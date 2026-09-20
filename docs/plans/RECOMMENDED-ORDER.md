@@ -53,8 +53,6 @@
    🔴 `L` · 🔒 blocked · unlocks 0/0
 2. `quests-progression-069` — **Quest offer pacing and conservative settlement gating**  
    🔴 `M` · ✅ ready · unlocks 0/0
-3. `ui-input-032` — **Approximate Startup Loading Progress**  
-   🟡 `S` · ✅ ready · unlocks 0/0
 
 ---
 
@@ -311,51 +309,47 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   ⚪ `S` · **Score:**  23  
    → **unlocks:** 0/0
 
-57. `ui-input-032` — **Approximate Startup Loading Progress**  
-  🟡 `S` · **Score:**  21  
-   → **unlocks:** 0/0
-
-58. `items-player-059` — **Crossbow, sling and thrown stones**  
+57. `items-player-059` — **Crossbow, sling and thrown stones**  
   🟡 `L` · **Score:**  20  
    → **unlocks:** 0/0
 
-59. `items-player-054` — **Instance payload capacity admission**  
+58. `items-player-054` — **Instance payload capacity admission**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-60. `items-player-055` — **Container transfer transaction atomicity**  
+59. `items-player-055` — **Container transfer transaction atomicity**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-61. `tools-019` — **Debug tooling lifecycle ownership**  
+60. `tools-019` — **Debug tooling lifecycle ownership**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-62. `ui-input-027` — **Interaction candidate dropped-item scaling**  
+61. `ui-input-027` — **Interaction candidate dropped-item scaling**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-63. `ui-input-030` — **Player downed action and input gating**  
+62. `ui-input-030` — **Player downed action and input gating**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-64. `world-038` — **WorldAudio async lifecycle and cache recovery**  
+63. `world-038` — **WorldAudio async lifecycle and cache recovery**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-65. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
+64. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
   🟡 `L` · **Score:**  18  
    → **unlocks:** 0/0
 
-66. `items-player-052` — **Settlement tool ownership and social acquisition**  
+65. `items-player-052` — **Settlement tool ownership and social acquisition**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-67. `items-player-058` — **Campfire decomposition and ash residue**  
+66. `items-player-058` — **Campfire decomposition and ash residue**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-68. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
+67. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
