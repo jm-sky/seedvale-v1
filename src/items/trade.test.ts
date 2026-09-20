@@ -13,6 +13,7 @@ import {
   previewTransactionNetCoins,
   resolveOfferLineBuyback,
   settleMerchantStockTransaction,
+  settleOwnedGoodsBarterTransaction,
   settleOwnedGoodsPurchase,
   settlePricedPurchase,
   settleTransaction,
@@ -493,6 +494,179 @@ describe('settleOwnedGoodsPurchase (plan settlements-npcs-033)', () => {
     expect(personal.getInstance(worn.id)).toBeNull()
     expect(buyer.getInstance(worn.id)).toMatchObject({ id: worn.id, durability: 0.4, sharpness: 0.3 })
     expect(household.count('arrow')).toBe(10)
+  })
+})
+
+describe('settleOwnedGoodsBarterTransaction (plan settlements-npcs-055)', () => {
+  it('settles a mixed BUY + OFFER basket atomically, offered goods landing in personalInventory', () => {
+    const buyer = new Inventory({ coin: 5, iron_rod: 2 })
+    const source = new Inventory({ arrow: 10 })
+    const npcPersonal = new Inventory({ coin: 50 })
+    const offerValue = resolveOfferLineBuyback(buyer, 'iron_rod', 2).value
+    const result = settleOwnedGoodsBarterTransaction(
+      buyer,
+      [{ kind: 'arrow', count: 5, unitPrice: 1, source }],
+      { iron_rod: 2 },
+      npcPersonal,
+      null,
+    )
+    expect(result).toBe('ok')
+    expect(buyer.count('arrow')).toBe(5)
+    expect(source.count('arrow')).toBe(5)
+    expect(buyer.count('iron_rod')).toBe(0)
+    expect(npcPersonal.count('iron_rod')).toBe(2)
+    const net = 5 - offerValue
+    expect(buyer.count('coin')).toBe(5 - net)
+    expect(npcPersonal.count('coin')).toBe(50 + net)
+  })
+
+  it('pays the NPC out of its own real coins when offer value exceeds the purchase cost', () => {
+    const buyer = new Inventory({ iron_rod: 10 })
+    const npcPersonal = new Inventory({ coin: 200 })
+    const offerValue = resolveOfferLineBuyback(buyer, 'iron_rod', 10).value
+    expect(settleOwnedGoodsBarterTransaction(buyer, [], { iron_rod: 10 }, npcPersonal, null)).toBe('ok')
+    expect(buyer.count('iron_rod')).toBe(0)
+    expect(npcPersonal.count('iron_rod')).toBe(10)
+    expect(buyer.count('coin')).toBe(offerValue)
+    expect(npcPersonal.count('coin')).toBe(200 - offerValue)
+  })
+
+  it('refuses without mutating anything when the NPC cannot actually afford the payout', () => {
+    const buyer = new Inventory({ iron_rod: 10 })
+    const npcPersonal = new Inventory({ coin: 1 })
+    expect(settleOwnedGoodsBarterTransaction(buyer, [], { iron_rod: 10 }, npcPersonal, null)).toBe('cannot_afford')
+    expect(buyer.count('iron_rod')).toBe(10)
+    expect(npcPersonal.count('coin')).toBe(1)
+  })
+
+  it('refuses without mutating anything when the player cannot afford the net cost', () => {
+    const buyer = new Inventory({ coin: 1 })
+    const source = new Inventory({ arrow: 10 })
+    const npcPersonal = new Inventory({ coin: 50 })
+    expect(settleOwnedGoodsBarterTransaction(
+      buyer,
+      [{ kind: 'arrow', count: 5, unitPrice: 3, source }],
+      {},
+      npcPersonal,
+      null,
+    )).toBe('cannot_afford')
+    expect(buyer.count('coin')).toBe(1)
+    expect(source.count('arrow')).toBe(10)
+  })
+
+  it('falls back to household when personalInventory would overflow, without splitting the line', () => {
+    const buyer = new Inventory({ iron_rod: 20 })
+    const npcPersonal = new Inventory({ coin: 1000 }, 1)
+    const npcHousehold = new Inventory()
+    expect(settleOwnedGoodsBarterTransaction(buyer, [], { iron_rod: 20 }, npcPersonal, npcHousehold)).toBe('ok')
+    expect(npcPersonal.count('iron_rod')).toBe(0)
+    expect(npcHousehold.count('iron_rod')).toBe(20)
+    expect(buyer.count('iron_rod')).toBe(0)
+  })
+
+  it('refuses without mutating anything when personalInventory is full and there is no household', () => {
+    const buyer = new Inventory({ iron_rod: 20 })
+    const npcPersonal = new Inventory({ coin: 1000 }, 1)
+    expect(settleOwnedGoodsBarterTransaction(buyer, [], { iron_rod: 20 }, npcPersonal, null)).toBe('full')
+    expect(buyer.count('iron_rod')).toBe(20)
+    expect(npcPersonal.count('iron_rod')).toBe(0)
+  })
+
+  it('cannot cumulatively overbook personalInventory across multiple offered lines', () => {
+    const buyer = new Inventory({ iron_rod: 20, dried_meat: 20 })
+    const npcPersonal = new Inventory({ coin: 1000 }, 12)
+    const npcHousehold = new Inventory()
+    expect(settleOwnedGoodsBarterTransaction(
+      buyer,
+      [],
+      { iron_rod: 20, dried_meat: 20 },
+      npcPersonal,
+      npcHousehold,
+    )).toBe('ok')
+    expect(npcPersonal.totalWeight()).toBeLessThanOrEqual(12 + 1e-9)
+    expect(npcPersonal.count('iron_rod') + npcHousehold.count('iron_rod')).toBe(20)
+    expect(npcPersonal.count('dried_meat') + npcHousehold.count('dried_meat')).toBe(20)
+  })
+
+  it('rejects a non-sellable barter-only kind (shell) rather than sinking it', () => {
+    const buyer = new Inventory({ shell: 5 })
+    const npcPersonal = new Inventory({ coin: 50 })
+    expect(settleOwnedGoodsBarterTransaction(buyer, [], { shell: 5 }, npcPersonal, null)).toBe('invalid_offer')
+    expect(buyer.count('shell')).toBe(5)
+  })
+
+  it('transfers an offered instance-backed item by exact identity/condition', () => {
+    const worn = createWeaponInstance('knife')
+    worn.durability = 0.3
+    worn.sharpness = 0.6
+    const buyer = new Inventory(undefined, undefined, [worn])
+    const npcPersonal = new Inventory({ coin: 50 })
+    expect(settleOwnedGoodsBarterTransaction(buyer, [], { knife: 1 }, npcPersonal, null)).toBe('ok')
+    expect(buyer.getInstance(worn.id)).toBeNull()
+    expect(npcPersonal.getInstance(worn.id)).toMatchObject({ id: worn.id, durability: 0.3, sharpness: 0.6 })
+  })
+
+  it('rejects when the player no longer actually owns the offered goods', () => {
+    const buyer = new Inventory({ iron_rod: 1 })
+    const npcPersonal = new Inventory({ coin: 50 })
+    expect(settleOwnedGoodsBarterTransaction(buyer, [], { iron_rod: 5 }, npcPersonal, null)).toBe('invalid_offer')
+    expect(buyer.count('iron_rod')).toBe(1)
+  })
+
+  it('rejects an all-empty basket', () => {
+    const buyer = new Inventory({ coin: 10 })
+    const npcPersonal = new Inventory({ coin: 50 })
+    expect(settleOwnedGoodsBarterTransaction(buyer, [], {}, npcPersonal, null)).toBe('invalid_offer')
+  })
+
+  it('supports an offer-only transaction with no purchase lines', () => {
+    const buyer = new Inventory({ iron_rod: 2 })
+    const npcPersonal = new Inventory({ coin: 50 })
+    expect(settleOwnedGoodsBarterTransaction(buyer, [], { iron_rod: 2 }, npcPersonal, null)).toBe('ok')
+    expect(npcPersonal.count('iron_rod')).toBe(2)
+  })
+
+  it('supports a purchase-only transaction with no offer', () => {
+    const buyer = new Inventory({ coin: 5 })
+    const source = new Inventory({ arrow: 10 })
+    const npcPersonal = new Inventory({ coin: 50 })
+    expect(settleOwnedGoodsBarterTransaction(
+      buyer,
+      [{ kind: 'arrow', count: 5, unitPrice: 1, source }],
+      {},
+      npcPersonal,
+      null,
+    )).toBe('ok')
+    expect(buyer.count('arrow')).toBe(5)
+    expect(npcPersonal.count('coin')).toBe(55)
+  })
+
+  it('a purchase source and an offer household destination may be the same object without corruption', () => {
+    const buyer = new Inventory({ coin: 5, dried_meat: 2 })
+    const household = new Inventory({ arrow: 10 })
+    const npcPersonal = new Inventory({ coin: 50 }, 0)
+    const offerValue = resolveOfferLineBuyback(buyer, 'dried_meat', 2).value
+    expect(settleOwnedGoodsBarterTransaction(
+      buyer,
+      [{ kind: 'arrow', count: 5, unitPrice: 1, source: household }],
+      { dried_meat: 2 },
+      npcPersonal,
+      household,
+    )).toBe('ok')
+    expect(buyer.count('arrow')).toBe(5)
+    expect(household.count('arrow')).toBe(5)
+    expect(household.count('dried_meat')).toBe(2)
+    const net = 5 - offerValue
+    expect(buyer.count('coin')).toBe(5 - net)
+    expect(npcPersonal.count('coin')).toBe(50 + net)
+  })
+
+  it('cannot duplicate goods or coins across a repeated commit', () => {
+    const buyer = new Inventory({ iron_rod: 5 })
+    const npcPersonal = new Inventory({ coin: 50 })
+    expect(settleOwnedGoodsBarterTransaction(buyer, [], { iron_rod: 5 }, npcPersonal, null)).toBe('ok')
+    expect(settleOwnedGoodsBarterTransaction(buyer, [], { iron_rod: 5 }, npcPersonal, null)).toBe('invalid_offer')
+    expect(npcPersonal.count('iron_rod')).toBe(5)
   })
 })
 

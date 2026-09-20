@@ -105,6 +105,13 @@ export type NpcAuthoritativeState = {
    *  false — legacy saves stay empty and reconstruction never reseeds.
    *  Never persisted. */
   needsInitialPersonalLoadout: boolean
+  /** Runtime-only latch: true on genuine first creation so settlement
+   *  materialization can seed the one-time starting coin budget once (plan
+   *  settlements-npcs-055). Snapshot restore is always false — the persisted
+   *  `personalInventory` balance is authoritative and never refilled.
+   *  Independent of `needsInitialPersonalLoadout` on purpose. Never
+   *  persisted. */
+  needsInitialStartingWealth: boolean
   /** Outstanding healable-physical-injury HP loss (plan npc-002) — separate
    *  from `health` itself (which stays combat/AI-agnostic): registered from
    *  accepted physical damage, relieved by actual restored HP, never derived
@@ -255,6 +262,7 @@ function fromSnapshot(id: NpcId, snapshot: NpcStateSnapshot, maxima?: NpcPhysica
     merchantJourney: cloneMerchantJourney(snapshot.merchantJourney),
     playerFollowUp: cloneNpcPlayerFollowUp(snapshot.playerFollowUp),
     needsInitialPersonalLoadout: false,
+    needsInitialStartingWealth: false,
   }
   if (maxima) applyDerivedStaminaMax(state.stamina, maxima.maxStamina)
   return state
@@ -304,6 +312,7 @@ export function createNpcAuthoritativeState(
     merchantJourney: null,
     playerFollowUp: null,
     needsInitialPersonalLoadout: true,
+    needsInitialStartingWealth: true,
   }
 }
 

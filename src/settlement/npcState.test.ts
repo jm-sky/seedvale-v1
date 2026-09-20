@@ -230,6 +230,7 @@ describe('NpcAuthoritativeState personalInventory (plan settlements-npcs-026)', 
     expect(b.personalInventory.isEmpty()).toBe(true)
     expect(a.personalInventory).not.toBe(b.personalInventory)
     expect(a.needsInitialPersonalLoadout).toBe(true)
+    expect(a.needsInitialStartingWealth).toBe(true)
   })
 
   it('repeated getOrCreate returns the same personal inventory object without reseeding', () => {
@@ -265,6 +266,16 @@ describe('NpcAuthoritativeState personalInventory (plan settlements-npcs-026)', 
     expect(hydrated.personalInventory.count('dried_meat')).toBe(3)
     expect(hydrated.personalInventory.count('coin')).toBe(8)
     expect(hydrated.needsInitialPersonalLoadout).toBe(false)
+    expect(hydrated.needsInitialStartingWealth).toBe(false)
+  })
+
+  it('never re-latches starting wealth for a restored NPC, even with zero coins (plan settlements-npcs-055)', () => {
+    const before = createNpcStateRegistry()
+    const state = before.getOrCreate('0_0:npc:0', 0)
+    state.needsInitialStartingWealth = false
+    const hydrated = createNpcStateRegistry(before.serialize()).getOrCreate('0_0:npc:0', 0)
+    expect(hydrated.personalInventory.count('coin')).toBe(0)
+    expect(hydrated.needsInitialStartingWealth).toBe(false)
   })
 
   it('round-trip preserves weapon instance id, condition and waterskin liquid', () => {

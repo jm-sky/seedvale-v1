@@ -217,6 +217,8 @@ Generated from TypeScript imports.
 - `settlement/merchantTrade.ts`
 - `settlement/npcPostDeath.test.ts`
 - `settlement/npcPostDeath.ts`
+- `settlement/npcStartingWealth.test.ts`
+- `settlement/npcStartingWealth.ts`
 - `settlement/npcState.ts`
 - `settlement/storageRepair.test.ts`
 - `settlement/storageRepair.ts`
@@ -836,6 +838,7 @@ Generated from TypeScript imports.
 - `app/actions/npcItemTransfer.ts`
 - `app/actions/workContractPayment.ts`
 - `items/inventoryTransfer.test.ts`
+- `items/trade.ts`
 - `quests/lostTreasureChronicleDeciphering.test.ts`
 - `settlement/npcPostDeath.ts`
 - `world/expeditionProvisioning.ts`
@@ -1544,6 +1547,7 @@ Generated from TypeScript imports.
 
 - `items/Inventory.ts`
 - `items/armorItemInstances.ts`
+- `items/inventoryTransfer.ts`
 - `items/itemInstances.ts`
 - `items/items.ts`
 - `items/liquidContainer.ts`

@@ -36,14 +36,14 @@
 
 1. `items-player-057` — **Mounted player lifecycle and restore continuity**  
    🔴 `S` · 🔒 blocked · unlocks 0/0 · type: fix
-2. `settlements-npcs-054` — **Transport carrier death and cargo disposition**  
+2. `world-033` — **WorldBundle rebuild transaction and lifecycle safety**  
+   🔴 `M` · ✅ ready · unlocks 3/3 · type: fix
+3. `settlements-npcs-054` — **Transport carrier death and cargo disposition**  
    🔴 `S` · ✅ ready · unlocks 0/0 · type: fix
-3. `world-terrain-044` — **Runtime ground query authority and missing-chunk fallbacks**  
+4. `world-terrain-044` — **Runtime ground query authority and missing-chunk fallbacks**  
    🔴 `M` · ✅ ready · unlocks 2/2 · type: bug
-4. `settlements-npcs-052` — **Persistent economic work cargo and local-transfer conservation**  
+5. `settlements-npcs-052` — **Persistent economic work cargo and local-transfer conservation**  
    🔴 `M` · ✅ ready · unlocks 0/0 · type: fix
-5. `world-033` — **WorldBundle rebuild transaction and lifecycle safety**  
-   🔴 `M` · ✅ ready · unlocks 2/2 · type: fix
 
 ---
 
@@ -66,8 +66,8 @@
    🔴 `M` · ✅ ready · unlocks 2/5
 4. `world-035` — **Regional road travel itinerary and adaptive traveller execution**  
    🔴 `L` · ✅ ready · unlocks 2/5
-5. `settlements-npcs-054` — **Transport carrier death and cargo disposition**  
-   🔴 `S` · ✅ ready · unlocks 0/0
+5. `world-033` — **WorldBundle rebuild transaction and lifecycle safety**  
+   🔴 `M` · ✅ ready · unlocks 3/3
 
 ---
 
@@ -121,57 +121,57 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   🔴 `L` · **Score:**  78  
    → **unlocks:** 1/1
 
-10. `quests-progression-046` — **Lost Treasure Chronicles — integration, legacy catch-up and superseded quest cleanup**  
+10. `world-033` — **WorldBundle rebuild transaction and lifecycle safety**  
+  🔴 `M` · **Score:**  69  
+   → **unlocks:** 3/3
+
+11. `items-player-057` — **Mounted player lifecycle and restore continuity**  
+  🔴 `S` · **Score:**  75  
+   → **unlocks:** 0/0
+
+12. `quests-progression-046` — **Lost Treasure Chronicles — integration, legacy catch-up and superseded quest cleanup**  
   🔴 `L` · **Score:**  66  
    → **unlocks:** 0/0
 
-11. `items-player-032` — **NPC player-storage resource and context rules**  
+13. `items-player-032` — **NPC player-storage resource and context rules**  
   🟡 `L` · **Score:**  64  
    → **unlocks:** 1/4
 
-12. `npc-032` — **Expedition needs and survival**  
+14. `npc-032` — **Expedition needs and survival**  
   🔴 `L` · **Score:**  98  
    → **unlocks:** 3/3
 
-13. `npc-034` — **Expedition shared work and activities**  
+15. `npc-034` — **Expedition shared work and activities**  
   🔴 `M` · **Score:**  75  
    → **unlocks:** 1/1
 
-14. `npc-033` — **Companion combat cooperation**  
+16. `npc-033` — **Companion combat cooperation**  
   🔴 `L` · **Score:**  72  
    → **unlocks:** 1/1
 
-15. `settlements-npcs-054` — **Transport carrier death and cargo disposition**  
+17. `settlements-npcs-054` — **Transport carrier death and cargo disposition**  
   🔴 `S` · **Score:**  59  
    → **unlocks:** 0/0
 
-16. `world-terrain-044` — **Runtime ground query authority and missing-chunk fallbacks**  
+18. `world-terrain-044` — **Runtime ground query authority and missing-chunk fallbacks**  
   🔴 `M` · **Score:**  59  
    → **unlocks:** 2/2
 
-17. `settlements-npcs-022` — **Household help and age-based work participation**  
+19. `settlements-npcs-022` — **Household help and age-based work participation**  
   🔴 `M` · **Score:**  57  
    → **unlocks:** 1/1
 
-18. `settlements-npcs-052` — **Persistent economic work cargo and local-transfer conservation**  
+20. `settlements-npcs-052` — **Persistent economic work cargo and local-transfer conservation**  
   🔴 `M` · **Score:**  57  
    → **unlocks:** 0/0
 
-19. `quests-progression-053` — **Hunters Brotherhood — competing hunting strategies**  
+21. `quests-progression-053` — **Hunters Brotherhood — competing hunting strategies**  
   🟡 `L` · **Score:**  56  
    → **unlocks:** 1/1
 
-20. `settlements-npcs-043` — **Settlement Cultivation Hydration, Rain & Farmer Watering**  
+22. `settlements-npcs-043` — **Settlement Cultivation Hydration, Rain & Farmer Watering**  
   🔴 `L` · **Score:**  56  
    → **unlocks:** 1/1
-
-21. `world-033` — **WorldBundle rebuild transaction and lifecycle safety**  
-  🔴 `M` · **Score:**  55  
-   → **unlocks:** 2/2
-
-22. `items-player-057` — **Mounted player lifecycle and restore continuity**  
-  🔴 `S` · **Score:**  75  
-   → **unlocks:** 0/0
 
 23. `quests-progression-069` — **Quest offer pacing and conservative settlement gating**  
   🔴 `M` · **Score:**  51  
@@ -241,107 +241,123 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   🔴 `L` · **Score:**  32  
    → **unlocks:** 0/0
 
-40. `world-terrain-042` — **Medicinal herb meadow patches**  
+40. `ui-input-031` — **World-bound UI session rebuild lifecycle**  
+  🔴 `S` · **Score:**  31  
+   → **unlocks:** 0/0
+
+41. `world-terrain-042` — **Medicinal herb meadow patches**  
   🟡 `M` · **Score:**  31  
    → **unlocks:** 1/1
 
-41. `npc-054` — **NPC desired gifts, gift acceptance and relationship rewards**  
+42. `npc-054` — **NPC desired gifts, gift acceptance and relationship rewards**  
   🔴 `L` · **Score:**  30  
    → **unlocks:** 0/0
 
-42. `items-player-053` — **Atomic world pickup ownership transfer**  
+43. `items-player-053` — **Atomic world pickup ownership transfer**  
   🔴 `S` · **Score:**  29  
    → **unlocks:** 0/0
 
-43. `npc-059` — **NPC need action result revalidation and atomic relief**  
+44. `npc-059` — **NPC need action result revalidation and atomic relief**  
   🔴 `S` · **Score:**  29  
    → **unlocks:** 0/0
 
-44. `ui-input-026` — **World and map label visibility and collision fixes**  
+45. `ui-input-026` — **World and map label visibility and collision fixes**  
   🔴 `S` · **Score:**  29  
    → **unlocks:** 0/0
 
-45. `world-terrain-043` — **System terrain modification rebuild idempotency**  
+46. `world-terrain-043` — **System terrain modification rebuild idempotency**  
   🔴 `S` · **Score:**  29  
    → **unlocks:** 0/0
 
-46. `settlements-022` — **Founded settlement live runtime and streaming**  
+47. `settlements-022` — **Founded settlement live runtime and streaming**  
   🔴 `L` · **Score:**  28  
    → **unlocks:** 0/0
 
-47. `items-player-014` — **Rope-pullable resource transport**  
+48. `items-player-014` — **Rope-pullable resource transport**  
   🟡 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-48. `npc-058` — **NPC time-skip resource and interrupt parity**  
+49. `npc-058` — **NPC time-skip resource and interrupt parity**  
   🔴 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-49. `tools-005` — **Seedvale Character Preparation Panel**  
+50. `tools-005` — **Seedvale Character Preparation Panel**  
   🔴 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-50. `world-034` — **Time-skip clock exactness and catch-up coverage**  
+51. `world-034` — **Time-skip clock exactness and catch-up coverage**  
   🔴 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-51. `world-terrain-039` — **N8AO / post-process cost budget**  
+52. `world-terrain-039` — **N8AO / post-process cost budget**  
   🔴 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-52. `world-terrain-046` — **Unified water shore query and river hotpath**  
+53. `world-terrain-046` — **Unified water shore query and river hotpath**  
   🔴 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-53. `ui-input-025` — **Road travel autopilot for player and mounts**  
+54. `ui-input-025` — **Road travel autopilot for player and mounts**  
   🔴 `L` · **Score:**  26  
    → **unlocks:** 0/0
 
-54. `items-player-044` — **Shoulder and forearm equipment slots**  
+55. `items-player-044` — **Shoulder and forearm equipment slots**  
   🟡 `M` · **Score:**  25  
    → **unlocks:** 0/0
 
-55. `world-036` — **Lightweight unloaded shipwreck and tower lookup**  
+56. `world-036` — **Lightweight unloaded shipwreck and tower lookup**  
   🟡 `M` · **Score:**  25  
    → **unlocks:** 0/0
 
-56. `world-terrain-041` — **Agent presentation render LOD**  
+57. `world-037` — **Audio spatial context isolation**  
+  🟡 `S` · **Score:**  25  
+   → **unlocks:** 0/0
+
+58. `world-terrain-041` — **Agent presentation render LOD**  
   🔴 `L` · **Score:**  24  
    → **unlocks:** 0/0
 
-57. `ui-input-029` — **Village torch interaction action contract**  
+59. `ui-input-029` — **Village torch interaction action contract**  
   ⚪ `S` · **Score:**  23  
    → **unlocks:** 0/0
 
-58. `tools-018` — **Codebase domain and flow audit master**  
+60. `tools-018` — **Codebase domain and flow audit master**  
   🔴 `XL` · **Score:**  20  
    → **unlocks:** 0/0
 
-59. `items-player-054` — **Instance payload capacity admission**  
+61. `items-player-054` — **Instance payload capacity admission**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-60. `items-player-055` — **Container transfer transaction atomicity**  
+62. `items-player-055` — **Container transfer transaction atomicity**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-61. `ui-input-027` — **Interaction candidate dropped-item scaling**  
+63. `tools-019` — **Debug tooling lifecycle ownership**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-62. `ui-input-030` — **Player downed action and input gating**  
+64. `ui-input-027` — **Interaction candidate dropped-item scaling**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-63. `items-player-052` — **Settlement tool ownership and social acquisition**  
+65. `ui-input-030` — **Player downed action and input gating**  
+  🟡 `S` · **Score:**  19  
+   → **unlocks:** 0/0
+
+66. `world-038` — **WorldAudio async lifecycle and cache recovery**  
+  🟡 `S` · **Score:**  19  
+   → **unlocks:** 0/0
+
+67. `items-player-052` — **Settlement tool ownership and social acquisition**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-64. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
+68. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-65. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
+69. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
   🟡 `L` · **Score:**  16  
    → **unlocks:** 0/0
 
@@ -420,6 +436,9 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   is blocked by:
   - [`world-035-regional-road-travel-itinerary-and-adaptive-traveller-execution.md`](world-035-regional-road-travel-itinerary-and-adaptive-traveller-execution.md)
 - [`ui-input-028-interaction-target-identity-and-cycle-lifecycle.md`](ui-input-028-interaction-target-identity-and-cycle-lifecycle.md)  
+  is blocked by:
+  - [`world-033-worldbundle-rebuild-transaction-and-lifecycle-safety.md`](world-033-worldbundle-rebuild-transaction-and-lifecycle-safety.md)
+- [`ui-input-031-world-bound-ui-session-rebuild-lifecycle.md`](ui-input-031-world-bound-ui-session-rebuild-lifecycle.md)  
   is blocked by:
   - [`world-033-worldbundle-rebuild-transaction-and-lifecycle-safety.md`](world-033-worldbundle-rebuild-transaction-and-lifecycle-safety.md)
 - [`world-terrain-045-canonical-local-water-player-traversal.md`](world-terrain-045-canonical-local-water-player-traversal.md)  
@@ -773,6 +792,7 @@ graph TD
   settlements_npcs_052["settlements-npcs-052 — Persistent economic work cargo and local-transfer conservation"]
   settlements_npcs_053["settlements-npcs-053 — Active TransportOrder registry lifecycle"]
   settlements_npcs_054["settlements-npcs-054 — Transport carrier death and cargo disposition"]
+  settlements_npcs_055["settlements-npcs-055 — Ordinary NPC Barter and Offer"]
   tools_000["tools-000 — Weapon Browser — Observatory/Admin"]
   tools_001["tools-001 — Performance Benchmark Determinism & Reliability"]
   tools_002["tools-002 — Trace Analyzer — Real Application CPU Attribution"]
@@ -790,6 +810,7 @@ graph TD
   tools_016["tools-016 — Heavy settlement performance benchmark"]
   tools_017["tools-017 — Custom UBC NPC model source and build pipeline"]
   tools_018["tools-018 — Codebase domain and flow audit master"]
+  tools_019["tools-019 — Debug tooling lifecycle ownership"]
   ui_input_001["ui-input-001 — Developer Debug API"]
   ui_input_002["ui-input-002 — UI/UX Interaction and Action System Polish"]
   ui_input_003["ui-input-003 — Merchant Trade UI/UX Redesign"]
@@ -820,6 +841,7 @@ graph TD
   ui_input_028["ui-input-028 — Interaction target identity and cycle lifecycle"]
   ui_input_029["ui-input-029 — Village torch interaction action contract"]
   ui_input_030["ui-input-030 — Player downed action and input gating"]
+  ui_input_031["ui-input-031 — World-bound UI session rebuild lifecycle"]
   world_001["world-001 — Playtest Gameplay Fixes — Stamina, Fire Time-Skip and Bear Behaviour"]
   world_003["world-003 — Faster Application Startup"]
   world_004["world-004 — Well Depth, Groundwater & Well Protection"]
@@ -855,6 +877,8 @@ graph TD
   world_034["world-034 — Time-skip clock exactness and catch-up coverage"]
   world_035["world-035 — Regional road travel itinerary and adaptive traveller execution"]
   world_036["world-036 — Lightweight unloaded shipwreck and tower lookup"]
+  world_037["world-037 — Audio spatial context isolation"]
+  world_038["world-038 — WorldAudio async lifecycle and cache recovery"]
   world_terrain_001["world-terrain-001 — Cloud System"]
   world_terrain_002["world-terrain-002 — Terrain Modification & Land Preparation"]
   world_terrain_003["world-terrain-003 — Weather puddles V2 — stronger shader surface effect"]
@@ -1367,6 +1391,7 @@ graph TD
   settlements_npcs_033 --> settlements_npcs_038
   settlements_npcs_033 --> settlements_npcs_040
   settlements_npcs_033 --> settlements_npcs_042
+  settlements_npcs_033 --> settlements_npcs_055
   settlements_npcs_034 --> settlements_npcs_016
   settlements_npcs_034 --> settlements_npcs_017
   settlements_npcs_034 --> settlements_npcs_052
@@ -1451,6 +1476,7 @@ graph TD
   world_027 --> fauna_045
   world_027 --> items_player_051
   world_027 --> persistence_006
+  world_027 --> world_037
   world_028 --> quests_progression_047
   world_028 --> world_030
   world_028 --> world_036
@@ -1462,6 +1488,7 @@ graph TD
   world_032 --> quests_progression_068
   world_033 --> items_player_057
   world_033 --> ui_input_028
+  world_033 --> ui_input_031
   world_035 --> settlements_npcs_051
   world_035 --> ui_input_025
   world_terrain_001 --> world_terrain_014

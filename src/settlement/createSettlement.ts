@@ -97,6 +97,7 @@ import {
   proceduralResidentAnchorsFromLandmarks,
   residentAnchorsForHome,
 } from './npcResidentAnchors'
+import { seedNpcStartingWealthIfNeeded } from './npcStartingWealth'
 import {
   PASTURE_WELL_TROUGH_BUCKET_REACH,
   pastureWellTroughDistance,
@@ -1148,6 +1149,11 @@ export async function createSettlement(
     // unload/reload) — a genuinely new id gets the usual fresh state (plan
     // 197), seeded with this NPC's generated maxima.
     const npcState = npcStateRegistry.getOrCreate(input.npcId, input.needOffset, physicalProfile)
+    seedNpcStartingWealthIfNeeded(npcState.personalInventory, npcState, {
+      size: def.size,
+      role: input.member.character.role,
+      age: input.member.age,
+    })
     input.seedMerchantStock?.(npcState)
     if (npcState.postDeath) finalizeExpiredNpcCorpse(npcState.postDeath, currentNowDays, droppedItems)
     if (shouldSkipNpcCorpsePresentation(npcState, currentNowDays)) return null

@@ -52,7 +52,7 @@ import {
   resolveOfferLineBuyback,
   sellInstancesForCoins,
   settleMerchantStockTransaction,
-  settleOwnedGoodsPurchase,
+  settleOwnedGoodsBarterTransaction,
   settlePricedPurchase,
 } from '../items/trade'
 import { MERCHANT_STOCK, merchantInstancePrice, merchantPrice, NEUTRAL_SELL_PRICE_CONTEXT, npcSalePrice, sellPrice, type SellPriceContext } from '../items/tradeCatalog'
@@ -285,6 +285,9 @@ export function createInventoryWiring(deps: InventoryWiringDeps): InventoryWirin
       previewNetCoins: (purchases, offer, instanceBuyCost = 0) => (
         previewTransactionNetCoins(inventory, purchases, offer, context, instanceBuyCost, purchaseMarkup)
       ),
+      previewNetCoinsForCost: (totalBuyCost, offer) => (
+        previewPricedPurchaseNetCoins(inventory, totalBuyCost, offer, context)
+      ),
     }
   }
 
@@ -371,17 +374,17 @@ export function createInventoryWiring(deps: InventoryWiringDeps): InventoryWirin
   }
 
   /** Ordinary NPC trade commit (plan settlements-npcs-033 §4 /
-   *  settlements-npcs-036) — re-resolves live owner, sellable quantity and
-   *  live social price for every requested kind right before mutating
-   *  anything (the plan's live revalidation contract), then hands the
-   *  revalidated basket to `settleOwnedGoodsPurchase`. Coin-only V1 (§8):
-   *  any non-empty `offer` is rejected rather than silently dropped, since
-   *  ordinary NPCs have no established barter-goods owner. */
+   *  settlements-npcs-036, barter extended by settlements-npcs-055) —
+   *  re-resolves live owner, sellable quantity and live social price for
+   *  every requested purchase kind right before mutating anything (the
+   *  plan's live revalidation contract), then hands the revalidated basket
+   *  plus the player's own OFFER basket to `settleOwnedGoodsBarterTransaction`.
+   *  Offered goods and any net coin payout settle against the interacting
+   *  NPC's own `personalInventory`/`Household.items` — never a catalog sink. */
   const settleNpcGoodsTransaction = (
     purchases: Partial<Record<ItemKind, number>>,
     offer: Partial<Record<ItemKind, number>>,
   ): TradeResult => {
-    if ((Object.values(offer) as number[]).some((count) => count > 0)) return 'invalid_offer'
     const npc = ui.merchant.npc as NpcAgent | null
     if (!npc || npc.health.dead) return 'not_sold'
     const settlementNpcs = findSettlementForNpc(npc)?.npcs ?? []
@@ -396,15 +399,23 @@ export function createInventoryWiring(deps: InventoryWiringDeps): InventoryWirin
       if (!source) return 'not_sold'
       lines.push({ kind, count, unitPrice: npcSalePrice(kind, context), source })
     }
-    if (lines.length === 0) return 'invalid_offer'
+    const offerHasEntries = (Object.values(offer) as number[]).some((count) => count > 0)
+    if (lines.length === 0 && !offerHasEntries) return 'invalid_offer'
     const npcState = bundle.settlementsManager.getNpcState(npc.id)
     if (!npcState) return 'not_sold'
-    const defaultSource = npc.household?.items ?? npcState.personalInventory
-    const result = settleOwnedGoodsPurchase(inventory, defaultSource, npcState.personalInventory, lines)
+    const npcHousehold = npc.household?.items ?? null
+    const result = settleOwnedGoodsBarterTransaction(
+      inventory,
+      lines,
+      offer,
+      npcState.personalInventory,
+      npcHousehold,
+      context,
+      nowDays(),
+    )
     if (result === 'ok') {
       afterTrade()
-      const totalPrice = lines.reduce((sum, line) => sum + line.unitPrice * line.count, 0)
-      toast.show(`Zapłacono ${totalPrice} monet.`, 'pickup')
+      toast.show('Transakcja zakończona.', 'pickup')
     }
     return result
   }
@@ -958,8 +969,9 @@ export function createInventoryWiring(deps: InventoryWiringDeps): InventoryWirin
         )
         return
       }
-      activeMerchantPricing = null
-      vueUi.openMerchantFromDialogue(view.counts, view.groups, 'npcGoods', null, null, buildNpcTradeStock(npc))
+      const pricing = createMerchantPricing(npc)
+      activeMerchantPricing = pricing
+      vueUi.openMerchantFromDialogue(view.counts, view.groups, 'npcGoods', pricing, null, buildNpcTradeStock(npc))
     },
     onRequestFood: (npc) => resolveAssistanceDialogue(npc, 'food'),
     onRequestWater: (npc) => resolveAssistanceDialogue(npc, 'water'),

@@ -377,6 +377,14 @@ export type MerchantPricing = {
     offer: Partial<Record<ItemKind, number>>,
     instanceBuyCost?: number,
   ) => number
+  /** Ordinary-NPC OFFER preview (plan settlements-npcs-055) — `totalBuyCost`
+   *  is already resolved from the session's own live `NpcTradeStockRow`
+   *  prices (not the merchant catalog `previewNetCoins` above assumes), so
+   *  this only needs to net it against the current offer basket. */
+  previewNetCoinsForCost: (
+    totalBuyCost: number,
+    offer: Partial<Record<ItemKind, number>>,
+  ) => number
 }
 
 /** Special world-entity horse offer outside `MERCHANT_STOCK` (plan
@@ -416,8 +424,10 @@ export type NpcTradeStockRow = {
 /** Which stock the open trade screen renders the BUY column from (plan
  *  settlements-npcs-033 §1/§10, settlements-012) — `'merchant'` is a Trader's
  *  finite owned catalog stock + OFFER/barter + optional home horse special;
- *  `'npcGoods'` is an ordinary NPC's real household/personal surplus with no
- *  barter/OFFER column. */
+ *  `'npcGoods'` is an ordinary NPC's real household/personal surplus. Both
+ *  modes show OFFER/barter (plan settlements-npcs-055) — `npcGoods` settles
+ *  it into the interacting NPC's own `personalInventory`/`Household.items`
+ *  instead of a catalog sink. */
 export type MerchantMode = 'merchant' | 'npcGoods'
 
 type MerchantState = {
@@ -432,7 +442,8 @@ type MerchantState = {
   npcStock: readonly NpcTradeStockRow[]
   /** Settles one mixed BUY+OFFER basket atomically (plan ui-input-003) —
    *  supersedes the old single-target onBuyCoins/onBuyBarter/onSellCoins.
-   *  For `mode: 'npcGoods'` the basket is BUY-only; `offer` is always empty. */
+   *  `mode: 'npcGoods'` accepts a real `offer` too (plan settlements-npcs-055),
+   *  settled into the interacting NPC's own persistent inventories. */
   onSettleTransaction: ((
     purchases: Partial<Record<ItemKind, number>>,
     offer: Partial<Record<ItemKind, number>>,

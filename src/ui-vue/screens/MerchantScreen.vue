@@ -55,9 +55,10 @@ const coins = computed(() => ui.merchant.counts.coin ?? 0)
 const horseOffers = computed(() => ui.merchant.horseOffers)
 const hasHorseOffers = computed(() => horseOffers.value.length > 0)
 
-/** Ordinary NPC household-goods session (plan settlements-npcs-033) — no
- *  OFFER/barter column and no `MERCHANT_STOCK` catalog; BUY rows come from
- *  the live, quantity-limited `ui.merchant.npcStock` instead. */
+/** Ordinary NPC household-goods session (plan settlements-npcs-033, barter
+ *  extended by settlements-npcs-055) — no `MERCHANT_STOCK` catalog; BUY rows
+ *  come from the live, quantity-limited `ui.merchant.npcStock` instead. The
+ *  OFFER column is shared with Merchant sessions (settlements-npcs-055). */
 const isNpcGoodsMode = computed(() => ui.merchant.mode === 'npcGoods')
 const hasNpcGoodsStock = computed(() => ui.merchant.npcStock.length > 0)
 const screenTitle = computed(() => (isNpcGoodsMode.value ? (ui.merchant.npc?.displayName ?? 'Handel') : 'Kupiec'))
@@ -228,7 +229,8 @@ const netCoins = computed(() => {
   if (isNpcGoodsMode.value) {
     const stackCost = (Object.entries(transaction.purchases) as [ItemKind, number][])
       .reduce((sum, [kind, count]) => (count > 0 ? sum + purchaseUnitPrice(kind) * count : sum), 0)
-    return stackCost + instanceBuyCost
+    const totalBuyCost = stackCost + instanceBuyCost
+    return ui.merchant.pricing?.previewNetCoinsForCost(totalBuyCost, transaction.offer) ?? totalBuyCost
   }
   return ui.merchant.pricing?.previewNetCoins(transaction.purchases, transaction.offer, instanceBuyCost) ?? 0
 })
@@ -239,7 +241,10 @@ const trading = ref(false)
  *  household production tick, or a prior purchase this session) — clamp the
  *  basket to what's still actually available rather than letting a stale
  *  quantity reach `onTrade`, mirroring the merchant catalog/owned-count
- *  staleness guard below (plan settlements-npcs-033 §4). */
+ *  staleness guard below (plan settlements-npcs-033 §4). The OFFER basket
+ *  clamps against the player's own current counts, same as merchant mode
+ *  (plan settlements-npcs-055) — it is no longer wiped just because the
+ *  session is `npcGoods`. */
 function clampStaleNpcGoodsTransaction(): boolean {
   let changed = false
   const nextPurchases: Partial<Record<ItemKind, number>> = {}
@@ -251,11 +256,18 @@ function clampStaleNpcGoodsTransaction(): boolean {
     nextPurchases[kind] = clamped
   }
   if (transaction.purchaseInstanceIds.length > 0) changed = true
-  if (Object.keys(transaction.offer).length > 0) changed = true
+  const nextOffer: Partial<Record<ItemKind, number>> = {}
+  for (const [kind, count] of Object.entries(transaction.offer) as [ItemKind, number][]) {
+    const owned = ownedCount(kind)
+    if (owned <= 0) { changed = true; continue }
+    const clamped = Math.min(owned, count)
+    if (clamped !== count) changed = true
+    nextOffer[kind] = clamped
+  }
   if (changed) {
     transaction.purchases = nextPurchases
     transaction.purchaseInstanceIds = []
-    transaction.offer = {}
+    transaction.offer = nextOffer
   }
   return changed
 }
@@ -375,7 +387,7 @@ function openDetails(kind: ItemKind, instanceId?: string): void {
       </div>
 
       <div
-        v-if="isCompact && !isNpcGoodsMode"
+        v-if="isCompact"
         class="mb-2 flex shrink-0 gap-1"
       >
         <MerchantTabButton
@@ -397,7 +409,7 @@ function openDetails(kind: ItemKind, instanceId?: string): void {
       >
         <div
           class="grid grid-cols-1 gap-4 md:min-h-0 md:flex-1 md:gap-4 md:overflow-hidden"
-          :class="isCompact ? '' : (isNpcGoodsMode ? 'md:grid-cols-2' : 'md:grid-cols-3')"
+          :class="isCompact ? '' : 'md:grid-cols-3'"
         >
           <section
             v-if="!isCompact || activeContext === 'buy'"
@@ -473,7 +485,7 @@ function openDetails(kind: ItemKind, instanceId?: string): void {
           </section>
 
           <section
-            v-if="!isNpcGoodsMode && (!isCompact || activeContext === 'offer')"
+            v-if="!isCompact || activeContext === 'offer'"
             class="flex min-w-0 flex-col gap-2 md:min-h-0"
           >
             <h3 class="hidden lg:block shrink-0 text-[12px] font-semibold uppercase tracking-wide opacity-70 max-md:text-[11px]">

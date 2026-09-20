@@ -237,6 +237,7 @@ Generated from TypeScript imports.
 - `settlement/npcPresentationOwner.ts`
 - `settlement/npcRelationships.ts`
 - `settlement/npcResidentAnchors.ts`
+- `settlement/npcStartingWealth.ts`
 - `settlement/npcState.ts`
 - `settlement/pastureWater.ts`
 - `settlement/places.ts`
@@ -375,6 +376,7 @@ Generated from TypeScript imports.
 - `settlement/merchantTrade.ts`
 - `settlement/npcIdentity.test.ts`
 - `settlement/npcIdentity.ts`
+- `settlement/npcStartingWealth.ts`
 - `settlement/plazaPaving.test.ts`
 - `settlement/plazaPaving.ts`
 - `settlement/professionFamilySurnames.test.ts`
@@ -1263,6 +1265,7 @@ Generated from TypeScript imports.
 - `settlement/families.ts`
 - `settlement/lostTreasureChroniclesElderResident.test.ts`
 - `settlement/npcPhysicalProfile.test.ts`
+- `settlement/npcStartingWealth.ts`
 - `settlement/settlementGenerator.test.ts`
 - `shared/effectivePhysicalAttributes.ts`
 
@@ -1364,6 +1367,27 @@ Generated from TypeScript imports.
 - `ai/npcProfessionWork.ts`
 - `settlement/createSettlement.ts`
 - `settlement/npcResidentAnchors.test.ts`
+
+## `settlement/npcStartingWealth.test.ts`
+
+**Imports**
+
+- `items/Inventory.ts`
+- `settlement/npcStartingWealth.ts`
+
+## `settlement/npcStartingWealth.ts`
+
+**Imports**
+
+- `ai/characters.ts`
+- `items/Inventory.ts`
+- `settlement/families.ts`
+- `settlement/npcPhysicalProfile.ts`
+
+**Imported by**
+
+- `settlement/createSettlement.ts`
+- `settlement/npcStartingWealth.test.ts`
 
 ## `settlement/npcState.test.ts`
 

@@ -354,6 +354,7 @@ Generated from TypeScript imports.
 - `settlement/lostTreasureChroniclesElderResident.ts`
 - `settlement/lostTreasureChroniclesSpecialistResident.ts`
 - `settlement/npcPhysicalProfile.ts`
+- `settlement/npcStartingWealth.ts`
 - `settlement/places.ts`
 - `settlement/professionFamilySurnames.test.ts`
 - `settlement/professionFamilySurnames.ts`

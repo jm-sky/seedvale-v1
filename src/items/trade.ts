@@ -1,5 +1,6 @@
 import type { Inventory } from './Inventory'
 import { createArmorInstance, effectiveInstanceWeight, isArmorKind } from './armorItemInstances'
+import { transferInventoryCount, transferInventoryInstance } from './inventoryTransfer'
 import {
   ARMOR_QUALITY_RANK,
   createItemInstanceId,
@@ -567,31 +568,47 @@ export type OwnedGoodsPurchaseLine = {
  *
  * @domain settlements-npcs
  */
-export function settleOwnedGoodsPurchase(
-  buyer: Inventory,
-  source: Inventory,
-  paymentDestination: Inventory,
+type ResolvedPurchaseLine = {
+  kind: ItemKind
+  count: number
+  unitPrice: number
+  source: Inventory
+  instances: ItemInstance[]
+}
+
+type PurchaseReservationResult =
+  | {
+    ok: true
+    totalPrice: number
+    stackPurchases: Partial<Record<ItemKind, number>>
+    incomingInstances: ItemInstance[]
+    resolved: ResolvedPurchaseLine[]
+  }
+  | { ok: false, result: Extract<TradeResult, 'invalid_offer' | 'not_sold'> }
+
+/** Preflight-only reservation pass shared by `settleOwnedGoodsPurchase` and
+ *  `settleOwnedGoodsBarterTransaction` — resolves every line's real
+ *  source/instances and tracks per-source reserved counts/ids so multiple
+ *  lines against the same owner cannot overbook it within one commit.
+ *  Mutates nothing; callers mutate only after every other preflight check
+ *  (coins, capacity) also passes. */
+function resolvePurchaseReservations(
   lines: readonly OwnedGoodsPurchaseLine[],
-): TradeResult {
+  defaultSource: Inventory,
+): PurchaseReservationResult {
   const active = lines.filter((line) => line.count > 0)
-  if (active.length === 0) return 'invalid_offer'
+  if (active.length === 0) return { ok: false, result: 'invalid_offer' }
   let totalPrice = 0
   const stackPurchases: Partial<Record<ItemKind, number>> = {}
   const reserved = new Map<Inventory, Set<string>>()
   const reservedCounts = new Map<Inventory, Partial<Record<ItemKind, number>>>()
   const incomingInstances: ItemInstance[] = []
-  const resolved: {
-    kind: ItemKind
-    count: number
-    unitPrice: number
-    source: Inventory
-    instances: ItemInstance[]
-  }[] = []
+  const resolved: ResolvedPurchaseLine[] = []
   for (const line of active) {
     const { kind, count, unitPrice } = line
-    if (!Number.isInteger(count) || count <= 0) return 'invalid_offer'
-    if (!Number.isInteger(unitPrice) || unitPrice < 0) return 'invalid_offer'
-    const lineSource = line.source ?? source
+    if (!Number.isInteger(count) || count <= 0) return { ok: false, result: 'invalid_offer' }
+    if (!Number.isInteger(unitPrice) || unitPrice < 0) return { ok: false, result: 'invalid_offer' }
+    const lineSource = line.source ?? defaultSource
     const takenIds = reserved.get(lineSource) ?? new Set<string>()
     const already = reservedCounts.get(lineSource)?.[kind] ?? 0
     const instances: ItemInstance[] = []
@@ -603,11 +620,11 @@ export function settleOwnedGoodsPurchase(
           lineSource.getInstances(kind).filter((instance) => !takenIds.has(instance.id)),
           count,
         )
-      if (ids.length !== count) return 'not_sold'
+      if (ids.length !== count) return { ok: false, result: 'not_sold' }
       for (const id of ids) {
-        if (takenIds.has(id)) return 'not_sold'
+        if (takenIds.has(id)) return { ok: false, result: 'not_sold' }
         const instance = lineSource.getInstance(id)
-        if (!instance || instance.kind !== kind) return 'not_sold'
+        if (!instance || instance.kind !== kind) return { ok: false, result: 'not_sold' }
         takenIds.add(id)
         instances.push(instance)
         incomingInstances.push(instance)
@@ -615,7 +632,7 @@ export function settleOwnedGoodsPurchase(
       reserved.set(lineSource, takenIds)
     } else {
       const owned = lineSource.count(kind)
-      if (owned < already + count) return 'not_sold'
+      if (owned < already + count) return { ok: false, result: 'not_sold' }
       const byKind = reservedCounts.get(lineSource) ?? {}
       byKind[kind] = already + count
       reservedCounts.set(lineSource, byKind)
@@ -624,6 +641,18 @@ export function settleOwnedGoodsPurchase(
     resolved.push({ kind, count, unitPrice, source: lineSource, instances })
     totalPrice += unitPrice * count
   }
+  return { ok: true, totalPrice, stackPurchases, incomingInstances, resolved }
+}
+
+export function settleOwnedGoodsPurchase(
+  buyer: Inventory,
+  source: Inventory,
+  paymentDestination: Inventory,
+  lines: readonly OwnedGoodsPurchaseLine[],
+): TradeResult {
+  const reservation = resolvePurchaseReservations(lines, source)
+  if (!reservation.ok) return reservation.result
+  const { totalPrice, stackPurchases, incomingInstances, resolved } = reservation
   if (totalPrice > 0 && !buyer.has('coin', totalPrice)) return 'cannot_afford'
   if (!wouldFitAfterTransaction(buyer, {}, stackPurchases, totalPrice, {}, incomingInstances)) return 'full'
   if (totalPrice > 0 && !wouldFitAfterTransaction(paymentDestination, {}, {}, -totalPrice)) return 'full'
@@ -641,6 +670,147 @@ export function settleOwnedGoodsPurchase(
   if (totalPrice > 0) {
     buyer.remove('coin', totalPrice)
     paymentDestination.add('coin', totalPrice)
+  }
+  return 'ok'
+}
+
+/**
+ * Atomic mixed BUY + OFFER transaction for ordinary NPC trade (plan
+ * settlements-npcs-055) — extends `settleOwnedGoodsPurchase`'s explicit-owner
+ * purchase model with a real player OFFER side. Offered goods move into the
+ * interacting NPC's own `npcPersonal` (its `personalInventory`) while they
+ * fit, `npcHousehold` (when present) as the capacity fallback for the whole
+ * line — never split across both. Coin flow always settles against
+ * `npcPersonal` in either direction (it is the NPC's one real wallet): a
+ * negative net (player receives coins) requires the NPC to actually own
+ * enough coin, never minted. Offered kinds go through the same
+ * `canSell`/`resolveOfferBuyback` valuation the shared Merchant OFFER column
+ * already uses, except `shell`/other non-sellable kinds are rejected rather
+ * than sunk into an untracked barter value the way a catalog-only Merchant
+ * session can.
+ *
+ * Preflights every participant (purchase sources, offer source, both
+ * possible offer destinations, both possible coin directions) before any
+ * mutation, then commits once via `inventoryTransfer.ts`'s primitives for
+ * every offered stack/instance move so perishable freshness and instance
+ * identity survive the transfer.
+ *
+ * @domain settlements-npcs
+ */
+export function settleOwnedGoodsBarterTransaction(
+  buyer: Inventory,
+  purchaseLines: readonly OwnedGoodsPurchaseLine[],
+  offer: Partial<Record<ItemKind, number>>,
+  npcPersonal: Inventory,
+  npcHousehold: Inventory | null,
+  context: SellPriceContext = NEUTRAL_SELL_PRICE_CONTEXT,
+  nowDays = 0,
+): TradeResult {
+  const activePurchases = purchaseLines.filter((line) => line.count > 0)
+  const offerEntries = (Object.entries(offer) as [ItemKind, number][]).filter(([, count]) => count > 0)
+  if (activePurchases.length === 0 && offerEntries.length === 0) return 'invalid_offer'
+
+  let totalPrice = 0
+  let stackPurchases: Partial<Record<ItemKind, number>> = {}
+  let incomingInstances: ItemInstance[] = []
+  let resolvedPurchases: ResolvedPurchaseLine[] = []
+  if (activePurchases.length > 0) {
+    const reservation = resolvePurchaseReservations(activePurchases, npcPersonal)
+    if (!reservation.ok) return reservation.result
+    totalPrice = reservation.totalPrice
+    stackPurchases = reservation.stackPurchases
+    incomingInstances = reservation.incomingInstances
+    resolvedPurchases = reservation.resolved
+  }
+
+  // Ordinary NPCs get real, persistent ownership of what they accept — never
+  // the catalog-Merchant "sink" a non-sellable barter-only kind (`shell`)
+  // would otherwise fall into via `resolveOfferBuyback`'s nonSellable bucket.
+  for (const [kind] of offerEntries) {
+    if (!canSell(kind)) return 'invalid_offer'
+  }
+  if (offerEntries.length > 0 && !isValidOffer(buyer, offer)) return 'invalid_offer'
+
+  const offerResolution = resolveOfferBuyback(buyer, offer, context)
+  const netCoins = computeNetCoins(totalPrice, offerResolution)
+
+  if (netCoins > 0 && !buyer.has('coin', netCoins)) return 'cannot_afford'
+  if (netCoins < 0 && npcPersonal.count('coin') < -netCoins) return 'cannot_afford'
+  if (!wouldFitAfterTransaction(
+    buyer,
+    offer,
+    stackPurchases,
+    netCoins,
+    offerResolution.instanceIdsByKind,
+    incomingInstances,
+  )) return 'full'
+
+  // Resolve a deterministic destination per offered line against a running
+  // weight/size simulation of `npcPersonal` — a stale per-call `canAdd()`
+  // would let several lines each individually "fit" against the same
+  // unchanged snapshot and collectively overbook it.
+  let personalWeight = npcPersonal.totalWeight()
+  let personalSize = npcPersonal.totalSize()
+  const offerDestinations: {
+    kind: ItemKind
+    count: number
+    instanceIds: readonly string[]
+    destination: Inventory
+  }[] = []
+  for (const [kind, count] of offerEntries) {
+    const instanceIds = offerResolution.instanceIdsByKind[kind] ?? []
+    const instances = instanceIds.flatMap((id) => {
+      const instance = buyer.getInstance(id)
+      return instance ? [instance] : []
+    })
+    const lineWeight = isInstanceBackedKind(kind) ? instancesWeight(instances) : ITEM_DEFS[kind].weight * count
+    const lineSize = isInstanceBackedKind(kind) ? instancesSize(instances) : itemSizeUnits(kind) * count
+    if (
+      personalWeight + lineWeight <= npcPersonal.maxWeight + 1e-9
+      && personalSize + lineSize <= npcPersonal.maxSize + 1e-9
+    ) {
+      offerDestinations.push({ kind, count, instanceIds, destination: npcPersonal })
+      personalWeight += lineWeight
+      personalSize += lineSize
+    } else if (npcHousehold) {
+      offerDestinations.push({ kind, count, instanceIds, destination: npcHousehold })
+    } else {
+      return 'full'
+    }
+  }
+  if (netCoins > 0) {
+    const coinWeight = ITEM_DEFS.coin.weight * netCoins
+    const coinSize = itemSizeUnits('coin') * netCoins
+    if (
+      personalWeight + coinWeight > npcPersonal.maxWeight + 1e-9
+      || personalSize + coinSize > npcPersonal.maxSize + 1e-9
+    ) return 'full'
+  }
+
+  for (const { kind, count, source, instances } of resolvedPurchases) {
+    if (isInstanceBackedKind(kind)) {
+      for (const instance of instances) {
+        if (!source.removeInstance(instance.id)) return 'not_sold'
+        buyer.addInstance(instance)
+      }
+    } else {
+      source.remove(kind, count)
+      buyer.add(kind, count)
+    }
+  }
+  for (const { kind, count, instanceIds, destination } of offerDestinations) {
+    if (isInstanceBackedKind(kind)) {
+      for (const id of instanceIds) transferInventoryInstance(buyer, destination, id)
+    } else {
+      transferInventoryCount(buyer, destination, kind, count, nowDays)
+    }
+  }
+  if (netCoins > 0) {
+    buyer.remove('coin', netCoins)
+    npcPersonal.add('coin', netCoins)
+  } else if (netCoins < 0) {
+    npcPersonal.remove('coin', -netCoins)
+    buyer.add('coin', -netCoins)
   }
   return 'ok'
 }

@@ -1,7 +1,7 @@
 # Plan: Ordinary NPC Barter and Offer
 
 **Created:** 2026-09-20
-**Status:** `planned` 📋
+**Status:** `verification needed` 🔍
 **Priority:** high · **Effort:** M
 **Depends on:** ~~settlements-npcs-033~~
 **Domain:** `settlements-npcs`
@@ -10,6 +10,7 @@
 **Tags:** `trade` `barter` `ownership`
 **Roadmap:** -
 **Model:** Sonnet · Composer
+**Implemented at:** 2026-09-20
 
 ## Goal
 

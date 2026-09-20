@@ -546,25 +546,26 @@ Generated from exported TypeScript symbols.
 
 ## `items/trade.ts`
 
-- `createAcquiredInstance` — function — line 197
-- `InstanceSellResult` — type — line 37
-- `OfferBuybackResolution` — type — line 41
-- `OwnedGoodsPurchaseLine` — type — line 546
-- `previewPricedPurchaseNetCoins` — function — line 361
-- `previewTransactionNetCoins` — function — line 344
-- `resolveOfferBuyback` — function — line 293
+- `createAcquiredInstance` — function — line 198
+- `InstanceSellResult` — type — line 38
+- `OfferBuybackResolution` — type — line 42
+- `OwnedGoodsPurchaseLine` — type — line 547
+- `previewPricedPurchaseNetCoins` — function — line 362
+- `previewTransactionNetCoins` — function — line 345
+- `resolveOfferBuyback` — function — line 294
   - domain: settlements — merchant buyback for an entire offer basket plus the concrete instance ids settlement should remove for instance-backed kinds.
-- `resolveOfferLineBuyback` — function — line 270
+- `resolveOfferLineBuyback` — function — line 271
   - domain: settlements — deterministic merchant buyback for one offer row, using the same worst-condition instance selection that settlement will remove.
-- `selectInstancesToSell` — function — line 228
-- `selectInstanceToPlace` — function — line 243
-- `sellInstancesForCoins` — function — line 649
-- `settleMerchantStockTransaction` — function — line 490
-- `settleOwnedGoodsPurchase` — function — line 570
+- `selectInstancesToSell` — function — line 229
+- `selectInstanceToPlace` — function — line 244
+- `sellInstancesForCoins` — function — line 819
+- `settleMerchantStockTransaction` — function — line 491
+- `settleOwnedGoodsBarterTransaction` — function — line 700
   - domain: settlements-npcs
-- `settlePricedPurchase` — function — line 374
-- `settleTransaction` — function — line 402
-- `TradeResult` — type — line 35
+- `settleOwnedGoodsPurchase` — function — line 647
+- `settlePricedPurchase` — function — line 375
+- `settleTransaction` — function — line 403
+- `TradeResult` — type — line 36
 
 ## `items/tradeCatalog.ts`
 

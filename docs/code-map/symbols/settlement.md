@@ -41,10 +41,10 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/createSettlement.ts`
 
-- `createSettlement` — function — line 516
-- `CreateSettlementDeps` — type — line 311
-- `Settlement` — type — line 170
-- `settlementSpawnPoint` — function — line 299
+- `createSettlement` — function — line 517
+- `CreateSettlementDeps` — type — line 312
+- `Settlement` — type — line 171
+- `settlementSpawnPoint` — function — line 300
 
 ## `settlement/decorProps.ts`
 
@@ -658,19 +658,26 @@ Generated from exported TypeScript symbols.
 - `residentAnchorsForHome` — function — line 113
 - `resolveNpcSettlementStorage` — function — line 71
 
+## `settlement/npcStartingWealth.ts`
+
+- `resolveNpcStartingCoins` — function — line 46
+  - domain: settlements-npcs
+- `seedNpcStartingWealthIfNeeded` — function — line 67
+  - domain: settlements-npcs
+
 ## `settlement/npcState.ts`
 
-- `createNpcAuthoritativeState` — function — line 281
-- `createNpcStateRegistry` — function — line 331
+- `createNpcAuthoritativeState` — function — line 289
+- `createNpcStateRegistry` — function — line 340
 - `MAX_HP` — const — line 52
 - `MAX_STAMINA` — const — line 53
 - `NpcAuthoritativeState` — type — line 91
   - domain: settlements-npcs
 - `NpcGraveVisitRecord` — type — line 44
 - `NpcId` — type — line 40
-- `NpcPhysicalMaxima` — type — line 267
-- `NpcStateRegistry` — type — line 317
-- `NpcStateSnapshot` — type — line 189
+- `NpcPhysicalMaxima` — type — line 275
+- `NpcStateRegistry` — type — line 326
+- `NpcStateSnapshot` — type — line 196
 
 ## `settlement/pastureWater.ts`
 
