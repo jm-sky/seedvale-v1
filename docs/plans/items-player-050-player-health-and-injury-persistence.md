@@ -1,11 +1,11 @@
 # Plan: Player health and injury persistence
 
 **Created:** 2026-09-20  
-**Status:** planned 📋  
+**Status:** `planned` 📋  
 **Priority:** medium · **Effort:** S  
 **Depends on:** ~~items-player-045~~  
-**Domain:** items-player  
-**Type:** bug  
+**Domain:** `items-player`  
+**Type:** `bug`  
 **Roadmap:** -
 
 ## Problem
