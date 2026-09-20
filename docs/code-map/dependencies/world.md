@@ -960,6 +960,7 @@ Generated from TypeScript imports.
 - `config/worldConfig.ts`
 - `fauna/createFauna.ts`
 - `terrain/chunkHeightmap.ts`
+- `terrain/slopeConstraint.ts`
 - `world/caves/caveHeightfieldRepresentation.ts`
 - `world/caves/caveIdentity.ts`
 - `world/caves/mouthCarve.ts`
@@ -978,6 +979,7 @@ Generated from TypeScript imports.
 - `world/caves/caveHeightfieldPresentation.ts`
 - `world/caves/caveHeightfieldRepresentation.ts`
 - `world/caves/mouthCarve.ts`
+- `world/caves/productionTopology.floor-continuity.test.ts`
 - `world/largeCaves.ts`
 - `world/locations/darkForestTreasureSite.ts`
 
@@ -1400,6 +1402,7 @@ Generated from TypeScript imports.
 
 **Imports**
 
+- `terrain/slopeConstraint.ts`
 - `world/caveVolume.ts`
 - `world/caves/caveOrientation.ts`
 
@@ -1461,6 +1464,7 @@ Generated from TypeScript imports.
 - `terrain/slopeConstraint.ts`
 - `world/caves/caveHeightfieldQuery.ts`
 - `world/caves/caveHeightfieldRepresentation.ts`
+- `world/caves/caveOrientation.ts`
 - `world/caves/caveTopology.ts`
 - `world/caves/mouthCarve.ts`
 - `world/caves/productionTopology.ts`

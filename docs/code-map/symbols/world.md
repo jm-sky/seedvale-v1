@@ -399,14 +399,14 @@ Generated from exported TypeScript symbols.
   - domain: world-terrain
 - `queryHeightfieldSpace` — function — line 181
   - domain: world-terrain
-- `resolveHeightfieldHorizontal` — function — line 215
+- `resolveHeightfieldHorizontal` — function — line 217
   - domain: world-terrain
 
 ## `world/caves/caveHeightfieldRepresentation.ts`
 
 - `APERTURE_LIFT` — const — line 84
 - `BETA` — const — line 47
-- `buildCaveHeightfieldRepresentation` — function — line 739
+- `buildCaveHeightfieldRepresentation` — function — line 740
   - domain: world-terrain
 - `buildChamberLobes` — function — line 416
   - domain: world-terrain
@@ -424,18 +424,18 @@ Generated from exported TypeScript symbols.
 - `DEFAULT_HEIGHTFIELD_CONFIG` — const — line 112
 - `ENTRANCE_INWARD` — const — line 88
 - `ENTRANCE_OUTWARD` — const — line 86
-- `estimateHeightfieldGrid` — function — line 712
+- `estimateHeightfieldGrid` — function — line 713
   - domain: world-terrain
 - `FAR_GAP` — const — line 80
-- `heightfieldGapGradient` — function — line 980
-- `heightfieldNodeGap` — function — line 893
-- `heightfieldNodeIndex` — function — line 880
-- `heightfieldNodeOpenSky` — function — line 898
-- `heightfieldNodePosition` — function — line 884
+- `heightfieldGapGradient` — function — line 988
+- `heightfieldNodeGap` — function — line 901
+- `heightfieldNodeIndex` — function — line 888
+- `heightfieldNodeOpenSky` — function — line 906
+- `heightfieldNodePosition` — function — line 892
 - `HeightfieldSample` — type — line 175
 - `HeightfieldStation` — type — line 166
 - `KAPPA` — const — line 56
-- `mouthOpeningAt` — function — line 969
+- `mouthOpeningAt` — function — line 977
   - domain: world-terrain
 - `NC` — const — line 52
 - `NF` — const — line 49
@@ -448,7 +448,7 @@ Generated from exported TypeScript symbols.
 - `RIM_BAND_MAX` — const — line 65
 - `RIM_BAND_MIN` — const — line 62
 - `rimBand` — function — line 222
-- `sampleHeightfieldAt` — function — line 933
+- `sampleHeightfieldAt` — function — line 941
   - domain: world-terrain
 - `SMOOTH_K` — const — line 58
 - `SurfaceSampler` — type — line 196
@@ -701,41 +701,41 @@ Generated from exported TypeScript symbols.
 
 ## `world/caves/mouthCarve.ts`
 
-- `CAVE_APPROACH_DEPTH` — const — line 24
-- `CAVE_APPROACH_OFFSET` — const — line 26
-- `CAVE_APPROACH_RADIUS` — const — line 28
-- `CAVE_MOUTH_DEPTH` — const — line 22
-- `CAVE_MOUTH_RADIUS` — const — line 27
-- `CaveMouthGeometry` — type — line 62
+- `CAVE_APPROACH_DEPTH` — const — line 25
+- `CAVE_APPROACH_OFFSET` — const — line 27
+- `CAVE_APPROACH_RADIUS` — const — line 43
+- `CAVE_MOUTH_DEPTH` — const — line 23
+- `CAVE_MOUTH_RADIUS` — const — line 38
+- `CaveMouthGeometry` — type — line 77
   - domain: world-terrain
-- `deriveMouthGeometry` — function — line 91
+- `deriveMouthGeometry` — function — line 106
   - domain: world-terrain
-- `inMouthAperture` — function — line 226
+- `inMouthAperture` — function — line 241
   - domain: world-terrain
-- `MOUTH_APERTURE_INWARD` — const — line 45
-- `MOUTH_APERTURE_OUTWARD` — const — line 46
-- `MOUTH_FRAME_INWARD` — const — line 39
-- `MOUTH_FRAME_OUTWARD` — const — line 38
-- `MOUTH_FRAME_THICKNESS` — const — line 37
-- `MOUTH_HOOD_HEIGHT` — const — line 40
-- `MOUTH_INTERIOR_ALONG` — const — line 34
-- `MOUTH_LIP_DEPTH` — const — line 41
-- `mouthAlong` — function — line 130
+- `MOUTH_APERTURE_INWARD` — const — line 60
+- `MOUTH_APERTURE_OUTWARD` — const — line 61
+- `MOUTH_FRAME_INWARD` — const — line 54
+- `MOUTH_FRAME_OUTWARD` — const — line 53
+- `MOUTH_FRAME_THICKNESS` — const — line 52
+- `MOUTH_HOOD_HEIGHT` — const — line 55
+- `MOUTH_INTERIOR_ALONG` — const — line 49
+- `MOUTH_LIP_DEPTH` — const — line 56
+- `mouthAlong` — function — line 145
   - domain: world-terrain
-- `mouthApertureVoidSDF` — function — line 274
+- `mouthApertureVoidSDF` — function — line 289
   - domain: world-terrain
-- `mouthCarveDepth` — function — line 208
+- `mouthCarveDepth` — function — line 223
   - domain: world-terrain
-- `MouthCarveDisc` — type — line 48
-- `mouthCarveDiscs` — function — line 174
+- `MouthCarveDisc` — type — line 63
+- `mouthCarveDiscs` — function — line 189
   - domain: world-terrain
-- `mouthFrameSolidSDF` — function — line 297
+- `mouthFrameSolidSDF` — function — line 312
   - domain: world-terrain
-- `mouthLateral` — function — line 145
+- `mouthLateral` — function — line 160
   - domain: world-terrain
-- `mouthLocalBoxSDF` — function — line 244
+- `mouthLocalBoxSDF` — function — line 259
   - domain: world-terrain
-- `smoothstep` — function — line 156
+- `smoothstep` — function — line 171
 
 ## `world/caves/mouthOverburden.ts`
 

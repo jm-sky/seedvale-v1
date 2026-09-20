@@ -1313,7 +1313,9 @@ Generated from TypeScript imports.
 - `player/caveSlopeSampling.test.ts`
 - `terrain/slopeConstraint.test.ts`
 - `world/caves/caveHeightfieldRepresentation.test.ts`
+- `world/caves/caveMouthGeometry.test.ts`
 - `world/caves/caveRoute.ts`
+- `world/caves/mouthCarve.ts`
 - `world/caves/productionTopology.floor-continuity.test.ts`
 
 ## `terrain/terrainClassification.ts`
