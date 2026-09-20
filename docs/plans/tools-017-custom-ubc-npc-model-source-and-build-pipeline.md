@@ -1,7 +1,7 @@
 # Plan: Custom UBC NPC model source and build pipeline
 
 **Created:** 2026-09-19
-**Status:** `planned` 📋
+**Status:** `verification needed` 🔍
 **Priority:** high · **Effort:** M
 **Depends on:** ~~npc-039~~, ~~npc-040~~
 **Domain:** `tools`  

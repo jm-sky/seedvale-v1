@@ -24,6 +24,49 @@ Compact AI knowledge base for the Seedvale character asset pipeline.
 - `TROUBLESHOOTING.md` — known problems; only confirmed fixes become verified.
 - `VERIFIED/` — tested procedures only.
 
+## Quaternius UBC custom profession NPCs (tools-017)
+
+Separate from MPFB2. Hand-authored outfit GLBs + shared UBC head/hair compose.
+
+### Source layout
+
+```text
+docs/blender/sources/characters/
+  quaternius/ubc-base/     # Superhero_Male_FullBody (CC0 subset)
+  quaternius/hair/         # Hair_SimpleParted, Hair_Beard
+  quaternius/outfits/      # Quaternius_Outfits_All_Male.blend (authoring master)
+  custom/<profession>/outfit.glb
+```
+
+Build never reads `_temp/`.
+
+### Blender export (custom outfit)
+
+1. Select outfit meshes + Armature (exclude `WGTS_rig` / helpers).
+2. Export glTF Binary (`.glb`), Selected Objects ON, Skinning ON, animations OFF.
+3. Save as `custom/<profession>/outfit.glb`.
+
+Outfit is clothing/props only for authoring intent; shared head/eyes/hair/beard are added by the build. Skinning must stay on the UBC deformation bones (positive-weight joints must map to the 65-bone set).
+
+### Build
+
+```bash
+pnpm assets:prepare-custom-ubc-npc
+# or: python3 scripts/assets/prepare-custom-ubc-npc.py blacksmith
+```
+
+Adds a profession by: author `outfit.glb` → one manifest row in `prepare-custom-ubc-npc.py` → rebuild.
+
+Output: `public/models/characters/ubc/npc/male_<profession>.glb`
+
+### Inspect gate
+
+```bash
+npx @gltf-transform/cli inspect public/models/characters/ubc/npc/male_blacksmith.glb
+```
+
+Expect: one skin, `JOINTS_0` + `WEIGHTS_0`, UBC bone names after `gltfpack -kn`, no animation clips. Texture profile is centralized (default 512 + WebP); do not Decimate in this pipeline.
+
 ## Source priority
 
 1. Current Seedvale code.

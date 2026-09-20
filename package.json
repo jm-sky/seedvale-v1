@@ -20,6 +20,7 @@
     "plans:cleanup-metadata": "tsx scripts/docs/cleanup-plan-metadata.ts",
     "assets:report": "tsx scripts/docs/generate-local-assets-report.ts",
     "assets:list-character-animations": "tsx scripts/assets/list-character-animations.ts",
+    "assets:prepare-custom-ubc-npc": "python3 scripts/assets/prepare-custom-ubc-npc.py --all",
     "docs:map-audit": "tsx scripts/docs/docs-map-audit.ts",
     "docs:navigation-candidates": "tsx scripts/docs/docs-navigation-candidates.ts",
     "docs:readme-index": "tsx scripts/docs/docs-readme-index.ts",
