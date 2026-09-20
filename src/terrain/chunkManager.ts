@@ -806,6 +806,8 @@ export type ChunkManager = {
   chunkSize: number
   resolution: number
   waterLevel: number
+  /** Vertical terrain scale above `waterLevel` — shared altitude-fraction helper for dig/biome queries. */
+  heightScale: number
   /** Ocean/coast continentalness thresholds — lets a caller distinguish an
    *  inland lake shoreline from the ocean shore via `oceanMixAt`
    *  (`terrain/waterBodies.ts`), e.g. `app/interactables.ts`'s lake drink/fill
@@ -3351,6 +3353,7 @@ export function createChunkManager(
     chunkSize: config.chunkSize,
     resolution: config.resolution,
     waterLevel: config.waterLevel,
+    heightScale: config.heightScale,
     region: config.region,
     loadedChunkCount: () => chunks.size,
     waitForChunks,

@@ -4,7 +4,9 @@ import { isTrapKind } from './itemInstances'
 import { cloneItemGlb } from './itemModels'
 
 export type ItemKind =
+  | 'amber'
   | 'shell'
+  | 'exceptional_shell'
   | 'stone'
   | 'branch'
   | 'beam'
@@ -272,6 +274,15 @@ export function canCancelRestNow(progress: number | null, vigorAllowedAtStart: b
 }
 
 export const ITEM_DEFS: Record<ItemKind, ItemDef> = {
+  amber: {
+    kind: 'amber',
+    label: 'bursztyn',
+    categories: ['resource'],
+    weight: 0.04,
+    size: 'XXS',
+    color: 0xd4a017,
+    description: 'Mały bursztyn wydobyty z gleby — rzadki naturalny surowiec.',
+  },
   shell: {
     kind: 'shell',
     label: 'muszla',
@@ -280,6 +291,15 @@ export const ITEM_DEFS: Record<ItemKind, ItemDef> = {
     size: 'XS',
     color: 0xf2e4c9,
     description: 'Lekka muszla znaleziona na brzegu. Przyda się do wymiany z Kupcem, gdy brakuje monet.'
+  },
+  exceptional_shell: {
+    kind: 'exceptional_shell',
+    label: 'wyjątkowa muszla',
+    categories: ['resource'],
+    weight: 0.06,
+    size: 'XS',
+    color: 0xf8ecd0,
+    description: 'Rzadka, pięknie ukształtowana muszla z brzegu oceanu.',
   },
   stone: {
     kind: 'stone',
@@ -1656,13 +1676,33 @@ function buildProceduralItemMesh(kind: ItemKind): THREE.Object3D {
     mesh.castShadow = true
     return mesh
   }
-  if (kind === 'shell') {
+  if (kind === 'shell' || kind === 'exceptional_shell') {
     const mesh = new THREE.Mesh(
-      new THREE.SphereGeometry(0.13, 6, 4),
-      new THREE.MeshStandardMaterial({ color: ITEM_DEFS.shell.color, flatShading: true }),
+      new THREE.SphereGeometry(kind === 'exceptional_shell' ? 0.15 : 0.13, 6, 4),
+      new THREE.MeshStandardMaterial({
+        color: ITEM_DEFS[kind].color,
+        flatShading: true,
+        ...(kind === 'exceptional_shell' ? { metalness: 0.15, roughness: 0.55 } : {}),
+      }),
     )
     mesh.scale.set(1, 0.5, 1.3)
     mesh.position.y = 0.08
+    mesh.castShadow = true
+    return mesh
+  }
+  if (kind === 'amber') {
+    const mesh = new THREE.Mesh(
+      new THREE.OctahedronGeometry(0.07, 0),
+      new THREE.MeshStandardMaterial({
+        color: ITEM_DEFS.amber.color,
+        flatShading: true,
+        metalness: 0.1,
+        roughness: 0.4,
+        transparent: true,
+        opacity: 0.92,
+      }),
+    )
+    mesh.position.y = 0.06
     mesh.castShadow = true
     return mesh
   }

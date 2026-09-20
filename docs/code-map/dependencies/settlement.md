@@ -2264,6 +2264,8 @@ Generated from TypeScript imports.
 - `terrain/cemeteryAssignment.ts`
 - `terrain/cemeteryPlacement.ts`
 - `terrain/chunkManager.ts`
+- `terrain/digFinds.test.ts`
+- `terrain/digFinds.ts`
 - `ui-vue/store.ts`
 - `world/createCaves.test.ts`
 - `world/createCaves.ts`

@@ -1308,6 +1308,7 @@ Generated from TypeScript imports.
 - `terrain/chunkWorldItems.ts`
 - `terrain/depositMining.ts`
 - `terrain/digAction.ts`
+- `terrain/digFinds.ts`
 - `terrain/renewableWorldItems.ts`
 - `tools/assetBrowser/gripEdit.ts`
 - `tools/assetBrowser/viewer/createAssetSlot.ts`

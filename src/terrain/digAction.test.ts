@@ -103,3 +103,47 @@ describe('applyDigAt — independent shell find (plan world-terrain-047)', () =>
     expect(feedback.inventory.add).not.toHaveBeenCalledWith('shell', expect.anything())
   })
 })
+
+describe('applyDigAt — contextual special find (plan world-terrain-048)', () => {
+  it('grants at most one contextual special alongside an ordinary shell', () => {
+    const chunkManager = fakeChunkManager({ sampleContinentalness: () => 0.4, sampleHeight: () => WATER_LEVEL + 0.2 })
+    const feedback = fakeFeedback()
+    const rolls = [0.99, 0, 0]
+    applyDigAt(
+      chunkManager,
+      0,
+      0,
+      { depth: 0.14, stoneChance: STONE_CHANCE_SAND, surface: 'sand' },
+      feedback,
+      () => rolls.shift()!,
+      { coastal: true, settlement: false, swamp: false, forest: false },
+    )
+    expect(feedback.inventory.add).toHaveBeenCalledWith('shell', 1)
+    expect(feedback.inventory.add).toHaveBeenCalledWith('exceptional_shell', 1)
+    expect(feedback.inventory.add).toHaveBeenCalledTimes(2)
+  })
+
+  it('drops the contextual find when inventory is full', () => {
+    const chunkManager = fakeChunkManager()
+    const feedback = fakeFeedback({
+      inventory: {
+        canAdd: (kind: string) => kind !== 'amber',
+        add: vi.fn(),
+        count: () => 0,
+        totalWeight: () => 0,
+        maxWeight: 100,
+      } as unknown as DigFeedback['inventory'],
+    })
+    const rolls = [0.99, 0]
+    applyDigAt(
+      chunkManager,
+      1,
+      2,
+      { depth: 0.28, stoneChance: 0.45, surface: 'soil' },
+      feedback,
+      () => rolls.shift()!,
+      { coastal: false, settlement: false, swamp: false, forest: true },
+    )
+    expect(feedback.droppedItems.drop).toHaveBeenCalledWith('amber', expect.any(Number), expect.any(Number))
+  })
+})

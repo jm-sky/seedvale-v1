@@ -204,23 +204,23 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/chunkManager.ts`
 
-- `applyChunkWaterDayNight` — function — line 1050
-- `applyModificationToTile` — function — line 907
+- `applyChunkWaterDayNight` — function — line 1052
+- `applyModificationToTile` — function — line 909
 - `ChunkManager` — type — line 555
 - `ChunkManagerConfig` — type — line 343
-- `createChunkManager` — function — line 1075
+- `createChunkManager` — function — line 1077
   - domain: world-terrain
   - system: chunk-manager
   - role: Owns terrain chunk streaming, sampling and environment-facing world queries.
   - simulation: on-demand
   - performance: nearby-only
-- `CropHarvestOutcome` — type — line 1064
-- `drainByBudget` — function — line 1025
+- `CropHarvestOutcome` — type — line 1066
+- `drainByBudget` — function — line 1027
 - `FinalizeStage` — type — line 457
-- `pickNearestQueuedKey` — function — line 985
-- `pickNextFinalizeKey` — function — line 1003
-- `TerrainModification` — type — line 864
-- `tickChunkWaterSurfaces` — function — line 1038
+- `pickNearestQueuedKey` — function — line 987
+- `pickNextFinalizeKey` — function — line 1005
+- `TerrainModification` — type — line 866
+- `tickChunkWaterSurfaces` — function — line 1040
 
 ## `terrain/chunkMeshCache.ts`
 
@@ -362,12 +362,33 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/digAction.ts`
 
-- `addDigItemToInventory` — function — line 32
-- `applyDigAt` — function — line 48
-- `applyLevelAt` — function — line 96
-- `applyMoundAt` — function — line 121
-- `DigFeedback` — type — line 17
-- `dropDigItemNearby` — function — line 41
+- `addDigItemToInventory` — function — line 33
+- `applyDigAt` — function — line 49
+- `applyLevelAt` — function — line 110
+- `applyMoundAt` — function — line 135
+- `DigFeedback` — type — line 18
+- `dropDigItemNearby` — function — line 42
+
+## `terrain/digFinds.ts`
+
+- `buildDigContextualFindContext` — function — line 117
+- `COASTAL_AMBER_CHANCE` — const — line 16
+- `COASTAL_EXCEPTIONAL_SHELL_CHANCE` — const — line 15
+  - domain: world-terrain Contextual shovel-find resolution (plan world-terrain-048) — repeatable low-probability material discovery during physical digging, separate from one-shot Hidden Finds.
+- `DigContextualFindContext` — type — line 33
+- `DigContextualFindEnv` — type — line 108
+- `digContextualFindEnvFromChunkManager` — function — line 153
+- `INLAND_AMBER_CHANCE` — const — line 17
+- `isDigForestContext` — function — line 45
+- `isDigSwampContext` — function — line 41
+- `isMountainProspectingDigContext` — function — line 49
+- `isWithinSettlementDigFootprint` — function — line 56
+- `MOUNTAIN_PROSPECTING_RANGE` — const — line 20
+- `MOUNTAIN_TRACE_ORE_CHANCE` — const — line 19
+- `resolveContextualDigFind` — function — line 94
+- `SETTLEMENT_DIG_FOOTPRINT_MARGIN` — const — line 26
+- `SETTLEMENT_LOST_OBJECT_CHANCE` — const — line 18
+- `SWAMP_CONTEXT_THRESHOLD` — const — line 23
 
 ## `terrain/distanceLod.ts`
 

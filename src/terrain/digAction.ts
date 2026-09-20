@@ -12,6 +12,7 @@ import {
   resolveDigShell,
   resolveDigStone,
 } from './dig'
+import { type DigContextualFindContext, resolveContextualDigFind } from './digFinds'
 import { nearestGridPoint, resolveLevelSamples } from './terrainPreparation'
 
 export type DigFeedback = {
@@ -52,6 +53,7 @@ export function applyDigAt(
   profile: DigProfile,
   feedback: DigFeedback,
   random: () => number = Math.random,
+  contextualFind: DigContextualFindContext | null = null,
 ): void {
   chunkManager.modifyTerrain(x, z, DIG_RADIUS, profile.depth, 'player')
   // A previously-dropped stone resting where we just dug (e.g. from an
@@ -82,6 +84,18 @@ export function applyDigAt(
     } else if (shellOutcome.kind === 'ground') {
       dropDigItemNearby('shell', x, z, feedback, random)
       feedback.toast.show('Muszelka wypadła na ziemię — ekwipunek jest pełny.')
+    }
+  }
+
+  if (contextualFind) {
+    const findKind = resolveContextualDigFind(contextualFind, random)
+    if (findKind) {
+      if (feedback.inventory.canAdd(findKind)) {
+        addDigItemToInventory(findKind, feedback)
+      } else {
+        dropDigItemNearby(findKind, x, z, feedback, random)
+        feedback.toast.show('Znalezisko wypadło na ziemię — ekwipunek jest pełny.')
+      }
     }
   }
 }

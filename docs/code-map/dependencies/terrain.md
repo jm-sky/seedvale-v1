@@ -76,6 +76,8 @@ Generated from TypeScript imports.
 - `terrain/chunkManager.ts`
 - `terrain/chunkMeshData.ts`
 - `terrain/chunkVegetation.ts`
+- `terrain/digFinds.test.ts`
+- `terrain/digFinds.ts`
 - `terrain/grassPlacement.ts`
 - `terrain/naturalResources.ts`
 - `world/locations/darkForestTreasureSite.ts`
@@ -370,6 +372,8 @@ Generated from TypeScript imports.
 - `terrain/chunkWorldItems.ts`
 - `terrain/coastalResources.ts`
 - `terrain/dig.ts`
+- `terrain/digFinds.test.ts`
+- `terrain/digFinds.ts`
 - `terrain/footstepSurface.ts`
 - `terrain/grass.ts`
 - `terrain/grassPlacement.test.ts`
@@ -563,6 +567,7 @@ Generated from TypeScript imports.
 - `terrain/chunkTileWorldgenCache.test.ts`
 - `terrain/digAction.test.ts`
 - `terrain/digAction.ts`
+- `terrain/digFinds.ts`
 - `terrain/footstepSurface.test.ts`
 - `terrain/footstepSurface.ts`
 - `world/caves/caveWorldgenCache.test.ts`
@@ -791,6 +796,7 @@ Generated from TypeScript imports.
 - `app/worldBundle.ts`
 - `economy/oreTransportDemand.ts`
 - `terrain/depositMining.test.ts`
+- `terrain/digFinds.ts`
 - `terrain/mineableDeposit.test.ts`
 - `terrain/mineableDeposit.ts`
 - `terrain/resourceDeposits.ts`
@@ -823,6 +829,8 @@ Generated from TypeScript imports.
 - `terrain/dig.test.ts`
 - `terrain/digAction.test.ts`
 - `terrain/digAction.ts`
+- `terrain/digFinds.test.ts`
+- `terrain/digFinds.ts`
 - `terrain/footstepSurface.ts`
 - `terrain/terrainPreparation.ts`
 - `world/hiddenFinds.ts`
@@ -845,6 +853,7 @@ Generated from TypeScript imports.
 - `items/items.ts`
 - `terrain/chunkManager.ts`
 - `terrain/dig.ts`
+- `terrain/digFinds.ts`
 - `terrain/terrainPreparation.ts`
 - `ui/createHud.ts`
 - `ui/createToast.ts`
@@ -854,6 +863,34 @@ Generated from TypeScript imports.
 - `app/actions/groundActions.test.ts`
 - `app/actions/groundActions.ts`
 - `terrain/digAction.test.ts`
+
+## `terrain/digFinds.test.ts`
+
+**Imports**
+
+- `settlement/settlementGenerator.ts`
+- `terrain/biomeRegions.ts`
+- `terrain/chunkHeightmap.ts`
+- `terrain/dig.ts`
+- `terrain/digFinds.ts`
+
+## `terrain/digFinds.ts`
+
+**Imports**
+
+- `items/items.ts`
+- `settlement/settlementGenerator.ts`
+- `terrain/biomeRegions.ts`
+- `terrain/chunkHeightmap.ts`
+- `terrain/chunkManager.ts`
+- `terrain/depositMining.ts`
+- `terrain/dig.ts`
+
+**Imported by**
+
+- `app/actions/groundActions.ts`
+- `terrain/digAction.ts`
+- `terrain/digFinds.test.ts`
 
 ## `terrain/distanceLod.test.ts`
 

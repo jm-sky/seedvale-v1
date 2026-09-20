@@ -70,9 +70,9 @@ Generated from exported TypeScript symbols.
 
 ## `app/actions/groundActions.ts`
 
-- `createGroundActions` — function — line 123
-- `GroundActions` — type — line 57
-- `GroundActionsDeps` — type — line 86
+- `createGroundActions` — function — line 124
+- `GroundActions` — type — line 58
+- `GroundActionsDeps` — type — line 87
 
 ## `app/actions/householdResourceTransferActions.ts`
 

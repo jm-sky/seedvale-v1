@@ -27,6 +27,7 @@ import { servedSettlementIdsForCemeteryId } from '../../terrain/cemeteryAssignme
 import { MINE_DURATION_SEC, yieldForOre } from '../../terrain/depositMining'
 import { DIG_DURATION_SEC, getDigProfileAt, getRockDigProfileAt } from '../../terrain/dig'
 import { addDigItemToInventory, applyDigAt, applyLevelAt, applyMoundAt, dropDigItemNearby } from '../../terrain/digAction'
+import { buildDigContextualFindContext, digContextualFindEnvFromChunkManager } from '../../terrain/digFinds'
 import { phaseName } from '../../world/dayNight'
 import { findExplicitBuriedSpot, findHiddenFindSpot, HIDDEN_FIND_SEARCH_RADIUS, resolveHiddenFindLoot } from '../../world/hiddenFinds'
 import { findTreasureMapBearCaveMapDig } from '../../world/locations/treasureMapBearCave'
@@ -343,7 +344,16 @@ export function createGroundActions(ctx: PlayerActionContext, deps: GroundAction
     }
     playActionDig(worldAudio.playOnce)
     busy.start(physicalDuration(DIG_DURATION_SEC), 'Kopanie…', () => {
-      applyDigAt(bundle.chunkManager, x, z, profile, digFeedback())
+      const digEnv = digContextualFindEnvFromChunkManager(bundle.chunkManager)
+      const contextualFind = buildDigContextualFindContext(
+        x,
+        z,
+        profile,
+        digEnv,
+        bundle.settlementsManager.peekDef,
+        (qx, qz, range) => bundle.resourceDeposits.queryNearest(qx, qz, range),
+      )
+      applyDigAt(bundle.chunkManager, x, z, profile, digFeedback(), Math.random, contextualFind)
       checkHiddenTreasureDig(x, z)
       if (checkTreasureMapBearCaveMapDig(x, z)) {
         ctx.syncQuickActionAvailability()

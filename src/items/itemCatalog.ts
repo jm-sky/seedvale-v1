@@ -300,6 +300,15 @@ export function consumeNeedNoun(need: ConsumableNeed): string {
  * @owns ItemCatalogEntry
  */
 export const ITEM_CATALOG: Record<ItemKind, ItemCatalogEntry> = {
+  amber: {
+    kind: 'amber',
+    label: 'bursztyn',
+    holdable: false,
+    melee: null,
+    spawn: 'none',
+    modelUrl: null,
+    notes: 'Plan world-terrain-048 — rare contextual shovel find (coast/forest/swamp). Procedural mesh.',
+  },
   shell: {
     kind: 'shell',
     label: 'muszla',
@@ -308,6 +317,15 @@ export const ITEM_CATALOG: Record<ItemKind, ItemCatalogEntry> = {
     spawn: 'village_renewable',
     modelUrl: null,
     notes: 'Procedural mesh; renewable near settlement. Barter token (issue 035) — Kupiec does not buy or sell shells for coins.',
+  },
+  exceptional_shell: {
+    kind: 'exceptional_shell',
+    label: 'wyjątkowa muszla',
+    holdable: false,
+    melee: null,
+    spawn: 'none',
+    modelUrl: null,
+    notes: 'Plan world-terrain-048 — rare coastal contextual shovel find. Procedural mesh.',
   },
   stone: {
     kind: 'stone',

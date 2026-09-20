@@ -190,6 +190,8 @@ export const MERCHANT_STOCK: readonly ItemKind[] = [
 
 /** Fallback coin-equivalent for items the merchant does not stock. */
 const RESOURCE_TRADE_VALUE: Partial<Record<ItemKind, number>> = {
+  amber: 18,
+  exceptional_shell: 12,
   shell: 1,
   stone: 1,
   branch: 1,

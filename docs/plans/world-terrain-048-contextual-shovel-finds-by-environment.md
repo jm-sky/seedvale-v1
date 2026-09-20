@@ -1,7 +1,7 @@
 # Plan: Contextual shovel finds by environment
 
 **Created:** 2026-09-20
-**Status:** `planned` 📋
+**Status:** `verification needed` 🔍
 **Type:** feature
 **Priority:** medium · **Effort:** M
 **Depends on:** ~~world-terrain-047~~

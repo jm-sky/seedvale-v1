@@ -925,6 +925,7 @@ graph TD
   world_terrain_045["world-terrain-045 — Canonical local water player traversal"]
   world_terrain_046["world-terrain-046 — Unified water shore query and river hotpath"]
   world_terrain_047["world-terrain-047 — Mineable rocks and coastal shell resources"]
+  world_terrain_048["world-terrain-048 — Contextual shovel finds by environment"]
   008 --> items_player_010
   069 --> settlements_npcs_008
   097 --> world_terrain_007
@@ -1542,4 +1543,5 @@ graph TD
   world_terrain_042 --> quests_progression_070
   world_terrain_044 --> npc_061
   world_terrain_044 --> world_terrain_045
+  world_terrain_047 --> world_terrain_048
 ```

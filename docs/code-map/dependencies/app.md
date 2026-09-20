@@ -330,6 +330,7 @@ Generated from TypeScript imports.
 - `terrain/depositMining.ts`
 - `terrain/dig.ts`
 - `terrain/digAction.ts`
+- `terrain/digFinds.ts`
 - `world/dayNight.ts`
 - `world/hiddenFinds.ts`
 - `world/locations/treasureMapBearCave.ts`
