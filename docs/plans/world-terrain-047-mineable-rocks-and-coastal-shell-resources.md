@@ -9,6 +9,7 @@
 **Subdomains:** `terrain` `chunks` `rendering`  
 **Tags:** `resources` `rocks` `shells` `mining` `shoreline` `persistence` `interaction`  
 **Roadmap:** -
+**Model:** Sonnet, Composer
 
 ## Goal
 
