@@ -2,6 +2,8 @@
 
 Recon baseline: verified on `main` 2026-09-20. Scope is metadata continuity when an **active** wild-animal-bound quest becomes `invalidated` during **constructor restore**. Do not add wild fauna persistence or a restoration subsystem.
 
+**Implementation (2026-09-20):** Wild restore invalidation in `QuestManager` constructor now builds from `runtimeProgress(restored)`, strips `stageCount` / `stageSlotProgress`, and writes via `setQuestState()` so journal, dialogue cooldowns, and observation survive. `invalidateStaleAnimalTargets()` already used `setQuestState()` and needed no change. Tests extended in `QuestManager.test.ts`.
+
 ## Current implementation
 
 ### Restore pipeline

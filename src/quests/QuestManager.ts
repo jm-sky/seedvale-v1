@@ -685,7 +685,13 @@ export class QuestManager {
             && !LIVESTOCK_KINDS.has(slot.objective.kind)
           ))
           if (wild) {
-            this.states.set(entry.id, { state: 'invalidated', stageIndex: restored.stageIndex })
+            const restoredRuntime = runtimeProgress(restored)
+            const { stageCount: _stageCount, stageSlotProgress: _slotProgress, ...durable } = restoredRuntime
+            this.setQuestState(entry.id, {
+              ...durable,
+              state: 'invalidated',
+              stageIndex: restored.stageIndex,
+            })
             continue
           }
           this.states.set(entry.id, runtimeProgress(restored))

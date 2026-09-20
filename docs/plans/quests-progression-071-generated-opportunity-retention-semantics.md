@@ -1,7 +1,8 @@
 # Plan: Generated opportunity retention semantics
 
 **Created:** 2026-09-19
-**Status:** `planned` 📋
+**Status:** `done` ✅
+**Implemented at:** 2026-09-20
 **Type:** fix
 **Priority:** medium · **Effort:** S
 **Depends on:** ~~quests-progression-031~~

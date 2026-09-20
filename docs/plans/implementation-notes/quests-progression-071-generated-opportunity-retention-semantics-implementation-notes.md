@@ -2,6 +2,8 @@
 
 Recon baseline: verified on `main` 2026-09-20. Scope is **only** which saved generated quest IDs force definition rematerialization at composition. Do not expand into `quests-progression-069`, authored quests, or a second persistence registry.
 
+**Implementation (2026-09-20):** Added `requiresGeneratedOpportunityRetention()` in `src/quests/generatedOpportunityRetention.ts`. `createApp.ts` filters `initialSave.quests.progress` through that predicate before passing IDs to generated opportunity builders. Unit tests in `generatedOpportunityRetention.test.ts` and an RPG reload regression in `rpgQuestMatrices.test.ts`.
+
 ## Current implementation
 
 ### What a “generated opportunity” is

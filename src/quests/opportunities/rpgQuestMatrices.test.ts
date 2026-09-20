@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import type { SettlementCell, SettlementDef } from '../../settlement/settlementGenerator'
 import type { OpportunityNpc } from './worldQuestOpportunityTypes'
 import { Inventory } from '../../items/Inventory'
+import { requiresGeneratedOpportunityRetention } from '../generatedOpportunityRetention'
 import { QuestManager } from '../QuestManager'
 import { validateQuestDefinitions } from '../quests'
 import { materializeRpgQuestOpportunity } from './rpgQuestMaterialization'
@@ -271,6 +272,40 @@ describe('shared opportunity selection', () => {
     })
     expect(selected.some((opportunity) => opportunity.kind === 'wolf-den-pressure')).toBe(true)
     expect(selected.filter((opportunity) => opportunity.kind === 'rpg-matrix')).toHaveLength(0)
+  })
+
+  it('does not pin an RPG matrix to a pristine exported id after reload filtering', () => {
+    const staleId = rpgQuestId('old-place-secret', '1_0', 'monolith:9:9:0:1')
+    const pristineSaveRow = { id: staleId, state: 'not_offered' as const, stageIndex: 0 }
+    expect(requiresGeneratedOpportunityRetention(pristineSaveRow)).toBe(false)
+    const retentionIds = [pristineSaveRow]
+      .filter(requiresGeneratedOpportunityRetention)
+      .map((entry) => entry.id)
+
+    const live = collectOldPlaceSecretCandidate({
+      settlementId: '1_0',
+      landmarks: [{ id: 'ruins:1:1:0:1', kind: 'ruins' }],
+    })!
+    const rpgInput = {
+      settlementId: '1_0',
+      settlementX: 280,
+      settlementZ: 0,
+      npcs: neighborNpcs,
+      landmarks: [{ id: 'ruins:1:1:0:1', kind: 'ruins' as const }],
+      otherSettlements: [{ id: '0_0', name: 'Dolina', x: 0, z: 0, npcs: homeNpcs }],
+    }
+    const filtered = selectSettlementQuestOpportunities({
+      candidates: collectRpgQuestOpportunities({ ...rpgInput, persistedQuestIds: retentionIds }),
+      persistedQuestIds: retentionIds,
+    })
+    expect(filtered.some((opportunity) => opportunity.id === live.id)).toBe(true)
+    expect(filtered.some((opportunity) => opportunity.id === staleId)).toBe(false)
+
+    const pinned = selectSettlementQuestOpportunities({
+      candidates: collectRpgQuestOpportunities({ ...rpgInput, persistedQuestIds: [staleId] }),
+      persistedQuestIds: [staleId],
+    })
+    expect(pinned.some((opportunity) => opportunity.id === staleId)).toBe(true)
   })
 
   it('does not select the same RPG matrix twice in one settlement', () => {

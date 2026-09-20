@@ -58,12 +58,12 @@ import {
 } from '../items/foreignProperty'
 import { createHeldTool } from '../items/HeldTool'
 import { DEFAULT_MAX_SIZE, Inventory, toSaveItemInstance } from '../items/Inventory'
-import { canPoisonMeat } from '../items/poisonedMeat'
 import { buildInventoryGroups, inventoryCountsForUi } from '../items/inventoryView'
 import { CAPABILITY_NEED_LABEL, hasItemCapability, ITEM_CATALOG } from '../items/itemCatalog'
 import { isWeaponMaintenanceKind } from '../items/itemInstances'
 import { ITEM_DEFS, type ItemKind } from '../items/items'
 import { migrateLegacyWaterskinsToInstances } from '../items/liquidContainer'
+import { canPoisonMeat } from '../items/poisonedMeat'
 import { createPrimaryWeaponSelection } from '../items/primaryWeapons'
 import { createAcquiredInstance } from '../items/trade'
 import { createTradeGrievanceStore } from '../items/tradeGrievance'
@@ -127,6 +127,7 @@ import {
   isDungeonBanditDeepStashLooted,
 } from '../quests/dungeonBanditTreasure'
 import { getActiveDungeonBanditTreasureBinding } from '../quests/dungeonBanditTreasureRuntime'
+import { requiresGeneratedOpportunityRetention } from '../quests/generatedOpportunityRetention'
 import {
   type GuardWorldProgress,
   migrateLegacyGuardSwordGift,
@@ -1452,7 +1453,9 @@ export async function createApp(
     suspiciousTransportCaveCache,
     suspiciousTransportCaveDescription,
   }
-  const persistedQuestIds = initialSave?.quests.progress.map((entry) => entry.id)
+  const persistedQuestIds = initialSave?.quests.progress
+    .filter(requiresGeneratedOpportunityRetention)
+    .map((entry) => entry.id)
   const opportunityQuestDefs: ReturnType<typeof buildWorldDrivenSettlementQuests> = []
   // Set once, alongside the Brotherhood introduction quest below — read by
   // `onInteractSpawnerMatched` to know which single quest/habitat pair the

@@ -795,6 +795,60 @@ describe('QuestManager save/load restore of animal-bound quests', () => {
     expect(qm.getState('wolf')).toBe('invalidated')
   })
 
+  it('preserves durable metadata when an active wild quest is invalidated on restore', () => {
+    const initial: QuestManagerInitial = {
+      progress: [{
+        id: 'wolf',
+        state: 'active',
+        stageIndex: 0,
+        stageCount: 1,
+        stageSlotProgress: { main: { count: 1 } },
+        journal: [{ kind: 'offer', atDays: 2, timeOfDay: 0.5 }],
+        dialogueCooldowns: { Anna: { untilDay: 8, stageIndex: 0, actionIndex: 0, reactionIndex: 0 } },
+        observation: {
+          type: 'habitat_pressure',
+          habitatId: 'den:1',
+          condition: 'healthy',
+          primary: null,
+          observedPressures: [],
+        },
+      }],
+      relations: {},
+    }
+    const qm = makeRestoredManager([wolfDef], initial, () => 'wolf-1')
+    expect(qm.getState('wolf')).toBe('invalidated')
+    const exported = qm.exportProgress()[0]
+    expect(exported?.journal).toEqual(initial.progress[0]?.journal)
+    expect(exported?.dialogueCooldowns).toEqual(initial.progress[0]?.dialogueCooldowns)
+    expect(exported?.observation).toEqual(initial.progress[0]?.observation)
+    expect(exported?.stageCount).toBeUndefined()
+    expect(exported?.stageSlotProgress).toBeUndefined()
+  })
+
+  it('preserves durable metadata for find_animal wild quests invalidated on restore', () => {
+    const findDef = quest({
+      id: 'find-wolf',
+      giverName: 'Anna',
+      offerLine: 'find wolf',
+      stages: [
+        { objective: { type: 'find_animal', kind: 'wolf' }, description: 'find wolf', reminderLine: 'remind' },
+      ],
+      reportLine: 'report wolf',
+    })
+    const initial: QuestManagerInitial = {
+      progress: [{
+        id: 'find-wolf',
+        state: 'active',
+        stageIndex: 0,
+        journal: [{ kind: 'progress', stageIndex: 0, atDays: 1, timeOfDay: 0.5 }],
+      }],
+      relations: {},
+    }
+    const qm = makeRestoredManager([findDef], initial, () => 'wolf-9')
+    expect(qm.getState('find-wolf')).toBe('invalidated')
+    expect(qm.exportProgress()[0]?.journal).toEqual(initial.progress[0]?.journal)
+  })
+
   it('leaves non-animal-bound quest states untouched on restore', () => {
     const initial: QuestManagerInitial = {
       progress: [{ id: 'simple', state: 'ready_to_report', stageIndex: 0 }],
@@ -824,6 +878,17 @@ describe('QuestManager invalidateStaleAnimalTargets (mid-session rebuild)', () =
     // must not be able to complete the now-invalidated quest.
     expect(qm.onInteractObjective({ type: 'animal_died', animalId: 'wolf-1' })).toBeNull()
     expect(qm.getState('wolf')).toBe('invalidated')
+  })
+
+  it('preserves journal metadata when invalidating a wild binding during rebuild', () => {
+    const qm = makeManager([wolfQuest], () => 'wolf-1')
+    acceptOffer(qm, 'Anna')
+    expect(qm.exportProgress()[0]?.journal?.some((entry) => entry.kind === 'offer')).toBe(true)
+
+    qm.invalidateStaleAnimalTargets()
+
+    expect(qm.getState('wolf')).toBe('invalidated')
+    expect(qm.exportProgress()[0]?.journal?.some((entry) => entry.kind === 'offer')).toBe(true)
   })
 
   it('rebinds an active livestock-kind (sheep) binding to a freshly resolved id instead of invalidating', () => {
