@@ -8,6 +8,7 @@
 **Domain:** `items-player`
 **Subdomains:** `items` `interaction`
 **Tags:** `quests` `dialogue` `reputation` `settlements`
+**Model:** Sonnet, Composer
 
 ## Cel
 
