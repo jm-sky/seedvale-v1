@@ -132,6 +132,7 @@ Unless noted otherwise, `verification needed` means implementation has passed au
 | ◼️ `tools-019-debug-tooling-lifecycle-ownership.md`                            | 🟡 | S      | -                                                                                                                                                                                                                                                                                          | -                                         |
 | 💡 `items-player-058-campfire-decomposition-and-ash-residue.md`                | 🟡 | M      | -                                                                                                                                                                                                                                                                                          | -                                         |
 | ◼️ `settlements-npcs-056-artisan-skill-specialization-and-player-orders.md`    | 🔴 | L      | ~~settlements-npcs-015~~, ~~settlements-npcs-016~~                                                                                                                                                                                                                                         | economy-production                        |
+| ◼️ `items-player-059-crossbow-sling-and-thrown-stones.md`                      | 🟡 | L      | ~~npc-053~~                                                                                                                                                                                                                                                                                | -                                         |
 
 ---
 
@@ -261,7 +262,7 @@ New plans declare a primary `Domain:` in frontmatter. Use optional `Tags:` only 
 
 - ai: `005`
 - fauna: `046`
-- items-player: `059`
+- items-player: `060`
 - npc: `062`
 - persistence: `007`
 - quests-progression: `073`
