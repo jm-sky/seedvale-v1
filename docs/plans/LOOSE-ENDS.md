@@ -59,6 +59,10 @@ Format: `- [ ] YYYY-MM-DD — opis (plan/plik, jeśli istotne)`
 - [ ] 2026-09-11 — off-screen `TransportOrder.execution` nie przesuwa potrzeb/vigoru/injury carrier NPC w czasie podróży. To ten sam brak co dla innych unloaded NPC, ale staje się istotny dla generic long-distance travel (`settlements-npcs-028` / `npc-029`). Naturalny seam: stanowy survival catch-up obok `resolveOffscreenTransportArrivals`, reuse istniejących `tickNeeds` / `tickVigorForSimulatedStep` / injury recovery helpers.
 - [ ] 2026-09-12 — npc-029 accompany NPCs still unload with their home settlement (same detailed XOR off-screen rule as transport carriers). Visual follow therefore stops when the village streams out; long-distance live-agent travel with the player belongs with `settlements-npcs-028` / paid escort, not a companion-specific streaming owner.
 
+## World lifecycle / rebuild
+
+- [ ] 2026-09-20 — `buildWorldSystems()` (`src/app/worldBundle.ts`) has no general partial-allocation cleanup for a throw during its ~700-line synchronous critical-path construction. world-033 fixed the one confirmed concrete leak (home-settlement-(0,0)-resolution failure leaking `chunkManager`/`waterMirror`) by disposing right at that throw site, but a throw from a later call in that path (e.g. `createCaves`, `buildSettlementsManager`) still leaks whatever critical systems were already constructed before it. A general fix needs a bounded disposer stack across that whole function — deliberately not attempted here to keep world-033 scoped to the rebuild *transaction* (publish-or-dispose the already-fully-built `fresh` world), not general construction-failure hardening.
+
 ## Performance / rendering
 
 - [ ] 2026-09-18 — Po zamknięciu `world-terrain-038`: w `settlement-heavy` 027 settlement shadow nadal ciąży `decor` (~399k tris) oraz `houseStatic`; garden zostawił Dirt jako grounding caster (rośliny już no-shadow). Nie dokładać kolejnych `castShadow=false` bez benchmarku + visual OK. Submission/geometria → `settlements-019`; N8AO/post → `world-terrain-039`; terrain/vegetation shadow tylko jeśli świeży isolation wskaże dominację.

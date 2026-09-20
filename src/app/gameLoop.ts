@@ -319,6 +319,13 @@ function applyDayNight(
 
 export type GameLoopDeps = {
   bundle: WorldBundle
+  /** True while `bundle` is a valid, fully-published world safe for normal
+   *  per-frame simulation to read/mutate (plan world-033) — `false` for the
+   *  destructive-teardown-through-fresh-publication window of an in-session
+   *  rebuild, and permanently once the app has torn down or a rebuild's
+   *  fresh-build genuinely failed. The single composition-root-owned signal
+   *  `tick()` gates on; no other system re-derives its own copy. */
+  isWorldValid: () => boolean
   player: PlayerController
   camera: PerspectiveCamera
   renderer: WebGLRenderer
@@ -711,7 +718,7 @@ const huntableLivestockSeenScratch = new Set<string>()
 
 export function createGameLoop(deps: GameLoopDeps): GameLoop {
   const {
-    bundle, player, camera, renderer, labelRenderer, scene, sky, lights, postProcessing, dayNight,
+    bundle, isWorldValid, player, camera, renderer, labelRenderer, scene, sky, lights, postProcessing, dayNight,
     climate, clouds, groundFog, weatherParticles, weatherAudio, getSeed,
     keyboard, mouseLook, touchControls, pauseMenu, npcDialog, npcInspector, npcInspectTrigger, questLog, vueUi, inventoryScreen,
     quickActions, timeSkip, timeSkipOverlay, busy, busyOverlay, restCamp, inventory, heldTool, equipment, mount, lead, landOwnership, toast, hud,
@@ -940,6 +947,17 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
     const gpuTimer = getGpuTimer()
     timer.update()
     const rawDt = timer.getDelta()
+    if (!isWorldValid()) {
+      // `bundle` is mid-rebuild (destructive teardown through fresh
+      // publication) or the app has torn down/a rebuild has failed (plan
+      // world-033) — its fields may be disposed or about to be replaced.
+      // Drain the frame's delta so a long rebuild doesn't reappear as one
+      // huge `dt` once simulation resumes, but run no simulation and no
+      // render against it; the browser keeps showing the last valid frame.
+      // One gate at the composition-root render-loop boundary, not scattered
+      // `if` guards across individual world systems.
+      return
+    }
     const dt = Math.min(rawDt, 0.05)
     // Plan items-player-029 — derived once per frame (cheap: one owned-item
     // check + a catalog read), reused below for movement/sprint, the player

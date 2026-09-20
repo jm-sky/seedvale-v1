@@ -1369,6 +1369,12 @@ async function buildWorldSystems(
   await settlementDefinitionCacheReady()
   const homeDefForSite = settlementDefFor({ gx: 0, gz: 0 }, homeResolveCtx)
   if (!homeDefForSite) {
+    // chunkManager/waterMirror are already live at this point — nothing else
+    // has claimed ownership of them yet (ocean, which would otherwise dispose
+    // waterMirror, isn't built until later), so this throw must free them
+    // itself rather than leaking them (plan world-033).
+    waterMirror.dispose()
+    chunkManager.dispose()
     throw new Error('[worldBundle] home settlement (0,0) failed to resolve for treasure site')
   }
   const darkForestTreasureSite = resolveDarkForestTreasureSite({
@@ -2511,6 +2517,13 @@ export async function createWorldBundle(
  *  must already reflect the caller's reset decision (a fresh empty `Set` if
  *  `resetCollectedItems`) — it's just threaded through to the new
  *  `chunkManager`, this function doesn't decide that part. */
+/** Outcome of one `rebuildWorldBundle()` attempt (plan world-033). The caller
+ *  (`createApp.ts`'s `rebuildWorld()`) must run its post-rebuild continuation
+ *  (map/cache invalidation, prewarm, `PlayerController.setGround`, etc.) only
+ *  for `'published'` — `'stale'` and `'failed'` never touch `bundle` and
+ *  leave it exactly as it was before this call. */
+export type WorldBundleRebuildOutcome = 'published' | 'stale' | 'failed'
+
 export async function rebuildWorldBundle(
   bundle: WorldBundle,
   scene: Scene,
@@ -2581,7 +2594,7 @@ export async function rebuildWorldBundle(
    *  mutated in place, threaded through both `createWorldBundle` and
    *  `rebuildWorldBundle`" contract as `resourceDepletion` above. */
   mineableRockState: MineableRockStateStore = new Map(),
-): Promise<void> {
+): Promise<WorldBundleRebuildOutcome> {
   // Snapshot before dispose() — a same-session rebuild (config change, not a
   // new seed) recreates `Fauna` from scratch just like every other bundle
   // member; spawn-point lifecycle would otherwise silently reset to `active`
@@ -2704,8 +2717,10 @@ export async function rebuildWorldBundle(
   treeLifecycle.clearPresence()
   if (resetCollectedItems) treeLifecycle.clearOverrides()
 
-  const { bundle: fresh, backgroundReady } = await buildWorldSystems({
-    scene, config, collectedItemIds, renewableWorldItems, consumedWorldPickupIds, removedCropIds, plantedTrees, plantedCrops, modifications, playAt,
+  let fresh: WorldBundle
+  try {
+    const built = await buildWorldSystems({
+      scene, config, collectedItemIds, renewableWorldItems, consumedWorldPickupIds, removedCropIds, plantedTrees, plantedCrops, modifications, playAt,
     treeLifecycle, getWorldDays, dayNight,
     droppedItems: carriedDrops,
     placedFires: carriedFires,
@@ -2756,17 +2771,41 @@ export async function rebuildWorldBundle(
     bloodTraces: carriedBloodTraces,
     treasureMapBearCaveSourceExtracted,
     treasureMapBearCaveCasketConsumed,
-  }, isStale)
-  // A rebuild keeps its historical fully-synchronous contract — callers
-  // (`app/createApp.ts`) still see every system, including fauna/item
-  // spawners/drying racks/hives, ready by the time this resolves. Only a
-  // fresh `createWorldBundle()` boot returns before `backgroundReady`.
-  await backgroundReady
+    }, isStale)
+    fresh = built.bundle
+    // A rebuild keeps its historical fully-synchronous contract — callers
+    // (`app/createApp.ts`) still see every system, including fauna/item
+    // spawners/drying racks/hives, ready by the time this resolves. Only a
+    // fresh `createWorldBundle()` boot returns before `backgroundReady`.
+    await built.backgroundReady
+  } catch (err) {
+    // `fresh` was never assigned (the synchronous critical-path build itself
+    // threw) or its deferred background phase rejected after allocating real
+    // fauna/item-spawner/drying-rack/hive systems — either way `bundle` was
+    // never touched and stays on its already-disposed old fields (plan
+    // world-033 requirement D). The caller must not clear its rebuild gate
+    // and resume ordinary runtime against that disposed bundle.
+    console.error('[worldBundle] rebuild failed while building the fresh world', err)
+    return 'failed'
+  }
+  // Re-check right before publication (plan world-033 requirement C) — a
+  // later rebuild or app teardown may have superseded this one while the
+  // fresh world was still building/settling. `buildWorldSystems`'s own
+  // internal staleness check only disposes the deferred fauna/item-spawner/
+  // drying-rack/hive systems it built in the background; the rest of `fresh`
+  // (chunkManager, ocean, settlementsManager, caves, and the other critical
+  // systems) is still fully live and must be disposed here, exactly once,
+  // instead of ever reaching `bundle`.
+  if (isStale?.() ?? false) {
+    disposeWorldBundle(fresh)
+    return 'stale'
+  }
   // `bundle` itself must stay the same object reference (see this file's
   // `WorldBundle` doc comment / ARCHITECTURE.md's rebuild invariants) — this
   // reassigns every field in place, in one synchronous step, rather than
   // replacing `bundle`.
   Object.assign(bundle, fresh)
+  return 'published'
 }
 
 export function disposeWorldBundle(bundle: WorldBundle): void {

@@ -343,6 +343,7 @@ import { createRestCampSequence } from './restCampSequence'
 import { createSaveState } from './saveState'
 import { getUserActions } from './userActions'
 import { createWorldBundle, disposeWorldBundle, rebuildWorldBundle } from './worldBundle'
+import { createWorldRebuildLifecycle } from './worldRebuildLifecycle'
 
 /** Player-inventory tools/utility granted for free if missing — covers both a
  *  brand-new game and saves from before this feature existed (plan §11's
@@ -2676,15 +2677,18 @@ export async function createApp(
     getMountedAnimalId: () => mount.mountedAnimalId(),
   })
 
-  let rebuilding = false
+  /** Single app-owned rebuild lifecycle signal (plan world-033) — see
+   *  `worldRebuildLifecycle.ts`'s doc comment. `worldGeneration` above stays
+   *  the staleness/epoch identity a specific in-flight rebuild checks itself
+   *  against; nothing else should hold its own copy of either. */
+  const worldRebuildLifecycle = createWorldRebuildLifecycle()
   /** Pass `resetCollectedItems: true` only for a genuinely new world (new seed,
    *  e.g. "New Game") — an unrelated terrain-param rebuild on the same seed
    *  should keep it, since item ids are seed-derived and stay meaningful. */
   bootMark('rebuildWorld')
   let cancelActivePlayerIntent: () => void = () => {}
   const rebuildWorld = async (resetCollectedItems = false) => {
-    if (rebuilding) return
-    rebuilding = true
+    if (!worldRebuildLifecycle.beginRebuild()) return
     cancelActivePlayerIntent()
     gui.setBusy(true)
     try {
@@ -2714,7 +2718,7 @@ export async function createApp(
       // in flight — see this file's `worldGeneration` doc comment above.
       worldGeneration++
       const thisRebuildGeneration = worldGeneration
-      await rebuildWorldBundle(
+      const rebuildOutcome = await rebuildWorldBundle(
         bundle,
         scene,
         config,
@@ -2747,6 +2751,22 @@ export async function createApp(
         onAnimalDeathSound,
         mineableRockState,
       )
+      if (rebuildOutcome !== 'published') {
+        // 'stale': a concurrent app teardown already disposed `bundle` and
+        // moved the lifecycle to `disposed` itself (see the returned
+        // teardown callback below) — nothing here owns recovering from that.
+        // 'failed': the fresh world never got built/settled, so `bundle` is
+        // still on its already-disposed old fields; never rebind consumers
+        // or resume ticking against it (plan world-033 requirement D).
+        if (rebuildOutcome === 'failed') {
+          worldRebuildLifecycle.completeFailed()
+          console.error('[createApp] world rebuild failed — normal simulation stays paused until a new rebuild succeeds')
+        } else {
+          worldRebuildLifecycle.completeStale()
+        }
+        return
+      }
+      worldRebuildLifecycle.completePublished()
       mapProjection.setParams(rawSampleParamsFromWorld(config))
       worldLocationCatalog.invalidateScanCache()
       worldKnowledgeResearch.invalidate()
@@ -2843,7 +2863,6 @@ export async function createApp(
       pauseMenu.setSeed(config.seed)
     } finally {
       gui.setBusy(false)
-      rebuilding = false
     }
   }
   bootMarkEnd('rebuildWorld')
@@ -3495,6 +3514,7 @@ export async function createApp(
   bootMark('createGameLoop')
   const gameLoop = createGameLoop({
     bundle, player, camera, renderer, labelRenderer, scene, sky, lights, postProcessing, dayNight,
+    isWorldValid: worldRebuildLifecycle.isValid,
     climate, clouds, groundFog, weatherParticles, weatherAudio, getSeed: () => config.seed,
     keyboard, mouseLook, touchControls, pauseMenu, npcDialog, npcInspector, npcInspectTrigger, questLog, vueUi, inventoryScreen,
     quickActions, timeSkip, timeSkipOverlay, busy, busyOverlay, restCamp, inventory, heldTool, equipment, mount, lead, landOwnership, toast, hud,
@@ -3709,6 +3729,11 @@ export async function createApp(
   bootMarksSummary()
 
   return () => {
+    // First — before anything else, including `renderLoop.dispose()` below —
+    // so an in-flight `rebuildWorldBundle()` paused at an `await` sees this
+    // the moment it resumes and never publishes its fresh world onto a
+    // bundle this teardown is about to dispose (plan world-033).
+    worldRebuildLifecycle.dispose()
     renderLoop.dispose()
     removeAutoSave()
     vueUi.configureAbortRest(null)

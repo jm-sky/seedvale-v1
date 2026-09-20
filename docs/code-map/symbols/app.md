@@ -287,13 +287,13 @@ Generated from exported TypeScript symbols.
 
 ## `app/createApp.ts`
 
-- `createApp` — function — line 436
+- `createApp` — function — line 437
   - system: app-composition
   - role: Composition root: builds every long-lived system, threads their dependencies and owns app-level lifecycle (boot, rebuild, dispose).
   - owns: WorldBundle, GameLoop, AppRenderLoop
   - lifecycle: boot
   - integration: Wires world, player, UI, persistence and audio systems together.
-- `NewAppOptions` — type — line 405
+- `NewAppOptions` — type — line 406
 
 ## `app/faunaEncounterComposition.ts`
 
@@ -303,8 +303,8 @@ Generated from exported TypeScript symbols.
 
 ## `app/gameLoop.ts`
 
-- `createGameLoop` — function — line 712
-- `GameLoop` — type — line 671
+- `createGameLoop` — function — line 719
+- `GameLoop` — type — line 678
 - `GameLoopDeps` — type — line 320
 
 ## `app/graphicsSettings.ts`
@@ -440,15 +440,26 @@ Generated from exported TypeScript symbols.
 - `caveCrateContainerSpecs` — function — line 344
   - domain: world-terrain
 - `caveTreasureContainerSpecs` — function — line 311
-- `createWorldBundle` — function — line 2252
-- `disposeWorldBundle` — function — line 2772
+- `createWorldBundle` — function — line 2258
+- `disposeWorldBundle` — function — line 2811
 - `HOME_RADIUS` — const — line 264
 - `homeChunks` — function — line 368
-- `rebuildWorldBundle` — function — line 2514
+- `rebuildWorldBundle` — function — line 2527
 - `WorldBundle` — type — line 391
   - system: world-bundle
   - role: Owns the lifetime/rebuild boundary for all world systems (terrain, settlements, fauna, items, player-placed structures).
   - owns: WorldBundle
   - lifecycle: rebuild
+- `WorldBundleRebuildOutcome` — type — line 2525
 - `WorldStartupLoadingStage` — type — line 1055
 - `WorldStartupLoadingStageListener` — type — line 1057
+
+## `app/worldRebuildLifecycle.ts`
+
+- `createWorldRebuildLifecycle` — function — line 46
+- `WorldLifecycleState` — type — line 15
+  - domain: world
+  - system: world-rebuild-lifecycle
+  - role: Single owner of the running/rebuilding/disposed/rebuild-failed state gating `gameLoop.tick()` and `rebuildWorld()` re-entrance.
+  - lifecycle: rebuild
+- `WorldRebuildLifecycle` — type — line 17

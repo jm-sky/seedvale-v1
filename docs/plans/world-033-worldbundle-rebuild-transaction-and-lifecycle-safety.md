@@ -1,7 +1,7 @@
 # Plan: WorldBundle rebuild transaction and lifecycle safety
 
 **Created:** 2026-09-19  
-**Status:** `planned` 📋  
+**Status:** `verification needed` 🔍  
 **Priority:** high · **Effort:** M  
 **Depends on:** none  
 **Domain:** `world`  

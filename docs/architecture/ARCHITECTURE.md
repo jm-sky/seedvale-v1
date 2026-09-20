@@ -103,10 +103,21 @@ createApp
           ├── dispose current world systems
           ├── clear module-level road caches and the tree-lifecycle presence/override caches
           ├── create a new ChunkManager
-          └── recreate dependent world systems against the new manager
+          ├── recreate dependent world systems against the new manager
+          └── re-check staleness, then publish onto `bundle` (or dispose the fresh world) — see below
 ```
 
 The rebuild path is used when terrain/world configuration changes and when starting a genuinely new seed. The caller decides whether collected items should be reset; `rebuildWorldBundle` carries that decision through rather than deciding it itself.
+
+### Rebuild transaction (plan world-033)
+
+`rebuildWorldBundle()` returns a `WorldBundleRebuildOutcome` (`'published' | 'stale' | 'failed'`) instead of assuming success:
+
+- Right before `Object.assign(bundle, fresh)`, it re-checks the caller's `isStale` predicate (`createApp.ts` passes `() => worldGeneration !== thisRebuildGeneration`). If stale — a later rebuild or app teardown superseded this one — it disposes the whole freshly-built world instead and returns `'stale'`; `bundle` is never touched.
+- If building the fresh world or its deferred background phase throws, it disposes whatever of the fresh world exists and returns `'failed'`; `bundle` is left on its already-disposed old fields.
+- Only `'published'` means `createApp.ts`'s `rebuildWorld()` may run its post-rebuild continuation (map/cache invalidation, prewarm, `PlayerController.setGround`, etc.) — see that function and `worldRebuildLifecycle.ts` for the composition-root side of this contract.
+
+`createApp.ts` owns one `WorldRebuildLifecycle` state (`running` / `rebuilding` / `disposed` / `rebuild-failed`, `worldRebuildLifecycle.ts`) that `gameLoop.tick()` reads through `isWorldValid()` before running any per-frame world simulation — the destructive-teardown-through-fresh-publication window of a rebuild runs no simulation against the disposed/being-replaced bundle. `'rebuild-failed'` is sticky: it blocks both further ticking and further rebuild attempts, since `bundle` cannot safely resume without a successful publish. App teardown always wins over an in-flight rebuild's own outcome.
 
 Not every long-lived system is recreated. `PlayerController`, for example, survives a terrain rebuild and explicitly receives the new terrain samplers/water level through `setGround(...)`. The correct rule is therefore **recreate a world system or explicitly rebind its replaceable world dependencies**, not blindly recreate every consumer of `ChunkManager`.
 
@@ -239,6 +250,8 @@ The persistent worldgen cache is a separate, disposable `(seed, namespace, versi
 4. World-owned resources must be disposed before replacement.
 5. Module-level caches whose keys are not seed-scoped must be cleared when switching worlds.
 6. New-world reset decisions belong to the caller; low-level rebuild helpers should not silently reset unrelated player/world state.
+7. A rebuild is a transaction: the fresh world is published onto `bundle` only after a final staleness re-check; if stale or failed, it is disposed instead and the caller runs no post-rebuild continuation (see "Rebuild transaction" above).
+8. Normal per-frame world simulation must not run while `bundle` is mid-rebuild or disposed — gate at the composition-root render-loop boundary (`gameLoop.tick()`'s `isWorldValid()`), not with scattered per-system checks.
 
 ## Adding a new system
 

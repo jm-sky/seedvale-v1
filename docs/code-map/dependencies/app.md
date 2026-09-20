@@ -974,6 +974,7 @@ Generated from TypeScript imports.
 - `app/saveState.ts`
 - `app/userActions.ts`
 - `app/worldBundle.ts`
+- `app/worldRebuildLifecycle.ts`
 - `audio/actionSounds.ts`
 - `audio/consequenceSounds.ts`
 - `audio/createAmbientAudio.ts`
@@ -1888,3 +1889,16 @@ Generated from TypeScript imports.
 - `quests/oldBonesAdventureCave.test.ts`
 - `ui/createNpcInspector.ts`
 - `world/locations/treasureMapBearCave.test.ts`
+
+## `app/worldRebuildLifecycle.test.ts`
+
+**Imports**
+
+- `app/worldRebuildLifecycle.ts`
+
+## `app/worldRebuildLifecycle.ts`
+
+**Imported by**
+
+- `app/createApp.ts`
+- `app/worldRebuildLifecycle.test.ts`
