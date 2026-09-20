@@ -5,7 +5,7 @@
 **Priority:** medium · **Effort:** M  
 **Depends on:** ~~world-028~~  
 **Domain:** `world`  
-**Type:** `performance`  
+**Type:** feature
 **Roadmap:** -
 
 ## Problem

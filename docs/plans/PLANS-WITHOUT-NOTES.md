@@ -1,11 +1,12 @@
 # PLANS PLANNED WITHOUT NOTES
 
 > Generated with `pnpm plans:without-notes`  
-> Date: 2026-09-20 10:57:46  
+> Date: 2026-09-20 11:02:03  
 
 ## PLANS
 
 - `items-player-050-player-health-and-injury-persistence.md`
+- `items-player-051-cave-aware-dropped-item-continuity.md`
 - `npc-058-time-skip-resource-and-interrupt-parity.md`
 - `npc-059-need-action-result-revalidation-and-atomic-relief.md`
 - `quests-progression-044-lost-treasure-chronicles-final-treasure-claims-and-resolution.md`
@@ -25,6 +26,7 @@
 - `ui-input-029-village-torch-interaction-action-contract.md`
 - `world-033-worldbundle-rebuild-transaction-and-lifecycle-safety.md`
 - `world-034-time-skip-clock-exactness-and-catch-up-coverage.md`
+- `world-036-lightweight-unloaded-shipwreck-and-tower-lookup.md`
 - `world-terrain-045-canonical-local-water-player-traversal.md`
 - `world-terrain-046-unified-water-shore-query-and-river-hotpath.md`
 - `world-terrain-047-mineable-rocks-and-coastal-shell-resources.md`
@@ -61,6 +63,43 @@ Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną
 Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
 
 Po ukończeniu implementation notes zaktualizuj też `docs/plans/items-player-050-player-health-and-injury-persistence.md` i dodaj/ustaw metadata:
+`**Model:** <best>, <cheaper-safe-fallback>`
+Wybierz dokładnie dwa modele spośród: Composer, Grok, Sonnet, Opus.
+Pierwszy ma być najlepszym wyborem do implementacji, drugi tańszym wariantem o minimalnym dodatkowym ryzyku.
+Dobierz modele na podstawie wykonanego reconu i implementation notes, zgodnie z `docs/plans/PLANNING.md`.
+
+Pliki dodaj na branch `main` w repozytorium.
+```
+
+### `items-player-051-cave-aware-dropped-item-continuity.md`
+
+Prompt:
+
+```
+Zrób review planu `items-player-051-cave-aware-dropped-item-continuity.md`
+
+Wczytaj:
+- `docs/STATE.md`
+- `docs/plans/PLANNING.md` (Implementation Notes section),
+- `docs/plans/items-player-051-cave-aware-dropped-item-continuity.md`
+- aktualny codebase,
+- potrzebne zależności i powiązane implementacje.
+
+Na podstawie review utwórz w repo plik:
+`docs/plans/implementation-notes/items-player-051-cave-aware-dropped-item-continuity-implementation-notes.md`
+
+Umieść w nim:
+- sugestie dotyczące implementacji,
+- istotne detale techniczne,
+- decyzje architektoniczne,
+- informacje o istniejących systemach i implementacjach, które należy wykorzystać,
+- potencjalne problemy, zależności i pułapki,
+- inne konkretne wskazówki, które ułatwią agentowi AI poprawną implementację planu.
+
+Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
+Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
+
+Po ukończeniu implementation notes zaktualizuj też `docs/plans/items-player-051-cave-aware-dropped-item-continuity.md` i dodaj/ustaw metadata:
 `**Model:** <best>, <cheaper-safe-fallback>`
 Wybierz dokładnie dwa modele spośród: Composer, Grok, Sonnet, Opus.
 Pierwszy ma być najlepszym wyborem do implementacji, drugi tańszym wariantem o minimalnym dodatkowym ryzyku.
@@ -764,6 +803,43 @@ Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną
 Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
 
 Po ukończeniu implementation notes zaktualizuj też `docs/plans/world-034-time-skip-clock-exactness-and-catch-up-coverage.md` i dodaj/ustaw metadata:
+`**Model:** <best>, <cheaper-safe-fallback>`
+Wybierz dokładnie dwa modele spośród: Composer, Grok, Sonnet, Opus.
+Pierwszy ma być najlepszym wyborem do implementacji, drugi tańszym wariantem o minimalnym dodatkowym ryzyku.
+Dobierz modele na podstawie wykonanego reconu i implementation notes, zgodnie z `docs/plans/PLANNING.md`.
+
+Pliki dodaj na branch `main` w repozytorium.
+```
+
+### `world-036-lightweight-unloaded-shipwreck-and-tower-lookup.md`
+
+Prompt:
+
+```
+Zrób review planu `world-036-lightweight-unloaded-shipwreck-and-tower-lookup.md`
+
+Wczytaj:
+- `docs/STATE.md`
+- `docs/plans/PLANNING.md` (Implementation Notes section),
+- `docs/plans/world-036-lightweight-unloaded-shipwreck-and-tower-lookup.md`
+- aktualny codebase,
+- potrzebne zależności i powiązane implementacje.
+
+Na podstawie review utwórz w repo plik:
+`docs/plans/implementation-notes/world-036-lightweight-unloaded-shipwreck-and-tower-lookup-implementation-notes.md`
+
+Umieść w nim:
+- sugestie dotyczące implementacji,
+- istotne detale techniczne,
+- decyzje architektoniczne,
+- informacje o istniejących systemach i implementacjach, które należy wykorzystać,
+- potencjalne problemy, zależności i pułapki,
+- inne konkretne wskazówki, które ułatwią agentowi AI poprawną implementację planu.
+
+Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
+Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
+
+Po ukończeniu implementation notes zaktualizuj też `docs/plans/world-036-lightweight-unloaded-shipwreck-and-tower-lookup.md` i dodaj/ustaw metadata:
 `**Model:** <best>, <cheaper-safe-fallback>`
 Wybierz dokładnie dwa modele spośród: Composer, Grok, Sonnet, Opus.
 Pierwszy ma być najlepszym wyborem do implementacji, drugi tańszym wariantem o minimalnym dodatkowym ryzyku.

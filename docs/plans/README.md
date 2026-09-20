@@ -116,6 +116,8 @@ Unless noted otherwise, `verification needed` means implementation has passed au
 | ◼️ `world-terrain-045-canonical-local-water-player-traversal.md`               | 🔴 | M      | world-terrain-044                                                                                                                                                                                                                                                                          | -                                         |
 | ◼️ `world-terrain-046-unified-water-shore-query-and-river-hotpath.md`          | 🔴 | M      | -                                                                                                                                                                                                                                                                                          | -                                         |
 | ◼️ `world-terrain-047-mineable-rocks-and-coastal-shell-resources.md`           | 🟡 | M      | -                                                                                                                                                                                                                                                                                          | -                                         |
+| ◼️ `items-player-051-cave-aware-dropped-item-continuity.md`                    | 🔴 | M      | ~~world-027~~                                                                                                                                                                                                                                                                              | -                                         |
+| ◼️ `world-036-lightweight-unloaded-shipwreck-and-tower-lookup.md`              | 🟡 | M      | ~~world-028~~                                                                                                                                                                                                                                                                              | -                                         |
 
 ---
 
@@ -243,7 +245,7 @@ New plans declare a primary `Domain:` in frontmatter. Use optional `Tags:` only 
 
 - ai: `005`
 - fauna: `045`
-- items-player: `051`
+- items-player: `052`
 - npc: `061`
 - persistence: `006`
 - quests-progression: `073`
@@ -251,7 +253,7 @@ New plans declare a primary `Domain:` in frontmatter. Use optional `Tags:` only 
 - settlements-npcs: `055`
 - tools: `019`
 - ui-input: `030`
-- world: `036`
+- world: `037`
 - world-terrain: `048`
 
 This ids section is maintained automatically from the plan files.
