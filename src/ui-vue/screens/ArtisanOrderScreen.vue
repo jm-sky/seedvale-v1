@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import UiButton from '@/components/UiButton.vue'
 import UiPanel from '@/components/UiPanel.vue'
 import { useOverlayScreen } from '../composables/useOverlayScreen'
 import { useTouchScroll } from '../composables/useTouchScroll'
 import { closeArtisanOrderScreen, isArtisanOrderScreenOpen, ui } from '../store'
-import { ref } from 'vue'
 
 useOverlayScreen('artisanOrderScreen', isArtisanOrderScreenOpen, closeArtisanOrderScreen)
 
@@ -59,8 +59,12 @@ useTouchScroll(listPanel)
             class="mb-1.5 flex items-center justify-between gap-2 rounded-md bg-white/5 px-3 py-2"
           >
             <div>
-              <div class="text-sm font-medium">{{ order.label }}</div>
-              <div class="text-[12px] opacity-70">{{ order.statusLabel }}</div>
+              <div class="text-sm font-medium">
+                {{ order.label }}
+              </div>
+              <div class="text-[12px] opacity-70">
+                {{ order.statusLabel }}
+              </div>
             </div>
             <UiButton
               v-if="order.canPickup"
@@ -92,7 +96,10 @@ useTouchScroll(listPanel)
               <div>
                 <div class="text-sm font-medium">
                   {{ entry.label }}
-                  <span v-if="entry.prefers" class="ml-1 text-[11px] opacity-60">specjalność</span>
+                  <span
+                    v-if="entry.prefers"
+                    class="ml-1 text-[11px] opacity-60"
+                  >specjalność</span>
                 </div>
                 <div class="text-[12px] opacity-70">
                   Zaliczka: {{ entry.deposit }} monet

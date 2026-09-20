@@ -1,9 +1,10 @@
 import { describe, expect, it } from 'vitest'
+import type { ArtisanProfile } from './artisanProfile'
 import {
+  BLACKSMITH_BATTLE_AXE_PRODUCTION,
   BLACKSMITH_CHAINMAIL_PRODUCTION,
   BLACKSMITH_IRON_ROD_PRODUCTION,
   BLACKSMITH_KNIFE_PRODUCTION,
-  BLACKSMITH_BATTLE_AXE_PRODUCTION,
   BLACKSMITH_MASTERWORK_SWORD_PRODUCTION,
 } from '../economy/production'
 import { Inventory } from '../items/Inventory'
@@ -14,7 +15,6 @@ import {
   resolveArtisanCraft,
   resolveArtisanCraftedQuality,
 } from './artisanCraft'
-import type { ArtisanProfile } from './artisanProfile'
 import { ARTISAN_SPECIALIZATION_BONUS, effectiveArtisanSkill } from './artisanProfile'
 
 function profile(overrides: Partial<ArtisanProfile> = {}): ArtisanProfile {

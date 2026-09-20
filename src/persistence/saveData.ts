@@ -19,10 +19,6 @@ import type { HouseholdId, HouseholdSnapshot } from '../settlement/household'
 import type { LivestockSaveRecord } from '../settlement/livestock'
 import type { NpcRelationshipEntry } from '../settlement/npcRelationships'
 import type { NpcId, NpcStateSnapshot } from '../settlement/npcState'
-import {
-  isArtisanOrderStatus,
-  isArtisanSpecialization,
-} from '../settlement/artisanProfile'
 import type { PlacedFireKind } from '../settlement/PlacedFires'
 import type { RatInfestationState } from '../settlement/ratInfestation'
 import type { RatSaveRecord } from '../settlement/ratPersistence'
@@ -53,6 +49,10 @@ import { ITEM_DEFS, type ItemKind } from '../items/items'
 import { type SavePrimaryWeaponChoice } from '../items/primaryWeapons'
 import { isTradeGrievanceList, type TradeGrievance } from '../items/tradeGrievance'
 import { QUEST_STATES, type QuestProgressEntry } from '../quests/quests'
+import {
+  isArtisanOrderStatus,
+  isArtisanSpecialization,
+} from '../settlement/artisanProfile'
 import { isPreparationSize, type PreparationSize } from '../terrain/terrainPreparation'
 import { CONDITION_MAX } from '../world/condition'
 import { isSaveGuardLocalKnowledge, isSaveGuardLocalKnowledgeByNpc } from '../world/locations/guardLocalKnowledge'

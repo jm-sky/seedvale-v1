@@ -5,7 +5,6 @@ import type { EquipmentSlot, EquipmentState } from '../items/equipment'
 import type { HeldTool } from '../items/HeldTool'
 import type { Inventory } from '../items/Inventory'
 import type { InventoryGroupView } from '../items/inventoryView'
-import { ITEM_DEFS, type ItemKind } from '../items/items'
 import type { PrimaryWeaponSelection } from '../items/primaryWeapons'
 import type { TradeResult } from '../items/trade'
 import type { CombatWeaponCategory, PlayerCombatMode } from '../player/playerCombatMode'
@@ -13,6 +12,7 @@ import type { PlayerController } from '../player/PlayerController'
 import type { PlayerTorch } from '../player/PlayerTorch'
 import type { QuestManager } from '../quests/QuestManager'
 import type { ReputationManager } from '../reputation/ReputationManager'
+import type { ArtisanOrder, ArtisanProfile } from '../settlement/artisanProfile'
 import type { Settlement } from '../settlement/createSettlement'
 import type { VueUi } from '../ui-vue/mount'
 import type { ArtisanActiveOrderView, ArtisanOrderCatalogView, MerchantHorseOffer, MerchantPricing, NpcTradeStockRow } from '../ui-vue/store'
@@ -41,14 +41,15 @@ import {
   isArmorKind,
   isInstanceBackedKind,
 } from '../items/itemInstances'
+import { ITEM_DEFS, type ItemKind } from '../items/items'
 import { inventoryOwnsPrimaryWeaponChoice } from '../items/primaryWeapons'
 import {
   type OwnedGoodsPurchaseLine,
   previewPricedPurchaseNetCoins,
   previewTransactionNetCoins,
   resolveOfferLineBuyback,
-  sellInstancesForCoins,
   selectInstancesToSell,
+  sellInstancesForCoins,
   settleMerchantStockTransaction,
   settleOwnedGoodsBarterTransaction,
   settlePricedPurchase,
@@ -64,6 +65,12 @@ import {
 } from '../quests/guardPersistence'
 import { guardRewardTopicAvailable, resolveNextGuardReward } from '../quests/guardRewards'
 import {
+  acceptArtisanOrder,
+  listArtisanOrderCatalog,
+  pickupArtisanOrder,
+  reservedArtisanOutputIds,
+} from '../settlement/artisanOrders'
+import {
   getHorseAcquisitionState,
   horseOfferStatusHint,
   listVendorHorseAnimals,
@@ -74,13 +81,6 @@ import {
   vendorHorseOfferPrice,
 } from '../settlement/horseAcquisition'
 import { horseVendorNpcId } from '../settlement/merchantTrade'
-import {
-  acceptArtisanOrder,
-  listArtisanOrderCatalog,
-  pickupArtisanOrder,
-  reservedArtisanOutputIds,
-} from '../settlement/artisanOrders'
-import type { ArtisanOrder, ArtisanProfile } from '../settlement/artisanProfile'
 import { hideBusy, showBusy, ui } from '../ui-vue/store'
 import { GUARD_AREA_RESEARCH_PENDING } from '../world/locations/guardLocalKnowledge'
 import {

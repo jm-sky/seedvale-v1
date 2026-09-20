@@ -1,19 +1,20 @@
-import type { Inventory } from '../items/Inventory'
-import { createArmorInstance, isArmorKind } from '../items/armorItemInstances'
-import {
-  isInstanceBackedKind,
-  type ArmorQuality,
-  type ItemInstance,
-} from '../items/itemInstances'
-import type { ItemKind } from '../items/items'
-import { createAcquiredInstance } from '../items/trade'
-import { transferInventoryCount, transferInventoryInstance } from '../items/inventoryTransfer'
 import type { ProductionDef } from '../economy/production'
+import type { SettlementEconomy } from '../economy/settlementEconomy'
+import type { Inventory } from '../items/Inventory'
+import type { ItemKind } from '../items/items'
+import type { Household } from './household'
+import type { NpcAuthoritativeState } from './npcState'
+import { isEconomicKind } from '../economy/kinds'
 import { BLACKSMITH_ORDER_PRODUCTIONS, productionDefById } from '../economy/production'
 import { executeProduction, preflightProductionInputs } from '../economy/productionExecutor'
-import { isEconomicKind } from '../economy/kinds'
-import type { SettlementEconomy } from '../economy/settlementEconomy'
-import type { Household } from './household'
+import { createArmorInstance, isArmorKind } from '../items/armorItemInstances'
+import { transferInventoryCount, transferInventoryInstance } from '../items/inventoryTransfer'
+import {
+  type ArmorQuality,
+  isInstanceBackedKind,
+  type ItemInstance,
+} from '../items/itemInstances'
+import { createAcquiredInstance } from '../items/trade'
 import {
   artisanCanCraft,
   artisanMaterialDepositValue,
@@ -28,7 +29,6 @@ import {
   type ArtisanProfile,
   noteArtisanProductionCompleted,
 } from './artisanProfile'
-import type { NpcAuthoritativeState } from './npcState'
 
 /**
  * Player custom-order catalog / accept / complete / pickup (plan

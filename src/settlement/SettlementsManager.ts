@@ -92,7 +92,6 @@ import {
 import { resolveNpcPresentationOwner, shouldMaterializeNpcAt } from './npcPresentationOwner'
 import { createNpcRelationships, type NpcRelationshipEntry } from './npcRelationships'
 import { createNpcStateRegistry, type NpcAuthoritativeState, type NpcId, type NpcStateSnapshot } from './npcState'
-import { adultProfessionCoverage } from './professionStaffing'
 import {
   type HorseDebugCommandResult,
   listPlayerOwnedHorses,
@@ -100,6 +99,7 @@ import {
   resurrectPlayerOwnedHorse as resurrectPlayerOwnedHorseOp,
   teleportPlayerOwnedHorseToPlayer as teleportPlayerOwnedHorseToPlayerOp,
 } from './playerOwnedHorseDebug'
+import { adultProfessionCoverage } from './professionStaffing'
 import { createSignpost } from './props'
 import { createRatInfestationRegistry, type RatInfestationState } from './ratInfestation'
 import { createRatRegistry, type RatSaveRecord } from './ratPersistence'

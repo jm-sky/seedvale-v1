@@ -1,11 +1,11 @@
 import type { ItemKind } from '../items/items'
-import { ORE_ITEM, type MineableOre } from './depositMining'
-import { biomeWeightsAt, type ForestBiome } from './biomeRegions'
 import type { RegionParams } from './chunkHeightmap'
-import type { DigProfile } from './dig'
-import { isEligibleShellDigSpot, type DigEnv } from './dig'
 import type { ChunkManager } from './chunkManager'
-import { cellsWithinRadius, type SettlementCell, type SettlementDef, worldToCell, SETTLEMENT_GRID_STEP } from '../settlement/settlementGenerator'
+import type { DigProfile } from './dig'
+import { cellsWithinRadius, SETTLEMENT_GRID_STEP, type SettlementCell, type SettlementDef, worldToCell } from '../settlement/settlementGenerator'
+import { biomeWeightsAt, type ForestBiome } from './biomeRegions'
+import { type MineableOre, ORE_ITEM } from './depositMining'
+import { type DigEnv, isEligibleShellDigSpot } from './dig'
 
 /** @domain world-terrain
  *  Contextual shovel-find resolution (plan world-terrain-048) — repeatable

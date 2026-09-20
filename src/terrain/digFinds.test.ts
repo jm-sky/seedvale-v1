@@ -1,8 +1,13 @@
 import { describe, expect, it } from 'vitest'
+import type { SettlementCell, SettlementDef } from '../settlement/settlementGenerator'
+import type { ForestBiome } from './biomeRegions'
+import type { RegionParams } from './chunkHeightmap'
+import { DIG_DEPTH_SOIL, STONE_CHANCE_SAND } from './dig'
 import {
   buildDigContextualFindContext,
   COASTAL_AMBER_CHANCE,
   COASTAL_EXCEPTIONAL_SHELL_CHANCE,
+  type DigContextualFindContext,
   INLAND_AMBER_CHANCE,
   isWithinSettlementDigFootprint,
   MOUNTAIN_PROSPECTING_RANGE,
@@ -10,12 +15,7 @@ import {
   resolveContextualDigFind,
   SETTLEMENT_DIG_FOOTPRINT_MARGIN,
   SETTLEMENT_LOST_OBJECT_CHANCE,
-  type DigContextualFindContext,
 } from './digFinds'
-import type { RegionParams } from './chunkHeightmap'
-import { DIG_DEPTH_SOIL, STONE_CHANCE_SAND } from './dig'
-import type { ForestBiome } from './biomeRegions'
-import type { SettlementCell, SettlementDef } from '../settlement/settlementGenerator'
 
 const WATER_LEVEL = 2
 const REGION = { oceanThreshold: 0.32, coastThreshold: 0.45, desertThreshold: 0.2, desertThresholdWidth: 0.1, swampThreshold: 0.7, swampThresholdWidth: 0.1 } as RegionParams

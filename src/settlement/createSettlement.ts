@@ -68,6 +68,7 @@ import {
   resolveAnimalCorpseCleanupHandle,
   type SettlementCorpseCleanupHooks,
 } from './animalCorpseSanitation'
+import { seedArtisanProfileIfNeeded } from './artisanProfile'
 import { resolveAuthoredRepairStructureIds } from './authoredRepairTargets'
 import { villageSizeConfig } from './families'
 import { buildAssemblyCollidersWorld, type HouseAssembly } from './houseBuilder'
@@ -101,7 +102,6 @@ import {
   proceduralResidentAnchorsFromLandmarks,
   residentAnchorsForHome,
 } from './npcResidentAnchors'
-import { seedArtisanProfileIfNeeded } from './artisanProfile'
 import { seedNpcStartingWealthIfNeeded } from './npcStartingWealth'
 import {
   PASTURE_WELL_TROUGH_BUCKET_REACH,

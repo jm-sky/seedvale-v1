@@ -316,8 +316,6 @@ export function interactableStableKey(target: Interactable): string {
       return `hive:${target.id}`
     case 'house':
       return `house:${target.houseId}`
-    case 'structureRepair':
-      return `structureRepair:${target.settlementId}:${target.structureId}`
     case 'householdStorage':
       return `householdStorage:${target.household.id}`
     case 'item':
@@ -354,6 +352,8 @@ export function interactableStableKey(target: Interactable): string {
       return `spawner:${target.spawner.id}`
     case 'standingTorch':
       return `standingTorch:${target.id}`
+    case 'structureRepair':
+      return `structureRepair:${target.settlementId}:${target.structureId}`
     case 'tent':
       return `tent:${target.id}`
     case 'terrainPreparation':

@@ -1,10 +1,10 @@
 import type { Role } from '../ai/characters'
-import type { NaturalResource } from '../terrain/naturalResources'
 import type { SettlementTerrain } from '../shared/SettlementName'
-import { createSeededRandom } from '../world/parseSeed'
+import type { NaturalResource } from '../terrain/naturalResources'
 import type { FamilyDef, VillageSize } from './families'
-import { settlementNpcId } from './npcIdentity'
 import type { NpcId } from './npcState'
+import { createSeededRandom } from '../world/parseSeed'
+import { settlementNpcId } from './npcIdentity'
 import { isProfessionAdult } from './professionStaffing'
 
 /**

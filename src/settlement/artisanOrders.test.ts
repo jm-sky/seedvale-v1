@@ -1,17 +1,17 @@
 import { describe, expect, it } from 'vitest'
+import type { ArtisanProfile } from './artisanProfile'
 import { BLACKSMITH_KNIFE_PRODUCTION, BLACKSMITH_MASTERWORK_SWORD_PRODUCTION } from '../economy/production'
 import { createSettlementEconomy } from '../economy/settlementEconomy'
 import { Inventory } from '../items/Inventory'
 import { isWeaponItemInstance } from '../items/itemInstances'
-import { createNpcAuthoritativeState } from './npcState'
-import { createHousehold } from './household'
 import {
   acceptArtisanOrder,
   completeArtisanOrder,
   listArtisanOrderCatalog,
   pickupArtisanOrder,
 } from './artisanOrders'
-import type { ArtisanProfile } from './artisanProfile'
+import { createHousehold } from './household'
+import { createNpcAuthoritativeState } from './npcState'
 
 const DEMANDS = [
   { kind: 'wood' as const, target: 0 },

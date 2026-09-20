@@ -6,7 +6,6 @@ import { createArmorInstance, isArmorKind } from '../items/armorItemInstances'
 import { type ArmorKind, type ArmorQuality, isInstanceBackedKind } from '../items/itemInstances'
 import { createAcquiredInstance } from '../items/trade'
 import { createSeededRandom } from '../world/parseSeed'
-import { adultProfessionCoverage } from './professionStaffing'
 import { resolveArtisanCraftedQuality } from './artisanCraft'
 import {
   type ArtisanProfile,
@@ -14,6 +13,7 @@ import {
   listSettlementBlacksmiths,
   resolveArtisanProfile,
 } from './artisanProfile'
+import { adultProfessionCoverage } from './professionStaffing'
 import { resolveSettlementArmorQuality } from './settlementArmorQuality'
 
 /**

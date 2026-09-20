@@ -1,14 +1,14 @@
+import type { ProductionDef } from '../economy/production'
 import type { Inventory } from '../items/Inventory'
-import type { ItemKind } from '../items/items'
 import type { ArmorQuality } from '../items/itemInstances'
+import type { ItemKind } from '../items/items'
 import { tradeValue } from '../items/tradeCatalog'
-import { pickWeightedArmorQuality } from './settlementArmorQuality'
+import { createSeededRandom } from '../world/parseSeed'
 import {
   type ArtisanProfile,
   effectiveArtisanSkill,
 } from './artisanProfile'
-import type { ProductionDef } from '../economy/production'
-import { createSeededRandom } from '../world/parseSeed'
+import { pickWeightedArmorQuality } from './settlementArmorQuality'
 
 export type ArtisanCraftDecision = {
   canCraft: boolean

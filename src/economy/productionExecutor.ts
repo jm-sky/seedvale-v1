@@ -1,11 +1,11 @@
 import type { Inventory, ItemAmount } from '../items/Inventory'
 import type { ItemInstance } from '../items/itemInstances'
-import { isInstanceBackedKind } from '../items/itemInstances'
 import type { ItemKind } from '../items/items'
 import type { EconomicKind } from './kinds'
 import type { ProductionDef } from './production'
 import type { SettlementEconomy } from './settlementEconomy'
 import type { StockAmount } from './stock'
+import { isInstanceBackedKind } from '../items/itemInstances'
 
 /**
  * Explicit owners for one synchronous recipe commit. The executor never

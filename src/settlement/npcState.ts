@@ -26,13 +26,13 @@ import {
 } from '../shared/temporaryConditions'
 import { createVigorState, type VigorState } from '../shared/VigorState'
 import { BASE_TRANSPORT_CARGO_MAX_WEIGHT_KG } from '../world/transportCapacity'
-import { cloneMerchantJourney, type MerchantJourneyState } from './merchantJourney'
 import {
   type ArtisanOrder,
   type ArtisanProfile,
   cloneArtisanOrders,
   cloneArtisanProfile,
 } from './artisanProfile'
+import { cloneMerchantJourney, type MerchantJourneyState } from './merchantJourney'
 import {
   cloneNpcPostDeath,
   createLegacyTerminalNpcPostDeath,

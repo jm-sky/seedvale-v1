@@ -29,6 +29,7 @@ import {
   matchInterSettlementFoodOpportunity,
   selectConcreteFoodGoods,
 } from '../economy/interSettlementFoodTransport'
+import { isEconomicKind } from '../economy/kinds'
 import { claimHouseholdSurplus } from '../economy/localExchange'
 import {
   commitBlacksmithProduction,
@@ -54,13 +55,10 @@ import {
   HUNTER_BOW_PRODUCTIONS,
   HUNTER_BOW_STOCK_CAP,
   type ProductionDef,
-  TEXTILE_WORKER_PRODUCTIONS,
   productionDefById,
+  TEXTILE_WORKER_PRODUCTIONS,
 } from '../economy/production'
 import { preflightProductionInputs } from '../economy/productionExecutor'
-import { completeArtisanOrder, nextCompletableArtisanOrder } from '../settlement/artisanOrders'
-import { missingArtisanMaterials } from '../settlement/artisanCraft'
-import { isEconomicKind } from '../economy/kinds'
 import { type SettlementEconomy } from '../economy/settlementEconomy'
 import { WOOL_YIELD } from '../fauna/livestockProduction'
 import {
@@ -73,6 +71,8 @@ import { Inventory } from '../items/Inventory'
 import { isWeaponItemInstance, WEAPON_MAINTENANCE_KIND_LIST, type WeaponItemInstance } from '../items/itemInstances'
 import { sharpenWeapon } from '../items/weaponMaintenance'
 import { physicalWorkDuration } from '../player/physicalWorkStrength'
+import { missingArtisanMaterials } from '../settlement/artisanCraft'
+import { completeArtisanOrder, nextCompletableArtisanOrder } from '../settlement/artisanOrders'
 import { resolveNpcSettlementStorage } from '../settlement/npcResidentAnchors'
 import { copyVec3 } from '../simulation'
 import { isMineableOre, MINE_DURATION_SEC, ORE_ITEM } from '../terrain/depositMining'
