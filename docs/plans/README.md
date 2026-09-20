@@ -111,6 +111,7 @@ Unless noted otherwise, `verification needed` means implementation has passed au
 | ◼️ `npc-059-need-action-result-revalidation-and-atomic-relief.md`              | 🔴 | S      | -                                                                                                                                                                                                                                                                                          | -                                         |
 | ◼️ `settlements-npcs-054-transport-carrier-death-and-cargo-disposition.md`     | 🔴 | S      | ~~settlements-npcs-019~~                                                                                                                                                                                                                                                                   | -                                         |
 | ◼️ `items-player-050-player-health-and-injury-persistence.md`                  | 🟡 | S      | ~~items-player-045~~                                                                                                                                                                                                                                                                       | -                                         |
+| ◼️ `ui-input-026-world-and-map-label-visibility-and-collision-fixes.md`        | 🔴 | S      | -                                                                                                                                                                                                                                                                                          | -                                         |
 
 ---
 
@@ -245,7 +246,7 @@ New plans declare a primary `Domain:` in frontmatter. Use optional `Tags:` only 
 - settlements: `023`
 - settlements-npcs: `055`
 - tools: `019`
-- ui-input: `026`
+- ui-input: `027`
 - world: `036`
 - world-terrain: `045`
 

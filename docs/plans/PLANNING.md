@@ -16,7 +16,7 @@ Rules for AI agents creating Seedvale plans and implementation notes.
 - settlements: `023`
 - settlements-npcs: `055`
 - tools: `019`
-- ui-input: `026`
+- ui-input: `027`
 - world: `036`
 - world-terrain: `045`
 
