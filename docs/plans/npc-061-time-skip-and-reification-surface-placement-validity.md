@@ -4,6 +4,7 @@
 **Status:** `planned` 📋
 **Type:** bug
 **Priority:** high · **Effort:** M
+**Model:** Sonnet → Composer
 **Depends on:** world-terrain-044
 **Domain:** `npc`
 **Subdomains:** `behavior` `lifecycle`
