@@ -8,7 +8,8 @@
 **Domain:** `quests-progression`  
 **Subdomains:** `quests` `relationships` `rewards`  
 **Tags:** `starter-quests` `repair` `world-state` `piotr` `anna`  
-**Roadmap:** -
+**Roadmap:** -  
+**Model:** Opus, Sonnet
 
 ## Cel
 
