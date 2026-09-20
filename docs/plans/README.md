@@ -127,6 +127,9 @@ Unless noted otherwise, `verification needed` means implementation has passed au
 | ◼️ `items-player-056-player-new-game-runtime-state-reset.md`                   | 🔴 | S      | items-player-050                                                                                                                                                                                                                                                                           | -                                         |
 | ◼️ `items-player-057-mounted-player-lifecycle-and-restore-continuity.md`       | 🔴 | S      | world-033, ~~settlements-npcs-048~~                                                                                                                                                                                                                                                        | -                                         |
 | ◼️ `ui-input-030-player-downed-action-input-gating.md`                         | 🟡 | S      | -                                                                                                                                                                                                                                                                                          | -                                         |
+| ◼️ `ui-input-031-world-bound-ui-session-rebuild-lifecycle.md`                  | 🔴 | S      | world-033                                                                                                                                                                                                                                                                                  | -                                         |
+| ◼️ `world-037-audio-spatial-context-isolation.md`                              | 🟡 | S      | ~~world-027~~                                                                                                                                                                                                                                                                              | -                                         |
+| ◼️ `world-038-world-audio-async-lifecycle-and-cache-recovery.md`               | 🟡 | S      | -                                                                                                                                                                                                                                                                                          | -                                         |
 
 ---
 
@@ -262,8 +265,8 @@ New plans declare a primary `Domain:` in frontmatter. Use optional `Tags:` only 
 - settlements: `023`
 - settlements-npcs: `055`
 - tools: `019`
-- ui-input: `031`
-- world: `037`
+- ui-input: `032`
+- world: `039`
 - world-terrain: `048`
 
 This ids section is maintained automatically from the plan files.

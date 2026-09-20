@@ -1,7 +1,7 @@
 # PLANS PLANNED WITHOUT NOTES
 
 > Generated with `pnpm plans:without-notes`  
-> Date: 2026-09-20 11:42:38  
+> Date: 2026-09-20 12:16:28  
 
 ## PLANS
 
@@ -33,9 +33,12 @@
 - `ui-input-028-interaction-target-identity-and-cycle-lifecycle.md`
 - `ui-input-029-village-torch-interaction-action-contract.md`
 - `ui-input-030-player-downed-action-input-gating.md`
+- `ui-input-031-world-bound-ui-session-rebuild-lifecycle.md`
 - `world-033-worldbundle-rebuild-transaction-and-lifecycle-safety.md`
 - `world-034-time-skip-clock-exactness-and-catch-up-coverage.md`
 - `world-036-lightweight-unloaded-shipwreck-and-tower-lookup.md`
+- `world-037-audio-spatial-context-isolation.md`
+- `world-038-world-audio-async-lifecycle-and-cache-recovery.md`
 - `world-terrain-045-canonical-local-water-player-traversal.md`
 - `world-terrain-046-unified-water-shore-query-and-river-hotpath.md`
 
@@ -1078,6 +1081,43 @@ Dobierz modele na podstawie wykonanego reconu i implementation notes, zgodnie z 
 Pliki dodaj na branch `main` w repozytorium.
 ```
 
+### `ui-input-031-world-bound-ui-session-rebuild-lifecycle.md`
+
+Prompt:
+
+```
+Zrób review planu `ui-input-031-world-bound-ui-session-rebuild-lifecycle.md`
+
+Wczytaj:
+- `docs/STATE.md`
+- `docs/plans/PLANNING.md` (Implementation Notes section),
+- `docs/plans/ui-input-031-world-bound-ui-session-rebuild-lifecycle.md`
+- aktualny codebase,
+- potrzebne zależności i powiązane implementacje.
+
+Na podstawie review utwórz w repo plik:
+`docs/plans/implementation-notes/ui-input-031-world-bound-ui-session-rebuild-lifecycle-implementation-notes.md`
+
+Umieść w nim:
+- sugestie dotyczące implementacji,
+- istotne detale techniczne,
+- decyzje architektoniczne,
+- informacje o istniejących systemach i implementacjach, które należy wykorzystać,
+- potencjalne problemy, zależności i pułapki,
+- inne konkretne wskazówki, które ułatwią agentowi AI poprawną implementację planu.
+
+Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
+Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
+
+Po ukończeniu implementation notes zaktualizuj też `docs/plans/ui-input-031-world-bound-ui-session-rebuild-lifecycle.md` i dodaj/ustaw metadata:
+`**Model:** <best>, <cheaper-safe-fallback>`
+Wybierz dokładnie dwa modele spośród: Composer, Grok, Sonnet, Opus.
+Pierwszy ma być najlepszym wyborem do implementacji, drugi tańszym wariantem o minimalnym dodatkowym ryzyku.
+Dobierz modele na podstawie wykonanego reconu i implementation notes, zgodnie z `docs/plans/PLANNING.md`.
+
+Pliki dodaj na branch `main` w repozytorium.
+```
+
 ### `world-033-worldbundle-rebuild-transaction-and-lifecycle-safety.md`
 
 Prompt:
@@ -1181,6 +1221,80 @@ Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną
 Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
 
 Po ukończeniu implementation notes zaktualizuj też `docs/plans/world-036-lightweight-unloaded-shipwreck-and-tower-lookup.md` i dodaj/ustaw metadata:
+`**Model:** <best>, <cheaper-safe-fallback>`
+Wybierz dokładnie dwa modele spośród: Composer, Grok, Sonnet, Opus.
+Pierwszy ma być najlepszym wyborem do implementacji, drugi tańszym wariantem o minimalnym dodatkowym ryzyku.
+Dobierz modele na podstawie wykonanego reconu i implementation notes, zgodnie z `docs/plans/PLANNING.md`.
+
+Pliki dodaj na branch `main` w repozytorium.
+```
+
+### `world-037-audio-spatial-context-isolation.md`
+
+Prompt:
+
+```
+Zrób review planu `world-037-audio-spatial-context-isolation.md`
+
+Wczytaj:
+- `docs/STATE.md`
+- `docs/plans/PLANNING.md` (Implementation Notes section),
+- `docs/plans/world-037-audio-spatial-context-isolation.md`
+- aktualny codebase,
+- potrzebne zależności i powiązane implementacje.
+
+Na podstawie review utwórz w repo plik:
+`docs/plans/implementation-notes/world-037-audio-spatial-context-isolation-implementation-notes.md`
+
+Umieść w nim:
+- sugestie dotyczące implementacji,
+- istotne detale techniczne,
+- decyzje architektoniczne,
+- informacje o istniejących systemach i implementacjach, które należy wykorzystać,
+- potencjalne problemy, zależności i pułapki,
+- inne konkretne wskazówki, które ułatwią agentowi AI poprawną implementację planu.
+
+Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
+Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
+
+Po ukończeniu implementation notes zaktualizuj też `docs/plans/world-037-audio-spatial-context-isolation.md` i dodaj/ustaw metadata:
+`**Model:** <best>, <cheaper-safe-fallback>`
+Wybierz dokładnie dwa modele spośród: Composer, Grok, Sonnet, Opus.
+Pierwszy ma być najlepszym wyborem do implementacji, drugi tańszym wariantem o minimalnym dodatkowym ryzyku.
+Dobierz modele na podstawie wykonanego reconu i implementation notes, zgodnie z `docs/plans/PLANNING.md`.
+
+Pliki dodaj na branch `main` w repozytorium.
+```
+
+### `world-038-world-audio-async-lifecycle-and-cache-recovery.md`
+
+Prompt:
+
+```
+Zrób review planu `world-038-world-audio-async-lifecycle-and-cache-recovery.md`
+
+Wczytaj:
+- `docs/STATE.md`
+- `docs/plans/PLANNING.md` (Implementation Notes section),
+- `docs/plans/world-038-world-audio-async-lifecycle-and-cache-recovery.md`
+- aktualny codebase,
+- potrzebne zależności i powiązane implementacje.
+
+Na podstawie review utwórz w repo plik:
+`docs/plans/implementation-notes/world-038-world-audio-async-lifecycle-and-cache-recovery-implementation-notes.md`
+
+Umieść w nim:
+- sugestie dotyczące implementacji,
+- istotne detale techniczne,
+- decyzje architektoniczne,
+- informacje o istniejących systemach i implementacjach, które należy wykorzystać,
+- potencjalne problemy, zależności i pułapki,
+- inne konkretne wskazówki, które ułatwią agentowi AI poprawną implementację planu.
+
+Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
+Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
+
+Po ukończeniu implementation notes zaktualizuj też `docs/plans/world-038-world-audio-async-lifecycle-and-cache-recovery.md` i dodaj/ustaw metadata:
 `**Model:** <best>, <cheaper-safe-fallback>`
 Wybierz dokładnie dwa modele spośród: Composer, Grok, Sonnet, Opus.
 Pierwszy ma być najlepszym wyborem do implementacji, drugi tańszym wariantem o minimalnym dodatkowym ryzyku.
