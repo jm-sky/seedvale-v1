@@ -12,6 +12,7 @@
  */
 
 import type { CaveEntrance } from '../caveVolume'
+import { SLOPE_MAX_WALKABLE_DEG } from '../../terrain/slopeConstraint'
 import { openingDirection } from './caveOrientation'
 
 /** Depth of the deterministic mouth recess `createCaves.ts` carves into
@@ -24,8 +25,22 @@ export const CAVE_MOUTH_DEPTH = 2.4
 export const CAVE_APPROACH_DEPTH = 1.35
 /** Centre of the approach pit, along `openingDirection`, from the entrance. */
 export const CAVE_APPROACH_OFFSET = 2.2
-export const CAVE_MOUTH_RADIUS = 1.65
-export const CAVE_APPROACH_RADIUS = 3.2
+
+/**
+ * Smoothstep radial pits peak at grade `1.5 · depth / radius`. Radius is
+ * sized so that peak stays under `SLOPE_MAX_WALKABLE_DEG`, with margin for
+ * approach-disc overlap and hillside base tilt (world-terrain-034).
+ * Downhill enter / uphill exit share this surface — too steep a pit is a
+ * one-way soft-lock under `constrainToSlope`.
+ */
+const MOUTH_PIT_GRADE_SAFETY = 1.18
+const SMOOTHSTEP_PEAK_DERIV = 1.5
+export const CAVE_MOUTH_RADIUS =
+  (CAVE_MOUTH_DEPTH * SMOOTHSTEP_PEAK_DERIV * MOUTH_PIT_GRADE_SAFETY) /
+  Math.tan((SLOPE_MAX_WALKABLE_DEG * Math.PI) / 180)
+
+/** Approach pit — already shallower/wider than the mouth; keep ≥ mouth radius. */
+export const CAVE_APPROACH_RADIUS = Math.max(3.2, CAVE_MOUTH_RADIUS + 0.3)
 
 /** Signed distance along `openingDirection` from the entrance. Positive is
  *  outward (approach / hillside); negative is into the cave. SDF occupancy,

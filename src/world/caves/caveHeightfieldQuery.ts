@@ -202,8 +202,10 @@ const HORIZONTAL_RESOLVE_ITERS = 24
  *   mouth onto the terrain beyond the open-sky contour, is never dragged
  *   toward the mouth by the gap gradient (`y == null` skips this rule:
  *   Y-blind probe);
- * - the column is `openSky` (mouth / approach), which is what keeps the
- *   portal open without a special case.
+ * - the column is `openSky` **and** still carries `minGap` (mouth / approach
+ *   portal). Open-sky rim columns whose gap has already collapsed are pushed
+ *   like ordinary fringe so a wider mouth carve cannot walk the capsule out
+ *   of void (world-terrain-034).
  *
  * Deterministic, stateless, no teleport-back: a capsule that starts in the
  * blocked fringe walks up-gradient into standable space; only deep in flat
@@ -226,7 +228,8 @@ export function resolveHeightfieldHorizontal(
     const sample = sampleHeightfieldAt(field, px, pz)
     if (sample.outsideGrid) return { x: px, z: pz }
     if (y != null && y > sample.surfaceY - CAVE_SURFACE_ENTITY_SLACK) return { x: px, z: pz }
-    if (sample.openSky) return { x: px, z: pz }
+    // Standable open-sky portal is identity; collapsed open-sky rim is not.
+    if (sample.openSky && sample.gap >= minGap - 1e-4) return { x: px, z: pz }
     const deficit = minGap - sample.gap
     if (deficit <= 1e-4) return { x: px, z: pz }
     const { gx, gz } = heightfieldGapGradient(field, px, pz)

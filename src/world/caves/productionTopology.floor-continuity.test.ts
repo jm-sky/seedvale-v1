@@ -1,6 +1,7 @@
 /** Floor-ramp continuity: topology stations and the gameplay heightfield
  *  floor between passage / widening / chamber / branch must stay within
- *  player walk grade. */
+ *  player walk grade. Mouth surface↔carve↔interior is covered separately
+ *  with a hybrid outdoor/cave floor sampler (world-terrain-034). */
 
 import { describe, expect, it } from 'vitest'
 import type { LargeCaveSite } from '../largeCaves'
@@ -10,8 +11,17 @@ import { measureSlope } from '../../fauna/createFauna'
 import { type RawSampleParams, sampleHeightAt } from '../../terrain/chunkHeightmap'
 import { SLOPE_MAX_WALKABLE_DEG } from '../../terrain/slopeConstraint'
 import { queryHeightfieldGround } from './caveHeightfieldQuery'
-import { buildCaveHeightfieldRepresentation, type CaveHeightfieldRepresentation } from './caveHeightfieldRepresentation'
-import { mouthCarveDepth } from './mouthCarve'
+import {
+  buildCaveHeightfieldRepresentation,
+  type CaveHeightfieldRepresentation,
+  ENTRANCE_INWARD,
+} from './caveHeightfieldRepresentation'
+import { openingDirection } from './caveOrientation'
+import {
+  CAVE_APPROACH_OFFSET,
+  CAVE_APPROACH_RADIUS,
+  mouthCarveDepth,
+} from './mouthCarve'
 import {
   buildProductionCaveTopology,
   MAX_TRAVERSABLE_FLOOR_GRADE,
@@ -69,13 +79,43 @@ function gameplayFloorProfile(
   return { maxGrade, maxStep }
 }
 
+/**
+ * Final gameplay floor along a path that may leave cave columns: prefer
+ * `queryHeightfieldGround` (player in-cave), else carved walk surface
+ * (outdoor feet on the mouth trench).
+ */
+function hybridGameplayFloorProfile(
+  field: CaveHeightfieldRepresentation,
+  walkSurfaceAt: (x: number, z: number) => number,
+  points: readonly { x: number, z: number }[],
+  startY: number,
+): { maxGrade: number, maxStep: number } {
+  let y = startY
+  let prev: { x: number, z: number, floor: number } | null = null
+  let maxGrade = 0
+  let maxStep = 0
+  for (const p of points) {
+    const hit = queryHeightfieldGround(field, walkSurfaceAt, p.x, y, p.z)
+    const floor = hit?.floorY ?? walkSurfaceAt(p.x, p.z)
+    if (prev) {
+      const dist = Math.hypot(p.x - prev.x, p.z - prev.z)
+      if (dist > 1e-6) {
+        maxGrade = Math.max(maxGrade, Math.abs(floor - prev.floor) / dist)
+        maxStep = Math.max(maxStep, Math.abs(floor - prev.floor))
+      }
+    }
+    prev = { x: p.x, z: p.z, floor }
+    y = floor + 0.2
+  }
+  return { maxGrade, maxStep }
+}
+
 function reversed(centerline: readonly CaveTopologyPoint[]): CaveTopologyPoint[] {
   return centerline.slice().reverse()
 }
 
-/** Entrance interior → chamber along `from` links. Skips the portal lip
- *  (`seg.from === 'entrance'` samples sit on the carve, not cave ground). */
-function mainRouteFromMouthInterior(topology: {
+/** Entrance → chamber along `from` links, including the mouth portal lip. */
+function mainRouteFromMouth(topology: {
   segments: readonly { from: string, to: string, centerline: readonly CaveTopologyPoint[] }[]
 }): CaveTopologyPoint[] {
   const byFrom = new Map(topology.segments.map((s) => [s.from, s]))
@@ -85,9 +125,7 @@ function mainRouteFromMouthInterior(topology: {
   while (byFrom.has(id) && !seen.has(id)) {
     seen.add(id)
     const seg = byFrom.get(id)!
-    if (seg.from === 'entrance') {
-      pts.push(seg.centerline[seg.centerline.length - 1]!)
-    } else if (pts.length === 0) {
+    if (pts.length === 0) {
       pts.push(...seg.centerline)
     } else {
       pts.push(...seg.centerline.slice(1))
@@ -96,6 +134,27 @@ function mainRouteFromMouthInterior(topology: {
     id = seg.to
   }
   return pts
+}
+
+/**
+ * Densified XZ path along the mouth opening axis from approach hillside
+ * through the portal into the first interior metres.
+ */
+function mouthTransitionPath(
+  entrance: { x: number, z: number, yaw: number },
+): { x: number, z: number }[] {
+  const out = openingDirection(entrance.yaw)
+  const alongStart = CAVE_APPROACH_OFFSET + CAVE_APPROACH_RADIUS * 0.35
+  const alongEnd = -ENTRANCE_INWARD
+  const step = 0.35
+  const points: { x: number, z: number }[] = []
+  for (let along = alongStart; along >= alongEnd - 1e-9; along -= step) {
+    points.push({
+      x: entrance.x + out.dx * along,
+      z: entrance.z + out.dz * along,
+    })
+  }
+  return points
 }
 
 function expectInteriorSegmentsWalkable(
@@ -108,7 +167,8 @@ function expectInteriorSegmentsWalkable(
     expect(maxCenterlineFloorGrade(seg.centerline), `${label} ${seg.id} topology`).toBeLessThanOrEqual(
       MAX_TRAVERSABLE_FLOOR_GRADE + 1e-6,
     )
-    // Mouth lip is portal/carve, not the tunnel↔chamber ramp this invariant covers.
+    // Entrance segment samples the portal lip where outdoor carve and cave
+    // columns meet — covered by `expectMouthTransitionWalkable` instead.
     if (seg.from === 'entrance') continue
     const { maxGrade, maxStep } = gameplayFloorProfile(field, surfaceHeightAt, seg.centerline)
     expect(maxGrade, `${label} ${seg.id} gameplay grade ${maxGrade.toFixed(3)}`).toBeLessThanOrEqual(FLOOR_GRADE_LIMIT)
@@ -117,6 +177,63 @@ function expectInteriorSegmentsWalkable(
     expect(back.maxGrade, `${label} ${seg.id} reverse grade ${back.maxGrade.toFixed(3)}`).toBeLessThanOrEqual(FLOOR_GRADE_LIMIT)
     expect(back.maxStep, `${label} ${seg.id} reverse step`).toBeLessThan(1.0)
   }
+}
+
+function expectMouthTransitionWalkable(
+  topology: {
+    entrance: { x: number, y: number, z: number, yaw: number }
+    segments: readonly { from: string, to: string, centerline: readonly CaveTopologyPoint[] }[]
+  },
+  field: CaveHeightfieldRepresentation,
+  walkSurfaceAt: (x: number, z: number) => number,
+  label: string,
+): void {
+  const points = mouthTransitionPath(topology.entrance)
+  expect(points.length).toBeGreaterThan(4)
+
+  const outwardStartY = walkSurfaceAt(points[0]!.x, points[0]!.z) + 0.25
+  const inbound = hybridGameplayFloorProfile(field, walkSurfaceAt, points, outwardStartY)
+  expect(inbound.maxGrade, `${label} surface→mouth→interior grade ${inbound.maxGrade.toFixed(3)}`).toBeLessThanOrEqual(
+    FLOOR_GRADE_LIMIT,
+  )
+  expect(inbound.maxStep, `${label} surface→mouth→interior step`).toBeLessThan(1.0)
+
+  const inward = points[points.length - 1]!
+  const inwardHit = queryHeightfieldGround(field, walkSurfaceAt, inward.x, topology.entrance.y + 0.5, inward.z)
+  const reverseStartY = (inwardHit?.floorY ?? walkSurfaceAt(inward.x, inward.z)) + 0.25
+  const outbound = hybridGameplayFloorProfile(field, walkSurfaceAt, points.slice().reverse(), reverseStartY)
+  expect(outbound.maxGrade, `${label} interior→mouth→surface grade ${outbound.maxGrade.toFixed(3)}`).toBeLessThanOrEqual(
+    FLOOR_GRADE_LIMIT,
+  )
+  expect(outbound.maxStep, `${label} interior→mouth→surface step`).toBeLessThan(1.0)
+
+  // Full main-route including entrance segment, both directions, hybrid floor
+  // so portal lip samples that leave cave columns still use carved terrain.
+  const route = mainRouteFromMouth(topology)
+  expect(route.length).toBeGreaterThan(4)
+  const routeIn = hybridGameplayFloorProfile(
+    field,
+    walkSurfaceAt,
+    densify(route, 0.4).map((p) => ({ x: p.x, z: p.z })),
+    walkSurfaceAt(route[0]!.x, route[0]!.z) + 0.25,
+  )
+  expect(routeIn.maxGrade, `${label} mouth→chamber hybrid grade ${routeIn.maxGrade.toFixed(3)}`).toBeLessThanOrEqual(
+    FLOOR_GRADE_LIMIT,
+  )
+  expect(routeIn.maxStep, `${label} mouth→chamber hybrid step`).toBeLessThan(1.0)
+  const routeBackPts = densify(reversed(route), 0.4).map((p) => ({ x: p.x, z: p.z }))
+  const chamberEnd = route[route.length - 1]!
+  const chamberHit = queryHeightfieldGround(field, walkSurfaceAt, chamberEnd.x, chamberEnd.y + 0.5, chamberEnd.z)
+  const routeOut = hybridGameplayFloorProfile(
+    field,
+    walkSurfaceAt,
+    routeBackPts,
+    (chamberHit?.floorY ?? chamberEnd.y) + 0.25,
+  )
+  expect(routeOut.maxGrade, `${label} chamber→mouth hybrid grade ${routeOut.maxGrade.toFixed(3)}`).toBeLessThanOrEqual(
+    FLOOR_GRADE_LIMIT,
+  )
+  expect(routeOut.maxStep, `${label} chamber→mouth hybrid step`).toBeLessThan(1.0)
 }
 
 describe('traversable floor continuity (production topology)', () => {
@@ -202,17 +319,14 @@ describe('seed 1136726869 chamber ramp is walkable both ways', () => {
     expectInteriorSegmentsWalkable(topology, field, walkSurfaceAt, 'seed 1136726869')
   })
 
-  it('walks interior → entrance on the same heightfield query path', () => {
+  it('walks surface → mouth → interior and back on the hybrid gameplay floor', () => {
     const { topology, field, walkSurfaceAt } = build()
     const chamber = topology.segments.find((s) => s.id === 'seg-chamber')!
     const backChamber = gameplayFloorProfile(field, walkSurfaceAt, reversed(chamber.centerline))
     expect(backChamber.maxGrade, `reverse chamber grade ${backChamber.maxGrade.toFixed(3)}`).toBeLessThanOrEqual(FLOOR_GRADE_LIMIT)
     expect(backChamber.maxStep).toBeLessThan(1.0)
 
-    const route = mainRouteFromMouthInterior(topology)
-    expect(route.length).toBeGreaterThan(4)
-    // Query must stay on cave ground from the chamber back to the mouth interior.
-    gameplayFloorProfile(field, walkSurfaceAt, reversed(route))
+    expectMouthTransitionWalkable(topology, field, walkSurfaceAt, 'seed 1136726869')
   })
 })
 
@@ -222,7 +336,7 @@ describe('heightfield floor grade on representative production seeds', () => {
   const intoDz = -Math.cos(site.yaw)
   const hill = (x: number, z: number) => 130 + 0.5 * ((x - site.x) * intoDx + (z - site.z) * intoDz)
 
-  it('keeps interior segments walkable both ways', () => {
+  it('keeps interior segments and mouth transition walkable both ways', () => {
     for (const seed of [42, 99, 7, 1]) {
       const topology = buildProductionCaveTopology({
         seed,
@@ -235,7 +349,7 @@ describe('heightfield floor grade on representative production seeds', () => {
         hill(x, z) - mouthCarveDepth(x, z, topology!.entrance)
       const field = buildCaveHeightfieldRepresentation(topology!, walkSurfaceAt).heightfield
       expectInteriorSegmentsWalkable(topology!, field, walkSurfaceAt, `seed ${seed}`)
-      gameplayFloorProfile(field, walkSurfaceAt, reversed(mainRouteFromMouthInterior(topology!)))
+      expectMouthTransitionWalkable(topology!, field, walkSurfaceAt, `seed ${seed}`)
     }
   })
 })

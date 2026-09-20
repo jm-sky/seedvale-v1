@@ -267,7 +267,7 @@ type LobeInfluence = {
 type Influence = SegmentInfluence | LobeInfluence
 
 /** Local cross-section state of one influence at one point. */
-type CrossSection = { f: number, c: number, t: number, q: number }
+type CrossSection = { f: number, c: number, t: number, q: number, dist: number }
 
 /**
  * Resamples a topology segment centerline at fixed arc length so footprint
@@ -581,7 +581,7 @@ export function crossSectionAt(
     // the widest station), and without the clamp `gap` would dip below
     // `FAR_GAP` there and then rise again at the box edge.
     const outside = Math.min(KAPPA * (d - rim), KAPPA * OUTSIDE_REACH)
-    return { f: waist + outside, c: waist - outside, t: 1, q: 1 }
+    return { f: waist + outside, c: waist - outside, t: 1, q: 1, dist: d }
   }
   const t = Math.max(0, (d - coreRadius) / band)
   const q = d / rim
@@ -590,6 +590,7 @@ export function crossSectionAt(
     c: axisY + height - (1 - BETA) * height * closure(q, NC),
     t,
     q,
+    dist: d,
   }
 }
 
@@ -778,13 +779,15 @@ export function buildCaveHeightfieldRepresentation(
       const mouthTaper = smoothstep01(-1.5, -0.2, -mouthAlong(x, z, topology.entrance))
       const macroOffset = macroNoise(x, z) * config.macro.amplitude * mouthTaper
 
-      // Union: keep the two dominant operands and blend only those. A running
-      // fold would bias by up to k/4 per step (`smin(a, a, k) = a - k/4`), so
-      // N overlapping influences in a chamber would quietly deepen the floor
-      // and raise the ceiling by N*k/4. This rounds the one junction that
-      // matters and is bias-bounded at k/4 regardless of N.
+      // Union: ceiling keeps the two highest operands (soft-max). Floor uses
+      // only the nearest influence by metric lateral `dist` (then lowest floor
+      // on a tie). Ranking by rim `t` or by lowest floor let a fat downstream
+      // core (still `t = 0` metres upstream) dig cliffs into an upstream ramp
+      // — a one-way exit soft-lock under `SLOPE_MAX_WALKABLE_DEG`
+      // (world-terrain-034). A running floor fold would also bias by up to
+      // k/4 per step (`smin(a, a, k) = a - k/4`).
       let f1 = Infinity
-      let f2 = Infinity
+      let distFloor1 = Infinity
       let c1 = -Infinity
       let c2 = -Infinity
       let tMin = 1
@@ -792,12 +795,17 @@ export function buildCaveHeightfieldRepresentation(
       for (const inf of influences) {
         const cs = influenceCrossSection(inf, x, z, macroOffset)
         if (!cs) continue
-        if (cs.f < f1) { f2 = f1; f1 = cs.f } else if (cs.f < f2) { f2 = cs.f }
+        const nearerFloor =
+          cs.dist < distFloor1 - 1e-6 || (Math.abs(cs.dist - distFloor1) <= 1e-6 && cs.f < f1)
+        if (nearerFloor) {
+          distFloor1 = cs.dist
+          f1 = cs.f
+        }
         if (cs.c > c1) { c2 = c1; c1 = cs.c } else if (cs.c > c2) { c2 = cs.c }
         if (cs.t < tMin) tMin = cs.t
         if (cs.q < qMin) qMin = cs.q
       }
-      let f = f2 === Infinity ? f1 : smin(f1, f2, SMOOTH_K)
+      let f = f1
       let c = c2 === -Infinity ? c1 : smax(c1, c2, SMOOTH_K)
       if (f1 === Infinity) {
         // No influence reaches this node: deep rock, recorded as a closed

@@ -1,7 +1,7 @@
 # Plan: Bidirectional cave traversal safety
 
 **Created:** 2026-09-15
-**Status:** `verification needed` 🔍 — implemented + technically verified (focused Vitest on floor-continuity + cave heightfield/query/topology). Browser/manual cave enter/exit is User.
+**Status:** `verification needed` 🔍 — reopened after browser verification still found one-way mouth exits; second pass fixed mouth carve grade + heightfield floor ownership at segment overlaps. Browser/manual cave enter/exit is User.
 **Type:** bug
 **Priority:** high · **Effort:** M
 **Depends on:** ~~world-terrain-019~~, ~~world-terrain-020~~
@@ -21,27 +21,30 @@ Naprawa ma wzmacniać istniejący kontrakt `CaveTopology -> CaveHeightfieldRepre
 
 - `src/world/caves/productionTopology.ts` ogranicza nachylenie centerline przez `MAX_TRAVERSABLE_FLOOR_GRADE`.
 - Finalny gameplay floor powstaje jednak w `src/world/caves/caveHeightfieldRepresentation.ts`; reprezentacja może lokalnie skoncentrować zmianę wysokości bardziej niż topology.
-- `src/world/caves/productionTopology.floor-continuity.test.ts` ma już dwa `it.fails` dla znanego przypadku seed `1136726869`, gdzie widening -> chamber daje około 2.5 m dropu na około 1.3 m mimo poprawnej topology.
-- Obecne testy potwierdzają istniejący problem reprezentacji, ale komentarz traktuje go jako quality issue. Z gameplay feedback wynika, że taki kształt może być rzeczywistym blockerem wyjścia.
-- `SLOPE_MAX_WALKABLE_DEG` jest istniejącym physical movement limitem i powinien pozostać źródłem prawdy dla akceptowalnego gameplay grade.
+- Pierwsza implementacja (2026-09-15) naprawiła cliff widening→chamber (lobe floor follows centerline), ale testy **świadomie pomijały** entrance segment / mouth portal (`if (seg.from === 'entrance') continue`, `mainRouteFromMouthInterior` startował od inward end). Reverse traversal dochodził tylko do mouth interior, nie przez `surface → mouth → interior`.
+- Browser verification po pierwszej pass nadal wykazywało one-way exits. Recon drugiej pass wskazał dwie przyczyny na finalnym gameplay floor:
+  1. **Mouth carve** (`CAVE_MOUTH_DEPTH` / `CAVE_MOUTH_RADIUS`): peak radial grade ~65° > `SLOPE_MAX_WALKABLE_DEG` (55°) — downhill enter OK, uphill exit blocked by `constrainToSlope`.
+  2. **Heightfield floor union**: soft-min najniższych floorów pozwalał szerokiemu downstream segmentowi (core nadal `t = 0` metry upstream) wykopać cliff w upstream rampę transition.
+- `SLOPE_MAX_WALKABLE_DEG` pozostaje źródłem prawdy dla akceptowalnego gameplay grade.
 
 ## Zakres
 
 1. Poprawić generowanie/interpolację cave floor w `caveHeightfieldRepresentation.ts`, tak aby przejścia między passage/widening/chamber/branch nie tworzyły lokalnego floor grade większego niż player walkability contract.
 2. Zachować topology jako źródło geometrii trasy; nie dodawać post-processu niezależnego od centerline, który mógłby rozjechać rendering, occupancy i gameplay query.
 3. Walidować finalny heightfield, nie tylko topology stations.
-4. Główna droga od wejścia do wnętrza ma być traversable w obie strony.
-5. Mouth/portal carve może mieć własną specyfikę, ale nie może pozostawiać jednostronnej pułapki na granicy surface <-> cave.
-6. Istniejące `it.fails` w `productionTopology.floor-continuity.test.ts` po poprawce mają stać się normalnymi testami regresyjnymi.
-7. Dodać test obejmujący kierunek interior -> entrance dla znanego failing fixture oraz reprezentatywnych production topology seeds.
+4. Główna droga od wejścia do wnętrza ma być traversable w obie strony — **w tym** `surface → mouth → interior` i odwrotnie na hybrid gameplay floor (`queryHeightfieldGround` / carved `walkSurfaceAt`).
+5. Mouth carve musi mieć peak grade ≤ walkability contract (shared discs w `mouthCarve.ts`); nie player-only escape.
+6. Istniejące `it.fails` w `productionTopology.floor-continuity.test.ts` po pierwszej poprawce stały się normalnymi testami; druga pass dodaje mouth-transition regression.
+7. Bounded zestaw seedów + Grota fixture (`1136726869`).
 
 ## Guardrails
 
 - Nie dodawać przycisku/teleportu „wydostań się z jaskini” jako rozwiązania.
 - Nie zwiększać globalnie player slope limitu tylko po to, aby przejść wadliwy floor.
 - Nie tworzyć osobnego cave navmesh/pathfinding systemu.
-- Nie modyfikować world seed semantics ani cave siting, jeśli problem można rozwiązać w reprezentacji floor.
+- Nie modyfikować world seed semantics ani cave siting, jeśli problem można rozwiązać w reprezentacji floor / mouth carve.
 - Zachować deterministyczność worldgen.
+- Bump `CAVES_V2_VERSION` przy zmianie mouth geometry / heightfield algorithm identity.
 
 ## Relevant files
 
@@ -50,6 +53,8 @@ Naprawa ma wzmacniać istniejący kontrakt `CaveTopology -> CaveHeightfieldRepre
 - `src/world/caves/productionTopology.ts`
 - `src/world/caves/productionTopology.floor-continuity.test.ts`
 - `src/world/caves/mouthCarve.ts`
+- `src/world/caves/caveMouthGeometry.test.ts`
+- `src/world/caves/caveWorldgenCache.ts`
 - `src/terrain/slopeConstraint.ts`
 - `docs/plans/implementation-notes/world-terrain-019-cave-heightfield-production-migration-implementation-notes.md`
 
@@ -57,15 +62,16 @@ Naprawa ma wzmacniać istniejący kontrakt `CaveTopology -> CaveHeightfieldRepre
 
 Automated:
 
-- failing heightfield floor-continuity fixtures przechodzą jako zwykłe `it`,
-- max sampled gameplay floor grade na main-route/branch pozostaje <= walkability limit,
-- brak regresji w cave topology/query tests.
+- mouth carve combined grade ≤ `tan(SLOPE_MAX_WALKABLE_DEG)`,
+- hybrid `surface → mouth → interior` and reverse ≤ walk-max grade + step continuity,
+- interior segment heightfield grade (incl. former chamber cliff) remains green,
+- bounded seeds `[42, 99, 7, 1]` + Grota `1136726869`.
 
 Manual browser verification wykonuje User:
 
 - wejście do kilku jaskiń i wyjście tą samą drogą,
 - szczególnie cave z dużą różnicą wysokości komory,
-- brak widocznych cliffów/stepów blokujących ruch.
+- brak widocznych cliffów/stepów blokujących ruch na mouth i pierwszej rampie.
 
 Przy nowych/zmienianych publicznych helperach dodać JSDoc z `@domain world-terrain`, jeśli poprawia to preflight discovery.
 

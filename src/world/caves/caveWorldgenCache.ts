@@ -44,7 +44,7 @@ export const CAVES_V2_NAMESPACE = 'caves-v2'
  * captures *algorithm* identity. An old-version record is a plain cache miss
  * — records are never migrated.
  */
-export const CAVES_V2_VERSION = 1
+export const CAVES_V2_VERSION = 2
 
 /** Generous per-seed cap: one manifest plus every accepted cave, with room
  *  for a little stale fingerprint churn before the least-recently-written

@@ -11,10 +11,14 @@ import { describe, expect, it } from 'vitest'
 import { createBenchmarkWorldConfig } from '../../config/worldConfig'
 import { measureSlope } from '../../fauna/createFauna'
 import { type RawSampleParams, sampleHeightAt } from '../../terrain/chunkHeightmap'
+import { SLOPE_MAX_WALKABLE_DEG } from '../../terrain/slopeConstraint'
 import { openingDirection } from '../largeCaves'
 import { buildCaveHeightfieldRepresentation, sampleHeightfieldAt } from './caveHeightfieldRepresentation'
 import { makeCaveId } from './caveIdentity'
 import {
+  CAVE_APPROACH_OFFSET,
+  CAVE_APPROACH_RADIUS,
+  CAVE_MOUTH_RADIUS,
   deriveMouthGeometry,
   inMouthAperture,
   mouthAlong,
@@ -22,6 +26,8 @@ import {
   mouthCarveDiscs,
 } from './mouthCarve'
 import { buildProductionCaveTopology } from './productionTopology'
+
+const WALKABLE_GRADE = Math.tan((SLOPE_MAX_WALKABLE_DEG * Math.PI) / 180)
 
 const REPRO_SEED = 1136726869
 const GROTA_CZARNEGO_KAMIENIA = {
@@ -57,8 +63,9 @@ describe('deriveMouthGeometry', () => {
     expect(mouth.apertureHalfWidth).toBe(1.5)
     expect(mouth.floorY).toBe(4)
     expect(mouth.ceilingY).toBe(6.6)
-    expect(mouth.mouthPitRadius).toBeCloseTo(1.65)
-    expect(mouth.approachRadius).toBeCloseTo(3.2)
+    expect(mouth.mouthPitRadius).toBeCloseTo(CAVE_MOUTH_RADIUS)
+    expect(mouth.approachRadius).toBeCloseTo(CAVE_APPROACH_RADIUS)
+    expect(mouth.approachRadius).toBeGreaterThanOrEqual(mouth.mouthPitRadius)
     expect(mouth.frameOutward).toBeGreaterThan(mouth.apertureOutward * 0.5)
   })
 
@@ -82,6 +89,20 @@ describe('mouth carve trench', () => {
     )
     expect(mouthCarveDepth(0, mouth.approachOffset, entrance)).toBeGreaterThan(0.2)
     expect(mouthCarveDepth(mouth.approachRadius + 0.4, mouth.approachOffset, entrance)).toBe(0)
+  })
+
+  it('keeps combined mouth+approach carve grade under player walk-max', () => {
+    const entrance = { x: 0, y: 0, z: 0, yaw: 0, width: 3, height: 2.6 }
+    const step = 0.05
+    let maxGrade = 0
+    const alongMin = -CAVE_MOUTH_RADIUS - 0.5
+    const alongMax = CAVE_APPROACH_OFFSET + CAVE_APPROACH_RADIUS + 0.5
+    for (let along = alongMin; along < alongMax; along += step) {
+      const d0 = mouthCarveDepth(0, along, entrance)
+      const d1 = mouthCarveDepth(0, along + step, entrance)
+      maxGrade = Math.max(maxGrade, Math.abs(d1 - d0) / step)
+    }
+    expect(maxGrade, `carve grade ${maxGrade.toFixed(3)}`).toBeLessThanOrEqual(WALKABLE_GRADE)
   })
 })
 

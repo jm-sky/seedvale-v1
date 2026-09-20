@@ -238,8 +238,9 @@ describe('cave heightfield union (no fold bias)', () => {
     // Regression: the union was a running `smin`/`smax` over one influence per
     // centerline *station*. `smin(a, a, k) = a - k/4`, so ~18 overlapping
     // capsules per segment silently deepened the floor and raised the ceiling
-    // (a mouth declaring 2.6 m measured 3.55 m). One influence per run plus
-    // blending only the two dominant operands bounds the bias at k/4 once.
+    // (a mouth declaring 2.6 m measured 3.55 m). One influence per run; floor
+    // takes the nearest influence, ceiling soft-maxes two operands — bias
+    // stays bounded and downstream rims cannot dig upstream cliffs.
     const noiseHeadroom = DEFAULT_HEIGHTFIELD_CONFIG.floorDetail.amplitude
       + DEFAULT_HEIGHTFIELD_CONFIG.ceilingDetail.amplitude
     const budget = SMOOTH_K / 2 + noiseHeadroom + 0.2

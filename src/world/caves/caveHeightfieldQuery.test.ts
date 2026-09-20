@@ -303,7 +303,10 @@ describe('resolveHeightfieldHorizontal (containment)', () => {
       expect(hit, `frame ${i}: capsule left cave space at ${x.toFixed(2)}, ${z.toFixed(2)}`).not.toBeNull()
       y = hit!.floorY + yOffset
       expect(standable(x, z), `frame ${i}: not standable at ${x.toFixed(2)}, ${z.toFixed(2)}`).toBe(true)
-      expect(y).toBeLessThan(base(x, z) - 0.5)
+      // Stay under the uncarved hillside (not the carved walk surface — openSky
+      // floors sit on that). Margin absorbs nearest-influence floor ownership
+      // vs the old soft-min depression (world-terrain-034).
+      expect(y).toBeLessThan(base(x, z) - 0.25)
       trace.push({ x, y, z })
     }
     return trace
@@ -513,12 +516,14 @@ describe('resolveHeightfieldHorizontal (containment)', () => {
     // Interior passage wall at the jump apex.
     assertContained({ x: 0, z: passage.position.z }, { x: 1, z: 0 }, WALK_STEP, JUMP_HEIGHT)
     assertContained({ x: 0, z: passage.position.z }, { x: -1, z: 0 }, SPRINT_STEP, JUMP_HEIGHT)
-    // Doorway flank from the open-sky throat, sideways, at the jump apex.
-    // The open-sky pit's own low sides are walkable (openSky is identity),
-    // so the flank assertion is: never in rock, stopped by the flank while
-    // still well under its terrain — not stepped up onto it.
+    // Doorway flank from the open-sky throat, sideways. Standing (not jump
+    // apex): with a walkable mouth carve the open-sky floor sits on the carved
+    // walk surface, so JUMP_HEIGHT would clear `surfaceY - slack` and skip
+    // containment as a "surface entity". Interior walls above still use the
+    // jump-apex check. Expect: never in rock, stopped by the flank while
+    // still well under uncarved terrain.
     for (const [dirX, step] of [[1, WALK_STEP], [-1, SPRINT_STEP]] as const) {
-      const trace = walkCapsule({ x: 0, z: 0.5 }, { x: dirX, z: 0 }, step, 240, JUMP_HEIGHT)
+      const trace = walkCapsule({ x: 0, z: 0.5 }, { x: dirX, z: 0 }, step, 240, 0)
       const last = trace[trace.length - 1]!
       const sample = sampleHeightfieldAt(field(), last.x, last.z)
       expect(sample.gap).toBeGreaterThan(0)
