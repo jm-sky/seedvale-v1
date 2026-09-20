@@ -6,6 +6,7 @@ import type { Household, HouseholdResourceKind } from '../settlement/household'
 import type { HouseholdExchangeHooks } from '../settlement/householdExchange'
 import type { PackAnimalJourneyHooks } from '../settlement/livestock'
 import type { NpcResidentAnchors } from '../settlement/npcResidentAnchors'
+import type { NpcAuthoritativeState } from '../settlement/npcState'
 import type { Place } from '../settlement/places'
 import type { SettlementMiningHooks } from '../terrain/resourceDeposits'
 import type { TransportOrders } from '../world/createTransportOrders'
@@ -46,6 +47,7 @@ import {
 } from '../economy/oreTransportDemand'
 import {
   BLACKSMITH_IRON_ROD_PRODUCTION,
+  BLACKSMITH_ORDER_PRODUCTIONS,
   DRESSING_PRODUCTION,
   householdTradeBowCount,
   HUNTER_ARROW_PRODUCTIONS,
@@ -53,8 +55,12 @@ import {
   HUNTER_BOW_STOCK_CAP,
   type ProductionDef,
   TEXTILE_WORKER_PRODUCTIONS,
+  productionDefById,
 } from '../economy/production'
 import { preflightProductionInputs } from '../economy/productionExecutor'
+import { completeArtisanOrder, nextCompletableArtisanOrder } from '../settlement/artisanOrders'
+import { missingArtisanMaterials } from '../settlement/artisanCraft'
+import { isEconomicKind } from '../economy/kinds'
 import { type SettlementEconomy } from '../economy/settlementEconomy'
 import { WOOL_YIELD } from '../fauna/livestockProduction'
 import {
@@ -171,6 +177,8 @@ export type NpcWorkContext = {
   foodSources: SettlementFoodSourceHooks | null
   householdExchange: HouseholdExchangeHooks | null
   npcId: string
+  /** Authoritative NPC state for artisan orders (plan settlements-npcs-056). */
+  npcState?: NpcAuthoritativeState | null
   /** World-owned transport commitments (plan settlements-npcs-018). Null in
    *  isolated fallbacks — trader collection then cannot run. */
   transportOrders: TransportOrders | null
@@ -1041,7 +1049,37 @@ function planBlacksmithWork(ctx: NpcWorkContext): NpcPlannedAction | null {
     }
   }
 
-  if (economy && blacksmithCanProcess(economy, household.items)) {
+  const pendingOrder = nextCompletableArtisanOrder(ctx.npcState?.artisanOrders)
+  if (pendingOrder && economy && ctx.npcState) {
+    const def = productionDefById(pendingOrder.productionId)
+    const materialsReady = def
+      ? missingArtisanMaterials(
+        def,
+        (kind) => isEconomicKind(kind) ? economy.query(kind) : 0,
+        household.items,
+      ).length === 0
+      : false
+    if (def && materialsReady) {
+      const orderId = pendingOrder.id
+      const npcState = ctx.npcState
+      return {
+        kind: 'work',
+        destination: copyVec3(workplace.position),
+        durationSec: ctx.rollWorkDurationSec(),
+        onComplete: () => {
+          completeArtisanOrder({
+            state: npcState,
+            economy,
+            household,
+            orderId,
+            simTime: ctx.simTime(),
+          })
+        },
+      }
+    }
+  }
+
+  if (!pendingOrder && economy && blacksmithCanProcess(economy, household.items)) {
     return {
       kind: 'work',
       destination: copyVec3(workplace.position),
@@ -1053,7 +1091,10 @@ function planBlacksmithWork(ctx: NpcWorkContext): NpcPlannedAction | null {
   }
 
   if (economy) {
-    observeIntendedRecipeBlocks(economy, [BLACKSMITH_IRON_ROD_PRODUCTION], { economy, inventory: household.items }, ctx.simTime())
+    const intended = pendingOrder
+      ? BLACKSMITH_ORDER_PRODUCTIONS.filter((def) => def.id === pendingOrder.productionId)
+      : [BLACKSMITH_IRON_ROD_PRODUCTION]
+    observeIntendedRecipeBlocks(economy, intended, { economy, inventory: household.items }, ctx.simTime())
   }
   return null
 }

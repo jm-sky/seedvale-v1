@@ -30,6 +30,18 @@ describe('initialStockFor', () => {
     const xl = initialStockFor(seed('cell-a', 'XL'))
     expect(xl.wood).toBeGreaterThan(outpost.wood!)
   })
+
+  it('seeds a one-time iron/coal reserve when a Blacksmith is present (plan settlements-npcs-056)', () => {
+    const none = initialStockFor(seed('metal-a', 'SM'))
+    const one = initialStockFor({ ...seed('metal-a', 'SM'), blacksmithCount: 1 })
+    const two = initialStockFor({ ...seed('metal-a', 'SM'), blacksmithCount: 2 })
+    expect(none.iron).toBeUndefined()
+    expect(none.coal).toBeUndefined()
+    expect(one.iron).toBeGreaterThan(0)
+    expect(one.coal).toBeGreaterThan(0)
+    expect(two.iron).toBeGreaterThan(one.iron!)
+    expect(two.coal).toBeGreaterThan(one.coal!)
+  })
 })
 
 describe('initialFoodFor', () => {

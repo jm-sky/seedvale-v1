@@ -91,6 +91,7 @@ import {
 import { resolveNpcPresentationOwner, shouldMaterializeNpcAt } from './npcPresentationOwner'
 import { createNpcRelationships, type NpcRelationshipEntry } from './npcRelationships'
 import { createNpcStateRegistry, type NpcAuthoritativeState, type NpcId, type NpcStateSnapshot } from './npcState'
+import { adultProfessionCoverage } from './professionStaffing'
 import {
   type HorseDebugCommandResult,
   listPlayerOwnedHorses,
@@ -616,6 +617,7 @@ export async function createSettlementsManager(
       foodSourceType: def.foodSourceType,
       familyCount: def.families.length,
       dominantResource: def.dominantResource,
+      blacksmithCount: adultProfessionCoverage(def.families).blacksmith,
     })
   }
 

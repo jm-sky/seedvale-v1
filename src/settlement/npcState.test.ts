@@ -554,3 +554,52 @@ describe('NpcAuthoritativeState merchantStock (plan settlements-012)', () => {
     expect(hydrated.merchantStock).not.toBe(state.merchantStock)
   })
 })
+
+describe('NpcAuthoritativeState artisan profile/orders (plan settlements-npcs-056)', () => {
+  it('round-trips artisan capability and a ready order', () => {
+    const before = createNpcStateRegistry()
+    const state = before.getOrCreate('0_0:npc:0', 0)
+    state.artisanProfile = {
+      baseSkill: 73,
+      experience: 4,
+      specializations: ['swords', 'tools'],
+      exclusive: false,
+    }
+    state.artisanProfileInitialized = true
+    state.artisanOrders.push({
+      id: '0_0:npc:0:order:0:blacksmith.knife',
+      artisanNpcId: '0_0:npc:0',
+      customer: 'player',
+      productionId: 'blacksmith.knife',
+      status: 'ready',
+      createdAt: 2,
+      paidMaterialCost: 10,
+      requiredMaterials: [{ kind: 'iron', amount: 1, owner: 'stock' }],
+      outputInstanceId: '0_0:npc:0:order:0:blacksmith.knife:output',
+      outputKind: 'knife',
+      outputQuality: 'good',
+    })
+
+    const hydrated = createNpcStateRegistry(before.serialize()).getOrCreate('0_0:npc:0', 0)
+    expect(hydrated.artisanProfileInitialized).toBe(true)
+    expect(hydrated.artisanProfile).toEqual(state.artisanProfile)
+    expect(hydrated.artisanOrders).toEqual(state.artisanOrders)
+    expect(hydrated.artisanOrders).not.toBe(state.artisanOrders)
+    expect(hydrated.artisanProfile).not.toBe(state.artisanProfile)
+  })
+
+  it('legacy snapshot without artisan fields restores uninitialized', () => {
+    const registry = createNpcStateRegistry({
+      '0_0:npc:0': {
+        health: { current: 100, max: 100, dead: false },
+        stamina: { current: 100, max: 100 },
+        vigor: { current: 100, max: 100 },
+        needs: { thirst: 0, woodDuty: 0, waterDuty: 0, hunger: 0 },
+      },
+    })
+    const state = registry.getOrCreate('0_0:npc:0', 0)
+    expect(state.artisanProfile).toBeNull()
+    expect(state.artisanProfileInitialized).toBe(false)
+    expect(state.artisanOrders).toEqual([])
+  })
+})

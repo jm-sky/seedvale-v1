@@ -1,15 +1,16 @@
 # Plan: Artisan Skill, Specialization and Player Orders
 
 **Created:** 2026-09-20  
-**Status:** `planned` 📋  
+**Status:** `verification needed` 🔍  
 **Type:** feature  
 **Priority:** high · **Effort:** L  
 **Depends on:** ~~settlements-npcs-015~~, ~~settlements-npcs-016~~  
 **Domain:** `settlements-npcs`  
 **Subdomains:** `economy` `production` `professions`  
 **Tags:** `artisan` `skill` `specialization` `orders`  
-**Roadmap:** `economy-production`
-**Model:** Sonnet, Composer
+**Roadmap:** `economy-production`  
+**Model:** Sonnet, Composer  
+**Implemented at:** 2026-09-20
 
 ## Goal
 

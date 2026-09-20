@@ -1,4 +1,6 @@
 import type { Inventory, ItemAmount } from '../items/Inventory'
+import type { ItemInstance } from '../items/itemInstances'
+import { isInstanceBackedKind } from '../items/itemInstances'
 import type { ItemKind } from '../items/items'
 import type { EconomicKind } from './kinds'
 import type { ProductionDef } from './production'
@@ -18,6 +20,13 @@ export type ProductionContext = {
   inventory?: Inventory
   /** Completion time for stock history and perishable acquisition. */
   simTime?: number
+  /**
+   * Instance-backed `itemOutputs` (plan settlements-npcs-056). When a recipe
+   * outputs instance-backed kinds, callers supply the concrete instances so
+   * quality/identity is decided before the commit; count-backed recipes omit
+   * this and keep using `Inventory.applyRecipe`.
+   */
+  itemOutputInstances?: readonly ItemInstance[]
 }
 
 export type ProductionBlockedCategory = 'stock' | 'item'
@@ -103,9 +112,21 @@ export function preflightProductionInputs(
         return fail(recipeId, 'insufficient-input', 'item', kind)
       }
     }
-    if (needsItems && !inventory.canApplyRecipe(itemInputs, itemOutputs)) {
+  }
+
+  const instanceOutputs = instanceBackedOutputs(itemOutputs)
+  if (instanceOutputs.length > 0) {
+    const instances = ctx.itemOutputInstances
+    if (!inventory || !instancesMatch(itemOutputs, instances)) {
       return fail(recipeId, 'unavailable-destination', 'item', itemKind(itemInputs, itemOutputs))
     }
+    for (const instance of instances!) {
+      if (!inventory.canAddInstance(instance)) {
+        return fail(recipeId, 'unavailable-destination', 'item', instance.kind)
+      }
+    }
+  } else if (inventory && needsItems && !inventory.canApplyRecipe(itemInputs, itemOutputs)) {
+    return fail(recipeId, 'unavailable-destination', 'item', itemKind(itemInputs, itemOutputs))
   }
 
   return { ok: true, recipeId }
@@ -136,9 +157,27 @@ export function executeProduction(
   const needsItems = itemInputs.length > 0 || itemOutputs.length > 0
   const economy = ctx.economy
   const inventory = ctx.inventory
+  const instanceOutputs = instanceBackedOutputs(itemOutputs)
 
-  if (inventory && needsItems && !inventory.applyRecipe(itemInputs, itemOutputs, simTime)) {
-    return { ok: false, recipeId, reason: 'transaction-failed' }
+  if (inventory && needsItems) {
+    if (instanceOutputs.length > 0) {
+      const instances = ctx.itemOutputInstances
+      if (!instancesMatch(itemOutputs, instances)) {
+        return { ok: false, recipeId, reason: 'transaction-failed' }
+      }
+      for (const { kind, amount } of itemInputs) {
+        if (!inventory.remove(kind, amount, simTime)) {
+          return { ok: false, recipeId, reason: 'transaction-failed', category: 'item', kind }
+        }
+      }
+      for (const instance of instances!) {
+        if (!inventory.addInstance(instance)) {
+          return { ok: false, recipeId, reason: 'transaction-failed', category: 'item', kind: instance.kind }
+        }
+      }
+    } else if (!inventory.applyRecipe(itemInputs, itemOutputs, simTime)) {
+      return { ok: false, recipeId, reason: 'transaction-failed' }
+    }
   }
 
   if (economy && needsStock) {
@@ -153,6 +192,28 @@ export function executeProduction(
   }
 
   return { ok: true, recipeId }
+}
+
+function instanceBackedOutputs(outputs: readonly Aggregated<ItemKind>[]): Aggregated<ItemKind>[] {
+  return outputs.filter((row) => isInstanceBackedKind(row.kind))
+}
+
+function instancesMatch(
+  outputs: readonly Aggregated<ItemKind>[],
+  instances: readonly ItemInstance[] | undefined,
+): boolean {
+  if (!instances) return false
+  const remaining = new Map<ItemKind, number>()
+  for (const row of outputs) remaining.set(row.kind, row.amount)
+  for (const instance of instances) {
+    const left = remaining.get(instance.kind)
+    if (left == null || left <= 0) return false
+    remaining.set(instance.kind, left - 1)
+  }
+  for (const amount of remaining.values()) {
+    if (amount !== 0) return false
+  }
+  return true
 }
 
 function fail(

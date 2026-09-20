@@ -5,7 +5,7 @@ import type { EquipmentSlot, EquipmentState } from '../items/equipment'
 import type { HeldTool } from '../items/HeldTool'
 import type { Inventory } from '../items/Inventory'
 import type { InventoryGroupView } from '../items/inventoryView'
-import type { ItemKind } from '../items/items'
+import { ITEM_DEFS, type ItemKind } from '../items/items'
 import type { PrimaryWeaponSelection } from '../items/primaryWeapons'
 import type { TradeResult } from '../items/trade'
 import type { CombatWeaponCategory, PlayerCombatMode } from '../player/playerCombatMode'
@@ -15,9 +15,7 @@ import type { QuestManager } from '../quests/QuestManager'
 import type { ReputationManager } from '../reputation/ReputationManager'
 import type { Settlement } from '../settlement/createSettlement'
 import type { VueUi } from '../ui-vue/mount'
-import type { MerchantPricing } from '../ui-vue/store'
-import type { MerchantHorseOffer } from '../ui-vue/store'
-import type { NpcTradeStockRow } from '../ui-vue/store'
+import type { ArtisanActiveOrderView, ArtisanOrderCatalogView, MerchantHorseOffer, MerchantPricing, NpcTradeStockRow } from '../ui-vue/store'
 import type { Hud } from '../ui/createHud'
 import type { Toast } from '../ui/createToast'
 import type { DayNightState } from '../world/dayNight'
@@ -43,7 +41,6 @@ import {
   isArmorKind,
   isInstanceBackedKind,
 } from '../items/itemInstances'
-import { ITEM_DEFS } from '../items/items'
 import { inventoryOwnsPrimaryWeaponChoice } from '../items/primaryWeapons'
 import {
   type OwnedGoodsPurchaseLine,
@@ -51,6 +48,7 @@ import {
   previewTransactionNetCoins,
   resolveOfferLineBuyback,
   sellInstancesForCoins,
+  selectInstancesToSell,
   settleMerchantStockTransaction,
   settleOwnedGoodsBarterTransaction,
   settlePricedPurchase,
@@ -76,6 +74,13 @@ import {
   vendorHorseOfferPrice,
 } from '../settlement/horseAcquisition'
 import { horseVendorNpcId } from '../settlement/merchantTrade'
+import {
+  acceptArtisanOrder,
+  listArtisanOrderCatalog,
+  pickupArtisanOrder,
+  reservedArtisanOutputIds,
+} from '../settlement/artisanOrders'
+import type { ArtisanOrder, ArtisanProfile } from '../settlement/artisanProfile'
 import { hideBusy, showBusy, ui } from '../ui-vue/store'
 import { GUARD_AREA_RESEARCH_PENDING } from '../world/locations/guardLocalKnowledge'
 import {
@@ -230,6 +235,18 @@ export function npcDialogueCanTrade(npc: NpcAgent | null): boolean {
   return !!npc && !npc.health.dead
 }
 
+/** Dialogue `Zamówienie` is available for a living Blacksmith with a seeded
+ *  artisan profile (plan settlements-npcs-056).
+ *
+ * @domain settlements-npcs
+ */
+export function npcDialogueCanOrderArtisan(
+  npc: NpcAgent | null,
+  artisanProfile: ArtisanProfile | null | undefined,
+): boolean {
+  return !!npc && !npc.health.dead && npc.role === 'blacksmith' && artisanProfile != null
+}
+
 export function createInventoryWiring(deps: InventoryWiringDeps): InventoryWiring {
   const {
     bundle, player, inventory, heldTool, equipment, primaryWeapons, playerCombatMode, playerTorch, hud, toast, vueUi,
@@ -257,6 +274,20 @@ export function createInventoryWiring(deps: InventoryWiringDeps): InventoryWirin
       if (settlement.npcs.includes(npc)) return settlement
     }
     return null
+  }
+
+  const findNpcById = (npcId: string): { npc: NpcAgent, settlement: Settlement } | null => {
+    for (const settlement of bundle.settlementsManager.getLoaded()) {
+      const npc = settlement.npcs.find((entry) => entry.id === npcId)
+      if (npc) return { npc, settlement }
+    }
+    return null
+  }
+
+  const reservedTradeIdsFor = (npc: NpcAgent | null): ReadonlySet<string> | undefined => {
+    if (!npc) return undefined
+    const orders = bundle.settlementsManager.getNpcState(npc.id)?.artisanOrders
+    return orders && orders.length > 0 ? reservedArtisanOutputIds(orders) : undefined
   }
 
   const buildSellPriceContext = (npc: NpcAgent | null): SellPriceContext => {
@@ -308,7 +339,7 @@ export function createInventoryWiring(deps: InventoryWiringDeps): InventoryWirin
     if (!npc) return []
     const settlementNpcs = findSettlementForNpc(npc)?.npcs ?? []
     const context = buildSellPriceContext(npc)
-    return resolveNpcTradeOffers(npc, settlementNpcs).map((offer) => ({
+    return resolveNpcTradeOffers(npc, settlementNpcs, reservedTradeIdsFor(npc)).map((offer) => ({
       kind: offer.kind,
       quantity: offer.quantity,
       unitPrice: npcSalePrice(offer.kind, context),
@@ -389,7 +420,8 @@ export function createInventoryWiring(deps: InventoryWiringDeps): InventoryWirin
     if (!npc || npc.health.dead) return 'not_sold'
     const settlementNpcs = findSettlementForNpc(npc)?.npcs ?? []
     const context = buildSellPriceContext(npc)
-    const liveOffers = resolveNpcTradeOffers(npc, settlementNpcs)
+    const reserved = reservedTradeIdsFor(npc)
+    const liveOffers = resolveNpcTradeOffers(npc, settlementNpcs, reserved)
     const lines: OwnedGoodsPurchaseLine[] = []
     for (const [kind, count] of Object.entries(purchases) as [ItemKind, number][]) {
       if (count <= 0) continue
@@ -397,7 +429,14 @@ export function createInventoryWiring(deps: InventoryWiringDeps): InventoryWirin
       if (!live || count > live.quantity) return 'not_sold'
       const source = npcTradeSourceInventory(live.owner, npc)
       if (!source) return 'not_sold'
-      lines.push({ kind, count, unitPrice: npcSalePrice(kind, context), source })
+      const instanceIds = isInstanceBackedKind(kind)
+        ? selectInstancesToSell(
+          source.getInstances(kind).filter((instance) => !reserved?.has(instance.id)),
+          count,
+        )
+        : undefined
+      if (instanceIds && instanceIds.length !== count) return 'not_sold'
+      lines.push({ kind, count, unitPrice: npcSalePrice(kind, context), source, instanceIds })
     }
     const offerHasEntries = (Object.values(offer) as number[]).some((count) => count > 0)
     if (lines.length === 0 && !offerHasEntries) return 'invalid_offer'
@@ -923,6 +962,151 @@ export function createInventoryWiring(deps: InventoryWiringDeps): InventoryWirin
     }
   }
 
+  let activeArtisanNpcId: string | null = null
+
+  const itemLabel = (kind: string): string => (
+    kind in ITEM_DEFS ? ITEM_DEFS[kind as ItemKind].label : kind
+  )
+
+  const missingMaterialsLabel = (
+    missing: readonly { kind: string, amount: number }[],
+  ): string | null => {
+    if (missing.length === 0) return null
+    return missing.map((row) => `${itemLabel(row.kind)} ×${row.amount}`).join(', ')
+  }
+
+  const artisanOrderStatusLabel = (status: ArtisanOrder['status']): string => {
+    if (status === 'ready') return 'Do odbioru'
+    if (status === 'in_progress') return 'W trakcie'
+    if (status === 'accepted') return 'Przyjęte'
+    if (status === 'collected') return 'Odebrane'
+    return 'Anulowane'
+  }
+
+  const artisanCatalogViews = (
+    catalog: NonNullable<ReturnType<typeof listArtisanOrderCatalog>>,
+  ): { catalog: ArtisanOrderCatalogView[], orders: ArtisanActiveOrderView[] } => ({
+    catalog: catalog.entries
+      .filter((entry) => entry.canOrder)
+      .map((entry) => ({
+        productionId: entry.productionId,
+        label: itemLabel(entry.outputKind),
+        deposit: entry.deposit,
+        canOrder: entry.canOrder,
+        missingLabel: missingMaterialsLabel(entry.missing),
+        prefers: entry.prefers,
+      })),
+    orders: catalog.orders
+      .filter((order) => order.status !== 'collected' && order.status !== 'cancelled')
+      .map((order) => ({
+        id: order.id,
+        label: itemLabel(order.outputKind ?? order.productionId),
+        statusLabel: artisanOrderStatusLabel(order.status),
+        canPickup: order.status === 'ready',
+      })),
+  })
+
+  const artisanSession = (npcId: string) => {
+    const located = findNpcById(npcId)
+    if (!located) return null
+    const npcState = bundle.settlementsManager.getNpcState(npcId)
+    if (!npcState || !located.npc.household) return null
+    const catalog = listArtisanOrderCatalog({
+      state: npcState,
+      economy: located.settlement.economy,
+      household: located.npc.household,
+    })
+    if (!catalog) return null
+    return { ...located, npcState, catalog }
+  }
+
+  const showArtisanOrderScreen = (npcId: string, message = ''): void => {
+    const session = artisanSession(npcId)
+    if (!session) return
+    const views = artisanCatalogViews(session.catalog)
+    vueUi.openArtisanOrderScreen(
+      session.npc.displayName,
+      inventory.count('coin'),
+      views.catalog,
+      views.orders,
+      message,
+    )
+  }
+
+  const refreshArtisanOrderScreenIfOpen = (message?: string): void => {
+    if (!vueUi.isArtisanOrderScreenOpen() || !activeArtisanNpcId) return
+    const session = artisanSession(activeArtisanNpcId)
+    if (!session) return
+    const views = artisanCatalogViews(session.catalog)
+    vueUi.refreshArtisanOrderScreen(inventory.count('coin'), views.catalog, views.orders, message)
+  }
+
+  vueUi.configureArtisanOrderScreen({
+    onOrder: (productionId) => {
+      if (!activeArtisanNpcId) return
+      const session = artisanSession(activeArtisanNpcId)
+      if (!session) {
+        refreshArtisanOrderScreenIfOpen('Ten kowal nie przyjmuje teraz zamówień.')
+        return
+      }
+      const result = acceptArtisanOrder({
+        state: session.npcState,
+        economy: session.settlement.economy,
+        household: session.npc.household!,
+        playerInventory: inventory,
+        productionId,
+        simTime: dayNight.elapsedDays,
+      })
+      if (result.ok) {
+        hud.setInventoryWeight(inventory.totalWeight(), inventory.maxWeight)
+        deps.refreshInventoryScreen()
+        toast.show('Zamówienie przyjęte.', 'pickup')
+        refreshArtisanOrderScreenIfOpen('Zamówienie przyjęte. Odbierz gotowy wyrób tutaj.')
+        return
+      }
+      if (result.reason === 'cannot-afford') {
+        refreshArtisanOrderScreenIfOpen('Za mało monet na zaliczkę.')
+        return
+      }
+      if (result.reason === 'missing-materials') {
+        refreshArtisanOrderScreenIfOpen(`Brakuje: ${missingMaterialsLabel(result.missing ?? []) ?? 'materiałów'}.`)
+        return
+      }
+      refreshArtisanOrderScreenIfOpen('Ten wyrób nie jest teraz dostępny.')
+    },
+    onPickup: (orderId) => {
+      if (!activeArtisanNpcId) return
+      const session = artisanSession(activeArtisanNpcId)
+      if (!session) {
+        refreshArtisanOrderScreenIfOpen('Nie można teraz odebrać zamówienia.')
+        return
+      }
+      const result = pickupArtisanOrder({
+        state: session.npcState,
+        household: session.npc.household!,
+        playerInventory: inventory,
+        orderId,
+        simTime: dayNight.elapsedDays,
+      })
+      if (result.ok) {
+        hud.setInventoryWeight(inventory.totalWeight(), inventory.maxWeight)
+        deps.syncHeldHud()
+        deps.syncQuickActionAvailability()
+        deps.syncPlayerAppearance()
+        deps.refreshInventoryScreen()
+        const label = itemLabel(result.order.outputKind ?? result.order.productionId)
+        toast.show(`+1 ${label}`, 'pickup')
+        refreshArtisanOrderScreenIfOpen(`Odebrano: ${label}.`)
+        return
+      }
+      if (result.reason === 'full') {
+        refreshArtisanOrderScreenIfOpen('Nie uniesiesz więcej.')
+        return
+      }
+      refreshArtisanOrderScreenIfOpen('Nie można teraz odebrać tego zamówienia.')
+    },
+  })
+
   vueUi.configureNpcDialogueMenu({
     onClaimGuardReward: () => {
       const npc = ui.npcDialogueMenu.npc as NpcAgent | null
@@ -951,6 +1135,19 @@ export function createInventoryWiring(deps: InventoryWiringDeps): InventoryWirin
       return guardRewardTopicAvailable(input)
     },
     getCanTrade: () => npcDialogueCanTrade(ui.npcDialogueMenu.npc as NpcAgent | null),
+    getCanOrderArtisan: () => {
+      const npc = ui.npcDialogueMenu.npc as NpcAgent | null
+      if (!npc) return false
+      return npcDialogueCanOrderArtisan(npc, bundle.settlementsManager.getNpcState(npc.id)?.artisanProfile)
+    },
+    onOpenArtisanOrders: () => {
+      const npc = ui.npcDialogueMenu.npc as NpcAgent | null
+      if (!npc || npc.health.dead) return
+      const npcState = bundle.settlementsManager.getNpcState(npc.id)
+      if (!npcDialogueCanOrderArtisan(npc, npcState?.artisanProfile)) return
+      activeArtisanNpcId = npc.id
+      showArtisanOrderScreen(npc.id)
+    },
     onOpenTrade: () => {
       const view = merchantInventoryView()
       const npc = ui.npcDialogueMenu.npc as NpcAgent | null

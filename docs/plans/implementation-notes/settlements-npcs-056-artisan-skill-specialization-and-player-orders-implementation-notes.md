@@ -1,5 +1,40 @@
 # Implementation Notes: Artisan Skill, Specialization and Player Orders
 
+**Plan:** `settlements-npcs-056-artisan-skill-specialization-and-player-orders.md`  
+**Status:** `implemented` ✅  
+**Implemented at:** 2026-09-20
+
+Post-implementation record of the seams that landed. Current source is authoritative.
+
+## Ownership
+
+- Artisan capability and player orders live on `NpcAuthoritativeState` (`artisanProfile`, `artisanProfileInitialized`, `artisanOrders`) — the same persistent NPC owner as merchant stock. Not Vue, not `NpcAgent` runtime fields.
+- Recipes stay on shared `ProductionDef.artisan` metadata in `src/economy/production.ts`. No second recipe registry.
+- Production still commits through `executeProduction`. Instance-backed outputs take explicit `itemOutputInstances` so quality/identity is decided before the commit.
+- Custom orders reuse `planBlacksmithWork()`: accepted/in-progress player orders outrank autonomous `iron_rod` processing; sharpening still wins first.
+
+## Generation
+
+- `src/settlement/artisanProfile.ts` seeds `baseSkill` on the shared `0..100` scale from settlement size + NPC id + seed + metal context. Experience is stored and incremented on real completion (`noteArtisanProductionCompleted`) without raising `baseSkill`.
+- One Blacksmith is always a non-exclusive generalist. Two or more Blacksmiths assign settlement-wide `swords/armor/tools/axes` coverage first; a smith who does not hold every category may be `exclusive`.
+- Household specialist stock (`householdProfessionStock.ts`) and settlement iron/coal (`initialStockFor` + `blacksmithCount`) use the same profile/roster. Seed once; restore never rerolls or refills.
+
+## Player orders
+
+- Dialogue `Zamówienie` is available for a living Blacksmith with a seeded profile (`inventoryWiring.ts` + `NpcDialogueMenu.vue` + `ArtisanOrderScreen.vue`).
+- Deposit = current `tradeValue` of required materials, paid into the artisan's `personalInventory` (household fallback). Materials are verified at accept and consumed at production completion.
+- Output is created only at completion, stored on `Household.items`, and transferred exactly once at pickup. Reserved output instance ids are excluded from ordinary NPC trade.
+
+## Persistence
+
+Save v51 → v52 is a version-bump-only migration. Missing artisan fields restore uninitialized/empty so first materialization can seed once.
+
+## Out of scope (unchanged)
+
+Skill growth, player-supplied missing materials, courier/procurement, NPC→NPC orders, labor pricing, non-Blacksmith artisan content.
+
+## Pre-implementation recon
+
 Source plan: `settlements-npcs-056-artisan-skill-specialization-and-player-orders.md`
 
 ## 1. Current architecture to preserve

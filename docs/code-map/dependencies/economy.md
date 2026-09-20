@@ -132,6 +132,7 @@ Generated from TypeScript imports.
 - `economy/sourceLedger.ts`
 - `economy/stock.ts`
 - `persistence/saveData.ts`
+- `settlement/artisanOrders.ts`
 - `terrain/depositMining.test.ts`
 - `terrain/depositMining.ts`
 - `terrain/mineableDeposit.ts`
@@ -242,6 +243,7 @@ Generated from TypeScript imports.
 - `items/Inventory.ts`
 - `items/itemInstances.ts`
 - `items/items.ts`
+- `settlement/artisanProfile.ts`
 
 **Imported by**
 
@@ -258,6 +260,10 @@ Generated from TypeScript imports.
 - `economy/productionShortage.ts`
 - `economy/settlementEconomy.test.ts`
 - `economy/settlementEconomy.ts`
+- `settlement/artisanCraft.test.ts`
+- `settlement/artisanCraft.ts`
+- `settlement/artisanOrders.test.ts`
+- `settlement/artisanOrders.ts`
 - `settlements-npcs-007.test.ts`
 
 ## `economy/productionExecutor.test.ts`
@@ -268,6 +274,7 @@ Generated from TypeScript imports.
 - `economy/productionExecutor.ts`
 - `economy/settlementEconomy.ts`
 - `items/Inventory.ts`
+- `items/weaponMaintenance.ts`
 - `settlement/household.ts`
 
 ## `economy/productionExecutor.ts`
@@ -279,6 +286,7 @@ Generated from TypeScript imports.
 - `economy/settlementEconomy.ts`
 - `economy/stock.ts`
 - `items/Inventory.ts`
+- `items/itemInstances.ts`
 - `items/items.ts`
 
 **Imported by**
@@ -290,6 +298,7 @@ Generated from TypeScript imports.
 - `economy/productionExecutor.test.ts`
 - `economy/productionShortage.ts`
 - `economy/settlementEconomy.ts`
+- `settlement/artisanOrders.ts`
 - `settlements-npcs-007.test.ts`
 
 ## `economy/productionShortage.test.ts`
@@ -402,6 +411,8 @@ Generated from TypeScript imports.
 - `interaction/resolveInteraction.ts`
 - `persistence/saveData.ts`
 - `settlement/SettlementsManager.ts`
+- `settlement/artisanOrders.test.ts`
+- `settlement/artisanOrders.ts`
 - `settlement/createSettlement.ts`
 - `settlement/household.test.ts`
 - `settlement/household.ts`

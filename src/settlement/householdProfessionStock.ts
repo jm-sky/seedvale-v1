@@ -7,6 +7,13 @@ import { type ArmorKind, type ArmorQuality, isInstanceBackedKind } from '../item
 import { createAcquiredInstance } from '../items/trade'
 import { createSeededRandom } from '../world/parseSeed'
 import { adultProfessionCoverage } from './professionStaffing'
+import { resolveArtisanCraftedQuality } from './artisanCraft'
+import {
+  type ArtisanProfile,
+  effectiveArtisanSkill,
+  listSettlementBlacksmiths,
+  resolveArtisanProfile,
+} from './artisanProfile'
 import { resolveSettlementArmorQuality } from './settlementArmorQuality'
 
 /**
@@ -159,6 +166,51 @@ function resolveHunterGrants(starting: HouseholdStartingContext, householdId: st
   return grants
 }
 
+function artisanArmorQualityFor(
+  starting: HouseholdStartingContext,
+  householdId: string,
+  kind: ArmorKind,
+  unitIndex: number,
+  profile: ArtisanProfile | null,
+): ArmorQuality {
+  if (profile) {
+    const skill = effectiveArtisanSkill(profile, 'armor')
+    return resolveArtisanCraftedQuality({
+      effectiveSkill: skill,
+      difficulty: 50,
+      eventId: `${householdId}:${kind}:${unitIndex}:starter`,
+    })
+  }
+  return armorQualityFor(starting, householdId, kind, unitIndex)
+}
+
+function householdBlacksmithProfile(
+  starting: HouseholdStartingContext,
+  householdId: string,
+): ArtisanProfile | null {
+  const ctx = stockContext(starting)
+  if (!ctx?.settlementId || !ctx.families || ctx.familyIndex == null) return null
+  const smiths = listSettlementBlacksmiths(ctx.settlementId, ctx.families)
+  const local = smiths.find((entry) => entry.familyIndex === ctx.familyIndex)
+  if (!local) return null
+  void householdId
+  return resolveArtisanProfile({
+    role: 'blacksmith',
+    npcId: local.npcId,
+    settlementId: ctx.settlementId,
+    seed: ctx.seed,
+    size: stockSize(starting),
+    terrain: ctx.terrain,
+    dominantResource: ctx.dominantResource,
+    families: ctx.families,
+  })
+}
+
+function wantsCategory(profile: ArtisanProfile | null, category: 'swords' | 'armor' | 'tools' | 'axes'): boolean {
+  if (!profile || !profile.exclusive) return true
+  return profile.specializations.includes(category)
+}
+
 function resolveBlacksmithGrants(starting: HouseholdStartingContext, householdId: string): StarterGrant[] {
   const grants: StarterGrant[] = []
   const size = stockSize(starting)
@@ -166,40 +218,64 @@ function resolveBlacksmithGrants(starting: HouseholdStartingContext, householdId
   const ctx = stockContext(starting)
   const metal = metalBias(ctx)
   const rng = specialistRng(starting, householdId, 0x42534d54)
+  const profile = householdBlacksmithProfile(starting, householdId)
+  const swords = wantsCategory(profile, 'swords')
+  const armor = wantsCategory(profile, 'armor')
+  const tools = wantsCategory(profile, 'tools')
+  const axes = wantsCategory(profile, 'axes')
+  const swordBias = profile?.specializations.includes('swords') === true
+  const armorBias = profile?.specializations.includes('armor') === true
+  const toolBias = profile?.specializations.includes('tools') === true
+  const axeBias = profile?.specializations.includes('axes') === true
 
   pushGrant(grants, 'knife', 1)
-  const smSword: ItemKind = rng() < 0.5 ? 'short_sword' : 'long_sword'
-  pushGrant(grants, smSword, BLACKSMITH_TRADE_SWORD_COUNT)
-  if (rank >= 2 && smSword !== 'short_sword') pushGrant(grants, 'short_sword', 1)
-  if (rank >= 2 && smSword !== 'long_sword') pushGrant(grants, 'long_sword', 1)
+  const ironRods = 2 + rank + (metal ? 1 : 0) + (toolBias || armorBias ? 1 : 0)
+  pushGrant(grants, 'iron_rod', ironRods)
 
-  const smTool: ItemKind = metal || rng() < 0.5 ? 'pickaxe' : 'axe'
-  pushGrant(grants, smTool, 1)
-  if (rank >= 2) {
-    if (smTool !== 'axe') pushGrant(grants, 'axe', 1)
-    if (smTool !== 'pickaxe') pushGrant(grants, 'pickaxe', 1)
-  } else if (metal && smTool !== 'axe') {
-    pushGrant(grants, 'axe', 1)
+  if (swords || !profile?.exclusive) {
+    const smSword: ItemKind = swordBias || rng() < 0.5 ? 'short_sword' : 'long_sword'
+    pushGrant(grants, smSword, BLACKSMITH_TRADE_SWORD_COUNT)
+    if (rank >= 2 && smSword !== 'short_sword') pushGrant(grants, 'short_sword', 1)
+    if (rank >= 2 && smSword !== 'long_sword') pushGrant(grants, 'long_sword', 1)
+    if (swordBias && rank >= 1) pushGrant(grants, smSword === 'short_sword' ? 'long_sword' : 'short_sword', 1)
   }
 
-  pushGrant(
-    grants,
-    'knight_pauldron_round',
-    BLACKSMITH_TRADE_PAULDRON_COUNT,
-    armorQualityFor(starting, householdId, 'knight_pauldron_round', 0),
-  )
-  if (rank >= 2) {
+  if (tools || axes || !profile?.exclusive) {
+    const smTool: ItemKind = axeBias ? 'axe' : (toolBias || metal || rng() < 0.5 ? 'pickaxe' : 'axe')
+    if (axes || tools || !profile?.exclusive) pushGrant(grants, smTool, 1)
+    if (rank >= 2 || axeBias || toolBias) {
+      if ((axes || !profile?.exclusive) && smTool !== 'axe') pushGrant(grants, 'axe', 1)
+      if ((tools || !profile?.exclusive) && smTool !== 'pickaxe') pushGrant(grants, 'pickaxe', 1)
+    } else if (metal && smTool !== 'axe' && (axes || !profile?.exclusive)) {
+      pushGrant(grants, 'axe', 1)
+    }
+  }
+
+  if (armor || !profile?.exclusive) {
     pushGrant(
       grants,
-      'knight_pauldron_spike',
-      1,
-      armorQualityFor(starting, householdId, 'knight_pauldron_spike', 0),
+      'knight_pauldron_round',
+      BLACKSMITH_TRADE_PAULDRON_COUNT + (armorBias ? 1 : 0),
+      artisanArmorQualityFor(starting, householdId, 'knight_pauldron_round', 0, profile),
     )
+    if (rank >= 2 || armorBias) {
+      pushGrant(
+        grants,
+        'knight_pauldron_spike',
+        1,
+        artisanArmorQualityFor(starting, householdId, 'knight_pauldron_spike', 0, profile),
+      )
+    }
+    if (rank >= 3 || (rank >= 2 && metal) || armorBias) {
+      pushGrant(
+        grants,
+        'chainmail',
+        1,
+        artisanArmorQualityFor(starting, householdId, 'chainmail', 0, profile),
+      )
+    }
   }
-  if (rank >= 3 || (rank >= 2 && metal)) {
-    pushGrant(grants, 'chainmail', 1, armorQualityFor(starting, householdId, 'chainmail', 0))
-  }
-  if (rank >= 4 && (metal || rng() < 0.18)) {
+  if ((rank >= 4 && (metal || rng() < 0.18) && swords) || (swordBias && rank >= 3 && rng() < 0.35)) {
     pushGrant(grants, rng() < 0.5 ? 'masterwork_sword' : 'damascus_short_sword', 1)
   }
   return grants

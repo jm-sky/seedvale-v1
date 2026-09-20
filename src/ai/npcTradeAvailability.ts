@@ -131,14 +131,28 @@ function ownedCount(inventory: Inventory, kind: ItemKind): number {
   return isInstanceBackedKind(kind) ? inventory.countInstances(kind) : inventory.count(kind)
 }
 
+function reservedCountOf(
+  household: Household,
+  kind: ItemKind,
+  reservedInstanceIds?: ReadonlySet<string>,
+): number {
+  if (!reservedInstanceIds || reservedInstanceIds.size === 0 || !isInstanceBackedKind(kind)) return 0
+  let reserved = 0
+  for (const instance of household.items.getInstances(kind)) {
+    if (reservedInstanceIds.has(instance.id)) reserved++
+  }
+  return reserved
+}
+
 function householdQuantityAvailable(
   kind: ItemKind,
   household: Household,
   settlementNpcs: readonly TradeReserveNpc[],
+  reservedInstanceIds?: ReadonlySet<string>,
 ): number {
   const reserveOf = HOUSEHOLD_TRADE_RESERVES[kind]
   if (!reserveOf) return 0
-  const owned = ownedCount(household.items, kind)
+  const owned = ownedCount(household.items, kind) - reservedCountOf(household, kind, reservedInstanceIds)
   if (owned <= 0) return 0
   return Math.max(0, owned - reserveOf(household, settlementNpcs))
 }
@@ -168,10 +182,11 @@ export function npcTradeQuantityAvailable(
   owner: NpcTradeOwnerSource,
   npc: NpcTradeCounterparty,
   settlementNpcs: readonly TradeReserveNpc[],
+  reservedInstanceIds?: ReadonlySet<string>,
 ): number {
   if (owner === 'household') {
     if (!npc.household) return 0
-    return householdQuantityAvailable(kind, npc.household, settlementNpcs)
+    return householdQuantityAvailable(kind, npc.household, settlementNpcs, reservedInstanceIds)
   }
   return personalQuantityAvailable(kind, npc)
 }
@@ -200,11 +215,12 @@ export function npcTradeSourceInventory(
 export function resolveNpcTradeOffers(
   npc: NpcTradeCounterparty,
   settlementNpcs: readonly TradeReserveNpc[],
+  reservedInstanceIds?: ReadonlySet<string>,
 ): readonly NpcTradeOffer[] {
   const offers: NpcTradeOffer[] = []
   const offered = new Set<ItemKind>()
   for (const kind of Object.keys(HOUSEHOLD_TRADE_RESERVES) as ItemKind[]) {
-    const quantity = npcTradeQuantityAvailable(kind, 'household', npc, settlementNpcs)
+    const quantity = npcTradeQuantityAvailable(kind, 'household', npc, settlementNpcs, reservedInstanceIds)
     if (quantity <= 0) continue
     offers.push({ kind, quantity, owner: 'household' })
     offered.add(kind)

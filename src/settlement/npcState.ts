@@ -28,6 +28,12 @@ import { createVigorState, type VigorState } from '../shared/VigorState'
 import { BASE_TRANSPORT_CARGO_MAX_WEIGHT_KG } from '../world/transportCapacity'
 import { cloneMerchantJourney, type MerchantJourneyState } from './merchantJourney'
 import {
+  type ArtisanOrder,
+  type ArtisanProfile,
+  cloneArtisanOrders,
+  cloneArtisanProfile,
+} from './artisanProfile'
+import {
   cloneNpcPostDeath,
   createLegacyTerminalNpcPostDeath,
   type NpcPostDeathState,
@@ -187,6 +193,19 @@ export type NpcAuthoritativeState = {
    *  arms it once ready and stops being the delivery owner (implementation
    *  notes §1/§3). Round-trips via `NpcStateSnapshot`. */
   playerFollowUp: NpcPlayerFollowUp | null
+  /**
+   * Persistent artisan capability (plan settlements-npcs-056). `null` for
+   * non-production NPCs. Mutable in place so later skill growth can raise
+   * `baseSkill` without replacing the record. Not Vue/`NpcAgent` runtime state.
+   */
+  artisanProfile: ArtisanProfile | null
+  /**
+   * Persisted latch so restore/rebuild never rerolls skill or specializations.
+   * Absent/false on legacy snapshots; generation-time seeding fills once.
+   */
+  artisanProfileInitialized: boolean
+  /** Persistent player custom-orders owned by this artisan. */
+  artisanOrders: ArtisanOrder[]
 }
 
 /** Plain-data snapshot — mirrors `SettlementEconomy.snapshot()` /
@@ -235,6 +254,11 @@ export type NpcStateSnapshot = {
   /** Optional Player follow-up (plan npc-050). Absent (including every
    *  pre-050 save) means `null` — no follow-up. */
   playerFollowUp?: NpcPlayerFollowUp | null
+  /** Optional artisan profile (plan settlements-npcs-056). Absent restores
+   *  uninitialized so first materialization can seed once. */
+  artisanProfile?: ArtisanProfile | null
+  artisanProfileInitialized?: boolean
+  artisanOrders?: ArtisanOrder[]
 }
 
 function fromSnapshot(id: NpcId, snapshot: NpcStateSnapshot, maxima?: NpcPhysicalMaxima): NpcAuthoritativeState {
@@ -261,6 +285,9 @@ function fromSnapshot(id: NpcId, snapshot: NpcStateSnapshot, maxima?: NpcPhysica
     travel: cloneNpcTravel(snapshot.travel),
     merchantJourney: cloneMerchantJourney(snapshot.merchantJourney),
     playerFollowUp: cloneNpcPlayerFollowUp(snapshot.playerFollowUp),
+    artisanProfile: cloneArtisanProfile(snapshot.artisanProfile),
+    artisanProfileInitialized: snapshot.artisanProfileInitialized === true,
+    artisanOrders: cloneArtisanOrders(snapshot.artisanOrders),
     needsInitialPersonalLoadout: false,
     needsInitialStartingWealth: false,
   }
@@ -311,6 +338,9 @@ export function createNpcAuthoritativeState(
     travel: null,
     merchantJourney: null,
     playerFollowUp: null,
+    artisanProfile: null,
+    artisanProfileInitialized: false,
+    artisanOrders: [],
     needsInitialPersonalLoadout: true,
     needsInitialStartingWealth: true,
   }
@@ -381,6 +411,11 @@ export function createNpcStateRegistry(initial?: Record<NpcId, NpcStateSnapshot>
           travel: cloneNpcTravel(state.travel) ?? undefined,
           merchantJourney: cloneMerchantJourney(state.merchantJourney) ?? undefined,
           playerFollowUp: cloneNpcPlayerFollowUp(state.playerFollowUp) ?? undefined,
+          artisanProfile: cloneArtisanProfile(state.artisanProfile) ?? undefined,
+          artisanProfileInitialized: state.artisanProfileInitialized || undefined,
+          artisanOrders: state.artisanOrders.length > 0
+            ? cloneArtisanOrders(state.artisanOrders)
+            : undefined,
         }
       }
       return out

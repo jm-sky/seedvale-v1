@@ -21,9 +21,9 @@ Generated from exported TypeScript symbols.
 
 ## `economy/initial.ts`
 
-- `demandsFor` — function — line 77
-- `initialFoodFor` — function — line 68
-- `initialStockFor` — function — line 50
+- `demandsFor` — function — line 106
+- `initialFoodFor` — function — line 97
+- `initialStockFor` — function — line 69
 - `SettlementEconomySeed` — type — line 8
 
 ## `economy/interSettlementFoodTransport.ts`
@@ -85,44 +85,56 @@ Generated from exported TypeScript symbols.
 
 ## `economy/production.ts`
 
-- `ARROWS_FROM_BEAM_PRODUCTION` — const — line 77
-- `ARROWS_FROM_BRANCH_PRODUCTION` — const — line 68
-- `BLACKSMITH_IRON_ROD_PRODUCTION` — const — line 197
+- `ARROWS_FROM_BEAM_PRODUCTION` — const — line 89
+- `ARROWS_FROM_BRANCH_PRODUCTION` — const — line 80
+- `BLACKSMITH_AXE_PRODUCTION` — const — line 242
+- `BLACKSMITH_BATTLE_AXE_PRODUCTION` — const — line 268
+- `BLACKSMITH_CHAINMAIL_PRODUCTION` — const — line 261
+- `BLACKSMITH_DAMASCUS_KNIFE_PRODUCTION` — const — line 275
+- `BLACKSMITH_IRON_ROD_PRODUCTION` — const — line 209
   - domain: settlements-npcs
-- `DRESSING_PRODUCTION` — const — line 206
-- `FARMING_PRODUCTION` — const — line 38
-- `FISHING_PRODUCTION` — const — line 45
-- `FLAX_LINEN_PRODUCTION` — const — line 163
-- `householdTradeBowCount` — function — line 136
+- `BLACKSMITH_KNIFE_PRODUCTION` — const — line 239
+- `BLACKSMITH_LONG_SWORD_PRODUCTION` — const — line 251
+- `BLACKSMITH_MASTERWORK_SWORD_PRODUCTION` — const — line 282
+- `BLACKSMITH_ORDER_PRODUCTIONS` — const — line 297
   - domain: settlements-npcs
-- `HUNTER_ARROW_PRODUCTIONS` — const — line 87
-- `HUNTER_BOW_PRODUCTIONS` — const — line 119
-- `HUNTER_BOW_STOCK_CAP` — const — line 125
-- `LINEN_BANDAGE_PRODUCTION` — const — line 173
-- `MINING_PRODUCTION` — const — line 52
-- `produceFirstAvailableItemRecipe` — function — line 220
-- `ProductionDef` — type — line 12
-- `productionDefById` — function — line 261
-- `productionForRole` — function — line 238
-- `SHORT_BOW_FROM_BEAM_PRODUCTION` — const — line 109
-- `SHORT_BOW_FROM_BRANCH_PRODUCTION` — const — line 100
+- `BLACKSMITH_PAULDRON_PRODUCTION` — const — line 254
+- `BLACKSMITH_PICKAXE_PRODUCTION` — const — line 245
+- `BLACKSMITH_SHORT_SWORD_PRODUCTION` — const — line 248
+- `DRESSING_PRODUCTION` — const — line 312
+- `FARMING_PRODUCTION` — const — line 50
+- `FISHING_PRODUCTION` — const — line 57
+- `FLAX_LINEN_PRODUCTION` — const — line 175
+- `householdTradeBowCount` — function — line 148
   - domain: settlements-npcs
-- `TEXTILE_WORKER_PRODUCTIONS` — const — line 183
-- `WOODCUTTING_PRODUCTION` — const — line 27
-- `WOOL_MATERIAL_PRODUCTION` — const — line 153
+- `HUNTER_ARROW_PRODUCTIONS` — const — line 99
+- `HUNTER_BOW_PRODUCTIONS` — const — line 131
+- `HUNTER_BOW_STOCK_CAP` — const — line 137
+- `LINEN_BANDAGE_PRODUCTION` — const — line 185
+- `MINING_PRODUCTION` — const — line 64
+- `produceFirstAvailableItemRecipe` — function — line 326
+- `ProductionDef` — type — line 13
+- `productionDefById` — function — line 377
+- `productionForRole` — function — line 344
+- `SHORT_BOW_FROM_BEAM_PRODUCTION` — const — line 121
+- `SHORT_BOW_FROM_BRANCH_PRODUCTION` — const — line 112
+  - domain: settlements-npcs
+- `TEXTILE_WORKER_PRODUCTIONS` — const — line 195
+- `WOODCUTTING_PRODUCTION` — const — line 39
+- `WOOL_MATERIAL_PRODUCTION` — const — line 165
   - domain: settlements-npcs
 
 ## `economy/productionExecutor.ts`
 
-- `executeProduction` — function — line 122
+- `executeProduction` — function — line 143
   - domain: settlements-npcs
-- `preflightProductionInputs` — function — line 62
+- `preflightProductionInputs` — function — line 71
   - domain: settlements-npcs
-- `ProductionBlockedCategory` — type — line 23
-- `ProductionContext` — type — line 14
+- `ProductionBlockedCategory` — type — line 32
+- `ProductionContext` — type — line 16
   - domain: settlements-npcs
-- `ProductionFailureReason` — type — line 25
-- `ProductionResult` — type — line 37
+- `ProductionFailureReason` — type — line 34
+- `ProductionResult` — type — line 46
   - domain: settlements-npcs
 
 ## `economy/productionShortage.ts`

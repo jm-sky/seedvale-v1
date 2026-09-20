@@ -97,6 +97,7 @@ import {
   proceduralResidentAnchorsFromLandmarks,
   residentAnchorsForHome,
 } from './npcResidentAnchors'
+import { seedArtisanProfileIfNeeded } from './artisanProfile'
 import { seedNpcStartingWealthIfNeeded } from './npcStartingWealth'
 import {
   PASTURE_WELL_TROUGH_BUCKET_REACH,
@@ -759,6 +760,9 @@ export async function createSettlement(
         dominantResource: def.plan.identity.dominantResource,
         isHome: def.isHome,
         seed: settlementSeed,
+        settlementId: def.id,
+        families: def.families,
+        familyIndex,
       }),
     )
   })
@@ -1153,6 +1157,16 @@ export async function createSettlement(
       size: def.size,
       role: input.member.character.role,
       age: input.member.age,
+    })
+    seedArtisanProfileIfNeeded(npcState, {
+      role: input.member.character.role,
+      npcId: input.npcId,
+      settlementId: def.id,
+      seed: settlementSeed,
+      size: def.size,
+      terrain: def.plan.identity.terrain,
+      dominantResource: def.plan.identity.dominantResource,
+      families: def.families,
     })
     input.seedMerchantStock?.(npcState)
     if (npcState.postDeath) finalizeExpiredNpcCorpse(npcState.postDeath, currentNowDays, droppedItems)

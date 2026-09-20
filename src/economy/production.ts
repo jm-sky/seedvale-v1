@@ -1,6 +1,7 @@
 import type { Role } from '../ai/characters'
 import type { Inventory, ItemAmount } from '../items/Inventory'
 import type { ItemKind } from '../items/items'
+import type { ArtisanSpecialization } from '../settlement/artisanProfile'
 import type { StockAmount } from './stock'
 import { isInstanceBackedKind } from '../items/itemInstances'
 import { executeProduction } from './productionExecutor'
@@ -21,6 +22,17 @@ export type ProductionDef = {
    *  owner; optional so stock-only defs stay valid. */
   itemInputs?: readonly ItemAmount[]
   itemOutputs?: readonly ItemAmount[]
+  /**
+   * Optional artisan capability / difficulty (plan settlements-npcs-056).
+   * Lives on the shared recipe so custom orders do not grow a second registry.
+   */
+  artisan?: {
+    difficulty: number
+    minSkill: number
+    specialization: ArtisanSpecialization
+    /** Exclusive specialists of other categories cannot craft this recipe. */
+    exclusive?: boolean
+  }
 }
 
 /** Wood source → woodcutter chop/deposit → wood stock. */
@@ -200,7 +212,101 @@ export const BLACKSMITH_IRON_ROD_PRODUCTION: ProductionDef = {
   inputs: [{ kind: 'iron', amount: 2 }, { kind: 'coal', amount: 1 }],
   outputs: [],
   itemOutputs: [{ kind: 'iron_rod', amount: 1 }],
+  artisan: { difficulty: 20, minSkill: 15, specialization: 'tools' },
 }
+
+function blacksmithRecipe(
+  id: string,
+  output: ItemKind,
+  iron: number,
+  coal: number,
+  artisan: NonNullable<ProductionDef['artisan']>,
+): ProductionDef {
+  return {
+    id,
+    role: 'blacksmith',
+    inputs: [
+      { kind: 'iron', amount: iron },
+      { kind: 'coal', amount: coal },
+    ],
+    outputs: [],
+    itemOutputs: [{ kind: output, amount: 1 }],
+    artisan,
+  }
+}
+
+/** Player-orderable Blacksmith recipes (plan settlements-npcs-056). */
+export const BLACKSMITH_KNIFE_PRODUCTION = blacksmithRecipe(
+  'blacksmith.knife', 'knife', 1, 1, { difficulty: 25, minSkill: 20, specialization: 'swords' },
+)
+export const BLACKSMITH_AXE_PRODUCTION = blacksmithRecipe(
+  'blacksmith.axe', 'axe', 2, 1, { difficulty: 35, minSkill: 28, specialization: 'axes' },
+)
+export const BLACKSMITH_PICKAXE_PRODUCTION = blacksmithRecipe(
+  'blacksmith.pickaxe', 'pickaxe', 2, 1, { difficulty: 40, minSkill: 32, specialization: 'tools' },
+)
+export const BLACKSMITH_SHORT_SWORD_PRODUCTION = blacksmithRecipe(
+  'blacksmith.short_sword', 'short_sword', 2, 1, { difficulty: 45, minSkill: 38, specialization: 'swords' },
+)
+export const BLACKSMITH_LONG_SWORD_PRODUCTION = blacksmithRecipe(
+  'blacksmith.long_sword', 'long_sword', 3, 1, { difficulty: 55, minSkill: 48, specialization: 'swords' },
+)
+export const BLACKSMITH_PAULDRON_PRODUCTION = blacksmithRecipe(
+  'blacksmith.knight_pauldron_round',
+  'knight_pauldron_round',
+  3,
+  1,
+  { difficulty: 60, minSkill: 52, specialization: 'armor' },
+)
+export const BLACKSMITH_CHAINMAIL_PRODUCTION = blacksmithRecipe(
+  'blacksmith.chainmail',
+  'chainmail',
+  4,
+  2,
+  { difficulty: 70, minSkill: 62, specialization: 'armor', exclusive: true },
+)
+export const BLACKSMITH_BATTLE_AXE_PRODUCTION = blacksmithRecipe(
+  'blacksmith.battle_axe',
+  'battle_axe',
+  4,
+  2,
+  { difficulty: 75, minSkill: 68, specialization: 'axes', exclusive: true },
+)
+export const BLACKSMITH_DAMASCUS_KNIFE_PRODUCTION = blacksmithRecipe(
+  'blacksmith.damascus_knife',
+  'damascus_knife',
+  3,
+  2,
+  { difficulty: 80, minSkill: 74, specialization: 'swords', exclusive: true },
+)
+export const BLACKSMITH_MASTERWORK_SWORD_PRODUCTION = blacksmithRecipe(
+  'blacksmith.masterwork_sword',
+  'masterwork_sword',
+  5,
+  2,
+  { difficulty: 88, minSkill: 82, specialization: 'swords', exclusive: true },
+)
+
+/**
+ * Orderable Blacksmith recipes, difficulty order (plan settlements-npcs-056).
+ * Autonomous iron-rod processing stays on `BLACKSMITH_IRON_ROD_PRODUCTION`
+ * and is included here so a player can also commission rods.
+ *
+ * @domain settlements-npcs
+ */
+export const BLACKSMITH_ORDER_PRODUCTIONS: readonly ProductionDef[] = [
+  BLACKSMITH_IRON_ROD_PRODUCTION,
+  BLACKSMITH_KNIFE_PRODUCTION,
+  BLACKSMITH_AXE_PRODUCTION,
+  BLACKSMITH_PICKAXE_PRODUCTION,
+  BLACKSMITH_SHORT_SWORD_PRODUCTION,
+  BLACKSMITH_LONG_SWORD_PRODUCTION,
+  BLACKSMITH_PAULDRON_PRODUCTION,
+  BLACKSMITH_CHAINMAIL_PRODUCTION,
+  BLACKSMITH_BATTLE_AXE_PRODUCTION,
+  BLACKSMITH_DAMASCUS_KNIFE_PRODUCTION,
+  BLACKSMITH_MASTERWORK_SWORD_PRODUCTION,
+]
 
 /** `1 bandage + 1 herb → 1 dressing` (plan settlements-npcs-007). */
 export const DRESSING_PRODUCTION: ProductionDef = {
@@ -253,6 +359,16 @@ const PRODUCTION_BY_ID: ReadonlyMap<string, ProductionDef> = new Map(
     FLAX_LINEN_PRODUCTION,
     LINEN_BANDAGE_PRODUCTION,
     BLACKSMITH_IRON_ROD_PRODUCTION,
+    BLACKSMITH_KNIFE_PRODUCTION,
+    BLACKSMITH_AXE_PRODUCTION,
+    BLACKSMITH_PICKAXE_PRODUCTION,
+    BLACKSMITH_SHORT_SWORD_PRODUCTION,
+    BLACKSMITH_LONG_SWORD_PRODUCTION,
+    BLACKSMITH_PAULDRON_PRODUCTION,
+    BLACKSMITH_CHAINMAIL_PRODUCTION,
+    BLACKSMITH_BATTLE_AXE_PRODUCTION,
+    BLACKSMITH_DAMASCUS_KNIFE_PRODUCTION,
+    BLACKSMITH_MASTERWORK_SWORD_PRODUCTION,
     DRESSING_PRODUCTION,
   ].map((def) => [def.id, def]),
 )

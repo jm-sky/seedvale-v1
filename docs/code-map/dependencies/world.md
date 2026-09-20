@@ -3582,6 +3582,8 @@ Generated from TypeScript imports.
 - `main.ts`
 - `quests/guardEveningOfferWindow.ts`
 - `reputation/socialExposure.ts`
+- `settlement/artisanCraft.ts`
+- `settlement/artisanProfile.ts`
 - `settlement/families.ts`
 - `settlement/findSettlementSite.ts`
 - `settlement/houseCatalog.ts`

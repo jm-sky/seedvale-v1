@@ -136,7 +136,11 @@ Each module below takes the shared [`PlayerActionContext`](../src/app/actions/ac
 - [Profession family surnames](../src/settlement/professionFamilySurnames.ts) — post-staffing worldgen household surnames from a representative adult profession; authored residents and reserved home identities keep their own names.
 - [Merchant trade](../src/settlement/merchantTrade.ts) — Trader specialization, stall index and finite regional assortment (plan settlements-012); optional `horses` specialization after a settlement-level paddock setup (plan settlements-013); home starter overlay including a guaranteed `poor` `leather_pauldron` (plan settlements-npcs-042).
 - [NPC vendor identity](../src/ai/npcVendor.ts) — semantic vendor kind from `Role` (`trader`/`blacksmith`/`hunter`); independent of live trade offers (plan settlements-npcs-042).
-- [Household profession stock](../src/settlement/householdProfessionStock.ts) — one-time specialist trade grants scaled by settlement size/terrain (plans settlements-npcs-040 / 042).
+- [Household profession stock](../src/settlement/householdProfessionStock.ts) — one-time specialist trade grants scaled by settlement size/terrain and artisan profile (plans settlements-npcs-040 / 042 / 056).
+- [Artisan profile](../src/settlement/artisanProfile.ts) — persistent Blacksmith skill/specialization generation and settlement-wide coverage (plan settlements-npcs-056).
+- [Artisan orders](../src/settlement/artisanOrders.ts) — player custom-order catalog/accept/complete/pickup on `NpcAuthoritativeState`.
+- [Artisan craft](../src/settlement/artisanCraft.ts) — recipe eligibility, material-value deposit and crafted quality.
+- [Artisan order screen](../src/ui-vue/screens/ArtisanOrderScreen.vue) — Blacksmith custom-order overlay opened from NPC dialogue `Zamówienie`.
 - [Settlement armor quality](../src/settlement/settlementArmorQuality.ts) — size-primary armor quality weights shared by Merchant and specialist bootstrap.
 - [Horse acquisition](../src/settlement/horseAcquisition.ts) — derived live-horse purchase view for the wagon horse and vendor paddock slots.
 - [Village paddock](../src/settlement/villagePaddock.ts) — settlement-level horse-vendor setup roll and fenced `VillagePlan.paddock` placement.
@@ -158,8 +162,8 @@ Each module below takes the shared [`PlayerActionContext`](../src/app/actions/ac
 
 ## Economy
 
-- [Production recipes](../src/economy/production.ts) — `ProductionDef` tables, role lookup, hunter item-recipe priority wrapper, and textile wool-material recipe.
-- [Production executor](../src/economy/productionExecutor.ts) — synchronous all-or-nothing stock/item/mixed recipe commit (plan settlements-npcs-015).
+- [Production recipes](../src/economy/production.ts) — `ProductionDef` tables, optional artisan capability metadata, role lookup, hunter item-recipe priority wrapper, and textile wool-material recipe.
+- [Production executor](../src/economy/productionExecutor.ts) — synchronous all-or-nothing stock/item/mixed recipe commit (plan settlements-npcs-015); instance-backed outputs accept explicit `itemOutputInstances` (plan settlements-npcs-056).
 - [Production shortage](../src/economy/productionShortage.ts) — compact blocked-input observations on settlement economy (plan settlements-npcs-017).
 - [Food transport demand](../src/economy/foodTransportDemand.ts) — derived uncovered settlement food shortage, uncommitted household surplus, and uncommitted settlement-storage surplus from live economy + active `TransportOrder`s (plans settlements-npcs-020 / 037). Not persisted.
 - [Inter-settlement food transport](../src/economy/interSettlementFoodTransport.ts) — bounded deterministic matching of known materialized settlements for food-only A→B `TransportOrder`s (plan settlements-npcs-037). Not persisted.
@@ -180,7 +184,7 @@ Each module below takes the shared [`PlayerActionContext`](../src/app/actions/ac
 - [NPC travel continuity](../src/ai/npcTravel.ts) — generic detailed↔off-screen spatial + survival/arrival checkpoint (019 duration math, 028 expedition dispatch, 037 transport `orderId` purpose).
 - [NPC expedition travel](../src/ai/npcExpeditionTravel.ts) — idempotent `ready` assignment → per-member `NpcAuthoritativeState.travel` (plan settlements-npcs-028); destination resolve stays in [expedition.ts](../src/world/expedition.ts).
 - [NPC logistics](../src/ai/npcLogistics.ts) — the claim→carry→deposit two-leg transfer builder and the economy-withdraw/household-exchange/player-storage-delivery flows built on it.
-- [NPC profession work](../src/ai/npcProfessionWork.ts) — profession `work`-block planners (miner/hunter/farmer/fisher/guard/trader/blacksmith/shepherd/textile_worker/herbalist) as pure functions.
+- [NPC profession work](../src/ai/npcProfessionWork.ts) — profession `work`-block planners (miner/hunter/farmer/fisher/guard/trader/blacksmith/shepherd/textile_worker/herbalist) as pure functions; Blacksmith player orders reuse the same planner (plan settlements-npcs-056).
 - [NPC destination threat](../src/ai/npcDestinationThreat.ts) — pure destination-risk/tolerance scorer for voluntary outdoor activities (plan npc-057), the Herbalist consumer's decision-time-only gate.
 - [NPC strategies](../src/ai/npcStrategies.ts) — per-need candidate strategy lists + `selectStrategy()`, the authoritative source `beginNeed()` switches on.
 - [NPC decision](../src/ai/npcDecision.ts) — the top-level `choose()`/`tickCriticalInterrupt()` priority tables, fauna-style.

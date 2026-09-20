@@ -1,10 +1,12 @@
 import { describe, expect, it } from 'vitest'
 import { Inventory } from '../items/Inventory'
+import { createWeaponInstance } from '../items/weaponMaintenance'
 import { createHousehold } from '../settlement/household'
 import {
   ARROWS_FROM_BEAM_PRODUCTION,
   ARROWS_FROM_BRANCH_PRODUCTION,
   BLACKSMITH_IRON_ROD_PRODUCTION,
+  BLACKSMITH_KNIFE_PRODUCTION,
   FARMING_PRODUCTION,
   HUNTER_ARROW_PRODUCTIONS,
   produceFirstAvailableItemRecipe,
@@ -344,6 +346,30 @@ describe('BLACKSMITH_IRON_ROD_PRODUCTION (settlements-npcs-016)', () => {
     const second = executeProduction(BLACKSMITH_IRON_ROD_PRODUCTION, { economy: eco, inventory: household.items })
     expect(second).toMatchObject({ ok: false, reason: 'insufficient-input' })
     expect(household.items.count('iron_rod')).toBe(1)
+  })
+})
+
+describe('instance-backed production outputs (plan settlements-npcs-056)', () => {
+  it('requires concrete itemOutputInstances for instance-backed recipes', () => {
+    const eco = economy({ iron: 2, coal: 1 })
+    const household = createHousehold('h', 's', 'home')
+    const blocked = executeProduction(BLACKSMITH_KNIFE_PRODUCTION, {
+      economy: eco,
+      inventory: household.items,
+    })
+    expect(blocked.ok).toBe(false)
+    expect(eco.query('iron')).toBe(2)
+    expect(household.items.countInstances('knife')).toBe(0)
+
+    const instance = { ...createWeaponInstance('knife'), id: 'order:knife' }
+    const committed = executeProduction(BLACKSMITH_KNIFE_PRODUCTION, {
+      economy: eco,
+      inventory: household.items,
+      itemOutputInstances: [instance],
+    })
+    expect(committed).toEqual({ ok: true, recipeId: 'blacksmith.knife' })
+    expect(household.items.getInstance('order:knife')?.kind).toBe('knife')
+    expect(eco.query('iron')).toBe(1)
   })
 })
 

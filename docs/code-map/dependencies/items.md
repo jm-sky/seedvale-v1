@@ -206,6 +206,10 @@ Generated from TypeScript imports.
 - `quests/opportunities/hunterProfessionQuests.test.ts`
 - `quests/opportunities/rpgQuestMatrices.test.ts`
 - `quests/suspiciousTransportCaveCache.test.ts`
+- `settlement/artisanCraft.test.ts`
+- `settlement/artisanCraft.ts`
+- `settlement/artisanOrders.test.ts`
+- `settlement/artisanOrders.ts`
 - `settlement/household.ts`
 - `settlement/householdProfessionStock.ts`
 - `settlement/householdResourceTransfer.test.ts`
@@ -275,6 +279,7 @@ Generated from TypeScript imports.
 - `items/trade.test.ts`
 - `items/trade.ts`
 - `player/characterPresentation.test.ts`
+- `settlement/artisanOrders.ts`
 - `settlement/householdProfessionStock.ts`
 - `settlement/merchantTrade.ts`
 
@@ -840,6 +845,7 @@ Generated from TypeScript imports.
 - `items/inventoryTransfer.test.ts`
 - `items/trade.ts`
 - `quests/lostTreasureChronicleDeciphering.test.ts`
+- `settlement/artisanOrders.ts`
 - `settlement/npcPostDeath.ts`
 - `world/expeditionProvisioning.ts`
 
@@ -1059,6 +1065,7 @@ Generated from TypeScript imports.
 - `app/inspection/buildWorldInspection.ts`
 - `app/inventoryWiring.ts`
 - `economy/production.ts`
+- `economy/productionExecutor.ts`
 - `items/HeldTool.test.ts`
 - `items/HeldTool.ts`
 - `items/Inventory.test.ts`
@@ -1093,6 +1100,9 @@ Generated from TypeScript imports.
 - `quests/lostTreasureExpedition.ts`
 - `quests/oldBonesAdventureCave.ts`
 - `quests/suspiciousTransportCaveCache.ts`
+- `settlement/artisanCraft.ts`
+- `settlement/artisanOrders.test.ts`
+- `settlement/artisanOrders.ts`
 - `settlement/foundedSettlementBootstrap.test.ts`
 - `settlement/foundedSettlementBootstrap.ts`
 - `settlement/householdProfessionStock.test.ts`
@@ -1278,6 +1288,8 @@ Generated from TypeScript imports.
 - `quests/opportunities/hunterProfessionQuests.ts`
 - `quests/quests.ts`
 - `quests/suspiciousTransportCaveCache.ts`
+- `settlement/artisanCraft.ts`
+- `settlement/artisanOrders.ts`
 - `settlement/household.ts`
 - `settlement/householdProfessionStock.test.ts`
 - `settlement/householdProfessionStock.ts`
@@ -1565,6 +1577,7 @@ Generated from TypeScript imports.
 - `app/inventoryWiring.ts`
 - `items/trade.test.ts`
 - `items/trapInstanceTrade.test.ts`
+- `settlement/artisanOrders.ts`
 - `settlement/householdProfessionStock.ts`
 - `settlement/merchantTrade.test.ts`
 - `settlement/merchantTrade.ts`
@@ -1596,6 +1609,7 @@ Generated from TypeScript imports.
 - `items/treasureGameplay.test.ts`
 - `quests/guardRewards.test.ts`
 - `quests/guardRewards.ts`
+- `settlement/artisanCraft.ts`
 - `settlement/merchantTrade.test.ts`
 - `settlement/merchantTrade.ts`
 - `ui-vue/store.ts`
@@ -1721,6 +1735,7 @@ Generated from TypeScript imports.
 - `app/createApp.ts`
 - `app/gameLoop.ts`
 - `app/inventoryWiring.ts`
+- `economy/productionExecutor.test.ts`
 - `items/HeldTool.test.ts`
 - `items/Inventory.test.ts`
 - `items/compactWeaponsAndMasterworkBow.test.ts`

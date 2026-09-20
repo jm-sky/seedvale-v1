@@ -16,6 +16,7 @@ import MerchantScreen from './screens/MerchantScreen.vue'
 import MinimapScreen from './screens/MinimapScreen.vue'
 import NotesScreen from './screens/NotesScreen.vue'
 import NpcGiveItemScreen from './screens/NpcGiveItemScreen.vue'
+import ArtisanOrderScreen from './screens/ArtisanOrderScreen.vue'
 import PauseMenu from './screens/PauseMenu.vue'
 import PlacementPreviewOverlay from './screens/PlacementPreviewOverlay.vue'
 import QuantityDialog from './screens/QuantityDialog.vue'
@@ -66,6 +67,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKeydown))
     <ContainerScreen />
     <HouseholdTransferScreen />
     <NpcGiveItemScreen />
+    <ArtisanOrderScreen />
     <QuantityDialog />
     <ActionConfirmOverlay />
     <QuickActionsScreen />

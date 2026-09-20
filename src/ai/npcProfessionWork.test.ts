@@ -1,13 +1,14 @@
 import { describe, expect, it, vi } from 'vitest'
 import type { ShepherdFlockHooks } from '../fauna/shepherdFlock'
 import type { NpcWorkContext } from './npcProfessionWork'
-import { BLACKSMITH_IRON_ROD_PRODUCTION } from '../economy/production'
+import { BLACKSMITH_IRON_ROD_PRODUCTION, BLACKSMITH_KNIFE_PRODUCTION } from '../economy/production'
 import { createSettlementEconomy } from '../economy/settlementEconomy'
 import { WOOL_YIELD } from '../fauna/livestockProduction'
 import { Inventory } from '../items/Inventory'
 import { createWeaponInstance } from '../items/weaponMaintenance'
 import { physicalWorkDuration } from '../player/physicalWorkStrength'
 import { createHousehold } from '../settlement/household'
+import { createNpcAuthoritativeState } from '../settlement/npcState'
 import { createHouseholdExchangeHooks } from '../settlement/householdExchange'
 import { MINE_DURATION_SEC } from '../terrain/depositMining'
 import { createTransportOrders } from '../world/createTransportOrders'
@@ -1622,6 +1623,85 @@ describe('planProfessionWork', () => {
       expect(eco.query('iron')).toBe(2)
       expect(household.items.count('iron_rod')).toBe(0)
       expect(eco.productionShortages()).toMatchObject([{ kind: 'coal' }])
+    })
+
+    it('prioritizes an accepted player order over autonomous iron_rod work (plan settlements-npcs-056)', () => {
+      const household = createHousehold('h', 's', 'home:h')
+      const eco = economy()
+      eco.add('iron', 4, 0)
+      eco.add('coal', 2, 0)
+      const npcState = createNpcAuthoritativeState('npc:smith', 0)
+      npcState.artisanProfile = {
+        baseSkill: 80,
+        experience: 0,
+        specializations: ['swords'],
+        exclusive: false,
+      }
+      npcState.artisanOrders.push({
+        id: 'npc:smith:order:0:blacksmith.knife',
+        artisanNpcId: 'npc:smith',
+        customer: 'player',
+        productionId: BLACKSMITH_KNIFE_PRODUCTION.id,
+        status: 'accepted',
+        createdAt: 1,
+        paidMaterialCost: 10,
+        requiredMaterials: [
+          { kind: 'iron', amount: 1, owner: 'stock' },
+          { kind: 'coal', amount: 1, owner: 'stock' },
+        ],
+        outputKind: 'knife',
+      })
+      const work = planProfessionWork(baseCtx({
+        role: 'blacksmith',
+        household,
+        workplace,
+        economy: eco,
+        npcState,
+      }))
+      expect(work?.kind).toBe('work')
+      work?.onComplete()
+      expect(npcState.artisanOrders[0]?.status).toBe('ready')
+      expect(household.items.countInstances('knife')).toBe(1)
+      expect(household.items.count('iron_rod')).toBe(0)
+      expect(eco.query('iron')).toBe(3)
+    })
+
+    it('does not fall through to iron_rod while a player order is waiting on materials', () => {
+      const household = createHousehold('h', 's', 'home:h')
+      const eco = economy()
+      eco.add('iron', 4, 0)
+      const npcState = createNpcAuthoritativeState('npc:smith', 0)
+      npcState.artisanProfile = {
+        baseSkill: 80,
+        experience: 0,
+        specializations: ['swords'],
+        exclusive: false,
+      }
+      npcState.artisanOrders.push({
+        id: 'npc:smith:order:0:blacksmith.knife',
+        artisanNpcId: 'npc:smith',
+        customer: 'player',
+        productionId: BLACKSMITH_KNIFE_PRODUCTION.id,
+        status: 'accepted',
+        createdAt: 1,
+        paidMaterialCost: 10,
+        requiredMaterials: [
+          { kind: 'iron', amount: 1, owner: 'stock' },
+          { kind: 'coal', amount: 1, owner: 'stock' },
+        ],
+        outputKind: 'knife',
+      })
+      const work = planProfessionWork(baseCtx({
+        role: 'blacksmith',
+        household,
+        workplace,
+        economy: eco,
+        npcState,
+        simTime: () => 4,
+      }))
+      expect(work).toBeNull()
+      expect(household.items.count('iron_rod')).toBe(0)
+      expect(eco.query('iron')).toBe(4)
     })
   })
 

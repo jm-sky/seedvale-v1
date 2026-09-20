@@ -1522,6 +1522,8 @@ Generated from TypeScript imports.
 - `quests/guardPersistence.ts`
 - `quests/guardRewards.ts`
 - `reputation/ReputationManager.ts`
+- `settlement/artisanOrders.ts`
+- `settlement/artisanProfile.ts`
 - `settlement/createSettlement.ts`
 - `settlement/horseAcquisition.ts`
 - `settlement/merchantTrade.ts`

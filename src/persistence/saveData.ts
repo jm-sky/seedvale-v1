@@ -19,6 +19,10 @@ import type { HouseholdId, HouseholdSnapshot } from '../settlement/household'
 import type { LivestockSaveRecord } from '../settlement/livestock'
 import type { NpcRelationshipEntry } from '../settlement/npcRelationships'
 import type { NpcId, NpcStateSnapshot } from '../settlement/npcState'
+import {
+  isArtisanOrderStatus,
+  isArtisanSpecialization,
+} from '../settlement/artisanProfile'
 import type { PlacedFireKind } from '../settlement/PlacedFires'
 import type { RatInfestationState } from '../settlement/ratInfestation'
 import type { RatSaveRecord } from '../settlement/ratPersistence'
@@ -713,7 +717,7 @@ export type SaveWorkContract =
  *  representation or semantics of `SaveData` change — see the plan's
  *  "Future schema-change workflow". Never duplicate this number elsewhere;
  *  `saveState.ts` imports it instead of declaring its own constant. */
-export const CURRENT_SAVE_VERSION = 51
+export const CURRENT_SAVE_VERSION = 52
 
 /** Canonical save contract for the current schema version. This module
  *  intentionally carries no history of schemas from before the v1 hard cut
@@ -2107,6 +2111,41 @@ function isNpcStateSnapshot(value: unknown): value is NpcStateSnapshot {
   if (s.travel !== undefined && s.travel !== null && !isNpcTravelContinuity(s.travel)) return false
   if (s.merchantJourney !== undefined && s.merchantJourney !== null && !isMerchantJourneyState(s.merchantJourney)) return false
   if (s.playerFollowUp !== undefined && s.playerFollowUp !== null && !isNpcPlayerFollowUp(s.playerFollowUp)) return false
+  if (s.artisanProfile !== undefined && s.artisanProfile !== null && !isArtisanProfile(s.artisanProfile)) return false
+  if (s.artisanProfileInitialized !== undefined && typeof s.artisanProfileInitialized !== 'boolean') return false
+  if (s.artisanOrders !== undefined && !isArtisanOrdersField(s.artisanOrders)) return false
+  return true
+}
+
+function isArtisanProfile(value: unknown): boolean {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false
+  const profile = value as Record<string, unknown>
+  if (typeof profile.baseSkill !== 'number' || typeof profile.experience !== 'number') return false
+  if (typeof profile.exclusive !== 'boolean') return false
+  if (!Array.isArray(profile.specializations)) return false
+  return profile.specializations.every(isArtisanSpecialization)
+}
+
+function isArtisanOrdersField(value: unknown): boolean {
+  if (!Array.isArray(value)) return false
+  for (const entry of value) {
+    if (!entry || typeof entry !== 'object' || Array.isArray(entry)) return false
+    const order = entry as Record<string, unknown>
+    if (typeof order.id !== 'string' || typeof order.artisanNpcId !== 'string') return false
+    if (order.customer !== 'player' || typeof order.productionId !== 'string') return false
+    if (!isArtisanOrderStatus(order.status) || typeof order.createdAt !== 'number') return false
+    if (typeof order.paidMaterialCost !== 'number') return false
+    if (!Array.isArray(order.requiredMaterials)) return false
+    for (const material of order.requiredMaterials) {
+      if (!material || typeof material !== 'object') return false
+      const row = material as Record<string, unknown>
+      if (typeof row.kind !== 'string' || typeof row.amount !== 'number') return false
+      if (row.owner !== 'stock' && row.owner !== 'item') return false
+    }
+    if (order.outputInstanceId !== undefined && typeof order.outputInstanceId !== 'string') return false
+    if (order.outputKind !== undefined && typeof order.outputKind !== 'string') return false
+    if (order.outputQuality !== undefined && !isArmorQuality(order.outputQuality)) return false
+  }
   return true
 }
 
@@ -3967,6 +4006,15 @@ function migrateSaveV50ToV51(data: unknown): unknown {
   return { ...v, version: 51, mineableRocks: [] }
 }
 
+/** v51 → v52 (plan settlements-npcs-056): optional artisan profile/orders on
+ *  `npcStates`. A pre-plan save has never generated them; restore already
+ *  defaults missing fields to uninitialized/empty so first materialization
+ *  can seed once. */
+function migrateSaveV51ToV52(data: unknown): unknown {
+  const v = data as Record<string, unknown>
+  return { ...v, version: 52 }
+}
+
 function migrateSaveV37ToV38(data: unknown): unknown {
   const v = data as Record<string, unknown>
   const seq = { n: 0 }
@@ -4138,6 +4186,7 @@ const SAVE_MIGRATIONS: Readonly<Record<number, SaveMigration>> = {
   48: migrateSaveV48ToV49,
   49: migrateSaveV49ToV50,
   50: migrateSaveV50ToV51,
+  51: migrateSaveV51ToV52,
 }
 
 function detectStoredVersion(value: unknown): number | null {

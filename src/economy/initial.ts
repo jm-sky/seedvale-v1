@@ -11,6 +11,8 @@ export type SettlementEconomySeed = {
   foodSourceType: FoodSourceType
   familyCount: number
   dominantResource: NaturalResource | null
+  /** Adult Blacksmith count — seeds a bounded one-time iron/coal reserve. */
+  blacksmithCount?: number
 }
 
 const BASE_WOOD: Record<VillageSize, number> = {
@@ -41,6 +43,23 @@ function hashString(value: string): number {
   return h >>> 0
 }
 
+function sizeRank(size: VillageSize): number {
+  switch (size) {
+    case 'LG':
+      return 3
+    case 'MD':
+      return 2
+    case 'OUTPOST':
+      return 0
+    case 'SM':
+      return 1
+    case 'XL':
+      return 4
+    default:
+      return 1
+  }
+}
+
 /**
  * Deterministic starting stock from settlement identity. Modest on purpose —
  * must not look like an infinite depot. Jitter is a 0–2 hash of `id`, not
@@ -51,10 +70,20 @@ export function initialStockFor(
   seed: SettlementEconomySeed,
 ): Partial<Record<EconomicKind, number>> {
   const jitter = hashString(seed.id) % 3
-  return {
+  const stock: Partial<Record<EconomicKind, number>> = {
     water: WATER_INITIAL,
     wood: BASE_WOOD[seed.size] + jitter,
   }
+  const blacksmiths = seed.blacksmithCount ?? 0
+  if (blacksmiths > 0) {
+    const rank = sizeRank(seed.size)
+    const metal = seed.dominantResource?.type === 'iron'
+      || seed.dominantResource?.type === 'coal'
+      || seed.dominantResource?.type === 'gold'
+    stock.iron = 3 + rank * 2 + blacksmiths + (metal ? 2 : 0)
+    stock.coal = 2 + rank + blacksmiths + (metal ? 1 : 0)
+  }
+  return stock
 }
 
 /** Starting concrete settlement food (plan settlements-npcs-008) — same

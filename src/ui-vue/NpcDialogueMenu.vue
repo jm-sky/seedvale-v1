@@ -336,6 +336,11 @@ function openTrade(): void {
   state.onOpenTrade?.()
 }
 
+function openArtisanOrders(): void {
+  emitUiClick()
+  state.onOpenArtisanOrders?.()
+}
+
 function giveItem(): void {
   emitUiClick()
   state.onGiveItem?.()
@@ -407,6 +412,14 @@ watch(() => state.open, (open) => {
           @click="openTrade"
         >
           Handel
+        </button>
+        <button
+          v-if="state.canOrderArtisan"
+          type="button"
+          class="cursor-pointer rounded-md bg-white/10 px-3 py-2 text-left text-sm font-medium hover:bg-white/20"
+          @click="openArtisanOrders"
+        >
+          Zamówienie
         </button>
         <button
           v-for="entry in reportShortcuts"

@@ -3,7 +3,7 @@ import type { SettlementEconomy } from '../economy/settlementEconomy'
 import type { ItemKind } from '../items/items'
 import type { SettlementTerrain } from '../shared/SettlementName'
 import type { NaturalResource } from '../terrain/naturalResources'
-import type { VillageSize } from './families'
+import type { FamilyDef, VillageSize } from './families'
 import { createSequenceAllocator } from '../debug/domainHistory'
 import { createHouseholdHistoryBuffer } from '../debug/householdHistory'
 import { STORED_FOOD_DECAY } from '../items/foodFreshness'
@@ -245,6 +245,10 @@ export type HouseholdTradeStockContext = {
   dominantResource?: NaturalResource | null
   isHome?: boolean
   seed: number
+  /** Settlement roster for artisan-aware Blacksmith stock (plan settlements-npcs-056). */
+  settlementId?: string
+  families?: readonly FamilyDef[]
+  familyIndex?: number
 }
 
 /** Profession-derived starting items (plan 178 hunter bandages, plan

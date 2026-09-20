@@ -347,6 +347,8 @@ Generated from TypeScript imports.
 - `quests/caveLocationDescription.ts`
 - `quests/huntersBrotherhoodIntroduction.test.ts`
 - `quests/opportunities/worldQuestOpportunityTypes.ts`
+- `settlement/artisanProfile.test.ts`
+- `settlement/artisanProfile.ts`
 - `settlement/families.ts`
 - `settlement/lodgingResolver.test.ts`
 - `settlement/lodgingResolver.ts`
@@ -1247,6 +1249,7 @@ Generated from TypeScript imports.
 - `player/physicalWorkStrength.ts`
 - `settlement/household.ts`
 - `settlement/householdExchange.ts`
+- `settlement/npcState.ts`
 - `terrain/depositMining.ts`
 - `world/createTransportOrders.ts`
 - `world/fishing.ts`
@@ -1278,10 +1281,13 @@ Generated from TypeScript imports.
 - `items/weaponMaintenance.ts`
 - `player/PlayerController.ts`
 - `player/physicalWorkStrength.ts`
+- `settlement/artisanCraft.ts`
+- `settlement/artisanOrders.ts`
 - `settlement/household.ts`
 - `settlement/householdExchange.ts`
 - `settlement/livestock.ts`
 - `settlement/npcResidentAnchors.ts`
+- `settlement/npcState.ts`
 - `settlement/places.ts`
 - `simulation/index.ts`
 - `terrain/depositMining.ts`

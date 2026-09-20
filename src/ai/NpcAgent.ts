@@ -5040,6 +5040,7 @@ export class NpcAgent {
       neuroticism: this.personality.neuroticism,
       householdExchange: this.householdExchange,
       npcId: this.id,
+      npcState: this.npcState,
       transportOrders: this.transportOrders,
       resourceSiteInventories: this.resourceSiteInventories,
       resolveResourceSitePosition: this.resolveResourceSitePosition ?? undefined,

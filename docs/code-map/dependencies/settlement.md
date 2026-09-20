@@ -66,6 +66,7 @@ Generated from TypeScript imports.
 - `settlement/npcRelationships.ts`
 - `settlement/npcState.ts`
 - `settlement/playerOwnedHorseDebug.ts`
+- `settlement/professionStaffing.ts`
 - `settlement/props.ts`
 - `settlement/ratInfestation.ts`
 - `settlement/ratPersistence.ts`
@@ -164,6 +165,108 @@ Generated from TypeScript imports.
 - `settlement/animalCorpseSanitation.test.ts`
 - `settlement/createSettlement.ts`
 
+## `settlement/artisanCraft.test.ts`
+
+**Imports**
+
+- `economy/production.ts`
+- `items/Inventory.ts`
+- `settlement/artisanCraft.ts`
+- `settlement/artisanProfile.ts`
+
+## `settlement/artisanCraft.ts`
+
+**Imports**
+
+- `economy/production.ts`
+- `items/Inventory.ts`
+- `items/itemInstances.ts`
+- `items/items.ts`
+- `items/tradeCatalog.ts`
+- `settlement/artisanProfile.ts`
+- `settlement/settlementArmorQuality.ts`
+- `world/parseSeed.ts`
+
+**Imported by**
+
+- `ai/npcProfessionWork.ts`
+- `settlement/artisanCraft.test.ts`
+- `settlement/artisanOrders.ts`
+- `settlement/householdProfessionStock.ts`
+
+## `settlement/artisanOrders.test.ts`
+
+**Imports**
+
+- `economy/production.ts`
+- `economy/settlementEconomy.ts`
+- `items/Inventory.ts`
+- `items/itemInstances.ts`
+- `settlement/artisanOrders.ts`
+- `settlement/artisanProfile.ts`
+- `settlement/household.ts`
+- `settlement/npcState.ts`
+
+## `settlement/artisanOrders.ts`
+
+**Imports**
+
+- `economy/kinds.ts`
+- `economy/production.ts`
+- `economy/productionExecutor.ts`
+- `economy/settlementEconomy.ts`
+- `items/Inventory.ts`
+- `items/armorItemInstances.ts`
+- `items/inventoryTransfer.ts`
+- `items/itemInstances.ts`
+- `items/items.ts`
+- `items/trade.ts`
+- `settlement/artisanCraft.ts`
+- `settlement/artisanProfile.ts`
+- `settlement/household.ts`
+- `settlement/npcState.ts`
+
+**Imported by**
+
+- `ai/npcProfessionWork.ts`
+- `app/inventoryWiring.ts`
+- `settlement/artisanOrders.test.ts`
+
+## `settlement/artisanProfile.test.ts`
+
+**Imports**
+
+- `ai/characters.ts`
+- `settlement/artisanProfile.ts`
+- `settlement/families.ts`
+
+## `settlement/artisanProfile.ts`
+
+**Imports**
+
+- `ai/characters.ts`
+- `settlement/families.ts`
+- `settlement/npcIdentity.ts`
+- `settlement/npcState.ts`
+- `settlement/professionStaffing.ts`
+- `shared/SettlementName.ts`
+- `terrain/naturalResources.ts`
+- `world/parseSeed.ts`
+
+**Imported by**
+
+- `app/inventoryWiring.ts`
+- `economy/production.ts`
+- `persistence/saveData.ts`
+- `settlement/artisanCraft.test.ts`
+- `settlement/artisanCraft.ts`
+- `settlement/artisanOrders.test.ts`
+- `settlement/artisanOrders.ts`
+- `settlement/artisanProfile.test.ts`
+- `settlement/createSettlement.ts`
+- `settlement/householdProfessionStock.ts`
+- `settlement/npcState.ts`
+
 ## `settlement/blacksmithYard.test.ts`
 
 **Imports**
@@ -224,6 +327,7 @@ Generated from TypeScript imports.
 - `player/PlayerController.ts`
 - `settlement/VillageFire.ts`
 - `settlement/animalCorpseSanitation.ts`
+- `settlement/artisanProfile.ts`
 - `settlement/families.ts`
 - `settlement/houseBuilder.ts`
 - `settlement/houseDoors.ts`
@@ -360,6 +464,8 @@ Generated from TypeScript imports.
 - `quests/lostTreasureChronicleSearch.test.ts`
 - `quests/materializeAuthoredQuests.test.ts`
 - `quests/opportunities/settlementQuestOpportunities.test.ts`
+- `settlement/artisanProfile.test.ts`
+- `settlement/artisanProfile.ts`
 - `settlement/createSettlement.ts`
 - `settlement/families.test.ts`
 - `settlement/findSettlementSite.test.ts`
@@ -716,6 +822,8 @@ Generated from TypeScript imports.
 - `interaction/resolveInteraction.ts`
 - `persistence/saveData.ts`
 - `settlement/SettlementsManager.ts`
+- `settlement/artisanOrders.test.ts`
+- `settlement/artisanOrders.ts`
 - `settlement/createSettlement.ts`
 - `settlement/foundedSettlementBootstrap.test.ts`
 - `settlement/foundedSettlementBootstrap.ts`
@@ -782,6 +890,8 @@ Generated from TypeScript imports.
 - `items/itemInstances.ts`
 - `items/items.ts`
 - `items/trade.ts`
+- `settlement/artisanCraft.ts`
+- `settlement/artisanProfile.ts`
 - `settlement/families.ts`
 - `settlement/household.ts`
 - `settlement/professionStaffing.ts`
@@ -1228,6 +1338,7 @@ Generated from TypeScript imports.
 - `quests/opportunities/settlementNpcMaterialization.ts`
 - `quests/opportunities/worldQuestMaterialization.ts`
 - `settlement/SettlementsManager.ts`
+- `settlement/artisanProfile.ts`
 - `settlement/createSettlement.ts`
 - `settlement/lostTreasureChroniclesArchaeologistResident.test.ts`
 - `settlement/lostTreasureChroniclesArchaeologistResident.ts`
@@ -1411,6 +1522,7 @@ Generated from TypeScript imports.
 - `ai/npcTravel.ts`
 - `ai/npcVigor.ts`
 - `items/Inventory.ts`
+- `settlement/artisanProfile.ts`
 - `settlement/merchantJourney.ts`
 - `settlement/npcPostDeath.ts`
 - `shared/HealthState.ts`
@@ -1431,6 +1543,8 @@ Generated from TypeScript imports.
 - `ai/npcExpeditionTravel.test.ts`
 - `ai/npcExpeditionTravel.ts`
 - `ai/npcOffscreenSurvival.test.ts`
+- `ai/npcProfessionWork.test.ts`
+- `ai/npcProfessionWork.ts`
 - `ai/npcTravel.test.ts`
 - `ai/npcTravelCheckpoint.ts`
 - `app/actions/npcItemTransfer.test.ts`
@@ -1459,6 +1573,9 @@ Generated from TypeScript imports.
 - `quests/quests.ts`
 - `quests/suspiciousTransportCaveCache.ts`
 - `settlement/SettlementsManager.ts`
+- `settlement/artisanOrders.test.ts`
+- `settlement/artisanOrders.ts`
+- `settlement/artisanProfile.ts`
 - `settlement/createSettlement.ts`
 - `settlement/foundedSettlement.ts`
 - `settlement/foundedSettlementBootstrap.test.ts`
@@ -1641,6 +1758,8 @@ Generated from TypeScript imports.
 - `ai/npcAppearance.ts`
 - `quests/materializeAuthoredQuests.test.ts`
 - `quests/opportunities/settlementQuestOpportunities.test.ts`
+- `settlement/SettlementsManager.ts`
+- `settlement/artisanProfile.ts`
 - `settlement/createSettlement.ts`
 - `settlement/householdProfessionStock.ts`
 - `settlement/lostTreasureChroniclesArchaeologistResident.test.ts`
@@ -2027,6 +2146,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `settlement/artisanCraft.ts`
 - `settlement/householdProfessionStock.ts`
 - `settlement/merchantTrade.ts`
 

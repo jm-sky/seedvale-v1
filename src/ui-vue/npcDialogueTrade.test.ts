@@ -3,7 +3,7 @@ import type { NpcAgent } from '../ai/NpcAgent'
 import type { Settlement } from '../settlement/createSettlement'
 import { HUNT_RESUPPLY_ARROW_TARGET } from '../ai/NpcAgent'
 import { type NpcTradeCounterparty, resolveNpcTradeOffers, type TradeReserveNpc } from '../ai/npcTradeAvailability'
-import { npcDialogueCanTrade } from '../app/inventoryWiring'
+import { npcDialogueCanOrderArtisan, npcDialogueCanTrade } from '../app/inventoryWiring'
 import { Inventory } from '../items/Inventory'
 import { type ItemKind } from '../items/items'
 import { QuestManager } from '../quests/QuestManager'
@@ -63,6 +63,8 @@ const emptyHandlers = {
   onAskAboutArea: () => '',
   onPayWage: () => '',
   onGiveItem: () => {},
+  onOpenArtisanOrders: () => {},
+  getCanOrderArtisan: () => false,
   onRespondToJoinProposal: () => '',
   onProposeJoin: () => '',
 }
@@ -86,6 +88,37 @@ describe('npcDialogueCanTrade', () => {
 
   it('is false when no NPC is in dialogue', () => {
     expect(npcDialogueCanTrade(null)).toBe(false)
+  })
+})
+
+describe('npcDialogueCanOrderArtisan (plan settlements-npcs-056)', () => {
+  const profile = { baseSkill: 50, experience: 0, specializations: ['tools' as const], exclusive: false }
+
+  it('is true for a living Blacksmith with a seeded profile', () => {
+    expect(npcDialogueCanOrderArtisan(
+      stubNpc({ id: 'smith-1', displayName: 'Kowal', role: 'blacksmith' }),
+      profile,
+    )).toBe(true)
+  })
+
+  it('is false for a living farmer, a dead Blacksmith, or a missing profile', () => {
+    expect(npcDialogueCanOrderArtisan(
+      stubNpc({ id: 'farmer-1', displayName: 'Jan', role: 'farmer' }),
+      profile,
+    )).toBe(false)
+    expect(npcDialogueCanOrderArtisan(
+      stubNpc({
+        id: 'smith-dead',
+        displayName: 'Kowal',
+        role: 'blacksmith',
+        health: { dead: true } as NpcAgent['health'],
+      }),
+      profile,
+    )).toBe(false)
+    expect(npcDialogueCanOrderArtisan(
+      stubNpc({ id: 'smith-2', displayName: 'Kowal', role: 'blacksmith' }),
+      null,
+    )).toBe(false)
   })
 })
 

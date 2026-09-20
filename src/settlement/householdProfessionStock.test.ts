@@ -85,6 +85,18 @@ describe('resolveProfessionStarterGrants (plan settlements-npcs-042)', () => {
     })
     expect(restored.items.count('arrow')).toBe(0)
   })
+
+  it('seeds iron_rod starter stock for a Blacksmith household (plan settlements-npcs-056)', () => {
+    const grants = resolveProfessionStarterGrants({
+      hasBlacksmith: true,
+      tradeStock: tradeStock({ size: 'SM' }),
+    }, 'h-smith')
+    expect(grants.some((grant) => grant.kind === 'iron_rod' && grant.count > 0)).toBe(true)
+    const kinds = kindsOf(grants)
+    expect(kinds).toEqual(expect.arrayContaining(['knife', 'iron_rod', 'knight_pauldron_round']))
+    expect(kinds.some((kind) => kind === 'short_sword' || kind === 'long_sword')).toBe(true)
+    expect(kinds.some((kind) => kind === 'axe' || kind === 'pickaxe')).toBe(true)
+  })
 })
 
 describe('specialist armor quality (plan settlements-npcs-042)', () => {

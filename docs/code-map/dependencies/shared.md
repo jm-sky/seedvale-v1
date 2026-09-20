@@ -73,6 +73,7 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `ai/dialogueTemplates.ts`
+- `settlement/artisanProfile.ts`
 - `settlement/createSettlement.ts`
 - `settlement/families.ts`
 - `settlement/household.ts`

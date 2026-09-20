@@ -86,6 +86,10 @@ type NpcDialogueMenuState = {
   canTrade: boolean
   getCanTrade: (() => boolean) | null
   onOpenTrade: (() => void) | null
+  /** Blacksmith custom-order surface (plan settlements-npcs-056). */
+  canOrderArtisan: boolean
+  getCanOrderArtisan: (() => boolean) | null
+  onOpenArtisanOrders: (() => void) | null
   /** "Poproś o jedzenie"/"Poproś o wodę" (plan 152) — resolved immediately
    *  against the currently-open `npc`, same shape as `onAskSword`. */
   onRequestFood: ((npc: NpcAgent) => string) | null
@@ -519,6 +523,33 @@ type NpcGiveItemScreenState = {
   onGive: ((kind: ItemKind, amount: number) => void) | null
   onGiveInstance: ((instanceId: string) => void) | null
 }
+
+export type ArtisanOrderCatalogView = {
+  productionId: string
+  label: string
+  deposit: number
+  canOrder: boolean
+  missingLabel: string | null
+  prefers: boolean
+}
+
+export type ArtisanActiveOrderView = {
+  id: string
+  label: string
+  statusLabel: string
+  canPickup: boolean
+}
+
+type ArtisanOrderScreenState = {
+  open: boolean
+  npcName: string
+  playerCoins: number
+  message: string
+  catalog: readonly ArtisanOrderCatalogView[]
+  orders: readonly ArtisanActiveOrderView[]
+  onOrder: ((productionId: string) => void) | null
+  onPickup: ((orderId: string) => void) | null
+}
 /** Shared `1..max` amount picker (plan items-player-024) — one reusable
  *  overlay for Inventory "Wyrzuć" and container/corpse "Weź"/"Włóż" instead
  *  of a bespoke stepper per screen. The caller only supplies `label`/`max`
@@ -793,7 +824,7 @@ export function emitUiClick(): void {
 }
 
 export const ui = reactive({
-  npcDialogueMenu: { open: false, npc: null, npcHeading: '', settlement: null, timeOfDay: 0, helpResult: null, resolveQuestHelp: null, resolveQuestPreview: null, canClaimGuardReward: false, getCanClaimGuardReward: null, onClaimGuardReward: null, canTrade: false, getCanTrade: null, onOpenTrade: null, onRequestFood: null, onRequestWater: null, onAskAboutArea: null, followUp: null, paymentClaim: null, onPayWage: null, onGiveItem: null, joinProposal: null, onRespondToJoinProposal: null, onProposeJoin: null } as NpcDialogueMenuState,
+  npcDialogueMenu: { open: false, npc: null, npcHeading: '', settlement: null, timeOfDay: 0, helpResult: null, resolveQuestHelp: null, resolveQuestPreview: null, canClaimGuardReward: false, getCanClaimGuardReward: null, onClaimGuardReward: null, canTrade: false, getCanTrade: null, onOpenTrade: null, canOrderArtisan: false, getCanOrderArtisan: null, onOpenArtisanOrders: null, onRequestFood: null, onRequestWater: null, onAskAboutArea: null, followUp: null, paymentClaim: null, onPayWage: null, onGiveItem: null, joinProposal: null, onRespondToJoinProposal: null, onProposeJoin: null } as NpcDialogueMenuState,
   villagers: { open: false, entries: [] as VillagerEntry[], page: 0, containers: [] as VillagerContainerOption[] },
   inventory: { open: false, counts: {}, groups: [], totalWeight: 0, maxWeight: 0, totalSize: 0, maxSize: 0, heldTool: null, heldInstanceId: null, primaryMelee: null, primaryRanged: null, onDrop: null, onEquip: null, onUnequip: null, equippedSlots: {}, onEquipArmor: null, onUnequipArmor: null, onConsume: null, onRead: null, onPlaceTrap: null, onSellInstances: null, onSharpen: null, onPlaceContainer: null, onPlaceTent: null, onSetPrimaryMelee: null, onSetPrimaryRanged: null } as InventoryState,
   pauseMenu: {
@@ -849,6 +880,9 @@ export const ui = reactive({
   npcGiveItemScreen: {
     open: false, npcName: '', playerCounts: {}, playerGroups: [], playerTotalWeight: 0, playerMaxWeight: 0, onGive: null, onGiveInstance: null,
   } as NpcGiveItemScreenState,
+  artisanOrderScreen: {
+    open: false, npcName: '', playerCoins: 0, message: '', catalog: [], orders: [], onOrder: null, onPickup: null,
+  } as ArtisanOrderScreenState,
   quantityDialog: { open: false, label: '', max: 1, value: 1, onConfirm: null } as QuantityDialogState,
   actionConfirm: { open: false, title: '', body: '', confirmLabel: 'Potwierdź', onConfirm: null, onOpen: null, onClose: null } as ActionConfirmState,
   busy: { visible: false, label: '', blurred: false, progress: null } as BusyState,
@@ -1079,6 +1113,7 @@ export function openNpcDialogueMenu(npc: NpcAgent, settlement: Settlement, quest
   state.resolveQuestPreview = () => questManager.previewNpcDialogue(npc.id)
   state.canClaimGuardReward = state.getCanClaimGuardReward?.() ?? false
   state.canTrade = state.getCanTrade?.() ?? false
+  state.canOrderArtisan = state.getCanOrderArtisan?.() ?? false
   state.paymentClaim = npc.preparePaymentRequest()
   state.joinProposal = npc.pendingVoluntaryJoinProposal()
   const followUp = npc.pendingPlayerFollowUp()
@@ -1199,6 +1234,8 @@ export function configureNpcDialogueMenu(handlers: {
   onAskAboutArea: (npc: NpcAgent) => string | Promise<string>
   onPayWage: () => string
   onGiveItem: () => void
+  onOpenArtisanOrders: () => void
+  getCanOrderArtisan: () => boolean
   onRespondToJoinProposal: (accept: boolean) => string
   onProposeJoin: (durationDays: number) => string
 }): void {
@@ -1206,6 +1243,8 @@ export function configureNpcDialogueMenu(handlers: {
   ui.npcDialogueMenu.onOpenTrade = handlers.onOpenTrade
   ui.npcDialogueMenu.getCanClaimGuardReward = handlers.getCanClaimGuardReward
   ui.npcDialogueMenu.getCanTrade = handlers.getCanTrade
+  ui.npcDialogueMenu.onOpenArtisanOrders = handlers.onOpenArtisanOrders
+  ui.npcDialogueMenu.getCanOrderArtisan = handlers.getCanOrderArtisan
   ui.npcDialogueMenu.onRequestFood = handlers.onRequestFood
   ui.npcDialogueMenu.onRequestWater = handlers.onRequestWater
   ui.npcDialogueMenu.onAskAboutArea = handlers.onAskAboutArea
@@ -1492,6 +1531,43 @@ export function refreshNpcGiveItemScreen(
 }
 export function closeNpcGiveItemScreen(): void { ui.npcGiveItemScreen.open = false }
 export function isNpcGiveItemScreenOpen(): boolean { return ui.npcGiveItemScreen.open }
+
+export function configureArtisanOrderScreen(handlers: Pick<ArtisanOrderScreenState, 'onOrder' | 'onPickup'>): void {
+  Object.assign(ui.artisanOrderScreen, handlers)
+}
+
+export function openArtisanOrderScreen(
+  npcName: string,
+  playerCoins: number,
+  catalog: readonly ArtisanOrderCatalogView[],
+  orders: readonly ArtisanActiveOrderView[],
+  message = '',
+): void {
+  closeNpcDialogueMenu({ decline: false })
+  ui.artisanOrderScreen.npcName = npcName
+  ui.artisanOrderScreen.playerCoins = playerCoins
+  ui.artisanOrderScreen.catalog = catalog
+  ui.artisanOrderScreen.orders = orders
+  ui.artisanOrderScreen.message = message
+  ui.artisanOrderScreen.open = true
+  emitUiOpen()
+}
+
+export function refreshArtisanOrderScreen(
+  playerCoins: number,
+  catalog: readonly ArtisanOrderCatalogView[],
+  orders: readonly ArtisanActiveOrderView[],
+  message?: string,
+): void {
+  if (!ui.artisanOrderScreen.open) return
+  ui.artisanOrderScreen.playerCoins = playerCoins
+  ui.artisanOrderScreen.catalog = catalog
+  ui.artisanOrderScreen.orders = orders
+  if (message !== undefined) ui.artisanOrderScreen.message = message
+}
+
+export function closeArtisanOrderScreen(): void { ui.artisanOrderScreen.open = false }
+export function isArtisanOrderScreenOpen(): boolean { return ui.artisanOrderScreen.open }
 
 /** Opens the shared quantity dialog (plan items-player-024). Callers only
  *  reach this for `max > 1` — a single-unit stack acts immediately without a

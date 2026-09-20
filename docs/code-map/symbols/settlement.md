@@ -19,6 +19,72 @@ Generated from exported TypeScript symbols.
 - `SettlementCorpseCleanupHooks` — type — line 73
 - `SettlementInfluence` — type — line 19
 
+## `settlement/artisanCraft.ts`
+
+- `artisanCanCraft` — function — line 64
+- `ArtisanCraftDecision` — type — line 13
+- `artisanMaterialDepositValue` — function — line 77
+  - domain: settlements-npcs
+- `artisanOutputKind` — function — line 145
+- `MissingArtisanMaterial` — type — line 88
+- `missingArtisanMaterials` — function — line 95
+- `resolveArtisanCraft` — function — line 38
+  - domain: settlements-npcs
+- `resolveArtisanCraftedQuality` — function — line 133
+  - domain: settlements-npcs
+
+## `settlement/artisanOrders.ts`
+
+- `acceptArtisanOrder` — function — line 133
+  - domain: settlements-npcs
+- `AcceptArtisanOrderResult` — type — line 111
+- `ArtisanOrderCatalog` — type — line 51
+- `ArtisanOrderCatalogEntry` — type — line 41
+  - domain: settlements-npcs
+- `artisanOrderRecipes` — function — line 58
+- `completeArtisanOrder` — function — line 203
+  - domain: settlements-npcs
+- `CompleteArtisanOrderResult` — type — line 194
+- `listArtisanOrderCatalog` — function — line 75
+- `nextCompletableArtisanOrder` — function — line 299
+- `pickupArtisanOrder` — function — line 266
+  - domain: settlements-npcs
+- `PickupArtisanOrderResult` — type — line 257
+- `reservedArtisanOutputIds` — function — line 62
+
+## `settlement/artisanProfile.ts`
+
+- `ARTISAN_SKILL_MAX` — const — line 28
+- `ARTISAN_SKILL_MIN` — const — line 27
+- `ARTISAN_SPECIALIZATION_BONUS` — const — line 26
+- `ARTISAN_SPECIALIZATIONS` — const — line 19
+- `ArtisanGenerationContext` — type — line 101
+- `ArtisanOrder` — type — line 65
+  - domain: settlements-npcs
+- `ArtisanOrderMaterial` — type — line 52
+- `ArtisanOrderStatus` — type — line 45
+- `ArtisanProfile` — type — line 37
+  - domain: settlements-npcs
+- `ArtisanSpecialization` — type — line 17
+  - domain: settlements-npcs
+- `cloneArtisanOrders` — function — line 360
+- `cloneArtisanProfile` — function — line 350
+- `effectiveArtisanSkill` — function — line 340
+  - domain: settlements-npcs
+- `generateArtisanBaseSkill` — function — line 153
+  - domain: settlements-npcs
+- `isArtisanOrderStatus` — function — line 401
+- `isArtisanSpecialization` — function — line 397
+- `listSettlementBlacksmiths` — function — line 202
+  - domain: settlements-npcs
+- `noteArtisanProductionCompleted` — function — line 389
+  - domain: settlements-npcs
+- `resolveArtisanProfile` — function — line 296
+  - domain: settlements-npcs
+- `seedArtisanProfileIfNeeded` — function — line 374
+  - domain: settlements-npcs
+- `SettlementBlacksmithRef` — type — line 192
+
 ## `settlement/blacksmithYard.ts`
 
 - `BLACKSMITH_YARD_BASE_OFFSET` — const — line 23
@@ -41,10 +107,10 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/createSettlement.ts`
 
-- `createSettlement` — function — line 517
-- `CreateSettlementDeps` — type — line 312
-- `Settlement` — type — line 171
-- `settlementSpawnPoint` — function — line 300
+- `createSettlement` — function — line 518
+- `CreateSettlementDeps` — type — line 313
+- `Settlement` — type — line 172
+- `settlementSpawnPoint` — function — line 301
 
 ## `settlement/decorProps.ts`
 
@@ -255,11 +321,11 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/household.ts`
 
-- `createHousehold` — function — line 390
-- `createHouseholdRegistry` — function — line 634
-- `FARMER_STARTING_SEED_COUNT` — const — line 271
+- `createHousehold` — function — line 394
+- `createHouseholdRegistry` — function — line 638
+- `FARMER_STARTING_SEED_COUNT` — const — line 275
 - `HayForageState` — type — line 129
-- `Household` — type — line 274
+- `Household` — type — line 278
 - `HOUSEHOLD_WOOD_RESERVE_TARGET` — const — line 99
 - `HouseholdAgricultureState` — type — line 203
 - `HouseholdDepositResult` — type — line 38
@@ -269,11 +335,11 @@ Generated from exported TypeScript symbols.
   - role: Owns one family's own food/wood/water stock, between NPC carrying and `SettlementEconomy`.
   - owns: Household
   - uses: SettlementEconomy
-- `householdIdFor` — function — line 356
-- `HouseholdRegistry` — type — line 599
+- `householdIdFor` — function — line 360
+- `HouseholdRegistry` — type — line 603
 - `HouseholdResourceKind` — type — line 56
 - `HouseholdSnapshot` — type — line 215
-- `HouseholdStartingContext` — type — line 255
+- `HouseholdStartingContext` — type — line 259
 - `HouseholdTradeStockContext` — type — line 242
   - domain: settlements-npcs
 - `resolveHayForage` — function — line 145
@@ -289,21 +355,21 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/householdProfessionStock.ts`
 
-- `applyProfessionTradeStock` — function — line 274
+- `applyProfessionTradeStock` — function — line 350
   - domain: settlements-npcs
-- `BLACKSMITH_TRADE_PAULDRON_COUNT` — const — line 25
-- `BLACKSMITH_TRADE_SWORD_COUNT` — const — line 24
-- `FARMER_TRADE_TOOL_COUNT` — const — line 23
-- `householdStartingContextFromFamily` — function — line 235
+- `BLACKSMITH_TRADE_PAULDRON_COUNT` — const — line 32
+- `BLACKSMITH_TRADE_SWORD_COUNT` — const — line 31
+- `FARMER_TRADE_TOOL_COUNT` — const — line 30
+- `householdStartingContextFromFamily` — function — line 311
   - domain: settlements-npcs
-- `HUNTER_STARTER_DRIED_MEAT` — const — line 29
-- `HUNTER_STARTER_HERB` — const — line 30
-- `HUNTER_STARTER_TRADE_ARROWS` — const — line 28
-- `HUNTER_STARTER_TRADE_SHORT_BOWS` — const — line 22
-- `resolveProfessionStarterGrants` — function — line 214
+- `HUNTER_STARTER_DRIED_MEAT` — const — line 36
+- `HUNTER_STARTER_HERB` — const — line 37
+- `HUNTER_STARTER_TRADE_ARROWS` — const — line 35
+- `HUNTER_STARTER_TRADE_SHORT_BOWS` — const — line 29
+- `resolveProfessionStarterGrants` — function — line 290
   - domain: settlements-npcs
-- `StarterGrant` — type — line 32
-- `WOODCUTTER_TRADE_AXE_COUNT` — const — line 21
+- `StarterGrant` — type — line 39
+- `WOODCUTTER_TRADE_AXE_COUNT` — const — line 28
   - domain: settlements-npcs
 
 ## `settlement/householdResourceTransfer.ts`
@@ -667,17 +733,17 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/npcState.ts`
 
-- `createNpcAuthoritativeState` — function — line 289
-- `createNpcStateRegistry` — function — line 340
-- `MAX_HP` — const — line 52
-- `MAX_STAMINA` — const — line 53
-- `NpcAuthoritativeState` — type — line 91
+- `createNpcAuthoritativeState` — function — line 316
+- `createNpcStateRegistry` — function — line 370
+- `MAX_HP` — const — line 58
+- `MAX_STAMINA` — const — line 59
+- `NpcAuthoritativeState` — type — line 97
   - domain: settlements-npcs
-- `NpcGraveVisitRecord` — type — line 44
-- `NpcId` — type — line 40
-- `NpcPhysicalMaxima` — type — line 275
-- `NpcStateRegistry` — type — line 326
-- `NpcStateSnapshot` — type — line 196
+- `NpcGraveVisitRecord` — type — line 50
+- `NpcId` — type — line 46
+- `NpcPhysicalMaxima` — type — line 302
+- `NpcStateRegistry` — type — line 356
+- `NpcStateSnapshot` — type — line 215
 
 ## `settlement/pastureWater.ts`
 
@@ -1159,13 +1225,13 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/SettlementsManager.ts`
 
-- `createSettlementsManager` — function — line 379
+- `createSettlementsManager` — function — line 380
   - domain: settlements
   - system: settlements-manager
   - role: Owns settlement generation, streaming and per-settlement economy/household/NPC-state registries.
   - owns: SettlementEconomy, Household
   - lifecycle: streaming
-- `SettlementsManager` — type — line 152
+- `SettlementsManager` — type — line 153
 
 ## `settlement/settlementStructures.ts`
 

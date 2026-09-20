@@ -11,6 +11,7 @@ const FORWARDED_FNS = [
   'configureContainerScreen', 'openContainerScreen', 'refreshContainerScreen', 'closeContainerScreen', 'isContainerScreenOpen',
   'configureHouseholdTransferScreen', 'openHouseholdTransferScreen', 'refreshHouseholdTransferScreen', 'closeHouseholdTransferScreen', 'isHouseholdTransferScreenOpen',
   'configureNpcGiveItemScreen', 'openNpcGiveItemScreen', 'refreshNpcGiveItemScreen', 'closeNpcGiveItemScreen', 'isNpcGiveItemScreenOpen',
+  'configureArtisanOrderScreen', 'openArtisanOrderScreen', 'refreshArtisanOrderScreen', 'closeArtisanOrderScreen', 'isArtisanOrderScreenOpen',
   'configurePauseMenu', 'setPauseSeed', 'setPauseActiveSaveName', 'openPauseMenu', 'closePauseMenu', 'togglePause', 'isPauseMenuOpen',
   'openQuestLog', 'refreshQuestLog', 'closeQuestLog', 'isQuestLogOpen',
   'configureFlavorDialog', 'openFlavorDialog', 'setFlavorPrompt', 'setFlavorInteractionPrompt', 'closeFlavorDialog', 'isFlavorDialogOpen',

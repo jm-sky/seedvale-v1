@@ -1067,6 +1067,7 @@ Generated from TypeScript imports.
 - `ai/dialogueTemplates.ts`
 - `app/worldBundle.ts`
 - `economy/initial.ts`
+- `settlement/artisanProfile.ts`
 - `settlement/createSettlement.ts`
 - `settlement/families.test.ts`
 - `settlement/families.ts`

@@ -2355,6 +2355,56 @@ describe('schema versioning and migration pipeline (persistence-003)', () => {
     expect(result.data.mineableRocks).toEqual([])
   })
 
+  it('migrates a v51 save without artisan fields to the current version (plan settlements-npcs-056)', () => {
+    const result = loadStoredSave({ ...validSave, version: 51 })
+    expect(result.status).toBe('ok')
+    if (result.status !== 'ok') return
+    expect(result.data.version).toBe(CURRENT_SAVE_VERSION)
+  })
+
+  it('round-trips npcStates artisan profile/orders and rejects a malformed profile (plan settlements-npcs-056)', () => {
+    const snapshot = {
+      health: { current: 100, max: 100, dead: false },
+      stamina: { current: 100, max: 100 },
+      vigor: { current: 100, max: 100 },
+      needs: { thirst: 0, woodDuty: 0, waterDuty: 0, hunger: 0 },
+      postDeath: null,
+      personalInventory: { counts: {}, instances: [] },
+      artisanProfileInitialized: true,
+      artisanProfile: {
+        baseSkill: 61,
+        experience: 2,
+        specializations: ['swords'],
+        exclusive: false,
+      },
+      artisanOrders: [{
+        id: 'npc:1:order:0:blacksmith.knife',
+        artisanNpcId: 'npc:1',
+        customer: 'player',
+        productionId: 'blacksmith.knife',
+        status: 'accepted',
+        createdAt: 3,
+        paidMaterialCost: 10,
+        requiredMaterials: [{ kind: 'iron', amount: 1, owner: 'stock' }],
+      }],
+    }
+    const result = loadStoredSave({ ...validSave, npcStates: { 'npc:1': snapshot } })
+    expect(result.status).toBe('ok')
+    if (result.status === 'ok') {
+      expect(result.data.npcStates?.['npc:1']?.artisanProfile).toEqual(snapshot.artisanProfile)
+      expect(result.data.npcStates?.['npc:1']?.artisanOrders).toEqual(snapshot.artisanOrders)
+    }
+    expect(loadStoredSave({
+      ...validSave,
+      npcStates: {
+        'npc:1': {
+          ...snapshot,
+          artisanProfile: { ...snapshot.artisanProfile, specializations: ['swordsmiting'] },
+        },
+      },
+    })).toEqual({ status: 'invalid' })
+  })
+
   it('round-trips mineableRocks and rejects a malformed one (plan world-terrain-047)', () => {
     const rocks = [
       { id: 'rock:largeRock:1:2:0:a', stageIndex: 1, actionsInStage: 2 },
