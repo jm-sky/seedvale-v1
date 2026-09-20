@@ -841,6 +841,7 @@ Generated from TypeScript imports.
 - `reputation/ReputationManager.ts`
 - `settlement/npcState.ts`
 - `terrain/chunkEnvironment.ts`
+- `world/authoredWorldConsequences.ts`
 - `world/locations/darkForestTreasureSite.ts`
 - `world/locations/treasureMapBearCave.ts`
 

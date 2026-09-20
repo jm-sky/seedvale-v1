@@ -147,6 +147,11 @@ import {
   type SettlementMiningHooks,
 } from '../terrain/resourceDeposits'
 import { terrainVisualHorizon, type TerrainVisualHorizon } from '../terrain/terrainVisualHorizon'
+import {
+  type AuthoredWorldConsequenceId,
+  type AuthoredWorldConsequenceRegistry,
+  createAuthoredWorldConsequenceRegistry,
+} from '../world/authoredWorldConsequences'
 import { type BloodTrace, type BloodTraceSystem, createBloodTraceSystem } from '../world/bloodTraces'
 import { preloadCartProp } from '../world/cartProp'
 import { landmarkRequiredMineCaveId } from '../world/caves/abandonedMineLandmark'
@@ -475,6 +480,15 @@ export type WorldBundle = {
    *  World-scoped: built fresh alongside `settlementsManager` below and never
    *  persisted, so it's naturally discarded on a `WorldBundle` rebuild. */
   riverWaterQuality: RiverWaterQualityResolver
+  /** Plan world-031 — world-owned activation fact for predefined authored
+   *  world consequences (e.g. a future "wolf den cleared" → outpost). Owns
+   *  only `id -> active?`; concrete domain materialization (residents,
+   *  construction, inventory) belongs to whatever consumer reads
+   *  `isActive()`, never to this registry. Persists as
+   *  `SaveData.authoredWorldConsequences` and carries across an in-session
+   *  rebuild the same "snapshot -> constructor input" contract as
+   *  `structureStates` above. */
+  authoredWorldConsequences: AuthoredWorldConsequenceRegistry
 }
 
 function buildChunkManager(
@@ -1117,6 +1131,10 @@ type WorldSystemsSeed = {
    *  same "carried across rebuild, sourced from `SaveData` on a fresh boot"
    *  contract as `households`/`structureStates` above. */
   foundedSettlements?: FoundedSettlementRegistrySnapshot
+  /** Plan world-031 — seeds the bundle-lifetime `AuthoredWorldConsequenceRegistry`,
+   *  same "carried across rebuild, sourced from `SaveData` on a fresh boot"
+   *  contract as `households`/`structureStates` above. */
+  authoredWorldConsequences?: readonly AuthoredWorldConsequenceId[]
   spawnerState?: ReadonlyMap<string, SavedSpawnPointState>
   persistentOccupants?: PersistentOccupantSnapshot
   resourceDepletion: ResourceDepletionState
@@ -1279,6 +1297,7 @@ async function buildWorldSystems(
     seedHomeStorageInfestation,
     structureStates: initialStructureStates,
     foundedSettlements: initialFoundedSettlements,
+    authoredWorldConsequences: initialAuthoredWorldConsequences,
     spawnerState: initialSpawnerState,
     persistentOccupants: initialPersistentOccupants,
     resourceDepletion,
@@ -2012,6 +2031,8 @@ async function buildWorldSystems(
     }
   }
 
+  const authoredWorldConsequences = createAuthoredWorldConsequenceRegistry(initialAuthoredWorldConsequences)
+
   const bundle: WorldBundle = {
     chunkManager,
     terrainVisualHorizon: terrainVisualHorizon({
@@ -2116,6 +2137,7 @@ async function buildWorldSystems(
     resourceSiteInventories,
     grassForage,
     riverWaterQuality,
+    authoredWorldConsequences,
   }
 
   // Deferred: fauna (§4), item preloads (§5), item spawners/drying racks/
@@ -2401,6 +2423,10 @@ export async function createWorldBundle(
    *  overrides, sourced from `SaveData.foundedSettlements` on a fresh boot;
    *  same carry/restore contract as `initialStructureStates` above. */
   initialFoundedSettlements?: FoundedSettlementRegistrySnapshot,
+  /** Plan world-031 — activated authored world consequence ids, sourced from
+   *  `SaveData.authoredWorldConsequences` on a fresh boot; same carry/restore
+   *  contract as `initialStructureStates`/`initialFoundedSettlements` above. */
+  initialAuthoredWorldConsequences?: readonly AuthoredWorldConsequenceId[],
 ): Promise<BuiltWorldSystems> {
   return buildWorldSystems({
     scene, config, collectedItemIds, renewableWorldItems, consumedWorldPickupIds, removedCropIds, plantedTrees, plantedCrops, modifications, playAt,
@@ -2445,6 +2471,7 @@ export async function createWorldBundle(
     seedHomeStorageInfestation,
     structureStates: initialStructureStates,
     foundedSettlements: initialFoundedSettlements,
+    authoredWorldConsequences: initialAuthoredWorldConsequences,
     spawnerState: initialSpawnerState,
     persistentOccupants: initialPersistentOccupants,
     resourceDepletion,
@@ -2635,6 +2662,10 @@ export async function rebuildWorldBundle(
   const carriedStorageInfestation = resetCollectedItems ? undefined : bundle.settlementsManager.snapshotStorageInfestation()
   const carriedStructureStates = resetCollectedItems ? undefined : bundle.settlementsManager.snapshotStructureStates()
   const carriedFoundedSettlements = resetCollectedItems ? undefined : bundle.settlementsManager.snapshotFoundedSettlements()
+  // Authored world consequence activation is gameplay history (plan
+  // world-031), same "reset only on a genuinely new world" contract as
+  // `carriedStructureStates`/`carriedFoundedSettlements` above.
+  const carriedAuthoredWorldConsequences = resetCollectedItems ? undefined : bundle.authoredWorldConsequences.snapshot()
   bundle.caves.dispose()
   bundle.resourceDeposits.dispose()
   bundle.grassForage.dispose()
@@ -2693,6 +2724,7 @@ export async function rebuildWorldBundle(
     seedHomeStorageInfestation: false,
     structureStates: carriedStructureStates,
     foundedSettlements: carriedFoundedSettlements,
+    authoredWorldConsequences: carriedAuthoredWorldConsequences,
     spawnerState: carriedSpawnerState,
     persistentOccupants: carriedPersistentOccupants,
     resourceDepletion,

@@ -1790,6 +1790,7 @@ Generated from TypeScript imports.
 - `terrain/terrainPreparation.ts`
 - `terrain/terrainVisualHorizon.ts`
 - `world/animalTraps.ts`
+- `world/authoredWorldConsequences.ts`
 - `world/beehives.ts`
 - `world/bloodTraces.ts`
 - `world/cartProp.ts`

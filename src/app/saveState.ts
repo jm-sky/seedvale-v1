@@ -338,6 +338,10 @@ export function createSaveState(deps: SaveStateDeps): SaveState {
       storageInfestation: bundle.settlementsManager.snapshotStorageInfestation(),
       structureStates: bundle.settlementsManager.snapshotStructureStates(),
       foundedSettlements: bundle.settlementsManager.snapshotFoundedSettlements(),
+      authoredWorldConsequences: (() => {
+        const snapshot = bundle.authoredWorldConsequences.snapshot()
+        return snapshot.length > 0 ? [...snapshot] : undefined
+      })(),
     }
   }
 
