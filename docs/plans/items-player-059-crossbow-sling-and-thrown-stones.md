@@ -9,6 +9,7 @@
 **Subdomains:** `items` `interaction`
 **Tags:** `combat` `npc` `ranged`
 **Roadmap:** -
+**Model:** Grok, Sonnet
 
 ## Goal
 
