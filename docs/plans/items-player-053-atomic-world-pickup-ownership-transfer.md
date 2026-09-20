@@ -8,6 +8,7 @@
 **Subdomains:** `inventory` `items` `interaction`
 **Type:** `bug`
 **Roadmap:** -
+**Model:** Sonnet, Composer
 
 ## Goal
 
