@@ -7,6 +7,7 @@
 **Domain:** `npc`
 **Type:** `fix`
 **Roadmap:** -
+**Model:** Sonnet, Composer
 
 ## Goal
 
