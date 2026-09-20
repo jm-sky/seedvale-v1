@@ -2679,6 +2679,7 @@ Generated from TypeScript imports.
 **Imports**
 
 - `settlement/structureCondition.ts`
+- `settlement/structureStateRegistry.ts`
 - `world/condition.ts`
 
 ## `settlement/structureCondition.ts`
@@ -2694,6 +2695,7 @@ Generated from TypeScript imports.
 
 - `ai/NpcAgent.ts`
 - `app/actions/placementActions.ts`
+- `app/createApp.ts`
 - `app/interactables.ts`
 - `persistence/saveData.ts`
 - `settlement/SettlementsManager.ts`
@@ -2748,6 +2750,7 @@ Generated from TypeScript imports.
 
 - `settlement/SettlementsManager.ts`
 - `settlement/createSettlement.ts`
+- `settlement/structureCondition.test.ts`
 - `settlement/structureRepairCandidates.test.ts`
 - `settlement/structureRepairCandidates.ts`
 - `settlement/structureStateRegistry.test.ts`

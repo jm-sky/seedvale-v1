@@ -287,13 +287,13 @@ Generated from exported TypeScript symbols.
 
 ## `app/createApp.ts`
 
-- `createApp` — function — line 441
+- `createApp` — function — line 442
   - system: app-composition
   - role: Composition root: builds every long-lived system, threads their dependencies and owns app-level lifecycle (boot, rebuild, dispose).
   - owns: WorldBundle, GameLoop, AppRenderLoop
   - lifecycle: boot
   - integration: Wires world, player, UI, persistence and audio systems together.
-- `NewAppOptions` — type — line 410
+- `NewAppOptions` — type — line 411
 
 ## `app/faunaEncounterComposition.ts`
 
@@ -349,10 +349,10 @@ Generated from exported TypeScript symbols.
 
 ## `app/interactables.ts`
 
-- `buildCombatTarget` — function — line 1338
-- `buildDigTarget` — function — line 1282
+- `buildCombatTarget` — function — line 1365
+- `buildDigTarget` — function — line 1309
 - `buildInteractables` — function — line 523
-- `collectItem` — function — line 1394
+- `collectItem` — function — line 1421
 - `COMBAT_TARGET_CONE_DOT` — const — line 110
 - `COMBAT_TARGET_RANGE` — const — line 95
 - `CombatAimMode` — type — line 100

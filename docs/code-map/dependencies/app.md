@@ -1078,6 +1078,7 @@ Generated from TypeScript imports.
 - `settlement/npcIdentity.ts`
 - `settlement/npcState.ts`
 - `settlement/settlementGenerator.ts`
+- `settlement/structureCondition.ts`
 - `settlement/villagePlanDebug.ts`
 - `shared/StaminaState.ts`
 - `shared/VigorState.ts`

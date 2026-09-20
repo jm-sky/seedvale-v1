@@ -118,10 +118,10 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/createSettlement.ts`
 
-- `createSettlement` — function — line 523
-- `CreateSettlementDeps` — type — line 318
+- `createSettlement` — function — line 538
+- `CreateSettlementDeps` — type — line 333
 - `Settlement` — type — line 177
-- `settlementSpawnPoint` — function — line 306
+- `settlementSpawnPoint` — function — line 321
 
 ## `settlement/decorProps.ts`
 
@@ -844,15 +844,17 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/props.ts`
 
-- `BlacksmithWorkplace` — type — line 360
-- `buildSettlementProps` — function — line 771
-- `disposeSettlementGroup` — function — line 2361
+- `AuthoredRepairVisualHandles` — type — line 363
+  - domain: settlements
+- `BlacksmithWorkplace` — type — line 383
+- `buildSettlementProps` — function — line 794
+- `disposeSettlementGroup` — function — line 2434
 - `SettlementHouseBed` — type — line 165
 - `SettlementHouseLandmark` — type — line 131
 - `SettlementLandmarks` — type — line 186
 - `SettlementLandPlot` — type — line 349
 - `SettlementStorageVisuals` — type — line 341
-- `SettlementTreeLandmark` — type — line 370
+- `SettlementTreeLandmark` — type — line 393
 - `SettlementWellLandmark` — type — line 172
 
 ## `settlement/propSpecs.ts`
@@ -1149,7 +1151,7 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/settlementPalisade.ts`
 
-- `fencePlacementColliders` — function — line 380
+- `fencePlacementColliders` — function — line 382
   - domain: settlements
 - `PALISADE_GATE_HALF_ANGLE` — const — line 20
 - `PALISADE_WALL_HALF_DEPTH` — const — line 27
@@ -1162,7 +1164,7 @@ Generated from exported TypeScript symbols.
   - domain: settlements
 - `SettlementEntranceTorchPlacement` — type — line 62
   - domain: settlements
-- `settlementPalisadeColliders` — function — line 399
+- `settlementPalisadeColliders` — function — line 401
   - domain: settlements
 - `SettlementPalisadePlacement` — type — line 54
   - domain: settlements
