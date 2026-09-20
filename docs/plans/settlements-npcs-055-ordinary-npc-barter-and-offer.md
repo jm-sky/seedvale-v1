@@ -9,6 +9,7 @@
 **Subdomains:** `economy` `household`
 **Tags:** `trade` `barter` `ownership`
 **Roadmap:** -
+**Model:** Sonnet · Composer
 
 ## Goal
 
