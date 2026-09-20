@@ -6,6 +6,7 @@
 **Depends on:** ~~npc-039~~, ~~npc-040~~
 **Domain:** `tools`  
 **Type:** `infrastructure`  
+**Model:** Sonnet, Composer
 **Subdomains:** `automation` `development`  
 **Tags:** `blender` `ubc` `quaternius` `characters` `assets`  
 **Roadmap:** -
