@@ -1,10 +1,11 @@
 # PLANS PLANNED WITHOUT NOTES
 
 > Generated with `pnpm plans:without-notes`  
-> Date: 2026-09-20 22:33:30  
+> Date: 2026-09-20 22:35:05  
 
 ## PLANS
 
+- `fauna-046-stamina-aware-animal-water-crossing-risk.md`
 - `quests-progression-044-lost-treasure-chronicles-final-treasure-claims-and-resolution.md`
 - `quests-progression-045-lost-treasure-chronicles-property-grant-deed-and-persistent-land-reward.md`
 - `quests-progression-046-lost-treasure-chronicles-integration-legacy-catch-up-and-superseded-quest-cleanup.md`
@@ -28,6 +29,37 @@
 
 --------------------------------
 ## PROMPTS
+
+### `fauna-046-stamina-aware-animal-water-crossing-risk.md`
+
+Prompt:
+
+```
+Zrób review planu `fauna-046-stamina-aware-animal-water-crossing-risk.md`
+
+Wczytaj:
+- `docs/STATE.md`
+- `docs/plans/PLANNING.md` (Implementation Notes section),
+- `docs/plans/fauna-046-stamina-aware-animal-water-crossing-risk.md`
+- aktualny codebase,
+- potrzebne zależności i powiązane implementacje.
+
+Na podstawie review utwórz w repo plik:
+`docs/plans/implementation-notes/fauna-046-stamina-aware-animal-water-crossing-risk-implementation-notes.md`
+
+Umieść w nim:
+- sugestie dotyczące implementacji,
+- istotne detale techniczne,
+- decyzje architektoniczne,
+- informacje o istniejących systemach i implementacjach, które należy wykorzystać,
+- potencjalne problemy, zależności i pułapki,
+- inne konkretne wskazówki, które ułatwią agentowi AI poprawną implementację planu.
+
+Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
+Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
+
+Pliki dodaj na branch `main` w repozytorium.
+```
 
 ### `quests-progression-044-lost-treasure-chronicles-final-treasure-claims-and-resolution.md`
 

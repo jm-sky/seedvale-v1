@@ -131,6 +131,7 @@ Unless noted otherwise, `verification needed` means implementation has passed au
 | 💡 `items-player-059-crossbow-sling-and-thrown-stones.md`                      | 🟡 | L      | ~~npc-053~~                                                                                                                                                                                                                                                                                | -                                         |
 | ◼️ `ui-input-033-world-map-player-heading-arrow.md`                            | 🟡 | S      | -                                                                                                                                                                                                                                                                                          | -                                         |
 | ◼️ `ui-input-034-deliberate-risky-natural-water-drinking.md`                   | 🔴 | S      | -                                                                                                                                                                                                                                                                                          | -                                         |
+| ◼️ `fauna-046-stamina-aware-animal-water-crossing-risk.md`                     | 🔴 | M      | ~~fauna-015~~, ~~fauna-029~~                                                                                                                                                                                                                                                               | -                                         |
 
 ---
 
@@ -262,7 +263,7 @@ New plans declare a primary `Domain:` in frontmatter. Use optional `Tags:` only 
 ## Next plan IDs
 
 - ai: `005`
-- fauna: `046`
+- fauna: `047`
 - items-player: `060`
 - npc: `062`
 - persistence: `007`
