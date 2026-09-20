@@ -3,6 +3,7 @@
 **Created:** 2026-09-20  
 **Status:** `planned` 📋  
 **Priority:** high · **Effort:** M  
+**Model:** Sonnet, Composer  
 **Depends on:** ~~world-027~~  
 **Domain:** `items-player`  
 **Type:** `bug`  
