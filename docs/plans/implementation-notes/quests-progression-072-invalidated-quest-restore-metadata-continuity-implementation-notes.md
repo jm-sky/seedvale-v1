@@ -1,267 +1,190 @@
 # Implementation Notes: quests-progression-072 — Invalidated quest restore metadata continuity
 
-Recon baseline: current `main` on 2026-09-19. Scope is only metadata continuity when an active wild-animal-bound quest becomes `invalidated` during restore. Do not redesign animal identity persistence.
+Recon baseline: verified on `main` 2026-09-20. Scope is metadata continuity when an **active** wild-animal-bound quest becomes `invalidated` during **constructor restore**. Do not add wild fauna persistence or a restoration subsystem.
 
 ## Current implementation
 
-`QuestManager` owns quest progress in `states: Map<string, QuestRuntimeProgress>`. Constructor restore:
+### Restore pipeline
 
-1. seeds every materialized definition as `not_offered`;
-2. iterates `initial.progress`;
-3. normalizes each saved entry through `normalizeRestoredProgress(def, entry)`;
-4. for active `kill_target_animal` / `find_animal` slots:
-   - livestock kinds are restored with `runtimeProgress(restored)` and rebound via `bindAnimalTargetIfNeeded()`;
-   - ordinary wild kinds are intentionally not rebound because their runtime individual identity is not trustworthy across restore.
+`SaveData.quests.progress` → `createApp.ts` → `new QuestManager(defs, …, initial)`.
 
-The wild branch currently bypasses the normal transition merge and writes only:
+Constructor sequence (`src/quests/QuestManager.ts` ~665–696):
+
+1. Seed every materialized def as `{ state: 'not_offered', stageIndex: 0 }`.
+2. For each saved entry with matching def id:
+   - `restored = normalizeRestoredProgress(def, entry)` — preserves journal, worldKnowledge, dialogueCooldowns, observation, stage progress fields, suppression, outcome migration for terminal states.
+   - If `restored.state === 'active'` and current stage has `kill_target_animal` / `find_animal` slots:
+     - **Livestock** (`LIVESTOCK_KINDS`): `states.set(id, runtimeProgress(restored))` + `bindAnimalTargetIfNeeded()`.
+     - **Ordinary wild:** direct `states.set(id, { state: 'invalidated', stageIndex: restored.stageIndex })` then `continue` — **skips** `runtimeProgress()` and **`setQuestState()`**.
+
+`animalTargets` is runtime-only (never persisted). Wild restore intentionally does not rebind (`resolveAnimalTarget` could attach a different individual). Livestock rebinding is deterministic via household/spawn identity (existing tests in `QuestManager.test.ts`).
+
+### Rebuild pipeline (aligned meaning, different code path)
+
+`createApp.ts::rebuildWorld()` (~2747) calls `questManager.invalidateStaleAnimalTargets()` when not doing New Game `reset()`.
+
+`invalidateStaleAnimalTargets()` (~1843–1867):
+
+- Scans **active** quests with bound wild (non-livestock) animal targets.
+- Clears stale bindings via `clearAnimalTargetsForQuest()`.
+- Sets `{ state: 'invalidated', stageIndex: s.stageIndex }` through **`setQuestState()`**, which merges durable fields from the **current active runtime** (`journal`, `worldKnowledge`, `dialogueCooldowns`, `observation` — see ~730–757).
+
+### Asymmetry (root cause of the defect)
+
+| Path | Metadata source when invalidating | Result today |
+| --- | --- | --- |
+| Mid-session rebuild | `setQuestState()` merges from active runtime | Durable metadata **preserved** |
+| Save/load restore | Raw `states.set` after seed `not_offered` | Normalized save metadata **discarded** |
+
+The restore branch correctly invalidates lifecycle and avoids wild rebind, but it does not apply the same transition contract as `setQuestState()` / rebuild invalidation.
+
+Relevant wild restore branch (~687–689):
 
 ```ts
-this.states.set(entry.id, {
-  state: 'invalidated',
-  stageIndex: restored.stageIndex,
-})
+this.states.set(entry.id, { state: 'invalidated', stageIndex: restored.stageIndex })
 ```
 
-This correctly invalidates lifecycle identity but drops durable normalized metadata.
+Tests proving invalidation without metadata assertions: `QuestManager.test.ts` “invalidates an active wild-fauna-kind quest (wolf) on restore” (~785), “invalidates an active wild boar binding on restore and rebuild” (~1912).
 
 ## Exact files and symbols
 
-### Primary implementation
+| File | Symbols |
+| --- | --- |
+| `src/quests/QuestManager.ts` | Constructor restore loop; `normalizeRestoredProgress()`; `runtimeProgress()`; `setQuestState()`; `bindAnimalTargetIfNeeded()`; `invalidateStaleAnimalTargets()`; `clearAnimalTargetsForQuest()`; `reset()`; `exportProgress()`; `animalTargets` |
+| `src/quests/quests.ts` | `QuestProgressEntry`, `QuestState`, `questStageObjectiveSlots()` |
+| `src/settlement/livestock.ts` | `LIVESTOCK_KINDS` |
+| `src/quests/QuestManager.test.ts` | Restore/rebuild/reset regressions |
 
-- `src/quests/QuestManager.ts`
-  - constructor restore loop
-  - `normalizeRestoredProgress(def, entry)`
-  - `runtimeProgress(entry)`
-  - `setQuestState(id, value)`
-  - `bindAnimalTargetIfNeeded(...)`
-  - `invalidateStaleAnimalTargets()`
-  - `reset()`
-  - `exportProgress()`
-  - `animalTargets: Map<...>`
-
-### Contracts
-
-- `src/quests/quests.ts`
-  - `QuestProgressEntry`
-  - `QuestState`
-  - `questStageObjectiveSlots()`
-- `src/settlement/livestock.ts::LIVESTOCK_KINDS`
-- `src/quests/QuestManager.test.ts`
-  - existing save/load livestock rebind tests
-  - existing wild restore invalidation tests
-  - existing `invalidateStaleAnimalTargets` rebuild tests
-  - reset/export metadata tests where applicable.
-
-No new save DTO belongs in `src/persistence/saveData.ts`; current validation already accepts the metadata fields.
+No `saveData.ts` changes — optional fields already validated.
 
 ## State ownership
 
-Persisted/durable quest fields are owned by `QuestManager` through `QuestProgressEntry`:
+- **Persisted / durable:** `QuestProgressEntry` fields owned by `QuestManager` export/restore (`journal`, `worldKnowledge`, `dialogueCooldowns`, `observation`, lifecycle, terminal outcome when applicable).
+- **Runtime-only:** `animalTargets`, `feedContributionIds` — must stay empty/unbound for wild invalidate-on-restore.
+- **Fauna:** owns real animal identity; restore must not trust wild `animalId` across sessions.
 
-- lifecycle `state`
-- `stageIndex`
-- optional terminal/outcome and stage progress
-- `journal`
-- `worldKnowledge`
-- `dialogueCooldowns`
-- `observation`
-- decline suppression where applicable.
+## Contracts to reuse (do not duplicate)
 
-Runtime-only animal binding is owned by `QuestManager.animalTargets` but is explicitly **not persisted**.
+### `normalizeRestoredProgress(def, entry)`
 
-Fauna owns real animal identity/lifecycle. Restore must not manufacture confidence in an ordinary wild `animalId`.
+Single save-compatibility normalization entry point (~3232). Wild invalidation must start from its output, not re-derive metadata from `QuestDef` authorship.
 
-## Existing restoration / transition contracts to reuse
+### `runtimeProgress(entry)`
 
-### `normalizeRestoredProgress()`
+Maps persisted entry → `QuestRuntimeProgress` (~3154), including metadata collections. Use as the base snapshot before converting lifecycle to `invalidated`.
 
-This is the existing save-compatibility normalization seam. It must remain the source of the restored entry before invalidation. Do not reconstruct metadata from the current `QuestDef` if normalized saved data already contains it.
+### `setQuestState(id, value)`
 
-### `runtimeProgress()`
-
-This copies persisted `QuestProgressEntry` fields into `QuestRuntimeProgress`. Reuse it rather than maintaining another manual field list.
-
-### `setQuestState()`
-
-This is the existing transition merge contract. It deliberately preserves:
-- non-empty `journal`,
-- non-empty `worldKnowledge`,
-- non-empty `dialogueCooldowns`,
-- `observation`,
-
-unless an explicit clear is requested for collection fields. Its comment explicitly contrasts this with `reset()`, which intentionally drops metadata.
+Transition merge contract (~730–757): preserves non-empty journal/worldKnowledge/dialogueCooldowns and observation when omitted from `value`. Contrasts with `reset()` (~710–718), which intentionally bypasses merge.
 
 ### `invalidateStaleAnimalTargets()`
 
-This is already the in-session rebuild counterpart for the same identity-loss meaning:
-- wild active binding → `invalidated`;
-- livestock → rebind through the normal resolver;
-- New Game does not use it because `reset()` clears the entire quest state.
+In-session counterpart for wild identity loss after fauna rebuild. After this plan, restore and rebuild should produce the same **exported** durable metadata for the same pre-invalidation saved entry (lifecycle `invalidated`, same `stageIndex`, no resumable stage counters, no wild bind).
 
-Restore and rebuild should share the same semantic result. Do not create a second invalidation lifecycle.
-
-## Lifecycle / call-sites
-
-### Save/load restore
-
-`SaveData.quests.progress`
-→ `createApp.ts`
-→ `new QuestManager(... initial ...)`
-→ `normalizeRestoredProgress()`
-→ animal-bound active-stage classification
-→ wild invalidation or livestock rebind.
-
-For a wild target, no entry is written to `animalTargets`. That must remain true.
-
-### In-session rebuild
-
-`createApp.ts::rebuildWorld()` calls `questManager.invalidateStaleAnimalTargets()` on ordinary same-world rebuilds. This path already exists and must remain aligned with constructor restore semantics.
-
-### New Game
-
-`QuestManager.reset()` intentionally bypasses `setQuestState()` and replaces every state with fresh `not_offered` progress, then clears `animalTargets` and other runtime dedupe. Do not change this.
+Optional: extract a **private** helper used by both restore wild branch and `invalidateStaleAnimalTargets()` only if it avoids duplicating field-clear rules — not a new service or registry.
 
 ## Implementation decision
 
-Use the already-normalized restored snapshot as the base, then convert only the lifecycle meaning to `invalidated`.
+When restore classifies an active animal-bound stage as untrustworthy wild:
 
-The smallest safe pattern is conceptually:
+1. Start from `const restored = normalizeRestoredProgress(def, entry)` (already computed).
+2. Build runtime snapshot: `runtimeProgress(restored)` **or** equivalent durable copy.
+3. Strip **continuation-only** active progress that must not imply resumability after invalidation:
+   - omit / clear `stageCount`
+   - omit / clear `stageSlotProgress`
+   - do **not** write `animalTargets` (restore wild path already skips bind; no `clearAnimalTargetsForQuest` required unless a future path pre-bound — currently none on restore)
+4. Apply lifecycle `invalidated` with preserved `stageIndex` (keep current history/debug semantics).
+5. Commit through **`setQuestState()`** (preferred) so merge rules match rebuild, **or** set full runtime object including durable fields explicitly if clearer.
 
-1. `const restoredRuntime = runtimeProgress(restored)`;
-2. remove stage-local continuation progress that must not survive invalidation;
-3. preserve durable history/context metadata;
-4. write an `invalidated` runtime state through the existing state-transition contract or a tiny shared invalidation helper also used by `invalidateStaleAnimalTargets()`.
+Do **not**:
 
-Do not call ordinary stage progression/outcome logic. `invalidated` is not a quest outcome and must not grant rewards/consequences or append synthetic result history unless existing behavior already does so.
+- call `applyOutcome()` — `invalidated` is not a quest outcome;
+- grant rewards, relations, reputation side effects;
+- persist wild `animalId`;
+- preserve active-stage counters as resumable state.
 
-### Fields to preserve
+### Fields
 
-Preserve normalized durable metadata that remains meaningful after invalidation:
-- `journal`
-- `worldKnowledge`
-- `dialogueCooldowns`
-- `observation`
+| Preserve | Drop / omit on invalidate |
+| --- | --- |
+| `journal`, `worldKnowledge`, `dialogueCooldowns`, `observation` | `stageCount`, `stageSlotProgress` |
+| `stageIndex` (restored) | runtime `animalTargets` |
+| — | invented `resolvedOutcomeId` |
 
-Also preserve any lifecycle-independent normalized metadata only if the current runtime/export contract already does so and it is meaningful for terminal history.
+`offerSuppressedUntilDay` applies only to `not_offered`; not relevant for active→invalidated restore.
 
-### Fields not to carry as active continuation
+`exportProgress()` only exports `stageCount` / `stageSlotProgress` for `active` (~3120–3128), so cleared counters will not reappear in saves after invalidation.
 
-Do not retain stage-local progress in a way that implies the invalidated quest can resume:
-- `stageCount`
-- `stageSlotProgress`
-- runtime `animalTargets`
-- runtime feed dedupe.
+### Shared helper (optional)
 
-`resolvedOutcomeId` should not be invented for `invalidated`; invalidation is not an outcome. If legacy/normalized data unexpectedly contains an outcome field on an active entry, do not use this plan to invent cleanup policy beyond the existing normalization contract.
-
-`offerSuppressedUntilDay` is only valid on `not_offered` entries, so it is not part of a normal active→invalidated restore.
-
-Keep `stageIndex` at the restored stage for history/debug continuity, matching current behavior.
-
-## Prefer one shared invalidation helper only if it reduces duplication
-
-A private helper is justified only if constructor restore and `invalidateStaleAnimalTargets()` currently need to perform the same state mutation.
-
-Its responsibility should be narrow:
+If restore and `invalidateStaleAnimalTargets()` both need identical “strip counters + invalidate + preserve durable fields” logic, a private method on `QuestManager` is sufficient:
 
 ```text
-questId + current/restored progress
-→ invalidated progress preserving durable metadata
-→ clear quest runtime animal/feed bindings as required
+toInvalidatedWildProgress(from: QuestRuntimeProgress): QuestRuntimeProgress
 ```
 
-Do not create:
-- a restoration service,
-- a second quest state machine,
-- an invalidated-quest registry,
-- a new persistence shape.
-
-If `setQuestState()` plus a small prepared value is clearer, use that instead.
+Narrow scope — no new persistence shape.
 
 ## Duplication / identity guard
 
-Restore must never:
-- bind a new ordinary wild animal merely because the species matches;
-- keep a stale saved/runtime animal binding;
-- create two runtime bindings for one quest;
-- materialize a second quest identity.
-
-The quest remains the same `questId`; only its lifecycle becomes `invalidated`.
-
-Livestock behavior remains unchanged: deterministic livestock kinds use the existing resolver/rebind path.
+- Same `questId`; no second quest row.
+- No wild rebind on restore; `onInteractObjective` for arbitrary same-kind animal must not advance quest (existing tests).
+- Livestock path unchanged: `runtimeProgress(restored)` + `bindAnimalTargetIfNeeded()`.
+- Constructor still skips entries where `!states.has(entry.id)` (def not materialized).
 
 ## Change order
 
-1. Add focused restore tests that reproduce metadata loss before changing implementation.
-2. Adjust the wild restore invalidation branch to preserve normalized durable metadata and drop continuation-only progress.
-3. If necessary, extract a very small private invalidation transition helper and reuse it from `invalidateStaleAnimalTargets()`.
-4. Verify livestock rebind and New Game reset remain unchanged.
-5. Do not touch persistence schema unless a test proves the current optional-field validator rejects an already-existing field.
+1. Add failing restore tests with journal/worldKnowledge/dialogueCooldowns/observation on active wild quests **before** code change.
+2. Fix wild restore branch to preserve durable metadata and drop continuation fields.
+3. Align `invalidateStaleAnimalTargets()` if helper extraction reduces drift (rebuild may already preserve via merge — add test asserting parity).
+4. Confirm `reset()` still clears all metadata and bindings.
+5. No persistence schema changes.
 
 ## Regression tests
 
-In `src/quests/QuestManager.test.ts`, cover at minimum:
+Extend `src/quests/QuestManager.test.ts`:
 
-1. active wild `kill_target_animal` restore → `invalidated`;
-2. active wild `find_animal` restore → `invalidated`;
-3. persisted `journal` survives restore invalidation;
-4. persisted `worldKnowledge` survives;
-5. persisted `dialogueCooldowns` survives;
-6. persisted `observation` survives;
-7. active-stage `stageCount` does not survive as resumable progress;
-8. active-stage `stageSlotProgress` does not survive as resumable progress;
-9. no wild `animalTargets` binding is recreated — interaction with an arbitrary same-kind animal cannot advance the invalidated quest;
-10. livestock active restore still rebinds and remains completable;
-11. `invalidateStaleAnimalTargets()` preserves the same durable metadata when it invalidates a wild binding during rebuild;
-12. `reset()` still clears journal/worldKnowledge/dialogueCooldowns/observation and runtime bindings.
+1. Active wild `kill_target_animal` restore → `invalidated` (existing behavior).
+2. Active wild `find_animal` restore → `invalidated`.
+3. Persisted `journal` survives restore invalidation.
+4. `worldKnowledge`, `dialogueCooldowns`, `observation` survive when present on saved active entry.
+5. Active `stageCount` / `stageSlotProgress` **not** present in runtime/export after invalidation.
+6. No wild `animalTargets` binding; animal death/found objectives no-op (extend existing wolf/boar tests).
+7. Livestock active restore still rebinds and completes (existing sheep tests).
+8. `invalidateStaleAnimalTargets()` preserves durable metadata when invalidating wild binding (mirror restore).
+9. `reset()` clears journal/worldKnowledge/dialogueCooldowns/observation and `animalTargets`.
 
-Prefer extending the existing restore/rebuild describes rather than creating broad new fixtures.
+Use minimal fixtures (`homeQuest('dzik-przy-szlaku')`, `wolfDef`, `makeRestoredManager`) already in file.
 
 ## Persistence / save compatibility
 
-No schema change.
-
-- No `CURRENT_SAVE_VERSION` bump.
-- No migration.
-- Existing saves already contain these optional fields.
-- Restore continues through `normalizeRestoredProgress()`.
-- The change only stops discarding already-valid saved metadata when lifecycle is converted to `invalidated`.
-- `animalTargets` remains runtime-only and absent from save data.
+- No version bump or migration.
+- Saves already store optional metadata fields.
+- Change only stops dropping normalized fields at restore invalidation boundary.
+- `animalTargets` remains absent from save data.
 
 ## Guardrails
 
-- Do not make ordinary wild individual IDs persistent.
-- Do not change the rule that wild active animal-bound quests invalidate across untrustworthy restore/rebuild boundaries.
-- Do not alter livestock deterministic rebind semantics.
-- Do not route invalidation through `applyOutcome()`; invalidated is not complete/failed.
-- Do not grant rewards, relation changes, reputation or social consequences.
-- Do not preserve active-stage counted/slot progress as resumable state.
-- Do not make `reset()` preserve metadata.
-- Do not add a persistence registry or restoration subsystem.
-- Do not touch `quests-progression-069`.
+- Do not persist ordinary wild individual IDs.
+- Do not invalidate livestock restore/rebind semantics.
+- Do not route through outcome resolution or reward pipelines.
+- Do not preserve active counters as resumable progress.
+- Do not alter `reset()` metadata clearing.
+- No parallel restoration registry; no `quests-progression-069` scope.
 
 ## Manual verification
 
-User-owned browser verification only:
+User-owned browser only:
 
-1. Start a wild-animal-bound quest and create some visible quest history/context.
-2. Save and reload.
-3. Confirm the quest is shown as invalidated rather than silently retargeted.
-4. Confirm its prior journal/context remains visible where the UI exposes it.
-5. Confirm interacting with/killing a newly spawned same-kind wild animal does not advance it.
-6. Separately restore a livestock-bound quest and confirm it remains active/completable.
-7. Start New Game and confirm old metadata does not carry over.
-
-Do not run browser verification as the implementation agent.
+1. Active wild-bound quest with visible journal/context → save/reload → `invalidated` with history still visible where UI shows it.
+2. Kill/find new same-species animal → quest does not advance.
+3. Livestock-bound quest → save/reload → still active/completable.
+4. New Game → prior metadata gone.
 
 ## Out of scope
 
-- persistent identity for ordinary wild fauna,
-- fauna save schema,
-- quest outcome redesign,
-- generated opportunity retention (owned by quests-progression-071),
-- offer pacing/gating (quests-progression-069),
-- UI redesign,
-- broad quest-system cleanup.
-
-> **Zrób git commit i push do main, rebase jeżeli trzeba**
+- Wild fauna identity persistence / fauna save schema.
+- Quest outcome or UI redesign.
+- Generated opportunity retention (`quests-progression-071`).
+- Offer pacing (`quests-progression-069`).
+- Changing when invalidation triggers (only **how** state is written once triggered).

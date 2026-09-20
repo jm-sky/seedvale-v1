@@ -73,5 +73,3 @@ Add focused tests proving:
 8. New Game `reset()` still clears all metadata.
 
 Browser verification remains the user's responsibility.
-
-> **Zrób git commit i push do main, rebase jeżeli trzeba**

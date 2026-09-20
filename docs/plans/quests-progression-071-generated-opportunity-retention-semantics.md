@@ -101,5 +101,3 @@ Automated tests should prove:
 7. no second opportunity persistence store is introduced.
 
 Browser verification remains the user's responsibility.
-
-> **Zrób git commit i push do main, rebase jeżeli trzeba**

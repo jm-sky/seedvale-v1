@@ -1,247 +1,205 @@
 # Implementation Notes: quests-progression-071 — Generated opportunity retention semantics
 
-Recon baseline: current `main` on 2026-09-19. These notes cover only generated-opportunity retention. Do not expand into `quests-progression-069` or redesign quest persistence.
+Recon baseline: verified on `main` 2026-09-20. Scope is **only** which saved generated quest IDs force definition rematerialization at composition. Do not expand into `quests-progression-069`, authored quests, or a second persistence registry.
 
 ## Current implementation
 
-Generated settlement opportunities are rebuilt only during `createApp()` composition, before `QuestManager` is constructed:
+### What a “generated opportunity” is
+
+Generated opportunities are **not** a persisted collection. They are lightweight records (`SettlementQuestOpportunity` / `RpgQuestOpportunity` in `src/quests/opportunities/worldQuestOpportunityTypes.ts`) built during **`createApp()` composition only**, then materialized into normal `QuestDef` objects and merged into `questDefs`:
 
 ```text
-initialSave.quests.progress
-→ createApp.ts persistedQuestIds
-→ buildWorldDrivenSettlementQuests()
-   → collectSettlementQuestOpportunities()
-   → collectRpgQuestOpportunities()
-   → selectSettlementQuestOpportunities()
-   → materialize...()
-→ final QuestDef[]
-→ new QuestManager(...)
+initialSave?.quests.progress
+→ createApp.ts (persistedQuestIds — currently every entry.id)
+→ per home settlement:
+     buildWorldDrivenSettlementQuests()
+       → collectSettlementQuestOpportunities()  // wolf-den, lost-livestock, injured-cow
+       → collectRpgQuestOpportunities()         // RPG matrices
+       → selectSettlementQuestOpportunities()
+       → materializeSettlementQuestOpportunity() / materializeRpgQuestOpportunity()
+     buildHunterProfessionQuests()
+     buildGuardEveningDutyQuest()
+→ opportunityQuestDefs
+→ questDefs = [...authoredQuestDefs, ...opportunityQuestDefs]
+→ new QuestManager(questDefs, …, { progress: initialSave.quests.progress })
 ```
 
-`QuestManager.exportProgress()` persists one `QuestProgressEntry` for every materialized `QuestDef`, including untouched `{ state: 'not_offered', stageIndex: 0 }` entries. `src/app/saveState.ts::buildSaveData()` writes that array directly.
+Authored / binding-driven quests (`lostHunter`, `dungeonBandit`, chronicles, etc.) are appended to `opportunityQuestDefs` but **do not** consume `persistedQuestIds`; they use their own binding caches. This plan touches only the three builder paths that accept `persistedQuestIds`.
 
-On the next boot, `src/app/createApp.ts` currently derives:
+### Lifetime and “cleanup”
+
+| Layer | Lifetime | Removal |
+| --- | --- | --- |
+| Lightweight opportunity records | Single `createApp()` pass | Discarded after materialization |
+| Materialized `QuestDef` | App-level `QuestManager.defs` until next full app boot | Not re-selected on in-session `WorldBundle` rebuild |
+| Runtime progress | `QuestManager.states` | `reset()` (New Game); terminal transitions; export on save |
+
+There is no background TTL or opportunity registry. “Stale opportunity” in the defect sense means: a **pristine** progress row in the save file still forces the same generated ID through collectors/selection on the **next cold boot**, even though the player never engaged with that quest.
+
+### Save/load interaction (the defect)
+
+`QuestManager.exportProgress()` (`src/quests/QuestManager.ts`) emits one `QuestProgressEntry` per **materialized** definition, including untouched defaults:
+
+```ts
+{ id, state: 'not_offered', stageIndex: 0 }
+```
+
+`src/app/saveState.ts::buildSaveData()` persists that array verbatim.
+
+On reload, `src/app/createApp.ts` (line ~1455) currently does:
 
 ```ts
 const persistedQuestIds = initialSave?.quests.progress.map((entry) => entry.id)
 ```
 
-That makes materialization history indistinguishable from meaningful quest continuity.
+Downstream consumers treat **every** saved ID as requiring reconstruction/preference:
 
-This defect is limited to generated-definition reconstruction. Authored definitions are materialized independently and do not rely on `persistedQuestIds` to exist.
+- `selectSettlementQuestOpportunities()` — persisted IDs are taken first with `ignoreLimit = true`; RPG matrix slots are reserved by the first selected matrix candidate (`src/quests/opportunities/settlementQuestSelection.ts`).
+- `collectRpgQuestOpportunities()` — parses persisted RPG IDs and calls `reconstructRpgOpportunity()` even when no live candidate exists (`src/quests/opportunities/rpgQuestMatrices.ts`).
+- `collectSettlementQuestOpportunities()` — reconstructs wolf-den / lost-livestock / injured-cow IDs from persisted IDs when live sources are absent (`src/quests/opportunities/settlementQuestOpportunities.ts`).
+- `buildHunterProfessionQuests()` — `persisted.has(hunterIIIId)` can force step III materialization intent (`src/quests/opportunities/hunterProfessionQuests.ts`).
+- `buildGuardEveningDutyQuest()` — materializes when `persisted.has(id)` even if evening preconditions fail (`src/quests/opportunities/guardProfessionQuests.ts`).
+
+**Loss vs staleness:**
+
+- **Over-retention (bug):** materialized-but-pristine generated quest → saved → reload pins old RPG matrix candidate / world-driven ID though selection would pick a fresh eligible candidate today.
+- **Under-retention (must not regress):** meaningful progress/metadata/terminal history **must** still reconstruct by deterministic ID when live sources changed or disappeared (covered by existing tests such as `rpgQuestMatrices.test.ts` “reconstructs… after landmark no longer live-eligible” and “always rematerializes a persisted generated id even after the live source disappears”).
+
+### Offer / suppression / acceptance / external resolution
+
+All of these run **after** composition inside `QuestManager`:
+
+- **Offer admission:** `not_offered` → `offered` / suppression checks via `offerSuppressedUntilDay` and decline path `declineOffer()` (`QuestManager`).
+- **Suppression:** decline sets `not_offered` + `offerSuppressedUntilDay` (exported only for `not_offered`). Retention predicate **must** treat suppressed `not_offered` as retention-worthy so the same generated definition (and giver binding) survives reload.
+- **Acceptance:** `offered` → `active`; stage progress may add `stageCount` / `stageSlotProgress` while `active`.
+- **External / world resolution:** terminal `complete` / `failed` with optional `resolvedOutcomeId`; `abandoned` / `invalidated` without outcome id per `QuestProgressEntry` contract (`src/quests/quests.ts`). Terminal/history entries must retain definition identity for journal/history consumers.
+
+Composition retention filtering does **not** change any of this runtime behavior.
+
+### In-session rebuild
+
+`QuestManager` and `questDefs` survive ordinary `rebuildWorld()` (`src/app/createApp.ts`). Generated opportunities are **not** re-collected mid-session. Plan scope is cold boot / save-load composition only.
 
 ## Exact files and symbols
 
-### Composition / retention boundary
+| File | Role |
+| --- | --- |
+| `src/app/createApp.ts` | Derives `persistedQuestIds`; passes to generated builders (~1478, ~1492, ~1507, ~1563). |
+| `src/app/saveState.ts` | `buildSaveData()` → `exportProgress()` (unchanged). |
+| `src/quests/quests.ts` | `QuestProgressEntry`, `QuestState`, field semantics. |
+| `src/quests/QuestManager.ts` | `exportProgress()`, restore constructor (unchanged by this plan). |
+| `src/quests/opportunities/worldQuestMaterialization.ts` | `buildWorldDrivenSettlementQuests()`. |
+| `src/quests/opportunities/settlementQuestSelection.ts` | `selectSettlementQuestOpportunities()`. |
+| `src/quests/opportunities/settlementQuestOpportunities.ts` | `collectSettlementQuestOpportunities()`. |
+| `src/quests/opportunities/rpgQuestMatrices.ts` | `collectRpgQuestOpportunities()`, `parseRpgQuestId`, `reconstructRpgOpportunity`. |
+| `src/quests/opportunities/hunterProfessionQuests.ts` | `buildHunterProfessionQuests()`. |
+| `src/quests/opportunities/guardProfessionQuests.ts` | `buildGuardEveningDutyQuest()`. |
+| `src/quests/opportunities/rpgQuestMatrices.test.ts` | RPG reconstruction / selection regressions. |
+| `src/quests/opportunities/settlementQuestOpportunities.test.ts` | World-driven persisted ID regressions. |
 
-- `src/app/createApp.ts`
-  - generated opportunity assembly around `persistedQuestIds`
-  - `buildWorldDrivenSettlementQuests(...)`
-  - `buildHunterProfessionQuests(...)`
-  - `buildGuardEveningDutyQuest(...)`
-- `src/app/saveState.ts::buildSaveData()`
-  - persists `questManager.exportProgress()`; do not change this for this plan.
-
-### Persisted quest progress owner
-
-- `src/quests/quests.ts::QuestProgressEntry`
-- `src/quests/QuestManager.ts`
-  - `states: Map<string, QuestRuntimeProgress>`
-  - `exportProgress()`
-  - constructor restore via `normalizeRestoredProgress()` / `runtimeProgress()`
-
-Relevant persisted progress fields currently include:
-- `state`
-- `stageIndex`
-- `resolvedOutcomeId?`
-- `stageCount?`
-- `stageSlotProgress?`
-- `offerSuppressedUntilDay?`
-- `journal?`
-- `worldKnowledge?`
-- `dialogueCooldowns?`
-- `observation?`
-
-### Generated-opportunity reconstruction
-
-- `src/quests/opportunities/worldQuestMaterialization.ts::buildWorldDrivenSettlementQuests()`
-- `src/quests/opportunities/settlementQuestOpportunities.ts::collectSettlementQuestOpportunities()`
-  - live wolf-den / lost-livestock / injured-cow candidates are merged with parseable persisted IDs.
-- `src/quests/opportunities/rpgQuestMatrices.ts::collectRpgQuestOpportunities()`
-  - persisted RPG IDs are parsed and reconstructed even when the previous source is no longer the current live candidate.
-- `src/quests/opportunities/settlementQuestSelection.ts::selectSettlementQuestOpportunities()`
-  - persisted IDs are selected first with `ignoreLimit = true`;
-  - RPG matrix identity is reserved by the first selected candidate, so a stale pristine candidate can block a fresh candidate of the same matrix.
-
-Profession/guard generated definitions also accept `persistedQuestIds`; keep using the same filtered retention set rather than inventing per-builder rules.
+**New symbol (planned):** pure helper, e.g. `requiresGeneratedOpportunityRetention(entry: QuestProgressEntry): boolean`, placed in a small module importable from `createApp.ts` without pulling opportunity collectors into app layer — e.g. `src/quests/opportunities/generatedOpportunityRetention.ts` or adjacent to `quests.ts` if types-only dependency is preferred. Add `@domain quests-progression` JSDoc for preflight.
 
 ## State ownership
 
-- `QuestManager` owns quest progress and exports the authoritative `QuestProgressEntry[]`.
-- Opportunity collectors own only candidate discovery/reconstruction from deterministic IDs; they do not own quest lifecycle.
-- `createApp.ts` owns the composition decision about which saved generated IDs need definition continuity.
-- World sources (wolf den, livestock, landmarks, settlement/NPC definitions) remain authoritative for live source state.
-- Do not add a generated-opportunity persistence registry, retention cache, queue or second quest state.
+- **`QuestManager`:** authoritative runtime + exported `QuestProgressEntry[]`.
+- **`createApp.ts`:** composition-only decision: which saved **generated** IDs require definition continuity on this boot.
+- **Collectors/materializers:** deterministic ID parse/reconstruct; no lifecycle ownership.
+- **World/fauna/settlement sources:** authoritative for **live** candidates only; must not erase persisted history when retention says reconstruct.
 
-## Lifecycle / call-sites
-
-### Creation and selection
-
-1. `createApp()` builds settlement/NPC/world context.
-2. Collectors create deterministic lightweight opportunity records.
-3. Persisted generated IDs are merged into those candidates so accepted/history-bearing quests can be rematerialized even if the live source changed.
-4. `selectSettlementQuestOpportunities()` keeps persisted candidates before fresh ones and enforces RPG matrix uniqueness.
-5. Materializers turn selected opportunities into normal `QuestDef` objects.
-6. `QuestManager` owns offer admission, suppression, acceptance, progress, external resolution and terminal history.
-
-### Offer / suppression / acceptance interaction
-
-- `not_offered` alone is not evidence that a generated definition needs retention.
-- Decline returns a quest to `not_offered` but writes `offerSuppressedUntilDay`; that entry **must** retain the same generated definition until the saved suppression is no longer relevant. Filtering only by `state !== 'not_offered'` would therefore be wrong.
-- `offered`, `active`, `ready_to_report` must retain identity.
-- Terminal/history states must continue to retain identity because current quest log/history and downstream consumers depend on the same definition.
-- `abandoned` and `invalidated` are terminal lifecycle states and therefore retention-worthy.
-- External resolution may produce terminal progress without player acceptance; terminal progress still needs the same definition for history/result interpretation.
-
-### Save/load
-
-- Save continues to export full quest progress for every materialized definition.
-- Load derives a narrower **generated-definition retention ID set** from saved `QuestProgressEntry` values.
-- Pass only that filtered ID set to generated opportunity collectors/builders.
-- `QuestManager` restore remains unchanged by this plan.
-
-### In-session WorldBundle rebuild
-
-`QuestManager` is app-level and survives ordinary `WorldBundle` rebuilds. The generated `QuestDef[]` is not reselected during those rebuilds. Therefore this plan should not add rebuild hooks or re-run opportunity selection mid-session.
-
-New Game uses the existing `QuestManager.reset()` path and is outside this retention derivation.
+Do **not** add a generated-opportunity save table, cache, or parallel quest state.
 
 ## Implementation decision
 
-Add one pure composition-level predicate/helper for saved generated progress, e.g. semantically:
+Introduce **one** composition-level predicate answering: *would dropping this generated definition lose meaningful persisted continuity?*
 
-`requiresGeneratedOpportunityRetention(entry: QuestProgressEntry): boolean`
-
-The helper must answer whether **discarding the generated definition would lose meaningful persisted continuity**.
-
-A pristine entry is exactly non-retaining when all of the following are true:
+**Pristine (non-retaining)** — all must hold:
 
 - `state === 'not_offered'`
 - `stageIndex === 0`
 - `resolvedOutcomeId === undefined`
 - `stageCount === undefined`
-- `stageSlotProgress === undefined` or contains no meaningful progress
+- `stageSlotProgress === undefined` or empty / no slot with progress (mirror export semantics: treat `{}` as non-retaining)
 - `offerSuppressedUntilDay === undefined`
-- `journal` absent/empty
-- `worldKnowledge` absent/empty
-- `dialogueCooldowns` absent/empty
+- `journal` absent or empty
+- `worldKnowledge` absent or empty
+- `dialogueCooldowns` absent or empty
 - `observation === undefined`
 
-Prefer the conservative rule: any non-default persisted field makes the generated entry retention-worthy. Do not special-case individual generated quest families.
+**Retention-worthy (conservative):** any deviation from pristine above; additionally any lifecycle state other than pristine `not_offered` at stage 0, including at minimum:
 
-Use the predicate in `createApp.ts` to derive the ID array once, then reuse that same filtered array for:
-- `buildWorldDrivenSettlementQuests()`,
-- its RPG sub-input,
-- `buildHunterProfessionQuests()`,
-- `buildGuardEveningDutyQuest()`,
-- any other existing generated builder currently fed by the same `persistedQuestIds` seam.
+- `offered`, `active`, `ready_to_report`
+- terminal: `complete`, `failed`, `abandoned`, `invalidated`
+- `not_offered` with decline suppression or any durable metadata
+- non-zero `stageIndex`, `stageCount`, or meaningful `stageSlotProgress`
 
-Keep the downstream `persistedQuestIds` API unchanged unless a trivial rename materially improves clarity. The bug is the upstream membership, not selection/materialization semantics.
+Do **not** special-case quest families in the predicate. Authored quests are unaffected (they are not filtered through this seam).
 
-Do **not** change `QuestManager.exportProgress()`: full progress export is useful and changing it would conflate save serialization with generated-definition reconstruction.
+In `createApp.ts`, replace unconditional `.map((entry) => entry.id)` with IDs from entries where the predicate is true (for generated retention only — the saved progress array passed to `QuestManager` remains the full `initialSave.quests.progress`).
 
-## Why this fixes both loss and staleness
+Pass the **same filtered ID list** to all four existing `persistedQuestIds` call sites in the home-settlement loop.
 
-Current over-retention:
-- untouched generated RPG candidate is exported;
-- reload treats its ID as persisted;
-- selector takes it before fresh candidates;
-- its matrix is reserved indefinitely.
+Do **not** change `QuestManager.exportProgress()`.
 
-After filtering:
-- untouched default entry contributes no retention claim;
-- live collection may choose the current fresh candidate;
-- meaningful progress still reconstructs by deterministic ID even if no longer live.
+### Save-file pruning (expected side effect)
 
-Under-retention guard:
-- declined `not_offered` with suppression remains retained;
-- any metadata-bearing `not_offered` entry remains retained;
-- terminal/history-bearing entries remain retained;
-- world-driven per-source IDs still reconstruct when their live source has changed/disappeared.
+On the next save after reload, `exportProgress()` only emits rows for **currently materialized** defs. Pristine generated quests that are no longer rematerialized will **drop out** of `quests.progress` naturally. No migration or explicit save scrubbing is required; this is composition interpretation, not schema change.
+
+### Pre-existing quirk (out of scope)
+
+`buildHunterProfessionQuests()` uses `needIII = persisted.has(hunterIIIId)` but returns early without materializing III when `!thicket` (`if (thicket || needIII) { if (!thicket) return defs }`). Retention fixes pinning of pristine IDs; fixing hunter-III-without-thicket reconstruction is a separate issue unless tests prove this plan regresses it.
 
 ## Change order
 
-1. Add the pure retention predicate next to the composition boundary or in the smallest quest/opportunity module that can be imported by `createApp.ts` without creating a new lifecycle owner.
-2. Add focused unit tests for the predicate if exported; otherwise cover the behavior at the nearest existing opportunity-selection test seam.
-3. Replace the unconditional `.map(entry => entry.id)` in `createApp.ts` with filtered retention IDs.
-4. Reuse that one filtered array at every existing generated builder call-site.
-5. Do not change collector/materializer selection algorithms unless tests reveal a separate bug.
+1. Add predicate + unit tests (exported or via dedicated describe).
+2. Wire filtered IDs in `createApp.ts` (single derivation, four call sites).
+3. Extend opportunity selection/reconstruction tests for pristine vs meaningful RPG/world-driven cases.
+4. Do not alter collector ranking/caps/matrix rules except via corrected input IDs.
 
 ## Regression tests
 
-Minimum coverage:
+Minimum automated coverage:
 
-1. pristine `not_offered` + stage 0 + no optional metadata → no retention claim;
-2. `offered`, `active`, `ready_to_report` → retained;
-3. terminal states currently supported by `QuestState` (`complete`, `failed`, `abandoned`, `invalidated`) → retained;
-4. `not_offered` + `offerSuppressedUntilDay` → retained;
-5. `not_offered` + each durable metadata family (`journal`, `worldKnowledge`, `dialogueCooldowns`, `observation`) → retained;
-6. defensive coverage for non-default stage/outcome progress (`stageIndex`, `resolvedOutcomeId`, `stageCount`, `stageSlotProgress`) → retained;
-7. RPG regression: a pristine previously selected candidate does not reserve the matrix after reload; the current live candidate may be selected;
-8. persisted meaningful RPG candidate still reconstructs with the same ID and reserves its matrix;
-9. declined generated offer keeps its same ID/suppression instead of rotating to another same-matrix source;
-10. world-driven persisted ID still reconstructs when its live source is no longer collected.
+1. Pristine generated `not_offered` / stage 0 / no optional fields → **not** in retention set.
+2. `offered`, `active`, `ready_to_report` → retained.
+3. Terminal `complete`, `failed`, `abandoned`, `invalidated` → retained.
+4. `not_offered` + `offerSuppressedUntilDay` → retained.
+5. `not_offered` + each metadata family (`journal`, `worldKnowledge`, `dialogueCooldowns`, `observation`) → retained.
+6. Non-default `stageIndex`, `resolvedOutcomeId`, `stageCount`, meaningful `stageSlotProgress` → retained.
+7. RPG: previously selected but pristine candidate does **not** block a fresh matrix candidate after reload; meaningful RPG progress still reconstructs same ID.
+8. Declined generated offer keeps same ID/suppression across reload (no matrix rotation bypass).
+9. World-driven persisted ID still reconstructs when live source gone (existing tests should keep passing).
 
-Use existing tests in:
-- `src/quests/opportunities/rpgQuestMatrices.test.ts`
-- `src/quests/opportunities/settlementQuestOpportunities.test.ts`
-- existing tests around `selectSettlementQuestOpportunities()`
-
-Add a small dedicated test only if that is cleaner than inflating unrelated fixtures.
+Prefer extending `rpgQuestMatrices.test.ts`, `settlementQuestOpportunities.test.ts`, and selection tests over new broad fixtures.
 
 ## Persistence / save compatibility
 
-No persisted shape changes.
-
 - No `CURRENT_SAVE_VERSION` bump.
 - No migration.
-- Older saves remain valid.
-- Existing pristine generated entries remain in old save files but stop acting as retention claims after this change.
-- Existing meaningful generated entries continue to reconstruct through the same deterministic IDs.
-- Do not delete old progress entries from the save as part of this plan; this plan changes interpretation at composition only.
+- Older saves: pristine rows may remain in file until next export; they stop affecting composition immediately after this change.
+- Meaningful rows continue to reconstruct via existing deterministic IDs.
 
 ## Guardrails
 
-- Do not touch `quests-progression-069` pacing/cooldown scope.
-- Do not change authored quest materialization/persistence semantics.
-- Do not filter `QuestManager.exportProgress()`.
-- Do not create a generated-opportunity save table/registry.
-- Do not move lifecycle knowledge into every collector.
-- Do not make live source availability overwrite meaningful persisted history.
-- Do not alter opportunity priority/cap/matrix ordering except through the corrected retained-ID input.
-- Keep deterministic generated IDs unchanged.
+- No `quests-progression-069` pacing changes.
+- No authored-quest persistence semantic changes.
+- No second opportunity persistence store.
+- No per-collector “persisted” definitions — filter once at composition.
+- Do not remove meaningful history because live sources disappeared.
+- Keep deterministic generated ID formats unchanged.
 
 ## Manual verification
 
-User-owned browser verification only:
+User-owned browser checks only (do not run as implementation agent):
 
-1. Start a world where an RPG generated candidate exists but do not talk to its giver.
-2. Save and reload.
-3. Confirm that the previous untouched candidate is not artificially pinned when a different current candidate of the same matrix should be eligible.
-4. Decline a generated offer, save/reload during suppression, and confirm the same opportunity remains suppressed rather than rotating.
-5. Accept/start a generated world-driven quest, save/reload after its source changes, and confirm the same quest/history returns.
-
-Do not run browser verification as the implementation agent.
+1. RPG candidate visible but never offered → save/reload → matrix not pinned to stale untouched candidate when a fresh candidate should win.
+2. Decline generated offer → save/reload during suppression → same quest id still suppressed, not rotated.
+3. Accept/start generated quest → save/reload after world change → same quest/history returns.
 
 ## Out of scope
 
 - `quests-progression-069` offer pacing/gating.
-- changing opportunity caps or ranking.
-- redesigning `QuestManager.exportProgress()`.
-- pruning save-file quest history.
-- new generated quest types.
-- new persistence registries.
-- quest UI changes.
-- broad quest-system audit.
-
-> **Zrób git commit i push do main, rebase jeżeli trzeba**
+- Opportunity caps, ranking, matrix ordering policy.
+- Redesigning `exportProgress()` or save pruning policy beyond natural export behavior.
+- Hunter III / thicket edge case fix.
+- New generated quest types, UI, broad quest audit.
+- `quests-progression-072` (invalidated restore metadata).
