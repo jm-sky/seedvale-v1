@@ -265,6 +265,26 @@ const NEAREST_VILLAGE = {
   size: 'SM' as const,
 }
 
+/** Inland DigContextualFindEnv fields for dig-completion mocks (world-terrain-048). */
+const DIG_CHUNK_ENV = {
+  sampleHeight: () => 4,
+  sampleMountainRidge: () => 0,
+  waterLevel: 2,
+  heightScale: 40,
+  seed: 42,
+  sampleContinentalness: () => 0.7,
+  region: {
+    oceanThreshold: 0.32,
+    coastThreshold: 0.45,
+    desertThreshold: 0.2,
+    desertThresholdWidth: 0.1,
+    swampThreshold: 0.7,
+    swampThresholdWidth: 0.1,
+  },
+  sampleMoistureRegion: () => 0.5,
+  sampleForestBiome: () => 'open' as const,
+}
+
 function setupHiddenFindDig(options: {
   landmarks: HiddenFindLandmark[]
   timeOfDay: number
@@ -294,10 +314,12 @@ function setupHiddenFindDig(options: {
       chunkManager: {
         getNearbyLandmarks: () => options.landmarks,
         modifyTerrain: vi.fn(),
+        ...DIG_CHUNK_ENV,
       },
       settlementsManager: { peekDef: () => null, getLoaded: () => [], home: null },
       droppedItems: { settleNear: vi.fn(), drop },
       treasureSites: options.treasureSites ?? [],
+      resourceDeposits: { queryNearest: () => null },
     },
     player: mockPlayer({
       skills: { sneak: { active: options.sneakActive ?? false, value: options.sneakValue ?? 0.2 } },
@@ -682,9 +704,14 @@ describe('physical-work Strength duration (plan npc-020)', () => {
     const toast = { show: vi.fn() }
     const ctx = {
       bundle: {
-        chunkManager: { getNearbyLandmarks: () => [], modifyTerrain: vi.fn() },
+        chunkManager: {
+          getNearbyLandmarks: () => [],
+          modifyTerrain: vi.fn(),
+          ...DIG_CHUNK_ENV,
+        },
         settlementsManager: { peekDef: () => null, getLoaded: () => [], home: null },
         droppedItems: { settleNear: vi.fn(), drop: vi.fn() },
+        resourceDeposits: { queryNearest: () => null },
       },
       player: mockPlayer(),
       inventory,

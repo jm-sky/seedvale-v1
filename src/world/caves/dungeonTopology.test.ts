@@ -119,7 +119,7 @@ function worstOverburdenShortfall(topology: CaveTopology, sampleBaseHeight: (x: 
 }
 
 const FIXTURES = Array.from({ length: 10 }, (_, i) => {
-  const site = baseSite({ x: 420 + i * 91, z: -180 + i * 37, yaw: 0.3 + i * 0.5 })
+  const site = baseSite({ x: 420 + i * 80, z: -180 + i * 37, yaw: 0.3 + i * 0.5 })
   return { seed: 42 + i, site, topology: dungeonFor(42 + i, site) }
 })
 
