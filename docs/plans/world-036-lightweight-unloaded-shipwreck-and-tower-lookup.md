@@ -7,6 +7,7 @@
 **Domain:** `world`  
 **Type:** feature
 **Roadmap:** -
+**Model:** Grok, Sonnet
 
 ## Problem
 
