@@ -131,6 +131,7 @@ Unless noted otherwise, `verification needed` means implementation has passed au
 | ◼️ `world-038-world-audio-async-lifecycle-and-cache-recovery.md`               | 🟡 | S      | -                                                                                                                                                                                                                                                                                          | -                                         |
 | ◼️ `tools-019-debug-tooling-lifecycle-ownership.md`                            | 🟡 | S      | -                                                                                                                                                                                                                                                                                          | -                                         |
 | 💡 `items-player-058-campfire-decomposition-and-ash-residue.md`                | 🟡 | M      | -                                                                                                                                                                                                                                                                                          | -                                         |
+| ◼️ `settlements-npcs-056-artisan-skill-specialization-and-player-orders.md`    | 🔴 | L      | ~~settlements-npcs-015~~, ~~settlements-npcs-016~~                                                                                                                                                                                                                                         | economy-production                        |
 
 ---
 
@@ -265,7 +266,7 @@ New plans declare a primary `Domain:` in frontmatter. Use optional `Tags:` only 
 - persistence: `007`
 - quests-progression: `073`
 - settlements: `023`
-- settlements-npcs: `056`
+- settlements-npcs: `057`
 - tools: `020`
 - ui-input: `032`
 - world: `039`
