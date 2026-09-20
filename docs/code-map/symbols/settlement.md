@@ -108,31 +108,40 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/foundedSettlement.ts`
 
-- `createFoundedSettlementRegistry` — function — line 84
-- `foundedHouseholdId` — function — line 36
-- `foundedSettlementId` — function — line 31
+- `createFoundedSettlementRegistry` — function — line 134
+- `foundedHomePlaceId` — function — line 58
   - domain: settlements
-- `FoundedSettlementRecord` — type — line 13
+- `FoundedHomeTentLookup` — type — line 66
+- `foundedHouseholdId` — function — line 38
+- `foundedSettlementId` — function — line 33
   - domain: settlements
-- `FoundedSettlementRegistry` — type — line 66
+- `FoundedSettlementRecord` — type — line 15
+  - domain: settlements
+- `FoundedSettlementRegistry` — type — line 116
   - domain: settlements
   - system: founded-settlement
   - role: Owns founded-settlement records and NPC settlement-residency overrides.
   - owns: FoundedSettlementRecord
-- `FoundedSettlementRegistrySnapshot` — type — line 49
-- `foundedTentId` — function — line 41
+- `FoundedSettlementRegistrySnapshot` — type — line 99
+- `foundedTentId` — function — line 43
+- `resolveFoundedHomePlace` — function — line 80
+  - domain: settlements
 
 ## `settlement/foundedSettlementBootstrap.ts`
 
-- `bootstrapFoundedSettlement` — function — line 102
+- `bootstrapFoundedSettlement` — function — line 203
   - domain: settlements
   - system: founded-settlement
   - role: Turns an arrived expedition into ordinary founded-settlement/household/economy state.
-- `BootstrapFoundedSettlementDeps` — type — line 62
-- `BootstrapFoundedSettlementFailureReason` — type — line 35
-- `BootstrapFoundedSettlementInput` — type — line 18
-- `BootstrapFoundedSettlementResult` — type — line 44
-- `FoundedSettlementTentsDeps` — type — line 51
+- `BootstrapFoundedSettlementDeps` — type — line 86
+- `BootstrapFoundedSettlementFailureReason` — type — line 36
+- `BootstrapFoundedSettlementInconsistencyReason` — type — line 48
+- `BootstrapFoundedSettlementInput` — type — line 19
+- `BootstrapFoundedSettlementResult` — type — line 57
+- `FoundedCampPlacement` — type — line 124
+- `FoundedSettlementTentsDeps` — type — line 67
+- `resolveFoundedCampLayout` — function — line 141
+  - domain: settlements
 
 ## `settlement/frameYield.ts`
 
@@ -247,7 +256,7 @@ Generated from exported TypeScript symbols.
 ## `settlement/household.ts`
 
 - `createHousehold` — function — line 390
-- `createHouseholdRegistry` — function — line 620
+- `createHouseholdRegistry` — function — line 634
 - `FARMER_STARTING_SEED_COUNT` — const — line 271
 - `HayForageState` — type — line 129
 - `Household` — type — line 274

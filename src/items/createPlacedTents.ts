@@ -50,6 +50,12 @@ export type PlacedTents = {
     from?: { id: string, condition: number },
   ) => PlacedTent
   pack: (id: string, nowDays: number) => TentPackResult
+  /** Lossless in-place transform update (plan settlements-020) — a migration
+   *  primitive distinct from `pack`+`place` (that path is a gameplay item
+   *  transfer and blocks on active repairs). Preserves `id`, `condition`,
+   *  `lastConditionUpdateAtDays` and any active repair; only moves the
+   *  persisted record + mesh. Returns `false` when `id` doesn't exist. */
+  relocate: (id: string, x: number, z: number, yaw: number) => boolean
   /** Resolved current condition, or `null` if `id` no longer exists. Tents
    *  are never sheltered by another tent — they degrade from direct rain/snow.
    *  Active repair freezes degradation at the checkpointed condition. */
@@ -163,6 +169,21 @@ export function createPlacedTents(
       tents.splice(index, 1)
       disposePlacedTentProp(entry.mesh)
       return { status: 'packed', tent: tentRecord(entry) }
+    },
+    relocate(id, x, z, yaw) {
+      const entry = find(id)
+      if (!entry) return false
+      entry.x = x
+      entry.z = z
+      entry.yaw = yaw
+      entry.mesh.rotation.y = yaw
+      // `placeOnGround` treats the mesh's current position as a local
+      // offset to preserve (prop foot/center anchors) — reset to the
+      // tent prop's own local-origin baseline first so a second call
+      // doesn't accumulate the previous world position on top of the new one.
+      entry.mesh.position.set(0, 0, 0)
+      placeOnGround(entry.mesh, x, z, sampleHeight)
+      return true
     },
     conditionOf(id, worldDays) {
       const entry = find(id)

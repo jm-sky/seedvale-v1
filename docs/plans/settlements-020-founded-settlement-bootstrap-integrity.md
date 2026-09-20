@@ -1,7 +1,7 @@
 # Plan: Founded settlement bootstrap integrity
 
 **Created:** 2026-09-19
-**Status:** `planned` 📋
+**Status:** `verification needed` 🔍
 **Type:** fix
 **Priority:** high · **Effort:** M
 **Depends on:** none
@@ -10,6 +10,34 @@
 **Tags:** `colony` `founding` `persistence` `residency`
 **Roadmap:** `quests-abandoned-gold-mine-colony.md`
 **Model:** Sonnet, Grok
+
+## Implementation status (2026-09-20)
+
+Implemented and technically verified (`npx tsc --noEmit`, `pnpm run lint:fix`,
+`pnpm run build`, focused + full `settlement`/`createPlacedTents` test suites
+all pass). Browser/gameplay verification is the player's responsibility and
+has not been performed by AI, per this plan's own "Verification" section.
+
+- `foundedHomePlaceId` + `resolveFoundedHomePlace` added to
+  `foundedSettlement.ts`; founded households now bind `homeId` to the
+  semantic `Place.id`, resolved to the live physical tent, never cached.
+- `resolveFoundedCampLayout` (deterministic ring layout, hashed rotation) in
+  `foundedSettlementBootstrap.ts`, reused by first creation, repeat-call
+  validation, and legacy reconciliation.
+- `bootstrapFoundedSettlement`'s result union gained
+  `{ status: 'inconsistent', reason }`; the `existing` path now does a full
+  two-phase inspect-then-repair pass (id/site/sponsor/member-set, per-founder
+  tent placement classified as expected/legacy/inconsistent, household
+  binding validity) instead of unconditionally repairing.
+- `PlacedTents.relocate(id, x, z, yaw)` added — lossless in-place transform
+  update preserving condition/`lastConditionUpdateAtDays`/active repair,
+  distinct from the `pack`+`place` gameplay-transfer path.
+- `HouseholdRegistry.rebindHome(id, settlementId, homeId)` added — the
+  registry-level repair seam `getOrCreate` couldn't provide, preserving the
+  household's resource snapshot exactly via its own `snapshot()`.
+- No `CURRENT_SAVE_VERSION` bump — no persisted-representation change, only
+  reconciliation of existing persisted records/tents/households at the
+  bootstrap/rebuild boundary.
 
 ## Goal
 

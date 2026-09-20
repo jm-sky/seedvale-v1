@@ -126,14 +126,14 @@ Generated from exported TypeScript symbols.
 
 ## `items/createPlacedTents.ts`
 
-- `createPlacedTents` — function — line 107
+- `createPlacedTents` — function — line 113
   - domain: items-player
 - `PlacedTent` — type — line 20
 - `PlacedTentEntry` — type — line 34
 - `PlacedTents` — type — line 41
-- `TENT_CONDITION_MAX` — const — line 73
-- `TENT_RAIN_DECAY_PER_DAY` — const — line 71
-- `TENT_SNOW_DECAY_PER_DAY` — const — line 72
+- `TENT_CONDITION_MAX` — const — line 79
+- `TENT_RAIN_DECAY_PER_DAY` — const — line 77
+- `TENT_SNOW_DECAY_PER_DAY` — const — line 78
 - `TentPackResult` — type — line 36
 
 ## `items/equipment.ts`

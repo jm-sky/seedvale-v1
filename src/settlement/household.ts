@@ -611,6 +611,20 @@ export type HouseholdRegistry = {
     explicitSnapshot?: HouseholdSnapshot,
   ) => Household
   get: (id: HouseholdId) => Household | undefined
+  /**
+   * Rebinds `settlementId`/`homeId` on an already-registered household
+   * without touching its resource state (plan settlements-020) — the
+   * registry-level repair seam `getOrCreate` can't provide, since it returns
+   * an existing entry unchanged. Preserves water/items/agriculture/hay
+   * exactly by round-tripping through the household's own `snapshot()`.
+   * Returns `false` (no-op) for an unknown `id` or a `settlementId`
+   * mismatch, instead of silently creating/moving arbitrary state. Intended
+   * only for recognized founded-legacy repair; unrelated households are
+   * never touched unless a caller explicitly invokes this.
+   *
+   * @domain settlements
+   */
+  rebindHome: (id: HouseholdId, settlementId: string, homeId: string) => boolean
   clear: () => void
   /** Stock-only snapshot of every household created so far — see
    *  `HouseholdSnapshot`'s doc comment. */
@@ -629,6 +643,13 @@ export function createHouseholdRegistry(initial?: Record<HouseholdId, HouseholdS
     },
     get(id) {
       return byId.get(id)
+    },
+    rebindHome(id, settlementId, homeId) {
+      const existing = byId.get(id)
+      if (!existing || existing.settlementId !== settlementId) return false
+      if (existing.homeId === homeId) return true
+      byId.set(id, createHousehold(id, settlementId, homeId, existing.snapshot()))
+      return true
     },
     clear() {
       byId.clear()

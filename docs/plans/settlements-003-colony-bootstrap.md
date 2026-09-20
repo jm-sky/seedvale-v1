@@ -313,6 +313,19 @@ household/NPC state is real and will resolve correctly through the normal
 registries — it just has no live on-screen presence yet. Stages 2/4 remain
 open follow-up work on this same plan.
 
+**Bootstrap-integrity follow-up closed (2026-09-20):** correctness gaps found
+in the Stage 1/3 bootstrap above — semantic home binding aliased onto the raw
+physical tent id, every founding tent stacked at the same center/yaw, and an
+over-permissive `existing` repair path that could mint a free tent or adopt
+an unrelated pre-existing stable id — are fixed by
+`settlements-020-founded-settlement-bootstrap-integrity.md`. Founded
+households now bind to `foundedHomePlaceId(...)` (resolved to the live tent
+via `resolveFoundedHomePlace`), founding tents get a deterministic
+non-overlapping camp layout, and repeat/legacy calls either reconcile
+recognized Stage-3 state or return an explicit `inconsistent` result instead
+of silently repairing corruption. Stages 2/4 (live resident materialization,
+streaming) continue as open follow-up on `settlements-021`/`settlements-022`.
+
 ### Stage 1 — founded state + persistence foundation
 
 - founded registry;

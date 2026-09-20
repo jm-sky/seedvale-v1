@@ -1,4 +1,6 @@
+import { Vector3 } from 'three'
 import type { NpcId } from './npcState'
+import type { Place } from './places'
 
 /**
  * Manager-lifetime record of a colony bootstrapped from an arrived
@@ -40,6 +42,54 @@ export function foundedHouseholdId(settlementId: string, npcId: NpcId): string {
 /** Deterministic physical-tent id for one founder's home (plan settlements-003 §"Tents"). */
 export function foundedTentId(settlementId: string, npcId: NpcId): string {
   return `${settlementId}:tent:${npcId}`
+}
+
+/**
+ * Stable semantic founded-home `Place.id` for one founder (plan
+ * settlements-020) — distinct from both the procedural `homePlaceId`
+ * namespace and the physical `foundedTentId` namespace, so
+ * `homeIndexFromPlaceId()` never mistakes a founded home for a procedural
+ * house index. `Household.homeId` for a founded household must use this id,
+ * never the raw tent id, so a later physical-shelter change
+ * (settlements-005) can happen without changing household identity.
+ *
+ * @domain settlements
+ */
+export function foundedHomePlaceId(settlementId: string, npcId: NpcId): string {
+  return `${settlementId}:home:founder:${npcId}`
+}
+
+/** Minimal physical-tent lookup `resolveFoundedHomePlace` needs — narrower
+ *  than `FoundedSettlementTentsDeps` (owned by `foundedSettlementBootstrap.ts`)
+ *  to avoid a module cycle; any real tents-deps object already satisfies this
+ *  structurally. */
+export type FoundedHomeTentLookup = {
+  get: (id: string) => { x: number, z: number } | null
+}
+
+/**
+ * Narrow semantic-home -> physical-tent resolver (plan settlements-020) —
+ * `settlements-021`/`settlements-022` should reuse this instead of
+ * reinterpreting a physical tent id as household identity. Returns `null`
+ * when `npcId` isn't a resident of `record`, or its stable founded tent
+ * doesn't currently exist. Never caches the resolved position back onto
+ * `record`/`Household` — coordinates always come from the live physical tent.
+ *
+ * @domain settlements
+ */
+export function resolveFoundedHomePlace(
+  record: FoundedSettlementRecord,
+  npcId: NpcId,
+  placedTents: FoundedHomeTentLookup,
+): Place | null {
+  if (!record.residentNpcIds.includes(npcId)) return null
+  const tent = placedTents.get(foundedTentId(record.id, npcId))
+  if (!tent) return null
+  return {
+    id: foundedHomePlaceId(record.id, npcId),
+    type: 'home',
+    position: new Vector3(tent.x, 0, tent.z),
+  }
 }
 
 /** Plain-data carry/save snapshot — same `initial*`/`serialize()` idiom as

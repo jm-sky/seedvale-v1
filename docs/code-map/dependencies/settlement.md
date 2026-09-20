@@ -453,6 +453,7 @@ Generated from TypeScript imports.
 **Imports**
 
 - `settlement/npcState.ts`
+- `settlement/places.ts`
 
 **Imported by**
 
@@ -473,6 +474,7 @@ Generated from TypeScript imports.
 - `settlement/foundedSettlementBootstrap.ts`
 - `settlement/household.ts`
 - `settlement/npcState.ts`
+- `settlement/places.ts`
 
 ## `settlement/foundedSettlementBootstrap.ts`
 
@@ -1465,6 +1467,8 @@ Generated from TypeScript imports.
 - `ai/npcPlayerReactionVoice.test.ts`
 - `ai/npcProfessionWork.ts`
 - `settlement/createSettlement.ts`
+- `settlement/foundedSettlement.ts`
+- `settlement/foundedSettlementBootstrap.test.ts`
 - `settlement/livestock.ts`
 - `settlement/lodgingResolver.ts`
 - `settlement/places.test.ts`

@@ -69,6 +69,35 @@ describe('createPlacedTents', () => {
     expect(tents.nodes()).toEqual([])
   })
 
+  it('relocate preserves id/condition/lastConditionUpdateAtDays/active repair while moving the record and mesh', () => {
+    const tents = createPlacedTents(new Scene(), () => 0, [], 1)
+    const placed = tents.place(1, 2, 0, 4, { id: 'tent:move', condition: 60 })
+    const started = tents.startRepair('tent:move', 4, () => true, () => true, () => {})
+    expect(started.status).toBe('started')
+
+    const ok = tents.relocate('tent:move', 9, 11, 1.5)
+    expect(ok).toBe(true)
+
+    const moved = tents.get('tent:move')!
+    expect(moved.x).toBe(9)
+    expect(moved.z).toBe(11)
+    expect(moved.yaw).toBe(1.5)
+    expect(moved.id).toBe(placed.id)
+    expect(moved.condition).toBe(60)
+    expect(moved.lastConditionUpdateAtDays).toBe(4)
+    expect(moved.repair).toBeDefined()
+
+    const mesh = tents.list().find((entry) => entry.id === 'tent:move')!.mesh
+    expect(mesh.rotation.y).toBe(1.5)
+    expect(mesh.position.x).toBe(9)
+    expect(mesh.position.z).toBe(11)
+  })
+
+  it('relocate returns false for an unknown id without throwing', () => {
+    const tents = createPlacedTents(new Scene(), () => 0, [], 1)
+    expect(tents.relocate('tent:missing', 1, 1, 0)).toBe(false)
+  })
+
   it('lazy-resolves tent condition deterministically without a per-frame tick', () => {
     const record = { condition: 100, lastConditionUpdateAtDays: 0 }
     const a = resolveWeatherDrivenCondition(record, 7, 8, 0, {
