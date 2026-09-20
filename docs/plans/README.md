@@ -118,6 +118,9 @@ Unless noted otherwise, `verification needed` means implementation has passed au
 | 💡 `world-terrain-047-mineable-rocks-and-coastal-shell-resources.md`           | 🟡 | M      | -                                                                                                                                                                                                                                                                                          | -                                         |
 | ◼️ `items-player-051-cave-aware-dropped-item-continuity.md`                    | 🔴 | M      | ~~world-027~~                                                                                                                                                                                                                                                                              | -                                         |
 | ◼️ `world-036-lightweight-unloaded-shipwreck-and-tower-lookup.md`              | 🟡 | M      | ~~world-028~~                                                                                                                                                                                                                                                                              | -                                         |
+| ◼️ `fauna-045-cave-surface-perception-boundary-and-entrance-awareness.md`      | 🔴 | M      | ~~world-027~~, ~~fauna-042~~                                                                                                                                                                                                                                                               | -                                         |
+| ◼️ `npc-061-time-skip-and-reification-surface-placement-validity.md`           | 🔴 | M      | world-terrain-044                                                                                                                                                                                                                                                                          | -                                         |
+| ◼️ `persistence-006-player-cave-position-save-load-continuity.md`              | 🔴 | S      | ~~world-027~~                                                                                                                                                                                                                                                                              | -                                         |
 
 ---
 
@@ -244,10 +247,10 @@ New plans declare a primary `Domain:` in frontmatter. Use optional `Tags:` only 
 ## Next plan IDs
 
 - ai: `005`
-- fauna: `045`
+- fauna: `046`
 - items-player: `052`
-- npc: `061`
-- persistence: `006`
+- npc: `062`
+- persistence: `007`
 - quests-progression: `073`
 - settlements: `023`
 - settlements-npcs: `055`
