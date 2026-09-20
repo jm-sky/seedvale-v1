@@ -9,6 +9,7 @@
 **Subdomains:** `hud` `feedback`
 **Tags:** `labels` `map` `fauna` `locations`
 **Roadmap:** -
+**Model:** Sonnet, Composer
 
 ## Problem
 
