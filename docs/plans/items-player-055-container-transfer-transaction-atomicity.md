@@ -8,6 +8,7 @@
 **Subdomains:** `inventory` `interaction`
 **Type:** `fix`
 **Roadmap:** -
+**Model:** Composer, Grok
 
 ## Goal
 
