@@ -88,23 +88,28 @@ Bulky cargo is not equivalent to “inventory non-empty”. Add a small shared/p
 
 Wire only semantics backed by current actions or current presentation state.
 
-Direct mappings:
+Baseline direct mappings already backed by verified clip names:
 
-- `chop` → `chopTree`
-- `harvest` → `farmHarvest`
-- `plant` → `farmPlant`
-- `eat` → `consume`
-- `conversation` → `talk`
-- `fish` → `interact`
-- `mine` → `interact`
-- `sharpen` → `interact`
-- `shear` → `interact`
-- `drink` → `interact`
-- `bury` / `cleanAnimalCorpse` → `interact`
-- ground food/item pickup, including berries/herbs → `interact`
-- `deposit` / `exchange` → `interact`
-- existing garden watering → new short semantic action `waterGarden` → `farmWater`; its completion calls the existing `foodSources.waterGarden(garden.id)`
-- existing sleep entry after `goSleep` reaches its destination → play `layToIdle` once; when it completes, hold the final frame with `settleAtEnd('layToIdle')` throughout the existing `sleep` phase, then ordinary animation sync resumes on wake. The existing sleep FSM remains authoritative.
+- `chop` → `chopTree` → `TreeChopping_Loop`
+- `harvest` → `farmHarvest` → `Farm_Harvest`
+- `plant` → `farmPlant` → `Farm_PlantSeed`
+- `eat` → `consume` → `Consume`
+- `conversation` → `talk` → `Idle_Talking_Loop`
+- existing garden watering → new short semantic action `waterGarden` → `farmWater` → `Farm_Watering`; its completion calls the existing `foodSources.waterGarden(garden.id)`
+- existing sleep entry after `goSleep` reaches its destination → play `layToIdle` / `LayToIdle` once; when it completes, hold the final frame with `settleAtEnd('layToIdle')` throughout the existing `sleep` phase, then ordinary animation sync resumes on wake. The existing sleep FSM remains authoritative.
+
+Purchased UAL2 Source changes the remaining mappings from “permanent Standard fallback” to “verify exact Source clip, then wire if truthful”:
+
+- `fish`
+- `mine`
+- `sharpen`
+- `shear`
+- `drink`
+- `bury` / `cleanAnimalCorpse`
+- ground food/item pickup including berries/herbs
+- ambiguous profession `work`.
+
+Stage A must inspect the physical Source inventory and record exact names before adding intents. If no exact semantic match exists, keep `interact` or the role-based `fixKneeling` fallback. `deposit` / `exchange` remain `interact` unless the Source inventory contains a genuinely matching current interaction and there is value in wiring it.
 
 `PickUp_Table` is not extracted or wired in this plan.
 
@@ -112,19 +117,13 @@ Direct mappings:
 
 ## Generic `work` mapping
 
-For `ActionId === 'work'`, use this fixed role mapping:
+`ActionId === 'work'` is intentionally ambiguous. Resolve it by role only after checking the purchased UAL2 Source inventory:
 
-- herbalist → `fixKneeling`
-- textile_worker → `fixKneeling`
-- blacksmith → `fixKneeling`
-- hunter → `fixKneeling`
-- trader → `interact`
-- miner → `interact`
-- fisher → `interact`
-- shepherd → `interact`
-- farmer/woodcutter/guard generic `work` → `interact` unless a more specific concrete ActionId is active.
+- if Stage A verifies a dedicated clip that truthfully matches the profession's **existing** generic work behavior, add a dedicated intent and exact clip mapping;
+- otherwise herbalist/textile_worker/blacksmith/hunter → `fixKneeling`;
+- otherwise trader/miner/fisher/shepherd/farmer/woodcutter/guard → `interact`.
 
-Do not change profession planning merely to improve animation coverage except for the existing garden watering mutation, which must become a short semantic action so the already-existing world mutation has a truthful visible duration.
+Do not change profession planning merely to manufacture animation coverage. The only planned simulation wrapper is existing garden watering: convert the current immediate mutation into a short semantic `waterGarden` action so the same existing mutation has truthful visible duration.
 
 ## UAL asset pipeline
 
@@ -138,6 +137,16 @@ Current UAL1 source:
 _temp/Models/packs/Universal Animation Library[Standard]/Unreal-Godot/UAL1_Standard.glb
 ```
 
+Purchased UAL2 Source inputs:
+
+```text
+_temp/Models/packs/Universal Animation Library 2[Source]/UAL2.blend
+_temp/Models/packs/Universal Animation Library 2[Source]/Unreal-Godot/UAL2.glb
+_temp/Models/packs/Universal Animation Library 2[Source]/Unreal-Godot/UAL2_RM.glb
+```
+
+Use `UAL2.glb` as the extraction source. `UAL2.blend` is for inspection/authoring context when needed. Do not use `UAL2_RM.glb` for ordinary code-driven NPC locomotion/work.
+
 Current extraction helper:
 
 `scripts/assets/extract_glb_clips.py`
@@ -149,9 +158,11 @@ Important behavior of `extract_glb_clips.py`:
 - it strips mannequin mesh/skin payload while retaining the node hierarchy/tracks necessary for animation;
 - therefore use it as the mechanical assertion that the Standard archive really contains every baseline clip.
 
-Add the UAL2 Standard source path beside UAL1 and fail clearly if either required Standard GLB is absent.
+Add the purchased UAL2 Source GLB path beside UAL1 and fail clearly if either required build input is absent.
 
-Use non-root-motion Standard files for gameplay movement. Seedvale navigation remains code-driven.
+Do not copy or commit the Source package itself. `_temp` is a development input; the committed/runtime artifact is the generated bounded companion.
+
+Seedvale navigation remains code-driven. Root-motion variants are never position authority.
 
 ## Shared companion asset decision
 
@@ -181,9 +192,11 @@ Prefer a small deterministic asset-build helper/manifest over shell-only ad-hoc 
 
 The generated runtime file name should be neutral, e.g. `ual_humanoid.glb`; update docs and all constants atomically.
 
-## Baseline Standard clip manifest
+## Runtime clip manifest
 
-The final `ual_humanoid.glb` must contain the already-required player/combat clips from the current companion plus these approved npc-055 runtime/presentation clips:
+The final `ual_humanoid.glb` is a **bounded consumer manifest**, not a copy of UAL1/UAL2.
+
+It must contain all clips already required by the player/combat path plus the verified npc-055 baseline:
 
 UAL1 Standard:
 - `Idle_Loop`
@@ -193,13 +206,10 @@ UAL1 Standard:
 - `Interact`
 - `Fixing_Kneeling`
 - `Idle_Talking_Loop`
-- `Sitting_Enter`
-- `Sitting_Idle_Loop`
-- `Sitting_Talking_Loop`
-- `Sitting_Exit`
+- sitting clips only if a current runtime consumer is wired;
 - current combat/hurt/death/player-required clips already present in the existing companion pipeline.
 
-UAL2 Standard:
+UAL2 Source (names already known to exist):
 - `TreeChopping_Loop`
 - `Farm_Harvest`
 - `Farm_PlantSeed`
@@ -207,17 +217,11 @@ UAL2 Standard:
 - `Walk_Carry_Loop`
 - `Consume`
 - `LayToIdle`
-- `Chest_Open`.
+- `Chest_Open` only if kept for a concrete near-term/current consumer.
 
-Do not include for npc-055 without another concrete runtime consumer:
-- `PickUp_Table`
-- `Idle_FoldArms_Loop`
-- `Idle_Lantern_Loop`
-- `Yes`
-- `Idle_No_Loop`
-- `OverhandThrow`.
+After Source inventory, append only exact clips actually wired by npc-055 (for example fishing/mining/smithing/shearing/etc. if verified). The manifest in the asset-build script should be the runtime truth and the build should fail if a requested name is absent.
 
-No fishing/mining/smithing/shearing/textile/foraging paid clip is part of this plan.
+Do **not** bulk-export the 130+ Source animations. Attractive but caller-less clips stay in the purchased source library and can be added when gameplay gains a real semantic consumer.
 
 ## Appearance migration
 
@@ -361,29 +365,33 @@ The extraction/build step should be self-validating:
 
 ## Verification order
 
-1. Pure resolver tests.
-2. Asset extraction/merge and clip-list verification.
-3. Wire new aliases into `NpcAgent`.
-4. Run focused NPC animation/profession tests.
-5. Complete adult UBC appearance mapping.
-6. Move children to scaled UBC stand-ins.
-7. Search/remove dead legacy runtime references.
-8. TypeScript, lint, relevant test suite/build as required by repository conventions.
-9. Update `docs/assets/MODELS.md` and state docs only to reflect implemented truth.
-10. Leave browser/manual animation verification to the User.
+1. Inventory exact `UAL2.glb` Source clip names and update `docs/assets/character-animations.md`.
+2. Lock the action → intent → exact clip matrix from real callers only.
+3. Pure resolver tests.
+4. Asset extraction/merge and clip-list verification.
+5. Wire baseline aliases and verified Source-only aliases into `NpcAgent`.
+6. Run focused NPC animation/profession tests.
+7. Complete adult UBC appearance mapping.
+8. Move children to scaled UBC stand-ins.
+9. Search/remove dead legacy runtime references.
+10. TypeScript, lint, relevant test suite/build as required by repository conventions.
+11. Update `docs/assets/MODELS.md` and state docs only to reflect implemented truth.
+12. Leave browser/manual animation verification to the User.
 
 ## Pitfalls
 
 - `NpcAppearance.animationUrl` exists, but `NpcAgent.create()` currently recomputes the companion from `modelUrl`; do not accidentally maintain two competing companion sources.
 - `PLAYER_UBC_ANIMATION_URL` is player-named but already shared by NPCs; rename/refactor instead of adding a second constant.
 - Garden watering already exists as an immediate mutation; this plan must wrap that existing mutation in a short semantic `waterGarden` action rather than adding another watering decision system.
-- `PickUp_Table` is not a valid general ground-pickup replacement.
+- `PickUp_Table` is not a valid general ground-pickup replacement unless Source inspection proves the current action is actually table-height; prefer a dedicated ground/gather clip when one exists.
 - animation clip duration must never control profession work duration.
 - `Walk_Carry_Loop` is presentation derived from an explicit bulky-cargo classifier; initial bulky kind is wood/beams. It must not create/persist duplicate cargo state, and run/flee overrides it.
 - loaded/off-screen simulation continuity cannot depend on animation playback.
 - legacy and UBC rigs must not share UAL through runtime retargeting.
 - female guard must end on Knight UBC; verify/fix the generated female Knight output rather than preserving Modular fallback.
 - do not broaden this work into a Teen/body-proportion implementation.
+- do not bulk-load or bulk-export the purchased Source library merely because it is available; runtime cost and semantic surface remain consumer-driven.
+- never make animation completion the trigger for authoritative profession/resource mutation; actions/timers remain authority.
 
 ## Model choice
 
