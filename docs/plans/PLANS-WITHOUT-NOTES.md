@@ -1,14 +1,16 @@
 # PLANS PLANNED WITHOUT NOTES
 
 > Generated with `pnpm plans:without-notes`  
-> Date: 2026-09-20 11:19:57  
+> Date: 2026-09-20 11:35:31  
 
 ## PLANS
 
 - `fauna-045-cave-surface-perception-boundary-and-entrance-awareness.md`
 - `items-player-050-player-health-and-injury-persistence.md`
 - `items-player-051-cave-aware-dropped-item-continuity.md`
-- `items-player-052-settlement-tool-ownership-and-social-acquisition.md`
+- `items-player-053-atomic-world-pickup-ownership-transfer.md`
+- `items-player-054-instance-payload-capacity-admission.md`
+- `items-player-055-container-transfer-transaction-atomicity.md`
 - `npc-058-time-skip-resource-and-interrupt-parity.md`
 - `npc-059-need-action-result-revalidation-and-atomic-relief.md`
 - `npc-061-time-skip-and-reification-surface-placement-validity.md`
@@ -148,22 +150,22 @@ Dobierz modele na podstawie wykonanego reconu i implementation notes, zgodnie z 
 Pliki dodaj na branch `main` w repozytorium.
 ```
 
-### `items-player-052-settlement-tool-ownership-and-social-acquisition.md`
+### `items-player-053-atomic-world-pickup-ownership-transfer.md`
 
 Prompt:
 
 ```
-Zrób review planu `items-player-052-settlement-tool-ownership-and-social-acquisition.md`
+Zrób review planu `items-player-053-atomic-world-pickup-ownership-transfer.md`
 
 Wczytaj:
 - `docs/STATE.md`
 - `docs/plans/PLANNING.md` (Implementation Notes section),
-- `docs/plans/items-player-052-settlement-tool-ownership-and-social-acquisition.md`
+- `docs/plans/items-player-053-atomic-world-pickup-ownership-transfer.md`
 - aktualny codebase,
 - potrzebne zależności i powiązane implementacje.
 
 Na podstawie review utwórz w repo plik:
-`docs/plans/implementation-notes/items-player-052-settlement-tool-ownership-and-social-acquisition-implementation-notes.md`
+`docs/plans/implementation-notes/items-player-053-atomic-world-pickup-ownership-transfer-implementation-notes.md`
 
 Umieść w nim:
 - sugestie dotyczące implementacji,
@@ -176,7 +178,81 @@ Umieść w nim:
 Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
 Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
 
-Po ukończeniu implementation notes zaktualizuj też `docs/plans/items-player-052-settlement-tool-ownership-and-social-acquisition.md` i dodaj/ustaw metadata:
+Po ukończeniu implementation notes zaktualizuj też `docs/plans/items-player-053-atomic-world-pickup-ownership-transfer.md` i dodaj/ustaw metadata:
+`**Model:** <best>, <cheaper-safe-fallback>`
+Wybierz dokładnie dwa modele spośród: Composer, Grok, Sonnet, Opus.
+Pierwszy ma być najlepszym wyborem do implementacji, drugi tańszym wariantem o minimalnym dodatkowym ryzyku.
+Dobierz modele na podstawie wykonanego reconu i implementation notes, zgodnie z `docs/plans/PLANNING.md`.
+
+Pliki dodaj na branch `main` w repozytorium.
+```
+
+### `items-player-054-instance-payload-capacity-admission.md`
+
+Prompt:
+
+```
+Zrób review planu `items-player-054-instance-payload-capacity-admission.md`
+
+Wczytaj:
+- `docs/STATE.md`
+- `docs/plans/PLANNING.md` (Implementation Notes section),
+- `docs/plans/items-player-054-instance-payload-capacity-admission.md`
+- aktualny codebase,
+- potrzebne zależności i powiązane implementacje.
+
+Na podstawie review utwórz w repo plik:
+`docs/plans/implementation-notes/items-player-054-instance-payload-capacity-admission-implementation-notes.md`
+
+Umieść w nim:
+- sugestie dotyczące implementacji,
+- istotne detale techniczne,
+- decyzje architektoniczne,
+- informacje o istniejących systemach i implementacjach, które należy wykorzystać,
+- potencjalne problemy, zależności i pułapki,
+- inne konkretne wskazówki, które ułatwią agentowi AI poprawną implementację planu.
+
+Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
+Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
+
+Po ukończeniu implementation notes zaktualizuj też `docs/plans/items-player-054-instance-payload-capacity-admission.md` i dodaj/ustaw metadata:
+`**Model:** <best>, <cheaper-safe-fallback>`
+Wybierz dokładnie dwa modele spośród: Composer, Grok, Sonnet, Opus.
+Pierwszy ma być najlepszym wyborem do implementacji, drugi tańszym wariantem o minimalnym dodatkowym ryzyku.
+Dobierz modele na podstawie wykonanego reconu i implementation notes, zgodnie z `docs/plans/PLANNING.md`.
+
+Pliki dodaj na branch `main` w repozytorium.
+```
+
+### `items-player-055-container-transfer-transaction-atomicity.md`
+
+Prompt:
+
+```
+Zrób review planu `items-player-055-container-transfer-transaction-atomicity.md`
+
+Wczytaj:
+- `docs/STATE.md`
+- `docs/plans/PLANNING.md` (Implementation Notes section),
+- `docs/plans/items-player-055-container-transfer-transaction-atomicity.md`
+- aktualny codebase,
+- potrzebne zależności i powiązane implementacje.
+
+Na podstawie review utwórz w repo plik:
+`docs/plans/implementation-notes/items-player-055-container-transfer-transaction-atomicity-implementation-notes.md`
+
+Umieść w nim:
+- sugestie dotyczące implementacji,
+- istotne detale techniczne,
+- decyzje architektoniczne,
+- informacje o istniejących systemach i implementacjach, które należy wykorzystać,
+- potencjalne problemy, zależności i pułapki,
+- inne konkretne wskazówki, które ułatwią agentowi AI poprawną implementację planu.
+
+Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
+Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
+
+Po ukończeniu implementation notes zaktualizuj też `docs/plans/items-player-055-container-transfer-transaction-atomicity.md` i dodaj/ustaw metadata:
 `**Model:** <best>, <cheaper-safe-fallback>`
 Wybierz dokładnie dwa modele spośród: Composer, Grok, Sonnet, Opus.
 Pierwszy ma być najlepszym wyborem do implementacji, drugi tańszym wariantem o minimalnym dodatkowym ryzyku.
