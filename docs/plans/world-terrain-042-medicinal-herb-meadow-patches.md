@@ -4,7 +4,7 @@
 **Status:** `planned` 📋
 **Type:** feature
 **Priority:** medium · **Effort:** M
-**Depends on:** none
+**Depends on:** world-terrain-049
 **Domain:** `world-terrain`
 **Subdomains:** `\` `vegetation\` `\` `terrain\` `\` `resources\`
 **Tags:** `\` `herbs\` `\` `meadow\` `\` `world-generation\` `\` `resources\`
@@ -37,16 +37,16 @@ The medicinal renewable kinds are currently:
 - \`yarrow\`,
 - \`herb\`.
 
-The flora pool is intentionally sparse:
+Prerequisite \`world-terrain-049\` splits forage into functional candidate pools. Scattered medicinal placements use the dedicated medicinal stream:
 
 \`\`\`text
-FLORA_CANDIDATES_PER_CHUNK = 6
-FLORA_KEEP_SCALE = 0.5
+ids cx:cz:hN
+bounded medicinal candidates per chunk (not shared with branch/nuts/berries)
 \`\`\`
 
-The current distribution is therefore intentionally scattered.
+Forest-floor, open flora and rare deadwood use separate pools. This plan must not re-merge those pools.
 
-This plan changes spatial distribution, not item ownership.
+The baseline medicinal distribution after 049 is still intentionally scattered (plus category isolation). This plan changes spatial concentration into herb-rich patches, not item ownership.
 
 ### Existing renewable lifecycle
 
@@ -206,25 +206,23 @@ Do not create duplicate visual-only plants representing the same resource.
 
 ## 7. Candidate generation and density budget
 
-Do not globally raise \`FLORA_CANDIDATES_PER_CHUNK\` enough to make all chunks more expensive.
+Do not raise forest-floor / open-flora / rare pool budgets to pay for meadows. Scattered medicinal already has its own \`hN\` pool from \`world-terrain-049\`.
 
-Prefer a small additional/redistributed candidate budget only when the chunk intersects meaningful medicinal-meadow suitability.
-
-Conceptually:
+Prefer a small **additional** patch candidate budget only when the chunk intersects meaningful medicinal-meadow suitability:
 
 \`\`\`text
 chunk generation
 → cheap suitability sampling
 → no meaningful herb-rich area
-    → ordinary flora path only
+    → existing pools only (including scattered hN medicinal)
 
 → qualifying area
-    → small bounded medicinal-patch candidate budget
+    → small bounded medicinal-patch candidate budget (mN, own salt)
     → local suitability checks
     → mint/yarrow/herb placements
 \`\`\`
 
-Do not dense-scan the entire chunk.
+Do not dense-scan the entire chunk. Do not put patch plants back into the shared forest-floor \`fN\` roll.
 
 Target outcome is visually noticeable but bounded:
 
@@ -235,7 +233,7 @@ across a strong patch
 
 not hundreds of item meshes.
 
-Exact constants should be named and covered by tests.
+Exact constants should be named and covered by tests. Global medicinal abundance must stay roughly comparable to the post-049 scattered baseline (redistribution into patches, not a silent buff).
 
 ## 8. Reuse existing meadow continuity
 

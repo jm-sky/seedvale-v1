@@ -191,11 +191,11 @@ function denseTreeGrid(coord: { cx: number, cz: number }) {
   return trees
 }
 
-describe('computeChunkItems — beam (loose wood, plan items-player-015)', () => {
+describe('computeChunkItems — beam (loose wood, plan items-player-015 / world-terrain-049)', () => {
   const tile = dryLandTile(19)
 
   /** A dense grid covering the whole chunk (`FLORA_TREE_PROXIMITY` is only 7
-   *  world units) so every flora candidate in `coord`'s chunk counts as
+   *  world units) so every forage candidate in `coord`'s chunk counts as
    *  "near a tree", regardless of where the seeded RNG happens to place it. */
 
   it('only ever appears near a tree, never on open ground', () => {
@@ -208,7 +208,7 @@ describe('computeChunkItems — beam (loose wood, plan items-player-015)', () =>
     expect(sawBeam).toBe(false)
   })
 
-  it('can appear near a tree, using the same flora id/collision scheme as branch', () => {
+  it('can appear near a tree with rare-wood id prefix wN', () => {
     let sawBeam = false
     for (let i = 0; i < 200; i++) {
       const coord = { cx: i, cz: -i }
@@ -221,28 +221,28 @@ describe('computeChunkItems — beam (loose wood, plan items-player-015)', () =>
       for (const item of items) {
         if (item.kind !== 'beam') continue
         sawBeam = true
-        expect(item.id).toMatch(new RegExp(`^${coord.cx}:${coord.cz}:f\\d$`))
+        expect(item.id).toMatch(new RegExp(`^${coord.cx}:${coord.cz}:w\\d+$`))
       }
     }
     expect(sawBeam).toBe(true)
   })
 })
 
-describe('computeChunkItems — medicinal herbs (plan items-player-043)', () => {
+describe('computeChunkItems — medicinal herbs (plan items-player-043 / world-terrain-049)', () => {
   const moistTile = (): ReturnType<typeof dryLandTile> => {
     const tile = dryLandTile(19)
     tile.moistureRegion = new Float32Array(19 * 19).fill(0.75)
     return tile
   }
 
-  it('keeps stable flora ids across repeated generation', () => {
+  it('keeps stable medicinal ids across repeated generation (hN prefix)', () => {
     const coord = { cx: 4, cz: -2 }
     const p = params({ cx: 4, cz: -2, seed: 404 })
     const a = computeChunkItems(coord, moistTile(), p, denseTreeGrid(coord))
     const b = computeChunkItems(coord, moistTile(), p, denseTreeGrid(coord))
     expect(a).toEqual(b)
     for (const item of a.filter((entry) => entry.kind === 'mint' || entry.kind === 'yarrow' || entry.kind === 'herb')) {
-      expect(item.id).toMatch(new RegExp(`^${coord.cx}:${coord.cz}:f\\d+$`))
+      expect(item.id).toMatch(new RegExp(`^${coord.cx}:${coord.cz}:h\\d+$`))
     }
   })
 
@@ -265,5 +265,58 @@ describe('computeChunkItems — medicinal herbs (plan items-player-043)', () => 
     }
     expect(mint).toBeGreaterThan(herb)
     expect(mint + yarrow + herb).toBeGreaterThan(0)
+  })
+
+  it('places medicinal finds without consuming forest-floor fN slots', () => {
+    let sawMedicinal = false
+    let sawForestFloor = false
+    for (let i = 0; i < 80; i++) {
+      const coord = { cx: i, cz: i + 7 }
+      const items = computeChunkItems(
+        coord,
+        moistTile(),
+        params({ cx: coord.cx, cz: coord.cz, seed: 700 + i }),
+        denseTreeGrid(coord),
+      )
+      for (const item of items) {
+        if (item.kind === 'mint' || item.kind === 'yarrow' || item.kind === 'herb' || item.kind === 'poisonous_herb') {
+          sawMedicinal = true
+          expect(item.id).toMatch(/:h\d+$/)
+        }
+        if (
+          item.kind === 'mushroom' ||
+          item.kind === 'branch' ||
+          item.kind === 'cone' ||
+          item.kind === 'berries' ||
+          item.kind === 'nuts'
+        ) {
+          sawForestFloor = true
+          expect(item.id).toMatch(/:f\d+$/)
+        }
+      }
+    }
+    expect(sawMedicinal).toBe(true)
+    expect(sawForestFloor).toBe(true)
+  })
+})
+
+describe('computeChunkItems — open flora pool (plan world-terrain-049)', () => {
+  it('assigns flower and flax the oN id prefix', () => {
+    let sawOpen = false
+    for (let i = 0; i < 120; i++) {
+      const coord = { cx: i, cz: -i - 1 }
+      const items = computeChunkItems(
+        coord,
+        dryLandTile(19),
+        params({ cx: coord.cx, cz: coord.cz, seed: 900 + i }),
+        [],
+      )
+      for (const item of items) {
+        if (item.kind !== 'flower' && item.kind !== 'flax') continue
+        sawOpen = true
+        expect(item.id).toMatch(new RegExp(`^${coord.cx}:${coord.cz}:o\\d+$`))
+      }
+    }
+    expect(sawOpen).toBe(true)
   })
 })

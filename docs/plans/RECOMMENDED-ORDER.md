@@ -227,17 +227,17 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   🔴 `M` · **Score:**  33  
    → **unlocks:** 0/0
 
-36. `world-terrain-045` — **Canonical local water player traversal**  
+36. `world-terrain-042` — **Medicinal herb meadow patches**  
+  🟡 `M` · **Score:**  33  
+   → **unlocks:** 1/1
+
+37. `world-terrain-045` — **Canonical local water player traversal**  
   🔴 `M` · **Score:**  33  
    → **unlocks:** 0/0
 
-37. `ui-input-031` — **World-bound UI session rebuild lifecycle**  
+38. `ui-input-031` — **World-bound UI session rebuild lifecycle**  
   🔴 `S` · **Score:**  31  
    → **unlocks:** 0/0
-
-38. `world-terrain-042` — **Medicinal herb meadow patches**  
-  🟡 `M` · **Score:**  31  
-   → **unlocks:** 1/1
 
 39. `npc-054` — **NPC desired gifts, gift acceptance and relationship rewards**  
   🔴 `L` · **Score:**  30  
@@ -343,20 +343,20 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-65. `items-player-052` — **Settlement tool ownership and social acquisition**  
+65. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
+  🟡 `L` · **Score:**  18  
+   → **unlocks:** 0/0
+
+66. `items-player-052` — **Settlement tool ownership and social acquisition**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-66. `items-player-058` — **Campfire decomposition and ash residue**  
+67. `items-player-058` — **Campfire decomposition and ash residue**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-67. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
+68. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
   🟡 `M` · **Score:**  17  
-   → **unlocks:** 0/0
-
-68. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
-  🟡 `L` · **Score:**  16  
    → **unlocks:** 0/0
 
 ---
@@ -921,6 +921,7 @@ graph TD
   world_terrain_046["world-terrain-046 — Unified water shore query and river hotpath"]
   world_terrain_047["world-terrain-047 — Mineable rocks and coastal shell resources"]
   world_terrain_048["world-terrain-048 — Contextual shovel finds by environment"]
+  world_terrain_049["world-terrain-049 — Flora functional candidate pools"]
   008 --> items_player_010
   069 --> settlements_npcs_008
   097 --> world_terrain_007
@@ -1540,4 +1541,5 @@ graph TD
   world_terrain_044 --> npc_061
   world_terrain_044 --> world_terrain_045
   world_terrain_047 --> world_terrain_048
+  world_terrain_049 --> world_terrain_042
 ```

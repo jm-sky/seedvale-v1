@@ -7,7 +7,7 @@
 
 ## Current code reality
 
-- `src/terrain/chunkItems.ts::computeChunkItems()` already owns the physical `mint` / `yarrow` / `herb` placements. It runs worker-side after `computeChunkVegetation()`, uses a dedicated flora RNG stream and stable `cx:cz:fN` ids.
+- `src/terrain/chunkItems.ts::computeChunkItems()` already owns the physical `mint` / `yarrow` / `herb` placements. After prerequisite `world-terrain-049`, scattered medicinals use the dedicated medicinal pool (`cx:cz:hN`, own salt); forest-floor / open flora / beam are separate pools. Do not re-merge them.
 - `src/terrain/renewableWorldItems.ts` already owns renewable depletion/respawn. Do not add meadow persistence or another lifecycle.
 - Herbalist gathering already goes through `src/world/herbalGathering.ts` -> `ChunkManager.findNearestWorldItem(s)` -> `src/terrain/chunkWorldItems.ts`. The off-screen path recomputes `computeChunkTile -> computeChunkVegetation -> computeChunkItems`, so new ordinary item placements automatically remain visible to NPC gathering if they stay in that pipeline.
 - Flower meadows and forest clearings share the same low-frequency `meadowNoise` in `src/terrain/chunkVegetation.ts`, but the noise cache, salt, `fieldAt()`, frequency and `flowerMeadowPatches()` are currently module-private. The plan cannot reuse that signal from `chunkItems.ts` or a main-thread world query without exposing/extracting it.
@@ -63,12 +63,12 @@ Road avoidance can be enforced in the actual patch-item placement using `tile.ro
 
 ## Item placement and save compatibility
 
-Keep the existing `fN` flora RNG stream/order intact as much as possible. Changing the shared flora weights/order can remap an old `fN` id from a finite item to a renewable herb (or vice versa); because persistence keys collection/depletion by placement id, that creates avoidable save aliasing.
+Prerequisite `world-terrain-049` already isolated scattered medicinals onto `hN`. Keep those base pools intact.
 
-Preferred implementation:
+Preferred implementation for patches:
 
-1. leave ordinary flora candidate positions and kind roll ordering unchanged;
-2. if needed for abundance compensation, apply deterministic **post-selection retention only to medicinal results** rather than changing all flora weights;
+1. leave forest-floor (`fN`), medicinal (`hN`), open flora (`oN`) and rare (`wN`) streams unchanged;
+2. if needed for abundance compensation against the post-049 medicinal baseline, apply deterministic **post-selection retention only to medicinal results** (scattered `hN` and/or patch `mN`) rather than changing forest-floor weights;
 3. add a separate, bounded medicinal-patch candidate stream with its own salt and id namespace, e.g. `cx:cz:mN`;
 4. generate that extra stream only for chunks whose cheap suitability probes indicate a meaningful patch.
 
@@ -76,7 +76,7 @@ The new `mN` placements are still normal `ItemPlacement` records, so `collectIte
 
 ## Economy calibration
 
-Do not guess constants from the plan text. First record a deterministic baseline over representative chunks/seeds from current `main`:
+Do not guess constants from the plan text. First record a deterministic baseline over representative chunks/seeds from current `main` **after** `world-terrain-049` (scattered `hN` medicinals):
 
 - total `mint`, `yarrow`, `herb`,
 - per-species ratios,
@@ -85,8 +85,8 @@ Do not guess constants from the plan text. First record a deterministic baseline
 Then tune ordinary medicinal retention + bounded patch candidates so:
 
 - strong patches are visibly denser locally,
-- scattered medicinal finds remain,
-- total medicinal count stays roughly near baseline,
+- scattered medicinal finds remain (`hN`),
+- total medicinal count stays roughly near the post-049 baseline,
 - `herb` remains materially rarer.
 
 Put the statistical sample in tests; avoid a brittle assertion on one seed/chunk. Also assert a hard per-chunk upper bound for the new patch stream.

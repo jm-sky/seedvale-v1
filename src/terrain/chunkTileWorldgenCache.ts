@@ -45,8 +45,10 @@ export const CHUNK_TILE_CACHE_NAMESPACE = 'chunk-tiles'
  * v3: medicinal flora split mint/yarrow/rare herb (plan items-player-043).
  * v4: tightened shell spawn band + stable `resourceId` on mineable
  * `largeRock`/`rockCluster` placements (plan world-terrain-047).
+ * v5: functional forage candidate pools — forest-floor / medicinal / open /
+ * rare wood with separate id prefixes (plan world-terrain-049).
  */
-export const CHUNK_TILE_CACHE_VERSION = 4
+export const CHUNK_TILE_CACHE_VERSION = 5
 
 /** Small byte-budget manifest record living in the same namespace — see
  *  `ChunkTileMetaPayload`. Its `fingerprint` field is a constant because the
