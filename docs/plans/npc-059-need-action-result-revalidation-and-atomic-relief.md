@@ -4,6 +4,7 @@
 **Status:** `planned` 📋
 **Type:** fix
 **Priority:** high · **Effort:** S
+**Model:** Sonnet, Composer
 **Depends on:** none
 **Domain:** `npc`
 **Subdomains:** `needs` `decision-making` `lifecycle`
