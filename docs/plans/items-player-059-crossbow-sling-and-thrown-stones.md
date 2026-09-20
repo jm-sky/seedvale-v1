@@ -677,6 +677,11 @@ Same:
 
 produces the same family/loadout/combat-mode result independent of catalog/map iteration order.
 
+## Models
+
+Check `public/models/items/crossbow.glb`
+
+
 ## 26. Non-goals
 
 Do not implement:
