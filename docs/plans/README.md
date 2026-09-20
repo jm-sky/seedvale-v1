@@ -114,6 +114,8 @@ Unless noted otherwise, `verification needed` means implementation has passed au
 | ◼️ `ui-input-027-interaction-candidate-dropped-item-scaling.md`                | 🟡 | S      | -                                                                                                                                                                                                                                                                                          | -                                         |
 | ◼️ `ui-input-028-interaction-target-identity-and-cycle-lifecycle.md`           | 🟡 | S      | ~~ui-input-015~~, ~~ui-input-020~~, world-033                                                                                                                                                                                                                                              | -                                         |
 | ◼️ `ui-input-029-village-torch-interaction-action-contract.md`                 | ⚪ | S      | ~~ui-input-015~~                                                                                                                                                                                                                                                                           | -                                         |
+| ◼️ `world-terrain-045-canonical-local-water-player-traversal.md`               | 🔴 | M      | world-terrain-044                                                                                                                                                                                                                                                                          | -                                         |
+| ◼️ `world-terrain-046-unified-water-shore-query-and-river-hotpath.md`          | 🔴 | M      | -                                                                                                                                                                                                                                                                                          | -                                         |
 
 ---
 
@@ -250,7 +252,7 @@ New plans declare a primary `Domain:` in frontmatter. Use optional `Tags:` only 
 - tools: `019`
 - ui-input: `030`
 - world: `036`
-- world-terrain: `045`
+- world-terrain: `047`
 
 This ids section is maintained automatically from the plan files.
 
