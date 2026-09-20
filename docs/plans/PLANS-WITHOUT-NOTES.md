@@ -1,13 +1,11 @@
 # PLANS PLANNED WITHOUT NOTES
 
 > Generated with `pnpm plans:without-notes`  
-> Date: 2026-09-20 19:00:50
+> Date: 2026-09-20 19:10:53  
 
 ## PLANS
 
-- `items-player-050-player-health-and-injury-persistence.md`
 - `items-player-054-instance-payload-capacity-admission.md`
-- `items-player-055-container-transfer-transaction-atomicity.md`
 - `items-player-056-player-new-game-runtime-state-reset.md`
 - `items-player-057-mounted-player-lifecycle-and-restore-continuity.md`
 - `npc-058-time-skip-resource-and-interrupt-parity.md`
@@ -39,43 +37,6 @@
 --------------------------------
 ## PROMPTS
 
-### `items-player-050-player-health-and-injury-persistence.md`
-
-Prompt:
-
-```
-Zrób review planu `items-player-050-player-health-and-injury-persistence.md`
-
-Wczytaj:
-- `docs/STATE.md`
-- `docs/plans/PLANNING.md` (Implementation Notes section),
-- `docs/plans/items-player-050-player-health-and-injury-persistence.md`
-- aktualny codebase,
-- potrzebne zależności i powiązane implementacje.
-
-Na podstawie review utwórz w repo plik:
-`docs/plans/implementation-notes/items-player-050-player-health-and-injury-persistence-implementation-notes.md`
-
-Umieść w nim:
-- sugestie dotyczące implementacji,
-- istotne detale techniczne,
-- decyzje architektoniczne,
-- informacje o istniejących systemach i implementacjach, które należy wykorzystać,
-- potencjalne problemy, zależności i pułapki,
-- inne konkretne wskazówki, które ułatwią agentowi AI poprawną implementację planu.
-
-Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
-Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
-
-Po ukończeniu implementation notes zaktualizuj też `docs/plans/items-player-050-player-health-and-injury-persistence.md` i dodaj/ustaw metadata:
-`**Model:** <best>, <cheaper-safe-fallback>`
-Wybierz dokładnie dwa modele spośród: Composer, Grok, Sonnet, Opus.
-Pierwszy ma być najlepszym wyborem do implementacji, drugi tańszym wariantem o minimalnym dodatkowym ryzyku.
-Dobierz modele na podstawie wykonanego reconu i implementation notes, zgodnie z `docs/plans/PLANNING.md`.
-
-Pliki dodaj na branch `main` w repozytorium.
-```
-
 ### `items-player-054-instance-payload-capacity-admission.md`
 
 Prompt:
@@ -105,43 +66,6 @@ Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną
 Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
 
 Po ukończeniu implementation notes zaktualizuj też `docs/plans/items-player-054-instance-payload-capacity-admission.md` i dodaj/ustaw metadata:
-`**Model:** <best>, <cheaper-safe-fallback>`
-Wybierz dokładnie dwa modele spośród: Composer, Grok, Sonnet, Opus.
-Pierwszy ma być najlepszym wyborem do implementacji, drugi tańszym wariantem o minimalnym dodatkowym ryzyku.
-Dobierz modele na podstawie wykonanego reconu i implementation notes, zgodnie z `docs/plans/PLANNING.md`.
-
-Pliki dodaj na branch `main` w repozytorium.
-```
-
-### `items-player-055-container-transfer-transaction-atomicity.md`
-
-Prompt:
-
-```
-Zrób review planu `items-player-055-container-transfer-transaction-atomicity.md`
-
-Wczytaj:
-- `docs/STATE.md`
-- `docs/plans/PLANNING.md` (Implementation Notes section),
-- `docs/plans/items-player-055-container-transfer-transaction-atomicity.md`
-- aktualny codebase,
-- potrzebne zależności i powiązane implementacje.
-
-Na podstawie review utwórz w repo plik:
-`docs/plans/implementation-notes/items-player-055-container-transfer-transaction-atomicity-implementation-notes.md`
-
-Umieść w nim:
-- sugestie dotyczące implementacji,
-- istotne detale techniczne,
-- decyzje architektoniczne,
-- informacje o istniejących systemach i implementacjach, które należy wykorzystać,
-- potencjalne problemy, zależności i pułapki,
-- inne konkretne wskazówki, które ułatwią agentowi AI poprawną implementację planu.
-
-Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
-Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
-
-Po ukończeniu implementation notes zaktualizuj też `docs/plans/items-player-055-container-transfer-transaction-atomicity.md` i dodaj/ustaw metadata:
 `**Model:** <best>, <cheaper-safe-fallback>`
 Wybierz dokładnie dwa modele spośród: Composer, Grok, Sonnet, Opus.
 Pierwszy ma być najlepszym wyborem do implementacji, drugi tańszym wariantem o minimalnym dodatkowym ryzyku.
