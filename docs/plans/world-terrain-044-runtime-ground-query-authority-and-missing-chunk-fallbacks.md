@@ -3,6 +3,7 @@
 **Created:** 2026-09-19
 **Status:** `planned` 📋
 **Priority:** high · **Effort:** M
+**Model:** Grok, Sonnet
 **Depends on:** ~~world-terrain-031~~, ~~world-terrain-033~~
 **Domain:** `world-terrain`
 **Type:** `bug`
@@ -21,7 +22,7 @@ For `heights` / `floorHeights`, that fallback is not equivalent to the authorita
 
 `sampleBridgeDeck()` also depends on the owning chunk record's retained `bridgeSpecs`; if the chunk is missing it returns `null`. Therefore `sampleSurfaceGround()` can silently downgrade from bridge-aware/runtime-modified ground to raw analytical terrain.
 
-The same movement sampler feeds player, NPC and animal slope/ground logic. Near a ready ↔ missing/generating boundary, finite-difference slope probes can even sample one point from the runtime tile and another from raw fallback, producing an artificial slope/step.
+The same permissive fallback reaches the player directly through `sampleSurfaceGround()` and reaches NPC/animal movement through their locally composed `sampleBridgeDeck() ?? sampleHeight()` samplers. Near a ready ↔ missing/generating boundary, finite-difference slope probes can therefore sample one point from the runtime tile and another from raw fallback, producing an artificial slope/step.
 
 The raw analytical fallback is useful for generation-time, streaming-independent queries. The defect is that one API silently serves both meanings.
 
@@ -77,9 +78,11 @@ Do not globally replace `sampleHeight` with `sampleSurfaceGround`; worldgen/plac
 
 ### 2. Remove silent downgrade from runtime movement
 
-For player/NPC/fauna movement, choose an explicit policy when canonical surface data is unavailable.
+Expose a resident/runtime movement-surface query that returns an explicit unavailable result when the owning chunk is missing, generating or otherwise lacks its canonical runtime tile. When available, it must read the runtime tile plus the retained `RoadBridgeSpec` projection; it must not fall back to raw analytical height.
 
-The implementation must preserve simulation independence and performance. Acceptable design directions include a cheap explicit unavailable result plus lifecycle/streaming ownership that guarantees detailed movers have needed ground, or a deterministic bounded resolver that can reconstruct the same canonical surface facts without materializing presentation. Choose after focused implementation recon; do not make per-agent hot paths regenerate chunks/routes/rivers.
+Detailed player/NPC/fauna movement must hold/block the attempted step when the required runtime ground or any slope probe is unavailable, then retry naturally on later ticks. Do not generate chunks, routes or rivers from per-agent hot paths.
+
+Keep a separate streaming-independent analytical/hybrid height path for worldgen, placement, coarse/off-screen simulation, reconstruction and time-skip.
 
 ### 3. Keep bridge authority consistent
 
