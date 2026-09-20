@@ -130,6 +130,7 @@ Unless noted otherwise, `verification needed` means implementation has passed au
 | ◼️ `ui-input-031-world-bound-ui-session-rebuild-lifecycle.md`                  | 🔴 | S      | world-033                                                                                                                                                                                                                                                                                  | -                                         |
 | ◼️ `world-037-audio-spatial-context-isolation.md`                              | 🟡 | S      | ~~world-027~~                                                                                                                                                                                                                                                                              | -                                         |
 | ◼️ `world-038-world-audio-async-lifecycle-and-cache-recovery.md`               | 🟡 | S      | -                                                                                                                                                                                                                                                                                          | -                                         |
+| ◼️ `tools-019-debug-tooling-lifecycle-ownership.md`                            | 🟡 | S      | -                                                                                                                                                                                                                                                                                          | -                                         |
 
 ---
 
@@ -264,7 +265,7 @@ New plans declare a primary `Domain:` in frontmatter. Use optional `Tags:` only 
 - quests-progression: `073`
 - settlements: `023`
 - settlements-npcs: `055`
-- tools: `019`
+- tools: `020`
 - ui-input: `032`
 - world: `039`
 - world-terrain: `048`
