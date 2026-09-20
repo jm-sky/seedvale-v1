@@ -321,35 +321,35 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   ⚪ `S` · **Score:**  23  
    → **unlocks:** 0/0
 
-60. `tools-018` — **Codebase domain and flow audit master**  
-  🔴 `XL` · **Score:**  20  
-   → **unlocks:** 0/0
-
-61. `items-player-054` — **Instance payload capacity admission**  
+60. `items-player-054` — **Instance payload capacity admission**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-62. `items-player-055` — **Container transfer transaction atomicity**  
+61. `items-player-055` — **Container transfer transaction atomicity**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-63. `tools-019` — **Debug tooling lifecycle ownership**  
+62. `tools-019` — **Debug tooling lifecycle ownership**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-64. `ui-input-027` — **Interaction candidate dropped-item scaling**  
+63. `ui-input-027` — **Interaction candidate dropped-item scaling**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-65. `ui-input-030` — **Player downed action and input gating**  
+64. `ui-input-030` — **Player downed action and input gating**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-66. `world-038` — **WorldAudio async lifecycle and cache recovery**  
+65. `world-038` — **WorldAudio async lifecycle and cache recovery**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-67. `items-player-052` — **Settlement tool ownership and social acquisition**  
+66. `items-player-052` — **Settlement tool ownership and social acquisition**  
+  🟡 `M` · **Score:**  17  
+   → **unlocks:** 0/0
+
+67. `items-player-058` — **Campfire decomposition and ash residue**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
@@ -579,6 +579,7 @@ graph TD
   items_player_055["items-player-055 — Container transfer transaction atomicity"]
   items_player_056["items-player-056 — Player New Game runtime state reset"]
   items_player_057["items-player-057 — Mounted player lifecycle and restore continuity"]
+  items_player_058["items-player-058 — Campfire decomposition and ash residue"]
   npc_001["npc-001 — NPC Physical Stats — Sex & Age"]
   npc_002["npc-002 — NPC Healing"]
   npc_004["npc-004 — Drzewo genealogiczne NPC"]
