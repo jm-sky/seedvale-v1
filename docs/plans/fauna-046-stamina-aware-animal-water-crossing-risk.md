@@ -3,6 +3,7 @@
 **Created:** 2026-09-21
 **Status:** `planned` 📋
 **Type:** fix
+**Model:** Opus · Sonnet
 **Priority:** high · **Effort:** M
 **Depends on:** ~~fauna-015~~, ~~fauna-029~~
 **Domain:** `fauna`
