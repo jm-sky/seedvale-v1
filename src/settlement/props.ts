@@ -353,6 +353,29 @@ export type SettlementLandPlot = {
   price: number
 }
 
+/**
+ * Live authored-repair presentation handles (plan quests-progression-073) —
+ * `Settlement.syncAuthoredRepairPresentation` projects registry condition
+ * onto these meshes without a full props rebuild.
+ *
+ * @domain settlements
+ */
+export type AuthoredRepairVisualHandles = {
+  foundationPile: THREE.Object3D | null
+  loggingWagon: THREE.Object3D | null
+  loggingWagonBaseY: number
+  householdFence: THREE.Object3D | null
+  communalFence: THREE.Object3D | null
+  householdFencePlacements: SettlementPalisadePlacement[]
+  communalFencePlacements: SettlementPalisadePlacement[]
+  communalFenceInstanceName: string
+  /** True when the communal target started damaged and still needs a
+   *  restore plant (avoids duplicating an already-rendered pasture segment). */
+  communalNeedsRestorePlant: boolean
+  /** True when the household fence started damaged and still needs a plant. */
+  householdNeedsRestorePlant: boolean
+}
+
 /** One household's blacksmith workplace (plan settlements-npcs-024 Stage 1)
  *  — anvil + grind workbench materialized in `familyIndex`'s own house yard,
  *  `position` the NPC work/access anchor beside them (not either prop's
@@ -837,6 +860,9 @@ export async function buildSettlementProps(
   pastureFencePlacements: SettlementPalisadePlacement[]
   /** Paddock fence placements (plan settlements-018). */
   paddockFencePlacements: SettlementPalisadePlacement[]
+  /** Live authored-repair mesh handles (plan quests-progression-073) — null
+   *  fields when the settlement has no authored presentation. */
+  authoredRepairVisuals: AuthoredRepairVisualHandles | null
 }> {
   const group = new THREE.Group()
   group.name = 'settlement'
@@ -1841,6 +1867,22 @@ export async function buildSettlementProps(
   // own stable identity/ownership (never the merchant wagon's). Damaged
   // presentation is a data-driven tilt of the same model, not a second
   // quest-only mesh (guardrail §10).
+  const authoredRepairVisuals: AuthoredRepairVisualHandles | null = authoredRepairPresentation
+    ? {
+        foundationPile: null,
+        loggingWagon: null,
+        loggingWagonBaseY: 0,
+        householdFence: null,
+        communalFence: null,
+        householdFencePlacements: [],
+        communalFencePlacements: [],
+        communalFenceInstanceName: authoredRepairPresentation.communalFenceUsesPastureSegment
+          ? 'settlement-pasture-fence-restored'
+          : 'settlement-communal-fence-fallback',
+        communalNeedsRestorePlant: authoredRepairPresentation.communalFenceDamaged,
+        householdNeedsRestorePlant: authoredRepairPresentation.householdFenceDamaged,
+      }
+    : null
   if (authoredRepairPresentation) {
     const house0 = landmarks.houses[0]?.position
     if (house0) {
@@ -1853,12 +1895,17 @@ export async function buildSettlementProps(
         preparePropFitMax(wagon, 3.8)
         placeOnGround(wagon, pose.wagonX, pose.wagonZ, sampleHeight)
         wagon.rotation.y = pose.yaw
+        const baseY = wagon.position.y
         if (authoredRepairPresentation.loggingWagonDamaged) {
           wagon.rotation.z = 0.18
           wagon.position.y -= 0.15
         }
         tagSettlementShadowKind(wagon, 'workplace')
         group.add(wagon)
+        if (authoredRepairVisuals) {
+          authoredRepairVisuals.loggingWagon = wagon
+          authoredRepairVisuals.loggingWagonBaseY = baseY
+        }
         landmarks.loggingWagon = new THREE.Vector3(
           pose.wagonX,
           sampleHeight(pose.wagonX, pose.wagonZ),
@@ -1897,6 +1944,25 @@ export async function buildSettlementProps(
       'settlement-pasture-fence',
     )
   }
+  // Restorable communal segment placements (pasture missing piece or SM
+  // fallback) — kept for live sync when the target becomes intact mid-session.
+  if (authoredRepairPresentation && authoredRepairVisuals) {
+    if (authoredRepairPresentation.communalFenceUsesPastureSegment && pasturePlan) {
+      const restoredSegment = pasturePlan.fenceSegments.find(
+        (segment) => segment.id === authoredRepairPresentation.communalFenceStructureId,
+      )
+      authoredRepairVisuals.communalFencePlacements = restoredSegment
+        ? fenceSegmentPlacements([restoredSegment], sampleHeight)
+        : []
+    } else {
+      const fx = landmarks.garden.x + 3
+      const fz = landmarks.garden.z + 1.5
+      authoredRepairVisuals.communalFencePlacements = fenceSegmentPlacements(
+        [{ id: authoredRepairPresentation.communalFenceStructureId, ax: fx - 1.5, az: fz, bx: fx + 1.5, bz: fz }],
+        sampleHeight,
+      )
+    }
+  }
   // SM/no-pasture communal-fence fallback (plan quests-progression-073) —
   // one small fence segment near the garden, present only while intact; a
   // completely missing segment where one is otherwise always present reads
@@ -1905,34 +1971,39 @@ export async function buildSettlementProps(
     authoredRepairPresentation
     && !authoredRepairPresentation.communalFenceUsesPastureSegment
     && !authoredRepairPresentation.communalFenceDamaged
+    && authoredRepairVisuals
   ) {
-    const fx = landmarks.garden.x + 3
-    const fz = landmarks.garden.z + 1.5
-    const fallbackFencePlacements = fenceSegmentPlacements(
-      [{ id: authoredRepairPresentation.communalFenceStructureId, ax: fx - 1.5, az: fz, bx: fx + 1.5, bz: fz }],
-      sampleHeight,
+    authoredRepairVisuals.communalFence = await plantEntrancePalisade(
+      group,
+      authoredRepairVisuals.communalFencePlacements,
+      authoredRepairVisuals.communalFenceInstanceName,
     )
-    await plantEntrancePalisade(group, fallbackFencePlacements, 'settlement-communal-fence-fallback')
   }
   // Piotr's household fence (plan quests-progression-073) — same
   // present-only-while-intact convention as the fallback above, anchored
   // near family index 0's own house.
-  if (authoredRepairPresentation && !authoredRepairPresentation.householdFenceDamaged) {
+  if (authoredRepairPresentation && authoredRepairVisuals) {
     const house0 = landmarks.houses[0]?.position
     if (house0) {
       const fx = house0.x + 2.2
       const fz = house0.z + 1
-      const householdFencePlacements = fenceSegmentPlacements(
+      authoredRepairVisuals.householdFencePlacements = fenceSegmentPlacements(
         [{ id: 'household-fence-0', ax: fx - 1.2, az: fz, bx: fx + 1.2, bz: fz }],
         sampleHeight,
       )
-      await plantEntrancePalisade(group, householdFencePlacements, 'settlement-household-fence')
+      if (!authoredRepairPresentation.householdFenceDamaged) {
+        authoredRepairVisuals.householdFence = await plantEntrancePalisade(
+          group,
+          authoredRepairVisuals.householdFencePlacements,
+          'settlement-household-fence',
+        )
+      }
     }
   }
   // Piotr's residential-foundation subtarget (plan quests-progression-073) —
   // a small loose-stone pile at the house base, visible only while damaged;
   // no separate GLB variant, just cheap primitives (guardrail §10).
-  if (authoredRepairPresentation?.foundationDamaged) {
+  if (authoredRepairPresentation?.foundationDamaged && authoredRepairVisuals) {
     const house0 = landmarks.houses[0]?.position
     if (house0) {
       const stoneMaterial = new THREE.MeshStandardMaterial({ color: 0x8c887f, roughness: 0.95 })
@@ -1945,12 +2016,13 @@ export async function buildSettlementProps(
       for (const stone of stoneOffsets) {
         const mesh = new THREE.Mesh(new THREE.IcosahedronGeometry(stone.r, 0), stoneMaterial)
         mesh.position.set(stone.dx, stone.r * 0.6, stone.dz)
-        mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI)
+        mesh.rotation.set(stone.r * 2.1, stone.dx * 4.7, stone.dz * 3.3)
         pile.add(mesh)
       }
       placeOnGround(pile, house0.x, house0.z, sampleHeight)
       tagSettlementShadowKind(pile, 'decor')
       group.add(pile)
+      authoredRepairVisuals.foundationPile = pile
     }
   }
   const paddockFencePlacementsResolved: SettlementPalisadePlacement[] = paddockPlan
@@ -2355,6 +2427,7 @@ export async function buildSettlementProps(
     palisadePlacements,
     pastureFencePlacements: pastureFencePlacementsResolved,
     paddockFencePlacements: paddockFencePlacementsResolved,
+    authoredRepairVisuals,
   }
 }
 

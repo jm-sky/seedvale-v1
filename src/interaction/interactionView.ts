@@ -316,6 +316,8 @@ export function interactableStableKey(target: Interactable): string {
       return `hive:${target.id}`
     case 'house':
       return `house:${target.houseId}`
+    case 'structureRepair':
+      return `structureRepair:${target.settlementId}:${target.structureId}`
     case 'householdStorage':
       return `householdStorage:${target.household.id}`
     case 'item':

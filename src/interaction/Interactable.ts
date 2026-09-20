@@ -79,6 +79,25 @@ export type InteractablePayload =
     repairCompletedWork: number | null
     repairRequiredWork: number | null
   }
+  /**
+   * Authored non-house settlement repair target (plan quests-progression-073)
+   * — fence / foundation / wagon / communal fence. Shares the same
+   * `[R]` → `describeStructureRepair` / `workOnStructureRepair` path as
+   * `house`, keyed by stable `structureId`.
+   */
+  | {
+    kind: 'structureRepair'
+    position: { x: number, z: number }
+    promptLabel: string
+    label: string
+    settlementId: string
+    structureId: string
+    condition: number
+    repairNeeded: boolean
+    repairActive: boolean
+    repairCompletedWork: number | null
+    repairRequiredWork: number | null
+  }
   | {
     kind: 'tree'
     position: { x: number, z: number }

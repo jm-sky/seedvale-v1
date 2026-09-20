@@ -405,22 +405,18 @@ Sprawdzić ręcznie:
 
 ## 16. Implementation status
 
-Zaimplementowane (sekcje 1–5, 7–9, 11, 13):
+Zaimplementowane (sekcje 1–14 automatycznie weryfikowalne; sekcja 15 = browser, User):
 
-- `src/settlement/structureCondition.ts` — `AuthoredRepairTargetKind` (`residentialFoundation`/`householdFence`/`communalFence`/`loggingWagon`), fixed-cost policies, `autonomousRepairReserved` na `SettlementStructureState`, `AUTHORED_STARTER_DAMAGE_CONDITION`.
-- `src/settlement/villagePlan.ts` — stabilne id helpery (`residentialFoundationStructureId`, `householdFenceStructureId`, `communalFenceFallbackStructureId`, `loggingWagonStructureId`).
-- `src/settlement/authoredRepairTargets.ts` (nowy) — `resolveCommunalFenceTarget` (real `pasture-fence-a` lub deterministyczny fallback bez wymuszania rozmiaru osady) i `resolveAuthoredRepairStructureIds`.
-- `src/settlement/structureRepairCandidates.ts` — `createAuthoredNpcRepairTarget` (bounded NPC target z bound material adapterem, reservation-aware).
-- `src/ai/NpcAgent.ts` — `authoredRepairTargets` obok istniejącego `structureRepairHooks`; jedna wspólna `selectRepairCandidate` arbitration.
-- `src/settlement/createSettlement.ts` / `SettlementsManager.ts` — idempotentny `ensureLoaded` seeding (home only), bind Piotr (husband, familyIndex 0) → household fence/foundation/wagon, Anna (wife) → communal fence.
-- `src/settlement/props.ts` — prezentacja jako projekcja stanu (brak `isBrokenVisual`): realny brakujący segment `pasture-fence-a` gdy uszkodzony, fallback fence, stone-pile na fundamencie, przechylony wóz Piotra.
-- `src/quests/QuestManager.ts` — `QuestLifecycleHooks.deliverGatherMaterials` (preflight przed `inventory.remove`, atomowy transfer do household/economy + release rezerwacji), wywoływany w `selectGatherTurnIn`.
-- `src/quests/authoredRepairDeliveries.ts` (nowy) + `createApp.ts` — mapowanie quest id → owner, bez wiedzy o quest id w `QuestManager`.
-- `src/quests/quests.ts` — `sporne-drewno` → `prioritize_anna`/`prioritize_piotr` (bez automatycznej kary drugiej strony), nowy prerequisite `{ type: 'any', prerequisites: [...] }` (OR-of-AND) rozwiązujący dual-unlock bez chain managera.
+- Cztery authored targets jako prawdziwe `SettlementStructureState` (policies, seeding idempotentny, reservation, persistence przez istniejący `structureStates`).
+- Player `[R]` — `Interactable` kind `structureRepair` + `authoredRepairGazeTargets` na home settlement; ten sam `describeStructureRepair` / `workOnStructureRepair` co residential house; reservation **nie** blokuje gracza.
+- Live visual sync — `AuthoredRepairVisualHandles` + `Settlement.syncAuthoredRepairPresentation` wywoływane z `contributeStructureRepairWork` po `completed` (foundation pile, untilt wagon, plant missing fences) bez stream-out/rebuild.
+- Hand-in transakcyjny — `canDeliverGatherMaterials` (preflight) → `inventory.remove` → `deliverGatherMaterials` (deposit + release) z rollbackiem przy fail commit.
+- NPC autonomous repair — Piotr/Anna bounded `authoredRepairTargets`, reservation-aware; materiały z household / economy.
+- Early repair (§6) — `isAuthoredRepairTargetIntact` + outcome `already_repaired` (relation +0) zastępuje gather action gdy target już intact; standardowa dostawa daje relation +1.
+- `sporne-drewno` dual follow-up (`any` prerequisites) bez permanent lockout.
+- Determinizm — brak `Math.random()` w foundation stone pile.
+- Testy: hand-in preflight/rollback/success, already_repaired, player begin while reserved, seed idempotency, sporne-drewno dual path, policies/candidates.
 
-Świadomie odłożone (poza automatic test scope, sekcja 14 tego nie wymaga; sekcja 15 jest manualna):
-
-- Sekcja 6 "alternate dialogue" po wcześniejszej naprawie przez gracza — gracz **może** naprawić wcześniej ([R] nie jest gated rezerwacją), dostawa nadal działa poprawnie (materiały trafiają do household, brak duplikacji/blokady questa), ale dialog Piotra nie rozpoznaje jeszcze "już naprawione" jako osobną gałąź. Wymagałoby nowego, generycznego seamu do odczytu live world state w dialogu (`resolveReminderLine` czy podobne) — celowo nie dodane w tym przebiegu, żeby uniknąć niedopracowanego mechanizmu.
-- Wizualna zmiana segmentu `pasture-fence-a`/fallback fence/wóz odświeża się przy materializacji osady (stream-in/rebuild), nie w czasie rzeczywistym w trakcie sesji — zgodne z implementation notes §13 ("derive at materialization... or existing update hooks"), ale oznacza że naprawa w trakcie sesji pokaże się wizualnie dopiero po kolejnym stream-out/in lub rebuildzie.
+Browser verification (User, sekcja 15) — nadal wymagana: czytelność uszkodzeń, NPC podchodzi po dostawie, live sync w sesji, early-repair dialog w grze, stream-out/in.
 
 > **Zrób git commit i push do main, rebase jeżeli trzeba**

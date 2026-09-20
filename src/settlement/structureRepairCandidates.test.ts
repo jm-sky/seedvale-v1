@@ -4,9 +4,10 @@ import {
   AUTHORED_STARTER_DAMAGE_CONDITION,
   pristineStructureState,
   STRUCTURE_REPAIR_RESUME_PRESSURE,
+  structureRepairPolicy,
 } from './structureCondition'
 import { createAuthoredNpcRepairTarget, createNpcStructureRepairHooks } from './structureRepairCandidates'
-import { createSettlementStructureStateRegistry } from './structureStateRegistry'
+import { beginRegistryStructureRepair, createSettlementStructureStateRegistry } from './structureStateRegistry'
 
 describe('createNpcStructureRepairHooks.pressure (plan settlements-npcs-034)', () => {
   const settlementId = 'home'
@@ -72,6 +73,22 @@ describe('createAuthoredNpcRepairTarget (plan quests-progression-073)', () => {
     expect(target.pressure(0)).toBeGreaterThan(0)
     const outcome = target.beginRepair(0)
     expect(outcome.status).toBe('started')
+  })
+
+  it('allows the shared player begin-repair path while the autonomous reservation still holds', () => {
+    const { registry } = seededTarget()
+    const policy = structureRepairPolicy('householdFence')!
+    const outcome = beginRegistryStructureRepair(
+      registry,
+      policy,
+      settlementId,
+      structureId,
+      0,
+      () => true,
+      () => {},
+    )
+    expect(outcome.status).toBe('started')
+    expect(registry.get(settlementId, structureId)?.autonomousRepairReserved).toBe(true)
   })
 
   it('resolves 0 pressure when the material adapter reports missing materials, even when released', () => {

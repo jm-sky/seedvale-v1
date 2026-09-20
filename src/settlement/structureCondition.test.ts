@@ -14,6 +14,7 @@ import {
   structureRepairPolicy,
   structureRepairPressureFromCondition,
 } from './structureCondition'
+import { createSettlementStructureStateRegistry } from './structureStateRegistry'
 
 const policy = structureRepairPolicy('residential')!
 
@@ -277,5 +278,29 @@ describe('autonomousRepairReserved (plan quests-progression-073)', () => {
       autonomousRepairReserved: false,
     })
     expect(released.autonomousRepairReserved).toBe(false)
+  })
+
+  it('does not re-seed authored damage over an already-repaired registry record', () => {
+    const registry = createSettlementStructureStateRegistry()
+    registry.set({
+      structureId: 'household-fence-0',
+      settlementId: 'home',
+      condition: CONDITION_MAX,
+      lastConditionUpdateAtDays: 2,
+      autonomousRepairReserved: false,
+    })
+    // Mirrors SettlementsManager.seedAuthoredRepairDamageIfNeeded.
+    if (!registry.get('home', 'household-fence-0')) {
+      registry.set({
+        structureId: 'household-fence-0',
+        settlementId: 'home',
+        condition: AUTHORED_STARTER_DAMAGE_CONDITION,
+        lastConditionUpdateAtDays: 3,
+        autonomousRepairReserved: true,
+      })
+    }
+    const state = registry.get('home', 'household-fence-0')!
+    expect(state.condition).toBe(CONDITION_MAX)
+    expect(state.autonomousRepairReserved).toBe(false)
   })
 })

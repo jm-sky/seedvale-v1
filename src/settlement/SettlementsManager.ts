@@ -1616,8 +1616,15 @@ export async function createSettlementsManager(
         targetCondition,
       )
     },
-    contributeStructureRepairWork: (settlementId, structureId, workAmount, nowDays) =>
-      contributeRegistryStructureRepairWork(structureStates, settlementId, structureId, workAmount, nowDays),
+    contributeStructureRepairWork: (settlementId, structureId, workAmount, nowDays) => {
+      const result = contributeRegistryStructureRepairWork(
+        structureStates, settlementId, structureId, workAmount, nowDays,
+      )
+      if (result.completed) {
+        entries.get(settlementId)?.settlement?.syncAuthoredRepairPresentation(nowDays)
+      }
+      return result
+    },
     residentialRepairCandidates: (settlementId, nowDays) => {
       const settlement = entries.get(settlementId)?.settlement
       if (!settlement) return []

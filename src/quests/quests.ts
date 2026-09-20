@@ -1060,6 +1060,34 @@ export function uniqueOutcomeForState(
 }
 
 /**
+ * Authored early-repair acknowledgement outcome id (plan
+ * quests-progression-073 §6) — coexists with the ordinary delivery
+ * `complete` outcome on starter repair gather quests.
+ *
+ * @domain quests-progression
+ */
+export const ALREADY_REPAIRED_OUTCOME_ID = 'already_repaired'
+
+/**
+ * Gather hand-in prefers the unique ordinary delivery `complete` outcome,
+ * ignoring an optional sibling `already_repaired` outcome so early player
+ * repair can share the same quest def without disabling material turn-in
+ * (plan quests-progression-073 §6).
+ *
+ * @domain quests-progression
+ */
+export function gatherDeliveryCompleteOutcome(
+  def: { outcomes: readonly QuestOutcome[] },
+): QuestOutcome | undefined {
+  const unique = uniqueOutcomeForState(def, 'complete')
+  if (unique) return unique
+  const delivery = def.outcomes.filter(
+    (outcome) => outcome.state === 'complete' && outcome.id !== ALREADY_REPAIRED_OUTCOME_ID,
+  )
+  return delivery.length === 1 ? delivery[0] : undefined
+}
+
+/**
  * Outcome id for a world source that resolved without the player completing
  * the objective (plan quests-progression-030). Prefer this named outcome over
  * `uniqueOutcomeForState(..., 'failed')` when multiple failed outcomes exist.
@@ -1517,6 +1545,15 @@ export type QuestDef = {
     resolvedOutcomeId: (questId: string) => QuestOutcomeId | undefined
     getReputationDimension: (dimension: ReputationDimension) => number
   }) => string
+  /**
+   * Offer / reminder / player-line overrides when the bound authored repair
+   * target is already intact (plan quests-progression-073 §6). Used with an
+   * `already_repaired` complete outcome and
+   * `QuestLifecycleHooks.isAuthoredRepairTargetIntact`.
+   */
+  alreadyRepairedOfferLine?: string
+  alreadyRepairedReminderLine?: string
+  alreadyRepairedPlayerLine?: string
   /** Active-quest opt-out policy (plan quests-progression-033). Absent =
    *  abandonable with no automatic consequence. */
   abandonment?: QuestAbandonment
@@ -1867,6 +1904,11 @@ export const QUESTS: readonly AuthoredQuestDef[] = [
     giverName: 'Piotr',
     offerLine:
       'Płot mi się rozłazi — zbierzesz pięć gałęzi na naprawę? Zapłacę osiem monet.',
+    alreadyRepairedOfferLine:
+      'Płot już stoi jak należy — widzę, że ktoś wziął sprawy w swoje ręce. Dziękuję.',
+    alreadyRepairedReminderLine:
+      'Widzę, że płot już naprawiłeś. Nie trzeba było czekać na moją prośbę.',
+    alreadyRepairedPlayerLine: 'Naprawiłem już twój płot.',
     stages: [
       {
         objective: { type: 'gather_item', kind: 'branch', count: 5 },
@@ -1883,6 +1925,12 @@ export const QUESTS: readonly AuthoredQuestDef[] = [
         id: 'delivered',
         state: 'complete',
         reward: { visibility: 'shown', items: [{ kind: 'coin', count: 8 }] },
+        consequences: { relations: [{ npcName: 'Piotr', delta: 1 }] },
+      },
+      {
+        id: 'already_repaired',
+        state: 'complete',
+        resultText: 'No proszę — płot trzyma się bez mojej prośby. Dzięki za pomoc.',
       },
     ],
   },
@@ -1919,6 +1967,11 @@ export const QUESTS: readonly AuthoredQuestDef[] = [
     giverName: 'Piotr',
     offerLine:
       'Potrzebuję sześciu kamieni na naprawy — przyniesiesz? Zapłacę dziewięć monet.',
+    alreadyRepairedOfferLine:
+      'Fundament już wygląda solidnie — widzę, że ktoś nie czekał na prośbę. Dziękuję.',
+    alreadyRepairedReminderLine:
+      'Widzę, że fundament już naprawiłeś. Nie trzeba było czekać na kamienie ode mnie.',
+    alreadyRepairedPlayerLine: 'Naprawiłem już fundament.',
     stages: [
       {
         objective: { type: 'gather_item', kind: 'stone', count: 6 },
@@ -1935,6 +1988,12 @@ export const QUESTS: readonly AuthoredQuestDef[] = [
         id: 'delivered',
         state: 'complete',
         reward: { visibility: 'shown', items: [{ kind: 'coin', count: 9 }] },
+        consequences: { relations: [{ npcName: 'Piotr', delta: 1 }] },
+      },
+      {
+        id: 'already_repaired',
+        state: 'complete',
+        resultText: 'Fundament trzyma się bez dostawy. Dzięki, że nie czekałeś.',
       },
     ],
   },
@@ -2258,6 +2317,11 @@ export const QUESTS: readonly AuthoredQuestDef[] = [
     giverName: 'Anna',
     offerLine:
       'Skoro zajmiemy się teraz pastwiskiem, potrzebuję pięciu porządnych gałęzi na ogrodzenie.',
+    alreadyRepairedOfferLine:
+      'Ogrodzenie już stoi — widzę, że nie czekałeś na moją prośbę. Dziękuję.',
+    alreadyRepairedReminderLine:
+      'Widzę, że ogrodzenie pastwiska już naprawiłeś. Nie trzeba mi już gałęzi.',
+    alreadyRepairedPlayerLine: 'Naprawiłem już ogrodzenie pastwiska.',
     stages: [
       {
         objective: { type: 'gather_item', kind: 'branch', count: 5 },
@@ -2288,6 +2352,11 @@ export const QUESTS: readonly AuthoredQuestDef[] = [
         reward: { visibility: 'hidden', items: [{ kind: 'seed_carrot', count: 3 }] },
         consequences: { relations: [{ npcName: 'Anna', delta: 1 }] },
       },
+      {
+        id: 'already_repaired',
+        state: 'complete',
+        resultText: 'Ogrodzenie trzyma się bez dostawy. Dzięki, że nie czekałeś.',
+      },
     ],
   },
   {
@@ -2298,6 +2367,11 @@ export const QUESTS: readonly AuthoredQuestDef[] = [
     giverName: 'Piotr',
     offerLine:
       'Skoro drewno trafia teraz do mnie, przynieś pięć porządnych gałęzi. Przygotuję z nich to, czego potrzebuję do naprawy wozu. Zapłacę osiem monet.',
+    alreadyRepairedOfferLine:
+      'Wóz już stoi równo — widzę, że ktoś wziął sprawy w swoje ręce. Dziękuję.',
+    alreadyRepairedReminderLine:
+      'Widzę, że wóz już naprawiłeś. Nie trzeba mi już gałęzi.',
+    alreadyRepairedPlayerLine: 'Naprawiłem już twój wóz.',
     stages: [
       {
         objective: { type: 'gather_item', kind: 'branch', count: 5 },
@@ -2327,6 +2401,11 @@ export const QUESTS: readonly AuthoredQuestDef[] = [
         resultText: 'Tyle wystarczy. Naprawię, co trzeba, i będę mógł normalnie wrócić do pracy. Weź zapłatę.',
         reward: { visibility: 'shown', items: [{ kind: 'coin', count: 8 }] },
         consequences: { relations: [{ npcName: 'Piotr', delta: 1 }] },
+      },
+      {
+        id: 'already_repaired',
+        state: 'complete',
+        resultText: 'Wóz trzyma się bez dostawy. Dzięki, że nie czekałeś.',
       },
     ],
   },

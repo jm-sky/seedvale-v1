@@ -25,7 +25,9 @@ import {
   parseLostLivestockQuestId,
 } from './opportunities/settlementQuestOpportunities'
 import {
+  ALREADY_REPAIRED_OUTCOME_ID,
   externalResolutionOutcome,
+  gatherDeliveryCompleteOutcome,
   hasSocialConsequence,
   isLegacySingleObjectiveStage,
   LEGACY_QUEST_OBJECTIVE_SLOT_ID,
@@ -447,18 +449,28 @@ export type QuestLifecycleHooks = {
    */
   activateWorldConsequence?: (consequenceId: string) => void
   /**
-   * Atomic world-transfer preflight+commit for a `gather_item` hand-in (plan
+   * Preflight for a `gather_item` hand-in world transfer (plan
    * quests-progression-073) — called from `selectGatherTurnIn` *before*
-   * removing the matching items from the player `Inventory`, so a target
-   * that can't currently accept the delivery (e.g. its owning
-   * household/settlement isn't resolvable) blocks the whole hand-in instead
-   * of destroying player materials with nowhere to go. Returns `true` for
-   * every quest id this hook doesn't recognize as an authored repair
-   * delivery — `QuestManager` never special-cases quest ids itself; the
-   * composition root owns that mapping and the concrete household/
-   * settlement material sink + starter-reservation release.
+   * removing player items. Must not mutate household/economy/reservation.
+   * Returns `true` for unrecognized quest ids (ordinary gather proceeds).
+   */
+  canDeliverGatherMaterials?: (questId: string, kind: ItemKind, count: number) => boolean
+  /**
+   * Commit world transfer for a `gather_item` hand-in (plan
+   * quests-progression-073) — called from `selectGatherTurnIn` *after*
+   * successful `inventory.remove`, so a failed destination write can roll
+   * player items back instead of leaving the world dirty with the player
+   * still holding stock. Deposits into the canonical household/economy sink
+   * and releases the starter reservation. Returns `true` for unrecognized
+   * quest ids. `QuestManager` never special-cases quest ids itself.
    */
   deliverGatherMaterials?: (questId: string, kind: ItemKind, count: number) => boolean
+  /**
+   * Whether the authored repair target bound to `questId` is already intact
+   * (plan quests-progression-073 §6) — composition root reads live structure
+   * condition; `QuestManager` never imports the settlement registry.
+   */
+  isAuthoredRepairTargetIntact?: (questId: string) => boolean
 }
 
 /**
@@ -835,6 +847,12 @@ export class QuestManager {
   }
 
   private offerText(def: QuestDef): string {
+    if (
+      this.lifecycleHooks.isAuthoredRepairTargetIntact?.(def.id)
+      && def.alreadyRepairedOfferLine
+    ) {
+      return def.alreadyRepairedOfferLine
+    }
     if (!def.resolveOfferLine) return def.offerLine
     return def.resolveOfferLine({
       getNpcRelation: (npcId) => this.getRelation(npcId),
@@ -2177,9 +2195,25 @@ export class QuestManager {
     const isFinalStage = s.stageIndex >= def.stages.length - 1
       && this.unfinishedSlots(def, s).length === 1
       && !stage.transitions
-    if (isFinalStage && !uniqueOutcomeForState(def, 'complete')) return undefined
+    if (isFinalStage && !gatherDeliveryCompleteOutcome(def)) return undefined
     if (!this.inventory.has(gatherSlot.objective.kind, gatherSlot.objective.count)) return undefined
     return gatherSlot
+  }
+
+  /** Active authored-repair gather whose world target is already intact. */
+  private alreadyRepairedGatherAction(def: QuestDef): QuestDialogAction | null {
+    if (!this.lifecycleHooks.isAuthoredRepairTargetIntact?.(def.id)) return null
+    if (!def.outcomes.some((outcome) => outcome.id === ALREADY_REPAIRED_OUTCOME_ID && outcome.state === 'complete')) {
+      return null
+    }
+    const s = this.stateOf(def.id)
+    if (s.state !== 'active') return null
+    const gatherSlot = this.unfinishedSlots(def, s).find((slot) => slot.objective.type === 'gather_item')
+    if (!gatherSlot) return null
+    return {
+      label: def.alreadyRepairedPlayerLine ?? 'Już to naprawiłem.',
+      onSelect: () => this.selectAlreadyRepairedAcknowledgement(def),
+    }
   }
 
   /**
@@ -2192,6 +2226,7 @@ export class QuestManager {
   private hasGiverCompletionActionNow(def: QuestDef, npcId: NpcId): boolean {
     if (npcId !== def.giver.npcId) return false
     if (this.stateOf(def.id).state === 'ready_to_report') return true
+    if (this.alreadyRepairedGatherAction(def)) return true
     return this.gatherHandInSlot(def) !== undefined
   }
 
@@ -2282,6 +2317,16 @@ export class QuestManager {
       }
       const unfinishedGather = this.unfinishedSlots(def, s).find((slot) => slot.objective.type === 'gather_item')
       if (unfinishedGather && unfinishedGather.objective.type === 'gather_item') {
+        const alreadyRepaired = this.alreadyRepairedGatherAction(def)
+        if (alreadyRepaired) {
+          const actions: QuestDialogAction[] = [alreadyRepaired]
+          if (abandonAction) actions.push(abandonAction)
+          return {
+            line: def.alreadyRepairedReminderLine
+              ?? 'Widzę, że już to naprawiłeś — dzięki, że nie czekałeś na prośbę.',
+            actions,
+          }
+        }
         const readySlot = this.gatherHandInSlot(def)
         if (!readySlot) {
           return abandonAction ? { line: this.expandQuestText(def, s, stage.reminderLine) ?? stage.reminderLine, actions: [abandonAction] } : null
@@ -2851,17 +2896,42 @@ export class QuestManager {
     }
     const { kind, count } = slot.objective
     if (!this.inventory.has(kind, count)) return stage.reminderLine
-    if (!(this.lifecycleHooks.deliverGatherMaterials?.(def.id, kind, count) ?? true)) return stage.reminderLine
+    // Preflight sinks before touching player inventory (plan quests-progression-073).
+    if (!(this.lifecycleHooks.canDeliverGatherMaterials?.(def.id, kind, count) ?? true)) {
+      return stage.reminderLine
+    }
     if (!this.inventory.remove(kind, count)) return stage.reminderLine
+    // Commit world transfer only after removal; roll items back on failure so
+    // the world is never left modified while the player still holds stock.
+    if (!(this.lifecycleHooks.deliverGatherMaterials?.(def.id, kind, count) ?? true)) {
+      this.inventory.add(kind, count)
+      return stage.reminderLine
+    }
     const remainingBefore = this.unfinishedSlots(def, current).length
     this.completeObjectiveSlot(def, current, slot)
     const after = this.stateOf(def.id)
     if (after.state === 'ready_to_report' && remainingBefore === 1 && current.stageIndex >= def.stages.length - 1 && !stage.transitions) {
-      const outcome = uniqueOutcomeForState(def, 'complete')
-      if (outcome && this.applyOutcome(def, outcome.id)) return def.reportLine
+      const outcome = gatherDeliveryCompleteOutcome(def)
+      if (outcome && this.applyOutcome(def, outcome.id)) return outcome.resultText ?? def.reportLine
     }
     if (after.state === 'complete' || after.state === 'failed') return def.reportLine
     return this.currentStage(def, after.stageIndex)?.reminderLine ?? def.reportLine
+  }
+
+  /**
+   * Early player-repair acknowledgement (plan quests-progression-073 §6) —
+   * completes through the authored `already_repaired` outcome without
+   * consuming gather materials.
+   */
+  private selectAlreadyRepairedAcknowledgement(def: QuestDef): string {
+    const current = this.stateOf(def.id)
+    if (current.state !== 'active') return def.reportLine
+    const outcome = def.outcomes.find((entry) => entry.id === ALREADY_REPAIRED_OUTCOME_ID)
+    if (!outcome || outcome.state !== 'complete') {
+      return this.currentStage(def, current.stageIndex)?.reminderLine ?? def.reportLine
+    }
+    const applied = this.applyOutcome(def, outcome.id)
+    return applied?.resultText ?? def.reportLine
   }
 
   /** One definition's whole contribution to talking to `npcId` right now:
@@ -3321,7 +3391,12 @@ function sameShownReward(a: QuestReward | undefined, b: QuestReward): boolean {
 }
 
 function promisedShownReward(def: QuestDef): QuestPromisedReward | null {
-  const complete = def.outcomes.filter((outcome) => outcome.state === 'complete')
+  // Ignore the optional early-repair sibling so starter repair gather quests
+  // still project their delivery reward in the quest log (plan
+  // quests-progression-073 §6).
+  const complete = def.outcomes.filter(
+    (outcome) => outcome.state === 'complete' && outcome.id !== ALREADY_REPAIRED_OUTCOME_ID,
+  )
   if (complete.length === 0) return null
   const first = complete[0]?.reward
   if (!first || first.visibility !== 'shown') return null

@@ -360,11 +360,13 @@ export async function plantEntrancePalisade(
   group: THREE.Group,
   placements: readonly SettlementPalisadePlacement[],
   instanceName = 'settlement-palisade',
-): Promise<void> {
-  if (placements.length === 0) return
+): Promise<THREE.Object3D | null> {
+  if (placements.length === 0) return null
   const wall = await loadPropOrFallback(WALL_URL, WALL_TARGET_HEIGHT, createPalisadeStake)
   const instanced = buildInstancedProps([wall], placements, instanceName)
-  if (instanced) group.add(instanced.group)
+  if (!instanced) return null
+  group.add(instanced.group)
+  return instanced.group
 }
 
 /**

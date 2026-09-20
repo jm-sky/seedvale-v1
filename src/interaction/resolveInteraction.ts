@@ -115,7 +115,7 @@ function capitalize(text: string): string {
  *  for repair identity (plan world-021); drink still synthesizes a `well`
  *  candidate here so the existing flavor/quest hook is unchanged. */
 export function resolveInteraction(
-  target: Exclude<Interactable, { kind: 'campfire' | 'item' | 'npc' | 'npcCorpse' | 'dig' | 'corpse' | 'deposit' | 'mineableRock' | 'camp' | 'tent' | 'bedroll' | 'platform' | 'trap' | 'cart' | 'waterEdge' | 'landPlot' | 'dryingRack' | 'hive' | 'crop' | 'container' | 'playerWell' | 'gardenPlot' | 'terrainPreparation' | 'hay' | 'standingTorch' | 'villageTorch' | 'playerTrough' | 'palisade' | 'residentialBuilding' | 'noticeBoard' | 'grindstone' | 'settlementStorage' | 'ratNest' | 'pastureTrough' }>,
+  target: Exclude<Interactable, { kind: 'campfire' | 'item' | 'npc' | 'npcCorpse' | 'dig' | 'corpse' | 'deposit' | 'mineableRock' | 'camp' | 'tent' | 'bedroll' | 'platform' | 'trap' | 'cart' | 'waterEdge' | 'landPlot' | 'dryingRack' | 'hive' | 'crop' | 'container' | 'playerWell' | 'gardenPlot' | 'terrainPreparation' | 'hay' | 'standingTorch' | 'villageTorch' | 'playerTrough' | 'palisade' | 'residentialBuilding' | 'noticeBoard' | 'grindstone' | 'settlementStorage' | 'ratNest' | 'pastureTrough' | 'structureRepair' }>,
   questManager: QuestManager,
 ): InteractionOutcome {
   switch (target.kind) {

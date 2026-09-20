@@ -1285,7 +1285,7 @@ describe('QuestManager legacy restore outcome normalization', () => {
 })
 
 describe('QuestManager formal vs personal relation rebalance', () => {
-  it('drewno-na-naprawe grants coins without a relation bump', () => {
+  it('drewno-na-naprawe grants coins and a relation bump on material delivery', () => {
     const granted: Array<{ kind: string, count: number }> = []
     const def = runtimeAuthored(QUESTS.find((d) => d.id === 'drewno-na-naprawe')!)
     const inventory = new Inventory()
@@ -1295,7 +1295,7 @@ describe('QuestManager formal vs personal relation rebalance', () => {
     speak(qm, 'Piotr')
     expect(qm.getState('drewno-na-naprawe')).toBe('complete')
     expect(granted).toEqual([{ kind: 'coin', count: 8 }])
-    expect(qm.getRelation('Piotr')).toBe(0)
+    expect(qm.getRelation('Piotr')).toBe(1)
   })
 
   it('woda-dla-marka grants five coins instead of a sword', () => {
@@ -1419,7 +1419,7 @@ describe('QuestManager paid quest definitions', () => {
     expect(qm.list().find((e) => e.id === 'ziola-dla-anny')?.promisedReward).toBeNull()
   })
 
-  it('kamienie-dla-piotra delivers stone ×6 for 9 coins without relation', () => {
+  it('kamienie-dla-piotra delivers stone ×6 for 9 coins with a relation bump', () => {
     const granted: Array<{ kind: string, count: number }> = []
     const def = runtimeAuthored(QUESTS.find((d) => d.id === 'kamienie-dla-piotra')!)
     const inventory = new Inventory()
@@ -1431,7 +1431,7 @@ describe('QuestManager paid quest definitions', () => {
     // whether/when the foundation is actually repaired afterwards.
     expect(qm.getState('kamienie-dla-piotra')).toBe('complete')
     expect(granted).toEqual([{ kind: 'coin', count: 9 }])
-    expect(qm.getRelation('Piotr')).toBe(0)
+    expect(qm.getRelation('Piotr')).toBe(1)
   })
 
   it('sprawdz-szlak pays 12 coins after cave interaction without relation', () => {
@@ -1875,22 +1875,36 @@ describe('QuestManager gather hand-in world-transfer bridge (plan quests-progres
   it('blocks completion and keeps player materials when the world-transfer preflight fails', () => {
     const inventory = new Inventory()
     inventory.add('branch', 5)
-    const calls: Array<{ questId: string, kind: string, count: number }> = []
+    const deliverCalls: Array<{ questId: string, kind: string, count: number }> = []
     const qm = managerWithLifecycleHooks(
       [gatherDeliveryQuest],
       inventory,
       {
+        canDeliverGatherMaterials: () => false,
         deliverGatherMaterials: (questId, kind, count) => {
-          calls.push({ questId, kind, count })
-          return false
+          deliverCalls.push({ questId, kind, count })
+          return true
         },
       },
     )
     acceptOffer(qm, 'Piotr')
     const result = speak(qm, 'Piotr')
-    expect(calls).toEqual([{ questId: 'gather-delivery', kind: 'branch', count: 5 }])
-    // Preflight failed before removal — the player keeps every branch and the
-    // quest never advances past its gather stage.
+    expect(deliverCalls).toEqual([])
+    expect(inventory.count('branch')).toBe(5)
+    expect(qm.getState('gather-delivery')).toBe('active')
+    expect(result).toBe('remind')
+  })
+
+  it('rolls player materials back when the world-transfer commit fails after removal', () => {
+    const inventory = new Inventory()
+    inventory.add('branch', 5)
+    const qm = managerWithLifecycleHooks(
+      [gatherDeliveryQuest],
+      inventory,
+      { deliverGatherMaterials: () => false },
+    )
+    acceptOffer(qm, 'Piotr')
+    const result = speak(qm, 'Piotr')
     expect(inventory.count('branch')).toBe(5)
     expect(qm.getState('gather-delivery')).toBe('active')
     expect(result).toBe('remind')
@@ -1918,6 +1932,26 @@ describe('QuestManager gather hand-in world-transfer bridge (plan quests-progres
     speak(qm, 'Piotr')
     expect(inventory.count('branch')).toBe(0)
     expect(qm.getState('gather-delivery')).toBe('complete')
+  })
+
+  it('already_repaired acknowledges early player repair without consuming materials', () => {
+    const def = runtimeAuthored(QUESTS.find((d) => d.id === 'drewno-na-naprawe')!)
+    const inventory = new Inventory()
+    inventory.add('branch', 5)
+    const qm = managerWithLifecycleHooks(
+      [def],
+      inventory,
+      { isAuthoredRepairTargetIntact: (questId) => questId === 'drewno-na-naprawe' },
+    )
+    acceptOffer(qm, 'Piotr')
+    const dialog = qm.onInteract('Piotr')
+    expect(dialog?.line).toContain('płot już naprawiłeś')
+    expect(dialog?.actions?.[0]?.label).toBe('Naprawiłem już twój płot.')
+    expect(selectAction(dialog)).toContain('bez mojej prośby')
+    expect(qm.getState('drewno-na-naprawe')).toBe('complete')
+    expect(qm.exportProgress().find((e) => e.id === 'drewno-na-naprawe')?.resolvedOutcomeId).toBe('already_repaired')
+    expect(inventory.count('branch')).toBe(5)
+    expect(qm.getRelation('Piotr')).toBe(0)
   })
 })
 

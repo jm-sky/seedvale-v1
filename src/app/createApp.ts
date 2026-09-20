@@ -238,6 +238,7 @@ import { livestockStrayCandidateFromAgent } from '../settlement/livestock'
 import { LOST_TREASURE_ELDER_SETTLEMENT_SEARCH_RADIUS } from '../settlement/lostTreasureChroniclesElderResident'
 import { settlementNpcDescriptors } from '../settlement/npcIdentity'
 import { cellsWithinRadius } from '../settlement/settlementGenerator'
+import { isStructureRepairProblem, structureRepairPolicy } from '../settlement/structureCondition'
 import { summarizeVillagePlan } from '../settlement/villagePlanDebug'
 import { useBootMark } from '../shared/bootMark'
 import { resolveInjurySeverity } from '../shared/injurySeverity'
@@ -1951,11 +1952,20 @@ export async function createApp(
       bundle.authoredWorldConsequences.activate(consequenceId)
     },
     // Atomic gather-hand-in world transfer for the four authored starter
-    // repair deliveries (plan quests-progression-073) — resolves the real
-    // household/settlement-economy material sink and releases the matching
-    // starter reservation only on success. Every other quest id is not in
-    // `AUTHORED_REPAIR_DELIVERIES`, so this always returns `true` for them
-    // (`selectGatherTurnIn` proceeds exactly as before).
+    // repair deliveries (plan quests-progression-073) — preflight resolves
+    // sinks without mutation; commit runs only after QuestManager has
+    // removed player items (rollback on false). Unrecognized quest ids
+    // always succeed so ordinary gather stays unchanged.
+    canDeliverGatherMaterials: (questId: string, kind: ItemKind, _count: number) => {
+      const target = AUTHORED_REPAIR_DELIVERIES[questId]
+      if (!target) return true
+      const homeDef = bundle.settlementsManager.getHomeDef()
+      if (target.owner === 'household') {
+        return bundle.settlementsManager.getHousehold(householdIdFor(homeDef.id, 0)) != null
+      }
+      const economy = bundle.settlementsManager.getEconomy(homeDef.id)
+      return economy != null && householdWoodItemValue(kind) != null
+    },
     deliverGatherMaterials: (questId: string, kind: ItemKind, count: number) => {
       const target = AUTHORED_REPAIR_DELIVERIES[questId]
       if (!target) return true
@@ -1969,7 +1979,7 @@ export async function createApp(
           : target.structureIdKind === 'residentialFoundation'
             ? ids.foundation
             : ids.loggingWagon
-        household.items.add(kind, count)
+        if (!household.items.add(kind, count)) return false
         bundle.settlementsManager.releaseAutonomousRepairReservation(homeDef.id, structureId)
         return true
       }
@@ -1979,6 +1989,24 @@ export async function createApp(
       economy.add('wood', value * count)
       bundle.settlementsManager.releaseAutonomousRepairReservation(homeDef.id, ids.communalFence.structureId)
       return true
+    },
+    isAuthoredRepairTargetIntact: (questId: string) => {
+      const target = AUTHORED_REPAIR_DELIVERIES[questId]
+      if (!target) return false
+      const homeDef = bundle.settlementsManager.getHomeDef()
+      const ids = resolveAuthoredRepairStructureIds(homeDef.plan)
+      const structureId = target.structureIdKind === 'householdFence'
+        ? ids.householdFence
+        : target.structureIdKind === 'residentialFoundation'
+          ? ids.foundation
+          : target.structureIdKind === 'loggingWagon'
+            ? ids.loggingWagon
+            : ids.communalFence.structureId
+      const policy = structureRepairPolicy(target.structureIdKind)
+      if (!policy) return false
+      const nowDays = dayNight.elapsedDays
+      const state = bundle.settlementsManager.getStructureSnapshot(homeDef.id, structureId, nowDays)
+      return !isStructureRepairProblem(policy, state, nowDays)
     },
   }
 

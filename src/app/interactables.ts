@@ -982,6 +982,33 @@ export function buildInteractables(
       })
     }
 
+    // Authored starter repair targets (plan quests-progression-073) — home
+    // only; gaze anchors stay available while damaged even when the mesh is
+    // intentionally absent (missing fence segment / stone pile only).
+    for (const target of settlement.authoredRepairGazeTargets) {
+      if (!withinRange(target.position.x, target.position.z, playerPos, GAZE_RANGE)) continue
+      const policy = structureRepairPolicy(target.kind)
+      if (!policy || !getStructureSnapshot) continue
+      const structureState = getStructureSnapshot(settlement.id, target.structureId, nowDays)
+      const repairActive = hasActiveStructureRepair(structureState)
+      const repairNeeded = isStructureRepairProblem(policy, structureState, nowDays)
+      if (!repairActive && !repairNeeded) continue
+      const condition = resolveStructureCondition(structureState, nowDays)
+      list.push({
+        kind: 'structureRepair',
+        position: target.position,
+        promptLabel: `[R] Napraw: ${policy.label}`,
+        label: policy.label,
+        settlementId: settlement.id,
+        structureId: target.structureId,
+        condition,
+        repairNeeded,
+        repairActive,
+        repairCompletedWork: structureState.repair?.completedWork ?? null,
+        repairRequiredWork: structureState.repair?.requiredWork ?? null,
+      })
+    }
+
     if (
       settlement.fire &&
       withinRange(settlement.fire.position.x, settlement.fire.position.z, playerPos, GAZE_RANGE)

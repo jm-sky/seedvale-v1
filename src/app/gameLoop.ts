@@ -2052,6 +2052,21 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
             vueUi.openFlavorDialog(view.title, view.description, actions)
           }
         }
+      } else if (target?.kind === 'structureRepair') {
+        // Plan quests-progression-073 — same shared repair dialog as `house`,
+        // for authored fence/foundation/wagon/communal targets.
+        if (altInteractPressed && (target.repairNeeded || target.repairActive)) {
+          const view = describeStructureRepair?.(target.settlementId, target.structureId, target.position.x, target.position.z)
+          if (view) {
+            const actions = [{
+              label: view.mode === 'continue' ? 'Kontynuuj naprawę' : 'Rozpocznij naprawę',
+              enabled: view.canAct,
+              reasonLabel: view.reasonLabel,
+              run: () => workOnStructureRepair?.(target.settlementId, target.structureId, target.position.x, target.position.z),
+            }]
+            vueUi.openFlavorDialog(view.title, view.description, actions)
+          }
+        }
       } else if (target?.kind === 'householdStorage') {
         if (interactPressed) openHouseholdResourceTransfer?.(target.household)
       } else if (target?.kind === 'settlementStorage') {

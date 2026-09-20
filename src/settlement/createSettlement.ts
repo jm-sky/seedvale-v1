@@ -129,7 +129,7 @@ import {
   createSettlementNightCycle,
   type SettlementNightAutoLightPolicy,
 } from './settlementNightCycle'
-import { fencePlacementColliders, settlementPalisadeColliders } from './settlementPalisade'
+import { fencePlacementColliders, plantEntrancePalisade, settlementPalisadeColliders } from './settlementPalisade'
 import { settlementPropColliders } from './settlementPropColliders'
 import { createSettlementSignposts } from './settlementSignposts'
 import { type SettlementVillageTorch } from './settlementVillageTorch'
@@ -205,6 +205,21 @@ export type Settlement = {
    *  registry, never a second nestDestroyed flag. */
   hasActiveNest: () => boolean
   hideRatNest: () => void
+  /**
+   * Home authored repair gaze anchors (plan quests-progression-073) — stable
+   * structure ids + world positions for player `[R]`, independent of whether
+   * the damaged mesh is currently visible. Empty for non-home settlements.
+   */
+  authoredRepairGazeTargets: readonly {
+    structureId: string
+    kind: import('./structureCondition').AuthoredRepairTargetKind
+    position: { x: number, z: number }
+  }[]
+  /**
+   * Project live structure-condition onto authored repair meshes after a
+   * repair completes (plan quests-progression-073) — no stream-out / rebuild.
+   */
+  syncAuthoredRepairPresentation: (nowDays: number) => void
   /** Settlement-owned bulk stock / demand / development (plan 071). */
   economy: SettlementEconomy
   /** One household per family, index-aligned with `def.families` (plan 069). */
@@ -699,6 +714,7 @@ export async function createSettlement(
     palisadePlacements,
     pastureFencePlacements,
     paddockFencePlacements,
+    authoredRepairVisuals,
   } = propsResult
   scene.add(group)
   /**
@@ -762,6 +778,44 @@ export async function createSettlement(
     }
     return targets
   }
+  /** Player `[R]` gaze anchors for the four authored targets — same positions
+   *  as NPC hooks above, exposed on the settlement so interactables never
+   *  need `VillagePlan` / `SettlementDef`. */
+  const authoredRepairGazeTargets: Settlement['authoredRepairGazeTargets'] = (() => {
+    if (!authoredRepairIds) return []
+    const house0 = landmarks.houses[0]?.position
+    if (!house0) return []
+    const communal = authoredRepairIds.communalFence
+    const segment = communal.usesPastureSegment
+      ? def.plan?.pasture?.fenceSegments.find((candidate) => candidate.id === communal.structureId)
+      : undefined
+    const communalPosition = segment && def.plan?.pasture
+      ? { x: (segment.ax + segment.bx) / 2, z: (segment.az + segment.bz) / 2 }
+      : { x: landmarks.garden.x + 3, z: landmarks.garden.z + 1.5 }
+    const wagon = landmarks.loggingWagon
+    return [
+      {
+        structureId: authoredRepairIds.householdFence,
+        kind: 'householdFence' as const,
+        position: { x: house0.x + 2.2, z: house0.z + 1 },
+      },
+      {
+        structureId: authoredRepairIds.foundation,
+        kind: 'residentialFoundation' as const,
+        position: { x: house0.x, z: house0.z },
+      },
+      {
+        structureId: authoredRepairIds.loggingWagon,
+        kind: 'loggingWagon' as const,
+        position: wagon ? { x: wagon.x, z: wagon.z } : { x: house0.x, z: house0.z },
+      },
+      {
+        structureId: communal.structureId,
+        kind: 'communalFence' as const,
+        position: communalPosition,
+      },
+    ]
+  })()
   // Plan 157 — one bounded walk of this settlement's own root, not the whole
   // scene: captures every house lamp, village torch, and the settlement's
   // own campfire (all attached under `group` by `buildSettlementProps`) in a
@@ -1501,6 +1555,61 @@ export async function createSettlement(
         landmarks.ratNestProp = undefined
       }
       landmarks.ratNest = undefined
+    },
+    authoredRepairGazeTargets,
+    syncAuthoredRepairPresentation(nowDays) {
+      if (!authoredRepairIds || !deps.structureStates || !authoredRepairVisuals) return
+      const visuals = authoredRepairVisuals
+      const foundationDamaged = isStructureRepairProblem(
+        structureRepairPolicy('residentialFoundation')!,
+        deps.structureStates.resolve(def.id, authoredRepairIds.foundation, nowDays),
+        nowDays,
+      )
+      if (!foundationDamaged && visuals.foundationPile) {
+        visuals.foundationPile.removeFromParent()
+        disposeObject3D(visuals.foundationPile)
+        visuals.foundationPile = null
+      }
+      const wagonDamaged = isStructureRepairProblem(
+        structureRepairPolicy('loggingWagon')!,
+        deps.structureStates.resolve(def.id, authoredRepairIds.loggingWagon, nowDays),
+        nowDays,
+      )
+      if (visuals.loggingWagon && !wagonDamaged) {
+        visuals.loggingWagon.rotation.z = 0
+        visuals.loggingWagon.position.y = visuals.loggingWagonBaseY
+      }
+      const householdDamaged = isStructureRepairProblem(
+        structureRepairPolicy('householdFence')!,
+        deps.structureStates.resolve(def.id, authoredRepairIds.householdFence, nowDays),
+        nowDays,
+      )
+      if (!householdDamaged && !visuals.householdFence && visuals.householdNeedsRestorePlant
+        && visuals.householdFencePlacements.length > 0) {
+        visuals.householdNeedsRestorePlant = false
+        void plantEntrancePalisade(group, visuals.householdFencePlacements, 'settlement-household-fence')
+          .then((mesh) => {
+            visuals.householdFence = mesh
+            registerSettlementColliders()
+          })
+      }
+      const communalDamaged = isStructureRepairProblem(
+        structureRepairPolicy('communalFence')!,
+        deps.structureStates.resolve(def.id, authoredRepairIds.communalFence.structureId, nowDays),
+        nowDays,
+      )
+      if (!communalDamaged && !visuals.communalFence && visuals.communalNeedsRestorePlant
+        && visuals.communalFencePlacements.length > 0) {
+        visuals.communalNeedsRestorePlant = false
+        void plantEntrancePalisade(
+          group,
+          visuals.communalFencePlacements,
+          visuals.communalFenceInstanceName,
+        ).then((mesh) => {
+          visuals.communalFence = mesh
+          registerSettlementColliders()
+        })
+      }
     },
     economy,
     households,
