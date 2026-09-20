@@ -1,7 +1,7 @@
 # PLANS PLANNED WITHOUT NOTES
 
 > Generated with `pnpm plans:without-notes`  
-> Date: 2026-09-20 18:01:16  
+> Date: 2026-09-20 18:04:01  
 
 ## PLANS
 
@@ -31,7 +31,6 @@
 - `ui-input-029-village-torch-interaction-action-contract.md`
 - `ui-input-030-player-downed-action-input-gating.md`
 - `ui-input-031-world-bound-ui-session-rebuild-lifecycle.md`
-- `world-034-time-skip-clock-exactness-and-catch-up-coverage.md`
 - `world-036-lightweight-unloaded-shipwreck-and-tower-lookup.md`
 - `world-037-audio-spatial-context-isolation.md`
 - `world-038-world-audio-async-lifecycle-and-cache-recovery.md`
@@ -995,43 +994,6 @@ Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną
 Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
 
 Po ukończeniu implementation notes zaktualizuj też `docs/plans/ui-input-031-world-bound-ui-session-rebuild-lifecycle.md` i dodaj/ustaw metadata:
-`**Model:** <best>, <cheaper-safe-fallback>`
-Wybierz dokładnie dwa modele spośród: Composer, Grok, Sonnet, Opus.
-Pierwszy ma być najlepszym wyborem do implementacji, drugi tańszym wariantem o minimalnym dodatkowym ryzyku.
-Dobierz modele na podstawie wykonanego reconu i implementation notes, zgodnie z `docs/plans/PLANNING.md`.
-
-Pliki dodaj na branch `main` w repozytorium.
-```
-
-### `world-034-time-skip-clock-exactness-and-catch-up-coverage.md`
-
-Prompt:
-
-```
-Zrób review planu `world-034-time-skip-clock-exactness-and-catch-up-coverage.md`
-
-Wczytaj:
-- `docs/STATE.md`
-- `docs/plans/PLANNING.md` (Implementation Notes section),
-- `docs/plans/world-034-time-skip-clock-exactness-and-catch-up-coverage.md`
-- aktualny codebase,
-- potrzebne zależności i powiązane implementacje.
-
-Na podstawie review utwórz w repo plik:
-`docs/plans/implementation-notes/world-034-time-skip-clock-exactness-and-catch-up-coverage-implementation-notes.md`
-
-Umieść w nim:
-- sugestie dotyczące implementacji,
-- istotne detale techniczne,
-- decyzje architektoniczne,
-- informacje o istniejących systemach i implementacjach, które należy wykorzystać,
-- potencjalne problemy, zależności i pułapki,
-- inne konkretne wskazówki, które ułatwią agentowi AI poprawną implementację planu.
-
-Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
-Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
-
-Po ukończeniu implementation notes zaktualizuj też `docs/plans/world-034-time-skip-clock-exactness-and-catch-up-coverage.md` i dodaj/ustaw metadata:
 `**Model:** <best>, <cheaper-safe-fallback>`
 Wybierz dokładnie dwa modele spośród: Composer, Grok, Sonnet, Opus.
 Pierwszy ma być najlepszym wyborem do implementacji, drugi tańszym wariantem o minimalnym dodatkowym ryzyku.
