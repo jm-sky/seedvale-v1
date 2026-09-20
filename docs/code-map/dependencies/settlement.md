@@ -55,6 +55,7 @@ Generated from TypeScript imports.
 - `items/createDroppedItems.ts`
 - `perf/agentCpuDiag.ts`
 - `player/PlayerController.ts`
+- `settlement/authoredRepairTargets.ts`
 - `settlement/createSettlement.ts`
 - `settlement/foundedSettlement.ts`
 - `settlement/foundedSettlementBootstrap.ts`
@@ -79,6 +80,7 @@ Generated from TypeScript imports.
 - `settlement/structureCondition.ts`
 - `settlement/structureRepairCandidates.ts`
 - `settlement/structureStateRegistry.ts`
+- `settlement/villagePlan.ts`
 - `terrain/chunkGrid.ts`
 - `terrain/chunkHeightmap.ts`
 - `terrain/resourceDeposits.ts`
@@ -267,6 +269,27 @@ Generated from TypeScript imports.
 - `settlement/householdProfessionStock.ts`
 - `settlement/npcState.ts`
 
+## `settlement/authoredRepairTargets.test.ts`
+
+**Imports**
+
+- `settlement/authoredRepairTargets.ts`
+- `settlement/villagePlan.ts`
+
+## `settlement/authoredRepairTargets.ts`
+
+**Imports**
+
+- `settlement/villagePlan.ts`
+
+**Imported by**
+
+- `app/createApp.ts`
+- `settlement/SettlementsManager.ts`
+- `settlement/authoredRepairTargets.test.ts`
+- `settlement/createSettlement.ts`
+- `settlement/props.ts`
+
 ## `settlement/blacksmithYard.test.ts`
 
 **Imports**
@@ -322,17 +345,20 @@ Generated from TypeScript imports.
 - `fauna/huntingHooks.ts`
 - `fauna/livestockProduction.ts`
 - `fauna/shepherdFlock.ts`
+- `items/constructionMaterials.ts`
 - `items/createDroppedItems.ts`
 - `perf/agentCpuDiag.ts`
 - `player/PlayerController.ts`
 - `settlement/VillageFire.ts`
 - `settlement/animalCorpseSanitation.ts`
 - `settlement/artisanProfile.ts`
+- `settlement/authoredRepairTargets.ts`
 - `settlement/families.ts`
 - `settlement/houseBuilder.ts`
 - `settlement/houseDoors.ts`
 - `settlement/household.ts`
 - `settlement/householdExchange.ts`
+- `settlement/householdWood.ts`
 - `settlement/livestock.ts`
 - `settlement/merchantTrade.ts`
 - `settlement/npcIdentity.ts`
@@ -357,6 +383,7 @@ Generated from TypeScript imports.
 - `settlement/settlementPropColliders.ts`
 - `settlement/settlementSignposts.ts`
 - `settlement/settlementVillageTorch.ts`
+- `settlement/structureCondition.ts`
 - `settlement/structureRepairCandidates.ts`
 - `settlement/structureStateRegistry.ts`
 - `settlement/wellInteractionQueue.ts`
@@ -802,6 +829,7 @@ Generated from TypeScript imports.
 - `app/actions/householdResourceTransferActions.test.ts`
 - `app/actions/householdResourceTransferActions.ts`
 - `app/actions/pastureTroughActions.test.ts`
+- `app/createApp.ts`
 - `app/gameLoop.ts`
 - `app/worldBundle.ts`
 - `debug/householdHistory.ts`
@@ -959,6 +987,8 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `ai/npcLogistics.ts`
+- `app/createApp.ts`
+- `settlement/createSettlement.ts`
 - `settlement/household.ts`
 - `settlement/householdResourceTransfer.ts`
 
@@ -1835,6 +1865,7 @@ Generated from TypeScript imports.
 - `debug/debugMode.ts`
 - `math/segment.ts`
 - `render/instancedProps.ts`
+- `settlement/authoredRepairTargets.ts`
 - `settlement/blacksmithYard.ts`
 - `settlement/campfireProps.ts`
 - `settlement/decorProps.ts`
@@ -2663,6 +2694,7 @@ Generated from TypeScript imports.
 - `app/interactables.ts`
 - `persistence/saveData.ts`
 - `settlement/SettlementsManager.ts`
+- `settlement/createSettlement.ts`
 - `settlement/structureCondition.test.ts`
 - `settlement/structureRepairCandidates.test.ts`
 - `settlement/structureRepairCandidates.ts`
@@ -2836,6 +2868,9 @@ Generated from TypeScript imports.
 - `ai/voluntaryExpeditionJoin.ts`
 - `debug/npcDebugApi.ts`
 - `economy/initial.ts`
+- `settlement/SettlementsManager.ts`
+- `settlement/authoredRepairTargets.test.ts`
+- `settlement/authoredRepairTargets.ts`
 - `settlement/npcResidentAnchors.ts`
 - `settlement/places.ts`
 - `settlement/plazaPaving.test.ts`

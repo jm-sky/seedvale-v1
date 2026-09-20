@@ -188,6 +188,38 @@ export function residentialStructureId(familyIndex: number): string {
   return `building-house-${familyIndex}`
 }
 
+/** Stable structureId for a residential house's stone-foundation subtarget
+ *  (plan quests-progression-073) — its own `SettlementStructureState` record
+ *  in the same registry, never merged into the parent whole-house record
+ *  (`residentialStructureId`), so an authored foundation repair never
+ *  collides with ordinary whole-house damage/repair. */
+export function residentialFoundationStructureId(familyIndex: number): string {
+  return `${residentialStructureId(familyIndex)}-foundation`
+}
+
+/** Stable structureId for a household's own yard fence (plan
+ *  quests-progression-073) — distinct from the settlement entrance palisade
+ *  and any player-built `PalisadeSegmentRecord`. */
+export function householdFenceStructureId(familyIndex: number): string {
+  return `household-fence-${familyIndex}`
+}
+
+/** Stable structureId for the deterministic communal-fence fallback used
+ *  when the home settlement has no `VillagePlan.pasture` (plan
+ *  quests-progression-073). When a pasture exists, the real
+ *  `VillagePastureFenceSegment.id` (e.g. `pasture-fence-a`) is used directly
+ *  as the structureId instead — see `resolveCommunalFenceTarget`. */
+export function communalFenceFallbackStructureId(): string {
+  return 'communal-fence-fallback'
+}
+
+/** Stable structureId for Piotr's logging wagon (plan quests-progression-073)
+ *  — independent of the merchant wagon's own presentation/ownership
+ *  (`merchantWagon.ts`, `landmarks.merchantWagon`). */
+export function loggingWagonStructureId(familyIndex: number): string {
+  return `logging-wagon-${familyIndex}`
+}
+
 /** Stable infrastructure plot id for a household well at `familyIndex`
  *  (plan settlements-npcs-035). Distinct from the plaza `plot-infra-well`. */
 export function householdWellPlotId(familyIndex: number): string {

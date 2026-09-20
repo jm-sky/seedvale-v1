@@ -13,6 +13,7 @@ import type { SettlementDestinationThreatHooks } from '../fauna/destinationThrea
 import type { SettlementHuntingHooks } from '../fauna/huntingHooks'
 import type { DropLivestockProductHook } from '../fauna/livestockProduction'
 import type { ShepherdFlockHooks } from '../fauna/shepherdFlock'
+import type { MaterialRequirement } from '../items/constructionMaterials'
 import type { DroppedItems } from '../items/createDroppedItems'
 import type { ColliderSource, HeightSampler } from '../player/PlayerController'
 import type { SettlementTerrain } from '../shared/SettlementName'
@@ -36,6 +37,7 @@ import type { NearbyPlayerWellLookup } from '../world/playerWell'
 import type { ResourceSiteInventories } from '../world/resourceSiteInventory'
 import type { SettlementForestHooks } from '../world/settlementForestHooks'
 import type { WeatherState } from '../world/weather'
+import type { AuthoredRepairPresentationInput } from './authoredRepairTargets'
 import type { VillageSize } from './families'
 import type { NpcAuthoritativeState, NpcStateRegistry } from './npcState'
 import type { FoodSourceType, SettlementDef } from './settlementGenerator'
@@ -66,11 +68,13 @@ import {
   resolveAnimalCorpseCleanupHandle,
   type SettlementCorpseCleanupHooks,
 } from './animalCorpseSanitation'
+import { resolveAuthoredRepairStructureIds } from './authoredRepairTargets'
 import { villageSizeConfig } from './families'
 import { buildAssemblyCollidersWorld, type HouseAssembly } from './houseBuilder'
 import { createHouseDoorController } from './houseDoors'
 import { type Household, householdIdFor, type HouseholdRegistry } from './household'
 import { createHouseholdExchangeHooks, type HouseholdSurplusCandidate } from './householdExchange'
+import { householdWoodItemValue } from './householdWood'
 import {
   disposeLivestock,
   type LivestockPersistence,
@@ -129,7 +133,8 @@ import { fencePlacementColliders, settlementPalisadeColliders } from './settleme
 import { settlementPropColliders } from './settlementPropColliders'
 import { createSettlementSignposts } from './settlementSignposts'
 import { type SettlementVillageTorch } from './settlementVillageTorch'
-import { createNpcStructureRepairHooks } from './structureRepairCandidates'
+import { isStructureRepairProblem, structureRepairPolicy } from './structureCondition'
+import { type AuthoredNpcRepairTarget, createAuthoredNpcRepairTarget, createNpcStructureRepairHooks } from './structureRepairCandidates'
 import { createVillageFire, FUEL_PER_BRANCH, type VillageFire } from './VillageFire'
 import {
   buildWellInteractionQueueConfig,
@@ -616,6 +621,41 @@ export async function createSettlement(
   const blacksmithFamilyIndices = def.families.flatMap((family, familyIndex) =>
     family.members.some((m) => m.character.role === 'blacksmith') ? [familyIndex] : [],
   )
+  // Authored starter repair-target presentation (plan quests-progression-073)
+  // — home settlement only, derived from the already-seeded (idempotent,
+  // `SettlementsManager.ensureLoaded`) structure registry so presentation
+  // stays a pure projection of authoritative repair state; no separate
+  // `isBrokenVisual` flag. `forest?.getWorldDays()` is a read-only condition
+  // query here — condition never actually decays over elapsed days (plan
+  // settlements-007 §4), so an early clock read is safe.
+  const authoredRepairIds = def.isHome ? resolveAuthoredRepairStructureIds(def.plan) : null
+  const earlyNowDays = forest?.getWorldDays() ?? 0
+  const authoredRepairPresentation: AuthoredRepairPresentationInput | undefined = authoredRepairIds && deps.structureStates
+    ? {
+        householdFenceDamaged: isStructureRepairProblem(
+          structureRepairPolicy('householdFence')!,
+          deps.structureStates.resolve(def.id, authoredRepairIds.householdFence, earlyNowDays),
+          earlyNowDays,
+        ),
+        foundationDamaged: isStructureRepairProblem(
+          structureRepairPolicy('residentialFoundation')!,
+          deps.structureStates.resolve(def.id, authoredRepairIds.foundation, earlyNowDays),
+          earlyNowDays,
+        ),
+        loggingWagonDamaged: isStructureRepairProblem(
+          structureRepairPolicy('loggingWagon')!,
+          deps.structureStates.resolve(def.id, authoredRepairIds.loggingWagon, earlyNowDays),
+          earlyNowDays,
+        ),
+        communalFenceDamaged: isStructureRepairProblem(
+          structureRepairPolicy('communalFence')!,
+          deps.structureStates.resolve(def.id, authoredRepairIds.communalFence.structureId, earlyNowDays),
+          earlyNowDays,
+        ),
+        communalFenceUsesPastureSegment: authoredRepairIds.communalFence.usesPastureSegment,
+        communalFenceStructureId: authoredRepairIds.communalFence.structureId,
+      }
+    : undefined
   bootMark('buildSettlementProps')
   let propsResult: Awaited<ReturnType<typeof buildSettlementProps>>
   try {
@@ -644,6 +684,7 @@ export async function createSettlement(
       infestationState(def.id).nestDestroyed
         ? undefined
         : { settlementId: def.id, settlementSeed },
+      authoredRepairPresentation,
     )
   } finally {
     bootMarkEnd('buildSettlementProps')
@@ -660,6 +701,67 @@ export async function createSettlement(
     paddockFencePlacements,
   } = propsResult
   scene.add(group)
+  /**
+   * Bounded per-NPC authored repair targets (plan quests-progression-073) —
+   * Piotr (`family-reserved-0`'s husband) gets his household fence/
+   * foundation/wagon material-sourced from his own `household.items`; the
+   * wife (Anna) gets the settlement's communal fence, material-sourced from
+   * `economy`'s bulk wood stock. Empty for every other NPC. Positions mirror
+   * the same offsets `props.ts` renders the corresponding prop at.
+   */
+  function authoredRepairTargetsFor(
+    member: { relation: string },
+    familyIndex: number,
+    household: Household,
+  ): readonly AuthoredNpcRepairTarget[] {
+    if (!authoredRepairIds || !deps.structureStates || familyIndex !== 0) return []
+    const house0 = landmarks.houses[0]?.position
+    if (!house0) return []
+    const targets: AuthoredNpcRepairTarget[] = []
+    if (member.relation === 'husband') {
+      const householdMaterial = {
+        hasMaterial: (r: MaterialRequirement) => household.items.has(r.kind, r.count),
+        consumeMaterial: (r: MaterialRequirement) => { household.items.remove(r.kind, r.count) },
+      }
+      const fencePosition = { x: house0.x + 2.2, y: house0.y, z: house0.z + 1 }
+      const fence = createAuthoredNpcRepairTarget(
+        def.id, authoredRepairIds.householdFence, 'householdFence', fencePosition, deps.structureStates, householdMaterial,
+      )
+      if (fence) targets.push(fence)
+      const foundation = createAuthoredNpcRepairTarget(
+        def.id, authoredRepairIds.foundation, 'residentialFoundation', house0, deps.structureStates, householdMaterial,
+      )
+      if (foundation) targets.push(foundation)
+      const wagonPosition = landmarks.loggingWagon ?? house0
+      const wagon = createAuthoredNpcRepairTarget(
+        def.id, authoredRepairIds.loggingWagon, 'loggingWagon', wagonPosition, deps.structureStates, householdMaterial,
+      )
+      if (wagon) targets.push(wagon)
+    } else if (member.relation === 'wife') {
+      const communal = authoredRepairIds.communalFence
+      const segment = communal.usesPastureSegment
+        ? def.plan?.pasture?.fenceSegments.find((candidate) => candidate.id === communal.structureId)
+        : undefined
+      const communalPosition = segment && def.plan?.pasture
+        ? { x: (segment.ax + segment.bx) / 2, y: def.plan.pasture.y, z: (segment.az + segment.bz) / 2 }
+        : { x: landmarks.garden.x + 3, y: landmarks.garden.y, z: landmarks.garden.z + 1.5 }
+      const economyMaterial = {
+        hasMaterial: (r: MaterialRequirement) => {
+          const value = householdWoodItemValue(r.kind)
+          return value != null && economy.query('wood') >= value * r.count
+        },
+        consumeMaterial: (r: MaterialRequirement) => {
+          const value = householdWoodItemValue(r.kind) ?? 0
+          economy.remove('wood', value * r.count)
+        },
+      }
+      const communalTarget = createAuthoredNpcRepairTarget(
+        def.id, communal.structureId, 'communalFence', communalPosition, deps.structureStates, economyMaterial,
+      )
+      if (communalTarget) targets.push(communalTarget)
+    }
+    return targets
+  }
   // Plan 157 — one bounded walk of this settlement's own root, not the whole
   // scene: captures every house lamp, village torch, and the settlement's
   // own campfire (all attached under `group` by `buildSettlementProps`) in a
@@ -1301,6 +1403,7 @@ export async function createSettlement(
           structureRepairHooks: deps.structureStates
             ? createNpcStructureRepairHooks(def.id, familyIndex, landmarks.houses[familyIndex]?.position, deps.structureStates)
             : null,
+          authoredRepairTargets: authoredRepairTargetsFor(member, familyIndex, household),
           npcWorldMovement: deps.npcWorldMovement,
         },
       })

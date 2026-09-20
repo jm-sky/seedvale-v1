@@ -17,7 +17,7 @@ import type { HouseholdExchangeHooks } from '../settlement/householdExchange'
 import type { PackAnimalJourneyHooks } from '../settlement/livestock'
 import type { NpcResidentAnchors } from '../settlement/npcResidentAnchors'
 import type { NpcAuthoritativeState } from '../settlement/npcState'
-import type { NpcStructureRepairHooks } from '../settlement/structureRepairCandidates'
+import type { AuthoredNpcRepairTarget, NpcStructureRepairHooks } from '../settlement/structureRepairCandidates'
 import type { FollowHysteresisState } from '../shared/followHysteresis'
 import type { VigorState } from '../shared/VigorState'
 import type { SettlementMiningHooks } from '../terrain/resourceDeposits'
@@ -1126,6 +1126,17 @@ export type NpcAgentDeps = {
    *  `null` when the settlement has no structure registry wired (test/
    *  isolated fallbacks) or no plan-building exists at this family index. */
   structureRepairHooks?: NpcStructureRepairHooks | null
+  /**
+   * A small fixed list of local authored repair targets this NPC may
+   * autonomously choose to work on (plan quests-progression-073) — e.g.
+   * Piotr's household fence/foundation/wagon, or Anna's communal fence.
+   * Distinct from `structureRepairHooks` (this NPC's own house): each entry
+   * already has its material-source adapter (household or settlement
+   * economy) bound at creation time, and is blocked from autonomous start
+   * while its starter-quest reservation holds. Empty/absent for every NPC
+   * without an authored binding.
+   */
+  authoredRepairTargets?: readonly AuthoredNpcRepairTarget[]
   /** Stateless cave/world spatial queries for movement (plan npc-027). */
   npcWorldMovement?: NpcWorldMovementQueries
   /**
@@ -1573,6 +1584,9 @@ export class NpcAgent {
   private readonly corpseCleanupHooks: SettlementCorpseCleanupHooks | null
   /** This NPC's own household-house repair target (plan settlements-007). */
   private readonly structureRepairHooks: NpcStructureRepairHooks | null
+  /** Bounded local authored repair targets (plan quests-progression-073) —
+   *  see `NpcAgentDeps.authoredRepairTargets`. */
+  private readonly authoredRepairTargets: readonly AuthoredNpcRepairTarget[]
   /** Cached from `update()`'s `nowDays` argument (plan npc-026) — absolute
    *  simulation days for persisted grave-visit cooldowns. Falls back to
    *  `forest.getWorldDays()` for isolated callers/tests. */
@@ -1676,6 +1690,7 @@ export class NpcAgent {
       graveVisitHooks,
       corpseCleanupHooks,
       structureRepairHooks,
+      authoredRepairTargets,
     } = deps
     const playAt = deps.playAt ?? (() => {})
     const npcId = deps.npcId ?? ''
@@ -1728,6 +1743,7 @@ export class NpcAgent {
     this.graveVisitHooks = graveVisitHooks ?? null
     this.corpseCleanupHooks = corpseCleanupHooks ?? null
     this.structureRepairHooks = structureRepairHooks ?? null
+    this.authoredRepairTargets = authoredRepairTargets ?? []
     this.getPlayerSocial = getPlayerSocial
     this.settlementCharacter = deps.settlementCharacter ?? 'default'
     this.getNearbyPlayerWell = getNearbyPlayerWell
@@ -6549,29 +6565,80 @@ export class NpcAgent {
     this.releaseSanitationCleanupReservation()
   }
 
-  /** Pure repair-pressure read (plan settlements-007 §5) — `0` when this NPC
-   *  has no structure-repair hooks (settlement built without a structure
-   *  registry) or is dead. Never scans the settlement itself: `structureRepairHooks`
-   *  already binds this NPC's own household house at `NpcAgent.create()` time. */
-  private structureRepairPressureCandidate(): number {
+/** One arbitration candidate across this NPC's own house repair and its
+   *  bounded authored repair targets (plan quests-progression-073) — the
+   *  single place both the pure pressure read and the actual start pick the
+   *  same highest-pressure target, so they never disagree. */
+  private selectRepairCandidate(nowDays: number):
+    | { source: 'house', hooks: NpcStructureRepairHooks, pressure: number }
+    | { source: 'authored', target: AuthoredNpcRepairTarget, pressure: number }
+    | null {
+    let bestPressure = 0
+    let bestHouseHooks: NpcStructureRepairHooks | null = null
+    let bestAuthoredTarget: AuthoredNpcRepairTarget | null = null
     const hooks = this.structureRepairHooks
-    if (!hooks || this.health.dead) return 0
-    const household = this.household
-    return hooks.pressure(this.nowDays(), (r) => household?.items.has(r.kind, r.count) ?? false)
+    if (hooks) {
+      const household = this.household
+      const pressure = hooks.pressure(nowDays, (r) => household?.items.has(r.kind, r.count) ?? false)
+      if (pressure > bestPressure) {
+        bestPressure = pressure
+        bestHouseHooks = hooks
+        bestAuthoredTarget = null
+      }
+    }
+    for (const target of this.authoredRepairTargets) {
+      const pressure = target.pressure(nowDays)
+      if (pressure > bestPressure) {
+        bestPressure = pressure
+        bestAuthoredTarget = target
+        bestHouseHooks = null
+      }
+    }
+    if (bestHouseHooks) return { source: 'house', hooks: bestHouseHooks, pressure: bestPressure }
+    if (bestAuthoredTarget) return { source: 'authored', target: bestAuthoredTarget, pressure: bestPressure }
+    return null
   }
 
-  /** Starts (or resumes) one repair work bout on this NPC's own household
-   *  house (plan settlements-007 §5/§11) — reuses the generic `goTo` →
-   *  `work` planned-action shape every other NPC construction step already
-   *  uses, so no separate repair runner exists. Materials are drawn from the
-   *  owning `Household.items` (implementation notes §8); a material-blocked
-   *  attempt simply does not start this tick — retried on the next `choose()`
-   *  cycle while the pressure remains, same convention as material-blocked
-   *  construction work. */
+  /** Pure repair-pressure read (plan settlements-007 §5, extended by plan
+   *  quests-progression-073) — `0` when this NPC has no structure-repair
+   *  hooks/authored targets (settlement built without a structure registry)
+   *  or is dead. Never scans the settlement itself: every candidate already
+   *  binds its own target at `NpcAgent.create()` time. */
+  private structureRepairPressureCandidate(): number {
+    if (this.health.dead) return 0
+    return this.selectRepairCandidate(this.nowDays())?.pressure ?? 0
+  }
+
+  /** Starts (or resumes) one repair work bout on the highest-pressure
+   *  candidate from `selectRepairCandidate` — this NPC's own household house,
+   *  or one of its bounded authored repair targets (plan settlements-007
+   *  §5/§11, plan quests-progression-073). Reuses the generic `goTo` → `work`
+   *  planned-action shape every other NPC construction step already uses, so
+   *  no separate repair runner exists. A material-blocked attempt simply
+   *  does not start this tick — retried on the next `choose()` cycle while
+   *  the pressure remains, same convention as material-blocked construction
+   *  work. */
   private beginRepairStructure(): boolean {
-    const hooks = this.structureRepairHooks
-    if (!hooks || this.health.dead) return false
+    if (this.health.dead) return false
     const nowDays = this.nowDays()
+    const selected = this.selectRepairCandidate(nowDays)
+    if (!selected) return false
+    if (selected.source === 'authored') {
+      const { target } = selected
+      const state = target.getSnapshot(nowDays)
+      if (!state.repair) {
+        const outcome = target.beginRepair(nowDays)
+        if (outcome.status !== 'started') return false
+      }
+      this.startAction({
+        kind: 'work',
+        destination: copyVec3(target.position),
+        durationSec: STRUCTURE_REPAIR_WORK_SESSION_SEC * this.waitMultiplier,
+        onComplete: () => target.contributeWork(STRUCTURE_REPAIR_WORK_SESSION_HOURS, this.nowDays()),
+      })
+      return true
+    }
+    const { hooks } = selected
     const state = hooks.getSnapshot(nowDays)
     if (!state.repair) {
       const household = this.household
@@ -6587,15 +6654,9 @@ export class NpcAgent {
       kind: 'work',
       destination: copyVec3(hooks.position),
       durationSec: STRUCTURE_REPAIR_WORK_SESSION_SEC * this.waitMultiplier,
-      onComplete: () => this.executeRepairWorkBout(),
+      onComplete: () => hooks.contributeWork(STRUCTURE_REPAIR_WORK_SESSION_HOURS, this.nowDays()),
     })
     return true
-  }
-
-  private executeRepairWorkBout(): void {
-    const hooks = this.structureRepairHooks
-    if (!hooks || this.health.dead) return
-    hooks.contributeWork(STRUCTURE_REPAIR_WORK_SESSION_HOURS, this.nowDays())
   }
 
   /**

@@ -52,6 +52,7 @@ import {
   shouldUseLegacyTransportExecutionHandoff,
 } from '../world/transportOffscreen'
 import { resolveTransportTravelArrivals } from '../world/transportTravelArrival'
+import { resolveAuthoredRepairStructureIds } from './authoredRepairTargets'
 import { createSettlement, type CreateSettlementDeps, type Settlement } from './createSettlement'
 import {
   createFoundedSettlementRegistry,
@@ -121,6 +122,7 @@ import { createLabeledProp, disposeLabeledProp, type LabeledProp, updateLabelOpa
 import { settlementStorageDestination } from './storageDestinations'
 import {
   applyStructureDamage as applyStructureDamageTx,
+  AUTHORED_STARTER_DAMAGE_CONDITION,
   quoteStructureRepair as quoteStructureRepairTx,
   resolveStructureCondition,
   type SettlementStructureState,
@@ -134,6 +136,7 @@ import {
   contributeRegistryStructureRepairWork,
   createSettlementStructureStateRegistry,
 } from './structureStateRegistry'
+import { communalFenceFallbackStructureId } from './villagePlan'
 
 type Entry = {
   def: SettlementDef
@@ -364,6 +367,18 @@ export type SettlementsManager = {
    *  producer reads, never a per-NPC world/plan scan. Empty for an unloaded
    *  or unknown settlement. */
   residentialRepairCandidates: (settlementId: string, nowDays: number) => readonly ResidentialRepairCandidate[]
+  /**
+   * `true` while an authored starter target still blocks autonomous (NPC)
+   * repair start (plan quests-progression-073) — set once by idempotent
+   * starter-damage seeding (`ensureLoaded`, home settlement only), cleared by
+   * `releaseAutonomousRepairReservation` on successful quest hand-in. Player
+   * repair is never gated by this.
+   */
+  isAutonomousRepairReserved: (settlementId: string, structureId: string) => boolean
+  /** Releases a starter reservation on successful quest hand-in (plan
+   *  quests-progression-073) — a no-op when no record exists or it is
+   *  already unreserved. */
+  releaseAutonomousRepairReservation: (settlementId: string, structureId: string) => void
   /** Save-schema snapshot of every mutated structure so far — see
    *  `SettlementStructureStateRegistry.serialize`. */
   snapshotStructureStates: () => Record<string, SettlementStructureState>
@@ -796,7 +811,40 @@ export async function createSettlementsManager(
   // and in-session `WorldBundle` rebuilds independent of any loaded
   // `Settlement`/Three.js object.
   const structureStates = createSettlementStructureStateRegistry(initialStructureStates)
-  const residentialRepairPolicy = structureRepairPolicy('residential')!
+
+  /** Dispatches a `StructureRepairPolicy` from a bare `structureId` (plan
+   *  quests-progression-073) — the player-facing repair transaction below
+   *  (`quoteStructureRepair`/`beginStructureRepair`/`listRepairProblems`) only
+   *  ever receives a stable id string, never the authored target kind that
+   *  produced it. Pattern-matches the small closed set of id shapes the
+   *  stable id helpers in `villagePlan.ts` emit; `null` for any other id
+   *  (no repair adapter). */
+  function structureRepairPolicyForId(structureId: string): ReturnType<typeof structureRepairPolicy> {
+    if (structureId.endsWith('-foundation')) return structureRepairPolicy('residentialFoundation')
+    if (structureId.startsWith('household-fence-')) return structureRepairPolicy('householdFence')
+    if (structureId.startsWith('logging-wagon-')) return structureRepairPolicy('loggingWagon')
+    if (structureId.startsWith('pasture-fence-') || structureId === communalFenceFallbackStructureId()) {
+      return structureRepairPolicy('communalFence')
+    }
+    if (structureId.startsWith('building-house-')) return structureRepairPolicy('residential')
+    return null
+  }
+
+  /** Idempotent authored starter-damage seeding (plan quests-progression-073)
+   *  — the single implementation both `ensureLoaded` (home settlement, every
+   *  materialization) and the public `seedAuthoredRepairDamage` method call,
+   *  so a settlement stream-out/in or `WorldBundle` rebuild can call this
+   *  freely without ever re-damaging an already-resolved starter target. */
+  function seedAuthoredRepairDamageIfNeeded(settlementId: string, structureId: string): void {
+    if (structureStates.get(settlementId, structureId)) return
+    structureStates.set({
+      structureId,
+      settlementId,
+      condition: AUTHORED_STARTER_DAMAGE_CONDITION,
+      lastConditionUpdateAtDays: currentNowDays(),
+      autonomousRepairReserved: true,
+    })
+  }
 
   // Founded (nonprocedural) colony registry (plan settlements-003) — same
   // "one manager-lifetime registry, survives settlement unload/reload and
@@ -1063,6 +1111,18 @@ export async function createSettlementsManager(
     const entry: Entry = { def, settlement: null, pendingPromise: null }
     entries.set(def.id, entry)
     syncMidpoints()
+    // Authored starter-quest damage (plan quests-progression-073) — seeded
+    // once, idempotently, for the home settlement's own family-reserved-0
+    // targets, before `createSettlement`/`buildSettlementProps` read the
+    // structure registry for presentation. Cheap and synchronous: no need to
+    // wait on `waitForChunks` below.
+    if (def.isHome) {
+      const ids = resolveAuthoredRepairStructureIds(def.plan)
+      seedAuthoredRepairDamageIfNeeded(def.id, ids.householdFence)
+      seedAuthoredRepairDamageIfNeeded(def.id, ids.foundation)
+      seedAuthoredRepairDamageIfNeeded(def.id, ids.loggingWagon)
+      seedAuthoredRepairDamageIfNeeded(def.id, ids.communalFence.structureId)
+    }
     entry.pendingPromise = waitForChunks(chunksNear(def.x, def.z, chunkSize))
       .then(() => createSettlement(def, economyFor(def), settlementDeps))
       .then((settlement) => {
@@ -1525,8 +1585,10 @@ export async function createSettlementsManager(
     listRepairProblems: (settlementId, nowDays) => {
       const out: { structureId: string, condition: number }[] = []
       for (const state of structureStates.listForSettlement(settlementId)) {
+        const policy = structureRepairPolicyForId(state.structureId)
+        if (!policy) continue
         const condition = resolveStructureCondition(state, nowDays)
-        if (condition <= residentialRepairPolicy.repairThreshold) out.push({ structureId: state.structureId, condition })
+        if (condition <= policy.repairThreshold) out.push({ structureId: state.structureId, condition })
       }
       return out
     },
@@ -1535,26 +1597,38 @@ export async function createSettlementsManager(
       structureStates.set(applyStructureDamageTx(current, amount, nowDays))
     },
     quoteStructureRepair: (settlementId, structureId, nowDays, targetCondition) => {
+      const policy = structureRepairPolicyForId(structureId)
+      if (!policy) return null
       const state = structureStates.resolve(settlementId, structureId, nowDays)
-      return quoteStructureRepairTx(residentialRepairPolicy, state, nowDays, targetCondition)
+      return quoteStructureRepairTx(policy, state, nowDays, targetCondition)
     },
-    beginStructureRepair: ({ consumeMaterial, hasMaterial, nowDays, settlementId, structureId, targetCondition }) =>
-      beginRegistryStructureRepair(
+    beginStructureRepair: ({ consumeMaterial, hasMaterial, nowDays, settlementId, structureId, targetCondition }) => {
+      const policy = structureRepairPolicyForId(structureId)
+      if (!policy) return { status: 'unavailable' }
+      return beginRegistryStructureRepair(
         structureStates,
-        residentialRepairPolicy,
+        policy,
         settlementId,
         structureId,
         nowDays,
         hasMaterial,
         consumeMaterial,
         targetCondition,
-      ),
+      )
+    },
     contributeStructureRepairWork: (settlementId, structureId, workAmount, nowDays) =>
       contributeRegistryStructureRepairWork(structureStates, settlementId, structureId, workAmount, nowDays),
     residentialRepairCandidates: (settlementId, nowDays) => {
       const settlement = entries.get(settlementId)?.settlement
       if (!settlement) return []
       return residentialRepairCandidates(settlement, structureStates, nowDays)
+    },
+    isAutonomousRepairReserved: (settlementId, structureId) =>
+      structureStates.get(settlementId, structureId)?.autonomousRepairReserved === true,
+    releaseAutonomousRepairReservation: (settlementId, structureId) => {
+      const current = structureStates.get(settlementId, structureId)
+      if (!current?.autonomousRepairReserved) return
+      structureStates.set({ ...current, autonomousRepairReserved: false })
     },
     snapshotStructureStates: () => structureStates.serialize(),
     dispose() {

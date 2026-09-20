@@ -3,12 +3,14 @@ import { CONDITION_MAX } from '../world/condition'
 import {
   applyStructureDamage,
   applyStructureRepairWork,
+  AUTHORED_STARTER_DAMAGE_CONDITION,
   beginStructureRepair,
   hasActiveStructureRepair,
   isStructureRepairProblem,
   pristineStructureState,
   quoteStructureRepair,
   STRUCTURE_REPAIR_RESUME_PRESSURE,
+  structureConditionStateFromSnapshot,
   structureRepairPolicy,
   structureRepairPressureFromCondition,
 } from './structureCondition'
@@ -16,10 +18,36 @@ import {
 const policy = structureRepairPolicy('residential')!
 
 describe('structureRepairPolicy', () => {
-  it('only adapts the residential role in V1', () => {
+  it('only adapts the residential VillageBuildingRole in V1', () => {
     expect(structureRepairPolicy('residential')).not.toBeNull()
     expect(structureRepairPolicy('production')).toBeNull()
     expect(structureRepairPolicy('public')).toBeNull()
+  })
+
+  it('adapts every authored quests-progression-073 target kind without touching the residential policy', () => {
+    expect(structureRepairPolicy('residentialFoundation')).not.toBeNull()
+    expect(structureRepairPolicy('householdFence')).not.toBeNull()
+    expect(structureRepairPolicy('communalFence')).not.toBeNull()
+    expect(structureRepairPolicy('loggingWagon')).not.toBeNull()
+    // Ordinary whole-house repair keeps its own beam+branch cost/policy —
+    // adding the foundation subtarget must never change it.
+    expect(policy.materialsForRestoredFraction(1)).toEqual([
+      { kind: 'beam', count: 4 },
+      { kind: 'branch', count: 4 },
+    ])
+  })
+
+  it('foundation repair uses stone, distinct from the parent residential beam+branch policy', () => {
+    const foundation = structureRepairPolicy('residentialFoundation')!
+    expect(foundation.materialsForRestoredFraction(1)).toEqual([{ kind: 'stone', count: 6 }])
+    expect(foundation.materialsForRestoredFraction(0)).toEqual([])
+  })
+
+  it('household fence, communal fence and logging wagon each cost 5 branches', () => {
+    for (const kind of ['householdFence', 'communalFence', 'loggingWagon'] as const) {
+      const targetPolicy = structureRepairPolicy(kind)!
+      expect(targetPolicy.materialsForRestoredFraction(1)).toEqual([{ kind: 'branch', count: 5 }])
+    }
   })
 })
 
@@ -222,5 +250,32 @@ describe('structureRepairPressureFromCondition', () => {
     // Resume pressure is a separate constant, not derived from condition —
     // just confirm both stay in the same "well under a critical need" band.
     expect(STRUCTURE_REPAIR_RESUME_PRESSURE).toBeLessThan(1)
+  })
+})
+
+describe('AUTHORED_STARTER_DAMAGE_CONDITION (plan quests-progression-073)', () => {
+  it('reads as damaged for every authored target kind and never as fully destroyed', () => {
+    for (const kind of ['residentialFoundation', 'householdFence', 'communalFence', 'loggingWagon'] as const) {
+      const targetPolicy = structureRepairPolicy(kind)!
+      expect(AUTHORED_STARTER_DAMAGE_CONDITION).toBeLessThanOrEqual(targetPolicy.repairThreshold)
+      expect(AUTHORED_STARTER_DAMAGE_CONDITION).toBeGreaterThan(0)
+    }
+  })
+})
+
+describe('autonomousRepairReserved (plan quests-progression-073)', () => {
+  it('round-trips through structureConditionStateFromSnapshot', () => {
+    const reserved = structureConditionStateFromSnapshot('home', 'household-fence-0', {
+      condition: AUTHORED_STARTER_DAMAGE_CONDITION,
+      lastConditionUpdateAtDays: 0,
+      autonomousRepairReserved: true,
+    })
+    expect(reserved.autonomousRepairReserved).toBe(true)
+    const released = structureConditionStateFromSnapshot('home', 'household-fence-0', {
+      condition: CONDITION_MAX,
+      lastConditionUpdateAtDays: 1,
+      autonomousRepairReserved: false,
+    })
+    expect(released.autonomousRepairReserved).toBe(false)
   })
 })

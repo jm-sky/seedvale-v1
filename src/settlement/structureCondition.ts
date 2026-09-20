@@ -34,6 +34,14 @@ export type SettlementStructureState = {
   condition: number
   lastConditionUpdateAtDays: number
   repair?: RepairProgress
+  /**
+   * Blocks autonomous (NPC) repair start while an authored starter quest
+   * still owns this target's initial damage (plan quests-progression-073) —
+   * set once by the idempotent starter-damage seeding bootstrap, cleared by
+   * the quest-world hand-in bridge on successful material delivery. Player
+   * repair is not gated by this flag (plan §6). Absent/`false` = free.
+   */
+  autonomousRepairReserved?: boolean
 }
 
 /** Fresh pristine state — the resolved default whenever no mutation record
@@ -100,11 +108,82 @@ const RESIDENTIAL_STRUCTURE_REPAIR_POLICY: StructureRepairPolicy = {
   requiredWorkForRestoredFraction: (fraction) => RESIDENTIAL_STRUCTURE_FULL_REPAIR_WORK_HOURS * fraction,
 }
 
-/** `null` for a `VillageBuildingRole` with no repair adapter yet (plan §5 —
- *  V1 only implements `residential`). */
-export function structureRepairPolicy(role: VillageBuildingRole): StructureRepairPolicy | null {
-  return role === 'residential' ? RESIDENTIAL_STRUCTURE_REPAIR_POLICY : null
+/**
+ * Small, closed set of authored repair-target kinds beyond ordinary
+ * `VillageBuildingRole` buildings (plan quests-progression-073) — one
+ * explicit component per starter quest target, not a generic
+ * building-component graph. `residentialFoundation` is a *subtarget* of a
+ * residential house (own `SettlementStructureState` record, see
+ * `residentialFoundationStructureId`), never a second whole-house policy.
+ *
+ * @domain settlements
+ */
+export type AuthoredRepairTargetKind =
+  | 'residentialFoundation'
+  | 'householdFence'
+  | 'communalFence'
+  | 'loggingWagon'
+
+export type StructureRepairTargetKind = VillageBuildingRole | AuthoredRepairTargetKind
+
+/** Authored starter-quest materials/work are fixed amounts, not scaled by
+ *  restored fraction (implementation notes §2/§14) — these targets only
+ *  ever go from one authored starting damage to a full restoration once. */
+function fixedRestorationPolicy(
+  label: string,
+  materials: readonly MaterialRequirement[],
+  requiredWorkHours: number,
+): StructureRepairPolicy {
+  return {
+    label,
+    repairThreshold: 50,
+    targetCondition: CONDITION_MAX,
+    importanceWeight: 1,
+    materialsForRestoredFraction: (fraction) => (fraction <= 0 ? [] : materials),
+    requiredWorkForRestoredFraction: (fraction) => (fraction <= 0 ? 0 : requiredWorkHours),
+  }
 }
+
+const RESIDENTIAL_FOUNDATION_REPAIR_POLICY = fixedRestorationPolicy(
+  'Fundament domu',
+  [{ kind: 'stone', count: 6 }],
+  1.5,
+)
+const HOUSEHOLD_FENCE_REPAIR_POLICY = fixedRestorationPolicy(
+  'Płot gospodarstwa',
+  [{ kind: 'branch', count: 5 }],
+  1,
+)
+const COMMUNAL_FENCE_REPAIR_POLICY = fixedRestorationPolicy(
+  'Ogrodzenie pastwiska',
+  [{ kind: 'branch', count: 5 }],
+  1,
+)
+const LOGGING_WAGON_REPAIR_POLICY = fixedRestorationPolicy(
+  'Wóz Piotra',
+  [{ kind: 'branch', count: 5 }],
+  1,
+)
+
+/** `null` for a target kind with no repair adapter (plan §5 — V1 only
+ *  implements `residential` among `VillageBuildingRole`s, plus the four
+ *  authored `AuthoredRepairTargetKind`s above). */
+export function structureRepairPolicy(kind: StructureRepairTargetKind): StructureRepairPolicy | null {
+  switch (kind) {
+    case 'communalFence': return COMMUNAL_FENCE_REPAIR_POLICY
+    case 'householdFence': return HOUSEHOLD_FENCE_REPAIR_POLICY
+    case 'loggingWagon': return LOGGING_WAGON_REPAIR_POLICY
+    case 'residential': return RESIDENTIAL_STRUCTURE_REPAIR_POLICY
+    case 'residentialFoundation': return RESIDENTIAL_FOUNDATION_REPAIR_POLICY
+    default: return null
+  }
+}
+
+/** Authored starter-quest condition, set once by the idempotent seeding
+ *  bootstrap (plan quests-progression-073) — clearly below every
+ *  `repairThreshold` above (50) so the target reads as damaged immediately,
+ *  well above 0 so it never reads as fully destroyed. */
+export const AUTHORED_STARTER_DAMAGE_CONDITION = 30
 
 /** Repair pressure never exceeds this — well under a typical urgent-need
  *  score, so ordinary structure maintenance loses to critical needs/severe
@@ -312,7 +391,7 @@ export const STRUCTURE_REPAIR_WORK_SESSION_HOURS = 1
 export function structureConditionStateFromSnapshot(
   settlementId: string,
   structureId: string,
-  snapshot: Pick<SettlementStructureState, 'condition' | 'lastConditionUpdateAtDays' | 'repair'>,
+  snapshot: Pick<SettlementStructureState, 'condition' | 'lastConditionUpdateAtDays' | 'repair' | 'autonomousRepairReserved'>,
 ): SettlementStructureState {
   return {
     structureId,
@@ -320,5 +399,6 @@ export function structureConditionStateFromSnapshot(
     condition: clampCondition(snapshot.condition),
     lastConditionUpdateAtDays: snapshot.lastConditionUpdateAtDays,
     repair: snapshot.repair,
+    autonomousRepairReserved: snapshot.autonomousRepairReserved,
   }
 }

@@ -1031,6 +1031,7 @@ Generated from TypeScript imports.
 - `player/playerVisualPreset.ts`
 - `player/targetedSkillSelection.ts`
 - `quests/QuestManager.ts`
+- `quests/authoredRepairDeliveries.ts`
 - `quests/cardinalDirection.ts`
 - `quests/caveLocationDescription.ts`
 - `quests/dungeonBanditTreasure.ts`
@@ -1065,8 +1066,11 @@ Generated from TypeScript imports.
 - `reputation/ReputationManager.ts`
 - `reputation/SocialNewsLedger.ts`
 - `reputation/animalDeeds.ts`
+- `settlement/authoredRepairTargets.ts`
 - `settlement/createSettlement.ts`
 - `settlement/horseAcquisition.ts`
+- `settlement/household.ts`
+- `settlement/householdWood.ts`
 - `settlement/landOwnership.ts`
 - `settlement/livestock.ts`
 - `settlement/lostTreasureChroniclesElderResident.ts`

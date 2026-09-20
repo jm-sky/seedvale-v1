@@ -114,6 +114,7 @@ import {
   ubcPreloadUrls,
 } from '../player/playerVisualPreset'
 import { createTargetedSkillSelection } from '../player/targetedSkillSelection'
+import { AUTHORED_REPAIR_DELIVERIES } from '../quests/authoredRepairDeliveries'
 import { cardinalDirectionPhrase } from '../quests/cardinalDirection'
 import { resolveCaveQuestPresentation } from '../quests/caveLocationDescription'
 import {
@@ -227,8 +228,11 @@ import {
 } from '../reputation/animalDeeds'
 import { applySocialConsequence, ReputationManager } from '../reputation/ReputationManager'
 import { createSocialNewsLedger } from '../reputation/SocialNewsLedger'
+import { resolveAuthoredRepairStructureIds } from '../settlement/authoredRepairTargets'
 import { settlementSpawnPoint } from '../settlement/createSettlement'
 import { getHorseAcquisitionState, merchantHorseAnimalId } from '../settlement/horseAcquisition'
+import { householdIdFor } from '../settlement/household'
+import { householdWoodItemValue } from '../settlement/householdWood'
 import { createLandOwnershipRegistry } from '../settlement/landOwnership'
 import { livestockStrayCandidateFromAgent } from '../settlement/livestock'
 import { LOST_TREASURE_ELDER_SETTLEMENT_SEARCH_RADIUS } from '../settlement/lostTreasureChroniclesElderResident'
@@ -1945,6 +1949,36 @@ export async function createApp(
     // hook above reads `bundle.*` live rather than a captured field.
     activateWorldConsequence: (consequenceId: string) => {
       bundle.authoredWorldConsequences.activate(consequenceId)
+    },
+    // Atomic gather-hand-in world transfer for the four authored starter
+    // repair deliveries (plan quests-progression-073) — resolves the real
+    // household/settlement-economy material sink and releases the matching
+    // starter reservation only on success. Every other quest id is not in
+    // `AUTHORED_REPAIR_DELIVERIES`, so this always returns `true` for them
+    // (`selectGatherTurnIn` proceeds exactly as before).
+    deliverGatherMaterials: (questId: string, kind: ItemKind, count: number) => {
+      const target = AUTHORED_REPAIR_DELIVERIES[questId]
+      if (!target) return true
+      const homeDef = bundle.settlementsManager.getHomeDef()
+      const ids = resolveAuthoredRepairStructureIds(homeDef.plan)
+      if (target.owner === 'household') {
+        const household = bundle.settlementsManager.getHousehold(householdIdFor(homeDef.id, 0))
+        if (!household) return false
+        const structureId = target.structureIdKind === 'householdFence'
+          ? ids.householdFence
+          : target.structureIdKind === 'residentialFoundation'
+            ? ids.foundation
+            : ids.loggingWagon
+        household.items.add(kind, count)
+        bundle.settlementsManager.releaseAutonomousRepairReservation(homeDef.id, structureId)
+        return true
+      }
+      const economy = bundle.settlementsManager.getEconomy(homeDef.id)
+      const value = householdWoodItemValue(kind)
+      if (!economy || value == null) return false
+      economy.add('wood', value * count)
+      bundle.settlementsManager.releaseAutonomousRepairReservation(homeDef.id, ids.communalFence.structureId)
+      return true
     },
   }
 

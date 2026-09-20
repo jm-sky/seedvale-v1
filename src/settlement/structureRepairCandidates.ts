@@ -1,6 +1,6 @@
 import type { MaterialRequirement } from '../items/constructionMaterials'
 import type { Settlement } from './createSettlement'
-import type { SettlementStructureState, StructureRepairStartOutcome } from './structureCondition'
+import type { AuthoredRepairTargetKind, SettlementStructureState, StructureRepairStartOutcome } from './structureCondition'
 import type { SettlementStructureStateRegistry } from './structureStateRegistry'
 import {
   hasActiveStructureRepair,
@@ -119,6 +119,75 @@ export function createNpcStructureRepairHooks(
     },
     beginRepair: (nowDays, hasMaterial, consumeMaterial) =>
       beginRegistryStructureRepair(registry, policy, settlementId, structureId, nowDays, hasMaterial, consumeMaterial),
+    contributeWork: (hours, nowDays) => contributeRegistryStructureRepairWork(registry, settlementId, structureId, hours, nowDays),
+  }
+}
+
+/**
+ * One bounded local authored repair target an NPC may autonomously choose to
+ * work on (plan quests-progression-073) — e.g. Piotr's household fence/
+ * foundation/wagon, or Anna's communal fence. Unlike `NpcStructureRepairHooks`
+ * above (still used for an NPC's own residential house), the material-source
+ * adapter (household items or settlement economy wood stock) is already
+ * bound at creation time, since ownership differs per authored target and
+ * `NpcAgent` must not know or guess which. `pressure`/`beginRepair` resolve
+ * to `0`/`unavailable` while `SettlementStructureState.autonomousRepairReserved`
+ * holds (released by the quest-world hand-in bridge on successful delivery).
+ *
+ * @domain settlements
+ */
+export type AuthoredNpcRepairTarget = {
+  settlementId: string
+  structureId: string
+  position: { x: number, y: number, z: number }
+  getSnapshot: (nowDays: number) => SettlementStructureState
+  pressure: (nowDays: number) => number
+  beginRepair: (nowDays: number) => StructureRepairStartOutcome
+  contributeWork: (hours: number, nowDays: number) => { acceptedWork: number, completed: boolean }
+}
+
+/** Material-source adapter bound once at creation time — a household's own
+ *  `Inventory` for a private target, or a settlement's bulk wood stock for a
+ *  communal one. Kept generic over `MaterialRequirement` like every other
+ *  repair material adapter in this domain. */
+export type AuthoredRepairMaterialSource = {
+  hasMaterial: (requirement: MaterialRequirement) => boolean
+  consumeMaterial: (requirement: MaterialRequirement) => void
+}
+
+/** `null` when `kind` has no repair policy (never true for the four
+ *  `AuthoredRepairTargetKind`s this plan defines). */
+export function createAuthoredNpcRepairTarget(
+  settlementId: string,
+  structureId: string,
+  kind: AuthoredRepairTargetKind,
+  position: { x: number, y: number, z: number },
+  registry: SettlementStructureStateRegistry,
+  material: AuthoredRepairMaterialSource,
+): AuthoredNpcRepairTarget | null {
+  const policy = structureRepairPolicy(kind)
+  if (!policy) return null
+  return {
+    settlementId,
+    structureId,
+    position,
+    getSnapshot: (nowDays) => registry.resolve(settlementId, structureId, nowDays),
+    pressure: (nowDays) => {
+      const state = registry.resolve(settlementId, structureId, nowDays)
+      if (state.autonomousRepairReserved) return 0
+      if (hasActiveStructureRepair(state)) return STRUCTURE_REPAIR_RESUME_PRESSURE
+      const quote = quoteStructureRepair(policy, state, nowDays)
+      if (!quote) return 0
+      if (quote.materials.some((requirement) => !material.hasMaterial(requirement))) return 0
+      return structureRepairPressureFromCondition(resolveStructureCondition(state, nowDays), policy)
+    },
+    beginRepair: (nowDays) => {
+      const state = registry.resolve(settlementId, structureId, nowDays)
+      if (state.autonomousRepairReserved) return { status: 'unavailable' }
+      return beginRegistryStructureRepair(
+        registry, policy, settlementId, structureId, nowDays, material.hasMaterial, material.consumeMaterial,
+      )
+    },
     contributeWork: (hours, nowDays) => contributeRegistryStructureRepairWork(registry, settlementId, structureId, hours, nowDays),
   }
 }

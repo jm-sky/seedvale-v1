@@ -80,6 +80,15 @@ export type QuestPrerequisite =
   /** One-hour deterministic evening window for quest offer only (plan
    *  quests-progression-021) — does not expire an accepted quest. */
   | { type: 'evening_offer_window', giverNpcId: NpcId }
+  /**
+   * OR-group: at least one nested prerequisite must hold (plan
+   * quests-progression-073) — the top-level `QuestAvailability.prerequisites`
+   * array stays a flat AND, so this is the one place a quest can express
+   * "either this quest's outcome, or that other quest's outcome" without a
+   * second chain-manager mechanism. Never nests another `any` (one level is
+   * sufficient for every current authored use).
+   */
+  | { type: 'any', prerequisites: readonly Exclude<QuestPrerequisite, { type: 'any' }>[] }
 
 /** Gates whether a quest is offered at all. Absent = always available
  *  (existing v2 quests keep their current behaviour). */
@@ -267,54 +276,66 @@ export function validateQuestDefinitions(
     validateWorldConsequenceEffects(def, knownWorldConsequenceIds)
     const prerequisites = def.availability?.prerequisites
     if (!prerequisites?.length) continue
-    for (const prereq of prerequisites) {
-      switch (prereq.type) {
-        case 'evening_offer_window':
-          break
-        case 'quest_outcome': {
-          if (prereq.questId === def.id) {
-            throw new QuestDefinitionValidationError(`Quest "${def.id}" cannot depend on its own outcome`)
-          }
-          if (prereq.outcomeIds.length === 0) {
-            throw new QuestDefinitionValidationError(`Quest "${def.id}" has an empty quest_outcome.outcomeIds`)
-          }
-          const referenced = byId.get(prereq.questId)
-          if (!referenced) {
-            throw new QuestDefinitionValidationError(`Quest "${def.id}" references unknown quest "${prereq.questId}"`)
-          }
-          for (const outcomeId of prereq.outcomeIds) {
-            if (!referenced.outcomes.some((outcome) => outcome.id === outcomeId)) {
-              throw new QuestDefinitionValidationError(
-                `Quest "${def.id}" references unknown outcome "${outcomeId}" on "${prereq.questId}"`,
-              )
-            }
-          }
-          break
-        }
-        case 'relation':
-          break
-        case 'renown':
-          if (!def.settlementId) {
-            throw new QuestDefinitionValidationError(`Quest "${def.id}" has a renown prerequisite but no settlementId`)
-          }
-          if (prereq.minimum < RENOWN_MIN || prereq.minimum > RENOWN_MAX) {
-            throw new QuestDefinitionValidationError(
-              `Quest "${def.id}" renown minimum ${prereq.minimum} is outside ${RENOWN_MIN}..${RENOWN_MAX}`,
-            )
-          }
-          break
-        case 'reputation':
-          if (!def.settlementId) {
-            throw new QuestDefinitionValidationError(`Quest "${def.id}" has a reputation prerequisite but no settlementId`)
-          }
-          if (prereq.minimum < REPUTATION_MIN || prereq.minimum > REPUTATION_MAX) {
-            throw new QuestDefinitionValidationError(
-              `Quest "${def.id}" reputation minimum ${prereq.minimum} is outside ${REPUTATION_MIN}..${REPUTATION_MAX}`,
-            )
-          }
-          break
+    for (const prereq of prerequisites) validatePrerequisite(def, prereq, byId)
+  }
+}
+
+function validatePrerequisite(
+  def: QuestDef,
+  prereq: QuestPrerequisite,
+  byId: ReadonlyMap<string, QuestDef>,
+): void {
+  switch (prereq.type) {
+    case 'any':
+      if (prereq.prerequisites.length === 0) {
+        throw new QuestDefinitionValidationError(`Quest "${def.id}" has an empty "any" prerequisite group`)
       }
+      for (const nested of prereq.prerequisites) validatePrerequisite(def, nested, byId)
+      break
+    case 'evening_offer_window':
+      break
+    case 'quest_outcome': {
+      if (prereq.questId === def.id) {
+        throw new QuestDefinitionValidationError(`Quest "${def.id}" cannot depend on its own outcome`)
+      }
+      if (prereq.outcomeIds.length === 0) {
+        throw new QuestDefinitionValidationError(`Quest "${def.id}" has an empty quest_outcome.outcomeIds`)
+      }
+      const referenced = byId.get(prereq.questId)
+      if (!referenced) {
+        throw new QuestDefinitionValidationError(`Quest "${def.id}" references unknown quest "${prereq.questId}"`)
+      }
+      for (const outcomeId of prereq.outcomeIds) {
+        if (!referenced.outcomes.some((outcome) => outcome.id === outcomeId)) {
+          throw new QuestDefinitionValidationError(
+            `Quest "${def.id}" references unknown outcome "${outcomeId}" on "${prereq.questId}"`,
+          )
+        }
+      }
+      break
     }
+    case 'relation':
+      break
+    case 'renown':
+      if (!def.settlementId) {
+        throw new QuestDefinitionValidationError(`Quest "${def.id}" has a renown prerequisite but no settlementId`)
+      }
+      if (prereq.minimum < RENOWN_MIN || prereq.minimum > RENOWN_MAX) {
+        throw new QuestDefinitionValidationError(
+          `Quest "${def.id}" renown minimum ${prereq.minimum} is outside ${RENOWN_MIN}..${RENOWN_MAX}`,
+        )
+      }
+      break
+    case 'reputation':
+      if (!def.settlementId) {
+        throw new QuestDefinitionValidationError(`Quest "${def.id}" has a reputation prerequisite but no settlementId`)
+      }
+      if (prereq.minimum < REPUTATION_MIN || prereq.minimum > REPUTATION_MAX) {
+        throw new QuestDefinitionValidationError(
+          `Quest "${def.id}" reputation minimum ${prereq.minimum} is outside ${REPUTATION_MIN}..${REPUTATION_MAX}`,
+        )
+      }
+      break
   }
 }
 
@@ -2171,10 +2192,10 @@ export const QUESTS: readonly AuthoredQuestDef[] = [
     id: 'sporne-drewno',
     title: 'Sporne drewno',
     description:
-      'Anna potrzebuje drewna do pilnych napraw w gospodarstwie. Piotr chce wykorzystać ten sam zapas, żeby naprawić wóz potrzebny przy wyrębie. Wysłuchaj obojga i zdecyduj, komu pomożesz.',
+      'Anna potrzebuje drewna na naprawę ogrodzenia wspólnego pastwiska. Piotr chce wykorzystać ten sam zapas, żeby naprawić wóz potrzebny przy wyrębie. Wysłuchaj obojga i zdecyduj, kto dostanie drewno pierwszy.',
     giverName: 'Anna',
     offerLine:
-      'Przy pastwisku ogrodzenie ledwo się trzyma, a przy stodole też jest co łatać. Potrzebuję drewna, zanim coś naprawdę się rozpadnie. Tylko że Piotr prosi o ten sam zapas. Porozmawiaj z nim, zanim zdecydujesz.',
+      'Ogrodzenie wspólnego pastwiska ledwo się trzyma — to sprawa całej osady, nie tylko mojego gospodarstwa. Potrzebuję drewna, zanim coś naprawdę się rozpadnie. Tylko że Piotr prosi o ten sam zapas. Porozmawiaj z nim, zanim zdecydujesz.',
     stages: [
       {
         objective: { type: 'talk_to_npc', npcName: 'Piotr' },
@@ -2190,67 +2211,40 @@ export const QUESTS: readonly AuthoredQuestDef[] = [
           choices: [
             {
               npcName: 'Anna',
-              outcomeId: 'support_anna',
-              npcLine: 'No i jak? Piotr cię przekonał, czy zostajesz przy gospodarstwie?',
-              playerLine: 'Drewno dostanie Anna. Gospodarstwo nie powinno dłużej czekać na naprawy.',
-              reactions: [
-                {
-                  when: [{ type: 'relation', npcName: 'Piotr', minimum: 'friendly' }],
-                  npcLine:
-                    'Dobrze. Piotr będzie musiał jeszcze trochę pojeździć starym wozem. Tutaj naprawy nie mogły już czekać.',
-                  consequences: { relations: [{ npcName: 'Piotr', delta: -1 }] },
-                },
-              ],
+              outcomeId: 'prioritize_anna',
+              npcLine: 'No i jak? Piotr cię przekonał, czy najpierw zajmiemy się pastwiskiem?',
+              playerLine: 'Drewno dostanie najpierw Anna. Ogrodzenie pastwiska nie powinno dłużej czekać.',
             },
             {
               npcName: 'Piotr',
-              outcomeId: 'support_piotr',
-              npcLine: 'No? Pomagasz mi, czy Annie?',
-              playerLine: 'Drewno dostanie Piotr. Jeśli stanie jego praca, problem szybko odczuje cała osada.',
-              reactions: [
-                {
-                  when: [{ type: 'relation', npcName: 'Piotr', maximum: 'acquainted' }],
-                  npcLine:
-                    'Dobrze. Naprawię wóz i wracam do pracy. Im szybciej będzie sprawny, tym szybciej przywiozę kolejne drewno.',
-                },
-                {
-                  when: [{ type: 'relation', npcName: 'Anna', minimum: 'friendly' }],
-                  npcLine:
-                    'Wezmę je. Wiem, że Anna się nie ucieszy, ale bez sprawnego wozu niedługo wszyscy będziemy mieli większy problem.',
-                  consequences: { relations: [{ npcName: 'Anna', delta: -1 }] },
-                },
-              ],
+              outcomeId: 'prioritize_piotr',
+              npcLine: 'No? Komu drewno trafia najpierw?',
+              playerLine: 'Drewno dostaniesz najpierw. Jeśli stanie twoja praca, problem szybko odczuje cała osada.',
             },
           ],
         },
-        description: 'Zdecyduj, czy pomożesz Annie, czy Piotrowi.',
-        reminderLine: 'Zdecydowałeś już, komu pomożesz?',
+        description: 'Zdecyduj, kto dostanie drewno pierwszy.',
+        reminderLine: 'Zdecydowałeś już, komu pomożesz najpierw?',
       },
     ],
-    reportLine: 'Wiem już, na kogo liczyć.',
+    reportLine: 'Wiem już, na kogo liczyć najpierw.',
     outcomes: [
       {
-        id: 'support_anna',
+        id: 'prioritize_anna',
         state: 'complete',
-        resultText: 'Dobrze. Przyda się każda deska. Dopilnuję, żeby nic się tu nie rozpadło.',
+        resultText: 'Dobrze. Przyda się każda deska. Piotr swoje drewno też dostanie, tylko chwilę później.',
         consequences: {
-          relations: [
-            { npcName: 'Anna', delta: 2 },
-            { npcName: 'Piotr', delta: -1 },
-          ],
+          relations: [{ npcName: 'Anna', delta: 1 }],
           social: { reputation: { benevolence: 3, trust: 1 }, renown: 2 },
         },
       },
       {
-        id: 'support_piotr',
+        id: 'prioritize_piotr',
         state: 'complete',
         resultText:
-          'Dobrze. Naprawię wóz i wracam do pracy. Im szybciej będzie sprawny, tym szybciej przywiozę kolejne drewno.',
+          'Dobrze. Naprawię wóz i wracam do pracy. Anna swoje drewno dostanie zaraz potem.',
         consequences: {
-          relations: [
-            { npcName: 'Piotr', delta: 2 },
-            { npcName: 'Anna', delta: -1 },
-          ],
+          relations: [{ npcName: 'Piotr', delta: 1 }],
           social: { reputation: { competence: 3, trust: 1 }, renown: 2 },
         },
       },
@@ -2260,31 +2254,37 @@ export const QUESTS: readonly AuthoredQuestDef[] = [
     id: 'drewno-dla-anny',
     title: 'Drewno dla Anny',
     description:
-      'Anna potrzebuje pięciu gałęzi na najpilniejsze naprawy w gospodarstwie, po tym jak drewno trafiło najpierw do niej.',
+      'Anna potrzebuje pięciu gałęzi na naprawę ogrodzenia wspólnego pastwiska.',
     giverName: 'Anna',
     offerLine:
-      'Skoro zdecydowałeś, że najpierw zajmiemy się gospodarstwem, potrzebuję pięciu porządnych gałęzi. Z tego przygotujemy materiał do najpilniejszych napraw.',
+      'Skoro zajmiemy się teraz pastwiskiem, potrzebuję pięciu porządnych gałęzi na ogrodzenie.',
     stages: [
       {
         objective: { type: 'gather_item', kind: 'branch', count: 5 },
         description: 'Zbierz 5 gałęzi.',
         reminderLine: 'Masz już pięć gałęzi?',
-        playerLine: 'Przyniosłem pięć gałęzi na najpilniejsze naprawy w gospodarstwie.',
+        playerLine: 'Przyniosłem pięć gałęzi na ogrodzenie pastwiska.',
       },
     ],
     reportPromptLine: 'Masz już gałęzie?',
-    reportPlayerLine: 'Przyniosłem pięć gałęzi na najpilniejsze naprawy w gospodarstwie.',
-    reportLine: 'To wystarczy. Teraz można wreszcie zabrać się za naprawy. Dziękuję.',
+    reportPlayerLine: 'Przyniosłem pięć gałęzi na ogrodzenie pastwiska.',
+    reportLine: 'To wystarczy. Teraz można wreszcie naprawić ogrodzenie. Dziękuję.',
     availability: {
       prerequisites: [
-        { type: 'quest_outcome', questId: 'sporne-drewno', outcomeIds: ['support_anna'] },
+        {
+          type: 'any',
+          prerequisites: [
+            { type: 'quest_outcome', questId: 'sporne-drewno', outcomeIds: ['prioritize_anna'] },
+            { type: 'quest_outcome', questId: 'drewno-dla-piotra', outcomeIds: ['delivered_to_piotr'] },
+          ],
+        },
       ],
     },
     outcomes: [
       {
         id: 'delivered_to_anna',
         state: 'complete',
-        resultText: 'To wystarczy. Teraz można wreszcie zabrać się za naprawy. Dziękuję.',
+        resultText: 'To wystarczy. Teraz można wreszcie naprawić ogrodzenie. Dziękuję.',
         reward: { visibility: 'hidden', items: [{ kind: 'seed_carrot', count: 3 }] },
         consequences: { relations: [{ npcName: 'Anna', delta: 1 }] },
       },
@@ -2294,10 +2294,10 @@ export const QUESTS: readonly AuthoredQuestDef[] = [
     id: 'drewno-dla-piotra',
     title: 'Drewno dla Piotra',
     description:
-      'Piotr potrzebuje pięciu gałęzi do naprawy wozu, po tym jak drewno trafiło najpierw do niego.',
+      'Piotr potrzebuje pięciu gałęzi do naprawy wozu.',
     giverName: 'Piotr',
     offerLine:
-      'Skoro drewno ma najpierw trafić do mnie, przynieś pięć porządnych gałęzi. Przygotuję z nich to, czego potrzebuję do naprawy wozu. Zapłacę osiem monet.',
+      'Skoro drewno trafia teraz do mnie, przynieś pięć porządnych gałęzi. Przygotuję z nich to, czego potrzebuję do naprawy wozu. Zapłacę osiem monet.',
     stages: [
       {
         objective: { type: 'gather_item', kind: 'branch', count: 5 },
@@ -2311,7 +2311,13 @@ export const QUESTS: readonly AuthoredQuestDef[] = [
     reportLine: 'Tyle wystarczy. Naprawię, co trzeba, i będę mógł normalnie wrócić do pracy. Weź zapłatę.',
     availability: {
       prerequisites: [
-        { type: 'quest_outcome', questId: 'sporne-drewno', outcomeIds: ['support_piotr'] },
+        {
+          type: 'any',
+          prerequisites: [
+            { type: 'quest_outcome', questId: 'sporne-drewno', outcomeIds: ['prioritize_piotr'] },
+            { type: 'quest_outcome', questId: 'drewno-dla-anny', outcomeIds: ['delivered_to_anna'] },
+          ],
+        },
       ],
     },
     outcomes: [
