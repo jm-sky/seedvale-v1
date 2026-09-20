@@ -9,6 +9,7 @@
 **Subdomains:** `feedback`
 **Tags:** `loading` `startup` `progress`
 **Roadmap:** -
+**Model:** Composer, Sonnet
 
 ## Goal
 
