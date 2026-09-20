@@ -9,6 +9,7 @@
 **Subdomains:** `predation` `prey` `habitat`
 **Tags:** `caves` `perception` `spatial-context`
 **Roadmap:** -
+**Model:** Grok, Composer
 
 ## Problem
 
