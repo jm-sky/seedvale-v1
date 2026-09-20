@@ -9,6 +9,7 @@
 **Subdomains:** `quests` `progression` `relationships`
 **Tags:** `offers` `pacing` `renown` `reputation`
 **Roadmap:** `quests-and-reputation.md`
+**Model:** Opus, Sonnet
 
 ## Goal
 
