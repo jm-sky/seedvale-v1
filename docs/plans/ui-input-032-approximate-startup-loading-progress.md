@@ -1,7 +1,7 @@
 # Plan: Approximate Startup Loading Progress
 
 **Created:** 2026-09-20
-**Status:** `planned` 📋
+**Status:** `done` ✅
 **Priority:** medium · **Effort:** S
 **Depends on:** ~~ui-input-022~~
 **Domain:** `ui-input`
