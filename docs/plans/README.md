@@ -112,6 +112,8 @@ Unless noted otherwise, `verification needed` means implementation has passed au
 | ◼️ `items-player-050-player-health-and-injury-persistence.md`                  | 🟡 | S      | ~~items-player-045~~                                                                                                                                                                                                                                                                       | -                                         |
 | 💡 `ui-input-026-world-and-map-label-visibility-and-collision-fixes.md`        | 🔴 | S      | -                                                                                                                                                                                                                                                                                          | -                                         |
 | ◼️ `ui-input-027-interaction-candidate-dropped-item-scaling.md`                | 🟡 | S      | -                                                                                                                                                                                                                                                                                          | -                                         |
+| ◼️ `ui-input-028-interaction-target-identity-and-cycle-lifecycle.md`           | 🟡 | S      | ~~ui-input-015~~, ~~ui-input-020~~, world-033                                                                                                                                                                                                                                              | -                                         |
+| ◼️ `ui-input-029-village-torch-interaction-action-contract.md`                 | ⚪ | S      | ~~ui-input-015~~                                                                                                                                                                                                                                                                           | -                                         |
 
 ---
 
@@ -246,7 +248,7 @@ New plans declare a primary `Domain:` in frontmatter. Use optional `Tags:` only 
 - settlements: `023`
 - settlements-npcs: `055`
 - tools: `019`
-- ui-input: `028`
+- ui-input: `030`
 - world: `036`
 - world-terrain: `045`
 
