@@ -446,6 +446,19 @@ export type QuestLifecycleHooks = {
    * pre-rebuild instance.
    */
   activateWorldConsequence?: (consequenceId: string) => void
+  /**
+   * Atomic world-transfer preflight+commit for a `gather_item` hand-in (plan
+   * quests-progression-073) — called from `selectGatherTurnIn` *before*
+   * removing the matching items from the player `Inventory`, so a target
+   * that can't currently accept the delivery (e.g. its owning
+   * household/settlement isn't resolvable) blocks the whole hand-in instead
+   * of destroying player materials with nowhere to go. Returns `true` for
+   * every quest id this hook doesn't recognize as an authored repair
+   * delivery — `QuestManager` never special-cases quest ids itself; the
+   * composition root owns that mapping and the concrete household/
+   * settlement material sink + starter-reservation release.
+   */
+  deliverGatherMaterials?: (questId: string, kind: ItemKind, count: number) => boolean
 }
 
 /**
@@ -1187,6 +1200,8 @@ export class QuestManager {
 
   private meetsPrerequisite(def: QuestDef, prereq: QuestPrerequisite): boolean {
     switch (prereq.type) {
+      case 'any':
+        return prereq.prerequisites.some((nested) => this.meetsPrerequisite(def, nested))
       case 'evening_offer_window':
         return isWithinEveningOfferWindow(
           this.worldTime.getWorldSeed(),
@@ -2836,6 +2851,7 @@ export class QuestManager {
     }
     const { kind, count } = slot.objective
     if (!this.inventory.has(kind, count)) return stage.reminderLine
+    if (!(this.lifecycleHooks.deliverGatherMaterials?.(def.id, kind, count) ?? true)) return stage.reminderLine
     if (!this.inventory.remove(kind, count)) return stage.reminderLine
     const remainingBefore = this.unfinishedSlots(def, current).length
     this.completeObjectiveSlot(def, current, slot)

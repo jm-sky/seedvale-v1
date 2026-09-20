@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import type { HouseVec3 } from '../assets/houseDefinitionExampleConfig'
 import type { RoadCorridorSegment } from '../terrain/chunkHeightmap'
+import type { AuthoredRepairPresentationInput } from './authoredRepairTargets'
 import type { SettlementSite } from './findSettlementSite'
 import type { FoodSourceType } from './settlementGenerator'
 import type { ClearingLayout } from './villageClearing'
@@ -118,7 +119,7 @@ import {
   type WoodPileVisual,
 } from './storageVisuals'
 import { paddockFencePlacements } from './villagePaddock'
-import { pastureFencePlacements } from './villagePasture'
+import { fenceSegmentPlacements } from './villagePasture'
 import {
   parseHouseholdWellFamilyIndex,
   pastureWellLandmarkId,
@@ -234,6 +235,10 @@ export type SettlementLandmarks = {
    *  `createSettlement.ts`, same as any other livestock, so it's a normal
    *  mountable/wandering animal rather than a decorative mesh. */
   merchantHorseSpawn?: { x: number, z: number, yaw: number }
+  /** Piotr's logging wagon (plan quests-progression-073, home settlement
+   *  only) — independent identity from `merchantWagon` above; set only if
+   *  the GLB loaded. */
+  loggingWagon?: THREE.Vector3
   garden: THREE.Vector3
   /** All garden pads (plan 077); `garden` mirrors the primary (index 0). */
   gardens: THREE.Vector3[]
@@ -809,6 +814,12 @@ export async function buildSettlementProps(
   /** When set, place the intact infestation nest from `VillagePlan` (plan
    *  quests-progression-013). Omitted when the nest is already destroyed. */
   ratNest?: { settlementId: string, settlementSeed: number },
+  /** Authored starter repair-target presentation (plan
+   *  quests-progression-073) — `undefined` for every settlement except home
+   *  (where `createSettlement.ts` resolves it from live structure-condition
+   *  state). Presentation only ever derives from this input; no separate
+   *  visual flag is stored. */
+  authoredRepairPresentation?: AuthoredRepairPresentationInput,
 ): Promise<{
   group: THREE.Group
   landmarks: SettlementLandmarks
@@ -1825,12 +1836,59 @@ export async function buildSettlementProps(
     landmarks.merchantHorseSpawn = { x: pose.horseX, z: pose.horseZ, yaw: pose.yaw }
   }
 
+  // Piotr's logging wagon (plan quests-progression-073) — reuses the same
+  // wagon asset/placement technique as the merchant wagon above, but with its
+  // own stable identity/ownership (never the merchant wagon's). Damaged
+  // presentation is a data-driven tilt of the same model, not a second
+  // quest-only mesh (guardrail §10).
+  if (authoredRepairPresentation) {
+    const house0 = landmarks.houses[0]?.position
+    if (house0) {
+      const loggingWagonObstacles: Array<{ x: number, z: number, r: number }> = [
+        { x: house0.x, z: house0.z, r: 2.8 },
+      ]
+      const pose = pickMerchantWagonPose(house0.x, house0.z, loggingWagonObstacles)
+      try {
+        const wagon = await loadGltf('/models/settlement/megakit/wagon.glb')
+        preparePropFitMax(wagon, 3.8)
+        placeOnGround(wagon, pose.wagonX, pose.wagonZ, sampleHeight)
+        wagon.rotation.y = pose.yaw
+        if (authoredRepairPresentation.loggingWagonDamaged) {
+          wagon.rotation.z = 0.18
+          wagon.position.y -= 0.15
+        }
+        tagSettlementShadowKind(wagon, 'workplace')
+        group.add(wagon)
+        landmarks.loggingWagon = new THREE.Vector3(
+          pose.wagonX,
+          sampleHeight(pose.wagonX, pose.wagonZ),
+          pose.wagonZ,
+        )
+      } catch (err) {
+        console.warn('[settlement] logging wagon.glb unavailable', err)
+      }
+    }
+  }
+
   const palisadePlacements = resolveEntrancePalisadePlacements(
     site, size, sampleHeight, waterLevel, plan, coast, pathCorridors,
   )
   await plantEntrancePalisade(group, palisadePlacements)
+  // A damaged authored communal-fence target hides its own real segment
+  // (plan quests-progression-073) — a genuinely missing fence fragment in an
+  // otherwise intact fence, derived from live structure-condition state, not
+  // a second `isBrokenVisual` flag.
+  const hiddenPastureFenceSegmentId = authoredRepairPresentation?.communalFenceUsesPastureSegment
+    && authoredRepairPresentation.communalFenceDamaged
+    ? authoredRepairPresentation.communalFenceStructureId
+    : null
   const pastureFencePlacementsResolved: SettlementPalisadePlacement[] = pasturePlan
-    ? pastureFencePlacements(pasturePlan, sampleHeight)
+    ? fenceSegmentPlacements(
+        hiddenPastureFenceSegmentId
+          ? pasturePlan.fenceSegments.filter((segment) => segment.id !== hiddenPastureFenceSegmentId)
+          : pasturePlan.fenceSegments,
+        sampleHeight,
+      )
     : []
   if (pastureFencePlacementsResolved.length > 0) {
     await plantEntrancePalisade(
@@ -1838,6 +1896,62 @@ export async function buildSettlementProps(
       pastureFencePlacementsResolved,
       'settlement-pasture-fence',
     )
+  }
+  // SM/no-pasture communal-fence fallback (plan quests-progression-073) —
+  // one small fence segment near the garden, present only while intact; a
+  // completely missing segment where one is otherwise always present reads
+  // the same way as the hidden pasture-segment case above.
+  if (
+    authoredRepairPresentation
+    && !authoredRepairPresentation.communalFenceUsesPastureSegment
+    && !authoredRepairPresentation.communalFenceDamaged
+  ) {
+    const fx = landmarks.garden.x + 3
+    const fz = landmarks.garden.z + 1.5
+    const fallbackFencePlacements = fenceSegmentPlacements(
+      [{ id: authoredRepairPresentation.communalFenceStructureId, ax: fx - 1.5, az: fz, bx: fx + 1.5, bz: fz }],
+      sampleHeight,
+    )
+    await plantEntrancePalisade(group, fallbackFencePlacements, 'settlement-communal-fence-fallback')
+  }
+  // Piotr's household fence (plan quests-progression-073) — same
+  // present-only-while-intact convention as the fallback above, anchored
+  // near family index 0's own house.
+  if (authoredRepairPresentation && !authoredRepairPresentation.householdFenceDamaged) {
+    const house0 = landmarks.houses[0]?.position
+    if (house0) {
+      const fx = house0.x + 2.2
+      const fz = house0.z + 1
+      const householdFencePlacements = fenceSegmentPlacements(
+        [{ id: 'household-fence-0', ax: fx - 1.2, az: fz, bx: fx + 1.2, bz: fz }],
+        sampleHeight,
+      )
+      await plantEntrancePalisade(group, householdFencePlacements, 'settlement-household-fence')
+    }
+  }
+  // Piotr's residential-foundation subtarget (plan quests-progression-073) —
+  // a small loose-stone pile at the house base, visible only while damaged;
+  // no separate GLB variant, just cheap primitives (guardrail §10).
+  if (authoredRepairPresentation?.foundationDamaged) {
+    const house0 = landmarks.houses[0]?.position
+    if (house0) {
+      const stoneMaterial = new THREE.MeshStandardMaterial({ color: 0x8c887f, roughness: 0.95 })
+      const pile = new THREE.Group()
+      const stoneOffsets = [
+        { dx: 0.6, dz: 0.3, r: 0.22 },
+        { dx: 0.85, dz: -0.1, r: 0.16 },
+        { dx: 0.4, dz: -0.35, r: 0.18 },
+      ]
+      for (const stone of stoneOffsets) {
+        const mesh = new THREE.Mesh(new THREE.IcosahedronGeometry(stone.r, 0), stoneMaterial)
+        mesh.position.set(stone.dx, stone.r * 0.6, stone.dz)
+        mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI)
+        pile.add(mesh)
+      }
+      placeOnGround(pile, house0.x, house0.z, sampleHeight)
+      tagSettlementShadowKind(pile, 'decor')
+      group.add(pile)
+    }
   }
   const paddockFencePlacementsResolved: SettlementPalisadePlacement[] = paddockPlan
     ? paddockFencePlacements(paddockPlan, sampleHeight)

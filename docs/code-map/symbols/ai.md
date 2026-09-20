@@ -187,7 +187,7 @@ Generated from exported TypeScript symbols.
 - `HUNT_RESUPPLY_ARROW_TARGET` — const — line 867
 - `NPC_HEIGHT` — const — line 484
 - `NPC_SHADOW_DISTANCE` — const — line 489
-- `NpcAgent` — class — line 1149
+- `NpcAgent` — class — line 1160
   - domain: settlements-npcs
   - system: npc-agent
   - role: Central per-NPC behaviour integration point: needs, FSM/schedule, personality-driven decisions and combat.

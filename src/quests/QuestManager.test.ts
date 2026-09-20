@@ -1427,6 +1427,9 @@ describe('QuestManager paid quest definitions', () => {
     const qm = new QuestManager([def], undefined, inventory, undefined, (kind, count) => granted.push({ kind, count }))
     acceptOffer(qm, 'Piotr')
     speak(qm, 'Piotr')
+    // Completes at hand-in (plan quests-progression-073) — independent of
+    // whether/when the foundation is actually repaired afterwards.
+    expect(qm.getState('kamienie-dla-piotra')).toBe('complete')
     expect(granted).toEqual([{ kind: 'coin', count: 9 }])
     expect(qm.getRelation('Piotr')).toBe(0)
   })
@@ -1828,11 +1831,101 @@ describe('QuestManager talk_to_npc_choice (plan quests-progression-005)', () => 
   })
 })
 
-describe('QuestManager sporne-drewno follow-ups (plan quests-progression-005)', () => {
-  it('requires Piotr before the side choice, then unlocks only Anna\'s follow-up', () => {
-    const granted: Array<{ kind: string, count: number }> = []
+function managerWithLifecycleHooks(
+  defs: readonly QuestDef[],
+  inventory: Inventory,
+  lifecycleHooks: import('./QuestManager').QuestLifecycleHooks,
+  initial?: QuestManagerInitial,
+): QuestManager {
+  return new QuestManager(
+    defs,
+    undefined,
+    inventory,
+    initial,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    lifecycleHooks,
+  )
+}
+
+const gatherDeliveryQuest = quest({
+  id: 'gather-delivery',
+  giverName: 'Piotr',
+  offerLine: 'offer branches',
+  stages: [
+    { objective: { type: 'gather_item', kind: 'branch', count: 5 }, description: 'gather', reminderLine: 'remind' },
+  ],
+  reportLine: 'report',
+})
+
+describe('QuestManager gather hand-in world-transfer bridge (plan quests-progression-073)', () => {
+  it('blocks completion and keeps player materials when the world-transfer preflight fails', () => {
     const inventory = new Inventory()
     inventory.add('branch', 5)
+    const calls: Array<{ questId: string, kind: string, count: number }> = []
+    const qm = managerWithLifecycleHooks(
+      [gatherDeliveryQuest],
+      inventory,
+      {
+        deliverGatherMaterials: (questId, kind, count) => {
+          calls.push({ questId, kind, count })
+          return false
+        },
+      },
+    )
+    acceptOffer(qm, 'Piotr')
+    const result = speak(qm, 'Piotr')
+    expect(calls).toEqual([{ questId: 'gather-delivery', kind: 'branch', count: 5 }])
+    // Preflight failed before removal — the player keeps every branch and the
+    // quest never advances past its gather stage.
+    expect(inventory.count('branch')).toBe(5)
+    expect(qm.getState('gather-delivery')).toBe('active')
+    expect(result).toBe('remind')
+  })
+
+  it('removes materials and completes normally once the world transfer succeeds', () => {
+    const inventory = new Inventory()
+    inventory.add('branch', 5)
+    const qm = managerWithLifecycleHooks(
+      [gatherDeliveryQuest],
+      inventory,
+      { deliverGatherMaterials: () => true },
+    )
+    acceptOffer(qm, 'Piotr')
+    speak(qm, 'Piotr')
+    expect(inventory.count('branch')).toBe(0)
+    expect(qm.getState('gather-delivery')).toBe('complete')
+  })
+
+  it('never calls the hook for an ordinary gather quest it does not recognize (default true, no special-casing)', () => {
+    const inventory = new Inventory()
+    inventory.add('branch', 5)
+    const qm = managerWithLifecycleHooks([gatherDeliveryQuest], inventory, {})
+    acceptOffer(qm, 'Piotr')
+    speak(qm, 'Piotr')
+    expect(inventory.count('branch')).toBe(0)
+    expect(qm.getState('gather-delivery')).toBe('complete')
+  })
+})
+
+describe('QuestManager sporne-drewno follow-ups (plan quests-progression-073)', () => {
+  it('prioritizing Anna unlocks her follow-up immediately, Piotr\'s only after she is delivered', () => {
+    const granted: Array<{ kind: string, count: number }> = []
+    const inventory = new Inventory()
+    inventory.add('branch', 10)
     const qm = new QuestManager(
       woodPack(),
       undefined,
@@ -1848,31 +1941,38 @@ describe('QuestManager sporne-drewno follow-ups (plan quests-progression-005)', 
     expect(selectAction(piotr)).toContain('Wóz ledwo wytrzymuje drogę do lasu')
     const annaChoice = qm.onInteract('Anna')
     expect(qm.getState('sporne-drewno')).toBe('active')
-    expect(selectAction(annaChoice)).toBe('Dobrze. Przyda się każda deska. Dopilnuję, żeby nic się tu nie rozpadło.')
-    expect(qm.exportProgress().find((e) => e.id === 'sporne-drewno')?.resolvedOutcomeId).toBe('support_anna')
-    expect(qm.getRelation('Anna')).toBe(2)
-    expect(qm.getRelation('Piotr')).toBe(-1)
+    expect(selectAction(annaChoice)).toBe(
+      'Dobrze. Przyda się każda deska. Piotr swoje drewno też dostanie, tylko chwilę później.',
+    )
+    expect(qm.exportProgress().find((e) => e.id === 'sporne-drewno')?.resolvedOutcomeId).toBe('prioritize_anna')
+    expect(qm.getRelation('Anna')).toBe(1)
+    expect(qm.getRelation('Piotr')).toBe(0)
     expect(qm.isQuestAvailable('drewno-dla-anny')).toBe(true)
     expect(qm.isQuestAvailable('drewno-dla-piotra')).toBe(false)
     expect(qm.onInteract('Piotr')).toBeNull()
     expect(qm.onInteract('Anna')?.line).toBe(
-      'Skoro zdecydowałeś, że najpierw zajmiemy się gospodarstwem, potrzebuję pięciu porządnych gałęzi. Z tego przygotujemy materiał do najpilniejszych napraw.',
+      'Skoro zajmiemy się teraz pastwiskiem, potrzebuję pięciu porządnych gałęzi na ogrodzenie.',
     )
     qm.onInteract('Anna')?.offer?.onAccept()
     speak(qm, 'Anna')
-    expect(inventory.count('branch')).toBe(0)
+    expect(inventory.count('branch')).toBe(5)
     expect(granted).toEqual([{ kind: 'seed_carrot', count: 3 }])
-    expect(qm.getRelation('Anna')).toBe(3)
+    expect(qm.getRelation('Anna')).toBe(2)
     expect(qm.exportProgress().find((e) => e.id === 'drewno-dla-anny')?.resolvedOutcomeId).toBe('delivered_to_anna')
-    speak(qm, 'Anna')
-    expect(granted).toHaveLength(1)
+    // Only after Anna's own delivery does Piotr's follow-up become available —
+    // priority set the order, it never permanently locked him out.
+    expect(qm.isQuestAvailable('drewno-dla-piotra')).toBe(true)
+    acceptOffer(qm, 'Piotr')
+    speak(qm, 'Piotr')
     expect(inventory.count('branch')).toBe(0)
+    expect(granted).toEqual([{ kind: 'seed_carrot', count: 3 }, { kind: 'coin', count: 8 }])
+    expect(qm.getRelation('Piotr')).toBe(1)
   })
 
-  it('unlocks only Piotr\'s paid follow-up after support_piotr and consumes branches once', () => {
+  it('prioritizing Piotr unlocks his follow-up immediately, Anna\'s only after he is delivered', () => {
     const granted: Array<{ kind: string, count: number }> = []
     const inventory = new Inventory()
-    inventory.add('branch', 5)
+    inventory.add('branch', 10)
     const qm = new QuestManager(
       woodPack(),
       undefined,
@@ -1883,9 +1983,11 @@ describe('QuestManager sporne-drewno follow-ups (plan quests-progression-005)', 
     acceptOffer(qm, 'Anna')
     speak(qm, 'Piotr')
     expect(selectAction(qm.onInteract('Piotr'))).toBe(
-      'Dobrze. Naprawię wóz i wracam do pracy. Im szybciej będzie sprawny, tym szybciej przywiozę kolejne drewno.',
+      'Dobrze. Naprawię wóz i wracam do pracy. Anna swoje drewno dostanie zaraz potem.',
     )
-    expect(qm.exportProgress().find((e) => e.id === 'sporne-drewno')?.resolvedOutcomeId).toBe('support_piotr')
+    expect(qm.exportProgress().find((e) => e.id === 'sporne-drewno')?.resolvedOutcomeId).toBe('prioritize_piotr')
+    expect(qm.getRelation('Piotr')).toBe(1)
+    expect(qm.getRelation('Anna')).toBe(0)
     expect(qm.isQuestAvailable('drewno-dla-anny')).toBe(false)
     expect(qm.isQuestAvailable('drewno-dla-piotra')).toBe(true)
     expect(qm.list().find((e) => e.id === 'drewno-dla-piotra')?.promisedReward).toEqual({
@@ -1893,23 +1995,30 @@ describe('QuestManager sporne-drewno follow-ups (plan quests-progression-005)', 
     })
     acceptOffer(qm, 'Piotr')
     speak(qm, 'Piotr')
-    expect(inventory.count('branch')).toBe(0)
+    expect(inventory.count('branch')).toBe(5)
     expect(granted).toEqual([{ kind: 'coin', count: 8 }])
-    expect(qm.getRelation('Piotr')).toBe(3)
+    expect(qm.getRelation('Piotr')).toBe(2)
     expect(qm.list().find((e) => e.id === 'drewno-dla-piotra')?.promisedReward).toBeNull()
+    // Only after Piotr's own delivery does Anna's follow-up become available.
+    expect(qm.isQuestAvailable('drewno-dla-anny')).toBe(true)
+    acceptOffer(qm, 'Anna')
+    speak(qm, 'Anna')
+    expect(inventory.count('branch')).toBe(0)
+    expect(granted).toEqual([{ kind: 'coin', count: 8 }, { kind: 'seed_carrot', count: 3 }])
+    expect(qm.getRelation('Anna')).toBe(1)
   })
 
   it('restores the chosen outcome and the matching follow-up after save/load', () => {
     const initial: QuestManagerInitial = {
-      progress: [{ id: 'sporne-drewno', state: 'complete', stageIndex: 2, resolvedOutcomeId: 'support_anna' }],
-      relations: { Anna: 2, Piotr: -1 },
+      progress: [{ id: 'sporne-drewno', state: 'complete', stageIndex: 2, resolvedOutcomeId: 'prioritize_anna' }],
+      relations: { Anna: 1 },
     }
     const qm = new QuestManager(woodPack(), undefined, new Inventory(), initial)
-    expect(qm.exportProgress().find((e) => e.id === 'sporne-drewno')?.resolvedOutcomeId).toBe('support_anna')
+    expect(qm.exportProgress().find((e) => e.id === 'sporne-drewno')?.resolvedOutcomeId).toBe('prioritize_anna')
     expect(qm.isQuestAvailable('drewno-dla-anny')).toBe(true)
     expect(qm.isQuestAvailable('drewno-dla-piotra')).toBe(false)
     expect(qm.onInteract('Anna')?.line).toBe(
-      'Skoro zdecydowałeś, że najpierw zajmiemy się gospodarstwem, potrzebuję pięciu porządnych gałęzi. Z tego przygotujemy materiał do najpilniejszych napraw.',
+      'Skoro zajmiemy się teraz pastwiskiem, potrzebuję pięciu porządnych gałęzi na ogrodzenie.',
     )
   })
 })
@@ -5661,8 +5770,8 @@ describe('QuestManager socially consequential dialogue (plan quests-progression-
     acceptOffer(wood, 'Anna')
     speak(wood, 'Piotr')
     expect(wood.onInteract('Anna')?.actions?.[0]?.onSelect())
-      .toBe('Dobrze. Piotr będzie musiał jeszcze trochę pojeździć starym wozem. Tutaj naprawy nie mogły już czekać.')
-    expect(wood.exportProgress().find((entry) => entry.id === 'sporne-drewno')?.resolvedOutcomeId).toBe('support_anna')
+      .toBe('Dobrze. Przyda się każda deska. Piotr swoje drewno też dostanie, tylko chwilę później.')
+    expect(wood.exportProgress().find((entry) => entry.id === 'sporne-drewno')?.resolvedOutcomeId).toBe('prioritize_anna')
   })
 
   it('journals the heard reaction line for a stage dialogue action', () => {

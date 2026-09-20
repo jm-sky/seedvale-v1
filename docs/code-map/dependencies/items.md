@@ -441,6 +441,7 @@ Generated from TypeScript imports.
 - `items/constructionMaterials.test.ts`
 - `items/createPlacedTents.ts`
 - `settlement/SettlementsManager.ts`
+- `settlement/createSettlement.ts`
 - `settlement/structureCondition.ts`
 - `settlement/structureRepairCandidates.ts`
 - `settlement/structureStateRegistry.ts`

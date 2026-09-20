@@ -305,12 +305,24 @@ describe('QUESTS authored RPG pack (plan quests-progression-005)', () => {
     expect(forPiotr?.giverName).toBe('Piotr')
     expect(boar?.giverName).toBe('Marek')
     expect(lost?.outcomes.map((o) => o.id)).toEqual(['returned_sealed', 'turned_over_to_guard'])
-    expect(dispute?.outcomes.map((o) => o.id)).toEqual(['support_anna', 'support_piotr'])
+    expect(dispute?.outcomes.map((o) => o.id)).toEqual(['prioritize_anna', 'prioritize_piotr'])
     expect(forAnna?.availability?.prerequisites).toEqual([
-      { type: 'quest_outcome', questId: 'sporne-drewno', outcomeIds: ['support_anna'] },
+      {
+        type: 'any',
+        prerequisites: [
+          { type: 'quest_outcome', questId: 'sporne-drewno', outcomeIds: ['prioritize_anna'] },
+          { type: 'quest_outcome', questId: 'drewno-dla-piotra', outcomeIds: ['delivered_to_piotr'] },
+        ],
+      },
     ])
     expect(forPiotr?.availability?.prerequisites).toEqual([
-      { type: 'quest_outcome', questId: 'sporne-drewno', outcomeIds: ['support_piotr'] },
+      {
+        type: 'any',
+        prerequisites: [
+          { type: 'quest_outcome', questId: 'sporne-drewno', outcomeIds: ['prioritize_piotr'] },
+          { type: 'quest_outcome', questId: 'drewno-dla-anny', outcomeIds: ['delivered_to_anna'] },
+        ],
+      },
     ])
     expect(boar?.availability?.prerequisites).toEqual([{ type: 'renown', minimum: 10 }])
   })

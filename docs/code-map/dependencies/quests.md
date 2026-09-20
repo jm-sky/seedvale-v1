@@ -71,6 +71,19 @@ Generated from TypeScript imports.
 - `ui-vue/store.ts`
 - `ui/createQuestLog.ts`
 
+## `quests/authoredRepairDeliveries.test.ts`
+
+**Imports**
+
+- `quests/authoredRepairDeliveries.ts`
+
+## `quests/authoredRepairDeliveries.ts`
+
+**Imported by**
+
+- `app/createApp.ts`
+- `quests/authoredRepairDeliveries.test.ts`
+
 ## `quests/cardinalDirection.test.ts`
 
 **Imports**

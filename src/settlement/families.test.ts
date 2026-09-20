@@ -427,3 +427,26 @@ describe('ensureSettlementElder (plan settlements-npcs-045)', () => {
     expect(a).toEqual(b)
   })
 })
+
+describe('reservedHomeFamilies (plan quests-progression-073)', () => {
+  it('always puts Piotr and Anna in family-reserved-0, at family index 0, for every home-eligible size and seed', () => {
+    for (const size of ['SM', 'MD', 'LG', 'XL'] as const) {
+      for (const seed of [0, 1, 7, 42]) {
+        const families = generateFamilies(seed, size, true, 'polish')
+        expect(families[0]?.id).toBe('family-reserved-0')
+        expect(families[0]?.members).toHaveLength(2)
+        expect(families[0]?.members[0]?.name).toBe('Piotr')
+        expect(families[0]?.members[0]?.relation).toBe('husband')
+        expect(families[0]?.members[1]?.name).toBe('Anna')
+        expect(families[0]?.members[1]?.relation).toBe('wife')
+      }
+    }
+  })
+
+  it('never appears on a non-home settlement', () => {
+    for (const size of ['SM', 'MD', 'LG', 'XL'] as const) {
+      const families = generateFamilies(3, size, false, 'polish')
+      expect(families.some((family) => family.id === 'family-reserved-0')).toBe(false)
+    }
+  })
+})

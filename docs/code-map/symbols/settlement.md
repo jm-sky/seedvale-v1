@@ -85,6 +85,17 @@ Generated from exported TypeScript symbols.
   - domain: settlements-npcs
 - `SettlementBlacksmithRef` — type — line 192
 
+## `settlement/authoredRepairTargets.ts`
+
+- `AuthoredRepairPresentationInput` — type — line 18
+  - domain: settlements
+- `AuthoredRepairStructureIds` — type — line 60
+  - domain: settlements
+- `CommunalFenceTarget` — type — line 30
+- `resolveAuthoredRepairStructureIds` — function — line 70
+- `resolveCommunalFenceTarget` — function — line 44
+  - domain: settlements
+
 ## `settlement/blacksmithYard.ts`
 
 - `BLACKSMITH_YARD_BASE_OFFSET` — const — line 23
@@ -107,10 +118,10 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/createSettlement.ts`
 
-- `createSettlement` — function — line 518
-- `CreateSettlementDeps` — type — line 313
-- `Settlement` — type — line 172
-- `settlementSpawnPoint` — function — line 301
+- `createSettlement` — function — line 523
+- `CreateSettlementDeps` — type — line 318
+- `Settlement` — type — line 177
+- `settlementSpawnPoint` — function — line 306
 
 ## `settlement/decorProps.ts`
 
@@ -833,16 +844,16 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/props.ts`
 
-- `BlacksmithWorkplace` — type — line 355
-- `buildSettlementProps` — function — line 766
-- `disposeSettlementGroup` — function — line 2247
-- `SettlementHouseBed` — type — line 164
-- `SettlementHouseLandmark` — type — line 130
-- `SettlementLandmarks` — type — line 185
-- `SettlementLandPlot` — type — line 344
-- `SettlementStorageVisuals` — type — line 336
-- `SettlementTreeLandmark` — type — line 365
-- `SettlementWellLandmark` — type — line 171
+- `BlacksmithWorkplace` — type — line 360
+- `buildSettlementProps` — function — line 771
+- `disposeSettlementGroup` — function — line 2361
+- `SettlementHouseBed` — type — line 165
+- `SettlementHouseLandmark` — type — line 131
+- `SettlementLandmarks` — type — line 186
+- `SettlementLandPlot` — type — line 349
+- `SettlementStorageVisuals` — type — line 341
+- `SettlementTreeLandmark` — type — line 370
+- `SettlementWellLandmark` — type — line 172
 
 ## `settlement/propSpecs.ts`
 
@@ -1225,13 +1236,13 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/SettlementsManager.ts`
 
-- `createSettlementsManager` — function — line 380
+- `createSettlementsManager` — function — line 395
   - domain: settlements
   - system: settlements-manager
   - role: Owns settlement generation, streaming and per-settlement economy/household/NPC-state registries.
   - owns: SettlementEconomy, Household
   - lifecycle: streaming
-- `SettlementsManager` — type — line 153
+- `SettlementsManager` — type — line 156
 
 ## `settlement/settlementStructures.ts`
 
@@ -1353,34 +1364,42 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/structureCondition.ts`
 
-- `applyStructureDamage` — function — line 169
+- `applyStructureDamage` — function — line 248
   - domain: settlements
-- `applyStructureRepairWork` — function — line 286
+- `applyStructureRepairWork` — function — line 365
   - domain: settlements
-- `beginStructureRepair` — function — line 237
+- `AUTHORED_STARTER_DAMAGE_CONDITION` — const — line 186
+- `AuthoredRepairTargetKind` — type — line 121
   - domain: settlements
-- `hasActiveStructureRepair` — function — line 55
-- `isStructureRepairProblem` — function — line 152
-- `pristineStructureState` — function — line 42
-- `quoteStructureRepair` — function — line 203
+- `beginStructureRepair` — function — line 316
   - domain: settlements
-- `resolveStructureCondition` — function — line 141
+- `hasActiveStructureRepair` — function — line 63
+- `isStructureRepairProblem` — function — line 231
+- `pristineStructureState` — function — line 50
+- `quoteStructureRepair` — function — line 282
+  - domain: settlements
+- `resolveStructureCondition` — function — line 220
 - `SettlementStructureState` — type — line 31
   - domain: settlements
-- `STRUCTURE_REPAIR_RESUME_PRESSURE` — const — line 119
-- `STRUCTURE_REPAIR_WORK_SESSION_HOURS` — const — line 310
-- `STRUCTURE_REPAIR_WORK_SESSION_SEC` — const — line 309
-- `structureConditionStateFromSnapshot` — function — line 312
-- `structureRepairPolicy` — function — line 105
-- `StructureRepairPolicy` — type — line 63
-- `structureRepairPressureFromCondition` — function — line 129
+- `STRUCTURE_REPAIR_RESUME_PRESSURE` — const — line 198
+- `STRUCTURE_REPAIR_WORK_SESSION_HOURS` — const — line 389
+- `STRUCTURE_REPAIR_WORK_SESSION_SEC` — const — line 388
+- `structureConditionStateFromSnapshot` — function — line 391
+- `structureRepairPolicy` — function — line 171
+- `StructureRepairPolicy` — type — line 71
+- `structureRepairPressureFromCondition` — function — line 208
   - domain: settlements
-- `StructureRepairQuote` — type — line 184
-- `StructureRepairStartOutcome` — type — line 221
-- `StructureRepairWorkOutcome` — type — line 271
+- `StructureRepairQuote` — type — line 263
+- `StructureRepairStartOutcome` — type — line 300
+- `StructureRepairTargetKind` — type — line 127
+- `StructureRepairWorkOutcome` — type — line 350
 
 ## `settlement/structureRepairCandidates.ts`
 
+- `AuthoredNpcRepairTarget` — type — line 139
+  - domain: settlements
+- `AuthoredRepairMaterialSource` — type — line 153
+- `createAuthoredNpcRepairTarget` — function — line 160
 - `createNpcStructureRepairHooks` — function — line 97
 - `NpcStructureRepairHooks` — type — line 79
   - domain: settlements
@@ -1442,18 +1461,21 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/villagePlan.ts`
 
+- `communalFenceFallbackStructureId` — function — line 212
 - `DEFAULT_PLAZA_RADIUS` — const — line 65
 - `FoodSourceType` — type — line 10
-- `householdWellLandmarkId` — function — line 207
-- `householdWellPlotId` — function — line 193
+- `householdFenceStructureId` — function — line 203
+- `householdWellLandmarkId` — function — line 239
+- `householdWellPlotId` — function — line 225
 - `isTreeWorkEligible` — function — line 111
-- `noticeBoardPlotId` — function — line 223
-- `PADDOCK_ID` — const — line 265
-- `paddockPathId` — function — line 267
-- `parseHouseholdWellFamilyIndex` — function — line 199
-- `PASTURE_ID` — const — line 251
-- `pasturePathId` — function — line 260
-- `pastureWellLandmarkId` — function — line 255
+- `loggingWagonStructureId` — function — line 219
+- `noticeBoardPlotId` — function — line 255
+- `PADDOCK_ID` — const — line 297
+- `paddockPathId` — function — line 299
+- `parseHouseholdWellFamilyIndex` — function — line 231
+- `PASTURE_ID` — const — line 283
+- `pasturePathId` — function — line 292
+- `pastureWellLandmarkId` — function — line 287
 - `plannedCampfireBodyKind` — function — line 103
 - `plannedCampfireFootprint` — function — line 99
 - `PLAZA_CAMPFIRE_FOOTPRINT` — const — line 91
@@ -1461,6 +1483,7 @@ Generated from exported TypeScript symbols.
 - `PLAZA_TREE_WORK_MARGIN` — const — line 109
 - `plazaRadiusForSize` — function — line 69
 - `plazaUsesMasonryFirepit` — function — line 95
+- `residentialFoundationStructureId` — function — line 196
 - `residentialStructureId` — function — line 187
 - `SettlementCharacter` — type — line 19
   - domain: settlements
@@ -1468,20 +1491,20 @@ Generated from exported TypeScript symbols.
 - `VillageBuildingPlan` — type — line 166
 - `VillageBuildingRole` — type — line 158
 - `VillageCenter` — type — line 47
-- `VillageEntrance` — type — line 345
+- `VillageEntrance` — type — line 377
 - `VillageIdentity` — type — line 23
-- `VillageLandmarkKind` — type — line 211
-- `VillageLandmarkPlan` — type — line 227
-- `VillageLayoutPattern` — type — line 357
-- `VillagePaddockPlan` — type — line 326
+- `VillageLandmarkKind` — type — line 243
+- `VillageLandmarkPlan` — type — line 259
+- `VillageLayoutPattern` — type — line 389
+- `VillagePaddockPlan` — type — line 358
   - domain: settlements
-- `VillagePastureAnchor` — type — line 286
-- `VillagePastureFenceSegment` — type — line 277
+- `VillagePastureAnchor` — type — line 318
+- `VillagePastureFenceSegment` — type — line 309
   - domain: settlements
-- `VillagePasturePlan` — type — line 301
+- `VillagePasturePlan` — type — line 333
   - domain: settlements
-- `VillagePathPlan` — type — line 241
-- `VillagePlan` — type — line 373
+- `VillagePathPlan` — type — line 273
+- `VillagePlan` — type — line 405
 - `VillagePlaza` — type — line 58
 - `villagePlazaAt` — function — line 82
 - `VillagePlot` — type — line 139
