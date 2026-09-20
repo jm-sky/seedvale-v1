@@ -11,6 +11,36 @@
 **Roadmap:** -
 **Model:** Sonnet, Composer
 
+## Implementation status (2026-09-20)
+
+Core implementation (`poisoned_meat` item, `src/items/poisonedMeat.ts` transform,
+`src/fauna/poisonedMeatBait.ts` deterministic detection/damage, `AnimalAgent`
+consume-path wiring, Quick Action UI) landed in commit `624f7fe`, but that
+commit shipped with a broken build: `itemRequirement(actual, required, item)`
+was called with the old 2-arg `(boolean, ItemKind)` shape in
+`survivalActions.ts`'s `poisonMeatAction`, and the Quick Actions
+compatibility facade (`src/ui/createQuickActions.ts`'s `QuickActionsHandlers`
+type, its `createQuickActions()` wiring, and `src/ui-vue/mount.ts`'s
+`FORWARDED_FNS`) never gained `onPoisonMeat`/`canPoisonMeat`, even though the
+Vue-side store (`ui-vue/store.ts`) and `QuickActionsScreen.vue`'s "Zatruj
+mięso" button were already fully wired against them. `npx tsc --noEmit`
+failed on `main` from that commit onward.
+
+This pass fixes both gaps: `itemRequirement` calls corrected to the real
+3-arg signature, `onPoisonMeat`/`canPoisonMeat` added to `QuickActionsHandlers`
++ forwarded through `createQuickActions()`, `setQuickActionsCanPoisonMeat`
+added to `FORWARDED_FNS`, and the initial `canPoisonMeat` flag passed at
+Quick Actions construction in `createApp.ts` (matching the existing
+`hasFishingRod` pattern). No behavior/design changes to the feature itself.
+
+Implemented and technically verified: `npx tsc --noEmit` and `vue-tsc
+--noEmit` (via `pnpm run build`) are clean, `pnpm run build` succeeds,
+`pnpm run lint:fix` clean, full `vitest run` — 7761 passed, only 4
+pre-existing/baseline failures in `npcProfessionWork.test.ts`'s trader
+transport-order tests (unrelated to this plan, reproduced identically before
+this change). Browser/gameplay verification is the player's responsibility
+and has not been performed by AI, per this plan's own "Verification" section.
+
 ## Cel
 
 Pozwolić graczowi wykorzystać istniejące `poisonous_herb` do przygotowania jednego rodzaju zatrutego mięsa, które korzysta z istniejącego dropped-food attraction/consumption fauny i po zjedzeniu zadaje bezpośrednie obrażenia HP.

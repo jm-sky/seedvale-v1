@@ -101,6 +101,8 @@ export type QuickActionsHandlers = {
   onCookMeal?: () => void
   /** "Rozbij pełny obóz" (plan items-player-018) — multi-stage camp setup. */
   onStartFullCamp?: () => void
+  /** "Zatruj mięso" (plan items-player-049) — poisonous herb + raw meat → poisoned_meat. */
+  onPoisonMeat?: () => ActionResult
   /** Initial digging-capability ownership for showing dig/level buttons. */
   hasDiggingTool?: boolean
   /** Initial tent ownership for showing "Rozstaw namiot". */
@@ -131,6 +133,10 @@ export type QuickActionsHandlers = {
   hasTreeSeed?: boolean
   /** Initial fishing-rod ownership for showing "Łów ryby" (plan `ui-input-006`). */
   hasFishingRod?: boolean
+  /** Initial "has poisonous_herb + eligible raw meat + room for output" flag
+   *  for showing "Zatruj mięso" (plan items-player-049), same shape as
+   *  `hasFishingRod`. */
+  canPoisonMeat?: boolean
   /** Which crop seed kinds the player currently carries (plan 126). */
   cropSeeds?: QuickActionsCropSeeds
   /** Initial near-settlement flag for showing "Odpocznij w mieście". */
@@ -195,6 +201,9 @@ export function createQuickActions(
   }
   if (typeof handlers.hasFishingRod === 'boolean') {
     getUi()?.setQuickActionsHasFishingRod(handlers.hasFishingRod)
+  }
+  if (typeof handlers.canPoisonMeat === 'boolean') {
+    getUi()?.setQuickActionsCanPoisonMeat(handlers.canPoisonMeat)
   }
   if (handlers.cropSeeds) {
     getUi()?.setQuickActionsCropSeeds(handlers.cropSeeds)

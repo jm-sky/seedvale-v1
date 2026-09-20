@@ -3133,6 +3133,7 @@ export async function createApp(
       cabbage: inventory.has('seed_cabbage', 1),
     },
     hasFishingRod: inventory.has('fishing_rod', 1),
+    canPoisonMeat: canPoisonMeat(inventory),
     nearTown: rest.isNearTown(),
     onOpen: () => {
       restorePointerLockAfterQuickActions = exitGamePointerLock(renderer.domElement)

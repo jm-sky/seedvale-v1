@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { Inventory } from './Inventory'
-import { createFoodBatch } from './foodFreshness'
-import { canPoisonMeat, isPoisonMeatInputKind, poisonMeat } from './poisonedMeat'
 import type { ItemKind } from './items'
+import { createFoodBatch } from './foodFreshness'
+import { Inventory } from './Inventory'
+import { canPoisonMeat, isPoisonMeatInputKind, poisonMeat } from './poisonedMeat'
 
 describe('poisonMeat (plan items-player-049)', () => {
   it('classifies raw meat bait kinds and rejects processed/fish/poisoned output', () => {

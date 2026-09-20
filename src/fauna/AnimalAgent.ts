@@ -75,12 +75,6 @@ import {
   resolveAttractionTarget,
 } from './animalAttraction'
 import {
-  POISONED_MEAT_DAMAGE_HP,
-  POISONED_MEAT_REJECT_IGNORE_SEC,
-  poisonedMeatDetected,
-  poisonedMeatDetectionRoll,
-} from './poisonedMeatBait'
-import {
   advanceCaveRoute,
   ANIMAL_CAPSULE_RADIUS_SCALE,
   type AnimalCaveContext,
@@ -291,6 +285,12 @@ import {
   snapshotOwnedAnimalControl,
 } from './ownedAnimalControl'
 import { detectionRoll, isPlayerNoticed, type PlayerStealthState, sneakDetectionMultiplier } from './playerAwareness'
+import {
+  POISONED_MEAT_DAMAGE_HP,
+  POISONED_MEAT_REJECT_IGNORE_SEC,
+  poisonedMeatDetected,
+  poisonedMeatDetectionRoll,
+} from './poisonedMeatBait'
 import {
   NEARBY_HUMAN_RADIUS,
   type PredatorHumanDecisionInput,

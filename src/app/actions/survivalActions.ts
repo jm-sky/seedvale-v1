@@ -23,7 +23,6 @@ import {
   isFoodBatchSpoiled,
   sourceSpeciesForMeatKind,
 } from '../../items/foodFreshness'
-import { canPoisonMeat, poisonMeat } from '../../items/poisonedMeat'
 import { resolveRawMeatSafetyRisk } from '../../items/foodSafety'
 import { type Inventory, inventoryFullToastText } from '../../items/Inventory'
 import { CAPABILITY_NEED_LABEL, hasItemCapability, ITEM_CATALOG } from '../../items/itemCatalog'
@@ -38,6 +37,7 @@ import {
   fillLiquidContainer,
   liquidContainerCapacity,
 } from '../../items/liquidContainer'
+import { canPoisonMeat, poisonMeat } from '../../items/poisonedMeat'
 import { scaleMedicinalTreatmentAmount } from '../../player/medicinalTreatmentEffectiveness'
 import {
   drinkWater as drinkWaterNeeds,
@@ -747,14 +747,14 @@ export function createSurvivalActions(ctx: PlayerActionContext): SurvivalActions
     if (!canPoisonMeat(inventory)) {
       if (!inventory.has('poisonous_herb', 1)) {
         toast.show('Potrzebujesz trującego ziela.', 'error')
-        return toResult([itemRequirement(false, 'poisonous_herb')])
+        return toResult([itemRequirement(inventory.count('poisonous_herb'), 1, 'poisonous_herb')])
       }
       if (!inventory.canAdd('poisoned_meat', 1)) {
         toast.show(inventoryFullToastText(inventory, 'poisoned_meat', 1), 'error')
         return toResult([targetRequirement(false, 'inventoryFull')])
       }
       toast.show('Potrzebujesz surowego mięsa.', 'error')
-      return toResult([itemRequirement(false, 'raw_meat')])
+      return toResult([itemRequirement(0, 1, 'raw_meat')])
     }
     const result = poisonMeat(inventory, dayNight.elapsedDays)
     if (!result.ok) return { ok: false, missing: [] }

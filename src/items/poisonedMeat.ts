@@ -1,6 +1,6 @@
 import type { Inventory } from './Inventory'
-import { BAIT_ITEM_PRIORITY, bait, type FoodBatch } from './foodFreshness'
 import type { ItemKind } from './items'
+import { bait, BAIT_ITEM_PRIORITY, type FoodBatch } from './foodFreshness'
 
 /**
  * @domain items-player

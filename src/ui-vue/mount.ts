@@ -14,7 +14,7 @@ const FORWARDED_FNS = [
   'configurePauseMenu', 'setPauseSeed', 'setPauseActiveSaveName', 'openPauseMenu', 'closePauseMenu', 'togglePause', 'isPauseMenuOpen',
   'openQuestLog', 'refreshQuestLog', 'closeQuestLog', 'isQuestLogOpen',
   'configureFlavorDialog', 'openFlavorDialog', 'setFlavorPrompt', 'setFlavorInteractionPrompt', 'closeFlavorDialog', 'isFlavorDialogOpen',
-  'configureQuickActions', 'setQuickActionsHasDiggingTool', 'setQuickActionsHasTent', 'setQuickActionsHasChest', 'setQuickActionsHasWoodenTorch', 'setQuickActionsHasPalisadeMaterial', 'setQuickActionsHasTroughMaterial', 'setQuickActionsHasBedrollMaterial', 'setQuickActionsHasPlatformMaterial', 'setQuickActionsHasCarriedContainer', 'setQuickActionsNearTown', 'setQuickActionsTraps', 'setQuickActionsFireAvailability', 'setQuickActionsHasTreeSeed', 'setQuickActionsCropSeeds', 'setQuickActionsHasFishingRod', 'setQuickActionsWorkContracts', 'toggleQuickActions', 'closeQuickActions', 'isQuickActionsOpen',
+  'configureQuickActions', 'setQuickActionsHasDiggingTool', 'setQuickActionsHasTent', 'setQuickActionsHasChest', 'setQuickActionsHasWoodenTorch', 'setQuickActionsHasPalisadeMaterial', 'setQuickActionsHasTroughMaterial', 'setQuickActionsHasBedrollMaterial', 'setQuickActionsHasPlatformMaterial', 'setQuickActionsHasCarriedContainer', 'setQuickActionsNearTown', 'setQuickActionsTraps', 'setQuickActionsFireAvailability', 'setQuickActionsHasTreeSeed', 'setQuickActionsCropSeeds', 'setQuickActionsHasFishingRod', 'setQuickActionsCanPoisonMeat', 'setQuickActionsWorkContracts', 'toggleQuickActions', 'closeQuickActions', 'isQuickActionsOpen',
   'configureAbortRest', 'abortRest',
   'configureAbortBusy', 'abortBusy',
   'configureAbortTargetedSkill', 'abortTargetedSkill',
