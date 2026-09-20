@@ -4,6 +4,7 @@
 **Status:** `planned` 📋
 **Type:** bug
 **Priority:** high · **Effort:** S
+**Model:** Sonnet, Composer
 **Depends on:** ~~world-027~~
 **Domain:** `persistence`
 **Subdomains:** `save-data` `migration`
