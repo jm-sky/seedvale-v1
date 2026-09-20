@@ -1,7 +1,7 @@
 # PLANS PLANNED WITHOUT NOTES
 
 > Generated with `pnpm plans:without-notes`  
-> Date: 2026-09-20 20:36:18  
+> Date: 2026-09-20 20:46:11  
 
 ## PLANS
 
@@ -56,12 +56,6 @@ Umieść w nim:
 Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
 Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
 
-Po ukończeniu implementation notes zaktualizuj też `docs/plans/npc-061-time-skip-and-reification-surface-placement-validity.md` i dodaj/ustaw metadata:
-`**Model:** <best>, <cheaper-safe-fallback>`
-Wybierz dokładnie dwa modele spośród: Composer, Grok, Sonnet, Opus.
-Pierwszy ma być najlepszym wyborem do implementacji, drugi tańszym wariantem o minimalnym dodatkowym ryzyku.
-Dobierz modele na podstawie wykonanego reconu i implementation notes, zgodnie z `docs/plans/PLANNING.md`.
-
 Pliki dodaj na branch `main` w repozytorium.
 ```
 
@@ -92,12 +86,6 @@ Umieść w nim:
 
 Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
 Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
-
-Po ukończeniu implementation notes zaktualizuj też `docs/plans/quests-progression-044-lost-treasure-chronicles-final-treasure-claims-and-resolution.md` i dodaj/ustaw metadata:
-`**Model:** <best>, <cheaper-safe-fallback>`
-Wybierz dokładnie dwa modele spośród: Composer, Grok, Sonnet, Opus.
-Pierwszy ma być najlepszym wyborem do implementacji, drugi tańszym wariantem o minimalnym dodatkowym ryzyku.
-Dobierz modele na podstawie wykonanego reconu i implementation notes, zgodnie z `docs/plans/PLANNING.md`.
 
 Pliki dodaj na branch `main` w repozytorium.
 ```
@@ -130,12 +118,6 @@ Umieść w nim:
 Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
 Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
 
-Po ukończeniu implementation notes zaktualizuj też `docs/plans/quests-progression-045-lost-treasure-chronicles-property-grant-deed-and-persistent-land-reward.md` i dodaj/ustaw metadata:
-`**Model:** <best>, <cheaper-safe-fallback>`
-Wybierz dokładnie dwa modele spośród: Composer, Grok, Sonnet, Opus.
-Pierwszy ma być najlepszym wyborem do implementacji, drugi tańszym wariantem o minimalnym dodatkowym ryzyku.
-Dobierz modele na podstawie wykonanego reconu i implementation notes, zgodnie z `docs/plans/PLANNING.md`.
-
 Pliki dodaj na branch `main` w repozytorium.
 ```
 
@@ -166,12 +148,6 @@ Umieść w nim:
 
 Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
 Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
-
-Po ukończeniu implementation notes zaktualizuj też `docs/plans/quests-progression-046-lost-treasure-chronicles-integration-legacy-catch-up-and-superseded-quest-cleanup.md` i dodaj/ustaw metadata:
-`**Model:** <best>, <cheaper-safe-fallback>`
-Wybierz dokładnie dwa modele spośród: Composer, Grok, Sonnet, Opus.
-Pierwszy ma być najlepszym wyborem do implementacji, drugi tańszym wariantem o minimalnym dodatkowym ryzyku.
-Dobierz modele na podstawie wykonanego reconu i implementation notes, zgodnie z `docs/plans/PLANNING.md`.
 
 Pliki dodaj na branch `main` w repozytorium.
 ```
@@ -204,12 +180,6 @@ Umieść w nim:
 Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
 Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
 
-Po ukończeniu implementation notes zaktualizuj też `docs/plans/quests-progression-053-hunters-brotherhood-competing-hunting-strategies.md` i dodaj/ustaw metadata:
-`**Model:** <best>, <cheaper-safe-fallback>`
-Wybierz dokładnie dwa modele spośród: Composer, Grok, Sonnet, Opus.
-Pierwszy ma być najlepszym wyborem do implementacji, drugi tańszym wariantem o minimalnym dodatkowym ryzyku.
-Dobierz modele na podstawie wykonanego reconu i implementation notes, zgodnie z `docs/plans/PLANNING.md`.
-
 Pliki dodaj na branch `main` w repozytorium.
 ```
 
@@ -240,12 +210,6 @@ Umieść w nim:
 
 Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
 Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
-
-Po ukończeniu implementation notes zaktualizuj też `docs/plans/quests-progression-054-hunters-brotherhood-exceptional-animal-finale.md` i dodaj/ustaw metadata:
-`**Model:** <best>, <cheaper-safe-fallback>`
-Wybierz dokładnie dwa modele spośród: Composer, Grok, Sonnet, Opus.
-Pierwszy ma być najlepszym wyborem do implementacji, drugi tańszym wariantem o minimalnym dodatkowym ryzyku.
-Dobierz modele na podstawie wykonanego reconu i implementation notes, zgodnie z `docs/plans/PLANNING.md`.
 
 Pliki dodaj na branch `main` w repozytorium.
 ```
@@ -278,12 +242,6 @@ Umieść w nim:
 Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
 Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
 
-Po ukończeniu implementation notes zaktualizuj też `docs/plans/settlements-npcs-049-merchant-wealth-tiers-and-travel-party-profile.md` i dodaj/ustaw metadata:
-`**Model:** <best>, <cheaper-safe-fallback>`
-Wybierz dokładnie dwa modele spośród: Composer, Grok, Sonnet, Opus.
-Pierwszy ma być najlepszym wyborem do implementacji, drugi tańszym wariantem o minimalnym dodatkowym ryzyku.
-Dobierz modele na podstawie wykonanego reconu i implementation notes, zgodnie z `docs/plans/PLANNING.md`.
-
 Pliki dodaj na branch `main` w repozytorium.
 ```
 
@@ -314,12 +272,6 @@ Umieść w nim:
 
 Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
 Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
-
-Po ukończeniu implementation notes zaktualizuj też `docs/plans/settlements-npcs-052-persistent-economic-work-cargo-and-local-transfer-conservation.md` i dodaj/ustaw metadata:
-`**Model:** <best>, <cheaper-safe-fallback>`
-Wybierz dokładnie dwa modele spośród: Composer, Grok, Sonnet, Opus.
-Pierwszy ma być najlepszym wyborem do implementacji, drugi tańszym wariantem o minimalnym dodatkowym ryzyku.
-Dobierz modele na podstawie wykonanego reconu i implementation notes, zgodnie z `docs/plans/PLANNING.md`.
 
 Pliki dodaj na branch `main` w repozytorium.
 ```
@@ -352,12 +304,6 @@ Umieść w nim:
 Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
 Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
 
-Po ukończeniu implementation notes zaktualizuj też `docs/plans/settlements-npcs-054-transport-carrier-death-and-cargo-disposition.md` i dodaj/ustaw metadata:
-`**Model:** <best>, <cheaper-safe-fallback>`
-Wybierz dokładnie dwa modele spośród: Composer, Grok, Sonnet, Opus.
-Pierwszy ma być najlepszym wyborem do implementacji, drugi tańszym wariantem o minimalnym dodatkowym ryzyku.
-Dobierz modele na podstawie wykonanego reconu i implementation notes, zgodnie z `docs/plans/PLANNING.md`.
-
 Pliki dodaj na branch `main` w repozytorium.
 ```
 
@@ -388,12 +334,6 @@ Umieść w nim:
 
 Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
 Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
-
-Po ukończeniu implementation notes zaktualizuj też `docs/plans/tools-005-seedvale-character-preparation-panel.md` i dodaj/ustaw metadata:
-`**Model:** <best>, <cheaper-safe-fallback>`
-Wybierz dokładnie dwa modele spośród: Composer, Grok, Sonnet, Opus.
-Pierwszy ma być najlepszym wyborem do implementacji, drugi tańszym wariantem o minimalnym dodatkowym ryzyku.
-Dobierz modele na podstawie wykonanego reconu i implementation notes, zgodnie z `docs/plans/PLANNING.md`.
 
 Pliki dodaj na branch `main` w repozytorium.
 ```
@@ -426,12 +366,6 @@ Umieść w nim:
 Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
 Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
 
-Po ukończeniu implementation notes zaktualizuj też `docs/plans/tools-019-debug-tooling-lifecycle-ownership.md` i dodaj/ustaw metadata:
-`**Model:** <best>, <cheaper-safe-fallback>`
-Wybierz dokładnie dwa modele spośród: Composer, Grok, Sonnet, Opus.
-Pierwszy ma być najlepszym wyborem do implementacji, drugi tańszym wariantem o minimalnym dodatkowym ryzyku.
-Dobierz modele na podstawie wykonanego reconu i implementation notes, zgodnie z `docs/plans/PLANNING.md`.
-
 Pliki dodaj na branch `main` w repozytorium.
 ```
 
@@ -462,12 +396,6 @@ Umieść w nim:
 
 Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
 Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
-
-Po ukończeniu implementation notes zaktualizuj też `docs/plans/ui-input-028-interaction-target-identity-and-cycle-lifecycle.md` i dodaj/ustaw metadata:
-`**Model:** <best>, <cheaper-safe-fallback>`
-Wybierz dokładnie dwa modele spośród: Composer, Grok, Sonnet, Opus.
-Pierwszy ma być najlepszym wyborem do implementacji, drugi tańszym wariantem o minimalnym dodatkowym ryzyku.
-Dobierz modele na podstawie wykonanego reconu i implementation notes, zgodnie z `docs/plans/PLANNING.md`.
 
 Pliki dodaj na branch `main` w repozytorium.
 ```
@@ -500,12 +428,6 @@ Umieść w nim:
 Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
 Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
 
-Po ukończeniu implementation notes zaktualizuj też `docs/plans/ui-input-029-village-torch-interaction-action-contract.md` i dodaj/ustaw metadata:
-`**Model:** <best>, <cheaper-safe-fallback>`
-Wybierz dokładnie dwa modele spośród: Composer, Grok, Sonnet, Opus.
-Pierwszy ma być najlepszym wyborem do implementacji, drugi tańszym wariantem o minimalnym dodatkowym ryzyku.
-Dobierz modele na podstawie wykonanego reconu i implementation notes, zgodnie z `docs/plans/PLANNING.md`.
-
 Pliki dodaj na branch `main` w repozytorium.
 ```
 
@@ -536,12 +458,6 @@ Umieść w nim:
 
 Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
 Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
-
-Po ukończeniu implementation notes zaktualizuj też `docs/plans/ui-input-030-player-downed-action-input-gating.md` i dodaj/ustaw metadata:
-`**Model:** <best>, <cheaper-safe-fallback>`
-Wybierz dokładnie dwa modele spośród: Composer, Grok, Sonnet, Opus.
-Pierwszy ma być najlepszym wyborem do implementacji, drugi tańszym wariantem o minimalnym dodatkowym ryzyku.
-Dobierz modele na podstawie wykonanego reconu i implementation notes, zgodnie z `docs/plans/PLANNING.md`.
 
 Pliki dodaj na branch `main` w repozytorium.
 ```
@@ -574,12 +490,6 @@ Umieść w nim:
 Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
 Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
 
-Po ukończeniu implementation notes zaktualizuj też `docs/plans/ui-input-031-world-bound-ui-session-rebuild-lifecycle.md` i dodaj/ustaw metadata:
-`**Model:** <best>, <cheaper-safe-fallback>`
-Wybierz dokładnie dwa modele spośród: Composer, Grok, Sonnet, Opus.
-Pierwszy ma być najlepszym wyborem do implementacji, drugi tańszym wariantem o minimalnym dodatkowym ryzyku.
-Dobierz modele na podstawie wykonanego reconu i implementation notes, zgodnie z `docs/plans/PLANNING.md`.
-
 Pliki dodaj na branch `main` w repozytorium.
 ```
 
@@ -610,12 +520,6 @@ Umieść w nim:
 
 Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
 Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
-
-Po ukończeniu implementation notes zaktualizuj też `docs/plans/world-037-audio-spatial-context-isolation.md` i dodaj/ustaw metadata:
-`**Model:** <best>, <cheaper-safe-fallback>`
-Wybierz dokładnie dwa modele spośród: Composer, Grok, Sonnet, Opus.
-Pierwszy ma być najlepszym wyborem do implementacji, drugi tańszym wariantem o minimalnym dodatkowym ryzyku.
-Dobierz modele na podstawie wykonanego reconu i implementation notes, zgodnie z `docs/plans/PLANNING.md`.
 
 Pliki dodaj na branch `main` w repozytorium.
 ```
@@ -648,12 +552,6 @@ Umieść w nim:
 Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
 Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
 
-Po ukończeniu implementation notes zaktualizuj też `docs/plans/world-038-world-audio-async-lifecycle-and-cache-recovery.md` i dodaj/ustaw metadata:
-`**Model:** <best>, <cheaper-safe-fallback>`
-Wybierz dokładnie dwa modele spośród: Composer, Grok, Sonnet, Opus.
-Pierwszy ma być najlepszym wyborem do implementacji, drugi tańszym wariantem o minimalnym dodatkowym ryzyku.
-Dobierz modele na podstawie wykonanego reconu i implementation notes, zgodnie z `docs/plans/PLANNING.md`.
-
 Pliki dodaj na branch `main` w repozytorium.
 ```
 
@@ -685,12 +583,6 @@ Umieść w nim:
 Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
 Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
 
-Po ukończeniu implementation notes zaktualizuj też `docs/plans/world-terrain-045-canonical-local-water-player-traversal.md` i dodaj/ustaw metadata:
-`**Model:** <best>, <cheaper-safe-fallback>`
-Wybierz dokładnie dwa modele spośród: Composer, Grok, Sonnet, Opus.
-Pierwszy ma być najlepszym wyborem do implementacji, drugi tańszym wariantem o minimalnym dodatkowym ryzyku.
-Dobierz modele na podstawie wykonanego reconu i implementation notes, zgodnie z `docs/plans/PLANNING.md`.
-
 Pliki dodaj na branch `main` w repozytorium.
 ```
 
@@ -721,12 +613,6 @@ Umieść w nim:
 
 Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
 Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
-
-Po ukończeniu implementation notes zaktualizuj też `docs/plans/world-terrain-046-unified-water-shore-query-and-river-hotpath.md` i dodaj/ustaw metadata:
-`**Model:** <best>, <cheaper-safe-fallback>`
-Wybierz dokładnie dwa modele spośród: Composer, Grok, Sonnet, Opus.
-Pierwszy ma być najlepszym wyborem do implementacji, drugi tańszym wariantem o minimalnym dodatkowym ryzyku.
-Dobierz modele na podstawie wykonanego reconu i implementation notes, zgodnie z `docs/plans/PLANNING.md`.
 
 Pliki dodaj na branch `main` w repozytorium.
 ```
