@@ -52,6 +52,19 @@ Generated from exported TypeScript symbols.
 - `TrapWeatherCatchup` — type — line 235
 - `trapWeatherWear` — function — line 224
 
+## `world/authoredWorldConsequences.ts`
+
+- `AUTHORED_WORLD_CONSEQUENCE_DEFINITIONS` — const — line 52
+  - domain: world
+- `AuthoredWorldConsequenceDefinition` — type — line 20
+  - domain: world
+- `AuthoredWorldConsequenceId` — type — line 9
+  - domain: world
+- `AuthoredWorldConsequenceRegistry` — type — line 31
+  - domain: world
+- `createAuthoredWorldConsequenceRegistry` — function — line 67
+  - domain: world
+
 ## `world/beehives.ts`
 
 - `BeehiveRecord` — type — line 5

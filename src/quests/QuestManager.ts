@@ -438,6 +438,14 @@ export type QuestLifecycleHooks = {
    * itself never imports the domain it's read from.
    */
   onInteractSpawnerMatched?: (questId: string, spawnerId: string) => void
+  /**
+   * Activates a predefined authored world consequence exactly once (plan
+   * world-031) — `QuestManager` never imports `WorldBundle` or the
+   * `AuthoredWorldConsequenceRegistry` itself, only this narrow hook. Must
+   * resolve the *current* live registry (post-rebuild), not a stale
+   * pre-rebuild instance.
+   */
+  activateWorldConsequence?: (consequenceId: string) => void
 }
 
 /**
@@ -640,8 +648,12 @@ export class QuestManager {
     lifecycleHooks: QuestLifecycleHooks = {},
     worldKnowledgeResolver: QuestWorldKnowledgeResolver = NO_WORLD_KNOWLEDGE,
     injuredCowSource: InjuredCowSourceLookup = NO_INJURED_COW_SOURCE,
+    /** Known `AuthoredWorldConsequenceId`s for `activate_world_consequence`
+     *  effect validation (plan world-031) — defaults to the production
+     *  catalog; tests may inject fixture ids instead. */
+    knownWorldConsequenceIds?: ReadonlySet<string>,
   ) {
-    validateQuestDefinitions(defs)
+    validateQuestDefinitions(defs, knownWorldConsequenceIds)
     this.defs = defs
     this.inventory = inventory
     this.grantItem = grantItem
@@ -2765,6 +2777,9 @@ export class QuestManager {
     if (!effects?.length) return
     for (const effect of effects) {
       switch (effect.type) {
+        case 'activate_world_consequence':
+          this.lifecycleHooks.activateWorldConsequence?.(effect.consequenceId)
+          break
         case 'discard_carried_container':
           this.lifecycleHooks.discardCarriedContainer?.(effect.containerId)
           break

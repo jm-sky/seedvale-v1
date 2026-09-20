@@ -223,6 +223,14 @@ describe('validateQuestDefinitions (plan quests-progression-004)', () => {
     expect(() => validateQuestDefinitions([badRenown])).toThrow(/renown minimum/)
   })
 
+  it('rejects an activate_world_consequence effect referencing an unknown id (plan world-031)', () => {
+    const bad = runtimeQuest({
+      ...baseQuest,
+      outcomes: [{ id: 'done', state: 'complete', effects: [{ type: 'activate_world_consequence', consequenceId: 'outpost:unknown' }] }],
+    })
+    expect(() => validateQuestDefinitions([bad])).toThrow(/activate_world_consequence references unknown consequence/)
+  })
+
   it('rejects talk_to_npc_choice with fewer than two choices', () => {
     const bad = runtimeQuest({
       ...baseQuest,

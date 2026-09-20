@@ -702,7 +702,7 @@ export type SaveWorkContract =
  *  representation or semantics of `SaveData` change — see the plan's
  *  "Future schema-change workflow". Never duplicate this number elsewhere;
  *  `saveState.ts` imports it instead of declaring its own constant. */
-export const CURRENT_SAVE_VERSION = 49
+export const CURRENT_SAVE_VERSION = 50
 
 /** Canonical save contract for the current schema version. This module
  *  intentionally carries no history of schemas from before the v1 hard cut
@@ -914,6 +914,12 @@ export type SaveData = {
    *  contract as `structureStates`/`households` above — absent (including
    *  every pre-settlements-003 save) restores an empty registry. */
   foundedSettlements?: FoundedSettlementRegistrySnapshot
+  /** Activated authored world consequence ids (plan world-031) — see
+   *  `world/authoredWorldConsequences.ts`'s `AuthoredWorldConsequenceRegistry`.
+   *  Sparse fact-only list (no definition payload), same "absent restores
+   *  empty" fallback contract as `structureStates`/`foundedSettlements`
+   *  above. */
+  authoredWorldConsequences?: string[]
   /** Sparse grass forage patch depletion overrides (plan fauna-010 §3/§4) —
    *  `patchId -> availableAtDays`, see `world/grassForage.ts`'s
    *  `GrassForageOverrides`. Patch *placement* is deterministic and never
@@ -2805,6 +2811,7 @@ export function isSaveData(value: unknown): value is SaveData {
   if (v.unsafeFoodEventCount !== undefined && typeof v.unsafeFoodEventCount !== 'number') return false
   if (v.structureStates !== undefined && !isStructureStatesField(v.structureStates)) return false
   if (v.foundedSettlements !== undefined && !isFoundedSettlementsField(v.foundedSettlements)) return false
+  if (v.authoredWorldConsequences !== undefined && !isResolvedHiddenFindSpotIdsField(v.authoredWorldConsequences)) return false
   return true
 }
 
@@ -3915,6 +3922,14 @@ function migrateSaveV48ToV49(data: unknown): unknown {
   return { ...v, version: 49 }
 }
 
+/** v49 → v50 (plan world-031): optional `authoredWorldConsequences`. A
+ *  pre-plan save has no authored world consequence ever activated; absent
+ *  restores an empty activation registry. */
+function migrateSaveV49ToV50(data: unknown): unknown {
+  const v = data as Record<string, unknown>
+  return { ...v, version: 50 }
+}
+
 function migrateSaveV37ToV38(data: unknown): unknown {
   const v = data as Record<string, unknown>
   const seq = { n: 0 }
@@ -4084,6 +4099,7 @@ const SAVE_MIGRATIONS: Readonly<Record<number, SaveMigration>> = {
   46: migrateSaveV46ToV47,
   47: migrateSaveV47ToV48,
   48: migrateSaveV48ToV49,
+  49: migrateSaveV49ToV50,
 }
 
 function detectStoredVersion(value: unknown): number | null {

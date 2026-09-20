@@ -113,6 +113,20 @@ Generated from TypeScript imports.
 - `world/createPlacedTraps.ts`
 - `world/trapProp.ts`
 
+## `world/authoredWorldConsequences.test.ts`
+
+**Imports**
+
+- `world/authoredWorldConsequences.ts`
+
+## `world/authoredWorldConsequences.ts`
+
+**Imported by**
+
+- `app/worldBundle.ts`
+- `quests/quests.ts`
+- `world/authoredWorldConsequences.test.ts`
+
 ## `world/beehives.test.ts`
 
 **Imports**

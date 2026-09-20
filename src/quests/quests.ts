@@ -6,6 +6,7 @@ import type { ReputationDimension } from '../reputation/ReputationManager'
 import type { NpcId } from '../settlement/npcState'
 import type { LandmarkKind } from '../terrain/chunkEnvironment'
 import { WOLF_DEN_ID } from '../fauna/AnimalSpawner'
+import { AUTHORED_WORLD_CONSEQUENCE_DEFINITIONS } from '../world/authoredWorldConsequences'
 import {
   DARK_FOREST_TREASURE_LOCATION_ID,
   darkForestTreasureChestId,
@@ -249,7 +250,13 @@ export class QuestDefinitionValidationError extends Error {}
  *  authored prerequisites, `talk_to_npc_choice` objectives, stage
  *  dialogue actions, dialogue reactions, or nonlinear stage flow — never
  *  clamps thresholds at runtime. */
-export function validateQuestDefinitions(defs: readonly QuestDef[]): void {
+export function validateQuestDefinitions(
+  defs: readonly QuestDef[],
+  /** Known `AuthoredWorldConsequenceId`s for `activate_world_consequence`
+   *  effects (plan world-031). Defaults to the production catalog; tests may
+   *  inject fixture ids instead. */
+  knownWorldConsequenceIds: ReadonlySet<string> = AUTHORED_WORLD_CONSEQUENCE_IDS,
+): void {
   const byId = new Map(defs.map((def) => [def.id, def]))
   for (const def of defs) {
     validatePlayerDialogueLines(def)
@@ -257,6 +264,7 @@ export function validateQuestDefinitions(defs: readonly QuestDef[]): void {
     validateStageDialogueActions(def)
     validateNonlinearStageFlow(def)
     validateWorldKnowledge(def)
+    validateWorldConsequenceEffects(def, knownWorldConsequenceIds)
     const prerequisites = def.availability?.prerequisites
     if (!prerequisites?.length) continue
     for (const prereq of prerequisites) {
@@ -620,6 +628,39 @@ function validateWorldKnowledge(def: QuestDef): void {
         `Quest "${def.id}" world-knowledge "${slot.id}" is never referenced`,
       )
     }
+  }
+}
+
+const AUTHORED_WORLD_CONSEQUENCE_IDS = new Set(AUTHORED_WORLD_CONSEQUENCE_DEFINITIONS.map((def) => def.id))
+
+/**
+ * Rejects an `activate_world_consequence` effect referencing an id without a
+ * predefined `AuthoredWorldConsequenceDefinition` (plan world-031) — a typo
+ * must never become an unknown persisted activation string. `knownIds`
+ * defaults to the production catalog; `QuestManager`/tests may inject a
+ * different set (e.g. fixtures) without coupling this validator to a single
+ * global constant.
+ *
+ * @domain quests-progression
+ */
+function validateWorldConsequenceEffects(def: QuestDef, knownIds: ReadonlySet<string>): void {
+  const noteEffect = (effect: QuestStageEffect): void => {
+    if (effect.type !== 'activate_world_consequence') return
+    if (!knownIds.has(effect.consequenceId)) {
+      throw new QuestDefinitionValidationError(
+        `Quest "${def.id}" activate_world_consequence references unknown consequence "${effect.consequenceId}"`,
+      )
+    }
+  }
+  for (const effect of def.acceptEffects ?? []) noteEffect(effect)
+  for (const stage of def.stages) {
+    for (const effect of stage.effects ?? []) noteEffect(effect)
+    for (const action of stage.dialogueActions ?? []) {
+      for (const effect of action.effects ?? []) noteEffect(effect)
+    }
+  }
+  for (const outcome of def.outcomes) {
+    for (const effect of outcome.effects ?? []) noteEffect(effect)
   }
 }
 
@@ -1208,6 +1249,13 @@ export type QuestStageEffect =
    * (plan quests-progression-047).
    */
   | { type: 'request_world_knowledge', knowledgeId: string }
+  /**
+   * Activates a predefined `AuthoredWorldConsequenceId` exactly once (plan
+   * world-031) — see `world/authoredWorldConsequences.ts`. `consequenceId`
+   * must reference a real predefined definition; `validateQuestDefinitions()`
+   * rejects an unknown one before gameplay.
+   */
+  | { type: 'activate_world_consequence', consequenceId: string }
 
 export type QuestStageDialogueAction = {
   npc: QuestNpcRef

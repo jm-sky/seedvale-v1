@@ -1,7 +1,8 @@
 # Plan: Authored Persistent World Consequences
 
 **Created:** 2026-09-17
-**Status:** `planned` 📋
+**Status:** `done` ✅
+**Implemented at:** 2026-09-20
 **Priority:** high · **Effort:** M
 **Depends on:** none
 **Domain:** `world`

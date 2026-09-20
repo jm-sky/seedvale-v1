@@ -812,6 +812,7 @@ export async function createApp(
     onAnimalDeathSound,
     loadingScreen.setStage,
     initialSave?.foundedSettlements,
+    initialSave?.authoredWorldConsequences,
   )
   bootMarkEnd('createWorldBundle')
   // Already logged inside `worldBundle.ts` on failure — nothing else to do
@@ -1929,6 +1930,14 @@ export async function createApp(
       const snapshot = bundle.fauna.getHabitatPressure(spawnerId, dayNight.elapsedDays)
       if (!snapshot) return
       questManager.recordObservation(questId, habitatPressureObservationFromSnapshot(snapshot))
+    },
+    // Activates a predefined authored world consequence exactly once (plan
+    // world-031) — reads `bundle.authoredWorldConsequences` at call time
+    // (not captured earlier), so this keeps resolving the live registry
+    // across an in-session `rebuildWorldBundle()`, the same way every other
+    // hook above reads `bundle.*` live rather than a captured field.
+    activateWorldConsequence: (consequenceId: string) => {
+      bundle.authoredWorldConsequences.activate(consequenceId)
     },
   }
 

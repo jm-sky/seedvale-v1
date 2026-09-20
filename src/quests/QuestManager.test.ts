@@ -2185,6 +2185,62 @@ describe('QuestManager dialogue actions (plan quests-progression-014)', () => {
     expect(qm.getRelation('Anna')).toBe(2)
   })
 
+  it('activates a predefined world consequence exactly once on terminal outcome, even via a stale report callback (plan world-031)', () => {
+    const activated: string[] = []
+    const def = quest({
+      ...simpleQuest,
+      outcomes: [{
+        id: 'complete',
+        state: 'complete',
+        effects: [{ type: 'activate_world_consequence', consequenceId: 'outpost:forest-road-01' }],
+      }],
+    })
+    const qm = new QuestManager(
+      [def],
+      undefined,
+      new Inventory(),
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      { activateWorldConsequence: (consequenceId) => activated.push(consequenceId) },
+      undefined,
+      undefined,
+      new Set(['outpost:forest-road-01']),
+    )
+    acceptOffer(qm, 'Anna')
+    qm.onInteractObjective({ type: 'interact_well' })
+    const dialog = qm.onInteract('Anna')
+    expect(selectAction(dialog)).toBe('report')
+    // A stale/repeated report callback must not re-dispatch the effect.
+    expect(selectAction(dialog)).toBe('report')
+    expect(activated).toEqual(['outpost:forest-road-01'])
+  })
+
+  it('rejects an unknown world consequence id by default, with no injected override (plan world-031)', () => {
+    const def = quest({
+      ...simpleQuest,
+      outcomes: [{
+        id: 'complete',
+        state: 'complete',
+        effects: [{ type: 'activate_world_consequence', consequenceId: 'outpost:forest-road-01' }],
+      }],
+    })
+    expect(() => new QuestManager([def], undefined, new Inventory())).toThrow(/activate_world_consequence/)
+  })
+
   it('leaves talk_to_npc_choice unresolved if the player closes without selecting', () => {
     const qm = new QuestManager([homeQuest('zaginiona-przesylka')], undefined, new Inventory())
     acceptOffer(qm, 'Kasia')

@@ -1881,6 +1881,29 @@ describe('schema versioning and migration pipeline (persistence-003)', () => {
     expect(result.data.renewableWorldItems).toBeUndefined()
   })
 
+  it('migrates a v49 save without authoredWorldConsequences to the current version (plan world-031)', () => {
+    const result = loadStoredSave({ ...validSave, version: 49 })
+    expect(result.status).toBe('ok')
+    if (result.status !== 'ok') return
+    expect(result.data.version).toBe(CURRENT_SAVE_VERSION)
+    expect(result.data.authoredWorldConsequences).toBeUndefined()
+  })
+
+  it('round-trips authoredWorldConsequences and rejects a malformed one (plan world-031)', () => {
+    const withActivations = loadStoredSave({
+      ...validSave,
+      authoredWorldConsequences: ['outpost:forest-road-01'],
+    })
+    expect(withActivations.status).toBe('ok')
+    if (withActivations.status === 'ok') {
+      expect(withActivations.data.authoredWorldConsequences).toEqual(['outpost:forest-road-01'])
+    }
+    expect(loadStoredSave({
+      ...validSave,
+      authoredWorldConsequences: [42],
+    })).toEqual({ status: 'invalid' })
+  })
+
   it('round-trips renewableWorldItems and rejects a malformed one (plan items-player-043)', () => {
     const withOverrides = loadStoredSave({
       ...validSave,
