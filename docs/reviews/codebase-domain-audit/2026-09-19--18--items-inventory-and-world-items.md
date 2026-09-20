@@ -4,7 +4,7 @@
 **Area:** 18 — Items, inventory & world items  
 **Scope:** code correctness, architecture, lifecycle/persistence, performance  
 **Baseline:** current `main` (`91aaa65bc295d5102f5561d902f0c7e22458f94c` during final recon)  
-**Result:** ⚠️ reviewed with one unresolved high finding
+**Result:** ⚠️ reviewed with two unresolved high findings
 
 ## 1. Scope
 
