@@ -129,6 +129,7 @@ Unless noted otherwise, `verification needed` means implementation has passed au
 | ◼️ `tools-019-debug-tooling-lifecycle-ownership.md`                            | 🟡 | S      | -                                                                                                                                                                                                                                                                                          | -                                         |
 | 💡 `items-player-058-campfire-decomposition-and-ash-residue.md`                | 🟡 | M      | -                                                                                                                                                                                                                                                                                          | -                                         |
 | 💡 `items-player-059-crossbow-sling-and-thrown-stones.md`                      | 🟡 | L      | ~~npc-053~~                                                                                                                                                                                                                                                                                | -                                         |
+| ◼️ `ui-input-032-approximate-startup-loading-progress.md`                      | 🟡 | S      | ~~ui-input-022~~                                                                                                                                                                                                                                                                           | -                                         |
 
 ---
 
@@ -268,7 +269,7 @@ New plans declare a primary `Domain:` in frontmatter. Use optional `Tags:` only 
 - settlements: `023`
 - settlements-npcs: `057`
 - tools: `020`
-- ui-input: `032`
+- ui-input: `033`
 - world: `039`
 - world-terrain: `049`
 
