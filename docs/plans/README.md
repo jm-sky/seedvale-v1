@@ -110,6 +110,7 @@ Unless noted otherwise, `verification needed` means implementation has passed au
 | ◼️ `settlements-npcs-052-persistent-economic-work-cargo-and-local-transfer-conservation.md` | 🔴 | M      | ~~settlements-npcs-019~~, ~~settlements-npcs-034~~                                                                                                                                                                                                                                         | -                                         |
 | ◼️ `npc-059-need-action-result-revalidation-and-atomic-relief.md`              | 🔴 | S      | -                                                                                                                                                                                                                                                                                          | -                                         |
 | ◼️ `settlements-npcs-054-transport-carrier-death-and-cargo-disposition.md`     | 🔴 | S      | ~~settlements-npcs-019~~                                                                                                                                                                                                                                                                   | -                                         |
+| ◼️ `items-player-050-player-health-and-injury-persistence.md`                  | 🟡 | S      | ~~items-player-045~~                                                                                                                                                                                                                                                                       | -                                         |
 
 ---
 
@@ -237,7 +238,7 @@ New plans declare a primary `Domain:` in frontmatter. Use optional `Tags:` only 
 
 - ai: `005`
 - fauna: `045`
-- items-player: `050`
+- items-player: `051`
 - npc: `061`
 - persistence: `006`
 - quests-progression: `073`
