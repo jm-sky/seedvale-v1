@@ -70,6 +70,10 @@ Generated from exported TypeScript symbols.
 - `getActiveDungeonBanditTreasureBinding` — function — line 12
 - `setActiveDungeonBanditTreasureBinding` — function — line 6
 
+## `quests/generatedOpportunityRetention.ts`
+
+- `requiresGeneratedOpportunityRetention` — function — line 17
+
 ## `quests/guardEveningOfferWindow.ts`
 
 - `deterministicEveningOfferWindowStart` — function — line 27

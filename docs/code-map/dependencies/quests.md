@@ -157,6 +157,25 @@ Generated from TypeScript imports.
 - `app/createApp.ts`
 - `app/worldBundle.ts`
 
+## `quests/generatedOpportunityRetention.test.ts`
+
+**Imports**
+
+- `quests/generatedOpportunityRetention.ts`
+- `quests/quests.ts`
+
+## `quests/generatedOpportunityRetention.ts`
+
+**Imports**
+
+- `quests/quests.ts`
+
+**Imported by**
+
+- `app/createApp.ts`
+- `quests/generatedOpportunityRetention.test.ts`
+- `quests/opportunities/rpgQuestMatrices.test.ts`
+
 ## `quests/guardEveningOfferWindow.test.ts`
 
 **Imports**
@@ -655,6 +674,7 @@ Generated from TypeScript imports.
 
 - `items/Inventory.ts`
 - `quests/QuestManager.ts`
+- `quests/generatedOpportunityRetention.ts`
 - `quests/opportunities/rpgQuestMaterialization.ts`
 - `quests/opportunities/rpgQuestMatrices.ts`
 - `quests/opportunities/settlementQuestOpportunities.ts`
@@ -839,6 +859,8 @@ Generated from TypeScript imports.
 - `quests/QuestManager.ts`
 - `quests/dungeonBanditTreasure.test.ts`
 - `quests/dungeonBanditTreasure.ts`
+- `quests/generatedOpportunityRetention.test.ts`
+- `quests/generatedOpportunityRetention.ts`
 - `quests/guardRewards.ts`
 - `quests/huntersBrotherhoodIntroduction.ts`
 - `quests/huntersBrotherhoodInvestigation.test.ts`
