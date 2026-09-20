@@ -7,6 +7,7 @@
 **Domain:** `items-player`  
 **Type:** `fix`  
 **Roadmap:** -
+**Model:** Sonnet, Composer
 
 ## Problem
 
