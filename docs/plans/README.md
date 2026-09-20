@@ -131,6 +131,7 @@ Unless noted otherwise, `verification needed` means implementation has passed au
 | ◼️ `world-037-audio-spatial-context-isolation.md`                              | 🟡 | S      | ~~world-027~~                                                                                                                                                                                                                                                                              | -                                         |
 | ◼️ `world-038-world-audio-async-lifecycle-and-cache-recovery.md`               | 🟡 | S      | -                                                                                                                                                                                                                                                                                          | -                                         |
 | ◼️ `tools-019-debug-tooling-lifecycle-ownership.md`                            | 🟡 | S      | -                                                                                                                                                                                                                                                                                          | -                                         |
+| ◼️ `settlements-npcs-055-ordinary-npc-barter-and-offer.md`                     | 🔴 | M      | ~~settlements-npcs-033~~                                                                                                                                                                                                                                                                   | -                                         |
 
 ---
 
@@ -264,7 +265,7 @@ New plans declare a primary `Domain:` in frontmatter. Use optional `Tags:` only 
 - persistence: `007`
 - quests-progression: `073`
 - settlements: `023`
-- settlements-npcs: `055`
+- settlements-npcs: `056`
 - tools: `020`
 - ui-input: `032`
 - world: `039`
