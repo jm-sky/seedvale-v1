@@ -1,7 +1,8 @@
 # Plan: Codebase domain and flow audit master
 
 **Created:** 2026-09-19  
-**Status:** `planned` 📋  
+**Status:** `done` ✅  
+**Completed:** 2026-09-20  
 **Priority:** high · **Effort:** XL  
 **Depends on:** none  
 **Domain:** `tools`  
@@ -190,7 +191,7 @@ Status vocabulary:
 | 23 | UI ↔ simulation contracts | Vue/DOM projections, state synchronization, action boundaries, rebuild/stale references | ⚠️ reviewed with unresolved high/critical findings | [review](../reviews/codebase-domain-audit/2026-09-19--23--ui-simulation-contracts.md) | [ui-input-031](./ui-input-031-world-bound-ui-session-rebuild-lifecycle.md), [world-033](./world-033-worldbundle-rebuild-transaction-and-lifecycle-safety.md), [items-player-057](./items-player-057-mounted-player-lifecycle-and-restore-continuity.md) |
 | 24 | Performance & workers | recurring work, complexity, allocations, cache ownership, workers and off-screen scaling | ✅ reviewed | [review](../reviews/codebase-domain-audit/2026-09-19--24--performance-and-workers.md) | [ui-input-027](./ui-input-027-interaction-candidate-dropped-item-scaling.md) |
 | 25 | Shared utilities, config & debug tooling | shared helpers, defaults, cross-domain utilities, production/debug separation | ✅ reviewed | [review](../reviews/codebase-domain-audit/2026-09-19--25--shared-utilities-config-and-debug-tooling.md) | [tools-019](./tools-019-debug-tooling-lifecycle-ownership.md) |
-| 26 | Cross-domain integration synthesis | findings and boundaries across world/settlements/NPC/fauna/player/quests/persistence | ⬜ not reviewed | - | - |
+| 26 | Cross-domain integration synthesis | findings and boundaries across world/settlements/NPC/fauna/player/quests/persistence | ⚠️ reviewed with unresolved high/critical findings | [review](../reviews/codebase-domain-audit/2026-09-19--26--cross-domain-integration-synthesis.md) | [world-033](./world-033-worldbundle-rebuild-transaction-and-lifecycle-safety.md), [world-034](./world-034-time-skip-clock-exactness-and-catch-up-coverage.md), [world-terrain-044](./world-terrain-044-runtime-ground-query-authority-and-missing-chunk-fallbacks.md), [settlements-npcs-052](./settlements-npcs-052-persistent-economic-work-cargo-and-local-transfer-conservation.md), [settlements-npcs-054](./settlements-npcs-054-transport-carrier-death-and-cargo-disposition.md), [ui-input-031](./ui-input-031-world-bound-ui-session-rebuild-lifecycle.md) |
 
 ## Per-session procedure
 
