@@ -41,10 +41,10 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/createSettlement.ts`
 
-- `createSettlement` — function — line 505
-- `CreateSettlementDeps` — type — line 306
-- `Settlement` — type — line 165
-- `settlementSpawnPoint` — function — line 294
+- `createSettlement` — function — line 516
+- `CreateSettlementDeps` — type — line 311
+- `Settlement` — type — line 170
+- `settlementSpawnPoint` — function — line 299
 
 ## `settlement/decorProps.ts`
 
@@ -630,11 +630,33 @@ Generated from exported TypeScript symbols.
 - `transferCorpseCountTo` — function — line 283
 - `transferCorpseInstanceTo` — function — line 267
 
+## `settlement/npcPresentationOwner.ts`
+
+- `NpcPresentationOwner` — type — line 38
+- `NpcPresentationOwnershipInput` — type — line 23
+  - domain: settlements-npcs
+  - system: npc-presentation-owner
+  - role: Pure policy resolving which settlement (if any) may materialize a live/corpse `NpcAgent` presentation for a given `NpcId` right now.
+- `resolveNpcPresentationOwner` — function — line 56
+  - domain: settlements-npcs
+- `shouldMaterializeNpcAt` — function — line 70
+
 ## `settlement/npcRelationships.ts`
 
 - `createNpcRelationships` — function — line 32
 - `NpcRelationshipEntry` — type — line 26
 - `NpcRelationships` — type — line 15
+
+## `settlement/npcResidentAnchors.ts`
+
+- `NpcResidentAnchors` — type — line 28
+  - domain: settlements-npcs
+  - system: npc-resident-anchors
+  - role: Narrow settlement-scoped physical routing/work-anchor contract shared by the procedural adapter and (later) a founded/nonprocedural one.
+- `proceduralResidentAnchorsFromLandmarks` — function — line 87
+  - domain: settlements-npcs
+- `residentAnchorsForHome` — function — line 113
+- `resolveNpcSettlementStorage` — function — line 71
 
 ## `settlement/npcState.ts`
 
@@ -1130,13 +1152,13 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/SettlementsManager.ts`
 
-- `createSettlementsManager` — function — line 378
+- `createSettlementsManager` — function — line 379
   - domain: settlements
   - system: settlements-manager
   - role: Owns settlement generation, streaming and per-settlement economy/household/NPC-state registries.
   - owns: SettlementEconomy, Household
   - lifecycle: streaming
-- `SettlementsManager` — type — line 151
+- `SettlementsManager` — type — line 152
 
 ## `settlement/settlementStructures.ts`
 

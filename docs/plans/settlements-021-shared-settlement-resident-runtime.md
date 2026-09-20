@@ -1,7 +1,7 @@
 # Plan: Shared settlement resident runtime
 
 **Created:** 2026-09-19
-**Status:** `planned` 📋
+**Status:** `verification needed` 🔍
 **Type:** refactor
 **Priority:** high · **Effort:** L
 **Depends on:** settlements-020
@@ -10,6 +10,103 @@
 **Tags:** `npc-runtime` `residency` `anchors` `colony` `authored-site`
 **Roadmap:** `quests-abandoned-gold-mine-colony.md`
 **Model:** Opus, Sonnet
+
+## Implementation status (2026-09-20)
+
+Implemented and technically verified (`npx tsc --noEmit`, `pnpm run lint:fix`,
+full `vitest run` — 7761 passed, only 4 pre-existing/baseline failures in
+`npcProfessionWork.test.ts`'s trader transport-order tests, unrelated to this
+plan and reproduced identically on `main` before this change). Browser/
+gameplay verification is the player's responsibility and has not been
+performed by AI, per this plan's own "Verification" section.
+
+`pnpm run build` currently fails on this branch, but from a pre-existing,
+unrelated, uncommitted in-progress change already present in the working
+tree before this plan's implementation started (`src/app/actions/
+survivalActions.ts`, `src/app/createApp.ts`, `src/fauna/AnimalAgent.ts`,
+`src/items/poisonedMeat.ts` — a `QuickActionsHandlers`/`VueUi` poison-meat
+wiring gap). None of those files were touched by this plan; `npx tsc --noEmit`
+scoped to this plan's own changes shows zero errors.
+
+- `src/settlement/npcPresentationOwner.ts` (Stage A) — pure
+  `resolveNpcPresentationOwner`/`shouldMaterializeNpcAt` policy plus the
+  one-live-agent matrix test (`npcPresentationOwner.test.ts`). Wired into
+  `createSettlement.ts` (replaces the old `isNpcAwayOnMerchantJourney`-only
+  gate with the full policy, including a new `CreateSettlementDeps.
+  residencyOverrideOf`) and into `SettlementsManager.resolveTravellingVisitors()`
+  (`residencyOf` backed by `FoundedSettlementRegistry`), so both call sites
+  share one rule.
+- `src/settlement/npcResidentAnchors.ts` (Stage B/C) — the narrow
+  `NpcResidentAnchors` contract plus `proceduralResidentAnchorsFromLandmarks`/
+  `residentAnchorsForHome`, the procedural adapter that builds it once per
+  settlement (plus once per resident for the home-dependent household
+  wood-pile point) from the existing `SettlementLandmarks`, preserving every
+  current procedural target exactly.
+- `NpcWorkContext` (`npcProfessionWork.ts`) and `NpcLogisticsCtx`
+  (`npcLogistics.ts`) no longer carry a full `landmarks: SettlementLandmarks`
+  field — replaced by narrow `settlementStorage`/`fishingAnchor`/
+  `guardPatrolPoints`/`settlementCultivationAnchors`/`fallbackGardenAnchor`
+  inputs. `planGuardPatrol`'s modulo now follows `ctx.guardPatrolPoints`'s
+  actual length instead of a hard-coded `% 3`, and returns `null` (idle/
+  pressure wins) when that list is empty — never a synthetic well/market.
+  Village-storage/transport-unload planners return `null` when
+  `settlementStorage` is absent instead of assuming one exists.
+- `NpcAgentDeps`/`NpcAgent` (`NpcAgent.ts`) replaced the required
+  `landmarks: SettlementLandmarks` field with `residentAnchors:
+  NpcResidentAnchors` — every direct `this.landmarks.*` read (water/wells,
+  garden idle/food fallback, wood/trees + plaza, dock route, pasture,
+  household wood-pile deposit, and the `emergencyTeleport` rescue-anchor
+  list) now reads the narrow anchors instead, degrading to `this.home` or an
+  empty list rather than crashing or fabricating infrastructure when a
+  field is absent. The now-fully-redundant `NpcAgentDeps.wellQueueId` (its
+  one read site was replaced by `residentAnchors.waterSources`) was removed
+  together with it.
+- `createSettlement.ts` (Stage D) — a local `materializeSettlementResident()`
+  closure is now the one shared existing-`NpcId` materialization pipeline:
+  physical profile → `npcStateRegistry.getOrCreate` → optional merchant-stock
+  seeding → required post-death maintenance → presentation-owner gate →
+  `NpcAgent.create` → scene registration, taking an inline resident-
+  descriptor input (`npcId`/`member`/`familyMembers`/`physicalSeed`/
+  `needOffset`/`treeIndex`/`household`/`home`/`workplace`/`socialPlace`/
+  `residentAnchors`, an optional `seedMerchantStock` hook, an
+  `applyPresentationGate` flag, and an `extraDeps: Partial<NpcAgentDeps>`
+  bag for the remaining settlement-scoped hooks). Both the ordinary
+  procedural resident loop and the travelling-visitor loop now call this
+  same function instead of each inlining their own copy of that step order;
+  the visitor path passes `applyPresentationGate: false` since
+  `resolveTravellingVisitors()` already applied the identical policy when
+  selecting it as a candidate for this destination. It does not generate
+  `npcId`, create a household, derive a home from `familyIndex`, call
+  `workplaceFor()`, require a `SettlementDef`, or build props/landmarks —
+  `createSettlement()`'s own procedural/visitor adapters still own all of
+  that and pass it in.
+- Every touched test fixture (`npcLogistics.test.ts`,
+  `npcProfessionWork.test.ts`, `npcPlayerReactionVoice.test.ts`,
+  `settlements-npcs-007.test.ts`) updated to the narrow contracts; no
+  procedural/visitor behavior assertions changed. New coverage:
+  `npcResidentAnchors.test.ts` (procedural adapter reproduces exact current
+  targets, multi-well/pasture projection, household wood-pile resolution/
+  fallback, `resolveNpcSettlementStorage` absence handling);
+  `npcPresentationOwner.test.ts`'s duplicate-materialization invariant (at
+  most one settlement can ever satisfy `shouldMaterializeNpcAt` for a given
+  resolved owner — the plan's "debug assertion" duplicate guard, never a
+  second runtime ownership registry); guard-patrol empty-list and actual-
+  length-modulo cases in `npcProfessionWork.test.ts`; a settlement-storage-
+  absence case (`planEconomyWithdraw` with real shortage/surplus but no
+  physical destination) in `npcLogistics.test.ts`.
+
+**Not implemented in this pass** (see `docs/plans/LOOSE-ENDS.md`): a
+standalone, separately-exported `SettlementResidentDescriptor` type/module.
+`materializeSettlementResident()` currently lives as a closure inside
+`createSettlement()` (so it can close over this settlement's already-built
+runtime deps/registries instead of re-threading all of them through an
+exported function signature) rather than a top-level export another module
+could call directly. `settlements-022`'s founded adapter will need either to
+extract this closure to a shared exported module at that point, or to build
+its own thin wrapper that constructs the same descriptor shape and calls
+into an equivalent local pipeline — both remain viable, and the exact
+founded-site capability inputs (real local anchors vs. absent infrastructure)
+are still `settlements-022`'s own job per this plan's non-goals.
 
 ## Goal
 

@@ -88,7 +88,7 @@ export function socialPlaceFor(
  * canonical identity in `landmarks.trees` but are not work-eligible.
  */
 export function workEligibleSettlementTrees(
-  landmarks: Pick<SettlementLandmarks, 'trees' | 'plaza'>,
+  landmarks: { trees: readonly SettlementTreeLandmark[], plaza?: SettlementLandmarks['plaza'] },
 ): SettlementTreeLandmark[] {
   return landmarks.trees.filter((tree) =>
     isTreeWorkEligible(tree.position.x, tree.position.z, landmarks.plaza),

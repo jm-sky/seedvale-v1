@@ -2,11 +2,11 @@ import type { EconomicSourceId } from '../economy/kinds'
 import type { SettlementDestinationThreatHooks } from '../fauna/destinationThreatHooks'
 import type { ItemKind } from '../items/items'
 import type { HeightSampler } from '../player/PlayerController'
-import type { Household } from '../settlement/household'
+import type { Household, HouseholdResourceKind } from '../settlement/household'
 import type { HouseholdExchangeHooks } from '../settlement/householdExchange'
 import type { PackAnimalJourneyHooks } from '../settlement/livestock'
+import type { NpcResidentAnchors } from '../settlement/npcResidentAnchors'
 import type { Place } from '../settlement/places'
-import type { SettlementLandmarks } from '../settlement/props'
 import type { SettlementMiningHooks } from '../terrain/resourceDeposits'
 import type { TransportOrders } from '../world/createTransportOrders'
 import type { SettlementFoodSourceHooks } from '../world/foodSources'
@@ -67,11 +67,7 @@ import { Inventory } from '../items/Inventory'
 import { isWeaponItemInstance, WEAPON_MAINTENANCE_KIND_LIST, type WeaponItemInstance } from '../items/itemInstances'
 import { sharpenWeapon } from '../items/weaponMaintenance'
 import { physicalWorkDuration } from '../player/physicalWorkStrength'
-import {
-  householdStorageDestination,
-  resolveHouseholdWoodStorage,
-  settlementStorageDestination,
-} from '../settlement/storageDestinations'
+import { resolveNpcSettlementStorage } from '../settlement/npcResidentAnchors'
 import { copyVec3 } from '../simulation'
 import { isMineableOre, MINE_DURATION_SEC, ORE_ITEM } from '../terrain/depositMining'
 import { type CultivationAnchor, resolveCultivationAnchor } from '../world/cultivationAnchor'
@@ -144,7 +140,18 @@ export type NpcWorkContext = {
    *  (P10 loose end), rather than duplicating the roll here. */
   rollWorkDurationSec: () => number
   home: Vector3
-  landmarks: SettlementLandmarks
+  /** Settlement-scope wood/food delivery destinations (plan settlements-021
+   *  Stage B) — `null` when this site has no settlement storage (never a
+   *  fake stockpile/crate); trader collection/unload then cannot run. */
+  settlementStorage: NpcResidentAnchors['settlementStorage']
+  /** Fishing cast anchor (plan settlements-021 Stage B) — `null` for a site
+   *  with no dock (fisher then has no fishing work, never a well
+   *  substitute). */
+  fishingAnchor: Vector3 | null
+  /** Full Guard patrol point list, home already included by the caller
+   *  (plan settlements-021 Stage B) — empty means no patrol capability at
+   *  all, the planner then falls through to idle/pressure. */
+  guardPatrolPoints: readonly Vector3[]
   workplace: Place | null
   household: Household | null
   economy: SettlementEconomy | null
@@ -182,6 +189,14 @@ export type NpcWorkContext = {
    *  bootstrap can supply a Player-built garden through the same Farmer
    *  planner. Absent, the planner resolves the settlement garden landmark. */
   cultivationAnchor?: CultivationAnchor | null
+  /** Settlement-produced cultivation footprints (plan settlements-021 Stage
+   *  B, formerly `landmarks.cultivationAnchors`) — empty for a site with no
+   *  scaled garden footprint yet. */
+  settlementCultivationAnchors: readonly CultivationAnchor[]
+  /** Abstract garden-gather idle/food-fallback anchor (plan settlements-021
+   *  Stage B, formerly `landmarks.garden`) — `null` for a site with no
+   *  cultivation-gather fallback. */
+  fallbackGardenAnchor: { x: number, z: number } | null
   /** Absolute world days for wool readiness (plan fauna-004). */
   nowDays?: () => number
   shepherdFlock?: ShepherdFlockHooks | null
@@ -373,10 +388,8 @@ function planFarmWork(ctx: NpcWorkContext): NpcPlannedAction | null {
   if (!foodSources) return null
   const garden = resolveCultivationAnchor({
     supplied: ctx.cultivationAnchor,
-    settlementAnchors: ctx.landmarks.cultivationAnchors,
-    fallbackGarden: ctx.landmarks.garden
-      ? { x: ctx.landmarks.garden.x, z: ctx.landmarks.garden.z }
-      : null,
+    settlementAnchors: ctx.settlementCultivationAnchors,
+    fallbackGarden: ctx.fallbackGardenAnchor,
   })
   if (!garden) return null
   const target = foodSources.queryHarvestableCrop(garden.position.x, garden.position.z, FARM_WORK_RADIUS)
@@ -414,16 +427,16 @@ function planFarmWork(ctx: NpcWorkContext): NpcPlannedAction | null {
 
 /**
  * Fisher's `work` schedule block (plan settlements-npcs-002 §4) — casts at
- * the settlement's real dock (`landmarks.dock`) using the same
+ * the settlement's real dock (`ctx.fishingAnchor`) using the same
  * deterministic `(spot, attempt)` catch rule `world/fishing.ts` already
  * defines for the player, never the player's own busy-channel action code.
- * `landmarks.dock` only exists for near-coast settlements — that fallback is
+ * `ctx.fishingAnchor` only exists for near-coast settlements — absence is
  * deliberately *not* a valid fishing target (plan §6/§14: "never fish at a
  * well"), so this returns `null` and the caller falls back to the normal
  * idle work stand instead of inventing a water source.
  */
 function planFishingWork(ctx: NpcWorkContext): NpcPlannedAction | null {
-  const dock = ctx.landmarks.dock
+  const dock = ctx.fishingAnchor
   if (!dock) return null
   if (!ctx.carried.canAdd('fish', 1)) return null
   const spotId = fishingSpotId(dock.x, dock.z)
@@ -439,11 +452,9 @@ function planFishingWork(ctx: NpcWorkContext): NpcPlannedAction | null {
     },
     next: {
       kind: 'deposit',
-      destination: copyVec3(householdStorageDestination(
-        'food',
-        ctx.home,
-        resolveHouseholdWoodStorage(ctx.home, ctx.landmarks),
-      )),
+      // Fish is `food`, which always resolves to `ctx.home` regardless of
+      // the household's wood-pile point.
+      destination: copyVec3(ctx.home),
       durationSec: 0.8 * ctx.waitMultiplier,
       onComplete: () => {
         if (ctx.household) depositCarriedItems(ctx.carried, ctx.household, FISH_YIELD_KINDS, ctx.simTime())
@@ -454,15 +465,17 @@ function planFishingWork(ctx: NpcWorkContext): NpcPlannedAction | null {
 
 /**
  * Guard's `work` schedule block (plan settlements-npcs-002 §6) — cycles
- * through a small deterministic set of patrol points (home, the settlement
- * well as its centre, the market as a second landmark) instead of standing
- * still at one workplace anchor. Threat detection/response is unchanged —
+ * through a small deterministic set of patrol points (`ctx.guardPatrolPoints`
+ * — procedurally home, the settlement well as its centre, the market as a
+ * second landmark, plan settlements-021 Stage B) instead of standing still
+ * at one workplace anchor. Threat detection/response is unchanged —
  * `NpcAgent`'s existing critical-interrupt path applies regardless of role.
- * Always succeeds (the three points always exist), so a guard never falls
- * back to the old static well stand.
+ * `null` (idle/pressure wins) only when this resident has no patrol points
+ * at all — never a synthetic well/market.
  */
 function planGuardPatrol(ctx: NpcWorkContext): NpcPlannedAction | null {
-  const points = [ctx.home, ctx.landmarks.well, ctx.landmarks.market]
+  const points = ctx.guardPatrolPoints
+  if (points.length === 0) return null
   const point = points[ctx.guardPatrolIndex % points.length]!
   ctx.advanceGuardPatrol()
   return {
@@ -503,13 +516,9 @@ function resolveDestinationEconomy(
 }
 
 function localStorageUnloadDestination(ctx: NpcWorkContext, order: TransportOrder) {
-  return isMineableOre(order.itemKind)
-    ? copyVec3(ctx.landmarks.stockpile)
-    : copyVec3(settlementStorageDestination(
-      'food',
-      ctx.landmarks.stockpile,
-      ctx.landmarks.settlementStorage,
-    ))
+  const kind: HouseholdResourceKind = isMineableOre(order.itemKind) ? 'wood' : 'food'
+  const destination = resolveNpcSettlementStorage(ctx.settlementStorage, kind)
+  return destination ? copyVec3(destination) : null
 }
 
 function resolveUnloadDestination(ctx: NpcWorkContext, order: TransportOrder) {
@@ -636,13 +645,14 @@ function planTransportPickup(
       orders.fail(order.id)
       return null
     }
+    const pickupDestination = resolveNpcSettlementStorage(ctx.settlementStorage, 'food')
+    if (!pickupDestination) {
+      orders.fail(order.id)
+      return null
+    }
     return {
       kind: 'work',
-      destination: copyVec3(settlementStorageDestination(
-        'food',
-        ctx.landmarks.stockpile,
-        ctx.landmarks.settlementStorage,
-      )),
+      destination: copyVec3(pickupDestination),
       durationSec: 1.2 * ctx.waitMultiplier,
       onComplete: () => {
         const current = orders.find(order.id)

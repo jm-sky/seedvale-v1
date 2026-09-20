@@ -15,10 +15,10 @@ import {
 } from './npcLogistics'
 
 const HOME = { x: 0, y: 0, z: 0 }
-const LANDMARKS = {
-  stockpile: { x: 5, y: 0, z: 0 },
-  settlementStorage: { x: 6, y: 0, z: 0 },
-} as unknown as NpcLogisticsCtx['landmarks']
+const SETTLEMENT_STORAGE: NpcLogisticsCtx['settlementStorage'] = {
+  wood: { x: 5, y: 0, z: 0 } as unknown as import('three').Vector3,
+  food: { x: 6, y: 0, z: 0 } as unknown as import('three').Vector3,
+}
 
 function baseCtx(overrides: Partial<NpcLogisticsCtx> = {}): NpcLogisticsCtx {
   return {
@@ -29,7 +29,7 @@ function baseCtx(overrides: Partial<NpcLogisticsCtx> = {}): NpcLogisticsCtx {
     helperAssignment: null,
     needs: createNeedState(0),
     home: HOME,
-    landmarks: LANDMARKS,
+    settlementStorage: SETTLEMENT_STORAGE,
     carried: new Inventory(),
     waitMultiplier: 1,
     simTime: () => 0,
@@ -145,6 +145,20 @@ describe('planEconomyWithdraw', () => {
   it('returns null without a household or without an economy', () => {
     expect(planEconomyWithdraw(baseCtx({ economy: createSettlementEconomy('s', {}, []) }), 'food')).toBeNull()
     expect(planEconomyWithdraw(baseCtx({ household: createHousehold('h', 's', 'home:h') }), 'food')).toBeNull()
+  })
+
+  it('a nonprocedural resident with no real settlement storage never gets a fake stockpile (plan settlements-021)', () => {
+    const economy = createSettlementEconomy('s', {}, [])
+    economy.depositFood('bread', 10)
+    const household = createHousehold('h', 's', 'home:h')
+    household.items.remove('bread', household.items.count('bread'))
+    // Real shortage + real surplus both exist — only the physical storage
+    // destination is absent (a founded/nonprocedural site with no built
+    // stockpile/crate yet).
+    const ctx = baseCtx({ household, economy, settlementStorage: null })
+
+    expect(canWithdrawFromEconomy(ctx, 'food')).toBe(true)
+    expect(planEconomyWithdraw(ctx, 'food')).toBeNull()
   })
 })
 

@@ -2,8 +2,10 @@
 import * as THREE from 'three'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import type { ActiveSound, PlayAtCancelable } from '../audio/createWorldAudio'
+import type { NpcResidentAnchors } from '../settlement/npcResidentAnchors'
 import type { Place } from '../settlement/places'
 import type { SettlementLandmarks } from '../settlement/props'
+import { proceduralResidentAnchorsFromLandmarks, residentAnchorsForHome } from '../settlement/npcResidentAnchors'
 import {
   configureNpcPlayerReactionAudio,
   NpcAgent,
@@ -41,12 +43,17 @@ function homePlace(): Place {
   }
 }
 
+function makeResidentAnchors(home: THREE.Vector3): NpcResidentAnchors {
+  const landmarks = makeLandmarks()
+  return residentAnchorsForHome(proceduralResidentAnchorsFromLandmarks(landmarks, 's1:well'), home, landmarks)
+}
+
 async function createTestNpc(playAtCancelable: PlayAtCancelable): Promise<NpcAgent> {
   return NpcAgent.create({
     sampleHeight: () => 0,
     waterLevel: -1,
     collidersNear: () => [],
-    landmarks: makeLandmarks(),
+    residentAnchors: makeResidentAnchors(homePlace().position),
     home: homePlace(),
     workplace: null,
     socialPlace: null,
@@ -126,7 +133,7 @@ describe('NpcAgent player reaction voice', () => {
       sampleHeight: () => 0,
       waterLevel: -1,
       collidersNear: () => [],
-      landmarks: makeLandmarks(),
+      residentAnchors: makeResidentAnchors(homePlace().position),
       home: homePlace(),
       workplace: null,
       socialPlace: null,

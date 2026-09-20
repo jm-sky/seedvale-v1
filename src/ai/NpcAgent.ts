@@ -15,8 +15,8 @@ import type { FamilyMember, FamilyMemberRef, FamilyRelation } from '../settlemen
 import type { Household, HouseholdResourceKind } from '../settlement/household'
 import type { HouseholdExchangeHooks } from '../settlement/householdExchange'
 import type { PackAnimalJourneyHooks } from '../settlement/livestock'
+import type { NpcResidentAnchors } from '../settlement/npcResidentAnchors'
 import type { NpcAuthoritativeState } from '../settlement/npcState'
-import type { SettlementLandmarks } from '../settlement/props'
 import type { NpcStructureRepairHooks } from '../settlement/structureRepairCandidates'
 import type { FollowHysteresisState } from '../shared/followHysteresis'
 import type { VigorState } from '../shared/VigorState'
@@ -104,7 +104,7 @@ import {
 import { createNpcAuthoritativeState } from '../settlement/npcState'
 import { type Place, workEligibleSettlementTrees } from '../settlement/places'
 import { isAdultAge } from '../settlement/professionStaffing'
-import { householdStorageDestination, resolveHouseholdWoodStorage } from '../settlement/storageDestinations'
+import { householdStorageDestination } from '../settlement/storageDestinations'
 import { STRUCTURE_REPAIR_WORK_SESSION_HOURS, STRUCTURE_REPAIR_WORK_SESSION_SEC } from '../settlement/structureCondition'
 import { isTreeWorkEligible, type SettlementCharacter } from '../settlement/villagePlan'
 import { type AgentAnimationSet, createAgentAnimationSet } from '../shared/agentAnimationSet'
@@ -892,9 +892,9 @@ const TIME_SKIP_SAMPLE_HOURS = 0.5
 
 /** Chance per `choose` cycle — when no active need routes the NPC anywhere
  *  specific and it would otherwise wander a few units from home — that it
- *  instead walks its settlement's dock path (`landmarks.dockRoute`, set by
- *  `createSettlement.ts` only for settlements near enough to water to have
- *  resolved one — see `settlement/roadNetwork.ts`). */
+ *  instead walks its settlement's dock path (`residentAnchors.dockRoute`,
+ *  set by `createSettlement.ts` only for settlements near enough to water to
+ *  have resolved one — see `settlement/roadNetwork.ts`). */
 const FOLLOW_DOCK_PATH_CHANCE = 0.08
 /** Random wander radius around home / garden while lingering on a schedule block. */
 const IDLE_WANDER_SPREAD = 4
@@ -1016,7 +1016,11 @@ export type NpcAgentDeps = {
   sampleHeight: HeightSampler
   waterLevel: number
   collidersNear: ColliderSource
-  landmarks: SettlementLandmarks
+  /** Narrow procedural-independent settlement-scope routing/work anchors
+   *  (plan settlements-021 Stage B/C) — built once per settlement (plus this
+   *  resident's own household wood-pile point) by the caller, never a full
+   *  `SettlementLandmarks`. */
+  residentAnchors: NpcResidentAnchors
   home: Place
   workplace: Place | null
   socialPlace: Place | null
@@ -1044,7 +1048,6 @@ export type NpcAgentDeps = {
   forest?: SettlementForestHooks
   npcId?: string
   queues?: ReadonlyMap<string, InteractionQueue>
-  wellQueueId?: string | null
   economy?: SettlementEconomy | null
   household?: Household | null
   /** Authoritative HP/needs/stamina/vigor (plan 197) — the same object
@@ -1208,7 +1211,7 @@ export class NpcAgent {
   private readonly sampleHeight: HeightSampler
   private readonly waterLevel: number
   private readonly collidersNear: ColliderSource
-  private readonly landmarks: SettlementLandmarks
+  private readonly residentAnchors: NpcResidentAnchors
   private readonly needs: NeedState
   private readonly home: THREE.Vector3
   /** Clip resolve/crossfade/one-shot/settle owner (review 2026-09-03 §5 E6)
@@ -1396,7 +1399,7 @@ export class NpcAgent {
    *  now live in `pendingAction.destination` instead. */
   private target = new THREE.Vector3()
   /** Waypoints for the `followPath` phase — a reference into
-   *  `landmarks.dockRoute`, walked one at a time via `steerTo`. */
+   *  `residentAnchors.dockRoute`, walked one at a time via `steerTo`. */
   private pathWaypoints: readonly THREE.Vector3[] = []
   private pathIndex = 0
   private treeIndex: number
@@ -1476,8 +1479,6 @@ export class NpcAgent {
   private readonly forest: SettlementForestHooks | undefined
   /** Settlement interaction queues (well today; garden/stall later). */
   private readonly queues: ReadonlyMap<string, InteractionQueue>
-  /** Queue id for village-well drinks; `null` skips queueing. */
-  private readonly wellQueueId: string | null
   /** Queue this agent is currently a member of (waiting or serving). */
   private activeQueueId: string | null = null
   /** Bounded semantic-event history (plan 170) — always recording (cheap,
@@ -1593,8 +1594,9 @@ export class NpcAgent {
   private readonly getPlayerSocial: (npcId: string) => PlayerSocialState
   private readonly settlementCharacter: SettlementCharacter
   /** Bounded lookup for a nearby completed player-built well (plan 127 §10)
-   *  — an alternative water-fetch destination to `landmarks.well` when
-   *  closer to this NPC's household home. See `resolveWaterWellTarget`. */
+   *  — an alternative water-fetch destination to `residentAnchors.
+   *  waterSources` when closer to this NPC's household home. See
+   *  `resolveWaterWellTarget`. */
   private readonly getNearbyPlayerWell?: NearbyPlayerWellLookup
   /** NPC hunger-source discovery hooks over natural world items + crops
    *  (plan 174) — an alternative to the abstract settlement-garden gather
@@ -1642,7 +1644,7 @@ export class NpcAgent {
       sampleHeight,
       waterLevel,
       collidersNear,
-      landmarks,
+      residentAnchors,
       home,
       workplace,
       socialPlace,
@@ -1678,7 +1680,6 @@ export class NpcAgent {
     const playAt = deps.playAt ?? (() => {})
     const npcId = deps.npcId ?? ''
     const queues = deps.queues ?? new Map()
-    const wellQueueId = deps.wellQueueId ?? null
     const economy = deps.economy ?? null
     const household = deps.household ?? null
     // Deterministic physical profile (plan npc-001/npc-019) — defaults to a
@@ -1706,7 +1707,6 @@ export class NpcAgent {
     this.forest = forest
     this.id = npcId
     this.queues = queues
-    this.wellQueueId = wellQueueId
     this.economy = economy
     this.household = household
     this.npcState = npcState
@@ -1742,7 +1742,7 @@ export class NpcAgent {
     this.sampleHeight = sampleHeight
     this.waterLevel = waterLevel
     this.collidersNear = collidersNear
-    this.landmarks = landmarks
+    this.residentAnchors = residentAnchors
     this.home = home.position.clone()
     const character = member.character
     this.name = character.name
@@ -1777,7 +1777,7 @@ export class NpcAgent {
     const energetic = this.traits.includes('energetic')
     this.fatigueMult = energetic ? ENERGETIC_FATIGUE_MULT : 1
     this.waitMultiplier = this.traits.includes('fast_worker') ? FAST_WORKER_WAIT_MULT : 1
-    this.treeIndex = treeIndex % Math.max(1, landmarks.trees.length)
+    this.treeIndex = treeIndex % Math.max(1, residentAnchors.wood?.trees.length ?? 0)
     this.needs = npcState.needs
 
     prepareProp(root, NPC_HEIGHT)
@@ -3263,11 +3263,14 @@ export class NpcAgent {
         this.wait -= dt
         // Face the well while drawing water so Interact reads as a drink.
         if (this.pendingAction?.kind === 'drink' && this.pendingAction.queueId) {
-          const wellPos = this.queues.get(this.pendingAction.queueId)?.config.anchor ?? this.landmarks.well
-          const dx = wellPos.x - this.mesh.position.x
-          const dz = wellPos.z - this.mesh.position.z
-          if (Math.hypot(dx, dz) > 0.05) {
-            this.mesh.rotation.y = Math.atan2(dx, dz)
+          const wellPos = this.queues.get(this.pendingAction.queueId)?.config.anchor
+            ?? this.residentAnchors.waterSources[0]?.position
+          if (wellPos) {
+            const dx = wellPos.x - this.mesh.position.x
+            const dz = wellPos.z - this.mesh.position.z
+            if (Math.hypot(dx, dz) > 0.05) {
+              this.mesh.rotation.y = Math.atan2(dx, dz)
+            }
           }
         }
         if (this.wait <= 0) {
@@ -3434,15 +3437,17 @@ export class NpcAgent {
           // the mesh center) and for any legacy drink aimed at the plaza well.
           if (action.kind === 'drink') {
             const queuedWell = action.queueId ? this.queues.get(action.queueId) : undefined
+            const primaryWater = this.residentAnchors.waterSources[0]?.position
             if (queuedWell) {
               playActionWell(this.playAt, queuedWell.config.anchor)
             } else if (
-              Math.hypot(
-                action.destination.x - this.landmarks.well.x,
-                action.destination.z - this.landmarks.well.z,
+              primaryWater
+              && Math.hypot(
+                action.destination.x - primaryWater.x,
+                action.destination.z - primaryWater.z,
               ) < 0.5
             ) {
-              playActionWell(this.playAt, this.landmarks.well)
+              playActionWell(this.playAt, primaryWater)
             }
           } else if (action.kind === 'chop') {
             playActionChop(this.playAt, action.destination)
@@ -3593,7 +3598,7 @@ export class NpcAgent {
           relieveNeed(this.needs, 'waterDuty')
           this.household.water.add(WATER_FETCH_AMOUNT)
         } else if (need === 'food') relieveNeed(this.needs, 'food')
-        else if (need === 'wood' && this.landmarks.trees.length > 0) {
+        else if (need === 'wood' && (this.residentAnchors.wood?.trees.length ?? 0) > 0) {
           relieveNeed(this.needs, 'wood')
         }
       }
@@ -3606,7 +3611,7 @@ export class NpcAgent {
       finalActivity === 'work' && this.workplace
         ? this.workplace.position
         : finalActivity === 'eat'
-          ? this.landmarks.garden
+          ? (this.residentAnchors.fallbackFoodAnchor ?? this.home)
           : finalActivity === 'social' && this.socialPlace
             ? this.socialPlace.position
             : this.home
@@ -4225,10 +4230,7 @@ export class NpcAgent {
     isSettlementWell: boolean
   } {
     const nearby = this.getNearbyPlayerWell?.(this.home.x, this.home.z, PLAYER_WELL_WATER_SEARCH_RADIUS) ?? null
-    const wells = this.landmarks.wells
-    const settlementWells = wells && wells.length > 0
-      ? wells.map((well) => ({ position: well.position, queueId: well.queueId }))
-      : [{ position: this.landmarks.well, queueId: this.wellQueueId }]
+    const settlementWells = this.residentAnchors.waterSources
     return resolveNearestWaterWellTarget({
       home: this.home,
       settlementWells,
@@ -4540,7 +4542,7 @@ export class NpcAgent {
         case 'gardenGather':
           this.startAction({
             kind: 'eat',
-            destination: copyVec3(this.landmarks.garden),
+            destination: copyVec3(this.residentAnchors.fallbackFoodAnchor ?? this.home),
             durationSec: 1.4 * this.waitMultiplier,
             onComplete: () => {
               depositFoodHarvest(household, this.economy, this.simClock)
@@ -4603,15 +4605,16 @@ export class NpcAgent {
       return
     }
     if (need === 'wood') {
+      const wood = this.residentAnchors.wood ?? { trees: [] }
       const selected = this.selectAndTraceStrategy('wood', getWoodStrategyCandidates({
-        available: this.role !== 'trader' && workEligibleSettlementTrees(this.landmarks).length > 0,
+        available: this.role !== 'trader' && workEligibleSettlementTrees(wood).length > 0,
         economyWithdrawAvailable: this.computeEconomyWithdrawAvailable('wood'),
         householdExchangeAvailable: this.computeHouseholdExchangeAvailable('wood'),
       }))
       switch (selected) {
         case 'chopDeposit': {
           const forest = this.forest
-          const eligibleTrees = workEligibleSettlementTrees(this.landmarks)
+          const eligibleTrees = workEligibleSettlementTrees(wood)
           if (eligibleTrees.length === 0) break
           let landmark = eligibleTrees[this.treeIndex % eligibleTrees.length]!
           this.treeIndex = (this.treeIndex + 1) % eligibleTrees.length
@@ -4623,10 +4626,10 @@ export class NpcAgent {
               80,
               forest.getWorldDays(),
               forest.sampleEnv,
-              (presence) => isTreeWorkEligible(presence.x, presence.z, this.landmarks.plaza),
+              (presence) => isTreeWorkEligible(presence.x, presence.z, wood.plaza),
             )
             if (found) {
-              const match = this.landmarks.trees.find((t) => t.id === found.id)
+              const match = wood.trees.find((t) => t.id === found.id)
               if (match) landmark = match
             }
           }
@@ -4681,7 +4684,7 @@ export class NpcAgent {
               destination: copyVec3(householdStorageDestination(
                 'wood',
                 this.home,
-                resolveHouseholdWoodStorage(this.home, this.landmarks),
+                this.residentAnchors.householdWoodStorage,
               )),
               durationSec: 0.8 * this.waitMultiplier,
               onComplete: () => {
@@ -4759,7 +4762,7 @@ export class NpcAgent {
       helperAssignment: this.npcState.helperAssignment,
       needs: this.needs,
       home: this.home,
-      landmarks: this.landmarks,
+      settlementStorage: this.residentAnchors.settlementStorage,
       carried: this.carried,
       waitMultiplier: this.waitMultiplier,
       simTime: () => this.simClock,
@@ -5001,18 +5004,25 @@ export class NpcAgent {
       simTime: () => this.simClock,
       rollWorkDurationSec: () => randRange(WORK_DURATION_RANGE) * this.waitMultiplier,
       home: this.home,
-      landmarks: this.landmarks,
+      settlementStorage: this.residentAnchors.settlementStorage,
+      fishingAnchor: this.residentAnchors.fishingAnchor,
+      settlementCultivationAnchors: this.residentAnchors.cultivationAnchors,
+      fallbackGardenAnchor: this.residentAnchors.fallbackFoodAnchor,
       workplace: this.workplace,
       household: this.household,
       economy: this.economy,
       carried: this.carried,
       transportCargo: this.transportCargo,
       guardPatrolIndex: this.guardPatrolIndex,
-      // `% 3` mirrors `npcProfessionWork.ts`'s own fixed 3-point patrol
-      // (home/well/market) — both sides know that shape by construction,
-      // same as before extraction.
+      // This resident's own home, prepended to the settlement's own extra
+      // patrol anchors (plan settlements-021 Stage B) — the procedural
+      // adapter supplies `[well, market]`, reproducing the previous fixed
+      // `[home, well, market]` patrol exactly. The modulo below follows this
+      // same list's actual length rather than a hard-coded `% 3`.
+      guardPatrolPoints: [this.home, ...this.residentAnchors.patrolPoints],
       advanceGuardPatrol: () => {
-        this.guardPatrolIndex = (this.guardPatrolIndex + 1) % 3
+        const count = 1 + this.residentAnchors.patrolPoints.length
+        this.guardPatrolIndex = (this.guardPatrolIndex + 1) % count
       },
       fishAttempt: this.fishAttempt,
       nextFishAttempt: () => {
@@ -5071,13 +5081,7 @@ export class NpcAgent {
       nowDays: () => this.worldNowDays,
       shepherdFlock: this.shepherdFlock,
       hasShearingTool: () => this.personalInventory.hasCapability('shearing'),
-      pasture: this.landmarks.pasture
-        ? {
-          x: this.landmarks.pasture.position.x,
-          z: this.landmarks.pasture.position.z,
-          radius: this.landmarks.pasture.radius,
-        }
-        : null,
+      pasture: this.residentAnchors.pasture,
     }
   }
 
@@ -5153,10 +5157,11 @@ export class NpcAgent {
       return
     }
     if (intent === 'eat') {
+      const gardenAnchor = this.residentAnchors.fallbackFoodAnchor ?? this.home
       if (this.settledIdleActivity !== 'eat') {
         this.startAction({
           kind: 'eat',
-          destination: copyVec3(this.landmarks.garden),
+          destination: copyVec3(gardenAnchor),
           durationSec: 1.4 * this.waitMultiplier,
           onComplete: () => {
             depositFoodHarvest(this.household, this.economy, this.simClock)
@@ -5167,7 +5172,7 @@ export class NpcAgent {
         })
         return
       }
-      this.wanderNear(this.landmarks.garden)
+      this.wanderNear(gardenAnchor)
       return
     }
     if (intent === 'social' && this.socialPlace) {
@@ -6721,8 +6726,8 @@ export class NpcAgent {
   /** Dock-path / wander-near-home fallback used when the schedule has no
    *  workplace to go to (or a wood need fired in a treeless settlement). */
   private beginUnscheduledIdle(): void {
-    if (this.landmarks.dockRoute.length > 1 && Math.random() < FOLLOW_DOCK_PATH_CHANCE) {
-      this.pathWaypoints = this.landmarks.dockRoute
+    if (this.residentAnchors.dockRoute.length > 1 && Math.random() < FOLLOW_DOCK_PATH_CHANCE) {
+      this.pathWaypoints = this.residentAnchors.dockRoute
       this.pathIndex = 0
       this.phase = 'followPath'
       resetMovementWatchdog(this.watchdog)
@@ -7313,16 +7318,13 @@ export class NpcAgent {
       return
     }
     const pos = this.mesh.position
+    // Bounded local avoidance/fallback anchors (plan settlements-021 Stage C)
+    // — empty for a site with no real infrastructure landmark; never a
+    // synthetic well/stockpile/garden.
+    const candidates = this.residentAnchors.collisionFallbackAnchors
     const colliders = [
       ...this.collidersNearAtHeight(pos.x, pos.z),
-      ...this.collidersNearAtHeight(this.landmarks.well.x, this.landmarks.well.z),
-      ...this.collidersNearAtHeight(this.landmarks.stockpile.x, this.landmarks.stockpile.z),
-      ...this.collidersNearAtHeight(this.landmarks.garden.x, this.landmarks.garden.z),
-    ]
-    const candidates = [
-      this.landmarks.well,
-      this.landmarks.stockpile,
-      this.landmarks.garden,
+      ...candidates.flatMap((anchor) => this.collidersNearAtHeight(anchor.x, anchor.z)),
     ]
     const picked = pickEmergencyTeleportPoint(
       pos,
@@ -7337,8 +7339,9 @@ export class NpcAgent {
       console.warn('[npc:rescue] emergency teleport', this.name, { x: picked.x, z: picked.z })
       return
     }
-    // Last resort: occupied-disk rim facing the well (plaza), never house center.
-    const fallback = destinationOnColliderRim(this.landmarks.well, pos, colliders)
+    // Last resort: occupied-disk rim facing the primary fallback anchor
+    // (plaza well, when one exists), never house center.
+    const fallback = destinationOnColliderRim(candidates[0] ?? this.home, pos, colliders)
     this.mesh.position.x = fallback.x
     this.mesh.position.z = fallback.z
     this.mesh.position.y = this.sampleHeight(fallback.x, fallback.z)

@@ -187,7 +187,7 @@ Generated from exported TypeScript symbols.
 - `HUNT_RESUPPLY_ARROW_TARGET` — const — line 867
 - `NPC_HEIGHT` — const — line 484
 - `NPC_SHADOW_DISTANCE` — const — line 489
-- `NpcAgent` — class — line 1146
+- `NpcAgent` — class — line 1149
   - domain: settlements-npcs
   - system: npc-agent
   - role: Central per-NPC behaviour integration point: needs, FSM/schedule, personality-driven decisions and combat.
@@ -415,25 +415,25 @@ Generated from exported TypeScript symbols.
 
 ## `ai/npcLogistics.ts`
 
-- `buildTransferAction` — function — line 175
-- `canDeliverToPlayerStorage` — function — line 356
-- `canExchangeWithHousehold` — function — line 211
-- `canWithdrawFromEconomy` — function — line 197
-- `depositCarriedItems` — function — line 132
-- `depositFoodHarvest` — function — line 120
-- `depositWoodHarvest` — function — line 93
+- `buildTransferAction` — function — line 178
+- `canDeliverToPlayerStorage` — function — line 361
+- `canExchangeWithHousehold` — function — line 214
+- `canWithdrawFromEconomy` — function — line 200
+- `depositCarriedItems` — function — line 135
+- `depositFoodHarvest` — function — line 123
+- `depositWoodHarvest` — function — line 96
 - `HELPER_DELIVERY_ITEM_KIND` — const — line 48
 - `HELPER_DELIVERY_MAX_CARRY` — const — line 49
 - `HOUSEHOLD_EXCHANGE_MAX_TRANSFER` — const — line 36
 - `HUNT_YIELD_KINDS` — const — line 53
 - `NpcLogisticsCtx` — type — line 67
-- `planDeliverHuntYieldHome` — function — line 418
-- `planEconomyWithdraw` — function — line 228
-- `planHouseholdExchange` — function — line 288
-- `planPlayerStorageDelivery` — function — line 379
-- `ResourceTransferPlan` — type — line 167
-- `satisfyHouseholdResourceNeed` — function — line 154
-- `WoodHarvestDeposit` — type — line 90
+- `planDeliverHuntYieldHome` — function — line 423
+- `planEconomyWithdraw` — function — line 231
+- `planHouseholdExchange` — function — line 293
+- `planPlayerStorageDelivery` — function — line 384
+- `ResourceTransferPlan` — type — line 170
+- `satisfyHouseholdResourceNeed` — function — line 157
+- `WoodHarvestDeposit` — type — line 93
 
 ## `ai/npcMovementRecovery.ts`
 
@@ -567,12 +567,12 @@ Generated from exported TypeScript symbols.
 
 ## `ai/npcProfessionWork.ts`
 
-- `BLACKSMITH_SHARPEN_THRESHOLD` — const — line 100
-- `findWeaponNeedingMaintenance` — function — line 116
-- `HERBAL_CANDIDATE_LIMIT` — const — line 1171
-- `NpcWorkContext` — type — line 136
-- `planProfessionWork` — function — line 1266
-- `selectTraderCollectionGoods` — function — line 482
+- `BLACKSMITH_SHARPEN_THRESHOLD` — const — line 96
+- `findWeaponNeedingMaintenance` — function — line 112
+- `HERBAL_CANDIDATE_LIMIT` — const — line 1181
+- `NpcWorkContext` — type — line 132
+- `planProfessionWork` — function — line 1276
+- `selectTraderCollectionGoods` — function — line 495
 
 ## `ai/npcSocialTitle.ts`
 

@@ -2399,6 +2399,7 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `ai/npcProfessionWork.ts`
+- `settlement/npcResidentAnchors.ts`
 - `settlement/props.ts`
 - `world/cultivationAnchor.test.ts`
 

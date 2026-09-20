@@ -88,6 +88,7 @@ import {
   settlementMemberPhysicalSeed,
   type TravellingVisitorSpawn,
 } from './npcIdentity'
+import { resolveNpcPresentationOwner, shouldMaterializeNpcAt } from './npcPresentationOwner'
 import { createNpcRelationships, type NpcRelationshipEntry } from './npcRelationships'
 import { createNpcStateRegistry, type NpcAuthoritativeState, type NpcId, type NpcStateSnapshot } from './npcState'
 import {
@@ -827,8 +828,17 @@ export async function createSettlementsManager(
     const result: TravellingVisitorSpawn[] = []
     npcStates.forEach((state, npcId) => {
       const journey = state.merchantJourney
-      if (!journey || journey.phase !== 'visiting') return
-      if (journey.destinationSettlementId !== destinationSettlementId) return
+      if (!journey) return
+      // Same presentation-owner policy `createSettlement.ts`'s own resident
+      // suppression consults (plan settlements-021 Stage A) — a journey
+      // wins over any residency override, so this stays consistent even for
+      // a founder who happens to also be a Travelling Merchant.
+      const owner = resolveNpcPresentationOwner({
+        sourceSettlementId: journey.homeSettlementId,
+        residencyOverride: foundedSettlements.residencyOf(npcId),
+        merchantJourney: journey,
+      })
+      if (!shouldMaterializeNpcAt(owner, destinationSettlementId)) return
       const home = knownSettlements.get(journey.homeSettlementId)
       if (!home) return
       const homeDef = defFor(worldToCell(home.x, home.z))
@@ -914,6 +924,7 @@ export async function createSettlementsManager(
       },
     } satisfies InterSettlementTransportHooks,
     resolveTravellingVisitors,
+    residencyOverrideOf: (npcId) => foundedSettlements.residencyOf(npcId),
     packAnimalJourney: packAnimalJourneyHooks,
     // `animalId` alone is not globally unique across settlements (two
     // different villages' own household rolls can both produce

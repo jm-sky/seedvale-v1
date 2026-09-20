@@ -177,100 +177,100 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   🟡 `L` · **Score:**  44  
    → **unlocks:** 0/0
 
-24. `settlements-021` — **Shared settlement resident runtime**  
+24. `settlements-npcs-044` — **Authored Outpost Occupants & Construction Lifecycle**  
   🔴 `L` · **Score:**  40  
    → **unlocks:** 1/1
 
-25. `settlements-npcs-044` — **Authored Outpost Occupants & Construction Lifecycle**  
-  🔴 `L` · **Score:**  40  
-   → **unlocks:** 1/1
-
-26. `quests-progression-058` — **Injured dog discovery thread**  
+25. `quests-progression-058` — **Injured dog discovery thread**  
   🟡 `M` · **Score:**  37  
    → **unlocks:** 0/0
 
-27. `tools-017` — **Custom UBC NPC model source and build pipeline**  
+26. `tools-017` — **Custom UBC NPC model source and build pipeline**  
   🔴 `M` · **Score:**  37  
    → **unlocks:** 0/0
 
-28. `items-player-050` — **Player health and injury persistence**  
+27. `items-player-050` — **Player health and injury persistence**  
   🟡 `S` · **Score:**  35  
    → **unlocks:** 0/0
 
-29. `npc-037` — **Work Contracts — Stale Target Discovery and Notice Cleanup**  
+28. `npc-037` — **Work Contracts — Stale Target Discovery and Notice Cleanup**  
   🔴 `M` · **Score:**  35  
    → **unlocks:** 0/0
 
-30. `npc-055` — **Semantic profession and activity animation coverage**  
+29. `npc-055` — **Semantic profession and activity animation coverage**  
   🔴 `L` · **Score:**  32  
    → **unlocks:** 0/0
 
-31. `world-terrain-042` — **Medicinal herb meadow patches**  
+30. `world-terrain-042` — **Medicinal herb meadow patches**  
   🟡 `M` · **Score:**  31  
    → **unlocks:** 1/1
 
-32. `world-terrain-044` — **Runtime ground query authority and missing-chunk fallbacks**  
+31. `world-terrain-044` — **Runtime ground query authority and missing-chunk fallbacks**  
   🔴 `M` · **Score:**  31  
    → **unlocks:** 0/0
 
-33. `npc-054` — **NPC desired gifts, gift acceptance and relationship rewards**  
+32. `npc-054` — **NPC desired gifts, gift acceptance and relationship rewards**  
   🔴 `L` · **Score:**  30  
    → **unlocks:** 0/0
 
-34. `npc-059` — **NPC need action result revalidation and atomic relief**  
+33. `npc-059` — **NPC need action result revalidation and atomic relief**  
   🔴 `S` · **Score:**  29  
    → **unlocks:** 0/0
 
-35. `ui-input-026` — **World and map label visibility and collision fixes**  
+34. `ui-input-026` — **World and map label visibility and collision fixes**  
   🔴 `S` · **Score:**  29  
    → **unlocks:** 0/0
 
-36. `world-terrain-043` — **System terrain modification rebuild idempotency**  
+35. `world-terrain-043` — **System terrain modification rebuild idempotency**  
   🔴 `S` · **Score:**  29  
    → **unlocks:** 0/0
 
-37. `settlements-022` — **Founded settlement live runtime and streaming**  
+36. `settlements-022` — **Founded settlement live runtime and streaming**  
   🔴 `L` · **Score:**  28  
    → **unlocks:** 0/0
 
-38. `items-player-014` — **Rope-pullable resource transport**  
+37. `items-player-014` — **Rope-pullable resource transport**  
   🟡 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-39. `npc-058` — **NPC time-skip resource and interrupt parity**  
+38. `npc-058` — **NPC time-skip resource and interrupt parity**  
   🔴 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-40. `tools-005` — **Seedvale Character Preparation Panel**  
+39. `tools-005` — **Seedvale Character Preparation Panel**  
   🔴 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-41. `world-033` — **WorldBundle rebuild transaction and lifecycle safety**  
+40. `world-033` — **WorldBundle rebuild transaction and lifecycle safety**  
   🔴 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-42. `world-034` — **Time-skip clock exactness and catch-up coverage**  
+41. `world-034` — **Time-skip clock exactness and catch-up coverage**  
   🔴 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-43. `world-terrain-039` — **N8AO / post-process cost budget**  
+42. `world-terrain-039` — **N8AO / post-process cost budget**  
   🔴 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-44. `ui-input-025` — **Road travel autopilot for player and mounts**  
+43. `ui-input-025` — **Road travel autopilot for player and mounts**  
   🔴 `L` · **Score:**  26  
    → **unlocks:** 0/0
 
-45. `items-player-044` — **Shoulder and forearm equipment slots**  
+44. `items-player-044` — **Shoulder and forearm equipment slots**  
   🟡 `M` · **Score:**  25  
    → **unlocks:** 0/0
 
-46. `world-terrain-041` — **Agent presentation render LOD**  
+45. `world-terrain-041` — **Agent presentation render LOD**  
   🔴 `L` · **Score:**  24  
    → **unlocks:** 0/0
 
-47. `tools-018` — **Codebase domain and flow audit master**  
+46. `tools-018` — **Codebase domain and flow audit master**  
   🔴 `XL` · **Score:**  20  
+   → **unlocks:** 0/0
+
+47. `ui-input-027` — **Interaction candidate dropped-item scaling**  
+  🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
 48. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
@@ -338,9 +338,6 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
 - [`quests-progression-070-boar-at-the-medicinal-meadow-systemic-settlement-problem.md`](quests-progression-070-boar-at-the-medicinal-meadow-systemic-settlement-problem.md)  
   is blocked by:
   - [`world-terrain-042-medicinal-herb-meadow-patches.md`](world-terrain-042-medicinal-herb-meadow-patches.md)
-- [`settlements-022-founded-settlement-live-runtime-and-streaming.md`](settlements-022-founded-settlement-live-runtime-and-streaming.md)  
-  is blocked by:
-  - [`settlements-021-shared-settlement-resident-runtime.md`](settlements-021-shared-settlement-resident-runtime.md)
 - [`settlements-npcs-051-travelling-merchant-road-party-travel-and-threat-cooperation.md`](settlements-npcs-051-travelling-merchant-road-party-travel-and-threat-cooperation.md)  
   is blocked by:
   - [`world-035-regional-road-travel-itinerary-and-adaptive-traveller-execution.md`](world-035-regional-road-travel-itinerary-and-adaptive-traveller-execution.md)
@@ -730,6 +727,7 @@ graph TD
   ui_input_024["ui-input-024 — NPC dialogue grouping and quest priority"]
   ui_input_025["ui-input-025 — Road travel autopilot for player and mounts"]
   ui_input_026["ui-input-026 — World and map label visibility and collision fixes"]
+  ui_input_027["ui-input-027 — Interaction candidate dropped-item scaling"]
   world_001["world-001 — Playtest Gameplay Fixes — Stamina, Fire Time-Skip and Bear Behaviour"]
   world_003["world-003 — Faster Application Startup"]
   world_004["world-004 — Well Depth, Groundwater & Well Protection"]

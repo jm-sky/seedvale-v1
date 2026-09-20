@@ -37,10 +37,10 @@ import type { ResourceSiteInventories } from '../world/resourceSiteInventory'
 import type { SettlementForestHooks } from '../world/settlementForestHooks'
 import type { WeatherState } from '../world/weather'
 import type { VillageSize } from './families'
-import type { NpcStateRegistry } from './npcState'
+import type { NpcAuthoritativeState, NpcStateRegistry } from './npcState'
 import type { FoodSourceType, SettlementDef } from './settlementGenerator'
 import type { SettlementStructureStateRegistry } from './structureStateRegistry'
-import { NpcAgent } from '../ai/NpcAgent'
+import { NpcAgent, type NpcAgentDeps } from '../ai/NpcAgent'
 import { createNpcCrowdPass } from '../ai/npcCrowd'
 import { advanceSocialPairing } from '../ai/socialBehaviour'
 import { disposeObject3D } from '../assets/loadGltf'
@@ -78,7 +78,6 @@ import {
   spawnLivestock,
   tickSettlementLivestock,
 } from './livestock'
-import { isNpcAwayOnMerchantJourney } from './merchantJourney'
 import {
   generateMerchantAssortment,
   resolveMerchantProfiles,
@@ -91,7 +90,13 @@ import {
   finalizeExpiredNpcCorpse,
   shouldSkipNpcCorpsePresentation,
 } from './npcPostDeath'
+import { resolveNpcPresentationOwner, shouldMaterializeNpcAt } from './npcPresentationOwner'
 import { createNpcRelationships, type NpcRelationships } from './npcRelationships'
+import {
+  type NpcResidentAnchors,
+  proceduralResidentAnchorsFromLandmarks,
+  residentAnchorsForHome,
+} from './npcResidentAnchors'
 import {
   PASTURE_WELL_TROUGH_BUCKET_REACH,
   pastureWellTroughDistance,
@@ -478,6 +483,12 @@ export type CreateSettlementDeps = {
    *  `SettlementsManager`-owned, forwarded into every `NpcAgent.create` call
    *  the same way as `interSettlement`. */
   packAnimalJourney?: PackAnimalJourneyHooks
+  /** Explicit NPC settlement-residency override (plan settlements-021 Stage
+   *  A) — backed by `FoundedSettlementRegistry.residencyOf`. `undefined`
+   *  means this npc keeps its ordinary procedural source-settlement
+   *  interpretation. Forwarded into `resolveNpcPresentationOwner` alongside
+   *  this settlement's own id and the npc's current `merchantJourney`. */
+  residencyOverrideOf?: (npcId: string) => string | undefined
   /** True when `(settlementId, animalId)` already has an authoritative live
    *  agent detached elsewhere right now (plan settlements-npcs-048) —
    *  forwarded into `spawnLivestock` so a household animal reserved by an
@@ -558,6 +569,7 @@ export async function createSettlement(
     resolveTravellingVisitors,
     packAnimalJourney,
     isLivestockDetachedElsewhere,
+    residencyOverrideOf,
   } = deps
 
   // Bridge-aware ground/water composed once, used only where NPC/livestock
@@ -1083,8 +1095,101 @@ export async function createSettlement(
       }
     },
   }
+  // Narrow procedural-independent resident runtime anchors (plan
+  // settlements-021 Stage B/C) — the settlement-scope slice is identical for
+  // every resident of this settlement (and for a travelling visitor spawned
+  // here below), so it's built once rather than per-NPC.
+  const settlementResidentAnchors = proceduralResidentAnchorsFromLandmarks(landmarks, wellQid)
+
+  /**
+   * Shared existing-`NpcId` resident-materialization pipeline (plan
+   * settlements-021 Stage D) — the one path both an ordinary procedural
+   * resident and a travelling visitor go through below: stable physical
+   * profile → `NpcStateRegistry.getOrCreate` → optional merchant-stock
+   * seeding → required post-death maintenance → presentation-owner gate →
+   * `NpcAgent.create` → scene registration. Neither call site may skip a
+   * step or reorder it relative to this pipeline.
+   *
+   * Deliberately does not generate `npcId`, create a household, derive a
+   * home from `familyIndex`, call `workplaceFor()`, require a
+   * `SettlementDef`, or build props/landmarks — every one of those stays
+   * the caller's job.
+   *
+   * @domain settlements-npcs
+   */
+  async function materializeSettlementResident(input: {
+    npcId: string
+    member: NpcAgentDeps['member']
+    familyMembers: NpcAgentDeps['familyMembers']
+    physicalSeed: number
+    needOffset: number
+    treeIndex: number
+    household: NpcAgentDeps['household']
+    home: NpcAgentDeps['home']
+    workplace: NpcAgentDeps['workplace']
+    socialPlace: NpcAgentDeps['socialPlace']
+    residentAnchors: NpcResidentAnchors
+    /** Procedural trader stock seeding only — a travelling visitor never
+     *  re-seeds its already-live merchant stock. */
+    seedMerchantStock?: (npcState: NpcAuthoritativeState) => void
+    /** `false` for a travelling visitor — `resolveTravellingVisitors()`
+     *  (plan settlements-021 Stage A) already applied this same
+     *  presentation-owner policy when selecting it as a candidate for this
+     *  destination. */
+    applyPresentationGate: boolean
+    /** Every remaining settlement-scoped `NpcAgent.create()` hook — an
+     *  ordinary resident gets the full bag, a visitor a much narrower one
+     *  (no profession/logistics hooks; `workplace` is already `null`). */
+    extraDeps: Partial<NpcAgentDeps>
+  }): Promise<NpcAgent | null> {
+    const physicalProfile = generatePhysicalProfile(input.physicalSeed, input.member.character.gender, input.member.age)
+    // Hydrates from the same HP/needs/stamina/vigor object every time this
+    // id has been seen before (agent dispose/recreate on settlement
+    // unload/reload) — a genuinely new id gets the usual fresh state (plan
+    // 197), seeded with this NPC's generated maxima.
+    const npcState = npcStateRegistry.getOrCreate(input.npcId, input.needOffset, physicalProfile)
+    input.seedMerchantStock?.(npcState)
+    if (npcState.postDeath) finalizeExpiredNpcCorpse(npcState.postDeath, currentNowDays, droppedItems)
+    if (shouldSkipNpcCorpsePresentation(npcState, currentNowDays)) return null
+    // Presentation-owner gate (plan settlements-021 Stage A) — covers both
+    // merchant journey away-suppression (plan settlements-npcs-038) and an
+    // explicit founded-residency override (plan settlements-020): this
+    // presentation is skipped whenever some other settlement (a merchant
+    // destination, or this npc's current residency) currently owns its
+    // live presentation.
+    if (input.applyPresentationGate) {
+      const owner = resolveNpcPresentationOwner({
+        sourceSettlementId: def.id,
+        residencyOverride: residencyOverrideOf?.(input.npcId),
+        merchantJourney: npcState.merchantJourney,
+      })
+      if (!shouldMaterializeNpcAt(owner, def.id)) return null
+    }
+    const agent = await NpcAgent.create({
+      sampleHeight: surfaceSampleHeight,
+      waterLevel,
+      collidersNear,
+      residentAnchors: input.residentAnchors,
+      home: input.home,
+      workplace: input.workplace,
+      socialPlace: input.socialPlace,
+      treeIndex: input.treeIndex,
+      needOffset: input.needOffset,
+      member: input.member,
+      physicalProfile,
+      familyMembers: input.familyMembers,
+      playAt,
+      requestNpcBark,
+      npcId: input.npcId,
+      npcState,
+      household: input.household,
+      ...input.extraDeps,
+    })
+    if (isSystemEnabled('npcs')) scene.add(agent.mesh)
+    return agent
+  }
+
   try {
-  const nowDays = currentNowDays
   agents = (await Promise.all(
     flatMembers.map(async ({ home, household, member, familyIndex, familyMembers }, i) => {
       const npcId = settlementNpcId(def.id, i)
@@ -1103,105 +1208,82 @@ export async function createSettlement(
       // npc-001/npc-019) — own seed stream (settlement seed + flat member
       // index), independent of `needOffset`/name/role rolls. The maxima are
       // only used the first time `npcId` is ever seen by `npcStateRegistry`
-      // below; hydration of an existing id ignores them (a settlement
-      // doesn't re-roll an NPC's body on reload). `physicalProfile` itself
-      // is also passed straight to `NpcAgent.create()` below (base SPEA
-      // isn't part of `NpcAuthoritativeState`, see `npcState.ts`) — the same
-      // stable `physicalSeed` formula reconstructs the same profile every
-      // time, so this doesn't reroll an existing NPC's Strength either.
+      // (inside `materializeSettlementResident`); hydration of an existing
+      // id ignores them (a settlement doesn't re-roll an NPC's body on
+      // reload). The same stable `physicalSeed` formula reconstructs the
+      // same profile every time, so this doesn't reroll an existing NPC's
+      // Strength either.
       const physicalSeed = settlementMemberPhysicalSeed(settlementSeed, i)
-      const physicalProfile = generatePhysicalProfile(physicalSeed, member.character.gender, member.age)
-      // Hydrates from the same HP/needs/stamina/vigor object every time this
-      // id has been seen before (agent dispose/recreate on settlement
-      // unload/reload) — a genuinely new id gets the usual fresh state
-      // (plan 197), seeded with this NPC's generated maxima.
-      const npcState = npcStateRegistry.getOrCreate(npcId, needOffset, physicalProfile)
-      if (member.character.role === 'trader') {
-        const profile = merchantProfiles.find((entry) => entry.npcId === npcId)
-        seedMerchantStockIfNeeded(
-          npcState.merchantStock,
-          npcState,
-          merchantAssortment.get(npcId) ?? {},
-          profile
-            ? {
-              size: def.size,
-              seed: settlementSeed,
-              npcId,
-              specialization: profile.specialization,
-              premiumAssignedKind: premiumAssignment?.npcId === npcId ? premiumAssignment.kind : null,
-              forcedArmorQuality: def.isHome && profile.stallIndex === 0
-                ? { leather_pauldron: 'poor' as const }
-                : undefined,
-            }
-            : undefined,
-        )
-      }
-      if (npcState.postDeath) finalizeExpiredNpcCorpse(npcState.postDeath, nowDays, droppedItems)
-      if (shouldSkipNpcCorpsePresentation(npcState, nowDays)) return null
-      // Merchant journey away-suppression (plan settlements-npcs-038) —
-      // presentation-only: family/household/profession identity are
-      // untouched, only this authored home `NpcAgent` is skipped while the
-      // real Trader is outbound/visiting/returning elsewhere. Must exist
-      // before foreign visitor materialization below to keep "at most one
-      // live agent" true when home and destination are loaded together.
-      if (isNpcAwayOnMerchantJourney(npcState)) return null
-      const agent = await NpcAgent.create({
-        sampleHeight: surfaceSampleHeight,
-        waterLevel,
-        collidersNear,
-        landmarks,
+      return materializeSettlementResident({
+        npcId,
+        member,
+        familyMembers,
+        physicalSeed,
+        needOffset,
+        treeIndex: i,
+        household,
         home,
         workplace,
         socialPlace,
-        treeIndex: i,
-        needOffset,
-        member,
-        physicalProfile,
-        familyMembers,
-        playAt,
-        requestNpcBark,
-        forest,
-        npcId,
-        queues,
-        wellQueueId: wellQid,
-        economy,
-        household,
-        npcState,
-        getPlayerSocial: npcGetPlayerSocial,
-        settlementCharacter: def.plan.identity.character,
-        mining,
-        getNearbyPlayerWell,
-        foodSources,
-        herbalGather,
-        hunting,
-        destinationThreat,
-        helperDelivery,
-        householdExchange,
-        workContracts,
-        transportOrders,
-        resourceSiteInventories,
-        resolveResourceSitePosition,
-        interSettlement,
-        packAnimalJourney,
-        playerWells,
-        droppedItems,
-        terrainPreparations,
-        palisades,
-        standingTorches,
-        residentialBuildings,
-        burialHooks: burialHooks
-          ? { ...burialHooks, householdId: household.id }
-          : null,
-        graveVisitHooks,
-        corpseCleanupHooks,
-        shepherdFlock,
-        structureRepairHooks: deps.structureStates
-          ? createNpcStructureRepairHooks(def.id, familyIndex, landmarks.houses[familyIndex]?.position, deps.structureStates)
-          : null,
-        npcWorldMovement: deps.npcWorldMovement,
+        residentAnchors: residentAnchorsForHome(settlementResidentAnchors, home.position, landmarks),
+        applyPresentationGate: true,
+        seedMerchantStock: member.character.role === 'trader'
+          ? (npcState) => seedMerchantStockIfNeeded(
+            npcState.merchantStock,
+            npcState,
+            merchantAssortment.get(npcId) ?? {},
+            profile
+              ? {
+                size: def.size,
+                seed: settlementSeed,
+                npcId,
+                specialization: profile.specialization,
+                premiumAssignedKind: premiumAssignment?.npcId === npcId ? premiumAssignment.kind : null,
+                forcedArmorQuality: def.isHome && profile.stallIndex === 0
+                  ? { leather_pauldron: 'poor' as const }
+                  : undefined,
+              }
+              : undefined,
+          )
+          : undefined,
+        extraDeps: {
+          forest,
+          queues,
+          economy,
+          getPlayerSocial: npcGetPlayerSocial,
+          settlementCharacter: def.plan.identity.character,
+          mining,
+          getNearbyPlayerWell,
+          foodSources,
+          herbalGather,
+          hunting,
+          destinationThreat,
+          helperDelivery,
+          householdExchange,
+          workContracts,
+          transportOrders,
+          resourceSiteInventories,
+          resolveResourceSitePosition,
+          interSettlement,
+          packAnimalJourney,
+          playerWells,
+          droppedItems,
+          terrainPreparations,
+          palisades,
+          standingTorches,
+          residentialBuildings,
+          burialHooks: burialHooks
+            ? { ...burialHooks, householdId: household.id }
+            : null,
+          graveVisitHooks,
+          corpseCleanupHooks,
+          shepherdFlock,
+          structureRepairHooks: deps.structureStates
+            ? createNpcStructureRepairHooks(def.id, familyIndex, landmarks.houses[familyIndex]?.position, deps.structureStates)
+            : null,
+          npcWorldMovement: deps.npcWorldMovement,
+        },
       })
-      if (isSystemEnabled('npcs')) scene.add(agent.mesh)
-      return agent
     }),
   )).filter((agent): agent is NpcAgent => agent != null)
   } finally {
@@ -1219,37 +1301,25 @@ export async function createSettlement(
   if (visitorSpawns.length > 0) {
     const anchorPosition = workplaceFor(def.id, 'trader', landmarks, 0, 0, 0)?.position
       ?? new Vector3(site.x, site.y, site.z)
-    const visitorAgents = (await Promise.all(visitorSpawns.map(async (visitorSpawn) => {
-      const physicalProfile = generatePhysicalProfile(
-        visitorSpawn.physicalSeed,
-        visitorSpawn.member.character.gender,
-        visitorSpawn.member.age,
-      )
-      const npcState = npcStateRegistry.getOrCreate(visitorSpawn.npcId, 0, physicalProfile)
-      if (npcState.postDeath) finalizeExpiredNpcCorpse(npcState.postDeath, currentNowDays, droppedItems)
-      if (shouldSkipNpcCorpsePresentation(npcState, currentNowDays)) return null
-      const agent = await NpcAgent.create({
-        sampleHeight: surfaceSampleHeight,
-        waterLevel,
-        collidersNear,
-        landmarks,
-        home: { id: `${def.id}:visitor:${visitorSpawn.npcId}`, type: 'home', position: anchorPosition },
-        workplace: null,
-        socialPlace,
-        treeIndex: 0,
-        needOffset: 0,
-        member: visitorSpawn.member,
-        physicalProfile,
-        familyMembers: visitorSpawn.familyMembers,
-        playAt,
-        requestNpcBark,
-        npcId: visitorSpawn.npcId,
-        npcState,
-        household: visitorSpawn.household ?? null,
-      })
-      if (isSystemEnabled('npcs')) scene.add(agent.mesh)
-      return agent
-    }))).filter((agent): agent is NpcAgent => agent != null)
+    const visitorAgents = (await Promise.all(visitorSpawns.map((visitorSpawn) => materializeSettlementResident({
+      npcId: visitorSpawn.npcId,
+      member: visitorSpawn.member,
+      familyMembers: visitorSpawn.familyMembers,
+      physicalSeed: visitorSpawn.physicalSeed,
+      needOffset: 0,
+      treeIndex: 0,
+      household: visitorSpawn.household ?? null,
+      home: { id: `${def.id}:visitor:${visitorSpawn.npcId}`, type: 'home', position: anchorPosition },
+      workplace: null,
+      socialPlace,
+      residentAnchors: residentAnchorsForHome(settlementResidentAnchors, anchorPosition, landmarks),
+      // `resolveTravellingVisitors()` already applied the same
+      // presentation-owner policy when selecting this npc as a visitor
+      // candidate for this destination (plan settlements-021 Stage A) — no
+      // second gate here.
+      applyPresentationGate: false,
+      extraDeps: {},
+    })))).filter((agent): agent is NpcAgent => agent != null)
     agents.push(...visitorAgents)
   }
 

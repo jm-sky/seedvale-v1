@@ -14,16 +14,6 @@ import { createHousehold } from './settlement/household'
 import { type HerbalGatherTarget, nearestHerbalGatherTarget } from './world/herbalGathering'
 
 const HOME = { x: 0, y: 0, z: 0 }
-const LANDMARKS = {
-  home: HOME,
-  well: HOME,
-  market: HOME,
-  garden: HOME,
-  stockpile: HOME,
-  settlementStorage: HOME,
-  dock: undefined,
-  trees: [],
-} as unknown as NpcWorkContext['landmarks']
 
 function baseCtx(overrides: Partial<NpcWorkContext> = {}): NpcWorkContext {
   return {
@@ -34,7 +24,11 @@ function baseCtx(overrides: Partial<NpcWorkContext> = {}): NpcWorkContext {
     simTime: () => 0,
     rollWorkDurationSec: () => 1,
     home: HOME as unknown as NpcWorkContext['home'],
-    landmarks: LANDMARKS,
+    settlementStorage: { food: HOME, wood: HOME } as unknown as NpcWorkContext['settlementStorage'],
+    fishingAnchor: null,
+    settlementCultivationAnchors: [],
+    fallbackGardenAnchor: HOME,
+    guardPatrolPoints: [HOME, HOME, HOME] as unknown as NpcWorkContext['guardPatrolPoints'],
     workplace: null,
     household: null,
     economy: null,

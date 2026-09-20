@@ -3,7 +3,7 @@ import type { HeightSampler } from '../player/PlayerController'
 import type { Household, HouseholdResourceKind } from '../settlement/household'
 import type { HouseholdExchangeHooks } from '../settlement/householdExchange'
 import type { HouseholdWoodItemBatch } from '../settlement/householdWood'
-import type { SettlementLandmarks } from '../settlement/props'
+import type { NpcResidentAnchors } from '../settlement/npcResidentAnchors'
 import type { HelperDeliveryHooks } from '../world/helperDeliveryHooks'
 import type { HelperAssignment } from './helperAssignment'
 import type { ActionId, NpcPlannedAction } from './npcAction'
@@ -12,7 +12,7 @@ import { commitWoodcutterDeposit, tryAdvanceDevelopment } from '../economy/npcWo
 import { type SettlementEconomy } from '../economy/settlementEconomy'
 import { carryFoodClaim, claimFoodItems, deliverCarriedFoodClaim, type FoodItemClaim } from '../items/foodItems'
 import { Inventory } from '../items/Inventory'
-import { settlementStorageDestination } from '../settlement/storageDestinations'
+import { resolveNpcSettlementStorage } from '../settlement/npcResidentAnchors'
 import { copyVec3, type Vec3 } from '../simulation'
 import { FOOD_THRESHOLD_NORMAL, type NeedState, relieveNeed } from './Needs'
 
@@ -72,7 +72,10 @@ export type NpcLogisticsCtx = {
   helperAssignment: HelperAssignment | null
   needs: NeedState
   home: Vec3
-  landmarks: SettlementLandmarks
+  /** Settlement-scope wood/food delivery destinations (plan settlements-021
+   *  Stage B, formerly `landmarks`) — `null` when this site has no
+   *  settlement storage; a village-storage withdrawal then cannot run. */
+  settlementStorage: NpcResidentAnchors['settlementStorage']
   carried: Inventory
   waitMultiplier: number
   simTime: () => number
@@ -229,8 +232,10 @@ export function planEconomyWithdraw(ctx: NpcLogisticsCtx, kind: HouseholdResourc
   const { economy, household } = ctx
   if (!household || !economy) return null
   if (household.shortage(kind) <= 0) return null
+  const pickupDestination = resolveNpcSettlementStorage(ctx.settlementStorage, kind)
+  if (!pickupDestination) return null
   const maxTransfer = HOUSEHOLD_EXCHANGE_MAX_TRANSFER[kind]
-  const pickup = copyVec3(settlementStorageDestination(kind, ctx.landmarks.stockpile, ctx.landmarks.settlementStorage))
+  const pickup = copyVec3(pickupDestination)
   const deposit = copyVec3(ctx.home)
   if (kind === 'food') {
     const requested = Math.min(economy.surplus('food'), maxTransfer)

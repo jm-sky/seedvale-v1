@@ -134,10 +134,10 @@ Generated from TypeScript imports.
 - `settlement/livestock.ts`
 - `settlement/npcPhysicalProfile.ts`
 - `settlement/npcPostDeath.ts`
+- `settlement/npcResidentAnchors.ts`
 - `settlement/npcState.ts`
 - `settlement/places.ts`
 - `settlement/professionStaffing.ts`
-- `settlement/props.ts`
 - `settlement/storageDestinations.ts`
 - `settlement/structureCondition.ts`
 - `settlement/structureRepairCandidates.ts`
@@ -980,8 +980,7 @@ Generated from TypeScript imports.
 - `settlement/household.ts`
 - `settlement/householdExchange.ts`
 - `settlement/householdWood.ts`
-- `settlement/props.ts`
-- `settlement/storageDestinations.ts`
+- `settlement/npcResidentAnchors.ts`
 - `simulation/index.ts`
 - `world/helperDeliveryHooks.ts`
 
@@ -1229,6 +1228,7 @@ Generated from TypeScript imports.
 
 - `ai/NpcAgent.ts`
 - `audio/createWorldAudio.ts`
+- `settlement/npcResidentAnchors.ts`
 - `settlement/places.ts`
 - `settlement/props.ts`
 
@@ -1280,9 +1280,8 @@ Generated from TypeScript imports.
 - `settlement/household.ts`
 - `settlement/householdExchange.ts`
 - `settlement/livestock.ts`
+- `settlement/npcResidentAnchors.ts`
 - `settlement/places.ts`
-- `settlement/props.ts`
-- `settlement/storageDestinations.ts`
 - `simulation/index.ts`
 - `terrain/depositMining.ts`
 - `terrain/resourceDeposits.ts`

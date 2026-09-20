@@ -62,6 +62,7 @@ Generated from TypeScript imports.
 - `settlement/livestock.ts`
 - `settlement/merchantJourney.ts`
 - `settlement/npcIdentity.ts`
+- `settlement/npcPresentationOwner.ts`
 - `settlement/npcRelationships.ts`
 - `settlement/npcState.ts`
 - `settlement/playerOwnedHorseDebug.ts`
@@ -229,12 +230,13 @@ Generated from TypeScript imports.
 - `settlement/household.ts`
 - `settlement/householdExchange.ts`
 - `settlement/livestock.ts`
-- `settlement/merchantJourney.ts`
 - `settlement/merchantTrade.ts`
 - `settlement/npcIdentity.ts`
 - `settlement/npcPhysicalProfile.ts`
 - `settlement/npcPostDeath.ts`
+- `settlement/npcPresentationOwner.ts`
 - `settlement/npcRelationships.ts`
+- `settlement/npcResidentAnchors.ts`
 - `settlement/npcState.ts`
 - `settlement/pastureWater.ts`
 - `settlement/places.ts`
@@ -724,6 +726,7 @@ Generated from TypeScript imports.
 - `settlement/householdResourceTransfer.ts`
 - `settlement/livestock.ts`
 - `settlement/npcIdentity.ts`
+- `settlement/npcResidentAnchors.ts`
 - `settlement/pastureWater.test.ts`
 - `settlement/pastureWater.ts`
 - `settlement/rats.ts`
@@ -1127,8 +1130,9 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `settlement/SettlementsManager.ts`
-- `settlement/createSettlement.ts`
 - `settlement/merchantJourney.test.ts`
+- `settlement/npcPresentationOwner.test.ts`
+- `settlement/npcPresentationOwner.ts`
 - `settlement/npcState.ts`
 - `world/transportTravelArrival.ts`
 
@@ -1296,6 +1300,25 @@ Generated from TypeScript imports.
 - `settlement/npcPostDeath.test.ts`
 - `settlement/npcState.ts`
 
+## `settlement/npcPresentationOwner.test.ts`
+
+**Imports**
+
+- `settlement/merchantJourney.ts`
+- `settlement/npcPresentationOwner.ts`
+
+## `settlement/npcPresentationOwner.ts`
+
+**Imports**
+
+- `settlement/merchantJourney.ts`
+
+**Imported by**
+
+- `settlement/SettlementsManager.ts`
+- `settlement/createSettlement.ts`
+- `settlement/npcPresentationOwner.test.ts`
+
 ## `settlement/npcRelationships.test.ts`
 
 **Imports**
@@ -1315,6 +1338,32 @@ Generated from TypeScript imports.
 - `settlement/SettlementsManager.ts`
 - `settlement/createSettlement.ts`
 - `settlement/npcRelationships.test.ts`
+
+## `settlement/npcResidentAnchors.test.ts`
+
+**Imports**
+
+- `settlement/npcResidentAnchors.ts`
+- `settlement/props.ts`
+
+## `settlement/npcResidentAnchors.ts`
+
+**Imports**
+
+- `settlement/household.ts`
+- `settlement/props.ts`
+- `settlement/storageDestinations.ts`
+- `settlement/villagePlan.ts`
+- `world/cultivationAnchor.ts`
+
+**Imported by**
+
+- `ai/NpcAgent.ts`
+- `ai/npcLogistics.ts`
+- `ai/npcPlayerReactionVoice.test.ts`
+- `ai/npcProfessionWork.ts`
+- `settlement/createSettlement.ts`
+- `settlement/npcResidentAnchors.test.ts`
 
 ## `settlement/npcState.test.ts`
 
@@ -1680,10 +1729,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
-- `ai/NpcAgent.ts`
-- `ai/npcLogistics.ts`
 - `ai/npcPlayerReactionVoice.test.ts`
-- `ai/npcProfessionWork.ts`
 - `app/actions/groundActions.test.ts`
 - `fauna/AnimalAgent.ts`
 - `fauna/animalCorpse.ts`
@@ -1702,6 +1748,8 @@ Generated from TypeScript imports.
 - `settlement/createSettlement.ts`
 - `settlement/landPurchase.ts`
 - `settlement/lodgingResolver.ts`
+- `settlement/npcResidentAnchors.test.ts`
+- `settlement/npcResidentAnchors.ts`
 - `settlement/places.test.ts`
 - `settlement/places.ts`
 - `settlement/props.lampMount.test.ts`
@@ -2397,9 +2445,8 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `ai/NpcAgent.ts`
-- `ai/npcLogistics.ts`
-- `ai/npcProfessionWork.ts`
 - `settlement/SettlementsManager.ts`
+- `settlement/npcResidentAnchors.ts`
 - `settlement/storageDestinations.test.ts`
 
 ## `settlement/storageRepair.test.ts`
@@ -2645,6 +2692,7 @@ Generated from TypeScript imports.
 - `ai/voluntaryExpeditionJoin.ts`
 - `debug/npcDebugApi.ts`
 - `economy/initial.ts`
+- `settlement/npcResidentAnchors.ts`
 - `settlement/places.ts`
 - `settlement/plazaPaving.test.ts`
 - `settlement/plazaPaving.ts`

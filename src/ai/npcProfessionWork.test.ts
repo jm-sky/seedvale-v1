@@ -20,17 +20,7 @@ const WELL = { x: 10, y: 0, z: 0 }
 const MARKET = { x: 20, y: 0, z: 0 }
 const GARDEN = { x: 5, y: 0, z: 5 }
 const STOCKPILE = { x: 8, y: 0, z: 0 }
-const SETTLEMENT_STORAGE = { x: 9, y: 0, z: 0 }
-const LANDMARKS = {
-  home: HOME,
-  well: WELL,
-  market: MARKET,
-  garden: GARDEN,
-  stockpile: STOCKPILE,
-  settlementStorage: SETTLEMENT_STORAGE,
-  dock: undefined,
-  trees: [],
-} as unknown as NpcWorkContext['landmarks']
+const SETTLEMENT_STORAGE_POS = { x: 9, y: 0, z: 0 }
 
 function baseCtx(overrides: Partial<NpcWorkContext> = {}): NpcWorkContext {
   return {
@@ -41,7 +31,11 @@ function baseCtx(overrides: Partial<NpcWorkContext> = {}): NpcWorkContext {
     simTime: () => 0,
     rollWorkDurationSec: () => 3,
     home: HOME as unknown as NpcWorkContext['home'],
-    landmarks: LANDMARKS,
+    settlementStorage: { food: SETTLEMENT_STORAGE_POS, wood: STOCKPILE } as unknown as NpcWorkContext['settlementStorage'],
+    fishingAnchor: null,
+    settlementCultivationAnchors: [],
+    fallbackGardenAnchor: GARDEN,
+    guardPatrolPoints: [HOME, WELL, MARKET] as unknown as NpcWorkContext['guardPatrolPoints'],
     workplace: null,
     household: null,
     economy: null,
@@ -340,18 +334,14 @@ describe('planProfessionWork', () => {
         findPlantSpot: () => ({ x: 2, z: 2 }),
         plant: () => true,
       }
-      const landmarks = {
-        ...LANDMARKS,
-        cultivationAnchors: [
-          { position: { x: 20, z: 30 }, radius: 3.2 },
-          { position: { x: 5, z: 5 }, radius: 4 },
-        ],
-      } as unknown as NpcWorkContext['landmarks']
       const work = planProfessionWork(baseCtx({
         role: 'farmer',
         household,
         foodSources: foodSources as unknown as NpcWorkContext['foodSources'],
-        landmarks,
+        settlementCultivationAnchors: [
+          { position: { x: 20, z: 30 }, radius: 3.2 },
+          { position: { x: 5, z: 5 }, radius: 4 },
+        ],
       }))
       expect(work?.kind).toBe('harvest')
       expect(queried).toEqual([{ x: 20, z: 30 }])
@@ -359,14 +349,14 @@ describe('planProfessionWork', () => {
   })
 
   describe('fisher', () => {
-    it('returns null without a dock (no landmarks.dock)', () => {
+    it('returns null without a dock (no fishingAnchor)', () => {
       const ctx = baseCtx({ role: 'fisher' })
       expect(planProfessionWork(ctx)).toBeNull()
     })
 
     it('casts at the dock when one exists and there is carry room', () => {
-      const landmarks = { ...LANDMARKS, dock: { x: 3, y: 0, z: 3 } } as unknown as NpcWorkContext['landmarks']
-      const ctx = baseCtx({ role: 'fisher', landmarks, strength: 1 })
+      const fishingAnchor = { x: 3, y: 0, z: 3 } as unknown as NpcWorkContext['fishingAnchor']
+      const ctx = baseCtx({ role: 'fisher', fishingAnchor, strength: 1 })
       const work = planProfessionWork(ctx)
       expect(work?.kind).toBe('fish')
       expect(work?.durationSec).toBe(FISHING_CAST_DURATION_SEC)
@@ -395,6 +385,29 @@ describe('planProfessionWork', () => {
 
     it('always succeeds — the three patrol points always exist', () => {
       expect(planProfessionWork(baseCtx({ role: 'guard' }))).not.toBeNull()
+    })
+
+    it('a nonprocedural resident with no patrol points at all degrades to idle instead of a synthetic well/market (plan settlements-021)', () => {
+      expect(planProfessionWork(baseCtx({
+        role: 'guard',
+        guardPatrolPoints: [] as unknown as NpcWorkContext['guardPatrolPoints'],
+      }))).toBeNull()
+    })
+
+    it('the patrol-index modulo follows the actual point count, not a hard-coded 3', () => {
+      let index = 0
+      const twoPointDestinations: unknown[] = []
+      const twoPoints = [WELL, MARKET] as unknown as NpcWorkContext['guardPatrolPoints']
+      for (let i = 0; i < 4; i++) {
+        const ctx = baseCtx({
+          role: 'guard',
+          guardPatrolPoints: twoPoints,
+          guardPatrolIndex: index,
+          advanceGuardPatrol: () => { index = (index + 1) % twoPoints.length },
+        })
+        twoPointDestinations.push(planProfessionWork(ctx)?.destination)
+      }
+      expect(twoPointDestinations).toEqual([WELL, MARKET, WELL, MARKET])
     })
   })
 
