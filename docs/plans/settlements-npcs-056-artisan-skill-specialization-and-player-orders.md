@@ -9,6 +9,7 @@
 **Subdomains:** `economy` `production` `professions`  
 **Tags:** `artisan` `skill` `specialization` `orders`  
 **Roadmap:** `economy-production`
+**Model:** Sonnet, Composer
 
 ## Goal
 
