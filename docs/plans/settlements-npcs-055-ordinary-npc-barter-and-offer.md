@@ -108,27 +108,38 @@ Do not add profession-specific barter prices.
 
 Ordinary NPC barter must not use the merchant behavior where offered goods can effectively disappear from world ownership.
 
-Use one explicit recipient rule:
+Use a deterministic two-level recipient policy:
 
 ```text
 player OFFER goods
-→ interacting NPC personalInventory
+→ interacting NPC personalInventory while it remains within its normal carrying/storage capacity
+→ otherwise that NPC's Household.items, when a household exists and can accept the goods
 ```
 
-The interacting NPC is the counterparty and already owns persistent `personalInventory`, including coin payment from ordinary NPC trade. This gives every accepted offered item one concrete, persistent owner without inventing a household wallet, settlement stock sink or generic market inventory.
+The goal is to avoid turning `personalInventory` into an ever-growing barter warehouse while still preserving concrete ownership.
 
-Do **not** route offered items into `Household.items` in this plan. Household stock has production/reserve semantics and automatically mixing arbitrary player goods into it would blur production goods, reserves and shared-family ownership.
+Preflight must resolve the destination of every offered line before mutation. It is valid for one transaction to route some offered lines/instances to the NPC and others to the household, but the routing must be deterministic and stable for that commit.
+
+Rules:
+
+- prefer `personalInventory` when the whole offered line/instance fits without exceeding its existing capacity;
+- otherwise use the NPC's own `Household.items` as the fallback owner;
+- household-less NPCs have no fallback: if `personalInventory` cannot accept the item, reject the transaction;
+- never route to an unrelated household, settlement economy, invisible market stock or global sink;
+- preserve exact instance identity/freshness metadata when moving into either owner.
+
+This reuses the two persistent owners the simulation already has rather than adding a third trade-storage concept.
 
 ### Capacity
 
-The recipient `personalInventory` must pass capacity preflight before any mutation.
+Both possible destinations must be included in transaction preflight.
 
-If the NPC cannot accept all offered goods:
+If the resolved personal/household destinations cannot accept all offered goods:
 
 - return a typed trade failure using the existing trade result contract where practical;
 - mutate neither player inventory, NPC/household sell stock, NPC inventory nor coins.
 
-Do not silently drop overflow or redirect it to another owner.
+Do not silently drop overflow.
 
 ## Acceptance policy
 
@@ -186,11 +197,44 @@ Then atomically:
 
 ```text
 NPC/household goods → player
-player offered goods → NPC personalInventory
+player offered goods → NPC personalInventory / own Household.items
 coins → whichever side is owed the net balance
 ```
 
 No partial mutations.
+
+## Ordinary NPC starting coin budget
+
+Ordinary NPC barter introduces a real requirement for counterparties to own enough money to pay small net buybacks. Fresh NPCs should therefore receive a **bounded, one-time starting coin budget around 100 coins**, derived from existing settlement/social facts rather than a universal constant.
+
+Do not add a new social-class state model for this plan. Resolve the starting amount deterministically from:
+
+- `SettlementDef.size` / existing `VillageSize`;
+- the NPC's existing `Role`;
+- existing life-stage/elder status where useful as a lightweight social-standing modifier.
+
+Recommended initial calibration:
+
+```text
+OUTPOST  ~50
+SM       ~75
+MD      ~100
+LG      ~125
+XL      ~150
+```
+
+Then apply a small role/social modifier, keeping normal residents near the size baseline and allowing locally important/wealthier roles such as Trader/Blacksmith or an Elder to start somewhat above it. Keep modifiers bounded (roughly ±25–35 coins), deterministic and testable; avoid large wealth gaps in V1.
+
+Important lifecycle rule:
+
+- seed coins only on genuine first creation of authoritative NPC state;
+- restored/snapshotted NPC state keeps its persisted balance exactly;
+- spending or losing coins must **not** trigger refill;
+- reconstruction, stream-out/in and save/load must never infer that a low balance means starter money should be granted again.
+
+Prefer extending the same one-time personal-belongings/NPC-state initialization seam already used by `seedInitialPersonalBelongingsIfNeeded()` / `NpcAuthoritativeState`, rather than seeding money from UI or trade-session opening.
+
+The coin budget lives in `personalInventory`. Do not create a household wallet or settlement treasury.
 
 ## Net settlement semantics
 
@@ -378,7 +422,9 @@ Keep green:
 - Ordinary NPC trade sessions show the existing OFFER/barter UI.
 - Player can settle one mixed NPC purchase using acceptable goods plus coins.
 - Every offered player item has an authoritative persistent owner after commit.
-- Offered goods go to the interacting NPC's `personalInventory`.
+- Offered goods have a deterministic persistent destination: interacting NPC `personalInventory` first, own `Household.items` as capacity fallback.
+- Fresh NPCs receive a deterministic one-time coin budget centered around ~100 coins, scaled by settlement size and modest existing-role/elder social modifiers.
+- Starter coins are never refilled after spending and survive existing persistence/rebuild semantics.
 - NPC payouts use real owned coins; no ordinary NPC coin minting.
 - NPC sell stock still comes from existing live owner/reserve resolution.
 - Stack and instance-backed ownership are preserved exactly.
@@ -396,6 +442,8 @@ Keep green:
 - NPC↔NPC trade;
 - household shared wallet;
 - settlement treasury;
+- recurring NPC income/refill solely to support barter;
+- a new generic social-class/rank system;
 - automatically routing accepted goods into production/household stock;
 - NPC resale of received player goods through production/economy systems;
 - merchant caravans;
@@ -410,6 +458,7 @@ Primary:
 - `src/items/trade.ts`
 - `src/items/tradeCatalog.ts`
 - `src/app/inventoryWiring.ts`
+- `src/settlement/npcState.ts` and/or the existing personal-belongings initialization module used by `seedInitialPersonalBelongingsIfNeeded()`
 - `src/ui-vue/store.ts`
 - `src/ui-vue/screens/MerchantScreen.vue`
 
@@ -429,14 +478,16 @@ Do not modify production recipes, profession work logic or household stock gener
 
 ## Suggested implementation order
 
-1. Add focused tests for ordinary-NPC offer ownership and net coin settlement.
-2. Extend/extract the shared transaction core for mixed explicit-owner NPC trade.
-3. Wire live revalidation and real NPC coin/offer ownership in `inventoryWiring.ts`.
-4. Generalize ordinary-session pricing callbacks in `store.ts` / app wiring.
-5. Remove `npcGoods` OFFER presentation gates in `MerchantScreen.vue`.
-6. Add UI/session regressions and merchant regressions.
-7. Run targeted tests, typecheck, lint/build and full repository-required checks.
-8. Leave browser/manual verification to the user.
+1. Add focused tests for one-time NPC starter coin seeding across settlement sizes/roles and persistence/rebuild.
+2. Add focused tests for ordinary-NPC offer ownership, personal→household fallback and net coin settlement.
+3. Extend the existing NPC-state/personal-belongings initialization seam with deterministic starter coins.
+4. Extend/extract the shared transaction core for mixed explicit-owner NPC trade with pre-resolved offer destinations.
+5. Wire live revalidation, fallback ownership and real NPC coin settlement in `inventoryWiring.ts`.
+6. Generalize ordinary-session pricing callbacks in `store.ts` / app wiring.
+7. Remove `npcGoods` OFFER presentation gates in `MerchantScreen.vue`.
+8. Add UI/session regressions and merchant regressions.
+9. Run targeted tests, typecheck, lint/build and full repository-required checks.
+10. Leave browser/manual verification to the user.
 
 Important new public architectural helpers should receive JSDoc and `@domain settlements-npcs` where useful for preflight discovery.
 
