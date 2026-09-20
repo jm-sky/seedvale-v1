@@ -72,82 +72,36 @@ Current UBC asset generation is in `scripts/assets/prepare-ubc-player-alpha.sh`.
 
 Do not retarget UAL onto Modular Men/Women at runtime. Their skeleton hierarchy differs from UBC and this would preserve two animation pipelines.
 
-## Asset tier verification
+## Owned animation sources and verification
 
-Verified against the current project asset audit and official Quaternius/itch distribution on 2026-09-18.
+The project now has the purchased **Universal Animation Library 2 Source** package locally. This changes the implementation baseline: UAL2 Source clips are in scope for npc-055 and should be used where they truthfully represent an existing simulation activity.
 
-### Universal Animation Library 1
+Authoritative local UAL2 Source inputs:
 
-Official current distribution:
+- `_temp/Models/packs/Universal Animation Library 2[Source]/UAL2.blend` — authoring/reference source;
+- `_temp/Models/packs/Universal Animation Library 2[Source]/Unreal-Godot/UAL2.glb` — preferred in-place runtime extraction source;
+- `_temp/Models/packs/Universal Animation Library 2[Source]/Unreal-Godot/UAL2_RM.glb` — root-motion variant, **not** an ordinary Seedvale NPC runtime source.
 
-- `Standard` — free;
-- `Pro` — paid, currently USD 9.99 on itch;
-- `Source` — paid, currently USD 14.99 on itch;
-- full library marketing count: 120+ animations;
-- Source additionally contains the authoring `.blend` rig/animation source.
+UAL1 remains the currently owned/used Standard source unless a newer local package is explicitly verified:
 
-The project's downloaded/inspected `UAL1_Standard.glb` contains 43 clips. Relevant confirmed Standard clips include:
+- `_temp/Models/packs/Universal Animation Library[Standard]/Unreal-Godot/UAL1_Standard.glb`.
 
-- `Idle_Loop`
-- `Walk_Loop`
-- `Jog_Fwd_Loop`
-- `Sprint_Loop`
-- `Interact`
-- `PickUp_Table`
-- `Fixing_Kneeling`
-- `Push_Loop`
-- `Idle_Talking_Loop`
-- `Sitting_Enter`
-- `Sitting_Idle_Loop`
-- `Sitting_Talking_Loop`
-- `Sitting_Exit`
-- `Sword_Attack`
-- `Sword_Idle`
-- `Death01`
-- hit/punch/jump/swim/crouch coverage already audited.
+Before changing runtime mappings, inventory the exact animation names physically present in the purchased UAL2 Source GLB (and use `UAL2.blend` only when authoring context is needed). Record that inventory in `docs/assets/character-animations.md`.
 
-### Universal Animation Library 2
+Never infer clip names from marketing, videos, semantic descriptions or old plan text. The local package is the authority. A profession-specific Source animation is wired only when its exact name exists in the inspected file.
 
-Official current distribution:
+Already verified useful Standard-compatible clips remain valid candidates:
 
-- `Standard` — free;
-- `Source` — paid, currently USD 14.99 on itch;
-- full library marketing count: 130+ animations;
-- official pack description explicitly includes farming and fishing;
-- Source contains the authoring `.blend` source.
+- UAL1: `Idle_Loop`, `Walk_Loop`, `Jog_Fwd_Loop`, `Sprint_Loop`, `Interact`, `Fixing_Kneeling`, `Idle_Talking_Loop`, sitting clips, combat/hurt/death/player clips.
+- UAL2: `TreeChopping_Loop`, `Farm_Harvest`, `Farm_PlantSeed`, `Farm_Watering`, `Walk_Carry_Loop`, `Consume`, `LayToIdle`, `Chest_Open`.
 
-The project's downloaded/inspected `UAL2_Standard.glb` contains 43 clips. Relevant confirmed Standard clips include:
+Purchased UAL2 Source should additionally be checked specifically for truthful coverage of current `fish`, `mine`, `sharpen`/blacksmith work, `shear`, textile work, herbalist/ground gathering, `drink`, burial/corpse work and other already-existing `ActionId` activities. Missing dedicated clips keep deterministic semantic fallbacks; do not invent near-match mappings merely to increase coverage.
 
-- `TreeChopping_Loop`
-- `Farm_Harvest`
-- `Farm_PlantSeed`
-- `Farm_Watering`
-- `Walk_Carry_Loop`
-- `Consume`
-- `LayToIdle`
-- `Idle_FoldArms_Loop`
-- `Idle_Lantern_Loop`
-- `Yes`
-- `Idle_No_Loop`
-- `Chest_Open`
-- `OverhandThrow`
-- combat/parkour clips already recorded in the asset audit.
-
-### Free vs paid rule for this plan
-
-The implementation baseline must require only clips physically verified in the project's Standard GLBs.
-
-Do not infer a paid clip name from the Animation Viewer, trailer, marketing text or semantic description. A paid-only clip may be wired only after its exact clip name is verified from a legitimately obtained Pro/Source package.
-
-Known example: the full UAL2 is advertised as containing fishing, while fishing is absent from the project's inspected Standard clip set. Therefore a dedicated fishing animation is an optional paid-tier enhancement, not a baseline dependency.
-
-The same rule applies to mining, smithing, shearing, weaving/spinning and ground-foraging: no dedicated Standard clip has been verified for them.
-
-Licensing is not the reason for the split: Quaternius marks the assets CC0. The distinction is package availability.
+Source files stay development inputs under `_temp`; runtime uses only the bounded generated companion asset committed under `public/models/characters/ubc/`.
 
 ## Activity-to-animation matrix
 
-### Free Standard baseline
+### Runtime baseline and purchased Source enrichment
 
 | Simulation activity | Current source | Target semantic animation | Confirmed free clip | Notes |
 |---|---|---|---|---|
@@ -167,24 +121,26 @@ Licensing is not the reason for the split: Quaternius marks the assets CC0. The 
 | guard sword combat | combat lifecycle | `attackMelee` / `combatIdle` | UAL1 sword clips | retain existing combat ownership |
 | chest interaction | no NPC chest action currently | — | UAL2 `Chest_Open` | include in companion asset now, but do not wire runtime until a real NPC container action exists |
 
-### No dedicated confirmed Standard clip
+### Source enrichment and fallback rule
 
-Keep a bounded semantic fallback rather than pretending a mismatched clip is correct:
+For every row below, first inspect the purchased UAL2 Source inventory. If an exact, truthful clip exists, give it a dedicated `NpcAnimationIntent` and include it in the bounded runtime manifest. Otherwise keep the listed fallback.
 
-| Role/activity | Existing simulation | Baseline fallback | Optional paid enhancement |
+| Role/activity | Existing simulation | Fallback when Source has no truthful clip | Source target to verify |
 |---|---|---|---|
-| fisher | `fish` | `interact` | dedicated fishing clip after Source verification |
-| miner | `mine` | `interact` | dedicated pickaxe/mining clip if verified |
-| blacksmith | `sharpen` | `interact` | smith/hammer/sharpen clip if verified |
-| blacksmith | generic `work` | `fixKneeling` | smith/hammer/crafting clip if verified |
-| shepherd | `shear` | `interact` | shearing clip if verified |
-| textile worker | generic `work` | `fixKneeling` | weaving/spinning/sewing clip if verified |
-| herbalist | generic `work` | `fixKneeling` | ground gather/forage clip if verified |
-| hunter | generic crafting `work` | `fixKneeling` | bowcraft/crafting clip if verified |
-| drink | `drink` | `interact` | dedicated drink clip if verified |
-| generic `work` — trader/miner/fisher/shepherd | `work` | `interact` | dedicated profession clips if verified |
-| ground pickup / berries / herbs | logistics/food/item pickup | `interact` | dedicated ground-pickup/forage clip if verified |
-| bury / corpse cleanup | existing action ids | `interact` | dig/bury/body-work clip if verified |
+| fisher | `fish` | `interact` | fishing cast/loop/reel clips |
+| miner | `mine` | `interact` | pickaxe/mining |
+| blacksmith | `sharpen` | `interact` | smith/hammer/sharpen |
+| blacksmith | generic `work` | `fixKneeling` | smith/crafting |
+| shepherd | `shear` | `interact` | shearing |
+| textile worker | generic `work` | `fixKneeling` | weaving/spinning/sewing |
+| herbalist | generic `work` | `fixKneeling` | ground gather/forage |
+| hunter | generic crafting `work` | `fixKneeling` | bowcraft/crafting |
+| drink | `drink` | `interact` | drink |
+| generic `work` — trader/miner/fisher/shepherd | `work` | `interact` | truthful profession work |
+| ground pickup / berries / herbs | logistics/food/item pickup | `interact` | ground pickup/gather |
+| bury / corpse cleanup | existing action ids | `interact` | digging/body-work |
+
+Do not create a semantic intent merely because a clip exists. The game-side caller/action must already exist or be a narrowly required presentation wrapper around an existing mutation.
 
 ## Architecture
 
@@ -265,10 +221,12 @@ Extend the existing asset-preparation pipeline so UBC NPC/player-compatible clip
 
 rather than keeping a player-named asset as the permanent NPC dependency.
 
-The extraction source should be:
+The extraction sources should be:
 
-- UAL1 Standard non-`_RM`;
-- UAL2 Standard non-`_RM`.
+- UAL1 Standard non-root-motion source currently used by the project;
+- purchased UAL2 Source `Unreal-Godot/UAL2.glb`.
+
+Do not extract ordinary NPC locomotion/work from `UAL2_RM.glb`.
 
 Seedvale already moves agents from deterministic simulation/navigation code, so root motion must remain disabled for ordinary NPC locomotion and work loops.
 
@@ -363,24 +321,27 @@ Docs/assets:
 
 ## Implementation stages
 
-### Stage A — asset manifest and semantic resolver
+### Stage A — Source inventory and semantic contract
 
-1. Record the exact clip inventory extracted from the two local Standard GLBs.
-2. Add the semantic animation-intent type and pure resolver.
-3. Add unit tests for action → intent mapping and fallback behavior.
-4. No gameplay or model migration yet.
+1. Inventory exact animation names from the purchased `UAL2.glb`; update `docs/assets/character-animations.md`.
+2. Compare Source coverage against the existing `ActionId` / profession work surface and lock the truthful action → intent → exact clip matrix.
+3. Add the semantic animation-intent type and pure resolver.
+4. Add unit tests for action → intent mapping, precedence and fallback behavior.
+5. No gameplay or model migration yet.
 
-### Stage B — UAL2 Standard companion asset
+### Stage B — bounded UAL1 + UAL2 Source companion asset
 
-1. Extend the current UBC asset-preparation script to read UAL2 Standard.
-2. Extract only approved UAL1+UAL2 clips.
-3. Produce one shared in-place companion GLB.
-4. Keep bone names and animation tracks required by Three.js mixer.
-5. Update the companion URL contract without duplicating animation data.
+1. Extend the current UBC asset-preparation pipeline to read current UAL1 Standard plus purchased UAL2 Source.
+2. Extract only clips required by player + currently wired NPC intents — **not the whole Source pack**.
+3. Merge them deterministically into one shared in-place `ual_humanoid.glb`.
+4. Fail the asset build on a missing requested clip or duplicate output clip name.
+5. Keep bone names and animation tracks required by Three.js mixer.
+6. Update the neutral companion URL contract without duplicating animation data.
+7. Verify the generated asset contains no root-motion locomotion dependency and no mannequin mesh payload.
 
-### Stage C — high-value activity wiring
+### Stage C — semantic activity wiring
 
-Wire and test:
+Wire and test the already-verified baseline first:
 
 1. `chop` → `TreeChopping_Loop`
 2. `harvest` → `Farm_Harvest`
@@ -388,10 +349,11 @@ Wire and test:
 4. `eat` → `Consume`
 5. `conversation` → `Idle_Talking_Loop`
 6. movement with relevant cargo → `Walk_Carry_Loop`
-7. generic `work` for herbalist/textile_worker/blacksmith/hunter → `Fixing_Kneeling`
+7. generic `work` fallback for herbalist/textile_worker/blacksmith/hunter → `Fixing_Kneeling`
 8. existing garden watering → short `waterGarden` action → `Farm_Watering`
 9. sleep entry → `LayToIdle`
-10. retain deterministic `Interact` fallback for unsupported activities.
+
+Then wire purchased Source-only coverage for existing actions (`fish`, `mine`, `sharpen`, `shear`, `drink`, profession-generic `work`, gathering/burial where semantically exact) using the exact names recorded in Stage A. Each Source-specific mapping must retain a deterministic fallback when the clip is absent from a generated/older asset.
 
 Animation duration must not become simulation duration. Existing action timers remain authoritative; loops may repeat until the action completes and one-shots may hold/return according to the existing animation lifecycle.
 
@@ -410,9 +372,12 @@ Animation duration must not become simulation duration. Existing action timers r
 3. Keep the future Base Human Pack Teen migration explicitly out of scope and tracked as a separate asset/appearance improvement.
 4. Migrate/remove remaining debug/test references, verify repository references reach zero, then physically delete the six legacy Modular NPC GLBs and their runtime pool/preload code in this stage.
 
-### Stage F — paid animation enrichment is out of scope
+### Stage F — cleanup and manifest lock
 
-Do not inspect, buy or wire Pro/Source clips in `npc-055`. Missing dedicated profession clips stay on the exact Standard fallbacks above. Candidate paid enhancements are tracked in `docs/plans/LOOSE-ENDS.md` for a separate future plan.
+1. Remove obsolete Standard-only/paid-deferred assumptions from docs and loose ends that npc-055 now resolves.
+2. Keep the runtime companion manifest bounded to actual player/NPC consumers; unused Source clips remain available only in the source package for later features.
+3. Confirm no runtime code references `UAL2_RM.glb`, the Source `_temp` paths or the old `ual1_player.glb`.
+4. Record any attractive but currently caller-less Source animations in `docs/plans/LOOSE-ENDS.md` rather than adding speculative intents.
 
 ## Locked implementation decisions
 
