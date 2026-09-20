@@ -1,11 +1,10 @@
 # PLANS PLANNED WITHOUT NOTES
 
 > Generated with `pnpm plans:without-notes`  
-> Date: 2026-09-20 17:31:50  
+> Date: 2026-09-20 17:36:24  
 
 ## PLANS
 
-- `fauna-045-cave-surface-perception-boundary-and-entrance-awareness.md`
 - `items-player-050-player-health-and-injury-persistence.md`
 - `items-player-051-cave-aware-dropped-item-continuity.md`
 - `items-player-053-atomic-world-pickup-ownership-transfer.md`
@@ -44,43 +43,6 @@
 
 --------------------------------
 ## PROMPTS
-
-### `fauna-045-cave-surface-perception-boundary-and-entrance-awareness.md`
-
-Prompt:
-
-```
-Zrób review planu `fauna-045-cave-surface-perception-boundary-and-entrance-awareness.md`
-
-Wczytaj:
-- `docs/STATE.md`
-- `docs/plans/PLANNING.md` (Implementation Notes section),
-- `docs/plans/fauna-045-cave-surface-perception-boundary-and-entrance-awareness.md`
-- aktualny codebase,
-- potrzebne zależności i powiązane implementacje.
-
-Na podstawie review utwórz w repo plik:
-`docs/plans/implementation-notes/fauna-045-cave-surface-perception-boundary-and-entrance-awareness-implementation-notes.md`
-
-Umieść w nim:
-- sugestie dotyczące implementacji,
-- istotne detale techniczne,
-- decyzje architektoniczne,
-- informacje o istniejących systemach i implementacjach, które należy wykorzystać,
-- potencjalne problemy, zależności i pułapki,
-- inne konkretne wskazówki, które ułatwią agentowi AI poprawną implementację planu.
-
-Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
-Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
-
-Po ukończeniu implementation notes zaktualizuj też `docs/plans/fauna-045-cave-surface-perception-boundary-and-entrance-awareness.md` i dodaj/ustaw metadata:
-`**Model:** <best>, <cheaper-safe-fallback>`
-Wybierz dokładnie dwa modele spośród: Composer, Grok, Sonnet, Opus.
-Pierwszy ma być najlepszym wyborem do implementacji, drugi tańszym wariantem o minimalnym dodatkowym ryzyku.
-Dobierz modele na podstawie wykonanego reconu i implementation notes, zgodnie z `docs/plans/PLANNING.md`.
-
-Pliki dodaj na branch `main` w repozytorium.
-```
 
 ### `items-player-050-player-health-and-injury-persistence.md`
 
