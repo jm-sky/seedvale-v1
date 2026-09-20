@@ -986,6 +986,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `ai/npcAnimationIntent.ts`
 - `ai/npcLogistics.ts`
 - `app/createApp.ts`
 - `settlement/createSettlement.ts`

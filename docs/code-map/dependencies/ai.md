@@ -26,6 +26,7 @@ Generated from TypeScript imports.
 - `ai/economicPressure.test.ts`
 - `ai/economicPressure.ts`
 - `ai/healingPressure.test.ts`
+- `ai/npcAnimationIntent.ts`
 - `ai/npcDecision.ts`
 - `ai/npcLogistics.test.ts`
 - `ai/npcLogistics.ts`
@@ -61,6 +62,7 @@ Generated from TypeScript imports.
 - `ai/npcAccompanyExecution.ts`
 - `ai/npcAction.ts`
 - `ai/npcAnimalThreat.ts`
+- `ai/npcAnimationIntent.ts`
 - `ai/npcAppearance.ts`
 - `ai/npcAssistance.ts`
 - `ai/npcBarkPolicies.ts`
@@ -323,6 +325,8 @@ Generated from TypeScript imports.
 - `ai/dialogueTemplates.ts`
 - `ai/nameCultures.test.ts`
 - `ai/nameCultures.ts`
+- `ai/npcAnimationIntent.test.ts`
+- `ai/npcAnimationIntent.ts`
 - `ai/npcAppearance.ts`
 - `ai/npcCombat.test.ts`
 - `ai/npcCombat.ts`
@@ -600,6 +604,8 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `ai/NpcAgent.ts`
+- `ai/npcAnimationIntent.test.ts`
+- `ai/npcAnimationIntent.ts`
 - `ai/npcLogistics.ts`
 - `ai/npcMovementTarget.test.ts`
 - `ai/npcMovementTarget.ts`
@@ -625,6 +631,29 @@ Generated from TypeScript imports.
 - `ai/npcAnimalThreat.test.ts`
 - `settlement/SettlementsManager.ts`
 - `settlement/createSettlement.ts`
+
+## `ai/npcAnimationIntent.test.ts`
+
+**Imports**
+
+- `ai/characters.ts`
+- `ai/npcAction.ts`
+- `ai/npcAnimationIntent.ts`
+
+## `ai/npcAnimationIntent.ts`
+
+**Imports**
+
+- `ai/Needs.ts`
+- `ai/characters.ts`
+- `ai/npcAction.ts`
+- `items/Inventory.ts`
+- `settlement/householdWood.ts`
+
+**Imported by**
+
+- `ai/NpcAgent.ts`
+- `ai/npcAnimationIntent.test.ts`
 
 ## `ai/npcAppearance.test.ts`
 

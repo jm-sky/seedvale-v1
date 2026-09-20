@@ -77,6 +77,7 @@ Generated from TypeScript imports.
 
 - `ai/NpcAgent.ts`
 - `ai/healingPressure.test.ts`
+- `ai/npcAnimationIntent.ts`
 - `ai/npcAssistance.test.ts`
 - `ai/npcAssistance.ts`
 - `ai/npcCombat.test.ts`

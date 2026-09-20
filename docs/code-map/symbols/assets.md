@@ -40,14 +40,14 @@ Generated from exported TypeScript symbols.
 ## `assets/assetAnchorData.ts`
 
 - `ADVENTURER_HAND_SPACE` — const — line 26
-- `anchorsForAsset` — function — line 186
+- `anchorsForAsset` — function — line 178
 - `ASSET_ANCHORS` — const — line 161
 - `CHARACTER_ANCHORS` — const — line 87
 - `CHARACTER_ANCHORS_UBC` — const — line 99
 - `HandAttachSpace` — type — line 18
 - `handAttachSpaceFromSocket` — function — line 77
 - `HELD_TOOL_GRIP_ANCHORS` — const — line 156
-- `heldToolHasGripAnchor` — function — line 193
+- `heldToolHasGripAnchor` — function — line 185
 - `RIGHT_HAND_BONE_NAMES` — const — line 9
 - `UBC_HAND_FROM_WRIST_R` — const — line 37
 - `UBC_HAND_OFFSET` — const — line 41
@@ -75,7 +75,7 @@ Generated from exported TypeScript symbols.
 ## `assets/assetIndex.ts`
 
 - `assetEntryMatchesQuery` — function — line 179
-- `assetIndexById` — function — line 618
+- `assetIndexById` — function — line 602
 - `AssetIndexEntry` — type — line 82
 - `AssetIndexGroup` — type — line 67
 - `AssetIndexStatus` — type — line 80
@@ -83,9 +83,9 @@ Generated from exported TypeScript symbols.
 - `basenameFromUrl` — function — line 125
 - `buildAssetIndex` — function — line 346
 - `customUrlEntry` — function — line 201
-- `entryFromUrl` — function — line 632
+- `entryFromUrl` — function — line 616
 - `filterAssetIndex` — function — line 192
-- `findAssetEntry` — function — line 624
+- `findAssetEntry` — function — line 608
 - `formatAssetLabel` — function — line 174
 - `groupFromModelUrl` — function — line 147
 - `kindFromBasename` — function — line 139

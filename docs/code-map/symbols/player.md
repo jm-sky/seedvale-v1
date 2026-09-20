@@ -287,31 +287,32 @@ Generated from exported TypeScript symbols.
 
 ## `player/playerVisualPreset.ts`
 
-- `companionAnimationUrl` — function — line 20
-- `PLAYER_UBC_ANIMATION_URL` — const — line 14
-- `PLAYER_UBC_KNIGHT_BROWN_URL` — const — line 30
-- `PLAYER_UBC_KNIGHT_CLOTH_BROWN_URL` — const — line 31
+- `companionAnimationUrl` — function — line 25
+- `PLAYER_UBC_ANIMATION_URL` — const — line 19
+- `PLAYER_UBC_KNIGHT_BROWN_URL` — const — line 35
+- `PLAYER_UBC_KNIGHT_CLOTH_BROWN_URL` — const — line 36
 - `PLAYER_UBC_KNIGHT_CLOTH_URL` — const — line 10
 - `PLAYER_UBC_KNIGHT_URL` — const — line 9
-- `PLAYER_UBC_NOBLE_BROWN_URL` — const — line 32
+- `PLAYER_UBC_NOBLE_BROWN_URL` — const — line 37
 - `PLAYER_UBC_NOBLE_URL` — const — line 11
-- `PLAYER_UBC_PEASANT_BROWN_URL` — const — line 28
+- `PLAYER_UBC_PEASANT_BROWN_URL` — const — line 33
 - `PLAYER_UBC_PEASANT_URL` — const — line 7
-- `PLAYER_UBC_RANGER_BROWN_URL` — const — line 29
+- `PLAYER_UBC_RANGER_BROWN_URL` — const — line 34
 - `PLAYER_UBC_RANGER_URL` — const — line 8
-- `PLAYER_UBC_WIZARD_BROWN_URL` — const — line 33
+- `PLAYER_UBC_WIZARD_BROWN_URL` — const — line 38
 - `PLAYER_UBC_WIZARD_URL` — const — line 12
-- `PlayerAppearance` — type — line 53
-- `PlayerEquipmentOutfitId` — type — line 44
-- `PlayerOutfitTint` — type — line 43
-- `PlayerVisualId` — type — line 35
-- `PlayerVisualPreset` — type — line 46
-- `resolveEquipmentOutfit` — function — line 166
-- `resolvePlayerAppearance` — function — line 197
-- `resolvePlayerTint` — function — line 172
-- `resolvePlayerUrlOverride` — function — line 151
-- `resolvePlayerVisualPreset` — function — line 216
-- `ubcPreloadUrls` — function — line 224
+- `PlayerAppearance` — type — line 58
+- `PlayerEquipmentOutfitId` — type — line 49
+- `PlayerOutfitTint` — type — line 48
+- `PlayerVisualId` — type — line 40
+- `PlayerVisualPreset` — type — line 51
+- `resolveEquipmentOutfit` — function — line 171
+- `resolvePlayerAppearance` — function — line 202
+- `resolvePlayerTint` — function — line 177
+- `resolvePlayerUrlOverride` — function — line 156
+- `resolvePlayerVisualPreset` — function — line 221
+- `UBC_HUMANOID_ANIMATION_URL` — const — line 17
+- `ubcPreloadUrls` — function — line 229
 
 ## `player/ridingStability.ts`
 
