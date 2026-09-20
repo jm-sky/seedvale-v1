@@ -359,6 +359,43 @@ describe('landmark variety (world-terrain-027)', () => {
     expect(cleared.some((v) => v.kind === 'tree' && v.x === 40)).toBe(true)
     expect(cleared.some((v) => v.kind === 'bush')).toBe(true)
   })
+
+  describe('mineable rock resourceId (plan world-terrain-047)', () => {
+    /** Scans several chunks so the test doesn't depend on one specific
+     *  chunk happening to roll a rock — rocks are a per-candidate random
+     *  chance, not guaranteed every chunk. */
+    function allRockPlacements(seed: number) {
+      const placements: ReturnType<typeof computeChunkEnvironment> = []
+      for (let cx = 0; cx < 6; cx++) {
+        for (let cz = 0; cz < 6; cz++) {
+          const params = baseParams({ seed, cx, cz })
+          const tile = computeChunkTile(params)
+          placements.push(
+            ...computeChunkEnvironment({ cx, cz }, tile, params, [])
+              .filter((p) => p.kind === 'largeRock' || p.kind === 'rockCluster'),
+          )
+        }
+      }
+      return placements
+    }
+
+    it('gives every generated rock a stable resourceId, distinct from landmark id', () => {
+      const rocks = allRockPlacements(42)
+      expect(rocks.length).toBeGreaterThan(0)
+      for (const rock of rocks) {
+        expect(rock.resourceId).toBeTruthy()
+        expect(rock.id).toBeUndefined()
+      }
+      // Unique across the scanned chunks — no two rocks share an id.
+      expect(new Set(rocks.map((r) => r.resourceId)).size).toBe(rocks.length)
+    })
+
+    it('regenerates the exact same rock resourceIds for the same seed/chunk', () => {
+      const first = allRockPlacements(7).map((r) => `${r.kind}:${r.resourceId}:${r.x.toFixed(3)}:${r.z.toFixed(3)}`)
+      const second = allRockPlacements(7).map((r) => `${r.kind}:${r.resourceId}:${r.x.toFixed(3)}:${r.z.toFixed(3)}`)
+      expect(second).toEqual(first)
+    })
+  })
 })
 
 /** world-014 — `resolveCemeteryPlacement` is the shared resolver both

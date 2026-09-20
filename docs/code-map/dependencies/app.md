@@ -1082,6 +1082,7 @@ Generated from TypeScript imports.
 - `terrain/chunkWorkerPool.ts`
 - `terrain/depositMining.ts`
 - `terrain/footstepSurface.ts`
+- `terrain/mineableRocks.ts`
 - `terrain/renewableWorldItems.ts`
 - `ui-vue/mount.ts`
 - `ui-vue/store.ts`
@@ -1645,6 +1646,7 @@ Generated from TypeScript imports.
 - `settlement/landOwnership.ts`
 - `terrain/chunkManager.ts`
 - `terrain/depositMining.ts`
+- `terrain/mineableRocks.ts`
 - `terrain/renewableWorldItems.ts`
 - `ui-vue/mount.ts`
 - `world/cropLifecycle.ts`
@@ -1784,6 +1786,7 @@ Generated from TypeScript imports.
 - `terrain/chunkManager.ts`
 - `terrain/depositMining.ts`
 - `terrain/mineableDeposit.ts`
+- `terrain/mineableRocks.ts`
 - `terrain/naturalResources.ts`
 - `terrain/renewableWorldItems.ts`
 - `terrain/resourceDeposits.ts`

@@ -8,6 +8,8 @@ import { playInventoryPickUp } from '../audio/inventorySounds'
 import {
   DIG_RADIUS,
   type DigProfile,
+  isEligibleShellDigSpot,
+  resolveDigShell,
   resolveDigStone,
 } from './dig'
 import { nearestGridPoint, resolveLevelSamples } from './terrainPreparation'
@@ -22,7 +24,27 @@ export type DigFeedback = {
   showCountAcquisition: (kind: ItemKind, delta: number, total: number) => void
 }
 
-/** Applies one dig depression + stone outcome at `(x, z)`. */
+/** Adds `amount` `kind` units straight to inventory and reports the pickup
+ *  as one grouped toast — the "fits" half of the shared count-backed dig/mine
+ *  acquisition contract (plan world-terrain-047 §3). Reused by rock-mining
+ *  yield in `groundActions.ts` so every count-backed terrain acquisition
+ *  shares one grant path. */
+export function addDigItemToInventory(kind: ItemKind, feedback: DigFeedback, amount = 1): void {
+  feedback.inventory.add(kind, amount)
+  playInventoryPickUp(feedback.playOnce)
+  feedback.hud.setInventoryWeight(feedback.inventory.totalWeight(), feedback.inventory.maxWeight)
+  feedback.showCountAcquisition(kind, amount, feedback.inventory.count(kind))
+}
+
+/** Drops one `kind` unit beside `(x, z)` — the "doesn't fit" half of the
+ *  shared count-backed dig/mine acquisition contract. */
+export function dropDigItemNearby(kind: ItemKind, x: number, z: number, feedback: DigFeedback, random: () => number): void {
+  const angle = random() * Math.PI * 2
+  feedback.droppedItems.drop(kind, x + Math.cos(angle) * 0.55, z + Math.sin(angle) * 0.55)
+}
+
+/** Applies one dig depression + stone outcome, plus an independent shell
+ *  find on eligible coastal sand (plan world-terrain-047), at `(x, z)`. */
 export function applyDigAt(
   chunkManager: ChunkManager,
   x: number,
@@ -39,27 +61,29 @@ export function applyDigAt(
   const outcome = resolveDigStone(profile.stoneChance, feedback.inventory.canAdd('stone'), random)
   if (outcome.kind === 'none') {
     feedback.toast.show(profile.surface === 'rock' ? 'Wykuto skałę.' : 'Wykopano dołek.')
-    return
+  } else if (outcome.kind === 'inventory') {
+    addDigItemToInventory('stone', feedback)
+  } else {
+    // Full inventory or unnoticed — never silently lose the stone.
+    dropDigItemNearby('stone', x, z, feedback, random)
+    feedback.toast.show(
+      outcome.reason === 'full'
+        ? 'Kamień wypadł na ziemię — ekwipunek jest pełny.'
+        : 'Kamień wypadł na ziemię.',
+    )
   }
-  if (outcome.kind === 'inventory') {
-    feedback.inventory.add('stone')
-    playInventoryPickUp(feedback.playOnce)
-    feedback.hud.setInventoryWeight(feedback.inventory.totalWeight(), feedback.inventory.maxWeight)
-    feedback.showCountAcquisition('stone', 1, feedback.inventory.count('stone'))
-    return
+
+  // Independent shell find (plan world-terrain-047) — a single dig may
+  // therefore produce both a stone and a shell.
+  if (isEligibleShellDigSpot(x, z, profile, chunkManager)) {
+    const shellOutcome = resolveDigShell(feedback.inventory.canAdd('shell'), random)
+    if (shellOutcome.kind === 'inventory') {
+      addDigItemToInventory('shell', feedback)
+    } else if (shellOutcome.kind === 'ground') {
+      dropDigItemNearby('shell', x, z, feedback, random)
+      feedback.toast.show('Muszelka wypadła na ziemię — ekwipunek jest pełny.')
+    }
   }
-  // Full inventory or unnoticed — never silently lose the stone.
-  const angle = random() * Math.PI * 2
-  feedback.droppedItems.drop(
-    'stone',
-    x + Math.cos(angle) * 0.55,
-    z + Math.sin(angle) * 0.55,
-  )
-  feedback.toast.show(
-    outcome.reason === 'full'
-      ? 'Kamień wypadł na ziemię — ekwipunek jest pełny.'
-      : 'Kamień wypadł na ziemię.',
-  )
 }
 
 /** "Wyrównaj" (plan `world-terrain-002` §1) — levels the 3×3 nearest terrain

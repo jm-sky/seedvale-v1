@@ -174,7 +174,14 @@ describe('progressiveHeight / progressiveHeights', () => {
 })
 
 describe('validatePreparationSamples', () => {
-  const env = { sampleHeight: () => 0, sampleMountainRidge: () => 0, waterLevel: 0, seed: 1 }
+  const env = {
+    sampleHeight: () => 0,
+    sampleMountainRidge: () => 0,
+    waterLevel: 0,
+    seed: 1,
+    sampleContinentalness: () => 0.7,
+    region: { oceanThreshold: 0.32, coastThreshold: 0.45 },
+  }
 
   it('rejects a sample too close to water', () => {
     const originals = [{ x: 0, z: 0, height: 0.5 }]

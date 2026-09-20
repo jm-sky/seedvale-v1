@@ -70,9 +70,9 @@ Generated from exported TypeScript symbols.
 
 ## `app/actions/groundActions.ts`
 
-- `createGroundActions` — function — line 118
+- `createGroundActions` — function — line 123
 - `GroundActions` — type — line 57
-- `GroundActionsDeps` — type — line 81
+- `GroundActionsDeps` — type — line 86
 
 ## `app/actions/householdResourceTransferActions.ts`
 
@@ -287,13 +287,13 @@ Generated from exported TypeScript symbols.
 
 ## `app/createApp.ts`
 
-- `createApp` — function — line 435
+- `createApp` — function — line 436
   - system: app-composition
   - role: Composition root: builds every long-lived system, threads their dependencies and owns app-level lifecycle (boot, rebuild, dispose).
   - owns: WorldBundle, GameLoop, AppRenderLoop
   - lifecycle: boot
   - integration: Wires world, player, UI, persistence and audio systems together.
-- `NewAppOptions` — type — line 404
+- `NewAppOptions` — type — line 405
 
 ## `app/faunaEncounterComposition.ts`
 
@@ -303,8 +303,8 @@ Generated from exported TypeScript symbols.
 
 ## `app/gameLoop.ts`
 
-- `createGameLoop` — function — line 709
-- `GameLoop` — type — line 668
+- `createGameLoop` — function — line 712
+- `GameLoop` — type — line 671
 - `GameLoopDeps` — type — line 320
 
 ## `app/graphicsSettings.ts`
@@ -349,10 +349,10 @@ Generated from exported TypeScript symbols.
 
 ## `app/interactables.ts`
 
-- `buildCombatTarget` — function — line 1324
-- `buildDigTarget` — function — line 1268
+- `buildCombatTarget` — function — line 1338
+- `buildDigTarget` — function — line 1282
 - `buildInteractables` — function — line 523
-- `collectItem` — function — line 1380
+- `collectItem` — function — line 1394
 - `COMBAT_TARGET_CONE_DOT` — const — line 110
 - `COMBAT_TARGET_RANGE` — const — line 95
 - `CombatAimMode` — type — line 100
@@ -411,14 +411,14 @@ Generated from exported TypeScript symbols.
 
 ## `app/saveState.ts`
 
-- `createSaveState` — function — line 154
+- `createSaveState` — function — line 160
   - domain: persistence
   - system: save-state
   - role: Assembles the live runtime state into `SaveData` and owns when it is written.
   - produces: SaveData
   - integration: Reads across WorldBundle, player and UI state to build one save.
-- `SaveState` — type — line 43
-- `SaveStateDeps` — type — line 64
+- `SaveState` — type — line 45
+- `SaveStateDeps` — type — line 66
 
 ## `app/userActions.ts`
 
@@ -436,19 +436,19 @@ Generated from exported TypeScript symbols.
 
 ## `app/worldBundle.ts`
 
-- `BuiltWorldSystems` — type — line 1228
-- `caveCrateContainerSpecs` — function — line 343
+- `BuiltWorldSystems` — type — line 1238
+- `caveCrateContainerSpecs` — function — line 344
   - domain: world-terrain
-- `caveTreasureContainerSpecs` — function — line 310
-- `createWorldBundle` — function — line 2241
-- `disposeWorldBundle` — function — line 2750
-- `HOME_RADIUS` — const — line 263
-- `homeChunks` — function — line 367
-- `rebuildWorldBundle` — function — line 2497
-- `WorldBundle` — type — line 390
+- `caveTreasureContainerSpecs` — function — line 311
+- `createWorldBundle` — function — line 2252
+- `disposeWorldBundle` — function — line 2772
+- `HOME_RADIUS` — const — line 264
+- `homeChunks` — function — line 368
+- `rebuildWorldBundle` — function — line 2514
+- `WorldBundle` — type — line 391
   - system: world-bundle
   - role: Owns the lifetime/rebuild boundary for all world systems (terrain, settlements, fauna, items, player-placed structures).
   - owns: WorldBundle
   - lifecycle: rebuild
-- `WorldStartupLoadingStage` — type — line 1049
-- `WorldStartupLoadingStageListener` — type — line 1051
+- `WorldStartupLoadingStage` — type — line 1055
+- `WorldStartupLoadingStageListener` — type — line 1057

@@ -107,6 +107,7 @@ const validSave: SaveData = {
   bedrolls: [{ id: 'bedroll:1', x: 12, z: -3, yaw: 0.4, variant: 'leather', condition: 90, lastConditionUpdateAtDays: 3.5 }],
   platforms: [{ id: 'platform:1', x: 13, z: -4, yaw: 0.4, condition: 95, lastConditionUpdateAtDays: 3.5 }],
   resourceDeposits: { 'resource_1_2': 0, 'resource_3_4': 5 },
+  mineableRocks: [],
   workContracts: [{
     id: 'workContract:1',
     employer: 'player',
@@ -2342,6 +2343,32 @@ describe('schema versioning and migration pipeline (persistence-003)', () => {
     expect(loadStoredSave({
       ...validSave,
       treasureChestMutations: [{ containerId: 'chest:a' }],
+    })).toEqual({ status: 'invalid' })
+  })
+
+  it('migrates a v50 save with no mineableRocks to the current version (plan world-terrain-047)', () => {
+    const { mineableRocks: _rocks, ...v50Fields } = validSave
+    const result = loadStoredSave({ ...v50Fields, version: 50 })
+    expect(result.status).toBe('ok')
+    if (result.status !== 'ok') return
+    expect(result.data.version).toBe(CURRENT_SAVE_VERSION)
+    expect(result.data.mineableRocks).toEqual([])
+  })
+
+  it('round-trips mineableRocks and rejects a malformed one (plan world-terrain-047)', () => {
+    const rocks = [
+      { id: 'rock:largeRock:1:2:0:a', stageIndex: 1, actionsInStage: 2 },
+      { id: 'rock:rockCluster:3:4:1:a', stageIndex: -1, actionsInStage: 0 },
+    ]
+    const withRocks = loadStoredSave({ ...validSave, mineableRocks: rocks })
+    expect(withRocks.status).toBe('ok')
+    if (withRocks.status === 'ok') {
+      expect(withRocks.data.mineableRocks).toEqual(rocks)
+    }
+
+    expect(loadStoredSave({
+      ...validSave,
+      mineableRocks: [{ id: 'rock:largeRock:1:2:0:a' }],
     })).toEqual({ status: 'invalid' })
   })
 

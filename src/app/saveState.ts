@@ -14,6 +14,7 @@ import type { SocialNewsLedger } from '../reputation/SocialNewsLedger'
 import type { LandOwnershipRegistry } from '../settlement/landOwnership'
 import type { TerrainModification } from '../terrain/chunkManager'
 import type { ResourceDepletionState } from '../terrain/depositMining'
+import type { MineableRockStateStore } from '../terrain/mineableRocks'
 import type { RenewableWorldItemOverrides } from '../terrain/renewableWorldItems'
 import type { VueUi } from '../ui-vue/mount'
 import type { CropPlacement } from '../world/cropLifecycle'
@@ -32,6 +33,7 @@ import { serializeTreasureMutations, type TreasureChestMutation } from '../items
 import { CURRENT_SAVE_VERSION, type SaveData, type SaveTerrainModification, type SaveWorkContract } from '../persistence/saveData'
 import { getActiveSaveId, getPendingNewSaveName, listSavesResult, type SaveReason, writeSave, type WriteSaveResult } from '../persistence/saveDb'
 import { resolvePauseActiveSaveName } from '../persistence/saveSlots'
+import { serializeMineableRockState } from '../terrain/mineableRocks'
 import { pruneRenewableWorldItems } from '../terrain/renewableWorldItems'
 import { isTransportOrderActive } from '../world/transportOrder'
 
@@ -126,6 +128,10 @@ export type SaveStateDeps = {
   /** Same live-accessor contract as the ids/arrays above (plan 198/201) —
    *  `createApp` replaces the underlying `Map` on a genuinely new world. */
   getResourceDepletion: () => ResourceDepletionState
+  /** Same live-accessor contract as `getResourceDepletion` above (plan
+   *  world-terrain-047) — `createApp` replaces the underlying `Map` on a
+   *  genuinely new world. */
+  getMineableRockState: () => MineableRockStateStore
   /** Live accessor (plan fauna-003) — `null` while not mounted. Only
    *  livestock (deterministic `animalId`) can ever be the mounted animal
    *  today, so this round-trips safely; see `app/createApp.ts`'s
@@ -306,6 +312,7 @@ export function createSaveState(deps: SaveStateDeps): SaveState {
     bedrolls: bundle.sleepingUtilities.bedrolls.nodes().map((b) => ({ ...b })),
     platforms: bundle.sleepingUtilities.platforms.nodes().map((p) => ({ ...p })),
     resourceDeposits: Object.fromEntries(deps.getResourceDepletion()),
+    mineableRocks: serializeMineableRockState(deps.getMineableRockState()),
     resourceSiteInventories: (() => {
       const snapshot = bundle.resourceSiteInventories.serialize()
       return Object.keys(snapshot).length > 0 ? snapshot : undefined

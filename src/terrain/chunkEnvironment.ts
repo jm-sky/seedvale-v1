@@ -55,6 +55,14 @@ export type EnvironmentPlacement = {
    *  `settlement/decorProps.ts`), not just a scale multiplier. Present only
    *  for `kind === 'cemetery'`. */
   cemeterySize?: CemeterySize
+  /** Stable identity for mineable generated rocks (`largeRock`/`rockCluster`,
+   *  plan world-terrain-047) — purely derived from `(seed, chunk, kind,
+   *  ordinal)`, same regeneration contract as `id`. Deliberately a separate
+   *  field: `id` is landmark identity (`ChunkManager.getNearbyLandmarks()`
+   *  treats any placement carrying it as a `LandmarkKind` candidate), and a
+   *  mineable rock must never masquerade as a landmark. Absent for every
+   *  other kind, and never changes when a rock's mining stage advances. */
+  resourceId?: string
 }
 
 const ROCK_CANDIDATES_PER_CHUNK = 4
@@ -316,6 +324,16 @@ export function deriveLandmarkId(seed: number, cx: number, cz: number, kind: Env
   return `${kind}:${cx}:${cz}:${ordinal}:${(seed >>> 0).toString(36)}`
 }
 
+/** Stable resource identity for a mineable generated rock (plan
+ *  world-terrain-047) — pure function of `(seed, chunk, kind, ordinal)`, same
+ *  shape/reasoning as `deriveLandmarkId` but namespaced `rock:` so it can
+ *  never collide with a landmark id even if both derivations were ever
+ *  compared by value. `ordinal` is the rock's own candidate index within
+ *  `computeChunkEnvironment`'s per-chunk rock loop. */
+export function deriveMineableRockResourceId(seed: number, cx: number, cz: number, kind: EnvironmentKind, ordinal: number): string {
+  return `rock:${kind}:${cx}:${cz}:${ordinal}:${(seed >>> 0).toString(36)}`
+}
+
 function nearTree(vegetation: readonly VegetationPlacement[], x: number, z: number, radius: number): boolean {
   for (const v of vegetation) {
     if (v.kind === 'tree' && Math.hypot(v.x - x, v.z - z) <= radius) return true
@@ -535,13 +553,15 @@ export function computeChunkEnvironment(
     if (rockRandom() > chance) continue
 
     const isLarge = rockRandom() < 0.35 + ridge * 0.3
+    const rockKind = isLarge ? 'largeRock' : 'rockCluster'
     placements.push({
       x: wx,
       z: wz,
-      kind: isLarge ? 'largeRock' : 'rockCluster',
+      kind: rockKind,
       scale: isLarge ? 0.9 + rockRandom() * 1.3 : 0.5 + rockRandom() * 0.6,
       rotationY: rockRandom() * Math.PI * 2,
       variant: rockRandom(),
+      resourceId: deriveMineableRockResourceId(params.seed, coord.cx, coord.cz, rockKind, i),
     })
   }
 

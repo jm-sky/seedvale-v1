@@ -88,6 +88,7 @@ function makeSaveData(overrides?: Partial<Pick<SaveData, 'savedAt' | 'elapsedDay
     bedrolls: [],
     platforms: [],
     resourceDeposits: {},
+    mineableRocks: [],
     workContracts: [],
   }
 }

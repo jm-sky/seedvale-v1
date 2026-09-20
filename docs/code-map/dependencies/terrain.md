@@ -244,6 +244,7 @@ Generated from TypeScript imports.
 - `terrain/chunkHeightmap.worker.ts`
 - `terrain/chunkHeightmapProtocol.ts`
 - `terrain/chunkManager.ts`
+- `terrain/mineableRocks.ts`
 - `terrain/unloadedLandmarkLookup.ts`
 - `terrain/worldKnowledgeScan.ts`
 - `world/hiddenFinds.ts`
@@ -367,6 +368,8 @@ Generated from TypeScript imports.
 - `terrain/chunkWorkerPool.test.ts`
 - `terrain/chunkWorkerPool.ts`
 - `terrain/chunkWorldItems.ts`
+- `terrain/coastalResources.ts`
+- `terrain/dig.ts`
 - `terrain/footstepSurface.ts`
 - `terrain/grass.ts`
 - `terrain/grassPlacement.test.ts`
@@ -469,6 +472,7 @@ Generated from TypeScript imports.
 - `terrain/chunkGrid.ts`
 - `terrain/chunkHeightmap.ts`
 - `terrain/chunkVegetation.ts`
+- `terrain/coastalResources.ts`
 - `world/parseSeed.ts`
 - `world/treeLifecycle.ts`
 
@@ -524,6 +528,7 @@ Generated from TypeScript imports.
 - `terrain/distanceLod.ts`
 - `terrain/fbm.ts`
 - `terrain/grass.ts`
+- `terrain/mineableRocks.ts`
 - `terrain/renewableWorldItems.ts`
 - `terrain/riverFord.ts`
 - `terrain/riverNetwork.ts`
@@ -556,6 +561,7 @@ Generated from TypeScript imports.
 - `app/worldBundle.ts`
 - `terrain/chunkManager.test.ts`
 - `terrain/chunkTileWorldgenCache.test.ts`
+- `terrain/digAction.test.ts`
 - `terrain/digAction.ts`
 - `terrain/footstepSurface.test.ts`
 - `terrain/footstepSurface.ts`
@@ -742,6 +748,24 @@ Generated from TypeScript imports.
 - `terrain/coastPlacement.test.ts`
 - `world/largeCaves.ts`
 
+## `terrain/coastalResources.test.ts`
+
+**Imports**
+
+- `terrain/coastalResources.ts`
+
+## `terrain/coastalResources.ts`
+
+**Imports**
+
+- `terrain/chunkHeightmap.ts`
+
+**Imported by**
+
+- `terrain/chunkItems.ts`
+- `terrain/coastalResources.test.ts`
+- `terrain/dig.ts`
+
 ## `terrain/depositMining.test.ts`
 
 **Imports**
@@ -783,6 +807,8 @@ Generated from TypeScript imports.
 
 - `player/PlayerController.ts`
 - `terrain/biomeColors.ts`
+- `terrain/chunkHeightmap.ts`
+- `terrain/coastalResources.ts`
 
 **Imported by**
 
@@ -795,10 +821,19 @@ Generated from TypeScript imports.
 - `interaction/Interactable.ts`
 - `settlement/hiddenTreasure.ts`
 - `terrain/dig.test.ts`
+- `terrain/digAction.test.ts`
 - `terrain/digAction.ts`
 - `terrain/footstepSurface.ts`
 - `terrain/terrainPreparation.ts`
 - `world/hiddenFinds.ts`
+
+## `terrain/digAction.test.ts`
+
+**Imports**
+
+- `terrain/chunkManager.ts`
+- `terrain/dig.ts`
+- `terrain/digAction.ts`
 
 ## `terrain/digAction.ts`
 
@@ -818,6 +853,7 @@ Generated from TypeScript imports.
 
 - `app/actions/groundActions.test.ts`
 - `app/actions/groundActions.ts`
+- `terrain/digAction.test.ts`
 
 ## `terrain/distanceLod.test.ts`
 
@@ -987,6 +1023,27 @@ Generated from TypeScript imports.
 - `terrain/abandonedMineDeposits.ts`
 - `terrain/mineableDeposit.test.ts`
 - `terrain/resourceDeposits.ts`
+
+## `terrain/mineableRocks.test.ts`
+
+**Imports**
+
+- `terrain/mineableRocks.ts`
+
+## `terrain/mineableRocks.ts`
+
+**Imports**
+
+- `terrain/chunkEnvironment.ts`
+- `world/mineableWork.ts`
+
+**Imported by**
+
+- `app/createApp.ts`
+- `app/saveState.ts`
+- `app/worldBundle.ts`
+- `terrain/chunkManager.ts`
+- `terrain/mineableRocks.test.ts`
 
 ## `terrain/naturalResources.test.ts`
 

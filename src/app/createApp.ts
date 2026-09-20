@@ -242,6 +242,7 @@ import { drainVigor } from '../shared/VigorState'
 import { chunksNear } from '../terrain/chunkGrid'
 import { disposeChunkWorkerPool } from '../terrain/chunkWorkerPool'
 import { sampleFootstepSurface } from '../terrain/footstepSurface'
+import { deserializeMineableRockState, type MineableRockStateStore } from '../terrain/mineableRocks'
 import { mountVueUi } from '../ui-vue/mount'
 import { configureAudioVolumes, configureNpcVoiceSounds, configureUiSounds } from '../ui-vue/store'
 import { createBusyOverlay } from '../ui/createBusyOverlay'
@@ -639,6 +640,10 @@ export async function createApp(
   // only on a genuinely new world" contract as the ids/arrays above, and
   // persisted the same way (`SaveData.resourceDeposits`).
   let resourceDepletion: ResourceDepletionState = new Map(Object.entries(initialSave?.resourceDeposits ?? {}))
+  // Plan world-terrain-047 — sparse mineable-rock mutation state, same
+  // "carried across rebuild, reset only on a genuinely new world" contract
+  // as `resourceDepletion` above.
+  let mineableRockState: MineableRockStateStore = deserializeMineableRockState(initialSave?.mineableRocks ?? [])
   // Plan settlements-npcs-021 — extracted goods waiting at remote resource
   // sites, same "carried across rebuild, reset only on a genuinely new
   // world" contract as `resourceDepletion` above. Independent of deposit
@@ -813,6 +818,7 @@ export async function createApp(
     loadingScreen.setStage,
     initialSave?.foundedSettlements,
     initialSave?.authoredWorldConsequences,
+    mineableRockState,
   )
   bootMarkEnd('createWorldBundle')
   // Already logged inside `worldBundle.ts` on failure — nothing else to do
@@ -2666,6 +2672,7 @@ export async function createApp(
     getModifications: () => modifications,
     getTreeLifecycle: () => treeLifecycle,
     getResourceDepletion: () => resourceDepletion,
+    getMineableRockState: () => mineableRockState,
     getMountedAnimalId: () => mount.mountedAnimalId(),
   })
 
@@ -2694,6 +2701,7 @@ export async function createApp(
         plantedCrops = []
         modifications = []
         resourceDepletion = new Map()
+        mineableRockState = new Map()
         resourceSiteInventories = createResourceSiteInventories()
         grassForageOverrides = {}
         resetDayNightForNewGame(dayNight)
@@ -2737,6 +2745,7 @@ export async function createApp(
         resourceSiteInventories,
         consumedWorldPickupIds,
         onAnimalDeathSound,
+        mineableRockState,
       )
       mapProjection.setParams(rawSampleParamsFromWorld(config))
       worldLocationCatalog.invalidateScanCache()
@@ -3521,6 +3530,7 @@ export async function createApp(
     startTreeChop: ground.startTreeChop,
     gatherBranch: ground.gatherBranch,
     startDepositMine: ground.startDepositMine,
+    startRockMineAt: ground.startRockMineAt,
     startBuryCorpse: survival.startBuryCorpse,
     startHarvestMeat: survival.startHarvestMeat,
     startMilkAnimal: survival.startMilkAnimal,

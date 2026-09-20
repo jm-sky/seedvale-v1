@@ -1156,6 +1156,20 @@ export function buildInteractables(
     })
   }
 
+  // Mineable environment rocks (plan world-terrain-047) — offered only while
+  // the held item has `rock_mining`, same held-tool gate as ore deposits.
+  if (pickaxeHeld) {
+    for (const rock of chunkManager.getNearbyMineableRocks(playerPos, GAZE_RANGE)) {
+      list.push({
+        kind: 'mineableRock',
+        position: { x: rock.x, z: rock.z },
+        promptLabel: rock.promptLabel,
+        resourceId: rock.resourceId,
+        rockKind: rock.kind,
+      })
+    }
+  }
+
   for (const spawner of fauna.getSpawners()) {
     if (!withinRange(spawner.x, spawner.z, playerPos, GAZE_RANGE)) continue
     list.push({

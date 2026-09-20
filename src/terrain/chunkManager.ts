@@ -135,6 +135,14 @@ import {
 import { densityLodFraction, grassFillerLodFraction, grassGeometryLodTier } from './distanceLod'
 import { createGrassSystem, type WorldGrassChunk } from './grass'
 import {
+  applyMineableRockAction,
+  effectiveMineableRockKind,
+  isMineableRockKind,
+  type MineableRockKind,
+  mineableRockPromptLabel,
+  type MineableRockStateStore,
+} from './mineableRocks'
+import {
   depleteRenewableWorldItem,
   isRenewableWorldItem,
   isRenewableWorldItemAvailable,
@@ -369,6 +377,14 @@ export type ChunkManagerConfig = {
    *  renewable medicinal flora. Same ownership/reset contract as
    *  `collectedItemIds` / grass forage overrides. */
   renewableWorldItems: RenewableWorldItemOverrides
+  /** Sparse mineable-rock mutation state (plan world-terrain-047), keyed by
+   *  stable `EnvironmentPlacement.resourceId` — app/world-owned, mutated in
+   *  place by `ChunkManager.mineRock()`, carried across chunk unload/reload
+   *  and an in-session `WorldBundle` rebuild, same "caller-owned, reset only
+   *  on a genuinely new world" contract as `collectedItemIds`. No entry means
+   *  untouched (full base state); `'depleted'` is an explicit tombstone so
+   *  deterministic worldgen never respawns a fully mined rock. */
+  mineableRockState: MineableRockStateStore
   /** Ids of naturally-generated crops (`terrain/chunkCrops.ts`) already
    *  harvested/removed (plan 172) — same "shared/mutated in place, survives
    *  chunk unload/reload" contract as `collectedItemIds`, kept as a separate
@@ -505,6 +521,12 @@ type ChunkRecord = {
    *  doesn't carry (see `TreeLifecycle.getPresence`), needed by
    *  `refreshTreeVisual` to re-place a tree it no longer has a mesh for. */
   treeYaw?: Map<string, number>
+  /** Individually-rendered mineable rocks whose state has diverged from
+   *  their deterministic base (plan world-terrain-047) — mirrors
+   *  `vegetationExtras`'s tree-exception precedent, kept as its own group so
+   *  toggling the `trees` debug system never hides a mined rock. Each child's
+   *  `userData.rockResourceId` addresses it for `refreshRockVisual`. */
+  rockOverrides?: THREE.Group
   items?: THREE.Group
   /** Naturally-generated crop meshes (plan 172) — same per-placement `Object3D`
    *  group as `items`, not instanced (crop density per chunk is small, same
@@ -674,6 +696,25 @@ export type ChunkManager = {
     pos: { x: number, z: number },
     radius: number,
   ) => { id: string, kind: LandmarkKind, x: number, z: number, rotationY: number, scale: number, cemeterySize?: CemeterySize }[]
+  /** Non-depleted mineable `largeRock`/`rockCluster` placements
+   *  (`terrain/chunkEnvironment.ts`, plan world-terrain-047) within `radius`
+   *  of `pos` among currently loaded chunks — same "loaded chunks only"
+   *  contract as `getNearbyLandmarks`, resolved against authoritative
+   *  `mineableRockState` so a depleted rock never surfaces here (and never
+   *  as a `getNearbyLandmarks` result either — mineable rocks carry
+   *  `resourceId`, never landmark `id`). `kind` is the *effective* current
+   *  visual/prompt stage, not the placement's base kind. */
+  getNearbyMineableRocks: (
+    pos: { x: number, z: number },
+    radius: number,
+  ) => { resourceId: string, kind: MineableRockKind, x: number, z: number, promptLabel: string }[]
+  /** Applies one completed mining action against the rock at `resourceId`
+   *  (found among currently loaded chunks) — mutates authoritative
+   *  `mineableRockState`, refreshes its presentation/collider in the same
+   *  call, and returns the resolved yield. `null` when the rock can't be
+   *  found (unloaded/invalid id) or is already depleted; callers must
+   *  re-resolve by id rather than trusting a stale per-frame snapshot. */
+  mineRock: (resourceId: string) => { kind: ItemKind, amount: number } | null
   /** Deterministically finds the nearest existing `kind` landmark to
    *  `(worldX, worldZ)`, searching chunks in expanding rings up to
    *  `maxChunkRadius` and stopping at the first hit (plan 132) — a bounded,
@@ -2159,9 +2200,25 @@ export function createChunkManager(
       { kind: 'rockCluster', templates: rockClusterTemplates },
       { kind: 'fallenLog', templates: fallenLogTemplates },
     ]
+    // Mineable rocks whose state has diverged from base (plan
+    // world-terrain-047) are projected as individual overrides below instead
+    // of joining the region-batched instances — collected while filtering the
+    // batched candidate list so chunk reload never resurrects the base
+    // instance for a touched rock.
+    const touchedRockOverrides: { placement: typeof tile.environment[number], effectiveKind: MineableRockKind }[] = []
     for (const { kind, templates } of envInstancedSources) {
       if (!templates) continue
-      const placements = tile.environment.filter((p) => p.kind === kind)
+      const isMineableKind = isMineableRockKind(kind)
+      const placements = tile.environment.filter((p) => {
+        if (p.kind !== kind) return false
+        if (!isMineableKind || !p.resourceId) return true
+        const touched = config.mineableRockState.has(p.resourceId)
+        if (touched) {
+          const effectiveKind = effectiveMineableRockKind(kind, config.mineableRockState.get(p.resourceId))
+          if (effectiveKind !== 'depleted') touchedRockOverrides.push({ placement: p, effectiveKind })
+        }
+        return !touched
+      })
       if (placements.length === 0) continue
       const propPlacements: PropPlacement[] = placements.map((p) => {
         const groundY = sampleTileHeight(p.x, p.z)
@@ -2180,9 +2237,13 @@ export function createChunkManager(
           groundY,
           rotationY: p.rotationY,
           scale: p.scale,
+          key: isMineableKind ? p.resourceId : undefined,
         }
       })
       vegetationRegionBatcher.setChunkPlacements(coord, kind, templates, propPlacements)
+    }
+    for (const { placement, effectiveKind } of touchedRockOverrides) {
+      addRockOverride(rec, placement, effectiveKind, sampleTileHeight)
     }
     syncInstancedLodForRecord(rec, lastPlayerChunk)
     getMonitor().recordHitch('PROPS', performance.now() - envT0, 'chunk environment')
@@ -2327,6 +2388,17 @@ export function createChunkManager(
     if (!record.tile) return
     const colliders: Collider[] = []
     for (const p of record.tile.environment) {
+      if (isMineableRockKind(p.kind) && p.resourceId) {
+        // Collider follows the same authoritative mineable state as
+        // presentation (plan world-terrain-047) — a depleted rock has no
+        // collider, and a transitioned large-rock pile uses the ordinary
+        // smaller `rockCluster` radius rather than its own base kind's.
+        const effectiveKind = effectiveMineableRockKind(p.kind, config.mineableRockState.get(p.resourceId))
+        if (effectiveKind === 'depleted') continue
+        const radius = ENVIRONMENT_COLLISION_RADIUS[effectiveKind]
+        if (radius > 0) colliders.push({ type: 'circle', x: p.x, z: p.z, radius: radius * p.scale })
+        continue
+      }
       const radius = ENVIRONMENT_COLLISION_RADIUS[p.kind]
       if (radius > 0) colliders.push({ type: 'circle', x: p.x, z: p.z, radius: radius * p.scale })
     }
@@ -2381,6 +2453,11 @@ export function createChunkManager(
       disposeObject3D(record.vegetationExtras)
       record.vegetationExtras.removeFromParent()
       record.vegetationExtras = undefined
+    }
+    if (record.rockOverrides) {
+      disposeObject3D(record.rockOverrides)
+      record.rockOverrides.removeFromParent()
+      record.rockOverrides = undefined
     }
     vegetationRegionBatcher.clearChunkPlacements(record.coord)
     if (record.items) {
@@ -2456,7 +2533,7 @@ export function createChunkManager(
     for (const rec of chunks.values()) {
       if (!rec.treeIds?.includes(treeId) || !rec.tile) continue
 
-      const wasInstance = vegetationRegionBatcher.removeByKey(rec.coord, treeId)
+      const wasInstance = vegetationRegionBatcher.removeByKey(rec.coord, 'tree-living', treeId)
       if (!wasInstance) {
         const mesh = rec.vegetationExtras?.children.find((c) => c.userData.treeId === treeId)
         if (!mesh) continue
@@ -2492,6 +2569,68 @@ export function createChunkManager(
         rec.vegetationExtras = extras
       }
       rec.vegetationExtras.add(replacement)
+      rebuildColliders(rec)
+      return true
+    }
+    return false
+  }
+
+  /** Instantiates one individually-rendered mineable-rock override into
+   *  `rec.rockOverrides` (creating the group on first use) — the runtime
+   *  representation for a rock whose state has diverged from its
+   *  deterministic base (plan world-terrain-047 §7). Uses the same
+   *  procedural (non-GLB) `createLargeRock`/`createRockCluster` factories
+   *  `createProceduralEnvironmentProp` falls back to, mirroring the tree
+   *  lifecycle's own "bulk stays instanced, the runtime exception is a plain
+   *  `Object3D`" precedent. */
+  function addRockOverride(
+    rec: ChunkRecord,
+    placement: { x: number, z: number, rotationY: number, scale: number, variant: number, resourceId?: string },
+    effectiveKind: MineableRockKind,
+    sampleGroundY: HeightSampler,
+  ): void {
+    const prop = effectiveKind === 'largeRock'
+      ? createLargeRock(placement.scale, placement.variant)
+      : createRockCluster(placement.scale, placement.variant)
+    prop.rotation.y = placement.rotationY
+    placeOnGround(prop, placement.x, placement.z, sampleGroundY)
+    prop.userData.rockResourceId = placement.resourceId
+    if (!rec.rockOverrides) {
+      const group = new THREE.Group()
+      group.name = 'chunk-rock-overrides'
+      scene.add(group)
+      rec.rockOverrides = group
+    }
+    rec.rockOverrides.add(prop)
+  }
+
+  /** Rebuilds one mineable rock's presentation after a mining action changed
+   *  its authoritative state (plan world-terrain-047) — suppresses/removes
+   *  its region-batched base instance (idempotent: a no-op once already
+   *  suppressed by an earlier action), removes any prior override mesh, then
+   *  projects the current effective stage as a fresh override unless the
+   *  rock is now depleted. Always re-derives collider state in the same
+   *  call so the player can never see a depleted rock still blocking
+   *  movement. */
+  function refreshRockVisual(resourceId: string): boolean {
+    for (const rec of chunks.values()) {
+      if (!rec.tile) continue
+      const placement = rec.tile.environment.find((p) => p.resourceId === resourceId)
+      if (!placement || !isMineableRockKind(placement.kind)) continue
+
+      vegetationRegionBatcher.removeByKey(rec.coord, placement.kind, resourceId)
+      if (rec.rockOverrides) {
+        const existing = rec.rockOverrides.children.find((c) => c.userData.rockResourceId === resourceId)
+        if (existing) {
+          existing.removeFromParent()
+          disposeObject3D(existing)
+        }
+      }
+
+      const effectiveKind = effectiveMineableRockKind(placement.kind, config.mineableRockState.get(resourceId))
+      if (effectiveKind !== 'depleted') {
+        addRockOverride(rec, placement, effectiveKind, (sx, sz) => sampleGroundHeightAt(sx, sz, rec.tile!, rec.coord))
+      }
       rebuildColliders(rec)
       return true
     }
@@ -2820,6 +2959,41 @@ export function createChunkManager(
         }
       }
       return out
+    },
+    getNearbyMineableRocks(pos, radius) {
+      const out: { resourceId: string, kind: MineableRockKind, x: number, z: number, promptLabel: string }[] = []
+      for (const rec of chunks.values()) {
+        if (!rec.tile) continue
+        for (const p of rec.tile.environment) {
+          if (!isMineableRockKind(p.kind) || !p.resourceId) continue
+          const dx = p.x - pos.x
+          const dz = p.z - pos.z
+          if (Math.hypot(dx, dz) > radius) continue
+          const effectiveKind = effectiveMineableRockKind(p.kind, config.mineableRockState.get(p.resourceId))
+          if (effectiveKind === 'depleted') continue
+          out.push({
+            resourceId: p.resourceId,
+            kind: effectiveKind,
+            x: p.x,
+            z: p.z,
+            promptLabel: mineableRockPromptLabel(effectiveKind),
+          })
+        }
+      }
+      return out
+    },
+    mineRock(resourceId) {
+      for (const rec of chunks.values()) {
+        if (!rec.tile) continue
+        const placement = rec.tile.environment.find((p) => p.resourceId === resourceId)
+        if (!placement || !isMineableRockKind(placement.kind)) continue
+        const outcome = applyMineableRockAction(placement.kind, config.mineableRockState.get(resourceId))
+        if (!outcome) return null
+        config.mineableRockState.set(resourceId, outcome.nextState)
+        refreshRockVisual(resourceId)
+        return { kind: outcome.yield.kind, amount: outcome.yield.amount }
+      }
+      return null
     },
     findLandmarkNear(kind, worldX, worldZ, maxChunkRadius) {
       const center = worldToChunk(worldX, worldZ, config.chunkSize)

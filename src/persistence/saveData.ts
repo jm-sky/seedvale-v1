@@ -364,6 +364,17 @@ export type SaveTreasureChestMutation = {
   destroyed?: boolean
 }
 
+/** Plan world-terrain-047 — sparse mineable-rock mutation state, keyed by
+ *  stable `EnvironmentPlacement.resourceId`. A fully untouched rock has no
+ *  entry. `stageIndex === -1` (`terrain/mineableRocks.ts`'s
+ *  `DEPLETED_STAGE_INDEX`) is an explicit tombstone for a fully depleted
+ *  rock — required so deterministic worldgen never respawns it. */
+export type SaveMineableRockState = {
+  id: string
+  stageIndex: number
+  actionsInStage: number
+}
+
 /** The container currently in the player's hands — same contents shape, no
  *  position/yaw since it has none while carried. */
 export type SaveCarriedContainer = {
@@ -702,7 +713,7 @@ export type SaveWorkContract =
  *  representation or semantics of `SaveData` change — see the plan's
  *  "Future schema-change workflow". Never duplicate this number elsewhere;
  *  `saveState.ts` imports it instead of declaring its own constant. */
-export const CURRENT_SAVE_VERSION = 50
+export const CURRENT_SAVE_VERSION = 51
 
 /** Canonical save contract for the current schema version. This module
  *  intentionally carries no history of schemas from before the v1 hard cut
@@ -840,6 +851,10 @@ export type SaveData = {
    *  `NaturalResource.id`. Sparse — an absent id restores as untouched
    *  (deterministic initial from richness); `0` means depleted. */
   resourceDeposits: Record<string, number>
+  /** Sparse mineable-rock mutation state (plan world-terrain-047) — see
+   *  `SaveMineableRockState`. Empty means no generated `largeRock`/
+   *  `rockCluster` placement has diverged from its deterministic base. */
+  mineableRocks: SaveMineableRockState[]
   /** Extracted-but-not-yet-transported goods at a remote resource site
    *  (plan settlements-npcs-021), keyed by `NaturalResource.id`. Sparse/
    *  optional — absent or empty means no stored remote goods. Independent
@@ -1139,6 +1154,19 @@ function isTreasureChestMutationEntry(value: unknown): value is SaveTreasureChes
 
 function isTreasureChestMutationsField(value: unknown): value is SaveTreasureChestMutation[] {
   return Array.isArray(value) && value.every(isTreasureChestMutationEntry)
+}
+
+function isMineableRockStateEntry(value: unknown): value is SaveMineableRockState {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false
+  const row = value as Record<string, unknown>
+  if (typeof row.id !== 'string') return false
+  if (typeof row.stageIndex !== 'number' || !Number.isInteger(row.stageIndex)) return false
+  if (typeof row.actionsInStage !== 'number' || !Number.isInteger(row.actionsInStage) || row.actionsInStage < 0) return false
+  return true
+}
+
+function isMineableRockStateField(value: unknown): value is SaveMineableRockState[] {
+  return Array.isArray(value) && value.every(isMineableRockStateEntry)
 }
 
 const BADGE_IDS: ReadonlySet<string> = new Set<BadgeId>(['relic_seeker', 'treasure_hunter'])
@@ -2786,6 +2814,7 @@ export function isSaveData(value: unknown): value is SaveData {
   if (!isBedrollsField(v.bedrolls)) return false
   if (!isPlatformsField(v.platforms)) return false
   if (!isResourceDepositsField(v.resourceDeposits)) return false
+  if (!isMineableRockStateField(v.mineableRocks)) return false
   if (v.resourceSiteInventories !== undefined && !isResourceSiteInventoriesField(v.resourceSiteInventories)) return false
   if (!isWorkContractsField(v.workContracts)) return false
   if (v.npcStates !== undefined && !isNpcStatesField(v.npcStates)) return false
@@ -3930,6 +3959,14 @@ function migrateSaveV49ToV50(data: unknown): unknown {
   return { ...v, version: 50 }
 }
 
+/** v50 → v51 (plan world-terrain-047): adds `mineableRocks`. A pre-plan save
+ *  has no generated rock ever mined; empty restores every rock to its
+ *  deterministic untouched base state. */
+function migrateSaveV50ToV51(data: unknown): unknown {
+  const v = data as Record<string, unknown>
+  return { ...v, version: 51, mineableRocks: [] }
+}
+
 function migrateSaveV37ToV38(data: unknown): unknown {
   const v = data as Record<string, unknown>
   const seq = { n: 0 }
@@ -4100,6 +4137,7 @@ const SAVE_MIGRATIONS: Readonly<Record<number, SaveMigration>> = {
   47: migrateSaveV47ToV48,
   48: migrateSaveV48ToV49,
   49: migrateSaveV49ToV50,
+  50: migrateSaveV50ToV51,
 }
 
 function detectStoredVersion(value: unknown): number | null {

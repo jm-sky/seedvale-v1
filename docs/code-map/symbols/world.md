@@ -1551,6 +1551,16 @@ Generated from exported TypeScript symbols.
 - `MapTerrainKind` — type — line 4
 - `MapViewport` — type — line 45
 
+## `world/mineableWork.ts`
+
+- `applyMineableWorkAction` — function — line 50
+- `initialMineableWorkState` — function — line 41
+- `MineableWorkDefinition` — type — line 22
+- `MineableWorkResult` — type — line 32
+- `MineableWorkStage` — type — line 15
+  - domain: world
+- `MineableWorkState` — type — line 27
+
 ## `world/naturalMaterialResponse.ts`
 
 - `applyNaturalMaterialResponseForUrl` — function — line 109

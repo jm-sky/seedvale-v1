@@ -86,6 +86,7 @@ const currentSave = {
   bedrolls: [],
   platforms: [],
   resourceDeposits: {},
+  mineableRocks: [],
   workContracts: [],
 }
 

@@ -965,6 +965,7 @@ Generated from TypeScript imports.
 - `ui-vue/playerQuickActions.ts`
 - `world/createSleepingUtilities.ts`
 - `world/foodSources.ts`
+- `world/mineableWork.ts`
 - `world/playerGarden.ts`
 - `world/playerWell.ts`
 
@@ -1318,6 +1319,7 @@ Generated from TypeScript imports.
 - `world/helperDeliveryHooks.ts`
 - `world/herbalGathering.ts`
 - `world/hiddenFinds.ts`
+- `world/mineableWork.ts`
 - `world/plantedCrops.ts`
 - `world/residentialBuilding.test.ts`
 - `world/restCancel.test.ts`

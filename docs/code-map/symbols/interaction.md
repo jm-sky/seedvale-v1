@@ -14,19 +14,19 @@ Generated from exported TypeScript symbols.
 
 ## `interaction/Interactable.ts`
 
-- `Interactable` — type — line 248
+- `Interactable` — type — line 253
 - `InteractablePayload` — type — line 33
-- `surfaceInteractable` — function — line 253
+- `surfaceInteractable` — function — line 258
 - `WorldItemRef` — type — line 18
 
 ## `interaction/interactionView.ts`
 
-- `alternateActionState` — function — line 483
-- `buildInteractionGazePrompt` — function — line 465
-- `buildInteractionView` — function — line 376
-- `hasInspectAction` — function — line 475
+- `alternateActionState` — function — line 485
+- `buildInteractionGazePrompt` — function — line 467
+- `buildInteractionView` — function — line 378
+- `hasInspectAction` — function — line 477
 - `interactableStableKey` — function — line 285
-- `interactionActionFromSkillPrompt` — function — line 488
+- `interactionActionFromSkillPrompt` — function — line 490
 - `InteractionActionSlot` — type — line 6
   - domain: ui-input
 - `InteractionActionView` — type — line 12
@@ -34,9 +34,9 @@ Generated from exported TypeScript symbols.
 - `InteractionGazePrompt` — type — line 25
 - `InteractionView` — type — line 20
 - `InteractionViewContext` — type — line 29
-- `isInteractableActionable` — function — line 452
-- `primaryActionState` — function — line 479
-- `slotInputKey` — function — line 459
+- `isInteractableActionable` — function — line 454
+- `primaryActionState` — function — line 481
+- `slotInputKey` — function — line 461
 
 ## `interaction/resolveInteraction.ts`
 

@@ -43,8 +43,10 @@ export const CHUNK_TILE_CACHE_NAMESPACE = 'chunk-tiles'
  * shapes a ford only inside an explicitly declared crossing footprint, and
  * regional road geometry itself changes for an unchanged seed.
  * v3: medicinal flora split mint/yarrow/rare herb (plan items-player-043).
+ * v4: tightened shell spawn band + stable `resourceId` on mineable
+ * `largeRock`/`rockCluster` placements (plan world-terrain-047).
  */
-export const CHUNK_TILE_CACHE_VERSION = 3
+export const CHUNK_TILE_CACHE_VERSION = 4
 
 /** Small byte-budget manifest record living in the same namespace — see
  *  `ChunkTileMetaPayload`. Its `fingerprint` field is a constant because the

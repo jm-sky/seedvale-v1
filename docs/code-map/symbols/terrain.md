@@ -116,32 +116,33 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/chunkEnvironment.ts`
 
-- `CEMETERY_CLEARING_PAD` — const — line 129
-- `CEMETERY_INNER_FRAC` — const — line 127
-- `CEMETERY_OUTER_FRAC` — const — line 128
-- `cemeteryFitsVillageFringe` — function — line 213
-- `cemeteryFootprintClearsRoads` — function — line 274
-- `CemeteryTerrainSampler` — type — line 353
-- `clearVegetationAroundOldTrees` — function — line 329
-- `computeChunkEnvironment` — function — line 492
-- `deriveLandmarkId` — function — line 315
+- `CEMETERY_CLEARING_PAD` — const — line 137
+- `CEMETERY_INNER_FRAC` — const — line 135
+- `CEMETERY_OUTER_FRAC` — const — line 136
+- `cemeteryFitsVillageFringe` — function — line 221
+- `cemeteryFootprintClearsRoads` — function — line 282
+- `CemeteryTerrainSampler` — type — line 371
+- `clearVegetationAroundOldTrees` — function — line 347
+- `computeChunkEnvironment` — function — line 510
+- `deriveLandmarkId` — function — line 323
+- `deriveMineableRockResourceId` — function — line 333
 - `EnvironmentKind` — type — line 18
 - `EnvironmentPlacement` — type — line 34
-- `isClassicLandmarkKind` — function — line 479
-- `LANDMARK_BIAS_MAX` — const — line 131
-- `LANDMARK_BIAS_MIN` — const — line 130
-- `LANDMARK_LABELS` — const — line 152
-- `LandmarkBiasInput` — type — line 165
-- `LandmarkBiasKind` — type — line 133
-- `landmarkChanceBias` — function — line 186
-- `LandmarkKind` — type — line 138
-- `LandmarkTerrainSampler` — type — line 364
+- `isClassicLandmarkKind` — function — line 497
+- `LANDMARK_BIAS_MAX` — const — line 139
+- `LANDMARK_BIAS_MIN` — const — line 138
+- `LANDMARK_LABELS` — const — line 160
+- `LandmarkBiasInput` — type — line 173
+- `LandmarkBiasKind` — type — line 141
+- `landmarkChanceBias` — function — line 194
+- `LandmarkKind` — type — line 146
+- `LandmarkTerrainSampler` — type — line 382
   - domain: world-terrain
-- `OLD_TREE_CLEARANCE_RADIUS` — const — line 118
-- `resolveClassicLandmarkPlacement` — function — line 434
+- `OLD_TREE_CLEARANCE_RADIUS` — const — line 126
+- `resolveClassicLandmarkPlacement` — function — line 452
   - domain: world-terrain
-- `rollCemeterySize` — function — line 292
-- `VillageDisk` — type — line 174
+- `rollCemeterySize` — function — line 300
+- `VillageDisk` — type — line 182
 
 ## `terrain/chunkGrid.ts`
 
@@ -198,28 +199,28 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/chunkItems.ts`
 
-- `computeChunkItems` — function — line 105
-- `ItemPlacement` — type — line 14
+- `computeChunkItems` — function — line 101
+- `ItemPlacement` — type — line 15
 
 ## `terrain/chunkManager.ts`
 
-- `applyChunkWaterDayNight` — function — line 1009
-- `applyModificationToTile` — function — line 866
-- `ChunkManager` — type — line 533
-- `ChunkManagerConfig` — type — line 335
-- `createChunkManager` — function — line 1034
+- `applyChunkWaterDayNight` — function — line 1050
+- `applyModificationToTile` — function — line 907
+- `ChunkManager` — type — line 555
+- `ChunkManagerConfig` — type — line 343
+- `createChunkManager` — function — line 1075
   - domain: world-terrain
   - system: chunk-manager
   - role: Owns terrain chunk streaming, sampling and environment-facing world queries.
   - simulation: on-demand
   - performance: nearby-only
-- `CropHarvestOutcome` — type — line 1023
-- `drainByBudget` — function — line 984
-- `FinalizeStage` — type — line 441
-- `pickNearestQueuedKey` — function — line 944
-- `pickNextFinalizeKey` — function — line 962
-- `TerrainModification` — type — line 823
-- `tickChunkWaterSurfaces` — function — line 997
+- `CropHarvestOutcome` — type — line 1064
+- `drainByBudget` — function — line 1025
+- `FinalizeStage` — type — line 457
+- `pickNearestQueuedKey` — function — line 985
+- `pickNextFinalizeKey` — function — line 1003
+- `TerrainModification` — type — line 864
+- `tickChunkWaterSurfaces` — function — line 1038
 
 ## `terrain/chunkMeshCache.ts`
 
@@ -239,34 +240,34 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/chunkTileWorldgenCache.ts`
 
-- `CHUNK_TILE_CACHE_BYTE_BUDGET` — const — line 63
+- `CHUNK_TILE_CACHE_BYTE_BUDGET` — const — line 65
 - `CHUNK_TILE_CACHE_NAMESPACE` — const — line 30
   - domain: world-terrain
   - system: worldgen-cache
   - role: Persistent-cache adapter for canonical worker-generated chunk tiles (plan world-terrain-031): one `chunk:<cx>:<cz>` record per chunk holding the unchanged `ChunkTileResult` — the eight apron-inclusive terrain grids plus the deterministic vegetation/item/environment/crop placements. Stores the existing worker contract verbatim; there is deliberately no cache-specific terrain model and no `SaveData` field.
   - integration: Disposable derived data only. `ChunkManager.ensureLoaded()` generates exactly the same chunk with an empty cache — a miss, a malformed record or an IndexedDB failure always falls back to the tile worker. The payload is *base* worldgen: player/system terrain modifications, terrain cutouts, tree/crop lifecycle, collected items, resource depletion, mesh data and every Three.js object stay downstream and are never cached here, so two same-seed saves share only deterministic generation output.
-- `CHUNK_TILE_CACHE_VERSION` — const — line 47
-- `CHUNK_TILE_META_SUBKEY` — const — line 52
-- `ChunkTileCacheStats` — type — line 93
-- `ChunkTileCacheStorage` — type — line 229
-- `chunkTileFingerprint` — function — line 86
+- `CHUNK_TILE_CACHE_VERSION` — const — line 49
+- `CHUNK_TILE_META_SUBKEY` — const — line 54
+- `ChunkTileCacheStats` — type — line 95
+- `ChunkTileCacheStorage` — type — line 231
+- `chunkTileFingerprint` — function — line 88
   - domain: world-terrain
   - system: worldgen-cache
-- `chunkTileSubKey` — function — line 70
-- `cloneChunkTileForRuntime` — function — line 206
+- `chunkTileSubKey` — function — line 72
+- `cloneChunkTileForRuntime` — function — line 208
   - domain: world-terrain
   - system: worldgen-cache
-- `estimateChunkTileBytes` — function — line 185
-- `getChunkTileCacheStats` — function — line 119
-- `loadCachedChunkTile` — function — line 330
+- `estimateChunkTileBytes` — function — line 187
+- `getChunkTileCacheStats` — function — line 121
+- `loadCachedChunkTile` — function — line 332
   - domain: world-terrain
   - system: worldgen-cache
-- `persistChunkTile` — function — line 378
+- `persistChunkTile` — function — line 380
   - domain: world-terrain
   - system: worldgen-cache
-- `resetChunkTileCacheMetadata` — function — line 313
-- `resetChunkTileCacheStats` — function — line 123
-- `validateCachedChunkTile` — function — line 163
+- `resetChunkTileCacheMetadata` — function — line 315
+- `resetChunkTileCacheStats` — function — line 125
+- `validateCachedChunkTile` — function — line 165
   - domain: world-terrain
   - system: worldgen-cache
 
@@ -303,6 +304,15 @@ Generated from exported TypeScript symbols.
   - domain: settlements-npcs
 - `WorldChunkItemRef` — type — line 25
 
+## `terrain/coastalResources.ts`
+
+- `isShellDigShore` — function — line 53
+- `isShellSpawnShore` — function — line 34
+- `SHELL_DIG_MAX_DEPTH_BELOW_WATER` — const — line 22
+- `SHELL_SPAWN_MAX_HEIGHT_ABOVE_WATER` — const — line 19
+- `SHELL_SPAWN_MIN_HEIGHT_ABOVE_WATER` — const — line 16
+  - domain: world-terrain
+
 ## `terrain/coastPlacement.ts`
 
 - `COAST_BEACH_HEIGHT` — const — line 14
@@ -327,31 +337,37 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/dig.ts`
 
-- `DIG_DEPTH_ROCK` — const — line 10
-- `DIG_DEPTH_SAND` — const — line 9
-- `DIG_DEPTH_SOIL` — const — line 8
-- `DIG_DURATION_SEC` — const — line 18
-- `DIG_RADIUS` — const — line 7
-- `DigEnv` — type — line 38
-- `DigProfile` — type — line 32
-- `DigStoneOutcome` — type — line 77
-- `DigSurface` — type — line 30
-- `getDigProfileAt` — function — line 58
-- `getRockDigProfileAt` — function — line 70
-- `isRockGround` — function — line 48
-- `resolveDigStone` — function — line 83
-- `ROCK_MOUNTAIN_RIDGE_THRESHOLD` — const — line 25
-- `STONE_CHANCE_ROCK` — const — line 13
-- `STONE_CHANCE_SAND` — const — line 12
-- `STONE_CHANCE_SOIL` — const — line 11
-- `STONE_NOTICE_CHANCE` — const — line 16
+- `DIG_DEPTH_ROCK` — const — line 12
+- `DIG_DEPTH_SAND` — const — line 11
+- `DIG_DEPTH_SOIL` — const — line 10
+- `DIG_DURATION_SEC` — const — line 20
+- `DIG_RADIUS` — const — line 9
+- `DigEnv` — type — line 40
+- `DigProfile` — type — line 34
+- `DigShellOutcome` — type — line 114
+- `DigStoneOutcome` — type — line 93
+- `DigSurface` — type — line 32
+- `getDigProfileAt` — function — line 65
+- `getRockDigProfileAt` — function — line 86
+- `isEligibleShellDigSpot` — function — line 133
+- `isRockGround` — function — line 55
+- `resolveDigShell` — function — line 120
+- `resolveDigStone` — function — line 99
+- `ROCK_MOUNTAIN_RIDGE_THRESHOLD` — const — line 27
+- `SHELL_CHANCE_SHORE_DIG` — const — line 112
+- `STONE_CHANCE_ROCK` — const — line 15
+- `STONE_CHANCE_SAND` — const — line 14
+- `STONE_CHANCE_SOIL` — const — line 13
+- `STONE_NOTICE_CHANCE` — const — line 18
 
 ## `terrain/digAction.ts`
 
-- `applyDigAt` — function — line 26
-- `applyLevelAt` — function — line 72
-- `applyMoundAt` — function — line 97
-- `DigFeedback` — type — line 15
+- `addDigItemToInventory` — function — line 32
+- `applyDigAt` — function — line 48
+- `applyLevelAt` — function — line 96
+- `applyMoundAt` — function — line 121
+- `DigFeedback` — type — line 17
+- `dropDigItemNearby` — function — line 41
 
 ## `terrain/distanceLod.ts`
 
@@ -448,6 +464,24 @@ Generated from exported TypeScript symbols.
 - `querySpatialContext` — function — line 91
 - `resolveDepositRemaining` — function — line 84
   - domain: world
+
+## `terrain/mineableRocks.ts`
+
+- `applyMineableRockAction` — function — line 95
+- `DEPLETED_STAGE_INDEX` — const — line 116
+- `deserializeMineableRockState` — function — line 130
+- `effectiveMineableRockKind` — function — line 62
+- `isMineableRockKind` — function — line 21
+- `isMineableRockTouched` — function — line 75
+- `MineableRockKind` — type — line 19
+  - domain: world-terrain
+- `mineableRockPromptLabel` — function — line 79
+- `MineableRockRuntimeState` — type — line 52
+- `MineableRockStateStore` — type — line 54
+- `MineableRockWorkOutcome` — type — line 83
+- `mineableWorkDefinitionForRock` — function — line 43
+- `SaveMineableRockRow` — type — line 114
+- `serializeMineableRockState` — function — line 118
 
 ## `terrain/naturalResources.ts`
 
@@ -651,7 +685,7 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/vegetationRegionBatcher.ts`
 
-- `createVegetationRegionBatcher` — function — line 188
+- `createVegetationRegionBatcher` — function — line 190
 - `REGION_CHUNKS` — const — line 100
 - `VegetationKind` — type — line 10
 - `VegetationLodClass` — type — line 41

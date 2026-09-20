@@ -324,6 +324,8 @@ export function interactableStableKey(target: Interactable): string {
       return `landmark:${target.landmarkId}`
     case 'landPlot':
       return `landPlot:${target.plotId}`
+    case 'mineableRock':
+      return `mineableRock:${target.resourceId}`
     case 'noticeBoard':
       return `noticeBoard:${target.settlementId}`
     case 'npc':

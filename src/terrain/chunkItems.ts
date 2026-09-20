@@ -10,6 +10,7 @@ import {
   type ChunkTileParams,
   sampleApronGrid,
 } from './chunkHeightmap'
+import { isShellSpawnShore, SHELL_SPAWN_MIN_HEIGHT_ABOVE_WATER } from './coastalResources'
 
 export type ItemPlacement = {
   /** Stable, deterministic (`cx:cz:localIndex`) — not random. Lets the save file
@@ -28,12 +29,6 @@ const SLOPE_REJECT = 0.9
  *  placement — lower than the terrain-shaping `mountainThreshold` so foothills
  *  qualify too, not just bare ridge crests. */
 const MOUNTAIN_ITEM_MIN_RIDGE = 0.35
-/** Max local height above `waterLevel` for shell placement, in world units
- *  (heightScale default 18). `continentalness` alone is too low-frequency to
- *  guarantee a spot is actually near the shoreline — a "coastal band" point can
- *  still sit high and dry deep inland (e.g. in a forest). This keeps shells tied
- *  to the terrain that's actually rendered near sea level. */
-const SHELL_MAX_HEIGHT_ABOVE_WATER = 3
 /** Fraction of otherwise-eligible candidates kept — these are meant to be rare
  *  finds, not litter. */
 const KEEP_CHANCE = 0.3
@@ -88,9 +83,10 @@ function hashChunk(cx: number, cz: number): number {
 /**
  * Deterministic, worker-safe per-chunk item placement — mirrors
  * `chunkVegetation.ts` (pure data, instantiated into meshes on the main thread
- * by `chunkManager.ts`). Shells land in the coastal band (continentalness
- * between `oceanThreshold`/`coastThreshold` *and* close to `waterLevel` in
- * local height, where waves would actually wash them up); stones land on
+ * by `chunkManager.ts`). Shells land in the tight ocean-shoreline dry band
+ * (`coastalResources.ts`'s `isShellSpawnShore` — ocean/coast continentalness
+ * *and* close to `waterLevel` in local height, where waves would actually
+ * wash them up); stones land on
  * strong mountain-ridge terrain; branch/mushroom/flower/cone/mint/yarrow/herb/
  * beam land per `biomeWeightsAt`/tree-proximity preference (see `FLORA_*`
  * constants above); coins (issue 035) are a third independent pool — rare
@@ -127,7 +123,7 @@ export function computeChunkItems(
     const wz = coord.cz * chunkSize + localZ
 
     const h = sample(tile.heights, wx, wz)
-    if (h <= waterLevel + 0.5) continue // underwater/shoreline
+    if (h <= waterLevel + SHELL_SPAWN_MIN_HEIGHT_ABOVE_WATER) continue // underwater/shoreline
 
     const d = SLOPE_SAMPLE_STEP
     const slope =
@@ -140,11 +136,7 @@ export function computeChunkItems(
     const ridge = sample(tile.mountainRidge, wx, wz)
 
     let kind: ItemKind | null = null
-    if (
-      continentalness >= params.region.oceanThreshold &&
-      continentalness <= params.region.coastThreshold &&
-      h <= waterLevel + SHELL_MAX_HEIGHT_ABOVE_WATER
-    ) {
+    if (isShellSpawnShore(h, waterLevel, continentalness, params.region)) {
       kind = 'shell'
     } else if (ridge >= MOUNTAIN_ITEM_MIN_RIDGE) {
       kind = 'stone'

@@ -26,7 +26,7 @@ import { cellFromId } from '../../settlement/settlementGenerator'
 import { servedSettlementIdsForCemeteryId } from '../../terrain/cemeteryAssignment'
 import { MINE_DURATION_SEC, yieldForOre } from '../../terrain/depositMining'
 import { DIG_DURATION_SEC, getDigProfileAt, getRockDigProfileAt } from '../../terrain/dig'
-import { applyDigAt, applyLevelAt, applyMoundAt } from '../../terrain/digAction'
+import { addDigItemToInventory, applyDigAt, applyLevelAt, applyMoundAt, dropDigItemNearby } from '../../terrain/digAction'
 import { phaseName } from '../../world/dayNight'
 import { findExplicitBuriedSpot, findHiddenFindSpot, HIDDEN_FIND_SEARCH_RADIUS, resolveHiddenFindLoot } from '../../world/hiddenFinds'
 import { findTreasureMapBearCaveMapDig } from '../../world/locations/treasureMapBearCave'
@@ -72,6 +72,11 @@ export type GroundActions = {
    *  items-player-012), not a per-attempt chance roll. */
   gatherBranch: (treeId: string, x: number, z: number) => void
   startDepositMine: (depositId: string, x: number, z: number) => void
+  /** Mines one completed action off a generated `largeRock`/`rockCluster`
+   *  environment prop (plan world-terrain-047) — offered only while the held
+   *  item has `rock_mining`, same busy/physical-work shape as
+   *  `startDepositMine`. */
+  startRockMineAt: (resourceId: string, x: number, z: number) => void
   /** Clears the in-session hidden-treasure dig progress (New Game only).
    *  A discovered treasure's own one-shot flag lives in `worldFlags`.
    */
@@ -554,6 +559,36 @@ export function createGroundActions(ctx: PlayerActionContext, deps: GroundAction
     }, physicalEffortBusyOptions('moderate', dayNight.dayLengthSec))
   }
 
+  /** Mineable environment rocks (plan world-terrain-047) — reuses
+   *  `GroundActions`' busy/physical-work conventions like `startDepositMine`,
+   *  but mutates `ChunkManager`'s own authoritative mineable-rock state
+   *  instead of `ResourceDeposits`; presentation/collider refresh happens
+   *  inside `ChunkManager.mineRock()` itself, in the same call that mutates
+   *  progress, so the player never sees a depleted rock still blocking
+   *  movement. Re-resolves the rock by `resourceId` at completion rather than
+   *  trusting the gaze-time snapshot, so cancellation before completion
+   *  leaves both progress and yield untouched automatically. */
+  const startRockMineAt = (resourceId: string, x: number, z: number): void => {
+    if (!hasItemCapability(heldTool.held(), 'rock_mining') || isActionBlocked(ctx)) return
+    playActionMine(worldAudio.playAt, { x, z })
+    busy.start(physicalDuration(MINE_DURATION_SEC), 'Kucie…', () => {
+      const result = bundle.chunkManager.mineRock(resourceId)
+      if (!result) {
+        toast.show('Tu nie ma już czego wydobywać.', 'error')
+        return
+      }
+      const feedback = digFeedback()
+      if (inventory.canAdd(result.kind, result.amount)) {
+        addDigItemToInventory(result.kind, feedback, result.amount)
+      } else {
+        for (let i = 0; i < result.amount; i++) dropDigItemNearby(result.kind, x, z, feedback, Math.random)
+        toast.show(inventoryFullToastText(inventory, result.kind, result.amount), 'error')
+      }
+      heldTool.syncWithInventory()
+      ctx.syncHeldHud()
+    }, physicalEffortBusyOptions('moderate', dayNight.dayLengthSec))
+  }
+
   return {
     aimGroundPoint,
     startDigAt,
@@ -564,6 +599,7 @@ export function createGroundActions(ctx: PlayerActionContext, deps: GroundAction
     startTreeChop,
     gatherBranch,
     startDepositMine,
+    startRockMineAt,
     resetTreasureProgress: () => hiddenTreasureDigCount = 0,
   }
 }

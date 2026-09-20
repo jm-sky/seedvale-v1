@@ -101,6 +101,56 @@ function params(overrides: Partial<ChunkTileParams> = {}): ChunkTileParams {
   }
 }
 
+function uniformTile(apronRes: number, height: number, continentalness: number): ChunkTileData {
+  const tile = dryLandTile(apronRes)
+  tile.heights = filled(apronRes, height)
+  tile.floorHeights = filled(apronRes, height)
+  tile.continentalness = filled(apronRes, continentalness)
+  return tile
+}
+
+describe('computeChunkItems — shell spawn band (plan world-terrain-047)', () => {
+  const WATER_LEVEL = 0
+  const COASTAL_CONTINENTALNESS = 0.4 // within [oceanThreshold, coastThreshold]
+  const INLAND_CONTINENTALNESS = 0.8
+
+  it('accepts a shell candidate close to the ocean shoreline', () => {
+    let sawShell = false
+    for (let i = 0; i < 60; i++) {
+      const coord = { cx: i, cz: -i }
+      const tile = uniformTile(19, WATER_LEVEL + 0.5, COASTAL_CONTINENTALNESS)
+      const items = computeChunkItems(coord, tile, params({ cx: coord.cx, cz: coord.cz, seed: 100 + i, waterLevel: WATER_LEVEL }), [])
+      if (items.some((item) => item.kind === 'shell')) sawShell = true
+    }
+    expect(sawShell).toBe(true)
+  })
+
+  it('rejects a candidate too far/high above the shoreline', () => {
+    for (let i = 0; i < 60; i++) {
+      const coord = { cx: i, cz: -i }
+      const tile = uniformTile(19, WATER_LEVEL + 3, COASTAL_CONTINENTALNESS)
+      const items = computeChunkItems(coord, tile, params({ cx: coord.cx, cz: coord.cz, seed: 100 + i, waterLevel: WATER_LEVEL }), [])
+      expect(items.some((item) => item.kind === 'shell')).toBe(false)
+    }
+  })
+
+  it('never satisfies the shell predicate on inland/lake-like continentalness', () => {
+    for (let i = 0; i < 60; i++) {
+      const coord = { cx: i, cz: -i }
+      const tile = uniformTile(19, WATER_LEVEL + 0.5, INLAND_CONTINENTALNESS)
+      const items = computeChunkItems(coord, tile, params({ cx: coord.cx, cz: coord.cz, seed: 100 + i, waterLevel: WATER_LEVEL }), [])
+      expect(items.some((item) => item.kind === 'shell')).toBe(false)
+    }
+  })
+
+  it('keeps deterministic stable ids for the same seed/chunk', () => {
+    const coord = { cx: 2, cz: -6 }
+    const tile = uniformTile(19, WATER_LEVEL + 0.5, COASTAL_CONTINENTALNESS)
+    const p = params({ cx: coord.cx, cz: coord.cz, seed: 321, waterLevel: WATER_LEVEL })
+    expect(computeChunkItems(coord, tile, p, [])).toEqual(computeChunkItems(coord, tile, p, []))
+  })
+})
+
 describe('computeChunkItems — coin pool (issue 035)', () => {
   const tile = dryLandTile(19)
 

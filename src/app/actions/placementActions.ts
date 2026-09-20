@@ -1854,6 +1854,8 @@ export function createPlacementActions(ctx: PlayerActionContext): PlacementActio
       sampleMountainRidge: chunkManager.sampleMountainRidge,
       waterLevel: chunkManager.waterLevel,
       seed: chunkManager.seed,
+      sampleContinentalness: chunkManager.sampleContinentalness,
+      region: chunkManager.region,
     }
     const validation = validatePreparationSamples(originalHeights, targetHeight, env)
     if (!validation.ok) {

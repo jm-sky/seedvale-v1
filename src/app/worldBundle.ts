@@ -25,6 +25,7 @@ import type { LandmarkKind } from '../terrain/chunkEnvironment'
 import type { ChunkCoord } from '../terrain/chunkGrid'
 import type { ResourceDepletionState } from '../terrain/depositMining'
 import type { MineableDepositDefinition } from '../terrain/mineableDeposit'
+import type { MineableRockStateStore } from '../terrain/mineableRocks'
 import type { RenewableWorldItemOverrides } from '../terrain/renewableWorldItems'
 import type { CompletedTerrainPreparation, TerrainPreparationRecord } from '../terrain/terrainPreparation'
 import type { PlacedTrapRecord } from '../world/animalTraps'
@@ -509,6 +510,10 @@ function buildChunkManager(
   treeLifecycle: TreeLifecycle,
   getWorldDays: () => number,
   waterMirror: WaterMirror,
+  /** Sparse mineable-rock mutation state (plan world-terrain-047) — same
+   *  "caller-owned, mutated in place, carried across rebuild" contract as
+   *  `collectedItemIds` above. */
+  mineableRockState: MineableRockStateStore,
 ): ChunkManager {
   const cfg: ChunkManagerConfig = {
     chunkSize: config.terrain.chunkSize,
@@ -535,6 +540,7 @@ function buildChunkManager(
     plantedTrees,
     plantedCrops,
     modifications,
+    mineableRockState,
     grass: config.terrain.grass,
     detailNormal: config.terrain.detailNormal,
     terrainCastsShadow: config.postProcessing.terrainCastsShadow,
@@ -1062,6 +1068,10 @@ type WorldSystemsSeed = {
   plantedTrees: PlantedTreeRecord[]
   plantedCrops: CropPlacement[]
   modifications: TerrainModification[]
+  /** Sparse mineable-rock mutation state (plan world-terrain-047) — same
+   *  long-lived, createApp-owned object as `resourceDepletion`, mutated in
+   *  place, carried across rebuild, reset only on a genuinely new world. */
+  mineableRockState: MineableRockStateStore
   playAt: PlayAt
   treeLifecycle: TreeLifecycle
   getWorldDays: () => number
@@ -1258,6 +1268,7 @@ async function buildWorldSystems(
 
   const {
     scene, config, collectedItemIds, renewableWorldItems, consumedWorldPickupIds, removedCropIds, plantedTrees, plantedCrops, modifications,
+    mineableRockState,
     playAt, treeLifecycle, getWorldDays, dayNight,
     droppedItems: initialDroppedItems,
     placedFires: initialPlacedFires,
@@ -1333,7 +1344,7 @@ async function buildWorldSystems(
   bootMarkEnd('createWaterMirror')
 
   bootMark('buildChunkManager')
-  const chunkManager = buildChunkManager(scene, config, collectedItemIds, renewableWorldItems, removedCropIds, plantedTrees, plantedCrops, modifications, treeLifecycle, getWorldDays, waterMirror)
+  const chunkManager = buildChunkManager(scene, config, collectedItemIds, renewableWorldItems, removedCropIds, plantedTrees, plantedCrops, modifications, treeLifecycle, getWorldDays, waterMirror, mineableRockState)
   bootMarkEnd('buildChunkManager')
 
   // Plan settlements-014 — river identity is registered during ChunkManager
@@ -2427,9 +2438,15 @@ export async function createWorldBundle(
    *  `SaveData.authoredWorldConsequences` on a fresh boot; same carry/restore
    *  contract as `initialStructureStates`/`initialFoundedSettlements` above. */
   initialAuthoredWorldConsequences?: readonly AuthoredWorldConsequenceId[],
+  /** Plan world-terrain-047 — sparse mineable-rock mutation state, sourced
+   *  from `SaveData.mineableRocks` on a fresh boot; same "caller-owned,
+   *  mutated in place, carried across rebuild" contract as `resourceDepletion`
+   *  above. */
+  mineableRockState: MineableRockStateStore = new Map(),
 ): Promise<BuiltWorldSystems> {
   return buildWorldSystems({
-    scene, config, collectedItemIds, renewableWorldItems, consumedWorldPickupIds, removedCropIds, plantedTrees, plantedCrops, modifications, playAt,
+    scene, config, collectedItemIds, renewableWorldItems, consumedWorldPickupIds, removedCropIds, plantedTrees, plantedCrops, modifications,
+    mineableRockState, playAt,
     treeLifecycle, getWorldDays, dayNight,
     droppedItems: initialDroppedItems,
     placedFires: initialPlacedFires,
@@ -2560,6 +2577,10 @@ export async function rebuildWorldBundle(
   /** Plan quests-progression-036 — same mutated-in-place Set `createApp` owns. */
   consumedWorldPickupIds: ReadonlySet<string> = new Set(),
   onAnimalDeathSound?: (kind: AnimalKind, x: number, z: number) => void,
+  /** Plan world-terrain-047 — same "long-lived object owned by `createApp.ts`,
+   *  mutated in place, threaded through both `createWorldBundle` and
+   *  `rebuildWorldBundle`" contract as `resourceDepletion` above. */
+  mineableRockState: MineableRockStateStore = new Map(),
 ): Promise<void> {
   // Snapshot before dispose() — a same-session rebuild (config change, not a
   // new seed) recreates `Fauna` from scratch just like every other bundle
@@ -2728,6 +2749,7 @@ export async function rebuildWorldBundle(
     spawnerState: carriedSpawnerState,
     persistentOccupants: carriedPersistentOccupants,
     resourceDepletion,
+    mineableRockState,
     grassForageOverrides,
     onAnimalDeath, onAnimalDeathSound, getPlayerSocial, onSettlementAvailable, isLandPlotOwned, onTrapCapture, onTrapBaitReturned,
     pointLightBudget, getNearbyPlayerWell,

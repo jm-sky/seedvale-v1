@@ -111,7 +111,7 @@ describe('vegetationRegionBatcher', () => {
     batcher.setChunkPlacements({ cx: 0, cz: 0 }, 'tree-living', templates, [placement('t1'), placement('t2')])
     expect(bucketOf(scene, 'chunk-vegetation-region-0,0|tree-living').count).toBe(2)
 
-    expect(batcher.removeByKey({ cx: 0, cz: 0 }, 't1')).toBe(true)
+    expect(batcher.removeByKey({ cx: 0, cz: 0 }, 'tree-living', 't1')).toBe(true)
     expect(bucketOf(scene, 'chunk-vegetation-region-0,0|tree-living').count).toBe(1)
 
     // A sibling chunk in the same region loads and triggers a region rebuild —
@@ -119,10 +119,10 @@ describe('vegetationRegionBatcher', () => {
     batcher.setChunkPlacements({ cx: 1, cz: 0 }, 'tree-living', templates, [placement('t3')])
     expect(bucketOf(scene, 'chunk-vegetation-region-0,0|tree-living').count).toBe(2)
 
-    expect(batcher.removeByKey({ cx: 0, cz: 0 }, 'does-not-exist')).toBe(false)
+    expect(batcher.removeByKey({ cx: 0, cz: 0 }, 'tree-living', 'does-not-exist')).toBe(false)
   })
 
-  it('removeByKey does not affect other kinds sharing the region', () => {
+  it('removeByKey is kind-scoped — a mismatched kind never touches another kind sharing the region', () => {
     const scene = new Scene()
     const batcher = createVegetationRegionBatcher(scene, 3)
     const templates = [template()]
@@ -130,8 +130,23 @@ describe('vegetationRegionBatcher', () => {
     batcher.setChunkPlacements({ cx: 0, cz: 0 }, 'tree-living', templates, [placement('t1')])
     batcher.setChunkPlacements({ cx: 0, cz: 0 }, 'bush', templates, [placement('b1')])
 
-    expect(batcher.removeByKey({ cx: 0, cz: 0 }, 'b1')).toBe(false)
+    expect(batcher.removeByKey({ cx: 0, cz: 0 }, 'tree-living', 'b1')).toBe(false)
     expect(bucketOf(scene, 'chunk-vegetation-region-0,0|bush').count).toBe(1)
+
+    expect(batcher.removeByKey({ cx: 0, cz: 0 }, 'bush', 'b1')).toBe(true)
+    expect(bucketOf(scene, 'chunk-vegetation-region-0,0|bush').count).toBe(0)
+  })
+
+  it('removeByKey works for a non-tree kind (mineable rocks, plan world-terrain-047)', () => {
+    const scene = new Scene()
+    const batcher = createVegetationRegionBatcher(scene, 3)
+    const templates = [template()]
+
+    batcher.setChunkPlacements({ cx: 0, cz: 0 }, 'largeRock', templates, [placement('rock:largeRock:1'), placement('rock:largeRock:2')])
+    expect(bucketOf(scene, 'chunk-environment-region-0,0|largeRock').count).toBe(2)
+
+    expect(batcher.removeByKey({ cx: 0, cz: 0 }, 'largeRock', 'rock:largeRock:1')).toBe(true)
+    expect(bucketOf(scene, 'chunk-environment-region-0,0|largeRock').count).toBe(1)
   })
 
   it('syncLod applies the nearest (max-fraction) contributing chunk to the whole region+kind', () => {

@@ -1,16 +1,23 @@
 import { describe, expect, it } from 'vitest'
 import {
   DIG_DEPTH_ROCK,
+  DIG_DEPTH_SAND,
   type DigEnv,
   getDigProfileAt,
   getRockDigProfileAt,
   isRockGround,
   resolveDigStone,
   STONE_CHANCE_ROCK,
+  STONE_CHANCE_SAND,
   STONE_NOTICE_CHANCE,
 } from './dig'
 
 const WATER_LEVEL = 2
+const REGION = { oceanThreshold: 0.32, coastThreshold: 0.45 }
+/** Inland, outside the ocean/coast continentalness band — the default for
+ *  every test that isn't specifically exercising the coastal exception. */
+const INLAND_CONTINENTALNESS = 0.7
+const COASTAL_CONTINENTALNESS = 0.4
 
 function env(overrides: Partial<DigEnv> = {}): DigEnv {
   return {
@@ -18,6 +25,8 @@ function env(overrides: Partial<DigEnv> = {}): DigEnv {
     sampleMountainRidge: () => 0,
     waterLevel: WATER_LEVEL,
     seed: 42,
+    sampleContinentalness: () => INLAND_CONTINENTALNESS,
+    region: REGION,
     ...overrides,
   }
 }
@@ -54,6 +63,28 @@ describe('getDigProfileAt', () => {
 
   it('tags ordinary dry land as soil', () => {
     expect(getDigProfileAt(0, 0, env())?.surface).toBe('soil')
+  })
+
+  it('allows shallow ocean-shoreline water within the configured depth', () => {
+    const profile = getDigProfileAt(0, 0, env({
+      sampleHeight: () => WATER_LEVEL - 0.2,
+      sampleContinentalness: () => COASTAL_CONTINENTALNESS,
+    }))
+    expect(profile).toEqual({ depth: DIG_DEPTH_SAND, stoneChance: STONE_CHANCE_SAND, surface: 'sand' })
+  })
+
+  it('rejects ocean water deeper than the configured shallow allowance', () => {
+    expect(getDigProfileAt(0, 0, env({
+      sampleHeight: () => WATER_LEVEL - 0.5,
+      sampleContinentalness: () => COASTAL_CONTINENTALNESS,
+    }))).toBeNull()
+  })
+
+  it('rejects inland shallow water even at the same depth/continentalness gate', () => {
+    expect(getDigProfileAt(0, 0, env({
+      sampleHeight: () => WATER_LEVEL - 0.2,
+      sampleContinentalness: () => INLAND_CONTINENTALNESS,
+    }))).toBeNull()
   })
 })
 

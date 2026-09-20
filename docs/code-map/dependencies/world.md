@@ -3449,6 +3449,24 @@ Generated from TypeScript imports.
 - `world/map/mapDiscovery.ts`
 - `world/map/mapProjection.ts`
 
+## `world/mineableWork.test.ts`
+
+**Imports**
+
+- `world/mineableWork.ts`
+
+## `world/mineableWork.ts`
+
+**Imports**
+
+- `items/itemCatalog.ts`
+- `items/items.ts`
+
+**Imported by**
+
+- `terrain/mineableRocks.ts`
+- `world/mineableWork.test.ts`
+
 ## `world/naturalMaterialResponse.test.ts`
 
 **Imports**

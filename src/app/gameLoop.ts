@@ -412,6 +412,9 @@ export type GameLoopDeps = {
   gatherBranch: (treeId: string, x: number, z: number) => void
   /** Start the pickaxe mine channel for a gaze-selected ore deposit (plan 090). */
   startDepositMine: (depositId: string, x: number, z: number) => void
+  /** Start the pickaxe mine channel for a gaze-selected mineable environment
+   *  rock (plan world-terrain-047). */
+  startRockMineAt: (resourceId: string, x: number, z: number) => void
   /** Shovel-bury a dead animal corpse (busy channel). */
   startBuryCorpse: (animal: AnimalAgent) => void
   /** Knife-harvest raw_meat from a dead animal corpse (busy channel, plan 106). */
@@ -714,7 +717,7 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
     quickActions, timeSkip, timeSkipOverlay, busy, busyOverlay, restCamp, inventory, heldTool, equipment, mount, lead, landOwnership, toast, hud,
     questManager, syncLostLivestockQuests, onQuestStateSynced, onPlayerAnimalKill, ambientAudio, fireAudio, houseDoors, worldAudio, playerTorch, minimap, mapDiscovery, locationProximityDiscovery, openQuestLog, openInventory, openSkills, openCharacter,
     targetedSkillSelection, toggleCombatMode,
-    startGroundWork, startTreeChop, gatherBranch, startDepositMine, startBuryCorpse, startHarvestMeat, startMilkAnimal, startShearAnimal, startCookAt, startIgniteFire,
+    startGroundWork, startTreeChop, gatherBranch, startDepositMine, startRockMineAt, startBuryCorpse, startHarvestMeat, startMilkAnimal, startShearAnimal, startCookAt, startIgniteFire,
     startDestroySpawner,
     drinkFromWaterSource, fillWaterskin, consumeItem, startTentRest, sleepInHay, openTrapArmDialog, disarmTrap, collectTrap,
     startFishing, applyFishingBait, interactDryingRack, collectHive, burnHive, harvestCrop, tidyGardenPlot, waterGardenPlot,
@@ -2137,6 +2140,8 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
           }
         } else if (target.kind === 'deposit') {
           startDepositMine(target.id, target.position.x, target.position.z)
+        } else if (target.kind === 'mineableRock') {
+          startRockMineAt(target.resourceId, target.position.x, target.position.z)
         } else if (target.kind === 'corpse') {
           if (target.action === 'bury') startBuryCorpse(target.animal)
           else if (target.action === 'inspect') {

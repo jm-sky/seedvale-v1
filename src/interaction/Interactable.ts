@@ -243,6 +243,11 @@ export type InteractablePayload =
   }
   /** Movable draft cart (plan fauna-007). */
   | { kind: 'cart', position: { x: number, z: number }, promptLabel: string, id: string }
+  /** Mineable generated environment rock (`largeRock`/`rockCluster`, plan
+   *  world-terrain-047) — `[E]` mines it, offered only while the held item
+   *  has `rock_mining`. `kind` is the *effective* current visual/prompt
+   *  stage, not necessarily the placement's original base kind. */
+  | { kind: 'mineableRock', position: { x: number, z: number }, promptLabel: string, resourceId: string, rockKind: 'largeRock' | 'rockCluster' }
 
 /** Per-frame interaction candidate with authoritative spatial identity (plan world-027). */
 export type Interactable = InteractablePayload & {

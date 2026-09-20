@@ -230,6 +230,7 @@ function validLegacyV8Save(): Record<string, unknown> {
     bedrolls: [],
     platforms: [],
     resourceDeposits: {},
+    mineableRocks: [],
     workContracts: [],
   }
 }

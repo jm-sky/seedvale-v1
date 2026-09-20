@@ -1,7 +1,7 @@
 # Plan: Mineable rocks and coastal shell resources
 
 **Created:** 2026-09-20  
-**Status:** `planned` 📋  
+**Status:** `verification needed` 🔍  
 **Priority:** medium · **Effort:** M  
 **Depends on:** none  
 **Domain:** `world-terrain`  

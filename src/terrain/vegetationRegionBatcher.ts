@@ -138,10 +138,12 @@ export type VegetationRegionBatcher = {
    *  region and rebuilds each affected region+kind (or disposes it if it
    *  becomes empty). Must run synchronously inside chunk `unload()`. */
   clearChunkPlacements: (chunkCoord: ChunkCoord) => void
-  /** Redirect for `refreshTreeVisual`'s chop/regrow — always targets the
-   *  `tree-living` kind of `chunkCoord`'s region, the only kind that ever
-   *  carries a placement `key`. */
-  removeByKey: (chunkCoord: ChunkCoord, key: string) => boolean
+  /** Keyed single-placement removal for `kind` within `chunkCoord`'s region —
+   *  used by `refreshTreeVisual`'s chop/regrow (`kind: 'tree-living'`) and by
+   *  `refreshRockVisual`'s mineable-rock override projection (`kind:
+   *  'largeRock' | 'rockCluster'`, plan world-terrain-047). Only placements
+   *  that were given a `PropPlacement.key` can be targeted this way. */
+  removeByKey: (chunkCoord: ChunkCoord, kind: VegetationKind, key: string) => boolean
   /** Reports `chunkCoord`'s current distance (Chebyshev chunk distance,
    *  `radius` is `config.loadRadius`, `lodScale` the active quality preset)
    *  to every kind it contributes to within its region. Resolves each kind's
@@ -246,8 +248,8 @@ export function createVegetationRegionBatcher(
     }
   }
 
-  function removeByKey(chunkCoord: ChunkCoord, key: string): boolean {
-    const tKey = tableKey(regionKey(chunkCoord, regionChunks), 'tree-living')
+  function removeByKey(chunkCoord: ChunkCoord, kind: VegetationKind, key: string): boolean {
+    const tKey = tableKey(regionKey(chunkCoord, regionChunks), kind)
     const rec = table.get(tKey)
     if (!rec) return false
     for (const contribution of rec.chunks.values()) {

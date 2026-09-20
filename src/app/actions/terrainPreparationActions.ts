@@ -188,6 +188,8 @@ export function createTerrainPreparationActions(
     sampleMountainRidge: bundle.chunkManager.sampleMountainRidge,
     waterLevel: bundle.chunkManager.waterLevel,
     seed: bundle.chunkManager.seed,
+    sampleContinentalness: bundle.chunkManager.sampleContinentalness,
+    region: bundle.chunkManager.region,
   })
 
   const exitPreview = (): void => {
