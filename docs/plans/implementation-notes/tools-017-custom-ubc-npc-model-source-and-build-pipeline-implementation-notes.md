@@ -192,6 +192,6 @@ Agent completed:
 - Shared `scripts/assets/ubc_gltf.py`; `prepare-custom-ubc-npc.py` validates, normalizes 382-joint Blender exports → 65 UBC bones, composes head/hair, optimizes.
 - Outputs: `male_blacksmith.glb` (~547 KiB), `male_woodcutter.glb` (~400 KiB); no animations; rebuild works with `_temp/` absent.
 - Unittests in `scripts/assets/test_prepare_custom_ubc_npc.py`.
-- Runtime `npcAppearance` left unchanged (manual Asset Browser check still needed).
+- Follow-up runtime wiring (2026-09-20): adult male `blacksmith` / `woodcutter` map to those GLBs via optional `UBC_ROLE_LOOK.modelUrl` in `npcAppearance.ts` (`tintUrl: null`, identity clothing hue, rolled hair color). Female adults and children keep Peasant UBC fallback. Manual Asset Browser check of deformation/materials still needed for the pipeline plan.
 
 > **Zrób git commit i push do main, rebase jeżeli trzeba**

@@ -17,6 +17,10 @@ export const NPC_UBC_FEMALE_RANGER_URL = `${UBC_DIR}/female_ranger.glb`
 export const NPC_UBC_FEMALE_KNIGHT_URL = `${UBC_DIR}/female_knight.glb`
 /** Adult male guard singleton — Knight with Armet stripped + Hair_SimpleParted. */
 export const NPC_UBC_MALE_KNIGHT_UNHELMETED_URL = `${UBC_DIR}/male_knight_unhelmeted.glb`
+/** Adult male blacksmith — authored profession GLB (tools-017); no outfit sidecar tint. */
+export const NPC_UBC_MALE_BLACKSMITH_URL = `${NPC_VARIANT_DIR}/male_blacksmith.glb`
+/** Adult male woodcutter — authored profession GLB (tools-017); no outfit sidecar tint. */
+export const NPC_UBC_MALE_WOODCUTTER_URL = `${NPC_VARIANT_DIR}/male_woodcutter.glb`
 /** Farmer sidecar — `T_Peasant_3` (sapphire vest), not the player's olive default. */
 export const NPC_UBC_PEASANT_TINT_URL = `${UBC_DIR}/npc_peasant.webp`
 /** Woodcutter sidecar — `T_Peasant_2` (earth brown), distinct from farmer sapphire. */
@@ -202,15 +206,33 @@ function rollUbcVariant(npcId: string, gender: NpcGender, outfit: NpcUbcOutfitId
   }
 }
 
-const UBC_ROLE_LOOK: Record<Role, { outfit: NpcUbcOutfitId, tintUrl: string }> = {
+/**
+ * Per-role UBC family + tint. Optional `modelUrl` pins an adult-male custom
+ * profession stem; females and children keep the outfit family path + tint.
+ */
+type UbcRoleLook = {
+  outfit: NpcUbcOutfitId
+  tintUrl: string
+  modelUrl?: string
+}
+
+const UBC_ROLE_LOOK: Record<Role, UbcRoleLook> = {
   farmer: { outfit: 'peasant', tintUrl: NPC_UBC_PEASANT_TINT_URL },
-  woodcutter: { outfit: 'peasant', tintUrl: NPC_UBC_WOODCUTTER_TINT_URL },
+  woodcutter: {
+    outfit: 'peasant',
+    tintUrl: NPC_UBC_WOODCUTTER_TINT_URL,
+    modelUrl: NPC_UBC_MALE_WOODCUTTER_URL,
+  },
   trader: { outfit: 'wizard', tintUrl: NPC_UBC_WIZARD_TINT_URL },
   hunter: { outfit: 'ranger', tintUrl: NPC_UBC_RANGER_TINT_URL },
   guard: { outfit: 'knight', tintUrl: NPC_UBC_KNIGHT_TINT_URL },
   miner: { outfit: 'peasant', tintUrl: NPC_UBC_PEASANT_TINT_URL },
   fisher: { outfit: 'peasant', tintUrl: NPC_UBC_PEASANT_TINT_URL },
-  blacksmith: { outfit: 'peasant', tintUrl: NPC_UBC_PEASANT_TINT_URL },
+  blacksmith: {
+    outfit: 'peasant',
+    tintUrl: NPC_UBC_PEASANT_TINT_URL,
+    modelUrl: NPC_UBC_MALE_BLACKSMITH_URL,
+  },
   shepherd: { outfit: 'peasant', tintUrl: NPC_UBC_PEASANT_TINT_URL },
   textile_worker: { outfit: 'peasant', tintUrl: NPC_UBC_PEASANT_TINT_URL },
   herbalist: { outfit: 'peasant', tintUrl: NPC_UBC_PEASANT_TINT_URL },
@@ -219,9 +241,13 @@ const UBC_ROLE_LOOK: Record<Role, { outfit: NpcUbcOutfitId, tintUrl: string }> =
 /**
  * Every adult role maps to a UBC outfit family (npc-055). Children also use
  * Peasant UBC regardless of role and keep age-driven `member.scale` outside
- * this resolver. Female guards use Knight. Hair/beard/hue come from `npcId`;
- * hair color also greys with `age`. Men never roll Hair_Buns. Peasant/Wizard/
- * Knight women roll Hair_Long / Hair_Buns; Ranger women only Hair_Long.
+ * this resolver. Female guards use Knight. Adult male blacksmith/woodcutter
+ * use authored custom GLBs (`UBC_ROLE_LOOK.modelUrl`) with no outfit sidecar
+ * tint and identity clothing hue so authored materials stay intact; hair
+ * color still rolls from `npcId`. Hair/beard/hue come from `npcId` on the
+ * family path; hair color also greys with `age`. Men never roll Hair_Buns.
+ * Peasant/Wizard/Knight women roll Hair_Long / Hair_Buns; Ranger women only
+ * Hair_Long.
  *
  * @domain npc
  */
@@ -233,9 +259,9 @@ export function resolveNpcAppearance(opts: {
   treeIndex: number
 }): NpcAppearance {
   // Children: Peasant UBC stand-in (npc-055). Scale stays on NpcAgent via member.scale.
-  const look = isAdultAge(opts.age)
+  const look: UbcRoleLook = isAdultAge(opts.age)
     ? UBC_ROLE_LOOK[opts.role]
-    : { outfit: 'peasant' as const, tintUrl: NPC_UBC_PEASANT_TINT_URL }
+    : { outfit: 'peasant', tintUrl: NPC_UBC_PEASANT_TINT_URL }
 
   if (look.outfit === 'knight' && opts.gender === 'male') {
     const style = rollUbcVariant(opts.npcId, opts.gender, look.outfit, opts.age)
@@ -245,6 +271,19 @@ export function resolveNpcAppearance(opts: {
       look.tintUrl,
       style.hairColor,
       style.clothingHue,
+    )
+  }
+
+  // Custom adult-male profession stems: keep authored outfit materials (no
+  // Peasant/Ranger sidecar overwrite) and skip clothing-hue multiply.
+  if (look.modelUrl && opts.gender === 'male') {
+    const style = rollUbcVariant(opts.npcId, opts.gender, look.outfit, opts.age)
+    return appearanceFor(
+      look.modelUrl,
+      look.outfit,
+      null,
+      style.hairColor,
+      NPC_CLOTHING_HUE.identity,
     )
   }
 
