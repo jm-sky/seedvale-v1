@@ -1,7 +1,7 @@
 # PLANS PLANNED WITHOUT NOTES
 
 > Generated with `pnpm plans:without-notes`  
-> Date: 2026-09-20 19:25:10  
+> Date: 2026-09-20 19:26:02  
 
 ## PLANS
 
@@ -19,7 +19,6 @@
 - `tools-005-seedvale-character-preparation-panel.md`
 - `tools-017-custom-ubc-npc-model-source-and-build-pipeline.md`
 - `tools-019-debug-tooling-lifecycle-ownership.md`
-- `ui-input-027-interaction-candidate-dropped-item-scaling.md`
 - `ui-input-028-interaction-target-identity-and-cycle-lifecycle.md`
 - `ui-input-029-village-torch-interaction-action-contract.md`
 - `ui-input-030-player-downed-action-input-gating.md`
@@ -542,43 +541,6 @@ Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną
 Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
 
 Po ukończeniu implementation notes zaktualizuj też `docs/plans/tools-019-debug-tooling-lifecycle-ownership.md` i dodaj/ustaw metadata:
-`**Model:** <best>, <cheaper-safe-fallback>`
-Wybierz dokładnie dwa modele spośród: Composer, Grok, Sonnet, Opus.
-Pierwszy ma być najlepszym wyborem do implementacji, drugi tańszym wariantem o minimalnym dodatkowym ryzyku.
-Dobierz modele na podstawie wykonanego reconu i implementation notes, zgodnie z `docs/plans/PLANNING.md`.
-
-Pliki dodaj na branch `main` w repozytorium.
-```
-
-### `ui-input-027-interaction-candidate-dropped-item-scaling.md`
-
-Prompt:
-
-```
-Zrób review planu `ui-input-027-interaction-candidate-dropped-item-scaling.md`
-
-Wczytaj:
-- `docs/STATE.md`
-- `docs/plans/PLANNING.md` (Implementation Notes section),
-- `docs/plans/ui-input-027-interaction-candidate-dropped-item-scaling.md`
-- aktualny codebase,
-- potrzebne zależności i powiązane implementacje.
-
-Na podstawie review utwórz w repo plik:
-`docs/plans/implementation-notes/ui-input-027-interaction-candidate-dropped-item-scaling-implementation-notes.md`
-
-Umieść w nim:
-- sugestie dotyczące implementacji,
-- istotne detale techniczne,
-- decyzje architektoniczne,
-- informacje o istniejących systemach i implementacjach, które należy wykorzystać,
-- potencjalne problemy, zależności i pułapki,
-- inne konkretne wskazówki, które ułatwią agentowi AI poprawną implementację planu.
-
-Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
-Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
-
-Po ukończeniu implementation notes zaktualizuj też `docs/plans/ui-input-027-interaction-candidate-dropped-item-scaling.md` i dodaj/ustaw metadata:
 `**Model:** <best>, <cheaper-safe-fallback>`
 Wybierz dokładnie dwa modele spośród: Composer, Grok, Sonnet, Opus.
 Pierwszy ma być najlepszym wyborem do implementacji, drugi tańszym wariantem o minimalnym dodatkowym ryzyku.
