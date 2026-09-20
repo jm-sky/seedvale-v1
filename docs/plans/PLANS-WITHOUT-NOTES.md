@@ -1,11 +1,10 @@
 # PLANS PLANNED WITHOUT NOTES
 
 > Generated with `pnpm plans:without-notes`  
-> Date: 2026-09-20 19:20:07  
+> Date: 2026-09-20 19:25:10  
 
 ## PLANS
 
-- `items-player-056-player-new-game-runtime-state-reset.md`
 - `npc-058-time-skip-resource-and-interrupt-parity.md`
 - `npc-059-need-action-result-revalidation-and-atomic-relief.md`
 - `npc-061-time-skip-and-reification-surface-placement-validity.md`
@@ -32,43 +31,6 @@
 
 --------------------------------
 ## PROMPTS
-
-### `items-player-056-player-new-game-runtime-state-reset.md`
-
-Prompt:
-
-```
-Zrób review planu `items-player-056-player-new-game-runtime-state-reset.md`
-
-Wczytaj:
-- `docs/STATE.md`
-- `docs/plans/PLANNING.md` (Implementation Notes section),
-- `docs/plans/items-player-056-player-new-game-runtime-state-reset.md`
-- aktualny codebase,
-- potrzebne zależności i powiązane implementacje.
-
-Na podstawie review utwórz w repo plik:
-`docs/plans/implementation-notes/items-player-056-player-new-game-runtime-state-reset-implementation-notes.md`
-
-Umieść w nim:
-- sugestie dotyczące implementacji,
-- istotne detale techniczne,
-- decyzje architektoniczne,
-- informacje o istniejących systemach i implementacjach, które należy wykorzystać,
-- potencjalne problemy, zależności i pułapki,
-- inne konkretne wskazówki, które ułatwią agentowi AI poprawną implementację planu.
-
-Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
-Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
-
-Po ukończeniu implementation notes zaktualizuj też `docs/plans/items-player-056-player-new-game-runtime-state-reset.md` i dodaj/ustaw metadata:
-`**Model:** <best>, <cheaper-safe-fallback>`
-Wybierz dokładnie dwa modele spośród: Composer, Grok, Sonnet, Opus.
-Pierwszy ma być najlepszym wyborem do implementacji, drugi tańszym wariantem o minimalnym dodatkowym ryzyku.
-Dobierz modele na podstawie wykonanego reconu i implementation notes, zgodnie z `docs/plans/PLANNING.md`.
-
-Pliki dodaj na branch `main` w repozytorium.
-```
 
 ### `npc-058-time-skip-resource-and-interrupt-parity.md`
 
