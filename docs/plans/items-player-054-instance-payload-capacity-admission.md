@@ -3,6 +3,7 @@
 **Created:** 2026-09-20
 **Status:** `planned` 📋
 **Priority:** medium · **Effort:** S
+**Model:** Composer, Grok
 **Depends on:** none
 **Domain:** `items-player`
 **Subdomains:** `inventory` `items`
