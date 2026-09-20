@@ -60,3 +60,30 @@ Outfit meshes have no clips; locomotion/combat clips live in `ual1_player.glb`.
 | Sword_Idle | 1 / 3 | ubc/ual1_player | ubc/male_peasant, ubc/male_ranger |
 | Walk_Loop | 1 / 3 | ubc/ual1_player | ubc/male_peasant, ubc/male_ranger |
 
+## UAL2 Source inventory (npc-055)
+
+Authoritative local package (development input only; not a runtime dependency):
+
+`_temp/Models/packs/Universal Animation Library 2[Source]/Unreal-Godot/UAL2.glb`
+
+Inspected 2026-09-20 — **134** animation names present (exact GLB names, sorted):
+
+A_TPose, Bandage_Loop, Bow_Aim_Down, Bow_Aim_Neutral, Bow_Aim_Up, Bow_Notch, Bow_RapidShoot_Loop, Bow_Shoot, Chest_Open, ClimbUp_1m, ClimbUp_2m, Consume, DoubleJump, Farm_Harvest, Farm_PickingTree, Farm_PlantSeed, Farm_ScatteringSeeds, Farm_Watering, Fish_Cast, Fish_Cast_Idle_Loop, Fish_OH_Idle_Loop, Fish_Reel, Fish_Reel_Failed, GetOffWall_2m, Hit_Knockback, IdleToLay, Idle_FoldArms_Loop, Idle_Lantern_Loop, Idle_No_Loop, Idle_Rail_Call, Idle_Rail_Loop, Idle_Shield_Break, Idle_Shield_Loop, Idle_TalkingPhone_Loop, JogToFlip, KipUp, LayToIdle, LiftAir, LiftAir_Fall, LiftAir_Fall_Air_Loop, LiftAir_Fall_Impact, LiftAir_Hit_L, LiftAir_Hit_R, LiftAir_Idle_Loop, Melee_Combo, Melee_Hook, Melee_Hook_Rec, Melee_Knee, Melee_Knee_Rec, Melee_Uppercut, Mining_Loop, MonsterTransformation, NinjaJump_Double, NinjaJump_Idle_Loop, NinjaJump_Land, NinjaJump_Start, OverhandThrow, SafetyVault, Shield_Dash, Shield_OneShot, Slide_Exit, Slide_Loop, Slide_Start, Sprint_Shield_Loop, StepUp, Surprise, SwordLight_C_Rec, Sword_Aerial_A, Sword_Aerial_A_Rec, Sword_Aerial_B, Sword_Aerial_Combo_Loop, Sword_Aerial_Idle_Loop, Sword_Block, Sword_Dash, Sword_GroundPound, Sword_Heavy_A, Sword_Heavy_A_Rec, Sword_Heavy_B, Sword_Heavy_B_Rec, Sword_Heavy_C, Sword_Heavy_C_Rec, Sword_Heavy_Combo, Sword_Heavy_D, Sword_Light_A, Sword_Light_A_Rec, Sword_Light_B, Sword_Light_B_Rec, Sword_Light_C, Sword_Light_Combo, Sword_Light_D, Sword_Regular_A, Sword_Regular_A_Rec, Sword_Regular_B, Sword_Regular_B_Rec, Sword_Regular_C, Sword_Regular_Combo, Sword_UpperCut, TreeChopping_Loop, Turn180_L, Turn180_R, Walk_Bwd_L_Loop, Walk_Bwd_Loop, Walk_Bwd_R_Loop, Walk_Carry_Loop, Walk_Fwd_L_Loop, Walk_Fwd_Loop, Walk_Fwd_R_Loop, Walk_L_Loop, Walk_R_Loop, WallRun_Jump_L, WallRun_Jump_R, WallRun_L_Loop, WallRun_R_Loop, Yes, Zombie_Bite, Zombie_Idle_Loop, Zombie_Run_Bwd_L_Loop, Zombie_Run_Bwd_Loop, Zombie_Run_Bwd_R_Loop, Zombie_Run_Fwd_L_Loop, Zombie_Run_Fwd_Loop, Zombie_Run_Fwd_R_Loop, Zombie_Run_L_Loop, Zombie_Run_R_Loop, Zombie_Scratch, Zombie_Spawn, Zombie_Walk_Bwd_L_Loop, Zombie_Walk_Bwd_Loop, Zombie_Walk_Bwd_R_Loop, Zombie_Walk_Fwd_L_Loop, Zombie_Walk_Fwd_Loop, Zombie_Walk_Fwd_R_Loop, Zombie_Walk_L_Loop, Zombie_Walk_R_Loop
+
+### npc-055 runtime wiring from this inventory
+
+| Clip | Intent / use |
+|------|----------------|
+| TreeChopping_Loop | chopTree |
+| Farm_Harvest | farmHarvest |
+| Farm_PlantSeed | farmPlant |
+| Farm_Watering | farmWater |
+| Walk_Carry_Loop | walkCarry |
+| Consume | consume |
+| LayToIdle | layToIdle (sleep entry) |
+| Mining_Loop | mine |
+| Fish_Cast_Idle_Loop | fish |
+| Chest_Open | extracted into companion; not wired until an NPC chest action exists |
+
+No truthful Source clip for sharpen / shear / drink / bury / textile weave / smith hammer — those stay on Interact / Fixing_Kneeling fallbacks. `UAL2_RM.glb` is not used for ordinary NPC locomotion/work.
+

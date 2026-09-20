@@ -10,6 +10,11 @@ ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 WORK="$(mktemp -d "${TMPDIR:-/tmp}/seedvale-ubc-player.XXXXXX")"
 OUT="$ROOT/public/models/characters/ubc"
 UAL1="$ROOT/_temp/Models/packs/Universal Animation Library[Standard]/Unreal-Godot/UAL1_Standard.glb"
+UAL2="$ROOT/_temp/Models/packs/Universal Animation Library 2[Source]/Unreal-Godot/UAL2.glb"
+# Bounded UAL1 keep-list: player locomotion/combat + npc-055 semantic extras.
+UAL1_KEEP='Idle_Loop,Walk_Loop,Jog_Fwd_Loop,Sprint_Loop,Sword_Attack,Sword_Idle,Interact,Fixing_Kneeling,Idle_Talking_Loop,Sitting_Enter,Sitting_Idle_Loop,Sitting_Talking_Loop,Sitting_Exit,Death01,Hit_Chest,Punch_Jab,Punch_Cross,Roll,Pistol_Idle_Loop,Pistol_Aim_Neutral,Pistol_Shoot,Crouch_Idle_Loop,Crouch_Fwd_Loop,Jump_Start,Jump_Loop,Jump_Land,Swim_Idle_Loop,Swim_Fwd_Loop,Idle_Torch_Loop'
+# Bounded UAL2 Source keep-list (npc-055). Never pull from UAL2_RM.glb.
+UAL2_KEEP='TreeChopping_Loop,Farm_Harvest,Farm_PlantSeed,Farm_Watering,Walk_Carry_Loop,Consume,LayToIdle,Chest_Open,Mining_Loop,Fish_Cast_Idle_Loop'
 OUTFITS=(
   male_peasant
   male_ranger
@@ -43,14 +48,26 @@ if [[ ! -f "$UAL1" ]]; then
   echo "missing $UAL1" >&2
   exit 1
 fi
+if [[ ! -f "$UAL2" ]]; then
+  echo "missing $UAL2 (UAL2 Source Unreal-Godot/UAL2.glb required for npc-055)" >&2
+  exit 1
+fi
 
 mkdir -p "$OUT" "$WORK/outfits" "$WORK/anims"
 
 python3 "$ROOT/scripts/assets/compose_ubc_player.py" --root "$ROOT" --out-dir "$WORK/outfits"
 python3 "$ROOT/scripts/assets/extract_glb_clips.py" \
   --in "$UAL1" \
-  --out "$WORK/anims/ual1_player.glb" \
-  --keep Idle_Loop,Walk_Loop,Sprint_Loop,Sword_Attack,Sword_Idle,Interact,Death01,Hit_Chest,Punch_Jab,Punch_Cross,Roll,Pistol_Idle_Loop,Pistol_Aim_Neutral,Pistol_Shoot,Crouch_Idle_Loop,Crouch_Fwd_Loop,Jump_Start,Jump_Loop,Jump_Land,Swim_Idle_Loop,Swim_Fwd_Loop,Idle_Torch_Loop
+  --out "$WORK/anims/ual1_subset.glb" \
+  --keep "$UAL1_KEEP"
+python3 "$ROOT/scripts/assets/extract_glb_clips.py" \
+  --in "$UAL2" \
+  --out "$WORK/anims/ual2_subset.glb" \
+  --keep "$UAL2_KEEP"
+python3 "$ROOT/scripts/assets/merge_glb_animations.py" \
+  --base "$WORK/anims/ual1_subset.glb" \
+  --add "$WORK/anims/ual2_subset.glb" \
+  --out "$WORK/anims/ual_humanoid.glb"
 
 optimize() {
   local src="$1"
@@ -81,7 +98,9 @@ for gltf in "$WORK/outfits/npc"/*.gltf; do
   name="$(basename "$gltf" .gltf)"
   optimize "$gltf" "$OUT/npc/${name}.glb"
 done
-optimize "$WORK/anims/ual1_player.glb" "$OUT/ual1_player.glb" "-ac"
+optimize "$WORK/anims/ual_humanoid.glb" "$OUT/ual_humanoid.glb" "-ac"
+# Remove legacy companion name if a previous prepare left it behind.
+rm -f "$OUT/ual1_player.glb"
 
 # Brown albedo variants are swapped at runtime onto MI_* outfit materials.
 # NPC profession tints (T_Peasant_3 / T_Peasant_2 / T_Wizard_3 / T_Ranger_2 / T_Knight_3) live beside them.

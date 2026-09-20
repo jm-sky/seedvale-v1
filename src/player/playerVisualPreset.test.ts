@@ -128,7 +128,7 @@ describe('resolvePlayerVisualPreset', () => {
 })
 
 describe('companionAnimationUrl', () => {
-  it('returns ual1_player for UBC outfit meshes and skips the clip GLB itself', () => {
+  it('returns ual_humanoid for UBC outfit meshes and skips the clip GLB itself', () => {
     expect(companionAnimationUrl(PLAYER_UBC_PEASANT_URL)).toBe(PLAYER_UBC_ANIMATION_URL)
     expect(companionAnimationUrl(`${PLAYER_UBC_RANGER_URL}?r=3`)).toBe(PLAYER_UBC_ANIMATION_URL)
     expect(companionAnimationUrl(PLAYER_UBC_ANIMATION_URL)).toBeNull()

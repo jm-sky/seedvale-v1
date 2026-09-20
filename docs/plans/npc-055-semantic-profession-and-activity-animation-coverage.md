@@ -1,9 +1,9 @@
 # Plan: Semantic profession and activity animation coverage
 
 **Created:** 2026-09-18
-**Status:** `planned` 📋
+**Status:** `verification needed` 🔍
 **Priority:** high · **Effort:** L
-**Depends on:** ~~items-player-035~~, npc-039
+**Depends on:** ~~items-player-035~~, ~~npc-039~~
 **Domain:** `npc`
 **Type:** `feature`
 **Model:** Sonnet, Composer

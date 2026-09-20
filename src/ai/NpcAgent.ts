@@ -279,6 +279,11 @@ import {
   serializableDefendScore,
   type ThreateningAnimalCandidate,
 } from './npcAnimalThreat'
+import {
+  isBulkyCargoPresentation,
+  type NpcAnimationIntent,
+  resolveNpcAnimationIntent,
+} from './npcAnimationIntent'
 import { resolveNpcAppearance } from './npcAppearance'
 import { type AssistanceRequestKind, type AssistanceResult, resolveNpcAssistance } from './npcAssistance'
 import { getSharedRequestNpcBark } from './npcBarkRequest'
@@ -535,18 +540,37 @@ const NPC_FLEE_DISTANCE = 8
 export type { NpcGender }
 export type { ActionId, NpcPlannedAction, Phase } from './npcAction'
 
-export { NPC_MODEL_URLS } from './npcAppearance'
-
 /** Public, dialogue-facing summary of what an NPC is doing right now — a
  *  narrower, stable view over the private `phase`/`pendingAction` FSM state
  *  (`getCurrentActivity()` below), so callers outside this class never see
  *  `Phase`/`PlannedAction` themselves (`docs/plans/archive/2026-08-09--048...`). */
 export type CurrentActivityKind = 'combat' | 'eat' | 'idle' | 'need' | 'sleep' | 'talking' | 'wander' | 'work'
 
-/** This NPC's `AgentAnimationSet` clip keys (review 2026-09-03 §5 E6) —
- *  the semantic mapping every `anim.resolve()`/`play()`/`playOnce()`/
- *  `settleAtEnd()` call site uses instead of a raw clip name. */
-type NpcAnimClip = 'attackMelee' | 'attackRanged' | 'death' | 'hurt' | 'idle' | 'interact' | 'run' | 'walk'
+/** This NPC's `AgentAnimationSet` clip keys (review 2026-09-03 §5 E6 /
+ *  plan npc-055) — semantic mapping for `anim.resolve()`/`play()`/`playOnce()`/
+ *  `settleAtEnd()`. Combat one-shots stay outside `resolveNpcAnimationIntent`. */
+type NpcAnimClip =
+  | 'attackMelee'
+  | 'attackRanged'
+  | 'death'
+  | 'hurt'
+  | 'idle'
+  | 'interact'
+  | 'run'
+  | 'walk'
+  | 'talk'
+  | 'consume'
+  | 'chopTree'
+  | 'farmHarvest'
+  | 'farmPlant'
+  | 'farmWater'
+  | 'walkCarry'
+  | 'fixKneeling'
+  | 'sitIdle'
+  | 'sitTalk'
+  | 'layToIdle'
+  | 'mine'
+  | 'fish'
 
 export type CurrentActivity = {
   kind: CurrentActivityKind
@@ -756,11 +780,11 @@ export function classifyPendingActivity(
   // `mine`/`fish`/`harvest`/`plant`/`sharpen` are all schedule-`work`-driven
   // profession actions (miner/fisher/farmer/blacksmith) — same "reads as
   // work, not a need" contract as `mine` already had before this plan.
-  if (
-    chainKind === 'work' || chainKind === 'mine' || chainKind === 'fish'
-    || chainKind === 'harvest' || chainKind === 'plant' || chainKind === 'sharpen'
-    || chainKind === 'shear'
-  ) return 'work'
+    if (
+      chainKind === 'work' || chainKind === 'mine' || chainKind === 'fish'
+      || chainKind === 'harvest' || chainKind === 'plant' || chainKind === 'sharpen'
+      || chainKind === 'shear' || chainKind === 'waterGarden'
+    ) return 'work'
   if (pending.kind === 'eat' && activeNeed === 'idle') return 'eat'
   // Plan 151 — walking to/settling at the campfire reads as ordinary idle;
   // the shared interaction itself reuses the existing player-facing
@@ -1232,15 +1256,16 @@ export class NpcAgent {
    *  mapping over whatever the loaded GLB actually exports (`resolve()`'s
    *  existing name-list fallback), never a hard-coded clip name in combat
    *  logic — a key with no matching clip is a safe, silent fallback
-   *  (existing Idle/Walk keep playing, no crash); every model in
-   *  `NPC_MODEL_URLS` today carries all four combat clips, but a future
-   *  pool entry might not. */
+   *  (existing Idle/Walk keep playing, no crash); UBC companion clips cover
+   *  the wired combat set, with silent fallback when a key is missing. */
   private readonly anim: AgentAnimationSet<NpcAnimClip>
   /** Counts down while the one-shot `hurt` clip should keep pre-empting
    *  `syncAnimation()`'s normal idle/walk/interact crossfade (plan npc-009) —
    *  `0` outside a hurt reaction. Set from `takeDamage()`, decremented in
    *  `update()` alongside the other cooldown-style timers. */
   private hurtAnimTimer = 0
+  /** Remaining LayToIdle one-shot duration after entering `sleep` (npc-055). */
+  private sleepAnimTimer = 0
   /** `simClock` at which the one-shot `death` clip finishes playing (plan
    *  npc-009) — bounds how long a dead NPC's `update()` keeps ticking its own
    *  `anim` mixer (see the `health.dead` branch there) instead of forever.
@@ -1810,11 +1835,25 @@ export class NpcAgent {
     this.anim = createAgentAnimationSet<NpcAnimClip>(root, animations)
     // Modular pool clips first; UAL aliases last so exact Modular names still
     // win when both a UBC companion clip file and a Modular GLB are in play.
+    // npc-055 semantic UAL names map activity intents to companion clips.
     this.anim.resolve({
       idle: ['Idle', 'Idle_Neutral', 'Idle_Loop'],
       walk: ['Walk', 'Run', 'Walk_Loop'],
-      run: ['Run', 'Run_Loop'],
+      run: ['Run', 'Sprint_Loop', 'Run_Loop'],
       interact: ['Interact', 'Wave'],
+      talk: ['Idle_Talking_Loop', 'Interact', 'Wave'],
+      consume: ['Consume', 'Interact'],
+      chopTree: ['TreeChopping_Loop', 'Interact', 'Wave'],
+      farmHarvest: ['Farm_Harvest', 'Interact', 'Wave'],
+      farmPlant: ['Farm_PlantSeed', 'Interact', 'Wave'],
+      farmWater: ['Farm_Watering', 'Interact', 'Wave'],
+      walkCarry: ['Walk_Carry_Loop', 'Walk', 'Walk_Loop'],
+      fixKneeling: ['Fixing_Kneeling', 'Interact', 'Wave'],
+      sitIdle: ['Sitting_Idle_Loop', 'Idle', 'Idle_Loop'],
+      sitTalk: ['Sitting_Talking_Loop', 'Idle_Talking_Loop', 'Interact'],
+      layToIdle: ['LayToIdle'],
+      mine: ['Mining_Loop', 'Interact', 'Wave'],
+      fish: ['Fish_Cast_Idle_Loop', 'Interact', 'Wave'],
       attackMelee: ['Sword_Slash', 'Sword_Attack'],
       attackRanged: ['Gun_Shoot', 'Idle_Gun_Shoot', 'Pistol_Shoot'],
       hurt: ['HitRecieve', 'HitRecieve_2', 'Hit_Chest'],
@@ -2966,6 +3005,7 @@ export class NpcAgent {
     if (this.abandonCooldown > 0) this.abandonCooldown -= dt
     if (this.threatReactionCooldown > 0) this.threatReactionCooldown -= dt
     if (this.hurtAnimTimer > 0) this.hurtAnimTimer -= dt
+    if (this.sleepAnimTimer > 0) this.sleepAnimTimer -= dt
 
     if (WATCHDOG_PHASES.has(this.phase)) {
       this.tickWatchdog(dt)
@@ -3350,8 +3390,12 @@ export class NpcAgent {
       case 'goSleep':
         if (!shouldStayAsleep(this.vigor, scheduledActivity, this.sleepReason)) {
           this.sleepReason = null
+          this.sleepAnimTimer = 0
           this.phase = 'choose'
-        } else if (this.steerWithRescue(this.sleepDest, dt)) this.phase = 'sleep'
+        } else if (this.steerWithRescue(this.sleepDest, dt)) {
+          this.phase = 'sleep'
+          this.beginSleepPose()
+        }
         break
       case 'goTo': {
         const action = this.pendingAction
@@ -3490,6 +3534,7 @@ export class NpcAgent {
       case 'sleep':
         if (!shouldStayAsleep(this.vigor, scheduledActivity, this.sleepReason)) {
           this.sleepReason = null
+          this.sleepAnimTimer = 0
           this.phase = 'choose'
         }
         break
@@ -3755,20 +3800,65 @@ export class NpcAgent {
     // this method: `update()` returns before `syncAnimation()` once dead.
     if (this.hurtAnimTimer > 0) return
     if (this.phase === 'combat' && !this.isCombatCycleIdle()) return
-    // Busy actions (drink / eat / talk) must not keep Walk — prioritize
-    // Interact over locomotion even if `moving` somehow stayed true.
-    if (this.isBusyPhase() && this.anim.has('interact')) {
-      this.anim.play('interact')
-    } else if (this.moving && resolveNpcEffectiveLocomotionMode(this.locomotionMode, this.stamina) === 'run' && this.anim.has('run')) {
-      this.anim.play('run')
-    } else if (this.moving && this.anim.has('walk')) {
-      // Also the safe fallback for a `run`-intent NPC on a model with no
-      // authored Run clip (plan npc-046) — real run-speed movement, Walk
-      // presentation, same as any other missing-clip fallback here.
-      this.anim.play('walk')
-    } else if (this.anim.has('idle')) {
-      this.anim.play('idle')
+    // Sleep entry one-shot (npc-055) — hold final LayToIdle frame after it ends.
+    if (this.phase === 'sleep') {
+      if (this.sleepAnimTimer > 0) return
+      if (this.anim.has('layToIdle')) this.anim.settleAtEnd('layToIdle')
+      return
     }
+    const run = this.moving && resolveNpcEffectiveLocomotionMode(this.locomotionMode, this.stamina) === 'run'
+    const bulkyCargo = isBulkyCargoPresentation({
+      carried: this.carried,
+      transportCargo: this.transportCargo,
+      actionKind: this.pendingAction?.kind ?? null,
+      chainKind: this.pendingAction?.chainKind ?? null,
+      activeNeed: this.activeNeed,
+    })
+    const intent = resolveNpcAnimationIntent({
+      phase: this.phase,
+      actionKind: this.pendingAction?.kind ?? null,
+      chainKind: this.pendingAction?.chainKind ?? null,
+      role: this.role,
+      moving: this.moving,
+      run,
+      bulkyCargo,
+    })
+    this.playAnimationIntent(intent)
+  }
+
+  /** Map a presentation intent to the first available resolved clip. */
+  private playAnimationIntent(intent: NpcAnimationIntent): void {
+    const clip = intent as NpcAnimClip
+    if (this.anim.has(clip)) {
+      this.anim.play(clip)
+      return
+    }
+    if (intent !== 'idle' && intent !== 'walk' && intent !== 'run' && this.anim.has('interact')) {
+      this.anim.play('interact')
+      return
+    }
+    if ((intent === 'walk' || intent === 'walkCarry') && this.anim.has('walk')) {
+      this.anim.play('walk')
+      return
+    }
+    if (intent === 'run' && this.anim.has('walk')) {
+      this.anim.play('walk')
+      return
+    }
+    if (this.anim.has('idle')) this.anim.play('idle')
+  }
+
+  /** Play LayToIdle once on sleep entry; `syncAnimation` settles after it ends. */
+  private beginSleepPose(): void {
+    if (!this.anim.has('layToIdle')) {
+      this.sleepAnimTimer = 0
+      return
+    }
+    this.sleepAnimTimer = this.anim.playOnce('layToIdle')
+  }
+
+  private isBusyPhase(): boolean {
+    return this.phase === 'execute' || this.phase === 'lookAtPlayer'
   }
 
   /** Impact-or-death sound at the exact moment an attack of this NPC's own
@@ -3785,10 +3875,6 @@ export class NpcAgent {
     } else if (target.ref.kind !== 'animal') {
       playNpcCombatDeath(this.playAt, targetPos)
     }
-  }
-
-  private isBusyPhase(): boolean {
-    return this.phase === 'execute' || this.phase === 'lookAtPlayer'
   }
 
   private nowDays(): number {
@@ -4232,6 +4318,7 @@ export class NpcAgent {
     )
     this.phase = preferHomeSleep(dist) ? 'goSleep' : 'sleep'
     if (this.phase === 'goSleep') this.prepareSleepDestination()
+    else this.beginSleepPose()
   }
 
   /** Picks the water-fetch destination for `beginNeed`'s `water`/`waterDuty`
@@ -4836,7 +4923,7 @@ export class NpcAgent {
     if (!foodSources) return false
     const target = foodSources.queryNearest(this.mesh.position.x, this.mesh.position.z, FOOD_SOURCE_SEARCH_RADIUS)
     if (!target) return false
-    this.startAction({
+    const action: NpcPlannedAction = {
       kind: 'eat',
       destination: copyVec3({ x: target.x, y: this.sampleHeight(target.x, target.z), z: target.z }),
       durationSec: 1.4 * this.waitMultiplier,
@@ -4855,7 +4942,10 @@ export class NpcAgent {
         // §14) still gets a chance at being tidied.
         if (target.kind === 'crop') {
           this.maybeMaintainNearbyGarden(target.x, target.z)
-          this.maybeWaterNearbyGarden(target.x, target.z)
+          // npc-055: attach short waterGarden next so Farm_Watering has a
+          // truthful timed lifecycle; mutation still runs on that step's complete.
+          const water = this.planWaterNearbyGarden(target.x, target.z)
+          if (water) action.next = water
         }
         if (result.count <= 0) return
         household?.depositFood(result.kind, result.count, this.economy, this.simClock)
@@ -4865,7 +4955,8 @@ export class NpcAgent {
         household?.takeFood(this.simClock)
         relieveNeed(this.needs, 'food')
       },
-    })
+    }
+    this.startAction(action)
     return true
   }
 
@@ -4978,26 +5069,30 @@ export class NpcAgent {
   }
 
   /**
-   * Plan settlements-npcs-001 §13/§14 — a chance to water a dry garden plot,
-   * same "only ever evaluated right after this NPC already arrived at a crop
-   * it was harvesting" shape and gates as `maybeMaintainNearbyGarden`. Never
-   * a global scan, never a special `WateringAI`.
-   *
-   * Same determinism reasoning as `maybeMaintainNearbyGarden`: gates a
-   * mutation of persisted `PlayerGardenRecord.hydration`, so it uses
-   * `gardenWateringRoll` rather than `Math.random()`.
+   * Plan settlements-npcs-001 §13/§14 + npc-055 — chance to water a dry garden
+   * plot after harvest. Same gates as before; returns a short `waterGarden`
+   * action whose completion calls the existing `foodSources.waterGarden`
+   * mutation (presentation duration only — no new watering decision system).
    */
-  private maybeWaterNearbyGarden(x: number, z: number): void {
+  private planWaterNearbyGarden(x: number, z: number): NpcPlannedAction | null {
     const foodSources = this.foodSources
-    if (!foodSources) return
-    if (this.health.currentHp / this.health.maxHp < NPC_GARDEN_MAINTENANCE_MIN_HEALTH_RATIO) return
-    if (getStaminaRatio(this.stamina) < NPC_GARDEN_MAINTENANCE_MIN_STAMINA_RATIO) return
-    if (pickNeed(this.needs, { critical: true }) !== 'idle') return
+    if (!foodSources) return null
+    if (this.health.currentHp / this.health.maxHp < NPC_GARDEN_MAINTENANCE_MIN_HEALTH_RATIO) return null
+    if (getStaminaRatio(this.stamina) < NPC_GARDEN_MAINTENANCE_MIN_STAMINA_RATIO) return null
+    if (pickNeed(this.needs, { critical: true }) !== 'idle') return null
     const garden = foodSources.gardenNear(x, z)
-    if (!garden || garden.hydration >= HYDRATION_DROUGHT_THRESHOLD) return
+    if (!garden || garden.hydration >= HYDRATION_DROUGHT_THRESHOLD) return null
     const attempt = Math.floor(this.nowDays() * 24)
-    if (gardenWateringRoll(this.id, garden.id, attempt) >= NPC_GARDEN_WATERING_CHANCE) return
-    foodSources.waterGarden(garden.id)
+    if (gardenWateringRoll(this.id, garden.id, attempt) >= NPC_GARDEN_WATERING_CHANCE) return null
+    const gardenId = garden.id
+    return {
+      kind: 'waterGarden',
+      destination: copyVec3({ x, y: this.sampleHeight(x, z), z }),
+      durationSec: 1.6 * this.waitMultiplier,
+      onComplete: () => {
+        foodSources.waterGarden(gardenId)
+      },
+    }
   }
 
   /** Builds the shared input `npcProfessionWork.ts`'s planners read (review

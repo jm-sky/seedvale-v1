@@ -111,7 +111,7 @@ function main() {
 
   output.push('## UBC (`characters/ubc/`)')
   output.push('')
-  output.push('Outfit meshes have no clips; locomotion/combat clips live in `ual1_player.glb`.')
+  output.push('Outfit meshes have no clips; locomotion/combat/work clips live in `ual_humanoid.glb`.')
   output.push('')
   writeClipTable(output, ubcFiles, collectMatrix(ubcFiles))
   output.push('')

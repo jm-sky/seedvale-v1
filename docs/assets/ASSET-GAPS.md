@@ -66,11 +66,11 @@ NPCs are functional, but character variety is now behind the rest of the world p
 
 ### Current state
 
-Gameplay NPCs still use the Quaternius **Ultimate Modular Men/Women** pools declared by `NPC_MODEL_URLS` in `src/ai/NpcAgent.ts`.
+Gameplay NPCs all use **Universal Base Characters (UBC)** outfits (plan npc-055): Peasant / Wizard / Ranger / Knight, with shared clips from `ual_humanoid.glb`. Children are scaled Peasant UBC stand-ins. Legacy Modular Men/Women NPC pool GLBs were removed.
 
-The player pipeline has already moved further toward **Universal Base Characters (UBC)** with fantasy outfits and Universal Animation Library clips. Runtime UBC assets include male Peasant, Ranger, Knight, Knight Cloth, Noble and Wizard variants under `public/models/characters/ubc/`.
+The player pipeline uses the same UBC family and companion asset. Runtime UBC assets include male Peasant, Ranger, Knight, Knight Cloth, Noble and Wizard variants under `public/models/characters/ubc/`.
 
-There are also 14 low-poly medieval people models under `public/models/characters/medieval/`, but they are static/background candidates rather than replacements for animated `NpcAgent` characters.
+There are also 14 low-poly medieval people models under `public/models/characters/medieval/`, but they are static/background candidates rather than animated `NpcAgent` characters.
 
 ### Gaps
 

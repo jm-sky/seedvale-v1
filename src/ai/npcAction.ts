@@ -80,6 +80,10 @@ export type ActionId =
    *  `goTo`/`execute` toward the persistent travel destination. Idle-tier,
    *  not a NeedId; critical interrupts cancel the action, not the commitment. */
   | 'travel'
+  /** Dry-garden watering after harvest (plan npc-055) — short semantic action
+   *  whose completion calls the existing `foodSources.waterGarden(...)` mutation.
+   *  Presentation only extends duration; hydration rules stay unchanged. */
+  | 'waterGarden'
 
 /**
  * NPC adapter over the shared `PlannedAction` contract: destination and

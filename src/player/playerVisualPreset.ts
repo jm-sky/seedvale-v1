@@ -10,19 +10,24 @@ export const PLAYER_UBC_KNIGHT_URL = `${UBC_DIR}/male_knight.glb`
 export const PLAYER_UBC_KNIGHT_CLOTH_URL = `${UBC_DIR}/male_knight_cloth.glb`
 export const PLAYER_UBC_NOBLE_URL = `${UBC_DIR}/male_noble.glb`
 export const PLAYER_UBC_WIZARD_URL = `${UBC_DIR}/male_wizard.glb`
-/** In-place UAL1 subset (locomotion/combat + coverage clips from items-player-035). */
-export const PLAYER_UBC_ANIMATION_URL = `${UBC_DIR}/ual1_player.glb`
+/**
+ * Shared in-place UAL1+UAL2 humanoid companion (npc-055).
+ * Used by player and all UBC NPC outfits — not duplicated into outfit meshes.
+ */
+export const UBC_HUMANOID_ANIMATION_URL = `${UBC_DIR}/ual_humanoid.glb`
+/** @deprecated Prefer {@link UBC_HUMANOID_ANIMATION_URL}; kept as alias during migration. */
+export const PLAYER_UBC_ANIMATION_URL = UBC_HUMANOID_ANIMATION_URL
 
 /**
- * Extra clip GLB for UBC outfit meshes (they ship with none). `ual1_player.glb`
+ * Extra clip GLB for UBC outfit meshes (they ship with none). `ual_humanoid.glb`
  * itself and non-UBC URLs return `null`. Query strings on the model URL are ignored.
  */
 export function companionAnimationUrl(modelUrl: string): string | null {
   const path = modelUrl.split('?')[0] ?? modelUrl
   if (!path.endsWith('.glb')) return null
   if (!path.startsWith(`${UBC_DIR}/`)) return null
-  if (path === PLAYER_UBC_ANIMATION_URL) return null
-  return PLAYER_UBC_ANIMATION_URL
+  if (path === UBC_HUMANOID_ANIMATION_URL) return null
+  return UBC_HUMANOID_ANIMATION_URL
 }
 
 export const PLAYER_UBC_PEASANT_BROWN_URL = `${UBC_DIR}/male_peasant_brown.webp`
@@ -74,32 +79,32 @@ const PRESETS: Record<PlayerVisualId, PlayerVisualPreset> = {
   peasant: {
     id: 'peasant',
     modelUrl: PLAYER_UBC_PEASANT_URL,
-    animationUrl: PLAYER_UBC_ANIMATION_URL,
+    animationUrl: UBC_HUMANOID_ANIMATION_URL,
   },
   ranger: {
     id: 'ranger',
     modelUrl: PLAYER_UBC_RANGER_URL,
-    animationUrl: PLAYER_UBC_ANIMATION_URL,
+    animationUrl: UBC_HUMANOID_ANIMATION_URL,
   },
   knight: {
     id: 'knight',
     modelUrl: PLAYER_UBC_KNIGHT_URL,
-    animationUrl: PLAYER_UBC_ANIMATION_URL,
+    animationUrl: UBC_HUMANOID_ANIMATION_URL,
   },
   knight_cloth: {
     id: 'knight_cloth',
     modelUrl: PLAYER_UBC_KNIGHT_CLOTH_URL,
-    animationUrl: PLAYER_UBC_ANIMATION_URL,
+    animationUrl: UBC_HUMANOID_ANIMATION_URL,
   },
   noble: {
     id: 'noble',
     modelUrl: PLAYER_UBC_NOBLE_URL,
-    animationUrl: PLAYER_UBC_ANIMATION_URL,
+    animationUrl: UBC_HUMANOID_ANIMATION_URL,
   },
   wizard: {
     id: 'wizard',
     modelUrl: PLAYER_UBC_WIZARD_URL,
-    animationUrl: PLAYER_UBC_ANIMATION_URL,
+    animationUrl: UBC_HUMANOID_ANIMATION_URL,
   },
 }
 

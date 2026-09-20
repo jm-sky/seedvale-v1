@@ -30,22 +30,8 @@ export const NPC_UBC_KNIGHT_TINT_URL = `${UBC_DIR}/npc_knight.webp`
 export const NPC_UBC_HAIR_1_URL = `${UBC_DIR}/hair_1.webp`
 export const NPC_UBC_HAIR_2_URL = `${UBC_DIR}/hair_2.webp`
 
-/** Quaternius Modular Men/Women — village-flavoured variants, one pool per gender. */
-export const NPC_MODEL_URLS: Record<NpcGender, readonly string[]> = {
-  male: [
-    '/models/characters/Farmer.glb',
-    '/models/characters/Casual_Hoodie.glb',
-    '/models/characters/Casual_2.glb',
-  ],
-  female: [
-    '/models/characters/Female_Casual.glb',
-    '/models/characters/Female_Medieval.glb',
-    '/models/characters/Female_Formal.glb',
-  ],
-}
-
-export type NpcOutfitId = 'modular' | 'peasant' | 'wizard' | 'ranger' | 'knight'
-export type NpcUbcOutfitId = Exclude<NpcOutfitId, 'modular'>
+export type NpcOutfitId = 'peasant' | 'wizard' | 'ranger' | 'knight'
+export type NpcUbcOutfitId = NpcOutfitId
 export type NpcHairKind = 'simple' | 'long' | 'buzzed' | 'buns'
 export type NpcClothingHueId = 'identity' | 'warm' | 'cool' | 'muted'
 export type NpcHairColorId = 'black' | 'brown' | 'redhead' | 'blond' | 'grey'
@@ -100,11 +86,6 @@ export type NpcAppearance = {
   tintUrl: string | null
 }
 
-export function modelUrlFor(gender: NpcGender, treeIndex: number): string {
-  const pool = NPC_MODEL_URLS[gender]
-  return pool[treeIndex % pool.length]!
-}
-
 function appearanceFor(
   modelUrl: string,
   outfit: NpcOutfitId,
@@ -149,7 +130,7 @@ function defaultUbcUrl(gender: NpcGender, outfit: NpcUbcOutfitId): string {
     return gender === 'female' ? NPC_UBC_FEMALE_RANGER_URL : PLAYER_UBC_RANGER_URL
   }
   if (outfit === 'knight') {
-    return NPC_UBC_MALE_KNIGHT_UNHELMETED_URL
+    return gender === 'female' ? NPC_UBC_FEMALE_KNIGHT_URL : NPC_UBC_MALE_KNIGHT_UNHELMETED_URL
   }
   return gender === 'female' ? NPC_UBC_FEMALE_WIZARD_URL : PLAYER_UBC_WIZARD_URL
 }
@@ -161,8 +142,10 @@ function isPlayerDefaultCombo(
   beard: boolean,
 ): boolean {
   if (beard) return false
-  // Helmeted player Knight must not be reused; guard pins the unhelmeted stem.
-  if (outfit === 'knight') return false
+  // Male guard pins the unhelmeted stem — never the helmeted player Knight.
+  if (outfit === 'knight' && gender === 'male') return false
+  // Female Knight stem is Hair_Long on `female_knight.glb`.
+  if (outfit === 'knight' && gender === 'female' && hair === 'long') return true
   if (gender === 'male' && hair === 'simple') return true
   // Female Peasant stem is Hair_Long. Wizard/Ranger stems were SimpleParted —
   // long hair lives in npc/female_*_long.glb.
@@ -219,22 +202,26 @@ function rollUbcVariant(npcId: string, gender: NpcGender, outfit: NpcUbcOutfitId
   }
 }
 
-const UBC_ROLE_LOOK: Partial<Record<Role, { outfit: NpcUbcOutfitId, tintUrl: string }>> = {
+const UBC_ROLE_LOOK: Record<Role, { outfit: NpcUbcOutfitId, tintUrl: string }> = {
   farmer: { outfit: 'peasant', tintUrl: NPC_UBC_PEASANT_TINT_URL },
   woodcutter: { outfit: 'peasant', tintUrl: NPC_UBC_WOODCUTTER_TINT_URL },
   trader: { outfit: 'wizard', tintUrl: NPC_UBC_WIZARD_TINT_URL },
   hunter: { outfit: 'ranger', tintUrl: NPC_UBC_RANGER_TINT_URL },
   guard: { outfit: 'knight', tintUrl: NPC_UBC_KNIGHT_TINT_URL },
+  miner: { outfit: 'peasant', tintUrl: NPC_UBC_PEASANT_TINT_URL },
+  fisher: { outfit: 'peasant', tintUrl: NPC_UBC_PEASANT_TINT_URL },
+  blacksmith: { outfit: 'peasant', tintUrl: NPC_UBC_PEASANT_TINT_URL },
+  shepherd: { outfit: 'peasant', tintUrl: NPC_UBC_PEASANT_TINT_URL },
+  textile_worker: { outfit: 'peasant', tintUrl: NPC_UBC_PEASANT_TINT_URL },
+  herbalist: { outfit: 'peasant', tintUrl: NPC_UBC_PEASANT_TINT_URL },
 }
 
 /**
- * Adult farmer/woodcutter → Peasant UBC, adult trader → Wizard UBC, adult
- * hunter → Ranger UBC, adult male guard → unhelmeted Knight singleton;
- * everyone else (including children and female guards) stays on the
- * Modular pool. Role, not reserved name, selects the outfit. Hair/beard/hue
- * come from `npcId`, not role; hair color also greys with `age`
- * (`rollHairColor`). Men never roll Hair_Buns. Peasant/Wizard women roll
- * Hair_Long / Hair_Buns; Ranger women only Hair_Long.
+ * Every adult role maps to a UBC outfit family (npc-055). Children also use
+ * Peasant UBC regardless of role and keep age-driven `member.scale` outside
+ * this resolver. Female guards use Knight. Hair/beard/hue come from `npcId`;
+ * hair color also greys with `age`. Men never roll Hair_Buns. Peasant/Wizard/
+ * Knight women roll Hair_Long / Hair_Buns; Ranger women only Hair_Long.
  *
  * @domain npc
  */
@@ -245,32 +232,28 @@ export function resolveNpcAppearance(opts: {
   role: Role
   treeIndex: number
 }): NpcAppearance {
-  if (!isAdultAge(opts.age)) {
-    return appearanceFor(modelUrlFor(opts.gender, opts.treeIndex), 'modular', null)
-  }
-  const look = UBC_ROLE_LOOK[opts.role]
-  if (look) {
-    if (look.outfit === 'knight') {
-      if (opts.gender !== 'male') {
-        return appearanceFor(modelUrlFor(opts.gender, opts.treeIndex), 'modular', null)
-      }
-      const style = rollUbcVariant(opts.npcId, opts.gender, look.outfit, opts.age)
-      return appearanceFor(
-        NPC_UBC_MALE_KNIGHT_UNHELMETED_URL,
-        look.outfit,
-        look.tintUrl,
-        style.hairColor,
-        style.clothingHue,
-      )
-    }
-    const variant = rollUbcVariant(opts.npcId, opts.gender, look.outfit, opts.age)
+  // Children: Peasant UBC stand-in (npc-055). Scale stays on NpcAgent via member.scale.
+  const look = isAdultAge(opts.age)
+    ? UBC_ROLE_LOOK[opts.role]
+    : { outfit: 'peasant' as const, tintUrl: NPC_UBC_PEASANT_TINT_URL }
+
+  if (look.outfit === 'knight' && opts.gender === 'male') {
+    const style = rollUbcVariant(opts.npcId, opts.gender, look.outfit, opts.age)
     return appearanceFor(
-      variant.modelUrl,
+      NPC_UBC_MALE_KNIGHT_UNHELMETED_URL,
       look.outfit,
       look.tintUrl,
-      variant.hairColor,
-      variant.clothingHue,
+      style.hairColor,
+      style.clothingHue,
     )
   }
-  return appearanceFor(modelUrlFor(opts.gender, opts.treeIndex), 'modular', null)
+
+  const variant = rollUbcVariant(opts.npcId, opts.gender, look.outfit, opts.age)
+  return appearanceFor(
+    variant.modelUrl,
+    look.outfit,
+    look.tintUrl,
+    variant.hairColor,
+    variant.clothingHue,
+  )
 }

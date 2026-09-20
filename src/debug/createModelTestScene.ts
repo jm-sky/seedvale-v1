@@ -35,7 +35,7 @@ function safeCharacterAssetName(raw: string | null, fallback: string): string {
  * `isModelTestMode()`.
  *
  * `?model=Adventurer` (default) or `?model=ubc/male_peasant`.
- * Optional `?anims=ubc/ual1_player` loads extra clips (UBC outfits have none).
+ * Optional `?anims=ubc/ual_humanoid` loads extra clips (UBC outfits have none).
  */
 export async function createModelTestScene(container: HTMLElement): Promise<() => void> {
   const renderer = createRenderer(container)

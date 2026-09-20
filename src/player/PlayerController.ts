@@ -196,7 +196,7 @@ type PlayerPose = 'stand' | 'crouch' | 'lie'
   - `Walk`
   - `Wave`
 
-  UBC Peasant/Ranger loads clips from `ual1_player.glb` (UAL1 subset). Mixer
+  UBC Peasant/Ranger loads clips from `ual_humanoid.glb` (UAL1+UAL2 subset). Mixer
   aliases those names onto the same slots as Adventurer (`Idle_Loop` → idle,
   `Sprint_Loop` → run, `Sword_Attack` → melee, pistol clips → bow stand-in).
 

@@ -4,7 +4,6 @@ import { PLAYER_UBC_ANIMATION_URL, PLAYER_UBC_PEASANT_URL, PLAYER_UBC_RANGER_URL
 import {
   NPC_CLOTHING_HUE,
   NPC_HAIR_COLOR,
-  NPC_MODEL_URLS,
   NPC_UBC_FEMALE_PEASANT_URL,
   NPC_UBC_FEMALE_RANGER_URL,
   NPC_UBC_FEMALE_WIZARD_URL,
@@ -369,21 +368,41 @@ describe('resolveNpcAppearance', () => {
     expect(hues.size).toBeGreaterThan(1)
   })
 
-  it('keeps children and other roles on the Modular pool', () => {
-    const childFarmer = resolveNpcAppearance({
-      age: 12,
-      gender: 'female',
-      npcId: ANNA,
-      role: 'farmer',
-      treeIndex: 0,
-    })
-    expect(childFarmer.outfit).toBe('modular')
-    expect(childFarmer.modelUrl).toBe(NPC_MODEL_URLS.female[0])
-    expect(childFarmer.animationUrl).toBeNull()
-    expect(childFarmer.tintUrl).toBeNull()
-    expect(childFarmer.hairColor).toBe(0xffffff)
-    expect(childFarmer.clothingHue).toBe(NPC_CLOTHING_HUE.identity)
+  it('maps every adult role to UBC and never returns modular', () => {
+    const roles = [
+      'farmer', 'woodcutter', 'guard', 'trader', 'miner', 'fisher',
+      'hunter', 'blacksmith', 'shepherd', 'textile_worker', 'herbalist',
+    ] as const
+    const expectedOutfit: Record<(typeof roles)[number], string> = {
+      farmer: 'peasant',
+      woodcutter: 'peasant',
+      miner: 'peasant',
+      fisher: 'peasant',
+      blacksmith: 'peasant',
+      shepherd: 'peasant',
+      textile_worker: 'peasant',
+      herbalist: 'peasant',
+      trader: 'wizard',
+      hunter: 'ranger',
+      guard: 'knight',
+    }
+    for (const role of roles) {
+      for (const gender of ['male', 'female'] as const) {
+        const look = resolveNpcAppearance({
+          age: 30,
+          gender,
+          npcId: `role:${role}:${gender}`,
+          role,
+          treeIndex: 0,
+        })
+        expect(look.outfit, `${role}/${gender}`).toBe(expectedOutfit[role])
+        expect(look.animationUrl).toBe(PLAYER_UBC_ANIMATION_URL)
+        expect(look.modelUrl).toMatch(/\/models\/characters\/ubc\//)
+      }
+    }
+  })
 
+  it('maps female guards to Knight UBC and children to scaled Peasant UBC', () => {
     const femaleGuard = resolveNpcAppearance({
       age: 30,
       gender: 'female',
@@ -391,18 +410,22 @@ describe('resolveNpcAppearance', () => {
       role: 'guard',
       treeIndex: 2,
     })
-    expect(femaleGuard.outfit).toBe('modular')
-    expect(femaleGuard.modelUrl).toBe(NPC_MODEL_URLS.female[2 % NPC_MODEL_URLS.female.length])
+    expect(femaleGuard.outfit).toBe('knight')
+    expect(femaleGuard.modelUrl).toMatch(/female_knight/)
+    expect(femaleGuard.animationUrl).toBe(PLAYER_UBC_ANIMATION_URL)
+    expect(femaleGuard.tintUrl).toBe(NPC_UBC_KNIGHT_TINT_URL)
 
-    const blacksmith = resolveNpcAppearance({
-      age: 32,
-      gender: 'male',
-      npcId: 'home:npc:3',
-      role: 'blacksmith',
-      treeIndex: 3,
+    const childFarmer = resolveNpcAppearance({
+      age: 12,
+      gender: 'female',
+      npcId: ANNA,
+      role: 'farmer',
+      treeIndex: 0,
     })
-    expect(blacksmith.outfit).toBe('modular')
-    expect(blacksmith.modelUrl).toBe(NPC_MODEL_URLS.male[3 % NPC_MODEL_URLS.male.length])
+    expect(childFarmer.outfit).toBe('peasant')
+    expect(childFarmer.modelUrl).toMatch(/peasant/)
+    expect(childFarmer.animationUrl).toBe(PLAYER_UBC_ANIMATION_URL)
+    expect(childFarmer.tintUrl).toBe(NPC_UBC_PEASANT_TINT_URL)
 
     const childHunter = resolveNpcAppearance({
       age: 12,
@@ -411,6 +434,7 @@ describe('resolveNpcAppearance', () => {
       role: 'hunter',
       treeIndex: 4,
     })
-    expect(childHunter.outfit).toBe('modular')
+    expect(childHunter.outfit).toBe('peasant')
+    expect(childHunter.modelUrl).toMatch(/peasant/)
   })
 })
