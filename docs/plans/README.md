@@ -125,6 +125,9 @@ Unless noted otherwise, `verification needed` means implementation has passed au
 | ◼️ `items-player-053-atomic-world-pickup-ownership-transfer.md`                | 🔴 | S      | -                                                                                                                                                                                                                                                                                          | -                                         |
 | ◼️ `items-player-054-instance-payload-capacity-admission.md`                   | 🟡 | S      | -                                                                                                                                                                                                                                                                                          | -                                         |
 | ◼️ `items-player-055-container-transfer-transaction-atomicity.md`              | 🟡 | S      | -                                                                                                                                                                                                                                                                                          | -                                         |
+| ◼️ `items-player-056-player-new-game-runtime-state-reset.md`                   | 🔴 | S      | items-player-050                                                                                                                                                                                                                                                                           | -                                         |
+| ◼️ `items-player-057-mounted-player-lifecycle-and-restore-continuity.md`       | 🔴 | S      | world-033, ~~settlements-npcs-048~~                                                                                                                                                                                                                                                        | -                                         |
+| ◼️ `ui-input-030-player-downed-action-input-gating.md`                         | 🟡 | S      | -                                                                                                                                                                                                                                                                                          | -                                         |
 
 ---
 
@@ -252,14 +255,14 @@ New plans declare a primary `Domain:` in frontmatter. Use optional `Tags:` only 
 
 - ai: `005`
 - fauna: `046`
-- items-player: `056`
+- items-player: `058`
 - npc: `062`
 - persistence: `007`
 - quests-progression: `073`
 - settlements: `023`
 - settlements-npcs: `055`
 - tools: `019`
-- ui-input: `030`
+- ui-input: `031`
 - world: `037`
 - world-terrain: `048`
 

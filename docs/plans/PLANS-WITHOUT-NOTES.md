@@ -1,7 +1,7 @@
 # PLANS PLANNED WITHOUT NOTES
 
 > Generated with `pnpm plans:without-notes`  
-> Date: 2026-09-20 11:35:31  
+> Date: 2026-09-20 11:42:38  
 
 ## PLANS
 
@@ -11,6 +11,8 @@
 - `items-player-053-atomic-world-pickup-ownership-transfer.md`
 - `items-player-054-instance-payload-capacity-admission.md`
 - `items-player-055-container-transfer-transaction-atomicity.md`
+- `items-player-056-player-new-game-runtime-state-reset.md`
+- `items-player-057-mounted-player-lifecycle-and-restore-continuity.md`
 - `npc-058-time-skip-resource-and-interrupt-parity.md`
 - `npc-059-need-action-result-revalidation-and-atomic-relief.md`
 - `npc-061-time-skip-and-reification-surface-placement-validity.md`
@@ -30,6 +32,7 @@
 - `ui-input-027-interaction-candidate-dropped-item-scaling.md`
 - `ui-input-028-interaction-target-identity-and-cycle-lifecycle.md`
 - `ui-input-029-village-torch-interaction-action-contract.md`
+- `ui-input-030-player-downed-action-input-gating.md`
 - `world-033-worldbundle-rebuild-transaction-and-lifecycle-safety.md`
 - `world-034-time-skip-clock-exactness-and-catch-up-coverage.md`
 - `world-036-lightweight-unloaded-shipwreck-and-tower-lookup.md`
@@ -253,6 +256,80 @@ Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną
 Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
 
 Po ukończeniu implementation notes zaktualizuj też `docs/plans/items-player-055-container-transfer-transaction-atomicity.md` i dodaj/ustaw metadata:
+`**Model:** <best>, <cheaper-safe-fallback>`
+Wybierz dokładnie dwa modele spośród: Composer, Grok, Sonnet, Opus.
+Pierwszy ma być najlepszym wyborem do implementacji, drugi tańszym wariantem o minimalnym dodatkowym ryzyku.
+Dobierz modele na podstawie wykonanego reconu i implementation notes, zgodnie z `docs/plans/PLANNING.md`.
+
+Pliki dodaj na branch `main` w repozytorium.
+```
+
+### `items-player-056-player-new-game-runtime-state-reset.md`
+
+Prompt:
+
+```
+Zrób review planu `items-player-056-player-new-game-runtime-state-reset.md`
+
+Wczytaj:
+- `docs/STATE.md`
+- `docs/plans/PLANNING.md` (Implementation Notes section),
+- `docs/plans/items-player-056-player-new-game-runtime-state-reset.md`
+- aktualny codebase,
+- potrzebne zależności i powiązane implementacje.
+
+Na podstawie review utwórz w repo plik:
+`docs/plans/implementation-notes/items-player-056-player-new-game-runtime-state-reset-implementation-notes.md`
+
+Umieść w nim:
+- sugestie dotyczące implementacji,
+- istotne detale techniczne,
+- decyzje architektoniczne,
+- informacje o istniejących systemach i implementacjach, które należy wykorzystać,
+- potencjalne problemy, zależności i pułapki,
+- inne konkretne wskazówki, które ułatwią agentowi AI poprawną implementację planu.
+
+Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
+Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
+
+Po ukończeniu implementation notes zaktualizuj też `docs/plans/items-player-056-player-new-game-runtime-state-reset.md` i dodaj/ustaw metadata:
+`**Model:** <best>, <cheaper-safe-fallback>`
+Wybierz dokładnie dwa modele spośród: Composer, Grok, Sonnet, Opus.
+Pierwszy ma być najlepszym wyborem do implementacji, drugi tańszym wariantem o minimalnym dodatkowym ryzyku.
+Dobierz modele na podstawie wykonanego reconu i implementation notes, zgodnie z `docs/plans/PLANNING.md`.
+
+Pliki dodaj na branch `main` w repozytorium.
+```
+
+### `items-player-057-mounted-player-lifecycle-and-restore-continuity.md`
+
+Prompt:
+
+```
+Zrób review planu `items-player-057-mounted-player-lifecycle-and-restore-continuity.md`
+
+Wczytaj:
+- `docs/STATE.md`
+- `docs/plans/PLANNING.md` (Implementation Notes section),
+- `docs/plans/items-player-057-mounted-player-lifecycle-and-restore-continuity.md`
+- aktualny codebase,
+- potrzebne zależności i powiązane implementacje.
+
+Na podstawie review utwórz w repo plik:
+`docs/plans/implementation-notes/items-player-057-mounted-player-lifecycle-and-restore-continuity-implementation-notes.md`
+
+Umieść w nim:
+- sugestie dotyczące implementacji,
+- istotne detale techniczne,
+- decyzje architektoniczne,
+- informacje o istniejących systemach i implementacjach, które należy wykorzystać,
+- potencjalne problemy, zależności i pułapki,
+- inne konkretne wskazówki, które ułatwią agentowi AI poprawną implementację planu.
+
+Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
+Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
+
+Po ukończeniu implementation notes zaktualizuj też `docs/plans/items-player-057-mounted-player-lifecycle-and-restore-continuity.md` i dodaj/ustaw metadata:
 `**Model:** <best>, <cheaper-safe-fallback>`
 Wybierz dokładnie dwa modele spośród: Composer, Grok, Sonnet, Opus.
 Pierwszy ma być najlepszym wyborem do implementacji, drugi tańszym wariantem o minimalnym dodatkowym ryzyku.
@@ -956,6 +1033,43 @@ Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną
 Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
 
 Po ukończeniu implementation notes zaktualizuj też `docs/plans/ui-input-029-village-torch-interaction-action-contract.md` i dodaj/ustaw metadata:
+`**Model:** <best>, <cheaper-safe-fallback>`
+Wybierz dokładnie dwa modele spośród: Composer, Grok, Sonnet, Opus.
+Pierwszy ma być najlepszym wyborem do implementacji, drugi tańszym wariantem o minimalnym dodatkowym ryzyku.
+Dobierz modele na podstawie wykonanego reconu i implementation notes, zgodnie z `docs/plans/PLANNING.md`.
+
+Pliki dodaj na branch `main` w repozytorium.
+```
+
+### `ui-input-030-player-downed-action-input-gating.md`
+
+Prompt:
+
+```
+Zrób review planu `ui-input-030-player-downed-action-input-gating.md`
+
+Wczytaj:
+- `docs/STATE.md`
+- `docs/plans/PLANNING.md` (Implementation Notes section),
+- `docs/plans/ui-input-030-player-downed-action-input-gating.md`
+- aktualny codebase,
+- potrzebne zależności i powiązane implementacje.
+
+Na podstawie review utwórz w repo plik:
+`docs/plans/implementation-notes/ui-input-030-player-downed-action-input-gating-implementation-notes.md`
+
+Umieść w nim:
+- sugestie dotyczące implementacji,
+- istotne detale techniczne,
+- decyzje architektoniczne,
+- informacje o istniejących systemach i implementacjach, które należy wykorzystać,
+- potencjalne problemy, zależności i pułapki,
+- inne konkretne wskazówki, które ułatwią agentowi AI poprawną implementację planu.
+
+Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
+Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
+
+Po ukończeniu implementation notes zaktualizuj też `docs/plans/ui-input-030-player-downed-action-input-gating.md` i dodaj/ustaw metadata:
 `**Model:** <best>, <cheaper-safe-fallback>`
 Wybierz dokładnie dwa modele spośród: Composer, Grok, Sonnet, Opus.
 Pierwszy ma być najlepszym wyborem do implementacji, drugi tańszym wariantem o minimalnym dodatkowym ryzyku.
