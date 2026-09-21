@@ -72,6 +72,19 @@ export type SaveConfig = {
   settlements: WorldConfig['settlements']
 }
 
+/** Player HP/injury consequence snapshot (plan items-player-050) — the
+ *  compact subset of `PlayerController.health`/`injuryRecovery` required to
+ *  reconstruct current health consequences on load. Deliberately excludes
+ *  `maxHp` (runtime capability, not continuity-relevant today), `dead`
+ *  (re-derived from `currentHp`), stamina and combat/downed execution state. */
+export type SavePlayerHealth = {
+  currentHp: number
+  physicalInjury: number
+  /** Lazy natural-recovery anchor (`shared/injuryRecovery.ts`) — absent means
+   *  "start recovery timing fresh at next use" rather than "no injury". */
+  injuryRecoveryUpdatedAtDays?: number
+}
+
 export type SavePlayer = {
   x: number
   z: number
@@ -82,6 +95,10 @@ export type SavePlayer = {
    *  is safe to round-trip; a missing/invalid id on load just fails to
    *  reattach (see `createApp.ts`'s `resolveMountAnimal`). */
   mountedAnimalId?: string
+  /** Plan items-player-050 — required on every current-version save so a
+   *  missing field can never silently mean "healthy"; pre-050 saves are
+   *  migrated to an explicit full-HP/zero-injury snapshot. */
+  health: SavePlayerHealth
 }
 
 export type { QuestProgressEntry }
@@ -717,7 +734,7 @@ export type SaveWorkContract =
  *  representation or semantics of `SaveData` change — see the plan's
  *  "Future schema-change workflow". Never duplicate this number elsewhere;
  *  `saveState.ts` imports it instead of declaring its own constant. */
-export const CURRENT_SAVE_VERSION = 52
+export const CURRENT_SAVE_VERSION = 53
 
 /** Canonical save contract for the current schema version. This module
  *  intentionally carries no history of schemas from before the v1 hard cut
@@ -976,6 +993,22 @@ function isSaveConfig(value: unknown): value is SaveConfig {
   return true
 }
 
+/** Current-schema `SavePlayer.health` must fail closed (plan items-player-050)
+ *  — malformed/missing values are rejected here rather than normalized, so a
+ *  hand-edited or corrupted current-version save never silently loads as
+ *  healthy. Legacy pre-050 saves never reach this validator; they are
+ *  migrated to an explicit snapshot first. */
+function isSavePlayerHealth(value: unknown): value is SavePlayerHealth {
+  if (!value || typeof value !== 'object') return false
+  const h = value as Record<string, unknown>
+  if (typeof h.currentHp !== 'number' || !Number.isFinite(h.currentHp) || h.currentHp < 0) return false
+  if (typeof h.physicalInjury !== 'number' || !Number.isFinite(h.physicalInjury) || h.physicalInjury < 0) return false
+  if (h.injuryRecoveryUpdatedAtDays !== undefined) {
+    if (typeof h.injuryRecoveryUpdatedAtDays !== 'number' || !Number.isFinite(h.injuryRecoveryUpdatedAtDays)) return false
+  }
+  return true
+}
+
 function isSavePlayer(value: unknown): value is SavePlayer {
   if (!value || typeof value !== 'object') return false
   const player = value as Record<string, unknown>
@@ -984,7 +1017,8 @@ function isSavePlayer(value: unknown): value is SavePlayer {
     typeof player.z === 'number' &&
     typeof player.yaw === 'number' &&
     typeof player.pitch === 'number' &&
-    (player.mountedAnimalId === undefined || typeof player.mountedAnimalId === 'string')
+    (player.mountedAnimalId === undefined || typeof player.mountedAnimalId === 'string') &&
+    isSavePlayerHealth(player.health)
   )
 }
 
@@ -4015,6 +4049,29 @@ function migrateSaveV51ToV52(data: unknown): unknown {
   return { ...v, version: 52 }
 }
 
+/** Legacy full-HP value for pre-050 saves (plan items-player-050) — kept as
+ *  its own persistence-local constant (mirrors `PlayerController.ts`'s
+ *  `PLAYER_MAX_HP`) rather than importing the runtime player module here. */
+const LEGACY_FULL_PLAYER_HP = 100
+
+/** v52 → v53 (plan items-player-050): `player.health` becomes required. A
+ *  pre-plan save never persisted HP/injury at all — every Continue/Load fully
+ *  healed the player — so migration writes that same legacy behaviour
+ *  explicitly (full HP, zero injury, no recovery anchor) rather than leaving
+ *  the field absent. */
+function migrateSaveV52ToV53(data: unknown): unknown {
+  const v = data as Record<string, unknown>
+  const player = (v.player && typeof v.player === 'object') ? v.player as Record<string, unknown> : {}
+  return {
+    ...v,
+    version: 53,
+    player: {
+      ...player,
+      health: { currentHp: LEGACY_FULL_PLAYER_HP, physicalInjury: 0 },
+    },
+  }
+}
+
 function migrateSaveV37ToV38(data: unknown): unknown {
   const v = data as Record<string, unknown>
   const seq = { n: 0 }
@@ -4187,6 +4244,7 @@ const SAVE_MIGRATIONS: Readonly<Record<number, SaveMigration>> = {
   49: migrateSaveV49ToV50,
   50: migrateSaveV50ToV51,
   51: migrateSaveV51ToV52,
+  52: migrateSaveV52ToV53,
 }
 
 function detectStoredVersion(value: unknown): number | null {

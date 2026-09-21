@@ -76,7 +76,7 @@ import {
   resolvePlayerEquipmentVisualTintUrl,
 } from './playerEquipmentVisual'
 import { createPlayerNeeds, type PlayerNeeds, tickPlayerMovementVigor, tickPlayerStamina } from './PlayerNeeds'
-import { accumulateSneakUse, applySneakSpeedModifier, createPlayerSkills, type PlayerSkills } from './PlayerSkills'
+import { accumulateSneakUse, applySneakSpeedModifier, createPlayerSkills, type PlayerSkills, resetPlayerSkills } from './PlayerSkills'
 import { bindAccessoryToPlayerSkeleton } from './ubcAccessoryBind'
 import { integrateVerticalMotion } from './verticalMotion'
 import {
@@ -1273,6 +1273,79 @@ export class PlayerController {
   /** After generic (non-wound) HP recovery — keep injury ≤ missing HP. */
   clampPhysicalInjuryToMissingHp(): void {
     clampPhysicalInjuryToMissingHp(this.injuryRecovery)
+  }
+
+  /**
+   * Reconstructs load-time health/injury from a validated `SavePlayerHealth`
+   * snapshot (plan items-player-050). Mutates the existing `health`/
+   * `injuryRecovery` objects in place — never replaces either, since
+   * `injuryRecovery.health` shares `health`'s object identity. Reconstruction
+   * only: never calls `resolveInjuryRecovery()` or any heal/damage helper, so
+   * load cannot itself trigger treatment/recovery semantics.
+   */
+  restoreHealthConsequences(snapshot: {
+    currentHp: number
+    physicalInjury: number
+    injuryRecoveryUpdatedAtDays?: number
+  }): void {
+    const currentHp = Math.max(0, Math.min(this.health.maxHp, snapshot.currentHp))
+    this.health.currentHp = currentHp
+    this.health.dead = currentHp <= 0
+    const missingHp = Math.max(0, this.health.maxHp - currentHp)
+    this.injuryRecovery.physicalInjury = Math.max(0, Math.min(missingHp, snapshot.physicalInjury))
+    this.injuryRecovery.injuryRecoveryUpdatedAtDays = snapshot.injuryRecoveryUpdatedAtDays
+  }
+
+  /** Fresh-boot-equivalent health/injury reset — the New Game counterpart of
+   *  `restoreHealthConsequences` (plan items-player-050), reused by
+   *  `resetForNewGame()` (plan items-player-056). */
+  resetHealthForNewGame(): void {
+    this.health.currentHp = this.health.maxHp
+    this.health.dead = false
+    this.injuryRecovery.physicalInjury = 0
+    this.injuryRecovery.injuryRecoveryUpdatedAtDays = undefined
+  }
+
+  /**
+   * One explicit owner-level "fresh player" reset for in-session pause-menu
+   * New Game (plan items-player-056) — resets every field this controller is
+   * sole owner of back to construction-time semantics, in place, without
+   * replacing any object identity consumers already hold (`health`,
+   * `injuryRecovery`, `needs`, `skills`, `temporaryConditions`). Must only be
+   * called from the New Game transaction; an ordinary same-seed `WorldBundle`
+   * rebuild must never call this.
+   *
+   * Mount/lead relations are owned by `MountActions`/`LeadActions` (plan
+   * items-player-057) and must already be cleared by the caller before this
+   * runs — `mounted` is reset here only as a final invariant, never as the
+   * mechanism that detaches an animal this controller does not own.
+   *
+   * Does not reset `needs` (caller reuses `resetPlayerNeeds()` directly) or
+   * appearance/equipment projections (owned by inventory/equipment/held-tool
+   * wiring, already refreshed elsewhere in the New Game branch).
+   */
+  resetForNewGame(): void {
+    this.resetHealthForNewGame()
+    resetPlayerSkills(this.skills)
+    this.restoreTemporaryConditionsState(undefined)
+    this.downed = false
+    this.downedTimer = 0
+    this.clearPoseVisual()
+    this.pose = 'stand'
+    this.mounted = false
+    this.verticalVelocity = 0
+    this.grounded = true
+    this.jumpRequested = false
+    this.endJumpPhase()
+    this.moving = false
+    this.sprinting = false
+    this.meleeAttacking = false
+    this.rangedDrawing = false
+    this.sneakUseDistance = 0
+    this.wasInWater = false
+    this.footstepAccum = 0
+    this.defenseAttempt = 0
+    this.playAction(this.idleAction)
   }
 
   /** Effective SPEA after injury + temporary conditions (plan npc-024 /

@@ -53,6 +53,10 @@ export type PlayerCombatMode = {
    * HUD sync. Mismatch deactivates while keeping `lastActiveWeapon`.
    */
   reconcile: (held: PlayerCombatModeHeld, primaries: PlayerCombatModePrimaries) => void
+  /** New Game (plan items-player-056) — fresh-construction-equivalent reset:
+   *  clears the active draw and resets `lastActiveWeapon` back to `melee`.
+   *  Not persisted/restored otherwise; ordinary rebuild must never call this. */
+  reset: () => void
 }
 
 function matchesDrawnWeapon(
@@ -92,6 +96,10 @@ export function createPlayerCombatMode(): PlayerCombatMode {
       if (activeWeapon === null) return
       if (matchesDrawnWeapon(activeWeapon, held, primaries)) return
       activeWeapon = null
+    },
+    reset() {
+      activeWeapon = null
+      lastActiveWeapon = 'melee'
     },
   }
 }

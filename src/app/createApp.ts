@@ -1147,6 +1147,7 @@ export async function createApp(
     mouseLook.state.yaw = initialSave.player.yaw
     mouseLook.state.pitch = initialSave.player.pitch
     player.setPosition(initialSave.player.x, initialSave.player.z)
+    player.restoreHealthConsequences(initialSave.player.health)
     restorePersistedNeeds(player.needs, initialSave.playerNeeds)
     restorePersistedSkills(player.skills, initialSave.skills)
     player.restoreTemporaryConditionsState(
@@ -2686,13 +2687,17 @@ export async function createApp(
   onTrapBaitReturnedTarget = gathering.onTrapBaitReturned
   vueUi.configureAbortRest(rest.abortRest)
   vueUi.configureAbortBusy(rest.abortBusy)
-  vueUi.configureAbortTargetedSkill(() => {
+  /** Shared by the manual "abort" UI action and New Game's fresh-player
+   *  reset (plan items-player-056) — a single cancel path for the selected
+   *  targeted skill and its UI/pointer-lock projection. */
+  const abortTargetedSkill = (): boolean => {
     if (targetedSkillSelection.get() == null) return false
     targetedSkillSelection.clear()
     vueUi.setSelectedTargetedSkill(null)
     mouseLook.setPointerLockEnabled(true)
     return true
-  })
+  }
+  vueUi.configureAbortTargetedSkill(abortTargetedSkill)
   vueUi.configureAbortTerrainPreparation(terrainPrep.cancelActive)
   vueUi.configureTerrainPreparationControls({
     grow: terrainPrep.growSize,
@@ -2762,6 +2767,22 @@ export async function createApp(
       // Old agents are about to be disposed — drop the reference rather than
       // toggling a class on a DOM node that's going away anyway.
       gameLoop.forgetHighlight()
+      // Old-world control relations must be let go before the old
+      // settlements/fauna they reference are disposed below (plan
+      // items-player-057): a genuinely new world (New Game) clears the
+      // relation outright, while an ordinary same-seed rebuild only drops the
+      // runtime handle and keeps the durable relation for `mount.update()`'s
+      // existing pending-restore path to re-resolve once the fresh bundle
+      // publishes.
+      if (resetCollectedItems) {
+        mount.resetForNewGame()
+        lead.detach()
+        playerCombatMode.reset()
+        abortTargetedSkill()
+      } else {
+        mount.detachForRebuild()
+      }
+
       if (resetCollectedItems) {
         collectedItemIds = new Set()
         renewableWorldItems = {}
@@ -2890,6 +2911,7 @@ export async function createApp(
         hud.setPlayerBadges(badges.listEarned())
         refreshCharacterReputation('standing')
         resetPlayerNeeds(player.needs)
+        player.resetForNewGame()
         fishingBait.clear()
         fishingAttempts.clear()
         hud.setInventoryWeight(inventory.totalWeight(), inventory.maxWeight)

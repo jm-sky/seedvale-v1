@@ -24,7 +24,7 @@ const config = {
 const validSave: SaveData = {
   version: CURRENT_SAVE_VERSION,
   config,
-  player: { x: 3, z: 4, yaw: 0.1, pitch: 0.2 },
+  player: { x: 3, z: 4, yaw: 0.1, pitch: 0.2, health: { currentHp: 100, physicalInjury: 0 } },
   savedAt: 100,
   quests: { progress: [], relations: {} },
   inventory: {},
@@ -2360,6 +2360,33 @@ describe('schema versioning and migration pipeline (persistence-003)', () => {
     expect(result.status).toBe('ok')
     if (result.status !== 'ok') return
     expect(result.data.version).toBe(CURRENT_SAVE_VERSION)
+  })
+
+  it('migrates a v52 save with no persisted player health to full HP + zero injury (plan items-player-050)', () => {
+    const { health: _health, ...v52Player } = validSave.player
+    const result = loadStoredSave({ ...validSave, version: 52, player: v52Player })
+    expect(result.status).toBe('ok')
+    if (result.status !== 'ok') return
+    expect(result.data.version).toBe(CURRENT_SAVE_VERSION)
+    expect(result.data.player.health).toEqual({ currentHp: 100, physicalInjury: 0 })
+  })
+
+  it('round-trips player health/injury/recovery-anchor and rejects malformed current-version values (plan items-player-050)', () => {
+    const damaged = {
+      ...validSave,
+      player: { ...validSave.player, health: { currentHp: 42, physicalInjury: 18, injuryRecoveryUpdatedAtDays: 3.5 } },
+    }
+    const result = loadStoredSave(damaged)
+    expect(result.status).toBe('ok')
+    if (result.status === 'ok') expect(result.data.player.health).toEqual(damaged.player.health)
+
+    expect(isSaveData({ ...validSave, player: { ...validSave.player, health: undefined } })).toBe(false)
+    expect(isSaveData({ ...validSave, player: { ...validSave.player, health: { currentHp: -1, physicalInjury: 0 } } })).toBe(false)
+    expect(isSaveData({ ...validSave, player: { ...validSave.player, health: { currentHp: 10, physicalInjury: Number.NaN } } })).toBe(false)
+    expect(isSaveData({
+      ...validSave,
+      player: { ...validSave.player, health: { currentHp: 10, physicalInjury: 0, injuryRecoveryUpdatedAtDays: 'x' } },
+    })).toBe(false)
   })
 
   it('round-trips npcStates artisan profile/orders and rejects a malformed profile (plan settlements-npcs-056)', () => {

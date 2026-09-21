@@ -26,12 +26,16 @@ function makeDeps(overrides: Partial<AnimalAgentDeps> = {}): AnimalAgentDeps {
 
 function setupMount(opts?: {
   refreshStayOnPlayerDismount?: (animal: AnimalAgent) => void
+  resolveAnimal?: (animalId: string) => AnimalAgent | null
+  isDowned?: () => boolean
 }) {
   const toast = { show: vi.fn() }
   const hud = { setMounted: vi.fn() }
+  let mounted = false
   const player = {
-    isDowned: () => false,
-    setMounted: vi.fn(),
+    isDowned: opts?.isDowned ?? (() => false),
+    isMounted: () => mounted,
+    setMounted: vi.fn((value: boolean) => { mounted = value }),
     setMountedTransform: vi.fn(),
     setPosition: vi.fn(),
     mesh: { position: { x: 0, y: 0, z: 0 } },
@@ -59,11 +63,11 @@ function setupMount(opts?: {
 
   const actions = createMountActions(
     ctx,
-    () => null,
+    opts?.resolveAnimal ?? (() => null),
     undefined,
     { refreshStayOnPlayerDismount },
   )
-  return { actions, refreshStayOnPlayerDismount, toast, player }
+  return { actions, refreshStayOnPlayerDismount, toast, hud, player }
 }
 
 describe('createMountActions owned-control Stay refresh (plan fauna-035)', () => {
@@ -124,5 +128,80 @@ describe('createMountActions owned-control Stay refresh (plan fauna-035)', () =>
     actions.dismount('player')
 
     expect(refreshStayOnPlayerDismount).not.toHaveBeenCalled()
+  })
+})
+
+describe('createMountActions rebuild/New-Game lifecycle (plan items-player-057/056)', () => {
+  it('mountedAnimalId() reflects a still-pending restore/rebuild-reattach id (save projection)', () => {
+    const { actions } = setupMount()
+    expect(actions.mountedAnimalId()).toBeNull()
+    actions.restoreMountedAnimalId('pending-horse')
+    expect(actions.isMounted()).toBe(false)
+    expect(actions.mountedAnimalId()).toBe('pending-horse')
+  })
+
+  it('detachForRebuild drops the live handle but keeps the durable relation, and update() reattaches once the fresh bundle resolves it', () => {
+    let resolvable: AnimalAgent | null = null
+    const { actions } = setupMount({ resolveAnimal: (id) => (resolvable?.animalId === id ? resolvable : null) })
+    const horse = new AnimalAgent(makeDeps({ animalId: 'rebuild-horse', x: 0, z: 0 }))
+    expect(actions.tryMount(horse)).toBe(true)
+    expect(actions.isMounted()).toBe(true)
+
+    actions.detachForRebuild()
+    expect(actions.isMounted()).toBe(false)
+    // Durable relation survives the detach — a save taken mid-rebuild must
+    // not lose it.
+    expect(actions.mountedAnimalId()).toBe('rebuild-horse')
+
+    // Not resolvable yet (fresh bundle still materializing livestock) — stays pending.
+    actions.update(0.016, 1)
+    expect(actions.isMounted()).toBe(false)
+    expect(actions.mountedAnimalId()).toBe('rebuild-horse')
+
+    // The same persistent animal becomes resolvable against the fresh bundle.
+    resolvable = horse
+    actions.update(0.016, 1)
+    expect(actions.isMounted()).toBe(true)
+    expect(actions.mountedAnimalId()).toBe('rebuild-horse')
+  })
+
+  it('a dead/non-mountable animal discovered after rebuild-detach clears the relation and unmounts cleanly', () => {
+    const horse = new AnimalAgent(makeDeps({ animalId: 'doomed-horse', x: 0, z: 0 }))
+    const { actions, toast, hud, player } = setupMount({ resolveAnimal: (id) => (id === horse.animalId ? horse : null) })
+    expect(actions.tryMount(horse)).toBe(true)
+    actions.detachForRebuild()
+    horse.health.dead = true
+
+    actions.update(0.016, 1)
+
+    expect(actions.isMounted()).toBe(false)
+    expect(actions.mountedAnimalId()).toBeNull()
+    expect(player.isMounted()).toBe(false)
+    expect(hud.setMounted).toHaveBeenCalledWith(false, '', null)
+    expect(toast.show).toHaveBeenCalledWith('Wierzchowiec zniknął.', 'error')
+  })
+
+  it('resetForNewGame clears both live and pending relation without gameplay dismount consequences', () => {
+    const { actions, refreshStayOnPlayerDismount, toast, player } = setupMount()
+    const horse = new AnimalAgent(makeDeps({ animalId: 'new-game-horse', x: 0, z: 0 }))
+    horse.transferOwnershipToPlayer()
+    horse.setOwnedControlMode('stay')
+    expect(actions.tryMount(horse)).toBe(true)
+    toast.show.mockClear()
+
+    actions.resetForNewGame()
+
+    expect(actions.isMounted()).toBe(false)
+    expect(actions.mountedAnimalId()).toBeNull()
+    expect(player.isMounted()).toBe(false)
+    expect(refreshStayOnPlayerDismount).not.toHaveBeenCalled()
+    expect(toast.show).not.toHaveBeenCalled()
+  })
+
+  it('resetForNewGame is safe to call while only a restore was pending (no live mount)', () => {
+    const { actions } = setupMount()
+    actions.restoreMountedAnimalId('pending-horse')
+    actions.resetForNewGame()
+    expect(actions.mountedAnimalId()).toBeNull()
   })
 })

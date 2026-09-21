@@ -103,11 +103,11 @@ Generated from exported TypeScript symbols.
 
 ## `app/actions/mountActions.ts`
 
-- `createMountActions` — function — line 61
+- `createMountActions` — function — line 76
 - `DismountReason` — type — line 20
-- `ForeignPropertyMountHooks` — type — line 48
+- `ForeignPropertyMountHooks` — type — line 63
 - `MountActions` — type — line 22
-- `OwnedMountHooks` — type — line 57
+- `OwnedMountHooks` — type — line 72
   - domain: fauna — conscious player dismount may refresh Stay via livestock ownership (plan fauna-035). Mount actions only report the lifecycle event; the injected callback owns control mutation + registry upsert.
 
 ## `app/actions/npcItemTransfer.ts`

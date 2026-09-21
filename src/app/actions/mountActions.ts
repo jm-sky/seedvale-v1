@@ -21,6 +21,10 @@ export type DismountReason = 'player' | 'death' | 'unavailable' | 'fall' | 'down
 
 export type MountActions = {
   isMounted: () => boolean
+  /** Save-projection identity (plan items-player-057): the live mount's id,
+   *  or the still-pending restore/rebuild-reattach id while resolution is
+   *  outstanding, or `null` when genuinely not mounted. A save taken mid-
+   *  resolution must not silently drop a valid mounted relation. */
   mountedAnimalId: () => string | null
   /** Validates and attempts to mount `animal` — no-ops (returns `false`)
    *  while already mounted, blocked by another activity, downed, or if the
@@ -41,6 +45,17 @@ export type MountActions = {
    *  can find it (livestock loads asynchronously) — retried every `update()`
    *  tick while pending. */
   restoreMountedAnimalId: (animalId: string | null) => void
+  /** Drops the live runtime handle right before an in-session same-world
+   *  rebuild disposes the current `AnimalAgent` (plan items-player-057),
+   *  while retaining the durable mounted relation so the same `animalId`
+   *  re-resolves against the fresh bundle through the existing pending-restore
+   *  path in `update()` once ticking resumes. No-op while not mounted. */
+  detachForRebuild: () => void
+  /** Full New Game reset (plan items-player-056/items-player-057) — clears
+   *  both the live handle and the durable/pending relation immediately, with
+   *  none of `dismount()`'s gameplay consequences (no toast, no Stay refresh,
+   *  no position offset). */
+  resetForNewGame: () => void
 }
 
 /** Mount reports ride lifecycle; the injected evaluator owns social/trade
@@ -197,7 +212,18 @@ export function createMountActions(
       // retrying next tick (livestock streams in asynchronously).
       if (resolved) {
         pendingRestoreId = null
-        if (resolved.isMountable()) enter(resolved, 'restore')
+        if (resolved.isMountable()) {
+          enter(resolved, 'restore')
+        } else if (player.isMounted()) {
+          // Only reached via `detachForRebuild()` (plan items-player-057) —
+          // an initial load-restore never sets `player.isMounted()` true
+          // before this resolves. The player was still visually riding going
+          // into this tick, so a terminally dead/invalid animal must clear
+          // that stale projection instead of leaving it stuck forever.
+          player.setMounted(false)
+          ctx.hud.setMounted(false, '', null)
+          toast.show('Wierzchowiec zniknął.', 'error')
+        }
       }
     }
     if (!mount) return
@@ -244,12 +270,38 @@ export function createMountActions(
     pendingRestoreId = animalId
   }
 
+  /** Ends whatever foreign-property "use" is in flight without applying its
+   *  normal dismount consequences — shared by `detachForRebuild()` and
+   *  `resetForNewGame()`, neither of which is a real dismount. */
+  function closeForeignIncident(): void {
+    if (!foreignIncident) return
+    foreignProperty?.endMountedUse(foreignIncident)
+    foreignIncident = null
+  }
+
+  function detachForRebuild(): void {
+    if (!mount) return
+    closeForeignIncident()
+    pendingRestoreId = mount.animalId
+    mount = null
+  }
+
+  function resetForNewGame(): void {
+    closeForeignIncident()
+    mount = null
+    pendingRestoreId = null
+    player.setMounted(false)
+    ctx.hud.setMounted(false, '', null)
+  }
+
   return {
     isMounted: () => mount !== null,
-    mountedAnimalId: () => mount?.animalId ?? null,
+    mountedAnimalId: () => mount?.animalId ?? pendingRestoreId ?? null,
     tryMount,
     dismount: (reason = 'player') => exit(reason),
     update,
     restoreMountedAnimalId,
+    detachForRebuild,
+    resetForNewGame,
   }
 }

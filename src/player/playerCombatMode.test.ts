@@ -299,4 +299,17 @@ describe('playerCombatMode (plan ui-input-018)', () => {
     expect(mode.isActive()).toBe(false)
     expect(mode.activeWeapon()).toBeNull()
   })
+
+  it('reset() clears an active draw and returns lastActiveWeapon to the fresh default (plan items-player-056)', () => {
+    const mode = createPlayerCombatMode()
+    mode.noteDrawn('ranged')
+    expect(mode.isActive()).toBe(true)
+    expect(mode.lastActiveWeapon()).toBe('ranged')
+
+    mode.reset()
+
+    expect(mode.isActive()).toBe(false)
+    expect(mode.activeWeapon()).toBeNull()
+    expect(mode.lastActiveWeapon()).toBe('melee')
+  })
 })

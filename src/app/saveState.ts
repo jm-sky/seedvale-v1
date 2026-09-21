@@ -187,6 +187,11 @@ export function createSaveState(deps: SaveStateDeps): SaveState {
       yaw: mouseLook.state.yaw,
       pitch: mouseLook.state.pitch,
       mountedAnimalId: deps.getMountedAnimalId() ?? undefined,
+      health: {
+        currentHp: player.health.currentHp,
+        physicalInjury: player.injuryRecovery.physicalInjury,
+        injuryRecoveryUpdatedAtDays: player.injuryRecovery.injuryRecoveryUpdatedAtDays,
+      },
     },
     savedAt: Date.now(),
     quests: {

@@ -194,6 +194,18 @@ export function restorePersistedSkills(
   }
 }
 
+/** New Game (plan items-player-056) — resets every skill to a fresh baseline
+ *  (zero XP, derived value back at `SKILL_MIN_VALUE`, no active stance).
+ *  Mirrors `createPlayerSkills()`'s defaults without replacing the object
+ *  identity `PlayerController.skills` consumers already hold. */
+export function resetPlayerSkills(skills: PlayerSkills): void {
+  for (const id of Object.keys(skills) as SkillId[]) {
+    skills[id].xp = 0
+    skills[id].value = SKILL_MIN_VALUE
+    skills[id].active = false
+  }
+}
+
 export function toggleSneak(skills: PlayerSkills): void {
   skills.sneak.active = !skills.sneak.active
 }

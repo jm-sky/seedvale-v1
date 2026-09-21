@@ -6,6 +6,7 @@ import {
   createPlayerSkills,
   isTargetedSkill,
   raiseSkillToValue,
+  resetPlayerSkills,
   restorePersistedSkills,
   ridingSpeedMultiplier,
   ridingStaminaDrainMultiplier,
@@ -93,6 +94,25 @@ describe('awardSkillXp', () => {
     awardSkillXp(skills, 'survival', Number.NaN)
     expect(skills.survival.xp).toBe(0)
     expect(skills.survival.value).toBe(SKILL_MIN_VALUE)
+  })
+})
+
+describe('resetPlayerSkills (plan items-player-056)', () => {
+  it('resets every skill to fresh xp/value/active while keeping object identity', () => {
+    const skills = createPlayerSkills()
+    const sneakState = skills.sneak
+    awardSkillXp(skills, 'sneak', 500)
+    skills.sneak.active = true
+    awardSkillXp(skills, 'archery', 40)
+
+    resetPlayerSkills(skills)
+
+    for (const id of Object.keys(skills) as (keyof typeof skills)[]) {
+      expect(skills[id].xp).toBe(0)
+      expect(skills[id].value).toBe(SKILL_MIN_VALUE)
+      expect(skills[id].active).toBe(false)
+    }
+    expect(skills.sneak).toBe(sneakState)
   })
 })
 

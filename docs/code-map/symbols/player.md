@@ -113,7 +113,7 @@ Generated from exported TypeScript symbols.
 ## `player/playerCombatMode.ts`
 
 - `CombatWeaponCategory` — type — line 9
-- `createPlayerCombatMode` — function — line 76
+- `createPlayerCombatMode` — function — line 80
   - domain: ui-input
 - `PlayerCombatMode` — type — line 34
   - domain: ui-input
@@ -239,25 +239,26 @@ Generated from exported TypeScript symbols.
 
 ## `player/PlayerSkills.ts`
 
-- `accumulateRidingUse` — function — line 267
-- `accumulateSneakUse` — function — line 245
-- `applySneakSpeedModifier` — function — line 286
+- `accumulateRidingUse` — function — line 279
+- `accumulateSneakUse` — function — line 257
+- `applySneakSpeedModifier` — function — line 298
 - `awardSkillXp` — function — line 137
 - `createPlayerSkills` — function — line 119
 - `isTargetedSkill` — function — line 44
 - `PlayerSkills` — type — line 74
 - `RaiseSkillResult` — type — line 144
 - `raiseSkillToValue` — function — line 156
+- `resetPlayerSkills` — function — line 201
 - `restorePersistedSkills` — function — line 184
-- `RIDING_XP_DISTANCE_M` — const — line 261
-- `ridingSpeedMultiplier` — function — line 327
-- `ridingStaminaDrainMultiplier` — function — line 341
+- `RIDING_XP_DISTANCE_M` — const — line 273
+- `ridingSpeedMultiplier` — function — line 339
+- `ridingStaminaDrainMultiplier` — function — line 353
 - `setSkillValueForDebug` — function — line 174
 - `SKILL_IDS` — const — line 42
 - `SKILL_LABEL` — const — line 52
 - `SKILL_MIN_VALUE` — const — line 80
 - `SKILL_USE` — const — line 31
-- `SKILL_XP_AWARD` — const — line 203
+- `SKILL_XP_AWARD` — const — line 215
 - `SKILL_XP_HALF_VALUE` — const — line 85
 - `SkillId` — type — line 14
   - domain: items-player
@@ -268,11 +269,11 @@ Generated from exported TypeScript symbols.
 - `SkillUseKind` — type — line 29
 - `SNEAK_LEGACY_VALUE` — const — line 112
 - `SNEAK_LEGACY_XP` — const — line 113
-- `SNEAK_SPEED_MULTIPLIER` — const — line 284
-- `SNEAK_XP_DISTANCE_M` — const — line 237
-- `survivalDurationMultiplier` — function — line 300
-- `survivalFoodMultiplier` — function — line 350
-- `toggleSneak` — function — line 197
+- `SNEAK_SPEED_MULTIPLIER` — const — line 296
+- `SNEAK_XP_DISTANCE_M` — const — line 249
+- `survivalDurationMultiplier` — function — line 312
+- `survivalFoodMultiplier` — function — line 362
+- `toggleSneak` — function — line 209
 - `xpForSkillValue` — function — line 102
 - `xpToSkillValue` — function — line 89
 

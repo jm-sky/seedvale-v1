@@ -31,7 +31,7 @@ const config = {
 const currentSave = {
   version: CURRENT_SAVE_VERSION,
   config,
-  player: { x: 1, z: 2, yaw: 0, pitch: 0 },
+  player: { x: 1, z: 2, yaw: 0, pitch: 0, health: { currentHp: 100, physicalInjury: 0 } },
   savedAt: 100,
   quests: { progress: [], relations: {} },
   inventory: {},

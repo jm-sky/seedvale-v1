@@ -30,7 +30,7 @@ function makeSaveData(overrides?: Partial<Pick<SaveData, 'savedAt' | 'elapsedDay
   return {
     version: CURRENT_SAVE_VERSION,
     config,
-    player: { x: 1, z: 2, yaw: 0, pitch: 0 },
+    player: { x: 1, z: 2, yaw: 0, pitch: 0, health: { currentHp: 100, physicalInjury: 0 } },
     savedAt: overrides?.savedAt ?? 100,
     quests: { progress: [], relations: {} },
     inventory: {},
