@@ -7,7 +7,9 @@
 
 - Sam fresh-game bootstrap jest już poprawnie ustawiony: `createApp.ts` przekazuje do `createWorldBundle(...)` `initialSave === undefined`, a `createSettlementsManager()` seeduje `SEEDED_RAT_INFESTATION` synchronicznie po wyznaczeniu `homeDef`, przed async budową home settlement.
 - Realna luka restore to `createApp.ts`: każdy istniejący save przekazuje `seedHomeStorageInfestation = false`, także save bez `storageInfestation`. Taki save tworzy pusty sparse registry i dokładnie wpada w regresję z planu. Najmniejsza poprawka bootstrapu to traktować **brak całego persisted pola** jako potrzebę inicjalizacji authored home problemu, np. na poziomie composition root przez `initialSave?.storageInfestation === undefined`. Nie seedować, gdy pole istnieje — również gdy jest pustym obiektem lub zawiera partial/resolved home record.
-- Same-seed `rebuildWorldBundle()` już robi właściwą rzecz dla poprawnego runtime: bierze `snapshotStorageInfestation()` i jawnie ustawia `seedHomeStorageInfestation: false`. Tego nie zmieniać; rebuild ma przenosić fakty, nie ponownie uruchamiać authored bootstrap.
+- Same-seed `rebuildWorldBundle()` robi właściwą rzecz tylko dla `resetCollectedItems === false`: bierze `snapshotStorageInfestation()` i powinien zachować `seedHomeStorageInfestation: false`, aby przenieść fakty 1:1.
+
+- **Dodatkowo potwierdzona luka New Game:** `rebuildWorldBundle()` przy `resetCollectedItems === true` odrzuca `carriedStorageInfestation` (poprawnie), ale przy budowie nowego bundle nadal przekazuje `seedHomeStorageInfestation: false`. To daje nowemu światu pusty registry. Dla tej ścieżki seed flag musi być `true`; dla ordinary same-seed rebuild (`resetCollectedItems === false`) pozostaje `false` i niesie snapshot 1:1.
 - `RatInfestationRegistry.get()` celowo spłaszcza absence do `NO_RAT_INFESTATION`. Nie zmieniać tego kontraktu dla ordinary settlements. Potrzebny jest drugi, wąski seam obecności rekordu.
 
 ## Zalecany seam obecności
@@ -44,14 +46,15 @@ Historycznie ukończony quest pozostaje ukończony przez persisted quest progres
 - `src/quests/settlementRatInfestation.test.ts`: `exists:false` + 0/1 rats nigdy nie jest resolved; `exists:true` zachowuje dotychczasową tabelę warunków.
 - `src/quests/QuestManager.test.ts`: injected absent snapshot nie kończy objective ani przez explicit poll, ani przez giver/reminder catch-up path (`maybeAdvanceResolvedStorageRatInfestation`).
 - Bootstrap test na możliwie wąskim seamie: fresh world oraz restore bez `storageInfestation` seedują home; restore z active/partial/resolved record nie seeduje ponownie.
-- Rebuild: snapshot active/partial/resolved przechodzi 1:1; `seedHomeStorageInfestation` pozostaje false.
+- Rebuild: przy `resetCollectedItems=false` snapshot active/partial/resolved przechodzi 1:1 i seed pozostaje false; przy `resetCollectedItems=true` stare state jest odrzucone, a nowy home dostaje `SEEDED_RAT_INFESTATION`.
 
 ## Kolejność implementacji
 
 1. Dodać registry/manager presence seam.
 2. Dodać `exists` do snapshotu i fail-closed predicate/default lookup.
 3. Podłączyć `exists` w `createApp.ts`.
-4. Poprawić restore bootstrap z „fresh app only” na „brak persisted infestation field”.
-5. Uzupełnić narrow tests; dopiero jeśli testy pokażą problem readiness, rozszerzać runtime seam.
+4. Poprawić restore bootstrap z „fresh app only” na brak authoritative home recordu zgodnie z istniejącym manager guardem; nie nadpisywać active/partial/resolved recordu.
+5. W `rebuildWorldBundle()` przekazać `seedHomeStorageInfestation: resetCollectedItems`: New Game seeduje świeży authored problem, ordinary rebuild tylko carryuje snapshot.
+6. Uzupełnić narrow tests; dopiero jeśli testy pokażą problem readiness, rozszerzać runtime seam.
 
 Nie zmieniać rat ecology, nest presentation, repair/destroy actions ani save schema bez konkretnej regresji wymagającej takiej zmiany.
