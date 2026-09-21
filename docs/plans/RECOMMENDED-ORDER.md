@@ -273,71 +273,67 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   🔴 `S` · **Score:**  29  
    → **unlocks:** 0/0
 
-47. `world-terrain-043` — **System terrain modification rebuild idempotency**  
-  🔴 `S` · **Score:**  29  
-   → **unlocks:** 0/0
-
-48. `settlements-022` — **Founded settlement live runtime and streaming**  
+47. `settlements-022` — **Founded settlement live runtime and streaming**  
   🔴 `L` · **Score:**  28  
    → **unlocks:** 0/0
 
-49. `items-player-014` — **Rope-pullable resource transport**  
+48. `items-player-014` — **Rope-pullable resource transport**  
   🟡 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-50. `ui-input-037` — **Quest log ready-to-report sections**  
+49. `ui-input-037` — **Quest log ready-to-report sections**  
   🟡 `S` · **Score:**  27  
    → **unlocks:** 0/0
 
-51. `world-terrain-039` — **N8AO / post-process cost budget**  
+50. `world-terrain-039` — **N8AO / post-process cost budget**  
   🔴 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-52. `world-terrain-046` — **Unified water shore query and river hotpath**  
+51. `world-terrain-046` — **Unified water shore query and river hotpath**  
   🔴 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-53. `ui-input-025` — **Road travel autopilot for player and mounts**  
+52. `ui-input-025` — **Road travel autopilot for player and mounts**  
   🔴 `L` · **Score:**  26  
    → **unlocks:** 0/0
 
-54. `items-player-044` — **Shoulder and forearm equipment slots**  
+53. `items-player-044` — **Shoulder and forearm equipment slots**  
   🟡 `M` · **Score:**  25  
    → **unlocks:** 0/0
 
-55. `world-036` — **Lightweight unloaded shipwreck and tower lookup**  
+54. `world-036` — **Lightweight unloaded shipwreck and tower lookup**  
   🟡 `M` · **Score:**  25  
    → **unlocks:** 0/0
 
-56. `world-terrain-041` — **Agent presentation render LOD**  
+55. `world-terrain-041` — **Agent presentation render LOD**  
   🔴 `L` · **Score:**  24  
    → **unlocks:** 0/0
 
-57. `tools-019` — **Debug tooling lifecycle ownership**  
+56. `tools-019` — **Debug tooling lifecycle ownership**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-58. `ui-input-027` — **Interaction candidate dropped-item scaling**  
+57. `ui-input-027` — **Interaction candidate dropped-item scaling**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-59. `ui-input-030` — **Player downed action and input gating**  
+58. `ui-input-030` — **Player downed action and input gating**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-60. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
+59. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
   🟡 `L` · **Score:**  18  
    → **unlocks:** 0/0
 
-61. `items-player-052` — **Settlement tool ownership and social acquisition**  
+60. `items-player-052` — **Settlement tool ownership and social acquisition**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-62. `items-player-058` — **Campfire decomposition and ash residue**  
+61. `items-player-058` — **Campfire decomposition and ash residue**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-63. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
+62. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 

@@ -563,6 +563,7 @@ Generated from TypeScript imports.
 - `app/interactables.test.ts`
 - `app/interactables.ts`
 - `app/saveState.ts`
+- `app/worldBundle.terrainModificationRebuild.test.ts`
 - `app/worldBundle.ts`
 - `terrain/chunkManager.test.ts`
 - `terrain/chunkTileWorldgenCache.test.ts`

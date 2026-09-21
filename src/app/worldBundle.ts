@@ -2517,6 +2517,15 @@ export async function createWorldBundle(
  *  must already reflect the caller's reset decision (a fresh empty `Set` if
  *  `resetCollectedItems`) — it's just threaded through to the new
  *  `chunkManager`, this function doesn't decide that part. */
+/** Same-world `WorldBundle` rebuild carry (plan world-terrain-043): deterministic
+ *  `source: 'system'` terrain effects are reconstructed by caves/fauna on every
+ *  fresh build, so only player-authored history must survive reconstruction. */
+export function carryTerrainModificationsAcrossRebuild(
+  modifications: readonly TerrainModification[],
+): TerrainModification[] {
+  return modifications.filter((m) => m.source === 'player')
+}
+
 /** Outcome of one `rebuildWorldBundle()` attempt (plan world-033). The caller
  *  (`createApp.ts`'s `rebuildWorld()`) must run its post-rebuild continuation
  *  (map/cache invalidation, prewarm, `PlayerController.setGround`, etc.) only

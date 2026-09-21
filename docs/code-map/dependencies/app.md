@@ -1737,6 +1737,13 @@ Generated from TypeScript imports.
 - `world/caves/caveAdventureContentPolicy.ts`
 - `world/createCaves.ts`
 
+## `app/worldBundle.terrainModificationRebuild.test.ts`
+
+**Imports**
+
+- `app/worldBundle.ts`
+- `terrain/chunkManager.ts`
+
 ## `app/worldBundle.ts`
 
 **Imports**
@@ -1900,6 +1907,7 @@ Generated from TypeScript imports.
 - `app/userActions.ts`
 - `app/worldBundle.caveCrate.test.ts`
 - `app/worldBundle.caveTreasure.test.ts`
+- `app/worldBundle.terrainModificationRebuild.test.ts`
 - `debug/faunaInspector.ts`
 - `debug/npcDebugApi.test.ts`
 - `debug/npcDebugApi.ts`

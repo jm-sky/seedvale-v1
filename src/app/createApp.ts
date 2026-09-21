@@ -351,7 +351,12 @@ import { createRenderStack } from './renderStack'
 import { createRestCampSequence } from './restCampSequence'
 import { createSaveState } from './saveState'
 import { getUserActions } from './userActions'
-import { createWorldBundle, disposeWorldBundle, rebuildWorldBundle } from './worldBundle'
+import {
+  carryTerrainModificationsAcrossRebuild,
+  createWorldBundle,
+  disposeWorldBundle,
+  rebuildWorldBundle,
+} from './worldBundle'
 import { createWorldRebuildLifecycle } from './worldRebuildLifecycle'
 
 /** Player-inventory tools/utility granted for free if missing — covers both a
@@ -2814,6 +2819,11 @@ export async function createApp(
       // in flight — see this file's `worldGeneration` doc comment above.
       worldGeneration++
       const thisRebuildGeneration = worldGeneration
+      // Plan world-terrain-043: system terrain mods are re-emitted by caves/fauna
+      // on every fresh build — carrying them would stack additive dig/scorch.
+      if (!resetCollectedItems) {
+        modifications = carryTerrainModificationsAcrossRebuild(modifications)
+      }
       const rebuildOutcome = await rebuildWorldBundle(
         bundle,
         scene,
