@@ -12,13 +12,15 @@ const UBC_OUTFIT_MATERIAL_NAMES = new Set([
 
 const UBC_HAIR_MATERIAL_NAMES = new Set(['MI_Hair_1', 'MI_Hair_2'])
 
-export function removeOutfitMeshMetallness(object: THREE.Object3D) {
+/**
+ * Removing metallness from outfit materials and setting emissive color to black
+ *  and fixing the black color of the models
+ */
+export function fixOutfitMeshDarkness(object: THREE.Object3D) {
   const mesh = object as THREE.Mesh
   if (!mesh.isMesh) return
 
-  const materials = Array.isArray(mesh.material)
-    ? mesh.material
-    : [mesh.material]
+  const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material]
 
   for (const material of materials) {
     const mat = material as THREE.MeshStandardMaterial
@@ -26,7 +28,15 @@ export function removeOutfitMeshMetallness(object: THREE.Object3D) {
     if (UBC_OUTFIT_MATERIAL_NAMES.has(mat.name)) {
       mat.metalness = 0
       mat.needsUpdate = true
+      // mat.vertexColors = false
+      // mat.needsUpdate = true
     }
+
+    if (!mat.map) continue
+
+    mat.emissiveMap = mat.map
+    mat.emissive.setHex(0x181818)
+    mat.needsUpdate = true
   }
 }
 

@@ -49,7 +49,7 @@ import {
   loadGltfAnimated,
   prepareProp,
 } from '../assets/loadGltf'
-import { applyClothingHue, applyHairColor, applyOutfitTint, cloneOutfitMaterials, removeOutfitMeshMetallness } from '../assets/ubcOutfitMaterials'
+import { applyClothingHue, applyHairColor, applyOutfitTint, cloneOutfitMaterials, fixOutfitMeshDarkness } from '../assets/ubcOutfitMaterials'
 import {
   playActionBowRelease,
   playActionChop,
@@ -1943,8 +1943,7 @@ export class NpcAgent {
     try {
       const { scene, animations: modelAnimations } = await loadGltfAnimated(modelUrl)
 
-    // DEBUG: NPC & player model is black or too dark [investingation in progress]
-      scene.traverse((obj) => removeOutfitMeshMetallness(obj))
+      scene.traverse((obj) => fixOutfitMeshDarkness(obj))
 
       let animations = modelAnimations
       if (animationUrl) {
@@ -1954,7 +1953,7 @@ export class NpcAgent {
         } catch (err) {
           console.warn(`[npc] failed to load animations ${animationUrl}`, err)
         }
-        cloneOutfitMaterials(scene)
+        // cloneOutfitMaterials(scene)
         // DEBUG: NPC & player model is black or too dark
         if (tintUrl && DEBUG_TINT_OUTFIT_MATERIALS) await applyOutfitTint(scene, tintUrl)
         applyClothingHue(scene, clothingHue)
