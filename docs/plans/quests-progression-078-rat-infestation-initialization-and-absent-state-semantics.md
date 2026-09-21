@@ -2,6 +2,7 @@
 
 **Created:** 2026-09-21
 **Status:** `planned` 📋
+**Model:** Sonnet → Composer
 **Type:** fix
 **Priority:** high · **Effort:** S
 **Depends on:** ~~quests-progression-013~~
