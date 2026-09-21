@@ -5,7 +5,7 @@ import { useItemCategoryLabels } from '@/composables/useItemCategoryLabels'
 import { isToolKind } from '../../items/HeldTool'
 import { inventoryItemReadAction } from '../../items/inventoryItemReadAction'
 import { type InventoryInstanceRow, ITEM_METER_LABEL } from '../../items/inventoryView'
-import { isMeleeToolKind, isRangedTool } from '../../items/itemCatalog'
+import { isMeleeToolKind, isRangedTool, isThrowableKind } from '../../items/itemCatalog'
 import { itemDisplayName } from '../../items/itemDisplay'
 import { isWeaponMaintenanceKind } from '../../items/itemInstances'
 import { hasItemCategory, ITEM_DEFS, type ItemCategory, type ItemKind, primaryItemCategory } from '../../items/items'
@@ -84,7 +84,7 @@ function onDrop(kind: ItemKind, count: number): void {
 function onEquip(kind: ItemKind): void { ui.inventory.onEquip?.(kind) }
 function onUnequip(): void { ui.inventory.onUnequip?.() }
 function onConsume(kind: ItemKind): void { ui.inventory.onConsume?.(kind) }
-// function onThrow(kind: ItemKind): void { ui.inventory.onThrow?.(kind) }
+function onThrow(kind: ItemKind): void { ui.inventory.onThrow?.(kind) }
 function onRead(kind: ItemKind): void { ui.inventory.onRead?.(kind) }
 function onPlaceTrap(kind: ItemKind): void {
   const trapKind = trapKindForItem(kind)
