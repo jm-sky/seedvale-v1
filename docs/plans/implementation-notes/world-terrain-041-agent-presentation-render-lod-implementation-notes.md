@@ -10,12 +10,12 @@ Nie zaczynaj od szerokiego investigation ani projektowania model-swap LOD.
 
 Benchmark `2026-09-21--030--benchmark-settlement-heavy.md` już rozstrzyga najważniejszy gate:
 
-- main pass: NPC **511 draws / 1.16M tris**, fauna **399 draws / 152.2k tris**,
+- scene census one-pass estimate: NPC **511 draws / 1.16M tris**, fauna **399 draws / 152.2k tris**; to render-eligible hierarchy estimate, **nie faktyczne camera/frustum submissions**,
 - shadow census: NPC **22 draws**, fauna **10 draws**,
 - `hide-npc-fauna`: RENDER **23.3 → 14.4 ms**,
 - `no-shadows` dla całej sceny: **23.3 → 19.6 ms**.
 
-Agent cost nie jest przede wszystkim problemem shadow-pass. Production work może przejść bez ponownego Gate A.
+Agent cost nie jest przede wszystkim problemem shadow-pass. Production work może przejść bez ponownego Gate A. Jednocześnie `censusScene()` nie robi camera/frustum attribution, więc nie wolno traktować 511+399 jako faktycznie wysłanych draw calls.
 
 Najprostszy bezpieczny v1 to:
 
@@ -48,7 +48,8 @@ Detail census ma odpowiedzieć tylko:
 1. ile renderable/skinned child meshes przypada na agent/model family,
 2. które family generują najwięcej draws,
 3. jak wygląda rozkład po distance bands,
-4. które child nodes są realnymi kandydatami do optional presentation.
+4. które z tych agentów są camera/frustum-relevant dla benchmark view, jeśli da się to policzyć bounded w benchmark path,
+5. które child nodes są realnymi kandydatami do optional presentation.
 
 Nie trzeba ponownie mierzyć, czy shadows dominują.
 
@@ -143,7 +144,7 @@ Nie zapisuj globalnego „original visibility” dla całego modelu. Cache dotyc
 
 ### 3. Node selection
 
-To jest jedyny fragment, którego nie należy zgadywać przed census.
+To jest jedyny fragment, którego nie należy zgadywać przed census. **Najpierw priorytetyzuj rodziny widoczne/relewantne dla benchmark camera**, nie rodziny dominujące tylko w pełnym scene graph.
 
 Kandydaci mogą obejmować włosy, zarost, drobne accessories/equipment lub inne niesylwetkowe child meshes, ale **tylko jeśli aktualna hierarchy potwierdzi, że ich ukrycie jest niezależne**.
 
@@ -254,7 +255,7 @@ Manualnie:
 
 ## Success criterion
 
-Liczy się redukcja **main-pass submissions** i realny benchmark gain.
+Liczy się realny benchmark gain oraz redukcja camera-relevant agent render budget. Sam spadek scene-census draws/triangles nie wystarcza, bo census nie jest renderer submission counterem.
 
 Jeśli visibility-only v1 usuwa mało draws albo nie poprawia benchmarku, revert/nie rozszerzaj mechanizmu. Następny krok powinien wtedy dotyczyć assetów lub osobnego, świadomie zaplanowanego skinned-model LOD — nie rozbudowy tego planu.
 
