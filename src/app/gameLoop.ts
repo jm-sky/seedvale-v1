@@ -198,6 +198,7 @@ import {
   worldItemAllowsAltInteract,
 } from './interactables'
 import { arbitrateGazeWaterEdgeTarget, requestDirectWaterDrink } from './waterDrinkInteraction'
+import { drainNonModalGameplayInput } from './playerDownedInputGating'
 import { activeModal } from './modalState'
 import { syncNpcQuestMarkers } from './npcQuestMarkerSync'
 import type { Object3D, PerspectiveCamera, Scene, WebGLRenderer } from 'three'
@@ -878,6 +879,22 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
     bowDrawSound?.stop()
     bowDrawSound = null
   }
+  /** Modal safety (plan 123) + downed incapacitation (plan ui-input-030). */
+  function cancelPlayerAttackInput(): void {
+    if (playerMelee.isAttacking()) {
+      playerMelee.reset()
+      player.endMeleeAttack()
+      player.setMeleeSwing(null)
+      attackYaw = null
+    }
+    if (playerRanged.isDrawing()) {
+      playerRanged.reset()
+      player.endRangedDraw()
+      rangedTargetId = null
+      stopBowDrawSound()
+      hud.setAiming(false, null)
+    }
+  }
   /** Any player HP loss (fauna hit, starvation/dehydration) interrupts a long
    *  activity in progress (plan 186 §3) — reuses the exact same Esc route
    *  (`RestActions.abortRest`/`abortBusy`) rather than a second cancellation
@@ -1148,21 +1165,7 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
       setHighlight(null)
       vueUi.setCycleTargetAvailable(false)
       vueUi.setInspectAvailable(false)
-      // Modal safety (plan 123): cancel any in-flight attack rather than let
-      // it keep timing out/resolving while input is blocked.
-      if (playerMelee.isAttacking()) {
-        playerMelee.reset()
-        player.endMeleeAttack()
-        player.setMeleeSwing(null)
-        attackYaw = null
-      }
-      if (playerRanged.isDrawing()) {
-        playerRanged.reset()
-        player.endRangedDraw()
-        rangedTargetId = null
-        stopBowDrawSound()
-        hud.setAiming(false, null)
-      }
+      cancelPlayerAttackInput()
 
       switch (modal) {
         case 'busy':
@@ -1203,11 +1206,18 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
           break
       }
     } else {
-      // Consumes a confirming `[E]` press itself when the preview is active,
-      // before the gaze/interact dispatch below gets a chance to see it
-      // (plan `world-terrain-002` §2).
-      tickTerrainPreparationPreview?.()
-      tickPlacementPreview?.()
+      const downedAtInputBoundary = player.isDowned()
+      if (downedAtInputBoundary) {
+        drainNonModalGameplayInput(keyboard)
+        cancelPlayerAttackInput()
+        playerThrow.clear()
+      } else {
+        // Consumes a confirming `[E]` press itself when the preview is active,
+        // before the gaze/interact dispatch below gets a chance to see it
+        // (plan `world-terrain-002` §2).
+        tickTerrainPreparationPreview?.()
+        tickPlacementPreview?.()
+      }
       const held = heldTool.held()
       const hasMilkContainer = hasCarriedMilkContainer(inventory)
       const hasCarriedWaterContainer = LIQUID_CONTAINER_KIND_LIST
@@ -1290,11 +1300,8 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
         meleeAnimalById.set(item.animal.animalId, item.animal)
       }
       const meleeTick = playerMelee.update(dt)
-      if (player.isDowned()) {
-        playerMelee.reset()
-        player.endMeleeAttack()
-        player.setMeleeSwing(null)
-        attackYaw = null
+      if (downedAtInputBoundary) {
+        cancelPlayerAttackInput()
       } else if (!playerMelee.isAttacking()) {
         player.endMeleeAttack()
         player.setMeleeSwing(null)
@@ -1389,7 +1396,9 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
       // `createTouchControls.ts`).
       const interactReleased = keyboard.consumeInteractRelease()
       const wasDrawing = playerRanged.state() === 'draw'
-      const releaseTick = interactReleased ? playerRanged.releaseDraw() : { fireReady: false, config: null }
+      const releaseTick = interactReleased && !downedAtInputBoundary
+        ? playerRanged.releaseDraw()
+        : { fireReady: false, config: null }
       // An early release (held less than `drawTime`) cancels the shot back to
       // `idle` with no `fireReady` edge — cut the draw clip short instead of
       // letting it play out over a shot that never happened.
@@ -1420,11 +1429,8 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
       const currentRangedAimYaw = (): number => resolveRangedAimYaw(
         rangedTargetId, rangedCandidates, player.mesh.position.x, player.mesh.position.z, mouseLook.state.yaw,
       )
-      if (player.isDowned()) {
-        playerRanged.reset()
-        player.endRangedDraw()
-        rangedTargetId = null
-        stopBowDrawSound()
+      if (downedAtInputBoundary) {
+        cancelPlayerAttackInput()
         playerThrow.clear()
       } else if (playerRanged.state() === 'draw') {
         // Holds the aim-draw pose loop every frame while actually drawing —
@@ -1819,6 +1825,13 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
       )
       vueUi.setInspectAvailable(inspectAvailable)
 
+      if (downedAtInputBoundary) {
+        setHighlight(null)
+        vueUi.setCycleTargetAvailable(false)
+        vueUi.setInspectAvailable(false)
+        vueUi.setFlavorInteractionPrompt({ targetLabel: '', actions: [], cycleHint: '' }, false, null)
+      }
+
       if (isDebugMode()) {
         if (target?.kind === 'house') {
           if (target.houseId !== lastDebugHouseId) {
@@ -1846,10 +1859,13 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
       }
 
       setHighlight(
-        selectedSkill
-          ? (skillAction ? interactableAgent(target) : null)
-          : interactableAgent(target),
+        downedAtInputBoundary
+          ? null
+          : selectedSkill
+            ? (skillAction ? interactableAgent(target) : null)
+            : interactableAgent(target),
       )
+      if (!downedAtInputBoundary) {
       if ((target?.kind === 'npc' || target?.kind === 'npcCorpse') && npcInspectTrigger?.consume()) {
         exitGamePointerLock(renderer.domElement)
         npcInspector?.open(target.npc, target.kind === 'npc' ? target.settlement.name : target.npc.displayName)
@@ -2470,6 +2486,7 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
           const outcome = resolveInteraction(target, questManager)
           npcDialog.open(outcome.speakerName, outcome.line, outcome.offer)
         }
+      }
       }
       if (keyboard.consumeQuestLog()) openQuestLog()
       if (keyboard.consumeInventory()) openInventory()

@@ -15,6 +15,8 @@ Generated from TypeScript imports.
 - `app/actions/actionContext.ts`
 - `app/createApp.ts`
 - `app/gameLoop.ts`
+- `app/playerDownedInputGating.test.ts`
+- `app/playerDownedInputGating.ts`
 - `debug/caves/caveHeightfieldPlayer.ts`
 - `debug/createCaveHeightfieldTestScene.ts`
 - `input/Keyboard.test.ts`

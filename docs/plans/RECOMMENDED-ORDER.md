@@ -309,23 +309,19 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-56. `ui-input-030` — **Player downed action and input gating**  
-  🟡 `S` · **Score:**  19  
-   → **unlocks:** 0/0
-
-57. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
+56. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
   🟡 `L` · **Score:**  18  
    → **unlocks:** 0/0
 
-58. `items-player-052` — **Settlement tool ownership and social acquisition**  
+57. `items-player-052` — **Settlement tool ownership and social acquisition**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-59. `items-player-058` — **Campfire decomposition and ash residue**  
+58. `items-player-058` — **Campfire decomposition and ash residue**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-60. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
+59. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 

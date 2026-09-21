@@ -1204,6 +1204,7 @@ Generated from TypeScript imports.
 - `app/interactables.ts`
 - `app/modalState.ts`
 - `app/npcQuestMarkerSync.ts`
+- `app/playerDownedInputGating.ts`
 - `app/restCampSequence.ts`
 - `app/waterDrinkInteraction.ts`
 - `app/worldBundle.ts`
@@ -1607,6 +1608,24 @@ Generated from TypeScript imports.
 
 - `app/gameLoop.ts`
 - `app/npcQuestMarkerSync.test.ts`
+
+## `app/playerDownedInputGating.test.ts`
+
+**Imports**
+
+- `app/playerDownedInputGating.ts`
+- `input/Keyboard.ts`
+
+## `app/playerDownedInputGating.ts`
+
+**Imports**
+
+- `input/Keyboard.ts`
+
+**Imported by**
+
+- `app/gameLoop.ts`
+- `app/playerDownedInputGating.test.ts`
 
 ## `app/renderStack.ts`
 

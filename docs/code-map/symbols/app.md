@@ -303,9 +303,9 @@ Generated from exported TypeScript symbols.
 
 ## `app/gameLoop.ts`
 
-- `createGameLoop` — function — line 730
-- `GameLoop` — type — line 690
-- `GameLoopDeps` — type — line 329
+- `createGameLoop` — function — line 731
+- `GameLoop` — type — line 691
+- `GameLoopDeps` — type — line 330
 
 ## `app/graphicsSettings.ts`
 
@@ -405,6 +405,12 @@ Generated from exported TypeScript symbols.
   - domain: quests-progression
 - `syncNpcQuestMarkers` — function — line 28
   - domain: quests-progression
+
+## `app/playerDownedInputGating.ts`
+
+- `drainNonModalGameplayInput` — function — line 23
+- `KeyboardGameplayDrain` — type — line 3
+- `runUnlessPlayerDowned` — function — line 42
 
 ## `app/renderStack.ts`
 
