@@ -18,14 +18,13 @@ Zmniejszyć główny koszt renderowania NPC oraz fauna/livestock przez prosty, w
 
 Świeży `settlement-heavy` (2026-09-21, benchmark 030):
 
-- NPC: **511 main-pass draws / 1.16M triangles**,
-- fauna: **399 main-pass draws / 152.2k triangles**,
-- razem: **910 main-pass draws**,
+- scene census (one-pass estimate, **nie faktyczne renderer submissions**): NPC **511 draws / 1.16M triangles**, fauna **399 draws / 152.2k triangles**,
+- razem: **910 render-eligible estimated draws**; `sceneCensus.ts` sprawdza hierarchy visibility, ale nie dowodzi camera/frustum submission,
 - shadow casters agentów: tylko **22 NPC + 10 fauna draws**,
 - `hide-npc-fauna`: RENDER **23.3 → 14.4 ms** (~9 ms exposed),
 - `no-shadows`: RENDER **23.3 → 19.6 ms** dla całej sceny.
 
-Gate „czy to głównie shadows?” jest więc już rozstrzygnięty: **nie**. Agent main-pass submissions są wystarczająco duże, żeby kontynuować. Nie powtarzać tego investigation w implementacji.
+Gate „czy to głównie shadows?” jest rozstrzygnięty: **nie**. `hide-npc-fauna` daje duży sygnał render cost, ale census nie jest renderer-submit counterem. Implementacja ma doprecyzować **camera-relevant** agent budget przed wyborem child nodes, bez powtarzania shadow investigation.
 
 Aktualny kod daje stabilne seamy:
 
@@ -49,11 +48,12 @@ Rozszerzyć istniejącą diagnostykę tylko o dane potrzebne do bezpiecznego wyb
 - draws i triangles,
 - model/asset family, jeśli jest dostępna bez nowego runtime registry,
 - distance bands,
+- camera/frustum relevance dla benchmark camera, jeśli można ją dodać bounded bez normal-runtime kosztu,
 - top families według draw count.
 
 Diagnostyka ma działać tylko w benchmark/debug path. Bez stałego per-frame scene traversal.
 
-Celem census nie jest ponowne udowadnianie problemu, lecz wskazanie **które istniejące child meshes można bezpiecznie wyłączyć w mid/far**.
+Celem census nie jest ponowne udowadnianie shadow problemu, lecz ustalenie **które camera-relevant rodziny/child meshes faktycznie tworzą koszt** i które istniejące child meshes można bezpiecznie wyłączyć w mid/far.
 
 ### 2. Shared presentation level
 
@@ -149,7 +149,7 @@ Użytkownik:
 
 ## Success gate
 
-Utrzymać production LOD tylko jeśli redukuje istotną liczbę **main-pass** agent submissions/triangles i daje mierzalny zysk bez regresji bliskiej prezentacji.
+Utrzymać production LOD tylko jeśli redukuje istotny **camera-relevant render budget** agentów i daje mierzalny zysk w `settlement-heavy` bez regresji bliskiej prezentacji. Nie uznawać samego spadku wartości scene-census za sukces.
 
 Jeśli aktualne hierarchy nie mają wystarczająco bezpiecznych optional nodes, zakończyć na census + udokumentowanym wymaganiu low-poly assets. Nie budować proxy/impostor/model-swap systemu w tym planie.
 
