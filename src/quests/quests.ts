@@ -1745,18 +1745,19 @@ export const QUESTS: readonly AuthoredQuestDef[] = [
     title: 'Muszle dla Kasi',
     description: 'Kasia potrzebuje trzech muszli do ozdobienia progu.',
     giverName: 'Kasia',
-    offerLine: 'Zbierasz muszle nad morzem? Przydałyby mi się trzy do ozdobienia progu.',
+    offerLine:
+      'Próg aż prosi się o trochę koloru. Jak będziesz nad morzem, rozejrzyj się za trzema ładnymi muszlami. Chciałabym go nimi ozdobić.',
     stages: [
       {
         objective: { type: 'gather_item', kind: 'shell', count: 3 },
         description: 'Zbierz 3 muszle.',
-        reminderLine: 'Znalazłeś już trzy muszle?',
-        playerLine: 'Tak. Znalazłem trzy muszle — proszę.',
+        reminderLine: 'Wpadły ci już w ręce jakieś ładne muszle?',
+        playerLine: 'Mam trzy. Wybrałem najładniejsze.',
       },
     ],
-    reportPromptLine: 'Masz już te muszle?',
-    reportPlayerLine: 'Tak. Znalazłem trzy muszle — proszę.',
-    reportLine: 'Piękne! Dziękuję, teraz próg będzie ładniejszy.',
+    reportPromptLine: 'I jak, znalazłeś coś nad morzem?',
+    reportPlayerLine: 'Mam trzy. Wybrałem najładniejsze.',
+    reportLine: 'O, te będą dobre. Przy progu od razu zrobi się przyjemniej.',
     outcomes: [
       {
         id: 'delivered',
@@ -1770,18 +1771,18 @@ export const QUESTS: readonly AuthoredQuestDef[] = [
     title: 'Woda dla Marka',
     description: 'Marek ma zajęte ręce i prosi, żebyś zaczerpnął dla niego wody ze studni.',
     giverName: 'Marek',
-    offerLine: 'Ręce mam zajęte — zaczerpniesz dla mnie wody ze studni?',
+    offerLine: 'Mam ręce pełne roboty. Jak będziesz przy studni, zaczerpniesz dla mnie wody?',
     stages: [
       {
         objective: { type: 'interact_well' },
         description: 'Zaczerpnij wody ze studni.',
-        reminderLine: 'Zaczerpnąłeś już wody?',
+        reminderLine: 'Byłeś już przy studni?',
         progressLine: 'Woda ze studni jest czysta i chłodna. Czas wrócić do Marka.',
       },
     ],
-    reportPromptLine: 'Udało ci się zaczerpnąć wody?',
-    reportPlayerLine: 'Tak. Zaczerpnąłem wody ze studni.',
-    reportLine: 'Dzięki, akurat mi się przydała. Weź te monety.',
+    reportPromptLine: 'Udało ci się podejść do studni?',
+    reportPlayerLine: 'Tak. Zaczerpnąłem świeżej wody.',
+    reportLine: 'Dobrze. Właśnie tego potrzebowałem. Masz, za fatygę.',
     outcomes: [
       {
         id: 'delivered',
@@ -1940,18 +1941,18 @@ export const QUESTS: readonly AuthoredQuestDef[] = [
     description: 'Anna potrzebuje trzech rzadkich ziół leczniczych do domowych zapasów.',
     giverName: 'Anna',
     offerLine:
-      'Zbierasz rzadkie zioła w okolicy? Przydałyby mi się trzy sztuki — zapłacę osiem monet.',
+      'Kończą mi się zioła w domowych zapasach. Jeśli będziesz poza osadą, wypatruj rzadkich leczniczych — trzy mi wystarczą.',
     stages: [
       {
         objective: { type: 'gather_item', kind: 'herb', count: 3 },
         description: 'Zbierz 3 rzadkie zioła lecznicze.',
-        reminderLine: 'Masz już trzy rzadkie zioła?',
-        playerLine: 'Tak. Zebrałem trzy rzadkie zioła — proszę.',
+        reminderLine: 'Udało ci się znaleźć jakieś lecznicze zioła?',
+        playerLine: 'Mam trzy. Powinny się nadać.',
       },
     ],
-    reportPromptLine: 'Masz już te zioła?',
-    reportPlayerLine: 'Tak. Zebrałem trzy rzadkie zioła — proszę.',
-    reportLine: 'Dziękuję, dokładnie tyle mi trzeba.',
+    reportPromptLine: 'Znalazłeś te zioła?',
+    reportPlayerLine: 'Mam trzy. Powinny się nadać.',
+    reportLine: 'Dobre sztuki. Odłożę je do zapasów, zanim naprawdę będą potrzebne.',
     outcomes: [
       {
         id: 'delivered',
@@ -1966,7 +1967,7 @@ export const QUESTS: readonly AuthoredQuestDef[] = [
     description: 'Piotrowi brakuje kamieni na naprawy w osadzie.',
     giverName: 'Piotr',
     offerLine:
-      'Potrzebuję sześciu kamieni na naprawy — przyniesiesz? Zapłacę dziewięć monet.',
+      'Brakuje mi kamienia do wzmocnienia fundamentu. Jak będziesz przy skałach, wybierz kilka porządnych sztuk.',
     alreadyRepairedOfferLine:
       'Fundament już wygląda solidnie — widzę, że ktoś nie czekał na prośbę. Dziękuję.',
     alreadyRepairedReminderLine:
@@ -1976,13 +1977,13 @@ export const QUESTS: readonly AuthoredQuestDef[] = [
       {
         objective: { type: 'gather_item', kind: 'stone', count: 6 },
         description: 'Zbierz 6 kamieni.',
-        reminderLine: 'Masz już sześć kamieni?',
-        playerLine: 'Przyniosłem sześć kamieni na naprawy.',
+        reminderLine: 'Udało ci się znaleźć porządny kamień na fundament?',
+        playerLine: 'Mam kamienie na fundament.',
       },
     ],
-    reportPromptLine: 'Masz już kamienie?',
-    reportPlayerLine: 'Przyniosłem sześć kamieni na naprawy.',
-    reportLine: 'To wystarczy. Dzięki za dostawę.',
+    reportPromptLine: 'Masz coś, czym da się wzmocnić fundament?',
+    reportPlayerLine: 'Mam kamienie na fundament.',
+    reportLine: 'Takie się nadadzą. Z tym fundament powinien trzymać jak należy.',
     outcomes: [
       {
         id: 'delivered',
