@@ -231,10 +231,6 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   🟡 `M` · **Score:**  33  
    → **unlocks:** 1/1
 
-37. `world-terrain-045` — **Canonical local water player traversal**  
-  🔴 `M` · **Score:**  33  
-   → **unlocks:** 0/0
-
 38. `items-player-060` — **Ranged weapon inventory, trade and use integrity**  
   🔴 `L` · **Score:**  32  
    → **unlocks:** 0/0

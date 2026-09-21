@@ -1,7 +1,7 @@
 # Plan: Canonical local water player traversal
 
 **Created:** 2026-09-20
-**Status:** `planned` 📋
+**Status:** `verification needed` 🔍 — see [implementation notes](./implementation-notes/world-terrain-045-canonical-local-water-player-traversal-implementation-notes.md)
 **Priority:** high · **Effort:** M
 **Depends on:** world-terrain-044
 **Domain:** `world-terrain`

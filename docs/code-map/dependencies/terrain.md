@@ -496,6 +496,7 @@ Generated from TypeScript imports.
 - `terrain/chunkHeightmap.ts`
 - `terrain/chunkHeightmapProtocol.ts`
 - `terrain/chunkManager.ts`
+- `terrain/riverFord.ts`
 - `terrain/roadBridge.ts`
 
 ## `terrain/chunkManager.ts`
@@ -1183,6 +1184,7 @@ Generated from TypeScript imports.
 - `settlement/roadNetwork.ts`
 - `terrain/chunkHeightmap.test.ts`
 - `terrain/chunkHeightmap.ts`
+- `terrain/chunkManager.test.ts`
 - `terrain/chunkManager.ts`
 - `terrain/riverFord.test.ts`
 - `terrain/waterSample.test.ts`
@@ -1534,6 +1536,7 @@ Generated from TypeScript imports.
 - `fauna/createFauna.ts`
 - `fauna/faunaProximity.test.ts`
 - `fauna/persistentOccupants.test.ts`
+- `player/PlayerController.ts`
 - `settlement/SettlementsManager.ts`
 - `settlement/createSettlement.ts`
 - `settlement/livestock.ts`

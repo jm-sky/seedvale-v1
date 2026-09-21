@@ -12,6 +12,7 @@ import type { EquipmentSlot } from '../items/equipment'
 import type { ToolKind } from '../items/HeldTool'
 import type { PhysicalAttributes } from '../shared/PhysicalAttributes'
 import type { FootstepSurface } from '../terrain/footstepSurface'
+import type { LocalWaterSample } from '../terrain/waterSample'
 import { disposeObject3D, loadGltf, loadGltfAnimated, loadGltfAsset, prepareProp } from '../assets/loadGltf'
 import {
   applyAccessoryTint,
@@ -219,6 +220,12 @@ export type HeightSampler = (x: number, z: number) => number
  *  analytical fallback. Detailed player/NPC/fauna movement uses this so a
  *  streaming frontier holds the step rather than fabricating ground. */
 export type RuntimeGroundSampler = (x: number, z: number) => number | null
+/** `ChunkManager.sampleRuntimeLocalWater` (plan world-terrain-045) — the
+ *  same resident-chunk availability contract as `RuntimeGroundSampler`,
+ *  `null` when the owning chunk cannot authoritatively answer yet (never
+ *  "dry"). Canonical detailed player water ownership; `HeightSampler`-style
+ *  scalar `waterLevel` is not used for this decision any more. */
+export type RuntimeLocalWaterSampler = (x: number, z: number) => LocalWaterSample | null
 /** `ChunkManager.collidersNear` (plan 097 §2.2) — kept as its own alias
  *  instead of importing `ChunkManager` here, same reasoning as `HeightSampler`. */
 export type ColliderSource = (x: number, z: number) => readonly Collider[]
@@ -301,14 +308,18 @@ export class PlayerController {
   private readonly keys: KeyState
   private readonly look: LookState
   private sampleHeight: HeightSampler
-  private sampleFloor: HeightSampler
   /** Resident/runtime movement-surface query (plan world-terrain-044) —
    *  `null` when the destination's owning chunk hasn't finished streaming.
    *  Gates detailed horizontal movement so a step never silently lands on
    *  `sampleHeight`'s permissive raw-analytical fallback; `sampleHeight`
    *  itself stays the snap-to-ground/vertical-motion convenience query. */
   private sampleResidentSurfaceGround: RuntimeGroundSampler
-  private waterLevel: number
+  /** Resident/runtime local-water query (plan world-terrain-045) — the
+   *  canonical physical-water answer detailed vertical motion/water
+   *  ownership reads instead of a scalar global `waterLevel` + `sampleFloor`,
+   *  so an elevated river matches what fauna/rendering already see. `null`
+   *  under the same unavailable conditions as `sampleResidentSurfaceGround`. */
+  private sampleResidentLocalWater: RuntimeLocalWaterSampler
   private collidersNear: ColliderSource
   private caveGround: CaveGroundQuery
   private caveFloor: CaveFloorSampler
@@ -482,9 +493,8 @@ export class PlayerController {
     keys: KeyState,
     look: LookState,
     sampleHeight: HeightSampler,
-    sampleFloor: HeightSampler,
     sampleResidentSurfaceGround: RuntimeGroundSampler,
-    waterLevel: number,
+    sampleResidentLocalWater: RuntimeLocalWaterSampler,
     collidersNear: ColliderSource,
     caveGround: CaveGroundQuery,
     caveFloor: CaveFloorSampler,
@@ -498,9 +508,8 @@ export class PlayerController {
     this.keys = keys
     this.look = look
     this.sampleHeight = sampleHeight
-    this.sampleFloor = sampleFloor
     this.sampleResidentSurfaceGround = sampleResidentSurfaceGround
-    this.waterLevel = waterLevel
+    this.sampleResidentLocalWater = sampleResidentLocalWater
     this.collidersNear = collidersNear
     this.caveGround = caveGround
     this.caveFloor = caveFloor
@@ -559,9 +568,8 @@ export class PlayerController {
     keys: KeyState,
     look: LookState,
     sampleHeight: HeightSampler,
-    sampleFloor: HeightSampler,
     sampleResidentSurfaceGround: RuntimeGroundSampler,
-    waterLevel: number,
+    sampleResidentLocalWater: RuntimeLocalWaterSampler,
     collidersNear: ColliderSource,
     caveGround: CaveGroundQuery,
     caveFloor: CaveFloorSampler,
@@ -597,9 +605,8 @@ export class PlayerController {
         keys,
         look,
         sampleHeight,
-        sampleFloor,
         sampleResidentSurfaceGround,
-        waterLevel,
+        sampleResidentLocalWater,
         collidersNear,
         caveGround,
         caveFloor,
@@ -616,9 +623,8 @@ export class PlayerController {
         keys,
         look,
         sampleHeight,
-        sampleFloor,
         sampleResidentSurfaceGround,
-        waterLevel,
+        sampleResidentLocalWater,
         collidersNear,
         caveGround,
         caveFloor,
@@ -634,9 +640,8 @@ export class PlayerController {
     keys: KeyState,
     look: LookState,
     sampleHeight: HeightSampler,
-    sampleFloor: HeightSampler,
     sampleResidentSurfaceGround: RuntimeGroundSampler,
-    waterLevel: number,
+    sampleResidentLocalWater: RuntimeLocalWaterSampler,
     collidersNear: ColliderSource,
     caveGround: CaveGroundQuery,
     caveFloor: CaveFloorSampler,
@@ -661,9 +666,8 @@ export class PlayerController {
       keys,
       look,
       sampleHeight,
-      sampleFloor,
       sampleResidentSurfaceGround,
-      waterLevel,
+      sampleResidentLocalWater,
       collidersNear,
       caveGround,
       caveFloor,
@@ -678,9 +682,8 @@ export class PlayerController {
   /** Call after terrain rebuild. */
   setGround(
     sampleHeight: HeightSampler,
-    sampleFloor: HeightSampler,
     sampleResidentSurfaceGround: RuntimeGroundSampler,
-    waterLevel: number,
+    sampleResidentLocalWater: RuntimeLocalWaterSampler,
     collidersNear: ColliderSource,
     caveGround: CaveGroundQuery,
     caveFloor: CaveFloorSampler,
@@ -689,9 +692,8 @@ export class PlayerController {
     sampleFootstepSurface: (x: number, z: number) => FootstepSurface,
   ): void {
     this.sampleHeight = sampleHeight
-    this.sampleFloor = sampleFloor
     this.sampleResidentSurfaceGround = sampleResidentSurfaceGround
-    this.waterLevel = waterLevel
+    this.sampleResidentLocalWater = sampleResidentLocalWater
     this.collidersNear = collidersNear
     this.caveGround = caveGround
     this.caveFloor = caveFloor
@@ -1539,7 +1541,10 @@ export class PlayerController {
         const ground = this.groundAt(startX, startZ)
         const groundDebug = this.peekGroundQueryDebug?.() ?? null
         let groundSource: PlayerMovementTraceTick['groundSource'] = groundDebug?.source ?? 'surface'
-        if (this.worldWaterOwnsVertical(startX, startZ, ground)) groundSource = 'water'
+        const debugWaterSample = this.sampleResidentLocalWater(startX, startZ)
+        if (debugWaterSample !== null && this.worldWaterOwnsVertical(startX, startZ, ground, debugWaterSample)) {
+          groundSource = 'water'
+        }
         this.movementTraceFrame += 1
         this.movementTracePending = {
           startX,
@@ -1842,13 +1847,22 @@ export class PlayerController {
    * Surface-world ocean/river water may own vertical motion only when the
    * water plane is in the player's current space. Resolved closed cave
    * ground (rock ceiling) blocks it even if strict occupancy is briefly false.
+   *
+   * Plan world-terrain-045: ownership comes from the resident local-water
+   * `sample` (river wins over lake/ocean, elevated rivers included) instead
+   * of the scalar global `waterLevel` — a bridge deck still reads `false`
+   * here because the resolved movement `ground` sits above the sample's own
+   * `waterSurfaceHeight`, even though the river physically remains present
+   * underneath it.
    */
   private worldWaterOwnsVertical(
     x: number,
     z: number,
     ground: { height: number, ceiling: number | null },
+    sample: LocalWaterSample,
   ): boolean {
-    if (ground.height > this.waterLevel) return false
+    if (!sample.present) return false
+    if (ground.height > sample.waterSurfaceHeight) return false
     return worldWaterAppliesInCurrentSpace({
       occupancy: this.caveOccupancy(x, this.mesh.position.y, z),
       caveCeiling: ground.ceiling,
@@ -1896,11 +1910,19 @@ export class PlayerController {
     const groundedBefore = this.grounded
     const vyBefore = this.verticalVelocity
     const ground = this.groundAt(x, z)
-    const inWorldWater = this.worldWaterOwnsVertical(x, z, ground)
-    if (inWorldWater) {
+    // Resident local-water sample unavailable (streaming frontier at
+    // construction/teleport time) — never guess wet; snap to plain ground
+    // the same as a confirmed dry sample would (plan world-terrain-045,
+    // same conservative policy as 044). The very next `updateVerticalMotion`
+    // tick re-resolves with a real sample once residency catches up.
+    const waterSample = this.sampleResidentLocalWater(x, z)
+    const inWorldWater = waterSample !== null
+      && waterSample.present
+      && this.worldWaterOwnsVertical(x, z, ground, waterSample)
+    if (waterSample !== null && waterSample.present && inWorldWater) {
       // Underwater: sink toward the real seabed instead of the flattened-to-waterLevel
       // mesh, capped so deep water still leaves the head above the surface.
-      this.mesh.position.y = swimFeetY(this.waterLevel, this.sampleFloor(x, z))
+      this.mesh.position.y = swimFeetY(waterSample.waterSurfaceHeight, waterSample.floorHeight)
     } else {
       this.mesh.position.y = ground.height
     }
@@ -1923,12 +1945,21 @@ export class PlayerController {
     const vyBefore = this.verticalVelocity
     const ground = this.groundAt(x, z)
     const groundY = ground.height
-    if (this.worldWaterOwnsVertical(x, z, ground)) {
+    const waterSample = this.sampleResidentLocalWater(x, z)
+    if (waterSample === null) {
+      // Resident water sample not available yet (streaming frontier) — hold
+      // vertical resolution this frame rather than guessing dry/wet from
+      // partial data; the next tick retries once residency catches up
+      // (plan world-terrain-045, same conservative policy as 044's
+      // horizontal step gate).
+      return
+    }
+    if (waterSample.present && this.worldWaterOwnsVertical(x, z, ground, waterSample)) {
       if (!this.wasInWater && this.playAt) {
-        playWaterLap(this.playAt, { x, y: this.waterLevel, z })
+        playWaterLap(this.playAt, { x, y: waterSample.waterSurfaceHeight, z })
       }
       this.wasInWater = true
-      this.mesh.position.y = swimFeetY(this.waterLevel, this.sampleFloor(x, z))
+      this.mesh.position.y = swimFeetY(waterSample.waterSurfaceHeight, waterSample.floorHeight)
       this.verticalVelocity = 0
       this.grounded = true
       this.jumpRequested = false

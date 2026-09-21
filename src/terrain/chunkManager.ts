@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import type { DetailNormalConfig } from '../config/worldConfig'
-import type { HeightSampler, RuntimeGroundSampler } from '../player/PlayerController'
+import type { HeightSampler, RuntimeGroundSampler, RuntimeLocalWaterSampler } from '../player/PlayerController'
 import type { PropPlacement } from '../render/instancedProps'
 import type { TreeEnvSample, TreeGrowthStage, TreeLifecycle, TreePresence } from '../world/treeLifecycle'
 import type { ChunkTileResult, GrassRequestParams } from './chunkHeightmapProtocol'
@@ -632,6 +632,15 @@ export type ChunkManager = {
    *  over every loaded chunk) — safe to call every tick from fauna's
    *  movement path, unlike `riverShoreDistance`/`riverShorePoint` above. */
   sampleLocalWater: (worldX: number, worldZ: number) => LocalWaterSample
+  /** Resident/runtime local-water query (plan world-terrain-045) — same residency
+   *  gate as `sampleRuntimeHeight`/`sampleRuntimeSurfaceGround` (owning chunk
+   *  `ready` + runtime `tile`), composed through the same pure `sampleLocalWater()`
+   *  above instead of `readField()`'s permissive analytical fallback. `null` means
+   *  the owning chunk cannot authoritatively answer yet — never "dry". Detailed
+   *  player water ownership uses this instead of the scalar global `waterLevel`;
+   *  `sampleLocalWater` above stays the analytical-fallback convenience for
+   *  off-screen/worldgen/fauna callers. */
+  sampleRuntimeLocalWater: RuntimeLocalWaterSampler
   /** 0 (open / poor forest habitat) – 1 (dense forest) continuous suitability
    *  at (x, z) via `forestDensityAt` (`biomeRegions.ts`) — same signal
    *  `chunkVegetation.ts` uses for tree-density modulation. Runtime bridge
@@ -1005,6 +1014,13 @@ export type ResidentChunkSnapshot = {
   ready: boolean
   tile?: ChunkTileResult
   bridgeSpecs?: RoadBridgeSpec[]
+  /** Same cached per-chunk data `ChunkRecord.riverGameplaySegments`/
+   *  `fordProjections` hold (plan world-terrain-045) — read by
+   *  `sampleResidentLocalWater` alongside `tile`, under the same `ready`
+   *  gate, since both are resolved by `ensureLoaded()` before a chunk ever
+   *  reaches `ready`. */
+  riverGameplaySegments?: RiverChannelSegment[]
+  fordProjections?: FordProjection[]
 }
 
 /** Pure resident/runtime terrain-height core of `ChunkManager.sampleRuntimeHeight`
@@ -1049,6 +1065,41 @@ export function sampleResidentSurfaceGround(
   }
   const o = apronOriginWorld(coord.cx, coord.cz, chunkSize, resolution)
   return sampleApronGrid(owning.tile.heights, o.apronRes, o.x, o.z, o.step, worldX, worldZ)
+}
+
+/** Pure resident/runtime local-water core of `ChunkManager.sampleRuntimeLocalWater`
+ *  (plan world-terrain-045) — the same residency gate as `sampleResidentHeight`/
+ *  `sampleResidentSurfaceGround` (owning chunk `ready` + runtime `tile`), composed
+ *  through the existing pure `sampleLocalWater()` fauna/rendering already use, fed
+ *  from `owning.tile.heights`/`floorHeights` instead of `readField()`'s analytical
+ *  fallback. `riverGameplaySegments`/`fordProjections` need no separate residency
+ *  check: `ensureLoaded()` always resolves them before a chunk reaches `ready`, so
+ *  gating on `tile` alone is exactly the same boundary as the ground queries above —
+ *  a missing/generating chunk is `null` ("unavailable"), never a fabricated dry
+ *  result, even though an empty segment array on an actually-ready record is a
+ *  valid authoritative "no river here" answer. */
+export function sampleResidentLocalWater(
+  owning: ResidentChunkSnapshot | undefined,
+  coord: ChunkCoord,
+  chunkSize: number,
+  resolution: number,
+  waterLevel: number,
+  worldX: number,
+  worldZ: number,
+): LocalWaterSample | null {
+  if (!owning?.ready || !owning.tile) return null
+  const o = apronOriginWorld(coord.cx, coord.cz, chunkSize, resolution)
+  const height = sampleApronGrid(owning.tile.heights, o.apronRes, o.x, o.z, o.step, worldX, worldZ)
+  const floor = sampleApronGrid(owning.tile.floorHeights, o.apronRes, o.x, o.z, o.step, worldX, worldZ)
+  return sampleLocalWaterPure(
+    height,
+    floor,
+    waterLevel,
+    owning.riverGameplaySegments ?? [],
+    worldX,
+    worldZ,
+    owning.fordProjections ?? [],
+  )
 }
 
 /** Nearest still-valid key in a finalize/load-style queue. `distanceOf`
@@ -2850,6 +2901,25 @@ export function createChunkManager(
     )
   }
 
+  function sampleRuntimeLocalWaterAt(worldX: number, worldZ: number): LocalWaterSample | null {
+    const coord = worldToChunk(worldX, worldZ, config.chunkSize)
+    const rec = chunks.get(chunkKey(coord))
+    return sampleResidentLocalWater(
+      rec && {
+        ready: rec.state === 'ready',
+        tile: rec.tile,
+        riverGameplaySegments: rec.riverGameplaySegments,
+        fordProjections: rec.fordProjections,
+      },
+      coord,
+      config.chunkSize,
+      config.resolution,
+      config.waterLevel,
+      worldX,
+      worldZ,
+    )
+  }
+
   return {
     update,
     tickWater(dt) {
@@ -2936,6 +3006,7 @@ export function createChunkManager(
         rec?.fordProjections ?? [],
       )
     },
+    sampleRuntimeLocalWater: sampleRuntimeLocalWaterAt,
     sampleForestFactor: (x, z) => {
       const h = readField('heights', x, z)
       const altitude01 = Math.max(0, (h - config.waterLevel) / Math.max(config.heightScale, 0.001))

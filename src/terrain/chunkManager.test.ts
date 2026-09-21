@@ -1,6 +1,6 @@
 import { Vector3 } from 'three'
 import { describe, expect, it, vi } from 'vitest'
-import type { ChunkTileParams } from './chunkHeightmap'
+import type { ChunkTileParams, RiverChannelSegment } from './chunkHeightmap'
 import type { ChunkTileResult } from './chunkHeightmapProtocol'
 import type { RoadBridgeSpec } from './roadBridge'
 import { clearCemeteryCaches } from './cemeteryAssignment'
@@ -18,10 +18,12 @@ import {
   resolveUnloadedLandmark,
   ringChunkOffsets,
   sampleResidentHeight,
+  sampleResidentLocalWater,
   sampleResidentSurfaceGround,
   type TerrainModification,
   tickChunkWaterSurfaces,
 } from './chunkManager'
+import { FORD_WATER_DEPTH, type FordProjection } from './riverFord'
 
 // Small grid so texel math is easy to reason about by hand: resolution 5,
 // chunkSize 32 -> step 8, apronRes 7 (world x/z per texel: -24,-16,-8,0,8,16,24
@@ -655,5 +657,100 @@ describe('sampleResidentSurfaceGround (plan world-terrain-044)', () => {
     const ready: ResidentChunkSnapshot = { ready: true, tile, bridgeSpecs: [spec] }
     // Far outside the small deck footprint declared above, on the same chunk.
     expect(sampleResidentSurfaceGround(ready, COORD, CHUNK_SIZE, RESOLUTION, 24, 24)).toBeCloseTo(6, 5)
+  })
+})
+
+/** plan world-terrain-045 — same residency gate as `sampleResidentHeight`/
+ *  `sampleResidentSurfaceGround` above, composed through the canonical pure
+ *  `sampleLocalWater()` so a missing/generating owning chunk is `null`, never
+ *  a fabricated `{ present: false }` "dry river" answer. */
+describe('sampleResidentLocalWater (plan world-terrain-045)', () => {
+  const COORD = { cx: 0, cz: 0 }
+  const WATER_LEVEL = 10
+
+  function riverSegment(overrides: Partial<RiverChannelSegment> = {}): RiverChannelSegment {
+    return {
+      ax: -10,
+      az: 0,
+      aBedH: 18,
+      aWaterH: 19,
+      aWaterHalfWidth: 2,
+      aChannelHalfWidth: 4,
+      bx: 10,
+      bz: 0,
+      bBedH: 18,
+      bWaterH: 19,
+      bWaterHalfWidth: 2,
+      bChannelHalfWidth: 4,
+      ...overrides,
+    }
+  }
+
+  it('is null when the owning chunk record is absent — never a fabricated dry sample', () => {
+    expect(sampleResidentLocalWater(undefined, COORD, CHUNK_SIZE, RESOLUTION, WATER_LEVEL, 0, 0)).toBeNull()
+  })
+
+  it('is null while the owning chunk is still generating, even with river data already retained', () => {
+    const generating: ResidentChunkSnapshot = { ready: false, riverGameplaySegments: [riverSegment()] }
+    expect(sampleResidentLocalWater(generating, COORD, CHUNK_SIZE, RESOLUTION, WATER_LEVEL, 0, 0)).toBeNull()
+  })
+
+  it('is null for a ready record that somehow has no tile', () => {
+    const readyNoTile: ResidentChunkSnapshot = { ready: true, riverGameplaySegments: [riverSegment()] }
+    expect(sampleResidentLocalWater(readyNoTile, COORD, CHUNK_SIZE, RESOLUTION, WATER_LEVEL, 0, 0)).toBeNull()
+  })
+
+  it('reports authoritative dry land on a ready record with no river', () => {
+    const tile = fakeTile(7, WATER_LEVEL + 5)
+    const ready: ResidentChunkSnapshot = { ready: true, tile }
+    expect(sampleResidentLocalWater(ready, COORD, CHUNK_SIZE, RESOLUTION, WATER_LEVEL, 0, 0))
+      .toEqual({ present: false })
+  })
+
+  it('reports lake/ocean depth from the runtime tile when ready with no river', () => {
+    const tile = fakeTile(7, WATER_LEVEL)
+    tile.floorHeights.fill(WATER_LEVEL - 3)
+    const ready: ResidentChunkSnapshot = { ready: true, tile }
+    expect(sampleResidentLocalWater(ready, COORD, CHUNK_SIZE, RESOLUTION, WATER_LEVEL, 0, 0))
+      .toEqual({ present: true, waterSurfaceHeight: WATER_LEVEL, floorHeight: WATER_LEVEL - 3, depth: 3 })
+  })
+
+  it('reports an elevated river above the global waterLevel as present — the plan\'s core fix', () => {
+    // Runtime terrain sits well above waterLevel everywhere in this tile — a
+    // mountain stream. Only the retained river data can report this as water.
+    const tile = fakeTile(7, WATER_LEVEL + 20)
+    const ready: ResidentChunkSnapshot = { ready: true, tile, riverGameplaySegments: [riverSegment()] }
+    expect(sampleResidentLocalWater(ready, COORD, CHUNK_SIZE, RESOLUTION, WATER_LEVEL, 0, 0))
+      .toEqual({ present: true, waterSurfaceHeight: 19, floorHeight: 18, depth: 1 })
+  })
+
+  it('shapes the ford bed instead of the natural channel bed inside a declared ford footprint', () => {
+    const tile = fakeTile(7, WATER_LEVEL + 20)
+    const ford: FordProjection = { x: 0, z: 0, dirX: 0, dirZ: 1, halfLength: 6, halfWidth: 5 }
+    const ready: ResidentChunkSnapshot = {
+      ready: true,
+      tile,
+      riverGameplaySegments: [riverSegment()],
+      fordProjections: [ford],
+    }
+    const sample = sampleResidentLocalWater(ready, COORD, CHUNK_SIZE, RESOLUTION, WATER_LEVEL, 0, 0)
+    expect(sample?.present).toBe(true)
+    if (!sample?.present) return
+    expect(sample.waterSurfaceHeight).toBe(19)
+    expect(sample.floorHeight).toBeCloseTo(19 - FORD_WATER_DEPTH, 6)
+  })
+
+  it('reconstructs the same value from canonical tile + retained river data after an unload/reload cycle', () => {
+    const tile = fakeTile(7, WATER_LEVEL + 20)
+    const segments = [riverSegment()]
+    const before = sampleResidentLocalWater(
+      { ready: true, tile, riverGameplaySegments: segments }, COORD, CHUNK_SIZE, RESOLUTION, WATER_LEVEL, 0, 0,
+    )
+    // "unload" (record dropped) then "reload" (fresh record, same canonical
+    // tile + re-resolved river segments) — same snapshot shape, independent call.
+    const after = sampleResidentLocalWater(
+      { ready: true, tile, riverGameplaySegments: segments }, COORD, CHUNK_SIZE, RESOLUTION, WATER_LEVEL, 0, 0,
+    )
+    expect(after).toEqual(before)
   })
 })

@@ -1119,9 +1119,8 @@ export async function createApp(
     keyboard.state,
     mouseLook.state,
     bundle.chunkManager.sampleSurfaceGround,
-    bundle.chunkManager.sampleFloor,
     bundle.chunkManager.sampleRuntimeSurfaceGround,
-    bundle.chunkManager.waterLevel,
+    bundle.chunkManager.sampleRuntimeLocalWater,
     bundle.chunkManager.collidersNear,
     caveGroundQuery,
     caveFloorSampler,
@@ -2954,9 +2953,8 @@ export async function createApp(
       if (typeof window !== 'undefined') window.__seedvaleProgramPrewarm = rebuiltPrewarm
       player.setGround(
         bundle.chunkManager.sampleSurfaceGround,
-        bundle.chunkManager.sampleFloor,
         bundle.chunkManager.sampleRuntimeSurfaceGround,
-        bundle.chunkManager.waterLevel,
+        bundle.chunkManager.sampleRuntimeLocalWater,
         bundle.chunkManager.collidersNear,
         caveGroundQuery,
         caveFloorSampler,

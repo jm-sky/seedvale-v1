@@ -44,6 +44,7 @@ Generated from TypeScript imports.
 - `shared/temporaryConditions.ts`
 - `terrain/footstepSurface.ts`
 - `terrain/slopeConstraint.ts`
+- `terrain/waterSample.ts`
 - `ui/agentStatusLabel.ts`
 - `world/collision.ts`
 
