@@ -1,7 +1,7 @@
 # Plan: Player cave position save/load continuity
 
 **Created:** 2026-09-20
-**Status:** `planned` 📋
+**Status:** `verification needed` 🔍
 **Type:** bug
 **Priority:** high · **Effort:** S
 **Model:** Sonnet, Composer

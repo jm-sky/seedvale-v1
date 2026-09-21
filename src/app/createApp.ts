@@ -1159,7 +1159,9 @@ export async function createApp(
     // Set look before position — setPosition() calls syncCamera(), which reads yaw/pitch.
     mouseLook.state.yaw = initialSave.player.yaw
     mouseLook.state.pitch = initialSave.player.pitch
-    player.setPosition(initialSave.player.x, initialSave.player.z)
+    player.setPosition(initialSave.player.x, initialSave.player.z, {
+      groundQuerySeedY: initialSave.player.y,
+    })
     player.restoreHealthConsequences(initialSave.player.health)
     restorePersistedNeeds(player.needs, initialSave.playerNeeds)
     restorePersistedSkills(player.skills, initialSave.skills)

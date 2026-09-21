@@ -2371,6 +2371,24 @@ describe('schema versioning and migration pipeline (persistence-003)', () => {
     expect(result.data.player.health).toEqual({ currentHp: 100, physicalInjury: 0 })
   })
 
+  it('migrates a v53 save with no persisted player Y and keeps it absent (plan persistence-006)', () => {
+    const result = loadStoredSave({ ...validSave, version: 53 })
+    expect(result.status).toBe('ok')
+    if (result.status !== 'ok') return
+    expect(result.data.version).toBe(CURRENT_SAVE_VERSION)
+    expect(result.data.player.y).toBeUndefined()
+  })
+
+  it('round-trips player Y and rejects a non-finite value (plan persistence-006)', () => {
+    const withY = { ...validSave, player: { ...validSave.player, y: 12.5 } }
+    const result = loadStoredSave(withY)
+    expect(result.status).toBe('ok')
+    if (result.status === 'ok') expect(result.data.player.y).toBe(12.5)
+
+    expect(isSaveData({ ...validSave, player: { ...validSave.player, y: Number.NaN } })).toBe(false)
+    expect(isSaveData({ ...validSave, player: { ...validSave.player, y: 'up' } })).toBe(false)
+  })
+
   it('round-trips player health/injury/recovery-anchor and rejects malformed current-version values (plan items-player-050)', () => {
     const damaged = {
       ...validSave,

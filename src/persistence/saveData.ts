@@ -88,6 +88,14 @@ export type SavePlayerHealth = {
 export type SavePlayer = {
   x: number
   z: number
+  /** Plan persistence-006 — vertical ground-query seed for `setPosition`'s
+   *  `groundQuerySeedY`, letting the Y-aware Cave V2 ground resolver
+   *  distinguish a closed cave floor from surface terrain at the same X/Z.
+   *  Absent on pre-persistence-006 saves; never synthesized by migration —
+   *  legacy saves keep the old X/Z-only surface-compatible restore. Never a
+   *  trusted final floor height: `setPosition()` always revalidates it via
+   *  `snapToGround()`. */
+  y?: number
   yaw: number
   pitch: number
   /** Livestock `animalId` currently ridden (plan fauna-003) — `undefined`
@@ -734,7 +742,7 @@ export type SaveWorkContract =
  *  representation or semantics of `SaveData` change — see the plan's
  *  "Future schema-change workflow". Never duplicate this number elsewhere;
  *  `saveState.ts` imports it instead of declaring its own constant. */
-export const CURRENT_SAVE_VERSION = 53
+export const CURRENT_SAVE_VERSION = 54
 
 /** Canonical save contract for the current schema version. This module
  *  intentionally carries no history of schemas from before the v1 hard cut
@@ -1015,6 +1023,7 @@ function isSavePlayer(value: unknown): value is SavePlayer {
   return (
     typeof player.x === 'number' &&
     typeof player.z === 'number' &&
+    (player.y === undefined || (typeof player.y === 'number' && Number.isFinite(player.y))) &&
     typeof player.yaw === 'number' &&
     typeof player.pitch === 'number' &&
     (player.mountedAnimalId === undefined || typeof player.mountedAnimalId === 'string') &&
@@ -4072,6 +4081,15 @@ function migrateSaveV52ToV53(data: unknown): unknown {
   }
 }
 
+/** v53 → v54 (plan persistence-006): `player.y` is new, optional. A pre-plan
+ *  save never persisted a vertical ground-query seed, so migration leaves it
+ *  absent rather than synthesizing one — restore keeps the legacy X/Z-only
+ *  surface-compatible `setPosition()` path for these saves. */
+function migrateSaveV53ToV54(data: unknown): unknown {
+  const v = data as Record<string, unknown>
+  return { ...v, version: 54 }
+}
+
 function migrateSaveV37ToV38(data: unknown): unknown {
   const v = data as Record<string, unknown>
   const seq = { n: 0 }
@@ -4245,6 +4263,7 @@ const SAVE_MIGRATIONS: Readonly<Record<number, SaveMigration>> = {
   50: migrateSaveV50ToV51,
   51: migrateSaveV51ToV52,
   52: migrateSaveV52ToV53,
+  53: migrateSaveV53ToV54,
 }
 
 function detectStoredVersion(value: unknown): number | null {

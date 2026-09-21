@@ -183,6 +183,7 @@ export function createSaveState(deps: SaveStateDeps): SaveState {
     },
     player: {
       x: player.mesh.position.x,
+      y: player.mesh.position.y,
       z: player.mesh.position.z,
       yaw: mouseLook.state.yaw,
       pitch: mouseLook.state.pitch,
