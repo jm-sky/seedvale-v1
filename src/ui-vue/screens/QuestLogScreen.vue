@@ -110,35 +110,103 @@ function formatReward(items: ReadonlyArray<{ kind: ItemKind, count: number }>): 
         </div>
 
         <div class="flex flex-col gap-2">
-          <div
-            v-if="visibleEntries.length === 0"
-            class="text-sm opacity-60"
-          >
-            Brak zadań w tej kategorii.
-          </div>
-          <button
-            v-for="entry in visibleEntries"
-            :key="entry.id"
-            type="button"
-            class="cursor-pointer rounded-md p-3 text-left"
-            :class="entry.state === 'ready_to_report' ? 'bg-white/15 ring-1 ring-white/30' : 'bg-white/5 hover:bg-white/10'"
-            @click="openDetails(entry)"
-          >
-            <div class="font-semibold text-sm">
-              {{ entry.title }}
-            </div>
-            <div class="text-xs opacity-70">
-              {{ entry.giverName }} · {{ STATE_LABEL[entry.state] }}<template v-if="entry.totalStages > 1">
-                — Etap {{ entry.stageIndex + 1 }}/{{ entry.totalStages }}
-              </template>
-            </div>
+          <template v-if="filter === 'current'">
             <div
-              v-if="entry.currentObjective"
-              class="mt-1 text-sm"
+              v-if="projected.counts.current === 0"
+              class="text-sm opacity-60"
             >
-              {{ entry.currentObjective }}
+              Brak zadań w tej kategorii.
             </div>
-          </button>
+            <template v-else>
+              <section
+                v-if="projected.currentReadyToReport.length > 0"
+                class="flex flex-col gap-2"
+              >
+                <h2 class="text-[12px] font-semibold uppercase tracking-wide opacity-70">
+                  Do oddania ({{ projected.currentReadyToReport.length }})
+                </h2>
+                <button
+                  v-for="entry in projected.currentReadyToReport"
+                  :key="entry.id"
+                  type="button"
+                  class="cursor-pointer rounded-md bg-white/15 p-3 text-left ring-1 ring-white/30"
+                  @click="openDetails(entry)"
+                >
+                  <div class="flex flex-wrap items-center gap-2">
+                    <span class="font-semibold text-sm">
+                      {{ entry.title }}
+                    </span>
+                    <span class="rounded-full bg-white/20 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide">
+                      DO ODDANIA
+                    </span>
+                  </div>
+                  <div class="mt-1 text-sm">
+                    Wróć do: {{ entry.giverName }}
+                  </div>
+                </button>
+              </section>
+              <section
+                v-if="projected.currentActive.length > 0"
+                class="flex flex-col gap-2"
+              >
+                <h2 class="text-[12px] font-semibold uppercase tracking-wide opacity-70">
+                  Aktywne ({{ projected.currentActive.length }})
+                </h2>
+                <button
+                  v-for="entry in projected.currentActive"
+                  :key="entry.id"
+                  type="button"
+                  class="cursor-pointer rounded-md bg-white/5 p-3 text-left hover:bg-white/10"
+                  @click="openDetails(entry)"
+                >
+                  <div class="font-semibold text-sm">
+                    {{ entry.title }}
+                  </div>
+                  <div class="text-xs opacity-70">
+                    {{ entry.giverName }} · {{ STATE_LABEL[entry.state] }}<template v-if="entry.totalStages > 1">
+                      — Etap {{ entry.stageIndex + 1 }}/{{ entry.totalStages }}
+                    </template>
+                  </div>
+                  <div
+                    v-if="entry.currentObjective"
+                    class="mt-1 text-sm"
+                  >
+                    {{ entry.currentObjective }}
+                  </div>
+                </button>
+              </section>
+            </template>
+          </template>
+          <template v-else>
+            <div
+              v-if="visibleEntries.length === 0"
+              class="text-sm opacity-60"
+            >
+              Brak zadań w tej kategorii.
+            </div>
+            <button
+              v-for="entry in visibleEntries"
+              :key="entry.id"
+              type="button"
+              class="cursor-pointer rounded-md bg-white/5 p-3 text-left hover:bg-white/10"
+              @click="openDetails(entry)"
+            >
+              <div class="font-semibold text-sm">
+                {{ entry.title }}
+              </div>
+              <div class="text-xs opacity-70">
+                {{ entry.giverName }} · {{ STATE_LABEL[entry.state] }}<template v-if="entry.totalStages > 1">
+                  — Etap {{ entry.stageIndex + 1 }}/{{ entry.totalStages }}
+                </template>
+              </div>
+              <div
+                v-if="entry.currentObjective"
+                class="mt-1 text-sm"
+              >
+                {{ entry.currentObjective }}
+              </div>
+            </button>
+          </template>
         </div>
       </template>
 

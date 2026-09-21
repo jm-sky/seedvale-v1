@@ -4,15 +4,15 @@ import type { QuestState } from '../../quests/quests'
 export type QuestLogFilter = 'current' | 'offers' | 'history'
 
 export type QuestLogBuckets = {
+  /** `ready_to_report` then `active`, each sorted by quest id. */
   current: readonly QuestListEntry[]
+  /** Current-tab subsection: quests ready to turn in at the giver NPC. @domain ui-input */
+  currentReadyToReport: readonly QuestListEntry[]
+  /** Current-tab subsection: in-progress active quests. @domain ui-input */
+  currentActive: readonly QuestListEntry[]
   offers: readonly QuestListEntry[]
   history: readonly QuestListEntry[]
   counts: Readonly<Record<QuestLogFilter, number>>
-}
-
-const CURRENT_RANK: Record<'ready_to_report' | 'active', number> = {
-  ready_to_report: 0,
-  active: 1,
 }
 
 const HISTORY_RANK: Record<'complete' | 'failed' | 'invalidated' | 'abandoned', number> = {
@@ -39,19 +39,22 @@ function byId(a: QuestListEntry, b: QuestListEntry): number {
  * Hides `not_offered` without changing list visibility semantics.
  */
 export function projectQuestLog(entries: readonly QuestListEntry[]): QuestLogBuckets {
-  const current: QuestListEntry[] = []
+  const currentReadyToReport: QuestListEntry[] = []
+  const currentActive: QuestListEntry[] = []
   const offers: QuestListEntry[] = []
   const history: QuestListEntry[] = []
   for (const entry of entries) {
     const bucket = questLogBucket(entry.state)
-    if (bucket === 'current') current.push(entry)
+    if (bucket === 'current') {
+      if (entry.state === 'ready_to_report') currentReadyToReport.push(entry)
+      else if (entry.state === 'active') currentActive.push(entry)
+    }
     else if (bucket === 'offers') offers.push(entry)
     else if (bucket === 'history') history.push(entry)
   }
-  current.sort((a, b) => {
-    const rank = CURRENT_RANK[a.state as 'ready_to_report' | 'active'] - CURRENT_RANK[b.state as 'ready_to_report' | 'active']
-    return rank !== 0 ? rank : byId(a, b)
-  })
+  currentReadyToReport.sort(byId)
+  currentActive.sort(byId)
+  const current = [...currentReadyToReport, ...currentActive]
   offers.sort(byId)
   history.sort((a, b) => {
     const rank = HISTORY_RANK[a.state as keyof typeof HISTORY_RANK] - HISTORY_RANK[b.state as keyof typeof HISTORY_RANK]
@@ -59,6 +62,8 @@ export function projectQuestLog(entries: readonly QuestListEntry[]): QuestLogBuc
   })
   return {
     current,
+    currentReadyToReport,
+    currentActive,
     offers,
     history,
     counts: { current: current.length, offers: offers.length, history: history.length },

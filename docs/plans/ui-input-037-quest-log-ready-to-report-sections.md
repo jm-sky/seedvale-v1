@@ -1,7 +1,7 @@
 # Plan: Quest log ready-to-report sections
 
 **Created:** 2026-09-21
-**Status:** `planned` 📋
+**Status:** `verification needed` 🔍 (implemented 2026-09-21 — browser checks are User-owned)
 **Type:** polish
 **Model:** Sonnet, Composer
 **Priority:** medium · **Effort:** S
