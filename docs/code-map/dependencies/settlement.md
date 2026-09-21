@@ -492,6 +492,7 @@ Generated from TypeScript imports.
 - `perf/heavySettlementScenario.ts`
 - `quests/lostTreasureChronicleDeciphering.test.ts`
 - `quests/lostTreasureChronicleSearch.test.ts`
+- `quests/lostTreasureExpedition.ts`
 - `quests/materializeAuthoredQuests.test.ts`
 - `quests/opportunities/settlementQuestOpportunities.test.ts`
 - `settlement/artisanProfile.test.ts`
@@ -1369,6 +1370,8 @@ Generated from TypeScript imports.
 
 - `app/createApp.ts`
 - `quests/lostTreasureChroniclesElder.ts`
+- `quests/lostTreasureExpedition.test.ts`
+- `quests/lostTreasureExpedition.ts`
 - `quests/materializeAuthoredQuests.test.ts`
 - `quests/materializeAuthoredQuests.ts`
 - `quests/oldBonesAdventureCave.test.ts`

@@ -40,10 +40,10 @@
    🔴 `M` · ✅ ready · unlocks 0/0 · type: fix
 3. `quests-progression-076` — **Quest terminal outcome feedback and Old Bones finale clarity**  
    🔴 `M` · ✅ ready · unlocks 0/0 · type: fix
-4. `quests-progression-079` — **Lost treasure expedition — external sponsor and local stakeholder flow**  
-   🟡 `S` · ✅ ready · unlocks 0/0 · type: fix
-5. `quests-progression-080` — **Quest stage reconciliation for pre-existing world state**  
+4. `quests-progression-080` — **Quest stage reconciliation for pre-existing world state**  
    🔴 `M` · ✅ ready · unlocks 0/0 · type: fix
+5. `fauna-045` — **Cave/surface perception boundary and entrance awareness**  
+   🔴 `M` · ✅ ready · unlocks 0/0 · type: bug
 
 ---
 
@@ -187,47 +187,43 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   🔴 `M` · **Score:**  41  
    → **unlocks:** 0/0
 
-26. `quests-progression-079` — **Lost treasure expedition — external sponsor and local stakeholder flow**  
-  🟡 `S` · **Score:**  41  
-   → **unlocks:** 0/0
-
-27. `quests-progression-080` — **Quest stage reconciliation for pre-existing world state**  
+26. `quests-progression-080` — **Quest stage reconciliation for pre-existing world state**  
   🔴 `M` · **Score:**  41  
    → **unlocks:** 0/0
 
-28. `settlements-npcs-044` — **Authored Outpost Occupants & Construction Lifecycle**  
+27. `settlements-npcs-044` — **Authored Outpost Occupants & Construction Lifecycle**  
   🔴 `L` · **Score:**  40  
    → **unlocks:** 1/1
 
-29. `fauna-045` — **Cave/surface perception boundary and entrance awareness**  
+28. `fauna-045` — **Cave/surface perception boundary and entrance awareness**  
   🔴 `M` · **Score:**  39  
    → **unlocks:** 0/0
 
-30. `npc-062` — **UBC NPC runtime material darkness and authored outfit preservation**  
+29. `npc-062` — **UBC NPC runtime material darkness and authored outfit preservation**  
   🔴 `M` · **Score:**  39  
    → **unlocks:** 0/0
 
-31. `quests-progression-058` — **Injured dog discovery thread**  
+30. `quests-progression-058` — **Injured dog discovery thread**  
   🟡 `M` · **Score:**  37  
    → **unlocks:** 0/0
 
-32. `npc-037` — **Work Contracts — Stale Target Discovery and Notice Cleanup**  
+31. `npc-037` — **Work Contracts — Stale Target Discovery and Notice Cleanup**  
   🔴 `M` · **Score:**  35  
    → **unlocks:** 0/0
 
-33. `fauna-046` — **Stamina-aware animal water crossing risk**  
+32. `fauna-046` — **Stamina-aware animal water crossing risk**  
   🔴 `M` · **Score:**  33  
    → **unlocks:** 0/0
 
-34. `items-player-051` — **Cave-aware dropped-item continuity**  
+33. `items-player-051` — **Cave-aware dropped-item continuity**  
   🔴 `M` · **Score:**  33  
    → **unlocks:** 0/0
 
-35. `npc-061` — **Time-skip and reification surface placement validity**  
+34. `npc-061` — **Time-skip and reification surface placement validity**  
   🔴 `M` · **Score:**  33  
    → **unlocks:** 0/0
 
-36. `world-terrain-042` — **Medicinal herb meadow patches**  
+35. `world-terrain-042` — **Medicinal herb meadow patches**  
   🟡 `M` · **Score:**  33  
    → **unlocks:** 1/1
 

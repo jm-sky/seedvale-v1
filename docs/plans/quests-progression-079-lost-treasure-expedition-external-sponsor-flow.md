@@ -1,7 +1,7 @@
 # Plan: Lost treasure expedition — external sponsor and local stakeholder flow
 
 **Created:** 2026-09-21
-**Status:** `planned` 📋
+**Status:** `verification needed` 🔍
 **Type:** fix
 **Priority:** medium · **Effort:** S
 **Model:** Sonnet → Composer

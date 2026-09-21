@@ -268,40 +268,50 @@ Generated from exported TypeScript symbols.
 
 ## `quests/lostTreasureExpedition.ts`
 
-- `buildLostTreasureExpeditionQuest` — function — line 385
+- `buildLostTreasureExpeditionQuest` — function — line 535
   - domain: quests-progression
-- `createLostTreasureExpeditionJournalInstance` — function — line 83
-- `EligibleLostTreasureExpeditionCave` — type — line 144
-- `eligibleLostTreasureExpeditionCaves` — function — line 188
+- `createLostTreasureExpeditionJournalInstance` — function — line 123
+- `EligibleLostTreasureExpeditionCave` — type — line 271
+- `eligibleLostTreasureExpeditionCaves` — function — line 315
   - domain: quests-progression
-- `isLostTreasureExpeditionCampLooted` — function — line 368
-- `isLostTreasureExpeditionEvidenceLooted` — function — line 372
-- `isLostTreasureExpeditionFinalTreasureLooted` — function — line 376
-- `isLostTreasureExpeditionJournalPackLooted` — function — line 354
-- `LOST_TREASURE_EXPEDITION_CAMP_RESERVATION_KEY` — const — line 20
-- `LOST_TREASURE_EXPEDITION_EVIDENCE_RESERVATION_KEY` — const — line 22
-- `LOST_TREASURE_EXPEDITION_FINAL_RESERVATION_KEY` — const — line 23
-- `LOST_TREASURE_EXPEDITION_JOURNAL_KIND` — const — line 31
-- `LOST_TREASURE_EXPEDITION_JOURNAL_RESERVATION_KEY` — const — line 21
-- `LOST_TREASURE_EXPEDITION_JOURNAL_TO_FAMILY_OUTCOME` — const — line 27
-- `LOST_TREASURE_EXPEDITION_JOURNAL_TO_SPONSOR_OUTCOME` — const — line 28
-- `LOST_TREASURE_EXPEDITION_KEEP_JOURNAL_OUTCOME` — const — line 29
-- `LOST_TREASURE_EXPEDITION_QUEST_PREFIX` — const — line 25
-- `LOST_TREASURE_EXPEDITION_RESERVATION_PREFIX` — const — line 18
-- `lostTreasureExpeditionAnchorClaims` — function — line 274
-- `LostTreasureExpeditionBinding` — type — line 47
+- `HOME_KASIA_MEMBER_INDEX` — const — line 43
   - domain: quests-progression
-- `lostTreasureExpeditionCaveReservationRequests` — function — line 285
-- `lostTreasureExpeditionClaimsMatch` — function — line 296
+- `isLostTreasureExpeditionCampLooted` — function — line 508
+- `isLostTreasureExpeditionEvidenceLooted` — function — line 512
+- `isLostTreasureExpeditionFinalTreasureLooted` — function — line 516
+- `isLostTreasureExpeditionJournalPackLooted` — function — line 494
+- `LOST_TREASURE_EXPEDITION_CAMP_RESERVATION_KEY` — const — line 23
+- `LOST_TREASURE_EXPEDITION_EVIDENCE_RESERVATION_KEY` — const — line 25
+- `LOST_TREASURE_EXPEDITION_FINAL_RESERVATION_KEY` — const — line 26
+- `LOST_TREASURE_EXPEDITION_JOURNAL_KIND` — const — line 34
+- `LOST_TREASURE_EXPEDITION_JOURNAL_RESERVATION_KEY` — const — line 24
+- `LOST_TREASURE_EXPEDITION_JOURNAL_TO_FAMILY_OUTCOME` — const — line 30
+- `LOST_TREASURE_EXPEDITION_JOURNAL_TO_SPONSOR_OUTCOME` — const — line 31
+- `LOST_TREASURE_EXPEDITION_KEEP_JOURNAL_OUTCOME` — const — line 32
+- `LOST_TREASURE_EXPEDITION_QUEST_PREFIX` — const — line 28
+- `LOST_TREASURE_EXPEDITION_RESERVATION_PREFIX` — const — line 21
+- `lostTreasureExpeditionAnchorClaims` — function — line 414
+- `LostTreasureExpeditionBinding` — type — line 86
   - domain: quests-progression
-- `lostTreasureExpeditionContainerId` — function — line 65
-- `lostTreasureExpeditionContainerSpecs` — function — line 334
+- `lostTreasureExpeditionCaveReservationRequests` — function — line 425
+- `lostTreasureExpeditionClaimsMatch` — function — line 436
   - domain: quests-progression
-- `lostTreasureExpeditionJournalInstanceId` — function — line 69
-- `lostTreasureExpeditionQuestId` — function — line 73
-- `resolveLostTreasureExpeditionBinding` — function — line 222
+- `lostTreasureExpeditionContainerId` — function — line 105
+- `lostTreasureExpeditionContainerSpecs` — function — line 474
   - domain: quests-progression
-- `selectLostTreasureExpeditionNpcs` — function — line 118
+- `lostTreasureExpeditionJournalInstanceId` — function — line 109
+- `LostTreasureExpeditionNeighborRef` — type — line 52
+  - domain: quests-progression
+- `lostTreasureExpeditionQuestId` — function — line 113
+- `LostTreasureExpeditionSponsorPresentation` — type — line 67
+  - domain: quests-progression
+- `lostTreasureExpeditionVillageSizeRank` — function — line 160
+  - domain: quests-progression
+- `resolveLostTreasureExpeditionBinding` — function — line 349
+  - domain: quests-progression
+- `selectLegacyLostTreasureExpeditionIdentityNpcs` — function — line 180
+  - domain: quests-progression
+- `selectLostTreasureExpeditionNpcs` — function — line 238
   - domain: quests-progression
 
 ## `quests/lostTreasureExpeditionRuntime.ts`

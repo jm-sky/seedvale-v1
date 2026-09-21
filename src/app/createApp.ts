@@ -120,7 +120,7 @@ import {
   AUTHORED_REPAIR_DELIVERIES,
   isAuthoredRepairTargetIntact as resolveAuthoredRepairTargetIntact,
 } from '../quests/authoredRepairDeliveries'
-import { cardinalDirectionPhrase } from '../quests/cardinalDirection'
+import { cardinalDirectionPhrase, cardinalSector } from '../quests/cardinalDirection'
 import { resolveCaveQuestPresentation } from '../quests/caveLocationDescription'
 import {
   buildDungeonBanditTreasureQuest,
@@ -1664,6 +1664,9 @@ export async function createApp(
         ))
         const allNpcs = [...homeNpcs, ...neighborNpcs]
         const sponsor = allNpcs.find((npc) => npc.id === lostTreasureExpeditionBinding.sponsorNpcId)
+        const sponsorDef = neighborDefs.find((neighbor) => (
+          neighbor.id === lostTreasureExpeditionBinding.sponsorSettlementId
+        ))
         opportunityQuestDefs.push(buildLostTreasureExpeditionQuest(
           lostTreasureExpeditionBinding,
           allNpcs,
@@ -1675,6 +1678,12 @@ export async function createApp(
             def.z,
             sponsor?.role ?? null,
           ),
+          {
+            settlementName: sponsorDef?.name ?? def.name,
+            sector: sponsorDef
+              ? cardinalSector(sponsorDef.x - def.x, sponsorDef.z - def.z)
+              : null,
+          },
         ))
       }
 

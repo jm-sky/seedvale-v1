@@ -7,8 +7,10 @@ import type { DungeonChamber } from '../world/caves/dungeonChambers'
 import type { SettlementOpportunityNpc } from './opportunities/settlementNpcMaterialization'
 import type { QuestSocialAvailabilityLookup } from './QuestManager'
 import { Inventory } from '../items/Inventory'
+import { settlementNpcId } from '../settlement/npcIdentity'
 import { resolveCaveAdventureContentPolicy } from '../world/caves/caveAdventureContentPolicy'
 import { createWorldGeneratedContainers } from '../world/worldGeneratedContainers'
+import { cardinalSector } from './cardinalDirection'
 import {
   DUNGEON_BANDIT_DEEP_RESERVATION_KEY,
   dungeonBanditCaveReservationRequests,
@@ -18,6 +20,7 @@ import {
   buildLostTreasureExpeditionQuest,
   createLostTreasureExpeditionJournalInstance,
   eligibleLostTreasureExpeditionCaves,
+  HOME_KASIA_MEMBER_INDEX,
   isLostTreasureExpeditionJournalPackLooted,
   LOST_TREASURE_EXPEDITION_FINAL_RESERVATION_KEY,
   LOST_TREASURE_EXPEDITION_JOURNAL_TO_FAMILY_OUTCOME,
@@ -27,7 +30,10 @@ import {
   lostTreasureExpeditionClaimsMatch,
   lostTreasureExpeditionContainerSpecs,
   lostTreasureExpeditionJournalInstanceId,
+  type LostTreasureExpeditionNeighborRef,
+  lostTreasureExpeditionQuestId,
   resolveLostTreasureExpeditionBinding,
+  selectLegacyLostTreasureExpeditionIdentityNpcs,
   selectLostTreasureExpeditionNpcs,
 } from './lostTreasureExpedition'
 import { QuestManager } from './QuestManager'
@@ -74,6 +80,22 @@ function dungeonAnchor(
   }
 }
 
+function neighbor(
+  id: string,
+  size: LostTreasureExpeditionNeighborRef['size'],
+  npcs: SettlementOpportunityNpc[],
+  extras: { name?: string, x?: number, z?: number } = {},
+): LostTreasureExpeditionNeighborRef {
+  return {
+    id,
+    name: extras.name ?? 'Brzeziny',
+    x: extras.x ?? 100,
+    z: extras.z ?? 0,
+    size,
+    npcs,
+  }
+}
+
 describe('lost treasure expedition (plan quests-progression-027)', () => {
   const dungeonId = 'cave:dungeon-a'
   const dungeonChambersOf = (caveId: string): readonly DungeonChamber[] => (
@@ -88,33 +110,93 @@ describe('lost treasure expedition (plan quests-progression-027)', () => {
     dungeonAnchor(dungeonId, 'finalTreasure', 'dungeon-final-chamber', 5),
     dungeonAnchor('cave:natural', 'storyFind', 'chamber', 6),
   ]
+  const defaultNeighbors = [
+    neighbor('1_0', 'LG', [npc('1_0:npc:0', 'trader', 'house-x')]),
+  ]
+  const bindingInput = (
+    overrides: Partial<Parameters<typeof resolveLostTreasureExpeditionBinding>[0]> = {},
+  ) => ({
+    worldSeed: 13,
+    settlementId: 'home',
+    homeSize: 'SM' as const,
+    homeNpcs: [npc('home:npc:0', 'trader', 'house-a'), npc('home:npc:1', 'farmer', 'house-b')],
+    neighborSettlements: defaultNeighbors,
+    caveIds: [dungeonId],
+    archetypeOf: () => 'dungeon' as const,
+    dungeonChambersOf,
+    contentAnchors: anchors,
+    ...overrides,
+  })
 
-  it('selects a trader sponsor and a different-household stakeholder', () => {
-    const pick = selectLostTreasureExpeditionNpcs([
+  it('selects a larger neighboring Merchant as sponsor and a local stakeholder', () => {
+    const pick = selectLostTreasureExpeditionNpcs('home', 'SM', [
       npc('home:npc:0', 'farmer', 'house-a'),
       npc('home:npc:1', 'trader', 'house-b'),
       npc('home:npc:2', 'guard', 'house-a'),
+    ], [
+      neighbor('1_0', 'LG', [npc('1_0:npc:0', 'trader', 'house-x')]),
     ])
-    expect(pick?.sponsor.id).toBe('home:npc:1')
-    expect(pick?.stakeholder?.id).toBe('home:npc:0')
+    expect(pick?.sponsor.id).toBe('1_0:npc:0')
+    expect(pick?.sponsorSettlement.id).toBe('1_0')
+    expect(pick?.stakeholder?.id).toBe('home:npc:1')
   })
 
-  it('falls back to a miner sponsor and a neighbor stakeholder', () => {
-    const pick = selectLostTreasureExpeditionNpcs(
-      [npc('home:npc:0', 'miner', 'house-a'), npc('home:npc:1', 'farmer', 'house-a')],
-      new Map([['1_0', [npc('1_0:npc:0', 'farmer', 'house-x')]]]),
-    )
-    expect(pick?.sponsor.id).toBe('home:npc:0')
-    expect(pick?.stakeholder?.id).toBe('1_0:npc:0')
+  it('prefers a larger nearby Merchant over a closer smaller Merchant', () => {
+    const pick = selectLostTreasureExpeditionNpcs('home', 'SM', [
+      npc('home:npc:0', 'farmer', 'house-a'),
+      npc('home:npc:1', 'farmer', 'house-b'),
+    ], [
+      neighbor('0_1', 'SM', [npc('0_1:npc:0', 'trader', 'house-y')]),
+      neighbor('1_0', 'LG', [npc('1_0:npc:0', 'trader', 'house-x')]),
+    ])
+    expect(pick?.sponsor.id).toBe('1_0:npc:0')
   })
 
-  it('exposes only two outcomes when no distinct-household stakeholder exists', () => {
-    const pick = selectLostTreasureExpeditionNpcs([
+  it('falls back to a Merchant from another nearby settlement when none is larger', () => {
+    const pick = selectLostTreasureExpeditionNpcs('home', 'XL', [
+      npc('home:npc:0', 'miner', 'house-a'),
+      npc('home:npc:1', 'farmer', 'house-b'),
+    ], [
+      neighbor('0_1', 'SM', [npc('0_1:npc:0', 'farmer', 'house-y')]),
+      neighbor('1_0', 'MD', [npc('1_0:npc:0', 'trader', 'house-x')]),
+    ])
+    expect(pick?.sponsor.id).toBe('1_0:npc:0')
+  })
+
+  it('falls back to a deterministic external adult when no Merchant exists', () => {
+    const pick = selectLostTreasureExpeditionNpcs('home', 'SM', [
       npc('home:npc:0', 'trader', 'house-a'),
-      npc('home:npc:1', 'farmer', 'house-a'),
+      npc('home:npc:1', 'farmer', 'house-b'),
+    ], [
+      neighbor('1_0', 'LG', [npc('1_0:npc:0', 'farmer', 'house-x')]),
     ])
-    expect(pick?.sponsor.id).toBe('home:npc:0')
-    expect(pick?.stakeholder).toBeUndefined()
+    expect(pick?.sponsor.id).toBe('1_0:npc:0')
+    expect(pick?.sponsor.role).toBe('farmer')
+  })
+
+  it('does not bind when the nearby pool has no external adult', () => {
+    expect(selectLostTreasureExpeditionNpcs('home', 'SM', [
+      npc('home:npc:0', 'trader', 'house-a'),
+    ], [])).toBeNull()
+    expect(selectLostTreasureExpeditionNpcs('home', 'SM', [
+      npc('home:npc:0', 'trader', 'house-a'),
+    ], [
+      neighbor('1_0', 'LG', [npc('1_0:npc:0', 'farmer', 'house-x', true)]),
+    ])).toBeNull()
+  })
+
+  it('excludes Kasia Hornblower household by stable identity, not surname', () => {
+    const kasiaId = settlementNpcId('home', HOME_KASIA_MEMBER_INDEX)
+    const marekId = settlementNpcId('home', 2)
+    const pick = selectLostTreasureExpeditionNpcs('home', 'SM', [
+      npc(settlementNpcId('home', 0), 'farmer', 'family-reserved-0'),
+      npc(settlementNpcId('home', 1), 'farmer', 'family-reserved-0'),
+      npc(marekId, 'guard', 'family-reserved-1'),
+      npc(kasiaId, 'trader', 'family-reserved-1'),
+      npc(settlementNpcId('home', 4), 'farmer', 'house-c'),
+    ], defaultNeighbors)
+    expect(pick?.stakeholder?.id).toBe(settlementNpcId('home', 0))
+    expect(pick?.stakeholder?.householdId).not.toBe('family-reserved-1')
   })
 
   it('orders the storyFind trail from shallow to deep and requires an unclaimed finalTreasure', () => {
@@ -145,32 +227,17 @@ describe('lost treasure expedition (plan quests-progression-027)', () => {
   })
 
   it('resolves deterministically', () => {
-    const input = {
-      worldSeed: 13,
-      settlementId: 'home',
-      homeNpcs: [npc('home:npc:0', 'trader', 'house-a'), npc('home:npc:1', 'farmer', 'house-b')],
-      caveIds: [dungeonId],
-      archetypeOf: () => 'dungeon' as const,
-      dungeonChambersOf,
-      contentAnchors: anchors,
-    }
+    const input = bindingInput()
     const first = resolveLostTreasureExpeditionBinding(input)
     const second = resolveLostTreasureExpeditionBinding(input)
     expect(first).toEqual(second)
     expect(first?.caveId).toBe(dungeonId)
+    expect(first?.sponsorNpcId).toBe('1_0:npc:0')
     expect(first?.stakeholderNpcId).toBe('home:npc:1')
   })
 
   it('materializes journal instance only in the leader-pack container and suppresses reseed', () => {
-    const binding = resolveLostTreasureExpeditionBinding({
-      worldSeed: 3,
-      settlementId: 'home',
-      homeNpcs: [npc('home:npc:0', 'trader', 'house-a'), npc('home:npc:1', 'farmer', 'house-b')],
-      caveIds: [dungeonId],
-      archetypeOf: () => 'dungeon',
-      dungeonChambersOf,
-      contentAnchors: anchors,
-    })!
+    const binding = resolveLostTreasureExpeditionBinding(bindingInput({ worldSeed: 3 }))!
     const specs = lostTreasureExpeditionContainerSpecs(binding, anchors)
     expect(specs).toHaveLength(4)
     const journalSpec = specs.find((spec) => spec.id === binding.journalContainerId)!
@@ -204,22 +271,20 @@ describe('lost treasure expedition (plan quests-progression-027)', () => {
     expect(player.getInstance(journalId)?.kind).toBe('expedition_journal')
   })
 
-  it('builds family / sponsor / keep outcomes and the ordered loot stages', () => {
-    const binding = resolveLostTreasureExpeditionBinding({
-      worldSeed: 5,
-      settlementId: 'home',
-      homeNpcs: [npc('home:npc:0', 'trader', 'house-a'), npc('home:npc:1', 'farmer', 'house-b')],
-      caveIds: [dungeonId],
-      archetypeOf: () => 'dungeon',
-      dungeonChambersOf,
-      contentAnchors: anchors,
-    })!
+  it('builds stakeholder / sponsor / keep outcomes and the ordered loot stages', () => {
+    const binding = resolveLostTreasureExpeditionBinding(bindingInput({ worldSeed: 5 }))!
     const def = buildLostTreasureExpeditionQuest(binding, [
       npc('home:npc:0', 'trader', 'house-a'),
       npc('home:npc:1', 'farmer', 'house-b'),
-    ], 'Osada', 'stary loch na wschód od osady')
-    expect(def.offerLine).toContain('stary loch na wschód od osady')
-    expect(`${def.offerLine} ${def.description} ${def.stages[0]?.progressLine}`).not.toMatch(/konkretn|dokładny loch/)
+      npc('1_0:npc:0', 'trader', 'house-x'),
+    ], 'Osada', 'stary loch na wschód od osady', {
+      settlementName: 'Brzeziny',
+      sector: 'E',
+    })
+    expect(def.giver.npcId).toBe(binding.stakeholderNpcId)
+    expect(def.offerLine).toContain('Brzeziny (E)')
+    expect(def.offerLine).not.toMatch(/stary loch/)
+    expect(`${def.offerLine} ${def.description} ${def.stages[0]?.progressLine}`).not.toMatch(/konkretn|dokładny loch|rodzin|krewny/i)
     expect(def.outcomes.map((outcome) => outcome.id)).toEqual([
       LOST_TREASURE_EXPEDITION_JOURNAL_TO_FAMILY_OUTCOME,
       LOST_TREASURE_EXPEDITION_JOURNAL_TO_SPONSOR_OUTCOME,
@@ -238,17 +303,17 @@ describe('lost treasure expedition (plan quests-progression-027)', () => {
   })
 
   it('reduces to sponsor / keep outcomes when no second stakeholder exists', () => {
-    const binding = resolveLostTreasureExpeditionBinding({
+    const binding = resolveLostTreasureExpeditionBinding(bindingInput({
       worldSeed: 5,
-      settlementId: 'home',
       homeNpcs: [npc('home:npc:0', 'trader', 'house-a')],
-      caveIds: [dungeonId],
-      archetypeOf: () => 'dungeon',
-      dungeonChambersOf,
-      contentAnchors: anchors,
-    })!
+    }))!
     expect(binding.stakeholderNpcId).toBeUndefined()
-    const def = buildLostTreasureExpeditionQuest(binding, [npc('home:npc:0', 'trader', 'house-a')], 'Osada', 'stary loch poza osadą')
+    const def = buildLostTreasureExpeditionQuest(
+      binding,
+      [npc('home:npc:0', 'trader', 'house-a'), npc('1_0:npc:0', 'trader', 'house-x')],
+      'Osada',
+      'stary loch poza osadą',
+    )
     expect(def.outcomes.map((outcome) => outcome.id)).toEqual([
       LOST_TREASURE_EXPEDITION_JOURNAL_TO_SPONSOR_OUTCOME,
       LOST_TREASURE_EXPEDITION_KEEP_JOURNAL_OUTCOME,
@@ -264,15 +329,10 @@ describe('lost treasure expedition (plan quests-progression-027)', () => {
       archetypeOf: () => 'dungeon',
       contentAnchors: anchors,
     })!
-    const expeditionBinding = resolveLostTreasureExpeditionBinding({
+    const expeditionBinding = resolveLostTreasureExpeditionBinding(bindingInput({
       worldSeed: 9,
-      settlementId: 'home',
       homeNpcs: [npc('home:npc:0', 'guard', 'house-a'), npc('home:npc:1', 'trader', 'house-b')],
-      caveIds: [dungeonId],
-      archetypeOf: () => 'dungeon',
-      dungeonChambersOf,
-      contentAnchors: anchors,
-    })!
+    }))!
     const policy = resolveCaveAdventureContentPolicy([], anchors, {
       anchorClaims: [
         ...(dungeonBanditCaveReservationRequests(banditBinding).anchorClaims ?? []),
@@ -288,10 +348,155 @@ describe('lost treasure expedition (plan quests-progression-027)', () => {
   })
 })
 
+describe('lost treasure expedition external sponsor flow (plan quests-progression-079)', () => {
+  const dungeonId = 'cave:dungeon-a'
+  const dungeonChambersOf = (caveId: string): readonly DungeonChamber[] => (
+    caveId === dungeonId ? DUNGEON_ROUTE_CHAMBERS : []
+  )
+  const anchors: CaveContentAnchor[] = [
+    dungeonAnchor(dungeonId, 'storyFind', 'dungeon-chamber-2', 0),
+    dungeonAnchor(dungeonId, 'storyFind', 'dungeon-chamber-3', 1),
+    dungeonAnchor(dungeonId, 'storyFind', 'dungeon-deep-chamber', 2),
+    dungeonAnchor(dungeonId, 'storyFind', 'dungeon-final-chamber', 3),
+    dungeonAnchor(dungeonId, 'finalTreasure', 'dungeon-final-chamber', 5),
+  ]
+  const homeNpcs = [
+    npc(settlementNpcId('home', 0), 'farmer', 'family-reserved-0'),
+    npc(settlementNpcId('home', 1), 'trader', 'family-reserved-0'),
+    npc(settlementNpcId('home', 2), 'guard', 'family-reserved-1'),
+    npc(settlementNpcId('home', 3), 'trader', 'family-reserved-1'),
+  ]
+
+  it('keeps the pre-079 quest id while the operational sponsor is external', () => {
+    const neighbors = [neighbor('1_0', 'LG', [npc('1_0:npc:0', 'trader', 'house-x')])]
+    const binding = resolveLostTreasureExpeditionBinding({
+      worldSeed: 5,
+      settlementId: 'home',
+      homeSize: 'SM',
+      homeNpcs,
+      neighborSettlements: neighbors,
+      caveIds: [dungeonId],
+      archetypeOf: () => 'dungeon',
+      dungeonChambersOf,
+      contentAnchors: anchors,
+    })!
+    const legacy = selectLegacyLostTreasureExpeditionIdentityNpcs(
+      homeNpcs,
+      new Map([['1_0', neighbors[0]!.npcs]]),
+    )!
+    expect(binding.sponsorNpcId).toBe('1_0:npc:0')
+    expect(binding.questId).toBe(lostTreasureExpeditionQuestId(
+      'home',
+      dungeonId,
+      legacy.sponsor.id,
+      legacy.stakeholder?.id,
+    ))
+    expect(binding.questId).not.toContain('1_0:npc:0')
+  })
+
+  it('puts settlement name and derived compass sector on the sponsor objective', () => {
+    const sponsor = neighbor('1_0', 'LG', [npc('1_0:npc:0', 'trader', 'house-x', false)], {
+      name: 'Brzeziny',
+      x: 100,
+      z: -100,
+    })
+    const binding = resolveLostTreasureExpeditionBinding({
+      worldSeed: 5,
+      settlementId: 'home',
+      homeSize: 'SM',
+      homeNpcs,
+      neighborSettlements: [sponsor],
+      caveIds: [dungeonId],
+      archetypeOf: () => 'dungeon',
+      dungeonChambersOf,
+      contentAnchors: anchors,
+    })!
+    const sector = cardinalSector(sponsor.x - 0, sponsor.z - 0)
+    const def = buildLostTreasureExpeditionQuest(
+      binding,
+      [...homeNpcs, npc('1_0:npc:0', 'trader', 'house-x')],
+      'Osada',
+      'stary loch',
+      { settlementName: sponsor.name, sector },
+    )
+    expect(sector).toBe('NE')
+    expect(def.stages[0]?.description).toContain('Brzeziny (NE)')
+    expect(def.offerLine).toContain('Brzeziny (NE)')
+  })
+
+  it('reveals the dungeon on the local stakeholder conversation, not the sponsor talk', () => {
+    const binding = resolveLostTreasureExpeditionBinding({
+      worldSeed: 5,
+      settlementId: 'home',
+      homeSize: 'SM',
+      homeNpcs,
+      neighborSettlements: [neighbor('1_0', 'LG', [npc('1_0:npc:0', 'trader', 'house-x')])],
+      caveIds: [dungeonId],
+      archetypeOf: () => 'dungeon',
+      dungeonChambersOf,
+      contentAnchors: anchors,
+    })!
+    const def = buildLostTreasureExpeditionQuest(
+      binding,
+      [...homeNpcs, npc('1_0:npc:0', 'trader', 'house-x')],
+      'Osada',
+      'stary loch',
+      { settlementName: 'Brzeziny', sector: 'E' },
+    )
+    expect(def.stages[0]?.objective).toEqual({ type: 'talk_to_npc', npc: { npcId: binding.sponsorNpcId } })
+    expect(def.stages[0]?.effects).toBeUndefined()
+    expect(def.stages[1]?.objective).toEqual({
+      type: 'talk_to_npc',
+      npc: { npcId: binding.stakeholderNpcId },
+    })
+    expect(def.stages[1]?.effects).toEqual([{
+      type: 'reveal_location',
+      locationId: binding.caveLocationId,
+      setNavigation: true,
+    }])
+    expect(def.stages[0]?.progressLine).not.toContain('stary loch')
+    expect(def.stages[1]?.progressLine).toContain('stary loch')
+  })
+
+  it('does not claim unsupported kinship in player-facing copy', () => {
+    const binding = resolveLostTreasureExpeditionBinding({
+      worldSeed: 5,
+      settlementId: 'home',
+      homeSize: 'SM',
+      homeNpcs,
+      neighborSettlements: [neighbor('1_0', 'LG', [npc('1_0:npc:0', 'trader', 'house-x')])],
+      caveIds: [dungeonId],
+      archetypeOf: () => 'dungeon',
+      dungeonChambersOf,
+      contentAnchors: anchors,
+    })!
+    const def = buildLostTreasureExpeditionQuest(
+      binding,
+      [...homeNpcs, npc('1_0:npc:0', 'trader', 'house-x')],
+      'Osada',
+      'stary loch',
+      { settlementName: 'Brzeziny', sector: 'E' },
+    )
+    const spoken = [
+      def.offerLine,
+      def.description,
+      def.outcomes.map((outcome) => outcome.resultText).join(' '),
+      def.stages.flatMap((stage) => [
+        stage.description,
+        stage.playerLine,
+        stage.progressLine,
+        ...(stage.dialogueActions ?? []).map((action) => action.playerLine),
+      ]).join(' '),
+    ].join(' ')
+    expect(spoken).not.toMatch(/krewny|rodziny zaginionego|Należy do was/i)
+  })
+})
+
 describe('lost treasure expedition socially consequential dialogue (plan quests-progression-052)', () => {
   const withStakeholder = {
     questId: 'world:lost-treasure-expedition:home:cave:s:f',
     settlementId: 'home',
+    sponsorSettlementId: '1_0',
     sponsorNpcId: 'home:npc:0',
     stakeholderNpcId: 'home:npc:1',
     caveId: 'cave:dungeon-a',

@@ -1771,10 +1771,18 @@ async function buildWorldSystems(
   setActiveTreasureMapBearCaveBinding(treasureMapBearCaveBinding)
 
   const homeOpportunityNpcs = settlementOpportunityNpcsFromDef(homeDef)
+  const neighborDefs = nearbyRpgSettlementDefs(homeDef, (cell) => settlementsManager.peekDef(cell))
   const neighborOpportunityNpcsBySettlement = new Map(
-    nearbyRpgSettlementDefs(homeDef, (cell) => settlementsManager.peekDef(cell))
-      .map((def) => [def.id, settlementOpportunityNpcsFromDef(def)] as const),
+    neighborDefs.map((def) => [def.id, settlementOpportunityNpcsFromDef(def)] as const),
   )
+  const lostTreasureNeighborSettlements = neighborDefs.map((def) => ({
+    id: def.id,
+    name: def.name,
+    x: def.x,
+    z: def.z,
+    size: def.size,
+    npcs: neighborOpportunityNpcsBySettlement.get(def.id) ?? settlementOpportunityNpcsFromDef(def),
+  }))
   const reservedAdventureCaveIds = new Set<string>(
     treasureMapBearCaveBinding ? [treasureMapBearCaveBinding.caveId] : [],
   )
@@ -1798,8 +1806,9 @@ async function buildWorldSystems(
   const lostTreasureExpeditionCandidate = resolveLostTreasureExpeditionBinding({
     worldSeed: config.seed,
     settlementId: homeDef.id,
+    homeSize: homeDef.size,
     homeNpcs: homeOpportunityNpcs,
-    neighborNpcsBySettlement: neighborOpportunityNpcsBySettlement,
+    neighborSettlements: lostTreasureNeighborSettlements,
     caveIds: caves.definitions().map((def) => def.caveId),
     archetypeOf: (caveId) => caves.archetypeOf(caveId) ?? null,
     dungeonChambersOf: (caveId) => caves.dungeonChambersOf(caveId),

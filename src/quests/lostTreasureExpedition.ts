@@ -9,9 +9,12 @@ import type { CaveArchetype } from '../world/caves/caveArchetype'
 import type { CaveContentAnchor } from '../world/caves/caveContentAnchors'
 import type { DungeonChamber } from '../world/caves/dungeonChambers'
 import type { WorldGeneratedContainerSpec } from '../world/worldGeneratedContainers'
+import type { CardinalSector } from './cardinalDirection'
 import type { SettlementOpportunityNpc } from './opportunities/settlementNpcMaterialization'
 import type { OpportunityNpc } from './opportunities/worldQuestOpportunityTypes'
 import type { QuestDef, QuestDialogueReaction } from './quests'
+import { rolledVillageSizeRank, type VillageSize } from '../settlement/families'
+import { settlementNpcId } from '../settlement/npcIdentity'
 import { caveWorldLocationId } from '../world/locations/darkForestTreasureSite'
 
 /** Stable reservation-key prefix for lost-treasure-expedition anchor arbitration. */
@@ -30,6 +33,42 @@ export const LOST_TREASURE_EXPEDITION_KEEP_JOURNAL_OUTCOME = 'keep_journal_and_t
 
 export const LOST_TREASURE_EXPEDITION_JOURNAL_KIND = 'expedition_journal' as const
 
+/**
+ * Flattened home-roster index of reserved Kasia Hornblower
+ * (`Piotr`, `Anna`, `Marek`, `Kasia`). Household exclusion uses this
+ * stable id, never display surname.
+ *
+ * @domain quests-progression
+ */
+export const HOME_KASIA_MEMBER_INDEX = 3
+
+/**
+ * Bounded neighboring settlement used by lost-treasure-expedition binding.
+ * Identity and size come from `SettlementDef`; NPCs from
+ * `settlementOpportunityNpcsFromDef` — no stream/camera dependency.
+ *
+ * @domain quests-progression
+ */
+export type LostTreasureExpeditionNeighborRef = {
+  id: string
+  name: string
+  x: number
+  z: number
+  size: VillageSize
+  npcs: readonly SettlementOpportunityNpc[]
+}
+
+/**
+ * Presentation-only sponsor settlement wording. Derived at materialization
+ * from authoritative settlement coordinates; never persisted.
+ *
+ * @domain quests-progression
+ */
+export type LostTreasureExpeditionSponsorPresentation = {
+  settlementName: string
+  sector: CardinalSector | null
+}
+
 function stableHash(text: string): number {
   let hash = 2166136261
   for (let i = 0; i < text.length; i++) {
@@ -47,6 +86,7 @@ function stableHash(text: string): number {
 export type LostTreasureExpeditionBinding = {
   questId: string
   settlementId: string
+  sponsorSettlementId: string
   sponsorNpcId: NpcId
   stakeholderNpcId?: NpcId
   caveId: string
@@ -107,15 +147,37 @@ function adults(npcs: readonly SettlementOpportunityNpc[]): SettlementOpportunit
   return npcs.filter((npc) => !npc.child)
 }
 
+function byNpcId(a: SettlementOpportunityNpc, b: SettlementOpportunityNpc): number {
+  return a.id.localeCompare(b.id)
+}
+
 /**
- * Deterministic sponsor/stakeholder selection for the lost-treasure-expedition
- * story. Sponsor prefers trader → miner → first adult. The second stakeholder
- * must be an adult from a different household (home first, then the nearest
- * neighbor settlement that has one) — never invented.
+ * Canonical village-size rank for sponsor preference. `OUTPOST` sits below
+ * every rolled size rather than being coerced to `RolledVillageSize`.
  *
  * @domain quests-progression
  */
-export function selectLostTreasureExpeditionNpcs(
+export function lostTreasureExpeditionVillageSizeRank(size: VillageSize): number {
+  if (size === 'OUTPOST') return -1
+  return rolledVillageSizeRank(size)
+}
+
+function firstTrader(npcs: readonly SettlementOpportunityNpc[]): SettlementOpportunityNpc | undefined {
+  return [...adults(npcs)].sort(byNpcId).find((npc) => npc.role === 'trader')
+}
+
+function firstAdult(npcs: readonly SettlementOpportunityNpc[]): SettlementOpportunityNpc | undefined {
+  return [...adults(npcs)].sort(byNpcId)[0]
+}
+
+/**
+ * Pre-079 identity-only sponsor/stakeholder pick. Quest id continues to
+ * embed these ids so accepted saves do not strand when the operational
+ * sponsor becomes an external Merchant.
+ *
+ * @domain quests-progression
+ */
+export function selectLegacyLostTreasureExpeditionIdentityNpcs(
   homeNpcs: readonly SettlementOpportunityNpc[],
   neighborNpcsBySettlement: ReadonlyMap<string, readonly SettlementOpportunityNpc[]> = new Map(),
 ): { sponsor: SettlementOpportunityNpc, stakeholder?: SettlementOpportunityNpc } | null {
@@ -128,17 +190,82 @@ export function selectLostTreasureExpeditionNpcs(
 
   const homeStakeholderPool = homeAdults
     .filter((npc) => npc.id !== sponsor.id && npc.householdId !== sponsor.householdId)
-    .sort((a, b) => a.id.localeCompare(b.id))
+    .sort(byNpcId)
   if (homeStakeholderPool[0]) return { sponsor, stakeholder: homeStakeholderPool[0] }
 
   const neighborSettlementIds = [...neighborNpcsBySettlement.keys()].sort()
   for (const settlementId of neighborSettlementIds) {
-    const pool = adults(neighborNpcsBySettlement.get(settlementId) ?? [])
-      .sort((a, b) => a.id.localeCompare(b.id))
+    const pool = adults(neighborNpcsBySettlement.get(settlementId) ?? []).sort(byNpcId)
     if (pool[0]) return { sponsor, stakeholder: pool[0] }
   }
 
   return { sponsor }
+}
+
+function selectLocalStakeholder(
+  homeSettlementId: string,
+  homeNpcs: readonly SettlementOpportunityNpc[],
+): SettlementOpportunityNpc | undefined {
+  const homeAdults = [...adults(homeNpcs)].sort(byNpcId)
+  if (homeAdults.length === 0) return undefined
+
+  const kasia = homeNpcs.find((npc) => npc.id === settlementNpcId(homeSettlementId, HOME_KASIA_MEMBER_INDEX))
+  if (kasia) {
+    const outsideHousehold = homeAdults.filter((npc) => npc.householdId !== kasia.householdId)
+    if (outsideHousehold[0]) return outsideHousehold[0]
+    return homeAdults.find((npc) => npc.id !== kasia.id)
+  }
+
+  const firstHousehold = homeAdults[0]!.householdId
+  const otherHousehold = homeAdults.find((npc) => npc.householdId !== firstHousehold)
+  if (otherHousehold) return otherHousehold
+  return homeAdults[1]
+}
+
+type OperationalLostTreasureExpeditionNpcs = {
+  sponsor: SettlementOpportunityNpc
+  sponsorSettlement: LostTreasureExpeditionNeighborRef
+  stakeholder?: SettlementOpportunityNpc
+}
+
+/**
+ * Deterministic external-sponsor / local-stakeholder selection. Sponsor is
+ * never a home resident. Stakeholder is an adult home resident outside
+ * Kasia Hornblower's household when that household can be resolved.
+ *
+ * @domain quests-progression
+ */
+export function selectLostTreasureExpeditionNpcs(
+  homeSettlementId: string,
+  homeSize: VillageSize,
+  homeNpcs: readonly SettlementOpportunityNpc[],
+  neighborSettlements: readonly LostTreasureExpeditionNeighborRef[],
+): OperationalLostTreasureExpeditionNpcs | null {
+  const homeRank = lostTreasureExpeditionVillageSizeRank(homeSize)
+
+  const pickFrom = (
+    predicate: (neighbor: LostTreasureExpeditionNeighborRef) => SettlementOpportunityNpc | undefined,
+  ): OperationalLostTreasureExpeditionNpcs | null => {
+    for (const neighbor of neighborSettlements) {
+      const sponsor = predicate(neighbor)
+      if (!sponsor) continue
+      const stakeholder = selectLocalStakeholder(homeSettlementId, homeNpcs)
+      return {
+        sponsor,
+        sponsorSettlement: neighbor,
+        ...(stakeholder ? { stakeholder } : {}),
+      }
+    }
+    return null
+  }
+
+  return pickFrom((neighbor) => (
+    lostTreasureExpeditionVillageSizeRank(neighbor.size) > homeRank
+      ? firstTrader(neighbor.npcs)
+      : undefined
+  ))
+    ?? pickFrom((neighbor) => firstTrader(neighbor.npcs))
+    ?? pickFrom((neighbor) => firstAdult(neighbor.npcs))
 }
 
 export type EligibleLostTreasureExpeditionCave = {
@@ -222,17 +349,21 @@ export function eligibleLostTreasureExpeditionCaves(
 export function resolveLostTreasureExpeditionBinding(input: {
   worldSeed: number
   settlementId: string
+  homeSize: VillageSize
   homeNpcs: readonly SettlementOpportunityNpc[]
-  neighborNpcsBySettlement?: ReadonlyMap<string, readonly SettlementOpportunityNpc[]>
+  neighborSettlements?: readonly LostTreasureExpeditionNeighborRef[]
   caveIds: readonly string[]
   archetypeOf: (caveId: string) => CaveArchetype | null
   dungeonChambersOf: (caveId: string) => readonly DungeonChamber[]
   contentAnchors: readonly CaveContentAnchor[]
   reservedAnchorIds?: ReadonlySet<string>
 }): LostTreasureExpeditionBinding | null {
+  const neighborSettlements = input.neighborSettlements ?? []
   const npcPick = selectLostTreasureExpeditionNpcs(
+    input.settlementId,
+    input.homeSize,
     input.homeNpcs,
-    input.neighborNpcsBySettlement ?? new Map(),
+    neighborSettlements,
   )
   if (!npcPick) return null
   const eligible = eligibleLostTreasureExpeditionCaves(
@@ -247,14 +378,23 @@ export function resolveLostTreasureExpeditionBinding(input: {
     `${input.worldSeed}\0${input.settlementId}\0lost-treasure-expedition`,
   ) % eligible.length
   const chosen = eligible[pick]!
+  const neighborNpcsBySettlement = new Map(
+    neighborSettlements.map((neighbor) => [neighbor.id, neighbor.npcs] as const),
+  )
+  const identityPick = selectLegacyLostTreasureExpeditionIdentityNpcs(
+    input.homeNpcs,
+    neighborNpcsBySettlement,
+  )
+  const questId = lostTreasureExpeditionQuestId(
+    input.settlementId,
+    chosen.caveId,
+    identityPick?.sponsor.id ?? npcPick.sponsor.id,
+    identityPick?.stakeholder?.id ?? npcPick.stakeholder?.id,
+  )
   return {
-    questId: lostTreasureExpeditionQuestId(
-      input.settlementId,
-      chosen.caveId,
-      npcPick.sponsor.id,
-      npcPick.stakeholder?.id,
-    ),
+    questId,
     settlementId: input.settlementId,
+    sponsorSettlementId: npcPick.sponsorSettlement.id,
     sponsorNpcId: npcPick.sponsor.id,
     ...(npcPick.stakeholder ? { stakeholderNpcId: npcPick.stakeholder.id } : {}),
     caveId: chosen.caveId,
@@ -377,6 +517,16 @@ export function isLostTreasureExpeditionFinalTreasureLooted(counts: Partial<Reco
   return suppliesLooted(counts, FINAL_TREASURE_SUPPLY)
 }
 
+function sponsorVisitLabel(
+  sponsorName: string,
+  settlementName: string,
+  sector: CardinalSector | null,
+): string {
+  return sector
+    ? `${sponsorName} w ${settlementName} (${sector})`
+    : `${sponsorName} w ${settlementName}`
+}
+
 /**
  * Materializes the lost-treasure-expedition quest for one resolved binding.
  *
@@ -387,28 +537,34 @@ export function buildLostTreasureExpeditionQuest(
   npcs: readonly OpportunityNpc[],
   settlementName: string,
   caveDescription: string,
+  sponsorPresentation?: LostTreasureExpeditionSponsorPresentation,
 ): QuestDef {
   const sponsor = npcs.find((npc) => npc.id === binding.sponsorNpcId)
   const stakeholder = binding.stakeholderNpcId
     ? npcs.find((npc) => npc.id === binding.stakeholderNpcId)
     : undefined
   const sponsorName = sponsor?.name ?? 'Kupiec'
-  const stakeholderName = stakeholder?.name ?? 'Krewny'
+  const stakeholderName = stakeholder?.name ?? 'Mieszkaniec'
+  const sponsorSettlementName = sponsorPresentation?.settlementName ?? settlementName
+  const sponsorSector = sponsorPresentation?.sector ?? null
+  const visitLabel = sponsorVisitLabel(sponsorName, sponsorSettlementName, sponsorSector)
+  const giverNpcId = binding.stakeholderNpcId ?? binding.sponsorNpcId
+  const giverName = binding.stakeholderNpcId ? stakeholderName : sponsorName
 
   const dialogueActions: NonNullable<QuestDef['stages'][number]['dialogueActions']>[number][] = []
   if (binding.stakeholderNpcId) {
-    const familyWarmth: QuestDialogueReaction = {
+    const contactWarmth: QuestDialogueReaction = {
       when: [{ type: 'relation', npc: { npcId: binding.stakeholderNpcId }, minimum: 'friendly' }],
       npcLine: 'Przyniosłeś go tutaj. Dobrze. Bałem się, że już nikt go nie zobaczy.',
       consequences: { relations: [{ npc: { npcId: binding.stakeholderNpcId }, delta: 1 }] },
     }
     dialogueActions.push({
       npc: { npcId: binding.stakeholderNpcId },
-      playerLine: `Znalazłem dziennik zaginionej wyprawy. Należy do was — oddaję go tobie, ${stakeholderName}.`,
+      playerLine: `Znalazłem dziennik zaginionej wyprawy. Oddaję go tobie, ${stakeholderName}.`,
       npcLine: 'Dziękuję. Przynajmniej będziemy wiedzieć, co się z nimi naprawdę stało.',
       physicalOutcomeId: LOST_TREASURE_EXPEDITION_JOURNAL_TO_FAMILY_OUTCOME,
       requireItemInstanceId: binding.journalInstanceId,
-      reactions: [familyWarmth],
+      reactions: [contactWarmth],
     })
   }
   const sponsorRecognition: QuestDialogueReaction = {
@@ -443,20 +599,36 @@ export function buildLostTreasureExpeditionQuest(
     reactions: [...keepJournalReactions],
   })
 
+  const revealDungeon = {
+    type: 'reveal_location' as const,
+    locationId: binding.caveLocationId,
+    setNavigation: true,
+  }
+
   const stages: QuestDef['stages'][number][] = [
     {
       objective: { type: 'talk_to_npc', npc: { npcId: binding.sponsorNpcId } },
-      description: `Wysłuchaj ${sponsorName} — sfinansował wyprawę po legendarny skarb, która nie wróciła.`,
-      reminderLine: `${sponsorName} wskazał loch, do którego wyruszyła zaginiona wyprawa.`,
-      playerLine: 'Słyszałem, że finansowałeś wyprawę po legendarny skarb.',
-      progressLine:
-        `Wyprawa nie wróciła. Ostatni raz widziano ją przy wejściu tutaj: ${caveDescription}.`,
-      effects: [{
-        type: 'reveal_location',
-        locationId: binding.caveLocationId,
-        setNavigation: true,
-      }],
+      description: `Porozmawiaj z ${visitLabel}.`,
+      reminderLine: `Kupiec ${visitLabel} zlecił odnalezienie zaginionej wyprawy.`,
+      playerLine: 'Słyszałem, że sfinansowałeś wyprawę po legendarny skarb, która nie wróciła.',
+      progressLine: binding.stakeholderNpcId
+        ? `Wyprawa, którą sfinansowałem, nie wróciła. Dokładnego miejsca nie znam — ${stakeholderName} w twojej osadzie był z nimi związany i może wiedzieć więcej.`
+        : `Wyprawa nie wróciła. Ostatni raz widziano ją przy wejściu tutaj: ${caveDescription}.`,
+      ...(binding.stakeholderNpcId ? {} : { effects: [revealDungeon] }),
     },
+  ]
+  if (binding.stakeholderNpcId) {
+    stages.push({
+      objective: { type: 'talk_to_npc', npc: { npcId: binding.stakeholderNpcId } },
+      description: `Porozmawiaj z ${stakeholderName} — zna lokalne szczegóły wyprawy.`,
+      reminderLine: `${stakeholderName} powinien wiedzieć, dokąd wyruszyła wyprawa.`,
+      playerLine: `${sponsorName} zlecił mi odnalezienie wyprawy. Czy wiesz, dokąd wyruszyli?`,
+      progressLine:
+        `Znaliśmy ich osobiście. Ostatni raz widziano wyprawę tutaj: ${caveDescription}.`,
+      effects: [revealDungeon],
+    })
+  }
+  stages.push(
     {
       objective: { type: 'loot_world_container', containerId: binding.campContainerId },
       description: 'Znajdź porzucony obóz wyprawy przy wejściu do lochu.',
@@ -489,14 +661,14 @@ export function buildLostTreasureExpeditionQuest(
       reminderLine: 'Dziennik wyprawy wciąż wymaga decyzji.',
       dialogueActions,
     },
-  ]
+  )
 
   const outcomes: QuestDef['outcomes'][number][] = []
   if (binding.stakeholderNpcId) {
     outcomes.push({
       id: LOST_TREASURE_EXPEDITION_JOURNAL_TO_FAMILY_OUTCOME,
       state: 'complete',
-      resultText: 'Dziennik wyprawy wrócił do rodziny zaginionego uczestnika. Skarb zostaje przy tobie.',
+      resultText: 'Dziennik wyprawy wrócił do osoby związanej z uczestnikami. Skarb zostaje przy tobie.',
       consequences: {
         relations: [{ npc: { npcId: binding.stakeholderNpcId }, delta: 3 }],
         social: {
@@ -542,14 +714,15 @@ export function buildLostTreasureExpeditionQuest(
     id: binding.questId,
     title: 'Zaginiona wyprawa po skarb',
     description:
-      `${sponsorName} z osady ${settlementName} sfinansował wyprawę po legendarny skarb, `
-      + `która wyruszyła tutaj: ${caveDescription} — i nigdy nie wróciła.`,
-    giverName: sponsorName,
-    giver: { npcId: binding.sponsorNpcId },
+      `${sponsorName} z osady ${sponsorSettlementName} sfinansował wyprawę po legendarny skarb, `
+      + 'która nigdy nie wróciła.',
+    giverName,
+    giver: { npcId: giverNpcId },
     settlementId: binding.settlementId,
-    offerLine:
-      `Wysłałem ludzi po legendarny skarb. To ${caveDescription}. Nie wrócili, `
-      + 'a ja wciąż nie wiem, co się z nimi stało.',
+    offerLine: binding.stakeholderNpcId
+      ? `Kupiec ${visitLabel} sfinansował wyprawę po skarb, która nie wróciła. Porozmawiaj z nim — on zleci odnalezienie wyprawy.`
+      : `Wysłałem ludzi po legendarny skarb. To ${caveDescription}. Nie wrócili, `
+        + 'a ja wciąż nie wiem, co się z nimi stało.',
     stages,
     reportLine: 'Sprawa zaginionej wyprawy ma wreszcie zakończenie.',
     outcomes,

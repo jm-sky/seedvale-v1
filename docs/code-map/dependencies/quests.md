@@ -103,6 +103,8 @@ Generated from TypeScript imports.
 - `quests/cardinalDirection.test.ts`
 - `quests/caveLocationDescription.ts`
 - `quests/landmarkLocationDescription.ts`
+- `quests/lostTreasureExpedition.test.ts`
+- `quests/lostTreasureExpedition.ts`
 
 ## `quests/caveLocationDescription.test.ts`
 
@@ -510,10 +512,12 @@ Generated from TypeScript imports.
 
 - `items/Inventory.ts`
 - `quests/QuestManager.ts`
+- `quests/cardinalDirection.ts`
 - `quests/dungeonBanditTreasure.ts`
 - `quests/lostTreasureExpedition.ts`
 - `quests/opportunities/settlementNpcMaterialization.ts`
 - `quests/quests.ts`
+- `settlement/npcIdentity.ts`
 - `world/caves/caveAdventureContentPolicy.ts`
 - `world/caves/caveContentAnchors.ts`
 - `world/caves/dungeonChambers.ts`
@@ -525,9 +529,12 @@ Generated from TypeScript imports.
 
 - `items/itemInstances.ts`
 - `items/items.ts`
+- `quests/cardinalDirection.ts`
 - `quests/opportunities/settlementNpcMaterialization.ts`
 - `quests/opportunities/worldQuestOpportunityTypes.ts`
 - `quests/quests.ts`
+- `settlement/families.ts`
+- `settlement/npcIdentity.ts`
 - `settlement/npcState.ts`
 - `world/caves/caveAdventureContentPolicy.ts`
 - `world/caves/caveArchetype.ts`
