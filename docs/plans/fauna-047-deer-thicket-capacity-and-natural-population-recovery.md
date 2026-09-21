@@ -9,6 +9,7 @@
 **Subdomains:** `population` `habitat` `lifecycle`
 **Tags:** `deer` `thicket` `depletion` `recovery`
 **Roadmap:** -
+**Model:** Sonnet, Composer
 
 ## Goal
 
