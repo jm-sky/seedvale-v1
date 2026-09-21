@@ -171,7 +171,6 @@ Do not treat a passing build as proof that a visual Three.js feature is correct.
 
 - Player melee/ranged cannot damage an NPC — only animals are hit-test candidates today; an `[E]` on an NPC opens dialogue instead. See [combat.md](./state/combat.md).
 - Fauna's own outgoing attacks use a flat per-attacker-kind damage table rather than the shared melee/ranged/critical/defense pipeline — see [combat.md](./state/combat.md) and [fauna.md](./state/fauna.md).
-- Player HP is not persisted — every Continue/Load fully heals the player, while NPC and livestock HP both persist. See [persistence.md](./state/persistence.md#known-persistence-limitations).
 - Individual ordinary wild fauna are never persisted (only the population is deterministically reconstructed); explicitly declared persistent habitat occupants are the sparse exception. Rats persist per individual plus a settlement infestation record. See [fauna.md](./state/fauna.md#persistence-classes).
 - NPC/animal execution state (pending action, pathfinding, combat intent, carried inventory) is never persisted and resets on every reconstruction.
 - Social Places beyond a settlement's own campfire; conversation partner selection/ranking by personality/traits/role/relationship; group conversations; social interaction memory entries.

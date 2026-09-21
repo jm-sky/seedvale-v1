@@ -1,7 +1,7 @@
 # PLANS PLANNED WITHOUT NOTES
 
 > Generated with `pnpm plans:without-notes`  
-> Date: 2026-09-21 11:08:37  
+> Date: 2026-09-21 11:10:51  
 
 ## PLANS
 
@@ -15,7 +15,6 @@
 - `quests-progression-079-lost-treasure-expedition-external-sponsor-flow.md`
 - `settlements-npcs-052-persistent-economic-work-cargo-and-local-transfer-conservation.md`
 - `settlements-npcs-054-transport-carrier-death-and-cargo-disposition.md`
-- `tools-005-seedvale-character-preparation-panel.md`
 - `tools-019-debug-tooling-lifecycle-ownership.md`
 
 --------------------------------
@@ -316,37 +315,6 @@ Wczytaj:
 
 Na podstawie review utwórz w repo plik:
 `docs/plans/implementation-notes/settlements-npcs-054-transport-carrier-death-and-cargo-disposition-implementation-notes.md`
-
-Umieść w nim:
-- sugestie dotyczące implementacji,
-- istotne detale techniczne,
-- decyzje architektoniczne,
-- informacje o istniejących systemach i implementacjach, które należy wykorzystać,
-- potencjalne problemy, zależności i pułapki,
-- inne konkretne wskazówki, które ułatwią agentowi AI poprawną implementację planu.
-
-Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
-Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
-
-Pliki dodaj na branch `main` w repozytorium.
-```
-
-### `tools-005-seedvale-character-preparation-panel.md`
-
-Prompt:
-
-```
-Zrób review planu `tools-005-seedvale-character-preparation-panel.md`
-
-Wczytaj:
-- `docs/STATE.md`
-- `docs/plans/PLANNING.md` (Implementation Notes section),
-- `docs/plans/tools-005-seedvale-character-preparation-panel.md`
-- aktualny codebase,
-- potrzebne zależności i powiązane implementacje.
-
-Na podstawie review utwórz w repo plik:
-`docs/plans/implementation-notes/tools-005-seedvale-character-preparation-panel-implementation-notes.md`
 
 Umieść w nim:
 - sugestie dotyczące implementacji,

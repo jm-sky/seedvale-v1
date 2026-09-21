@@ -1,7 +1,7 @@
 # Plan: Seedvale Character Preparation Panel
 
 **Created:** 2026-08-31
-**Status:** `planned` 📋
+**Status:** `draft` 📝
 **Type:** infrastructure
 **Priority:** high · **Effort:** M
 **Depends on:** none
