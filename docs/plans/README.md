@@ -130,6 +130,7 @@ Unless noted otherwise, `verification needed` means implementation has passed au
 | ◼️ `ui-input-037-quest-log-ready-to-report-sections.md`                        | 🟡 | S      | ~~ui-input-017~~                                                                                                                                                                                                                                                                           | quests-and-reputation                     |
 | ◼️ `quests-progression-075-lost-livestock-report-lifecycle-and-truthful-quest-journal.md` | 🔴 | S      | ~~quests-progression-030~~                                                                                                                                                                                                                                                                 | -                                         |
 | ◼️ `quests-progression-076-quest-terminal-outcome-feedback-and-old-bones-finale-clarity.md` | 🔴 | M      | ~~quests-progression-002~~, ~~quests-progression-021~~, ~~quests-progression-051~~                                                                                                                                                                                                         | quests-and-reputation                     |
+| ◼️ `npc-062-ubc-runtime-material-darkness-and-authored-outfit-preservation.md` | 🔴 | M      | ~~tools-017~~, ~~npc-055~~                                                                                                                                                                                                                                                                 | -                                         |
 
 ---
 
@@ -265,7 +266,7 @@ New plans declare a primary `Domain:` in frontmatter. Use optional `Tags:` only 
 - ai: `005`
 - fauna: `047`
 - items-player: `060`
-- npc: `062`
+- npc: `063`
 - persistence: `007`
 - quests-progression: `077`
 - settlements: `023`
