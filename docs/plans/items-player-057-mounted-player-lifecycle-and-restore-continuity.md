@@ -1,9 +1,9 @@
 # Plan: Mounted player lifecycle and restore continuity
 
 **Created:** 2026-09-20  
-**Status:** `in progress` 🔄 — lifecycle correctness delivered against the existing bare-id identity; collision-safe identity blocked on `settlements-npcs-048` — see "Implementation status"  
+**Status:** `in progress` 🔄  
 **Priority:** high · **Effort:** S  
-**Depends on:** ~~world-033~~, settlements-npcs-048 (plan file claims `verification needed`, but current code has not actually landed the canonical namespaced identity this plan needs — see "Implementation status")  
+**Depends on:** ~~world-033~~, settlements-npcs-048  
 **Domain:** `items-player`  
 **Type:** `fix`  
 **Roadmap:** -

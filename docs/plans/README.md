@@ -51,6 +51,7 @@ Unless noted otherwise, `verification needed` means implementation has passed au
 | `settlements-003-colony-bootstrap.md`                     | Stages 1/3 implemented; Stages 2/4 (live materialization/streaming) deferred — see plan's "Implementation status" | 🔴  | L      | ~~world-019~~, ~~settlements-npcs-028~~ |
 | `settlements-npcs-025-resource-storage-visualization.md`  | Stage 2 implemented?                                                  | ⚪  | M      | -      |
 | `world-terrain-010-waterways-and-vegetation.md`           | Phases 2/8/9 deferred — see plan's "Implementation status"            | 🟡  | M      | -      |
+| `items-player-057-mounted-player-lifecycle-and-restore-continuity.md` | Lifecycle correctness (save-while-pending, rebuild detach/reattach, New Game clear) implemented against the existing bare-id identity; identity-collision guarantee (test #10) blocked on `settlements-npcs-048`'s still-missing canonical reference — see plan's "Implementation status" | 🔴  | S      | ~~world-033~~, settlements-npcs-048 |
 
 ---
 
