@@ -3,6 +3,7 @@
 **Created:** 2026-09-21
 **Status:** `planned` 📋
 **Type:** polish
+**Model:** Sonnet, Composer
 **Priority:** medium · **Effort:** S
 **Depends on:** ~~ui-input-017~~
 **Domain:** `ui-input`
