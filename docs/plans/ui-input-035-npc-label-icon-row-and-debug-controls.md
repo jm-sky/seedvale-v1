@@ -15,7 +15,7 @@
 Refactor floating NPC labels into a clearer presentation structure:
 
 - quest marker above the NPC name as a Lucide icon,
-- vendor marker in the same icon row, using Lucide `Chart` instead of the current text token `◈`,
+- shop marker in the same icon row, using Lucide `Chart` instead of the current text token `◈`,
 - optional debug need/activity icon in the first icon slot,
 - NPC name split into prefix / main name / suffix presentation,
 - detailed NPC diagnostic text controlled independently from global `?debug`,
@@ -24,13 +24,13 @@ Refactor floating NPC labels into a clearer presentation structure:
 Target layout:
 
 ```text
-[ activity/need ] [ quest ] [ vendor: Chart ]
+[ activity/need ] [ quest ] [ shop: Chart ]
         Stary Jan Kowalski Starszy
                  status bars
            optional debug text
 ```
 
-Quest/vendor icons remain gameplay presentation. Activity/need is debug-only.
+Quest/shop icons remain gameplay presentation. Activity/need is debug-only.
 
 ## Current implementation
 
@@ -42,7 +42,7 @@ Today `createAgentLabel()` builds one `.npc-label__name-row` containing:
 
 - name,
 - quest marker,
-- vendor marker,
+- shop marker,
 
 followed by bars and optional assessment/debug text.
 
@@ -120,14 +120,14 @@ Use stable semantic slots rather than arbitrary appended DOM nodes:
 type AgentLabelIconSlot =
   | 'activity'
   | 'quest'
-  | 'vendor'
+  | 'shop'
 ```
 
 Stable visual order:
 
 1. activity / need,
 2. quest,
-3. vendor.
+3. shop.
 
 All three may be visible simultaneously. Missing slots must not leave empty spacing.
 
@@ -215,7 +215,14 @@ Preserve the existing `npcQuestMarkerSync.ts` dirty/sink lifecycle.
 
 Change only presentation as necessary so quest state becomes an icon rather than text inside the name row.
 
-Before mapping icons, verify all actual values returned by the current quest `labelMarker()`. If different values encode distinct quest states, preserve those semantics with distinct icon/color presentation rather than collapsing them to a boolean.
+Keep quest domain behavior unchanged. The current quest marker semantics already distinguish:
+
+- available (`!`),
+- in progress (`…`),
+- ready (`✓`),
+- required talk target (`?`).
+
+Preserve those four semantic states and their existing priority/lifecycle. This plan changes only their presentation from text glyphs to Lucide icon/color mapping; do not collapse them to a boolean or redesign quest logic.
 
 Do not change:
 
@@ -227,22 +234,36 @@ Do not change:
 
 Quest observation gating must remain equivalent to the current behavior.
 
-## Vendor icon
+## Shop icon
 
-Use `resolveNpcVendorKind(role)` as the semantic source.
+Keep this plan intentionally simple.
 
-For every recognizable vendor kind, render:
+Use existing vendor identity from `resolveNpcVendorKind(role)` only to decide whether the NPC gets the shop slot.
+
+For every recognizable vendor kind, render one shop icon:
 
 - Lucide `Chart`,
 - in the shared icon row,
 - after quest,
 - above the NPC name.
 
+Do not implement stock, availability, order, or trade-state variants in this plan.
+
+The shop slot API should remain extensible so a later plan can add a semantic variant/state without changing the icon-row structure. A minimal contract equivalent to this is sufficient:
+
+```ts
+type ShopLabelIconPresentation = {
+  visible: boolean
+}
+```
+
+or the equivalent representation through the generic `AgentLabelIconPresentation`.
+
+Do not introduce `available`, `out-of-stock`, `order-in-progress`, artisan-order integration, or any new trade polling/cadence here.
+
 Do not use the text token `◈` for label presentation after this refactor.
 
-All vendor kinds may initially share the same `Chart` icon. Do not change vendor eligibility, offers or trade mechanics.
-
-Preserve current observation gating: vendor identity must not become visible at an observation level where it is currently hidden.
+Preserve current observation gating: shop/vendor identity must not become visible at an observation level where it is currently hidden.
 
 ## Debug activity / need icon
 
@@ -308,7 +329,7 @@ Optional query params may be used only as initial overrides if that falls out na
 Preserve existing gameplay information rules.
 
 - Quest icon: same visibility semantics as current quest marker.
-- Vendor icon: same visibility semantics as current vendor marker.
+- Shop icon: same visibility semantics as current shop marker.
 - Prefix/suffix: follow the same identity/knowledge rules as the name source that provides them.
 - Activity/need debug icon: debug-only bypass controlled by its dedicated toggle.
 - `fullLabelInfo`: preserve current bypass behavior.
@@ -324,7 +345,7 @@ Labels update frequently. Preserve the current write-if-changed approach.
 - Update one slot only when its presentation changes.
 - Do not mount Vue per NPC.
 - Do not add per-frame quest scans.
-- Do not add per-frame vendor resolution work if existing presentation sync already has the value available.
+- Do not add per-frame shop/trade availability resolution. Shop visibility is based only on existing vendor identity in this plan.
 - Do not recompute NPC needs/activity outside the NPC's existing state.
 
 ## Main files / integration points
@@ -333,7 +354,7 @@ Labels update frequently. Preserve the current write-if-changed approach.
 
 - add icon row,
 - add semantic icon slots,
-- move quest/vendor presentation above the name,
+- move quest/shop presentation above the name,
 - add structured name presentation,
 - preserve guarded DOM updates,
 - preserve distance/observation behavior.
@@ -353,7 +374,9 @@ Labels update frequently. Preserve the current write-if-changed approach.
 ### `src/ai/npcVendor.ts`
 
 - preserve `resolveNpcVendorKind()`,
+- use it only for simple shop-slot visibility,
 - stop using `NPC_VENDOR_MARKER = '◈'` for label rendering,
+- do not add stock/order state resolution,
 - avoid changing trade semantics.
 
 ### `src/ui/createDebugGui.ts`
@@ -371,7 +394,7 @@ Labels update frequently. Preserve the current write-if-changed approach.
 - add `.npc-label__icon-row` styles,
 - add shared SVG/icon sizing and spacing,
 - add prefix/main/suffix styles,
-- remove quest/vendor separators from the name row.
+- remove quest/shop separators from the name row.
 
 If current code has moved these styles elsewhere by implementation time, follow current ownership rather than forcing changes into `index.html`.
 
@@ -381,14 +404,14 @@ Add or extend focused tests for the shared label/presentation behavior.
 
 Cover at least:
 
-1. quest and vendor icons coexist,
+1. quest and shop icons coexist,
 2. activity + quest + vendor render in stable order,
 3. missing slots leave no empty separator/spacing artifact,
 4. changing quest presentation does not recreate unrelated icon slots,
 5. vendor presentation derives from current vendor identity,
 6. diagnostic text and activity icon are independently toggleable,
 7. activity icon disappears when disabled,
-8. observation gating for quest/vendor is unchanged,
+8. observation gating for quest/shop is unchanged,
 9. simple name renders correctly,
 10. prefix-only, suffix-only and prefix+suffix name presentations render correctly,
 11. changing prefix/suffix does not require rebuilding the whole label,
@@ -434,7 +457,10 @@ AI agent does not perform browser verification.
 This plan does not include:
 
 - quest availability/ranking changes,
-- vendor/trade mechanic changes,
+- shop/vendor/trade mechanic changes,
+- shop stock availability states,
+- out-of-stock presentation,
+- artisan/player-order status presentation,
 - new NPC needs or activities,
 - decision-system changes,
 - new observation/perception rules,
