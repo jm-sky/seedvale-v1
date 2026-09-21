@@ -72,7 +72,7 @@ const helpTopics = computed(() => state.helpResult?.topics ?? [])
  *  override rather than the top-level (possibly multi-topic) payload — drives
  *  what "Wróć" does inside "help" (plan quests-progression-020). */
 const helpDrilled = ref(false)
-/** When true, leaving a drilled help payload returns to Aktywne sprawy. */
+/** When true, leaving a drilled help payload returns to Aktywne zadania. */
 const activeMattersOrigin = ref(false)
 const isHomeGuard = computed(() => state.npc?.role === 'guard' && state.settlement?.isHome === true)
 /** "Opowiedz mi coś o okolicy" eligibility (plan world-012 §7, extended to
@@ -101,7 +101,9 @@ const reportShortcuts = computed(() => questPreview.value.filter((entry) => entr
 const requiredActionShortcuts = computed(() => (
   questPreview.value.filter((entry) => entry.kind === 'required-action')
 ))
-const activeMatters = computed(() => questPreview.value.filter((entry) => entry.kind === 'active'))
+const activeMatters = computed(() => questPreview.value.filter((entry) => (
+  entry.kind === 'active' || entry.kind === 'required-action' || entry.kind === 'report'
+)))
 
 const showAboutVillage = computed(() => state.settlement != null)
 
@@ -478,7 +480,7 @@ watch(() => state.open, (open) => {
           class="cursor-pointer rounded-md bg-white/5 px-3 py-2 text-left text-sm hover:bg-white/10"
           @click="selectTopic('activeMatters')"
         >
-          Aktywne sprawy
+          Aktywne zadania
         </button>
         <button
           type="button"
@@ -681,21 +683,31 @@ watch(() => state.open, (open) => {
         </div>
         <div
           v-else-if="topic === 'help' && hasOffer"
-          class="flex gap-2"
+          class="flex flex-col gap-2"
         >
+          <div class="flex gap-2">
+            <button
+              type="button"
+              class="flex-1 cursor-pointer rounded-md bg-white/10 px-3 py-2 text-sm font-medium hover:bg-white/20"
+              @click="accept"
+            >
+              Przyjmij
+            </button>
+            <button
+              type="button"
+              class="flex-1 cursor-pointer rounded-md bg-white/5 px-3 py-2 text-sm hover:bg-white/10"
+              @click="close"
+            >
+              Odmów
+            </button>
+          </div>
           <button
+            v-if="helpDrilled"
             type="button"
-            class="flex-1 cursor-pointer rounded-md bg-white/10 px-3 py-2 text-sm font-medium hover:bg-white/20"
-            @click="accept"
+            class="cursor-pointer self-start rounded-md bg-white/5 px-3 py-2 text-sm hover:bg-white/10"
+            @click="helpBack"
           >
-            Przyjmij
-          </button>
-          <button
-            type="button"
-            class="flex-1 cursor-pointer rounded-md bg-white/5 px-3 py-2 text-sm hover:bg-white/10"
-            @click="close"
-          >
-            Odmów
+            Wróć
           </button>
         </div>
         <template v-else-if="topic === 'help'">

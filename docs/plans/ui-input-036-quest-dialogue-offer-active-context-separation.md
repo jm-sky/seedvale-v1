@@ -1,7 +1,7 @@
 # Plan: Quest dialogue offer / active context separation
 
 **Created:** 2026-09-21
-**Status:** `planned` 📋
+**Status:** `verification needed` 🔍
 **Priority:** high · **Effort:** S
 **Depends on:** ~~ui-input-024~~, ~~quests-progression-034~~
 **Domain:** `ui-input`

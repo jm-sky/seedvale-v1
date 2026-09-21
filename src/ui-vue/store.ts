@@ -70,7 +70,7 @@ type NpcDialogueMenuState = {
   /**
    * Read-only quest dialogue preview for the open NPC. Opening the menu must
    * not invoke it for mutation — callers read kinds/titles for root shortcuts
-   * and Aktywne sprawy; each entry's `resolve()` is live (plan ui-input-024).
+   * and Aktywne zadania; each entry's `resolve()` is live (plan ui-input-024).
    *
    * @domain ui-input
    */
@@ -1109,7 +1109,7 @@ export function openNpcDialogueMenu(npc: NpcAgent, settlement: Settlement, quest
   state.settlement = settlement
   state.timeOfDay = timeOfDay
   state.helpResult = null
-  state.resolveQuestHelp = () => questManager.onInteract(npc.id)
+  state.resolveQuestHelp = () => questManager.resolveNpcQuestOffers(npc.id)
   state.resolveQuestPreview = () => questManager.previewNpcDialogue(npc.id)
   state.canClaimGuardReward = state.getCanClaimGuardReward?.() ?? false
   state.canTrade = state.getCanTrade?.() ?? false
@@ -1177,7 +1177,7 @@ export function selectNpcDialogueHelpTopic(index: number): void {
   state.helpResult = topicEntry.resolve()
 }
 /**
- * Apply a live quest dialogue override from a root shortcut or Aktywne sprawy
+ * Apply a live quest dialogue override from a root shortcut or Aktywne zadania
  * preview entry without going through `onInteract` admission (plan ui-input-024).
  *
  * @domain ui-input

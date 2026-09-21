@@ -7,13 +7,13 @@ import type { Settlement } from '../settlement/createSettlement'
 import { Inventory } from '../items/Inventory'
 import { QuestManager } from '../quests/QuestManager'
 import {
+  applyNpcDialogueQuestOverride,
   closeNpcDialogueMenu,
   getNpcDialogueQuestPreview,
   openNpcDialogueMenu,
   resolveNpcDialogueHelp,
   resolveNpcDialogueOpenTopic,
   selectNpcDialogueHelpAction,
-  selectNpcDialogueHelpTopic,
   ui,
 } from './store'
 
@@ -119,7 +119,14 @@ describe('openNpcDialogueMenu talk_to_npc seam (plan quests-progression-014)', (
     expect(qm.getState('relay')).toBe('active')
     expect(qm.exportProgress()[0]?.stageIndex).toBe(0)
 
+    // Offer/help path is offer-only (plan ui-input-036); required talk lives on preview.
     resolveNpcDialogueHelp()
+    expect(ui.npcDialogueMenu.helpResult?.line).toBe('generic greeting')
+    expect(ui.npcDialogueMenu.helpResult?.actions).toBeUndefined()
+
+    const required = getNpcDialogueQuestPreview().find((entry) => entry.kind === 'required-action')
+    expect(required?.questId).toBe('relay')
+    applyNpcDialogueQuestOverride(required!.resolve())
     expect(ui.npcDialogueMenu.helpResult?.line).toBe('Tak?')
     expect(ui.npcDialogueMenu.helpResult?.actions?.[0]?.label).toBe(
       'Anna mówiła, że jutro idziecie na ryby o świcie.',
@@ -173,7 +180,8 @@ describe('openNpcDialogueMenu talk_to_npc seam (plan quests-progression-014)', (
     const qm = new QuestManager([talkToPiotrQuest], undefined, new Inventory())
     acceptOffer(qm, ANNA_ID)
     openNpcDialogueMenu(stubNpc('Piotr', PIOTR_ID), stubSettlement, qm, 12)
-    resolveNpcDialogueHelp()
+    const required = getNpcDialogueQuestPreview().find((entry) => entry.kind === 'required-action')
+    applyNpcDialogueQuestOverride(required!.resolve())
     selectNpcDialogueHelpAction(0)
     closeNpcDialogueMenu()
     expect(qm.getState('relay')).toBe('ready_to_report')
@@ -182,7 +190,14 @@ describe('openNpcDialogueMenu talk_to_npc seam (plan quests-progression-014)', (
     expect(resolveNpcDialogueOpenTopic()).toBeNull()
     expect(qm.getState('relay')).toBe('ready_to_report')
 
+    // Help/offer path stays offer-only; report lives on preview (plan ui-input-036).
     resolveNpcDialogueHelp()
+    expect(ui.npcDialogueMenu.helpResult?.line).toBe('generic greeting')
+    expect(ui.npcDialogueMenu.helpResult?.actions).toBeUndefined()
+
+    const report = getNpcDialogueQuestPreview().find((entry) => entry.kind === 'report')
+    expect(report?.questId).toBe('relay')
+    applyNpcDialogueQuestOverride(report!.resolve())
     expect(ui.npcDialogueMenu.helpResult?.line).toBe('Przekazałeś już Piotrowi?')
     expect(ui.npcDialogueMenu.helpResult?.actions?.[0]?.label).toBe('Tak. Będzie o świcie.')
     selectNpcDialogueHelpAction(0)
@@ -241,12 +256,11 @@ describe('openNpcDialogueMenu talk_to_npc seam (plan quests-progression-014)', (
   })
 })
 
-describe('resolveNpcDialogueHelp topic picker contract (plan quests-progression-020)', () => {
+describe('resolveNpcDialogueHelp topic picker contract (plan quests-progression-020 / ui-input-036)', () => {
   const KASIA_ID = 'kasia-id'
-  // This suite tests the topic-navigation contract for purely passive
-  // concurrent reminders, not the active-quest opt-out (plan
-  // quests-progression-033) — both fixtures disable it so their reminders
-  // stay action-less, matching the scenario this suite is about.
+  // This suite tests concurrent active reminders under the active-task preview
+  // contract (plan ui-input-036) — help/offer no longer aggregates them.
+  // Both fixtures disable abandonment so reminders stay action-less.
   const shellsQuest: QuestDef = {
     id: 'shells',
     title: 'Muszle dla Kasi',
@@ -276,7 +290,7 @@ describe('resolveNpcDialogueHelp topic picker contract (plan quests-progression-
     abandonment: { allowed: false },
   }
 
-  it('offers a topic per concurrent quest context and keeps each independently reachable', () => {
+  it('lists concurrent active quests on preview and keeps each independently reachable', () => {
     const qm = new QuestManager([shellsQuest, wolvesQuest], undefined, new Inventory())
     // Only one of the two competing offers from the same giver (Kasia) is
     // exposed at a time (plan quests-progression-033's offer cap);
@@ -287,28 +301,30 @@ describe('resolveNpcDialogueHelp topic picker contract (plan quests-progression-
     expect(qm.getState('wolves')).toBe('active')
 
     openNpcDialogueMenu(stubNpc('Kasia', KASIA_ID), stubSettlement, qm, 12)
+
+    // Help/offer path must not surface active reminders (plan ui-input-036).
     resolveNpcDialogueHelp()
-
+    expect(ui.npcDialogueMenu.helpResult?.line).toBe('generic greeting')
+    expect(ui.npcDialogueMenu.helpResult?.topics).toBeUndefined()
     expect(ui.npcDialogueMenu.helpResult?.actions).toBeUndefined()
-    expect(ui.npcDialogueMenu.helpResult?.topics?.map((t) => t.label)).toEqual(['Muszle dla Kasi', 'Wilki u kupca'])
 
-    // Selecting one topic shows only that quest's payload...
-    selectNpcDialogueHelpTopic(0)
+    const preview = getNpcDialogueQuestPreview()
+    expect(preview.map((entry) => ({ id: entry.questId, kind: entry.kind, title: entry.title }))).toEqual([
+      { id: 'shells', kind: 'active', title: 'Muszle dla Kasi' },
+      { id: 'wolves', kind: 'active', title: 'Wilki u kupca' },
+    ])
+
+    applyNpcDialogueQuestOverride(preview[0]!.resolve())
     expect(ui.npcDialogueMenu.helpResult?.line).toBe('Masz już muszle?')
     expect(ui.npcDialogueMenu.helpResult?.topics).toBeUndefined()
 
-    // ...without removing the other quest: re-deriving the help payload still lists both.
-    resolveNpcDialogueHelp()
-    expect(ui.npcDialogueMenu.helpResult?.topics?.map((t) => t.label)).toEqual(['Muszle dla Kasi', 'Wilki u kupca'])
-
-    // The player can switch to the second quest from the same re-opened list.
-    selectNpcDialogueHelpTopic(1)
+    applyNpcDialogueQuestOverride(preview[1]!.resolve())
     expect(ui.npcDialogueMenu.helpResult?.line).toBe('Wilki nadal tam są.')
 
     closeNpcDialogueMenu()
   })
 
-  it('keeps the existing single-quest UX when the NPC has only one quest context', () => {
+  it('keeps the existing single-offer UX when the NPC has only one offer context', () => {
     const qm = new QuestManager([shellsQuest], undefined, new Inventory())
     openNpcDialogueMenu(stubNpc('Kasia', KASIA_ID), stubSettlement, qm, 12)
 
@@ -316,6 +332,67 @@ describe('resolveNpcDialogueHelp topic picker contract (plan quests-progression-
     expect(ui.npcDialogueMenu.helpResult?.topics).toBeUndefined()
     expect(ui.npcDialogueMenu.helpResult?.line).toBe('Potrzebuję muszli z plaży.')
     expect(ui.npcDialogueMenu.helpResult?.offer).toBeDefined()
+
+    closeNpcDialogueMenu()
+  })
+})
+
+describe('openNpcDialogueMenu offer / active context separation (plan ui-input-036)', () => {
+  const ABANDON_LABEL = 'Przykro mi, jednak nie dam rady ci pomóc.'
+
+  it('help returns only the new offer while preview exposes offer and active', () => {
+    const offerQuest = quest({
+      id: 'fresh-offer',
+      title: 'Nowa oferta',
+      giverName: 'Anna',
+      giver: { npcId: ANNA_ID },
+      offerLine: 'Mam dla ciebie coś nowego.',
+      stages: [
+        { objective: { type: 'interact_well' }, description: 'well', reminderLine: 'remind fresh' },
+      ],
+      reportLine: 'done fresh',
+      offer: { urgency: 'urgent' },
+    })
+    const activeQuest = quest({
+      id: 'active-matter',
+      title: 'Aktywna sprawa',
+      giverName: 'Anna',
+      giver: { npcId: ANNA_ID },
+      offerLine: 'offer active',
+      stages: [
+        { objective: { type: 'interact_tree' }, description: 'tree', reminderLine: 'remind active' },
+      ],
+      reportLine: 'done active',
+      abandonment: { allowed: true },
+    })
+    const qm = new QuestManager([offerQuest, activeQuest], undefined, new Inventory(), {
+      progress: [{ id: 'active-matter', state: 'active', stageIndex: 0 }],
+      relations: {},
+    })
+
+    openNpcDialogueMenu(stubNpc('Anna', ANNA_ID), stubSettlement, qm, 12)
+
+    const preview = getNpcDialogueQuestPreview()
+    expect(preview.map((entry) => ({ id: entry.questId, kind: entry.kind }))).toEqual([
+      { id: 'fresh-offer', kind: 'offer' },
+      { id: 'active-matter', kind: 'active' },
+    ])
+    expect(qm.getState('fresh-offer')).toBe('not_offered')
+
+    resolveNpcDialogueHelp()
+    expect(qm.getState('fresh-offer')).toBe('offered')
+    expect(ui.npcDialogueMenu.helpResult?.line).toBe('Mam dla ciebie coś nowego.')
+    expect(ui.npcDialogueMenu.helpResult?.offer).toBeDefined()
+    expect(ui.npcDialogueMenu.helpResult?.topics).toBeUndefined()
+    expect(ui.npcDialogueMenu.helpResult?.actions).toBeUndefined()
+    expect(JSON.stringify(ui.npcDialogueMenu.helpResult)).not.toContain('Aktywna sprawa')
+    expect(JSON.stringify(ui.npcDialogueMenu.helpResult)).not.toContain(ABANDON_LABEL)
+    expect(JSON.stringify(ui.npcDialogueMenu.helpResult)).not.toContain('remind active')
+
+    const active = preview.find((entry) => entry.kind === 'active')
+    applyNpcDialogueQuestOverride(active!.resolve())
+    expect(ui.npcDialogueMenu.helpResult?.line).toBe('remind active')
+    expect(ui.npcDialogueMenu.helpResult?.actions?.some((action) => action.label === ABANDON_LABEL)).toBe(true)
 
     closeNpcDialogueMenu()
   })

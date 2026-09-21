@@ -3021,8 +3021,37 @@ export class QuestManager {
   }
 
   /**
+   * Deliberate offer-only dialogue resolution for `npcId` (plan ui-input-036).
+   * Admits selectable giver offers, then returns only accept-capable `offered`
+   * payloads — never active reminders, report/hand-in, required talk, or
+   * topic-scoped abandon. Use `previewNpcDialogue()` + per-entry `resolve()`
+   * for already-accepted quest contexts. Live topic `resolve()` re-reads
+   * through `handleGiverOffer`, not the broad contribution path.
+   *
+   * @domain quests-progression
+   */
+  resolveNpcQuestOffers(npcId: NpcId): QuestDialogOverride | null {
+    this.admitOffersForGiver(npcId)
+    const offers: { def: QuestDef, override: QuestDialogOverride }[] = []
+    for (const def of this.defs) {
+      if (def.giver.npcId !== npcId) continue
+      const override = this.handleGiverOffer(def)
+      if (override) offers.push({ def, override })
+    }
+    if (offers.length === 0) return null
+    if (offers.length === 1) return offers[0]!.override
+    return {
+      line: DEFAULT_NPC_PROMPT,
+      topics: offers.map(({ def }) => ({
+        label: def.title,
+        resolve: () => this.handleGiverOffer(def) ?? { line: this.offerText(def) },
+      })),
+    }
+  }
+
+  /**
    * Read-only per-context dialogue preview for `npcId` — used by the NPC
-   * dialogue root menu for actionable shortcuts and Aktywne sprawy without
+   * dialogue root menu for actionable shortcuts and Aktywne zadania without
    * calling `onInteract()` (plan ui-input-024). Classification reuses the
    * same predicates as `labelMarker()`; each entry's `resolve()` routes
    * through `resolveNpcQuestContribution` like `QuestDialogTopic`. Does

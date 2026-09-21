@@ -6085,3 +6085,125 @@ describe('QuestManager.previewNpcDialogue (plan ui-input-024)', () => {
   })
 })
 
+describe('QuestManager.resolveNpcQuestOffers (plan ui-input-036)', () => {
+  it('admits and returns one selectable offer directly', () => {
+    const qm = makeManager([simpleQuest])
+    expect(qm.getState('simple')).toBe('not_offered')
+    const dialog = qm.resolveNpcQuestOffers('Anna')
+    expect(qm.getState('simple')).toBe('offered')
+    expect(dialog?.line).toBe('offer')
+    expect(dialog?.offer).toBeDefined()
+    expect(dialog?.topics).toBeUndefined()
+    expect(dialog?.actions).toBeUndefined()
+  })
+
+  it('returns a titled topic picker for normal plus urgent/story offers', () => {
+    const normal = quest({
+      id: 'normal-offer',
+      title: 'Zwyczajna sprawa',
+      giverName: 'Anna',
+      offerLine: 'offer normal',
+      stages: [{ objective: { type: 'interact_well' }, description: 'w', reminderLine: 'remind' }],
+      reportLine: 'done',
+    })
+    const urgent = quest({
+      id: 'urgent-offer',
+      title: 'Pilna sprawa',
+      giverName: 'Anna',
+      offerLine: 'offer urgent',
+      stages: [{ objective: { type: 'interact_tree' }, description: 't', reminderLine: 'remind' }],
+      reportLine: 'done',
+      offer: { urgency: 'urgent' },
+    })
+    const qm = makeManager([normal, urgent])
+    const dialog = qm.resolveNpcQuestOffers('Anna')
+    expect(qm.getState('normal-offer')).toBe('offered')
+    expect(qm.getState('urgent-offer')).toBe('offered')
+    expect(dialog?.offer).toBeUndefined()
+    expect(dialog?.topics?.map((topic) => topic.label)).toEqual(['Zwyczajna sprawa', 'Pilna sprawa'])
+    const first = dialog?.topics?.[0]?.resolve()
+    expect(first?.line).toBe('offer normal')
+    expect(first?.offer).toBeDefined()
+    expect(first?.actions).toBeUndefined()
+    const second = dialog?.topics?.[1]?.resolve()
+    expect(second?.line).toBe('offer urgent')
+    expect(second?.offer).toBeDefined()
+  })
+
+  it('excludes active reminders, report and foreign required-action', () => {
+    const active = quest({
+      id: 'active-q',
+      title: 'Aktywna',
+      giverName: 'Anna',
+      offerLine: 'offer active',
+      stages: [{ objective: { type: 'interact_well' }, description: 'w', reminderLine: 'remind active' }],
+      reportLine: 'done active',
+    })
+    const reportable = quest({
+      id: 'report-q',
+      title: 'Do oddania',
+      giverName: 'Anna',
+      offerLine: 'offer report',
+      stages: [{ objective: { type: 'interact_tree' }, description: 't', reminderLine: 'remind report' }],
+      reportLine: 'done report',
+    })
+    const foreign = quest({
+      id: 'relay',
+      title: 'Przekaz',
+      giverName: 'Piotr',
+      offerLine: 'offer relay',
+      stages: [{
+        objective: { type: 'talk_to_npc', npc: { npcId: 'Anna' } },
+        description: 'talk',
+        reminderLine: 'remind relay',
+        playerLine: 'Piotr prosił o przekaz.',
+        progressLine: 'got it',
+      }],
+      reportLine: 'done relay',
+    })
+    const fresh = quest({
+      id: 'fresh',
+      title: 'Nowa oferta',
+      giverName: 'Anna',
+      offerLine: 'offer fresh',
+      stages: [{ objective: { type: 'interact_well' }, description: 'w', reminderLine: 'remind fresh' }],
+      reportLine: 'done fresh',
+      // Urgent bypasses ordinary giver capacity occupied by active + ready_to_report.
+      offer: { urgency: 'urgent' },
+    })
+    const qm = makeManager([active, reportable, foreign, fresh], undefined, undefined, {
+      progress: [
+        { id: 'active-q', state: 'active', stageIndex: 0 },
+        { id: 'report-q', state: 'ready_to_report', stageIndex: 1 },
+        { id: 'relay', state: 'active', stageIndex: 0 },
+      ],
+      relations: {},
+    })
+
+    const dialog = qm.resolveNpcQuestOffers('Anna')
+    expect(qm.getState('fresh')).toBe('offered')
+    expect(dialog?.line).toBe('offer fresh')
+    expect(dialog?.offer).toBeDefined()
+    expect(dialog?.topics).toBeUndefined()
+    expect(dialog?.actions).toBeUndefined()
+    expect(JSON.stringify(dialog)).not.toContain('remind active')
+    expect(JSON.stringify(dialog)).not.toContain('Do oddania')
+    expect(JSON.stringify(dialog)).not.toContain('Przekaz')
+    expect(JSON.stringify(dialog)).not.toContain(ABANDON_LABEL)
+  })
+
+  it('does not admit offers on preview; resolveNpcQuestOffers performs the transition', () => {
+    const qm = makeManager([simpleQuest])
+    expect(qm.previewNpcDialogue('Anna').map((entry) => entry.kind)).toEqual(['offer'])
+    expect(qm.getState('simple')).toBe('not_offered')
+    qm.resolveNpcQuestOffers('Anna')
+    expect(qm.getState('simple')).toBe('offered')
+  })
+
+  it('returns null when this NPC has no current offers', () => {
+    const qm = makeManager([simpleQuest])
+    acceptOffer(qm, 'Anna')
+    expect(qm.resolveNpcQuestOffers('Anna')).toBeNull()
+  })
+})
+
