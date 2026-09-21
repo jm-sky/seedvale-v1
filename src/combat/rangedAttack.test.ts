@@ -25,6 +25,21 @@ describe('rangedAccuracy', () => {
   it('never drops below the config value at zero skill', () => {
     expect(rangedAccuracy(CONFIG, 0)).toBeGreaterThanOrEqual(CONFIG.accuracy)
   })
+
+  it('defaults skillAccuracyScale to full bow contribution', () => {
+    expect(rangedAccuracy(CONFIG, 1)).toBe(rangedAccuracy({ ...CONFIG, skillAccuracyScale: 1 }, 1))
+  })
+
+  it('reduces archery contribution for crossbow-scale configs', () => {
+    const full = rangedAccuracy(CONFIG, 1)
+    const reduced = rangedAccuracy({ ...CONFIG, skillAccuracyScale: 0.25 }, 1)
+    expect(reduced).toBeLessThan(full)
+    expect(reduced).toBeGreaterThan(CONFIG.accuracy)
+  })
+
+  it('ignores archery entirely when skillAccuracyScale is 0', () => {
+    expect(rangedAccuracy({ ...CONFIG, skillAccuracyScale: 0 }, 1)).toBe(CONFIG.accuracy)
+  })
 })
 
 describe('rangedDeviationRoll', () => {

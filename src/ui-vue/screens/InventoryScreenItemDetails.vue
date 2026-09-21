@@ -9,7 +9,7 @@ import type { EquipmentSlot } from '../../items/equipment'
 import { FOOD_SOURCE_SPECIES_LABEL, foodHungerRelief, FRESHNESS_STAGE_LABEL } from '../../items/foodFreshness'
 import { isToolKind } from '../../items/HeldTool'
 import { ITEM_METER_LABEL, type ItemMeterKind } from '../../items/inventoryView'
-import { CAPABILITY_LABEL, isMeleeToolKind, isRangedTool } from '../../items/itemCatalog'
+import { CAPABILITY_LABEL, isMeleeToolKind, isRangedTool, isThrowableKind } from '../../items/itemCatalog'
 import { type BookTier, consumeNeedNoun, ITEM_CATALOG } from '../../items/itemCatalog'
 import { itemDisplayName } from '../../items/itemDisplay'
 import { isArmorKind, isWeaponMaintenanceKind } from '../../items/itemInstances'
@@ -221,6 +221,7 @@ function isInstanceHeld(id: string): boolean {
   return ui.inventory.heldTool === props.selectedItem && ui.inventory.heldInstanceId === id
 }
 function onConsume(kind: ItemKind): void { ui.inventory.onConsume?.(kind) }
+function onThrow(kind: ItemKind): void { ui.inventory.onThrow?.(kind) }
 function onRead(kind: ItemKind): void { ui.inventory.onRead?.(kind) }
 function percent(value: number): string { return `${Math.round(value * 100)}%` }
 function onPlaceTrap(kind: ItemKind): void {
@@ -607,6 +608,11 @@ function isInstancePrimaryRanged(id: string): boolean {
         :label="consumeUse.reasonLabel ? `${consumeUse.label} — ${consumeUse.reasonLabel}` : consumeUse.label"
         :disabled="!consumeUse.enabled"
         @click="onConsume(item.kind)"
+      />
+      <ItemsScreenItemButton
+        v-if="isThrowableKind(item.kind)"
+        label="Rzuć"
+        @click="onThrow(item.kind)"
       />
       <ItemsScreenItemButton
         v-if="readUse"

@@ -16,7 +16,9 @@ import type { Interactable } from '../interaction/Interactable'
 import type { CampRepairTargetKind } from '../items/campRepair'
 import type { EquipmentState } from '../items/equipment'
 import type { HeldTool } from '../items/HeldTool'
+import type { SaveItemInstance } from '../items/Inventory'
 import type { PlayerController } from '../player/PlayerController'
+import type { PlayerThrow } from '../player/playerThrow'
 import type { PlayerTorch } from '../player/PlayerTorch'
 import type { TargetedSkillSelection } from '../player/targetedSkillSelection'
 import type { QuestManager } from '../quests/QuestManager'
@@ -102,8 +104,8 @@ import { executeTargetedSkillAction, queryTargetedSkillAction, targetedSkillProm
 import { treeInspectionCanYieldBranch } from '../interaction/treeInspection'
 import { resolveEquipmentModifiers } from '../items/equipment'
 import { getFoodBatchFreshnessStage } from '../items/foodFreshness'
-import { Inventory, inventoryFullToastText, inventoryFullToastTextForInstance, type SaveItemInstance, toSaveItemInstance } from '../items/Inventory'
-import { ARROW_DAMAGE_BONUS, hasItemCapability, isRangedTool, ITEM_CATALOG } from '../items/itemCatalog'
+import { Inventory, inventoryFullToastText, inventoryFullToastTextForInstance, toSaveItemInstance } from '../items/Inventory'
+import { ARROW_DAMAGE_BONUS, hasItemCapability, isRangedTool, ITEM_CATALOG, rangedConfigFromThrowable } from '../items/itemCatalog'
 import { fuelValue, selectFuelKind } from '../items/itemFuel'
 import { isInstanceBackedKind, isWeaponItemInstance } from '../items/itemInstances'
 import { isLiquidContainerInstance, LIQUID_CONTAINER_KIND_LIST } from '../items/itemInstances'
@@ -365,6 +367,9 @@ export type GameLoopDeps = {
   restCamp: RestCampSequence
   inventory: Inventory
   heldTool: HeldTool
+  /** Transient armed-throw state (plan items-player-059 §17) — "Rzuć" arms a
+   *  throwable item kind for the next gaze-fire, independent of `heldTool`. */
+  playerThrow: PlayerThrow
   /** Wearable equipment (plan items-player-029) — `resolveEquipmentModifiers()`
    *  derives this frame's armor effects from this + `inventory` once, reused
    *  for movement/sprint/melee/combat-damage below. */
@@ -721,7 +726,7 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
     bundle, isWorldValid, player, camera, renderer, labelRenderer, scene, sky, lights, postProcessing, dayNight,
     climate, clouds, groundFog, weatherParticles, weatherAudio, getSeed,
     keyboard, mouseLook, touchControls, pauseMenu, npcDialog, npcInspector, npcInspectTrigger, questLog, vueUi, inventoryScreen,
-    quickActions, timeSkip, timeSkipOverlay, busy, busyOverlay, restCamp, inventory, heldTool, equipment, mount, lead, landOwnership, toast, hud,
+    quickActions, timeSkip, timeSkipOverlay, busy, busyOverlay, restCamp, inventory, heldTool, playerThrow, equipment, mount, lead, landOwnership, toast, hud,
     questManager, syncLostLivestockQuests, onQuestStateSynced, onPlayerAnimalKill, ambientAudio, fireAudio, houseDoors, worldAudio, playerTorch, minimap, mapDiscovery, locationProximityDiscovery, openQuestLog, openInventory, openSkills, openCharacter,
     targetedSkillSelection, toggleCombatMode,
     startGroundWork, startTreeChop, gatherBranch, startDepositMine, startRockMineAt, startBuryCorpse, startHarvestMeat, startMilkAnimal, startShearAnimal, startCookAt, startIgniteFire,
@@ -1396,6 +1401,7 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
         player.endRangedDraw()
         rangedTargetId = null
         stopBowDrawSound()
+        playerThrow.clear()
       } else if (playerRanged.state() === 'draw') {
         // Holds the aim-draw pose loop every frame while actually drawing —
         // idempotent, mirrors the melee tick's per-frame animation sync.
@@ -1426,7 +1432,7 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
         const config = releaseTick.config
         const ammoKind = config.ammoKinds.find((k) => inventory.has(k, 1)) ?? null
         if (!ammoKind) {
-          toast.show('Brak strzał w ekwipunku.', 'error')
+          toast.show('Brak amunicji w ekwipunku.', 'error')
         } else {
           stopBowDrawSound()
           playActionBowRelease(worldAudio.playAt, player.mesh.position)
@@ -2204,7 +2210,30 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
         } else if (target.kind === 'npcCorpse') {
           openNpcCorpse?.(target.npc)
         } else if (target.kind === 'animal') {
-          if (isMeleeTool(held) && !player.isDowned()) {
+          const armedThrowKind = playerThrow.armedKind()
+          if (armedThrowKind && !player.isDowned()) {
+            // Direct stone throw (plan items-player-059 §13/§17) — same
+            // `[E]`-over-a-gazed-animal draw/release trigger as a held ranged
+            // weapon, via a synthetic `RangedConfig` from `throwable`; never
+            // occupies `HeldTool`/enters normal weapon selection.
+            const config = rangedConfigFromThrowable(armedThrowKind)
+            if (config && !playerRanged.isDrawing()) {
+              const hasAmmo = config.ammoKinds.some((k) => inventory.has(k, 1))
+              if (!hasAmmo) {
+                toast.show('Brak kamieni w ekwipunku.', 'error')
+                playerThrow.clear()
+              } else if (player.needs.stamina.current < config.staminaCost) {
+                toast.show('Brak siły na rzut.', 'error')
+              } else if (playerRanged.requestDraw(config, player.needs.stamina, player.needs.vigor, dayNight.dayLengthSec)) {
+                playerCombat.enter()
+                playerCombat.noteActivity()
+                playerCombat.setSoftLock(livingTargetIdForAnimal(target.animal.animalId))
+                rangedTargetId = livingTargetIdForAnimal(target.animal.animalId)
+                player.faceToward(target.position.x, target.position.z)
+                player.beginRangedDraw()
+              }
+            }
+          } else if (isMeleeTool(held) && !player.isDowned()) {
             // `[E]` over a gazed live animal is the attack *trigger* (keeps
             // the existing "Atakuj: X" prompt UX) — the actual hit/damage is
             // resolved geometrically above, independent of this single
@@ -2261,7 +2290,9 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
             if (config && !playerRanged.isDrawing()) {
               const hasAmmo = config.ammoKinds.some((k) => inventory.has(k, 1))
               if (!hasAmmo) {
-                toast.show('Brak strzał w ekwipunku.', 'error')
+                // Shared by bow/crossbow/sling (plan items-player-059) —
+                // ammo-neutral wording rather than bow-specific "strzały".
+                toast.show('Brak amunicji w ekwipunku.', 'error')
               } else if (player.needs.stamina.current < config.staminaCost) {
                 toast.show('Brak siły na strzał.', 'error')
               } else if (playerRanged.requestDraw(config, player.needs.stamina, player.needs.vigor, dayNight.dayLengthSec)) {

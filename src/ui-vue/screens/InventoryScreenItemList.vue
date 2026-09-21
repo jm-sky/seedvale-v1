@@ -84,6 +84,7 @@ function onDrop(kind: ItemKind, count: number): void {
 function onEquip(kind: ItemKind): void { ui.inventory.onEquip?.(kind) }
 function onUnequip(): void { ui.inventory.onUnequip?.() }
 function onConsume(kind: ItemKind): void { ui.inventory.onConsume?.(kind) }
+// function onThrow(kind: ItemKind): void { ui.inventory.onThrow?.(kind) }
 function onRead(kind: ItemKind): void { ui.inventory.onRead?.(kind) }
 function onPlaceTrap(kind: ItemKind): void {
   const trapKind = trapKindForItem(kind)

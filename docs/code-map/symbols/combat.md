@@ -62,15 +62,15 @@ Generated from exported TypeScript symbols.
 ## `combat/rangedAttack.ts`
 
 - `rangedAccuracy` — function — line 22
-- `rangedDeviationRoll` — function — line 29
-- `resolveRangedDirection` — function — line 50
+- `rangedDeviationRoll` — function — line 32
+- `resolveRangedDirection` — function — line 53
 
 ## `combat/rangedLifecycle.ts`
 
-- `createRangedAttackLifecycle` — function — line 63
-- `RangedAttackLifecycle` — type — line 28
-- `RangedAttackTickResult` — type — line 21
-- `RangedState` — type — line 19
+- `createRangedAttackLifecycle` — function — line 74
+- `RangedAttackLifecycle` — type — line 34
+- `RangedAttackTickResult` — type — line 27
+- `RangedState` — type — line 25
 
 ## `combat/rangedReticle.ts`
 

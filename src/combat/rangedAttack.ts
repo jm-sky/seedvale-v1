@@ -20,7 +20,10 @@ const ARCHERY_MAX_ACCURACY_BONUS = 0.22
 const MAX_DEVIATION_RAD = 0.34
 
 export function rangedAccuracy(config: RangedConfig, archerySkillValue: number): number {
-  const skillBonus = ARCHERY_MAX_ACCURACY_BONUS * Math.max(0, Math.min(1, archerySkillValue))
+  const skillScale = config.skillAccuracyScale ?? 1
+  const skillBonus = ARCHERY_MAX_ACCURACY_BONUS
+    * Math.max(0, Math.min(1, archerySkillValue))
+    * Math.max(0, skillScale)
   return Math.max(0, Math.min(1, config.accuracy + skillBonus))
 }
 

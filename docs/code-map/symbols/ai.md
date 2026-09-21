@@ -180,25 +180,25 @@ Generated from exported TypeScript symbols.
 
 ## `ai/NpcAgent.ts`
 
-- `classifyPendingActivity` — function — line 783
-- `configureNpcPlayerReactionAudio` — function — line 1029
-- `CurrentActivity` — type — line 584
-- `CurrentActivityKind` — type — line 556
-- `HUNT_RESUPPLY_ARROW_TARGET` — const — line 898
-- `NPC_HEIGHT` — const — line 498
-- `NPC_SHADOW_DISTANCE` — const — line 503
-- `NpcAgent` — class — line 1191
+- `classifyPendingActivity` — function — line 784
+- `configureNpcPlayerReactionAudio` — function — line 1030
+- `CurrentActivity` — type — line 585
+- `CurrentActivityKind` — type — line 557
+- `HUNT_RESUPPLY_ARROW_TARGET` — const — line 899
+- `NPC_HEIGHT` — const — line 499
+- `NPC_SHADOW_DISTANCE` — const — line 504
+- `NpcAgent` — class — line 1192
   - domain: settlements-npcs
   - system: npc-agent
   - role: Central per-NPC behaviour integration point: needs, FSM/schedule, personality-driven decisions and combat.
   - owns: NpcAuthoritativeState
   - uses: Household, SettlementEconomy, Needs
   - simulation: tick
-- `NpcAgentDeps` — type — line 1046
-- `NpcInspectionSnapshot` — type — line 599
-- `NpcWhy` — type — line 758
-- `projectNpcWhy` — function — line 825
-- `promoteChainKind` — function — line 775
+- `NpcAgentDeps` — type — line 1047
+- `NpcInspectionSnapshot` — type — line 600
+- `NpcWhy` — type — line 759
+- `projectNpcWhy` — function — line 826
+- `promoteChainKind` — function — line 776
 
 ## `ai/npcAnimalThreat.ts`
 
@@ -339,22 +339,23 @@ Generated from exported TypeScript symbols.
 
 ## `ai/npcCombat.ts`
 
-- `applyNpcMeleeHit` — function — line 248
-- `applyNpcRangedHit` — function — line 273
-- `NpcAmmoSource` — type — line 203
+- `applyNpcMeleeHit` — function — line 307
+- `applyNpcRangedHit` — function — line 332
+- `chooseCombatMode` — function — line 245
+- `NpcAmmoSource` — type — line 262
 - `NpcMeleeWeapon` — type — line 42
 - `npcMeleeWeaponFamily` — function — line 79
 - `NpcMeleeWeaponFamily` — type — line 47
 - `NpcRangedWeapon` — type — line 43
-- `npcRangedWeaponFamily` — function — line 86
+- `npcRangedWeaponFamily` — function — line 101
 - `NpcRangedWeaponFamily` — type — line 48
-- `resolveIncomingNpcDamage` — function — line 345
-- `resolveNpcAmmo` — function — line 209
-- `resolveNpcAmmoKind` — function — line 224
-- `resolveNpcArmorEquipment` — function — line 320
-- `resolveNpcDefenseConfig` — function — line 231
-- `resolveNpcMeleeWeapon` — function — line 155
-- `resolveNpcRangedWeapon` — function — line 181
+- `resolveIncomingNpcDamage` — function — line 404
+- `resolveNpcAmmo` — function — line 268
+- `resolveNpcAmmoKind` — function — line 283
+- `resolveNpcArmorEquipment` — function — line 379
+- `resolveNpcDefenseConfig` — function — line 290
+- `resolveNpcMeleeWeapon` — function — line 177
+- `resolveNpcRangedWeapon` — function — line 209
 
 ## `ai/npcCrowd.ts`
 
@@ -413,13 +414,15 @@ Generated from exported TypeScript symbols.
 
 - `defaultWeaponForRole` — function — line 23
 - `ensureKnifeCarried` — function — line 47
-- `isNpcLoadoutBelonging` — function — line 157
+- `isNpcLoadoutBelonging` — function — line 207
 - `seedDefaultRoleWeapon` — function — line 33
+- `seedGuardCrossbowLoadout` — function — line 143
 - `seedHunterStartingArrows` — function — line 70
 - `seedHunterSupplies` — function — line 62
-- `seedInitialPersonalBelongingsIfNeeded` — function — line 136
+- `seedInitialPersonalBelongingsIfNeeded` — function — line 179
 - `seedShepherdPrimaryWeapon` — function — line 125
 - `seedShepherdShears` — function — line 77
+- `seedShepherdSlingLoadout` — function — line 165
 - `selectShepherdPrimaryWeapon` — function — line 111
 - `SHEPHERD_PRIMARY_WEAPON_KINDS` — const — line 105
 

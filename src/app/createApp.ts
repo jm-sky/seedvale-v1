@@ -108,6 +108,7 @@ import {
   restorePersistedNeeds,
 } from '../player/PlayerNeeds'
 import { restorePersistedSkills, toggleSneak } from '../player/PlayerSkills'
+import { createPlayerThrow } from '../player/playerThrow'
 import { createPlayerTorch } from '../player/PlayerTorch'
 import {
   resolvePlayerAppearance,
@@ -1010,6 +1011,8 @@ export async function createApp(
   migrateArmorCountsToInstances(inventory)
   grantStartingLoadout(inventory)
   const heldTool = createHeldTool(inventory, initialSave?.heldTool ?? null)
+  /** Transient armed-throw state (plan items-player-059 §17) — not persisted. */
+  const playerThrow = createPlayerThrow()
   const equipment = createEquipmentState(inventory, initialSave?.playerEquipment)
   const primaryWeapons = createPrimaryWeaponSelection()
   if (initialSave) {
@@ -3084,6 +3087,18 @@ export async function createApp(
     onEquipArmor: inventoryWiring.equipArmor,
     onUnequipArmor: inventoryWiring.unequipArmor,
     onConsume: (kind) => survival.consumeItem(kind),
+    onThrow: (kind) => {
+      // Toggle (plan items-player-059 §17) — clicking "Rzuć" again while
+      // already armed with the same kind disarms instead of re-arming.
+      inventoryScreen.close()
+      if (playerThrow.armedKind() === kind) {
+        playerThrow.clear()
+        toast.show('Rzut anulowany.')
+      } else {
+        playerThrow.arm(kind)
+        toast.show('Rzut uzbrojony — [E] na cel, by rzucić.')
+      }
+    },
     onRead: (kind) => {
       if (ITEM_CATALOG[kind].treasureMap) inventoryWiring.readTreasureMapItem(kind)
       else inventoryWiring.readBookItem(kind)
@@ -3583,7 +3598,7 @@ export async function createApp(
     isWorldValid: worldRebuildLifecycle.isValid,
     climate, clouds, groundFog, weatherParticles, weatherAudio, getSeed: () => config.seed,
     keyboard, mouseLook, touchControls, pauseMenu, npcDialog, npcInspector, npcInspectTrigger, questLog, vueUi, inventoryScreen,
-    quickActions, timeSkip, timeSkipOverlay, busy, busyOverlay, restCamp, inventory, heldTool, equipment, mount, lead, landOwnership, toast, hud,
+    quickActions, timeSkip, timeSkipOverlay, busy, busyOverlay, restCamp, inventory, heldTool, playerThrow, equipment, mount, lead, landOwnership, toast, hud,
     questManager, syncLostLivestockQuests, onQuestStateSynced: refreshGuardEveningPolicies, ambientAudio, fireAudio, houseDoors, worldAudio, playerTorch, minimap, mapDiscovery, locationProximityDiscovery, openQuestLog, openInventory, openSkills, openCharacter,
     targetedSkillSelection,
     toggleCombatMode: inventoryWiring.toggleCombatMode,

@@ -1285,6 +1285,7 @@ Generated from TypeScript imports.
 - `player/medicalTreatment.ts`
 - `player/playerCombatMode.ts`
 - `player/playerEquipmentVisual.ts`
+- `player/playerThrow.ts`
 - `quests/QuestManager.test.ts`
 - `quests/QuestManager.ts`
 - `quests/dungeonBanditTreasure.ts`

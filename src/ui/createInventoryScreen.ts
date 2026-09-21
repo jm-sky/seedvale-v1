@@ -21,6 +21,9 @@ export type InventoryScreenHandlers = {
   onUnequipArmor?: (slot?: EquipmentSlot) => void
   /** "Zjedz"/"Wypij" (plan 106) — only offered for consumable items. */
   onConsume?: (kind: ItemKind) => void
+  /** "Rzuć" (plan items-player-059) — arms an improvised throwable without
+   *  occupying `HeldTool`. */
+  onThrow?: (kind: ItemKind) => void
   /** "Czytaj" (plan items-player-016) — only offered for `ITEM_CATALOG[kind].book` items. */
   onRead?: (kind: ItemKind) => void
   onPlaceTrap?: (kind: TrapKind) => void
@@ -98,6 +101,7 @@ export function createInventoryScreen(
       (kind, instanceId) => handlers.onEquip?.(kind, instanceId),
       () => handlers.onUnequip?.(),
       (kind) => handlers.onConsume?.(kind),
+      (kind) => handlers.onThrow?.(kind),
       (kind) => handlers.onRead?.(kind),
       (kind) => handlers.onPlaceTrap?.(kind),
       (ids) => handlers.onSellInstances?.(ids) ?? 'invalid_offer',

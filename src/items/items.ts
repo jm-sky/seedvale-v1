@@ -115,6 +115,10 @@ export type ItemKind =
   /** Plan items-player-047 — elite quest-reward hunting bow: faster/lighter/
    *  more accurate than `hunting_bow`, but less raw damage than `long_bow`. */
   | 'masterwork_hunting_bow'
+  /** Plan items-player-059 — slow high-impact reload weapon; not a bow variant. */
+  | 'crossbow'
+  /** Plan items-player-059 — cheap stone-ammo ranged weapon. */
+  | 'sling'
   /** Plan quests-progression-025 — identity-backed family heirloom. */
   | 'signet_ring'
   /** Sellable jewelry loot (Quaternius Ultimate RPG Pack) — no wear mechanics; `EquipmentSlot` has no `finger` slot. */
@@ -133,6 +137,8 @@ export type ItemKind =
   | 'arrow'
   | 'broadhead_arrow'
   | 'war_arrow'
+  /** Plan items-player-059 — crossbow ammo (ordinary stackable count). */
+  | 'bolt'
   | 'chest'
   | 'backpack'
   | 'tree_seed'
@@ -1266,6 +1272,24 @@ export const ITEM_DEFS: Record<ItemKind, ItemDef> = {
     color: 0x8a6a3f,
     description: 'Wyjątkowy łuk myśliwski wykonany mistrzowską ręką. Szybszy, celniejszy i wygodniejszy niż zwykły łuk myśliwski.'
   },
+  crossbow: {
+    kind: 'crossbow',
+    label: 'kusza',
+    categories: ['weapon'],
+    weight: 2.4,
+    size: 'MD',
+    color: 0x5a4030,
+    description: 'Ciężka kusza o wysokiej sile przebicia. Szybki strzał, ale długie przeładowanie.',
+  },
+  sling: {
+    kind: 'sling',
+    label: 'proca',
+    categories: ['weapon'],
+    weight: 0.25,
+    size: 'SM',
+    color: 0x8a7050,
+    description: 'Prosta proca. Tania broń dystansowa strzelająca zwykłymi kamieniami.',
+  },
   arrow: {
     kind: 'arrow',
     label: 'strzała',
@@ -1292,6 +1316,15 @@ export const ITEM_DEFS: Record<ItemKind, ItemDef> = {
     size: 'XS',
     color: 0x5a5a5a,
     description: 'Cięższa, wzmocniona strzała bojowa. Zadaje największe obrażenia.'
+  },
+  bolt: {
+    kind: 'bolt',
+    label: 'bełt',
+    categories: ['resource'],
+    weight: 0.08,
+    size: 'XS',
+    color: 0x6a5a40,
+    description: 'Krótki bełt do kuszy. Grubszy i cięższy od zwykłej strzały.',
   },
   chest: {
     kind: 'chest',
@@ -2416,7 +2449,45 @@ function buildProceduralItemMesh(kind: ItemKind): THREE.Object3D {
     group.add(string)
     return group
   }
-  if (kind === 'arrow' || kind === 'broadhead_arrow' || kind === 'war_arrow') {
+  if (kind === 'crossbow') {
+    const group = new THREE.Group()
+    const stock = new THREE.Mesh(
+      new THREE.BoxGeometry(0.08, 0.06, 0.55),
+      new THREE.MeshStandardMaterial({ color: ITEM_DEFS.crossbow.color, flatShading: true }),
+    )
+    stock.position.y = 0.04
+    stock.castShadow = true
+    group.add(stock)
+    const prod = new THREE.Mesh(
+      new THREE.BoxGeometry(0.42, 0.03, 0.04),
+      new THREE.MeshStandardMaterial({ color: 0x4a4035, flatShading: true }),
+    )
+    prod.position.set(0, 0.07, 0.18)
+    prod.castShadow = true
+    group.add(prod)
+    return group
+  }
+  if (kind === 'sling') {
+    const group = new THREE.Group()
+    const pouch = new THREE.Mesh(
+      new THREE.SphereGeometry(0.04, 6, 4),
+      new THREE.MeshStandardMaterial({ color: ITEM_DEFS.sling.color, flatShading: true }),
+    )
+    pouch.scale.set(1.4, 0.55, 1)
+    pouch.position.y = 0.05
+    pouch.castShadow = true
+    group.add(pouch)
+    const cord = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.006, 0.006, 0.35, 4),
+      new THREE.MeshStandardMaterial({ color: 0x6a5840, flatShading: true }),
+    )
+    cord.rotation.z = Math.PI / 2.4
+    cord.position.set(0.12, 0.05, 0)
+    cord.castShadow = true
+    group.add(cord)
+    return group
+  }
+  if (kind === 'arrow' || kind === 'broadhead_arrow' || kind === 'war_arrow' || kind === 'bolt') {
     const group = new THREE.Group()
     const shaft = new THREE.Mesh(
       new THREE.CylinderGeometry(0.008, 0.008, 0.55, 5),

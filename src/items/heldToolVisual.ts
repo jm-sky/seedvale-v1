@@ -216,6 +216,20 @@ export const HELD_ATTACH: Record<ToolKind, HeldAttach> = {
     scale: 0.98,
     gripLocalOffset: [0, 0, -0.3],
   },
+  // Plan items-player-059 — Quaternius-style crossbow GLB in public/models/items.
+  crossbow: {
+    position: [-0.2, 0.12, -0.02],
+    rotation: [Math.PI / 2, -Math.PI / 2, 0],
+    scale: 0.95,
+    gripLocalOffset: [0, 0, -0.18],
+  },
+  // Plan items-player-059 — procedural sling; soft pouch grip.
+  sling: {
+    position: [0.02, 0.1, -0.02],
+    rotation: [Math.PI / 2, 0, 0],
+    scale: 1.1,
+    gripLocalOffset: [0, 0, -0.05],
+  },
 }
 
 /**
@@ -266,6 +280,7 @@ export const HELD_GLB: Partial<Record<ToolKind, { url: string, maxSize: number }
   short_bow: { url: '/models/items/short_bow.glb', maxSize: 0.8 },
   hunting_bow: { url: '/models/items/hunting_bow.glb', maxSize: 0.9 },
   long_bow: { url: '/models/items/long_bow.glb', maxSize: 1.05 },
+  crossbow: { url: '/models/items/crossbow.glb', maxSize: 0.75 },
 }
 
 const HELD_ASSET_ID: Partial<Record<ToolKind, string>> = {
@@ -288,6 +303,7 @@ const HELD_ASSET_ID: Partial<Record<ToolKind, string>> = {
   short_bow: 'held:short_bow',
   hunting_bow: 'held:hunting_bow',
   long_bow: 'held:long_bow',
+  crossbow: 'held:crossbow',
 }
 
 /**
@@ -295,7 +311,7 @@ const HELD_ASSET_ID: Partial<Record<ToolKind, string>> = {
  * wooden_torch stick; remap to the Z-forward axis `HELD_ATTACH` expects for
  * the fishing_rod/spear/pitchfork grip family.
  */
-const Y_TO_Z_HELD_KINDS = new Set<ToolKind>(['hunting_bow', 'long_bow', 'short_bow', 'wooden_torch'])
+const Y_TO_Z_HELD_KINDS = new Set<ToolKind>(['crossbow', 'hunting_bow', 'long_bow', 'short_bow', 'wooden_torch'])
 
 export type HeldMountContext = {
   characterRoot: Object3D

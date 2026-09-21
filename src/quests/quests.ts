@@ -1947,11 +1947,11 @@ export const QUESTS: readonly AuthoredQuestDef[] = [
         objective: { type: 'gather_item', kind: 'herb', count: 3 },
         description: 'Zbierz 3 rzadkie zioła lecznicze.',
         reminderLine: 'Udało ci się znaleźć jakieś lecznicze zioła?',
-        playerLine: 'Mam trzy. Powinny się nadać.',
+        playerLine: 'Tak. Zebrałem trzy rzadkie zioła — proszę.',
       },
     ],
     reportPromptLine: 'Znalazłeś te zioła?',
-    reportPlayerLine: 'Mam trzy. Powinny się nadać.',
+    reportPlayerLine: 'Tak. Zebrałem trzy rzadkie zioła — proszę.',
     reportLine: 'Dobre sztuki. Odłożę je do zapasów, zanim naprawdę będą potrzebne.',
     outcomes: [
       {
@@ -2040,11 +2040,11 @@ export const QUESTS: readonly AuthoredQuestDef[] = [
         objective: { type: 'kill_target_animal', kind: 'fox' },
         description: 'Zabij lisa przy osadzie.',
         reminderLine: 'Lis dalej kręci się przy osadzie. Lepiej nie czekać, aż dobierze się do kur.',
-        progressLine: 'Lis nie żyje. Zagrożenie dla obejść minęło.',
+        progressLine: 'Lisa już nie ma. Nie będzie już grasował przy osadzie.',
       },
     ],
     reportPromptLine: 'Co z tym lisem?',
-    reportPlayerLine: 'Już nie podejdzie pod osadę.',
+    reportPlayerLine: 'Lisa już nie ma. Nie będzie już grasował przy osadzie.',
     reportLine: 'Dobrze. Jedno zmartwienie mniej, zwłaszcza dla tych, którzy trzymają drób. Masz — za robotę.',
     outcomes: [
       {

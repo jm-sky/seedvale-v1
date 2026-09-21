@@ -1,10 +1,11 @@
 import type { RangedConfig } from '../items/itemCatalog'
 
 /**
- * Neutral ranged-attack timing primitive (plan 177) — the draw→release→
- * recovery timer shared by every ranged attacker (player, NPC), pulled out
- * of `player/playerRanged.ts` (plan 162) the same way
- * `combat/meleeAttack.ts` pulled melee's timer out of `player/playerMelee.ts`.
+ * Neutral ranged-attack timing primitive (plan 177, extended by
+ * items-player-059) — the draw→release→recovery→(optional reload) timer
+ * shared by every ranged attacker (player, NPC), pulled out of
+ * `player/playerRanged.ts` (plan 162) the same way `combat/meleeAttack.ts`
+ * pulled melee's timer out of `player/playerMelee.ts`.
  * Owns only timing and the single `fireReady` edge — stamina gating stays
  * attacker-specific (`player/playerRanged.ts` wraps this for the player;
  * `ai/NpcAgent.ts`'s `combat` phase does the same for NPCs). Ammo lookup/
@@ -15,8 +16,13 @@ import type { RangedConfig } from '../items/itemCatalog'
  * `manualRelease` (`player/playerRanged.ts`) for real press-to-draw/
  * release-to-fire input: `drawTime` becomes the *minimum* hold before
  * `release()` counts as a fire instead of a cancel.
+ *
+ * When `config.reloadTime` is set (crossbow), recovery transitions into an
+ * explicit `reload` phase before idle. `fireReady` still occurs only at the
+ * shot edge — reload gates the *next* `start()`, never the shot that just
+ * fired. Bows omit `reloadTime` and keep draw→release→recovery→idle.
  */
-export type RangedState = 'idle' | 'draw' | 'release' | 'recovery'
+export type RangedState = 'idle' | 'draw' | 'release' | 'recovery' | 'reload'
 
 export type RangedAttackTickResult = {
   /** True on the exact frame draw completes — the single point at which a
@@ -27,7 +33,10 @@ export type RangedAttackTickResult = {
 
 export type RangedAttackLifecycle = {
   state: () => RangedState
+  /** True while any non-idle phase is active (draw/release/recovery/reload). */
   isDrawing: () => boolean
+  /** True only during the explicit post-shot reload phase. */
+  isReloading: () => boolean
   /** Progress (0..1) within the current phase — for draw-pose visuals. */
   phaseProgress: () => number
   /** Starts `draw` if currently idle. Callers gate stamina/ammo/etc. before
@@ -45,7 +54,8 @@ export type RangedAttackLifecycle = {
    *  otherwise cancels back to `idle` with no shot. No-op if not currently in
    *  `draw`. Irrelevant for non-manual-release draws (NPCs). */
   release: () => RangedAttackTickResult
-  /** Cancels any in-flight draw — interrupt/death/rebuild safety. */
+  /** Cancels any in-flight draw/reload — interrupt/death/rebuild safety.
+   *  Never manufactures a shot or spends ammo. */
   reset: () => void
 }
 
@@ -56,6 +66,7 @@ function phaseDuration(state: RangedState, config: RangedConfig): number {
     case 'draw': return config.drawTime
     case 'recovery': return config.recovery
     case 'release': return RELEASE_PHASE_DURATION
+    case 'reload': return config.reloadTime ?? 0
     default: return 0
   }
 }
@@ -69,6 +80,7 @@ export function createRangedAttackLifecycle(): RangedAttackLifecycle {
   return {
     state: () => state,
     isDrawing: () => state !== 'idle',
+    isReloading: () => state === 'reload',
     phaseProgress: () => {
       if (!config) return 0
       const duration = phaseDuration(state, config)
@@ -87,7 +99,8 @@ export function createRangedAttackLifecycle(): RangedAttackLifecycle {
       timer += dt
       let fireReady = false
       let fireConfig: RangedConfig | null = null
-      for (let guard = 0; guard < 4; guard++) {
+      // draw→release→recovery→reload→idle can cascade in one large dt.
+      for (let guard = 0; guard < 6; guard++) {
         if (state === 'draw' && manualRelease) {
           // Waiting on release() — hold the timer at drawTime so
           // phaseProgress() doesn't run past 1 while fully drawn.
@@ -107,6 +120,18 @@ export function createRangedAttackLifecycle(): RangedAttackLifecycle {
           continue
         }
         if (state === 'recovery' && timer >= config.recovery) {
+          timer -= config.recovery
+          const reloadTime = config.reloadTime ?? 0
+          if (reloadTime > 0) {
+            state = 'reload'
+            continue
+          }
+          timer = 0
+          state = 'idle'
+          config = null
+          break
+        }
+        if (state === 'reload' && timer >= (config.reloadTime ?? 0)) {
           timer = 0
           state = 'idle'
           config = null

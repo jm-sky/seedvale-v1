@@ -127,6 +127,49 @@ export function seedShepherdPrimaryWeapon(inventory: Inventory, npcId: string): 
   inventory.addInstance(createWeaponInstance(selectShepherdPrimaryWeapon(npcId)))
 }
 
+/** Isolated from every other roll (plan items-player-059 §10) — a guard's
+ *  optional crossbow never rerolls when unrelated content/salts change. */
+const GUARD_CROSSBOW_LOADOUT_SALT = 'guard-crossbow-loadout-v1'
+/** Suggested V1 occurrence (plan §10: "30-50% of guards"). */
+const GUARD_CROSSBOW_LOADOUT_CHANCE_PERCENT = 40
+const GUARD_STARTING_BOLTS = 6
+
+/** Deterministic optional guard crossbow (plan items-player-059 §10) — an
+ *  additional ranged option alongside `DEFAULT_WEAPON_BY_ROLE.guard`
+ *  (`long_sword`, unchanged), not a replacement. One stable roll per
+ *  `npcId`; idempotent (no-op once a crossbow is already carried). `crossbow`
+ *  is count-based like bows (not `WEAPON_MAINTENANCE_KINDS`), so both it and
+ *  its bolts use plain `add()`. */
+export function seedGuardCrossbowLoadout(inventory: Inventory, npcId: string): void {
+  if (inventory.holdsAny('crossbow')) return
+  const roll = hashString(`${npcId}:${GUARD_CROSSBOW_LOADOUT_SALT}`) % 100
+  if (roll >= GUARD_CROSSBOW_LOADOUT_CHANCE_PERCENT) return
+  inventory.add('crossbow', 1)
+  inventory.add('bolt', GUARD_STARTING_BOLTS)
+}
+
+/** Isolated from `SHEPHERD_PRIMARY_WEAPON_SALT` (plan items-player-059 §12)
+ *  — sling is an independent optional roll; the existing melee weights/salt
+ *  are unchanged. */
+const SHEPHERD_SLING_LOADOUT_SALT = 'shepherd-sling-loadout-v1'
+/** Suggested V1 occurrence (plan §12: "20-30% of shepherds"). */
+const SHEPHERD_SLING_LOADOUT_CHANCE_PERCENT = 25
+const SHEPHERD_STARTING_SLING_STONES = 4
+
+/** Deterministic optional shepherd sling (plan items-player-059 §12) —
+ *  additional to the primary melee roll above, never replacing it. Seeds a
+ *  small initial `stone` stack alongside it (existing renewable resource
+ *  reused as sling ammo, plan §11); no shepherd stone-resupply loop exists
+ *  yet, so this stack is deliberately small and one-time, like
+ *  `HUNTER_STARTING_ARROWS`. */
+export function seedShepherdSlingLoadout(inventory: Inventory, npcId: string): void {
+  if (inventory.holdsAny('sling')) return
+  const roll = hashString(`${npcId}:${SHEPHERD_SLING_LOADOUT_SALT}`) % 100
+  if (roll >= SHEPHERD_SLING_LOADOUT_CHANCE_PERCENT) return
+  inventory.add('sling', 1)
+  inventory.add('stone', SHEPHERD_STARTING_SLING_STONES)
+}
+
 /**
  * Seeds role weapons/knife into authoritative personal inventory once, on
  * genuine first NPC-state creation (plan settlements-npcs-026). Snapshot
@@ -142,20 +185,28 @@ export function seedInitialPersonalBelongingsIfNeeded(
   if (!state.needsInitialPersonalLoadout) return
   seedDefaultRoleWeapon(inventory, role)
   if (role === 'hunter' || role === 'woodcutter') ensureKnifeCarried(inventory)
+  if (role === 'guard') seedGuardCrossbowLoadout(inventory, npcId)
   if (role === 'shepherd') {
     seedShepherdShears(inventory)
     seedShepherdPrimaryWeapon(inventory, npcId)
+    seedShepherdSlingLoadout(inventory, npcId)
   }
   state.needsInitialPersonalLoadout = false
 }
 
-/** Whether `kind` is this role's personal loadout belonging (plan npc-010) —
- *  the default role weapon, plus the extra `knife` woodcutter/hunter seed
- *  beside a non-knife primary. Arrows and every other carried work/economy
- *  payload stay out: they are household/expedition supply, not personal
- *  equipment, and the loadout helpers never tag ownership per item. */
+/** Whether `kind` is this role's personal loadout belonging (plan npc-010,
+ *  extended by plan items-player-059 §10/§12) — the default role weapon,
+ *  plus the extra `knife` woodcutter/hunter seed beside a non-knife primary,
+ *  plus the optional guard crossbow and shepherd sling rolls above. Bolts
+ *  are included for guard: unlike hunter arrows there is no guard bolt
+ *  resupply/`carried` work-supply loop, so `seedGuardCrossbowLoadout` seeds
+ *  them straight into personal inventory and they belong here too. Stones
+ *  are deliberately **not** included even for a sling-carrying shepherd —
+ *  `stone` stays the ordinary shared renewable resource (trade/corpse-loot
+ *  semantics unaffected), the same reason arrows stay out for hunter. */
 export function isNpcLoadoutBelonging(kind: ItemKind, role: Role): boolean {
   if (kind === defaultWeaponForRole(role)) return true
-  if (role === 'shepherd' && (kind === 'shears' || SHEPHERD_PRIMARY_WEAPON_KINDS.includes(kind))) return true
+  if (role === 'shepherd' && (kind === 'shears' || kind === 'sling' || SHEPHERD_PRIMARY_WEAPON_KINDS.includes(kind))) return true
+  if (role === 'guard' && (kind === 'crossbow' || kind === 'bolt')) return true
   return kind === 'knife' && (role === 'woodcutter' || role === 'hunter')
 }

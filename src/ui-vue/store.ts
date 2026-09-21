@@ -151,6 +151,8 @@ type InventoryState = {
   onUnequipArmor: ((slot?: EquipmentSlot) => void) | null
   /** "Zjedz"/"Wypij" (plan 106) — only offered for `ITEM_CATALOG[kind].consumable` items. */
   onConsume: ((kind: ItemKind) => void) | null
+  /** "Rzuć" (plan items-player-059) — improvised throwable arming. */
+  onThrow: ((kind: ItemKind) => void) | null
   /** "Czytaj" (plan items-player-016) — only offered for `ITEM_CATALOG[kind].book` items. */
   onRead: ((kind: ItemKind) => void) | null
   onPlaceTrap: ((kind: TrapKind) => void) | null
@@ -826,7 +828,7 @@ export function emitUiClick(): void {
 export const ui = reactive({
   npcDialogueMenu: { open: false, npc: null, npcHeading: '', settlement: null, timeOfDay: 0, helpResult: null, resolveQuestHelp: null, resolveQuestPreview: null, canClaimGuardReward: false, getCanClaimGuardReward: null, onClaimGuardReward: null, canTrade: false, getCanTrade: null, onOpenTrade: null, canOrderArtisan: false, getCanOrderArtisan: null, onOpenArtisanOrders: null, onRequestFood: null, onRequestWater: null, onAskAboutArea: null, followUp: null, paymentClaim: null, onPayWage: null, onGiveItem: null, joinProposal: null, onRespondToJoinProposal: null, onProposeJoin: null } as NpcDialogueMenuState,
   villagers: { open: false, entries: [] as VillagerEntry[], page: 0, containers: [] as VillagerContainerOption[] },
-  inventory: { open: false, counts: {}, groups: [], totalWeight: 0, maxWeight: 0, totalSize: 0, maxSize: 0, heldTool: null, heldInstanceId: null, primaryMelee: null, primaryRanged: null, onDrop: null, onEquip: null, onUnequip: null, equippedSlots: {}, onEquipArmor: null, onUnequipArmor: null, onConsume: null, onRead: null, onPlaceTrap: null, onSellInstances: null, onSharpen: null, onPlaceContainer: null, onPlaceTent: null, onSetPrimaryMelee: null, onSetPrimaryRanged: null } as InventoryState,
+  inventory: { open: false, counts: {}, groups: [], totalWeight: 0, maxWeight: 0, totalSize: 0, maxSize: 0, heldTool: null, heldInstanceId: null, primaryMelee: null, primaryRanged: null, onDrop: null, onEquip: null, onUnequip: null, equippedSlots: {}, onEquipArmor: null, onUnequipArmor: null, onConsume: null, onThrow: null, onRead: null, onPlaceTrap: null, onSellInstances: null, onSharpen: null, onPlaceContainer: null, onPlaceTent: null, onSetPrimaryMelee: null, onSetPrimaryRanged: null } as InventoryState,
   pauseMenu: {
     open: false, seed: 0, playerName: '', activeSaveName: '', onPause: null, onResume: null, onToggleGui: null,
     onNameChange: null, onNameCommit: null, onSave: null, onSaveAs: null, onLoadSave: null, onListSaves: null,
@@ -1270,6 +1272,7 @@ export function openInventory(
   onEquip: (kind: ItemKind, instanceId?: string) => void,
   onUnequip: () => void,
   onConsume: (kind: ItemKind) => void,
+  onThrow: (kind: ItemKind) => void,
   onRead: (kind: ItemKind) => void,
   onPlaceTrap: (kind: TrapKind) => void,
   onSellInstances: (instanceIds: readonly string[]) => TradeResult,
@@ -1298,6 +1301,7 @@ export function openInventory(
   ui.inventory.onEquipArmor = onEquipArmor
   ui.inventory.onUnequipArmor = onUnequipArmor
   ui.inventory.onConsume = onConsume
+  ui.inventory.onThrow = onThrow
   ui.inventory.onRead = onRead
   ui.inventory.onPlaceTrap = onPlaceTrap
   ui.inventory.onSellInstances = onSellInstances

@@ -45,7 +45,7 @@ export type NpcRangedWeapon = { kind: ItemKind, ranged: RangedConfig }
 /** Small pure weapon-family classification (plan npc-053 §4) — used only for
  *  NPC profession weapon preference, not a general item-catalog concept. */
 export type NpcMeleeWeaponFamily = 'compact' | 'sword' | 'axe' | 'spear' | 'tool'
-export type NpcRangedWeaponFamily = 'bow'
+export type NpcRangedWeaponFamily = 'bow' | 'crossbow' | 'sling'
 
 /** Explicit per-kind family classification for every current melee-capable
  *  `ItemKind` (plan npc-053 §4/§9 implementation notes) — deliberately total
@@ -80,11 +80,26 @@ export function npcMeleeWeaponFamily(kind: ItemKind): NpcMeleeWeaponFamily {
   return NPC_MELEE_WEAPON_FAMILY[kind] ?? 'tool'
 }
 
-/** All current ranged weapons are bows (plan npc-053 §4) — kept as a
- *  function so a future second ranged family only needs a new lookup here,
- *  not a signature change. */
-export function npcRangedWeaponFamily(_kind: ItemKind): NpcRangedWeaponFamily {
-  return 'bow'
+/** Explicit per-kind ranged family classification (plan items-player-059 §8)
+ *  — deliberately total over today's ranged-capable catalog, mirroring
+ *  `NPC_MELEE_WEAPON_FAMILY`'s completeness contract; `npcCombat.test.ts`
+ *  asserts every `RANGED_CAPABLE_KINDS` entry is listed here. */
+const NPC_RANGED_WEAPON_FAMILY: Readonly<Partial<Record<ItemKind, NpcRangedWeaponFamily>>> = {
+  short_bow: 'bow',
+  hunting_bow: 'bow',
+  long_bow: 'bow',
+  masterwork_hunting_bow: 'bow',
+  crossbow: 'crossbow',
+  sling: 'sling',
+}
+
+/** Classifies a ranged-capable `ItemKind` into its NPC weapon family —
+ *  falls back to `bow` for anything not explicitly listed (same "unclassified
+ *  falls back rather than becoming unusable" contract as
+ *  `npcMeleeWeaponFamily`); completeness is enforced by a test, not this
+ *  fallback. */
+export function npcRangedWeaponFamily(kind: ItemKind): NpcRangedWeaponFamily {
+  return NPC_RANGED_WEAPON_FAMILY[kind] ?? 'bow'
 }
 
 /** Closed per-role preferred melee family/families (plan npc-053 §5) —
@@ -104,11 +119,14 @@ const NPC_MELEE_FAMILY_PREFERENCE: Readonly<Record<Role, readonly NpcMeleeWeapon
   herbalist: ['compact'],
 }
 
-/** Only `hunter` has a ranged preference in V1 (plan npc-053 §5) — every
- *  other role has no entry, which is equivalent to "no bonus" since there's
- *  only one ranged family today. */
+/** Per-role ranged family preference (plan npc-053 §5, extended by plan
+ *  items-player-059 §9/§10/§12) — every other role has no entry, equivalent
+ *  to "no bonus". Hunter's `bow` preference is additionally enforced as a
+ *  hard restriction below, not just this generic bonus (§9). */
 const NPC_RANGED_FAMILY_PREFERENCE: Readonly<Partial<Record<Role, readonly NpcRangedWeaponFamily[]>>> = {
   hunter: ['bow'],
+  guard: ['crossbow'],
+  shepherd: ['sling'],
 }
 
 /** Profession-preferred-family bonus (plan npc-053 §7) — a weapon outside
@@ -120,8 +138,12 @@ function meleeCombatScore(config: MeleeConfig): number {
   return attackCycle > 0 ? config.damage / attackCycle : 0
 }
 
+/** Sustained-cadence score — includes `reloadTime` (crossbow, plan
+ *  items-player-059 §19) in the cycle denominator for neutral within-family
+ *  ranking; bows/sling omit it (`?? 0`), so their score is unchanged. Opening
+ *  -shot tactical value is handled by mode/handling logic, not here. */
 function rangedCombatScore(config: RangedConfig): number {
-  const attackCycle = config.drawTime + config.recovery
+  const attackCycle = config.drawTime + config.recovery + (config.reloadTime ?? 0)
   return attackCycle > 0 ? config.damage / attackCycle : 0
 }
 
@@ -173,20 +195,31 @@ export function resolveNpcMeleeWeapon(inventory: Inventory, role: Role): NpcMele
 }
 
 /** Resolves the best bow an NPC currently owns (plan npc-053 §5/§6/§7/§8/
- *  §11) — mirrors `resolveNpcMeleeWeapon` for the ranged mode. Does **not**
- *  check ammo: a bow with no compatible arrow currently carried still
- *  resolves here (matches every melee-capable weapon's "config exists"
- *  contract); `NpcAgent.beginCombat`/the `combat` phase separately require
- *  actual ammo before drawing. */
+ *  §11, extended by plan items-player-059 §9) — mirrors `resolveNpcMeleeWeapon`
+ *  for the ranged mode. Does **not** check ammo: a bow with no compatible
+ *  arrow currently carried still resolves here (matches every melee-capable
+ *  weapon's "config exists" contract); `NpcAgent.beginCombat`/the `combat`
+ *  phase separately require actual ammo before drawing.
+ *
+ *  Hunter is a deliberate hard restriction, not just the generic preferred-
+ *  family bonus: when at least one usable `bow`-family candidate is carried,
+ *  every non-bow ranged candidate (e.g. a hunter manually given a crossbow)
+ *  is excluded outright, so raw score can never let it win. Never applied to
+ *  melee selection. */
 export function resolveNpcRangedWeapon(inventory: Inventory, role: Role): NpcRangedWeapon | null {
   const preferred = NPC_RANGED_FAMILY_PREFERENCE[role] ?? []
+  const restrictToBow = role === 'hunter' && RANGED_CAPABLE_KINDS.some(
+    (kind) => npcRangedWeaponFamily(kind) === 'bow' && inventory.holdsAny(kind),
+  )
   const candidates: Array<ScoredCandidate & { ranged: RangedConfig }> = []
   for (const kind of RANGED_CAPABLE_KINDS) {
     if (!inventory.holdsAny(kind)) continue
+    const family = npcRangedWeaponFamily(kind)
+    if (restrictToBow && family !== 'bow') continue
     const ranged = ITEM_CATALOG[kind].ranged
     if (!ranged) continue
     const baseScore = rangedCombatScore(ranged)
-    const isPreferred = preferred.includes(npcRangedWeaponFamily(kind))
+    const isPreferred = preferred.includes(family)
     candidates.push({
       kind,
       ranged,
@@ -196,6 +229,32 @@ export function resolveNpcRangedWeapon(inventory: Inventory, role: Role): NpcRan
   }
   const best = pickBestCandidate(candidates)
   return best ? { kind: best.kind, ranged: best.ranged } : null
+}
+
+/** Combat mode a capable NPC should use right now (plan items-player-059
+ *  §6) — pure distance/capability decision shared by combat entry and (via
+ *  `NpcAgent.switchCombatMode`) an in-encounter crossbow→melee transition.
+ *  No role names: "close" is derived from the actually-resolved melee
+ *  weapon's own range, not a hard-coded profession value.
+ *
+ *  - close threat + usable melee → melee (never stand back and reload/aim
+ *    into a target already inside striking distance);
+ *  - otherwise usable ranged → ranged;
+ *  - otherwise usable melee → melee;
+ *  - neither → `null` (existing flee path). */
+export function chooseCombatMode(params: {
+  hasMelee: boolean
+  hasRanged: boolean
+  /** The resolved melee weapon's own range — irrelevant (any value is fine)
+   *  when `hasMelee` is false. */
+  meleeRange: number
+  distance: number
+}): 'melee' | 'ranged' | null {
+  const { hasMelee, hasRanged, meleeRange, distance } = params
+  if (hasMelee && distance <= meleeRange) return 'melee'
+  if (hasRanged) return 'ranged'
+  if (hasMelee) return 'melee'
+  return null
 }
 
 /** One resolved ammo unit and the inventory that actually owns it — firing

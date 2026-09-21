@@ -233,7 +233,7 @@ Generated from exported TypeScript symbols.
 
 ## `player/playerRanged.ts`
 
-- `createPlayerRanged` — function — line 44
+- `createPlayerRanged` — function — line 46
 - `PlayerRanged` — type — line 21
 - `RangedTickResult` — type — line 19
 
@@ -275,6 +275,11 @@ Generated from exported TypeScript symbols.
 - `toggleSneak` — function — line 197
 - `xpForSkillValue` — function — line 102
 - `xpToSkillValue` — function — line 89
+
+## `player/playerThrow.ts`
+
+- `createPlayerThrow` — function — line 19
+- `PlayerThrow` — type — line 13
 
 ## `player/PlayerTorch.ts`
 

@@ -82,9 +82,11 @@ export type RangedConfig = {
   /** Seconds from draw request until release: the NPC auto-fire delay, and
    *  for the player (real press-to-draw/release-to-fire input) the minimum
    *  hold before an early release counts as a cancel instead of a fire —
-   *  see `combat/rangedLifecycle.ts`'s `manualRelease`. */
+   *  see `combat/rangedLifecycle.ts`'s `manualRelease`. For crossbow this is
+   *  the short aim/fire preparation before the shot. */
   drawTime: number
-  /** Seconds after release before another shot can be requested. */
+  /** Seconds after release before another shot can be requested (bows) or
+   *  before an explicit `reloadTime` phase begins (crossbow). */
   recovery: number
   staminaCost: number
   /** Base `[0,1]` accuracy before the `archery` skill bonus — see
@@ -97,6 +99,31 @@ export type RangedConfig = {
   /** Optional flat addition to the shared critical-hit chance. */
   criticalChance?: number
   criticalMultiplier?: number
+  /** Explicit post-shot reload (plan items-player-059) — when set, the shared
+   *  ranged lifecycle enters `reload` after recovery before returning to idle.
+   *  Bows omit this and keep draw→release→recovery unchanged. */
+  reloadTime?: number
+  /** Multiplier on the archery skill accuracy contribution (plan
+   *  items-player-059). Defaults to `1` (full bow contribution). Crossbow
+   *  uses a reduced scale; sling/throw typically use `0`. */
+  skillAccuracyScale?: number
+  /** Minimum target distance at which reload is considered safe (plan
+   *  items-player-059). Used by shared combat mode logic, not role AI. */
+  minReloadDistance?: number
+}
+
+/** Improvised throw attack (plan items-player-059) — not a held ranged weapon
+ *  and not an NPC ranged-family candidate. Converted to a synthetic
+ *  `RangedConfig` at the fire seam so projectile/accuracy reuse stays shared. */
+export type ThrowableConfig = {
+  damage: number
+  range: number
+  projectileSpeed: number
+  accuracy: number
+  /** Short wind-up before the throw releases (player manual-release minimum). */
+  drawTime: number
+  recovery: number
+  staminaCost: number
 }
 
 /** Declarative gameplay capability of an item kind — the answer to "can this
@@ -194,6 +221,9 @@ export type ItemCatalogEntry = {
   defense?: DefenseConfig | null
   /** Ranged attack vs animals while held (plan 162 — `player/playerRanged.ts`). */
   ranged?: RangedConfig | null
+  /** Improvised throw without holding a ranged weapon (plan items-player-059).
+   *  Must not be set together with `ranged` on the same kind. */
+  throwable?: ThrowableConfig | null
   spawn: ItemSpawnKind
   /** Runtime GLB under public/ when present. */
   modelUrl: string | null
@@ -332,9 +362,18 @@ export const ITEM_CATALOG: Record<ItemKind, ItemCatalogEntry> = {
     label: 'kamień',
     holdable: false,
     melee: null,
+    throwable: {
+      damage: 4,
+      range: 6,
+      projectileSpeed: 14,
+      accuracy: 0.45,
+      drawTime: 0.2,
+      recovery: 0.45,
+      staminaCost: 3,
+    },
     spawn: 'village_renewable',
     modelUrl: null,
-    notes: 'Procedural; also dig loot / drops.',
+    notes: 'Procedural; also dig loot / drops. Plan items-player-059 — improvised throw + sling ammo; still not a held ranged weapon.',
   },
   branch: {
     kind: 'branch',
@@ -1355,6 +1394,49 @@ export const ITEM_CATALOG: Record<ItemKind, ItemCatalogEntry> = {
     modelUrl: null,
     notes: 'Plan items-player-047 — quest/exceptional reward, not Kupiec stock (never MERCHANT_STOCK or PREMIUM_MERCHANT_KINDS). Fastest, most accurate bow; less raw damage than long_bow.',
   },
+  crossbow: {
+    kind: 'crossbow',
+    label: 'kusza',
+    holdable: true,
+    melee: null,
+    ranged: {
+      damage: 34,
+      range: 18,
+      projectileSpeed: 40,
+      drawTime: 0.35,
+      recovery: 0.15,
+      reloadTime: 2.5,
+      staminaCost: 10,
+      accuracy: 0.88,
+      skillAccuracyScale: 0.25,
+      minReloadDistance: 4.5,
+      ammoKinds: ['bolt'],
+      criticalChance: 0.06,
+    },
+    spawn: 'none',
+    modelUrl: '/models/items/crossbow.glb',
+    notes: 'Plan items-player-059 — Kupiec stock. High-impact reload weapon; not a bow variant. Explicit reload via rangedLifecycle.',
+  },
+  sling: {
+    kind: 'sling',
+    label: 'proca',
+    holdable: true,
+    melee: null,
+    ranged: {
+      damage: 8,
+      range: 11,
+      projectileSpeed: 22,
+      drawTime: 0.4,
+      recovery: 0.35,
+      staminaCost: 4,
+      accuracy: 0.65,
+      skillAccuracyScale: 0,
+      ammoKinds: ['stone'],
+    },
+    spawn: 'none',
+    modelUrl: null,
+    notes: 'Plan items-player-059 — Kupiec stock. Cheap ranged weapon using existing `stone` as ammo. Procedural fallback mesh.',
+  },
   arrow: {
     kind: 'arrow',
     label: 'strzała',
@@ -1381,6 +1463,15 @@ export const ITEM_CATALOG: Record<ItemKind, ItemCatalogEntry> = {
     spawn: 'none',
     modelUrl: '/models/items/arrow.glb',
     notes: 'Plan 162 — Kupiec stock. Heaviest, highest-damage ammo variant.',
+  },
+  bolt: {
+    kind: 'bolt',
+    label: 'bełt',
+    holdable: false,
+    melee: null,
+    spawn: 'none',
+    modelUrl: null,
+    notes: 'Plan items-player-059 — Kupiec stock. Crossbow ammo; ordinary stackable count. Procedural arrow-like fallback until a dedicated GLB exists.',
   },
   chest: {
     kind: 'chest',
@@ -1820,6 +1911,30 @@ export const ARROW_DAMAGE_BONUS: Partial<Record<ItemKind, number>> = {
  *  a type predicate so callers narrow `held` before indexing `ITEM_CATALOG`. */
 export function isRangedTool<K extends ItemKind | null | undefined>(kind: K): kind is Extract<K, ItemKind> {
   return kind != null && ITEM_CATALOG[kind]?.ranged != null
+}
+
+/** Whether `kind` declares an improvised throw attack (plan items-player-059). */
+export function isThrowableKind<K extends ItemKind | null | undefined>(kind: K): kind is Extract<K, ItemKind> {
+  return kind != null && ITEM_CATALOG[kind]?.throwable != null
+}
+
+/** Builds a synthetic `RangedConfig` from a throwable item so player/NPC fire
+ *  seams reuse the shared accuracy/projectile/lifecycle path without marking
+ *  the resource as a held ranged weapon (plan items-player-059). */
+export function rangedConfigFromThrowable(kind: ItemKind): RangedConfig | null {
+  const throwable = ITEM_CATALOG[kind]?.throwable
+  if (!throwable) return null
+  return {
+    damage: throwable.damage,
+    range: throwable.range,
+    projectileSpeed: throwable.projectileSpeed,
+    drawTime: throwable.drawTime,
+    recovery: throwable.recovery,
+    staminaCost: throwable.staminaCost,
+    accuracy: throwable.accuracy,
+    skillAccuracyScale: 0,
+    ammoKinds: [kind],
+  }
 }
 
 /** Melee-capable held tools — the items-domain mirror of `isMeleeTool`

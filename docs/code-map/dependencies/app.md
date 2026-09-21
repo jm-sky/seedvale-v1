@@ -1027,6 +1027,7 @@ Generated from TypeScript imports.
 - `player/humanCarryCapacity.ts`
 - `player/playerCombatMode.ts`
 - `player/playerEquipmentVisual.ts`
+- `player/playerThrow.ts`
 - `player/playerVisualPreset.ts`
 - `player/targetedSkillSelection.ts`
 - `quests/QuestManager.ts`
@@ -1255,6 +1256,7 @@ Generated from TypeScript imports.
 - `player/playerDamage.ts`
 - `player/playerMelee.ts`
 - `player/playerRanged.ts`
+- `player/playerThrow.ts`
 - `player/targetedSkillSelection.ts`
 - `quests/QuestManager.ts`
 - `render/createPostProcessing.ts`

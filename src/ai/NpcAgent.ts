@@ -78,7 +78,7 @@ import { FLOCK_THREAT_RADIUS, senseOwnedFlockThreat, type ShepherdFlockHooks } f
 import { CONSTRUCTION_MATERIAL_RADIUS, consumeMaterial, hasMaterial } from '../items/constructionMaterials'
 import { foodItemCount } from '../items/foodItems'
 import { Inventory } from '../items/Inventory'
-import { ITEM_CATALOG, type RangedConfig } from '../items/itemCatalog'
+import { ITEM_CATALOG, type RangedConfig, rangedConfigFromThrowable } from '../items/itemCatalog'
 import { type AgentProfile, DEFAULT_CELL_SIZE, findPath, type NavigationQuery, type PathPoint } from '../navigation/navigation'
 import { beginActivePath, endActivePath, recordPathRequest, recordRepath } from '../navigation/navigationStats'
 import { PLAYER_COLLISION_RADIUS } from '../player/playerDimensions'
@@ -309,6 +309,7 @@ import {
 import {
   applyNpcMeleeHit,
   applyNpcRangedHit,
+  chooseCombatMode,
   type NpcMeleeWeapon,
   type NpcRangedWeapon,
   resolveIncomingNpcDamage,
@@ -1393,6 +1394,12 @@ export class NpcAgent {
    *  while this one is still travelling (see the `combat` phase's ranged
    *  branch), so there's never more than one to track. */
   private combatProjectile: Projectile | null = null
+  /** One opportunistic improvised stone throw per combat encounter (plan
+   *  items-player-059 §14) — set the moment a throw is triggered in
+   *  `tickMeleeCombat`, reset alongside every other combat field in
+   *  `beginCombat`/`endCombat`/`die`. Prevents a melee NPC with no ranged
+   *  weapon from becoming a persistent ranged fighter via repeated throws. */
+  private combatImprovisedThrowUsed = false
   /** Monotonic per-agent counter — deterministic attack identity for
    *  `resolveCriticalHit`'s roll (plan 177 §Deterministic simulation),
    *  never frame number/array index/object identity. Shared by melee and
@@ -2517,10 +2524,38 @@ export class NpcAgent {
     this.combatAttack.reset()
     this.combatRangedAttack.reset()
     this.combatProjectile = null
+    this.combatImprovisedThrowUsed = false
     replaceActionLifecycle(this.actionLifecycle)
     this.phase = 'combat'
     this.trace.record({ simTime: this.simClock, type: 'combat.started', targetId: intent.target.ref.id })
     this.requestBark('combat_start', `combat:${this.id}:${intent.target.ref.id}`)
+    return true
+  }
+
+  /** Switches the active combat encounter's mode in place (plan
+   *  items-player-059 §5/§6) — same target/`onKill`, freshly resolved
+   *  weapon for the new mode, only the now-incompatible attack lifecycle
+   *  reset. Never calls `endCombat`/`beginCombat`, so encounter callbacks
+   *  and `combatAttackAttempt` never re-run/reset. No-op (`false`) when
+   *  `mode` isn't actually usable right now (e.g. no melee weapon) or combat
+   *  isn't active. */
+  private switchCombatMode(mode: CombatIntent['mode']): boolean {
+    if (!this.combatIntent || this.combatIntent.mode === mode) return false
+    if (mode === 'melee') {
+      const meleeWeapon = resolveNpcMeleeWeapon(this.personalInventory, this.role)
+      if (!meleeWeapon) return false
+      this.combatMeleeWeapon = meleeWeapon
+      // Abandons any in-flight draw/reload without manufacturing a shot or
+      // spending ammo (plan §5) — the in-flight `combatProjectile`, if any,
+      // is left to resolve on its own (already-fired, ammo already spent).
+      this.combatRangedAttack.reset()
+    } else {
+      const rangedWeapon = resolveNpcRangedWeapon(this.personalInventory, this.role)
+      if (!rangedWeapon || !this.resolveRangedAmmo(rangedWeapon.ranged)) return false
+      this.combatRangedWeapon = rangedWeapon
+      this.combatAttack.reset()
+    }
+    this.combatIntent = { ...this.combatIntent, mode }
     return true
   }
 
@@ -2535,10 +2570,18 @@ export class NpcAgent {
       : this.combatRangedAttack.state() === 'idle' && !this.combatProjectile
   }
 
-  /** Melee sub-branch of the `combat` phase (plan 177 §6) — approach if out
-   *  of weapon range, otherwise swing via the shared `combatAttack`
-   *  lifecycle and resolve the hit once at its `hitReady` edge. Target
-   *  existence/liveness/position are already validated by the caller. */
+  /** Melee sub-branch of the `combat` phase (plan 177 §6, extended by plan
+   *  items-player-059 §14) — approach if out of weapon range, otherwise
+   *  swing via the shared `combatAttack` lifecycle and resolve the hit once
+   *  at its `hitReady` edge. Target existence/liveness/position are already
+   *  validated by the caller.
+   *
+   *  While closing distance with no real ranged weapon, this NPC may take
+   *  one opportunistic improvised `stone` throw (`combatImprovisedThrowUsed`
+   *  gates it to once per encounter) — it shares `combatRangedAttack`/
+   *  `combatProjectile` with `tickRangedCombat`, since both are otherwise
+   *  idle during melee mode; `tickRangedAttackCycle` drives whichever one is
+   *  actually active regardless of `intent.mode`. */
   private tickMeleeCombat(dt: number, intent: CombatIntent, targetPos: { x: number, z: number }): void {
     const weapon = this.combatMeleeWeapon
     if (!weapon) {
@@ -2550,6 +2593,27 @@ export class NpcAgent {
     const dz = targetPos.z - this.mesh.position.z
     const dist = Math.hypot(dx, dz)
     const inRange = dist <= weapon.melee.range
+
+    if (this.combatRangedAttack.state() !== 'idle' || this.combatProjectile) {
+      this.tickRangedAttackCycle(dt, intent, targetPos)
+      // A thrown-stone kill just ended combat via `tickRangedAttackCycle` —
+      // every combat field (including `weapon`'s owning `combatIntent`) is
+      // already cleared; nothing below is safe to run this frame.
+      if (!this.combatIntent) return
+    } else if (
+      !inRange
+      && !this.combatImprovisedThrowUsed
+      && !this.combatRangedWeapon
+    ) {
+      const throwConfig = rangedConfigFromThrowable('stone')
+      const ammo = throwConfig ? this.resolveRangedAmmo(throwConfig) : null
+      if (throwConfig && ammo && dist <= throwConfig.range && this.stamina.current >= throwConfig.staminaCost) {
+        this.combatImprovisedThrowUsed = true
+        drainStamina(this.stamina, throwConfig.staminaCost)
+        this.combatRangedAttack.start(throwConfig)
+      }
+    }
+
     if (!inRange && this.combatAttack.state() === 'idle') {
       this.tmp.set(targetPos.x, 0, targetPos.z)
       this.steerTo(this.tmp, dt)
@@ -2615,36 +2679,23 @@ export class NpcAgent {
     }
   }
 
-  /** Ranged sub-branch of the `combat` phase (plan 177 §7) — reuses plan
-   *  162's `RangedConfig`/draw→release→recovery shape,
-   *  `combat/rangedAttack.ts`'s accuracy/deviation resolution and
-   *  `combat/projectile.ts`'s swept collision: the same pipeline
-   *  `gameLoop.ts` already drives for the player, not a redesign. The only
-   *  thing that differs is projectile *ownership* — an NPC tracks at most
-   *  one in-flight `combatProjectile` on itself (see the field doc) instead
-   *  of a shared world array, so this needs no separate projectile registry
-   *  and keeps working with no camera/player/gameLoop involved. `archery`
-   *  skill has no NPC equivalent yet, so accuracy uses the bow's own base
-   *  value (skill `0`) — the same "smallest existing-compatible value"
-   *  choice `applyIncomingCombatDamage` makes for defense skill. */
-  private tickRangedCombat(dt: number, intent: CombatIntent, targetPos: { x: number, z: number }): void {
-    const weapon = this.combatRangedWeapon
-    if (!weapon) {
-      this.endCombat('failed')
-      return
-    }
-
-    const dx = targetPos.x - this.mesh.position.x
-    const dz = targetPos.z - this.mesh.position.z
-    const dist = Math.hypot(dx, dz)
-    const inRange = dist <= weapon.ranged.range
-    if (!inRange && this.combatRangedAttack.state() === 'idle') {
-      this.tmp.set(targetPos.x, 0, targetPos.z)
-      this.steerTo(this.tmp, dt)
-    } else if (dist > 1e-4) {
-      this.mesh.rotation.y = Math.atan2(dx, dz)
-    }
-
+  /** Draw/fire/projectile-advance/hit cycle shared by a real ranged weapon
+   *  (`tickRangedCombat`) and an improvised stone throw (`tickMeleeCombat`,
+   *  plan items-player-059 §14/§15) — reuses plan 162's `RangedConfig`/
+   *  draw→release→recovery shape, `combat/rangedAttack.ts`'s accuracy/
+   *  deviation resolution and `combat/projectile.ts`'s swept collision: the
+   *  same pipeline `gameLoop.ts` already drives for the player, not a
+   *  redesign. Reads only `this.combatRangedAttack`/`this.combatProjectile`
+   *  plus whatever `RangedConfig` is already loaded into the lifecycle
+   *  (`tick.config`) — deliberately ignorant of `this.combatRangedWeapon`,
+   *  so it works identically whether that config came from a real weapon or
+   *  a throwable-derived synthetic one. `archery` skill has no NPC
+   *  equivalent yet, so accuracy uses the config's own base value (skill
+   *  `0`) — the same "smallest existing-compatible value" choice
+   *  `applyIncomingCombatDamage` makes for defense skill. May end combat
+   *  (`intent`/`this.combatIntent` invalid afterward) — callers must check
+   *  `this.combatIntent` before touching combat state again. */
+  private tickRangedAttackCycle(dt: number, intent: CombatIntent, targetPos: { x: number, z: number }): void {
     const tick = this.combatRangedAttack.update(dt)
     if (tick.fireReady && tick.config && !this.combatProjectile) {
       // Ammo already confirmed present when the draw started
@@ -2708,6 +2759,45 @@ export class NpcAgent {
         this.combatProjectile = null
       }
     }
+  }
+
+  /** Ranged sub-branch of the `combat` phase (plan 177 §7, extended by plan
+   *  items-player-059 §5/§7) — approach/face the target, drive the shared
+   *  fire/projectile cycle via `tickRangedAttackCycle`, then start the next
+   *  draw once in range and idle. Crossbow reload interruption (§5/§7): a
+   *  reload in progress is abandoned for melee the moment the target closes
+   *  inside the weapon's own `minReloadDistance`, if melee is actually
+   *  usable — checked every frame reload is active, covering both "just
+   *  fired" and "target closed mid-reload". V1 adds no kiting: once melee
+   *  starts, this encounter never switches back to ranged on its own
+   *  (`switchCombatMode` doc) — only a later encounter re-evaluates from
+   *  `chooseCombatMode`. */
+  private tickRangedCombat(dt: number, intent: CombatIntent, targetPos: { x: number, z: number }): void {
+    const weapon = this.combatRangedWeapon
+    if (!weapon) {
+      this.endCombat('failed')
+      return
+    }
+
+    const dx = targetPos.x - this.mesh.position.x
+    const dz = targetPos.z - this.mesh.position.z
+    const dist = Math.hypot(dx, dz)
+
+    const minReloadDistance = weapon.ranged.minReloadDistance ?? 0
+    if (this.combatRangedAttack.isReloading() && dist < minReloadDistance && this.switchCombatMode('melee')) {
+      return
+    }
+
+    const inRange = dist <= weapon.ranged.range
+    if (!inRange && this.combatRangedAttack.state() === 'idle') {
+      this.tmp.set(targetPos.x, 0, targetPos.z)
+      this.steerTo(this.tmp, dt)
+    } else if (dist > 1e-4) {
+      this.mesh.rotation.y = Math.atan2(dx, dz)
+    }
+
+    this.tickRangedAttackCycle(dt, intent, targetPos)
+    if (!this.combatIntent) return
 
     if (
       inRange
@@ -2777,7 +2867,19 @@ export class NpcAgent {
       )
     }
     if (decision === 'defend') {
-      const mode: CombatIntent['mode'] = hasRanged ? 'ranged' : 'melee'
+      // Distance-aware mode choice (plan items-player-059 §6) — replaces
+      // "ranged whenever available": a threat already inside melee range
+      // gets melee, not a bow/crossbow/sling draw next to an attacking
+      // animal. `decision === 'defend'` already implies `canFight`
+      // (`arbitrateAnimalThreat`'s `-Infinity` `defendScore` otherwise), so
+      // `chooseCombatMode` is guaranteed non-null here; `?? 'melee'` is
+      // belt-and-suspenders type safety, not a real fallback path.
+      const mode: CombatIntent['mode'] = chooseCombatMode({
+        hasMelee: meleeWeapon != null,
+        hasRanged,
+        meleeRange: meleeWeapon?.melee.range ?? 0,
+        distance: threat.distance,
+      }) ?? 'melee'
       const started = this.beginCombat({ target: threat.target, mode })
       if (isNpcCombatDebugMode()) {
         console.log(
@@ -2861,6 +2963,7 @@ export class NpcAgent {
     this.combatAttack.reset()
     this.combatRangedAttack.reset()
     this.combatProjectile = null
+    this.combatImprovisedThrowUsed = false
     this.trace.record({ simTime: this.simClock, type: 'combat.ended', outcome })
     this.phase = 'choose'
     // Runs last, after every combat field is reset and `phase` defaults to
@@ -2915,6 +3018,7 @@ export class NpcAgent {
     this.combatAttack.reset()
     this.combatRangedAttack.reset()
     this.combatProjectile = null
+    this.combatImprovisedThrowUsed = false
     if (this.anim.has('death') && alreadySettled) {
       // Reconstructed from already-dead state — jump straight to the clip's
       // settled end pose with no fade/blend against whatever the fresh-alive

@@ -3,7 +3,7 @@
 **Created:** 2026-09-18
 **Status:** `planned` 📋
 **Priority:** high · **Effort:** L
-**Depends on:** settlements-npcs-048, npc-053, items-player-047, npc-030
+**Depends on:** ~~settlements-npcs-048~~, ~~npc-053~~, ~~items-player-047~~, ~~npc-030~~
 **Domain:** `settlements-npcs`
 **Type:** `feature`
 **Roadmap:** `quests-travelling-merchant-journeys.md`

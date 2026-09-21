@@ -106,6 +106,11 @@ export const ITEM_GLB_SPECS: Partial<Record<ItemKind, GroundGlbSpec>> = {
     maxSize: 1.35,
     groundRotation: [0, 0, Math.PI / 2.2],
   },
+  crossbow: {
+    url: '/models/items/crossbow.glb',
+    maxSize: 0.9,
+    groundRotation: [0, 0, Math.PI / 2.2],
+  },
   // Quaternius Arrow (Medieval Weapons Pack) — plan 162. Already authored lying
   // along Z (no ground rotation needed); shared by all three arrow ItemKinds.
   arrow: { url: '/models/items/arrow.glb', maxSize: 0.6 },
