@@ -4,6 +4,7 @@
 **Status:** `planned` 📋
 **Type:** fix
 **Priority:** medium · **Effort:** S
+**Model:** Sonnet → Composer
 **Depends on:** ~~quests-progression-027~~
 **Domain:** `quests-progression`
 **Subdomains:** `quests` `relationships`
