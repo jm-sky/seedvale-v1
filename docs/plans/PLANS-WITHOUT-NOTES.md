@@ -1,7 +1,7 @@
 # PLANS PLANNED WITHOUT NOTES
 
 > Generated with `pnpm plans:without-notes`  
-> Date: 2026-09-21 05:22:11  
+> Date: 2026-09-21 05:36:12  
 
 ## PLANS
 
@@ -10,6 +10,7 @@
 - `quests-progression-046-lost-treasure-chronicles-integration-legacy-catch-up-and-superseded-quest-cleanup.md`
 - `quests-progression-053-hunters-brotherhood-competing-hunting-strategies.md`
 - `quests-progression-054-hunters-brotherhood-exceptional-animal-finale.md`
+- `quests-progression-074-small-quest-offer-scope-and-prioritization.md`
 - `settlements-npcs-049-merchant-wealth-tiers-and-travel-party-profile.md`
 - `settlements-npcs-052-persistent-economic-work-cargo-and-local-transfer-conservation.md`
 - `settlements-npcs-054-transport-carrier-death-and-cargo-disposition.md`
@@ -170,6 +171,37 @@ Wczytaj:
 
 Na podstawie review utwórz w repo plik:
 `docs/plans/implementation-notes/quests-progression-054-hunters-brotherhood-exceptional-animal-finale-implementation-notes.md`
+
+Umieść w nim:
+- sugestie dotyczące implementacji,
+- istotne detale techniczne,
+- decyzje architektoniczne,
+- informacje o istniejących systemach i implementacjach, które należy wykorzystać,
+- potencjalne problemy, zależności i pułapki,
+- inne konkretne wskazówki, które ułatwią agentowi AI poprawną implementację planu.
+
+Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
+Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
+
+Pliki dodaj na branch `main` w repozytorium.
+```
+
+### `quests-progression-074-small-quest-offer-scope-and-prioritization.md`
+
+Prompt:
+
+```
+Zrób review planu `quests-progression-074-small-quest-offer-scope-and-prioritization.md`
+
+Wczytaj:
+- `docs/STATE.md`
+- `docs/plans/PLANNING.md` (Implementation Notes section),
+- `docs/plans/quests-progression-074-small-quest-offer-scope-and-prioritization.md`
+- aktualny codebase,
+- potrzebne zależności i powiązane implementacje.
+
+Na podstawie review utwórz w repo plik:
+`docs/plans/implementation-notes/quests-progression-074-small-quest-offer-scope-and-prioritization-implementation-notes.md`
 
 Umieść w nim:
 - sugestie dotyczące implementacji,
