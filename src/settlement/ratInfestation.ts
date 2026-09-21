@@ -2,7 +2,7 @@
  * @domain settlements
  * @system rat-infestation
  * @role Authoritative settlement-owned rat infestation state (plan
- *  quests-progression-013) — keyed by stable `settlementId`, survives
+ *  quests-progression-013 / quests-progression-078) — keyed by stable `settlementId`, survives
  *  settlement stream-out/in, `WorldBundle` rebuild and save/load. Owns
  *  independent storage-damage and nest-destroyed facts. Not owned by
  *  `QuestManager` or Three.js props.
@@ -32,6 +32,10 @@ export const RAT_NEST_DESTROY_DURATION_SEC = 3
 
 export type RatInfestationRegistry = {
   get: (settlementId: string) => RatInfestationState
+  /** True only when this settlement has an authoritative infestation record.
+   *  Distinct from `get()`, which still maps absence to `NO_RAT_INFESTATION`
+   *  for ordinary settlements (plan quests-progression-078). */
+  has: (settlementId: string) => boolean
   isStorageDamaged: (settlementId: string) => boolean
   isNestDestroyed: (settlementId: string) => boolean
   hasActiveNest: (settlementId: string) => boolean
@@ -40,6 +44,21 @@ export type RatInfestationRegistry = {
   destroyNest: (settlementId: string) => void
   serialize: () => Record<string, RatInfestationState>
   clear: () => void
+}
+
+/**
+ * Authored home infestation is seeded only when the composition root asked
+ * for a seed and this settlement has no persisted record yet. Ordinary
+ * settlements keep sparse absence → `NO_RAT_INFESTATION`.
+ *
+ * @domain quests-progression
+ */
+export function shouldSeedAuthoredHomeInfestation(
+  seedHomeStorageInfestation: boolean,
+  initialStorageInfestation: Record<string, RatInfestationState> | undefined,
+  homeSettlementId: string,
+): boolean {
+  return seedHomeStorageInfestation && initialStorageInfestation?.[homeSettlementId] === undefined
 }
 
 /** Per-`SettlementsManager` infestation store — same manager-lifetime registry
@@ -57,6 +76,7 @@ export function createRatInfestationRegistry(
 
   return {
     get: (settlementId) => recorded(settlementId) ?? NO_RAT_INFESTATION,
+    has: (settlementId) => recorded(settlementId) !== undefined,
     isStorageDamaged: (settlementId) => recorded(settlementId)?.storageDamaged === true,
     isNestDestroyed: (settlementId) => recorded(settlementId)?.nestDestroyed !== false,
     hasActiveNest: (settlementId) => recorded(settlementId)?.nestDestroyed === false,

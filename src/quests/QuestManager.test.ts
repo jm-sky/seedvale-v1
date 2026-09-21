@@ -455,21 +455,44 @@ describe('QuestManager resolve_storage_rat_infestation', () => {
   })
 
   it('stays active until storage is repaired, the nest is destroyed, and rats are at most one', () => {
-    let snapshot = { storageDamaged: true, nestDestroyed: false, aliveRatCount: 5 }
+    let snapshot = { exists: true, storageDamaged: true, nestDestroyed: false, aliveRatCount: 5 }
     const qm = makeManager([ratQuest], undefined, undefined, undefined, undefined, {
       getSnapshot: () => snapshot,
     })
     acceptOffer(qm, 'Marek')
     expect(qm.getState('plaga')).toBe('active')
-    snapshot = { storageDamaged: false, nestDestroyed: true, aliveRatCount: 2 }
+    snapshot = { exists: true, storageDamaged: false, nestDestroyed: true, aliveRatCount: 2 }
     qm.pollSettlementRatInfestationObjectives()
     expect(qm.getState('plaga')).toBe('active')
-    snapshot = { storageDamaged: false, nestDestroyed: false, aliveRatCount: 0 }
+    snapshot = { exists: true, storageDamaged: false, nestDestroyed: false, aliveRatCount: 0 }
     qm.pollSettlementRatInfestationObjectives()
     expect(qm.getState('plaga')).toBe('active')
-    snapshot = { storageDamaged: false, nestDestroyed: true, aliveRatCount: 1 }
+    snapshot = { exists: true, storageDamaged: false, nestDestroyed: true, aliveRatCount: 1 }
     qm.pollSettlementRatInfestationObjectives()
     expect(qm.getState('plaga')).toBe('ready_to_report')
+  })
+
+  it('does not complete from an absent infestation snapshot via poll or giver catch-up', () => {
+    const snapshot = { exists: false, storageDamaged: false, nestDestroyed: true, aliveRatCount: 0 }
+    const qm = makeManager([ratQuest], undefined, undefined, undefined, undefined, {
+      getSnapshot: () => snapshot,
+    })
+    acceptOffer(qm, 'Marek')
+    expect(qm.getState('plaga')).toBe('active')
+    qm.pollSettlementRatInfestationObjectives()
+    expect(qm.getState('plaga')).toBe('active')
+    const dialog = qm.onInteract('Marek')
+    expect(qm.getState('plaga')).toBe('active')
+    expect(dialog?.line).not.toContain('plaga wygasła')
+  })
+
+  it('does not complete from the default absent lookup', () => {
+    const qm = makeManager([ratQuest])
+    acceptOffer(qm, 'Marek')
+    qm.pollSettlementRatInfestationObjectives()
+    expect(qm.getState('plaga')).toBe('active')
+    qm.onInteract('Marek')
+    expect(qm.getState('plaga')).toBe('active')
   })
 })
 

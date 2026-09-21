@@ -810,7 +810,10 @@ export async function createApp(
     initialSave?.removedRatIds,
     initialSave?.ratReconcileBuckets,
     initialSave?.storageInfestation,
-    initialSave === undefined,
+    // Missing `storageInfestation` (fresh world or legacy save) seeds the
+    // authored home problem; a present field — even `{}` — is restored as-is
+    // (plan quests-progression-078).
+    initialSave?.storageInfestation === undefined,
     initialSave?.structureStates,
     grassForageOverrides,
     (initialSave?.completedTerrainPreparations ?? []).map((p) => ({
@@ -2072,6 +2075,7 @@ export async function createApp(
     },
     {
       getSnapshot: (settlementId) => ({
+        exists: bundle.settlementsManager.hasRatInfestation(settlementId),
         storageDamaged: bundle.settlementsManager.isStorageDamaged(settlementId),
         nestDestroyed: bundle.settlementsManager.isNestDestroyed(settlementId),
         aliveRatCount: bundle.settlementsManager.countAliveRats(settlementId),

@@ -1133,7 +1133,10 @@ type WorldSystemsSeed = {
   removedRatIds?: readonly string[]
   ratReconcileBuckets?: Record<string, number>
   storageInfestation?: Record<string, import('../settlement/ratInfestation').RatInfestationState>
-  /** Authored V1 trigger for home storage infestation on a fresh world. */
+  /** Authored V1 trigger for home storage infestation on a fresh world or
+   *  New Game rebuild (`resetCollectedItems`). Ordinary same-seed rebuild
+   *  carries the registry snapshot 1:1 and must not reseed
+   *  (plan quests-progression-078). */
   seedHomeStorageInfestation?: boolean
   /** Plan settlements-007 — seeds the manager-lifetime `SettlementStructureStateRegistry`,
    *  same "carried across rebuild, sourced from `SaveData` on a fresh boot"
@@ -2768,7 +2771,7 @@ export async function rebuildWorldBundle(
     removedRatIds: carriedRats?.removedIds,
     ratReconcileBuckets: carriedRats?.reconcileBuckets,
     storageInfestation: carriedStorageInfestation,
-    seedHomeStorageInfestation: false,
+    seedHomeStorageInfestation: resetCollectedItems,
     structureStates: carriedStructureStates,
     foundedSettlements: carriedFoundedSettlements,
     authoredWorldConsequences: carriedAuthoredWorldConsequences,

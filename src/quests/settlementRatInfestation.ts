@@ -2,24 +2,36 @@
  * @domain quests-progression
  * @system settlement-rat-infestation
  * @role Pure world-condition helpers for the settlement rat infestation quest
- *  (plan quests-progression-006 §5, quests-progression-013 §11).
+ *  (plan quests-progression-006 §5, quests-progression-013 §11,
+ *   quests-progression-078).
  */
 
 export type SettlementRatInfestationSnapshot = {
+  /** Authoritative infestation record exists for this settlement. Missing
+   *  records must not satisfy completion (plan quests-progression-078). */
+  exists: boolean
   storageDamaged: boolean
   nestDestroyed: boolean
   aliveRatCount: number
 }
 
-/** Quest completion requires repaired storage, a destroyed nest, and at most
- *  one living rat (plan quests-progression-013 §11). */
+const ABSENT_INFESTATION_REMINDER =
+  'Szczury wciąż roi się wokół magazynu. Napraw dziury, zniszcz gniazdo za domem i doprowadź ich do jednego albo mniej.'
+
+/** Quest completion requires an existing infestation plus repaired storage,
+ *  a destroyed nest, and at most one living rat (plan quests-progression-013
+ *  §11, quests-progression-078). */
 export function isSettlementRatInfestationResolved(snapshot: SettlementRatInfestationSnapshot): boolean {
-  return !snapshot.storageDamaged && snapshot.nestDestroyed && snapshot.aliveRatCount <= 1
+  return snapshot.exists
+    && !snapshot.storageDamaged
+    && snapshot.nestDestroyed
+    && snapshot.aliveRatCount <= 1
 }
 
 /** Authored NPC reminder variants keyed by live world state — remaining work
  *  is derived from the three facts, not from quest-side progress flags. */
 export function settlementRatInfestationReminderLine(snapshot: SettlementRatInfestationSnapshot): string {
+  if (!snapshot.exists) return ABSENT_INFESTATION_REMINDER
   if (isSettlementRatInfestationResolved(snapshot)) {
     return 'Wygląda na to, że plaga wygasła. Możesz mi to potwierdzić.'
   }

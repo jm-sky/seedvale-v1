@@ -354,7 +354,7 @@ export type SettlementRatInfestationLookup = {
 }
 
 const NO_SETTLEMENT_RAT_INFESTATION: SettlementRatInfestationLookup = {
-  getSnapshot: () => ({ storageDamaged: false, nestDestroyed: true, aliveRatCount: 0 }),
+  getSnapshot: () => ({ exists: false, storageDamaged: false, nestDestroyed: true, aliveRatCount: 0 }),
 }
 
 /** Read-only spawn-point destruction seam for `destroy_spawn_point` (plan

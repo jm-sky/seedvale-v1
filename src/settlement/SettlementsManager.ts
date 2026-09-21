@@ -105,7 +105,11 @@ import {
 } from './playerOwnedHorseDebug'
 import { adultProfessionCoverage } from './professionStaffing'
 import { createSignpost } from './props'
-import { createRatInfestationRegistry, type RatInfestationState } from './ratInfestation'
+import {
+  createRatInfestationRegistry,
+  shouldSeedAuthoredHomeInfestation,
+  type RatInfestationState,
+} from './ratInfestation'
 import { createRatRegistry, type RatSaveRecord } from './ratPersistence'
 import {
   type MidpointSignpost,
@@ -309,6 +313,10 @@ export type SettlementsManager = {
   }
   /** Rat infestation state per settlement (plan quests-progression-013). */
   snapshotStorageInfestation: () => Record<string, RatInfestationState>
+  /** True when an authoritative infestation record exists for `settlementId`.
+   *  Absence is not the same as `NO_RAT_INFESTATION` / a resolved problem
+   *  (plan quests-progression-078). */
+  hasRatInfestation: (settlementId: string) => boolean
   isStorageDamaged: (settlementId: string) => boolean
   isNestDestroyed: (settlementId: string) => boolean
   hasActiveNest: (settlementId: string) => boolean
@@ -1037,7 +1045,7 @@ export async function createSettlementsManager(
   if (!homeDef) {
     throw new Error('[SettlementsManager] home settlement (0,0) failed to generate')
   }
-  if (seedHomeStorageInfestation && initialStorageInfestation?.[homeDef.id] === undefined) {
+  if (shouldSeedAuthoredHomeInfestation(!!seedHomeStorageInfestation, initialStorageInfestation, homeDef.id)) {
     ratInfestation.seed(homeDef.id)
   }
   // Home never goes through `ensureLoaded()` at initial boot — its `entries`
@@ -1622,6 +1630,7 @@ export async function createSettlementsManager(
       return rats.serialize()
     },
     snapshotStorageInfestation: () => ratInfestation.serialize(),
+    hasRatInfestation: (settlementId) => ratInfestation.has(settlementId),
     isStorageDamaged: (settlementId) => ratInfestation.isStorageDamaged(settlementId),
     isNestDestroyed: (settlementId) => ratInfestation.isNestDestroyed(settlementId),
     hasActiveNest: (settlementId) => ratInfestation.hasActiveNest(settlementId),
