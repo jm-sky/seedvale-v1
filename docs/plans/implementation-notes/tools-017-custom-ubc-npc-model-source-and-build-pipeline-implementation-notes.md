@@ -115,20 +115,16 @@ CUSTOM_NPCS = {
         "source": "docs/blender/sources/characters/custom/blacksmith/outfit.glb",
         "output": "public/models/characters/ubc/npc/male_blacksmith.glb",
         "sex": "male",
-        "hair": "simple",
-        "beard": True,
     },
     "woodcutter": {
         "source": "docs/blender/sources/characters/custom/woodcutter/outfit.glb",
         "output": "public/models/characters/ubc/npc/male_woodcutter.glb",
         "sex": "male",
-        "hair": "simple",
-        "beard": False,
     },
 }
 ```
 
-Do not encode profession gameplay rules here. This manifest describes asset builds only.
+Do not encode profession gameplay rules or hair/beard bake choices here. Hair/beard are separate runtime attachments selected by `npcAppearance.ts`.
 
 ## Optimization
 
@@ -150,13 +146,11 @@ Keep texture policy centralized. Default 512 is consistent with the current UBC 
 
 ## Runtime boundary
 
-`src/ai/npcAppearance.ts::resolveNpcAppearance()` is already authoritative for profession appearance and currently maps all professions to UBC families.
+`src/ai/npcAppearance.ts::resolveNpcAppearance()` is authoritative for profession appearance.
 
-Do not change that resolver in tools-017. This plan should only prove that custom assets can be deterministically rebuilt and placed under `public/models/characters/ubc/npc/`.
-
-A later small integration change can replace the Peasant fallback URL for specific roles such as `blacksmith` or `woodcutter` after the generated asset is manually accepted.
-
-Do not add persistence fields: appearance remains derived.
+Custom adult-male stems pin `UBC_ROLE_LOOK.modelUrl` and expose runtime
+`hairAttachmentUrl` / `beardAttachmentUrl` from profession hair pools. Fantasy
+roles keep baked combinatorial GLBs. Appearance remains derived — no persistence.
 
 ## Suggested implementation order
 
@@ -193,5 +187,17 @@ Agent completed:
 - Outputs: `male_blacksmith.glb` (~547 KiB), `male_woodcutter.glb` (~400 KiB); no animations; rebuild works with `_temp/` absent.
 - Unittests in `scripts/assets/test_prepare_custom_ubc_npc.py`.
 - Follow-up runtime wiring (2026-09-20): adult male `blacksmith` / `woodcutter` map to those GLBs via optional `UBC_ROLE_LOOK.modelUrl` in `npcAppearance.ts` (`tintUrl: null`, identity clothing hue, rolled hair color). Female adults and children keep Peasant UBC fallback. Manual Asset Browser check of deformation/materials still needed for the pipeline plan.
+
+## Runtime hair/beard attachments (2026-09-21)
+
+Contract change vs original bake-time hair/beard:
+
+- Profession compose no longer bakes hair/beard into `male_blacksmith.glb` / `male_woodcutter.glb` (outfit + head/eyes/eyebrows only).
+- Repo-local `Hair_Long` + `T_Hair_2_*` vendored beside SimpleParted/Beard.
+- Reusable runtime GLBs: `public/models/characters/ubc/hair/{hair_simple,hair_long,beard}.glb`.
+- `npcAppearance.ts` rolls profession hair pools (blacksmith `bald|simple`, woodcutter `simple|long`) and independent beard from `npcId`; exposes `hairAttachmentUrl` / `beardAttachmentUrl`.
+- `NpcAgent.create` remaps attachments via existing `bindAccessoryToPlayerSkeleton` (no second mixer); `applyHairColor` runs after attach.
+- Fantasy combinatorial baked path unchanged; female/children keep fallbacks.
+- `outfits/Textures/` kept as Blender authoring dependency.
 
 > **Zrób git commit i push do main, rebase jeżeli trzeba**

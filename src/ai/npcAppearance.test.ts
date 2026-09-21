@@ -4,11 +4,14 @@ import { PLAYER_UBC_ANIMATION_URL, PLAYER_UBC_PEASANT_URL, PLAYER_UBC_RANGER_URL
 import {
   NPC_CLOTHING_HUE,
   NPC_HAIR_COLOR,
+  NPC_UBC_BEARD_URL,
   NPC_UBC_FEMALE_PEASANT_URL,
   NPC_UBC_FEMALE_RANGER_URL,
   NPC_UBC_FEMALE_WIZARD_URL,
   NPC_UBC_HAIR_1_URL,
   NPC_UBC_HAIR_2_URL,
+  NPC_UBC_HAIR_LONG_URL,
+  NPC_UBC_HAIR_SIMPLE_URL,
   NPC_UBC_KNIGHT_TINT_URL,
   NPC_UBC_MALE_BLACKSMITH_URL,
   NPC_UBC_MALE_KNIGHT_UNHELMETED_URL,
@@ -70,6 +73,8 @@ describe('resolveNpcAppearance', () => {
     expect(smith.tintUrl).toBeNull()
     expect(smith.clothingHue).toBe(NPC_CLOTHING_HUE.identity)
     expect(Object.values(NPC_HAIR_COLOR)).toContain(smith.hairColor)
+    expect(['bald', 'simple']).toContain(smith.hair)
+    expect(typeof smith.beard).toBe('boolean')
 
     const cutter = resolveNpcAppearance({
       age: 38,
@@ -84,6 +89,7 @@ describe('resolveNpcAppearance', () => {
     expect(cutter.tintUrl).toBeNull()
     expect(cutter.clothingHue).toBe(NPC_CLOTHING_HUE.identity)
     expect(Object.values(NPC_HAIR_COLOR)).toContain(cutter.hairColor)
+    expect(['simple', 'long']).toContain(cutter.hair)
   })
 
   it('keeps female blacksmith/woodcutter on Peasant UBC with role sidecars', () => {
@@ -98,6 +104,8 @@ describe('resolveNpcAppearance', () => {
     expect(smith.modelUrl).toMatch(/female_peasant/)
     expect(smith.modelUrl).not.toBe(NPC_UBC_MALE_BLACKSMITH_URL)
     expect(smith.tintUrl).toBe(NPC_UBC_PEASANT_TINT_URL)
+    expect(smith.hairAttachmentUrl).toBeNull()
+    expect(smith.beardAttachmentUrl).toBeNull()
     expect(Object.values(NPC_CLOTHING_HUE)).toContain(smith.clothingHue)
 
     const cutter = resolveNpcAppearance({
@@ -111,6 +119,8 @@ describe('resolveNpcAppearance', () => {
     expect(cutter.modelUrl).toMatch(/female_peasant/)
     expect(cutter.modelUrl).not.toBe(NPC_UBC_MALE_WOODCUTTER_URL)
     expect(cutter.tintUrl).toBe(NPC_UBC_WOODCUTTER_TINT_URL)
+    expect(cutter.hairAttachmentUrl).toBeNull()
+    expect(cutter.beardAttachmentUrl).toBeNull()
   })
 
   it('keeps child blacksmith/woodcutter on Peasant UBC fallback', () => {
@@ -125,6 +135,8 @@ describe('resolveNpcAppearance', () => {
     expect(childSmith.modelUrl).toMatch(/peasant/)
     expect(childSmith.modelUrl).not.toBe(NPC_UBC_MALE_BLACKSMITH_URL)
     expect(childSmith.tintUrl).toBe(NPC_UBC_PEASANT_TINT_URL)
+    expect(childSmith.hairAttachmentUrl).toBeNull()
+    expect(childSmith.beardAttachmentUrl).toBeNull()
 
     const childCutter = resolveNpcAppearance({
       age: 10,
@@ -137,6 +149,122 @@ describe('resolveNpcAppearance', () => {
     expect(childCutter.modelUrl).toMatch(/peasant/)
     expect(childCutter.modelUrl).not.toBe(NPC_UBC_MALE_WOODCUTTER_URL)
     expect(childCutter.tintUrl).toBe(NPC_UBC_PEASANT_TINT_URL)
+    expect(childCutter.hairAttachmentUrl).toBeNull()
+    expect(childCutter.beardAttachmentUrl).toBeNull()
+  })
+
+  it('selects custom profession hair/beard deterministically from npcId', () => {
+    const opts = {
+      age: 40,
+      gender: 'male' as const,
+      npcId: 'forge:stable:7',
+      role: 'blacksmith' as const,
+      treeIndex: 7,
+    }
+    const a = resolveNpcAppearance(opts)
+    const b = resolveNpcAppearance(opts)
+    expect(a).toEqual(b)
+    expect(a.hair).toBe(b.hair)
+    expect(a.beard).toBe(b.beard)
+    expect(a.hairAttachmentUrl).toBe(b.hairAttachmentUrl)
+    expect(a.beardAttachmentUrl).toBe(b.beardAttachmentUrl)
+  })
+
+  it('limits blacksmith hair to bald|simple and woodcutter to simple|long', () => {
+    const smithHairs = new Set<string>()
+    const cutterHairs = new Set<string>()
+    for (let i = 0; i < 80; i++) {
+      const smith = resolveNpcAppearance({
+        age: 40,
+        gender: 'male',
+        npcId: `forge:pool:${i}`,
+        role: 'blacksmith',
+        treeIndex: i,
+      })
+      const cutter = resolveNpcAppearance({
+        age: 40,
+        gender: 'male',
+        npcId: `woods:pool:${i}`,
+        role: 'woodcutter',
+        treeIndex: i,
+      })
+      smithHairs.add(smith.hair)
+      cutterHairs.add(cutter.hair)
+      expect(['bald', 'simple']).toContain(smith.hair)
+      expect(['simple', 'long']).toContain(cutter.hair)
+    }
+    expect(smithHairs.has('bald')).toBe(true)
+    expect(smithHairs.has('simple')).toBe(true)
+    expect(smithHairs.has('long')).toBe(false)
+    expect(cutterHairs.has('simple')).toBe(true)
+    expect(cutterHairs.has('long')).toBe(true)
+    expect(cutterHairs.has('bald')).toBe(false)
+  })
+
+  it('keeps beard independent of hair, including bald+beard', () => {
+    let baldWithBeard = false
+    let baldWithoutBeard = false
+    let hairedWithBeard = false
+    let hairedWithoutBeard = false
+    for (let i = 0; i < 200; i++) {
+      const look = resolveNpcAppearance({
+        age: 45,
+        gender: 'male',
+        npcId: `forge:beard:${i}`,
+        role: 'blacksmith',
+        treeIndex: i,
+      })
+      if (look.hair === 'bald') {
+        if (look.beard) baldWithBeard = true
+        else baldWithoutBeard = true
+        expect(look.hairAttachmentUrl).toBeNull()
+        expect(look.beardAttachmentUrl).toBe(look.beard ? NPC_UBC_BEARD_URL : null)
+      } else {
+        if (look.beard) hairedWithBeard = true
+        else hairedWithoutBeard = true
+        expect(look.hairAttachmentUrl).toBe(NPC_UBC_HAIR_SIMPLE_URL)
+        expect(look.beardAttachmentUrl).toBe(look.beard ? NPC_UBC_BEARD_URL : null)
+      }
+    }
+    expect(baldWithBeard).toBe(true)
+    expect(baldWithoutBeard).toBe(true)
+    expect(hairedWithBeard).toBe(true)
+    expect(hairedWithoutBeard).toBe(true)
+  })
+
+  it('maps bald to no hair attachment and simple/long to runtime hair URLs', () => {
+    const looks = Array.from({ length: 60 }, (_, i) => resolveNpcAppearance({
+      age: 35,
+      gender: 'male',
+      npcId: `attach:map:${i}`,
+      role: i % 2 === 0 ? 'blacksmith' : 'woodcutter',
+      treeIndex: i,
+    }))
+    for (const look of looks) {
+      if (look.hair === 'bald') {
+        expect(look.hairAttachmentUrl).toBeNull()
+      } else if (look.hair === 'simple') {
+        expect(look.hairAttachmentUrl).toBe(NPC_UBC_HAIR_SIMPLE_URL)
+      } else if (look.hair === 'long') {
+        expect(look.hairAttachmentUrl).toBe(NPC_UBC_HAIR_LONG_URL)
+      }
+      expect(look.beardAttachmentUrl).toBe(look.beard ? NPC_UBC_BEARD_URL : null)
+    }
+  })
+
+  it('uses custom male model only for the matching adult male profession', () => {
+    expect(resolveNpcAppearance({
+      age: 40, gender: 'male', npcId: 'a', role: 'blacksmith', treeIndex: 0,
+    }).modelUrl).toBe(NPC_UBC_MALE_BLACKSMITH_URL)
+    expect(resolveNpcAppearance({
+      age: 40, gender: 'male', npcId: 'b', role: 'woodcutter', treeIndex: 0,
+    }).modelUrl).toBe(NPC_UBC_MALE_WOODCUTTER_URL)
+    expect(resolveNpcAppearance({
+      age: 40, gender: 'male', npcId: 'c', role: 'farmer', treeIndex: 0,
+    }).modelUrl).not.toBe(NPC_UBC_MALE_BLACKSMITH_URL)
+    expect(resolveNpcAppearance({
+      age: 40, gender: 'male', npcId: 'd', role: 'farmer', treeIndex: 0,
+    }).hairAttachmentUrl).toBeNull()
   })
 
   it('maps adult hunter to Ranger UBC with a tint the player does not use', () => {
@@ -382,6 +510,9 @@ describe('resolveNpcAppearance', () => {
     expect(existsSync(`public${NPC_UBC_KNIGHT_TINT_URL}`)).toBe(true)
     expect(existsSync(`public${NPC_UBC_MALE_BLACKSMITH_URL}`)).toBe(true)
     expect(existsSync(`public${NPC_UBC_MALE_WOODCUTTER_URL}`)).toBe(true)
+    expect(existsSync(`public${NPC_UBC_HAIR_SIMPLE_URL}`)).toBe(true)
+    expect(existsSync(`public${NPC_UBC_HAIR_LONG_URL}`)).toBe(true)
+    expect(existsSync(`public${NPC_UBC_BEARD_URL}`)).toBe(true)
   })
 
   it('never assigns grey hair to an adult NPC under 50', () => {

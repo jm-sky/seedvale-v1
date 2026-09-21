@@ -202,5 +202,26 @@ class SkinNormalizeTests(unittest.TestCase):
         self.assertIn('WGTS_rig', str(ctx.exception))
 
 
+class ManifestContractTests(unittest.TestCase):
+    def test_profession_manifest_has_no_baked_hair(self) -> None:
+        for npc_id, cfg in _mod.CUSTOM_NPCS.items():
+            self.assertNotIn('hair', cfg, npc_id)
+            self.assertNotIn('beard', cfg, npc_id)
+            _mod.assert_no_temp(cfg['source'])
+            _mod.assert_no_temp(cfg['output'])
+
+    def test_hair_attachments_are_repo_local(self) -> None:
+        expected = {'hair_simple', 'hair_long', 'beard'}
+        self.assertEqual(set(_mod.HAIR_ATTACHMENTS), expected)
+        for att_id, cfg in _mod.HAIR_ATTACHMENTS.items():
+            _mod.assert_no_temp(cfg['source'])
+            _mod.assert_no_temp(cfg['output'])
+            self.assertTrue(
+                os.path.isfile(cfg['source']),
+                f'missing repo-local hair source for {att_id}: {cfg["source"]}',
+            )
+            _mod.validate_hair_attachment_source(cfg['source'])
+
+
 if __name__ == '__main__':
     unittest.main()

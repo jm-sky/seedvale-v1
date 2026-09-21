@@ -45,6 +45,7 @@ import type { RequestNpcInitiatedDialogue } from './npcInitiatedDialogueRequest'
 import type { NpcPlayerFollowUp } from './npcPlayerFollowUp'
 import {
   disposeObject3D,
+  loadGltf,
   loadGltfAnimated,
   prepareProp,
 } from '../assets/loadGltf'
@@ -84,6 +85,7 @@ import { type AgentProfile, DEFAULT_CELL_SIZE, findPath, type NavigationQuery, t
 import { beginActivePath, endActivePath, recordPathRequest, recordRepath } from '../navigation/navigationStats'
 import { PLAYER_COLLISION_RADIUS } from '../player/playerDimensions'
 import { companionAnimationUrl } from '../player/playerVisualPreset'
+import { bindAccessoryToPlayerSkeleton } from '../player/ubcAccessoryBind'
 import { resolveNearestWaterWellTarget } from '../settlement/householdWells'
 import {
   generatePhysicalProfile,
@@ -1916,6 +1918,8 @@ export class NpcAgent {
     const tintUrl = autoLook ? appearance.tintUrl : null
     const hairColor = autoLook ? appearance.hairColor : 0xffffff
     const clothingHue = autoLook ? appearance.clothingHue : 0xffffff
+    const hairAttachmentUrl = autoLook ? appearance.hairAttachmentUrl : null
+    const beardAttachmentUrl = autoLook ? appearance.beardAttachmentUrl : null
     try {
       const { scene, animations: modelAnimations } = await loadGltfAnimated(modelUrl)
       let animations = modelAnimations
@@ -1929,12 +1933,37 @@ export class NpcAgent {
         cloneOutfitMaterials(scene)
         if (tintUrl) await applyOutfitTint(scene, tintUrl)
         applyClothingHue(scene, clothingHue)
+        await NpcAgent.attachUbcHairAttachments(scene, hairAttachmentUrl, beardAttachmentUrl)
         applyHairColor(scene, hairColor)
       }
       return new NpcAgent(scene, animations, deps)
     } catch (err) {
       console.warn(`[npc] failed to load ${modelUrl}, using capsule`, err)
       return NpcAgent.createCapsuleFallback(deps)
+    }
+  }
+
+  /**
+   * Bind optional runtime hair/beard meshes onto the live UBC skeleton.
+   * Reuses the player accessory remapper — no second mixer / armature.
+   */
+  private static async attachUbcHairAttachments(
+    scene: THREE.Object3D,
+    hairUrl: string | null,
+    beardUrl: string | null,
+  ): Promise<void> {
+    for (const url of [hairUrl, beardUrl]) {
+      if (!url) continue
+      try {
+        const cloned = await loadGltf(url)
+        cloneOutfitMaterials(cloned)
+        const bound = bindAccessoryToPlayerSkeleton(cloned, scene)
+        if (!bound) continue
+        bound.name = url.includes('beard') ? 'ubcBeardAttachment' : 'ubcHairAttachment'
+        scene.add(bound)
+      } catch (err) {
+        console.warn(`[npc] failed to load hair attachment ${url}`, err)
+      }
     }
   }
 

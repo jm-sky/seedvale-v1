@@ -45,8 +45,9 @@ function collectSkinnedMeshes(root: THREE.Object3D): THREE.SkinnedMesh[] {
 }
 
 /**
- * Rebind accessory skinned meshes onto the live player UBC skeleton.
+ * Rebind accessory skinned meshes onto a live UBC skeleton (player or NPC).
  * The accessory armature is remap source data only — no second mixer.
+ * Used for equipment overlays and runtime hair/beard attachments.
  * Missing joints fail closed (skip + warn) rather than a partial bind.
  *
  * @domain items-player

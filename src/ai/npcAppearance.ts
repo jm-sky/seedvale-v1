@@ -10,6 +10,7 @@ import { createSeededRandom } from '../world/parseSeed'
 
 const UBC_DIR = '/models/characters/ubc'
 const NPC_VARIANT_DIR = `${UBC_DIR}/npc`
+const HAIR_DIR = `${UBC_DIR}/hair`
 
 export const NPC_UBC_FEMALE_PEASANT_URL = `${UBC_DIR}/female_peasant.glb`
 export const NPC_UBC_FEMALE_WIZARD_URL = `${UBC_DIR}/female_wizard.glb`
@@ -21,6 +22,10 @@ export const NPC_UBC_MALE_KNIGHT_UNHELMETED_URL = `${UBC_DIR}/male_knight_unhelm
 export const NPC_UBC_MALE_BLACKSMITH_URL = `${NPC_VARIANT_DIR}/male_blacksmith.glb`
 /** Adult male woodcutter — authored profession GLB (tools-017); no outfit sidecar tint. */
 export const NPC_UBC_MALE_WOODCUTTER_URL = `${NPC_VARIANT_DIR}/male_woodcutter.glb`
+/** Runtime hair/beard attachments for custom profession stems (tools-017). */
+export const NPC_UBC_HAIR_SIMPLE_URL = `${HAIR_DIR}/hair_simple.glb`
+export const NPC_UBC_HAIR_LONG_URL = `${HAIR_DIR}/hair_long.glb`
+export const NPC_UBC_BEARD_URL = `${HAIR_DIR}/beard.glb`
 /** Farmer sidecar — `T_Peasant_3` (sapphire vest), not the player's olive default. */
 export const NPC_UBC_PEASANT_TINT_URL = `${UBC_DIR}/npc_peasant.webp`
 /** Woodcutter sidecar — `T_Peasant_2` (earth brown), distinct from farmer sapphire. */
@@ -37,6 +42,8 @@ export const NPC_UBC_HAIR_2_URL = `${UBC_DIR}/hair_2.webp`
 export type NpcOutfitId = 'peasant' | 'wizard' | 'ranger' | 'knight'
 export type NpcUbcOutfitId = NpcOutfitId
 export type NpcHairKind = 'simple' | 'long' | 'buzzed' | 'buns'
+/** Resolved hair for appearance; `bald` only on custom adult-male profession stems. */
+export type NpcResolvedHair = NpcHairKind | 'bald'
 export type NpcClothingHueId = 'identity' | 'warm' | 'cool' | 'muted'
 export type NpcHairColorId = 'black' | 'brown' | 'redhead' | 'blond' | 'grey'
 
@@ -63,6 +70,10 @@ const MALE_HAIR_KINDS: readonly NpcHairKind[] = ['simple', 'long', 'buzzed']
 const FEMALE_HAIR_KINDS: readonly NpcHairKind[] = ['long', 'buns']
 /** Ranger hood clips Hair_Buns; huntresses only roll Long. */
 const FEMALE_RANGER_HAIR_KINDS: readonly NpcHairKind[] = ['long']
+/** Custom adult-male blacksmith — bald or simple; beard is independent. */
+const BLACKSMITH_HAIR_KINDS: readonly NpcResolvedHair[] = ['bald', 'simple']
+/** Custom adult-male woodcutter — simple or long; beard is independent. */
+const WOODCUTTER_HAIR_KINDS: readonly NpcResolvedHair[] = ['simple', 'long']
 const CLOTHING_HUE_IDS: readonly NpcClothingHueId[] = ['identity', 'warm', 'cool', 'muted']
 const NON_GREY_HAIR_COLOR_IDS: readonly NpcHairColorId[] = ['black', 'brown', 'redhead', 'blond']
 const BEARD_CHANCE = 0.35
@@ -83,27 +94,39 @@ const APPEARANCE_SEED_SALT = 0x41505045
  */
 export type NpcAppearance = {
   animationUrl: string | null
+  beard: boolean
+  beardAttachmentUrl: string | null
   clothingHue: number
+  hair: NpcResolvedHair
+  hairAttachmentUrl: string | null
   hairColor: number
   modelUrl: string
   outfit: NpcOutfitId
   tintUrl: string | null
 }
 
-function appearanceFor(
-  modelUrl: string,
-  outfit: NpcOutfitId,
-  tintUrl: string | null,
-  hairColor: number = 0xffffff,
-  clothingHue: number = NPC_CLOTHING_HUE.identity,
-): NpcAppearance {
+function appearanceFor(opts: {
+  beard: boolean
+  beardAttachmentUrl?: string | null
+  clothingHue?: number
+  hair: NpcResolvedHair
+  hairAttachmentUrl?: string | null
+  hairColor?: number
+  modelUrl: string
+  outfit: NpcOutfitId
+  tintUrl: string | null
+}): NpcAppearance {
   return {
-    animationUrl: companionAnimationUrl(modelUrl),
-    clothingHue,
-    hairColor,
-    modelUrl,
-    outfit,
-    tintUrl,
+    animationUrl: companionAnimationUrl(opts.modelUrl),
+    beard: opts.beard,
+    beardAttachmentUrl: opts.beardAttachmentUrl ?? null,
+    clothingHue: opts.clothingHue ?? NPC_CLOTHING_HUE.identity,
+    hair: opts.hair,
+    hairAttachmentUrl: opts.hairAttachmentUrl ?? null,
+    hairColor: opts.hairColor ?? 0xffffff,
+    modelUrl: opts.modelUrl,
+    outfit: opts.outfit,
+    tintUrl: opts.tintUrl,
   }
 }
 
@@ -120,6 +143,13 @@ function hairKindsFor(gender: NpcGender, outfit: NpcUbcOutfitId): readonly NpcHa
   if (gender === 'male') return MALE_HAIR_KINDS
   if (outfit === 'ranger') return FEMALE_RANGER_HAIR_KINDS
   return FEMALE_HAIR_KINDS
+}
+
+/** Profession-specific hair pools for custom adult-male stems. */
+export function customProfessionHairKinds(role: Role): readonly NpcResolvedHair[] | null {
+  if (role === 'blacksmith') return BLACKSMITH_HAIR_KINDS
+  if (role === 'woodcutter') return WOODCUTTER_HAIR_KINDS
+  return null
 }
 
 function pickIndex(random: () => number, length: number): number {
@@ -176,6 +206,13 @@ export function ubcVariantModelUrl(
   return `${NPC_VARIANT_DIR}/${gender}_${outfit}_${hair}${beardSuffix}.glb`
 }
 
+/** Runtime hair attachment URL for custom stems; `null` when bald or unsupported. */
+export function hairAttachmentUrlFor(hair: NpcResolvedHair): string | null {
+  if (hair === 'simple') return NPC_UBC_HAIR_SIMPLE_URL
+  if (hair === 'long') return NPC_UBC_HAIR_LONG_URL
+  return null
+}
+
 function greyHairChanceForAge(age: number): number {
   if (age >= GREY_HAIR_SENIOR_AGE) return GREY_HAIR_CHANCE_SENIOR
   if (age >= GREY_HAIR_MIN_AGE) return GREY_HAIR_CHANCE_MIDDLE
@@ -188,21 +225,65 @@ function rollHairColor(random: () => number, age: number): NpcHairColorId {
   return NON_GREY_HAIR_COLOR_IDS[pickIndex(random, NON_GREY_HAIR_COLOR_IDS.length)]!
 }
 
-function rollUbcVariant(npcId: string, gender: NpcGender, outfit: NpcUbcOutfitId, age: number): {
+type RolledStyle = {
+  beard: boolean
   clothingHue: number
+  hair: NpcResolvedHair
   hairColor: number
   modelUrl: string
-} {
-  const random = createSeededRandom(hashNpcId(npcId) ^ APPEARANCE_SEED_SALT)
+}
+
+function appearanceSeed(npcId: string): () => number {
+  return createSeededRandom(hashNpcId(npcId) ^ APPEARANCE_SEED_SALT)
+}
+
+function rollUbcVariant(npcId: string, gender: NpcGender, outfit: NpcUbcOutfitId, age: number): RolledStyle {
+  const random = appearanceSeed(npcId)
   const hairs = hairKindsFor(gender, outfit)
   const hair = hairs[pickIndex(random, hairs.length)]!
   const beard = gender === 'male' && random() < BEARD_CHANCE
   const hairColorId = rollHairColor(random, age)
   const hueId = CLOTHING_HUE_IDS[pickIndex(random, CLOTHING_HUE_IDS.length)]!
   return {
+    beard,
     clothingHue: NPC_CLOTHING_HUE[hueId],
+    hair,
     hairColor: NPC_HAIR_COLOR[hairColorId],
     modelUrl: ubcVariantModelUrl(gender, outfit, hair, beard),
+  }
+}
+
+/**
+ * Seeded hair/beard/color for custom adult-male profession stems. Hair pool is
+ * profession-specific; beard is independent of hair (including bald).
+ *
+ * @domain npc
+ */
+export function rollCustomProfessionStyle(
+  npcId: string,
+  role: Role,
+  age: number,
+): {
+  beard: boolean
+  hair: NpcResolvedHair
+  hairAttachmentUrl: string | null
+  beardAttachmentUrl: string | null
+  hairColor: number
+} {
+  const pool = customProfessionHairKinds(role)
+  if (!pool) {
+    throw new Error(`rollCustomProfessionStyle: no hair pool for role ${role}`)
+  }
+  const random = appearanceSeed(npcId)
+  const hair = pool[pickIndex(random, pool.length)]!
+  const beard = random() < BEARD_CHANCE
+  const hairColorId = rollHairColor(random, age)
+  return {
+    beard,
+    beardAttachmentUrl: beard ? NPC_UBC_BEARD_URL : null,
+    hair,
+    hairAttachmentUrl: hairAttachmentUrlFor(hair),
+    hairColor: NPC_HAIR_COLOR[hairColorId],
   }
 }
 
@@ -243,9 +324,9 @@ const UBC_ROLE_LOOK: Record<Role, UbcRoleLook> = {
  * Peasant UBC regardless of role and keep age-driven `member.scale` outside
  * this resolver. Female guards use Knight. Adult male blacksmith/woodcutter
  * use authored custom GLBs (`UBC_ROLE_LOOK.modelUrl`) with no outfit sidecar
- * tint and identity clothing hue so authored materials stay intact; hair
- * color still rolls from `npcId`. Hair/beard/hue come from `npcId` on the
- * family path; hair color also greys with `age`. Men never roll Hair_Buns.
+ * tint and identity clothing hue; hair/beard attach at runtime from
+ * profession-specific pools. Fantasy path still uses baked hair/beard
+ * variants. Hair color greys with `age`. Men never roll Hair_Buns.
  * Peasant/Wizard/Knight women roll Hair_Long / Hair_Buns; Ranger women only
  * Hair_Long.
  *
@@ -265,34 +346,43 @@ export function resolveNpcAppearance(opts: {
 
   if (look.outfit === 'knight' && opts.gender === 'male') {
     const style = rollUbcVariant(opts.npcId, opts.gender, look.outfit, opts.age)
-    return appearanceFor(
-      NPC_UBC_MALE_KNIGHT_UNHELMETED_URL,
-      look.outfit,
-      look.tintUrl,
-      style.hairColor,
-      style.clothingHue,
-    )
+    return appearanceFor({
+      beard: style.beard,
+      clothingHue: style.clothingHue,
+      hair: style.hair,
+      hairColor: style.hairColor,
+      modelUrl: NPC_UBC_MALE_KNIGHT_UNHELMETED_URL,
+      outfit: look.outfit,
+      tintUrl: look.tintUrl,
+    })
   }
 
   // Custom adult-male profession stems: keep authored outfit materials (no
-  // Peasant/Ranger sidecar overwrite) and skip clothing-hue multiply.
+  // Peasant/Ranger sidecar overwrite), skip clothing-hue multiply, and attach
+  // hair/beard at runtime from profession pools.
   if (look.modelUrl && opts.gender === 'male') {
-    const style = rollUbcVariant(opts.npcId, opts.gender, look.outfit, opts.age)
-    return appearanceFor(
-      look.modelUrl,
-      look.outfit,
-      null,
-      style.hairColor,
-      NPC_CLOTHING_HUE.identity,
-    )
+    const style = rollCustomProfessionStyle(opts.npcId, opts.role, opts.age)
+    return appearanceFor({
+      beard: style.beard,
+      beardAttachmentUrl: style.beardAttachmentUrl,
+      clothingHue: NPC_CLOTHING_HUE.identity,
+      hair: style.hair,
+      hairAttachmentUrl: style.hairAttachmentUrl,
+      hairColor: style.hairColor,
+      modelUrl: look.modelUrl,
+      outfit: look.outfit,
+      tintUrl: null,
+    })
   }
 
   const variant = rollUbcVariant(opts.npcId, opts.gender, look.outfit, opts.age)
-  return appearanceFor(
-    variant.modelUrl,
-    look.outfit,
-    look.tintUrl,
-    variant.hairColor,
-    variant.clothingHue,
-  )
+  return appearanceFor({
+    beard: variant.beard,
+    clothingHue: variant.clothingHue,
+    hair: variant.hair,
+    hairColor: variant.hairColor,
+    modelUrl: variant.modelUrl,
+    outfit: look.outfit,
+    tintUrl: look.tintUrl,
+  })
 }

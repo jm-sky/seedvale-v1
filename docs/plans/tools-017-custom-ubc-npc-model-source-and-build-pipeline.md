@@ -185,11 +185,11 @@ Skrypt powinien:
 3. zwalidować skin / joints / weights;
 4. przekonwertować GLB do formatu roboczego tylko wewnątrz temp workdir, jeśli obecny `GltfDoc` wymaga external-buffer glTF;
 5. reuse wspólnej logiki z `compose_ubc_player.py`;
-6. dodać UBC head / eyes / eyebrows;
-7. opcjonalnie dodać hair / beard;
-8. usunąć/ignorować source animations;
-9. zoptymalizować tekstury i GLB tym samym profilem co UBC;
-10. zapisać finalny asset pod `public/models/characters/ubc/npc/`.
+6. dodać UBC head / eyes / eyebrows (**bez** bake hair/beard);
+7. usunąć/ignorować source animations;
+8. zoptymalizować tekstury i GLB tym samym profilem co UBC;
+9. zapisać finalny profession asset pod `public/models/characters/ubc/npc/`;
+10. osobno zbudować reusable runtime hair/beard GLB pod `public/models/characters/ubc/hair/`.
 
 Build nie może czytać z `_temp/`.
 
@@ -224,9 +224,16 @@ blacksmith:
   source: docs/blender/sources/characters/custom/blacksmith/outfit.glb
   output: public/models/characters/ubc/npc/male_blacksmith.glb
   sex: male
-  hair: simple
-  beard: true
+
+woodcutter:
+  source: docs/blender/sources/characters/custom/woodcutter/outfit.glb
+  output: public/models/characters/ubc/npc/male_woodcutter.glb
+  sex: male
 ```
+
+Hair/beard **nie** są polami manifestu — nie bake'ować ich do profession GLB.
+Runtime wybiera fryzurę/brodę z `npcId` przez `npcAppearance.ts` i ładuje
+osobne reusable GLB (`public/models/characters/ubc/hair/{hair_simple,hair_long,beard}.glb`).
 
 Dokładny format może być Python data table lub JSON. Preferować najmniejszą formę współdzieloną przez build script.
 
@@ -234,8 +241,9 @@ Nowy custom NPC powinien wymagać głównie:
 
 1. ręcznego przygotowania outfitu w Blenderze;
 2. eksportu `custom/<profession>/outfit.glb`;
-3. dodania jednego wpisu do manifestu;
-4. uruchomienia wspólnego build command.
+3. dodania jednego wpisu do manifestu (bez hair/beard);
+4. uruchomienia wspólnego build command;
+5. (opcjonalnie) profesyjnej puli fryzur w `npcAppearance.ts`.
 
 Nie tworzyć `compose_blacksmith()`, `compose_herbalist()` itd., jeśli różnice są danymi.
 
@@ -294,11 +302,14 @@ Po implementacji pełny Blacksmith ma być odtwarzalny jedną komendą z plików
 
 `src/ai/npcAppearance.ts` pozostaje authoritative appearance resolverem.
 
-Ten plan nie ma automatycznie przepinać wszystkich profesji na custom models. Asset pipeline kończy się na wygenerowaniu poprawnego runtime GLB.
+Custom adult-male profession stems (`UBC_ROLE_LOOK.modelUrl`) ładują outfit+head
+GLB, a hair/beard dołączają runtime przez istniejący `bindAccessoryToPlayerSkeleton`
+(reuse player accessory remapper — bez drugiego mixera). Profesja ogranicza tylko
+pulę fryzur (blacksmith: `bald|simple`, woodcutter: `simple|long`); beard jest
+niezależne; `bald` nie ładuje hair assetu. Female adults i children zostają na
+obecnych UBC fallbackach. Fantasy combinatorial baked path bez zmian.
 
-Podpięcie Blacksmitha / Herbalista do konkretnej roli może być osobnym małym etapem/planem po weryfikacji assetu.
-
-Nie łączyć asset authoringu z gameplay appearance policy.
+Nie dodawać persistence fields: appearance remains derived.
 
 ## Dokumentacja
 

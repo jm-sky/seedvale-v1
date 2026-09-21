@@ -2,8 +2,11 @@
 """Compose + optimize custom Quaternius UBC profession NPCs from repo-local sources.
 
 Reads authored outfit GLBs under docs/blender/sources/characters/custom/,
-composes shared head/eyes/hair/beard from the vendored UBC subset, and writes
-runtime GLBs under public/models/characters/ubc/npc/.
+composes shared head/eyes/eyebrows from the vendored UBC subset (no baked
+hair/beard), and writes runtime GLBs under public/models/characters/ubc/npc/.
+
+Also builds reusable runtime hair/beard attachment GLBs under
+public/models/characters/ubc/hair/ for runtime skeleton rebind.
 
 Never reads `_temp/`.
 """
@@ -36,32 +39,43 @@ ROOT = os.path.abspath(os.path.join(_SCRIPT_DIR, '../..'))
 CHARACTERS = os.path.join(ROOT, 'docs/blender/sources/characters')
 UBC_BASE = os.path.join(CHARACTERS, 'quaternius/ubc-base/Superhero_Male_FullBody.gltf')
 HAIR_DIR = os.path.join(CHARACTERS, 'quaternius/hair')
+HAIR_OUT_DIR = os.path.join(ROOT, 'public/models/characters/ubc/hair')
 
-HAIR_FILES = {
-    'simple': os.path.join(HAIR_DIR, 'Hair_SimpleParted.gltf'),
-}
-BEARD_FILE = os.path.join(HAIR_DIR, 'Hair_Beard.gltf')
-HAIR_NODE_NAMES = {
-    'simple': 'Hair_SimpleParted',
+# Repo-local Quaternius hair sources → optimized runtime attachments.
+# Hair/beard are NOT baked into profession GLBs; runtime remaps them onto the
+# live UBC skeleton via bindAccessoryToPlayerSkeleton.
+HAIR_ATTACHMENTS: dict[str, dict[str, Any]] = {
+    'hair_simple': {
+        'source': os.path.join(HAIR_DIR, 'Hair_SimpleParted.gltf'),
+        'output': os.path.join(HAIR_OUT_DIR, 'hair_simple.glb'),
+        'textureSize': 512,
+    },
+    'hair_long': {
+        'source': os.path.join(HAIR_DIR, 'Hair_Long.gltf'),
+        'output': os.path.join(HAIR_OUT_DIR, 'hair_long.glb'),
+        'textureSize': 512,
+    },
+    'beard': {
+        'source': os.path.join(HAIR_DIR, 'Hair_Beard.gltf'),
+        'output': os.path.join(HAIR_OUT_DIR, 'beard.glb'),
+        'textureSize': 512,
+    },
 }
 
-# Asset-build only — not gameplay profession rules.
+# Asset-build only — not gameplay profession rules. Outfit + head only.
 CUSTOM_NPCS: dict[str, dict[str, Any]] = {
     'blacksmith': {
         'source': os.path.join(CHARACTERS, 'custom/blacksmith/outfit.glb'),
         'output': os.path.join(ROOT, 'public/models/characters/ubc/npc/male_blacksmith.glb'),
         'sex': 'male',
-        'hair': 'simple',
-        'beard': True,
     },
     'woodcutter': {
         'source': os.path.join(CHARACTERS, 'custom/woodcutter/outfit.glb'),
         'output': os.path.join(ROOT, 'public/models/characters/ubc/npc/male_woodcutter.glb'),
         'sex': 'male',
-        'hair': 'simple',
-        'beard': False,
     },
 }
+
 
 def assert_no_temp(path: str) -> None:
     normalized = os.path.normpath(path)
@@ -279,12 +293,10 @@ def relocate_images(doc: GltfDoc, out_dir: str) -> None:
 def compose_custom(
     outfit_gltf: str,
     base_gltf: str,
-    hair_gltf: str | None,
-    beard_gltf: str | None,
     out_gltf: str,
     label: str,
-    hair_kind: str | None,
 ) -> None:
+    """Compose outfit + shared head/eyes/eyebrows. Hair/beard stay separate runtime assets."""
     out_dir = os.path.dirname(out_gltf)
     os.makedirs(out_dir, exist_ok=True)
 
@@ -299,19 +311,10 @@ def compose_custom(
 
     mat_map: dict[int, int] = {}
     tex_map: dict[int, int] = {}
-    print(f'Composing {label}')
+    print(f'Composing {label} (outfit + head; no baked hair/beard)')
     add_skinned_mesh(dest, base, 0, 'Eyebrows', out_dir, mat_map, tex_map)
     add_skinned_mesh(dest, base, 1, 'Eyes', out_dir, mat_map, tex_map)
     add_skinned_mesh(dest, base, 2, 'HeadSkin', out_dir, mat_map, tex_map, slice_head=True)
-
-    if hair_kind:
-        if not hair_gltf:
-            raise SystemExit(f'{label}: hair kind {hair_kind} without hair glTF')
-        hair = GltfDoc(hair_gltf)
-        add_skinned_mesh(dest, hair, 0, HAIR_NODE_NAMES[hair_kind], out_dir, {}, {})
-    if beard_gltf:
-        beard = GltfDoc(beard_gltf)
-        add_skinned_mesh(dest, beard, 0, 'Hair_Beard', out_dir, {}, {})
 
     if dest.j.get('animations'):
         raise SystemExit(f'{label}: animations survived composition')
@@ -342,7 +345,6 @@ def build_one(npc_id: str, work: str) -> None:
     cfg = CUSTOM_NPCS[npc_id]
     source = cfg['source']
     output = cfg['output']
-    hair_kind = cfg.get('hair')
     texture_size = int(cfg.get('textureSize', 512))
 
     for path in (source, UBC_BASE, output):
@@ -352,20 +354,6 @@ def build_one(npc_id: str, work: str) -> None:
     if not os.path.isfile(UBC_BASE):
         raise SystemExit(f'missing UBC base {UBC_BASE}')
 
-    hair_gltf = None
-    if hair_kind:
-        hair_gltf = HAIR_FILES.get(hair_kind)
-        if not hair_gltf or not os.path.isfile(hair_gltf):
-            raise SystemExit(f'missing hair source for {hair_kind!r}: {hair_gltf}')
-        assert_no_temp(hair_gltf)
-
-    beard_gltf = None
-    if cfg.get('beard'):
-        beard_gltf = BEARD_FILE
-        if not os.path.isfile(beard_gltf):
-            raise SystemExit(f'missing beard source {beard_gltf}')
-        assert_no_temp(beard_gltf)
-
     npc_work = os.path.join(work, npc_id)
     os.makedirs(npc_work, exist_ok=True)
     converted = os.path.join(npc_work, 'outfit.gltf')
@@ -373,35 +361,93 @@ def build_one(npc_id: str, work: str) -> None:
 
     print(f'=== {npc_id} ===')
     glb_to_gltf(source, converted)
-    compose_custom(
-        converted,
-        UBC_BASE,
-        hair_gltf,
-        beard_gltf,
-        composed,
-        npc_id,
-        hair_kind,
-    )
+    compose_custom(converted, UBC_BASE, composed, npc_id)
     optimize_glb(composed, output, texture_size, npc_work)
+
+
+def validate_hair_attachment_source(source: str) -> None:
+    """Ensure hair/beard source is a skinned UBC-compatible mesh (no _temp)."""
+    assert_no_temp(source)
+    if not os.path.isfile(source):
+        raise SystemExit(f'missing hair attachment source {source}')
+    doc = GltfDoc(source)
+    skins = doc.j.get('skins') or []
+    if len(skins) != 1:
+        raise SystemExit(f'{source}: expected exactly one skin, got {len(skins)}')
+    meshes = doc.j.get('meshes') or []
+    if not meshes:
+        raise SystemExit(f'{source}: no meshes')
+    names = set(doc.joint_names())
+    if 'Head' not in names:
+        raise SystemExit(f'{source}: UBC Head joint missing from skin')
+    for mesh in meshes:
+        for pi, prim in enumerate(mesh.get('primitives', [])):
+            attrs = prim.get('attributes', {})
+            if 'JOINTS_0' not in attrs or 'WEIGHTS_0' not in attrs:
+                raise SystemExit(
+                    f'{source}: mesh {mesh.get("name", pi)} missing JOINTS_0/WEIGHTS_0'
+                )
+    print(f'  validated hair source {os.path.basename(source)} ({len(names)} joints)')
+
+
+def build_hair_attachment(att_id: str, work: str) -> None:
+    if att_id not in HAIR_ATTACHMENTS:
+        raise SystemExit(
+            f'unknown hair attachment {att_id!r}; known: {sorted(HAIR_ATTACHMENTS)}'
+        )
+    cfg = HAIR_ATTACHMENTS[att_id]
+    source = cfg['source']
+    output = cfg['output']
+    texture_size = int(cfg.get('textureSize', 512))
+    assert_no_temp(output)
+    validate_hair_attachment_source(source)
+
+    att_work = os.path.join(work, f'att_{att_id}')
+    os.makedirs(att_work, exist_ok=True)
+    print(f'=== hair attachment {att_id} ===')
+    # Source is already a standalone skinned UBC hair glTF; optimize in place.
+    optimize_glb(source, output, texture_size, att_work)
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('ids', nargs='*', help='custom NPC ids to build')
-    parser.add_argument('--all', action='store_true', help='build every manifest entry')
+    parser.add_argument('--all', action='store_true', help='build every NPC + hair attachments')
+    parser.add_argument(
+        '--hair-attachments',
+        action='store_true',
+        help='build reusable hair/beard runtime GLBs only',
+    )
     args = parser.parse_args()
 
+    build_npcs: list[str] = []
+    build_hair: list[str] = []
+
     if args.all:
-        ids = list(CUSTOM_NPCS)
+        build_npcs = list(CUSTOM_NPCS)
+        build_hair = list(HAIR_ATTACHMENTS)
+    elif args.hair_attachments:
+        build_hair = list(HAIR_ATTACHMENTS)
     elif args.ids:
-        ids = args.ids
+        for item in args.ids:
+            if item in CUSTOM_NPCS:
+                build_npcs.append(item)
+            elif item in HAIR_ATTACHMENTS:
+                build_hair.append(item)
+            else:
+                parser.error(
+                    f'unknown id {item!r}; NPC={sorted(CUSTOM_NPCS)} '
+                    f'hair={sorted(HAIR_ATTACHMENTS)}'
+                )
     else:
-        parser.error('pass NPC id(s) or --all')
+        parser.error('pass NPC/hair id(s), --hair-attachments, or --all')
 
     work = tempfile.mkdtemp(prefix='seedvale-custom-ubc-npc.')
     try:
-        for npc_id in ids:
+        for npc_id in build_npcs:
             build_one(npc_id, work)
+        for att_id in build_hair:
+            build_hair_attachment(att_id, work)
     finally:
         shutil.rmtree(work, ignore_errors=True)
 
