@@ -28,6 +28,22 @@ To omija istniejący `ready_to_report` i report dialogue. `applyOutcome()` zapis
 
 Materializowany lost-livestock quest już posiada `reportPromptLine`, `reportPlayerLine` i `reportLine`; naprawa ma wykorzystać istniejący report lifecycle zamiast tworzyć równoległy mechanizm.
 
+Potwierdzony przypadek gameplay: gracz znalazł zwłoki owcy, zbadał je i **nie wrócił do Anny**, a quest mimo to został automatycznie rozstrzygnięty i w historii pojawiła się wypowiedź przypisana Annie. To jest bezpośrednia regresja tego kontraktu: `corpse-inspected` oznacza wiedzę/obserwację gracza i completion objective, nie rozmowę z giverem.
+
+## Lifecycle boundaries
+
+Implementacja ma jawnie zachować rozdział:
+
+```text
+world knowledge / observation
+→ objective completion
+→ ready_to_report
+→ rzeczywista player ↔ NPC interaction
+→ terminal outcome / complete
+```
+
+`corpse-inspected` i `returned` mogą dostarczyć wiedzę świata oraz spełnić objective bez żadnej implikacji, że giver tę wiedzę już posiada. `ready_to_report` oznacza właśnie tę granicę.
+
 ## Desired lifecycle
 
 ### Zwierzę martwe
@@ -118,6 +134,7 @@ Save wykonany po discovery, ale przed reportem, musi po reloadzie zachować moż
 Automated:
 
 - accept lost-livestock → `corpse-inspected` → poll: `ready_to_report`, brak `resolvedOutcomeId`, brak terminalnych consequences i brak result note przypisanego giverowi;
+- zmienić istniejący regression test, który obecnie oczekuje `complete` bezpośrednio po `lostLookup('corpse-inspected')` + `pollLostLivestockSources()`; nowy kontrakt ma oczekiwać `ready_to_report` aż do faktycznego report interaction;
 - następna rzeczywista rozmowa z giverem oferuje report, a jej wybór stosuje dokładnie `dead_confirmed`, kończy quest i nalicza consequences dokładnie raz;
 - analogicznie `returned` → `ready_to_report` → report → `live_return`;
 - save/export + restore pomiędzy discovery a reportem zachowuje właściwy branch;
