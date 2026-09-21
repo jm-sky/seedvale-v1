@@ -203,25 +203,25 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   🟡 `M` · **Score:**  37  
    → **unlocks:** 0/0
 
-30. `npc-037` — **Work Contracts — Stale Target Discovery and Notice Cleanup**  
+30. `items-player-060` — **Ranged weapon inventory, trade and use integrity**  
   🔴 `M` · **Score:**  35  
    → **unlocks:** 0/0
 
-31. `items-player-051` — **Cave-aware dropped-item continuity**  
+31. `npc-037` — **Work Contracts — Stale Target Discovery and Notice Cleanup**  
+  🔴 `M` · **Score:**  35  
+   → **unlocks:** 0/0
+
+32. `items-player-051` — **Cave-aware dropped-item continuity**  
   🔴 `M` · **Score:**  33  
    → **unlocks:** 0/0
 
-32. `npc-061` — **Time-skip and reification surface placement validity**  
+33. `npc-061` — **Time-skip and reification surface placement validity**  
   🔴 `M` · **Score:**  33  
    → **unlocks:** 0/0
 
-33. `world-terrain-042` — **Medicinal herb meadow patches**  
+34. `world-terrain-042` — **Medicinal herb meadow patches**  
   🟡 `M` · **Score:**  33  
    → **unlocks:** 1/1
-
-34. `items-player-060` — **Ranged weapon inventory, trade and use integrity**  
-  🔴 `L` · **Score:**  32  
-   → **unlocks:** 0/0
 
 35. `npc-054` — **NPC desired gifts, gift acceptance and relationship rewards**  
   🔴 `L` · **Score:**  30  
