@@ -2,6 +2,10 @@
 
 Generated from exported TypeScript symbols.
 
+## `types/lucide-icon-nodes.d.ts`
+
+- `__iconNode` — const — line 2
+
 ## `types/n8ao.d.ts`
 
 - `N8AOConfiguration` — type — line 17

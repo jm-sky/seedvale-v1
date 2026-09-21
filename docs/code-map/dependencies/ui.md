@@ -7,6 +7,7 @@ Generated from TypeScript imports.
 **Imports**
 
 - `ui/agentStatusLabel.ts`
+- `ui/npcLabelIconPresentation.ts`
 
 ## `ui/agentStatusLabel.ts`
 
@@ -14,6 +15,8 @@ Generated from TypeScript imports.
 
 - `simulation/observation.ts`
 - `ui/labelDistance.ts`
+- `ui/lucideDomIcon.ts`
+- `ui/npcLabelIconPresentation.ts`
 - `world/waterMirror.ts`
 
 **Imported by**
@@ -241,6 +244,26 @@ Generated from TypeScript imports.
 - `terrain/resourceDeposits.ts`
 - `ui/agentStatusLabel.ts`
 - `ui/labelDistance.test.ts`
+
+## `ui/lucideDomIcon.ts`
+
+**Imported by**
+
+- `ui/agentStatusLabel.ts`
+- `ui/npcLabelIconPresentation.ts`
+
+## `ui/npcLabelIconPresentation.ts`
+
+**Imports**
+
+- `ai/Needs.ts`
+- `ui/lucideDomIcon.ts`
+
+**Imported by**
+
+- `ai/NpcAgent.ts`
+- `ui/agentStatusLabel.test.ts`
+- `ui/agentStatusLabel.ts`
 
 ## `ui/startScreenFlow.test.ts`
 

@@ -4,18 +4,24 @@ Generated from exported TypeScript symbols.
 
 ## `ui/agentStatusLabel.ts`
 
-- `AgentLabelDom` — type — line 33
-- `AgentLabelObservationPresentation` — type — line 119
-- `AgentStatusLabelController` — type — line 153
-- `applyBarPercent` — function — line 103
-- `computeBarPercent` — function — line 94
-- `createAgentLabel` — function — line 51
-- `createAgentStatusLabelController` — function — line 191
-- `createLabelBar` — function — line 23
-- `INITIAL_LABEL_DISTANCE_STATE` — const — line 138
-- `LabelBarKind` — type — line 18
-- `LabelDistanceState` — type — line 111
-- `updateAgentLabelDistanceState` — function — line 425
+- `AgentLabelDom` — type — line 55
+- `AgentLabelIconSlot` — type — line 29
+- `AgentLabelNamePresentation` — type — line 32
+- `AgentLabelObservationPresentation` — type — line 152
+- `AgentStatusLabelController` — type — line 205
+  - domain: ui-input
+- `applyBarPercent` — function — line 136
+- `computeBarPercent` — function — line 127
+- `createAgentLabel` — function — line 73
+  - domain: ui-input
+- `createAgentStatusLabelController` — function — line 239
+  - domain: ui-input
+- `createLabelBar` — function — line 45
+- `INITIAL_LABEL_DISTANCE_STATE` — const — line 171
+- `LabelBarKind` — type — line 26
+  - domain: ui-input
+- `LabelDistanceState` — type — line 144
+- `updateAgentLabelDistanceState` — function — line 560
 
 ## `ui/createBusyOverlay.ts`
 
@@ -107,6 +113,28 @@ Generated from exported TypeScript symbols.
 - `barsVisibleForDistance` — function — line 22
 - `gazeOpacityFactor` — function — line 41
 - `labelOpacityForDistance` — function — line 10
+
+## `ui/lucideDomIcon.ts`
+
+- `createLucideDomIcon` — function — line 19
+  - domain: ui-input
+- `LucideIconNode` — type — line 8
+  - domain: ui-input
+
+## `ui/npcLabelIconPresentation.ts`
+
+- `activityIconPresentation` — function — line 131
+  - domain: ui-input
+- `ActivityIconSource` — type — line 18
+- `AgentLabelIconKind` — type — line 28
+  - domain: ui-input
+- `AgentLabelIconPresentation` — type — line 46
+- `iconNodeForKind` — function — line 82
+  - domain: ui-input
+- `questMarkerIconPresentation` — function — line 96
+  - domain: ui-input
+- `shopIconPresentation` — function — line 106
+  - domain: ui-input
 
 ## `ui/startScreenFlow.ts`
 

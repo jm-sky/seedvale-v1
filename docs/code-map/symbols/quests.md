@@ -571,24 +571,24 @@ Generated from exported TypeScript symbols.
 - `AuthoredQuestStageDialogueAction` — type — line 1663
   - domain: quests-progression
 - `AuthoredQuestStageObjectiveSlot` — type — line 1678
-- `bindDarkForestTreasureQuest` — function — line 2850
-- `bindExactCaveQuests` — function — line 2823
-- `bindTreasureMapBearCaveQuest` — function — line 2957
-- `buildDarkForestTreasureQuest` — function — line 2692
-- `buildHorseAcquisitionQuest` — function — line 2739
-- `buildLandmarkQuests` — function — line 2506
-- `buildTreasureMapBearCaveQuest` — function — line 2876
-- `CAVE_PLACE_TOKEN` — const — line 2782
-- `cavePlacePhrase` — function — line 2786
+- `bindDarkForestTreasureQuest` — function — line 2851
+- `bindExactCaveQuests` — function — line 2824
+- `bindTreasureMapBearCaveQuest` — function — line 2958
+- `buildDarkForestTreasureQuest` — function — line 2693
+- `buildHorseAcquisitionQuest` — function — line 2740
+- `buildLandmarkQuests` — function — line 2507
+- `buildTreasureMapBearCaveQuest` — function — line 2877
+- `CAVE_PLACE_TOKEN` — const — line 2783
+- `cavePlacePhrase` — function — line 2787
 - `externalResolutionOutcome` — function — line 1106
   - domain: quests-progression
 - `gatherDeliveryCompleteOutcome` — function — line 1079
   - domain: quests-progression
 - `hasSocialConsequence` — function — line 1117
 - `isLegacySingleObjectiveStage` — function — line 1451
-- `LandmarkResolver` — type — line 2495
+- `LandmarkResolver` — type — line 2496
 - `LEGACY_QUEST_OBJECTIVE_SLOT_ID` — const — line 1353
-- `MAP_SOURCE_PLACE_TOKEN` — const — line 2689
+- `MAP_SOURCE_PLACE_TOKEN` — const — line 2690
 - `matchStageTransition` — function — line 1479
 - `objectiveNeedsPersistedSlotProgress` — function — line 1461
   - domain: quests-progression
@@ -662,8 +662,8 @@ Generated from exported TypeScript symbols.
   - domain: quests-progression
 - `selectMatchingQuestDialogueReaction` — function — line 237
   - domain: quests-progression
-- `TreasureMapBearCaveQuestBinding` — type — line 2867
-- `treasureMapSourcePlacePhrase` — function — line 2802
+- `TreasureMapBearCaveQuestBinding` — type — line 2868
+- `treasureMapSourcePlacePhrase` — function — line 2803
 - `uniqueOutcomeForState` — function — line 1054
 - `validateQuestDefinitions` — function — line 262
 - `WORLD_KNOWLEDGE_HOUR_DAYS` — const — line 923

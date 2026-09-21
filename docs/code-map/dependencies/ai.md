@@ -45,6 +45,7 @@ Generated from TypeScript imports.
 - `fauna/AnimalLife.ts`
 - `settlement/npcState.ts`
 - `ui/createNpcInspector.ts`
+- `ui/npcLabelIconPresentation.ts`
 
 ## `ai/NpcAgent.timeSkip.test.ts`
 
@@ -183,6 +184,7 @@ Generated from TypeScript imports.
 - `terrain/terrainPreparation.ts`
 - `ui/agentStatusLabel.ts`
 - `ui/labelDistance.ts`
+- `ui/npcLabelIconPresentation.ts`
 - `world/bloodTraces.ts`
 - `world/collision.ts`
 - `world/createPalisades.ts`
