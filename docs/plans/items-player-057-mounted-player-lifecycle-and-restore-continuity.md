@@ -1,9 +1,9 @@
 # Plan: Mounted player lifecycle and restore continuity
 
 **Created:** 2026-09-20  
-**Status:** `planned` 📋  
+**Status:** `in progress` 🔄 — lifecycle correctness delivered against the existing bare-id identity; collision-safe identity blocked on `settlements-npcs-048` — see "Implementation status"  
 **Priority:** high · **Effort:** S  
-**Depends on:** world-033, settlements-npcs-048  
+**Depends on:** ~~world-033~~, settlements-npcs-048 (plan file claims `verification needed`, but current code has not actually landed the canonical namespaced identity this plan needs — see "Implementation status")  
 **Domain:** `items-player`  
 **Type:** `fix`  
 **Roadmap:** -
@@ -136,5 +136,19 @@ Performance optimization is secondary to correctness and should not change resto
 - do not duplicate `settlements-npcs-048` identity model;
 - no browser verification by the AI agent;
 - do not run `pnpm docs:sync`.
+
+## Implementation status (2026-09-21)
+
+**Scope delivered:** every lifecycle-correctness item this plan asks for, using the existing bare `animalId` identity (unchanged `SavePlayer.mountedAnimalId?: string`, no schema/migration work).
+
+- `MountActions` now separates the durable relation from the live handle: the live `AnimalAgent` reference (`mount`) and the durable `pendingRestoreId` are tracked independently, and the save projection `mountedAnimalId()` returns the live id **or** the still-pending id, never silently `null` mid-resolution (fixes problem #2 from the plan).
+- `detachForRebuild()` drops the live handle (and closes any in-flight foreign-property incident) while keeping the durable id as `pendingRestoreId`, so `update()`'s existing per-frame pending-restore resolution — unchanged, no duplicated state machine — re-resolves and reattaches the same persistent animal exactly once after a fresh `WorldBundle` publishes (fixes problem #1). A dead/non-mountable animal discovered this way now cleanly clears the player's mounted projection (`player.setMounted(false)` + HUD + toast) instead of leaving it stuck, since the player was already visually mounted going into that tick — the original boot-time pending-restore path is unaffected (it never sets `player.isMounted()` before resolution).
+- `resetForNewGame()` clears both the live and pending relation immediately with none of `dismount()`'s gameplay consequences (no toast, no Stay refresh, no position offset) — consumed by `items-player-056`.
+- `createApp.ts::rebuildWorld` calls `mount.detachForRebuild()` before every ordinary same-world rebuild's `rebuildWorldBundle()` (which synchronously disposes `bundle.settlementsManager`/`bundle.fauna` before this file regains control), and `mount.resetForNewGame()` + `lead.detach()` before a New Game's dispose. No second rebuild state machine was added — this reuses `world-033`'s existing `beginRebuild`/`completePublished`/`completeStale`/`completeFailed` gate verbatim; `gameLoop.tick()` (and therefore `mount.update()`) is already skipped for the whole invalid window, so the detached handle is never ticked mid-rebuild.
+- Exit semantics (death/downed/fall/player dismount, Stay refresh rule, single `setMounted(false)`) are untouched.
+
+**Scope deliberately not delivered — dependency gap, not an oversight:** test #10 (identity-collision resolution through a canonical namespaced reference). Recon before implementing confirmed `settlements-npcs-048` is marked `verification needed` in its own plan file but has **not** actually landed a collision-safe identity in current code: `SettlementsManager`/`livestock.ts`'s `PersistentLivestockContext.detachedById`/`detachedOriginById` and `resolveLivePersistentAnimal()` are still keyed by bare `animalId`, exactly as this plan's implementation notes flagged. Per this plan's own guardrails ("no second livestock registry", "do not duplicate `settlements-npcs-048`'s identity model"), inventing a mount-only namespaced type here was explicitly out of scope. Two settlements whose livestock collide on the same bare id are therefore still not disambiguated for mount save/restore/rebuild — this is the same pre-existing limitation `settlements-npcs-048` was supposed to close, now also documented at [persistence.md](../state/persistence.md#known-persistence-limitations) and [player-systems.md](../state/player-systems.md). Once `settlements-npcs-048` actually lands its canonical `PersistentLivestockRef`, `MountActions`'s durable relation and `SavePlayer.mountedAnimalId` should be migrated onto it (with a real `CURRENT_SAVE_VERSION` bump if the persisted shape changes) — do not treat that plan's current `verification needed` label as proof the type already exists; re-check `src/settlement/livestock.ts` first.
+
+**Tests:** `mountActions.test.ts` gained coverage for the save-projection-while-pending, detach→reattach-on-fresh-resolve, dead-animal-after-rebuild-detach cleanup, and New-Game full clear (both live and pending-only cases). `tsc --noEmit`, `lint:fix`, `build`, and the full `vitest` suite (8041 tests) pass. Browser/manual verification (mount → in-session rebuild → still riding the same horse; mount → New Game → no stale relation) remains User-owned; `pnpm docs:sync` was run once for the combined three-plan delivery per the session's own instructions.
 
 > **Zrób git commit i push do main, rebase jeżeli trzeba**

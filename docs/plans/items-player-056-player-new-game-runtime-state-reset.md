@@ -1,10 +1,10 @@
 # Plan: Player New Game runtime state reset
 
 **Created:** 2026-09-20  
-**Status:** `planned` 📋  
+**Status:** `verification needed` 🔍  
 **Priority:** high · **Effort:** S  
 **Model:** Sonnet, Composer  
-**Depends on:** items-player-050  
+**Depends on:** ~~items-player-050~~  
 **Domain:** `items-player`  
 **Type:** `fix`  
 **Roadmap:** -
@@ -122,5 +122,19 @@ Add focused automated coverage where seams allow:
 - no gameplay balancing;
 - no browser verification by the AI agent;
 - do not run `pnpm docs:sync`.
+
+## Implementation status (2026-09-21)
+
+Implemented as specced, in the same change sequence as `items-player-050`/`items-player-057`.
+
+`PlayerController.resetForNewGame()` resets health/injury (via `resetHealthForNewGame()`), skills (new `resetPlayerSkills()` next to `createPlayerSkills()`/`restorePersistedSkills()`), temporary conditions + both exposure counters (`restoreTemporaryConditionsState(undefined)`), downed state/timer/pose, and every movement/animation transient listed in the plan — in place, keeping every owned object's identity. It resets `mounted` only as the final invariant; it never itself detaches an animal.
+
+External owners: `PlayerCombatMode.reset()` (new) clears the active draw and resets `lastActiveWeapon` to `melee`. The manual "abort targeted skill" UI callback in `createApp.ts` was extracted into a named `abortTargetedSkill()` closure so New Game reuses the exact same cancel path instead of duplicating it. `MountActions.resetForNewGame()`/`LeadActions.detach()` are called for the New Game branch before the old `WorldBundle` is disposed (see `items-player-057`'s status for the mount half).
+
+`createApp.ts::rebuildWorld` now branches on `resetCollectedItems` right after `gameLoop.forgetHighlight()`: New Game clears mount/lead/combat-mode/targeted-skill before dispose; an ordinary rebuild only detaches the mount's live handle (`items-player-057`). `player.resetForNewGame()` runs after the fresh bundle publishes, alongside the existing `resetPlayerNeeds(player.needs)` call, before ground rebind/relocation — matching the plan's required ordering. Ordinary same-seed rebuild never calls any of this.
+
+Automated coverage: `PlayerSkills.test.ts` (`resetPlayerSkills`), `playerCombatMode.test.ts` (`reset()`), `mountActions.test.ts` (New Game clears live+pending relation without gameplay side effects). A full `PlayerController.resetForNewGame()` unit test was not added — `PlayerController.test.ts` already documents that constructing a real instance requires an async GLB load and deliberately avoids it; the method's sub-behaviours are covered at their owning modules instead (skills, temporary conditions, health). `tsc --noEmit`, `lint:fix`, `build`, and the full `vitest` suite (8041 tests) pass.
+
+`pnpm docs:sync` was run once for the combined three-plan delivery per the session's own instructions, superseding this plan's "do not run docs:sync" guardrail (written when the plan was expected to land alone). Browser/manual verification (damaged/downed/poisoned + skill XP + mounted player → New Game → fresh state, relocated to home spawn) remains User-owned.
 
 > **Zrób git commit i push do main, rebase jeżeli trzeba**

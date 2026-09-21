@@ -1,7 +1,7 @@
 # Plan: Player health and injury persistence
 
 **Created:** 2026-09-20  
-**Status:** `planned` 📋  
+**Status:** `verification needed` 🔍  
 **Priority:** medium · **Effort:** S  
 **Model:** Sonnet, Composer  
 **Depends on:** ~~items-player-045~~  
@@ -110,5 +110,13 @@ Add focused automated coverage:
 Automated/static verification only: targeted saveData migration/validation tests, targeted app/player persistence tests where existing seams support them, and repository-required type/build checks.
 
 Manual browser verification should later confirm: take damage + injury, save, Continue/Load, and verify HP/injury are unchanged.
+
+## Implementation status (2026-09-21)
+
+Implemented as specced. `CURRENT_SAVE_VERSION` bumped `52 → 53`; `SavePlayer.health = { currentHp, physicalInjury, injuryRecoveryUpdatedAtDays? }` is required on the current schema and fails closed on missing/non-finite/negative values (`isSavePlayerHealth`). The `51 → 52` migration writes an explicit full-HP/zero-injury/no-anchor snapshot rather than leaving the field absent.
+
+`PlayerController.restoreHealthConsequences()` mutates the existing `health`/`injuryRecovery` objects in place (never replaces them), clamps `currentHp` to `[0, maxHp]` and `physicalInjury` to `[0, maxHp - currentHp]`, and never calls `resolveInjuryRecovery()`/heal/damage helpers. `createApp.ts` calls it immediately after `player.setPosition()` in the `initialSave` branch, before `syncDerivedPhysicalCapabilities`/HUD/game-loop wiring. `PlayerController.resetHealthForNewGame()` is the paired fresh-boot reset, reused by `items-player-056`'s `resetForNewGame()`.
+
+Automated coverage: `saveData.test.ts` (migration, schema validation, round-trip incl. the recovery anchor), plus the pre-existing `injuryRecovery.test.ts` for the shared recovery math this plan deliberately did not duplicate. `tsc --noEmit`, `lint:fix`, `build`, and the full `vitest` suite (8041 tests) pass. Browser/manual verification (take damage + injury, save, Continue/Load, confirm unchanged) is still User-owned per this plan's guardrails.
 
 > **Zrób git commit i push do main, rebase jeżeli trzeba**
