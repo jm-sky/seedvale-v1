@@ -3,7 +3,7 @@
 **Created:** 2026-09-21
 **Status:** `planned` 📋
 **Type:** fix
-**Priority:** high · **Effort:** L
+**Priority:** high · **Effort:** M
 **Depends on:** ~~items-player-059~~
 **Domain:** `items-player`
 **Subdomains:** `inventory` `items` `interaction`
@@ -59,6 +59,10 @@ This is especially risky because trade has two deliberately different paths:
 The repository already centralizes acquisition through `createAcquiredInstance()`, but its correctness depends on the classification matching the item lifecycle.
 
 Do not repair this by adding another `if (kind === 'short_bow')` in Merchant UI or trade wiring.
+
+### Scope rule after recon
+
+This remains one coherent lifecycle plan, but existing generic instance-aware paths are **verification-first** rather than presumed refactor work. After the central ranged classification changes, reuse the current generic Inventory/trade/world-transfer mechanisms and modify them only where targeted tests expose a concrete gap. In particular, Merchant/NPC transfer, Inventory grouping, capacity and drop/pickup already have shared instance-aware seams; do not rewrite them merely because they are named in this plan.
 
 ## 1. Establish one reusable ranged-weapon ownership contract
 
@@ -127,7 +131,7 @@ For a count of N purchased/granted ranged weapons, exactly N instances must be c
 
 ## 5. Merchant catalog purchase
 
-Audit `settleTransaction()` and its helpers against all ranged weapons in Merchant stock.
+Verify the live Merchant path first: `src/app/inventoryWiring.ts` → `settleMerchantStockTransaction()` against persistent `NpcAuthoritativeState.merchantStock`, with assortment/materialization in `src/settlement/merchantTrade.ts`. Keep `settleTransaction()` compatible for tests/other callers, but do not treat it as the primary runtime Merchant path.
 
 Required atomic behaviour:
 
@@ -264,7 +268,7 @@ Do not create NPC-only mirror counts.
 
 ## 12. Drop, pickup and world transfer
 
-Audit the ordinary item drop/pickup path for ranged instances.
+Verify the ordinary item drop/pickup path for ranged instances. The generic dropped-item contract already supports concrete instance payloads, so this should remain reuse/verification work unless tests expose a gap.
 
 Dropping a ranged weapon must preserve its physical identity where the existing world-item representation supports instance payloads.
 
