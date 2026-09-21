@@ -62,4 +62,5 @@ Format: `- [ ] YYYY-MM-DD — opis (plan/plik, jeśli istotne)`
 
 ## Performance / rendering
 
+- [ ] 2026-09-21 — Agent performance / simulation-boundary audit follow-ups that were **not** promoted to dedicated plans: camera-vs-simulation invariants, player-distance fidelity boundaries, broad Agent runtime-controller scope, fauna cadence/proximity reuse, ground/water query ownership, collider candidate volume watchlist, livestock duplicate-update diagnostic identity validation, NPC presentation/animation cost attribution, and shadow-cost ownership. Review: `docs/reviews/2026-09-21--agent-performance-and-simulation-boundary-followups.md`.
 - [ ] 2026-09-18 — Po zamknięciu `world-terrain-038`: w `settlement-heavy` 027 settlement shadow nadal ciąży `decor` (~399k tris) oraz `houseStatic`; garden zostawił Dirt jako grounding caster (rośliny już no-shadow). Nie dokładać kolejnych `castShadow=false` bez benchmarku + visual OK. Submission/geometria → `settlements-019`; N8AO/post → `world-terrain-039`; terrain/vegetation shadow tylko jeśli świeży isolation wskaże dominację.
