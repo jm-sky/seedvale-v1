@@ -32,6 +32,7 @@ Generated from TypeScript imports.
 - `app/saveState.ts`
 - `app/userActions.test.ts`
 - `app/userActions.ts`
+- `app/waterDrinkInteraction.ts`
 - `fauna/faunaCombat.ts`
 - `items/HeldTool.test.ts`
 - `items/compactWeaponsAndMasterworkBow.test.ts`
@@ -940,6 +941,7 @@ Generated from TypeScript imports.
 - `app/gameLoop.ts`
 - `app/interactables.ts`
 - `app/inventoryWiring.ts`
+- `app/waterDrinkInteraction.ts`
 - `combat/defenseResolver.test.ts`
 - `combat/defenseResolver.ts`
 - `combat/meleeAttack.test.ts`

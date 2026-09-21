@@ -2270,6 +2270,9 @@ Generated from exported TypeScript symbols.
 
 - `createWaterSource` — function — line 96
 - `DRINK_THIRST_RELIEF` — const — line 75
+- `requiresRiskyWaterDrinkConfirmation` — function — line 111
+- `RISKY_WATER_DRINK_CONFIRM_BODY` — const — line 104
+- `RISKY_WATER_DRINK_CONFIRM_LABEL` — const — line 106
 - `UNCOVERED_WELL_CONSUMPTION_RISK` — const — line 59
 - `UNCOVERED_WELL_WARNING` — const — line 67
 - `UNDRINKABLE_WATER_WARNING` — const — line 86

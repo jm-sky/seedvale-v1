@@ -98,3 +98,17 @@ export function createWaterSource(kind: WaterSource['kind']): WaterSource {
   if (kind === 'ocean') return { kind, quality: 'undrinkable' }
   return { kind, quality: 'unsafe' }
 }
+
+/** Plan ui-input-034 — shown before committing a direct drink that can apply
+ *  unsafe-water poisoning and/or `consumptionRisk` HP/Vigor loss. */
+export const RISKY_WATER_DRINK_CONFIRM_BODY = 'Ta woda może być niebezpieczna. Czy na pewno chcesz zaryzykować?'
+
+export const RISKY_WATER_DRINK_CONFIRM_LABEL = 'Napij się mimo ryzyka'
+
+/** Plan ui-input-034 — pure policy for deliberate direct-drink confirmation.
+ *  `undrinkable` stays an immediate action-boundary rejection, not a confirm
+ *  path. */
+export function requiresRiskyWaterDrinkConfirmation(source: WaterSource): boolean {
+  if (source.quality === 'undrinkable') return false
+  return source.quality === 'unsafe' || source.consumptionRisk != null
+}

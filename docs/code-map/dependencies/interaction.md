@@ -31,6 +31,8 @@ Generated from TypeScript imports.
 - `app/inspection/inspectionTarget.ts`
 - `app/interactables.test.ts`
 - `app/interactables.ts`
+- `app/waterDrinkInteraction.test.ts`
+- `app/waterDrinkInteraction.ts`
 - `interaction/interactionView.test.ts`
 - `interaction/interactionView.ts`
 - `interaction/resolveInteraction.ts`
