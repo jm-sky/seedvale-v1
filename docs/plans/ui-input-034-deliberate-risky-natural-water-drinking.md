@@ -3,6 +3,7 @@
 **Created:** 2026-09-21
 **Status:** `planned` 📋
 **Priority:** high · **Effort:** S
+**Model:** Sonnet, Composer
 **Depends on:** none
 **Domain:** `ui-input`
 **Type:** `fix`
