@@ -56,6 +56,10 @@ Format: `- [ ] YYYY-MM-DD — opis (plan/plik, jeśli istotne)`
 - [ ] 2026-09-11 — off-screen `TransportOrder.execution` nie przesuwa potrzeb/vigoru/injury carrier NPC w czasie podróży. To ten sam brak co dla innych unloaded NPC, ale staje się istotny dla generic long-distance travel (`settlements-npcs-028` / `npc-029`). Naturalny seam: stanowy survival catch-up obok `resolveOffscreenTransportArrivals`, reuse istniejących `tickNeeds` / `tickVigorForSimulatedStep` / injury recovery helpers.
 - [ ] 2026-09-12 — npc-029 accompany NPCs still unload with their home settlement (same detailed XOR off-screen rule as transport carriers). Visual follow therefore stops when the village streams out; long-distance live-agent travel with the player belongs with `settlements-npcs-028` / paid escort, not a companion-specific streaming owner.
 
+## Quest / UI / interaction
+
+- [ ] 2026-09-21 — Quest/UI/interaction audit follow-ups not promoted to dedicated plans: dropped-item group stable identity, the narrow `pendingReportOutcomeId` lifecycle invariant, and remaining legacy `promptLabel` action-semantics parsing. Review: `docs/reviews/2026-09-21--quest-ui-interaction-followups.md`.
+
 ## World lifecycle / rebuild
 
 - [ ] 2026-09-21 — Player/world lifecycle audit follow-ups not promoted to dedicated plans: async spatial-audio revalidation, broader `buildWorldSystems()` partial-construction cleanup boundary, failed-rebuild diagnostic wording, and stale player-health persistence comments. Review: `docs/reviews/2026-09-21--player-world-lifecycle-followups.md`.
