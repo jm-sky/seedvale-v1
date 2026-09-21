@@ -7,6 +7,7 @@
 **Domain:** `ui-input`  
 **Type:** `fix`  
 **Roadmap:** -
+**Model:** Sonnet, Composer
 
 ## Problem
 
