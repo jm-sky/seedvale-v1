@@ -16,31 +16,32 @@ Generated from exported TypeScript symbols.
 
 ## `fauna/AnimalAgent.ts`
 
-- `AnimalAgent` — class — line 1210
+- `AnimalAgent` — class — line 1251
   - domain: fauna
   - system: animal-agent
   - role: Central per-animal behaviour integration point: predator/prey AI, needs, health, production (livestock) and riding (mounts).
   - uses: HealthState, StaminaState
   - simulation: tick
-- `AnimalAgentDebugInfo` — type — line 605
-- `AnimalAgentDeps` — type — line 975
-- `AnimalSaveState` — type — line 738
-- `AnimalUpdateContext` — type — line 1056
-- `BURY_DURATION_SEC` — const — line 418
-- `canPredatorPursueIntoVillage` — function — line 822
-- `FAUNA_SHADOW_DISTANCE` — const — line 387
-- `FaunaAiBranch` — type — line 542
-- `FaunaNavRescueDebugInfo` — type — line 589
-- `FRENZY_VILLAGE_ARRIVAL_RADIUS` — const — line 477
-- `FrenzyWolfCandidate` — type — line 910
-- `HARVEST_MEAT_DURATION_SEC` — const — line 421
-- `isWithinVillageRadius` — function — line 803
-- `NearbyNpcCandidate` — type — line 905
-- `pickNearestEligibleWolf` — function — line 919
-- `pickRabidTarget` — function — line 944
-- `RABIES_BITE_INFECTION_CHANCE` — const — line 405
-- `villageFleeBiasFalloff` — function — line 830
-- `VillageInfo` — type — line 797
+- `AnimalAgentDebugInfo` — type — line 644
+- `AnimalAgentDeps` — type — line 1016
+- `AnimalSaveState` — type — line 779
+- `AnimalUpdateContext` — type — line 1097
+- `BURY_DURATION_SEC` — const — line 441
+- `canPredatorPursueIntoVillage` — function — line 863
+- `FAUNA_SHADOW_DISTANCE` — const — line 410
+- `FaunaAiBranch` — type — line 565
+- `FaunaNavRescueDebugInfo` — type — line 612
+- `FaunaWaterCrossingDebugInfo` — type — line 626
+- `FRENZY_VILLAGE_ARRIVAL_RADIUS` — const — line 500
+- `FrenzyWolfCandidate` — type — line 951
+- `HARVEST_MEAT_DURATION_SEC` — const — line 444
+- `isWithinVillageRadius` — function — line 844
+- `NearbyNpcCandidate` — type — line 946
+- `pickNearestEligibleWolf` — function — line 960
+- `pickRabidTarget` — function — line 985
+- `RABIES_BITE_INFECTION_CHANCE` — const — line 428
+- `villageFleeBiasFalloff` — function — line 871
+- `VillageInfo` — type — line 838
 
 ## `fauna/animalAreaBound.ts`
 
@@ -861,12 +862,18 @@ Generated from exported TypeScript symbols.
 - `AnimalWaterCapability` — type — line 22
 - `autonomousDestinationAccepts` — function — line 103
 - `classifyWaterTraversal` — function — line 51
+- `evaluateWaterRouteFeasibility` — function — line 209
 - `isDispreferredSwim` — function — line 125
+- `predictSwimStaminaCost` — function — line 156
 - `shouldApplyDrowningDamage` — function — line 85
 - `SWIM_PREFER_DRY_CELL_COST` — const — line 99
+- `SWIM_SAFETY_RESERVE_RATIO` — const — line 148
 - `swimStaminaExertion` — function — line 75
 - `wadeDepthFor` — function — line 40
+- `WaterRouteFeasibility` — type — line 180
 - `WaterRouteIntent` — type — line 94
+- `WaterRouteRejectionReason` — type — line 178
+- `WaterRouteSample` — type — line 173
 - `waterTraversalCellCost` — function — line 114
 - `WaterTraversalMode` — type — line 13
   - domain: fauna

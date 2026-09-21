@@ -2,11 +2,15 @@ import { describe, expect, it } from 'vitest'
 import {
   autonomousDestinationAccepts,
   classifyWaterTraversal,
+  evaluateWaterRouteFeasibility,
   isDispreferredSwim,
+  predictSwimStaminaCost,
   shouldApplyDrowningDamage,
   SWIM_PREFER_DRY_CELL_COST,
+  SWIM_SAFETY_RESERVE_RATIO,
   swimStaminaExertion,
   wadeDepthFor,
+  type WaterRouteSample,
   waterTraversalCellCost,
 } from './waterTraversal'
 
@@ -111,5 +115,109 @@ describe('autonomous water route preference (plan fauna-029)', () => {
     expect(autonomousDestinationAccepts('swimming', { waterAdapted: true })).toBe(true)
     expect(waterTraversalCellCost('swimming', { waterAdapted: true }, 'preferDry')).toBe(1)
     expect(isDispreferredSwim('swimming', { waterAdapted: true }, 'preferDry')).toBe(false)
+  })
+})
+
+describe('predictSwimStaminaCost (plan fauna-046 §1)', () => {
+  it('scales with swim time (distance / speed) times drain rate times exertion', () => {
+    expect(predictSwimStaminaCost(10, 2, 0.18, 1)).toBeCloseTo(5 * 0.18 * 1, 5)
+  })
+
+  it('is zero for a non-positive distance', () => {
+    expect(predictSwimStaminaCost(0, 2, 0.18, 1)).toBe(0)
+    expect(predictSwimStaminaCost(-1, 2, 0.18, 1)).toBe(0)
+  })
+
+  it('guards near-zero/zero speed as Infinity for a real distance, never NaN', () => {
+    expect(predictSwimStaminaCost(5, 0, 0.18, 1)).toBe(Infinity)
+    expect(Number.isNaN(predictSwimStaminaCost(5, 0, 0.18, 1))).toBe(false)
+  })
+})
+
+describe('evaluateWaterRouteFeasibility (plan fauna-046 §2)', () => {
+  const drainRate = 0.18
+  const speed = 3
+
+  function swim(distance: number): WaterRouteSample {
+    return { stepDistance: distance, mode: 'swimming' }
+  }
+  function dry(distance = 1): WaterRouteSample {
+    return { stepDistance: distance, mode: 'dry' }
+  }
+
+  it('a route with no swimming is always safe', () => {
+    const result = evaluateWaterRouteFeasibility([dry(5), dry(5)], undefined, 1, 1, speed, drainRate)
+    expect(result.safe).toBe(true)
+    expect(result.reason).toBe('no-swim')
+    expect(result.totalSwimDistance).toBe(0)
+  })
+
+  it('dry -> short swim -> dry is safe with full stamina', () => {
+    const result = evaluateWaterRouteFeasibility([dry(3), swim(4), dry(3)], undefined, 1, 1, speed, drainRate)
+    expect(result.safe).toBe(true)
+    expect(result.maxContinuousSwimDistance).toBe(4)
+  })
+
+  it('the same crossing is unsafe with low stamina', () => {
+    const result = evaluateWaterRouteFeasibility([dry(3), swim(4), dry(3)], undefined, 0.15, 1, speed, drainRate)
+    expect(result.safe).toBe(false)
+    expect(result.reason).toBe('unsafe-distance')
+  })
+
+  it('a higher staminaDrainRate shortens the safe range for the same crossing', () => {
+    const samples = [dry(3), swim(2), dry(3)]
+    const normal = evaluateWaterRouteFeasibility(samples, undefined, 0.5, 1, speed, drainRate)
+    const higherDrain = evaluateWaterRouteFeasibility(samples, undefined, 0.5, 1, speed, drainRate * 3)
+    expect(normal.safe).toBe(true)
+    expect(higherDrain.safe).toBe(false)
+  })
+
+  it('waterAdapted gets a much larger safe range through its lower exertion', () => {
+    const samples = [dry(3), swim(20), dry(3)]
+    const landAnimal = evaluateWaterRouteFeasibility(samples, undefined, 0.5, 1, speed, drainRate)
+    const duck = evaluateWaterRouteFeasibility(samples, { waterAdapted: true }, 0.5, 1, speed, drainRate)
+    expect(landAnimal.safe).toBe(false)
+    expect(duck.safe).toBe(true)
+  })
+
+  it('keeps the configured safety reserve — an exact zero-at-exit budget only passes without one', () => {
+    const staminaCapacity = 1
+    const cost = predictSwimStaminaCost(5, speed, drainRate, 1)
+    const samples = [swim(5), dry(1)]
+    const noReserve = evaluateWaterRouteFeasibility(samples, undefined, cost, staminaCapacity, speed, drainRate, 0)
+    expect(noReserve.safe).toBe(true)
+    const withReserve = evaluateWaterRouteFeasibility(
+      samples, undefined, cost, staminaCapacity, speed, drainRate, SWIM_SAFETY_RESERVE_RATIO,
+    )
+    expect(withReserve.safe).toBe(false)
+  })
+
+  it('zero/near-zero stamina never approves an ordinary crossing', () => {
+    const result = evaluateWaterRouteFeasibility([swim(0.5)], undefined, 0.001, 1, speed, drainRate)
+    expect(result.safe).toBe(false)
+  })
+
+  it('a long continuous crossing (ocean) is unsafe even at full stamina', () => {
+    const result = evaluateWaterRouteFeasibility([swim(400)], undefined, 1, 1, speed, drainRate)
+    expect(result.safe).toBe(false)
+    expect(result.maxContinuousSwimDistance).toBe(400)
+  })
+
+  it('several short segments separated by dry/wading are not treated as one continuous swim', () => {
+    const samples = [swim(3), dry(1), swim(3), { stepDistance: 1, mode: 'wading' } as WaterRouteSample, swim(3)]
+    const result = evaluateWaterRouteFeasibility(samples, undefined, 1, 1, speed, drainRate)
+    expect(result.maxContinuousSwimDistance).toBe(3)
+    expect(result.totalSwimDistance).toBe(9)
+  })
+
+  it('a route ending in swimming has no confirmed exit and is unsafe for a non-waterAdapted species', () => {
+    const result = evaluateWaterRouteFeasibility([dry(3), swim(2)], undefined, 1, 1, speed, drainRate)
+    expect(result.safe).toBe(false)
+    expect(result.reason).toBe('no-safe-exit')
+  })
+
+  it('a route ending in swimming is fine for a waterAdapted species', () => {
+    const result = evaluateWaterRouteFeasibility([dry(3), swim(2)], { waterAdapted: true }, 1, 1, speed, drainRate)
+    expect(result.safe).toBe(true)
   })
 })

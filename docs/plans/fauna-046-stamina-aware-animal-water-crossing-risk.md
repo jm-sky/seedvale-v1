@@ -1,7 +1,7 @@
 # Plan: Stamina-aware animal water crossing risk
 
 **Created:** 2026-09-21
-**Status:** `planned` 📋
+**Status:** `verification needed` 🔍
 **Type:** fix
 **Model:** Opus · Sonnet
 **Priority:** high · **Effort:** M

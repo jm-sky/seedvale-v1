@@ -180,6 +180,7 @@ import {
   type AnimalTrip,
   findStrayReturnDestination,
   findWaterTripDestination,
+  probeBestPointNear,
   tripDayBucket,
 } from './animalRoaming'
 import {
@@ -309,10 +310,14 @@ import { PREY_ALERT_RANGE_BONUS, type PreyAlertCandidate, resolvePreyAlertThreat
 import {
   autonomousDestinationAccepts,
   classifyWaterTraversal,
+  evaluateWaterRouteFeasibility,
   isDispreferredSwim,
   shouldApplyDrowningDamage,
+  SWIM_SAFETY_RESERVE_RATIO,
   swimStaminaExertion,
+  type WaterRouteFeasibility,
   type WaterRouteIntent,
+  type WaterRouteSample,
   waterTraversalCellCost,
   type WaterTraversalMode,
 } from './waterTraversal'
@@ -360,10 +365,17 @@ type NavRescue = {
   waypoints: readonly PathPoint[]
   index: number
   active: boolean
+  /** Seconds remaining before a `preferDry` route may be re-attempted after
+   *  `resolveSafeWaterRoute()` rejected the last one as stamina-unsafe (plan
+   *  fauna-046 §7) — armed instead of committing an unsafe route, so
+   *  `stepNavRescue` holds position (rather than falling through to the
+   *  unsafe direct line) until it elapses. Always `0` for `chaseNav`/
+   *  `fleeNav`, which never reject on stamina. */
+  unsafeCooldown: number
 }
 
 function createNavRescue(): NavRescue {
-  return { watchdog: createMovementWatchdog(), waypoints: [], index: 0, active: false }
+  return { watchdog: createMovementWatchdog(), waypoints: [], index: 0, active: false, unsafeCooldown: 0 }
 }
 
 function clearNavRescue(nav: NavRescue): void {
@@ -375,6 +387,17 @@ function clearNavRescue(nav: NavRescue): void {
 /** `AnimalAgent.stepNavRescue`'s "this route no longer matches `dest`"
  *  threshold (meters) — see that method's doc. */
 const STALE_NAV_ROUTE_DIST = 6
+/** `resolveSafeWaterRoute()`'s bounded retry cooldown (plan fauna-046 §7) —
+ *  same order of magnitude as `SOURCE_SEARCH_COOLDOWN_SEC`, so a rejected
+ *  crossing is re-tried on a cadence rather than every tick, without
+ *  needing a brand-new tuning scale. */
+const UNSAFE_CROSSING_COOLDOWN_SEC = 5
+/** Bounded local search for `tickWaterExitRecovery()`'s nearest reachable
+ *  dry/wading exit (plan fauna-046 §6) — same order of magnitude as
+ *  `animalForaging.ts`'s `WATER_SEARCH_ATTEMPTS`/`FOOD_SEARCH_RADIUS`, not a
+ *  world-scale water-body scan. */
+const WATER_EXIT_SEARCH_RADIUS = 14
+const WATER_EXIT_SEARCH_ATTEMPTS = 16
 
 /** HP/sec drained by `tickDrowning()` while `swimming` and stamina-exhausted
  *  (plan fauna-015 §7) — same order of magnitude as a real attack (see
@@ -593,6 +616,22 @@ export type FaunaNavRescueDebugInfo = {
   currentWaypoint: { x: number, z: number } | null
   rescueStage: RescueStage
   lowProgressStrikes: number
+  /** Seconds left before a rejected `preferDry` crossing may be retried
+   *  (plan fauna-046 §7/§8) — always `0` for `chaseNav`/`fleeNav`. */
+  unsafeCooldown: number
+}
+
+/** `AnimalAgent.getDebugInfo()`'s water-crossing risk snapshot (plan
+ *  fauna-046 §8) — cheap, already-resolved values only, no extra sampling. */
+export type FaunaWaterCrossingDebugInfo = {
+  waterMode: WaterTraversalMode
+  staminaRatio: number
+  safetyReserveRatio: number
+  /** `tickWaterExitRecovery()`'s current target, while active. */
+  recoveryTarget: { x: number, z: number } | null
+  /** `resolveSafeWaterRoute()`'s last rejection reason for `moveNav`,
+   *  cleared once a `preferDry` route is accepted. */
+  lastRouteRejectionReason: WaterRouteFeasibility['reason'] | null
 }
 
 /** Serializable, `console.log`/`console.table`-safe snapshot of one
@@ -667,6 +706,8 @@ export type AnimalAgentDebugInfo = {
   strategicDestWalkable: boolean | null
   chaseNav: FaunaNavRescueDebugInfo
   fleeNav: FaunaNavRescueDebugInfo
+  moveNav: FaunaNavRescueDebugInfo
+  waterCrossing: FaunaWaterCrossingDebugInfo
   /** Owning household's home `Place.id` (plan fauna-011 §2/§15) — `null` for
    *  wild fauna/unowned livestock. Same value as `ownerHouseId`. */
   ownerHouseId: string | null
@@ -1603,6 +1644,14 @@ export class AnimalAgent {
   /** Wander / trip / needs / attraction (plan fauna-029) — preferDry cost. */
   private readonly moveNav: NavRescue = createNavRescue()
   private readonly repathWaypointScratch = new THREE.Vector3()
+  /** Set only while `tickWaterExitRecovery()` is actively steering this
+   *  animal toward a found dry/wading exit (plan fauna-046 §6) — `null`
+   *  otherwise, including whenever `waterMode` isn't `swimming`. */
+  private waterExitRecoveryTarget: THREE.Vector3 | null = null
+  /** Last rejection reason from `resolveSafeWaterRoute()` for `moveNav`
+   *  (plan fauna-046 §8) — cleared the instant a `preferDry` route is
+   *  accepted; debug-only. */
+  private lastMoveNavRejection: WaterRouteFeasibility['reason'] | null = null
   /** True while this predator's latest throttled human-response decision
    *  (player or, when frenzied, a noticed NPC) is `attack` — the small
    *  signal `NpcAgent`'s bounded local threat perception reads to react
@@ -2063,6 +2112,9 @@ export class AnimalAgent {
     clearNavRescue(this.chaseNav)
     clearNavRescue(this.fleeNav)
     clearNavRescue(this.moveNav)
+    this.moveNav.unsafeCooldown = 0
+    this.waterExitRecoveryTarget = null
+    this.lastMoveNavRejection = null
     this.snapY()
   }
 
@@ -2090,6 +2142,9 @@ export class AnimalAgent {
     clearNavRescue(this.chaseNav)
     clearNavRescue(this.fleeNav)
     clearNavRescue(this.moveNav)
+    this.moveNav.unsafeCooldown = 0
+    this.waterExitRecoveryTarget = null
+    this.lastMoveNavRejection = null
     this.behaviourAccumSec = CADENCE_PRIME_SEC
     this.presentationAccumSec = CADENCE_PRIME_SEC
     this.snapY()
@@ -2806,6 +2861,7 @@ export class AnimalAgent {
       currentWaypoint: current ? { x: current.x, z: current.z } : null,
       rescueStage: nav.watchdog.rescueStage,
       lowProgressStrikes: nav.watchdog.lowProgressStrikes,
+      unsafeCooldown: nav.unsafeCooldown,
     }
   }
 
@@ -2859,6 +2915,16 @@ export class AnimalAgent {
         : null,
       chaseNav: this.navDebugInfo(this.chaseNav),
       fleeNav: this.navDebugInfo(this.fleeNav),
+      moveNav: this.navDebugInfo(this.moveNav),
+      waterCrossing: {
+        waterMode: this.waterMode,
+        staminaRatio: getStaminaRatio(this.life.stamina),
+        safetyReserveRatio: SWIM_SAFETY_RESERVE_RATIO,
+        recoveryTarget: this.waterExitRecoveryTarget
+          ? { x: this.waterExitRecoveryTarget.x, z: this.waterExitRecoveryTarget.z }
+          : null,
+        lastRouteRejectionReason: this.lastMoveNavRejection,
+      },
       ownerHouseId: this.ownerHouseId ?? null,
       dogGuard: this.dogGuardTarget
         ? {
@@ -5989,7 +6055,16 @@ export class AnimalAgent {
    *  was ever found), falls straight through to steering at `dest`
    *  directly — the pre-existing behaviour. `dest` itself is never touched
    *  here: the committed prey/flee target stays whatever the caller already
-   *  decided (plan npc-005's target commitment is upstream of this). */
+   *  decided (plan npc-005's target commitment is upstream of this).
+   *
+   *  `preferDry` (always `moveNav` — ordinary wander/trip/needs/attraction,
+   *  plan fauna-046) gets two extra layers ability/preference don't cover:
+   *  survival recovery takes over first whenever this animal is actually
+   *  `swimming` (`tickWaterExitRecovery`), and a route `attemptNavRepath`
+   *  found is only committed once `resolveSafeWaterRoute` has checked this
+   *  animal's current stamina budget against it — an unsafe route arms
+   *  `nav.unsafeCooldown` instead, which holds position here rather than
+   *  falling through to the unsafe direct line. */
   private stepNavRescue(
     nav: NavRescue,
     dest: THREE.Vector3,
@@ -5997,6 +6072,8 @@ export class AnimalAgent {
     dt: number,
     intent: WaterRouteIntent = 'allowSwim',
   ): void {
+    if (intent === 'preferDry' && nav === this.moveNav && this.tickWaterExitRecovery(speed, dt)) return
+    if (nav.unsafeCooldown > 0) nav.unsafeCooldown = Math.max(0, nav.unsafeCooldown - dt)
     if (nav.active) {
       // A route computed toward a much earlier `dest` (e.g. a previous,
       // now-unrelated chase/flee session left it active) is worse than no
@@ -6015,7 +6092,9 @@ export class AnimalAgent {
     const needImmediateRepath = intent === 'preferDry'
       && !nav.active
       && this.destLosHasDispreferredSwim(dest.x, dest.z)
-    if (stage !== 'none' || needImmediateRepath) this.attemptNavRepath(nav, dest, intent)
+    if (nav.unsafeCooldown <= 0 && (stage !== 'none' || needImmediateRepath)) {
+      this.attemptNavRepath(nav, dest, intent, speed)
+    }
 
     while (nav.active) {
       const waypoint = nav.waypoints[nav.index]
@@ -6032,7 +6111,48 @@ export class AnimalAgent {
       nav.index++
       if (nav.index >= nav.waypoints.length) this.clearNavRescue(nav)
     }
+    if (intent === 'preferDry' && nav.unsafeCooldown > 0) return
     this.steerToward(dest, speed, dt)
+  }
+
+  /** Water-exit survival override (plan fauna-046 §6) for ordinary
+   *  (`preferDry`) autonomous movement — `true` once it has taken over this
+   *  tick's movement, meaning `stepNavRescue` must return immediately
+   *  instead of running its own preferDry logic. While this animal's
+   *  last-resolved `waterMode` (see that field's one-tick-lag doc) is
+   *  actually `swimming`, steers `moveNav` itself toward the nearest
+   *  reachable dry/wading point via `allowSwim` — so the unsafe-crossing
+   *  rejection above never applies to the recovery leg — overriding
+   *  whatever wander/needs/trip target was live, so a drink/wander retarget
+   *  can't pull the animal back into deep water mid-crossing. Real stamina
+   *  drain and `tickDrowning()` stay fully in effect throughout, same as
+   *  any other swimming: this never teleports, never suppresses either.
+   *  Clears itself (and `moveNav`'s own route) the instant `waterMode`
+   *  actually leaves `swimming`. A bounded local probe that finds no
+   *  reachable exit this tick simply defers to ordinary movement (the
+   *  pre-existing behaviour) rather than freezing the animal in open
+   *  water. */
+  private tickWaterExitRecovery(speed: number, dt: number): boolean {
+    if (this.waterMode !== 'swimming') {
+      if (this.waterExitRecoveryTarget) {
+        this.waterExitRecoveryTarget = null
+        this.clearNavRescue(this.moveNav)
+      }
+      return false
+    }
+    if (!this.waterExitRecoveryTarget) {
+      const found = probeBestPointNear(
+        { x: this.mesh.position.x, z: this.mesh.position.z },
+        WATER_EXIT_SEARCH_RADIUS,
+        WATER_EXIT_SEARCH_ATTEMPTS,
+        (x, z) => this.isWalkable(x, z) && this.waterModeAt(x, z) !== 'swimming' && this.waterModeAt(x, z) !== null,
+        (x, z) => -Math.hypot(x - this.mesh.position.x, z - this.mesh.position.z),
+      )
+      if (!found) return false
+      this.waterExitRecoveryTarget = new THREE.Vector3(found.x, 0, found.z)
+    }
+    this.stepNavRescue(this.moveNav, this.waterExitRecoveryTarget, speed, dt, 'allowSwim')
+    return true
   }
 
   /** Bounded A* from the current position toward `dest` via the shared
@@ -6040,11 +6160,14 @@ export class AnimalAgent {
    *  `isWalkable`/`sampleHeight` — Navigation never re-derives walkability
    *  from `ColliderRegistry` itself (see `NavigationQuery`'s doc). A failed
    *  search leaves `nav` untouched, so `stepNavRescue` simply keeps steering
-   *  straight at `dest` next frame instead of getting stuck waiting. */
+   *  straight at `dest` next frame instead of getting stuck waiting.
+   *  `preferDry` additionally routes the found path through
+   *  `resolveSafeWaterRoute` before committing it (plan fauna-046 §2/§3). */
   private attemptNavRepath(
     nav: NavRescue,
     dest: THREE.Vector3,
     intent: WaterRouteIntent = 'allowSwim',
+    speed = 0,
   ): void {
     const query: NavigationQuery = {
       isWalkable: (x, z) => this.isWalkable(x, z),
@@ -6063,10 +6186,99 @@ export class AnimalAgent {
     recordPathRequest(result, performance.now() - t0)
     recordRepath()
     if (!result || result.waypoints.length === 0) return
+    if (intent === 'preferDry') {
+      const safeWaypoints = this.resolveSafeWaterRoute(nav, result.waypoints, dest, speed)
+      if (!safeWaypoints) return
+      if (!nav.active) beginActivePath()
+      nav.waypoints = safeWaypoints
+      nav.index = 0
+      nav.active = true
+      nav.unsafeCooldown = 0
+      this.lastMoveNavRejection = null
+      return
+    }
     if (!nav.active) beginActivePath()
     nav.waypoints = result.waypoints
     nav.index = 0
     nav.active = true
+  }
+
+  /** Stamina-safety gate for a `preferDry` route `attemptNavRepath` just
+   *  found (plan fauna-046 §2/§3) — the seam implementation notes call out
+   *  as "after a concrete route exists and before it becomes committed".
+   *  Accepts `waypoints` unchanged when the worst continuous swim segment
+   *  fits this animal's current stamina budget; otherwise retries once with
+   *  a query-local override that makes swimming unavailable for this one
+   *  bounded search (never touching `isWalkable()` itself, so ordinary
+   *  physical ability is untouched), and only commits that retry if it,
+   *  too, evaluates safe. Neither attempt widens
+   *  `DEFAULT_BOUNDS_PADDING`/`DEFAULT_MAX_NODES`. Returns `null` and arms
+   *  `nav.unsafeCooldown` when no safe route exists in bounds — the caller
+   *  (`stepNavRescue`) then holds position instead of walking the unsafe
+   *  direct line, and existing target/source-timeout lifecycles eventually
+   *  retarget it (plan fauna-046 §5's "no drink-specific water geometry"). */
+  private resolveSafeWaterRoute(
+    nav: NavRescue,
+    waypoints: readonly PathPoint[],
+    dest: THREE.Vector3,
+    speed: number,
+  ): readonly PathPoint[] | null {
+    const primary = this.evaluateRouteSafety(waypoints, speed)
+    if (primary.safe) return waypoints
+    const strictQuery: NavigationQuery = {
+      isWalkable: (x, z) => this.isWalkable(x, z) && this.waterModeAt(x, z) !== 'swimming',
+      sampleHeight: this.sampleHeight,
+    }
+    const retry = findPath(
+      strictQuery,
+      {},
+      { x: this.mesh.position.x, z: this.mesh.position.z },
+      { x: dest.x, z: dest.z },
+    )
+    if (retry && retry.waypoints.length > 0) {
+      const retrySafety = this.evaluateRouteSafety(retry.waypoints, speed)
+      if (retrySafety.safe) return retry.waypoints
+      this.lastMoveNavRejection = retrySafety.reason
+    } else {
+      this.lastMoveNavRejection = primary.reason
+    }
+    nav.unsafeCooldown = UNSAFE_CROSSING_COOLDOWN_SEC
+    return null
+  }
+
+  /** Samples `waypoints` (prefixed with the animal's current position, so
+   *  the current→first-waypoint leg is never undercounted) at the same
+   *  bounded spatial scale navigation itself samples at, and evaluates the
+   *  resulting polyline through `evaluateWaterRouteFeasibility` using this
+   *  tick's actual speed/drain-rate — matching exactly what `tickAnimalLife`
+   *  would charge if this animal actually swam it (plan fauna-046,
+   *  implementation notes "Cost model"). */
+  private evaluateRouteSafety(waypoints: readonly PathPoint[], speed: number): WaterRouteFeasibility {
+    const points: PathPoint[] = [{ x: this.mesh.position.x, z: this.mesh.position.z }, ...waypoints]
+    const samples: WaterRouteSample[] = []
+    const step = DEFAULT_CELL_SIZE / 2
+    for (let i = 1; i < points.length; i++) {
+      const a = points[i - 1]!
+      const b = points[i]!
+      const dx = b.x - a.x
+      const dz = b.z - a.z
+      const dist = Math.hypot(dx, dz)
+      if (dist < 1e-6) continue
+      const steps = Math.max(1, Math.ceil(dist / step))
+      const stepDistance = dist / steps
+      for (let s = 1; s <= steps; s++) {
+        const t = s / steps
+        samples.push({ stepDistance, mode: this.waterModeAt(a.x + dx * t, a.z + dz * t) })
+      }
+    }
+    return evaluateWaterRouteFeasibility(
+      samples,
+      this.def.water,
+      this.life.stamina.current,
+      this.life.stamina.max,
+      speed,
+      this.def.metabolism.staminaDrainRate * this.trainingModifiers().staminaDrain,
+    )
   }
 
   private clearNavRescue(nav: NavRescue): void {

@@ -130,3 +130,131 @@ export function isDispreferredSwim(
   if (mode !== 'swimming') return false
   return waterTraversalCellCost(mode, capability, intent) > 1
 }
+
+/**
+ * Stamina-aware survival feasibility (plan fauna-046) — a third layer on
+ * top of physical ability (`classifyWaterTraversal`) and route preference
+ * (`waterTraversalCellCost`/`isDispreferredSwim`): does *this* animal, with
+ * its current stamina and metabolism, actually have a safe budget for a
+ * planned swim, not just a cheaper-than-land one? Deliberately kept as pure
+ * scalar helpers colocated with the rest of this module's water policy —
+ * no second module, no new stamina resource.
+ */
+
+/** Share of `staminaCapacity` ordinary autonomous crossing planning must
+ *  never spend (plan fauna-046 §1) — a tuning constant, not a per-species
+ *  field. Emergency intents (`flee`/`chase`, already on `allowSwim`) bypass
+ *  this entirely; they never call into the functions below. */
+export const SWIM_SAFETY_RESERVE_RATIO = 0.2
+
+/** Predicted stamina cost of swimming `distance` meters at `speed` m/s,
+ *  given this tick's actual `staminaDrainRate` and `exertion`
+ *  (`swimStaminaExertion`) — matches exactly what `tickAnimalLife()` drains
+ *  while `swimming`, so planner and drowning runtime never drift (plan
+ *  fauna-046, implementation notes "Cost model"). `Infinity` for
+ *  near-zero/negative `speed` on a real `distance`, never `NaN`. */
+export function predictSwimStaminaCost(
+  distance: number,
+  speed: number,
+  staminaDrainRate: number,
+  exertion: number,
+): number {
+  if (distance <= 0) return 0
+  if (speed <= 1e-6) return Infinity
+  const swimSeconds = distance / speed
+  return swimSeconds * staminaDrainRate * exertion
+}
+
+/** One sampled step of a candidate route — `stepDistance` (m) is the
+ *  distance from the previous sample, `mode` is this species' physical
+ *  water classification at the sampled point (`null` never legitimately
+ *  appears here: a caller only samples points `isWalkable()` already
+ *  accepted). */
+export type WaterRouteSample = {
+  stepDistance: number
+  mode: WaterTraversalMode | null
+}
+
+export type WaterRouteRejectionReason = 'unsafe-distance' | 'no-safe-exit'
+
+export type WaterRouteFeasibility = {
+  totalSwimDistance: number
+  /** The longest uninterrupted `swimming` run along the route — the actual
+   *  drowning-risk driver (plan fauna-046 §2), not total wet distance. */
+  maxContinuousSwimDistance: number
+  /** Predicted stamina remaining after crossing
+   *  `maxContinuousSwimDistance` — `NaN` only when `safe` is `false` with
+   *  `reason: 'no-safe-exit'` (never actually crossed to compute one). */
+  estimatedStaminaAtExit: number
+  safe: boolean
+  reason: 'ok' | 'no-swim' | WaterRouteRejectionReason
+}
+
+/**
+ * Bounded route/segment evaluation (plan fauna-046 §2) — given a caller-
+ * sampled polyline (current position through waypoints to destination, at
+ * the same bounded spatial scale navigation already samples at), answers
+ * whether *this* animal's current stamina safely covers it. Reuses
+ * `sampleLocalWater()`/`classifyWaterTraversal()` only indirectly, through
+ * the caller-supplied `samples` — this function itself does no world
+ * sampling and no global scan.
+ *
+ * A route that never enters `swimming` is trivially safe. Otherwise safety
+ * is decided by the worst (longest) continuous swim segment, not the sum of
+ * all wet samples: several short segments separated by a `dry`/`wading`
+ * rest point are not treated as one continuous swim (segment resets there).
+ * A route whose last sample is still `swimming` has no confirmed exit and
+ * is unsafe for any non-`waterAdapted` species, regardless of distance.
+ */
+export function evaluateWaterRouteFeasibility(
+  samples: readonly WaterRouteSample[],
+  capability: AnimalWaterCapability | undefined,
+  currentStamina: number,
+  staminaCapacity: number,
+  speed: number,
+  staminaDrainRate: number,
+  reserveRatio: number = SWIM_SAFETY_RESERVE_RATIO,
+): WaterRouteFeasibility {
+  let totalSwimDistance = 0
+  let maxContinuousSwimDistance = 0
+  let currentSegment = 0
+  for (const sample of samples) {
+    if (sample.mode === 'swimming') {
+      totalSwimDistance += sample.stepDistance
+      currentSegment += sample.stepDistance
+      if (currentSegment > maxContinuousSwimDistance) maxContinuousSwimDistance = currentSegment
+    } else {
+      currentSegment = 0
+    }
+  }
+  if (totalSwimDistance <= 0) {
+    return {
+      totalSwimDistance: 0,
+      maxContinuousSwimDistance: 0,
+      estimatedStaminaAtExit: currentStamina,
+      safe: true,
+      reason: 'no-swim',
+    }
+  }
+  const endsInSwim = samples.length > 0 && samples[samples.length - 1]!.mode === 'swimming'
+  if (endsInSwim && capability?.waterAdapted !== true) {
+    return {
+      totalSwimDistance,
+      maxContinuousSwimDistance,
+      estimatedStaminaAtExit: Number.NaN,
+      safe: false,
+      reason: 'no-safe-exit',
+    }
+  }
+  const exertion = swimStaminaExertion(capability)
+  const staminaCost = predictSwimStaminaCost(maxContinuousSwimDistance, speed, staminaDrainRate, exertion)
+  const estimatedStaminaAtExit = currentStamina - staminaCost
+  const safe = estimatedStaminaAtExit >= staminaCapacity * reserveRatio
+  return {
+    totalSwimDistance,
+    maxContinuousSwimDistance,
+    estimatedStaminaAtExit,
+    safe,
+    reason: safe ? 'ok' : 'unsafe-distance',
+  }
+}

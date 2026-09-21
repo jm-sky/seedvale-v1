@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import * as THREE from 'three'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import type { GrassForageService } from '../world/createGrassForagePatches'
 import { DRY_WATER_SAMPLE } from '../terrain/waterSample'
 import { AnimalAgent, type AnimalAgentDeps } from './AnimalAgent'
@@ -2482,6 +2482,67 @@ describe('AnimalAgent proximity candidate narrowing (plan fauna-042)', () => {
     expect(rabidB.getDebugInfo().aiBranch).toBe('rabid')
     expect(rabidA.getDebugInfo().intent).toBe('chase')
     expect(rabidB.getDebugInfo().intent).toBe('chase')
+  })
+})
+
+describe('stamina-aware water crossing risk (plan fauna-046)', () => {
+  const FAR = new THREE.Vector3(1000, 0, 1000)
+  /** A circular deep-water pool of this radius centered on the world
+   *  origin — swimmable (2m, past a horse's ~0.65m wading depth), dry
+   *  everywhere outside it. */
+  const POOL_RADIUS = 8
+  const radialPool = (x: number, z: number) => (
+    Math.hypot(x, z) < POOL_RADIUS
+      ? { present: true as const, waterSurfaceHeight: 0, floorHeight: -2, depth: 2 }
+      : DRY_WATER_SAMPLE
+  )
+
+  it('an animal already swimming heads for the nearest safe exit instead of freezing mid-crossing', () => {
+    // Spawned just inside the pool boundary — no thirst/hunger (both start
+    // below NEED_ELEVATED_THRESHOLD), no def.activity routine rest, no
+    // nearby threat, so ordinary wander is the only behaviour in play and
+    // `tickWaterExitRecovery()` is the only mechanism that can plausibly
+    // steer it back out once `waterMode` resolves to `swimming`.
+    const horse = new AnimalAgent(makeDeps({
+      def: ANIMAL_DEFS.horse,
+      animalId: 'mid-crossing-horse',
+      x: POOL_RADIUS - 1,
+      z: 0,
+      sampleLocalWater: radialPool,
+    }))
+    // Pin every random roll this scenario touches (wander/probe angle+
+    // distance, the routine-rest idle coin flip) to one fixed value, so the
+    // chosen exit direction — and therefore the swim distance/duration the
+    // real stamina/drowning model has to survive — is deterministic rather
+    // than occasionally landing on a much longer, unlucky crossing.
+    const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(0.75)
+    try {
+      for (let i = 0; i < 300; i++) {
+        horse.update({ dt: 0.1, others: [horse], observerPos: FAR, dayFactor: 1, forestFactor: 0, litFires: [] })
+      }
+    } finally {
+      randomSpy.mockRestore()
+    }
+    expect(horse.isDead()).toBe(false)
+    expect(Math.hypot(horse.mesh.position.x, horse.mesh.position.z)).toBeGreaterThanOrEqual(POOL_RADIUS)
+  })
+
+  it('mounted movement through deep water is never blocked by the autonomous safety gate', () => {
+    // Plan fauna-046 non-goal: player-driven mounted movement keeps its
+    // pre-existing physical-ability-only contract — `driveMounted()` never
+    // calls `stepNavRescue`/`attemptNavRepath` at all, so an exhausted mount
+    // (which would fail every autonomous stamina check) must still respond
+    // to rein input through water exactly as before this plan.
+    const mount = new AnimalAgent(makeDeps({
+      def: ANIMAL_DEFS.horse,
+      animalId: 'mounted-through-water',
+      sampleLocalWater: () => ({ present: true as const, waterSurfaceHeight: 0, floorHeight: -2, depth: 2 }),
+    }))
+    mount.setMounted(true)
+    mount.life.stamina.current = 0
+    const startX = mount.mesh.position.x
+    for (let i = 0; i < 20; i++) mount.driveMounted(1 / 60, 1, 0, false)
+    expect(mount.mesh.position.x).toBeGreaterThan(startX)
   })
 })
 
