@@ -450,10 +450,11 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/livestock.ts`
 
+- `attachToDetached` — function — line 961
 - `createLivestockRegistry` — function — line 338
-- `detachMerchantPackAnimal` — function — line 996
+- `detachMerchantPackAnimal` — function — line 1051
   - domain: settlements-npcs
-- `disposeLivestock` — function — line 1067
+- `disposeLivestock` — function — line 1120
 - `fillShepherdFlockKinds` — function — line 49
 - `isPlayerOwnedLivestockRecord` — function — line 106
 - `LIVESTOCK_KINDS` — const — line 82
@@ -463,23 +464,27 @@ Generated from exported TypeScript symbols.
 - `LivestockRegistry` — type — line 187
 - `LivestockSaveRecord` — type — line 96
 - `livestockStrayCandidateFromAgent` — function — line 143
-- `PackAnimalCandidate` — type — line 928
-- `PackAnimalJourneyHooks` — type — line 934
-- `PersistentLivestockContext` — type — line 858
-- `resolveLivePersistentAnimal` — function — line 866
-- `resolveMerchantPackAnimalCandidate` — function — line 951
+- `originOfDetachedAnimal` — function — line 950
+- `PackAnimalCandidate` — type — line 990
+- `PackAnimalJourneyHooks` — type — line 996
+- `PersistentLivestockContext` — type — line 883
+- `persistentLivestockKey` — function — line 869
+- `PersistentLivestockRef` — type — line 861
+- `resolveLivePersistentAnimal` — function — line 918
+- `resolveLivePersistentAnimalByRef` — function — line 895
+- `resolveMerchantPackAnimalCandidate` — function — line 1017
   - domain: settlements-npcs
-- `restoreDetachedMerchantPackAnimals` — function — line 1047
-- `restoreDetachedPlayerOwnedLivestock` — function — line 1022
-- `setOwnedAnimalControl` — function — line 1010
+- `restoreDetachedMerchantPackAnimals` — function — line 1101
+- `restoreDetachedPlayerOwnedLivestock` — function — line 1077
+- `setOwnedAnimalControl` — function — line 1065
 - `shouldSpawnDeterministicLivestockSlot` — function — line 115
   - domain: fauna
   - role: Household rolls and merchant-horse slots skip tombstones and player-owned records restored on the detached path (fauna-020 / fauna-030).
 - `spawnAnimalFromRecord` — function — line 232
 - `SpawnAnimalFromRecordDeps` — type — line 220
 - `spawnLivestock` — function — line 614
-- `tickSettlementLivestock` — function — line 1084
-- `transferAnimalOwnership` — function — line 906
+- `tickSettlementLivestock` — function — line 1137
+- `transferAnimalOwnership` — function — line 968
 
 ## `settlement/lodging.ts`
 
@@ -796,13 +801,13 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/playerOwnedHorseDebug.ts`
 
-- `HorseDebugCandidate` — type — line 33
-- `HorseDebugCommandResult` — type — line 39
+- `HorseDebugCandidate` — type — line 34
+- `HorseDebugCommandResult` — type — line 40
 - `listPlayerOwnedHorses` — function — line 210
   - domain: fauna
   - role: Plain diagnostic list of player-owned horses from persistent livestock authority (live, saved-only, tombstoned). Never returns `AnimalAgent`.
-- `PlayerOwnedHorseDebugSnapshot` — type — line 14
-- `PlayerOwnedHorseDebugStatus` — type — line 12
+- `PlayerOwnedHorseDebugSnapshot` — type — line 15
+- `PlayerOwnedHorseDebugStatus` — type — line 13
 - `resurrectPlayerOwnedHorse` — function — line 254
   - domain: fauna
   - role: Debug resurrection of a player-owned horse identity. Live corpses are revived in place; tombstoned individuals restore one saved record and one spawned agent. Never creates a second `animalId`.
@@ -1239,13 +1244,13 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/SettlementsManager.ts`
 
-- `createSettlementsManager` — function — line 410
+- `createSettlementsManager` — function — line 413
   - domain: settlements
   - system: settlements-manager
   - role: Owns settlement generation, streaming and per-settlement economy/household/NPC-state registries.
   - owns: SettlementEconomy, Household
   - lifecycle: streaming
-- `SettlementsManager` — type — line 162
+- `SettlementsManager` — type — line 165
 
 ## `settlement/settlementStructures.ts`
 

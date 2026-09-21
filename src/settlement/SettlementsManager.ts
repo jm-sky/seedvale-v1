@@ -72,8 +72,11 @@ import {
   createLivestockRegistry,
   detachMerchantPackAnimal,
   type LivestockSaveRecord,
+  originOfDetachedAnimal,
   type PackAnimalJourneyHooks,
   type PersistentLivestockContext,
+  persistentLivestockKey,
+  type PersistentLivestockRef,
   resolveLivePersistentAnimal,
   resolveMerchantPackAnimalCandidate,
   restoreDetachedMerchantPackAnimals,
@@ -690,8 +693,7 @@ export async function createSettlementsManager(
   })
 
   const detachedLivestock: AnimalAgent[] = []
-  const detachedById = new Map<string, AnimalAgent>()
-  const detachedOriginById = new Map<string, string>()
+  const detachedByRef = new Map<string, { animal: AnimalAgent, originSettlementId: string }>()
 
   const persistentLivestockCtx: PersistentLivestockContext = {
     getLoadedSettlements: () => {
@@ -702,8 +704,7 @@ export async function createSettlementsManager(
       return out
     },
     detached: detachedLivestock,
-    detachedById,
-    detachedOriginById,
+    detachedByRef,
     registry: livestock,
   }
 
@@ -721,8 +722,7 @@ export async function createSettlementsManager(
     spawnAnimalDeps,
     livestock,
     detachedLivestock,
-    detachedById,
-    detachedOriginById,
+    detachedByRef,
   )
 
   // A save taken mid merchant-journey (plan settlements-npcs-048) — restore
@@ -740,20 +740,24 @@ export async function createSettlementsManager(
       spawnAnimalDeps,
       livestock,
       detachedLivestock,
-      detachedById,
-      detachedOriginById,
+      detachedByRef,
       activePackAnimals,
     )
   }
 
-  /** Whether any currently-active `MerchantJourneyState.packAnimalId` still
-   *  points at `animalId` (plan settlements-npcs-048) — the assignment
+  /** Whether any currently-active `MerchantJourneyState` still points at this
+   *  exact origin/animal (plan settlements-npcs-048) — the assignment
    *  authority is the live journey set itself, never a second persisted
-   *  reservation registry. */
-  function isPackAnimalReserved(animalId: string): boolean {
+   *  reservation registry. Compares both `homeSettlementId` and
+   *  `packAnimalId`: two different settlements' own journeys can share a
+   *  bare `packAnimalId` (deterministic per-house rolls can coincide), so a
+   *  bare-id-only comparison would wrongly treat an unrelated settlement's
+   *  own individual as reserved. */
+  function isPackAnimalReserved(ref: PersistentLivestockRef): boolean {
     let reserved = false
     npcStates.forEach((state) => {
-      if (state.merchantJourney?.packAnimalId === animalId) reserved = true
+      const journey = state.merchantJourney
+      if (journey?.packAnimalId === ref.animalId && journey.homeSettlementId === ref.settlementId) reserved = true
     })
     return reserved
   }
@@ -770,15 +774,13 @@ export async function createSettlementsManager(
    *  here — they stay detached forever by design
    *  (`restoreDetachedPlayerOwnedLivestock`). */
   function reclaimDetachedHouseholdLivestock(settlementId: string, settlement: Settlement): void {
-    for (const [animalId, origin] of detachedOriginById) {
-      if (origin !== settlementId) continue
-      const animal = detachedById.get(animalId)
-      if (!animal || animal.isDead() || animal.isPlayerOwned()) continue
-      if (isPackAnimalReserved(animalId)) continue
+    for (const [key, { animal, originSettlementId }] of detachedByRef) {
+      if (originSettlementId !== settlementId) continue
+      if (animal.isDead() || animal.isPlayerOwned()) continue
+      if (isPackAnimalReserved({ settlementId: originSettlementId, animalId: animal.animalId })) continue
       const idx = detachedLivestock.indexOf(animal)
       if (idx >= 0) detachedLivestock.splice(idx, 1)
-      detachedById.delete(animalId)
-      detachedOriginById.delete(animalId)
+      detachedByRef.delete(key)
       ;(settlement.livestock as AnimalAgent[]).push(animal)
       livestock.upsert(settlementId, animal)
     }
@@ -795,15 +797,11 @@ export async function createSettlementsManager(
     resolveCandidate: (homeSettlementId, homeId) => {
       const settlement = entries.get(homeSettlementId)?.settlement
       if (!settlement) return null
-      return resolveMerchantPackAnimalCandidate(
-        settlement.livestock,
-        homeId,
-        // `animalId` alone is not globally unique across settlements — never
-        // offer a candidate whose bare id is already the shared detached
-        // collection's key for a *different* origin (see the shared
-        // bare-id-keyed `detachedById`/`detachedOriginById` maps' doc).
-        (animalId) => !detachedById.has(animalId) || detachedOriginById.get(animalId) === homeSettlementId,
-      )
+      // Candidates are always this settlement's own individuals, and the
+      // shared detached collection is keyed by origin + `animalId` (plan
+      // settlements-npcs-048), so a bare-id collision with a different
+      // origin's own detached individual can never affect this resolution.
+      return resolveMerchantPackAnimalCandidate(settlement.livestock, homeId)
     },
     commitReservation: (homeSettlementId, animalId) => {
       const settlement = entries.get(homeSettlementId)?.settlement
@@ -1008,11 +1006,10 @@ export async function createSettlementsManager(
     packAnimalJourney: packAnimalJourneyHooks,
     // `animalId` alone is not globally unique across settlements (two
     // different villages' own household rolls can both produce
-    // `horse-house0-0`) — comparing against the recorded *origin* settlement
-    // for the currently-detached entry with this id, rather than mere
-    // presence in `detachedById`, keeps this settlement's own unrelated
+    // `horse-house0-0`) — looking up the canonical origin+id composite key
+    // rather than a bare-id-keyed map keeps this settlement's own unrelated
     // same-named individual spawning normally (plan settlements-npcs-048).
-    isLivestockDetachedElsewhere: (settlementId, animalId) => detachedOriginById.get(animalId) === settlementId,
+    isLivestockDetachedElsewhere: (settlementId, animalId) => detachedByRef.has(persistentLivestockKey({ settlementId, animalId })),
   }
 
   // Remembered so a settlement that streams in later (or finishes its async
@@ -1326,8 +1323,10 @@ export async function createSettlementsManager(
    *  animal falls back to baseline. Never persists the derived weight, and
    *  `setBaseMaxWeight` deliberately preserves any existing (possibly now
    *  overweight) cargo rather than dropping it. */
-  function reconcileMerchantPackCapacity(state: NpcAuthoritativeState, journey: { packAnimalId?: string }): void {
-    const animal = journey.packAnimalId ? detachedById.get(journey.packAnimalId) : undefined
+  function reconcileMerchantPackCapacity(state: NpcAuthoritativeState, journey: { packAnimalId?: string, homeSettlementId: string }): void {
+    const animal = journey.packAnimalId
+      ? detachedByRef.get(persistentLivestockKey({ settlementId: journey.homeSettlementId, animalId: journey.packAnimalId }))?.animal
+      : undefined
     const pack = animal && !animal.isDead() ? animal.def.pack : undefined
     state.transportCargo.setBaseMaxWeight(resolveNpcTransportCargoCapacity(pack))
   }
@@ -1454,18 +1453,30 @@ export async function createSettlementsManager(
       if (detachedLivestock.length > 0) {
         agentCpu.beginNpcLivestock()
         agentCpu.beginNpcLivestockDetached()
+        // Reverse origin index for this frame's detached individuals, built
+        // once from the canonical `detachedByRef` (plan settlements-npcs-048)
+        // — every per-animal origin lookup below (merchant follow-target
+        // sync, persistence namespace, final upsert) reuses this single O(n)
+        // pass instead of re-deriving origin from a bare `animalId`, which
+        // would be ambiguous when two origins share one.
+        const originByAnimal = new Map<AnimalAgent, string>()
+        for (const { animal, originSettlementId } of detachedByRef.values()) originByAnimal.set(animal, originSettlementId)
         // Actor-neutral merchant follow-target sync (plan
         // settlements-npcs-048 §12) — only costs anything once at least one
         // active journey has a `packAnimalId`; a merchant not currently a
         // live `NpcAgent` anywhere loaded (off-screen) simply yields no
         // target, so its pack animal falls back to normal autonomy instead
-        // of a separate off-screen tick.
-        const merchantByPackAnimal = new Map<string, string>()
+        // of a separate off-screen tick. Keyed by the canonical origin+id
+        // composite so two different settlements' journeys sharing a bare
+        // `packAnimalId` never cross-target each other's pack animal.
+        const merchantByPackAnimalKey = new Map<string, string>()
         npcStates.forEach((state, npcId) => {
-          const packAnimalId = state.merchantJourney?.packAnimalId
-          if (packAnimalId) merchantByPackAnimal.set(packAnimalId, npcId)
+          const journey = state.merchantJourney
+          if (journey?.packAnimalId) {
+            merchantByPackAnimalKey.set(persistentLivestockKey({ settlementId: journey.homeSettlementId, animalId: journey.packAnimalId }), npcId)
+          }
         })
-        if (merchantByPackAnimal.size > 0) {
+        if (merchantByPackAnimalKey.size > 0) {
           const livePosByNpcId = new Map<string, { x: number, z: number }>()
           for (const entry of entries.values()) {
             if (!entry.settlement) continue
@@ -1474,7 +1485,8 @@ export async function createSettlementsManager(
             }
           }
           for (const animal of detachedLivestock) {
-            const npcId = merchantByPackAnimal.get(animal.animalId)
+            const origin = originByAnimal.get(animal)
+            const npcId = origin ? merchantByPackAnimalKey.get(persistentLivestockKey({ settlementId: origin, animalId: animal.animalId })) : undefined
             animal.setMerchantFollowTarget(npcId ? livePosByNpcId.get(npcId) ?? null : null)
           }
         }
@@ -1495,18 +1507,15 @@ export async function createSettlementsManager(
           waterSourceProvider,
           playerObservation,
           playerControlPos: { x: playerPos.x, z: playerPos.z },
-          resolvePersistenceSettlementId: (animal) => detachedOriginById.get(animal.animalId) ?? 'detached',
+          resolvePersistenceSettlementId: (animal) => originByAnimal.get(animal) ?? 'detached',
           scareStimulus,
         })
         agentCpu.beginLivestockDetachedBookkeeping()
-        for (const [animalId, animal] of detachedById) {
-          if (!detachedLivestock.includes(animal)) {
-            detachedById.delete(animalId)
-            detachedOriginById.delete(animalId)
-          }
+        for (const [key, entry] of detachedByRef) {
+          if (!detachedLivestock.includes(entry.animal)) detachedByRef.delete(key)
         }
         for (const animal of detachedLivestock) {
-          const origin = detachedOriginById.get(animal.animalId)
+          const origin = originByAnimal.get(animal)
           if (origin) livestock.upsert(origin, animal)
         }
         agentCpu.endLivestockDetachedBookkeeping()
@@ -1593,7 +1602,7 @@ export async function createSettlementsManager(
         if (entry.settlement) livestock.capture(entry.def.id, entry.settlement.livestock)
       }
       for (const animal of detachedLivestock) {
-        const origin = detachedOriginById.get(animal.animalId)
+        const origin = originOfDetachedAnimal(persistentLivestockCtx, animal)
         if (origin) livestock.upsert(origin, animal)
       }
       return livestock.serialize()
@@ -1697,8 +1706,7 @@ export async function createSettlementsManager(
         animal.mesh.removeFromParent()
       }
       detachedLivestock.length = 0
-      detachedById.clear()
-      detachedOriginById.clear()
+      detachedByRef.clear()
       for (const entry of entries.values()) entry.settlement?.dispose()
       for (const instances of midpoints.values()) {
         for (const inst of instances) disposeMidpointInstance(inst)

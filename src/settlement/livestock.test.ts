@@ -9,13 +9,36 @@ import {
   isPlayerOwnedLivestockRecord,
   livestockRecordMatchesHouseholdSlot,
   type LivestockSaveRecord,
+  originOfDetachedAnimal,
+  type PersistentLivestockContext,
+  persistentLivestockKey,
   resolveLivePersistentAnimal,
+  resolveLivePersistentAnimalByRef,
   resolveMerchantPackAnimalCandidate,
   setOwnedAnimalControl,
   shouldSpawnDeterministicLivestockSlot,
   tickSettlementLivestock,
   transferAnimalOwnership,
 } from './livestock'
+
+function ctxOf(
+  animals: { animal: AnimalAgent, originSettlementId: string }[],
+  registry = createLivestockRegistry(),
+  loaded: { id: string, livestock: AnimalAgent[] }[] = [],
+): PersistentLivestockContext {
+  const detachedByRef = new Map(
+    animals.map(({ animal, originSettlementId }) => [
+      `${originSettlementId}:${animal.animalId}`,
+      { animal, originSettlementId },
+    ]),
+  )
+  return {
+    getLoadedSettlements: () => loaded,
+    detached: animals.map((a) => a.animal),
+    detachedByRef,
+    registry,
+  }
+}
 
 function fakeAnimal(
   animalId: string,
@@ -174,22 +197,13 @@ describe('persistent livestock operations', () => {
     const registry = createLivestockRegistry()
     const animal = fakeAnimal('horse-house0-0', 'horse', 'home:home:0')
     const settlementLivestock = [animal]
-    const detached: AnimalAgent[] = []
-    const detachedById = new Map<string, AnimalAgent>()
-    const detachedOriginById = new Map<string, string>()
-    const ctx = {
-      getLoadedSettlements: () => [{ id: 'home', livestock: settlementLivestock }],
-      detached,
-      detachedById,
-      detachedOriginById,
-      registry,
-    }
+    const ctx = ctxOf([], registry, [{ id: 'home', livestock: settlementLivestock }])
 
     expect(transferAnimalOwnership(ctx, 'horse-house0-0', { kind: 'player' })).toBe(true)
     expect(settlementLivestock).toHaveLength(0)
-    expect(detached).toEqual([animal])
-    expect(detachedById.get('horse-house0-0')).toBe(animal)
-    expect(detachedOriginById.get('horse-house0-0')).toBe('home')
+    expect(ctx.detached).toEqual([animal])
+    expect(ctx.detachedByRef.get('home:horse-house0-0')?.animal).toBe(animal)
+    expect(originOfDetachedAnimal(ctx, animal)).toBe('home')
     expect(resolveLivePersistentAnimal(ctx, 'horse-house0-0')?.animal).toBe(animal)
     expect(animal.transferOwnershipToPlayer).toHaveBeenCalled()
   })
@@ -197,14 +211,7 @@ describe('persistent livestock operations', () => {
   it('setOwnedAnimalControl updates only player-owned live animals', () => {
     const registry = createLivestockRegistry()
     const animal = fakeAnimal('horse-house0-0', 'horse', undefined, { kind: 'player' })
-    const detached = [animal]
-    const ctx = {
-      getLoadedSettlements: () => [],
-      detached,
-      detachedById: new Map([['horse-house0-0', animal]]),
-      detachedOriginById: new Map([['horse-house0-0', 'home']]),
-      registry,
-    }
+    const ctx = ctxOf([{ animal, originSettlementId: 'home' }], registry)
     expect(setOwnedAnimalControl(ctx, 'horse-house0-0', 'stay')).toBe(true)
     expect(animal.setOwnedControlMode).toHaveBeenCalledWith('stay')
   })
@@ -336,17 +343,17 @@ describe('resolveMerchantPackAnimalCandidate (plan settlements-npcs-048)', () =>
     expect(resolveMerchantPackAnimalCandidate([], homeId)).toBeNull()
   })
 
-  it('skips a candidate whose bare animalId collides with a different origin already detached elsewhere', () => {
+  it('a bare-animalId collision in a different settlement never affects this settlement\'s own candidate resolution', () => {
     // `animalId` is not globally unique across settlements (two villages can
-    // both roll a "horse-house0-0") — a caller reports that id unavailable
-    // when it is already the detached collection's key for another origin.
+    // both roll a "horse-house0-0") — candidates are always this
+    // settlement's own roster, and the shared detached collection is keyed
+    // by origin + id (plan settlements-npcs-048), so no external bare-id
+    // check is needed or possible here any more.
     const collidingId = 'horse-house0-0'
     const colliding = fakeAnimal(collidingId, 'horse', homeId, undefined, undefined, { pack: { cargoCapacityKg: 50 } })
-    const donkey = fakeAnimal('donkey-house0-0', 'donkey', homeId, undefined, undefined, { pack: { cargoCapacityKg: 40 } })
-    const isBareIdAvailable = (animalId: string) => animalId !== collidingId
-    expect(resolveMerchantPackAnimalCandidate([colliding, donkey], homeId, isBareIdAvailable)).toEqual({
-      animalId: 'donkey-house0-0',
-      pack: { cargoCapacityKg: 40 },
+    expect(resolveMerchantPackAnimalCandidate([colliding], homeId)).toEqual({
+      animalId: collidingId,
+      pack: { cargoCapacityKg: 50 },
     })
   })
 })
@@ -356,22 +363,13 @@ describe('detachMerchantPackAnimal (plan settlements-npcs-048)', () => {
     const registry = createLivestockRegistry()
     const animal = fakeAnimal('horse-house0-0', 'horse', 'home:home:0', undefined, undefined, { pack: { cargoCapacityKg: 50 } })
     const settlementLivestock = [animal]
-    const detached: AnimalAgent[] = []
-    const detachedById = new Map<string, AnimalAgent>()
-    const detachedOriginById = new Map<string, string>()
-    const ctx = {
-      getLoadedSettlements: () => [{ id: 'home', livestock: settlementLivestock }],
-      detached,
-      detachedById,
-      detachedOriginById,
-      registry,
-    }
+    const ctx = ctxOf([], registry, [{ id: 'home', livestock: settlementLivestock }])
 
     expect(detachMerchantPackAnimal(ctx, 'home', settlementLivestock, 'horse-house0-0')).toBe(true)
     expect(settlementLivestock).toHaveLength(0)
-    expect(detached).toEqual([animal])
-    expect(detachedById.get('horse-house0-0')).toBe(animal)
-    expect(detachedOriginById.get('horse-house0-0')).toBe('home')
+    expect(ctx.detached).toEqual([animal])
+    expect(ctx.detachedByRef.get('home:horse-house0-0')?.animal).toBe(animal)
+    expect(originOfDetachedAnimal(ctx, animal)).toBe('home')
     // Ownership is untouched — this is a travel relation, not a transfer.
     expect(animal.isPlayerOwned()).toBe(false)
   })
@@ -379,14 +377,53 @@ describe('detachMerchantPackAnimal (plan settlements-npcs-048)', () => {
   it('is a no-op for an animalId no longer present in the given roster', () => {
     const registry = createLivestockRegistry()
     const settlementLivestock: AnimalAgent[] = []
-    const ctx = {
-      getLoadedSettlements: () => [],
-      detached: [],
-      detachedById: new Map(),
-      detachedOriginById: new Map(),
-      registry,
-    }
+    const ctx = ctxOf([], registry)
     expect(detachMerchantPackAnimal(ctx, 'home', settlementLivestock, 'missing')).toBe(false)
+  })
+})
+
+describe('persistent livestock identity collisions (plan settlements-npcs-048)', () => {
+  const homeId = 'home:home:0'
+
+  it('two settlements rolling the same bare animalId get distinct canonical refs', () => {
+    const a = fakeAnimal('horse-house0-0', 'horse', homeId)
+    const b = fakeAnimal('horse-house0-0', 'horse', homeId)
+    const settlementA = [a]
+    const settlementB = [b]
+    const ctx = ctxOf([], createLivestockRegistry(), [
+      { id: 'village-a', livestock: settlementA },
+      { id: 'village-b', livestock: settlementB },
+    ])
+
+    expect(detachMerchantPackAnimal(ctx, 'village-a', settlementA, 'horse-house0-0')).toBe(true)
+    expect(detachMerchantPackAnimal(ctx, 'village-b', settlementB, 'horse-house0-0')).toBe(true)
+
+    // Both individuals are simultaneously detached without one overwriting
+    // the other's origin or object identity.
+    expect(ctx.detached).toHaveLength(2)
+    expect(resolveLivePersistentAnimalByRef(ctx, { settlementId: 'village-a', animalId: 'horse-house0-0' })?.animal).toBe(a)
+    expect(resolveLivePersistentAnimalByRef(ctx, { settlementId: 'village-b', animalId: 'horse-house0-0' })?.animal).toBe(b)
+    expect(originOfDetachedAnimal(ctx, a)).toBe('village-a')
+    expect(originOfDetachedAnimal(ctx, b)).toBe('village-b')
+  })
+
+  it('detaching one colliding individual does not remove or shadow the other', () => {
+    const a = fakeAnimal('horse-house0-0', 'horse', homeId)
+    const b = fakeAnimal('horse-house0-0', 'horse', homeId)
+    const ctx = ctxOf([{ animal: a, originSettlementId: 'village-a' }], createLivestockRegistry())
+    const settlementB = [b]
+
+    expect(detachMerchantPackAnimal(ctx, 'village-b', settlementB, 'horse-house0-0')).toBe(true)
+
+    expect(ctx.detached).toContain(a)
+    expect(ctx.detached).toContain(b)
+    expect(resolveLivePersistentAnimalByRef(ctx, { settlementId: 'village-a', animalId: 'horse-house0-0' })?.animal).toBe(a)
+  })
+
+  it('the canonical composite key never collides across origins even for the same bare animalId — the dedup guard every restore path (`restoreDetachedPlayerOwnedLivestock`/`restoreDetachedMerchantPackAnimals`) keys on', () => {
+    const keyA = persistentLivestockKey({ settlementId: 'village-a', animalId: 'horse-house0-0' })
+    const keyB = persistentLivestockKey({ settlementId: 'village-b', animalId: 'horse-house0-0' })
+    expect(keyA).not.toBe(keyB)
   })
 })
 

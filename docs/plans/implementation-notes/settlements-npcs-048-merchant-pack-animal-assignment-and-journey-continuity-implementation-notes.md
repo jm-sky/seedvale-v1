@@ -238,3 +238,7 @@ Highest-value regressions:
 - real existing `AnimalPackState` still survives travel and uses the normal fauna-039 death handoff.
 
 Browser verification remains User-owned.
+
+## Update (2026-09-21) — identity contract closed
+
+The recon conclusion above ("Livestock `animalId` is not globally unique across settlements... must be addressed by origin namespace + id, not by bare `animalId`") was correct but had not actually been implemented in code as of 2026-09-19/20 — `PersistentLivestockContext.detachedById`/`detachedOriginById` were still bare-`animalId`-keyed `Map`s, which is what `items-player-057`'s own implementation session independently re-confirmed when it deferred its test #10. That gap is now closed: see the plan file's own "Implementation status" section for the concrete change (`PersistentLivestockRef`/`persistentLivestockKey()`, `detachedByRef` replacing the bare-id-keyed pair, and every `SettlementsManager.ts` call site that used to read origin from a bare id). Nothing else in this document changed — the ownership model, journey-state shape, assignment seam, capacity reconciliation, follow, and death semantics described above are all unchanged by this fix; only the identity layer underneath them stopped being collision-prone.

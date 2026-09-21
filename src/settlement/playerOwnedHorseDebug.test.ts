@@ -74,15 +74,13 @@ function ctxFor(opts: {
 }): PersistentLivestockContext {
   const origin = opts.origin ?? 'home'
   const animals = opts.animals ?? []
-  const detachedById = new Map(animals.map((a) => [a.animalId, a]))
-  const detachedOriginById = new Map(animals.map((a) => [a.animalId, origin]))
+  const detachedByRef = new Map(animals.map((a) => [`${origin}:${a.animalId}`, { animal: a, originSettlementId: origin }]))
   const registry = createLivestockRegistry()
   for (const animal of animals) registry.upsert(origin, animal)
   return {
     getLoadedSettlements: () => opts.loaded ?? [],
     detached: [...animals],
-    detachedById,
-    detachedOriginById,
+    detachedByRef,
     registry,
   }
 }
@@ -159,8 +157,7 @@ describe('player-owned horse debug operations', () => {
     const ctx = ctxFor({ animals: [horse] })
     ctx.registry.markRemoved('home', 'horse-house0-0')
     ctx.detached.length = 0
-    ctx.detachedById.clear()
-    ctx.detachedOriginById.clear()
+    ctx.detachedByRef.clear()
 
     const spawned = fakeHorse('horse-house0-0', { name: 'Wichura', x: 3, z: 0 })
     const result = await resurrectPlayerOwnedHorse(
@@ -171,7 +168,7 @@ describe('player-owned horse debug operations', () => {
     )
     expect(result).toEqual({ ok: true, reason: 'restored', animalId: 'horse-house0-0' })
     expect(ctx.detached).toEqual([spawned])
-    expect(ctx.detachedById.get('horse-house0-0')).toBe(spawned)
+    expect(ctx.detachedByRef.get('home:horse-house0-0')?.animal).toBe(spawned)
     const snap = ctx.registry.serialize()
     expect(snap.entries).toHaveLength(1)
     expect(snap.entries[0]!.animalId).toBe('horse-house0-0')

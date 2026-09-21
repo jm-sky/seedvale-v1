@@ -1,5 +1,6 @@
 import type { AnimalAgent } from '../fauna/AnimalAgent'
 import {
+  attachToDetached,
   isPlayerOwnedLivestockRecord,
   type LivestockSaveRecord,
   type PersistentLivestockContext,
@@ -66,9 +67,8 @@ type HorseSelection =
 
 function livePlayerOwnedHorses(ctx: PersistentLivestockContext): { animal: AnimalAgent, originSettlementId: string }[] {
   const out: { animal: AnimalAgent, originSettlementId: string }[] = []
-  for (const animal of ctx.detached) {
-    const origin = ctx.detachedOriginById.get(animal.animalId)
-    if (origin && isPlayerOwnedHorseAgent(animal)) out.push({ animal, originSettlementId: origin })
+  for (const { animal, originSettlementId } of ctx.detachedByRef.values()) {
+    if (isPlayerOwnedHorseAgent(animal)) out.push({ animal, originSettlementId })
   }
   for (const settlement of ctx.getLoadedSettlements()) {
     for (const animal of settlement.livestock) {
@@ -276,11 +276,6 @@ export async function resurrectPlayerOwnedHorse(
   const restored = aliveRecord(snapshot, playerPos.x + TELEPORT_OFFSET_X, playerPos.z)
   ctx.registry.restoreRemoved(restored)
   const agent = await spawnFromRecord(restored)
-  if (!ctx.detachedById.has(agent.animalId)) {
-    ctx.detached.push(agent)
-    ctx.detachedById.set(agent.animalId, agent)
-  }
-  ctx.detachedOriginById.set(agent.animalId, restored.settlementId)
-  ctx.registry.upsert(restored.settlementId, agent)
+  attachToDetached(ctx, restored.settlementId, agent)
   return ok(agent.animalId, 'restored')
 }
