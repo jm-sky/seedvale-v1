@@ -211,75 +211,71 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   🔴 `M` · **Score:**  35  
    → **unlocks:** 0/0
 
-32. `fauna-046` — **Stamina-aware animal water crossing risk**  
+32. `items-player-051` — **Cave-aware dropped-item continuity**  
   🔴 `M` · **Score:**  33  
    → **unlocks:** 0/0
 
-33. `items-player-051` — **Cave-aware dropped-item continuity**  
+33. `npc-061` — **Time-skip and reification surface placement validity**  
   🔴 `M` · **Score:**  33  
    → **unlocks:** 0/0
 
-34. `npc-061` — **Time-skip and reification surface placement validity**  
-  🔴 `M` · **Score:**  33  
-   → **unlocks:** 0/0
-
-35. `world-terrain-042` — **Medicinal herb meadow patches**  
+34. `world-terrain-042` — **Medicinal herb meadow patches**  
   🟡 `M` · **Score:**  33  
    → **unlocks:** 1/1
 
-36. `items-player-060` — **Ranged weapon inventory, trade and use integrity**  
+35. `items-player-060` — **Ranged weapon inventory, trade and use integrity**  
   🔴 `L` · **Score:**  32  
    → **unlocks:** 0/0
 
-37. `npc-054` — **NPC desired gifts, gift acceptance and relationship rewards**  
+36. `npc-054` — **NPC desired gifts, gift acceptance and relationship rewards**  
   🔴 `L` · **Score:**  30  
    → **unlocks:** 0/0
 
-38. `settlements-022` — **Founded settlement live runtime and streaming**  
+37. `settlements-022` — **Founded settlement live runtime and streaming**  
   🔴 `L` · **Score:**  28  
    → **unlocks:** 0/0
 
-39. `items-player-014` — **Rope-pullable resource transport**  
+38. `items-player-014` — **Rope-pullable resource transport**  
   🟡 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-40. `world-terrain-039` — **N8AO / post-process cost budget**  
+39. `world-terrain-039` — **N8AO / post-process cost budget**  
   🔴 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-41. `world-terrain-041` — **Agent presentation render LOD**  
+40. `world-terrain-041` — **Agent presentation render LOD**  
   🔴 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-42. `world-terrain-046` — **Unified water shore query and river hotpath**  
+41. `world-terrain-046` — **Unified water shore query and river hotpath**  
   🔴 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-43. `ui-input-025` — **Road travel autopilot for player and mounts**  
+42. `ui-input-025` — **Road travel autopilot for player and mounts**  
   🔴 `L` · **Score:**  26  
    → **unlocks:** 0/0
 
-44. `items-player-044` — **Shoulder and forearm equipment slots**  
+43. `items-player-044` — **Shoulder and forearm equipment slots**  
   🟡 `M` · **Score:**  25  
    → **unlocks:** 0/0
 
-45. `world-036` — **Lightweight unloaded shipwreck and tower lookup**  
+44. `world-036` — **Lightweight unloaded shipwreck and tower lookup**  
   🟡 `M` · **Score:**  25  
    → **unlocks:** 0/0
 
-46. `tools-019` — **Debug tooling lifecycle ownership**  
+45. `tools-019` — **Debug tooling lifecycle ownership**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-47. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
+46. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
   🟡 `L` · **Score:**  18  
    → **unlocks:** 0/0
 
-48. `items-player-052` — **Settlement tool ownership and social acquisition**  
+47. `items-player-052` — **Settlement tool ownership and social acquisition**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-49. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
+48. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
