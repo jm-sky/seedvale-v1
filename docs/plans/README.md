@@ -132,6 +132,7 @@ Unless noted otherwise, `verification needed` means implementation has passed au
 | ◼️ `ui-input-033-world-map-player-heading-arrow.md`                            | 🟡 | S      | -                                                                                                                                                                                                                                                                                          | -                                         |
 | ◼️ `ui-input-034-deliberate-risky-natural-water-drinking.md`                   | 🔴 | S      | -                                                                                                                                                                                                                                                                                          | -                                         |
 | 💡 `fauna-046-stamina-aware-animal-water-crossing-risk.md`                     | 🔴 | M      | ~~fauna-015~~, ~~fauna-029~~                                                                                                                                                                                                                                                               | -                                         |
+| ◼️ `ui-input-035-npc-label-icon-row-and-debug-controls.md`                     | 🟡 | M      | -                                                                                                                                                                                                                                                                                          | -                                         |
 
 ---
 
@@ -271,7 +272,7 @@ New plans declare a primary `Domain:` in frontmatter. Use optional `Tags:` only 
 - settlements: `023`
 - settlements-npcs: `057`
 - tools: `020`
-- ui-input: `035`
+- ui-input: `036`
 - world: `039`
 - world-terrain: `050`
 
