@@ -1,6 +1,6 @@
 # Seedvale — Performance & Rendering Strategy
 
-**Updated:** 2026-09-14
+**Updated:** 2026-09-21
 **Status:** active
 **Scope:** CPU · GPU · memory · rendering · chunk streaming · scalability
 
@@ -130,6 +130,25 @@ NPC category wall-clock is `SettlementsManager.update()`. While the perf monitor
 | GPU weather particles | ✅ |
 | Material program cache keys | ✅ |
 | Performance instrumentation / browser tracing | ✅ |
+
+## Current optimization direction — 2026-09-21 benchmark batch
+
+Fresh canonical benchmarks (`stream` 029, `settlement-heavy` 030, `water` 031) move the next optimization focus away from generic water/grass work and toward agent + settlement rendering. These are **investigation priorities, not implementation plans**; each still requires focused diagnosis before choosing a mechanism.
+
+| Area | Evidence / estimated recoverable cost | Estimated effort | ROI |
+|---|---|---:|---:|
+| NPC + fauna rendering / LOD / culling | Highest signal. Settlement-heavy isolation: render 23.3 → 14.4 ms without NPC/fauna (-38%, ~9 ms exposed cost). A targeted optimization plausibly recovering ~4–7 ms would be material. | M | very high |
+| Settlement rendering / draw submissions | Settlement-heavy: 1516 settlement scene draws; isolation 23.3 → 19.1 ms (-18%, ~4.2 ms). Plausible target ~2–4 ms if redundant/avoidable submissions can be proven. | M–L | very high |
+| Mirrors / reflection pass | Stream: 11.9 → 9.0 ms (-25%, ~3 ms); water ~1.2 ms. Settlement-heavy showed ~0 ms benefit, so this is scenario-dependent rather than global. | S–M | high |
+| Terrain rendering | Stream: ~2.2 ms exposed (-18%); settlement-heavy ~2.0 ms (-9%). | M | high |
+| NPC simulation CPU | Settlement-heavy NPC category 4.7 ms; stream 2.0 ms. Diagnose attribution before changing cadence/ownership. | M–L | high |
+| Fauna simulation CPU | ~1.4–1.6 ms in current scenarios; smaller than rendering but still measurable. | S–M | medium/high |
+| Post-processing | Stream exposes ~3.7 ms, but results are scene/GPU dependent; settlement-heavy does not currently justify treating it as the primary bottleneck. | M | medium |
+| Vegetation / grass | Fresh isolation gives weak or inconsistent benefit in settlement-heavy/stream. Do not prioritize without new evidence. | M | low/medium |
+| Water | Water benchmark is now ~83.8 FPS, 11.9 ms frame, WATER 1.5 ms; not a current priority. | M | low |
+| Chunk streaming CPU | STREAMING ~0.8 ms average in benchmark 029; further CPU work is lower priority unless hitch analysis identifies a specific cause. | M–L | low |
+
+**Next investigation target:** NPC + fauna rendering / LOD / culling. Start from current render ownership and existing distance/importance/visibility mechanisms; do not introduce a parallel visibility system before proving what creates the exposed cost.
 
 ## Candidate work — measurement required
 
