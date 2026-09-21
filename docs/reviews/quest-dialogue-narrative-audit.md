@@ -38,12 +38,14 @@ The labels below are the initial triage from the 2026-09-21 audit. They are not 
 
 ## Batch A — weak small errands
 
+**Completed:** 2026-09-21 — dialogue/narrative rewrite on `main`; mechanics and rewards unchanged.
+
 | Status | Quest | Source | Initial label | Main issue |
 |---|---|---|---|---|
-| ⬜ | Muszle dla Kasi | src/quests/quests.ts | **rewrite** | Pure fetch request; weak personal/world context. |
-| ⬜ | Woda dla Marka | src/quests/quests.ts | **rewrite** | Mechanical request; giver motivation is barely present. |
-| ⬜ | Zioła dla Anny | src/quests/quests.ts | **rewrite** | "Bring N items for N coins" tone; little character voice. |
-| ⬜ | Kamienie dla Piotra | src/quests/quests.ts | **rewrite** | Quest-board wording; no concrete repair/problem context in spoken line. |
+| ✅ | Muszle dla Kasi | src/quests/quests.ts | **rewrite** | Pure fetch request; weak personal/world context. |
+| ✅ | Woda dla Marka | src/quests/quests.ts | **rewrite** | Mechanical request; giver motivation is barely present. |
+| ✅ | Zioła dla Anny | src/quests/quests.ts | **rewrite** | "Bring N items for N coins" tone; little character voice. |
+| ✅ | Kamienie dla Piotra | src/quests/quests.ts | **rewrite** | Quest-board wording; no concrete repair/problem context in spoken line. |
 
 ## Batch B — small local problems
 
