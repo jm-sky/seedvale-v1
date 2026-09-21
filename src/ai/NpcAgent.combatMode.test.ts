@@ -168,7 +168,7 @@ describe('NpcAgent improvised stone throw (plan items-player-059 §14)', () => {
   // of a `seedGuardCrossbowLoadout`/`seedShepherdSlingLoadout` roll quietly
   // handing this NPC a real ranged weapon.
   it('throws exactly one stone while closing melee distance with no ranged weapon', async () => {
-    const npc = await createCombatTestNpc('farmer-throw', 'farmer')
+    const npc = await createCombatTestNpc('farmer-throw', 'shepherd')
     npc.personalInventory.addInstance(createWeaponInstance('spear')) // melee.range === 3, farmer's preferred family
     npc.personalInventory.add('stone', 3)
     const stoneBefore = npc.personalInventory.count('stone')
@@ -196,7 +196,7 @@ describe('NpcAgent improvised stone throw (plan items-player-059 §14)', () => {
   })
 
   it('never throws when a real ranged weapon is carried', async () => {
-    const npc = await createCombatTestNpc('farmer-sling', 'farmer')
+    const npc = await createCombatTestNpc('farmer-sling', 'shepherd')
     npc.personalInventory.addInstance(createWeaponInstance('spear'))
     npc.personalInventory.add('sling', 1)
     npc.personalInventory.add('stone', 3)
