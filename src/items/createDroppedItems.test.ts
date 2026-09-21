@@ -161,3 +161,44 @@ describe('createDroppedItems.consume (plan fauna-023 §6)', () => {
     expect(dropped.nodes()).toHaveLength(1)
   })
 })
+
+describe('createDroppedItems.queryNear (plan ui-input-027)', () => {
+  it('returns records within radius in stable insertion order', () => {
+    const dropped = createDroppedItems(new Scene(), sampleHeight)
+    dropped.drop('branch', 1, 0)
+    dropped.drop('beam', 0.5, 0)
+    dropped.drop('branch', 2, 0)
+    const near = dropped.queryNear(0, 0, 1.2)
+    expect(near.map((item) => item.kind)).toEqual(['branch', 'beam'])
+  })
+
+  it('excludes records outside radius and preserves negative coordinates', () => {
+    const dropped = createDroppedItems(new Scene(), sampleHeight)
+    dropped.drop('stone', -10, -10)
+    dropped.drop('stone', -9.5, -10)
+    dropped.drop('stone', 50, 50)
+    const near = dropped.queryNear(-10, -10, 1)
+    expect(near).toHaveLength(2)
+    expect(near.every((item) => Math.hypot(item.x + 10, item.z + 10) <= 1)).toBe(true)
+  })
+
+  it('updates the index on collect and dispose', () => {
+    const dropped = createDroppedItems(new Scene(), sampleHeight)
+    dropped.drop('branch', 0, 0)
+    dropped.drop('branch', 0.2, 0)
+    const [first] = dropped.nodes()
+    dropped.collect(first!.id)
+    expect(dropped.queryNear(0, 0, 2)).toHaveLength(1)
+    dropped.dispose()
+    expect(dropped.queryNear(0, 0, 2)).toHaveLength(0)
+    expect(dropped.nodes()).toHaveLength(0)
+  })
+
+  it('does not scan the whole registry when only a few records are local', () => {
+    const dropped = createDroppedItems(new Scene(), sampleHeight)
+    for (let i = 0; i < 250; i++) dropped.drop('stone', 800 + i, 800)
+    dropped.drop('mushroom', 0, 0)
+    expect(dropped.nodes()).toHaveLength(251)
+    expect(dropped.queryNear(0, 0, 5)).toHaveLength(1)
+  })
+})

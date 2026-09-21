@@ -36,6 +36,14 @@ function fakeDroppedItems(initial: readonly DroppedItem[]): DroppedItems {
     tick: () => {},
     reconcilePerishableLifecycle: () => {},
     settleNear: () => {},
+    queryNear(x, z, radius) {
+      const radiusSq = radius * radius
+      return items.filter((item) => {
+        const dx = item.x - x
+        const dz = item.z - z
+        return dx * dx + dz * dz <= radiusSq
+      })
+    },
     dispose: () => {},
   }
 }

@@ -24,10 +24,31 @@ export type DroppedItem = {
   foodBatch?: FoodBatch
 }
 
+/** Coarse XZ bucket size for {@link DroppedItems.queryNear} (plan ui-input-027).
+ *  Matches interaction grouping radius so neighbour lookup stays local. */
+export const DROPPED_ITEM_QUERY_CELL_SIZE = 1.5
+
+const DROPPED_ITEM_CELL_KEY_STRIDE = 1 << 20
+
+function droppedItemCellCoord(v: number): number {
+  return Math.floor(v / DROPPED_ITEM_QUERY_CELL_SIZE)
+}
+
+function droppedItemCellKey(cx: number, cz: number): number {
+  return cx * DROPPED_ITEM_CELL_KEY_STRIDE + cz
+}
+
 export type DroppedItems = {
   nodes: () => readonly DroppedItem[]
   /** Read-only lookup by stable id (plan fauna-023) — never removes. */
   get: (id: string) => DroppedItem | null
+  /**
+   * Returns dropped records whose XZ position lies within `radius` of
+   * `(x, z)`, in stable insertion/source order (plan ui-input-027).
+   *
+   * @domain ui-input
+   */
+  queryNear: (x: number, z: number, radius: number) => readonly DroppedItem[]
   /** Places one unit of `kind` at (x, z) as a new pickup, world-persistent
    *  (unlike the renewable spawner pool, dropped items don't respawn — once
    *  collected they're gone for good, same as world-generated ones). Pass
@@ -80,6 +101,9 @@ export function createDroppedItems(
   nowDays = 0,
 ): DroppedItems {
   const items: DroppedItem[] = []
+  const bucketIndex = new Map<number, DroppedItem[]>()
+  const sourceOrder = new Map<string, number>()
+  let nextSourceOrder = 0
   const meshes = new Map<string, Object3D>()
   // Runtime-only, not persisted — see `drop()`'s `onCollected` doc.
   const collectedCallbacks = new Map<string, () => void>()
@@ -110,10 +134,55 @@ export function createDroppedItems(
     for (const item of items) noteDecomposeAt(item)
   }
 
+  const indexInsert = (item: DroppedItem): void => {
+    sourceOrder.set(item.id, nextSourceOrder++)
+    const key = droppedItemCellKey(droppedItemCellCoord(item.x), droppedItemCellCoord(item.z))
+    let bucket = bucketIndex.get(key)
+    if (!bucket) {
+      bucket = []
+      bucketIndex.set(key, bucket)
+    }
+    bucket.push(item)
+  }
+
+  const indexRemove = (item: DroppedItem): void => {
+    sourceOrder.delete(item.id)
+    const key = droppedItemCellKey(droppedItemCellCoord(item.x), droppedItemCellCoord(item.z))
+    const bucket = bucketIndex.get(key)
+    if (!bucket) return
+    const at = bucket.indexOf(item)
+    if (at !== -1) bucket.splice(at, 1)
+    if (bucket.length === 0) bucketIndex.delete(key)
+  }
+
+  const queryNear = (x: number, z: number, radius: number): readonly DroppedItem[] => {
+    const radiusSq = radius * radius
+    const cover = radius + DROPPED_ITEM_QUERY_CELL_SIZE
+    const minCx = droppedItemCellCoord(x - cover)
+    const maxCx = droppedItemCellCoord(x + cover)
+    const minCz = droppedItemCellCoord(z - cover)
+    const maxCz = droppedItemCellCoord(z + cover)
+    const result: DroppedItem[] = []
+    for (let cx = minCx; cx <= maxCx; cx++) {
+      for (let cz = minCz; cz <= maxCz; cz++) {
+        const bucket = bucketIndex.get(droppedItemCellKey(cx, cz))
+        if (!bucket) continue
+        for (const item of bucket) {
+          const dx = item.x - x
+          const dz = item.z - z
+          if (dx * dx + dz * dz <= radiusSq) result.push(item)
+        }
+      }
+    }
+    result.sort((a, b) => (sourceOrder.get(a.id) ?? 0) - (sourceOrder.get(b.id) ?? 0))
+    return result
+  }
+
   const disposeNode = (id: string): DroppedItem | null => {
     const index = items.findIndex((item) => item.id === id)
     if (index === -1) return null
     const [item] = items.splice(index, 1)
+    indexRemove(item!)
     const mesh = meshes.get(id)
     if (mesh) {
       mesh.removeFromParent()
@@ -128,6 +197,7 @@ export function createDroppedItems(
   for (const item of initial) {
     if (item.foodBatch && isFoodBatchDecomposed(item.kind, item.foodBatch, nowDays)) continue
     items.push(item)
+    indexInsert(item)
     spawnMesh(item)
     noteDecomposeAt(item)
   }
@@ -137,11 +207,13 @@ export function createDroppedItems(
     get(id) {
       return items.find((item) => item.id === id) ?? null
     },
+    queryNear,
     drop(kind, x, z, instance, onCollected, foodBatch) {
       const item: DroppedItem = { id: `drop:${Date.now()}:${nextDropId++}`, kind, x, z }
       if (instance) item.instance = instance
       if (foodBatch) item.foodBatch = foodBatch
       items.push(item)
+      indexInsert(item)
       spawnMesh(item, DROP_SPAWN_HEIGHT)
       falling.set(item.id, { vy: 0 })
       if (onCollected) collectedCallbacks.set(item.id, onCollected)
@@ -211,6 +283,9 @@ export function createDroppedItems(
       }
       meshes.clear()
       items.length = 0
+      bucketIndex.clear()
+      sourceOrder.clear()
+      nextSourceOrder = 0
       falling.clear()
       collectedCallbacks.clear()
       nextDecomposeAt = Infinity

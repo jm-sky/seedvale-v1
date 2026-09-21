@@ -17,6 +17,7 @@ import {
   commitWorldPickup,
   DROPPED_ITEM_GROUP_RADIUS,
   filterInteractablesSameSpatialContext,
+  GAZE_RANGE,
   grindstoneInteractPosition,
   groupDroppedItemCandidates,
   itemPromptLabel,
@@ -161,6 +162,63 @@ describe('groupDroppedItemCandidates (plan items-player-022)', () => {
     }
     expect(inventory.count('branch')).toBe(2)
     expect(dropped.nodes().map((item) => item.id)).toEqual(group!.memberIds.slice(2))
+  })
+
+  it('merges transitive same-kind chains within grouping radius (plan ui-input-027)', () => {
+    const dropped = createDroppedItems(new Scene(), sampleHeight)
+    dropped.drop('branch', 0, 0)
+    dropped.drop('branch', 1.4, 0)
+    dropped.drop('branch', 2.8, 0)
+    const groups = groupDroppedItemCandidates(dropped.nodes())
+    expect(groups).toHaveLength(1)
+    expect(groups[0]?.memberIds).toHaveLength(3)
+  })
+
+  it('groups correctly across negative XZ bucket boundaries (plan ui-input-027)', () => {
+    const dropped = createDroppedItems(new Scene(), sampleHeight)
+    dropped.drop('branch', -45.75, -45.75)
+    dropped.drop('branch', -45.74, -45.75)
+    const groups = groupDroppedItemCandidates(dropped.nodes())
+    expect(groups).toHaveLength(1)
+    expect(groups[0]?.memberIds).toHaveLength(2)
+  })
+
+  it('keeps member order by source insertion across spatial buckets (plan ui-input-027)', () => {
+    const dropped = createDroppedItems(new Scene(), sampleHeight)
+    dropped.drop('branch', 0, 0)
+    dropped.drop('branch', 3, 0)
+    dropped.drop('branch', 0.1, 0)
+    const nodes = dropped.nodes()
+    const groups = groupDroppedItemCandidates(nodes)
+    expect(groups).toHaveLength(2)
+    const pair = groups.find((group) => group.memberIds.length === 2)
+    expect(pair?.memberIds).toEqual([nodes[0]!.id, nodes[2]!.id])
+    expect(pair?.first.id).toBe(nodes[0]!.id)
+  })
+
+  it('carries the first member on each group for prompt metadata (plan ui-input-027)', () => {
+    const dropped = createDroppedItems(new Scene(), sampleHeight)
+    for (let i = 0; i < 3; i++) dropped.drop('branch', 0.05 * i, 0)
+    const [group] = groupDroppedItemCandidates(dropped.nodes())
+    expect(group!.first.id).toBe(group!.memberIds[0])
+  })
+})
+
+describe('groupDroppedItemCandidates local query contract (plan ui-input-027)', () => {
+  const sampleHeight = (): number => 0
+  const queryRadius = GAZE_RANGE + DROPPED_ITEM_GROUP_RADIUS
+
+  it('groups only the gaze halo slice, not the whole global registry', () => {
+    const dropped = createDroppedItems(new Scene(), sampleHeight)
+    for (let i = 0; i < 120; i++) dropped.drop('stone', 500 + i * 0.01, 500)
+    dropped.drop('branch', 0, 0)
+    dropped.drop('branch', 0.1, 0)
+    const local = dropped.queryNear(0, 0, queryRadius)
+    expect(local).toHaveLength(2)
+    expect(dropped.nodes().length).toBeGreaterThan(100)
+    const groups = groupDroppedItemCandidates(local)
+    expect(groups).toHaveLength(1)
+    expect(groups[0]?.memberIds).toHaveLength(2)
   })
 })
 

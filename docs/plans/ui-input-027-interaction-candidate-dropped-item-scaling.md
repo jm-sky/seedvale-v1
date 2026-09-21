@@ -1,14 +1,19 @@
 # Plan: Interaction candidate dropped-item scaling
 
 **Created:** 2026-09-20  
-**Status:** `planned` 📋  
+**Status:** `verification needed` 🔍 — implemented + technically verified (`tsc`/vitest); browser/gameplay not yet verified. See [implementation notes](./implementation-notes/ui-input-027-interaction-candidate-dropped-item-scaling-implementation-notes.md).  
 **Priority:** medium · **Effort:** S  
 **Model:** Sonnet, Composer  
 **Depends on:** none  
 **Domain:** `ui-input`  
 **Subdomains:** `interaction`  
 **Type:** `optimization`  
-**Roadmap:** -
+**Roadmap:** -  
+**Implemented at:** 2026-09-21
+
+## Implementation status
+
+Implemented. `DroppedItems.queryNear()` (registry-owned XZ bucket index + source order) bounds the per-frame dropped slice; `buildInteractables()` queries with `GAZE_RANGE + DROPPED_ITEM_GROUP_RADIUS`, groups only that slice via bucket-neighbour union-find (no global O(D²) path), and uses `DroppedItemGroupCandidate.first` for freshness prompts without a second registry scan. Browser/manual verification is User-owned.
 
 ## Goal
 

@@ -1,5 +1,14 @@
 # Implementation Notes: ui-input-027 — Interaction candidate dropped-item scaling
 
+**Status:** `verification needed` 🔍
+
+## What was implemented
+
+- `createDroppedItems()` maintains a runtime-only XZ bucket index and monotonic source-order map; `queryNear(x, z, radius)` returns exact-radius matches in insertion order. Index insert/remove runs on `drop()`, hydrate, and `disposeNode()`; `dispose()` clears all index state.
+- `groupDroppedItemCandidates()` uses per-slice spatial buckets for union edges (exact `DROPPED_ITEM_GROUP_RADIUS` predicate), single-pass root→members assembly, and returns `DroppedItemGroupCandidate` with `first` for prompt metadata.
+- `buildInteractables()` calls `queryNear` once at `GAZE_RANGE + DROPPED_ITEM_GROUP_RADIUS` and no longer rescans `nodes()` per group for freshness.
+- Tests extended in `src/app/interactables.test.ts` and `src/items/createDroppedItems.test.ts`. Browser verification not performed (User-owned).
+
 ## Current code facts
 
 - Hot path is exactly `gameLoop.tick → buildInteractables()`; `src/app/interactables.ts` currently calls `groupDroppedItemCandidates(droppedItems.nodes())` every frame.

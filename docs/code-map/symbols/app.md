@@ -349,31 +349,32 @@ Generated from exported TypeScript symbols.
 
 ## `app/interactables.ts`
 
-- `buildCombatTarget` — function — line 1378
-- `buildDigTarget` — function — line 1322
-- `buildInteractables` — function — line 541
+- `buildCombatTarget` — function — line 1431
+- `buildDigTarget` — function — line 1375
+- `buildInteractables` — function — line 589
 - `COMBAT_TARGET_CONE_DOT` — const — line 113
 - `COMBAT_TARGET_RANGE` — const — line 98
 - `CombatAimMode` — type — line 103
-- `commitWorldPickup` — function — line 1524
+- `commitWorldPickup` — function — line 1577
   - domain: items-player
 - `DIG_REACH` — const — line 92
 - `DROPPED_ITEM_GROUP_RADIUS` — const — line 319
-- `filterInteractablesSameSpatialContext` — function — line 525
+- `DroppedItemGroupCandidate` — type — line 322
+- `filterInteractablesSameSpatialContext` — function — line 573
 - `GAZE_RANGE` — const — line 88
-- `grindstoneInteractPosition` — function — line 400
-- `groupDroppedItemCandidates` — function — line 329
+- `grindstoneInteractPosition` — function — line 448
+- `groupDroppedItemCandidates` — function — line 340
   - domain: items-player
 - `INTERACT_MIN_DOT` — const — line 85
 - `INTERACT_RANGE` — const — line 82
 - `itemPromptLabel` — function — line 308
-- `resolveHaySpot` — function — line 414
-- `resolveShorelineWaterSource` — function — line 471
-- `resolveWorldPickup` — function — line 1461
+- `resolveHaySpot` — function — line 462
+- `resolveShorelineWaterSource` — function — line 519
+- `resolveWorldPickup` — function — line 1514
 - `worldItemAllowsAltInteract` — function — line 293
   - domain: ui-input
-- `WorldPickupCommit` — type — line 1509
-- `WorldPickupResolution` — type — line 1448
+- `WorldPickupCommit` — type — line 1562
+- `WorldPickupResolution` — type — line 1501
   - domain: items-player
 
 ## `app/inventoryWiring.ts`

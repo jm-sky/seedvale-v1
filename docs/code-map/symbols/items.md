@@ -113,9 +113,10 @@ Generated from exported TypeScript symbols.
 
 ## `items/createDroppedItems.ts`
 
-- `createDroppedItems` — function — line 76
+- `createDroppedItems` — function — line 97
+- `DROPPED_ITEM_QUERY_CELL_SIZE` — const — line 29
 - `DroppedItem` — type — line 13
-- `DroppedItems` — type — line 27
+- `DroppedItems` — type — line 41
 
 ## `items/createItemSpawners.ts`
 

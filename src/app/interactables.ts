@@ -318,20 +318,29 @@ export function itemPromptLabel(kind: ItemKind, quantity = 1, freshness?: Freshn
  *  still share one interaction target (plan items-player-022). */
 export const DROPPED_ITEM_GROUP_RADIUS = 1.5
 
-/**
- * Groups nearby identical plain dropped records into one interaction
- * candidate each. Records with `instance` or `foodBatch` stay individual.
- * Membership and member order follow the source array so Tab identity does
- * not flicker (plan items-player-022).
- *
- * @domain items-player
- */
-export function groupDroppedItemCandidates(items: readonly DroppedItem[]): {
+/** One grouped or singleton dropped-item interaction candidate (plan ui-input-027). */
+export type DroppedItemGroupCandidate = {
   kind: ItemKind
   x: number
   z: number
   memberIds: readonly string[]
-}[] {
+  /** First member in source order — carries freshness without a registry rescan. */
+  first: DroppedItem
+}
+
+/**
+ * Groups nearby identical plain dropped records into one interaction
+ * candidate each. Records with `instance` or `foodBatch` stay individual.
+ * Membership and member order follow the source array so Tab identity does
+ * not flicker (plan items-player-022). Uses coarse local buckets so work
+ * scales with nearby density, not global dropped count (plan ui-input-027).
+ *
+ * @domain items-player
+ */
+export function groupDroppedItemCandidates(items: readonly DroppedItem[]): DroppedItemGroupCandidate[] {
+  const n = items.length
+  if (n === 0) return []
+
   const parent = items.map((_, i) => i)
   const find = (i: number): number => {
     while (parent[i] !== i) {
@@ -348,41 +357,80 @@ export function groupDroppedItemCandidates(items: readonly DroppedItem[]): {
   }
 
   const radiusSq = DROPPED_ITEM_GROUP_RADIUS * DROPPED_ITEM_GROUP_RADIUS
-  for (let i = 0; i < items.length; i++) {
+  const cellSize = DROPPED_ITEM_GROUP_RADIUS
+  const cellStride = 1 << 16
+  const cellCoord = (v: number): number => Math.floor(v / cellSize)
+  const cellKey = (cx: number, cz: number): number => cx * cellStride + cz
+
+  const buckets = new Map<number, number[]>()
+  for (let i = 0; i < n; i++) {
+    const item = items[i]!
+    if (item.instance || item.foodBatch) continue
+    const key = cellKey(cellCoord(item.x), cellCoord(item.z))
+    let bucket = buckets.get(key)
+    if (!bucket) {
+      bucket = []
+      buckets.set(key, bucket)
+    }
+    bucket.push(i)
+  }
+
+  const neighborCover = DROPPED_ITEM_GROUP_RADIUS + cellSize
+  for (let i = 0; i < n; i++) {
     const a = items[i]!
     if (a.instance || a.foodBatch) continue
-    for (let j = i + 1; j < items.length; j++) {
-      const b = items[j]!
-      if (b.instance || b.foodBatch || a.kind !== b.kind) continue
-      const dx = a.x - b.x
-      const dz = a.z - b.z
-      if (dx * dx + dz * dz <= radiusSq) union(i, j)
+    const minCx = cellCoord(a.x - neighborCover)
+    const maxCx = cellCoord(a.x + neighborCover)
+    const minCz = cellCoord(a.z - neighborCover)
+    const maxCz = cellCoord(a.z + neighborCover)
+    for (let cx = minCx; cx <= maxCx; cx++) {
+      for (let cz = minCz; cz <= maxCz; cz++) {
+        const bucket = buckets.get(cellKey(cx, cz))
+        if (!bucket) continue
+        for (const j of bucket) {
+          if (j <= i) continue
+          const b = items[j]!
+          if (a.kind !== b.kind) continue
+          const dx = a.x - b.x
+          const dz = a.z - b.z
+          if (dx * dx + dz * dz <= radiusSq) union(i, j)
+        }
+      }
     }
   }
 
+  const rootMembers = new Map<number, DroppedItem[]>()
+  for (let i = 0; i < n; i++) {
+    const item = items[i]!
+    if (item.instance || item.foodBatch) continue
+    const root = find(i)
+    let members = rootMembers.get(root)
+    if (!members) {
+      members = []
+      rootMembers.set(root, members)
+    }
+    members.push(item)
+  }
+
   const emitted = new Set<number>()
-  const groups: { kind: ItemKind, x: number, z: number, memberIds: readonly string[] }[] = []
-  for (let i = 0; i < items.length; i++) {
+  const groups: DroppedItemGroupCandidate[] = []
+  for (let i = 0; i < n; i++) {
     const item = items[i]!
     if (item.instance || item.foodBatch) {
-      groups.push({ kind: item.kind, x: item.x, z: item.z, memberIds: [item.id] })
+      groups.push({ kind: item.kind, x: item.x, z: item.z, memberIds: [item.id], first: item })
       continue
     }
     const root = find(i)
     if (emitted.has(root)) continue
     emitted.add(root)
-    const members: DroppedItem[] = []
-    for (let j = 0; j < items.length; j++) {
-      const candidate = items[j]!
-      if (candidate.instance || candidate.foodBatch) continue
-      if (find(j) === root) members.push(candidate)
-    }
+    const members = rootMembers.get(root)!
     const first = members[0]!
     groups.push({
       kind: first.kind,
       x: first.x,
       z: first.z,
       memberIds: members.map((entry) => entry.id),
+      first,
     })
   }
   return groups
@@ -1252,10 +1300,15 @@ export function buildInteractables(
     })
   }
 
-  for (const group of groupDroppedItemCandidates(droppedItems.nodes())) {
-    const first = droppedItems.nodes().find((node) => node.id === group.memberIds[0])
-    const freshness = first?.foodBatch
-      ? getFoodBatchFreshnessStage(group.kind, first.foodBatch, nowDays)
+  for (const group of groupDroppedItemCandidates(
+    droppedItems.queryNear(
+      playerPos.x,
+      playerPos.z,
+      GAZE_RANGE + DROPPED_ITEM_GROUP_RADIUS,
+    ),
+  )) {
+    const freshness = group.first.foodBatch
+      ? getFoodBatchFreshnessStage(group.kind, group.first.foodBatch, nowDays)
       : undefined
     list.push({
       kind: 'item',
