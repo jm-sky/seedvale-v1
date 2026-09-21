@@ -49,6 +49,7 @@ function spawner(overrides: Partial<PreySpawner> = {}): PreySpawner {
     humanTaste: false,
     canRecover: true,
     lastSettlementTripOpportunityDay: null,
+    depletedRecoveryDays: 0,
     ...overrides,
   }
 }

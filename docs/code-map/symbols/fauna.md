@@ -357,27 +357,33 @@ Generated from exported TypeScript symbols.
 
 ## `fauna/AnimalSpawner.ts`
 
-- `countBoundForSpawner` — function — line 140
-- `defaultSpawnPointScenarioFields` — function — line 285
-- `depletionThreshold` — function — line 121
-- `DESTROY_SPAWNER_DURATION_SEC` — const — line 56
-- `EMPTY_HABITAT_RESPAWN_MULTIPLIER` — const — line 60
-- `MIN_RECOVERY_POPULATION` — const — line 50
-- `PreySpawner` — type — line 62
-- `RECOVERY_DAYS` — const — line 47
-- `respawnIntervalDaysFor` — function — line 133
-- `restoreSpawnPointState` — function — line 271
-- `SavedSpawnPointState` — type — line 244
-- `shouldDeplete` — function — line 127
-- `snapshotSpawnPointState` — function — line 255
-- `SPAWNER_DESTROY_BRANCH_COST` — const — line 54
-- `SPAWNER_RADIUS` — const — line 109
-- `SpawnerBoundCount` — type — line 151
-- `SpawnerBoundLiveAnimal` — type — line 112
+- `canUseDepletedNaturalRecovery` — function — line 232
+- `countBoundForSpawner` — function — line 152
+- `defaultSpawnPointScenarioFields` — function — line 373
+- `DEPLETED_NATURAL_RECOVERY_DAYS` — const — line 54
+- `DEPLETED_RECOLONIZATION_DAYS` — const — line 57
+- `depletedRecoveryIntervalDays` — function — line 224
+- `depletionThreshold` — function — line 133
+- `DESTROY_SPAWNER_DURATION_SEC` — const — line 63
+- `EMPTY_HABITAT_RESPAWN_MULTIPLIER` — const — line 67
+- `MIN_RECOVERY_POPULATION` — const — line 51
+- `PreySpawner` — type — line 69
+- `RECOVERY_DAYS` — const — line 48
+- `respawnIntervalDaysFor` — function — line 145
+- `restoreSpawnPointState` — function — line 358
+- `SavedSpawnPointState` — type — line 328
+- `shouldDeplete` — function — line 139
+- `snapshotSpawnPointState` — function — line 341
+- `SPAWNER_DESTROY_BRANCH_COST` — const — line 61
+- `SPAWNER_RADIUS` — const — line 121
+- `SpawnerBoundCount` — type — line 163
+- `SpawnerBoundLiveAnimal` — type — line 124
 - `SpawnerType` — type — line 20
-- `SpawnPointState` — type — line 42
-- `tickSpawnPointRecovery` — function — line 222
-- `updateSpawners` — function — line 173
+- `SpawnPointState` — type — line 43
+- `tickSpawnPointRecovery` — function — line 305
+- `updateDepletedSpawnerRecovery` — function — line 258
+  - domain: fauna
+- `updateSpawners` — function — line 185
 - `WOLF_DEN_ID` — const — line 26
 
 ## `fauna/animalStray.ts`
@@ -534,25 +540,25 @@ Generated from exported TypeScript symbols.
 
 ## `fauna/createFauna.ts`
 
-- `clearsRiverChannel` — function — line 302
-- `createFauna` — function — line 599
-- `Fauna` — type — line 109
-- `FAUNA_URLS` — const — line 509
-- `faunaGltfUrls` — function — line 524
-- `findHomeCaveSpawner` — function — line 468
-- `isDeerEdgeHabitat` — function — line 356
-- `isNearRoadCorridor` — function — line 337
-- `isValidWildFaunaSpawnSite` — function — line 312
-- `measureSlope` — function — line 395
-- `resolveWildFaunaSpawnPosition` — function — line 323
-- `SPAWNER_DESTROY_ACCUSATIVE` — const — line 485
-- `SPAWNER_DESTROYING_GENITIVE` — const — line 493
-- `SPAWNER_LABELS` — const — line 477
-- `SPAWNER_RING_OFFSET` — const — line 274
-- `SPAWNER_SPECS` — const — line 431
-- `spawnerDestroyBusyLabel` — function — line 504
-- `spawnerDestroyPromptLabel` — function — line 500
-- `spawnerId` — function — line 461
+- `clearsRiverChannel` — function — line 303
+- `createFauna` — function — line 600
+- `Fauna` — type — line 110
+- `FAUNA_URLS` — const — line 510
+- `faunaGltfUrls` — function — line 525
+- `findHomeCaveSpawner` — function — line 469
+- `isDeerEdgeHabitat` — function — line 357
+- `isNearRoadCorridor` — function — line 338
+- `isValidWildFaunaSpawnSite` — function — line 313
+- `measureSlope` — function — line 396
+- `resolveWildFaunaSpawnPosition` — function — line 324
+- `SPAWNER_DESTROY_ACCUSATIVE` — const — line 486
+- `SPAWNER_DESTROYING_GENITIVE` — const — line 494
+- `SPAWNER_LABELS` — const — line 478
+- `SPAWNER_RING_OFFSET` — const — line 275
+- `SPAWNER_SPECS` — const — line 432
+- `spawnerDestroyBusyLabel` — function — line 505
+- `spawnerDestroyPromptLabel` — function — line 501
+- `spawnerId` — function — line 462
 
 ## `fauna/destinationThreatHooks.ts`
 

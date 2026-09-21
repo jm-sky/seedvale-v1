@@ -59,6 +59,13 @@ describe('faunaGltfUrls (wild-boar GLB feature flag)', () => {
   })
 })
 
+describe('SPAWNER_SPECS deer thicket (plan fauna-047)', () => {
+  it('uses a maxPreyCount of 4 for ordinary deer thickets', () => {
+    const thicket = SPAWNER_SPECS.find((spec) => spec.type === 'thicket' && spec.kind === 'deer')
+    expect(thicket?.maxPreyCount).toBe(4)
+  })
+})
+
 describe('wolfDen initial pack variants (plan fauna-022)', () => {
   it('assigns exactly one alpha across the den maxPreyCount, at slot 0', () => {
     const den = SPAWNER_SPECS.find((spec) => spec.type === 'wolfDen')

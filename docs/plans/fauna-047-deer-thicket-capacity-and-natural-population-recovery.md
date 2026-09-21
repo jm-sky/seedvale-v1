@@ -1,7 +1,7 @@
 # Plan: Deer thicket capacity and natural population recovery
 
 **Created:** 2026-09-21
-**Status:** `planned` 📋
+**Status:** `done` ✅ (implemented 2026-09-21 — automated tests; browser verification by user)
 **Priority:** high · **Effort:** M
 **Depends on:** ~~fauna-041~~
 **Domain:** `fauna`

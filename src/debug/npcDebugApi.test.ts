@@ -122,6 +122,7 @@ function fakeWolfDenSpawner(overrides: Partial<PreySpawner> = {}): PreySpawner {
     humanTaste: true,
     canRecover: false,
     lastSettlementTripOpportunityDay: null,
+    depletedRecoveryDays: 0,
     ...overrides,
   }
 }

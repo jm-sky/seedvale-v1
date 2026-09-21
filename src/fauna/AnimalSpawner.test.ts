@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import {
+  canUseDepletedNaturalRecovery,
+  DEPLETED_NATURAL_RECOVERY_DAYS,
+  DEPLETED_RECOLONIZATION_DAYS,
+  depletedRecoveryIntervalDays,
   depletionThreshold,
   EMPTY_HABITAT_RESPAWN_MULTIPLIER,
   MIN_RECOVERY_POPULATION,
@@ -10,6 +14,7 @@ import {
   shouldDeplete,
   snapshotSpawnPointState,
   tickSpawnPointRecovery,
+  updateDepletedSpawnerRecovery,
   updateSpawners,
 } from './AnimalSpawner'
 
@@ -30,6 +35,7 @@ function spawner(overrides: Partial<PreySpawner> = {}): PreySpawner {
     humanTaste: false,
     canRecover: true,
     lastSettlementTripOpportunityDay: null,
+    depletedRecoveryDays: 0,
     ...overrides,
   }
 }
@@ -277,6 +283,174 @@ describe('updateSpawners', () => {
   })
 })
 
+describe('depletedRecoveryIntervalDays', () => {
+  it('uses the longer recolonization delay when the habitat is empty', () => {
+    expect(depletedRecoveryIntervalDays(0)).toBe(DEPLETED_RECOLONIZATION_DAYS)
+    expect(depletedRecoveryIntervalDays(1)).toBe(DEPLETED_NATURAL_RECOVERY_DAYS)
+  })
+})
+
+describe('canUseDepletedNaturalRecovery', () => {
+  it('excludes disabled/recovering, Infinity intervals, and canRecover: false', () => {
+    expect(canUseDepletedNaturalRecovery(spawner({ state: 'depleted' }))).toBe(true)
+    expect(canUseDepletedNaturalRecovery(spawner({ state: 'active' }))).toBe(false)
+    expect(canUseDepletedNaturalRecovery(spawner({ state: 'disabled' }))).toBe(false)
+    expect(canUseDepletedNaturalRecovery(spawner({
+      state: 'depleted',
+      type: 'wolfDen',
+      respawnIntervalDays: Infinity,
+    }))).toBe(false)
+    expect(canUseDepletedNaturalRecovery(spawner({ state: 'depleted', canRecover: false }))).toBe(false)
+  })
+
+  it('excludes habitats whose ordinary capacity cannot reach MIN_RECOVERY_POPULATION', () => {
+    expect(canUseDepletedNaturalRecovery(spawner({ state: 'depleted', maxPreyCount: 1 }))).toBe(false)
+    const reserved = new Map([['settlement-a:cave', 1]])
+    expect(canUseDepletedNaturalRecovery(
+      spawner({ state: 'depleted', maxPreyCount: 2 }),
+      reserved,
+    )).toBe(false)
+  })
+})
+
+describe('updateDepletedSpawnerRecovery (plan fauna-047)', () => {
+  it('does not recover before the interval elapses when one survivor remains', () => {
+    const s = spawner({ state: 'depleted', maxPreyCount: 4, deathsThisCycle: 3 })
+    const counter = respawnCounter()
+    updateDepletedSpawnerRecovery(
+      [s],
+      DEPLETED_NATURAL_RECOVERY_DAYS - 0.01,
+      [bound('deer', s.id)],
+      counter.tick,
+    )
+    expect(counter.count).toBe(0)
+    expect(s.state).toBe('depleted')
+  })
+
+  it('becomes active after a successful recovery spawn reaches MIN_RECOVERY_POPULATION', () => {
+    const s = spawner({ state: 'depleted', maxPreyCount: 4, deathsThisCycle: 3 })
+    const counter = respawnCounter()
+    updateDepletedSpawnerRecovery(
+      [s],
+      DEPLETED_NATURAL_RECOVERY_DAYS,
+      [bound('deer', s.id)],
+      counter.tick,
+    )
+    expect(counter.count).toBe(1)
+    expect(s.state).toBe('active')
+    expect(s.deathsThisCycle).toBe(0)
+    expect(s.depletedRecoveryDays).toBe(0)
+    expect(s.daysSinceLastRespawn).toBe(0)
+  })
+
+  it('waits six days before the first colonizer when empty, then three for the second', () => {
+    const s = spawner({ state: 'depleted', maxPreyCount: 4, deathsThisCycle: 3 })
+    const counter = respawnCounter()
+    updateDepletedSpawnerRecovery([s], DEPLETED_RECOLONIZATION_DAYS - 0.01, [], counter.tick)
+    expect(counter.count).toBe(0)
+    updateDepletedSpawnerRecovery([s], 0.01, [], counter.tick)
+    expect(counter.count).toBe(1)
+    expect(s.state).toBe('depleted')
+    updateDepletedSpawnerRecovery(
+      [s],
+      DEPLETED_NATURAL_RECOVERY_DAYS - 0.01,
+      [bound('deer', s.id)],
+      counter.tick,
+    )
+    expect(counter.count).toBe(1)
+    updateDepletedSpawnerRecovery(
+      [s],
+      0.01,
+      [bound('deer', s.id)],
+      counter.tick,
+    )
+    expect(counter.count).toBe(2)
+    expect(s.state).toBe('active')
+  })
+
+  it('catch-up on a large dayDelta does not exceed MIN_RECOVERY_POPULATION or ordinary cap', () => {
+    const s = spawner({ state: 'depleted', maxPreyCount: 4, deathsThisCycle: 3 })
+    const counter = respawnCounter()
+    updateDepletedSpawnerRecovery([s], 100, [], counter.tick)
+    expect(counter.count).toBe(2)
+    expect(s.state).toBe('active')
+  })
+
+  it('does not consume recovery time when materialization fails', () => {
+    const s = spawner({ state: 'depleted', maxPreyCount: 4, deathsThisCycle: 3 })
+    let attempts = 0
+    updateDepletedSpawnerRecovery([s], DEPLETED_NATURAL_RECOVERY_DAYS, [bound('deer', s.id)], () => {
+      attempts++
+      return false
+    })
+    expect(attempts).toBe(1)
+    expect(s.depletedRecoveryDays).toBe(DEPLETED_NATURAL_RECOVERY_DAYS)
+    let respawned = 0
+    updateDepletedSpawnerRecovery([s], 0.01, [bound('deer', s.id)], () => {
+      respawned++
+      return true
+    })
+    expect(respawned).toBe(1)
+    expect(s.state).toBe('active')
+  })
+
+  it('isolates recovery per spawner for same-kind habitats', () => {
+    const a = spawner({ id: 'settlement-a:thicket', state: 'depleted', maxPreyCount: 4 })
+    const b = spawner({ id: 'settlement-b:thicket', state: 'depleted', maxPreyCount: 4 })
+    const counter = respawnCounter()
+    updateDepletedSpawnerRecovery(
+      [a, b],
+      DEPLETED_NATURAL_RECOVERY_DAYS,
+      [bound('deer', a.id)],
+      counter.tick,
+    )
+    expect(counter.count).toBe(1)
+    expect(a.state).toBe('active')
+    expect(b.state).toBe('depleted')
+  })
+
+  it('respects reserved persistent slots during recovery', () => {
+    const s = spawner({ state: 'depleted', maxPreyCount: 3, deathsThisCycle: 2 })
+    const reserved = new Map([[s.id, 2]])
+    const counter = respawnCounter()
+    updateDepletedSpawnerRecovery([s], 100, [], counter.tick, reserved)
+    expect(counter.count).toBe(0)
+    expect(s.state).toBe('depleted')
+  })
+
+  it('does not run for disabled or recovering spawners', () => {
+    for (const state of ['disabled', 'recovering'] as const) {
+      const s = spawner({ state, depletedRecoveryDays: 10 })
+      const counter = respawnCounter()
+      updateDepletedSpawnerRecovery([s], 100, [], counter.tick)
+      expect(counter.count).toBe(0)
+      expect(s.depletedRecoveryDays).toBe(10)
+    }
+  })
+})
+
+describe('cap-4 deer thicket depletion (plan fauna-047)', () => {
+  it('stays active after two deaths and depletes after three', () => {
+    const cap = 4
+    const s = spawner({ type: 'thicket', maxPreyCount: cap })
+    s.deathsThisCycle = 2
+    expect(shouldDeplete(s.deathsThisCycle, cap)).toBe(false)
+    s.deathsThisCycle = 3
+    expect(shouldDeplete(s.deathsThisCycle, cap)).toBe(true)
+  })
+
+  it('supports three hunter kills: active through two deaths, depleted only on the third', () => {
+    const s = spawner({ type: 'thicket', maxPreyCount: 4, state: 'active' })
+    s.deathsThisCycle = 1
+    expect(shouldDeplete(s.deathsThisCycle, s.maxPreyCount)).toBe(false)
+    s.deathsThisCycle = 2
+    expect(shouldDeplete(s.deathsThisCycle, s.maxPreyCount)).toBe(false)
+    s.deathsThisCycle = 3
+    if (shouldDeplete(s.deathsThisCycle, s.maxPreyCount)) s.state = 'depleted'
+    expect(s.state).toBe('depleted')
+  })
+})
+
 describe('tickSpawnPointRecovery', () => {
   it('stays disabled before RECOVERY_DAYS elapse, even with enough nearby population', () => {
     const s = spawner({ state: 'disabled', disabledAtDay: 10 })
@@ -334,6 +508,7 @@ describe('snapshotSpawnPointState / restoreSpawnPointState (persistence follow-u
       humanTaste: false,
       canRecover: true,
       lastSettlementTripOpportunityDay: null,
+      depletedRecoveryDays: 0,
     })
   })
 
@@ -347,7 +522,12 @@ describe('snapshotSpawnPointState / restoreSpawnPointState (persistence follow-u
 
   it('round-trips active/depleted/disabled/recovering through snapshot + restore', () => {
     for (const state of ['active', 'depleted', 'disabled', 'recovering'] as const) {
-      const original = spawner({ state, deathsThisCycle: 2, disabledAtDay: state === 'active' ? null : 5 })
+      const original = spawner({
+        state,
+        deathsThisCycle: 2,
+        disabledAtDay: state === 'active' ? null : 5,
+        depletedRecoveryDays: state === 'depleted' ? 2.5 : 0,
+      })
       const saved = snapshotSpawnPointState(original)
       // Fresh spawner as `createFauna()` would construct it on rebuild — always
       // starts `active`/0/null before the saved snapshot is applied.
@@ -356,6 +536,17 @@ describe('snapshotSpawnPointState / restoreSpawnPointState (persistence follow-u
       expect(restored.state).toBe(state)
       expect(restored.deathsThisCycle).toBe(2)
       expect(restored.disabledAtDay).toBe(state === 'active' ? null : 5)
+      expect(restored.depletedRecoveryDays).toBe(state === 'depleted' ? 2.5 : 0)
     }
+  })
+
+  it('defaults depletedRecoveryDays to 0 for older saves without the field', () => {
+    const restored = spawner()
+    restoreSpawnPointState(restored, {
+      state: 'depleted',
+      deathsThisCycle: 1,
+      disabledAtDay: null,
+    })
+    expect(restored.depletedRecoveryDays).toBe(0)
   })
 })

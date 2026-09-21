@@ -55,6 +55,7 @@ import {
   shouldDeplete,
   SPAWNER_RADIUS,
   tickSpawnPointRecovery,
+  updateDepletedSpawnerRecovery,
   updateSpawners,
 } from './AnimalSpawner'
 import {
@@ -435,7 +436,7 @@ export const SPAWNER_SPECS: {
   maxPreyCount: number
 }[] = [
   { type: 'rockDen', kind: 'wolf', respawnIntervalDays: 2, maxPreyCount: 2 },
-  { type: 'thicket', kind: 'deer', respawnIntervalDays: 1, maxPreyCount: 3 },
+  { type: 'thicket', kind: 'deer', respawnIntervalDays: 1, maxPreyCount: 4 },
   { type: 'wolfDen', kind: 'wolf', respawnIntervalDays: Infinity, maxPreyCount: 2 },
   // Bear den — solitary occupant, slower respawn than the wolf den.
   { type: 'rockDen', kind: 'bear', respawnIntervalDays: 3, maxPreyCount: 1 },
@@ -1068,6 +1069,7 @@ export async function createFauna(
       state: 'active',
       deathsThisCycle: 0,
       disabledAtDay: null,
+      depletedRecoveryDays: 0,
       ...defaultSpawnPointScenarioFields(spec.type),
     }
     restoreSpawnPointState(spawner, initialSpawnerState?.get(spawner.id))
@@ -1161,6 +1163,7 @@ export async function createFauna(
       state: 'active',
       deathsThisCycle: 0,
       disabledAtDay: null,
+      depletedRecoveryDays: 0,
       ...defaultSpawnPointScenarioFields(extra.type),
     }
     restoreSpawnPointState(spawner, initialSpawnerState?.get(spawner.id))
@@ -1222,6 +1225,7 @@ export async function createFauna(
         state: 'active',
         deathsThisCycle: 0,
         disabledAtDay: null,
+        depletedRecoveryDays: 0,
         ...defaultSpawnPointScenarioFields(extra.type),
       }
       restoreSpawnPointState(spawner, initialSpawnerState?.get(spawner.id))
@@ -1484,23 +1488,32 @@ export async function createFauna(
           boundOccupancyCounts.set(a.spawnPointId, (boundOccupancyCounts.get(a.spawnPointId) ?? 0) + 1)
         }
       }
+      const materializeManagedSpawnerAnimal = (spawner: PreySpawner): boolean => {
+        const pos = resolveWildFaunaSpawnPosition(
+          findWalkableNear(spawner.x, spawner.z, 0, 4),
+          spawner,
+          drySpawnSite(spawner.x, spawner.z, SPAWN_RIVER_CLEARANCE),
+        )
+        if (!pos) return false
+        const agent = spawnAgent(spawner.kind, pos.x, pos.z, undefined, undefined, undefined, spawner.id)
+        scene.add(agent.mesh)
+        agents.push(agent)
+        boundOccupancyCounts.set(spawner.id, (boundOccupancyCounts.get(spawner.id) ?? 0) + 1)
+        return true
+      }
+      const boundCountForSpawner = (spawner: PreySpawner) => boundOccupancyCounts.get(spawner.id) ?? 0
       updateSpawners(
         spawners,
         dayDelta,
-        (spawner) => boundOccupancyCounts.get(spawner.id) ?? 0,
-        (spawner) => {
-          const pos = resolveWildFaunaSpawnPosition(
-            findWalkableNear(spawner.x, spawner.z, 0, 4),
-            spawner,
-            drySpawnSite(spawner.x, spawner.z, SPAWN_RIVER_CLEARANCE),
-          )
-          if (!pos) return false
-          const agent = spawnAgent(spawner.kind, pos.x, pos.z, undefined, undefined, undefined, spawner.id)
-          scene.add(agent.mesh)
-          agents.push(agent)
-          boundOccupancyCounts.set(spawner.id, (boundOccupancyCounts.get(spawner.id) ?? 0) + 1)
-          return true
-        },
+        boundCountForSpawner,
+        materializeManagedSpawnerAnimal,
+        reservedPersistentSlots,
+      )
+      updateDepletedSpawnerRecovery(
+        spawners,
+        dayDelta,
+        boundCountForSpawner,
+        materializeManagedSpawnerAnimal,
         reservedPersistentSlots,
       )
       if (diagOn) agentCpu.addFaunaSpawnerBookkeepingMs(performance.now() - spawnerT0)
@@ -1622,6 +1635,7 @@ export async function createFauna(
       if (!spawner || spawner.state !== 'depleted') return false
       spawner.state = 'disabled'
       spawner.disabledAtDay = nowDays
+      spawner.depletedRecoveryDays = 0
       const mesh = spawnerMeshById.get(spawnerId)
       if (mesh) tintPropMaterials(mesh, BURNED_SPAWNER_TINT_HEX)
       // The genuine player action ("[E] Zniszcz") — persisted, unlike the

@@ -32,6 +32,7 @@ function wolfDen(overrides: Partial<PreySpawner> = {}): PreySpawner {
     humanTaste: false,
     canRecover: false,
     lastSettlementTripOpportunityDay: null,
+    depletedRecoveryDays: 0,
     ...overrides,
   }
 }

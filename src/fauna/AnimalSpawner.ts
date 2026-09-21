@@ -30,6 +30,7 @@ export const WOLF_DEN_ID = 'wolf-den'
  *
  *  ```text
  *  active → (>50% of maxPreyCount dies this cycle) → depleted
+ *         → (slow natural recovery while intact — plan fauna-047) → active
  *         → (player "Zniszcz", 4 branches) → disabled
  *         → (RECOVERY_DAYS elapsed) → recovering
  *         → (>=MIN_RECOVERY_POPULATION of the same kind nearby) → active
@@ -48,6 +49,12 @@ export const RECOVERY_DAYS = 21
 /** Minimum live same-kind animals within `SPAWNER_RADIUS` required for a
  *  `recovering` spawn point to become `active` again. */
 export const MIN_RECOVERY_POPULATION = 2
+/** Game-days between successful spawns while a `depleted` habitat still has at
+ *  least one bound survivor (plan fauna-047). */
+export const DEPLETED_NATURAL_RECOVERY_DAYS = 3
+/** Game-days before the first colonizer when a `depleted` habitat has no bound
+ *  survivors left (plan fauna-047 — deterministic V1 within 5–7 days). */
+export const DEPLETED_RECOLONIZATION_DAYS = 6
 
 /** Branches consumed by `[E] Zniszcz` on a `depleted` spawn point (plan 125 §6 /
  *  plan 137 — spent on channel complete, not on keypress). */
@@ -101,6 +108,11 @@ export type PreySpawner = {
   /** Last `elapsedDays` when a settlement-directed trip opportunity was
    *  consumed for this den, or `null` before the first trip. */
   lastSettlementTripOpportunityDay: number | null
+  /** Accumulated eligible game-days toward natural recovery while `depleted`
+   *  (plan fauna-047). Persisted — multi-day ecological progress must survive
+   *  save/load. Reset when the habitat returns to `active` or enters the
+   *  player-destroyed (`disabled`) lifecycle. */
+  depletedRecoveryDays: number
 }
 
 /** Animals of the spawner's `kind` within this radius count toward the
@@ -208,6 +220,77 @@ export function updateSpawners(
   }
 }
 
+/** Interval until the next natural recovery spawn at the current bound count. */
+export function depletedRecoveryIntervalDays(boundCount: number): number {
+  return boundCount === 0 ? DEPLETED_RECOLONIZATION_DAYS : DEPLETED_NATURAL_RECOVERY_DAYS
+}
+
+/** Whether this spawner may use bound-occupancy natural recovery while
+ *  `depleted` (plan fauna-047). Excludes destroyed-habitat states, one-shot
+ *  dens, `canRecover: false`, and habitats whose ordinary capacity cannot
+ *  ever reach `MIN_RECOVERY_POPULATION`. */
+export function canUseDepletedNaturalRecovery(
+  spawner: PreySpawner,
+  reservedPersistentSlots?: ReadonlyMap<string, number>,
+): boolean {
+  if (spawner.state !== 'depleted') return false
+  if (spawner.canRecover === false) return false
+  const respawnIntervalDays = effectiveRespawnIntervalDays(spawner)
+  if (!Number.isFinite(respawnIntervalDays) || respawnIntervalDays <= 0) return false
+  const cap = ordinaryHabitatCapacity(
+    effectiveMaxPreyCount(spawner),
+    reservedPersistentSlots?.get(spawner.id) ?? 0,
+  )
+  return cap >= MIN_RECOVERY_POPULATION
+}
+
+/**
+ * Ticks natural population recovery for intact `depleted` habitats in
+ * **game-days** (plan fauna-047). Uses bound `spawnPointId` occupancy —
+ * not the nearby-radius check used by `tickSpawnPointRecovery`. A large
+ * `dayDelta` may materialize more than once up to `MIN_RECOVERY_POPULATION`
+ * and ordinary capacity. Failed materialization retains accumulated time and
+ * ends this spawner's pass for the frame. At `MIN_RECOVERY_POPULATION`,
+ * transitions to `active` and resets cycle counters.
+ *
+ * @domain fauna
+ */
+export function updateDepletedSpawnerRecovery(
+  spawners: PreySpawner[],
+  dayDelta: number,
+  boundLiveAnimalsOrCount: readonly SpawnerBoundLiveAnimal[] | SpawnerBoundCount,
+  onRespawn: (spawner: PreySpawner) => boolean,
+  reservedPersistentSlots?: ReadonlyMap<string, number>,
+): void {
+  if (dayDelta <= 0) return
+  const getBoundCount: SpawnerBoundCount = typeof boundLiveAnimalsOrCount === 'function'
+    ? boundLiveAnimalsOrCount
+    : (spawner) => countBoundForSpawner(spawner, boundLiveAnimalsOrCount)
+  for (const spawner of spawners) {
+    if (!canUseDepletedNaturalRecovery(spawner, reservedPersistentSlots)) continue
+    spawner.depletedRecoveryDays += dayDelta
+    const cap = ordinaryHabitatCapacity(
+      effectiveMaxPreyCount(spawner),
+      reservedPersistentSlots?.get(spawner.id) ?? 0,
+    )
+    let bound = getBoundCount(spawner)
+    while (bound < MIN_RECOVERY_POPULATION && bound < cap) {
+      const interval = depletedRecoveryIntervalDays(bound)
+      if (spawner.depletedRecoveryDays < interval) break
+      if (!onRespawn(spawner)) break
+      spawner.depletedRecoveryDays -= interval
+      bound++
+      if (bound >= MIN_RECOVERY_POPULATION) {
+        spawner.state = 'active'
+        spawner.deathsThisCycle = 0
+        spawner.depletedRecoveryDays = 0
+        spawner.daysSinceLastRespawn = 0
+        break
+      }
+    }
+  }
+}
+
 /**
  * Low-frequency (call at most once per in-game day, see `createFauna.ts`)
  * recovery check for one `disabled`/`recovering` spawn point (plan 125 §8):
@@ -234,6 +317,7 @@ export function tickSpawnPointRecovery(
   spawner.state = 'active'
   spawner.deathsThisCycle = 0
   spawner.disabledAtDay = null
+  spawner.depletedRecoveryDays = 0
 }
 
 /** Minimal spawn-point lifecycle fields that need to survive a save/reload
@@ -249,6 +333,8 @@ export type SavedSpawnPointState = {
   humanTaste?: boolean
   canRecover?: boolean
   lastSettlementTripOpportunityDay?: number | null
+  /** Partial natural-recovery progress while `depleted` (plan fauna-047). */
+  depletedRecoveryDays?: number
 }
 
 /** Pure snapshot for `SaveData` — pairs with `restoreSpawnPointState`. */
@@ -261,6 +347,7 @@ export function snapshotSpawnPointState(spawner: PreySpawner): SavedSpawnPointSt
     humanTaste: spawner.humanTaste,
     canRecover: spawner.canRecover,
     lastSettlementTripOpportunityDay: spawner.lastSettlementTripOpportunityDay,
+    depletedRecoveryDays: spawner.depletedRecoveryDays,
   }
 }
 
@@ -279,6 +366,7 @@ export function restoreSpawnPointState(spawner: PreySpawner, saved: SavedSpawnPo
   if (saved.lastSettlementTripOpportunityDay !== undefined) {
     spawner.lastSettlementTripOpportunityDay = saved.lastSettlementTripOpportunityDay
   }
+  spawner.depletedRecoveryDays = saved.depletedRecoveryDays ?? 0
 }
 
 /** Default scenario fields for a freshly constructed habitat spawner. */
