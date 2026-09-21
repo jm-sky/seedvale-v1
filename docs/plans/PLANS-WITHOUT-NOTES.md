@@ -1,11 +1,10 @@
 # PLANS PLANNED WITHOUT NOTES
 
 > Generated with `pnpm plans:without-notes`  
-> Date: 2026-09-21 10:54:22  
+> Date: 2026-09-21 10:55:27  
 
 ## PLANS
 
-- `items-player-060-ranged-weapon-inventory-trade-and-use-integrity.md`
 - `npc-062-ubc-runtime-material-darkness-and-authored-outfit-preservation.md`
 - `quests-progression-044-lost-treasure-chronicles-final-treasure-claims-and-resolution.md`
 - `quests-progression-045-lost-treasure-chronicles-property-grant-deed-and-persistent-land-reward.md`
@@ -26,37 +25,6 @@
 
 --------------------------------
 ## PROMPTS
-
-### `items-player-060-ranged-weapon-inventory-trade-and-use-integrity.md`
-
-Prompt:
-
-```
-Zrób review planu `items-player-060-ranged-weapon-inventory-trade-and-use-integrity.md`
-
-Wczytaj:
-- `docs/STATE.md`
-- `docs/plans/PLANNING.md` (Implementation Notes section),
-- `docs/plans/items-player-060-ranged-weapon-inventory-trade-and-use-integrity.md`
-- aktualny codebase,
-- potrzebne zależności i powiązane implementacje.
-
-Na podstawie review utwórz w repo plik:
-`docs/plans/implementation-notes/items-player-060-ranged-weapon-inventory-trade-and-use-integrity-implementation-notes.md`
-
-Umieść w nim:
-- sugestie dotyczące implementacji,
-- istotne detale techniczne,
-- decyzje architektoniczne,
-- informacje o istniejących systemach i implementacjach, które należy wykorzystać,
-- potencjalne problemy, zależności i pułapki,
-- inne konkretne wskazówki, które ułatwią agentowi AI poprawną implementację planu.
-
-Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
-Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
-
-Pliki dodaj na branch `main` w repozytorium.
-```
 
 ### `npc-062-ubc-runtime-material-darkness-and-authored-outfit-preservation.md`
 
