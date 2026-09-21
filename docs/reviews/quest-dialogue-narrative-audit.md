@@ -59,12 +59,14 @@ The labels below are the initial triage from the 2026-09-21 audit. They are not 
 
 ## Batch C — professions
 
+**Completed:** 2026-09-21 — approved dialogue/narrative pass on `main`; mechanics and rewards unchanged.
+
 | Status | Quest | Source | Initial label | Main issue |
 |---|---|---|---|---|
-| ⬜ | Pierwsze trofea | src/quests/opportunities/hunterProfessionQuests.ts | **polish** | Reads partly like tutorial/checklist dialogue. |
-| ⬜ | Poroża jeleni | src/quests/opportunities/hunterProfessionQuests.ts | **rewrite** | Awkward tone; "bez pracy nie ma pysznego mięsa" is especially weak. |
-| ⬜ | Pomoc przy zagajniku | src/quests/opportunities/hunterProfessionQuests.ts | **polish** | Solid systemic premise; improve hunter voice and naturalness. |
-| ⬜ | Światła na noc | src/quests/opportunities/guardProfessionQuests.ts | **polish** | Grounded premise, but dialogue can carry more guard-specific voice. |
+| ✅ | Pierwsze trofea | src/quests/opportunities/hunterProfessionQuests.ts | **polish** | Reads partly like tutorial/checklist dialogue. |
+| ✅ | Poroża jeleni | src/quests/opportunities/hunterProfessionQuests.ts | **rewrite** | Awkward tone; "bez pracy nie ma pysznego mięsa" is especially weak. |
+| ✅ | Pomoc przy zagajniku | src/quests/opportunities/hunterProfessionQuests.ts | **polish** | Solid systemic premise; improve hunter voice and naturalness. |
+| ✅ | Światła na noc | src/quests/opportunities/guardProfessionQuests.ts | **polish** | Grounded premise, but dialogue can carry more guard-specific voice. |
 
 ---
 
