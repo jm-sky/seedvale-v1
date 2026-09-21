@@ -227,9 +227,10 @@ type MinimapDrawer = (playerPos: Vector3, settlements: readonly MinimapSettlemen
 let registeredDrawer: MinimapDrawer | null = null
 let lastPlayerX = 0
 let lastPlayerZ = 0
+let lastPlayerYaw = 0
 
-export function lastMinimapPlayer(): { x: number, z: number } {
-  return { x: lastPlayerX, z: lastPlayerZ }
+export function lastMinimapPlayer(): { x: number, z: number, yaw: number } {
+  return { x: lastPlayerX, z: lastPlayerZ, yaw: lastPlayerYaw }
 }
 
 /** MinimapScreen registers an imperative drawer so gameLoop can paint without
@@ -245,5 +246,6 @@ export function updateRegisteredMinimap(
 ): void {
   lastPlayerX = playerPos.x
   lastPlayerZ = playerPos.z
+  lastPlayerYaw = yaw
   registeredDrawer?.(playerPos, settlements, yaw)
 }

@@ -57,8 +57,6 @@
    🟡 `S` · 🔒 blocked · unlocks 0/0
 4. `ui-input-037` — **Quest log ready-to-report sections**  
    🟡 `S` · ✅ ready · unlocks 0/0
-5. `ui-input-033` — **World map player heading arrow**  
-   🟡 `S` · ✅ ready · unlocks 0/0
 
 ---
 
@@ -335,27 +333,23 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-62. `ui-input-033` — **World map player heading arrow**  
+62. `world-038` — **WorldAudio async lifecycle and cache recovery**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-63. `world-038` — **WorldAudio async lifecycle and cache recovery**  
-  🟡 `S` · **Score:**  19  
-   → **unlocks:** 0/0
-
-64. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
+63. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
   🟡 `L` · **Score:**  18  
    → **unlocks:** 0/0
 
-65. `items-player-052` — **Settlement tool ownership and social acquisition**  
+64. `items-player-052` — **Settlement tool ownership and social acquisition**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-66. `items-player-058` — **Campfire decomposition and ash residue**  
+65. `items-player-058` — **Campfire decomposition and ash residue**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-67. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
+66. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 

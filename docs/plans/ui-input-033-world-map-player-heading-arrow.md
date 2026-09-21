@@ -1,7 +1,7 @@
 # Plan: World map player heading arrow
 
 **Created:** 2026-09-21
-**Status:** `planned` 📋
+**Status:** `verification needed` 🔍 (implemented 2026-09-21 — browser checks are user-owned)
 **Model:** Sonnet, Composer
 **Priority:** medium · **Effort:** S
 **Depends on:** none

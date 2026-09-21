@@ -642,7 +642,7 @@ type WorldInspectionState = {
   onOpen: (() => void) | null
   onClose: (() => void) | null
 }
-type WorldMapState = { open: boolean; playerX: number; playerZ: number }
+type WorldMapState = { open: boolean; playerX: number; playerZ: number; playerYaw: number }
 type StatBar = { current: number, max: number }
 /** Character screen (plan 105 §"Character Screen") — presentation-only
  *  mirror of `HealthState` + `PlayerNeeds`, pushed once/frame from
@@ -898,7 +898,7 @@ export const ui = reactive({
     onOpen: null,
     onClose: null,
   } as WorldInspectionState,
-  worldMap: { open: false, playerX: 0, playerZ: 0 } as WorldMapState,
+  worldMap: { open: false, playerX: 0, playerZ: 0, playerYaw: 0 } as WorldMapState,
   characterScreen: {
     open: false,
     hp: { current: 100, max: 100 },
@@ -1985,17 +1985,18 @@ export function isWorldInspectionOpen(): boolean {
   return ui.worldInspection.open
 }
 
-export function openWorldMap(playerX: number, playerZ: number): void {
+export function openWorldMap(playerX: number, playerZ: number, playerYaw: number): void {
   if (document.pointerLockElement) document.exitPointerLock()
   ui.worldMap.playerX = playerX
   ui.worldMap.playerZ = playerZ
+  ui.worldMap.playerYaw = playerYaw
   ui.worldMap.open = true
 }
 export function closeWorldMap(): void { ui.worldMap.open = false }
 export function isWorldMapOpen(): boolean { return ui.worldMap.open }
-export function toggleWorldMap(playerX: number, playerZ: number): void {
+export function toggleWorldMap(playerX: number, playerZ: number, playerYaw: number): void {
   if (ui.worldMap.open) closeWorldMap()
-  else openWorldMap(playerX, playerZ)
+  else openWorldMap(playerX, playerZ, playerYaw)
 }
 
 export function openCharacterScreen(): void { ui.characterScreen.open = true; emitUiOpen() }

@@ -3409,7 +3409,7 @@ export async function createApp(
     onInventory: openInventory,
     onCharacter: openCharacter,
     onWorldMap: () => {
-      vueUi.openWorldMap(player.mesh.position.x, player.mesh.position.z)
+      vueUi.openWorldMap(player.mesh.position.x, player.mesh.position.z, mouseLook.state.yaw)
     },
     onToggleGui: () => {
       const visible = gui.toggle()

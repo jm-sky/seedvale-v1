@@ -78,6 +78,10 @@ Generated from TypeScript imports.
 - `world/map/mapProjection.ts`
 - `world/map/mapTypes.ts`
 
+**Imported by**
+
+- `ui-vue/lib/worldMapPlayerHeading.test.ts`
+
 ## `ui-vue/lib/drawMinimap.ts`
 
 **Imports**
@@ -171,6 +175,12 @@ Generated from TypeScript imports.
 **Imports**
 
 - `world/locations/worldLocationTypes.ts`
+
+## `ui-vue/lib/worldMapPlayerHeading.test.ts`
+
+**Imports**
+
+- `ui-vue/lib/drawMap.ts`
 
 ## `ui-vue/mount.ts`
 

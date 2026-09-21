@@ -2439,7 +2439,7 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
       if (keyboard.consumeCombatMode()) toggleCombatMode()
       if (keyboard.consumeQuickActions()) quickActions.toggle()
       if (keyboard.consumeMinimap()) {
-        vueUi.toggleWorldMap(player.mesh.position.x, player.mesh.position.z)
+        vueUi.toggleWorldMap(player.mesh.position.x, player.mesh.position.z, mouseLook.state.yaw)
       }
       if (keyboard.consumeJump()) player.jump()
       if (keyboard.consumeDrop()) {

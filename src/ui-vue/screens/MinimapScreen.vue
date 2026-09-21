@@ -100,8 +100,8 @@ function onCanvasClick(): void {
     pinched = false
     return
   }
-  const { x, z } = lastMinimapPlayer()
-  openWorldMap(x, z)
+  const { x, z, yaw } = lastMinimapPlayer()
+  openWorldMap(x, z, yaw)
 }
 
 onMounted(() => {

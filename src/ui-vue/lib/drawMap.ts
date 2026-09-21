@@ -77,6 +77,16 @@ export function lodStepFor(view: WorldMapView, width: number, _height: number): 
   return Math.max(1, Math.ceil(cellsAcross / MAP_WORLD_MAX_CELLS_PER_AXIS))
 }
 
+/**
+ * Unit look direction on the north-up world map canvas from `MouseLook` yaw.
+ * Canvas +Y follows world +Z; yaw `0` points north (canvas up).
+ *
+ * @domain ui-input
+ */
+export function worldMapPlayerLookDirection(yaw: number): { dirX: number, dirY: number } {
+  return { dirX: -Math.sin(yaw), dirY: -Math.cos(yaw) }
+}
+
 function drawUnavailable(ctx: CanvasRenderingContext2D, width: number, height: number): void {
   ctx.fillStyle = MAP_UNAVAILABLE_FILL
   ctx.fillRect(0, 0, width, height)
@@ -91,6 +101,7 @@ export function drawWorldMapFrame(
   view: WorldMapView,
   playerX: number,
   playerZ: number,
+  playerYaw: number,
 ): void {
   drawUnavailable(ctx, width, height)
 
@@ -166,11 +177,14 @@ export function drawWorldMapFrame(
   }
 
   const player = worldToCanvas(playerX, playerZ, view, width, height)
+  const { dirX, dirY } = worldMapPlayerLookDirection(playerYaw)
+  const perpX = -dirY
+  const perpY = dirX
   ctx.fillStyle = '#f2f6fa'
   ctx.beginPath()
-  ctx.moveTo(player.x, player.y - 7)
-  ctx.lineTo(player.x + 5, player.y + 5)
-  ctx.lineTo(player.x - 5, player.y + 5)
+  ctx.moveTo(player.x + dirX * 7, player.y + dirY * 7)
+  ctx.lineTo(player.x - dirX * 7 + perpX * 5, player.y - dirY * 7 + perpY * 5)
+  ctx.lineTo(player.x - dirX * 7 - perpX * 5, player.y - dirY * 7 - perpY * 5)
   ctx.closePath()
   ctx.fill()
 
