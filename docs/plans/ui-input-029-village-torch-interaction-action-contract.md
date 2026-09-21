@@ -6,7 +6,8 @@
 **Depends on:** ~~ui-input-015~~  
 **Domain:** `ui-input`  
 **Type:** `fix`  
-**Roadmap:** -
+**Roadmap:** -  
+**Model:** Sonnet, Composer
 
 ## Problem
 
