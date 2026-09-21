@@ -1128,6 +1128,7 @@ Generated from TypeScript imports.
 - `terrain/footstepSurface.ts`
 - `terrain/mineableRocks.ts`
 - `terrain/renewableWorldItems.ts`
+- `ui-vue/lib/questTerminalFeedback.ts`
 - `ui-vue/mount.ts`
 - `ui-vue/store.ts`
 - `ui/createBusyOverlay.ts`

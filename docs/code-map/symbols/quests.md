@@ -518,20 +518,20 @@ Generated from exported TypeScript symbols.
 
 ## `quests/QuestManager.ts`
 
-- `AnimalTargetResolver` — type — line 321
-- `AnimalTreatmentQuestContext` — type — line 265
+- `AnimalTargetResolver` — type — line 337
+- `AnimalTreatmentQuestContext` — type — line 281
   - domain: quests-progression
-- `ApplySocialConsequence` — type — line 333
-- `DangerousTraitApplier` — type — line 326
-- `HabitatAnimalFeedContext` — type — line 274
-- `HorseRewardAvailability` — type — line 297
-- `ObjectiveRef` — type — line 302
-- `PlayerAnimalHarvestContext` — type — line 248
+- `ApplySocialConsequence` — type — line 349
+- `DangerousTraitApplier` — type — line 342
+- `HabitatAnimalFeedContext` — type — line 290
+- `HorseRewardAvailability` — type — line 313
+- `ObjectiveRef` — type — line 318
+- `PlayerAnimalHarvestContext` — type — line 264
 - `QUEST_MARKER_AVAILABLE` — const — line 86
 - `QUEST_MARKER_IN_PROGRESS` — const — line 87
 - `QUEST_MARKER_READY` — const — line 88
 - `QUEST_MARKER_TALK_TARGET` — const — line 89
-- `QuestAnimalOwnershipTransfer` — type — line 293
+- `QuestAnimalOwnershipTransfer` — type — line 309
 - `QuestDialogAction` — type — line 91
 - `QuestDialogOverride` — type — line 128
   - domain: quests-progression
@@ -540,30 +540,32 @@ Generated from exported TypeScript symbols.
   - domain: quests-progression
 - `QuestDialoguePreviewKind` — type — line 158
   - domain: quests-progression
-- `QuestItemGrant` — type — line 289
-- `QuestJournalNote` — type — line 188
-- `QuestLifecycleHooks` — type — line 415
-- `QuestListEntry` — type — line 195
-- `QuestManager` — class — line 612
+- `QuestItemGrant` — type — line 305
+- `QuestJournalNote` — type — line 204
+- `QuestLifecycleHooks` — type — line 431
+- `QuestListEntry` — type — line 211
+- `QuestManager` — class — line 637
   - domain: quests-progression
   - system: quest-manager
   - role: Owns quest progress, objective/stage evaluation and NPC relation levels.
   - owns: QuestProgressEntry
   - integration: Bound to world entities (fauna, wells, spawners) via injected resolvers, never by importing them directly. World-driven opportunities use a read-only source lookup; QuestManager owns quest progress only.
-- `QuestManagerInitial` — type — line 218
-- `QuestPhysicalOutcomeContext` — type — line 388
-- `QuestPhysicalOutcomeResolver` — type — line 394
+- `QuestManagerInitial` — type — line 234
+- `QuestPhysicalOutcomeContext` — type — line 404
+- `QuestPhysicalOutcomeResolver` — type — line 410
 - `QuestPromisedReward` — type — line 182
-- `QuestSocialAvailabilityLookup` — type — line 338
-- `QuestVoiceIntent` — type — line 410
+- `QuestSocialAvailabilityLookup` — type — line 354
+- `QuestTerminalPresentation` — type — line 193
   - domain: quests-progression
-- `QuestWorldKnowledgeDescribeContext` — type — line 485
+- `QuestVoiceIntent` — type — line 426
   - domain: quests-progression
-- `QuestWorldKnowledgeResolver` — type — line 489
-- `QuestWorldProgressLookup` — type — line 372
-- `QuestWorldTimeLookup` — type — line 344
-- `SettlementRatInfestationLookup` — type — line 352
-- `SpawnPointDestructionLookup` — type — line 362
+- `QuestWorldKnowledgeDescribeContext` — type — line 510
+  - domain: quests-progression
+- `QuestWorldKnowledgeResolver` — type — line 514
+- `QuestWorldProgressLookup` — type — line 388
+- `QuestWorldTimeLookup` — type — line 360
+- `SettlementRatInfestationLookup` — type — line 368
+- `SpawnPointDestructionLookup` — type — line 378
 
 ## `quests/quests.ts`
 

@@ -1,7 +1,7 @@
 # Plan: Quest terminal outcome feedback and Old Bones finale clarity
 
 **Created:** 2026-09-21
-**Status:** `planned` 📋
+**Status:** `verification needed` 🔍
 **Type:** fix
 **Priority:** high · **Effort:** M
 **Depends on:** ~~quests-progression-002~~, ~~quests-progression-021~~, ~~quests-progression-051~~

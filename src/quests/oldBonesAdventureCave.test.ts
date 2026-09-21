@@ -1,9 +1,11 @@
 import { Scene } from 'three'
 import { describe, expect, it } from 'vitest'
+import type { SocialConsequence } from '../reputation/ReputationManager'
 import type { CaveContentAnchor } from '../world/caves/caveContentAnchors'
 import type { SettlementOpportunityNpc } from './opportunities/settlementNpcMaterialization'
 import { caveTreasureContainerSpecs } from '../app/worldBundle'
 import { Inventory } from '../items/Inventory'
+import { transferInventoryInstance } from '../items/inventoryTransfer'
 import { settlementNpcId } from '../settlement/npcIdentity'
 import { resolveCaveAdventureContentPolicy } from '../world/caves/caveAdventureContentPolicy'
 import { createWorldGeneratedContainers } from '../world/worldGeneratedContainers'
@@ -328,6 +330,22 @@ describe('old bones socially consequential dialogue (plan quests-progression-052
   ) {
     const def = buildOldBonesAdventureCaveQuest(binding, npcList, 'Osada', 'głęboka jaskinia na północ od osady')
     const inventory = new Inventory({}, Infinity, [createOldBonesSignetInstance(binding.caveId)])
+    const npcInventories = new Map<string, Inventory>([
+      [binding.claimantANpcId, new Inventory({}, Infinity)],
+      ...('claimantBNpcId' in binding && binding.claimantBNpcId
+        ? [[binding.claimantBNpcId, new Inventory({}, Infinity)] as const]
+        : []),
+    ])
+    const social: SocialConsequence[] = []
+    const signetId = binding.signetInstanceId
+    const recipientFor = (outcomeId: string): string | null => {
+      if (outcomeId === OLD_BONES_RETURN_TO_FIRST_CLAIMANT_OUTCOME) return binding.claimantANpcId
+      if (
+        outcomeId === OLD_BONES_GIVE_TO_SECOND_CLAIMANT_OUTCOME
+        && 'claimantBNpcId' in binding
+      ) return binding.claimantBNpcId ?? null
+      return null
+    }
     const qm = new QuestManager(
       [def],
       undefined,
@@ -339,6 +357,7 @@ describe('old bones socially consequential dialogue (plan quests-progression-052
       undefined,
       undefined,
       undefined,
+      (consequence) => social.push(consequence),
       undefined,
       undefined,
       undefined,
@@ -349,10 +368,25 @@ describe('old bones socially consequential dialogue (plan quests-progression-052
       undefined,
       undefined,
       undefined,
-      undefined,
-      { canResolve: () => true, onResolve: () => {} },
+      {
+        canResolve: (_questId, outcomeId, context) => {
+          if (context.requireItemInstanceId !== signetId) return false
+          const instance = inventory.getInstance(signetId)
+          if (!instance) return false
+          if (outcomeId === OLD_BONES_KEEP_SIGNET_OUTCOME) return true
+          const npcId = recipientFor(outcomeId)
+          const dest = npcId ? npcInventories.get(npcId) : undefined
+          return dest?.canAddInstance(instance) === true
+        },
+        onResolve: (_questId, outcomeId) => {
+          const npcId = recipientFor(outcomeId)
+          const dest = npcId ? npcInventories.get(npcId) : undefined
+          if (!dest) return
+          transferInventoryInstance(inventory, dest, signetId)
+        },
+      },
     )
-    return { def, qm }
+    return { def, qm, inventory, npcInventories, social }
   }
 
   it('keeps A/B/keep outcomes, exact signet gate and claimant-B-absent materialization', () => {
@@ -382,36 +416,63 @@ describe('old bones socially consequential dialogue (plan quests-progression-052
   it('selects claimant replies from live relation without blocking outcomes', () => {
     const giveA = terminalManager(withBBinding, {}, npcs)
     expect(giveA.qm.onInteract('home:npc:0')?.actions?.[0]?.onSelect())
-      .toBe('Dziękuję. Chociaż tyle z tamtej historii wraca.')
+      .toBe('Przyjmuję sygnet. Ta historia na tym się kończy. Dziękuję.')
     expect(giveA.qm.getRelation('home:npc:0')).toBe(3)
+    expect(giveA.qm.getState(withBBinding.questId)).toBe('complete')
+    expect(giveA.inventory.getInstance(withBBinding.signetInstanceId)).toBeNull()
+    expect(giveA.npcInventories.get('home:npc:0')?.getInstance(withBBinding.signetInstanceId)?.kind)
+      .toBe('signet_ring')
+    expect(giveA.qm.list().find((entry) => entry.id === withBBinding.questId)?.resultText)
+      .toBe('Sygnet wrócił do pierwszego spadkobiercy.')
 
     const giveAWarm = terminalManager(withBBinding, { 'home:npc:0': 3 }, npcs)
     expect(giveAWarm.qm.onInteract('home:npc:0')?.actions?.[0]?.onSelect())
-      .toBe('Wiedziałem, że go nie zatrzymasz. Dziękuję.')
+      .toBe('Wiedziałem, że go nie zatrzymasz. Sygnet wraca do mnie. Na tym kończymy.')
     expect(giveAWarm.qm.getRelation('home:npc:0')).toBe(7)
 
     const giveB = terminalManager(withBBinding, { 'home:npc:0': 3 }, npcs)
     expect(giveB.qm.onInteract('home:npc:1')?.actions?.[0]?.onSelect())
-      .toBe('Wiedziałem, że mógłbyś stanąć po jego stronie. Tym bardziej dziękuję, że sygnet trafił do mnie.')
+      .toBe('Wiedziałem, że mógłbyś stanąć po jego stronie. Sygnet jest u mnie. Na tym kończymy.')
     expect(giveB.qm.getRelation('home:npc:0')).toBe(1)
+    expect(giveB.qm.getRelation('home:npc:1')).toBe(2)
     expect(giveB.qm.exportProgress()[0]?.resolvedOutcomeId).toBe(OLD_BONES_GIVE_TO_SECOND_CLAIMANT_OUTCOME)
+    expect(giveB.inventory.getInstance(withBBinding.signetInstanceId)).toBeNull()
+    expect(giveB.npcInventories.get('home:npc:1')?.getInstance(withBBinding.signetInstanceId)?.kind)
+      .toBe('signet_ring')
+    expect(giveB.npcInventories.get('home:npc:0')?.getInstance(withBBinding.signetInstanceId)).toBeNull()
+    expect(giveB.social).toEqual([{
+      settlementId: 'home',
+      reputation: { trust: 1, benevolence: 2, integrity: 1 },
+      renown: 2,
+    }])
+    expect(giveB.qm.onInteract('home:npc:1')).toBeNull()
+    expect(giveB.social).toHaveLength(1)
+
+    const giveBDefault = terminalManager(withBBinding, {}, npcs)
+    expect(giveBDefault.qm.onInteract('home:npc:1')?.actions?.[0]?.onSelect())
+      .toBe('Przyjmuję ten sygnet. Spór jest zamknięty. Dziękuję, że mnie wysłuchałeś.')
+    expect(giveBDefault.qm.list().find((entry) => entry.id === withBBinding.questId)?.resultText)
+      .toBe('Sygnet trafił do drugiego spadkobiercy.')
 
     const keep = terminalManager(withoutBBinding, {}, [
       npc('home:npc:0', 'farmer', false, 'f0', 0),
       npc('home:npc:1', 'hunter', false, 'f1', 1),
     ])
     expect(keep.qm.onInteract('home:npc:0')?.actions?.[1]?.onSelect())
-      .toBe('Przynosisz nam historię, a pamiątkę bierzesz ze sobą. Rozumiem.')
+      .toBe('Przynosisz nam historię, a sygnet zabierasz ze sobą. Rozumiem. Na tym kończymy.')
     expect(keep.qm.getRelation('home:npc:0')).toBe(-1)
+    expect(keep.inventory.getInstance(withoutBBinding.signetInstanceId)?.kind).toBe('signet_ring')
+    expect(keep.qm.list().find((entry) => entry.id === withoutBBinding.questId)?.resultText)
+      .toBe('Szczątki zostały rozpoznane, ale sygnet został przy tobie.')
   })
 
   it('journals the trusted keep-signet reaction line once', () => {
     const { qm } = terminalManager(withBBinding, { 'home:npc:0': 6 }, npcs)
     expect(qm.onInteract('home:npc:0')?.actions?.[1]?.onSelect())
-      .toBe('Tobie mówiłem o tym jak komuś swojemu. A sygnet zabierasz ze sobą.')
+      .toBe('Tobie mówiłem o tym jak komuś swojemu. Sygnet zabierasz ze sobą. Niech tak zostanie.')
     expect(qm.getRelation('home:npc:0')).toBe(3)
     expect(qm.list().find((entry) => entry.id === withBBinding.questId)?.notes.map((note) => note.text))
-      .toContain('Tobie mówiłem o tym jak komuś swojemu. A sygnet zabierasz ze sobą.')
+      .toContain('Tobie mówiłem o tym jak komuś swojemu. Sygnet zabierasz ze sobą. Niech tak zostanie.')
     expect(qm.exportProgress()[0]?.journal?.some((event) => event.dialogueReactionIndex === 0)).toBe(true)
     expect(qm.exportProgress()[0]?.resolvedOutcomeId).toBe(OLD_BONES_KEEP_SIGNET_OUTCOME)
   })

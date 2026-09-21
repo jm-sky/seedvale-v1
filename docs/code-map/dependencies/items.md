@@ -854,6 +854,7 @@ Generated from TypeScript imports.
 - `items/inventoryTransfer.test.ts`
 - `items/trade.ts`
 - `quests/lostTreasureChronicleDeciphering.test.ts`
+- `quests/oldBonesAdventureCave.test.ts`
 - `settlement/artisanOrders.ts`
 - `settlement/npcPostDeath.ts`
 - `world/expeditionProvisioning.ts`
@@ -1336,6 +1337,7 @@ Generated from TypeScript imports.
 - `tools/assetBrowser/viewer/mountHeldPreview.ts`
 - `ui-vue/composables/useItemCategoryLabels.ts`
 - `ui-vue/composables/useMerchantTradeState.ts`
+- `ui-vue/lib/questTerminalFeedback.ts`
 - `ui-vue/npcDialogueTrade.test.ts`
 - `ui-vue/playerQuickActions.ts`
 - `ui-vue/store.ts`

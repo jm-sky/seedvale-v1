@@ -14,7 +14,7 @@ import { ui } from '../store'
     <div
       v-for="item in ui.toast.items"
       :key="item.id"
-      class="rounded-lg bg-[rgba(20,24,28,0.85)] px-4 py-2 font-sans text-[13px] whitespace-nowrap text-ink shadow-[0_8px_24px_rgba(0,0,0,0.35)] transition-opacity duration-300 ease-in-out"
+      class="max-w-[min(92vw,22rem)] whitespace-pre-line rounded-lg bg-[rgba(20,24,28,0.85)] px-4 py-2 text-center font-sans text-[13px] text-ink shadow-[0_8px_24px_rgba(0,0,0,0.35)] transition-opacity duration-300 ease-in-out"
       :class="{
         'opacity-0': item.fading,
         'opacity-100': !item.fading,

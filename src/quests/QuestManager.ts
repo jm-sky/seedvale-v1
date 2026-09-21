@@ -183,6 +183,22 @@ export type QuestPromisedReward = {
   items: ReadonlyArray<{ kind: ItemKind, count: number }>
 }
 
+/**
+ * Player-facing summary of a newly committed `complete` / `failed` outcome.
+ * Built inside `applyOutcome()` from the resolved `QuestOutcome`; UI must not
+ * look up `QuestDef` or reconstruct hidden rewards.
+ *
+ * @domain quests-progression
+ */
+export type QuestTerminalPresentation = {
+  title: string
+  state: 'complete' | 'failed'
+  /** Same copy `list().resultText` uses (`resultPresentation()`). */
+  resultText: string
+  /** Present only when the outcome reward is `visibility: 'shown'`. */
+  shownReward?: QuestPromisedReward
+}
+
 /** One heard-line card in the Quest Log details (plan ui-input-021).
  *  Vue renders these fields only — it does not interpret quest ids. */
 export type QuestJournalNote = {
@@ -474,6 +490,15 @@ export type QuestLifecycleHooks = {
    * condition; `QuestManager` never imports the settlement registry.
    */
   isAuthoredRepairTargetIntact?: (questId: string) => boolean
+  /**
+   * Fired once after `applyOutcome()` actually commits a new `complete` or
+   * `failed` outcome (plan quests-progression-076). Restore/hydration and
+   * stale second resolves must not call this. The payload is already
+   * presentation-ready — composition root forwards it to the shared toast.
+   *
+   * @domain quests-progression
+   */
+  onTerminalOutcome?: (presentation: QuestTerminalPresentation) => void
 }
 
 /**
@@ -1996,9 +2021,10 @@ export class QuestManager {
     return this.applyOutcome(def, outcomeId) !== null
   }
 
-  /** Applies `outcomeId` exactly once: terminal state, reward, consequences.
-   *  Presentation (spoken line / complete sound) is the caller's job except
-   *  the existing successful-turn-in thank-you clip.
+  /** Applies `outcomeId` exactly once: terminal state, reward, consequences,
+   *  then a one-shot `onTerminalOutcome` presentation for `complete`/`failed`.
+   *  Spoken NPC lines stay on the dialogue caller; the complete-sound clip
+   *  remains the existing voice hook.
    *
    *  `automatic: true` marks a world-driven resolution with no real player↔NPC
    *  interaction (e.g. `pollWorldDrivenSources()`, an unrecoverable lost
@@ -2041,7 +2067,29 @@ export class QuestManager {
     }
     this.applyConsequences(def, outcome.consequences)
     if (outcome.state === 'complete') this.playQuestCompleteSound(def.giver.npcId)
+    this.emitTerminalOutcome(def, outcome)
     return outcome
+  }
+
+  /**
+   * Shared complete/failed toast payload after the outcome has committed.
+   * Abandoned / invalidated never emit here.
+   *
+   * @domain quests-progression
+   */
+  private emitTerminalOutcome(def: QuestDef, outcome: QuestOutcome): void {
+    if (outcome.state !== 'complete' && outcome.state !== 'failed') return
+    const progress = this.stateOf(def.id)
+    const stage = this.currentStage(def, progress.stageIndex)
+    const shown = outcome.reward?.visibility === 'shown'
+      ? { items: outcome.reward.items ?? [] }
+      : undefined
+    this.lifecycleHooks.onTerminalOutcome?.({
+      title: def.title,
+      state: outcome.state,
+      resultText: resultPresentation(def, progress, outcome, stage) ?? '',
+      ...(shown ? { shownReward: shown } : {}),
+    })
   }
 
   /** Relation/social deltas only — no reward, sound, or terminal state. */

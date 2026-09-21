@@ -65,6 +65,8 @@ Generated from TypeScript imports.
 - `quests/worldKnowledgeResolver.ts`
 - `ui-vue/lib/questLogBuckets.test.ts`
 - `ui-vue/lib/questLogBuckets.ts`
+- `ui-vue/lib/questTerminalFeedback.test.ts`
+- `ui-vue/lib/questTerminalFeedback.ts`
 - `ui-vue/npcDialogueOpen.test.ts`
 - `ui-vue/npcDialogueTrade.test.ts`
 - `ui-vue/npcDialogueVoice.test.ts`
@@ -592,10 +594,12 @@ Generated from TypeScript imports.
 
 - `app/worldBundle.ts`
 - `items/Inventory.ts`
+- `items/inventoryTransfer.ts`
 - `quests/QuestManager.ts`
 - `quests/oldBonesAdventureCave.ts`
 - `quests/opportunities/settlementNpcMaterialization.ts`
 - `quests/quests.ts`
+- `reputation/ReputationManager.ts`
 - `settlement/npcIdentity.ts`
 - `world/caves/caveAdventureContentPolicy.ts`
 - `world/caves/caveContentAnchors.ts`
@@ -917,6 +921,7 @@ Generated from TypeScript imports.
 - `settlement/lodgingResolver.ts`
 - `ui-vue/lib/questLogBuckets.test.ts`
 - `ui-vue/lib/questLogBuckets.ts`
+- `ui-vue/lib/questTerminalFeedback.test.ts`
 - `ui-vue/npcDialogueOpen.test.ts`
 - `world/locations/guardLocalKnowledge.ts`
 

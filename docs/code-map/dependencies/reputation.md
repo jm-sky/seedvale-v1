@@ -25,6 +25,7 @@ Generated from TypeScript imports.
 - `quests/QuestManager.test.ts`
 - `quests/QuestManager.ts`
 - `quests/lostTreasureChronicleSearch.ts`
+- `quests/oldBonesAdventureCave.test.ts`
 - `quests/quests.ts`
 - `reputation/ReputationManager.test.ts`
 - `reputation/SocialNewsLedger.ts`

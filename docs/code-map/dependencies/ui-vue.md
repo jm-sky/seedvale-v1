@@ -187,6 +187,26 @@ Generated from TypeScript imports.
 
 - `ui-vue/lib/questLogBuckets.test.ts`
 
+## `ui-vue/lib/questTerminalFeedback.test.ts`
+
+**Imports**
+
+- `quests/QuestManager.ts`
+- `quests/quests.ts`
+- `ui-vue/lib/questTerminalFeedback.ts`
+
+## `ui-vue/lib/questTerminalFeedback.ts`
+
+**Imports**
+
+- `items/items.ts`
+- `quests/QuestManager.ts`
+
+**Imported by**
+
+- `app/createApp.ts`
+- `ui-vue/lib/questTerminalFeedback.test.ts`
+
 ## `ui-vue/lib/utils.ts`
 
 ## `ui-vue/lib/worldLocationDisplay.ts`

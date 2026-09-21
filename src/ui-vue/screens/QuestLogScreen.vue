@@ -10,6 +10,7 @@ import {
   projectQuestLog,
   type QuestLogFilter,
 } from '../lib/questLogBuckets'
+import { questLogTerminalResultText } from '../lib/questTerminalFeedback'
 import { closeQuestLog, emitUiClick, isQuestLogOpen, ui } from '../store'
 
 const STATE_LABEL: Record<QuestState, string> = {
@@ -61,6 +62,9 @@ const selectedEntry = computed<QuestListEntry | null>(() => {
   if (!selectedId.value) return null
   return ui.questLog.entries.find((entry) => entry.id === selectedId.value) ?? null
 })
+const selectedResultText = computed(() => (
+  selectedEntry.value ? questLogTerminalResultText(selectedEntry.value) : null
+))
 
 watch(selectedEntry, (entry) => {
   if (currentView.value === 'details' && !entry) {
@@ -258,6 +262,18 @@ function formatReward(items: ReadonlyArray<{ kind: ItemKind, count: number }>): 
             <div class="mt-1 text-sm">
               {{ note.text }}
             </div>
+          </div>
+        </div>
+
+        <div
+          v-if="selectedResultText"
+          class="mt-4 flex flex-col gap-1"
+        >
+          <div class="text-xs font-semibold uppercase tracking-wide opacity-80">
+            Wynik
+          </div>
+          <div class="rounded-md bg-white/5 p-3 text-sm">
+            {{ STATE_LABEL[selectedEntry.state] }} — {{ selectedResultText }}
           </div>
         </div>
 

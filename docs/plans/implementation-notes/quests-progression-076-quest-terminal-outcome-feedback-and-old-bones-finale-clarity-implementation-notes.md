@@ -1,5 +1,7 @@
 # Implementation Notes: Quest terminal outcome feedback and Old Bones finale clarity
 
+**Status:** `verification needed` 🔍 — implemented and automated-verified; browser/manual verification pending (user-performed).
+
 ## Recon findings
 
 - `QuestManager.applyOutcome()` is the correct single terminal commit seam. Keep state mutation, journal/result recording, cleanup, reward grant and social consequences there; do not emit terminal presentation from dialogue callbacks or from Vue.
@@ -36,6 +38,13 @@ Update tests around all three terminal choices rather than replacing current ass
 - For Quest Log UI, render a result block only for terminal entries when `resultText` is non-empty. State labeling can be UI mapping from the already-present `QuestState`; outcome IDs must remain opaque.
 - Existing completion sound / `playQuestVoice` behavior is orthogonal; do not move or deduplicate it as part of this fix.
 - Because the work crosses quest lifecycle + composition + Vue presentation, keep the implementation focused; no notification-system refactor unless the existing shared toast contract demonstrably cannot represent the required payload.
+
+## Implemented
+
+- `QuestTerminalPresentation` + `QuestLifecycleHooks.onTerminalOutcome` from `applyOutcome()` after a real complete/failed commit.
+- Shared Vue toast via `formatQuestTerminalToast` (multiline toast stack); no quest-specific overlay and no hidden rewards in the payload.
+- Quest Log details show `resultText` for complete/failed/abandoned through `questLogTerminalResultText`.
+- Old Bones A/B/keep finale copy updated; physical transfer, outcome IDs and relation gating unchanged.
 
 ## Relevant code
 

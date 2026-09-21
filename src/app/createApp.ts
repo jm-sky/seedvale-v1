@@ -215,7 +215,7 @@ import {
   buildWorldDrivenSettlementQuests,
   opportunityNpcsFromSettlement,
 } from '../quests/opportunities/worldQuestMaterialization'
-import { QuestManager, type QuestVoiceIntent } from '../quests/QuestManager'
+import { QuestManager, type QuestTerminalPresentation, type QuestVoiceIntent } from '../quests/QuestManager'
 import { bindDarkForestTreasureQuest, bindExactCaveQuests, bindTreasureMapBearCaveQuest, buildDarkForestTreasureQuest, buildHorseAcquisitionQuest, buildLandmarkQuests, buildTreasureMapBearCaveQuest, QUESTS, questStageObjectiveSlots } from '../quests/quests'
 import {
   isSuspiciousTransportCacheLooted,
@@ -252,6 +252,7 @@ import { chunksNear } from '../terrain/chunkGrid'
 import { disposeChunkWorkerPool } from '../terrain/chunkWorkerPool'
 import { sampleFootstepSurface } from '../terrain/footstepSurface'
 import { deserializeMineableRockState, type MineableRockStateStore } from '../terrain/mineableRocks'
+import { formatQuestTerminalToast } from '../ui-vue/lib/questTerminalFeedback'
 import { mountVueUi } from '../ui-vue/mount'
 import { configureAudioVolumes, configureNpcVoiceSounds, configureUiSounds } from '../ui-vue/store'
 import { createBusyOverlay } from '../ui/createBusyOverlay'
@@ -2026,6 +2027,11 @@ export async function createApp(
       economy.add('wood', value * count)
       bundle.settlementsManager.releaseAutonomousRepairReservation(homeDef.id, ids.communalFence.structureId)
       return true
+    },
+    // One-shot complete/failed presentation (plan quests-progression-076) —
+    // QuestManager already resolved copy and shown-reward visibility.
+    onTerminalOutcome: (presentation: QuestTerminalPresentation) => {
+      vueUi.showToast(formatQuestTerminalToast(presentation))
     },
     isAuthoredRepairTargetIntact: (questId: string) => {
       const target = AUTHORED_REPAIR_DELIVERIES[questId]

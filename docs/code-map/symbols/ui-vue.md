@@ -113,6 +113,13 @@ Generated from exported TypeScript symbols.
 - `QuestLogBuckets` — type — line 6
 - `QuestLogFilter` — type — line 4
 
+## `ui-vue/lib/questTerminalFeedback.ts`
+
+- `formatQuestTerminalToast` — function — line 15
+  - domain: quests-progression
+- `questLogTerminalResultText` — function — line 34
+  - domain: quests-progression
+
 ## `ui-vue/lib/utils.ts`
 
 - `cn` — function — line 5

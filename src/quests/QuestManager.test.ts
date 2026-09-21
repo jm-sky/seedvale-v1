@@ -1884,6 +1884,96 @@ function managerWithLifecycleHooks(
   )
 }
 
+describe('QuestManager terminal outcome presentation (plan quests-progression-076)', () => {
+  const branched = quest({
+    id: 'branch',
+    title: 'Gałąź',
+    giverName: 'Anna',
+    offerLine: 'offer',
+    stages: [
+      { objective: { type: 'interact_well' }, description: 'well', reminderLine: 'remind' },
+    ],
+    reportLine: 'Zdaję relację.',
+    outcomes: [
+      {
+        id: 'win',
+        state: 'complete',
+        resultText: 'Udało się.',
+        reward: { visibility: 'shown', items: [{ kind: 'coin', count: 5 }] },
+      },
+      {
+        id: 'quiet',
+        state: 'complete',
+        reward: { visibility: 'hidden', items: [{ kind: 'coin', count: 15 }] },
+      },
+      {
+        id: 'lose',
+        state: 'failed',
+        resultText: 'Nie zdążyłeś.',
+      },
+    ],
+  })
+
+  function withHook(initial?: QuestManagerInitial) {
+    const emissions: import('./QuestManager').QuestTerminalPresentation[] = []
+    const qm = managerWithLifecycleHooks(
+      [branched],
+      new Inventory(),
+      { onTerminalOutcome: (presentation) => emissions.push(presentation) },
+      initial,
+    )
+    return { qm, emissions }
+  }
+
+  it('emits once for a newly committed complete outcome with shown reward', () => {
+    const { qm, emissions } = withHook()
+    expect(qm.resolveQuest('branch', 'win')).toBe(true)
+    expect(emissions).toEqual([{
+      title: 'Gałąź',
+      state: 'complete',
+      resultText: 'Udało się.',
+      shownReward: { items: [{ kind: 'coin', count: 5 }] },
+    }])
+    expect(qm.resolveQuest('branch', 'win')).toBe(false)
+    expect(qm.resolveQuest('branch', 'lose')).toBe(false)
+    expect(emissions).toHaveLength(1)
+  })
+
+  it('emits failed presentation without inventing an outcome id', () => {
+    const { qm, emissions } = withHook()
+    expect(qm.resolveQuest('branch', 'lose')).toBe(true)
+    expect(emissions).toEqual([{
+      title: 'Gałąź',
+      state: 'failed',
+      resultText: 'Nie zdążyłeś.',
+    }])
+  })
+
+  it('keeps hidden rewards off the presentation payload', () => {
+    const { qm, emissions } = withHook()
+    expect(qm.resolveQuest('branch', 'quiet')).toBe(true)
+    expect(emissions[0]?.shownReward).toBeUndefined()
+    expect(emissions[0]?.resultText).toBe('Zdaję relację.')
+  })
+
+  it('does not emit when restoring already-terminal progress', () => {
+    const { emissions } = withHook({
+      progress: [{ id: 'branch', state: 'complete', stageIndex: 1, resolvedOutcomeId: 'win' }],
+      relations: {},
+    })
+    expect(emissions).toEqual([])
+  })
+
+  it('does not emit abandonment', () => {
+    const { qm, emissions } = withHook({
+      progress: [{ id: 'branch', state: 'active', stageIndex: 0 }],
+      relations: {},
+    })
+    expect(qm.abandonQuest('branch')).toBe(true)
+    expect(emissions).toEqual([])
+  })
+})
+
 const gatherDeliveryQuest = quest({
   id: 'gather-delivery',
   giverName: 'Piotr',
