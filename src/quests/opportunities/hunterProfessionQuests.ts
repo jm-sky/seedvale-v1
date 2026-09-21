@@ -79,23 +79,23 @@ function materializeHunterI(giver: OpportunityNpc, settlementId: string, settlem
     giver: { npcId: giver.id },
     settlementId,
     offerLine:
-      'Chcę zobaczyć, czy umiesz oprawić sarnę jak należy. Upoluj trzy i przynieś skóry — wtedy dam ci łuk na start.',
+      'Samo trafić zwierzynę to jeszcze nie sztuka. Pokaż, że potrafisz też dobrze ją oprawić. Przynieś mi skóry z trzech saren, a dam ci łuk, z którym można zacząć prawdziwe polowanie.',
     stages: [
       {
         objective: { type: 'harvest_animals', kind: 'deer', count: 3 },
         description: 'Upoluj i opraw trzy sarny.',
-        reminderLine: 'Potrzebuję trzech saren oprawionych twoim nożem — sama skóra w plecaku to za mało.',
+        reminderLine: 'Nie liczy się samo polowanie. Chcę zobaczyć, że potrafisz porządnie oprawić zwierzynę.',
       },
       {
         objective: { type: 'gather_item', kind: 'hide', count: 3 },
         description: 'Oddaj trzy skóry myśliwemu.',
-        reminderLine: 'Masz już trzy skóry ze saren?',
-        playerLine: 'Mam trzy skóry, o które prosiłeś.',
+        reminderLine: 'Masz już skóry z tych saren?',
+        playerLine: 'Mam trzy skóry. Sam je oprawiłem.',
       },
     ],
-    reportPromptLine: 'Udało się upolować te sarny?',
+    reportPromptLine: 'No i jak poszło pierwsze polowanie?',
     reportPlayerLine: 'Upolowałem trzy sarny i przyniosłem skóry.',
-    reportLine: 'Dobra robota. Trzymaj łuk — nauczysz się nim strzelać na polowaniu.',
+    reportLine: 'Dobrze. Widać, że nie zmarnowałeś zwierzyny. Weź ten łuk — przyda ci się przy następnych łowach.',
     outcomes: [
       {
         id: HUNTER_I_OUTCOME,
@@ -127,23 +127,23 @@ function materializeHunterII(
     settlementId,
     availability: { prerequisites: [{ type: 'quest_outcome', questId: hunterIQuestId, outcomeIds: [HUNTER_I_OUTCOME] }] },
     offerLine:
-      'Teraz jelenie. Upoluj je i przynieś dwa poroża — nie każdy dorosły je nosi, ale bez pracy nie ma pysznego mięsa.',
+      'Z sarnami sobie poradziłeś. Teraz spróbuj z jeleniem — jest silniejszy i łatwiej go spłoszyć. Przynieś mi dwa poroża. Będę wiedział, że potrafisz podejść większą zwierzynę.',
     stages: [
       {
         objective: { type: 'harvest_animals', kind: 'stag', count: 2 },
         description: 'Opraw dwa dorosłe jelenie.',
-        reminderLine: 'Potrzebuję dowodu, że polujesz na jelenie — opraw przynajmniej dwa.',
+        reminderLine: 'Jeleń nie da ci podejść tak łatwo jak sarna. Nie spiesz się i dobrze wybierz moment.',
       },
       {
         objective: { type: 'gather_item', kind: 'antler', count: 2 },
         description: 'Oddaj dwa poroża.',
-        reminderLine: 'Masz już dwa poroża?',
-        playerLine: 'Przyniosłem dwa poroża z jeleni.',
+        reminderLine: 'Masz już poroża?',
+        playerLine: 'Mam dwa poroża z upolowanych jeleni.',
       },
     ],
-    reportPromptLine: 'Znalazłeś poroża?',
+    reportPromptLine: 'Jak poszło z jeleniami?',
     reportPlayerLine: 'Upolowałem jelenie i mam poroża.',
-    reportLine: 'Solidna robota. Ten łuk myśliwski lepiej trzyma na większej zwierzynie.',
+    reportLine: 'No, teraz już można mówić o polowaniu. Weź ten łuk — na większą zwierzynę sprawdzi się lepiej.',
     outcomes: [
       {
         id: HUNTER_II_OUTCOME,
@@ -175,7 +175,7 @@ function materializeHunterIII(
     settlementId,
     availability: { prerequisites: [{ type: 'quest_outcome', questId: hunterIIQuestId, outcomeIds: [HUNTER_II_OUTCOME] }] },
     offerLine:
-      'Przy jednym zagajniku zwierzyna głoduje częściej. Zostaw tam jabłka, marchew albo jagody — jak zjedzą, wróć z wieścią.',
+      'Dobry myśliwy nie tylko bierze z lasu. Przy jednym z zagajników zwierzyna ma mało pożywienia. Zostaw tam coś, co zjedzą sarny i jelenie. Chcę zobaczyć, czy rozumiesz różnicę między polowaniem a wybijaniem wszystkiego, co się rusza.',
     stages: [
       {
         objective: {
@@ -186,12 +186,12 @@ function materializeHunterIII(
           foodKinds: HABITAT_FEED_FOODS,
         },
         description: 'Nakarm trzy zwierzęta z tego zagajnika zostawionym jedzeniem.',
-        reminderLine: 'Zostaw przy zagajniku jedzenie, które sarna albo jeleń zje z ziemi.',
+        reminderLine: 'Zostaw jedzenie przy zagajniku i daj zwierzynie czas. Jeśli zaczną tam żerować, będziemy wiedzieli, że miejsce jeszcze da się odbudować.',
       },
     ],
-    reportPromptLine: 'Zwierzyna zjadła to, co zostawiłeś?',
-    reportPlayerLine: 'Zostawiłem jedzenie i zwierzyna je zjadła.',
-    reportLine: 'Dzięki — teraz ten kąt lasu ma chwilę oddechu. Dobrze, że pomogłeś.',
+    reportPromptLine: 'Przyjęły jedzenie?',
+    reportPlayerLine: 'Tak. Zwierzyna przyszła i zaczęła żerować.',
+    reportLine: 'Dobrze. Pamiętaj o tym. Jeśli łowisko umrze, myśliwy długo po nim nie przetrwa.',
     outcomes: [
       {
         id: HUNTER_III_COMPLETE_OUTCOME,
