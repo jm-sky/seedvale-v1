@@ -9,6 +9,7 @@
 **Tags:** `audio` `caves` `spatial-context`  
 **Type:** `fix`  
 **Roadmap:** -
+**Model:** Sonnet, Composer
 
 ## Goal
 
