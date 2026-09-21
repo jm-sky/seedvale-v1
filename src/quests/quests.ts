@@ -1904,7 +1904,7 @@ export const QUESTS: readonly AuthoredQuestDef[] = [
     description: 'Piotrowi rozłazi się płot — zbierz kilka gałęzi na naprawę.',
     giverName: 'Piotr',
     offerLine:
-      'Płot mi się rozłazi — zbierzesz pięć gałęzi na naprawę? Zapłacę osiem monet.',
+      'Płot znowu puszcza przy jednym z przęseł. Jak będziesz zbierał drewno, odłóż mi kilka mocnych gałęzi na naprawę.',
     alreadyRepairedOfferLine:
       'Płot już stoi jak należy — widzę, że ktoś wziął sprawy w swoje ręce. Dziękuję.',
     alreadyRepairedReminderLine:
@@ -1914,13 +1914,13 @@ export const QUESTS: readonly AuthoredQuestDef[] = [
       {
         objective: { type: 'gather_item', kind: 'branch', count: 5 },
         description: 'Zbierz 5 gałęzi.',
-        reminderLine: 'Masz już dość gałęzi na naprawę?',
-        playerLine: 'Przyniosłem pięć gałęzi. Tyle powinno wystarczyć na płot.',
+        reminderLine: 'Znalazłeś coś, co nada się na ten płot?',
+        playerLine: 'Mam kilka porządnych gałęzi. Powinny wystarczyć.',
       },
     ],
-    reportPromptLine: 'Masz już gałęzie?',
-    reportPlayerLine: 'Przyniosłem pięć gałęzi. Tyle powinno wystarczyć na płot.',
-    reportLine: 'To starczy w zupełności. Płot znów będzie trzymał się kupy.',
+    reportPromptLine: 'Masz coś na naprawę płotu?',
+    reportPlayerLine: 'Mam kilka porządnych gałęzi. Powinny wystarczyć.',
+    reportLine: 'Tak, te będą dobre. Wreszcie przestanie się chwiać przy każdym podmuchu.',
     outcomes: [
       {
         id: 'delivered',
@@ -2005,21 +2005,21 @@ export const QUESTS: readonly AuthoredQuestDef[] = [
       'Kasia prosi o sprawdzenie skalnej groty znajdującej się {cavePlace}. Ostatnio zauważono tam świeże ślady zwierząt.',
     giverName: 'Kasia',
     offerLine:
-      'Ostatnio ktoś widział świeże ślady przy skalnej grocie {cavePlace}. Możesz tam zajrzeć i sprawdzić, czy nie kręci się tam coś niebezpiecznego? Zapłacę ci za fatygę.',
+      'Przy skalnej grocie {cavePlace} pojawiły się świeże ślady. Nie wiadomo, co tam siedzi. Zajrzałbyś tam i sprawdził, zanim ktoś przypadkiem podejdzie za blisko?',
     stages: [
       {
         objective: { type: 'interact_spawner', spawnerType: 'rockDen' },
         description: 'Sprawdź skalną grotę wskazaną przez Kasię.',
-        reminderLine: 'Skalna grota jest {cavePlace}. Sprawdź tylko, co się tam dzieje, i wróć do mnie.',
+        reminderLine: 'Grota jest {cavePlace}. Nie musisz niczego ruszać — sprawdź tylko, co się tam kręci.',
         progressLine:
           'Wokół wejścia widać świeże ślady zwierząt. To miejsce zdecydowanie nie jest opuszczone.',
       },
     ],
-    reportPromptLine: 'I jak? Udało ci się sprawdzić skalną grotę?',
+    reportPromptLine: 'Co znalazłeś przy grocie?',
     reportPlayerLine:
-      'Tak. Są tam świeże ślady. Wygląda na to, że coś regularnie korzysta z tej groty.',
+      'Ślady są świeże. Coś regularnie tam wraca.',
     reportLine:
-      'Dobrze, że to sprawdziłeś. Przynajmniej wiemy, że trzeba tam uważać. Dzięki — proszę, to za pomoc.',
+      'Czyli lepiej omijać to miejsce bez potrzeby. Dobrze, że wiemy, zanim ktoś się tam zapuści.',
     outcomes: [
       {
         id: 'reported',
@@ -2034,18 +2034,18 @@ export const QUESTS: readonly AuthoredQuestDef[] = [
     description: 'Marek prosi o pozbycie się lisa grasującego przy osadzie.',
     giverName: 'Marek',
     offerLine:
-      'Przy osadzie grasuje lis. Trzeba go zabić, zanim weźmie się za kury — zapłacę dwadzieścia monet.',
+      'Lis podchodzi coraz bliżej zabudowań. Jeszcze trochę i zacznie wyciągać kury z obejść. Jeśli go wypatrzysz, pozbądź się go, zanim narobi szkód.',
     stages: [
       {
         objective: { type: 'kill_target_animal', kind: 'fox' },
         description: 'Zabij lisa przy osadzie.',
-        reminderLine: 'Lis wciąż grasuje w okolicy.',
-        progressLine: 'Lis nie żyje. Wróć do Marka.',
+        reminderLine: 'Lis dalej kręci się przy osadzie. Lepiej nie czekać, aż dobierze się do kur.',
+        progressLine: 'Lis nie żyje. Zagrożenie dla obejść minęło.',
       },
     ],
-    reportPromptLine: 'Co z lisem?',
-    reportPlayerLine: 'Zabiłem lisa. Nie będzie już grasował przy osadzie.',
-    reportLine: 'Dzięki — teraz będzie spokojniej. Weź monety.',
+    reportPromptLine: 'Co z tym lisem?',
+    reportPlayerLine: 'Już nie podejdzie pod osadę.',
+    reportLine: 'Dobrze. Jedno zmartwienie mniej, zwłaszcza dla tych, którzy trzymają drób. Masz — za robotę.',
     outcomes: [
       {
         id: 'reported',
