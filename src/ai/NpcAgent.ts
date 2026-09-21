@@ -49,7 +49,7 @@ import {
   loadGltfAnimated,
   prepareProp,
 } from '../assets/loadGltf'
-import { applyClothingHue, applyHairColor, applyOutfitTint, cloneOutfitMaterials } from '../assets/ubcOutfitMaterials'
+import { applyClothingHue, applyHairColor, applyOutfitTint, cloneOutfitMaterials, removeOutfitMeshMetallness } from '../assets/ubcOutfitMaterials'
 import {
   playActionBowRelease,
   playActionChop,
@@ -546,6 +546,12 @@ const ANIMAL_THREAT_REACTION_INTERVAL_SEC = 1.5
  *  away from the threat — same order of magnitude as fauna's own
  *  `FLEE_DISTANCE` (`AnimalAgent.ts`). */
 const NPC_FLEE_DISTANCE = 8
+
+/**
+ * DEBUG: Tint outfit materials for NPC & player model
+ * Investigation in progress
+ */
+const DEBUG_TINT_OUTFIT_MATERIALS = false
 
 export type { NpcGender }
 export type { ActionId, NpcPlannedAction, Phase } from './npcAction'
@@ -1936,6 +1942,10 @@ export class NpcAgent {
     const beardAttachmentUrl = autoLook ? appearance.beardAttachmentUrl : null
     try {
       const { scene, animations: modelAnimations } = await loadGltfAnimated(modelUrl)
+
+    // DEBUG: NPC & player model is black or too dark [investingation in progress]
+      scene.traverse((obj) => removeOutfitMeshMetallness(obj))
+
       let animations = modelAnimations
       if (animationUrl) {
         try {
@@ -1945,7 +1955,8 @@ export class NpcAgent {
           console.warn(`[npc] failed to load animations ${animationUrl}`, err)
         }
         cloneOutfitMaterials(scene)
-        if (tintUrl) await applyOutfitTint(scene, tintUrl)
+        // DEBUG: NPC & player model is black or too dark
+        if (tintUrl && DEBUG_TINT_OUTFIT_MATERIALS) await applyOutfitTint(scene, tintUrl)
         applyClothingHue(scene, clothingHue)
         await NpcAgent.attachUbcHairAttachments(scene, hairAttachmentUrl, beardAttachmentUrl)
         applyHairColor(scene, hairColor)

@@ -12,6 +12,24 @@ const UBC_OUTFIT_MATERIAL_NAMES = new Set([
 
 const UBC_HAIR_MATERIAL_NAMES = new Set(['MI_Hair_1', 'MI_Hair_2'])
 
+export function removeOutfitMeshMetallness(object: THREE.Object3D) {
+  const mesh = object as THREE.Mesh
+  if (!mesh.isMesh) return
+
+  const materials = Array.isArray(mesh.material)
+    ? mesh.material
+    : [mesh.material]
+
+  for (const material of materials) {
+    const mat = material as THREE.MeshStandardMaterial
+
+    if (UBC_OUTFIT_MATERIAL_NAMES.has(mat.name)) {
+      mat.metalness = 0
+      mat.needsUpdate = true
+    }
+  }
+}
+
 function cloneNamedMaterials(
   root: THREE.Object3D,
   names: ReadonlySet<string>,
