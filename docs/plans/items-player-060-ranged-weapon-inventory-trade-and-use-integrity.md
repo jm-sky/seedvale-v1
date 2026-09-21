@@ -9,6 +9,7 @@
 **Subdomains:** `inventory` `items` `interaction`
 **Tags:** `combat` `trade` `ranged`
 **Roadmap:** -
+**Model:** Sonnet · Composer
 
 ## Goal
 
