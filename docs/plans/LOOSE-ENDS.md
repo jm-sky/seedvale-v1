@@ -58,6 +58,7 @@ Format: `- [ ] YYYY-MM-DD — opis (plan/plik, jeśli istotne)`
 
 ## World lifecycle / rebuild
 
+- [ ] 2026-09-21 — Player/world lifecycle audit follow-ups not promoted to dedicated plans: async spatial-audio revalidation, broader `buildWorldSystems()` partial-construction cleanup boundary, failed-rebuild diagnostic wording, and stale player-health persistence comments. Review: `docs/reviews/2026-09-21--player-world-lifecycle-followups.md`.
 - [ ] 2026-09-20 — `buildWorldSystems()` (`src/app/worldBundle.ts`) has no general partial-allocation cleanup for a throw during its ~700-line synchronous critical-path construction. world-033 fixed the one confirmed concrete leak (home-settlement-(0,0)-resolution failure leaking `chunkManager`/`waterMirror`) by disposing right at that throw site, but a throw from a later call in that path (e.g. `createCaves`, `buildSettlementsManager`) still leaks whatever critical systems were already constructed before it. A general fix needs a bounded disposer stack across that whole function — deliberately not attempted here to keep world-033 scoped to the rebuild *transaction* (publish-or-dispose the already-fully-built `fresh` world), not general construction-failure hardening.
 
 ## Performance / rendering
