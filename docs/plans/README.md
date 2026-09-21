@@ -132,6 +132,7 @@ Unless noted otherwise, `verification needed` means implementation has passed au
 | ◼️ `quests-progression-076-quest-terminal-outcome-feedback-and-old-bones-finale-clarity.md` | 🔴 | M      | ~~quests-progression-002~~, ~~quests-progression-021~~, ~~quests-progression-051~~                                                                                                                                                                                                         | quests-and-reputation                     |
 | ◼️ `npc-062-ubc-runtime-material-darkness-and-authored-outfit-preservation.md` | 🔴 | M      | ~~tools-017~~, ~~npc-055~~                                                                                                                                                                                                                                                                 | -                                         |
 | ◼️ `quests-progression-077-authored-starter-repair-initialization-and-intact-state-semantics.md` | 🔴 | S      | ~~quests-progression-073~~                                                                                                                                                                                                                                                                 | -                                         |
+| ◼️ `items-player-060-ranged-weapon-inventory-trade-and-use-integrity.md`       | 🔴 | L      | ~~items-player-059~~                                                                                                                                                                                                                                                                       | -                                         |
 
 ---
 
@@ -266,7 +267,7 @@ New plans declare a primary `Domain:` in frontmatter. Use optional `Tags:` only 
 
 - ai: `005`
 - fauna: `047`
-- items-player: `060`
+- items-player: `061`
 - npc: `063`
 - persistence: `007`
 - quests-progression: `078`
