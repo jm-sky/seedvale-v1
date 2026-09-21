@@ -227,13 +227,13 @@ Generated from exported TypeScript symbols.
 
 ## `assets/ubcOutfitMaterials.ts`
 
-- `applyAccessoryTint` — function — line 152
-- `applyClothingHue` — function — line 166
-- `applyHairColor` — function — line 181
-- `applyHairTint` — function — line 199
-- `applyOutfitTint` — function — line 138
-- `cloneAccessoryMaterials` — function — line 68
-- `cloneOutfitMaterials` — function — line 59
-- `disposeAccessoryMaterialClones` — function — line 89
-- `disposeOutfitMaterialClones` — function — line 72
-- `removeOutfitMeshMetallness` — function — line 15
+- `applyAccessoryTint` — function — line 162
+- `applyClothingHue` — function — line 176
+- `applyHairColor` — function — line 191
+- `applyHairTint` — function — line 209
+- `applyOutfitTint` — function — line 148
+- `cloneAccessoryMaterials` — function — line 78
+- `cloneOutfitMaterials` — function — line 69
+- `disposeAccessoryMaterialClones` — function — line 99
+- `disposeOutfitMaterialClones` — function — line 82
+- `fixOutfitMeshDarkness` — function — line 19

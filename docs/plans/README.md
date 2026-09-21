@@ -129,6 +129,7 @@ Unless noted otherwise, `verification needed` means implementation has passed au
 | 💡 `quests-progression-074-small-quest-offer-scope-and-prioritization.md`      | 🟡 | S      | quests-progression-069                                                                                                                                                                                                                                                                     | quests-and-reputation                     |
 | ◼️ `ui-input-037-quest-log-ready-to-report-sections.md`                        | 🟡 | S      | ~~ui-input-017~~                                                                                                                                                                                                                                                                           | quests-and-reputation                     |
 | ◼️ `quests-progression-075-lost-livestock-report-lifecycle-and-truthful-quest-journal.md` | 🔴 | S      | ~~quests-progression-030~~                                                                                                                                                                                                                                                                 | -                                         |
+| ◼️ `quests-progression-076-quest-terminal-outcome-feedback-and-old-bones-finale-clarity.md` | 🔴 | M      | ~~quests-progression-002~~, ~~quests-progression-021~~, ~~quests-progression-051~~                                                                                                                                                                                                         | quests-and-reputation                     |
 
 ---
 
@@ -266,7 +267,7 @@ New plans declare a primary `Domain:` in frontmatter. Use optional `Tags:` only 
 - items-player: `060`
 - npc: `062`
 - persistence: `007`
-- quests-progression: `076`
+- quests-progression: `077`
 - settlements: `023`
 - settlements-npcs: `057`
 - tools: `020`
