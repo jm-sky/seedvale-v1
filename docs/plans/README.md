@@ -134,6 +134,8 @@ Unless noted otherwise, `verification needed` means implementation has passed au
 | ◼️ `quests-progression-077-authored-starter-repair-initialization-and-intact-state-semantics.md` | 🔴 | S      | ~~quests-progression-073~~                                                                                                                                                                                                                                                                 | -                                         |
 | ◼️ `items-player-060-ranged-weapon-inventory-trade-and-use-integrity.md`       | 🔴 | L      | ~~items-player-059~~                                                                                                                                                                                                                                                                       | -                                         |
 | ◼️ `quests-progression-078-rat-infestation-initialization-and-absent-state-semantics.md` | 🔴 | S      | ~~quests-progression-013~~                                                                                                                                                                                                                                                                 | -                                         |
+| ◼️ `fauna-047-deer-thicket-capacity-and-natural-population-recovery.md`        | 🔴 | M      | ~~fauna-041~~                                                                                                                                                                                                                                                                              | -                                         |
+| ◼️ `quests-progression-079-lost-treasure-expedition-external-sponsor-flow.md`  | 🟡 | S      | ~~quests-progression-027~~                                                                                                                                                                                                                                                                 | -                                         |
 
 ---
 
@@ -267,11 +269,11 @@ New plans declare a primary `Domain:` in frontmatter. Use optional `Tags:` only 
 ## Next plan IDs
 
 - ai: `005`
-- fauna: `047`
+- fauna: `048`
 - items-player: `061`
 - npc: `063`
 - persistence: `007`
-- quests-progression: `079`
+- quests-progression: `080`
 - settlements: `023`
 - settlements-npcs: `057`
 - tools: `020`
