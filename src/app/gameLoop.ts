@@ -89,12 +89,12 @@ import { combatTargetForAnimal, isMeleeTool } from '../fauna/faunaCombat'
 import { countNearbyHumans } from '../fauna/predatorHumanDecision'
 import { isTouchDevice } from '../input/isTouchDevice'
 import { type createMouseLook, exitGamePointerLock } from '../input/MouseLook'
+import { pickInGaze, rankInGaze } from '../interaction/findInteractionTarget'
 import {
   advanceCycleCommittedKey,
   cycleHintPosition,
   resolveCycleCommittedTarget,
 } from '../interaction/interactionCycleTarget'
-import { pickInGaze, rankInGaze } from '../interaction/findInteractionTarget'
 import {
   buildInteractionGazePrompt,
   interactableStableKey,

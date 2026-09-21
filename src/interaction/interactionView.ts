@@ -432,11 +432,11 @@ export function buildInteractionView(
     case 'standingTorch':
       actions = standingTorchActions(target, ctx)
       break
-    case 'villageTorch':
-      actions = villageTorchActions(target)
-      break
     case 'terrainPreparation':
       actions = terrainPreparationActions()
+      break
+    case 'villageTorch':
+      actions = villageTorchActions(target)
       break
     default:
       actions = buildFromParsed(parseLegacyPrompt(target.promptLabel))
