@@ -1,7 +1,7 @@
 # Plan: System terrain modification rebuild idempotency
 
 **Created:** 2026-09-19
-**Status:** `planned` 📋
+**Status:** `verification needed` 🔍 — implemented + technically verified (focused Vitest). Browser/manual verification deferred to user (see implementation notes).
 **Priority:** high · **Effort:** S
 **Model:** Composer, Sonnet
 **Depends on:** none
