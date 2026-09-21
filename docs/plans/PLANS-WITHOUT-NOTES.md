@@ -1,7 +1,7 @@
 # PLANS PLANNED WITHOUT NOTES
 
 > Generated with `pnpm plans:without-notes`  
-> Date: 2026-09-21 05:38:45  
+> Date: 2026-09-21 05:47:03  
 
 ## PLANS
 
@@ -15,8 +15,6 @@
 - `settlements-npcs-054-transport-carrier-death-and-cargo-disposition.md`
 - `tools-005-seedvale-character-preparation-panel.md`
 - `tools-019-debug-tooling-lifecycle-ownership.md`
-- `ui-input-028-interaction-target-identity-and-cycle-lifecycle.md`
-- `ui-input-029-village-torch-interaction-action-contract.md`
 - `ui-input-030-player-downed-action-input-gating.md`
 - `ui-input-031-world-bound-ui-session-rebuild-lifecycle.md`
 - `ui-input-033-world-map-player-heading-arrow.md`
@@ -325,68 +323,6 @@ Wczytaj:
 
 Na podstawie review utwórz w repo plik:
 `docs/plans/implementation-notes/tools-019-debug-tooling-lifecycle-ownership-implementation-notes.md`
-
-Umieść w nim:
-- sugestie dotyczące implementacji,
-- istotne detale techniczne,
-- decyzje architektoniczne,
-- informacje o istniejących systemach i implementacjach, które należy wykorzystać,
-- potencjalne problemy, zależności i pułapki,
-- inne konkretne wskazówki, które ułatwią agentowi AI poprawną implementację planu.
-
-Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
-Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
-
-Pliki dodaj na branch `main` w repozytorium.
-```
-
-### `ui-input-028-interaction-target-identity-and-cycle-lifecycle.md`
-
-Prompt:
-
-```
-Zrób review planu `ui-input-028-interaction-target-identity-and-cycle-lifecycle.md`
-
-Wczytaj:
-- `docs/STATE.md`
-- `docs/plans/PLANNING.md` (Implementation Notes section),
-- `docs/plans/ui-input-028-interaction-target-identity-and-cycle-lifecycle.md`
-- aktualny codebase,
-- potrzebne zależności i powiązane implementacje.
-
-Na podstawie review utwórz w repo plik:
-`docs/plans/implementation-notes/ui-input-028-interaction-target-identity-and-cycle-lifecycle-implementation-notes.md`
-
-Umieść w nim:
-- sugestie dotyczące implementacji,
-- istotne detale techniczne,
-- decyzje architektoniczne,
-- informacje o istniejących systemach i implementacjach, które należy wykorzystać,
-- potencjalne problemy, zależności i pułapki,
-- inne konkretne wskazówki, które ułatwią agentowi AI poprawną implementację planu.
-
-Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
-Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
-
-Pliki dodaj na branch `main` w repozytorium.
-```
-
-### `ui-input-029-village-torch-interaction-action-contract.md`
-
-Prompt:
-
-```
-Zrób review planu `ui-input-029-village-torch-interaction-action-contract.md`
-
-Wczytaj:
-- `docs/STATE.md`
-- `docs/plans/PLANNING.md` (Implementation Notes section),
-- `docs/plans/ui-input-029-village-torch-interaction-action-contract.md`
-- aktualny codebase,
-- potrzebne zależności i powiązane implementacje.
-
-Na podstawie review utwórz w repo plik:
-`docs/plans/implementation-notes/ui-input-029-village-torch-interaction-action-contract-implementation-notes.md`
 
 Umieść w nim:
 - sugestie dotyczące implementacji,
