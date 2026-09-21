@@ -226,6 +226,20 @@ export type AgentStatusLabelController = {
     gazeFactor?: number,
     observation?: AgentLabelObservationPresentation,
   ) => void
+  /**
+   * Distance fade / shadow / bar visibility only — no bar percentages,
+   * observation or name updates. Use when presentation content is frozen
+   * (e.g. corpse) but label opacity must still track the observer.
+   *
+   * @domain ui-input
+   */
+  syncDistance: (
+    mesh: THREE.Object3D,
+    distance: number,
+    shadowDistance: number,
+    gazeFactor?: number,
+    showBarsOverride?: boolean,
+  ) => void
   settleAtZeroHp: () => void
   dispose: () => void
 }
@@ -419,6 +433,18 @@ export function createAgentStatusLabelController(
         lastObservationLevel = presentation.level
         showBarsOverride = presentation.showBars
       }
+      distanceState = updateAgentLabelDistanceState(
+        labelDom.el,
+        labelDom.barsEl,
+        mesh,
+        distance,
+        shadowDistance,
+        distanceState,
+        gazeFactor,
+        showBarsOverride,
+      )
+    },
+    syncDistance: (mesh, distance, shadowDistance, gazeFactor = 1, showBarsOverride) => {
       distanceState = updateAgentLabelDistanceState(
         labelDom.el,
         labelDom.barsEl,

@@ -1479,14 +1479,14 @@ Generated from exported TypeScript symbols.
 
 ## `world/locations/worldLocationCatalog.ts`
 
-- `abandonedCemeteryChunkIntersectsKmBand` — function — line 223
+- `abandonedCemeteryChunkIntersectsKmBand` — function — line 230
   - domain: world
 - `COOPERATIVE_ABANDONED_PROBE_THRESHOLD` — const — line 155
-- `createWorldLocationCatalog` — function — line 289
+- `createWorldLocationCatalog` — function — line 296
 - `emptyLocationScanDiagnostics` — function — line 120
 - `LandmarkQueryOptions` — type — line 144
 - `LocationScanDiagnostics` — type — line 93
-- `settlementLocationId` — function — line 932
+- `settlementLocationId` — function — line 946
 - `WorldLocationCatalog` — type — line 157
 - `WorldLocationCatalogDeps` — type — line 29
 

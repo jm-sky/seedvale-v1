@@ -164,6 +164,13 @@ export type WorldLocationCatalog = {
    * the current world has no bound mine landmark.
    */
   abandonedMine(): WorldLocation | null
+  /**
+   * Read-only mine ↔ backing-cave map ids for presentation (plan ui-input-026).
+   * `null` when the world has no abandoned mine.
+   *
+   * @domain ui-input
+   */
+  abandonedMineBinding(): { mineId: string, caveLocationId: string } | null
   /** Settlements within `maxKm` of `(x, z)`, nearest first (plan §8 — no
    *  `discoveryWeight`, always distance-ordered). */
   nearestSettlements(x: number, z: number, maxKm: number): WorldLocation[]
@@ -325,6 +332,12 @@ export function createWorldLocationCatalog(deps: WorldLocationCatalogDeps): Worl
       name: landmarkName(seed, 'abandonedMine', mine.mineId),
       discoveryWeight: weightOf(seed, mine.mineId),
     }
+  }
+
+  function abandonedMineBinding(): { mineId: string, caveLocationId: string } | null {
+    const mine = deps.getAbandonedMine?.()
+    if (!mine) return null
+    return { mineId: mine.mineId, caveLocationId: `cave:${mine.caveId}` }
   }
 
   function cemeteryLocationFromResolved(
@@ -911,6 +924,7 @@ export function createWorldLocationCatalog(deps: WorldLocationCatalogDeps): Worl
   return {
     getById,
     abandonedMine: abandonedMineLocation,
+    abandonedMineBinding,
     nearestSettlements,
     stableLandmarksInRange,
     landmarksWithin,

@@ -71,6 +71,7 @@ Generated from TypeScript imports.
 **Imports**
 
 - `ui-vue/lib/mapColors.ts`
+- `ui-vue/lib/mapLocationLabelLayout.ts`
 - `world/locations/navigationTargets.ts`
 - `world/locations/worldLocationTypes.ts`
 - `world/map/mapConfig.ts`
@@ -117,6 +118,24 @@ Generated from TypeScript imports.
 
 - `ui-vue/lib/drawMap.ts`
 - `ui-vue/lib/drawMinimap.ts`
+
+## `ui-vue/lib/mapLocationLabelLayout.test.ts`
+
+**Imports**
+
+- `ui-vue/lib/mapLocationLabelLayout.ts`
+- `world/map/mapTypes.ts`
+
+## `ui-vue/lib/mapLocationLabelLayout.ts`
+
+**Imports**
+
+- `world/map/mapTypes.ts`
+
+**Imported by**
+
+- `ui-vue/lib/drawMap.ts`
+- `ui-vue/lib/mapLocationLabelLayout.test.ts`
 
 ## `ui-vue/lib/minimapLocationMarkers.test.ts`
 

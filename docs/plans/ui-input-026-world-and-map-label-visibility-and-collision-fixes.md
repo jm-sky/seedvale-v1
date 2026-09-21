@@ -1,7 +1,7 @@
 # Plan: World and map label visibility and collision fixes
 
 **Created:** 2026-09-20
-**Status:** `planned` 📋
+**Status:** `done` ✅
 **Type:** fix
 **Priority:** high · **Effort:** S
 **Depends on:** none

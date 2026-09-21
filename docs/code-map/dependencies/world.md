@@ -3449,6 +3449,8 @@ Generated from TypeScript imports.
 - `persistence/saveData.ts`
 - `ui-vue/lib/drawMap.ts`
 - `ui-vue/lib/mapColors.ts`
+- `ui-vue/lib/mapLocationLabelLayout.test.ts`
+- `ui-vue/lib/mapLocationLabelLayout.ts`
 - `ui-vue/lib/minimapLocationMarkers.test.ts`
 - `ui-vue/lib/minimapLocationMarkers.ts`
 - `world/locations/locationKnowledge.ts`

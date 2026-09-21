@@ -21,6 +21,36 @@ function visibleSlots(controller: ReturnType<typeof createAgentStatusLabelContro
     .map((el) => (el as HTMLElement).dataset.slot ?? '')
 }
 
+describe('createAgentStatusLabelController syncDistance (ui-input-026)', () => {
+  it('applies the same distance fade policy as sync without re-showing bars', () => {
+    const controller = createAgentStatusLabelController('Wilk', null, ['hp', 'stamina'], 2)
+    controller.sync(
+      { hp: { current: 100, max: 100 }, stamina: { current: 100, max: 100 } },
+      controller.label,
+      10,
+      80,
+    )
+    expect(controller.el.style.opacity).not.toBe('0')
+    controller.settleAtZeroHp()
+    expect((controller.el.querySelector('.npc-label__bars') as HTMLElement).style.display).toBe('none')
+
+    controller.syncDistance(controller.label, 40, 80, 1, false)
+    expect(controller.el.style.opacity).toBe('0')
+    expect((controller.el.querySelector('.npc-label__bars') as HTMLElement).style.display).toBe('none')
+
+    controller.syncDistance(controller.label, 10, 80, 1, false)
+    expect(controller.el.style.opacity).toBe('1')
+    expect((controller.el.querySelector('.npc-label__bars') as HTMLElement).style.display).toBe('none')
+  })
+
+  it('does not change top-level display when label was hidden for harvest', () => {
+    const controller = createAgentStatusLabelController('Szczur', null, ['hp'], 2)
+    controller.el.style.display = 'none'
+    controller.syncDistance(controller.label, 10, 80, 1, false)
+    expect(controller.el.style.display).toBe('none')
+  })
+})
+
 describe('createAgentStatusLabelController observation presentation', () => {
   it('hides observation-owned content at none while keeping the label element', () => {
     const controller = createAgentStatusLabelController('Jan', null, ['hp', 'stamina'], 2)

@@ -11,6 +11,7 @@ import {
 import { getActiveMapData } from '../../world/map/mapData'
 import { mapCellBounds } from '../../world/map/mapProjection'
 import { LOCATION_KIND_EMOJI, locationKindColor, MAP_FOG_FILL, MAP_UNAVAILABLE_FILL, mapCellFillStyle, targetSlotColor } from './mapColors'
+import { resolveMapLocationLabelPresentations } from './mapLocationLabelLayout'
 
 export type WorldMapView = {
   viewX: number
@@ -124,11 +125,22 @@ export function drawWorldMapFrame(
     }
 
     const targetSlotById = new Map((getActiveNavigationTargets()?.list() ?? []).map((t) => [t.id, t.slot]))
+    const activeTargetIds = new Set(targetSlotById.keys())
+    const knownLocations = mapData.knownLocations(viewport)
+    const mineBinding = mapData.catalog.abandonedMineBinding()
 
     ctx.font = '12px sans-serif'
     ctx.textAlign = 'center'
     ctx.textBaseline = 'top'
-    for (const location of mapData.knownLocations(viewport)) {
+    const presentations = resolveMapLocationLabelPresentations(
+      knownLocations,
+      activeTargetIds,
+      mineBinding,
+      (location) => worldToCanvas(location.x, location.z, view, width, height),
+      (text) => ctx.measureText(text).width,
+    )
+    for (const presentation of presentations) {
+      const location = presentation.location
       const { x, y } = worldToCanvas(location.x, location.z, view, width, height)
       const targetSlot = targetSlotById.get(location.id)
       // Kind read from the id prefix, not `location.kind` — the latter is
@@ -137,41 +149,45 @@ export function drawWorldMapFrame(
       // `worldLocationKindFromId`).
       const kind = worldLocationKindFromId(location.id)
       ctx.fillStyle = targetSlot != null ? targetSlotColor(targetSlot) : locationKindColor(kind)
-      if (location.areaRadius && location.areaRadius > 0) {
-        const radiusPx = location.areaRadius * view.zoom
-        ctx.beginPath()
-        ctx.arc(x, y, radiusPx, 0, Math.PI * 2)
-        ctx.globalAlpha = 0.16
-        ctx.fill()
-        ctx.globalAlpha = 0.75
-        ctx.lineWidth = 1.5
-        ctx.strokeStyle = ctx.fillStyle
-        ctx.stroke()
-        ctx.globalAlpha = 1
+      if (presentation.showMarker) {
+        if (location.areaRadius && location.areaRadius > 0) {
+          const radiusPx = location.areaRadius * view.zoom
+          ctx.beginPath()
+          ctx.arc(x, y, radiusPx, 0, Math.PI * 2)
+          ctx.globalAlpha = 0.16
+          ctx.fill()
+          ctx.globalAlpha = 0.75
+          ctx.lineWidth = 1.5
+          ctx.strokeStyle = ctx.fillStyle
+          ctx.stroke()
+          ctx.globalAlpha = 1
+        }
+        // `estimated`/`discovered`/`confirmed` read as outline / translucent /
+        // solid (plan §16/§22 — visually distinguishable without extra UI).
+        if (location.state === 'estimated') {
+          ctx.globalAlpha = 1
+          ctx.strokeStyle = ctx.fillStyle
+          ctx.lineWidth = 1.5
+          ctx.strokeRect(x - 5, y - 5, 10, 10)
+        } else {
+          ctx.globalAlpha = location.state === 'discovered' ? 0.65 : 1
+          ctx.fillRect(x - 5, y - 5, 10, 10)
+          ctx.globalAlpha = 1
+        }
+        // Native-colour emoji glyph — a colour-independent cue for kind,
+        // alongside (never instead of) the marker fill colour.
+        if (kind) {
+          ctx.globalAlpha = 1
+          ctx.fillText(LOCATION_KIND_EMOJI[kind], x, y - 13)
+        }
       }
-      // `estimated`/`discovered`/`confirmed` read as outline / translucent /
-      // solid (plan §16/§22 — visually distinguishable without extra UI).
-      if (location.state === 'estimated') {
-        ctx.globalAlpha = 1
-        ctx.strokeStyle = ctx.fillStyle
-        ctx.lineWidth = 1.5
-        ctx.strokeRect(x - 5, y - 5, 10, 10)
-      } else {
-        ctx.globalAlpha = location.state === 'discovered' ? 0.65 : 1
-        ctx.fillRect(x - 5, y - 5, 10, 10)
-        ctx.globalAlpha = 1
-      }
-      // Native-colour emoji glyph — a colour-independent cue for kind,
-      // alongside (never instead of) the marker fill colour.
-      if (kind) {
-        ctx.globalAlpha = 1
-        ctx.fillText(LOCATION_KIND_EMOJI[kind], x, y - 13)
-      }
-      if (location.label) {
+      if (presentation.showLabel && presentation.labelText) {
+        const lx = x + presentation.labelOffsetX
+        const ly = y + presentation.labelOffsetY
         ctx.fillStyle = 'rgba(20, 24, 28, 0.85)'
-        ctx.fillText(location.label, x + 1, y + 9)
+        ctx.fillText(presentation.labelText, lx + 1, ly + 1)
         ctx.fillStyle = '#f2f6fa'
-        ctx.fillText(location.label, x, y + 8)
+        ctx.fillText(presentation.labelText, lx, ly)
       }
     }
   }

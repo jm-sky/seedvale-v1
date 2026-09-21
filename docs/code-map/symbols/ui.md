@@ -14,14 +14,14 @@ Generated from exported TypeScript symbols.
 - `computeBarPercent` — function — line 127
 - `createAgentLabel` — function — line 73
   - domain: ui-input
-- `createAgentStatusLabelController` — function — line 239
+- `createAgentStatusLabelController` — function — line 253
   - domain: ui-input
 - `createLabelBar` — function — line 45
 - `INITIAL_LABEL_DISTANCE_STATE` — const — line 171
 - `LabelBarKind` — type — line 26
   - domain: ui-input
 - `LabelDistanceState` — type — line 144
-- `updateAgentLabelDistanceState` — function — line 560
+- `updateAgentLabelDistanceState` — function — line 586
 
 ## `ui/createBusyOverlay.ts`
 

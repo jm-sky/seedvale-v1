@@ -3382,6 +3382,14 @@ export class AnimalAgent {
         }
         if (this.deathAnimElapsedSec >= this.deathAnimDurationSec) this.settleDeathPose()
       }
+      const corpseObserverDistance = this.mesh.position.distanceTo(observerPos)
+      this.labelController.syncDistance(
+        this.mesh,
+        corpseObserverDistance,
+        FAUNA_SHADOW_DISTANCE,
+        undefined,
+        false,
+      )
       this.lastFaunaDecisionInput = null
       return
     }

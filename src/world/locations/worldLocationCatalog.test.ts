@@ -239,6 +239,40 @@ describe('createWorldLocationCatalog', () => {
     expect(catalog.abandonedMine()?.x).toBe(880)
   })
 
+  it('exposes abandoned mine binding with prefixed cave location id', () => {
+    const catalog = createWorldLocationCatalog({
+      getSeed: () => 1,
+      getCaves: () => fakeCaves([]),
+      getChunkManager: () => fakeChunkManager(),
+      lookupSettlement: () => null,
+      getSampleParams: () => rawParams(),
+      getChunkSize: () => 64,
+      getAbandonedMine: () => ({
+        mineId: 'abandonedMine:bind1',
+        caveId: 'bind1',
+        x: 1,
+        z: 2,
+        caveSource: 'existing-cave' as const,
+      }),
+    })
+    expect(catalog.abandonedMineBinding()).toEqual({
+      mineId: 'abandonedMine:bind1',
+      caveLocationId: 'cave:bind1',
+    })
+  })
+
+  it('returns null abandoned mine binding when landmark is absent', () => {
+    const catalog = createWorldLocationCatalog({
+      getSeed: () => 1,
+      getCaves: () => fakeCaves([]),
+      getChunkManager: () => fakeChunkManager(),
+      lookupSettlement: () => null,
+      getSampleParams: () => rawParams(),
+      getChunkSize: () => 64,
+    })
+    expect(catalog.abandonedMineBinding()).toBeNull()
+  })
+
   it('cave name/weight are a stable function of (seed, id)', () => {
     const caves = fakeCaves([{ caveId: 'cave-1', entrance: { x: 0, z: 0, yaw: 0, y: 0, width: 3, height: 3 } }])
     const build = (seed: number) => createWorldLocationCatalog({

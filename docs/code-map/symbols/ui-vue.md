@@ -39,17 +39,17 @@ Generated from exported TypeScript symbols.
 
 ## `ui-vue/lib/drawMap.ts`
 
-- `canvasToWorld` — function — line 44
-- `clampWorldMapZoom` — function — line 27
-- `drawWorldMapFrame` — function — line 99
-- `findLocationAtCanvasPoint` — function — line 204
-- `lodStepFor` — function — line 74
-- `viewportFor` — function — line 57
-- `WorldMapDrawContext` — type — line 21
-- `worldMapPlayerLookDirection` — function — line 86
+- `canvasToWorld` — function — line 45
+- `clampWorldMapZoom` — function — line 28
+- `drawWorldMapFrame` — function — line 100
+- `findLocationAtCanvasPoint` — function — line 220
+- `lodStepFor` — function — line 75
+- `viewportFor` — function — line 58
+- `WorldMapDrawContext` — type — line 22
+- `worldMapPlayerLookDirection` — function — line 87
   - domain: ui-input
-- `WorldMapView` — type — line 15
-- `worldToCanvas` — function — line 31
+- `WorldMapView` — type — line 16
+- `worldToCanvas` — function — line 32
 
 ## `ui-vue/lib/drawMinimap.ts`
 
@@ -81,6 +81,15 @@ Generated from exported TypeScript symbols.
 - `mapCellFillStyle` — function — line 73
 - `TARGET_SLOT_COLORS` — const — line 27
 - `targetSlotColor` — function — line 29
+
+## `ui-vue/lib/mapLocationLabelLayout.ts`
+
+- `AbandonedMineBinding` — type — line 4
+- `MapLocationLabelPresentation` — type — line 9
+- `resolveMapLocationLabelPresentations` — function — line 104
+  - domain: ui-input
+- `suppressedCaveLocationIdsForMineBinding` — function — line 74
+  - domain: ui-input
 
 ## `ui-vue/lib/minimapLocationMarkers.ts`
 
