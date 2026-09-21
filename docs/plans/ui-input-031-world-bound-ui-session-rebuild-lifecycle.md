@@ -6,7 +6,8 @@
 **Depends on:** world-033  
 **Domain:** `ui-input`  
 **Type:** `fix`  
-**Roadmap:** -
+**Roadmap:** -  
+**Model:** Sonnet, Composer
 
 ## Goal
 
