@@ -21,6 +21,10 @@ export function inspectionTargetRef(target: Interactable | null | undefined): In
       return { kind: target.kind, id: target.id }
     case 'camp':
       return { kind: 'camp', id: target.tentId }
+    case 'campfire':
+      if (target.source.kind !== 'placed') return null
+      if (target.source.fireKind !== 'simple' && target.source.fireKind !== 'pit') return null
+      return { kind: 'placedFire', id: target.source.id }
     case 'tent':
       return { kind: 'camp', id: target.id }
     default:

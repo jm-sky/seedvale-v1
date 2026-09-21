@@ -32,6 +32,7 @@ const validSave: SaveData = {
   collectedItemIds: [],
   droppedItems: [],
   placedFires: [],
+  fireResidues: [],
   timeOfDay: 0.32,
   elapsedDays: 2,
   heldTool: null,
@@ -2377,6 +2378,44 @@ describe('schema versioning and migration pipeline (persistence-003)', () => {
     if (result.status !== 'ok') return
     expect(result.data.version).toBe(CURRENT_SAVE_VERSION)
     expect(result.data.player.y).toBeUndefined()
+  })
+
+  it('migrates a v54 save with old placed fires and empty ash residues (plan items-player-058)', () => {
+    const result = loadStoredSave({
+      ...validSave,
+      version: 54,
+      fireResidues: undefined,
+      placedFires: [
+        { id: 's1', x: 1, z: 2, kind: 'simple' },
+        { id: 'p1', x: 3, z: 4, kind: 'pit', grate: true },
+        { id: 'w1', x: 5, z: 6, kind: 'pile' },
+      ],
+    })
+    expect(result.status).toBe('ok')
+    if (result.status !== 'ok') return
+    expect(result.data.version).toBe(CURRENT_SAVE_VERSION)
+    expect(result.data.fireResidues).toEqual([])
+    expect(result.data.placedFires).toEqual([
+      { id: 's1', x: 1, z: 2, kind: 'simple', hasBurned: true },
+      { id: 'p1', x: 3, z: 4, kind: 'pit', grate: true, hasBurned: false },
+      { id: 'w1', x: 5, z: 6, kind: 'pile', hasBurned: false },
+    ])
+  })
+
+  it('round-trips fire residues and rejects malformed current-version records (plan items-player-058)', () => {
+    const withResidue = {
+      ...validSave,
+      fireResidues: [{ id: 'ash:1', x: 2, z: 3, createdAtDay: 1, expiresAtDay: 2 }],
+      placedFires: [{ id: 's1', x: 0, z: 0, kind: 'simple' as const, hasBurned: true }],
+    }
+    const result = loadStoredSave(withResidue)
+    expect(result.status).toBe('ok')
+    if (result.status === 'ok') {
+      expect(result.data.fireResidues).toEqual(withResidue.fireResidues)
+      expect(result.data.placedFires[0]?.hasBurned).toBe(true)
+    }
+    expect(isSaveData({ ...validSave, fireResidues: undefined })).toBe(false)
+    expect(isSaveData({ ...validSave, placedFires: [{ id: 's1', x: 0, z: 0, kind: 'simple' }] })).toBe(false)
   })
 
   it('round-trips player Y and rejects a non-finite value (plan persistence-006)', () => {

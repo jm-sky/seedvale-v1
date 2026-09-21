@@ -7,6 +7,7 @@ import type { CampRestSnapshot } from '../campRestSnapshot'
 import type { InspectionActionId } from '../inspection/worldInspectionView'
 import type { PlayerActionContext } from './actionContext'
 import type { ActionResult } from './actionContracts'
+import type { FireRemovalPreview } from './fireRemovalActions'
 import type {
   ConstructionActionView,
   RemovalPreview,
@@ -26,6 +27,7 @@ import {
   type InspectionTargetRef,
 } from '../inspection/inspectionTarget'
 import { requestDirectWaterDrink } from '../waterDrinkInteraction'
+import { fireRemovalToInspectionPreview } from './fireRemovalActions'
 
 export type InspectionActionDeps = {
   vueUi: VueUi
@@ -58,6 +60,8 @@ export type InspectionActionDeps = {
   previewBedrollRemoval: (id: string) => RemovalPreview | null
   removeBedroll: (id: string) => void
   previewPlatformRemoval: (id: string) => RemovalPreview | null
+  previewPlacedFireRemoval: (id: string) => FireRemovalPreview | null
+  removePlacedFire: (id: string) => void
   removePlatform: (id: string) => void
   sleepInOwnedHouse: (id: string) => void
   resumeTerrainPreparationWork: (id: string) => void
@@ -125,6 +129,7 @@ export function createInspectionActions(
     previewPlayerTroughRemoval: deps.previewPlayerTroughRemoval,
     previewBedrollRemoval: deps.previewBedrollRemoval,
     previewPlatformRemoval: deps.previewPlatformRemoval,
+    previewPlacedFireRemoval: deps.previewPlacedFireRemoval,
     campSnapshot: deps.campInspectionSnapshot,
     droppedItems: ctx.bundle.droppedItems,
     worldSeed: ctx.getWorldSeed(),
@@ -237,6 +242,15 @@ export function createInspectionActions(
         }
         if (ref.kind === 'platform') {
           confirmDanger('Usuń podest', deps.previewPlatformRemoval(ref.id), () => deps.removePlatform(ref.id))
+          return
+        }
+        if (ref.kind === 'placedFire') {
+          const preview = deps.previewPlacedFireRemoval(ref.id)
+          confirmDanger(
+            preview?.confirmTitle ?? 'Usuń ognisko',
+            preview ? fireRemovalToInspectionPreview(preview) : null,
+            () => deps.removePlacedFire(ref.id),
+          )
           return
         }
         break

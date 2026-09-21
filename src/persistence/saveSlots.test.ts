@@ -39,6 +39,7 @@ const currentSave = {
   collectedItemIds: [],
   droppedItems: [],
   placedFires: [],
+  fireResidues: [],
   timeOfDay: 0.32,
   elapsedDays: 0,
     heldTool: null,

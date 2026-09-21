@@ -14,10 +14,10 @@ Generated from exported TypeScript symbols.
 
 ## `interaction/Interactable.ts`
 
-- `Interactable` — type — line 272
-- `InteractablePayload` — type — line 33
-- `surfaceInteractable` — function — line 277
-- `WorldItemRef` — type — line 18
+- `Interactable` — type — line 284
+- `InteractablePayload` — type — line 34
+- `surfaceInteractable` — function — line 289
+- `WorldItemRef` — type — line 19
 
 ## `interaction/interactionCycleTarget.ts`
 
@@ -27,22 +27,22 @@ Generated from exported TypeScript symbols.
 
 ## `interaction/interactionView.ts`
 
-- `alternateActionState` — function — line 499
-- `buildInteractionGazePrompt` — function — line 481
-- `buildInteractionView` — function — line 389
-- `hasInspectAction` — function — line 491
-- `interactableStableKey` — function — line 294
-- `interactionActionFromSkillPrompt` — function — line 504
-- `InteractionActionSlot` — type — line 6
+- `alternateActionState` — function — line 532
+- `buildInteractionGazePrompt` — function — line 514
+- `buildInteractionView` — function — line 419
+- `hasInspectAction` — function — line 524
+- `interactableStableKey` — function — line 322
+- `interactionActionFromSkillPrompt` — function — line 537
+- `InteractionActionSlot` — type — line 8
   - domain: ui-input
-- `InteractionActionView` — type — line 12
-- `InteractionConsequenceTone` — type — line 10
-- `InteractionGazePrompt` — type — line 25
-- `InteractionView` — type — line 20
-- `InteractionViewContext` — type — line 29
-- `isInteractableActionable` — function — line 468
-- `primaryActionState` — function — line 495
-- `slotInputKey` — function — line 475
+- `InteractionActionView` — type — line 14
+- `InteractionConsequenceTone` — type — line 12
+- `InteractionGazePrompt` — type — line 27
+- `InteractionView` — type — line 22
+- `InteractionViewContext` — type — line 31
+- `isInteractableActionable` — function — line 501
+- `primaryActionState` — function — line 528
+- `slotInputKey` — function — line 508
 
 ## `interaction/resolveInteraction.ts`
 

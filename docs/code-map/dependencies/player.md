@@ -117,6 +117,7 @@ Generated from TypeScript imports.
 - `terrain/bloodOverlay.ts`
 - `terrain/chunkManager.ts`
 - `terrain/dig.ts`
+- `terrain/fireResidueOverlay.ts`
 - `terrain/naturalResources.ts`
 - `terrain/slopeConstraint.ts`
 - `terrain/waterBodyKind.ts`
@@ -138,6 +139,7 @@ Generated from TypeScript imports.
 - `world/createStandingTorches.ts`
 - `world/createTerrainPreparations.ts`
 - `world/createWorkContracts.ts`
+- `world/fireResidues.ts`
 - `world/groundFog.ts`
 - `world/npcGraves.ts`
 - `world/worldContext.ts`

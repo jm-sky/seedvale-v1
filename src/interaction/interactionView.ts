@@ -1,5 +1,7 @@
 import type { ConstructionActionView, ResidentialWorkView } from '../app/actions/placementActions'
+import type { ItemKind } from '../items/items'
 import type { Interactable } from './Interactable'
+import { type FireRemovalPreview, isPlacedFireDismantleShortcut } from '../app/actions/fireRemovalActions'
 
 /** @domain ui-input */
 
@@ -30,6 +32,9 @@ export type InteractionViewContext = {
   hasInspect: boolean
   /** Targeted-skill primary slot override (plan items-player-021). */
   primaryOverride?: InteractionActionView | null
+  /** Live held-tool kind for contextual alternate-slot overrides. */
+  heldTool?: ItemKind | null
+  previewPlacedFireRemoval?: (id: string) => FireRemovalPreview | null
   describeWellWork?: (id: string) => { canWork: boolean, reasonLabel: string } | null
   describeWellRoofRepair?: (id: string) => {
     canAct: boolean
@@ -107,6 +112,29 @@ function digActions(target: Extract<Interactable, { kind: 'dig' }>): Interaction
     actions.push({ slot: 'primary', label: stripBracketPrefix(target.promptLabel), enabled: false, reasonLabel: '' })
   }
   return actions
+}
+
+function campfireActions(
+  target: Extract<Interactable, { kind: 'campfire' }>,
+  ctx: InteractionViewContext,
+): InteractionActionView[] {
+  const actions = buildFromParsed(parseLegacyPrompt(target.promptLabel))
+  if (!isPlacedFireDismantleShortcut(target.source, ctx.heldTool ?? null)) return actions
+  const preview = target.source.kind === 'placed'
+    ? ctx.previewPlacedFireRemoval?.(target.source.id)
+    : null
+  const label = preview?.actionLabel
+    ?? (target.source.kind === 'placed' && target.source.fireKind === 'pit'
+      ? 'Rozbierz palenisko'
+      : 'Usuń ognisko')
+  const alternate: InteractionActionView = {
+    slot: 'alternate',
+    label,
+    enabled: preview?.canReceive ?? true,
+    reasonLabel: preview?.reasonLabel ?? '',
+  }
+  const withoutAlternate = actions.filter((action) => action.slot !== 'alternate')
+  return [...withoutAlternate, alternate]
 }
 
 function enrichPlayerWell(
@@ -300,7 +328,9 @@ export function interactableStableKey(target: Interactable): string {
     case 'camp':
       return `camp:${target.tentId}`
     case 'campfire':
-      return `campfire:${target.position.x.toFixed(2)}:${target.position.z.toFixed(2)}`
+      return target.source.kind === 'placed'
+        ? `campfire:${target.source.id}`
+        : `campfire:${target.position.x.toFixed(2)}:${target.position.z.toFixed(2)}`
     case 'cart':
       return `cart:${target.id}`
     case 'container':
@@ -407,6 +437,9 @@ export function buildInteractionView(
     case 'camp':
     case 'tent':
       actions = campRestActions()
+      break
+    case 'campfire':
+      actions = campfireActions(target, ctx)
       break
     case 'cart':
       actions = cartActions(target)

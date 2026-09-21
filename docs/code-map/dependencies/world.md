@@ -2572,6 +2572,24 @@ Generated from TypeScript imports.
 - `app/worldBundle.ts`
 - `world/expeditionProvisioning.test.ts`
 
+## `world/fireResidues.test.ts`
+
+**Imports**
+
+- `world/fireResidues.ts`
+
+## `world/fireResidues.ts`
+
+**Imports**
+
+- `player/PlayerController.ts`
+- `terrain/fireResidueOverlay.ts`
+
+**Imported by**
+
+- `app/worldBundle.ts`
+- `world/fireResidues.test.ts`
+
 ## `world/fishing.test.ts`
 
 **Imports**

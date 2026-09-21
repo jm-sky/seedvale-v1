@@ -72,6 +72,12 @@ export function isPlayerPlacedFire(entry: { habitatBurn: boolean }): boolean {
   return !entry.habitatBurn
 }
 
+/** Player-built kinds that can be dismantled from Inspection / a digging
+ *  tool (plan items-player-058). `'pile'` is intentionally out of scope. */
+export function isRemovablePlacedFireKind(kind: PlacedFireKind): kind is 'simple' | 'pit' {
+  return kind === 'simple' || kind === 'pit'
+}
+
 /** Persisted shape — positions aren't derivable from the seed (player chose
  *  them), so the full record round-trips through the save, same as
  *  `items/createDroppedItems.ts`'s `DroppedItem`. Lit/fuel state is *not*
@@ -83,8 +89,19 @@ export function isPlayerPlacedFire(entry: { habitatBurn: boolean }): boolean {
  *  does need to persist — a one-time built upgrade, not derived state. It
  *  mirrors onto the live `VillageFire.hasGrate()`, the actual value cooking
  *  reads (`items/campfireCooking.ts`'s `resolveCookingCapacity`), so nothing
- *  downstream has to know this is a `PlacedFire` versus any other fire. */
-export type PlacedFire = { id: string, x: number, z: number, kind: PlacedFireKind, grate: boolean }
+ *  downstream has to know this is a `PlacedFire` versus any other fire.
+ *
+ *  `hasBurned` (plan items-player-058) is the persisted "was this fire ever
+ *  actually used?" flag. Runtime `everLit` resets on reconstruction and
+ *  cannot answer residue after save/load. */
+export type PlacedFire = {
+  id: string
+  x: number
+  z: number
+  kind: PlacedFireKind
+  grate: boolean
+  hasBurned: boolean
+}
 
 export type PlacedFireEntry = {
   fire: VillageFire
@@ -120,6 +137,13 @@ export type PlacedFires = {
    *  it onto the live `VillageFire`, and attaches the grate visual as a child
    *  of this fire's own group. */
   buildGrate: (id: string) => boolean
+  /** Live entry by stable id, or undefined. Callers must re-resolve at
+   *  commit time rather than capturing the object across a rebuild. */
+  find: (id: string) => PlacedFireEntry | undefined
+  /** Mesh/light/collection cleanup for one fire. Repeated calls are a
+   *  no-op. Does not grant salvage or create residue — those belong to the
+   *  application-layer dismantle action (plan items-player-058). */
+  remove: (id: string) => boolean
   update: (dt: number) => void
   dispose: () => void
 }
@@ -172,6 +196,7 @@ export function createPlacedFires(
     fire.setGrate(pf.grate)
     fires.push({
       ...pf,
+      hasBurned: pf.hasBurned === true,
       habitatBurn: pf.habitatBurn === true,
       fire,
       everLit: false,
@@ -179,7 +204,8 @@ export function createPlacedFires(
     })
   }
 
-  const despawn = (id: string): void => {
+  const despawn = (id: string): boolean => {
+    const index = fires.findIndex((entry) => entry.id === id)
     const mesh = meshes.get(id)
     if (mesh) {
       pointLightBudget.unregisterSubtree(mesh)
@@ -187,8 +213,9 @@ export function createPlacedFires(
       disposeObject3D(mesh)
       meshes.delete(id)
     }
-    const index = fires.findIndex((entry) => entry.id === id)
-    if (index !== -1) fires.splice(index, 1)
+    if (index === -1) return false
+    fires.splice(index, 1)
+    return true
   }
 
   for (const pf of initial) spawn(pf)
@@ -197,7 +224,7 @@ export function createPlacedFires(
     list: () => fires,
     nodes: () => fires
       .filter(isPlayerPlacedFire)
-      .map(({ id, x, z, kind, grate }) => ({ id, x, z, kind, grate })),
+      .map(({ id, x, z, kind, grate, hasBurned }) => ({ id, x, z, kind, grate, hasBurned })),
     place(x, z, kind, opts) {
       spawn({
         id: `fire:${Date.now()}:${nextFireId++}`,
@@ -205,6 +232,7 @@ export function createPlacedFires(
         z,
         kind,
         grate: false,
+        hasBurned: kind === 'simple',
         habitatBurn: opts?.habitatBurn === true,
       })
       const entry = fires[fires.length - 1]!
@@ -213,6 +241,8 @@ export function createPlacedFires(
         // action already took 2 from the inventory (`app/createApp.ts`).
         entry.fire.light()
         entry.fire.addFuel()
+        entry.hasBurned = true
+        entry.everLit = true
       }
       return entry
     },
@@ -239,6 +269,12 @@ export function createPlacedFires(
       mesh?.add(createGrateVisual())
       return true
     },
+    find(id) {
+      return fires.find((entry) => entry.id === id)
+    },
+    remove(id) {
+      return despawn(id)
+    },
     update(dt) {
       // Snapshot first — `despawn` splices `fires`, which would skip the
       // next entry if we walked the live array while removing from it.
@@ -247,6 +283,7 @@ export function createPlacedFires(
         if (entry.kind === 'pile') meshes.get(entry.id)?.scale.setScalar(pileBodyScale(entry.fire.getFuelRatio()))
         if (entry.fire.isLit()) {
           entry.everLit = true
+          entry.hasBurned = true
           entry.unlitSeconds = 0
           continue
         }

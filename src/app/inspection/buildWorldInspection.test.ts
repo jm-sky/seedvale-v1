@@ -261,6 +261,31 @@ describe('buildWorldInspection (plan ui-input-014)', () => {
     }))).toEqual({ kind: 'playerTrough', id: 'trough:1' })
   })
 
+  it('maps player-placed simple/pit campfires and ignores settlement fires', () => {
+    const fire = { isLit: () => false } as never
+    expect(inspectionTargetRef(surfaceInteractable({
+      kind: 'campfire',
+      position: { x: 0, z: 0 },
+      promptLabel: '',
+      fire,
+      source: { kind: 'placed', id: 'fire:9', fireKind: 'simple' },
+    }))).toEqual({ kind: 'placedFire', id: 'fire:9' })
+    expect(inspectionTargetRef(surfaceInteractable({
+      kind: 'campfire',
+      position: { x: 0, z: 0 },
+      promptLabel: '',
+      fire,
+      source: { kind: 'settlement' },
+    }))).toBeNull()
+    expect(inspectionTargetRef(surfaceInteractable({
+      kind: 'campfire',
+      position: { x: 0, z: 0 },
+      promptLabel: '',
+      fire,
+      source: { kind: 'placed', id: 'fire:pile', fireKind: 'pile' },
+    }))).toBeNull()
+  })
+
   it('disables trough fill when the live check reports missing water', () => {
     const view = buildWorldInspection({ kind: 'playerTrough', id: 'trough:1' }, emptyLookup({
       trough: () => ({
@@ -276,6 +301,34 @@ describe('buildWorldInspection (plan ui-input-014)', () => {
     expect(view!.actions.find((action) => action.id === 'fill')).toMatchObject({
       enabled: false,
       reasonLabel: 'Potrzebujesz pojemnika z wodą.',
+    })
+  })
+
+  it('builds player fire inspection with a danger remove action', () => {
+    const view = buildWorldInspection({ kind: 'placedFire', id: 'fire:9' }, emptyLookup({
+      previewPlacedFireRemoval: (id) => id === 'fire:9'
+        ? {
+          id,
+          fireKind: 'pit',
+          actionLabel: 'Rozbierz palenisko',
+          confirmTitle: 'Rozbierz palenisko',
+          body: 'odzysk',
+          canReceive: false,
+          reasonLabel: 'Najpierw zdemontuj ruszt.',
+          salvageCount: 4,
+          hasBurned: true,
+          lit: false,
+          grate: true,
+        }
+        : null,
+    }))
+    expect(view).not.toBeNull()
+    expect(view!.title).toBe('Kamienne palenisko')
+    expect(view!.actions[0]).toMatchObject({
+      id: 'remove',
+      variant: 'danger',
+      enabled: false,
+      reasonLabel: 'Najpierw zdemontuj ruszt.',
     })
   })
 })

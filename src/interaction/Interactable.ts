@@ -5,6 +5,7 @@ import type { PreySpawner } from '../fauna/AnimalSpawner'
 import type { ItemKind } from '../items/items'
 import type { Settlement } from '../settlement/createSettlement'
 import type { Household } from '../settlement/household'
+import type { PlacedFireKind } from '../settlement/PlacedFires'
 import type { VillageFire } from '../settlement/VillageFire'
 import type { LandmarkKind } from '../terrain/chunkEnvironment'
 import type { DigProfile } from '../terrain/dig'
@@ -107,7 +108,18 @@ export type InteractablePayload =
     sizeClass: TreeSizeClass
     canHarvest?: boolean
   }
-  | { kind: 'campfire', position: { x: number, z: number }, promptLabel: string, fire: VillageFire }
+  /** `source` distinguishes a player-placed fire (stable id + kind) from a
+   *  settlement campfire. Habitat-burn spectacles are never built as
+   *  interactables (`isPlayerPlacedFire`). */
+  | {
+    kind: 'campfire'
+    position: { x: number, z: number }
+    promptLabel: string
+    fire: VillageFire
+    source:
+      | { kind: 'placed', id: string, fireKind: PlacedFireKind }
+      | { kind: 'settlement' }
+  }
   | { kind: 'spawner', position: { x: number, z: number }, promptLabel: string, spawner: PreySpawner }
   | { kind: 'item', position: { x: number, z: number }, promptLabel: string, item: WorldItemRef, interactRange?: number }
   /** Ore deposit — pickaxe `[E] Wydobądź` (plan 090). */

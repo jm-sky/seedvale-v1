@@ -51,6 +51,8 @@ Generated from TypeScript imports.
 - `app/actions/containerActions.ts`
 - `app/actions/cookMealIntent.test.ts`
 - `app/actions/cookMealIntent.ts`
+- `app/actions/fireRemovalActions.test.ts`
+- `app/actions/fireRemovalActions.ts`
 - `app/actions/fullCampIntent.test.ts`
 - `app/actions/fullCampIntent.ts`
 - `app/actions/gatheringActions.ts`
@@ -211,6 +213,36 @@ Generated from TypeScript imports.
 
 - `app/actions/cookMealIntent.test.ts`
 - `app/createApp.ts`
+
+## `app/actions/fireRemovalActions.test.ts`
+
+**Imports**
+
+- `app/actions/actionContext.ts`
+- `app/actions/fireRemovalActions.ts`
+- `app/userActions.ts`
+- `settlement/VillageFire.ts`
+
+## `app/actions/fireRemovalActions.ts`
+
+**Imports**
+
+- `app/actions/actionContext.ts`
+- `app/actions/placementActions.ts`
+- `app/userActions.ts`
+- `interaction/Interactable.ts`
+- `items/itemCatalog.ts`
+- `items/items.ts`
+- `settlement/PlacedFires.ts`
+
+**Imported by**
+
+- `app/actions/fireRemovalActions.test.ts`
+- `app/actions/inspectionActions.ts`
+- `app/createApp.ts`
+- `app/gameLoop.ts`
+- `app/inspection/buildWorldInspection.ts`
+- `interaction/interactionView.ts`
 
 ## `app/actions/fullCampIntent.test.ts`
 
@@ -378,6 +410,7 @@ Generated from TypeScript imports.
 
 - `app/actions/actionContext.ts`
 - `app/actions/actionContracts.ts`
+- `app/actions/fireRemovalActions.ts`
 - `app/actions/placementActions.ts`
 - `app/actions/restActions.ts`
 - `app/campRestSnapshot.ts`
@@ -575,6 +608,7 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `app/actions/containerActions.ts`
+- `app/actions/fireRemovalActions.ts`
 - `app/actions/inspectionActions.ts`
 - `app/actions/placementPreviewActions.ts`
 - `app/actions/placementPreviewContract.test.ts`
@@ -948,6 +982,7 @@ Generated from TypeScript imports.
 - `app/actions/actionContext.ts`
 - `app/actions/containerActions.ts`
 - `app/actions/cookMealIntent.ts`
+- `app/actions/fireRemovalActions.ts`
 - `app/actions/fullCampIntent.ts`
 - `app/actions/gatheringActions.ts`
 - `app/actions/groundActions.ts`
@@ -1193,6 +1228,7 @@ Generated from TypeScript imports.
 
 - `ai/NpcAgent.ts`
 - `app/actions/acquisitionFeedback.ts`
+- `app/actions/fireRemovalActions.ts`
 - `app/actions/leadActions.ts`
 - `app/actions/mountActions.ts`
 - `app/actions/placementActions.ts`
@@ -1368,6 +1404,7 @@ Generated from TypeScript imports.
 
 **Imports**
 
+- `app/actions/fireRemovalActions.ts`
 - `app/actions/placementActions.ts`
 - `app/actions/restActions.ts`
 - `app/campRestSnapshot.ts`
@@ -1737,6 +1774,8 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `app/actions/fireRemovalActions.test.ts`
+- `app/actions/fireRemovalActions.ts`
 - `app/actions/fullCampIntent.ts`
 - `app/createApp.ts`
 - `app/userActions.test.ts`
@@ -1902,6 +1941,7 @@ Generated from TypeScript imports.
 - `world/expeditionAssignment.ts`
 - `world/expeditionParty.ts`
 - `world/expeditionProvisioning.ts`
+- `world/fireResidues.ts`
 - `world/foodSources.ts`
 - `world/grassForage.ts`
 - `world/helperDeliveryHooks.ts`

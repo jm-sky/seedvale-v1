@@ -408,6 +408,12 @@ Generated from exported TypeScript symbols.
 - `fbm01` — function — line 14
 - `FbmParams` — type — line 3
 
+## `terrain/fireResidueOverlay.ts`
+
+- `createFireResidueOverlaySystem` — function — line 81
+- `FireResidueOverlayPlacement` — type — line 12
+- `FireResidueOverlaySystem` — type — line 19
+
 ## `terrain/footstepSurface.ts`
 
 - `FootstepSurface` — type — line 6

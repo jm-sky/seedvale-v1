@@ -924,6 +924,16 @@ Generated from TypeScript imports.
 - `terrain/grassPlacement.ts`
 - `terrain/worldKnowledgeScan.ts`
 
+## `terrain/fireResidueOverlay.ts`
+
+**Imports**
+
+- `player/PlayerController.ts`
+
+**Imported by**
+
+- `world/fireResidues.ts`
+
 ## `terrain/footstepSurface.test.ts`
 
 **Imports**

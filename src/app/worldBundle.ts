@@ -201,6 +201,7 @@ import {
   readyExpeditionAssignment,
   provisionExpeditionAssignment as transferExpeditionProvisions,
 } from '../world/expeditionProvisioning'
+import { createFireResidues, type FireResidueRecord, type FireResidues } from '../world/fireResidues'
 import { createFoodSourceHooks } from '../world/foodSources'
 import { createHelperDeliveryHooks } from '../world/helperDeliveryHooks'
 import { createHerbalGatherHooks } from '../world/herbalGathering'
@@ -402,6 +403,7 @@ export type WorldBundle = {
   resourceDeposits: ResourceDeposits
   droppedItems: DroppedItems
   placedFires: PlacedFires
+  fireResidues: FireResidues
   placedTents: PlacedTents
   placedTraps: PlacedTraps
   /** Movable draft carts (plan fauna-007) — world-owned, no AI. */
@@ -1080,6 +1082,7 @@ type WorldSystemsSeed = {
   dayNight: DayNightState
   droppedItems: readonly DroppedItem[]
   placedFires: readonly PlacedFire[]
+  fireResidues: readonly FireResidueRecord[]
   placedTents: readonly PlacedTent[]
   placedTraps: readonly PlacedTrapRecord[]
   carts: readonly CartRecord[]
@@ -1277,6 +1280,7 @@ async function buildWorldSystems(
     playAt, treeLifecycle, getWorldDays, dayNight,
     droppedItems: initialDroppedItems,
     placedFires: initialPlacedFires,
+    fireResidues: initialFireResidues,
     placedTents: initialPlacedTents,
     placedTraps: initialPlacedTraps,
     carts: initialCarts,
@@ -1657,6 +1661,12 @@ async function buildWorldSystems(
 
   bootMark('placed')
   const placedFires = createPlacedFires(scene, chunkManager.sampleHeight, initialPlacedFires, playAt, pointLightBudget)
+  const fireResidues = createFireResidues(
+    scene,
+    chunkManager.sampleHeight,
+    initialFireResidues,
+    dayNight.elapsedDays,
+  )
   const placedTents = createPlacedTents(scene, chunkManager.sampleHeight, initialPlacedTents, config.seed)
   const placedTraps = createPlacedTraps(
     scene,
@@ -2078,6 +2088,7 @@ async function buildWorldSystems(
     resourceDeposits,
     droppedItems,
     placedFires,
+    fireResidues,
     placedTents,
     placedTraps,
     carts,
@@ -2463,6 +2474,8 @@ export async function createWorldBundle(
    *  mutated in place, carried across rebuild" contract as `resourceDepletion`
    *  above. */
   mineableRockState: MineableRockStateStore = new Map(),
+  /** Ash marks from dismantled used player fires (plan items-player-058). */
+  initialFireResidues: readonly FireResidueRecord[] = [],
 ): Promise<BuiltWorldSystems> {
   return buildWorldSystems({
     scene, config, collectedItemIds, renewableWorldItems, consumedWorldPickupIds, removedCropIds, plantedTrees, plantedCrops, modifications,
@@ -2470,6 +2483,7 @@ export async function createWorldBundle(
     treeLifecycle, getWorldDays, dayNight,
     droppedItems: initialDroppedItems,
     placedFires: initialPlacedFires,
+    fireResidues: initialFireResidues,
     placedTents: initialPlacedTents,
     placedTraps: initialPlacedTraps,
     carts: initialCarts,
@@ -2641,6 +2655,8 @@ export async function rebuildWorldBundle(
   bundle.droppedItems.dispose()
   const carriedFires = resetCollectedItems ? [] : [...bundle.placedFires.nodes()]
   bundle.placedFires.dispose()
+  const carriedFireResidues = resetCollectedItems ? [] : [...bundle.fireResidues.nodes()]
+  bundle.fireResidues.dispose()
   const carriedTents = resetCollectedItems ? [] : [...bundle.placedTents.nodes()]
   bundle.placedTents.dispose()
   const carriedTraps = resetCollectedItems ? [] : [...bundle.placedTraps.nodes()]
@@ -2747,6 +2763,7 @@ export async function rebuildWorldBundle(
     treeLifecycle, getWorldDays, dayNight,
     droppedItems: carriedDrops,
     placedFires: carriedFires,
+    fireResidues: carriedFireResidues,
     placedTents: carriedTents,
     placedTraps: carriedTraps,
     carts: carriedCarts,
@@ -2837,6 +2854,7 @@ export function disposeWorldBundle(bundle: WorldBundle): void {
   bundle.itemSpawners.dispose()
   bundle.droppedItems.dispose()
   bundle.placedFires.dispose()
+  bundle.fireResidues.dispose()
   bundle.placedTents.dispose()
   bundle.placedTraps.dispose()
   bundle.carts.dispose()

@@ -103,6 +103,7 @@ export type InspectionTargetKind =
   | 'bedroll'
   | 'platform'
   | 'playerTrough'
+  | 'placedFire'
 
 export type InspectionTargetRef = {
   kind: InspectionTargetKind

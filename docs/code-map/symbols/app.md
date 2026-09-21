@@ -55,6 +55,14 @@ Generated from exported TypeScript symbols.
   - domain: ui-input
 - `runEatAnything` — function — line 201
 
+## `app/actions/fireRemovalActions.ts`
+
+- `createFireRemovalActions` — function — line 80
+- `FireRemovalActions` — type — line 109
+- `FireRemovalPreview` — type — line 13
+- `fireRemovalToInspectionPreview` — function — line 69
+- `isPlacedFireDismantleShortcut` — function — line 41
+
 ## `app/actions/fullCampIntent.ts`
 
 - `createFullCampIntent` — function — line 55
@@ -82,9 +90,9 @@ Generated from exported TypeScript symbols.
 
 ## `app/actions/inspectionActions.ts`
 
-- `createInspectionActions` — function — line 95
-- `InspectionActionDeps` — type — line 30
-- `InspectionActions` — type — line 82
+- `createInspectionActions` — function — line 99
+- `InspectionActionDeps` — type — line 32
+- `InspectionActions` — type — line 86
 
 ## `app/actions/leadActions.ts`
 
@@ -287,13 +295,13 @@ Generated from exported TypeScript symbols.
 
 ## `app/createApp.ts`
 
-- `createApp` — function — line 451
+- `createApp` — function — line 452
   - system: app-composition
   - role: Composition root: builds every long-lived system, threads their dependencies and owns app-level lifecycle (boot, rebuild, dispose).
   - owns: WorldBundle, GameLoop, AppRenderLoop
   - lifecycle: boot
   - integration: Wires world, player, UI, persistence and audio systems together.
-- `NewAppOptions` — type — line 420
+- `NewAppOptions` — type — line 421
 
 ## `app/faunaEncounterComposition.ts`
 
@@ -303,9 +311,9 @@ Generated from exported TypeScript symbols.
 
 ## `app/gameLoop.ts`
 
-- `createGameLoop` — function — line 731
-- `GameLoop` — type — line 691
-- `GameLoopDeps` — type — line 330
+- `createGameLoop` — function — line 735
+- `GameLoop` — type — line 695
+- `GameLoopDeps` — type — line 332
 
 ## `app/graphicsSettings.ts`
 
@@ -320,14 +328,14 @@ Generated from exported TypeScript symbols.
 
 ## `app/inspection/buildWorldInspection.ts`
 
-- `buildWorldInspection` — function — line 127
-- `listWaterContainerOptions` — function — line 831
-- `liveWellWaterSource` — function — line 877
-- `WorldInspectionLookup` — type — line 91
+- `buildWorldInspection` — function — line 130
+- `listWaterContainerOptions` — function — line 853
+- `liveWellWaterSource` — function — line 899
+- `WorldInspectionLookup` — type — line 93
 
 ## `app/inspection/inspectionTarget.ts`
 
-- `contractTargetFor` — function — line 33
+- `contractTargetFor` — function — line 37
 - `inspectionTargetRef` — function — line 10
 
 ## `app/inspection/worldInspectionView.ts`
@@ -344,18 +352,18 @@ Generated from exported TypeScript symbols.
 - `InspectionRow` — type — line 52
 - `InspectionSection` — type — line 59
 - `InspectionTargetKind` — type — line 96
-- `InspectionTargetRef` — type — line 107
+- `InspectionTargetRef` — type — line 108
 - `WorldInspectionView` — type — line 88
 
 ## `app/interactables.ts`
 
-- `buildCombatTarget` — function — line 1431
-- `buildDigTarget` — function — line 1375
+- `buildCombatTarget` — function — line 1433
+- `buildDigTarget` — function — line 1377
 - `buildInteractables` — function — line 589
 - `COMBAT_TARGET_CONE_DOT` — const — line 113
 - `COMBAT_TARGET_RANGE` — const — line 98
 - `CombatAimMode` — type — line 103
-- `commitWorldPickup` — function — line 1577
+- `commitWorldPickup` — function — line 1579
   - domain: items-player
 - `DIG_REACH` — const — line 92
 - `DROPPED_ITEM_GROUP_RADIUS` — const — line 319
@@ -370,11 +378,11 @@ Generated from exported TypeScript symbols.
 - `itemPromptLabel` — function — line 308
 - `resolveHaySpot` — function — line 462
 - `resolveShorelineWaterSource` — function — line 519
-- `resolveWorldPickup` — function — line 1514
+- `resolveWorldPickup` — function — line 1516
 - `worldItemAllowsAltInteract` — function — line 293
   - domain: ui-input
-- `WorldPickupCommit` — type — line 1562
-- `WorldPickupResolution` — type — line 1501
+- `WorldPickupCommit` — type — line 1564
+- `WorldPickupResolution` — type — line 1503
   - domain: items-player
 
 ## `app/inventoryWiring.ts`
@@ -459,24 +467,24 @@ Generated from exported TypeScript symbols.
 
 ## `app/worldBundle.ts`
 
-- `BuiltWorldSystems` — type — line 1243
-- `carryTerrainModificationsAcrossRebuild` — function — line 2537
-- `caveCrateContainerSpecs` — function — line 344
+- `BuiltWorldSystems` — type — line 1246
+- `carryTerrainModificationsAcrossRebuild` — function — line 2551
+- `caveCrateContainerSpecs` — function — line 345
   - domain: world-terrain
-- `caveTreasureContainerSpecs` — function — line 311
-- `createWorldBundle` — function — line 2272
-- `disposeWorldBundle` — function — line 2834
-- `HOME_RADIUS` — const — line 264
-- `homeChunks` — function — line 368
-- `rebuildWorldBundle` — function — line 2550
-- `WorldBundle` — type — line 391
+- `caveTreasureContainerSpecs` — function — line 312
+- `createWorldBundle` — function — line 2283
+- `disposeWorldBundle` — function — line 2851
+- `HOME_RADIUS` — const — line 265
+- `homeChunks` — function — line 369
+- `rebuildWorldBundle` — function — line 2564
+- `WorldBundle` — type — line 392
   - system: world-bundle
   - role: Owns the lifetime/rebuild boundary for all world systems (terrain, settlements, fauna, items, player-placed structures).
   - owns: WorldBundle
   - lifecycle: rebuild
-- `WorldBundleRebuildOutcome` — type — line 2548
-- `WorldStartupLoadingStage` — type — line 1057
-- `WorldStartupLoadingStageListener` — type — line 1059
+- `WorldBundleRebuildOutcome` — type — line 2562
+- `WorldStartupLoadingStage` — type — line 1059
+- `WorldStartupLoadingStageListener` — type — line 1061
 
 ## `app/worldRebuildLifecycle.ts`
 
