@@ -1,4 +1,5 @@
 import type { AudioBusId, PlayAt } from './createWorldAudio'
+import { WORLD_SPATIAL_CONTEXT_SURFACE } from '../world/spatialContext'
 
 /**
  * @domain world
@@ -73,7 +74,11 @@ export function createAmbientEventRuntime(
           const sound = def.sounds[Math.floor(rng() * def.sounds.length)]
           worldAudio.playAt(
             sound,
-            { x: ctx.playerX + Math.cos(angle) * radius, z: ctx.playerZ + Math.sin(angle) * radius },
+            {
+              x: ctx.playerX + Math.cos(angle) * radius,
+              z: ctx.playerZ + Math.sin(angle) * radius,
+              spatialContext: WORLD_SPATIAL_CONTEXT_SURFACE,
+            },
             def.volume,
             def.bus,
           )

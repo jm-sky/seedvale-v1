@@ -1,7 +1,7 @@
 # Plan: WorldAudio async lifecycle and cache recovery
 
 **Created:** 2026-09-20  
-**Status:** `planned` 📋  
+**Status:** `verification needed` 🔍  
 **Priority:** medium · **Effort:** S  
 **Depends on:** none  
 **Domain:** `world`  
@@ -108,5 +108,9 @@ Run focused Vitest + type-check as appropriate during implementation.
 Manual browser verification is performed by the User; the implementation agent must not run browser verification.
 
 Do not run `pnpm docs:sync`.
+
+## Implementation status (2026-09-21)
+
+Implemented on `main`: one-shot owner tracking + dispose guards, rejected `loadBuffer` cache eviction, `createWorldAudio.test.ts` lifecycle/cache coverage. Spatial gating from world-037 preserved. Automated checks pass; browser verification pending (user).
 
 > **Zrób git commit i push do main, rebase jeżeli trzeba**

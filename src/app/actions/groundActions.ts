@@ -32,6 +32,7 @@ import { phaseName } from '../../world/dayNight'
 import { findExplicitBuriedSpot, findHiddenFindSpot, HIDDEN_FIND_SEARCH_RADIUS, resolveHiddenFindLoot } from '../../world/hiddenFinds'
 import { findTreasureMapBearCaveMapDig } from '../../world/locations/treasureMapBearCave'
 import { createSeededRandom } from '../../world/parseSeed'
+import { WORLD_SPATIAL_CONTEXT_SURFACE } from '../../world/spatialContext'
 import { buriedTreasureKeyPlacements } from '../../world/treasureSites'
 import { advanceWorldTreeHarvest, CHOP_DURATION_SEC } from '../../world/treeHarvest'
 import { isChoppableStage } from '../../world/treeLifecycle'
@@ -371,7 +372,7 @@ export function createGroundActions(ctx: PlayerActionContext, deps: GroundAction
       toast.show('Tu nie da się kopać kilofem.', 'error')
       return
     }
-    playActionMine(worldAudio.playAt, { x, z })
+    playActionMine(worldAudio.playAt, { x, z, spatialContext: WORLD_SPATIAL_CONTEXT_SURFACE })
     busy.start(physicalDuration(DIG_DURATION_SEC), 'Kucie…', () => {
       applyDigAt(bundle.chunkManager, x, z, profile, digFeedback())
       ctx.syncQuickActionAvailability()
@@ -543,7 +544,7 @@ export function createGroundActions(ctx: PlayerActionContext, deps: GroundAction
       toast.show(inventoryFullToastText(inventory, stepYield.kind, stepYield.count), 'error')
       return
     }
-    playActionMine(worldAudio.playAt, { x, z })
+    playActionMine(worldAudio.playAt, { x, z, spatialContext: WORLD_SPATIAL_CONTEXT_SURFACE })
     busy.start(physicalDuration(MINE_DURATION_SEC), 'Wydobywanie…', () => {
       if (!inventory.canAdd(stepYield.kind, stepYield.count)) {
         toast.show(inventoryFullToastText(inventory, stepYield.kind, stepYield.count), 'error')
@@ -580,7 +581,7 @@ export function createGroundActions(ctx: PlayerActionContext, deps: GroundAction
    *  leaves both progress and yield untouched automatically. */
   const startRockMineAt = (resourceId: string, x: number, z: number): void => {
     if (!hasItemCapability(heldTool.held(), 'rock_mining') || isActionBlocked(ctx)) return
-    playActionMine(worldAudio.playAt, { x, z })
+    playActionMine(worldAudio.playAt, { x, z, spatialContext: WORLD_SPATIAL_CONTEXT_SURFACE })
     busy.start(physicalDuration(MINE_DURATION_SEC), 'Kucie…', () => {
       const result = bundle.chunkManager.mineRock(resourceId)
       if (!result) {

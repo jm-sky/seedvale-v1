@@ -1,5 +1,7 @@
 import { Audio, AudioListener, AudioLoader, type Camera, Vector3 } from 'three'
+import type { WorldSpatialContext } from '../world/spatialContext'
 import { type AudioVolumes, loadAudioVolumes } from './audioSettings'
+import { worldSoundSpatialContextsCompatible } from './worldAudioSpatial'
 
 export type { AudioVolumes } from './audioSettings'
 
@@ -13,8 +15,25 @@ export type AudioLoopHandle = {
   dispose: () => void
 }
 
-/** World XZ (optional Y) for distance-attenuated one-shots. */
-export type WorldSoundPosition = { x: number; y?: number; z: number }
+/** World position for distance-attenuated one-shots. Real `y` or explicit
+ *  `spatialContext` when the source is genuinely surface-owned / synthetic. */
+export type WorldSoundPosition = {
+  x: number
+  y?: number
+  z: number
+  spatialContext?: WorldSpatialContext
+}
+
+/** Late-bound cave/surface resolver — reads current `Caves.spatialContextAt`. */
+export type ResolveSpatialContextAt = (
+  x: number,
+  y: number,
+  z: number,
+) => WorldSpatialContext | null
+
+export type CreateWorldAudioOptions = {
+  resolveSpatialContextAt?: ResolveSpatialContextAt
+}
 
 /** Fire-and-forget clip at a world position — volume falls off with distance.
  *  `maxDistance` overrides the default falloff range (`DISTANCE_MAX`) for a
@@ -79,11 +98,17 @@ const BUS_RAMP = 0.01
 const audioLoader = new AudioLoader()
 const bufferCache = new Map<string, Promise<AudioBuffer>>()
 
-function loadBuffer(url: string): Promise<AudioBuffer> {
+/** Shared across WorldAudio instances — successful buffers stay cached; failed
+ *  loads evict only their own promise so a later request can retry. */
+export function loadBuffer(url: string): Promise<AudioBuffer> {
   let cached = bufferCache.get(url)
   if (!cached) {
-    cached = audioLoader.loadAsync(url)
-    bufferCache.set(url, cached)
+    const promise = audioLoader.loadAsync(url)
+    bufferCache.set(url, promise)
+    void promise.catch(() => {
+      if (bufferCache.get(url) === promise) bufferCache.delete(url)
+    })
+    cached = promise
   }
   return cached
 }
@@ -103,10 +128,19 @@ export function distanceGain(
   return 1 - (distance - refDistance) / (maxDistance - refDistance)
 }
 
+type OneShotEntry = {
+  sound: Audio
+  stopped: boolean
+}
+
 /** Camera-attached AudioListener plus a small mixer for looped, gain-lerped
  *  layers (ambient beds) and one-shot clips (reaction sounds) — shared
  *  foundation for both, so neither has to build its own AudioContext plumbing. */
-export function createWorldAudio(camera: Camera): WorldAudio {
+export function createWorldAudio(
+  camera: Camera,
+  options: CreateWorldAudioOptions = {},
+): WorldAudio {
+  const resolveSpatialContextAt = options.resolveSpatialContextAt
   const listener = new AudioListener()
   camera.add(listener)
   const listenerPos = new Vector3()
@@ -153,8 +187,21 @@ export function createWorldAudio(camera: Camera): WorldAudio {
   window.addEventListener('keydown', resumeContext)
 
   const activeLoops = new Set<{ sound: Audio; target: number }>()
+  const activeOneShots = new Set<OneShotEntry>()
+  let disposed = false
+
+  function cleanupOneShot(entry: OneShotEntry): void {
+    if (entry.stopped) return
+    entry.stopped = true
+    if (entry.sound.isPlaying) entry.sound.stop()
+    entry.sound.disconnect()
+    activeOneShots.delete(entry)
+  }
 
   function createLoop(url: string, bus: AudioBusId = 'ambient'): AudioLoopHandle {
+    if (disposed) {
+      return { setTargetGain: () => {}, dispose: () => {} }
+    }
     const sound = new Audio(listener)
     attachToBus(sound, bus)
     const entry = { sound, target: 0 }
@@ -162,7 +209,7 @@ export function createWorldAudio(camera: Camera): WorldAudio {
 
     loadBuffer(url)
       .then((buffer) => {
-        if (!activeLoops.has(entry)) return // disposed before load finished
+        if (disposed || !activeLoops.has(entry)) return
         sound.setBuffer(buffer)
         sound.setLoop(true)
         sound.setVolume(0)
@@ -187,33 +234,70 @@ export function createWorldAudio(camera: Camera): WorldAudio {
   const NO_OP_SOUND: ActiveSound = { stop: () => {} }
 
   function playOnceCancelable(url: string, volume = 1, bus: AudioBusId = 'sfx'): ActiveSound {
+    if (disposed) return NO_OP_SOUND
     const sound = new Audio(listener)
     attachToBus(sound, bus)
-    let stopped = false
+    const entry: OneShotEntry = { sound, stopped: false }
+    activeOneShots.add(entry)
+
     loadBuffer(url)
       .then((buffer) => {
-        if (stopped) return
+        if (disposed || entry.stopped || !activeOneShots.has(entry)) return
         sound.setBuffer(buffer)
         sound.setLoop(false)
         sound.setVolume(clamp01(volume))
-        sound.onEnded = () => sound.disconnect()
+        sound.onEnded = () => cleanupOneShot(entry)
         sound.play()
       })
       .catch((error: unknown) => {
         console.warn(`[audio] failed to load clip "${url}"`, error)
+        cleanupOneShot(entry)
       })
     return {
       stop() {
-        if (stopped) return
-        stopped = true
-        if (sound.isPlaying) sound.stop()
-        sound.disconnect()
+        cleanupOneShot(entry)
       },
     }
   }
 
   function playOnce(url: string, volume = 1, bus: AudioBusId = 'sfx'): void {
+    if (disposed) return
     playOnceCancelable(url, volume, bus)
+  }
+
+  function resolveSourceSpatialContext(position: WorldSoundPosition): WorldSpatialContext | null {
+    if (position.spatialContext !== undefined) return position.spatialContext
+    if (position.y === undefined || !resolveSpatialContextAt) return null
+    return resolveSpatialContextAt(position.x, position.y, position.z)
+  }
+
+  function playAtCancelable(
+    url: string,
+    position: WorldSoundPosition,
+    volume = 1,
+    bus: AudioBusId = 'sfx',
+    maxDistance = DISTANCE_MAX,
+  ): ActiveSound {
+    if (disposed) return NO_OP_SOUND
+
+    listener.getWorldPosition(listenerPos)
+    const listenerContext = resolveSpatialContextAt
+      ? resolveSpatialContextAt(listenerPos.x, listenerPos.y, listenerPos.z)
+      : null
+    const sourceContext = resolveSourceSpatialContext(position)
+    if (!worldSoundSpatialContextsCompatible(listenerContext, sourceContext)) {
+      return NO_OP_SOUND
+    }
+
+    const y = position.y ?? listenerPos.y
+    const distance = Math.hypot(
+      position.x - listenerPos.x,
+      y - listenerPos.y,
+      position.z - listenerPos.z,
+    )
+    const gain = clamp01(volume) * distanceGain(distance, DISTANCE_REF, maxDistance)
+    if (gain < DISTANCE_GAIN_EPS) return NO_OP_SOUND
+    return playOnceCancelable(url, gain, bus)
   }
 
   function playAt(
@@ -224,25 +308,6 @@ export function createWorldAudio(camera: Camera): WorldAudio {
     maxDistance?: number,
   ): void {
     playAtCancelable(url, position, volume, bus, maxDistance)
-  }
-
-  function playAtCancelable(
-    url: string,
-    position: WorldSoundPosition,
-    volume = 1,
-    bus: AudioBusId = 'sfx',
-    maxDistance = DISTANCE_MAX,
-  ): ActiveSound {
-    listener.getWorldPosition(listenerPos)
-    const y = position.y ?? listenerPos.y
-    const distance = Math.hypot(
-      position.x - listenerPos.x,
-      y - listenerPos.y,
-      position.z - listenerPos.z,
-    )
-    const gain = clamp01(volume) * distanceGain(distance, DISTANCE_REF, maxDistance)
-    if (gain < DISTANCE_GAIN_EPS) return NO_OP_SOUND
-    return playOnceCancelable(url, gain, bus)
   }
 
   function update(dt: number): void {
@@ -256,8 +321,12 @@ export function createWorldAudio(camera: Camera): WorldAudio {
   }
 
   function dispose(): void {
+    if (disposed) return
+    disposed = true
     window.removeEventListener('pointerdown', resumeContext)
     window.removeEventListener('keydown', resumeContext)
+    for (const entry of [...activeOneShots]) cleanupOneShot(entry)
+    activeOneShots.clear()
     for (const entry of activeLoops) {
       entry.sound.stop()
       entry.sound.disconnect()

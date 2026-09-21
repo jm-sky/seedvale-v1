@@ -32,6 +32,7 @@ Generated from TypeScript imports.
 **Imports**
 
 - `audio/createWorldAudio.ts`
+- `world/spatialContext.ts`
 
 **Imported by**
 
@@ -114,11 +115,19 @@ Generated from TypeScript imports.
 - `app/gameLoop.ts`
 - `audio/createAmbientAudio.test.ts`
 
+## `audio/createWorldAudio.test.ts`
+
+**Imports**
+
+- `world/spatialContext.ts`
+
 ## `audio/createWorldAudio.ts`
 
 **Imports**
 
 - `audio/audioSettings.ts`
+- `audio/worldAudioSpatial.ts`
+- `world/spatialContext.ts`
 
 **Imported by**
 
@@ -279,3 +288,21 @@ Generated from TypeScript imports.
 - `app/createApp.ts`
 - `app/gameLoop.ts`
 - `audio/weatherSounds.test.ts`
+
+## `audio/worldAudioSpatial.test.ts`
+
+**Imports**
+
+- `audio/worldAudioSpatial.ts`
+- `world/spatialContext.ts`
+
+## `audio/worldAudioSpatial.ts`
+
+**Imports**
+
+- `world/spatialContext.ts`
+
+**Imported by**
+
+- `audio/createWorldAudio.ts`
+- `audio/worldAudioSpatial.test.ts`

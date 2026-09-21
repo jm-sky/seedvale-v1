@@ -587,7 +587,7 @@ export async function createSettlementsManager(
    *  routing/prop placement. Defaults to "no bridges" for callers/tests that
    *  don't pass one. */
   sampleBridgeDeck: (x: number, z: number) => number | null = () => null,
-  onAnimalDeathSound?: (kind: AnimalKind, x: number, z: number) => void,
+  onAnimalDeathSound?: (kind: AnimalKind, x: number, y: number, z: number) => void,
   /** Persisted founded-settlement records + NPC residency overrides (plan
    *  settlements-003) — same "one manager-lifetime registry, `initial*`/
    *  `snapshot*` idiom" contract as `initialHouseholds`/`initialStorageInfestation`

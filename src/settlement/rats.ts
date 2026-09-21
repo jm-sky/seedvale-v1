@@ -169,7 +169,7 @@ export type SettlementRatsDeps = {
   settlementId: string
   settlementSeed: number
   onAnimalDeath?: (animalId: string) => void
-  onAnimalDeathSound?: (kind: import('../fauna/AnimalAgent').AnimalKind, x: number, z: number) => void
+  onAnimalDeathSound?: (kind: import('../fauna/AnimalAgent').AnimalKind, x: number, y: number, z: number) => void
   /** Live storage-damage fact for this settlement — read every
    *  reconciliation tick, never cached here. */
   storageDamaged: () => boolean

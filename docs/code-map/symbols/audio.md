@@ -42,13 +42,13 @@ Generated from exported TypeScript symbols.
 
 ## `audio/ambientEvents.ts`
 
-- `AmbientEventContext` — type — line 17
+- `AmbientEventContext` — type — line 18
   - domain: world
   - system: ambient-audio
   - role: Shared runtime for sporadic ambient one-shots (owl hoot; future distant wolf howl, single bird calls, etc. — plan world-016). A definition is data plus a pure eligibility predicate; this module owns cooldown/recheck/chance/variant-selection/placement/playback so adding another event needs a definition, not a new dedicated timer in `createAmbientAudio.ts`.
-- `AmbientEventDefinition` — type — line 27
-- `AmbientEventRuntime` — type — line 44
-- `createAmbientEventRuntime` — function — line 54
+- `AmbientEventDefinition` — type — line 28
+- `AmbientEventRuntime` — type — line 45
+- `createAmbientEventRuntime` — function — line 55
 
 ## `audio/ambientWeights.ts`
 
@@ -104,18 +104,21 @@ Generated from exported TypeScript symbols.
 
 ## `audio/createWorldAudio.ts`
 
-- `ActiveSound` — type — line 32
-- `AudioBusId` — type — line 7
-- `AudioLoopHandle` — type — line 9
-- `createWorldAudio` — function — line 109
-- `DISTANCE_GAIN_EPS` — const — line 71
-- `DISTANCE_MAX` — const — line 69
-- `DISTANCE_REF` — const — line 67
-- `distanceGain` — function — line 96
-- `PlayAt` — type — line 23
-- `PlayAtCancelable` — type — line 37
-- `WorldAudio` — type — line 45
-- `WorldSoundPosition` — type — line 17
+- `ActiveSound` — type — line 51
+- `AudioBusId` — type — line 9
+- `AudioLoopHandle` — type — line 11
+- `createWorldAudio` — function — line 139
+- `CreateWorldAudioOptions` — type — line 34
+- `DISTANCE_GAIN_EPS` — const — line 90
+- `DISTANCE_MAX` — const — line 88
+- `DISTANCE_REF` — const — line 86
+- `distanceGain` — function — line 121
+- `loadBuffer` — function — line 103
+- `PlayAt` — type — line 42
+- `PlayAtCancelable` — type — line 56
+- `ResolveSpatialContextAt` — type — line 28
+- `WorldAudio` — type — line 64
+- `WorldSoundPosition` — type — line 20
 
 ## `audio/doorSounds.ts`
 
@@ -199,3 +202,8 @@ Generated from exported TypeScript symbols.
 - `thunderSoundUrl` — function — line 70
 - `thunderVolume` — function — line 74
 - `WeatherAudio` — type — line 36
+
+## `audio/worldAudioSpatial.ts`
+
+- `worldSoundSpatialContextsCompatible` — function — line 13
+  - domain: world

@@ -67,7 +67,7 @@ describe('createAmbientEventRuntime (plan world-016)', () => {
 
     runtime.update(0, eligibleCtx)
     expect(playAt).toHaveBeenCalledTimes(1)
-    expect(playAt).toHaveBeenCalledWith('b.ogg', { x: 8, z: 0 }, 0.7, 'ambient')
+    expect(playAt).toHaveBeenCalledWith('b.ogg', { x: 8, z: 0, spatialContext: expect.anything() }, 0.7, 'ambient')
 
     // Still well inside the fresh 150s cooldown — must not roll (and thus
     // must not touch the now-exhausted rng queue) even though eligible.

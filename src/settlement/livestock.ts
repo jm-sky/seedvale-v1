@@ -225,7 +225,7 @@ export type SpawnAnimalFromRecordDeps = {
   naturalWaterKindAt?: (x: number, z: number) => import('../world/WaterSource').WaterBodyKind | null
   collidersNear: ColliderSource
   onAnimalDeath?: (animalId: string) => void
-  onAnimalDeathSound?: (kind: AnimalKind, x: number, z: number) => void
+  onAnimalDeathSound?: (kind: AnimalKind, x: number, y: number, z: number) => void
 }
 
 /** Spawns one persistent livestock individual from a saved record (plan fauna-020). */
@@ -279,7 +279,7 @@ function createGuaranteedSheep(
   naturalWaterKindAt: ((x: number, z: number) => import('../world/WaterSource').WaterBodyKind | null) | undefined,
   collidersNear: ColliderSource,
   onAnimalDeath: ((animalId: string) => void) | undefined,
-  onAnimalDeathSound: ((kind: AnimalKind, x: number, z: number) => void) | undefined,
+  onAnimalDeathSound: ((kind: AnimalKind, x: number, y: number, z: number) => void) | undefined,
   removed: ReadonlySet<string> | undefined,
   saved: ReadonlyMap<string, LivestockSaveRecord> | undefined,
   isLiveElsewhere?: (animalId: string) => boolean,
@@ -648,7 +648,7 @@ export async function spawnLivestock(
   /** Family index of the generated shepherd household, or `null`. */
   shepherdHouseIndex: number | null = null,
   /** Death vocal at `collapse()` (S26). */
-  onAnimalDeathSound?: (kind: AnimalKind, x: number, z: number) => void,
+  onAnimalDeathSound?: (kind: AnimalKind, x: number, y: number, z: number) => void,
   /** Settlement pasture (plan settlements-009) — trough is a water target
    *  for every household animal; roam is only for the shepherd house.
    *  `household` (plan settlements-npcs-046) is the trough's one canonical

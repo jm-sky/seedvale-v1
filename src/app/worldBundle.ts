@@ -668,7 +668,7 @@ function buildSettlementsManager(
    *  (home and every streamed-in neighbor), not per `SettlementDef`. */
   onSettlementAvailable?: (settlement: { id: string, x: number, z: number }) => void,
   npcWorldMovement?: import('../ai/npcMovementTarget').NpcWorldMovementQueries,
-  onAnimalDeathSound?: (kind: AnimalKind, x: number, z: number) => void,
+  onAnimalDeathSound?: (kind: AnimalKind, x: number, y: number, z: number) => void,
   /** Plan settlements-003 — same carry/restore contract as `initialHouseholds`/
    *  `initialNpcStates` above. */
   initialFoundedSettlements?: FoundedSettlementRegistrySnapshot,
@@ -836,7 +836,7 @@ function buildFauna(
    *  `AnimalCaveWorldContract` `createFauna()` actually needs, so fauna
    *  itself never imports `createCaves.ts`. */
   caves?: Caves,
-  onAnimalDeathSound?: (kind: AnimalKind, x: number, z: number) => void,
+  onAnimalDeathSound?: (kind: AnimalKind, x: number, y: number, z: number) => void,
   closedSettlements?: readonly {
     id: string
     x: number
@@ -1149,7 +1149,7 @@ type WorldSystemsSeed = {
   persistentOccupants?: PersistentOccupantSnapshot
   resourceDepletion: ResourceDepletionState
   onAnimalDeath?: (animalId: string) => void
-  onAnimalDeathSound?: (kind: AnimalKind, x: number, z: number) => void
+  onAnimalDeathSound?: (kind: AnimalKind, x: number, y: number, z: number) => void
   getPlayerSocial?: PlayerSocialLookup
   /** Settlement-lifecycle "actually built" callback (plan
    *  quests-progression-022 §8) — forwarded into `buildSettlementsManager`
@@ -2434,7 +2434,7 @@ export async function createWorldBundle(
   initialResourceSiteInventories?: ResourceSiteInventories,
   /** Plan quests-progression-036 — app-owned consumed authored pickup ids. */
   consumedWorldPickupIds: ReadonlySet<string> = new Set(),
-  onAnimalDeathSound?: (kind: AnimalKind, x: number, z: number) => void,
+  onAnimalDeathSound?: (kind: AnimalKind, x: number, y: number, z: number) => void,
   onStartupLoadingStage?: WorldStartupLoadingStageListener,
   /** Plan settlements-003 — founded-settlement records + NPC residency
    *  overrides, sourced from `SaveData.foundedSettlements` on a fresh boot;
@@ -2589,7 +2589,7 @@ export async function rebuildWorldBundle(
   resourceSiteInventories?: ResourceSiteInventories,
   /** Plan quests-progression-036 — same mutated-in-place Set `createApp` owns. */
   consumedWorldPickupIds: ReadonlySet<string> = new Set(),
-  onAnimalDeathSound?: (kind: AnimalKind, x: number, z: number) => void,
+  onAnimalDeathSound?: (kind: AnimalKind, x: number, y: number, z: number) => void,
   /** Plan world-terrain-047 — same "long-lived object owned by `createApp.ts`,
    *  mutated in place, threaded through both `createWorldBundle` and
    *  `rebuildWorldBundle`" contract as `resourceDepletion` above. */

@@ -1,7 +1,7 @@
 # Plan: Audio spatial context isolation
 
 **Created:** 2026-09-20  
-**Status:** `planned` 📋  
+**Status:** `verification needed` 🔍  
 **Priority:** medium · **Effort:** S  
 **Depends on:** ~~world-027~~  
 **Domain:** `world`  
@@ -98,5 +98,9 @@ Add JSDoc to any new public spatial-audio contract when it materially improves p
 
 Do not run browser verification.  
 Do not run `pnpm docs:sync`.
+
+## Implementation status (2026-09-21)
+
+Implemented on `main`: `WorldSoundPosition.spatialContext`, late-bound `resolveSpatialContextAt` in `createWorldAudio` / `createApp`, pure `worldSoundSpatialContextsCompatible`, call-site Y/context fixes (actions, ambient owl, animal death `y`), unit tests. Automated checks pass; browser cave/surface audio verification pending (user).
 
 > **Zrób git commit i push do main, rebase jeżeli trzeba**

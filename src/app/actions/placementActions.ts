@@ -178,6 +178,7 @@ import {
   PLATFORM_FOOTPRINT_LENGTH,
   PLATFORM_FOOTPRINT_WIDTH,
 } from '../../world/sleepingUtilityProp'
+import { WORLD_SPATIAL_CONTEXT_SURFACE } from '../../world/spatialContext'
 import {
   isStandingTorchConstructionComplete,
   STANDING_TORCH_FOOTPRINT_RADIUS,
@@ -839,7 +840,7 @@ export function createPlacementActions(ctx: PlayerActionContext): PlacementActio
       },
     )
     if (stage === 'roof') {
-      playActionWellConstruction(worldAudio.playAt, { x: well.x, z: well.z })
+      playActionWellConstruction(worldAudio.playAt, { x: well.x, z: well.z, spatialContext: WORLD_SPATIAL_CONTEXT_SURFACE })
     }
   }
 
@@ -946,7 +947,7 @@ export function createPlacementActions(ctx: PlayerActionContext): PlacementActio
         applyRepresentedPhysicalEffortVigor(player.needs.vigor, 'heavy', accepted)
       },
     )
-    playActionWellConstruction(worldAudio.playAt, { x: well.x, z: well.z })
+    playActionWellConstruction(worldAudio.playAt, { x: well.x, z: well.z, spatialContext: WORLD_SPATIAL_CONTEXT_SURFACE })
   }
 
   const workOnWellRoofRepair = (id: string): void => {

@@ -25,6 +25,7 @@ import {
 } from '../../world/fishing'
 import { CROP_SEED_ITEM, isPlantedCropId } from '../../world/plantedCrops'
 import { cultivationYieldCount, findNearestGarden, resolveCultivationCare } from '../../world/playerGarden'
+import { WORLD_SPATIAL_CONTEXT_SURFACE } from '../../world/spatialContext'
 import { isActionBlocked, type PlayerActionContext } from './actionContext'
 
 function inventoryCanAcceptHarvest(
@@ -241,7 +242,7 @@ export function createGatheringActions(
     }
     const spotId = fishingSpotId(x, z)
     const attempt = (fishingAttempts.get(spotId) ?? 0) + 1
-    playActionFishingCast(worldAudio.playAt, { x, z })
+    playActionFishingCast(worldAudio.playAt, { x, z, spatialContext: WORLD_SPATIAL_CONTEXT_SURFACE })
     busy.start(FISHING_CAST_DURATION_SEC, 'Łowienie ryb…', () => {
       fishingAttempts.set(spotId, attempt)
       const hasBait = isBaitActive(fishingBait.get(spotId), dayNight.elapsedDays)

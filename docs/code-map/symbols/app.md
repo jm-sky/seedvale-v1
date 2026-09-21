@@ -64,15 +64,15 @@ Generated from exported TypeScript symbols.
 
 ## `app/actions/gatheringActions.ts`
 
-- `createGatheringActions` — function — line 89
-- `GatheringActionDeps` — type — line 78
-- `GatheringActions` — type — line 57
+- `createGatheringActions` — function — line 90
+- `GatheringActionDeps` — type — line 79
+- `GatheringActions` — type — line 58
 
 ## `app/actions/groundActions.ts`
 
-- `createGroundActions` — function — line 124
-- `GroundActions` — type — line 58
-- `GroundActionsDeps` — type — line 87
+- `createGroundActions` — function — line 125
+- `GroundActions` — type — line 59
+- `GroundActionsDeps` — type — line 88
 
 ## `app/actions/householdResourceTransferActions.ts`
 
@@ -134,22 +134,22 @@ Generated from exported TypeScript symbols.
 
 ## `app/actions/placementActions.ts`
 
-- `ConstructionActionView` — type — line 335
-- `createPlacementActions` — function — line 499
-- `evaluatePlacementSite` — function — line 279
-- `GroundPlacementDefinition` — type — line 262
+- `ConstructionActionView` — type — line 336
+- `createPlacementActions` — function — line 500
+- `evaluatePlacementSite` — function — line 280
+- `GroundPlacementDefinition` — type — line 263
   - domain: world
-- `GroundPlacementSite` — type — line 246
-- `PlacementActions` — type — line 354
-- `PlacementBlocker` — type — line 212
-- `PlacementMutationLifecycle` — type — line 273
-- `PlacementPreviewResult` — type — line 223
-- `previewGroundPlacement` — function — line 289
-- `RemovalPreview` — type — line 347
-- `ResidentialWorkView` — type — line 340
-- `StructureRepairView` — type — line 327
-- `WellRoofRepairView` — type — line 315
-- `WellWorkView` — type — line 308
+- `GroundPlacementSite` — type — line 247
+- `PlacementActions` — type — line 355
+- `PlacementBlocker` — type — line 213
+- `PlacementMutationLifecycle` — type — line 274
+- `PlacementPreviewResult` — type — line 224
+- `previewGroundPlacement` — function — line 290
+- `RemovalPreview` — type — line 348
+- `ResidentialWorkView` — type — line 341
+- `StructureRepairView` — type — line 328
+- `WellRoofRepairView` — type — line 316
+- `WellWorkView` — type — line 309
 
 ## `app/actions/placementPreviewActions.ts`
 
@@ -287,13 +287,13 @@ Generated from exported TypeScript symbols.
 
 ## `app/createApp.ts`
 
-- `createApp` — function — line 445
+- `createApp` — function — line 446
   - system: app-composition
   - role: Composition root: builds every long-lived system, threads their dependencies and owns app-level lifecycle (boot, rebuild, dispose).
   - owns: WorldBundle, GameLoop, AppRenderLoop
   - lifecycle: boot
   - integration: Wires world, player, UI, persistence and audio systems together.
-- `NewAppOptions` — type — line 414
+- `NewAppOptions` — type — line 415
 
 ## `app/faunaEncounterComposition.ts`
 

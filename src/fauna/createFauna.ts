@@ -685,7 +685,7 @@ export async function createFauna(
   sampleBridgeDeck?: (x: number, z: number) => number | null,
   /** Death vocal at `collapse()` (S26) — forwarded into every `AnimalAgent`
    *  this factory spawns, same optional convention as `onAnimalDeath`. */
-  onAnimalDeathSound?: (kind: AnimalKind, x: number, z: number) => void,
+  onAnimalDeathSound?: (kind: AnimalKind, x: number, y: number, z: number) => void,
   /** Nearby closed settlements whose configured predator pressure this
    *  home-centric fauna build may fill (plan settlements-010). Optional so
    *  existing callers/tests keep compiling. Placement uses a dedicated RNG,

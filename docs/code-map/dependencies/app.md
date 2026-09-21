@@ -272,6 +272,7 @@ Generated from TypeScript imports.
 - `world/fishing.ts`
 - `world/plantedCrops.ts`
 - `world/playerGarden.ts`
+- `world/spatialContext.ts`
 
 **Imported by**
 
@@ -333,6 +334,7 @@ Generated from TypeScript imports.
 - `world/hiddenFinds.ts`
 - `world/locations/treasureMapBearCave.ts`
 - `world/parseSeed.ts`
+- `world/spatialContext.ts`
 - `world/treasureSites.ts`
 - `world/treeHarvest.ts`
 - `world/treeLifecycle.ts`
@@ -566,6 +568,7 @@ Generated from TypeScript imports.
 - `world/residentialBuilding.ts`
 - `world/sleepingUtilities.ts`
 - `world/sleepingUtilityProp.ts`
+- `world/spatialContext.ts`
 - `world/standingTorch.ts`
 
 **Imported by**
@@ -1141,6 +1144,7 @@ Generated from TypeScript imports.
 - `world/resourceSiteInventory.ts`
 - `world/seedLibrary.ts`
 - `world/sleepingUtilities.ts`
+- `world/spatialContext.ts`
 - `world/timeSkip.ts`
 - `world/treeLifecycle.ts`
 - `world/weather.ts`

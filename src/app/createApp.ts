@@ -9,6 +9,7 @@ import type { RenewableWorldItemOverrides } from '../terrain/renewableWorldItems
 import type { TrapCaptureEvent } from '../world/createPlacedTraps'
 import type { GrassForageOverrides } from '../world/grassForage'
 import type { NearbyPlayerWellLookup } from '../world/playerWell'
+import type { WorldSpatialContext } from '../world/spatialContext'
 import type { PlayerActionContext } from './actions/actionContext'
 import { configureNpcPlayerReactionAudio } from '../ai/NpcAgent'
 import { NpcBarkLimiter } from '../ai/npcBarkLimiter'
@@ -589,7 +590,10 @@ export async function createApp(
   // delay first paint (see `mountVueUi`'s doc comment).
   const vueUi = mountVueUi(container)
 
-  const worldAudio = createWorldAudio(camera)
+  let resolveSpatialContextAtTarget: ((x: number, y: number, z: number) => WorldSpatialContext) | null = null
+  const worldAudio = createWorldAudio(camera, {
+    resolveSpatialContextAt: (x, y, z) => resolveSpatialContextAtTarget?.(x, y, z) ?? null,
+  })
   configureAudioVolumes(worldAudio.getVolumes(), (volumes) => {
     worldAudio.setVolumes(volumes)
   })
@@ -732,9 +736,10 @@ export async function createApp(
   const onAnimalDeathSound = (
     kind: import('../fauna/AnimalAgent').AnimalKind,
     x: number,
+    y: number,
     z: number,
   ): void => {
-    playAnimalCombatDeath(worldAudio.playAt, { x, z }, kind)
+    playAnimalCombatDeath(worldAudio.playAt, { x, y, z }, kind)
   }
 
   loadingScreen.setStage('terrain')
@@ -830,6 +835,7 @@ export async function createApp(
     mineableRockState,
   )
   bootMarkEnd('createWorldBundle')
+  resolveSpatialContextAtTarget = (x, y, z) => bundle.caves.spatialContextAt(x, y, z)
   // Already logged inside `worldBundle.ts` on failure — nothing else to do
   // here. On success, `bundle`'s stub fauna/item spawners/drying racks/
   // hives have already been replaced in place by the time this resolves.

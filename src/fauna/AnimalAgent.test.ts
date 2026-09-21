@@ -718,10 +718,10 @@ describe('AnimalAgent', () => {
         animalId: 'sfx-wolf',
         x: 3,
         z: 4,
-        onDeathSound: (kind, x, z) => { heard.push(`${kind}:${x}:${z}`) },
+        onDeathSound: (kind, x, y, z) => { heard.push(`${kind}:${x}:${y}:${z}`) },
       }))
       dying.takeDamage(9999)
-      expect(heard).toEqual(['wolf:3:4'])
+      expect(heard).toEqual(['wolf:3:0.3825:4'])
     })
 
     it('follows the player while attached and defers ordinary elevated needs', () => {

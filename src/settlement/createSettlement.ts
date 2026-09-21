@@ -446,7 +446,7 @@ export type CreateSettlementDeps = {
   /** Reports any of this settlement's livestock deaths (any cause) by
    *  `animalId` — forwarded into `spawnLivestock` (plan 110). */
   onAnimalDeath?: (animalId: string) => void
-  onAnimalDeathSound?: (kind: import('../fauna/AnimalAgent').AnimalKind, x: number, z: number) => void
+  onAnimalDeathSound?: (kind: import('../fauna/AnimalAgent').AnimalKind, x: number, y: number, z: number) => void
   /** Authoritative Work Contract lifecycle (plan npc-015) — forwarded into
    *  every `NpcAgent.create` call the same way `mining`/`foodSources` are
    *  above. World-global (not settlement-scoped): an NPC resolves its own
