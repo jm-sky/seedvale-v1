@@ -275,95 +275,87 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   🟡 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-48. `npc-058` — **NPC time-skip resource and interrupt parity**  
+48. `tools-005` — **Seedvale Character Preparation Panel**  
   🔴 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-49. `tools-005` — **Seedvale Character Preparation Panel**  
+49. `world-terrain-039` — **N8AO / post-process cost budget**  
   🔴 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-50. `world-034` — **Time-skip clock exactness and catch-up coverage**  
+50. `world-terrain-046` — **Unified water shore query and river hotpath**  
   🔴 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-51. `world-terrain-039` — **N8AO / post-process cost budget**  
-  🔴 `M` · **Score:**  27  
-   → **unlocks:** 0/0
-
-52. `world-terrain-046` — **Unified water shore query and river hotpath**  
-  🔴 `M` · **Score:**  27  
-   → **unlocks:** 0/0
-
-53. `ui-input-025` — **Road travel autopilot for player and mounts**  
+51. `ui-input-025` — **Road travel autopilot for player and mounts**  
   🔴 `L` · **Score:**  26  
    → **unlocks:** 0/0
 
-54. `items-player-044` — **Shoulder and forearm equipment slots**  
+52. `items-player-044` — **Shoulder and forearm equipment slots**  
   🟡 `M` · **Score:**  25  
    → **unlocks:** 0/0
 
-55. `world-036` — **Lightweight unloaded shipwreck and tower lookup**  
+53. `world-036` — **Lightweight unloaded shipwreck and tower lookup**  
   🟡 `M` · **Score:**  25  
    → **unlocks:** 0/0
 
-56. `world-037` — **Audio spatial context isolation**  
+54. `world-037` — **Audio spatial context isolation**  
   🟡 `S` · **Score:**  25  
    → **unlocks:** 0/0
 
-57. `world-terrain-041` — **Agent presentation render LOD**  
+55. `world-terrain-041` — **Agent presentation render LOD**  
   🔴 `L` · **Score:**  24  
    → **unlocks:** 0/0
 
-58. `ui-input-029` — **Village torch interaction action contract**  
+56. `ui-input-029` — **Village torch interaction action contract**  
   ⚪ `S` · **Score:**  23  
    → **unlocks:** 0/0
 
-59. `items-player-059` — **Crossbow, sling and thrown stones**  
+57. `items-player-059` — **Crossbow, sling and thrown stones**  
   🟡 `L` · **Score:**  20  
    → **unlocks:** 0/0
 
-60. `items-player-054` — **Instance payload capacity admission**  
+58. `items-player-054` — **Instance payload capacity admission**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-61. `items-player-055` — **Container transfer transaction atomicity**  
+59. `items-player-055` — **Container transfer transaction atomicity**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-62. `tools-019` — **Debug tooling lifecycle ownership**  
+60. `tools-019` — **Debug tooling lifecycle ownership**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-63. `ui-input-027` — **Interaction candidate dropped-item scaling**  
+61. `ui-input-027` — **Interaction candidate dropped-item scaling**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-64. `ui-input-030` — **Player downed action and input gating**  
+62. `ui-input-030` — **Player downed action and input gating**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-65. `ui-input-033` — **World map player heading arrow**  
+63. `ui-input-033` — **World map player heading arrow**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-66. `world-038` — **WorldAudio async lifecycle and cache recovery**  
+64. `world-038` — **WorldAudio async lifecycle and cache recovery**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-67. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
+65. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
   🟡 `L` · **Score:**  18  
    → **unlocks:** 0/0
 
-68. `items-player-052` — **Settlement tool ownership and social acquisition**  
+66. `items-player-052` — **Settlement tool ownership and social acquisition**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-69. `items-player-058` — **Campfire decomposition and ash residue**  
+67. `items-player-058` — **Campfire decomposition and ash residue**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-70. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
+68. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 

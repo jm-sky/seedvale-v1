@@ -1011,9 +1011,12 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
         bundle.settlementsManager.resolveTimeSkip(skip.startTimeOfDay, skip.hours, dayNight.dayLengthSec)
         // World-owned off-screen transport progression (plan
         // settlements-npcs-019) — `settlementsManager.resolveTimeSkip` above
-        // only replays *loaded* settlements' live NPCs, so an off-screen
-        // carrier's in-transit order needs its own elapsed-time checkpoint
-        // here, independent of which settlements happen to be streamed in.
+        // only replays *loaded* settlements' live NPCs/animals, so an
+        // off-screen carrier's in-transit order needs its own elapsed-time
+        // checkpoint here, independent of which settlements happen to be
+        // streamed in. `elapsedDays` is already post-skip: `TimeSkip.tick`
+        // committed the skip-owned clock interval before this `justFinished`
+        // branch.
         resolveOffscreenTransportArrivals(
           bundle.transportOrders,
           {
@@ -2467,19 +2470,22 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
       // an accelerated `worldDt`, not ticked at all, so nothing walks/steers/
       // fights/decays in hidden fast-forward underneath the label/filter.
       // `settlementsManager.resolveTimeSkip`/`fauna.resolveTimeSkip` (called
-      // above on `skip.justFinished`) apply the skipped period's effect
-      // exactly once, deterministically, instead of a live per-frame tick.
-      // `dt` for the clock itself stays real — the sky/clock still has to
-      // race ahead. Player needs (`worldDt`) instead keep ticking through
-      // the skip, scaled by the same `dayNight.timeMultiplier` the clock
-      // itself races ahead by, so Hunger/Thirst/Vigor — and the HUD bars
-      // reflecting them — progress visibly across a rest/sleep skip instead
-      // of jumping only once it finishes (plan 165 §5); this is a
-      // deliberate, unchanged exception to the freeze-and-catch-up rule
-      // above; see `NpcAgent.resolveTimeSkip` / `Fauna.resolveTimeSkip`
+      // above on `skip.justFinished`, after this frame's skip-owned clock
+      // interval has already been committed through `tickDayNight`) apply
+      // the skipped period's effect exactly once, deterministically, instead
+      // of a live per-frame tick.
+      // `dt` for leftover post-skip clock stays real — `TimeSkip.tick`
+      // already advanced the skip-owned slice. Player needs (`worldDt`)
+      // instead keep ticking through the skip, scaled by the same skip
+      // multiplier the clock itself races ahead by, so Hunger/Thirst/Vigor —
+      // and the HUD bars reflecting them — progress visibly across a
+      // rest/sleep skip instead of jumping only once it finishes (plan 165
+      // §5); this is a deliberate, unchanged exception to the freeze-and-
+      // catch-up rule above; see `NpcAgent.resolveTimeSkip` /
+      // `Fauna.resolveTimeSkip`
       // (`docs/plans/2026-08-22--196--arch--time-skip-simulation-semantics.md`).
-      const worldDt = timeSkip.isActive() ? dt * dayNight.timeMultiplier : dt
-      tickDayNight(dayNight, dt)
+      const worldDt = skip?.worldDt ?? dt
+      tickDayNight(dayNight, skip?.leftoverDt ?? dt)
       // Cheap: `tickClimate` only recomputes `weather` from the deterministic
       // hash when `elapsedDays` crosses into a new weather cycle (plan §17);
       // `season`/`seasonProgress` are trivial arithmetic recomputed every call.

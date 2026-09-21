@@ -43,6 +43,7 @@ import { getAgentCpuDiag } from '../perf/agentCpuDiag'
 import { type ChunkCoord, chunksNear } from '../terrain/chunkGrid'
 import { DRY_WATER_SAMPLE } from '../terrain/waterSample'
 import { createNullPointLightBudget, type PointLightBudget } from '../world/pointLightBudget'
+import { gameHoursToRealSeconds } from '../world/timeConversion'
 import { BASE_TRANSPORT_CARGO_MAX_WEIGHT_KG, resolveNpcTransportCargoCapacity } from '../world/transportCapacity'
 import {
   estimateOffscreenTravelDays,
@@ -110,6 +111,10 @@ import {
   type RoadNetworkContext,
 } from './roadNetwork'
 import {
+  resolveSettlementAgricultureCatchUp,
+  shouldCatchUpAgricultureDuringTimeSkip,
+} from './settlementAgriculture'
+import {
   cellSeed,
   cellsWithinRadius,
   SETTLEMENT_GRID_STEP,
@@ -119,6 +124,7 @@ import {
 } from './settlementGenerator'
 import { settlementDefFor } from './settlementPlanCache'
 import { createLabeledProp, disposeLabeledProp, type LabeledProp, updateLabelOpacity } from './settlementSignposts'
+import { visitUniqueAnimalsById } from './settlementTimeSkipAnimals'
 import { settlementStorageDestination } from './storageDestinations'
 import {
   applyStructureDamage as applyStructureDamageTx,
@@ -214,11 +220,12 @@ export type SettlementsManager = {
    *  glow) — also remembered so a settlement streamed in later starts at the
    *  current time of day instead of flashing on/off at its own default. */
   setDayNight: (t: number) => void
-  /** Called once when a `world/timeSkip.ts` skip finishes — replays the
-   *  skipped period for every loaded settlement's NPCs (needs/stamina/
-   *  position catch-up) instead of leaving them to walk it off in real time.
-   *  Only loaded settlements' NPCs exist to update; unloaded ones re-seed
-   *  from scratch on load regardless. See `NpcAgent.resolveTimeSkip`
+  /** Called once when a `world/timeSkip.ts` skip finishes — the skip-owned
+   *  World Time interval is already committed. Replays that interval for
+   *  every loaded settlement's NPCs, settlement-owned animals (livestock,
+   *  rats, detached livestock), and procedural non-home agriculture.
+   *  Unloaded settlements re-seed from scratch on load regardless. See
+   *  `NpcAgent.resolveTimeSkip`
    *  (`docs/plans/archive/2026-08-12--075--time-skip-npc-catchup.md`). */
   resolveTimeSkip: (startTimeOfDay: number, hours: number, dayLengthSec: number) => void
   getLoaded: () => Settlement[]
@@ -1226,6 +1233,20 @@ export async function createSettlementsManager(
     for (const household of settlement.households) household.markAgricultureResolved(nowDays)
   }
 
+  function catchUpSettlementAgriculture(settlement: Settlement, def: SettlementDef, nowDays: number): void {
+    if (!shouldCatchUpAgricultureDuringTimeSkip({
+      isHome: def.isHome,
+      isFounded: foundedSettlements.get(def.id) != null,
+    })) return
+    resolveSettlementAgricultureCatchUp({
+      isHome: false,
+      families: def.families,
+      households: settlement.households,
+      nowDays,
+      economy: economies.get(def.id),
+    })
+  }
+
   function unload(id: string, entry: Entry, nowDays: number, dayLengthSec: number, playerX: number, playerZ: number): void {
     if (entry.settlement) {
       stampSettlementAgriculture(entry.settlement, nowDays)
@@ -1352,11 +1373,16 @@ export async function createSettlementsManager(
     resolveTimeSkip(startTimeOfDay, hours, dayLengthSec) {
       lastDayLengthSec = dayLengthSec
       const nowDays = currentNowDays()
+      const elapsedSeconds = gameHoursToRealSeconds(hours, dayLengthSec)
+      const animalCollections: Array<readonly AnimalAgent[]> = []
       for (const entry of entries.values()) {
         if (!entry.settlement) continue
-        stampSettlementAgriculture(entry.settlement, nowDays)
+        catchUpSettlementAgriculture(entry.settlement, entry.def, nowDays)
         for (const npc of entry.settlement.npcs) npc.resolveTimeSkip(startTimeOfDay, hours, dayLengthSec)
+        animalCollections.push(entry.settlement.livestock, entry.settlement.rats)
       }
+      animalCollections.push(detachedLivestock)
+      visitUniqueAnimalsById(animalCollections, (animal) => animal.resolveTimeSkip(elapsedSeconds))
       npcStates.forEach((state) => resolveNpcTravelCheckpoint(state, nowDays, dayLengthSec))
       if (transportOrders) {
         resolveTransportTravelArrivals(

@@ -10,6 +10,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `ai/NpcAgent.timeSkip.test.ts`
 - `ai/NpcAgent.ts`
 - `ai/npcAnimalThreat.test.ts`
 - `ai/npcAnimalThreat.ts`

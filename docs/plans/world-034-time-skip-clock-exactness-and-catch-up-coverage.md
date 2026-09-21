@@ -1,7 +1,8 @@
 # Plan: Time-skip clock exactness and catch-up coverage
 
 **Created:** 2026-09-19
-**Status:** `planned` 📋
+**Status:** `verification needed` 🔍
+**Implemented at:** 2026-09-21 06:15
 **Priority:** high · **Effort:** M
 **Model:** Sonnet, Composer
 **Depends on:** none

@@ -86,6 +86,8 @@ Generated from TypeScript imports.
 - `ai/npcLoadout.ts`
 - `ai/npcLogistics.test.ts`
 - `ai/npcLogistics.ts`
+- `ai/npcNeedTransactions.test.ts`
+- `ai/npcNeedTransactions.ts`
 - `ai/npcOffscreenSurvival.ts`
 - `ai/npcPersonalProvisions.test.ts`
 - `ai/npcPersonalProvisions.ts`
@@ -1043,7 +1045,6 @@ Generated from TypeScript imports.
 
 **Imported by**
 
-- `ai/NpcAgent.ts`
 - `ai/npcLoadout.ts`
 - `ai/npcPersonalProvisions.ts`
 - `ai/npcProfessionWork.ts`
@@ -1364,7 +1365,8 @@ Generated from TypeScript imports.
 
 **Imported by**
 
-- `ai/NpcAgent.ts`
+- `ai/NpcAgent.timeSkip.test.ts`
+- `ai/npcNeedTransactions.test.ts`
 - `ai/npcOffscreenSurvival.test.ts`
 - `ai/npcPersonalProvisions.test.ts`
 - `ai/npcPersonalProvisions.ts`

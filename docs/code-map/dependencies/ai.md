@@ -18,6 +18,7 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `ai/Needs.test.ts`
+- `ai/NpcAgent.timeSkip.test.ts`
 - `ai/NpcAgent.ts`
 - `ai/decisionModifiers.test.ts`
 - `ai/decisionModifiers.ts`
@@ -30,6 +31,8 @@ Generated from TypeScript imports.
 - `ai/npcDecision.ts`
 - `ai/npcLogistics.test.ts`
 - `ai/npcLogistics.ts`
+- `ai/npcNeedTransactions.test.ts`
+- `ai/npcNeedTransactions.ts`
 - `ai/npcOffscreenSurvival.ts`
 - `ai/npcPersonalProvisions.ts`
 - `ai/npcPlan.ts`
@@ -42,6 +45,24 @@ Generated from TypeScript imports.
 - `fauna/AnimalLife.ts`
 - `settlement/npcState.ts`
 - `ui/createNpcInspector.ts`
+
+## `ai/NpcAgent.timeSkip.test.ts`
+
+**Imports**
+
+- `ai/Needs.ts`
+- `ai/NpcAgent.ts`
+- `ai/npcAction.ts`
+- `ai/npcTravel.ts`
+- `combat/combatIntent.ts`
+- `items/liquidContainer.ts`
+- `settlement/household.ts`
+- `settlement/npcResidentAnchors.ts`
+- `settlement/npcState.ts`
+- `settlement/places.ts`
+- `settlement/props.ts`
+- `simulation/interactionQueue.ts`
+- `simulation/types.ts`
 
 ## `ai/NpcAgent.ts`
 
@@ -79,6 +100,7 @@ Generated from TypeScript imports.
 - `ai/npcMovementRoute.ts`
 - `ai/npcMovementTarget.ts`
 - `ai/npcMovementWatchdog.ts`
+- `ai/npcNeedTransactions.ts`
 - `ai/npcPersonalProvisions.ts`
 - `ai/npcPlan.ts`
 - `ai/npcPlayerFollowUp.ts`
@@ -120,9 +142,7 @@ Generated from TypeScript imports.
 - `items/createDroppedItems.ts`
 - `items/foodItems.ts`
 - `items/itemCatalog.ts`
-- `items/itemInstances.ts`
 - `items/items.ts`
-- `items/liquidContainer.ts`
 - `navigation/navigation.ts`
 - `navigation/navigationStats.ts`
 - `player/PlayerController.ts`
@@ -192,6 +212,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `ai/NpcAgent.timeSkip.test.ts`
 - `ai/dialogueTemplates.ts`
 - `ai/npcCaveLocomotion.test.ts`
 - `ai/npcCurrentActivity.test.ts`
@@ -604,6 +625,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `ai/NpcAgent.timeSkip.test.ts`
 - `ai/NpcAgent.ts`
 - `ai/npcAnimationIntent.test.ts`
 - `ai/npcAnimationIntent.ts`
@@ -1155,6 +1177,30 @@ Generated from TypeScript imports.
 - `ai/npcMovementWatchdog.test.ts`
 - `fauna/AnimalAgent.ts`
 
+## `ai/npcNeedTransactions.test.ts`
+
+**Imports**
+
+- `ai/Needs.ts`
+- `ai/npcNeedTransactions.ts`
+- `items/Inventory.ts`
+- `items/liquidContainer.ts`
+- `settlement/household.ts`
+
+## `ai/npcNeedTransactions.ts`
+
+**Imports**
+
+- `ai/Needs.ts`
+- `ai/npcPersonalProvisions.ts`
+- `items/Inventory.ts`
+- `settlement/household.ts`
+
+**Imported by**
+
+- `ai/NpcAgent.ts`
+- `ai/npcNeedTransactions.test.ts`
+
 ## `ai/npcOffscreenSurvival.test.ts`
 
 **Imports**
@@ -1208,6 +1254,7 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `ai/NpcAgent.ts`
+- `ai/npcNeedTransactions.ts`
 - `ai/npcOffscreenSurvival.ts`
 - `ai/npcPersonalProvisions.test.ts`
 - `ai/npcWorkContract.ts`
@@ -1432,6 +1479,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `ai/NpcAgent.timeSkip.test.ts`
 - `ai/NpcAgent.ts`
 - `ai/npcExpeditionTravel.ts`
 - `ai/npcOffscreenSurvival.test.ts`

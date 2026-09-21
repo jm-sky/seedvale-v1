@@ -13,6 +13,7 @@ import {
   householdStartingContextFromFamily,
   resolveSettlementAgricultureCatchUp,
   resolveUnloadedHouseholdAgriculture,
+  shouldCatchUpAgricultureDuringTimeSkip,
 } from './settlementAgriculture'
 
 const PERSONALITY = {
@@ -282,5 +283,30 @@ describe('settlementAgriculture (plan settlements-npcs-030)', () => {
     resolveUnloadedHouseholdAgriculture({ household: restored, capacity: 1, nowDays: 6 })
     expect(restored.items.count('seed_carrot')).toBe(household.items.count('seed_carrot'))
     expect(restored.items.count('carrot')).toBe(household.items.count('carrot'))
+  })
+
+  it('time-skip catch-up applies only to procedural non-home settlements', () => {
+    expect(shouldCatchUpAgricultureDuringTimeSkip({ isHome: true, isFounded: false })).toBe(false)
+    expect(shouldCatchUpAgricultureDuringTimeSkip({ isHome: false, isFounded: true })).toBe(false)
+    expect(shouldCatchUpAgricultureDuringTimeSkip({ isHome: false, isFounded: false })).toBe(true)
+  })
+
+  it('resolves a skipped agriculture interval instead of a timestamp-only stamp', () => {
+    const stamped = createHousehold('h-stamp', 's', 'home', undefined, { adultFarmerCount: 1 })
+    stamped.markAgricultureResolved(0)
+    const foodBefore = stamped.foodCount()
+    stamped.markAgricultureResolved(CROP_DEFS.carrot.matureAfterDays * 2)
+    expect(stamped.foodCount()).toBe(foodBefore)
+    expect(stamped.agricultureLastResolvedAtDays()).toBe(CROP_DEFS.carrot.matureAfterDays * 2)
+
+    const caught = createHousehold('h-catch', 's', 'home', undefined, { adultFarmerCount: 1 })
+    caught.markAgricultureResolved(0)
+    resolveUnloadedHouseholdAgriculture({
+      household: caught,
+      capacity: 1,
+      nowDays: CROP_DEFS.carrot.matureAfterDays * 2,
+    })
+    expect(caught.items.count('carrot')).toBeGreaterThan(0)
+    expect(caught.agricultureLastResolvedAtDays()).toBe(CROP_DEFS.carrot.matureAfterDays * 2)
   })
 })

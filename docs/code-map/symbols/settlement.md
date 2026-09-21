@@ -332,13 +332,13 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/household.ts`
 
-- `createHousehold` — function — line 394
-- `createHouseholdRegistry` — function — line 638
-- `FARMER_STARTING_SEED_COUNT` — const — line 275
+- `createHousehold` — function — line 404
+- `createHouseholdRegistry` — function — line 648
+- `FARMER_STARTING_SEED_COUNT` — const — line 285
 - `HayForageState` — type — line 129
-- `Household` — type — line 278
+- `Household` — type — line 288
 - `HOUSEHOLD_WOOD_RESERVE_TARGET` — const — line 99
-- `HouseholdAgricultureState` — type — line 203
+- `HouseholdAgricultureState` — type — line 213
 - `HouseholdDepositResult` — type — line 38
 - `HouseholdId` — type — line 33
   - domain: settlements-npcs
@@ -346,12 +346,12 @@ Generated from exported TypeScript symbols.
   - role: Owns one family's own food/wood/water stock, between NPC carrying and `SettlementEconomy`.
   - owns: Household
   - uses: SettlementEconomy
-- `householdIdFor` — function — line 360
-- `HouseholdRegistry` — type — line 603
+- `householdIdFor` — function — line 370
+- `HouseholdRegistry` — type — line 613
 - `HouseholdResourceKind` — type — line 56
-- `HouseholdSnapshot` — type — line 215
-- `HouseholdStartingContext` — type — line 259
-- `HouseholdTradeStockContext` — type — line 242
+- `HouseholdSnapshot` — type — line 225
+- `HouseholdStartingContext` — type — line 269
+- `HouseholdTradeStockContext` — type — line 252
   - domain: settlements-npcs
 - `resolveHayForage` — function — line 145
 - `WaterReserve` — type — line 160
@@ -1086,8 +1086,9 @@ Generated from exported TypeScript symbols.
 - `householdSeedReserveRequirement` — function — line 27
 - `householdSeedStockCount` — function — line 32
 - `householdSeedSurplusCount` — function — line 42
-- `resolveSettlementAgricultureCatchUp` — function — line 118
+- `resolveSettlementAgricultureCatchUp` — function — line 130
 - `resolveUnloadedHouseholdAgriculture` — function — line 73
+- `shouldCatchUpAgricultureDuringTimeSkip` — function — line 119
 
 ## `settlement/settlementArmorQuality.ts`
 
@@ -1238,13 +1239,13 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/SettlementsManager.ts`
 
-- `createSettlementsManager` — function — line 395
+- `createSettlementsManager` — function — line 402
   - domain: settlements
   - system: settlements-manager
   - role: Owns settlement generation, streaming and per-settlement economy/household/NPC-state registries.
   - owns: SettlementEconomy, Household
   - lifecycle: streaming
-- `SettlementsManager` — type — line 156
+- `SettlementsManager` — type — line 162
 
 ## `settlement/settlementStructures.ts`
 
@@ -1279,6 +1280,11 @@ Generated from exported TypeScript symbols.
 - `classifySettlementTerrain` — function — line 39
 - `MOUNTAIN_RIDGE_THRESHOLD` — const — line 31
 - `TerrainSamplers` — type — line 9
+
+## `settlement/settlementTimeSkipAnimals.ts`
+
+- `visitUniqueAnimalsById` — function — line 11
+  - domain: world
 
 ## `settlement/settlementVillageTorch.ts`
 

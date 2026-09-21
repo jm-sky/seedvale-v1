@@ -76,11 +76,9 @@ import { commitRoleWork } from '../economy/npcWork'
 import { type SettlementEconomy } from '../economy/settlementEconomy'
 import { FLOCK_THREAT_RADIUS, senseOwnedFlockThreat, type ShepherdFlockHooks } from '../fauna/shepherdFlock'
 import { CONSTRUCTION_MATERIAL_RADIUS, consumeMaterial, hasMaterial } from '../items/constructionMaterials'
-import { foodItemCount, takeOneFoodItem } from '../items/foodItems'
+import { foodItemCount } from '../items/foodItems'
 import { Inventory } from '../items/Inventory'
 import { ITEM_CATALOG, type RangedConfig } from '../items/itemCatalog'
-import { isLiquidContainerInstance } from '../items/itemInstances'
-import { drinkFromLiquidContainer } from '../items/liquidContainer'
 import { type AgentProfile, DEFAULT_CELL_SIZE, findPath, type NavigationQuery, type PathPoint } from '../navigation/navigation'
 import { beginActivePath, endActivePath, recordPathRequest, recordRepath } from '../navigation/navigationStats'
 import { PLAYER_COLLISION_RADIUS } from '../player/playerDimensions'
@@ -369,8 +367,16 @@ import {
   tickMovementWatchdog,
 } from './npcMovementWatchdog'
 import {
+  applyTimeSkipNeedCatchUp,
+  HOUSEHOLD_WATER_DRINK_AMOUNT,
+  tryConsumeHouseholdFood,
+  tryConsumeHouseholdWater,
+} from './npcNeedTransactions'
+import {
   buildContractProvisionContext,
   buildEscortProvisionContext,
+  consumeOnePersonalDrink,
+  consumeOnePersonalFood,
   contractProvisionFeasibilityPenalty,
   countPersonalDrinkPortions,
   countPersonalFood,
@@ -850,8 +856,6 @@ const WATCHDOG_PHASES: ReadonlySet<Phase> = new Set(['followPath', 'goSleep', 'g
  *  magnitude as `npcLogistics.ts`'s `FOOD_GATHER_AMOUNT` (moved there,
  *  review 2026-09-03 §8 step 3) against `WATER_POLICY`'s capacity 5. */
 const WATER_FETCH_AMOUNT = 2
-/** How much stored household water one drink-at-home visit consumes. */
-const WATER_DRINK_FROM_STOCK_AMOUNT = 1
 /** How far (world units) from this NPC's household home a completed
  *  player-built well is considered as an alternative to the settlement's own
  *  well (plan 127 §10) — bounded so the choice stays local/deterministic,
@@ -3643,6 +3647,7 @@ export class NpcAgent {
     if (this.health.dead) return
     this.dayLengthSec = dayLengthSec
     if (hasCommittedNpcTravel(this.npcState.travel) && this.npcState.travel?.arrival !== 'reached') {
+      this.interruptDetailedActionForTimeSkip({ markPlanInterrupted: false })
       if (this.inCaveRecoveryDomain()) {
         this.holdCavePositionForTimeSkip()
         this.finishTimeSkipMovementReset(
@@ -3653,7 +3658,10 @@ export class NpcAgent {
       this.catchUpCommittedTravel(hours, dayLengthSec)
       return
     }
-    resolveSharedInjuryRecovery(this.npcState, this.nowDays())
+    this.interruptDetailedActionForTimeSkip({ markPlanInterrupted: true })
+    const skipStartDays = this.nowDays()
+    const skipEndDays = skipStartDays + hours / 24
+    resolveSharedInjuryRecovery(this.npcState, skipEndDays)
     let finalActivity: ScheduleActivity | null = null
     let elapsed = 0
     let napping = this.sleepReason === 'collapse' || shouldCollapseSleep(this.vigor)
@@ -3679,21 +3687,20 @@ export class NpcAgent {
         if (activity === 'work') drainStamina(this.stamina, BASE_FATIGUE_RATE * this.fatigueMult * stepDt)
         else restoreStamina(this.stamina, this.effectiveRestRate() * stepDt)
         // Not asleep this step — resolve whichever need would have sent the
-        // NPC off to drink/eat/gather, same amounts `beginNeed` applies.
+        // NPC off to drink/eat, only when the owner transaction succeeds.
         const need = pickNeed(this.needs, this.needPickOptions())
-        if (need === 'water') {
-          this.household?.water.remove(WATER_DRINK_FROM_STOCK_AMOUNT)
-          relieveNeed(this.needs, 'water')
-        } else if (need === 'waterDuty' && this.household) {
-          relieveNeed(this.needs, 'waterDuty')
-          this.household.water.add(WATER_FETCH_AMOUNT)
-        } else if (need === 'food') relieveNeed(this.needs, 'food')
-        else if (need === 'wood' && (this.residentAnchors.wood?.trees.length ?? 0) > 0) {
-          relieveNeed(this.needs, 'wood')
+        if (applyTimeSkipNeedCatchUp({
+          need,
+          household: this.household,
+          personalInventory: this.personalInventory,
+          nowDays: skipStartDays + elapsed / 24,
+        })) {
+          relieveNeed(this.needs, need)
         }
       }
       finalActivity = activity
     }
+    this.worldNowDays = skipEndDays
     this.sleepReason = napping ? 'collapse' : finalActivity === 'sleep' ? 'schedule' : null
     if (finalActivity === null) return
 
@@ -3720,7 +3727,12 @@ export class NpcAgent {
     this.worldNowDays = toDays
     this.syncAccompanyTravelCheckpoint()
     const travel = this.npcState.travel
-    if (!travel || travel.blocked || travel.arrival === 'reached') return
+    if (!travel || travel.blocked || travel.arrival === 'reached') {
+      this.finishTimeSkipMovementReset(
+        this.sleepReason === 'collapse' || shouldCollapseSleep(this.vigor),
+      )
+      return
+    }
     if (!travel.execution) {
       this.npcState.travel = beginOffscreenNpcTravel(
         { x: this.mesh.position.x, z: this.mesh.position.z },
@@ -3744,15 +3756,28 @@ export class NpcAgent {
       const at = after.lastPosition
       this.mesh.position.set(at.x, this.sampleHeight(at.x, at.z), at.z)
     }
-    this.leaveActiveQueue()
-    this.pendingAction = null
-    this.clearMovementCommitment()
-    this.wait = 0
-    this.pathWaypoints = []
-    this.pathIndex = 0
-    this.previousPhase = null
-    resetMovementWatchdog(this.watchdog)
-    this.phase = 'choose'
+    this.finishTimeSkipMovementReset(
+      this.sleepReason === 'collapse' || shouldCollapseSleep(this.vigor),
+    )
+  }
+
+  /**
+   * Ends the current detailed action through the NPC-owned interruption
+   * seams before time-skip catch-up. Combat goes through `endCombat`;
+   * everything else through `resetInFlightAction`. Committed travel keeps
+   * `markPlanInterrupted: false` so the travel commitment itself is not
+   * treated as a cancelled plan.
+   */
+  private interruptDetailedActionForTimeSkip(opts: { markPlanInterrupted: boolean }): void {
+    if (this.phase === 'combat') {
+      this.endCombat('cancelled')
+      return
+    }
+    this.resetInFlightAction({
+      lifecycle: 'fail',
+      clearSleepReason: false,
+      markPlanInterrupted: opts.markPlanInterrupted,
+    })
   }
 
   private inCaveRecoveryDomain(): boolean {
@@ -3787,20 +3812,8 @@ export class NpcAgent {
   }
 
   private finishTimeSkipMovementReset(napping: boolean): void {
-    this.leaveActiveQueue()
-    this.pendingAction = null
-    this.clearMovementCommitment()
-    // A conversation reservation can't survive a time-skip catch-up (the
-    // partner NPC is independently reset the same way) — clear it here too
-    // so `socialCandidate()` isn't left permanently blocked (plan 151).
-    this.clearConversationPresentation()
     this.settledIdleActivity = null
-    this.wait = 0
-    this.pathWaypoints = []
-    this.pathIndex = 0
     this.previousPhase = null
-    resetMovementWatchdog(this.watchdog)
-    this.clearRepath()
     this.phase = napping ? 'sleep' : 'choose'
   }
 
@@ -4549,7 +4562,7 @@ export class NpcAgent {
       // this settlement has one), same as before households owned water.
       const household = this.household
       const selected = this.selectAndTraceStrategy('water', getWaterStrategyCandidates({
-        householdHasWater: household?.water.has(WATER_DRINK_FROM_STOCK_AMOUNT) ?? false,
+        householdHasWater: household?.water.has(HOUSEHOLD_WATER_DRINK_AMOUNT) ?? false,
         personalWaterAvailable: findDrinkablePersonalWaterContainer(this.personalInventory) != null,
       }))
       switch (selected) {
@@ -4560,8 +4573,9 @@ export class NpcAgent {
             destination: copyVec3(this.home),
             durationSec: 1.2 * this.waitMultiplier,
             onComplete: () => {
-              household.water.remove(WATER_DRINK_FROM_STOCK_AMOUNT)
-              relieveNeed(this.needs, 'water')
+              if (tryConsumeHouseholdWater(household, HOUSEHOLD_WATER_DRINK_AMOUNT)) {
+                relieveNeed(this.needs, 'water')
+              }
             },
           })
           return
@@ -4569,17 +4583,14 @@ export class NpcAgent {
         case 'personalWater': {
           const container = findDrinkablePersonalWaterContainer(this.personalInventory)
           if (!container) break
-          const containerId = container.id
           this.startAction({
             kind: 'drink',
             destination: copyVec3(this.mesh.position),
             durationSec: 0.8 * this.waitMultiplier,
             onComplete: () => {
-              this.personalInventory.updateInstance(containerId, (current) => {
-                if (!isLiquidContainerInstance(current)) return current
-                return drinkFromLiquidContainer(current) ?? current
-              })
-              relieveNeed(this.needs, 'water')
+              if (consumeOnePersonalDrink(this.personalInventory)) {
+                relieveNeed(this.needs, 'water')
+              }
             },
           })
           return
@@ -4678,9 +4689,10 @@ export class NpcAgent {
             durationSec: 1.4 * this.waitMultiplier,
             onComplete: () => {
               depositFoodHarvest(household, this.economy, this.simClock)
-              household?.takeFood(this.simClock)
-              relieveNeed(this.needs, 'food')
-              this.progressActivePlan('secureFood', 1)
+              if (tryConsumeHouseholdFood(household, this.simClock)) {
+                relieveNeed(this.needs, 'food')
+                this.progressActivePlan('secureFood', 1)
+              }
             },
           })
           return
@@ -4694,9 +4706,10 @@ export class NpcAgent {
             destination: copyVec3(this.home),
             durationSec: 1.2 * this.waitMultiplier,
             onComplete: () => {
-              household.takeFood(this.simClock)
-              relieveNeed(this.needs, 'food')
-              this.progressActivePlan('secureFood', 1)
+              if (tryConsumeHouseholdFood(household, this.simClock)) {
+                relieveNeed(this.needs, 'food')
+                this.progressActivePlan('secureFood', 1)
+              }
             },
           })
           return
@@ -4719,8 +4732,9 @@ export class NpcAgent {
             destination: copyVec3(this.mesh.position),
             durationSec: 0.8 * this.waitMultiplier,
             onComplete: () => {
-              takeOneFoodItem(this.personalInventory, this.nowDays())
-              relieveNeed(this.needs, 'food')
+              if (consumeOnePersonalFood(this.personalInventory, this.nowDays())) {
+                relieveNeed(this.needs, 'food')
+              }
             },
           })
           return
@@ -4981,8 +4995,9 @@ export class NpcAgent {
         if (result.recoveredSeeds && result.recoveredSeeds.count > 0) {
           household?.items.add(result.recoveredSeeds.kind, result.recoveredSeeds.count)
         }
-        household?.takeFood(this.simClock)
-        relieveNeed(this.needs, 'food')
+        if (tryConsumeHouseholdFood(household, this.simClock)) {
+          relieveNeed(this.needs, 'food')
+        }
       },
     }
     this.startAction(action)
@@ -5306,9 +5321,10 @@ export class NpcAgent {
           durationSec: 1.4 * this.waitMultiplier,
           onComplete: () => {
             depositFoodHarvest(this.household, this.economy, this.simClock)
-            this.household?.takeFood(this.simClock)
-            relieveNeed(this.needs, 'food')
-            this.settledIdleActivity = 'eat'
+            if (tryConsumeHouseholdFood(this.household, this.simClock)) {
+              relieveNeed(this.needs, 'food')
+              this.settledIdleActivity = 'eat'
+            }
           },
         })
         return

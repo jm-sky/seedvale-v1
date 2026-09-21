@@ -1,7 +1,8 @@
 # Plan: NPC time-skip resource and interrupt parity
 
 **Created:** 2026-09-19
-**Status:** `planned` 📋
+**Status:** `verification needed` 🔍
+**Implemented at:** 2026-09-21 06:15
 **Priority:** high · **Effort:** M
 **Depends on:** none
 **Domain:** `npc`

@@ -2043,10 +2043,10 @@ Generated from exported TypeScript symbols.
 
 ## `world/timeSkip.ts`
 
-- `createTimeSkip` — function — line 67
-- `TimeSkip` — type — line 25
-- `TimeSkipFadeStrength` — type — line 8
-- `TimeSkipTickResult` — type — line 10
+- `createTimeSkip` — function — line 79
+- `TimeSkip` — type — line 34
+- `TimeSkipFadeStrength` — type — line 9
+- `TimeSkipTickResult` — type — line 11
 
 ## `world/transportCapacity.ts`
 

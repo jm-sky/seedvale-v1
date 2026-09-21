@@ -2445,6 +2445,7 @@ Generated from TypeScript imports.
 - `world/bloodTraces.ts`
 - `world/createSky.ts`
 - `world/dayNight.test.ts`
+- `world/timeSkip.test.ts`
 - `world/timeSkip.ts`
 - `world/worldContext.ts`
 
@@ -4240,10 +4241,18 @@ Generated from TypeScript imports.
 - `persistence/saveData.ts`
 - `player/PlayerNeeds.ts`
 - `quests/QuestManager.ts`
+- `settlement/SettlementsManager.ts`
 - `world/dayNight.ts`
 - `world/timeConversion.test.ts`
 - `world/timeSkip.ts`
 - `world/transportOffscreen.ts`
+
+## `world/timeSkip.test.ts`
+
+**Imports**
+
+- `world/dayNight.ts`
+- `world/timeSkip.ts`
 
 ## `world/timeSkip.ts`
 
@@ -4258,6 +4267,7 @@ Generated from TypeScript imports.
 - `app/createApp.ts`
 - `app/gameLoop.ts`
 - `app/modalState.ts`
+- `world/timeSkip.test.ts`
 
 ## `world/transportCapacity.test.ts`
 

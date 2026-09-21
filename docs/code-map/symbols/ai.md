@@ -180,25 +180,25 @@ Generated from exported TypeScript symbols.
 
 ## `ai/NpcAgent.ts`
 
-- `classifyPendingActivity` — function — line 776
-- `configureNpcPlayerReactionAudio` — function — line 1024
-- `CurrentActivity` — type — line 577
-- `CurrentActivityKind` — type — line 549
-- `HUNT_RESUPPLY_ARROW_TARGET` — const — line 893
-- `NPC_HEIGHT` — const — line 491
-- `NPC_SHADOW_DISTANCE` — const — line 496
-- `NpcAgent` — class — line 1186
+- `classifyPendingActivity` — function — line 780
+- `configureNpcPlayerReactionAudio` — function — line 1026
+- `CurrentActivity` — type — line 581
+- `CurrentActivityKind` — type — line 553
+- `HUNT_RESUPPLY_ARROW_TARGET` — const — line 895
+- `NPC_HEIGHT` — const — line 495
+- `NPC_SHADOW_DISTANCE` — const — line 500
+- `NpcAgent` — class — line 1188
   - domain: settlements-npcs
   - system: npc-agent
   - role: Central per-NPC behaviour integration point: needs, FSM/schedule, personality-driven decisions and combat.
   - owns: NpcAuthoritativeState
   - uses: Household, SettlementEconomy, Needs
   - simulation: tick
-- `NpcAgentDeps` — type — line 1041
-- `NpcInspectionSnapshot` — type — line 592
-- `NpcWhy` — type — line 751
-- `projectNpcWhy` — function — line 818
-- `promoteChainKind` — function — line 768
+- `NpcAgentDeps` — type — line 1043
+- `NpcInspectionSnapshot` — type — line 596
+- `NpcWhy` — type — line 755
+- `projectNpcWhy` — function — line 822
+- `promoteChainKind` — function — line 772
 
 ## `ai/npcAnimalThreat.ts`
 
@@ -518,6 +518,16 @@ Generated from exported TypeScript symbols.
 - `STUCK_STRIKES_FOR_REPATH` — const — line 35
 - `tickMovementWatchdog` — function — line 80
 
+## `ai/npcNeedTransactions.ts`
+
+- `applyTimeSkipNeedCatchUp` — function — line 68
+- `HOUSEHOLD_WATER_DRINK_AMOUNT` — const — line 15
+  - domain: npc
+- `tryConsumeFoodForNeed` — function — line 39
+- `tryConsumeHouseholdFood` — function — line 27
+- `tryConsumeHouseholdWater` — function — line 18
+- `tryConsumeWaterForNeed` — function — line 54
+
 ## `ai/npcOffscreenSurvival.ts`
 
 - `NpcOffscreenSurvivalHost` — type — line 32
@@ -527,8 +537,8 @@ Generated from exported TypeScript symbols.
 
 ## `ai/npcPersonalProvisions.ts`
 
-- `buildContractProvisionContext` — function — line 312
-- `buildEscortProvisionContext` — function — line 358
+- `buildContractProvisionContext` — function — line 313
+- `buildEscortProvisionContext` — function — line 359
 - `consumeOnePersonalDrink` — function — line 98
 - `consumeOnePersonalFood` — function — line 93
 - `CONTRACT_MISSING_DRINK_PENALTY` — const — line 48
@@ -540,7 +550,7 @@ Generated from exported TypeScript symbols.
 - `contractTravelHours` — function — line 174
 - `countPersonalDrinkPortions` — function — line 56
 - `countPersonalFood` — function — line 51
-- `escortAwayHours` — function — line 344
+- `escortAwayHours` — function — line 345
 - `estimateContractProvisionNeed` — function — line 141
 - `estimateEscortProvisionNeed` — function — line 161
 - `findDrinkablePersonalWaterContainer` — function — line 69
@@ -548,7 +558,7 @@ Generated from exported TypeScript symbols.
 - `hasFillablePersonalWaterskin` — function — line 88
 - `LOCAL_CONTRACT_TRAVEL_HOURS` — const — line 35
   - domain: npc
-- `provisionContractSupplies` — function — line 269
+- `provisionContractSupplies` — function — line 270
 - `readContractProvisionAvailability` — function — line 192
 
 ## `ai/npcPlan.ts`

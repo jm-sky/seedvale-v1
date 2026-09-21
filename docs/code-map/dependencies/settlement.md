@@ -72,10 +72,12 @@ Generated from TypeScript imports.
 - `settlement/ratInfestation.ts`
 - `settlement/ratPersistence.ts`
 - `settlement/roadNetwork.ts`
+- `settlement/settlementAgriculture.ts`
 - `settlement/settlementGenerator.ts`
 - `settlement/settlementPlanCache.ts`
 - `settlement/settlementSignposts.ts`
 - `settlement/settlementTerrain.ts`
+- `settlement/settlementTimeSkipAnimals.ts`
 - `settlement/storageDestinations.ts`
 - `settlement/structureCondition.ts`
 - `settlement/structureRepairCandidates.ts`
@@ -101,6 +103,7 @@ Generated from TypeScript imports.
 - `world/pointLightBudget.ts`
 - `world/resourceSiteInventory.ts`
 - `world/settlementForestHooks.ts`
+- `world/timeConversion.ts`
 - `world/transportCapacity.ts`
 - `world/transportOffscreen.ts`
 - `world/transportOrder.ts`
@@ -817,9 +820,12 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `ai/NpcAgent.timeSkip.test.ts`
 - `ai/NpcAgent.ts`
 - `ai/npcLogistics.test.ts`
 - `ai/npcLogistics.ts`
+- `ai/npcNeedTransactions.test.ts`
+- `ai/npcNeedTransactions.ts`
 - `ai/npcPersonalProvisions.test.ts`
 - `ai/npcPersonalProvisions.ts`
 - `ai/npcProfessionWork.test.ts`
@@ -1503,6 +1509,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `ai/NpcAgent.timeSkip.test.ts`
 - `ai/NpcAgent.ts`
 - `ai/npcLogistics.ts`
 - `ai/npcPlayerReactionVoice.test.ts`
@@ -1565,6 +1572,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `ai/NpcAgent.timeSkip.test.ts`
 - `ai/NpcAgent.ts`
 - `ai/burialPressure.test.ts`
 - `ai/burialPressure.ts`
@@ -1684,6 +1692,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `ai/NpcAgent.timeSkip.test.ts`
 - `ai/NpcAgent.ts`
 - `ai/npcPlayerReactionVoice.test.ts`
 - `ai/npcProfessionWork.ts`
@@ -1904,6 +1913,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `ai/NpcAgent.timeSkip.test.ts`
 - `ai/npcPlayerReactionVoice.test.ts`
 - `app/actions/groundActions.test.ts`
 - `fauna/AnimalAgent.ts`
@@ -2165,6 +2175,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `settlement/SettlementsManager.ts`
 - `settlement/createSettlement.ts`
 - `settlement/settlementAgriculture.test.ts`
 
@@ -2562,6 +2573,19 @@ Generated from TypeScript imports.
 - `settlement/settlementProgression.test.ts`
 - `settlement/settlementProgression.ts`
 - `settlement/settlementWorldgenCache.test.ts`
+
+## `settlement/settlementTimeSkipAnimals.test.ts`
+
+**Imports**
+
+- `settlement/settlementTimeSkipAnimals.ts`
+
+## `settlement/settlementTimeSkipAnimals.ts`
+
+**Imported by**
+
+- `settlement/SettlementsManager.ts`
+- `settlement/settlementTimeSkipAnimals.test.ts`
 
 ## `settlement/settlementVillageTorch.ts`
 

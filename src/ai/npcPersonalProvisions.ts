@@ -256,11 +256,12 @@ function fillPersonalWaterskinFromHousehold(
   household: Household,
 ): boolean {
   const container = findFillablePersonalWaterskin(personalInventory)
-  if (!container || !household.water.has(1)) return false
+  if (!container || !household.water.tryRemove(1)) return false
   const filled = fillLiquidContainer(container, 'water')
-  if (!filled) return false
-  if (!personalInventory.updateInstance(container.id, () => filled)) return false
-  household.water.remove(1)
+  if (!filled || !personalInventory.updateInstance(container.id, () => filled)) {
+    household.water.add(1)
+    return false
+  }
   return true
 }
 

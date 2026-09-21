@@ -167,6 +167,10 @@ export type WaterReserve = {
   shouldFetch: () => boolean
   add: (amount: number) => void
   remove: (amount: number) => void
+  /** Atomic withdrawal — false when `current` cannot cover `amount`, leaving
+   *  the reserve unchanged. Prefer this over `has` + clamping `remove` when
+   *  a caller must not relieve a need after a failed consumption. */
+  tryRemove: (amount: number) => boolean
   /** Sets `current` to `capacity` in one step (plan settlements-npcs-046) —
    *  the pasture well's implicit rope bucket fills straight to capacity
    *  rather than a bounded per-visit amount. Idempotent when already full. */
@@ -188,6 +192,12 @@ function createWaterReserve(initial: number): WaterReserve {
     },
     remove: (amount) => {
       current = Math.max(0, current - amount)
+    },
+    tryRemove: (amount) => {
+      if (amount <= 0) return true
+      if (current < amount) return false
+      current -= amount
+      return true
     },
     fillToCapacity: () => {
       current = WATER_POLICY.capacity

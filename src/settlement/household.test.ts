@@ -189,6 +189,16 @@ describe('household water reserve (plan 122)', () => {
     expect(household.water.has(1)).toBe(false)
   })
 
+  it('tryRemove fails without clamping when stock cannot cover the amount', () => {
+    const household = createHousehold('h', 's', 'home')
+    household.water.remove(household.water.current)
+    household.water.add(1)
+    expect(household.water.tryRemove(2)).toBe(false)
+    expect(household.water.current).toBe(1)
+    expect(household.water.tryRemove(1)).toBe(true)
+    expect(household.water.current).toBe(0)
+  })
+
   it('is independent of the wood EconomicStock/food items (not an EconomicKind)', () => {
     const household = createHousehold('h', 's', 'home')
     const waterBefore = household.water.current

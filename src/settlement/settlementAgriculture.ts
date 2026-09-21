@@ -112,6 +112,18 @@ export function resolveUnloadedHouseholdAgriculture(input: {
 }
 
 /**
+ * Time-skip may resolve the skipped agriculture interval only for loaded
+ * procedural non-home settlements. Home stays on the detailed Farmer path;
+ * founded runtimes must not receive procedural aggregate production.
+ */
+export function shouldCatchUpAgricultureDuringTimeSkip(input: {
+  isHome: boolean
+  isFounded: boolean
+}): boolean {
+  return !input.isHome && !input.isFounded
+}
+
+/**
  * Stream-in catch-up for every household of one settlement. Home stays on
  * the detailed Farmer path and never produces through this aggregate.
  */
