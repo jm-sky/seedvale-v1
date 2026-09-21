@@ -234,7 +234,8 @@ Research/reviews:
 
 ## Latest benchmark results
 
-- `docs/performance/results/2026-09-17--021--benchmark-settlement-heavy.md`
-- `docs/performance/results/2026-09-17--021--benchmark-stream.md`
+- `docs/performance/results/2026-09-21--029--benchmark-stream.md`
+- `docs/performance/results/2026-09-21--030--benchmark-settlement-heavy.md`
+- `docs/performance/results/2026-09-21--031--benchmark-water.md`
 
 Historical benchmark results remain under `docs/performance/results/` and `docs/performance/trace-results/`. Treat them as dated evidence, not current-state declarations.
