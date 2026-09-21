@@ -73,7 +73,7 @@ import {
 } from '../world/spatialContext'
 import { isStandingTorchConstructionComplete, standingTorchPromptLabel } from '../world/standingTorch'
 import { isChoppableStage } from '../world/treeLifecycle'
-import { createWaterSource, type WaterBodyKind, type WaterQuality } from '../world/WaterSource'
+import { createWaterSource, type WaterBodyKind, type WaterQuality, type WaterSource } from '../world/WaterSource'
 import { resolveCampInteractionMembers } from './campRestSnapshot'
 import type { Vector3 } from 'three'
 
@@ -464,6 +464,21 @@ function resolveWaterBodyShore(
   if (!kind) return null
   const riverPoint = chunkManager.riverShorePoint(playerPos.x, playerPos.z)
   return riverPoint ? { kind, position: riverPoint } : null
+}
+
+/** Live shoreline `WaterSource` at `playerPos` (plan ui-input-034) — same
+ *  quality rules as the synthetic `waterEdge` interactable. */
+export function resolveShorelineWaterSource(
+  playerPos: Vector3,
+  chunkManager: ChunkManager,
+  resolveRiverWaterQuality: (worldX: number, worldZ: number) => WaterQuality,
+): WaterSource | null {
+  const waterBody = resolveWaterBodyShore(playerPos, chunkManager)
+  if (!waterBody) return null
+  if (waterBody.kind === 'river') {
+    return { kind: 'river', quality: resolveRiverWaterQuality(playerPos.x, playerPos.z) }
+  }
+  return createWaterSource(waterBody.kind)
 }
 
 type SpatialContextResolver = (x: number, y: number, z: number) => WorldSpatialContext
@@ -1273,15 +1288,10 @@ export function buildInteractables(
     }
   }
 
-  const waterBody = resolveWaterBodyShore(playerPos, chunkManager)
-  if (waterBody) {
+  const source = resolveShorelineWaterSource(playerPos, chunkManager, resolveRiverWaterQuality)
+  if (source) {
+    const waterBody = resolveWaterBodyShore(playerPos, chunkManager)!
     const fishingHeld = hasItemCapability(heldTool, 'fishing')
-    // River quality is contextual (plan world-017) — resolved from this same
-    // query point's hydrology + settlement proximity instead of the static
-    // per-kind default `createWaterSource` uses for well/lake/ocean.
-    const source = waterBody.kind === 'river'
-      ? { kind: 'river' as const, quality: resolveRiverWaterQuality(playerPos.x, playerPos.z) }
-      : createWaterSource(waterBody.kind)
     list.push({
       kind: 'waterEdge',
       position: waterBody.position,

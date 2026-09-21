@@ -1,7 +1,7 @@
 # Plan: Deliberate risky natural-water drinking
 
 **Created:** 2026-09-21
-**Status:** `planned` 📋
+**Status:** `done` ✅
 **Priority:** high · **Effort:** S
 **Model:** Sonnet, Composer
 **Depends on:** none

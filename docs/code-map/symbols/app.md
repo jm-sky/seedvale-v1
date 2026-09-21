@@ -82,9 +82,9 @@ Generated from exported TypeScript symbols.
 
 ## `app/actions/inspectionActions.ts`
 
-- `createInspectionActions` — function — line 94
-- `InspectionActionDeps` — type — line 29
-- `InspectionActions` — type — line 81
+- `createInspectionActions` — function — line 95
+- `InspectionActionDeps` — type — line 30
+- `InspectionActions` — type — line 82
 
 ## `app/actions/leadActions.ts`
 
@@ -303,9 +303,9 @@ Generated from exported TypeScript symbols.
 
 ## `app/gameLoop.ts`
 
-- `createGameLoop` — function — line 727
-- `GameLoop` — type — line 687
-- `GameLoopDeps` — type — line 326
+- `createGameLoop` — function — line 730
+- `GameLoop` — type — line 690
+- `GameLoopDeps` — type — line 329
 
 ## `app/graphicsSettings.ts`
 
@@ -349,17 +349,17 @@ Generated from exported TypeScript symbols.
 
 ## `app/interactables.ts`
 
-- `buildCombatTarget` — function — line 1368
-- `buildDigTarget` — function — line 1312
-- `buildInteractables` — function — line 526
+- `buildCombatTarget` — function — line 1378
+- `buildDigTarget` — function — line 1322
+- `buildInteractables` — function — line 541
 - `COMBAT_TARGET_CONE_DOT` — const — line 113
 - `COMBAT_TARGET_RANGE` — const — line 98
 - `CombatAimMode` — type — line 103
-- `commitWorldPickup` — function — line 1514
+- `commitWorldPickup` — function — line 1524
   - domain: items-player
 - `DIG_REACH` — const — line 92
 - `DROPPED_ITEM_GROUP_RADIUS` — const — line 319
-- `filterInteractablesSameSpatialContext` — function — line 510
+- `filterInteractablesSameSpatialContext` — function — line 525
 - `GAZE_RANGE` — const — line 88
 - `grindstoneInteractPosition` — function — line 400
 - `groupDroppedItemCandidates` — function — line 329
@@ -368,11 +368,12 @@ Generated from exported TypeScript symbols.
 - `INTERACT_RANGE` — const — line 82
 - `itemPromptLabel` — function — line 308
 - `resolveHaySpot` — function — line 414
-- `resolveWorldPickup` — function — line 1451
+- `resolveShorelineWaterSource` — function — line 471
+- `resolveWorldPickup` — function — line 1461
 - `worldItemAllowsAltInteract` — function — line 293
   - domain: ui-input
-- `WorldPickupCommit` — type — line 1499
-- `WorldPickupResolution` — type — line 1438
+- `WorldPickupCommit` — type — line 1509
+- `WorldPickupResolution` — type — line 1448
   - domain: items-player
 
 ## `app/inventoryWiring.ts`
@@ -440,6 +441,14 @@ Generated from exported TypeScript symbols.
 - `TORCH_BRANCH_COST` — const — line 26
 - `WOOD_PILE_BEAM_COST` — const — line 31
 - `WOOD_PILE_FOOTPRINT_RADIUS` — const — line 40
+
+## `app/waterDrinkInteraction.ts`
+
+- `arbitrateGazeWaterEdgeTarget` — function — line 23
+  - domain: ui-input
+- `DirectWaterDrinkDeps` — type — line 13
+- `requestDirectWaterDrink` — function — line 41
+  - domain: ui-input
 
 ## `app/worldBundle.ts`
 

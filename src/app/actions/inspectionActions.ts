@@ -25,6 +25,7 @@ import {
   inspectionTargetRef,
   type InspectionTargetRef,
 } from '../inspection/inspectionTarget'
+import { requestDirectWaterDrink } from '../waterDrinkInteraction'
 
 export type InspectionActionDeps = {
   vueUi: VueUi
@@ -189,8 +190,18 @@ export function createInspectionActions(
         }
         break
       case 'drink': {
-        const source = ref.kind === 'playerWell' ? liveWellSource(ref.id) : null
-        if (source) deps.drinkFromWaterSource(source)
+        if (ref.kind === 'playerWell') {
+          const preview = liveWellSource(ref.id)
+          if (!preview) break
+          requestDirectWaterDrink(
+            preview,
+            () => liveWellSource(ref.id),
+            {
+              drinkFromWaterSource: deps.drinkFromWaterSource,
+              openActionConfirm: deps.vueUi.openActionConfirm.bind(deps.vueUi),
+            },
+          )
+        }
         break
       }
       case 'fill':

@@ -18,6 +18,8 @@ Generated from TypeScript imports.
 - `app/gameLoop.ts`
 - `app/inspection/buildWorldInspection.ts`
 - `app/interactables.ts`
+- `app/waterDrinkInteraction.test.ts`
+- `app/waterDrinkInteraction.ts`
 - `fauna/AnimalAgent.ts`
 - `fauna/animalForaging.ts`
 - `fauna/animalNaturalWater.ts`
@@ -4153,6 +4155,7 @@ Generated from TypeScript imports.
 - `app/gameLoop.ts`
 - `app/interactables.test.ts`
 - `app/interactables.ts`
+- `app/waterDrinkInteraction.test.ts`
 - `app/worldBundle.ts`
 - `interaction/Interactable.ts`
 - `player/playerCombat.test.ts`

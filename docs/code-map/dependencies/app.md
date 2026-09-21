@@ -382,6 +382,7 @@ Generated from TypeScript imports.
 - `app/inspection/buildWorldInspection.ts`
 - `app/inspection/inspectionTarget.ts`
 - `app/inspection/worldInspectionView.ts`
+- `app/waterDrinkInteraction.ts`
 - `interaction/Interactable.ts`
 - `items/campRepair.ts`
 - `ui-vue/mount.ts`
@@ -1195,11 +1196,13 @@ Generated from TypeScript imports.
 - `app/actions/survivalActions.ts`
 - `app/busyAction.ts`
 - `app/faunaEncounterComposition.ts`
+- `app/inspection/buildWorldInspection.ts`
 - `app/inspection/inspectionTarget.ts`
 - `app/interactables.ts`
 - `app/modalState.ts`
 - `app/npcQuestMarkerSync.ts`
 - `app/restCampSequence.ts`
+- `app/waterDrinkInteraction.ts`
 - `app/worldBundle.ts`
 - `audio/actionSounds.ts`
 - `audio/animalSounds.ts`
@@ -1384,6 +1387,7 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `app/actions/inspectionActions.ts`
+- `app/gameLoop.ts`
 - `app/inspection/buildWorldInspection.test.ts`
 
 ## `app/inspection/inspectionTarget.ts`
@@ -1715,6 +1719,30 @@ Generated from TypeScript imports.
 - `app/createApp.ts`
 - `app/userActions.test.ts`
 - `ui-vue/playerQuickActions.ts`
+
+## `app/waterDrinkInteraction.test.ts`
+
+**Imports**
+
+- `app/waterDrinkInteraction.ts`
+- `interaction/Interactable.ts`
+- `world/WaterSource.ts`
+- `world/spatialContext.ts`
+
+## `app/waterDrinkInteraction.ts`
+
+**Imports**
+
+- `interaction/Interactable.ts`
+- `items/HeldTool.ts`
+- `items/itemCatalog.ts`
+- `world/WaterSource.ts`
+
+**Imported by**
+
+- `app/actions/inspectionActions.ts`
+- `app/gameLoop.ts`
+- `app/waterDrinkInteraction.test.ts`
 
 ## `app/worldBundle.caveCrate.test.ts`
 

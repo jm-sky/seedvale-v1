@@ -181,6 +181,7 @@ import { applyLightningFlash, applyWeatherOverlay, applyWeatherSkyOverlay, capOu
 import { showCountAcquisitionToast } from './actions/acquisitionFeedback'
 import { feedAnimal, hasCarriedMilkContainer } from './actions/survivalActions'
 import { buildHuntableLivestock } from './faunaEncounterComposition'
+import { liveWellWaterSource } from './inspection/buildWorldInspection'
 import { inspectionTargetRef } from './inspection/inspectionTarget'
 import {
   buildCombatTarget,
@@ -192,9 +193,11 @@ import {
   filterInteractablesSameSpatialContext,
   INTERACT_MIN_DOT,
   INTERACT_RANGE,
+  resolveShorelineWaterSource,
   resolveWorldPickup,
   worldItemAllowsAltInteract,
 } from './interactables'
+import { arbitrateGazeWaterEdgeTarget, requestDirectWaterDrink } from './waterDrinkInteraction'
 import { activeModal } from './modalState'
 import { syncNpcQuestMarkers } from './npcQuestMarkerSync'
 import type { Object3D, PerspectiveCamera, Scene, WebGLRenderer } from 'three'
@@ -746,6 +749,26 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
     tickTerrainPreparationPreview, tickPlacementPreview, resumeTerrainPreparationWork, tickTerrainPreparationWork, isTerrainPreparationWorkActive, onTerrainPreparationWorkFinished,
     onSleepFinished, tickLodging, isLodgingActive, canCancelRest, interruptLongActivityOnDamage, onInventoryChanged, consumedWorldPickupIds, setFrameTiming, syncPointLightBudget, getPlayerObservation,
   } = deps
+
+  const commitDirectWaterDrink = (previewSource: WaterSource, revalidateSource: () => WaterSource | null): void => {
+    if (!drinkFromWaterSource) return
+    requestDirectWaterDrink(previewSource, revalidateSource, {
+      drinkFromWaterSource,
+      openActionConfirm: vueUi.openActionConfirm.bind(vueUi),
+    })
+  }
+
+  const revalidateShorelineDrinkSource = (): WaterSource | null => resolveShorelineWaterSource(
+    player.mesh.position,
+    bundle.chunkManager,
+    bundle.riverWaterQuality.resolve,
+  )
+
+  const revalidatePlayerWellDrinkSource = (wellId: string): WaterSource | null => {
+    const well = bundle.playerWells.nodes().find((entry) => entry.id === wellId)
+    if (!well) return null
+    return liveWellWaterSource(well, getSeed(), dayNight.elapsedDays)
+  }
 
   renderer.shadowMap.autoUpdate = false
   /** Runtime NPC instances that already received a `labelMarker` projection.
@@ -1667,36 +1690,45 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
           cycleCommittedKey,
           interactableStableKey,
         )
+        const digTarget = buildDigTarget(
+          player.mesh.position,
+          mouseLook.state.yaw,
+          held,
+          bundle.chunkManager,
+          playerSpatialContext,
+        )
+        const combatTarget = buildCombatTarget(
+          bundle.settlementsManager.getLoaded(),
+          bundle.fauna,
+          player.mesh.position,
+          mouseLook.state.yaw,
+          held,
+          playerMelee.recentTargetIds(),
+          aimMode,
+          playerSpatialContext,
+          resolveSpatialContextAt,
+        )
         target = cycledTarget
           ?? skillScreenTarget
-          ?? pickInGaze(
-            interactables,
-            player.mesh.position,
-            mouseLook.state.yaw,
-            herbDiscoveryRange,
-            INTERACT_MIN_DOT,
-            {
-              ...gazeRankOptions,
-              previous: gazePrevious,
-              sameCandidate: (a, b) => interactableStableKey(a) === interactableStableKey(b),
-            },
-          ) ?? buildDigTarget(
-            player.mesh.position,
-            mouseLook.state.yaw,
+          ?? arbitrateGazeWaterEdgeTarget(
+            pickInGaze(
+              interactables,
+              player.mesh.position,
+              mouseLook.state.yaw,
+              herbDiscoveryRange,
+              INTERACT_MIN_DOT,
+              {
+                ...gazeRankOptions,
+                previous: gazePrevious,
+                sameCandidate: (a, b) => interactableStableKey(a) === interactableStableKey(b),
+              },
+            ),
+            digTarget,
+            combatTarget,
             held,
-            bundle.chunkManager,
-            playerSpatialContext,
-          ) ?? buildCombatTarget(
-            bundle.settlementsManager.getLoaded(),
-            bundle.fauna,
-            player.mesh.position,
-            mouseLook.state.yaw,
-            held,
-            playerMelee.recentTargetIds(),
-            aimMode,
-            playerSpatialContext,
-            resolveSpatialContextAt,
           )
+          ?? digTarget
+          ?? combatTarget
       }
       // While mounted, the only player action is the dedicated Dismount
       // button (plan fauna-003 §10) — no gaze prompt, no `[E]`/`[R]`
@@ -1903,9 +1935,10 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
         if (altInteractPressed) startCookAt?.(target.fire)
       } else if (target?.kind === 'well') {
         if (interactPressed) {
+          const wellSource = target.source
           const outcome = resolveInteraction(target, questManager)
           npcDialog.open(outcome.speakerName, outcome.line, outcome.offer)
-          drinkFromWaterSource?.(target.source)
+          commitDirectWaterDrink(wellSource, () => wellSource)
         }
         if (altInteractPressed) fillWaterskin?.(target.source)
       } else if (target?.kind === 'waterEdge') {
@@ -1913,7 +1946,9 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
           if (interactPressed) startFishing?.(target.position.x, target.position.z)
           if (altInteractPressed) applyFishingBait?.(target.position.x, target.position.z)
         } else {
-          if (interactPressed) drinkFromWaterSource?.(target.source)
+          if (interactPressed) {
+            commitDirectWaterDrink(target.source, revalidateShorelineDrinkSource)
+          }
           if (altInteractPressed) fillWaterskin?.(target.source)
         }
       } else if (target?.kind === 'dryingRack') {
@@ -1959,7 +1994,11 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
               label: 'Napij się',
               enabled: view.waterAvailable && !!source,
               reasonLabel: view.waterAvailable ? '' : WELL_WATER_UNAVAILABLE_DURING_REPAIR,
-              run: () => { if (source) drinkFromWaterSource?.(source) },
+              run: () => {
+                if (source) {
+                  commitDirectWaterDrink(source, () => revalidatePlayerWellDrinkSource(wellId))
+                }
+              },
             },
             {
               label: 'Napełnij pojemnik',
@@ -1982,7 +2021,7 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
               spatialContext: target.spatialContext,
             }, questManager)
             npcDialog.open(outcome.speakerName, outcome.line, outcome.offer)
-            drinkFromWaterSource?.(source)
+            commitDirectWaterDrink(source, () => revalidatePlayerWellDrinkSource(wellId))
           } else {
             workOnWellRoofRepair?.(wellId)
           }
