@@ -2657,6 +2657,10 @@ describe('QuestManager world-driven settlement sources', () => {
     expect(qm.list()[0]?.resolvedOutcomeId).toBe(RESOLVED_WITHOUT_PLAYER_OUTCOME)
     expect(granted).toEqual([])
     expect(qm.getRelation('Anna')).toBe(0)
+    // Automatic world resolution never fabricates a conversation with the
+    // giver (plan quests-progression-075) — only the offer line (genuinely
+    // Anna's own line) is attributed to her; the result note is not.
+    expect(qm.list()[0]?.notes.find((note) => note.text === 'gone')?.speakerName).not.toBe('Anna')
   })
 
   it('prefers named resolved_without_player when multiple failed outcomes exist', () => {
@@ -2860,7 +2864,7 @@ describe('QuestManager lost livestock sources (fauna-024)', () => {
     expect(qm.onInteract('Anna')?.offer).toBeDefined()
   })
 
-  it('reads live return from world state, not quest flags', () => {
+  it('reads live return from world state as ready-to-report, not an immediate resolution (plan quests-progression-075)', () => {
     const qm = makeManager(
       [lostQuest],
       undefined,
@@ -2886,11 +2890,77 @@ describe('QuestManager lost livestock sources (fauna-024)', () => {
       lostLookup('returned'),
     )
     polling.pollLostLivestockSources()
+    // World knowledge only — no report to Anna happened yet, so the quest
+    // isn't resolved and the discovery itself is never attributed to her as
+    // spoken dialogue (only her earlier, genuine offer line is).
+    expect(polling.getState(lostQuest.id)).toBe('ready_to_report')
+    expect(polling.list()[0]?.resolvedOutcomeId).toBeUndefined()
+    expect(polling.list()[0]?.notes.some((note) => note.text === 'live')).toBe(false)
+    expect(polling.list()[0]?.notes.find((note) => note.speakerName === 'Anna')?.text).toBe('offer sheep')
+
+    // The actual report interaction applies the captured branch exactly.
+    expect(speak(polling, 'Anna')).toBe('live')
     expect(polling.getState(lostQuest.id)).toBe('complete')
     expect(polling.list()[0]?.resolvedOutcomeId).toBe('live_return')
+    expect(polling.list()[0]?.notes.some((note) => note.speakerName === 'Anna' && note.text === 'live')).toBe(true)
   })
 
-  it('fails from world unavailable, not a quest-local flag', () => {
+  it('does not let the branch flip if the fauna snapshot changes again while ready_to_report', () => {
+    let status: import('../fauna/animalStray').LostLivestockSourceStatus | 'untracked' = 'returned'
+    const qm = makeManager(
+      [lostQuest],
+      undefined,
+      undefined,
+      { progress: [{ id: lostQuest.id, state: 'active', stageIndex: 0 }], relations: {} },
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      { getSnapshot: (questId: string) => questId === lostQuest.id ? status : 'untracked' as const },
+    )
+    qm.pollLostLivestockSources()
+    expect(qm.getState(lostQuest.id)).toBe('ready_to_report')
+    status = 'corpse-inspected'
+    qm.pollLostLivestockSources()
+    expect(qm.getState(lostQuest.id)).toBe('ready_to_report')
+    expect(speak(qm, 'Anna')).toBe('live')
+    expect(qm.list()[0]?.resolvedOutcomeId).toBe('live_return')
+  })
+
+  it('preserves the captured report branch across export/restore, even if the snapshot changes meanwhile', () => {
+    const qm = makeManager(
+      [lostQuest],
+      undefined,
+      undefined,
+      { progress: [{ id: lostQuest.id, state: 'active', stageIndex: 0 }], relations: {} },
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      lostLookup('corpse-inspected'),
+    )
+    qm.pollLostLivestockSources()
+    expect(qm.getState(lostQuest.id)).toBe('ready_to_report')
+    const exported = qm.exportProgress()
+    expect(exported.find((entry) => entry.id === lostQuest.id)?.pendingReportOutcomeId).toBe('dead_confirmed')
+
+    const restored = makeManager(
+      [lostQuest],
+      undefined,
+      undefined,
+      { progress: exported, relations: {} },
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      lostLookup('lost-alive'),
+    )
+    expect(restored.getState(lostQuest.id)).toBe('ready_to_report')
+    expect(speak(restored, 'Anna')).toBe('dead')
+    expect(restored.list()[0]?.resolvedOutcomeId).toBe('dead_confirmed')
+  })
+
+  it('fails from world unavailable, not a quest-local flag, without fabricating giver speech', () => {
     const qm = makeManager(
       [lostQuest],
       undefined,
@@ -2904,10 +2974,12 @@ describe('QuestManager lost livestock sources (fauna-024)', () => {
     )
     qm.pollLostLivestockSources()
     expect(qm.getState(lostQuest.id)).toBe('failed')
-    expect(qm.list()[0]?.resolvedOutcomeId).toBe('unavailable')
+    const entry = qm.list()[0]
+    expect(entry?.resolvedOutcomeId).toBe('unavailable')
+    expect(entry?.notes.find((note) => note.text === 'gone')?.speakerName).not.toBe('Anna')
   })
 
-  it('reads inspected corpse from world state', () => {
+  it('reads inspected corpse from world state as ready-to-report, then resolves dead_confirmed only on report', () => {
     const qm = makeManager(
       [lostQuest],
       undefined,
@@ -2920,8 +2992,46 @@ describe('QuestManager lost livestock sources (fauna-024)', () => {
       lostLookup('corpse-inspected'),
     )
     qm.pollLostLivestockSources()
+    expect(qm.getState(lostQuest.id)).toBe('ready_to_report')
+    expect(qm.list()[0]?.resolvedOutcomeId).toBeUndefined()
+    expect(speak(qm, 'Anna')).toBe('dead')
     expect(qm.getState(lostQuest.id)).toBe('complete')
     expect(qm.list()[0]?.resolvedOutcomeId).toBe('dead_confirmed')
+  })
+
+  it('does not duplicate the journal result on repeated polling after the report resolved the quest', () => {
+    let status: import('../fauna/animalStray').LostLivestockSourceStatus | 'untracked' = 'returned'
+    const qm = makeManager(
+      [lostQuest],
+      undefined,
+      undefined,
+      { progress: [{ id: lostQuest.id, state: 'active', stageIndex: 0 }], relations: {} },
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      { getSnapshot: (questId: string) => questId === lostQuest.id ? status : 'untracked' as const },
+    )
+    qm.pollLostLivestockSources()
+    speak(qm, 'Anna')
+    expect(qm.getState(lostQuest.id)).toBe('complete')
+    const noteCount = qm.list()[0]?.notes.length
+    status = 'corpse-inspected'
+    qm.pollLostLivestockSources()
+    expect(qm.getState(lostQuest.id)).toBe('complete')
+    expect(qm.list()[0]?.resolvedOutcomeId).toBe('live_return')
+    expect(qm.list()[0]?.notes.length).toBe(noteCount)
+  })
+
+  it('projects a legacy terminal state without a recorded result event as an observation, not giver speech', () => {
+    const qm = makeManager(
+      [lostQuest],
+      undefined,
+      undefined,
+      { progress: [{ id: lostQuest.id, state: 'complete', stageIndex: 1, resolvedOutcomeId: 'live_return' }], relations: {} },
+    )
+    const entry = qm.list()[0]
+    expect(entry?.notes.find((note) => note.text === 'live')?.speakerName).toBe('Obserwacja')
   })
 })
 
@@ -5215,9 +5325,12 @@ describe('QuestManager quest-log journal notes (plan ui-input-021)', () => {
       undefined,
       { progress: [{ id: 'journal', state: 'complete', stageIndex: 1, resolvedOutcomeId: 'complete' }], relations: {} },
     )
+    // A legacy terminal state with no recorded `result` event predates
+    // per-event speaker provenance — presented as an observation rather than
+    // giver speech never fabricated (plan quests-progression-075).
     expect(notesOf(complete)).toEqual([
       { dateLabel: null, speakerName: 'Anna', text: 'offer journal' },
-      { dateLabel: null, speakerName: 'Anna', text: 'report journal' },
+      { dateLabel: null, speakerName: 'Obserwacja', text: 'report journal' },
     ])
     expect(qmExportHasNoJournal(complete)).toBe(true)
   })

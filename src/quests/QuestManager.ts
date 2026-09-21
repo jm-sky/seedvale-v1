@@ -239,6 +239,9 @@ type QuestRuntimeProgress = {
   dialogueCooldowns?: Record<NpcId, QuestDialogueCooldown>
   /** One quest-local field-inspection observation (plan quests-progression-049). */
   observation?: QuestHabitatPressureObservation
+  /** Captured report-branch intent — see `QuestProgressEntry.pendingReportOutcomeId`
+   *  (plan quests-progression-075). */
+  pendingReportOutcomeId?: QuestOutcomeId
 }
 
 /** Player-only harvest report (plan quests-progression-020). */
@@ -918,11 +921,15 @@ export class QuestManager {
       })
     }
     if (terminal && !hasResult) {
+      // No recorded `result` event means this terminal state predates
+      // per-event speaker provenance (an older save) — presenting it as an
+      // observation rather than giver speech avoids fabricating a
+      // conversation that never happened (plan quests-progression-075).
       const resolved = resolvedOutcome(def, progress)
       const stage = this.currentStage(def, progress.stageIndex)
       const result = resultPresentation(def, progress, resolved, stage)
       if (result) {
-        notes.push({ dateLabel: null, speakerName: def.giverName, text: result })
+        notes.push({ dateLabel: null, speakerName: QUEST_JOURNAL_OBSERVATION_SPEAKER, text: result })
       }
     }
     return notes
@@ -1024,7 +1031,7 @@ export class QuestManager {
     def: QuestDef,
     s: QuestRuntimeProgress,
     slot: QuestStageObjectiveSlot,
-    options?: { speakerNpcId?: NpcId, skipProgressJournal?: boolean },
+    options?: { speakerNpcId?: NpcId, skipProgressJournal?: boolean, pendingReportOutcomeId?: QuestOutcomeId },
   ): void {
     if (s.state !== 'active') return
     const stage = this.currentStage(def, s.stageIndex)
@@ -1034,6 +1041,7 @@ export class QuestManager {
     const journalOpts = {
       speakerNpcId: options?.speakerNpcId ?? this.progressSpeakerNpcId(slot),
       ...(options?.skipProgressJournal ? { skipProgressJournal: true } : {}),
+      ...(options?.pendingReportOutcomeId ? { pendingReportOutcomeId: options.pendingReportOutcomeId } : {}),
     }
     const mode = questStageMode(stage)
     if (mode === 'any' || questStageObjectiveSlots(stage).length <= 1) {
@@ -1212,7 +1220,7 @@ export class QuestManager {
       const s = this.stateOf(def.id)
       if (s.state !== 'active' && s.state !== 'ready_to_report') continue
       const failed = uniqueOutcomeForState(def, 'failed')
-      if (failed) this.applyOutcome(def, failed.id)
+      if (failed) this.applyOutcome(def, failed.id, { automatic: true })
     }
   }
 
@@ -1565,14 +1573,21 @@ export class QuestManager {
       }
       if (status === 'resolved') {
         const outcome = externalResolutionOutcome(def)
-        if (outcome) this.applyOutcome(def, outcome.id)
+        if (outcome) this.applyOutcome(def, outcome.id, { automatic: true })
       }
     }
   }
 
   /**
    * Polls typed lost-livestock world snapshots. Outcomes come from fauna
-   * state, never from quest-local flags.
+   * state, never from quest-local flags. `returned` / `corpse-inspected` are
+   * world knowledge, not a giver conversation: they complete the
+   * `recover_lost_livestock` objective into the existing `ready_to_report`
+   * lifecycle (capturing which terminal outcome the eventual report should
+   * apply as `pendingReportOutcomeId`) instead of resolving the quest
+   * outright, so a fabricated giver line can never appear before the player
+   * actually reports back (plan quests-progression-075). `unavailable` has no
+   * report to give, so it remains an automatic terminal failure.
    *
    * @domain quests-progression
    */
@@ -1587,16 +1602,17 @@ export class QuestManager {
         continue
       }
       if (s.state !== 'active') continue
-      if (snapshot === 'returned') {
-        this.applyOutcome(def, LOST_LIVESTOCK_LIVE_OUTCOME)
-        continue
-      }
-      if (snapshot === 'corpse-inspected') {
-        this.applyOutcome(def, LOST_LIVESTOCK_DEAD_OUTCOME)
+      if (snapshot === 'returned' || snapshot === 'corpse-inspected') {
+        const slot = this.unfinishedSlots(def, s).find((entry) => entry.objective.type === 'recover_lost_livestock')
+        if (!slot) continue
+        const pendingReportOutcomeId = snapshot === 'returned'
+          ? LOST_LIVESTOCK_LIVE_OUTCOME
+          : LOST_LIVESTOCK_DEAD_OUTCOME
+        this.completeObjectiveSlot(def, s, slot, { pendingReportOutcomeId })
         continue
       }
       if (snapshot === 'unavailable') {
-        this.applyOutcome(def, LOST_LIVESTOCK_UNAVAILABLE_OUTCOME)
+        this.applyOutcome(def, LOST_LIVESTOCK_UNAVAILABLE_OUTCOME, { automatic: true })
       }
     }
   }
@@ -1982,8 +1998,19 @@ export class QuestManager {
 
   /** Applies `outcomeId` exactly once: terminal state, reward, consequences.
    *  Presentation (spoken line / complete sound) is the caller's job except
-   *  the existing successful-turn-in thank-you clip. */
-  private applyOutcome(def: QuestDef, outcomeId: QuestOutcomeId): QuestOutcome | null {
+   *  the existing successful-turn-in thank-you clip.
+   *
+   *  `automatic: true` marks a world-driven resolution with no real player↔NPC
+   *  interaction (e.g. `pollWorldDrivenSources()`, an unrecoverable lost
+   *  livestock, a reserved reward target dying) — its journal result is
+   *  speakerless instead of falsely attributing spoken dialogue to the giver
+   *  (plan quests-progression-075). Omit it for every real report / dialogue
+   *  turn-in, which keeps today's giver-spoken result. */
+  private applyOutcome(
+    def: QuestDef,
+    outcomeId: QuestOutcomeId,
+    options?: { automatic?: boolean },
+  ): QuestOutcome | null {
     const current = this.stateOf(def.id)
     if (
       current.state === 'abandoned' || current.state === 'complete'
@@ -1996,13 +2023,16 @@ export class QuestManager {
       const animalId = this.completeOutcomeAnimalId(def, outcome)
       if (animalId && !this.transferAnimalOwnership(animalId)) {
         const failed = uniqueOutcomeForState(def, 'failed')
-        return failed ? this.applyOutcome(def, failed.id) : null
+        return failed ? this.applyOutcome(def, failed.id, options) : null
       }
     }
 
     const stageIndex = outcome.state === 'complete' ? def.stages.length : current.stageIndex
     this.setQuestState(def.id, { state: outcome.state, stageIndex, resolvedOutcomeId: outcome.id })
-    this.appendJournal(def.id, { kind: 'result', speakerNpcId: def.giver.npcId })
+    this.appendJournal(def.id, {
+      kind: 'result',
+      ...(options?.automatic ? {} : { speakerNpcId: def.giver.npcId }),
+    })
     this.clearAnimalTargetsForQuest(def.id)
 
     this.applyEffects(def.id, outcome.effects, { skipAnimalOwnership: true })
@@ -2075,7 +2105,13 @@ export class QuestManager {
   }
 
   private resolveSuccessfulTurnIn(def: QuestDef): string | null {
-    const outcome = uniqueOutcomeForState(def, 'complete')
+    // Re-read live state on every call (never capture a stale branch) — the
+    // pending id is read here, before `applyOutcome` clears it, so a
+    // multi-branch report (lost-livestock live/dead) can still tell its
+    // outcome's `resultText` apart from the single-outcome generic
+    // `reportLine`; ordinary single-outcome quests keep today's `reportLine`.
+    const branchedReport = this.stateOf(def.id).pendingReportOutcomeId !== undefined
+    const outcome = this.reportOutcome(def)
     if (!outcome) return null
     if (!this.applyOutcome(def, outcome.id)) return null
     // Unlike `resultText` (journal/log presentation only — see
@@ -2083,7 +2119,9 @@ export class QuestManager {
     // spoken line here so a report reflects a captured observation
     // (plan quests-progression-049) without changing turn-in text for
     // every pre-existing quest, which never sets it.
-    return outcome.resolveResultText?.(this.stateOf(def.id).observation) ?? def.reportLine
+    return outcome.resolveResultText?.(this.stateOf(def.id).observation)
+      ?? (branchedReport ? outcome.resultText : undefined)
+      ?? def.reportLine
   }
 
   private resolveFailedFind(def: QuestDef, stage: QuestStage | undefined): string | null {
@@ -2100,7 +2138,7 @@ export class QuestManager {
     def: QuestDef,
     s: QuestRuntimeProgress,
     resultId?: string,
-    options?: { speakerNpcId?: NpcId, skipProgressJournal?: boolean },
+    options?: { speakerNpcId?: NpcId, skipProgressJournal?: boolean, pendingReportOutcomeId?: QuestOutcomeId },
   ): void {
     this.clearFeedDedupe(def.id, s.stageIndex)
     const stage = this.currentStage(def, s.stageIndex)
@@ -2124,7 +2162,14 @@ export class QuestManager {
       if (target >= 0) nextIndex = target
     }
     const nextState = nextIndex >= def.stages.length ? 'ready_to_report' : 'active'
-    this.setQuestState(def.id, { state: nextState, stageIndex: nextIndex, stageCount: 0 })
+    this.setQuestState(def.id, {
+      state: nextState,
+      stageIndex: nextIndex,
+      stageCount: 0,
+      ...(nextState === 'ready_to_report' && options?.pendingReportOutcomeId
+        ? { pendingReportOutcomeId: options.pendingReportOutcomeId }
+        : {}),
+    })
     if (nextState === 'active') this.bindAnimalTargetIfNeeded(def, nextIndex)
     this.lifecycleHooks.onStageAdvanced?.(def.id, clearedIndex)
   }
@@ -2438,8 +2483,24 @@ export class QuestManager {
     return this.expandQuestText(def, this.stateOf(def.id), stage.progressLine ?? stage.reminderLine) ?? fallback
   }
 
+  /** The exact outcome a `ready_to_report` report action will apply — a
+   *  captured `pendingReportOutcomeId` branch (e.g. lost-livestock
+   *  `live_return` vs `dead_confirmed`, set by `completeObjectiveSlot`/
+   *  `advanceStage` when the objective completed from world knowledge, not a
+   *  giver conversation) when present and still authored, else the def's
+   *  unique `complete` outcome (plan quests-progression-075). Never derives
+   *  the branch from live world state at report time. */
+  private reportOutcome(def: QuestDef): QuestOutcome | undefined {
+    const pendingId = this.stateOf(def.id).pendingReportOutcomeId
+    if (pendingId) {
+      const pending = def.outcomes.find((entry) => entry.id === pendingId && entry.state === 'complete')
+      if (pending) return pending
+    }
+    return uniqueOutcomeForState(def, 'complete')
+  }
+
   private reportOverride(def: QuestDef): QuestDialogOverride | null {
-    if (!uniqueOutcomeForState(def, 'complete')) return null
+    if (!this.reportOutcome(def)) return null
     return {
       line: def.reportPromptLine ?? DEFAULT_REPORT_PROMPT,
       actions: [{
@@ -3278,6 +3339,9 @@ export class QuestManager {
         entry.dialogueCooldowns = s.dialogueCooldowns
       }
       if (s.observation) entry.observation = s.observation
+      if (s.state === 'ready_to_report' && s.pendingReportOutcomeId) {
+        entry.pendingReportOutcomeId = s.pendingReportOutcomeId
+      }
       return entry
     })
   }
@@ -3305,6 +3369,9 @@ function runtimeProgress(entry: QuestProgressEntry): QuestRuntimeProgress {
     progress.dialogueCooldowns = entry.dialogueCooldowns
   }
   if (entry.observation) progress.observation = entry.observation
+  if (entry.state === 'ready_to_report' && entry.pendingReportOutcomeId) {
+    progress.pendingReportOutcomeId = entry.pendingReportOutcomeId
+  }
   return progress
 }
 
@@ -3382,6 +3449,11 @@ function normalizeRestoredProgress(def: QuestDef, entry: QuestProgressEntry): Qu
       ? { dialogueCooldowns: migrated.dialogueCooldowns }
       : {}),
     ...(migrated.observation ? { observation: migrated.observation } : {}),
+    ...(migrated.state === 'ready_to_report'
+      && migrated.pendingReportOutcomeId
+      && def.outcomes.some((outcome) => outcome.id === migrated.pendingReportOutcomeId && outcome.state === 'complete')
+      ? { pendingReportOutcomeId: migrated.pendingReportOutcomeId }
+      : {}),
   }
   if (migrated.state !== 'complete' && migrated.state !== 'failed') return base
   if (migrated.resolvedOutcomeId) {

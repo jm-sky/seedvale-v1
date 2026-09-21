@@ -2,7 +2,7 @@
 
 **Prepared:** 2026-09-21  
 **Plan:** `quests-progression-075-lost-livestock-report-lifecycle-and-truthful-quest-journal.md`  
-**Status:** `planned` 📋
+**Status:** `verification needed` 🔍 — implemented and automated-verified; browser/manual verification pending (user-performed).
 
 ## Current code findings
 

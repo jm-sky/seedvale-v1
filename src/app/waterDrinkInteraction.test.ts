@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import type { Interactable } from '../interaction/Interactable'
-import { createWaterSource, UNCOVERED_WELL_CONSUMPTION_RISK } from '../world/WaterSource'
 import { WORLD_SPATIAL_CONTEXT_SURFACE } from '../world/spatialContext'
+import { createWaterSource, UNCOVERED_WELL_CONSUMPTION_RISK } from '../world/WaterSource'
 import { arbitrateGazeWaterEdgeTarget, requestDirectWaterDrink } from './waterDrinkInteraction'
 
 const waterEdge: Interactable = {

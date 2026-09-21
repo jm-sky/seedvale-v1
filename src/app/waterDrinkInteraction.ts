@@ -1,10 +1,10 @@
 import type { Interactable } from '../interaction/Interactable'
-import { hasItemCapability } from '../items/itemCatalog'
 import type { ToolKind } from '../items/HeldTool'
+import { hasItemCapability } from '../items/itemCatalog'
 import {
+  requiresRiskyWaterDrinkConfirmation,
   RISKY_WATER_DRINK_CONFIRM_BODY,
   RISKY_WATER_DRINK_CONFIRM_LABEL,
-  requiresRiskyWaterDrinkConfirmation,
   type WaterSource,
 } from '../world/WaterSource'
 

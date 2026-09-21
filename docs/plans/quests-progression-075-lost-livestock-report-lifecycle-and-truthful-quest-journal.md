@@ -1,7 +1,7 @@
 # Plan: Lost livestock report lifecycle and truthful quest journal
 
 **Created:** 2026-09-21
-**Status:** `planned` 📋
+**Status:** `verification needed` 🔍
 **Type:** bug
 **Priority:** high · **Effort:** S
 **Depends on:** ~~quests-progression-030~~

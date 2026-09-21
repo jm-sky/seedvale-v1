@@ -1023,6 +1023,14 @@ export type QuestProgressEntry = {
    * capture one.
    */
   observation?: QuestHabitatPressureObservation
+  /**
+   * Captured report-branch intent for a `ready_to_report` quest whose
+   * terminal outcome depends on what the player actually discovered before
+   * report dialogue is reached (e.g. lost-livestock `live_return` vs
+   * `dead_confirmed`) — quest lifecycle intent, never a copy of live world
+   * state (plan quests-progression-075). Cleared on terminal resolution.
+   */
+  pendingReportOutcomeId?: QuestOutcomeId
 }
 
 /**

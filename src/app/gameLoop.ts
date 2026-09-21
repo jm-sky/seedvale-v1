@@ -197,10 +197,10 @@ import {
   resolveWorldPickup,
   worldItemAllowsAltInteract,
 } from './interactables'
-import { arbitrateGazeWaterEdgeTarget, requestDirectWaterDrink } from './waterDrinkInteraction'
-import { drainNonModalGameplayInput } from './playerDownedInputGating'
 import { activeModal } from './modalState'
 import { syncNpcQuestMarkers } from './npcQuestMarkerSync'
+import { drainNonModalGameplayInput } from './playerDownedInputGating'
+import { arbitrateGazeWaterEdgeTarget, requestDirectWaterDrink } from './waterDrinkInteraction'
 import type { Object3D, PerspectiveCamera, Scene, WebGLRenderer } from 'three'
 
 /** Candidate-gathering radius for ranged projectile collision (plan 162) —
