@@ -54,6 +54,7 @@ import type { TimeSkip } from '../world/timeSkip'
 import type { WaterSource } from '../world/WaterSource'
 import type { ClimateState, WeatherState } from '../world/weather'
 import type { WeatherParticles } from '../world/weatherParticles'
+import type { FireRemovalPreview } from './actions/fireRemovalActions'
 import type { LeadActions } from './actions/leadActions'
 import type { MountActions } from './actions/mountActions'
 import type { RemovalPreview } from './actions/placementActions'
@@ -179,6 +180,7 @@ import { resolveOffscreenTransportArrivals } from '../world/transportOffscreen'
 import { computeSurfaceWeather, tickClimate } from '../world/weather'
 import { applyLightningFlash, applyWeatherOverlay, applyWeatherSkyOverlay, capOutdoorFogToTerrainHorizon, grassWindAmpFor, resolveSceneFog } from '../world/weatherVisuals'
 import { showCountAcquisitionToast } from './actions/acquisitionFeedback'
+import { isPlacedFireDismantleShortcut } from './actions/fireRemovalActions'
 import { feedAnimal, hasCarriedMilkContainer } from './actions/survivalActions'
 import { buildHuntableLivestock } from './faunaEncounterComposition'
 import { liveWellWaterSource } from './inspection/buildWorldInspection'
@@ -605,6 +607,8 @@ export type GameLoopDeps = {
   removeBedroll?: (id: string) => void
   previewPlatformRemoval?: (id: string) => RemovalPreview | null
   removePlatform?: (id: string) => void
+  previewPlacedFireRemoval?: (id: string) => FireRemovalPreview | null
+  commitPlacedFireRemoval?: (id: string) => boolean
   /** `[R]` removes one gazed-at palisade segment (plan items-player-010 §5) —
    *  the generic player-built removal/recovery seam applied to a palisade:
    *  preflights inventory capacity for the recovered materials, then removes
@@ -746,6 +750,7 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
     previewActionConsequence, previewForeignMount,
     previewPalisadeRemoval, previewStandingTorchRemoval, removeStandingTorch, igniteVillageTorch, previewPlayerTroughRemoval, removePlayerTrough,
     previewResidentialCancel, previewBedrollRemoval, removeBedroll, previewPlatformRemoval, removePlatform,
+    previewPlacedFireRemoval, commitPlacedFireRemoval,
     openWorldInspection, syncWorldInspection,
     tickTerrainPreparationPreview, tickPlacementPreview, resumeTerrainPreparationWork, tickTerrainPreparationWork, isTerrainPreparationWorkActive, onTerrainPreparationWorkFinished,
     onSleepFinished, tickLodging, isLodgingActive, canCancelRest, interruptLongActivityOnDamage, onInventoryChanged, consumedWorldPickupIds, setFrameTiming, syncPointLightBudget, getPlayerObservation,
@@ -1077,6 +1082,7 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
         // comment below) — this is its sole catch-up for the skipped period,
         // mirroring the NPC catch-up above (plan 196).
         bundle.fauna.resolveTimeSkip(skip.hours, dayNight.dayLengthSec)
+        bundle.fireResidues.reconcile(dayNight.elapsedDays)
         // Player needs already progressed through the skip via `worldDt`
         // below (plan 165 — scaled by `dayNight.timeMultiplier` instead of
         // frozen, so no separate lump catch-up is needed here). `fadeStrength
@@ -1793,6 +1799,8 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
         ? (skillAction && target
           ? buildInteractionGazePrompt(target, {
               hasInspect: !isTouchDevice() && inspectAvailable,
+              heldTool: heldTool.held(),
+              previewPlacedFireRemoval,
               describeWellWork,
               describeWellRoofRepair,
               describePalisadeWork,
@@ -1807,6 +1815,8 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
         : (target
           ? buildInteractionGazePrompt(target, {
               hasInspect: !isTouchDevice() && inspectAvailable,
+              heldTool: heldTool.held(),
+              previewPlacedFireRemoval,
               describeWellWork,
               describeWellRoofRepair,
               describePalisadeWork,
@@ -1948,7 +1958,17 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
             startIgniteFire?.(target.fire)
           }
         }
-        if (altInteractPressed) startCookAt?.(target.fire)
+        if (altInteractPressed) {
+          if (isPlacedFireDismantleShortcut(target.source, heldTool.held())) {
+            const preview = target.source.kind === 'placed'
+              ? previewPlacedFireRemoval?.(target.source.id)
+              : null
+            if (preview && !preview.canReceive) toast.show(preview.reasonLabel, 'error')
+            else if (preview) commitPlacedFireRemoval?.(preview.id)
+          } else {
+            startCookAt?.(target.fire)
+          }
+        }
       } else if (target?.kind === 'well') {
         if (interactPressed) {
           const wellSource = target.source
@@ -3001,6 +3021,7 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
       // `tickFire()` for exactly this reason (see its doc comment).
       for (const s of loaded) s.tickFire(worldDt)
       bundle.placedFires.update(worldDt)
+      bundle.fireResidues.reconcile(dayNight.elapsedDays)
       bundle.standingTorches.resolveExpiry(dayNight.elapsedDays)
       // Same `worldDt` cadence as `placedFires` above — only lit standing
       // torches' flame/sparks actually tick (plan items-player-009 §5).

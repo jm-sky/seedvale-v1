@@ -132,8 +132,25 @@ export type SaveFoodBatch = {
 export type SaveDroppedItem = { id: string, kind: ItemKind, x: number, z: number, instance?: SaveItemInstance, foodBatch?: SaveFoodBatch }
 
 /** `kind` — `'pit'` (stone-ring, longer burn) vs `'simple'` (branches only,
- *  shorter burn). `grate` is optional; a missing value restores as `false`. */
-export type SavePlacedFire = { id: string, x: number, z: number, kind: PlacedFireKind, grate?: boolean }
+ *  shorter burn). `grate` is optional; a missing value restores as `false`.
+ *  `hasBurned` (plan items-player-058) is the persisted "ever used" flag. */
+export type SavePlacedFire = {
+  id: string
+  x: number
+  z: number
+  kind: PlacedFireKind
+  grate?: boolean
+  hasBurned: boolean
+}
+
+/** One-day cosmetic ash after a used player fire is dismantled. */
+export type SaveFireResidue = {
+  id: string
+  x: number
+  z: number
+  createdAtDay: number
+  expiresAtDay: number
+}
 
 export type SaveTreeOverride = {
   stage: 'sapling' | 'young' | 'mature' | 'old' | 'limbed' | 'felled' | 'harvested'
@@ -742,7 +759,7 @@ export type SaveWorkContract =
  *  representation or semantics of `SaveData` change — see the plan's
  *  "Future schema-change workflow". Never duplicate this number elsewhere;
  *  `saveState.ts` imports it instead of declaring its own constant. */
-export const CURRENT_SAVE_VERSION = 54
+export const CURRENT_SAVE_VERSION = 55
 
 /** Canonical save contract for the current schema version. This module
  *  intentionally carries no history of schemas from before the v1 hard cut
@@ -780,6 +797,8 @@ export type SaveData = {
    *  derivable from the seed either, same reasoning as `droppedItems`. Lit/fuel
    *  state is intentionally not persisted (see `PlacedFires.ts`). */
   placedFires: SavePlacedFire[]
+  /** Ash marks from dismantled used player fires (plan items-player-058). */
+  fireResidues: SaveFireResidue[]
   /** `world/dayNight.ts`'s `DayNightState.timeOfDay` — otherwise the clock
    *  resets to the default dawn-ish start on every Continue. */
   timeOfDay: number
@@ -1110,6 +1129,37 @@ function isPlayerTorchField(value: unknown): value is SavePlayerTorch | null {
   const t = value as Record<string, unknown>
   if (t.source !== 'branch' && t.source !== 'wooden_torch') return false
   return typeof t.fuelRemaining === 'number' && Number.isFinite(t.fuelRemaining)
+}
+
+function isPlacedFiresField(value: unknown): value is SavePlacedFire[] {
+  if (!Array.isArray(value)) return false
+  return value.every((raw) => {
+    if (!raw || typeof raw !== 'object') return false
+    const f = raw as Record<string, unknown>
+    return (
+      typeof f.id === 'string'
+      && typeof f.x === 'number'
+      && typeof f.z === 'number'
+      && (f.kind === 'simple' || f.kind === 'pit' || f.kind === 'pile')
+      && typeof f.hasBurned === 'boolean'
+      && (f.grate === undefined || typeof f.grate === 'boolean')
+    )
+  })
+}
+
+function isFireResiduesField(value: unknown): value is SaveFireResidue[] {
+  if (!Array.isArray(value)) return false
+  return value.every((raw) => {
+    if (!raw || typeof raw !== 'object') return false
+    const r = raw as Record<string, unknown>
+    return (
+      typeof r.id === 'string'
+      && typeof r.x === 'number'
+      && typeof r.z === 'number'
+      && typeof r.createdAtDay === 'number'
+      && typeof r.expiresAtDay === 'number'
+    )
+  })
 }
 
 function isPlacedTentsField(value: unknown): value is SavePlacedTent[] {
@@ -2849,7 +2899,8 @@ export function isSaveData(value: unknown): value is SaveData {
   if (!Array.isArray(v.collectedItemIds)) return false
   if (v.renewableWorldItems !== undefined && !isResourceDepositsField(v.renewableWorldItems)) return false
   if (!isDroppedItemsField(v.droppedItems)) return false
-  if (!Array.isArray(v.placedFires)) return false
+  if (!isPlacedFiresField(v.placedFires)) return false
+  if (!isFireResiduesField(v.fireResidues)) return false
   if (typeof v.timeOfDay !== 'number') return false
   if (typeof v.elapsedDays !== 'number') return false
   if (!isHeldToolField(v.heldTool)) return false
@@ -4090,6 +4141,29 @@ function migrateSaveV53ToV54(data: unknown): unknown {
   return { ...v, version: 54 }
 }
 
+/** v54 → v55 (plan items-player-058): persist `PlacedFire.hasBurned` and the
+ *  ash-residue collection. Old `simple` fires start lit when built, so they
+ *  migrate as used; old `pit`/`pile` have no evidence of lighting. */
+function migrateSaveV54ToV55(data: unknown): unknown {
+  const v = data as Record<string, unknown>
+  const placedFires = Array.isArray(v.placedFires)
+    ? v.placedFires.map((raw) => {
+      if (!raw || typeof raw !== 'object') return raw
+      const fire = raw as Record<string, unknown>
+      return {
+        ...fire,
+        hasBurned: fire.hasBurned === true || fire.kind === 'simple',
+      }
+    })
+    : []
+  return {
+    ...v,
+    version: 55,
+    placedFires,
+    fireResidues: Array.isArray(v.fireResidues) ? v.fireResidues : [],
+  }
+}
+
 function migrateSaveV37ToV38(data: unknown): unknown {
   const v = data as Record<string, unknown>
   const seq = { n: 0 }
@@ -4264,6 +4338,7 @@ const SAVE_MIGRATIONS: Readonly<Record<number, SaveMigration>> = {
   51: migrateSaveV51ToV52,
   52: migrateSaveV52ToV53,
   53: migrateSaveV53ToV54,
+  54: migrateSaveV54ToV55,
 }
 
 function detectStoredVersion(value: unknown): number | null {

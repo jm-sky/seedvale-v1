@@ -323,6 +323,7 @@ import { createWeatherParticles } from '../world/weatherParticles'
 import { createWorldContext } from '../world/worldContext'
 import { createContainerActions } from './actions/containerActions'
 import { createCookMealIntent, runEatAnything } from './actions/cookMealIntent'
+import { createFireRemovalActions } from './actions/fireRemovalActions'
 import { createFullCampIntent } from './actions/fullCampIntent'
 import { createGatheringActions } from './actions/gatheringActions'
 import { createGroundActions } from './actions/groundActions'
@@ -760,7 +761,11 @@ export async function createApp(
     modifications,
     worldAudio.playAt,
     initialSave?.droppedItems ?? [],
-    (initialSave?.placedFires ?? []).map((f) => ({ ...f, grate: f.grate === true })),
+    (initialSave?.placedFires ?? []).map((f) => ({
+      ...f,
+      grate: f.grate === true,
+      hasBurned: f.hasBurned === true,
+    })),
     initialSave?.placedTents ?? [],
     (initialSave?.placedTraps ?? []).map((t) => ({ ...t, baitKind: t.baitKind ?? null })),
     initialSave?.graves ?? [],
@@ -841,6 +846,7 @@ export async function createApp(
     initialSave?.foundedSettlements,
     initialSave?.authoredWorldConsequences,
     mineableRockState,
+    initialSave?.fireResidues ?? [],
   )
   bootMarkEnd('createWorldBundle')
   resolveSpatialContextAtTarget = (x, y, z) => bundle.caves.spatialContextAt(x, y, z)
@@ -2542,6 +2548,7 @@ export async function createApp(
   )
 
   const placement = createPlacementActions(actionCtx)
+  const fireRemoval = createFireRemovalActions(actionCtx)
   const storageInfestation = createStorageInfestationActions({
     ctx: actionCtx,
     bundle,
@@ -2699,6 +2706,8 @@ export async function createApp(
     removeBedroll: placement.removeBedroll,
     previewPlatformRemoval: placement.previewPlatformRemoval,
     removePlatform: placement.removePlatform,
+    previewPlacedFireRemoval: fireRemoval.previewPlacedFireRemoval,
+    removePlacedFire: (id) => { fireRemoval.commitPlacedFireRemoval(id) },
     sleepInOwnedHouse: rest.sleepInOwnedHouse,
     resumeTerrainPreparationWork: terrainPrep.resumeWork,
     beginHireHelpForTarget: contracts.beginHireHelpForTarget,
@@ -3776,6 +3785,8 @@ export async function createApp(
     removeBedroll: placement.removeBedroll,
     previewPlatformRemoval: placement.previewPlatformRemoval,
     removePlatform: placement.removePlatform,
+    previewPlacedFireRemoval: fireRemoval.previewPlacedFireRemoval,
+    commitPlacedFireRemoval: fireRemoval.commitPlacedFireRemoval,
     repairSettlementStorage: storageInfestation.repairSettlementStorage,
     destroyRatNest: storageInfestation.destroyRatNest,
     openNoticeBoard: contracts.openNoticeBoard,

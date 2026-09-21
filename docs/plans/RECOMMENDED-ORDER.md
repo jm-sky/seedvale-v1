@@ -247,24 +247,24 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   🔴 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-41. `world-terrain-046` — **Unified water shore query and river hotpath**  
+41. `world-terrain-041` — **Agent presentation render LOD**  
   🔴 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-42. `ui-input-025` — **Road travel autopilot for player and mounts**  
+42. `world-terrain-046` — **Unified water shore query and river hotpath**  
+  🔴 `M` · **Score:**  27  
+   → **unlocks:** 0/0
+
+43. `ui-input-025` — **Road travel autopilot for player and mounts**  
   🔴 `L` · **Score:**  26  
    → **unlocks:** 0/0
 
-43. `items-player-044` — **Shoulder and forearm equipment slots**  
+44. `items-player-044` — **Shoulder and forearm equipment slots**  
   🟡 `M` · **Score:**  25  
    → **unlocks:** 0/0
 
-44. `world-036` — **Lightweight unloaded shipwreck and tower lookup**  
+45. `world-036` — **Lightweight unloaded shipwreck and tower lookup**  
   🟡 `M` · **Score:**  25  
-   → **unlocks:** 0/0
-
-45. `world-terrain-041` — **Agent presentation render LOD**  
-  🔴 `L` · **Score:**  24  
    → **unlocks:** 0/0
 
 46. `tools-019` — **Debug tooling lifecycle ownership**  
@@ -279,11 +279,7 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-49. `items-player-058` — **Campfire decomposition and ash residue**  
-  🟡 `M` · **Score:**  17  
-   → **unlocks:** 0/0
-
-50. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
+49. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 

@@ -779,14 +779,15 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/PlacedFires.ts`
 
-- `createPlacedFires` — function — line 138
+- `createPlacedFires` — function — line 162
 - `HABITAT_BURN_DESPAWN_DELAY` — const — line 61
 - `isPlayerPlacedFire` — function — line 71
+- `isRemovablePlacedFireKind` — function — line 77
 - `pileBodyScale` — function — line 37
-- `PlacedFire` — type — line 87
-- `PlacedFireEntry` — type — line 89
+- `PlacedFire` — type — line 97
+- `PlacedFireEntry` — type — line 106
 - `PlacedFireKind` — type — line 17
-- `PlacedFires` — type — line 101
+- `PlacedFires` — type — line 118
 - `PlaceFireOpts` — type — line 63
 
 ## `settlement/places.ts`

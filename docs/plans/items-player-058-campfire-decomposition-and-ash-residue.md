@@ -1,7 +1,7 @@
 # Plan: Campfire decomposition and ash residue
 
 **Created:** 2026-09-20
-**Status:** `planned` 📋
+**Status:** `verification needed` 🔍
 **Priority:** medium · **Effort:** M
 **Depends on:** none
 **Domain:** `items-player`
@@ -10,6 +10,10 @@
 **Type:** `feature`
 **Roadmap:** -
 **Model:** Sonnet, Composer
+
+## Implementation status
+
+Implemented 2026-09-21. Automated tests cover fire removal, sticky `hasBurned`, residue expiry, save migration, inspection refs, and the `soil_digging` `[R]` override. Browser/manual verification is user-owned (see §15).
 
 ## Cel
 

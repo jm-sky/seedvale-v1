@@ -702,6 +702,7 @@ export function buildInteractables(
         : pf.kind === 'pile' ? 'Zapal stos drewna'
         : 'Zapal ognisko',
       fire: pf.fire,
+      source: { kind: 'placed', id: pf.id, fireKind: pf.kind },
     })
   }
 
@@ -1084,6 +1085,7 @@ export function buildInteractables(
         position: settlement.fire.position,
         promptLabel: settlement.fire.isLit() ? CAMPFIRE_LIT_PROMPT : 'Zapal ognisko',
         fire: settlement.fire,
+        source: { kind: 'settlement' },
       })
     }
 

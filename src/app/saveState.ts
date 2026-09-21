@@ -209,6 +209,7 @@ export function createSaveState(deps: SaveStateDeps): SaveState {
     })(),
     droppedItems: bundle.droppedItems.nodes().map((item) => ({ ...item })),
     placedFires: bundle.placedFires.nodes().map((fire) => ({ ...fire })),
+    fireResidues: bundle.fireResidues.nodes().map((residue) => ({ ...residue })),
     timeOfDay: dayNight.timeOfDay,
     elapsedDays: dayNight.elapsedDays,
     heldTool: heldTool.held(),

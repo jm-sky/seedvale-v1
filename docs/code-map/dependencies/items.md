@@ -931,6 +931,7 @@ Generated from TypeScript imports.
 - `ai/npcCombat.ts`
 - `app/actions/actionContracts.ts`
 - `app/actions/containerActions.ts`
+- `app/actions/fireRemovalActions.ts`
 - `app/actions/groundActions.ts`
 - `app/actions/npcItemTransfer.test.ts`
 - `app/actions/placementActions.ts`
@@ -1199,6 +1200,7 @@ Generated from TypeScript imports.
 - `app/actions/actionContracts.ts`
 - `app/actions/containerActions.ts`
 - `app/actions/cookMealIntent.ts`
+- `app/actions/fireRemovalActions.ts`
 - `app/actions/gatheringActions.ts`
 - `app/actions/groundActions.test.ts`
 - `app/actions/groundActions.ts`
@@ -1239,6 +1241,7 @@ Generated from TypeScript imports.
 - `fauna/harvestedRemains.ts`
 - `fauna/livestockProduction.ts`
 - `interaction/Interactable.ts`
+- `interaction/interactionView.ts`
 - `interaction/targetedSkillAction.ts`
 - `items/HeldTool.ts`
 - `items/Inventory.test.ts`

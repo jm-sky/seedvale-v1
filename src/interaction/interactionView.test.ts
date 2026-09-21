@@ -250,3 +250,59 @@ describe('construction InteractionView trough fill', () => {
   })
 })
 
+describe('campfire soil_digging alternate (plan items-player-058)', () => {
+  const fire = { isLit: () => true } as never
+  const placed = surfaceInteractable({
+    kind: 'campfire',
+    position: { x: 1, z: 2 },
+    promptLabel: '[E] Dołóż opał · [R] Upiecz mięso',
+    fire,
+    source: { kind: 'placed', id: 'fire:1', fireKind: 'simple' },
+  })
+  const settlement = surfaceInteractable({
+    kind: 'campfire',
+    position: { x: 3, z: 4 },
+    promptLabel: '[E] Dołóż opał · [R] Upiecz mięso',
+    fire,
+    source: { kind: 'settlement' },
+  })
+
+  it('keeps cooking without a digging tool', () => {
+    const view = buildInteractionView(placed, { hasInspect: false, heldTool: null })
+    expect(view.actions.find((action) => action.slot === 'alternate')).toMatchObject({
+      label: 'Upiecz mięso',
+      enabled: true,
+    })
+  })
+
+  it('overrides [R] for a player fire when a shovel is held', () => {
+    const view = buildInteractionView(placed, {
+      hasInspect: true,
+      heldTool: 'shovel',
+      previewPlacedFireRemoval: () => ({
+        id: 'fire:1',
+        fireKind: 'simple',
+        actionLabel: 'Usuń ognisko',
+        confirmTitle: 'Usuń ognisko',
+        body: 'x',
+        canReceive: true,
+        reasonLabel: '',
+        salvageCount: 0,
+        hasBurned: true,
+        lit: true,
+        grate: false,
+      }),
+    })
+    expect(view.actions.find((action) => action.slot === 'alternate')).toMatchObject({
+      label: 'Usuń ognisko',
+      enabled: true,
+    })
+    expect(view.actions.some((action) => action.slot === 'inspect')).toBe(true)
+  })
+
+  it('does not override settlement campfires even with a shovel', () => {
+    const view = buildInteractionView(settlement, { hasInspect: false, heldTool: 'shovel' })
+    expect(view.actions.find((action) => action.slot === 'alternate')?.label).toBe('Upiecz mięso')
+  })
+})
+

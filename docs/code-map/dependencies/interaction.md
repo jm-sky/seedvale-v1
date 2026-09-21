@@ -11,6 +11,7 @@ Generated from TypeScript imports.
 - `fauna/AnimalAgent.ts`
 - `fauna/AnimalSpawner.ts`
 - `items/items.ts`
+- `settlement/PlacedFires.ts`
 - `settlement/VillageFire.ts`
 - `settlement/createSettlement.ts`
 - `settlement/household.ts`
@@ -25,6 +26,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `app/actions/fireRemovalActions.ts`
 - `app/actions/inspectionActions.ts`
 - `app/gameLoop.ts`
 - `app/inspection/buildWorldInspection.test.ts`
@@ -82,8 +84,10 @@ Generated from TypeScript imports.
 
 **Imports**
 
+- `app/actions/fireRemovalActions.ts`
 - `app/actions/placementActions.ts`
 - `interaction/Interactable.ts`
+- `items/items.ts`
 
 **Imported by**
 

@@ -4,6 +4,7 @@ import type { Inventory } from '../../items/Inventory'
 import type { PlayerTroughRecord } from '../../world/playerTrough'
 import type { BedrollRecord, PlatformRecord } from '../../world/sleepingUtilities'
 import type { WaterSource } from '../../world/WaterSource'
+import type { FireRemovalPreview } from '../actions/fireRemovalActions'
 import type { ConstructionActionView, RemovalPreview, ResidentialWorkView, WellRoofRepairView, WellWorkView } from '../actions/placementActions'
 import type { CampRepairView } from '../actions/restActions'
 import type { CampRestSnapshot } from '../campRestSnapshot'
@@ -78,6 +79,7 @@ import {
   type WorkContractRecord,
   type WorkContractState,
 } from '../../world/workContract'
+import { fireRemovalToInspectionPreview } from '../actions/fireRemovalActions'
 import { campInspectionRepairTargets, formatCampInspectionDetails } from '../campRestSnapshot'
 
 const WELL_STAGE_ORDER: readonly WellStage[] = ['pit', 'well', 'roof']
@@ -114,6 +116,7 @@ export type WorldInspectionLookup = {
   previewPlayerTroughRemoval?: (id: string) => RemovalPreview | null
   previewBedrollRemoval?: (id: string) => RemovalPreview | null
   previewPlatformRemoval?: (id: string) => RemovalPreview | null
+  previewPlacedFireRemoval?: (id: string) => FireRemovalPreview | null
   campSnapshot?: (tentId: string) => CampRestSnapshot | null
   droppedItems?: DroppedItems
   worldSeed: number
@@ -135,6 +138,8 @@ export function buildWorldInspection(
       return buildCampInspection(ref.id, lookup)
     case 'palisade':
       return buildPalisadeInspection(ref.id, lookup)
+    case 'placedFire':
+      return buildPlacedFireInspection(ref.id, lookup)
     case 'platform':
       return buildPlatformInspection(ref.id, lookup)
     case 'playerTrough':
@@ -687,6 +692,23 @@ function dangerAction(
     enabled: preview?.canReceive ?? true,
     reasonLabel: preview?.reasonLabel ?? '',
     variant: 'danger',
+  }
+}
+
+function buildPlacedFireInspection(id: string, lookup: WorldInspectionLookup): WorldInspectionView | null {
+  const preview = lookup.previewPlacedFireRemoval?.(id)
+  if (!preview) return null
+  const rows: InspectionRow[] = [
+    { kind: 'info', label: 'Stan', value: preview.lit ? 'pali się' : 'wygaszone' },
+  ]
+  if (preview.fireKind === 'pit') {
+    rows.push({ kind: 'info', label: 'Ruszt', value: preview.grate ? 'tak' : 'nie' })
+  }
+  return {
+    targetId: id,
+    title: preview.fireKind === 'pit' ? 'Kamienne palenisko' : 'Zwykłe ognisko',
+    sections: [{ title: preview.fireKind === 'pit' ? 'Palenisko' : 'Ognisko', rows }],
+    actions: [dangerAction('remove', preview.actionLabel, fireRemovalToInspectionPreview(preview))],
   }
 }
 

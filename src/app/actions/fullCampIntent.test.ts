@@ -260,7 +260,7 @@ function bedrollEntry(id: string) {
 }
 
 function placedFire(id: string, fire: VillageFire) {
-  return { id, x: 0, z: 0, kind: 'simple' as const, grate: false, fire, everLit: true, unlitSeconds: 0, habitatBurn: false }
+  return { id, x: 0, z: 0, kind: 'simple' as const, grate: false, hasBurned: true, fire, everLit: true, unlitSeconds: 0, habitatBurn: false }
 }
 
 function createTestIntent(overrides: {

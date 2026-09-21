@@ -1121,6 +1121,15 @@ Generated from exported TypeScript symbols.
   - domain: settlements-npcs
 - `readyExpeditionAssignment` — function — line 234
 
+## `world/fireResidues.ts`
+
+- `createFireResidues` — function — line 72
+- `FIRE_RESIDUE_LIFETIME_DAYS` — const — line 12
+- `fireResidueExpiresAt` — function — line 31
+- `FireResidueRecord` — type — line 14
+- `FireResidues` — type — line 22
+- `isFireResidueActive` — function — line 35
+
 ## `world/fishing.ts`
 
 - `applyFishingBait` — function — line 82

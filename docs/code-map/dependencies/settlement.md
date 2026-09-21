@@ -22,11 +22,13 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `app/actions/fireRemovalActions.ts`
 - `app/campRestSnapshot.ts`
 - `app/interactables.ts`
 - `app/userActions.test.ts`
 - `app/userActions.ts`
 - `app/worldBundle.ts`
+- `interaction/Interactable.ts`
 - `items/cookingFireResolver.ts`
 - `persistence/saveData.ts`
 - `settlement/PlacedFires.test.ts`
@@ -135,6 +137,7 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `app/actions/cookMealIntent.test.ts`
+- `app/actions/fireRemovalActions.test.ts`
 - `app/actions/fullCampIntent.test.ts`
 - `app/actions/survivalActions.test.ts`
 - `app/actions/survivalActions.ts`
