@@ -57,8 +57,6 @@
    🟡 `S` · 🔒 blocked · unlocks 0/0
 4. `ui-input-037` — **Quest log ready-to-report sections**  
    🟡 `S` · ✅ ready · unlocks 0/0
-5. `ui-input-033` — **World map player heading arrow**  
-   🟡 `S` · ✅ ready · unlocks 0/0
 
 ---
 
@@ -327,23 +325,19 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-60. `ui-input-033` — **World map player heading arrow**  
-  🟡 `S` · **Score:**  19  
-   → **unlocks:** 0/0
-
-61. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
+60. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
   🟡 `L` · **Score:**  18  
    → **unlocks:** 0/0
 
-62. `items-player-052` — **Settlement tool ownership and social acquisition**  
+61. `items-player-052` — **Settlement tool ownership and social acquisition**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-63. `items-player-058` — **Campfire decomposition and ash residue**  
+62. `items-player-058` — **Campfire decomposition and ash residue**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-64. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
+63. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 

@@ -91,6 +91,7 @@ function paint(): void {
     view,
     ui.worldMap.playerX,
     ui.worldMap.playerZ,
+    ui.worldMap.playerYaw,
   )
 }
 
