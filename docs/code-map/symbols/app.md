@@ -36,9 +36,9 @@ Generated from exported TypeScript symbols.
 
 ## `app/actions/containerActions.ts`
 
-- `ContainerActionDeps` — type — line 124
-- `ContainerActions` — type — line 92
-- `createContainerActions` — function — line 139
+- `ContainerActionDeps` — type — line 92
+- `ContainerActions` — type — line 60
+- `createContainerActions` — function — line 107
 
 ## `app/actions/containerInstanceTransfer.ts`
 
@@ -349,26 +349,31 @@ Generated from exported TypeScript symbols.
 
 ## `app/interactables.ts`
 
-- `buildCombatTarget` — function — line 1365
-- `buildDigTarget` — function — line 1309
-- `buildInteractables` — function — line 523
-- `collectItem` — function — line 1421
-- `COMBAT_TARGET_CONE_DOT` — const — line 110
-- `COMBAT_TARGET_RANGE` — const — line 95
-- `CombatAimMode` — type — line 100
-- `DIG_REACH` — const — line 89
-- `DROPPED_ITEM_GROUP_RADIUS` — const — line 316
-- `filterInteractablesSameSpatialContext` — function — line 507
-- `GAZE_RANGE` — const — line 85
-- `grindstoneInteractPosition` — function — line 397
-- `groupDroppedItemCandidates` — function — line 326
+- `buildCombatTarget` — function — line 1368
+- `buildDigTarget` — function — line 1312
+- `buildInteractables` — function — line 526
+- `COMBAT_TARGET_CONE_DOT` — const — line 113
+- `COMBAT_TARGET_RANGE` — const — line 98
+- `CombatAimMode` — type — line 103
+- `commitWorldPickup` — function — line 1514
   - domain: items-player
-- `INTERACT_MIN_DOT` — const — line 82
-- `INTERACT_RANGE` — const — line 79
-- `itemPromptLabel` — function — line 305
-- `resolveHaySpot` — function — line 411
-- `worldItemAllowsAltInteract` — function — line 290
+- `DIG_REACH` — const — line 92
+- `DROPPED_ITEM_GROUP_RADIUS` — const — line 319
+- `filterInteractablesSameSpatialContext` — function — line 510
+- `GAZE_RANGE` — const — line 88
+- `grindstoneInteractPosition` — function — line 400
+- `groupDroppedItemCandidates` — function — line 329
+  - domain: items-player
+- `INTERACT_MIN_DOT` — const — line 85
+- `INTERACT_RANGE` — const — line 82
+- `itemPromptLabel` — function — line 308
+- `resolveHaySpot` — function — line 414
+- `resolveWorldPickup` — function — line 1451
+- `worldItemAllowsAltInteract` — function — line 293
   - domain: ui-input
+- `WorldPickupCommit` — type — line 1499
+- `WorldPickupResolution` — type — line 1438
+  - domain: items-player
 
 ## `app/inventoryWiring.ts`
 

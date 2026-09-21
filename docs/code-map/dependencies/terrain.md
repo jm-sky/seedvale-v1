@@ -560,6 +560,7 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `app/createApp.ts`
+- `app/interactables.test.ts`
 - `app/interactables.ts`
 - `app/saveState.ts`
 - `app/worldBundle.ts`

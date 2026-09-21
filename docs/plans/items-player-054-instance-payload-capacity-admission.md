@@ -1,7 +1,7 @@
 # Plan: Instance payload capacity admission
 
 **Created:** 2026-09-20
-**Status:** `planned` 📋
+**Status:** `verification needed` 🔍
 **Priority:** medium · **Effort:** S
 **Model:** Composer, Grok
 **Depends on:** none

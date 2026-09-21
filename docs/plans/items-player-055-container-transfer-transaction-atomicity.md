@@ -1,7 +1,7 @@
 # Plan: Container transfer transaction atomicity
 
 **Created:** 2026-09-20
-**Status:** `planned` 📋
+**Status:** `verification needed` 🔍
 **Priority:** medium · **Effort:** S
 **Depends on:** none
 **Domain:** `items-player`

@@ -1,19 +1,58 @@
 import { Scene } from 'three'
 import { describe, expect, it } from 'vitest'
+import type { WorldItemRef } from '../interaction/Interactable'
+import type { ItemSpawners } from '../items/createItemSpawners'
+import type { SaveItemInstance } from '../items/Inventory'
+import type { ItemKind } from '../items/items'
+import type { ItemSpawnPoint } from '../items/ItemSpawner'
+import type { ChunkManager } from '../terrain/chunkManager'
 import { surfaceInteractable } from '../interaction/Interactable'
 import { createDroppedItems } from '../items/createDroppedItems'
+import { createFoodBatch } from '../items/foodFreshness'
 import { Inventory } from '../items/Inventory'
 import { ITEM_DEFS } from '../items/items'
+import { createWeaponInstance } from '../items/weaponMaintenance'
 import { caveSpatialContext, WORLD_SPATIAL_CONTEXT_SURFACE } from '../world/spatialContext'
 import {
+  commitWorldPickup,
   DROPPED_ITEM_GROUP_RADIUS,
   filterInteractablesSameSpatialContext,
   grindstoneInteractPosition,
   groupDroppedItemCandidates,
   itemPromptLabel,
   resolveHaySpot,
+  resolveWorldPickup,
   worldItemAllowsAltInteract,
 } from './interactables'
+
+const sampleHeight = (): number => 0
+
+function fakeItemSpawners(points: ItemSpawnPoint[]): ItemSpawners {
+  return {
+    nodes: () => points,
+    collect(id: string) {
+      const p = points.find((point) => point.id === id)
+      if (!p || p.collected) return null
+      p.collected = true
+      const instance = p.instanceId ? { id: p.instanceId, kind: p.kind } : undefined
+      return { kind: p.kind, x: p.x, z: p.z, instance, authoredOneShot: p.authoredOneShot }
+    },
+  } as unknown as ItemSpawners
+}
+
+function fakeChunkManager(items: Map<string, { kind: ItemKind, x: number, z: number }>): ChunkManager {
+  return {
+    collectItem(id: string) {
+      const item = items.get(id)
+      if (!item) return null
+      items.delete(id)
+      return item
+    },
+  } as unknown as ChunkManager
+}
+
+const noSpawners = fakeItemSpawners([])
+const noChunkItems = fakeChunkManager(new Map())
 
 describe('resolveHaySpot', () => {
   const garden = { x: 0, z: 0 }
@@ -210,5 +249,164 @@ describe('grindstoneInteractPosition', () => {
       x: workplace.position.x,
       z: workplace.position.z,
     })
+  })
+})
+
+describe('resolveWorldPickup + commitWorldPickup (plan items-player-053)', () => {
+  it('dropped exact instance retains its id and metadata after a successful transfer', () => {
+    const dropped = createDroppedItems(new Scene(), sampleHeight)
+    dropped.drop('axe', 0, 0, { id: 'item:axe:1', kind: 'axe', durability: 0.4, sharpness: 0.6 })
+    const ref: WorldItemRef = { id: dropped.nodes()[0]!.id, kind: 'axe', source: 'dropped' }
+    const inventory = new Inventory()
+    const resolution = resolveWorldPickup(ref, noChunkItems, noSpawners, dropped)
+    expect(resolution).not.toBeNull()
+    const result = commitWorldPickup(resolution!, inventory, 0)
+    expect(result).toMatchObject({ ok: true, itemKind: 'axe' })
+    expect(inventory.getInstance('item:axe:1')).toMatchObject({ id: 'item:axe:1', durability: 0.4, sharpness: 0.6 })
+    expect(dropped.nodes()).toHaveLength(0)
+  })
+
+  it('leaves the dropped source present when the destination already owns the same instance id', () => {
+    const dropped = createDroppedItems(new Scene(), sampleHeight)
+    dropped.drop('axe', 0, 0, { id: 'item:axe:dup', kind: 'axe', durability: 1, sharpness: 1 })
+    const ref: WorldItemRef = { id: dropped.nodes()[0]!.id, kind: 'axe', source: 'dropped' }
+    const inventory = new Inventory()
+    inventory.addInstance({ ...createWeaponInstance('axe'), id: 'item:axe:dup' })
+    const resolution = resolveWorldPickup(ref, noChunkItems, noSpawners, dropped)!
+    const result = commitWorldPickup(resolution, inventory, 0)
+    expect(result.ok).toBe(false)
+    expect(dropped.nodes()).toHaveLength(1)
+    expect(inventory.countInstances('axe')).toBe(1)
+  })
+
+  it('leaves the dropped source present when the destination lacks instance capacity', () => {
+    const dropped = createDroppedItems(new Scene(), sampleHeight)
+    dropped.drop('axe', 0, 0, { id: 'item:axe:cap', kind: 'axe', durability: 1, sharpness: 1 })
+    const ref: WorldItemRef = { id: dropped.nodes()[0]!.id, kind: 'axe', source: 'dropped' }
+    const inventory = new Inventory({}, 0.001)
+    const resolution = resolveWorldPickup(ref, noChunkItems, noSpawners, dropped)!
+    const result = commitWorldPickup(resolution, inventory, 0)
+    expect(result.ok).toBe(false)
+    expect(dropped.nodes()).toHaveLength(1)
+    expect(inventory.getInstance('item:axe:cap')).toBeNull()
+  })
+
+  it('fails closed on a malformed exact saved instance instead of minting a fresh replacement', () => {
+    const dropped = createDroppedItems(new Scene(), sampleHeight)
+    dropped.drop('axe', 0, 0, { id: '', kind: 'axe' } as SaveItemInstance)
+    const ref: WorldItemRef = { id: dropped.nodes()[0]!.id, kind: 'axe', source: 'dropped' }
+    const inventory = new Inventory()
+    const resolution = resolveWorldPickup(ref, noChunkItems, noSpawners, dropped)!
+    const result = commitWorldPickup(resolution, inventory, 0)
+    expect(result.ok).toBe(false)
+    expect(inventory.countInstances('axe')).toBe(0)
+    expect(dropped.nodes()).toHaveLength(1)
+  })
+
+  it('preserves a perishable dropped batch on a failed pickup and moves it intact on success', () => {
+    const dropped = createDroppedItems(new Scene(), sampleHeight)
+    const batch = createFoodBatch(1, 0, 1)
+    dropped.drop('deer_meat', 0, 0, undefined, undefined, batch)
+    const ref: WorldItemRef = { id: dropped.nodes()[0]!.id, kind: 'deer_meat', source: 'dropped' }
+
+    const tooSmall = new Inventory({}, 0.001)
+    const failedResolution = resolveWorldPickup(ref, noChunkItems, noSpawners, dropped)!
+    expect(commitWorldPickup(failedResolution, tooSmall, 0).ok).toBe(false)
+    expect(dropped.nodes()).toHaveLength(1)
+    expect(dropped.nodes()[0]?.foodBatch).toEqual(batch)
+
+    const inventory = new Inventory()
+    const okResolution = resolveWorldPickup(ref, noChunkItems, noSpawners, dropped)!
+    const result = commitWorldPickup(okResolution, inventory, 5)
+    expect(result.ok).toBe(true)
+    expect(inventory.count('deer_meat')).toBe(1)
+    expect(dropped.nodes()).toHaveLength(0)
+  })
+
+  it('marks an authored spawner one-shot consumed only after a successful transfer', () => {
+    const point: ItemSpawnPoint = {
+      id: 'spawner:authored:1',
+      x: 0,
+      z: 0,
+      kind: 'key',
+      respawnTime: Infinity,
+      timeSinceCollected: 0,
+      collected: false,
+      instanceId: 'item:key:1',
+      authoredOneShot: true,
+    }
+    const spawners = fakeItemSpawners([point])
+    const ref: WorldItemRef = { id: point.id, kind: point.kind, source: 'spawner' }
+    const inventory = new Inventory()
+    const resolution = resolveWorldPickup(ref, noChunkItems, spawners, createDroppedItems(new Scene(), sampleHeight))!
+    expect(resolution.authoredOneShot).toBe(true)
+    const result = commitWorldPickup(resolution, inventory, 0)
+    expect(result).toMatchObject({ ok: true, authoredOneShot: true })
+    expect(inventory.getInstance('item:key:1')).not.toBeNull()
+    expect(point.collected).toBe(true)
+  })
+
+  it('does not retire an authored spawner one-shot when the destination commit fails', () => {
+    const point: ItemSpawnPoint = {
+      id: 'spawner:authored:2',
+      x: 0,
+      z: 0,
+      kind: 'key',
+      respawnTime: Infinity,
+      timeSinceCollected: 0,
+      collected: false,
+      instanceId: 'item:key:2',
+      authoredOneShot: true,
+    }
+    const spawners = fakeItemSpawners([point])
+    const ref: WorldItemRef = { id: point.id, kind: point.kind, source: 'spawner' }
+    const inventory = new Inventory()
+    inventory.addInstance({ id: 'item:key:2', kind: 'key' })
+    const resolution = resolveWorldPickup(ref, noChunkItems, spawners, createDroppedItems(new Scene(), sampleHeight))!
+    const result = commitWorldPickup(resolution, inventory, 0)
+    expect(result.ok).toBe(false)
+    expect(point.collected).toBe(false)
+  })
+
+  it('retires a chunk world item exactly once', () => {
+    const items = new Map<string, { kind: ItemKind, x: number, z: number }>([
+      ['world:item:1', { kind: 'stone', x: 0, z: 0 }],
+    ])
+    const chunkManager = fakeChunkManager(items)
+    const ref: WorldItemRef = { id: 'world:item:1', kind: 'stone', source: 'world' }
+    const inventory = new Inventory()
+    const resolution = resolveWorldPickup(ref, chunkManager, noSpawners, createDroppedItems(new Scene(), sampleHeight))!
+    const result = commitWorldPickup(resolution, inventory, 0)
+    expect(result).toMatchObject({ ok: true, itemKind: 'stone' })
+    expect(inventory.count('stone')).toBe(1)
+    expect(items.has('world:item:1')).toBe(false)
+    // `ChunkManager` has no separate non-mutating peek, so a stale second
+    // attempt only surfaces as a failed retire during commit, not as a null
+    // resolve — the commit must still report failure and never duplicate.
+    const secondInventory = new Inventory()
+    const secondResolution = resolveWorldPickup(ref, chunkManager, noSpawners, createDroppedItems(new Scene(), sampleHeight))!
+    expect(commitWorldPickup(secondResolution, secondInventory, 0).ok).toBe(false)
+    expect(secondInventory.count('stone')).toBe(0)
+  })
+
+  it('retires a renewable spawner pickup exactly once', () => {
+    const point: ItemSpawnPoint = {
+      id: 'spawner:1',
+      x: 0,
+      z: 0,
+      kind: 'branch',
+      respawnTime: 60,
+      timeSinceCollected: 0,
+      collected: false,
+    }
+    const spawners = fakeItemSpawners([point])
+    const ref: WorldItemRef = { id: point.id, kind: point.kind, source: 'spawner' }
+    const inventory = new Inventory()
+    const resolution = resolveWorldPickup(ref, noChunkItems, spawners, createDroppedItems(new Scene(), sampleHeight))!
+    const result = commitWorldPickup(resolution, inventory, 0)
+    expect(result).toMatchObject({ ok: true, itemKind: 'branch' })
+    expect(inventory.count('branch')).toBe(1)
+    expect(point.collected).toBe(true)
+    expect(resolveWorldPickup(ref, noChunkItems, spawners, createDroppedItems(new Scene(), sampleHeight))).toBeNull()
   })
 })
