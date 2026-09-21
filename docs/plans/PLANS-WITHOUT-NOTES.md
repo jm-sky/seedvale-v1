@@ -1,7 +1,7 @@
 # PLANS PLANNED WITHOUT NOTES
 
 > Generated with `pnpm plans:without-notes`  
-> Date: 2026-09-21 06:35:00  
+> Date: 2026-09-21 06:46:11  
 
 ## PLANS
 
@@ -18,7 +18,6 @@
 - `ui-input-030-player-downed-action-input-gating.md`
 - `ui-input-031-world-bound-ui-session-rebuild-lifecycle.md`
 - `ui-input-033-world-map-player-heading-arrow.md`
-- `world-terrain-046-unified-water-shore-query-and-river-hotpath.md`
 
 --------------------------------
 ## PROMPTS
@@ -411,37 +410,6 @@ Wczytaj:
 
 Na podstawie review utwórz w repo plik:
 `docs/plans/implementation-notes/ui-input-033-world-map-player-heading-arrow-implementation-notes.md`
-
-Umieść w nim:
-- sugestie dotyczące implementacji,
-- istotne detale techniczne,
-- decyzje architektoniczne,
-- informacje o istniejących systemach i implementacjach, które należy wykorzystać,
-- potencjalne problemy, zależności i pułapki,
-- inne konkretne wskazówki, które ułatwią agentowi AI poprawną implementację planu.
-
-Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
-Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
-
-Pliki dodaj na branch `main` w repozytorium.
-```
-
-### `world-terrain-046-unified-water-shore-query-and-river-hotpath.md`
-
-Prompt:
-
-```
-Zrób review planu `world-terrain-046-unified-water-shore-query-and-river-hotpath.md`
-
-Wczytaj:
-- `docs/STATE.md`
-- `docs/plans/PLANNING.md` (Implementation Notes section),
-- `docs/plans/world-terrain-046-unified-water-shore-query-and-river-hotpath.md`
-- aktualny codebase,
-- potrzebne zależności i powiązane implementacje.
-
-Na podstawie review utwórz w repo plik:
-`docs/plans/implementation-notes/world-terrain-046-unified-water-shore-query-and-river-hotpath-implementation-notes.md`
 
 Umieść w nim:
 - sugestie dotyczące implementacji,
