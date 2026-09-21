@@ -353,10 +353,6 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-67. `ui-input-035` — **NPC label icon row and debug controls**  
-  🟡 `M` · **Score:**  17  
-   → **unlocks:** 0/0
-
 ---
 
 ## Initially Blocked
@@ -842,6 +838,7 @@ graph TD
   ui_input_033["ui-input-033 — World map player heading arrow"]
   ui_input_034["ui-input-034 — Deliberate risky natural-water drinking"]
   ui_input_035["ui-input-035 — NPC label icon row and debug controls"]
+  ui_input_036["ui-input-036 — Quest dialogue offer / active context separation"]
   world_001["world-001 — Playtest Gameplay Fixes — Stamina, Fire Time-Skip and Bear Behaviour"]
   world_003["world-003 — Faster Application Startup"]
   world_004["world-004 — Well Depth, Groundwater & Well Protection"]
@@ -1265,6 +1262,7 @@ graph TD
   quests_progression_034 --> quests_progression_048
   quests_progression_034 --> quests_progression_055
   quests_progression_034 --> quests_progression_069
+  quests_progression_034 --> ui_input_036
   quests_progression_035 --> quests_progression_051
   quests_progression_035 --> quests_progression_056
   quests_progression_036 --> quests_progression_040
@@ -1450,6 +1448,7 @@ graph TD
   ui_input_019 --> ui_input_023
   ui_input_020 --> ui_input_028
   ui_input_022 --> ui_input_032
+  ui_input_024 --> ui_input_036
   world_006 --> world_016
   world_007 --> quests_progression_011
   world_008 --> items_player_009
