@@ -136,6 +136,7 @@ Unless noted otherwise, `verification needed` means implementation has passed au
 | ◼️ `quests-progression-078-rat-infestation-initialization-and-absent-state-semantics.md` | 🔴 | S      | ~~quests-progression-013~~                                                                                                                                                                                                                                                                 | -                                         |
 | ◼️ `fauna-047-deer-thicket-capacity-and-natural-population-recovery.md`        | 🔴 | M      | ~~fauna-041~~                                                                                                                                                                                                                                                                              | -                                         |
 | ◼️ `quests-progression-079-lost-treasure-expedition-external-sponsor-flow.md`  | 🟡 | S      | ~~quests-progression-027~~                                                                                                                                                                                                                                                                 | -                                         |
+| ◼️ `quests-progression-080-quest-stage-reconciliation-for-pre-existing-world-state.md` | 🔴 | M      | ~~quests-progression-025~~                                                                                                                                                                                                                                                                 | -                                         |
 
 ---
 
@@ -273,7 +274,7 @@ New plans declare a primary `Domain:` in frontmatter. Use optional `Tags:` only 
 - items-player: `061`
 - npc: `063`
 - persistence: `007`
-- quests-progression: `080`
+- quests-progression: `081`
 - settlements: `023`
 - settlements-npcs: `057`
 - tools: `020`
