@@ -3,6 +3,7 @@
 **Created:** 2026-09-20
 **Status:** `planned` 📋
 **Priority:** high · **Effort:** M
+**Model:** Composer · **Fallback:** Sonnet
 **Depends on:** none
 **Domain:** `world-terrain`
 **Type:** `fix`
