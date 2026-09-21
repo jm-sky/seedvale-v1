@@ -9,6 +9,7 @@
 **Tags:** `audio` `lifecycle` `loading` `cache`  
 **Type:** `fix`  
 **Roadmap:** -
+**Model:** Sonnet, Composer
 
 ## Goal
 
