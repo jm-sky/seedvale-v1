@@ -89,7 +89,7 @@ export function buildGuardEveningDutyQuest(input: {
     giver: { npcId: giver.id },
     settlementId: input.settlementId,
     offerLine:
-      'Wieczorem trzeba zapalić pochodnie i ognisko — dziś zrób to sam, żebym mógł iść na obchód.',
+      'Za chwilę zrobi się ciemno, a ja muszę obejść skraj osady. Zapal pochodnie i ognisko, zanim ruszę. Nocą lepiej widzieć, co podchodzi pod domy.',
     availability: {
       prerequisites: [{ type: 'evening_offer_window', giverNpcId: giver.id }],
     },
@@ -102,13 +102,13 @@ export function buildGuardEveningDutyQuest(input: {
           requireCampfire: true,
         },
         description: 'Zapal wskazane pochodnie i ognisko osady.',
-        reminderLine: 'Jeszcze nie wszystkie światła są zapalone — pochodnie i ognisko muszą płonąć.',
-        progressLine: 'Dobrze — osada jest gotowa na noc.',
+        reminderLine: 'Nie wszystkie światła jeszcze płoną. Sprawdź pochodnie i ognisko, zanim zapadnie noc.',
+        progressLine: 'Światła płoną. Osada jest przygotowana na noc.',
       },
     ],
-    reportPromptLine: 'Zapalione wszystko, o co prosiłem?',
-    reportPlayerLine: 'Pochodnie i ognisko są zapalone.',
-    reportLine: 'Dzięki. Teraz mogę spokojnie pilnować osady.',
+    reportPromptLine: 'Wszystko zapalone?',
+    reportPlayerLine: 'Tak. Pochodnie i ognisko płoną.',
+    reportLine: 'Dobrze. Mogę iść na obchód, nie zostawiając osady po ciemku.',
     outcomes: [
       {
         id: GUARD_EVENING_OUTCOME,
