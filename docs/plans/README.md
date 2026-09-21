@@ -133,6 +133,7 @@ Unless noted otherwise, `verification needed` means implementation has passed au
 | ◼️ `npc-062-ubc-runtime-material-darkness-and-authored-outfit-preservation.md` | 🔴 | M      | ~~tools-017~~, ~~npc-055~~                                                                                                                                                                                                                                                                 | -                                         |
 | ◼️ `quests-progression-077-authored-starter-repair-initialization-and-intact-state-semantics.md` | 🔴 | S      | ~~quests-progression-073~~                                                                                                                                                                                                                                                                 | -                                         |
 | ◼️ `items-player-060-ranged-weapon-inventory-trade-and-use-integrity.md`       | 🔴 | L      | ~~items-player-059~~                                                                                                                                                                                                                                                                       | -                                         |
+| ◼️ `quests-progression-078-rat-infestation-initialization-and-absent-state-semantics.md` | 🔴 | S      | ~~quests-progression-013~~                                                                                                                                                                                                                                                                 | -                                         |
 
 ---
 
@@ -270,7 +271,7 @@ New plans declare a primary `Domain:` in frontmatter. Use optional `Tags:` only 
 - items-player: `061`
 - npc: `063`
 - persistence: `007`
-- quests-progression: `078`
+- quests-progression: `079`
 - settlements: `023`
 - settlements-npcs: `057`
 - tools: `020`
