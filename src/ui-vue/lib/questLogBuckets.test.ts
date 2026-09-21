@@ -55,9 +55,29 @@ describe('projectQuestLog', () => {
       entry('b-ready', 'ready_to_report'),
     ])
     expect(projected.current.map((e) => e.id)).toEqual(['a-ready', 'b-ready', 'z-active'])
+    expect(projected.currentReadyToReport.map((e) => e.id)).toEqual(['a-ready', 'b-ready'])
+    expect(projected.currentActive.map((e) => e.id)).toEqual(['z-active'])
     expect(projected.offers.map((e) => e.id)).toEqual(['m-offered'])
     expect(projected.counts.current).toBe(3)
     expect(projected.counts.offers).toBe(1)
+  })
+
+  it('splits current into exclusive ready and active subsections regardless of input order', () => {
+    const projected = projectQuestLog([
+      entry('active-b', 'active'),
+      entry('ready-z', 'ready_to_report'),
+      entry('active-a', 'active'),
+      entry('ready-a', 'ready_to_report'),
+    ])
+    expect(projected.currentReadyToReport.map((e) => e.id)).toEqual(['ready-a', 'ready-z'])
+    expect(projected.currentActive.map((e) => e.id)).toEqual(['active-a', 'active-b'])
+    const readyIds = new Set(projected.currentReadyToReport.map((e) => e.id))
+    for (const e of projected.currentActive) {
+      expect(readyIds.has(e.id)).toBe(false)
+    }
+    expect(projected.counts.current).toBe(
+      projected.currentReadyToReport.length + projected.currentActive.length,
+    )
   })
 
   it('puts all four terminal states in history', () => {
