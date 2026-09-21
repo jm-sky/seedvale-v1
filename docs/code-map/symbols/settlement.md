@@ -942,15 +942,17 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/ratInfestation.ts`
 
-- `createRatInfestationRegistry` — function — line 47
+- `createRatInfestationRegistry` — function — line 66
 - `NO_RAT_INFESTATION` — const — line 18
 - `RAT_NEST_DESTROY_DURATION_SEC` — const — line 31
 - `RatInfestationRegistry` — type — line 33
 - `RatInfestationState` — type — line 11
   - domain: settlements
   - system: rat-infestation
-  - role: Authoritative settlement-owned rat infestation state (plan quests-progression-013) — keyed by stable `settlementId`, survives settlement stream-out/in, `WorldBundle` rebuild and save/load. Owns independent storage-damage and nest-destroyed facts. Not owned by `QuestManager` or Three.js props.
+  - role: Authoritative settlement-owned rat infestation state (plan quests-progression-013 / quests-progression-078) — keyed by stable `settlementId`, survives settlement stream-out/in, `WorldBundle` rebuild and save/load. Owns independent storage-damage and nest-destroyed facts. Not owned by `QuestManager` or Three.js props.
 - `SEEDED_RAT_INFESTATION` — const — line 25
+- `shouldSeedAuthoredHomeInfestation` — function — line 56
+  - domain: quests-progression
 
 ## `settlement/ratNestPlacement.ts`
 
@@ -1244,13 +1246,13 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/SettlementsManager.ts`
 
-- `createSettlementsManager` — function — line 413
+- `createSettlementsManager` — function — line 421
   - domain: settlements
   - system: settlements-manager
   - role: Owns settlement generation, streaming and per-settlement economy/household/NPC-state registries.
   - owns: SettlementEconomy, Household
   - lifecycle: streaming
-- `SettlementsManager` — type — line 165
+- `SettlementsManager` — type — line 169
 
 ## `settlement/settlementStructures.ts`
 

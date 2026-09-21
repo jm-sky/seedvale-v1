@@ -680,12 +680,12 @@ Generated from exported TypeScript symbols.
 
 ## `quests/settlementRatInfestation.ts`
 
-- `isSettlementRatInfestationResolved` — function — line 16
-- `settlementRatInfestationReminderLine` — function — line 22
-- `SettlementRatInfestationSnapshot` — type — line 8
+- `isSettlementRatInfestationResolved` — function — line 24
+- `settlementRatInfestationReminderLine` — function — line 33
+- `SettlementRatInfestationSnapshot` — type — line 9
   - domain: quests-progression
   - system: settlement-rat-infestation
-  - role: Pure world-condition helpers for the settlement rat infestation quest (plan quests-progression-006 §5, quests-progression-013 §11).
+  - role: Pure world-condition helpers for the settlement rat infestation quest (plan quests-progression-006 §5, quests-progression-013 §11, quests-progression-078).
 
 ## `quests/suspiciousTransportCaveCache.ts`
 
