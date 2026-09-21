@@ -2720,9 +2720,10 @@ Generated from TypeScript imports.
 
 - `ai/NpcAgent.ts`
 - `app/actions/placementActions.ts`
-- `app/createApp.ts`
 - `app/interactables.ts`
 - `persistence/saveData.ts`
+- `quests/authoredRepairDeliveries.test.ts`
+- `quests/authoredRepairDeliveries.ts`
 - `settlement/SettlementsManager.ts`
 - `settlement/createSettlement.ts`
 - `settlement/structureCondition.test.ts`

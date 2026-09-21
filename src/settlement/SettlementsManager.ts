@@ -333,6 +333,14 @@ export type SettlementsManager = {
    *  `getEconomy` above. Pristine (`condition: 100`, no repair) for a
    *  structure that was never damaged. */
   getStructureSnapshot: (settlementId: string, structureId: string, nowDays: number) => SettlementStructureState
+  /** Raw stored settlement-structure record, or `undefined` when no
+   *  damage/repair mutation has ever been recorded for `structureId` (plan
+   *  quests-progression-077) — unlike `getStructureSnapshot` above, this never
+   *  resolves a missing record to a pristine fallback. Read-only passthrough
+   *  to `SettlementStructureStateRegistry.get()`; use this wherever "no
+   *  authoritative record yet" must stay distinguishable from "resolved
+   *  pristine" — e.g. authored starter-repair intact/damaged observation. */
+  getStoredStructureState: (settlementId: string, structureId: string) => SettlementStructureState | undefined
   /** Every stored (i.e. ever-damaged) structure below its role's repair
    *  threshold for one settlement — V1 only adapts `residential` structures,
    *  see `structureCondition.ts`'s `structureRepairPolicy`. The narrow
@@ -853,6 +861,21 @@ export async function createSettlementsManager(
     })
   }
 
+  /** Seeds all four authored starter repair targets (plan
+   *  quests-progression-073) for the home settlement — the single place both
+   *  the direct initial home build below and `ensureLoaded`'s home branch
+   *  call, so the four-target list can never drift between call-sites, and
+   *  neither call-site can run `createSettlement`/presentation before
+   *  authoritative damage exists (plan quests-progression-077). Idempotent
+   *  via `seedAuthoredRepairDamageIfNeeded`. */
+  function seedHomeAuthoredRepairDamageIfNeeded(def: SettlementDef): void {
+    const ids = resolveAuthoredRepairStructureIds(def.plan)
+    seedAuthoredRepairDamageIfNeeded(def.id, ids.householdFence)
+    seedAuthoredRepairDamageIfNeeded(def.id, ids.foundation)
+    seedAuthoredRepairDamageIfNeeded(def.id, ids.loggingWagon)
+    seedAuthoredRepairDamageIfNeeded(def.id, ids.communalFence.structureId)
+  }
+
   // Founded (nonprocedural) colony registry (plan settlements-003) — same
   // "one manager-lifetime registry, survives settlement unload/reload and
   // in-session rebuilds" reasoning as `households`/`npcStates`/
@@ -1012,6 +1035,12 @@ export async function createSettlementsManager(
   if (seedHomeStorageInfestation && initialStorageInfestation?.[homeDef.id] === undefined) {
     ratInfestation.seed(homeDef.id)
   }
+  // Home never goes through `ensureLoaded()` at initial boot — its `entries`
+  // record is set directly below, so `ensureLoaded`'s own `def.isHome` seeding
+  // branch never runs for it (plan quests-progression-077's bootstrap-ordering
+  // fix). Seed here, before `createSettlement`, so presentation and quest
+  // observation never see missing authored damage for the home settlement.
+  seedHomeAuthoredRepairDamageIfNeeded(homeDef)
   // Built the same way a streamed-in neighbor is below (`ensureLoaded`) —
   // kicked off immediately rather than waiting for the player to wander into
   // range, but NOT awaited before this function returns (world-003 "faster
@@ -1124,11 +1153,7 @@ export async function createSettlementsManager(
     // structure registry for presentation. Cheap and synchronous: no need to
     // wait on `waitForChunks` below.
     if (def.isHome) {
-      const ids = resolveAuthoredRepairStructureIds(def.plan)
-      seedAuthoredRepairDamageIfNeeded(def.id, ids.householdFence)
-      seedAuthoredRepairDamageIfNeeded(def.id, ids.foundation)
-      seedAuthoredRepairDamageIfNeeded(def.id, ids.loggingWagon)
-      seedAuthoredRepairDamageIfNeeded(def.id, ids.communalFence.structureId)
+      seedHomeAuthoredRepairDamageIfNeeded(def)
     }
     entry.pendingPromise = waitForChunks(chunksNear(def.x, def.z, chunkSize))
       .then(() => createSettlement(def, economyFor(def), settlementDeps))
@@ -1608,6 +1633,7 @@ export async function createSettlementsManager(
       animalId,
     ),
     getStructureSnapshot: (settlementId, structureId, nowDays) => structureStates.resolve(settlementId, structureId, nowDays),
+    getStoredStructureState: (settlementId, structureId) => structureStates.get(settlementId, structureId),
     listRepairProblems: (settlementId, nowDays) => {
       const out: { structureId: string, condition: number }[] = []
       for (const state of structureStates.listForSettlement(settlementId)) {

@@ -42,8 +42,8 @@
    🔴 `M` · ✅ ready · unlocks 2/2 · type: bug
 4. `settlements-npcs-052` — **Persistent economic work cargo and local-transfer conservation**  
    🔴 `M` · ✅ ready · unlocks 0/0 · type: fix
-5. `quests-progression-077` — **Authored starter repair initialization and intact-state semantics**  
-   🔴 `S` · ✅ ready · unlocks 0/0 · type: fix
+5. `quests-progression-076` — **Quest terminal outcome feedback and Old Bones finale clarity**  
+   🔴 `M` · ✅ ready · unlocks 0/0 · type: fix
 
 ---
 
@@ -195,167 +195,163 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   🟡 `L` · **Score:**  44  
    → **unlocks:** 0/0
 
-27. `quests-progression-077` — **Authored starter repair initialization and intact-state semantics**  
-  🔴 `S` · **Score:**  43  
-   → **unlocks:** 0/0
-
-28. `quests-progression-076` — **Quest terminal outcome feedback and Old Bones finale clarity**  
+27. `quests-progression-076` — **Quest terminal outcome feedback and Old Bones finale clarity**  
   🔴 `M` · **Score:**  41  
    → **unlocks:** 0/0
 
-29. `quests-progression-079` — **Lost treasure expedition — external sponsor and local stakeholder flow**  
+28. `quests-progression-079` — **Lost treasure expedition — external sponsor and local stakeholder flow**  
   🟡 `S` · **Score:**  41  
    → **unlocks:** 0/0
 
-30. `quests-progression-080` — **Quest stage reconciliation for pre-existing world state**  
+29. `quests-progression-080` — **Quest stage reconciliation for pre-existing world state**  
   🔴 `M` · **Score:**  41  
    → **unlocks:** 0/0
 
-31. `settlements-npcs-044` — **Authored Outpost Occupants & Construction Lifecycle**  
+30. `settlements-npcs-044` — **Authored Outpost Occupants & Construction Lifecycle**  
   🔴 `L` · **Score:**  40  
    → **unlocks:** 1/1
 
-32. `fauna-045` — **Cave/surface perception boundary and entrance awareness**  
+31. `fauna-045` — **Cave/surface perception boundary and entrance awareness**  
   🔴 `M` · **Score:**  39  
    → **unlocks:** 0/0
 
-33. `npc-062` — **UBC NPC runtime material darkness and authored outfit preservation**  
+32. `npc-062` — **UBC NPC runtime material darkness and authored outfit preservation**  
   🔴 `M` · **Score:**  39  
    → **unlocks:** 0/0
 
-34. `quests-progression-058` — **Injured dog discovery thread**  
+33. `quests-progression-058` — **Injured dog discovery thread**  
   🟡 `M` · **Score:**  37  
    → **unlocks:** 0/0
 
-35. `npc-037` — **Work Contracts — Stale Target Discovery and Notice Cleanup**  
+34. `npc-037` — **Work Contracts — Stale Target Discovery and Notice Cleanup**  
   🔴 `M` · **Score:**  35  
    → **unlocks:** 0/0
 
-36. `persistence-006` — **Player cave position save/load continuity**  
+35. `persistence-006` — **Player cave position save/load continuity**  
   🔴 `S` · **Score:**  35  
    → **unlocks:** 0/0
 
-37. `fauna-046` — **Stamina-aware animal water crossing risk**  
+36. `fauna-046` — **Stamina-aware animal water crossing risk**  
   🔴 `M` · **Score:**  33  
    → **unlocks:** 0/0
 
-38. `items-player-051` — **Cave-aware dropped-item continuity**  
+37. `items-player-051` — **Cave-aware dropped-item continuity**  
   🔴 `M` · **Score:**  33  
    → **unlocks:** 0/0
 
-39. `npc-061` — **Time-skip and reification surface placement validity**  
+38. `npc-061` — **Time-skip and reification surface placement validity**  
   🔴 `M` · **Score:**  33  
    → **unlocks:** 0/0
 
-40. `quests-progression-075` — **Lost livestock report lifecycle and truthful quest journal**  
+39. `quests-progression-075` — **Lost livestock report lifecycle and truthful quest journal**  
   🔴 `S` · **Score:**  33  
    → **unlocks:** 0/0
 
-41. `world-terrain-042` — **Medicinal herb meadow patches**  
+40. `world-terrain-042` — **Medicinal herb meadow patches**  
   🟡 `M` · **Score:**  33  
    → **unlocks:** 1/1
 
-42. `world-terrain-045` — **Canonical local water player traversal**  
+41. `world-terrain-045` — **Canonical local water player traversal**  
   🔴 `M` · **Score:**  33  
    → **unlocks:** 0/0
 
-43. `items-player-060` — **Ranged weapon inventory, trade and use integrity**  
+42. `items-player-060` — **Ranged weapon inventory, trade and use integrity**  
   🔴 `L` · **Score:**  32  
    → **unlocks:** 0/0
 
-44. `npc-054` — **NPC desired gifts, gift acceptance and relationship rewards**  
+43. `npc-054` — **NPC desired gifts, gift acceptance and relationship rewards**  
   🔴 `L` · **Score:**  30  
    → **unlocks:** 0/0
 
-45. `npc-059` — **NPC need action result revalidation and atomic relief**  
+44. `npc-059` — **NPC need action result revalidation and atomic relief**  
   🔴 `S` · **Score:**  29  
    → **unlocks:** 0/0
 
-46. `ui-input-026` — **World and map label visibility and collision fixes**  
+45. `ui-input-026` — **World and map label visibility and collision fixes**  
   🔴 `S` · **Score:**  29  
    → **unlocks:** 0/0
 
-47. `ui-input-034` — **Deliberate risky natural-water drinking**  
+46. `ui-input-034` — **Deliberate risky natural-water drinking**  
   🔴 `S` · **Score:**  29  
    → **unlocks:** 0/0
 
-48. `world-terrain-043` — **System terrain modification rebuild idempotency**  
+47. `world-terrain-043` — **System terrain modification rebuild idempotency**  
   🔴 `S` · **Score:**  29  
    → **unlocks:** 0/0
 
-49. `settlements-022` — **Founded settlement live runtime and streaming**  
+48. `settlements-022` — **Founded settlement live runtime and streaming**  
   🔴 `L` · **Score:**  28  
    → **unlocks:** 0/0
 
-50. `items-player-014` — **Rope-pullable resource transport**  
+49. `items-player-014` — **Rope-pullable resource transport**  
   🟡 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-51. `ui-input-037` — **Quest log ready-to-report sections**  
+50. `ui-input-037` — **Quest log ready-to-report sections**  
   🟡 `S` · **Score:**  27  
    → **unlocks:** 0/0
 
-52. `world-terrain-039` — **N8AO / post-process cost budget**  
+51. `world-terrain-039` — **N8AO / post-process cost budget**  
   🔴 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-53. `world-terrain-046` — **Unified water shore query and river hotpath**  
+52. `world-terrain-046` — **Unified water shore query and river hotpath**  
   🔴 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-54. `ui-input-025` — **Road travel autopilot for player and mounts**  
+53. `ui-input-025` — **Road travel autopilot for player and mounts**  
   🔴 `L` · **Score:**  26  
    → **unlocks:** 0/0
 
-55. `items-player-044` — **Shoulder and forearm equipment slots**  
+54. `items-player-044` — **Shoulder and forearm equipment slots**  
   🟡 `M` · **Score:**  25  
    → **unlocks:** 0/0
 
-56. `world-036` — **Lightweight unloaded shipwreck and tower lookup**  
+55. `world-036` — **Lightweight unloaded shipwreck and tower lookup**  
   🟡 `M` · **Score:**  25  
    → **unlocks:** 0/0
 
-57. `world-037` — **Audio spatial context isolation**  
+56. `world-037` — **Audio spatial context isolation**  
   🟡 `S` · **Score:**  25  
    → **unlocks:** 0/0
 
-58. `world-terrain-041` — **Agent presentation render LOD**  
+57. `world-terrain-041` — **Agent presentation render LOD**  
   🔴 `L` · **Score:**  24  
    → **unlocks:** 0/0
 
-59. `tools-019` — **Debug tooling lifecycle ownership**  
+58. `tools-019` — **Debug tooling lifecycle ownership**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-60. `ui-input-027` — **Interaction candidate dropped-item scaling**  
+59. `ui-input-027` — **Interaction candidate dropped-item scaling**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-61. `ui-input-030` — **Player downed action and input gating**  
+60. `ui-input-030` — **Player downed action and input gating**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-62. `ui-input-033` — **World map player heading arrow**  
+61. `ui-input-033` — **World map player heading arrow**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-63. `world-038` — **WorldAudio async lifecycle and cache recovery**  
+62. `world-038` — **WorldAudio async lifecycle and cache recovery**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-64. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
+63. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
   🟡 `L` · **Score:**  18  
    → **unlocks:** 0/0
 
-65. `items-player-052` — **Settlement tool ownership and social acquisition**  
+64. `items-player-052` — **Settlement tool ownership and social acquisition**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-66. `items-player-058` — **Campfire decomposition and ash residue**  
+65. `items-player-058` — **Campfire decomposition and ash residue**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-67. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
+66. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 

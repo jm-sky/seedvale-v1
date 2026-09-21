@@ -115,7 +115,10 @@ import {
   ubcPreloadUrls,
 } from '../player/playerVisualPreset'
 import { createTargetedSkillSelection } from '../player/targetedSkillSelection'
-import { AUTHORED_REPAIR_DELIVERIES } from '../quests/authoredRepairDeliveries'
+import {
+  AUTHORED_REPAIR_DELIVERIES,
+  isAuthoredRepairTargetIntact as resolveAuthoredRepairTargetIntact,
+} from '../quests/authoredRepairDeliveries'
 import { cardinalDirectionPhrase } from '../quests/cardinalDirection'
 import { resolveCaveQuestPresentation } from '../quests/caveLocationDescription'
 import {
@@ -239,7 +242,6 @@ import { livestockStrayCandidateFromAgent } from '../settlement/livestock'
 import { LOST_TREASURE_ELDER_SETTLEMENT_SEARCH_RADIUS } from '../settlement/lostTreasureChroniclesElderResident'
 import { settlementNpcDescriptors } from '../settlement/npcIdentity'
 import { cellsWithinRadius } from '../settlement/settlementGenerator'
-import { isStructureRepairProblem, structureRepairPolicy } from '../settlement/structureCondition'
 import { summarizeVillagePlan } from '../settlement/villagePlanDebug'
 import { useBootMark } from '../shared/bootMark'
 import { resolveInjurySeverity } from '../shared/injurySeverity'
@@ -2006,11 +2008,10 @@ export async function createApp(
           : target.structureIdKind === 'loggingWagon'
             ? ids.loggingWagon
             : ids.communalFence.structureId
-      const policy = structureRepairPolicy(target.structureIdKind)
-      if (!policy) return false
-      const nowDays = dayNight.elapsedDays
-      const state = bundle.settlementsManager.getStructureSnapshot(homeDef.id, structureId, nowDays)
-      return !isStructureRepairProblem(policy, state, nowDays)
+      // Stored (not resolved-pristine) lookup: a missing record must never
+      // read as "already repaired" (plan quests-progression-077).
+      const storedState = bundle.settlementsManager.getStoredStructureState(homeDef.id, structureId)
+      return resolveAuthoredRepairTargetIntact(target, storedState, dayNight.elapsedDays)
     },
   }
 

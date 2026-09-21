@@ -1,7 +1,7 @@
 # Plan: Authored starter repair initialization and intact-state semantics
 
 **Created:** 2026-09-21  
-**Status:** `planned` 📋  
+**Status:** `verification needed` 🔍  
 **Type:** fix  
 **Priority:** high · **Effort:** S  
 **Depends on:** ~~quests-progression-073~~  

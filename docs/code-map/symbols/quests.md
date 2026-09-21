@@ -4,8 +4,10 @@ Generated from exported TypeScript symbols.
 
 ## `quests/authoredRepairDeliveries.ts`
 
-- `AUTHORED_REPAIR_DELIVERIES` — const — line 16
-- `AuthoredRepairDeliveryTarget` — type — line 12
+- `AUTHORED_REPAIR_DELIVERIES` — const — line 18
+- `AuthoredRepairDeliveryTarget` — type — line 14
+  - domain: quests-progression
+- `isAuthoredRepairTargetIntact` — function — line 37
   - domain: quests-progression
 
 ## `quests/cardinalDirection.ts`

@@ -76,8 +76,13 @@ Generated from TypeScript imports.
 **Imports**
 
 - `quests/authoredRepairDeliveries.ts`
+- `settlement/structureCondition.ts`
 
 ## `quests/authoredRepairDeliveries.ts`
+
+**Imports**
+
+- `settlement/structureCondition.ts`
 
 **Imported by**
 
