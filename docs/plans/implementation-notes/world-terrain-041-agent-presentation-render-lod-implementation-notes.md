@@ -4,85 +4,107 @@
 **Status:** pre-implementation recon complete  
 **Model:** Sonnet, Composer
 
-## Current implementation seams
+## Recon conclusion
 
-### NPC presentation
+Nie zaczynaj od szerokiego investigation ani projektowania model-swap LOD.
 
-`src/ai/NpcAgent.ts` owns one live agent root and already separates simulation state from render presentation well enough to extend without creating another agent object.
+Benchmark `2026-09-21--030--benchmark-settlement-heavy.md` już rozstrzyga najważniejszy gate:
 
-Relevant current facts:
+- main pass: NPC **511 draws / 1.16M tris**, fauna **399 draws / 152.2k tris**,
+- shadow census: NPC **22 draws**, fauna **10 draws**,
+- `hide-npc-fauna`: RENDER **23.3 → 14.4 ms**,
+- `no-shadows` dla całej sceny: **23.3 → 19.6 ms**.
 
-- NPC models are skinned GLB clones loaded through `loadGltfAnimated()` / `SkeletonUtils.clone()`.
-- `NPC_SHADOW_DISTANCE = 36` already disables distant NPC shadow casting while leaving the main-pass model visible.
-- The code comment next to that constant documents roughly **9 skinned submeshes per NPC** as a meaningful submit cost.
-- NPC render layer is assigned through existing `AGENT_RENDER_LAYER` / `assignRenderLayer()`.
-- Animation is owned by `createAgentAnimationSet()`; the animation owner must stay attached to the existing model/root lifecycle.
+Agent cost nie jest przede wszystkim problemem shadow-pass. Production work może przejść bez ponownego Gate A.
 
-`src/ai/npcAppearance.ts` selects among:
-- Modular Men/Women variants,
-- UBC Peasant/Wizard/Ranger/Knight variants,
-- baked hair/beard variants.
+Najprostszy bezpieczny v1 to:
 
-No separate low-poly or explicit LOD model family was found in the current repository.
+```text
+benchmark-only hierarchy census
+→ pure shared near/mid/far policy
+→ per-owner cached optional child visibility
+→ benchmark
+→ stop, jeśli hierarchy nie daje sensownej redukcji
+```
 
-### Fauna presentation
+Nie ma zweryfikowanych low-poly variants, więc **nie implementuj model swappingu**.
 
-`src/fauna/AnimalAgent.ts` follows the same broad ownership shape:
+## Current seams to reuse
 
-- one stable agent root,
-- GLB/procedural/capsule visual under that root,
-- `createAgentAnimationSet()`,
+### `src/perf/sceneCensus.ts`
+
+Już ma:
+
+- `classifyObject()` z bucketami `npc` / `fauna`,
+- `censusScene()`,
+- `censusShadowCasters()`,
+- draw-call i triangle counting,
+- effective visibility handling.
+
+Rozszerz ten istniejący benchmark/debug mechanism albo dodaj mały helper obok niego. Nie twórz drugiego normal-runtime census systemu.
+
+Detail census ma odpowiedzieć tylko:
+
+1. ile renderable/skinned child meshes przypada na agent/model family,
+2. które family generują najwięcej draws,
+3. jak wygląda rozkład po distance bands,
+4. które child nodes są realnymi kandydatami do optional presentation.
+
+Nie trzeba ponownie mierzyć, czy shadows dominują.
+
+### `src/ai/NpcAgent.ts`
+
+NPC ma stabilnego ownera/root i obecny animated GLB lifecycle. Zachowaj go.
+
+Istotne fakty:
+
+- `NPC_SHADOW_DISTANCE = 36`,
+- komentarz przy nim dokumentuje około **9 skinned submeshes × NPC** jako wcześniejszy submit problem,
+- render layer korzysta z `AGENT_RENDER_LAYER` / `assignRenderLayer()`,
+- animation lifecycle korzysta z `createAgentAnimationSet()`,
+- appearance/model hierarchy różni się między rodzinami NPC.
+
+Nie zmieniaj `this.mesh` identity i nie rebindowuj skeleton/mixer.
+
+Po finalnym zbudowaniu presentation hierarchy można **raz** zebrać referencje do optional nodes. Później transition ma używać tylko cached references.
+
+### `src/fauna/AnimalAgent.ts`
+
+Ten sam ogólny wzorzec ownership: stabilny agent + presentation child.
+
+Zachowaj istniejące:
+
 - `FAUNA_SHADOW_DISTANCE`,
-- `AGENT_RENDER_LAYER`.
+- `AGENT_RENDER_LAYER`,
+- `createAgentAnimationSet()`,
+- living/corpse presentation lifecycle,
+- procedural/capsule fallback.
 
-Fauna already has `animalPresentationIntervalSec()` / `resolveAnimalUpdateImportance()` in `animalUpdateCadence.ts`. That mechanism throttles **CPU presentation updates**. It is not a render LOD and must not become the authority for main-pass visibility/detail.
+Szczególnie nie łam `hideLivingVisual()` / `showLivingVisual()`. LOD nie może przywrócić living child, gdy corpse lifecycle go ukrył.
 
-Corpse handling also depends on the existing living visual hierarchy through `hideLivingVisual()` / `showLivingVisual()`, so any replacement/visibility mechanism must preserve that contract.
+Fallback bez sensownych optional nodes może pozostać zawsze `near`/full.
 
-## Diagnostic first
+### `src/fauna/animalUpdateCadence.ts`
 
-The existing scene census only reports aggregate `npc` and `fauna` buckets. Before implementing a production LOD, add a bounded agent-specific census used by `settlement-heavy`.
+Nie reużywaj `AnimalUpdateImportance` jako render LOD authority.
 
-Recommended location:
+Ten moduł steruje częstotliwością CPU work:
 
-- extend `src/perf/sceneCensus.ts` with an optional agent-detail helper, or
-- add `src/perf/agentRenderCensus.ts` if the data would otherwise distort the generic census API.
+- `resolveAnimalUpdateImportance()`,
+- `animalBehaviourIntervalSec()`,
+- `animalPresentationIntervalSec()`.
 
-Do not add a normal-game per-frame traversal.
+Można wykorzystać ten sam już policzony observer distance w miejscu integracji, jeśli jest lokalnie dostępny, ale policy i state muszą pozostać osobne.
 
-For NPC, livestock and wild fauna separately capture at least:
+## Concrete v1 design
 
-- agents present,
-- visible agents,
-- renderable meshes / skinned meshes,
-- estimated draw calls,
-- triangles,
-- average and p95 renderables per agent,
-- `castShadow=true` renderables,
-- distance bands from player/observer, e.g. 0–15, 15–30, 30–60, 60+ m,
-- source `assetUrl` where available.
+### 1. Pure policy
 
-If practical, report top model families by draw count so the implementation can distinguish:
-- UBC NPCs,
-- modular NPCs,
-- livestock models,
-- wild fauna models.
-
-### Gate A — shadow vs main pass
-
-Run `settlement-heavy` with the census and compare with the already-existing `no-shadows` and `hide-npc-fauna` isolation probes.
-
-If most of the agent win is explained by shadow submissions, stop production work here and let `world-terrain-038` own the optimization.
-
-Continue only when main-pass renderables/triangles remain a material cost after shadow filtering.
-
-## Shared LOD policy
-
-If Gate A passes, add a small pure shared policy module:
+Preferowany plik:
 
 `src/render/agentPresentationLod.ts`
 
-Suggested contract:
+Minimalny kontrakt:
 
 ```ts
 export type AgentPresentationLevel = 'near' | 'mid' | 'far'
@@ -97,203 +119,143 @@ export function resolveAgentPresentationLevel(
 ): AgentPresentationLevel
 ```
 
-The first implementation should intentionally keep the input narrow.
+Nie dodawaj camera/frustum/object references do pure policy.
 
-### Importance
+`important=true` zawsze daje `near`.
 
-`important=true` should force `near`.
+Thresholds są renderowymi thresholdami, nie aliasami fauna cadence. Wybierz jawne stałe w tym module i pokryj boundary tests. Jeśli podczas browser verification wyjdzie oscillation, dopiero wtedy dodaj hysteresis.
 
-Use only importance signals already available at the caller without creating cross-system lookups.
+### 2. Adapter = cached visibility only
 
-Initial eligible cases:
+Nie potrzebujemy ogólnego frameworka adapterów. Mały helper wystarczy, jeśli usuwa duplikację między ownerami.
 
-- direct interaction/dialogue target if the current caller already knows it,
-- combat/flee participant if already locally known,
-- mounted player-owned animal,
-- actively led player-owned animal.
+Semantyka:
 
-Do **not** add a global “important agents registry” in this plan.
+- construction: dostaje jawnie wybrane optional `Object3D[]`,
+- `applyLevel()` robi pracę tylko przy zmianie levelu,
+- `near` przywraca wszystkie nodes należące do LOD budget,
+- `mid/far` ukrywa tylko nodes potwierdzone jako niesylwetkowe,
+- nie dotyka root visibility,
+- nie traversuje hierarchy podczas update,
+- nie mutuje material/geometry/layers/skeleton.
 
-If a signal is not locally available, omit it in v1 rather than importing quest/combat/dialogue managers into the render module.
+Nie zapisuj globalnego „original visibility” dla całego modelu. Cache dotyczy wyłącznie nodes, które ten LOD mechanizm rzeczywiście posiada; inaczej łatwo wejść w konflikt z corpse/equipment lifecycle.
 
-### Distance policy
+### 3. Node selection
 
-Do not reuse simulation cadence thresholds as the LOD thresholds.
+To jest jedyny fragment, którego nie należy zgadywać przed census.
 
-Start with explicit render distances, benchmark-tuned later. Keep hysteresis if browser verification shows visible threshold oscillation.
+Kandydaci mogą obejmować włosy, zarost, drobne accessories/equipment lub inne niesylwetkowe child meshes, ale **tylko jeśli aktualna hierarchy potwierdzi, że ich ukrycie jest niezależne**.
 
-The shared resolver should be pure and unit tested.
+Nie używaj heurystyki typu „każdy child o małej liczbie triangles” ani przypadkowego node-name matching dla wszystkich assetów.
 
-## Preferred implementation order
+Preferuj jawne per-family selection z małą liczbą znanych reguł. Family bez bezpiecznej reguły pozostaje full.
 
-### R1 — census only
+Jeśli census pokaże, że większość kosztu siedzi w niepodzielnym body/outfit mesh i optional nodes dają mało draws, zatrzymaj production część. To oznacza potrzebę prawdziwych low-poly assets, nie potrzebę bardziej skomplikowanego runtime systemu.
 
-Implement the agent render census and run the benchmark.
+## Importance integration
 
-This is a valid endpoint if Gate A fails or if no safe representation reduction is available.
+Nie buduj centralnego registry.
 
-### R2 — submesh visibility budget
+NPC/fauna owner może przekazać `important` tylko z sygnałów, które już zna lokalnie.
 
-Because the repo currently has no low-poly agent assets, the first production candidate should be **existing-hierarchy submesh reduction**, not model swapping.
+Minimum:
 
-For each representative model family, identify whether some child meshes are visually optional at mid/far distance, for example:
+- bardzo mały distance → policy i tak wybierze `near`,
+- mounted animal → `important`,
+- player-coupled/led animal → `important`, jeśli stan jest już lokalny.
 
-- hair/beard accessories,
-- small equipment/details,
-- outfit accessory meshes,
-- other non-silhouette children.
+Combat/flee/interaction/dialogue mogą wymuszać `near` tylko tam, gdzie sygnał jest dostępny bez importowania nowych managerów. Brak sygnału w v1 jest lepszy niż nowa zależność między domenami.
 
-Do not assume node names. Inspect the actual loaded hierarchy/census.
+## Update placement
 
-If a family has no safely removable children, leave it unchanged.
+Nie dodawaj agent LOD traversal/update do `gameLoop.ts`.
 
-The agent owner should cache the relevant presentation nodes once after model construction. Do not traverse the whole model every frame.
+LOD level aktualizuj w istniejącym owner presentation/update path, gdzie observer distance jest już dostępny lub tani do uzyskania.
 
-Suggested adapter shape:
+Per tick dozwolone:
 
-```ts
-type AgentPresentationAdapter = {
-  applyLevel(level: AgentPresentationLevel): void
-  dispose(): void
-}
-```
+- distance/importance resolve,
+- porównanie z last level,
+- przy transition kilka cached `.visible` assignments.
 
-NPC and fauna may build different adapters, but both consume the same `AgentPresentationLevel`.
+Per tick niedozwolone:
 
-The shared policy owns **when** detail changes; each model adapter owns **what** can safely be hidden.
+- `traverse()`,
+- arrays/maps budowane od nowa,
+- material cloning,
+- skeleton/model rebuild.
 
-### R3 — explicit model LOD only if assets exist
+## Explicitly out of v1
 
-If future low-poly variants are added, extend the adapter to swap presentation children under the same stable agent root.
+Nie implementuj:
 
-Do not implement runtime decimation.
+- alternate GLB loading,
+- low-poly model variants,
+- swapping skinned roots,
+- AnimationMixer rebind,
+- runtime mesh simplification,
+- impostors,
+- global visibility manager,
+- osobnych NPC/fauna LOD policies.
 
-Do not create a second `NpcAgent` / `AnimalAgent`.
-
-A model swap must preserve:
-
-- root world transform,
-- agent identity,
-- collider/interaction identity,
-- health/life state,
-- ownership,
-- render layer,
-- animation semantic state.
-
-Because `AgentAnimationSet` owns an `AnimationMixer` bound to a model root, an actual skinned-model swap requires an explicit animation rebind contract. Do not silently replace the animated child while retaining a mixer bound to the old skeleton.
-
-Unless a low-poly asset family with compatible skeleton/clip contract is verified, keep R3 out of the initial implementation.
-
-## Integration points
-
-### NPC
-
-Primary seam: `src/ai/NpcAgent.ts`.
-
-During/after visual construction:
-
-1. retain the stable top-level `this.mesh`,
-2. build a cached presentation adapter for its loaded hierarchy,
-3. apply `AGENT_RENDER_LAYER` exactly as today,
-4. keep current shadow-distance logic independent,
-5. compute presentation level only when the existing presentation/update path already has observer distance available.
-
-Do not introduce another scene traversal in `gameLoop.ts`.
-
-### Fauna
-
-Primary seam: `src/fauna/AnimalAgent.ts`.
-
-Use the same shared resolver but a fauna-specific adapter.
-
-Important guards:
-
-- mounted horse → `near`,
-- actively led owned animal → `near`,
-- corpse state must not accidentally re-enable hidden living meshes,
-- procedural/capsule fallback may simply keep one level if there is nothing useful to reduce.
-
-Do not derive render level from `AnimalUpdateImportance`; both may use distance/importance inputs, but they remain separate policies.
-
-## Transition behaviour
-
-For visibility-only R2:
-
-- level changes should toggle cached child `.visible` flags only when the resolved level changes,
-- no material cloning,
-- no geometry mutation,
-- no per-frame allocation,
-- no rebuild of the skeleton,
-- no animation reset.
-
-Track the last applied level per agent.
-
-If browser verification shows obvious popping, add small hysteresis to the pure policy rather than temporal smoothing or per-frame fades across many meshes.
+To są osobne problemy. Obecny plan ma sprawdzić, ile można odzyskać tanim visibility budgetem.
 
 ## Tests
 
-Add:
-
 ### `src/render/agentPresentationLod.test.ts`
 
-Cover:
+Pokryj:
 
-- near/mid/far thresholds,
-- important agent forced to near,
-- boundary behaviour,
-- hysteresis if introduced.
+- near/mid/far boundaries,
+- `important` → near,
+- deterministic/stateless behaviour.
 
-### Adapter tests where practical
+### visibility helper
 
-For a synthetic Object3D hierarchy verify:
+Na synthetic `Object3D` hierarchy:
 
-- near restores all intended presentation nodes,
-- mid/far hide only configured optional nodes,
-- root stays visible,
-- render layer is untouched,
-- repeated application of the same level is a no-op.
+- near przywraca owned optional nodes,
+- mid/far ukrywa właściwy subset,
+- root pozostaje nietknięty,
+- repeated same-level apply jest no-op,
+- layers nie są zmieniane.
 
-NPC/fauna behavioural tests should only be added where the integration seam can be tested without constructing the full game world.
+Nie buduj ciężkich `NpcAgent` / `AnimalAgent` integration tests tylko dla pokrycia prostego helpera.
 
-## Performance verification
+## Implementation order for Sonnet
 
-AI agent:
+1. Przeczytaj tylko wskazane wyżej seams + aktualne benchmark integration call-sites.
+2. Dodaj bounded detail census i ustal realne model families/optional nodes.
+3. Jeśli optional nodes mają materialny draw budget, dodaj pure policy + tests.
+4. Dodaj cached visibility integration do NPC i fauna tylko dla potwierdzonych families.
+5. Uruchom targeted tests, potem type-check/lint/build.
+6. Nie wykonuj browser verification.
+7. Jeśli census nie daje sensownego R2, zakończ bez proxy/model-swap i zapisz wynik jako asset requirement.
 
-- `pnpm test` / targeted Vitest,
-- type-check,
-- lint,
-- build,
-- no browser verification.
+## User browser verification
 
-User:
+`?benchmark=settlement-heavy` przed/po:
 
-1. Run `?benchmark=settlement-heavy` before/after.
-2. Compare:
-   - NPC draws / triangles,
-   - fauna draws / triangles,
-   - total draw calls,
-   - RENDER avg/p95,
-   - FPS/p95 frame time.
-3. Walk from far → mid → near through a populated settlement.
-4. Check:
-   - dialogue/interaction target,
-   - guards/combat,
-   - livestock,
-   - wild fauna,
-   - mounted horse,
-   - led animal,
-   - death/corpse transition.
-5. Watch for:
-   - model parts popping too close,
-   - missing hair/equipment at near range,
-   - animation reset,
-   - living visual incorrectly restored on corpse,
-   - render-layer/reflection regressions.
+- NPC/fauna draws i triangles,
+- total draws,
+- RENDER avg/p95,
+- FPS i frame p95.
 
-## Success gate
+Manualnie:
 
-Keep production LOD only if it removes a meaningful number of **main-pass** agent submissions/triangles and improves `settlement-heavy` without visible near-range regressions.
+- far → mid → near,
+- NPC z różnymi appearance families,
+- livestock i wild fauna,
+- mount/led animal,
+- combat/flee,
+- death/corpse,
+- powrót do near: pełne hair/equipment/body bez resetu animacji.
 
-If current agent assets do not expose enough optional submeshes to produce a meaningful win, stop after census and document an asset requirement for explicit low-poly variants. Do not compensate by building a proxy/impostor system in this plan.
+## Success criterion
+
+Liczy się redukcja **main-pass submissions** i realny benchmark gain.
+
+Jeśli visibility-only v1 usuwa mało draws albo nie poprawia benchmarku, revert/nie rozszerzaj mechanizmu. Następny krok powinien wtedy dotyczyć assetów lub osobnego, świadomie zaplanowanego skinned-model LOD — nie rozbudowy tego planu.
 
 > **Zrób git commit i push do main, rebase jeżeli trzeba**
