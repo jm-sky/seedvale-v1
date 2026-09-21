@@ -433,7 +433,7 @@ export function nearestRiverBankPoint(
  *  key can quantize by hydrology cell.
  *
  *  `distanceToWaterEdge` is exposed alongside so a caller comparing several
- *  candidate chains/records (e.g. `ChunkManager.riverWaterContext` scanning
+ *  candidate chains/records (e.g. `ChunkManager.riverShoreQuery` scanning
  *  every loaded chunk) can pick the overall-nearest one by the same "water
  *  edge distance" metric `nearestRiverBankDistance`/`nearestRiverBankPoint`
  *  already use, instead of centerline distance which can disagree with it
@@ -474,6 +474,66 @@ export function nearestRiverHydrologyContext(
           accumulation: a.accumulation + (b.accumulation - a.accumulation) * t,
           distanceToWaterEdge: dist,
         }
+      }
+    }
+  }
+  return best
+}
+
+/** `nearestRiverHydrologyContext`'s hydrology sample plus the same winning
+ *  candidate's own water-edge bank point (plan world-terrain-046) — one
+ *  nearest-selection walk over `chains` instead of the three independent
+ *  scans `nearestRiverBankDistance`/`nearestRiverBankPoint`/
+ *  `nearestRiverHydrologyContext` would each perform on the same input.
+ *  `distanceToWaterEdge`, the bank point and the hydrology context always
+ *  come from the *same* projected `(a, b, t)`, so a shoreline/quality query
+ *  built on this can never disagree with itself about which river segment it
+ *  answered from. `null` under the same "no positive-width river point
+ *  nearby" contract as `nearestRiverHydrologyContext`. */
+export type RiverShoreCandidate = {
+  /** The actual point on this candidate's own water edge nearest the query
+   *  point — same selection as `nearestRiverBankPoint`, kept distinct from
+   *  `x`/`z` (the centerline sample location `RiverHydrologyContext` owns). */
+  bankX: number
+  bankZ: number
+} & RiverHydrologyContext
+
+export function nearestRiverShoreCandidate(
+  chains: readonly RiverChain[],
+  x: number,
+  z: number,
+): RiverShoreCandidate | null {
+  let best: RiverShoreCandidate | null = null
+  for (const chain of chains) {
+    const pts = chain.points
+    for (let i = 0; i < pts.length - 1; i++) {
+      const a = pts[i]!
+      const b = pts[i + 1]!
+      const aHalfWidth = widthFromAccumulation(a.accumulation) / 2
+      const bHalfWidth = widthFromAccumulation(b.accumulation) / 2
+      if (aHalfWidth <= 0 && bHalfWidth <= 0) continue
+
+      const { distSq, t } = projectOntoSegment(x, z, a.x, a.z, b.x, b.z)
+      const halfWidth = aHalfWidth + (bHalfWidth - aHalfWidth) * t
+      const dist = Math.sqrt(distSq) - halfWidth
+      if (best !== null && dist >= best.distanceToWaterEdge) continue
+
+      const cx = a.x + (b.x - a.x) * t
+      const cz = a.z + (b.z - a.z) * t
+      const toQueryX = x - cx
+      const toQueryZ = z - cz
+      const toQueryLen = Math.hypot(toQueryX, toQueryZ)
+      const bankX = toQueryLen < 1e-6 ? cx : cx + (toQueryX / toQueryLen) * halfWidth
+      const bankZ = toQueryLen < 1e-6 ? cz : cz + (toQueryZ / toQueryLen) * halfWidth
+
+      best = {
+        x: cx,
+        z: cz,
+        elevation: a.elevation + (b.elevation - a.elevation) * t,
+        accumulation: a.accumulation + (b.accumulation - a.accumulation) * t,
+        distanceToWaterEdge: dist,
+        bankX,
+        bankZ,
       }
     }
   }

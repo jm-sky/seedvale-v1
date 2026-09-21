@@ -113,6 +113,49 @@ describe('isDrinkableNaturalShorePoint', () => {
     })
     expect(isDrinkableNaturalShorePoint(ctx, 0, 0)).toBe(false)
   })
+
+  it('rejects a point with no natural water body at all, even when walkable', () => {
+    const ctx = makeCtx({
+      def: ANIMAL_DEFS.horse,
+      naturalWaterKindAt: () => null,
+    })
+    expect(isDrinkableNaturalShorePoint(ctx, 0, 0)).toBe(false)
+  })
+
+  it('accepts an elevated river shore even though terrain never dips near waterLevel anywhere (plan world-terrain-046)', () => {
+    // A carved mountain stream can sit entirely above the global
+    // `waterLevel` — the old unconditional flat `shoreProbeHits` prerequisite
+    // rejected this before the river-aware classifier ever ran.
+    const ctx = makeCtx({
+      def: ANIMAL_DEFS.horse,
+      sampleHeight: () => 100,
+      waterLevel: 0,
+      naturalWaterKindAt: () => 'river',
+      sampleLocalWater: () => ({
+        present: true,
+        waterSurfaceHeight: 95,
+        floorHeight: 94.7,
+        depth: 0.3,
+      }),
+    })
+    expect(isDrinkableNaturalShorePoint(ctx, 0, 0)).toBe(true)
+  })
+
+  it('still rejects a too-deep elevated river candidate — body discovery does not bypass walkability/depth constraints', () => {
+    const ctx = makeCtx({
+      def: ANIMAL_DEFS.horse,
+      sampleHeight: () => 100,
+      waterLevel: 0,
+      naturalWaterKindAt: () => 'river',
+      sampleLocalWater: () => ({
+        present: true,
+        waterSurfaceHeight: 95,
+        floorHeight: 92,
+        depth: 3,
+      }),
+    })
+    expect(isDrinkableNaturalShorePoint(ctx, 0, 0)).toBe(false)
+  })
 })
 
 describe('findTroughTarget / findWaterTarget (plan 122 — trough preferred over shoreline)', () => {

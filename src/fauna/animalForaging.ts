@@ -362,11 +362,16 @@ export type ForagingContext = {
 }
 
 /** Natural shoreline drink point: dry or shallow wade at the edge, never deep
- *  water or undrinkable ocean. */
+ *  water or undrinkable ocean. Body discovery (`naturalWaterKindAt`) runs
+ *  first and alone decides "is there natural water here at all" (plan
+ *  world-terrain-046) — no separate flat `shoreProbeHits` prerequisite, which
+ *  used to reject an elevated river shore before the river-aware classifier
+ *  ever ran (a carved mountain stream can sit entirely above the global
+ *  `waterLevel`, same reasoning as `terrain/waterSample.ts`). */
 export function isDrinkableNaturalShorePoint(ctx: ForagingContext, x: number, z: number): boolean {
   if (!ctx.isWalkable(x, z)) return false
-  if (shoreProbeHits(x, z, ctx.sampleHeight, ctx.waterLevel) === 0) return false
   const kind = ctx.naturalWaterKindAt?.(x, z)
+  if (kind == null) return false
   if (kind === 'ocean') return false
   const sample = ctx.sampleLocalWater?.(x, z)
   if (sample?.present) {

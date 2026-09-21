@@ -479,9 +479,11 @@ export type WorldBundle = {
    *  shared by wild herbivores (`fauna`) and settlement livestock alike. */
   grassForage: GrassForageService
   /** Plan world-017 — lazy, cached contextual river water quality, composing
-   *  `chunkManager.riverWaterContext` and `settlementsManager.peekDef`.
-   *  World-scoped: built fresh alongside `settlementsManager` below and never
-   *  persisted, so it's naturally discarded on a `WorldBundle` rebuild. */
+   *  an already-resolved river hydrology context (plan world-terrain-046 —
+   *  the caller's own `chunkManager.riverShoreQuery` result, never
+   *  re-queried here) and `settlementsManager.peekDef`. World-scoped: built
+   *  fresh alongside `settlementsManager` below and never persisted, so it's
+   *  naturally discarded on a `WorldBundle` rebuild. */
   riverWaterQuality: RiverWaterQualityResolver
   /** Plan world-031 — world-owned activation fact for predefined authored
    *  world consequences (e.g. a future "wolf den cleared" → outpost). Owns
@@ -730,7 +732,7 @@ function buildSettlementsManager(
     standingTorches,
     residentialBuildings,
     npcGraves,
-    chunkManager.riverShoreDistance.bind(chunkManager),
+    chunkManager.riverShoreQuery.bind(chunkManager),
     initialStructureStates,
     getNowDays,
     onSettlementAvailable,
@@ -875,7 +877,7 @@ function buildFauna(
     waterLevel: chunkManager.waterLevel,
     sampleContinentalness: chunkManager.sampleContinentalness,
     region: chunkManager.region,
-    riverShoreDistance: chunkManager.riverShoreDistance.bind(chunkManager),
+    riverShoreQuery: chunkManager.riverShoreQuery.bind(chunkManager),
   })
 
   bootMark('createFauna')
@@ -1657,7 +1659,7 @@ async function buildWorldSystems(
   const settlementsManager = await buildSettlementsManager(scene, chunkManager, config.seed, playAt, config, forest, worldContext, mining, initialEconomies, onAnimalDeath, getPlayerSocial, isLandPlotOwned, pointLightBudget, getNearbyPlayerWell, foodSources, herbalGather, hunting, destinationThreat, initialHouseholds, initialNpcStates, helperDelivery, initialNpcRelationships, initialLivestock, initialRemovedLivestockIds, initialRats, initialRemovedRatIds, initialRatReconcileBuckets, initialStorageInfestation, seedHomeStorageInfestation, workContracts, transportOrders, resourceSiteInventories, resolveResourceSitePosition, playerWells, droppedItems, grassForage, playerTroughs, terrainPreparations, palisades, standingTorches, residentialBuildings, npcGraves, initialStructureStates, getWorldDays, onSettlementAvailable, npcWorldMovement, onAnimalDeathSound, initialFoundedSettlements)
   bootMarkEnd('buildSettlementsManager')
   const homeDef = settlementsManager.getHomeDef()
-  const riverWaterQuality = createRiverWaterQualityResolver(chunkManager.riverWaterContext, settlementsManager.peekDef)
+  const riverWaterQuality = createRiverWaterQualityResolver(settlementsManager.peekDef)
 
   bootMark('placed')
   const placedFires = createPlacedFires(scene, chunkManager.sampleHeight, initialPlacedFires, playAt, pointLightBudget)

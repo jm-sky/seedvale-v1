@@ -585,19 +585,28 @@ Generated from TypeScript imports.
 - `fauna/AnimalAgent.ts`
 - `fauna/animalNames.test.ts`
 
+## `fauna/animalNaturalWater.test.ts`
+
+**Imports**
+
+- `fauna/animalNaturalWater.ts`
+- `terrain/chunkHeightmap.ts`
+- `terrain/riverNetwork.ts`
+
 ## `fauna/animalNaturalWater.ts`
 
 **Imports**
 
 - `player/PlayerController.ts`
 - `terrain/chunkHeightmap.ts`
-- `terrain/waterBodies.ts`
+- `terrain/riverNetwork.ts`
 - `terrain/waterBodyKind.ts`
 - `world/WaterSource.ts`
 
 **Imported by**
 
 - `app/worldBundle.ts`
+- `fauna/animalNaturalWater.test.ts`
 - `settlement/SettlementsManager.ts`
 
 ## `fauna/animalNeedArbitration.test.ts`

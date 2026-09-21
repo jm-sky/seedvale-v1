@@ -16,6 +16,7 @@ import type { DroppedItems } from '../items/createDroppedItems'
 import type { ColliderSource, HeightSampler, RuntimeGroundSampler } from '../player/PlayerController'
 import type { RegionParams } from '../terrain/chunkHeightmap'
 import type { SettlementMiningHooks } from '../terrain/resourceDeposits'
+import type { RiverShoreCandidate } from '../terrain/riverNetwork'
 import type { LocalWaterSample } from '../terrain/waterSample'
 import type { Collider } from '../world/collision'
 import type { GrassForageService } from '../world/createGrassForagePatches'
@@ -560,9 +561,11 @@ export async function createSettlementsManager(
   /** NPC burial graves (plan npc-011) — forwarded into every `createSettlement`
    *  call the same way as `droppedItems`. */
   npcGraves?: import('../world/npcGraves').NpcGraves,
-  /** River bank distance (plan fauna drink targeting) — when set, livestock
-   *  agents get the same lake/river/ocean classifier as player drink. */
-  riverShoreDistance?: (worldX: number, worldZ: number) => number | null,
+  /** Bounded river-shore query (plan world-terrain-046, formerly
+   *  `riverShoreDistance`) — when set, livestock agents get the same
+   *  lake/river/ocean classifier as player drink, via the same shared
+   *  `terrain/waterBodyKind.ts::resolveWaterShore` seam. */
+  riverShoreQuery?: (worldX: number, worldZ: number) => RiverShoreCandidate | null,
   /** Persisted settlement-structure condition/repair state (plan
    *  settlements-007) — same "one manager-lifetime registry, `initial*`/
    *  `snapshot*` idiom" contract as `initialStorageInfestation` above. Keyed
@@ -612,13 +615,13 @@ export async function createSettlementsManager(
   const surfaceSampleHeight: HeightSampler = (x, z) => sampleBridgeDeck(x, z) ?? sampleHeight(x, z)
   const surfaceSampleLocalWater = (x: number, z: number): LocalWaterSample =>
     sampleBridgeDeck(x, z) != null ? DRY_WATER_SAMPLE : sampleLocalWater(x, z)
-  const naturalWaterKindAt = riverShoreDistance
+  const naturalWaterKindAt = riverShoreQuery
     ? createNaturalWaterKindAt({
       sampleHeight,
       waterLevel,
       sampleContinentalness: terrainSamplers.sampleContinentalness,
       region,
-      riverShoreDistance,
+      riverShoreQuery,
     })
     : undefined
   const roadCtx: RoadNetworkContext = {

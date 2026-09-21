@@ -1,7 +1,7 @@
 # Plan: Unified water shore query and river hotpath
 
 **Created:** 2026-09-20
-**Status:** `planned` 📋
+**Status:** `verification needed` 🔍
 **Priority:** high · **Effort:** M
 **Model:** Composer · **Fallback:** Sonnet
 **Depends on:** none

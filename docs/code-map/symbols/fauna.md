@@ -175,7 +175,7 @@ Generated from exported TypeScript symbols.
 ## `fauna/animalForaging.ts`
 
 - `AnimalWaterSourceProvider` — type — line 99
-- `applySourceRelief` — function — line 730
+- `applySourceRelief` — function — line 735
 - `canAcceptHandFeed` — function — line 146
 - `CARCASS_EAT_DURATION_SEC` — const — line 73
 - `CarcassCandidate` — type — line 231
@@ -184,12 +184,12 @@ Generated from exported TypeScript symbols.
 - `dietItemReliefScale` — function — line 136
 - `DRINK_DURATION_SEC` — const — line 69
 - `EAT_DURATION_SEC` — const — line 66
-- `findFoodTarget` — function — line 641
-- `findForageTarget` — function — line 507
-- `findGrassPatchTarget` — function — line 535
-- `findHouseholdTroughTarget` — function — line 397
-- `findTroughTarget` — const — line 421
-- `findWaterTarget` — function — line 477
+- `findFoodTarget` — function — line 646
+- `findForageTarget` — function — line 512
+- `findGrassPatchTarget` — function — line 540
+- `findHouseholdTroughTarget` — function — line 402
+- `findTroughTarget` — const — line 426
+- `findWaterTarget` — function — line 482
 - `FOOD_INTERACTION_RANGE` — const — line 60
 - `FOOD_SEARCH_RADIUS` — const — line 32
   - domain: fauna
@@ -197,8 +197,8 @@ Generated from exported TypeScript symbols.
 - `forageEdgeScore` — function — line 113
 - `ForagingContext` — type — line 309
 - `isCarcassEdible` — function — line 173
-- `isDrinkableNaturalShorePoint` — function — line 366
-- `isSourceTargetValid` — function — line 656
+- `isDrinkableNaturalShorePoint` — function — line 371
+- `isSourceTargetValid` — function — line 661
 - `selectDietFeedKind` — function — line 124
 - `SOURCE_SEARCH_COOLDOWN_SEC` — const — line 77
 - `SOURCE_TARGET_TIMEOUT_SEC` — const — line 82
@@ -280,7 +280,7 @@ Generated from exported TypeScript symbols.
 
 ## `fauna/animalNaturalWater.ts`
 
-- `createNaturalWaterKindAt` — function — line 18
+- `createNaturalWaterKindAt` — function — line 25
 - `NaturalWaterKindSamplerDeps` — type — line 7
 
 ## `fauna/animalNeedArbitration.ts`

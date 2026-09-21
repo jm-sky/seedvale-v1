@@ -12,6 +12,7 @@ import type { LandOwnershipRegistry } from '../settlement/landOwnership'
 import type { SettlementStructureState } from '../settlement/structureCondition'
 import type { ChunkManager } from '../terrain/chunkManager'
 import type { ResourceDeposits } from '../terrain/resourceDeposits'
+import type { RiverHydrologyContext } from '../terrain/riverNetwork'
 import type { Beehives } from '../world/createBeehives'
 import type { DryingRacks } from '../world/createDryingRacks'
 import type { Palisades } from '../world/createPalisades'
@@ -50,8 +51,7 @@ import {
   isMedicinalForageKind,
   medicinalHerbInteractRange,
 } from '../terrain/renewableWorldItems'
-import { oceanMixAt } from '../terrain/waterBodies'
-import { nearestShoreProbePoint, resolveWaterBodyKind } from '../terrain/waterBodyKind'
+import { resolveWaterShore, type WaterShoreResult } from '../terrain/waterBodyKind'
 import { TRAP_DEFS, type TrapKind, type TrapState } from '../world/animalTraps'
 import { honeyAvailable } from '../world/beehives'
 import { cartAcceptsAnimal } from '../world/cart'
@@ -73,7 +73,7 @@ import {
 } from '../world/spatialContext'
 import { isStandingTorchConstructionComplete, standingTorchPromptLabel } from '../world/standingTorch'
 import { isChoppableStage } from '../world/treeLifecycle'
-import { createWaterSource, type WaterBodyKind, type WaterQuality, type WaterSource } from '../world/WaterSource'
+import { createWaterSource, type WaterQuality, type WaterSource } from '../world/WaterSource'
 import { resolveCampInteractionMembers } from './campRestSnapshot'
 import type { Vector3 } from 'three'
 
@@ -482,14 +482,14 @@ export function resolveHaySpot(
 
 /** Unified lake/river/ocean shoreline resolver — replaces the old lake-only
  *  `isNearLakeShore` (plan `ui-input-006`) so drinking/filling and the
- *  fishing interaction both work at any of the three water bodies, reusing
- *  the detection each already had elsewhere instead of a new fishing-specific
- *  detector: `nearestShoreProbePoint` + `oceanMixAt` for lake/ocean (fauna's
- *  own shoreline probe plus the same continentalness mix the water shader
- *  uses), `chunkManager.riverShorePoint` (cached river channel segments +
- *  `math/segment.ts`'s point-to-segment distance) for river. No discrete
- *  "Lake"/"River" world object exists (plan 106 §4) — this is a synthetic
- *  candidate built fresh each frame, same pattern as `buildDigTarget`.
+ *  fishing interaction both work at any of the three water bodies. Delegates
+ *  to `terrain/waterBodyKind.ts`'s `resolveWaterShore` (plan world-terrain-046)
+ *  — the same shared shore/body query fauna's natural-water eligibility
+ *  consumes — after resolving the river candidate once via
+ *  `chunkManager.riverShoreQuery`, so this and the fauna path can never
+ *  disagree on precedence or repeat the river scan. No discrete "Lake"/
+ *  "River" world object exists (plan 106 §4) — this is a synthetic candidate
+ *  built fresh each frame, same pattern as `buildDigTarget`.
  *
  *  Returns the real world point the interaction happens at, not the player's
  *  own position — `waterEdge` used to sit exactly on `playerPos`, which
@@ -499,19 +499,23 @@ export function resolveHaySpot(
 function resolveWaterBodyShore(
   playerPos: Vector3,
   chunkManager: ChunkManager,
-): { kind: WaterBodyKind, position: { x: number, z: number } } | null {
-  const shorePoint = nearestShoreProbePoint(playerPos.x, playerPos.z, chunkManager.sampleHeight, chunkManager.waterLevel)
-  if (shorePoint) {
-    const continentalness = chunkManager.sampleContinentalness(playerPos.x, playerPos.z)
-    const oceanMix = oceanMixAt(continentalness, chunkManager.region.oceanThreshold, chunkManager.region.coastThreshold)
-    const kind = resolveWaterBodyKind(true, oceanMix, null)
-    return kind ? { kind, position: shorePoint } : null
+): WaterShoreResult | null {
+  const riverCandidate = chunkManager.riverShoreQuery(playerPos.x, playerPos.z)
+  return resolveWaterShore(playerPos.x, playerPos.z, chunkManager, riverCandidate)
+}
+
+/** `WaterSource` for an already-resolved shore result — `river` reuses the
+ *  exact hydrology context `resolveWaterBodyShore` already found instead of
+ *  asking `resolveRiverWaterQuality` to re-resolve river context from
+ *  coordinates (plan world-terrain-046). */
+function waterSourceForShore(
+  waterBody: WaterShoreResult,
+  resolveRiverWaterQuality: (context: RiverHydrologyContext) => WaterQuality,
+): WaterSource {
+  if (waterBody.kind === 'river') {
+    return { kind: 'river', quality: resolveRiverWaterQuality(waterBody.river) }
   }
-  const riverBankDistance = chunkManager.riverShoreDistance(playerPos.x, playerPos.z)
-  const kind = resolveWaterBodyKind(false, 0, riverBankDistance)
-  if (!kind) return null
-  const riverPoint = chunkManager.riverShorePoint(playerPos.x, playerPos.z)
-  return riverPoint ? { kind, position: riverPoint } : null
+  return createWaterSource(waterBody.kind)
 }
 
 /** Live shoreline `WaterSource` at `playerPos` (plan ui-input-034) — same
@@ -519,14 +523,10 @@ function resolveWaterBodyShore(
 export function resolveShorelineWaterSource(
   playerPos: Vector3,
   chunkManager: ChunkManager,
-  resolveRiverWaterQuality: (worldX: number, worldZ: number) => WaterQuality,
+  resolveRiverWaterQuality: (context: RiverHydrologyContext) => WaterQuality,
 ): WaterSource | null {
   const waterBody = resolveWaterBodyShore(playerPos, chunkManager)
-  if (!waterBody) return null
-  if (waterBody.kind === 'river') {
-    return { kind: 'river', quality: resolveRiverWaterQuality(playerPos.x, playerPos.z) }
-  }
-  return createWaterSource(waterBody.kind)
+  return waterBody ? waterSourceForShore(waterBody, resolveRiverWaterQuality) : null
 }
 
 type SpatialContextResolver = (x: number, y: number, z: number) => WorldSpatialContext
@@ -645,11 +645,13 @@ export function buildInteractables(
    *  "Nakarm" prompt ever offered). */
   feedItemKindFor?: (animal: AnimalAgent) => ItemKind | null,
   /** Contextual river water quality (plan world-017), lazy/cached at world
-   *  scope — `bundle.riverWaterQuality.resolve` in production
-   *  (`world/riverWaterQualityResolver.ts`). Defaults to a fail-closed
-   *  `unsafe` for any test/caller that doesn't model river hydrology, rather
-   *  than reintroducing the old blanket `river = safe`. */
-  resolveRiverWaterQuality: (worldX: number, worldZ: number) => WaterQuality = () => 'unsafe',
+   *  scope — `bundle.riverWaterQuality.resolveFromContext` in production
+   *  (`world/riverWaterQualityResolver.ts`), fed the already-resolved
+   *  hydrology context from this frame's own `resolveWaterBodyShore` call
+   *  (plan world-terrain-046) rather than re-querying by coordinate. Defaults
+   *  to a fail-closed `unsafe` for any test/caller that doesn't model river
+   *  hydrology, rather than reintroducing the old blanket `river = safe`. */
+  resolveRiverWaterQuality: (context: RiverHydrologyContext) => WaterQuality = () => 'unsafe',
   /** Detached player-owned livestock (plan fauna-020) — not in any loaded
    *  settlement's `livestock` array but still interactable. */
   detachedLivestock: readonly AnimalAgent[] = [],
@@ -1343,15 +1345,14 @@ export function buildInteractables(
     }
   }
 
-  const source = resolveShorelineWaterSource(playerPos, chunkManager, resolveRiverWaterQuality)
-  if (source) {
-    const waterBody = resolveWaterBodyShore(playerPos, chunkManager)!
+  const waterBody = resolveWaterBodyShore(playerPos, chunkManager)
+  if (waterBody) {
     const fishingHeld = hasItemCapability(heldTool, 'fishing')
     list.push({
       kind: 'waterEdge',
       position: waterBody.position,
       promptLabel: fishingHeld ? FISHING_PROMPT : waterBody.kind === 'ocean' ? OCEAN_WATER_PROMPT : WATER_SOURCE_PROMPT,
-      source,
+      source: waterSourceForShore(waterBody, resolveRiverWaterQuality),
     })
   }
 

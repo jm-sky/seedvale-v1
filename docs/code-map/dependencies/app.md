@@ -1469,6 +1469,7 @@ Generated from TypeScript imports.
 - `items/items.ts`
 - `items/weaponMaintenance.ts`
 - `terrain/chunkManager.ts`
+- `terrain/riverNetwork.ts`
 - `world/spatialContext.ts`
 
 ## `app/interactables.ts`
@@ -1504,7 +1505,7 @@ Generated from TypeScript imports.
 - `terrain/dig.ts`
 - `terrain/renewableWorldItems.ts`
 - `terrain/resourceDeposits.ts`
-- `terrain/waterBodies.ts`
+- `terrain/riverNetwork.ts`
 - `terrain/waterBodyKind.ts`
 - `world/WaterSource.ts`
 - `world/animalTraps.ts`

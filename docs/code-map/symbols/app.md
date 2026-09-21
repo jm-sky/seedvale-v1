@@ -357,13 +357,13 @@ Generated from exported TypeScript symbols.
 
 ## `app/interactables.ts`
 
-- `buildCombatTarget` — function — line 1433
-- `buildDigTarget` — function — line 1377
+- `buildCombatTarget` — function — line 1434
+- `buildDigTarget` — function — line 1378
 - `buildInteractables` — function — line 589
 - `COMBAT_TARGET_CONE_DOT` — const — line 113
 - `COMBAT_TARGET_RANGE` — const — line 98
 - `CombatAimMode` — type — line 103
-- `commitWorldPickup` — function — line 1579
+- `commitWorldPickup` — function — line 1580
   - domain: items-player
 - `DIG_REACH` — const — line 92
 - `DROPPED_ITEM_GROUP_RADIUS` — const — line 319
@@ -377,12 +377,12 @@ Generated from exported TypeScript symbols.
 - `INTERACT_RANGE` — const — line 82
 - `itemPromptLabel` — function — line 308
 - `resolveHaySpot` — function — line 462
-- `resolveShorelineWaterSource` — function — line 519
-- `resolveWorldPickup` — function — line 1516
+- `resolveShorelineWaterSource` — function — line 523
+- `resolveWorldPickup` — function — line 1517
 - `worldItemAllowsAltInteract` — function — line 293
   - domain: ui-input
-- `WorldPickupCommit` — type — line 1564
-- `WorldPickupResolution` — type — line 1503
+- `WorldPickupCommit` — type — line 1565
+- `WorldPickupResolution` — type — line 1504
   - domain: items-player
 
 ## `app/inventoryWiring.ts`
@@ -467,24 +467,24 @@ Generated from exported TypeScript symbols.
 
 ## `app/worldBundle.ts`
 
-- `BuiltWorldSystems` — type — line 1246
-- `carryTerrainModificationsAcrossRebuild` — function — line 2551
+- `BuiltWorldSystems` — type — line 1248
+- `carryTerrainModificationsAcrossRebuild` — function — line 2553
 - `caveCrateContainerSpecs` — function — line 345
   - domain: world-terrain
 - `caveTreasureContainerSpecs` — function — line 312
-- `createWorldBundle` — function — line 2283
-- `disposeWorldBundle` — function — line 2851
+- `createWorldBundle` — function — line 2285
+- `disposeWorldBundle` — function — line 2853
 - `HOME_RADIUS` — const — line 265
 - `homeChunks` — function — line 369
-- `rebuildWorldBundle` — function — line 2564
+- `rebuildWorldBundle` — function — line 2566
 - `WorldBundle` — type — line 392
   - system: world-bundle
   - role: Owns the lifetime/rebuild boundary for all world systems (terrain, settlements, fauna, items, player-placed structures).
   - owns: WorldBundle
   - lifecycle: rebuild
-- `WorldBundleRebuildOutcome` — type — line 2562
-- `WorldStartupLoadingStage` — type — line 1059
-- `WorldStartupLoadingStageListener` — type — line 1061
+- `WorldBundleRebuildOutcome` — type — line 2564
+- `WorldStartupLoadingStage` — type — line 1061
+- `WorldStartupLoadingStageListener` — type — line 1063
 
 ## `app/worldRebuildLifecycle.ts`
 

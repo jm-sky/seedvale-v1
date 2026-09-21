@@ -311,6 +311,7 @@ Generated from TypeScript imports.
 - `audio/ambientWeights.ts`
 - `config/worldConfig.ts`
 - `debug/caves/caveHeightfieldTerrain.ts`
+- `fauna/animalNaturalWater.test.ts`
 - `fauna/animalNaturalWater.ts`
 - `fauna/createFauna.test.ts`
 - `fauna/createFauna.ts`
@@ -1218,9 +1219,14 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `app/interactables.test.ts`
+- `app/interactables.ts`
 - `debug/locationQueries.test.ts`
 - `debug/locationQueries.ts`
 - `debug/npcDebugApi.test.ts`
+- `fauna/animalNaturalWater.test.ts`
+- `fauna/animalNaturalWater.ts`
+- `settlement/SettlementsManager.ts`
 - `settlement/findSettlementSite.ts`
 - `settlement/villagePaddock.ts`
 - `settlement/villagePasture.test.ts`
@@ -1235,6 +1241,8 @@ Generated from TypeScript imports.
 - `terrain/riverQuery.test.ts`
 - `terrain/riverQuery.ts`
 - `terrain/riverTileCache.ts`
+- `terrain/waterBodyKind.test.ts`
+- `terrain/waterBodyKind.ts`
 - `terrain/waterSample.test.ts`
 - `terrain/waterSample.ts`
 - `world/createRiverWater.ts`
@@ -1486,8 +1494,6 @@ Generated from TypeScript imports.
 
 **Imported by**
 
-- `app/interactables.ts`
-- `fauna/animalNaturalWater.ts`
 - `terrain/chunkHeightmap.ts`
 - `terrain/chunkVegetation.test.ts`
 - `terrain/terrainClassification.ts`
@@ -1498,6 +1504,7 @@ Generated from TypeScript imports.
 
 **Imports**
 
+- `terrain/riverNetwork.ts`
 - `terrain/waterBodyKind.ts`
 
 ## `terrain/waterBodyKind.ts`
@@ -1505,6 +1512,7 @@ Generated from TypeScript imports.
 **Imports**
 
 - `player/PlayerController.ts`
+- `terrain/riverNetwork.ts`
 - `terrain/waterBodies.ts`
 - `world/WaterSource.ts`
 

@@ -1,5 +1,13 @@
 import { describe, expect, it } from 'vitest'
-import { lakeProximityAt, nearestShoreProbePoint, resolveWaterBodyKind, shoreProbeHits } from './waterBodyKind'
+import type { RiverShoreCandidate } from './riverNetwork'
+import {
+  lakeProximityAt,
+  nearestShoreProbePoint,
+  resolveWaterBodyKind,
+  resolveWaterShore,
+  shoreProbeHits,
+  type WaterShoreSamplers,
+} from './waterBodyKind'
 
 describe('shoreProbeHits (plan 094)', () => {
   const flatAt = (h: number) => () => h
@@ -63,8 +71,79 @@ describe('resolveWaterBodyKind (plan ui-input-006)', () => {
     expect(resolveWaterBodyKind(false, 0, 1.51)).toBeNull()
   })
 
-  it('prefers the lake/ocean probe over a river reading at the same point', () => {
-    expect(resolveWaterBodyKind(true, 0, 0)).toBe('lake')
+  it('prefers a river reading over the lake/ocean probe at the same point (plan world-terrain-046)', () => {
+    // River overlap must follow the same "river always wins" precedence
+    // `terrain/waterSample.ts`'s `sampleLocalWater()` already uses for
+    // physical water — a river mouth is not decided by call order.
+    expect(resolveWaterBodyKind(true, 0, 0)).toBe('river')
+    expect(resolveWaterBodyKind(true, 1, 1.5)).toBe('river')
+  })
+})
+
+describe('resolveWaterShore (plan world-terrain-046)', () => {
+  // `continentalness` is low (oceanic) .. high (inland) — `oceanMixAt` turns
+  // it into the ocean/lake mix `resolveWaterBodyKind` reads, so 1 (well
+  // inland) reads lake and 0 (unambiguously oceanic) reads ocean.
+  const flatSamplers = (sampleHeight: (x: number, z: number) => number, continentalness = 1): WaterShoreSamplers => ({
+    sampleHeight,
+    waterLevel: 0,
+    sampleContinentalness: () => continentalness,
+    region: { oceanThreshold: 0.3, coastThreshold: 0.5 },
+  })
+
+  function riverCandidate(overrides: Partial<RiverShoreCandidate> = {}): RiverShoreCandidate {
+    return {
+      x: 0,
+      z: 0,
+      elevation: 10,
+      accumulation: 20,
+      distanceToWaterEdge: 0,
+      bankX: 1,
+      bankZ: 0,
+      ...overrides,
+    }
+  }
+
+  it('is null with no river candidate and no flat shore nearby', () => {
+    expect(resolveWaterShore(0, 0, flatSamplers(() => 10), null)).toBeNull()
+  })
+
+  it('resolves lake/ocean from the flat probe when no river candidate is supplied', () => {
+    const lake = resolveWaterShore(0, 0, flatSamplers(() => -1), null)
+    expect(lake).toEqual({ kind: 'lake', position: { x: 1.5, z: 0 }, distance: 0 })
+
+    const ocean = resolveWaterShore(0, 0, flatSamplers(() => -1, 0), null)
+    expect(ocean?.kind).toBe('ocean')
+  })
+
+  it('resolves an elevated river shore purely from the river candidate, with no flat waterLevel probe hit anywhere', () => {
+    // Terrain never dips near `waterLevel` (a carved mountain stream can sit
+    // entirely above it) — the old flat `shoreProbeHits` prerequisite would
+    // have rejected this point outright before a river was ever considered.
+    const candidate = riverCandidate({ distanceToWaterEdge: 0.5, bankX: 3, bankZ: 4 })
+    const result = resolveWaterShore(0, 0, flatSamplers(() => 100), candidate)
+    expect(result).toEqual({ kind: 'river', position: { x: 3, z: 4 }, distance: 0.5, river: candidate })
+  })
+
+  it('a river candidate within the shore margin wins over a lake/ocean probe hit at the same point (overlap/river-mouth precedence)', () => {
+    const candidate = riverCandidate({ distanceToWaterEdge: -0.2, bankX: 5, bankZ: 5 })
+    // Flat probe would also hit here (shallow everywhere) and reads oceanic.
+    const result = resolveWaterShore(0, 0, flatSamplers(() => -1, 0), candidate)
+    expect(result).toEqual({ kind: 'river', position: { x: 5, z: 5 }, distance: -0.2, river: candidate })
+  })
+
+  it('falls through to the flat lake/ocean probe once the river candidate is too far to count as shore', () => {
+    const candidate = riverCandidate({ distanceToWaterEdge: 50 })
+    const result = resolveWaterShore(0, 0, flatSamplers(() => -1), candidate)
+    expect(result).toEqual({ kind: 'lake', position: { x: 1.5, z: 0 }, distance: 0 })
+  })
+
+  it('a null river candidate never produces a river result, even standing at a would-be river point', () => {
+    // Fail-closed contract at the orchestration boundary (plan
+    // world-terrain-046): the only way `resolveWaterShore` ever returns
+    // `kind: 'river'` is a real, already-resolved candidate — never a
+    // fabricated/assumed one.
+    expect(resolveWaterShore(0, 0, flatSamplers(() => 100), null)).toBeNull()
   })
 })
 

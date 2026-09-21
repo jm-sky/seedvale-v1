@@ -11,6 +11,7 @@ import {
   nearestRiverBankDistance,
   nearestRiverBankPoint,
   nearestRiverHydrologyContext,
+  nearestRiverShoreCandidate,
   overlappingRiverTiles,
   RIVER_CELL_STEP,
   RIVER_TILE_SIZE,
@@ -688,6 +689,42 @@ describe('nearestRiverHydrologyContext (plan world-017)', () => {
     expect(left!.accumulation).toBeCloseTo(right!.accumulation, 5)
     expect(left!.x).toBeCloseTo(right!.x, 5)
     expect(left!.z).toBeCloseTo(right!.z, 5)
+  })
+})
+
+describe('nearestRiverShoreCandidate (plan world-terrain-046)', () => {
+  it('is null when no chains are nearby', () => {
+    expect(nearestRiverShoreCandidate([], 0, 0)).toBeNull()
+  })
+
+  it('agrees with nearestRiverBankDistance/nearestRiverBankPoint/nearestRiverHydrologyContext computed separately on the same chain', () => {
+    const chain: RiverChain = { points: [point(0, 0, 100, 300), point(64, 0, 90, 300)] }
+    const candidate = nearestRiverShoreCandidate([chain], 32, 5)
+    expect(candidate).not.toBeNull()
+
+    const segments = riverChannelSegmentsNear([chain], 32, 5, 64)
+    const distance = nearestRiverBankDistance(segments, 32, 5)
+    const bank = nearestRiverBankPoint(segments, 32, 5)
+    const context = nearestRiverHydrologyContext([chain], 32, 5)
+
+    expect(candidate!.distanceToWaterEdge).toBeCloseTo(distance!, 5)
+    expect(candidate!.bankX).toBeCloseTo(bank!.x, 5)
+    expect(candidate!.bankZ).toBeCloseTo(bank!.z, 5)
+    expect(candidate!.x).toBeCloseTo(context!.x, 5)
+    expect(candidate!.z).toBeCloseTo(context!.z, 5)
+    expect(candidate!.elevation).toBeCloseTo(context!.elevation, 5)
+    expect(candidate!.accumulation).toBeCloseTo(context!.accumulation, 5)
+  })
+
+  it('picks the nearest of several chains, the same single winning candidate for distance, bank point and hydrology', () => {
+    const near: RiverChain = { points: [point(0, 0, 100, 300), point(64, 0, 90, 300)] }
+    const far: RiverChain = { points: [point(0, 50, 20, 300), point(64, 50, 10, 300)] }
+    const candidate = nearestRiverShoreCandidate([near, far], 32, 5)
+    expect(candidate).not.toBeNull()
+    // The near chain's elevation range is 90-100; the far chain's is 10-20 —
+    // picking the far chain by mistake would show up here.
+    expect(candidate!.elevation).toBeGreaterThan(50)
+    expect(candidate!.z).toBeCloseTo(0, 5)
   })
 })
 

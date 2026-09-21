@@ -1,6 +1,7 @@
 import { MathUtils } from 'three'
 import type { HeightSampler } from '../player/PlayerController'
 import type { WaterBodyKind } from '../world/WaterSource'
+import type { RiverShoreCandidate } from './riverNetwork'
 import { oceanMixAt } from './waterBodies'
 
 /**
@@ -67,15 +68,88 @@ const RIVER_SHORE_MARGIN = 1.5
 /** Pure lake-vs-river-vs-ocean decision from already-resolved probe/distance
  *  inputs. `hasShoreProbeHit` is `shoreProbeHits(...) > 0`; `oceanMix` is
  *  `oceanMixAt(...)` at the same point; `riverBankDistance` is
- *  `ChunkManager.riverShoreDistance(...)`. */
+ *  `ChunkManager.riverShoreQuery(...)?.distanceToWaterEdge`.
+ *
+ *  River is checked first (plan world-terrain-046): a real river channel/bank
+ *  candidate wins over a flat lake/ocean probe hit at the same point, the
+ *  same "river always wins on overlap" precedence
+ *  `terrain/waterSample.ts`'s `sampleLocalWater()` already uses for physical
+ *  water. Callers must supply both pieces of evidence whenever they might
+ *  both apply (e.g. near a river mouth) rather than short-circuiting the
+ *  river query once a flat probe hits — otherwise this precedence can never
+ *  take effect. */
 export function resolveWaterBodyKind(
   hasShoreProbeHit: boolean,
   oceanMix: number,
   riverBankDistance: number | null,
 ): WaterBodyKind | null {
-  if (hasShoreProbeHit) return oceanMix > 0.5 ? 'ocean' : 'lake'
   if (riverBankDistance !== null && riverBankDistance <= RIVER_SHORE_MARGIN) return 'river'
+  if (hasShoreProbeHit) return oceanMix > 0.5 ? 'ocean' : 'lake'
   return null
+}
+
+/** Unified read-only water-shore result (plan world-terrain-046): a body
+ *  `kind`, the real interaction point, and the signed shore/bank distance the
+ *  `kind` decision was made from. `kind === 'river'` also carries the exact
+ *  `RiverShoreCandidate` (hydrology + bank point) that produced it, so a
+ *  caller doing river water-quality lookup never has to re-resolve the same
+ *  nearest river candidate — the discriminated union makes that field's
+ *  presence a compile-time guarantee instead of a runtime assertion.
+ *  Immutable/read-only, rebuilt fresh per query — never retained across
+ *  frames. */
+export type WaterShoreResult =
+  | { kind: 'ocean' | 'lake', position: { x: number, z: number }, distance: number }
+  | { kind: 'river', position: { x: number, z: number }, distance: number, river: RiverShoreCandidate }
+
+/** Samplers `resolveWaterShore` needs beyond the already-resolved river
+ *  candidate — the same lake/ocean probe inputs `resolveWaterBodyKind`
+ *  always took. */
+export type WaterShoreSamplers = {
+  sampleHeight: HeightSampler
+  waterLevel: number
+  sampleContinentalness: (x: number, z: number) => number
+  region: { oceanThreshold: number, coastThreshold: number }
+}
+
+/** One shore/body query composing flat lake/ocean and river evidence with
+ *  `resolveWaterBodyKind`'s precedence (plan world-terrain-046) — replaces
+ *  each consumer's own ad hoc "flat probe, then maybe river" orchestration
+ *  (`app/interactables.ts`'s old `resolveWaterBodyShore`,
+ *  `fauna/animalNaturalWater.ts`'s `createNaturalWaterKindAt`) with one
+ *  shared seam both can depend on without either importing the other.
+ *  `riverCandidate` is a single already-resolved `ChunkManager.riverShoreQuery(x, z)`
+ *  result (or `null`) — this function never queries river data itself, so
+ *  repeated calls at the same point never repeat that scan. The flat
+ *  lake/ocean probe is skipped entirely once the river candidate already
+ *  wins under `resolveWaterBodyKind`'s precedence, since that decision can't
+ *  change regardless of whether a flat probe would also hit. */
+export function resolveWaterShore(
+  x: number,
+  z: number,
+  samplers: WaterShoreSamplers,
+  riverCandidate: RiverShoreCandidate | null,
+): WaterShoreResult | null {
+  if (riverCandidate !== null && resolveWaterBodyKind(false, 0, riverCandidate.distanceToWaterEdge) === 'river') {
+    return {
+      kind: 'river',
+      position: { x: riverCandidate.bankX, z: riverCandidate.bankZ },
+      distance: riverCandidate.distanceToWaterEdge,
+      river: riverCandidate,
+    }
+  }
+
+  const shorePoint = nearestShoreProbePoint(x, z, samplers.sampleHeight, samplers.waterLevel)
+  if (!shorePoint) return null
+  const oceanMix = oceanMixAt(
+    samplers.sampleContinentalness(x, z),
+    samplers.region.oceanThreshold,
+    samplers.region.coastThreshold,
+  )
+  const kind = resolveWaterBodyKind(true, oceanMix, null)
+  // `hasShoreProbeHit: true` always resolves to `'ocean'`/`'lake'`, never
+  // `null`/`'river'` — this narrow just keeps that provable to the compiler
+  // instead of asserting it.
+  return kind === 'ocean' || kind === 'lake' ? { kind, position: shorePoint, distance: 0 } : null
 }
 
 /** Samplers `lakeProximityAt` needs — a subset of `ChunkManager`/

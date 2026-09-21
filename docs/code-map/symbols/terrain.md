@@ -205,27 +205,27 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/chunkManager.ts`
 
-- `applyChunkWaterDayNight` — function — line 1173
-- `applyModificationToTile` — function — line 934
-- `ChunkManager` — type — line 555
-- `ChunkManagerConfig` — type — line 343
-- `createChunkManager` — function — line 1198
+- `applyChunkWaterDayNight` — function — line 1168
+- `applyModificationToTile` — function — line 929
+- `ChunkManager` — type — line 554
+- `ChunkManagerConfig` — type — line 342
+- `createChunkManager` — function — line 1193
   - domain: world-terrain
   - system: chunk-manager
   - role: Owns terrain chunk streaming, sampling and environment-facing world queries.
   - simulation: on-demand
   - performance: nearby-only
-- `CropHarvestOutcome` — type — line 1187
-- `drainByBudget` — function — line 1148
-- `FinalizeStage` — type — line 457
-- `pickNearestQueuedKey` — function — line 1108
-- `pickNextFinalizeKey` — function — line 1126
-- `ResidentChunkSnapshot` — type — line 1013
-- `sampleResidentHeight` — function — line 1033
-- `sampleResidentLocalWater` — function — line 1081
-- `sampleResidentSurfaceGround` — function — line 1053
-- `TerrainModification` — type — line 891
-- `tickChunkWaterSurfaces` — function — line 1161
+- `CropHarvestOutcome` — type — line 1182
+- `drainByBudget` — function — line 1143
+- `FinalizeStage` — type — line 456
+- `pickNearestQueuedKey` — function — line 1103
+- `pickNextFinalizeKey` — function — line 1121
+- `ResidentChunkSnapshot` — type — line 1008
+- `sampleResidentHeight` — function — line 1028
+- `sampleResidentLocalWater` — function — line 1076
+- `sampleResidentSurfaceGround` — function — line 1048
+- `TerrainModification` — type — line 886
+- `tickChunkWaterSurfaces` — function — line 1156
 
 ## `terrain/chunkMeshCache.ts`
 
@@ -572,8 +572,8 @@ Generated from exported TypeScript symbols.
 ## `terrain/riverNetwork.ts`
 
 - `canonicalWaterHeight` — function — line 213
-- `computeRiverTile` — function — line 796
-- `computeRiverTileDiagnostics` — function — line 812
+- `computeRiverTile` — function — line 856
+- `computeRiverTileDiagnostics` — function — line 872
   - domain: world-terrain
 - `DEFAULT_RIVER_THRESHOLDS` — const — line 57
 - `depthFromAccumulation` — function — line 197
@@ -584,17 +584,19 @@ Generated from exported TypeScript symbols.
 - `nearestRiverBankDistance` — function — line 351
 - `nearestRiverBankPoint` — function — line 398
 - `nearestRiverHydrologyContext` — function — line 451
+- `nearestRiverShoreCandidate` — function — line 501
 - `overlappingRiverTiles` — function — line 84
 - `RIVER_CELL_STEP` — const — line 40
 - `RIVER_TILE_HALO` — const — line 39
 - `RIVER_TILE_SIZE` — const — line 33
 - `RiverChain` — type — line 98
-- `RiverChainDiagnostic` — type — line 582
-- `RiverChainRejection` — type — line 573
-- `RiverChainTerminal` — type — line 552
+- `RiverChainDiagnostic` — type — line 642
+- `RiverChainRejection` — type — line 633
+- `RiverChainTerminal` — type — line 612
 - `riverChannelSegmentsNear` — function — line 240
 - `RiverHydrologyContext` — type — line 441
 - `RiverPoint` — type — line 97
+- `RiverShoreCandidate` — type — line 493
 - `RiverTileCoord` — type — line 63
 - `riverTileCoordOf` — function — line 65
 - `riverTileCoreRect` — function — line 76
@@ -740,11 +742,14 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/waterBodyKind.ts`
 
-- `lakeProximityAt` — function — line 136
-- `LakeProximitySamplers` — type — line 83
-- `nearestShoreProbePoint` — function — line 49
-- `resolveWaterBodyKind` — function — line 71
-- `shoreProbeHits` — function — line 32
+- `lakeProximityAt` — function — line 210
+- `LakeProximitySamplers` — type — line 157
+- `nearestShoreProbePoint` — function — line 50
+- `resolveWaterBodyKind` — function — line 81
+- `resolveWaterShore` — function — line 126
+- `shoreProbeHits` — function — line 33
+- `WaterShoreResult` — type — line 100
+- `WaterShoreSamplers` — type — line 107
 
 ## `terrain/waterSample.ts`
 

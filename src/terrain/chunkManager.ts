@@ -151,12 +151,11 @@ import {
 } from './renewableWorldItems'
 import {
   nearestRiverBankDistance,
-  nearestRiverBankPoint,
-  nearestRiverHydrologyContext,
+  nearestRiverShoreCandidate,
   overlappingRiverTiles,
   type RiverChain,
   riverChannelSegmentsNear,
-  type RiverHydrologyContext,
+  type RiverShoreCandidate,
   type RiverTileCoord,
 } from './riverNetwork'
 import { createRiverQuery } from './riverQuery'
@@ -604,33 +603,29 @@ export type ChunkManager = {
    *  bank edge (`riverNetwork.ts`'s `nearestRiverBankDistance`, fed by each
    *  loaded chunk's already-cached `riverChains` — no separate river query
    *  system) — negative inside the channel, `null` when no river tile is
-   *  loaded nearby. Used by `app/interactables.ts`'s shoreline resolver so
-   *  drinking/fishing work at a river the same way they already do at a lake
-   *  (plan `ui-input-006`). */
+   *  loaded nearby. Used only for fauna spawn-site river clearance
+   *  (`fauna/createFauna.ts`'s `isValidWildFaunaSpawnSite`/`clearsRiverChannel`);
+   *  shoreline/interaction and natural-water-eligibility callers use
+   *  `riverShoreQuery` below instead (plan world-terrain-046). */
   riverShoreDistance: (worldX: number, worldZ: number) => number | null
-  /** The actual point on the nearest loaded river's bank edge closest to
-   *  `(worldX, worldZ)` (`riverNetwork.ts`'s `nearestRiverBankPoint`) — same
-   *  segment search as `riverShoreDistance`, for callers that need a real
-   *  interaction position rather than a proximity distance
-   *  (`app/interactables.ts`'s `waterEdge` candidate, plan `ui-input-006`
-   *  ocean/river fishing fix). `null` when no river tile is loaded nearby. */
-  riverShorePoint: (worldX: number, worldZ: number) => { x: number, z: number } | null
-  /** Hydrology data (`elevation`/`accumulation`) at the nearest loaded
-   *  river's own centerline to `(worldX, worldZ)` (plan world-017) — same
-   *  bounded per-chunk scan and nearest-segment selection as
-   *  `riverShoreDistance`/`riverShorePoint` above
-   *  (`riverNetwork.ts`'s `nearestRiverHydrologyContext`), so river water
-   *  quality classification always keys off the same segment/bank the
-   *  shoreline resolver already found for the same query point. `null` when
-   *  no river tile is loaded nearby. */
-  riverWaterContext: (worldX: number, worldZ: number) => RiverHydrologyContext | null
+  /** One bounded river-shore query (plan world-terrain-046) — distance, bank
+   *  interaction point and hydrology context from the *same* winning nearest
+   *  candidate (`riverNetwork.ts`'s `nearestRiverShoreCandidate`), scanning
+   *  every loaded chunk's cached `riverChains` exactly once. Replaces the old
+   *  `riverShorePoint`/`riverWaterContext` pair, which each re-walked the
+   *  same chains independently and could in principle disagree about which
+   *  segment was actually nearest. `app/interactables.ts`'s shoreline
+   *  resolver and `fauna/animalNaturalWater.ts`'s natural-water classifier
+   *  both consume this one result instead of querying separately. `null`
+   *  when no river tile is loaded nearby. */
+  riverShoreQuery: (worldX: number, worldZ: number) => RiverShoreCandidate | null
   /** Cheap, hot-path-safe physical water sample at `(worldX, worldZ)` (plan
    *  fauna-015) — lake/ocean depth from `floorHeights` vs `waterLevel`, or a
    *  loaded river's own canonical water/bed geometry when the point sits
    *  inside that river's channel. Bounded to the point's own owning chunk's
-   *  cached river chains (one map lookup, no `riverShoreDistance`-style scan
-   *  over every loaded chunk) — safe to call every tick from fauna's
-   *  movement path, unlike `riverShoreDistance`/`riverShorePoint` above. */
+   *  cached river chains (one map lookup, no `riverShoreDistance`/
+   *  `riverShoreQuery`-style scan over every loaded chunk) — safe to call
+   *  every tick from fauna's movement path. */
   sampleLocalWater: (worldX: number, worldZ: number) => LocalWaterSample
   /** Resident/runtime local-water query (plan world-terrain-045) — same residency
    *  gate as `sampleRuntimeHeight`/`sampleRuntimeSurfaceGround` (owning chunk
@@ -2962,28 +2957,13 @@ export function createChunkManager(
       }
       return best
     },
-    riverShorePoint(worldX, worldZ) {
-      let bestDist: number | null = null
-      let bestPoint: { x: number, z: number } | null = null
+    riverShoreQuery(worldX, worldZ) {
+      let best: RiverShoreCandidate | null = null
       for (const rec of chunks.values()) {
         if (!rec.riverChains || rec.riverChains.length === 0) continue
-        const segments = riverChannelSegmentsNear(rec.riverChains, worldX, worldZ, RIVER_SHORE_QUERY_SIZE)
-        if (segments.length === 0) continue
-        const dist = nearestRiverBankDistance(segments, worldX, worldZ)
-        if (dist !== null && (bestDist === null || dist < bestDist)) {
-          bestDist = dist
-          bestPoint = nearestRiverBankPoint(segments, worldX, worldZ)
-        }
-      }
-      return bestPoint
-    },
-    riverWaterContext(worldX, worldZ) {
-      let best: RiverHydrologyContext | null = null
-      for (const rec of chunks.values()) {
-        if (!rec.riverChains || rec.riverChains.length === 0) continue
-        const context = nearestRiverHydrologyContext(rec.riverChains, worldX, worldZ)
-        if (context !== null && (best === null || context.distanceToWaterEdge < best.distanceToWaterEdge)) {
-          best = context
+        const candidate = nearestRiverShoreCandidate(rec.riverChains, worldX, worldZ)
+        if (candidate !== null && (best === null || candidate.distanceToWaterEdge < best.distanceToWaterEdge)) {
+          best = candidate
         }
       }
       return best

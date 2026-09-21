@@ -231,35 +231,31 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   🔴 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-37. `world-terrain-046` — **Unified water shore query and river hotpath**  
-  🔴 `M` · **Score:**  27  
-   → **unlocks:** 0/0
-
-38. `ui-input-025` — **Road travel autopilot for player and mounts**  
+37. `ui-input-025` — **Road travel autopilot for player and mounts**  
   🔴 `L` · **Score:**  26  
    → **unlocks:** 0/0
 
-39. `items-player-044` — **Shoulder and forearm equipment slots**  
+38. `items-player-044` — **Shoulder and forearm equipment slots**  
   🟡 `M` · **Score:**  25  
    → **unlocks:** 0/0
 
-40. `world-036` — **Lightweight unloaded shipwreck and tower lookup**  
+39. `world-036` — **Lightweight unloaded shipwreck and tower lookup**  
   🟡 `M` · **Score:**  25  
    → **unlocks:** 0/0
 
-41. `tools-019` — **Debug tooling lifecycle ownership**  
+40. `tools-019` — **Debug tooling lifecycle ownership**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-42. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
+41. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
   🟡 `L` · **Score:**  18  
    → **unlocks:** 0/0
 
-43. `items-player-052` — **Settlement tool ownership and social acquisition**  
+42. `items-player-052` — **Settlement tool ownership and social acquisition**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-44. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
+43. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 

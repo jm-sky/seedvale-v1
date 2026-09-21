@@ -88,6 +88,7 @@ Generated from TypeScript imports.
 - `terrain/chunkGrid.ts`
 - `terrain/chunkHeightmap.ts`
 - `terrain/resourceDeposits.ts`
+- `terrain/riverNetwork.ts`
 - `terrain/waterSample.ts`
 - `world/collision.ts`
 - `world/createGrassForagePatches.ts`

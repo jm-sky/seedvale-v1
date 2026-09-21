@@ -767,7 +767,7 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
   const revalidateShorelineDrinkSource = (): WaterSource | null => resolveShorelineWaterSource(
     player.mesh.position,
     bundle.chunkManager,
-    bundle.riverWaterQuality.resolve,
+    bundle.riverWaterQuality.resolveFromContext,
   )
 
   const revalidatePlayerWellDrinkSource = (wellId: string): WaterSource | null => {
@@ -1274,7 +1274,7 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
           if (!kind || !animal.canAcceptHandFeedItem(kind)) return null
           return kind
         },
-        bundle.riverWaterQuality.resolve,
+        bundle.riverWaterQuality.resolveFromContext,
         bundle.settlementsManager.getDetachedLivestock(),
         getSeed(),
         bundle.carts.list(),

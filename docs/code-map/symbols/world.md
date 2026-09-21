@@ -1908,11 +1908,11 @@ Generated from exported TypeScript symbols.
 
 ## `world/riverWaterQualityResolver.ts`
 
-- `createRiverWaterQualityResolver` — function — line 32
-- `RiverWaterQualityResolver` — type — line 26
+- `createRiverWaterQualityResolver` — function — line 38
+- `RiverWaterQualityResolver` — type — line 32
   - domain: world
   - system: river-water-quality
-  - role: Owns the only river-water-quality cache; composes a river-context query and a settlement-def lookup through the pure classifier in `riverWaterQuality.ts`.
+  - role: Owns the only river-water-quality cache; composes an already-resolved river hydrology context and a settlement-def lookup through the pure classifier in `riverWaterQuality.ts`.
 
 ## `world/seedLibrary.ts`
 

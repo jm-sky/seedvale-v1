@@ -1,11 +1,12 @@
-import { Scene } from 'three'
-import { describe, expect, it } from 'vitest'
+import { Scene, Vector3 } from 'three'
+import { describe, expect, it, vi } from 'vitest'
 import type { WorldItemRef } from '../interaction/Interactable'
 import type { ItemSpawners } from '../items/createItemSpawners'
 import type { SaveItemInstance } from '../items/Inventory'
 import type { ItemKind } from '../items/items'
 import type { ItemSpawnPoint } from '../items/ItemSpawner'
 import type { ChunkManager } from '../terrain/chunkManager'
+import type { RiverShoreCandidate } from '../terrain/riverNetwork'
 import { surfaceInteractable } from '../interaction/Interactable'
 import { createDroppedItems } from '../items/createDroppedItems'
 import { createFoodBatch } from '../items/foodFreshness'
@@ -22,6 +23,7 @@ import {
   groupDroppedItemCandidates,
   itemPromptLabel,
   resolveHaySpot,
+  resolveShorelineWaterSource,
   resolveWorldPickup,
   worldItemAllowsAltInteract,
 } from './interactables'
@@ -466,5 +468,76 @@ describe('resolveWorldPickup + commitWorldPickup (plan items-player-053)', () =>
     expect(inventory.count('branch')).toBe(1)
     expect(point.collected).toBe(true)
     expect(resolveWorldPickup(ref, noChunkItems, spawners, createDroppedItems(new Scene(), sampleHeight))).toBeNull()
+  })
+})
+
+describe('resolveShorelineWaterSource (plan world-terrain-046)', () => {
+  function riverCandidate(overrides: Partial<RiverShoreCandidate> = {}): RiverShoreCandidate {
+    return {
+      x: 0,
+      z: 0,
+      elevation: 10,
+      accumulation: 20,
+      distanceToWaterEdge: 0,
+      bankX: 3,
+      bankZ: 4,
+      ...overrides,
+    }
+  }
+
+  function fakeShoreChunkManager(overrides: {
+    sampleHeight?: () => number
+    continentalness?: number
+    riverShoreQuery?: (x: number, z: number) => RiverShoreCandidate | null
+  } = {}): ChunkManager {
+    return {
+      sampleHeight: overrides.sampleHeight ?? (() => 100),
+      waterLevel: 0,
+      sampleContinentalness: () => overrides.continentalness ?? 1,
+      region: { oceanThreshold: 0.3, coastThreshold: 0.5 },
+      riverShoreQuery: overrides.riverShoreQuery ?? (() => null),
+    } as unknown as ChunkManager
+  }
+
+  it('resolves an elevated river shore with exactly one riverShoreQuery call, feeding its own context into resolveRiverWaterQuality', () => {
+    const query = vi.fn(() => riverCandidate({ distanceToWaterEdge: 0.2 }))
+    const chunkManager = fakeShoreChunkManager({ riverShoreQuery: query })
+    const resolveRiverWaterQuality = vi.fn(() => 'safe' as const)
+
+    const source = resolveShorelineWaterSource(new Vector3(0, 0, 0), chunkManager, resolveRiverWaterQuality)
+
+    expect(query).toHaveBeenCalledTimes(1)
+    expect(resolveRiverWaterQuality).toHaveBeenCalledTimes(1)
+    expect(resolveRiverWaterQuality).toHaveBeenCalledWith(riverCandidate({ distanceToWaterEdge: 0.2 }))
+    expect(source).toEqual({ kind: 'river', quality: 'safe' })
+  })
+
+  it('resolves lake/ocean unchanged when no river candidate is nearby, without ever calling resolveRiverWaterQuality', () => {
+    const chunkManager = fakeShoreChunkManager({ sampleHeight: () => -1, continentalness: 1 })
+    const resolveRiverWaterQuality = vi.fn(() => 'unsafe' as const)
+
+    const source = resolveShorelineWaterSource(new Vector3(0, 0, 0), chunkManager, resolveRiverWaterQuality)
+
+    expect(resolveRiverWaterQuality).not.toHaveBeenCalled()
+    expect(source?.kind).toBe('lake')
+  })
+
+  it('a river candidate within the shore margin wins over a lake/ocean probe hit at the same point', () => {
+    const chunkManager = fakeShoreChunkManager({
+      sampleHeight: () => -1, // flat probe would also hit
+      continentalness: 1,
+      riverShoreQuery: () => riverCandidate({ distanceToWaterEdge: -0.1 }),
+    })
+    const resolveRiverWaterQuality = vi.fn(() => 'unsafe' as const)
+
+    const source = resolveShorelineWaterSource(new Vector3(0, 0, 0), chunkManager, resolveRiverWaterQuality)
+
+    expect(source?.kind).toBe('river')
+  })
+
+  it('is null with no river candidate and no flat shore nearby', () => {
+    const chunkManager = fakeShoreChunkManager()
+    const source = resolveShorelineWaterSource(new Vector3(0, 0, 0), chunkManager, () => 'unsafe')
+    expect(source).toBeNull()
   })
 })
