@@ -1,11 +1,10 @@
 # PLANS PLANNED WITHOUT NOTES
 
 > Generated with `pnpm plans:without-notes`  
-> Date: 2026-09-21 10:35:57  
+> Date: 2026-09-21 10:54:22  
 
 ## PLANS
 
-- `fauna-047-deer-thicket-capacity-and-natural-population-recovery.md`
 - `items-player-060-ranged-weapon-inventory-trade-and-use-integrity.md`
 - `npc-062-ubc-runtime-material-darkness-and-authored-outfit-preservation.md`
 - `quests-progression-044-lost-treasure-chronicles-final-treasure-claims-and-resolution.md`
@@ -27,37 +26,6 @@
 
 --------------------------------
 ## PROMPTS
-
-### `fauna-047-deer-thicket-capacity-and-natural-population-recovery.md`
-
-Prompt:
-
-```
-Zrób review planu `fauna-047-deer-thicket-capacity-and-natural-population-recovery.md`
-
-Wczytaj:
-- `docs/STATE.md`
-- `docs/plans/PLANNING.md` (Implementation Notes section),
-- `docs/plans/fauna-047-deer-thicket-capacity-and-natural-population-recovery.md`
-- aktualny codebase,
-- potrzebne zależności i powiązane implementacje.
-
-Na podstawie review utwórz w repo plik:
-`docs/plans/implementation-notes/fauna-047-deer-thicket-capacity-and-natural-population-recovery-implementation-notes.md`
-
-Umieść w nim:
-- sugestie dotyczące implementacji,
-- istotne detale techniczne,
-- decyzje architektoniczne,
-- informacje o istniejących systemach i implementacjach, które należy wykorzystać,
-- potencjalne problemy, zależności i pułapki,
-- inne konkretne wskazówki, które ułatwią agentowi AI poprawną implementację planu.
-
-Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
-Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
-
-Pliki dodaj na branch `main` w repozytorium.
-```
 
 ### `items-player-060-ranged-weapon-inventory-trade-and-use-integrity.md`
 
