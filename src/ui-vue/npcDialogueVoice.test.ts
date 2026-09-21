@@ -5,10 +5,11 @@ import { Inventory } from '../items/Inventory'
 import { QuestManager } from '../quests/QuestManager'
 import {
   acceptNpcDialogueOffer,
+  applyNpcDialogueQuestOverride,
   closeNpcDialogueMenu,
   configureNpcVoiceSounds,
+  getNpcDialogueQuestPreview,
   openNpcDialogueMenu,
-  resolveNpcDialogueHelp,
   selectNpcDialogueHelpAction,
   ui,
 } from './store'
@@ -155,9 +156,14 @@ describe('NPC dialogue voice intents', () => {
     openNpcDialogueMenu(npc, stubSettlement, qm, 12)
     playAt.mockClear()
 
-    resolveNpcDialogueHelp()
-    // TODO: Fix to use new voice model
-    // expect(ui.npcDialogueMenu.helpResult?.actions?.[0]?.label).toBe('Yes.')
+    const report = getNpcDialogueQuestPreview()
+      .find((entry) => entry.kind === 'report')
+
+    expect(report?.questId).toBe('q1')
+
+    applyNpcDialogueQuestOverride(report!.resolve())
+
+    expect(ui.npcDialogueMenu.helpResult?.actions?.[0]?.label).toBe('Yes.')
     selectNpcDialogueHelpAction(0)
 
     // TODO: Fix to use new voice model
