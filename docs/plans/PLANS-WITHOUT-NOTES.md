@@ -1,7 +1,7 @@
 # PLANS PLANNED WITHOUT NOTES
 
 > Generated with `pnpm plans:without-notes`  
-> Date: 2026-09-21 05:52:56  
+> Date: 2026-09-21 06:31:29  
 
 ## PLANS
 
@@ -19,7 +19,7 @@
 - `ui-input-031-world-bound-ui-session-rebuild-lifecycle.md`
 - `ui-input-033-world-map-player-heading-arrow.md`
 - `ui-input-034-deliberate-risky-natural-water-drinking.md`
-- `world-038-world-audio-async-lifecycle-and-cache-recovery.md`
+- `ui-input-036-quest-dialogue-offer-active-context-separation.md`
 - `world-terrain-046-unified-water-shore-query-and-river-hotpath.md`
 
 --------------------------------
@@ -459,22 +459,22 @@ Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywisty
 Pliki dodaj na branch `main` w repozytorium.
 ```
 
-### `world-038-world-audio-async-lifecycle-and-cache-recovery.md`
+### `ui-input-036-quest-dialogue-offer-active-context-separation.md`
 
 Prompt:
 
 ```
-Zrób review planu `world-038-world-audio-async-lifecycle-and-cache-recovery.md`
+Zrób review planu `ui-input-036-quest-dialogue-offer-active-context-separation.md`
 
 Wczytaj:
 - `docs/STATE.md`
 - `docs/plans/PLANNING.md` (Implementation Notes section),
-- `docs/plans/world-038-world-audio-async-lifecycle-and-cache-recovery.md`
+- `docs/plans/ui-input-036-quest-dialogue-offer-active-context-separation.md`
 - aktualny codebase,
 - potrzebne zależności i powiązane implementacje.
 
 Na podstawie review utwórz w repo plik:
-`docs/plans/implementation-notes/world-038-world-audio-async-lifecycle-and-cache-recovery-implementation-notes.md`
+`docs/plans/implementation-notes/ui-input-036-quest-dialogue-offer-active-context-separation-implementation-notes.md`
 
 Umieść w nim:
 - sugestie dotyczące implementacji,
