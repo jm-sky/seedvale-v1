@@ -15,6 +15,12 @@
 - `tradeCatalog.ts`: normal Merchant catalog contains `short_bow`, `hunting_bow`, `long_bow`, `crossbow`, `sling`; `masterwork_hunting_bow` is deliberately only in fallback trade value and remains exceptional. No balance/catalog availability change is needed.
 - `playerRanged.ts`/catalog ranged config already model weapon/ammo capability separately from ownership. The ownership fix should not duplicate ranged-family metadata there. The central ranged instance list should be checked against catalog ranged capability in tests so drift fails loudly.
 
+## Scope / effort interpretation
+
+The plan is still a single end-to-end lifecycle fix, but recon reduces expected implementation effort to **M**: most cross-system behavior already exists behind generic instance-aware seams. Treat Merchant/NPC trade, Inventory grouping, capacity and drop/pickup as verification-first. Change shared code only for failures demonstrated by focused tests; do not proactively rewrite those paths.
+
+The genuinely expected code changes are concentrated in central ranged classification/acquisition, `HeldTool` identity, NPC ranged loadout seeding, one versioned cross-owner save migration and focused invariant/regression tests.
+
 ## Persistence / migration
 
 Use the real versioned save pipeline in `src/persistence/saveData.ts`, not a boot-only normalization in `createApp.ts`. Current main is save version 52.
