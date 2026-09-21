@@ -12,6 +12,7 @@ import { ITEM_CATALOG } from '../items/itemCatalog'
 import {
   applyNpcMeleeHit,
   applyNpcRangedHit,
+  chooseCombatMode,
   npcMeleeWeaponFamily,
   npcRangedWeaponFamily,
   resolveIncomingNpcDamage,
@@ -28,6 +29,9 @@ const SHORT_BOW = ITEM_CATALOG.short_bow.ranged!
 
 const ALL_CURRENT_MELEE_KINDS: readonly ItemKind[] = (Object.keys(ITEM_CATALOG) as ItemKind[])
   .filter((kind) => ITEM_CATALOG[kind].melee != null)
+
+const ALL_CURRENT_RANGED_KINDS: readonly ItemKind[] = (Object.keys(ITEM_CATALOG) as ItemKind[])
+  .filter((kind) => ITEM_CATALOG[kind].ranged != null)
 
 function fakeTarget(overrides: Partial<CombatTargetHandle> = {}): CombatTargetHandle & { damages: number[] } {
   const damages: number[] = []
@@ -177,6 +181,83 @@ describe('resolveNpcRangedWeapon', () => {
     for (const kind of bows) a.add(kind, 1)
     for (const kind of [...bows].reverse()) b.add(kind, 1)
     expect(resolveNpcRangedWeapon(a, 'hunter')?.kind).toBe(resolveNpcRangedWeapon(b, 'hunter')?.kind)
+  })
+
+  it('guard prefers crossbow (plan items-player-059 §10)', () => {
+    const carried = new Inventory(undefined, 5)
+    carried.add('crossbow', 1)
+    expect(resolveNpcRangedWeapon(carried, 'guard')?.kind).toBe('crossbow')
+  })
+
+  it('shepherd prefers sling (plan items-player-059 §12)', () => {
+    const carried = new Inventory(undefined, 5)
+    carried.add('sling', 1)
+    expect(resolveNpcRangedWeapon(carried, 'shepherd')?.kind).toBe('sling')
+  })
+
+  it('hunter is restricted to bow even when carrying a higher-scoring crossbow (plan items-player-059 §9)', () => {
+    const carried = new Inventory(undefined, 5)
+    carried.add('short_bow', 1)
+    carried.add('crossbow', 1)
+    // Crossbow's raw score (damage / (draw+recovery+reload)) is not
+    // necessarily lower than short_bow's — the restriction must be a hard
+    // exclusion, not merely losing on score.
+    expect(resolveNpcRangedWeapon(carried, 'hunter')?.kind).toBe('short_bow')
+  })
+
+  it('a non-hunter role is unaffected by the hunter bow restriction, and its own family bonus still applies', () => {
+    const carried = new Inventory(undefined, 5)
+    carried.add('sling', 1)
+    carried.add('crossbow', 1)
+    // guard prefers crossbow (no bow-restriction applies outside `hunter`):
+    // crossbow 34/(0.35+0.15+2.5)≈11.33, bonused ×1.5≈17.0 beats sling's
+    // unbonused 8/(0.4+0.35)≈10.67.
+    expect(resolveNpcRangedWeapon(carried, 'guard')?.kind).toBe('crossbow')
+  })
+
+  it('hunter without any bow still resolves a carried crossbow (restriction only applies when a bow candidate exists)', () => {
+    const carried = new Inventory(undefined, 5)
+    carried.add('crossbow', 1)
+    expect(resolveNpcRangedWeapon(carried, 'hunter')?.kind).toBe('crossbow')
+  })
+})
+
+describe('npcRangedWeaponFamily (plan items-player-059 §8)', () => {
+  it('classifies every current ranged-capable ItemKind explicitly', () => {
+    const expected: Partial<Record<ItemKind, ReturnType<typeof npcRangedWeaponFamily>>> = {
+      short_bow: 'bow',
+      hunting_bow: 'bow',
+      long_bow: 'bow',
+      masterwork_hunting_bow: 'bow',
+      crossbow: 'crossbow',
+      sling: 'sling',
+    }
+    for (const kind of ALL_CURRENT_RANGED_KINDS) {
+      expect(expected[kind], `missing explicit family for ranged kind "${kind}"`).toBeDefined()
+      expect(npcRangedWeaponFamily(kind)).toBe(expected[kind])
+    }
+  })
+})
+
+describe('chooseCombatMode (plan items-player-059 §6)', () => {
+  it('picks melee when the threat is already inside melee range, even with usable ranged available', () => {
+    expect(chooseCombatMode({ hasMelee: true, hasRanged: true, meleeRange: 2.6, distance: 2 })).toBe('melee')
+  })
+
+  it('picks ranged for a distant threat when both are usable', () => {
+    expect(chooseCombatMode({ hasMelee: true, hasRanged: true, meleeRange: 2.6, distance: 10 })).toBe('ranged')
+  })
+
+  it('falls back to melee for a distant threat when only melee is usable', () => {
+    expect(chooseCombatMode({ hasMelee: true, hasRanged: false, meleeRange: 2.6, distance: 10 })).toBe('melee')
+  })
+
+  it('picks ranged when only ranged is usable, regardless of distance', () => {
+    expect(chooseCombatMode({ hasMelee: false, hasRanged: true, meleeRange: 0, distance: 1 })).toBe('ranged')
+  })
+
+  it('returns null with no usable capability at all', () => {
+    expect(chooseCombatMode({ hasMelee: false, hasRanged: false, meleeRange: 0, distance: 5 })).toBeNull()
   })
 })
 

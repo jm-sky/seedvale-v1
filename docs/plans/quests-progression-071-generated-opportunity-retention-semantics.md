@@ -2,7 +2,7 @@
 
 **Created:** 2026-09-19
 **Status:** `done` ✅
-**Implemented at:** 2026-09-20
+**Implemented at:** 2026-09-20 07:02
 **Type:** fix
 **Priority:** medium · **Effort:** S
 **Depends on:** ~~quests-progression-031~~

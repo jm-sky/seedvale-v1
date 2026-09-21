@@ -313,43 +313,39 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   ⚪ `S` · **Score:**  23  
    → **unlocks:** 0/0
 
-57. `items-player-059` — **Crossbow, sling and thrown stones**  
-  🟡 `L` · **Score:**  20  
-   → **unlocks:** 0/0
-
-58. `tools-019` — **Debug tooling lifecycle ownership**  
+57. `tools-019` — **Debug tooling lifecycle ownership**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-59. `ui-input-027` — **Interaction candidate dropped-item scaling**  
+58. `ui-input-027` — **Interaction candidate dropped-item scaling**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-60. `ui-input-030` — **Player downed action and input gating**  
+59. `ui-input-030` — **Player downed action and input gating**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-61. `ui-input-033` — **World map player heading arrow**  
+60. `ui-input-033` — **World map player heading arrow**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-62. `world-038` — **WorldAudio async lifecycle and cache recovery**  
+61. `world-038` — **WorldAudio async lifecycle and cache recovery**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-63. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
+62. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
   🟡 `L` · **Score:**  18  
    → **unlocks:** 0/0
 
-64. `items-player-052` — **Settlement tool ownership and social acquisition**  
+63. `items-player-052` — **Settlement tool ownership and social acquisition**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-65. `items-player-058` — **Campfire decomposition and ash residue**  
+64. `items-player-058` — **Campfire decomposition and ash residue**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-66. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
+65. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 

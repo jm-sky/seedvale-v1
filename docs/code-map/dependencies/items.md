@@ -906,6 +906,12 @@ Generated from TypeScript imports.
 - `items/itemInstances.ts`
 - `items/items.ts`
 
+## `items/itemCatalog.test.ts`
+
+**Imports**
+
+- `items/itemCatalog.ts`
+
 ## `items/itemCatalog.ts`
 
 **Imports**
@@ -959,6 +965,7 @@ Generated from TypeScript imports.
 - `items/inventoryItemReadAction.ts`
 - `items/inventoryView.ts`
 - `items/itemCapabilities.test.ts`
+- `items/itemCatalog.test.ts`
 - `items/itemConsumables.test.ts`
 - `items/itemDisplay.ts`
 - `items/itemFuel.ts`
@@ -1741,6 +1748,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `ai/NpcAgent.combatMode.test.ts`
 - `ai/npcLoadout.ts`
 - `ai/npcProfessionWork.test.ts`
 - `ai/npcProfessionWork.ts`

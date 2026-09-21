@@ -2,7 +2,7 @@
 
 **Created:** 2026-09-17
 **Status:** `done` ✅
-**Implemented at:** 2026-09-20
+**Implemented at:** 2026-09-20 08:27
 **Priority:** high · **Effort:** M
 **Depends on:** none
 **Domain:** `world`

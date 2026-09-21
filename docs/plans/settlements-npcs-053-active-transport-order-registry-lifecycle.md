@@ -2,7 +2,7 @@
 
 **Created:** 2026-09-19  
 **Status:** `verification needed` 🔍  
-**Implemented at:** 2026-09-19
+**Implemented at:** 2026-09-19 13:59
 **Priority:** medium · **Effort:** S  
 **Depends on:** ~~settlements-npcs-018~~, ~~settlements-npcs-019~~, ~~settlements-npcs-020~~  
 **Domain:** `settlements-npcs`  

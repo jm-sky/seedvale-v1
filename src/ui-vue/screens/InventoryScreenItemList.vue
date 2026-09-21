@@ -239,6 +239,12 @@ function setPrimaryRanged(kind: ItemKind, instances: readonly InventoryInstanceR
               @click="onConsume(item.kind)"
             />
             <ItemsScreenItemButton
+              v-if="isThrowableKind(item.kind)"
+              class="min-h-0 py-1"
+              label="Rzuć"
+              @click="onThrow(item.kind)"
+            />
+            <ItemsScreenItemButton
               v-if="item.readAction"
               class="min-h-0 py-1"
               :label="item.readAction.label"

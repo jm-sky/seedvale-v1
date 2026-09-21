@@ -1509,6 +1509,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `ai/NpcAgent.combatMode.test.ts`
 - `ai/NpcAgent.timeSkip.test.ts`
 - `ai/NpcAgent.ts`
 - `ai/npcLogistics.ts`

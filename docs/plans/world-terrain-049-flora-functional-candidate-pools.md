@@ -10,7 +10,7 @@
 **Tags:** `flora` `herbs` `chunk-items` `world-generation` `forage`
 **Roadmap:** -
 **Model:** Composer, Sonnet
-**Implemented at:** 2026-09-21
+**Implemented at:** 2026-09-21 12:12
 
 ## Goal
 

@@ -10,6 +10,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `ai/NpcAgent.combatMode.test.ts`
 - `ai/NpcAgent.timeSkip.test.ts`
 - `ai/NpcAgent.ts`
 - `ai/npcAnimalThreat.test.ts`
@@ -163,6 +164,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `ai/NpcAgent.combatMode.test.ts`
 - `ai/NpcAgent.ts`
 - `combat/rangedLifecycle.test.ts`
 - `player/playerRanged.ts`

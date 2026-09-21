@@ -625,6 +625,12 @@ Generated from TypeScript imports.
 - `app/gameLoop.ts`
 - `player/playerRanged.test.ts`
 
+## `player/playerThrow.test.ts`
+
+**Imports**
+
+- `player/playerThrow.ts`
+
 ## `player/playerThrow.ts`
 
 **Imports**
@@ -635,6 +641,7 @@ Generated from TypeScript imports.
 
 - `app/createApp.ts`
 - `app/gameLoop.ts`
+- `player/playerThrow.test.ts`
 
 ## `player/playerVisualPreset.test.ts`
 

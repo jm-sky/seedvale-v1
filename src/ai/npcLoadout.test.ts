@@ -6,11 +6,13 @@ import {
   ensureKnifeCarried,
   isNpcLoadoutBelonging,
   seedDefaultRoleWeapon,
+  seedGuardCrossbowLoadout,
   seedHunterStartingArrows,
   seedHunterSupplies,
   seedInitialPersonalBelongingsIfNeeded,
   seedShepherdPrimaryWeapon,
   seedShepherdShears,
+  seedShepherdSlingLoadout,
   selectShepherdPrimaryWeapon,
   SHEPHERD_PRIMARY_WEAPON_KINDS,
 } from './npcLoadout'
@@ -131,6 +133,17 @@ describe('isNpcLoadoutBelonging (plan npc-010)', () => {
     expect(isNpcLoadoutBelonging('axe', 'shepherd')).toBe(true)
     expect(isNpcLoadoutBelonging('spear', 'farmer')).toBe(false)
   })
+
+  it('treats guard crossbow+bolts and shepherd sling as loadout belongings, but never shepherd stone (plan items-player-059)', () => {
+    expect(isNpcLoadoutBelonging('crossbow', 'guard')).toBe(true)
+    expect(isNpcLoadoutBelonging('bolt', 'guard')).toBe(true)
+    expect(isNpcLoadoutBelonging('crossbow', 'shepherd')).toBe(false)
+    expect(isNpcLoadoutBelonging('sling', 'shepherd')).toBe(true)
+    // Same reason arrows stay out for hunter — stone stays the ordinary
+    // shared renewable resource, not a protected personal belonging.
+    expect(isNpcLoadoutBelonging('stone', 'shepherd')).toBe(false)
+    expect(isNpcLoadoutBelonging('sling', 'guard')).toBe(false)
+  })
 })
 
 describe('seedInitialPersonalBelongingsIfNeeded (plan settlements-npcs-026)', () => {
@@ -230,5 +243,79 @@ describe('seedHunterStartingArrows', () => {
     seedHunterStartingArrows(carried)
     expect(carried.count('arrow')).toBe(6)
     expect(carried.holdsAny('knife')).toBe(false)
+  })
+})
+
+describe('seedGuardCrossbowLoadout (plan items-player-059 §10)', () => {
+  it('gives a real but partial fraction of guards a crossbow, deterministically per npc id', () => {
+    let hits = 0
+    for (let i = 0; i < 200; i++) {
+      const inventory = new Inventory()
+      seedGuardCrossbowLoadout(inventory, `npc:guard:${i}`)
+      if (inventory.holdsAny('crossbow')) {
+        hits++
+        expect(inventory.count('bolt')).toBe(6)
+      } else {
+        expect(inventory.count('bolt')).toBe(0)
+      }
+    }
+    expect(hits).toBeGreaterThan(0)
+    expect(hits).toBeLessThan(200)
+  })
+
+  it('is deterministic and idempotent for the same npc id', () => {
+    const a = new Inventory()
+    seedGuardCrossbowLoadout(a, 'npc:guard:stable')
+    const gotCrossbow = a.holdsAny('crossbow')
+    seedGuardCrossbowLoadout(a, 'npc:guard:stable')
+    expect(a.holdsAny('crossbow')).toBe(gotCrossbow)
+    expect(a.count('crossbow')).toBeLessThanOrEqual(1)
+
+    const b = new Inventory()
+    seedGuardCrossbowLoadout(b, 'npc:guard:stable')
+    expect(b.holdsAny('crossbow')).toBe(gotCrossbow)
+  })
+
+  it('is additional to, never a replacement for, the default long_sword', () => {
+    const inventory = new Inventory()
+    seedDefaultRoleWeapon(inventory, 'guard')
+    seedGuardCrossbowLoadout(inventory, 'npc:guard:additional')
+    expect(inventory.holdsAny('long_sword')).toBe(true)
+  })
+})
+
+describe('seedShepherdSlingLoadout (plan items-player-059 §12)', () => {
+  it('gives a real but partial fraction of shepherds a sling, deterministically per npc id', () => {
+    let hits = 0
+    for (let i = 0; i < 200; i++) {
+      const inventory = new Inventory()
+      seedShepherdSlingLoadout(inventory, `npc:shepherd-sling:${i}`)
+      if (inventory.holdsAny('sling')) {
+        hits++
+        expect(inventory.count('stone')).toBe(4)
+      } else {
+        expect(inventory.count('stone')).toBe(0)
+      }
+    }
+    expect(hits).toBeGreaterThan(0)
+    expect(hits).toBeLessThan(200)
+  })
+
+  it('is deterministic and idempotent for the same npc id', () => {
+    const a = new Inventory()
+    seedShepherdSlingLoadout(a, 'npc:shepherd-sling:stable')
+    const gotSling = a.holdsAny('sling')
+    seedShepherdSlingLoadout(a, 'npc:shepherd-sling:stable')
+    expect(a.holdsAny('sling')).toBe(gotSling)
+    expect(a.count('sling')).toBeLessThanOrEqual(1)
+  })
+
+  it('never changes the existing shepherd primary melee weapon roll', () => {
+    const withSling = new Inventory()
+    seedShepherdPrimaryWeapon(withSling, 'npc:shepherd-both')
+    const primaryBefore = SHEPHERD_PRIMARY_WEAPON_KINDS.find((kind) => withSling.holdsAny(kind))
+    seedShepherdSlingLoadout(withSling, 'npc:shepherd-both')
+    const primaryAfter = SHEPHERD_PRIMARY_WEAPON_KINDS.find((kind) => withSling.holdsAny(kind))
+    expect(primaryAfter).toBe(primaryBefore)
   })
 })

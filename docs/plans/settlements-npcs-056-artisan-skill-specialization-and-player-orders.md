@@ -10,7 +10,7 @@
 **Tags:** `artisan` `skill` `specialization` `orders`  
 **Roadmap:** `economy-production`  
 **Model:** Sonnet, Composer  
-**Implemented at:** 2026-09-20
+**Implemented at:** 2026-09-20 21:01
 
 ## Goal
 

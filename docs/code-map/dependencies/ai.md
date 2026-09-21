@@ -47,6 +47,17 @@ Generated from TypeScript imports.
 - `ui/createNpcInspector.ts`
 - `ui/npcLabelIconPresentation.ts`
 
+## `ai/NpcAgent.combatMode.test.ts`
+
+**Imports**
+
+- `ai/NpcAgent.ts`
+- `ai/npcCombat.ts`
+- `combat/combatIntent.ts`
+- `combat/rangedLifecycle.ts`
+- `items/weaponMaintenance.ts`
+- `settlement/npcResidentAnchors.ts`
+
 ## `ai/NpcAgent.timeSkip.test.ts`
 
 **Imports**
@@ -214,6 +225,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `ai/NpcAgent.combatMode.test.ts`
 - `ai/NpcAgent.timeSkip.test.ts`
 - `ai/dialogueTemplates.ts`
 - `ai/npcCaveLocomotion.test.ts`
@@ -871,6 +883,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `ai/NpcAgent.combatMode.test.ts`
 - `ai/NpcAgent.ts`
 - `ai/npcCombat.test.ts`
 - `ai/npcLoadout.test.ts`

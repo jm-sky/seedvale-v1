@@ -1,7 +1,7 @@
 # Plan: Crossbow, sling and thrown stones
 
 **Created:** 2026-09-20
-**Status:** `planned` 📋
+**Status:** `verification needed` 🔍
 **Priority:** medium · **Effort:** L
 **Depends on:** ~~npc-053~~
 **Domain:** `items-player`
