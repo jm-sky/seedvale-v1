@@ -2,9 +2,9 @@ import { describe, expect, it } from 'vitest'
 import {
   createRatInfestationRegistry,
   NO_RAT_INFESTATION,
+  type RatInfestationState,
   SEEDED_RAT_INFESTATION,
   shouldSeedAuthoredHomeInfestation,
-  type RatInfestationState,
 } from './ratInfestation'
 
 function bootstrapHomeInfestation(

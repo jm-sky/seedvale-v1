@@ -107,8 +107,8 @@ import { adultProfessionCoverage } from './professionStaffing'
 import { createSignpost } from './props'
 import {
   createRatInfestationRegistry,
-  shouldSeedAuthoredHomeInfestation,
   type RatInfestationState,
+  shouldSeedAuthoredHomeInfestation,
 } from './ratInfestation'
 import { createRatRegistry, type RatSaveRecord } from './ratPersistence'
 import {
