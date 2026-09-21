@@ -49,11 +49,13 @@ The labels below are the initial triage from the 2026-09-21 audit. They are not 
 
 ## Batch B — small local problems
 
+**Completed:** 2026-09-21 — approved dialogue/narrative pass on `main`; mechanics and rewards unchanged.
+
 | Status | Quest | Source | Initial label | Main issue |
 |---|---|---|---|---|
-| ⬜ | Drewno na naprawę | src/quests/quests.ts | **rewrite** | Functional but transactional and checklist-like. |
-| ⬜ | Lis przy osadzie | src/quests/quests.ts | **rewrite** | Generic extermination contract; little local texture. |
-| ⬜ | Sprawdzenie skalnej groty | src/quests/quests.ts | **polish** | Better premise than basic errands; needs stronger natural delivery. |
+| ✅ | Drewno na naprawę | src/quests/quests.ts | **rewrite** | Functional but transactional and checklist-like. |
+| ✅ | Lis przy osadzie | src/quests/quests.ts | **rewrite** | Generic extermination contract; little local texture. |
+| ✅ | Sprawdzenie skalnej groty | src/quests/quests.ts | **polish** | Better premise than basic errands; needs stronger natural delivery. |
 
 ## Batch C — professions
 
