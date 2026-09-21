@@ -227,63 +227,63 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   🟡 `M` · **Score:**  33  
    → **unlocks:** 1/1
 
-37. `items-player-060` — **Ranged weapon inventory, trade and use integrity**  
+36. `items-player-060` — **Ranged weapon inventory, trade and use integrity**  
   🔴 `L` · **Score:**  32  
    → **unlocks:** 0/0
 
-38. `npc-054` — **NPC desired gifts, gift acceptance and relationship rewards**  
+37. `npc-054` — **NPC desired gifts, gift acceptance and relationship rewards**  
   🔴 `L` · **Score:**  30  
    → **unlocks:** 0/0
 
-39. `settlements-022` — **Founded settlement live runtime and streaming**  
+38. `settlements-022` — **Founded settlement live runtime and streaming**  
   🔴 `L` · **Score:**  28  
    → **unlocks:** 0/0
 
-40. `items-player-014` — **Rope-pullable resource transport**  
+39. `items-player-014` — **Rope-pullable resource transport**  
   🟡 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-41. `world-terrain-039` — **N8AO / post-process cost budget**  
+40. `world-terrain-039` — **N8AO / post-process cost budget**  
   🔴 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-42. `world-terrain-046` — **Unified water shore query and river hotpath**  
+41. `world-terrain-046` — **Unified water shore query and river hotpath**  
   🔴 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-43. `ui-input-025` — **Road travel autopilot for player and mounts**  
+42. `ui-input-025` — **Road travel autopilot for player and mounts**  
   🔴 `L` · **Score:**  26  
    → **unlocks:** 0/0
 
-44. `items-player-044` — **Shoulder and forearm equipment slots**  
+43. `items-player-044` — **Shoulder and forearm equipment slots**  
   🟡 `M` · **Score:**  25  
    → **unlocks:** 0/0
 
-45. `world-036` — **Lightweight unloaded shipwreck and tower lookup**  
+44. `world-036` — **Lightweight unloaded shipwreck and tower lookup**  
   🟡 `M` · **Score:**  25  
    → **unlocks:** 0/0
 
-46. `world-terrain-041` — **Agent presentation render LOD**  
+45. `world-terrain-041` — **Agent presentation render LOD**  
   🔴 `L` · **Score:**  24  
    → **unlocks:** 0/0
 
-47. `tools-019` — **Debug tooling lifecycle ownership**  
+46. `tools-019` — **Debug tooling lifecycle ownership**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-48. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
+47. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
   🟡 `L` · **Score:**  18  
    → **unlocks:** 0/0
 
-49. `items-player-052` — **Settlement tool ownership and social acquisition**  
+48. `items-player-052` — **Settlement tool ownership and social acquisition**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-50. `items-player-058` — **Campfire decomposition and ash residue**  
+49. `items-player-058` — **Campfire decomposition and ash residue**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-51. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
+50. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
