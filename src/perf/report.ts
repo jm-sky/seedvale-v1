@@ -4,7 +4,7 @@ import type { SessionTotals } from './monitor'
 import type { IsolationProbeRow, LongFrameAttribution, PerfContext, PerfReportJson } from './types'
 import { formatAgentCpuReport } from './agentCpuDiag'
 import { percentile } from './percentile'
-import { SCENE_BUCKETS, type SceneCensus, SETTLEMENT_CONTENT_KINDS, type SettlementShadowCensus } from './sceneCensus'
+import { type AgentDetailCensus, SCENE_BUCKETS, type SceneCensus, SETTLEMENT_CONTENT_KINDS, type SettlementShadowCensus } from './sceneCensus'
 import { LONG_FRAME_MS, PERF_CATEGORIES, PERF_CATEGORY_COUNT } from './types'
 
 const EMPTY_CONTEXT: PerfContext = {
@@ -23,6 +23,7 @@ export function buildReport(input: {
   scene?: SceneCensus
   shadowCasters?: SceneCensus
   settlementShadowCasters?: SettlementShadowCensus
+  agentDetail?: AgentDetailCensus
   isolation?: IsolationProbeRow[]
   agentCpu?: AgentCpuReport | null
   grassFinalization?: GrassFinalizationReport | null
@@ -124,6 +125,7 @@ export function buildReport(input: {
     scene: input.scene,
     shadowCasters: input.shadowCasters,
     settlementShadowCasters: input.settlementShadowCasters,
+    agentDetail: input.agentDetail,
     hitches,
     isolation: input.isolation,
     systems,
@@ -157,6 +159,7 @@ export function formatReport(report: PerfReportJson): string {
     report.settlementShadowCasters,
     SETTLEMENT_CONTENT_KINDS,
   )
+  const agentDetailLines = formatAgentDetailLines(report.agentDetail)
   const isolationLines = (report.isolation ?? [])
     .map((row) => `  ${row.id.padEnd(18)} render=${row.renderMsAvg.toFixed(1)} ms draws=${row.drawCallsAvg} tris=${formatTriangles(row.trianglesAvg)}`)
     .join('\n')
@@ -218,6 +221,9 @@ export function formatReport(report: PerfReportJson): string {
     '',
     'Settlement shadow casters (one-pass estimate):',
     settlementShadowLines || '  (not sampled)',
+    '',
+    'Agent detail (one-pass estimate):',
+    agentDetailLines || '  (not sampled)',
     '',
     'Systems:',
     sysLines || '  (no per-system CPU samples)',
@@ -304,4 +310,27 @@ function formatCensusLines(
     })
     .filter((line): line is string => line !== null)
     .join('\n')
+}
+
+function formatAgentDetailLines(agentDetail: AgentDetailCensus | undefined): string {
+  if (!agentDetail) return ''
+  const section = (label: string, group: AgentDetailCensus['npc']): string[] => {
+    if (group.families.length === 0) return []
+    const lines = [`  ${label}:`]
+    lines.push('    by family (sorted by draws):')
+    for (const f of group.families) {
+      lines.push(
+        `      ${f.family.padEnd(16)} agents=${f.agents} draws=${f.drawCalls} tris=${formatTriangles(f.triangles)} skinned=${f.skinnedMeshes}/${f.meshes}`,
+      )
+    }
+    lines.push('    by distance band:')
+    for (const b of group.distanceBands) {
+      if (b.agents === 0) continue
+      lines.push(
+        `      ${b.band.padEnd(4)} agents=${b.agents} camera-relevant=${b.cameraRelevantAgents} draws=${b.drawCalls} tris=${formatTriangles(b.triangles)}`,
+      )
+    }
+    return lines
+  }
+  return [...section('NPC', agentDetail.npc), ...section('Fauna', agentDetail.fauna)].join('\n')
 }

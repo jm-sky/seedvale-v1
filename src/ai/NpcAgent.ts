@@ -84,6 +84,8 @@ import { beginActivePath, endActivePath, recordPathRequest, recordRepath } from 
 import { PLAYER_COLLISION_RADIUS } from '../player/playerDimensions'
 import { companionAnimationUrl } from '../player/playerVisualPreset'
 import { bindAccessoryToPlayerSkeleton } from '../player/ubcAccessoryBind'
+import { resolveAgentPresentationLevel } from '../render/agentPresentationLod'
+import { type AgentPresentationVisibility, createAgentPresentationVisibility } from '../render/agentPresentationVisibility'
 import { resolveNearestWaterWellTarget } from '../settlement/householdWells'
 import {
   generatePhysicalProfile,
@@ -1518,6 +1520,10 @@ export class NpcAgent {
    *  `labelDistanceState`). `ui/agentStatusLabel.ts` owns the guarded-write
    *  presentation logic; this only ever drives it. */
   private readonly labelController: AgentStatusLabelController
+  /** Cached optional presentation nodes (hair/beard attachments) this NPC's
+   *  family actually has — `null` when there's nothing safe to hide (plan
+   *  world-terrain-041). `update()` only ever toggles their `.visible`. */
+  private readonly presentationVisibility: AgentPresentationVisibility | null
   /** Runtime-only hysteresis cache for observation-level presentation (npc-023). */
   private lastObservationLevel: ObservationLevel | null = null
   /** Why the NPC is currently in `goSleep`/`sleep`. `null` when awake. */
@@ -1908,6 +1914,16 @@ export class NpcAgent {
 
     this.mesh.add(this.label)
     assignRenderLayer(this.mesh, AGENT_RENDER_LAYER)
+    // Custom adult-male profession stems (blacksmith/woodcutter) attach these
+    // by name at runtime (see `attachUbcHairAttachments`) — every other
+    // family bakes hair into the body mesh, so there is nothing safe to
+    // register for them (plan world-terrain-041: no guessed node names).
+    this.presentationVisibility = createAgentPresentationVisibility(
+      [
+        root.getObjectByName('ubcHairAttachment'),
+        root.getObjectByName('ubcBeardAttachment'),
+      ].filter((node): node is THREE.Object3D => node != null),
+    )
 
     // Hydrating an npc id whose authoritative state is already dead
     // (settlement unload/reload, `WorldBundle` rebuild) must not resurrect
@@ -1975,7 +1991,11 @@ export class NpcAgent {
         await NpcAgent.attachUbcHairAttachments(scene, hairAttachmentUrl, beardAttachmentUrl)
         applyHairColor(scene, hairColor)
       }
-      return new NpcAgent(scene, animations, deps)
+      const npc = new NpcAgent(scene, animations, deps)
+      // Diagnostic-only tag (world-terrain-041 agent detail census) — mirrors
+      // `AnimalAgent`'s `mesh.userData.animalKind`, not a new runtime registry.
+      if (autoLook) npc.mesh.userData.npcFamily = appearance.family
+      return npc
     } catch (err) {
       console.warn(`[npc] failed to load ${modelUrl}, using capsule`, err)
       return NpcAgent.createCapsuleFallback(deps)
@@ -3718,6 +3738,11 @@ export class NpcAgent {
     this.applyMovementGroundY()
     this.syncAnimation()
     const distance = this.mesh.position.distanceTo(observerPos)
+    if (this.presentationVisibility) {
+      this.presentationVisibility.applyLevel(
+        resolveAgentPresentationLevel({ distance, important: this.phase === 'combat' }),
+      )
+    }
     const observationLevel = resolveStableObservationLevel(
       { perception: playerObservation.perception, distance },
       this.lastObservationLevel,

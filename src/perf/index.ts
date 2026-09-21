@@ -57,7 +57,8 @@ export type {
   ProgramCensusStageKind,
   ProgramCensusSummary,
 } from './programCensus'
-export { censusScene, censusSettlementShadowCasters, censusShadowCasters } from './sceneCensus'
+export { censusAgentDetail, censusScene, censusSettlementShadowCasters, censusShadowCasters } from './sceneCensus'
+export type { AgentDetailCensus, AgentDistanceBandDetail, AgentFamilyDetail } from './sceneCensus'
 export { LONG_FRAME_MS, PERF_CATEGORIES } from './types'
 export type {
   IsolationProbeRow,

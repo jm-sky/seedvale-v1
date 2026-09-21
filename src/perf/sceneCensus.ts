@@ -1,4 +1,9 @@
-import { InstancedMesh, Mesh, type Object3D, type Scene, SkinnedMesh } from 'three'
+import { type Camera, Frustum, InstancedMesh, Matrix4, Mesh, type Object3D, type Scene, SkinnedMesh, Vector3 } from 'three'
+import {
+  AGENT_PRESENTATION_MID_DISTANCE_M,
+  AGENT_PRESENTATION_NEAR_DISTANCE_M,
+  type AgentPresentationLevel,
+} from '../render/agentPresentationLod'
 
 /** Scene-graph buckets used to attribute draw calls / triangles.
  *  Classification is by object `name` / `userData`, not GPU time. */
@@ -335,4 +340,154 @@ export function hideBuckets(root: Object3D, buckets: readonly SceneBucket[]): Vi
 
 export function restoreVisibility(tokens: readonly VisibilityRestore[]): void {
   for (const token of tokens) token.object.visible = token.visible
+}
+
+/**
+ * Benchmark-only agent detail census (plan world-terrain-041) — for every
+ * NPC/fauna root (`mesh.name === 'npc' | 'fauna'`, the same identity
+ * `classifyObject()` matches), attributes its renderable/skinned mesh count,
+ * draw calls and triangles by asset family and by presentation distance
+ * band. Purely diagnostic: reads existing `userData` tags
+ * (`npcFamily`/`animalKind`) already set at construction time, adds no new
+ * runtime registry, and is never called outside a benchmark/debug path.
+ */
+export type AgentBucket = 'npc' | 'fauna'
+
+export type AgentDetailMeshStats = {
+  meshes: number
+  skinnedMeshes: number
+  drawCalls: number
+  triangles: number
+}
+
+function emptyAgentDetailMeshStats(): AgentDetailMeshStats {
+  return { meshes: 0, skinnedMeshes: 0, drawCalls: 0, triangles: 0 }
+}
+
+export type AgentFamilyDetail = AgentDetailMeshStats & {
+  family: string
+  agents: number
+}
+
+/** Distance bands mirror `agentPresentationLod.ts`'s near/mid/far — the
+ *  whole point of this census is to tell that policy's node-selection
+ *  decision apart from a guess. */
+export type AgentDistanceBandDetail = {
+  band: AgentPresentationLevel
+  agents: number
+  /** Agents whose root position falls inside the benchmark camera's
+   *  frustum — `0` whenever no `camera` was supplied to
+   *  {@link censusAgentDetail}. A point-in-frustum estimate (agent root
+   *  position only, no bounding-sphere/occlusion), not a renderer submission
+   *  count. */
+  cameraRelevantAgents: number
+} & AgentDetailMeshStats
+
+export type AgentDetailCensus = {
+  npc: { families: AgentFamilyDetail[], distanceBands: AgentDistanceBandDetail[] }
+  fauna: { families: AgentFamilyDetail[], distanceBands: AgentDistanceBandDetail[] }
+}
+
+const AGENT_DISTANCE_BAND_ORDER: readonly AgentPresentationLevel[] = ['near', 'mid', 'far']
+
+function agentFamilyOf(root: Object3D, bucket: AgentBucket): string {
+  const tag = bucket === 'fauna' ? root.userData.animalKind : root.userData.npcFamily
+  return typeof tag === 'string' ? tag : 'unknown'
+}
+
+function agentDistanceBandOf(distance: number): AgentPresentationLevel {
+  if (distance <= AGENT_PRESENTATION_NEAR_DISTANCE_M) return 'near'
+  if (distance <= AGENT_PRESENTATION_MID_DISTANCE_M) return 'mid'
+  return 'far'
+}
+
+/** Bounded to one agent's own subtree — called once per agent root, not
+ *  per frame (see module doc). */
+function accumulateAgentMeshStats(stats: AgentDetailMeshStats, root: Object3D): void {
+  root.traverse((object) => {
+    if (!isRenderableMesh(object)) return
+    if (!isEffectivelyVisible(object)) return
+    const mesh = object as Mesh
+    stats.meshes += 1
+    if (mesh instanceof SkinnedMesh) stats.skinnedMeshes += 1
+    stats.drawCalls += drawCallsFor(mesh)
+    stats.triangles += triangleCount(mesh)
+  })
+}
+
+function addAgentDetailStats(target: AgentDetailMeshStats, from: AgentDetailMeshStats): void {
+  target.meshes += from.meshes
+  target.skinnedMeshes += from.skinnedMeshes
+  target.drawCalls += from.drawCalls
+  target.triangles += from.triangles
+}
+
+export function censusAgentDetail(
+  scene: Scene,
+  observerPos: { x: number, y: number, z: number },
+  camera?: Camera,
+): AgentDetailCensus {
+  const npcFamilies = new Map<string, AgentFamilyDetail>()
+  const faunaFamilies = new Map<string, AgentFamilyDetail>()
+  const npcBands = new Map<AgentPresentationLevel, AgentDistanceBandDetail>()
+  const faunaBands = new Map<AgentPresentationLevel, AgentDistanceBandDetail>()
+
+  // One-pass estimate (see module doc) — built from the camera's current
+  // matrices, same "no extra measurement" idiom as the isolation probes.
+  let frustum: Frustum | null = null
+  if (camera) {
+    frustum = new Frustum()
+    frustum.setFromProjectionMatrix(
+      new Matrix4().multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse),
+    )
+  }
+  const worldPos = new Vector3()
+
+  scene.traverse((object) => {
+    if (object.name !== 'npc' && object.name !== 'fauna') return
+    if (!isEffectivelyVisible(object)) return
+    const bucket: AgentBucket = object.name === 'npc' ? 'npc' : 'fauna'
+    const stats = emptyAgentDetailMeshStats()
+    accumulateAgentMeshStats(stats, object)
+    // Nothing renderable under this root right now (e.g. a corpse-hidden
+    // living visual) — excludes it rather than counting a phantom agent.
+    if (stats.meshes === 0) return
+
+    object.getWorldPosition(worldPos)
+    const dx = worldPos.x - observerPos.x
+    const dy = worldPos.y - observerPos.y
+    const dz = worldPos.z - observerPos.z
+    const distance = Math.sqrt(dx * dx + dy * dy + dz * dz)
+    const band = agentDistanceBandOf(distance)
+    const cameraRelevant = frustum?.containsPoint(worldPos) ?? false
+
+    const familyMap = bucket === 'npc' ? npcFamilies : faunaFamilies
+    const family = agentFamilyOf(object, bucket)
+    const familyRow = familyMap.get(family) ?? { family, agents: 0, ...emptyAgentDetailMeshStats() }
+    familyRow.agents += 1
+    addAgentDetailStats(familyRow, stats)
+    familyMap.set(family, familyRow)
+
+    const bandMap = bucket === 'npc' ? npcBands : faunaBands
+    const bandRow = bandMap.get(band) ?? { band, agents: 0, cameraRelevantAgents: 0, ...emptyAgentDetailMeshStats() }
+    bandRow.agents += 1
+    if (cameraRelevant) bandRow.cameraRelevantAgents += 1
+    addAgentDetailStats(bandRow, stats)
+    bandMap.set(band, bandRow)
+  })
+
+  const byDrawCallsDesc = (a: AgentFamilyDetail, b: AgentFamilyDetail): number => b.drawCalls - a.drawCalls
+  const bandsOrDefault = (map: Map<AgentPresentationLevel, AgentDistanceBandDetail>): AgentDistanceBandDetail[] =>
+    AGENT_DISTANCE_BAND_ORDER.map((band) => map.get(band) ?? { band, agents: 0, cameraRelevantAgents: 0, ...emptyAgentDetailMeshStats() })
+
+  return {
+    npc: {
+      families: [...npcFamilies.values()].sort(byDrawCallsDesc),
+      distanceBands: bandsOrDefault(npcBands),
+    },
+    fauna: {
+      families: [...faunaFamilies.values()].sort(byDrawCallsDesc),
+      distanceBands: bandsOrDefault(faunaBands),
+    },
+  }
 }

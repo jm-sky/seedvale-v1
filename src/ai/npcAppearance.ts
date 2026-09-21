@@ -97,6 +97,11 @@ export type NpcAppearance = {
   beard: boolean
   beardAttachmentUrl: string | null
   clothingHue: number
+  /** Asset-family tag for diagnostics (world-terrain-041 agent detail
+   *  census) — the outfit family, or the custom stem's role for the two
+   *  adult-male profession GLBs. Not a runtime registry: purely descriptive,
+   *  read only by benchmark/debug tooling. */
+  family: string
   hair: NpcResolvedHair
   hairAttachmentUrl: string | null
   hairColor: number
@@ -109,6 +114,7 @@ function appearanceFor(opts: {
   beard: boolean
   beardAttachmentUrl?: string | null
   clothingHue?: number
+  family: string
   hair: NpcResolvedHair
   hairAttachmentUrl?: string | null
   hairColor?: number
@@ -121,6 +127,7 @@ function appearanceFor(opts: {
     beard: opts.beard,
     beardAttachmentUrl: opts.beardAttachmentUrl ?? null,
     clothingHue: opts.clothingHue ?? NPC_CLOTHING_HUE.identity,
+    family: opts.family,
     hair: opts.hair,
     hairAttachmentUrl: opts.hairAttachmentUrl ?? null,
     hairColor: opts.hairColor ?? 0xffffff,
@@ -349,6 +356,7 @@ export function resolveNpcAppearance(opts: {
     return appearanceFor({
       beard: style.beard,
       clothingHue: style.clothingHue,
+      family: look.outfit,
       hair: style.hair,
       hairColor: style.hairColor,
       modelUrl: NPC_UBC_MALE_KNIGHT_UNHELMETED_URL,
@@ -366,6 +374,7 @@ export function resolveNpcAppearance(opts: {
       beard: style.beard,
       beardAttachmentUrl: style.beardAttachmentUrl,
       clothingHue: NPC_CLOTHING_HUE.identity,
+      family: opts.role,
       hair: style.hair,
       hairAttachmentUrl: style.hairAttachmentUrl,
       hairColor: style.hairColor,
@@ -379,6 +388,7 @@ export function resolveNpcAppearance(opts: {
   return appearanceFor({
     beard: variant.beard,
     clothingHue: variant.clothingHue,
+    family: look.outfit,
     hair: variant.hair,
     hairColor: variant.hairColor,
     modelUrl: variant.modelUrl,

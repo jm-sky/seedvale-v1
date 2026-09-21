@@ -3035,6 +3035,7 @@ export async function createApp(
     }),
     dayNight,
     player,
+    camera,
     monitor: perfMonitor,
     applyQualityPreset: graphics.applyNamedQualityPreset,
     isolation: {

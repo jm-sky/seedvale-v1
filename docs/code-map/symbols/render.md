@@ -2,6 +2,21 @@
 
 Generated from exported TypeScript symbols.
 
+## `render/agentPresentationLod.ts`
+
+- `AGENT_PRESENTATION_MID_DISTANCE_M` — const — line 41
+- `AGENT_PRESENTATION_NEAR_DISTANCE_M` — const — line 34
+- `AgentPresentationLevel` — type — line 23
+  - domain: world-terrain
+- `AgentPresentationLodInput` — type — line 25
+- `resolveAgentPresentationLevel` — function — line 48
+
+## `render/agentPresentationVisibility.ts`
+
+- `AgentPresentationVisibility` — type — line 16
+  - domain: world-terrain
+- `createAgentPresentationVisibility` — function — line 25
+
 ## `render/aoBudget.ts`
 
 - `AO_MIN_STABLE_MS` — const — line 16

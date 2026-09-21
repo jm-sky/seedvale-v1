@@ -21,7 +21,8 @@ import { formatIsolationReport, runIsolationProbes } from './isolationProbe'
 import { formatLongFrameAttribution } from './longFrameFormat'
 import { formatProgramAttributionReport, formatProgramCensusReport, formatProgramCompileCostReport, getProgramCensus } from './programCensus'
 import { buildReport, formatReport } from './report'
-import { censusScene, censusSettlementShadowCasters, censusShadowCasters } from './sceneCensus'
+import { censusAgentDetail, censusScene, censusSettlementShadowCasters, censusShadowCasters } from './sceneCensus'
+import type { Camera } from 'three'
 
 /** Post-preload settle window (plan tools-001 §3) — lets lazy
  *  initialization/first-use costs that `waitForChunks()` doesn't cover (GC,
@@ -68,10 +69,15 @@ export type BenchmarkHost = {
     peekDef: (cell: SettlementCell) => SettlementDef | null
   }
   dayNight: DayNightState
-  player: { setPosition: (x: number, z: number) => void; mesh: { position: { x: number; z: number } } }
+  player: { setPosition: (x: number, z: number) => void; mesh: { position: { x: number; y: number; z: number } } }
   monitor: PerfMonitor
   applyQualityPreset: (preset: Exclude<QualityPreset, 'Custom'>) => void
   isolation: IsolationHost
+  /** Benchmark camera, for {@link censusAgentDetail}'s point-in-frustum
+   *  estimate (plan world-terrain-041) — same stable-for-the-session value
+   *  the rest of the render stack uses, not an accessor, since (unlike
+   *  `chunkManager`) it is never replaced by a `WorldBundle` rebuild. */
+  camera: Camera
 }
 
 function sleep(ms: number): Promise<void> {
@@ -240,6 +246,10 @@ export function createBenchmarkRunner(host: BenchmarkHost): BenchmarkRunner {
         const scene = censusScene(host.isolation.scene)
         const shadowCasters = censusShadowCasters(host.isolation.scene)
         const settlementShadowCasters = censusSettlementShadowCasters(host.isolation.scene)
+        // Bounded, benchmark-only agent breakdown (plan world-terrain-041) —
+        // camera-relevance is a point-in-frustum estimate off the same
+        // camera the render stack already uses, no extra measurement.
+        const agentDetail = censusAgentDetail(host.isolation.scene, player.mesh.position, host.camera)
         // Previously skipped for `stream` — now runs for every scenario so
         // the render-cost breakdown (water/vegetation/postprocessing/mirrors/
         // CPU-GPU separation) is available for the scenario program census
@@ -276,6 +286,7 @@ export function createBenchmarkRunner(host: BenchmarkHost): BenchmarkRunner {
           scene,
           shadowCasters,
           settlementShadowCasters,
+          agentDetail,
           isolation,
         })
         console.log(formatReport(report))

@@ -1,8 +1,93 @@
 # Implementation notes — Agent presentation render LOD
 
 **Plan:** `world-terrain-041-agent-presentation-render-lod.md`  
-**Status:** pre-implementation recon complete  
+**Status:** implemented on `main` (2026-09-21); awaiting user browser/benchmark verification  
 **Model:** Sonnet, Composer
+
+## As implemented
+
+- `src/render/agentPresentationLod.ts`: the shared pure policy —
+  `resolveAgentPresentationLevel({ distance, important })` returns
+  `'near' | 'mid' | 'far'`. Thresholds are new, explicit constants
+  (`AGENT_PRESENTATION_NEAR_DISTANCE_M = 18`,
+  `AGENT_PRESENTATION_MID_DISTANCE_M = 36`) — not imports from
+  `animalUpdateCadence.ts`. `important` always forces `near`.
+- `src/render/agentPresentationVisibility.ts`: `createAgentPresentationVisibility(optionalNodes)`
+  returns `null` for an empty node list (a family with nothing safe stays full
+  automatically, no adapter allocated), otherwise a tiny `{ applyLevel }`
+  object that toggles only those cached nodes' `.visible`, no-ops on a
+  repeated same-level call, and never touches root/material/geometry/layers.
+- **Node-selection finding (the plan's required gate):** confirmed by
+  reading `NpcAgent.ts`/`npcAppearance.ts`/`AnimalAgent.ts` — no runtime
+  probing was possible/needed since these are named, source-level
+  attachment points, not guesses.
+  - NPC: only the two custom adult-male profession stems (blacksmith,
+    woodcutter) attach separate hair/beard meshes at runtime, named
+    `ubcHairAttachment` / `ubcBeardAttachment` (`NpcAgent.attachUbcHairAttachments`).
+    Every other NPC family (all baked UBC outfit variants — peasant/wizard/
+    ranger/knight, both genders) bakes hair into the body mesh — no
+    independent optional node exists for them, so they get no adapter and
+    stay `near`-only forever, per the plan's "family without a safe rule
+    stays full" guardrail.
+  - Fauna: `AnimalAgent`'s GLB/procedural models expose no equivalent named
+    optional child (the only runtime-attached extra is the saddlebags pack
+    visual, which is gameplay state, not a non-silhouette LOD candidate, and
+    stays out of scope). **No fauna optional nodes were registered — v1
+    ships NPC-only**, matching "family without a safe rule stays full" and
+    the plan's permission to end at census + documented asset requirement
+    for the family that has nothing to give.
+- `NpcAgent.ts`: added `presentationVisibility: AgentPresentationVisibility | null`,
+  populated once at construction from `root.getObjectByName('ubcHairAttachment' | 'ubcBeardAttachment')`
+  (present only for the two custom stems). `update()` resolves the level
+  from the observer `distance` it already computes for the label/observation
+  system, with `important = this.phase === 'combat'` (the only locally-known
+  signal from the plan's importance list that applies to NPCs — no
+  mounted/led-animal analogue exists for `NpcAgent`).
+- `npcAppearance.ts`: added a `family: string` field to `NpcAppearance`
+  (outfit family, or the custom stem's role) — diagnostic-only, read by the
+  census, not a new registry. `NpcAgent.create()` tags
+  `mesh.userData.npcFamily` from it (mirrors `AnimalAgent`'s existing
+  `mesh.userData.animalKind`).
+- `src/perf/sceneCensus.ts`: added `censusAgentDetail(scene, observerPos, camera?)`
+  — benchmark-only, extends the existing census module rather than adding a
+  parallel one. For every `npc`/`fauna` root, buckets by asset family
+  (`npcFamily`/`animalKind`) and by the same near/mid/far distance bands the
+  policy uses, with mesh/skinned-mesh/draw/triangle totals per bucket.
+  `cameraRelevantAgents` is a bounded point-in-frustum estimate (agent root
+  world position only, no bounding sphere/occlusion) computed from the
+  benchmark camera's own `projectionMatrix`/`matrixWorldInverse` — `0`
+  whenever no camera is supplied. Runs once per benchmark session, not
+  per-frame.
+- `src/perf/benchmark.ts` / `createApp.ts`: `BenchmarkHost` gained a
+  `camera: Camera` field (wired from the app's existing, never-replaced
+  `camera`, same lifetime rule as `scene`) and `player.mesh.position`'s type
+  widened to include `y` (real `Vector3`, was `{x,z}`-only). The benchmark
+  run now also computes `agentDetail` and threads it through
+  `buildReport`/`PerfReportJson`/`formatReport` (new "Agent detail" report
+  section, families sorted by draw calls, bands in near→far order).
+- Tests: `src/render/agentPresentationLod.test.ts` (boundaries, `important`
+  override, determinism), `src/render/agentPresentationVisibility.test.ts`
+  (synthetic `Object3D` hierarchy: null-for-empty, hides only owned nodes,
+  restores on `near`, same-level no-op, layers untouched), and a
+  `censusAgentDetail` describe block added to the existing
+  `src/perf/sceneCensus.test.ts` (family grouping, distance bands, skinned
+  vs. ordinary mesh counts, excludes agents with nothing currently
+  renderable, camera-relevance on/off).
+- Verification run: `npx tsc --noEmit`, `pnpm run lint:fix` (auto-fixed
+  import ordering only), `pnpm test` (full suite, 8250 tests), `pnpm run
+  build` — all clean. No browser verification performed (user does this
+  manually).
+
+## What the user's benchmark decides
+
+This is a narrow v1 by design (only 2 of ~11 NPC professions have anything
+to hide, and only hair/beard — non-silhouette but small). The plan's success
+gate applies as written: if `?benchmark=settlement-heavy` shows no
+measurable NPC draw/RENDER-time improvement, the right next step is to
+revert or leave this mechanism as-is without extending it — not to widen
+node selection with guessed names, and not to build fauna/model-swap LOD to
+compensate. The "Agent detail" report section's per-family draw-call numbers
+are exactly what settles that call.
 
 ## Recon conclusion
 

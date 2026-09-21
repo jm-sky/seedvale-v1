@@ -239,10 +239,6 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   🔴 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-39. `world-terrain-041` — **Agent presentation render LOD**  
-  🔴 `M` · **Score:**  27  
-   → **unlocks:** 0/0
-
 40. `world-terrain-046` — **Unified water shore query and river hotpath**  
   🔴 `M` · **Score:**  27  
    → **unlocks:** 0/0

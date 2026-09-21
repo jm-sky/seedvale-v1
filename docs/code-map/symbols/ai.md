@@ -180,25 +180,25 @@ Generated from exported TypeScript symbols.
 
 ## `ai/NpcAgent.ts`
 
-- `classifyPendingActivity` — function — line 790
-- `configureNpcPlayerReactionAudio` — function — line 1036
-- `CurrentActivity` — type — line 591
-- `CurrentActivityKind` — type — line 563
-- `HUNT_RESUPPLY_ARROW_TARGET` — const — line 905
-- `NPC_HEIGHT` — const — line 499
-- `NPC_SHADOW_DISTANCE` — const — line 504
-- `NpcAgent` — class — line 1208
+- `classifyPendingActivity` — function — line 792
+- `configureNpcPlayerReactionAudio` — function — line 1038
+- `CurrentActivity` — type — line 593
+- `CurrentActivityKind` — type — line 565
+- `HUNT_RESUPPLY_ARROW_TARGET` — const — line 907
+- `NPC_HEIGHT` — const — line 501
+- `NPC_SHADOW_DISTANCE` — const — line 506
+- `NpcAgent` — class — line 1210
   - domain: settlements-npcs
   - system: npc-agent
   - role: Central per-NPC behaviour integration point: needs, FSM/schedule, personality-driven decisions and combat.
   - owns: NpcAuthoritativeState
   - uses: Household, SettlementEconomy, Needs
   - simulation: tick
-- `NpcAgentDeps` — type — line 1053
-- `NpcInspectionSnapshot` — type — line 606
-- `NpcWhy` — type — line 765
-- `projectNpcWhy` — function — line 832
-- `promoteChainKind` — function — line 782
+- `NpcAgentDeps` — type — line 1055
+- `NpcInspectionSnapshot` — type — line 608
+- `NpcWhy` — type — line 767
+- `projectNpcWhy` — function — line 834
+- `promoteChainKind` — function — line 784
 
 ## `ai/npcAnimalThreat.ts`
 
@@ -230,8 +230,8 @@ Generated from exported TypeScript symbols.
 
 ## `ai/npcAppearance.ts`
 
-- `customProfessionHairKinds` — function — line 149
-- `hairAttachmentUrlFor` — function — line 210
+- `customProfessionHairKinds` — function — line 156
+- `hairAttachmentUrlFor` — function — line 217
 - `NPC_CLOTHING_HUE` — const — line 51
 - `NPC_HAIR_COLOR` — const — line 59
 - `NPC_UBC_BEARD_URL` — const — line 28
@@ -259,11 +259,11 @@ Generated from exported TypeScript symbols.
 - `NpcOutfitId` — type — line 42
 - `NpcResolvedHair` — type — line 46
 - `NpcUbcOutfitId` — type — line 43
-- `resolveNpcAppearance` — function — line 335
+- `resolveNpcAppearance` — function — line 342
   - domain: npc
-- `rollCustomProfessionStyle` — function — line 262
+- `rollCustomProfessionStyle` — function — line 269
   - domain: npc
-- `ubcVariantModelUrl` — function — line 196
+- `ubcVariantModelUrl` — function — line 203
   - domain: npc
 
 ## `ai/npcAssistance.ts`

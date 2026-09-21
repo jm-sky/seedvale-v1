@@ -4,10 +4,13 @@ import {
   InstancedMesh,
   Mesh,
   MeshBasicMaterial,
+  PerspectiveCamera,
   Scene,
+  SkinnedMesh,
 } from 'three'
 import { describe, expect, it } from 'vitest'
 import {
+  censusAgentDetail,
   censusScene,
   censusSettlementShadowCasters,
   censusShadowCasters,
@@ -337,6 +340,93 @@ describe('censusSettlementShadowCasters', () => {
     expect(census.landmarkWell.meshes).toBe(0)
     expect(census.landmark.meshes).toBe(0)
     expect(census.other.meshes).toBe(0)
+  })
+})
+
+function agentRoot(name: 'npc' | 'fauna', x: number, z: number): Group {
+  const root = new Group()
+  root.name = name
+  root.position.set(x, 0, z)
+  return root
+}
+
+describe('censusAgentDetail', () => {
+  it('groups NPCs by npcFamily and buckets them by distance band', () => {
+    const scene = new Scene()
+    const near = agentRoot('npc', 5, 0)
+    near.userData.npcFamily = 'peasant'
+    near.add(namedMesh('body'))
+    const far = agentRoot('npc', 1000, 0)
+    far.userData.npcFamily = 'knight'
+    far.add(namedMesh('body'))
+    scene.add(near, far)
+
+    const census = censusAgentDetail(scene, { x: 0, y: 0, z: 0 })
+    expect(census.npc.families.map((f) => f.family).sort()).toEqual(['knight', 'peasant'])
+    const nearBand = census.npc.distanceBands.find((b) => b.band === 'near')!
+    const farBand = census.npc.distanceBands.find((b) => b.band === 'far')!
+    expect(nearBand.agents).toBe(1)
+    expect(farBand.agents).toBe(1)
+    expect(census.fauna.families).toEqual([])
+  })
+
+  it('falls back to unknown when the family/kind tag is missing', () => {
+    const scene = new Scene()
+    const root = agentRoot('npc', 0, 0)
+    root.add(namedMesh('body'))
+    scene.add(root)
+    const census = censusAgentDetail(scene, { x: 0, y: 0, z: 0 })
+    expect(census.npc.families).toEqual([{ family: 'unknown', agents: 1, meshes: 1, skinnedMeshes: 0, drawCalls: 1, triangles: 12 }])
+  })
+
+  it('counts skinned meshes separately from ordinary meshes', () => {
+    const scene = new Scene()
+    const root = agentRoot('fauna', 0, 0)
+    root.userData.animalKind = 'wolf'
+    const skinned = new SkinnedMesh(new BoxGeometry(1, 1, 1), new MeshBasicMaterial())
+    root.add(skinned)
+    root.add(namedMesh('accessory'))
+    scene.add(root)
+    const census = censusAgentDetail(scene, { x: 0, y: 0, z: 0 })
+    expect(census.fauna.families).toEqual([
+      { family: 'wolf', agents: 1, meshes: 2, skinnedMeshes: 1, drawCalls: 2, triangles: 24 },
+    ])
+  })
+
+  it('excludes an agent root with nothing currently renderable', () => {
+    const scene = new Scene()
+    const root = agentRoot('npc', 0, 0)
+    root.userData.npcFamily = 'peasant'
+    const hidden = namedMesh('body')
+    hidden.visible = false
+    root.add(hidden)
+    scene.add(root)
+    const census = censusAgentDetail(scene, { x: 0, y: 0, z: 0 })
+    expect(census.npc.families).toEqual([])
+  })
+
+  it('marks camera-relevant agents only when a camera is supplied and they fall in its frustum', () => {
+    const scene = new Scene()
+    const inView = agentRoot('npc', 0, -10)
+    inView.userData.npcFamily = 'peasant'
+    inView.add(namedMesh('body'))
+    const behindCamera = agentRoot('npc', 0, 10)
+    behindCamera.userData.npcFamily = 'peasant'
+    behindCamera.add(namedMesh('body'))
+    scene.add(inView, behindCamera)
+
+    const camera = new PerspectiveCamera(60, 1, 0.1, 100)
+    camera.position.set(0, 0, 0)
+    camera.lookAt(0, 0, -1)
+    camera.updateMatrixWorld(true)
+    camera.updateProjectionMatrix()
+
+    const withoutCamera = censusAgentDetail(scene, { x: 0, y: 0, z: 0 })
+    expect(withoutCamera.npc.distanceBands.every((b) => b.cameraRelevantAgents === 0)).toBe(true)
+
+    const withCamera = censusAgentDetail(scene, { x: 0, y: 0, z: 0 }, camera)
+    const totalRelevant = withCamera.npc.distanceBands.reduce((sum, b) => sum + b.cameraRelevantAgents, 0)
+    expect(totalRelevant).toBe(1)
   })
 })
 

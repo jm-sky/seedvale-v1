@@ -2,6 +2,38 @@
 
 Generated from TypeScript imports.
 
+## `render/agentPresentationLod.test.ts`
+
+**Imports**
+
+- `render/agentPresentationLod.ts`
+
+## `render/agentPresentationLod.ts`
+
+**Imported by**
+
+- `ai/NpcAgent.ts`
+- `perf/sceneCensus.ts`
+- `render/agentPresentationLod.test.ts`
+- `render/agentPresentationVisibility.ts`
+
+## `render/agentPresentationVisibility.test.ts`
+
+**Imports**
+
+- `render/agentPresentationVisibility.ts`
+
+## `render/agentPresentationVisibility.ts`
+
+**Imports**
+
+- `render/agentPresentationLod.ts`
+
+**Imported by**
+
+- `ai/NpcAgent.ts`
+- `render/agentPresentationVisibility.test.ts`
+
 ## `render/aoBudget.test.ts`
 
 **Imports**

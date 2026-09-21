@@ -21,9 +21,9 @@ Generated from exported TypeScript symbols.
 
 ## `perf/benchmark.ts`
 
-- `BenchmarkHost` — type — line 54
-- `BenchmarkRunner` — type — line 42
-- `createBenchmarkRunner` — function — line 136
+- `BenchmarkHost` — type — line 55
+- `BenchmarkRunner` — type — line 43
+- `createBenchmarkRunner` — function — line 142
 
 ## `perf/benchmarkFixture.ts`
 
@@ -142,32 +142,38 @@ Generated from exported TypeScript symbols.
 ## `perf/report.ts`
 
 - `buildReport` — function — line 18
-- `formatReport` — function — line 145
+- `formatReport` — function — line 147
 
 ## `perf/sceneCensus.ts`
 
-- `BucketStats` — type — line 20
-- `censusScene` — function — line 261
-- `censusSettlementShadowCasters` — function — line 297
+- `AgentBucket` — type — line 354
+- `AgentDetailCensus` — type — line 386
+- `AgentDetailMeshStats` — type — line 356
+- `AgentDistanceBandDetail` — type — line 375
+- `AgentFamilyDetail` — type — line 367
+- `BucketStats` — type — line 25
+- `censusAgentDetail` — function — line 425
+- `censusScene` — function — line 266
+- `censusSettlementShadowCasters` — function — line 302
   - domain: world-terrain
-- `censusShadowCasters` — function — line 279
+- `censusShadowCasters` — function — line 284
   - domain: world-terrain
-- `censusTotals` — function — line 309
-- `classifyObject` — function — line 186
-- `classifySettlementContent` — function — line 174
+- `censusTotals` — function — line 314
+- `classifyObject` — function — line 191
+- `classifySettlementContent` — function — line 179
   - domain: world-terrain
-- `emptyCensus` — function — line 78
-- `emptySettlementShadowCensus` — function — line 84
-- `hideBuckets` — function — line 323
-- `restoreVisibility` — function — line 336
-- `SCENE_BUCKETS` — const — line 5
-- `SceneBucket` — type — line 18
-- `SceneCensus` — type — line 28
-- `SETTLEMENT_CONTENT_KINDS` — const — line 32
-- `SETTLEMENT_SHADOW_KIND_USERDATA` — const — line 70
-- `SettlementContentKind` — type — line 65
-- `SettlementShadowCensus` — type — line 67
-- `VisibilityRestore` — type — line 72
+- `emptyCensus` — function — line 83
+- `emptySettlementShadowCensus` — function — line 89
+- `hideBuckets` — function — line 328
+- `restoreVisibility` — function — line 341
+- `SCENE_BUCKETS` — const — line 10
+- `SceneBucket` — type — line 23
+- `SceneCensus` — type — line 33
+- `SETTLEMENT_CONTENT_KINDS` — const — line 37
+- `SETTLEMENT_SHADOW_KIND_USERDATA` — const — line 75
+- `SettlementContentKind` — type — line 70
+- `SettlementShadowCensus` — type — line 72
+- `VisibilityRestore` — type — line 77
 
 ## `perf/types.ts`
 

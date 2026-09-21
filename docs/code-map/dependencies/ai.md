@@ -161,6 +161,8 @@ Generated from TypeScript imports.
 - `player/playerDimensions.ts`
 - `player/playerVisualPreset.ts`
 - `player/ubcAccessoryBind.ts`
+- `render/agentPresentationLod.ts`
+- `render/agentPresentationVisibility.ts`
 - `settlement/animalCorpseSanitation.ts`
 - `settlement/families.ts`
 - `settlement/household.ts`

@@ -355,6 +355,10 @@ Generated from TypeScript imports.
 
 ## `perf/sceneCensus.ts`
 
+**Imports**
+
+- `render/agentPresentationLod.ts`
+
 **Imported by**
 
 - `perf/benchmark.ts`
