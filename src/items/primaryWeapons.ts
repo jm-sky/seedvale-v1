@@ -1,7 +1,7 @@
 import type { Inventory } from './Inventory'
 import type { ItemKind } from './items'
 import { isMeleeToolKind, isRangedTool } from './itemCatalog'
-import { isInstanceBackedKind, isWeaponMaintenanceKind } from './itemInstances'
+import { isInstanceBackedKind } from './itemInstances'
 
 export type PrimaryWeaponChoice = { kind: ItemKind, instanceId: string | null }
 
@@ -19,14 +19,14 @@ export type PrimaryWeaponSelection = {
    *  empty melee/ranged slot only; never overwrites an explicit assignment. */
   noteEquipped: (kind: ItemKind, instanceId: string | null) => void
   /** Drops a choice whose kind is no longer in inventory, and re-resolves its
-   *  instance id (weapon-maintenance kinds) the same way `HeldTool` does. */
+   *  instance id (instance-backed kinds) the same way `HeldTool` does. */
   syncWithInventory: (inventory: Inventory) => void
   exportState: () => { primaryMeleeWeapon: SavePrimaryWeaponChoice | null, primaryRangedWeapon: SavePrimaryWeaponChoice | null }
   restoreState: (saved: { primaryMeleeWeapon?: SavePrimaryWeaponChoice | null, primaryRangedWeapon?: SavePrimaryWeaponChoice | null }) => void
 }
 
 function resolveInstanceId(inventory: Inventory, kind: ItemKind, preferId: string | null): string | null {
-  if (!isWeaponMaintenanceKind(kind)) return null
+  if (!isInstanceBackedKind(kind)) return null
   const instances = inventory.getInstances(kind)
   if (instances.length === 0) return null
   if (preferId && instances.some((inst) => inst.id === preferId)) return preferId
@@ -95,12 +95,12 @@ export function createPrimaryWeaponSelection(): PrimaryWeaponSelection {
 
 export function isPrimaryMeleeAssignment(kind: ItemKind, instanceId: string | null, choice: PrimaryWeaponChoice | null): boolean {
   if (!choice || choice.kind !== kind) return false
-  if (!isWeaponMaintenanceKind(kind)) return true
+  if (!isInstanceBackedKind(kind)) return true
   return choice.instanceId === instanceId
 }
 
 export function isPrimaryRangedAssignment(kind: ItemKind, instanceId: string | null, choice: PrimaryWeaponChoice | null): boolean {
   if (!choice || choice.kind !== kind) return false
-  if (!isWeaponMaintenanceKind(kind)) return true
+  if (!isInstanceBackedKind(kind)) return true
   return choice.instanceId === instanceId
 }

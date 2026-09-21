@@ -1,7 +1,7 @@
 # Plan: Ranged weapon inventory, trade and use integrity
 
 **Created:** 2026-09-21
-**Status:** `planned` 📋
+**Status:** `verification needed` 🔍
 **Type:** fix
 **Priority:** high · **Effort:** M
 **Depends on:** ~~items-player-059~~
@@ -10,6 +10,10 @@
 **Tags:** `combat` `trade` `ranged`
 **Roadmap:** -
 **Model:** Sonnet · Composer
+
+## Implementation status
+
+Implemented 2026-09-21. `RANGED_WEAPON_KINDS` (`itemInstances.ts`) is the new central classification — `hunting_bow` moved out of `IDENTITY_ONLY_ITEM_KINDS`, and `createAcquiredInstance()` mints a plain instance for the whole family. `HeldTool`/`primaryWeapons` generalized their concrete-identity gate from "weapon-maintenance" to "instance-backed", so a ranged weapon now carries a real `heldInstanceId`. Merchant stock, ordinary NPC purchase/barter, selling, drop/pickup and capacity math needed no changes — they were already generic over `isInstanceBackedKind`, confirming the plan's recon. `inventoryView.ts`'s identity-only builder was generalized into a fallback for any instance-backed kind, which is what actually fixes the reported regression (a ranged weapon had no dedicated builder, so it silently produced no Inventory group at all before this). NPC ranged loadout seeding (`npcLoadout.ts`: hunter's starting bow, guard's optional crossbow, shepherd's optional sling) and the Hunter's `short_bow` crafting output (`economy/production.ts`'s `produceFirstAvailableItemRecipe`, via a new `resolveItemOutputInstances()` bridge to `executeProduction`'s `itemOutputInstances` contract) now mint real instances instead of stack counts. A versioned v55→v56 save migration converts every legacy count-backed ranged weapon (across player inventory, dropped items, placed/carried containers, households, NPC personal inventory and NPC merchant stock) into instances, idempotently, while leaving existing `hunting_bow` instances untouched. Automated tests cover the acquisition matrix, Merchant purchase/selling atomicity, NPC-owned transfer, Inventory visibility, HeldTool/primary-weapon identity, the save migration, and a catalog-derived completeness guardrail. Browser/manual verification is user-owned (see §19).
 
 ## Goal
 

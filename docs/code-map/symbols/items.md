@@ -267,7 +267,7 @@ Generated from exported TypeScript symbols.
 
 ## `items/HeldTool.ts`
 
-- `createHeldTool` — function — line 74
+- `createHeldTool` — function — line 76
   - domain: items-player
   - system: held-tool
   - role: Tracks which single tool/weapon instance is currently equipped in hand.
@@ -329,12 +329,12 @@ Generated from exported TypeScript symbols.
 
 ## `items/inventoryView.ts`
 
-- `buildInventoryGroups` — function — line 259
-- `inventoryCountsForUi` — function — line 296
-- `InventoryGroupView` — type — line 68
-- `InventoryInstanceRow` — type — line 46
-- `ITEM_METER_LABEL` — const — line 40
-- `ItemMeterKind` — type — line 35
+- `buildInventoryGroups` — function — line 265
+- `inventoryCountsForUi` — function — line 302
+- `InventoryGroupView` — type — line 67
+- `InventoryInstanceRow` — type — line 45
+- `ITEM_METER_LABEL` — const — line 39
+- `ItemMeterKind` — type — line 34
 
 ## `items/itemCatalog.ts`
 
@@ -399,38 +399,42 @@ Generated from exported TypeScript symbols.
 - `ArmorItemInstance` — type — line 57
 - `ArmorKind` — type — line 19
 - `ArmorQuality` — type — line 38
-- `clamp01` — function — line 256
-- `clampCampCondition` — function — line 193
-- `cloneItemInstance` — function — line 261
-- `createItemInstanceId` — function — line 209
-- `createKeyInstance` — function — line 240
-- `createTentInstance` — function — line 198
-- `IDENTITY_ONLY_ITEM_KINDS` — const — line 216
-- `INSTANCE_BACKED_KINDS` — const — line 227
+- `clamp01` — function — line 290
+- `clampCampCondition` — function — line 224
+- `cloneItemInstance` — function — line 295
+- `createItemInstanceId` — function — line 240
+- `createKeyInstance` — function — line 274
+- `createTentInstance` — function — line 229
+- `IDENTITY_ONLY_ITEM_KINDS` — const — line 250
+- `INSTANCE_BACKED_KINDS` — const — line 260
 - `isArmorItemInstance` — function — line 74
 - `isArmorKind` — function — line 62
 - `isArmorQuality` — function — line 66
-- `isInstanceBackedKind` — function — line 244
-- `isLiquidContainerInstance` — function — line 177
-- `isLiquidContainerKind` — function — line 151
-- `isTentItemInstance` — function — line 188
-- `isTrapItemInstance` — function — line 252
-- `isTrapKind` — function — line 248
-- `isWeaponItemInstance` — function — line 164
+- `isInstanceBackedKind` — function — line 278
+- `isLiquidContainerInstance` — function — line 208
+- `isLiquidContainerKind` — function — line 182
+- `isRangedWeaponKind` — function — line 155
+- `isTentItemInstance` — function — line 219
+- `isTrapItemInstance` — function — line 286
+- `isTrapKind` — function — line 282
+- `isWeaponItemInstance` — function — line 195
 - `isWeaponMaintenanceKind` — function — line 124
 - `ItemInstance` — type — line 4
-- `LIQUID_CONTAINER_KIND_LIST` — const — line 141
-- `LIQUID_CONTAINER_KINDS` — const — line 149
-- `LiquidContainerItemInstance` — type — line 171
-- `LiquidContainerKind` — type — line 134
-- `LiquidContent` — type — line 129
+- `LIQUID_CONTAINER_KIND_LIST` — const — line 172
+- `LIQUID_CONTAINER_KINDS` — const — line 180
+- `LiquidContainerItemInstance` — type — line 202
+- `LiquidContainerKind` — type — line 165
+- `LiquidContent` — type — line 160
 - `normalizeArmorQuality` — function — line 70
-- `TentItemInstance` — type — line 183
+- `RANGED_WEAPON_KIND_LIST` — const — line 144
+- `RANGED_WEAPON_KINDS` — const — line 153
+- `RangedWeaponKind` — type — line 136
+- `TentItemInstance` — type — line 214
 - `TrapItemInstance` — type — line 11
 - `TrapKind` — type — line 9
 - `WEAPON_MAINTENANCE_KIND_LIST` — const — line 104
 - `WEAPON_MAINTENANCE_KINDS` — const — line 122
-- `WeaponItemInstance` — type — line 158
+- `WeaponItemInstance` — type — line 189
 - `WeaponMaintenanceKind` — type — line 83
 
 ## `items/itemModels.ts`
@@ -553,26 +557,26 @@ Generated from exported TypeScript symbols.
 
 ## `items/trade.ts`
 
-- `createAcquiredInstance` — function — line 198
-- `InstanceSellResult` — type — line 38
-- `OfferBuybackResolution` — type — line 42
-- `OwnedGoodsPurchaseLine` — type — line 547
-- `previewPricedPurchaseNetCoins` — function — line 362
-- `previewTransactionNetCoins` — function — line 345
-- `resolveOfferBuyback` — function — line 294
+- `createAcquiredInstance` — function — line 199
+- `InstanceSellResult` — type — line 39
+- `OfferBuybackResolution` — type — line 43
+- `OwnedGoodsPurchaseLine` — type — line 548
+- `previewPricedPurchaseNetCoins` — function — line 363
+- `previewTransactionNetCoins` — function — line 346
+- `resolveOfferBuyback` — function — line 295
   - domain: settlements — merchant buyback for an entire offer basket plus the concrete instance ids settlement should remove for instance-backed kinds.
-- `resolveOfferLineBuyback` — function — line 271
+- `resolveOfferLineBuyback` — function — line 272
   - domain: settlements — deterministic merchant buyback for one offer row, using the same worst-condition instance selection that settlement will remove.
-- `selectInstancesToSell` — function — line 229
-- `selectInstanceToPlace` — function — line 244
-- `sellInstancesForCoins` — function — line 819
-- `settleMerchantStockTransaction` — function — line 491
-- `settleOwnedGoodsBarterTransaction` — function — line 700
+- `selectInstancesToSell` — function — line 230
+- `selectInstanceToPlace` — function — line 245
+- `sellInstancesForCoins` — function — line 820
+- `settleMerchantStockTransaction` — function — line 492
+- `settleOwnedGoodsBarterTransaction` — function — line 701
   - domain: settlements-npcs
-- `settleOwnedGoodsPurchase` — function — line 647
-- `settlePricedPurchase` — function — line 375
-- `settleTransaction` — function — line 403
-- `TradeResult` — type — line 36
+- `settleOwnedGoodsPurchase` — function — line 648
+- `settlePricedPurchase` — function — line 376
+- `settleTransaction` — function — line 404
+- `TradeResult` — type — line 37
 
 ## `items/tradeCatalog.ts`
 

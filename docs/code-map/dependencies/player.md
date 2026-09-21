@@ -463,6 +463,7 @@ Generated from TypeScript imports.
 
 - `items/HeldTool.ts`
 - `items/Inventory.ts`
+- `items/itemInstances.ts`
 - `items/primaryWeapons.ts`
 - `items/weaponMaintenance.ts`
 - `player/playerCombatMode.ts`

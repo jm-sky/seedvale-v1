@@ -44,7 +44,7 @@ import { EQUIPMENT_SLOTS, isEquipmentSlot, type SavePlayerEquipment } from '../i
 import { type FoodSourceSpecies, isFoodSourceSpecies } from '../items/foodFreshness'
 import { isToolKind } from '../items/HeldTool'
 import { isMeleeToolKind, isRangedTool } from '../items/itemCatalog'
-import { ARMOR_KIND_LIST, isArmorKind, isArmorQuality, isTrapKind } from '../items/itemInstances'
+import { ARMOR_KIND_LIST, isArmorKind, isArmorQuality, isRangedWeaponKind, isTrapKind, RANGED_WEAPON_KIND_LIST } from '../items/itemInstances'
 import { ITEM_DEFS, type ItemKind } from '../items/items'
 import { type SavePrimaryWeaponChoice } from '../items/primaryWeapons'
 import { isTradeGrievanceList, type TradeGrievance } from '../items/tradeGrievance'
@@ -759,7 +759,7 @@ export type SaveWorkContract =
  *  representation or semantics of `SaveData` change — see the plan's
  *  "Future schema-change workflow". Never duplicate this number elsewhere;
  *  `saveState.ts` imports it instead of declaring its own constant. */
-export const CURRENT_SAVE_VERSION = 55
+export const CURRENT_SAVE_VERSION = 56
 
 /** Canonical save contract for the current schema version. This module
  *  intentionally carries no history of schemas from before the v1 hard cut
@@ -4164,6 +4164,134 @@ function migrateSaveV54ToV55(data: unknown): unknown {
   }
 }
 
+function rangedInstanceRow(id: string, kind: ItemKind): SaveItemInstance {
+  return { id, kind }
+}
+
+function migrateRangedCountsToInstances(
+  counts: Partial<Record<ItemKind, number>> | undefined,
+  instances: SaveItemInstance[] | undefined,
+  seq: { n: number },
+): { counts: Partial<Record<ItemKind, number>>, instances: SaveItemInstance[] } {
+  const nextCounts = { ...(counts ?? {}) }
+  const nextInstances = [...(instances ?? [])]
+  for (const kind of RANGED_WEAPON_KIND_LIST) {
+    const stacked = nextCounts[kind]
+    if (typeof stacked !== 'number' || stacked <= 0) continue
+    for (let i = 0; i < stacked; i++) {
+      seq.n += 1
+      nextInstances.push(rangedInstanceRow(`ranged:migrated:${seq.n}`, kind))
+    }
+    delete nextCounts[kind]
+  }
+  return { counts: nextCounts, instances: nextInstances }
+}
+
+function migrateInventoryContentsRanged(
+  contents: { counts?: Partial<Record<ItemKind, number>>, instances?: SaveItemInstance[] } | undefined,
+  seq: { n: number },
+): { counts: Partial<Record<ItemKind, number>>, instances: SaveItemInstance[], foodBatches?: unknown } | undefined {
+  if (!contents || typeof contents !== 'object') return contents as undefined
+  const migrated = migrateRangedCountsToInstances(contents.counts, contents.instances, seq)
+  return { ...contents, counts: migrated.counts, instances: migrated.instances }
+}
+
+/** v55 → v56 (plan items-player-060): count-backed reusable ranged weapons
+ *  (`short_bow`/`long_bow`/`masterwork_hunting_bow`/`crossbow`/`sling`, and
+ *  any legacy count-backed `hunting_bow` predating its former identity-only
+ *  special case) become plain `{ id, kind }` instances — the same physical-
+ *  ownership contract as melee `WEAPON_MAINTENANCE_KINDS`. Existing
+ *  `hunting_bow` instance rows are untouched (this migration only ever
+ *  converts `counts`, never rewrites `instances`), so a repeated run mints
+ *  nothing new and stays idempotent. Covers every persisted Inventory-shaped
+ *  owner that can legally hold these goods: player inventory, dropped world
+ *  items, placed/carried containers, households, NPC `personalInventory` and
+ *  NPC `merchantStock` (authoritative Merchant stock since v46).
+ *  `heldTool`/`primaryWeapon*` choices need no rewrite — a missing/stale
+ *  `heldInstanceId` already re-resolves to a deterministic owned instance on
+ *  restore (`HeldTool`'s `resolveInstanceId`). */
+function migrateSaveV55ToV56(data: unknown): unknown {
+  const v = data as Record<string, unknown>
+  const seq = { n: 0 }
+  const inventory = (v.inventory ?? {}) as Partial<Record<ItemKind, number>>
+  const inventoryInstances = Array.isArray(v.inventoryInstances) ? v.inventoryInstances as SaveItemInstance[] : []
+  const playerInv = migrateRangedCountsToInstances(inventory, inventoryInstances, seq)
+
+  const droppedItems = Array.isArray(v.droppedItems)
+    ? (v.droppedItems as Record<string, unknown>[]).map((item) => {
+      if (!item || typeof item.kind !== 'string' || !isRangedWeaponKind(item.kind as ItemKind) || item.instance) return item
+      seq.n += 1
+      return { ...item, instance: rangedInstanceRow(`ranged:migrated:${seq.n}`, item.kind as ItemKind) }
+    })
+    : v.droppedItems
+
+  const placedContainers = Array.isArray(v.placedContainers)
+    ? (v.placedContainers as Record<string, unknown>[]).map((container) => {
+      if (!container) return container
+      const migrated = migrateRangedCountsToInstances(
+        container.counts as Partial<Record<ItemKind, number>> | undefined,
+        container.instances as SaveItemInstance[] | undefined,
+        seq,
+      )
+      return { ...container, counts: migrated.counts, instances: migrated.instances }
+    })
+    : v.placedContainers
+
+  const carried = v.carriedContainer && typeof v.carriedContainer === 'object'
+    ? (() => {
+      const c = v.carriedContainer as Record<string, unknown>
+      const migrated = migrateRangedCountsToInstances(
+        c.counts as Partial<Record<ItemKind, number>> | undefined,
+        c.instances as SaveItemInstance[] | undefined,
+        seq,
+      )
+      return { ...c, counts: migrated.counts, instances: migrated.instances }
+    })()
+    : v.carriedContainer
+
+  const households = v.households && typeof v.households === 'object'
+    ? Object.fromEntries(Object.entries(v.households as Record<string, unknown>).map(([id, household]) => {
+      if (!household || typeof household !== 'object') return [id, household]
+      const h = household as Record<string, unknown>
+      const items = migrateInventoryContentsRanged(h.items as { counts?: Partial<Record<ItemKind, number>>, instances?: SaveItemInstance[] }, seq)
+      return [id, items ? { ...h, items } : household]
+    }))
+    : v.households
+
+  const npcStates = v.npcStates && typeof v.npcStates === 'object'
+    ? Object.fromEntries(Object.entries(v.npcStates as Record<string, unknown>).map(([id, state]) => {
+      if (!state || typeof state !== 'object') return [id, state]
+      const s = state as Record<string, unknown>
+      const personalInventory = migrateInventoryContentsRanged(
+        s.personalInventory as { counts?: Partial<Record<ItemKind, number>>, instances?: SaveItemInstance[] },
+        seq,
+      )
+      const merchantStock = migrateInventoryContentsRanged(
+        s.merchantStock as { counts?: Partial<Record<ItemKind, number>>, instances?: SaveItemInstance[] } | undefined,
+        seq,
+      )
+      if (!personalInventory && !merchantStock) return [id, state]
+      return [id, {
+        ...s,
+        ...(personalInventory ? { personalInventory } : {}),
+        ...(merchantStock ? { merchantStock } : {}),
+      }]
+    }))
+    : v.npcStates
+
+  return {
+    ...v,
+    version: 56,
+    inventory: playerInv.counts,
+    inventoryInstances: playerInv.instances,
+    droppedItems,
+    placedContainers,
+    carriedContainer: carried,
+    households,
+    npcStates,
+  }
+}
+
 function migrateSaveV37ToV38(data: unknown): unknown {
   const v = data as Record<string, unknown>
   const seq = { n: 0 }
@@ -4339,6 +4467,7 @@ const SAVE_MIGRATIONS: Readonly<Record<number, SaveMigration>> = {
   52: migrateSaveV52ToV53,
   53: migrateSaveV53ToV54,
   54: migrateSaveV54ToV55,
+  55: migrateSaveV55ToV56,
 }
 
 function detectStoredVersion(value: unknown): number | null {

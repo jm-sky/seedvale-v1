@@ -78,6 +78,15 @@ describe('seedDefaultRoleWeapon', () => {
     expect(carried.holdsAny('hunting_bow')).toBe(true)
     expect(resolveNpcRangedWeapon(carried, 'hunter')?.kind).toBe('hunting_bow')
   })
+
+  it('seeds the hunter bow as a real instance, never a shadow count (plan items-player-060)', () => {
+    const carried = new Inventory(undefined, 5)
+    seedDefaultRoleWeapon(carried, 'hunter')
+    expect(carried.countInstances('hunting_bow')).toBe(1)
+    expect(carried.count('hunting_bow')).toBe(0)
+    seedDefaultRoleWeapon(carried, 'hunter')
+    expect(carried.countInstances('hunting_bow')).toBe(1)
+  })
 })
 
 describe('seedHunterSupplies (plan 178)', () => {
@@ -254,6 +263,9 @@ describe('seedGuardCrossbowLoadout (plan items-player-059 §10)', () => {
       seedGuardCrossbowLoadout(inventory, `npc:guard:${i}`)
       if (inventory.holdsAny('crossbow')) {
         hits++
+        // Plan items-player-060 — a real instance, never a shadow count.
+        expect(inventory.countInstances('crossbow')).toBe(1)
+        expect(inventory.count('crossbow')).toBe(0)
         expect(inventory.count('bolt')).toBe(6)
       } else {
         expect(inventory.count('bolt')).toBe(0)
@@ -269,7 +281,7 @@ describe('seedGuardCrossbowLoadout (plan items-player-059 §10)', () => {
     const gotCrossbow = a.holdsAny('crossbow')
     seedGuardCrossbowLoadout(a, 'npc:guard:stable')
     expect(a.holdsAny('crossbow')).toBe(gotCrossbow)
-    expect(a.count('crossbow')).toBeLessThanOrEqual(1)
+    expect(a.countInstances('crossbow')).toBeLessThanOrEqual(1)
 
     const b = new Inventory()
     seedGuardCrossbowLoadout(b, 'npc:guard:stable')
@@ -292,6 +304,9 @@ describe('seedShepherdSlingLoadout (plan items-player-059 §12)', () => {
       seedShepherdSlingLoadout(inventory, `npc:shepherd-sling:${i}`)
       if (inventory.holdsAny('sling')) {
         hits++
+        // Plan items-player-060 — a real instance, never a shadow count.
+        expect(inventory.countInstances('sling')).toBe(1)
+        expect(inventory.count('sling')).toBe(0)
         expect(inventory.count('stone')).toBe(4)
       } else {
         expect(inventory.count('stone')).toBe(0)
@@ -307,7 +322,7 @@ describe('seedShepherdSlingLoadout (plan items-player-059 §12)', () => {
     const gotSling = a.holdsAny('sling')
     seedShepherdSlingLoadout(a, 'npc:shepherd-sling:stable')
     expect(a.holdsAny('sling')).toBe(gotSling)
-    expect(a.count('sling')).toBeLessThanOrEqual(1)
+    expect(a.countInstances('sling')).toBeLessThanOrEqual(1)
   })
 
   it('never changes the existing shepherd primary melee weapon roll', () => {

@@ -73,6 +73,26 @@ describe('buildInventoryGroups — instance-backed coverage (plan items-player-0
     const kinds = groups.map((g) => g.kind)
     expect(kinds).toEqual(expect.arrayContaining(['trap_good', 'long_sword', 'wooden_bucket', 'tent']))
   })
+
+  it('shows an owned reusable ranged weapon immediately (plan items-player-060 — the short_bow regression)', () => {
+    for (const kind of ['short_bow', 'hunting_bow', 'long_bow', 'masterwork_hunting_bow', 'crossbow', 'sling'] as const) {
+      const inventory = new Inventory({})
+      inventory.addInstance({ id: `${kind}:1`, kind })
+      const group = buildInventoryGroups(inventory).find((g) => g.kind === kind)
+      expect(group).toBeDefined()
+      expect(group!.count).toBe(1)
+      expect(group!.instances[0]!.id).toBe(`${kind}:1`)
+    }
+  })
+
+  it('groups two owned copies of the same ranged weapon while keeping their identity distinct', () => {
+    const inventory = new Inventory({})
+    inventory.addInstance({ id: 'short_bow:a', kind: 'short_bow' })
+    inventory.addInstance({ id: 'short_bow:b', kind: 'short_bow' })
+    const group = buildInventoryGroups(inventory).find((g) => g.kind === 'short_bow')!
+    expect(group.count).toBe(2)
+    expect(group.instances.map((row) => row.id).sort()).toEqual(['short_bow:a', 'short_bow:b'])
+  })
 })
 
 describe('buildInventoryGroups — armor quality (plan items-player-040)', () => {

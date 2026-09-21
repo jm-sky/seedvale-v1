@@ -973,6 +973,7 @@ Generated from TypeScript imports.
 - `items/itemConsumables.test.ts`
 - `items/itemDisplay.ts`
 - `items/itemFuel.ts`
+- `items/itemInstances.test.ts`
 - `items/itemUseView.ts`
 - `items/liquidContainer.ts`
 - `items/primaryWeapons.ts`
@@ -1052,6 +1053,14 @@ Generated from TypeScript imports.
 - `items/itemFuel.test.ts`
 - `settlement/householdWood.ts`
 
+## `items/itemInstances.test.ts`
+
+**Imports**
+
+- `items/itemCatalog.ts`
+- `items/itemInstances.ts`
+- `items/items.ts`
+
 ## `items/itemInstances.ts`
 
 **Imports**
@@ -1098,6 +1107,7 @@ Generated from TypeScript imports.
 - `items/inventoryView.ts`
 - `items/itemCapabilities.test.ts`
 - `items/itemCatalog.ts`
+- `items/itemInstances.test.ts`
 - `items/itemUseView.test.ts`
 - `items/itemUseView.ts`
 - `items/items.ts`
@@ -1112,6 +1122,7 @@ Generated from TypeScript imports.
 - `items/weaponMaintenance.ts`
 - `persistence/saveData.ts`
 - `player/characterPresentation.ts`
+- `player/playerCombatMode.test.ts`
 - `quests/dungeonBanditTreasure.ts`
 - `quests/lostHunterNaturalCave.ts`
 - `quests/lostTreasureChronicleDeciphering.ts`
@@ -1278,6 +1289,7 @@ Generated from TypeScript imports.
 - `items/itemDisplay.test.ts`
 - `items/itemDisplay.ts`
 - `items/itemFuel.ts`
+- `items/itemInstances.test.ts`
 - `items/itemInstances.ts`
 - `items/itemModels.ts`
 - `items/itemUseView.ts`
@@ -1598,11 +1610,13 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `ai/npcLoadout.ts`
 - `app/actions/groundActions.ts`
 - `app/actions/placementActions.ts`
 - `app/createApp.ts`
 - `app/interactables.ts`
 - `app/inventoryWiring.ts`
+- `economy/production.ts`
 - `items/trade.test.ts`
 - `items/trapInstanceTrade.test.ts`
 - `settlement/artisanOrders.ts`

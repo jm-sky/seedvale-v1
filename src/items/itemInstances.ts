@@ -125,6 +125,37 @@ export function isWeaponMaintenanceKind(kind: ItemKind): kind is WeaponMaintenan
   return WEAPON_MAINTENANCE_KINDS.has(kind)
 }
 
+/** Plan items-player-060 — every current reusable player ranged weapon.
+ *  Central classification: acquisition, Inventory, trade and `HeldTool`
+ *  identity all key off this instead of a per-kind branch each. Deliberately
+ *  separate from `WeaponMaintenanceKind` — a bow/crossbow/sling has no
+ *  meaningful `sharpness`, so it stays a plain `ItemInstance { id, kind }`
+ *  rather than borrowing melee maintenance state. Ammo (`arrow` and
+ *  variants, `bolt`, `stone`) is not part of this family — it stays an
+ *  ordinary stackable resource. */
+export type RangedWeaponKind =
+  | 'short_bow'
+  | 'hunting_bow'
+  | 'long_bow'
+  | 'masterwork_hunting_bow'
+  | 'crossbow'
+  | 'sling'
+
+export const RANGED_WEAPON_KIND_LIST: readonly RangedWeaponKind[] = [
+  'crossbow',
+  'hunting_bow',
+  'long_bow',
+  'masterwork_hunting_bow',
+  'short_bow',
+  'sling',
+]
+
+export const RANGED_WEAPON_KINDS: ReadonlySet<ItemKind> = new Set<ItemKind>(RANGED_WEAPON_KIND_LIST)
+
+export function isRangedWeaponKind(kind: ItemKind): kind is RangedWeaponKind {
+  return RANGED_WEAPON_KINDS.has(kind)
+}
+
 /** What a liquid-container instance (plan items-player-001) can hold. */
 export type LiquidContent = 'water' | 'milk'
 
@@ -212,14 +243,16 @@ export function createItemInstanceId(): string {
 }
 
 /** Count-based kinds that may still carry a stable instance id when authored
- *  content needs physical identity (plans quests-progression-023 / 025). */
+ *  content needs physical identity (plans quests-progression-023 / 025).
+ *  `hunting_bow` moved out to `RANGED_WEAPON_KINDS` (plan items-player-060)
+ *  — its physical identity is now owned by the ranged-family classification,
+ *  not this story-identity one. */
 export const IDENTITY_ONLY_ITEM_KINDS: ReadonlySet<ItemKind> = new Set<ItemKind>([
   'bandit_ledger',
   'chronicle_reference',
   'chronicle_search_evidence',
   'encoded_chronicle',
   'expedition_journal',
-  'hunting_bow',
   'marked_valuable',
   'signet_ring',
 ])
@@ -233,6 +266,7 @@ export const INSTANCE_BACKED_KINDS: ReadonlySet<ItemKind> = new Set<ItemKind>([
   ...LIQUID_CONTAINER_KINDS,
   ...ARMOR_KIND_LIST,
   ...IDENTITY_ONLY_ITEM_KINDS,
+  ...RANGED_WEAPON_KINDS,
 ])
 
 /** Generic physical key. Systemic treasure passes a deterministic `id`;

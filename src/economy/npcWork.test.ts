@@ -156,34 +156,37 @@ describe('commitHunterBowProduction (plan settlements-npcs-040)', () => {
     household.items.remove('beam', household.items.count('beam'))
   }
 
-  it('produces a short_bow into Household.items, not personal inventory', () => {
+  it('produces a short_bow instance into Household.items, not personal inventory (plan items-player-060)', () => {
     const household = createHousehold('h', 's', 'home')
     clearStartingWood(household)
     household.items.add('branch', 2)
     expect(commitHunterBowProduction(household)).toBe(true)
     expect(household.items.count('branch')).toBe(0)
-    expect(household.items.count('short_bow')).toBe(1)
+    expect(household.items.countInstances('short_bow')).toBe(1)
+    expect(household.items.count('short_bow')).toBe(0)
   })
 
   it('blocks once the household already holds the unsold bow cap', () => {
     const household = createHousehold('h', 's', 'home')
     clearStartingWood(household)
-    household.items.add('short_bow', 2)
+    household.items.addInstance({ id: 'bow:cap:1', kind: 'short_bow' })
+    household.items.addInstance({ id: 'bow:cap:2', kind: 'short_bow' })
     household.items.add('branch', 4)
     expect(commitHunterBowProduction(household)).toBe(false)
-    expect(household.items.count('short_bow')).toBe(2)
+    expect(household.items.countInstances('short_bow')).toBe(2)
     expect(household.items.count('branch')).toBe(4)
   })
 
   it('can produce again after a bow is sold', () => {
     const household = createHousehold('h', 's', 'home')
     clearStartingWood(household)
-    household.items.add('short_bow', 2)
+    household.items.addInstance({ id: 'bow:resume:1', kind: 'short_bow' })
+    household.items.addInstance({ id: 'bow:resume:2', kind: 'short_bow' })
     household.items.add('branch', 2)
     expect(commitHunterBowProduction(household)).toBe(false)
-    household.items.remove('short_bow', 1)
+    household.items.removeInstance('bow:resume:1')
     expect(commitHunterBowProduction(household)).toBe(true)
-    expect(household.items.count('short_bow')).toBe(2)
+    expect(household.items.countInstances('short_bow')).toBe(2)
   })
 })
 

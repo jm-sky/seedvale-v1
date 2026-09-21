@@ -2402,6 +2402,73 @@ describe('schema versioning and migration pipeline (persistence-003)', () => {
     ])
   })
 
+  it('migrates a v55 save with legacy count-backed ranged weapons into one instance each, across every owner, preserving existing hunting_bow instances (plan items-player-060)', () => {
+    const result = loadStoredSave({
+      ...validSave,
+      version: 55,
+      inventory: { short_bow: 2, crossbow: 1 },
+      inventoryInstances: [{ id: 'hunting_bow:existing', kind: 'hunting_bow' }],
+      droppedItems: [{ id: 'drop:1', kind: 'sling', x: 1, z: 2 }],
+      placedContainers: [
+        { id: 'chest:1', kind: 'chest', x: 5, z: -3, yaw: 0.4, counts: { long_bow: 1 }, instances: [], foodBatches: {} },
+      ],
+      carriedContainer: { id: 'chest:2', kind: 'chest', counts: { masterwork_hunting_bow: 1 }, instances: [], foodBatches: {} },
+      households: {
+        home: { water: 5, items: { counts: { hunting_bow: 1 }, instances: [] } },
+      },
+      npcStates: {
+        'npc:1': {
+          health: { current: 100, max: 100, dead: false },
+          stamina: { current: 100, max: 100 },
+          vigor: { current: 100, max: 100 },
+          needs: { thirst: 0, woodDuty: 0, waterDuty: 0, hunger: 0 },
+          postDeath: null,
+          personalInventory: { counts: { short_bow: 1 }, instances: [] },
+          merchantStock: { counts: { crossbow: 2 }, instances: [] },
+        },
+      },
+    })
+    expect(result.status).toBe('ok')
+    if (result.status !== 'ok') return
+    expect(result.data.version).toBe(CURRENT_SAVE_VERSION)
+
+    expect(result.data.inventory.short_bow).toBeUndefined()
+    expect(result.data.inventory.crossbow).toBeUndefined()
+    const playerRanged = result.data.inventoryInstances.filter((i) => i.kind !== 'hunting_bow' || i.id !== 'hunting_bow:existing')
+    expect(playerRanged.filter((i) => i.kind === 'short_bow')).toHaveLength(2)
+    expect(playerRanged.filter((i) => i.kind === 'crossbow')).toHaveLength(1)
+    expect(result.data.inventoryInstances).toContainEqual({ id: 'hunting_bow:existing', kind: 'hunting_bow' })
+
+    const drop = result.data.droppedItems.find((d) => d.id === 'drop:1')
+    expect(drop?.instance).toEqual({ id: expect.any(String), kind: 'sling' })
+
+    expect(result.data.placedContainers[0]?.counts.long_bow).toBeUndefined()
+    expect(result.data.placedContainers[0]?.instances).toHaveLength(1)
+    expect(result.data.placedContainers[0]?.instances[0]?.kind).toBe('long_bow')
+
+    expect(result.data.carriedContainer?.counts.masterwork_hunting_bow).toBeUndefined()
+    expect(result.data.carriedContainer?.instances).toHaveLength(1)
+
+    const householdItems = result.data.households?.home?.items
+    expect(householdItems?.counts.hunting_bow).toBeUndefined()
+    expect(householdItems?.instances).toHaveLength(1)
+    expect(householdItems?.instances[0]?.kind).toBe('hunting_bow')
+
+    const npc = result.data.npcStates?.['npc:1']
+    expect(npc?.personalInventory?.counts.short_bow).toBeUndefined()
+    expect(npc?.personalInventory?.instances).toHaveLength(1)
+    expect(npc?.merchantStock?.counts.crossbow).toBeUndefined()
+    expect(npc?.merchantStock?.instances).toHaveLength(2)
+  })
+
+  it('leaves a save with no legacy ranged counts unchanged (idempotent) (plan items-player-060)', () => {
+    const result = loadStoredSave({ ...validSave, version: 55 })
+    expect(result.status).toBe('ok')
+    if (result.status !== 'ok') return
+    expect(result.data.version).toBe(CURRENT_SAVE_VERSION)
+    expect(result.data.inventoryInstances).toEqual([])
+  })
+
   it('round-trips fire residues and rejects malformed current-version records (plan items-player-058)', () => {
     const withResidue = {
       ...validSave,

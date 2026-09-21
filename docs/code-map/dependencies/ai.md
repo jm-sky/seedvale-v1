@@ -999,6 +999,7 @@ Generated from TypeScript imports.
 - `items/Inventory.ts`
 - `items/itemInstances.ts`
 - `items/items.ts`
+- `items/trade.ts`
 - `items/weaponMaintenance.ts`
 
 **Imported by**

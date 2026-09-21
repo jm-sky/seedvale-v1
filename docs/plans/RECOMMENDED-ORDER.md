@@ -199,13 +199,10 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   🟡 `M` · **Score:**  37  
    → **unlocks:** 0/0
 
-29. `items-player-060` — **Ranged weapon inventory, trade and use integrity**  
+29. `npc-037` — **Work Contracts — Stale Target Discovery and Notice Cleanup**  
   🔴 `M` · **Score:**  35  
    → **unlocks:** 0/0
 
-30. `npc-037` — **Work Contracts — Stale Target Discovery and Notice Cleanup**  
-  🔴 `M` · **Score:**  35  
-   → **unlocks:** 0/0
 
 31. `items-player-051` — **Cave-aware dropped-item continuity**  
   🔴 `M` · **Score:**  33  

@@ -1,9 +1,11 @@
 import type { Role } from '../ai/characters'
 import type { Inventory, ItemAmount } from '../items/Inventory'
+import type { ItemInstance } from '../items/itemInstances'
 import type { ItemKind } from '../items/items'
 import type { ArtisanSpecialization } from '../settlement/artisanProfile'
 import type { StockAmount } from './stock'
 import { isInstanceBackedKind } from '../items/itemInstances'
+import { createAcquiredInstance } from '../items/trade'
 import { executeProduction } from './productionExecutor'
 
 /**
@@ -103,9 +105,11 @@ export const HUNTER_ARROW_PRODUCTIONS: readonly ProductionDef[] = [
 
 /**
  * Hunter bow production (plan settlements-npcs-040) — same item-for-item
- * `Household.items` path as arrows. Outputs `short_bow` (count-backed) so
- * `executeProduction` / `applyRecipe` can commit without synthesizing
- * instances. Cap is unsold household trade stock, not lifetime production.
+ * `Household.items` path as arrows. `short_bow` is instance-backed (plan
+ * items-player-060), so `produceFirstAvailableItemRecipe` mints a fresh
+ * instance via `resolveItemOutputInstances()` before calling
+ * `executeProduction`, rather than a plain `applyRecipe` count bump. Cap is
+ * unsold household trade stock, not lifetime production.
  *
  * @domain settlements-npcs
  */
@@ -323,13 +327,38 @@ export const DRESSING_PRODUCTION: ProductionDef = {
  * against `inventory`. Priority order is the array order (hunter: branch
  * before beam). Returns the applied def, or null when none can run.
  */
+/** Mints fresh instances for any instance-backed `itemOutputs` entries in
+ *  `def` (plan items-player-060) — bridges a count/instance-agnostic recipe
+ *  declaration to `executeProduction`'s explicit `itemOutputInstances`
+ *  contract, the same way `artisanOrders.ts`'s custom-order completion does
+ *  for quality-bearing crafted output. `undefined` both when `def` has no
+ *  instance-backed output (the common case — `executeProduction` then takes
+ *  its plain `applyRecipe` count path) and when acquisition unexpectedly
+ *  fails for a declared instance-backed kind, which `executeProduction`
+ *  itself then rejects as `unavailable-destination` rather than silently
+ *  falling back to a count. */
+function resolveItemOutputInstances(def: ProductionDef): ItemInstance[] | undefined {
+  const instanceOutputs = (def.itemOutputs ?? []).filter((output) => isInstanceBackedKind(output.kind))
+  if (instanceOutputs.length === 0) return undefined
+  const instances: ItemInstance[] = []
+  for (const { kind, amount } of instanceOutputs) {
+    for (let i = 0; i < amount; i++) {
+      const instance = createAcquiredInstance(kind)
+      if (!instance) return undefined
+      instances.push(instance)
+    }
+  }
+  return instances
+}
+
 export function produceFirstAvailableItemRecipe(
   inventory: Inventory,
   defs: readonly ProductionDef[],
   simTime = 0,
 ): ProductionDef | null {
   for (const def of defs) {
-    if (executeProduction(def, { inventory, simTime }).ok) return def
+    const itemOutputInstances = resolveItemOutputInstances(def)
+    if (executeProduction(def, { inventory, simTime, itemOutputInstances }).ok) return def
   }
   return null
 }

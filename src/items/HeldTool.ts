@@ -1,7 +1,7 @@
 import type { Inventory } from './Inventory'
 import type { ItemKind } from './items'
 import { HOLDABLE_KINDS } from './itemCatalog'
-import { isWeaponMaintenanceKind } from './itemInstances'
+import { isInstanceBackedKind } from './itemInstances'
 
 /** Tool kinds that can occupy the single "in hand" slot. */
 export type ToolKind = 'knife'
@@ -44,8 +44,10 @@ export function isToolKind(kind: ItemKind): kind is ToolKind {
 export type HeldTool = {
   held: () => ToolKind | null
   /** The specific `Inventory` instance in hand — only set (and only
-   *  meaningful) for `WEAPON_MAINTENANCE_KINDS` (plan 161). Null for every
-   *  count-based tool and whenever nothing is held. */
+   *  meaningful) for a holdable kind whose ownership is instance-backed
+   *  (melee `WEAPON_MAINTENANCE_KINDS`, plan 161; reusable ranged weapons,
+   *  plan items-player-060). Null for every count-based tool and whenever
+   *  nothing is held. */
   heldInstanceId: () => string | null
   /** Equip a tool already in inventory. For a weapon-maintenance kind,
    *  `instanceId` picks which concrete instance goes in hand — an invalid/
@@ -84,7 +86,7 @@ export function createHeldTool(
   }
 
   function resolveInstanceId(kind: ToolKind, preferId?: string | null): string | null {
-    if (!isWeaponMaintenanceKind(kind)) return null
+    if (!isInstanceBackedKind(kind)) return null
     const instances = inventory.getInstances(kind)
     if (instances.length === 0) return null
     if (preferId && instances.some((inst) => inst.id === preferId)) return preferId
@@ -116,7 +118,7 @@ export function createHeldTool(
         currentInstanceId = null
         return
       }
-      if (isWeaponMaintenanceKind(current)) {
+      if (isInstanceBackedKind(current)) {
         if (currentInstanceId === null || !inventory.getInstance(currentInstanceId)) {
           currentInstanceId = resolveInstanceId(current)
         }

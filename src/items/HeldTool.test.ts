@@ -77,26 +77,28 @@ describe('createHeldTool', () => {
     expect(held.heldInstanceId()).toBe(b.id)
   })
 
-  it('equips identity-only hunting_bow from instances without tracking heldInstanceId', () => {
-    const inventory = new Inventory({}, undefined, [{ id: createItemInstanceId(), kind: 'hunting_bow' }])
-    const held = createHeldTool(inventory)
-    expect(isToolKind('hunting_bow')).toBe(true)
-    expect(held.equip('hunting_bow')).toBe(true)
-    expect(held.held()).toBe('hunting_bow')
-    expect(held.heldInstanceId()).toBeNull()
-    held.syncWithInventory()
-    expect(held.held()).toBe('hunting_bow')
-    expect(held.heldInstanceId()).toBeNull()
-  })
-
-  it('equips count-based bows without setting heldInstanceId', () => {
-    const inventory = new Inventory({ short_bow: 1, long_bow: 1, masterwork_hunting_bow: 1 })
-    const held = createHeldTool(inventory)
-    for (const kind of ['short_bow', 'long_bow', 'masterwork_hunting_bow'] as const) {
+  it('equips ranged weapons (plan items-player-060) with a concrete instance id, same as weapon-maintenance kinds', () => {
+    for (const kind of ['short_bow', 'hunting_bow', 'long_bow', 'masterwork_hunting_bow', 'crossbow', 'sling'] as const) {
+      const inventory = new Inventory({}, undefined, [{ id: createItemInstanceId(), kind }])
+      const held = createHeldTool(inventory)
+      expect(isToolKind(kind)).toBe(true)
       expect(held.equip(kind)).toBe(true)
       expect(held.held()).toBe(kind)
-      expect(held.heldInstanceId()).toBeNull()
+      expect(held.heldInstanceId()).not.toBeNull()
     }
+  })
+
+  it('re-resolves the held ranged instance onto another owned copy after the equipped one is removed', () => {
+    const a = { id: createItemInstanceId(), kind: 'short_bow' as const }
+    const b = { id: createItemInstanceId(), kind: 'short_bow' as const }
+    const inventory = new Inventory({}, undefined, [a, b])
+    const held = createHeldTool(inventory)
+    expect(held.equip('short_bow', a.id)).toBe(true)
+    expect(held.heldInstanceId()).toBe(a.id)
+    inventory.removeInstance(a.id)
+    held.syncWithInventory()
+    expect(held.held()).toBe('short_bow')
+    expect(held.heldInstanceId()).toBe(b.id)
   })
 
   it('equips compact weapon-maintenance kinds with a concrete instance id', () => {

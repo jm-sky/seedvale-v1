@@ -1076,3 +1076,93 @@ describe('armor quality pricing and merchant instance trade (plan items-player-0
     expect(pay.count('coin')).toBe(unitPrice)
   })
 })
+
+describe('reusable ranged weapons (plan items-player-060)', () => {
+  const RANGED_KINDS = ['short_bow', 'hunting_bow', 'long_bow', 'masterwork_hunting_bow', 'crossbow', 'sling'] as const
+
+  it('mints exactly one plain instance per acquisition, no shadow count, across the whole family', () => {
+    for (const kind of RANGED_KINDS) {
+      const first = createAcquiredInstance(kind)
+      const second = createAcquiredInstance(kind)
+      expect(first).toEqual({ id: expect.any(String), kind })
+      expect(second!.id).not.toBe(first!.id)
+      // Plain instance — no leftover melee maintenance fields.
+      expect(first).not.toHaveProperty('durability')
+      expect(first).not.toHaveProperty('sharpness')
+
+      const inventory = new Inventory({})
+      inventory.addInstance(first!)
+      expect(inventory.count(kind)).toBe(0)
+      expect(inventory.countInstances(kind)).toBe(1)
+      expect(inventory.holdsAny(kind)).toBe(true)
+    }
+  })
+
+  it('materializes finite Merchant stock as real instances, not a legacy count (plan §5)', () => {
+    const stock = new Inventory()
+    seedMerchantStockIfNeeded(stock, { merchantStockInitialized: false }, { short_bow: 2, crossbow: 1 })
+    expect(stock.count('short_bow')).toBe(0)
+    expect(stock.getInstances('short_bow')).toHaveLength(2)
+    expect(stock.getInstances('crossbow')).toHaveLength(1)
+    // Idempotent — re-seeding an already-initialized stock mints nothing new.
+    seedMerchantStockIfNeeded(stock, { merchantStockInitialized: true }, { short_bow: 5 })
+    expect(stock.getInstances('short_bow')).toHaveLength(2)
+  })
+
+  it('purchases the real stocked instance atomically — insufficient coins/capacity mutate nothing', () => {
+    const bow = { id: 'stock:short_bow:1', kind: 'short_bow' as const }
+    const stock = new Inventory(undefined, Infinity, [bow], undefined, Infinity)
+    const price = merchantPrice('short_bow')!
+
+    const poor = new Inventory({ coin: price - 1 }, Infinity, undefined, undefined, Infinity)
+    expect(settleMerchantStockTransaction(poor, stock, { short_bow: 1 }, {})).toBe('cannot_afford')
+    expect(stock.getInstance(bow.id)).toEqual(bow)
+    expect(poor.count('coin')).toBe(price - 1)
+
+    const cramped = new Inventory({ coin: price }, 0, undefined, undefined, Infinity)
+    expect(settleMerchantStockTransaction(cramped, stock, { short_bow: 1 }, {})).toBe('full')
+    expect(stock.getInstance(bow.id)).toEqual(bow)
+
+    const buyer = new Inventory({ coin: price }, Infinity, undefined, undefined, Infinity)
+    expect(settleMerchantStockTransaction(buyer, stock, { short_bow: 1 }, {})).toBe('ok')
+    expect(buyer.getInstance(bow.id)).toEqual(bow)
+    expect(stock.getInstance(bow.id)).toBeNull()
+    expect(buyer.count('coin')).toBe(0)
+  })
+
+  it('repeated purchase of two copies yields two distinct instance ids', () => {
+    const a = { id: 'stock:sling:a', kind: 'sling' as const }
+    const b = { id: 'stock:sling:b', kind: 'sling' as const }
+    const stock = new Inventory(undefined, Infinity, [a, b], undefined, Infinity)
+    const price = merchantPrice('sling')!
+    const buyer = new Inventory({ coin: price * 2 }, Infinity, undefined, undefined, Infinity)
+    expect(settleMerchantStockTransaction(buyer, stock, { sling: 2 }, {})).toBe('ok')
+    expect(buyer.getInstances('sling').map((i) => i.id).sort()).toEqual(['stock:sling:a', 'stock:sling:b'])
+  })
+
+  it('an NPC-owned ranged weapon sale moves the real instance, never mints a replacement', () => {
+    const owned = { id: 'household:hunting_bow:1', kind: 'hunting_bow' as const }
+    const buyer = new Inventory({ coin: 200 }, Infinity, undefined, undefined, Infinity)
+    const source = new Inventory(undefined, Infinity, [owned], undefined, Infinity)
+    const payee = new Inventory(undefined, Infinity, undefined, undefined, Infinity)
+    const unitPrice = npcInstanceSalePrice(owned)
+    const result = settleOwnedGoodsPurchase(buyer, source, payee, [{
+      kind: 'hunting_bow', count: 1, unitPrice, instanceIds: [owned.id],
+    }])
+    expect(result).toBe('ok')
+    expect(buyer.getInstance(owned.id)).toEqual(owned)
+    expect(source.getInstances('hunting_bow')).toHaveLength(0)
+    expect(payee.count('coin')).toBe(unitPrice)
+  })
+
+  it('selling one of two owned copies removes exactly the requested instance', () => {
+    const worse = { id: 'crossbow:worse', kind: 'crossbow' as const }
+    const better = { id: 'crossbow:better', kind: 'crossbow' as const }
+    const inventory = new Inventory(undefined, Infinity, [worse, better], undefined, Infinity)
+    const line = resolveOfferLineBuyback(inventory, 'crossbow', 1)
+    expect(line.instanceIds).toHaveLength(1)
+    expect(settleTransaction(inventory, {}, { crossbow: 1 }, NEUTRAL_SELL_PRICE_CONTEXT)).toBe('ok')
+    expect(inventory.getInstances('crossbow')).toHaveLength(1)
+    expect(inventory.count('crossbow')).toBe(0)
+  })
+})

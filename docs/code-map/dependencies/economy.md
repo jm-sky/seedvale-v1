@@ -243,6 +243,7 @@ Generated from TypeScript imports.
 - `items/Inventory.ts`
 - `items/itemInstances.ts`
 - `items/items.ts`
+- `items/trade.ts`
 - `settlement/artisanProfile.ts`
 
 **Imported by**

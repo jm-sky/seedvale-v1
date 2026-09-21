@@ -2,7 +2,8 @@ import type { Inventory } from '../items/Inventory'
 import type { WeaponMaintenanceKind } from '../items/itemInstances'
 import type { ItemKind } from '../items/items'
 import type { Role } from './characters'
-import { isWeaponMaintenanceKind } from '../items/itemInstances'
+import { isInstanceBackedKind } from '../items/itemInstances'
+import { createAcquiredInstance } from '../items/trade'
 import { createWeaponInstance } from '../items/weaponMaintenance'
 
 /**
@@ -25,16 +26,18 @@ export function defaultWeaponForRole(role: Role): ItemKind {
 }
 
 /** Seeds `carried` with `role`'s default weapon, once, at NPC construction
- *  (plan 185 §6/§12) — a no-op when `carried` already holds one (defensive
- *  idempotency; construction only ever runs this once). Weapon kinds here are
- *  all `WEAPON_MAINTENANCE_KINDS` today, so this mirrors `createApp.ts`'s
- *  `grantStartingLoadout` instance-vs-count branch rather than assuming
- *  `Inventory.add()` alone is enough. */
+ *  (plan 185 §6/§12, generalized by plan items-player-060) — a no-op when
+ *  `carried` already holds one (defensive idempotency; construction only
+ *  ever runs this once). Every kind here is either melee-maintenance- or
+ *  ranged-instance-backed today (hunter's `hunting_bow`), so this mirrors
+ *  `createApp.ts`'s `grantStartingLoadout` instance-vs-count branch rather
+ *  than assuming `Inventory.add()` alone is enough. */
 export function seedDefaultRoleWeapon(carried: Inventory, role: Role): void {
   const kind = defaultWeaponForRole(role)
   if (carried.holdsAny(kind)) return
-  if (isWeaponMaintenanceKind(kind)) {
-    carried.addInstance(createWeaponInstance(kind))
+  if (isInstanceBackedKind(kind)) {
+    const instance = createAcquiredInstance(kind)
+    if (instance) carried.addInstance(instance)
   } else {
     carried.add(kind, 1)
   }
@@ -138,13 +141,14 @@ const GUARD_STARTING_BOLTS = 6
  *  additional ranged option alongside `DEFAULT_WEAPON_BY_ROLE.guard`
  *  (`long_sword`, unchanged), not a replacement. One stable roll per
  *  `npcId`; idempotent (no-op once a crossbow is already carried). `crossbow`
- *  is count-based like bows (not `WEAPON_MAINTENANCE_KINDS`), so both it and
- *  its bolts use plain `add()`. */
+ *  is a ranged-weapon instance (plan items-player-060), like every other
+ *  reusable bow/crossbow/sling; `bolt` ammo stays an ordinary count. */
 export function seedGuardCrossbowLoadout(inventory: Inventory, npcId: string): void {
   if (inventory.holdsAny('crossbow')) return
   const roll = hashString(`${npcId}:${GUARD_CROSSBOW_LOADOUT_SALT}`) % 100
   if (roll >= GUARD_CROSSBOW_LOADOUT_CHANCE_PERCENT) return
-  inventory.add('crossbow', 1)
+  const instance = createAcquiredInstance('crossbow')
+  if (instance) inventory.addInstance(instance)
   inventory.add('bolt', GUARD_STARTING_BOLTS)
 }
 
@@ -157,16 +161,17 @@ const SHEPHERD_SLING_LOADOUT_CHANCE_PERCENT = 25
 const SHEPHERD_STARTING_SLING_STONES = 4
 
 /** Deterministic optional shepherd sling (plan items-player-059 §12) —
- *  additional to the primary melee roll above, never replacing it. Seeds a
- *  small initial `stone` stack alongside it (existing renewable resource
- *  reused as sling ammo, plan §11); no shepherd stone-resupply loop exists
- *  yet, so this stack is deliberately small and one-time, like
- *  `HUNTER_STARTING_ARROWS`. */
+ *  additional to the primary melee roll above, never replacing it. `sling`
+ *  is a ranged-weapon instance (plan items-player-060). Seeds a small
+ *  initial `stone` stack alongside it (existing renewable resource reused
+ *  as sling ammo, plan §11); no shepherd stone-resupply loop exists yet, so
+ *  this stack is deliberately small and one-time, like `HUNTER_STARTING_ARROWS`. */
 export function seedShepherdSlingLoadout(inventory: Inventory, npcId: string): void {
   if (inventory.holdsAny('sling')) return
   const roll = hashString(`${npcId}:${SHEPHERD_SLING_LOADOUT_SALT}`) % 100
   if (roll >= SHEPHERD_SLING_LOADOUT_CHANCE_PERCENT) return
-  inventory.add('sling', 1)
+  const instance = createAcquiredInstance('sling')
+  if (instance) inventory.addInstance(instance)
   inventory.add('stone', SHEPHERD_STARTING_SLING_STONES)
 }
 

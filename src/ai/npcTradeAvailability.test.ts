@@ -124,11 +124,12 @@ describe('npcTradeAvailability household goods (plan settlements-npcs-033 / 036)
 
   it('offers explicit specialist goods including dried_meat and herb', () => {
     const household = householdWith({
-      short_bow: 1,
       dried_meat: 3,
       herb: 4,
       backpack: 1,
     })
+    // Plan items-player-060 — short_bow trade stock is a real instance, not a count.
+    household.items.addInstance({ id: 'short_bow:1', kind: 'short_bow' })
     const npc = counterparty(household, 'hunter')
     expect(resolveNpcTradeOffers(npc, [])).toEqual([
       { kind: 'short_bow', quantity: 1, owner: 'household' },

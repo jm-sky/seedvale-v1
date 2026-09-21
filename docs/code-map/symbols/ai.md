@@ -412,19 +412,19 @@ Generated from exported TypeScript symbols.
 
 ## `ai/npcLoadout.ts`
 
-- `defaultWeaponForRole` — function — line 23
-- `ensureKnifeCarried` — function — line 47
-- `isNpcLoadoutBelonging` — function — line 207
-- `seedDefaultRoleWeapon` — function — line 33
-- `seedGuardCrossbowLoadout` — function — line 143
-- `seedHunterStartingArrows` — function — line 70
-- `seedHunterSupplies` — function — line 62
-- `seedInitialPersonalBelongingsIfNeeded` — function — line 179
-- `seedShepherdPrimaryWeapon` — function — line 125
-- `seedShepherdShears` — function — line 77
-- `seedShepherdSlingLoadout` — function — line 165
-- `selectShepherdPrimaryWeapon` — function — line 111
-- `SHEPHERD_PRIMARY_WEAPON_KINDS` — const — line 105
+- `defaultWeaponForRole` — function — line 24
+- `ensureKnifeCarried` — function — line 50
+- `isNpcLoadoutBelonging` — function — line 212
+- `seedDefaultRoleWeapon` — function — line 35
+- `seedGuardCrossbowLoadout` — function — line 146
+- `seedHunterStartingArrows` — function — line 73
+- `seedHunterSupplies` — function — line 65
+- `seedInitialPersonalBelongingsIfNeeded` — function — line 184
+- `seedShepherdPrimaryWeapon` — function — line 128
+- `seedShepherdShears` — function — line 80
+- `seedShepherdSlingLoadout` — function — line 169
+- `selectShepherdPrimaryWeapon` — function — line 114
+- `SHEPHERD_PRIMARY_WEAPON_KINDS` — const — line 108
 
 ## `ai/npcLocomotion.ts`
 

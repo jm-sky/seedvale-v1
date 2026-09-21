@@ -85,43 +85,43 @@ Generated from exported TypeScript symbols.
 
 ## `economy/production.ts`
 
-- `ARROWS_FROM_BEAM_PRODUCTION` — const — line 89
-- `ARROWS_FROM_BRANCH_PRODUCTION` — const — line 80
-- `BLACKSMITH_AXE_PRODUCTION` — const — line 242
-- `BLACKSMITH_BATTLE_AXE_PRODUCTION` — const — line 268
-- `BLACKSMITH_CHAINMAIL_PRODUCTION` — const — line 261
-- `BLACKSMITH_DAMASCUS_KNIFE_PRODUCTION` — const — line 275
-- `BLACKSMITH_IRON_ROD_PRODUCTION` — const — line 209
+- `ARROWS_FROM_BEAM_PRODUCTION` — const — line 91
+- `ARROWS_FROM_BRANCH_PRODUCTION` — const — line 82
+- `BLACKSMITH_AXE_PRODUCTION` — const — line 246
+- `BLACKSMITH_BATTLE_AXE_PRODUCTION` — const — line 272
+- `BLACKSMITH_CHAINMAIL_PRODUCTION` — const — line 265
+- `BLACKSMITH_DAMASCUS_KNIFE_PRODUCTION` — const — line 279
+- `BLACKSMITH_IRON_ROD_PRODUCTION` — const — line 213
   - domain: settlements-npcs
-- `BLACKSMITH_KNIFE_PRODUCTION` — const — line 239
-- `BLACKSMITH_LONG_SWORD_PRODUCTION` — const — line 251
-- `BLACKSMITH_MASTERWORK_SWORD_PRODUCTION` — const — line 282
-- `BLACKSMITH_ORDER_PRODUCTIONS` — const — line 297
+- `BLACKSMITH_KNIFE_PRODUCTION` — const — line 243
+- `BLACKSMITH_LONG_SWORD_PRODUCTION` — const — line 255
+- `BLACKSMITH_MASTERWORK_SWORD_PRODUCTION` — const — line 286
+- `BLACKSMITH_ORDER_PRODUCTIONS` — const — line 301
   - domain: settlements-npcs
-- `BLACKSMITH_PAULDRON_PRODUCTION` — const — line 254
-- `BLACKSMITH_PICKAXE_PRODUCTION` — const — line 245
-- `BLACKSMITH_SHORT_SWORD_PRODUCTION` — const — line 248
-- `DRESSING_PRODUCTION` — const — line 312
-- `FARMING_PRODUCTION` — const — line 50
-- `FISHING_PRODUCTION` — const — line 57
-- `FLAX_LINEN_PRODUCTION` — const — line 175
-- `householdTradeBowCount` — function — line 148
+- `BLACKSMITH_PAULDRON_PRODUCTION` — const — line 258
+- `BLACKSMITH_PICKAXE_PRODUCTION` — const — line 249
+- `BLACKSMITH_SHORT_SWORD_PRODUCTION` — const — line 252
+- `DRESSING_PRODUCTION` — const — line 316
+- `FARMING_PRODUCTION` — const — line 52
+- `FISHING_PRODUCTION` — const — line 59
+- `FLAX_LINEN_PRODUCTION` — const — line 179
+- `householdTradeBowCount` — function — line 152
   - domain: settlements-npcs
-- `HUNTER_ARROW_PRODUCTIONS` — const — line 99
-- `HUNTER_BOW_PRODUCTIONS` — const — line 131
-- `HUNTER_BOW_STOCK_CAP` — const — line 137
-- `LINEN_BANDAGE_PRODUCTION` — const — line 185
-- `MINING_PRODUCTION` — const — line 64
-- `produceFirstAvailableItemRecipe` — function — line 326
-- `ProductionDef` — type — line 13
-- `productionDefById` — function — line 377
-- `productionForRole` — function — line 344
-- `SHORT_BOW_FROM_BEAM_PRODUCTION` — const — line 121
-- `SHORT_BOW_FROM_BRANCH_PRODUCTION` — const — line 112
+- `HUNTER_ARROW_PRODUCTIONS` — const — line 101
+- `HUNTER_BOW_PRODUCTIONS` — const — line 135
+- `HUNTER_BOW_STOCK_CAP` — const — line 141
+- `LINEN_BANDAGE_PRODUCTION` — const — line 189
+- `MINING_PRODUCTION` — const — line 66
+- `produceFirstAvailableItemRecipe` — function — line 354
+- `ProductionDef` — type — line 15
+- `productionDefById` — function — line 406
+- `productionForRole` — function — line 373
+- `SHORT_BOW_FROM_BEAM_PRODUCTION` — const — line 125
+- `SHORT_BOW_FROM_BRANCH_PRODUCTION` — const — line 116
   - domain: settlements-npcs
-- `TEXTILE_WORKER_PRODUCTIONS` — const — line 195
-- `WOODCUTTING_PRODUCTION` — const — line 39
-- `WOOL_MATERIAL_PRODUCTION` — const — line 165
+- `TEXTILE_WORKER_PRODUCTIONS` — const — line 199
+- `WOODCUTTING_PRODUCTION` — const — line 41
+- `WOOL_MATERIAL_PRODUCTION` — const — line 169
   - domain: settlements-npcs
 
 ## `economy/productionExecutor.ts`

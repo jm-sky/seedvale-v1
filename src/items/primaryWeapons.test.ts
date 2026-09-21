@@ -129,16 +129,17 @@ describe('primaryWeapons', () => {
     expect(inventoryOwnsPrimaryWeaponChoice(inventory, 'axe', axe.id)).toBe(true)
   })
 
-  it('keeps a stack-based ranged primary and clears it when the stack is gone', () => {
-    const inventory = new Inventory({ short_bow: 1 })
-    expect(inventoryOwnsPrimaryWeaponChoice(inventory, 'short_bow', null)).toBe(true)
+  it('keeps an instance-backed ranged primary (plan items-player-060) and clears it when the last instance is gone', () => {
+    const bow = { id: 'bow:1', kind: 'short_bow' as const }
+    const inventory = new Inventory({}, undefined, [bow])
+    expect(inventoryOwnsPrimaryWeaponChoice(inventory, 'short_bow', bow.id)).toBe(true)
 
     const primary = createPrimaryWeaponSelection()
-    primary.setPrimaryRanged({ kind: 'short_bow', instanceId: null })
+    primary.setPrimaryRanged({ kind: 'short_bow', instanceId: bow.id })
     primary.syncWithInventory(inventory)
-    expect(primary.primaryRanged()).toEqual({ kind: 'short_bow', instanceId: null })
+    expect(primary.primaryRanged()).toEqual({ kind: 'short_bow', instanceId: bow.id })
 
-    inventory.remove('short_bow', 1)
+    inventory.removeInstance(bow.id)
     primary.syncWithInventory(inventory)
     expect(primary.primaryRanged()).toBeNull()
   })
@@ -163,10 +164,11 @@ describe('primaryWeapons', () => {
     expect(isPrimaryMeleeAssignment('damascus_long_sword', null, choice)).toBe(false)
   })
 
-  it('ignores instance id for non-maintenance ranged weapons', () => {
-    const choice = { kind: 'short_bow' as const, instanceId: null }
-    expect(isPrimaryRangedAssignment('short_bow', null, choice)).toBe(true)
-    expect(isPrimaryRangedAssignment('short_bow', 'ignored', choice)).toBe(true)
+  it('matches ranged instance id for instance-backed ranged weapons (plan items-player-060)', () => {
+    const choice = { kind: 'short_bow' as const, instanceId: 'inst-a' }
+    expect(isPrimaryRangedAssignment('short_bow', 'inst-a', choice)).toBe(true)
+    expect(isPrimaryRangedAssignment('short_bow', 'inst-b', choice)).toBe(false)
+    expect(isPrimaryRangedAssignment('short_bow', null, choice)).toBe(false)
   })
 
   it('migrates older saves without primary weapon fields to empty slots', () => {

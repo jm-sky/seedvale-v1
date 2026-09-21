@@ -71,21 +71,22 @@ describe('hunter arrow productions (settlements-npcs-003)', () => {
   })
 })
 
-describe('hunter bow productions (plan settlements-npcs-040)', () => {
-  it('2 branch -> 1 short_bow', () => {
+describe('hunter bow productions (plan settlements-npcs-040 / items-player-060)', () => {
+  it('2 branch -> 1 short_bow instance', () => {
     const inv = new Inventory({ branch: 2 }, Infinity)
     const applied = produceFirstAvailableItemRecipe(inv, HUNTER_BOW_PRODUCTIONS)
     expect(applied).toBe(SHORT_BOW_FROM_BRANCH_PRODUCTION)
     expect(inv.count('branch')).toBe(0)
-    expect(inv.count('short_bow')).toBe(1)
+    expect(inv.countInstances('short_bow')).toBe(1)
+    expect(inv.count('short_bow')).toBe(0)
   })
 
-  it('1 beam -> 1 short_bow', () => {
+  it('1 beam -> 1 short_bow instance', () => {
     const inv = new Inventory({ beam: 1 }, Infinity)
     const applied = produceFirstAvailableItemRecipe(inv, HUNTER_BOW_PRODUCTIONS)
     expect(applied).toBe(SHORT_BOW_FROM_BEAM_PRODUCTION)
     expect(inv.count('beam')).toBe(0)
-    expect(inv.count('short_bow')).toBe(1)
+    expect(inv.countInstances('short_bow')).toBe(1)
   })
 
   it('prefers branch over beam when both are available', () => {
@@ -97,12 +98,12 @@ describe('hunter bow productions (plan settlements-npcs-040)', () => {
   it('blocks when wood is insufficient', () => {
     const inv = new Inventory({ branch: 1 }, Infinity)
     expect(produceFirstAvailableItemRecipe(inv, HUNTER_BOW_PRODUCTIONS)).toBeNull()
-    expect(inv.count('short_bow')).toBe(0)
+    expect(inv.countInstances('short_bow')).toBe(0)
     expect(inv.count('branch')).toBe(1)
   })
 
   it('counts stack short_bow and instance hunting_bow toward the trade cap', () => {
-    const inv = new Inventory({ short_bow: 1 }, Infinity, [{ id: 'bow-1', kind: 'hunting_bow' }])
+    const inv = new Inventory({}, Infinity, [{ id: 'bow-0', kind: 'short_bow' }, { id: 'bow-1', kind: 'hunting_bow' }])
     expect(householdTradeBowCount(inv)).toBe(HUNTER_BOW_STOCK_CAP)
   })
 })

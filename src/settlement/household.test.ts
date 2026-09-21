@@ -312,7 +312,9 @@ describe('household specialist trade stock (plan settlements-npcs-040 / 042)', (
   it('seeds bounded hunter SM trade stock on genuine first construction', () => {
     const household = createHousehold('h', 's', 'home', undefined, { hasHunter: true })
     expect(household.items.count('arrow')).toBe(12)
-    expect(household.items.count('short_bow')).toBe(1)
+    // Plan items-player-060 — short_bow trade stock is a real instance, not a count.
+    expect(household.items.countInstances('short_bow')).toBe(1)
+    expect(household.items.count('short_bow')).toBe(0)
     expect(household.items.countInstances('hunting_bow')).toBe(0)
     expect(household.items.count('dried_meat')).toBe(2)
     expect(household.items.count('herb')).toBe(3)
@@ -327,12 +329,13 @@ describe('household specialist trade stock (plan settlements-npcs-040 / 042)', (
     const before = createHousehold('h', 's', 'home', undefined, { hasHunter: true })
     const pauldron = before.items.getInstances('leather_pauldron')[0]!
     before.items.removeInstance(pauldron.id)
-    before.items.remove('short_bow', 1)
+    const bow = before.items.getInstances('short_bow')[0]!
+    before.items.removeInstance(bow.id)
     before.items.remove('arrow', before.items.count('arrow'))
     const after = createHousehold('h', 's', 'home', before.snapshot(), { hasHunter: true })
     expect(after.items.countInstances('leather_pauldron')).toBe(0)
     expect(after.items.getInstance(pauldron.id)).toBeNull()
-    expect(after.items.count('short_bow')).toBe(0)
+    expect(after.items.countInstances('short_bow')).toBe(0)
     expect(after.items.count('arrow')).toBe(0)
   })
 

@@ -11,7 +11,6 @@ import { ITEM_CATALOG } from './itemCatalog'
 import {
   ARMOR_QUALITY_LABELS,
   type ArmorQuality,
-  IDENTITY_ONLY_ITEM_KINDS,
   INSTANCE_BACKED_KINDS,
   isArmorItemInstance,
   isLiquidContainerInstance,
@@ -90,8 +89,15 @@ function percentDeltaLabel(multiplier: number): string {
   return delta === 0 ? '±0%' : `${delta > 0 ? '+' : ''}${delta}%`
 }
 
-function buildIdentityOnlyGroup(kind: ItemKind, instances: readonly ItemInstance[]): InventoryGroupView | null {
-  if (!IDENTITY_ONLY_ITEM_KINDS.has(kind) || instances.length === 0) return null
+/** Fallback presentation for any instance-backed kind not covered by a more
+ *  specific builder above — story identity-only kinds (`IDENTITY_ONLY_ITEM_KINDS`)
+ *  and plain `ItemInstance { id, kind }` reusable ranged weapons alike (plan
+ *  items-player-060 §8: reuse this generic grouping rather than forcing
+ *  ranged weapons into identity-only UI semantics or adding a per-kind
+ *  branch). A fixed 100% "condition" is display-only — neither family tracks
+ *  wear. */
+function buildGenericInstanceGroup(kind: ItemKind, instances: readonly ItemInstance[]): InventoryGroupView | null {
+  if (instances.length === 0) return null
   const rows: InventoryInstanceRow[] = instances.map((inst) => ({
     id: inst.id,
     meterKind: 'condition',
@@ -266,7 +272,7 @@ export function buildInventoryGroups(inventory: Inventory, nowDays = 0): Invento
       ?? buildLiquidContainerGroup(kind, instances, inventory, nowDays)
       ?? buildTentGroup(kind, instances)
       ?? buildArmorGroup(kind, instances)
-      ?? buildIdentityOnlyGroup(kind, instances)
+      ?? buildGenericInstanceGroup(kind, instances)
     if (group) groups.push(group)
   }
 

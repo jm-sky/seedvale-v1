@@ -1,9 +1,19 @@
 import { describe, expect, it } from 'vitest'
+import type { ItemInstance } from '../items/itemInstances'
 import { createHeldTool } from '../items/HeldTool'
 import { Inventory } from '../items/Inventory'
 import { createPrimaryWeaponSelection } from '../items/primaryWeapons'
 import { createWeaponInstance } from '../items/weaponMaintenance'
 import { createPlayerCombatMode } from './playerCombatMode'
+
+/** A ranged weapon is instance-backed (plan items-player-060) — every test
+ *  below that used to hand it to `Inventory` as a raw count now hands it a
+ *  concrete instance instead, same as `createWeaponInstance('long_sword')`. */
+let nextShortBowId = 0
+function shortBowInstance(): ItemInstance {
+  nextShortBowId += 1
+  return { id: `short_bow:${nextShortBowId}`, kind: 'short_bow' }
+}
 
 function syncCombatMode(
   mode: ReturnType<typeof createPlayerCombatMode>,
@@ -72,11 +82,12 @@ describe('playerCombatMode (plan ui-input-018)', () => {
 
   it('inactive + primary melee action equips melee and activates Combat Mode', () => {
     const sword = createWeaponInstance('long_sword')
-    const inventory = new Inventory({ short_bow: 1 }, undefined, [sword])
+    const bow = shortBowInstance()
+    const inventory = new Inventory({}, undefined, [sword, bow])
     const held = createHeldTool(inventory)
     const primary = createPrimaryWeaponSelection()
     primary.setPrimaryMelee({ kind: 'long_sword', instanceId: sword.id })
-    primary.setPrimaryRanged({ kind: 'short_bow', instanceId: null })
+    primary.setPrimaryRanged({ kind: 'short_bow', instanceId: bow.id })
     const mode = createPlayerCombatMode()
 
     expect(drawPrimary(mode, held, primary, inventory, 'melee')).toBe(true)
@@ -89,11 +100,12 @@ describe('playerCombatMode (plan ui-input-018)', () => {
 
   it('inactive + primary ranged action equips ranged and activates Combat Mode', () => {
     const sword = createWeaponInstance('long_sword')
-    const inventory = new Inventory({ short_bow: 1 }, undefined, [sword])
+    const bow = shortBowInstance()
+    const inventory = new Inventory({}, undefined, [sword, bow])
     const held = createHeldTool(inventory)
     const primary = createPrimaryWeaponSelection()
     primary.setPrimaryMelee({ kind: 'long_sword', instanceId: sword.id })
-    primary.setPrimaryRanged({ kind: 'short_bow', instanceId: null })
+    primary.setPrimaryRanged({ kind: 'short_bow', instanceId: bow.id })
     const mode = createPlayerCombatMode()
 
     expect(drawPrimary(mode, held, primary, inventory, 'ranged')).toBe(true)
@@ -104,11 +116,12 @@ describe('playerCombatMode (plan ui-input-018)', () => {
 
   it('active melee + ranged action switches weapon and last category', () => {
     const sword = createWeaponInstance('long_sword')
-    const inventory = new Inventory({ short_bow: 1 }, undefined, [sword])
+    const bow = shortBowInstance()
+    const inventory = new Inventory({}, undefined, [sword, bow])
     const held = createHeldTool(inventory)
     const primary = createPrimaryWeaponSelection()
     primary.setPrimaryMelee({ kind: 'long_sword', instanceId: sword.id })
-    primary.setPrimaryRanged({ kind: 'short_bow', instanceId: null })
+    primary.setPrimaryRanged({ kind: 'short_bow', instanceId: bow.id })
     const mode = createPlayerCombatMode()
 
     drawPrimary(mode, held, primary, inventory, 'melee')
@@ -121,11 +134,12 @@ describe('playerCombatMode (plan ui-input-018)', () => {
 
   it('active ranged + melee action switches weapon and last category', () => {
     const sword = createWeaponInstance('long_sword')
-    const inventory = new Inventory({ short_bow: 1 }, undefined, [sword])
+    const bow = shortBowInstance()
+    const inventory = new Inventory({}, undefined, [sword, bow])
     const held = createHeldTool(inventory)
     const primary = createPrimaryWeaponSelection()
     primary.setPrimaryMelee({ kind: 'long_sword', instanceId: sword.id })
-    primary.setPrimaryRanged({ kind: 'short_bow', instanceId: null })
+    primary.setPrimaryRanged({ kind: 'short_bow', instanceId: bow.id })
     const mode = createPlayerCombatMode()
 
     drawPrimary(mode, held, primary, inventory, 'ranged')
@@ -153,11 +167,12 @@ describe('playerCombatMode (plan ui-input-018)', () => {
 
   it('inactive + toggle draws the last active category', () => {
     const sword = createWeaponInstance('long_sword')
-    const inventory = new Inventory({ short_bow: 1 }, undefined, [sword])
+    const bow = shortBowInstance()
+    const inventory = new Inventory({}, undefined, [sword, bow])
     const held = createHeldTool(inventory)
     const primary = createPrimaryWeaponSelection()
     primary.setPrimaryMelee({ kind: 'long_sword', instanceId: sword.id })
-    primary.setPrimaryRanged({ kind: 'short_bow', instanceId: null })
+    primary.setPrimaryRanged({ kind: 'short_bow', instanceId: bow.id })
     const mode = createPlayerCombatMode()
 
     drawPrimary(mode, held, primary, inventory, 'ranged')
@@ -169,10 +184,11 @@ describe('playerCombatMode (plan ui-input-018)', () => {
   })
 
   it('invalid last category falls back to the other configured primary', () => {
-    const inventory = new Inventory({ short_bow: 1 })
+    const bow = shortBowInstance()
+    const inventory = new Inventory({}, undefined, [bow])
     const held = createHeldTool(inventory)
     const primary = createPrimaryWeaponSelection()
-    primary.setPrimaryRanged({ kind: 'short_bow', instanceId: null })
+    primary.setPrimaryRanged({ kind: 'short_bow', instanceId: bow.id })
     const mode = createPlayerCombatMode()
 
     expect(mode.lastActiveWeapon()).toBe('melee')
