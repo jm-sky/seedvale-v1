@@ -1,7 +1,7 @@
 # Plan: World-bound UI session rebuild lifecycle
 
 **Created:** 2026-09-20  
-**Status:** `planned` 📋  
+**Status:** `verification needed` 🔍  
 **Priority:** high · **Effort:** S  
 **Depends on:** world-033  
 **Domain:** `ui-input`  

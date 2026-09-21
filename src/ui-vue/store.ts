@@ -1189,6 +1189,26 @@ export function applyNpcDialogueQuestOverride(override: QuestDialogOverride): vo
   if (!state.open) return
   state.helpResult = override
 }
+/** Clears world-bound UI sessions without gameplay side effects (plan
+ *  ui-input-031) — used at WorldBundle rebuild and app dispose. */
+export function invalidateWorldBoundUiSessions(): void {
+  resetNpcDialogueMenu()
+  closeMerchant()
+  ui.villagers.open = false
+  ui.villagers.entries = []
+  ui.villagers.containers = []
+  ui.flavorDialog.open = false
+  ui.flavorDialog.actions = []
+  ui.actionConfirm.open = false
+  ui.actionConfirm.onConfirm = null
+  ui.quantityDialog.open = false
+  ui.quantityDialog.onConfirm = null
+  closeContainerScreen()
+  closeHouseholdTransferScreen()
+  closeNpcGiveItemScreen()
+  closeArtisanOrderScreen()
+}
+
 function resetNpcDialogueMenu(): void {
   const state = ui.npcDialogueMenu
   state.open = false

@@ -87,6 +87,9 @@ export type ContainerActions = {
    *  through to pick-up). */
   forceOpenContainer: (id: string) => boolean
   describeWorldGeneratedContainer: (id: string) => string | null
+  /** Drops any open transfer session tied to disposed runtime objects (plan
+   *  ui-input-031). */
+  invalidateWorldBoundTransferSession: () => void
 }
 
 export type ContainerActionDeps = {
@@ -709,6 +712,11 @@ export function createContainerActions(
     },
   })
 
+  const invalidateWorldBoundTransferSession = (): void => {
+    openTransfer = null
+    if (vueUi.isContainerScreenOpen()) vueUi.closeContainerScreen()
+  }
+
   return {
     previewContainerPlacement,
     placeContainerAtAim,
@@ -722,5 +730,6 @@ export function createContainerActions(
     equipAnimalPack,
     unequipAnimalPack,
     pickUpGroundSaddlebags,
+    invalidateWorldBoundTransferSession,
   }
 }

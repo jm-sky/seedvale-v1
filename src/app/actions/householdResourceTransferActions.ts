@@ -14,6 +14,7 @@ import { isActionBlocked, type PlayerActionContext } from './actionContext'
 
 export type HouseholdResourceTransferActions = {
   openHouseholdResourceTransfer: (household: Household) => void
+  invalidateWorldBoundTransferSession: () => void
 }
 
 export type HouseholdResourceTransferDeps = {
@@ -89,7 +90,13 @@ export function createHouseholdResourceTransferActions(
 
   vueUi.configureHouseholdTransferScreen({ onDeposit: deposit })
 
+  const invalidateWorldBoundTransferSession = (): void => {
+    activeHousehold = null
+    if (vueUi.isHouseholdTransferScreenOpen()) vueUi.closeHouseholdTransferScreen()
+  }
+
   return {
+    invalidateWorldBoundTransferSession,
     openHouseholdResourceTransfer: (household: Household) => {
       if (isActionBlocked(ctx)) return
       if (!resolveEconomy(household)) {

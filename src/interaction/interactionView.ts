@@ -148,6 +148,15 @@ function enrichPlayerWell(
   })
 }
 
+function villageTorchActions(
+  target: Extract<Interactable, { kind: 'villageTorch' }>,
+): InteractionActionView[] {
+  if (target.lit) {
+    return [{ slot: 'primary', label: 'Pochodnia (płonie)', enabled: false, reasonLabel: '' }]
+  }
+  return [{ slot: 'primary', label: 'Zapal pochodnię', enabled: true, reasonLabel: '' }]
+}
+
 function standingTorchActions(
   target: Extract<Interactable, { kind: 'standingTorch' }>,
   ctx: InteractionViewContext,
@@ -422,6 +431,9 @@ export function buildInteractionView(
       break
     case 'standingTorch':
       actions = standingTorchActions(target, ctx)
+      break
+    case 'villageTorch':
+      actions = villageTorchActions(target)
       break
     case 'terrainPreparation':
       actions = terrainPreparationActions()

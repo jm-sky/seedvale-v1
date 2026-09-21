@@ -42,6 +42,7 @@ const FORWARDED_FNS = [
   'showToast', 'clearToasts',
   'configureTouchChrome', 'setTouchInputEnabled', 'setCycleTargetAvailable', 'setInspectAvailable', 'clearTouchChrome',
   'configureWorldInspection', 'openWorldInspection', 'refreshWorldInspection', 'closeWorldInspection', 'isWorldInspectionOpen',
+  'invalidateWorldBoundUiSessions',
 ] as const
 
 export type VueUi = Pick<StoreModule, typeof FORWARDED_FNS[number]> & { dispose: () => void }
@@ -77,7 +78,16 @@ export function mountVueUi(container: HTMLElement): VueUi {
     return undefined
   }])) as Pick<StoreModule, typeof FORWARDED_FNS[number]>
 
-  const api: VueUi = { ...forwarded, dispose() { disposed = true; app?.unmount(); if (mountedVueUi === api) mountedVueUi = null; root.remove() } }
+  const api: VueUi = {
+    ...forwarded,
+    dispose() {
+      store.invalidateWorldBoundUiSessions()
+      disposed = true
+      app?.unmount()
+      if (mountedVueUi === api) mountedVueUi = null
+      root.remove()
+    },
+  }
   mountedVueUi = api
   return api
 }

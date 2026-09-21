@@ -2759,13 +2759,16 @@ export async function createApp(
   let cancelActivePlayerIntent: () => void = () => {}
   const rebuildWorld = async (resetCollectedItems = false) => {
     if (!worldRebuildLifecycle.beginRebuild()) return
+    vueUi.invalidateWorldBoundUiSessions()
+    containers.invalidateWorldBoundTransferSession()
+    householdTransfer.invalidateWorldBoundTransferSession()
     cancelActivePlayerIntent()
     gui.setBusy(true)
     try {
       syncSeedInUrl(config.seed)
       saveWorld(config)
-      // Old agents are about to be disposed — drop the reference rather than
-      // toggling a class on a DOM node that's going away anyway.
+      // Old agents are about to be disposed — drop runtime targeting without
+      // touching soon-to-be-disposed highlight targets (plan ui-input-028).
       gameLoop.forgetHighlight()
       // Old-world control relations must be let go before the old
       // settlements/fauna they reference are disposed below (plan

@@ -1,7 +1,7 @@
 # Plan: Village torch interaction action contract
 
 **Created:** 2026-09-20  
-**Status:** `planned` 📋  
+**Status:** `verification needed` 🔍  
 **Priority:** low · **Effort:** S  
 **Depends on:** ~~ui-input-015~~  
 **Domain:** `ui-input`  

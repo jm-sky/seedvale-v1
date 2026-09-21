@@ -36,9 +36,9 @@ Generated from exported TypeScript symbols.
 
 ## `app/actions/containerActions.ts`
 
-- `ContainerActionDeps` — type — line 92
+- `ContainerActionDeps` — type — line 95
 - `ContainerActions` — type — line 60
-- `createContainerActions` — function — line 107
+- `createContainerActions` — function — line 110
 
 ## `app/actions/containerInstanceTransfer.ts`
 
@@ -76,9 +76,9 @@ Generated from exported TypeScript symbols.
 
 ## `app/actions/householdResourceTransferActions.ts`
 
-- `createHouseholdResourceTransferActions` — function — line 30
+- `createHouseholdResourceTransferActions` — function — line 31
 - `HouseholdResourceTransferActions` — type — line 15
-- `HouseholdResourceTransferDeps` — type — line 19
+- `HouseholdResourceTransferDeps` — type — line 20
 
 ## `app/actions/inspectionActions.ts`
 
@@ -303,9 +303,9 @@ Generated from exported TypeScript symbols.
 
 ## `app/gameLoop.ts`
 
-- `createGameLoop` — function — line 724
-- `GameLoop` — type — line 683
-- `GameLoopDeps` — type — line 322
+- `createGameLoop` — function — line 727
+- `GameLoop` — type — line 687
+- `GameLoopDeps` — type — line 326
 
 ## `app/graphicsSettings.ts`
 

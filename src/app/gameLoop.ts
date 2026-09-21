@@ -89,6 +89,11 @@ import { combatTargetForAnimal, isMeleeTool } from '../fauna/faunaCombat'
 import { countNearbyHumans } from '../fauna/predatorHumanDecision'
 import { isTouchDevice } from '../input/isTouchDevice'
 import { type createMouseLook, exitGamePointerLock } from '../input/MouseLook'
+import {
+  advanceCycleCommittedKey,
+  cycleHintPosition,
+  resolveCycleCommittedTarget,
+} from '../interaction/interactionCycleTarget'
 import { pickInGaze, rankInGaze } from '../interaction/findInteractionTarget'
 import {
   buildInteractionGazePrompt,
@@ -185,7 +190,6 @@ import {
   type CombatAimMode,
   commitWorldPickup,
   filterInteractablesSameSpatialContext,
-  GAZE_RANGE,
   INTERACT_MIN_DOT,
   INTERACT_RANGE,
   resolveWorldPickup,
@@ -694,10 +698,9 @@ export type GameLoop = {
    *  `dayNight.enabled` gates the call — this always applies unconditionally
    *  when invoked. */
   resyncDayNight: () => void
-  /** Drops the currently gaze-highlighted NPC/animal reference without
-   *  toggling its highlight class off — for use right before its underlying
-   *  mesh is disposed (`rebuildWorld`), where touching the soon-to-be-gone
-   *  object is pointless. */
+  /** Clears runtime interaction targeting before a world rebuild disposes
+   *  old runtime objects — highlight reference, gaze hysteresis, non-combat
+   *  Tab commitment and combat world-cycle state (plan ui-input-028). */
   forgetHighlight: () => void
 }
 
@@ -906,11 +909,9 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
    *  steps through `cycleCandidates` (gaze-ranked interactables within
    *  `INTERACT_RANGE`) so a crowded spot (NPCs stacked in front of a well)
    *  can still target a world object. Combat-active Tab stays on living
-   *  targets; Shift+Tab stays on non-living world cycle. `cycleActive`
-   *  clears itself once the candidate list shrinks back to trivial so gaze
-   *  picking silently resumes. */
-  let cycleActive = false
-  let cycleIndex = 0
+   *  targets; Shift+Tab stays on non-living world cycle. Tab commitment is
+   *  a stable semantic key, not a numeric index (plan ui-input-028). */
+  let cycleCommittedKey: string | null = null
   /** Runtime-only gaze stability key (plan ui-input-015) — not persisted. */
   let gazeStableTargetKey: string | null = null
   const setHighlight = (next: Highlightable | null): void => {
@@ -1575,8 +1576,7 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
           playerCombat.setSoftLock(livingTargets[next]!.id)
           playerCombat.enter()
           playerCombat.noteActivity()
-          cycleActive = false
-          cycleIndex = 0
+          cycleCommittedKey = null
         } else if (cycleTargetPressed && shiftHeld) {
           if (worldCycleCandidates.length <= 1) {
             playerCombat.setWorldCycleIndex(0)
@@ -1598,19 +1598,24 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
         playerCombat.setSoftLock(null)
         playerCombat.enter()
         playerCombat.noteActivity()
-        cycleActive = false
-        cycleIndex = 0
+        cycleCommittedKey = null
       } else if (cycleCandidates.length <= 1) {
-        cycleActive = false
-        cycleIndex = 0
+        cycleCommittedKey = null
       } else if (cycleTargetPressed) {
-        cycleIndex = cycleActive ? (cycleIndex + 1) % cycleCandidates.length : 0
-        cycleActive = true
-      } else if (cycleIndex >= cycleCandidates.length) {
-        cycleIndex = 0
+        cycleCommittedKey = advanceCycleCommittedKey(
+          cycleCandidates,
+          cycleCommittedKey,
+          interactableStableKey,
+        )
+      } else if (
+        cycleCommittedKey
+        && !resolveCycleCommittedTarget(cycleCandidates, cycleCommittedKey, interactableStableKey)
+      ) {
+        cycleCommittedKey = null
       }
 
       let target: (typeof interactables)[number] | null = null
+      let cycledTarget: (typeof interactables)[number] | null = null
       if (playerCombat.isActive()) {
         if (playerCombat.worldCycleActive() && worldCycleCandidates.length > 0) {
           target = worldCycleCandidates[playerCombat.worldCycleIndex() % worldCycleCandidates.length] ?? null
@@ -1657,7 +1662,12 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
             herbDiscoveryRange,
           )
           : null
-        target = (cycleActive ? cycleCandidates[cycleIndex]! : null)
+        cycledTarget = resolveCycleCommittedTarget(
+          cycleCandidates,
+          cycleCommittedKey,
+          interactableStableKey,
+        )
+        target = cycledTarget
           ?? skillScreenTarget
           ?? pickInGaze(
             interactables,
@@ -1701,9 +1711,15 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
         gazeStableTargetKey = null
       }
 
+      const nonCombatCycleHint = (() => {
+        if (cycleCandidates.length <= 1) return ''
+        const hintTarget = cycleCommittedKey ? cycledTarget : target
+        const position = cycleHintPosition(cycleCandidates, hintTarget, interactableStableKey)
+        return position ? ` · [Tab] Dalej (${position.position}/${position.total})` : ''
+      })()
       const cycleHint = playerCombat.isActive()
         ? (livingTargets.length > 1 ? ' · [Tab] Cel · [Shift+Tab] Świat' : ' · [Shift+Tab] Świat')
-        : (target && cycleCandidates.length > 1 ? ` · [Tab] Dalej (${cycleIndex + 1}/${cycleCandidates.length})` : '')
+        : nonCombatCycleHint
       const rangedDrawProgress = playerRanged.state() === 'draw' ? playerRanged.phaseProgress() : null
       const selectedSkill = targetedSkillSelection.get()
       const skillAction = selectedSkill && target
@@ -1730,7 +1746,7 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
       const promptHighlighted = Boolean(
         (selectedSkill && skillAction)
         || (target && (
-          cycleActive
+          (cycleCommittedKey != null && cycledTarget != null)
           || (playerCombat.isActive() && (playerCombat.softLockId() != null || playerCombat.worldCycleActive()))
         )),
       )
@@ -1797,24 +1813,10 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
         }
       }
 
-      const gazeCandidates: { position: { x: number, z: number }, agent: Highlightable }[] = []
-      for (const item of interactables) {
-        if (item.kind === 'npc' || item.kind === 'npcCorpse') gazeCandidates.push({ position: item.position, agent: item.npc })
-        else if (item.kind === 'animal' || item.kind === 'corpse') {
-          gazeCandidates.push({ position: item.position, agent: item.animal })
-        }
-      }
-      const gazed = pickInGaze(
-        gazeCandidates,
-        player.mesh.position,
-        mouseLook.state.yaw,
-        GAZE_RANGE,
-        INTERACT_MIN_DOT,
-      )
       setHighlight(
         selectedSkill
           ? (skillAction ? interactableAgent(target) : null)
-          : (interactableAgent(target) ?? gazed?.agent ?? null),
+          : interactableAgent(target),
       )
       if ((target?.kind === 'npc' || target?.kind === 'npcCorpse') && npcInspectTrigger?.consume()) {
         exitGamePointerLock(renderer.domElement)
@@ -3069,6 +3071,12 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
   return {
     tick,
     resyncDayNight,
-    forgetHighlight: () => { highlightedTarget = null },
+    forgetHighlight: () => {
+      highlightedTarget = null
+      cycleCommittedKey = null
+      gazeStableTargetKey = null
+      playerCombat.setWorldCycleActive(false)
+      playerCombat.setWorldCycleIndex(0)
+    },
   }
 }

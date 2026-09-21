@@ -191,6 +191,44 @@ describe('action consequence preview (plan items-player-042)', () => {
   })
 })
 
+describe('villageTorch InteractionView (plan ui-input-029)', () => {
+  const unlit = surfaceInteractable({
+    kind: 'villageTorch',
+    position: { x: 0, z: 0 },
+    promptLabel: '[E] Zapal pochodnię',
+    settlementId: 'home',
+    torchId: 'torch-1',
+    lit: false,
+  })
+  const lit = surfaceInteractable({
+    kind: 'villageTorch',
+    position: { x: 0, z: 0 },
+    promptLabel: 'Pochodnia (płonie)',
+    settlementId: 'home',
+    torchId: 'torch-1',
+    lit: true,
+  })
+
+  it('exposes an enabled primary ignition action when unlit', () => {
+    const view = buildInteractionView(unlit, { hasInspect: false })
+    expect(primaryActionState(view)).toMatchObject({
+      label: 'Zapal pochodnię',
+      enabled: true,
+    })
+    expect(isInteractableActionable(unlit)).toBe(true)
+  })
+
+  it('exposes no enabled primary action when lit', () => {
+    const view = buildInteractionView(lit, { hasInspect: false })
+    expect(primaryActionState(view)).toMatchObject({
+      label: 'Pochodnia (płonie)',
+      enabled: false,
+    })
+    expect(isInteractableActionable(lit)).toBe(false)
+    expect(view.targetLabel).toBe('Pochodnia (płonie)')
+  })
+})
+
 describe('construction InteractionView trough fill', () => {
   it('shows trough fill as disabled when water is missing', () => {
     const view = buildInteractionView(surfaceInteractable({

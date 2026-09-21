@@ -332,4 +332,11 @@ Generated from TypeScript imports.
 - `ui-vue/npcDialogueVoice.test.ts`
 - `ui-vue/playerQuickActions.test.ts`
 - `ui-vue/playerQuickActions.ts`
+- `ui-vue/worldBoundUiSessions.test.ts`
 - `ui/createHud.ts`
+
+## `ui-vue/worldBoundUiSessions.test.ts`
+
+**Imports**
+
+- `ui-vue/store.ts`

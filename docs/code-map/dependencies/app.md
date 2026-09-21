@@ -1230,6 +1230,7 @@ Generated from TypeScript imports.
 - `input/isTouchDevice.ts`
 - `interaction/Interactable.ts`
 - `interaction/findInteractionTarget.ts`
+- `interaction/interactionCycleTarget.ts`
 - `interaction/interactionView.ts`
 - `interaction/resolveInteraction.ts`
 - `interaction/skillAimPick.ts`

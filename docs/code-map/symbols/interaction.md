@@ -19,14 +19,20 @@ Generated from exported TypeScript symbols.
 - `surfaceInteractable` — function — line 277
 - `WorldItemRef` — type — line 18
 
+## `interaction/interactionCycleTarget.ts`
+
+- `advanceCycleCommittedKey` — function — line 12
+- `cycleHintPosition` — function — line 27
+- `resolveCycleCommittedTarget` — function — line 3
+
 ## `interaction/interactionView.ts`
 
-- `alternateActionState` — function — line 487
-- `buildInteractionGazePrompt` — function — line 469
-- `buildInteractionView` — function — line 380
-- `hasInspectAction` — function — line 479
-- `interactableStableKey` — function — line 285
-- `interactionActionFromSkillPrompt` — function — line 492
+- `alternateActionState` — function — line 499
+- `buildInteractionGazePrompt` — function — line 481
+- `buildInteractionView` — function — line 389
+- `hasInspectAction` — function — line 491
+- `interactableStableKey` — function — line 294
+- `interactionActionFromSkillPrompt` — function — line 504
 - `InteractionActionSlot` — type — line 6
   - domain: ui-input
 - `InteractionActionView` — type — line 12
@@ -34,9 +40,9 @@ Generated from exported TypeScript symbols.
 - `InteractionGazePrompt` — type — line 25
 - `InteractionView` — type — line 20
 - `InteractionViewContext` — type — line 29
-- `isInteractableActionable` — function — line 456
-- `primaryActionState` — function — line 483
-- `slotInputKey` — function — line 463
+- `isInteractableActionable` — function — line 468
+- `primaryActionState` — function — line 495
+- `slotInputKey` — function — line 475
 
 ## `interaction/resolveInteraction.ts`
 

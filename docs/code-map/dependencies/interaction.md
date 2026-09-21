@@ -56,6 +56,19 @@ Generated from TypeScript imports.
 - `app/gameLoop.ts`
 - `interaction/findInteractionTarget.test.ts`
 
+## `interaction/interactionCycleTarget.test.ts`
+
+**Imports**
+
+- `interaction/interactionCycleTarget.ts`
+
+## `interaction/interactionCycleTarget.ts`
+
+**Imported by**
+
+- `app/gameLoop.ts`
+- `interaction/interactionCycleTarget.test.ts`
+
 ## `interaction/interactionView.test.ts`
 
 **Imports**

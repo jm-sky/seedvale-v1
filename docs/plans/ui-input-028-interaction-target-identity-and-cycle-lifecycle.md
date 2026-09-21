@@ -1,7 +1,7 @@
 # Plan: Interaction target identity and cycle lifecycle
 
 **Created:** 2026-09-20  
-**Status:** `planned` 📋  
+**Status:** `verification needed` 🔍  
 **Priority:** medium · **Effort:** S  
 **Depends on:** ~~ui-input-015~~, ~~ui-input-020~~, world-033  
 **Domain:** `ui-input`  
