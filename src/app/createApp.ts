@@ -2996,7 +2996,11 @@ export async function createApp(
     },
   })
 
-  const labelObservationDebug = { fullLabelInfo: isDebugMode() }
+  const labelObservationDebug = {
+    fullLabelInfo: isDebugMode(),
+    showNpcActivityIcon: false,
+    showNpcDiagnosticText: false,
+  }
 
   const gui = createDebugGui(config, dayNight, climate, renderer, {
     onTerrainChange,
@@ -3724,6 +3728,8 @@ export async function createApp(
     getPlayerObservation: () => ({
       perception: player.attributes.perception,
       fullLabelInfo: isDebugMode() && labelObservationDebug.fullLabelInfo,
+      showNpcActivityIcon: labelObservationDebug.showNpcActivityIcon,
+      showNpcDiagnosticText: labelObservationDebug.showNpcDiagnosticText,
     }),
   })
   bootMarkEnd('createGameLoop')

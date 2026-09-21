@@ -4,18 +4,40 @@ import type { ObservationLevel, QualitativeHealth } from '../simulation/observat
 import { formatPhysicalAssessment, formatPhysicalAssessmentFromQualitative } from '../simulation/observation'
 import { setSubtreeCastShadow } from '../world/waterMirror'
 import { barsVisibleForDistance, labelOpacityForDistance } from './labelDistance'
+import { createLucideDomIcon } from './lucideDomIcon'
+import {
+  type AgentLabelIconKind,
+  type AgentLabelIconPresentation,
+  iconNodeForKind,
+  questMarkerIconPresentation,
+  shopIconPresentation,
+} from './npcLabelIconPresentation'
 
 /**
- * Shared floating name+stat-bars CSS2D label (plan 202) — `NpcAgent` and
- * `AnimalAgent` both build one above their mesh (name line + a row of
- * percent-fill bars: hp/stamina for both, plus vigor for NPCs or
- * satiety/hydration for fauna) and refresh it every frame with the same
- * "only touch the DOM when the rounded percent/visibility/opacity actually
- * changed" guards. This module owns that shared shape; each caller still
- * owns its own bar set, name text and update cadence.
+ * Shared floating name+stat-bars CSS2D label (plan 202 / ui-input-035) —
+ * `NpcAgent` and `AnimalAgent` both build one above their mesh (optional
+ * icon row, name line + a row of percent-fill bars) and refresh it every
+ * frame with write-if-changed DOM guards. This module owns that shared
+ * shape; each caller still owns its own bar set, name text and update cadence.
+ *
+ * @domain ui-input
  */
 
 export type LabelBarKind = 'hp' | 'stamina' | 'vigor' | 'satiety' | 'hydration'
+
+/** Stable icon-row slots — fixed visual order: activity → quest → shop. */
+export type AgentLabelIconSlot = 'activity' | 'quest' | 'shop'
+
+/** Structured name presentation for the label name row. */
+export type AgentLabelNamePresentation = {
+  prefix?: string
+  name: string
+  suffix?: string
+}
+
+export type { AgentLabelIconKind, AgentLabelIconPresentation }
+
+const ICON_SLOT_ORDER: readonly AgentLabelIconSlot[] = ['activity', 'quest', 'shop']
 
 /** One `npc-label__bar--{kind}` bar + its fill div, ready to append into a
  *  `labelBarsEl`. `initialPercent` seeds the fill width before the first
@@ -33,59 +55,70 @@ export function createLabelBar(kind: LabelBarKind, initialPercent = 100): { bar:
 export type AgentLabelDom = {
   label: CSS2DObject
   el: HTMLDivElement
+  iconRowEl: HTMLDivElement
+  nameRowEl: HTMLDivElement
+  /** Main name span — kept as `nameEl` for PlayerController / fauna callers. */
   nameEl: HTMLDivElement
-  markerEl: HTMLDivElement
-  vendorMarkerEl: HTMLDivElement
+  namePrefixEl: HTMLDivElement
+  nameSuffixEl: HTMLDivElement
   barsEl: HTMLDivElement
 }
 
-/** Builds the `.npc-label` DOM tree (name line + a `bars` container) and
- *  wraps it in a `CSS2DObject` positioned at `height` above the mesh
- *  origin — the shared skeleton both `NpcAgent` and `AnimalAgent` construct
- *  in their constructors. `bars` are the already-built `{ bar }` elements
- *  from `createLabelBar`, in display order; a caller that needs to append
- *  more children after the bars (e.g. `NpcAgent`'s debug line) can still do
- *  so via the returned `el`. Does not attach `label` to any mesh or assign
- *  a render layer — callers keep that (their own `mesh.add`/
- *  `assignRenderLayer` call sites differ slightly in ordering). */
+/**
+ * Builds the `.npc-label` DOM tree (icon row + name row + bars) and wraps
+ * it in a `CSS2DObject` positioned at `height` above the mesh origin.
+ *
+ * @domain ui-input
+ */
 export function createAgentLabel(
   initialName: string,
-  questMarker: string | null,
+  _questMarker: string | null,
   bars: readonly { bar: HTMLDivElement }[],
   height: number,
 ): AgentLabelDom {
   const wrapperEl = document.createElement('div')
   wrapperEl.className = 'npc-label'
 
-  const firstRowEl = document.createElement('div')
-  firstRowEl.className = 'npc-label__name-row'
+  const iconRowEl = document.createElement('div')
+  iconRowEl.className = 'npc-label__icon-row'
+  iconRowEl.style.display = 'none'
 
-  const firstRowNameEl = document.createElement('div')
-  firstRowNameEl.className = 'npc-label__name'
-  firstRowNameEl.textContent = initialName
+  const nameRowEl = document.createElement('div')
+  nameRowEl.className = 'npc-label__name-row'
 
-  firstRowEl.append(firstRowNameEl)
+  const namePrefixEl = document.createElement('div')
+  namePrefixEl.className = 'npc-label__name-prefix'
+  namePrefixEl.style.display = 'none'
 
-  const firstRowMarkerEl = document.createElement('div')
-  firstRowMarkerEl.className = 'npc-label__marker'
-  applyQuestMarkerEl(firstRowMarkerEl, questMarker)
-  firstRowEl.append(firstRowMarkerEl)
+  const nameEl = document.createElement('div')
+  nameEl.className = 'npc-label__name npc-label__name-main'
+  nameEl.textContent = initialName
 
-  const firstRowVendorMarkerEl = document.createElement('div')
-  firstRowVendorMarkerEl.className = 'npc-label__vendor-marker'
-  applyQuestMarkerEl(firstRowVendorMarkerEl, null)
-  firstRowEl.append(firstRowVendorMarkerEl)
+  const nameSuffixEl = document.createElement('div')
+  nameSuffixEl.className = 'npc-label__name-suffix'
+  nameSuffixEl.style.display = 'none'
+
+  nameRowEl.append(namePrefixEl, nameEl, nameSuffixEl)
 
   const barsEl = document.createElement('div')
   barsEl.className = 'npc-label__bars'
   barsEl.append(...bars.map((b) => b.bar))
 
-  wrapperEl.append(firstRowEl, barsEl)
+  wrapperEl.append(iconRowEl, nameRowEl, barsEl)
 
   const label = new CSS2DObject(wrapperEl)
   label.position.set(0, height, 0)
 
-  return { label, el: wrapperEl, nameEl: firstRowNameEl, markerEl: firstRowMarkerEl, vendorMarkerEl: firstRowVendorMarkerEl, barsEl }
+  return {
+    label,
+    el: wrapperEl,
+    iconRowEl,
+    nameRowEl,
+    nameEl,
+    namePrefixEl,
+    nameSuffixEl,
+    barsEl,
+  }
 }
 
 /** `current/max` → rounded percent, `0` for a non-positive `max` — shared by
@@ -122,10 +155,10 @@ export type AgentLabelObservationPresentation = {
   broadIdentity: string
   /** Knowledge-authorized or detailed personal label when `detailed`. */
   knownName: string
-  /** Quest marker for `detailed`. */
+  /** Quest marker token from QuestManager (`?`/`✓`/`!`/`…`); mapped to an icon. */
   questMarker: string | null
-  /** Vendor marker token; shown only at `detailed` / full-label bypass. */
-  vendorMarker?: string | null
+  /** When true and observation is detailed / full-label, show the shop icon. */
+  shopVisible?: boolean
   healthRatio: number
   staminaRatio: number
   /** When set (NPC injury observation, plan npc-025), qualitative health
@@ -141,34 +174,50 @@ export const INITIAL_LABEL_DISTANCE_STATE: LabelDistanceState = {
   opacity: -1,
 }
 
+type IconSlotState = {
+  el: HTMLDivElement
+  presentation: AgentLabelIconPresentation | null
+  iconKind: AgentLabelIconKind | null
+}
+
+function presentationsEqual(
+  a: AgentLabelIconPresentation | null,
+  b: AgentLabelIconPresentation | null,
+): boolean {
+  if (a === b) return true
+  if (!a || !b) return false
+  return a.icon === b.icon && a.color === b.color && a.title === b.title
+}
+
+function namePresentationsEqual(a: AgentLabelNamePresentation, b: AgentLabelNamePresentation): boolean {
+  return (a.prefix ?? '') === (b.prefix ?? '')
+    && a.name === b.name
+    && (a.suffix ?? '') === (b.suffix ?? '')
+}
+
 /**
- * Full label controller (review 2026-09-03 §5 E6) — the constructor-time
- * wiring + per-frame `sync()` guard logic both `NpcAgent` and `AnimalAgent`
- * hand-roll today, collapsed into one object. Owns name text, an arbitrary
- * set of percent-fill bars, the distance-based visibility/opacity rules
- * above, and (optionally) a debug line — everything below `createAgentLabel`
- * in the shared shape. A caller with presentation state beyond this (e.g.
- * `NpcAgent`'s highlight glow) still reaches `el`/`label` directly.
+ * Full label controller (review 2026-09-03 §5 E6 / plan ui-input-035) —
+ * constructor-time wiring + per-frame `sync()` guards for name, icon slots,
+ * bars, distance fade, and optional debug line.
+ *
+ * @domain ui-input
  */
 export type AgentStatusLabelController = {
   label: CSS2DObject
   el: HTMLDivElement
-  /** Guarded against the last-written text — a no-op DOM write when
-   *  unchanged, same as every other field here. */
+  /** Convenience for simple names — equivalent to `setNamePresentation({ name })`. */
   setName: (text: string) => void
-  /** Guarded against the last-written text — a no-op DOM write when
-   *  unchanged, same as every other field here. */
+  /** Structured prefix / main / suffix name presentation. */
+  setNamePresentation: (presentation: AgentLabelNamePresentation) => void
+  /**
+   * Sets one icon-row slot. Gameplay quest/shop slots are normally driven by
+   * observation `sync`; the activity slot is the deliberate debug bypass.
+   */
+  setIcon: (slot: AgentLabelIconSlot, presentation: AgentLabelIconPresentation | null) => void
+  /** Maps a quest marker token into the quest icon slot (compat helper). */
   setQuestMarker: (text: string | null) => void
-  /** `null` hides the debug line (and skips the text guard/write); a string
-   *  shows it, guarded against the last-written text. Callers own deciding
-   *  *when* a debug line applies (e.g. `isDebugMode()`) — this only ever
-   *  renders what it's given. */
+  /** `null` hides the debug line; a string shows it, write-if-changed. */
   setDebugLine: (text: string | null) => void
-  /** One frame's worth of presentation updates — bar percents (only the
-   *  kinds passed are touched; a controller built with fewer bar kinds than
-   *  `bars` here simply ignores the extras), then the shared distance/
-   *  opacity/shadow rule. `gazeFactor` defaults to `1` (fauna's case; NPCs
-   *  pass their own gaze-highlight factor). */
   sync: (
     bars: Partial<Record<LabelBarKind, { current: number, max: number }>>,
     mesh: THREE.Object3D,
@@ -177,17 +226,16 @@ export type AgentStatusLabelController = {
     gazeFactor?: number,
     observation?: AgentLabelObservationPresentation,
   ) => void
-  /** Resets the bars-hidden/hp-zeroed presentation a death/despawn wants
-   *  (mirrors `NpcAgent`'s pre-202 die() label reset) — `hp` alone, since
-   *  that's the only bar every caller zeroes on death. */
   settleAtZeroHp: () => void
   dispose: () => void
 }
 
-/** Builds the full label (`createAgentLabel` + one `createLabelBar` per
- *  requested kind) and wraps it with the guarded `setName`/`setDebugLine`/
- *  `sync` behavior above. `bars` order is display order, matching
- *  `createAgentLabel`'s existing contract. */
+/**
+ * Builds the full label and wraps it with guarded name/icon/debug/`sync`
+ * behavior. `bars` order is display order.
+ *
+ * @domain ui-input
+ */
 export function createAgentStatusLabelController(
   name: string,
   questMarker: string | null,
@@ -209,26 +257,125 @@ export function createAgentStatusLabelController(
   debugEl.style.display = 'none'
   labelDom.el.append(debugEl)
 
-  let lastName = name
-  let lastQuestMarker = questMarker
-  let lastVendorMarker: string | null = null
+  const slots = new Map<AgentLabelIconSlot, IconSlotState>()
+  for (const slot of ICON_SLOT_ORDER) {
+    const el = document.createElement('div')
+    el.className = `npc-label__icon npc-label__icon--${slot}`
+    el.style.display = 'none'
+    el.dataset.slot = slot
+    labelDom.iconRowEl.append(el)
+    slots.set(slot, { el, presentation: null, iconKind: null })
+  }
+
+  let lastNamePresentation: AgentLabelNamePresentation = { name }
+  let lastQuestMarker: string | null = questMarker
+  let lastShopVisible = false
   let lastAssessmentText = ''
   let lastObservationLevel: ObservationLevel | null = null
   let lastDebugText = ''
   let distanceState = INITIAL_LABEL_DISTANCE_STATE
 
+  const syncIconRowVisibility = (): void => {
+    let anyVisible = false
+    for (const slot of ICON_SLOT_ORDER) {
+      if (slots.get(slot)?.presentation) {
+        anyVisible = true
+        break
+      }
+    }
+    const display = anyVisible ? '' : 'none'
+    if (labelDom.iconRowEl.style.display !== display) {
+      labelDom.iconRowEl.style.display = display
+    }
+  }
+
+  const applyIconSlot = (
+    slot: AgentLabelIconSlot,
+    presentation: AgentLabelIconPresentation | null,
+  ): void => {
+    const state = slots.get(slot)
+    if (!state) return
+    if (presentationsEqual(state.presentation, presentation)) return
+
+    state.presentation = presentation
+    if (!presentation) {
+      state.el.style.display = 'none'
+      state.el.replaceChildren()
+      state.el.removeAttribute('title')
+      state.el.style.color = ''
+      state.iconKind = null
+      syncIconRowVisibility()
+      return
+    }
+
+    if (state.iconKind !== presentation.icon) {
+      state.el.replaceChildren(createLucideDomIcon(iconNodeForKind(presentation.icon), {
+        size: 12,
+        className: 'npc-label__icon-svg',
+      }))
+      state.iconKind = presentation.icon
+    }
+
+    const color = presentation.color ?? ''
+    if (state.el.style.color !== color) state.el.style.color = color
+    const title = presentation.title ?? ''
+    if ((state.el.getAttribute('title') ?? '') !== title) {
+      if (title) state.el.setAttribute('title', title)
+      else state.el.removeAttribute('title')
+    }
+    if (state.el.style.display !== '') state.el.style.display = ''
+    syncIconRowVisibility()
+  }
+
+  const applyNamePresentation = (presentation: AgentLabelNamePresentation): void => {
+    if (namePresentationsEqual(presentation, lastNamePresentation)) return
+    lastNamePresentation = {
+      prefix: presentation.prefix,
+      name: presentation.name,
+      suffix: presentation.suffix,
+    }
+
+    const prefix = presentation.prefix?.trim() ?? ''
+    const suffix = presentation.suffix?.trim() ?? ''
+    if (labelDom.nameEl.textContent !== presentation.name) {
+      labelDom.nameEl.textContent = presentation.name
+    }
+    if (labelDom.namePrefixEl.textContent !== prefix) {
+      labelDom.namePrefixEl.textContent = prefix
+    }
+    const prefixDisplay = prefix ? '' : 'none'
+    if (labelDom.namePrefixEl.style.display !== prefixDisplay) {
+      labelDom.namePrefixEl.style.display = prefixDisplay
+    }
+    if (labelDom.nameSuffixEl.textContent !== suffix) {
+      labelDom.nameSuffixEl.textContent = suffix
+    }
+    const suffixDisplay = suffix ? '' : 'none'
+    if (labelDom.nameSuffixEl.style.display !== suffixDisplay) {
+      labelDom.nameSuffixEl.style.display = suffixDisplay
+    }
+  }
+
+  if (questMarker) {
+    applyIconSlot('quest', questMarkerIconPresentation(questMarker))
+  }
+
   return {
     label: labelDom.label,
     el: labelDom.el,
     setName: (text) => {
-      if (text === lastName) return
-      lastName = text
-      labelDom.nameEl.textContent = text
+      applyNamePresentation({ name: text })
+    },
+    setNamePresentation: (presentation) => {
+      applyNamePresentation(presentation)
+    },
+    setIcon: (slot, presentation) => {
+      applyIconSlot(slot, presentation)
     },
     setQuestMarker: (text) => {
       if (text === lastQuestMarker) return
       lastQuestMarker = text
-      applyQuestMarkerEl(labelDom.markerEl, text)
+      applyIconSlot('quest', questMarkerIconPresentation(text))
     },
     setDebugLine: (text) => {
       if (text === null) {
@@ -252,24 +399,22 @@ export function createAgentStatusLabelController(
       if (observation) {
         const presentation = resolveAgentLabelObservationPresentation(observation)
         distanceState = applyAgentLabelObservationPresentation(
-          labelDom.nameEl,
-          labelDom.markerEl,
-          labelDom.vendorMarkerEl,
-          labelDom.barsEl,
+          labelDom,
           assessmentEl,
           presentation,
           {
-            lastName,
+            lastNamePresentation,
             lastQuestMarker,
-            lastVendorMarker,
+            lastShopVisible,
             lastAssessmentText,
             lastObservationLevel,
           },
           distanceState,
+          applyIconSlot,
+          applyNamePresentation,
         )
-        lastName = presentation.nameText
         lastQuestMarker = presentation.questMarker
-        lastVendorMarker = presentation.vendorMarker
+        lastShopVisible = presentation.shopVisible
         lastAssessmentText = presentation.assessmentText
         lastObservationLevel = presentation.level
         showBarsOverride = presentation.showBars
@@ -298,17 +443,11 @@ export function createAgentStatusLabelController(
   }
 }
 
-/** Applies the shared distance-based presentation rules (bars hidden past
- *  `labelDistance.ts`'s fade-near radius, mesh shadow-casting gated by
- *  `shadowDistance`, name/bars opacity fading to 0 by the fade-far radius —
- *  optionally scaled by an NPC-only `gazeFactor`) — write-if-changed against
- *  `prev`, same guard shape as `applyBarPercent`. Returns the new state to
- *  store back into the caller's own field. */
 type ResolvedAgentLabelObservationPresentation = {
   level: ObservationLevel
   nameText: string
   questMarker: string | null
-  vendorMarker: string | null
+  shopVisible: boolean
   assessmentText: string
   showBars: boolean
   showName: boolean
@@ -322,14 +461,14 @@ function resolveAgentLabelObservationPresentation(
   const assessmentText = observation.qualitativeHealth
     ? formatPhysicalAssessmentFromQualitative(observation.qualitativeHealth, observation.staminaRatio)
     : formatPhysicalAssessment(observation.healthRatio, observation.staminaRatio)
-  const vendorMarker = level === 'detailed' ? (observation.vendorMarker ?? null) : null
+  const shopVisible = level === 'detailed' ? Boolean(observation.shopVisible) : false
   switch (level) {
     case 'assessed':
       return {
         level,
         nameText: observation.broadIdentity,
         questMarker: observation.questMarker,
-        vendorMarker,
+        shopVisible,
         assessmentText,
         showBars: false,
         showName: true,
@@ -340,7 +479,7 @@ function resolveAgentLabelObservationPresentation(
         level,
         nameText: observation.broadIdentity,
         questMarker: observation.questMarker,
-        vendorMarker,
+        shopVisible,
         assessmentText,
         showBars: false,
         showName: true,
@@ -351,7 +490,7 @@ function resolveAgentLabelObservationPresentation(
         level,
         nameText: observation.knownName,
         questMarker: observation.questMarker,
-        vendorMarker,
+        shopVisible,
         assessmentText,
         showBars: true,
         showName: true,
@@ -363,7 +502,7 @@ function resolveAgentLabelObservationPresentation(
         nameText: '',
         assessmentText,
         questMarker: observation.questMarker,
-        vendorMarker,
+        shopVisible,
         showBars: false,
         showName: false,
         showAssessment: false,
@@ -371,40 +510,36 @@ function resolveAgentLabelObservationPresentation(
   }
 }
 
-function applyQuestMarkerEl(markerEl: HTMLDivElement, text: string | null): void {
-  const value = text ?? ''
-  if (markerEl.textContent !== value) markerEl.textContent = value
-  const display = value ? '' : 'none'
-  if (markerEl.style.display !== display) markerEl.style.display = display
-}
-
 function applyAgentLabelObservationPresentation(
-  nameEl: HTMLDivElement,
-  markerEl: HTMLDivElement,
-  vendorMarkerEl: HTMLDivElement,
-  barsEl: HTMLDivElement,
+  labelDom: AgentLabelDom,
   assessmentEl: HTMLDivElement,
   presentation: ResolvedAgentLabelObservationPresentation,
   prev: {
-    lastName: string
+    lastNamePresentation: AgentLabelNamePresentation
     lastQuestMarker: string | null
-    lastVendorMarker: string | null
+    lastShopVisible: boolean
     lastAssessmentText: string
     lastObservationLevel: ObservationLevel | null
   },
   distanceState: LabelDistanceState,
+  applyIconSlot: (slot: AgentLabelIconSlot, presentation: AgentLabelIconPresentation | null) => void,
+  applyNamePresentation: (presentation: AgentLabelNamePresentation) => void,
 ): LabelDistanceState {
   const nameDisplay = presentation.showName ? '' : 'none'
-  if (nameEl.style.display !== nameDisplay) nameEl.style.display = nameDisplay
-  if (presentation.showName && presentation.nameText !== prev.lastName) {
-    nameEl.textContent = presentation.nameText
+  if (labelDom.nameRowEl.style.display !== nameDisplay) {
+    labelDom.nameRowEl.style.display = nameDisplay
+  }
+  if (presentation.showName && presentation.nameText !== prev.lastNamePresentation.name) {
+    // Observation owns the visible identity string; clear prefix/suffix so
+    // broad/known swaps do not leave stale structured parts.
+    applyNamePresentation({ name: presentation.nameText })
   }
 
   if (presentation.questMarker !== prev.lastQuestMarker) {
-    applyQuestMarkerEl(markerEl, presentation.questMarker)
+    applyIconSlot('quest', questMarkerIconPresentation(presentation.questMarker))
   }
-  if (presentation.vendorMarker !== prev.lastVendorMarker) {
-    applyQuestMarkerEl(vendorMarkerEl, presentation.vendorMarker)
+  if (presentation.shopVisible !== prev.lastShopVisible) {
+    applyIconSlot('shop', shopIconPresentation(presentation.shopVisible))
   }
 
   const assessmentDisplay = presentation.showAssessment ? '' : 'none'
@@ -414,7 +549,7 @@ function applyAgentLabelObservationPresentation(
   }
 
   const showBars = presentation.showBars
-  if (showBars !== distanceState.barsVisible) barsEl.style.display = showBars ? '' : 'none'
+  if (showBars !== distanceState.barsVisible) labelDom.barsEl.style.display = showBars ? '' : 'none'
 
   return {
     ...distanceState,

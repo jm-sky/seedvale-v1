@@ -152,6 +152,27 @@
         pointer-events: none;
         user-select: none;
       }
+      .npc-label__icon-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        min-height: 12px;
+      }
+      .npc-label__icon {
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 12px;
+        height: 12px;
+        line-height: 0;
+      }
+      .npc-label__icon-svg {
+        display: block;
+        width: 12px;
+        height: 12px;
+      }
       .npc-label__name-row {
         display: flex;
         align-items: center;
@@ -160,25 +181,22 @@
         min-width: 0;
         max-width: 16ch;
       }
-
-      .npc-label__name {
+      .npc-label__name-prefix,
+      .npc-label__name-suffix {
+        flex: 0 1 auto;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        opacity: 0.85;
+      }
+      .npc-label__name,
+      .npc-label__name-main {
         flex: 1 1 auto;
         min-width: 0;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-      }
-      .npc-label__marker {
-        flex: 0 0 auto;
-      }
-      .npc-label__marker:not(:empty)::before {
-        content: " · ";
-      }
-      .npc-label__vendor-marker {
-        flex: 0 0 auto;
-      }
-      .npc-label__vendor-marker:not(:empty)::before {
-        content: " · ";
       }
       .npc-label__assessment {
         text-align: center;

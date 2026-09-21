@@ -67,7 +67,11 @@ export function createDebugGui(
   climate: ClimateState,
   renderer: WebGLRenderer,
   handlers: DebugGuiHandlers,
-  labelDebug?: { fullLabelInfo: boolean },
+  labelDebug?: {
+    fullLabelInfo: boolean
+    showNpcActivityIcon: boolean
+    showNpcDiagnosticText: boolean
+  },
 ): DebugGuiHandle {
   const gui = new GUI({ title: 'Seedvale' })
   gui.close()
@@ -769,11 +773,13 @@ export function createDebugGui(
   audioFolder.add(audio, 'surface').name('Footstep surface').listen().disable()
 
   if (isDebugMode() && labelDebug) {
-    const labels = gui.addFolder('Labels')
+    const labels = gui.addFolder('NPC labels')
     labels
       .add(labelDebug, 'fullLabelInfo')
       .name('Full label info')
       .onChange((enabled: boolean) => handlers.onFullLabelInfoChange?.(enabled))
+    labels.add(labelDebug, 'showNpcActivityIcon').name('Activity / need icon')
+    labels.add(labelDebug, 'showNpcDiagnosticText').name('Diagnostic text')
   }
 
   const perfFolder = gui.addFolder('Performance')

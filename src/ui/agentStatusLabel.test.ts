@@ -1,6 +1,25 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from 'vitest'
 import { createAgentStatusLabelController } from './agentStatusLabel'
+import {
+  activityIconPresentation,
+  questMarkerIconPresentation,
+  shopIconPresentation,
+} from './npcLabelIconPresentation'
+
+function iconSlot(controller: ReturnType<typeof createAgentStatusLabelController>, slot: string): HTMLElement | null {
+  return controller.el.querySelector(`.npc-label__icon--${slot}`)
+}
+
+function iconRow(controller: ReturnType<typeof createAgentStatusLabelController>): HTMLElement {
+  return controller.el.querySelector('.npc-label__icon-row') as HTMLElement
+}
+
+function visibleSlots(controller: ReturnType<typeof createAgentStatusLabelController>): string[] {
+  return [...controller.el.querySelectorAll('.npc-label__icon')]
+    .filter((el) => (el as HTMLElement).style.display !== 'none')
+    .map((el) => (el as HTMLElement).dataset.slot ?? '')
+}
 
 describe('createAgentStatusLabelController observation presentation', () => {
   it('hides observation-owned content at none while keeping the label element', () => {
@@ -20,8 +39,8 @@ describe('createAgentStatusLabelController observation presentation', () => {
         staminaRatio: 0.8,
       },
     )
-    expect(controller.el.querySelector('.npc-label__name')?.textContent).toBe('Jan')
-    expect((controller.el.querySelector('.npc-label__name') as HTMLElement).style.display).toBe('none')
+    expect(controller.el.querySelector('.npc-label__name-main')?.textContent).toBe('Jan')
+    expect((controller.el.querySelector('.npc-label__name-row') as HTMLElement).style.display).toBe('none')
     expect((controller.el.querySelector('.npc-label__bars') as HTMLElement).style.display).toBe('none')
   })
 
@@ -42,7 +61,7 @@ describe('createAgentStatusLabelController observation presentation', () => {
         staminaRatio: 0.1,
       },
     )
-    expect(controller.el.querySelector('.npc-label__name')?.textContent).toBe('Osoba')
+    expect(controller.el.querySelector('.npc-label__name-main')?.textContent).toBe('Osoba')
     expect(controller.el.querySelector('.npc-label__assessment')?.textContent).toBe('Ranny · Wyczerpany')
     expect((controller.el.querySelector('.npc-label__bars') as HTMLElement).style.display).toBe('none')
   })
@@ -64,7 +83,7 @@ describe('createAgentStatusLabelController observation presentation', () => {
         staminaRatio: 1,
       },
     )
-    expect(controller.el.querySelector('.npc-label__name')?.textContent).toBe('Jan')
+    expect(controller.el.querySelector('.npc-label__name-main')?.textContent).toBe('Jan')
     expect((controller.el.querySelector('.npc-label__bars') as HTMLElement).style.display).not.toBe('none')
   })
 
@@ -86,17 +105,13 @@ describe('createAgentStatusLabelController observation presentation', () => {
         fullLabelInfo: true,
       },
     )
-    expect(controller.el.querySelector('.npc-label__name')?.textContent).toBe('Jan')
-    expect((controller.el.querySelector('.npc-label__bars') as HTMLElement).style.display).not.toBe('none')
+    expect(controller.el.querySelector('.npc-label__name-main')?.textContent).toBe('Jan')
+    expect((controller.el.querySelector('.npc-label__name-row') as HTMLElement).style.display).not.toBe('none')
   })
 })
 
-describe('vendor marker observation gating (plan settlements-npcs-042)', () => {
-  function vendorEl(controller: ReturnType<typeof createAgentStatusLabelController>): HTMLElement {
-    return controller.el.querySelector('.npc-label__vendor-marker') as HTMLElement
-  }
-
-  it('stays hidden at none, basic and assessed even when the NPC is a vendor', () => {
+describe('agentStatusLabel shop / quest icon row (ui-input-035)', () => {
+  it('hides shop below detailed observation levels', () => {
     for (const level of ['none', 'basic', 'assessed'] as const) {
       const controller = createAgentStatusLabelController('Jan', '?', ['hp'], 2)
       controller.sync(
@@ -110,17 +125,16 @@ describe('vendor marker observation gating (plan settlements-npcs-042)', () => {
           broadIdentity: 'Osoba',
           knownName: 'Jan',
           questMarker: '?',
-          vendorMarker: '◈',
+          shopVisible: true,
           healthRatio: 1,
           staminaRatio: 1,
         },
       )
-      expect(vendorEl(controller).style.display).toBe('none')
-      expect(vendorEl(controller).textContent).toBe('')
+      expect(iconSlot(controller, 'shop')?.style.display).toBe('none')
     }
   })
 
-  it('shows at detailed and stays visible with empty stock because it is not offer-derived', () => {
+  it('shows shop ChartBar at detailed when shopVisible', () => {
     const controller = createAgentStatusLabelController('Kasia', null, ['hp'], 2)
     controller.sync(
       { hp: { current: 100, max: 100 } },
@@ -133,16 +147,16 @@ describe('vendor marker observation gating (plan settlements-npcs-042)', () => {
         broadIdentity: 'Osoba',
         knownName: 'Kasia',
         questMarker: null,
-        vendorMarker: '◈',
+        shopVisible: true,
         healthRatio: 1,
         staminaRatio: 1,
       },
     )
-    expect(vendorEl(controller).style.display).not.toBe('none')
-    expect(vendorEl(controller).textContent).toBe('◈')
+    expect(iconSlot(controller, 'shop')?.style.display).not.toBe('none')
+    expect(iconSlot(controller, 'shop')?.querySelector('svg')).toBeTruthy()
   })
 
-  it('shows under fullLabelInfo even when observation level is none', () => {
+  it('shows shop under fullLabelInfo even when observation level is none', () => {
     const controller = createAgentStatusLabelController('Marek', null, ['hp'], 2)
     controller.sync(
       { hp: { current: 100, max: 100 } },
@@ -155,16 +169,16 @@ describe('vendor marker observation gating (plan settlements-npcs-042)', () => {
         broadIdentity: 'Osoba',
         knownName: 'Marek',
         questMarker: null,
-        vendorMarker: '◈',
+        shopVisible: true,
         healthRatio: 1,
         staminaRatio: 1,
         fullLabelInfo: true,
       },
     )
-    expect(vendorEl(controller).style.display).not.toBe('none')
+    expect(iconSlot(controller, 'shop')?.style.display).not.toBe('none')
   })
 
-  it('does not appear for fauna / non-vendor presentation', () => {
+  it('does not show shop for fauna / non-vendor presentation', () => {
     const controller = createAgentStatusLabelController('Wilk', null, ['hp'], 2)
     controller.sync(
       { hp: { current: 100, max: 100 } },
@@ -181,6 +195,154 @@ describe('vendor marker observation gating (plan settlements-npcs-042)', () => {
         staminaRatio: 1,
       },
     )
-    expect(vendorEl(controller).style.display).toBe('none')
+    expect(iconSlot(controller, 'shop')?.style.display).toBe('none')
+    expect(iconRow(controller).style.display).toBe('none')
+  })
+
+  it('renders quest and shop icons together in stable order', () => {
+    const controller = createAgentStatusLabelController('Jan', null, ['hp'], 2)
+    controller.setIcon('activity', activityIconPresentation({ kind: 'work' }))
+    controller.sync(
+      { hp: { current: 100, max: 100 } },
+      controller.label,
+      5,
+      80,
+      1,
+      {
+        level: 'detailed',
+        broadIdentity: 'Osoba',
+        knownName: 'Jan',
+        questMarker: '!',
+        shopVisible: true,
+        healthRatio: 1,
+        staminaRatio: 1,
+      },
+    )
+    expect(visibleSlots(controller)).toEqual(['activity', 'quest', 'shop'])
+  })
+
+  it('hides the icon row when all slots are empty and leaves no spacer artifacts', () => {
+    const controller = createAgentStatusLabelController('Jan', '!', ['hp'], 2)
+    controller.sync(
+      { hp: { current: 100, max: 100 } },
+      controller.label,
+      5,
+      80,
+      1,
+      {
+        level: 'detailed',
+        broadIdentity: 'Osoba',
+        knownName: 'Jan',
+        questMarker: null,
+        shopVisible: false,
+        healthRatio: 1,
+        staminaRatio: 1,
+      },
+    )
+    expect(visibleSlots(controller)).toEqual([])
+    expect(iconRow(controller).style.display).toBe('none')
+  })
+
+  it('changing quest presentation does not recreate unrelated icon slots', () => {
+    const controller = createAgentStatusLabelController('Jan', null, ['hp'], 2)
+    controller.setIcon('activity', activityIconPresentation({ kind: 'sleep' }))
+    controller.sync(
+      { hp: { current: 100, max: 100 } },
+      controller.label,
+      5,
+      80,
+      1,
+      {
+        level: 'detailed',
+        broadIdentity: 'Osoba',
+        knownName: 'Jan',
+        questMarker: '!',
+        shopVisible: true,
+        healthRatio: 1,
+        staminaRatio: 1,
+      },
+    )
+    const activitySvg = iconSlot(controller, 'activity')?.querySelector('svg')
+    const shopSvg = iconSlot(controller, 'shop')?.querySelector('svg')
+    controller.sync(
+      { hp: { current: 100, max: 100 } },
+      controller.label,
+      5,
+      80,
+      1,
+      {
+        level: 'detailed',
+        broadIdentity: 'Osoba',
+        knownName: 'Jan',
+        questMarker: '✓',
+        shopVisible: true,
+        healthRatio: 1,
+        staminaRatio: 1,
+      },
+    )
+    expect(iconSlot(controller, 'activity')?.querySelector('svg')).toBe(activitySvg)
+    expect(iconSlot(controller, 'shop')?.querySelector('svg')).toBe(shopSvg)
+    expect(iconSlot(controller, 'quest')?.querySelector('svg')).toBeTruthy()
+  })
+
+  it('clears the activity icon when set to null', () => {
+    const controller = createAgentStatusLabelController('Jan', null, ['hp'], 2)
+    controller.setIcon('activity', activityIconPresentation({ kind: 'combat' }))
+    expect(iconSlot(controller, 'activity')?.style.display).not.toBe('none')
+    controller.setIcon('activity', null)
+    expect(iconSlot(controller, 'activity')?.style.display).toBe('none')
+  })
+})
+
+describe('agentStatusLabel structured name (ui-input-035)', () => {
+  it('renders a simple name in the main span', () => {
+    const controller = createAgentStatusLabelController('Jan Kowalski', null, ['hp'], 2)
+    expect(controller.el.querySelector('.npc-label__name-main')?.textContent).toBe('Jan Kowalski')
+    expect((controller.el.querySelector('.npc-label__name-prefix') as HTMLElement).style.display).toBe('none')
+    expect((controller.el.querySelector('.npc-label__name-suffix') as HTMLElement).style.display).toBe('none')
+  })
+
+  it('renders prefix-only, suffix-only and prefix+suffix presentations', () => {
+    const controller = createAgentStatusLabelController('Jan', null, ['hp'], 2)
+    controller.setNamePresentation({ prefix: 'Stary', name: 'Jan Kowalski' })
+    expect(controller.el.querySelector('.npc-label__name-prefix')?.textContent).toBe('Stary')
+    expect(controller.el.querySelector('.npc-label__name-main')?.textContent).toBe('Jan Kowalski')
+    expect((controller.el.querySelector('.npc-label__name-suffix') as HTMLElement).style.display).toBe('none')
+
+    controller.setNamePresentation({ name: 'Jan Kowalski', suffix: 'Starszy' })
+    expect((controller.el.querySelector('.npc-label__name-prefix') as HTMLElement).style.display).toBe('none')
+    expect(controller.el.querySelector('.npc-label__name-suffix')?.textContent).toBe('Starszy')
+
+    controller.setNamePresentation({ prefix: 'Stary', name: 'Jan Kowalski', suffix: 'Starszy' })
+    expect(controller.el.querySelector('.npc-label__name-prefix')?.textContent).toBe('Stary')
+    expect(controller.el.querySelector('.npc-label__name-main')?.textContent).toBe('Jan Kowalski')
+    expect(controller.el.querySelector('.npc-label__name-suffix')?.textContent).toBe('Starszy')
+  })
+
+  it('setName remains compatible for fauna/simple callers', () => {
+    const controller = createAgentStatusLabelController('Wilk', null, ['hp'], 2)
+    controller.setName('Niebezpieczny wilk')
+    expect(controller.el.querySelector('.npc-label__name-main')?.textContent).toBe('Niebezpieczny wilk')
+  })
+})
+
+describe('npcLabelIconPresentation mappers', () => {
+  it('maps quest tokens with QuestManager priority semantics preserved as distinct icons', () => {
+    expect(questMarkerIconPresentation('?')?.icon).toBe('quest-talk')
+    expect(questMarkerIconPresentation('✓')?.icon).toBe('quest-ready')
+    expect(questMarkerIconPresentation('!')?.icon).toBe('quest-available')
+    expect(questMarkerIconPresentation('…')?.icon).toBe('quest-progress')
+    expect(questMarkerIconPresentation(null)).toBeNull()
+  })
+
+  it('maps shop visibility to ChartBar presentation', () => {
+    expect(shopIconPresentation(true)?.icon).toBe('shop')
+    expect(shopIconPresentation(false)).toBeNull()
+  })
+
+  it('prefers need over generic activity kind', () => {
+    expect(activityIconPresentation({ kind: 'need', need: 'water' })?.icon).toBe('need-water')
+    expect(activityIconPresentation({ kind: 'work' })?.icon).toBe('activity-work')
+    expect(activityIconPresentation({ kind: 'idle' })?.icon).toBe('activity-idle')
   })
 })

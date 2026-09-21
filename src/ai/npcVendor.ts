@@ -10,9 +10,6 @@ import type { Role } from './characters'
  */
 export type NpcVendorKind = 'merchant' | 'blacksmith' | 'hunter'
 
-/** Presentation token for the shared NPC label vendor marker. */
-export const NPC_VENDOR_MARKER = '◈'
-
 /**
  * Resolves whether an NPC is a recognizable vendor from authoritative
  * `Role`. Independent of live stock, offers, and Merchant specialization.
@@ -30,9 +27,4 @@ export function resolveNpcVendorKind(role: Role): NpcVendorKind | null {
     default:
       return null
   }
-}
-
-/** Label token for a vendor role, or `null` when the NPC is not a vendor. */
-export function npcVendorMarker(role: Role): string | null {
-  return resolveNpcVendorKind(role) ? NPC_VENDOR_MARKER : null
 }

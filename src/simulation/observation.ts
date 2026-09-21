@@ -18,6 +18,10 @@ export type PlayerObservationInput = {
   perception: number
   /** Debug-only bypass — when true, observation information gating is skipped. */
   fullLabelInfo: boolean
+  /** Debug-only — show NPC activity/need icon in the label icon row. */
+  showNpcActivityIcon: boolean
+  /** Debug-only — show verbose NPC diagnostic text under the label. */
+  showNpcDiagnosticText: boolean
 }
 
 export const NEUTRAL_PERCEPTION = 0.5
@@ -27,6 +31,8 @@ export const NPC_BROAD_IDENTITY_LABEL = 'Osoba'
 export const DEFAULT_PLAYER_OBSERVATION: PlayerObservationInput = {
   perception: NEUTRAL_PERCEPTION,
   fullLabelInfo: false,
+  showNpcActivityIcon: false,
+  showNpcDiagnosticText: false,
 }
 
 const DETAILED_BASELINE = 20

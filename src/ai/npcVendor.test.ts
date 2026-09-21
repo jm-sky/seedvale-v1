@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { NPC_VENDOR_MARKER, npcVendorMarker, resolveNpcVendorKind } from './npcVendor'
+import { resolveNpcVendorKind } from './npcVendor'
 
 describe('resolveNpcVendorKind (plan settlements-npcs-042)', () => {
   it('marks trader, blacksmith and hunter as vendors', () => {
@@ -18,7 +18,6 @@ describe('resolveNpcVendorKind (plan settlements-npcs-042)', () => {
 
   it('does not depend on stock or offers — empty-stock vendors stay vendors', () => {
     expect(resolveNpcVendorKind('trader')).toBe('merchant')
-    expect(npcVendorMarker('trader')).toBe(NPC_VENDOR_MARKER)
-    expect(npcVendorMarker('woodcutter')).toBeNull()
+    expect(resolveNpcVendorKind('woodcutter')).toBeNull()
   })
 })

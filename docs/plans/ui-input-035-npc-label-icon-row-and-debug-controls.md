@@ -1,7 +1,7 @@
 # Plan: NPC label icon row and debug controls
 
 **Created:** 2026-09-21
-**Status:** `planned` 📋
+**Status:** `verification needed` 🔍 — implemented + technically verified (`type-check`, focused + full test suite). Browser/manual checklist remains for the user (plan § Manual verification).
 **Priority:** medium · **Effort:** M
 **Model:** Sonnet, Composer
 **Depends on:** none

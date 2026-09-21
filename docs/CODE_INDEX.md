@@ -196,7 +196,7 @@ Each module below takes the shared [`PlayerActionContext`](../src/app/actions/ac
 - [NPC post-death](../src/settlement/npcPostDeath.ts) — authoritative corpse lifecycle, full-`personalInventory` loot handoff/snapshot (no role/loadout filtering, plan npc-036), burial claim handoff.
 - [Animal-corpse sanitation](../src/settlement/animalCorpseSanitation.ts) — settlement influence + nearest-household responsibility for animal corpses.
 - [Agent animation set](../src/shared/agentAnimationSet.ts) — clip resolve/crossfade/one-shot/settle owner over an `AnimationMixer`.
-- [Agent status label](../src/ui/agentStatusLabel.ts) — the shared floating name/quest-marker/vendor-marker/bars/debug-line CSS2D label and its controller.
+- [Agent status label](../src/ui/agentStatusLabel.ts) — the shared floating CSS2D label (icon row for activity/quest/shop Lucide icons, structured prefix/main/suffix name, bars, debug line) and its controller.
 
 ## Fauna internals
 

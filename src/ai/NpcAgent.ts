@@ -163,6 +163,7 @@ import {
 } from '../terrain/terrainPreparation'
 import { type AgentStatusLabelController, createAgentStatusLabelController } from '../ui/agentStatusLabel'
 import { gazeOpacityFactor } from '../ui/labelDistance'
+import { activityIconPresentation } from '../ui/npcLabelIconPresentation'
 import { recordBloodHit } from '../world/bloodTraces'
 import { colliderActiveAtY } from '../world/collision'
 import { ensureNpcBurialGrave } from '../world/npcGraves'
@@ -425,7 +426,7 @@ import {
   stampNpcTravelCheckpoint,
 } from './npcTravel'
 import { resolveNpcTravelCheckpoint } from './npcTravelCheckpoint'
-import { npcVendorMarker } from './npcVendor'
+import { resolveNpcVendorKind } from './npcVendor'
 import {
   applyDamageVigor,
   applySleepVigor,
@@ -1497,8 +1498,8 @@ export class NpcAgent {
   private sleepReason: SleepReason | null = null
   /** Set externally (e.g. by a QuestManager) — NpcAgent stays quest-agnostic. */
   private questMarker: string | null = null
-  /** Role-derived vendor marker token; observation gating lives on the label. */
-  private readonly vendorMarker: string | null
+  /** Role-derived shop visibility; observation gating lives on the label. */
+  private readonly shopVisible: boolean
   private highlighted = false
   private readonly playAt: PlayAt
   /** Optional per-agent override (tests); production uses module configure
@@ -1679,6 +1680,8 @@ export class NpcAgent {
   private readonly npcState: NpcAuthoritativeState
   private readonly physicalProfile: PhysicalProfile
   private lastFullLabelInfo = false
+  private lastShowNpcActivityIcon = false
+  private lastShowNpcDiagnosticText = false
 
   private constructor(
     root: THREE.Object3D,
@@ -1797,7 +1800,7 @@ export class NpcAgent {
     this.gender = character.gender
     this.voiceProfileId = voiceProfileIdFor(this.gender, character.role)
     this.role = character.role
-    this.vendorMarker = npcVendorMarker(this.role)
+    this.shopVisible = resolveNpcVendorKind(this.role) != null
     this.personalInventory = npcState.personalInventory
     this.transportCargo = npcState.transportCargo
     if (!npcState.health.dead) {
@@ -3591,8 +3594,11 @@ export class NpcAgent {
       this.lastObservationLevel,
     )
     this.lastFullLabelInfo = playerObservation.fullLabelInfo
+    this.lastShowNpcActivityIcon = playerObservation.showNpcActivityIcon
+    this.lastShowNpcDiagnosticText = playerObservation.showNpcDiagnosticText
     this.lastObservationLevel = observationLevel
     this.updateDebugLabel()
+    this.updateActivityIcon(timeOfDay)
     const gaze = gazeOpacityFactor(
       this.mesh.position.x - observerPos.x,
       this.mesh.position.z - observerPos.z,
@@ -3614,7 +3620,7 @@ export class NpcAgent {
         broadIdentity: NPC_BROAD_IDENTITY_LABEL,
         knownName: this.displayName,
         questMarker: this.questMarker,
-        vendorMarker: this.vendorMarker,
+        shopVisible: this.shopVisible,
         healthRatio,
         staminaRatio: getStaminaRatio(this.stamina),
         qualitativeHealth: (() => {
@@ -4116,11 +4122,20 @@ export class NpcAgent {
     }
   }
 
-  /** `?debug=1`-only diagnostic line — phase/action/distance/stamina/rescue
-   *  state, per the movement-resilience plan's instrumentation requirement.
-   *  Hidden (and left unwritten) outside debug mode. */
+  /** Debug activity/need icon — dedicated toggle, independent of diagnostic text. */
+  private updateActivityIcon(timeOfDay: number): void {
+    if (!this.lastShowNpcActivityIcon) {
+      this.labelController.setIcon('activity', null)
+      return
+    }
+    this.labelController.setIcon('activity', activityIconPresentation(this.getCurrentActivity(timeOfDay)))
+  }
+
+  /** Verbose diagnostic line under the label — gated by `showNpcDiagnosticText`
+   *  (plan ui-input-035), not by global `?debug` alone. Poisoning detail still
+   *  follows `fullLabelInfo`. */
   private updateDebugLabel(): void {
-    if (!isDebugMode()) {
+    if (!this.lastShowNpcDiagnosticText) {
       this.labelController.setDebugLine(null)
       return
     }
