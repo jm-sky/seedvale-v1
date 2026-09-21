@@ -7,6 +7,7 @@
 **Domain:** `quests-progression`
 **Type:** `polish`
 **Roadmap:** `quests-and-reputation.md`
+**Model:** Sonnet, Composer
 
 ## Goal
 
