@@ -718,6 +718,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `ai/NpcAgent.ts`
 - `player/PlayerController.ts`
 - `player/ubcAccessoryBind.test.ts`
 - `tools/assetBrowser/viewer/mountAccessoryPreview.ts`

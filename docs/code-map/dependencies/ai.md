@@ -128,6 +128,7 @@ Generated from TypeScript imports.
 - `player/PlayerController.ts`
 - `player/playerDimensions.ts`
 - `player/playerVisualPreset.ts`
+- `player/ubcAccessoryBind.ts`
 - `settlement/animalCorpseSanitation.ts`
 - `settlement/families.ts`
 - `settlement/household.ts`

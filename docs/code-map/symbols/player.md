@@ -355,7 +355,7 @@ Generated from exported TypeScript symbols.
 
 ## `player/ubcAccessoryBind.ts`
 
-- `bindAccessoryToPlayerSkeleton` — function — line 54
+- `bindAccessoryToPlayerSkeleton` — function — line 55
   - domain: items-player
 - `collectBoneNames` — function — line 23
 - `mapBonesByName` — function — line 11
