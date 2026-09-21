@@ -9,7 +9,7 @@ import type { SettlementDestinationThreatHooks } from '../fauna/destinationThrea
 import type { HuntTarget, SettlementHuntingHooks } from '../fauna/huntingHooks'
 import type { DroppedItems } from '../items/createDroppedItems'
 import type { ItemKind } from '../items/items'
-import type { ColliderSource, HeightSampler } from '../player/PlayerController'
+import type { ColliderSource, HeightSampler, RuntimeGroundSampler } from '../player/PlayerController'
 import type { SettlementCorpseCleanupHooks } from '../settlement/animalCorpseSanitation'
 import type { FamilyMember, FamilyMemberRef, FamilyRelation } from '../settlement/families'
 import type { Household, HouseholdResourceKind } from '../settlement/household'
@@ -154,7 +154,7 @@ import {
   qualitativeHealthFromInjurySeverity,
   resolveStableObservationLevel,
 } from '../simulation/observation'
-import { stepWithSlopeAndCollision } from '../terrain/slopeConstraint'
+import { stepWithSlopeAndCollision, stepWithSlopeAndCollisionResident } from '../terrain/slopeConstraint'
 import {
   TERRAIN_PREP_NPC_WORK_SESSION_HOURS,
   TERRAIN_PREP_NPC_WORK_SESSION_SEC,
@@ -1052,6 +1052,16 @@ export function configureNpcPlayerReactionAudio(playAtCancelable: PlayAtCancelab
  */
 export type NpcAgentDeps = {
   sampleHeight: HeightSampler
+  /** Resident/runtime movement-ground query (plan world-terrain-044) — `null`
+   *  when the destination's owning chunk hasn't finished streaming. Used
+   *  only for the detailed per-tick surface step (`steerTo`'s
+   *  `stepWithSlopeAndCollision` call); every other `sampleHeight` use here
+   *  (construction/reification, time-skip, coarse travel, target metadata)
+   *  keeps the always-available analytical/hybrid query unchanged. Optional
+   *  so existing callers/tests without a `ChunkManager` keep compiling —
+   *  when absent, detailed movement falls back to `sampleHeight` exactly
+   *  like before this plan. */
+  sampleResidentSurfaceGround?: RuntimeGroundSampler
   waterLevel: number
   collidersNear: ColliderSource
   /** Narrow procedural-independent settlement-scope routing/work anchors
@@ -1258,6 +1268,9 @@ export class NpcAgent {
   private readonly fatigueMult: number
   private readonly waitMultiplier: number
   private readonly sampleHeight: HeightSampler
+  /** See `NpcAgentDeps.sampleResidentSurfaceGround` — detailed per-tick
+   *  movement only. */
+  private readonly sampleResidentSurfaceGround?: RuntimeGroundSampler
   private readonly waterLevel: number
   private readonly collidersNear: ColliderSource
   private readonly residentAnchors: NpcResidentAnchors
@@ -1703,6 +1716,7 @@ export class NpcAgent {
   ) {
     const {
       sampleHeight,
+      sampleResidentSurfaceGround,
       waterLevel,
       collidersNear,
       residentAnchors,
@@ -1803,6 +1817,7 @@ export class NpcAgent {
     this.householdExchange = householdExchange ?? null
     this.worldMovement = deps.npcWorldMovement ?? NPC_WORLD_MOVEMENT_SURFACE_ONLY
     this.sampleHeight = sampleHeight
+    this.sampleResidentSurfaceGround = sampleResidentSurfaceGround
     this.waterLevel = waterLevel
     this.collidersNear = collidersNear
     this.residentAnchors = residentAnchors
@@ -7278,17 +7293,32 @@ export class NpcAgent {
     // Steep terrain scales down (and, past the max walkable angle, removes)
     // the uphill component of the step — across-slope/downhill are
     // untouched (plan 183). 3-tier collision fallback shared with
-    // `AnimalAgent.steerToward` (plan 202).
-    const result = stepWithSlopeAndCollision({
-      x: this.mesh.position.x,
-      z: this.mesh.position.z,
-      dirX: this.tmp.x,
-      dirZ: this.tmp.z,
-      speed,
-      dt,
-      sampleHeight: this.sampleHeight,
-      isWalkable: (x, z) => this.isWalkable(x, z),
-    })
+    // `AnimalAgent.steerToward` (plan 202). Resident/runtime ground (plan
+    // world-terrain-044) when the caller wired one: holds the step instead
+    // of silently stepping onto raw analytical fallback at a streaming
+    // frontier. Falls back to the old always-available `sampleHeight` path
+    // for callers/tests that don't model chunk residency.
+    const result = this.sampleResidentSurfaceGround
+      ? stepWithSlopeAndCollisionResident({
+        x: this.mesh.position.x,
+        z: this.mesh.position.z,
+        dirX: this.tmp.x,
+        dirZ: this.tmp.z,
+        speed,
+        dt,
+        sampleGround: this.sampleResidentSurfaceGround,
+        isWalkable: (x, z) => this.isWalkable(x, z),
+      })
+      : stepWithSlopeAndCollision({
+        x: this.mesh.position.x,
+        z: this.mesh.position.z,
+        dirX: this.tmp.x,
+        dirZ: this.tmp.z,
+        speed,
+        dt,
+        sampleHeight: this.sampleHeight,
+        isWalkable: (x, z) => this.isWalkable(x, z),
+      })
     this.mesh.position.x = result.x
     this.mesh.position.z = result.z
     this.moving = result.moved

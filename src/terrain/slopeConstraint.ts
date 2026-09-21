@@ -1,4 +1,4 @@
-import type { HeightSampler } from '../player/PlayerController'
+import type { HeightSampler, RuntimeGroundSampler } from '../player/PlayerController'
 
 /**
  * Slope-based movement constraint (plan 183) — shared by `PlayerController`,
@@ -124,4 +124,74 @@ export function stepWithSlopeAndCollision(params: {
     nz = z + step.z
   }
   return { x: nx, z: nz, moved: nx !== x || nz !== z }
+}
+
+/** Resident-aware sibling of {@link sampleSlope} (plan world-terrain-044) —
+ *  same central-difference idiom, but over a nullable
+ *  {@link RuntimeGroundSampler}: `null` the moment any of the 4 probe
+ *  samples is unavailable (owning chunk absent/generating/tile-less),
+ *  instead of silently mixing a resident sample with raw analytical
+ *  fallback on the other side of a streaming boundary — the exact
+ *  "artificial slope/step" defect this plan fixes. Does not widen
+ *  `sampleSlope` itself: worldgen/other pure callers keep the
+ *  always-available `HeightSampler` contract unchanged. */
+export function sampleResidentSlope(
+  x: number,
+  z: number,
+  sampleGround: RuntimeGroundSampler,
+  step = SLOPE_SAMPLE_STEP,
+): SlopeSample | null {
+  const hxPlus = sampleGround(x + step, z)
+  const hxMinus = sampleGround(x - step, z)
+  const hzPlus = sampleGround(x, z + step)
+  const hzMinus = sampleGround(x, z - step)
+  if (hxPlus === null || hxMinus === null || hzPlus === null || hzMinus === null) return null
+  const dHdx = (hxPlus - hxMinus) / (2 * step)
+  const dHdz = (hzPlus - hzMinus) / (2 * step)
+  const gradLen = Math.hypot(dHdx, dHdz)
+  if (gradLen < 1e-6) return { angleRad: 0, upX: 0, upZ: 0 }
+  return {
+    angleRad: Math.atan(gradLen),
+    upX: dHdx / gradLen,
+    upZ: dHdz / gradLen,
+  }
+}
+
+/**
+ * Resident-aware sibling of {@link stepWithSlopeAndCollision} (plan
+ * world-terrain-044) — the detailed-movement contract for player/NPC/fauna
+ * once a resident/runtime ground query is available: instead of silently
+ * stepping onto raw analytical fallback terrain at a missing-chunk boundary,
+ * an unavailable slope probe *or* an unavailable candidate-step ground
+ * sample holds the mover at its current position (`moved: false`) for the
+ * caller to retry next tick. Same 3-tier diagonal/X-only/Z-only collision
+ * fallback as `stepWithSlopeAndCollision`, but each candidate is only
+ * attempted once its own resident ground sample confirms it isn't crossing
+ * into unavailable territory — never generates chunks/routes itself.
+ */
+export function stepWithSlopeAndCollisionResident(params: {
+  x: number
+  z: number
+  dirX: number
+  dirZ: number
+  speed: number
+  dt: number
+  sampleGround: RuntimeGroundSampler
+  isWalkable: (x: number, z: number) => boolean
+}): { x: number, z: number, moved: boolean } {
+  const { x, z, dirX, dirZ, speed, dt, sampleGround, isWalkable } = params
+  const slope = sampleResidentSlope(x, z, sampleGround)
+  if (slope === null) return { x, z, moved: false }
+  const step = constrainToSlope(dirX * speed * dt, dirZ * speed * dt, slope)
+  const candidates: readonly [number, number][] = [
+    [x + step.x, z + step.z],
+    [x + step.x, z],
+    [x, z + step.z],
+  ]
+  for (const [cx, cz] of candidates) {
+    if (sampleGround(cx, cz) === null) continue
+    if (!isWalkable(cx, cz)) continue
+    return { x: cx, z: cz, moved: cx !== x || cz !== z }
+  }
+  return { x, z, moved: false }
 }

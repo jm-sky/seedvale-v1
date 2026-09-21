@@ -118,7 +118,7 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/createSettlement.ts`
 
-- `createSettlement` — function — line 538
+- `createSettlement` — function — line 547
 - `CreateSettlementDeps` — type — line 333
 - `Settlement` — type — line 177
 - `settlementSpawnPoint` — function — line 321
@@ -450,11 +450,11 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/livestock.ts`
 
-- `attachToDetached` — function — line 961
-- `createLivestockRegistry` — function — line 338
-- `detachMerchantPackAnimal` — function — line 1051
+- `attachToDetached` — function — line 977
+- `createLivestockRegistry` — function — line 345
+- `detachMerchantPackAnimal` — function — line 1067
   - domain: settlements-npcs
-- `disposeLivestock` — function — line 1120
+- `disposeLivestock` — function — line 1136
 - `fillShepherdFlockKinds` — function — line 49
 - `isPlayerOwnedLivestockRecord` — function — line 106
 - `LIVESTOCK_KINDS` — const — line 82
@@ -464,27 +464,27 @@ Generated from exported TypeScript symbols.
 - `LivestockRegistry` — type — line 187
 - `LivestockSaveRecord` — type — line 96
 - `livestockStrayCandidateFromAgent` — function — line 143
-- `originOfDetachedAnimal` — function — line 950
-- `PackAnimalCandidate` — type — line 990
-- `PackAnimalJourneyHooks` — type — line 996
-- `PersistentLivestockContext` — type — line 883
-- `persistentLivestockKey` — function — line 869
-- `PersistentLivestockRef` — type — line 861
-- `resolveLivePersistentAnimal` — function — line 918
-- `resolveLivePersistentAnimalByRef` — function — line 895
-- `resolveMerchantPackAnimalCandidate` — function — line 1017
+- `originOfDetachedAnimal` — function — line 966
+- `PackAnimalCandidate` — type — line 1006
+- `PackAnimalJourneyHooks` — type — line 1012
+- `PersistentLivestockContext` — type — line 899
+- `persistentLivestockKey` — function — line 885
+- `PersistentLivestockRef` — type — line 877
+- `resolveLivePersistentAnimal` — function — line 934
+- `resolveLivePersistentAnimalByRef` — function — line 911
+- `resolveMerchantPackAnimalCandidate` — function — line 1033
   - domain: settlements-npcs
-- `restoreDetachedMerchantPackAnimals` — function — line 1101
-- `restoreDetachedPlayerOwnedLivestock` — function — line 1077
-- `setOwnedAnimalControl` — function — line 1065
+- `restoreDetachedMerchantPackAnimals` — function — line 1117
+- `restoreDetachedPlayerOwnedLivestock` — function — line 1093
+- `setOwnedAnimalControl` — function — line 1081
 - `shouldSpawnDeterministicLivestockSlot` — function — line 115
   - domain: fauna
   - role: Household rolls and merchant-horse slots skip tombstones and player-owned records restored on the detached path (fauna-020 / fauna-030).
-- `spawnAnimalFromRecord` — function — line 232
+- `spawnAnimalFromRecord` — function — line 236
 - `SpawnAnimalFromRecordDeps` — type — line 220
-- `spawnLivestock` — function — line 614
-- `tickSettlementLivestock` — function — line 1137
-- `transferAnimalOwnership` — function — line 968
+- `spawnLivestock` — function — line 621
+- `tickSettlementLivestock` — function — line 1153
+- `transferAnimalOwnership` — function — line 984
 
 ## `settlement/lodging.ts`
 

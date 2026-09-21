@@ -15,7 +15,7 @@ import type { DropLivestockProductHook } from '../fauna/livestockProduction'
 import type { ShepherdFlockHooks } from '../fauna/shepherdFlock'
 import type { MaterialRequirement } from '../items/constructionMaterials'
 import type { DroppedItems } from '../items/createDroppedItems'
-import type { ColliderSource, HeightSampler } from '../player/PlayerController'
+import type { ColliderSource, HeightSampler, RuntimeGroundSampler } from '../player/PlayerController'
 import type { SettlementTerrain } from '../shared/SettlementName'
 import type { PlayerObservationInput } from '../simulation/observation'
 import type { NaturalResource } from '../terrain/naturalResources'
@@ -347,6 +347,15 @@ export type CreateSettlementDeps = {
    *  placement (a bridge deck is not terrain there). Optional so existing
    *  callers/tests that don't model bridges keep compiling. */
   sampleBridgeDeck?: (x: number, z: number) => number | null
+  /** Resident/runtime movement-ground query (plan world-terrain-044) —
+   *  `ChunkManager.sampleRuntimeSurfaceGround`, forwarded unchanged into
+   *  every `NpcAgent`/livestock `AnimalAgent` this function constructs, as
+   *  their detailed-movement sampler (`null` at a streaming frontier holds
+   *  the step instead of `sampleBridgeDeck ?? sampleHeight`'s silent
+   *  analytical fallback). Never reassigned onto the raw `sampleHeight`
+   *  used for prop/building placement above. Optional so existing
+   *  callers/tests without a `ChunkManager` keep compiling. */
+  sampleResidentSurfaceGround?: RuntimeGroundSampler
   naturalWaterKindAt?: (x: number, z: number) => import('../world/WaterSource').WaterBodyKind | null
   localRadius: number
   seed: number
@@ -546,6 +555,7 @@ export async function createSettlement(
     waterLevel,
     sampleLocalWater,
     sampleBridgeDeck,
+    sampleResidentSurfaceGround,
     naturalWaterKindAt,
     localRadius,
     seed,
@@ -1013,6 +1023,7 @@ export async function createSettlement(
         }
         : undefined,
       isLivestockDetachedElsewhere ? (animalId) => isLivestockDetachedElsewhere(def.id, animalId) : undefined,
+      sampleResidentSurfaceGround,
     )
   } finally {
     bootMarkEnd('spawnLivestock')
@@ -1343,6 +1354,7 @@ export async function createSettlement(
     }
     const agent = await NpcAgent.create({
       sampleHeight: surfaceSampleHeight,
+      sampleResidentSurfaceGround,
       waterLevel,
       collidersNear,
       residentAnchors: input.residentAnchors,

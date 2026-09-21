@@ -205,23 +205,26 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/chunkManager.ts`
 
-- `applyChunkWaterDayNight` — function — line 1052
-- `applyModificationToTile` — function — line 909
+- `applyChunkWaterDayNight` — function — line 1122
+- `applyModificationToTile` — function — line 925
 - `ChunkManager` — type — line 555
 - `ChunkManagerConfig` — type — line 343
-- `createChunkManager` — function — line 1077
+- `createChunkManager` — function — line 1147
   - domain: world-terrain
   - system: chunk-manager
   - role: Owns terrain chunk streaming, sampling and environment-facing world queries.
   - simulation: on-demand
   - performance: nearby-only
-- `CropHarvestOutcome` — type — line 1066
-- `drainByBudget` — function — line 1027
+- `CropHarvestOutcome` — type — line 1136
+- `drainByBudget` — function — line 1097
 - `FinalizeStage` — type — line 457
-- `pickNearestQueuedKey` — function — line 987
-- `pickNextFinalizeKey` — function — line 1005
-- `TerrainModification` — type — line 866
-- `tickChunkWaterSurfaces` — function — line 1040
+- `pickNearestQueuedKey` — function — line 1057
+- `pickNextFinalizeKey` — function — line 1075
+- `ResidentChunkSnapshot` — type — line 1004
+- `sampleResidentHeight` — function — line 1017
+- `sampleResidentSurfaceGround` — function — line 1037
+- `TerrainModification` — type — line 882
+- `tickChunkWaterSurfaces` — function — line 1110
 
 ## `terrain/chunkMeshCache.ts`
 
@@ -625,12 +628,14 @@ Generated from exported TypeScript symbols.
 
 - `applySlopeMovementConstraint` — function — line 82
 - `constrainToSlope` — function — line 66
+- `sampleResidentSlope` — function — line 138
 - `sampleSlope` — function — line 42
 - `SLOPE_FALLOFF_START_DEG` — const — line 12
 - `SLOPE_MAX_WALKABLE_DEG` — const — line 15
 - `SLOPE_SAMPLE_STEP` — const — line 20
 - `SlopeSample` — interface — line 31
 - `stepWithSlopeAndCollision` — function — line 104
+- `stepWithSlopeAndCollisionResident` — function — line 172
 
 ## `terrain/terrainClassification.ts`
 

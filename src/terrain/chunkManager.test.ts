@@ -2,6 +2,7 @@ import { Vector3 } from 'three'
 import { describe, expect, it, vi } from 'vitest'
 import type { ChunkTileParams } from './chunkHeightmap'
 import type { ChunkTileResult } from './chunkHeightmapProtocol'
+import type { RoadBridgeSpec } from './roadBridge'
 import { clearCemeteryCaches } from './cemeteryAssignment'
 import { clearCemeteryPlacementCaches } from './cemeteryPlacement'
 import * as chunkHeightmap from './chunkHeightmap'
@@ -13,8 +14,11 @@ import {
   landmarkFromEnvironment,
   pickNearestQueuedKey,
   pickNextFinalizeKey,
+  type ResidentChunkSnapshot,
   resolveUnloadedLandmark,
   ringChunkOffsets,
+  sampleResidentHeight,
+  sampleResidentSurfaceGround,
   type TerrainModification,
   tickChunkWaterSurfaces,
 } from './chunkManager'
@@ -32,6 +36,22 @@ function fakeTile(apronRes: number, fill = 10): ChunkTileResult {
     floorHeights: new Float32Array(n).fill(fill),
     roadTint: new Float32Array(n).fill(0),
   } as unknown as ChunkTileResult
+}
+
+function fakeBridgeSpec(overrides: Partial<RoadBridgeSpec> = {}): RoadBridgeSpec {
+  return {
+    id: 'bridge-1',
+    x: 0,
+    z: 0,
+    yaw: 0,
+    dirX: 1,
+    dirZ: 0,
+    span: 40,
+    width: 6,
+    deckY: 5,
+    deckThickness: 0.3,
+    ...overrides,
+  }
 }
 
 function heightAtWorld(tile: ChunkTileResult, cx: number, cz: number, wx: number, wz: number): number {
@@ -559,5 +579,81 @@ describe('resolveUnloadedLandmark (plan world-014)', () => {
     ]
     expect(firstOrder[0]).toEqual(secondOrder[1])
     expect(firstOrder[1]).toEqual(secondOrder[0])
+  })
+})
+
+/** plan world-terrain-044 — the resident/runtime query contract must never
+ *  fall back to `sampleHeightAt`/raw analytical terrain: absent, generating
+ *  or tile-less residency is always `null`, never a fabricated number. */
+describe('sampleResidentHeight (plan world-terrain-044)', () => {
+  const COORD = { cx: 0, cz: 0 }
+
+  it('is null when the owning chunk record is absent', () => {
+    expect(sampleResidentHeight(undefined, COORD, CHUNK_SIZE, RESOLUTION, 0, 0)).toBeNull()
+  })
+
+  it('is null while the owning chunk is still generating (no tile yet)', () => {
+    const generating: ResidentChunkSnapshot = { ready: false }
+    expect(sampleResidentHeight(generating, COORD, CHUNK_SIZE, RESOLUTION, 0, 0)).toBeNull()
+  })
+
+  it('is null for a ready record that somehow has no tile', () => {
+    const readyNoTile: ResidentChunkSnapshot = { ready: true }
+    expect(sampleResidentHeight(readyNoTile, COORD, CHUNK_SIZE, RESOLUTION, 0, 0)).toBeNull()
+  })
+
+  it('reads the runtime tile directly (road/river/modification shaping included) once ready', () => {
+    const tile = fakeTile(7, 12)
+    // Shape the tile the way road/river carving or a runtime dig would —
+    // the resident query must report this exact value, not a re-derived
+    // analytical height.
+    const o = apronOriginWorld(COORD.cx, COORD.cz, CHUNK_SIZE, RESOLUTION)
+    const idx = Math.round((0 - o.z) / o.step) * o.apronRes + Math.round((0 - o.x) / o.step)
+    tile.heights[idx] = 4.5
+    const ready: ResidentChunkSnapshot = { ready: true, tile }
+    expect(sampleResidentHeight(ready, COORD, CHUNK_SIZE, RESOLUTION, 0, 0)).toBeCloseTo(4.5, 5)
+  })
+
+  it('reconstructs the same value from canonical tile + snapshot after an unload/reload cycle', () => {
+    const tile = fakeTile(7, 9)
+    const before = sampleResidentHeight({ ready: true, tile }, COORD, CHUNK_SIZE, RESOLUTION, 8, -8)
+    // "unload" (record dropped) then "reload" (fresh record, same canonical tile
+    // + replayed modifications) — same snapshot shape, independent call.
+    const after = sampleResidentHeight({ ready: true, tile }, COORD, CHUNK_SIZE, RESOLUTION, 8, -8)
+    expect(after).toBe(before)
+  })
+})
+
+describe('sampleResidentSurfaceGround (plan world-terrain-044)', () => {
+  const COORD = { cx: 0, cz: 0 }
+
+  it('is null when the owning chunk record is absent, even with bridgeSpecs data available elsewhere', () => {
+    expect(sampleResidentSurfaceGround(undefined, COORD, CHUNK_SIZE, RESOLUTION, 0, 0)).toBeNull()
+  })
+
+  it('is null while generating, and never treats missing presentation as "no bridge here"', () => {
+    const generating: ResidentChunkSnapshot = { ready: false, bridgeSpecs: [fakeBridgeSpec()] }
+    expect(sampleResidentSurfaceGround(generating, COORD, CHUNK_SIZE, RESOLUTION, 0, 0)).toBeNull()
+  })
+
+  it('returns terrain height when ready with no bridge nearby', () => {
+    const tile = fakeTile(7, 6)
+    const ready: ResidentChunkSnapshot = { ready: true, tile }
+    expect(sampleResidentSurfaceGround(ready, COORD, CHUNK_SIZE, RESOLUTION, 0, 0)).toBeCloseTo(6, 5)
+  })
+
+  it('returns the declared bridge deck Y inside its footprint instead of terrain-under-bridge', () => {
+    const tile = fakeTile(7, 6)
+    const spec = fakeBridgeSpec({ deckY: 11 })
+    const ready: ResidentChunkSnapshot = { ready: true, tile, bridgeSpecs: [spec] }
+    expect(sampleResidentSurfaceGround(ready, COORD, CHUNK_SIZE, RESOLUTION, 0, 0)).toBe(11)
+  })
+
+  it('falls through to the runtime tile outside the bridge footprint on the same ready chunk', () => {
+    const tile = fakeTile(7, 6)
+    const spec = fakeBridgeSpec({ deckY: 11, span: 4, width: 4 })
+    const ready: ResidentChunkSnapshot = { ready: true, tile, bridgeSpecs: [spec] }
+    // Far outside the small deck footprint declared above, on the same chunk.
+    expect(sampleResidentSurfaceGround(ready, COORD, CHUNK_SIZE, RESOLUTION, 24, 24)).toBeCloseTo(6, 5)
   })
 })

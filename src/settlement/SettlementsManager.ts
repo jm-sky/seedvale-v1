@@ -13,7 +13,7 @@ import type { DropLivestockProductHook } from '../fauna/livestockProduction'
 import type { OwnedAnimalControlMode } from '../fauna/ownedAnimalControl'
 import type { MaterialRequirement } from '../items/constructionMaterials'
 import type { DroppedItems } from '../items/createDroppedItems'
-import type { ColliderSource, HeightSampler } from '../player/PlayerController'
+import type { ColliderSource, HeightSampler, RuntimeGroundSampler } from '../player/PlayerController'
 import type { RegionParams } from '../terrain/chunkHeightmap'
 import type { SettlementMiningHooks } from '../terrain/resourceDeposits'
 import type { LocalWaterSample } from '../terrain/waterSample'
@@ -594,6 +594,12 @@ export async function createSettlementsManager(
    *  above. Absent (including every pre-settlements-003 save) restores an
    *  empty registry. */
   initialFoundedSettlements?: FoundedSettlementRegistrySnapshot,
+  /** Resident/runtime movement-ground query (plan world-terrain-044) —
+   *  `ChunkManager.sampleRuntimeSurfaceGround`, forwarded unchanged into
+   *  every `createSettlement` call and `spawnAnimalDeps` below (both the
+   *  home-manager-created and detached/reconstructed animal paths), same
+   *  optional convention as `sampleBridgeDeck` above. */
+  sampleResidentSurfaceGround?: RuntimeGroundSampler,
 ): Promise<SettlementsManager> {
   const surfaceSampleHeight: HeightSampler = (x, z) => sampleBridgeDeck(x, z) ?? sampleHeight(x, z)
   const surfaceSampleLocalWater = (x: number, z: number): LocalWaterSample =>
@@ -711,6 +717,7 @@ export async function createSettlementsManager(
   const spawnAnimalDeps: SpawnAnimalFromRecordDeps = {
     scene,
     sampleHeight: surfaceSampleHeight,
+    sampleResidentSurfaceGround,
     waterLevel,
     sampleLocalWater: surfaceSampleLocalWater,
     naturalWaterKindAt,
@@ -941,6 +948,7 @@ export async function createSettlementsManager(
     waterLevel,
     sampleLocalWater,
     sampleBridgeDeck,
+    sampleResidentSurfaceGround,
     localRadius,
     seed,
     householdRegistry: households,

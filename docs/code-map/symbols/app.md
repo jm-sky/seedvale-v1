@@ -458,24 +458,24 @@ Generated from exported TypeScript symbols.
 
 ## `app/worldBundle.ts`
 
-- `BuiltWorldSystems` — type — line 1238
-- `carryTerrainModificationsAcrossRebuild` — function — line 2523
+- `BuiltWorldSystems` — type — line 1240
+- `carryTerrainModificationsAcrossRebuild` — function — line 2525
 - `caveCrateContainerSpecs` — function — line 344
   - domain: world-terrain
 - `caveTreasureContainerSpecs` — function — line 311
-- `createWorldBundle` — function — line 2258
-- `disposeWorldBundle` — function — line 2820
+- `createWorldBundle` — function — line 2260
+- `disposeWorldBundle` — function — line 2822
 - `HOME_RADIUS` — const — line 264
 - `homeChunks` — function — line 368
-- `rebuildWorldBundle` — function — line 2536
+- `rebuildWorldBundle` — function — line 2538
 - `WorldBundle` — type — line 391
   - system: world-bundle
   - role: Owns the lifetime/rebuild boundary for all world systems (terrain, settlements, fauna, items, player-placed structures).
   - owns: WorldBundle
   - lifecycle: rebuild
-- `WorldBundleRebuildOutcome` — type — line 2534
-- `WorldStartupLoadingStage` — type — line 1055
-- `WorldStartupLoadingStageListener` — type — line 1057
+- `WorldBundleRebuildOutcome` — type — line 2536
+- `WorldStartupLoadingStage` — type — line 1057
+- `WorldStartupLoadingStageListener` — type — line 1059
 
 ## `app/worldRebuildLifecycle.ts`
 

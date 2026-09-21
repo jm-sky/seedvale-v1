@@ -1,7 +1,7 @@
 # Plan: Runtime ground query authority and missing-chunk fallbacks
 
 **Created:** 2026-09-19
-**Status:** `planned` 📋
+**Status:** `verification needed` 🔍 — see [implementation notes](./implementation-notes/world-terrain-044-runtime-ground-query-authority-and-missing-chunk-fallbacks-implementation-notes.md)
 **Priority:** high · **Effort:** M
 **Model:** Grok, Sonnet
 **Depends on:** ~~world-terrain-031~~, ~~world-terrain-033~~

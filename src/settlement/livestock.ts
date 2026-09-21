@@ -5,7 +5,7 @@ import type { PackConfig } from '../fauna/animalDefs'
 import type { LivestockStrayCandidate } from '../fauna/animalStray'
 import type { DropLivestockProductHook } from '../fauna/livestockProduction'
 import type { OwnedAnimalControlMode } from '../fauna/ownedAnimalControl'
-import type { ColliderSource, HeightSampler } from '../player/PlayerController'
+import type { ColliderSource, HeightSampler, RuntimeGroundSampler } from '../player/PlayerController'
 import type { LocalWaterSample } from '../terrain/waterSample'
 import type { GrassForageService } from '../world/createGrassForagePatches'
 import type { Household } from './household'
@@ -220,6 +220,10 @@ function livestockToSaveRecord(settlementId: string, animal: AnimalAgent): Lives
 export type SpawnAnimalFromRecordDeps = {
   scene: THREE.Scene
   sampleHeight: HeightSampler
+  /** Resident/runtime movement-ground query (plan world-terrain-044) —
+   *  forwarded to `AnimalAgent`'s detailed-movement sampler; see
+   *  `AnimalAgentDeps.sampleResidentSurfaceGround`. */
+  sampleResidentSurfaceGround?: RuntimeGroundSampler
   waterLevel: number
   sampleLocalWater: (x: number, z: number) => LocalWaterSample
   naturalWaterKindAt?: (x: number, z: number) => import('../world/WaterSource').WaterBodyKind | null
@@ -240,6 +244,7 @@ export async function spawnAnimalFromRecord(
     def: ANIMAL_DEFS[kind],
     animalId: record.animalId,
     sampleHeight: deps.sampleHeight,
+    sampleResidentSurfaceGround: deps.sampleResidentSurfaceGround,
     waterLevel: deps.waterLevel,
     sampleLocalWater: deps.sampleLocalWater,
     naturalWaterKindAt: deps.naturalWaterKindAt,
@@ -283,6 +288,7 @@ function createGuaranteedSheep(
   removed: ReadonlySet<string> | undefined,
   saved: ReadonlyMap<string, LivestockSaveRecord> | undefined,
   isLiveElsewhere?: (animalId: string) => boolean,
+  sampleResidentSurfaceGround?: RuntimeGroundSampler,
 ): AnimalAgent | null {
   const homeIndex = 0
   const home = homes[homeIndex]!
@@ -311,6 +317,7 @@ function createGuaranteedSheep(
     def: ANIMAL_DEFS.sheep,
     animalId,
     sampleHeight,
+    sampleResidentSurfaceGround,
     waterLevel,
     sampleLocalWater,
     naturalWaterKindAt,
@@ -678,6 +685,11 @@ export async function spawnLivestock(
    *  applies to player-owned records. `undefined` for every caller without a
    *  merchant-journey seam (tests, isolated builds). */
   isLiveElsewhere?: (animalId: string) => boolean,
+  /** Resident/runtime movement-ground query (plan world-terrain-044) —
+   *  forwarded into every `AnimalAgent` this factory spawns, same optional
+   *  convention as `onAnimalDeath`/`onAnimalDeathSound` above; see
+   *  `AnimalAgentDeps.sampleResidentSurfaceGround`. */
+  sampleResidentSurfaceGround?: RuntimeGroundSampler,
 ): Promise<AnimalAgent[]> {
   if (!isSystemEnabled('animals')) return []
   await ensureLivestockTemplates()
@@ -719,6 +731,7 @@ export async function spawnLivestock(
         def: ANIMAL_DEFS[kind],
         animalId,
         sampleHeight,
+        sampleResidentSurfaceGround,
         waterLevel,
         sampleLocalWater,
         naturalWaterKindAt,
@@ -763,6 +776,7 @@ export async function spawnLivestock(
       removed,
       saved,
       isLiveElsewhere,
+      sampleResidentSurfaceGround,
     )
     if (sheep) {
       scene.add(sheep.mesh)
@@ -779,6 +793,7 @@ export async function spawnLivestock(
         def: ANIMAL_DEFS.horse,
         animalId,
         sampleHeight,
+        sampleResidentSurfaceGround,
         waterLevel,
         sampleLocalWater,
         naturalWaterKindAt,
@@ -826,6 +841,7 @@ export async function spawnLivestock(
         def: ANIMAL_DEFS.horse,
         animalId,
         sampleHeight,
+        sampleResidentSurfaceGround,
         waterLevel,
         sampleLocalWater,
         naturalWaterKindAt,

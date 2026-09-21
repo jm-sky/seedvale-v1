@@ -496,6 +496,7 @@ Generated from TypeScript imports.
 - `terrain/chunkHeightmap.ts`
 - `terrain/chunkHeightmapProtocol.ts`
 - `terrain/chunkManager.ts`
+- `terrain/roadBridge.ts`
 
 ## `terrain/chunkManager.ts`
 
@@ -1280,6 +1281,7 @@ Generated from TypeScript imports.
 - `settlement/roadNetwork.ts`
 - `terrain/chunkHeightmap.test.ts`
 - `terrain/chunkHeightmap.ts`
+- `terrain/chunkManager.test.ts`
 - `terrain/chunkManager.ts`
 - `terrain/roadBridge.test.ts`
 - `world/createBridge.ts`

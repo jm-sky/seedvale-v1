@@ -1117,6 +1117,7 @@ export async function createApp(
     mouseLook.state,
     bundle.chunkManager.sampleSurfaceGround,
     bundle.chunkManager.sampleFloor,
+    bundle.chunkManager.sampleRuntimeSurfaceGround,
     bundle.chunkManager.waterLevel,
     bundle.chunkManager.collidersNear,
     caveGroundQuery,
@@ -2950,6 +2951,7 @@ export async function createApp(
       player.setGround(
         bundle.chunkManager.sampleSurfaceGround,
         bundle.chunkManager.sampleFloor,
+        bundle.chunkManager.sampleRuntimeSurfaceGround,
         bundle.chunkManager.waterLevel,
         bundle.chunkManager.collidersNear,
         caveGroundQuery,

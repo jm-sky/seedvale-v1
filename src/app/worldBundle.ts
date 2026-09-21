@@ -736,6 +736,7 @@ function buildSettlementsManager(
     chunkManager.sampleBridgeDeck,
     onAnimalDeathSound,
     initialFoundedSettlements,
+    chunkManager.sampleRuntimeSurfaceGround,
   )
 }
 
@@ -927,6 +928,7 @@ function buildFauna(
     chunkManager.sampleBridgeDeck,
     onAnimalDeathSound,
     closedSettlements,
+    chunkManager.sampleRuntimeSurfaceGround,
   ).finally(() => bootMarkEnd('createFauna'))
 }
 

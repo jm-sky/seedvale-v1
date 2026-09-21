@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import type { DetailNormalConfig } from '../config/worldConfig'
-import type { HeightSampler } from '../player/PlayerController'
+import type { HeightSampler, RuntimeGroundSampler } from '../player/PlayerController'
 import type { PropPlacement } from '../render/instancedProps'
 import type { TreeEnvSample, TreeGrowthStage, TreeLifecycle, TreePresence } from '../world/treeLifecycle'
 import type { ChunkTileResult, GrassRequestParams } from './chunkHeightmapProtocol'
@@ -580,6 +580,22 @@ export type ChunkManager = {
    *  `sampleHeight` for placement/worldgen code, where a bridge deck is not
    *  terrain. */
   sampleSurfaceGround: HeightSampler
+  /** Resident/runtime terrain height (plan world-terrain-044) — samples only
+   *  `ChunkRecord.tile.heights` (roads/rivers/fords/`TerrainModification`
+   *  replay included), never the raw analytical `sampleHeightAt` fallback.
+   *  `null` when the owning chunk is absent, generating, or has no runtime
+   *  tile — the explicit "unavailable" this plan introduces, for detailed
+   *  movement that must not treat missing residency as flat raw terrain. */
+  sampleRuntimeHeight: RuntimeGroundSampler
+  /** Resident/runtime movement surface (plan world-terrain-044) — the same
+   *  runtime tile `sampleRuntimeHeight` reads, with the owning chunk's
+   *  retained `bridgeSpecs` deck Y resolved first when present. `null` under
+   *  the same unavailable conditions as `sampleRuntimeHeight` (never derives
+   *  bridge existence from a missing chunk's absence). This is the
+   *  authoritative query for detailed player/NPC/fauna movement; cave
+   *  arbitration remains caller-owned, and `sampleSurfaceGround` above stays
+   *  the permissive analytical-fallback convenience for other callers. */
+  sampleRuntimeSurfaceGround: RuntimeGroundSampler
   sampleBiome: (x: number, z: number) => number
   sampleContinentalness: (x: number, z: number) => number
   sampleMountainRidge: (x: number, z: number) => number
@@ -979,6 +995,60 @@ export function applyModificationToTile(
     }
   }
   return touched
+}
+
+/** A chunk's residency + runtime-terrain state, as `sampleResidentHeight`/
+ *  `sampleResidentSurfaceGround` need it — a narrow structural slice of
+ *  `ChunkRecord` (not exported) so these pure functions stay testable
+ *  without constructing a full `ChunkManager`/`ChunkRecord`. */
+export type ResidentChunkSnapshot = {
+  ready: boolean
+  tile?: ChunkTileResult
+  bridgeSpecs?: RoadBridgeSpec[]
+}
+
+/** Pure resident/runtime terrain-height core of `ChunkManager.sampleRuntimeHeight`
+ *  (plan world-terrain-044) — factored out of the manager's closure so it's
+ *  unit-testable without a full `ChunkManager`/worker/scene. Samples only
+ *  `owning.tile.heights` (roads/rivers/fords/`TerrainModification` replay
+ *  already baked in by `attachChunkMesh`) — never `sampleHeightAt` or any
+ *  other analytical fallback. `null` when `owning` is absent, not `ready`,
+ *  or has no `tile` yet: the explicit "unavailable" this plan introduces. */
+export function sampleResidentHeight(
+  owning: ResidentChunkSnapshot | undefined,
+  coord: ChunkCoord,
+  chunkSize: number,
+  resolution: number,
+  worldX: number,
+  worldZ: number,
+): number | null {
+  if (!owning?.ready || !owning.tile) return null
+  const o = apronOriginWorld(coord.cx, coord.cz, chunkSize, resolution)
+  return sampleApronGrid(owning.tile.heights, o.apronRes, o.x, o.z, o.step, worldX, worldZ)
+}
+
+/** Pure resident/runtime movement-surface core of
+ *  `ChunkManager.sampleRuntimeSurfaceGround` (plan world-terrain-044) — the
+ *  same residency gate and runtime tile as `sampleResidentHeight`, with the
+ *  owning chunk's retained `bridgeSpecs` deck Y resolved first when present.
+ *  A missing/not-ready chunk is never treated as "no bridge here" — it's
+ *  unavailable, same as the terrain case, so a caller can't mistake missing
+ *  presentation for missing bridge (plan world-terrain-033 authority). */
+export function sampleResidentSurfaceGround(
+  owning: ResidentChunkSnapshot | undefined,
+  coord: ChunkCoord,
+  chunkSize: number,
+  resolution: number,
+  worldX: number,
+  worldZ: number,
+): number | null {
+  if (!owning?.ready || !owning.tile) return null
+  if (owning.bridgeSpecs && owning.bridgeSpecs.length > 0) {
+    const deckY = bridgeDeckYAt(owning.bridgeSpecs, worldX, worldZ)
+    if (deckY !== null) return deckY
+  }
+  const o = apronOriginWorld(coord.cx, coord.cz, chunkSize, resolution)
+  return sampleApronGrid(owning.tile.heights, o.apronRes, o.x, o.z, o.step, worldX, worldZ)
 }
 
 /** Nearest still-valid key in a finalize/load-style queue. `distanceOf`
@@ -2754,6 +2824,32 @@ export function createChunkManager(
     return bridgeDeckYAt(rec.bridgeSpecs, worldX, worldZ)
   }
 
+  function sampleRuntimeHeightAt(worldX: number, worldZ: number): number | null {
+    const coord = worldToChunk(worldX, worldZ, config.chunkSize)
+    const rec = chunks.get(chunkKey(coord))
+    return sampleResidentHeight(
+      rec && { ready: rec.state === 'ready', tile: rec.tile },
+      coord,
+      config.chunkSize,
+      config.resolution,
+      worldX,
+      worldZ,
+    )
+  }
+
+  function sampleRuntimeSurfaceGroundAt(worldX: number, worldZ: number): number | null {
+    const coord = worldToChunk(worldX, worldZ, config.chunkSize)
+    const rec = chunks.get(chunkKey(coord))
+    return sampleResidentSurfaceGround(
+      rec && { ready: rec.state === 'ready', tile: rec.tile, bridgeSpecs: rec.bridgeSpecs },
+      coord,
+      config.chunkSize,
+      config.resolution,
+      worldX,
+      worldZ,
+    )
+  }
+
   return {
     update,
     tickWater(dt) {
@@ -2779,6 +2875,8 @@ export function createChunkManager(
     sampleFloor: (x, z) => readField('floorHeights', x, z),
     sampleBridgeDeck: sampleBridgeDeckAt,
     sampleSurfaceGround: (x, z) => sampleBridgeDeckAt(x, z) ?? readField('heights', x, z),
+    sampleRuntimeHeight: sampleRuntimeHeightAt,
+    sampleRuntimeSurfaceGround: sampleRuntimeSurfaceGroundAt,
     sampleBiome: (x, z) => readField('biomes', x, z),
     sampleContinentalness: (x, z) => readField('continentalness', x, z),
     sampleMountainRidge: (x, z) => readField('mountainRidge', x, z),

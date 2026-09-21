@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import type { Inventory } from '../items/Inventory'
 import type { ItemKind } from '../items/items'
-import type { ColliderSource, HeightSampler } from '../player/PlayerController'
+import type { ColliderSource, HeightSampler, RuntimeGroundSampler } from '../player/PlayerController'
 import type { Household } from '../settlement/household'
 import type { LocalWaterSample } from '../terrain/waterSample'
 import type { AnimalAttractionSource } from '../world/animalAttractionSource'
@@ -51,7 +51,7 @@ import {
   type PlayerObservationInput,
   resolveStableObservationLevel,
 } from '../simulation/observation'
-import { stepWithSlopeAndCollision } from '../terrain/slopeConstraint'
+import { stepWithSlopeAndCollision, stepWithSlopeAndCollisionResident } from '../terrain/slopeConstraint'
 import { type AgentStatusLabelController, createAgentStatusLabelController } from '../ui/agentStatusLabel'
 import { recordBloodHit } from '../world/bloodTraces'
 import { colliderActiveAtY, colliderContainsPoint } from '../world/collision'
@@ -976,6 +976,15 @@ export type AnimalAgentDeps = {
   def: AnimalDef
   animalId: string
   sampleHeight: HeightSampler
+  /** Resident/runtime movement-ground query (plan world-terrain-044) — `null`
+   *  when the destination's owning chunk hasn't finished streaming. Used
+   *  only for the detailed per-tick surface step (`steerToward`/
+   *  `driveMounted`'s `stepWithSlopeAndCollision` calls); spawn/habitat/
+   *  coarse lifecycle needs keep using `sampleHeight`. Optional so existing
+   *  callers/tests without a `ChunkManager` keep compiling — when absent,
+   *  detailed movement falls back to `sampleHeight` exactly like before
+   *  this plan. */
+  sampleResidentSurfaceGround?: RuntimeGroundSampler
   waterLevel: number
   sampleLocalWater: (x: number, z: number) => LocalWaterSample
   /** Lake/river/ocean shore classifier — same seam as player drink targets. */
@@ -1270,6 +1279,9 @@ export class AnimalAgent {
    *  plan fauna-017 step 5) needs it public so `this` satisfies that type
    *  without a wrapper allocation — same reasoning as `isCapsule`/`def`. */
   readonly sampleHeight: HeightSampler
+  /** See `AnimalAgentDeps.sampleResidentSurfaceGround` — detailed per-tick
+   *  movement only. */
+  private readonly sampleResidentSurfaceGround?: RuntimeGroundSampler
   private readonly waterLevel: number
   /** Local physical water sample (plan fauna-015), forwarded unchanged from
    *  `ChunkManager.sampleLocalWater` by the spawn site — the sole input
@@ -1693,6 +1705,7 @@ export class AnimalAgent {
       def,
       animalId,
       sampleHeight,
+      sampleResidentSurfaceGround,
       waterLevel,
       sampleLocalWater,
       naturalWaterKindAt,
@@ -1743,6 +1756,7 @@ export class AnimalAgent {
     this.cave = cave
     this.caveInteriorNow = cave != null
     this.sampleHeight = sampleHeight
+    this.sampleResidentSurfaceGround = sampleResidentSurfaceGround
     this.waterLevel = waterLevel
     this.sampleLocalWater = sampleLocalWater
     this.naturalWaterKindAt = naturalWaterKindAt
@@ -2415,16 +2429,31 @@ export class AnimalAgent {
       const trainingSpeed = this.trainingModifiers().speed
       const speed = (this.sprinting ? mount.sprintSpeed : mount.walkSpeed) * speedMultiplier * trainingSpeed
 
-      const result = stepWithSlopeAndCollision({
-        x: this.mesh.position.x,
-        z: this.mesh.position.z,
-        dirX,
-        dirZ,
-        speed,
-        dt,
-        sampleHeight: this.sampleHeight,
-        isWalkable: (x, z) => this.isWalkable(x, z),
-      })
+      // Resident/runtime ground (plan world-terrain-044) when the spawn site
+      // wired one — holds the step instead of silently stepping onto raw
+      // analytical fallback at a streaming frontier; falls back to the old
+      // always-available `sampleHeight` path otherwise.
+      const result = this.sampleResidentSurfaceGround
+        ? stepWithSlopeAndCollisionResident({
+          x: this.mesh.position.x,
+          z: this.mesh.position.z,
+          dirX,
+          dirZ,
+          speed,
+          dt,
+          sampleGround: this.sampleResidentSurfaceGround,
+          isWalkable: (x, z) => this.isWalkable(x, z),
+        })
+        : stepWithSlopeAndCollision({
+          x: this.mesh.position.x,
+          z: this.mesh.position.z,
+          dirX,
+          dirZ,
+          speed,
+          dt,
+          sampleHeight: this.sampleHeight,
+          isWalkable: (x, z) => this.isWalkable(x, z),
+        })
       this.mesh.position.x = result.x
       this.mesh.position.z = result.z
     }
@@ -5924,17 +5953,30 @@ export class AnimalAgent {
     // the uphill component of the step — across-slope/downhill are
     // untouched (plan 183). 3-tier collision fallback shared with
     // `NpcAgent.steerTo` (plan 202). Water preference is scoring/cost, not
-    // a hard wall here (plan fauna-029).
-    const result = stepWithSlopeAndCollision({
-      x: this.mesh.position.x,
-      z: this.mesh.position.z,
-      dirX: this.tmp.x,
-      dirZ: this.tmp.z,
-      speed,
-      dt,
-      sampleHeight: this.sampleHeight,
-      isWalkable: (x, z) => this.isWalkable(x, z),
-    })
+    // a hard wall here (plan fauna-029). Resident/runtime ground (plan
+    // world-terrain-044) when the spawn site wired one — see `driveMounted`'s
+    // comment above for why.
+    const result = this.sampleResidentSurfaceGround
+      ? stepWithSlopeAndCollisionResident({
+        x: this.mesh.position.x,
+        z: this.mesh.position.z,
+        dirX: this.tmp.x,
+        dirZ: this.tmp.z,
+        speed,
+        dt,
+        sampleGround: this.sampleResidentSurfaceGround,
+        isWalkable: (x, z) => this.isWalkable(x, z),
+      })
+      : stepWithSlopeAndCollision({
+        x: this.mesh.position.x,
+        z: this.mesh.position.z,
+        dirX: this.tmp.x,
+        dirZ: this.tmp.z,
+        speed,
+        dt,
+        sampleHeight: this.sampleHeight,
+        isWalkable: (x, z) => this.isWalkable(x, z),
+      })
     this.mesh.position.x = result.x
     this.mesh.position.z = result.z
   }

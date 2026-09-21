@@ -213,6 +213,12 @@ type PlayerPose = 'stand' | 'crouch' | 'lie'
 export const PLAYER_MODEL_URL = '/models/characters/Adventurer.glb'
 
 export type HeightSampler = (x: number, z: number) => number
+/** `ChunkManager.sampleRuntimeHeight`/`sampleRuntimeSurfaceGround` (plan
+ *  world-terrain-044) — `null` when the owning chunk is absent, generating,
+ *  or has no runtime tile yet, instead of `HeightSampler`'s silent raw-
+ *  analytical fallback. Detailed player/NPC/fauna movement uses this so a
+ *  streaming frontier holds the step rather than fabricating ground. */
+export type RuntimeGroundSampler = (x: number, z: number) => number | null
 /** `ChunkManager.collidersNear` (plan 097 §2.2) — kept as its own alias
  *  instead of importing `ChunkManager` here, same reasoning as `HeightSampler`. */
 export type ColliderSource = (x: number, z: number) => readonly Collider[]
@@ -296,6 +302,12 @@ export class PlayerController {
   private readonly look: LookState
   private sampleHeight: HeightSampler
   private sampleFloor: HeightSampler
+  /** Resident/runtime movement-surface query (plan world-terrain-044) —
+   *  `null` when the destination's owning chunk hasn't finished streaming.
+   *  Gates detailed horizontal movement so a step never silently lands on
+   *  `sampleHeight`'s permissive raw-analytical fallback; `sampleHeight`
+   *  itself stays the snap-to-ground/vertical-motion convenience query. */
+  private sampleResidentSurfaceGround: RuntimeGroundSampler
   private waterLevel: number
   private collidersNear: ColliderSource
   private caveGround: CaveGroundQuery
@@ -471,6 +483,7 @@ export class PlayerController {
     look: LookState,
     sampleHeight: HeightSampler,
     sampleFloor: HeightSampler,
+    sampleResidentSurfaceGround: RuntimeGroundSampler,
     waterLevel: number,
     collidersNear: ColliderSource,
     caveGround: CaveGroundQuery,
@@ -486,6 +499,7 @@ export class PlayerController {
     this.look = look
     this.sampleHeight = sampleHeight
     this.sampleFloor = sampleFloor
+    this.sampleResidentSurfaceGround = sampleResidentSurfaceGround
     this.waterLevel = waterLevel
     this.collidersNear = collidersNear
     this.caveGround = caveGround
@@ -546,6 +560,7 @@ export class PlayerController {
     look: LookState,
     sampleHeight: HeightSampler,
     sampleFloor: HeightSampler,
+    sampleResidentSurfaceGround: RuntimeGroundSampler,
     waterLevel: number,
     collidersNear: ColliderSource,
     caveGround: CaveGroundQuery,
@@ -583,6 +598,7 @@ export class PlayerController {
         look,
         sampleHeight,
         sampleFloor,
+        sampleResidentSurfaceGround,
         waterLevel,
         collidersNear,
         caveGround,
@@ -601,6 +617,7 @@ export class PlayerController {
         look,
         sampleHeight,
         sampleFloor,
+        sampleResidentSurfaceGround,
         waterLevel,
         collidersNear,
         caveGround,
@@ -618,6 +635,7 @@ export class PlayerController {
     look: LookState,
     sampleHeight: HeightSampler,
     sampleFloor: HeightSampler,
+    sampleResidentSurfaceGround: RuntimeGroundSampler,
     waterLevel: number,
     collidersNear: ColliderSource,
     caveGround: CaveGroundQuery,
@@ -644,6 +662,7 @@ export class PlayerController {
       look,
       sampleHeight,
       sampleFloor,
+      sampleResidentSurfaceGround,
       waterLevel,
       collidersNear,
       caveGround,
@@ -660,6 +679,7 @@ export class PlayerController {
   setGround(
     sampleHeight: HeightSampler,
     sampleFloor: HeightSampler,
+    sampleResidentSurfaceGround: RuntimeGroundSampler,
     waterLevel: number,
     collidersNear: ColliderSource,
     caveGround: CaveGroundQuery,
@@ -670,6 +690,7 @@ export class PlayerController {
   ): void {
     this.sampleHeight = sampleHeight
     this.sampleFloor = sampleFloor
+    this.sampleResidentSurfaceGround = sampleResidentSurfaceGround
     this.waterLevel = waterLevel
     this.collidersNear = collidersNear
     this.caveGround = caveGround
@@ -1477,12 +1498,24 @@ export class PlayerController {
       this.wish.z = slopeWish.z
       const candidateX = startX + slopeWish.x
       const candidateZ = startZ + slopeWish.z
+      // Detailed movement must not silently step onto raw analytical
+      // fallback terrain at a streaming frontier (plan world-terrain-044):
+      // cave ground is a separate, chunk-residency-independent spatial
+      // index and always arbitrates first (`Caves.queryGround`); only the
+      // outdoor resident surface needs the ready-chunk check. Unavailable
+      // holds the player at `startX`/`startZ` for this frame — the next
+      // frame's `update()` retries naturally once streaming catches up.
+      const residentGroundAvailable =
+        this.caveGround(candidateX, startY, candidateZ) != null
+        || this.sampleResidentSurfaceGround(candidateX, candidateZ) != null
       // Sneak progresses from distance actually sneaked, not from frames with
       // the toggle on (plan 128 §1 "nie przyznawać XP co klatkę").
-      if (this.skills.sneak.active) {
+      if (residentGroundAvailable && this.skills.sneak.active) {
         this.sneakUseDistance = accumulateSneakUse(this.skills, this.sneakUseDistance, this.wish.length())
       }
-      if (this.movementTraceRecord) {
+      if (!residentGroundAvailable) {
+        // Hold position — see comment above.
+      } else if (this.movementTraceRecord) {
         const colliders = this.collidersNearAtHeight(candidateX, candidateZ)
         const ordinary = resolvePositionAudited(
           candidateX,

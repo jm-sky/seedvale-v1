@@ -1,6 +1,6 @@
 import { Group, type Object3D, type Scene, type Vector3 } from 'three'
 import { CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js'
-import type { ColliderSource, HeightSampler } from '../player/PlayerController'
+import type { ColliderSource, HeightSampler, RuntimeGroundSampler } from '../player/PlayerController'
 import type { RoadCorridorSegment } from '../terrain/chunkHeightmap'
 import type { LocalWaterSample } from '../terrain/waterSample'
 import type { AnimalAttractionSource } from '../world/animalAttractionSource'
@@ -691,6 +691,14 @@ export async function createFauna(
    *  existing callers/tests keep compiling. Placement uses a dedicated RNG,
    *  never the fauna `0xfa11` stream. */
   closedSettlements?: readonly ClosedSettlementSite[],
+  /** Resident/runtime movement-ground query (plan world-terrain-044) —
+   *  `ChunkManager.sampleRuntimeSurfaceGround`, composed below into the
+   *  `AnimalAgent` this factory constructs' detailed-movement sampler
+   *  (`null` at a streaming frontier holds the step instead of
+   *  `sampleBridgeDeck ?? sampleHeight`'s silent analytical fallback).
+   *  Optional so existing callers/tests without a `ChunkManager` keep
+   *  compiling. */
+  sampleResidentSurfaceGround?: RuntimeGroundSampler,
 ): Promise<Fauna> {
   const { bootMark, bootMarkEnd } = useBootMark('createFauna')
 
@@ -893,6 +901,7 @@ export async function createFauna(
       def: ANIMAL_DEFS[kind],
       animalId,
       sampleHeight: agentSampleHeight,
+      sampleResidentSurfaceGround,
       waterLevel,
       sampleLocalWater: agentSampleLocalWater,
       naturalWaterKindAt,

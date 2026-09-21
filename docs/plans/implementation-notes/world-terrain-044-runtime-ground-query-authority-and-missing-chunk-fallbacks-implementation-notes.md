@@ -3,6 +3,18 @@
 **Plan:** `docs/plans/world-terrain-044-runtime-ground-query-authority-and-missing-chunk-fallbacks.md`  
 **Recon basis:** current `main`, 2026-09-20
 
+## Implementation status (2026-09-21)
+
+Implemented as designed below, with the following scoping decisions:
+
+- **`ChunkManager`**: added `sampleRuntimeHeight`/`sampleRuntimeSurfaceGround` (`RuntimeGroundSampler`, `PlayerController.ts`) plus pure, unit-testable cores `sampleResidentHeight`/`sampleResidentSurfaceGround` (`chunkManager.ts`, exported for `chunkManager.test.ts` — no full-manager construction needed). Old `sampleHeight`/`sampleFloor`/`sampleSurfaceGround`/`sampleBridgeDeck` untouched.
+- **`slopeConstraint.ts`**: added `sampleResidentSlope`/`stepWithSlopeAndCollisionResident`, the nullable-safe siblings of `sampleSlope`/`stepWithSlopeAndCollision`. `sampleSlope`/`stepWithSlopeAndCollision` themselves are unchanged (per plan, kept non-nullable for worldgen/other pure callers).
+- **Player**: `PlayerController` gates the per-frame horizontal step on `sampleResidentSurfaceGround(candidateX, candidateZ) !== null || caveGround(...) !== null` — an unavailable resident sample holds the player at the current position for that frame (retried next frame) instead of stepping onto `sampleHeight`'s permissive analytical fallback. This is a narrower fix than swapping the finite-difference slope probe itself: `PlayerController`'s own slope/trace-recording code stays on the existing `sampleHeight`-based `applySlopeMovementConstraint`/`sampleSlope`, since the destination-availability gate already prevents ever standing in the raw-fallback zone. The full nullable-slope-probe fix (`stepWithSlopeAndCollisionResident`) is used by NPC/fauna below, which go through the shared primitive directly.
+- **NPC/fauna**: `NpcAgentDeps.sampleResidentSurfaceGround` / `AnimalAgentDeps.sampleResidentSurfaceGround` are **optional**. When present, the one detailed per-tick movement call site in each (`NpcAgent`'s `steerTo`; `AnimalAgent`'s `steerToward` and `driveMounted`) uses `stepWithSlopeAndCollisionResident`; when absent (existing tests/isolated callers), behavior is byte-for-byte the old `stepWithSlopeAndCollision(sampleHeight)` path. Wired from real `ChunkManager` data at every production construction site: `createSettlement.ts` (NPCs) → `SettlementsManager.ts` (home + detached/reconstructed livestock via `spawnAnimalDeps`) → `livestock.ts::spawnLivestock`/`createGuaranteedSheep`/`spawnAnimalFromRecord` (all 5 `AnimalAgent` construction sites) → `createFauna.ts` (wild fauna) → `worldBundle.ts` passes `chunkManager.sampleRuntimeSurfaceGround` into both `createSettlementsManager`/`createFauna` calls.
+- **Out of scope, left unwired** (same optional-fallback contract, zero behavior change): `settlement/rats.ts`'s `AnimalAgent` construction — rats aren't in the plan's "Relevant files"; `createSettlement.ts::createSettlementRats` still receives the old `surfaceSampleHeight` only.
+- Every new/changed call site kept the pre-existing `sampleHeight`/`sampleSurfaceGround`/`sampleBridgeDeck` analytical convenience queries for placement/worldgen/coarse/time-skip/off-screen paths untouched, per plan "do not globally replace `sampleHeight`".
+- Verification: `npx tsc --noEmit`, full `vitest run` (8128 tests), `eslint . --fix`, and `vite build` all pass. Browser/gameplay verification (chunk-boundary walk/road/ford/bridge/dig crossings, NPC/fauna traversal, streaming-frontier hold behavior, cave arbitration) is the user's, per plan.
+
 ## Decision
 
 Do not replace the existing deterministic analytical samplers. Add an **explicit resident/runtime ground contract** alongside them and route detailed movement through that contract.
