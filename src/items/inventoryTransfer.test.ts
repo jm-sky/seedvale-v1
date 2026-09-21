@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { createFoodBatch } from './foodFreshness'
 import { Inventory } from './Inventory'
 import { transferInventoryCount, transferInventoryInstance } from './inventoryTransfer'
+import { createLiquidContainerInstance, fillLiquidContainer } from './liquidContainer'
 import { createWeaponInstance } from './weaponMaintenance'
 
 describe('transferInventoryCount', () => {
@@ -66,5 +67,17 @@ describe('transferInventoryInstance', () => {
     expect(transferInventoryInstance(source, destination, knife.id)).toBe(false)
     expect(source.getInstance(knife.id)?.id).toBe(knife.id)
     expect(destination.getInstance(knife.id)).toBeNull()
+  })
+
+  it('rejects an overweight filled container without mutating either owner (plan items-player-054)', () => {
+    const source = new Inventory()
+    // waterskin_large: base 0.5kg + 10l water = 10.5kg; maxWeight fits the
+    // base container but not the real filled payload mass.
+    const destination = new Inventory({}, 6)
+    const filled = fillLiquidContainer(createLiquidContainerInstance('waterskin_large'), 'water')!
+    expect(source.addInstance(filled)).toBe(true)
+    expect(transferInventoryInstance(source, destination, filled.id)).toBe(false)
+    expect(source.getInstance(filled.id)).toMatchObject({ amountLitres: filled.amountLitres, liquid: 'water' })
+    expect(destination.getInstance(filled.id)).toBeNull()
   })
 })

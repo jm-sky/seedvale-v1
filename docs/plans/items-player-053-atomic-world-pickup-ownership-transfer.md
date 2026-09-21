@@ -1,7 +1,7 @@
 # Plan: Atomic world pickup ownership transfer
 
 **Created:** 2026-09-20
-**Status:** `planned` 📋
+**Status:** `verification needed` 🔍
 **Priority:** high · **Effort:** S
 **Depends on:** none
 **Domain:** `items-player`

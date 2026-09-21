@@ -257,6 +257,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `app/interactables.test.ts`
 - `items/createItemSpawners.ts`
 
 ## `items/armorItemInstances.ts`
@@ -545,6 +546,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `app/interactables.test.ts`
 - `app/interactables.ts`
 - `app/worldBundle.ts`
 - `items/authoredWorldPickups.ts`
@@ -646,6 +648,7 @@ Generated from TypeScript imports.
 - `app/actions/npcItemTransfer.test.ts`
 - `app/actions/survivalActions.ts`
 - `app/gameLoop.ts`
+- `app/interactables.test.ts`
 - `app/interactables.ts`
 - `economy/localExchange.test.ts`
 - `economy/settlementEconomy.ts`
@@ -698,7 +701,6 @@ Generated from TypeScript imports.
 - `ai/NpcAgent.ts`
 - `ai/npcLogistics.ts`
 - `ai/npcPersonalProvisions.ts`
-- `app/actions/containerActions.ts`
 - `app/inventoryWiring.ts`
 - `economy/interSettlementFoodTransport.ts`
 - `economy/localExchange.test.ts`
@@ -833,6 +835,7 @@ Generated from TypeScript imports.
 - `items/Inventory.ts`
 - `items/foodFreshness.ts`
 - `items/inventoryTransfer.ts`
+- `items/liquidContainer.ts`
 - `items/weaponMaintenance.ts`
 
 ## `items/inventoryTransfer.ts`
@@ -844,6 +847,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `app/actions/containerActions.ts`
 - `app/actions/npcItemTransfer.ts`
 - `app/actions/workContractPayment.ts`
 - `items/inventoryTransfer.test.ts`
@@ -1066,6 +1070,7 @@ Generated from TypeScript imports.
 - `app/gameLoop.ts`
 - `app/inspection/buildWorldInspection.test.ts`
 - `app/inspection/buildWorldInspection.ts`
+- `app/interactables.ts`
 - `app/inventoryWiring.ts`
 - `economy/production.ts`
 - `economy/productionExecutor.ts`
@@ -1377,9 +1382,11 @@ Generated from TypeScript imports.
 - `app/inspection/buildWorldInspection.ts`
 - `items/Inventory.test.ts`
 - `items/Inventory.ts`
+- `items/inventoryTransfer.test.ts`
 - `items/inventoryView.ts`
 - `items/itemUseView.ts`
 - `items/liquidContainer.test.ts`
+- `items/trade.test.ts`
 - `items/trade.ts`
 - `settlement/npcPostDeath.test.ts`
 - `settlement/npcState.test.ts`
@@ -1549,6 +1556,7 @@ Generated from TypeScript imports.
 - `items/armorItemInstances.ts`
 - `items/itemInstances.ts`
 - `items/items.ts`
+- `items/liquidContainer.ts`
 - `items/trade.ts`
 - `items/tradeCatalog.ts`
 - `items/tradeGrievance.ts`
@@ -1578,7 +1586,7 @@ Generated from TypeScript imports.
 - `app/actions/groundActions.ts`
 - `app/actions/placementActions.ts`
 - `app/createApp.ts`
-- `app/gameLoop.ts`
+- `app/interactables.ts`
 - `app/inventoryWiring.ts`
 - `items/trade.test.ts`
 - `items/trapInstanceTrade.test.ts`
@@ -1739,6 +1747,7 @@ Generated from TypeScript imports.
 - `app/actions/npcItemTransfer.test.ts`
 - `app/createApp.ts`
 - `app/gameLoop.ts`
+- `app/interactables.test.ts`
 - `app/inventoryWiring.ts`
 - `economy/productionExecutor.test.ts`
 - `items/HeldTool.test.ts`

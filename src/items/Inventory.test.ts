@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest'
 import { humanBodyCarryCapacityKg } from '../player/humanCarryCapacity'
 import { PLAYER_STARTING_ATTRIBUTES } from '../player/PlayerController'
-import { createArmorInstance } from './armorItemInstances'
+import { createArmorInstance, effectiveInstanceWeight } from './armorItemInstances'
 import { createFoodBatch } from './foodFreshness'
-import { DEFAULT_MAX_SIZE, Inventory } from './Inventory'
+import { DEFAULT_MAX_SIZE, effectiveCarriedInstanceWeight, Inventory, inventoryFullToastTextForInstance } from './Inventory'
 import { createTentInstance, isWeaponItemInstance } from './itemInstances'
 import { itemSizeUnits } from './items'
-import { createLiquidContainerInstance, fillLiquidContainer } from './liquidContainer'
+import { addLiquidToContainer, createLiquidContainerInstance, fillLiquidContainer } from './liquidContainer'
 import { createTrapInstance } from './trapItemInstances'
 import { createWeaponInstance } from './weaponMaintenance'
 
@@ -567,5 +567,60 @@ describe('Inventory.setBaseMaxWeight (plan settlements-npcs-047)', () => {
     expect(inv.count('stone')).toBe(4)
     expect(inv.add('stone', 1)).toBe(true)
     expect(inv.count('stone')).toBe(5)
+  })
+})
+
+describe('instance payload capacity admission (plan items-player-054)', () => {
+  // waterskin_large: base 0.5kg, 10l capacity, LIQUID_DENSITY_KG_PER_LITRE = 1
+  // → empty 0.5kg, full 10.5kg. maxWeight = 6 sits strictly between them.
+  it('admits an empty liquid container using base/effective instance mass', () => {
+    const inv = new Inventory({}, 6)
+    const empty = createLiquidContainerInstance('waterskin_large')
+    expect(inv.canAddInstance(empty)).toBe(true)
+    expect(inv.addInstance(empty)).toBe(true)
+  })
+
+  it('includes partial liquid payload mass in admission', () => {
+    const inv = new Inventory({}, 6)
+    const half = addLiquidToContainer(createLiquidContainerInstance('waterskin_large'), 'water', 5)!.instance
+    expect(effectiveCarriedInstanceWeight(half)).toBeCloseTo(5.5)
+    expect(inv.canAddInstance(half)).toBe(true)
+    expect(inv.addInstance(half)).toBe(true)
+    expect(inv.totalWeight()).toBeCloseTo(5.5)
+  })
+
+  it('rejects a full container whose base would fit but base+liquid would not', () => {
+    const inv = new Inventory({}, 6)
+    const full = fillLiquidContainer(createLiquidContainerInstance('waterskin_large'), 'water')!
+    expect(effectiveCarriedInstanceWeight(full)).toBeCloseTo(10.5)
+    expect(inv.canAddInstance(full)).toBe(false)
+    expect(inv.addInstance(full)).toBe(false)
+    expect(inv.isEmpty()).toBe(true)
+  })
+
+  it('keeps total weight within max after a successful full-container insertion', () => {
+    const inv = new Inventory({}, 20)
+    const full = fillLiquidContainer(createLiquidContainerInstance('waterskin_large'), 'water')!
+    expect(inv.addInstance(full)).toBe(true)
+    expect(inv.totalWeight()).toBeLessThanOrEqual(inv.maxWeight)
+  })
+
+  it('leaves armor quality effective weight unchanged', () => {
+    const poor = createArmorInstance('leather_armor', 'poor')
+    expect(effectiveCarriedInstanceWeight(poor)).toBe(effectiveInstanceWeight(poor))
+  })
+
+  it('leaves non-liquid instance capacity behaviour unchanged', () => {
+    const inv = new Inventory({}, 1)
+    const trap = createTrapInstance('trap_simple')
+    expect(effectiveCarriedInstanceWeight(trap)).toBe(effectiveInstanceWeight(trap))
+    expect(inv.canAddInstance(trap)).toBe(inv.totalWeight() + effectiveInstanceWeight(trap) <= inv.maxWeight + 1e-9)
+  })
+
+  it('inventoryFullToastTextForInstance explains a payload-mass rejection', () => {
+    const inv = new Inventory({}, 6)
+    const full = fillLiquidContainer(createLiquidContainerInstance('waterskin_large'), 'water')!
+    expect(inv.canAddInstance(full)).toBe(false)
+    expect(inventoryFullToastTextForInstance(inv, full)).toBe('Ekwipunek jest za ciężki.')
   })
 })

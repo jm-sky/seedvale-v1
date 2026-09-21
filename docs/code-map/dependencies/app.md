@@ -127,7 +127,6 @@ Generated from TypeScript imports.
 
 - `ai/NpcAgent.ts`
 - `app/actions/actionContext.ts`
-- `app/actions/containerInstanceTransfer.ts`
 - `app/actions/placementActions.ts`
 - `app/actions/placementYaw.ts`
 - `fauna/AnimalAgent.ts`
@@ -135,7 +134,7 @@ Generated from TypeScript imports.
 - `items/Inventory.ts`
 - `items/container.ts`
 - `items/equipment.ts`
-- `items/foodItems.ts`
+- `items/inventoryTransfer.ts`
 - `items/inventoryView.ts`
 - `items/itemCatalog.ts`
 - `items/itemInstances.ts`
@@ -170,7 +169,6 @@ Generated from TypeScript imports.
 
 **Imported by**
 
-- `app/actions/containerActions.ts`
 - `app/actions/containerInstanceTransfer.test.ts`
 
 ## `app/actions/cookMealIntent.test.ts`
@@ -1245,7 +1243,6 @@ Generated from TypeScript imports.
 - `items/itemFuel.ts`
 - `items/itemInstances.ts`
 - `items/items.ts`
-- `items/trade.ts`
 - `items/weaponMaintenance.ts`
 - `perf/index.ts`
 - `player/PlayerController.ts`
@@ -1416,8 +1413,13 @@ Generated from TypeScript imports.
 - `app/interactables.ts`
 - `interaction/Interactable.ts`
 - `items/Inventory.ts`
+- `items/ItemSpawner.ts`
 - `items/createDroppedItems.ts`
+- `items/createItemSpawners.ts`
+- `items/foodFreshness.ts`
 - `items/items.ts`
+- `items/weaponMaintenance.ts`
+- `terrain/chunkManager.ts`
 - `world/spatialContext.ts`
 
 ## `app/interactables.ts`
@@ -1438,7 +1440,9 @@ Generated from TypeScript imports.
 - `items/createPlacedTents.ts`
 - `items/foodFreshness.ts`
 - `items/itemCatalog.ts`
+- `items/itemInstances.ts`
 - `items/items.ts`
+- `items/trade.ts`
 - `player/playerMelee.ts`
 - `settlement/PlacedFires.ts`
 - `settlement/createSettlement.ts`

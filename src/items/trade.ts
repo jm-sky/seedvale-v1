@@ -1,5 +1,5 @@
-import type { Inventory } from './Inventory'
 import { createArmorInstance, effectiveInstanceWeight, isArmorKind } from './armorItemInstances'
+import { effectiveCarriedInstanceWeight, type Inventory } from './Inventory'
 import { transferInventoryCount, transferInventoryInstance } from './inventoryTransfer'
 import {
   ARMOR_QUALITY_RANK,
@@ -96,7 +96,7 @@ function recordSize(record: Partial<Record<ItemKind, number>>): number {
 
 function instancesWeight(instances: readonly ItemInstance[]): number {
   let total = 0
-  for (const instance of instances) total += effectiveInstanceWeight(instance)
+  for (const instance of instances) total += effectiveCarriedInstanceWeight(instance)
   return total
 }
 
@@ -120,7 +120,7 @@ function offerRemovalDelta(
       for (const id of ids) {
         const instance = inventory.getInstance(id)
         if (!instance) continue
-        weight += effectiveInstanceWeight(instance)
+        weight += effectiveCarriedInstanceWeight(instance)
         size += itemSizeUnits(instance.kind)
       }
     } else {

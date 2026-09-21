@@ -1,6 +1,6 @@
 import type { NpcAgent } from '../../ai/NpcAgent'
 import type { AnimalAgent } from '../../fauna/AnimalAgent'
-import type { FoodBatch, Inventory } from '../../items/Inventory'
+import type { Inventory } from '../../items/Inventory'
 import type { ItemKind } from '../../items/items'
 import type { VueUi } from '../../ui-vue/mount'
 import type { GroundPlacementDefinition, PlacementBlocker, PlacementPreviewResult } from './placementActions'
@@ -14,8 +14,8 @@ import {
   containerTotalWeight,
 } from '../../items/container'
 import { resolveEquipmentModifiers } from '../../items/equipment'
-import { skipBatchCount } from '../../items/foodItems'
-import { inventoryFullToastText } from '../../items/Inventory'
+import { inventoryFullToastText, inventoryFullToastTextForInstance } from '../../items/Inventory'
+import { transferInventoryCount, transferInventoryInstance } from '../../items/inventoryTransfer'
 import { buildInventoryGroups, inventoryCountsForUi } from '../../items/inventoryView'
 import { CAPABILITY_NEED_LABEL, hasItemCapability } from '../../items/itemCatalog'
 import { INSTANCE_BACKED_KINDS } from '../../items/itemInstances'
@@ -36,52 +36,20 @@ import { canLootNpcCorpse, corpseLootInventory, transferCorpseCountTo, transferC
 import { CHEST_DEPTH, CHEST_WIDTH } from '../../world/containerProp'
 import { attemptTreasureUnlock, treasureSiteForContainer } from '../../world/treasureSites'
 import { isActionBlocked, type PlayerActionContext } from './actionContext'
-import { withdrawInstanceRollbackSafe } from './containerInstanceTransfer'
 import { evaluatePlacementSite, previewGroundPlacement } from './placementActions'
 import { placementAimSite } from './placementYaw'
 
 /** How many more of `kind` (up to `available`) would actually fit in
- *  `inventory` right now — used by "Weź wszystko" (plan items-player-024) to
- *  request only the capacity-legal amount instead of an all-or-nothing
- *  transfer. Walks one unit at a time (bounded by a chest/corpse's own small
- *  contents) rather than a closed-form calc, since a carried backpack can
- *  grow `maxWeight` mid-walk. */
-function maxTransferable(inventory: Inventory, kind: ItemKind, available: number): number {
+ *  `destination` right now — used both by deposit/"Weź wszystko" (plan
+ *  items-player-024, items-player-055) to request only the capacity-legal
+ *  amount before committing one atomic `transferInventoryCount()` move,
+ *  instead of an all-or-nothing transfer. Walks one unit at a time (bounded
+ *  by a chest/corpse/pack's own small contents) rather than a closed-form
+ *  calc, since a carried backpack can grow `maxWeight` mid-walk. */
+function maxTransferable(destination: Inventory, kind: ItemKind, available: number): number {
   let n = 0
-  while (n < available && inventory.canAdd(kind, n + 1)) n++
+  while (n < available && destination.canAdd(kind, n + 1)) n++
   return n
-}
-
-/** Same batch-preserving partial-accept algorithm as
- *  `PlacedContainers.deposit()` (`world/createPlacedContainers.ts`),
- *  reused directly against a live pack `Inventory` (plan fauna-039 §12) —
- *  an equipped pack has no `id`-keyed store of its own to route through
- *  `containerContents()`, just the animal's own `Inventory`. Returns the
- *  amount actually accepted so the caller can return any remainder to the
- *  player, same "partial success, never lost" contract. */
-function depositBatchesInto(
-  target: Inventory,
-  kind: ItemKind,
-  amount: number,
-  nowDays: number,
-  batches?: readonly FoodBatch[],
-): number {
-  if (amount <= 0) return 0
-  if (batches && batches.length > 0) {
-    let accepted = 0
-    let remaining = amount
-    for (const batch of batches) {
-      if (remaining <= 0) break
-      const take = Math.min(batch.count, remaining)
-      if (!target.addWithFreshness(kind, take, [{ ...batch, count: take }], nowDays)) break
-      accepted += take
-      remaining -= take
-    }
-    return accepted
-  }
-  let accepted = 0
-  while (accepted < amount && target.add(kind, 1, nowDays)) accepted++
-  return accepted
 }
 
 /** Everything the generic player storage (plan 164) does from the app layer:
@@ -178,6 +146,31 @@ export function createContainerActions(
       inventory.totalWeight(),
       inventory.maxWeight,
     )
+  }
+
+  /** Live destination/source `Inventory` for the currently open container/
+   *  pack transfer session (plan items-player-055) — re-resolved fresh on
+   *  every handler call rather than cached across UI events, since a
+   *  container/pack can be invalidated (world rebuild, pack unequip,
+   *  animal death handoff) while the screen stays open. `null` for
+   *  `npcCorpse` (loot lives on the corpse's own snapshot, moved through
+   *  `transferCorpseCountTo`/`transferCorpseInstanceTo` instead) and for a
+   *  stale/missing container or pack — callers must treat `null` as a no-op,
+   *  never as license to mutate the player side first. */
+  const resolveOpenTransferInventory = (): Inventory | null => {
+    if (!openTransfer || openTransfer.kind === 'npcCorpse') return null
+    if (openTransfer.kind === 'animalPack') return resolveAnimalPack(openTransfer.animalId)?.contents ?? null
+    return containerContents(openTransfer.id)?.find(openTransfer.id)?.contents ?? null
+  }
+
+  /** Refreshes whichever transfer screen is open after a committed move
+   *  against `contents` (the same live `Inventory` `resolveOpenTransferInventory`
+   *  just returned) — a no-op for `npcCorpse` sessions, which use
+   *  `refreshNpcCorpseScreen` instead. */
+  const refreshOpenTransferScreen = (contents: Inventory): void => {
+    if (!openTransfer) return
+    if (openTransfer.kind === 'animalPack') refreshAnimalPackScreen(contents)
+    else if (openTransfer.kind === 'container') refreshContainerScreenFor(openTransfer.id)
   }
 
   /** Shared placement contract for a container (plan `world-008`) — one
@@ -572,43 +565,18 @@ export function createContainerActions(
         toast.show('Nie możesz zostawiać przedmiotów przy zwłokach.', 'error')
         return
       }
+      const target = resolveOpenTransferInventory()
+      if (!target) return
       const nowDays = ctx.dayNight.elapsedDays
-      const batches = inventory.removeWithFreshness(kind, amount, nowDays)
-      if (!batches) return
-      if (openTransfer.kind === 'animalPack') {
-        const resolved = resolveAnimalPack(openTransfer.animalId)
-        if (!resolved) {
-          inventory.addWithFreshness(kind, amount, batches, nowDays)
-          return
-        }
-        const acceptedIntoPack = depositBatchesInto(resolved.contents, kind, amount, nowDays, batches)
-        if (acceptedIntoPack <= 0) {
-          inventory.addWithFreshness(kind, amount, batches, nowDays)
-          toast.show('Brak miejsca w jukach.', 'error')
-          return
-        }
-        if (acceptedIntoPack < amount) {
-          inventory.addWithFreshness(kind, amount - acceptedIntoPack, skipBatchCount(batches, acceptedIntoPack), nowDays)
-        }
-        hud.setInventoryWeight(inventory.totalWeight(), inventory.maxWeight)
-        ctx.onInventoryChanged()
-        refreshAnimalPackScreen(resolved.contents)
-        return
-      }
-      const store = containerContents(openTransfer.id)
-      if (!store) return
-      const accepted = store.deposit(openTransfer.id, kind, amount, nowDays, batches)
+      const accepted = maxTransferable(target, kind, amount)
       if (accepted <= 0) {
-        inventory.addWithFreshness(kind, amount, batches, nowDays)
-        toast.show('Brak miejsca w skrzyni.', 'error')
+        toast.show(openTransfer.kind === 'animalPack' ? 'Brak miejsca w jukach.' : 'Brak miejsca w skrzyni.', 'error')
         return
       }
-      if (accepted < amount) {
-        inventory.addWithFreshness(kind, amount - accepted, skipBatchCount(batches, accepted), nowDays)
-      }
+      if (!transferInventoryCount(inventory, target, kind, accepted, nowDays)) return
       hud.setInventoryWeight(inventory.totalWeight(), inventory.maxWeight)
       ctx.onInventoryChanged()
-      refreshContainerScreenFor(openTransfer.id)
+      refreshOpenTransferScreen(target)
     },
     onWithdraw: (kind, amount) => {
       if (!openTransfer) return
@@ -624,30 +592,16 @@ export function createContainerActions(
         refreshNpcCorpseScreen(openTransfer.npc)
         return
       }
-      if (openTransfer.kind === 'animalPack') {
-        const resolved = resolveAnimalPack(openTransfer.animalId)
-        if (!resolved) return
-        const nowDays = ctx.dayNight.elapsedDays
-        const take = Math.min(resolved.contents.count(kind), amount)
-        if (take <= 0) return
-        const withdrawnBatches = resolved.contents.removeWithFreshness(kind, take, nowDays)
-        if (!withdrawnBatches) return
-        inventory.addWithFreshness(kind, take, withdrawnBatches, nowDays)
-        hud.setInventoryWeight(inventory.totalWeight(), inventory.maxWeight)
-        ctx.onInventoryChanged()
-        refreshAnimalPackScreen(resolved.contents)
-        return
-      }
+      const source = resolveOpenTransferInventory()
+      if (!source) return
       const nowDays = ctx.dayNight.elapsedDays
-      const store = containerContents(openTransfer.id)
-      if (!store) return
-      const withdrawn = store.withdraw(openTransfer.id, kind, amount, nowDays)
-      if (withdrawn.amount <= 0) return
-      inventory.addWithFreshness(kind, withdrawn.amount, withdrawn.batches, nowDays)
+      const take = Math.min(source.count(kind), amount)
+      if (take <= 0) return
+      if (!transferInventoryCount(source, inventory, kind, take, nowDays)) return
       hud.setInventoryWeight(inventory.totalWeight(), inventory.maxWeight)
       ctx.onInventoryChanged()
-      ctx.onWorldContainerWithdraw?.(openTransfer.id, kind, withdrawn.amount)
-      refreshContainerScreenFor(openTransfer.id)
+      if (openTransfer.kind === 'container') ctx.onWorldContainerWithdraw?.(openTransfer.id, kind, take)
+      refreshOpenTransferScreen(source)
     },
     onDepositInstance: (instanceId) => {
       if (!openTransfer) return
@@ -655,30 +609,16 @@ export function createContainerActions(
         toast.show('Nie możesz zostawiać przedmiotów przy zwłokach.', 'error')
         return
       }
-      const instance = inventory.getInstance(instanceId)
-      if (!instance) return
-      if (openTransfer.kind === 'animalPack') {
-        const resolved = resolveAnimalPack(openTransfer.animalId)
-        if (!resolved || !resolved.contents.addInstance(instance)) {
-          toast.show('Brak miejsca w jukach.', 'error')
-          return
-        }
-        if (!inventory.removeInstance(instanceId)) return
-        hud.setInventoryWeight(inventory.totalWeight(), inventory.maxWeight)
-        ctx.onInventoryChanged()
-        refreshAnimalPackScreen(resolved.contents)
+      if (!inventory.getInstance(instanceId)) return
+      const target = resolveOpenTransferInventory()
+      if (!target) return
+      if (!transferInventoryInstance(inventory, target, instanceId)) {
+        toast.show(openTransfer.kind === 'animalPack' ? 'Brak miejsca w jukach.' : 'Brak miejsca w skrzyni.', 'error')
         return
       }
-      const store = containerContents(openTransfer.id)
-      if (!store) return
-      if (!store.depositInstance(openTransfer.id, instance)) {
-        toast.show('Brak miejsca w skrzyni.', 'error')
-        return
-      }
-      if (!inventory.removeInstance(instanceId)) return
       hud.setInventoryWeight(inventory.totalWeight(), inventory.maxWeight)
       ctx.onInventoryChanged()
-      refreshContainerScreenFor(openTransfer.id)
+      refreshOpenTransferScreen(target)
     },
     onWithdrawInstance: (instanceId) => {
       if (!openTransfer) return
@@ -687,11 +627,11 @@ export function createContainerActions(
         const instance = post ? corpseLootInventory(post.loot).getInstance(instanceId) : null
         if (!post || !instance) return
         if (!inventory.canAddInstance(instance)) {
-          toast.show(inventoryFullToastText(inventory, instance.kind, 1), 'error')
+          toast.show(inventoryFullToastTextForInstance(inventory, instance), 'error')
           return
         }
         if (!transferCorpseInstanceTo(post, inventory, instanceId)) {
-          toast.show(inventoryFullToastText(inventory, instance.kind, 1), 'error')
+          toast.show(inventoryFullToastTextForInstance(inventory, instance), 'error')
           return
         }
         hud.setInventoryWeight(inventory.totalWeight(), inventory.maxWeight)
@@ -699,45 +639,26 @@ export function createContainerActions(
         refreshNpcCorpseScreen(openTransfer.npc)
         return
       }
-      if (openTransfer.kind === 'animalPack') {
-        const resolved = resolveAnimalPack(openTransfer.animalId)
-        const instance = resolved?.contents.getInstance(instanceId)
-        if (!resolved || !instance) return
-        if (!inventory.canAddInstance(instance)) {
-          toast.show(inventoryFullToastText(inventory, instance.kind, 1), 'error')
-          return
-        }
-        if (!resolved.contents.removeInstance(instanceId)) return
-        if (!inventory.addInstance(instance)) {
-          resolved.contents.addInstance(instance)
-          return
-        }
-        hud.setInventoryWeight(inventory.totalWeight(), inventory.maxWeight)
-        ctx.onInventoryChanged()
-        refreshAnimalPackScreen(resolved.contents)
-        return
-      }
-      const store = containerContents(openTransfer.id)
-      const entry = store?.find(openTransfer.id)
-      const instance = entry?.contents.getInstance(instanceId)
-      if (!instance || !store) return
+      const source = resolveOpenTransferInventory()
+      if (!source) return
+      const instance = source.getInstance(instanceId)
+      if (!instance) return
       if (!inventory.canAddInstance(instance)) {
-        toast.show(inventoryFullToastText(inventory, instance.kind, 1), 'error')
+        toast.show(inventoryFullToastTextForInstance(inventory, instance), 'error')
         return
       }
-      const withdrawn = withdrawInstanceRollbackSafe(store, openTransfer.id, instanceId, inventory)
-      if (!withdrawn) return
+      if (!transferInventoryInstance(source, inventory, instanceId)) return
       hud.setInventoryWeight(inventory.totalWeight(), inventory.maxWeight)
       ctx.onInventoryChanged()
-      ctx.onWorldContainerWithdraw?.(openTransfer.id, withdrawn.kind, 1)
-      refreshContainerScreenFor(openTransfer.id)
+      if (openTransfer.kind === 'container') ctx.onWorldContainerWithdraw?.(openTransfer.id, instance.kind, 1)
+      refreshOpenTransferScreen(source)
     },
     /** "Weź wszystko" (plan items-player-024) — transfers as much of the
      *  source's contents as legally fits (`maxTransferable`), leaving any
-     *  capacity-limited remainder in place. Preserves food freshness (via
-     *  the same `withdraw`/`transferCorpseCountTo` primitives regular
-     *  transfers use) and instance identity (per-instance withdraw, never a
-     *  bulk copy). Partial success is intended, not a failure. */
+     *  capacity-limited remainder in place, as a sequence of individually
+     *  atomic `transferInventoryCount()`/`transferInventoryInstance()` moves
+     *  (plan items-player-055) rather than one all-or-nothing transaction —
+     *  partial success is intended, not a failure. */
     onTakeAll: () => {
       if (!openTransfer) return
       let transferredAny = false
@@ -762,60 +683,29 @@ export function createContainerActions(
         refreshNpcCorpseScreen(openTransfer.npc)
         return
       }
-      if (openTransfer.kind === 'animalPack') {
-        const resolved = resolveAnimalPack(openTransfer.animalId)
-        if (!resolved) return
-        const nowDays = ctx.dayNight.elapsedDays
-        for (const [kind, count] of Object.entries(resolved.contents.toJSON()) as [ItemKind, number][]) {
-          if (count <= 0) continue
-          const n = maxTransferable(inventory, kind, count)
-          if (n <= 0) continue
-          const withdrawnBatches = resolved.contents.removeWithFreshness(kind, n, nowDays)
-          if (!withdrawnBatches) continue
-          inventory.addWithFreshness(kind, n, withdrawnBatches, nowDays)
-          transferredAny = true
-        }
-        for (const kind of INSTANCE_BACKED_KINDS) {
-          for (const instance of resolved.contents.getInstances(kind)) {
-            if (!inventory.canAddInstance(instance)) continue
-            if (!resolved.contents.removeInstance(instance.id)) continue
-            if (!inventory.addInstance(instance)) { resolved.contents.addInstance(instance); continue }
-            transferredAny = true
-          }
-        }
-        if (!transferredAny) return
-        hud.setInventoryWeight(inventory.totalWeight(), inventory.maxWeight)
-        ctx.onInventoryChanged()
-        refreshAnimalPackScreen(resolved.contents)
-        return
-      }
+      const source = resolveOpenTransferInventory()
+      if (!source) return
       const nowDays = ctx.dayNight.elapsedDays
-      const store = containerContents(openTransfer.id)
-      const entry = store?.find(openTransfer.id)
-      if (!store || !entry) return
-      for (const [kind, count] of Object.entries(entry.contents.toJSON()) as [ItemKind, number][]) {
+      for (const [kind, count] of Object.entries(source.toJSON()) as [ItemKind, number][]) {
         if (count <= 0) continue
         const n = maxTransferable(inventory, kind, count)
         if (n <= 0) continue
-        const withdrawn = store.withdraw(openTransfer.id, kind, n, nowDays)
-        if (withdrawn.amount <= 0) continue
-        inventory.addWithFreshness(kind, withdrawn.amount, withdrawn.batches, nowDays)
-        ctx.onWorldContainerWithdraw?.(openTransfer.id, kind, withdrawn.amount)
+        if (!transferInventoryCount(source, inventory, kind, n, nowDays)) continue
         transferredAny = true
+        if (openTransfer.kind === 'container') ctx.onWorldContainerWithdraw?.(openTransfer.id, kind, n)
       }
       for (const kind of INSTANCE_BACKED_KINDS) {
-        for (const instance of entry.contents.getInstances(kind)) {
+        for (const instance of source.getInstances(kind)) {
           if (!inventory.canAddInstance(instance)) continue
-          const withdrawn = withdrawInstanceRollbackSafe(store, openTransfer.id, instance.id, inventory)
-          if (!withdrawn) continue
-          ctx.onWorldContainerWithdraw?.(openTransfer.id, withdrawn.kind, 1)
+          if (!transferInventoryInstance(source, inventory, instance.id)) continue
           transferredAny = true
+          if (openTransfer.kind === 'container') ctx.onWorldContainerWithdraw?.(openTransfer.id, instance.kind, 1)
         }
       }
       if (!transferredAny) return
       hud.setInventoryWeight(inventory.totalWeight(), inventory.maxWeight)
       ctx.onInventoryChanged()
-      refreshContainerScreenFor(openTransfer.id)
+      refreshOpenTransferScreen(source)
     },
   })
 

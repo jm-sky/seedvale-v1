@@ -6,6 +6,7 @@ import type { ItemSpawners } from '../items/createItemSpawners'
 import type { PlacedTents } from '../items/createPlacedTents'
 import type { ToolKind } from '../items/HeldTool'
 import type { SaveItemInstance } from '../items/Inventory'
+import type { ItemInstance } from '../items/itemInstances'
 import type { Settlement } from '../settlement/createSettlement'
 import type { LandOwnershipRegistry } from '../settlement/landOwnership'
 import type { SettlementStructureState } from '../settlement/structureCondition'
@@ -29,8 +30,10 @@ import { SPAWNER_LABELS, spawnerDestroyPromptLabel } from '../fauna/createFauna'
 import { isMeleeTool } from '../fauna/faunaCombat'
 import { containerGroundPrompt } from '../items/container'
 import { type FoodBatch, type FreshnessStage, getFoodBatchFreshnessStage } from '../items/foodFreshness'
+import { Inventory } from '../items/Inventory'
 import { consumeVerbLabel, hasItemCapability, isRangedTool, ITEM_CATALOG } from '../items/itemCatalog'
 import { ITEM_DEFS, type ItemKind } from '../items/items'
+import { createAcquiredInstance } from '../items/trade'
 import { type MeleeHitCandidate, pickCombatTarget } from '../player/playerMelee'
 import { pastureTroughCanFill, pastureTroughPromptLabel } from '../settlement/pastureWater'
 import { isPlayerPlacedFire, type PlacedFires } from '../settlement/PlacedFires'
@@ -1415,21 +1418,145 @@ export function buildCombatTarget(
   }
 }
 
-/** Routes a picked-up `WorldItemRef` to whichever registry it came from —
- *  world-generated (finite, id-based collected set), the renewable pool near
- *  the settlement, or a player drop. */
-export function collectItem(
+/**
+ * Read-only, mutation-free pickup descriptor for a `WorldItemRef`, resolved
+ * from whichever registry currently owns it — world-generated (finite,
+ * id-based collected set), the renewable pool, or a player drop (plan
+ * items-player-053). `null` means the ref no longer resolves to a live
+ * source (already collected/stale) — never partially resolved.
+ *
+ * Callers must complete the full destination admission/commit sequence and
+ * call `retire()` at most once, synchronously, only after that commit
+ * succeeds — no `await`/callback may separate resolution from retirement,
+ * so the source this descriptor names cannot change out from under the
+ * transaction. `retire()` returning `false` is an invariant failure (the
+ * source vanished despite that synchronous contract), never a normal retry
+ * case.
+ *
+ * @domain items-player
+ */
+export type WorldPickupResolution = {
+  itemKind: ItemKind
+  /** Exact saved instance payload the source claims, if any — a dropped
+   *  instance-backed item or an authored/renewable spawner's `instanceId`. */
+  instance?: SaveItemInstance
+  /** Perishable food provenance (dropped sources only). */
+  foodBatch?: FoodBatch
+  /** True only for an authored one-shot spawner pickup. */
+  authoredOneShot: boolean
+  /** Retires the exact source this resolution came from. */
+  retire: () => boolean
+}
+
+export function resolveWorldPickup(
   ref: WorldItemRef,
   chunkManager: ChunkManager,
   itemSpawners: ItemSpawners,
   droppedItems: DroppedItems,
-): { kind: ItemKind, x: number, z: number, instance?: SaveItemInstance, foodBatch?: FoodBatch, authoredOneShot?: boolean } | null {
+): WorldPickupResolution | null {
   switch (ref.source) {
-    case 'dropped':
-      return droppedItems.collect(ref.id)
-    case 'spawner':
-      return itemSpawners.collect(ref.id)
-    case 'world':
-      return chunkManager.collectItem(ref.id)
+    case 'dropped': {
+      const item = droppedItems.get(ref.id)
+      if (!item) return null
+      return {
+        itemKind: item.kind,
+        instance: item.instance,
+        foodBatch: item.foodBatch,
+        authoredOneShot: false,
+        retire: () => droppedItems.collect(ref.id) !== null,
+      }
+    }
+    case 'spawner': {
+      const point = itemSpawners.nodes().find((p) => p.id === ref.id)
+      if (!point || point.collected) return null
+      return {
+        itemKind: point.kind,
+        instance: point.instanceId ? { id: point.instanceId, kind: point.kind } : undefined,
+        authoredOneShot: point.authoredOneShot ?? false,
+        retire: () => itemSpawners.collect(ref.id) !== null,
+      }
+    }
+    case 'world': {
+      // Chunk world items never carry an exact instance/food payload — the
+      // interaction candidate's own `ref.kind` is already the ordinary
+      // destination kind, so admission resolves without a separate peek.
+      // `retire` IS the source's mutating read (`ChunkManager` has no
+      // separate non-mutating lookup by id).
+      return {
+        itemKind: ref.kind,
+        authoredOneShot: false,
+        retire: () => chunkManager.collectItem(ref.id) !== null,
+      }
+    }
   }
+}
+
+/** Outcome of `commitWorldPickup()` — `ok: false` carries the concrete
+ *  `instance` that was rejected (when the transaction reached that stage),
+ *  so a caller with UI feedback can explain a payload-mass rejection
+ *  precisely (`inventoryFullToastTextForInstance`) instead of falling back
+ *  to the kind-level message. */
+export type WorldPickupCommit =
+  | { ok: true, itemKind: ItemKind, authoredOneShot: boolean }
+  | { ok: false, itemKind: ItemKind, instance?: ItemInstance }
+
+/**
+ * Commits one already-`resolveWorldPickup()`-resolved pickup into
+ * `inventory` (plan items-player-053): reconstructs/validates the exact
+ * destination payload, commits it, and only then retires the source. A
+ * malformed exact saved instance fails closed — it is never replaced by a
+ * freshly minted instance. A rejected or malformed destination leaves
+ * `inventory` and the source completely unchanged (`ok: false`); the source
+ * is retired, and `inventory` gains the item, only on `ok: true`.
+ *
+ * @domain items-player
+ */
+export function commitWorldPickup(
+  resolution: WorldPickupResolution,
+  inventory: Inventory,
+  nowDays: number,
+): WorldPickupCommit {
+  const { itemKind, authoredOneShot } = resolution
+  let acquiredInstance: ItemInstance | null
+  if (resolution.instance) {
+    const [restored] = Inventory.instancesFromJSON([resolution.instance])
+    if (!restored) return { ok: false, itemKind }
+    acquiredInstance = restored
+  } else {
+    // Fresh-instance minting only applies when the source does not claim an
+    // exact instance payload — e.g. a renewable spawner point with no
+    // `instanceId` for an otherwise instance-backed kind.
+    acquiredInstance = createAcquiredInstance(itemKind)
+  }
+
+  if (acquiredInstance) {
+    if (!inventory.canAddInstance(acquiredInstance)) return { ok: false, itemKind, instance: acquiredInstance }
+    if (!inventory.addInstance(acquiredInstance)) return { ok: false, itemKind, instance: acquiredInstance }
+    if (!resolution.retire()) {
+      // Invariant failure: the source vanished between resolve and retire
+      // despite the required synchronous, no-await ordering. Roll back the
+      // just-committed destination payload rather than leaving a duplicate.
+      inventory.removeInstance(acquiredInstance.id)
+      return { ok: false, itemKind, instance: acquiredInstance }
+    }
+    return { ok: true, itemKind, authoredOneShot }
+  }
+
+  if (resolution.foodBatch) {
+    if (!inventory.canAdd(itemKind, 1)) return { ok: false, itemKind }
+    if (!inventory.addWithFreshness(itemKind, 1, [resolution.foodBatch], nowDays)) return { ok: false, itemKind }
+    if (!resolution.retire()) {
+      inventory.remove(itemKind, 1, nowDays)
+      return { ok: false, itemKind }
+    }
+    return { ok: true, itemKind, authoredOneShot }
+  }
+
+  if (!inventory.canAdd(itemKind, 1)) return { ok: false, itemKind }
+  if (!inventory.add(itemKind, 1, nowDays)) return { ok: false, itemKind }
+  if (!resolution.retire()) {
+    inventory.remove(itemKind, 1, nowDays)
+    return { ok: false, itemKind }
+  }
+  return { ok: true, itemKind, authoredOneShot }
 }

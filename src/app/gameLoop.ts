@@ -102,13 +102,12 @@ import { executeTargetedSkillAction, queryTargetedSkillAction, targetedSkillProm
 import { treeInspectionCanYieldBranch } from '../interaction/treeInspection'
 import { resolveEquipmentModifiers } from '../items/equipment'
 import { getFoodBatchFreshnessStage } from '../items/foodFreshness'
-import { Inventory, inventoryFullToastText, type SaveItemInstance, toSaveItemInstance } from '../items/Inventory'
+import { Inventory, inventoryFullToastText, inventoryFullToastTextForInstance, type SaveItemInstance, toSaveItemInstance } from '../items/Inventory'
 import { ARROW_DAMAGE_BONUS, hasItemCapability, isRangedTool, ITEM_CATALOG } from '../items/itemCatalog'
 import { fuelValue, selectFuelKind } from '../items/itemFuel'
 import { isInstanceBackedKind, isWeaponItemInstance } from '../items/itemInstances'
 import { isLiquidContainerInstance, LIQUID_CONTAINER_KIND_LIST } from '../items/itemInstances'
 import { ITEM_DEFS, type ItemKind } from '../items/items'
-import { createAcquiredInstance } from '../items/trade'
 import { applySharpnessWear, getSharpnessDamageModifier, getWeaponMaintenanceProfile } from '../items/weaponMaintenance'
 import { getGpuTimer, getMonitor, getProgramCensus, withCategory, withProgramCensusStage } from '../perf'
 import { buildCharacterPresentation } from '../player/characterPresentation'
@@ -180,13 +179,14 @@ import {
   buildCombatTarget,
   buildDigTarget,
   buildInteractables,
-  collectItem,
   COMBAT_TARGET_RANGE,
   type CombatAimMode,
+  commitWorldPickup,
   filterInteractablesSameSpatialContext,
   GAZE_RANGE,
   INTERACT_MIN_DOT,
   INTERACT_RANGE,
+  resolveWorldPickup,
   worldItemAllowsAltInteract,
 } from './interactables'
 import { activeModal } from './modalState'
@@ -2115,6 +2115,14 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
         // batch rather than trusting the prompt string.
         const altQuickConsume = altInteractPressed
           && worldItemAllowsAltInteract(target.item.kind, memberIds.length, freshness)
+        // Atomic world pickup ownership transfer (plan items-player-053) —
+        // `resolveWorldPickup`/`commitWorldPickup` resolve the exact source
+        // payload without mutating it, validate the real destination
+        // admission (exact instance/food/plain), commit the destination, and
+        // only then retire the source. A rejected destination leaves the
+        // source untouched and reports no success; grouped plain drops stop
+        // at the first rejected member so earlier committed members stay
+        // valid (plan items-player-022's group contract).
         const tryCollectWorldItem = (): { picked: number, lastKind: ItemKind | null } => {
           let picked = 0
           let lastKind: ItemKind | null = null
@@ -2122,23 +2130,24 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
             const ref = grouped
               ? { id, kind: target.item.kind, source: 'dropped' as const }
               : target.item
-            if (!inventory.canAdd(ref.kind)) {
-              if (picked === 0) toast.show(inventoryFullToastText(inventory, ref.kind), 'error')
+            const resolution = resolveWorldPickup(ref, bundle.chunkManager, bundle.itemSpawners, bundle.droppedItems)
+            if (!resolution) continue
+            const result = commitWorldPickup(resolution, inventory, dayNight.elapsedDays)
+            if (!result.ok) {
+              if (picked === 0) {
+                toast.show(
+                  result.instance
+                    ? inventoryFullToastTextForInstance(inventory, result.instance)
+                    : inventoryFullToastText(inventory, result.itemKind),
+                  'error',
+                )
+              }
               break
             }
-            const collected = collectItem(ref, bundle.chunkManager, bundle.itemSpawners, bundle.droppedItems)
-            if (!collected) continue
-            const restoredInstance = collected.instance
-              ? Inventory.instancesFromJSON([collected.instance])[0] ?? null
-              : null
-            const acquiredInstance = restoredInstance ?? createAcquiredInstance(collected.kind)
-            if (acquiredInstance) inventory.addInstance(acquiredInstance)
-            else if (collected.foodBatch) inventory.addWithFreshness(collected.kind, 1, [collected.foodBatch], dayNight.elapsedDays)
-            else inventory.add(collected.kind, 1, dayNight.elapsedDays)
-            if (collected.authoredOneShot) consumedWorldPickupIds.add(ref.id)
+            if (result.authoredOneShot) consumedWorldPickupIds.add(ref.id)
             picked += 1
-            lastKind = collected.kind
-            if (isMedicinalForageKind(collected.kind)) {
+            lastKind = result.itemKind
+            if (isMedicinalForageKind(result.itemKind)) {
               awardSkillXp(player.skills, 'survival', SKILL_XP_AWARD.forageMedicinalHerb)
             }
           }

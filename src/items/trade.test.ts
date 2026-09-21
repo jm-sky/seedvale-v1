@@ -6,6 +6,7 @@ import { createArmorInstance, effectiveInstanceWeight } from './armorItemInstanc
 import { Inventory } from './Inventory'
 import { createKeyInstance, createTentInstance, isTentItemInstance } from './itemInstances'
 import { ITEM_DEFS } from './items'
+import { createLiquidContainerInstance, fillLiquidContainer } from './liquidContainer'
 import {
   createAcquiredInstance,
   type OwnedGoodsPurchaseLine,
@@ -917,6 +918,43 @@ describe('settlePricedPurchase (plan quests-progression-012)', () => {
     expect(settlePricedPurchase(inv, HORSE_PRICE, offer, NEUTRAL_SELL_PRICE_CONTEXT, () => true)).toBe('ok')
     expect(inv.count('coin')).toBe(240 - preview)
     expect(inv.count('shell')).toBe(10)
+  })
+})
+
+describe('concrete-instance capacity accounts for liquid payload mass (plan items-player-054)', () => {
+  it('rejects an incoming filled liquid container that would overflow buyer capacity', () => {
+    const filled = fillLiquidContainer(createLiquidContainerInstance('waterskin_large'), 'water')!
+    const buyer = new Inventory({ coin: 10 }, 1)
+    const source = new Inventory(undefined, undefined, [filled])
+    const payee = new Inventory()
+    expect(settleOwnedGoodsPurchase(buyer, source, payee, [
+      { kind: 'waterskin_large', count: 1, unitPrice: 5, instanceIds: [filled.id] },
+    ])).toBe('full')
+    expect(source.getInstance(filled.id)).not.toBeNull()
+    expect(buyer.getInstance(filled.id)).toBeNull()
+    expect(buyer.count('coin')).toBe(10)
+  })
+
+  it('accepts the same filled container once buyer capacity actually covers the payload', () => {
+    const filled = fillLiquidContainer(createLiquidContainerInstance('waterskin_large'), 'water')!
+    const buyer = new Inventory({ coin: 10 }, 12)
+    const source = new Inventory(undefined, undefined, [filled])
+    const payee = new Inventory()
+    expect(settleOwnedGoodsPurchase(buyer, source, payee, [
+      { kind: 'waterskin_large', count: 1, unitPrice: 5, instanceIds: [filled.id] },
+    ])).toBe('ok')
+    expect(buyer.getInstance(filled.id)).toMatchObject({ amountLitres: filled.amountLitres, liquid: 'water' })
+  })
+
+  it('accounts for the real outgoing payload mass when selling a filled container frees capacity', () => {
+    const filled = fillLiquidContainer(createLiquidContainerInstance('waterskin_large'), 'water')!
+    // maxWeight sits strictly between the post-sale weight with the real
+    // ~10.5kg removal (fits) and the pre-054 under-counted ~0.5kg removal
+    // (would not fit) — proves the outgoing side, not just admission.
+    const seller = new Inventory({ coin: 0 }, 5, [filled])
+    expect(settleTransaction(seller, {}, { waterskin_large: 1 })).toBe('ok')
+    expect(seller.getInstance(filled.id)).toBeNull()
+    expect(seller.count('coin')).toBe(sellPrice('waterskin_large'))
   })
 })
 

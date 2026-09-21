@@ -120,6 +120,22 @@ export function toSaveItemInstance(instance: ItemInstance): SaveItemInstance {
 export type { FoodBatch, FoodSourceSpecies } from './foodFreshness'
 
 /**
+ * Full physical mass one carried `ItemInstance` contributes: its structural/
+ * armor-scaled weight plus any payload mass it owns (currently, liquid
+ * volume for a filled container). The single calculation `totalWeight()`,
+ * `canAddInstance()` and any mixed-transaction capacity math must share, so
+ * a filled waterskin/bucket cannot pass admission and then push the owner
+ * over `maxWeight` (items-player-054).
+ *
+ * @domain items-player
+ */
+export function effectiveCarriedInstanceWeight(instance: ItemInstance): number {
+  const base = effectiveInstanceWeight(instance)
+  if (isLiquidContainerInstance(instance)) return base + instance.amountLitres * LIQUID_DENSITY_KG_PER_LITRE
+  return base
+}
+
+/**
  * Persisted contents of a generic `Inventory` — counts, item-instance state
  * (including liquid-container fill) and optional perishable food batches.
  * Capacity (`maxWeight`/`maxSize`) and decay modifier are runtime
@@ -301,10 +317,7 @@ export class Inventory {
   totalWeight(): number {
     let total = 0
     for (const [kind, n] of this.counts) total += ITEM_DEFS[kind].weight * n
-    for (const instance of this.instances.values()) {
-      total += effectiveInstanceWeight(instance)
-      if (isLiquidContainerInstance(instance)) total += instance.amountLitres * LIQUID_DENSITY_KG_PER_LITRE
-    }
+    for (const instance of this.instances.values()) total += effectiveCarriedInstanceWeight(instance)
     return total
   }
 
@@ -337,7 +350,7 @@ export class Inventory {
   }
 
   canAddInstance(instance: ItemInstance): boolean {
-    const weightOk = this.totalWeight() + effectiveInstanceWeight(instance) <= this.maxWeight + 1e-9
+    const weightOk = this.totalWeight() + effectiveCarriedInstanceWeight(instance) <= this.maxWeight + 1e-9
     return weightOk && this.hasSizeRoom(instance.kind, 1)
   }
 
@@ -732,6 +745,19 @@ export function inventoryFromContents(
 export function inventoryFullToastText(inventory: Inventory, kind: ItemKind, n = 1): string {
   const weightOk = inventory.hasWeightRoom(kind, n)
   const sizeOk = inventory.hasSizeRoom(kind, n)
+  if (!weightOk && !sizeOk) return 'Ekwipunek jest za ciężki albo za mały.'
+  if (!weightOk) return 'Ekwipunek jest za ciężki.'
+  return 'Ekwipunek jest za mały.'
+}
+
+/** `inventoryFullToastText`'s sibling for a rejected concrete `ItemInstance`
+ *  (plan items-player-054) — a filled liquid container's payload mass isn't
+ *  visible to `hasWeightRoom(kind)`, so a caller that already has the actual
+ *  instance and failed `canAddInstance(instance)` should explain the
+ *  rejection using this instead. */
+export function inventoryFullToastTextForInstance(inventory: Inventory, instance: ItemInstance): string {
+  const weightOk = inventory.totalWeight() + effectiveCarriedInstanceWeight(instance) <= inventory.maxWeight + 1e-9
+  const sizeOk = inventory.hasSizeRoom(instance.kind, 1)
   if (!weightOk && !sizeOk) return 'Ekwipunek jest za ciężki albo za mały.'
   if (!weightOk) return 'Ekwipunek jest za ciężki.'
   return 'Ekwipunek jest za mały.'
