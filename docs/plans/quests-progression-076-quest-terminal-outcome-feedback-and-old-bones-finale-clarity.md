@@ -9,6 +9,7 @@
 **Subdomains:** `quests` `rewards`
 **Tags:** `outcomes` `feedback` `dialogue` `quest-log`
 **Roadmap:** `quests-and-reputation.md`
+**Model:** Sonnet · Composer
 
 ## Cel
 
