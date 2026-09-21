@@ -330,8 +330,8 @@ import {
   canDeliverToPlayerStorage,
   canExchangeWithHousehold,
   canWithdrawFromEconomy,
+  completeWoodHarvestDuty,
   depositFoodHarvest,
-  depositWoodHarvest,
   HUNT_YIELD_KINDS,
   type NpcLogisticsCtx,
   planDeliverHuntYieldHome,
@@ -4978,12 +4978,13 @@ export class NpcAgent {
               )),
               durationSec: 0.8 * this.waitMultiplier,
               onComplete: () => {
-                relieveNeed(this.needs, 'wood')
-                depositWoodHarvest(this.household, this.economy, harvestedYields, this.simClock)
-                const harvestedUnits = harvestedYields.reduce((n, y) => {
-                  const per = y.kind === 'beam' ? 2 : 1
-                  return n + y.count * per
-                }, 0)
+                const harvestedUnits = completeWoodHarvestDuty(
+                  this.needs,
+                  this.household,
+                  this.economy,
+                  harvestedYields,
+                  this.simClock,
+                )
                 this.progressActivePlan('obtainWood', harvestedUnits)
               },
             },

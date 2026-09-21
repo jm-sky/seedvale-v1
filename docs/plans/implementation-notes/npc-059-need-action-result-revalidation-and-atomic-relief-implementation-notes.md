@@ -80,3 +80,12 @@ A tiny extracted completion helper is acceptable only if it reduces test setup a
 - `npc-058` owns time-skip parity. Do not modify `resolveTimeSkip`/off-screen survival here.
 - Do not change strategy ordering, pressure scoring, `NpcPlan` lifecycle, action persistence, or retry state.
 - Diagnostics may record a failure reason only through the existing trace buffer; no persisted failure/retry flag.
+
+## What was actually implemented
+
+`npc-058` already routed household/personal food and water completions through `tryConsume*` / `consumeOnePersonal*` (atomic `tryRemove` for household drinks). This plan kept that path and added the remaining commit-time gaps:
+
+- `WaterReserve.remove(amount)` now returns the actual removed amount; over-remove still clamps to zero. NPC household drinking continues to use `tryRemove` so a partial reserve is not drained as a failed drink. Animal trough relief uses the returned amount after the existing `has()` re-check.
+- `satisfyHouseholdResourceNeed(..., 'food')` relieves hunger only when `takeFood()` returns an item.
+- `completeWoodHarvestDuty()` is the chop→deposit semantic commit used by `NpcAgent`: empty `harvestedYields` skip deposit, wood-duty relief, and Plan progress; non-empty yields keep exact `branch`/`beam` deposit plus branch-equivalent progress.
+- No reservation manager, no new action FSM, no time-skip changes, no new trace event (physical action still completes; next `choose()` re-plans).

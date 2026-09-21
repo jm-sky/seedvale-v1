@@ -3,15 +3,17 @@ import type { NpcLogisticsCtx } from './npcLogistics'
 import { createSettlementEconomy } from '../economy/settlementEconomy'
 import { Inventory } from '../items/Inventory'
 import { createHousehold } from '../settlement/household'
-import { createNeedState } from './Needs'
+import { createNeedState, NEED_SATISFY_AMOUNT } from './Needs'
 import {
   canDeliverToPlayerStorage,
   canExchangeWithHousehold,
   canWithdrawFromEconomy,
+  completeWoodHarvestDuty,
   HELPER_DELIVERY_MAX_CARRY,
   planEconomyWithdraw,
   planHouseholdExchange,
   planPlayerStorageDelivery,
+  satisfyHouseholdResourceNeed,
 } from './npcLogistics'
 
 const HOME = { x: 0, y: 0, z: 0 }
@@ -274,5 +276,54 @@ describe('planPlayerStorageDelivery', () => {
     const needs = createNeedState(0)
     needs.hunger = 0.9
     expect(canDeliverToPlayerStorage(deliveryCtx({ needs }))).toBe(false)
+  })
+})
+
+describe('satisfyHouseholdResourceNeed (plan npc-059)', () => {
+  it('relieves hunger only when takeFood succeeds after a food exchange', () => {
+    const household = createHousehold('h', 's', 'home:h')
+    household.items.remove('bread', household.items.count('bread'))
+    household.depositFood('bread', 1)
+    const needs = createNeedState()
+    needs.hunger = 0.9
+    satisfyHouseholdResourceNeed(needs, household, 'food', 0)
+    expect(household.foodCount()).toBe(0)
+    expect(needs.hunger).toBeCloseTo(0.9 - NEED_SATISFY_AMOUNT.food)
+
+    const stillHungry = needs.hunger
+    satisfyHouseholdResourceNeed(needs, household, 'food', 0)
+    expect(needs.hunger).toBe(stillHungry)
+  })
+})
+
+describe('completeWoodHarvestDuty (plan npc-059)', () => {
+  it('empty harvestedYields grants no wood-duty relief and no plan progress units', () => {
+    const household = createHousehold('h', 's', 'home:h', { water: 4, items: { counts: {}, instances: [] } })
+    const woodBefore = household.woodCount()
+    const needs = createNeedState()
+    needs.woodDuty = 0.8
+    const units = completeWoodHarvestDuty(needs, household, null, [], 0)
+    expect(units).toBe(0)
+    expect(needs.woodDuty).toBe(0.8)
+    expect(household.woodCount()).toBe(woodBefore)
+  })
+
+  it('non-empty yields deposit exact batches, relieve wood duty, and return branch-equivalent units', () => {
+    const household = createHousehold('h', 's', 'home:h', { water: 4, items: { counts: {}, instances: [] } })
+    const woodBefore = household.woodCount()
+    const needs = createNeedState()
+    needs.woodDuty = 0.8
+    const units = completeWoodHarvestDuty(
+      needs,
+      household,
+      null,
+      [{ kind: 'branch', count: 2 }, { kind: 'beam', count: 1 }],
+      0,
+    )
+    expect(units).toBe(4)
+    expect(needs.woodDuty).toBeCloseTo(0.8 - NEED_SATISFY_AMOUNT.wood)
+    expect(household.woodCount()).toBe(woodBefore + 4)
+    expect(household.items.count('branch')).toBe(2)
+    expect(household.items.count('beam')).toBe(1)
   })
 })

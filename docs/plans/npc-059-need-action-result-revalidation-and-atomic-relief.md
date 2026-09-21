@@ -1,7 +1,7 @@
 # Plan: NPC need action result revalidation and atomic relief
 
 **Created:** 2026-09-19
-**Status:** `planned` 📋
+**Status:** `verification needed` 🔍
 **Type:** fix
 **Priority:** high · **Effort:** S
 **Model:** Sonnet, Composer

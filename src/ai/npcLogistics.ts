@@ -92,6 +92,14 @@ export type NpcLogisticsCtx = {
  *  so a failed harvest never still mints wood at deposit time. */
 export type WoodHarvestDeposit = { kind: 'branch' | 'beam', count: number }
 
+/** Branch-equivalent units from exact harvest batches (`beam` counts as 2). */
+export function woodHarvestBranchEquivalent(yields: readonly WoodHarvestDeposit[]): number {
+  return yields.reduce((n, y) => {
+    const per = y.kind === 'beam' ? 2 : 1
+    return n + y.count * per
+  }, 0)
+}
+
 /** Deposits exact tree-harvest materials into the household (plan settlements-npcs-034). */
 export function depositWoodHarvest(
   household: Household | null,
@@ -109,6 +117,25 @@ export function depositWoodHarvest(
   } else if (economy) {
     commitWoodcutterDeposit(economy, simTime)
   }
+}
+
+/**
+ * Chop→deposit semantic commit (plan npc-059). Empty harvests neither
+ * relieve the wood duty nor report plan progress; a no-op deposit is skipped.
+ * @returns branch-equivalent units actually deposited (0 on failure).
+ */
+export function completeWoodHarvestDuty(
+  needs: NeedState,
+  household: Household | null,
+  economy: SettlementEconomy | null,
+  yields: readonly WoodHarvestDeposit[],
+  simTime: number,
+): number {
+  const harvestedUnits = woodHarvestBranchEquivalent(yields)
+  if (harvestedUnits <= 0) return 0
+  depositWoodHarvest(household, economy, yields, simTime)
+  relieveNeed(needs, 'wood')
+  return harvestedUnits
 }
 
 /** Garden visit gathers a small amount of food into the household (capped,
@@ -156,8 +183,7 @@ export function depositCarriedItems(
  *  duty pressure itself eases. */
 export function satisfyHouseholdResourceNeed(needs: NeedState, household: Household, kind: HouseholdResourceKind, simTime: number): void {
   if (kind === 'food') {
-    household.takeFood(simTime)
-    relieveNeed(needs, 'food')
+    if (household.takeFood(simTime) != null) relieveNeed(needs, 'food')
   } else {
     relieveNeed(needs, 'wood')
   }

@@ -35,7 +35,7 @@ function fakeHousehold(overrides: Partial<{
       current: waterAmount,
       capacity: 10,
       has: (amount: number) => waterAmount >= amount,
-      remove: (_amount: number) => {},
+      remove: (amount: number) => Math.min(waterAmount, Math.max(0, amount)),
     },
     items,
     resolveHayForage: () => {},
@@ -164,7 +164,11 @@ describe('findTroughTarget / findWaterTarget (plan 122 — trough preferred over
         current,
         capacity: 10,
         has: (amount: number) => current >= amount,
-        remove: (amount: number) => { current -= amount },
+        remove: (amount: number) => {
+          const removed = Math.min(current, Math.max(0, amount))
+          current -= removed
+          return removed
+        },
       },
       items: new Inventory({}, Infinity),
       resolveHayForage: () => {},
@@ -217,7 +221,11 @@ describe('pasture trough canonical household binding (plan settlements-npcs-046)
         current,
         capacity: 10,
         has: (amount: number) => current >= amount,
-        remove: (amount: number) => { current -= amount },
+        remove: (amount: number) => {
+          const removed = Math.min(current, Math.max(0, amount))
+          current -= removed
+          return removed
+        },
       },
       items: new Inventory({}, Infinity),
       resolveHayForage: () => {},
@@ -257,7 +265,11 @@ describe('isSourceTargetValid / applySourceRelief — trough (plan 122)', () => 
         current: waterAmount,
         capacity: 10,
         has: (amount: number) => waterAmount >= amount,
-        remove: (amount: number) => { waterAmount -= amount },
+        remove: (amount: number) => {
+          const removed = Math.min(waterAmount, Math.max(0, amount))
+          waterAmount -= removed
+          return removed
+        },
       },
       items: new Inventory({}, Infinity),
       resolveHayForage: () => {},

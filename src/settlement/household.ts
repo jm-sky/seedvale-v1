@@ -166,7 +166,10 @@ export type WaterReserve = {
   /** True while stock is below target (worth fetching, not urgent). */
   shouldFetch: () => boolean
   add: (amount: number) => void
-  remove: (amount: number) => void
+  /** Clamping withdrawal — returns the amount actually removed
+   *  (`min(current, max(0, amount))`). Callers that require a full drink
+   *  must compare the return value with the requested amount (plan npc-059). */
+  remove: (amount: number) => number
   /** Atomic withdrawal — false when `current` cannot cover `amount`, leaving
    *  the reserve unchanged. Prefer this over `has` + clamping `remove` when
    *  a caller must not relieve a need after a failed consumption. */
@@ -191,7 +194,9 @@ function createWaterReserve(initial: number): WaterReserve {
       current = Math.min(WATER_POLICY.capacity, current + amount)
     },
     remove: (amount) => {
-      current = Math.max(0, current - amount)
+      const removed = Math.min(current, Math.max(0, amount))
+      current -= removed
+      return removed
     },
     tryRemove: (amount) => {
       if (amount <= 0) return true

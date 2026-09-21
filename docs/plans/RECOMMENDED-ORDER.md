@@ -251,59 +251,55 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   🔴 `L` · **Score:**  30  
    → **unlocks:** 0/0
 
-42. `npc-059` — **NPC need action result revalidation and atomic relief**  
-  🔴 `S` · **Score:**  29  
-   → **unlocks:** 0/0
-
-43. `settlements-022` — **Founded settlement live runtime and streaming**  
+42. `settlements-022` — **Founded settlement live runtime and streaming**  
   🔴 `L` · **Score:**  28  
    → **unlocks:** 0/0
 
-44. `items-player-014` — **Rope-pullable resource transport**  
+43. `items-player-014` — **Rope-pullable resource transport**  
   🟡 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-45. `world-terrain-039` — **N8AO / post-process cost budget**  
+44. `world-terrain-039` — **N8AO / post-process cost budget**  
   🔴 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-46. `world-terrain-046` — **Unified water shore query and river hotpath**  
+45. `world-terrain-046` — **Unified water shore query and river hotpath**  
   🔴 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-47. `ui-input-025` — **Road travel autopilot for player and mounts**  
+46. `ui-input-025` — **Road travel autopilot for player and mounts**  
   🔴 `L` · **Score:**  26  
    → **unlocks:** 0/0
 
-48. `items-player-044` — **Shoulder and forearm equipment slots**  
+47. `items-player-044` — **Shoulder and forearm equipment slots**  
   🟡 `M` · **Score:**  25  
    → **unlocks:** 0/0
 
-49. `world-036` — **Lightweight unloaded shipwreck and tower lookup**  
+48. `world-036` — **Lightweight unloaded shipwreck and tower lookup**  
   🟡 `M` · **Score:**  25  
    → **unlocks:** 0/0
 
-50. `world-terrain-041` — **Agent presentation render LOD**  
+49. `world-terrain-041` — **Agent presentation render LOD**  
   🔴 `L` · **Score:**  24  
    → **unlocks:** 0/0
 
-51. `tools-019` — **Debug tooling lifecycle ownership**  
+50. `tools-019` — **Debug tooling lifecycle ownership**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-52. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
+51. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
   🟡 `L` · **Score:**  18  
    → **unlocks:** 0/0
 
-53. `items-player-052` — **Settlement tool ownership and social acquisition**  
+52. `items-player-052` — **Settlement tool ownership and social acquisition**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-54. `items-player-058` — **Campfire decomposition and ash residue**  
+53. `items-player-058` — **Campfire decomposition and ash residue**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-55. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
+54. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 

@@ -738,8 +738,8 @@ export function applySourceRelief(ctx: ForagingContext, target: SourceTarget): v
       // backing household when set (e.g. the pasture trough's canonical
       // owner), never `ctx.household` unconditionally.
       const household = target.household ?? ctx.household
-      if (household?.water.has(TROUGH_DRINK_AMOUNT)) {
-        household.water.remove(TROUGH_DRINK_AMOUNT)
+      if (household?.water.has(TROUGH_DRINK_AMOUNT)
+        && household.water.remove(TROUGH_DRINK_AMOUNT) >= TROUGH_DRINK_AMOUNT) {
         drinkWater(ctx.life)
       }
     } else if (source.kind === 'playerTrough') {

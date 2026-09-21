@@ -189,6 +189,18 @@ describe('household water reserve (plan 122)', () => {
     expect(household.water.has(1)).toBe(false)
   })
 
+  it('remove returns the amount actually withdrawn (plan npc-059)', () => {
+    const household = createHousehold('h', 's', 'home')
+    household.water.remove(household.water.current)
+    household.water.add(3)
+    expect(household.water.remove(1)).toBe(1)
+    expect(household.water.current).toBe(2)
+    expect(household.water.remove(5)).toBe(2)
+    expect(household.water.current).toBe(0)
+    expect(household.water.remove(1)).toBe(0)
+    expect(household.water.remove(-2)).toBe(0)
+  })
+
   it('tryRemove fails without clamping when stock cannot cover the amount', () => {
     const household = createHousehold('h', 's', 'home')
     household.water.remove(household.water.current)

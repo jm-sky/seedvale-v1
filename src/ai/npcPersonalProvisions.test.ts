@@ -40,6 +40,23 @@ describe('npcPersonalProvisions helpers', () => {
     expect(countPersonalDrinkPortions(inventory)).toBe(1)
   })
 
+  it('grants no personal-food relief when the item disappeared after selection (plan npc-059)', () => {
+    const inventory = new Inventory()
+    expect(consumeOnePersonalFood(inventory, 1)).toBe(false)
+    inventory.add('bread', 1)
+    inventory.remove('bread', 1)
+    expect(consumeOnePersonalFood(inventory, 1)).toBe(false)
+  })
+
+  it('grants no personal-water relief when the container is gone or empty', () => {
+    const inventory = new Inventory()
+    expect(consumeOnePersonalDrink(inventory)).toBe(false)
+    const filled = fillLiquidContainer(createLiquidContainerInstance('waterskin_small'), 'water')!
+    inventory.addInstance(filled)
+    inventory.removeInstance(filled.id)
+    expect(consumeOnePersonalDrink(inventory)).toBe(false)
+  })
+
   it('skips provisioning estimates for short local contracts', () => {
     const estimate = estimateContractProvisionNeed({
       travelHours: 1,

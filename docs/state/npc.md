@@ -100,7 +100,13 @@ When this file and the code disagree, the code wins — update this file.
 
 8. STATE CHANGE     onComplete mutates a shared intermediate (Household,
                     SettlementEconomy, a combat target, the NPC's own carried
-                    inventory) — never another NPC's authoritative state directly
+                    inventory) — never another NPC's authoritative state directly.
+                    Strategy availability at `beginNeed()` is a preview:
+                    hunger/thirst/wood-duty relief and Plan progress commit
+                    only when the owner mutation at completion succeeds
+                    (plan npc-059). A stale source finishes the physical
+                    action with no semantic success; the next `choose()`
+                    re-plans.
 ```
 
 This is the domain's central extensibility point: a new pressure producer needs no change to the other producers or to the arbitration call site, only a new candidate pushed into the same array.
