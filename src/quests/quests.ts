@@ -350,6 +350,23 @@ function validatePlayerDialogueLines(def: QuestDef): void {
     if (stage.playerLine !== undefined && stage.playerLine.trim().length === 0) {
       throw new QuestDefinitionValidationError(`Quest "${def.id}" stage playerLine is empty`)
     }
+    const ownedDialogue = stage.ownedItemInstanceDialogue
+    if (!ownedDialogue) continue
+    if (ownedDialogue.instanceId.trim().length === 0) {
+      throw new QuestDefinitionValidationError(
+        `Quest "${def.id}" ownedItemInstanceDialogue.instanceId is empty`,
+      )
+    }
+    if (ownedDialogue.progressLine.trim().length === 0) {
+      throw new QuestDefinitionValidationError(
+        `Quest "${def.id}" ownedItemInstanceDialogue.progressLine is empty`,
+      )
+    }
+    if (ownedDialogue.playerLine !== undefined && ownedDialogue.playerLine.trim().length === 0) {
+      throw new QuestDefinitionValidationError(
+        `Quest "${def.id}" ownedItemInstanceDialogue.playerLine is empty`,
+      )
+    }
   }
 }
 
@@ -1417,6 +1434,19 @@ export type QuestStage = {
    *  `gather_item` (cleared and reported in the same giver conversation —
    *  see `QuestManager`). */
   progressLine?: string
+  /**
+   * Optional primary `talk_to_npc` copy when the player currently owns this
+   * exact item instance. `QuestManager` resolves it from `Inventory` at
+   * action-list and selection time — presentation only; selecting talk still
+   * completes the same slot (plan quests-progression-080).
+   *
+   * @domain quests-progression
+   */
+  ownedItemInstanceDialogue?: {
+    instanceId: string
+    playerLine?: string
+    progressLine: string
+  }
   /** Player-facing line for a conscious `talk_to_npc` / gather hand-in
    *  action (plan quests-progression-014). Absent = a generic spoken action. */
   playerLine?: string

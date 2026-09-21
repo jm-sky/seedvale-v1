@@ -328,9 +328,19 @@ export function buildOldBonesAdventureCaveQuest(
       playerLine: 'Znalazłem stare szczątki. Ktoś z waszej rodziny zaginął w tamtej okolicy?',
       progressLine:
         'Taką historię u nas opowiadano. Miał przy sobie sygnet. Jeśli go znajdziesz, przynieś go.',
+      ownedItemInstanceDialogue: {
+        instanceId: binding.signetInstanceId,
+        playerLine: 'Znalazłem sygnet przy starych szczątkach.',
+        progressLine: 'Taką historię u nas opowiadano. To ten sygnet. Dobrze, że już go masz.',
+      },
     },
     {
       objective: { type: 'loot_world_container', containerId: binding.containerId },
+      objectives: [
+        { id: 'loot', objective: { type: 'loot_world_container', containerId: binding.containerId } },
+        { id: 'own', objective: { type: 'own_item_instance', instanceId: binding.signetInstanceId } },
+      ],
+      mode: 'all',
       description: 'Odnajdź szczątki we wskazanej jaskini i zabierz rodowy sygnet.',
       reminderLine: 'We wskazanej jaskini powinny leżeć stare szczątki z sygnetem.',
       progressLine: 'Sygnet jest u ciebie. Teraz wróć z nim do osady.',

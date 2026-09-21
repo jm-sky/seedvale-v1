@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import type { ItemKind } from '../items/items'
 import type { SocialConsequence } from '../reputation/ReputationManager'
 import type { SettlementOpportunityNpc } from './opportunities/settlementNpcMaterialization'
-import type { QuestDialogOverride, QuestManagerInitial, QuestSocialAvailabilityLookup, QuestWorldKnowledgeResolver, QuestWorldTimeLookup } from './QuestManager'
+import type { QuestDialogOverride, QuestManagerInitial, QuestSocialAvailabilityLookup, QuestWorldKnowledgeResolver, QuestWorldProgressLookup, QuestWorldTimeLookup } from './QuestManager'
 import type { AuthoredQuestDef, QuestDef } from './quests'
 import { WOLF_DEN_ID } from '../fauna/AnimalSpawner'
 import { Inventory } from '../items/Inventory'
@@ -6430,6 +6430,433 @@ describe('QuestManager.resolveNpcQuestOffers (plan ui-input-036)', () => {
     const qm = makeManager([simpleQuest])
     acceptOffer(qm, 'Anna')
     expect(qm.resolveNpcQuestOffers('Anna')).toBeNull()
+  })
+})
+
+describe('QuestManager stage-entry world-objective reconciliation (plan quests-progression-080)', () => {
+  const token = { id: 'token-1', kind: 'signet_ring' as const }
+
+  function worldProgressLookup(
+    overrides: Partial<QuestWorldProgressLookup> = {},
+  ): QuestWorldProgressLookup {
+    return {
+      hasReadItem: () => false,
+      hasDiscoveredLocation: () => false,
+      isWorldContainerLooted: () => false,
+      hasResolvedHiddenFindSpot: () => false,
+      hasAcquiredPortableContainer: () => false,
+      ...overrides,
+    }
+  }
+
+  function makeWorldManager(
+    defs: readonly QuestDef[],
+    inventory: Inventory = new Inventory(),
+    worldProgress: Partial<QuestWorldProgressLookup> = {},
+  ): QuestManager {
+    return new QuestManager(
+      defs,
+      undefined,
+      inventory,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      worldProgressLookup(worldProgress),
+    )
+  }
+
+  function stageIndexOf(qm: QuestManager, id: string): number | undefined {
+    return qm.exportProgress().find((entry) => entry.id === id)?.stageIndex
+  }
+
+  function progressJournal(qm: QuestManager, id: string) {
+    return (qm.exportProgress().find((entry) => entry.id === id)?.journal ?? [])
+      .filter((event) => event.kind === 'progress')
+  }
+
+  it('catches up an already-satisfied loot_world_container between two talks', () => {
+    const def = quest({
+      id: 'loot-chain',
+      giverName: 'Anna',
+      offerLine: 'offer loot-chain',
+      stages: [
+        {
+          objective: { type: 'talk_to_npc', npc: { npcId: 'Piotr' } },
+          description: 'talk-a',
+          reminderLine: 'remind-a',
+          playerLine: 'Talk A',
+          progressLine: 'heard-a',
+        },
+        {
+          objective: { type: 'loot_world_container', containerId: 'chest-1' },
+          description: 'loot',
+          reminderLine: 'remind-loot',
+          progressLine: 'found-chest',
+        },
+        {
+          objective: { type: 'talk_to_npc', npc: { npcId: 'Kasia' } },
+          description: 'talk-b',
+          reminderLine: 'remind-b',
+          playerLine: 'Talk B',
+          progressLine: 'heard-b',
+        },
+      ],
+      reportLine: 'report loot-chain',
+    })
+    const qm = makeWorldManager([def], undefined, {
+      isWorldContainerLooted: (containerId) => containerId === 'chest-1',
+    })
+    acceptOffer(qm, 'Anna')
+    expect(speak(qm, 'Piotr')).toBe('heard-a')
+    expect(qm.getState('loot-chain')).toBe('active')
+    expect(stageIndexOf(qm, 'loot-chain')).toBe(2)
+    expect(qm.onInteract('Kasia')?.actions?.[0]?.label).toBe('Talk B')
+    expect(speak(qm, 'Kasia')).toBe('heard-b')
+  })
+
+  it('catches up an already-owned own_item_instance between two talks', () => {
+    const def = quest({
+      id: 'own-chain',
+      giverName: 'Anna',
+      offerLine: 'offer own-chain',
+      stages: [
+        {
+          objective: { type: 'talk_to_npc', npc: { npcId: 'Piotr' } },
+          description: 'talk-a',
+          reminderLine: 'remind-a',
+          playerLine: 'Talk A',
+          progressLine: 'heard-a',
+        },
+        {
+          objective: { type: 'own_item_instance', instanceId: token.id },
+          description: 'own',
+          reminderLine: 'remind-own',
+          progressLine: 'have-token',
+        },
+        {
+          objective: { type: 'talk_to_npc', npc: { npcId: 'Kasia' } },
+          description: 'talk-b',
+          reminderLine: 'remind-b',
+          playerLine: 'Talk B',
+          progressLine: 'heard-b',
+        },
+      ],
+      reportLine: 'report own-chain',
+    })
+    const qm = makeWorldManager([def], new Inventory({}, Infinity, [token]))
+    acceptOffer(qm, 'Anna')
+    speak(qm, 'Piotr')
+    expect(stageIndexOf(qm, 'own-chain')).toBe(2)
+    expect(qm.onInteract('Kasia')?.actions?.[0]?.label).toBe('Talk B')
+  })
+
+  it('reconciles two consecutive already-satisfied world stages in one talk', () => {
+    const def = quest({
+      id: 'two-world',
+      giverName: 'Anna',
+      offerLine: 'offer two-world',
+      stages: [
+        {
+          objective: { type: 'talk_to_npc', npc: { npcId: 'Piotr' } },
+          description: 'talk-a',
+          reminderLine: 'remind-a',
+          playerLine: 'Talk A',
+          progressLine: 'heard-a',
+        },
+        {
+          objective: { type: 'loot_world_container', containerId: 'chest-1' },
+          description: 'loot-a',
+          reminderLine: 'remind-loot-a',
+          progressLine: 'found-a',
+        },
+        {
+          objective: { type: 'loot_world_container', containerId: 'chest-2' },
+          description: 'loot-b',
+          reminderLine: 'remind-loot-b',
+          progressLine: 'found-b',
+        },
+        {
+          objective: { type: 'talk_to_npc', npc: { npcId: 'Kasia' } },
+          description: 'talk-b',
+          reminderLine: 'remind-b',
+          playerLine: 'Talk B',
+          progressLine: 'heard-b',
+        },
+      ],
+      reportLine: 'report two-world',
+    })
+    const qm = makeWorldManager([def], undefined, {
+      isWorldContainerLooted: (containerId) => containerId === 'chest-1' || containerId === 'chest-2',
+    })
+    acceptOffer(qm, 'Anna')
+    speak(qm, 'Piotr')
+    expect(stageIndexOf(qm, 'two-world')).toBe(3)
+    expect(qm.onInteract('Kasia')?.actions?.[0]?.label).toBe('Talk B')
+  })
+
+  it('consumes both already-true slots of an all stage in one reconciliation pass', () => {
+    const def = quest({
+      id: 'all-world',
+      giverName: 'Anna',
+      offerLine: 'offer all-world',
+      stages: [
+        {
+          objective: { type: 'talk_to_npc', npc: { npcId: 'Piotr' } },
+          description: 'talk-a',
+          reminderLine: 'remind-a',
+          playerLine: 'Talk A',
+          progressLine: 'heard-a',
+        },
+        {
+          objective: { type: 'loot_world_container', containerId: 'chest-1' },
+          objectives: [
+            { id: 'loot', objective: { type: 'loot_world_container', containerId: 'chest-1' } },
+            { id: 'own', objective: { type: 'own_item_instance', instanceId: token.id } },
+          ],
+          mode: 'all',
+          description: 'both',
+          reminderLine: 'remind-both',
+          progressLine: 'have-both',
+        },
+        {
+          objective: { type: 'talk_to_npc', npc: { npcId: 'Kasia' } },
+          description: 'talk-b',
+          reminderLine: 'remind-b',
+          playerLine: 'Talk B',
+          progressLine: 'heard-b',
+        },
+      ],
+      reportLine: 'report all-world',
+    })
+    const qm = makeWorldManager(
+      [def],
+      new Inventory({}, Infinity, [token]),
+      { isWorldContainerLooted: (containerId) => containerId === 'chest-1' },
+    )
+    acceptOffer(qm, 'Anna')
+    speak(qm, 'Piotr')
+    expect(stageIndexOf(qm, 'all-world')).toBe(2)
+    expect(qm.onInteract('Kasia')?.actions?.[0]?.label).toBe('Talk B')
+  })
+
+  it('does not advance an unsatisfied state-backed objective', () => {
+    const def = quest({
+      id: 'unsatisfied',
+      giverName: 'Anna',
+      offerLine: 'offer unsatisfied',
+      stages: [
+        {
+          objective: { type: 'talk_to_npc', npc: { npcId: 'Piotr' } },
+          description: 'talk-a',
+          reminderLine: 'remind-a',
+          playerLine: 'Talk A',
+          progressLine: 'heard-a',
+        },
+        {
+          objective: { type: 'loot_world_container', containerId: 'chest-1' },
+          description: 'loot',
+          reminderLine: 'remind-loot',
+          progressLine: 'found-chest',
+        },
+        {
+          objective: { type: 'talk_to_npc', npc: { npcId: 'Kasia' } },
+          description: 'talk-b',
+          reminderLine: 'remind-b',
+          playerLine: 'Talk B',
+          progressLine: 'heard-b',
+        },
+      ],
+      reportLine: 'report unsatisfied',
+    })
+    const qm = makeWorldManager([def])
+    acceptOffer(qm, 'Anna')
+    speak(qm, 'Piotr')
+    expect(stageIndexOf(qm, 'unsatisfied')).toBe(1)
+    expect(qm.onInteract('Kasia')?.actions?.some((action) => action.label === 'Talk B')).toBeFalsy()
+  })
+
+  it('does not fabricate a later talk even when every world fact is already true', () => {
+    const def = quest({
+      id: 'keep-talk',
+      giverName: 'Anna',
+      offerLine: 'offer keep-talk',
+      stages: [
+        {
+          objective: { type: 'talk_to_npc', npc: { npcId: 'Piotr' } },
+          description: 'talk-a',
+          reminderLine: 'remind-a',
+          playerLine: 'Talk A',
+          progressLine: 'heard-a',
+        },
+        {
+          objective: { type: 'loot_world_container', containerId: 'chest-1' },
+          description: 'loot',
+          reminderLine: 'remind-loot',
+          progressLine: 'found-chest',
+        },
+        {
+          objective: { type: 'talk_to_npc', npc: { npcId: 'Kasia' } },
+          description: 'talk-b',
+          reminderLine: 'remind-b',
+          playerLine: 'Talk B',
+          progressLine: 'heard-b',
+        },
+      ],
+      reportLine: 'report keep-talk',
+    })
+    const qm = makeWorldManager([def], undefined, {
+      isWorldContainerLooted: () => true,
+    })
+    acceptOffer(qm, 'Anna')
+    speak(qm, 'Piotr')
+    expect(stageIndexOf(qm, 'keep-talk')).toBe(2)
+    expect(qm.getState('keep-talk')).toBe('active')
+    const notes = qm.list().find((entry) => entry.id === 'keep-talk')?.notes ?? []
+    expect(notes.some((note) => note.text === 'heard-b')).toBe(false)
+    expect(speak(qm, 'Kasia')).toBe('heard-b')
+  })
+
+  it('follows toStageId jumps through already-true world stages without looping', () => {
+    const def = quest({
+      id: 'jump-world',
+      giverName: 'Anna',
+      offerLine: 'offer jump-world',
+      stages: [
+        {
+          objective: { type: 'talk_to_npc', npc: { npcId: 'Piotr' } },
+          description: 'talk-a',
+          reminderLine: 'remind-a',
+          playerLine: 'Talk A',
+          progressLine: 'heard-a',
+        },
+        {
+          id: 'loot-a',
+          objective: { type: 'loot_world_container', containerId: 'chest-1' },
+          description: 'loot-a',
+          reminderLine: 'remind-a-loot',
+          progressLine: 'found-a',
+          resultId: 'skip',
+          transitions: [{ resultId: 'skip', toStageId: 'loot-c' }],
+        },
+        {
+          objective: { type: 'talk_to_npc', npc: { npcId: 'Kasia' } },
+          description: 'skipped-talk',
+          reminderLine: 'remind-skipped',
+          playerLine: 'Skipped talk',
+          progressLine: 'heard-skipped',
+        },
+        {
+          id: 'loot-c',
+          objective: { type: 'loot_world_container', containerId: 'chest-2' },
+          description: 'loot-c',
+          reminderLine: 'remind-c-loot',
+          progressLine: 'found-c',
+        },
+        {
+          objective: { type: 'talk_to_npc', npc: { npcId: 'Marek' } },
+          description: 'talk-end',
+          reminderLine: 'remind-end',
+          playerLine: 'Talk end',
+          progressLine: 'heard-end',
+        },
+      ],
+      reportLine: 'report jump-world',
+    })
+    const qm = makeWorldManager([def], undefined, {
+      isWorldContainerLooted: () => true,
+    })
+    acceptOffer(qm, 'Anna')
+    speak(qm, 'Piotr')
+    expect(stageIndexOf(qm, 'jump-world')).toBe(4)
+    expect(qm.onInteract('Marek')?.actions?.[0]?.label).toBe('Talk end')
+    expect(qm.onInteract('Kasia')?.actions?.some((action) => action.label === 'Skipped talk')).toBeFalsy()
+  })
+
+  it('journals the talk as NPC speech and auto-reconciled world progress as observation', () => {
+    const def = quest({
+      id: 'journal-catchup',
+      giverName: 'Anna',
+      offerLine: 'offer journal-catchup',
+      stages: [
+        {
+          objective: { type: 'talk_to_npc', npc: { npcId: 'Anna' } },
+          description: 'talk-a',
+          reminderLine: 'remind-a',
+          playerLine: 'Talk A',
+          progressLine: 'heard-a',
+        },
+        {
+          objective: { type: 'loot_world_container', containerId: 'chest-1' },
+          description: 'loot',
+          reminderLine: 'remind-loot',
+          progressLine: 'found-chest',
+        },
+        {
+          objective: { type: 'talk_to_npc', npc: { npcId: 'Piotr' } },
+          description: 'talk-b',
+          reminderLine: 'remind-b',
+          playerLine: 'Talk B',
+          progressLine: 'heard-b',
+        },
+      ],
+      reportLine: 'report journal-catchup',
+    })
+    const qm = makeWorldManager([def], undefined, {
+      isWorldContainerLooted: () => true,
+    })
+    acceptOffer(qm, 'Anna')
+    const talk = qm.onInteract('Anna')?.actions?.find((action) => action.label === 'Talk A')
+    expect(talk?.onSelect()).toBe('heard-a')
+    const journal = progressJournal(qm, 'journal-catchup')
+    expect(journal).toEqual([
+      expect.objectContaining({ stageIndex: 0, speakerNpcId: 'Anna' }),
+      expect.objectContaining({ stageIndex: 1 }),
+    ])
+    expect(journal[1]?.speakerNpcId).toBeUndefined()
+    const notes = qm.list().find((entry) => entry.id === 'journal-catchup')?.notes ?? []
+    expect(notes.find((note) => note.text === 'heard-a')?.speakerName).toBe('Anna')
+    expect(notes.find((note) => note.text === 'found-chest')?.speakerName).toBe('Obserwacja')
+    expect(notes.some((note) => note.text === 'heard-b')).toBe(false)
+  })
+
+  it('resolves owned-item talk copy from live inventory at onSelect, not menu-open', () => {
+    const def = quest({
+      id: 'owned-talk',
+      giverName: 'Anna',
+      offerLine: 'offer owned-talk',
+      stages: [{
+        objective: { type: 'talk_to_npc', npc: { npcId: 'Piotr' } },
+        description: 'talk',
+        reminderLine: 'remind',
+        playerLine: 'I have not found it.',
+        progressLine: 'Go find it.',
+        ownedItemInstanceDialogue: {
+          instanceId: token.id,
+          playerLine: 'I already have it.',
+          progressLine: 'You already have it.',
+        },
+      }],
+      reportLine: 'report owned-talk',
+    })
+    const inventory = new Inventory({}, Infinity)
+    const qm = makeWorldManager([def], inventory)
+    acceptOffer(qm, 'Anna')
+    const dialog = qm.onInteract('Piotr')
+    expect(dialog?.actions?.[0]?.label).toBe('I have not found it.')
+    const onSelect = dialog?.actions?.[0]?.onSelect
+    expect(onSelect).toBeDefined()
+    inventory.addInstance(token)
+    expect(onSelect?.()).toBe('You already have it.')
+    const notes = qm.list().find((entry) => entry.id === 'owned-talk')?.notes ?? []
+    expect(notes.some((note) => note.text === 'You already have it.')).toBe(true)
+    expect(notes.some((note) => note.text === 'Go find it.')).toBe(false)
   })
 })
 

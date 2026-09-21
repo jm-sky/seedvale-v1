@@ -1,5 +1,7 @@
 # Implementation Notes: Quest stage reconciliation for pre-existing world state
 
+**Status:** `verification needed` 🔍 — implemented and automated-verified; browser/manual verification pending (user-performed).
+
 ## Recon findings
 
 - `QuestManager.catchUpActiveWorldObjectives()` already has the correct authority boundary: it queries `worldProgress`, `settlementLight` and `Inventory` through `isWorldObjectiveSatisfied()`. Do not add historical flags to quest progress.
@@ -40,3 +42,9 @@
 ## Scope guard
 
 No changes are needed to world generation, remains spawning, `WorldGeneratedContainers`, persistence shape, or the Old Bones physical outcome resolver unless tests expose a separate defect. The implementation should stay centered on `QuestManager.ts`, `quests.ts`, `oldBonesAdventureCave.ts` and their tests.
+
+## Implemented
+
+- `QuestManager.advanceStage()` now calls a re-entrancy-safe iterative reconciler after entering an `active` stage. Fingerprint is stage index + unfinished slot ids; iteration is bounded by authored slot count.
+- Old Bones acquisition is an `all` stage of `loot_world_container` + `own_item_instance`. Claimant A uses generic `ownedItemInstanceDialogue` keyed by the exact signet instance; copy is resolved from live `Inventory` at selection time.
+- Catch-up journals world/inventory progress without an NPC speaker. Talk still records the selected line, including the already-found variant via a progress stamp.

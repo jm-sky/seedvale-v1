@@ -259,6 +259,19 @@ describe('old bones adventure cave (plan quests-progression-025)', () => {
     ], 'Osada', 'głęboka jaskinia na północ od osady')
     expect(withB.offerLine).toContain('głęboka jaskinia na północ od osady')
     expect(`${withB.offerLine} ${withB.stages[0]?.reminderLine} ${withB.stages[0]?.progressLine}`).not.toMatch(/konkretn/)
+    expect(withB.stages[1]?.ownedItemInstanceDialogue).toEqual({
+      instanceId: oldBonesSignetInstanceId('cave-a'),
+      playerLine: 'Znalazłem sygnet przy starych szczątkach.',
+      progressLine: 'Taką historię u nas opowiadano. To ten sygnet. Dobrze, że już go masz.',
+    })
+    expect(withB.stages[2]?.mode).toBe('all')
+    expect(withB.stages[2]?.objectives?.map((slot) => [slot.id, slot.objective])).toEqual([
+      ['loot', {
+        type: 'loot_world_container',
+        containerId: 'world-container:quests-progression-025:cave-a:sideTreasure',
+      }],
+      ['own', { type: 'own_item_instance', instanceId: oldBonesSignetInstanceId('cave-a') }],
+    ])
     expect(withB.outcomes.map((outcome) => outcome.id)).toEqual([
       OLD_BONES_RETURN_TO_FIRST_CLAIMANT_OUTCOME,
       OLD_BONES_GIVE_TO_SECOND_CLAIMANT_OUTCOME,
@@ -475,5 +488,148 @@ describe('old bones socially consequential dialogue (plan quests-progression-052
       .toContain('Tobie mówiłem o tym jak komuś swojemu. Sygnet zabierasz ze sobą. Niech tak zostanie.')
     expect(qm.exportProgress()[0]?.journal?.some((event) => event.dialogueReactionIndex === 0)).toBe(true)
     expect(qm.exportProgress()[0]?.resolvedOutcomeId).toBe(OLD_BONES_KEEP_SIGNET_OUTCOME)
+  })
+})
+
+describe('old bones pre-existing signet catch-up (plan quests-progression-080)', () => {
+  const npcs = [
+    npc('home:npc:0', 'farmer', false, 'f0', 0),
+    npc('home:npc:1', 'farmer', false, 'f0', 0),
+    npc('home:npc:2', 'hunter', false, 'f1', 1),
+  ]
+  const binding = {
+    questId: 'world:old-bones:home:cave-a',
+    settlementId: 'home',
+    giverNpcId: 'home:npc:2',
+    claimantANpcId: 'home:npc:0',
+    claimantBNpcId: 'home:npc:1',
+    caveId: 'cave-a',
+    caveLocationId: 'cave:cave-a',
+    anchorId: 'cave-a:sideTreasure',
+    containerId: 'world-container:quests-progression-025:cave-a:sideTreasure',
+    signetInstanceId: oldBonesSignetInstanceId('cave-a'),
+  }
+  const alreadyFoundPlayerLine = 'Znalazłem sygnet przy starych szczątkach.'
+  const alreadyFoundProgressLine = 'Taką historię u nas opowiadano. To ten sygnet. Dobrze, że już go masz.'
+  const findProgressLine = 'Taką historię u nas opowiadano. Miał przy sobie sygnet. Jeśli go znajdziesz, przynieś go.'
+
+  function playthrough(options: { looted: boolean, ownsSignet: boolean }) {
+    const def = buildOldBonesAdventureCaveQuest(binding, npcs, 'Osada', 'głęboka jaskinia na północ od osady')
+    const world = { looted: options.looted }
+    const inventory = new Inventory(
+      {},
+      Infinity,
+      options.ownsSignet ? [createOldBonesSignetInstance(binding.caveId)] : [],
+    )
+    const qm = new QuestManager(
+      [def],
+      undefined,
+      inventory,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      {
+        hasReadItem: () => false,
+        hasDiscoveredLocation: () => false,
+        isWorldContainerLooted: (containerId) => world.looted && containerId === binding.containerId,
+        hasResolvedHiddenFindSpot: () => false,
+        hasAcquiredPortableContainer: () => false,
+      },
+    )
+    return { def, qm, inventory, world }
+  }
+
+  function acceptAndTalkToGiver(qm: QuestManager): void {
+    qm.onInteract(binding.giverNpcId)?.offer?.onAccept()
+    qm.onInteract(binding.giverNpcId)?.actions?.[0]?.onSelect()
+  }
+
+  function talkToClaimantA(qm: QuestManager): string | undefined {
+    return qm.onInteract(binding.claimantANpcId)?.actions?.[0]?.onSelect()
+  }
+
+  it('catches up a pre-looted owned signet after the required conversations', () => {
+    const { qm } = playthrough({ looted: true, ownsSignet: true })
+    acceptAndTalkToGiver(qm)
+    expect(qm.onInteract(binding.claimantANpcId)?.actions?.[0]?.label).toBe(alreadyFoundPlayerLine)
+    expect(talkToClaimantA(qm)).toBe(alreadyFoundProgressLine)
+    expect(qm.exportProgress()[0]?.stageIndex).toBe(3)
+    expect(qm.getState(binding.questId)).toBe('active')
+    expect(qm.onInteract(binding.claimantBNpcId)?.actions?.[0]?.label)
+      .toBe('Znalazłem sygnet. Mówisz, że powinien trafić do ciebie?')
+    const notes = qm.list().find((entry) => entry.id === binding.questId)?.notes ?? []
+    expect(notes.some((note) => note.text === alreadyFoundProgressLine)).toBe(true)
+    expect(notes.some((note) => note.text.includes('wysłuchaj obu stron'))).toBe(false)
+    expect(qm.onInteract(binding.claimantANpcId)?.actions?.some((action) => (
+      action.label === 'Sygnet wraca do ciebie.'
+    ))).toBeFalsy()
+  })
+
+  it('does not catch up acquisition while the signet is still in the remains', () => {
+    const { qm } = playthrough({ looted: false, ownsSignet: false })
+    acceptAndTalkToGiver(qm)
+    expect(talkToClaimantA(qm)).toBe(findProgressLine)
+    expect(qm.exportProgress()[0]?.stageIndex).toBe(2)
+    expect(qm.onInteract(binding.claimantBNpcId)?.actions?.some((action) => (
+      action.label === 'Znalazłem sygnet. Mówisz, że powinien trafić do ciebie?'
+    ))).toBeFalsy()
+  })
+
+  it('does not expose claimant decision when remains are looted but the exact signet is not owned', () => {
+    const { qm } = playthrough({ looted: true, ownsSignet: false })
+    acceptAndTalkToGiver(qm)
+    talkToClaimantA(qm)
+    expect(qm.exportProgress()[0]?.stageIndex).toBe(2)
+    expect(qm.onInteract(binding.claimantANpcId)?.actions?.some((action) => (
+      action.label === 'Sygnet wraca do ciebie.'
+    ))).toBeFalsy()
+    expect(qm.onInteract(binding.claimantBNpcId)?.actions?.[0]?.label).not.toBe(
+      'Znalazłem sygnet. Mówisz, że powinien trafić do ciebie?',
+    )
+  })
+
+  it('uses the already-found line from live inventory at onSelect', () => {
+    const { qm, inventory } = playthrough({ looted: true, ownsSignet: false })
+    acceptAndTalkToGiver(qm)
+    const dialog = qm.onInteract(binding.claimantANpcId)
+    expect(dialog?.actions?.[0]?.label).toBe(
+      'Znalazłem stare szczątki. Ktoś z waszej rodziny zaginął w tamtej okolicy?',
+    )
+    const onSelect = dialog?.actions?.[0]?.onSelect
+    inventory.addInstance(createOldBonesSignetInstance(binding.caveId))
+    expect(onSelect?.()).toBe(alreadyFoundProgressLine)
+    expect(qm.exportProgress()[0]?.stageIndex).toBe(3)
+  })
+
+  it('keeps the ordinary in-order discovery path', () => {
+    const { qm, inventory, world } = playthrough({ looted: false, ownsSignet: false })
+    acceptAndTalkToGiver(qm)
+    expect(talkToClaimantA(qm)).toBe(findProgressLine)
+    expect(qm.exportProgress()[0]?.stageIndex).toBe(2)
+    world.looted = true
+    inventory.addInstance(createOldBonesSignetInstance(binding.caveId))
+    qm.notifyInventoryChanged()
+    qm.pollWorldProgressionObjectives()
+    expect(qm.exportProgress()[0]?.stageIndex).toBe(3)
+    expect(qm.onInteract(binding.claimantBNpcId)?.actions?.[0]?.onSelect())
+      .toBe('Mówię, że nie tylko on ma do niego prawo. Zanim go oddasz, wysłuchaj obu stron.')
+  })
+
+  it('does not journal claimant B until the player selects that talk', () => {
+    const { qm } = playthrough({ looted: true, ownsSignet: true })
+    acceptAndTalkToGiver(qm)
+    talkToClaimantA(qm)
+    const before = qm.list().find((entry) => entry.id === binding.questId)?.notes.map((note) => note.text) ?? []
+    expect(before.some((text) => text.includes('wysłuchaj obu stron'))).toBe(false)
+    qm.onInteract(binding.claimantBNpcId)?.actions?.[0]?.onSelect()
+    const after = qm.list().find((entry) => entry.id === binding.questId)?.notes.map((note) => note.text) ?? []
+    expect(after.some((text) => text.includes('wysłuchaj obu stron'))).toBe(true)
   })
 })

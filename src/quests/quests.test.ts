@@ -390,6 +390,28 @@ describe('quest dialogue lines and cave binding (plan quests-progression-014)', 
     expect(() => validateQuestDefinitions([bad])).toThrow(/reportPlayerLine/)
   })
 
+  it('rejects empty ownedItemInstanceDialogue fields (plan quests-progression-080)', () => {
+    const wrap = (
+      owned: NonNullable<QuestDef['stages'][number]['ownedItemInstanceDialogue']>,
+    ): QuestDef => runtimeQuest({
+      ...runtimeAuthored(QUESTS.find((q) => q.id === 'relay-anna-piotr')!),
+      id: 'owned-talk',
+      stages: [{
+        objective: { type: 'talk_to_npc', npc: { npcId: 'Piotr' } },
+        description: 'talk',
+        reminderLine: 'r',
+        ownedItemInstanceDialogue: owned,
+      }],
+    })
+    expect(() => validateQuestDefinitions([wrap({ instanceId: ' ', progressLine: 'ok' })])).toThrow(/instanceId/)
+    expect(() => validateQuestDefinitions([wrap({ instanceId: 'x', progressLine: ' ' })])).toThrow(/progressLine/)
+    expect(() => validateQuestDefinitions([wrap({
+      instanceId: 'x',
+      progressLine: 'ok',
+      playerLine: ' ',
+    })])).toThrow(/playerLine/)
+  })
+
   it('binds exact cave identity and cheap direction prose onto authored cave quests', () => {
     const bound = bindExactCaveQuests(QUESTS, {
       id: 'home:cave',

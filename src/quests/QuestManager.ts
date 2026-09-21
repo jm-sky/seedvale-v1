@@ -524,6 +524,16 @@ const NO_WORLD_KNOWLEDGE: QuestWorldKnowledgeResolver = {
 const WORLD_KNOWLEDGE_PENDING_STAMP = 'world-knowledge-pending'
 const WORLD_KNOWLEDGE_REVEAL_STAMP = 'world-knowledge-reveal'
 const WORLD_KNOWLEDGE_CLUE_TOKEN = /\{worldKnowledgeClue:([^}]+)\}/g
+/** Distinguishes a primary-talk progress stamp that used the owned-instance
+ *  dialogue variant (plan quests-progression-080). */
+const OWNED_ITEM_INSTANCE_PROGRESS_STAMP = 'owned-item-instance-progress'
+
+type QuestStageAdvanceOptions = {
+  speakerNpcId?: NpcId
+  skipProgressJournal?: boolean
+  pendingReportOutcomeId?: QuestOutcomeId
+  stampId?: string
+}
 
 const NO_WORLD_QUEST_SOURCE: WorldQuestSourceLookup = {
   getStatus: () => 'untracked',
@@ -667,6 +677,9 @@ export class QuestManager {
   /** Guard against stale async completions after New Game / reset. */
   private knowledgeEpoch = 0
   private knowledgeLaunching = new Set<string>()
+  /** Per-quest re-entrancy guard for stage-entry world-objective catch-up
+   *  (plan quests-progression-080). Runtime-only. */
+  private readonly worldObjectiveReconciling = new Set<string>()
   /** Set whenever quest state changes; consumers (gameLoop's marker refresh)
    *  clear it after recomputing labels, so per-frame work is skipped on
    *  frames where nothing quest-related happened. Starts `true` so the first
@@ -909,6 +922,13 @@ export class QuestManager {
     if (event.stampId === WORLD_KNOWLEDGE_REVEAL_STAMP) {
       return this.expandQuestText(def, progress, stage.progressLine ?? stage.reminderLine)
     }
+    if (event.stampId === OWNED_ITEM_INSTANCE_PROGRESS_STAMP) {
+      return this.expandQuestText(
+        def,
+        progress,
+        stage.ownedItemInstanceDialogue?.progressLine ?? stage.progressLine ?? null,
+      )
+    }
     if (event.dialogueActionIndex !== undefined) {
       const action = stage.dialogueActions?.[event.dialogueActionIndex]
       const reactionLine = event.dialogueReactionIndex !== undefined
@@ -1056,17 +1076,18 @@ export class QuestManager {
     def: QuestDef,
     s: QuestRuntimeProgress,
     slot: QuestStageObjectiveSlot,
-    options?: { speakerNpcId?: NpcId, skipProgressJournal?: boolean, pendingReportOutcomeId?: QuestOutcomeId },
+    options?: QuestStageAdvanceOptions,
   ): void {
     if (s.state !== 'active') return
     const stage = this.currentStage(def, s.stageIndex)
     if (!stage) return
     if (s.stageSlotProgress?.[slot.id]?.completed) return
 
-    const journalOpts = {
+    const journalOpts: QuestStageAdvanceOptions = {
       speakerNpcId: options?.speakerNpcId ?? this.progressSpeakerNpcId(slot),
       ...(options?.skipProgressJournal ? { skipProgressJournal: true } : {}),
       ...(options?.pendingReportOutcomeId ? { pendingReportOutcomeId: options.pendingReportOutcomeId } : {}),
+      ...(options?.stampId !== undefined ? { stampId: options.stampId } : {}),
     }
     const mode = questStageMode(stage)
     if (mode === 'any' || questStageObjectiveSlots(stage).length <= 1) {
@@ -1879,17 +1900,46 @@ export class QuestManager {
   }
 
   private catchUpActiveWorldObjectives(def: QuestDef, s: QuestRuntimeProgress): void {
-    const seen = new Set<number>()
-    let current = s
-    while (current.state === 'active') {
-      if (seen.has(current.stageIndex)) break
-      seen.add(current.stageIndex)
-      const stage = this.currentStage(def, current.stageIndex)
-      if (!stage) break
-      const slot = this.unfinishedSlots(def, current).find((entry) => this.isWorldObjectiveSatisfied(entry.objective))
-      if (!slot) break
-      this.completeObjectiveSlot(def, current, slot)
-      current = this.stateOf(def.id)
+    if (s.state !== 'active') return
+    this.reconcileActiveWorldObjectives(def)
+  }
+
+  /**
+   * Completes catch-up-capable world-state objectives on the current active
+   * stage, then on each newly entered active stage, until the first
+   * unsatisfied or action-driven slot. Re-entrancy-safe: `advanceStage`
+   * calls this after entering an active stage, and this calls
+   * `completeObjectiveSlot` → `advanceStage` (plan quests-progression-080).
+   *
+   * Cycle detection includes unfinished slot ids so an `all` stage can
+   * consume more than one already-true slot in one pass. Iteration is also
+   * bounded by the authored slot count.
+   *
+   * @domain quests-progression
+   */
+  private reconcileActiveWorldObjectives(def: QuestDef): void {
+    if (this.worldObjectiveReconciling.has(def.id)) return
+    this.worldObjectiveReconciling.add(def.id)
+    try {
+      const slotBudget = def.stages.reduce(
+        (sum, stage) => sum + questStageObjectiveSlots(stage).length,
+        0,
+      )
+      const seen = new Set<string>()
+      let current = this.stateOf(def.id)
+      for (let i = 0; i < slotBudget + 1; i++) {
+        if (current.state !== 'active') break
+        const unfinished = this.unfinishedSlots(def, current)
+        const fingerprint = `${current.stageIndex}:${[...unfinished.map((slot) => slot.id)].sort().join(',')}`
+        if (seen.has(fingerprint)) break
+        seen.add(fingerprint)
+        const slot = unfinished.find((entry) => this.isWorldObjectiveSatisfied(entry.objective))
+        if (!slot) break
+        this.completeObjectiveSlot(def, current, slot)
+        current = this.stateOf(def.id)
+      }
+    } finally {
+      this.worldObjectiveReconciling.delete(def.id)
     }
   }
 
@@ -2186,7 +2236,7 @@ export class QuestManager {
     def: QuestDef,
     s: QuestRuntimeProgress,
     resultId?: string,
-    options?: { speakerNpcId?: NpcId, skipProgressJournal?: boolean, pendingReportOutcomeId?: QuestOutcomeId },
+    options?: QuestStageAdvanceOptions,
   ): void {
     this.clearFeedDedupe(def.id, s.stageIndex)
     const stage = this.currentStage(def, s.stageIndex)
@@ -2196,6 +2246,7 @@ export class QuestManager {
         kind: 'progress',
         stageIndex: clearedIndex,
         speakerNpcId: options?.speakerNpcId,
+        ...(options?.stampId !== undefined ? { stampId: options.stampId } : {}),
       })
     }
     const transition = matchStageTransition(stage, resultId)
@@ -2220,6 +2271,7 @@ export class QuestManager {
     })
     if (nextState === 'active') this.bindAnimalTargetIfNeeded(def, nextIndex)
     this.lifecycleHooks.onStageAdvanced?.(def.id, clearedIndex)
+    if (nextState === 'active') this.reconcileActiveWorldObjectives(def)
   }
 
   /** Presents an already-`offered` def's offer dialogue. Promotion from
@@ -2568,12 +2620,11 @@ export class QuestManager {
     ))
     if (!slot || slot.objective.type !== 'talk_to_npc') return null
     const stageIndex = s.stageIndex
-    const progressLine = stage.progressLine ?? stage.description
     return {
       line: DEFAULT_NPC_PROMPT,
       actions: [{
-        label: stage.playerLine ?? DEFAULT_TALK_PLAYER_LINE,
-        onSelect: () => this.selectTalkToNpc(def, npcId, stageIndex, slot.id, progressLine),
+        label: this.talkToNpcPlayerLine(stage) ?? DEFAULT_TALK_PLAYER_LINE,
+        onSelect: () => this.selectTalkToNpc(def, npcId, stageIndex, slot.id),
       }],
     }
   }
@@ -2720,18 +2771,49 @@ export class QuestManager {
     npcId: NpcId,
     stageIndex: number,
     slotId: string,
-    progressLine: string,
   ): string {
+    const spokenStage = def.stages[stageIndex]
+    const fallback = this.talkToNpcProgressLine(spokenStage)
     const current = this.stateOf(def.id)
-    if (current.state !== 'active' || current.stageIndex !== stageIndex) return progressLine
+    if (current.state !== 'active' || current.stageIndex !== stageIndex) return fallback
     const stage = this.currentStage(def, current.stageIndex)
     const slot = this.unfinishedSlots(def, current).find((entry) => entry.id === slotId)
     if (!stage || !slot || slot.objective.type !== 'talk_to_npc' || slot.objective.npc.npcId !== npcId) {
-      return progressLine
+      return fallback
     }
+    const owned = this.ownedItemInstanceTalkVariant(stage)
     this.applyEffects(def.id, stage.effects)
-    this.completeObjectiveSlot(def, current, slot)
-    return progressLine
+    this.completeObjectiveSlot(def, current, slot, owned
+      ? { stampId: OWNED_ITEM_INSTANCE_PROGRESS_STAMP }
+      : undefined)
+    return owned?.progressLine ?? stage.progressLine ?? stage.description
+  }
+
+  /**
+   * Live primary-talk copy when the player currently owns the stage's exact
+   * item instance. Presentation only — does not complete the talk
+   * (plan quests-progression-080).
+   *
+   * @domain quests-progression
+   */
+  private ownedItemInstanceTalkVariant(
+    stage: QuestStage | undefined,
+  ): NonNullable<QuestStage['ownedItemInstanceDialogue']> | undefined {
+    const variant = stage?.ownedItemInstanceDialogue
+    if (!variant) return undefined
+    if (!this.inventory.getInstance(variant.instanceId)) return undefined
+    return variant
+  }
+
+  private talkToNpcProgressLine(stage: QuestStage | undefined): string {
+    return this.ownedItemInstanceTalkVariant(stage)?.progressLine
+      ?? stage?.progressLine
+      ?? stage?.description
+      ?? ''
+  }
+
+  private talkToNpcPlayerLine(stage: QuestStage | undefined): string | undefined {
+    return this.ownedItemInstanceTalkVariant(stage)?.playerLine ?? stage?.playerLine
   }
 
   private completeOutcomeAnimalId(def: QuestDef, outcome: QuestOutcome): string | undefined {

@@ -1,7 +1,7 @@
 # Plan: Quest stage reconciliation for pre-existing world state
 
 **Created:** 2026-09-21
-**Status:** `planned` 📋
+**Status:** `verification needed` 🔍
 **Type:** fix
 **Priority:** high · **Effort:** M
 **Model:** Sonnet · Composer
@@ -264,5 +264,9 @@ Manual browser verification by User:
 5. Confirm optional claimant dialogue still requires a real conversation.
 6. Confirm claimant choice transfers/keeps the exact physical signet as authored.
 7. Repeat the ordinary in-order path and confirm no regression.
+
+## Implementation status
+
+Implemented and automated-verified. Browser/manual verification is owned by the User.
 
 > **Zrób git commit i push do main, rebase jeżeli trzeba**
