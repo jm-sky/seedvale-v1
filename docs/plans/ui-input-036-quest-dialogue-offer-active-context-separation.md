@@ -8,6 +8,7 @@
 **Type:** `fix`
 **Subdomains:** `menus` `interaction` `feedback`
 **Tags:** `npc-dialogue` `quests` `quest-lifecycle`
+**Model:** Sonnet, Composer
 **Roadmap:** -
 
 ## Goal
