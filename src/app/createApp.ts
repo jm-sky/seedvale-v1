@@ -41,6 +41,7 @@ import {
 import { createCaveHeightfieldTestScene } from '../debug/createCaveHeightfieldTestScene'
 import { createModelTestScene } from '../debug/createModelTestScene'
 import { isAdminMode, isDebugMode, isSystemEnabled } from '../debug/debugMode'
+import { readFlyConfig } from '../debug/flyCam'
 import { installNpcDebugApi } from '../debug/npcDebugApi'
 import { createNpcInspectTrigger } from '../debug/npcInspectTrigger'
 import { createPlayerGroundTraceBuffer } from '../debug/playerGroundTrace'
@@ -3663,7 +3664,8 @@ export async function createApp(
   // A benchmark fixture boots with no active save slot pinned to it — periodic
   // autosave would write the fresh benchmark world over whatever save was last
   // active (plan tools-001 trap #14), so it stays off for a fixture run.
-  const removeAutoSave = fixture ? (() => {}) : installAutoSave()
+  // `?fly` observer runs likewise never write a save over the player's own slot.
+  const removeAutoSave = fixture || readFlyConfig() ? (() => {}) : installAutoSave()
 
   bootMark('createGameLoop')
   const gameLoop = createGameLoop({

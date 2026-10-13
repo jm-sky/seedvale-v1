@@ -82,6 +82,7 @@ import {
 } from '../combat/rangedReticle'
 import { createColliderDebugView } from '../debug/colliderDebugView'
 import { isCameraMeshDebugMode, isColliderDebugMode, isDebugMode, isNpcCombatDebugMode } from '../debug/debugMode'
+import { createFlyCam, readFlyConfig } from '../debug/flyCam'
 import { setCameraMeshHit } from '../debug/renderStateDebug'
 import { ANIMAL_LABELS, FAUNA_SHADOW_DISTANCE, selectDietFeedKind } from '../fauna/AnimalAgent'
 import { buildAttractionSnapshot } from '../fauna/animalAttraction'
@@ -755,6 +756,9 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
     tickTerrainPreparationPreview, tickPlacementPreview, resumeTerrainPreparationWork, tickTerrainPreparationWork, isTerrainPreparationWorkActive, onTerrainPreparationWorkFinished,
     onSleepFinished, tickLodging, isLodgingActive, canCancelRest, interruptLongActivityOnDamage, onInventoryChanged, consumedWorldPickupIds, setFrameTiming, syncPointLightBudget, getPlayerObservation,
   } = deps
+  // `?fly` — free-flight observer (src/debug/flyCam.ts); replaces `player.update()` below.
+  const flyConfig = readFlyConfig()
+  const flyCam = flyConfig ? createFlyCam(flyConfig, player, camera, mouseLook.state, keyboard.state) : null
 
   const commitDirectWaterDrink = (previewSource: WaterSource, revalidateSource: () => WaterSource | null): void => {
     if (!drinkFromWaterSource) return
@@ -2704,7 +2708,10 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
       // — suppresses `player.update()`'s normal Stamina regeneration so it
       // can never net out against the Stamina those channels already drain.
       const physicalEffortActive = busy.isPhysical() || (isTerrainPreparationWorkActive?.() ?? false)
-      withCategory(monitor, 'PHYSICS', () => { player.update(dt, dayNight.dayLengthSec, physicalEffortActive, dayNight.elapsedDays) })
+      withCategory(monitor, 'PHYSICS', () => {
+        if (flyCam) flyCam.update(dt, modal === null && !timeSkip.isActive() && !busy.isActive())
+        else player.update(dt, dayNight.dayLengthSec, physicalEffortActive, dayNight.elapsedDays)
+      })
       player.syncDerivedPhysicalCapabilities(dayNight.elapsedDays, (kg) => inventory.setBaseMaxWeight(kg))
       // Hunger/thirst/vigor progress on `worldDt` (scaled during a time-skip,
       // see above) — stamina keeps ticking inside `player.update(dt)` on raw

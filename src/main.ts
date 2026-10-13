@@ -2,6 +2,7 @@ import './app/dialogueTimeControl'
 import { createApp } from './app/createApp'
 import { createWorldConfig } from './config/worldConfig'
 import { isCaveHeightfieldTestMode, isModelTestMode } from './debug/debugMode'
+import { readFlyConfig } from './debug/flyCam'
 import { BENCHMARK_FIXTURE } from './perf/benchmarkFixture'
 import { benchmarkScenarioFromUrl, isPerfUrlEnabled } from './perf/flags'
 import {
@@ -49,6 +50,13 @@ async function boot(container: HTMLElement): Promise<void> {
   const autoBenchmarkId = benchmarkScenarioFromUrl()
   if (autoBenchmarkId) {
     void createApp(container, undefined, { benchmarkFixture: BENCHMARK_FIXTURE })
+    return
+  }
+
+  // `?fly` observer: a fresh world from `?seed=` (default 42), never a stored save — a save's seed would
+  // override the URL — and no start screen. Autosave is off for it (createApp.ts).
+  if (readFlyConfig()) {
+    void createApp(container)
     return
   }
 
