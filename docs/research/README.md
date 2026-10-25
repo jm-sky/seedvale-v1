@@ -14,7 +14,7 @@ Analyses, spikes, comparisons, and notes collected before implementation decisio
 
 | File | Summary | Status |
 |------|---------|--------|
-| [V1 Revival dossier](v1-revival/README.md) | [R1 V1 baseline](v1-revival/2026-10-25--001--v1-baseline.md), [R2 architecture and simulation](v1-revival/2026-10-25--002--architecture-and-simulation.md), [R3 world and visuals](v1-revival/2026-10-25--003--world-and-visuals.md), [R4 gameplay systems](v1-revival/2026-10-25--004--gameplay-systems.md) | `done` (R1–R4 source research; R5 not started) |
+| [V1 Revival dossier](v1-revival/README.md) | [R1 V1 baseline](v1-revival/2026-10-25--001--v1-baseline.md), [R2 architecture and simulation](v1-revival/2026-10-25--002--architecture-and-simulation.md), [R3 world and visuals](v1-revival/2026-10-25--003--world-and-visuals.md), [R4 gameplay systems](v1-revival/2026-10-25--004--gameplay-systems.md), [R5 content and player experience](v1-revival/2026-10-25--005--content-and-player-experience.md) | `done` (R1–R5 source research; runtime/experience verification outstanding) |
 | [2026-08-07--001--threejs-terrain-ai-tech-research.md](2026-08-07--001--threejs-terrain-ai-tech-research.md) | Three.js + procedural terrain + character AI — libraries, patterns, product directions | `done` |
 | [2026-08-07--003--3d-portfolio-library-audit.md](2026-08-07--003--3d-portfolio-library-audit.md) | Audit `../3d-portfolio/src/library` — SimonDev terrain patterns reusable for Seedvale | `done` |
 | [2026-08-07--002--3d-asset-sources.md](2026-08-07--002--3d-asset-sources.md) | Źródła modeli 3D (CC0 glTF) bez Blendera — Kenney / Quaternius, pipeline, mapowanie v0.2–v0.3 | `done` |
