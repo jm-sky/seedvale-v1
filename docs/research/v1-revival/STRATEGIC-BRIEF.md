@@ -105,18 +105,24 @@ These comparisons are **proposed preparation, not completed findings**. No agent
 
 Keep each result short: pinned evidence, differences, dependencies, risks and decisions needed. Reuse R1–R7; do not produce competing full implementation plans or expand into unselected systems. Consolidation review should remove contradictions and implicit assumptions before Opus plans.
 
-### Documentation audit and agent-facing cleanup — Opus owner
+### Documentation audit and cleanup — split ownership
 
-The author additionally requests a V1 documentation audit and cleanup, with AI-agent optimization owned by **Claude Opus 5.5**. This is preparation for reliable future sessions, not another broad application-code investigation. Opus should use its findings when proposing revival phases; a separate architecture rewrite is not implied.
+The author requests a V1 documentation audit and cleanup. **Only optimization specifically for AI-agent use is assigned to Claude Opus 5.5.** The remaining preparatory audit and housekeeping can be coordinated and performed by Astra and GPT 6.1 Sol now, without waiting for Opus. This is not another broad application-code investigation or an implementation plan.
 
-- Review agent entry points, navigation indexes, current-state documents, plans and linked GitHub issues. Make authoritative scope, implementation status, historical evidence and unapproved proposals explicit, with bounded task-specific reading.
-- Move old, completed plans to the repository's appropriate archive after checking completion evidence. Do not classify a plan as complete by age or title alone; preserve unresolved follow-ups and verification gaps, history and incoming links. Follow existing archive conventions where suitable.
-- Inventory plans and issues still awaiting work. Record current status, remaining scope, dependencies, duplication and relationship to this brief. Link to the owning plan/issue rather than copying full content into a parallel backlog.
-- Reconcile contradictions, stale instructions and ambiguities with current code and explicit author decisions. Research candidates are not commitments. Existing open work absent from this brief is not automatically cancelled or approved for revival.
-- Resolve factual/documentation inconsistencies autonomously where evidence is sufficient. Bring genuine product conflicts, scope changes and significant compromises to the author; do not silently discard unfinished work or close issues solely to reduce noise.
-- Remove redundant active guidance, repair navigation after moves, and keep historical reports clearly historical. Regenerate generated indexes rather than manually editing generated sections.
+**Astra / GPT 6.1 Sol — preparatory work:**
+- Inventory plans and GitHub issues awaiting work, recording status, remaining scope, dependencies, duplication and relationship to this brief. Link to owning sources rather than creating a parallel backlog.
+- Check completion evidence and move old, completed plans to the appropriate archive. Age or title alone does not establish completion. Preserve unresolved follow-ups, verification gaps and history; repair incoming links and follow existing archive conventions.
+- Compare current-state documents, plans and issues against current code where necessary and explicit author decisions. Resolve factual inconsistencies, stale statuses, duplication and ambiguities where evidence is sufficient.
+- Record genuine product conflicts, scope changes and significant compromises for the author. Research candidates are not commitments; open work absent from this brief is not automatically cancelled or approved for revival. Do not silently discard unfinished work or close issues solely to reduce noise.
+- Keep historical reports clearly historical and update existing owning documents. Regenerate affected generated indexes rather than manually editing generated sections.
+- Astra consolidates and reviews findings and corrections so Opus receives a coherent, concise foundation.
 
-**Completion evidence:** a concise active-work index with source links and dispositions; completed plans archived with references repaired; a short conflict list showing resolved items and remaining author decisions; consistent agent entry points that route to current authority without requiring obsolete plans or all research reports. Check links and generated navigation affected by the cleanup. Prefer updating existing owning documents over creating another layer of audit reports. The audit and cleanup have not yet been performed.
+**Claude Opus 5.5 — AI-agent optimization:**
+- Use the prepared audit results to optimize agent entry points, instruction hierarchy, navigation and task-specific context loading.
+- Make current authority, approved scope, implementation status, historical evidence and unapproved proposals unambiguous; minimize redundant or distracting reading across future sessions.
+- Integrate the resulting documentation structure with its later planning and coordination workflow. Do not repeat the preparatory audit unless a specific evidence gap requires it.
+
+**Completion evidence:** preparatory work yields an accurate active-work index with source links and dispositions, archived completed plans with repaired references, and a short list of resolved conflicts and remaining author decisions. Opus's optimization yields consistent agent entry points and bounded reading routes without requiring obsolete plans or all research reports. Check links and affected generated navigation. Prefer updating existing owning documents over adding layers of audit reports. The audit, cleanup and AI-agent optimization have not yet been performed.
 
 ## 6. Plan and acceptance expectations
 
