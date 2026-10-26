@@ -2,7 +2,7 @@
 
 **Created at:** 2026-10-26  
 **Created by:** ChatGPT Sol  
-**Status:** Provisional research output; D0/D1/D3/D4 consultation answers incorporated. **NOT APPROVED — DO NOT EXECUTE.**  
+**Status:** Provisional research output; D0/D1/D3/D4/D9 consultation answers incorporated. **NOT APPROVED — DO NOT EXECUTE.**  
 **Created for:** author consultation, then a bounded Cursor Grok/Composer implementation handoff.
 
 Read the [inventory and decision register](./2026-10-26--ui-migration-research.md#5-author-decision-register) and [compatibility matrix](./2026-10-26--ui-migration-compatibility-matrix.md) first. These stages are candidate first slices, not a commitment to migrate every screen in three tasks. Keep later character, HUD, trade, map and menu migration in separate future slices after their decisions; no implicit cancellation or removal. V3 Player–NPC dialogue UI/UX is excluded by the author's explicit D0 decision. Leave V1 dialogue intact.
@@ -10,6 +10,7 @@ Read the [inventory and decision register](./2026-10-26--ui-migration-research.m
 ## 1. Shared execution contract (after applicable author approval)
 
 - Refresh affected V1/V3 `main` files against the report pins; follow V1 `CLAUDE.md` and current plan navigation. Do not overwrite concurrent model/weather/docs changes. Create a standard active plan and run its repository preflight only when implementation is actually authorized.
+- Demonstration screens are required by D9: shared adapted components, isolated labeled fixtures/callbacks and no world bootstrap. Research/planning approval does not authorize implementation yet.
 - V1 `src/app/createApp.ts`, `src/app/inventoryWiring.ts`, `src/items/Inventory.ts`, `src/items/equipment.ts`, `src/player/characterPresentation.ts`, `src/ui-vue/store.ts`, `src/input/Keyboard.ts` and WorldBundle remain authoritative. Read their relevant ranges; do not replace them with donor stores/hosts/commands.
 - Donor `src/game/ui/items/InventoryScreen.vue` and `WorldInventoryScreen.vue` are reference layouts, not parents to transplant. No donor `@/game/data`, `game/sim`, `game/save`, `SceneSession`, `useSettings`, `useWorldMap` or composition root dependencies in migrated screens.
 - Preserve all existing V1 controls and behavior in each touched screen. No gameplay, balance, item catalog, save schema, general crafting, parry/dodge, body wound health or armor mechanics work in these visual slices. Future selected layered/area armor has a separate contract and approval path.
@@ -43,6 +44,10 @@ Read the [inventory and decision register](./2026-10-26--ui-migration-research.m
 | Use/drop/equip/read/sharpen/etc. | Existing V1 handlers remain unchanged. No donor model updates or command imports. |
 
 **Author-approved D4 behavior:** keep selected detail layout stable. Unsupported donor-only controls (e.g. generic free repair) remain natively disabled + opacity-5 with a readable adjacent reason and no command dispatch. Unsupported armor wear/DPS/type resist/material/rarity values retain labeled unavailable placeholders, never numeric fillers. Keep every real V1 field/use active as allowed by its current requirements. Use a truthful generic icon if a matching approved asset is absent. Demo quality editing and general crafting are not implemented; any retained entry follows the same disabled rule. D4 does not authorize adding every demo control to the selected screen.
+
+**Additional required deliverable — standalone demo (D9):** include a world-independent, clearly labeled item-details demonstration in the Stage A proposal. Reuse the exact adapted presentation components and styles used by the live screen. Specify its entry/build path after checking V1's existing Vite entry conventions; keep fixtures and demo-only callback wiring in a separate demo directory. Provide representative weapon, armor, food, liquid and unavailable-state fixtures using V1 view contracts, a fixture selector and reset. Simulated callbacks must be labeled and affect demo-local state only; no live Inventory/save/WorldBundle access and no donor gameplay owner. Missing mechanics remain unavailable with disabled + opacity-5 controls, rather than fabricated capability values. Subsequent selected screens receive their own demo coverage incrementally; no blanket port of donor sandbox navigation.
+
+**Demo acceptance and verification:** launch the demo without world bootstrap; confirm identical shared presentation, fixture switching/reset, missing-value layout stability and disabled no-dispatch behavior. Compare demo and live screen under equivalent data/viewport. Verify opening/resetting a demo cannot read/write active game state or saves. Demo screenshots establish visual/component evidence only; retain the live gameplay and save/load checks below. Roll back demo entry/build changes with the isolated Stage A commit, without affecting world state.
 
 **Acceptance:** same carried inventory before/after; all currently available details/actions accessible; exact instance equip/sharpen/sell still resolves correctly; drop still means current kind/quantity semantics; food freshness/species, liquid fill, book eligibility/capabilities, armor quality and restrictions remain visible. No persistent state change from opening/selecting/closing details.
 

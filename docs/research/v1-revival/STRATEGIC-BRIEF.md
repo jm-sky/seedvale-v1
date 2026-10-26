@@ -65,6 +65,8 @@ A lightweight moon and stars aligned with world cardinal directions remain a des
 - Obtain new armor through existing trade, artisans, appropriate loot and rewards. **A new general player crafting system is outside the agreed scope.**
 - Opus owns slots/layers/damage rules, balancing and integration design. No wholesale adoption of V3's item authority or combat model is implied.
 
+- **Demonstration screens are also required** (author decision, 2026-10-26): reuse the same adapted UI components in isolated, clearly labeled demos without starting the world. Begin with item details; demo fixtures/simulated callbacks must not affect live game state or count as gameplay verification. See [D9 and the draft stages](./2026-10-26--ui-migration-research.md#standalone-demonstration-screens--author-scope-addition). Implementation remains unapproved.
+
 ### Voices, cast and selected stories
 
 **First audio stage:** use suitable existing recordings, including newer batches and dedicated Mark Hornblower material. Missing recordings can remain text-only at this stage.
