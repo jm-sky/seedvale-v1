@@ -98,6 +98,8 @@ Check current source only where freshness or an unresolved fact matters to a sel
 
 ## 5. Completed preparation and current handoff
 
+**Technical-review update, 2026-10-26:** the author subsequently assigned Astra the bounded review of delivered models, snow and UI A–C. See [Cursor technical review](../../reviews/2026-10-26--026--v1-revival-cursor-technical-review.md) for findings, executed checks and remaining limits. Earlier references here to Opus's future technical review now mean taking over these findings and targeted follow-ups, not repeating this review. Opus's planning and AI-agent documentation optimization ownership is unchanged.
+
 The requested bounded comparisons are complete source research, not future assignments or implementation acceptance:
 
 | Topic | Owning evidence |

@@ -56,6 +56,12 @@ Tracked work items (bugs, improvements) live here — not in GitHub Issues.
 | 038 | `2026-08-20--038--npc-labels-and-sound-query-param.md` | Ukryć dalsze NPC labels; dodać `noSound=true` query param | `todo` |
 | 039 | [2026-08-24--039--terrain-prepare-level-floorheights-not-updated.md](./2026-08-24--039--terrain-prepare-level-floorheights-not-updated.md) | Wyrównaj/Przygotuj teren (i zwykłe kopanie) nie zmieniają wizualnie terenu — `applyModificationToTile` pisze tylko do `tile.heights`, mesh czyta `tile.floorHeights` | `done` |
 
+Review-owned follow-ups (details remain in the review; no duplicate issue files or approved queue):
+
+| Owner | Scope | Status |
+| --- | --- | --- |
+| [Astra review 026 — F1–F4](../reviews/2026-10-26--026--v1-revival-cursor-technical-review.md#findings--ranked-all-medium-p2) | Player appearance race; armor comparison identity; nested-modal focus; Recent eligibility | `todo` |
+
 When adding a new issue, create `YYYY-MM-DD--NNN--short-slug.md` and add a row to this table.
 
 **Next ID:** `040`

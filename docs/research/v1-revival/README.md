@@ -11,6 +11,8 @@ Start revival planning with the [Strategic Brief for Claude Opus 5.5](./STRATEGI
 
 R1–R7 remain research evidence, not an approved backlog. The brief resolves selected earlier author questions without changing historical research findings. Use its topic links for bounded reading rather than loading all reports by default.
 
+Current technical review: [Astra — Cursor models, snow and UI A–C](../../reviews/2026-10-26--026--v1-revival-cursor-technical-review.md) — bounded review completed at `7b5a781`; four P2 findings, 55 scoped tests passed, runtime/visual limitations retained. Opus takes the correction handoff and retains AI-agent documentation optimization. This supersedes the assumption that the entire bounded technical review is still to start; it does not approve remaining-work order.
+
 Current handoff: [Opus readiness review — 2026-10-26](./2026-10-26--opus-readiness-review.md) — READY WITH QUALIFICATIONS; current commits, cleanup results, evidence limits and remaining decisions. Dated snapshot, not another backlog.
 
 Completed comparisons: [UI/equipment](./2026-10-26--ui-equipment-v1-v3-comparison.md), [dog/elder/cemeteries](./2026-10-26--dog-elder-cemeteries-comparison.md), [clouds/settlement spacing](./2026-10-26--clouds-settlement-spacing-comparison.md). Apply the brief’s newer decisions: unowned rescue dog; clouds without A/B; route/travel calibration rather than a direct grid multiplier.
