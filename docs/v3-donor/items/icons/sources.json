@@ -1,0 +1,644 @@
+[
+  {
+    "file": "animal-hide.svg",
+    "source": "delapouite/animal-hide.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "archery-target.svg",
+    "source": "lorc/archery-target.svg",
+    "author": "Lorc",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "archive-register.svg",
+    "source": "delapouite/archive-register.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "arrow-flights.svg",
+    "source": "lorc/arrow-flights.svg",
+    "author": "Lorc",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "arrow.svg",
+    "source": "lorc/heavy-arrow.svg",
+    "author": "Lorc",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "axe.svg",
+    "source": "lorc/battle-axe.svg",
+    "author": "Lorc",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "backpack.svg",
+    "source": "delapouite/backpack.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "bandage-roll.svg",
+    "source": "lorc/bandage-roll.svg",
+    "author": "Lorc",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "basket.svg",
+    "source": "delapouite/basket.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "beer-stein.svg",
+    "source": "lorc/beer-stein.svg",
+    "author": "Lorc",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "blanket.svg",
+    "source": "delapouite/blanket.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "bolt.svg",
+    "source": "delapouite/bolt-drop.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "book-cover.svg",
+    "source": "lorc/book-cover.svg",
+    "author": "Lorc",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "book-pile.svg",
+    "source": "delapouite/book-pile.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "boot-prints.svg",
+    "source": "lorc/boot-prints.svg",
+    "author": "Lorc",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "bow.svg",
+    "source": "delapouite/bow-arrow.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "bread.svg",
+    "source": "delapouite/bread.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "buckler.svg",
+    "source": "willdabeast/round-shield.svg",
+    "author": "Willdabeast",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "cabbage.svg",
+    "source": "delapouite/cabbage.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "carrot.svg",
+    "source": "delapouite/carrot.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "chisel.svg",
+    "source": "delapouite/chisel.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "coal-pile.svg",
+    "source": "delapouite/coal-pile.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "coffee-cup.svg",
+    "source": "delapouite/coffee-cup.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "coins.svg",
+    "source": "delapouite/coins.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "crossbow.svg",
+    "source": "carl-olsen/crossbow.svg",
+    "author": "Carl Olsen",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "crossed-swords.svg",
+    "source": "lorc/crossed-swords.svg",
+    "author": "Lorc",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "dagger.svg",
+    "source": "lorc/plain-dagger.svg",
+    "author": "Lorc",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "drill.svg",
+    "source": "lorc/drill.svg",
+    "author": "Lorc",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "empty-wood-bucket.svg",
+    "source": "delapouite/empty-wood-bucket.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "feet.svg",
+    "source": "lorc/leather-boot.svg",
+    "author": "Lorc",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "fish-cooked.svg",
+    "source": "darkzaitzev/fish-cooked.svg",
+    "author": "DarkZaitzev",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "fish-smoking.svg",
+    "source": "delapouite/fish-smoking.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "fishing-net.svg",
+    "source": "lorc/fishing-net.svg",
+    "author": "Lorc",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "fishing-pole.svg",
+    "source": "delapouite/fishing-pole.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "flint-spark.svg",
+    "source": "delapouite/flint-spark.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "flour.svg",
+    "source": "delapouite/flour.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "forearms.svg",
+    "source": "delapouite/bracer.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "gears.svg",
+    "source": "lorc/gears.svg",
+    "author": "Lorc",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "gems.svg",
+    "source": "lorc/gems.svg",
+    "author": "Lorc",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "grain.svg",
+    "source": "delapouite/grain.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "hammer.svg",
+    "source": "delapouite/warhammer.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "hand-saw.svg",
+    "source": "delapouite/hand-saw.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "hands.svg",
+    "source": "delapouite/gauntlet.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "head.svg",
+    "source": "lorc/heavy-helm.svg",
+    "author": "Lorc",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "healing.svg",
+    "source": "delapouite/healing.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "heart-beats.svg",
+    "source": "delapouite/heart-beats.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "heart-organ.svg",
+    "source": "lorc/heart-organ.svg",
+    "author": "Lorc",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "heart-plus.svg",
+    "source": "zeromancer/heart-plus.svg",
+    "author": "Zeromancer",
+    "license": "CC0"
+  },
+  {
+    "file": "heater.svg",
+    "source": "sbed/shield.svg",
+    "author": "Sbed",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "herbs-bundle.svg",
+    "source": "delapouite/herbs-bundle.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "hourglass.svg",
+    "source": "lorc/hourglass.svg",
+    "author": "Lorc",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "jug.svg",
+    "source": "delapouite/jug.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "key.svg",
+    "source": "sbed/key.svg",
+    "author": "Sbed",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "kitchen-scale.svg",
+    "source": "delapouite/kitchen-scale.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "ladle.svg",
+    "source": "delapouite/ladle.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "legs.svg",
+    "source": "delapouite/leg-armor.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "lightning-arc.svg",
+    "source": "lorc/lightning-arc.svg",
+    "author": "Lorc",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "log.svg",
+    "source": "delapouite/log.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "mace.svg",
+    "source": "delapouite/flanged-mace.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "measure-tape.svg",
+    "source": "delapouite/measure-tape.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "meat.svg",
+    "source": "lorc/meat.svg",
+    "author": "Lorc",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "metal-bar.svg",
+    "source": "lorc/metal-bar.svg",
+    "author": "Lorc",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "mining.svg",
+    "source": "lorc/mining.svg",
+    "author": "Lorc",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "mushroom-gills.svg",
+    "source": "lorc/mushroom-gills.svg",
+    "author": "Lorc",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "nails.svg",
+    "source": "lorc/nails.svg",
+    "author": "Lorc",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "open-book.svg",
+    "source": "lorc/open-book.svg",
+    "author": "Lorc",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "ore.svg",
+    "source": "faithtoken/ore.svg",
+    "author": "Faithtoken",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "paper-bag-folded.svg",
+    "source": "caro-asercion/paper-bag-folded.svg",
+    "author": "Caro Asercion",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "planks.svg",
+    "source": "delapouite/planks.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "poison.svg",
+    "source": "sbed/poison.svg",
+    "author": "Sbed",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "polearm.svg",
+    "source": "lorc/halberd.svg",
+    "author": "Lorc",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "rake.svg",
+    "source": "delapouite/rake.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "rolled-cloth.svg",
+    "source": "delapouite/rolled-cloth.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "rope-coil.svg",
+    "source": "delapouite/rope-coil.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "round.svg",
+    "source": "willdabeast/round-shield.svg",
+    "author": "Willdabeast",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "saddle.svg",
+    "source": "delapouite/saddle.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "salt-shaker.svg",
+    "source": "lorc/salt-shaker.svg",
+    "author": "Lorc",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "saucepan.svg",
+    "source": "caro-asercion/saucepan.svg",
+    "author": "Caro Asercion",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "scroll-quill.svg",
+    "source": "delapouite/scroll-quill.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "sewing-needle.svg",
+    "source": "lorc/sewing-needle.svg",
+    "author": "Lorc",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "shears.svg",
+    "source": "delapouite/shears.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "shield-bash.svg",
+    "source": "delapouite/shield-bash.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "shiny-apple.svg",
+    "source": "lorc/shiny-apple.svg",
+    "author": "Lorc",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "shoulders.svg",
+    "source": "delapouite/shoulder-armor.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "sickle.svg",
+    "source": "delapouite/sickle.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "skills.svg",
+    "source": "delapouite/skills.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "sling.svg",
+    "source": "delapouite/sling.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "spade.svg",
+    "source": "lorc/spade.svg",
+    "author": "Lorc",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "spear.svg",
+    "source": "lorc/thrown-spear.svg",
+    "author": "Lorc",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "staff.svg",
+    "source": "lorc/wizard-staff.svg",
+    "author": "Lorc",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "stone.svg",
+    "source": "lorc/stone-sphere.svg",
+    "author": "Lorc",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "sword.svg",
+    "source": "lorc/broadsword.svg",
+    "author": "Lorc",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "toolbox.svg",
+    "source": "delapouite/toolbox.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "torch.svg",
+    "source": "delapouite/torch.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "torso.svg",
+    "source": "delapouite/chest-armor.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "tree-branch.svg",
+    "source": "lorc/tree-branch.svg",
+    "author": "Lorc",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "upgrade.svg",
+    "source": "delapouite/upgrade.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "virus.svg",
+    "source": "lorc/virus.svg",
+    "author": "Lorc",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "water-drop.svg",
+    "source": "sbed/water-drop.svg",
+    "author": "Sbed",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "waterskin.svg",
+    "source": "delapouite/waterskin.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "weight.svg",
+    "source": "delapouite/weight.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "wheat.svg",
+    "source": "lorc/wheat.svg",
+    "author": "Lorc",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "wheelbarrow.svg",
+    "source": "delapouite/wheelbarrow.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "wolf-trap.svg",
+    "source": "lorc/wolf-trap.svg",
+    "author": "Lorc",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "wood-pile.svg",
+    "source": "delapouite/wood-pile.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "wood-stick.svg",
+    "source": "delapouite/wood-stick.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  },
+  {
+    "file": "wool.svg",
+    "source": "delapouite/wool.svg",
+    "author": "Delapouite",
+    "license": "CC BY 3.0"
+  }
+]

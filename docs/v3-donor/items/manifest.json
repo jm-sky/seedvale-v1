@@ -1,0 +1,2256 @@
+{
+  "version": 1,
+  "updatedAt": "2026-10-22T12:47:10Z",
+  "items": {
+    "sword": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:17Z",
+      "sourceSheet": "assets-src/items/pilot-batch-01.png",
+      "gridPosition": {
+        "col": 0,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/sword.png",
+      "notes": "cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "ironvale_sword": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:17Z",
+      "sourceSheet": "assets-src/items/pilot-batch-01.png",
+      "gridPosition": {
+        "col": 1,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/ironvale_sword.png",
+      "notes": "cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "mail_shirt": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:17Z",
+      "sourceSheet": "assets-src/items/pilot-batch-01.png",
+      "gridPosition": {
+        "col": 2,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/mail_shirt.png",
+      "notes": "cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "kingsbane_hauberk": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:17Z",
+      "sourceSheet": "assets-src/items/pilot-batch-01.png",
+      "gridPosition": {
+        "col": 0,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/kingsbane_hauberk.png",
+      "notes": "cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "backpack": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:17Z",
+      "sourceSheet": "assets-src/items/pilot-batch-01.png",
+      "gridPosition": {
+        "col": 1,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/backpack.png",
+      "notes": "cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "long_bow": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:17Z",
+      "sourceSheet": "assets-src/items/pilot-batch-01.png",
+      "gridPosition": {
+        "col": 2,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/long_bow.png",
+      "notes": "cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "long_sword": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:22Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T102823Z--long_sword-knife-short_sword-axe-club-hatchet.derived-alpha.png",
+      "gridPosition": {
+        "col": 0,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/long_sword.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "wooden_shield": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:19Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T095723Z--long_sword-wooden_shield-hammer-bread-ashgrove_dagger-stoneford_mail.derived-alpha.png",
+      "gridPosition": {
+        "col": 1,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/wooden_shield.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "hammer": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:19Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T095723Z--long_sword-wooden_shield-hammer-bread-ashgrove_dagger-stoneford_mail.derived-alpha.png",
+      "gridPosition": {
+        "col": 2,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/hammer.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "bread": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:19Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T095723Z--long_sword-wooden_shield-hammer-bread-ashgrove_dagger-stoneford_mail.derived-alpha.png",
+      "gridPosition": {
+        "col": 0,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/bread.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "ashgrove_dagger": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:19Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T095723Z--long_sword-wooden_shield-hammer-bread-ashgrove_dagger-stoneford_mail.derived-alpha.png",
+      "gridPosition": {
+        "col": 1,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/ashgrove_dagger.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "stoneford_mail": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:19Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T095723Z--long_sword-wooden_shield-hammer-bread-ashgrove_dagger-stoneford_mail.derived-alpha.png",
+      "gridPosition": {
+        "col": 2,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/stoneford_mail.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "arrow": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:27Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T103742Z--arrow-arrow_bodkin-knife-short_sword-axe-club.derived-alpha.png",
+      "gridPosition": {
+        "col": 0,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/arrow.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "arrow_bodkin": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:27Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T103742Z--arrow-arrow_bodkin-knife-short_sword-axe-club.derived-alpha.png",
+      "gridPosition": {
+        "col": 1,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/arrow_bodkin.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "sling_stone": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:24Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T103011Z--arrow-arrow_bodkin-sling_stone-full_helm-iron_helm-iron_pauldrons.derived-alpha.png",
+      "gridPosition": {
+        "col": 2,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/sling_stone.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "full_helm": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:24Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T103011Z--arrow-arrow_bodkin-sling_stone-full_helm-iron_helm-iron_pauldrons.derived-alpha.png",
+      "gridPosition": {
+        "col": 0,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/full_helm.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "iron_helm": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:24Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T103011Z--arrow-arrow_bodkin-sling_stone-full_helm-iron_helm-iron_pauldrons.derived-alpha.png",
+      "gridPosition": {
+        "col": 1,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/iron_helm.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "iron_pauldrons": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:24Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T103011Z--arrow-arrow_bodkin-sling_stone-full_helm-iron_helm-iron_pauldrons.derived-alpha.png",
+      "gridPosition": {
+        "col": 2,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/iron_pauldrons.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "axe": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:27Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T103742Z--arrow-arrow_bodkin-knife-short_sword-axe-club.derived-alpha.png",
+      "gridPosition": {
+        "col": 1,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/axe.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "club": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:27Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T103742Z--arrow-arrow_bodkin-knife-short_sword-axe-club.derived-alpha.png",
+      "gridPosition": {
+        "col": 2,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/club.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "hatchet": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:22Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T102823Z--long_sword-knife-short_sword-axe-club-hatchet.derived-alpha.png",
+      "gridPosition": {
+        "col": 2,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/hatchet.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "iron_vambraces": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:29Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T104215Z--iron_vambraces-leather_boots-leather_bracers-leather_cap-leather_gloves-leather_jerkin.derived-alpha.png",
+      "gridPosition": {
+        "col": 0,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/iron_vambraces.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "knife": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:27Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T103742Z--arrow-arrow_bodkin-knife-short_sword-axe-club.derived-alpha.png",
+      "gridPosition": {
+        "col": 2,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/knife.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "leather_boots": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:29Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T104215Z--iron_vambraces-leather_boots-leather_bracers-leather_cap-leather_gloves-leather_jerkin.derived-alpha.png",
+      "gridPosition": {
+        "col": 1,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/leather_boots.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "leather_bracers": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:29Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T104215Z--iron_vambraces-leather_boots-leather_bracers-leather_cap-leather_gloves-leather_jerkin.derived-alpha.png",
+      "gridPosition": {
+        "col": 2,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/leather_bracers.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "leather_cap": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:29Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T104215Z--iron_vambraces-leather_boots-leather_bracers-leather_cap-leather_gloves-leather_jerkin.derived-alpha.png",
+      "gridPosition": {
+        "col": 0,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/leather_cap.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "leather_gloves": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:29Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T104215Z--iron_vambraces-leather_boots-leather_bracers-leather_cap-leather_gloves-leather_jerkin.derived-alpha.png",
+      "gridPosition": {
+        "col": 1,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/leather_gloves.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "leather_jerkin": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:29Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T104215Z--iron_vambraces-leather_boots-leather_bracers-leather_cap-leather_gloves-leather_jerkin.derived-alpha.png",
+      "gridPosition": {
+        "col": 2,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/leather_jerkin.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "leather_pauldron": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:31Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T110600Z--leather_pauldron-leather_trousers-mail_chausses-mail_coif-padded_cap-padded_hose.derived-alpha.png",
+      "gridPosition": {
+        "col": 0,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/leather_pauldron.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "leather_trousers": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:31Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T110600Z--leather_pauldron-leather_trousers-mail_chausses-mail_coif-padded_cap-padded_hose.derived-alpha.png",
+      "gridPosition": {
+        "col": 1,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/leather_trousers.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "mail_chausses": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:31Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T110600Z--leather_pauldron-leather_trousers-mail_chausses-mail_coif-padded_cap-padded_hose.derived-alpha.png",
+      "gridPosition": {
+        "col": 2,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/mail_chausses.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "mail_coif": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:31Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T110600Z--leather_pauldron-leather_trousers-mail_chausses-mail_coif-padded_cap-padded_hose.derived-alpha.png",
+      "gridPosition": {
+        "col": 0,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/mail_coif.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "padded_cap": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:31Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T110600Z--leather_pauldron-leather_trousers-mail_chausses-mail_coif-padded_cap-padded_hose.derived-alpha.png",
+      "gridPosition": {
+        "col": 1,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/padded_cap.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "padded_hose": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:31Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T110600Z--leather_pauldron-leather_trousers-mail_chausses-mail_coif-padded_cap-padded_hose.derived-alpha.png",
+      "gridPosition": {
+        "col": 2,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/padded_hose.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "padded_jacket": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:33Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T110950Z--padded_jacket-plate_cuirass-plate_gauntlets-plate_greaves-plate_pauldrons_round-plate_pauldrons_spiked.derived-alpha.png",
+      "gridPosition": {
+        "col": 0,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/padded_jacket.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "plate_cuirass": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:33Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T110950Z--padded_jacket-plate_cuirass-plate_gauntlets-plate_greaves-plate_pauldrons_round-plate_pauldrons_spiked.derived-alpha.png",
+      "gridPosition": {
+        "col": 1,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/plate_cuirass.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "plate_gauntlets": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:33Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T110950Z--padded_jacket-plate_cuirass-plate_gauntlets-plate_greaves-plate_pauldrons_round-plate_pauldrons_spiked.derived-alpha.png",
+      "gridPosition": {
+        "col": 2,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/plate_gauntlets.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "plate_greaves": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:33Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T110950Z--padded_jacket-plate_cuirass-plate_gauntlets-plate_greaves-plate_pauldrons_round-plate_pauldrons_spiked.derived-alpha.png",
+      "gridPosition": {
+        "col": 0,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/plate_greaves.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "plate_pauldrons_round": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:33Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T110950Z--padded_jacket-plate_cuirass-plate_gauntlets-plate_greaves-plate_pauldrons_round-plate_pauldrons_spiked.derived-alpha.png",
+      "gridPosition": {
+        "col": 1,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/plate_pauldrons_round.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "plate_pauldrons_spiked": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:33Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T110950Z--padded_jacket-plate_cuirass-plate_gauntlets-plate_greaves-plate_pauldrons_round-plate_pauldrons_spiked.derived-alpha.png",
+      "gridPosition": {
+        "col": 2,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/plate_pauldrons_spiked.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "plate_sabatons": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:36Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T111745Z--plate_sabatons-plate_vambraces-ranger_pauldron-ravenmoor_cuirass-reinforced_boots-studded_gloves.derived-alpha.png",
+      "gridPosition": {
+        "col": 0,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/plate_sabatons.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "plate_vambraces": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:36Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T111745Z--plate_sabatons-plate_vambraces-ranger_pauldron-ravenmoor_cuirass-reinforced_boots-studded_gloves.derived-alpha.png",
+      "gridPosition": {
+        "col": 1,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/plate_vambraces.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "ranger_pauldron": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:36Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T111745Z--plate_sabatons-plate_vambraces-ranger_pauldron-ravenmoor_cuirass-reinforced_boots-studded_gloves.derived-alpha.png",
+      "gridPosition": {
+        "col": 2,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/ranger_pauldron.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "ravenmoor_cuirass": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:36Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T111745Z--plate_sabatons-plate_vambraces-ranger_pauldron-ravenmoor_cuirass-reinforced_boots-studded_gloves.derived-alpha.png",
+      "gridPosition": {
+        "col": 0,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/ravenmoor_cuirass.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "reinforced_boots": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:36Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T111745Z--plate_sabatons-plate_vambraces-ranger_pauldron-ravenmoor_cuirass-reinforced_boots-studded_gloves.derived-alpha.png",
+      "gridPosition": {
+        "col": 1,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/reinforced_boots.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "short_sword": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:27Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T103742Z--arrow-arrow_bodkin-knife-short_sword-axe-club.derived-alpha.png",
+      "gridPosition": {
+        "col": 0,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/short_sword.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "studded_gloves": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:36Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T111745Z--plate_sabatons-plate_vambraces-ranger_pauldron-ravenmoor_cuirass-reinforced_boots-studded_gloves.derived-alpha.png",
+      "gridPosition": {
+        "col": 2,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/studded_gloves.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "studded_leather": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:38Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T114835Z--studded_leather-primer_construction-primer_medicine-primer_survival-ale-apple.derived-alpha.png",
+      "gridPosition": {
+        "col": 0,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/studded_leather.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "primer_construction": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:38Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T114835Z--studded_leather-primer_construction-primer_medicine-primer_survival-ale-apple.derived-alpha.png",
+      "gridPosition": {
+        "col": 1,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/primer_construction.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "primer_medicine": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:38Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T114835Z--studded_leather-primer_construction-primer_medicine-primer_survival-ale-apple.derived-alpha.png",
+      "gridPosition": {
+        "col": 2,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/primer_medicine.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "primer_survival": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:38Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T114835Z--studded_leather-primer_construction-primer_medicine-primer_survival-ale-apple.derived-alpha.png",
+      "gridPosition": {
+        "col": 0,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/primer_survival.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "ale": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:38Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T114835Z--studded_leather-primer_construction-primer_medicine-primer_survival-ale-apple.derived-alpha.png",
+      "gridPosition": {
+        "col": 1,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/ale.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "apple": {
+      "status": "generated",
+      "model": "reprocess-generated",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:52:38Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T114835Z--studded_leather-primer_construction-primer_medicine-primer_survival-ale-apple.derived-alpha.png",
+      "gridPosition": {
+        "col": 2,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/apple.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "cabbage": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:54:09Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T115406Z--cabbage-carrot-dried_fish-dried_meat-fish-flour.derived-alpha.png",
+      "gridPosition": {
+        "col": 0,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/cabbage.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "carrot": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:54:09Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T115406Z--cabbage-carrot-dried_fish-dried_meat-fish-flour.derived-alpha.png",
+      "gridPosition": {
+        "col": 1,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/carrot.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "dried_fish": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:54:09Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T115406Z--cabbage-carrot-dried_fish-dried_meat-fish-flour.derived-alpha.png",
+      "gridPosition": {
+        "col": 2,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/dried_fish.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "dried_meat": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:54:09Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T115406Z--cabbage-carrot-dried_fish-dried_meat-fish-flour.derived-alpha.png",
+      "gridPosition": {
+        "col": 0,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/dried_meat.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "fish": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:54:09Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T115406Z--cabbage-carrot-dried_fish-dried_meat-fish-flour.derived-alpha.png",
+      "gridPosition": {
+        "col": 1,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/fish.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "flour": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:54:09Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T115406Z--cabbage-carrot-dried_fish-dried_meat-fish-flour.derived-alpha.png",
+      "gridPosition": {
+        "col": 2,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/flour.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "milk": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:56:37Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T115634Z--milk-arnica-chamomile-hemlock-mint-nightshade.derived-alpha.png",
+      "gridPosition": {
+        "col": 0,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/milk.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "arnica": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:56:37Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T115634Z--milk-arnica-chamomile-hemlock-mint-nightshade.derived-alpha.png",
+      "gridPosition": {
+        "col": 1,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/arnica.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "chamomile": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:56:37Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T115634Z--milk-arnica-chamomile-hemlock-mint-nightshade.derived-alpha.png",
+      "gridPosition": {
+        "col": 2,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/chamomile.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "hemlock": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:56:37Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T115634Z--milk-arnica-chamomile-hemlock-mint-nightshade.derived-alpha.png",
+      "gridPosition": {
+        "col": 0,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/hemlock.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "mint": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:56:37Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T115634Z--milk-arnica-chamomile-hemlock-mint-nightshade.derived-alpha.png",
+      "gridPosition": {
+        "col": 1,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/mint.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "nightshade": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T11:56:37Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T115634Z--milk-arnica-chamomile-hemlock-mint-nightshade.derived-alpha.png",
+      "gridPosition": {
+        "col": 2,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/nightshade.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "yarrow": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:02:15Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T120212Z--yarrow-bandage-salve-blanket-ledger-board.derived-alpha.png",
+      "gridPosition": {
+        "col": 0,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/yarrow.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "bandage": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:02:15Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T120212Z--yarrow-bandage-salve-blanket-ledger-board.derived-alpha.png",
+      "gridPosition": {
+        "col": 1,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/bandage.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "salve": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:02:15Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T120212Z--yarrow-bandage-salve-blanket-ledger-board.derived-alpha.png",
+      "gridPosition": {
+        "col": 2,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/salve.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "blanket": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:02:15Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T120212Z--yarrow-bandage-salve-blanket-ledger-board.derived-alpha.png",
+      "gridPosition": {
+        "col": 0,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/blanket.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "ledger": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:02:15Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T120212Z--yarrow-bandage-salve-blanket-ledger-board.derived-alpha.png",
+      "gridPosition": {
+        "col": 1,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/ledger.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "board": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:02:15Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T120212Z--yarrow-bandage-salve-blanket-ledger-board.derived-alpha.png",
+      "gridPosition": {
+        "col": 2,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/board.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "bran": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:10:06Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T121004Z--bran-branch-charcoal-cloth-coal-firewood.derived-alpha.png",
+      "gridPosition": {
+        "col": 0,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/bran.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "branch": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:10:06Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T121004Z--bran-branch-charcoal-cloth-coal-firewood.derived-alpha.png",
+      "gridPosition": {
+        "col": 1,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/branch.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "charcoal": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:10:06Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T121004Z--bran-branch-charcoal-cloth-coal-firewood.derived-alpha.png",
+      "gridPosition": {
+        "col": 2,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/charcoal.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "cloth": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:10:06Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T121004Z--bran-branch-charcoal-cloth-coal-firewood.derived-alpha.png",
+      "gridPosition": {
+        "col": 0,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/cloth.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "coal": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:10:06Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T121004Z--bran-branch-charcoal-cloth-coal-firewood.derived-alpha.png",
+      "gridPosition": {
+        "col": 1,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/coal.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "firewood": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:10:06Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T121004Z--bran-branch-charcoal-cloth-coal-firewood.derived-alpha.png",
+      "gridPosition": {
+        "col": 2,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/firewood.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "battle_axe": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:14:32Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T121429Z--battle_axe-dagger-damascus_dagger-damascus_longsword-damascus_sword-obsidian_dagger.derived-alpha.png",
+      "gridPosition": {
+        "col": 0,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/battle_axe.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "dagger": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:14:32Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T121429Z--battle_axe-dagger-damascus_dagger-damascus_longsword-damascus_sword-obsidian_dagger.derived-alpha.png",
+      "gridPosition": {
+        "col": 1,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/dagger.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "damascus_dagger": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:14:32Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T121429Z--battle_axe-dagger-damascus_dagger-damascus_longsword-damascus_sword-obsidian_dagger.derived-alpha.png",
+      "gridPosition": {
+        "col": 2,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/damascus_dagger.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "damascus_longsword": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:14:32Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T121429Z--battle_axe-dagger-damascus_dagger-damascus_longsword-damascus_sword-obsidian_dagger.derived-alpha.png",
+      "gridPosition": {
+        "col": 0,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/damascus_longsword.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "damascus_sword": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:14:32Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T121429Z--battle_axe-dagger-damascus_dagger-damascus_longsword-damascus_sword-obsidian_dagger.derived-alpha.png",
+      "gridPosition": {
+        "col": 1,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/damascus_sword.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "obsidian_dagger": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:14:32Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T121429Z--battle_axe-dagger-damascus_dagger-damascus_longsword-damascus_sword-obsidian_dagger.derived-alpha.png",
+      "gridPosition": {
+        "col": 2,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/obsidian_dagger.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "obsidian_knife": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:17:46Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T121743Z--obsidian_knife-obsidian_sword-short_bow-sling-spear-staff.derived-alpha.png",
+      "gridPosition": {
+        "col": 0,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/obsidian_knife.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "obsidian_sword": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:17:46Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T121743Z--obsidian_knife-obsidian_sword-short_bow-sling-spear-staff.derived-alpha.png",
+      "gridPosition": {
+        "col": 1,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/obsidian_sword.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "short_bow": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:17:46Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T121743Z--obsidian_knife-obsidian_sword-short_bow-sling-spear-staff.derived-alpha.png",
+      "gridPosition": {
+        "col": 2,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/short_bow.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "sling": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:17:46Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T121743Z--obsidian_knife-obsidian_sword-short_bow-sling-spear-staff.derived-alpha.png",
+      "gridPosition": {
+        "col": 0,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/sling.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "spear": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:17:46Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T121743Z--obsidian_knife-obsidian_sword-short_bow-sling-spear-staff.derived-alpha.png",
+      "gridPosition": {
+        "col": 1,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/spear.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "staff": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:17:46Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T121743Z--obsidian_knife-obsidian_sword-short_bow-sling-spear-staff.derived-alpha.png",
+      "gridPosition": {
+        "col": 2,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/staff.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "war_hammer": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:19:39Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T121936Z--war_hammer-fenmoor_sword-marlow_longbow-millbrook_shortsword-stonebridge_longsword-composite_bow.derived-alpha.png",
+      "gridPosition": {
+        "col": 0,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/war_hammer.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "fenmoor_sword": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:19:39Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T121936Z--war_hammer-fenmoor_sword-marlow_longbow-millbrook_shortsword-stonebridge_longsword-composite_bow.derived-alpha.png",
+      "gridPosition": {
+        "col": 1,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/fenmoor_sword.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "marlow_longbow": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:19:39Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T121936Z--war_hammer-fenmoor_sword-marlow_longbow-millbrook_shortsword-stonebridge_longsword-composite_bow.derived-alpha.png",
+      "gridPosition": {
+        "col": 2,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/marlow_longbow.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "millbrook_shortsword": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:19:39Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T121936Z--war_hammer-fenmoor_sword-marlow_longbow-millbrook_shortsword-stonebridge_longsword-composite_bow.derived-alpha.png",
+      "gridPosition": {
+        "col": 0,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/millbrook_shortsword.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "stonebridge_longsword": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:19:39Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T121936Z--war_hammer-fenmoor_sword-marlow_longbow-millbrook_shortsword-stonebridge_longsword-composite_bow.derived-alpha.png",
+      "gridPosition": {
+        "col": 1,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/stonebridge_longsword.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "composite_bow": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:19:39Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T121936Z--war_hammer-fenmoor_sword-marlow_longbow-millbrook_shortsword-stonebridge_longsword-composite_bow.derived-alpha.png",
+      "gridPosition": {
+        "col": 2,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/composite_bow.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "crossbow": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:21:25Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T122123Z--crossbow-falchion-halberd-hunting_bow-mace-pinewatch_longsword.derived-alpha.png",
+      "gridPosition": {
+        "col": 0,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/crossbow.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "falchion": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:21:25Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T122123Z--crossbow-falchion-halberd-hunting_bow-mace-pinewatch_longsword.derived-alpha.png",
+      "gridPosition": {
+        "col": 1,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/falchion.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "halberd": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:21:25Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T122123Z--crossbow-falchion-halberd-hunting_bow-mace-pinewatch_longsword.derived-alpha.png",
+      "gridPosition": {
+        "col": 2,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/halberd.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "hunting_bow": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:21:25Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T122123Z--crossbow-falchion-halberd-hunting_bow-mace-pinewatch_longsword.derived-alpha.png",
+      "gridPosition": {
+        "col": 0,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/hunting_bow.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "mace": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:21:25Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T122123Z--crossbow-falchion-halberd-hunting_bow-mace-pinewatch_longsword.derived-alpha.png",
+      "gridPosition": {
+        "col": 1,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/mace.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "pinewatch_longsword": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:21:25Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T122123Z--crossbow-falchion-halberd-hunting_bow-mace-pinewatch_longsword.derived-alpha.png",
+      "gridPosition": {
+        "col": 2,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/pinewatch_longsword.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "greywatch_longsword": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:32:08Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T123206Z--greywatch_longsword-harrow_shortsword-kestrel_dagger-yewmaster_longbow-blackpine_vambraces-brigandine.derived-alpha.png",
+      "gridPosition": {
+        "col": 0,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/greywatch_longsword.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "harrow_shortsword": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:32:08Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T123206Z--greywatch_longsword-harrow_shortsword-kestrel_dagger-yewmaster_longbow-blackpine_vambraces-brigandine.derived-alpha.png",
+      "gridPosition": {
+        "col": 1,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/harrow_shortsword.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "kestrel_dagger": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:32:08Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T123206Z--greywatch_longsword-harrow_shortsword-kestrel_dagger-yewmaster_longbow-blackpine_vambraces-brigandine.derived-alpha.png",
+      "gridPosition": {
+        "col": 2,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/kestrel_dagger.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "yewmaster_longbow": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:32:08Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T123206Z--greywatch_longsword-harrow_shortsword-kestrel_dagger-yewmaster_longbow-blackpine_vambraces-brigandine.derived-alpha.png",
+      "gridPosition": {
+        "col": 0,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/yewmaster_longbow.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "blackpine_vambraces": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:32:08Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T123206Z--greywatch_longsword-harrow_shortsword-kestrel_dagger-yewmaster_longbow-blackpine_vambraces-brigandine.derived-alpha.png",
+      "gridPosition": {
+        "col": 1,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/blackpine_vambraces.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "brigandine": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:32:08Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T123206Z--greywatch_longsword-harrow_shortsword-kestrel_dagger-yewmaster_longbow-blackpine_vambraces-brigandine.derived-alpha.png",
+      "gridPosition": {
+        "col": 2,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/brigandine.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "chisel": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:33:28Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T123326Z--chisel-fishing_net-fishing_rod-flint-frame_saw-gathering_basket.derived-alpha.png",
+      "gridPosition": {
+        "col": 0,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/chisel.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "fishing_net": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:33:28Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T123326Z--chisel-fishing_net-fishing_rod-flint-frame_saw-gathering_basket.derived-alpha.png",
+      "gridPosition": {
+        "col": 1,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/fishing_net.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "fishing_rod": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:33:28Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T123326Z--chisel-fishing_net-fishing_rod-flint-frame_saw-gathering_basket.derived-alpha.png",
+      "gridPosition": {
+        "col": 2,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/fishing_rod.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "flint": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:33:28Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T123326Z--chisel-fishing_net-fishing_rod-flint-frame_saw-gathering_basket.derived-alpha.png",
+      "gridPosition": {
+        "col": 0,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/flint.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "frame_saw": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:33:28Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T123326Z--chisel-fishing_net-fishing_rod-flint-frame_saw-gathering_basket.derived-alpha.png",
+      "gridPosition": {
+        "col": 1,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/frame_saw.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "gathering_basket": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:33:28Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T123326Z--chisel-fishing_net-fishing_rod-flint-frame_saw-gathering_basket.derived-alpha.png",
+      "gridPosition": {
+        "col": 2,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/gathering_basket.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "square": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:34:59Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T123456Z--square-torch-waterskin_m-wedge-wheelbarrow-wooden_cup.derived-alpha.png",
+      "gridPosition": {
+        "col": 0,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/square.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "torch": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:34:59Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T123456Z--square-torch-waterskin_m-wedge-wheelbarrow-wooden_cup.derived-alpha.png",
+      "gridPosition": {
+        "col": 1,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/torch.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "waterskin_m": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:34:59Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T123456Z--square-torch-waterskin_m-wedge-wheelbarrow-wooden_cup.derived-alpha.png",
+      "gridPosition": {
+        "col": 2,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/waterskin_m.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "wedge": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:34:59Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T123456Z--square-torch-waterskin_m-wedge-wheelbarrow-wooden_cup.derived-alpha.png",
+      "gridPosition": {
+        "col": 0,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/wedge.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "wheelbarrow": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:34:59Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T123456Z--square-torch-waterskin_m-wedge-wheelbarrow-wooden_cup.derived-alpha.png",
+      "gridPosition": {
+        "col": 1,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/wheelbarrow.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "wooden_cup": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:34:59Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T123456Z--square-torch-waterskin_m-wedge-wheelbarrow-wooden_cup.derived-alpha.png",
+      "gridPosition": {
+        "col": 2,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/wooden_cup.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "shovel": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:47:10Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T124707Z--shovel-rope-tent-whetstone-snare-sack.derived-alpha.png",
+      "gridPosition": {
+        "col": 0,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/shovel.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "rope": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:47:10Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T124707Z--shovel-rope-tent-whetstone-snare-sack.derived-alpha.png",
+      "gridPosition": {
+        "col": 1,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/rope.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "tent": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:47:10Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T124707Z--shovel-rope-tent-whetstone-snare-sack.derived-alpha.png",
+      "gridPosition": {
+        "col": 2,
+        "row": 0
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/tent.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "whetstone": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:47:10Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T124707Z--shovel-rope-tent-whetstone-snare-sack.derived-alpha.png",
+      "gridPosition": {
+        "col": 0,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/whetstone.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "snare": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:47:10Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T124707Z--shovel-rope-tent-whetstone-snare-sack.derived-alpha.png",
+      "gridPosition": {
+        "col": 1,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/snare.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    },
+    "sack": {
+      "status": "generated",
+      "model": "openai/gpt-image-2",
+      "promptRevision": "style-2026-10-22-v4",
+      "referenceRevision": "style-reference-image-2026-10-22",
+      "generatedAt": "2026-10-22T12:47:10Z",
+      "sourceSheet": "assets-src/items/sheets/20261022T124707Z--shovel-rope-tent-whetstone-snare-sack.derived-alpha.png",
+      "gridPosition": {
+        "col": 2,
+        "row": 1
+      },
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "outputPath": "public/assets/items/sack.png",
+      "notes": "Alpha derived by edge flood-fill (model returned opaque RGB); cell bleed+recenter; parchment alpha softened (target=180)."
+    }
+  }
+}
