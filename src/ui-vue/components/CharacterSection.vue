@@ -11,8 +11,8 @@ const props = withDefaults(defineProps<{
 </script>
 
 <template>
-  <section :class="cn('rounded-md bg-white/5 p-3', props.class)">
-    <h2 class="mb-2 text-sm font-semibold">
+  <section :class="cn('rounded-lg border border-white/10 bg-black/20 p-3', props.class)">
+    <h2 class="mb-2 text-xs font-semibold uppercase tracking-wide text-neutral-400">
       {{ title }}
     </h2>
     <slot />
