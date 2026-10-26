@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
+import { ANIMS_URL, bodyUrl } from '../characters/characterFiles'
 import {
   PLAYER_MODEL_URL,
 } from './PlayerController'
@@ -56,19 +57,24 @@ describe('resolveEquipmentOutfit', () => {
 })
 
 describe('resolvePlayerAppearance', () => {
-  it('defaults to Peasant when the URL and body slot are empty', () => {
+  it('defaults to Peasant kit when the URL and body slot are empty', () => {
     const appearance = resolvePlayerAppearance({ search: '', bodyKind: null })
     expect(appearance.id).toBe('peasant')
     expect(appearance.modelUrl).toBe(PLAYER_UBC_PEASANT_URL)
     expect(appearance.animationUrl).toBe(PLAYER_UBC_ANIMATION_URL)
+    expect(appearance.kit?.outfit).toBe('Peasant')
+    expect(appearance.kit?.sex).toBe('Male')
     expect(appearance.tint).toBe('default')
     expect(appearance.tintUrl).toBeNull()
   })
 
-  it('uses Ranger for leather and Knight for chainmail when there is no URL override', () => {
+  it('uses Ranger for leather and Knight_Helm for chainmail when there is no URL override', () => {
     expect(resolvePlayerAppearance({ search: '', bodyKind: 'leather_armor' }).id).toBe('ranger')
     expect(resolvePlayerAppearance({ search: '', bodyKind: 'chainmail' }).modelUrl).toBe(
       PLAYER_UBC_KNIGHT_URL,
+    )
+    expect(resolvePlayerAppearance({ search: '', bodyKind: 'chainmail' }).kit?.outfit).toBe(
+      'Knight_Helm',
     )
   })
 
@@ -76,6 +82,9 @@ describe('resolvePlayerAppearance', () => {
     expect(
       resolvePlayerAppearance({ search: '?player=adventurer', bodyKind: 'leather_armor' }).id,
     ).toBe('adventurer')
+    expect(
+      resolvePlayerAppearance({ search: '?player=adventurer', bodyKind: 'leather_armor' }).kit,
+    ).toBeNull()
     expect(
       resolvePlayerAppearance({ search: '?player=ranger', bodyKind: null }).id,
     ).toBe('ranger')
@@ -87,12 +96,13 @@ describe('resolvePlayerAppearance', () => {
     ).toBe(PLAYER_UBC_WIZARD_URL)
   })
 
-  it('applies ?playerTint=brown only to UBC outfits', () => {
+  it('applies ?playerTint=brown cloth tint on kit outfits', () => {
     expect(resolvePlayerAppearance({ search: '?playerTint=brown', bodyKind: null })).toMatchObject({
       id: 'peasant',
       tint: 'brown',
       tintUrl: PLAYER_UBC_PEASANT_BROWN_URL,
     })
+    expect(resolvePlayerAppearance({ search: '?playerTint=brown', bodyKind: null }).kit?.clothTint).not.toBeNull()
     expect(
       resolvePlayerAppearance({ search: '?player=ranger&playerTint=brown', bodyKind: null }),
     ).toMatchObject({
@@ -116,6 +126,7 @@ describe('resolvePlayerVisualPreset', () => {
     expect(preset.id).toBe('peasant')
     expect(preset.modelUrl).toBe(PLAYER_UBC_PEASANT_URL)
     expect(preset.animationUrl).toBe(PLAYER_UBC_ANIMATION_URL)
+    expect(preset.kit?.outfit).toBe('Peasant')
   })
 
   it('still exposes Adventurer only through the whitelist', () => {
@@ -123,34 +134,27 @@ describe('resolvePlayerVisualPreset', () => {
       id: 'adventurer',
       modelUrl: PLAYER_MODEL_URL,
       animationUrl: null,
+      kit: null,
     })
   })
 })
 
 describe('companionAnimationUrl', () => {
-  it('returns ual_humanoid for UBC outfit meshes and skips the clip GLB itself', () => {
-    expect(companionAnimationUrl(PLAYER_UBC_PEASANT_URL)).toBe(PLAYER_UBC_ANIMATION_URL)
-    expect(companionAnimationUrl(`${PLAYER_UBC_RANGER_URL}?r=3`)).toBe(PLAYER_UBC_ANIMATION_URL)
-    expect(companionAnimationUrl(PLAYER_UBC_ANIMATION_URL)).toBeNull()
+  it('returns anims.glb for kit outfit meshes and skips the clip GLB itself', () => {
+    expect(companionAnimationUrl(PLAYER_UBC_PEASANT_URL)).toBe(ANIMS_URL)
+    expect(companionAnimationUrl(`${PLAYER_UBC_RANGER_URL}?r=3`)).toBe(ANIMS_URL)
+    expect(companionAnimationUrl(ANIMS_URL)).toBeNull()
     expect(companionAnimationUrl(PLAYER_MODEL_URL)).toBeNull()
+    expect(companionAnimationUrl(bodyUrl('Female', 'Wizard'))).toBe(ANIMS_URL)
   })
 })
 
 describe('ubcPreloadUrls', () => {
-  it('warms the other equipment-driven UBC meshes and skips Adventurer', () => {
+  it('warms the other equipment-driven kit body meshes and skips Adventurer', () => {
     expect(ubcPreloadUrls(PLAYER_UBC_PEASANT_URL)).toEqual([
       PLAYER_UBC_RANGER_URL,
       PLAYER_UBC_KNIGHT_URL,
     ])
-    expect(ubcPreloadUrls(PLAYER_UBC_RANGER_URL)).toEqual([
-      PLAYER_UBC_PEASANT_URL,
-      PLAYER_UBC_KNIGHT_URL,
-    ])
-    expect(ubcPreloadUrls(PLAYER_UBC_KNIGHT_URL)).toEqual([
-      PLAYER_UBC_PEASANT_URL,
-      PLAYER_UBC_RANGER_URL,
-    ])
     expect(ubcPreloadUrls(PLAYER_MODEL_URL)).toEqual([])
-    expect(ubcPreloadUrls(PLAYER_UBC_WIZARD_URL)).toEqual([])
   })
 })

@@ -45,11 +45,15 @@ import type { RequestNpcInitiatedDialogue } from './npcInitiatedDialogueRequest'
 import type { NpcPlayerFollowUp } from './npcPlayerFollowUp'
 import {
   disposeObject3D,
-  loadGltf,
   loadGltfAnimated,
   prepareProp,
 } from '../assets/loadGltf'
-import { applyClothingHue, applyHairColor, applyOutfitTint, cloneOutfitMaterials, fixOutfitMeshDarkness } from '../assets/ubcOutfitMaterials'
+import {
+  applyClothingHue,
+  applyHairColor,
+  cloneOutfitMaterials,
+  fixOutfitMeshDarkness,
+} from '../assets/ubcOutfitMaterials'
 import {
   playActionBowRelease,
   playActionChop,
@@ -59,6 +63,7 @@ import {
   playCombatHit,
   playNpcCombatDeath,
 } from '../audio/actionSounds'
+import { assembleCharacter } from '../characters/assembleCharacter'
 import { MELEE_CRITICAL_MULTIPLIER } from '../combat/criticalHit'
 import { resolveMeleeRecovery } from '../combat/meleeAgility'
 import {
@@ -83,7 +88,6 @@ import { type AgentProfile, DEFAULT_CELL_SIZE, findPath, type NavigationQuery, t
 import { beginActivePath, endActivePath, recordPathRequest, recordRepath } from '../navigation/navigationStats'
 import { PLAYER_COLLISION_RADIUS } from '../player/playerDimensions'
 import { companionAnimationUrl } from '../player/playerVisualPreset'
-import { bindAccessoryToPlayerSkeleton } from '../player/ubcAccessoryBind'
 import { resolveAgentPresentationLevel } from '../render/agentPresentationLod'
 import { type AgentPresentationVisibility, createAgentPresentationVisibility } from '../render/agentPresentationVisibility'
 import { resolveNearestWaterWellTarget } from '../settlement/householdWells'
@@ -548,12 +552,6 @@ const ANIMAL_THREAT_REACTION_INTERVAL_SEC = 1.5
  *  away from the threat — same order of magnitude as fauna's own
  *  `FLEE_DISTANCE` (`AnimalAgent.ts`). */
 const NPC_FLEE_DISTANCE = 8
-
-/**
- * DEBUG: Tint outfit materials for NPC & player model
- * Investigation in progress
- */
-const DEBUG_TINT_OUTFIT_MATERIALS = false
 
 export type { NpcGender }
 export type { ActionId, NpcPlannedAction, Phase } from './npcAction'
@@ -1966,30 +1964,35 @@ export class NpcAgent {
     const modelUrl = deps.modelUrl ?? appearance.modelUrl
     const animationUrl = companionAnimationUrl(modelUrl)
     const autoLook = deps.modelUrl == null
-    const tintUrl = autoLook ? appearance.tintUrl : null
     const hairColor = autoLook ? appearance.hairColor : 0xffffff
     const clothingHue = autoLook ? appearance.clothingHue : 0xffffff
-    const hairAttachmentUrl = autoLook ? appearance.hairAttachmentUrl : null
-    const beardAttachmentUrl = autoLook ? appearance.beardAttachmentUrl : null
     try {
-      const { scene, animations: modelAnimations } = await loadGltfAnimated(modelUrl)
-
-      scene.traverse((obj) => fixOutfitMeshDarkness(obj))
-
-      let animations = modelAnimations
-      if (animationUrl) {
-        try {
-          const extra = await loadGltfAnimated(animationUrl)
-          animations = [...modelAnimations, ...extra.animations]
-        } catch (err) {
-          console.warn(`[npc] failed to load animations ${animationUrl}`, err)
-        }
-        // cloneOutfitMaterials(scene)
-        // DEBUG: NPC & player model is black or too dark
-        if (tintUrl && DEBUG_TINT_OUTFIT_MATERIALS) await applyOutfitTint(scene, tintUrl)
+      let scene
+      let animations
+      if (autoLook) {
+        const assembled = await assembleCharacter(appearance.kit)
+        for (const w of assembled.warnings) console.warn(`[npc] kit: ${w}`)
+        scene = assembled.scene
+        animations = assembled.animations
+        // Clone MI_Hair_* / outfit mats before tint — Quaternius hair albedo is grey
+        // until multiply (same contract as UBC applyHairColor).
+        cloneOutfitMaterials(scene)
+        scene.traverse((obj) => fixOutfitMeshDarkness(obj))
         applyClothingHue(scene, clothingHue)
-        await NpcAgent.attachUbcHairAttachments(scene, hairAttachmentUrl, beardAttachmentUrl)
         applyHairColor(scene, hairColor)
+      } else {
+        const loaded = await loadGltfAnimated(modelUrl)
+        scene = loaded.scene
+        animations = loaded.animations
+        scene.traverse((obj) => fixOutfitMeshDarkness(obj))
+        if (animationUrl) {
+          try {
+            const extra = await loadGltfAnimated(animationUrl)
+            animations = [...animations, ...extra.animations]
+          } catch (err) {
+            console.warn(`[npc] failed to load animations ${animationUrl}`, err)
+          }
+        }
       }
       const npc = new NpcAgent(scene, animations, deps)
       // Diagnostic-only tag (world-terrain-041 agent detail census) — mirrors
@@ -1999,30 +2002,6 @@ export class NpcAgent {
     } catch (err) {
       console.warn(`[npc] failed to load ${modelUrl}, using capsule`, err)
       return NpcAgent.createCapsuleFallback(deps)
-    }
-  }
-
-  /**
-   * Bind optional runtime hair/beard meshes onto the live UBC skeleton.
-   * Reuses the player accessory remapper — no second mixer / armature.
-   */
-  private static async attachUbcHairAttachments(
-    scene: THREE.Object3D,
-    hairUrl: string | null,
-    beardUrl: string | null,
-  ): Promise<void> {
-    for (const url of [hairUrl, beardUrl]) {
-      if (!url) continue
-      try {
-        const cloned = await loadGltf(url)
-        cloneOutfitMaterials(cloned)
-        const bound = bindAccessoryToPlayerSkeleton(cloned, scene)
-        if (!bound) continue
-        bound.name = url.includes('beard') ? 'ubcBeardAttachment' : 'ubcHairAttachment'
-        scene.add(bound)
-      } catch (err) {
-        console.warn(`[npc] failed to load hair attachment ${url}`, err)
-      }
     }
   }
 

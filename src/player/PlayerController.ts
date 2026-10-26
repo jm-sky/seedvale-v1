@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import { CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js'
 import type { PlayAt } from '../audio/createWorldAudio'
+import type { CharacterAppearance } from '../characters/characterTypes'
 import type { CaveGroundQueryDebug, PlayerGroundTraceTick } from '../debug/playerGroundTrace'
 import type {
   MovementHeightfieldSnapshot,
@@ -16,12 +17,17 @@ import type { LocalWaterSample } from '../terrain/waterSample'
 import { disposeObject3D, loadGltf, loadGltfAnimated, loadGltfAsset, prepareProp } from '../assets/loadGltf'
 import {
   applyAccessoryTint,
+  applyHairColor,
   applyOutfitTint,
   cloneAccessoryMaterials,
   cloneOutfitMaterials,
   disposeAccessoryMaterialClones,
   disposeOutfitMaterialClones,
 } from '../assets/ubcOutfitMaterials'
+import { assembleCharacter } from '../characters/assembleCharacter'
+
+/** Quaternius hair albedo is grey until multiply — player default brown. */
+const PLAYER_KIT_HAIR_COLOR = 0x6b3d22
 import {
   playFootstep,
   playJumpLand,
@@ -413,10 +419,10 @@ export class PlayerController {
   private rangedReleaseAction: THREE.AnimationAction | null = null
   private jumpPhase: 'none' | 'start' | 'loop' | 'land' = 'none'
   private jumpLandLockRemaining = 0
-  private animations: THREE.AnimationClip[] = []
   private currentModelUrl = PLAYER_MODEL_URL
   private currentAnimationUrl: string | null = null
   private currentTintUrl: string | null = null
+  private currentKitKey = ''
   private appearanceLoadToken = 0
   private currentAction: THREE.AnimationAction | null = null
   /** True while `playerMelee` is in-flight — `syncAnimation` must not
@@ -579,6 +585,7 @@ export class PlayerController {
     modelUrl = PLAYER_MODEL_URL,
     animationUrl: string | null = null,
     preloadUrls: readonly string[] = [],
+    kit: CharacterAppearance | null = null,
   ): Promise<PlayerController> {
     try {
       if (preloadUrls.length > 0) {
@@ -586,18 +593,30 @@ export class PlayerController {
           console.warn(`[player] failed to preload ${url}`, err)
         })))
       }
-      const { scene, animations: modelAnimations } = await loadGltfAnimated(modelUrl)
-      let animations = modelAnimations
-      if (animationUrl) {
-        try {
-          const extra = await loadGltfAnimated(animationUrl)
-          animations = [...modelAnimations, ...extra.animations]
-        } catch (err) {
-          console.warn(`[player] failed to load animations ${animationUrl}`, err)
+      let scene
+      let animations
+      if (kit) {
+        const assembled = await assembleCharacter(kit)
+        for (const w of assembled.warnings) console.warn(`[player] kit: ${w}`)
+        scene = assembled.scene
+        animations = assembled.animations
+        cloneOutfitMaterials(scene)
+        applyHairColor(scene, PLAYER_KIT_HAIR_COLOR)
+      } else {
+        const loaded = await loadGltfAnimated(modelUrl)
+        scene = loaded.scene
+        animations = loaded.animations
+        if (animationUrl) {
+          try {
+            const extra = await loadGltfAnimated(animationUrl)
+            animations = [...animations, ...extra.animations]
+          } catch (err) {
+            console.warn(`[player] failed to load animations ${animationUrl}`, err)
+          }
         }
       }
       prepareProp(scene, PLAYER_HEIGHT)
-      return new PlayerController(
+      const player = new PlayerController(
         scene,
         animations,
         false,
@@ -616,6 +635,11 @@ export class PlayerController {
         modelUrl,
         animationUrl,
       )
+      if (kit) {
+        player.currentKitKey = `${kit.sex}|${kit.outfit}|${kit.head}|${kit.hair}|${kit.beard}|${kit.clothTint}|${kit.garments.join(',')}`
+        player.currentTintUrl = null
+      }
+      return player
     } catch (err) {
       console.warn(`[player] failed to load ${modelUrl}, using capsule`, err)
       return PlayerController.createCapsuleFallback(
@@ -806,32 +830,50 @@ export class PlayerController {
    */
   async applyAppearance(opts: {
     animationUrl: string | null
+    kit?: CharacterAppearance | null
     modelUrl: string
     tintUrl: string | null
   }): Promise<void> {
     if (this.isCapsule) return
     if (this.appearanceLocked) return
+    const kitKey = opts.kit
+      ? `${opts.kit.sex}|${opts.kit.outfit}|${opts.kit.head}|${opts.kit.hair}|${opts.kit.beard}|${opts.kit.clothTint}|${opts.kit.garments.join(',')}`
+      : ''
     if (
       opts.modelUrl === this.currentModelUrl
       && opts.animationUrl === this.currentAnimationUrl
       && opts.tintUrl === this.currentTintUrl
+      && kitKey === this.currentKitKey
     ) {
       return
     }
 
     const token = ++this.appearanceLoadToken
-    if (opts.modelUrl !== this.currentModelUrl) {
+    if (opts.modelUrl !== this.currentModelUrl || kitKey !== this.currentKitKey) {
       try {
-        const { scene, animations: modelAnimations } = await loadGltfAnimated(opts.modelUrl)
-        if (token !== this.appearanceLoadToken) return
-        let animations = this.animations
-        if (opts.animationUrl && opts.animationUrl !== this.currentAnimationUrl) {
-          try {
-            const extra = await loadGltfAnimated(opts.animationUrl)
-            if (token !== this.appearanceLoadToken) return
-            animations = [...modelAnimations, ...extra.animations]
-          } catch (err) {
-            console.warn(`[player] failed to load animations ${opts.animationUrl}`, err)
+        let scene
+        let animations
+        if (opts.kit) {
+          const assembled = await assembleCharacter(opts.kit)
+          if (token !== this.appearanceLoadToken) return
+          for (const w of assembled.warnings) console.warn(`[player] kit: ${w}`)
+          scene = assembled.scene
+          animations = assembled.animations
+          cloneOutfitMaterials(scene)
+          applyHairColor(scene, PLAYER_KIT_HAIR_COLOR)
+        } else {
+          const loaded = await loadGltfAnimated(opts.modelUrl)
+          if (token !== this.appearanceLoadToken) return
+          scene = loaded.scene
+          animations = loaded.animations
+          if (opts.animationUrl && opts.animationUrl !== this.currentAnimationUrl) {
+            try {
+              const extra = await loadGltfAnimated(opts.animationUrl)
+              if (token !== this.appearanceLoadToken) return
+              animations = [...animations, ...extra.animations]
+            } catch (err) {
+              console.warn(`[player] failed to load animations ${opts.animationUrl}`, err)
+            }
           }
         }
         prepareProp(scene, PLAYER_HEIGHT)
@@ -839,6 +881,7 @@ export class PlayerController {
         this.replaceModelRoot(scene, animations)
         this.currentModelUrl = opts.modelUrl
         this.currentAnimationUrl = opts.animationUrl
+        this.currentKitKey = kitKey
       } catch (err) {
         console.warn(`[player] failed to swap appearance ${opts.modelUrl}`, err)
         return
@@ -846,9 +889,13 @@ export class PlayerController {
     }
 
     if (token !== this.appearanceLoadToken) return
-    const tintApplied = await applyOutfitTint(this.modelRoot, opts.tintUrl)
-    if (token !== this.appearanceLoadToken) return
-    if (tintApplied) this.currentTintUrl = opts.tintUrl
+    if (!opts.kit) {
+      const tintApplied = await applyOutfitTint(this.modelRoot, opts.tintUrl)
+      if (token !== this.appearanceLoadToken) return
+      if (tintApplied) this.currentTintUrl = opts.tintUrl
+    } else {
+      this.currentTintUrl = opts.tintUrl
+    }
   }
 
   private replaceModelRoot(next: THREE.Object3D, animations: THREE.AnimationClip[]): void {
@@ -1633,7 +1680,6 @@ export class PlayerController {
   }
 
   private bindMixer(root: THREE.Object3D, animations: THREE.AnimationClip[]): void {
-    this.animations = animations
     this.mixer?.removeEventListener('finished', this.onMixerFinished)
     this.clearMixerActions()
     if (animations.length > 0) {

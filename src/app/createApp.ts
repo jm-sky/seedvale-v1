@@ -1137,7 +1137,10 @@ export async function createApp(
     (x, z) => sampleFootstepSurface(bundle.chunkManager, x, z),
     playerAppearance.modelUrl,
     playerAppearance.animationUrl,
-    ubcPreloadUrls(playerAppearance.modelUrl),
+    playerAppearance.kit
+      ? []
+      : ubcPreloadUrls(playerAppearance.modelUrl),
+    playerAppearance.kit,
   )
   const syncArmsEquipmentVisual = (): Promise<void> => {
     const armsId = equippedInstanceId(equipment, inventory, 'arms')
@@ -1154,6 +1157,7 @@ export async function createApp(
     void player.applyAppearance({
       modelUrl: appearance.modelUrl,
       animationUrl: appearance.animationUrl,
+      kit: appearance.kit,
       tintUrl: appearance.tintUrl,
     })
     void syncArmsEquipmentVisual()
@@ -1161,6 +1165,7 @@ export async function createApp(
   await player.applyAppearance({
     modelUrl: playerAppearance.modelUrl,
     animationUrl: playerAppearance.animationUrl,
+    kit: playerAppearance.kit,
     tintUrl: playerAppearance.tintUrl,
   })
   await syncArmsEquipmentVisual()
