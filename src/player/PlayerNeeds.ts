@@ -76,6 +76,21 @@ const VIGOR_SPRINT_EXTRA_DRAIN_MULTIPLIER = 1.5
 const STAMINA_SPRINT_DRAIN_PER_SEC = 20
 const STAMINA_REGEN_PER_SEC = 12
 
+/** Sprint stops at this stamina and resumes only once it has recovered to
+ *  `SPRINT_RESUME_STAMINA` (hysteresis: no walk/run flicker at the floor —
+ *  same pattern as v2 `RUN_MIN_STAMINA` / `RUN_RESUME_STAMINA`). Absolute
+ *  points are safe because player max Stamina is always 70..130. */
+export const SPRINT_MIN_STAMINA = 5
+export const SPRINT_RESUME_STAMINA = 50
+
+/** Latch for sprint gating: set when current ≤ min, clear when ≥ resume,
+ *  otherwise keep the previous state. */
+export function updateSprintOutOfBreath(outOfBreath: boolean, current: number): boolean {
+  if (current <= SPRINT_MIN_STAMINA) return true
+  if (current >= SPRINT_RESUME_STAMINA) return false
+  return outOfBreath
+}
+
 /** Continuous Stamina cost for a long physical `BusyAction` channel (playtest
  *  fixes plan §1 — terrain prep / well work had no Stamina cost at all).
  *  Flat real-seconds rate, same "twitchy short-term pool" framing as the

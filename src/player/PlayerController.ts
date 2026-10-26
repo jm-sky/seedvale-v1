@@ -61,7 +61,6 @@ import {
   registerPhysicalInjuryFromHeal,
   resolveInjuryRecovery,
 } from '../shared/injuryRecovery'
-import { isExhausted } from '../shared/StaminaState'
 import {
   createEmptyTemporaryConditions,
   hasActivePoisoning,
@@ -82,7 +81,13 @@ import {
   type PlayerEquipmentVisual,
   resolvePlayerEquipmentVisualTintUrl,
 } from './playerEquipmentVisual'
-import { createPlayerNeeds, type PlayerNeeds, tickPlayerMovementVigor, tickPlayerStamina } from './PlayerNeeds'
+import {
+  createPlayerNeeds,
+  type PlayerNeeds,
+  tickPlayerMovementVigor,
+  tickPlayerStamina,
+  updateSprintOutOfBreath,
+} from './PlayerNeeds'
 import { accumulateSneakUse, applySneakSpeedModifier, createPlayerSkills, type PlayerSkills, resetPlayerSkills } from './PlayerSkills'
 import { bindAccessoryToPlayerSkeleton } from './ubcAccessoryBind'
 import { integrateVerticalMotion } from './verticalMotion'
@@ -433,6 +438,10 @@ export class PlayerController {
   private rangedDrawing = false
   private moving = false
   private sprinting = false
+  /** Sprint exhaustion latch (hysteresis): set near empty Stamina, cleared
+   *  only after recovering to `SPRINT_RESUME_STAMINA` — prevents walk/run
+   *  animation flicker while Shift is held at the floor. */
+  private outOfBreath = false
   /** True while riding a mount (plan fauna-003) — suspends normal WASD/
    *  gravity/collision movement in `update()`; the riding system
    *  (`app/actions/mountActions.ts`) calls `setMountedTransform()` every
@@ -1286,6 +1295,7 @@ export class PlayerController {
     this.mounted = mounted
     this.moving = false
     this.sprinting = false
+    this.outOfBreath = false
     this.meleeAttacking = false
     this.rangedDrawing = false
     this.endJumpPhase()
@@ -1409,6 +1419,7 @@ export class PlayerController {
     this.endJumpPhase()
     this.moving = false
     this.sprinting = false
+    this.outOfBreath = false
     this.meleeAttacking = false
     this.rangedDrawing = false
     this.sneakUseDistance = 0
@@ -1512,7 +1523,8 @@ export class PlayerController {
 
     if (this.encumbranceBlocked) this.wish.set(0, 0, 0)
     this.moving = this.wish.lengthSq() > 0
-    this.sprinting = this.moving && this.keys.sprint && !isExhausted(this.needs.stamina)
+    this.outOfBreath = updateSprintOutOfBreath(this.outOfBreath, this.needs.stamina.current)
+    this.sprinting = this.moving && this.keys.sprint && !this.outOfBreath
     tickPlayerStamina(this.needs.stamina, dt, this.sprinting, recoveryAllowed, endurance, this.equipmentSprintStaminaMultiplier)
     if (this.moving) tickPlayerMovementVigor(this.needs.vigor, dt, this.sprinting, dayLengthSec)
     if (!this.skills.sneak.active) this.sneakUseDistance = 0
