@@ -79,7 +79,7 @@ export default defineConfig(({ mode }) => {
       format: 'es',
     },
     test: {
-      include: ['src/**/*.test.ts', 'scripts/**/*.test.ts'],
+      include: ['src/**/*.test.ts', 'scripts/**/*.test.ts', 'vite-plugin-asset-browser.test.ts'],
     },
   }
 })

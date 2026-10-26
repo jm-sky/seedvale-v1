@@ -25,7 +25,9 @@ import { tintBucketGlb } from '../../../items/items'
 import { companionAnimationUrl } from '../../../player/playerVisualPreset'
 import { hairColorHexFor } from '../hairTint'
 import { browserState } from '../state'
+import { compareCompanionAnimationUrl } from './compareCompanionAnimation'
 import { type AnchorGizmoGroup, createAnchorGizmos } from './createAnchorGizmos'
+import { attachCompareKit } from './mountCompareGarments'
 
 export type MeshStats = {
   triangles: number
@@ -53,6 +55,10 @@ export type AssetSlot = {
   setPose: (pose: 'rest' | 'idle') => void
   /** `null` restores bind pose. Unknown names fall back to idle, then first clip. */
   setClip: (name: string | null) => void
+  /** Advance the slot AnimationMixer; no-op when idle/rest or unloaded. */
+  update: (deltaSec: number) => void
+  /** True while a clip action is playing (drives continuous render). */
+  isAnimating: () => boolean
   /** World AABB of the model only — never the slot group (helpers inflate it). */
   getBounds: () => Box3 | null
   getNativeBounds: () => Box3 | null
@@ -145,6 +151,8 @@ export function createAssetSlot(role: 'reference' | 'target', scene: Group): Ass
   let bboxHelper: Box3Helper | null = null
   let mixer: AnimationMixer | null = null
   let clips: import('three').AnimationClip[] = []
+  /** Clip name currently playing, or `null` for bind pose. Avoids re-seeking every frame. */
+  let playingClip: string | null = null
   let nativeBox: Box3 | null = null
   let preparedBox: Box3 | null = null
   let meshStat: MeshStats = emptyMeshStats()
@@ -217,30 +225,42 @@ export function createAssetSlot(role: 'reference' | 'target', scene: Group): Ass
       if (!url || !nextEntry) return
 
       const fetchUrl = reloadCounter > 0 ? `${url}?r=${reloadCounter}` : url
-      const companionUrl = companionAnimationUrl(url)
-      const loaded = nextEntry.skinned || companionUrl
+      const ubcAnimUrl = companionAnimationUrl(url)
+      const compareAnimUrl = compareCompanionAnimationUrl(url)
+      const animCompanionUrl = ubcAnimUrl ?? compareAnimUrl
+      const loaded = nextEntry.skinned || animCompanionUrl
         ? await loadGltfAnimated(fetchUrl)
         : { scene: await loadGltf(fetchUrl), animations: [] as import('three').AnimationClip[] }
 
       model = loaded.scene
       clips = loaded.animations
-      if (companionUrl) {
+      if (animCompanionUrl) {
         try {
-          const extra = await loadGltfAnimated(companionUrl)
+          const extra = await loadGltfAnimated(animCompanionUrl)
           clips = [...loaded.animations, ...extra.animations]
         } catch (err) {
-          console.warn(`[asset-browser] failed to load animations ${companionUrl}`, err)
+          console.warn(`[asset-browser] failed to load animations ${animCompanionUrl}`, err)
         }
       }
       nativeBox = boxFromModel(model)
       applyPrepare(model, nextEntry.prepare)
-      if (companionUrl) {
+      // UBC hair tint only — Quaternius compare bodies do not use MI_Hair_* materials.
+      if (ubcAnimUrl) {
         cloneOutfitMaterials(model)
         applyHairColor(model, hairColorHexFor(browserState.hairColor))
       }
       if (nextEntry.id === 'item:wooden_bucket') tintBucketGlb(model, 'wooden_bucket')
       else if (nextEntry.id === 'item:copper_bucket') tintBucketGlb(model, 'copper_bucket')
       if (nextEntry.id === 'held:wooden_torch') model.rotation.x = Math.PI / 2
+      if (nextEntry.headUrl || (nextEntry.garments?.length && nextEntry.eqUrl)) {
+        const kit = await attachCompareKit(model, nextEntry)
+        if (kit.warnings.length) {
+          browserState.statusMessage = kit.warnings.join('; ')
+          console.warn('[asset-browser] compare kit', kit.warnings)
+        } else if (kit.attached.length) {
+          browserState.statusMessage = `Attached ${kit.attached.join(', ')}`
+        }
+      }
       preparedBox = boxFromModel(model)
       meshStat = collectMeshStats(model)
 
@@ -280,6 +300,7 @@ export function createAssetSlot(role: 'reference' | 'target', scene: Group): Ass
       anchors = []
       anchorIssues = []
       clips = []
+      playingClip = null
       nativeBox = null
       preparedBox = null
       meshStat = emptyMeshStats()
@@ -288,18 +309,34 @@ export function createAssetSlot(role: 'reference' | 'target', scene: Group): Ass
       slot.setClip(pose === 'rest' ? null : resolveAppliedClipName('idle', null, slot.clipNames))
     },
     setClip(name) {
-      if (!model || !mixer || !clips.length) return
-      mixer.stopAllAction()
-      if (name == null) return
+      if (!model || !mixer) return
+      if (name == null || !clips.length) {
+        if (playingClip !== null) {
+          mixer.stopAllAction()
+          playingClip = null
+          slot.refreshAnchors()
+        }
+        return
+      }
       const clip = clips.find((c) => c.name === name)
         ?? clips.find((c) => /idle/i.test(c.name))
         ?? clips[0]
       if (!clip) return
+      if (playingClip === clip.name) return
+      mixer.stopAllAction()
       const action = mixer.clipAction(clip)
+      action.reset()
       action.play()
-      mixer.setTime(0)
+      playingClip = clip.name
       mixer.update(0)
       slot.refreshAnchors()
+    },
+    update(deltaSec) {
+      if (!mixer || playingClip == null || deltaSec <= 0) return
+      mixer.update(deltaSec)
+    },
+    isAnimating() {
+      return playingClip != null
     },
     getBounds() {
       if (!model) return null

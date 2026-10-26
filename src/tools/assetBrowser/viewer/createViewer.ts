@@ -1,4 +1,5 @@
 import {
+  Clock,
   LineBasicMaterial,
   LineSegments,
   Vector3,
@@ -152,6 +153,7 @@ export function createViewer(container: HTMLElement): AssetViewer {
   let connectionLine: LineSegments | null = null
   let composer: ReturnType<typeof createPostProcessing> | null = null
   let animating = false
+  const clock = new Clock()
 
   const markDirty = () => { dirty = true }
   container.addEventListener('viewer-dirty', markDirty)
@@ -207,12 +209,14 @@ export function createViewer(container: HTMLElement): AssetViewer {
     })
   }
 
-  const render = () => {
+  const render = (deltaSec: number) => {
     layout = browserState.layout
     activeView = browserState.activeView
     applyEnvironment()
     applySlotPose(reference)
     applySlotPose(target)
+    reference.update(deltaSec)
+    target.update(deltaSec)
     reference.refreshAnchors()
     target.refreshAnchors()
     refreshConnection()
@@ -265,8 +269,11 @@ export function createViewer(container: HTMLElement): AssetViewer {
   }
 
   const loop = () => {
+    const deltaSec = Math.min(clock.getDelta(), 0.1)
     animating = browserState.lightingPreset === 'torch'
-    render()
+      || reference.isAnimating()
+      || target.isAnimating()
+    render(deltaSec)
     requestAnimationFrame(loop)
   }
   requestAnimationFrame(loop)

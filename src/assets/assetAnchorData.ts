@@ -168,6 +168,7 @@ export const ASSET_ANCHORS: Record<string, readonly AssetAnchorDef[]> = {
   'character:ubc-noble': CHARACTER_ANCHORS_UBC,
   'character:ubc-wizard': CHARACTER_ANCHORS_UBC,
   'character:ubc-male-knight-unhelmeted': CHARACTER_ANCHORS_UBC,
+  'character:ubc-male-blacksmith': CHARACTER_ANCHORS_UBC,
   'house:hut_a': [floorCenterLampMount(8.5)],
   'house:hut_b': [floorCenterLampMount(8.0)],
   'house:hut_c': [floorCenterLampMount(6.5)],

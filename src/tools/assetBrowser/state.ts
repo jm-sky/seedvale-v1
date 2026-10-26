@@ -55,7 +55,7 @@ export type BrowserState = {
 }
 
 export const browserState = reactive<BrowserState>({
-  referenceId: 'character:player',
+  referenceId: 'character:ubc-peasant',
   targetId: null,
   freeUrl: '',
   referenceFreeUrl: '',
@@ -78,7 +78,7 @@ export const browserState = reactive<BrowserState>({
   focusRadius: null,
   timeOfDay: 0.5,
   torchFuelRatio: 1,
-  pose: 'rest',
+  pose: 'idle',
   clip: null,
   hairColor: DEFAULT_HAIR_COLOR,
   resetTransformOnReload: false,

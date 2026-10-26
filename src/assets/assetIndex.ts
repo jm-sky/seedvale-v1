@@ -3,7 +3,12 @@ import { parkedIdFromUrl } from './assetUrlUtils'
 
 export { parkedIdFromUrl } from './assetUrlUtils'
 import { NPC_HEIGHT } from '../ai/NpcAgent'
-import { NPC_UBC_FEMALE_KNIGHT_URL, NPC_UBC_FEMALE_PEASANT_URL, NPC_UBC_FEMALE_RANGER_URL, NPC_UBC_FEMALE_WIZARD_URL, NPC_UBC_MALE_KNIGHT_UNHELMETED_URL } from '../ai/npcAppearance'
+import {
+  NPC_UBC_FEMALE_PEASANT_URL,
+  NPC_UBC_FEMALE_WIZARD_URL,
+  NPC_UBC_MALE_BLACKSMITH_URL,
+  NPC_UBC_MALE_KNIGHT_UNHELMETED_URL,
+} from '../ai/npcAppearance'
 import { ANIMAL_DEFS } from '../fauna/AnimalAgent'
 import { FAUNA_URLS } from '../fauna/createFauna'
 import { HELD_GLB } from '../items/heldToolVisual'
@@ -79,6 +84,9 @@ export type AssetIndexGroup =
 
 export type AssetIndexStatus = 'wired' | 'parked' | 'extra'
 
+/** Quaternius eq garment node stem; pack node is `EQ_${name}`. */
+export type CompareGarment = 'PeasantSkirt'
+
 export type AssetIndexEntry = {
   id: string
   url: string
@@ -93,6 +101,15 @@ export type AssetIndexEntry = {
   pack?: string
   /** Light MegaKit role from filename (`wall`, `roof`, …) — not a global ontology. */
   kind?: string
+  /**
+   * Optional Quaternius base garments to attach after body load (asset-browser compare).
+   * Requires `eqUrl` pointing at `eq/Female.glb` (or Male).
+   */
+  garments?: readonly CompareGarment[]
+  /** Pack URL for `garments` (e.g. `/compare/v3/eq/Female.glb`). */
+  eqUrl?: string
+  /** Base head GLB for compare kits (`/compare/v{2|3}/{Sex}_Head.glb`). One variant per sex. */
+  headUrl?: string
 }
 
 const WAGON_URL = '/models/settlement/megakit/wagon.glb'
@@ -343,6 +360,79 @@ function pushHeightSpecs(
   }
 }
 
+type CompareSex = 'Male' | 'Female'
+type CompareVersion = 'v2' | 'v3'
+
+type CompareBodySpec = {
+  /** Filename stem without sex prefix, e.g. `Peasant` → `Male_Peasant.glb`. */
+  outfit: string
+  /** Short look name for the label. */
+  look: string
+  sexes: readonly CompareSex[]
+  /** Attach PeasantSkirt for this sex when true (version-specific). */
+  skirtFemale: boolean
+}
+
+/**
+ * Profession body GLBs for cross-version look compare in the asset browser.
+ * Skirt rule: v2 = Peasant / Peasant_Boots / Herbalist; v3 = those + Wizard.
+ */
+/** Female Ranger/Guard/Blacksmith/Knight are out of live cast (render--013); male-only here. */
+const COMPARE_BODY_SPECS: readonly CompareBodySpec[] = [
+  { outfit: 'Peasant', look: 'Peasant', sexes: ['Male', 'Female'], skirtFemale: true },
+  { outfit: 'Peasant_Boots', look: 'Peasant boots', sexes: ['Male', 'Female'], skirtFemale: true },
+  { outfit: 'Ranger', look: 'Ranger', sexes: ['Male'], skirtFemale: false },
+  { outfit: 'Ranger_NoHood', look: 'Ranger (no hood / hunter)', sexes: ['Male'], skirtFemale: false },
+  {
+    outfit: 'Peasant',
+    look: 'Guard body (Peasant — v2/v3 profession trap)',
+    sexes: ['Male'],
+    skirtFemale: false,
+  },
+  { outfit: 'Blacksmith', look: 'Blacksmith', sexes: ['Male'], skirtFemale: false },
+  { outfit: 'Herbalist', look: 'Herbalist', sexes: ['Male', 'Female'], skirtFemale: true },
+  { outfit: 'Wizard', look: 'Wizard / merchant', sexes: ['Male', 'Female'], skirtFemale: false },
+  { outfit: 'Knight', look: 'Knight (v1 Guard lineage)', sexes: ['Male'], skirtFemale: false },
+]
+
+/** Guard-body rows reuse Peasant outfit; give them distinct ids. */
+function compareEntryId(version: CompareVersion, sex: CompareSex, outfit: string, look: string): string {
+  if (look.startsWith('Guard')) return `compare:${version}-${sex.toLowerCase()}-guard-peasant`
+  const stem = outfit.toLowerCase().replace(/_/g, '-')
+  return `compare:${version}-${sex.toLowerCase()}-${stem}`
+}
+
+function pushCompareCharacterEntries(out: AssetIndexEntry[]): void {
+  for (const version of ['v2', 'v3'] as const) {
+    const base = `/compare/${version}`
+    for (const spec of COMPARE_BODY_SPECS) {
+      for (const sex of spec.sexes) {
+        const id = compareEntryId(version, sex, spec.outfit, spec.look)
+        if (out.some((e) => e.id === id)) continue
+        const skirt =
+          sex === 'Female'
+          && spec.skirtFemale
+          && (version === 'v3' || spec.outfit !== 'Wizard')
+        // v3 Wizard female gets skirt via render--013 even though skirtFemale is false above.
+        const wizardSkirt = version === 'v3' && sex === 'Female' && spec.outfit === 'Wizard'
+        const withSkirt = skirt || wizardSkirt
+        out.push({
+          id,
+          url: `${base}/${sex}_${spec.outfit}.glb`,
+          label: `${version} ${sex} ${spec.look}${withSkirt ? ' + Skirt' : ''}`,
+          group: 'character',
+          prepare: { mode: 'height', value: sex === 'Female' ? NPC_HEIGHT : PLAYER_HEIGHT },
+          skinned: true,
+          anchors: anchorsForAsset(id),
+          headUrl: `${base}/${sex}_Head.glb`,
+          garments: withSkirt ? (['PeasantSkirt'] as const) : undefined,
+          eqUrl: withSkirt ? `${base}/eq/Female.glb` : undefined,
+        })
+      }
+    }
+  }
+}
+
 export function buildAssetIndex(): AssetIndexEntry[] {
   const out: AssetIndexEntry[] = []
 
@@ -464,24 +554,6 @@ export function buildAssetIndex(): AssetIndexEntry[] {
     anchors: anchorsForAsset('character:ubc-female-wizard'),
   })
   out.push({
-    id: 'character:ubc-female-ranger',
-    url: NPC_UBC_FEMALE_RANGER_URL,
-    label: 'NPC (UBC Female Ranger)',
-    group: 'character',
-    prepare: { mode: 'height', value: NPC_HEIGHT },
-    skinned: true,
-    anchors: anchorsForAsset('character:ubc-female-ranger'),
-  })
-  out.push({
-    id: 'character:ubc-female-knight',
-    url: NPC_UBC_FEMALE_KNIGHT_URL,
-    label: 'NPC (UBC Female Knight)',
-    group: 'character',
-    prepare: { mode: 'height', value: NPC_HEIGHT },
-    skinned: true,
-    anchors: anchorsForAsset('character:ubc-female-knight'),
-  })
-  out.push({
     id: 'character:ubc-male-knight-unhelmeted',
     url: NPC_UBC_MALE_KNIGHT_UNHELMETED_URL,
     label: 'NPC (UBC Male Knight, unhelmeted)',
@@ -490,6 +562,17 @@ export function buildAssetIndex(): AssetIndexEntry[] {
     skinned: true,
     anchors: anchorsForAsset('character:ubc-male-knight-unhelmeted'),
   })
+  out.push({
+    id: 'character:ubc-male-blacksmith',
+    url: NPC_UBC_MALE_BLACKSMITH_URL,
+    label: 'NPC (UBC Male Blacksmith)',
+    group: 'character',
+    prepare: { mode: 'height', value: NPC_HEIGHT },
+    skinned: true,
+    anchors: anchorsForAsset('character:ubc-male-blacksmith'),
+  })
+
+  pushCompareCharacterEntries(out)
 
   for (const [kind, url] of Object.entries(FAUNA_URLS)) {
     if (!url) continue

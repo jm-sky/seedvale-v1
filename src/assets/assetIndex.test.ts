@@ -21,8 +21,56 @@ describe('assetIndex', () => {
 
   it('every entry has url and prepare', () => {
     for (const entry of buildAssetIndex()) {
-      expect(entry.url).toMatch(/^\/models\//)
+      expect(entry.url).toMatch(/^\/(models|compare\/v[23])\//)
       expect(entry.prepare.mode).toBeTruthy()
+    }
+  })
+
+  it('defaults wired blacksmith and compare profession bodies with skirt metadata', () => {
+    const index = buildAssetIndex()
+    const blacksmith = index.find((e) => e.id === 'character:ubc-male-blacksmith')
+    expect(blacksmith?.group).toBe('character')
+    expect(blacksmith?.skinned).toBe(true)
+
+    const v3FemalePeasant = index.find((e) => e.id === 'compare:v3-female-peasant')
+    expect(v3FemalePeasant?.url).toBe('/compare/v3/Female_Peasant.glb')
+    expect(v3FemalePeasant?.headUrl).toBe('/compare/v3/Female_Head.glb')
+    expect(v3FemalePeasant?.garments).toEqual(['PeasantSkirt'])
+    expect(v3FemalePeasant?.eqUrl).toBe('/compare/v3/eq/Female.glb')
+    expect(v3FemalePeasant?.label).toMatch(/\+ Skirt/)
+
+    const v3MalePeasant = index.find((e) => e.id === 'compare:v3-male-peasant')
+    expect(v3MalePeasant?.headUrl).toBe('/compare/v3/Male_Head.glb')
+    expect(v3MalePeasant?.garments).toBeUndefined()
+
+    const v2FemaleWizard = index.find((e) => e.id === 'compare:v2-female-wizard')
+    expect(v2FemaleWizard?.garments).toBeUndefined()
+    expect(v2FemaleWizard?.label).not.toMatch(/Skirt/)
+
+    const v3FemaleWizard = index.find((e) => e.id === 'compare:v3-female-wizard')
+    expect(v3FemaleWizard?.garments).toEqual(['PeasantSkirt'])
+    expect(v3FemaleWizard?.eqUrl).toBe('/compare/v3/eq/Female.glb')
+
+    const guard = index.find((e) => e.id === 'compare:v3-male-guard-peasant')
+    expect(guard?.url).toBe('/compare/v3/Male_Peasant.glb')
+    expect(guard?.label).toMatch(/Guard/)
+
+    const ids = new Set(index.map((e) => e.id))
+    for (const id of [
+      'character:ubc-female-ranger',
+      'character:ubc-female-knight',
+      'compare:v2-female-ranger',
+      'compare:v3-female-ranger',
+      'compare:v2-female-ranger-nohood',
+      'compare:v3-female-ranger-nohood',
+      'compare:v2-female-guard-peasant',
+      'compare:v3-female-guard-peasant',
+      'compare:v2-female-blacksmith',
+      'compare:v3-female-blacksmith',
+      'compare:v2-female-knight',
+      'compare:v3-female-knight',
+    ]) {
+      expect(ids.has(id), id).toBe(false)
     }
   })
 
