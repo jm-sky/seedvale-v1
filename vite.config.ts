@@ -59,6 +59,7 @@ export default defineConfig(({ mode }) => {
           assetBrowser: resolve(rootDir, 'asset-browser.html'),
           houseBrowser: resolve(rootDir, 'house-browser.html'),
           itemDetailsDemo: resolve(rootDir, 'item-details-demo.html'),
+          inventoryListDemo: resolve(rootDir, 'inventory-list-demo.html'),
         },
       },
     },

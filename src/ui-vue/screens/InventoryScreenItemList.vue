@@ -5,14 +5,21 @@ import { useItemCategoryLabels } from '@/composables/useItemCategoryLabels'
 import { isToolKind } from '../../items/HeldTool'
 import { inventoryItemReadAction } from '../../items/inventoryItemReadAction'
 import { type InventoryInstanceRow, ITEM_METER_LABEL } from '../../items/inventoryView'
-import { isMeleeToolKind, isRangedTool, isThrowableKind } from '../../items/itemCatalog'
+import { isArmorCatalogKind, isMeleeToolKind, isRangedTool, isThrowableKind } from '../../items/itemCatalog'
 import { itemDisplayName } from '../../items/itemDisplay'
 import { isWeaponMaintenanceKind } from '../../items/itemInstances'
 import { hasItemCategory, ITEM_DEFS, type ItemCategory, type ItemKind, primaryItemCategory } from '../../items/items'
 import { isPrimaryMeleeAssignment, isPrimaryRangedAssignment } from '../../items/primaryWeapons'
 import { trapKindForItem } from '../../world/animalTraps'
+import QualityTag from '../components/items/QualityTag.vue'
 import { useTouchScroll } from '../composables/useTouchScroll'
 import { openQuantityDialog, ui } from '../store'
+
+const props = defineProps<{
+  /** When true, parent owns the outer panel (Stage B two-column). */
+  embedded?: boolean
+  compareInstanceId?: string | null
+}>()
 
 const panel = ref<HTMLElement | null>(null)
 
@@ -69,14 +76,15 @@ function conditionLabel(item: (typeof allItems.value)[number]): string | null {
 }
 
 const emit = defineEmits<{
-  'select-item': [item: ItemKind],
+  'select-item': [item: ItemKind]
+  'compare-instance': [instanceId: string]
+  'compare-kind': [kind: ItemKind]
 }>()
 
 useTouchScroll(panel)
 
 function formatWeight(kg: number): string { return `${kg.toFixed(1)} kg` }
-/** "Wyrzuć" (plan items-player-024) — a single unit drops immediately; a
- *  stack of more than one opens the shared quantity dialog first. */
+
 function onDrop(kind: ItemKind, count: number): void {
   if (count <= 1) { ui.inventory.onDrop?.(kind, count); return }
   openQuantityDialog(`Wyrzuć: ${itemDisplayName(kind)}`, count, (amount) => ui.inventory.onDrop?.(kind, amount))
@@ -127,54 +135,78 @@ function setPrimaryMelee(kind: ItemKind, instances: readonly InventoryInstanceRo
 function setPrimaryRanged(kind: ItemKind, instances: readonly InventoryInstanceRow[]): void {
   ui.inventory.onSetPrimaryRanged?.(kind, resolvePrimaryInstanceId(kind, instances))
 }
+
+function isKindCompared(instances: readonly InventoryInstanceRow[]): boolean {
+  if (!props.compareInstanceId) return false
+  return instances.some((row) => row.id === props.compareInstanceId)
+}
+
+function armorQualityLabel(instances: readonly InventoryInstanceRow[]): string | null {
+  const labels = instances.map((row) => row.qualityLabel).filter(Boolean)
+  if (labels.length === 0) return null
+  const first = labels[0]!
+  return labels.every((l) => l === first) ? first : 'różne'
+}
 </script>
 
 <template>
   <div
     ref="panel"
-    class="max-h-[calc(100dvh-32px)] w-full max-w-3xl overflow-y-auto rounded-[10px] bg-panel p-5 text-ink shadow-[0_12px_40px_rgba(0,0,0,0.45)]"
-    style="touch-action: pan-y"
+    :class="embedded
+      ? 'flex min-w-0 flex-col gap-3'
+      : 'max-h-[calc(100dvh-32px)] w-full max-w-3xl overflow-y-auto rounded-[10px] bg-panel p-5 text-ink shadow-[0_12px_40px_rgba(0,0,0,0.45)]'"
+    :style="embedded ? undefined : { touchAction: 'pan-y' }"
   >
-    <h1 class="mb-2 text-lg font-semibold tracking-wide">
+    <h1
+      class="text-lg font-semibold tracking-wide"
+      :class="embedded ? 'text-neutral-100' : ''"
+    >
       Ekwipunek
     </h1>
-    <div class="mb-3 text-[13px] opacity-75">
+    <div
+      class="text-[13px]"
+      :class="embedded ? 'text-neutral-400' : 'opacity-75'"
+    >
       Waga: {{ formatWeight(ui.inventory.totalWeight) }} / {{ formatWeight(ui.inventory.maxWeight) }}
       · Pojemność: {{ ui.inventory.totalSize.toFixed(2) }} / {{ ui.inventory.maxSize.toFixed(2) }}
       <span
         v-if="ui.inventory.heldTool"
-        class="ml-2 opacity-90"
+        class="ml-2"
+        :class="embedded ? 'text-neutral-300' : 'opacity-90'"
       >
         · w ręce: {{ ITEM_DEFS[ui.inventory.heldTool].label }}
       </span>
     </div>
     <div
       v-if="availableCategories.length > 1"
-      class="mb-3 flex items-center gap-2"
+      class="flex flex-wrap items-center gap-1"
     >
-      <div class="flex flex-1 min-w-0 gap-1 overflow-x-auto">
-        <button
-          type="button"
-          class="shrink-0 rounded-full px-2.5 py-1 text-[11px] uppercase tracking-wide cursor-pointer"
-          :class="filter === 'all' ? 'bg-primary/40 text-ink' : 'bg-white/5 opacity-70 hover:opacity-100'"
-          @click="filter = 'all'"
-        >
-          Wszystko
-        </button>
-        <button
-          v-for="cat in availableCategories"
-          :key="cat"
-          type="button"
-          class="shrink-0 rounded-full px-2.5 py-1 text-[11px] uppercase tracking-wide cursor-pointer"
-          :class="filter === cat ? 'bg-primary/40 text-ink' : 'bg-white/5 opacity-70 hover:opacity-100'"
-          @click="filter = cat"
-        >
-          {{ categoryLabel[cat] }}
-        </button>
-      </div>
+      <button
+        type="button"
+        class="rounded-full border px-2.5 py-0.5 text-xs focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary cursor-pointer"
+        :class="filter === 'all'
+          ? (embedded ? 'border-neutral-200 bg-neutral-100 text-neutral-900' : 'bg-primary/40 text-ink border-transparent')
+          : (embedded ? 'border-neutral-700 text-neutral-300 hover:border-neutral-500' : 'bg-white/5 opacity-70 hover:opacity-100 border-transparent')"
+        @click="filter = 'all'"
+      >
+        Wszystko
+      </button>
+      <button
+        v-for="cat in availableCategories"
+        :key="cat"
+        type="button"
+        class="rounded-full border px-2.5 py-0.5 text-xs focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary cursor-pointer"
+        :class="filter === cat
+          ? (embedded ? 'border-neutral-200 bg-neutral-100 text-neutral-900' : 'bg-primary/40 text-ink border-transparent')
+          : (embedded ? 'border-neutral-700 text-neutral-300 hover:border-neutral-500' : 'bg-white/5 opacity-70 hover:opacity-100 border-transparent')"
+        @click="filter = cat"
+      >
+        {{ categoryLabel[cat] }}
+      </button>
       <select
         v-model="sortMode"
-        class="shrink-0 rounded-md bg-white/5 px-2 py-1 text-[11px] uppercase tracking-wide"
+        class="ml-auto rounded border px-2 py-0.5 text-xs"
+        :class="embedded ? 'border-neutral-700 bg-neutral-900 text-neutral-200' : 'bg-white/5'"
       >
         <option
           v-for="(label, mode) in SORT_LABEL"
@@ -185,52 +217,69 @@ function setPrimaryRanged(kind: ItemKind, instances: readonly InventoryInstanceR
         </option>
       </select>
     </div>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-      <div
+
+    <ul
+      class="divide-y overflow-hidden rounded-lg border"
+      :class="embedded ? 'divide-white/10 border-neutral-700' : 'divide-white/10 border-white/10'"
+    >
+      <li
         v-if="items.length === 0"
-        class="text-[13px] opacity-60"
+        class="px-3 py-6 text-center text-sm"
+        :class="embedded ? 'text-neutral-500' : 'opacity-60'"
       >
         {{ allItems.length === 0 ? 'Ekwipunek jest pusty.' : 'Brak przedmiotów w tej kategorii.' }}
-      </div>
-      <div
+      </li>
+      <li
         v-for="item in items"
         :key="item.kind"
-        class="flex flex-col gap-1 rounded-md bg-white/5 p-3 border"
-        :class="ui.inventory.heldTool === item.kind ? 'border-primary/50' : 'border-transparent'"
+        class="flex flex-col gap-1 px-3 py-1.5 text-sm"
+        :class="[
+          embedded ? 'hover:bg-white/5' : 'bg-white/5 mb-0',
+          isKindCompared(item.instances) ? 'bg-neutral-800/70' : '',
+          ui.inventory.heldTool === item.kind ? 'ring-1 ring-primary/40' : '',
+        ]"
       >
         <button
           type="button"
-          class="cursor-pointer flex items-baseline justify-between hover:text-primary"
+          class="flex w-full cursor-pointer items-baseline justify-between gap-2 text-left hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           @click="emit('select-item', item.kind)"
         >
-          <span class="text-sm font-semibold flex flex-wrap items-center gap-1.5">
+          <span class="min-w-0 flex-1 font-semibold wrap-break-word">
             <span>{{ item.count }} × {{ item.displayName }}</span>
+            <QualityTag
+              v-if="isArmorCatalogKind(item.kind) && armorQualityLabel(item.instances)"
+              class="ml-1.5 align-middle"
+              :label="armorQualityLabel(item.instances)!"
+            />
             <span
               v-if="conditionLabel(item)"
-              class="text-[11px] font-normal opacity-70"
+              class="ml-1.5 text-[11px] font-normal opacity-70"
             >{{ conditionLabel(item) }}</span>
             <span
-              v-if="isPrimaryMeleeItem(item.kind)"
-              class="rounded-full bg-primary/30 px-2 py-0.5 text-[10px] font-medium"
-            >
-              Podstawowa
-            </span>
-            <span
-              v-if="isPrimaryRangedItem(item.kind)"
-              class="rounded-full bg-primary/30 px-2 py-0.5 text-[10px] font-medium"
+              v-if="isPrimaryMeleeItem(item.kind) || isPrimaryRangedItem(item.kind)"
+              class="ml-1.5 rounded-full bg-primary/30 px-2 py-0.5 text-[10px] font-medium"
             >
               Podstawowa
             </span>
           </span>
-          <span class="text-[11px] uppercase tracking-wide opacity-60">
+          <span class="shrink-0 text-[11px] uppercase tracking-wide opacity-60">
             {{ categoryLabels(item.def) }}
           </span>
         </button>
-        <div class="text-xs opacity-70">
+        <div
+          class="text-xs"
+          :class="embedded ? 'text-neutral-400' : 'opacity-70'"
+        >
           {{ formatWeight(item.def.weight) }} szt. · {{ formatWeight(item.def.weight * item.count) }} razem
         </div>
-        <div class="mt-1 -mb-1 flex flex-wrap items-center justify-between gap-2">
-          <div class="flex items-center justify-start gap-2">
+        <div class="mt-1 flex flex-wrap items-center justify-between gap-2">
+          <div class="flex flex-wrap items-center justify-start gap-2">
+            <ItemsScreenItemButton
+              v-if="isArmorCatalogKind(item.kind) && item.instances.length > 0"
+              class="min-h-0 py-1"
+              label="Porównaj"
+              @click="emit('compare-kind', item.kind)"
+            />
             <ItemsScreenItemButton
               v-if="item.consumeUse"
               class="min-h-0 py-1"
@@ -302,7 +351,7 @@ function setPrimaryRanged(kind: ItemKind, instances: readonly InventoryInstanceR
             />
           </div>
         </div>
-      </div>
-    </div>
+      </li>
+    </ul>
   </div>
 </template>
