@@ -73,7 +73,7 @@ A lightweight moon and stars aligned with world cardinal directions remain a des
 Retain the author preference for key names **Mark, Kate, Ann and Peter**. Confirm their identity mapping before renaming; preserve quest and character identity.
 
 **Selected for early content stages:**
-- Wounded dog encounter leading to a companion that helps search for treasure; companion state and progress must survive save/load.
+- **Wounded dog — ownership decision confirmed 2026-10-26:** use a separate, genuinely unowned rescue dog. Rescue/treatment is followed by earning trust and explicit adoption; treatment alone does not grant ownership. The resulting companion helps search for treasure, with state and progress surviving save/load. Reuse existing V1 animal mechanisms and suitable V2 rescue/search behavior. Do not take a household-owned dog or require an owner-return/release branch for this selected story. This resolves the ownership question in the [dog/elder/cemetery comparison](./2026-10-26--dog-elder-cemeteries-comparison.md); plan 058's household-owner opening is not the required route for this companion. Opus should reconcile overlapping plan scope without treating this decision as cancellation of unrelated household-dog work.
 - Settlement elder as a **former adventurer, not the headman**, with his legendary sword at home. Characterization, dialogue and actual item ownership/placement must agree.
 
 No order between these two stories, or ahead of other primary goals, has been approved.
