@@ -3,6 +3,8 @@
 **Created at:** 2026-10-26  
 **Created by:** ChatGPT Sol
 
+> **Readiness reconciliation — 2026-10-26:** Pre-cleanup audit, not current task instructions. Cursor completed [Snapshot 3](../../plans/archive/README.md#snapshot-3--2026-10-26); see the [readiness snapshot](./2026-10-26--opus-readiness-review.md) for checked results. Do not repeat all 344 classifications. The vegetation partial-stage exception below is corrected from agent plan 041 to vegetation plan 040; this is a reference correction, not new unfinished agent LOD work.
+
 ## Executive findings and coverage
 
 - Audited **jm-sky/seedvale-v1**, `main` at [`2314fd4`](https://github.com/jm-sky/seedvale-v1/commit/2314fd431c4c4d76c6de9844ca315b63f0557a74), observed 2026-10-26. No V3 repository was used as the target. [STRATEGIC-BRIEF](./STRATEGIC-BRIEF.md) governs revival decisions; older research/recommendation order does not approve work.
@@ -147,7 +149,7 @@ Consequential exceptions to a simple “implemented, awaiting browser check” i
 | Source | Evidence/status and remaining work | Relationship / disposition |
 | --- | --- | --- |
 | [items-player-012](../../plans/items-player-012-player-gathering-and-fire-cooking-polish.md) | Header explicitly leaves tree-branch gathering changes pending; fish/Quick Actions implementation and gameplay acceptance are separate. | S; retain partial work, do not relabel fully implemented. |
-| [world-terrain-041](../../plans/archive/world-terrain-041-agent-presentation-render-lod.md) | Header records stage 1 only; stages 2/3 not started and user benchmark/browser verification pending. | S; retain remaining implementation as well as measurements. |
+| [world-terrain-040](../../plans/world-terrain-040-vegetation-render-budget-v2.md) | Header records stage 1 only; stages 2/3 not started and user benchmark/browser verification pending. | S; retain remaining implementation as well as measurements. |
 | [world-terrain-019](../../plans/archive/world-terrain-019-cave-heightfield-production-migration.md) | Header says done, but implementation-status/notes still say milestone C and dependency handoff are missing; later world-027/npc-027 work exists. Historical wording cannot establish current missing code. | O/U; reconcile later spatial owners before archive or reopening C. |
 | [settlements-021](../../plans/archive/settlements-021-shared-settlement-resident-runtime.md) | Shared resident runtime plan is verification-needed; founded-settlement live streaming still has separate planned owner settlements-022. | O; implemented shared seam is not a completed colony. |
 | [npc-056](../../plans/archive/npc-056-npc-voice-full-migration-and-legacy-cleanup.md) | Verification-needed migration replaces legacy audio; its ownership is relevant to existing recordings and newer voice batches. | S; verify semantic coverage/listening; avoid restoring legacy paths merely to reuse recordings. |
@@ -256,3 +258,4 @@ Exact GPU/profile, source readiness, archive-link repair, routine dependency cor
 **Suggested executor:** Cursor Composer or Codex GPT 6.1 Sol. Work in `jm-sky/seedvale-v1` on main under CLAUDE.md; read this report and the strategic brief first. Scope is documentation housekeeping in A, not game code, product selection, full AI-agent architecture redesign, issue/PR closure or implementation of deferred stages.
 
 Start with a fresh main ref and targeted source checks for facts that changed since this pin. Correct omissions and clearly proven status wording in owning documents. Reconcile 057/061 and cave stage ownership with narrowly linked evidence. Classify all 344 verification-needed plans into manual-only, unfinished/technical residual and insufficient-evidence groups. Archive implemented manual-only and done plans after checking dependencies and inbound links, preserving truthful verification status and history; keep substantive residual work active. The four source-checked examples are a starting set, not the whole authorized archive scope. Optional bounded soak tests may cover concrete stability/lifecycle risks but are not an archive prerequisite. Use the existing generators for generated sections; do not manually rewrite their outputs or lose curated order. Run link/existence checks and inspect generated diffs for unrelated churn. Do not rerun broad R1–R7 recon or require a game build for pure link moves. Commit coherent verified documentation changes, pull/rebase before push, preserve concurrent changes, never force-push. Report factual corrections, archive moves and any still-unresolved scope decisions separately.
+

@@ -3,6 +3,8 @@
 **Created at:** 2026-10-26  
 **Created by:** ChatGPT Sol
 
+> **Readiness reconciliation — 2026-10-26:** The later author decision selects **V3 cloud adaptation without A/B**. Selection alternatives and §6’s A/B packet below are historical recommendations, not prerequisites. Retain ordinary weather/day-night/atmosphere/lifecycle/regression verification; no measured speedup is established. The travel target is approximately 10–15% longer comparable journeys, not an automatic percentage multiplication of 280. [Current authority](./STRATEGIC-BRIEF.md#3-agreed-product-direction).
+
 ## 1. Executive findings
 
 **Clouds:** V3 is a useful, active donor for a global directional cloud layer, but selection still needs one bounded V1 visual/performance check. Its clouds are two scrolling noise samples inside the existing sky-dome shader, with no additional cloud draw. That supports a submission-cost hypothesis, **not a measured V1 speedup**: the shader shades the sky on every frame and has different visual capabilities. Adapt the cloud technique to V1's rendering boundary; copying the whole V3 atmosphere would also replace sky colouring, sun presentation, exposure and fog policy, exceeding this research direction.
@@ -133,3 +135,4 @@ No numeric travel baseline or success rate has been produced in this session. Th
 No new blocking product question is established. The brief already chooses approximate journey extension, similar pace, accepted fog distance, existing content distribution and no old-save compatibility requirement. Exact hardware/settings are measurement inputs to record.
 
 Only if the paired cloud check reveals a material tradeoff should the author decide whether losing V1's PNG family character/horizon appearance is acceptable for the demonstrated global effect/cost. If a spacing candidate cannot achieve the target without materially changing settlement availability, connectivity or content reachability, present that concrete compromise for author choice rather than assuming approval.
+

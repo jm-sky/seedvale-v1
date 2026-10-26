@@ -3,6 +3,8 @@
 **Created at:** 2026-10-26  
 **Created by:** ChatGPT Sol
 
+> **Readiness reconciliation — 2026-10-26:** Ownership is resolved: separate genuinely unowned wounded dog → treatment → trust → explicit adoption → treasure-search companion. Treatment grants no ownership. Plan 058’s household-owner return/reveal branch and corresponding checks below are historical evidence, not required for this selected story. Other identity/persistence/real-treasure safeguards remain relevant. [Current authority](./STRATEGIC-BRIEF.md#voices-cast-and-selected-stories).
+
 ## Executive findings
 
 - **Dog:** V1 has household dogs, Medicine, player ownership, Follow/Stay and livestock persistence. The selected wounded-dog story is **not connected** in the inspected composition/save paths: plan 058 and its preparatory notes describe an opening only. V2 supplies connected rescue/adoption and real treasure detection, but its **unowned** rescue dog conflicts with blindly adopting V1's household-owned encounter dog.
@@ -132,3 +134,4 @@ No other author answer is required to begin detailed planning. Opus can specify 
 [v1-npc]: https://github.com/jm-sky/seedvale-v1/blob/454151315df6a95f55f3db4cabe41f8d4d6010c9/src/ai/NpcAgent.ts
 [v1-settlement]: https://github.com/jm-sky/seedvale-v1/blob/454151315df6a95f55f3db4cabe41f8d4d6010c9/src/settlement/createSettlement.ts
 [v1-roles]: https://github.com/jm-sky/seedvale-v1/blob/454151315df6a95f55f3db4cabe41f8d4d6010c9/src/ai/characters.ts
+

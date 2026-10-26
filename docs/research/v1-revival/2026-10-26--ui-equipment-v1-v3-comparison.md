@@ -4,6 +4,8 @@
 **Created by:** ChatGPT Sol  
 **Status:** Research input for Opus; recommendations are not approved scope or an implementation plan.
 
+> **Readiness reconciliation — 2026-10-26:** The later [UI decisions](./2026-10-26--ui-migration-research.md#5-author-decision-register) supersede donor-conversation reuse suggestions: **do not port V3 NPC–player conversation UI/UX**. Quick Actions requires its own V1 adaptation. Eight armor candidates remain recommendations, neither a mandatory list nor a limit; nails/unnecessary NPC-only tool imports stay excluded.
+
 ## Executive findings
 
 - V3 offers reusable Vue presentation, especially item details, meters and comparison layout. Its inventory sandbox is substantially richer than its world inventory. Adopting the design does not require replacing V1 inventory, state, commands or combat controls.
@@ -100,3 +102,4 @@ Inputs and later verification needs, **not a prescribed sequence**:
 5. Focused conversation and Quick Actions interaction evidence: stale choices, quest/report/hand-in exactly once, ordinary-NPC trade and artisan/gift transitions, urgent needs/hazards, Escape/focus, placement cancellation and unavailable-action refresh. Reuse existing tests and dated evidence where applicable; no broad game build is needed for this report.
 
 Only this report is the deliverable; indexes, plans, brief, code, assets and catalogs are unchanged.
+

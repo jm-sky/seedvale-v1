@@ -2,10 +2,12 @@
 
 **Created at:** 2026-10-26  
 **Created by:** ChatGPT Sol  
-**Status:** Provisional research output; D0/D1/D3/D4/D9 consultation answers incorporated. **NOT APPROVED — DO NOT EXECUTE.**  
+**Status:** Provisional research output; D0/D1/D3/D4/D9 consultation answers incorporated. **Historical draft specifications: A–C delivered under later accepted proposals; later slices remain unapproved.**  
 **Created for:** author consultation, then a bounded Cursor Grok/Composer implementation handoff.
 
 Read the [inventory and decision register](./2026-10-26--ui-migration-research.md#5-author-decision-register) and [compatibility matrix](./2026-10-26--ui-migration-compatibility-matrix.md) first. These stages are candidate first slices, not a commitment to migrate every screen in three tasks. Keep later character, HUD, trade, map and menu migration in separate future slices after their decisions; no implicit cancellation or removal. V3 Player–NPC dialogue UI/UX is excluded by the author's explicit D0 decision. Leave V1 dialogue intact.
+
+> **Readiness reconciliation — 2026-10-26:** Stages A–C are authorized and implemented; owning proposals/plans record author visual PASS. Earlier blanket “not approved”, screenshot-pending and execution-gate wording below is historical for those delivered slices, not a requirement to reopen them. Later Character/skills and other screens remain unapproved. The Stage C proposal overrides literal opacity-5 for Quick Actions chips only; preserve native disabled/no-dispatch and readable reasons. See the [dated handoff](./2026-10-26--opus-readiness-review.md).
 
 ## 1. Shared execution contract (after applicable author approval)
 
@@ -116,3 +118,4 @@ These are research conclusions, **not executable fourth stages**:
 - Dialogue: **do not port donor Player–NPC UI/UX**. Any later improvement is a separately agreed V1 design retaining all current action paths; no donor transcript/numbered-choice design assumed.
 
 Before release of each approved stage: record source review, automated results, browser-observed actions, comparison screenshots and author visual verdict separately. Include untested workflows and unresolved product choices. Recheck stale callbacks after item/NPC removal, world replacement and save/load. An inactive control must be disabled both visually and in dispatch, and a missing callback must never appear enabled. No stage may claim approval merely because checks pass.
+

@@ -3,19 +3,23 @@
 **Created at:** 2026-10-25  
 **Created by:** ChatGPT GPT-6  
 **Updated at:** 2026-10-26  
-**Updated by:** Cursor (Composer)
+**Updated by:** ChatGPT Sol
 
 ## Current strategic entry point
 
-Start revival planning with the [Strategic Brief for Claude Opus 5.5](./STRATEGIC-BRIEF.md). It records the author's agreed goals, scope, exclusions, conditional preferences and open issues from the 2026-10-26 strategy session. Opus owns detailed planning, coordination and implementation; its proposed phases and order require author discussion and approval before implementation.
+Start revival planning with the [Strategic Brief for Claude Opus 5.5](./STRATEGIC-BRIEF.md). It records the author's agreed goals, scope, exclusions, conditional preferences and open issues from the 2026-10-26 strategy session. Opus owns later coordination, detailed planning, AI-agent documentation optimization and technical review of Cursor changes. Its proposed order for remaining work requires author discussion and approval; bounded Cursor exceptions are recorded in the brief.
 
 R1–R7 remain research evidence, not an approved backlog. The brief resolves selected earlier author questions without changing historical research findings. Use its topic links for bounded reading rather than loading all reports by default.
+
+Current handoff: [Opus readiness review — 2026-10-26](./2026-10-26--opus-readiness-review.md) — READY WITH QUALIFICATIONS; current commits, cleanup results, evidence limits and remaining decisions. Dated snapshot, not another backlog.
+
+Completed comparisons: [UI/equipment](./2026-10-26--ui-equipment-v1-v3-comparison.md), [dog/elder/cemeteries](./2026-10-26--dog-elder-cemeteries-comparison.md), [clouds/settlement spacing](./2026-10-26--clouds-settlement-spacing-comparison.md). Apply the brief’s newer decisions: unowned rescue dog; clouds without A/B; route/travel calibration rather than a direct grid multiplier.
 
 Preparation: [Documentation and backlog audit — 2026-10-26](./2026-10-26--documentation-backlog-audit.md) — inventory, evidence-backed corrections, archive scope (including implemented work awaiting manual checks), and a bounded cleanup packet.
 
 Asset migration hazard: [V3 character heads — SuperHero FullBody residual](./2026-10-26--v3-character-heads-superhero-residual.md) — when moving V3 Quaternius/CharacterKit GLBs into V1, use post-repair `*_Head*.glb` (or rebuild with `head-cut` arm-dominant drop); pre-repair heads poke SuperHero shoulder/arm skin through cloth.
 
-UI migration: [research](./2026-10-26--ui-migration-research.md), [matrix](./2026-10-26--ui-migration-compatibility-matrix.md), [draft stages](./2026-10-26--ui-migration-draft-stages.md), Stages A–C visual PASS (`ui-input-039`…`041`). Next: [Stage D character kick-off](./NEXT-SESSION--stage-d-character.md) (D3/D5 consultation first). Demos: `item-details-demo.html`, `inventory-list-demo.html`, `quick-actions-demo.html`. No V3 dialogue port.
+UI migration: [research](./2026-10-26--ui-migration-research.md), [matrix](./2026-10-26--ui-migration-compatibility-matrix.md), [draft stages](./2026-10-26--ui-migration-draft-stages.md), Stages A–C have author visual PASS recorded in [A](./2026-10-26--stage-a-item-details-ui-proposal.md), [B](./2026-10-26--stage-b-inventory-list-equipment-ui-proposal.md) and [C](./2026-10-26--stage-c-quick-actions-ui-proposal.md); broader gameplay/technical acceptance remains separate. Candidate next slice: [Stage D character kick-off](./NEXT-SESSION--stage-d-character.md) (D3/D5 consultation first). Demos: `item-details-demo.html`, `inventory-list-demo.html`, `quick-actions-demo.html`. No V3 dialogue port.
 
 V3 donor intake: [docs/v3-donor/](../../v3-donor/) — staged copies of selected V3 voices (MP3 + text banks), character profiles/refs (including Casimir Eastwood), item illustrations + type/category icons, concept art, and the **51 keep/rewrite curated quests** with full linked v1/v2 source documents for re-curation. Staging only; not a runtime merge or implementation backlog. Character kit GLBs already live under `public/assets/characters/`. See also [v3-donor/quests/](../../v3-donor/quests/).
 
@@ -60,4 +64,5 @@ Route terrain/road findings through [R3](./2026-10-25--003--world-and-visuals.md
 ## Author additions for Astra
 
 Read the [Author Feature Checklist — 2026-10-26](./2026-10-26--author-feature-checklist.md) alongside R7 before strategy discussion. It records seven explicit author preferences identified during a quick coverage check: NPC voices including newer batches and Mark Hornblower, key NPC names, optional English/mixed languages without automatic conversion, wounded dog companion and treasure search, lightweight directional night sky, the former-adventurer elder with his legendary sword (not the headman), and two independent roaming hero groups with their quests. These supplement the research inventory; detailed scope and donor implementation remain to be established with Astra.
+
 

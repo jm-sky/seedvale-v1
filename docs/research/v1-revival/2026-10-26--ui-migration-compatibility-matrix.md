@@ -6,6 +6,8 @@
 
 Read with the [inventory, preservation contract and author decisions](./2026-10-26--ui-migration-research.md) and [draft stages](./2026-10-26--ui-migration-draft-stages.md). Same pinned snapshots as that report. D0 is explicit: **V3 Player–NPC dialogue UI/UX is excluded by the author.** Its contract is recorded only to prevent accidental adoption.
 
+> **Readiness reconciliation — 2026-10-26:** Historical source mapping, not current implementation status. Accepted A–C proposals supersede the original no-implementation-approval wording for those slices. Stage A omits free Repair/QualityPicker; D4 does not add every donor affordance. Stage C uses muted readable disabled Quick Actions chips instead of literal opacity-5. See the [current decision register](./2026-10-26--ui-migration-research.md#5-author-decision-register).
+
 ## 1. How to read this matrix
 
 `prop` is display input unless explicitly a callback/host; `event` is output, not necessarily a gameplay command; `model` includes both its prop and `update:*` event. A model carrying an entire Inventory/Account is not a validated V1 command. Types are transcribed from the actual Vue macros, including optionality; imported types stay named, with their defining dependencies listed in §4. Rows marked `$imported` delegate a third-party interface rather than declaring individual gameplay values.
@@ -866,3 +868,4 @@ V1 artisans/gifts/household transfers/inspection/placement/time-skip/quantity di
 [src240]: https://github.com/jm-sky/seedvale/blob/8e3c9ba886ef98cf5301503f66fb0dc9ee514eb6/src/game/ui/menu/SlotList.vue
 [src241]: https://github.com/jm-sky/seedvale/blob/8e3c9ba886ef98cf5301503f66fb0dc9ee514eb6/src/game/ui/menu/SlotRow.vue
 [src242]: https://github.com/jm-sky/seedvale/blob/8e3c9ba886ef98cf5301503f66fb0dc9ee514eb6/src/game/ui/trade/TradePanel.vue
+

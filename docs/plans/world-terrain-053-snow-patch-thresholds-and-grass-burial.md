@@ -1,6 +1,7 @@
 # Plan: Snow patch thresholds and grass burial
 
-**Created:** 2026-10-26
+**Created at:** 2026-10-26  
+**Created by:** Cursor (Composer)
 **Status:** `verification needed` 🔍
 **Implemented at:** 2026-10-26
 **Type:** feature
@@ -55,4 +56,5 @@ Drive gradual, spatially coherent snow accumulation and melting across terrain a
 
 Fixed seed + camera via `?snow=` steps 0 / light / medium / heavy / melt / clear. Confirm terrain↔grass agreement, no chunk-boundary popping, no floating grass, rain/clear intact. Report UNVERIFIED if GPU/browser unavailable.
 
-**2026-10-26:** automated tests + `vite build` passed; browser/FPS **UNVERIFIED**.
+**2026-10-26:** focused automated tests + `vite build` passed per [implementation notes](./implementation-notes/world-terrain-053-snow-patch-thresholds-and-grass-burial-implementation-notes.md). Full `pnpm build` / `vue-tsc` was blocked by recorded pre-existing `mountCompareGarments.test.ts` errors; no full typecheck PASS is established. Browser/FPS **UNVERIFIED**. These are historical results, not rerun in this review.
+
