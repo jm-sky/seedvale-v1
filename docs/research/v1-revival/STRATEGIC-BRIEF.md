@@ -54,8 +54,9 @@ A lightweight moon and stars aligned with world cardinal directions remain a des
 
 ### UI and equipment
 
-- **The whole UI should eventually follow V3's design**, delivered in stages. Reuse suitable Vue components where useful; Opus determines integration.
-- **NPC conversation screen and Quick Actions need separate examination and completion/verification.** The author specifically flagged missing or untested areas; do not treat all V3 UI as a finished template.
+- **The UI should eventually follow V3's design**, delivered in stages, with one explicit exception: **do not migrate V3 Player–NPC dialogue UI/UX** (author decision, 2026-10-26); retain V1 dialogue, with any later visual redesign separately agreed. Reuse suitable Vue components where useful; retain V1 data and commands.
+- **Quick Actions needs its own visual adaptation and interaction verification**; no suitable V3 menu counterpart was found.
+- UI consultation selects **item details first** and **current V1 equipment mechanics for the transitional UI**. Unavailable controls stay in the layout with native `disabled` + exactly `opacity-5`, with readable reasons; missing metrics use labeled unavailable space, never invented values. These are planning choices, **not implementation approval**. See the [UI migration decision register and draft stages](./2026-10-26--ui-migration-research.md#5-author-decision-register) for resolved choices and remaining screen-specific gates.
 - Equipment comparison is an expected benefit. Displays and previews must reflect actual game effects.
 - **Layered armor and body-area protection are selected gameplay changes**, not only a body-diagram presentation.
 - Player and NPC equipment must provide comparable protection under shared rules where combat exists.
@@ -154,3 +155,4 @@ Open items include exact hardware/profile and baseline scenes; detailed armor/vi
 | Original explicit author additions | [Author Feature Checklist](./2026-10-26--author-feature-checklist.md); this brief supplies later priorities and qualifications |
 
 Maintain this brief as the concise decision entry point. Keep technical detail in its owning plan/research document and link it; do not duplicate the decision ledger across multiple handoffs.
+

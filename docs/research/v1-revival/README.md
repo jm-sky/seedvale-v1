@@ -15,6 +15,8 @@ Preparation: [Documentation and backlog audit — 2026-10-26](./2026-10-26--docu
 
 Asset migration hazard: [V3 character heads — SuperHero FullBody residual](./2026-10-26--v3-character-heads-superhero-residual.md) — when moving V3 Quaternius/CharacterKit GLBs into V1, use post-repair `*_Head*.glb` (or rebuild with `head-cut` arm-dominant drop); pre-repair heads poke SuperHero shoulder/arm skin through cloth.
 
+UI migration: [inventory and author decisions](./2026-10-26--ui-migration-research.md), [exact props/events matrix](./2026-10-26--ui-migration-compatibility-matrix.md), [three draft Cursor slices](./2026-10-26--ui-migration-draft-stages.md). Source mapping and first consultation completed; implementation is not approved. V3 Player–NPC dialogue UI/UX is excluded; item details is the selected first slice.
+
 ## Purpose
 
 Evidence-led research for deciding how to revive Seedvale V1 as the game's foundation. The dossier inventories existing capabilities, their runtime ownership, preservation concerns, and unknowns before Astra makes architecture or product decisions. **V1 is the research target**; R1 establishes its baseline and R2 compares selected V2/V3 technical mechanisms under the separately authorized architecture and simulation scope; R3 compares world presentation, environmental rendering and visual assets; R4 compares gameplay systems, items, progression and gameplay UI; R5 compares quests, dialogue, knowledge, voices, maps, travel and player experience. R6 independently reviews and consolidates R1–R5 for Astra. R7 supplies the unified, evidence-backed candidate matrix across the initiative.
@@ -47,3 +49,4 @@ The author and Astra establish strategic direction; the current agreed decisions
 ## Author additions for Astra
 
 Read the [Author Feature Checklist — 2026-10-26](./2026-10-26--author-feature-checklist.md) alongside R7 before strategy discussion. It records seven explicit author preferences identified during a quick coverage check: NPC voices including newer batches and Mark Hornblower, key NPC names, optional English/mixed languages without automatic conversion, wounded dog companion and treasure search, lightweight directional night sky, the former-adventurer elder with his legendary sword (not the headman), and two independent roaming hero groups with their quests. These supplement the research inventory; detailed scope and donor implementation remain to be established with Astra.
+
