@@ -165,6 +165,53 @@ export type SurfaceWeatherState = {
   snowAmount: number
 }
 
+/** Weather inputs consumed by one surface-weather integration step. */
+export type SurfaceWeatherStepInput = {
+  type: WeatherType
+  intensity: number
+  temperature: number
+}
+
+/**
+ * One integration step of the plan-133 wetness/snow presentation curves.
+ * Shared by the pure lookback replay and by lil-gui `forced` live stepping
+ * so debug weather uses the same accumulate/melt windows.
+ * @domain world
+ */
+export function stepSurfaceWeather(
+  state: SurfaceWeatherState,
+  weather: SurfaceWeatherStepInput,
+  stepDays: number,
+): void {
+  if (stepDays <= 0) return
+
+  // Rain raises wetness toward an intensity-scaled target; anything else
+  // (including snow — snow feeds wetness only through melt, below) lets it
+  // decay back toward dry over the drying window.
+  if (isRainWeather(weather.type)) {
+    const target = clamp01(0.35 + weather.intensity * 0.65)
+    state.wetness = Math.max(state.wetness, target * clamp01(stepDays / WETNESS_RISE_DAYS))
+  } else {
+    state.wetness = Math.max(0, state.wetness * (1 - stepDays / WETNESS_DRY_WINDOW_DAYS))
+  }
+
+  // Snow accumulates while it keeps snowing; otherwise it melts at a rate
+  // gated by temperature (frozen = no melt), feeding the melted amount
+  // back into wetness so `snow → melting → wet ground` reads as one curve
+  // instead of snow just vanishing.
+  if (weather.type === 'snow') {
+    state.snowAmount = state.snowAmount + (1 - state.snowAmount) * clamp01(stepDays / SNOW_ACCUMULATE_WINDOW_DAYS)
+  } else if (state.snowAmount > 0) {
+    const meltRate = clamp01(weather.temperature / 6)
+    const melted = state.snowAmount * meltRate * clamp01(stepDays / SNOW_MELT_WINDOW_DAYS)
+    state.snowAmount = Math.max(0, state.snowAmount - melted)
+    if (melted > 0) state.wetness = clamp01(Math.max(state.wetness, melted * 0.6))
+  }
+
+  state.wetness = clamp01(state.wetness)
+  state.snowAmount = clamp01(state.snowAmount)
+}
+
 /** Pure — same `(seed, elapsedDays)` always yields the same wetness/snow
  *  pair, independent of actual play history. Simulates forward one weather
  *  cycle at a time from a fixed-size lookback window (not from world start),
@@ -177,8 +224,7 @@ export function computeSurfaceWeather(seed: number, elapsedDays: number): Surfac
   const windowCycles = Math.ceil(SURFACE_SIM_WINDOW_DAYS / WEATHER_CYCLE_DAYS)
   const startCycle = Math.max(0, currentCycle - windowCycles)
 
-  let wetness = 0
-  let snow = 0
+  const state: SurfaceWeatherState = { wetness: 0, snowAmount: 0 }
   for (let cycle = startCycle; cycle <= currentCycle; cycle++) {
     const cycleStart = cycle * WEATHER_CYCLE_DAYS
     const cycleSeason = getSeason(cycleStart)
@@ -187,32 +233,69 @@ export function computeSurfaceWeather(seed: number, elapsedDays: number): Surfac
       cycle === currentCycle
         ? clamp01((elapsedDays - cycleStart) / WEATHER_CYCLE_DAYS) * WEATHER_CYCLE_DAYS
         : WEATHER_CYCLE_DAYS
-
-    // Rain raises wetness toward an intensity-scaled target; anything else
-    // (including snow — snow feeds wetness only through melt, below) lets it
-    // decay back toward dry over the drying window.
-    if (isRainWeather(w.type)) {
-      const target = clamp01(0.35 + w.intensity * 0.65)
-      wetness = Math.max(wetness, target * clamp01(stepDays / WETNESS_RISE_DAYS))
-    } else {
-      wetness = Math.max(0, wetness * (1 - stepDays / WETNESS_DRY_WINDOW_DAYS))
-    }
-
-    // Snow accumulates while it keeps snowing; otherwise it melts at a rate
-    // gated by temperature (frozen = no melt), feeding the melted amount
-    // back into wetness so `snow → melting → wet ground` reads as one curve
-    // instead of snow just vanishing.
-    if (w.type === 'snow') {
-      snow = snow + (1 - snow) * clamp01(stepDays / SNOW_ACCUMULATE_WINDOW_DAYS)
-    } else if (snow > 0) {
-      const meltRate = clamp01(w.temperature / 6)
-      const melted = snow * meltRate * clamp01(stepDays / SNOW_MELT_WINDOW_DAYS)
-      snow = Math.max(0, snow - melted)
-      if (melted > 0) wetness = clamp01(Math.max(wetness, melted * 0.6))
-    }
+    stepSurfaceWeather(state, w, stepDays)
   }
 
-  return { wetness: clamp01(wetness), snowAmount: clamp01(snow) }
+  return state
+}
+
+/**
+ * Mutable presentation cache for lil-gui `forced` weather: while forced is
+ * active, surface wetness/snow integrate forward with `stepSurfaceWeather`
+ * (same rates as the pure lookback). Entering forced seeds from
+ * `computeSurfaceWeather`; returning to `'auto'` drops the cache so the
+ * deterministic function resumes. Debug-only — not persisted.
+ * @domain world
+ */
+export type ForcedSurfaceWeatherRuntime = {
+  wetness: number
+  snowAmount: number
+  /** `null` while following pure `computeSurfaceWeather`. */
+  activeForced: WeatherType | null
+}
+
+export function createForcedSurfaceWeatherRuntime(): ForcedSurfaceWeatherRuntime {
+  return { wetness: 0, snowAmount: 0, activeForced: null }
+}
+
+/**
+ * Resolves presented surface weather for one frame. With `forced === 'auto'`
+ * this is pure `computeSurfaceWeather`. With a lil-gui force, it steps the
+ * shared accumulate/melt curves using the forced weather and world-clock `dt`.
+ * @domain world
+ */
+export function resolveSurfaceWeatherForFrame(
+  runtime: ForcedSurfaceWeatherRuntime,
+  seed: number,
+  elapsedDays: number,
+  dayLengthSec: number,
+  worldDtSec: number,
+  forced: WeatherType | 'auto',
+): SurfaceWeatherState {
+  if (forced === 'auto') {
+    runtime.activeForced = null
+    return computeSurfaceWeather(seed, elapsedDays)
+  }
+
+  const season = getSeason(elapsedDays)
+  const weather: SurfaceWeatherStepInput = {
+    type: forced,
+    intensity: forced === 'clear' ? 0 : 0.8,
+    temperature: temperatureFor(season, forced),
+  }
+
+  if (runtime.activeForced === null) {
+    const base = computeSurfaceWeather(seed, elapsedDays)
+    runtime.wetness = base.wetness
+    runtime.snowAmount = base.snowAmount
+    runtime.activeForced = forced
+  } else {
+    runtime.activeForced = forced
+  }
+
+  const stepDays = worldDtSec / Math.max(30, dayLengthSec)
+  stepSurfaceWeather(runtime, weather, stepDays)
+  return { wetness: runtime.wetness, snowAmount: runtime.snowAmount }
 }
 
 /** Cumulative rain "intensity-days" between two `elapsedDays` timestamps —

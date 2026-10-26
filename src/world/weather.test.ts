@@ -6,11 +6,13 @@ import {
   computeSurfaceWeather,
   computeWeather,
   createClimateState,
+  createForcedSurfaceWeatherRuntime,
   DAYS_PER_SEASON,
   DAYS_PER_YEAR,
   getSeason,
   getSeasonProgress,
   isRainWeather,
+  resolveSurfaceWeatherForFrame,
   temperatureFor,
   tickClimate,
   WEATHER_CYCLE_DAYS,
@@ -192,6 +194,62 @@ describe('computeSurfaceWeather', () => {
     expect(snowCycleStart).toBeGreaterThanOrEqual(0)
     const afterSnow = computeSurfaceWeather(seed, snowCycleStart + cycleDays - 0.01)
     expect(afterSnow.snowAmount).toBeGreaterThan(0)
+  })
+})
+
+describe('resolveSurfaceWeatherForFrame (lil-gui forced)', () => {
+  it('follows pure computeSurfaceWeather while forced is auto', () => {
+    const runtime = createForcedSurfaceWeatherRuntime()
+    const a = resolveSurfaceWeatherForFrame(runtime, 11, 12.34, 480, 1 / 60, 'auto')
+    expect(a).toEqual(computeSurfaceWeather(11, 12.34))
+    expect(runtime.activeForced).toBeNull()
+  })
+
+  it('accumulates snow monotonically while forced snow runs', () => {
+    const runtime = createForcedSurfaceWeatherRuntime()
+    // Spring start — deterministic snowAmount is typically 0; force snow.
+    let prev = resolveSurfaceWeatherForFrame(runtime, 1, 0.05, 480, 0, 'snow').snowAmount
+    for (let i = 0; i < 120; i++) {
+      // ~2 real minutes at 60fps with dayLengthSec=480 ≈ 0.25 world-days —
+      // enough to see a clear rise toward the accumulate window.
+      const next = resolveSurfaceWeatherForFrame(runtime, 1, 0.05 + i / 480, 480, 1, 'snow').snowAmount
+      expect(next).toBeGreaterThanOrEqual(prev - 1e-12)
+      prev = next
+    }
+    expect(prev).toBeGreaterThan(0.15)
+  })
+
+  it('melts after switching forced snow to a warm clear day', () => {
+    const runtime = createForcedSurfaceWeatherRuntime()
+    let snow = 0
+    for (let i = 0; i < 200; i++) {
+      snow = resolveSurfaceWeatherForFrame(runtime, 1, i / 480, 480, 1, 'snow').snowAmount
+    }
+    expect(snow).toBeGreaterThan(0.2)
+    let prev = snow
+    for (let i = 0; i < 200; i++) {
+      // Summer clear is well above freezing → melt.
+      const next = resolveSurfaceWeatherForFrame(
+        runtime,
+        1,
+        DAYS_PER_SEASON + i / 480,
+        480,
+        1,
+        'clear',
+      ).snowAmount
+      expect(next).toBeLessThanOrEqual(prev + 1e-12)
+      prev = next
+    }
+    expect(prev).toBeLessThan(snow)
+  })
+
+  it('resumes pure derivation when forced returns to auto', () => {
+    const runtime = createForcedSurfaceWeatherRuntime()
+    resolveSurfaceWeatherForFrame(runtime, 1, 0.1, 480, 1, 'snow')
+    expect(runtime.activeForced).toBe('snow')
+    const resumed = resolveSurfaceWeatherForFrame(runtime, 1, 0.1, 480, 1, 'auto')
+    expect(resumed).toEqual(computeSurfaceWeather(1, 0.1))
+    expect(runtime.activeForced).toBeNull()
   })
 })
 

@@ -153,6 +153,8 @@ export function createDebugGui(
   seasonWeather
     .add(climate, 'forced', ['auto', 'clear', 'cloudy', 'rain', 'fog', 'snow', 'storm'])
     .name('Wymuś pogodę')
+  // Forced snow/rain also drives gradual terrain/grass surface cover via the
+  // same accumulate/melt rates as computeSurfaceWeather (see gameLoop).
 
   const terrain = gui.addFolder('Terrain mesh')
   terrainControllers.push(

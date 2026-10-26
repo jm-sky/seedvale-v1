@@ -179,7 +179,11 @@ import { createLightningRuntime } from '../world/lightningEvents'
 import { WELL_WATER_UNAVAILABLE_DURING_REPAIR } from '../world/playerWell'
 import { resolveOffscreenTransportArrivals } from '../world/transportOffscreen'
 import { parseSnowParam } from '../terrain/snowField'
-import { computeSurfaceWeather, tickClimate } from '../world/weather'
+import {
+  createForcedSurfaceWeatherRuntime,
+  resolveSurfaceWeatherForFrame,
+  tickClimate,
+} from '../world/weather'
 import { applyLightningFlash, applyWeatherOverlay, applyWeatherSkyOverlay, capOutdoorFogToTerrainHorizon, grassWindAmpFor, resolveSceneFog } from '../world/weatherVisuals'
 import { showCountAcquisitionToast } from './actions/acquisitionFeedback'
 import { isPlacedFireDismantleShortcut } from './actions/fireRemovalActions'
@@ -804,6 +808,9 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
    *  threshold crossing instead of when the weather actually changes. */
   let lastAppliedWeatherType = climate.weather.type
   let lastAppliedWeatherIntensity = climate.weather.intensity
+  /** Lil-gui `forced` surface wetness/snow integrator (same rates as
+   *  `computeSurfaceWeather`); idle while `forced === 'auto'`. */
+  const forcedSurfaceWeather = createForcedSurfaceWeatherRuntime()
   const lightningRuntime = createLightningRuntime()
   let lightningFlashAmount = 0
   let lightningScare: import('../fauna/animalScare').AnimalScareStimulus | null = null
@@ -2626,13 +2633,18 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
           || Math.abs(lightning.flashAmount - lightningFlashAmount) >= 0.04)
       lightningFlashAmount = lightning.flashAmount
       lightningScare = lightning.scareStimulus
-      // Pure + bounded (plan 133 — `computeSurfaceWeather`'s lookback is a
-      // fixed cycle count, not proportional to `elapsedDays`), so this is
-      // cheap enough to re-derive every frame for a smooth rise/dry curve
-      // rather than only at weather-cycle boundaries. Two shared uniform
-      // writes, no per-chunk work. `?snow=` (plan world-terrain-053) overrides
-      // presented snow amount for fixed A/B steps; wetness stays climate-derived.
-      const surfaceWeather = computeSurfaceWeather(getSeed(), dayNight.elapsedDays)
+      // Pure lookback when `forced === 'auto'` (plan 133); while lil-gui
+      // forces weather, the same accumulate/melt steps run live so "Wymuś
+      // pogodę → snow" builds terrain/grass cover gradually. `?snow=` still
+      // overrides presented snow for fixed A/B steps.
+      const surfaceWeather = resolveSurfaceWeatherForFrame(
+        forcedSurfaceWeather,
+        getSeed(),
+        dayNight.elapsedDays,
+        dayNight.dayLengthSec,
+        worldDt,
+        climate.forced,
+      )
       const snowOverride = parseSnowParam()
       bundle.chunkManager.setWeatherSurface(
         surfaceWeather.wetness,
