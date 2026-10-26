@@ -59,6 +59,7 @@ Unless noted otherwise, `verification needed` means implementation has passed au
 
 | File                                                      | Summary                                                               | Pri | Effort | Depends         |
 | --------------------------------------------------------- | --------------------------------------------------------------------- | --- | ------ | --------------- |
+| `ui-input-039-stage-a-item-details-v3-reskin.md`          | Stage A landed; author browser/screenshots for visual PASS            | 🔴  | M      | -               |
 | `2026-08-17--149--shader-program-first-use-hitch.md`      | Phase C: `Green` / `MI_WindowGlass` / `Wood`                          | 🔴  | M/L    | -               |
 | `settlements-003-colony-bootstrap.md`                     | Stages 1/3 implemented; Stages 2/4 (live materialization/streaming) deferred — see plan's "Implementation status" | 🔴  | L      | ~~world-019~~, ~~settlements-npcs-028~~ |
 | `settlements-npcs-024-household-owned-profession-workplaces.md` | Stage 1 implemented; Stage 2 (profession-aware yard sizing) not started | 🔴  | M      | ~~settlements-npcs-002~~ ~~settlements-npcs-011~~ |

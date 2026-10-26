@@ -21,7 +21,7 @@ const emit = defineEmits<{
     :class="cn(
       'min-h-11 cursor-pointer rounded-md border border-white/20 bg-transparent px-2.5 py-1.5 text-xs hover:bg-white/10',
       selected && 'border-primary/50',
-      disabled && 'opacity-50',
+      disabled && 'opacity-5',
       destructive && 'hover:border-destructive/80',
       props.class,
     )"

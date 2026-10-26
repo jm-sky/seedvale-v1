@@ -1,14 +1,19 @@
 <script setup lang="ts">
 import { Apple, BookOpen, Package, ScrollText, Shield, Sword, Wheat } from 'lucide-vue-next'
 import { type Component, computed, ref } from 'vue'
-import InventoryScreenSection from '@/components/InventoryScreenSection.vue'
+import ItemDetailCard from '@/components/items/ItemDetailCard.vue'
+import ItemInstanceMeters from '@/components/items/ItemInstanceMeters.vue'
+import {
+  buildItemDetailPresentation,
+  type DetailStatRow,
+} from '@/components/items/buildItemDetailPresentation'
 import ItemsScreenItemButton from '@/components/ItemsScreenItemButton.vue'
 import { useItemCategoryLabels } from '@/composables/useItemCategoryLabels'
 import { firstUpperCase } from '@/lib/firstUpperCase'
 import type { EquipmentSlot } from '../../items/equipment'
 import { FOOD_SOURCE_SPECIES_LABEL, foodHungerRelief, FRESHNESS_STAGE_LABEL } from '../../items/foodFreshness'
 import { isToolKind } from '../../items/HeldTool'
-import { ITEM_METER_LABEL, type ItemMeterKind } from '../../items/inventoryView'
+import { ITEM_METER_LABEL } from '../../items/inventoryView'
 import { CAPABILITY_LABEL, isMeleeToolKind, isRangedTool, isThrowableKind } from '../../items/itemCatalog'
 import { type BookTier, consumeNeedNoun, ITEM_CATALOG } from '../../items/itemCatalog'
 import { itemDisplayName } from '../../items/itemDisplay'
@@ -68,9 +73,6 @@ const meleeSpeed = computed<string | null>(() => {
   return 'wolny'
 })
 const ranged = computed(() => catalogEntry.value?.ranged ?? null)
-/** Ammo kind(s)/current count(s) for a held-ready ranged weapon (plan
- *  items-player-024) — derived from the ranged config's own `ammoKinds` plus
- *  live inventory counts, no separate combat/ammo state. */
 const ammoText = computed<string | null>(() => {
   const r = ranged.value
   if (!r) return null
@@ -94,9 +96,6 @@ const percentDelta = (multiplier: number): string => {
   return delta === 0 ? '±0%' : `${delta > 0 ? '+' : ''}${delta}%`
 }
 const consumable = computed(() => catalogEntry.value?.consumable ?? null)
-/** "Zjedz"/"Wypij" availability (plan items-player-024) — null when `kind`
- *  isn't consumable; otherwise reflects spoiled food / an empty liquid
- *  container before the player ever clicks. */
 const consumeUse = computed(() => group.value?.consumeUse ?? null)
 const consumableRelief = computed(() => {
   if (!consumable.value || !props.selectedItem) return 0
@@ -112,15 +111,7 @@ const sourceSpeciesLabel = computed(() => {
 })
 const book = computed(() => catalogEntry.value?.book ?? null)
 const treasureMap = computed(() => catalogEntry.value?.treasureMap ?? null)
-/** Live current value of the book's skill — `ui.skillsScreen` is pushed
- *  explicitly by `readBookItem` right after a successful read (plan
- *  items-player-016), so this stays fresh even while the inventory modal
- *  freezes the normal per-frame push. */
 const bookSkillValue = computed<number | null>(() => book.value ? getSkillValue(book.value.skill) : null)
-/** "Czytaj" availability (plan items-player-024) — null when `kind` isn't a
- *  book; disabled with a reason for "too advanced"/"already known" before
- *  the player clicks (`readBook()` itself is always a safe no-op either
- *  way, so this is purely upfront clarity, not a hard block). */
 const readUse = computed(() => {
   const b = book.value
   const value = bookSkillValue.value
@@ -130,7 +121,6 @@ const bookStateLabel = computed(() => readUse.value ? (readUse.value.reasonLabel
 const itemValue = computed<number>(() => item.value ? tradeValue(item.value.kind) : 0)
 const itemCategoryText = computed(() => item.value ? item.value.categories.map((cat) => categoryLabel[cat]).join(' · ') : '')
 const itemCategoryIcon = computed(() => item.value ? CATEGORY_ICON[primaryItemCategory(item.value)] : Sword)
-const imageUrl = computed<string | null>(() => null)
 
 const instanceRows = computed(() => {
   if (!group.value || group.value.instances.length === 0) return []
@@ -138,7 +128,7 @@ const instanceRows = computed(() => {
     count: number
     ids: string[]
     sellPrice: number
-    meterKind: ItemMeterKind
+    meterKind: typeof group.value.instances[0]['meterKind']
     conditionPercent: number
     sharpnessPercent: number | null
     qualityLabel: string | null
@@ -181,9 +171,6 @@ const instanceRows = computed(() => {
   })
 })
 
-/** Player-facing gameplay uses of this item (plan items-player-024) —
- *  `ITEM_CATALOG[kind].capabilities` stays the only source of truth; this
- *  only maps it to the same wording the merchant capability filter uses. */
 const capabilityLabels = computed<string[]>(() => (catalogEntry.value?.capabilities ?? []).map((cap) => CAPABILITY_LABEL[cap]))
 
 const whetstoneCount = computed<number>(() => ui.inventory.counts.whetstone ?? 0)
@@ -203,11 +190,101 @@ const showSetPrimaryRanged = computed(() =>
   && !isWeaponMaintenanceKind(props.selectedItem)
   && !isPrimaryRanged.value)
 
+const presentation = computed(() => {
+  if (!props.selectedItem || !item.value) return null
+  const stats: DetailStatRow[] = []
+  stats.push({ label: 'Kategoria', value: itemCategoryText.value })
+  stats.push({ label: 'Ilość', value: `×${itemCount.value}` })
+  stats.push({
+    label: 'Waga',
+    value: formatWeight(representativeArmorRow.value?.effectiveWeightKg ?? item.value.weight),
+  })
+  stats.push({ label: 'Wartość', value: `${itemValue.value} monet` })
+  if (melee.value) {
+    stats.push({ label: 'Obrażenia', value: melee.value.damage.toString() })
+    stats.push({ label: 'Zasięg', value: `${melee.value.range.toFixed(1)} m` })
+  }
+  if (meleeSpeed.value) stats.push({ label: 'Szybkość ataku', value: meleeSpeed.value })
+  if (ranged.value) {
+    stats.push({ label: 'Obrażenia', value: ranged.value.damage.toString() })
+    stats.push({ label: 'Zasięg', value: `${ranged.value.range.toFixed(1)} m` })
+  }
+  if (ammoText.value) stats.push({ label: 'Amunicja', value: ammoText.value })
+  if (consumable.value) {
+    stats.push({
+      label: 'Efekt',
+      value: `+${consumableRelief.value} ${consumeNeedNoun(consumable.value.need)}`,
+    })
+  }
+  if (freshnessLabel.value) stats.push({ label: 'Świeżość', value: freshnessLabel.value })
+  if (sourceSpeciesLabel.value) stats.push({ label: 'Źródło', value: sourceSpeciesLabel.value })
+  if (book.value) {
+    stats.push({
+      label: 'Umiejętność',
+      value: `${SKILL_LABEL[book.value.skill]} · ${BOOK_TIER_LABEL[book.value.tier]}`,
+    })
+    stats.push({ label: 'Wymagane', value: percent(book.value.requiredSkillValue) })
+    if (bookSkillValue.value != null) stats.push({ label: 'Twój poziom', value: percent(bookSkillValue.value) })
+    stats.push({ label: 'Nauka do', value: percent(book.value.targetSkillValue) })
+    if (bookStateLabel.value) stats.push({ label: 'Stan', value: bookStateLabel.value })
+  }
+  if (isPrimaryMelee.value) stats.push({ label: 'Skrót', value: 'Podstawowa broń biała' })
+  if (isPrimaryRanged.value) stats.push({ label: 'Skrót', value: 'Podstawowa broń dystansowa' })
+  if (capabilityLabels.value.length > 0) {
+    stats.push({ label: 'Zastosowania', value: capabilityLabels.value.join(' · ') })
+  }
+  if (representativeArmorRow.value?.slotLabel) {
+    stats.push({ label: 'Slot', value: representativeArmorRow.value.slotLabel })
+  }
+  if (representativeArmorRow.value?.qualityLabel && instanceRows.value.length <= 1) {
+    stats.push({ label: 'Jakość', value: representativeArmorRow.value.qualityLabel })
+  }
+  if (armor.value) {
+    stats.push({
+      label: 'Ochrona',
+      value: `${representativeArmorRow.value?.protectionPercent ?? Math.round(armor.value.damageReduction * 100)}%`,
+    })
+    stats.push({
+      label: 'Wysiłek ataku',
+      value: representativeArmorRow.value?.staminaPenaltyLabel ?? percentDelta(armor.value.staminaCostMultiplier ?? 1),
+    })
+    stats.push({
+      label: 'Tempo ataku',
+      value: representativeArmorRow.value?.recoveryPenaltyLabel ?? percentDelta(armor.value.meleeRecoveryMultiplier ?? 1),
+    })
+    stats.push({
+      label: 'Ruch',
+      value: representativeArmorRow.value?.movementPenaltyLabel ?? percentDelta(armor.value.movementSpeedMultiplier ?? 1),
+    })
+  }
+  if (anyArmorEquipped.value) stats.push({ label: 'Stan', value: 'Założona' })
+
+  const firstInstance = group.value?.instances[0]
+  const showWeaponMeters = props.selectedItem != null && isWeaponMaintenanceKind(props.selectedItem)
+  const showFillOrCondition = !isArmorItem.value && group.value?.meterKind != null && firstInstance != null
+
+  return buildItemDetailPresentation({
+    kind: props.selectedItem,
+    title: firstUpperCase(displayName.value),
+    meta: `${itemCategoryText.value} · ×${itemCount.value}`,
+    description: item.value.description ?? `To jest... ${item.value.label}.`,
+    lore: null,
+    meterKind: showFillOrCondition || showWeaponMeters ? (firstInstance?.meterKind ?? group.value?.meterKind ?? null) : null,
+    conditionPercent: showFillOrCondition || showWeaponMeters
+      ? (group.value?.uniformConditionPercent ?? firstInstance?.conditionPercent ?? null)
+      : null,
+    sharpnessPercent: showWeaponMeters ? (firstInstance?.sharpnessPercent ?? null) : null,
+    qualityLabel: isArmorItem.value ? (representativeArmorRow.value?.qualityLabel ?? null) : null,
+    showArmorWearPlaceholder: isArmorItem.value,
+    showDpsPlaceholder: melee.value != null || ranged.value != null,
+    showResistPlaceholders: isArmorItem.value,
+    stats,
+  })
+})
+
 useTouchScroll(panel)
 
 function formatWeight(kg: number): string { return `${kg.toFixed(1)} kg` }
-/** "Wyrzuć" (plan items-player-024) — a single unit drops immediately; a
- *  stack of more than one opens the shared quantity dialog first. */
 function onDrop(kind: ItemKind): void {
   const count = itemCount.value
   if (count <= 1) { ui.inventory.onDrop?.(kind, count); return }
@@ -266,405 +343,233 @@ function isInstancePrimaryRanged(id: string): boolean {
 
 <template>
   <div
-    v-if="ui.inventory.open && item"
+    v-if="ui.inventory.open && item && presentation"
     ref="panel"
-    class="max-h-[calc(100dvh-32px)] w-full max-w-2xl overflow-y-auto rounded-[10px] bg-panel p-5 text-ink shadow-[0_12px_40px_rgba(0,0,0,0.45)]"
+    class="max-h-[calc(100dvh-32px)] w-full max-w-2xl overflow-y-auto"
     style="touch-action: pan-y"
   >
-    <div class="flex flex-row items-center justify-between gap-2">
-      <h1 class="mb-2 text-xl font-semibold tracking-wide">
-        {{ firstUpperCase(displayName) }}
-      </h1>
-      <button
-        type="button"
-        class="cursor-pointer rounded-md border border-white/20 bg-transparent px-2.5 py-1 text-xs hover:bg-white/10"
-        @click="emit('return-to-list')"
-      >
-        Powrót
-      </button>
-    </div>
-
-    <div class="my-4 h-px border-white/20 border-b" />
-
-    <div class="my-4 flex h-28 items-center justify-center rounded-md bg-white/5">
-      <img
-        v-if="imageUrl"
-        :src="imageUrl"
-        :alt="item.label"
-        class="h-full w-full rounded-md object-cover"
-      >
-      <component
-        :is="itemCategoryIcon"
-        v-else
-        :size="40"
-        class="opacity-40"
-      />
-    </div>
-
-    <div class="my-2">
-      {{ item.description ?? `To jest... ${item.label}.` }}
-    </div>
-
-    <div class="my-4 h-px border-white/20 border-b" />
-
-    <div class="grid grid-cols-2 gap-2 my-2">
-      <InventoryScreenSection
-        label="Kategoria"
-        :value="itemCategoryText"
-      />
-
-      <InventoryScreenSection
-        label="Ilość"
-        :value="`×${itemCount}`"
-      />
-
-      <InventoryScreenSection
-        label="Waga"
-        :value="formatWeight(representativeArmorRow?.effectiveWeightKg ?? item.weight)"
-      />
-
-      <InventoryScreenSection
-        label="Wartość"
-        :value="`${itemValue} monet`"
-      />
-
-      <InventoryScreenSection
-        v-if="melee"
-        label="Obrażenia"
-        :value="melee.damage.toString()"
-      />
-
-      <InventoryScreenSection
-        v-if="melee"
-        label="Zasięg"
-        :value="`${melee.range.toFixed(1)} m`"
-      />
-
-      <InventoryScreenSection
-        v-if="meleeSpeed"
-        label="Szybkość ataku"
-        :value="meleeSpeed"
-      />
-
-      <InventoryScreenSection
-        v-if="ranged"
-        label="Obrażenia"
-        :value="ranged.damage.toString()"
-      />
-
-      <InventoryScreenSection
-        v-if="ranged"
-        label="Zasięg"
-        :value="`${ranged.range.toFixed(1)} m`"
-      />
-
-      <InventoryScreenSection
-        v-if="ammoText"
-        label="Amunicja"
-        :value="ammoText"
-      />
-
-      <InventoryScreenSection
-        v-if="consumable"
-        label="Efekt"
-        :value="`+${consumableRelief} ${consumeNeedNoun(consumable.need)}`"
-      />
-
-      <InventoryScreenSection
-        v-if="freshnessLabel"
-        label="Świeżość"
-        :value="freshnessLabel"
-      />
-
-      <InventoryScreenSection
-        v-if="sourceSpeciesLabel"
-        label="Źródło"
-        :value="sourceSpeciesLabel"
-      />
-
-      <InventoryScreenSection
-        v-if="book"
-        label="Umiejętność"
-        :value="`${SKILL_LABEL[book.skill]} · ${BOOK_TIER_LABEL[book.tier]}`"
-      />
-
-      <InventoryScreenSection
-        v-if="book"
-        label="Wymagane"
-        :value="percent(book.requiredSkillValue)"
-      />
-
-      <InventoryScreenSection
-        v-if="book && bookSkillValue != null"
-        label="Twój poziom"
-        :value="percent(bookSkillValue)"
-      />
-
-      <InventoryScreenSection
-        v-if="book"
-        label="Nauka do"
-        :value="percent(book.targetSkillValue)"
-      />
-
-      <InventoryScreenSection
-        v-if="book && bookStateLabel"
-        label="Stan"
-        :value="bookStateLabel"
-      />
-
-      <InventoryScreenSection
-        v-if="isPrimaryMelee"
-        label="Skrót"
-        value="Podstawowa broń biała"
-      />
-
-      <InventoryScreenSection
-        v-if="isPrimaryRanged"
-        label="Skrót"
-        value="Podstawowa broń dystansowa"
-      />
-
-      <InventoryScreenSection
-        v-if="capabilityLabels.length > 0"
-        label="Zastosowania"
-        :value="capabilityLabels.join(' · ')"
-      />
-
-      <InventoryScreenSection
-        v-if="representativeArmorRow?.slotLabel"
-        label="Slot"
-        :value="representativeArmorRow.slotLabel"
-      />
-
-      <InventoryScreenSection
-        v-if="representativeArmorRow?.qualityLabel && instanceRows.length <= 1"
-        label="Jakość"
-        :value="representativeArmorRow.qualityLabel"
-      />
-
-      <InventoryScreenSection
-        v-if="armor"
-        label="Ochrona"
-        :value="`${representativeArmorRow?.protectionPercent ?? Math.round(armor.damageReduction * 100)}%`"
-      />
-
-      <InventoryScreenSection
-        v-if="armor"
-        label="Wysiłek ataku"
-        :value="representativeArmorRow?.staminaPenaltyLabel ?? percentDelta(armor.staminaCostMultiplier ?? 1)"
-      />
-
-      <InventoryScreenSection
-        v-if="armor"
-        label="Tempo ataku"
-        :value="representativeArmorRow?.recoveryPenaltyLabel ?? percentDelta(armor.meleeRecoveryMultiplier ?? 1)"
-      />
-
-      <InventoryScreenSection
-        v-if="armor"
-        label="Ruch"
-        :value="representativeArmorRow?.movementPenaltyLabel ?? percentDelta(armor.movementSpeedMultiplier ?? 1)"
-      />
-
-      <InventoryScreenSection
-        v-if="anyArmorEquipped"
-        label="Stan"
-        value="Założona"
-      />
-    </div>
-
-    <div
-      v-if="instanceRows.length > 0"
-      class="my-4"
+    <ItemDetailCard
+      solid
+      :title="presentation.title"
+      :meta="presentation.meta"
+      :description="presentation.description"
+      :lore="presentation.lore"
+      :lore-unavailable="presentation.loreUnavailable"
+      :illustration-src="presentation.illustrationSrc"
+      :fallback-icon="itemCategoryIcon"
+      :stat-rows="presentation.stats"
+      @return-to-list="emit('return-to-list')"
     >
-      <div class="mb-2 text-sm font-semibold">
-        Lista
-      </div>
-      <div class="flex flex-col gap-2">
-        <div
-          v-for="row in instanceRows"
-          :key="row.qualityLabel ? `quality:${row.qualityLabel}` : `${row.conditionPercent}:${row.sharpnessPercent}`"
-          class="flex flex-row items-center justify-between gap-2 rounded-md bg-white/5 px-3 py-2 text-sm"
-        >
-          <div class="flex flex-wrap items-center gap-2">
-            <span class="font-medium">{{ row.count }}×</span>
-            <span
-              v-if="row.qualityLabel"
-              class="rounded-full bg-white/10 -my-1 px-2.5 py-1 text-sm"
-            >
-              {{ row.qualityLabel }}
-            </span>
-            <span
-              v-else
-              class="rounded-full bg-white/10 -my-1 px-2.5 py-1 text-sm"
-            >
-              {{ ITEM_METER_LABEL[row.meterKind] }} {{ row.conditionPercent }}%
-            </span>
-            <span
-              v-if="row.sharpnessPercent !== null"
-              class="rounded-full bg-white/10 -my-1 px-2.5 py-1 text-sm"
-            >
-              Ostrość {{ row.sharpnessPercent }}%
-            </span>
-            <span
-              v-if="row.effectiveWeightKg != null"
-              class="rounded-full bg-white/10 -my-1 px-2.5 py-1 text-sm"
-            >
-              {{ formatWeight(row.effectiveWeightKg) }}
-            </span>
-          </div>
+      <template #controls>
+        <ItemInstanceMeters :meters="presentation.meters" />
+      </template>
+
+      <template
+        v-if="instanceRows.length > 0"
+        #lista
+      >
+        <div class="mb-2 text-sm font-semibold text-neutral-300">
+          Lista
+        </div>
+        <div class="flex flex-col gap-2">
           <div
-            v-for="(id, index) in row.ids"
-            :key="id"
-            class="flex flex-wrap items-center justify-between gap-2"
+            v-for="row in instanceRows"
+            :key="row.qualityLabel ? `quality:${row.qualityLabel}` : `${row.conditionPercent}:${row.sharpnessPercent}`"
+            class="flex flex-col gap-2 rounded-md border border-neutral-800 bg-neutral-900/40 px-3 py-2 text-sm"
           >
-            <div class="flex flex-wrap items-center gap-2">
+            <div class="flex flex-wrap items-center gap-2 text-neutral-300">
+              <span class="font-medium">{{ row.count }}×</span>
               <span
-                v-if="row.ids.length > 1"
-                class="text-[11px] opacity-60"
+                v-if="row.qualityLabel"
+                class="rounded border border-neutral-600 px-1.5 py-0.5 text-xs"
+              >{{ row.qualityLabel }}</span>
+              <span
+                v-else
+                class="rounded border border-neutral-600 px-1.5 py-0.5 text-xs"
               >
-                #{{ index + 1 }}
+                {{ ITEM_METER_LABEL[row.meterKind] }} {{ row.conditionPercent }}%
               </span>
               <span
-                v-if="melee && isWeaponMaintenanceKind(item.kind) && isInstancePrimaryMelee(id)"
-                class="rounded-full bg-primary/30 px-2 py-0.5 text-[11px] font-medium"
+                v-if="row.sharpnessPercent !== null"
+                class="rounded border border-neutral-600 px-1.5 py-0.5 text-xs"
               >
-                Podstawowa
+                Ostrość {{ row.sharpnessPercent }}%
               </span>
               <span
-                v-if="ranged && isWeaponMaintenanceKind(item.kind) && isInstancePrimaryRanged(id)"
-                class="rounded-full bg-primary/30 px-2 py-0.5 text-[11px] font-medium"
+                v-if="row.effectiveWeightKg != null"
+                class="rounded border border-neutral-600 px-1.5 py-0.5 text-xs"
               >
-                Podstawowa
-              </span>
-              <span
-                v-if="isArmorItem && isArmorInstanceEquipped(id)"
-                class="rounded-full bg-primary/30 px-2 py-0.5 text-[11px] font-medium"
-              >
-                Założona
+                {{ formatWeight(row.effectiveWeightKg) }}
               </span>
             </div>
-            <div class="flex flex-wrap gap-2">
-              <ItemsScreenItemButton
-                v-if="isToolKind(item.kind) && !isInstanceHeld(id)"
-                class="min-h-0 py-1"
-                label="Weź"
-                @click="onEquip(item.kind, id)"
-              />
-              <ItemsScreenItemButton
-                v-if="isArmorItem && !isArmorInstanceEquipped(id)"
-                class="min-h-0 py-1"
-                label="Załóż"
-                @click="onEquipArmor(id)"
-              />
-              <ItemsScreenItemButton
-                v-if="isArmorItem && isArmorInstanceEquipped(id)"
-                class="min-h-0 py-1"
-                label="Zdejmij"
-                @click="onUnequipArmor(armor?.slot)"
-              />
-              <ItemsScreenItemButton
-                v-if="isToolKind(item.kind) && isInstanceHeld(id)"
-                class="min-h-0 py-1"
-                label="Odłóż"
-                @click="onUnequip"
-              />
-              <ItemsScreenItemButton
-                v-if="melee && isWeaponMaintenanceKind(item.kind) && !isInstancePrimaryMelee(id)"
-                class="min-h-0 py-1"
-                label="Ustaw podstawową"
-                @click="setPrimaryMelee(item.kind, id)"
-              />
-              <ItemsScreenItemButton
-                v-if="ranged && isWeaponMaintenanceKind(item.kind) && !isInstancePrimaryRanged(id)"
-                class="min-h-0 py-1"
-                label="Ustaw podstawową"
-                @click="setPrimaryRanged(item.kind, id)"
-              />
-              <ItemsScreenItemButton
-                v-if="row.sharpnessPercent !== null && row.sharpnessPercent < 100"
-                class="min-h-0 py-1"
-                :label="`Naostrz (${whetstoneCount})`"
-                :disabled="whetstoneCount === 0"
-                @click="sharpenInstance(id)"
-              />
-              <ItemsScreenItemButton
-                v-if="merchantOpen"
-                class="min-h-0 py-1"
-                :label="`Sprzedaj (${row.sellPrice})`"
-                @click="sellInstance(id)"
-              />
+            <div
+              v-for="(id, index) in row.ids"
+              :key="id"
+              class="flex flex-wrap items-center justify-between gap-2"
+            >
+              <div class="flex flex-wrap items-center gap-2">
+                <span
+                  v-if="row.ids.length > 1"
+                  class="text-[11px] text-neutral-500"
+                >
+                  #{{ index + 1 }}
+                </span>
+                <span
+                  v-if="melee && isWeaponMaintenanceKind(item.kind) && isInstancePrimaryMelee(id)"
+                  class="rounded-full bg-primary/30 px-2 py-0.5 text-[11px] font-medium"
+                >
+                  Podstawowa
+                </span>
+                <span
+                  v-if="ranged && isWeaponMaintenanceKind(item.kind) && isInstancePrimaryRanged(id)"
+                  class="rounded-full bg-primary/30 px-2 py-0.5 text-[11px] font-medium"
+                >
+                  Podstawowa
+                </span>
+                <span
+                  v-if="isArmorItem && isArmorInstanceEquipped(id)"
+                  class="rounded-full bg-primary/30 px-2 py-0.5 text-[11px] font-medium"
+                >
+                  Założona
+                </span>
+              </div>
+              <div class="flex flex-wrap items-center gap-2">
+                <ItemsScreenItemButton
+                  v-if="isToolKind(item.kind) && !isInstanceHeld(id)"
+                  class="min-h-0 py-1"
+                  label="Weź"
+                  @click="onEquip(item.kind, id)"
+                />
+                <ItemsScreenItemButton
+                  v-if="isArmorItem && !isArmorInstanceEquipped(id)"
+                  class="min-h-0 py-1"
+                  label="Załóż"
+                  @click="onEquipArmor(id)"
+                />
+                <ItemsScreenItemButton
+                  v-if="isArmorItem && isArmorInstanceEquipped(id)"
+                  class="min-h-0 py-1"
+                  label="Zdejmij"
+                  @click="onUnequipArmor(armor?.slot)"
+                />
+                <ItemsScreenItemButton
+                  v-if="isToolKind(item.kind) && isInstanceHeld(id)"
+                  class="min-h-0 py-1"
+                  label="Odłóż"
+                  @click="onUnequip"
+                />
+                <ItemsScreenItemButton
+                  v-if="melee && isWeaponMaintenanceKind(item.kind) && !isInstancePrimaryMelee(id)"
+                  class="min-h-0 py-1"
+                  label="Ustaw podstawową"
+                  @click="setPrimaryMelee(item.kind, id)"
+                />
+                <ItemsScreenItemButton
+                  v-if="ranged && isWeaponMaintenanceKind(item.kind) && !isInstancePrimaryRanged(id)"
+                  class="min-h-0 py-1"
+                  label="Ustaw podstawową"
+                  @click="setPrimaryRanged(item.kind, id)"
+                />
+                <template v-if="row.sharpnessPercent !== null && row.sharpnessPercent < 100">
+                  <ItemsScreenItemButton
+                    class="min-h-0 py-1"
+                    :label="`Naostrz (${whetstoneCount})`"
+                    :disabled="whetstoneCount === 0"
+                    @click="whetstoneCount > 0 && sharpenInstance(id)"
+                  />
+                  <span
+                    v-if="whetstoneCount === 0"
+                    class="text-[11px] text-neutral-400"
+                  >Brak osełki</span>
+                </template>
+                <ItemsScreenItemButton
+                  v-if="merchantOpen"
+                  class="min-h-0 py-1"
+                  :label="`Sprzedaj (${row.sellPrice})`"
+                  @click="sellInstance(id)"
+                />
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </template>
 
-    <div class="my-4 h-px border-white/20 border-b" />
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mx-auto max-w-md">
-      <ItemsScreenItemButton
-        v-if="consumeUse"
-        :label="consumeUse.reasonLabel ? `${consumeUse.label} — ${consumeUse.reasonLabel}` : consumeUse.label"
-        :disabled="!consumeUse.enabled"
-        @click="onConsume(item.kind)"
-      />
-      <ItemsScreenItemButton
-        v-if="isThrowableKind(item.kind)"
-        label="Rzuć"
-        @click="onThrow(item.kind)"
-      />
-      <ItemsScreenItemButton
-        v-if="readUse"
-        :label="readUse.reasonLabel ? `${readUse.label} — ${readUse.reasonLabel}` : readUse.label"
-        :disabled="!readUse.enabled"
-        @click="onRead(item.kind)"
-      />
-      <ItemsScreenItemButton
-        v-if="treasureMap"
-        label="Odczytaj"
-        @click="onRead(item.kind)"
-      />
-      <ItemsScreenItemButton
-        v-if="trapKindForItem(item.kind)"
-        label="Zastaw"
-        @click="onPlaceTrap(item.kind)"
-      />
-      <ItemsScreenItemButton
-        v-if="item.kind === 'chest'"
-        label="Postaw"
-        @click="onPlaceContainer"
-      />
-      <ItemsScreenItemButton
-        v-if="item.kind === 'tent'"
-        label="Rozstaw"
-        @click="onPlaceTent"
-      />
-      <ItemsScreenItemButton
-        v-if="showSetPrimaryMelee"
-        label="Ustaw jako podstawową broń białą"
-        @click="setPrimaryMelee(item.kind)"
-      />
-      <ItemsScreenItemButton
-        v-if="showSetPrimaryRanged"
-        label="Ustaw jako podstawową broń dystansową"
-        @click="setPrimaryRanged(item.kind)"
-      />
-      <ItemsScreenItemButton
-        v-if="isToolKind(item.kind) && !isWeaponMaintenanceKind(item.kind) && ui.inventory.heldTool !== item.kind"
-        label="Weź"
-        @click="onEquip(item.kind)"
-      />
-      <ItemsScreenItemButton
-        v-if="!isWeaponMaintenanceKind(item.kind) && ui.inventory.heldTool === item.kind"
-        label="Odłóż"
-        @click="onUnequip"
-      />
-      <ItemsScreenItemButton
-        label="Wyrzuć"
-        destructive
-        @click="onDrop(item.kind)"
-      />
-    </div>
+      <template #actions>
+        <div class="grid w-full grid-cols-1 gap-2 md:grid-cols-2">
+          <template v-if="consumeUse">
+            <ItemsScreenItemButton
+              :label="consumeUse.label"
+              :disabled="!consumeUse.enabled"
+              @click="consumeUse.enabled && onConsume(item.kind)"
+            />
+            <span
+              v-if="consumeUse.reasonLabel"
+              class="self-center text-[11px] text-neutral-400"
+            >{{ consumeUse.reasonLabel }}</span>
+          </template>
+          <ItemsScreenItemButton
+            v-if="isThrowableKind(item.kind)"
+            label="Rzuć"
+            @click="onThrow(item.kind)"
+          />
+          <template v-if="readUse">
+            <ItemsScreenItemButton
+              :label="readUse.label"
+              :disabled="!readUse.enabled"
+              @click="readUse.enabled && onRead(item.kind)"
+            />
+            <span
+              v-if="readUse.reasonLabel"
+              class="self-center text-[11px] text-neutral-400"
+            >{{ readUse.reasonLabel }}</span>
+          </template>
+          <ItemsScreenItemButton
+            v-if="treasureMap"
+            label="Odczytaj"
+            @click="onRead(item.kind)"
+          />
+          <ItemsScreenItemButton
+            v-if="trapKindForItem(item.kind)"
+            label="Zastaw"
+            @click="onPlaceTrap(item.kind)"
+          />
+          <ItemsScreenItemButton
+            v-if="item.kind === 'chest'"
+            label="Postaw"
+            @click="onPlaceContainer"
+          />
+          <ItemsScreenItemButton
+            v-if="item.kind === 'tent'"
+            label="Rozstaw"
+            @click="onPlaceTent"
+          />
+          <ItemsScreenItemButton
+            v-if="showSetPrimaryMelee"
+            label="Ustaw jako podstawową broń białą"
+            @click="setPrimaryMelee(item.kind)"
+          />
+          <ItemsScreenItemButton
+            v-if="showSetPrimaryRanged"
+            label="Ustaw jako podstawową broń dystansową"
+            @click="setPrimaryRanged(item.kind)"
+          />
+          <ItemsScreenItemButton
+            v-if="isToolKind(item.kind) && !isWeaponMaintenanceKind(item.kind) && ui.inventory.heldTool !== item.kind"
+            label="Weź"
+            @click="onEquip(item.kind)"
+          />
+          <ItemsScreenItemButton
+            v-if="!isWeaponMaintenanceKind(item.kind) && ui.inventory.heldTool === item.kind"
+            label="Odłóż"
+            @click="onUnequip"
+          />
+          <ItemsScreenItemButton
+            label="Wyrzuć"
+            destructive
+            @click="onDrop(item.kind)"
+          />
+        </div>
+      </template>
+    </ItemDetailCard>
   </div>
 </template>

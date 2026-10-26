@@ -20,7 +20,9 @@ Read the [inventory and decision register](./2026-10-26--ui-migration-research.m
 
 ## 2. Stage A — one real item-details slice
 
-**Author consultation:** D1 approved item details first; D3 current mechanics and D4 disabled + opacity-5 apply. Keep current V1 list→details and every action, change details presentation only. D5 concrete visual layout/acceptance remains open; D6 retains existing behavior under the mission. These answers do not authorize implementation.
+**Author consultation:** D1 approved item details first; D3 current mechanics and D4 disabled + opacity-5 apply. Keep current V1 list→details and every action, change details presentation only. **D5 accepted 2026-10-26:** look identical to V3 `ItemDetailCard`; D6 retains existing behavior. **Implementation authorized** via accepted proposal + plan `ui-input-039-stage-a-item-details-v3-reskin`.
+
+**Proposal (accepted):** [2026-10-26--stage-a-item-details-ui-proposal.md](./2026-10-26--stage-a-item-details-ui-proposal.md) — V3-identical look, field/action map, adapter boundary, §6 flags. Visual PASS of the built screen still needs author screenshots.
 
 **Target files:**
 

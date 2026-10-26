@@ -15,7 +15,7 @@ Preparation: [Documentation and backlog audit — 2026-10-26](./2026-10-26--docu
 
 Asset migration hazard: [V3 character heads — SuperHero FullBody residual](./2026-10-26--v3-character-heads-superhero-residual.md) — when moving V3 Quaternius/CharacterKit GLBs into V1, use post-repair `*_Head*.glb` (or rebuild with `head-cut` arm-dominant drop); pre-repair heads poke SuperHero shoulder/arm skin through cloth.
 
-UI migration: [inventory and author decisions](./2026-10-26--ui-migration-research.md), [exact props/events matrix](./2026-10-26--ui-migration-compatibility-matrix.md), [three draft Cursor slices](./2026-10-26--ui-migration-draft-stages.md). Source mapping and first consultation completed; implementation is not approved. V3 Player–NPC dialogue UI/UX is excluded; item details is the selected first slice.
+UI migration: [research](./2026-10-26--ui-migration-research.md), [matrix](./2026-10-26--ui-migration-compatibility-matrix.md), [draft stages](./2026-10-26--ui-migration-draft-stages.md), [Stage A proposal (implemented; visual PASS pending)](./2026-10-26--stage-a-item-details-ui-proposal.md), plan [`ui-input-039`](../../plans/ui-input-039-stage-a-item-details-v3-reskin.md). Demo: `item-details-demo.html`. Stage B blocked on D2. No V3 dialogue port.
 
 V3 donor intake: [docs/v3-donor/](../../v3-donor/) — staged copies of selected V3 voices (MP3 + text banks), character profiles/refs (including Casimir Eastwood), item illustrations + type/category icons, concept art, and the **51 keep/rewrite curated quests** with full linked v1/v2 source documents for re-curation. Staging only; not a runtime merge or implementation backlog. Character kit GLBs already live under `public/assets/characters/`. See also [v3-donor/quests/](../../v3-donor/quests/).
 
