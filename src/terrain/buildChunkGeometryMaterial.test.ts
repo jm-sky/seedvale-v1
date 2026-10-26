@@ -67,7 +67,12 @@ describe('createTerrainMaterial', () => {
     expect(dirtIdx).toBeGreaterThan(-1)
     expect(macroIdx).toBeGreaterThan(dirtIdx)
     expect(wetSandIdx).toBeGreaterThan(macroIdx)
-    expect(mat.customProgramCacheKey?.()).toContain('v7')
+    // Plan world-terrain-053: threshold snow field (replaces soft v7 blend).
+    expect(fragmentShader).toContain('svSnowCover')
+    expect(fragmentShader).toContain('svSnowThreshold')
+    expect(fragmentShader).toContain('uSnowAmount > 0.002')
+    expect(mat.customProgramCacheKey?.()).toContain('v8')
+    expect(uniforms.uSnowAmount).toBe(mat.weatherUniforms.uSnowAmount)
 
     mat.dispose()
   })

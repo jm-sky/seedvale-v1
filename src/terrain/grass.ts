@@ -10,6 +10,15 @@ import {
   type GrassChunkData,
   type GrassSpeciesId,
 } from './grassPlacement'
+import {
+  GRASS_SNOW_BIAS,
+  GRASS_SNOW_DITHER_AT,
+  GRASS_SNOW_FROST,
+  SNOW_ALT_M,
+  SNOW_BIAS,
+  SNOW_COL,
+  SNOW_FIELD_GLSL,
+} from './snowField'
 
 export type WorldGrassChunk = {
   /** Group of InstancedMeshes (species buckets + optional near-field filler)
@@ -81,6 +90,12 @@ export type GrassSystem = {
   /** 0 = full night, 1 = full day — darkens grass in step with sky/fog/lights.
    *  `sunDirection` drives cheap fake subsurface/backlighting (plan 066). */
   setDayNight: (dayFactor: number, sunDirection: THREE.Vector3) => void
+  /**
+   * Bind the shared terrain `uSnowAmount` uniform object so grass burial/frost
+   * uses the same presentation amount as ground snow (plan world-terrain-053).
+   * Pass the identical `{ value }` reference — do not clone.
+   */
+  setSnowAmountUniform: (uSnowAmount: { value: number }) => void
   dispose: () => void
 }
 
@@ -358,6 +373,8 @@ const VERTEX_SHADER = /* glsl */ `
 
   uniform float uTime;
   uniform float uWindAmp;
+  // Shared with terrain weatherUniforms.uSnowAmount (plan world-terrain-053).
+  uniform float uSnowAmount;
 
   varying vec3 vColor;
   varying float vFogDepth;
@@ -366,6 +383,11 @@ const VERTEX_SHADER = /* glsl */ `
   // fake subsurface (plan 066). Captured before wind bend so it stays the
   // geometric "along-blade" parameter, not world Y.
   varying float vBladeT;
+  // Local snow cover at the instance origin (0..1) for tip frost / discard.
+  varying float vGrassSnow;
+  varying float vGrassBury;
+
+${SNOW_FIELD_GLSL}
 
   void main() {
     float bladeT = position.y;
@@ -376,10 +398,26 @@ const VERTEX_SHADER = /* glsl */ `
     // whenever USE_INSTANCING is defined (i.e. the material is used on an
     // InstancedMesh) — no explicit declaration needed, unlike most other
     // per-vertex inputs.
-    vec3 transformed = position;
+    vec3 localPos = position;
+    float grassSnow = 0.0;
+    float grassBury = 0.0;
     #ifdef USE_INSTANCING
-      transformed = (instanceMatrix * vec4(transformed, 1.0)).xyz;
+      // World-space instance origin (chunk group translate × instance translate).
+      vec3 instanceOrigin = ( modelMatrix * instanceMatrix * vec4( 0.0, 0.0, 0.0, 1.0 ) ).xyz;
+      if ( uSnowAmount > 0.002 ) {
+        float snowAlt = ${SNOW_BIAS.altitude.toFixed(2)} * smoothstep( ${SNOW_ALT_M[0].toFixed(2)}, ${SNOW_ALT_M[1].toFixed(2)}, instanceOrigin.y );
+        grassSnow = svSnowCover( svSnowThreshold( instanceOrigin.xz, 1.0 ), uSnowAmount, ${GRASS_SNOW_BIAS.toFixed(2)} + snowAlt );
+        grassBury = smoothstep( 0.25, 0.9, grassSnow );
+        // Shrink blade height in place — roots stay planted (no placement regen).
+        localPos.y *= 1.0 - 0.8 * grassBury;
+      }
+      vec3 transformed = (instanceMatrix * vec4(localPos, 1.0)).xyz;
+    #else
+      vec3 transformed = localPos;
     #endif
+
+    vGrassSnow = grassSnow;
+    vGrassBury = grassBury;
 
     vec4 worldPos = modelMatrix * vec4(transformed, 1.0);
 
@@ -407,8 +445,17 @@ const FRAGMENT_SHADER = /* glsl */ `
   varying float vFogDepth;
   varying vec3 vWorldPos;
   varying float vBladeT;
+  varying float vGrassSnow;
+  varying float vGrassBury;
 
   void main() {
+    // Fully buried blades drop out (plan world-terrain-053) — avoids floating
+    // stubs once height scale has collapsed.
+    if ( vGrassBury > ${GRASS_SNOW_DITHER_AT.toFixed(2)} ) {
+      float buryGone = smoothstep( ${GRASS_SNOW_DITHER_AT.toFixed(2)}, 0.99, vGrassBury );
+      if ( buryGone > 0.5 ) discard;
+    }
+
     // Grass is mostly unlit (no scene lights/shadows) — the terrain around it
     // IS lit (MeshStandardMaterial), and at night its ambient/hemi/sun
     // intensities (world/dayNight.ts's skyParamsFromTime) drop to roughly
@@ -418,6 +465,12 @@ const FRAGMENT_SHADER = /* glsl */ `
     // instead of going dark with it. Matched down to the same rough floor.
     float brightness = mix(0.08, 1.0, uDayFactor);
     vec3 color = vColor * brightness;
+
+    // Tip frost toward snow colour as local cover rises (same field as terrain).
+    if ( vGrassSnow > 0.0 ) {
+      float frost = vGrassSnow * ${GRASS_SNOW_FROST.toFixed(2)} * smoothstep( 0.2, 1.0, vBladeT );
+      color = mix( color, vec3( ${SNOW_COL.r.toFixed(2)}, ${SNOW_COL.g.toFixed(2)}, ${SNOW_COL.b.toFixed(2)} ), frost );
+    }
 
     // Fake translucency (plan 066): when looking toward the sun, thin tips
     // pick up a warm scatter as if light passes through the blade. View/sun
@@ -488,6 +541,8 @@ export function createGrassSystem(): GrassSystem {
         uDayFactor: { value: 1 },
         // Normalized sun direction from Sky — updated via setDayNight.
         uSunDirection: { value: new THREE.Vector3(0, 1, 0) },
+        // Placeholder until ChunkManager binds terrain weatherUniforms.uSnowAmount.
+        uSnowAmount: { value: 0 },
       },
     ]),
     vertexShader: VERTEX_SHADER,
@@ -762,6 +817,10 @@ export function createGrassSystem(): GrassSystem {
     setDayNight(dayFactor, sunDirection) {
       material.uniforms.uDayFactor!.value = dayFactor
       ;(material.uniforms.uSunDirection!.value as THREE.Vector3).copy(sunDirection).normalize()
+    },
+    setSnowAmountUniform(uSnowAmount) {
+      // Same object reference as terrain — ChunkManager mutates `.value` in place.
+      material.uniforms.uSnowAmount = uSnowAmount
     },
     dispose() {
       material.dispose()

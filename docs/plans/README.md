@@ -134,6 +134,7 @@ Active residual verification-needed plans (unfinished implementation remains):
 
 | Plan | Sprawdź |
 |------|---------|
+| `world-terrain-053-snow-patch-thresholds-and-grass-burial.md` | Browser A/B via `?snow=0..1` (patches, grass burial, melt, rain intact); FPS vs baseline. Automated field tests passed; GPU look **UNVERIFIED** in implementation session. |
 | `items-player-012-player-gathering-and-fire-cooking-polish.md` | Fish cooking + Quick Actions fire category: browser/gameplay check. **Tree branch gathering changes in this plan are still pending implementation** — do not treat the plan as fully shipped. |
 | `world-terrain-040-vegetation-render-budget-v2.md` | Stage 1: user benchmark/browser verification. **Stages 2/3 are not started** — retain as active residual work. |
 

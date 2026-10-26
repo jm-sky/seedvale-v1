@@ -8,6 +8,12 @@ import {
 } from '../assets/sharedSurfaceDiffuseTextures'
 import { buildCutChunkAttributes, type TerrainCutout } from './terrainCutout'
 import { getSharedTerrainDetailNormalMap } from './terrainDetailNormalMap'
+import {
+  SNOW_ALT_M,
+  SNOW_BIAS,
+  SNOW_COL,
+  SNOW_FIELD_GLSL,
+} from './snowField'
 
 export type ChunkMeshResult = {
   mesh: THREE.Mesh
@@ -206,14 +212,11 @@ const WET_SAND_CHUNK = /* glsl */ `
   }
 `
 
-/** Plan 133 — deterministic, weather-derived surface visuals (wet ground,
- *  puddles, snow cover). `uWetness`/`uSnowAmount` are the only new uniforms;
- *  everything else reuses `vWorldPos`, `vBareGround` and `terrainValueNoise`
- *  already injected above. `vSlopeUp` is the cheapest available flatness
- *  signal: the terrain mesh only ever translates (no rotation/scale), so the
- *  vertex-shader `objectNormal` is already world-space — its `.y` component
- *  is `cos(slope angle)` with zero extra per-vertex cost beyond the varying
- *  itself, no new attribute needed. */
+/** Plan 133 / world-terrain-053 — deterministic weather-derived surface visuals
+ *  (wet ground, puddles, threshold snow). `uWetness`/`uSnowAmount` are the only
+ *  weather uniforms; snow uses the shared world-anchored field from
+ *  `snowField.ts` (detail always 1 — camera-independent). `vSlopeUp` is the
+ *  cheapest flatness signal (terrain only translates; objectNormal.y is world up). */
 const WEATHER_SURFACE_COLOR_CHUNK = /* glsl */ `
   float wetGroundAmt = 0.0;
   float puddleEdgeAmt = 0.0;
@@ -247,14 +250,17 @@ const WEATHER_SURFACE_COLOR_CHUNK = /* glsl */ `
     puddleEdgeAmt = ( puddleOuter - puddleInner ) * puddleGate;
     puddleCoreAmt = puddleInner * puddleGate;
 
-    // Snow cover: brighter blend favoring flat ground, subtle noise breakup
-    // so edges don't read as a hard fill line.
-    float snowNoise = terrainValueNoise( vWorldPos.xz * 0.03 ) * 0.5 + 0.5;
-    float snowFlat = smoothstep( 0.5, 0.9, flatUp );
-    snowCoverAmt = clamp(
-      uSnowAmount * mix( 0.5, 1.0, snowFlat ) * mix( 0.7, 1.05, snowNoise ),
-      0.0, 1.0
-    );
+    // Snow: monotone world-anchored patches (plan world-terrain-053 / VIS-07).
+    // Flat gains, steep sheds, altitude gains; detail octave share fixed at 1.
+    if ( uSnowAmount > 0.002 ) {
+      float snowBias = ${SNOW_BIAS.flat.toFixed(2)} * smoothstep( 0.85, 0.97, flatUp )
+        - ${SNOW_BIAS.steep.toFixed(2)} * ( 1.0 - smoothstep( 0.55, 0.8, flatUp ) )
+        + ${SNOW_BIAS.altitude.toFixed(2)} * smoothstep( ${SNOW_ALT_M[0].toFixed(2)}, ${SNOW_ALT_M[1].toFixed(2)}, vWorldPos.y );
+      snowCoverAmt = svSnowCover( svSnowThreshold( vWorldPos.xz, 1.0 ), uSnowAmount, snowBias ) * aboveWater;
+      wetGroundAmt *= 1.0 - snowCoverAmt;
+      puddleEdgeAmt *= 1.0 - snowCoverAmt;
+      puddleCoreAmt *= 1.0 - snowCoverAmt;
+    }
   }
   diffuseColor.rgb *= 1.0 - wetGroundAmt * 0.32;
   diffuseColor.rgb *= 1.0 - puddleEdgeAmt * 0.34;
@@ -262,7 +268,7 @@ const WEATHER_SURFACE_COLOR_CHUNK = /* glsl */ `
   // Slight cool cast in the puddle core reads as a thin water layer rather
   // than just darker dirt — kept subtle to avoid a "wet plastic" look.
   diffuseColor.rgb = mix( diffuseColor.rgb, vec3( 0.12, 0.16, 0.20 ), puddleCoreAmt * 0.32 );
-  diffuseColor.rgb = mix( diffuseColor.rgb, vec3( 0.90, 0.94, 0.98 ), snowCoverAmt );
+  diffuseColor.rgb = mix( diffuseColor.rgb, vec3( ${SNOW_COL.r.toFixed(2)}, ${SNOW_COL.g.toFixed(2)}, ${SNOW_COL.b.toFixed(2)} ), snowCoverAmt );
 `
 
 /** Wet ground lowers roughness a little; puddle edge more so; the puddle
@@ -362,7 +368,8 @@ uniform float uTerrainDirtBareStart;
 uniform float uTerrainDirtBareEnd;
 uniform float uTerrainDirtFadeStart;
 uniform float uTerrainDirtFadeEnd;
-${MACRO_NOISE_FUNCS}${
+${MACRO_NOISE_FUNCS}
+${SNOW_FIELD_GLSL}${
           detailOn
             ? '\nuniform float uDetailTilesGrass;\nuniform float uDetailTilesBare;'
             : ''
@@ -395,11 +402,10 @@ ${MACRO_NOISE_FUNCS}${
   }
   // Every chunk injects identical code for a given detail mode, so they can
   // share one compiled program — but three's default cache key ignores
-  // `onBeforeCompile`, so say so explicitly. Bumped to v6 for plan
-  // world-terrain-003's edge/core puddle split so three never reuses a v5
-  // program compiled against the old single `puddleAmt` chunk.
+  // `onBeforeCompile`, so say so explicitly. Bumped to v8 for plan
+  // world-terrain-053's threshold snow field (replaces the soft v7 blend).
   material.customProgramCacheKey = () =>
-    detailOn ? 'chunk-terrain-surface-detail-v7' : 'chunk-terrain-surface-v7'
+    detailOn ? 'chunk-terrain-surface-detail-v8' : 'chunk-terrain-surface-v8'
 }
 
 /**

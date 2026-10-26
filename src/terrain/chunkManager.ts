@@ -1266,6 +1266,9 @@ export function createChunkManager(
     config.detailNormal,
     config.waterLevel,
   )
+  // Grass burial/frost reads the identical uSnowAmount object as terrain
+  // (plan world-terrain-053) — setWeatherSurface mutates `.value` in place.
+  grassSystem.setSnowAmountUniform(terrainMaterial.weatherUniforms.uSnowAmount)
   let lastCheckX = Number.POSITIVE_INFINITY
   let lastCheckZ = Number.POSITIVE_INFINITY
   const recheckDistance = config.chunkSize * 0.25

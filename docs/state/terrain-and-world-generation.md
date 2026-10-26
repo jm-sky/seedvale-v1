@@ -68,7 +68,7 @@ When this file and the code disagree, the code wins — update this file.
 ## Surface weather effects (wetness/snow)
 
 - Wetness/snow cover (`world/weather.ts`'s `computeSurfaceWeather`, plan 133) are pure, bounded-lookback derived values from `(seed, elapsedDays)` — no per-chunk state, no save field. Rain and storm raise wetness; snow accumulates and melts (temperature-gated) back into wetness.
-- Pushed as two uniforms (`uWetness`/`uSnowAmount`) onto the shared terrain `MeshStandardMaterial`, read in-shader against `vBareGround`/`vSlopeUp` and low-frequency noise for puddle/snow breakup. Desert/beach aren't separately distinguished from roads/dirt since `vBareGround` doesn't encode that split.
+- Pushed as two uniforms (`uWetness`/`uSnowAmount`) onto the shared terrain `MeshStandardMaterial` and the shared grass `ShaderMaterial` (same `uSnowAmount` object). Terrain and grass consume a world-anchored monotone threshold field (`terrain/snowField.ts`, plan world-terrain-053 / VIS-07): patches appear, grow and merge as `snowAmount` rises; grass blades bury/frost in shader without regenerating placements. Wet/puddle response is scaled down under snow cover. Desert/beach aren't separately distinguished from roads/dirt since `vBareGround` doesn't encode that split.
 
 ## Slope movement constraint
 

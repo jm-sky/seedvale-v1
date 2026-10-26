@@ -178,6 +178,7 @@ import { updateFoliageWind } from '../world/foliageWind'
 import { createLightningRuntime } from '../world/lightningEvents'
 import { WELL_WATER_UNAVAILABLE_DURING_REPAIR } from '../world/playerWell'
 import { resolveOffscreenTransportArrivals } from '../world/transportOffscreen'
+import { parseSnowParam } from '../terrain/snowField'
 import { computeSurfaceWeather, tickClimate } from '../world/weather'
 import { applyLightningFlash, applyWeatherOverlay, applyWeatherSkyOverlay, capOutdoorFogToTerrainHorizon, grassWindAmpFor, resolveSceneFog } from '../world/weatherVisuals'
 import { showCountAcquisitionToast } from './actions/acquisitionFeedback'
@@ -2629,9 +2630,14 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
       // fixed cycle count, not proportional to `elapsedDays`), so this is
       // cheap enough to re-derive every frame for a smooth rise/dry curve
       // rather than only at weather-cycle boundaries. Two shared uniform
-      // writes, no per-chunk work.
+      // writes, no per-chunk work. `?snow=` (plan world-terrain-053) overrides
+      // presented snow amount for fixed A/B steps; wetness stays climate-derived.
       const surfaceWeather = computeSurfaceWeather(getSeed(), dayNight.elapsedDays)
-      bundle.chunkManager.setWeatherSurface(surfaceWeather.wetness, surfaceWeather.snowAmount)
+      const snowOverride = parseSnowParam()
+      bundle.chunkManager.setWeatherSurface(
+        surfaceWeather.wetness,
+        snowOverride !== null ? snowOverride : surfaceWeather.snowAmount,
+      )
       const weatherVisualChanged =
         climate.weather.type !== lastAppliedWeatherType ||
         Math.abs(climate.weather.intensity - lastAppliedWeatherIntensity) >= 0.03
