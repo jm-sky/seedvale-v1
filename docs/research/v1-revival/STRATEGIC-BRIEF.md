@@ -2,6 +2,8 @@
 
 **Created at:** 2026-10-26  
 **Created by:** ChatGPT Sol  
+**Updated at:** 2026-10-26  
+**Updated by:** ChatGPT Sol  
 **Status:** Author-agreed strategic direction; implementation plan and sequence pending author approval.  
 **Target:** `jm-sky/seedvale-v1`
 
@@ -102,6 +104,19 @@ These comparisons are **proposed preparation, not completed findings**. No agent
 | Clouds and settlement spacing | V3 cloud mechanism and available cost evidence; V1 settlement-placement controls and implications of modestly longer journeys. No unsupported speedup claim. |
 
 Keep each result short: pinned evidence, differences, dependencies, risks and decisions needed. Reuse R1–R7; do not produce competing full implementation plans or expand into unselected systems. Consolidation review should remove contradictions and implicit assumptions before Opus plans.
+
+### Documentation audit and agent-facing cleanup — Opus owner
+
+The author additionally requests a V1 documentation audit and cleanup, with AI-agent optimization owned by **Claude Opus 5.5**. This is preparation for reliable future sessions, not another broad application-code investigation. Opus should use its findings when proposing revival phases; a separate architecture rewrite is not implied.
+
+- Review agent entry points, navigation indexes, current-state documents, plans and linked GitHub issues. Make authoritative scope, implementation status, historical evidence and unapproved proposals explicit, with bounded task-specific reading.
+- Move old, completed plans to the repository's appropriate archive after checking completion evidence. Do not classify a plan as complete by age or title alone; preserve unresolved follow-ups and verification gaps, history and incoming links. Follow existing archive conventions where suitable.
+- Inventory plans and issues still awaiting work. Record current status, remaining scope, dependencies, duplication and relationship to this brief. Link to the owning plan/issue rather than copying full content into a parallel backlog.
+- Reconcile contradictions, stale instructions and ambiguities with current code and explicit author decisions. Research candidates are not commitments. Existing open work absent from this brief is not automatically cancelled or approved for revival.
+- Resolve factual/documentation inconsistencies autonomously where evidence is sufficient. Bring genuine product conflicts, scope changes and significant compromises to the author; do not silently discard unfinished work or close issues solely to reduce noise.
+- Remove redundant active guidance, repair navigation after moves, and keep historical reports clearly historical. Regenerate generated indexes rather than manually editing generated sections.
+
+**Completion evidence:** a concise active-work index with source links and dispositions; completed plans archived with references repaired; a short conflict list showing resolved items and remaining author decisions; consistent agent entry points that route to current authority without requiring obsolete plans or all research reports. Check links and generated navigation affected by the cleanup. Prefer updating existing owning documents over creating another layer of audit reports. The audit and cleanup have not yet been performed.
 
 ## 6. Plan and acceptance expectations
 
