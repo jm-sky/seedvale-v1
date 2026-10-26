@@ -17,7 +17,7 @@ Asset migration hazard: [V3 character heads — SuperHero FullBody residual](./2
 
 UI migration: [inventory and author decisions](./2026-10-26--ui-migration-research.md), [exact props/events matrix](./2026-10-26--ui-migration-compatibility-matrix.md), [three draft Cursor slices](./2026-10-26--ui-migration-draft-stages.md). Source mapping and first consultation completed; implementation is not approved. V3 Player–NPC dialogue UI/UX is excluded; item details is the selected first slice.
 
-V3 donor intake: [docs/v3-donor/](../../v3-donor/) — staged copies of selected V3 voices, character profiles/refs (including Casimir Eastwood), item illustrations + type/category icons, concept art and related plans for later integration. Staging only; not a runtime merge or implementation backlog. Character kit GLBs already live under `public/assets/characters/`.
+V3 donor intake: [docs/v3-donor/](../../v3-donor/) — staged copies of selected V3 voices (MP3 + text banks), character profiles/refs (including Casimir Eastwood), item illustrations + type/category icons, concept art, and the **51 keep/rewrite curated quests** with full linked v1/v2 source documents for re-curation. Staging only; not a runtime merge or implementation backlog. Character kit GLBs already live under `public/assets/characters/`. See also [v3-donor/quests/](../../v3-donor/quests/).
 
 ## Purpose
 
