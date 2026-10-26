@@ -48,6 +48,15 @@ For detailed evidence, start with [R1](./2026-10-25--001--v1-baseline.md) and [R
 
 The author and Astra establish strategic direction; the current agreed decisions and Opus's planning mandate are recorded in the [Strategic Brief](./STRATEGIC-BRIEF.md). No R1 observation constitutes a KEEP / PORT / REBUILD verdict.
 
+## Additional author suggestions — pending research
+
+The author raised two additional visual/world-quality opportunities on 2026-10-26. **These are not approved implementation scope or a mandate to replace V1 systems.** Assess them in focused V1/V3 comparisons before Opus proposes inclusion or sequencing:
+
+- **Roads and terrain surfaces:** investigate replacing or supplementing flat terrain/road coloring with appropriate textures, following relevant V3 techniques where beneficial. Compare material blending, visual consistency with V1, terrain-generation ownership, and rendering cost before selecting an approach.
+- **Cave entrances and interiors:** review whether V1 caves need improvement and compare their entrance geometry, transitions, interiors and supporting systems with V3. V3 reportedly adapted V1 caves; verify that lineage and identify actual reusable improvements rather than assuming V3 is universally better.
+
+Route terrain/road findings through [R3](./2026-10-25--003--world-and-visuals.md) and relevant R7 world/visual candidates; route cave findings through relevant world and gameplay research. Keep any later decisions in the [Strategic Brief](./STRATEGIC-BRIEF.md) or Opus's approved plan, not in this candidate note.
+
 ## Author additions for Astra
 
 Read the [Author Feature Checklist — 2026-10-26](./2026-10-26--author-feature-checklist.md) alongside R7 before strategy discussion. It records seven explicit author preferences identified during a quick coverage check: NPC voices including newer batches and Mark Hornblower, key NPC names, optional English/mixed languages without automatic conversion, wounded dog companion and treasure search, lightweight directional night sky, the former-adventurer elder with his legendary sword (not the headman), and two independent roaming hero groups with their quests. These supplement the research inventory; detailed scope and donor implementation remain to be established with Astra.
