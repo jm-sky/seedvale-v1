@@ -1,7 +1,8 @@
 # Plan: Stage B — Inventory list + equipment comparison V3 reskin
 
 **Created:** 2026-10-26
-**Status:** `verification needed` 🔍
+**Status:** `done` ✅
+**Closed:** 2026-10-26 — author visual PASS
 **Type:** polish
 **Priority:** high · **Effort:** M
 **Depends on:** ~~ui-input-039~~

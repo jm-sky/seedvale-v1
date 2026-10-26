@@ -4,7 +4,7 @@
 **Created by:** Cursor (Composer)  
 **Updated at:** 2026-10-26  
 **Updated by:** Cursor (Composer)  
-**Status:** **IMPLEMENTED — verification needed** (2026-10-26). Accepted earlier same day (D2 = kind-list (a); two-column list|equipment; D5 = V3-identical look). Plan: `ui-input-040-stage-b-inventory-list-equipment`. Live list+equipment + D9 demo `inventory-list-demo.html` landed; **visual PASS** still requires author screenshots (adapted vs V3).
+**Status:** **IMPLEMENTED — visual PASS** (author 2026-10-26). Accepted earlier same day (D2 = kind-list (a); two-column list|equipment; D5 = V3-identical look). Plan: `ui-input-040-stage-b-inventory-list-equipment`. Live list+equipment + D9 demo `inventory-list-demo.html` landed.
 
 **Target:** `jm-sky/seedvale-v1` (`legacy/seedvale`)  
 **Design donor:** `jm-sky/seedvale` (V3) `InventoryList` / `EquipmentPanel` / `LoadoutSummary` presentation only
@@ -85,4 +85,4 @@ Stage C, character tab, HUD, trade, map, dialogue, layered armor mechanics, sche
 
 ## 8. Closure
 
-**Accepted for implementation** 2026-10-26 by the author. Active plan: `ui-input-040-stage-b-inventory-list-equipment`. Stage A visual PASS remains a separate screenshot gate.
+**Accepted for implementation** 2026-10-26 by the author. Active plan: `ui-input-040-stage-b-inventory-list-equipment`. Stage A/B visual PASS accepted by author 2026-10-26.

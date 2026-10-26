@@ -4,7 +4,7 @@
 **Created by:** Cursor (Composer)  
 **Updated at:** 2026-10-26  
 **Updated by:** Cursor (Composer)  
-**Status:** **IMPLEMENTED — verification needed** (2026-10-26). Accepted earlier same day (D5 = V3-identical look; §6 flags 2–6). Plan [`ui-input-039`](../../plans/ui-input-039-stage-a-item-details-v3-reskin.md). Live reskin + D9 demo `item-details-demo.html` landed; **visual PASS** still requires author screenshots (adapted vs V3).
+**Status:** **IMPLEMENTED — visual PASS** (author 2026-10-26). Accepted earlier same day (D5 = V3-identical look; §6 flags 2–6). Plan [`ui-input-039`](../../plans/ui-input-039-stage-a-item-details-v3-reskin.md). Live reskin + D9 demo `item-details-demo.html` landed.
 
 **Target:** `jm-sky/seedvale-v1` (`legacy/seedvale`)  
 **Design donor:** `jm-sky/seedvale` (V3) item-card presentation only

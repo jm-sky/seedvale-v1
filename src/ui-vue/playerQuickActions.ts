@@ -65,8 +65,16 @@ function describeRequirement(req: ActionRequirement): string {
   }
 }
 
-function describeMissing(missing: readonly ActionRequirement[]): string {
+/**
+ * Polish label for unavailable fire-action requirements (D4 adjacent reason).
+ * @domain ui
+ */
+export function formatMissingRequirements(missing: readonly ActionRequirement[]): string {
   return missing.map(describeRequirement).join(' ')
+}
+
+function describeMissing(missing: readonly ActionRequirement[]): string {
+  return formatMissingRequirements(missing)
 }
 
 /** A listed fire action's handler must exist by the time the catalog is
@@ -154,9 +162,10 @@ export const FIRE_QUICK_ACTIONS: readonly FireActionDef[] = [
 
 /** The complete fire catalog, stably sorted available-first (plan
  *  `ui-input-007` §4) — never filtered. An unavailable action stays visible
- *  so the caller can render it `disabled` at 50% opacity instead of hiding
- *  it; `missing` is exposed for that presentation. Availability comes solely
- *  from `avail` (the authoritative `userActions.ts` checks synced by
+ *  so the caller can render it `disabled` (muted readable chrome + adjacent
+ *  reason) instead of hiding it; `missing` is exposed for that presentation.
+ *  Availability comes
+ *  solely from `avail` (the authoritative `userActions.ts` checks synced by
  *  `createApp.ts`'s `syncQuickActionAvailability`) — this function derives
  *  nothing itself. */
 export function visibleFireActions(

@@ -1,4 +1,8 @@
 <script setup lang="ts">
+/**
+ * Quick Actions section stack (Stage C spacing aligned with MenuPanel body gaps).
+ * @domain ui
+ */
 import QuickActionsGroupLabel from './QuickActionsGroupLabel.vue'
 
 defineProps<{
@@ -7,12 +11,12 @@ defineProps<{
 </script>
 
 <template>
-  <div class="p-1 flex flex-col gap-1">
+  <div class="flex flex-col gap-2">
     <QuickActionsGroupLabel
       v-if="label"
       :label
     />
-    <div class="flex gap-2 flex-wrap">
+    <div class="flex flex-wrap content-start items-start gap-2">
       <slot />
     </div>
   </div>

@@ -60,6 +60,7 @@ export default defineConfig(({ mode }) => {
           houseBrowser: resolve(rootDir, 'house-browser.html'),
           itemDetailsDemo: resolve(rootDir, 'item-details-demo.html'),
           inventoryListDemo: resolve(rootDir, 'inventory-list-demo.html'),
+          quickActionsDemo: resolve(rootDir, 'quick-actions-demo.html'),
         },
       },
     },
