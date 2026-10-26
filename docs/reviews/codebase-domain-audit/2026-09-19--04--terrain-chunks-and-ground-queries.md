@@ -2,7 +2,7 @@
 
 **Date:** 2026-09-19
 **Area:** 04 — Terrain, chunks & ground queries
-**Master:** [tools-018](../../plans/tools-018-codebase-domain-and-flow-audit-master.md)
+**Master:** [tools-018](../../plans/archive/tools-018-codebase-domain-and-flow-audit-master.md)
 **Result:** ⚠️ reviewed with unresolved high findings
 **Code basis:** `main` inspected on 2026-09-19
 
@@ -180,7 +180,7 @@ Same-seed in-session rebuilds can progressively alter authoritative runtime terr
 
 **Plan**
 
-[world-terrain-043-system-terrain-modification-rebuild-idempotency.md](../../plans/world-terrain-043-system-terrain-modification-rebuild-idempotency.md)
+[world-terrain-043-system-terrain-modification-rebuild-idempotency.md](../../plans/archive/world-terrain-043-system-terrain-modification-rebuild-idempotency.md)
 
 ---
 
@@ -220,7 +220,7 @@ This is not an argument to remove analytical sampling: streaming-independent wor
 
 **Plan**
 
-[world-terrain-044-runtime-ground-query-authority-and-missing-chunk-fallbacks.md](../../plans/world-terrain-044-runtime-ground-query-authority-and-missing-chunk-fallbacks.md)
+[world-terrain-044-runtime-ground-query-authority-and-missing-chunk-fallbacks.md](../../plans/archive/world-terrain-044-runtime-ground-query-authority-and-missing-chunk-fallbacks.md)
 
 ---
 
@@ -284,8 +284,8 @@ Relevant completed/implemented foundations that should be reused rather than rep
 
 ## 8. New plans required
 
-1. [world-terrain-043-system-terrain-modification-rebuild-idempotency.md](../../plans/world-terrain-043-system-terrain-modification-rebuild-idempotency.md) — fix F04-01.
-2. [world-terrain-044-runtime-ground-query-authority-and-missing-chunk-fallbacks.md](../../plans/world-terrain-044-runtime-ground-query-authority-and-missing-chunk-fallbacks.md) — fix F04-02.
+1. [world-terrain-043-system-terrain-modification-rebuild-idempotency.md](../../plans/archive/world-terrain-043-system-terrain-modification-rebuild-idempotency.md) — fix F04-01.
+2. [world-terrain-044-runtime-ground-query-authority-and-missing-chunk-fallbacks.md](../../plans/archive/world-terrain-044-runtime-ground-query-authority-and-missing-chunk-fallbacks.md) — fix F04-02.
 
 No plan created for F04-03 pending performance evidence.
 

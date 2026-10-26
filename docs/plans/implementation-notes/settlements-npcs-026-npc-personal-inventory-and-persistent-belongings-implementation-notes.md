@@ -1,6 +1,6 @@
 # Implementation notes: NPC personal inventory and persistent belongings
 
-Plan: `docs/plans/settlements-npcs-026-npc-personal-inventory-and-persistent-belongings.md`
+Plan: `docs/plans/archive/settlements-npcs-026-npc-personal-inventory-and-persistent-belongings.md`
 
 ## 1. Authoritative ownership is already decided by current architecture
 
@@ -139,7 +139,7 @@ Focused set; broader repo recon should not be necessary unless current code has 
 - `src/ai/npcLogistics.ts`, `src/ai/npcProfessionWork.ts`, `src/ai/npcAssistance.ts` — confirm work cargo stays on `carried`.
 - `src/app/saveState.ts` — confirm no new top-level save field is needed.
 - `src/persistence/saveData.ts` — snapshot validation, save version and migration chain.
-- `src/settlement/npcPostDeath.ts` and `docs/plans/npc-010-death-and-corpse-lifecycle.md` — downstream ownership contract only; do not broaden 026 into corpse work.
+- `src/settlement/npcPostDeath.ts` and `docs/plans/archive/npc-010-death-and-corpse-lifecycle.md` — downstream ownership contract only; do not broaden 026 into corpse work.
 
 ## 11. Suggested implementation order
 

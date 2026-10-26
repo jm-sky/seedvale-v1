@@ -1,6 +1,6 @@
 # Implementation notes: fauna-046 stamina-aware animal water crossing risk
 
-**Plan:** `docs/plans/fauna-046-stamina-aware-animal-water-crossing-risk.md`  
+**Plan:** `docs/plans/archive/fauna-046-stamina-aware-animal-water-crossing-risk.md`  
 **Baseline:** current `main`, after fauna-015/fauna-029 and the current AnimalAgent cadence/navigation work.
 
 ## Current code contracts to preserve

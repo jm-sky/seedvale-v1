@@ -1,7 +1,7 @@
 # Implementation notes: quests-progression-025 — Old bones adventure cave
 
 **Reviewed:** 2026-09-13  
-**Plan:** `docs/plans/quests-progression-025-adventure-cave-old-bones.md`
+**Plan:** `docs/plans/archive/quests-progression-025-adventure-cave-old-bones.md`
 
 ## Recon summary
 

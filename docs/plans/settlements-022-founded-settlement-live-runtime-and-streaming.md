@@ -4,7 +4,7 @@
 **Status:** `planned` 📋
 **Type:** feature
 **Priority:** high · **Effort:** L
-**Depends on:** settlements-021
+**Depends on:** ~~settlements-021~~
 **Domain:** `settlements`
 **Subdomains:** `population` `development` `economy`
 **Tags:** `colony` `streaming` `runtime` `performance` `authored-site`

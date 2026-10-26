@@ -1,6 +1,6 @@
 # Implementation Notes: NPC profession-aware weapon choice and armor use
 
-Plan: `docs/plans/npc-053-profession-aware-weapon-choice-and-armor-use.md`
+Plan: `docs/plans/archive/npc-053-profession-aware-weapon-choice-and-armor-use.md`
 
 These notes reflect current `main`; current code wins if it changes before implementation.
 

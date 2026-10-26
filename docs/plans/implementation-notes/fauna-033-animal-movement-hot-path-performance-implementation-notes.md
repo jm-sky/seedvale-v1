@@ -1,6 +1,6 @@
 # Implementation notes: fauna-033 — animal movement hot-path performance
 
-**Plan:** [fauna-033](../fauna-033-animal-movement-hot-path-performance.md)
+**Plan:** [fauna-033](../archive/fauna-033-animal-movement-hot-path-performance.md)
 **Recon prepared:** 2026-09-16 · **Implemented:** 2026-09-16
 
 This file combines a pre-implementation recon pass with the actual implementation outcome. The recon (first part) was written before the code changes below and frames the open questions; the "Implemented" section (second part) records what was actually built, including how the recon's "most important correctness trap" was resolved. Where the two disagree, the "Implemented" section is authoritative.

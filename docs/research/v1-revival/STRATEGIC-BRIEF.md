@@ -122,7 +122,9 @@ The author requests a V1 documentation audit and cleanup. **Only optimization sp
 - Make current authority, approved scope, implementation status, historical evidence and unapproved proposals unambiguous; minimize redundant or distracting reading across future sessions.
 - Integrate the resulting documentation structure with its later planning and coordination workflow. Do not repeat the preparatory audit unless a specific evidence gap requires it.
 
-**Completion evidence:** preparatory work yields an accurate active-work index with source links and dispositions, archived completed plans with repaired references, and a short list of resolved conflicts and remaining author decisions. Opus's optimization yields consistent agent entry points and bounded reading routes without requiring obsolete plans or all research reports. Check links and affected generated navigation. Prefer updating existing owning documents over adding layers of audit reports. The audit, cleanup and AI-agent optimization have not yet been performed.
+**Completion evidence:** preparatory work yields an accurate active-work index with source links and dispositions, archived completed plans with repaired references, and a short list of resolved conflicts and remaining author decisions. Opus's optimization yields consistent agent entry points and bounded reading routes without requiring obsolete plans or all research reports. Check links and affected generated navigation. Prefer updating existing owning documents over adding layers of audit reports.
+
+**Progress (2026-10-26):** the preparatory audit is recorded in [2026-10-26--documentation-backlog-audit.md](./2026-10-26--documentation-backlog-audit.md); Snapshot 3 housekeeping archived implemented `verification needed`/`done` plans (see [archive Snapshot 3](../../plans/archive/README.md#snapshot-3--2026-10-26)). Opus's AI-agent documentation optimization has **not** yet been performed.
 
 ## 6. Plan and acceptance expectations
 

@@ -1,6 +1,6 @@
 # Implementation Notes: settlements-npcs-036 — Generic NPC-Owned Goods Trading
 
-**Plan:** `docs/plans/settlements-npcs-036-generic-npc-owned-goods-trading.md`  
+**Plan:** `docs/plans/archive/settlements-npcs-036-generic-npc-owned-goods-trading.md`  
 **Reviewed:** 2026-09-14  
 **Status:** `verification needed` 🔍  
 **Source of truth:** current `main` code + docs.

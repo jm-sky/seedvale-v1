@@ -1,6 +1,6 @@
 # Implementation Notes: npc-049 — NPC contextual life barks and local voice limiter
 
-**Plan:** `docs/plans/npc-049-npc-contextual-life-barks-and-local-voice-limiter.md`  
+**Plan:** `docs/plans/archive/npc-049-npc-contextual-life-barks-and-local-voice-limiter.md`  
 **Reviewed:** 2026-09-17  
 **Source:** current `main` + targeted voice/NPC-needs/weather/threat/playback recon
 

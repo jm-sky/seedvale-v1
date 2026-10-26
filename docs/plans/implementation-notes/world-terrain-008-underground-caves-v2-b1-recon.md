@@ -1,6 +1,6 @@
 # Implementation Notes: Underground Caves V2 — B1 Recon
 
-> Plan: `docs/plans/world-terrain-008-underground-caves-v2.md`
+> Plan: `docs/plans/archive/world-terrain-008-underground-caves-v2.md`
 > Recon date: **2026-09-07**
 > Scope: **Milestone B1 only — production topology + SDF spatial representation + geometry**
 >

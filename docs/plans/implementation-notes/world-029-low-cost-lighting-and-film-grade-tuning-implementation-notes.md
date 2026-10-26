@@ -1,7 +1,7 @@
 # Implementation notes: world-029 low-cost lighting and film-grade tuning
 
 **Reviewed:** 2026-09-16  
-**Plan:** `docs/plans/world-029-low-cost-lighting-and-film-grade-tuning.md`
+**Plan:** `docs/plans/archive/world-029-low-cost-lighting-and-film-grade-tuning.md`
 
 ## Current code facts
 

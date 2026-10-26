@@ -4,7 +4,7 @@
 **Status:** `in progress` 🔄
 **Type:** optimization
 **Priority:** high · **Effort:** L
-**Depends on:** world-013
+**Depends on:** ~~world-013~~
 **Domain:** `world`
 **Subdomains:** `simulation` `places`
 **Tags:** `seed` `worldgen` `cache` `persistence`

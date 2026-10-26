@@ -1,6 +1,6 @@
 # Implementation notes: fauna-028 — AnimalAgent importance/cadence
 
-**Implemented:** 2026-09-14 · plan: [fauna-028](../fauna-028-animal-agent-update-cadence.md)
+**Implemented:** 2026-09-14 · plan: [fauna-028](../archive/fauna-028-animal-agent-update-cadence.md)
 
 Recon-level findings that a future agent would otherwise have to rediscover, plus the two places the implementation deviates from the plan.
 

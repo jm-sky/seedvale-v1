@@ -1,7 +1,7 @@
 # Implementation notes: quests-progression-024 — Suspicious transport natural cave cache
 
 **Reviewed:** 2026-09-13  
-**Plan:** `docs/plans/quests-progression-024-suspicious-transport-natural-cave-cache.md`  
+**Plan:** `docs/plans/archive/quests-progression-024-suspicious-transport-natural-cave-cache.md`  
 **Baseline:** `main` at `b1bd97790c6aabbb727a08d7c756eac752b38e8f`
 
 ## Main recon findings

@@ -142,7 +142,7 @@ Habitat ownership and current spatial occupancy remain distinct concepts.
 - `src/settlement/npcPostDeath.ts::dropNpcCorpseLoot`
 - `src/app/interactables.ts::spatialContextForPayload`
 - `src/app/saveState.ts` dropped-item snapshot path
-- `docs/plans/world-027-player-spatial-context-and-cross-space-target-isolation.md` and its implementation notes
+- `docs/plans/archive/world-027-player-spatial-context-and-cross-space-target-isolation.md` and its implementation notes
 
 **Evidence:**
 
@@ -197,7 +197,7 @@ This is a state-continuity defect: the item's logical world position does not su
 - `src/terrain/chunkManager.ts::findLandmarkNear`
 - `src/terrain/unloadedLandmarkLookup.ts::resolveUnloadedLandmark`
 - `src/terrain/chunkEnvironment.ts::computeChunkEnvironment`
-- `docs/plans/world-028-classic-landmark-unloaded-lookup-main-thread-freeze.md`
+- `docs/plans/archive/world-028-classic-landmark-unloaded-lookup-main-thread-freeze.md`
 
 **Evidence:**
 

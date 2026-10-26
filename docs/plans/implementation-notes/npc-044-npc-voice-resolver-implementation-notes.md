@@ -1,6 +1,6 @@
 # Implementation Notes: npc-044 — NPC hierarchical voice resolver
 
-**Plan:** `docs/plans/npc-044-npc-voice-resolver.md`  
+**Plan:** `docs/plans/archive/npc-044-npc-voice-resolver.md`  
 **Reviewed:** 2026-09-17  
 **Source:** current `main` + plan recon
 

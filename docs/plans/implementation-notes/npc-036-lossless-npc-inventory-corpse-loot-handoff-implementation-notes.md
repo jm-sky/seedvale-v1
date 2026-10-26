@@ -1,6 +1,6 @@
 # Implementation notes: Lossless NPC inventory → corpse loot handoff
 
-Plan: `docs/plans/npc-036-lossless-npc-inventory-corpse-loot-handoff.md`
+Plan: `docs/plans/archive/npc-036-lossless-npc-inventory-corpse-loot-handoff.md`
 
 ## 1. Ownership is already correct; representation is not
 

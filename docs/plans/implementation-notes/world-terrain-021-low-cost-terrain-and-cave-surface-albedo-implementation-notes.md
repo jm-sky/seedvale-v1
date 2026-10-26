@@ -1,7 +1,7 @@
 # Implementation notes: world-terrain-021 low-cost terrain and cave surface albedo
 
 **Reviewed:** 2026-09-11  
-**Plan:** `docs/plans/world-terrain-021-low-cost-terrain-and-cave-surface-albedo.md`  
+**Plan:** `docs/plans/archive/world-terrain-021-low-cost-terrain-and-cave-surface-albedo.md`  
 **Baseline:** `main` at `05f12eb1efaced5e3819bc92bfb1a13b1831db69`
 
 Focused implementation handoff based on current code. Do not repeat broad

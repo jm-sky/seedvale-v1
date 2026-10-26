@@ -1,6 +1,6 @@
 # Implementation Notes: ui-input-029 Village torch interaction action contract
 
-**Plan:** `docs/plans/ui-input-029-village-torch-interaction-action-contract.md`  
+**Plan:** `docs/plans/archive/ui-input-029-village-torch-interaction-action-contract.md`  
 **Reviewed against:** `main`, 2026-09-21
 
 ## Current contract

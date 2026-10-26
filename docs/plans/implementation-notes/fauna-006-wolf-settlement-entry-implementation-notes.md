@@ -1,6 +1,6 @@
 # Implementation Notes: Wolf Settlement Entry
 
-**Plan:** `docs/plans/fauna-006-wolf-settlement-entry.md`
+**Plan:** `docs/plans/archive/fauna-006-wolf-settlement-entry.md`
 
 ## Current code
 

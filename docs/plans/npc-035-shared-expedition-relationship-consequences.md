@@ -4,7 +4,7 @@
 **Status:** `draft` 📝  
 **Type:** feature  
 **Priority:** high · **Effort:** L  
-**Depends on:** npc-029, npc-032, npc-033, npc-034  
+**Depends on:** ~~npc-029~~, npc-032, npc-033, npc-034  
 **Domain:** `npc`  
 **Subdomains:** `relationships` `memory` `decision-making`  
 **Tags:** `companions` `relationships` `shared-history` `social-consequences` `expedition`  

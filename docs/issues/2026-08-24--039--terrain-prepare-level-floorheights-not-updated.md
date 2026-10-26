@@ -2,7 +2,7 @@
 
 **Status:** `done`
 **Created:** 2026-08-24
-**Źródło:** playtest po planie [world-terrain-002](../plans/world-terrain-002-terrain-modification-and-land-preparation.md)
+**Źródło:** playtest po planie [world-terrain-002](../plans/archive/world-terrain-002-terrain-modification-and-land-preparation.md)
 
 ## Fix (2026-08-24)
 
@@ -113,5 +113,5 @@ sprawia, że trawa już znika w trakcie pracy. Brakuje wyłącznie zapisu do
 
 ## Related
 
-- Plan [world-terrain-002](../plans/world-terrain-002-terrain-modification-and-land-preparation.md) — wprowadził gałąź `'prepare'`, która odziedziczyła ten brak.
+- Plan [world-terrain-002](../plans/archive/world-terrain-002-terrain-modification-and-land-preparation.md) — wprowadził gałąź `'prepare'`, która odziedziczyła ten brak.
 - Issue [026 — cave mouth flat prop, not a hole](./2026-08-12--026--cave-mouth-flat-prop-not-a-hole.md) — jego fix (plan 083) mógł zostać cicho zepsuty przez tę samą regresję.

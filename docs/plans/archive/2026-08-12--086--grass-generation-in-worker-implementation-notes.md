@@ -17,7 +17,7 @@ Worker bundle grew from ~21 KB to ~61 KB (`dist/assets/chunkHeightmap.worker-*.j
 
 `Simulate (ms)` baseline while walking is **~3-5 ms** (debug GUI, `?debug=1` → Performance folder). No grass-correlated spike observed while crossing chunk/grass boundaries — consistent with the goal (grass placement no longer runs synchronously on the main thread). No pre-086 "before" number was captured in this session (086 was implemented and measured in the same sitting), so this isn't a rigorous before/after diff, but a healthy steady-state baseline with no spike at grass boundaries is the expected outcome.
 
-A separate ~89 ms spike was observed, tied to a settlement streaming into view rather than grass — traced to synchronous settlement prop building (`buildSettlementProps`, `props.ts`) and filed as [issue 027](../issues/2026-08-13--027--settlement-streaming-main-thread-freeze.md); out of scope for this plan (and also outside plan 087's declared scope — see that issue for detail).
+A separate ~89 ms spike was observed, tied to a settlement streaming into view rather than grass — traced to synchronous settlement prop building (`buildSettlementProps`, `props.ts`) and filed as [issue 027](../../issues/2026-08-13--027--settlement-streaming-main-thread-freeze.md); out of scope for this plan (and also outside plan 087's declared scope — see that issue for detail).
 
 ## Browser/visual verification
 

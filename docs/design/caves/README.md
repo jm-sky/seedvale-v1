@@ -2,7 +2,7 @@
 
 **Status:** `Cave V2/SDF stage closed; heightfield spike accepted; production migration planned`
 **Started:** 2026-09-04
-**Related implementation plan:** `docs/plans/world-terrain-019-cave-heightfield-production-migration.md`
+**Related implementation plan:** `docs/plans/archive/world-terrain-019-cave-heightfield-production-migration.md`
 **Domain:** `world-terrain`
 
 ## Purpose
@@ -27,7 +27,7 @@ The historical Cave V2 checklist below records the V2/SDF workflow. It is **not*
 - [x] Capture V1 gameplay problems and Cave V2 requirements — `01-problem-and-requirements.md`.
 - [x] Research cave generation/representation techniques — `02-generation-techniques-research.md`.
 - [x] Compare Advanced Sweep vs Graph + SDF/Volume and define the shared spike — `03-advanced-sweep-vs-sdf-spike-research.md`.
-- [x] Create the Cave V2 implementation plan — `docs/plans/world-terrain-008-underground-caves-v2.md`.
+- [x] Create the Cave V2 implementation plan — `docs/plans/archive/world-terrain-008-underground-caves-v2.md`.
 - [x] Architecture/recon agent: perform focused current-code recon and create `docs/plans/implementation-notes/world-terrain-008-underground-caves-v2-implementation-notes.md`.
 
 ### B. Milestone A — representation decision
@@ -136,9 +136,9 @@ V1 cleanup + Cave V2 completion
 | `04-sweep-vs-sdf-spike-results.md` | Technical measurements, player observations and architecture decision from Milestone A. | `technical comparison complete, manual comparison required` |
 | `05-b4-streaming-lifecycle-performance-recon.md` | Current-code B4 recon: lifecycle, performance risks, worker decision and recommended streaming architecture. | `recon complete` |
 | `06-heightfield-cave-representation-design.md` | Cave heightfield (2.5D `floorY`/`ceilingY`) recon and accepted representation. Rejects the boundary-wall model of the first world-terrain-018 iteration. Production migration is `world-terrain-019`. | `spike accepted; not yet production SoT` |
-| `docs/plans/world-terrain-008-underground-caves-v2.md` | Historical Cave V2/SDF architecture and infrastructure plan. | `done` |
-| `docs/plans/world-terrain-018-cave-heightfield-representation-spike.md` | Isolated heightfield spike. Harness remains reference/test. | `done` |
-| `docs/plans/world-terrain-019-cave-heightfield-production-migration.md` | Production heightfield migration. | `planned` |
+| `docs/plans/archive/world-terrain-008-underground-caves-v2.md` | Historical Cave V2/SDF architecture and infrastructure plan. | `done` |
+| `docs/plans/archive/world-terrain-018-cave-heightfield-representation-spike.md` | Isolated heightfield spike. Harness remains reference/test. | `done` |
+| `docs/plans/archive/world-terrain-019-cave-heightfield-production-migration.md` | Production heightfield migration. | `planned` |
 | `docs/plans/implementation-notes/world-terrain-008-underground-caves-v2-implementation-notes.md` | Exact current-code integration map for the V2/SDF stage. | `historical; production still SDF until 019` |
 | `docs/plans/implementation-notes/world-terrain-008-underground-caves-v2-b4-implementation-notes.md` | B4 implementation contract: lifecycle seam, worker boundary, disposal and verification. | `landed in V2; SDF extraction remains until 019` |
 

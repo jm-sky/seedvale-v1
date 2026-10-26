@@ -12,7 +12,7 @@ This roadmap defines the evolution from the current need-driven NPC behaviour to
 
 Introduce explicit pressures derived from existing needs and world state. Pressures explain why a need, problem or duty currently matters and become an input to decision-making.
 
-**Implementation plan:** [`../plans/ai-001-npc-pressure-layer.md`](../plans/ai-001-npc-pressure-layer.md)
+**Implementation plan:** [`../plans/ai-001-npc-pressure-layer.md`](../plans/archive/ai-001-npc-pressure-layer.md)
 
 ### 2. Personality-aware Decisions
 
@@ -20,7 +20,7 @@ Introduce explicit pressures derived from existing needs and world state. Pressu
 
 Extend the decision context so Big Five personality, traits and role can influence the scoring of existing choices without directly dictating actions.
 
-**Implementation plan:** [`../plans/ai-002-npc-personality-decisions.md`](../plans/ai-002-npc-personality-decisions.md)
+**Implementation plan:** [`../plans/ai-002-npc-personality-decisions.md`](../plans/archive/ai-002-npc-personality-decisions.md)
 
 ### 3. Strategy Layer
 

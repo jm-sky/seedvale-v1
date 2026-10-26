@@ -1,7 +1,7 @@
 # SEEDVALE — IMPLEMENTATION PREFLIGHT
 
 ## Target
-Plan: `docs/plans/items-player-001-containers-waterskins-and-copper-items.md`
+Plan: `docs/plans/archive/items-player-001-containers-waterskins-and-copper-items.md`
 Implementation notes: `docs/plans/implementation-notes/items-player-001-containers-waterskins-and-copper-items-implementation-notes.md`
 HEAD: efffef9 | branch: main
 Working tree: HAS CHANGES — preserve them

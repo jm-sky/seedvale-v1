@@ -1,6 +1,6 @@
 # Implementation Notes: Distant Cave Mouth Occlusion
 
-Plan: `docs/plans/world-terrain-026-cave-distant-mouth-occlusion.md`
+Plan: `docs/plans/archive/world-terrain-026-cave-distant-mouth-occlusion.md`
 
 ## Current-code ownership
 

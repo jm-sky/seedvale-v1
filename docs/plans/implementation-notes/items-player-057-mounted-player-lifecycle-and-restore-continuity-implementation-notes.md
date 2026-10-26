@@ -1,6 +1,6 @@
 # Implementation notes: items-player-057 — Mounted player lifecycle and restore continuity
 
-**Plan:** `docs/plans/items-player-057-mounted-player-lifecycle-and-restore-continuity.md`  
+**Plan:** `docs/plans/archive/items-player-057-mounted-player-lifecycle-and-restore-continuity.md`  
 **Recon basis:** current `main`, 2026-09-20
 
 ## Recon conclusion

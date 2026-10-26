@@ -1,6 +1,6 @@
 # Implementation notes: settlements-npcs-031 — sustainable seed recovery
 
-**Implemented:** 2026-09-14 · plan: [settlements-npcs-031](../settlements-npcs-031-sustainable-seed-recovery-and-replanting.md)
+**Implemented:** 2026-09-14 · plan: [settlements-npcs-031](../archive/settlements-npcs-031-sustainable-seed-recovery-and-replanting.md)
 
 ## Recon vs the plan text
 

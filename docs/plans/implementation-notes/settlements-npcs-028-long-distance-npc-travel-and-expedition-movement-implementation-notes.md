@@ -1,6 +1,6 @@
 # Implementation Notes: Long-distance NPC travel and expedition movement
 
-**Plan:** `docs/plans/settlements-npcs-028-long-distance-npc-travel-and-expedition-movement.md`  
+**Plan:** `docs/plans/archive/settlements-npcs-028-long-distance-npc-travel-and-expedition-movement.md`  
 **Reviewed:** 2026-09-15  
 **Codebase:** `main`
 

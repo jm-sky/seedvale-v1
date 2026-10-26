@@ -1,6 +1,6 @@
 # Implementation Notes: NPC Candidate Strategies
 
-**Plan:** `docs/plans/ai-003-npc-candidate-strategies.md`
+**Plan:** `docs/plans/archive/ai-003-npc-candidate-strategies.md`
 **Reviewed:** 2026-08-25
 **Status:** `verification needed` 🔍
 

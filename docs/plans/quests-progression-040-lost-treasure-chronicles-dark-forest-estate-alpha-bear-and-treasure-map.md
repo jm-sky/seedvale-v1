@@ -3,7 +3,7 @@
 **Created:** 2026-09-15  
 **Status:** `planned` 📋  
 **Priority:** high · **Effort:** L  
-**Depends on:** quests-progression-039, ~~quests-progression-009~~, ~~quests-progression-036~~, ~~fauna-022~~  
+**Depends on:** ~~quests-progression-039~~, ~~quests-progression-009~~, ~~quests-progression-036~~, ~~fauna-022~~  
 **Domain:** `quests-progression`  
 **Type:** `feature`  
 **Subdomains:** `quests` `progression`  
@@ -741,10 +741,10 @@ Use events and stable world-state predicates.
 
 Verify current `main`, especially:
 
-- `docs/plans/quests-progression-009-dark-forest-ruins-treasure-map.md`;
+- `docs/plans/archive/quests-progression-009-dark-forest-ruins-treasure-map.md`;
 - `docs/plans/implementation-notes/quests-progression-009-dark-forest-ruins-treasure-map-implementation-notes.md`;
-- `docs/plans/quests-progression-036-one-shot-authored-treasure-map-pickup.md`;
-- `docs/plans/quests-progression-039-lost-treasure-chronicles-chronicle-deciphering-and-specialist.md`;
+- `docs/plans/archive/quests-progression-036-one-shot-authored-treasure-map-pickup.md`;
+- `docs/plans/archive/quests-progression-039-lost-treasure-chronicles-chronicle-deciphering-and-specialist.md`;
 - `src/world/locations/darkForestTreasureSite.ts`;
 - `src/world/locations/darkForestTreasureSite.test.ts`;
 - `src/items/authoredWorldPickups.ts`;

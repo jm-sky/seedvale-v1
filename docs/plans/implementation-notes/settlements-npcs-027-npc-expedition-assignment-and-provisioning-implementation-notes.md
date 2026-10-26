@@ -1,6 +1,6 @@
 # Implementation Notes: NPC expedition assignment and provisioning
 
-**Plan:** `docs/plans/settlements-npcs-027-npc-expedition-assignment-and-provisioning.md`  
+**Plan:** `docs/plans/archive/settlements-npcs-027-npc-expedition-assignment-and-provisioning.md`  
 **Reviewed:** 2026-09-15  
 **Codebase:** `main`
 

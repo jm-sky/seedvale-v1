@@ -1,6 +1,6 @@
 # B3 recon — player Y surface snap at passage→chamber (2026-09-10)
 
-> Plan: `docs/plans/world-terrain-008-underground-caves-v2.md`
+> Plan: `docs/plans/archive/world-terrain-008-underground-caves-v2.md`
 > Against current `main` source only. No commit archaeology.
 > Harness: `src/world/caves/caveGameplayQuery.b3-chamber-snap-recon.test.ts`
 > **B3 remains in progress.** Do not treat automated tests as closing it.

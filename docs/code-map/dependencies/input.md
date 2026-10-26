@@ -19,6 +19,7 @@ Generated from TypeScript imports.
 - `app/playerDownedInputGating.ts`
 - `debug/caves/caveHeightfieldPlayer.ts`
 - `debug/createCaveHeightfieldTestScene.ts`
+- `debug/flyCam.ts`
 - `input/Keyboard.test.ts`
 - `input/MouseLook.ts`
 - `input/createTouchControls.ts`
@@ -43,6 +44,7 @@ Generated from TypeScript imports.
 - `app/userActions.ts`
 - `debug/caves/caveHeightfieldPlayer.ts`
 - `debug/createCaveHeightfieldTestScene.ts`
+- `debug/flyCam.ts`
 - `input/createTouchControls.ts`
 - `player/PlayerController.ts`
 

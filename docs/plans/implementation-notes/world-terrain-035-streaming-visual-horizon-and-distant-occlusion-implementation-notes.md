@@ -1,7 +1,7 @@
 # Implementation notes: world-terrain-035 streaming visual horizon and distant occlusion
 
 **Reviewed:** 2026-09-15  
-**Plan:** `docs/plans/world-terrain-035-streaming-visual-horizon-and-distant-occlusion.md`  
+**Plan:** `docs/plans/archive/world-terrain-035-streaming-visual-horizon-and-distant-occlusion.md`  
 **Baseline:** `main` at `f652b7baf9ff2a7c61954100483c50a41e2a1c3b`
 
 ## Current code facts

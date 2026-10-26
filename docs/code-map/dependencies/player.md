@@ -68,6 +68,7 @@ Generated from TypeScript imports.
 - `app/userActions.ts`
 - `assets/assetIndex.ts`
 - `debug/caves/caveHeightfieldTraversal.test.ts`
+- `debug/flyCam.ts`
 - `debug/npcDebugApi.ts`
 - `fauna/AnimalAgent.ts`
 - `fauna/animalCorpse.ts`

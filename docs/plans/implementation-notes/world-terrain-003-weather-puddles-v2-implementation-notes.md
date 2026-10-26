@@ -1,7 +1,7 @@
 # Implementation notes — world-terrain-003 (Weather puddles V2)
 
 **Reviewed:** 2026-08-31  
-**Plan:** `docs/plans/world-terrain-003-weather-puddles-v2.md`  
+**Plan:** `docs/plans/archive/world-terrain-003-weather-puddles-v2.md`  
 **Status:** implementation recon complete
 
 ## Review verdict

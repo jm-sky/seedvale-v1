@@ -4,7 +4,7 @@
 **Status:** `draft` 📝
 **Type:** feature
 **Priority:** medium · **Effort:** L
-**Depends on:** settlements-npcs-045, ~~items-player-016~~
+**Depends on:** ~~settlements-npcs-045~~, ~~items-player-016~~
 **Domain:** `quests-progression`
 **Subdomains:** `progression` `relationships`
 **Tags:** `elder` `skills` `knowledge` `books`

@@ -4,7 +4,7 @@
 **Status:** `planned` 📋
 **Type:** polish
 **Priority:** high · **Effort:** M
-**Depends on:** ~~quests-progression-004~~, quests-progression-033, quests-progression-034
+**Depends on:** ~~quests-progression-004~~, ~~quests-progression-033~~, ~~quests-progression-034~~
 **Domain:** `quests-progression`
 **Subdomains:** `quests` `progression` `relationships`
 **Tags:** `offers` `pacing` `renown` `reputation`

@@ -1,6 +1,6 @@
 # Implementation Notes: NPC Helper Resource Delivery
 
-**Plan:** `docs/plans/2026-08-19--167--npc-helper-resource-delivery.md`
+**Plan:** `docs/plans/archive/2026-08-19--167--npc-helper-resource-delivery.md`
 **Reviewed:** 2026-08-25
 **Status:** `done` — see plan's §19 implementation notes (2026-08-27) for what was actually built.
 

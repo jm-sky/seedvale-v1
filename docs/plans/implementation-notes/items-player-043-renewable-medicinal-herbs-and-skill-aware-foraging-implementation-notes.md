@@ -1,6 +1,6 @@
 # Implementation Notes: items-player-043 — Renewable medicinal herbs and skill-aware foraging
 
-**Plan:** `docs/plans/items-player-043-renewable-medicinal-herbs-and-skill-aware-foraging.md`  
+**Plan:** `docs/plans/archive/items-player-043-renewable-medicinal-herbs-and-skill-aware-foraging.md`  
 **Reviewed:** 2026-09-16  
 **Source:** current `main` codebase + `docs/plans/PLANNING.md` + related skill/injury plans
 

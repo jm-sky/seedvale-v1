@@ -1,6 +1,6 @@
 # Implementation notes: fauna-026 — predator ↔ livestock encounter set
 
-Plan: `docs/plans/fauna-026-predator-livestock-encounter-set.md`
+Plan: `docs/plans/archive/fauna-026-predator-livestock-encounter-set.md`
 
 ## Recon baseline
 

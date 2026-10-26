@@ -1,6 +1,6 @@
 # Implementation Notes: Underground Caves V2 — B4
 
-> Plan: `docs/plans/world-terrain-008-underground-caves-v2.md`  
+> Plan: `docs/plans/archive/world-terrain-008-underground-caves-v2.md`  
 > Recon: `docs/design/caves/05-b4-streaming-lifecycle-performance-recon.md`  
 > Date: **2026-09-10**  
 > Scope: **Milestone B4 only — streaming + lifecycle + performance**

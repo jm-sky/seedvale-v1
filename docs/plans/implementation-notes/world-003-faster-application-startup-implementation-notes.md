@@ -1,6 +1,6 @@
 # Implementation notes — plan world-003: Faster Application Startup
 
-**Implemented:** 2026-08-27 · **Plan:** [world-003-faster-application-startup.md](../world-003-faster-application-startup.md)
+**Implemented:** 2026-08-27 · **Plan:** [world-003-faster-application-startup.md](../archive/world-003-faster-application-startup.md)
 
 ## 1. Core mechanism: `createWorldBundle()` returns before the world is fully built
 

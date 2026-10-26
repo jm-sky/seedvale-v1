@@ -1,6 +1,6 @@
 # Implementation Notes: NPC Goals & Persistent Plans
 
-**Plan:** docs/plans/ai-004-npc-goals-and-persistent-plans.md  
+**Plan:** docs/plans/archive/ai-004-npc-goals-and-persistent-plans.md  
 **Reviewed:** 2026-08-31  
 **Status:** planned 📋
 

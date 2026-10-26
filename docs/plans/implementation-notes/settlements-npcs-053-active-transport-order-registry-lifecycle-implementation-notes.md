@@ -1,6 +1,6 @@
 # Implementation notes: settlements-npcs-053 active TransportOrder registry lifecycle
 
-**Plan:** `docs/plans/settlements-npcs-053-active-transport-order-registry-lifecycle.md`  
+**Plan:** `docs/plans/archive/settlements-npcs-053-active-transport-order-registry-lifecycle.md`  
 **Recon baseline:** current `main` on 2026-09-19
 
 ## Current ownership and invariants

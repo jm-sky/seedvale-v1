@@ -1,7 +1,7 @@
 # Cave V2 — B4 streaming, lifecycle and performance recon
 
 **Date:** 2026-09-10  
-**Plan:** `docs/plans/world-terrain-008-underground-caves-v2.md`  
+**Plan:** `docs/plans/archive/world-terrain-008-underground-caves-v2.md`  
 **Milestone:** B4 — streaming + lifecycle + performance  
 **Status:** focused recon complete; no implementation in this document
 

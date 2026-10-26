@@ -1,6 +1,6 @@
 # Implementation notes — NPC & Animal Target Commitment
 
-**Plan:** `docs/plans/npc-005-npc-animal-target-commitment.md`
+**Plan:** `docs/plans/archive/npc-005-npc-animal-target-commitment.md`
 **Status:** verification needed — see plan §17 for the implementation summary
 **Purpose:** provide Claude Code with a focused implementation map based on the current `main` codebase; avoid repeating broad recon.
 

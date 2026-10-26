@@ -1,6 +1,6 @@
 # Implementation Notes: Wearable armor and combat equipment
 
-Plan: `docs/plans/items-player-029-wearable-armor-and-combat-equipment.md`
+Plan: `docs/plans/archive/items-player-029-wearable-armor-and-combat-equipment.md`
 
 ## Recon summary
 

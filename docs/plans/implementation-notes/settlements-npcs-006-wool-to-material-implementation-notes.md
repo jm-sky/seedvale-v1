@@ -1,6 +1,6 @@
 # Implementation notes: settlements-npcs-006 — Wool to material
 
-Plan: `docs/plans/settlements-npcs-006-wool-to-material.md`
+Plan: `docs/plans/archive/settlements-npcs-006-wool-to-material.md`
 
 **Reviewed:** 2026-09-11  
 **Status:** `verification needed` 🔍

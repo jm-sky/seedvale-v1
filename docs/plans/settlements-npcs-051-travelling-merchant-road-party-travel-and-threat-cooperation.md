@@ -4,7 +4,7 @@
 **Status:** `planned` 📋
 **Type:** feature
 **Priority:** high · **Effort:** L
-**Depends on:** world-035, settlements-npcs-049, settlements-npcs-050, settlements-npcs-048, npc-048, npc-057
+**Depends on:** world-035, settlements-npcs-049, settlements-npcs-050, ~~settlements-npcs-048~~, ~~npc-048~~, ~~npc-057~~
 **Domain:** `settlements-npcs`
 **Subdomains:** `logistics` `social`
 **Tags:** `merchant` `travel` `roads` `escort` `threats`

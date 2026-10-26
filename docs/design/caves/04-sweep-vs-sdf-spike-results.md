@@ -10,7 +10,7 @@ Selected representation: SDF / local continuous volume
 Milestone A closed
 ```
 
-Plan: `docs/plans/world-terrain-008-underground-caves-v2.md`
+Plan: `docs/plans/archive/world-terrain-008-underground-caves-v2.md`
 
 ---
 

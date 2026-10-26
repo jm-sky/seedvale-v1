@@ -3,7 +3,7 @@
 **Status:** `heightfield spike accepted (2026-09-11) — production migration is world-terrain-019`
 **Created:** 2026-09-11
 **Domain:** `world-terrain`
-**Supersedes (as the target representation):** `docs/plans/world-terrain-018-cave-heightfield-representation-spike.md` §4, §7, §8, §9
+**Supersedes (as the target representation):** `docs/plans/archive/world-terrain-018-cave-heightfield-representation-spike.md` §4, §7, §8, §9
 **Related:** `01-problem-and-requirements.md`, `02-generation-techniques-research.md`, `04-sweep-vs-sdf-spike-results.md`, `05-b4-streaming-lifecycle-performance-recon.md`
 
 > This document is the outcome of a focused recon of the merged heightfield spike

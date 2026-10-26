@@ -1,7 +1,7 @@
 # Implementation notes: world-terrain-028 archetype-aware cave story and loot anchors
 
 **Reviewed:** 2026-09-13  
-**Plan:** `docs/plans/world-terrain-028-archetype-aware-cave-story-and-loot-anchors.md`  
+**Plan:** `docs/plans/archive/world-terrain-028-archetype-aware-cave-story-and-loot-anchors.md`  
 **Baseline:** `main` at `cecb8551ee670ba97807678d9b60d913c351fbe5`
 
 ## Main recon findings

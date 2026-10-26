@@ -154,7 +154,7 @@ Read/verify contracts, likely little or no behavioural change:
 - `src/terrain/riverTileCache.ts`
 - `src/terrain/chunkHeightmap.ts`
 - `docs/state/water.md`
-- `docs/plans/world-terrain-011-river-sink-resolution-and-inland-drainage-recovery.md`
+- `docs/plans/archive/world-terrain-011-river-sink-resolution-and-inland-drainage-recovery.md`
 - `docs/plans/implementation-notes/world-terrain-011-river-sink-resolution-and-inland-drainage-recovery-implementation-notes.md`
 
 ## 10. Recommended implementation order

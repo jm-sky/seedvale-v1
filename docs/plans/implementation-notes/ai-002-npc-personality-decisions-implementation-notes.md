@@ -1,6 +1,6 @@
 # Implementation Notes: NPC Personality-aware Decisions
 
-**Plan:** `docs/plans/ai-002-npc-personality-decisions.md`
+**Plan:** `docs/plans/archive/ai-002-npc-personality-decisions.md`
 **Reviewed:** 2026-08-24
 **Status:** `verification needed` — implemented + technically verified 2026-08-24, browser verification pending
 

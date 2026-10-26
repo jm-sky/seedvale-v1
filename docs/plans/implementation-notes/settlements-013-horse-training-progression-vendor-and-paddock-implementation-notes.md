@@ -1,6 +1,6 @@
 # Implementation Notes: settlements-013 — Horse training progression, vendor and paddock
 
-**Plan:** `docs/plans/settlements-013-horse-training-progression-vendor-and-paddock.md`  
+**Plan:** `docs/plans/archive/settlements-013-horse-training-progression-vendor-and-paddock.md`  
 **Reviewed:** 2026-09-15  
 **Status:** `verification needed` 🔍  
 **Source of truth:** current `main` code + docs.

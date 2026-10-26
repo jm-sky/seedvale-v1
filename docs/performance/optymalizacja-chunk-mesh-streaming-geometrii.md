@@ -60,7 +60,7 @@ Historyczne wartości 45.5 / 92.6 ms są baseline sprzed `world-terrain-004`, ni
 
 ## Źródła
 
-- `docs/plans/world-terrain-004-chunk-mesh-streaming-geometry-optimization.md`
+- `docs/plans/archive/world-terrain-004-chunk-mesh-streaming-geometry-optimization.md`
 - `docs/plans/implementation-notes/world-terrain-004-chunk-mesh-streaming-geometry-optimization-implementation-notes.md`
 - `src/terrain/chunkMeshData.ts`
 - `src/terrain/chunkMeshCache.ts`

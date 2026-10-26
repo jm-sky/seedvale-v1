@@ -1,7 +1,7 @@
 # Implementation notes: quests-progression-024 natural cave contraband cache
 
 **Reviewed:** 2026-09-13  
-**Plan:** `docs/plans/quests-progression-024-suspicious-transport-natural-cave-cache.md`  
+**Plan:** `docs/plans/archive/quests-progression-024-suspicious-transport-natural-cave-cache.md`  
 **Baseline:** `main` at `b0d2cb0fd51214c6bb30f194607aa6a599127e18`
 
 ## Main recon findings

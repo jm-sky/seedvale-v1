@@ -1,6 +1,6 @@
 # Implementation Notes: settlements-npcs-055 — Ordinary NPC Barter and Offer
 
-**Plan:** `docs/plans/settlements-npcs-055-ordinary-npc-barter-and-offer.md`  
+**Plan:** `docs/plans/archive/settlements-npcs-055-ordinary-npc-barter-and-offer.md`  
 **Reviewed:** 2026-09-20  
 **Status:** `planned` 📋  
 **Source of truth:** current `main` code + docs.

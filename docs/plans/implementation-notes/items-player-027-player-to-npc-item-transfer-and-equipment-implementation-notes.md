@@ -1,6 +1,6 @@
 # Implementation Notes: Player-to-NPC item transfer and equipment
 
-Plan: `docs/plans/items-player-027-player-to-npc-item-transfer-and-equipment.md`
+Plan: `docs/plans/archive/items-player-027-player-to-npc-item-transfer-and-equipment.md`
 
 ## Current code facts
 

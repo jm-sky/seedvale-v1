@@ -583,9 +583,9 @@ Resolve by stable dungeon/obstruction identity.
 
 Verify current `main`, especially:
 
-- `docs/plans/quests-progression-026-dungeon-bandit-treasure.md`;
+- `docs/plans/archive/quests-progression-026-dungeon-bandit-treasure.md`;
 - its implementation notes;
-- `docs/plans/quests-progression-027-lost-treasure-expedition.md`;
+- `docs/plans/archive/quests-progression-027-lost-treasure-expedition.md`;
 - its implementation notes;
 - `src/quests/lostTreasureExpedition.ts`;
 - cave anchor/content-policy modules;

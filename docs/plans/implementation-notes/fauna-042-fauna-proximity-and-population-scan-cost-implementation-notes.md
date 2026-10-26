@@ -1,6 +1,6 @@
 # Implementation notes: fauna-042 — fauna proximity and population scan cost
 
-**Plan:** [fauna-042](../fauna-042-fauna-proximity-and-population-scan-cost.md)  
+**Plan:** [fauna-042](../archive/fauna-042-fauna-proximity-and-population-scan-cost.md)  
 **Recon baseline:** reviewed against `main` at `3e34c058` on 2026-09-19; current code still wins if `main` advances  
 **Current state:** implementation landed; hardening/correctness tests landed 2026-09-19. Remaining User-owned work is browser/performance comparison (including cell-size A/B), not a second spatial-system implementation
 

@@ -4,7 +4,7 @@
 **Status:** `draft` 📝
 **Type:** feature
 **Priority:** medium · **Effort:** L
-**Depends on:** settlements-npcs-045, settlements-npcs-022, npc-011
+**Depends on:** ~~settlements-npcs-045~~, settlements-npcs-022, ~~npc-011~~
 **Domain:** `npc`
 **Subdomains:** `behavior` `work` `lifecycle`
 **Tags:** `elder` `fishing` `cemetery` `rats`

@@ -1,6 +1,6 @@
 # Implementation notes: fauna-029 animal water route preference and corpse world-time
 
-**Plan:** `docs/plans/fauna-029-animal-water-route-preference-and-corpse-world-time.md`  
+**Plan:** `docs/plans/archive/fauna-029-animal-water-route-preference-and-corpse-world-time.md`  
 **Baseline:** current `main` after fauna-015 (ability-only water) and fauna-028 (update cadence).
 
 `fauna-028` is already the AnimalAgent cadence plan. This work is **fauna-029**.

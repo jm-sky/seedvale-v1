@@ -1,6 +1,6 @@
 # Archived plans
 
-Historia planowania Seedvale, przeniesiona z [docs/plans/](../README.md) w dwóch snapshotach, gdy plany osiągnęły `done` albo `verification needed` i przestały być potrzebne w bieżącej mapie planowania. Zobacz [Snapshot 1](#snapshot-1--2026-08-07--2026-08-14) i [Snapshot 2](#snapshot-2--2026-08-14--2026-08-19) niżej.
+Historia planowania Seedvale, przeniesiona z [docs/plans/](../README.md) w dwóch snapshotach, gdy plany osiągnęły `done` albo `verification needed` i przestały być potrzebne w bieżącej mapie planowania. Zobacz [Snapshot 1](#snapshot-1--2026-08-07--2026-08-14), [Snapshot 2](#snapshot-2--2026-08-14--2026-08-19) i [Snapshot 3](#snapshot-3--2026-10-26) niżej.
 
 **Nie** source of truth dla „jak jest teraz”. Trwałe reguły: [STATE.md](../../STATE.md), [SETTLEMENTS.md](../../state/settlements.md), [WATER.md](../../state/water.md), [GRAPHICS.md](../../architecture/GRAPHICS.md), [ARCHITECTURE.md](../../architecture/ARCHITECTURE.md).
 
@@ -273,3 +273,67 @@ Implemented; still waiting on browser/play check.
 ---
 
 Companion notes stay next to the plan in this folder. Do not add new plans here.
+
+---
+
+## Snapshot 3 — 2026-10-26
+
+**Date:** 2026-10-26. **Scope:** deliberate archive of implemented `verification needed` and `done` plans under the author clarification in [documentation backlog audit](../../research/v1-revival/2026-10-26--documentation-backlog-audit.md) § Author clarification: manual gameplay verification alone is not a retention gate for implemented plans. Archive preserves truthful verification status; it does **not** imply browser/gameplay acceptance.
+
+**Counts:** **402** plans moved (343 `verification needed`, 59 `done`). Companion implementation notes remain under [`docs/plans/implementation-notes/`](../implementation-notes/) unless they were already co-located with an archived legacy plan.
+
+**Kept active (residual unfinished implementation):**
+
+| File | Residual |
+|------|----------|
+| [`items-player-012`](../items-player-012-player-gathering-and-fire-cooking-polish.md) | Tree branch gathering still pending; fish/Quick Actions shipped |
+| [`world-terrain-040`](../world-terrain-040-vegetation-render-budget-v2.md) | Stages 2/3 not started; Stage 1 awaits user benchmark |
+
+Draft / planned / in-progress plans (including partial stages such as `world-015`, `settlements-npcs-024`/`025`, `world-terrain-010`, `settlements-003`) stay in the [live map](../README.md). Mounted identity residual is owned only by [`items-player-061`](../items-player-061-lifecycle-mounted-livestock-reference.md); delivered lifecycle slice archived as [`items-player-057`](./items-player-057-mounted-player-lifecycle-and-restore-continuity.md).
+
+**Authority:** [STRATEGIC-BRIEF](../../research/v1-revival/STRATEGIC-BRIEF.md) governs revival product decisions. This snapshot is documentation housekeeping, not a revival backlog or acceptance report. Optional soak tests were not a prerequisite.
+
+### Verification needed (archived, 343)
+
+By domain:
+
+| Domain | Count |
+|--------|------:|
+| quests-progression | 51 |
+| settlements-npcs | 44 |
+| items-player | 41 |
+| npc | 41 |
+| fauna | 40 |
+| world-terrain | 35 |
+| ui-input | 27 |
+| world | 26 |
+| settlements | 19 |
+| tools | 9 |
+| persistence | 5 |
+| ai | 4 |
+| 2026-08-21- | 1 |
+
+Full file list: [`.snapshot-3-manifest.txt`](./.snapshot-3-manifest.txt) (all 402 moved basenames). Individual plan headers retain `verification needed` and their original checklists.
+
+### Done (archived, 59)
+
+| Domain | Count |
+|--------|------:|
+| ui-input | 9 |
+| npc | 8 |
+| world-terrain | 8 |
+| world | 7 |
+| items-player | 6 |
+| quests-progression | 6 |
+| fauna | 5 |
+| tools | 4 |
+| settlements-npcs | 2 |
+| 2026-08-13- | 1 |
+| 2026-08-19- | 1 |
+| persistence | 1 |
+| settlements | 1 |
+
+Notable examples with source-checked completion evidence in the audit: [`fauna-040`](./fauna-040-settlement-rat-reconciliation-checkpoint.md), [`fauna-043`](./fauna-043-frenzy-source-target-claim-cleanup.md), [`quests-progression-071`](./quests-progression-071-generated-opportunity-retention-semantics.md), [`quests-progression-072`](./quests-progression-072-invalidated-quest-restore-metadata-continuity.md).
+
+Companion notes stay next to the plan in this folder when co-located; otherwise see `docs/plans/implementation-notes/`. Do not add new plans here.
+

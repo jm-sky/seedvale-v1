@@ -3,7 +3,7 @@
 **Created:** 2026-09-17
 **Status:** `planned` 📋
 **Priority:** high · **Effort:** L
-**Depends on:** world-031
+**Depends on:** ~~world-031~~
 **Domain:** `settlements-npcs`
 **Type:** `feature`
 **Subdomains:** `household` `schedules` `social`

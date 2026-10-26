@@ -546,7 +546,7 @@ QuestManager should observe relevant events/state rather than polling all dungeo
 
 Verify current `main`, especially:
 
-- `docs/plans/quests-progression-027-lost-treasure-expedition.md`;
+- `docs/plans/archive/quests-progression-027-lost-treasure-expedition.md`;
 - its implementation notes;
 - `src/quests/lostTreasureExpedition.ts`;
 - `src/quests/lostTreasureExpeditionRuntime.ts`;

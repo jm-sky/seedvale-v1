@@ -20,9 +20,9 @@ The work is staged:
 
 1. **Stage 1 — progressive wood pile**: implemented authored discrete wood pile variants;
 2. **Stage 1 follow-up — split settlement vs household wood storage**: implemented — settlement wood and each household's wood have separate physical destinations and separate progressive piles;
-3. **Stage 2 — pooled food representatives**: **next implementation stage** — replace scale-only food quantity cues with bounded discrete representatives and stable cached pools;
-4. **Stage 3A — container-ready food layout foundation**: implement together with Stage 2 as neutral local/container-relative slot layout, without depending on an open-container asset;
-5. **Stage 3B — actual container fill visualization**: separate later stage, only after a suitable open container asset is checked in and verified;
+3. **Stage 2 — pooled food representatives**: **implemented** on `main` (`allocateFoodRepresentatives`, cached per-kind pools in `storageVisuals.ts` + tests) — bounded discrete representatives replace scale-only food cues;
+4. **Stage 3A — container-ready food layout foundation**: **implemented** with Stage 2 — eight stable local/container-relative slots; no open-container asset dependency;
+5. **Stage 3B — actual container fill visualization**: **remaining** — only after a suitable open container asset is checked in and verified;
 6. audit remaining `EconomicKind`s and defer those without real storage semantics/assets.
 
 ## Current verified state
@@ -69,7 +69,7 @@ The same `wood_pile_progressive.glb` and `createWoodPileVisual()` mechanism is r
 
 `landmarks.householdStorages` already provides deterministic, household-index-aligned yard storage anchors. Household wood extends the same yard-placement mechanism through `landmarks.householdWoodStorages` rather than creating a parallel place system.
 
-Food currently uses `FOOD_ITEM_KINDS` + `createItemMesh(kind)`. `src/settlement/storageVisuals.ts` still represents at most four food kinds by scaling one mesh per selected kind and recreates/disposes meshes when the signature changes. Stage 2 replaces that behaviour.
+Food uses `FOOD_ITEM_KINDS` + `createItemMesh(kind)` with Stage 2/3A pooling: `allocateFoodRepresentatives()` selects kinds, cached pools reuse meshes, and eight local slots place representatives. Pre-Stage-2 scale-only behaviour is gone. Stage 3B (open-container fill) remains.
 
 Current food item GLBs are not a blocker. `createItemMesh(kind)` remains the visual factory and already provides a usable fallback when a dedicated food model is absent. Dedicated carrot/cabbage/potato/tomato/fish models may improve presentation later but are not required for Stage 2/3A.
 
@@ -122,9 +122,9 @@ type SettlementStorageVisuals = {
 
 Do not reintroduce aggregate physical wood state or duplicate progressive-pile logic.
 
-### 2. Stage 2 — pooled food representatives — next implementation stage
+### 2. Stage 2 — pooled food representatives — implemented
 
-Implement Stage 2 without waiting for new models/assets.
+Stage 2 is on `main` (`allocateFoodRepresentatives` + pool reuse). Historical scope text below is retained for design intent; do not reimplement pooling.
 
 Keep one shared food visualization mechanism for household and settlement storage.
 
@@ -203,7 +203,7 @@ Requirements:
 
 Do not share actual `Object3D` instances between storage locations. Pool ownership remains per `FoodStorageVisual` controller.
 
-### 3. Stage 3A — container-ready food layout foundation — implement with Stage 2
+### 3. Stage 3A — container-ready food layout foundation — implemented with Stage 2
 
 Keep separation:
 
@@ -265,7 +265,7 @@ Only then adapt Stage 3A local slots to truthful inside-container placement. Do 
 ### 5. Remaining `EconomicKind`s
 
 - `wood`: Stage 1 + Stage 1 follow-up — implemented;
-- `food`: Stage 2 + 3A next; 3B after asset verification;
+- `food`: Stage 2 + 3A implemented; 3B after asset verification;
 - `iron`, `coal`, `gold`, `copper_ore`: defer until real destinations and semantically correct stored-material visuals exist;
 - `water`: defer until stored-water container/destination exists.
 

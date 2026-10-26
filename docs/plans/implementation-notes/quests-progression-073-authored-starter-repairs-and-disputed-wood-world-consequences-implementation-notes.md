@@ -1,6 +1,6 @@
 # Implementation Notes: Authored starter repairs and disputed wood world consequences
 
-Source plan: `docs/plans/quests-progression-073-authored-starter-repairs-and-disputed-wood-world-consequences.md`
+Source plan: `docs/plans/archive/quests-progression-073-authored-starter-repairs-and-disputed-wood-world-consequences.md`
 
 Recon against current `main` on 2026-09-20. These notes record implementation-relevant ownership, seams and discrepancies only.
 

@@ -71,6 +71,12 @@ Generated from TypeScript imports.
 
 ## `tools/assetBrowser/modelManifest.ts`
 
+## `tools/assetBrowser/state.default.test.ts`
+
+**Imports**
+
+- `tools/assetBrowser/state.ts`
+
 ## `tools/assetBrowser/state.ts`
 
 **Imports**
@@ -83,6 +89,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `tools/assetBrowser/state.default.test.ts`
 - `tools/assetBrowser/urlParams.test.ts`
 - `tools/assetBrowser/urlParams.ts`
 - `tools/assetBrowser/viewer/createAssetSlot.ts`
@@ -131,6 +138,19 @@ Generated from TypeScript imports.
 - `tools/assetBrowser/viewer/cameraPersist.test.ts`
 - `tools/assetBrowser/viewer/createMultiView.ts`
 
+## `tools/assetBrowser/viewer/compareCompanionAnimation.test.ts`
+
+**Imports**
+
+- `tools/assetBrowser/viewer/compareCompanionAnimation.ts`
+
+## `tools/assetBrowser/viewer/compareCompanionAnimation.ts`
+
+**Imported by**
+
+- `tools/assetBrowser/viewer/compareCompanionAnimation.test.ts`
+- `tools/assetBrowser/viewer/createAssetSlot.ts`
+
 ## `tools/assetBrowser/viewer/createAnchorGizmos.ts`
 
 **Imports**
@@ -160,7 +180,9 @@ Generated from TypeScript imports.
 - `player/playerVisualPreset.ts`
 - `tools/assetBrowser/hairTint.ts`
 - `tools/assetBrowser/state.ts`
+- `tools/assetBrowser/viewer/compareCompanionAnimation.ts`
 - `tools/assetBrowser/viewer/createAnchorGizmos.ts`
+- `tools/assetBrowser/viewer/mountCompareGarments.ts`
 
 **Imported by**
 
@@ -266,6 +288,25 @@ Generated from TypeScript imports.
 - `tools/assetBrowser/alignmentEdit.ts`
 - `tools/assetBrowser/viewer/createViewer.ts`
 - `tools/assetBrowser/viewer/mountAccessoryPreview.test.ts`
+
+## `tools/assetBrowser/viewer/mountCompareGarments.test.ts`
+
+**Imports**
+
+- `assets/loadGltf.ts`
+- `tools/assetBrowser/viewer/mountCompareGarments.ts`
+
+## `tools/assetBrowser/viewer/mountCompareGarments.ts`
+
+**Imports**
+
+- `assets/assetIndex.ts`
+- `assets/loadGltf.ts`
+
+**Imported by**
+
+- `tools/assetBrowser/viewer/createAssetSlot.ts`
+- `tools/assetBrowser/viewer/mountCompareGarments.test.ts`
 
 ## `tools/assetBrowser/viewer/mountHeldPreview.test.ts`
 

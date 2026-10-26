@@ -2,7 +2,7 @@
 
 **Status:** `done` — zaimplementowane 2026-08-19; playtest OK.
 **Created:** 2026-08-19
-**Źródło:** playtest planu [129](../plans/2026-08-16--129--coins-and-land-sales.md) i powiązany UX (strażnik, namiot/pułapka)
+**Źródło:** playtest planu [129](../plans/archive/2026-08-16--129--coins-and-land-sales.md) i powiązany UX (strażnik, namiot/pułapka)
 
 ## Objaw / prośba
 

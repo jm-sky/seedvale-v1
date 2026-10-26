@@ -1,7 +1,7 @@
 # Implementation notes: world-terrain-030 persistent cave worldgen cache
 
 **Reviewed:** 2026-09-14  
-**Plan:** `docs/plans/world-terrain-030-persistent-cave-worldgen-cache.md`  
+**Plan:** `docs/plans/archive/world-terrain-030-persistent-cave-worldgen-cache.md`  
 **Baseline:** `main` at `c88d72142cdd6b93489786a4fc9d07f579d013e8`
 
 ## Main recon findings

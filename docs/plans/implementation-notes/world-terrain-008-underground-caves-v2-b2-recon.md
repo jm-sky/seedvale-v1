@@ -1,6 +1,6 @@
 # Implementation Notes: Underground Caves V2 — B2 Recon
 
-> Plan: `docs/plans/world-terrain-008-underground-caves-v2.md`
+> Plan: `docs/plans/archive/world-terrain-008-underground-caves-v2.md`
 > Recon date: **2026-09-08**
 > Scope: **Milestone B2 only — entrance + gameplay spatial queries**
 > Diagnostic tests: `src/world/caves/caveGameplayQuery.b2-recon.test.ts`

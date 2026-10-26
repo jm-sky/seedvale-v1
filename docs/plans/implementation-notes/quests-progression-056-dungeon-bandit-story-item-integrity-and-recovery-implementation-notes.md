@@ -1,7 +1,7 @@
 # Implementation notes: quests-progression-056
 
 **Reviewed:** 2026-09-17  
-**Plan:** `docs/plans/quests-progression-056-dungeon-bandit-story-item-integrity-and-recovery.md`  
+**Plan:** `docs/plans/archive/quests-progression-056-dungeon-bandit-story-item-integrity-and-recovery.md`  
 **Baseline:** `main` after `c9d67c0d0d03b158a864d06194e2e614ed0b6d5f`
 
 ## Confirmed failure shape

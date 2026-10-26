@@ -230,7 +230,7 @@ If a new objective/event type is required, describe a reusable world fact (`reco
 
 ## Files / symbols with highest implementation value
 
-- `docs/plans/world-terrain-028-archetype-aware-cave-story-and-loot-anchors.md`;
+- `docs/plans/archive/world-terrain-028-archetype-aware-cave-story-and-loot-anchors.md`;
 - `src/app/worldBundle.ts::caveTreasureContainerSpecs()`;
 - `src/app/worldBundle.caveTreasure.test.ts`;
 - `src/world/caves/caveContentAnchors.ts`;

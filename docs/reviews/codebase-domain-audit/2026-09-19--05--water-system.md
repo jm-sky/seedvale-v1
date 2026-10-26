@@ -319,7 +319,7 @@ The existing `world-017` implementation notes explicitly called out `buildIntera
 - `src/terrain/chunkManager.ts::sampleLocalWater`
 - `src/terrain/chunkManager.ts::readField`
 - `src/terrain/waterSample.ts::sampleLocalWater`
-- `docs/plans/world-terrain-044-runtime-ground-query-authority-and-missing-chunk-fallbacks.md`
+- `docs/plans/archive/world-terrain-044-runtime-ground-query-authority-and-missing-chunk-fallbacks.md`
 
 **Code evidence:**
 
@@ -505,12 +505,12 @@ The known failure class was checked directly.
 
 Created:
 
-1. `docs/plans/world-terrain-045-canonical-local-water-player-traversal.md`
+1. `docs/plans/archive/world-terrain-045-canonical-local-water-player-traversal.md`
    - F05-1;
    - F05-5;
    - shares runtime availability semantics with `world-terrain-044`.
 
-2. `docs/plans/world-terrain-046-unified-water-shore-query-and-river-hotpath.md`
+2. `docs/plans/archive/world-terrain-046-unified-water-shore-query-and-river-hotpath.md`
    - F05-2;
    - F05-3;
    - F05-4.

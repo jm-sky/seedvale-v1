@@ -1,6 +1,6 @@
 # Implementation Notes: settlements-014 — Persistent settlement definition worldgen cache
 
-**Plan:** `docs/plans/settlements-014-persistent-settlement-definition-worldgen-cache.md`  
+**Plan:** `docs/plans/archive/settlements-014-persistent-settlement-definition-worldgen-cache.md`  
 **Reviewed:** 2026-09-16  
 **Status:** `verification needed` 🔍  
 **Source of truth:** current `main` code + docs.

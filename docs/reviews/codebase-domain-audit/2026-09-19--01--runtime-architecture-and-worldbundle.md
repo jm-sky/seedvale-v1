@@ -258,7 +258,7 @@ They document F4 historically, but there is no active implementation plan for it
 
 Created:
 
-- `docs/plans/world-033-worldbundle-rebuild-transaction-and-lifecycle-safety.md`
+- `docs/plans/archive/world-033-worldbundle-rebuild-transaction-and-lifecycle-safety.md`
 
 It owns F3–F5 as one coherent lifecycle boundary: suspend runtime while the world projection is invalid, make stale/teardown cancellation prevent publication/post-work, and make rebuild failure cleanup/outcome explicit.
 

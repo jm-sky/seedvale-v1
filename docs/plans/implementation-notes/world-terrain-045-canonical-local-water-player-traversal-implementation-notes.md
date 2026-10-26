@@ -1,6 +1,6 @@
 # Implementation Notes: world-terrain-045 Canonical local water player traversal
 
-**Plan:** `docs/plans/world-terrain-045-canonical-local-water-player-traversal.md`  
+**Plan:** `docs/plans/archive/world-terrain-045-canonical-local-water-player-traversal.md`  
 **Reviewed against:** `main`, 2026-09-21
 
 ## Implementation status (2026-09-21)

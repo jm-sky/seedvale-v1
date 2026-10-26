@@ -2,9 +2,10 @@
 
 **Status:** `todo`  
 **Date:** 2026-08-14  
-**Source:** [review 012](../reviews/2026-08-14--012--perf-bottleneck-diagnosis.md)
+**Source:** [review 012](../reviews/2026-08-14--012--perf-bottleneck-diagnosis.md)  
+**Housekeeping (2026-10-26):** historical P0/P1 diagnosis from 2026-08-14. Later work owns pieces of this surface (e.g. shadow budget / N8AO plans, chunk streaming, agent presentation LOD, vegetation budget). Do **not** treat “no optimizations yet” as current truth — remeasure on the reference device and link residual work to the current owning plan rather than building a second general perf program from this issue.
 
-Nie implementować „przy okazji”. To lista potwierdzonych kosztów po naprawie instrumentacji.
+Nie implementować „przy okazji”. To lista potwierdzonych kosztów po naprawie instrumentacji (dated).
 
 ## P0
 

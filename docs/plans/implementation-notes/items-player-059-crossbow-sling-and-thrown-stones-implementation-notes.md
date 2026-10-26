@@ -1,6 +1,6 @@
 # Implementation Notes: Crossbow, sling and thrown stones
 
-Plan: `docs/plans/items-player-059-crossbow-sling-and-thrown-stones.md`
+Plan: `docs/plans/archive/items-player-059-crossbow-sling-and-thrown-stones.md`
 
 These notes reflect current `main`. Current code remains authoritative if it changes before implementation.
 

@@ -1,6 +1,6 @@
 # Implementation notes: fauna-031 — Wildlife habitat pressure assessment
 
-**Implemented:** 2026-09-16 · plan: [fauna-031](../fauna-031-wildlife-habitat-pressure-assessment.md)
+**Implemented:** 2026-09-16 · plan: [fauna-031](../archive/fauna-031-wildlife-habitat-pressure-assessment.md)
 
 Landed as a fauna-owned derived read model. `src/fauna/habitatPressure.ts` owns the snapshot contract, pure scoring, one-pass agent scan, TTL cache check and the lazy resolver. `createFauna()` holds a runtime-only `Map` and exposes `Fauna.getHabitatPressure`. The inert `WorldBundle` fauna stub returns `null`. Nothing is written to `SaveData`.
 

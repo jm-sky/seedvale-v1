@@ -6,7 +6,7 @@
 **Excluded:** `NpcAgent` (reviewed separately, 2026-09-03), `createFauna.ts`, `settlement/livestock.ts`,
 `settlement/rats.ts` internals, `PlayerController`, the Vue/UI layer
 
-> This report is Phase 0 of `docs/plans/fauna-017-animal-agent-refactor.md` (status `draft`, effort `M`).
+> This report is Phase 0 of `docs/plans/archive/fauna-017-animal-agent-refactor.md` (status `draft`, effort `M`).
 > Phase 1 of that plan is to translate §8/§9 below into its own implementation steps. This review
 > recommends raising that plan's effort from `M` to `L` — see the Verdict.
 
@@ -841,7 +841,7 @@ Update `docs/state/fauna.md` (new module boundaries; correct the "traversability
 sentence so it stays scoped to `isWalkable`; add the fauna-011 dog description that
 `LOOSE-ENDS.md:21` says is missing), add manual routing rows to `docs/CODE_INDEX.md`, run
 `pnpm docs:sync`, tick `LOOSE-ENDS.md:23` and `:30`, add P9's two persisted-randomness notes, and
-update `docs/plans/fauna-017-animal-agent-refactor.md` from `draft` with the accepted scope and the
+update `docs/plans/archive/fauna-017-animal-agent-refactor.md` from `draft` with the accepted scope and the
 `L` effort.
 
 ---
@@ -881,7 +881,7 @@ update `docs/plans/fauna-017-animal-agent-refactor.md` from `draft` with the acc
 | `docs/state/fauna.md` | module boundaries; scope the traversal sentence; fauna-011 dog gap | 11 |
 | `docs/CODE_INDEX.md` | manual routing rows, then `pnpm docs:sync` | 11 |
 | `docs/plans/LOOSE-ENDS.md` | tick `:23` (partial) and `:30`; add P9's two notes | 11 |
-| `docs/plans/fauna-017-animal-agent-refactor.md` | `draft` → concrete plan; effort `M` → `L` | 11 |
+| `docs/plans/archive/fauna-017-animal-agent-refactor.md` | `draft` → concrete plan; effort `M` → `L` | 11 |
 
 ### Do not touch
 
@@ -1088,7 +1088,7 @@ class constructible in a test for the first time, which is what turns steps 5–
 into verified. Step 4 carries the one silent-failure risk in the whole plan (R1) and must not be started
 before 4a lands.
 
-> This is above the `M` currently recorded for `docs/plans/fauna-017-animal-agent-refactor.md`. If that
+> This is above the `M` currently recorded for `docs/plans/archive/fauna-017-animal-agent-refactor.md`. If that
 > plan must stay `M`, the defensible `M`-sized subset is **steps 1, 2, 3 and 4** (~700 lines moved, the
 > deps objects, the tick-tail unification and the presentation adoption) — which delivers the two
 > tracked `LOOSE-ENDS` items and fixes D2, and leaves steps 5–10 as a follow-up plan.

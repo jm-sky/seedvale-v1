@@ -1,6 +1,6 @@
 # Implementation Notes: items-player-047 — Additional compact weapons and master hunting bow
 
-Plan: `docs/plans/items-player-047-additional-compact-weapons-and-master-hunting-bow.md`
+Plan: `docs/plans/archive/items-player-047-additional-compact-weapons-and-master-hunting-bow.md`
 
 These notes record implementation-relevant facts from current `main`. Current code remains authoritative if it changes before implementation.
 

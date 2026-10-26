@@ -297,9 +297,9 @@ These established the current time categories and “freeze detailed simulation,
 
 Created:
 
-- `docs/plans/world-034-time-skip-clock-exactness-and-catch-up-coverage.md` — F1/F2.
-- `docs/plans/npc-058-time-skip-resource-and-interrupt-parity.md` — F3/F4.
-- `docs/plans/fauna-040-settlement-rat-reconciliation-checkpoint.md` — F5.
+- `docs/plans/archive/world-034-time-skip-clock-exactness-and-catch-up-coverage.md` — F1/F2.
+- `docs/plans/archive/npc-058-time-skip-resource-and-interrupt-parity.md` — F3/F4.
+- `docs/plans/archive/fauna-040-settlement-rat-reconciliation-checkpoint.md` — F5.
 
 No broad RNG plan was created: deterministic keyed mechanisms already exist, and remaining raw-RNG call sites should be handled by their owning domain plans/audits rather than by a global mutable RNG service.
 

@@ -1,6 +1,6 @@
 # Implementation Notes: settlements-npcs-042 — Vendor Identity and Settlement-Scaled Stock
 
-**Plan:** `docs/plans/settlements-npcs-042-vendor-identity-and-settlement-scaled-stock.md`  
+**Plan:** `docs/plans/archive/settlements-npcs-042-vendor-identity-and-settlement-scaled-stock.md`  
 **Reviewed:** 2026-09-16  
 **Source of truth:** current `main` code + docs.  
 **Recon baseline:** `main` at/after `9a28fbc8`.

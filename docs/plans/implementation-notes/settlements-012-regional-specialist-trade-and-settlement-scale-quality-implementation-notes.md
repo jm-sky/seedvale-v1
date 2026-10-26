@@ -1,6 +1,6 @@
 # Implementation Notes: settlements-012 — Regional specialist trade and settlement-scale quality
 
-**Plan:** `docs/plans/settlements-012-regional-specialist-trade-and-settlement-scale-quality.md`  
+**Plan:** `docs/plans/archive/settlements-012-regional-specialist-trade-and-settlement-scale-quality.md`  
 **Reviewed:** 2026-09-14  
 **Status:** `verification needed` 🔍  
 **Source of truth:** current `main` code + docs.

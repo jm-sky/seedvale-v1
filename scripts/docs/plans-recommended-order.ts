@@ -496,6 +496,14 @@ const main = async (): Promise<void> => {
   output.push('## How to read this')
   output.push('')
   output.push(
+    '**Authority:** this file ranks existing `planned` plans by dependency readiness. ' +
+    'It is **not** the V1 revival backlog and does not approve product order. ' +
+    'Revival scope and phase approval live in ' +
+    '`docs/research/v1-revival/STRATEGIC-BRIEF.md`; R7 candidates are evidence, not commitments. ' +
+    'Keep dependency facts below; do not treat Top 5 / Ready Now as author priority.',
+  )
+  output.push('')
+  output.push(
     'The Top 5 sections above are independent perspectives on the same plan set — ' +
     'each answers "what is worth looking at now" from a different angle. They are ' +
     'not alternative execution orders and may overlap or disagree with each other.',

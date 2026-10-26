@@ -1,6 +1,6 @@
 # Implementation notes: world-terrain-044 — runtime ground query authority and missing-chunk fallbacks
 
-**Plan:** `docs/plans/world-terrain-044-runtime-ground-query-authority-and-missing-chunk-fallbacks.md`  
+**Plan:** `docs/plans/archive/world-terrain-044-runtime-ground-query-authority-and-missing-chunk-fallbacks.md`  
 **Recon basis:** current `main`, 2026-09-20
 
 ## Implementation status (2026-09-21)

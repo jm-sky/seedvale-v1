@@ -1,6 +1,6 @@
 # Implementation Notes: Non-Home Settlement Food Production v1
 
-Plan: `docs/plans/settlements-npcs-030-non-home-settlement-food-production-v1.md`
+Plan: `docs/plans/archive/settlements-npcs-030-non-home-settlement-food-production-v1.md`
 
 Reviewed against `main` on 2026-09-12.
 

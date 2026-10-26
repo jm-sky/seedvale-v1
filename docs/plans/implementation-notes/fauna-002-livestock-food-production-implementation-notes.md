@@ -1,6 +1,6 @@
 # Implementation notes: fauna-002 — Livestock Food Production
 
-Plan: [`fauna-002-livestock-food-production.md`](../fauna-002-livestock-food-production.md)
+Plan: [`fauna-002-livestock-food-production.md`](../archive/fauna-002-livestock-food-production.md)
 
 > A pre-implementation review landed on `main` (this same file path, "Status:
 > review complete") while this implementation was already underway. This

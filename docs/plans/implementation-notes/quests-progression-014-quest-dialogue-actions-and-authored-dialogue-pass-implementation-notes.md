@@ -1,6 +1,6 @@
 # Implementation Notes: Quest Dialogue Actions & Authored Dialogue Pass
 
-Companion to `docs/plans/quests-progression-014-quest-dialogue-actions-and-authored-dialogue-pass.md`.
+Companion to `docs/plans/archive/quests-progression-014-quest-dialogue-actions-and-authored-dialogue-pass.md`.
 
 Recon against current `main` and `docs/STATE.md` on 2026-09-10. These notes record implementation-relevant seams and decisions only; current code wins if it changes before implementation.
 

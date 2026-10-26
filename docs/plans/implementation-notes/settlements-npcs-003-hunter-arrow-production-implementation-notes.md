@@ -1,6 +1,6 @@
 # Implementation notes — settlements-npcs-003: Hunter Arrow Production
 
-**Plan:** [settlements-npcs-003-hunter-arrow-production.md](../settlements-npcs-003-hunter-arrow-production.md)
+**Plan:** [settlements-npcs-003-hunter-arrow-production.md](../archive/settlements-npcs-003-hunter-arrow-production.md)
 **Implemented:** 2026-08-26
 
 ## 1. What changed

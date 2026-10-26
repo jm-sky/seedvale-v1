@@ -1,6 +1,6 @@
 # Implementation Notes: Profession staffing and settlement composition
 
-**Plan:** `docs/plans/settlements-npcs-023-profession-staffing-and-settlement-composition.md`  
+**Plan:** `docs/plans/archive/settlements-npcs-023-profession-staffing-and-settlement-composition.md`  
 **Reviewed:** 2026-09-10  
 **Codebase:** `main`
 

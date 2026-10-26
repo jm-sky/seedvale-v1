@@ -3,7 +3,7 @@
 **Created:** 2026-09-17
 **Status:** `draft` 📝
 **Priority:** high · **Effort:** L
-**Depends on:** world-031, settlements-npcs-044
+**Depends on:** ~~world-031~~, settlements-npcs-044
 **Domain:** `quests-progression`
 **Type:** `feature`
 **Subdomains:** `quests` `progression`

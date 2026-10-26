@@ -1,6 +1,6 @@
 # Implementation Notes: Mountain Peaks & Mountain Massifs
 
-**Plan:** [2026-08-21--191--mountain-peaks-and-massifs.md](./2026-08-21--191--mountain-peaks-and-massifs.md)
+**Plan:** [2026-08-21--191--mountain-peaks-and-massifs.md](../archive/2026-08-21--191--mountain-peaks-and-massifs.md)
 
 **Review basis:** current `main` codebase, `docs/STATE.md`, terrain state and the implemented 181 changes. Code is authoritative when it differs from the plan.
 

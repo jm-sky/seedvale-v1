@@ -1,7 +1,7 @@
 # Implementation notes: world-terrain-019 cave heightfield production migration
 
 **Reviewed:** 2026-09-11  
-**Plan:** `docs/plans/world-terrain-019-cave-heightfield-production-migration.md`  
+**Plan:** `docs/plans/archive/world-terrain-019-cave-heightfield-production-migration.md`  
 **Baseline:** `main` at `81f9b1a550e67a03b8b3414eabed81a853a259ff`  
 **Milestone A implemented:** 2026-09-11 — see “Milestone A — implemented” below.  
 **Milestone B implemented:** 2026-09-11 — see “Milestone B — implemented” below. Heightfield is presentation + terrain-mouth authority.  

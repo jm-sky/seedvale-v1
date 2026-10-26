@@ -1,6 +1,6 @@
 # Implementation notes: fauna-041 managed spawner population authority
 
-**Plan:** `docs/plans/fauna-041-managed-spawner-population-authority.md`  
+**Plan:** `docs/plans/archive/fauna-041-managed-spawner-population-authority.md`  
 **Recon baseline:** current `main` on 2026-09-19
 
 ## Current ownership and relevant state

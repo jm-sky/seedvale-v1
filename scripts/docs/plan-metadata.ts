@@ -200,7 +200,7 @@ export const formatValidationIssues = (issues: ValidationIssue[]): string =>
 /**
  * Best-effort, deterministic repair of a single plan's metadata header — see
  * `docs/plans/PLAN-METADATA.md` for the contract and
- * `docs/plans/tools-011-plan-metadata-graceful-repair-and-self-healing-synchronization.md`
+ * `docs/plans/archive/tools-011-plan-metadata-graceful-repair-and-self-healing-synchronization.md`
  * for the design this implements.
  *
  * A ChatGPT-authored plan frequently arrives with missing, unnormalized or

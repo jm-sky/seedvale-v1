@@ -1028,6 +1028,7 @@ Generated from TypeScript imports.
 - `debug/createCaveHeightfieldTestScene.ts`
 - `debug/createModelTestScene.ts`
 - `debug/debugMode.ts`
+- `debug/flyCam.ts`
 - `debug/npcDebugApi.ts`
 - `debug/npcInspectTrigger.ts`
 - `debug/playerGroundTrace.ts`
@@ -1261,6 +1262,7 @@ Generated from TypeScript imports.
 - `combat/rangedReticle.ts`
 - `debug/colliderDebugView.ts`
 - `debug/debugMode.ts`
+- `debug/flyCam.ts`
 - `debug/npcInspectTrigger.ts`
 - `debug/renderStateDebug.ts`
 - `fauna/AnimalAgent.ts`

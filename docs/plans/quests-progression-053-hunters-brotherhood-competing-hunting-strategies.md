@@ -4,7 +4,7 @@
 **Status:** `planned` 📋
 **Type:** feature
 **Priority:** medium · **Effort:** L
-**Depends on:** quests-progression-049
+**Depends on:** ~~quests-progression-049~~
 **Domain:** `quests-progression`
 **Subdomains:** `quests` `relationships` `progression`
 **Tags:** `hunters-brotherhood` `fauna` `choice` `consequences`

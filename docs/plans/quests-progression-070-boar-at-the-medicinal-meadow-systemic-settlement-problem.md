@@ -4,7 +4,7 @@
 **Status:** `planned` 📋
 **Type:** feature
 **Priority:** medium · **Effort:** L
-**Depends on:** npc-057, world-terrain-042
+**Depends on:** ~~npc-057~~, world-terrain-042
 **Domain:** `quests-progression`
 **Subdomains:** `quests` `world-problems` `settlement`
 **Tags:** `boar` `herbs` `fauna` `npc` `world-state`

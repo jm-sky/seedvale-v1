@@ -1,6 +1,6 @@
 # Implementation notes: npc-060 social pairing cadence and allocation
 
-**Plan:** `docs/plans/npc-060-social-pairing-cadence-and-allocation.md`  
+**Plan:** `docs/plans/archive/npc-060-social-pairing-cadence-and-allocation.md`  
 **Recon baseline:** current `main` on 2026-09-19
 
 ## Current ownership and lifecycle

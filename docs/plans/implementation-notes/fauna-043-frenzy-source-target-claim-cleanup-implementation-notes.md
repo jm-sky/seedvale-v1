@@ -2,7 +2,7 @@
 
 **Recon date:** 2026-09-19  
 **Target:** `main`  
-**Source plan:** `docs/plans/fauna-043-frenzy-source-target-claim-cleanup.md`
+**Source plan:** `docs/plans/archive/fauna-043-frenzy-source-target-claim-cleanup.md`
 
 ## Current code state
 

@@ -2,7 +2,7 @@
 
 **Recon date:** 2026-09-19  
 **Target:** `main`  
-**Source plan:** `docs/plans/fauna-040-settlement-rat-reconciliation-checkpoint.md`
+**Source plan:** `docs/plans/archive/fauna-040-settlement-rat-reconciliation-checkpoint.md`
 
 ## Current code state
 

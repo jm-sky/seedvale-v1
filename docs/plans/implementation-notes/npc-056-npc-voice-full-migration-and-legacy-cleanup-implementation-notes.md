@@ -1,6 +1,6 @@
 # Implementation Notes: npc-056 — NPC voice full migration and legacy cleanup
 
-**Plan:** `docs/plans/npc-056-npc-voice-full-migration-and-legacy-cleanup.md`
+**Plan:** `docs/plans/archive/npc-056-npc-voice-full-migration-and-legacy-cleanup.md`
 **Reviewed:** 2026-09-18
 **Source:** current `main` + targeted NPC voice/dialogue/quest/audio recon
 

@@ -1,6 +1,6 @@
 # Implementation Notes: Cave Heightfield Representation Spike
 
-> Plan: `docs/plans/world-terrain-018-cave-heightfield-representation-spike.md`  
+> Plan: `docs/plans/archive/world-terrain-018-cave-heightfield-representation-spike.md`  
 > Date: **2026-09-10**  
 > Scope: isolated cave heightfield comparison harness only
 

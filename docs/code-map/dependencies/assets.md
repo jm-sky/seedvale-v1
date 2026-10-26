@@ -136,6 +136,7 @@ Generated from TypeScript imports.
 - `tools/assetBrowser/viewer/createViewer.ts`
 - `tools/assetBrowser/viewer/mountAccessoryPreview.test.ts`
 - `tools/assetBrowser/viewer/mountAccessoryPreview.ts`
+- `tools/assetBrowser/viewer/mountCompareGarments.ts`
 - `tools/assetBrowser/viewer/mountHeldPreview.test.ts`
 - `tools/assetBrowser/viewer/mountHeldPreview.ts`
 - `tools/assetBrowser/viewer/reportFromScene.ts`
@@ -251,6 +252,8 @@ Generated from TypeScript imports.
 - `terrain/chunkManager.ts`
 - `terrain/resourceDeposits.ts`
 - `tools/assetBrowser/viewer/createAssetSlot.ts`
+- `tools/assetBrowser/viewer/mountCompareGarments.test.ts`
+- `tools/assetBrowser/viewer/mountCompareGarments.ts`
 - `tools/assetBrowser/viewer/mountHeldPreview.ts`
 - `world/cartProp.sharedGpu.test.ts`
 - `world/cartProp.ts`

@@ -1,7 +1,7 @@
 # Implementation Notes: ui-input-005 Lodging Navigation Recovery and Cancellation
 
 **Reviewed:** 2026-08-31
-**Plan:** `docs/plans/ui-input-005-lodging-navigation-recovery-and-cancellation.md`
+**Plan:** `docs/plans/archive/ui-input-005-lodging-navigation-recovery-and-cancellation.md`
 **Status:** implementation notes
 **Source of truth:** current `main` code, `docs/STATE.md`, and the existing plan 168 implementation notes.
 

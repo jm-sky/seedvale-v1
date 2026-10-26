@@ -236,7 +236,7 @@ Core/current:
 
 - [`docs/STATE.md`](../STATE.md)
 - [`docs/architecture/GRAPHICS.md`](../architecture/GRAPHICS.md)
-- [`world-terrain-004`](../plans/world-terrain-004-chunk-mesh-streaming-geometry-optimization.md)
+- [`world-terrain-004`](../plans/archive/world-terrain-004-chunk-mesh-streaming-geometry-optimization.md)
 - [`world-terrain-004 implementation notes`](../plans/implementation-notes/world-terrain-004-chunk-mesh-streaming-geometry-optimization-implementation-notes.md)
 - [`Plan 143 — Cross-chunk vegetation batching`](../plans/archive/2026-08-17--143--cross-chunk-vegetation-batching.md)
 - [`Plan 144 — Water reflection GPU optimization`](../plans/archive/2026-08-17--144--water-reflection-gpu-optimization.md)

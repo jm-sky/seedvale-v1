@@ -1,7 +1,7 @@
 # SEEDVALE — IMPLEMENTATION PREFLIGHT
 
 ## Target
-Plan: `docs/plans/settlements-npcs-005-local-resource-exchange.md`
+Plan: `docs/plans/archive/settlements-npcs-005-local-resource-exchange.md`
 Implementation notes: `docs/plans/implementation-notes/settlements-npcs-005-local-resource-exchange-implementation-notes.md`
 HEAD: efffef9 | branch: main
 Working tree: HAS CHANGES — preserve them

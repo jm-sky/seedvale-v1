@@ -119,7 +119,7 @@ Priorytetowo testować pure resolver + realne seams, nie snapshoty implementacyj
 - `src/fauna/wolfDenScenario.ts` — pressure/humanTaste pozostają orthogonalne do variant.
 - `src/settlement/propUtils.ts::tintPropMaterials()` — istniejący bezpieczny material-clone/tint helper do reuse.
 - `src/quests/QuestManager.ts` / `src/app/createApp.ts` — zachować istniejący `markDangerous()` injection contract; zmieniać tylko jeśli konsolidacja wymaga mechanicznej adaptacji.
-- `docs/plans/quests-progression-019-dangerous-animal-deeds-local-reputation.md` — downstream consumer significance; nie implementować reputation w tym planie.
+- `docs/plans/archive/quests-progression-019-dangerous-animal-deeds-local-reputation.md` — downstream consumer significance; nie implementować reputation w tym planie.
 
 ## Kolejność implementacji
 

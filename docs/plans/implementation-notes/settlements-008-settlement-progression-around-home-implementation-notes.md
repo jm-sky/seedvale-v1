@@ -1,6 +1,6 @@
 # Implementation notes: Settlement progression around home
 
-Plan: `docs/plans/settlements-008-settlement-progression-around-home.md`
+Plan: `docs/plans/archive/settlements-008-settlement-progression-around-home.md`
 
 ## Current seams to reuse
 

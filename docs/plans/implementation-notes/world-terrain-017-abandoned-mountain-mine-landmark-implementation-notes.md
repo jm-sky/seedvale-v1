@@ -1,7 +1,7 @@
 # world-terrain-017 — Abandoned mountain mine landmark — implementation notes
 
 **Reviewed:** 2026-09-14  
-**Plan:** `docs/plans/world-terrain-017-abandoned-mountain-mine-landmark.md`
+**Plan:** `docs/plans/archive/world-terrain-017-abandoned-mountain-mine-landmark.md`
 
 ## Recon baseline
 

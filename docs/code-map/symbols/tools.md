@@ -42,15 +42,15 @@ Generated from exported TypeScript symbols.
 ## `tools/assetBrowser/state.ts`
 
 - `BackgroundPreset` — type — line 13
-- `browserState` — const — line 57
+- `browserState` — const — line 62
 - `BrowserState` — type — line 18
 - `FocusMode` — type — line 16
 - `LightingPreset` — type — line 12
 - `PoseMode` — type — line 14
 - `RenderMode` — type — line 11
-- `resetSlotDiagnostics` — function — line 164
-- `slotDiagnostics` — const — line 127
-- `SlotDiagnostics` — type — line 103
+- `resetSlotDiagnostics` — function — line 170
+- `slotDiagnostics` — const — line 133
+- `SlotDiagnostics` — type — line 109
 - `ViewLayout` — type — line 10
 
 ## `tools/assetBrowser/urlParams.ts`
@@ -72,6 +72,10 @@ Generated from exported TypeScript symbols.
 - `restoreCamerasFromPersist` — function — line 109
 - `saveCameraPersist` — function — line 64
 
+## `tools/assetBrowser/viewer/compareCompanionAnimation.ts`
+
+- `compareCompanionAnimationUrl` — function — line 5
+
 ## `tools/assetBrowser/viewer/createAnchorGizmos.ts`
 
 - `AnchorGizmoGroup` — type — line 13
@@ -79,16 +83,16 @@ Generated from exported TypeScript symbols.
 
 ## `tools/assetBrowser/viewer/createAssetSlot.ts`
 
-- `AssetSlot` — type — line 35
-- `boundsData` — function — line 333
-- `boxFromModel` — function — line 76
-- `collectMeshStats` — function — line 81
-- `createAssetSlot` — function — line 133
-- `MeshStats` — type — line 30
-- `reconcilePoseClip` — function — line 121
-- `resolveAppliedClipName` — function — line 108
-- `setWireframe` — function — line 351
-- `sortedClipNames` — function — line 103
+- `AssetSlot` — type — line 37
+- `boundsData` — function — line 372
+- `boxFromModel` — function — line 82
+- `collectMeshStats` — function — line 87
+- `createAssetSlot` — function — line 139
+- `MeshStats` — type — line 32
+- `reconcilePoseClip` — function — line 127
+- `resolveAppliedClipName` — function — line 114
+- `setWireframe` — function — line 390
+- `sortedClipNames` — function — line 109
 
 ## `tools/assetBrowser/viewer/createMultiView.ts`
 
@@ -105,9 +109,9 @@ Generated from exported TypeScript symbols.
 
 ## `tools/assetBrowser/viewer/createViewer.ts`
 
-- `AssetViewer` — type — line 37
-- `createViewer` — function — line 68
-- `syncDiagnostics` — function — line 453
+- `AssetViewer` — type — line 38
+- `createViewer` — function — line 69
+- `syncDiagnostics` — function — line 460
 
 ## `tools/assetBrowser/viewer/createViewerScene.ts`
 
@@ -137,6 +141,14 @@ Generated from exported TypeScript symbols.
 - `computeAccessoryPreviewState` — function — line 55
   - domain: items-player
 - `equipmentVisualForEntry` — function — line 45
+
+## `tools/assetBrowser/viewer/mountCompareGarments.ts`
+
+- `attachCompareGarments` — function — line 100
+- `attachCompareHead` — function — line 67
+- `attachCompareKit` — function — line 173
+- `CompareAttachResult` — type — line 7
+- `CompareKitOptions` — type — line 167
 
 ## `tools/assetBrowser/viewer/mountHeldPreview.ts`
 

@@ -1,6 +1,6 @@
 # Implementation Notes: settlements-npcs-033 — Player Trading with Any NPC
 
-**Plan:** `docs/plans/settlements-npcs-033-player-trading-with-any-npc.md`  
+**Plan:** `docs/plans/archive/settlements-npcs-033-player-trading-with-any-npc.md`  
 **Reviewed:** 2026-09-12  
 **Status:** `verification needed` 🔍  
 **Source of truth:** current `main` code + docs.

@@ -1,7 +1,7 @@
 # Implementation notes: world-terrain-025 underground cave pool
 
 **Reviewed:** 2026-09-13  
-**Plan:** `docs/plans/world-terrain-025-underground-cave-pool.md`  
+**Plan:** `docs/plans/archive/world-terrain-025-underground-cave-pool.md`  
 **Baseline:** `main` at `e2a9b21f1ed24053bfe1bffd2266cbcc682811f6`
 
 Focused handoff for the current Cave V2 code. The dependency `world-terrain-024` is already implemented on `main`; use its dungeon contracts rather than reconstructing dungeon semantics.

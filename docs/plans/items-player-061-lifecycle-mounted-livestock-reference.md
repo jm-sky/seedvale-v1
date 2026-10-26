@@ -4,7 +4,8 @@
 **Status:** `draft` 📝
 **Type:** fix
 **Priority:** high · **Effort:** S
-**Depends on:** ~~items-player-057~~, ~~settlements-npcs-048~~
+**Depends on:** ~~items-player-057~~, ~~settlements-npcs-048~~  
+**Owns residual from 057:** collision-safe mounted identity only (`PersistentLivestockRef` on `MountActions` / `SavePlayer.mountedAnimalId`). 057's lifecycle slice is delivered; do not duplicate it here.
 **Domain:** `items-player`
 **Subdomains:** `interaction`
 **Tags:** `lifecycle` `mount` `livestock` `persistence`

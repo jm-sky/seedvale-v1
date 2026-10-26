@@ -2,7 +2,7 @@
 
 **Reviewed:** 2026-09-13  
 **Implemented:** 2026-09-14  
-**Plan:** `docs/plans/quests-progression-026-dungeon-bandit-treasure.md`  
+**Plan:** `docs/plans/archive/quests-progression-026-dungeon-bandit-treasure.md`  
 **Baseline:** `main` at `3fe62b1f3c55efc53b76332e867dd83d7edfd1c8`
 
 ## Dependency status

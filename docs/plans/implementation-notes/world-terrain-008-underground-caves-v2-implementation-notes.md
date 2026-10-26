@@ -1,7 +1,7 @@
 # Implementation Notes: Underground Caves V2
 
-> Plan: `docs/plans/world-terrain-008-underground-caves-v2.md`
-> V1 plan: `docs/plans/world-terrain-007-underground-caves.md` (+ its notes/contract/review)
+> Plan: `docs/plans/archive/world-terrain-008-underground-caves-v2.md`
+> V1 plan: `docs/plans/archive/world-terrain-007-underground-caves.md` (+ its notes/contract/review)
 > Recon date: **2026-09-04**, against `main` @ `2ddd86ec`.
 
 These notes are the code-level map for the agent implementing **Milestone A only**
@@ -231,7 +231,7 @@ Rules to hold the line:
   makes a bend expressible without either spike inventing its own path model.
 - `features` is how shelf/overhang intent is stated so Sweep cannot quietly skip them.
   **`shelf`** — elevated floor region adjacent in XZ to lower floor (single `floorY` per
-  column; see `docs/plans/world-terrain-008-underground-caves-v2.md` §7). Production SDF
+  column; see `docs/plans/archive/world-terrain-008-underground-caves-v2.md` §7). Production SDF
   currently emits a floating solid box — implementation mismatch, not design semantics.
   **`overhang`** — volumetric ceiling/wall feature; may imply multi-interval columns.
 - Reuse `CaveEntrance` from `caveVolume.ts` rather than defining a second entrance

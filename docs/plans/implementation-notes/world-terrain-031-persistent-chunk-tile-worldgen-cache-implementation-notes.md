@@ -1,7 +1,7 @@
 # Implementation notes: world-terrain-031 persistent chunk tile worldgen cache
 
 **Reviewed:** 2026-09-14  
-**Plan:** `docs/plans/world-terrain-031-persistent-chunk-tile-worldgen-cache.md`  
+**Plan:** `docs/plans/archive/world-terrain-031-persistent-chunk-tile-worldgen-cache.md`  
 **Baseline:** `main` at `adb3fe70ca027f56cbaa27a0e13ee86e297b829c`
 
 ## Main recon findings

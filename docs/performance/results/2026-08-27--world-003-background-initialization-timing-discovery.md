@@ -1,7 +1,7 @@
 # World-003 — GLTF Loading Contention Discovery
 
 **Date:** 2026-08-27  
-**Related plan:** `docs/plans/world-003-faster-application-startup.md`  
+**Related plan:** `docs/plans/archive/world-003-faster-application-startup.md`  
 **Related:** `docs/plans/implementation-notes/world-003-faster-application-startup-implementation-notes.md`
 
 ## Discovery

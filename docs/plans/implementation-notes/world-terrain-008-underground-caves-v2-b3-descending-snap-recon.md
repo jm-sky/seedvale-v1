@@ -1,6 +1,6 @@
 # Implementation Notes: Underground Caves V2 — B3 Descending-Snap Recon
 
-> Plan: `docs/plans/world-terrain-008-underground-caves-v2.md`
+> Plan: `docs/plans/archive/world-terrain-008-underground-caves-v2.md`
 > Recon date: **2026-09-09**
 > Scope: remaining “player/camera pops to the surface a few metres past the
 > mouth, as the tunnel starts descending” after `ef420657` and `f5bacadb`.

@@ -4,7 +4,7 @@
 **Status:** `planned` 📋
 **Type:** feature
 **Priority:** medium · **Effort:** M
-**Depends on:** quests-progression-057, ~~items-player-046~~, ~~fauna-011~~
+**Depends on:** ~~quests-progression-057~~, ~~items-player-046~~, ~~fauna-011~~
 **Domain:** `quests-progression`
 **Subdomains:** `quests` `relationships`
 **Tags:** `medicine` `dog` `discovery` `world-action`

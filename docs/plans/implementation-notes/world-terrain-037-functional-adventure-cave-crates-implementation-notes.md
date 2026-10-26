@@ -1,7 +1,7 @@
 # Implementation notes: world-terrain-037 functional adventure cave crates
 
 **Reviewed:** 2026-09-16  
-**Plan:** `docs/plans/world-terrain-037-functional-adventure-cave-crates.md`
+**Plan:** `docs/plans/archive/world-terrain-037-functional-adventure-cave-crates.md`
 
 ## Recon findings
 

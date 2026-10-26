@@ -3,7 +3,7 @@ Done in 270ms using pnpm v11.20.0
 # SEEDVALE — IMPLEMENTATION PREFLIGHT
 
 ## Target
-Plan: `docs/plans/npc-002-npc-healing.md`
+Plan: `docs/plans/archive/npc-002-npc-healing.md`
 Implementation notes: `docs/plans/implementation-notes/npc-002-npc-healing-implementation-notes.md`
 HEAD: bfab5c0 | branch: main
 Working tree: HAS CHANGES — preserve them

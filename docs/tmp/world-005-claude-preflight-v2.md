@@ -3,7 +3,7 @@ Done in 263ms using pnpm v11.20.0
 # SEEDVALE — IMPLEMENTATION PREFLIGHT
 
 ## Target
-Plan: `docs/plans/world-005-new-game-time-reset.md`
+Plan: `docs/plans/archive/world-005-new-game-time-reset.md`
 Implementation notes: MISSING
 HEAD: bfab5c0 | branch: main
 Working tree: HAS CHANGES — preserve them

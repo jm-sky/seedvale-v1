@@ -3,8 +3,9 @@
 **Status:** `todo`
 **Date:** 2026-08-15
 **Source:** [review 013](../reviews/2026-08-15--013--architecture-and-performance-audit.md)
+**Housekeeping (2026-10-26):** historical O(N²) diagnosis. Related current owners include [`fauna-042`](../plans/archive/fauna-042-fauna-proximity-and-population-scan-cost.md), [`fauna-048`](../plans/fauna-048-agent-performance-village-query-scaling.md) and [`npc-063`](../plans/npc-063-agent-performance-update-cost-attribution.md). Do not build a second general spatial index from this issue; verify residual against those plans first.
 
-Nie implementować od razu — oba miejsca są dziś tanie (≤34 NPC, ≤28 fauna). Wpis śledzi ryzyko skalowania, nie pilny fix.
+Nie implementować od razu — oba miejsca były tanie przy ówczesnych populacjach. Wpis śledzi ryzyko skalowania (dated), nie pilny fix.
 
 ## P1 — no gating at all
 

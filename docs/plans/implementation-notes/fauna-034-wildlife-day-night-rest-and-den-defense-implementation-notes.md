@@ -1,6 +1,6 @@
 # Implementation notes: fauna-034 — Wildlife day/night rest and den defense
 
-**Plan:** [fauna-034](../fauna-034-wildlife-day-night-rest-and-den-defense.md)
+**Plan:** [fauna-034](../archive/fauna-034-wildlife-day-night-rest-and-den-defense.md)
 
 ## Verified current-code facts
 

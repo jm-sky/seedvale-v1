@@ -3,7 +3,7 @@
 **Created:** 2026-09-18
 **Status:** `draft` 📝
 **Priority:** medium-high · **Effort:** L
-**Depends on:** quests-progression-067, world-032, world-031, settlements-npcs-051
+**Depends on:** quests-progression-067, world-032, ~~world-031~~, settlements-npcs-051
 **Domain:** `quests-progression`
 **Type:** `feature`
 **Roadmap:** `quests-travelling-merchant-journeys.md`

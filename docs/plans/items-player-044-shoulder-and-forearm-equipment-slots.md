@@ -4,7 +4,7 @@
 **Status:** `planned` 📋
 **Priority:** medium · **Effort:** M
 **Model:** Sonnet, Composer
-**Depends on:** items-player-039
+**Depends on:** ~~items-player-039~~
 **Domain:** `items-player`
 **Type:** `feature`
 **Subdomains:** `items` `inventory` `presentation`

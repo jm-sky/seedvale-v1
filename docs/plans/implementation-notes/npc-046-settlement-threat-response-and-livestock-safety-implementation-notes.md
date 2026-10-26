@@ -1,6 +1,6 @@
 # Implementation Notes: npc-046 — NPC emergency locomotion for settlement threats
 
-**Plan:** `docs/plans/npc-046-settlement-threat-response-and-livestock-safety.md`  
+**Plan:** `docs/plans/archive/npc-046-settlement-threat-response-and-livestock-safety.md`  
 **Reviewed:** 2026-09-17  
 **Source:** current `main` + targeted NPC movement/threat/stamina/animation recon
 

@@ -4,7 +4,7 @@
 **Reviewed:** 2026-08-11
 **Review basis:** current `main` repository state, `CLAUDE.md`, `docs/STATE.md`, `docs/ROADMAP.md`, `docs/plans/README.md`, plan 057, plan 058 + its implementation notes, and the relevant item/interaction/tree/resource plans and code.
 
-> **Current truth (2026-08-11):** 057 is implemented, including **multi-stage chop** (`mature → limbed → felled → harvested`, yields `branch` 2/2/3). Prefer [`docs/STATE.md`](../STATE.md) and the **Implementation decisions / Multi-stage chop** sections at the bottom of this file over the pre-implementation review narrative above them when they disagree. APIs: `TreeLifecycle.advanceHarvest` / `harvestFully`; `advanceWorldTreeHarvest` / `harvestWorldTreeFully`.
+> **Current truth (2026-08-11):** 057 is implemented, including **multi-stage chop** (`mature → limbed → felled → harvested`, yields `branch` 2/2/3). Prefer [`docs/STATE.md`](../../STATE.md) and the **Implementation decisions / Multi-stage chop** sections at the bottom of this file over the pre-implementation review narrative above them when they disagree. APIs: `TreeLifecycle.advanceHarvest` / `harvestFully`; `advanceWorldTreeHarvest` / `harvestWorldTreeFully`.
 
 ## 1. Scope and architectural intent
 

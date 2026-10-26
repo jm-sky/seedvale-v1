@@ -1,7 +1,7 @@
 # Implementation notes: quests-progression-027 lost treasure expedition
 
 **Reviewed:** 2026-09-14  
-**Plan:** `docs/plans/quests-progression-027-lost-treasure-expedition.md`  
+**Plan:** `docs/plans/archive/quests-progression-027-lost-treasure-expedition.md`  
 **Baseline:** current `main` recon on 2026-09-14
 
 ## Dependency status

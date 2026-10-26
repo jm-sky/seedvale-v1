@@ -70,7 +70,7 @@ Relevant files:
 - `src/world/caveColliders.ts`
 - `src/world/createCaves.ts`
 - `docs/design/caves/01-problem-and-requirements.md`
-- `docs/plans/world-terrain-007-underground-caves.md`
+- `docs/plans/archive/world-terrain-007-underground-caves.md`
 
 ### Hard product constraints
 
@@ -1487,8 +1487,8 @@ This document does **not** change `01-problem-and-requirements.md` or select a r
 26. `docs/design/caves/01-problem-and-requirements.md` — cave requirements.  
     https://github.com/jm-sky/seedvale/blob/main/docs/design/caves/01-problem-and-requirements.md
 
-27. `docs/plans/world-terrain-007-underground-caves.md` — current cave plan/status.  
-    https://github.com/jm-sky/seedvale/blob/main/docs/plans/world-terrain-007-underground-caves.md
+27. `docs/plans/archive/world-terrain-007-underground-caves.md` — current cave plan/status.  
+    https://github.com/jm-sky/seedvale/blob/main/docs/plans/archive/world-terrain-007-underground-caves.md
 
 28. `src/world/caveGenerator.ts` — current deterministic graph generator.  
     https://github.com/jm-sky/seedvale/blob/main/src/world/caveGenerator.ts

@@ -3,7 +3,7 @@
 **Created:** 2026-09-15  
 **Status:** `planned` 📋  
 **Priority:** high · **Effort:** L  
-**Depends on:** quests-progression-045, quests-progression-044, quests-progression-043, quests-progression-042, quests-progression-041, quests-progression-040, quests-progression-039, quests-progression-038, quests-progression-037, ~~quests-progression-027~~, ~~quests-progression-009~~  
+**Depends on:** quests-progression-045, quests-progression-044, quests-progression-043, quests-progression-042, quests-progression-041, quests-progression-040, ~~quests-progression-039~~, ~~quests-progression-038~~, ~~quests-progression-037~~, ~~quests-progression-027~~, ~~quests-progression-009~~  
 **Domain:** `quests-progression`  
 **Type:** `polish`  
 **Subdomains:** `quests` `relationships` `progression`  

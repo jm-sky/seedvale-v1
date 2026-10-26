@@ -1,6 +1,6 @@
 # Implementation Notes: NPC Pressure Layer
 
-**Plan:** `docs/plans/ai-001-npc-pressure-layer.md`
+**Plan:** `docs/plans/archive/ai-001-npc-pressure-layer.md`
 **Reviewed:** 2026-08-24
 **Status:** `verification needed`
 

@@ -1,6 +1,6 @@
 # Implementation notes: fauna-004 — Sheep wool cycle and shepherd
 
-Plan: `docs/plans/fauna-004-sheep-wool-and-shepherd.md`
+Plan: `docs/plans/archive/fauna-004-sheep-wool-and-shepherd.md`
 
 ## Review outcome — 2026-09-06, updated 2026-09-10
 
@@ -57,7 +57,7 @@ Shepherd flock ma rozszerzyć ten pipeline zamiast tworzyć równoległy generat
 
 ### `settlements-npcs-023` — profession staffing/composition
 
-Plan `docs/plans/settlements-npcs-023-profession-staffing-and-settlement-composition.md` powinien zostać zaimplementowany **przed fauna-004** i jest authoritative generation-time seam dla profession composition.
+Plan `docs/plans/archive/settlements-npcs-023-profession-staffing-and-settlement-composition.md` powinien zostać zaimplementowany **przed fauna-004** i jest authoritative generation-time seam dla profession composition.
 
 Jego model wejściowy:
 

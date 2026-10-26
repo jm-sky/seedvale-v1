@@ -1,6 +1,6 @@
 # Implementation notes: Household wells and population scaling
 
-Plan: `docs/plans/settlements-npcs-035-household-wells-and-population-scaling.md`
+Plan: `docs/plans/archive/settlements-npcs-035-household-wells-and-population-scaling.md`
 
 ## Current ownership and control flow
 

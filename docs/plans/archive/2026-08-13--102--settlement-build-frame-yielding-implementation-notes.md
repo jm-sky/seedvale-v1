@@ -1,7 +1,7 @@
 # Implementation Notes: Settlement Build Frame Yielding
 
 **Plan:** [2026-08-13--102--settlement-build-frame-yielding.md](./2026-08-13--102--settlement-build-frame-yielding.md)
-**Issue:** [027 — settlement streaming main-thread freeze](../issues/2026-08-13--027--settlement-streaming-main-thread-freeze.md)
+**Issue:** [027 — settlement streaming main-thread freeze](../../issues/2026-08-13--027--settlement-streaming-main-thread-freeze.md)
 
 ## Status (2026-08-13)
 

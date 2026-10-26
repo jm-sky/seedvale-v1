@@ -4,7 +4,7 @@
 **Status:** `planned` 📋
 **Type:** feature
 **Priority:** medium · **Effort:** M
-**Depends on:** world-terrain-049
+**Depends on:** ~~world-terrain-049~~
 **Domain:** `world-terrain`
 **Subdomains:** `\` `vegetation\` `\` `terrain\` `\` `resources\`
 **Tags:** `\` `herbs\` `\` `meadow\` `\` `world-generation\` `\` `resources\`

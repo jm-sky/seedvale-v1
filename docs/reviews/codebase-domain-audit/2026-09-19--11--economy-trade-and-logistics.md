@@ -1,7 +1,7 @@
 # Codebase Domain Audit 11 — Economy, trade & logistics
 
 **Date:** 2026-09-19  
-**Master:** `docs/plans/tools-018-codebase-domain-and-flow-audit-master.md`  
+**Master:** `docs/plans/archive/tools-018-codebase-domain-and-flow-audit-master.md`  
 **Area:** 11 — Economy, trade & logistics  
 **Result:** ⚠️ reviewed with unresolved high finding  
 **Scope:** code correctness, architecture, lifecycle/persistence, performance only

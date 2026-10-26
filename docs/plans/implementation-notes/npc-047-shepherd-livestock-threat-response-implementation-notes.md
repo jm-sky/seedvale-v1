@@ -1,6 +1,6 @@
 # Implementation Notes: npc-047 — Shepherd livestock threat response
 
-**Plan:** `docs/plans/npc-047-shepherd-livestock-threat-response.md`  
+**Plan:** `docs/plans/archive/npc-047-shepherd-livestock-threat-response.md`  
 **Reviewed:** 2026-09-17  
 **Source:** current `main` + targeted shepherd-flock/NPC threat/loadout/combat recon
 

@@ -1,7 +1,7 @@
 # Implementation notes: world-terrain-029 persistent road route worldgen cache
 
 **Reviewed:** 2026-09-15  
-**Plan:** `docs/plans/world-terrain-029-persistent-road-route-worldgen-cache.md`  
+**Plan:** `docs/plans/archive/world-terrain-029-persistent-road-route-worldgen-cache.md`  
 **Baseline:** `main` at `f2ef36ada93e89360e3f877ccbcff9d2d5f50647`
 
 ## Current code facts

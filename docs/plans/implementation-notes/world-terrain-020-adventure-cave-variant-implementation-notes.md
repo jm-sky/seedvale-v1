@@ -1,7 +1,7 @@
 # Implementation notes: world-terrain-020 adventure cave variant
 
 **Reviewed:** 2026-09-11  
-**Plan:** `docs/plans/world-terrain-020-adventure-cave-variant.md`  
+**Plan:** `docs/plans/archive/world-terrain-020-adventure-cave-variant.md`  
 **Baseline:** `main` at `2f62a70720cd14a264b672e474fbc810bee83014`
 
 Focused implementation handoff based on current code. Do not repeat broad cave/treasure recon unless `main` materially changed.

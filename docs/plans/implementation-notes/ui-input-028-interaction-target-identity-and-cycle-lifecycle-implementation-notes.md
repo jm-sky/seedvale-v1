@@ -1,6 +1,6 @@
 # Implementation notes: ui-input-028 — Interaction target identity and cycle lifecycle
 
-**Plan:** `docs/plans/ui-input-028-interaction-target-identity-and-cycle-lifecycle.md`  
+**Plan:** `docs/plans/archive/ui-input-028-interaction-target-identity-and-cycle-lifecycle.md`  
 **Recon basis:** current `main`, 2026-09-21
 
 ## Current-code decisions

@@ -1,7 +1,7 @@
 # SEEDVALE — IMPLEMENTATION PREFLIGHT
 
 ## Target
-Plan: `docs/plans/fauna-002-livestock-food-production.md`
+Plan: `docs/plans/archive/fauna-002-livestock-food-production.md`
 Implementation notes: `docs/plans/implementation-notes/fauna-002-livestock-food-production-implementation-notes.md`
 HEAD: efffef9 | branch: main
 Working tree: HAS CHANGES — preserve them

@@ -1,7 +1,7 @@
 # Implementation notes: quests-progression-079 lost treasure expedition external sponsor flow
 
 **Reviewed:** 2026-09-21  
-**Plan:** `docs/plans/quests-progression-079-lost-treasure-expedition-external-sponsor-flow.md`  
+**Plan:** `docs/plans/archive/quests-progression-079-lost-treasure-expedition-external-sponsor-flow.md`  
 **Baseline:** current `main` recon on 2026-09-21
 
 ## Current-code discrepancies that matter

@@ -1,6 +1,6 @@
 # Implementation notes: world-terrain-043 — system terrain modification rebuild idempotency
 
-**Plan:** `docs/plans/world-terrain-043-system-terrain-modification-rebuild-idempotency.md`  
+**Plan:** `docs/plans/archive/world-terrain-043-system-terrain-modification-rebuild-idempotency.md`  
 **Recon basis:** current `main`, 2026-09-20
 
 ## Decision

@@ -1,7 +1,9 @@
 import { execFileSync } from 'node:child_process'
+import { existsSync } from 'node:fs'
 import { readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import {
+  ARCHIVED_PLANS_DIR,
   LEGACY_PLAN_ID_RE,
   PLAN_ID_RE,
   PLANS_DIR,
@@ -60,7 +62,23 @@ const isPlanRecentVerification = (plan: DoneRecord | undefined): boolean => {
 }
 
 /**
- * Return plan files currently present in docs/plans.
+ * Resolve a plan basename to its live or archive path under docs/plans.
+ *
+ * @domain tools
+ */
+const resolvePlanFilePath = (file: string): string | null => {
+  const bare = file.replace(/^archive\//, '')
+  const live = resolve(ROOT_DIR, PLANS_DIR, bare)
+  if (existsSync(live)) return live
+  const archived = resolve(ROOT_DIR, ARCHIVED_PLANS_DIR, bare)
+  if (existsSync(archived)) return archived
+  return null
+}
+
+/**
+ * Return live plan files in docs/plans (not archive).
+ * Archived plans keep their existing DONE.md rows; use resolvePlanFilePath when a
+ * recorded id must be re-read after a snapshot move.
  *
  * @domain tools
  */
@@ -68,11 +86,11 @@ const getCurrentPlanFiles = async (): Promise<string[]> => {
   const output = git('ls-files', 'docs/plans/*.md')
 
   const result = output
-  ? output
+    ? output
       .split('\n')
       .map(file => file.replace(/^docs\/plans\//, ''))
-      .filter(isPlanFile)
-  : []
+      .filter(file => !file.startsWith('archive/') && isPlanFile(file))
+    : []
 
   return result
 }
@@ -80,12 +98,18 @@ const getCurrentPlanFiles = async (): Promise<string[]> => {
 const getGitCommits = (
   file: string,
 ): string[] => {
+  const bare = file.replace(/^archive\//, '')
+  const liveRel = `docs/plans/${bare}`
+  const archiveRel = `docs/plans/archive/${bare}`
+  const pathspec = existsSync(resolve(ROOT_DIR, liveRel))
+    ? liveRel
+    : archiveRel
   const output = git(
     'log',
     '--follow',
     '--format=%H',
     '--',
-    `docs/plans/${file}`,
+    pathspec,
   )
 
   return output
@@ -136,11 +160,11 @@ const getStatusEvents = (
   let verificationNeeded: Event | null = null
   let done: Event | null = null
 
+  const bare = file.replace(/^archive\//, '')
   for (const commit of commits) {
-    const content = getFileAtCommit(
-      resolve(PLANS_DIR, file),
-      commit,
-    )
+    const content =
+      getFileAtCommit(resolve(PLANS_DIR, bare), commit) ??
+      getFileAtCommit(resolve(ARCHIVED_PLANS_DIR, bare), commit)
 
     if (!content) continue
 
@@ -542,7 +566,13 @@ const main = async (): Promise<void> => {
       continue
     }
 
-    const content = await readFile(resolve(PLANS_DIR, file), 'utf8')
+    const planPath = resolvePlanFilePath(file)
+    if (!planPath) {
+      console.warn(`[Plans done] Skipping missing plan file: ${file}`)
+      continue
+    }
+
+    const content = await readFile(planPath, 'utf8')
 
     const events = getStatusEvents(file)
 

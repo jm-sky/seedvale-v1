@@ -1,6 +1,6 @@
 # Implementation Notes: npc-045 — Campfire spoken conversation pairs
 
-**Plan:** `docs/plans/npc-045-campfire-spoken-conversation-pairs.md`  
+**Plan:** `docs/plans/archive/npc-045-campfire-spoken-conversation-pairs.md`  
 **Reviewed:** 2026-09-17  
 **Source:** current `main` + targeted social/campfire/audio recon
 

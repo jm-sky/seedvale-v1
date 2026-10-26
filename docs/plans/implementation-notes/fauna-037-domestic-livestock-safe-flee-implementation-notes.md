@@ -1,6 +1,6 @@
 # Implementation Notes: fauna-037 — Domestic livestock safe flee
 
-**Plan:** `docs/plans/fauna-037-domestic-livestock-safe-flee.md`  
+**Plan:** `docs/plans/archive/fauna-037-domestic-livestock-safe-flee.md`  
 **Reviewed:** 2026-09-17  
 **Source:** current `main` + targeted fauna flee/livestock ownership/roaming recon
 

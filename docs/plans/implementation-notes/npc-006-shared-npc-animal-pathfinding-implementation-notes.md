@@ -1,6 +1,6 @@
 # Implementation Notes: Shared NPC and Animal Pathfinding
 
-**Plan:** `docs/plans/npc-006-shared-npc-animal-pathfinding.md`
+**Plan:** `docs/plans/archive/npc-006-shared-npc-animal-pathfinding.md`
 **Status:** `planned` 📋
 **Created:** 2026-08-31
 

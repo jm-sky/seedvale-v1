@@ -1,7 +1,7 @@
 # Implementation notes: fauna-027 dungeon cave residents and pool foraging
 
 **Reviewed:** 2026-09-13  
-**Plan:** `docs/plans/fauna-027-dungeon-cave-residents-and-pool-foraging.md`  
+**Plan:** `docs/plans/archive/fauna-027-dungeon-cave-residents-and-pool-foraging.md`  
 **Baseline:** `main` at `7aec70cdd90e9c49dda5312eeb7afd2aab46ffa2`
 
 ## Aktualny stan zależności

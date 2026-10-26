@@ -2,7 +2,7 @@
 
 **Reviewed:** 2026-09-16  
 **Implemented:** 2026-09-16 (`src/world/naturalMaterialResponse.ts`, hook in `loadGltf.ts` `loadCached`)  
-**Plan:** `docs/plans/world-terrain-036-low-cost-natural-material-response-tuning.md`
+**Plan:** `docs/plans/archive/world-terrain-036-low-cost-natural-material-response-tuning.md`
 
 ## Current code facts
 

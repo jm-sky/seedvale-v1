@@ -262,9 +262,9 @@ Read-only / integration reference:
 - `src/app/createApp.ts::openQuestLog()`
 - `src/ui/createQuestLog.ts`
 - `src/ui-vue/store.ts`
-- `docs/plans/quests-progression-055-quest-marker-lifecycle-and-actionability-fixes.md`
-- `docs/plans/ui-input-036-quest-dialogue-offer-active-context-separation.md`
-- `docs/plans/ui-input-037-quest-log-ready-to-report-sections.md`
+- `docs/plans/archive/quests-progression-055-quest-marker-lifecycle-and-actionability-fixes.md`
+- `docs/plans/archive/ui-input-036-quest-dialogue-offer-active-context-separation.md`
+- `docs/plans/archive/ui-input-037-quest-log-ready-to-report-sections.md`
 
 ## Guardrails
 

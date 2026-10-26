@@ -3,7 +3,7 @@
 **Created:** 2026-09-18
 **Status:** `draft` 📝
 **Priority:** high · **Effort:** L
-**Depends on:** settlements-npcs-048, settlements-npcs-049, fauna-039, npc-053
+**Depends on:** ~~settlements-npcs-048~~, settlements-npcs-049, ~~fauna-039~~, ~~npc-053~~
 **Domain:** `settlements-npcs`
 **Type:** `feature`
 **Roadmap:** `quests-travelling-merchant-journeys.md`

@@ -60,7 +60,7 @@ Relevant historical/design documents include:
 
 - `docs/plans/archive/2026-08-20--172--natural-crop-lifecycle.md`;
 - `docs/plans/implementation-notes/2026-08-16--126--seed-planting-implementation-notes.md`;
-- `docs/plans/settlements-npcs-001-cultivation-hydration-and-watering.md`;
+- `docs/plans/archive/settlements-npcs-001-cultivation-hydration-and-watering.md`;
 - `docs/roadmap/economy-production.md`;
 - `docs/roadmap/npc-professions-households-and-age.md`.
 

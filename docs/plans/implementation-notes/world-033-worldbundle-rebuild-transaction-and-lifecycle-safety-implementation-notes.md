@@ -1,6 +1,6 @@
 # Implementation notes: world-033 — WorldBundle rebuild transaction and lifecycle safety
 
-**Plan:** `docs/plans/world-033-worldbundle-rebuild-transaction-and-lifecycle-safety.md`
+**Plan:** `docs/plans/archive/world-033-worldbundle-rebuild-transaction-and-lifecycle-safety.md`
 **Recon basis:** current `main`, 2026-09-20
 
 ## Decision

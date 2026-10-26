@@ -1,6 +1,6 @@
 # Implementation Notes: Underground Caves V2 — B3 Recon
 
-> Plan: `docs/plans/world-terrain-008-underground-caves-v2.md`
+> Plan: `docs/plans/archive/world-terrain-008-underground-caves-v2.md`
 > Recon date: **2026-09-08**
 > Scope: **Milestone B3 only — collision + third-person camera**
 > Measured against current `main` (B1+B2 already landed). No browser.

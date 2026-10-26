@@ -128,6 +128,13 @@ Generated from exported TypeScript symbols.
 - `logNpcThreatBranch` — function — line 24
 - `pickNextFrenzyWolfId` — function — line 49
 
+## `debug/flyCam.ts`
+
+- `createFlyCam` — function — line 50
+- `FlyCam` — type — line 44
+- `FlyConfig` — type — line 21
+- `readFlyConfig` — function — line 26
+
 ## `debug/householdHistory.ts`
 
 - `createHouseholdHistoryBuffer` — function — line 36

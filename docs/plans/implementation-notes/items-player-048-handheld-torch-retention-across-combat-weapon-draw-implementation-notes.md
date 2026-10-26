@@ -329,6 +329,6 @@ Related established behavior:
 
 - `src/items/HeldTool.ts`
 - `src/player/playerCombatMode.ts`
-- `docs/plans/ui-input-018-player-combat-mode-and-weapon-toggle.md`
+- `docs/plans/archive/ui-input-018-player-combat-mode-and-weapon-toggle.md`
 
 > **Zrób git commit i push do main, rebase jeżeli trzeba**

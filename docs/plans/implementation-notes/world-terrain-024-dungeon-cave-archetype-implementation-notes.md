@@ -1,7 +1,7 @@
 # Implementation notes: world-terrain-024 dungeon cave archetype
 
 **Reviewed:** 2026-09-12  
-**Plan:** `docs/plans/world-terrain-024-dungeon-cave-archetype.md`  
+**Plan:** `docs/plans/archive/world-terrain-024-dungeon-cave-archetype.md`  
 **Baseline:** `main` at `92056c605d27a7b8c5838fde4fb97c5ca46699e8`
 
 Focused handoff for the current Cave V2 code. Do not repeat broad cave recon unless `main` materially changed.

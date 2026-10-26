@@ -3,7 +3,7 @@
 **Created:** 2026-09-18
 **Status:** `planned` 📋
 **Priority:** high · **Effort:** L
-**Depends on:** npc-053
+**Depends on:** ~~npc-053~~
 **Domain:** `npc`
 **Type:** `feature`
 **Roadmap:** `quests-travelling-merchant-journeys.md`

@@ -1,6 +1,6 @@
 # Implementation Notes: items-player-049 — Poisoned meat predator bait
 
-**Plan:** `docs/plans/items-player-049-poisoned-meat-predator-bait.md`  
+**Plan:** `docs/plans/archive/items-player-049-poisoned-meat-predator-bait.md`  
 **Reviewed:** 2026-09-19  
 **Source of truth:** current `main` code + docs; plan is intent, current code wins on conflicts.
 

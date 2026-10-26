@@ -1,6 +1,6 @@
 # Implementation Notes: Distance-Based Terrain Detail LOD
 
-**Plan:** `docs/plans/world-terrain-005-distance-based-terrain-detail-lod.md`
+**Plan:** `docs/plans/archive/world-terrain-005-distance-based-terrain-detail-lod.md`
 
 ## Pre-flight findings
 

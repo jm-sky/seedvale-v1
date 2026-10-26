@@ -1,6 +1,6 @@
 # Implementation Notes: npc-048 — Local threat assistance and guard response
 
-**Plan:** `docs/plans/npc-048-local-threat-assistance-and-guard-response.md`  
+**Plan:** `docs/plans/archive/npc-048-local-threat-assistance-and-guard-response.md`  
 **Reviewed:** 2026-09-17  
 **Source:** current `main` + targeted threat-forwarding/settlement-update/guard-loadout recon
 

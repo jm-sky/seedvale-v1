@@ -1,7 +1,7 @@
 # SEEDVALE — IMPLEMENTATION PREFLIGHT
 
 ## Target
-Plan: `docs/plans/world-005-new-game-time-reset.md`
+Plan: `docs/plans/archive/world-005-new-game-time-reset.md`
 Implementation notes: MISSING
 HEAD: 8e4affd | branch: main
 Working tree: HAS CHANGES — preserve them

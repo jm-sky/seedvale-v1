@@ -10,6 +10,7 @@ Generated from TypeScript imports.
 - `app/dialogueTimeControl.ts`
 - `config/worldConfig.ts`
 - `debug/debugMode.ts`
+- `debug/flyCam.ts`
 - `perf/benchmarkFixture.ts`
 - `perf/flags.ts`
 - `persistence/saveDb.ts`

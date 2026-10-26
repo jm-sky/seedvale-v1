@@ -1,6 +1,6 @@
 # Implementation Notes: Agent Decision Architecture Refactor (npc-008)
 
-**Plan:** [npc-008-agent-decision-architecture-refactor.md](../npc-008-agent-decision-architecture-refactor.md)
+**Plan:** [npc-008-agent-decision-architecture-refactor.md](../archive/npc-008-agent-decision-architecture-refactor.md)
 **Stage covered here:** migration step 1 — *"Udokumentować istniejący decision flow i jego priorytety"* (recon) plus the concrete implementation design for steps 2–4.
 **Date:** 2026-09-02
 **Code state at recon:** `30a6c8d`, `src/fauna/AnimalAgent.ts` (3219 lines), `src/ai/NpcAgent.ts` (4690 lines).
