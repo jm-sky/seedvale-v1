@@ -48,6 +48,11 @@ export type BrowserState = {
   clip: string | null
   /** UBC `MI_Hair_*` color multiply; no-op on non-UBC meshes. */
   hairColor: HairColorId
+  /**
+   * When true, attach base `*_Head.glb` on v2/v3 compare bodies.
+   * No effect on UBC / non-compare slots.
+   */
+  compareHead: boolean
   resetTransformOnReload: boolean
   reportText: string
   statusMessage: string
@@ -81,6 +86,7 @@ export const browserState = reactive<BrowserState>({
   pose: 'idle',
   clip: null,
   hairColor: DEFAULT_HAIR_COLOR,
+  compareHead: true,
   resetTransformOnReload: false,
   reportText: '',
   statusMessage: 'Ready',

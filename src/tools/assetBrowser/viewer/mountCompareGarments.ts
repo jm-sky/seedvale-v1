@@ -164,12 +164,21 @@ export async function attachCompareGarments(
   return { attached, warnings }
 }
 
+export type CompareKitOptions = {
+  /** Attach `headUrl` when true (default). */
+  head?: boolean
+}
+
 /** Head first, then garments — shared status line for the asset-browser slot. */
 export async function attachCompareKit(
   body: Object3D,
   entry: Pick<AssetIndexEntry, 'headUrl' | 'garments' | 'eqUrl'>,
+  opts: CompareKitOptions = {},
 ): Promise<CompareAttachResult> {
-  const head = await attachCompareHead(body, entry)
+  const includeHead = opts.head !== false
+  const head = includeHead
+    ? await attachCompareHead(body, entry)
+    : { attached: [] as string[], warnings: [] as string[] }
   const garments = await attachCompareGarments(body, entry)
   return {
     attached: [...head.attached, ...garments.attached],

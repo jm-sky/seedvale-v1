@@ -196,6 +196,23 @@ watch(
 )
 
 watch(
+  () => browserState.compareHead,
+  () => {
+    if (!viewer.value || !indexReady.value) return
+    const ref = resolveLoadEntry(assetIndex.value, {
+      id: browserState.referenceId,
+      url: browserState.referenceFreeUrl,
+    })
+    const tgt = resolveLoadEntry(assetIndex.value, {
+      id: browserState.targetId,
+      url: browserState.freeUrl,
+    })
+    if (ref?.headUrl) void loadReference()
+    if (tgt?.headUrl) void loadTarget()
+  },
+)
+
+watch(
   () => [browserState.focus, browserState.focusRadius] as const,
   () => viewer.value?.frame(),
 )
@@ -667,6 +684,13 @@ function lampMountSnippet() {
           v-model="browserState.wireframe"
           type="checkbox"
         > Wireframe</label>
+        <label
+          class="flex items-center gap-2 text-xs"
+          title="Attach Male_Head / Female_Head on v2/v3 compare bodies"
+        ><input
+          v-model="browserState.compareHead"
+          type="checkbox"
+        > v2/v3 head</label>
         <label class="mt-1 block text-xs text-slate-400">Hair color</label>
         <select
           v-model="browserState.hairColor"

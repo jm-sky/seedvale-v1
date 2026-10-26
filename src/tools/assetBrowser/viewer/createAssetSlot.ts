@@ -253,7 +253,9 @@ export function createAssetSlot(role: 'reference' | 'target', scene: Group): Ass
       else if (nextEntry.id === 'item:copper_bucket') tintBucketGlb(model, 'copper_bucket')
       if (nextEntry.id === 'held:wooden_torch') model.rotation.x = Math.PI / 2
       if (nextEntry.headUrl || (nextEntry.garments?.length && nextEntry.eqUrl)) {
-        const kit = await attachCompareKit(model, nextEntry)
+        const kit = await attachCompareKit(model, nextEntry, {
+          head: browserState.compareHead,
+        })
         if (kit.warnings.length) {
           browserState.statusMessage = kit.warnings.join('; ')
           console.warn('[asset-browser] compare kit', kit.warnings)

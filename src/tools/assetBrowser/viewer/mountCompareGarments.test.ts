@@ -107,5 +107,25 @@ describe('attachCompareKit', () => {
     expect(result.attached).toEqual(['Head', 'EQ_PeasantSkirt'])
     expect(result.warnings).toEqual([])
   })
+
+  it('skips head when opts.head is false', async () => {
+    const { body } = bodyWithPelvis()
+    const eqPack = new Object3D()
+    eqPack.add(skinnedWithBone('EQ_PeasantSkirt', 'pelvis'))
+    vi.mocked(loadGltf).mockResolvedValueOnce(eqPack)
+
+    const result = await attachCompareKit(
+      body,
+      {
+        headUrl: '/compare/v3/Female_Head.glb',
+        garments: ['PeasantSkirt'],
+        eqUrl: '/compare/v3/eq/Female.glb',
+      },
+      { head: false },
+    )
+    expect(result.attached).toEqual(['EQ_PeasantSkirt'])
+    expect(loadGltf).toHaveBeenCalledTimes(1)
+    expect(loadGltf).toHaveBeenCalledWith('/compare/v3/eq/Female.glb')
+  })
 })
 

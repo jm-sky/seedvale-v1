@@ -35,6 +35,7 @@ function baseState(overrides: Partial<BrowserState> = {}): BrowserState {
     pose: 'rest',
     clip: null,
     hairColor: 'brown',
+    compareHead: true,
     resetTransformOnReload: false,
     reportText: '',
     statusMessage: 'Ready',
