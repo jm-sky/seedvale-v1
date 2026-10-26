@@ -8,7 +8,7 @@
  *
  * Usage:
  *   pnpm claude:preflight npc-002
- *   pnpm claude:preflight docs/plans/npc-002-npc-healing.md
+ *   pnpm claude:preflight docs/plans/archive/npc-002-npc-healing.md
  *
  *   For clean redirected output (no pnpm/corepack lifecycle banner in the
  *   file), pass --silent to pnpm itself:

@@ -69,7 +69,7 @@ function skipTimeMultiplier(dayLengthSec: number): number {
  * multiplier and, on `justFinished`, asks catch-up owners to resolve the
  * completed interval once — see `NpcAgent.resolveTimeSkip` /
  * `SettlementsManager.resolveTimeSkip` / `Fauna.resolveTimeSkip`
- * (`docs/plans/world-034-time-skip-clock-exactness-and-catch-up-coverage.md`,
+ * (`docs/plans/archive/world-034-time-skip-clock-exactness-and-catch-up-coverage.md`,
  * `docs/plans/archive/2026-08-22--196--arch--time-skip-simulation-semantics.md`).
  * NPC/fauna/traps stay frozen for the duration; player needs keep live-ticking
  * through `worldDt`. `app/createApp.ts` is responsible for blocking player
