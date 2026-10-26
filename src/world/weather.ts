@@ -145,8 +145,9 @@ function clamp01(v: number): number {
 export const WETNESS_DRY_WINDOW_DAYS = 0.75
 /** How long into an active rain cycle wetness takes to reach its target. */
 const WETNESS_RISE_DAYS = 0.08
-/** How long continuous snowfall takes to reach full visual coverage. */
-export const SNOW_ACCUMULATE_WINDOW_DAYS = 1.1
+/** How long continuous snowfall takes to reach full visual coverage.
+ *  2026-10-26: shortened from 1.1 (~30% faster accumulate for debug/play feel). */
+export const SNOW_ACCUMULATE_WINDOW_DAYS = 1.1 / 1.3
 /** How long snow cover takes to fully melt at a comfortably-above-freezing
  *  temperature (scales down as temperature approaches 0°C; frozen = no melt). */
 export const SNOW_MELT_WINDOW_DAYS = 2.2
