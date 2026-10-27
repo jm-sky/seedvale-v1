@@ -25,10 +25,14 @@ Research: [Track A deep recon, source owners, dependencies and proposed Composer
 - [ ] Record matched runtime/visual acceptance and completion status after implementation.
 
 ### B. Settlement rendering and draw submissions — parallel recon, second implementation lane
-- [ ] Check existing settlement/instancing/storage plans and current rendering owners, then reconcile overlapping scope.
-- [ ] Attribute main/shadow/mirror draws for static vs dynamic structures, decorative props, equipment and storage visuals without introducing a second profiling framework.
-- [ ] Determine selective material merging, instancing, distance culling and V2/V3 tiered stockpile asset opportunities; preserve real inventories, doors, interactions, building stages, lifecycle and streaming.
-- [ ] Prepare independently reviewable plan stages with explicit static/dynamic and cleanup boundaries.
+
+Research: [Track B deep recon, static/dynamic boundaries, donor comparison and proposed Composer slices (§11)](./2026-10-26--v1-performance-transfer-v2-v3-recon.md#11-track-b-deep-recon--settlement-rendering-and-static-structures-2026-10-27). Source reconnaissance complete at V1 `d1c477f3`; no runtime changes or new benchmark evidence. Existing settlements-019 Stage 1 is implemented with browser verification outstanding; its later stages own static submission follow-ups.
+
+- [x] Check existing settlement/instancing/storage plans and current rendering owners, then reconcile overlapping scope (§11.1–11.3).
+- [x] Map static/dynamic, decor and storage owners plus existing main/shadow/mirror diagnostics and measurement gaps (§11.2–11.5); actor equipment stays with A.
+- [ ] Capture fresh actual per-pass attribution with shared A0a/B0 instrumentation; historical census/isolation is not current measured attribution.
+- [x] Determine selective material merging, instancing, distance culling and V2/V3 tiered stockpile asset opportunities; preserve real inventories, doors, interactions, building stages, lifecycle and streaming (§11.3–11.5).
+- [x] Prepare ranked, independently reviewable Composer proposals with explicit ownership, static/dynamic, cleanup and rollback boundaries (§11.6); formal implementation approval remains pending.
 - [ ] Approve and implement slices after A is stable or sooner if code ownership is genuinely disjoint.
 - [ ] Record scene-level visual/runtime acceptance and update plans.
 
@@ -72,5 +76,5 @@ Research: [Track A deep recon, source owners, dependencies and proposed Composer
 | Track | Research owner | Result document | Status |
 | --- | --- | --- | --- |
 | A — actors | Codex | [Existing transfer recon §10](./2026-10-26--v1-performance-transfer-v2-v3-recon.md#10-track-a-deep-recon--npc-and-fauna-rendering-2026-10-27) | Source recon complete; A0a attribution proposed first; implementation/measurements/visual acceptance pending |
-| B — settlements | TBD | existing recon or new analysis | Not started |
+| B — settlements | Codex | [Existing transfer recon §11](./2026-10-26--v1-performance-transfer-v2-v3-recon.md#11-track-b-deep-recon--settlement-rendering-and-static-structures-2026-10-27) | Source recon complete; shared A0a/B0 attribution proposed first; implementation/measurements/visual acceptance pending |
 | C — grass | TBD | existing recon or new analysis | Not started |
