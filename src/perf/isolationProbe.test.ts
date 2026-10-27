@@ -51,4 +51,13 @@ describe('formatIsolationReport', () => {
     expect(withoutGpu).toContain('EXT_disjoint_timer_query_webgl2 is unavailable')
     expect(withoutGpu).not.toContain('GPU elapsed')
   })
+
+  it('marks rows with too few frames as INVALID instead of printing a zero/outlier timing', () => {
+    const report = formatIsolationReport([
+      row({ id: 'full', renderMsAvg: 20, renderMsP95: 30, renderMsMax: 45, frames: 30, status: 'ok' }),
+      row({ id: 'no-postprocessing', frames: 0, status: 'insufficient-frames' }),
+    ])
+    expect(report).toContain('no postprocessing  INVALID — only 0 frame(s) in sample window')
+    expect(report).not.toContain('Δavg vs baseline=-20.0 ms (-100%)')
+  })
 })

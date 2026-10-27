@@ -10,8 +10,16 @@ import {
 import { PERF_CATEGORY_INDEX } from './types'
 import type { Scene } from 'three'
 
-const PROBE_SETTLE_MS = 150
-const PROBE_SAMPLE_MS = 400
+/** Frame-count based windows: a fixed 150/400 ms window held 0–1 frames when a
+ *  probe's first frame was a multi-second shader compile (e.g. the
+ *  post-processing bypass path), producing `0.0` rows and 3593 ms outliers.
+ *  The settle phase now discards at least `PROBE_SETTLE_FRAMES` frames (so
+ *  first-use compiles land outside the sample), and the sample phase collects
+ *  at least `PROBE_SAMPLE_FRAMES` frames, bounded by `PROBE_TIMEOUT_MS`. */
+const PROBE_SETTLE_FRAMES = 8
+const PROBE_SAMPLE_FRAMES = 30
+const PROBE_MIN_SAMPLE_MS = 400
+const PROBE_TIMEOUT_MS = 15000
 /** GPU timer queries resolve asynchronously, a few frames after submission —
  *  the game loop drains completed ones every tick regardless of probe state
  *  (`gameLoop.ts`'s unconditional `getGpuTimer().poll()`), so this is just a
@@ -46,6 +54,22 @@ function sleep(ms: number): Promise<void> {
   })
 }
 
+/** Resolves once `frames` animation frames elapsed and `minMs` passed, or at
+ *  `timeoutMs` — whichever condition set is met first for the timeout. */
+function waitFrames(frames: number, minMs: number, timeoutMs: number): Promise<void> {
+  return new Promise((resolve) => {
+    const start = performance.now()
+    let n = 0
+    const tick = () => {
+      n++
+      const elapsed = performance.now() - start
+      if ((n >= frames && elapsed >= minMs) || elapsed >= timeoutMs) resolve()
+      else requestAnimationFrame(tick)
+    }
+    requestAnimationFrame(tick)
+  })
+}
+
 /** Samples one isolation probe window: CPU-side `RENDER` category time
  *  (avg/p95/max, from `SessionTotals.renderCategoryMs` — see `monitor.ts`)
  *  plus, when `gpuTimer.available`, the GPU-side elapsed time for that exact
@@ -53,10 +77,10 @@ function sleep(ms: number): Promise<void> {
  *  render call, which can include driver/GPU wait — it is reported as such,
  *  never relabelled as isolated CPU cost. */
 async function sampleProbe(monitor: PerfMonitor, gpuTimer: GpuTimer, id: string): Promise<IsolationProbeRow> {
-  await sleep(PROBE_SETTLE_MS)
+  await waitFrames(PROBE_SETTLE_FRAMES, 0, PROBE_TIMEOUT_MS)
   gpuTimer.reset()
   monitor.beginSession()
-  await sleep(PROBE_SAMPLE_MS)
+  await waitFrames(PROBE_SAMPLE_FRAMES, PROBE_MIN_SAMPLE_MS, PROBE_TIMEOUT_MS)
   const totals = monitor.endSession()
   const n = Math.max(1, totals.frames)
   const renderSorted = [...totals.renderCategoryMs].sort((a, b) => a - b)
@@ -68,10 +92,13 @@ async function sampleProbe(monitor: PerfMonitor, gpuTimer: GpuTimer, id: string)
     renderMsMax: renderSorted.length > 0 ? renderSorted[renderSorted.length - 1]! : 0,
     drawCallsAvg: Math.round(totals.drawCallsSum / n),
     trianglesAvg: Math.round(totals.trianglesSum / n),
+    frames: totals.frames,
+    status: totals.frames >= PROBE_SAMPLE_FRAMES ? 'ok' : 'insufficient-frames',
   }
 
   if (gpuTimer.available) {
     await sleep(GPU_DRAIN_MS)
+    gpuTimer.poll()
     const gpuSorted = [...gpuTimer.samples()].sort((a, b) => a - b)
     if (gpuSorted.length > 0) {
       row.gpuMsAvg = gpuSorted.reduce((sum, v) => sum + v, 0) / gpuSorted.length
@@ -209,6 +236,9 @@ export function formatIsolationReport(rows: readonly IsolationProbeRow[]): strin
   const idWidth = Math.max(...rows.map((r) => (ISOLATION_LABELS[r.id] ?? r.id).length))
   const tableLines = rows.map((r) => {
     const label = ISOLATION_LABELS[r.id] ?? r.id
+    if (r.status === 'insufficient-frames') {
+      return `  ${label.padEnd(idWidth)}  INVALID — only ${r.frames ?? 0} frame(s) in sample window (excluded from diffs)`
+    }
     const diff = r.id === baseline.id ? '—' : formatDiff(r.renderMsAvg - baseline.renderMsAvg, baseline.renderMsAvg)
     return `  ${label.padEnd(idWidth)}  avg=${r.renderMsAvg.toFixed(1)} ms  p95=${r.renderMsP95.toFixed(1)} ms  max=${r.renderMsMax.toFixed(1)} ms  Δavg vs baseline=${diff}`
   })

@@ -30,8 +30,8 @@ export type GpuTimer = {
    *  regardless of whether a sampling window is currently open, so results
    *  from earlier frames aren't left stuck in the pending queue. */
   poll: () => void
-  /** Clears collected samples (does not touch in-flight queries) — call
-   *  before a new probe's sampling window starts. */
+  /** Clears collected samples and discards in-flight queries (they belong to
+   *  the previous window) — call before a new sampling window starts. */
   reset: () => void
   samples: () => readonly number[]
   /** Explicit availability / drop provenance for report export. */
@@ -134,6 +134,11 @@ export function createGpuTimer(renderer: WebGLRenderer, enabled: boolean): GpuTi
       drain()
     },
     reset() {
+      // Discard in-flight queries too: they were submitted before this
+      // window began, so resolving them later would attribute the previous
+      // probe's GPU time to the new window.
+      for (const q of pending) gl.deleteQuery(q)
+      pending = []
       samples = []
       disjointEvents = 0
       skipped = 0

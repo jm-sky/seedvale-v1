@@ -70,11 +70,13 @@ export function createRenderStack(container: HTMLElement, config: WorldConfig): 
     scene,
     benchmarkScenarioFromUrl() === 'stream' || isProgramCensusUrlEnabled(),
   )
-  // Same gating as programCensus above — benchmark-diagnostic only, no-op
-  // (and no per-frame WebGL query calls at all) otherwise.
+  // Benchmark-diagnostic only (any `?benchmark=` run, or program census) —
+  // no-op (and no per-frame WebGL query calls at all) otherwise. Previously
+  // gated on `stream` only, which left GPU timer `unavailable` for every
+  // other scenario even where the extension was exposed.
   const gpuTimer = createGpuTimer(
     renderer,
-    benchmarkScenarioFromUrl() === 'stream' || isProgramCensusUrlEnabled(),
+    benchmarkScenarioFromUrl() !== null || isProgramCensusUrlEnabled(),
   )
 
   const camera = createCamera(container.clientWidth / container.clientHeight)

@@ -1,12 +1,14 @@
 import type { QualityPreset } from '../config/qualityProfiles'
 import type { WorldConfig } from '../config/worldConfig'
+import type { LookState } from '../input/MouseLook'
 import type { SettlementCell, SettlementDef } from '../settlement/settlementGenerator'
 import type { DayNightState } from '../world/dayNight'
 import type { BenchmarkScenarioId } from './benchmarkScenarios'
 import type { IsolationHost } from './isolationProbe'
 import type { PerfMonitor } from './monitor'
 import type { PassSubmissionCollector } from './passSubmissionCollector'
-import type { PerfReportJson, PopulationSnapshot, ScenarioSettlement } from './types'
+import type { CameraControlResult, PerfReportJson, PopulationGateResult, PopulationSnapshot, ScenarioSettlement } from './types'
+import { clampDistance, clampPitch } from '../input/MouseLook'
 import { worldToChunk } from '../terrain/chunkGrid'
 import { buildAgentCpuReport, formatAgentCpuReport, getAgentCpuDiag } from './agentCpuDiag'
 import { assertArtifactRoundTrip, buildArtifactBundle, type PerfArtifactBundle } from './artifacts'
@@ -50,10 +52,25 @@ const STREAM_UPDATE_MS = 100
  *  this close above `waterLevel` (dry) to count as "at the water's edge". */
 const WATER_SHORE_MARGIN = 1.5
 
+/** Optional run controls. Defaults keep the previous harness behaviour except
+ *  the population gate, which is on (set `populationGate: false` to skip). */
+export type BenchmarkRunOptions = {
+  /** Controlled camera look (radians / world units) applied through the
+   *  regular `MouseLook` state read by `PlayerController.syncCamera` — no
+   *  pointer lock needed. Omitted fields keep the current value. */
+  camera?: { yaw?: number; pitch?: number; distance?: number }
+  /** Wait for a stable NPC count before the measured window. `false` skips. */
+  populationGate?: false | { stableMs?: number; timeoutMs?: number }
+}
+
 export type BenchmarkRunner = {
   running: () => boolean
-  run: (id: BenchmarkScenarioId, durationSec?: number) => Promise<PerfReportJson | null>
+  run: (id: BenchmarkScenarioId, durationSec?: number, options?: BenchmarkRunOptions) => Promise<PerfReportJson | null>
 }
+
+const POPULATION_POLL_MS = 250
+const POPULATION_STABLE_MS = 5000
+const POPULATION_TIMEOUT_MS = 90000
 
 type TerrainProbe = {
   waitForChunks: (coords: { cx: number; cz: number }[]) => Promise<void>
@@ -90,12 +107,44 @@ export type BenchmarkHost = {
   camera: Camera
   renderer: WebGLRenderer
   passCollector: PassSubmissionCollector
+  /** Live player camera look state (`createMouseLook().state`) — the same
+   *  object `PlayerController.syncCamera` reads every tick. */
+  look: LookState
 }
 
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => {
     window.setTimeout(resolve, ms)
   })
+}
+
+async function waitForStablePopulation(
+  monitor: PerfMonitor,
+  gate: BenchmarkRunOptions['populationGate'],
+): Promise<PopulationGateResult> {
+  if (gate === false) {
+    return { status: 'disabled', waitedMs: 0, stableForMs: 0, npcCount: monitor.getContext().npcCount, timeoutMs: 0 }
+  }
+  const stableMs = gate?.stableMs ?? POPULATION_STABLE_MS
+  const timeoutMs = gate?.timeoutMs ?? POPULATION_TIMEOUT_MS
+  const start = performance.now()
+  let last = monitor.getContext().npcCount
+  let lastChange = start
+  for (;;) {
+    await sleep(POPULATION_POLL_MS)
+    const now = performance.now()
+    const count = monitor.getContext().npcCount
+    if (count !== last) {
+      last = count
+      lastChange = now
+    }
+    if (now - lastChange >= stableMs) {
+      return { status: 'stable', waitedMs: Math.round(now - start), stableForMs: Math.round(now - lastChange), npcCount: count, timeoutMs }
+    }
+    if (now - start >= timeoutMs) {
+      return { status: 'timeout', waitedMs: Math.round(now - start), stableForMs: Math.round(now - lastChange), npcCount: count, timeoutMs }
+    }
+  }
 }
 
 function loadRing(x: number, z: number, chunkSize: number, loadRadius: number) {
@@ -163,7 +212,7 @@ export function createBenchmarkRunner(host: BenchmarkHost): BenchmarkRunner {
 
   return {
     running: () => inFlight,
-    async run(id, durationSec = DEFAULT_DURATION_SEC) {
+    async run(id, durationSec = DEFAULT_DURATION_SEC, options = {}) {
       if (inFlight) return null
       inFlight = true
       const { player, dayNight, config, monitor } = host
@@ -230,6 +279,22 @@ export function createBenchmarkRunner(host: BenchmarkHost): BenchmarkRunner {
         // Phase: warm-up — outside the measured session (see WARMUP_MS doc).
         await sleep(WARMUP_MS)
 
+        // Phase: controlled camera (no pointer lock). Applied before the
+        // population gate so the gate and window see the same view.
+        let cameraControl: CameraControlResult | null = null
+        if (options.camera) {
+          const { look } = host
+          if (options.camera.yaw !== undefined) look.yaw = options.camera.yaw
+          if (options.camera.distance !== undefined) look.distance = clampDistance(options.camera.distance)
+          if (options.camera.pitch !== undefined) look.pitch = clampPitch(options.camera.pitch, look.distance)
+          cameraControl = { applied: true, yaw: look.yaw, pitch: look.pitch, distance: look.distance }
+        }
+
+        // Phase: population-stability gate. Observes only — never freezes or
+        // alters the simulation. A timeout is recorded as an explicit failure
+        // status in the report, and the run still proceeds (unstable).
+        const populationGate = await waitForStablePopulation(monitor, options.populationGate)
+
         // Stream route is derived from elapsed wall-clock time each tick,
         // not accumulated per-tick — `setInterval`'s delivered delay isn't
         // exactly `STREAM_UPDATE_MS`, and a fixed per-tick step would drift
@@ -257,16 +322,28 @@ export function createBenchmarkRunner(host: BenchmarkHost): BenchmarkRunner {
         getAgentCpuDiag().reset()
         getGrassFinalizationDiag().reset()
         getGrassBaselineDiag().reset()
+        // Window-scoped GPU timer samples: reset here, read before the
+        // isolation probes (which reset it per probe) — see `gpuTimerStatus`.
+        getGpuTimer().reset()
         host.passCollector.enable(host.renderer)
         host.passCollector.beginSession()
         monitor.setSource('benchmark', true)
         monitor.beginSession()
+        const windowStartedAt = performance.timeOrigin + performance.now()
         try {
           await sleep(durationSec * 1000)
         } finally {
           // Always tear down collector even if the timed window throws.
         }
         const totals = monitor.endSession()
+        if (typeof window !== 'undefined') {
+          // Epoch-ms bounds of the measured window, so external diagnostics
+          // (console GL errors, traces) can be placed relative to it.
+          window.__seedvalePerfWindow = { startMs: windowStartedAt, endMs: performance.timeOrigin + performance.now() }
+        }
+        await sleep(200)
+        getGpuTimer().poll()
+        const gpuTimerStatus = buildGpuTimerStatus(getGpuTimer())
         const passSubmissions = host.passCollector.endSession()
         host.passCollector.disable()
         const agentCpuTotals = getAgentCpuDiag().snapshot()
@@ -340,8 +417,10 @@ export function createBenchmarkRunner(host: BenchmarkHost): BenchmarkRunner {
             },
             populationStart,
             populationEnd,
+            populationGate,
+            cameraControl,
             device: captureDeviceMeta(host.renderer),
-            gpuTimer: buildGpuTimerStatus(getGpuTimer()),
+            gpuTimer: gpuTimerStatus,
           },
           scene,
           shadowCasters,
@@ -478,9 +557,10 @@ declare global {
     __seedvalePerfLastReport?: PerfReportJson
     __seedvalePerfReports?: PerfReportJson[]
     __seedvalePerfLastArtifacts?: PerfArtifactBundle
-    __seedvaleRunBenchmark?: (id: BenchmarkScenarioId, durationSec?: number) => Promise<PerfReportJson | null>
+    __seedvaleRunBenchmark?: (id: BenchmarkScenarioId, durationSec?: number, options?: BenchmarkRunOptions) => Promise<PerfReportJson | null>
     __copyBenchmarkReport?: () => void
     __getBenchmarkReport?: () => string
     __seedvaleReady?: boolean
+    __seedvalePerfWindow?: { startMs: number; endMs: number }
   }
 }

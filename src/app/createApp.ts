@@ -3059,6 +3059,7 @@ export async function createApp(
     renderer,
     monitor: perfMonitor,
     passCollector: passSubmissionCollector,
+    look: mouseLook.state,
     applyQualityPreset: graphics.applyNamedQualityPreset,
     isolation: {
       scene,
@@ -3902,7 +3903,7 @@ export async function createApp(
   const autoBench = benchmarkScenarioFromUrl()
 
   if (typeof window !== 'undefined') {
-    window.__seedvaleRunBenchmark = (id, durationSec) => benchmark.run(id, durationSec)
+    window.__seedvaleRunBenchmark = (id, durationSec, options) => benchmark.run(id, durationSec, options)
   }
 
   if (autoBench) void benchmark.run(autoBench)

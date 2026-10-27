@@ -215,6 +215,12 @@ export function formatReport(report: PerfReportJson): string {
         + `pos=(${round1(ctx.scenarioSettlement.x)}, ${round1(ctx.scenarioSettlement.z)})`
       : null,
     ctx.route ? `  route: start=(${round1(ctx.route.startX)}, ${round1(ctx.route.startZ)}) speed=${ctx.route.speedMps} m/s duration=${ctx.route.durationSec}s` : null,
+    ctx.populationGate
+      ? `  populationGate: ${ctx.populationGate.status} waited=${ctx.populationGate.waitedMs}ms npc=${ctx.populationGate.npcCount}${ctx.populationGate.status === 'timeout' ? ' (UNSTABLE — population still changing at timeout)' : ''}`
+      : null,
+    ctx.cameraControl
+      ? `  cameraControl: yaw=${round1(ctx.cameraControl.yaw)} pitch=${round1(ctx.cameraControl.pitch)} distance=${round1(ctx.cameraControl.distance)}`
+      : null,
     ctx.gpuTimer
       ? `  gpuTimer: available=${ctx.gpuTimer.available} resolved=${ctx.gpuTimer.resolved} samples=${ctx.gpuTimer.samples} span=${ctx.gpuTimer.querySpan}`
       : null,

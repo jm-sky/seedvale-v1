@@ -133,6 +133,22 @@ export type PopulationSnapshot = {
   settlementResidentCount?: number | null
 }
 
+export type PopulationGateResult = {
+  status: 'stable' | 'timeout' | 'disabled'
+  waitedMs: number
+  stableForMs: number
+  /** NPC count when the gate released (or timed out). */
+  npcCount: number
+  timeoutMs: number
+}
+
+export type CameraControlResult = {
+  applied: boolean
+  yaw: number
+  pitch: number
+  distance: number
+}
+
 export type GpuTimerStatus = {
   available: boolean
   /** Extension supported and at least one sample resolved. */
@@ -205,6 +221,10 @@ export type PerfContext = {
   cameraPose?: CameraPose | null
   populationStart?: PopulationSnapshot | null
   populationEnd?: PopulationSnapshot | null
+  /** NPC-population stability gate result before the measured window. */
+  populationGate?: PopulationGateResult | null
+  /** Controlled camera look applied for the run (no pointer lock needed). */
+  cameraControl?: CameraControlResult | null
   device?: DeviceMeta | null
   gpuTimer?: GpuTimerStatus | null
 }
@@ -228,6 +248,11 @@ export type IsolationProbeRow = {
   renderMsMax: number
   drawCallsAvg: number
   trianglesAvg: number
+  /** Frames actually captured in the sample window; `status` is
+   *  `insufficient-frames` when fewer than the required count landed (row
+   *  values must then not be used). Optional for pre-fix artifacts. */
+  frames?: number
+  status?: 'ok' | 'insufficient-frames'
   /** GPU-side elapsed time for the exact same `RENDER`-category span, from
    *  WebGL2 `EXT_disjoint_timer_query_webgl2` timestamp queries. `undefined`
    *  whenever the extension wasn't available or no query resolved during
