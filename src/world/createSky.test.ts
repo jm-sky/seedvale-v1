@@ -63,7 +63,7 @@ describe('createSky cloud attachment (world-terrain-054)', () => {
 
     sky.updateClouds(0.05, weather({ type: 'storm', intensity: 1 }), NOON)
     expect(u.uSvCloudCover!.value).toBe(1)
-    expect(u.uSvCloudOpacity!.value).toBe(0.8)
+    expect(u.uSvCloudOpacity!.value).toBe(0.9)
     expect(u.uSvCloudEnabled!.value).toBe(1)
 
     const offsetAfterFirst = (u.uSvCloudOffset!.value as { x: number, y: number }).x

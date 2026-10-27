@@ -356,6 +356,8 @@ const showDetailsPane = computed(() =>
         : 'h-[min(100dvh,100dvh)] max-h-[100dvh] w-[calc(100vw-1rem)] max-w-none pb-[max(1rem,env(safe-area-inset-bottom))]'"
       style="touch-action: pan-y"
       :inert="ui.quantityDialog.open ? true : undefined"
+      @keydown.tab.stop
+      @keyup.tab.stop
     >
       <header class="mb-3 flex shrink-0 items-start justify-between gap-3">
         <div>

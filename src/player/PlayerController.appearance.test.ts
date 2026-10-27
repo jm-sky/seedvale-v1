@@ -113,6 +113,28 @@ describe('player async visual lifetime (review 026 F1)', () => {
     expect((initial.mesh.material as THREE.MeshStandardMaterial).map).toBeNull()
   })
 
+  it('finishes tinting a replacement when the same appearance is requested again', async () => {
+    const { controller } = await player()
+    const oldTint = new THREE.Texture()
+    vi.mocked(loadTexture).mockResolvedValueOnce(oldTint)
+    await controller.applyAppearance({ ...base, tintUrl: 'brown.webp' })
+
+    const next = model()
+    vi.mocked(loadGltfAnimated).mockResolvedValueOnce(next)
+    const tint = deferred<THREE.Texture>()
+    vi.mocked(loadTexture).mockReturnValue(tint.promise)
+    const appearance = { ...base, modelUrl: 'B.glb', tintUrl: 'brown.webp' }
+    const loading = controller.applyAppearance(appearance)
+    await vi.waitFor(() => expect(loadTexture).toHaveBeenCalledTimes(2))
+    const repeated = controller.applyAppearance(appearance)
+    const newTint = new THREE.Texture()
+    tint.resolve(newTint)
+    await Promise.all([loading, repeated])
+
+    expect(controller.mesh.children).toContain(next.scene)
+    expect((next.mesh.material as THREE.MeshStandardMaterial).map).toBe(newTint)
+  })
+
   it('discards appearance and accessory completions after disposal and rejects new loads', async () => {
     const { controller, initial } = await player()
     const appearance = deferred<Awaited<ReturnType<typeof assembleCharacter>>>()
@@ -149,6 +171,39 @@ describe('player async visual lifetime (review 026 F1)', () => {
     await loading
     expect(accessory.mesh.parent?.parent).toBeNull()
     expect(ownedDispose).toHaveBeenCalledOnce()
+  })
+
+  it.each(['replace', 'remove'] as const)('discards an out-of-order accessory after %s', async (action) => {
+    const { controller, initial } = await player()
+    const pending = deferred<THREE.Group>()
+    const stale = model()
+    const newest = model()
+    const skeletonDispose = vi.spyOn(stale.mesh.skeleton, 'dispose')
+    const sharedDispose = vi.spyOn(stale.material, 'dispose')
+    vi.mocked(loadGltf).mockReturnValueOnce(pending.promise).mockResolvedValueOnce(newest.scene)
+
+    const loading = controller.applyEquipmentVisuals('arms', { modelUrl: 'old.glb' })
+    await controller.applyEquipmentVisuals('arms', action === 'replace' ? { modelUrl: 'new.glb' } : null)
+    const installed = initial.scene.getObjectByName('ubcEquipmentVisual')
+    expect(Boolean(installed)).toBe(action === 'replace')
+    pending.resolve(stale.scene)
+    await loading
+
+    expect(initial.scene.getObjectByName('ubcEquipmentVisual')).toBe(installed)
+    expect(stale.scene.parent).toBeNull()
+    expect(skeletonDispose).toHaveBeenCalledOnce()
+    expect(sharedDispose).not.toHaveBeenCalled()
+  })
+
+  it('does not apply a pending outfit tint after disposal', async () => {
+    const { controller, initial } = await player()
+    const tint = deferred<THREE.Texture>()
+    vi.mocked(loadTexture).mockReturnValueOnce(tint.promise)
+    const loading = controller.applyAppearance({ ...base, tintUrl: 'brown.webp' })
+    controller.dispose()
+    tint.resolve(new THREE.Texture())
+    await loading
+    expect((initial.mesh.material as THREE.MeshStandardMaterial).map).toBeNull()
   })
 
   it('discards a held-tool completion after disposal', async () => {

@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { createApp, h, nextTick } from 'vue'
+import { createKeyboard } from '../../input/Keyboard'
 import { createArmorInstance } from '../../items/armorItemInstances'
 import { Inventory } from '../../items/Inventory'
 import { buildInventoryGroups } from '../../items/inventoryView'
@@ -34,6 +35,37 @@ async function mount(width: number) {
 }
 
 describe('current inventory review 026 regressions (F2/F3)', () => {
+  it.each([false, true])('keeps details Tab navigation out of gameplay (shift: %s)', async (shiftKey) => {
+    const keyboard = createKeyboard()
+    try {
+      const rows = await mount(390)
+      rows[1]!.click()
+      await nextTick()
+      await nextTick()
+      const heading = document.activeElement!
+      expect(heading.id).toBe('inventory-detail-heading')
+      for (const type of ['keydown', 'keyup']) {
+        const event = new KeyboardEvent(type, { key: 'Tab', code: 'Tab', shiftKey, bubbles: true, cancelable: true })
+        heading.dispatchEvent(event)
+        expect(event.defaultPrevented).toBe(false)
+        expect(keyboard.consumeCycleTarget()).toBe(false)
+      }
+    } finally {
+      keyboard.dispose()
+    }
+  })
+
+  it.each([1366, 390])('equips the selected second armor ID at width %i', async (width) => {
+    const rows = await mount(width)
+    rows[1]!.click()
+    await nextTick()
+    const equip = Array.from(el.querySelectorAll('button')).find((button) => button.textContent?.trim() === 'Załóż')
+    expect(equip).toBeDefined()
+    expect(ui.inventory.onEquipArmor).not.toHaveBeenCalled()
+    equip!.click()
+    expect(ui.inventory.onEquipArmor).toHaveBeenCalledExactlyOnceWith('armor:second')
+  })
+
   it('previews the second same-kind armor by ID without equipping or opening another dialog', async () => {
     const rows = await mount(1366)
     expect(rows).toHaveLength(2)

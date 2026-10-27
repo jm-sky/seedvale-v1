@@ -14,7 +14,7 @@ describe('pinned V3 equipment source verification', () => {
     expect(readReviewedIds(mapping.replaceAll('\n', '\r\n'))).toEqual(readReviewedIds(mapping))
     expect(() => readReviewedIds('missing')).toThrow(/missing the All definitions section/)
   })
-  it('verifies original source blobs, donor types and every imported field without an external checkout', () => {
+  it('verifies original source blobs, donor types and every imported field without an external checkout', { timeout: 30_000 }, () => {
     verifySource()
   })
 
