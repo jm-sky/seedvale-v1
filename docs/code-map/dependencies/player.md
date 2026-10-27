@@ -51,6 +51,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `ai/NpcAgent.spatial.test.ts`
 - `ai/NpcAgent.ts`
 - `ai/npcLogistics.ts`
 - `ai/npcProfessionWork.ts`
@@ -251,6 +252,7 @@ Generated from TypeScript imports.
 - `player/skillEvaluation.test.ts`
 - `player/skillEvaluation.ts`
 - `player/targetedSkillSelection.ts`
+- `ui-vue/components/items/buildInventoryDetailStatRows.ts`
 - `ui-vue/demos/character-skills/fixtures.ts`
 - `ui-vue/store.ts`
 - `world/animalTraps.test.ts`

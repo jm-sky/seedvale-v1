@@ -340,12 +340,12 @@ Generated from exported TypeScript symbols.
 
 ## `items/inventoryView.ts`
 
-- `buildInventoryGroups` — function — line 265
-- `inventoryCountsForUi` — function — line 302
-- `InventoryGroupView` — type — line 67
-- `InventoryInstanceRow` — type — line 45
-- `ITEM_METER_LABEL` — const — line 39
-- `ItemMeterKind` — type — line 34
+- `buildInventoryGroups` — function — line 281
+- `inventoryCountsForUi` — function — line 318
+- `InventoryGroupView` — type — line 72
+- `InventoryInstanceRow` — type — line 46
+- `ITEM_METER_LABEL` — const — line 40
+- `ItemMeterKind` — type — line 35
 
 ## `items/itemCatalog.ts`
 
@@ -703,6 +703,50 @@ Generated from exported TypeScript symbols.
 - `TreasureMechanicalResult` — type — line 50
 - `TreasureTrapType` — type — line 49
 - `treasureWorldContainerPrompt` — function — line 341
+
+## `items/v3Equipment/compatibilityTypes.ts`
+
+- `CompatibilityDecision` — interface — line 20
+- `EquipmentCompatibilityResult` — type — line 45
+- `EquipmentPropertyPath` — type — line 7
+- `PropertyCompatibility` — interface — line 11
+- `VerifiedV1Target` — interface — line 27
+
+## `items/v3Equipment/provenance.ts`
+
+- `EquipmentFamilyCounts` — interface — line 1
+- `V3_EQUIPMENT_PROVENANCE` — const — line 51
+- `V3EquipmentProvenance` — interface — line 11
+
+## `items/v3Equipment/types.ts`
+
+- `AmmoItem` — interface — line 84
+- `AmmoKind` — type — line 45
+- `ArmorFamily` — type — line 110
+- `ArmorItem` — interface — line 114
+- `ArmorLayer` — type — line 109
+- `ArmorSlot` — type — line 108
+- `DamageType` — type — line 6
+- `Grip` — type — line 44
+- `ItemAvailability` — type — line 13
+- `ItemBase` — interface — line 21
+- `ItemCategory` — type — line 8
+- `ItemMaterial` — type — line 9
+- `ItemOrigin` — type — line 14
+- `ItemTier` — type — line 11
+- `LegacyIds` — interface — line 16
+- `MeleeClass` — type — line 41
+- `MeleeWeapon` — interface — line 61
+- `RangedClass` — type — line 42
+- `RangedWeapon` — interface — line 70
+- `Resist` — type — line 112
+- `ShieldClass` — type — line 92
+- `ShieldItem` — interface — line 94
+- `SizeClass` — type — line 7
+- `V3EquipmentDefinition` — type — line 125
+- `WeaponCapability` — type — line 46
+- `WeaponClass` — type — line 43
+- `WeaponItem` — type — line 82
 
 ## `items/weaponMaintenance.ts`
 

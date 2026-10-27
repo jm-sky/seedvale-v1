@@ -1546,6 +1546,15 @@ Generated from TypeScript imports.
 - `player/playerCombat.ts`
 - `player/playerMelee.test.ts`
 
+## `app/inventoryWiring.equipToolGuard.test.ts`
+
+**Imports**
+
+- `items/HeldTool.ts`
+- `items/Inventory.ts`
+- `items/primaryWeapons.ts`
+- `items/weaponMaintenance.ts`
+
 ## `app/inventoryWiring.ts`
 
 **Imports**

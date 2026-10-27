@@ -1,7 +1,7 @@
 # Plan: Stage F — Trade V3-identical reskin + V1 filters
 
 **Created:** 2026-10-27  
-**Status:** `implemented` — author visual PASS pending  
+**Status:** `verification needed` 🔍
 **Implemented at:** 2026-10-27  
 **Type:** polish  
 **Priority:** high · **Effort:** M  

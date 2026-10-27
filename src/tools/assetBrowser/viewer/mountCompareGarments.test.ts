@@ -1,4 +1,4 @@
-import { Bone, Object3D, Skeleton, SkinnedMesh, BufferGeometry, MeshBasicMaterial } from 'three'
+import { Bone, BufferGeometry, Group, MeshBasicMaterial, Object3D, Skeleton, SkinnedMesh } from 'three'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { attachCompareGarments, attachCompareHead, attachCompareKit } from './mountCompareGarments'
 
@@ -39,7 +39,7 @@ describe('attachCompareHead', () => {
 
   it('binds head skinned meshes onto the body skeleton', async () => {
     const { body, bone } = bodyWithPelvis()
-    const pack = new Object3D()
+    const pack = new Group()
     pack.add(skinnedWithBone('Head', 'pelvis'))
     vi.mocked(loadGltf).mockResolvedValueOnce(pack)
 
@@ -72,7 +72,7 @@ describe('attachCompareGarments', () => {
   it('binds EQ_PeasantSkirt onto the body skeleton by bone name', async () => {
     const { body, bone } = bodyWithPelvis()
 
-    const pack = new Object3D()
+    const pack = new Group()
     pack.add(skinnedWithBone('EQ_PeasantSkirt', 'pelvis'))
     vi.mocked(loadGltf).mockResolvedValueOnce(pack)
 
@@ -91,9 +91,9 @@ describe('attachCompareGarments', () => {
 describe('attachCompareKit', () => {
   it('attaches head then skirt', async () => {
     const { body } = bodyWithPelvis()
-    const headPack = new Object3D()
+    const headPack = new Group()
     headPack.add(skinnedWithBone('Head', 'pelvis'))
-    const eqPack = new Object3D()
+    const eqPack = new Group()
     eqPack.add(skinnedWithBone('EQ_PeasantSkirt', 'pelvis'))
     vi.mocked(loadGltf)
       .mockResolvedValueOnce(headPack)
@@ -110,7 +110,7 @@ describe('attachCompareKit', () => {
 
   it('skips head when opts.head is false', async () => {
     const { body } = bodyWithPelvis()
-    const eqPack = new Object3D()
+    const eqPack = new Group()
     eqPack.add(skinnedWithBone('EQ_PeasantSkirt', 'pelvis'))
     vi.mocked(loadGltf).mockResolvedValueOnce(eqPack)
 

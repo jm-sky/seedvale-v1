@@ -56,7 +56,7 @@ const RAW_ERROR = {
 const DEFAULT_SIMPLIFY_ERROR = 0.004
 const MALE_PEASANT_FAMILY_ERROR = 0.001
 
-const CHECKPOINTS = new Set(['S0', 'S1', 'S2', 'S3', 'S4a', 'S4b', 'S5', 'full'])
+const CHECKPOINTS = new Set(['full', 'S0', 'S1', 'S2', 'S3', 'S4a', 'S4b', 'S5'])
 const RECIPES = new Set(['base-historical', 'variant-current'])
 
 await MeshoptSimplifier.ready

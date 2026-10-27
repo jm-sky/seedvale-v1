@@ -18,8 +18,8 @@ import {
   selectionMatchesRow,
   sortInventoryRows,
 } from './inventoryPresentation'
-import { conditionTone } from './meters'
 import ItemTypeIcon from './ItemTypeIcon.vue'
+import { conditionTone } from './meters'
 import QualityTag from './QualityTag.vue'
 import StatBar from './StatBar.vue'
 import StatIcon from './StatIcon.vue'

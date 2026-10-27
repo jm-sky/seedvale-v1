@@ -1449,6 +1449,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `ai/NpcAgent.spatialLifecycle.test.ts`
 - `ai/NpcAgent.ts`
 - `ai/burialPressure.test.ts`
 - `ai/burialPressure.ts`
@@ -1517,6 +1518,8 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `ai/NpcAgent.combatMode.test.ts`
+- `ai/NpcAgent.spatial.test.ts`
+- `ai/NpcAgent.spatialLifecycle.test.ts`
 - `ai/NpcAgent.timeSkip.test.ts`
 - `ai/NpcAgent.ts`
 - `ai/npcLogistics.ts`
@@ -1580,6 +1583,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `ai/NpcAgent.spatialLifecycle.test.ts`
 - `ai/NpcAgent.timeSkip.test.ts`
 - `ai/NpcAgent.ts`
 - `ai/burialPressure.test.ts`
@@ -1700,6 +1704,8 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `ai/NpcAgent.spatial.test.ts`
+- `ai/NpcAgent.spatialLifecycle.test.ts`
 - `ai/NpcAgent.timeSkip.test.ts`
 - `ai/NpcAgent.ts`
 - `ai/npcPlayerReactionVoice.test.ts`
@@ -1921,6 +1927,8 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `ai/NpcAgent.spatial.test.ts`
+- `ai/NpcAgent.spatialLifecycle.test.ts`
 - `ai/NpcAgent.timeSkip.test.ts`
 - `ai/npcPlayerReactionVoice.test.ts`
 - `app/actions/groundActions.test.ts`

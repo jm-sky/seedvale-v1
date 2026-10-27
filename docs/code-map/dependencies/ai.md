@@ -18,6 +18,7 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `ai/Needs.test.ts`
+- `ai/NpcAgent.spatialLifecycle.test.ts`
 - `ai/NpcAgent.timeSkip.test.ts`
 - `ai/NpcAgent.ts`
 - `ai/decisionModifiers.test.ts`
@@ -57,6 +58,54 @@ Generated from TypeScript imports.
 - `combat/rangedLifecycle.ts`
 - `items/weaponMaintenance.ts`
 - `settlement/npcResidentAnchors.ts`
+
+## `ai/NpcAgent.spatial.test.ts`
+
+**Imports**
+
+- `ai/NpcAgent.ts`
+- `ai/npcAction.ts`
+- `ai/npcMovementRoute.ts`
+- `ai/npcMovementTarget.ts`
+- `combat/combatIntent.ts`
+- `combat/meleeAttack.ts`
+- `combat/projectile.ts`
+- `combat/rangedAttack.ts`
+- `items/weaponMaintenance.ts`
+- `player/PlayerController.ts`
+- `settlement/npcResidentAnchors.ts`
+- `settlement/places.ts`
+- `settlement/props.ts`
+- `simulation/interactionQueue.ts`
+- `simulation/types.ts`
+- `world/caves/caveHabitat.ts`
+- `world/caves/caveHeightfieldQuery.ts`
+- `world/caves/caveHeightfieldRepresentation.ts`
+- `world/caves/caveTopology.ts`
+- `world/caves/mouthCarve.ts`
+- `world/caves/productionTopology.ts`
+- `world/largeCaves.ts`
+- `world/spatialContext.ts`
+
+## `ai/NpcAgent.spatialLifecycle.test.ts`
+
+**Imports**
+
+- `ai/Needs.ts`
+- `ai/NpcAgent.ts`
+- `ai/npcAction.ts`
+- `ai/npcMovementRoute.ts`
+- `ai/npcMovementTarget.ts`
+- `ai/npcTravel.ts`
+- `ai/npcTravelCheckpoint.ts`
+- `items/liquidContainer.ts`
+- `settlement/npcPostDeath.ts`
+- `settlement/npcResidentAnchors.ts`
+- `settlement/npcState.ts`
+- `settlement/places.ts`
+- `settlement/props.ts`
+- `simulation/types.ts`
+- `world/spatialContext.ts`
 
 ## `ai/NpcAgent.timeSkip.test.ts`
 
@@ -228,6 +277,8 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `ai/NpcAgent.combatMode.test.ts`
+- `ai/NpcAgent.spatial.test.ts`
+- `ai/NpcAgent.spatialLifecycle.test.ts`
 - `ai/NpcAgent.timeSkip.test.ts`
 - `ai/dialogueTemplates.ts`
 - `ai/npcCaveLocomotion.test.ts`
@@ -641,6 +692,8 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `ai/NpcAgent.spatial.test.ts`
+- `ai/NpcAgent.spatialLifecycle.test.ts`
 - `ai/NpcAgent.timeSkip.test.ts`
 - `ai/NpcAgent.ts`
 - `ai/npcAnimationIntent.test.ts`
@@ -1133,6 +1186,8 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `ai/NpcAgent.spatial.test.ts`
+- `ai/NpcAgent.spatialLifecycle.test.ts`
 - `ai/NpcAgent.ts`
 - `ai/npcCaveLocomotion.test.ts`
 - `ai/npcCaveLocomotion.ts`
@@ -1172,6 +1227,8 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `ai/NpcAgent.spatial.test.ts`
+- `ai/NpcAgent.spatialLifecycle.test.ts`
 - `ai/NpcAgent.ts`
 - `ai/npcCaveLocomotion.ts`
 - `ai/npcMovementCaveIntegration.test.ts`
@@ -1499,6 +1556,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `ai/NpcAgent.spatialLifecycle.test.ts`
 - `ai/NpcAgent.timeSkip.test.ts`
 - `ai/NpcAgent.ts`
 - `ai/npcExpeditionTravel.ts`
@@ -1521,6 +1579,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `ai/NpcAgent.spatialLifecycle.test.ts`
 - `ai/NpcAgent.ts`
 - `ai/npcOffscreenSurvival.test.ts`
 - `settlement/SettlementsManager.ts`

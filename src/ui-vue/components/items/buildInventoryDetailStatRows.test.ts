@@ -1,16 +1,16 @@
 import { describe, expect, it } from 'vitest'
-import { ITEM_CATALOG } from '../../../items/itemCatalog'
 import type { InventoryGroupView } from '../../../items/inventoryView'
+import { ITEM_CATALOG } from '../../../items/itemCatalog'
 import { ITEM_DEFS, type ItemKind } from '../../../items/items'
+import {
+  buildInventoryDetailStatRows,
+  formatAmmoStat,
+} from './buildInventoryDetailStatRows'
 import { buildItemDetailPresentation } from './buildItemDetailPresentation'
 import {
   catalogueStatStrength,
   INVENTORY_DETAIL_STAT_CEILINGS,
 } from './catalogueStatStrength'
-import {
-  buildInventoryDetailStatRows,
-  formatAmmoStat,
-} from './buildInventoryDetailStatRows'
 
 function emptyGroup(kind: InventoryGroupView['kind'], count = 1): InventoryGroupView {
   return {

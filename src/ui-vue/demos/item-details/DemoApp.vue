@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import { buildItemDetailPresentation } from '@/components/items/buildItemDetailPresentation'
 import ItemDetailCard from '@/components/items/ItemDetailCard.vue'
 import ItemInstanceMeters from '@/components/items/ItemInstanceMeters.vue'
-import { buildItemDetailPresentation } from '@/components/items/buildItemDetailPresentation'
 import ItemsScreenItemButton from '@/components/ItemsScreenItemButton.vue'
 import { ITEM_DEFS, primaryItemCategory } from '../../../items/items'
 import { DEMO_FIXTURES, type DemoFixtureId } from './fixtures'

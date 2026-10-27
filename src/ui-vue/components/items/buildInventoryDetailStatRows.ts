@@ -1,9 +1,5 @@
 import type { InventoryGroupView, InventoryInstanceRow } from '../../../items/inventoryView'
 import type { DetailStatRow } from './buildItemDetailPresentation'
-import {
-  catalogueStatStrength,
-  INVENTORY_DETAIL_STAT_CEILINGS,
-} from './catalogueStatStrength'
 import { FOOD_SOURCE_SPECIES_LABEL, foodHungerRelief, FRESHNESS_STAGE_LABEL } from '../../../items/foodFreshness'
 import {
   type BookTier,
@@ -16,6 +12,10 @@ import { resolveReadBookUseView } from '../../../items/itemUseView'
 import { tradeValue } from '../../../items/tradeCatalog'
 import { SKILL_LABEL } from '../../../player/PlayerSkills'
 import { formatCoins } from '../../lib/formatCoins'
+import {
+  catalogueStatStrength,
+  INVENTORY_DETAIL_STAT_CEILINGS,
+} from './catalogueStatStrength'
 
 const CEILINGS = INVENTORY_DETAIL_STAT_CEILINGS
 

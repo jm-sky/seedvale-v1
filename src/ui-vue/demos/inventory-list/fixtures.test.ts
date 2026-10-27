@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { projectInventoryRows } from '../../components/items/inventoryPresentation'
-import { DEMO_SCENARIOS, cloneScenario } from './fixtures'
+import { cloneScenario, DEMO_SCENARIOS } from './fixtures'
 
 describe('inventory-list demo fixtures', () => {
   it('builds hybrid rows for every scenario without exploding stacks', () => {

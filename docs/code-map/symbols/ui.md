@@ -36,7 +36,7 @@ Generated from exported TypeScript symbols.
 
 ## `ui/createHud.ts`
 
-- `createHud` — function — line 54
+- `createHud` — function — line 61
 - `Hud` — type — line 5
 
 ## `ui/createInventoryScreen.ts`

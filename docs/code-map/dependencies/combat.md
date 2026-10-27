@@ -11,6 +11,7 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `ai/NpcAgent.combatMode.test.ts`
+- `ai/NpcAgent.spatial.test.ts`
 - `ai/NpcAgent.timeSkip.test.ts`
 - `ai/NpcAgent.ts`
 - `ai/npcAnimalThreat.test.ts`
@@ -87,6 +88,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `ai/NpcAgent.spatial.test.ts`
 - `ai/NpcAgent.ts`
 - `combat/meleeAttack.test.ts`
 - `player/playerCombat.test.ts`
@@ -123,6 +125,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `ai/NpcAgent.spatial.test.ts`
 - `ai/NpcAgent.ts`
 - `ai/npcCombat.test.ts`
 - `ai/npcCombat.ts`
@@ -145,6 +148,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `ai/NpcAgent.spatial.test.ts`
 - `ai/NpcAgent.ts`
 - `app/gameLoop.ts`
 - `combat/rangedAttack.test.ts`

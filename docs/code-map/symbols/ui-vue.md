@@ -2,13 +2,33 @@
 
 Generated from exported TypeScript symbols.
 
+## `ui-vue/components/items/ammoSectionView.ts`
+
+- `AmmoSectionLine` — type — line 4
+- `AmmoSectionView` — type — line 10
+- `buildAmmoSectionView` — function — line 20
+
+## `ui-vue/components/items/buildInventoryDetailStatRows.ts`
+
+- `buildInventoryDetailStatRows` — function — line 97
+- `BuildInventoryDetailStatRowsInput` — type — line 78
+- `formatAmmoStat` — function — line 59
+
 ## `ui-vue/components/items/buildItemDetailPresentation.ts`
 
-- `buildItemDetailPresentation` — function — line 65
-- `BuildItemDetailPresentationInput` — type — line 34
-- `DetailMeterRow` — type — line 13
-- `DetailStatRow` — type — line 6
-- `ItemDetailPresentation` — type — line 22
+- `buildItemDetailPresentation` — function — line 105
+- `BuildItemDetailPresentationInput` — type — line 64
+- `DETAIL_STAT_GROUP_ORDER` — const — line 10
+- `DetailMeterRow` — type — line 31
+- `DetailStatGroup` — type — line 8
+- `DetailStatRow` — type — line 18
+- `ItemDetailPresentation` — type — line 44
+
+## `ui-vue/components/items/catalogueStatStrength.ts`
+
+- `catalogueStatStrength` — function — line 5
+- `INVENTORY_DETAIL_STAT_CEILINGS` — const — line 64
+- `InventoryDetailStatCeilings` — type — line 10
 
 ## `ui-vue/components/items/collectArmorPreviewInstances.ts`
 
@@ -17,7 +37,36 @@ Generated from exported TypeScript symbols.
 
 ## `ui-vue/components/items/equipmentPanelTypes.ts`
 
-- `EquipmentSlotView` — type — line 3
+- `EquipmentSlotView` — type — line 4
+
+## `ui-vue/components/items/inventoryPresentation.ts`
+
+- `availableInventoryCategories` — function — line 156
+- `deriveCompareInstanceId` — function — line 219
+- `filterInventoryRows` — function — line 164
+- `findPresentationRow` — function — line 210
+- `INVENTORY_CATEGORY_ORDER` — const — line 52
+- `InventoryCategoryFilter` — type — line 23
+- `InventoryPresentationRow` — type — line 25
+- `inventoryRowKey` — function — line 66
+- `InventorySelection` — type — line 17
+- `InventorySortMode` — type — line 22
+- `isSelectionVisible` — function — line 259
+- `projectInventoryRows` — function — line 103
+- `reconcileInventorySelection` — function — line 235
+- `selectedGroupKind` — function — line 254
+- `selectedInstanceId` — function — line 250
+- `selectionFromRow` — function — line 72
+- `selectionMatchesRow` — function — line 79
+- `sortInventoryRows` — function — line 180
+
+## `ui-vue/components/items/itemIcons.ts`
+
+- `ItemStatIconName` — type — line 13
+- `QUALITY_TAG` — const — line 171
+- `resolveItemCategoryIconSrc` — function — line 157
+- `resolveItemKindIconSrc` — function — line 161
+- `resolveItemStatIconSrc` — function — line 166
 
 ## `ui-vue/components/items/itemIllustrations.ts`
 
@@ -72,18 +121,41 @@ Generated from exported TypeScript symbols.
 - `SkillsActionCardInput` — type — line 11
 - `skillsFixture` — function — line 204
 
+## `ui-vue/demos/hud/fixtures.ts`
+
+- `clockFixture` — function — line 50
+- `ClockFixture` — type — line 41
+- `DEMO_SCENARIOS` — const — line 28
+- `DemoScenario` — type — line 23
+- `DemoViewId` — type — line 11
+- `gazeDisabledFixture` — function — line 110
+- `gazeOkFixture` — function — line 98
+- `needsFixture` — function — line 71
+- `placementFixture` — function — line 131
+- `PlacementFixture` — type — line 122
+- `toastFixture` — function — line 90
+
 ## `ui-vue/demos/inventory-list/fixtures.ts`
 
-- `DEMO_SCENARIOS` — const — line 26
-- `DemoScenario` — type — line 7
-- `DemoScenarioId` — type — line 5
-- `slotViewsFor` — function — line 92
+- `cloneScenario` — function — line 209
+- `DEMO_SCENARIOS` — const — line 199
+- `DemoScenario` — type — line 25
+- `DemoScenarioId` — type — line 16
 
 ## `ui-vue/demos/item-details/fixtures.ts`
 
-- `DEMO_FIXTURES` — const — line 23
+- `DEMO_FIXTURES` — const — line 25
 - `DemoFixture` — type — line 7
 - `DemoFixtureId` — type — line 5
+
+## `ui-vue/demos/merchant/fixtures.ts`
+
+- `DEMO_SCENARIOS` — const — line 52
+- `DemoBuyRow` — type — line 15
+- `DemoHorse` — type — line 33
+- `DemoOfferRow` — type — line 25
+- `DemoScenario` — type — line 40
+- `DemoViewId` — type — line 8
 
 ## `ui-vue/demos/quick-actions/fixtures.ts`
 
@@ -130,6 +202,11 @@ Generated from exported TypeScript symbols.
 ## `ui-vue/lib/firstUpperCase.ts`
 
 - `firstUpperCase` — const — line 1
+
+## `ui-vue/lib/formatCoins.ts`
+
+- `formatCoins` — function — line 8
+  - domain: ui
 
 ## `ui-vue/lib/mapColors.ts`
 
@@ -229,239 +306,240 @@ Generated from exported TypeScript symbols.
 
 ## `ui-vue/store.ts`
 
-- `abortBusy` — function — line 1773
-- `abortPlacementPreview` — function — line 1853
-- `abortRest` — function — line 1703
-- `abortTargetedSkill` — function — line 1783
-- `abortTerrainPreparation` — function — line 1794
-- `acceptNpcDialogueOffer` — function — line 1240
-- `applyNpcDialogueQuestOverride` — function — line 1187
+- `abortBusy` — function — line 1797
+- `abortPlacementPreview` — function — line 1877
+- `abortRest` — function — line 1727
+- `abortTargetedSkill` — function — line 1807
+- `abortTerrainPreparation` — function — line 1818
+- `acceptNpcDialogueOffer` — function — line 1252
+- `applyNpcDialogueQuestOverride` — function — line 1197
   - domain: ui-input
 - `ArtisanActiveOrderView` — type — line 538
 - `ArtisanOrderCatalogView` — type — line 529
-- `backToQuickActionsCategories` — function — line 1696
+- `backToQuickActionsCategories` — function — line 1720
 - `CharacterReputationStandingView` — type — line 671
 - `CharacterReputationView` — type — line 689
 - `CharacterSettlementOption` — type — line 666
 - `CharacterStats` — type — line 653
-- `clearToasts` — function — line 2380
-- `clearTouchChrome` — function — line 2403
-- `closeActionConfirm` — function — line 1639
-- `closeArtisanOrderScreen` — function — line 1593
-- `closeCharacterScreen` — function — line 2003
-- `closeContainerScreen` — function — line 1486
-- `closeFlavorDialog` — function — line 1079
-- `closeHouseholdTransferScreen` — function — line 1523
-- `closeInventory` — function — line 1361
-- `closeMerchant` — function — line 1428
-- `closeNotes` — function — line 1941
-- `closeNpcDialogueMenu` — function — line 1228
-- `closeNpcGiveItemScreen` — function — line 1556
-- `closePauseMenu` — function — line 985
-- `closeQuantityDialog` — function — line 1611
-- `closeQuestLog` — function — line 1032
-- `closeQuickActions` — function — line 1685
-- `closeSkillsScreen` — function — line 2123
-- `closeTopOverlay` — function — line 981
-- `closeVillagers` — function — line 1087
-- `closeWorldConfigScreen` — function — line 1937
-- `closeWorldInspection` — function — line 1977
-- `closeWorldMap` — function — line 1995
-- `configureAbortBusy` — function — line 1770
-- `configureAbortPlacementPreview` — function — line 1850
-- `configureAbortRest` — function — line 1700
-- `configureAbortTargetedSkill` — function — line 1780
-- `configureAbortTerrainPreparation` — function — line 1791
-- `configureActionConfirm` — function — line 1623
-- `configureArtisanOrderScreen` — function — line 1559
-- `configureAudioVolumes` — function — line 991
-- `configureCharacterScreen` — function — line 2009
-- `configureContainerScreen` — function — line 1438
-- `configureFlavorDialog` — function — line 1035
-- `configureHouseholdTransferScreen` — function — line 1489
-- `configureMerchant` — function — line 1372
-- `configureNpcDialogueMenu` — function — line 1249
-- `configureNpcGiveItemScreen` — function — line 1526
-- `configurePauseMenu` — function — line 987
-- `configurePlacementPreviewConfirm` — function — line 1861
-- `configurePlacementPreviewRepeat` — function — line 1886
-- `configurePlacementPreviewRotation` — function — line 1875
-- `configurePrimaryWeaponShortcuts` — function — line 2292
-- `configureQuickActions` — function — line 1652
-- `configureSkillsScreen` — function — line 2129
-- `configureTerrainPreparationControls` — function — line 1811
-- `configureTouchChrome` — function — line 2387
-- `configureUiSounds` — function — line 809
-- `configureWorldConfigScreen` — function — line 1915
-- `configureWorldInspection` — function — line 1944
-- `confirmActionConfirm` — function — line 1645
-- `confirmPlacementPreview` — function — line 1864
-- `confirmQuantityDialog` — function — line 1615
-- `confirmTerrainPreparation` — function — line 1826
+- `clearToasts` — function — line 2418
+- `clearTouchChrome` — function — line 2441
+- `closeActionConfirm` — function — line 1663
+- `closeArtisanOrderScreen` — function — line 1617
+- `closeCharacterScreen` — function — line 2027
+- `closeContainerScreen` — function — line 1510
+- `closeFlavorDialog` — function — line 1089
+- `closeHouseholdTransferScreen` — function — line 1547
+- `closeInventory` — function — line 1373
+- `closeMerchant` — function — line 1452
+- `closeNotes` — function — line 1965
+- `closeNpcDialogueMenu` — function — line 1240
+- `closeNpcGiveItemScreen` — function — line 1580
+- `closePauseMenu` — function — line 995
+- `closeQuantityDialog` — function — line 1635
+- `closeQuestLog` — function — line 1042
+- `closeQuickActions` — function — line 1709
+- `closeSkillsScreen` — function — line 2147
+- `closeTopOverlay` — function — line 991
+- `closeVillagers` — function — line 1097
+- `closeWorldConfigScreen` — function — line 1961
+- `closeWorldInspection` — function — line 2001
+- `closeWorldMap` — function — line 2019
+- `configureAbortBusy` — function — line 1794
+- `configureAbortPlacementPreview` — function — line 1874
+- `configureAbortRest` — function — line 1724
+- `configureAbortTargetedSkill` — function — line 1804
+- `configureAbortTerrainPreparation` — function — line 1815
+- `configureActionConfirm` — function — line 1647
+- `configureArtisanOrderScreen` — function — line 1583
+- `configureAudioVolumes` — function — line 1001
+- `configureCharacterScreen` — function — line 2033
+- `configureContainerScreen` — function — line 1462
+- `configureFlavorDialog` — function — line 1045
+- `configureHouseholdTransferScreen` — function — line 1513
+- `configureMerchant` — function — line 1396
+- `configureNpcDialogueMenu` — function — line 1261
+- `configureNpcGiveItemScreen` — function — line 1550
+- `configurePauseMenu` — function — line 997
+- `configurePlacementPreviewConfirm` — function — line 1885
+- `configurePlacementPreviewRepeat` — function — line 1910
+- `configurePlacementPreviewRotation` — function — line 1899
+- `configurePrimaryWeaponShortcuts` — function — line 2330
+- `configureQuickActions` — function — line 1676
+- `configureSkillsScreen` — function — line 2153
+- `configureTerrainPreparationControls` — function — line 1835
+- `configureTouchChrome` — function — line 2425
+- `configureUiSounds` — function — line 815
+- `configureWorldConfigScreen` — function — line 1939
+- `configureWorldInspection` — function — line 1968
+- `confirmActionConfirm` — function — line 1669
+- `confirmPlacementPreview` — function — line 1888
+- `confirmQuantityDialog` — function — line 1639
+- `confirmTerrainPreparation` — function — line 1850
 - `ContainerScreenMode` — type — line 472
-- `emitUiClick` — function — line 824
-- `equipPrimaryMelee` — function — line 2295
-- `equipPrimaryRanged` — function — line 2298
-- `finishTimeSkipHide` — function — line 1744
+- `emitUiClick` — function — line 830
+- `equipPrimaryMelee` — function — line 2333
+- `equipPrimaryRanged` — function — line 2336
+- `finishTimeSkipHide` — function — line 1768
 - `FireActionId` — type — line 228
 - `FlavorDialogDetailRow` — type — line 206
-- `getHudSkillAimScreen` — function — line 2335
-- `getNpcDialogueQuestPreview` — function — line 1146
+- `getHudSkillAimScreen` — function — line 2373
+- `getNpcDialogueQuestPreview` — function — line 1156
   - domain: ui-input
-- `getSkillValue` — function — line 2239
-- `getSkillXp` — function — line 2243
-- `growTerrainPreparation` — function — line 1814
-- `hideBusy` — function — line 1760
-- `hidePlacementPreview` — function — line 1906
-- `hideTerrainPreparationPreview` — function — line 1842
-- `hideTimeSkip` — function — line 1732
+- `getSkillValue` — function — line 2263
+- `getSkillXp` — function — line 2267
+- `growTerrainPreparation` — function — line 1838
+- `hideBusy` — function — line 1784
+- `hidePlacementPreview` — function — line 1930
+- `hideTerrainPreparationPreview` — function — line 1866
+- `hideTimeSkip` — function — line 1756
 - `HouseholdTransferSummaryView` — type — line 500
 - `InteractionPanelAction` — type — line 197
-- `invalidateWorldBoundUiSessions` — function — line 1194
-- `isActionConfirmOpen` — function — line 1650
-- `isArtisanOrderScreenOpen` — function — line 1594
-- `isCharacterScreenOpen` — function — line 2004
-- `isContainerScreenOpen` — function — line 1487
-- `isFlavorDialogOpen` — function — line 1084
-- `isHouseholdTransferScreenOpen` — function — line 1524
-- `isInventoryOpen` — function — line 1370
-- `isMerchantOpen` — function — line 1436
-- `isMinimapCollapsed` — function — line 2360
-- `isNotesOpen` — function — line 1942
-- `isNpcDialogueMenuOpen` — function — line 1248
-- `isNpcGiveItemScreenOpen` — function — line 1557
-- `isPauseMenuOpen` — function — line 986
-- `isQuantityDialogOpen` — function — line 1621
-- `isQuestLogOpen` — function — line 1033
-- `isQuickActionsOpen` — function — line 1694
-- `isSkillsScreenOpen` — function — line 2124
-- `isVillagersOpen` — function — line 1096
-- `isWorldConfigScreenOpen` — function — line 1938
-- `isWorldInspectionOpen` — function — line 1984
-- `isWorldMapOpen` — function — line 1996
-- `lowerTerrainPreparation` — function — line 1823
+- `invalidateWorldBoundUiSessions` — function — line 1204
+- `isActionConfirmOpen` — function — line 1674
+- `isArtisanOrderScreenOpen` — function — line 1618
+- `isCharacterScreenOpen` — function — line 2028
+- `isContainerScreenOpen` — function — line 1511
+- `isFlavorDialogOpen` — function — line 1094
+- `isHouseholdTransferScreenOpen` — function — line 1548
+- `isInventoryOpen` — function — line 1394
+- `isMerchantOpen` — function — line 1460
+- `isMinimapCollapsed` — function — line 2398
+- `isNotesOpen` — function — line 1966
+- `isNpcDialogueMenuOpen` — function — line 1260
+- `isNpcGiveItemScreenOpen` — function — line 1581
+- `isPauseMenuOpen` — function — line 996
+- `isQuantityDialogOpen` — function — line 1645
+- `isQuestLogOpen` — function — line 1043
+- `isQuickActionsOpen` — function — line 1718
+- `isSkillsScreenOpen` — function — line 2148
+- `isVillagersOpen` — function — line 1106
+- `isWorldConfigScreenOpen` — function — line 1962
+- `isWorldInspectionOpen` — function — line 2008
+- `isWorldMapOpen` — function — line 2020
+- `lowerTerrainPreparation` — function — line 1847
 - `MerchantHorseOffer` — type — line 398
 - `MerchantMode` — type — line 437
 - `MerchantPricing` — type — line 377
 - `NpcTradeStockRow` — type — line 412
-- `openActionConfirm` — function — line 1630
-- `openArtisanOrderScreen` — function — line 1563
-- `openCharacterScreen` — function — line 2002
-- `openContainerScreen` — function — line 1441
-- `openFlavorDialog` — function — line 1039
-- `openHouseholdTransferScreen` — function — line 1492
-- `openInventory` — function — line 1279
-- `openMerchant` — function — line 1380
-- `openMerchantFromDialogue` — function — line 1401
-- `openNotes` — function — line 1940
-- `openNpcDialogueMenu` — function — line 1099
-- `openNpcGiveItemScreen` — function — line 1529
-- `openPauseMenu` — function — line 984
-- `openQuantityDialog` — function — line 1599
-- `openQuestLog` — function — line 1030
-- `openQuickActions` — function — line 1680
-- `openSkillsScreen` — function — line 2122
-- `openVillagers` — function — line 1086
-- `openWorldConfigScreen` — function — line 1936
-- `openWorldInspection` — function — line 1962
-- `openWorldMap` — function — line 1988
-- `PlacementPreviewRotationControls` — type — line 1870
-- `PrimaryWeaponShortcuts` — type — line 2286
-- `pushSkillsState` — function — line 2194
+- `openActionConfirm` — function — line 1654
+- `openArtisanOrderScreen` — function — line 1587
+- `openCharacterScreen` — function — line 2026
+- `openContainerScreen` — function — line 1465
+- `openFlavorDialog` — function — line 1049
+- `openHouseholdTransferScreen` — function — line 1516
+- `openInventory` — function — line 1291
+- `openMerchant` — function — line 1404
+- `openMerchantFromDialogue` — function — line 1425
+- `openNotes` — function — line 1964
+- `openNpcDialogueMenu` — function — line 1109
+- `openNpcGiveItemScreen` — function — line 1553
+- `openPauseMenu` — function — line 994
+- `openQuantityDialog` — function — line 1623
+- `openQuestLog` — function — line 1040
+- `openQuickActions` — function — line 1704
+- `openSkillsScreen` — function — line 2146
+- `openVillagers` — function — line 1096
+- `openWorldConfigScreen` — function — line 1960
+- `openWorldInspection` — function — line 1986
+- `openWorldMap` — function — line 2012
+- `PlacementPreviewRotationControls` — type — line 1894
+- `PrimaryWeaponShortcuts` — type — line 2324
+- `pushSkillsState` — function — line 2218
 - `QuickActionsCategoryId` — type — line 251
 - `QuickActionsFireAvailability` — type — line 242
-- `raiseTerrainPreparation` — function — line 1820
-- `refreshArtisanOrderScreen` — function — line 1580
-- `refreshContainerScreen` — function — line 1466
-- `refreshHouseholdTransferScreen` — function — line 1509
-- `refreshInventory` — function — line 1336
-- `refreshMerchant` — function — line 1413
-- `refreshNpcGiveItemScreen` — function — line 1544
-- `refreshQuestLog` — function — line 1031
-- `refreshVillagers` — function — line 1089
-- `refreshWorldInspection` — function — line 1972
-- `registerOverlay` — function — line 978
-- `resetAudioSettings` — function — line 1012
-- `resetGraphicsQuality` — function — line 1022
-- `resolveNpcDialogueHelp` — function — line 1152
-- `resolveNpcDialogueOpenTopic` — function — line 1133
-- `rotatePlacementPreviewLeft` — function — line 1878
-- `rotatePlacementPreviewRight` — function — line 1881
-- `selectNpcDialogueHelpAction` — function — line 1162
-- `selectNpcDialogueHelpTopic` — function — line 1175
-- `selectQuickActionsCategory` — function — line 1695
-- `setAudioVolume` — function — line 1002
-- `setCanCancelTerrainPreparation` — function — line 1723
-- `setCharacterBadges` — function — line 2112
-- `setCharacterReputation` — function — line 2118
-- `setCharacterStats` — function — line 2019
-- `setCycleTargetAvailable` — function — line 2391
-- `setFlavorInteractionPrompt` — function — line 1067
-- `setFlavorPrompt` — function — line 1059
-- `setHudAiming` — function — line 2319
-- `setHudCombatWeapon` — function — line 2283
-- `setHudFps` — function — line 2247
-- `setHudHeldAmmo` — function — line 2271
-- `setHudHeldTool` — function — line 2264
-- `setHudInventoryWeight` — function — line 2259
-- `setHudLeading` — function — line 2352
-- `setHudMounted` — function — line 2346
-- `setHudPlayerCondition` — function — line 2315
-- `setHudPlayerNeeds` — function — line 2304
-- `setHudPrimaryWeapons` — function — line 2279
-- `setHudSkillAimScreen` — function — line 2325
-- `setHudTime` — function — line 2253
-- `setInspectAvailable` — function — line 2395
-- `setLodgingWalkActive` — function — line 1729
-- `setMinimapCollapsed` — function — line 2359
-- `setPauseActiveSaveName` — function — line 1028
-- `setPausePlayerName` — function — line 1026
-- `setPauseSaveStatus` — function — line 1027
-- `setPauseSeed` — function — line 1025
-- `setQuantityDialogValue` — function — line 1608
-- `setQuickActionsCanPoisonMeat` — function — line 1671
-- `setQuickActionsCropSeeds` — function — line 1672
-- `setQuickActionsFireAvailability` — function — line 1668
-- `setQuickActionsHasBedrollMaterial` — function — line 1659
-- `setQuickActionsHasCarriedContainer` — function — line 1661
-- `setQuickActionsHasChest` — function — line 1655
-- `setQuickActionsHasDiggingTool` — function — line 1653
-- `setQuickActionsHasFishingRod` — function — line 1670
-- `setQuickActionsHasPalisadeMaterial` — function — line 1657
-- `setQuickActionsHasPlatformMaterial` — function — line 1660
-- `setQuickActionsHasTent` — function — line 1654
-- `setQuickActionsHasTreeSeed` — function — line 1669
-- `setQuickActionsHasTroughMaterial` — function — line 1658
-- `setQuickActionsHasWoodenTorch` — function — line 1656
-- `setQuickActionsNearTown` — function — line 1662
-- `setQuickActionsTraps` — function — line 1663
-- `setQuickActionsWorkContracts` — function — line 1677
-- `setSelectedTargetedSkill` — function — line 2207
-- `setSkillsState` — function — line 2138
-- `setTouchInputEnabled` — function — line 2399
-- `setVillagersPage` — function — line 1097
-- `sheatheCombatWeapon` — function — line 2301
-- `showBusy` — function — line 1754
-- `showPlacementPreview` — function — line 1893
-- `showTerrainPreparationPreview` — function — line 1830
-- `showTimeSkip` — function — line 1709
-- `showToast` — function — line 2364
-- `shrinkTerrainPreparation` — function — line 1817
-- `syncOverlayStack` — function — line 980
-- `TerrainPreparationControls` — type — line 1803
-- `ToastItem` — type — line 781
-- `toggleCharacterScreen` — function — line 2005
-- `toggleHudFpsVisible` — function — line 2252
-- `toggleMinimap` — function — line 2358
-- `togglePause` — function — line 983
-- `togglePlacementPreviewRepeat` — function — line 1889
-- `toggleQuickActions` — function — line 1693
-- `toggleSkillsScreen` — function — line 2125
-- `toggleVillagers` — function — line 1088
-- `toggleWorldMap` — function — line 1997
-- `ui` — const — line 828
-- `unregisterOverlay` — function — line 979
-- `updateTimeSkipRestUi` — function — line 1715
+- `raiseTerrainPreparation` — function — line 1844
+- `refreshArtisanOrderScreen` — function — line 1604
+- `refreshContainerScreen` — function — line 1490
+- `refreshHouseholdTransferScreen` — function — line 1533
+- `refreshInventory` — function — line 1348
+- `refreshMerchant` — function — line 1437
+- `refreshNpcGiveItemScreen` — function — line 1568
+- `refreshQuestLog` — function — line 1041
+- `refreshVillagers` — function — line 1099
+- `refreshWorldInspection` — function — line 1996
+- `registerOverlay` — function — line 988
+- `resetAudioSettings` — function — line 1022
+- `resetGraphicsQuality` — function — line 1032
+- `resolveNpcDialogueHelp` — function — line 1162
+- `resolveNpcDialogueOpenTopic` — function — line 1143
+- `rotatePlacementPreviewLeft` — function — line 1902
+- `rotatePlacementPreviewRight` — function — line 1905
+- `selectNpcDialogueHelpAction` — function — line 1172
+- `selectNpcDialogueHelpTopic` — function — line 1185
+- `selectQuickActionsCategory` — function — line 1719
+- `setAudioVolume` — function — line 1012
+- `setCanCancelTerrainPreparation` — function — line 1747
+- `setCharacterBadges` — function — line 2136
+- `setCharacterReputation` — function — line 2142
+- `setCharacterStats` — function — line 2043
+- `setCycleTargetAvailable` — function — line 2429
+- `setFlavorInteractionPrompt` — function — line 1077
+- `setFlavorPrompt` — function — line 1069
+- `setHudAiming` — function — line 2357
+- `setHudCombatWeapon` — function — line 2321
+- `setHudFps` — function — line 2271
+- `setHudHeldAmmo` — function — line 2309
+- `setHudHeldTool` — function — line 2302
+- `setHudInventoryWeight` — function — line 2297
+- `setHudLeading` — function — line 2390
+- `setHudMounted` — function — line 2384
+- `setHudPlayerCondition` — function — line 2353
+- `setHudPlayerNeeds` — function — line 2342
+- `setHudPrimaryWeapons` — function — line 2317
+- `setHudSkillAimScreen` — function — line 2363
+- `setHudTime` — function — line 2277
+- `setHudWeather` — function — line 2286
+- `setInspectAvailable` — function — line 2433
+- `setLodgingWalkActive` — function — line 1753
+- `setMinimapCollapsed` — function — line 2397
+- `setPauseActiveSaveName` — function — line 1038
+- `setPausePlayerName` — function — line 1036
+- `setPauseSaveStatus` — function — line 1037
+- `setPauseSeed` — function — line 1035
+- `setQuantityDialogValue` — function — line 1632
+- `setQuickActionsCanPoisonMeat` — function — line 1695
+- `setQuickActionsCropSeeds` — function — line 1696
+- `setQuickActionsFireAvailability` — function — line 1692
+- `setQuickActionsHasBedrollMaterial` — function — line 1683
+- `setQuickActionsHasCarriedContainer` — function — line 1685
+- `setQuickActionsHasChest` — function — line 1679
+- `setQuickActionsHasDiggingTool` — function — line 1677
+- `setQuickActionsHasFishingRod` — function — line 1694
+- `setQuickActionsHasPalisadeMaterial` — function — line 1681
+- `setQuickActionsHasPlatformMaterial` — function — line 1684
+- `setQuickActionsHasTent` — function — line 1678
+- `setQuickActionsHasTreeSeed` — function — line 1693
+- `setQuickActionsHasTroughMaterial` — function — line 1682
+- `setQuickActionsHasWoodenTorch` — function — line 1680
+- `setQuickActionsNearTown` — function — line 1686
+- `setQuickActionsTraps` — function — line 1687
+- `setQuickActionsWorkContracts` — function — line 1701
+- `setSelectedTargetedSkill` — function — line 2231
+- `setSkillsState` — function — line 2162
+- `setTouchInputEnabled` — function — line 2437
+- `setVillagersPage` — function — line 1107
+- `sheatheCombatWeapon` — function — line 2339
+- `showBusy` — function — line 1778
+- `showPlacementPreview` — function — line 1917
+- `showTerrainPreparationPreview` — function — line 1854
+- `showTimeSkip` — function — line 1733
+- `showToast` — function — line 2402
+- `shrinkTerrainPreparation` — function — line 1841
+- `syncOverlayStack` — function — line 990
+- `TerrainPreparationControls` — type — line 1827
+- `ToastItem` — type — line 787
+- `toggleCharacterScreen` — function — line 2029
+- `toggleHudFpsVisible` — function — line 2276
+- `toggleMinimap` — function — line 2396
+- `togglePause` — function — line 993
+- `togglePlacementPreviewRepeat` — function — line 1913
+- `toggleQuickActions` — function — line 1717
+- `toggleSkillsScreen` — function — line 2149
+- `toggleVillagers` — function — line 1098
+- `toggleWorldMap` — function — line 2021
+- `ui` — const — line 834
+- `unregisterOverlay` — function — line 989
+- `updateTimeSkipRestUi` — function — line 1739
 - `VillagerContainerOption` — type — line 56
 - `VillagerEntry` — type — line 49
 - `VILLAGERS_PAGE_SIZE` — const — line 51

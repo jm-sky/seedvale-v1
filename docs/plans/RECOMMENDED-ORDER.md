@@ -55,6 +55,8 @@
    🔴 `L` · 🔒 blocked · unlocks 0/0
 3. `quests-progression-074` — **Small quest offer scope and prioritization**  
    🟡 `S` · 🔒 blocked · unlocks 0/0
+4. `ui-input-045` — **Equipment panel body-ordered layout (V3 items--006 adapted)**  
+   🟡 `S` · ✅ ready · unlocks 0/0
 
 ---
 
@@ -249,19 +251,23 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   🟡 `M` · **Score:**  25  
    → **unlocks:** 0/0
 
-41. `tools-019` — **Debug tooling lifecycle ownership**  
+41. `ui-input-045` — **Equipment panel body-ordered layout (V3 items--006 adapted)**  
+  🟡 `S` · **Score:**  23  
+   → **unlocks:** 0/0
+
+42. `tools-019` — **Debug tooling lifecycle ownership**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-42. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
+43. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
   🟡 `L` · **Score:**  18  
    → **unlocks:** 0/0
 
-43. `items-player-052` — **Settlement tool ownership and social acquisition**  
+44. `items-player-052` — **Settlement tool ownership and social acquisition**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-44. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
+45. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
@@ -765,6 +771,9 @@ graph TD
   ui_input_040["ui-input-040 — Stage B — Inventory list + equipment comparison V3 reskin"]
   ui_input_041["ui-input-041 — Stage C — Quick Actions V3 MenuPanel reskin"]
   ui_input_042["ui-input-042 — Stage D — Character / skills V3 reskin"]
+  ui_input_043["ui-input-043 — Stage E — HUD V3-like reskin (no compass)"]
+  ui_input_044["ui-input-044 — Stage F — Trade V3-identical reskin + V1 filters"]
+  ui_input_045["ui-input-045 — Equipment panel body-ordered layout (V3 items--006 adapted)"]
   world_001["world-001 — Playtest Gameplay Fixes — Stamina, Fire Time-Skip and Bear Behaviour"]
   world_003["world-003 — Faster Application Startup"]
   world_004["world-004 — Well Depth, Groundwater & Well Protection"]
@@ -1411,9 +1420,19 @@ graph TD
   ui_input_039 --> ui_input_040
   ui_input_039 --> ui_input_041
   ui_input_039 --> ui_input_042
+  ui_input_039 --> ui_input_043
+  ui_input_039 --> ui_input_044
   ui_input_040 --> ui_input_041
   ui_input_040 --> ui_input_042
+  ui_input_040 --> ui_input_043
+  ui_input_040 --> ui_input_044
+  ui_input_040 --> ui_input_045
   ui_input_041 --> ui_input_042
+  ui_input_041 --> ui_input_043
+  ui_input_041 --> ui_input_044
+  ui_input_042 --> ui_input_043
+  ui_input_042 --> ui_input_044
+  ui_input_043 --> ui_input_044
   world_006 --> world_016
   world_007 --> quests_progression_011
   world_008 --> items_player_009

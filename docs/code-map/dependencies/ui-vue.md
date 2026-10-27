@@ -2,6 +2,54 @@
 
 Generated from TypeScript imports.
 
+## `ui-vue/components/items/ammoSectionView.test.ts`
+
+**Imports**
+
+- `items/items.ts`
+- `ui-vue/components/items/ammoSectionView.ts`
+
+## `ui-vue/components/items/ammoSectionView.ts`
+
+**Imports**
+
+- `items/itemDisplay.ts`
+- `items/items.ts`
+
+**Imported by**
+
+- `ui-vue/components/items/ammoSectionView.test.ts`
+
+## `ui-vue/components/items/buildInventoryDetailStatRows.test.ts`
+
+**Imports**
+
+- `items/inventoryView.ts`
+- `items/itemCatalog.ts`
+- `items/items.ts`
+- `ui-vue/components/items/buildInventoryDetailStatRows.ts`
+- `ui-vue/components/items/buildItemDetailPresentation.ts`
+- `ui-vue/components/items/catalogueStatStrength.ts`
+
+## `ui-vue/components/items/buildInventoryDetailStatRows.ts`
+
+**Imports**
+
+- `items/foodFreshness.ts`
+- `items/inventoryView.ts`
+- `items/itemCatalog.ts`
+- `items/itemUseView.ts`
+- `items/items.ts`
+- `items/tradeCatalog.ts`
+- `player/PlayerSkills.ts`
+- `ui-vue/components/items/buildItemDetailPresentation.ts`
+- `ui-vue/components/items/catalogueStatStrength.ts`
+- `ui-vue/lib/formatCoins.ts`
+
+**Imported by**
+
+- `ui-vue/components/items/buildInventoryDetailStatRows.test.ts`
+
 ## `ui-vue/components/items/buildItemDetailPresentation.test.ts`
 
 **Imports**
@@ -14,13 +62,28 @@ Generated from TypeScript imports.
 
 - `items/inventoryView.ts`
 - `items/items.ts`
+- `ui-vue/components/items/itemIcons.ts`
 - `ui-vue/components/items/itemIllustrations.ts`
 - `ui-vue/components/items/meters.ts`
 
 **Imported by**
 
+- `ui-vue/components/items/buildInventoryDetailStatRows.test.ts`
+- `ui-vue/components/items/buildInventoryDetailStatRows.ts`
 - `ui-vue/components/items/buildItemDetailPresentation.test.ts`
 - `ui-vue/demos/item-details/fixtures.ts`
+
+## `ui-vue/components/items/catalogueStatStrength.ts`
+
+**Imports**
+
+- `items/itemCatalog.ts`
+- `items/items.ts`
+
+**Imported by**
+
+- `ui-vue/components/items/buildInventoryDetailStatRows.test.ts`
+- `ui-vue/components/items/buildInventoryDetailStatRows.ts`
 
 ## `ui-vue/components/items/collectArmorPreviewInstances.ts`
 
@@ -39,11 +102,59 @@ Generated from TypeScript imports.
 **Imports**
 
 - `items/equipment.ts`
+- `items/itemInstances.ts`
 
 **Imported by**
 
 - `ui-vue/components/items/collectArmorPreviewInstances.ts`
-- `ui-vue/demos/inventory-list/fixtures.ts`
+
+## `ui-vue/components/items/inventoryHybridActions.test.ts`
+
+**Imports**
+
+- `items/Inventory.ts`
+- `items/armorItemInstances.ts`
+- `items/inventoryView.ts`
+- `items/weaponMaintenance.ts`
+- `ui-vue/components/items/inventoryPresentation.ts`
+
+## `ui-vue/components/items/inventoryPresentation.test.ts`
+
+**Imports**
+
+- `items/Inventory.ts`
+- `items/armorItemInstances.ts`
+- `items/inventoryView.ts`
+- `items/itemInstances.ts`
+- `items/trapItemInstances.ts`
+- `items/weaponMaintenance.ts`
+- `ui-vue/components/items/inventoryPresentation.ts`
+
+## `ui-vue/components/items/inventoryPresentation.ts`
+
+**Imports**
+
+- `items/inventoryView.ts`
+- `items/itemDisplay.ts`
+- `items/itemInstances.ts`
+- `items/items.ts`
+
+**Imported by**
+
+- `ui-vue/components/items/inventoryHybridActions.test.ts`
+- `ui-vue/components/items/inventoryPresentation.test.ts`
+- `ui-vue/demos/inventory-list/fixtures.test.ts`
+
+## `ui-vue/components/items/itemIcons.ts`
+
+**Imports**
+
+- `items/itemInstances.ts`
+- `items/items.ts`
+
+**Imported by**
+
+- `ui-vue/components/items/buildItemDetailPresentation.ts`
 
 ## `ui-vue/components/items/itemIllustrations.ts`
 
@@ -114,13 +225,38 @@ Generated from TypeScript imports.
 
 ## `ui-vue/demos/character-skills/main.ts`
 
+## `ui-vue/demos/hud/fixtures.ts`
+
+**Imports**
+
+- `interaction/interactionView.ts`
+
+## `ui-vue/demos/hud/main.ts`
+
+## `ui-vue/demos/inventory-list/fixtures.test.ts`
+
+**Imports**
+
+- `ui-vue/components/items/inventoryPresentation.ts`
+- `ui-vue/demos/inventory-list/fixtures.ts`
+
 ## `ui-vue/demos/inventory-list/fixtures.ts`
 
 **Imports**
 
+- `items/Inventory.ts`
+- `items/armorItemInstances.ts`
 - `items/equipment.ts`
-- `items/equipmentPreview.ts`
-- `ui-vue/components/items/equipmentPanelTypes.ts`
+- `items/inventoryView.ts`
+- `items/itemInstances.ts`
+- `items/items.ts`
+- `items/primaryWeapons.ts`
+- `items/trapItemInstances.ts`
+- `items/weaponMaintenance.ts`
+
+**Imported by**
+
+- `ui-vue/demos/inventory-list/fixtures.test.ts`
 
 ## `ui-vue/demos/inventory-list/main.ts`
 
@@ -132,6 +268,15 @@ Generated from TypeScript imports.
 - `ui-vue/components/items/buildItemDetailPresentation.ts`
 
 ## `ui-vue/demos/item-details/main.ts`
+
+## `ui-vue/demos/merchant/fixtures.ts`
+
+**Imports**
+
+- `items/itemCatalog.ts`
+- `items/items.ts`
+
+## `ui-vue/demos/merchant/main.ts`
 
 ## `ui-vue/demos/quick-actions/fixtures.ts`
 
@@ -199,6 +344,19 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `app/actions/acquisitionFeedback.ts`
+
+## `ui-vue/lib/formatCoins.test.ts`
+
+**Imports**
+
+- `ui-vue/lib/formatCoins.ts`
+
+## `ui-vue/lib/formatCoins.ts`
+
+**Imported by**
+
+- `ui-vue/components/items/buildInventoryDetailStatRows.ts`
+- `ui-vue/lib/formatCoins.test.ts`
 
 ## `ui-vue/lib/mapColors.ts`
 

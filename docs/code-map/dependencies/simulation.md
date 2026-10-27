@@ -80,6 +80,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `ai/NpcAgent.spatial.test.ts`
 - `ai/NpcAgent.timeSkip.test.ts`
 - `assets/resolveInteractionPoint.ts`
 - `settlement/wellInteractionQueue.ts`
@@ -144,6 +145,8 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `ai/NpcAgent.spatial.test.ts`
+- `ai/NpcAgent.spatialLifecycle.test.ts`
 - `ai/NpcAgent.timeSkip.test.ts`
 - `settlement/wellInteractionQueue.ts`
 - `simulation/actionControl.ts`

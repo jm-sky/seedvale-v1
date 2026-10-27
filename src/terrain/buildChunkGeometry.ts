@@ -6,14 +6,14 @@ import {
   type SharedSurfaceDiffuseSampler,
   TERRAIN_DIRT_DIFFUSE_LINEAR_NEUTRAL,
 } from '../assets/sharedSurfaceDiffuseTextures'
-import { buildCutChunkAttributes, type TerrainCutout } from './terrainCutout'
-import { getSharedTerrainDetailNormalMap } from './terrainDetailNormalMap'
 import {
   SNOW_ALT_M,
   SNOW_BIAS,
   SNOW_COL,
   SNOW_FIELD_GLSL,
 } from './snowField'
+import { buildCutChunkAttributes, type TerrainCutout } from './terrainCutout'
+import { getSharedTerrainDetailNormalMap } from './terrainDetailNormalMap'
 
 export type ChunkMeshResult = {
   mesh: THREE.Mesh

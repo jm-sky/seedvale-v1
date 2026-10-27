@@ -94,6 +94,7 @@ Generated from TypeScript imports.
 - `app/gameLoop.ts`
 - `interaction/interactionView.test.ts`
 - `items/foreignProperty.ts`
+- `ui-vue/demos/hud/fixtures.ts`
 - `ui-vue/store.ts`
 
 ## `interaction/resolveInteraction.ts`

@@ -1,7 +1,7 @@
 # PLANS PLANNED WITHOUT NOTES
 
 > Generated with `pnpm plans:without-notes`  
-> Date: 2026-09-21 11:21:05  
+> Date: 2026-10-27 13:18:26  
 
 ## PLANS
 
@@ -13,6 +13,7 @@
 - `settlements-npcs-052-persistent-economic-work-cargo-and-local-transfer-conservation.md`
 - `settlements-npcs-054-transport-carrier-death-and-cargo-disposition.md`
 - `tools-019-debug-tooling-lifecycle-ownership.md`
+- `ui-input-045-equipment-body-layout.md`
 
 --------------------------------
 ## PROMPTS
@@ -250,6 +251,37 @@ Wczytaj:
 
 Na podstawie review utwórz w repo plik:
 `docs/plans/implementation-notes/tools-019-debug-tooling-lifecycle-ownership-implementation-notes.md`
+
+Umieść w nim:
+- sugestie dotyczące implementacji,
+- istotne detale techniczne,
+- decyzje architektoniczne,
+- informacje o istniejących systemach i implementacjach, które należy wykorzystać,
+- potencjalne problemy, zależności i pułapki,
+- inne konkretne wskazówki, które ułatwią agentowi AI poprawną implementację planu.
+
+Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
+Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
+
+Pliki dodaj na branch `main` w repozytorium.
+```
+
+### `ui-input-045-equipment-body-layout.md`
+
+Prompt:
+
+```
+Zrób review planu `ui-input-045-equipment-body-layout.md`
+
+Wczytaj:
+- `docs/STATE.md`
+- `docs/plans/PLANNING.md` (Implementation Notes section),
+- `docs/plans/ui-input-045-equipment-body-layout.md`
+- aktualny codebase,
+- potrzebne zależności i powiązane implementacje.
+
+Na podstawie review utwórz w repo plik:
+`docs/plans/implementation-notes/ui-input-045-equipment-body-layout-implementation-notes.md`
 
 Umieść w nim:
 - sugestie dotyczące implementacji,
