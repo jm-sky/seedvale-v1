@@ -358,10 +358,19 @@ export function createPassSubmissionCollector(): PassSubmissionCollector {
     // Prefer info totals as pass ground truth; classified draws explain them.
     const classifiedCalls = current.calls
     const classifiedTris = current.triangles
-    current.residualCalls = current.infoCalls - classifiedCalls
-    current.residualTriangles = current.infoTriangles - classifiedTris
-    // Use info totals as reported pass size when available.
-    if (current.infoCalls > 0 || current.infoTriangles > 0) {
+    // During beauty, Three may also render the shadow map. Those draws are
+    // attributed to `shadowScratch` (different camera) but still sit inside
+    // this pass's `renderer.info` delta — subtract them before residual check.
+    const nestedShadowCalls = activePass === 'main' ? shadowScratch.calls : 0
+    const nestedShadowTris = activePass === 'main' ? shadowScratch.triangles : 0
+    current.residualCalls = current.infoCalls - classifiedCalls - nestedShadowCalls
+    current.residualTriangles = current.infoTriangles - classifiedTris - nestedShadowTris
+    // Report main totals as beauty-only (info minus nested shadow), so A/B
+    // consumers don't double-count shadow into main.
+    if (activePass === 'main' && (current.infoCalls > 0 || current.infoTriangles > 0)) {
+      current.calls = Math.max(0, current.infoCalls - nestedShadowCalls)
+      current.triangles = Math.max(0, current.infoTriangles - nestedShadowTris)
+    } else if (current.infoCalls > 0 || current.infoTriangles > 0) {
       current.calls = current.infoCalls
       current.triangles = current.infoTriangles
     }
@@ -370,13 +379,13 @@ export function createPassSubmissionCollector(): PassSubmissionCollector {
       || (current.infoCalls > 0 && Math.abs(current.residualCalls) / Math.max(1, current.infoCalls) > 0.25)
     ) {
       unverifiedReason = unverifiedReason
-        ?? `pass ${activePass}: classified calls (${classifiedCalls}) diverge from renderer.info (${current.infoCalls})`
+        ?? `pass ${activePass}: classified calls (${classifiedCalls}+shadow ${nestedShadowCalls}) diverge from renderer.info (${current.infoCalls})`
     }
 
     if (activePass === 'mirror') accumulatePass(mirrorAcc, current)
     else if (activePass === 'main') {
       accumulatePass(mainAcc, current)
-      if (shadowWanted && (shadowScratch.calls > 0 || shadowScratch.infoCalls > 0)) {
+      if (shadowWanted && (shadowScratch.calls > 0 || shadowScratch.infoCalls > 0 || nestedShadowCalls > 0)) {
         // Shadow draws were attributed during main; info delta for shadow is
         // not separately available — mark shadow totals from classified only.
         shadowScratch.infoCalls = shadowScratch.calls

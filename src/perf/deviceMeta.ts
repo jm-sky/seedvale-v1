@@ -93,6 +93,10 @@ export function drawingBufferSize(renderer: WebGLRenderer | null | undefined): {
 } {
   if (!renderer) return { width: null, height: null }
   try {
+    const gl = renderer.getContext() as WebGLRenderingContext | null
+    if (gl && typeof gl.drawingBufferWidth === 'number') {
+      return { width: gl.drawingBufferWidth, height: gl.drawingBufferHeight }
+    }
     const el = renderer.domElement as HTMLCanvasElement & {
       drawingBufferWidth?: number
       drawingBufferHeight?: number
