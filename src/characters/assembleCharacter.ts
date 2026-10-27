@@ -123,6 +123,9 @@ function applyClothTint(root: Object3D, tint: number | null): void {
       const cloned = m.clone() as MeshStandardMaterial
       cloned.color = m.color.clone().multiply(multiply)
       cloned.name = m.name
+      cloned.userData.sharedGpu = false
+      cloned.userData.ubcOutfitMaterial = true
+      cloned.userData.defaultMap = cloned.map ?? null
       if (Array.isArray(mesh.material)) {
         mesh.material = mesh.material.map((x) => (x === mat ? cloned : x))
       } else {

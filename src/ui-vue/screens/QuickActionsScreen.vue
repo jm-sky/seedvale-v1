@@ -369,10 +369,23 @@ type IndexedAction = {
   onClick: () => void
 }
 
+/** Tool prerequisites shared by category actions and Recent entries. */
+function toolUnavailable(categoryId: string): Pick<Action, 'disabled' | 'reason'> {
+  if (categoryId === 'lopata' || categoryId === 'teren') {
+    return unavailableReason(ui.quickActions.hasDiggingTool, 'Brakuje narzędzia do kopania')
+  }
+  if (categoryId === 'wedkarstwo') return unavailableReason(ui.quickActions.hasFishingRod, 'Brakuje wędki')
+  if (categoryId === 'skrzynia') return unavailableReason(ui.quickActions.hasCarriedContainer, 'Nie niesiesz skrzyni')
+  return {}
+}
+
 /** Live action lookup for recent-row re-run (keys are stable presentation ids). */
 const actionIndex = computed(() => {
   const map = new Map<string, IndexedAction>()
-  const put = (key: string, row: IndexedAction) => { map.set(key, row) }
+  const put = (key: string, row: IndexedAction) => {
+    const requirement = toolUnavailable(key.split(':')[0])
+    map.set(key, { ...row, ...requirement })
+  }
 
   for (const action of buildActions.value) {
     put(`budowa:${action.label}`, { label: action.label, cost: action.cost, disabled: action.disabled, reason: action.reason, onClick: action.onClick })
@@ -440,7 +453,12 @@ const recentRows = computed(() =>
       cost: live.cost ?? entry.cost,
       disabled: live.disabled,
       reason: live.reason,
-      onClick: () => trackAndRun(entry.categoryId, entry.key, live.label, live.cost ?? entry.cost, live.onClick),
+      onClick: () => {
+        // Re-read on activation: a tool may have disappeared since render.
+        const current = actionIndex.value.get(entry.key)
+        if (!current || current.disabled) return
+        trackAndRun(entry.categoryId, entry.key, current.label, current.cost ?? entry.cost, current.onClick)
+      },
     }
   }),
 )
@@ -452,6 +470,8 @@ function trackAndRun(
   cost: string | undefined,
   run: () => void,
 ): void {
+  const current = actionIndex.value.get(key)
+  if (!current || current.disabled) return
   recordQuickActionRecent({ key, label, categoryId, cost })
   run()
 }
@@ -622,8 +642,7 @@ function weaponShortcutIcon(action: 'melee' | 'ranged' | 'sheathe'): Component {
               :key="action.label"
               :label="action.label"
               :cost="action.cost"
-              :disabled="action.disabled"
-              :reason="action.reason"
+              v-bind="toolUnavailable('lopata')"
               @click="trackAndRun('lopata', `lopata:${action.label}`, action.label, action.cost, action.onClick)"
             />
           </QuickActionsGroup>
@@ -633,8 +652,7 @@ function weaponShortcutIcon(action: 'melee' | 'ranged' | 'sheathe'): Component {
               :key="action.label"
               :label="action.label"
               :cost="action.cost"
-              :disabled="action.disabled"
-              :reason="action.reason"
+              v-bind="toolUnavailable('teren')"
               @click="trackAndRun('teren', `teren:${action.label}`, action.label, action.cost, action.onClick)"
             />
           </QuickActionsGroup>
@@ -663,6 +681,7 @@ function weaponShortcutIcon(action: 'melee' | 'ranged' | 'sheathe'): Component {
           <QuickActionsGroup v-if="ui.quickActions.category === 'wedkarstwo'">
             <QuickActionsButton
               label="Łów ryby"
+              v-bind="toolUnavailable('wedkarstwo')"
               @click="trackAndRun('wedkarstwo', 'wedkarstwo:Łów ryby', 'Łów ryby', undefined, equipFishingRod)"
             />
           </QuickActionsGroup>
@@ -677,6 +696,7 @@ function weaponShortcutIcon(action: 'melee' | 'ranged' | 'sheathe'): Component {
           <QuickActionsGroup v-if="ui.quickActions.category === 'skrzynia'">
             <QuickActionsButton
               label="Odłóż skrzynię"
+              v-bind="toolUnavailable('skrzynia')"
               @click="trackAndRun('skrzynia', 'skrzynia:Odłóż skrzynię', 'Odłóż skrzynię', undefined, putDownContainer)"
             />
           </QuickActionsGroup>

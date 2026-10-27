@@ -60,7 +60,9 @@ Review-owned follow-ups (details remain in the review; no duplicate issue files 
 
 | Owner | Scope | Status |
 | --- | --- | --- |
-| [Astra review 026 — F1–F4](../reviews/2026-10-26--026--v1-revival-cursor-technical-review.md#findings--ranked-all-medium-p2) | Player appearance race; armor comparison identity; nested-modal focus; Recent eligibility | `todo` |
+| [Astra review 026 — F1–F4](../reviews/2026-10-26--026--v1-revival-cursor-technical-review.md#findings--ranked-all-medium-p2) | Player appearance race; armor comparison identity; nested-modal focus; Recent eligibility | `fixed` (automated); browser follow-up remains |
+
+Correction follow-up (2026-10-27): F1 invalidates appearance/tint/accessory/held-tool work on newer requests and disposal, releases stale instance-owned resources, and rejects new loads after disposal. F4 shares current tool eligibility between category and Recent presentation and guards activation before dispatch. F2/F3 were superseded by the author-approved hybrid inventory in `1f62f4a8`: exact instance rows, inline desktop details, and hidden narrow list with focus transfer/return. Screen-level regressions cover second same-kind armor selection, quantity priority and narrow focus navigation. The historical review's evidence and visual acceptance remain unchanged; real-browser Tab/Shift+Tab, pointer lock, cold GLB loading, GPU appearance and a new-save round trip still need runtime verification.
 
 When adding a new issue, create `YYYY-MM-DD--NNN--short-slug.md` and add a row to this table.
 

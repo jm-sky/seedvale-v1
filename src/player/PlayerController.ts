@@ -21,7 +21,6 @@ import {
   applyOutfitTint,
   cloneAccessoryMaterials,
   cloneOutfitMaterials,
-  disposeAccessoryMaterialClones,
   disposeOutfitMaterialClones,
 } from '../assets/ubcOutfitMaterials'
 import { assembleCharacter } from '../characters/assembleCharacter'
@@ -95,6 +94,17 @@ import {
   swimFeetY,
   worldWaterAppliesInCurrentSpace,
 } from './worldWaterEligibility'
+
+/** Release a runtime clone without freeing loader-shared geometry or textures. */
+function disposePlayerVisual(root: THREE.Object3D): void {
+  const skeletons = new Set<THREE.Skeleton>()
+  root.traverse((object) => {
+    const mesh = object as THREE.SkinnedMesh
+    if (mesh.isSkinnedMesh) skeletons.add(mesh.skeleton)
+  })
+  skeletons.forEach((skeleton) => skeleton.dispose())
+  disposeObject3D(root)
+}
 
 /** Stationary/moving/sprinting classification of the player's current
  *  movement, derived from the same `moving`/`sprinting` flags `update()`
@@ -429,6 +439,7 @@ export class PlayerController {
   private currentTintUrl: string | null = null
   private currentKitKey = ''
   private appearanceLoadToken = 0
+  private disposed = false
   private currentAction: THREE.AnimationAction | null = null
   /** True while `playerMelee` is in-flight — `syncAnimation` must not
    *  overwrite `Sword_Slash` with Idle/Walk until recovery ends. */
@@ -801,6 +812,7 @@ export class PlayerController {
   }
 
   setHeldTool(kind: ToolKind | null): void {
+    if (this.disposed) return
     if (kind === this.heldToolKind) return
     this.heldToolKind = kind
     const loadToken = ++this.heldToolLoadToken
@@ -843,8 +855,9 @@ export class PlayerController {
     modelUrl: string
     tintUrl: string | null
   }): Promise<void> {
-    if (this.isCapsule) return
-    if (this.appearanceLocked) return
+    if (this.disposed || this.isCapsule || this.appearanceLocked) return
+    // Every request supersedes in-flight work, even a return to the installed kit.
+    const token = ++this.appearanceLoadToken
     const kitKey = opts.kit
       ? `${opts.kit.sex}|${opts.kit.outfit}|${opts.kit.head}|${opts.kit.hair}|${opts.kit.beard}|${opts.kit.clothTint}|${opts.kit.garments.join(',')}`
       : ''
@@ -857,14 +870,16 @@ export class PlayerController {
       return
     }
 
-    const token = ++this.appearanceLoadToken
     if (opts.modelUrl !== this.currentModelUrl || kitKey !== this.currentKitKey) {
       try {
         let scene
         let animations
         if (opts.kit) {
           const assembled = await assembleCharacter(opts.kit)
-          if (token !== this.appearanceLoadToken) return
+          if (token !== this.appearanceLoadToken) {
+            disposePlayerVisual(assembled.scene)
+            return
+          }
           for (const w of assembled.warnings) console.warn(`[player] kit: ${w}`)
           scene = assembled.scene
           animations = assembled.animations
@@ -872,18 +887,29 @@ export class PlayerController {
           applyHairColor(scene, PLAYER_KIT_HAIR_COLOR)
         } else {
           const loaded = await loadGltfAnimated(opts.modelUrl)
-          if (token !== this.appearanceLoadToken) return
+          if (token !== this.appearanceLoadToken) {
+            disposePlayerVisual(loaded.scene)
+            return
+          }
           scene = loaded.scene
           animations = loaded.animations
           if (opts.animationUrl && opts.animationUrl !== this.currentAnimationUrl) {
             try {
               const extra = await loadGltfAnimated(opts.animationUrl)
-              if (token !== this.appearanceLoadToken) return
+              disposePlayerVisual(extra.scene)
+              if (token !== this.appearanceLoadToken) {
+                disposePlayerVisual(scene)
+                return
+              }
               animations = [...animations, ...extra.animations]
             } catch (err) {
               console.warn(`[player] failed to load animations ${opts.animationUrl}`, err)
             }
           }
+        }
+        if (token !== this.appearanceLoadToken) {
+          disposePlayerVisual(scene)
+          return
         }
         prepareProp(scene, PLAYER_HEIGHT)
         cloneOutfitMaterials(scene)
@@ -899,7 +925,9 @@ export class PlayerController {
 
     if (token !== this.appearanceLoadToken) return
     if (!opts.kit) {
-      const tintApplied = await applyOutfitTint(this.modelRoot, opts.tintUrl)
+      const tintApplied = await applyOutfitTint(
+        this.modelRoot, opts.tintUrl, () => token === this.appearanceLoadToken,
+      )
       if (token !== this.appearanceLoadToken) return
       if (tintApplied) this.currentTintUrl = opts.tintUrl
     } else {
@@ -954,6 +982,7 @@ export class PlayerController {
    * @domain items-player
    */
   async applyEquipmentVisuals(slot: EquipmentSlot, visual: PlayerEquipmentVisual | null): Promise<void> {
+    if (this.disposed) return
     this.desiredEquipmentVisuals[slot] = visual
     if (this.isCapsule || this.appearanceLocked) return
     await this.mountEquipmentVisual(slot, visual)
@@ -973,7 +1002,7 @@ export class PlayerController {
   private detachEquipmentVisual(slot: EquipmentSlot): void {
     const attached = this.attachedEquipmentVisuals[slot]
     if (!attached) return
-    disposeAccessoryMaterialClones(attached)
+    disposePlayerVisual(attached)
     attached.removeFromParent()
     delete this.attachedEquipmentVisuals[slot]
   }
@@ -1004,25 +1033,25 @@ export class PlayerController {
       console.warn(`[player] failed to load equipment visual ${visual.modelUrl}`, err)
       return
     }
-    if (token !== this.equipmentVisualLoadToken[slot]) {
-      disposeAccessoryMaterialClones(cloned)
+    if (this.disposed || token !== this.equipmentVisualLoadToken[slot]) {
+      disposePlayerVisual(cloned)
       return
     }
     cloneAccessoryMaterials(cloned)
     const bound = bindAccessoryToPlayerSkeleton(cloned, this.modelRoot)
     if (!bound) {
-      disposeAccessoryMaterialClones(cloned)
+      disposePlayerVisual(cloned)
       return
     }
-    if (token !== this.equipmentVisualLoadToken[slot]) {
-      disposeAccessoryMaterialClones(bound)
+    if (this.disposed || token !== this.equipmentVisualLoadToken[slot]) {
+      disposePlayerVisual(bound)
       return
     }
     this.applyEquipmentVisualAlignment(bound, visual)
     const tintUrl = resolvePlayerEquipmentVisualTintUrl(visual)
     if (tintUrl) await applyAccessoryTint(bound, tintUrl)
-    if (token !== this.equipmentVisualLoadToken[slot]) {
-      disposeAccessoryMaterialClones(bound)
+    if (this.disposed || token !== this.equipmentVisualLoadToken[slot]) {
+      disposePlayerVisual(bound)
       return
     }
     this.modelRoot.add(bound)
@@ -1681,12 +1710,20 @@ export class PlayerController {
   }
 
   dispose(): void {
+    if (this.disposed) return
     this.setHeldTool(null)
+    this.disposed = true
+    ++this.appearanceLoadToken
+    ++this.heldToolLoadToken
+    for (const slot of Object.keys(this.equipmentVisualLoadToken) as EquipmentSlot[]) {
+      this.equipmentVisualLoadToken[slot]! += 1
+      this.detachEquipmentVisual(slot)
+    }
     this.label.removeFromParent()
     this.labelEl.remove()
     this.mixer?.removeEventListener('finished', this.onMixerFinished)
     this.mixer?.stopAllAction()
-    if (!this.isCapsule) disposeOutfitMaterialClones(this.modelRoot)
+    if (!this.isCapsule) disposePlayerVisual(this.modelRoot)
     // GLB clones share GPU resources with the loader cache — only free the capsule fallback.
     if (this.isCapsule) disposeObject3D(this.mesh)
   }
