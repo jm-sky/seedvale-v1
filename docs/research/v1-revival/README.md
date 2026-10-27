@@ -17,6 +17,8 @@ Current handoff: [Opus readiness review — 2026-10-26](./2026-10-26--opus-readi
 
 Completed comparisons: [UI/equipment](./2026-10-26--ui-equipment-v1-v3-comparison.md), [dog/elder/cemeteries](./2026-10-26--dog-elder-cemeteries-comparison.md), [clouds/settlement spacing](./2026-10-26--clouds-settlement-spacing-comparison.md). Apply the brief’s newer decisions: unowned rescue dog; clouds without A/B; route/travel calibration rather than a direct grid multiplier.
 
+Selected performance workstreams: [Three-track rendering roadmap — 2026-10-27](./2026-10-27--performance-three-track-roadmap.md) — author-selected NPC/fauna rendering, settlement draw submissions, and V3 grass/flower presentation; parallel research checklist and provisional staged implementation order. This focused track does not approve specific renderer ports or replace the Strategic Brief.
+
 Performance and navigation transfer recon: [V2/V3 selective optimization candidates — 2026-10-26](./2026-10-26--v1-performance-transfer-v2-v3-recon.md) — actor culling/draw attribution, tree impostors vs fern LOD, tiered stockpile assets, cold-world hitches and navigation quality. Research for Opus, not an approved implementation order.
 
 Preparation: [Documentation and backlog audit — 2026-10-26](./2026-10-26--documentation-backlog-audit.md) — inventory, evidence-backed corrections, archive scope (including implemented work awaiting manual checks), and a bounded cleanup packet.
