@@ -917,6 +917,9 @@ export class PlayerController {
         this.currentModelUrl = opts.modelUrl
         this.currentAnimationUrl = opts.animationUrl
         this.currentKitKey = kitKey
+        // The replacement has its own baked materials; the old model's tint
+        // cannot satisfy a repeated request while this model's tint is loading.
+        this.currentTintUrl = null
       } catch (err) {
         console.warn(`[player] failed to swap appearance ${opts.modelUrl}`, err)
         return
