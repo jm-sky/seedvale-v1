@@ -48,6 +48,20 @@ Research: [Track C deep recon, V1 surface adapter, lifecycle/pools/uploads and p
 - [ ] Approve prototype, implement in bounded slices, then decide cutover and retirement of V1 fallback.
 - [ ] Record visual/runtime acceptance and lifecycle integrity.
 
+## Benchmark readiness gate — 2026-10-27
+
+[Cross-track A0a/B0/C0 readiness audit and metric matrix](../../performance/audits/2026-10-27--three-track-benchmark-diagnostics-readiness.md) checks the current instrument → report → file chain against code at `afde7765`. **Status: NOT BASELINE READY**, documentation-only audit. Existing benchmark exports lack actual verified per-pass A/B submissions, complete full-session tails/raw sidecar, reproducible SHA/device/phase metadata, and C0 active/LOD/flower/upload provenance. GPU elapsed may legitimately be **unavailable**, never synthesized.
+
+- [x] Reuse existing perf, scene census, program census, GPU timers, agent CPU and grass finalization diagnostics; audit report and September evidence without claiming fresh measurements.
+- [x] Define P0/P1/P2, STOP criteria, scenario minimum and one shared A0a/B0 collector owner.
+- [ ] **P0:** one narrow Cursor diagnostics/export implementation, no renderer/behavior optimizations, no duplicate profiler; verify tests/build and browser pass attribution.
+- [ ] **A0a/B0:** capture real pass counters and matched settlement-heavy camera rotation; no inference from census/isolations.
+- [ ] **C0:** capture grass-rich forest/meadow, stream/cold/warm, resident grass/flower/LOD and streaming/finalization; record V1 baseline before V3 candidate.
+- [ ] **Gate:** save raw JSON, human Markdown, verified SHA/device/viewport/quality/seed/weather/camera/phase, GPU status, successful target-hardware repeatability; mark lanes UNVERIFIED if required evidence absent.
+- [ ] Only then choose relevant P1 diagnosis and obtain separate author approval for an optimization slice.
+
+Do not restart prior implementation work solely because this measurement audit is complete. Existing `settlements-019` conditional post-Stage-1 benchmark gate remains in force.
+
 ## Cross-track sequencing
 
 1. Run **A/B/C targeted reconnaissance in parallel**, reusing existing documents and adding only the missing evidence.
