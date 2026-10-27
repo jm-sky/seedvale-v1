@@ -19,6 +19,18 @@ const manifest = JSON.parse(readFileSync(resolve(fixtureRoot, 'manifest.json'), 
   blobs: Record<string, string>
 }
 
+/** Prove fixture blob membership in the pinned commit without requiring/changing donor HEAD. */
+export function verifyPinnedGitTree(donor: string): void {
+  readPinnedSources()
+  const git = (...args: string[]) => execFileSync('git', ['-C', resolve(donor), ...args], { encoding: 'utf8' }).trim()
+  assert.match(git('remote', 'get-url', 'origin'), /github\.com[:/]jm-sky\/seedvale(?:\.git)?$/)
+  assert.equal(git('rev-parse', `${provenance.sourceRevision}^{commit}`), provenance.sourceRevision)
+  for (const [path, blob] of Object.entries(manifest.blobs)) {
+    assert.equal(git('rev-parse', `${provenance.sourceRevision}:${path}`), blob, `Pinned Git-tree membership mismatch: ${path}`)
+  }
+  console.log(`PASS: all five fixture blobs belong to Git commit ${provenance.sourceRevision}; donor HEAD unchanged.`)
+}
+
 /** Fixtures are original constructor sources, never generated from the imported catalogue. */
 export function readPinnedSources(donor?: string): Readonly<Record<string, string>> {
   assert.equal(manifest.repository, provenance.repository)
@@ -126,9 +138,11 @@ export function resolvePinnedDefinitions(sources = readPinnedSources()): readonl
 }
 
 /** Independent reviewed expectation, read from the original mapping table (not the catalogue). */
-export function readReviewedIds(): readonly string[] {
-  const mapping = readFileSync(new URL('../../docs/research/v1-revival/2026-10-27--equipment-id-mapping.md', import.meta.url), 'utf8')
-  const table = mapping.split('## All definitions\n')[1]!.split('\n## ')[0]!
+export function readReviewedIds(mapping = readFileSync(new URL('../../docs/research/v1-revival/2026-10-27--equipment-id-mapping.md', import.meta.url), 'utf8')): readonly string[] {
+  // Research Markdown follows the checkout's EOL convention; pinned source bytes do not.
+  const section = mapping.split(/## All definitions\r?\n/)[1]
+  assert.ok(section, 'Reviewed mapping is missing the All definitions section')
+  const table = section.split(/\r?\n## /)[0]!
   const ids = Array.from(table.matchAll(/^\| `([^`]+)` \|/gm), match => match[1]!)
   assert.equal(ids.length, 87, 'Reviewed mapping must contain 87 rows')
   assert.equal(new Set(ids).size, 87, 'Reviewed mapping has duplicate IDs')
@@ -191,4 +205,10 @@ export function verifySource(donor?: string): void {
   console.log(`PASS: 87/87 unique canonical IDs in reviewed order; complete field-level equality, 41 keys including own undefined; counts 30/8/39/3/7. ${types.length} type/domain equalities and five typed exports. Source ${provenance.sourceRevision}; ${donor ? 'local donor and recon blobs verified' : 'checked-in pinned source blobs verified'}.`)
 }
 
-if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) verifySource(process.argv[2])
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  if (process.argv[2] === '--git-tree') {
+    assert.ok(process.argv[3], '--git-tree requires an explicit donor repository path')
+    verifySource()
+    verifyPinnedGitTree(process.argv[3])
+  } else verifySource(process.argv[2])
+}

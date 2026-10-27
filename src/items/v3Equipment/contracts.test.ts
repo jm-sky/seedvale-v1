@@ -142,8 +142,9 @@ describe('V3 equipment source contract', () => {
 
   it('keeps runtime dependencies inside this module and excludes gameplay importers', () => {
     const directory = fileURLToPath(new URL('.', import.meta.url))
-    const files = readdirSync(directory).filter(name => name.endsWith('.ts') && !name.endsWith('.test.ts'))
-    expect(files.sort()).toEqual(['catalogue.ts', 'compatibilityTypes.ts', 'provenance.ts', 'types.ts'])
+    const allFiles = readdirSync(directory).filter(name => name.endsWith('.ts') && !name.endsWith('.test.ts'))
+    const files = ['catalogue.ts', 'compatibilityTypes.ts', 'provenance.ts', 'types.ts']
+    expect(allFiles.sort()).toEqual(['adapter.ts', 'catalogue.ts', 'compatibility.ts', 'compatibilityTypes.ts', 'propertyCompatibility.ts', 'provenance.ts', 'types.ts', 'validation.ts'])
     for (const file of files) {
       const source = ts.createSourceFile(file, readFileSync(`${directory}/${file}`, 'utf8'), ts.ScriptTarget.Latest, true)
       const check = (node: ts.Node): void => {
@@ -162,11 +163,21 @@ describe('V3 equipment source contract', () => {
       }).outputText
       expect(emitted).not.toMatch(/\b(?:import|require)\s*[("'{*]/)
     }
+    // Policy/validation may consume source data; only the adapter may read V1 authorities.
+    for (const file of allFiles.filter(file => !files.includes(file))) {
+      const source = ts.createSourceFile(file, readFileSync(resolve(directory, file), 'utf8'), ts.ScriptTarget.Latest, true)
+      for (const statement of source.statements) {
+        if (ts.isImportDeclaration(statement) && !statement.importClause?.isTypeOnly) {
+          const path = (statement.moduleSpecifier as ts.StringLiteral).text
+          expect(path.startsWith('./') || (file === 'adapter.ts' && ['../itemCatalog', '../items'].includes(path))).toBe(true)
+        }
+      }
+    }
     const sourceRoot = fileURLToPath(new URL('../..', import.meta.url))
     const scan = (directory: string): void => {
       for (const entry of readdirSync(directory, { withFileTypes: true })) {
         const path = resolve(directory, entry.name)
-        if (path === fileURLToPath(new URL('.', import.meta.url)).replace(/\/$/, '')) continue
+        if (path === resolve(fileURLToPath(new URL('.', import.meta.url)))) continue
         if (entry.isDirectory()) scan(path)
         else if (/\.(?:ts|vue)$/.test(entry.name) && !entry.name.endsWith('.test.ts')) {
           const text = readFileSync(path, 'utf8')

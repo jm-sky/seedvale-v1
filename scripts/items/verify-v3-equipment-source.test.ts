@@ -1,12 +1,19 @@
+import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { MeleeWeapon, V3EquipmentDefinition } from '../../src/items/v3Equipment/types'
 import { V3_EQUIPMENT_DEFINITIONS } from '../../src/items/v3Equipment/catalogue'
-import { assertSourceEqual, resolvePinnedDefinitions, verifyDefinitions, verifySource } from './verify-v3-equipment-source'
+import { assertSourceEqual, readReviewedIds, resolvePinnedDefinitions, verifyDefinitions, verifySource } from './verify-v3-equipment-source'
 
 const expected = resolvePinnedDefinitions()
 const copy = () => structuredClone(expected) as V3EquipmentDefinition[]
 
 describe('pinned V3 equipment source verification', () => {
+  it('parses reviewed Markdown with LF or CRLF without changing pinned source bytes', () => {
+    const mapping = readFileSync(new URL('../../docs/research/v1-revival/2026-10-27--equipment-id-mapping.md', import.meta.url), 'utf8').replaceAll('\r\n', '\n')
+    expect(readReviewedIds(mapping)).toHaveLength(87)
+    expect(readReviewedIds(mapping.replaceAll('\n', '\r\n'))).toEqual(readReviewedIds(mapping))
+    expect(() => readReviewedIds('missing')).toThrow(/missing the All definitions section/)
+  })
   it('verifies original source blobs, donor types and every imported field without an external checkout', () => {
     verifySource()
   })

@@ -20,6 +20,9 @@ jobs:
       - name: Type check
         run: pnpm run type-check
 
+      - name: Equipment source and compatibility contracts
+        run: pnpm exec tsc --project tsconfig.equipment-verification.json
+
       - name: Lint
         run: pnpm run lint
 

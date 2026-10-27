@@ -1,0 +1,2 @@
+# Byte-pinned donor fixtures must hash identically on Windows and Linux.
+scripts/items/fixtures/v3-equipment/**/*.ts.txt text eol=lf

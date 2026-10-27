@@ -22,3 +22,13 @@ node --import tsx scripts/items/verify-v3-equipment-source.ts /home/madeyskij/pr
 ```
 
 The explicit checkout must have origin `jm-sky/seedvale`, exact pinned HEAD, matching source bytes and recon revision `94c464739d46afb982949fd6ed96b0d74d265b10` available. No fetch or checkout is performed and no newer-HEAD fallback exists. Fixtures were extracted using `git show <pin>:<original-path>`; their blob IDs were independently checked against both the pinned Git tree and the original working-tree bytes. Any future source update requires an explicit revision/provenance review; never regenerate expectations from the imported catalogue.
+
+Stage 3 adds a Git-tree-only membership audit that allows a newer donor HEAD without changing it:
+
+```sh
+node --import tsx scripts/items/verify-v3-equipment-source.ts --git-tree /path/to/seedvale
+```
+
+This first runs the offline fidelity check, then checks the origin, pinned commit object and every `commit:path` blob. Missing Git objects fail explicitly. Offline fixture hashes alone still do not prove commit membership. Before any future pin change, run this audit against a repository containing the requested commit (or independently check all five GitHub Contents API blob SHAs at the exact ref), review source differences, and update provenance only with approval. Stage 3 checked all five SHAs through GitHub because the local donor lacks the old object; see its implementation notes.
+
+The fixture-only `.gitattributes` LF rule preserves original bytes even with `core.autocrlf=true`. The reviewed Markdown ID table accepts both LF and CRLF; no source-byte hash normalization is performed.

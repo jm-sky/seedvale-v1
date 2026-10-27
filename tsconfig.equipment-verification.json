@@ -1,0 +1,8 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "src/items/v3Equipment/**/*.ts",
+    "scripts/items/verify-v3-equipment-source.ts",
+    "scripts/items/verify-v3-equipment-source.test.ts"
+  ]
+}
