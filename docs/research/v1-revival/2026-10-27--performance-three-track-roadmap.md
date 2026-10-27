@@ -54,10 +54,10 @@ Research: [Track C deep recon, V1 surface adapter, lifecycle/pools/uploads and p
 
 - [x] Reuse existing perf, scene census, program census, GPU timers, agent CPU and grass finalization diagnostics; audit report and September evidence without claiming fresh measurements.
 - [x] Define P0/P1/P2, STOP criteria, scenario minimum and one shared A0a/B0 collector owner.
-- [ ] **P0:** one narrow Cursor diagnostics/export implementation, no renderer/behavior optimizations, no duplicate profiler; verify tests/build and browser pass attribution.
-- [ ] **A0a/B0:** capture real pass counters and matched settlement-heavy camera rotation; no inference from census/isolations.
-- [ ] **C0:** capture grass-rich forest/meadow, stream/cold/warm, resident grass/flower/LOD and streaming/finalization; record V1 baseline before V3 candidate.
-- [ ] **Gate:** save raw JSON, human Markdown, verified SHA/device/viewport/quality/seed/weather/camera/phase, GPU status, successful target-hardware repeatability; mark lanes UNVERIFIED if required evidence absent.
+- [x] **P0:** diagnostics/export implemented (`e124e866` + residual fix `94a74470`); unit/typecheck/build verified; browser smoke showed `passSubmissions.reliability=observed` — no renderer/behavior optimizations.
+- [ ] **A0a/B0:** capture real pass counters and matched settlement-heavy camera rotation on instrument SHA; no inference from census/isolations. *(diagnostic 032 only — UNVERIFIED)*
+- [ ] **C0:** capture grass-rich forest/meadow, stream/cold/warm, resident grass/flower/LOD and streaming/finalization; record V1 baseline before V3 candidate. *(UNVERIFIED)*
+- [ ] **Gate:** save raw JSON, human Markdown, verified SHA/device/viewport/quality/seed/weather/camera/phase, GPU status, successful target-hardware repeatability; mark lanes UNVERIFIED if required evidence absent. See [Arc runbook](../../performance/2026-10-27--arc-baseline-runbook.md).
 - [ ] Only then choose relevant P1 diagnosis and obtain separate author approval for an optimization slice.
 
 Do not restart prior implementation work solely because this measurement audit is complete. Existing `settlements-019` conditional post-Stage-1 benchmark gate remains in force.

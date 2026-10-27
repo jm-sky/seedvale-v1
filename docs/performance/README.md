@@ -1,10 +1,12 @@
 # Seedvale — Performance & Rendering Strategy
 
-**Updated:** 2026-09-21
+**Updated:** 2026-10-27
 **Status:** active
 **Scope:** CPU · GPU · memory · rendering · chunk streaming · scalability
 
 This is the central overview of Seedvale performance. Current code remains the source of truth; historical measurements and research are evidence, not a current implementation checklist.
+
+**P0 diagnostics (2026-10-27):** instrument SHA `94a74470` — full-session distributions, raw sidecar, actual per-pass submission collector, V1 grass baseline, artifact bundle. Readiness audit: [`audits/2026-10-27--three-track-benchmark-diagnostics-readiness.md`](./audits/2026-10-27--three-track-benchmark-diagnostics-readiness.md). Certified Arc captures: [`2026-10-27--arc-baseline-runbook.md`](./2026-10-27--arc-baseline-runbook.md). Diagnostic smoke only: `results/2026-10-27--032--benchmark-settlement-heavy.*` (not ROI baseline).
 
 ## Performance model
 

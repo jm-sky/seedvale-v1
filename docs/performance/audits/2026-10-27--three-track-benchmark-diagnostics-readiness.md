@@ -1,9 +1,35 @@
 # Three-track benchmark and diagnostics readiness audit — A0a / B0 / C0
 
 **Date:** 2026-10-27  
-**Status:** source-audited; **NOT BASELINE READY**; no browser execution or runtime change  
-**Source pin:** V1 `afde776545a847c486842516f09aa2813ec756dd` (main at audit); audit covers the V1 code, not V2/V3 runtime.  
+**Status:** P0 instrumentation **implemented**; certified A0a/B0/C0 baselines still **UNVERIFIED / BLOCKED** pending Arc runbook reps  
+**Source pin (audit):** V1 `afde776545a847c486842516f09aa2813ec756dd`  
+**Instrument SHA (P0):** `e124e866e0ec79cbb66aa99a029f87d6445b563e` + residual fix `94a74470fe94d365bbfbd9a8a42dce150c027f9b`  
 **Scope:** A agent rendering, B settlement submissions, C V1 grass/flowers baseline before any renderer prototype.
+
+## 0. P0 implementation follow-up (2026-10-27)
+
+**Fixed in code (no gameplay/render optimizations):**
+
+| Item | Owner | Status |
+| --- | --- | --- |
+| Full-session frame/update/render p50/p95/p99 + sample counts | `monitor.ts` / `report.ts` / `timeDistribution.ts` | Done |
+| Bounded raw sidecar with explicit sampling | `rawSidecar.ts` | Done |
+| Shared actual per-pass submission collector (mirror/shadow/main + buckets) | `passSubmissionCollector.ts` + `gameLoop.ts` | Done; census remains estimate |
+| V1 grass resident/submitted/lifecycle/allocation baseline | `grassBaseline.ts` + thin grass/chunkManager hooks | Done |
+| SHA / runId / phase / camera / drawingBuffer / population / device / GPU status | `types.ts` / `buildInfo.ts` / `deviceMeta.ts` / `gpuTimer.ts` | Done |
+| JSON + raw + Markdown + meta artifacts; Agent CPU MD de-duped | `artifacts.ts` / `benchmark.ts` / `report.ts` | Done |
+
+**Browser smoke (diagnostic, not acceptance):** `docs/performance/results/2026-10-27--032--benchmark-settlement-heavy.*` on Arc 140V ANGLE — `passSubmissions.reliability=observed`, duration 15 s, fixture absent (`?perf=1`). Further loads hung at worldgen ~10% in-session; use [Arc runbook](../2026-10-27--arc-baseline-runbook.md).
+
+**Lane status after P0:**
+
+| Lane | Status | Blocker |
+| --- | --- | --- |
+| A0a | UNVERIFIED | No certified 30 s / ≥3-rep settlement-heavy + camera rotation on instrument SHA |
+| B0 | UNVERIFIED | Same as A0a (shared collector); Stage 1 settlements-019 browser gate still open |
+| C0 | UNVERIFIED | No verified grass-rich forest + stream cold/warm pair with fixture |
+
+**Still P1/P2 (unchanged intent):** NPC mixer-only spans (`npc-063`); skinned envelope culling samples; settlement rebuild/upload bytes; grass GPU upload ranges / V3 pools; cold-start harness mode; program-census JSON; GC attribution.
 
 ## 1. Existing owner / non-duplication
 

@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "gitSha": "e124e866e0ec79cbb66aa99a029f87d6445b563e",
+  "instrumentationCommits": [
+    "e124e866e0ec79cbb66aa99a029f87d6445b563e",
+    "94a74470fe94d365bbfbd9a8a42dce150c027f9b"
+  ],
+  "runId": "2026-10-27T13-40-33-222Z-ime2se",
+  "scenario": "settlement-heavy",
+  "phase": "warm",
+  "canonical": false,
+  "generatedAt": "2026-10-27T13:52:39.000Z",
+  "fixtureVersion": null,
+  "quality": "High",
+  "durationSec": 15,
+  "hardwareClass": "diagnostic",
+  "device": {
+    "webglVendor": "Google Inc. (Intel)",
+    "webglRenderer": "ANGLE (Intel, Intel(R) Arc(TM) 140V GPU (16GB) (0x000064A0) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "drawingBuffer": [948, 486]
+  },
+  "passSubmissionsReliability": "observed",
+  "notes": "DIAGNOSTIC single warmed capture on Arc 140V via Cursor browser (ANGLE/D3D11). durationSec=15 (not canonical 30); not a 3-rep series; camera rotation not applied; ?perf=1 path (fixtureVersion absent). Pass collector residual fix from 94a74470 was hot-reloaded into the session; injected gitSha remains e124e866. Do NOT use as ROI acceptance baseline. Use docs/performance/2026-10-27--arc-baseline-runbook.md for certified captures on SHA 94a74470+."
+}
