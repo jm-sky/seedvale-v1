@@ -282,7 +282,7 @@ For each runtime slice, run touched-file lint, the meaningful targeted tests abo
 **Status:** source reconnaissance complete; proposed Composer slices only. No runtime changes, new benchmark, visual acceptance or implementation authorization.<br>
 **V1 source pin:** [`d1c477f36e12e6eaafcf643f4575551026406df3`](https://github.com/jm-sky/seedvale-v1/commit/d1c477f36e12e6eaafcf643f4575551026406df3), synchronized local `main` before this documentation commit. Initial inspection used local `040a3d4e`; rebase preserved that prior Track A documentation under this new SHA. Incoming changes affected NPC characterization tests and documentation, with no settlement/render runtime changes.<br>
 **Donor pins:** V3 local [`94c464739d46afb982949fd6ed96b0d74d265b10`](https://github.com/jm-sky/seedvale/commit/94c464739d46afb982949fd6ed96b0d74d265b10); V2 [`9ba54815493b886eb1bdce032f5209aeb2856c37`](https://github.com/jm-sky/seedvales-v2/commit/9ba54815493b886eb1bdce032f5209aeb2856c37), `stockpiles.ts` / `stockpileTiers.ts` read through GitHub. The local `seedvale-2` checkout points to V3, so it supplies no V2 evidence.<br>
-**Method:** targeted source inspection and reconciliation with the Strategic Brief, performance owner, transfer candidates B/C/F, Track A, existing plans/notes and reviews. Asset triangle counts below are historical reports, not a new binary asset census. This section extends the existing transfer recon; [Track B checklist](./2026-10-27--performance-three-track-roadmap.md#b-settlement-rendering-and-draw-submissions--parallel-recon-second-implementation-lane) owns research progress.
+**Method:** targeted source inspection and reconciliation with the Strategic Brief, performance owner, transfer candidates B/C/F, Track A, existing plans/notes and reviews. Asset triangle counts below are historical reports, not a new binary asset census. This section extends the existing transfer recon; [Track B checklist](./2026-10-27--performance-three-track-roadmap.md#b-settlement-rendering-and-draw-submissions--active-performance-priority) owns research progress.
 
 ### 11.1 Findings and overlap with existing work
 
@@ -380,6 +380,8 @@ For an approved runtime slice, run meaningful focused tests, touched-file lint a
 
 ## 12. Track C deep recon — V1 grass/flower renderer adaptation (2026-10-27)
 
+**Sequencing update — 2026-10-27:** [approved D9](./STRATEGIC-BRIEF.md#approved-revival-decisions-2026-10-27) selects **C0 → CA1 → CA2 → evaluate** in the [grass audit](./2026-10-27--revival-audit--grass-flowers-v3.md#5-conditional-small-stages). The C1–C6 adapter/backend stages below are preserved as a **conditional V3 candidate**, not the selected first implementation or a prerequisite for CA1/CA2. D4 Performance-First controls integration and measurement scheduling.
+
 > **Delta 2026-10-27:** [grass/flowers audit](./2026-10-27--revival-audit--grass-flowers-v3.md) — recommends V1-side memory/upload trims before the V3 backend described here; the backend stays a gated candidate.
 
 **Created at:** 2026-10-27<br>
@@ -389,7 +391,7 @@ For an approved runtime slice, run meaningful focused tests, touched-file lint a
 
 ### 12.1 Scope reconciliation and recommendation
 
-Extend this owner rather than create another grass report: §9 already owns conditional replacement, its **27 October Grass Visual Direction supersedes the earlier preference for donor clump silhouettes**. [R3](./2026-10-25--003--world-and-visuals.md) supplies preservation/measurement context, not current snow implementation status. This section supplies the missing adapter, lifecycle, upload and cutover contracts requested by [Track C](./2026-10-27--performance-three-track-roadmap.md#c-grass-and-flowers-presentation--parallel-deeper-recon-third-implementation-lane). These are reviewable proposals for separately authorized implementation, not a new formal plan or activation PASS.
+Extend this owner rather than create another grass report: §9 already owns conditional replacement, its **27 October Grass Visual Direction supersedes the earlier preference for donor clump silhouettes**. [R3](./2026-10-25--003--world-and-visuals.md) supplies preservation/measurement context, not current snow implementation status. This section supplies the missing adapter, lifecycle, upload and cutover contracts requested by [Track C](./2026-10-27--performance-three-track-roadmap.md#c-grass-and-flowers--approved-v1-first-execution). These are reviewable proposals for separately authorized implementation, not a new formal plan or activation PASS.
 
 **Recommended candidate:** V3-style bounded tile cache, band pools and partial instance uploads, consuming V1 surface/eligibility data; retain V1 olive palette and recognisable grass forms, soften angular blade outlines, and replace only decorative meadow flowers with loose billboard clumps. V3 architecture is worth prototyping; a full cutover remains conditional on decisive matched net benefit and acceptable appearance. Do not transplant V3 worldgen, navigation, terrain queries, weather machine or gameplay vegetation.
 
@@ -518,7 +520,7 @@ Minimum scene matrix: close olive meadow in motion; dense wilderness/forest edge
 
 Highest risks: wrong rendered-surface sampling near edits/cutouts; stale source bytes after world mutation; copying short donor radii that expose bare ground under V1 fog; main-thread generation displacing an existing worker advantage; Lambert/day-night palette differences; dither/billboard overdraw and aliasing; broadleaf/flower suppression affecting unrelated vegetation; ring meshes losing V1 pass exclusions; duplicate resources/late callbacks across rebuild; bounded slots silently truncating rich V1 patches. These risks require prototype evidence, not simulation simplification or terrain replacement.
 
-**This session's verdict:** research complete; no runtime/build/test/browser/GPU acceptance claimed, no FPS gain established. Next eligible action is implementation-contract review and authorization for C0/C1, not full renderer activation. The three-track checklist records research delivery separately from those open gates.
+**This session's verdict:** research complete; no runtime/build/test/browser/GPU acceptance claimed, no FPS gain established. Current execution direction is D9's C0 → CA1 → CA2 → evaluation; C1/backend review is eligible only if subsequent evidence warrants it, not full renderer activation. The three-track checklist records research delivery separately from those open gates.
 
 ### 12.9 Immutable source routing
 

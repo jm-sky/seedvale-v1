@@ -2,13 +2,15 @@
 
 **Created at:** 2026-10-27
 **Created by:** Claude Opus 5.5 (subagent, one of five parallel specialist auditors)
-**Status:** research — not approved scope; **PENDING BASELINE** (C0 benchmarks running independently; no FPS gain claimed anywhere in this file)
+**Status:** research; D9's V1-first CA1/CA2 sequence approved, other mechanisms remain proposals; measured keep/revert **PENDING BASELINE** (no FPS gain claimed)
 **Source pins:** V1 `c460b224eadfa395e400da3413815327530adaf7` (authoritative); V3 donor `907e17cd2ad487547a25a1f928b2770348183d75`.
 **Builds on (not redone):** [transfer recon §9 and §12](./2026-10-26--v1-performance-transfer-v2-v3-recon.md) (§12 pinned V1 `317a5c71` / V3 `94c46473`; commit `3131b0c2` is the §12 addendum + roadmap edit, no separate doc), [three-track roadmap](./2026-10-27--performance-three-track-roadmap.md), [grass finalization](../../performance/grass-finalization.md), [benchmark readiness audit](../../performance/audits/2026-10-27--three-track-benchmark-diagnostics-readiness.md), [Arc runbook](../../performance/2026-10-27--arc-baseline-runbook.md), [plan 053 snow burial](../../plans/world-terrain-053-snow-patch-thresholds-and-grass-burial.md), [benchmark 016](../../performance/results/2026-09-14--016--benchmark-stream-grass.md), [diagnostic 032](../../performance/results/2026-10-27--032--benchmark-settlement-heavy.md).
 
 **Evidence labels:** **[code]** read at the pins above · **[doc]** stated in a repo document · **[measured-diagnostic]** from a captured diagnostic run that is *not* a certified baseline · **[hypothesis]** inference to be tested. Nothing was built, run, type-checked or browser-verified in this audit.
 
 ---
+
+**Author decision update — 2026-10-27:** [Master D9](./STRATEGIC-BRIEF.md#approved-revival-decisions-2026-10-27) approves **C0 → CA1 → CA2 → evaluate → V3 tiled backend only if evidence warrants**. CA1/CA2 do not require a V3 adapter or CA6 pooling; pooling and detailed appearance choices remain conditional/unapproved. Preserve V1 authority, deterministic identity, coverage/richness, fog/visibility and olive palette, with intended softer blades and decorative billboard flowers; no density reduction approved. [D4 integration/measurement policy](./2026-10-27--master-revival-roadmap.md#4-strategy--performance-first) supersedes parallel scheduling and any implication of a benchmark after every row. Original research evidence below is retained.
 
 ## 1. Verified state and delta vs §12
 
@@ -112,9 +114,9 @@
 
 ### 4.2 Recommendation
 
-**(a) first, with (b) kept as a gated prototype — reject (c) for this track.** **[hypothesis, PENDING BASELINE]**
+**D9 approves (a)'s V1-first CA1/CA2 sequence; (b) remains a conditional V3 prototype.** Measured benefits and further mechanisms are **PENDING BASELINE**. Full terrain replacement (c) remains outside this track.
 
-Reasoning: the only grass numbers available show V1 grass is **memory/upload-heavy and draw-light** (33 main-pass calls / 318 k tris, `hide-grass` noise-level in 032), while V3's main architectural advantage (bounded triangles and few draws) addresses the draw side. Option (a1/a3) attacks the measured waste with V1-native changes and no new adapter; (a2/a5) deliver the author's visual asks (less angular blades, billboard flower clumps, V1 olive palette) independent of the renderer. Proceed to (b) only if C0 in a **grass-rich** scene shows grass main-pass GPU time or triangle count is a material share of frame time *after* (a1–a3) — that is the condition under which V3's bounded bands could deliver the "decisive, measured net improvement" §9 demands. This is a sequencing proposal, not a reversal of the author's conditional preference for V3.
+Reasoning: the only grass numbers available show V1 grass is **memory/upload-heavy and draw-light** (33 main-pass calls / 318 k tris, `hide-grass` noise-level in 032), while V3's main architectural advantage (bounded triangles and few draws) addresses the draw side. Option (a1/a3) attacks the measured waste with V1-native changes and no new adapter; (a2/a5) deliver the author's visual asks (less angular blades, billboard flower clumps, V1 olive palette) independent of the renderer. Proceed to (b) only if C0 in a **grass-rich** scene shows grass main-pass GPU time or triangle count is a material share of frame time *after CA1/CA2* (optional buffer work only if independently justified) — that is the condition under which V3's bounded bands could deliver the "decisive, measured net improvement" §9 demands. The V1-first CA1/CA2 sequence is now approved under D9; architecture choices beyond it remain conditional, with V3 retained as a candidate.
 
 ### 4.3 Invariants for any option
 
@@ -141,13 +143,13 @@ Each stage: one concern, one reviewable commit, `pnpm claude:preflight` against 
 | **CA6 (gated)** | Partial-prefix buffers / pooled attributes so upload bytes ∝ submitted | grass finalization (reopen explicitly, resolves P8) | C0+ shows first-render upload is a material travel hitch | Upload bytes per attach and travel p99 improve beyond run variance | Revert to whole-array binding |
 | **CB (gated)** | §12 C1 → C6 V3 tiled backend behind `legacy\|tiled` dev selector, radii tuned to V1 reach | §12 C1–C6 | After CA1–CA2: grass-rich C0 shows grass draw/GPU cost material; author still wants V3 look | §12.8 keep criteria unchanged | Legacy default; bundle-rebuild switch back |
 
-Order: C0+ → CA1 → CA2 → (CA3, CA4 in parallel by visual owner) → CA5 → CA6/CB only on evidence. Serialize all `chunkManager.ts` / `grass.ts` writers with Tracks A/B.
+Approved order: credible **C0 → CA1 → CA2 → evaluate**. C0+ remains targeted diagnostics only if needed for a decision, not an automatic extra run or prerequisite for all CA1/CA2 work. CA3–CA5 appearance may be planned alongside this work but is not approved runtime scope by D9; CA6/CB require further evidence and applicable approval. Serialize all `chunkManager.ts` / `grass.ts` writers with Tracks A/B.
 
 ---
 
 ## 6. Benchmark and visual acceptance criteria
 
-**Scenes (from runbook/readiness audit):** `?benchmark=forest` only where grass cover is verified; `?benchmark=stream` cold and warm separately; a staged meadow pose (non-canonical until formalized); `settlement-heavy` as a non-grass control. High preset, same SHA, ≥ 3 warmed reps with variance note **[doc runbook]**.
+**Scenes (from runbook/readiness audit):** `?benchmark=forest` only where grass cover is verified; `?benchmark=stream` cold and warm separately; a staged meadow pose (non-canonical until formalized); `settlement-heavy` as a non-grass control. High preset, matched workload/configuration with both SHAs recorded (not necessarily identical), ≥ 3 warmed reps with variance note **[doc runbook]**.
 
 **Technical metrics per arm:** frame p50/p95/p99, hitch count/max; main-pass grass calls/tris (pass collector, not census); resident vs submitted full/filler instances; allocation estimate; first-render upload bytes and frame time after attach (C0+); worker grass request/complete/discard; JS heap trend; `renderer.info.memory` geometries over out-and-back travel.
 
@@ -169,9 +171,9 @@ Order: C0+ → CA1 → CA2 → (CA3, CA4 in parallel by visual owner) → CA5 �
 
 ## 7. Author decisions needed
 
-1. **Sequencing:** accept "(a) first, (b) gated on grass-rich C0" — or proceed straight to the §12 C1 adapter for the V3 backend regardless of C0?
-2. **Reopen grass-finalization policy (P8):** allow CA1/CA2/CA6 (generation/upload trimming, possible pooling) under Track C, explicitly superseding "no buffer pooling by default"?
-3. **Grass reach:** keep V1's ~96–160 m grass reach under 150–250 m fog (any V3 port must match it), or accept a shorter reach with stronger ground colour?
+1. **Sequencing — RESOLVED by Master D9:** C0 → CA1 → CA2 → evaluate, then consider V3 only if evidence warrants; direct C1 migration is not selected.
+2. **Pooling — still open:** D9 selects CA1/CA2 generation/storage trims; it does not approve CA6 or supersede "no buffer pooling by default". Reopen pooling only with relevant evidence and applicable approval.
+3. **Grass reach — preservation direction fixed by D9:** keep current V1 coverage and fog/visibility expectations. Shorter reach/density loss is not approved; detailed implementation remains to be verified.
 4. **Blade look:** soften V1 fins (CA3) as the target, or adopt V3 12-blade clumps (only under CB)? Per 2026-10-27 direction V1 is the base — confirm.
 5. **`herb` grass bucket:** keep as-is (costliest near tier, 36 tris) or allow a lower-segment variant? Any look change needs your review.
 6. **Flowers:** confirm billboard clumps replace the meadow flower *bushes* entirely (species 2/3/4), and whether flower density may exceed current 5–14 per patch.
@@ -181,7 +183,7 @@ Order: C0+ → CA1 → CA2 → (CA3, CA4 in parallel by visual owner) → CA5 �
 
 ## Contradictions recorded
 
-- `grass-finalization.md` ("do not introduce … buffer pooling by default") vs roadmap Track C mandatory workstream — resolve via decision 2 **[doc]**.
+- Track C being mandatory does not require pooling: D9 selects CA1/CA2 first; CA6 remains conditional under the existing no-default-pooling policy **[doc]**.
 - §9 earlier preference for V3 clump silhouettes vs 2026-10-27 direction "V1 as base, less angular" — §12.1 already records the latter superseding; this audit follows it **[doc]**.
 - V3 source comments ("5-triangle flowers", "48 slots") vs constants (3 tris, 96 slots) — constants win **[code]**.
 - Census grass cost (89 draws / 1.21 M tris) vs observed main pass (33 / 318 k) in 032 — use pass collector for all gates **[measured-diagnostic]**.

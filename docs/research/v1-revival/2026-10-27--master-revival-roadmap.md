@@ -1,10 +1,12 @@
-# V1 Revival — Master Roadmap (proposal)
+# V1 Revival — Master Roadmap (approved decisions and remaining proposals)
 
 **Created:** 2026-10-27  
 **Created by:** Claude Opus 5.5 (coordinator)  
-**Status:** **proposal for author approval** — not approved scope, not an execution order until accepted. Performance choices are **PENDING BASELINE** (A0a/B0/C0 running independently).  
+**Status:** **D1/D3/D4/D9 APPROVED (2026-10-27)**; all other decisions and detailed mechanisms remain proposals. D4 supersedes gated parallel lanes with **PERFORMANCE-FIRST**. Performance keep/revert choices remain **PENDING BASELINE**; this is not approval of the entire roadmap.  
 **Pins:** V1 `c460b224` · V3 `907e17cd` · V2 = V3 `legacy/SeedVales` (`9ba54815`)  
 **Method:** five area audits (static source/doc analysis; **no tests, benchmarks or browser runs** in this session), coordinator cross-review and targeted source spot-checks.
+
+Authority: [Strategic Brief — approved Revival decisions](./STRATEGIC-BRIEF.md#approved-revival-decisions-2026-10-27). Original source pins/method above describe the audit; reconciliation checked save v56 at `c0595d1`. No runtime changes, tests, benchmarks or formal plans were made for reconciliation.
 
 ## 0. Inputs (area reports)
 
@@ -32,13 +34,13 @@ Spot-checked by the coordinator in current source:
 
 ## 2. Resolved contradictions and cross-area conflicts
 
-| # | Conflict | Resolution (proposed) |
+| # | Conflict | Reconciled direction (remaining mechanisms are proposals) |
 | --- | --- | --- |
-| X1 | Equipment (E2) and worldgen/spacing both need a save bump; `items-player-044` assumed no bump but `isPlayerEquipmentField` rejects unknown slot keys. | One small **persistence policy plan first** (`persistence-008`, new): v57 adds a worldgen epoch + explicit refusal of pre-revival saves with a clear message; later changes bump normally. Equipment E2 and spacing each take their own subsequent bump. |
-| X2 | Track C porting V3 grass would add a 5th independent wind. | **Shared wind owner precedes** any V3 grass backend (CB) and water wind. V1-side grass trims (CA1/CA2) don't depend on it. |
-| X3 | Mirror pass (≈339 calls) is claimed by water atmosphere, settlements (B1a) and actors (0 actor mirror draws already). | One **reflection policy decision** under existing `world-terrain-015`, taken together with water work and gated on B0. Settlement B1a is an implementation of that policy, not a separate one. |
-| X4 | Armor visuals multiply actor draws/skeletons (each slot ≥1 draw + skeleton, uncullable on NPC rebind path). | Armor **appearance** waits for the Track A actor visual contract (shared skeleton, merge key, shared bounds). Mechanics + UI may ship earlier (brief permits temporary visual mismatch). |
-| X5 | §10 lists native skinned culling as new / A0a as first Composer task. | Superseded: bodies/fauna already cull natively; A0a tooling shipped (P0). Next A step = certified capture + A1′ inflated sphere incl. head/hair. |
+| X1 | Equipment (E2) and worldgen/spacing both need a save bump; `items-player-044` assumed no bump but `isPlayerEquipmentField` rejects unknown slot keys. | **D1 approved direction:** prepare future `persistence-008`, current proposal v57, with separate save-format/worldgen versioning and understandable pre-Revival refusal; compatible new saves must load correctly. No formal plan or implementation now. Implementation follows P1; later schema changes bump normally, without forcing another worldgen epoch. |
+| X2 | Track C porting V3 grass would add a 5th independent wind. | V1-side CA1/CA2 do not depend on shared wind. A future CB prototype must resolve wind ownership without importing unrelated atmosphere implementation into P1; broad wind/water work is deferred. |
+| X3 | Mirror pass (≈339 calls) is claimed by water atmosphere, settlements (B1a) and actors (0 actor mirror draws already). | One **reflection policy decision** under existing `world-terrain-015`, still open (D8/D13), informed by B0. A bounded B optimization may proceed only after its required decision; broad water work waits until after P1. Settlement B1a is an implementation of that policy, not a separate one. |
+| X4 | Armor visuals multiply actor draws/skeletons (each slot ≥1 draw + skeleton, uncullable on NPC rebind path). | Armor **appearance** waits for the Track A actor visual contract (shared skeleton, merge key, shared bounds). The brief still permits mechanics + UI before appearance, but performance-affecting mechanics integration also waits until after P1. |
+| X5 | §10 lists native skinned culling as new / A0a as first Composer task. | Superseded: bodies/fauna already cull natively; A0a tooling shipped (P0). Next A candidate = A1′ inflated sphere incl. head/hair after certified capture and applicable approval. |
 | X6 | `grass-finalization.md` ("no pooling by default") vs mandatory Track C. | Track C stays mandatory as a *goal*; mechanism = V1-side memory/upload trims first, pooling (CA6) and V3 backend (CB) only on C0 evidence. |
 | X7 | `docs/state/combat.md` claims player→NPC/NPC→NPC damage go through the shared hook. | Doc is wrong vs code; fix in doc-hygiene packet. |
 | X8 | Brief §3/§5, readiness review and dossier README describe UI at A–C / Trade "next". | Dated status note in the brief + README correction (done in this commit for README/brief pointer). |
@@ -47,92 +49,135 @@ Spot-checked by the coordinator in current source:
 
 ```mermaid
 graph TD
-  BASE[A0a/B0/C0 certified baseline] --> A[Track A slices]
-  BASE --> B[Track B slices]
-  BASE --> C[Track C CA6 / CB]
-  BASE --> REFL[Reflection policy wt-015]
-  SAVE[persistence-008 save + worldgen epoch] --> SPACE[Settlement spacing calibration]
-  SAVE --> E2[Armor slots x layers E2]
-  SPACE --> CEM[V2-style cemeteries]
-  SPACE --> DOG[Rescue dog placement] 
-  SPACE --> ELDER[Elder ex-adventurer + sword]
-  E1[Hit-area resolver E1] --> E3[Wire shared human-hit E3]
-  E2 --> E3 --> EUI[Truthful per-area equipment UI] --> BAL[Rebalance + acquisition/loot + guard kits]
-  A --> LOOK[Armor/character appearance contract]
-  EUI --> LOOK
-  WIND[Shared wind owner] --> C
-  WIND --> WATER[Water atmosphere]
-  REFL --> WATER
-  CLOUDS[V3 clouds adapt] --> WATER
-  NEWMAT[New materials: grass, crypts, armor] --> PREWARM[Shader prewarm coverage]
+  REF[Stable reference build and unrelated integrations paused] --> BASE[Certified A0a/B0/C0 baseline]
+  BASE --> A[Track A approved slices]
+  BASE --> B[Track B approved slices]
+  BASE --> C[C0 then CA1 then CA2 then evaluate]
+  D9[D9 V1-first direction] --> C
+  C -. evidence and separate scope decision .-> CB[Conditional V3 backend candidate]
+  DEC[Open area decisions including D8/D10/D11/D13] -. only affected mechanisms .-> A
+  DEC -. only affected mechanisms .-> B
+  A --> FINAL[Technical and visual verification plus final combined assessment]
+  B --> FINAL
+  C --> FINAL
+  FINAL --> EXIT[P1 scope completed or explicitly closed - freeze ends]
+  EXIT --> SAVE[Implement separate save and worldgen compatibility policy]
+  D1[D1 future persistence-008 planning] --> SAVE
+  SAVE --> EPOCH[One coordinated incompatible Revival worldgen epoch]
+  D3[D3 batching strategy] --> EPOCH
+  EPOCH --> SPACE[Spacing and routes if selected]
+  EPOCH --> CEM[Procedural cemetery changes if selected]
+  SPACE --> STORIES[Placement-dependent dog and elder content]
+  EXIT --> ARM[Armor mechanics after open rules are resolved]
+  ARM --> EUI[Truthful equipment UI then appearance]
+  A --> LOOK[Actor appearance contract proposal]
+  LOOK --> EUI
+  EXIT --> ATM[Unrelated atmosphere and rendering]
+  EXIT --> OTHER[Other Revival runtime integrations]
 ```
 
-## 4. Strategy choice
+D3 batches **incompatible generation**, not every Revival change. D2 mappings are not selected or forced into the epoch. Compatible fixes need no epoch dependency, but must respect D4 workload isolation. Optional CB and other unapproved ideas are not mandatory freeze-exit dependencies. Detailed post-P1 ordering below remains proposed.
 
-Options considered: performance-first (serial), atmosphere-first, content-first. **Recommended: gated parallel lanes** — performance lanes proceed behind the baseline gate while code-disjoint mechanics (armor rules, persistence policy) and decision work run in parallel; all worldgen-changing work is batched into **one "worldgen epoch"** so the author starts a new game once. Rationale: brief sets no fixed order among performance/atmosphere/UI; the baseline is in flight anyway; armor and persistence code is disjoint from render owners; batching worldgen changes minimises new-game resets and cache bumps.
+## 4. Strategy — Performance-First
+
+**D4 APPROVED, 2026-10-27:** complete A (NPC/fauna rendering), B (settlement rendering/draw submissions), and C (grass/flowers optimization) before integrating unrelated changes that can materially affect performance. This replaces the earlier **gated-parallel-lanes recommendation**. Disjoint files/owners do not establish benchmark isolation; parallel implementation is not the preferred strategy or an objective.
+
+### Integration freeze
+
+Pause unrelated integrations into the **benchmarked V1 branch/codebase** during the A/B/C phase if they may materially change:
+
+- CPU simulation workload; GPU cost; scene complexity or draw calls.
+- NPC/fauna counts, model complexity, animation; settlement generation/population.
+- Terrain/vegetation density; shaders, lighting, shadows or water reflections.
+- World streaming/cache behavior; asset loading, memory allocation or startup.
+- Benchmark scenario comparability.
+
+Defer new NPC models/equipment visuals, worldgen/spacing, new weather/wind/cloud/water rendering, broad combat/equipment integration touching active simulation, and other such Revival runtime changes. Existing delivered work is retained; earlier research/plans are **deferred, not cancelled**.
+
+Documentation, research/reconnaissance, architecture analysis, formal planning, unit tests, non-runtime development tooling, inactive data/assets and isolated UI demos may proceed **only when they do not affect bundling, loading, execution or benchmark behavior**. Demos must not start or modify the living world. Separate branches may prepare other work, but performance-affecting changes must wait to merge until exit.
+
+**Entry:** stable reference build plus a certified baseline covering the applicable A/B/C scenarios, with unrelated performance-affecting integrations paused. Pause them already during baseline preparation so the reference stays stable. Current diagnostic/UNVERIFIED captures do not satisfy entry; see [readiness audit](../../performance/audits/2026-10-27--three-track-benchmark-diagnostics-readiness.md) and [Arc runbook](../../performance/2026-10-27--arc-baseline-runbook.md).
+
+**Exit:** the approved A/B/C scope is completed or explicitly closed; accepted changes have appropriate technical and visual verification; the final combined performance result is documented. Record closure/deferment of optional candidates explicitly. An open optional optimization, including V3 CB, must not keep the freeze alive indefinitely. Other Revival implementation then resumes with scope-appropriate verification.
+
+**Necessary exceptions:** critical correctness, security or blocking fixes only. For each, record why it cannot wait, whether benchmark workload changes, the affected commit, and whether a targeted measurement is genuinely required. Do not automatically rerun the full suite. Benchmark comparability, not file ownership or SHA equality alone, controls reuse (§10).
 
 ## 5. Phases
 
-| Phase | Content | Entry | Exit / completion evidence | Priority |
-| --- | --- | --- | --- | --- |
-| **P0 — Baseline & hygiene** | Certify A0a/B0/C0 (≥3 warm reps, SHA ≥ `94a74470`) and paste into the reports' Baseline slots; cold/warm startup timing; author visual PASS for inventory hybrid, Trade F, settlements-019 Stage 1; doc-hygiene packet (§7 step 2); author decisions D1–D4. | now | Baselines READY or explicitly UNVERIFIED; decisions recorded in brief | P0 |
-| **P1 — Performance lanes** | A: A1′ inflated cull sphere (all actor skinned meshes), A5′ far eye/brow hide, A0b mixer/label spans → A3 cadence, A6 no per-spawn GLB clone. B: reflection policy → B1a, then B1b/B2 on leading family. C: C0+ upload probe, CA1 filler radius, CA2 instance cap. | baseline for the lane (A1′ may land with keep/revert decided at baseline) | Per-slice keep rule (§6) + author visual check | P0/P1 |
-| **P1∥ — Armor mechanics** | `items-player-062` (new plan): E1 pure hit-area + shared human-hit pipeline (not wired) → E2 slot×layer `EquipmentState` + save bump (re-scoped 044) → E3 wire into player and NPC damage. | persistence-008 for E2 | Unit/regression tests; same hit → same protection for player and NPC; new-game save round-trip | P1 |
-| **P2 — Worldgen epoch** | persistence-008 policy → spacing calibration (+10–15 % travel via route evidence) → V2-style cemeteries (graves + size-scaled crypts) → name mapping Ann/Peter/Kate/Mark → targeted worldgen cache bumps. | D1, D2 approved | One new game; routes/merchants/transport coherent; Hidden Finds IDs stable | P1 |
-| **P3 — Atmosphere** | Shared wind owner (remove `TEMP` hack properly) → V3 clouds adapt (no A/B) → water (lakes vs rivers) under reflection policy → grass look CA3–CA5 (softer blades, billboard flower clumps, ring fade) → moon/stars (new work). | wind design approved; baseline for perf-sensitive parts | Author scene review (day/night/weather) at current fog distance; prewarm covers new programs | P1/P2 |
-| **P4 — Equipment UI & content** | Truthful per-area UI (revise `ui-input-045` for layers) → rebalance + 8 candidate pieces → acquisition via trade/artisans/loot/rewards → deterministic guard kits. Then armor/character appearance under Track A contract. | E3 | Displayed protection = applied protection; acquisition round-trip | P2 |
-| **P5 — Living-world content** | Voices stage 1 (independent; can start any time) → unowned rescue dog (split from plan 058) + treasure → elder ex-adventurer + sword → later roaming groups. | P2 for placement-dependent stories | Real actors/items/effects; durable state; no duplicated rewards | P2 |
-| **P6 — Remaining UI/models** | Map/menu consultation; selective settlement/character model replacement; optional C CB (V3 grass backend) only if C0 + post-CA evidence warrants. | evidence / author choice | per owning plan | P3 |
+Only the Performance-First order and D1/D3/D9 direction are approved. Detailed candidate slices and post-performance phases remain proposals subject to their owning plans/decisions.
+
+| Phase | Content | Entry | Exit / completion evidence |
+| --- | --- | --- | --- |
+| **P0 — Stable reference and baseline** | Pause unrelated performance-affecting merges; certify A0a/B0/C0 once for applicable scenarios and preserve the reference metadata/reports. Documentation and planning may continue within §4. | Baseline preparation; readiness/runbook quality gates | Stable reference and certified applicable baseline. Otherwise remain explicitly UNVERIFIED/BLOCKED; do not treat that label as a passing gate. |
+| **P1 — A/B/C performance implementation** | A: proposed cull bounds A1′/A2′, attribution/cadence and spawn-churn slices; A5′ far detail and A7 merge remain gated by D10/D11 and area choices. B: leading-family submission work; B1a reflection trims require D8/D13, not a broad water rewrite. C: **C0 → CA1 useful filler radius → CA2 generation/storage cap → evaluate**, then CB only if evidence warrants further architecture. | P0 certified baseline; applicable implementation approval and unresolved area decisions for affected slices | Appropriate technical/visual checks, documented keep/revert evidence and **final combined assessment**; approved scope completed or explicitly closed. End freeze; optional candidates do not prolong it. |
+| **P2 — Save policy and coordinated worldgen epoch (deferred implementation)** | Future `persistence-008` policy (v57 proposal) before incompatible generator integration; coordinate spacing/routes and procedural cemeteries as applicable in one epoch. Only selected features enter it; D2 mappings stay open. Target only affected worldgen cache namespaces. | **P1 exit**, D1/D3 direction; future plan/scope approval, D2 only if a name change is included | Understandable incompatible-save refusal, compatible-new-save round-trip; one coordinated new-game boundary; coherent routes/transport/IDs and generation checks per future plan |
+| **P3 — Atmosphere (deferred proposal)** | Shared wind design, further selected cloud/water work, softer grass/billboard-flower appearance and moon/stars as scoped later. Delivered clouds retained; no new cloud A/B selection gate. Appearance may be planned in P1, but changing shaders/geometry/flowers is not implicitly part of CA1/CA2. | **P1 exit**, applicable scope/design approvals; worldgen only where truly dependent | Author scene review and verification appropriate to the actual change; no inferred reflection/tree-wind approval |
+| **P4 — Armor mechanics, equipment UI/content/appearance (deferred proposal)** | Future hit/slot/layer work → truthful UI → balance/acquisition → appearance under actor contract. No simultaneous runtime armor lane. | **P1 exit**; D5/D6 and other applicable rules/content decisions; save policy for persisted changes | Displayed effects = applied effects, player/NPC parity, compatible-save round-trip; guard kits D7 remain open |
+| **P5 — Living-world content (deferred proposal)** | Voices stage 1, unowned rescue dog/treasure, elder/sword; later roaming groups retained. Asset loading/runtime integration waits; inert preparation may continue per §4. | **P1 exit**; topology for placement-dependent stories; D12 plan split remains open | Real actors/items/effects, durable state, no duplicated rewards |
+| **P6 — Remaining UI/models (deferred proposal)** | Map/menu consultation and selective model replacement; isolated UI demos may continue during P1 under §4. Conditional CB remains a candidate, not a mandatory later migration. | **P1 exit** for performance-affecting integration; owning scope/author choices | Verification per owning plan |
 
 ## 6. Shared acceptance rules
 
-- **Performance keep rule (proposal):** improvement beyond max(2× rep spread, 5 %) in the lane's decision metric (observed per-pass calls/tris for the family, render p50/p95, frame p95/p99), matched population/SHA/device, `reliability=observed`, no visual regression in author review. Memory-only stages pass on memory/upload with no frame-time regression and are **not** reported as FPS gains.
-- **Simulation:** no camera-dependent simulation; identity, ownership, offscreen continuity and save/load untouched by render slices.
-- **Gameplay:** displayed equipment effect = applied effect; player/NPC parity tests; new-game round-trip after each save bump.
-- **Verification vocabulary:** Implemented / Technically verified / Browser-manual verified kept distinct (CLAUDE.md).
+- **Performance keep rule (still a proposal):** improvement beyond max(2× rep spread, 5 %) in the relevant decision metric (observed family/pass calls/tris, render p50/p95, frame p95/p99), matched workload/device/configuration with both SHAs recorded, `reliability=observed`, and appropriate author visual review. This threshold and area-specific choices are not approved by D4. Memory/upload-only stages are not reported as FPS gains.
+- **Simulation:** no camera-dependent simulation; preserve identity, ownership, offscreen continuity and save/load.
+- **Grass:** preserve deterministic V1 world/terrain/simulation, coverage/richness, current fog/visibility, olive palette, intended softer blades and decorative billboard flowers. D9 does not approve density reduction or all appearance mechanisms.
+- **Gameplay after P1:** displayed equipment effect = applied effect; player/NPC parity and compatible-new-save round-trips.
+- **Verification vocabulary:** Implemented / Technically verified / Browser-manual verified remain distinct (CLAUDE.md). Focused regression tests normally support implementation; performance runs follow §10, not every stage.
 
 ## 7. First concrete steps (small, ordered)
 
-| # | Step | Owner plan | Agent | Gate |
-| --- | --- | --- | --- | --- |
-| 1 | Certify A0a/B0/C0, paste numbers into the three Baseline slots; separately attribute the 8.49 s frame | three-track roadmap / runbook | author + GPT Astra (review) | runbook READY/STOP |
-| 2 | Doc-hygiene packet: revival pointer in `CLAUDE.md`/plans README routing, `pnpm run type-check` (vue-tsc) instead of `npx tsc`, fix `docs/state/combat.md` damage-routing lines, brief UI status note, §10 correction note | — (docs) | Cursor, reviewed by Opus | author OK for CLAUDE.md edit |
-| 3 | Author visual PASS: inventory hybrid, Trade F, settlements-019 Stage 1 | ui-input-044 / settlements-019 | author | — |
-| 4 | Write `persistence-008` (save v57 + worldgen epoch + pre-revival refusal) | new plan | Claude Opus (plan), Cursor (impl) | D1 |
-| 5 | Write `items-player-062`; implement E1 pure hit-area resolver + shared human-hit pipeline with unit tests, unwired | new plan | Opus (plan), Cursor (impl) | D5/D6 |
-| 6 | A1′ inflated cull sphere for all actor skinned meshes incl. head/hair (never writes `visible`) | world-terrain-050 | Cursor; Astra review | keep/revert PENDING BASELINE |
-| 7 | A0b mixer/label CPU spans | npc-063 | Cursor | none (diagnostic) |
-| 8 | CA1 filler generation only inside filler radius, own seeded stream | Track C / grass owner | Cursor | C0 memory metric |
-| 9 | Shared wind owner design note (V3 `render/wind/wind.ts` as reference) | new plan if adopted (world-terrain-055) | Claude Opus | author OK |
-| 10 | Reflection policy decision → B1a mirror trim for small settlement detail | world-terrain-015 | Opus (decision doc), Cursor (impl) | B0 + author look |
+These are roadmap handoffs, not actions authorized by this documentation reconciliation.
+
+| # | Step | Owner | Gate |
+| --- | --- | --- | --- |
+| 1 | Pause unrelated workload-affecting merges; select stable reference; certify shared A0a/B0 and applicable C0, preserve SHA/device/config/workload/raw and human reports | three-track roadmap / Arc runbook | READY/STOP; reuse any already certified comparable evidence |
+| 2 | Agree bounded A/B/C implementation scope and remaining area-specific gates using existing audits/plans; do not approve D8/D10/D11/D13 by implication | owning plans / author | certified baseline and applicable decisions |
+| 3 | Deliver approved A slices and leading-family B work; for C deliver CA1 then CA2 after C0. Use focused tests/review and independent reversible commits | world-terrain-050 / npc-063 / settlements-019 / grass owner | meaningful keep/revert questions measured per §10; no stage-by-stage full-suite requirement |
+| 4 | Evaluate CA1/CA2. Consider V3 tiled backend only if evidence warrants a further architecture decision | Track C | preserve coverage and world identity; no automatic CB commitment |
+| 5 | Document final combined A/B/C result and technical/visual verification; close or defer optional scope explicitly and end freeze | performance owners / author review | §4 exit criteria |
+| 6 | Resume other Revival runtime implementation under its decisions/plans: save policy before incompatible epoch; armor and atmosphere after P1 | owning plans | no formal `persistence-008` or armor plan created here; open decisions remain open |
+
+Documentation/planning (including future persistence policy preparation), isolated demos and non-runtime tooling may continue meanwhile under §4. They are not a preferred parallel implementation lane.
 
 ## 8. Agent allocation
 
-- **Cursor (Composer):** single-concern, file-bounded slices with an owner plan and tests — A1′, A5′, A0b, A6, CA1/CA2, B1a/B1b, E1–E3 implementation, doc-hygiene edits, voices stage 1 wiring.
-- **GPT Astra:** independent technical review of each Cursor slice; baseline certification review (SHA/variance/STOP); bounded donor comparisons (cemetery layout, cloud adaptation details); decision-ledger upkeep in the brief.
-- **Claude Opus:** cross-system plans and contracts — persistence/worldgen epoch, armor rules (`items-player-062`), shared wind owner, actor visual/armor appearance contract, spacing calibration; review of lifecycle-risky changes; AI-agent documentation optimization.
+Allocation remains a proposal; additional agents/parallelism are optional.
 
-## 9. Decision points for the author
+- **Cursor (Composer):** approved, file-bounded A/B/C slices with existing owners, focused tests and review. No runtime armor E1–E3, voices wiring, worldgen or atmosphere integration during P1 unless a necessary §4 exception applies.
+- **GPT Astra:** technical review, baseline certification/comparability review, decision-ledger upkeep; no repeated broad research or automatic benchmarks after every slice.
+- **Claude Opus:** cross-system planning/architecture and lifecycle review; persistence/worldgen policy, future armor/wind/appearance contracts may be prepared within §4. Their runtime integrations follow P1. No formal plan creation is part of this reconciliation.
 
-| ID | Decision | Recommendation |
+## 9. Decision register
+
+Authority: [dated author record](./STRATEGIC-BRIEF.md#approved-revival-decisions-2026-10-27). “Yes” in the original recommendation column was advice, never approval.
+
+| ID | Decision / direction | Status |
 | --- | --- | --- |
-| D1 | Save policy: v57 with worldgen epoch, pre-revival saves refused with message | Yes |
-| D2 | Name mapping Anna→Ann, Piotr→Peter, Kasia→Kate, Marek→Mark (home families) | Confirm |
-| D3 | Batch all worldgen changes into one epoch (one new game) | Yes |
-| D4 | Overall strategy: gated parallel lanes (§4) | Yes |
-| D5 | Hit model: per-hit sampled body area (area = slot, V3 weights); one protection value per piece; damage types/durability deferred | Yes |
-| D6 | Accept lower average protection for body-only kits after body areas (rebalance) | Yes |
-| D7 | Guards get deterministic light armor kits in new games | Yes |
-| D8 | Reflection policy: keep / lower cadence / drop small detail / V3-style sky tint | PENDING BASELINE; lean "drop small detail" |
-| D9 | Track C: V1-side trims first, V3 backend gated (not straight to §12 C1 adapter) | Yes |
-| D10 | Actor far-detail: hide eyes/eyebrows beyond shadow range (36 m) | Yes, with visual check |
-| D11 | Merge direction for outfits (A7): keep MeshStandard look vs V3 Lambert vs no merge | Decide after A1′–A6 evidence |
-| D12 | Split plan 058: household dog stays, new plan for unowned rescue dog | Yes |
-| D13 | Small settlement details may be omitted from water reflections if unnoticeable | Yes, with author look |
-| D14 | Tree wind excluded by default | Yes |
+| D1 | Separate save format and worldgen compatibility; prepare future persistence-008, v57 current proposal (code v56); clear pre-Revival refusal and correct compatible new-save loading | **APPROVED** — planning/documentation, no immediate implementation |
+| D2 | Proposed Anna→Ann, Piotr→Peter, Kasia→Kate, Marek→Mark mappings | **OPEN / UNAPPROVED** |
+| D3 | One coordinated incompatible Revival worldgen epoch; not blanket feature approval | **APPROVED** |
+| D4 | **PERFORMANCE-FIRST** and controlled integration freeze (§4), replacing gated parallel lanes | **APPROVED** |
+| D5 | Per-hit body-area model, weights, protection rules | **OPEN / UNAPPROVED** |
+| D6 | Body-only protection rebalance | **OPEN / UNAPPROVED** |
+| D7 | Guard armor kits | **OPEN / UNAPPROVED** |
+| D8 | Reflection policy: keep / lower cadence / omit detail / sky tint | **OPEN / UNAPPROVED**, informed by baseline |
+| D9 | C0 → CA1 → CA2 → evaluate; V3 tiled backend conditional | **APPROVED** |
+| D10 | Actor far-detail eye/eyebrow appearance | **OPEN / UNAPPROVED** |
+| D11 | Outfit merge/material direction: MeshStandard / Lambert / no merge | **OPEN / UNAPPROVED**, informed by A evidence |
+| D12 | Rescue-dog plan 058 split | **OPEN / UNAPPROVED**; prior unowned-dog product decision retained |
+| D13 | Small settlement details omitted from reflections | **OPEN / UNAPPROVED** |
+| D14 | Tree wind | **OPEN / UNAPPROVED** |
 
-Area-specific secondary decisions (grass blade look, herb variant, flower density, building-footprint grass mask, armor layer coverage, first armor content) stay in their area reports §7.
+Area-specific secondary decisions (blade implementation, herb variant, flower replacement/density, footprint mask, armor coverage/content and other audit §7 questions) remain open except the explicit D9 preservation/sequence direction. Audit-local D numbers are not this master register.
 
-## 10. Benchmark intake (how to add results later)
+## 10. Benchmark policy and intake
 
-Paste certified numbers only into the **Baseline results slot** tables in the A, B and C reports (§6 of each), add the run file link, then re-evaluate items marked PENDING BASELINE in §5/§7/§9 of this roadmap. No re-analysis is needed unless the baseline contradicts the 032 ranking hint (actors > settlements ≫ grass in settlement-heavy); in that case reorder P1 lanes only.
+- Establish **one certified reference baseline set** for the applicable A0a/B0/C0 scenarios. Preserve commit SHA, device/browser, configuration, scene/workload/populations/camera/phase, raw evidence and reports. Reuse it while relevant runtime behavior and workload remain comparable.
+- A changed SHA does **not** itself invalidate a baseline. Record both revisions and relevant runtime/workload differences; do not claim gains across incomparable versions or configurations.
+- Do not benchmark automatically after every commit or small stage. Prefer focused unit/regression checks. Measure when evidence is needed to decide whether a meaningful optimization should be kept.
+- Where practical, assess several independently reversible changes in one measurement session. Keep commits reviewable; if combined results regress, use targeted diagnostics to isolate the cause.
+- For necessary exceptions, apply §4's record and decide whether targeted measurement is needed; do not reflexively rerun the full suite.
+- Perform and document a **final combined performance assessment before freeze exit**. After exit, new work gets verification appropriate to its own scope.
+- This policy controls **when** to measure. Executed runs still satisfy the existing [readiness audit](../../performance/audits/2026-10-27--three-track-benchmark-diagnostics-readiness.md) and [Arc runbook](../../performance/2026-10-27--arc-baseline-runbook.md) quality/READY/STOP requirements; no reduced rep counts, missing metadata or uncertified substitutions.
+
+Paste certified values into the A/B/C audits' **Baseline results slots** (§6), link run artifacts and metadata, then resolve only the affected PENDING BASELINE candidates. Diagnostic 032 and 033–051 remain diagnostic, not certified acceptance. Reorder A/B/C candidates only if evidence warrants; do not reopen strategic D1/D3/D4/D9 decisions.

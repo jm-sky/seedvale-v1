@@ -8,6 +8,8 @@ This is the central overview of Seedvale performance. Current code remains the s
 
 **P0 diagnostics (2026-10-27):** instrument SHA `94a74470` — full-session distributions, raw sidecar, actual per-pass submission collector, V1 grass baseline, artifact bundle. Readiness audit: [`audits/2026-10-27--three-track-benchmark-diagnostics-readiness.md`](./audits/2026-10-27--three-track-benchmark-diagnostics-readiness.md). Certified Arc captures: [`2026-10-27--arc-baseline-runbook.md`](./2026-10-27--arc-baseline-runbook.md). Diagnostic smoke only: `results/2026-10-27--032--benchmark-settlement-heavy.*` (not ROI baseline).
 
+**Revival policy (2026-10-27):** [approved D4 Performance-First / D9 V1-first](../research/v1-revival/STRATEGIC-BRIEF.md#approved-revival-decisions-2026-10-27). Complete A/B/C rendering optimization before unrelated workload-affecting integration; [freeze boundaries and entry/exit](../research/v1-revival/2026-10-27--master-revival-roadmap.md#4-strategy--performance-first). Reuse one certified comparable baseline set, use focused regression checks and measure meaningful keep/revert decisions; no automatic benchmark after every commit/stage. [Full benchmark policy](../research/v1-revival/2026-10-27--master-revival-roadmap.md#10-benchmark-policy-and-intake) governs when to run; the existing runbook still governs capture quality.
+
 ## Performance model
 
 Keep three problems separate:
@@ -27,7 +29,7 @@ The September 1 benchmark batch is historical. Representative values were roughl
 | forest | 81.4 | 16.5 ms | 7.2 ms | 2.9 ms | 0.9 ms | 0.5 ms |
 | water | 61.8 | 25.5 ms | 11.6 ms | 2.6 ms | 0.9 ms | 0.5 ms |
 
-Do not treat these as the current baseline after later rendering/streaming changes. Establish a fresh browser baseline before deciding the next major optimization.
+Do not treat these as the current baseline after later rendering/streaming changes. Establish the applicable certified Revival baseline once, then reuse it while comparable under the policy above.
 
 ## Current implementation state
 
@@ -133,9 +135,9 @@ NPC category wall-clock is `SettlementsManager.update()`. While the perf monitor
 | Material program cache keys | ✅ |
 | Performance instrumentation / browser tracing | ✅ |
 
-## Current optimization direction — 2026-09-21 benchmark batch
+## Historical optimization direction — 2026-09-21 benchmark batch
 
-Fresh canonical benchmarks (`stream` 029, `settlement-heavy` 030, `water` 031) move the next optimization focus away from generic water/grass work and toward agent + settlement rendering. These are **investigation priorities, not implementation plans**; each still requires focused diagnosis before choosing a mechanism.
+The then-current canonical benchmarks (`stream` 029, `settlement-heavy` 030, `water` 031) move the next optimization focus away from generic water/grass work and toward agent + settlement rendering. These are **historical investigation priorities, not implementation plans**; current Revival priority includes mandatory Track C with D9's V1-first sequence. The older weak grass isolation signal does not remove C from A/B/C.
 
 | Area | Evidence / estimated recoverable cost | Estimated effort | ROI |
 |---|---|---:|---:|
@@ -154,7 +156,7 @@ Fresh canonical benchmarks (`stream` 029, `settlement-heavy` 030, `water` 031) m
 
 ## Candidate work — measurement required
 
-This is not a queue. Re-rank after a fresh benchmark.
+This is not a queue. Select candidates from relevant certified evidence; unrelated candidates wait under D4. More aggressive LOD does not authorize reduced vegetation density.
 
 | Candidate | Expected value | Rule |
 |---|---|---|
@@ -179,10 +181,10 @@ Those already exist in current code.
 
 ## Recommended decision order
 
-1. **Measure current code.** Use fresh browser results; do not optimize from the September 1 baseline alone.
+1. **Use the applicable certified reference.** Establish it if absent; reuse while comparable. September historical results alone are not acceptance evidence.
 2. **Classify the problem:** sustained FPS vs hitch vs scalability.
 3. **Prefer the smallest existing-system extension** that removes measured work.
-4. **Change one thing and benchmark.** Keep, improve or revert based on evidence.
+4. **Keep changes independently reversible; measure when a meaningful keep/revert decision needs it.** Prefer focused tests during implementation and, where practical, assess several candidates in one measurement session.
 5. Only then consider broader rendering architecture.
 
 For current known work:
@@ -212,8 +214,8 @@ Guiding loop:
 measure
 → identify dominant cost
 → reuse existing mechanism
-→ change one thing
-→ benchmark
+→ make independently reversible changes with focused tests
+→ measure when needed for a meaningful decision
 → keep / improve / revert
 ```
 

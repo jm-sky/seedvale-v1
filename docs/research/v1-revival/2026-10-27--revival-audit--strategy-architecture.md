@@ -11,6 +11,8 @@ Scope stays inside the brief's selected work (§3 of the brief). R1–R7 candida
 
 ---
 
+**Superseded strategy notice — 2026-10-27:** [author-approved Master D1/D3/D4/D9](./STRATEGIC-BRIEF.md#approved-revival-decisions-2026-10-27) and the [reconciled Master Roadmap](./2026-10-27--master-revival-roadmap.md) govern execution. The original graph, strategy table, overlapping phases and benchmark cadence below are historical proposals: **gated parallel lanes, early worldgen and simultaneous armor/atmosphere integration are superseded by D4 Performance-First**. Complete/explicitly close A/B/C and record final combined results before such integrations. D3 approves one coordinated incompatible epoch, not name mappings or every feature. D9 selects C0 → CA1 → CA2 → evaluation; V3 cutover is conditional. Local §7 D numbers differ from the master register; no reflection, armor, dog-split, tree-wind or other local choice is approved by this update. Use the Master's baseline-reuse policy, not automatic per-slice runs. Research findings are preserved; deferred work is not cancelled.
+
 ## 1. Verified state per area
 
 | Area | Exists in V1 (evidence) | Donor available | Status |
@@ -110,6 +112,8 @@ graph TD
 
 ## 4. Recommended strategy and alternatives
 
+**Historical recommendation — superseded by Master D4 Performance-First; see the dated notice above.**
+
 | Strategy | Pros | Cons |
 | --- | --- | --- |
 | **Performance-first** (A→B→C to target, then everything else) | Matches the 50–60 FPS goal. The three-track roadmap is already authorized. Avoids measuring on a moving target. | The baseline is not ready yet (STOP gate). The author waits for visible atmosphere/content. Water and wind changes later would invalidate C acceptance (wind) and B attribution (mirror). |
@@ -120,6 +124,8 @@ graph TD
 Rationale [hypothesis]: generator changes are the only work that forces a new game and moves the ground under content. Fixing geography early lets every later acceptance (dog, elder, cemetery, travel feel, performance baselines B/C) be recorded once against final geography. Wind is the shared prerequisite of the C cutover and water, so it goes before both.
 
 ## 5. Proposed phased order (entry/exit criteria)
+
+**Historical overlapping schedule — superseded by Master D4; implementation follows the reconciled Master Roadmap.**
 
 Phases can overlap where noted. Each phase delivers through small, separately approved slices per PLANNING.md. No phase claims FPS gains without matched baseline evidence.
 

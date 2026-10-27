@@ -4,6 +4,8 @@
 **Instrument SHA (minimum):** `94a74470fe94d365bbfbd9a8a42dce150c027f9b` (P0 + main/shadow residual fix)  
 **Reference hardware:** author’s Intel Arc laptop, real browser WebGL (not SwiftShader / not headless-only)
 
+**Scheduling / reuse:** [approved D4 policy](../research/v1-revival/2026-10-27--master-revival-roadmap.md#10-benchmark-policy-and-intake) controls when captures are needed. Establish one certified applicable A/B/C reference set and reuse while workload/configuration remain comparable; a changed SHA alone does not require recapture. No automatic full suite per commit or stage. The technical protocol and READY/STOP requirements below remain unchanged.
+
 ## Prerequisites
 
 1. `git checkout` / pull so `git rev-parse HEAD` is the instrumented SHA (or later P0-only docs commits).

@@ -3,13 +3,13 @@
 **Created at:** 2026-10-26  
 **Created by:** ChatGPT Sol  
 **Updated at:** 2026-10-27  
-**Updated by:** Claude Opus 5.5  
-**Status:** Current author-agreed direction; remaining-work sequence pending author approval. Author-authorized Cursor exceptions are recorded below.  
+**Updated by:** Codex (approved-decision reconciliation)  
+**Status:** Current author-agreed direction; Revival D1/D3/D4/D9 approved on 2026-10-27. Other roadmap proposals remain unapproved. Earlier author-authorized Cursor exceptions are recorded below and are subject to the current D4 integration freeze.  
 **Target:** `jm-sky/seedvale-v1`
 
 ## 1. Start here: mandate and authority
 
-Claude Opus 5.5 owns later coordination, detailed planning, AI-agent documentation optimization and technical review of Cursor changes. Its proposed phases, order, dependencies and verification criteria for **remaining work require author discussion and approval** before execution. The author separately authorized Cursor's NPC/player model transfer and shoulder repair, snow patches/grass burial, documentation cleanup and accepted UI slices A–C. These are bounded exceptions to the original Opus-first workflow, not blanket implementation approval. After approval, routine technical decisions are autonomous; return to the author for scope changes or significant compromises, particularly degraded appearance, simplified simulation or omission of an agreed feature.
+Claude Opus 5.5 owns later coordination, detailed planning, AI-agent documentation optimization and technical review of Cursor changes. Its proposed phases, order, dependencies and verification criteria for **remaining work require author discussion and approval** before execution, except where the approved Revival decisions below settle direction or sequencing. The author separately authorized Cursor's NPC/player model transfer and shoulder repair, snow patches/grass burial, documentation cleanup and accepted UI slices A–C. These are bounded exceptions to the original Opus-first workflow, not blanket implementation approval. D4 now governs further integrations, including previously authorized work. After approval, routine technical decisions are autonomous; return to the author for scope changes or significant compromises, particularly degraded appearance, simplified simulation or omission of an agreed feature.
 
 This brief records explicit author decisions from the strategic conversation. It is the entry point for revival scope, not a technical design or implementation acceptance report. Current code remains authoritative for what exists. Follow [CLAUDE.md](../../../CLAUDE.md) and use the repository's targeted navigation workflow.
 
@@ -17,16 +17,33 @@ Read this brief first. Consult the relevant research sections through §7 as nee
 
 Astra/ChatGPT may coordinate bounded research, comparison and review, including GPT 6.1 Sol work, to prepare evidence. This does not transfer detailed implementation planning from Opus. Communicate with the author in Polish and use described survey choices for strategic questions; repository documentation remains English.
 
+## Approved Revival decisions (2026-10-27)
+
+This is the authoritative author decision record for **Master Roadmap D1/D3/D4/D9** (not the similarly numbered UI or area-audit questions). These are final strategic decisions; they do not approve every proposed mechanism or authorize implementation in this documentation task. Earlier unrelated author decisions remain in force, with further integration subject to D4.
+
+| ID | Status | Author-approved direction |
+| --- | --- | --- |
+| **D1** | **APPROVED** | Prepare future `persistence-008`: separate save-format evolution from explicit `worldgenVersion` / epoch compatibility. Current code at V1 `c0595d1`: `CURRENT_SAVE_VERSION = 56` in [saveData.ts](../../../src/persistence/saveData.ts); **v57 is the current proposal**, not implemented. Clearly refuse incompatible pre-Revival saves with an understandable message; compatible new saves must round-trip correctly. Planning/documentation authorized; no immediate implementation or formal plan creation in this task. |
+| **D3** | **APPROVED** | Coordinate incompatible generation changes into **one planned Revival epoch**, minimizing repeated new games. Settlement spacing/routes and procedural cemeteries are coordination examples, not blanket feature approval. D2 name mappings remain undecided. Keep unrelated UI, equipment, graphics and simulation outside this epoch; compatible fixes may proceed independently only when D4 permits. |
+| **D4** | **APPROVED — PERFORMANCE-FIRST** | Complete **A NPC/fauna rendering, B settlement rendering/draw calls, C grass/flowers optimization** before unrelated performance-affecting integration. This **supersedes gated parallel lanes**; parallel work is optional, not a priority. Pause integrations that change the measured runtime/workload; documentation, research, architecture, formal planning, tests, non-runtime tooling, inert assets/data and isolated UI demos may continue only without benchmark effects. Other branch preparation is allowed, with merge deferred. Runtime armor, worldgen and atmosphere outside A/B/C wait. |
+| **D9** | **APPROVED — V1 first** | **C0 credible baseline → CA1 remove filler generation outside its useful radius → CA2 cap generation/storage of instances that current LOD cannot submit → evaluate → consider V3 tiled backend only if evidence warrants.** No V3 prerequisite for CA1/CA2. Preserve V1 terrain/simulation authority, world identity/determinism, coverage/richness, fog/visibility, olive palette, intended softer blades and decorative billboard flowers. Appearance planning may continue; reduced density is not approved. V3 remains a conditional candidate. |
+
+**D4 operating policy:** establish a stable reference build and certified A/B/C baseline with unrelated performance-affecting integrations paused. Preserve baseline SHA/device/configuration/workload/reports and reuse it while comparable; a new SHA alone does not invalidate it. Use focused regression tests during implementation, measure to decide meaningful keep/revert questions, batch independently reversible candidates in measurement sessions where practical, diagnose regressions selectively, and document a final combined result. No automatic full-suite rerun after every commit/stage or exception; never claim gains from incomparable versions/configurations.
+
+Freeze exit requires the approved A/B/C scope **completed or explicitly closed**, appropriate technical and visual verification of accepted changes, and the combined performance result recorded. Optional ideas must not prolong the freeze indefinitely. Then other Revival implementation may resume with verification appropriate to its scope. Necessary critical correctness/security/blocking fixes may be exceptions: record why they cannot wait, workload impact, affected commit and whether a targeted measurement is actually needed. Detailed boundaries, entry/exit and benchmark handling: [Master Roadmap §4](./2026-10-27--master-revival-roadmap.md#4-strategy--performance-first) and [§10](./2026-10-27--master-revival-roadmap.md#10-benchmark-policy-and-intake).
+
+**Still unapproved:** D2 names; D5/D6 body-hit/armor balance; D7 guard equipment; D8 reflections; D10 actor far detail; D11 outfit material/merge; D12 rescue-dog plan split; D13 small settlement details in reflections; D14 tree wind. Additional area-specific decisions remain open. A recommendation marked “Yes” is not approval.
+
 ## 2. Primary goals and preservation boundaries
 
-**Primary goals:** smoother, more convenient play and improved atmosphere. No fixed order between performance, atmosphere and UI has been approved.
+**Primary goals:** smoother, more convenient play and improved atmosphere. D4 now gives A/B/C rendering performance the first implementation phase; unrelated performance-affecting Revival integration follows its completion.
 
 - Reference device: author's **DELL Pro Premium with Intel Arc**. Exact GPU, resolution and settings remain to be recorded before measurements.
 - Target: **50–60 FPS**, with roughly **45–60 FPS acceptable**, not at any visual cost. Evaluate travel stutters separately from average FPS; detailed measurement thresholds belong in Opus's proposed plan.
 - Current V1 visibility distance and strong distance fog are acceptable. Increasing draw distance is not a goal.
 - Accepted compromises: simpler distant objects and cheaper/lower-frequency shadows or reflections **without noticeable disturbances**. Reduced vegetation density has not been approved.
 - Preserve V1's interconnected living-world behavior, concrete economy and ownership, character identity and atmosphere. No blanket architecture replacement or simplification of simulation is authorized by a performance goal.
-- **Compatibility with pre-revival saves/worlds is not required; a new game is acceptable.** New games must still save/load correctly. This does not authorize arbitrary deletion of persistence infrastructure or silently accepting incompatible data; Opus should specify the version/reset policy.
+- **Compatibility with pre-revival saves/worlds is not required; a new game is acceptable.** New games must still save/load correctly. This does not authorize arbitrary deletion of persistence infrastructure or silently accepting incompatible data; D1's dated record establishes the separate save-format/worldgen versioning direction; its detailed design remains future planning.
 - Broad geography changes are permissible if they improve exploration, but are not an objective in themselves and do not select a donor generator.
 
 ## 3. Agreed product direction
@@ -44,7 +61,7 @@ Priority atmosphere areas:
 2. Coherent **wind** across grass, vegetation and water; tree motion is conditional on acceptable quality and cost.
 3. Improved **settlements and characters** through selective model/outfit/detail replacement, retaining successful V1 assets, style and inhabitants' identities.
 
-These are priorities, not a mandated implementation order.
+These remain selected product priorities; further runtime changes outside A/B/C are deferred under D4.
 
 **Cemeteries:** improve them using V2 as the reference: individual graves with plaques and **one or more larger crypts**, with crypt count related to settlement size. Exact layout and sizing remain for Opus. Crypt interiors and additional quests have not been selected.
 
@@ -79,7 +96,7 @@ Retain the author preference for key names **Mark, Kate, Ann and Peter**. Confir
 - **Wounded dog — ownership decision confirmed 2026-10-26:** use a separate, genuinely unowned rescue dog. Rescue/treatment is followed by earning trust and explicit adoption; treatment alone does not grant ownership. The resulting companion helps search for treasure, with state and progress surviving save/load. Reuse existing V1 animal mechanisms and suitable V2 rescue/search behavior. Do not take a household-owned dog or require an owner-return/release branch for this selected story. This resolves the ownership question in the [dog/elder/cemetery comparison](./2026-10-26--dog-elder-cemeteries-comparison.md); plan 058's household-owner opening is not the required route for this companion. Opus should reconcile overlapping plan scope without treating this decision as cancellation of unrelated household-dog work.
 - Settlement elder as a **former adventurer, not the headman**, with his legendary sword at home. Characterization, dialogue and actual item ownership/placement must agree.
 
-No order between these two stories, or ahead of other primary goals, has been approved.
+No order between these two stories has been approved. Their performance-affecting implementation follows the D4 phase.
 
 **Later content goals:** two independent roaming groups with their quests: a knight and squire; a hunter father and son. They were explicitly deferred relative to the dog and elder, not discarded.
 
@@ -98,7 +115,7 @@ Check current source only where freshness or an unresolved fact matters to a sel
 
 ## 5. Completed preparation and current handoff
 
-**Opus roadmap proposal, 2026-10-27:** [Master Revival Roadmap](./2026-10-27--master-revival-roadmap.md) proposes phases, dependencies, agent allocation and decisions D1–D14. It is **not approved** until the author accepts it; this brief's decisions are unchanged. Dated status note: UI Stages D–E have visual PASS and Stage F Trade is implemented (`ui-input-044`, verification needed), so §3/§5 references to A–C as the latest UI state are historical.
+**Opus roadmap proposal, 2026-10-27:** [Master Revival Roadmap](./2026-10-27--master-revival-roadmap.md) proposes phases, dependencies, agent allocation and decisions D1–D14. Only D1/D3/D4/D9 are newly approved, as recorded in the dated decision record; the roadmap as a whole and its other proposals are not approved. D4 replaces its earlier gated-parallel-lanes strategy. Dated status note: UI Stages D–E have visual PASS and Stage F Trade is implemented (`ui-input-044`, verification needed), so §3/§5 references to A–C as the latest UI state are historical.
 
 **Technical-review update, 2026-10-26:** the author subsequently assigned Astra the bounded review of delivered models, snow and UI A–C. See [Cursor technical review](../../reviews/2026-10-26--026--v1-revival-cursor-technical-review.md) for findings, executed checks and remaining limits. Earlier references here to Opus's future technical review now mean taking over these findings and targeted follow-ups, not repeating this review. Opus's planning and AI-agent documentation optimization ownership is unchanged.
 
@@ -129,7 +146,7 @@ Use scoped criteria, to be made concrete in that plan:
 - The dog and elder have real actors/items/effects, durable selected state and no duplicated rewards or invented completion claims.
 - Longer routes preserve coherent crossings, NPC/material transport and acceptable travel feel.
 
-Open items include exact hardware/profile and baseline scenes; detailed armor/visual contracts; donor content readiness; name mapping; audio coverage and relation/reputation mapping; cemetery sizing; and phase order. Clouds are selected without A/B; their performance benefit remains unmeasured, not an unresolved selection gate. These are not all author blockers: Opus should resolve technical facts and routine design within scope, asking only for consequential product choices.
+Open items include exact hardware/profile and baseline scenes; detailed armor/visual contracts; donor content readiness; name mapping; audio coverage and relation/reputation mapping; cemetery sizing; and post-performance phase details. The performance-first phase order is settled by D4. Clouds are selected without A/B; their performance benefit remains unmeasured, not an unresolved selection gate. These are not all author blockers: Opus should resolve technical facts and routine design within scope, asking only for consequential product choices.
 
 ## 7. Evidence routing
 
