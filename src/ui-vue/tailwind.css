@@ -75,6 +75,33 @@
 }
 
 /*
+ * Stage E (ui-input-043): scoped warm V3 HUD tokens.
+ * Do not apply globally — only `.sv-hud` (and nested).
+ */
+.sv-hud {
+  --surface: oklch(0.23 0.02 60 / 0.92);
+  --surface-solid: oklch(0.23 0.02 60 / 0.95);
+  --color-neutral-50: oklch(0.97 0.012 85);
+  --color-neutral-100: oklch(0.95 0.02 85);
+  --color-neutral-200: oklch(0.89 0.025 82);
+  --color-neutral-300: oklch(0.82 0.03 80);
+  --color-neutral-400: oklch(0.72 0.035 78);
+  --color-neutral-500: oklch(0.6 0.035 72);
+  --color-neutral-600: oklch(0.47 0.035 68);
+  --color-neutral-700: oklch(0.38 0.03 65);
+  --color-neutral-800: oklch(0.3 0.025 62);
+  --color-neutral-900: oklch(0.23 0.02 60);
+  --color-neutral-950: oklch(0.17 0.015 60);
+  --color-good: oklch(0.75 0.15 145);
+  --color-bad: oklch(0.68 0.19 27);
+  --color-warn: oklch(0.8 0.15 80);
+  --color-edge: oklch(0.78 0.1 230);
+  --color-primary: oklch(0.78 0.12 75);
+  color: oklch(0.95 0.02 85);
+  border-color: oklch(0.45 0.03 70 / 0.6);
+}
+
+/*
  * Stage D (ui-input-042): scoped warm V3 Character / Skills tokens.
  * Do not apply globally — only `.sv-character` / `.sv-skills` (and nested).
  */

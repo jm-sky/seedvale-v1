@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { nextTick, ref, watch } from 'vue'
-import { slotInputKey } from '../../interaction/interactionView'
+import HudGazeChip from '../components/HudGazeChip.vue'
 import { useOverlayScreen } from '../composables/useOverlayScreen'
 import { useTouchScroll } from '../composables/useTouchScroll'
 import { closeFlavorDialog, isFlavorDialogOpen, ui } from '../store'
@@ -58,7 +58,7 @@ function onPanelKeyDown(event: KeyboardEvent): void {
   >
     <div
       ref="panel"
-      class="max-h-[calc(100dvh-32px)] w-[min(420px,calc(100vw-32px))] overflow-y-auto rounded-[10px] bg-panel p-5 text-ink shadow-[0_12px_40px_rgba(0,0,0,0.45)]"
+      class="sv-hud max-h-[calc(100dvh-32px)] w-[min(420px,calc(100vw-32px))] overflow-y-auto rounded-[10px] border border-neutral-500/45 bg-neutral-900/92 p-5 text-neutral-50 shadow-[0_12px_40px_rgba(0,0,0,0.45)]"
       style="touch-action: pan-y"
       role="dialog"
       aria-modal="true"
@@ -110,12 +110,12 @@ function onPanelKeyDown(event: KeyboardEvent): void {
           v-for="action in ui.flavorDialog.actions"
           :key="action.label"
           type="button"
-          class="cursor-pointer rounded-md border bg-white/10 px-3 py-1.5 text-left text-[13px] hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[rgba(255,196,92,0.9)] disabled:cursor-default disabled:opacity-40 disabled:hover:bg-white/10"
+          class="cursor-pointer rounded-md border bg-neutral-800/60 px-3 py-1.5 text-left text-[13px] hover:bg-neutral-700/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-default disabled:border-neutral-600/40 disabled:bg-neutral-800/35 disabled:text-neutral-400 disabled:hover:bg-neutral-800/35"
           :class="action.consequenceTone === 'negative'
-            ? 'border-red-400/50'
+            ? 'border-bad/50'
             : action.consequenceTone === 'caution'
-              ? 'border-amber-300/50'
-              : 'border-white/20'"
+              ? 'border-warn/50'
+              : 'border-neutral-500/45'"
           :disabled="!action.enabled"
           @click="runAction(action.run)"
         >
@@ -123,7 +123,7 @@ function onPanelKeyDown(event: KeyboardEvent): void {
           <span
             v-if="action.reasonLabel"
             class="block text-[11px]"
-            :class="action.enabled && action.consequenceTone === 'caution' ? 'text-amber-300' : 'text-red-300'"
+            :class="action.enabled && action.consequenceTone === 'caution' ? 'text-warn' : 'text-bad'"
           >
             {{ action.reasonLabel }}
           </span>
@@ -137,45 +137,13 @@ function onPanelKeyDown(event: KeyboardEvent): void {
 
   <div
     v-if="!ui.flavorDialog.open && (ui.flavorDialog.interactionPrompt || ui.flavorDialog.prompt)"
-    class="pointer-events-none fixed bottom-[90px] left-1/2 z-[6] -translate-x-1/2 rounded-md bg-black/70 px-3.5 py-1.5 text-[13px] text-white shadow"
-    :class="ui.flavorDialog.promptHighlighted ? 'ring-1 ring-[rgba(255,196,92,0.9)] shadow-[0_0_10px_2px_rgba(255,196,92,0.5)]' : ''"
+    class="sv-hud pointer-events-none fixed bottom-[90px] left-1/2 z-[6] -translate-x-1/2"
   >
-    <template v-if="ui.flavorDialog.interactionPrompt">
-      <span v-if="ui.flavorDialog.interactionPrompt.targetLabel">
-        {{ ui.flavorDialog.interactionPrompt.targetLabel }}
-      </span>
-      <template
-        v-for="(action, index) in ui.flavorDialog.interactionPrompt.actions"
-        :key="`${action.slot}-${action.label}`"
-      >
-        <span v-if="index > 0 || ui.flavorDialog.interactionPrompt.targetLabel"> · </span>
-        <span
-          :class="{
-            'opacity-55': !action.enabled,
-            'text-amber-300': action.enabled && action.consequenceTone === 'caution',
-            'text-red-300': action.enabled && action.consequenceTone === 'negative',
-          }"
-        >
-          [{{ slotInputKey(action.slot) }}] {{ action.label }}
-          <span
-            v-if="action.reasonLabel"
-            :class="action.enabled && action.consequenceTone === 'caution' ? 'text-amber-300' : 'text-red-300'"
-          > — {{ action.reasonLabel }}</span>
-        </span>
-      </template>
-      <span v-if="ui.flavorDialog.interactionPrompt.cycleHint">{{ ui.flavorDialog.interactionPrompt.cycleHint }}</span>
-    </template>
-    <template v-else>
-      {{ ui.flavorDialog.prompt!.startsWith('[') ? ui.flavorDialog.prompt : `[E] ${ui.flavorDialog.prompt}` }}
-    </template>
-    <div
-      v-if="ui.flavorDialog.progress !== null"
-      class="mt-1.5 h-1 w-32 overflow-hidden rounded-full bg-white/20"
-    >
-      <div
-        class="h-full bg-[rgba(255,196,92,0.9)] transition-[width] duration-75 ease-linear"
-        :style="{ width: `${Math.round(ui.flavorDialog.progress * 100)}%` }"
-      />
-    </div>
+    <HudGazeChip
+      :interaction-prompt="ui.flavorDialog.interactionPrompt"
+      :fallback-prompt="ui.flavorDialog.prompt"
+      :highlighted="ui.flavorDialog.promptHighlighted"
+      :progress="ui.flavorDialog.progress"
+    />
   </div>
 </template>

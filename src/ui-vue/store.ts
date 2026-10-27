@@ -737,6 +737,12 @@ type SkillsScreenState = {
 type HudState = {
   time: string
   phase: string
+  /** Stage E (ui-input-043): read-only climate projection for ClockWeather chrome.
+   *  Empty strings omit weather/season spans until the first push. */
+  seasonLabel: string
+  weatherLabel: string
+  temperatureText: string
+  weatherKind: '' | 'clear' | 'cloudy' | 'rain' | 'fog' | 'snow' | 'storm'
   fps: string
   /** FPS is debug chrome, not player-facing UI (review 007 C6) — hidden by
    *  default, toggled from Ustawienia. */
@@ -938,6 +944,10 @@ export const ui = reactive({
   hud: {
     time: '--',
     phase: '',
+    seasonLabel: '',
+    weatherLabel: '',
+    temperatureText: '',
+    weatherKind: '',
     fps: '',
     showFps: false,
     weight: '',
@@ -2255,6 +2265,20 @@ export function setHudTime(timeOfDay: number): void {
   if (ui.hud.time !== time) ui.hud.time = time
   const phase = phaseName(timeOfDay)
   if (ui.hud.phase !== phase) ui.hud.phase = phase
+}
+
+/** Stage E — thin read-only climate projection for HUD ClockWeather chrome.
+ *  Does not tick climate or mutate weather state. */
+export function setHudWeather(input: {
+  seasonLabel: string
+  weatherLabel: string
+  temperatureText: string
+  weatherKind: HudState['weatherKind']
+}): void {
+  if (ui.hud.seasonLabel !== input.seasonLabel) ui.hud.seasonLabel = input.seasonLabel
+  if (ui.hud.weatherLabel !== input.weatherLabel) ui.hud.weatherLabel = input.weatherLabel
+  if (ui.hud.temperatureText !== input.temperatureText) ui.hud.temperatureText = input.temperatureText
+  if (ui.hud.weatherKind !== input.weatherKind) ui.hud.weatherKind = input.weatherKind
 }
 export function setHudInventoryWeight(current: number, max: number): void {
   const text = `${current.toFixed(1)}/${max.toFixed(1)} kg`

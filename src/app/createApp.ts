@@ -319,7 +319,7 @@ import { listSeedRecords, resolveNewGameSeed } from '../world/seedLibrary'
 import { BEDROLL_MATERIAL_REQUIREMENTS, PLATFORM_MATERIAL_REQUIREMENTS } from '../world/sleepingUtilities'
 import { createTimeSkip } from '../world/timeSkip'
 import { createTreeLifecycle, parseTreeOverrides } from '../world/treeLifecycle'
-import { createClimateState } from '../world/weather'
+import { createClimateState, SEASON_LABELS, WEATHER_LABELS } from '../world/weather'
 import { createWeatherParticles } from '../world/weatherParticles'
 import { createWorldContext } from '../world/worldContext'
 import { createContainerActions } from './actions/containerActions'
@@ -1220,6 +1220,12 @@ export async function createApp(
   })
   const hud = createHud(container)
   hud.setTime(dayNight.timeOfDay)
+  hud.setWeather({
+    seasonLabel: SEASON_LABELS[climate.season],
+    weatherLabel: WEATHER_LABELS[climate.weather.type],
+    temperatureText: `${Math.round(climate.weather.temperature)}°C`,
+    weatherKind: climate.weather.type,
+  })
   const toast = createToast(container)
 
   // Assigned below; PlayerTorch onChange closes over the live binding.

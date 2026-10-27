@@ -181,7 +181,9 @@ import { resolveOffscreenTransportArrivals } from '../world/transportOffscreen'
 import {
   createForcedSurfaceWeatherRuntime,
   resolveSurfaceWeatherForFrame,
+  SEASON_LABELS,
   tickClimate,
+  WEATHER_LABELS,
 } from '../world/weather'
 import { applyLightningFlash, applyWeatherOverlay, applyWeatherSkyOverlay, capOutdoorFogToTerrainHorizon, grassWindAmpFor, resolveSceneFog } from '../world/weatherVisuals'
 import { showCountAcquisitionToast } from './actions/acquisitionFeedback'
@@ -2694,6 +2696,13 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
         inCaveInterior,
       )
       hud.setTime(dayNight.timeOfDay)
+      // Stage E — thin HUD projection of existing climate facts (no climate math).
+      hud.setWeather({
+        seasonLabel: SEASON_LABELS[climate.season],
+        weatherLabel: WEATHER_LABELS[climate.weather.type],
+        temperatureText: `${Math.round(climate.weather.temperature)}°C`,
+        weatherKind: climate.weather.type,
+      })
       // Live ammo readout (plan items-player-024) — cheap early-exit for the
       // common non-ranged-held case; recomputed every frame (like the load
       // calc just below) rather than threaded through every ammo-count

@@ -1,6 +1,14 @@
 <script setup lang="ts">
+/**
+ * Stage E (ui-input-043): V3-like HUD chrome on V1 producers.
+ * Aim / mounted / leading geometry and callbacks unchanged (D6).
+ * @domain ui
+ */
 import { computed, onMounted, onUnmounted, watch } from 'vue'
 import { isTouchDevice } from '../../input/isTouchDevice'
+import HudCarryStatus from '../components/HudCarryStatus.vue'
+import HudClockWeather from '../components/HudClockWeather.vue'
+import HudNeedsReadout from '../components/HudNeedsReadout.vue'
 import { abortTargetedSkill, setHudSkillAimScreen, ui } from '../store'
 
 const touchDevice = isTouchDevice()
@@ -59,55 +67,36 @@ onUnmounted(() => {
  *  (`.npc-label__bar--{hp,stamina,vigor,satiety,hydration}`, index.html) so the
  *  player's own bars read as the same visual language. */
 const needBars = computed(() => [
-  { key: 'hp', label: 'Zdrowie', value: ui.hud.playerNeeds.hp, color: '#e05555' },
-  { key: 'stamina', label: 'Kondycja', value: ui.hud.playerNeeds.stamina, color: '#e0c040' },
-  { key: 'vigor', label: 'Wigor', value: ui.hud.playerNeeds.vigor, color: '#5cbfa8' },
-  { key: 'hunger', label: 'Głód', value: ui.hud.playerNeeds.hunger, color: '#d4893a' },
-  { key: 'thirst', label: 'Pragnienie', value: ui.hud.playerNeeds.thirst, color: '#4a9fd8' },
+  { id: 'hp', label: 'Zdrowie', value: ui.hud.playerNeeds.hp, color: '#e05555' },
+  { id: 'stamina', label: 'Kondycja', value: ui.hud.playerNeeds.stamina, color: '#e0c040' },
+  { id: 'vigor', label: 'Wigor', value: ui.hud.playerNeeds.vigor, color: '#5cbfa8' },
+  { id: 'hunger', label: 'Głód', value: ui.hud.playerNeeds.hunger, color: '#d4893a' },
+  { id: 'thirst', label: 'Pragnienie', value: ui.hud.playerNeeds.thirst, color: '#4a9fd8' },
 ])
 </script>
 
 <template>
   <div
-    class="pointer-events-none fixed z-[5] select-none text-ink [text-shadow:0_1px_3px_rgba(0,0,0,0.55)] max-[700px]:left-[max(12px,env(safe-area-inset-left))] max-[700px]:top-[max(12px,env(safe-area-inset-top))]"
+    class="sv-hud pointer-events-none fixed z-5 select-none max-[700px]:left-[max(12px,env(safe-area-inset-left))] max-[700px]:top-[max(12px,env(safe-area-inset-top))]"
     style="left: 16px; top: 16px"
   >
-    <div class="text-[28px] font-semibold tracking-wide max-[700px]:text-[22px] max-[500px]:text-[22px]">
-      {{ ui.hud.time }}
-    </div>
-    <div class="mt-0.5 flex gap-3 text-[13px] opacity-90">
-      <span v-if="ui.hud.phase">{{ ui.hud.phase }}</span>
-      <span v-if="ui.hud.showFps && ui.hud.fps">{{ ui.hud.fps }}</span>
-      <span v-if="ui.hud.weight">{{ ui.hud.weight }}</span>
-      <span
-        v-if="ui.hud.playerCondition"
-        class="text-amber-300"
-      >{{ ui.hud.playerCondition }}</span>
-      <span v-if="ui.hud.held">{{ ui.hud.held }}</span>
-      <span v-if="ui.hud.heldAmmo">{{ ui.hud.heldAmmo }}</span>
-    </div>
-    <div class="mt-2 flex w-[130px] flex-col gap-1 max-[700px]:w-[100px]">
-      <div
-        v-for="bar in needBars"
-        :key="bar.key"
-        class="flex items-center gap-1.5"
-        :title="bar.label"
-      >
-        <div class="h-[3px] flex-1 overflow-hidden rounded-full bg-black/45">
-          <div
-            class="h-full rounded-full transition-[width]"
-            :style="{ width: `${Math.round(bar.value * 100)}%`, background: bar.color }"
-          />
-        </div>
-      </div>
-    </div>
-
-    <div
-      v-if="!touchDevice"
-      class="mt-2.5 text-xs opacity-70 max-[700px]:hidden"
-    >
-      {{ ui.hud.hint }}
-    </div>
+    <HudClockWeather
+      :time="ui.hud.time"
+      :phase="ui.hud.phase"
+      :season-label="ui.hud.seasonLabel"
+      :weather-label="ui.hud.weatherLabel"
+      :temperature-text="ui.hud.temperatureText"
+      :weather-kind="ui.hud.weatherKind"
+    />
+    <HudNeedsReadout :bars="needBars" />
+    <HudCarryStatus
+      :weight="ui.hud.weight"
+      :held="ui.hud.held"
+      :held-ammo="ui.hud.heldAmmo"
+      :player-condition="ui.hud.playerCondition"
+      :fps="ui.hud.fps"
+      :show-fps="ui.hud.showFps"
+    />
   </div>
 
   <!-- Dedicated Dismount button (plan fauna-003 §10) — bottom-center, clear
@@ -116,11 +105,11 @@ const needBars = computed(() => [
        desktop and mobile without touch-specific wiring. -->
   <div
     v-if="ui.hud.mounted.active"
-    class="pointer-events-none fixed inset-x-0 bottom-[max(20px,env(safe-area-inset-bottom))] z-[5] flex justify-center"
+    class="sv-hud pointer-events-none fixed inset-x-0 bottom-[max(20px,env(safe-area-inset-bottom))] z-5 flex justify-center"
   >
     <button
       type="button"
-      class="pointer-events-auto cursor-pointer rounded-full border border-white/20 bg-black/55 px-5 py-2.5 text-sm font-semibold tracking-wide text-ink shadow-lg backdrop-blur-sm transition-colors hover:bg-black/70 active:bg-black/80"
+      class="pointer-events-auto cursor-pointer rounded-full border border-neutral-400/40 bg-neutral-900/75 px-5 py-2.5 text-sm font-semibold tracking-wide text-neutral-50 shadow-lg backdrop-blur-sm transition-colors hover:bg-neutral-800/80 active:bg-neutral-700/80"
       @click="ui.hud.mounted.onDismount?.()"
     >
       Zejdź z wierzchowca ({{ ui.hud.mounted.animalLabel }}){{ touchDevice ? '' : ' [T]' }}
@@ -129,11 +118,11 @@ const needBars = computed(() => [
 
   <div
     v-else-if="ui.hud.leading.active"
-    class="pointer-events-none fixed inset-x-0 bottom-[max(20px,env(safe-area-inset-bottom))] z-[5] flex justify-center"
+    class="sv-hud pointer-events-none fixed inset-x-0 bottom-[max(20px,env(safe-area-inset-bottom))] z-5 flex justify-center"
   >
     <button
       type="button"
-      class="pointer-events-auto cursor-pointer rounded-full border border-white/20 bg-black/55 px-5 py-2.5 text-sm font-semibold tracking-wide text-ink shadow-lg backdrop-blur-sm transition-colors hover:bg-black/70 active:bg-black/80"
+      class="pointer-events-auto cursor-pointer rounded-full border border-neutral-400/40 bg-neutral-900/75 px-5 py-2.5 text-sm font-semibold tracking-wide text-neutral-50 shadow-lg backdrop-blur-sm transition-colors hover:bg-neutral-800/80 active:bg-neutral-700/80"
       @click="ui.hud.leading.onDetach?.()"
     >
       Odepnij linę ({{ ui.hud.leading.animalLabel }})
@@ -144,11 +133,11 @@ const needBars = computed(() => [
        this mirrors PlacementPreview / lodging cancel chrome. -->
   <div
     v-else-if="touchDevice && ui.skillsScreen.selectedSkill"
-    class="pointer-events-none fixed inset-x-0 bottom-24 z-[5] flex justify-center"
+    class="sv-hud pointer-events-none fixed inset-x-0 bottom-24 z-[5] flex justify-center"
   >
     <button
       type="button"
-      class="pointer-events-auto cursor-pointer rounded-md border border-white/20 bg-panel px-3 py-1 text-[13px] text-ink [text-shadow:0_1px_3px_rgba(0,0,0,0.5)] hover:bg-white/20"
+      class="pointer-events-auto cursor-pointer rounded-md border border-neutral-400/40 bg-neutral-900/80 px-3 py-1 text-[13px] text-neutral-50 hover:bg-neutral-800/80"
       @click="abortTargetedSkill()"
     >
       Anuluj

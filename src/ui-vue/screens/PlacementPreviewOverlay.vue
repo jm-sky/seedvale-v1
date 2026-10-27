@@ -1,7 +1,12 @@
 <script setup lang="ts">
+/**
+ * Stage E (ui-input-043): placement overlay — warm chrome only; handlers unchanged.
+ * @domain ui
+ */
 import { computed } from 'vue'
 import { formatPlacementRequirement } from '../../app/actions/placementRequirementView'
 import { isTouchDevice } from '../../input/isTouchDevice'
+import HudBottomPanel from '../components/HudBottomPanel.vue'
 import {
   abortPlacementPreview,
   confirmPlacementPreview,
@@ -14,18 +19,21 @@ import {
 const touchDevice = isTouchDevice()
 
 const reasonClass = computed(() => {
-  if (ui.placementPreview.state === 'invalid') return 'text-red-300'
-  if (ui.placementPreview.state === 'preparation') return 'text-amber-300'
-  return 'text-green-300'
+  if (ui.placementPreview.state === 'invalid') return 'text-bad'
+  if (ui.placementPreview.state === 'preparation') return 'text-warn'
+  return 'text-good'
 })
+
+const btnClass =
+  'cursor-pointer rounded-md border border-neutral-500/45 bg-neutral-800/55 px-3 py-1 text-[13px] hover:bg-neutral-700/65 disabled:cursor-default disabled:border-neutral-600/35 disabled:bg-neutral-800/30 disabled:text-neutral-400'
 </script>
 
 <template>
   <div
     v-if="ui.placementPreview.visible"
-    class="pointer-events-none fixed inset-x-0 bottom-24 z-[12] flex justify-center"
+    class="sv-hud pointer-events-none fixed inset-x-0 bottom-24 z-[12] flex justify-center"
   >
-    <div class="pointer-events-auto relative flex flex-col items-center gap-1.5 rounded-lg bg-panel px-4.5 py-2 text-[15px] text-ink [text-shadow:0_1px_3px_rgba(0,0,0,0.5)]">
+    <HudBottomPanel interactive>
       <div>{{ ui.placementPreview.label }}</div>
       <div
         v-if="ui.placementPreview.reasonLabel"
@@ -36,7 +44,7 @@ const reasonClass = computed(() => {
       </div>
       <ul
         v-if="ui.placementPreview.requirements.length"
-        class="list-none pl-0 text-[12px] opacity-90"
+        class="list-none pl-0 text-[12px] text-neutral-200/90"
       >
         <li
           v-for="requirement in ui.placementPreview.requirements"
@@ -51,25 +59,25 @@ const reasonClass = computed(() => {
       >
         <button
           type="button"
-          class="cursor-pointer rounded-md border border-white/20 bg-white/10 px-3 py-1 text-[13px] hover:bg-white/20"
+          :class="btnClass"
           aria-label="Obróć w lewo"
           @click="rotatePlacementPreviewLeft"
         >
           ↶
           <span
             v-if="!touchDevice"
-            class="text-[11px] opacity-70"
+            class="text-[11px] text-neutral-300/70"
           >[F]</span>
         </button>
         <button
           type="button"
-          class="cursor-pointer rounded-md border border-white/20 bg-white/10 px-3 py-1 text-[13px] hover:bg-white/20"
+          :class="btnClass"
           aria-label="Obróć w prawo"
           @click="rotatePlacementPreviewRight"
         >
           <span
             v-if="!touchDevice"
-            class="text-[11px] opacity-70"
+            class="text-[11px] text-neutral-300/70"
           >[G]</span>
           ↷
         </button>
@@ -88,7 +96,7 @@ const reasonClass = computed(() => {
       <div class="flex items-center gap-2">
         <button
           type="button"
-          class="cursor-pointer rounded-md border border-white/20 bg-white/10 px-3 py-1 text-[13px] hover:bg-white/20 disabled:cursor-default disabled:opacity-40"
+          :class="btnClass"
           :disabled="!ui.placementPreview.canConfirm"
           @click="confirmPlacementPreview"
         >
@@ -96,12 +104,12 @@ const reasonClass = computed(() => {
         </button>
         <button
           type="button"
-          class="cursor-pointer rounded-md border border-white/20 bg-white/10 px-3 py-1 text-[13px] hover:bg-white/20"
+          :class="btnClass"
           @click="abortPlacementPreview"
         >
           Anuluj [Esc]
         </button>
       </div>
-    </div>
+    </HudBottomPanel>
   </div>
 </template>

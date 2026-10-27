@@ -1,4 +1,9 @@
 <script setup lang="ts">
+/**
+ * Stage E (ui-input-043): live toast host — presentation via HudToastStack leaf.
+ * @domain ui
+ */
+import HudToastStack from '../components/HudToastStack.vue'
 import { ui } from '../store'
 </script>
 
@@ -8,21 +13,9 @@ import { ui } from '../store'
        so a transient toast is never hidden behind whatever overlay happens
        to be open — plan ui-input-002 §4. Non-modal: not in `openStack`. -->
   <div
-    class="pointer-events-none fixed left-1/2 z-50 flex -translate-x-1/2 flex-col items-center gap-1.5"
+    class="sv-hud pointer-events-none fixed left-1/2 z-50 flex -translate-x-1/2 flex-col items-center"
     style="top: max(16px, env(safe-area-inset-top))"
   >
-    <div
-      v-for="item in ui.toast.items"
-      :key="item.id"
-      class="max-w-[min(92vw,22rem)] whitespace-pre-line rounded-lg bg-[rgba(20,24,28,0.85)] px-4 py-2 text-center font-sans text-[13px] text-ink shadow-[0_8px_24px_rgba(0,0,0,0.35)] transition-opacity duration-300 ease-in-out"
-      :class="{
-        'opacity-0': item.fading,
-        'opacity-100': !item.fading,
-        'border border-[rgba(224,179,74,0.5)]': item.variant === 'pickup',
-        'border border-[rgba(217,92,92,0.5)]': item.variant === 'error',
-      }"
-    >
-      {{ item.text }}
-    </div>
+    <HudToastStack :rows="ui.toast.items" />
   </div>
 </template>

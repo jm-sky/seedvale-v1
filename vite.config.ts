@@ -62,6 +62,7 @@ export default defineConfig(({ mode }) => {
           inventoryListDemo: resolve(rootDir, 'inventory-list-demo.html'),
           quickActionsDemo: resolve(rootDir, 'quick-actions-demo.html'),
           characterSkillsDemo: resolve(rootDir, 'character-skills-demo.html'),
+          hudDemo: resolve(rootDir, 'hud-demo.html'),
         },
       },
     },
