@@ -56,6 +56,20 @@ V3's dress script currently sets `BUST_FLATTEN = 0.0`, documenting prior clippin
 
 V3's `docs/assets/quaternius-character-blend-pipeline.md` describes its own **different** upstream source arrangement; its claim that custom .blend masters are absent applies to V3, **not V1**.
 
+## 4a. Author-inspected V1 Blender master — 2026-10-27
+
+**Evidence:** author's direct inspection of `Quaternius_Outfits_All_Male.blend`; these are source-scene observations, **not** verification that current live V1 uses these exact variants.
+
+| Hand-edited source variant | Confirmed authoring details |
+| --- | --- |
+| `Peasant` | Has a hat; lower legs are wrapped in cloth/rags instead of wearing boots. |
+| `Woodcutter` | Peasant-derived outfit with boots and brown suspenders. |
+| `Blacksmith` | Peasant-derived outfit with boots, an additional belt, leather forearm protectors adapted from Ranger, and a black front apron/panel. |
+
+**Preservation intent:** retain these manual author edits as valuable V1 source work. The Blacksmith's black front apron is a potential **bounded Claude + Blender MCP improvement**, preserving the rest of the hand-authored outfit; this is a candidate, not an authorized implementation task.
+
+**Required targeted follow-up:** compare this `.blend` and any exported custom GLBs with the **live V1** CharacterKit/runtime mapping, especially the current `Woodcutter → Peasant` fallback and the existing `Blacksmith` asset; distinguish source assets, generated output, and actually loaded model. Check whether the Peasant hat can be reused for the requested farmer appearance. Do not assume the manually edited master is already used by the live runtime.
+
 ## 5. Unresolved design/technical decisions
 
 - Exact professions and spouse/no-profession rules that receive an apron; relationship with profession-specific base garments.
