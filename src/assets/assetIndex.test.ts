@@ -21,7 +21,7 @@ describe('assetIndex', () => {
 
   it('every entry has url and prepare', () => {
     for (const entry of buildAssetIndex()) {
-      expect(entry.url).toMatch(/^\/(models|compare\/v[23])\//)
+      expect(entry.url).toMatch(/^\/(models|assets\/characters|compare\/v[23])\//)
       expect(entry.prepare.mode).toBeTruthy()
     }
   })
