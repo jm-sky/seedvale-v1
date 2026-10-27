@@ -3,6 +3,9 @@
 **Created at:** 2026-10-27  
 **Created by:** Cursor (Composer)  
 **Status:** Implementation landed in working tree; automated checks green for focused suites; **author visual PASS pending**. Historical Stage A/B visual PASS unchanged.  
+**Updated at:** 2026-10-27 — detail `#controls` aligned with V3 `InstanceMeters` (QualityTag + Wartość/`formatCoins` + condition bars) under the description, before stats.  
+**Updated at:** 2026-10-27b — detail stats grid mirrors V3 groups (`main`/`resist`/`body`/`value` + V1 `extra`): no `Ilość` on instance weapons; ammo = primary kind + owned sum; donor-only Klasa/Materiał/Trwałość/DPS as disabled placeholders.  
+**Updated at:** 2026-10-27c — read-only **Amunicja** under EquipmentPanel „Założone” (V3 AmmoPanel placement; V1 auto fire order; no preference UI).  
 **Base HEAD:** `58501504e1be06d49f36d5d31685d41daec0cc2e` (`test(npc): lock spatial checkpoint and reification contracts`)  
 **Authority:** [three-panel contract](./2026-10-27--inventory-hybrid-three-panel-contract.md)
 
@@ -11,8 +14,8 @@
 | Area | Files |
 | --- | --- |
 | Hybrid projection | `src/ui-vue/components/items/inventoryPresentation.ts` (+ tests) |
-| Shared leaves | `InventoryList.vue`, `InventoryItemDetails.vue`; `EquipmentPanel` selection-only; `ItemDetailCard` optional Powrót |
-| Live screen | `InventoryScreen.vue` three-panel ≥1200 / narrow List–Details; thin adapters |
+| Shared leaves | `InventoryList.vue`, `InventoryItemDetails.vue`; `EquipmentPanel` selection-only + `AmmoSection`; `ItemDetailCard` optional Powrót; `ammoSectionView` |
+| Live screen | `InventoryScreen.vue` V3 two-column ≥1200 (details above equipment) / narrow List–Details; thin adapters |
 | View fields | `inventoryView.ts` liquid litres/content + `effectiveWeightKg` / carried liquid mass |
 | Guards / lifecycle | `inventoryWiring.equipTool` explicit-ID reject before torch; `closeInventory` clears all callbacks; `invalidateWorldBoundUiSessions` closes inventory |
 | D9 demo | `demos/inventory-list/{DemoApp,fixtures}` use shared leaves + real Inventory snapshots |
@@ -31,6 +34,7 @@ pnpm exec vitest run \
   src/ui-vue/components/items/buildItemDetailPresentation.test.ts \
   src/ui-vue/components/items/inventoryPresentation.test.ts \
   src/ui-vue/components/items/inventoryHybridActions.test.ts \
+  src/ui-vue/components/items/ammoSectionView.test.ts \
   src/app/inventoryWiring.equipToolGuard.test.ts \
   src/ui-vue/worldBoundUiSessions.test.ts \
   src/ui-vue/demos/inventory-list/fixtures.test.ts
@@ -44,7 +48,7 @@ pnpm exec vitest run \
 
 ## Layout note for screenshots
 
-V3 donor `InventoryScreen` remains **two columns** (details above equipment). V1 desktop is an **author-directed three-column** composition of the same leaf roles. Capture donor reference vs live vs `inventory-list-demo.html` at comparable viewports; do not claim donor already had three columns.
+Desktop matches the V3 donor composition: **two columns** — list left; right column stacks **details above** `EquipmentPanel` / loadout. Shell width `max-w-7xl` (author: more room for the detail stats grid). Narrow (&lt;1200) keeps List/Details drill-down. Instance weapon/tool/armor rows use plain **Wyrzuć** (no „Działania na rodzaju” chrome); that section stays for drink/place/throw/read kinds.
 
 ## Pending author / manual gates
 
@@ -56,4 +60,4 @@ V3 donor `InventoryScreen` remains **two columns** (details above equipment). V1
 
 ## Polish author summary
 
-Zaimplementowano hybrydową listę ekwipunku (osobne wiersze dla prawdziwych instancji, grupy dla stosów), wspólne komponenty listy/szczegółów/ekwipunku używane w grze i w demo, układ trzech paneli od 1200px oraz drill-down na węższym ekranie. Zaznaczenie nic nie zmienia w świecie — akcje są tylko w szczegółach; wyrzut zawsze dotyczy rodzaju z czytelnym ostrzeżeniem. Dociągnięto walidację ID przy „Weź” i czyszczenie callbacków przy przebudowie świata. Testy jednostkowe/DOM przeszły; **wygląd i pełne sprawdzenie w przeglądarce czekają na autora**. Build pominięty z powodu okna godzinowego.
+Zaimplementowano hybrydową listę ekwipunku (osobne wiersze dla prawdziwych instancji, grupy dla stosów), wspólne komponenty listy/szczegółów/ekwipunku używane w grze i w demo. Desktop jak V3: **dwie kolumny** (lista | szczegóły nad założonym/loadout); poniżej 1200px drill-down. Zaznaczenie nic nie zmienia w świecie — akcje są tylko w szczegółach. Testy jednostkowe/DOM przeszły; **wygląd i przeglądarka czekają na autora**.

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, nextTick, ref, watch } from 'vue'
 import { useItemCategoryLabels } from '@/composables/useItemCategoryLabels'
+import { firstUpperCase } from '@/lib/firstUpperCase'
 import type { PrimaryWeaponChoice } from '../../../items/primaryWeapons'
 import { ITEM_METER_LABEL } from '../../../items/inventoryView'
 import { isPrimaryMeleeAssignment, isPrimaryRangedAssignment } from '../../../items/primaryWeapons'
@@ -18,8 +19,10 @@ import {
   sortInventoryRows,
 } from './inventoryPresentation'
 import { conditionTone } from './meters'
+import ItemTypeIcon from './ItemTypeIcon.vue'
 import QualityTag from './QualityTag.vue'
 import StatBar from './StatBar.vue'
+import StatIcon from './StatIcon.vue'
 
 const props = defineProps<{
   rows: readonly InventoryPresentationRow[]
@@ -129,40 +132,46 @@ function assignmentBadges(row: InventoryPresentationRow): string[] {
   return badges
 }
 
+function waterText(row: InventoryPresentationRow): string | null {
+  if (row.type !== 'instance') return null
+  const inst = row.instance
+  if (inst.capacityLitres == null) return null
+  if (inst.liquid == null || inst.amountLitres == null) {
+    return inst.amountLitres === 0 ? 'pusty' : null
+  }
+  return `${inst.amountLitres.toFixed(1)} / ${inst.capacityLitres.toFixed(1)} l`
+}
+
 function rowAriaLabel(row: InventoryPresentationRow): string {
-  const parts = [row.displayName, `×${row.count}`, formatWeight(row.weightKg)]
+  const parts = [firstUpperCase(row.displayName), `×${row.count}`, formatWeight(row.weightKg)]
   if (row.type === 'instance') {
     if (row.instance.qualityLabel) parts.push(row.instance.qualityLabel)
-    else if (row.instance.meterKind && row.group.meterKind) {
-      // Suppress armor/generic sort-only 100 as wear in the accessible name when meter is absent for armor.
-      if (row.group.meterKind != null && !(row.instance.quality != null && row.instance.conditionPercent === 100 && row.instance.meterKind === 'condition' && row.instance.protectionPercent != null)) {
-        if (!(row.instance.quality != null)) {
-          parts.push(`${ITEM_METER_LABEL[row.instance.meterKind]} ${row.instance.conditionPercent}%`)
-        }
-      } else if (row.instance.sharpnessPercent != null) {
-        parts.push(`Ostrość ${row.instance.sharpnessPercent}%`)
-      } else if (row.instance.meterKind === 'fill' || row.instance.meterKind === 'durability' || (row.instance.meterKind === 'condition' && row.instance.quality == null)) {
-        parts.push(`${ITEM_METER_LABEL[row.instance.meterKind]} ${row.instance.conditionPercent}%`)
-      }
+    else if (showMeter(row)) {
+      parts.push(`${ITEM_METER_LABEL[row.instance.meterKind]} ${row.instance.conditionPercent}%`)
     }
     if (row.instance.sharpnessPercent != null) parts.push(`Ostrość ${row.instance.sharpnessPercent}%`)
-    if (row.instance.liquid != null && row.instance.amountLitres != null) {
-      parts.push(`${row.instance.liquid} ${row.instance.amountLitres} l`)
-    }
+    const water = waterText(row)
+    if (water) parts.push(water)
   }
   parts.push(...assignmentBadges(row))
   return parts.join(', ')
 }
 
+/** Real wear/fill meters only — never armor quality or identity-only 100. */
 function showMeter(row: InventoryPresentationRow): boolean {
-  if (row.type !== 'instance') return false
-  // Armor quality is not wear; generic identity 100 is not wear.
-  if (row.instance.quality != null) return false
-  if (row.instance.meterKind === 'condition' && row.instance.sharpnessPercent == null && row.instance.protectionPercent == null && row.instance.conditionPercent === 100) {
-    // Identity-only / ranged plain — suppress fake wear bar.
+  if (row.type === 'instance') {
+    if (row.instance.quality != null) return false
+    if (row.instance.meterKind === 'fill') return true
+    if (row.instance.sharpnessPercent != null) return true
+    if (row.instance.meterKind === 'durability') return true
+    if (row.instance.meterKind === 'condition') {
+      // Traps/tents have real condition; plain identity 100 without other state does not.
+      return row.instance.conditionPercent < 100 || row.kind.startsWith('trap') || row.kind === 'tent'
+    }
     return false
   }
-  return row.group.meterKind != null
+  // Group row: uniform real meter (e.g. stack of worn tools is rare; skip fake).
+  return false
 }
 
 function meterRatio(row: InventoryPresentationRow): number {
@@ -189,41 +198,39 @@ defineExpose({
       {{ carryingLabel }}
     </div>
 
-    <div
-      class="flex flex-wrap items-center gap-1"
-      role="group"
-      aria-label="Filtr kategorii"
-    >
-      <button
-        type="button"
-        class="min-h-11 rounded-full border px-2.5 py-0.5 text-xs sm:min-h-0"
-        :class="filter === 'all'
-          ? 'border-neutral-200 bg-neutral-100 text-neutral-900'
-          : 'border-neutral-700 text-neutral-300 hover:border-neutral-500'"
-        :aria-pressed="filter === 'all'"
-        @click="emit('update:filter', 'all')"
+    <div class="flex flex-wrap items-center gap-2">
+      <div
+        class="flex min-w-0 flex-1 flex-wrap items-center gap-1"
+        role="group"
+        aria-label="Filtr kategorii"
       >
-        Wszystkie
-      </button>
-      <button
-        v-for="cat in availableCategories"
-        :key="cat"
-        type="button"
-        class="min-h-11 rounded-full border px-2.5 py-0.5 text-xs sm:min-h-0"
-        :class="filter === cat
-          ? 'border-neutral-200 bg-neutral-100 text-neutral-900'
-          : 'border-neutral-700 text-neutral-300 hover:border-neutral-500'"
-        :aria-pressed="filter === cat"
-        @click="emit('update:filter', cat)"
-      >
-        {{ categoryLabel[cat] }}
-      </button>
-    </div>
-
-    <label class="flex items-center gap-2 text-xs text-neutral-400">
-      <span>Sortuj</span>
+        <button
+          type="button"
+          class="rounded-full border px-2.5 py-0.5 text-xs focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+          :class="filter === 'all'
+            ? 'border-neutral-200 bg-neutral-100 text-neutral-900'
+            : 'border-neutral-700 text-neutral-300 hover:border-neutral-500'"
+          :aria-pressed="filter === 'all'"
+          @click="emit('update:filter', 'all')"
+        >
+          Wszystkie
+        </button>
+        <button
+          v-for="cat in availableCategories"
+          :key="cat"
+          type="button"
+          class="rounded-full border px-2.5 py-0.5 text-xs focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+          :class="filter === cat
+            ? 'border-neutral-200 bg-neutral-100 text-neutral-900'
+            : 'border-neutral-700 text-neutral-300 hover:border-neutral-500'"
+          :aria-pressed="filter === cat"
+          @click="emit('update:filter', cat)"
+        >
+          {{ categoryLabel[cat] }}
+        </button>
+      </div>
       <select
-        class="min-h-11 rounded-md border border-neutral-700 bg-neutral-900 px-2 py-1 text-neutral-200 sm:min-h-0"
+        class="ml-auto shrink-0 rounded border border-neutral-700 bg-neutral-900 px-2 py-0.5 text-xs text-neutral-200"
         :value="sortMode"
         aria-label="Sortowanie listy ekwipunku"
         @change="emit('update:sortMode', ($event.target as HTMLSelectElement).value as InventorySortMode)"
@@ -236,7 +243,7 @@ defineExpose({
           {{ label }}
         </option>
       </select>
-    </label>
+    </div>
 
     <div
       v-if="selectionOutsideFilter"
@@ -245,7 +252,7 @@ defineExpose({
       <p>Wybrany przedmiot jest poza filtrem.</p>
       <button
         type="button"
-        class="mt-1 min-h-11 underline sm:min-h-0"
+        class="mt-1 underline"
         @click="onReveal"
       >
         Pokaż zaznaczenie
@@ -254,7 +261,7 @@ defineExpose({
 
     <ul
       ref="listRef"
-      class="min-h-0 flex-1 divide-y divide-neutral-800 overflow-y-auto rounded-lg border border-neutral-800"
+      class="min-h-0 flex-1 divide-y divide-white/10 overflow-y-auto overflow-x-hidden rounded-lg border border-neutral-800"
       role="list"
     >
       <li
@@ -264,47 +271,64 @@ defineExpose({
         <button
           :ref="(el) => setRowRef(row.key, el)"
           type="button"
-          class="flex w-full min-h-11 items-center gap-2 px-3 py-1.5 text-left text-sm hover:bg-white/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+          class="flex w-full flex-col gap-1 px-3 py-1.5 text-left text-sm hover:bg-white/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:flex-row sm:items-center sm:gap-2"
           :class="selectionMatchesRow(selection, row) ? 'bg-neutral-800/70' : ''"
           :aria-current="selectionMatchesRow(selection, row) ? 'true' : undefined"
           :aria-label="rowAriaLabel(row)"
           @click="onSelect(row)"
         >
-          <span class="min-w-0 flex-1">
-            <span class="flex flex-wrap items-center gap-1.5">
-              <span class="font-medium text-neutral-100">{{ row.displayName }}</span>
-              <QualityTag
-                v-if="row.type === 'instance' && row.instance.qualityLabel"
-                :label="row.instance.qualityLabel"
-              />
-              <span
-                v-for="badge in assignmentBadges(row)"
-                :key="badge"
-                class="rounded-full bg-primary/30 px-2 py-0.5 text-[11px] font-medium text-neutral-100"
-              >{{ badge }}</span>
-            </span>
-            <span class="mt-0.5 block text-xs text-neutral-400">
-              ×{{ row.count }} · {{ formatWeight(row.weightKg) }}
-              <template v-if="row.type === 'instance' && row.instance.liquid != null">
-                · {{ row.instance.liquid }} {{ row.instance.amountLitres?.toFixed(1) }} l
-              </template>
-              <template v-else-if="row.type === 'instance' && row.instance.amountLitres === 0 && row.instance.capacityLitres != null">
-                · pusty
-              </template>
-            </span>
-            <StatBar
-              v-if="showMeter(row)"
-              class="mt-1 max-w-[8rem]"
-              :value="meterRatio(row)"
-              :tone="conditionTone(meterRatio(row))"
-              :title="row.type === 'instance' ? `${ITEM_METER_LABEL[row.instance.meterKind]} ${row.instance.conditionPercent}%` : undefined"
+          <span class="flex min-w-0 items-center gap-2 sm:contents">
+            <ItemTypeIcon
+              :kind="row.kind"
+              :category="row.category"
+              class="size-3.5 shrink-0 text-neutral-300"
+              aria-hidden="true"
             />
+            <span
+              data-item-name
+              class="min-w-0 flex-1 wrap-break-word text-neutral-100"
+            >{{ firstUpperCase(row.displayName) }}</span>
+          </span>
+          <span class="flex flex-wrap items-center gap-x-2 gap-y-0.5 sm:contents">
+            <QualityTag
+              v-if="row.type === 'instance' && row.instance.quality"
+              :quality="row.instance.quality"
+            />
+            <span
+              v-if="row.count > 1"
+              class="text-xs text-neutral-400 tabular-nums"
+            >×{{ row.count }}</span>
+            <span
+              v-for="badge in assignmentBadges(row)"
+              :key="badge"
+              class="rounded border-transparent bg-emerald-900/60 px-1.5 text-[11px] text-emerald-300"
+            >{{ badge }}</span>
+            <span
+              v-if="showMeter(row)"
+              class="w-12 shrink-0"
+            >
+              <StatBar
+                :value="meterRatio(row)"
+                :tone="conditionTone(meterRatio(row))"
+                :title="row.type === 'instance' ? `${ITEM_METER_LABEL[row.instance.meterKind]} ${row.instance.conditionPercent}%` : undefined"
+              />
+            </span>
+            <span
+              v-if="waterText(row)"
+              class="shrink-0 text-xs text-neutral-400 tabular-nums"
+            >{{ waterText(row) }}</span>
+            <span class="shrink-0 text-right text-xs text-neutral-400 tabular-nums sm:w-16">
+              <StatIcon
+                name="weight"
+                class="mr-0.5"
+              />{{ formatWeight(row.weightKg) }}
+            </span>
           </span>
         </button>
       </li>
       <li
         v-if="visibleRows.length === 0"
-        class="px-3 py-4 text-sm text-neutral-500"
+        class="px-3 py-6 text-center text-sm text-neutral-500"
       >
         Brak przedmiotów w tej kategorii.
       </li>

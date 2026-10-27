@@ -130,7 +130,7 @@ const d = () => props.delta ?? null
           Cut / pierce / blunt
         </dt>
         <dd class="text-xs text-neutral-500">
-          niedostępne
+          N/A
         </dd>
       </div>
       <div>
@@ -138,7 +138,7 @@ const d = () => props.delta ?? null
           DPS · cena
         </dt>
         <dd class="text-xs text-neutral-500">
-          niedostępne
+          N/A
         </dd>
       </div>
     </dl>

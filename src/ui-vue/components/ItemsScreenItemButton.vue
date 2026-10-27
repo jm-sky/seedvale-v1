@@ -19,10 +19,11 @@ const emit = defineEmits<{
   <button
     type="button"
     :class="cn(
-      'min-h-11 cursor-pointer rounded-md border border-white/20 bg-transparent px-2.5 py-1.5 text-xs hover:bg-white/10',
-      selected && 'border-primary/50',
+      // V3 inventory action density: compact outline / primary chips in the card footer.
+      'cursor-pointer rounded border border-neutral-500 px-3 py-1 text-sm text-neutral-100 hover:border-neutral-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:pointer-events-none',
+      selected && 'border-primary/50 bg-neutral-100 font-medium text-neutral-900 hover:bg-white hover:border-neutral-200',
       disabled && 'opacity-5',
-      destructive && 'hover:border-destructive/80',
+      destructive && 'hover:border-bad/80 hover:text-bad',
       props.class,
     )"
     :disabled="disabled"

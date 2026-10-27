@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { firstUpperCase } from '@/lib/firstUpperCase'
 import type { LoadoutStatView } from '../../../items/equipmentPreview'
 import type { PrimaryWeaponChoice } from '../../../items/primaryWeapons'
 import type { EquipmentSlotView } from './equipmentPanelTypes'
@@ -8,9 +9,10 @@ import {
   EQUIPMENT_SLOTS,
   type EquipmentSlot,
 } from '../../../items/equipment'
+import { ITEM_CATALOG } from '../../../items/itemCatalog'
 import { ITEM_DEFS, type ItemKind } from '../../../items/items'
+import AmmoSection from './AmmoSection.vue'
 import LoadoutSummary from './LoadoutSummary.vue'
-import QualityTag from './QualityTag.vue'
 
 const props = defineProps<{
   slots: readonly EquipmentSlotView[]
@@ -21,7 +23,10 @@ const props = defineProps<{
   primaryRanged: PrimaryWeaponChoice | null
   primaryMeleeLabel: string | null
   primaryRangedLabel: string | null
-  ammoLines: readonly string[]
+  /** Current inventory selection — AmmoSection only when this kind is ranged. */
+  selectedKind?: ItemKind | null
+  /** Live inventory counts for AmmoSection. */
+  counts: Partial<Record<string, number>>
   loadoutCurrent: LoadoutStatView
   loadoutDelta?: LoadoutStatView | null
   loadoutContext: string
@@ -33,6 +38,8 @@ const emit = defineEmits<{
   'select-held': []
   'select-primary-melee': []
   'select-primary-ranged': []
+  'unequip-armor': [slot: EquipmentSlot]
+  unequip: []
 }>()
 
 const slotOrder = EQUIPMENT_SLOTS
@@ -48,6 +55,18 @@ function primaryLabel(choice: PrimaryWeaponChoice | null, fallback: string | nul
   if (!choice) return '—'
   return ITEM_DEFS[choice.kind]?.label ?? choice.kind
 }
+
+/** Ammo under Założone only while a ranged weapon/tool is selected (not armor/melee/etc.). */
+const rangedAmmo = computed(() => {
+  const kind = props.selectedKind ?? null
+  if (!kind) return null
+  const ranged = ITEM_CATALOG[kind]?.ranged
+  if (!ranged || ranged.ammoKinds.length === 0) return null
+  return {
+    weaponLabel: ITEM_DEFS[kind]?.label ?? kind,
+    ammoKinds: ranged.ammoKinds,
+  }
+})
 </script>
 
 <template>
@@ -59,149 +78,126 @@ function primaryLabel(choice: PrimaryWeaponChoice | null, fallback: string | nul
       <div
         v-for="slot in slotOrder"
         :key="slot"
-        class="border-b border-neutral-800 py-0.5"
+        class="min-w-0 border-b border-neutral-800 py-0.5"
       >
-        <span class="inline-flex items-center gap-1 text-xs text-neutral-500 uppercase">
+        <span class="inline-flex items-center gap-1 whitespace-nowrap text-xs text-neutral-500 uppercase">
           {{ EQUIPMENT_SLOT_LABEL[slot] }}
         </span>
-        <div class="flex flex-wrap items-center gap-1">
+        <div class="flex min-w-0 items-center gap-2.5 whitespace-nowrap">
           <template v-if="bySlot.get(slot)?.instanceId">
             <button
               type="button"
-              class="mr-1 min-h-11 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:min-h-0"
+              class="min-w-0 truncate hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
               :class="compareInstanceId === bySlot.get(slot)!.instanceId ? 'text-amber-200' : 'text-neutral-200'"
+              :title="firstUpperCase(bySlot.get(slot)!.label!)"
               @click="emit('select-slot', slot, bySlot.get(slot)!.instanceId!)"
             >
-              {{ bySlot.get(slot)!.label }}
+              {{ firstUpperCase(bySlot.get(slot)!.label!) }}
             </button>
-            <QualityTag
-              v-if="bySlot.get(slot)!.qualityLabel"
-              :label="bySlot.get(slot)!.qualityLabel!"
-            />
+            <button
+              type="button"
+              class="shrink-0 text-xs text-neutral-500 hover:text-neutral-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+              :aria-label="`Zdejmij ${bySlot.get(slot)!.label}`"
+              @click="emit('unequip-armor', slot)"
+            >
+              ✕
+            </button>
           </template>
           <span
             v-else
             class="text-neutral-600"
-          >Puste</span>
-        </div>
-        <!-- D4: future under/outer layer row keeps stable space -->
-        <div class="mt-0.5 flex items-center gap-2 text-[10px] text-neutral-500">
-          <span>Warstwa</span>
-          <button
-            type="button"
-            disabled
-            class="cursor-not-allowed opacity-5"
-            aria-describedby="equipment-layer-reason"
-          >
-            under/outer
-          </button>
+          >—</span>
         </div>
       </div>
 
-      <div class="border-b border-neutral-800 py-0.5">
-        <span class="text-xs text-neutral-500 uppercase">
+      <div class="min-w-0 border-b border-neutral-800 py-0.5">
+        <span class="whitespace-nowrap text-xs text-neutral-500 uppercase">
           W ręce
         </span>
-        <div class="flex flex-wrap items-center gap-1">
+        <div class="flex min-w-0 items-center gap-2.5 whitespace-nowrap">
           <button
             v-if="heldTool"
             type="button"
-            class="mr-1 min-h-11 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:min-h-0"
+            class="min-w-0 truncate hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            :title="firstUpperCase(heldLabel ?? ITEM_DEFS[heldTool].label)"
             @click="emit('select-held')"
           >
-            {{ heldLabel ?? ITEM_DEFS[heldTool].label }}
+            {{ firstUpperCase(heldLabel ?? ITEM_DEFS[heldTool].label) }}
           </button>
           <span
             v-else
-            class="mr-1 text-neutral-600"
-          >Puste</span>
+            class="text-neutral-600"
+          >—</span>
+          <button
+            v-if="heldTool"
+            type="button"
+            class="shrink-0 text-xs text-neutral-500 hover:text-neutral-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            aria-label="Odłóż z ręki"
+            @click="emit('unequip')"
+          >
+            ✕
+          </button>
         </div>
       </div>
 
-      <div class="border-b border-neutral-800 py-0.5">
-        <span class="text-xs text-neutral-500 uppercase">
+      <div class="min-w-0 border-b border-neutral-800 py-0.5">
+        <span class="whitespace-nowrap text-xs text-neutral-500 uppercase">
           Podst. wręcz
         </span>
-        <div>
+        <div class="flex min-w-0 items-center whitespace-nowrap">
           <button
             v-if="primaryMelee"
             type="button"
-            class="min-h-11 text-neutral-200 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:min-h-0"
+            class="min-w-0 truncate hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            :title="firstUpperCase(primaryLabel(primaryMelee, primaryMeleeLabel))"
             @click="emit('select-primary-melee')"
           >
-            {{ primaryLabel(primaryMelee, primaryMeleeLabel) }}
+            {{ firstUpperCase(primaryLabel(primaryMelee, primaryMeleeLabel)) }}
           </button>
           <span
             v-else
             class="text-neutral-600"
-          >Puste</span>
+          >—</span>
         </div>
       </div>
 
-      <div class="border-b border-neutral-800 py-0.5">
-        <span class="text-xs text-neutral-500 uppercase">
+      <div class="min-w-0 border-b border-neutral-800 py-0.5">
+        <span class="whitespace-nowrap text-xs text-neutral-500 uppercase">
           Podst. dystans
         </span>
-        <div>
+        <div class="flex min-w-0 items-center whitespace-nowrap">
           <button
             v-if="primaryRanged"
             type="button"
-            class="min-h-11 text-neutral-200 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:min-h-0"
+            class="min-w-0 truncate hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            :title="firstUpperCase(primaryLabel(primaryRanged, primaryRangedLabel))"
             @click="emit('select-primary-ranged')"
           >
-            {{ primaryLabel(primaryRanged, primaryRangedLabel) }}
+            {{ firstUpperCase(primaryLabel(primaryRanged, primaryRangedLabel)) }}
           </button>
           <span
             v-else
             class="text-neutral-600"
-          >Puste</span>
+          >—</span>
         </div>
       </div>
 
-      <div class="border-b border-neutral-800 py-0.5">
-        <span class="text-xs text-neutral-500 uppercase">
+      <div class="min-w-0 border-b border-neutral-800 py-0.5">
+        <span class="whitespace-nowrap text-xs text-neutral-500 uppercase">
           Tarcza
         </span>
-        <div class="flex items-center gap-2">
-          <button
-            type="button"
-            disabled
-            class="cursor-not-allowed opacity-5"
-            aria-describedby="equipment-shield-reason"
-          >
-            Załóż
-          </button>
-          <span
-            id="equipment-shield-reason"
-            class="text-[10px] text-neutral-500"
-          >niedostępne</span>
+        <div class="text-neutral-600">
+          N/A
         </div>
       </div>
     </div>
 
-    <p
-      id="equipment-layer-reason"
-      class="mt-1 text-[10px] text-neutral-500"
-    >
-      Warstwy zbroi — niedostępne (brak mechaniki).
-    </p>
-
-    <div
-      v-if="ammoLines.length > 0"
-      class="mt-2 text-xs text-neutral-400"
-    >
-      <div class="mb-0.5 text-neutral-500 uppercase">
-        Amunicja
-      </div>
-      <ul>
-        <li
-          v-for="line in ammoLines"
-          :key="line"
-        >
-          {{ line }}
-        </li>
-      </ul>
-    </div>
+    <AmmoSection
+      v-if="rangedAmmo"
+      :weapon-label="rangedAmmo.weaponLabel"
+      :ammo-kinds="rangedAmmo.ammoKinds"
+      :counts="counts"
+    />
 
     <LoadoutSummary
       class="mt-3"

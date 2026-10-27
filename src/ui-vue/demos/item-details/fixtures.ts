@@ -1,6 +1,6 @@
+import type { ItemKind } from '../../../items/items'
 import type { DetailStatRow } from '../../components/items/buildItemDetailPresentation'
 import type { BuildItemDetailPresentationInput } from '../../components/items/buildItemDetailPresentation'
-import type { ItemKind } from '../../../items/items'
 
 export type DemoFixtureId = 'weapon' | 'armor' | 'food' | 'liquid' | 'unavailable'
 
@@ -13,11 +13,13 @@ export type DemoFixture = {
 }
 
 const baseStats = (extra: DetailStatRow[] = []): DetailStatRow[] => [
-  { label: 'Kategoria', value: 'demo' },
-  { label: 'Ilość', value: '×1' },
-  { label: 'Waga', value: '1.0 kg' },
-  { label: 'Wartość', value: '10 monet' },
+  { group: 'main', label: 'Kategoria', value: 'demo' },
   ...extra,
+  { group: 'body', label: 'Rozmiar', value: 'MD', icon: 'size' },
+  { group: 'body', label: 'Waga', value: '1.0 kg', icon: 'weight' },
+  { group: 'body', label: 'Materiał', value: '—', unavailable: true, icon: 'material' },
+  { group: 'value', label: 'Trwałość', value: '—', unavailable: true, icon: 'durability' },
+  { group: 'value', label: 'Wartość', value: '10c', icon: 'price' },
 ]
 
 export const DEMO_FIXTURES: DemoFixture[] = [
@@ -36,11 +38,12 @@ export const DEMO_FIXTURES: DemoFixture[] = [
       meterKind: 'durability',
       conditionPercent: 72,
       sharpnessPercent: 55,
+      worthCoins: 10,
       showDpsPlaceholder: true,
       stats: baseStats([
-        { label: 'Obrażenia', value: '12' },
-        { label: 'Zasięg', value: '1.2 m' },
-        { label: 'Szybkość ataku', value: 'średni' },
+        { group: 'main', label: 'Obrażenia', value: '12', icon: 'damage' },
+        { group: 'main', label: 'Zasięg', value: '1.2 m', icon: 'reach' },
+        { group: 'extra', label: 'Szybkość ataku', value: 'średni' },
       ]),
     },
   },
@@ -56,13 +59,15 @@ export const DEMO_FIXTURES: DemoFixture[] = [
       title: 'Skórzany pancerz',
       meta: 'pancerz · ×1',
       description: 'Lekka ochrona z garbowanej skóry.',
-      qualityLabel: 'zwykła',
+      qualityLabel: 'Zwykła',
+      quality: 'common',
+      worthCoins: 10,
       showArmorWearPlaceholder: true,
       showResistPlaceholders: true,
       stats: baseStats([
-        { label: 'Slot', value: 'ciało' },
-        { label: 'Ochrona', value: '18%' },
-        { label: 'Ruch', value: '−5%' },
+        { group: 'main', label: 'Slot', value: 'ciało', icon: 'slot' },
+        { group: 'main', label: 'Ochrona', value: '18%', icon: 'armor' },
+        { group: 'extra', label: 'Ruch', value: '−5%', icon: 'speedPenalty' },
       ]),
     },
   },
@@ -78,13 +83,14 @@ export const DEMO_FIXTURES: DemoFixture[] = [
       title: 'Jabłko',
       meta: 'pożywienie · ×3',
       description: 'Chrupiące jabłko z sadu.',
+      worthCoins: 3,
+      stackCount: 3,
       stats: [
-        { label: 'Kategoria', value: 'demo' },
-        { label: 'Ilość', value: '×3' },
-        { label: 'Waga', value: '0.2 kg' },
-        { label: 'Wartość', value: '3 monet' },
-        { label: 'Efekt', value: '+8 głodu' },
-        { label: 'Świeżość', value: 'świeże' },
+        { group: 'main', label: 'Efekt', value: '+8 głodu', icon: 'nutrition' },
+        { group: 'main', label: 'Świeżość', value: 'świeże' },
+        { group: 'body', label: 'Waga', value: '0.2 kg', icon: 'weight' },
+        { group: 'value', label: 'Ilość', value: '×3' },
+        { group: 'value', label: 'Wartość', value: '1c', icon: 'price' },
       ],
     },
   },
@@ -102,8 +108,9 @@ export const DEMO_FIXTURES: DemoFixture[] = [
       description: 'Worek na wodę.',
       meterKind: 'fill',
       conditionPercent: 60,
+      worthCoins: 10,
       stats: baseStats([
-        { label: 'Efekt', value: '+12 pragnienia' },
+        { group: 'main', label: 'Efekt', value: '+12 pragnienia', icon: 'water' },
       ]),
     },
   },
@@ -119,10 +126,11 @@ export const DEMO_FIXTURES: DemoFixture[] = [
       title: 'Mięso',
       meta: 'pożywienie · ×1',
       description: 'Surowy kawałek mięsa.',
+      worthCoins: 10,
       showDpsPlaceholder: false,
       stats: baseStats([
-        { label: 'Efekt', value: '+10 głodu' },
-        { label: 'Świeżość', value: 'zepsute' },
+        { group: 'main', label: 'Efekt', value: '+10 głodu', icon: 'nutrition' },
+        { group: 'main', label: 'Świeżość', value: 'zepsute' },
       ]),
     },
   },

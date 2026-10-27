@@ -156,22 +156,61 @@
   border-color: oklch(0.45 0.03 70 / 0.6);
 }
 
-/* Slim vertical scrollbar for Character body / skills column. */
-.sv-character-scroll {
+/*
+ * Slim warm scrollbar for Character, Inventory, Merchant, Item detail and demos.
+ * `.sv-character-scroll` / `.sv-ui-scroll` are opt-in; stage wrappers style nested scrollers.
+ */
+.sv-character-scroll,
+.sv-ui-scroll,
+.sv-inventory-stage-b,
+.sv-inventory-stage-b *,
+.sv-merchant,
+.sv-merchant *,
+.sv-item-detail,
+.sv-item-detail * {
   scrollbar-width: thin;
   scrollbar-color: oklch(0.55 0.03 70 / 0.45) transparent;
 }
-.sv-character-scroll::-webkit-scrollbar {
+.sv-character-scroll::-webkit-scrollbar,
+.sv-ui-scroll::-webkit-scrollbar,
+.sv-inventory-stage-b::-webkit-scrollbar,
+.sv-inventory-stage-b *::-webkit-scrollbar,
+.sv-merchant::-webkit-scrollbar,
+.sv-merchant *::-webkit-scrollbar,
+.sv-item-detail::-webkit-scrollbar,
+.sv-item-detail *::-webkit-scrollbar {
   width: 5px;
+  height: 5px;
 }
-.sv-character-scroll::-webkit-scrollbar-track {
+.sv-character-scroll::-webkit-scrollbar-track,
+.sv-ui-scroll::-webkit-scrollbar-track,
+.sv-inventory-stage-b::-webkit-scrollbar-track,
+.sv-inventory-stage-b *::-webkit-scrollbar-track,
+.sv-merchant::-webkit-scrollbar-track,
+.sv-merchant *::-webkit-scrollbar-track,
+.sv-item-detail::-webkit-scrollbar-track,
+.sv-item-detail *::-webkit-scrollbar-track {
   background: transparent;
 }
-.sv-character-scroll::-webkit-scrollbar-thumb {
+.sv-character-scroll::-webkit-scrollbar-thumb,
+.sv-ui-scroll::-webkit-scrollbar-thumb,
+.sv-inventory-stage-b::-webkit-scrollbar-thumb,
+.sv-inventory-stage-b *::-webkit-scrollbar-thumb,
+.sv-merchant::-webkit-scrollbar-thumb,
+.sv-merchant *::-webkit-scrollbar-thumb,
+.sv-item-detail::-webkit-scrollbar-thumb,
+.sv-item-detail *::-webkit-scrollbar-thumb {
   background: oklch(0.55 0.03 70 / 0.45);
   border-radius: 999px;
 }
-.sv-character-scroll::-webkit-scrollbar-thumb:hover {
+.sv-character-scroll::-webkit-scrollbar-thumb:hover,
+.sv-ui-scroll::-webkit-scrollbar-thumb:hover,
+.sv-inventory-stage-b::-webkit-scrollbar-thumb:hover,
+.sv-inventory-stage-b *::-webkit-scrollbar-thumb:hover,
+.sv-merchant::-webkit-scrollbar-thumb:hover,
+.sv-merchant *::-webkit-scrollbar-thumb:hover,
+.sv-item-detail::-webkit-scrollbar-thumb:hover,
+.sv-item-detail *::-webkit-scrollbar-thumb:hover {
   background: oklch(0.62 0.04 72 / 0.65);
 }
 
@@ -207,8 +246,8 @@
  * Do not apply globally — only `.sv-inventory-stage-b` (and nested).
  */
 /*
- * D2(c)/D5 desktop breakpoint is an explicit 1200px floor (not Tailwind lg=1024).
- * Layout switching is owned by InventoryScreen media/JS; tokens stay scoped here.
+ * D2(c)/D5: desktop uses V3 two-column composition (list | details+equipment).
+ * Narrow drill-down switches below an explicit 1200px floor (not Tailwind lg=1024).
  */
 .sv-inventory-stage-b {
   --surface: oklch(0.23 0.02 60 / 0.92);

@@ -39,6 +39,7 @@ export function buildEquipmentSlotViews(
       slot,
       instanceId,
       label: row?.label ?? null,
+      quality: row?.quality ?? null,
       qualityLabel: row ? qualityLabelFor(row) : null,
     }
   })

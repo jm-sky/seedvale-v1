@@ -70,17 +70,6 @@ const equippedInstanceIds = computed(() =>
   Object.values(ui.inventory.equippedSlots).filter((id): id is string => typeof id === 'string'),
 )
 
-const ammoLines = computed(() => {
-  const choice = ui.inventory.primaryRanged
-  if (!choice) return [] as string[]
-  const ranged = ITEM_CATALOG[choice.kind]?.ranged
-  if (!ranged) return [] as string[]
-  return ranged.ammoKinds.map((kind) => {
-    const count = ui.inventory.counts[kind] ?? 0
-    return `${itemDisplayName(kind)} ×${count}`
-  })
-})
-
 const heldLabel = computed(() => {
   const kind = ui.inventory.heldTool
   return kind ? itemDisplayName(kind) : null
@@ -361,10 +350,10 @@ const showDetailsPane = computed(() =>
       role="dialog"
       aria-modal="true"
       aria-labelledby="inventory-dialog-title"
-      class="sv-inventory-stage-b flex w-[min(96rem,calc(100vw-2rem))] flex-col overflow-hidden rounded-[10px] border border-neutral-700 bg-(--surface-solid) p-4 text-neutral-100 shadow-[0_12px_40px_rgba(0,0,0,0.45)]"
+      class="sv-inventory-stage-b flex w-full max-w-7xl flex-col overflow-hidden rounded-[10px] border border-neutral-700 bg-(--surface-solid) p-5 text-neutral-100 shadow-[0_12px_40px_rgba(0,0,0,0.45)]"
       :class="isDesktop
-        ? 'h-[min(48rem,calc(100dvh-2rem))]'
-        : 'h-[min(100dvh,100dvh)] max-h-[100dvh] pb-[max(1rem,env(safe-area-inset-bottom))]'"
+        ? 'h-[min(42rem,calc(100dvh-3rem))]'
+        : 'h-[min(100dvh,100dvh)] max-h-[100dvh] w-[calc(100vw-1rem)] max-w-none pb-[max(1rem,env(safe-area-inset-bottom))]'"
       style="touch-action: pan-y"
       :inert="ui.quantityDialog.open ? true : undefined"
     >
@@ -400,11 +389,11 @@ const showDetailsPane = computed(() =>
         </div>
       </header>
 
-      <!-- Desktop three-panel -->
+      <!-- Desktop: V3 two-column — list | (details above equipment) -->
       <div
         v-if="isDesktop"
         class="grid min-h-0 flex-1 gap-4 overflow-hidden"
-        style="grid-template-columns: minmax(16rem, 1fr) minmax(22rem, 1.25fr) minmax(18rem, 1fr)"
+        style="grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr)"
       >
         <div class="flex min-h-0 min-w-0 flex-col overflow-hidden">
           <InventoryList
@@ -425,7 +414,7 @@ const showDetailsPane = computed(() =>
             @reveal="filter = 'all'"
           />
         </div>
-        <div class="min-h-0 min-w-0 overflow-y-auto">
+        <div class="flex min-h-0 min-w-0 flex-col gap-4 overflow-y-auto">
           <InventoryItemDetails
             v-if="selection && detailGroup"
             :key="selection.type === 'instance' ? selection.instanceId : selection.kind"
@@ -463,7 +452,7 @@ const showDetailsPane = computed(() =>
           />
           <div
             v-else
-            class="flex h-full min-h-[12rem] items-center justify-center rounded-lg border border-dashed border-neutral-700 text-sm text-neutral-500"
+            class="flex min-h-[12rem] items-center justify-center rounded-lg border border-dashed border-neutral-700 text-sm text-neutral-500"
           >
             Wybierz przedmiot
           </div>
@@ -474,8 +463,6 @@ const showDetailsPane = computed(() =>
           >
             Przejdź do szczegółów
           </a>
-        </div>
-        <div class="min-h-0 min-w-0 overflow-y-auto">
           <EquipmentPanel
             :slots="equipmentSlots"
             :held-tool="ui.inventory.heldTool"
@@ -485,7 +472,8 @@ const showDetailsPane = computed(() =>
             :primary-ranged="ui.inventory.primaryRanged"
             :primary-melee-label="primaryMeleeLabel"
             :primary-ranged-label="primaryRangedLabel"
-            :ammo-lines="ammoLines"
+            :selected-kind="selection?.kind ?? null"
+            :counts="ui.inventory.counts"
             :loadout-current="loadoutPreview.current"
             :loadout-delta="loadoutPreview.delta"
             :loadout-context="loadoutPreview.context"
@@ -494,6 +482,8 @@ const showDetailsPane = computed(() =>
             @select-held="onSelectHeld"
             @select-primary-melee="onSelectPrimaryMelee"
             @select-primary-ranged="onSelectPrimaryRanged"
+            @unequip-armor="onUnequipArmor"
+            @unequip="onUnequip"
           />
         </div>
       </div>
@@ -533,7 +523,8 @@ const showDetailsPane = computed(() =>
             :primary-ranged="ui.inventory.primaryRanged"
             :primary-melee-label="primaryMeleeLabel"
             :primary-ranged-label="primaryRangedLabel"
-            :ammo-lines="ammoLines"
+            :selected-kind="selection?.kind ?? null"
+            :counts="ui.inventory.counts"
             :loadout-current="loadoutPreview.current"
             :loadout-delta="loadoutPreview.delta"
             :loadout-context="loadoutPreview.context"
@@ -542,6 +533,8 @@ const showDetailsPane = computed(() =>
             @select-held="onSelectHeld"
             @select-primary-melee="onSelectPrimaryMelee"
             @select-primary-ranged="onSelectPrimaryRanged"
+            @unequip-armor="onUnequipArmor"
+            @unequip="onUnequip"
           />
         </div>
         <div

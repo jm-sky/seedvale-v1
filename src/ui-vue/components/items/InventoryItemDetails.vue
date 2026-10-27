@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { Apple, BookOpen, Package, ScrollText, Shield, Sword, Wheat } from 'lucide-vue-next'
-import { type Component, computed } from 'vue'
+import { computed } from 'vue'
 import ItemsScreenItemButton from '@/components/ItemsScreenItemButton.vue'
 import { useItemCategoryLabels } from '@/composables/useItemCategoryLabels'
 import { firstUpperCase } from '@/lib/firstUpperCase'
@@ -8,34 +7,19 @@ import type { EquipmentSlot } from '../../../items/equipment'
 import type { InventoryGroupView, InventoryInstanceRow } from '../../../items/inventoryView'
 import type { PrimaryWeaponChoice } from '../../../items/primaryWeapons'
 import type { InventorySelection } from './inventoryPresentation'
-import { FOOD_SOURCE_SPECIES_LABEL, foodHungerRelief, FRESHNESS_STAGE_LABEL } from '../../../items/foodFreshness'
 import { isToolKind } from '../../../items/HeldTool'
-import { type BookTier, CAPABILITY_LABEL, consumeNeedNoun, isMeleeToolKind, isRangedTool, isThrowableKind, ITEM_CATALOG } from '../../../items/itemCatalog'
+import { isMeleeToolKind, isRangedTool, isThrowableKind, ITEM_CATALOG } from '../../../items/itemCatalog'
 import { itemDisplayName } from '../../../items/itemDisplay'
 import { isArmorKind, isInstanceBackedKind, isWeaponMaintenanceKind } from '../../../items/itemInstances'
-import { ITEM_DEFS, type ItemCategory, primaryItemCategory } from '../../../items/items'
+import { ITEM_DEFS, primaryItemCategory } from '../../../items/items'
 import { resolveReadBookUseView } from '../../../items/itemUseView'
 import { isPrimaryMeleeAssignment, isPrimaryRangedAssignment } from '../../../items/primaryWeapons'
 import { tradeValue } from '../../../items/tradeCatalog'
-import { SKILL_LABEL } from '../../../player/PlayerSkills'
 import { trapKindForItem } from '../../../world/animalTraps'
-import {
-  buildItemDetailPresentation,
-  type DetailStatRow,
-} from './buildItemDetailPresentation'
+import { buildInventoryDetailStatRows } from './buildInventoryDetailStatRows'
+import { buildItemDetailPresentation } from './buildItemDetailPresentation'
 import ItemDetailCard from './ItemDetailCard.vue'
 import ItemInstanceMeters from './ItemInstanceMeters.vue'
-
-const BOOK_TIER_LABEL: Record<BookTier, string> = {
-  basic: 'podstawowy',
-  intermediate: 'średniozaawansowany',
-  advanced: 'zaawansowany',
-}
-
-const LIQUID_LABEL: Record<string, string> = {
-  water: 'woda',
-  milk: 'mleko',
-}
 
 const props = withDefaults(defineProps<{
   selection: Exclude<InventorySelection, null>
@@ -82,18 +66,6 @@ const emit = defineEmits<{
 
 const { categoryLabel } = useItemCategoryLabels()
 
-const CATEGORY_ICON: Record<ItemCategory, Component> = {
-  weapon: Sword,
-  armor: Shield,
-  tool: Sword,
-  resource: Wheat,
-  utility: Package,
-  food: Apple,
-  knowledge: BookOpen,
-  story: ScrollText,
-  other: Package,
-}
-
 const kind = computed(() => props.selection.kind)
 const item = computed(() => ITEM_DEFS[kind.value])
 const displayName = computed(() => itemDisplayName(kind.value))
@@ -102,9 +74,7 @@ const isInstanceSelection = computed(() => props.selection.type === 'instance')
 const liveKindCount = computed(() => props.group.count)
 const melee = computed(() => catalogEntry.value?.melee ?? null)
 const ranged = computed(() => catalogEntry.value?.ranged ?? null)
-const armor = computed(() => catalogEntry.value?.armor ?? null)
 const isArmorItem = computed(() => isArmorKind(kind.value))
-const consumable = computed(() => catalogEntry.value?.consumable ?? null)
 const consumeUse = computed(() => props.group.consumeUse ?? null)
 const book = computed(() => catalogEntry.value?.book ?? null)
 const treasureMap = computed(() => catalogEntry.value?.treasureMap ?? null)
@@ -144,46 +114,7 @@ const isPrimaryRangedSelected = computed(() => {
 })
 
 const itemCategoryText = computed(() => item.value.categories.map((cat) => categoryLabel[cat]).join(' · '))
-const itemCategoryIcon = computed(() => CATEGORY_ICON[primaryItemCategory(item.value)])
-const capabilityLabels = computed(() => (catalogEntry.value?.capabilities ?? []).map((cap) => CAPABILITY_LABEL[cap]))
-
-const consumableRelief = computed(() => {
-  if (!consumable.value) return 0
-  return foodHungerRelief(kind.value, props.group.sourceSpecies)
-})
-const freshnessLabel = computed(() => {
-  const stage = props.group.freshnessStage
-  return stage ? FRESHNESS_STAGE_LABEL[stage] : null
-})
-const sourceSpeciesLabel = computed(() => {
-  const species = props.group.sourceSpecies
-  return species ? FOOD_SOURCE_SPECIES_LABEL[species] : null
-})
-
-const meleeSpeed = computed(() => {
-  const m = melee.value
-  if (!m) return null
-  const cycle = m.windUp + m.hitWindow + m.recovery
-  if (cycle < 0.35) return 'szybki'
-  if (cycle < 0.55) return 'średni'
-  return 'wolny'
-})
-
-const ammoText = computed(() => {
-  const r = ranged.value
-  if (!r) return null
-  return r.ammoKinds
-    .map((ammoKind) => `${ITEM_DEFS[ammoKind].label}: ${props.counts[ammoKind] ?? 0}`)
-    .join(' · ')
-})
-
-function formatWeight(kg: number): string {
-  return `${kg.toFixed(1)} kg`
-}
-
-function percent(value: number): string {
-  return `${Math.round(value * 100)}%`
-}
+const itemPrimaryCategory = computed(() => primaryItemCategory(item.value))
 
 const unitWeight = computed(() => {
   if (props.instance?.effectiveWeightKg != null) return props.instance.effectiveWeightKg
@@ -191,93 +122,38 @@ const unitWeight = computed(() => {
 })
 
 const presentation = computed(() => {
-  const stats: DetailStatRow[] = []
-  stats.push({ label: 'Kategoria', value: itemCategoryText.value })
-  if (isInstanceSelection.value) {
-    stats.push({ label: 'Ilość tego rodzaju', value: `×${liveKindCount.value}` })
-    stats.push({ label: 'Waga sztuki', value: formatWeight(unitWeight.value) })
-  } else {
-    stats.push({ label: 'Ilość', value: `×${liveKindCount.value}` })
-    stats.push({ label: 'Waga jednostki', value: formatWeight(item.value.weight) })
-    stats.push({ label: 'Waga grupy', value: formatWeight(item.value.weight * liveKindCount.value) })
-  }
-  stats.push({ label: 'Wartość referencyjna', value: `${tradeValue(kind.value)} monet` })
-  if (props.instance?.sellPrice != null && props.merchantOpen) {
-    stats.push({ label: 'Cena sprzedaży', value: `${props.instance.sellPrice} monet` })
-  }
-  if (melee.value) {
-    stats.push({ label: 'Obrażenia', value: melee.value.damage.toString() })
-    stats.push({ label: 'Zasięg', value: `${melee.value.range.toFixed(1)} m` })
-  }
-  if (meleeSpeed.value) stats.push({ label: 'Szybkość ataku', value: meleeSpeed.value })
-  if (ranged.value) {
-    stats.push({ label: 'Obrażenia', value: ranged.value.damage.toString() })
-    stats.push({ label: 'Zasięg', value: `${ranged.value.range.toFixed(1)} m` })
-  }
-  if (ammoText.value) stats.push({ label: 'Amunicja', value: ammoText.value })
-  if (consumable.value) {
-    stats.push({
-      label: 'Efekt (następna porcja)',
-      value: `+${consumableRelief.value} ${consumeNeedNoun(consumable.value.need)}`,
-    })
-  }
-  if (freshnessLabel.value) stats.push({ label: 'Świeżość (następna porcja)', value: freshnessLabel.value })
-  if (sourceSpeciesLabel.value) stats.push({ label: 'Źródło (następna porcja)', value: sourceSpeciesLabel.value })
-  if (props.instance?.liquid !== undefined) {
-    const liquid = props.instance.liquid
-    stats.push({
-      label: 'Zawartość',
-      value: liquid == null
-        ? 'pusty'
-        : `${LIQUID_LABEL[liquid] ?? liquid} · ${props.instance.amountLitres?.toFixed(1) ?? 0} / ${props.instance.capacityLitres?.toFixed(1) ?? 0} l`,
-    })
-  }
-  if (book.value) {
-    stats.push({
-      label: 'Umiejętność',
-      value: `${SKILL_LABEL[book.value.skill]} · ${BOOK_TIER_LABEL[book.value.tier]}`,
-    })
-    stats.push({ label: 'Wymagane', value: percent(book.value.requiredSkillValue) })
-    if (props.bookSkillValue != null) stats.push({ label: 'Twój poziom', value: percent(props.bookSkillValue) })
-    stats.push({ label: 'Nauka do', value: percent(book.value.targetSkillValue) })
-    if (readUse.value) stats.push({ label: 'Stan', value: readUse.value.reasonLabel || 'Możesz się nauczyć' })
-  }
-  if (isPrimaryMeleeSelected.value) stats.push({ label: 'Skrót', value: 'Podstawowa broń biała' })
-  if (isPrimaryRangedSelected.value) stats.push({ label: 'Skrót', value: 'Podstawowa broń dystansowa' })
-  if (isHeldSelected.value) stats.push({ label: 'Trzymane', value: 'W ręce' })
-  if (capabilityLabels.value.length > 0) {
-    stats.push({ label: 'Zastosowania', value: capabilityLabels.value.join(' · ') })
-  }
-  if (props.instance?.slotLabel) stats.push({ label: 'Slot', value: props.instance.slotLabel })
-  if (props.instance?.qualityLabel) stats.push({ label: 'Jakość', value: props.instance.qualityLabel })
-  if (isArmorItem.value && armor.value) {
-    stats.push({
-      label: 'Ochrona',
-      value: `${props.instance?.protectionPercent ?? Math.round(armor.value.damageReduction * 100)}%`,
-    })
-    stats.push({
-      label: 'Wysiłek ataku',
-      value: props.instance?.staminaPenaltyLabel ?? '±0%',
-    })
-    stats.push({
-      label: 'Tempo ataku',
-      value: props.instance?.recoveryPenaltyLabel ?? '±0%',
-    })
-    stats.push({
-      label: 'Ruch',
-      value: props.instance?.movementPenaltyLabel ?? '±0%',
-    })
-  }
-  if (equippedInstanceId.value) stats.push({ label: 'Stan', value: 'Założona' })
-  if (isInstanceSelection.value && props.instance) {
-    stats.push({ label: 'Identyfikator', value: props.instance.id.slice(-8) })
-  }
+  const unitValue = tradeValue(kind.value)
+  const stats = buildInventoryDetailStatRows({
+    kind: kind.value,
+    selectionType: isInstanceSelection.value ? 'instance' : 'group',
+    liveKindCount: liveKindCount.value,
+    unitWeightKg: unitWeight.value,
+    catalog: catalogEntry.value,
+    group: props.group,
+    instance: props.instance,
+    counts: props.counts,
+    bookSkillValue: props.bookSkillValue,
+    merchantOpen: props.merchantOpen,
+    isArmor: isArmorItem.value,
+  })
 
   const showWeaponMeters = isWeaponMaintenanceKind(kind.value) && props.instance != null
+  // Generic identity / ranged rows carry a display-only 100% condition — never treat as wear.
+  const isDisplayOnlyFullCondition = props.instance != null
+    && props.instance.meterKind === 'condition'
+    && props.instance.sharpnessPercent == null
+    && props.instance.conditionPercent === 100
+    && !trapKindForItem(kind.value)
+    && kind.value !== 'tent'
   const showFillOrCondition = !isArmorItem.value
     && props.instance != null
     && props.instance.meterKind != null
-    && !(props.instance.meterKind === 'condition' && props.instance.sharpnessPercent == null && props.instance.conditionPercent === 100 && !trapKindForItem(kind.value) && kind.value !== 'tent')
+    && !isDisplayOnlyFullCondition
+
+  // V3 Worth: instance = unit reference; group = unit × live count.
+  const worthCoins = isInstanceSelection.value
+    ? unitValue
+    : unitValue * liveKindCount.value
 
   return buildItemDetailPresentation({
     kind: kind.value,
@@ -291,7 +167,11 @@ const presentation = computed(() => {
     conditionPercent: showFillOrCondition || showWeaponMeters ? props.instance?.conditionPercent ?? null : null,
     sharpnessPercent: showWeaponMeters ? props.instance?.sharpnessPercent ?? null : null,
     qualityLabel: isArmorItem.value ? (props.instance?.qualityLabel ?? null) : null,
+    quality: isArmorItem.value ? (props.instance?.quality ?? null) : null,
+    worthCoins,
+    stackCount: !isInstanceSelection.value && liveKindCount.value > 1 ? liveKindCount.value : null,
     showArmorWearPlaceholder: isArmorItem.value,
+    showConditionUnavailablePlaceholder: isDisplayOnlyFullCondition && !isArmorItem.value,
     showDpsPlaceholder: melee.value != null || ranged.value != null,
     showResistPlaceholders: isArmorItem.value,
     stats,
@@ -300,10 +180,24 @@ const presentation = computed(() => {
 
 const trapKind = computed(() => trapKindForItem(kind.value))
 
+/** Kind-scoped chips (drink/place/throw/read) — not for plain weapon/tool/armor instance rows. */
+const hasKindScopedGameplayActions = computed(() => (
+  consumeUse.value != null
+  || isThrowableKind(kind.value)
+  || readUse.value != null
+  || treasureMap.value != null
+  || trapKind.value != null
+  || kind.value === 'tent'
+))
+
+const showInstanceKindScopedSection = computed(() => (
+  isInstanceSelection.value && hasKindScopedGameplayActions.value
+))
+
 function onDropKind(): void {
   const count = liveKindCount.value
   if (count <= 0) return
-  const label = isInstanceSelection.value
+  const label = showInstanceKindScopedSection.value
     ? `Wyrzuć z rodzaju: ${displayName.value}`
     : `Wyrzuć: ${displayName.value}`
   if (count <= 1) {
@@ -335,245 +229,200 @@ function onUnequipArmorGuarded(): void {
     :meta="presentation.meta"
     :description="presentation.description"
     :lore="presentation.lore"
-    :lore-unavailable="presentation.loreUnavailable"
     :illustration-src="presentation.illustrationSrc"
-    :fallback-icon="itemCategoryIcon"
+    :kind="kind"
+    :category="itemPrimaryCategory"
     :stat-rows="presentation.stats"
     @return-to-list="emit('return-to-list')"
   >
     <template #controls>
-      <ItemInstanceMeters :meters="presentation.meters" />
+      <ItemInstanceMeters
+        :meters="presentation.meters"
+        :quality="presentation.quality"
+        :quality-label="presentation.qualityLabel"
+        :worth-coins="presentation.worthCoins"
+        :stack-count="presentation.stackCount"
+      />
     </template>
 
     <template #actions>
-      <div class="grid w-full grid-cols-1 gap-2 md:grid-cols-2">
-        <!-- Exact instance actions -->
-        <template v-if="isInstanceSelection && instance">
-          <ItemsScreenItemButton
-            v-if="isToolKind(kind) && !isHeldSelected"
-            class="min-h-11 sm:min-h-0"
-            label="Weź"
-            @click="emit('equip', kind, instance.id)"
-          />
-          <ItemsScreenItemButton
-            v-if="isToolKind(kind) && isHeldSelected"
-            class="min-h-11 sm:min-h-0"
-            label="Odłóż"
-            @click="onUnequipHeldGuarded"
-          />
-          <ItemsScreenItemButton
-            v-if="isArmorItem && !equippedInstanceId"
-            class="min-h-11 sm:min-h-0"
-            label="Załóż"
-            @click="emit('equip-armor', instance.id)"
-          />
-          <ItemsScreenItemButton
-            v-if="isArmorItem && equippedInstanceId"
-            class="min-h-11 sm:min-h-0"
-            label="Zdejmij"
-            @click="onUnequipArmorGuarded"
-          />
-          <ItemsScreenItemButton
-            v-if="isMeleeToolKind(kind) && !isPrimaryMeleeSelected"
-            class="min-h-11 sm:min-h-0"
-            label="Ustaw podstawową wręcz"
-            @click="emit('set-primary-melee', kind, isInstanceBackedKind(kind) ? instance.id : null)"
-          />
-          <ItemsScreenItemButton
-            v-if="isRangedTool(kind) && !isPrimaryRangedSelected"
-            class="min-h-11 sm:min-h-0"
-            label="Ustaw podstawową dystansową"
-            @click="emit('set-primary-ranged', kind, isInstanceBackedKind(kind) ? instance.id : null)"
-          />
-          <template v-if="instance.sharpnessPercent !== null && instance.sharpnessPercent < 100">
-            <ItemsScreenItemButton
-              class="min-h-11 sm:min-h-0"
-              :label="`Naostrz (${whetstoneCount})`"
-              :disabled="whetstoneCount === 0"
-              @click="whetstoneCount > 0 && emit('sharpen', instance.id)"
-            />
-            <span
-              v-if="whetstoneCount === 0"
-              class="self-center text-[11px] text-neutral-400"
-            >Brak osełki</span>
-          </template>
-          <ItemsScreenItemButton
-            v-if="merchantOpen"
-            class="min-h-11 sm:min-h-0"
-            :label="`Sprzedaj (${instance.sellPrice})`"
-            @click="emit('sell', instance.id)"
-          />
-        </template>
+      <!-- Exact instance actions — compact V3 footer chips -->
+      <template v-if="isInstanceSelection && instance">
+        <ItemsScreenItemButton
+          v-if="isToolKind(kind) && !isHeldSelected"
+          label="Weź"
+          selected
+          @click="emit('equip', kind, instance.id)"
+        />
+        <ItemsScreenItemButton
+          v-if="isToolKind(kind) && isHeldSelected"
+          label="Odłóż"
+          @click="onUnequipHeldGuarded"
+        />
+        <ItemsScreenItemButton
+          v-if="isArmorItem && !equippedInstanceId"
+          label="Załóż"
+          selected
+          @click="emit('equip-armor', instance.id)"
+        />
+        <ItemsScreenItemButton
+          v-if="isArmorItem && equippedInstanceId"
+          label="Zdejmij"
+          @click="onUnequipArmorGuarded"
+        />
+        <ItemsScreenItemButton
+          v-if="isMeleeToolKind(kind) && !isPrimaryMeleeSelected"
+          label="Podst. wręcz"
+          @click="emit('set-primary-melee', kind, isInstanceBackedKind(kind) ? instance.id : null)"
+        />
+        <ItemsScreenItemButton
+          v-if="isRangedTool(kind) && !isPrimaryRangedSelected"
+          label="Podst. dystans"
+          @click="emit('set-primary-ranged', kind, isInstanceBackedKind(kind) ? instance.id : null)"
+        />
+        <ItemsScreenItemButton
+          v-if="instance.sharpnessPercent !== null && instance.sharpnessPercent < 100"
+          :label="`Naostrz (${whetstoneCount})`"
+          :disabled="whetstoneCount === 0"
+          :title="whetstoneCount === 0 ? 'Brak osełki' : undefined"
+          @click="whetstoneCount > 0 && emit('sharpen', instance.id)"
+        />
+        <ItemsScreenItemButton
+          v-if="merchantOpen"
+          :label="`Sprzedaj (${instance.sellPrice})`"
+          @click="emit('sell', instance.id)"
+        />
+        <!-- Weapons/tools/armor: plain drop (no „rodzaj” chrome — rows are already instances). -->
+        <ItemsScreenItemButton
+          v-if="!showInstanceKindScopedSection"
+          label="Wyrzuć"
+          destructive
+          @click="onDropKind"
+        />
+      </template>
 
-        <!-- Group / count-kind actions (also for non-instance selection) -->
-        <template v-if="!isInstanceSelection">
-          <template v-if="consumeUse">
-            <ItemsScreenItemButton
-              class="min-h-11 sm:min-h-0"
-              :label="consumeUse.label"
-              :disabled="!consumeUse.enabled"
-              @click="consumeUse.enabled && emit('consume', kind)"
-            />
-            <span
-              v-if="consumeUse.reasonLabel"
-              class="self-center text-[11px] text-neutral-400"
-            >{{ consumeUse.reasonLabel }}</span>
-          </template>
-          <ItemsScreenItemButton
-            v-if="isThrowableKind(kind)"
-            class="min-h-11 sm:min-h-0"
-            label="Rzuć"
-            @click="emit('throw', kind)"
-          />
-          <template v-if="readUse">
-            <ItemsScreenItemButton
-              class="min-h-11 sm:min-h-0"
-              :label="readUse.label"
-              :disabled="!readUse.enabled"
-              @click="readUse.enabled && emit('read', kind)"
-            />
-            <span
-              v-if="readUse.reasonLabel"
-              class="self-center text-[11px] text-neutral-400"
-            >{{ readUse.reasonLabel }}</span>
-          </template>
-          <ItemsScreenItemButton
-            v-if="treasureMap"
-            class="min-h-11 sm:min-h-0"
-            label="Odczytaj"
-            @click="emit('read', kind)"
-          />
-          <ItemsScreenItemButton
-            v-if="trapKind"
-            class="min-h-11 sm:min-h-0"
-            label="Zastaw"
-            @click="emit('place-trap', kind)"
-          />
-          <ItemsScreenItemButton
-            v-if="kind === 'chest'"
-            class="min-h-11 sm:min-h-0"
-            label="Postaw"
-            @click="emit('place-container')"
-          />
-          <ItemsScreenItemButton
-            v-if="kind === 'tent'"
-            class="min-h-11 sm:min-h-0"
-            label="Rozstaw"
-            @click="emit('place-tent')"
-          />
-          <ItemsScreenItemButton
-            v-if="isMeleeToolKind(kind) && !isWeaponMaintenanceKind(kind) && !isPrimaryMeleeSelected"
-            class="min-h-11 sm:min-h-0"
-            label="Ustaw jako podstawową broń białą"
-            @click="emit('set-primary-melee', kind, null)"
-          />
-          <ItemsScreenItemButton
-            v-if="isRangedTool(kind) && !isInstanceBackedKind(kind) && !isPrimaryRangedSelected"
-            class="min-h-11 sm:min-h-0"
-            label="Ustaw jako podstawową broń dystansową"
-            @click="emit('set-primary-ranged', kind, null)"
-          />
-          <ItemsScreenItemButton
-            v-if="isToolKind(kind) && !isInstanceBackedKind(kind) && !isHeldSelected"
-            class="min-h-11 sm:min-h-0"
-            label="Weź"
-            @click="emit('equip', kind)"
-          />
-          <ItemsScreenItemButton
-            v-if="isToolKind(kind) && !isInstanceBackedKind(kind) && isHeldSelected"
-            class="min-h-11 sm:min-h-0"
-            label="Odłóż"
-            @click="onUnequipHeldGuarded"
-          />
-          <ItemsScreenItemButton
-            class="min-h-11 sm:min-h-0"
-            label="Wyrzuć"
-            destructive
-            @click="onDropKind"
-          />
-        </template>
-      </div>
+      <!-- Group / count-kind actions -->
+      <template v-if="!isInstanceSelection">
+        <ItemsScreenItemButton
+          v-if="consumeUse"
+          :label="consumeUse.label"
+          :disabled="!consumeUse.enabled"
+          :title="consumeUse.reasonLabel ?? undefined"
+          selected
+          @click="consumeUse.enabled && emit('consume', kind)"
+        />
+        <ItemsScreenItemButton
+          v-if="isThrowableKind(kind)"
+          label="Rzuć"
+          @click="emit('throw', kind)"
+        />
+        <ItemsScreenItemButton
+          v-if="readUse"
+          :label="readUse.label"
+          :disabled="!readUse.enabled"
+          :title="readUse.reasonLabel ?? undefined"
+          @click="readUse.enabled && emit('read', kind)"
+        />
+        <ItemsScreenItemButton
+          v-if="treasureMap"
+          label="Odczytaj"
+          @click="emit('read', kind)"
+        />
+        <ItemsScreenItemButton
+          v-if="trapKind"
+          label="Zastaw"
+          @click="emit('place-trap', kind)"
+        />
+        <ItemsScreenItemButton
+          v-if="kind === 'chest'"
+          label="Postaw"
+          @click="emit('place-container')"
+        />
+        <ItemsScreenItemButton
+          v-if="kind === 'tent'"
+          label="Rozstaw"
+          @click="emit('place-tent')"
+        />
+        <ItemsScreenItemButton
+          v-if="isMeleeToolKind(kind) && !isWeaponMaintenanceKind(kind) && !isPrimaryMeleeSelected"
+          label="Podst. wręcz"
+          @click="emit('set-primary-melee', kind, null)"
+        />
+        <ItemsScreenItemButton
+          v-if="isRangedTool(kind) && !isInstanceBackedKind(kind) && !isPrimaryRangedSelected"
+          label="Podst. dystans"
+          @click="emit('set-primary-ranged', kind, null)"
+        />
+        <ItemsScreenItemButton
+          v-if="isToolKind(kind) && !isInstanceBackedKind(kind) && !isHeldSelected"
+          label="Weź"
+          selected
+          @click="emit('equip', kind)"
+        />
+        <ItemsScreenItemButton
+          v-if="isToolKind(kind) && !isInstanceBackedKind(kind) && isHeldSelected"
+          label="Odłóż"
+          @click="onUnequipHeldGuarded"
+        />
+        <ItemsScreenItemButton
+          label="Wyrzuć"
+          destructive
+          @click="onDropKind"
+        />
+      </template>
 
-      <!-- Group-scoped section inside instance details -->
-      <div
-        v-if="isInstanceSelection"
-        class="mt-4 w-full border-t border-neutral-800 pt-3"
-      >
-        <h3 class="mb-2 text-sm font-semibold text-neutral-300">
-          Działania na rodzaju: {{ displayName }} · ×{{ liveKindCount }}
-        </h3>
-        <div class="grid grid-cols-1 gap-2 md:grid-cols-2">
-          <template v-if="consumeUse">
-            <ItemsScreenItemButton
-              class="min-h-11 sm:min-h-0"
-              :label="instance?.capacityLitres != null ? `Wypij z rodzaju: ${consumeUse.label}` : `${consumeUse.label} (rodzaj)`"
-              :disabled="!consumeUse.enabled"
-              @click="consumeUse.enabled && emit('consume', kind)"
-            />
-            <span class="self-center text-[11px] text-neutral-400">
-              {{
-                consumeUse.reasonLabel
-                  || (instance?.capacityLitres != null
-                    ? 'Gra wybierze pierwszy pojemnik tego rodzaju, z którego można wypić.'
-                    : 'Działanie dotyczy rodzaju, nie zaznaczonej sztuki.')
-              }}
-            </span>
-          </template>
-          <ItemsScreenItemButton
-            v-if="isThrowableKind(kind)"
-            class="min-h-11 sm:min-h-0"
-            label="Rzuć (rodzaj)"
-            @click="emit('throw', kind)"
-          />
-          <template v-if="readUse">
-            <ItemsScreenItemButton
-              class="min-h-11 sm:min-h-0"
-              :label="readUse.label"
-              :disabled="!readUse.enabled"
-              @click="readUse.enabled && emit('read', kind)"
-            />
-            <span
-              v-if="readUse.reasonLabel"
-              class="self-center text-[11px] text-neutral-400"
-            >{{ readUse.reasonLabel }}</span>
-          </template>
-          <ItemsScreenItemButton
-            v-if="treasureMap"
-            class="min-h-11 sm:min-h-0"
-            label="Odczytaj"
-            @click="emit('read', kind)"
-          />
-          <template v-if="trapKind">
-            <ItemsScreenItemButton
-              class="min-h-11 sm:min-h-0"
-              :label="`Zastaw z rodzaju: ${displayName}`"
-              @click="emit('place-trap', kind)"
-            />
-            <span class="self-center text-[11px] text-neutral-400">
-              Gra wybierze najmniej sprawną działającą pułapkę tego rodzaju.
-            </span>
-          </template>
-          <template v-if="kind === 'tent'">
-            <ItemsScreenItemButton
-              class="min-h-11 sm:min-h-0"
-              label="Rozstaw z rodzaju: namiot"
-              @click="emit('place-tent')"
-            />
-            <span class="self-center text-[11px] text-neutral-400">
-              Gra wybierze namiot o najniższym stanie.
-            </span>
-          </template>
-          <ItemsScreenItemButton
-            class="min-h-11 sm:min-h-0"
-            label="Wyrzuć z rodzaju…"
-            destructive
-            @click="onDropKind"
-          />
-          <p class="md:col-span-2 text-[11px] text-neutral-400">
-            To działanie nie wskazuje zaznaczonej sztuki. Gra wyrzuci pierwsze sztuki tego rodzaju według kolejności ekwipunku.
-          </p>
+      <!-- Kind-scoped chips only when drink/place/throw/read apply (not bare weapon/tool/armor). -->
+      <template v-if="showInstanceKindScopedSection">
+        <div class="basis-full text-left text-[11px] leading-snug text-neutral-500">
+          Działania na rodzaju: {{ displayName }} · ×{{ liveKindCount }}.
+          To działanie nie wskazuje zaznaczonej sztuki. Gra wyrzuci pierwsze sztuki tego rodzaju według kolejności ekwipunku.
         </div>
-      </div>
+        <ItemsScreenItemButton
+          v-if="consumeUse"
+          :label="instance?.capacityLitres != null ? `Wypij (rodzaj)` : `${consumeUse.label} (rodzaj)`"
+          :disabled="!consumeUse.enabled"
+          :title="consumeUse.reasonLabel
+            || (instance?.capacityLitres != null
+              ? 'Gra wybierze pierwszy pojemnik tego rodzaju, z którego można wypić.'
+              : 'Działanie dotyczy rodzaju, nie zaznaczonej sztuki.')"
+          @click="consumeUse.enabled && emit('consume', kind)"
+        />
+        <ItemsScreenItemButton
+          v-if="isThrowableKind(kind)"
+          label="Rzuć"
+          @click="emit('throw', kind)"
+        />
+        <ItemsScreenItemButton
+          v-if="readUse"
+          :label="readUse.label"
+          :disabled="!readUse.enabled"
+          :title="readUse.reasonLabel ?? undefined"
+          @click="readUse.enabled && emit('read', kind)"
+        />
+        <ItemsScreenItemButton
+          v-if="treasureMap"
+          label="Odczytaj"
+          @click="emit('read', kind)"
+        />
+        <ItemsScreenItemButton
+          v-if="trapKind"
+          label="Zastaw (rodzaj)"
+          title="Gra wybierze najmniej sprawną działającą pułapkę tego rodzaju."
+          @click="emit('place-trap', kind)"
+        />
+        <ItemsScreenItemButton
+          v-if="kind === 'tent'"
+          label="Rozstaw (rodzaj)"
+          title="Gra wybierze namiot o najniższym stanie."
+          @click="emit('place-tent')"
+        />
+        <ItemsScreenItemButton
+          label="Wyrzuć z rodzaju…"
+          destructive
+          title="To działanie nie wskazuje zaznaczonej sztuki. Gra wyrzuci pierwsze sztuki tego rodzaju według kolejności ekwipunku."
+          @click="onDropKind"
+        />
+      </template>
     </template>
   </ItemDetailCard>
 </template>

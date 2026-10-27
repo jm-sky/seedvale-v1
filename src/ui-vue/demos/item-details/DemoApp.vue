@@ -4,6 +4,7 @@ import ItemDetailCard from '@/components/items/ItemDetailCard.vue'
 import ItemInstanceMeters from '@/components/items/ItemInstanceMeters.vue'
 import { buildItemDetailPresentation } from '@/components/items/buildItemDetailPresentation'
 import ItemsScreenItemButton from '@/components/ItemsScreenItemButton.vue'
+import { ITEM_DEFS, primaryItemCategory } from '../../../items/items'
 import { DEMO_FIXTURES, type DemoFixtureId } from './fixtures'
 
 const selectedId = ref<DemoFixtureId>('weapon')
@@ -11,6 +12,8 @@ const log = ref<string[]>([])
 
 const fixture = computed(() => DEMO_FIXTURES.find((f) => f.id === selectedId.value) ?? DEMO_FIXTURES[0])
 const presentation = computed(() => buildItemDetailPresentation(fixture.value.presentation))
+const fixtureKind = computed(() => fixture.value.presentation.kind)
+const fixtureCategory = computed(() => primaryItemCategory(ITEM_DEFS[fixtureKind.value]))
 
 function selectFixture(id: DemoFixtureId): void {
   selectedId.value = id
@@ -68,13 +71,20 @@ function onDemoAction(actionId: string, label: string, disabled?: boolean): void
         :meta="presentation.meta"
         :description="presentation.description"
         :lore="presentation.lore"
-        :lore-unavailable="presentation.loreUnavailable"
         :illustration-src="presentation.illustrationSrc"
+        :kind="fixtureKind"
+        :category="fixtureCategory"
         :stat-rows="presentation.stats"
         @return-to-list="resetDemo"
       >
         <template #controls>
-          <ItemInstanceMeters :meters="presentation.meters" />
+          <ItemInstanceMeters
+            :meters="presentation.meters"
+            :quality="presentation.quality"
+            :quality-label="presentation.qualityLabel"
+            :worth-coins="presentation.worthCoins"
+            :stack-count="presentation.stackCount"
+          />
         </template>
         <template #actions>
           <div class="flex w-full flex-wrap items-center gap-2">

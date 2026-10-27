@@ -87,7 +87,7 @@ describe('hybrid inventory UI actions (D2c)', () => {
     expect(inventory.count('arrow')).toBe(3)
   })
 
-  it('instance details show group-drop warning and request kind-scoped quantity', async () => {
+  it('weapon instance details use plain Wyrzuć (no kind-scope chrome) and still request quantity', async () => {
     const inventory = new Inventory({}, 100, undefined, undefined, 100)
     const first = createWeaponInstance('knife')
     const second = createWeaponInstance('knife')
@@ -117,15 +117,16 @@ describe('hybrid inventory UI actions (D2c)', () => {
       showReturn: false,
     })
     await nextTick()
-    expect(el.textContent).toMatch(/kolejności ekwipunku/i)
+    expect(el.textContent).not.toMatch(/Działania na rodzaju/i)
+    expect(el.textContent).not.toMatch(/kolejności ekwipunku/i)
     const dropBtn = Array.from(el.querySelectorAll('button')).find((b) =>
-      b.textContent?.includes('Wyrzuć z rodzaju'),
+      b.textContent?.trim() === 'Wyrzuć',
     )
     expect(dropBtn).toBeTruthy()
     ;(dropBtn as HTMLButtonElement).click()
     await nextTick()
     expect(emitted['request-drop-quantity']?.[0]?.[0]).toBe('knife')
-    expect(String(emitted['request-drop-quantity']?.[0]?.[2] ?? '')).toMatch(/rodzaju/i)
+    expect(String(emitted['request-drop-quantity']?.[0]?.[2] ?? '')).toMatch(/^Wyrzuć:/i)
   })
 
   it('group drop with inventory order A,B removes A first while B stays selectable', () => {

@@ -187,19 +187,11 @@ if (typeof window !== 'undefined') {
         Shared leaves: InventoryList + InventoryItemDetails + EquipmentPanel. Fixture-local only —
         no live store / WorldBundle / save. {{ scenario.note }}
       </p>
-      <ul class="mt-2 space-y-0.5 text-[11px] text-neutral-500">
-        <li
-          v-for="(line, i) in log"
-          :key="i"
-        >
-          {{ line }}
-        </li>
-      </ul>
     </details>
 
     <div
-      class="sv-inventory-stage-b mx-auto mt-4 flex w-[min(96rem,calc(100vw-2rem))] flex-col gap-3 rounded-lg border border-neutral-700 bg-(--surface-solid) p-4"
-      :class="isDesktop ? 'h-[min(48rem,calc(100dvh-8rem))]' : ''"
+      class="sv-inventory-stage-b mx-auto mt-4 flex w-full max-w-7xl flex-col gap-3 rounded-lg border border-neutral-700 bg-(--surface-solid) p-5"
+      :class="isDesktop ? 'h-[min(42rem,calc(100dvh-8rem))]' : ''"
     >
       <p class="text-[13px] text-neutral-400">
         {{ carryingLabel }}
@@ -208,7 +200,7 @@ if (typeof window !== 'undefined') {
       <div
         v-if="isDesktop"
         class="grid min-h-0 flex-1 gap-4 overflow-hidden"
-        style="grid-template-columns: minmax(16rem, 1fr) minmax(22rem, 1.25fr) minmax(18rem, 1fr)"
+        style="grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr)"
       >
         <InventoryList
           class="min-h-0 overflow-hidden"
@@ -225,7 +217,7 @@ if (typeof window !== 'undefined') {
           @update:filter="filter = $event"
           @update:sort-mode="sortMode = $event"
         />
-        <div class="min-h-0 overflow-y-auto">
+        <div class="flex min-h-0 flex-col gap-4 overflow-y-auto">
           <InventoryItemDetails
             v-if="selection && detailGroup"
             :selection="selection"
@@ -261,12 +253,10 @@ if (typeof window !== 'undefined') {
           />
           <div
             v-else
-            class="flex h-full min-h-[12rem] items-center justify-center rounded-lg border border-dashed border-neutral-700 text-sm text-neutral-500"
+            class="flex min-h-[12rem] items-center justify-center rounded-lg border border-dashed border-neutral-700 text-sm text-neutral-500"
           >
             Wybierz przedmiot
           </div>
-        </div>
-        <div class="min-h-0 overflow-y-auto">
           <EquipmentPanel
             :slots="equipmentSlots"
             :held-tool="scenario.heldTool"
@@ -276,7 +266,8 @@ if (typeof window !== 'undefined') {
             :primary-ranged="scenario.primaryRanged"
             :primary-melee-label="scenario.primaryMelee ? itemDisplayName(scenario.primaryMelee.kind) : null"
             :primary-ranged-label="scenario.primaryRanged ? itemDisplayName(scenario.primaryRanged.kind) : null"
-            :ammo-lines="[]"
+            :selected-kind="selection?.kind ?? null"
+            :counts="scenario.counts"
             :loadout-current="loadoutPreview.current"
             :loadout-delta="loadoutPreview.delta"
             :loadout-context="loadoutPreview.context"
@@ -285,6 +276,8 @@ if (typeof window !== 'undefined') {
             @select-held="onSelectHeld"
             @select-primary-melee="onSelectPrimaryMelee"
             @select-primary-ranged="onSelectPrimaryRanged"
+            @unequip-armor="demoAction('unequip armor')"
+            @unequip="demoAction('unequip')"
           />
         </div>
       </div>
@@ -317,7 +310,8 @@ if (typeof window !== 'undefined') {
             :primary-ranged="scenario.primaryRanged"
             :primary-melee-label="scenario.primaryMelee ? itemDisplayName(scenario.primaryMelee.kind) : null"
             :primary-ranged-label="scenario.primaryRanged ? itemDisplayName(scenario.primaryRanged.kind) : null"
-            :ammo-lines="[]"
+            :selected-kind="selection?.kind ?? null"
+            :counts="scenario.counts"
             :loadout-current="loadoutPreview.current"
             :loadout-delta="loadoutPreview.delta"
             :loadout-context="loadoutPreview.context"
@@ -326,6 +320,8 @@ if (typeof window !== 'undefined') {
             @select-held="onSelectHeld"
             @select-primary-melee="onSelectPrimaryMelee"
             @select-primary-ranged="onSelectPrimaryRanged"
+            @unequip-armor="demoAction('unequip armor')"
+            @unequip="demoAction('unequip')"
           />
         </template>
         <InventoryItemDetails
@@ -363,5 +359,18 @@ if (typeof window !== 'undefined') {
         />
       </div>
     </div>
+
+    <ul
+      v-if="log.length"
+      class="sv-ui-scroll mx-auto mt-3 max-h-28 max-w-7xl space-y-0.5 overflow-y-auto font-mono text-[11px] text-neutral-500"
+      aria-label="Demo action log"
+    >
+      <li
+        v-for="(line, i) in log"
+        :key="i"
+      >
+        {{ line }}
+      </li>
+    </ul>
   </DemoShell>
 </template>

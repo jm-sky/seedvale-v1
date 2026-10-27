@@ -57,16 +57,55 @@ describe('buildItemDetailPresentation', () => {
       meterKind: 'condition',
       conditionPercent: 100,
       qualityLabel: 'zwykła',
+      quality: 'common',
+      worthCoins: 42,
       showArmorWearPlaceholder: true,
       showResistPlaceholders: true,
       stats: [{ label: 'Ochrona', value: '18%' }],
     })
     expect(p.meters.some((m) => m.label === 'Stan')).toBe(false)
     expect(p.meters.some((m) => m.label === 'Zużycie' && m.unavailable)).toBe(true)
-    expect(p.meters.some((m) => m.ratio === 1 && m.label !== 'Jakość')).toBe(false)
+    expect(p.meters.some((m) => m.label === 'Jakość')).toBe(false)
+    expect(p.quality).toBe('common')
+    expect(p.qualityLabel).toBe('zwykła')
+    expect(p.worthCoins).toBe(42)
     expect(p.stats.filter((s) => s.unavailable).map((s) => s.label)).toEqual(
       expect.arrayContaining(['Cięcie', 'Pchnięcie', 'Obuch']),
     )
+  })
+
+  it('exposes V3-style worth header and stack count without fabricating meters', () => {
+    const p = buildItemDetailPresentation({
+      kind: 'apple',
+      title: 'Jabłko',
+      meta: '×3',
+      description: 'Opis',
+      worthCoins: 3,
+      stackCount: 3,
+      stats: [{ label: 'Wartość', value: '1c' }],
+    })
+    expect(p.worthCoins).toBe(3)
+    expect(p.stackCount).toBe(3)
+    expect(p.meters).toEqual([])
+    expect(p.quality).toBeNull()
+  })
+
+  it('reserves gray unavailable Stan for display-only full condition (e.g. bow)', () => {
+    const p = buildItemDetailPresentation({
+      kind: 'hunting_bow',
+      title: 'Łuk myśliwski',
+      meta: 'broń · sztuka',
+      description: 'Opis',
+      worthCoins: 45,
+      showConditionUnavailablePlaceholder: true,
+      showDpsPlaceholder: true,
+      stats: [{ label: 'Obrażenia', value: '8' }],
+    })
+    const stan = p.meters.find((m) => m.label === 'Stan')
+    expect(stan?.unavailable).toBe(true)
+    expect(stan?.ratio).toBeNull()
+    expect(stan?.icon).toBe('durability')
+    expect(p.meters.some((m) => m.ratio === 1)).toBe(false)
   })
 
   it('missing metrics stay labeled unavailable, never fabricated zero', () => {
@@ -80,7 +119,7 @@ describe('buildItemDetailPresentation', () => {
     })
     const dps = p.stats.find((s) => s.label === 'DPS')
     expect(dps?.unavailable).toBe(true)
-    expect(dps?.value).toBe('niedostępne')
+    expect(dps?.value).toBe('—')
     expect(p.loreUnavailable).toBe(true)
     expect(p.meters.every((m) => m.unavailable || (m.ratio != null && m.ratio > 0) || m.title)).toBe(true)
   })
