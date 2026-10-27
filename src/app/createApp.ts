@@ -76,13 +76,17 @@ import {
   benchmarkScenarioFromUrl,
   createAgentCpuDiag,
   createBenchmarkRunner,
+  createGrassBaselineDiag,
   createGrassFinalizationDiag,
+  createPassSubmissionCollector,
   createPerfMonitor,
   isPerfUrlEnabled,
   setActiveAgentCpuDiag,
   setActiveGpuTimer,
+  setActiveGrassBaselineDiag,
   setActiveGrassFinalizationDiag,
   setActiveMonitor,
+  setActivePassSubmissionCollector,
   setActiveProgramCensus,
 } from '../perf'
 import {
@@ -498,6 +502,10 @@ export async function createApp(
   setActiveAgentCpuDiag(agentCpuDiag)
   const grassFinalizationDiag = createGrassFinalizationDiag()
   setActiveGrassFinalizationDiag(grassFinalizationDiag)
+  const grassBaselineDiag = createGrassBaselineDiag()
+  setActiveGrassBaselineDiag(grassBaselineDiag)
+  const passSubmissionCollector = createPassSubmissionCollector()
+  setActivePassSubmissionCollector(passSubmissionCollector)
   if (isPerfUrlEnabled()) perfMonitor.setSource('url', true)
   // Seed-source precedence (plan persistence-004 §9, world-015 §3): a caller-
   // resolved Seed Library choice (`options.seed`, boot `StartScreen`'s New
@@ -587,6 +595,9 @@ export async function createApp(
 
   setActiveProgramCensus(programCensus)
   setActiveGpuTimer(gpuTimer)
+  // Pass collector stays disabled until a benchmark session enables it —
+  // avoid wrapping renderBufferDirect during ordinary play.
+  passSubmissionCollector.disable()
 
   if (typeof window !== 'undefined') {
     window.__seedvaleProgramCensus = programCensus
@@ -3045,7 +3056,9 @@ export async function createApp(
     dayNight,
     player,
     camera,
+    renderer,
     monitor: perfMonitor,
+    passCollector: passSubmissionCollector,
     applyQualityPreset: graphics.applyNamedQualityPreset,
     isolation: {
       scene,
@@ -3954,6 +3967,9 @@ export async function createApp(
     setActiveMonitor(null)
     setActiveAgentCpuDiag(null)
     setActiveGrassFinalizationDiag(null)
+    setActiveGrassBaselineDiag(null)
+    passSubmissionCollector.dispose()
+    setActivePassSubmissionCollector(null)
     setActiveProgramCensus(null)
     setActiveGpuTimer(null)
     gpuTimer.dispose()

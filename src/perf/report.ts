@@ -1,10 +1,13 @@
 import type { AgentCpuReport } from './agentCpuDiag'
+import type { GrassBaselineSnapshot } from './grassBaseline'
 import type { GrassFinalizationReport } from './grassFinalizationDiag'
 import type { SessionTotals } from './monitor'
+import type { PassSubmissionReport } from './passSubmissionCollector'
 import type { IsolationProbeRow, LongFrameAttribution, PerfContext, PerfReportJson } from './types'
-import { formatAgentCpuReport } from './agentCpuDiag'
 import { percentile } from './percentile'
+import { buildRawSidecar } from './rawSidecar'
 import { type AgentDetailCensus, SCENE_BUCKETS, type SceneCensus, SETTLEMENT_CONTENT_KINDS, type SettlementShadowCensus } from './sceneCensus'
+import { timeDistribution } from './timeDistribution'
 import { LONG_FRAME_MS, PERF_CATEGORIES, PERF_CATEGORY_COUNT } from './types'
 
 const EMPTY_CONTEXT: PerfContext = {
@@ -27,6 +30,9 @@ export function buildReport(input: {
   isolation?: IsolationProbeRow[]
   agentCpu?: AgentCpuReport | null
   grassFinalization?: GrassFinalizationReport | null
+  grassBaseline?: GrassBaselineSnapshot | null
+  passSubmissions?: PassSubmissionReport | null
+  includeRaw?: boolean
   /** False only for `current` (plan tools-001 §2) — no fixed anchor, so it
    *  can't be trusted in an automated baseline comparison. Defaults true. */
   canonical?: boolean
@@ -36,11 +42,14 @@ export function buildReport(input: {
   const ctx = input.context ?? EMPTY_CONTEXT
   const sorted = Float64Array.from(totals.frameMs)
   sorted.sort()
-  const avgMs = totals.frameMsSum / n
+  const avgMs = totals.frames > 0 ? totals.frameMsSum / totals.frames : 0
   const fpsAvg = avgMs > 0 ? 1000 / avgMs : 0
   const fpsMin = totals.frameMsMax > 0 ? 1000 / totals.frameMsMax : 0
-  const p1Ms = percentile(sorted, sorted.length, 99)
+  const p1Ms = totals.frames > 0 ? percentile(sorted, sorted.length, 99) : 0
   const fpsP1 = p1Ms > 0 ? 1000 / p1Ms : 0
+  const frameDist = timeDistribution(totals.frameMs)
+  const updateDist = timeDistribution(totals.simulateMs ?? [])
+  const renderDist = timeDistribution(totals.renderWallMs ?? [])
 
   const systems: PerfReportJson['systems'] = {}
   const ranked: { name: string; ms: number }[] = []
@@ -72,10 +81,11 @@ export function buildReport(input: {
     }))
     .sort((a, b) => b.maxMs - a.maxMs)
 
+  const hitchCount = hitches.reduce((sum, h) => sum + h.count, 0)
   const frameMaxMs = totals.frameMsMax === Infinity ? 0 : totals.frameMsMax
   const largestHitchMs = hitches.reduce((max, h) => Math.max(max, h.maxMs), 0)
   const unattributedMs = Math.max(0, frameMaxMs - largestHitchMs)
-  const p95Ms = percentile(sorted, sorted.length, 95)
+  const p95Ms = totals.frames > 0 ? percentile(sorted, sorted.length, 95) : 0
 
   const top = ranked[0]
   const second = ranked[1]
@@ -98,12 +108,15 @@ export function buildReport(input: {
     recommendation = `${top.name} is the primary sustained bottleneck.`
   }
 
+  const longFrames = buildLongFrameAttribution(totals)
+
   return {
     durationSec,
     quality: ctx.quality,
     pixelRatio: ctx.pixelRatio,
     scenario,
     canonical: input.canonical ?? true,
+    frameCount: totals.frames,
     fps: {
       avg: round1(fpsAvg),
       min: Math.round(fpsMin),
@@ -111,9 +124,16 @@ export function buildReport(input: {
     },
     frameTime: {
       avg: round1(avgMs),
-      p95: round1(percentile(sorted, sorted.length, 95)),
-      max: round1(totals.frameMsMax === Infinity ? 0 : totals.frameMsMax),
+      p50: frameDist.p50,
+      p95: round1(p95Ms),
+      p99: frameDist.p99,
+      max: round1(frameMaxMs),
     },
+    updateTime: updateDist,
+    renderTime: renderDist,
+    frameWallTime: frameDist,
+    hitchCount,
+    longFrameCount: longFrames.count,
     rendering: {
       drawCallsAvg: Math.round(totals.drawCallsSum / n),
       drawCallsMax: totals.drawCallsMax,
@@ -126,6 +146,7 @@ export function buildReport(input: {
     shadowCasters: input.shadowCasters,
     settlementShadowCasters: input.settlementShadowCasters,
     agentDetail: input.agentDetail,
+    passSubmissions: input.passSubmissions ?? null,
     hitches,
     isolation: input.isolation,
     systems,
@@ -136,11 +157,13 @@ export function buildReport(input: {
       largestHitchMs: round1(largestHitchMs),
       unattributedMs: round1(unattributedMs),
     },
-    longFrames: buildLongFrameAttribution(totals),
+    longFrames,
     recommendation,
     context: ctx,
     agentCpu: input.agentCpu ?? undefined,
     grassFinalization: input.grassFinalization ?? undefined,
+    grassBaseline: input.grassBaseline ?? null,
+    raw: input.includeRaw === false ? undefined : buildRawSidecar(totals),
   }
 }
 
@@ -165,6 +188,9 @@ export function formatReport(report: PerfReportJson): string {
     .join('\n')
   const ctx = report.context
   const reproLines = [
+    ctx.gitSha ? `  gitSha: ${ctx.gitSha}` : null,
+    ctx.runId ? `  runId: ${ctx.runId}` : null,
+    ctx.phase ? `  phase: ${ctx.phase}` : null,
     ctx.fixtureVersion ? `  fixture: ${ctx.fixtureVersion}` : null,
     ctx.seed != null ? `  seed: ${ctx.seed}` : null,
     ctx.elapsedDays != null ? `  elapsedDays: ${ctx.elapsedDays}` : null,
@@ -175,6 +201,12 @@ export function formatReport(report: PerfReportJson): string {
     ctx.loadRadius != null ? `  loadRadius: ${ctx.loadRadius}` : null,
     ctx.grassMacroVariation != null ? `  grassMacroVariation: ${ctx.grassMacroVariation ? 'ON' : 'OFF'}` : null,
     ctx.viewportWidth != null && ctx.viewportHeight != null ? `  viewport: ${ctx.viewportWidth}x${ctx.viewportHeight}` : null,
+    ctx.drawingBufferWidth != null && ctx.drawingBufferHeight != null
+      ? `  drawingBuffer: ${ctx.drawingBufferWidth}x${ctx.drawingBufferHeight}`
+      : null,
+    ctx.cameraPose
+      ? `  camera: pos=(${round1(ctx.cameraPose.position.x)}, ${round1(ctx.cameraPose.position.y)}, ${round1(ctx.cameraPose.position.z)})`
+      : null,
     ctx.scenarioAnchor ? `  anchor: (${round1(ctx.scenarioAnchor.x)}, ${round1(ctx.scenarioAnchor.z)})` : null,
     ctx.scenarioSettlement
       ? `  settlement: ${ctx.scenarioSettlement.name} (${ctx.scenarioSettlement.id}) `
@@ -183,13 +215,31 @@ export function formatReport(report: PerfReportJson): string {
         + `pos=(${round1(ctx.scenarioSettlement.x)}, ${round1(ctx.scenarioSettlement.z)})`
       : null,
     ctx.route ? `  route: start=(${round1(ctx.route.startX)}, ${round1(ctx.route.startZ)}) speed=${ctx.route.speedMps} m/s duration=${ctx.route.durationSec}s` : null,
+    ctx.gpuTimer
+      ? `  gpuTimer: available=${ctx.gpuTimer.available} resolved=${ctx.gpuTimer.resolved} samples=${ctx.gpuTimer.samples} span=${ctx.gpuTimer.querySpan}`
+      : null,
   ].filter((line): line is string => line !== null)
+
+  const distLine = (label: string, d: { p50: number | null; p95: number | null; p99: number | null; max: number | null; sampleCount: number }): string =>
+    `  ${label}: p50=${d.p50 ?? 'unavailable'} p95=${d.p95 ?? 'unavailable'} p99=${d.p99 ?? 'unavailable'} max=${d.max ?? 'unavailable'} n=${d.sampleCount}`
+
+  const pass = report.passSubmissions
+  const passLines = pass
+    ? [
+        `  reliability: ${pass.reliability}${pass.reliabilityReason ? ` (${pass.reliabilityReason})` : ''}`,
+        `  frames: ${pass.frames} shadowRefresh=${pass.shadowRefreshFrames} shadowSkipped=${pass.shadowSkippedFrames}`,
+        `  mirror calls avg: ${pass.mirror?.callsAvg ?? 'unavailable'}`,
+        `  shadow calls avg: ${pass.shadow?.callsAvg ?? 'unavailable'}`,
+        `  main calls avg: ${pass.main?.callsAvg ?? 'unavailable'}`,
+      ].join('\n')
+    : '  (not collected)'
 
   return [
     '[Seedvale Benchmark]',
     '',
     `Scenario: ${report.scenario}${report.canonical ? '' : ' (non-canonical)'}`,
     `Duration: ${report.durationSec}s`,
+    `Frames: ${report.frameCount}`,
     `Quality: ${report.quality}`,
     `Pixel ratio: ${report.pixelRatio}`,
     '',
@@ -201,17 +251,27 @@ export function formatReport(report: PerfReportJson): string {
     `  min: ${report.fps.min}`,
     `  p1: ${report.fps.p1}`,
     '',
-    'Frame time:',
+    'Frame time (wall-clock):',
     `  avg: ${report.frameTime.avg} ms`,
+    `  p50: ${report.frameTime.p50 ?? 'unavailable'} ms`,
     `  p95: ${report.frameTime.p95} ms`,
+    `  p99: ${report.frameTime.p99 ?? 'unavailable'} ms`,
     `  max: ${report.frameTime.max} ms`,
     '',
-    'Rendering:',
+    'Distributions (CPU wall-clock; render may include GPU wait):',
+    distLine('update', report.updateTime),
+    distLine('render', report.renderTime),
+    distLine('frame', report.frameWallTime),
+    '',
+    'Rendering (combined renderer.info):',
     `  draw calls: ${report.rendering.drawCallsAvg} avg / ${report.rendering.drawCallsMax} max`,
     `  triangles: ${formatTriangles(report.rendering.trianglesAvg)} avg`,
     `  mirror draws: ${report.rendering.mirrorDrawCallsAvg ?? 0} avg`,
     `  geometries: ${report.rendering.geometries ?? report.context.geometries ?? 0}`,
     `  textures: ${report.rendering.textures ?? report.context.textures ?? 0}`,
+    '',
+    'Pass submissions (actual):',
+    passLines,
     '',
     'Scene (one-pass estimate):',
     sceneLines || '  (not sampled)',
@@ -234,7 +294,7 @@ export function formatReport(report: PerfReportJson): string {
     'Critical spikes:',
     spikes,
     '',
-    'Hitches (>= 8 ms):',
+    `Hitches (>= 8 ms): total=${report.hitchCount}`,
     hitchLines || '  (none)',
     '',
     'Isolation probes:',
@@ -247,17 +307,18 @@ export function formatReport(report: PerfReportJson): string {
     '',
     'Long frames:',
     `  threshold: ${report.longFrames?.thresholdMs ?? LONG_FRAME_MS} ms`,
-    `  count: ${report.longFrames?.count ?? 0}`,
+    `  count: ${report.longFrameCount}`,
     `  worst: ${report.longFrames?.worst[0] ? `${report.longFrames.worst[0].frameMs} ms` : '(none)'}`,
+    '',
+    'Raw sidecar:',
+    report.raw
+      ? `  sampling=${report.raw.sampling.mode} factor=${report.raw.sampling.factor} exported=${report.raw.sampling.exportedCount}/${report.raw.sampling.originalCount}`
+      : '  (absent)',
     '',
     'Recommendation:',
     report.recommendation,
-    // Agent-CPU breakdown, appended as its own block after the main report
-    // (the layout `docs/performance/results/` already records). Restores a
-    // section `formatReport` silently stopped emitting — `formatAgentCpuReport`
-    // was still imported here but no longer called, which is exactly what
-    // `report.test.ts`'s `[Seedvale Agent CPU]` assertion was failing on.
-    ...(report.agentCpu ? ['', '---', '', formatAgentCpuReport(report.agentCpu)] : []),
+    // Agent CPU is intentionally NOT embedded here — `getBenchmarkReport`
+    // appends it once to avoid the historical duplicate Markdown section.
   ].join('\n')
 }
 

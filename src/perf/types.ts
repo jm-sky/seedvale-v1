@@ -1,6 +1,10 @@
 import type { AgentCpuReport } from './agentCpuDiag'
+import type { GrassBaselineSnapshot } from './grassBaseline'
 import type { GrassFinalizationReport } from './grassFinalizationDiag'
+import type { PassSubmissionReport } from './passSubmissionCollector'
+import type { PerfRawSidecar } from './rawSidecar'
 import type { AgentDetailCensus, SceneCensus, SettlementShadowCensus } from './sceneCensus'
+import type { TimeDistribution } from './timeDistribution'
 
 /** Categories from plan 103 §2. CPU timers attribute work to these buckets.
  *  SHADOWS / POSTPROCESS are reserved for future GPU-pass splits — today's
@@ -112,6 +116,55 @@ export type ScenarioSettlement = {
   z: number
 }
 
+/** Measurement phase label — warm is the default harness path (preload + 1s).
+ *  Cold / first-use require a separately labelled capture, never inferred. */
+export type BenchmarkPhase = 'cold' | 'warm' | 'first-use' | 'unknown'
+
+export type CameraPose = {
+  position: { x: number; y: number; z: number }
+  quaternion: { x: number; y: number; z: number; w: number }
+}
+
+export type PopulationSnapshot = {
+  npcCount: number
+  faunaCount: number
+  loadedChunks: number
+  settlementFamilyCount?: number | null
+  settlementResidentCount?: number | null
+}
+
+export type GpuTimerStatus = {
+  available: boolean
+  /** Extension supported and at least one sample resolved. */
+  resolved: boolean
+  samples: number
+  /** What the timer spanned — never fabricated ms when unavailable. */
+  querySpan: 'postprocess+labels' | 'unavailable'
+  unresolved: number | null
+  disjoint: number | null
+  skipped: number | null
+  avgMs: number | null
+  p95Ms: number | null
+  maxMs: number | null
+}
+
+export type DeviceMeta = {
+  userAgent: string | null
+  platform: string | null
+  language: string | null
+  webglVendor: string | null
+  webglRenderer: string | null
+  /** Free-form slots for author-filled Arc / driver / power notes. */
+  manual: {
+    gpu?: string | null
+    driver?: string | null
+    os?: string | null
+    browser?: string | null
+    powerThermal?: string | null
+    notes?: string | null
+  }
+}
+
 export type PerfContext = {
   loadedChunks: number
   npcCount: number
@@ -133,6 +186,9 @@ export type PerfContext = {
   weather?: string
   viewportWidth?: number
   viewportHeight?: number
+  /** WebGL drawing buffer pixels (not CSS viewport). */
+  drawingBufferWidth?: number | null
+  drawingBufferHeight?: number | null
   scenarioAnchor?: ScenarioAnchor
   route?: ScenarioRoute
   /** Selected settlement for `settlement-heavy` (plan tools-016). */
@@ -142,6 +198,15 @@ export type PerfContext = {
    *  it captured, per the plan's requirement that OFF/ON captures can't be
    *  confused later. */
   grassMacroVariation?: boolean
+  /** Exact git SHA of the measured bundle (`unavailable` if not injected). */
+  gitSha?: string
+  runId?: string
+  phase?: BenchmarkPhase
+  cameraPose?: CameraPose | null
+  populationStart?: PopulationSnapshot | null
+  populationEnd?: PopulationSnapshot | null
+  device?: DeviceMeta | null
+  gpuTimer?: GpuTimerStatus | null
 }
 
 export type HitchReportRow = {
@@ -238,8 +303,21 @@ export type PerfReportJson = {
   /** false for `current` (no fixed anchor) — excluded from automated
    *  baseline comparisons, still useful as an ad-hoc/debug run. */
   canonical: boolean
+  /** Frames committed to the measured session. */
+  frameCount: number
   fps: { avg: number; min: number; p1: number }
-  frameTime: { avg: number; p95: number; max: number }
+  /** Legacy frameTime fields preserved for compatibility; p50/p99 added. */
+  frameTime: { avg: number; p50: number | null; p95: number; p99: number | null; max: number }
+  /**
+   * Wall-clock distributions. `renderTime` spans the gameLoop render section
+   * (`performance.now`) and may include GPU/driver wait — not pure CPU, and
+   * not a substitute for {@link PerfContext.gpuTimer}.
+   */
+  updateTime: TimeDistribution
+  renderTime: TimeDistribution
+  frameWallTime: TimeDistribution
+  hitchCount: number
+  longFrameCount: number
   rendering: {
     drawCallsAvg: number
     drawCallsMax: number
@@ -256,6 +334,8 @@ export type PerfReportJson = {
   /** Per-family/distance-band NPC/fauna breakdown (plan world-terrain-041),
    *  for choosing/validating presentation-LOD optional-node candidates. */
   agentDetail?: AgentDetailCensus
+  /** Actual per-pass WebGL submissions (A0a/B0). Null when collector disabled. */
+  passSubmissions?: PassSubmissionReport | null
   hitches?: HitchReportRow[]
   isolation?: IsolationProbeRow[]
   systems: Partial<Record<PerfCategory, number>>
@@ -271,4 +351,8 @@ export type PerfReportJson = {
   agentCpu?: AgentCpuReport
   /** Main-thread grass mesh finalization (`buildGrassChunkMeshes` + attach). */
   grassFinalization?: GrassFinalizationReport
+  /** V1 grass/flower resident + lifecycle baseline (C0). */
+  grassBaseline?: GrassBaselineSnapshot | null
+  /** Bounded raw frame series — also published as a sidecar artifact. */
+  raw?: PerfRawSidecar
 }

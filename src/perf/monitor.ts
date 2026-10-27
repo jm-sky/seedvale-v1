@@ -56,9 +56,15 @@ export type SessionTotals = {
   frameMsMin: number
   frameMsMax: number
   frameMs: number[]
+  /** Per-frame simulate (pre-render) wall-clock from `FrameEndInput.simulateMs`. */
+  simulateMs: number[]
+  /** Per-frame render wall-clock from `FrameEndInput.renderMs` (may include GPU wait). */
+  renderWallMs: number[]
   drawCallsSum: number
   drawCallsMax: number
   trianglesSum: number
+  drawCallsSeries: number[]
+  trianglesSeries: number[]
   /** Per-frame `RENDER` category time (`withCategory(monitor, 'RENDER', …)`
    *  in `gameLoop.ts` — postprocess + label render), for isolation probes
    *  that need p95/max, not just the `categoryMsSum` average. */
@@ -72,6 +78,11 @@ export type SessionTotals = {
   mirrorDrawCallsSum: number
   geometriesLast: number
   texturesLast: number
+}
+
+/** Test/fixture helper — empty session with all series arrays present. */
+export function emptySessionTotals(): SessionTotals {
+  return emptySession()
 }
 
 export type PerfMonitor = {
@@ -109,9 +120,13 @@ function emptySession(): SessionTotals {
     frameMsMin: Infinity,
     frameMsMax: 0,
     frameMs: [],
+    simulateMs: [],
+    renderWallMs: [],
     drawCallsSum: 0,
     drawCallsMax: 0,
     trianglesSum: 0,
+    drawCallsSeries: [],
+    trianglesSeries: [],
     renderCategoryMs: [],
     categoryMsSum: new Float64Array(PERF_CATEGORY_COUNT),
     spikeCounts: new Int32Array(PERF_CATEGORY_COUNT),
@@ -279,11 +294,15 @@ export function createPerfMonitor(budgetMs = 1000 / 60): PerfMonitor {
       session.frames++
       session.frameMsSum += lastFrame
       session.frameMs.push(lastFrame)
+      session.simulateMs.push(input.simulateMs)
+      session.renderWallMs.push(input.renderMs)
       session.frameMsMin = Math.min(session.frameMsMin, lastFrame)
       session.frameMsMax = Math.max(session.frameMsMax, lastFrame)
       session.drawCallsSum += input.drawCalls
       session.drawCallsMax = Math.max(session.drawCallsMax, input.drawCalls)
       session.trianglesSum += input.triangles
+      session.drawCallsSeries.push(input.drawCalls)
+      session.trianglesSeries.push(input.triangles)
       session.renderCategoryMs.push(accum[PERF_CATEGORY_INDEX.RENDER]!)
       session.mirrorDrawCallsSum += input.mirrorDrawCalls ?? 0
       session.geometriesLast = input.geometries ?? session.geometriesLast

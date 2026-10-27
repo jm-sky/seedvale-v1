@@ -5,9 +5,18 @@ import type { DayNightState } from '../world/dayNight'
 import type { BenchmarkScenarioId } from './benchmarkScenarios'
 import type { IsolationHost } from './isolationProbe'
 import type { PerfMonitor } from './monitor'
-import type { PerfReportJson, ScenarioSettlement } from './types'
+import type { PassSubmissionCollector } from './passSubmissionCollector'
+import type { PerfReportJson, PopulationSnapshot, ScenarioSettlement } from './types'
 import { worldToChunk } from '../terrain/chunkGrid'
 import { buildAgentCpuReport, formatAgentCpuReport, getAgentCpuDiag } from './agentCpuDiag'
+import { assertArtifactRoundTrip, buildArtifactBundle, type PerfArtifactBundle } from './artifacts'
+import { createRunId, getBuildGitSha } from './buildInfo'
+import { buildGpuTimerStatus, captureDeviceMeta, drawingBufferSize } from './deviceMeta'
+import { getGpuTimer } from './gpuTimer'
+import {
+  formatGrassBaselineReport,
+  getGrassBaselineDiag,
+} from './grassBaseline'
 import {
   buildGrassFinalizationReport,
   formatGrassFinalizationReport,
@@ -19,10 +28,11 @@ import {
 } from './heavySettlementScenario'
 import { formatIsolationReport, runIsolationProbes } from './isolationProbe'
 import { formatLongFrameAttribution } from './longFrameFormat'
+import { formatPassSubmissionReport } from './passSubmissionCollector'
 import { formatProgramAttributionReport, formatProgramCensusReport, formatProgramCompileCostReport, getProgramCensus } from './programCensus'
 import { buildReport, formatReport } from './report'
 import { censusAgentDetail, censusScene, censusSettlementShadowCasters, censusShadowCasters } from './sceneCensus'
-import type { Camera } from 'three'
+import type { Camera, WebGLRenderer } from 'three'
 
 /** Post-preload settle window (plan tools-001 §3) — lets lazy
  *  initialization/first-use costs that `waitForChunks()` doesn't cover (GC,
@@ -78,6 +88,8 @@ export type BenchmarkHost = {
    *  the rest of the render stack uses, not an accessor, since (unlike
    *  `chunkManager`) it is never replaced by a `WorldBundle` rebuild. */
   camera: Camera
+  renderer: WebGLRenderer
+  passCollector: PassSubmissionCollector
 }
 
 function sleep(ms: number): Promise<void> {
@@ -232,13 +244,31 @@ export function createBenchmarkRunner(host: BenchmarkHost): BenchmarkRunner {
           }, STREAM_UPDATE_MS)
         }
 
-        // Phase: measured session.
+        // Phase: measured session (explicit warm — preload + WARMUP_MS above).
+        const runId = createRunId()
+        const gitSha = getBuildGitSha()
+        const populationStart: PopulationSnapshot = {
+          npcCount: monitor.getContext().npcCount,
+          faunaCount: monitor.getContext().faunaCount,
+          loadedChunks: monitor.getContext().loadedChunks,
+          settlementFamilyCount: scenarioSettlement?.familyCount ?? null,
+          settlementResidentCount: scenarioSettlement?.residentCount ?? null,
+        }
         getAgentCpuDiag().reset()
         getGrassFinalizationDiag().reset()
+        getGrassBaselineDiag().reset()
+        host.passCollector.enable(host.renderer)
+        host.passCollector.beginSession()
         monitor.setSource('benchmark', true)
         monitor.beginSession()
-        await sleep(durationSec * 1000)
+        try {
+          await sleep(durationSec * 1000)
+        } finally {
+          // Always tear down collector even if the timed window throws.
+        }
         const totals = monitor.endSession()
+        const passSubmissions = host.passCollector.endSession()
+        host.passCollector.disable()
         const agentCpuTotals = getAgentCpuDiag().snapshot()
         const grassFinalizationTotals = getGrassFinalizationDiag().snapshot()
         if (streamTimer) window.clearInterval(streamTimer)
@@ -250,6 +280,7 @@ export function createBenchmarkRunner(host: BenchmarkHost): BenchmarkRunner {
         // camera-relevance is a point-in-frustum estimate off the same
         // camera the render stack already uses, no extra measurement.
         const agentDetail = censusAgentDetail(host.isolation.scene, player.mesh.position, host.camera)
+        const grassBaseline = getGrassBaselineDiag().snapshotScene(host.isolation.scene)
         // Previously skipped for `stream` — now runs for every scenario so
         // the render-cost breakdown (water/vegetation/postprocessing/mirrors/
         // CPU-GPU separation) is available for the scenario program census
@@ -258,6 +289,13 @@ export function createBenchmarkRunner(host: BenchmarkHost): BenchmarkRunner {
         monitor.setSource('benchmark', false)
 
         const baseContext = monitor.getContext()
+        const populationEnd: PopulationSnapshot = {
+          npcCount: baseContext.npcCount,
+          faunaCount: baseContext.faunaCount,
+          loadedChunks: baseContext.loadedChunks,
+          settlementFamilyCount: scenarioSettlement?.familyCount ?? null,
+          settlementResidentCount: scenarioSettlement?.residentCount ?? null,
+        }
         const agentCpu = buildAgentCpuReport({
           frames: totals.frames,
           totals: agentCpuTotals,
@@ -265,6 +303,8 @@ export function createBenchmarkRunner(host: BenchmarkHost): BenchmarkRunner {
           context: baseContext,
         })
         const grassFinalization = buildGrassFinalizationReport(grassFinalizationTotals)
+        const buf = drawingBufferSize(host.renderer)
+        const cam = host.camera
         const report = buildReport({
           durationSec,
           scenario: id,
@@ -272,6 +312,8 @@ export function createBenchmarkRunner(host: BenchmarkHost): BenchmarkRunner {
           canonical: id !== 'current',
           agentCpu,
           grassFinalization,
+          grassBaseline,
+          passSubmissions,
           context: {
             ...baseContext,
             timeOfDay,
@@ -282,6 +324,24 @@ export function createBenchmarkRunner(host: BenchmarkHost): BenchmarkRunner {
               : undefined,
             viewportWidth: typeof window !== 'undefined' ? window.innerWidth : undefined,
             viewportHeight: typeof window !== 'undefined' ? window.innerHeight : undefined,
+            drawingBufferWidth: buf.width,
+            drawingBufferHeight: buf.height,
+            gitSha,
+            runId,
+            phase: 'warm',
+            cameraPose: {
+              position: { x: cam.position.x, y: cam.position.y, z: cam.position.z },
+              quaternion: {
+                x: cam.quaternion.x,
+                y: cam.quaternion.y,
+                z: cam.quaternion.z,
+                w: cam.quaternion.w,
+              },
+            },
+            populationStart,
+            populationEnd,
+            device: captureDeviceMeta(host.renderer),
+            gpuTimer: buildGpuTimerStatus(getGpuTimer()),
           },
           scene,
           shadowCasters,
@@ -293,6 +353,8 @@ export function createBenchmarkRunner(host: BenchmarkHost): BenchmarkRunner {
         console.log(report)
         if (agentCpu) console.log(formatAgentCpuReport(agentCpu))
         if (grassFinalization) console.log(formatGrassFinalizationReport(grassFinalization))
+        console.log(formatGrassBaselineReport(grassBaseline))
+        console.log(formatPassSubmissionReport(passSubmissions))
         console.log(formatLongFrameAttribution(report.longFrames))
         // Plan 149 Phase 0 program-census diagnostic (docs/performance/audits/
         // 2026-09-01--program-census.md) — the census (`?programCensus=1` or
@@ -323,6 +385,8 @@ export function createBenchmarkRunner(host: BenchmarkHost): BenchmarkRunner {
             'Seedvale Benchmark',
             agentCpu ? 'Seedvale Agent CPU' : undefined,
             grassFinalization ? 'Seedvale Grass Finalization' : undefined,
+            'Seedvale Grass Baseline',
+            'Seedvale Pass Submissions',
             'Seedvale Long Frame Attribution',
             programCensus.enabled ? 'Seedvale Program Census' : undefined,
             programCensus.enabled ? 'Seedvale Program Attribution' : undefined,
@@ -340,6 +404,7 @@ export function createBenchmarkRunner(host: BenchmarkHost): BenchmarkRunner {
           content.push(formatReport(report))
           content.push('\n---\n')
 
+          // Agent CPU once here only — `formatReport` no longer embeds it.
           if (agentCpu) {
             content.push(formatAgentCpuReport(agentCpu))
             content.push('\n---\n')
@@ -349,6 +414,11 @@ export function createBenchmarkRunner(host: BenchmarkHost): BenchmarkRunner {
             content.push(formatGrassFinalizationReport(grassFinalization))
             content.push('\n---\n')
           }
+
+          content.push(formatGrassBaselineReport(grassBaseline))
+          content.push('\n---\n')
+          content.push(formatPassSubmissionReport(passSubmissions))
+          content.push('\n---\n')
 
           content.push(formatLongFrameAttribution(report.longFrames))
           content.push('\n---\n')
@@ -372,15 +442,26 @@ export function createBenchmarkRunner(host: BenchmarkHost): BenchmarkRunner {
           navigator.clipboard.writeText(getBenchmarkReport())
         }
 
+        const markdown = getBenchmarkReport()
+        const artifacts = buildArtifactBundle({
+          report,
+          markdown,
+          hardwareClass: 'unknown',
+          notes: 'Harness capture — set hardwareClass to target-gpu only on verified Arc/real-GPU runs.',
+        })
+        assertArtifactRoundTrip(artifacts)
+
         if (typeof window !== 'undefined') {
           window.__seedvalePerfLastReport = report
           const previous = window.__seedvalePerfReports ?? []
           window.__seedvalePerfReports = [...previous, report]
+          window.__seedvalePerfLastArtifacts = artifacts
           window.__copyBenchmarkReport = copyBenchmarkReport
           window.__getBenchmarkReport = getBenchmarkReport
         }
         return report
       } finally {
+        host.passCollector.disable()
         if (saved.preset === 'Low' || saved.preset === 'Medium' || saved.preset === 'High') {
           host.applyQualityPreset(saved.preset)
         }
@@ -396,6 +477,7 @@ declare global {
   interface Window {
     __seedvalePerfLastReport?: PerfReportJson
     __seedvalePerfReports?: PerfReportJson[]
+    __seedvalePerfLastArtifacts?: PerfArtifactBundle
     __seedvaleRunBenchmark?: (id: BenchmarkScenarioId, durationSec?: number) => Promise<PerfReportJson | null>
     __copyBenchmarkReport?: () => void
     __getBenchmarkReport?: () => string

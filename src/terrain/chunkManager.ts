@@ -13,6 +13,7 @@ import { disposeObject3D } from '../assets/loadGltf'
 import { isSystemEnabled } from '../debug/debugMode'
 import { createItemMesh, type ItemKind } from '../items/items'
 import { getMonitor } from '../perf/active'
+import { getGrassBaselineDiag } from '../perf/grassBaseline'
 import { getGrassFinalizationDiag, readJsHeapUsedBytes } from '../perf/grassFinalizationDiag'
 import { withCategory, withStage } from '../perf/monitor'
 import { getProgramCensus } from '../perf/programCensus'
@@ -1619,6 +1620,7 @@ export function createChunkManager(
     const coord = record.coord
     const { x, z } = chunkCenter(coord, config.chunkSize)
     record.grassPending = true
+    getGrassBaselineDiag().recordRequest()
 
     const params: GrassRequestParams = {
       cx: coord.cx,
@@ -1648,14 +1650,17 @@ export function createChunkManager(
         const rec = chunks.get(key)
         if (!rec) {
           getGrassFinalizationDiag().recordDiscarded('unloaded')
+          getGrassBaselineDiag().recordDiscard('unloaded')
           return
         }
         rec.grassPending = false
         const dist = chebyshevDistance(coord, lastPlayerChunk)
         if (dist > grassUnloadRadius) {
           getGrassFinalizationDiag().recordDiscarded('outOfRange')
+          getGrassBaselineDiag().recordDiscard('outOfRange')
           return
         }
+        getGrassBaselineDiag().recordCompletion()
         const diag = getGrassFinalizationDiag()
         const timed = diag.isEnabled()
         const tCallback0 = timed ? performance.now() : 0
@@ -1673,6 +1678,7 @@ export function createChunkManager(
           if (timed) diag.recordLodApply(performance.now() - tLod0, grass.geometryCount())
           const tAttach0 = timed ? performance.now() : 0
           if (isSystemEnabled('grass')) scene.add(grass.mesh)
+          getGrassBaselineDiag().recordStreamIn()
           if (timed) diag.recordSceneAttach(performance.now() - tAttach0)
           if (timed) {
             const heap1 = readJsHeapUsedBytes()
@@ -1691,11 +1697,13 @@ export function createChunkManager(
   }
 
   function removeGrass(record: ChunkRecord): void {
+    if (record.grass) getGrassBaselineDiag().recordStreamOut()
     record.grass?.dispose()
     record.grass = undefined
     if (record.grassPending) {
       cancelChunkGrass(record.key)
       record.grassPending = false
+      getGrassBaselineDiag().recordCancel()
     }
   }
 

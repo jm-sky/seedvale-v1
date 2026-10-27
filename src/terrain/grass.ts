@@ -650,6 +650,11 @@ export function createGrassSystem(): GrassSystem {
       mesh.castShadow = false
       mesh.receiveShadow = false
       mesh.name = `chunk-grass-${id}`
+      // Diagnostic tags for C0 grass baseline (resident vs submitted) — no
+      // gameplay/render behaviour change.
+      mesh.userData.grassFullCount = bucket.count
+      mesh.userData.grassFiller = isFiller
+      mesh.userData.grassSpecies = id
       // Skipped by the water mirror: grass is by far the heaviest bucket
       // (~2.4M of the scene's ~5.7M triangles at 84k instances) and a blade is
       // far below one texel of the 128² reflection target, which itself

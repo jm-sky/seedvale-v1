@@ -8,6 +8,15 @@ import type { WebGLRenderer } from 'three'
  *  the extension isn't exposed (older GPU/driver, some sandboxed/virtualized
  *  contexts, a WebGL1 fallback) — callers must show that as an explicit
  *  limitation, never estimate/fake a number in its place. */
+export type GpuTimerProvenance = {
+  available: boolean
+  samples: number
+  unresolved: number
+  disjointEvents: number
+  skipped: number
+  querySpan: 'postprocess+labels' | 'unavailable'
+}
+
 export type GpuTimer = {
   readonly available: boolean
   /** Opens a `TIME_ELAPSED_EXT` query spanning until the matching
@@ -25,6 +34,8 @@ export type GpuTimer = {
    *  before a new probe's sampling window starts. */
   reset: () => void
   samples: () => readonly number[]
+  /** Explicit availability / drop provenance for report export. */
+  provenance: () => GpuTimerProvenance
   dispose: () => void
 }
 
@@ -43,6 +54,14 @@ const NOOP_TIMER: GpuTimer = {
   poll: () => {},
   reset: () => {},
   samples: () => [],
+  provenance: () => ({
+    available: false,
+    samples: 0,
+    unresolved: 0,
+    disjointEvents: 0,
+    skipped: 0,
+    querySpan: 'unavailable',
+  }),
   dispose: () => {},
 }
 
@@ -66,12 +85,15 @@ export function createGpuTimer(renderer: WebGLRenderer, enabled: boolean): GpuTi
   let pending: WebGLQuery[] = []
   let samples: number[] = []
   let open: WebGLQuery | null = null
+  let disjointEvents = 0
+  let skipped = 0
 
   function drain(): void {
     // A disjoint event (GPU reset/throttle/driver hiccup) invalidates every
     // result since the last check — discard the whole pending batch rather
     // than report numbers that may not correspond to what was measured.
     if (gl.getParameter(GPU_DISJOINT_EXT)) {
+      disjointEvents += 1
       for (const q of pending) gl.deleteQuery(q)
       pending = []
       return
@@ -90,9 +112,15 @@ export function createGpuTimer(renderer: WebGLRenderer, enabled: boolean): GpuTi
     available: true,
     beginFrame() {
       if (open) return // defensive: one begin/end pair per frame, should not double-open
-      if (pending.length >= MAX_PENDING) return // pipeline backed up — skip rather than grow unbounded
+      if (pending.length >= MAX_PENDING) {
+        skipped += 1
+        return // pipeline backed up — skip rather than grow unbounded
+      }
       const q = gl.createQuery()
-      if (!q) return
+      if (!q) {
+        skipped += 1
+        return
+      }
       gl.beginQuery(TIME_ELAPSED_EXT, q)
       open = q
     },
@@ -107,8 +135,18 @@ export function createGpuTimer(renderer: WebGLRenderer, enabled: boolean): GpuTi
     },
     reset() {
       samples = []
+      disjointEvents = 0
+      skipped = 0
     },
     samples: () => samples,
+    provenance: () => ({
+      available: true,
+      samples: samples.length,
+      unresolved: pending.length + (open ? 1 : 0),
+      disjointEvents,
+      skipped,
+      querySpan: 'postprocess+labels',
+    }),
     dispose() {
       if (open) {
         gl.endQuery(TIME_ELAPSED_EXT)

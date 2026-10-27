@@ -38,6 +38,15 @@ function gitCommitHash(): string {
   }
 }
 
+/** Full SHA for benchmark provenance — never invent at report time. */
+function gitCommitHashFull(): string {
+  try {
+    return execSync('git rev-parse HEAD').toString().trim()
+  } catch {
+    return 'unavailable'
+  }
+}
+
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, rootDir, '')
   return {
@@ -46,6 +55,7 @@ export default defineConfig(({ mode }) => {
       __APP_VERSION__: JSON.stringify(pkg.version),
       __BUILD_DATE__: JSON.stringify(formatBuildDate(new Date())),
       __GIT_COMMIT__: JSON.stringify(gitCommitHash()),
+      __GIT_COMMIT_FULL__: JSON.stringify(gitCommitHashFull()),
     },
     resolve: {
       alias: {

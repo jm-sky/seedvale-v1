@@ -117,7 +117,7 @@ import { isInstanceBackedKind, isWeaponItemInstance } from '../items/itemInstanc
 import { isLiquidContainerInstance, LIQUID_CONTAINER_KIND_LIST } from '../items/itemInstances'
 import { ITEM_DEFS, type ItemKind } from '../items/items'
 import { applySharpnessWear, getSharpnessDamageModifier, getWeaponMaintenanceProfile } from '../items/weaponMaintenance'
-import { getGpuTimer, getMonitor, getProgramCensus, withCategory, withProgramCensusStage } from '../perf'
+import { getGpuTimer, getMonitor, getPassSubmissionCollector, getProgramCensus, withCategory, withProgramCensusStage } from '../perf'
 import { buildCharacterPresentation } from '../player/characterPresentation'
 import {
   medicalTreatmentPromptLabel,
@@ -3120,10 +3120,14 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
     syncPointLightBudget?.()
     const renderStart = performance.now()
     renderer.info.reset()
+    const passCollector = getPassSubmissionCollector()
+    passCollector?.beginFrame()
     postProcessing.applyFrameBudget(lastRenderMs)
     withCategory(monitor, 'WATER', () => {
       withProgramCensusStage(programCensus, 'mirror-render', () => {
-        bundle.ocean.renderMirror(renderer, scene, camera)
+        const runMirror = () => bundle.ocean.renderMirror(renderer, scene, camera)
+        if (passCollector?.isEnabled()) passCollector.withPass('mirror', null, runMirror)
+        else runMirror()
       })
     })
     const mirrorDrawCalls = renderer.info.render.calls
@@ -3141,6 +3145,7 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
       hasNearbyShadowCaster(shadowPlayerX, shadowPlayerZ),
     )
     if (shadowWanted) renderer.shadowMap.needsUpdate = true
+    passCollector?.noteShadowRefresh(shadowWanted)
     recordShadowBudgetFrame(shadowBudgetState, shadowPlayerX, shadowPlayerZ, shadowWanted)
     postProcessing.updateGodRays(camera, sky.sunPosition, cachedSky.elev)
     withCategory(monitor, 'RENDER', () => {
@@ -3149,11 +3154,16 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
       // CPU wall-clock one (`isolationProbe.ts`'s CPU/GPU separation).
       gpuTimer.beginFrame()
       withProgramCensusStage(programCensus, 'postprocess-render', () => {
-        postProcessing.render()
+        const runBeauty = () => {
+          postProcessing.render()
+        }
+        if (passCollector?.isEnabled()) passCollector.withPass('main', camera, runBeauty)
+        else runBeauty()
       })
       labelRenderer.render(scene, camera)
       gpuTimer.endFrame()
     })
+    passCollector?.endFrame()
     const renderEnd = performance.now()
     const simulateMs = renderStart - frameStart
     const renderMs = renderEnd - renderStart

@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { buildAgentCpuReport, emptyAgentCpuDiagTotals } from './agentCpuDiag'
+import { buildAgentCpuReport, emptyAgentCpuDiagTotals, formatAgentCpuReport } from './agentCpuDiag'
 import { formatLongFrameAttribution } from './longFrameFormat'
 import { createPerfMonitor } from './monitor'
 import { buildReport, formatReport } from './report'
@@ -103,6 +103,10 @@ describe('buildReport', () => {
         drawCallsSum: 10000,
         drawCallsMax: 1200,
         trianglesSum: 10_000_000,
+        simulateMs: [],
+        renderWallMs: [],
+        drawCallsSeries: [],
+        trianglesSeries: [],
         renderCategoryMs: [],
         categoryMsSum,
         spikeCounts: new Int32Array(PERF_CATEGORY_COUNT),
@@ -150,6 +154,10 @@ describe('buildReport', () => {
         drawCallsSum: 10000,
         drawCallsMax: 1200,
         trianglesSum: 10_000_000,
+        simulateMs: [],
+        renderWallMs: [],
+        drawCallsSeries: [],
+        trianglesSeries: [],
         renderCategoryMs: [],
         categoryMsSum: new Float64Array(PERF_CATEGORY_COUNT),
         spikeCounts: new Int32Array(PERF_CATEGORY_COUNT),
@@ -183,6 +191,10 @@ describe('buildReport', () => {
         drawCallsSum: 3000,
         drawCallsMax: 200,
         trianglesSum: 1_000_000,
+        simulateMs: [],
+        renderWallMs: [],
+        drawCallsSeries: [],
+        trianglesSeries: [],
         renderCategoryMs: [],
         categoryMsSum,
         spikeCounts: new Int32Array(PERF_CATEGORY_COUNT),
@@ -262,6 +274,10 @@ describe('buildReport', () => {
         drawCallsSum: 10000,
         drawCallsMax: 1200,
         trianglesSum: 10_000_000,
+        simulateMs: [],
+        renderWallMs: [],
+        drawCallsSeries: [],
+        trianglesSeries: [],
         renderCategoryMs: [],
         categoryMsSum,
         spikeCounts: new Int32Array(PERF_CATEGORY_COUNT),
@@ -274,7 +290,11 @@ describe('buildReport', () => {
         texturesLast: 0,
       },
     })
-    const text = formatReport(report)
+    // Agent CPU is no longer embedded in formatReport (avoids duplicate MD
+    // when getBenchmarkReport appends it once).
+    expect(report.agentCpu).toBeTruthy()
+    expect(formatReport(report)).not.toContain('[Seedvale Agent CPU]')
+    const text = formatAgentCpuReport(agentCpu!)
     expect(text).toContain('[Seedvale Agent CPU]')
     expect(text).toContain('crowd pass:')
     expect(text).toContain('livestock:')
@@ -297,6 +317,10 @@ describe('buildReport', () => {
         drawCallsSum: 200,
         drawCallsMax: 120,
         trianglesSum: 1_000_000,
+        simulateMs: [16, 2080],
+        renderWallMs: [0, 33],
+        drawCallsSeries: [100, 100],
+        trianglesSeries: [500000, 500000],
         renderCategoryMs: [],
         categoryMsSum,
         spikeCounts: new Int32Array(PERF_CATEGORY_COUNT),
@@ -349,6 +373,10 @@ describe('buildReport', () => {
         drawCallsSum: 200,
         drawCallsMax: 120,
         trianglesSum: 1_000_000,
+        simulateMs: [],
+        renderWallMs: [],
+        drawCallsSeries: [],
+        trianglesSeries: [],
         renderCategoryMs: [],
         categoryMsSum,
         spikeCounts: new Int32Array(PERF_CATEGORY_COUNT),
@@ -401,6 +429,10 @@ describe('buildReport', () => {
         drawCallsSum: 200,
         drawCallsMax: 120,
         trianglesSum: 1_000_000,
+        simulateMs: [],
+        renderWallMs: [],
+        drawCallsSeries: [],
+        trianglesSeries: [],
         renderCategoryMs: [],
         categoryMsSum,
         spikeCounts: new Int32Array(PERF_CATEGORY_COUNT),
@@ -450,6 +482,10 @@ describe('buildReport', () => {
         drawCallsSum: 10000,
         drawCallsMax: 1200,
         trianglesSum: 10_000_000,
+        simulateMs: [],
+        renderWallMs: [],
+        drawCallsSeries: [],
+        trianglesSeries: [],
         renderCategoryMs: [],
         categoryMsSum,
         spikeCounts: new Int32Array(PERF_CATEGORY_COUNT),
@@ -495,6 +531,10 @@ describe('buildReport', () => {
         drawCallsSum: 10000,
         drawCallsMax: 1200,
         trianglesSum: 10_000_000,
+        simulateMs: [],
+        renderWallMs: [],
+        drawCallsSeries: [],
+        trianglesSeries: [],
         renderCategoryMs: [],
         categoryMsSum,
         spikeCounts: new Int32Array(PERF_CATEGORY_COUNT),
