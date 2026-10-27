@@ -46,7 +46,7 @@ export interface V3EquipmentProvenance {
 
 /**
  * Verified local donor HEAD on 2026-10-27, not a freshly fetched remote.
- * All four source paths are unchanged since reconRevision. No records imported.
+ * All four source paths are unchanged since reconRevision. Stage 2 preserves the resolved records.
  */
 export const V3_EQUIPMENT_PROVENANCE: V3EquipmentProvenance = Object.freeze({
   repository: 'jm-sky/seedvale',

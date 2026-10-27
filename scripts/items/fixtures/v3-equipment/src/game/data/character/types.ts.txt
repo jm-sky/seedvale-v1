@@ -1,0 +1,60 @@
+/**
+ * Character contract: attributes (base, 1-10) and skills (practised, continuous 0-100.0, no levels or XP).
+ * @domain character
+ */
+
+export type AttrId = 'str' | 'per' | 'end' | 'cha' | 'int' | 'agi'
+
+export type SkillId =
+  | 'medicine'
+  | 'sneak'
+  | 'survival'
+  | 'traps'
+  | 'melee'
+  | 'ranged'
+  | 'construction'
+  | 'blacksmith'
+  | 'woodcutting'
+  | 'mining'
+  | 'farming'
+  | 'trade'
+  | 'riding'
+
+export type SkillCategory = 'combat' | 'craft' | 'field' | 'social'
+
+export type Attributes = Record<AttrId, number>
+export type Skills = Record<SkillId, number>
+
+/** One way a skill grows. `ceiling`: the source stops giving anything once the skill reaches it (practice has a limit). */
+export interface TrainingSource {
+  id: string
+  skill: SkillId
+  label: string
+  /** 0..1; harder practice gives more (`skillGain`). */
+  difficulty: number
+  /** Multiplier for one occurrence of the event. */
+  amount: number
+  ceiling?: number
+}
+
+export interface SkillDef {
+  id: SkillId
+  name: string
+  category: SkillCategory
+  /** Value of a new character. 0 only where the skill needs something the player cannot have at the start. */
+  start: number
+  description: string
+}
+
+export interface AttrDef {
+  id: AttrId
+  name: string
+  description: string
+}
+
+export interface CharacterState {
+  attrs: Attributes
+  skills: Skills
+  /** Seconds of heavy carrying accumulated towards the next point of strength. */
+  strTrain: number
+}

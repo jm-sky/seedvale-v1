@@ -1,0 +1,11 @@
+{
+  "repository": "jm-sky/seedvale",
+  "sourceRevision": "907e17cd2ad487547a25a1f928b2770348183d75",
+  "blobs": {
+    "src/game/data/items/types.ts": "3d945658772c450f4832b31276af2b96bf20a5cf",
+    "src/game/data/items/weapons.ts": "a6de03c815af43b4e39f79027748b8b8d2a83858",
+    "src/game/data/items/armor.ts": "584c9cbf9cc612f735e21af2d73a6d6669b47231",
+    "src/game/data/items/catalog.ts": "217aeac6533fb0495fec8b768af7dc77ffe4c5f3",
+    "src/game/data/character/types.ts": "53b7bff4036da23aa5f66ab7ce7c15ac0a86ae05"
+  }
+}

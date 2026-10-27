@@ -1,4 +1,5 @@
 import { readdirSync, readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import ts from 'typescript'
 import { describe, expect, expectTypeOf, it } from 'vitest'
@@ -7,6 +8,8 @@ import type { ItemKind } from '../items'
 import type { EquipmentCompatibilityResult, EquipmentPropertyPath, VerifiedV1Target } from './compatibilityTypes'
 import type { AmmoItem, ArmorItem, ItemBase, ItemTier, MeleeWeapon, RangedWeapon, Resist, ShieldItem, V3EquipmentDefinition } from './types'
 import { V3_EQUIPMENT_PROVENANCE } from './provenance'
+
+type KeysOfUnion<T> = T extends unknown ? keyof T : never
 
 // Synthetic contract fixtures, deliberately not donor catalogue records.
 const base = {
@@ -81,7 +84,10 @@ describe('V3 equipment source contract', () => {
   it('separates definition tier and source IDs from V1 instance quality and identity', () => {
     expectTypeOf<ItemTier>().toEqualTypeOf<'common' | 'legendary' | 'masterwork'>()
     expectTypeOf<ItemTier>().not.toEqualTypeOf<ArmorQuality>()
-    expectTypeOf<Extract<keyof V3EquipmentDefinition, 'quality' | 'itemId' | 'count' | 'edge'>>().toEqualTypeOf<never>()
+    type InstanceState = 'quality' | 'itemId' | 'count' | 'edge' | 'condition' | 'currentCondition' | 'currentDurability'
+    expectTypeOf<Extract<KeysOfUnion<V3EquipmentDefinition>, InstanceState>>().toEqualTypeOf<never>()
+    // Prove the guard sees a field added to only one variant (keyof a union would miss it).
+    expectTypeOf<Extract<KeysOfUnion<V3EquipmentDefinition | (MeleeWeapon & { edge: number })>, InstanceState>>().toEqualTypeOf<'edge'>()
     expectTypeOf<V3EquipmentDefinition['id']>().toEqualTypeOf<string>()
     expectTypeOf<VerifiedV1Target['id']>().toEqualTypeOf<ItemKind>()
   })
@@ -134,18 +140,19 @@ describe('V3 equipment source contract', () => {
     expect(inactive.activation).toBe('inactive')
   })
 
-  it('keeps production imports type-only and all runtime dependencies inside this module', () => {
+  it('keeps runtime dependencies inside this module and excludes gameplay importers', () => {
     const directory = fileURLToPath(new URL('.', import.meta.url))
     const files = readdirSync(directory).filter(name => name.endsWith('.ts') && !name.endsWith('.test.ts'))
-    expect(files.sort()).toEqual(['compatibilityTypes.ts', 'provenance.ts', 'types.ts'])
+    expect(files.sort()).toEqual(['catalogue.ts', 'compatibilityTypes.ts', 'provenance.ts', 'types.ts'])
     for (const file of files) {
       const source = ts.createSourceFile(file, readFileSync(`${directory}/${file}`, 'utf8'), ts.ScriptTarget.Latest, true)
       const check = (node: ts.Node): void => {
         if (ts.isImportDeclaration(node)) expect(node.importClause?.isTypeOnly).toBe(true)
         if (ts.isExportDeclaration(node)) expect(node.moduleSpecifier).toBeUndefined()
         if (ts.isCallExpression(node)) {
-          // Object.freeze is the only initialization; no dynamic imports/require/calls into gameplay.
-          expect(node.expression.getText(source)).toBe('Object.freeze')
+          // Only freezing owned literals and building the private canonical lookup are allowed.
+          expect(['Object.freeze', 'Object.values', 'deepFreeze', 'V3_EQUIPMENT_DEFINITIONS.map', 'byId.get'])
+            .toContain(node.expression.getText(source))
         }
         ts.forEachChild(node, check)
       }
@@ -155,6 +162,19 @@ describe('V3 equipment source contract', () => {
       }).outputText
       expect(emitted).not.toMatch(/\b(?:import|require)\s*[("'{*]/)
     }
+    const sourceRoot = fileURLToPath(new URL('../..', import.meta.url))
+    const scan = (directory: string): void => {
+      for (const entry of readdirSync(directory, { withFileTypes: true })) {
+        const path = resolve(directory, entry.name)
+        if (path === fileURLToPath(new URL('.', import.meta.url)).replace(/\/$/, '')) continue
+        if (entry.isDirectory()) scan(path)
+        else if (/\.(?:ts|vue)$/.test(entry.name) && !entry.name.endsWith('.test.ts')) {
+          const text = readFileSync(path, 'utf8')
+          expect(text, `Unexpected gameplay consumer: ${path}`).not.toMatch(/v3Equipment/)
+        }
+      }
+    }
+    scan(sourceRoot)
   })
 
   it('retains the approved count baseline in frozen provenance metadata', () => {
