@@ -9,6 +9,7 @@ import type { SkillId } from '../../../player/PlayerSkills'
 import type { CharacterReputationView } from '../../store'
 import CharacterPanel from '../../components/CharacterPanel.vue'
 import SkillsActionCards from '../../components/SkillsActionCards.vue'
+import DemoShell from '../DemoShell.vue'
 import {
   characterCriticalFixture,
   characterHealthyFixture,
@@ -92,17 +93,14 @@ function onSelectTargeted(id: SkillId): void {
 </script>
 
 <template>
-  <div class="min-h-dvh bg-[oklch(0.2_0.015_60)] p-4 text-neutral-200">
-    <header class="mx-auto mb-4 max-w-4xl">
-      <p class="text-xs uppercase tracking-wide text-amber-200/80">
-        Demo Stage D — Character / Skills (bez świata / save)
-      </p>
-      <h1 class="text-lg font-semibold text-neutral-100">
-        Te same leaves co live CharacterScreen / SkillsScreen
-      </h1>
-      <p class="mt-1 text-sm text-neutral-400">
-        Callbacki lokalne — brak PlayerSkills runtime / WorldBundle / save.
-      </p>
+  <DemoShell
+    current="character"
+    title="Character (demo)"
+  >
+    <details class="rounded-lg border border-neutral-800 bg-neutral-900/40 p-3 text-sm">
+      <summary class="cursor-pointer text-neutral-400 hover:text-neutral-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
+        Demo controls
+      </summary>
       <div class="mt-3 flex flex-wrap gap-2">
         <button
           v-for="s in DEMO_SCENARIOS"
@@ -122,9 +120,20 @@ function onSelectTargeted(id: SkillId): void {
           Reset
         </button>
       </div>
-    </header>
+      <ul
+        v-if="log.length"
+        class="mt-3 space-y-1 font-mono text-xs text-neutral-500"
+      >
+        <li
+          v-for="(line, i) in log"
+          :key="i"
+        >
+          {{ line }}
+        </li>
+      </ul>
+    </details>
 
-    <div class="mx-auto flex max-w-4xl justify-center">
+    <div class="flex w-full justify-center">
       <CharacterPanel
         v-if="scenario.kind === 'character'"
         :hp="characterData.hp"
@@ -148,17 +157,5 @@ function onSelectTargeted(id: SkillId): void {
         @select-targeted="onSelectTargeted"
       />
     </div>
-
-    <ul
-      v-if="log.length"
-      class="mx-auto mt-4 max-w-4xl space-y-1 font-mono text-xs text-neutral-500"
-    >
-      <li
-        v-for="(line, i) in log"
-        :key="i"
-      >
-        {{ line }}
-      </li>
-    </ul>
-  </div>
+  </DemoShell>
 </template>

@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { CheckIcon } from '@lucide/vue'
-import { LockIcon } from 'lucide-vue-next'
+/**
+ * Stage F (ui-input-044): V3 TransactionPanel chrome; V1 Handluj + Polish summary.
+ * @domain ui
+ */
 import { ref } from 'vue'
-import UiButton from '@/components/UiButton.vue'
 import type { ItemKind } from '../../items/items'
 import { useTouchScroll } from '../composables/useTouchScroll'
+import { formatCoins } from '../lib/formatCoins'
 
 export type TransactionLine = {
   kind: ItemKind
@@ -21,6 +23,8 @@ const props = defineProps<{
   netCoins: number
   coins: number
   canTrade: boolean
+  /** Why Handluj is disabled (amber); optional. */
+  problem?: string
 }>()
 
 const emit = defineEmits<{
@@ -35,39 +39,47 @@ useTouchScroll(list)
 function afterTrade(): number {
   return props.coins - props.netCoins
 }
+
+const removeClass = 'border-transparent bg-transparent px-0 py-0 text-xs text-neutral-500 hover:text-neutral-100'
+const netLabel = () => {
+  if (props.netCoins > 0) return 'Do zapłaty'
+  if (props.netCoins < 0) return 'Otrzymasz'
+  return 'Równo'
+}
 </script>
 
 <template>
-  <div class="flex min-h-0 flex-1 flex-col">
-    <h3 class="mb-2 shrink-0 text-[12px] font-semibold uppercase tracking-wide opacity-70 max-md:text-[11px]">
+  <section class="flex min-h-0 flex-col gap-2">
+    <h2 class="shrink-0 text-lg font-semibold text-neutral-100">
       Transakcja
-    </h3>
+    </h2>
     <div
       ref="list"
-      class="min-h-0 flex-1 space-y-2 overflow-y-auto"
+      class="max-h-72 min-h-16 flex-1 space-y-2 overflow-y-auto"
       style="touch-action: pan-y"
     >
-      <div
+      <p
         v-if="purchases.length === 0 && offerItems.length === 0"
-        class="text-[12px] opacity-60"
+        class="text-sm text-neutral-500"
       >
         Wybierz towary do kupienia lub oferowane przedmioty.
-      </div>
+      </p>
       <div v-if="purchases.length > 0">
-        <div class="mb-1 text-[11px] opacity-60">
+        <p class="mb-1 text-xs text-neutral-500">
           BUY
-        </div>
+        </p>
         <div
           v-for="line in purchases"
           :key="`buy-${line.instanceId ?? line.kind}`"
-          class="flex items-center justify-between gap-2 rounded bg-white/5 px-2 py-1 text-sm"
+          class="flex items-center justify-between gap-2 rounded bg-neutral-800/60 px-2 py-1 text-sm"
         >
-          <span class="min-w-0 truncate capitalize">{{ line.label }} ×{{ line.count }}</span>
+          <span class="min-w-0 truncate capitalize text-neutral-100">{{ line.label }} ×{{ line.count }}</span>
           <span class="flex shrink-0 items-center gap-2">
-            <span class="text-[12px] opacity-70">{{ line.totalValue }}</span>
+            <span class="text-xs text-neutral-300 tabular-nums">{{ formatCoins(line.totalValue) }}</span>
             <button
               type="button"
-              class="cursor-pointer text-[11px] opacity-60 hover:opacity-100"
+              :class="removeClass"
+              :aria-label="`Usuń ${line.label}`"
               @click="emit('remove-purchase', line.kind, line.instanceId)"
             >
               ✕
@@ -76,20 +88,21 @@ function afterTrade(): number {
         </div>
       </div>
       <div v-if="offerItems.length > 0">
-        <div class="mb-1 text-[11px] opacity-60">
+        <p class="mb-1 text-xs text-neutral-500">
           OFFER
-        </div>
+        </p>
         <div
           v-for="line in offerItems"
           :key="`offer-${line.kind}`"
-          class="flex items-center justify-between gap-2 rounded bg-white/5 px-2 py-1 text-sm"
+          class="flex items-center justify-between gap-2 rounded bg-neutral-800/60 px-2 py-1 text-sm"
         >
-          <span class="min-w-0 truncate capitalize">{{ line.label }} ×{{ line.count }}</span>
+          <span class="min-w-0 truncate capitalize text-neutral-100">{{ line.label }} ×{{ line.count }}</span>
           <span class="flex shrink-0 items-center gap-2">
-            <span class="text-[12px] opacity-70">−{{ line.totalValue }}</span>
+            <span class="text-xs text-neutral-300 tabular-nums">−{{ formatCoins(line.totalValue) }}</span>
             <button
               type="button"
-              class="cursor-pointer text-[11px] opacity-60 hover:opacity-100"
+              :class="removeClass"
+              :aria-label="`Usuń ${line.label}`"
               @click="emit('remove-offer', line.kind)"
             >
               ✕
@@ -99,36 +112,41 @@ function afterTrade(): number {
       </div>
     </div>
 
-    <div class="mt-2 shrink-0 space-y-1 border-t border-white/10 pt-2 text-sm">
-      <div class="flex items-center justify-between">
-        <span>{{ netCoins > 0 ? 'To pay' : 'You receive' }}</span>
-        <span class="font-semibold">{{ Math.abs(netCoins) }} monet</span>
+    <dl class="space-y-1 border-t border-neutral-800 pt-2 text-sm">
+      <div class="flex justify-between text-neutral-100">
+        <dt>{{ netLabel() }}</dt>
+        <dd class="font-semibold tabular-nums">
+          {{ formatCoins(Math.abs(netCoins)) }}
+        </dd>
       </div>
-      <div class="flex items-center justify-between text-[12px] opacity-70">
-        <span>Twoje monety</span>
-        <span>{{ coins }}</span>
+      <div class="flex justify-between text-xs text-neutral-400">
+        <dt>Twoja sakiewka</dt>
+        <dd class="tabular-nums">
+          {{ formatCoins(coins) }}
+        </dd>
       </div>
-      <div class="flex items-center justify-between text-[12px] opacity-70">
-        <span>Po transakcji</span>
-        <span>{{ afterTrade() }}</span>
+      <div class="flex justify-between text-xs text-neutral-400">
+        <dt>Po transakcji</dt>
+        <dd class="tabular-nums">
+          {{ formatCoins(afterTrade()) }}
+        </dd>
       </div>
-      <UiButton
-        class="mt-2 w-full"
-        label="Handluj"
-        :disabled="!canTrade"
-        :class="canTrade ? '' : 'opacity-50'"
-        @click="emit('trade')"
-      >
-        <CheckIcon
-          v-if="canTrade"
-          class="size-4 mr-2"
-        />
-        <LockIcon
-          v-else
-          class="size-4 mr-2"
-        />
-        Handluj
-      </UiButton>
-    </div>
-  </div>
+    </dl>
+    <p
+      v-if="problem"
+      id="merchant-transaction-problem"
+      class="text-xs text-amber-400"
+    >
+      {{ problem }}
+    </p>
+    <button
+      type="button"
+      class="w-full rounded-md border border-neutral-600 bg-primary/90 px-3 py-1.5 text-sm font-medium text-neutral-950 hover:bg-primary disabled:cursor-not-allowed disabled:border-neutral-700 disabled:bg-neutral-800 disabled:text-neutral-500 disabled:opacity-100"
+      :disabled="!canTrade"
+      :aria-describedby="problem ? 'merchant-transaction-problem' : undefined"
+      @click="emit('trade')"
+    >
+      {{ canTrade ? '✓ Handluj' : '🔒 Handluj' }}
+    </button>
+  </section>
 </template>

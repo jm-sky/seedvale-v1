@@ -4,6 +4,7 @@ import { type Component, computed, ref } from 'vue'
 import InventoryScreenSection from '@/components/InventoryScreenSection.vue'
 import { useItemCategoryLabels } from '@/composables/useItemCategoryLabels'
 import { firstUpperCase } from '@/lib/firstUpperCase'
+import { formatCoins } from '@/lib/formatCoins'
 import { type BookTier, consumeNeedNoun, ITEM_CATALOG } from '../../items/itemCatalog'
 import { itemDisplayName } from '../../items/itemDisplay'
 import { ITEM_DEFS, type ItemCategory, type ItemKind, primaryItemCategory } from '../../items/items'
@@ -137,7 +138,7 @@ function formatWeight(kg: number): string { return `${kg.toFixed(1)} kg` }
         <InventoryScreenSection
           v-if="buyPrice != null"
           label="Cena kupna"
-          :value="`${buyPrice} monet`"
+          :value="formatCoins(buyPrice)"
         />
         <InventoryScreenSection
           v-if="stockRow?.qualityLabel"
@@ -166,7 +167,7 @@ function formatWeight(kg: number): string { return `${kg.toFixed(1)} kg` }
         />
         <InventoryScreenSection
           label="Wartość wymiany"
-          :value="`${barterValue} monet`"
+          :value="formatCoins(barterValue)"
         />
         <InventoryScreenSection
           v-if="group?.condition === 'uniform' && group.uniformConditionPercent != null"
@@ -242,7 +243,7 @@ function formatWeight(kg: number): string { return `${kg.toFixed(1)} kg` }
               Stan {{ row.conditionPercent }}% / ostrość {{ row.sharpnessPercent }}%
             </span>
             <span v-else>Stan {{ row.conditionPercent }}%</span>
-            <span class="opacity-70">{{ row.sellPrice }} monet</span>
+            <span class="opacity-70">{{ formatCoins(row.sellPrice) }}</span>
           </div>
         </div>
       </div>

@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 import type { EquipmentSlot } from '../../../items/equipment'
 import { previewEquipLoadoutFromSnapshot } from '../../../items/equipmentPreview'
 import EquipmentPanel from '../../components/items/EquipmentPanel.vue'
+import DemoShell from '../DemoShell.vue'
 import { DEMO_SCENARIOS, type DemoScenarioId, slotViewsFor } from './fixtures'
 
 const selectedId = ref<DemoScenarioId>('compare-chainmail')
@@ -59,17 +60,14 @@ function onUnequipHeld(): void {
 </script>
 
 <template>
-  <div class="min-h-dvh bg-[oklch(0.2_0.015_60)] p-4 text-neutral-200">
-    <header class="mx-auto mb-4 max-w-5xl">
-      <p class="text-xs uppercase tracking-wide text-amber-200/80">
-        Demo Stage B — inventory list + equipment (bez świata / save)
-      </p>
-      <h1 class="text-lg font-semibold text-neutral-100">
-        Te same leaves co live InventoryScreen (EquipmentPanel / LoadoutSummary)
-      </h1>
-      <p class="mt-1 text-sm text-neutral-400">
-        Preview jest czystym helperem. Callbacki lokalne — brak Inventory / WorldBundle / donor mutations.
-      </p>
+  <DemoShell
+    current="inventory"
+    title="Inventory (demo)"
+  >
+    <details class="rounded-lg border border-neutral-800 bg-neutral-900/40 p-3 text-sm">
+      <summary class="cursor-pointer text-neutral-400 hover:text-neutral-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
+        Demo controls
+      </summary>
       <div class="mt-3 flex flex-wrap gap-2">
         <button
           v-for="s in DEMO_SCENARIOS"
@@ -89,7 +87,18 @@ function onUnequipHeld(): void {
           Reset
         </button>
       </div>
-    </header>
+      <ul
+        v-if="log.length"
+        class="mt-3 space-y-1 font-mono text-xs text-neutral-500"
+      >
+        <li
+          v-for="(line, i) in log"
+          :key="i"
+        >
+          {{ line }}
+        </li>
+      </ul>
+    </details>
 
     <div class="sv-inventory-stage-b mx-auto grid max-w-5xl gap-4 rounded-lg border border-neutral-700 bg-(--surface-solid) p-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
       <section class="flex flex-col gap-2">
@@ -142,22 +151,5 @@ function onUnequipHeld(): void {
         @select-held="pushLog('Select held')"
       />
     </div>
-
-    <aside class="mx-auto mt-4 max-w-5xl rounded-md border border-dashed border-neutral-600 p-3 text-xs text-neutral-400">
-      <div class="mb-1 font-semibold text-neutral-300">
-        Log demo
-      </div>
-      <ul v-if="log.length">
-        <li
-          v-for="(line, i) in log"
-          :key="i"
-        >
-          {{ line }}
-        </li>
-      </ul>
-      <p v-else>
-        Brak zdarzeń.
-      </p>
-    </aside>
-  </div>
+  </DemoShell>
 </template>

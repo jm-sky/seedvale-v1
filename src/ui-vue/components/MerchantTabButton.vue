@@ -1,27 +1,28 @@
 <script setup lang="ts">
-import { CheckIcon } from 'lucide-vue-next'
-
+/**
+ * Stage F (ui-input-044): V3 rounded-full compact trade tab.
+ * @domain ui
+ */
 defineProps<{
   label: string
   active: boolean
 }>()
 
 const emit = defineEmits<{
-  'click': []
+  click: []
 }>()
 </script>
 
 <template>
   <button
     type="button"
-    class="flex-1 cursor-pointer rounded-md px-2 py-1.5 text-xs flex items-center justify-center gap-2"
-    :class="active ? 'bg-white/15' : 'bg-white/5 hover:bg-white/10'"
+    :aria-pressed="active"
+    class="rounded-full border px-3 py-1 text-sm"
+    :class="active
+      ? 'border-neutral-200 bg-neutral-100 text-neutral-900'
+      : 'border-neutral-700 text-neutral-300 hover:border-neutral-500'"
     @click="emit('click')"
   >
-    <CheckIcon
-      v-if="active"
-      class="size-4 -ml-6"
-    />
     {{ label }}
   </button>
 </template>

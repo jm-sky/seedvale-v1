@@ -1,13 +1,20 @@
 <script setup lang="ts">
+/**
+ * Stage F (ui-input-044): V3 TradeFilterBar chrome + V1 capability dropdown / price·sort selects.
+ * @domain ui
+ */
 import { computed } from 'vue'
 import { useItemCategoryLabels } from '@/composables/useItemCategoryLabels'
 import type { CapabilityFilter, CategoryFilter, PriceFilter, TradeFilters, TradeSortMode } from '../composables/useMerchantTradeState'
 import { CAPABILITY_LABEL, type ItemCapability } from '../../items/itemCatalog'
+import MerchantFilterDropdown from './MerchantFilterDropdown.vue'
 
 const props = defineProps<{
   modelValue: TradeFilters
   availableCapabilities: readonly ItemCapability[]
   sortOptions: readonly { id: TradeSortMode, label: string }[]
+  /** Distinguishes BUY vs OFFER Esc-stack ids for the capability menu. */
+  side: 'buy' | 'offer'
 }>()
 
 const emit = defineEmits<{
@@ -29,20 +36,26 @@ const categoryChips: { id: CategoryFilter, label: string }[] = [
   { id: 'other', label: categoryLabel.other },
 ]
 
-const capabilityChips = computed(() => [
+const capabilityOptions = computed(() => [
   { id: 'all' as CapabilityFilter, label: 'Dowolna zdolność' },
   ...props.availableCapabilities.map((id) => ({ id: id as CapabilityFilter, label: CAPABILITY_LABEL[id] })),
 ])
 
-const priceChips: { id: PriceFilter, label: string }[] = [
+const capabilityOverlayId = computed(() => `merchant-capability-${props.side}`)
+
+const priceOptions: { id: PriceFilter, label: string }[] = [
   { id: 'all', label: 'Każda cena' },
-  { id: 'low', label: '≤10' },
-  { id: 'mid', label: '11–25' },
-  { id: 'high', label: '>25' },
+  { id: 'low', label: '≤10c' },
+  { id: 'mid', label: '11–25c' },
+  { id: 'high', label: '>25c' },
 ]
 
-function chipClass(active: boolean): string {
-  return active ? 'bg-white/15' : 'bg-white/5 hover:bg-white/10'
+const selectClass = 'rounded border border-neutral-700 bg-neutral-900 px-2 py-0.5 text-xs text-neutral-200'
+
+function pillClass(active: boolean): string {
+  return active
+    ? 'border-neutral-200 bg-neutral-100 text-neutral-900'
+    : 'border-neutral-700 text-neutral-300 hover:border-neutral-500'
 }
 
 function update(patch: Partial<TradeFilters>): void {
@@ -51,64 +64,65 @@ function update(patch: Partial<TradeFilters>): void {
 </script>
 
 <template>
-  <div class="flex flex-wrap lg:flex-col gap-1.5">
-    <input
-      type="text"
-      placeholder="Szukaj..."
-      class="min-w-1/4 lg:w-full rounded-md bg-white/5 px-2 py-1.5 text-xs outline-none placeholder:opacity-50 focus:bg-white/10"
-      :value="modelValue.search"
-      @input="update({ search: ($event.target as HTMLInputElement).value })"
-    >
-    <div class="contents lg:flex lg:flex-wrap lg:gap-1">
+  <div class="flex flex-col gap-1.5">
+    <div class="flex flex-wrap gap-1">
       <button
         v-for="chip in categoryChips"
         :key="chip.id"
         type="button"
-        class="cursor-pointer rounded-md px-2 py-1 text-xs max-md:px-1.5 max-md:py-0.5 max-md:text-[11px]"
-        :class="chipClass(modelValue.category === chip.id)"
+        :aria-pressed="modelValue.category === chip.id"
+        class="rounded-full border px-2.5 py-0.5 text-xs"
+        :class="pillClass(modelValue.category === chip.id)"
         @click="update({ category: chip.id })"
       >
         {{ chip.label }}
       </button>
     </div>
-    <div
-      v-if="capabilityChips.length > 1"
-      class="contents lg:flex lg:flex-wrap lg:gap-1"
-    >
-      <button
-        v-for="chip in capabilityChips"
-        :key="chip.id"
-        type="button"
-        class="cursor-pointer rounded-md px-2 py-1 text-xs max-md:px-1.5 max-md:py-0.5 max-md:text-[11px]"
-        :class="chipClass(modelValue.capability === chip.id)"
-        @click="update({ capability: chip.id })"
+    <div class="flex flex-wrap items-center gap-1">
+      <input
+        type="search"
+        placeholder="Szukaj…"
+        aria-label="Szukaj"
+        class="min-w-24 flex-1 rounded border border-neutral-700 bg-neutral-900 px-2 py-0.5 text-xs text-neutral-100 placeholder:text-neutral-500"
+        :value="modelValue.search"
+        @input="update({ search: ($event.target as HTMLInputElement).value })"
       >
-        {{ chip.label }}
-      </button>
-    </div>
-    <span class="mx-0.5 opacity-30 lg:hidden">|</span>
-    <div class="contents lg:flex lg:flex-wrap lg:gap-1">
-      <button
-        v-for="chip in priceChips"
-        :key="chip.id"
-        type="button"
-        class="cursor-pointer rounded-md px-2 py-1 text-xs max-md:px-1.5 max-md:py-0.5 max-md:text-[11px]"
-        :class="chipClass(modelValue.price === chip.id)"
-        @click="update({ price: chip.id })"
+      <MerchantFilterDropdown
+        v-if="capabilityOptions.length > 1"
+        :model-value="modelValue.capability"
+        :options="capabilityOptions"
+        menu-label="Zdolność"
+        :overlay-id="capabilityOverlayId"
+        @update:model-value="update({ capability: $event as CapabilityFilter })"
+      />
+      <select
+        :class="selectClass"
+        aria-label="Cena"
+        :value="modelValue.price"
+        @change="update({ price: ($event.target as HTMLSelectElement).value as PriceFilter })"
       >
-        {{ chip.label }}
-      </button>
-      <span class="mx-0.5 hidden opacity-30 md:inline">|</span>
-      <button
-        v-for="chip in sortOptions"
-        :key="chip.id"
-        type="button"
-        class="cursor-pointer rounded-md px-2 py-1 text-xs max-md:px-1.5 max-md:py-0.5 max-md:text-[11px]"
-        :class="chipClass(modelValue.sort === chip.id)"
-        @click="update({ sort: chip.id })"
+        <option
+          v-for="p in priceOptions"
+          :key="p.id"
+          :value="p.id"
+        >
+          {{ p.label }}
+        </option>
+      </select>
+      <select
+        :class="selectClass"
+        aria-label="Sortuj"
+        :value="modelValue.sort"
+        @change="update({ sort: ($event.target as HTMLSelectElement).value as TradeSortMode })"
       >
-        {{ chip.label }}
-      </button>
+        <option
+          v-for="s in sortOptions"
+          :key="s.id"
+          :value="s.id"
+        >
+          {{ s.label }}
+        </option>
+      </select>
     </div>
   </div>
 </template>

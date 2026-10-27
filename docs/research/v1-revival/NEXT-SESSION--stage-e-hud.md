@@ -1,6 +1,7 @@
-# Sesja: Stage E — HUD (closed)
+# Closed — Stage E HUD (ui-input-043)
 
-Stage E (`ui-input-043`) **visual PASS** 2026-10-27.
+**2026-10-27:** Stage E **visual PASS** (author). Plan `ui-input-043` → `done`.
 
-## Next
-Trade or map/menu — D5 consult first (draft §5). Demo remains: `hud-demo.html`.
+- V3-like ClockWeather / needs / toast / gaze / placement; carry under bars; no CompassStrip; hint removed.
+- Demo: `hud-demo.html`.
+- Next session kick-off: [NEXT-SESSION--stage-f-trade.md](./NEXT-SESSION--stage-f-trade.md).

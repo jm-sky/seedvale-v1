@@ -1,7 +1,10 @@
 <script setup lang="ts">
+/**
+ * Stage F (ui-input-044): V3 Trade / Merchant chrome; V1 basket + settle ownership unchanged.
+ * @domain ui
+ */
 import { computed, ref, watch } from 'vue'
 import MerchantTabButton from '@/components/MerchantTabButton.vue'
-import UiPanel from '@/components/UiPanel.vue'
 import { ITEM_CATALOG, type ItemCapability } from '../../items/itemCatalog'
 import { itemDisplayName } from '../../items/itemDisplay'
 import { isInstanceBackedKind } from '../../items/itemInstances'
@@ -15,6 +18,7 @@ import { useCompactMerchantLayout } from '../composables/useCompactMerchantLayou
 import { useMerchantTradeState } from '../composables/useMerchantTradeState'
 import { useOverlayScreen } from '../composables/useOverlayScreen'
 import { useTouchScroll } from '../composables/useTouchScroll'
+import { formatCoins } from '../lib/formatCoins'
 import { npcGoodsBuyEmptyCopy } from '../lib/npcGoodsBuyEmptyCopy'
 import { closeMerchant, isMerchantOpen, showToast, ui } from '../store'
 
@@ -235,7 +239,12 @@ const netCoins = computed(() => {
   return ui.merchant.pricing?.previewNetCoins(transaction.purchases, transaction.offer, instanceBuyCost) ?? 0
 })
 const canTrade = computed(() => purchaseLines.value.length > 0 || offerLines.value.length > 0)
+const lineCount = computed(() => purchaseLines.value.length + offerLines.value.length)
 const trading = ref(false)
+const tradeProblem = computed(() => {
+  if (canTrade.value) return undefined
+  return 'Wybierz towary do kupienia lub oferowane przedmioty.'
+})
 
 /** Ordinary NPC household stock can shrink while the screen sits open (a
  *  household production tick, or a prior purchase this session) — clamp the
@@ -354,31 +363,24 @@ function openDetails(kind: ItemKind, instanceId?: string): void {
 <template>
   <div
     v-if="ui.merchant.open"
-    class="pointer-events-auto fixed inset-0 z-20 flex items-center justify-center bg-panel-backdrop backdrop-blur-[2px] max-md:items-stretch max-md:p-2"
+    class="pointer-events-auto fixed inset-0 z-20 flex items-center justify-center bg-black/60 backdrop-blur-[2px] max-md:items-stretch max-md:p-2"
     @click.self="closeMerchant"
   >
-    <UiPanel
-      class="flex h-[min(760px,calc(100dvh-32px))] w-[min(1200px,calc(100vw-32px))] max-w-6xl flex-col !overflow-hidden !p-5 max-md:h-[calc(100dvh-16px)] max-md:max-h-none max-md:w-full max-md:!p-3"
+    <div
+      class="sv-merchant flex h-[min(760px,calc(100dvh-32px))] w-[min(1360px,calc(100vw-32px))] max-w-7xl flex-col overflow-hidden rounded-xl border border-white/15 bg-neutral-900/85 p-5 text-neutral-100 shadow-[0_12px_40px_rgba(0,0,0,0.45)] max-md:h-[calc(100dvh-16px)] max-md:max-h-none max-md:w-full max-md:p-3"
+      :class="isCompact ? 'shop-compact' : ''"
     >
-      <div class="mb-2 flex shrink-0 flex-wrap items-baseline justify-between gap-2 max-md:mb-1.5">
-        <h2 class="text-base font-semibold tracking-wide max-md:text-sm">
+      <div class="mb-2 flex shrink-0 flex-wrap items-baseline justify-between gap-2 text-sm">
+        <h2 class="text-base font-semibold tracking-wide text-primary">
           {{ screenTitle }}
         </h2>
-        <div class="flex flex-row items-center gap-3 max-md:gap-2">
-          <p class="text-[13px] opacity-75 max-md:text-xs">
-            Monety: {{ coins }}
+        <div class="flex flex-row items-center gap-3">
+          <p class="tabular-nums text-neutral-300">
+            <span class="text-neutral-500">Sakiewka:</span> {{ formatCoins(coins) }}
           </p>
           <button
-            v-if="isCompact"
             type="button"
-            class="text-[12px] opacity-90 rounded-md px-2 py-1 border border-white/20 max-md:px-1.5 max-md:py-0.5 max-md:text-[11px]"
-            @click="drawerOpen = true"
-          >
-            Transakcja{{ canTrade ? ` (${purchaseLines.length + offerLines.length})` : '' }}
-          </button>
-          <button
-            type="button"
-            class="text-[12px] opacity-75 rounded-md px-2 py-1 border border-white/10 max-md:px-1.5 max-md:py-0.5 max-md:text-[11px]"
+            class="rounded-md border border-neutral-700 px-2 py-1 text-xs text-neutral-300 hover:border-neutral-500 hover:text-neutral-100"
             @click="closeMerchant"
           >
             Zamknij
@@ -387,64 +389,51 @@ function openDetails(kind: ItemKind, instanceId?: string): void {
       </div>
 
       <div
-        v-if="isCompact"
-        class="mb-2 flex shrink-0 gap-1"
-      >
-        <MerchantTabButton
-          label="BUY"
-          :active="activeContext === 'buy'"
-          @click="activeContext = 'buy'"
-        />
-        <MerchantTabButton
-          label="OFFER"
-          :active="activeContext === 'offer'"
-          @click="activeContext = 'offer'"
-        />
-      </div>
-
-      <div
         ref="merchantBody"
-        class="min-h-0 flex-1 max-md:overflow-y-auto md:flex md:flex-col md:overflow-hidden"
+        class="flex min-h-0 flex-1 flex-col overflow-hidden"
         style="touch-action: pan-y"
       >
+        <!-- Wide: three columns -->
         <div
-          class="grid grid-cols-1 gap-4 md:min-h-0 md:flex-1 md:gap-4 md:overflow-hidden"
-          :class="isCompact ? '' : 'md:grid-cols-3'"
+          v-if="!isCompact"
+          class="grid min-h-0 flex-1 items-start gap-6 overflow-hidden lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_18rem]"
         >
-          <section
-            v-if="!isCompact || activeContext === 'buy'"
-            class="flex min-w-0 flex-col gap-2 md:min-h-0"
-          >
-            <h3 class="hidden lg:block shrink-0 text-[12px] font-semibold uppercase tracking-wide opacity-70 max-md:text-[11px]">
+          <section class="flex min-h-0 min-w-0 flex-col gap-2">
+            <h3 class="shrink-0 text-lg font-semibold">
               BUY
             </h3>
             <MerchantFilterBar
               v-if="!isNpcGoodsMode || hasNpcGoodsStock"
+              side="buy"
+              class="shrink-0"
               :model-value="buyFilters"
               :available-capabilities="buyCapabilities"
               :sort-options="BUY_SORT_OPTIONS"
               @update:model-value="Object.assign(buyFilters, $event)"
             />
-            <div class="flex flex-col gap-1.5 md:min-h-0 md:flex-1 md:overflow-y-auto">
+            <div
+              v-if="hasHorseOffers"
+              class="flex shrink-0 flex-col gap-1.5"
+            >
               <div
                 v-for="(offer, horseIndex) in horseOffers"
                 :key="`horse-${horseIndex}-${offer.label}`"
-                class="flex flex-col gap-1 rounded-md border border-amber-400/30 bg-amber-400/10 px-3 py-2 max-md:px-2 max-md:py-1.5"
+                class="flex flex-col gap-1 rounded-md border border-amber-400/30 bg-amber-400/10 px-3 py-2"
               >
                 <div class="flex items-center justify-between gap-2">
                   <div class="min-w-0">
-                    <p class="text-sm font-medium capitalize max-md:text-[13px]">
+                    <p class="text-sm font-medium capitalize text-neutral-100">
                       {{ offer.label }}
                     </p>
-                    <p class="text-[12px] opacity-70 max-md:text-[11px]">
-                      {{ offer.price }} monet
+                    <p class="text-xs text-neutral-400">
+                      {{ formatCoins(offer.price) }}
                       <span v-if="offer.status === 'available' && offer.previewNetCoins(transaction.offer) > 0">
-                        · do zapłaty {{ offer.previewNetCoins(transaction.offer) }}
+                        · do zapłaty {{ formatCoins(offer.previewNetCoins(transaction.offer)) }}
                       </span>
                     </p>
                     <p
                       v-if="offer.statusHint"
-                      class="mt-1 text-[12px] opacity-80 max-md:text-[11px]"
+                      class="mt-1 text-xs text-neutral-300"
                     >
                       {{ offer.statusHint }}
                     </p>
@@ -452,19 +441,27 @@ function openDetails(kind: ItemKind, instanceId?: string): void {
                   <button
                     v-if="offer.status === 'available'"
                     type="button"
-                    class="shrink-0 rounded-md border border-white/20 px-2 py-1 text-[12px] hover:bg-white/10 max-md:text-[11px]"
+                    class="shrink-0 rounded-md border border-neutral-600 px-2 py-1 text-xs text-neutral-200 hover:border-neutral-400"
                     @click="onBuyHorse(offer)"
                   >
                     Kup
                   </button>
+                  <span
+                    v-else
+                    class="shrink-0 rounded-md border border-neutral-700 bg-neutral-800 px-2 py-1 text-xs text-neutral-500"
+                  >
+                    Niedostępny
+                  </span>
                 </div>
               </div>
-              <div
+            </div>
+            <ul class="min-h-0 flex-1 divide-y divide-neutral-800 overflow-y-auto rounded-lg border border-neutral-800">
+              <li
                 v-if="isNpcGoodsMode ? npcGoodsEmptyCopy : (buyRows.length === 0 && !hasHorseOffers)"
-                class="text-[12px] opacity-60"
+                class="px-3 py-6 text-center text-sm text-neutral-500"
               >
                 {{ isNpcGoodsMode ? npcGoodsEmptyCopy : 'Brak towarów w tej kategorii.' }}
-              </div>
+              </li>
               <MerchantItemRow
                 v-for="row in buyRows"
                 :key="row.instanceId ?? row.kind"
@@ -472,91 +469,226 @@ function openDetails(kind: ItemKind, instanceId?: string): void {
                 :instance-id="row.instanceId"
                 :label="row.label"
                 :price="row.price"
-                price-suffix="monet"
                 :committed-count="row.instanceId
                   ? (transaction.purchaseInstanceIds.includes(row.instanceId) ? 1 : 0)
                   : (transaction.purchases[row.kind] ?? 0)"
                 :max-count="row.maxCount"
+                :owned-count="ownedCount(row.kind)"
                 @commit="onCommitPurchase"
                 @clear="onClearPurchase"
                 @open-details="openDetails"
               />
-            </div>
+            </ul>
           </section>
 
-          <section
-            v-if="!isCompact || activeContext === 'offer'"
-            class="flex min-w-0 flex-col gap-2 md:min-h-0"
-          >
-            <h3 class="hidden lg:block shrink-0 text-[12px] font-semibold uppercase tracking-wide opacity-70 max-md:text-[11px]">
+          <section class="flex min-h-0 min-w-0 flex-col gap-2">
+            <h3 class="shrink-0 text-lg font-semibold">
               OFFER
             </h3>
             <MerchantFilterBar
+              side="offer"
+              class="shrink-0"
               :model-value="offerFilters"
               :available-capabilities="offerCapabilities"
               :sort-options="OFFER_SORT_OPTIONS"
               @update:model-value="Object.assign(offerFilters, $event)"
             />
-            <div class="flex flex-col gap-1.5 md:min-h-0 md:flex-1 md:overflow-y-auto">
-              <div
+            <ul class="min-h-0 flex-1 divide-y divide-neutral-800 overflow-y-auto rounded-lg border border-neutral-800">
+              <li
                 v-if="offerRows.length === 0"
-                class="text-[12px] opacity-60"
+                class="px-3 py-6 text-center text-sm text-neutral-500"
               >
                 {{ offerableKinds.length === 0 ? 'Ekwipunek jest pusty.' : 'Brak towarów w tej kategorii.' }}
-              </div>
+              </li>
               <MerchantItemRow
                 v-for="row in offerRows"
                 :key="row.kind"
                 :kind="row.kind"
                 :label="row.label"
                 :price="row.price"
-                price-suffix="monet"
                 :committed-count="transaction.offer[row.kind] ?? 0"
                 :max-count="ownedCount(row.kind)"
                 :owned-count="ownedCount(row.kind)"
+                :disabled="row.price <= 0"
+                :disabled-reason="row.price <= 0 ? 'Brak ceny handlu.' : undefined"
                 @commit="onCommitOffer"
                 @clear="onClearOffer"
                 @open-details="openDetails"
               />
-            </div>
+            </ul>
           </section>
 
-          <section
-            v-if="!isCompact"
-            class="flex min-w-0 flex-col md:min-h-0"
-          >
+          <section class="flex min-h-0 min-w-0 flex-col">
             <MerchantTransactionPanel
               :purchases="purchaseLines"
               :offer-items="offerLines"
               :net-coins="netCoins"
               :coins="coins"
               :can-trade="canTrade && !trading"
+              :problem="!canTrade ? tradeProblem : undefined"
               @trade="onTrade"
               @remove-purchase="onClearPurchase"
               @remove-offer="onClearOffer"
             />
           </section>
         </div>
+
+        <!-- Compact: one list + in-flow transaction bar -->
+        <div
+          v-else
+          class="flex min-h-0 flex-1 flex-col gap-2"
+        >
+          <nav class="flex shrink-0 gap-2">
+            <MerchantTabButton
+              label="BUY"
+              :active="activeContext === 'buy'"
+              @click="activeContext = 'buy'"
+            />
+            <MerchantTabButton
+              label="OFFER"
+              :active="activeContext === 'offer'"
+              @click="activeContext = 'offer'"
+            />
+          </nav>
+
+          <section
+            v-if="activeContext === 'buy'"
+            class="flex min-h-0 flex-1 flex-col gap-2 overflow-hidden"
+          >
+            <MerchantFilterBar
+              v-if="!isNpcGoodsMode || hasNpcGoodsStock"
+              side="buy"
+              class="shrink-0"
+              :model-value="buyFilters"
+              :available-capabilities="buyCapabilities"
+              :sort-options="BUY_SORT_OPTIONS"
+              @update:model-value="Object.assign(buyFilters, $event)"
+            />
+            <div
+              v-if="hasHorseOffers"
+              class="flex shrink-0 flex-col gap-1.5"
+            >
+              <div
+                v-for="(offer, horseIndex) in horseOffers"
+                :key="`horse-c-${horseIndex}-${offer.label}`"
+                class="flex flex-col gap-1 rounded-md border border-amber-400/30 bg-amber-400/10 px-3 py-2"
+              >
+                <div class="flex items-center justify-between gap-2">
+                  <div class="min-w-0">
+                    <p class="text-sm font-medium capitalize">
+                      {{ offer.label }}
+                    </p>
+                    <p class="text-xs text-neutral-400">
+                      {{ formatCoins(offer.price) }}
+                    </p>
+                  </div>
+                  <button
+                    v-if="offer.status === 'available'"
+                    type="button"
+                    class="shrink-0 rounded-md border border-neutral-600 px-2 py-1 text-xs"
+                    @click="onBuyHorse(offer)"
+                  >
+                    Kup
+                  </button>
+                </div>
+              </div>
+            </div>
+            <ul class="min-h-0 flex-1 divide-y divide-neutral-800 overflow-y-auto rounded-lg border border-neutral-800">
+              <li
+                v-if="isNpcGoodsMode ? npcGoodsEmptyCopy : (buyRows.length === 0 && !hasHorseOffers)"
+                class="px-3 py-6 text-center text-sm text-neutral-500"
+              >
+                {{ isNpcGoodsMode ? npcGoodsEmptyCopy : 'Brak towarów w tej kategorii.' }}
+              </li>
+              <MerchantItemRow
+                v-for="row in buyRows"
+                :key="row.instanceId ?? row.kind"
+                :kind="row.kind"
+                :instance-id="row.instanceId"
+                :label="row.label"
+                :price="row.price"
+                :committed-count="row.instanceId
+                  ? (transaction.purchaseInstanceIds.includes(row.instanceId) ? 1 : 0)
+                  : (transaction.purchases[row.kind] ?? 0)"
+                :max-count="row.maxCount"
+                :owned-count="ownedCount(row.kind)"
+                @commit="onCommitPurchase"
+                @clear="onClearPurchase"
+                @open-details="openDetails"
+              />
+            </ul>
+          </section>
+
+          <section
+            v-else
+            class="flex min-h-0 flex-1 flex-col gap-2 overflow-hidden"
+          >
+            <MerchantFilterBar
+              side="offer"
+              class="shrink-0"
+              :model-value="offerFilters"
+              :available-capabilities="offerCapabilities"
+              :sort-options="OFFER_SORT_OPTIONS"
+              @update:model-value="Object.assign(offerFilters, $event)"
+            />
+            <ul class="min-h-0 flex-1 divide-y divide-neutral-800 overflow-y-auto rounded-lg border border-neutral-800">
+              <li
+                v-if="offerRows.length === 0"
+                class="px-3 py-6 text-center text-sm text-neutral-500"
+              >
+                {{ offerableKinds.length === 0 ? 'Ekwipunek jest pusty.' : 'Brak towarów w tej kategorii.' }}
+              </li>
+              <MerchantItemRow
+                v-for="row in offerRows"
+                :key="row.kind"
+                :kind="row.kind"
+                :label="row.label"
+                :price="row.price"
+                :committed-count="transaction.offer[row.kind] ?? 0"
+                :max-count="ownedCount(row.kind)"
+                :owned-count="ownedCount(row.kind)"
+                :disabled="row.price <= 0"
+                :disabled-reason="row.price <= 0 ? 'Brak ceny handlu.' : undefined"
+                @commit="onCommitOffer"
+                @clear="onClearOffer"
+                @open-details="openDetails"
+              />
+            </ul>
+          </section>
+
+          <button
+            type="button"
+            :aria-expanded="drawerOpen"
+            class="flex shrink-0 items-center justify-between rounded-lg border border-neutral-500 bg-neutral-900 px-4 py-2 text-sm shadow-lg"
+            @click="drawerOpen = true"
+          >
+            <span>Transakcja · {{ lineCount }} {{ lineCount === 1 ? 'pozycja' : 'pozycji' }}</span>
+            <span class="tabular-nums text-neutral-300">
+              {{ netCoins > 0 ? 'zapłać' : netCoins < 0 ? 'otrzymaj' : 'równo' }}
+              {{ formatCoins(Math.abs(netCoins)) }}
+            </span>
+          </button>
+        </div>
       </div>
 
-      <div class="mt-3 shrink-0 text-[11px] opacity-60">
+      <div class="mt-3 shrink-0 text-[11px] text-neutral-500">
         Esc — zamknij
       </div>
-    </UiPanel>
+    </div>
 
     <div
       v-if="isCompact && drawerOpen"
-      class="pointer-events-auto fixed inset-0 z-20 flex items-center justify-center bg-panel-backdrop backdrop-blur-[2px]"
+      class="pointer-events-auto fixed inset-0 z-30 flex items-end justify-center bg-black/60 sm:items-center"
       @click.self="drawerOpen = false"
     >
-      <div class="flex max-h-[calc(100dvh-32px)] w-[min(520px,calc(100vw-32px))] flex-col rounded-[10px] bg-panel p-4 text-ink shadow-[0_12px_40px_rgba(0,0,0,0.45)]">
+      <div class="sv-merchant flex max-h-[calc(100dvh-32px)] w-[min(520px,calc(100vw-32px))] flex-col rounded-xl border border-white/15 bg-neutral-900/95 p-4 text-neutral-100 shadow-[0_12px_40px_rgba(0,0,0,0.45)]">
         <div class="mb-2 flex items-center justify-between">
-          <h2 class="text-sm font-semibold">
+          <h2 class="sr-only">
             Transakcja
           </h2>
           <button
             type="button"
-            class="cursor-pointer rounded-md border border-white/20 px-2 py-1 text-xs hover:bg-white/10"
+            class="ml-auto text-sm text-neutral-400 hover:text-neutral-100"
             @click="drawerOpen = false"
           >
             Zamknij
@@ -568,6 +700,7 @@ function openDetails(kind: ItemKind, instanceId?: string): void {
           :net-coins="netCoins"
           :coins="coins"
           :can-trade="canTrade && !trading"
+          :problem="!canTrade ? tradeProblem : undefined"
           @trade="onTrade"
           @remove-purchase="onClearPurchase"
           @remove-offer="onClearOffer"
