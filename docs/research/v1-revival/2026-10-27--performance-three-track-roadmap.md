@@ -14,10 +14,13 @@ This focused performance track may advance through research, plans and separatel
 ## Ordered execution and checklist
 
 ### A. NPC and fauna rendering — first implementation lane
-- [ ] Check current code, [agent render LOD draft](../../plans/world-terrain-050-agent-performance-render-census-and-lod.md), existing ownership and recent NPC/model changes; extend existing recon rather than duplicate it.
-- [ ] Source-backed analysis of whole-actor culling, main vs shadow pass, skinned bounds, animation mixer/cadence, model/equipment LOD, corpses and offscreen visuals.
-- [ ] Identify steps independent of the ongoing [npc-064 spatial-state seam](../../plans/npc-064-agent-performance-spatial-state-seam.md); no camera-based suppression of authoritative simulation.
-- [ ] Stage a narrowly scoped implementation plan using existing plan IDs/ownership and short, reversible commits.
+
+Research: [Track A deep recon, source owners, dependencies and proposed Composer slices (§10)](./2026-10-26--v1-performance-transfer-v2-v3-recon.md#10-track-a-deep-recon--npc-and-fauna-rendering-2026-10-27). Source reconnaissance complete at V1 `a23ecfd9`; no runtime changes or new benchmark evidence.
+
+- [x] Check current code, [agent render LOD draft](../../plans/world-terrain-050-agent-performance-render-census-and-lod.md), existing ownership and recent NPC/model changes; extend existing recon rather than duplicate it.
+- [x] Source-backed analysis of whole-actor culling, main vs shadow pass, skinned bounds, animation mixer/cadence, model/equipment LOD, corpses and offscreen visuals.
+- [x] Identify steps independent of the ongoing [npc-064 spatial-state seam](../../plans/npc-064-agent-performance-spatial-state-seam.md); no camera-based suppression of authoritative simulation.
+- [x] Propose bounded Composer slices under existing `world-terrain-050` / `npc-063` ownership (§10.7); formal implementation scope/approval remains pending. No new plan ID or activation claim.
 - [ ] Approve and deliver one implementation slice at a time, with unit/regression coverage and independent review.
 - [ ] Record matched runtime/visual acceptance and completion status after implementation.
 
@@ -68,6 +71,6 @@ This focused performance track may advance through research, plans and separatel
 
 | Track | Research owner | Result document | Status |
 | --- | --- | --- | --- |
-| A — actors | TBD | existing recon or new analysis | Not started |
+| A — actors | Codex | [Existing transfer recon §10](./2026-10-26--v1-performance-transfer-v2-v3-recon.md#10-track-a-deep-recon--npc-and-fauna-rendering-2026-10-27) | Source recon complete; A0a attribution proposed first; implementation/measurements/visual acceptance pending |
 | B — settlements | TBD | existing recon or new analysis | Not started |
 | C — grass | TBD | existing recon or new analysis | Not started |
