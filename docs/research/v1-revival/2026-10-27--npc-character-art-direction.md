@@ -87,3 +87,54 @@ V3's `docs/assets/quaternius-character-blend-pipeline.md` describes its own **di
 - Revival: `docs/research/v1-revival/STRATEGIC-BRIEF.md`, `2026-10-27--revival-audit--npc-fauna-rendering.md` and `2026-10-27--revival-audit--equipment-armor-combat.md`.
 
 This record captures **author visual decisions and static code/document recon**, not a completed asset inspection, Blender execution, game test, or approval to implement. Draft an implementation plan only after targeted source and animation inspection and reconciliation with the performance-first freeze.
+
+
+## 7. Follow-up — named NPC appearance and modular equipment (2026-10-27)
+
+### Author requirements (agreed direction)
+
+- **Key NPC identity:** determine the full stable appearance of important/named NPCs from their existing character cards, rather than relying only on role/id randomization. Example: **Kate Hornblower** has **copper-brown hair** and a **green dress** (with the agreed ankle-length skirt). Other profile details must be checked against each card; do not invent them.
+- **Player:** should have a **beard and moustache**. Current default has `beard: false`; evaluate whether the available `Beard` mesh represents both or needs a separate asset.
+- **Asset provenance:** NPC models currently selected from the V3-derived CharacterKit must be reconciled with the author's hand-edited V1 Blender models before replacing or adopting them. Preserve authored Peasant/Woodcutter/Blacksmith work.
+- **Equipment appearance:** pursue coherent, dynamic armor visualization for **player and NPC** using the same semantic rules, with a Peasant or profession outfit as the candidate base. Example intent: leg armor changes the visible legs; torso armor overlays/replaces appropriate torso clothing. Switching to full Ranger/Knight outfits may be appropriate only for specific combinations, not as an automatic substitute for any torso armor.
+- **Other retained scope:** body-build variants (Base/Fat/Stout, young/child; no Slim requirement), long and work skirts, skirt knee clipping correction, profession/spouse aprons and visually readable armor layering.
+
+These requirements **do not yet approve** a particular outfit-composition algorithm, performance approach or implementation schedule.
+
+### Verified V1 runtime baseline (static inspection)
+
+| Area | Current behavior / limitation | Relevant files |
+| --- | --- | --- |
+| NPC identity/appearance | `resolveNpcAppearance` deterministically selects role outfit, head `Base/Lean/Round/Warm`, hairstyles, beard and hair color (black/brown/redhead/blond/grey) from NPC id/sex/age/role. `NpcAgent.create` assembles kit and applies selected hair/clothing colors. No specific named-character override in that resolver. | `src/ai/npcAppearance.ts`, `src/ai/NpcAgent.ts` |
+| Player look | Default kit: Male, head Base, hair Parted, beard false; fixed brown hair color in `PlayerController`. | `src/player/playerVisualPreset.ts`, `src/player/PlayerController.ts` |
+| Profession mapping | Farmer Peasant_Boots, Woodcutter Peasant + tint, Blacksmith Blacksmith, Miner Peasant, Trader Wizard, Herbalist Herbalist, Guard Knight_Cloth. Women using Ranger/Knight/Blacksmith are coerced to Peasant. Young NPCs use Peasant. | `src/ai/npcAppearance.ts` |
+| Garments | Female Peasant/Peasant_Boots/Herbalist/Wizard attach `PeasantSkirt`; no live WorkSkirt/LongSkirt/apron choice yet. | `src/characters/{characterTypes,baseGarments,assembleCharacter}.ts` |
+| Equipment look | Player torso armor switches the *entire base outfit* (none → Peasant, leather_armor → Ranger, other body armor / chainmail → Knight_Helm); player has four pauldron accessory visual mappings. `assembleCharacter` only attaches the garment union `PeasantSkirt` from `eq/<Sex>.glb`. | `src/player/{playerVisualPreset,playerEquipmentVisual,PlayerController}.ts`, `src/characters/assembleCharacter.ts` |
+| Armor inventory | V1 has six unlayered slots head/body/arms/hands/legs/feet, but active armor kinds only for body (leather_armor, chainmail) and arms (four pauldrons). NPC protection derives from personal inventory rather than persistent worn-equipment state. | `src/items/{equipment,itemCatalog,itemInstances}.ts`, `docs/research/v1-revival/2026-10-27--revival-audit--equipment-armor-combat.md` |
+| Donor assets already in V1 | V1 repo includes `scripts/assets/blender-armour-modules.py`, `blender-equipment-modules.py`, `build-equipment-modules.mjs`; `assets-src/characters/eq/{Chainmail,PaddedJacket}_{Male,Female}.raw.glb`; and `public/assets/characters/eq/{Male,Female}.glb`. The build script declares both modules for both sexes. This verifies repository presence, **not live equip integration or visual fit**. | Paths above |
+
+### Design alternatives — unapproved
+
+| Strategy | Benefit | Cost / risk |
+| --- | --- | --- |
+| Full outfit switching (current style) | Simple and few moving parts | Can erase recognizable profession/named NPC clothes; visually replaces mail with Knight |
+| Modular base + body-region pieces | Match actual gear; preserve identity | Clipping, mesh overlaps, skeleton/draw-call costs; requires clear body-part replacement/occlusion |
+| **Hybrid candidate** | Modular overlays/replacements by body region, special full-set swaps only where truly useful | Needs explicit compatibility/occlusion rules and controlled performance budget |
+
+**Illustrative visual-compatibility matrix — for evaluation, not a committed rule:**
+
+| Equipped item / state | Candidate appearance | Check |
+| --- | --- | --- |
+| No armor | Profession-specific / Peasant base | V1 authored master vs V3 kit |
+| Leather torso | LeatherJerkin overlay or body replacement | Hide overlapping tunic surfaces |
+| Padded underlayer | PaddedJacket / gambeson | Can layer under mail and still fit |
+| Mail torso | Chainmail module | Should not automatically turn into Knight_Helm |
+| Leg armor | Replace or occlude underlying leg clothing | Compatible with boots, skirts and animations |
+| Pauldrons | Shoulder modules | Sleeve/armor clipping |
+| Full plate set | Composite modules or exceptional Knight swap | Preserve identity where visible; avoid redundant mesh layers |
+| Helmet/headwear | Head module, context-aware hairstyle visibility | Hair/helmet intersections |
+| Unequip | Restore baseline outfit | No lost profile/appearance choices |
+
+**Open decisions / required recon:** complete roster of character cards and actual game wiring; color/style override precedence; whether mustache requires new geometry; exact Peasant/V1 authored versus V3 model compatibility and body-part boundaries; replacement versus layering/occlusion per equipment region; consistency between player and NPC inventory/equip semantics; female skirts and overlays; performance contract after the performance-first track. In particular, whether visible profession-specific details (e.g., Woodcutter suspenders) must remain visible wherever armor does not physically cover them **has not yet been answered by the author**.
+
+**Constraint:** V1 is authoritative, V3 assets are selective donors. Do not initiate runtime work that would disturb the ongoing D4 performance optimization measurements. This section documents discussion and static reconnaissance, not a plan, benchmark, or approval to implement.
