@@ -19,6 +19,47 @@ const manifest = JSON.parse(readFileSync(resolve(fixtureRoot, 'manifest.json'), 
   blobs: Record<string, string>
 }
 
+interface GitTreeProof {
+  readonly commit: string
+  /** Raw Git tree bytes, base64 encoded, keyed by their object SHA. */
+  readonly trees: Readonly<Record<string, string>>
+}
+
+/** Content-addressed commit-to-blob proof. Revision strings alone cannot satisfy this check. */
+export function verifyPinnedTreeProof(
+  proof: GitTreeProof = JSON.parse(readFileSync(resolve(fixtureRoot, 'git-tree-proof.json'), 'utf8')),
+): void {
+  const objectHash = (kind: string, bytes: Buffer) => createHash('sha1').update(`${kind} ${bytes.length}\0`).update(bytes).digest('hex')
+  assert.equal(objectHash('commit', Buffer.from(proof.commit)), provenance.sourceRevision, 'Pinned commit proof hash mismatch')
+  const root = /^tree ([0-9a-f]{40})\n/.exec(proof.commit)?.[1]
+  assert.ok(root, 'Pinned commit proof lacks a root tree')
+  for (const [path, blob] of Object.entries(manifest.blobs)) {
+    let sha: string = root
+    const parts = path.split('/')
+    for (const [index, name] of parts.entries()) {
+      const encoded = proof.trees[sha]
+      assert.ok(encoded, `Pinned membership cannot be verified: missing tree ${sha} for ${path}`)
+      const bytes = Buffer.from(encoded, 'base64')
+      assert.equal(objectHash('tree', bytes), sha, `Pinned tree proof hash mismatch: ${path}`)
+      const entries: { mode: string, name: string, sha: string }[] = []
+      for (let offset = 0; offset < bytes.length;) {
+        const end = bytes.indexOf(0, offset)
+        assert.ok(end > offset && end + 21 <= bytes.length, `Malformed Git tree proof: ${path}`)
+        const header = bytes.subarray(offset, end).toString('utf8')
+        const space = header.indexOf(' ')
+        entries.push({ mode: header.slice(0, space), name: header.slice(space + 1), sha: bytes.subarray(end + 1, end + 21).toString('hex') })
+        offset = end + 21
+      }
+      const matches = entries.filter(entry => entry.name === name)
+      assert.equal(matches.length, 1, `Pinned membership path missing/ambiguous: ${path}`)
+      const entry = matches[0]!
+      assert.equal(entry.mode, index === parts.length - 1 ? '100644' : '40000', `Pinned membership mode mismatch: ${path}`)
+      sha = entry.sha
+    }
+    assert.equal(sha, blob, `Pinned commit-to-blob membership mismatch: ${path}`)
+  }
+}
+
 /** Prove fixture blob membership in the pinned commit without requiring/changing donor HEAD. */
 export function verifyPinnedGitTree(donor: string): void {
   readPinnedSources()
@@ -36,6 +77,7 @@ export function readPinnedSources(donor?: string): Readonly<Record<string, strin
   assert.equal(manifest.repository, provenance.repository)
   assert.equal(manifest.sourceRevision, provenance.sourceRevision)
   assert.deepStrictEqual(Object.keys(manifest.blobs), [...Object.values(provenance.sourcePaths), 'src/game/data/character/types.ts'])
+  verifyPinnedTreeProof()
   const sources: Record<string, string> = {}
   for (const [path, blob] of Object.entries(manifest.blobs)) {
     const bytes = readFileSync(resolve(fixtureRoot, `${path}.txt`))
@@ -202,7 +244,7 @@ export function verifySource(donor?: string): void {
   const sources = readPinnedSources(donor)
   verifyTypes(sources)
   verifyDefinitions(V3_EQUIPMENT_DEFINITIONS, resolvePinnedDefinitions(sources))
-  console.log(`PASS: 87/87 unique canonical IDs in reviewed order; complete field-level equality, 41 keys including own undefined; counts 30/8/39/3/7. ${types.length} type/domain equalities and five typed exports. Source ${provenance.sourceRevision}; ${donor ? 'local donor and recon blobs verified' : 'checked-in pinned source blobs verified'}.`)
+  console.log(`PASS: 87/87 unique canonical IDs in reviewed order; complete field-level equality, 41 keys including own undefined; counts 30/8/39/3/7. ${types.length} type/domain equalities and five typed exports. Source ${provenance.sourceRevision}; commit-to-blob proof verified; ${donor ? 'local donor and recon blobs verified' : 'checked-in pinned source blobs verified'}.`)
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

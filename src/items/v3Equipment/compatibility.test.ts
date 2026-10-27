@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs'
 import { describe, expect, expectTypeOf, it } from 'vitest'
 import type { ItemKind } from '../items'
 import type { CanonicalV3Id, CompatibilityEntry } from './compatibility'
@@ -16,6 +17,46 @@ const replace = (id: CanonicalV3Id, changes: Partial<CompatibilityEntry>) => man
 const errors = (entries: readonly CompatibilityEntry[], data = v1) => validateEquipmentCompatibility(data, entries).join('\n')
 
 describe('exhaustive compatibility manifest', () => {
+  it('matches all 87 independently reviewed mapping rows, including candidate targets', () => {
+    const mapping = readFileSync(new URL('../../../docs/research/v1-revival/2026-10-27--equipment-id-mapping.md', import.meta.url), 'utf8')
+    const table = mapping.split(/## All definitions\r?\n/)[1]!.split(/\r?\n## /)[0]!
+    const rows = table.split(/\r?\n/).filter(line => line.startsWith('| `')).map(line => {
+      const cells = line.split('|').map(cell => cell.trim())
+      return { id: cells[1]!.replaceAll('`', ''), target: cells[2]!.match(/^`([^`]+)`$/)?.[1], classification: cells[6]!.toLowerCase() }
+    })
+    expect(rows).toHaveLength(87)
+    expect(manifest.map(e => ({ id: e.donorId, target: e.target?.id ?? e.candidateTarget, classification: e.classification }))).toEqual(rows)
+  })
+
+  it('rejects every unapproved classification transition for all 87 IDs', () => {
+    for (const e of manifest) {
+      for (const classification of ['existing', 'adapt', 'new', 'conflict', 'deferred'] as const) {
+        if (classification === e.classification) continue
+        const changed = replace(e.donorId, { classification })
+        expect(errors(changed), `${e.donorId} → ${classification}`).toMatch(/reviewed .*policy mismatch/)
+        expect(projectV3Equipment(e.donorId, v1, changed)).toMatchObject({ kind: 'conflict', activation: 'inactive' })
+      }
+    }
+  })
+
+  it('rejects internally consistent reclassification, including swaps preserving totals', () => {
+    const changed = manifest.map(e => e.donorId === 'padded_cap' ? { ...e, classification: 'deferred' as const }
+      : e.donorId === 'falchion' ? { ...e, classification: 'new' as const } : e)
+    expect(errors(changed)).toMatch(/padded_cap: reviewed .*policy mismatch/)
+    expect(errors(changed)).toMatch(/falchion: reviewed .*policy mismatch/)
+    const removed = replace('knife', { classification: 'new', target: undefined, identityRelation: undefined,
+      runtimeProjection: 'blocked', evidence: { ...entry('knife').evidence, targetId: undefined } })
+    expect(errors(removed)).toMatch(/knife: reviewed .*policy mismatch/)
+  })
+
+  it('protects verified targets, candidate relationships and exact projection permissions', () => {
+    const changed = replace('knife', { target: entry('dagger').target, identityRelation: 'historical-v1', evidence: { ...entry('knife').evidence, targetId: 'dagger' } })
+    expect(errors(changed)).toMatch(/knife: reviewed .*policy mismatch/)
+    expect(errors(replace('sling_stone', { candidateTarget: 'arrow' }))).toMatch(/sling_stone: reviewed .*policy mismatch/)
+    expect(errors(replace('knife', { runtimeProjection: 'blocked' }))).toMatch(/knife: reviewed .*policy mismatch/)
+    expect(errors(replace('padded_cap', { runtimeProjection: 'existing-v1-reference' }))).toMatch(/padded_cap: reviewed .*policy mismatch/)
+  })
+
   it('proves 87/87 unique IDs, classifications and real current V1 target structure', () => {
     expect(manifest).toHaveLength(87)
     expect(new Set(manifest.map(e => e.donorId)).size).toBe(87)
@@ -126,10 +167,76 @@ describe('pure canonical adapter', () => {
     expect(projectV3Equipment('knife', v1, manifest.slice(1)).kind).toBe('conflict')
     expect(projectV3Equipment('knife', { ...v1, catalog: {} }).kind).toBe('conflict')
     expect(projectV3Equipment('arrow', v1, replace('arrow', { runtimeProjection: 'existing-v1-reference' })).kind).toBe('conflict')
-    // Verified ancestry is independent of explicit projection permission.
+    // Even a conservative permission change requires a reviewed baseline update.
     const blocked = replace('mail_shirt', { runtimeProjection: 'blocked' })
-    expect(errors(blocked)).toBe('')
-    expect(projectV3Equipment('mail_shirt', v1, blocked).kind).toBe('deferred')
+    expect(errors(blocked)).toMatch(/reviewed .*policy mismatch/)
+    expect(projectV3Equipment('mail_shirt', v1, blocked).kind).toBe('conflict')
+  })
+
+  it.each([
+    ['target', { target: undefined }],
+    ['target', { target: null }],
+    ['target', { target: { ...entry('knife').target, id: 4 } }],
+    ['target', { target: { ...entry('knife').target, evidence: [] } }],
+    ['evidence', { evidence: undefined }],
+    ['evidence', { evidence: null }],
+    ['evidence', { evidence: { ...entry('knife').evidence, checks: undefined } }],
+    ['evidence', { evidence: { ...entry('knife').evidence, checks: ['identity', 1] } }],
+    ['evidence', { evidence: { ...entry('knife').evidence, targetId: {} } }],
+    ['historicalAliases', { historicalAliases: undefined }],
+    ['historicalAliases', { historicalAliases: null }],
+    ['historicalAliases', { historicalAliases: [] }],
+    ['historicalAliases', { historicalAliases: { v1: 2 } }],
+    ['properties', { properties: undefined }],
+    ['properties', { properties: {} }],
+    ['properties', { properties: [null] }],
+    ['properties', { properties: [{ ...entry('knife').properties[0], property: {} }] }],
+    ['properties', { properties: [{ ...entry('knife').properties[0], reason: 1 }] }],
+    ['unresolvedDecisions', { unresolvedDecisions: null }],
+    ['unresolvedDecisions', { unresolvedDecisions: [null] }],
+    ['unresolvedDecisions', { unresolvedDecisions: [{ id: 'test', question: 1, affectedProperties: [] }] }],
+    ['unresolvedDecisions', { unresolvedDecisions: [{ id: 'test', question: 'test', affectedProperties: [null] }] }],
+    ['dependencies', { dependencies: [false] }],
+    ['classification', { classification: null }],
+    ['candidateTarget', { candidateTarget: {} }],
+  ])('fails closed without exceptions for malformed %s: %j', (field, changes) => {
+    const malformed = manifest.map(e => e.donorId === 'knife' ? { ...e, ...changes } : e)
+    expect(validateEquipmentCompatibility(v1, malformed).join('\n')).toMatch(new RegExp(`knife: .*${field}`))
+    const result = projectV3Equipment('knife', v1, malformed)
+    expect(result).toMatchObject({ kind: 'conflict', activation: 'inactive' })
+    expect(result).not.toHaveProperty('profile')
+    expect(result).toHaveProperty('errors')
+  })
+
+  it.each([null, {}, 'manifest', 12, [null], [undefined]])('handles invalid manifest containers/entries: %j', malformed => {
+    expect(validateEquipmentCompatibility(v1, malformed).length).toBeGreaterThan(0)
+    expect(projectV3Equipment('knife', v1, malformed)).toMatchObject({ kind: 'conflict', activation: 'inactive' })
+    expect(projectV3Equipment('unknown', v1, malformed)).toEqual({ kind: 'unknown-id', id: 'unknown', activation: 'inactive' })
+  })
+
+  it('rejects duplicate entries without projecting and retains explicit undefined defaults', () => {
+    const result = projectV3Equipment('knife', v1, [...manifest, entry('knife')])
+    expect(result).toMatchObject({ kind: 'conflict', activation: 'inactive' })
+    expect(result).not.toHaveProperty('profile')
+    expect(projectV3Equipment('knife', v1, undefined).kind).toBe('existing-v1-profile')
+  })
+
+  it('identifies the array index of a null entry in an otherwise complete manifest', () => {
+    const malformed = manifest.map((e, index) => index === 1 ? null : e)
+    expect(validateEquipmentCompatibility(v1, malformed)).toContain('manifest[1]: entry must be an object')
+    const result = projectV3Equipment('knife', v1, malformed)
+    expect(result).toMatchObject({ kind: 'conflict', activation: 'inactive' })
+    expect(result).not.toHaveProperty('profile')
+  })
+
+  it('globally blocks a valid knife lookup when unrelated mail_shirt is malformed, with diagnostics', () => {
+    expect(projectV3Equipment('knife').kind).toBe('existing-v1-profile')
+    const malformed = manifest.map(e => e.donorId === 'mail_shirt' ? { ...e, evidence: undefined } : e)
+    const result = projectV3Equipment('knife', v1, malformed)
+    expect(result).toMatchObject({ kind: 'conflict', activation: 'inactive' })
+    if (!('errors' in result)) throw new Error('Expected global validation diagnostics')
+    expect(result.errors).toContain('mail_shirt: invalid or missing evidence')
+    expect(result).not.toHaveProperty('profile')
   })
 
   it('is deterministic and preserves source data, all V1 values and physical identities', () => {
@@ -144,6 +251,11 @@ describe('pure canonical adapter', () => {
       expect(Object.isFrozen(result)).toBe(true)
       expect(result.activation).toBe('inactive')
       if ('source' in result) expect(result.source).toBe(findV3EquipmentDefinition(source.id))
+      if (result.kind === 'existing-v1-profile') {
+        const target = result.compatibility.target!.id
+        expect(result.profile.definition).toBe(ITEM_DEFS[target])
+        expect(result.profile.gameplay).toBe(ITEM_CATALOG[target])
+      }
     }
     expect(V3_EQUIPMENT_DEFINITIONS).toStrictEqual(sourceBefore)
     expect(ITEM_DEFS).toStrictEqual(defsBefore)

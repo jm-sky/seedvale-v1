@@ -67,3 +67,52 @@ Current-pin membership is therefore independently verified through GitHub. Offli
 **READY WITH CONDITIONS** for separate Stage 4 planning/review, not activation approval. Resolve the relevant identity decisions and select an explicit integration scope. Author missing V1 profiles and acquisition/persistence contracts before any new runtime kind. Reconcile armor with `items-player-044` and shared player/NPC protection. Retain the source/compatibility/gameplay authority boundaries and independently verify provenance for any pin change.
 
 Active V1 item values, acquisition, combat/equipment behavior, Inventory physical operations and its three-panel/hybrid-row UI are unchanged. No persistence schema change, save migration, new obtainable item or Stage 4 implementation is included.
+
+## Corrective pass — Review 027 (2026-10-27)
+
+**Scope:** isolated Stage 3 corrections, based on [Review 027](../../reviews/2026-10-27--027--v3-equipment-catalogue-stage-3-review.md). Starting checkout: clean `main`, `8b8c3034175e4a55a7631b05884db606cd089d82`; no staged, unstaged or untracked work to preserve. The environment initially had no repository; a sparse checkout includes all source, scripts and documentation. Current source was inspected before editing. The independent review remains unchanged. Stage 4 is neither implemented nor approved.
+
+| Finding | Resolution and evidence |
+| --- | --- |
+| **P2-1: classification/identity integrity — resolved** | `compatibility.ts::matchesReviewedPolicy` compares each supplied entry against the private, explicit reviewed `POLICY` table, independently of the supplied expanded manifest. It checks classification, verified target versus candidate target, identity relation and exact projection permission. No second expanded manifest is maintained. Tests compare all 87 policy rows with the independent research mapping, reject every alternative classification for every ID, the totals-preserving padded-cap/falchion swap, internally consistent knife-to-new reclassification, verified-target replacement, candidate replacement and forged permissions. |
+| **P2-2: malformed manifest — resolved** | `validation.ts::hasEntryShape` narrows `unknown` containers/entries before nested reads. Missing/malformed aliases, evidence/checks, target members, properties, decisions and dependencies return entry/field diagnostics. `projectV3Equipment` accepts `unknown` policy data and returns the existing inactive `conflict` plus `errors` shape on validation failure. There is no catch-all, normalization, registration or fallback projection. Missing required verified targets also fail the policy/target checks. Tests cover null entries, invalid containers, missing fields, nested wrong types and duplicate IDs. |
+| **P3-1: global invalidation — resolved** | Deliberately retain the whole-manifest integrity gate for every known-ID lookup. An unrelated malformed `mail_shirt` blocks an otherwise valid `knife` projection with `mail_shirt: invalid or missing evidence`, without throwing or returning a profile. This prevents partial admission under a damaged policy. Trade-off: one defect blocks every known ID and validation scans all rows per query. This isolated adapter has no production consumer; future integration must separately decide a validated lifecycle boundary before hot-path use. Unknown canonical IDs still return `unknown-id` before manifest validation. |
+| **P3-2: provenance/CI — local resolution; remote execution tracked separately** | New `fixtures/v3-equipment/git-tree-proof.json` contains the actual pinned commit object and six raw ancestor trees (base64), captured from the donor Git object database. `verifyPinnedTreeProof` hashes the commit against the pinned revision, then hashes and traverses each ancestor tree to the five exact path/blob pairs. `readPinnedSources` requires this proof before checking the original fixture bytes. Matching revision labels alone cannot pass. Tests reject forged commit content, changed tree bytes and missing intermediate evidence. CI retains its explicit focused `tsc` step and adds an explicit offline source-fidelity/membership step. |
+
+### Policy authority and future changes
+
+The reviewed policy remains **17 existing / 9 adapt / 27 new / 4 conflict / 30 deferred**, covering **87/87** definitions. Historical ancestry is distinct from verified current V1 identity; canonical name equality and evidence prose do not approve a projection. All four conflicts and the sling-stone candidate remain blocked. Existing profiles are borrowed by reference; all 25 references are checked against the original V1 objects. Even lowering a reviewed projection permission now requires a baseline change, rather than being silently accepted as a caller override.
+
+Intentional future policy evolution must explicitly review each changed ID, classification, target/candidate role, identity evidence and projection permission against current V1 source. Record the human decision in the mapping/owning implementation notes, then update `POLICY` and the corresponding positive/negative tests together. Updating an evidence string or merely rebalancing classification totals is insufficient. This workflow permits reviewed evolution; it does not grant gameplay admission or Stage 4 approval.
+
+The content-addressed proof establishes membership in the already approved commit; it is not a signature or approval of a different donor pin. For any separately authorized pin change, fetch the exact reviewed donor commit, capture its raw `git cat-file commit <sha>` text and each raw `git cat-file tree <ancestor-sha>` buffer needed by the five source paths (base64 in the proof), and independently review the resulting path/blob relationships before changing provenance/fixtures. Never regenerate this proof from imported catalogue values. The current donor revision, five source fixtures and blob manifest are unchanged.
+
+### Verification commands and outcomes
+
+Executed from the V1 checkout with Node **24.19.0** and installed dependencies:
+
+```sh
+node node_modules/vitest/vitest.mjs run src/items/v3Equipment scripts/items/verify-v3-equipment-source.test.ts src/items/Inventory.test.ts src/items/equipment.test.ts src/items/itemCatalog.test.ts
+node node_modules/typescript/bin/tsc --project tsconfig.equipment-verification.json
+node node_modules/vue-tsc/bin/vue-tsc.js --noEmit
+node node_modules/eslint/bin/eslint.js src/items/v3Equipment/adapter.ts src/items/v3Equipment/compatibility.ts src/items/v3Equipment/validation.ts src/items/v3Equipment/compatibility.test.ts scripts/items/verify-v3-equipment-source.ts scripts/items/verify-v3-equipment-source.test.ts
+node --import tsx scripts/items/verify-v3-equipment-source.ts
+node --import tsx scripts/items/verify-v3-equipment-source.ts --git-tree /tmp/seedvale-equipment-donor
+git diff --check
+```
+
+Results: **7 suites / 196 tests PASS**; focused TypeScript **PASS**; application typecheck **PASS**; scoped ESLint **PASS**; offline fidelity and commit membership **PASS** (87 records, all own keys/values, 26 type/domain equalities and five typed exports); independent live Git-tree audit **PASS** for all five blobs at `907e17cd2ad487547a25a1f928b2770348183d75`; whitespace check **PASS**. Existing Stage 2 source-fidelity assertions remain intact. The production-import isolation test passes. CI configuration actually invokes `pnpm exec tsc --project tsconfig.equipment-verification.json` and now `pnpm exec tsx scripts/items/verify-v3-equipment-source.ts`; both have local passing equivalents above. No network access or donor credentials are needed for ordinary tests or these CI checks. Remote CI completion is unverified at documentation time; local results are not a remote CI attestation.
+
+The live Git-tree audit used a fresh bare donor object database, not a newer donor checkout:
+
+```sh
+git init --bare /tmp/seedvale-equipment-donor
+git -C /tmp/seedvale-equipment-donor remote add origin https://github.com/jm-sky/seedvale.git
+git -C /tmp/seedvale-equipment-donor fetch --depth 1 --filter=blob:none origin 907e17cd2ad487547a25a1f928b2770348183d75
+```
+
+Preparation limitations: the default package-store path was unavailable; dependency installation succeeded with `XDG_DATA_HOME=/tmp/seedvale-pnpm XDG_CACHE_HOME=/tmp/seedvale-cache pnpm install --frozen-lockfile --store-dir /tmp/seedvale-store`. Direct preflight (`node --import tsx scripts/claude/pre-implementation.ts equipment-catalogue`) reports `Plan not found`, as this is a research-stage task rather than an indexed plan; required context and targeted source/tests were read directly. The sandbox blocked child Git execution in the live audit; the same exact command passed with the authorized execution boundary. An initial focused TypeScript diagnostic in the new verifier was fixed with an explicit `string` annotation and rerun successfully. No browser/GPU/full-world benchmarks or gameplay acceptance are claimed.
+
+Changed files: `compatibility.ts` (`matchesReviewedPolicy`), `validation.ts` (`hasEntryShape`, `validateEquipmentCompatibility`), `adapter.ts` (`projectV3Equipment`), `compatibility.test.ts`, verifier and verifier tests, the new Git proof fixture, `.github/workflows/ci.yml`, and this note. `compatibilityTypes.ts`, `propertyCompatibility.ts` and the focused tsconfig required no changes.
+
+All 87 donor definitions, source pin, active `ItemKind`, `ITEM_DEFS`, `ITEM_CATALOG`, Inventory/UI, combat, NPC equipment, economy/acquisition and persistence remain unchanged. Remaining semantic decisions listed above still belong to separately authorized later work. These corrections close the Stage 3 technical findings locally, without approving Stage 4.

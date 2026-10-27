@@ -3,7 +3,7 @@ import type { ItemDef, ItemKind } from '../items'
 import type { CompatibilityEntry } from './compatibility'
 import type { V3EquipmentDefinition } from './types'
 import { V3_EQUIPMENT_DEFINITIONS } from './catalogue'
-import { V1_VERIFICATION_REVISION, V3_EQUIPMENT_COMPATIBILITY } from './compatibility'
+import { matchesReviewedPolicy, V1_VERIFICATION_REVISION, V3_EQUIPMENT_COMPATIBILITY } from './compatibility'
 import { PROPERTY_CLASSES, propertyPaths } from './propertyCompatibility'
 import { V3_EQUIPMENT_PROVENANCE } from './provenance'
 
@@ -49,10 +49,38 @@ function compatibleFamily(source: V3EquipmentDefinition, id: ItemKind, v1: V1Def
   return false // No shield family in V1.
 }
 
-/** Structural proof of current targets and complete policy. Semantic equivalence still needs human approval. */
+const isRecord = (value: unknown): value is Record<string, unknown> => value !== null && typeof value === 'object' && !Array.isArray(value)
+const isString = (value: unknown): value is string => typeof value === 'string'
+const optionalString = (value: unknown) => value === undefined || isString(value)
+const stringArray = (value: unknown): value is string[] => Array.isArray(value) && Array.from(value).every(isString)
+
+/** Narrow untrusted data before any nested access. No normalization or repair. */
+function hasEntryShape(value: unknown, fail: (reason: string) => void): value is CompatibilityEntry {
+  if (!isRecord(value)) { fail('entry must be an object'); return false }
+  const invalid: string[] = []
+  const require = (valid: boolean, field: string) => { if (!valid) invalid.push(field) }
+  for (const field of ['donorId', 'classification', 'sourceRevision', 'runtimeProjection', 'activation']) require(isString(value[field]), field)
+  require(optionalString(value.candidateTarget), 'candidateTarget')
+  require(optionalString(value.identityRelation), 'identityRelation')
+  require(isRecord(value.historicalAliases) && optionalString(value.historicalAliases.v1) && optionalString(value.historicalAliases.v2), 'historicalAliases')
+  require(value.target === undefined || (isRecord(value.target) && isString(value.target.id)
+    && isString(value.target.verifiedRevision) && isString(value.target.evidence)), 'target')
+  require(isRecord(value.evidence) && isString(value.evidence.mappingDocument) && isString(value.evidence.sourceId)
+    && optionalString(value.evidence.targetId) && stringArray(value.evidence.checks), 'evidence')
+  require(Array.isArray(value.properties) && Array.from(value.properties).every(p => isRecord(p)
+    && isString(p.property) && isString(p.compatibility) && isString(p.preservation) && isString(p.reason)), 'properties')
+  require(Array.isArray(value.unresolvedDecisions) && Array.from(value.unresolvedDecisions).every(d => isRecord(d)
+    && isString(d.id) && isString(d.question) && stringArray(d.affectedProperties)
+    && d.affectedProperties.every(p => Object.hasOwn(PROPERTY_CLASSES, p))), 'unresolvedDecisions')
+  require(stringArray(value.dependencies), 'dependencies')
+  for (const field of invalid) fail(`invalid or missing ${field}`)
+  return invalid.length === 0
+}
+
+/** Global integrity gate: reviewed policy plus executable V1 structure, never semantic approval. */
 export function validateEquipmentCompatibility(
   v1: V1Definitions,
-  entries: readonly CompatibilityEntry[] = V3_EQUIPMENT_COMPATIBILITY,
+  entries: unknown = V3_EQUIPMENT_COMPATIBILITY,
   sources: readonly V3EquipmentDefinition[] = V3_EQUIPMENT_DEFINITIONS,
 ): readonly string[] {
   const errors: string[] = []
@@ -60,13 +88,18 @@ export function validateEquipmentCompatibility(
   const targets = new Map<string, string>()
   const sourceIds = new Set(sources.map(source => source.id))
   if (sourceIds.size !== sources.length) errors.push('duplicate source canonical ID')
-  for (const entry of entries) {
+  if (!Array.isArray(entries)) return Object.freeze(['manifest: expected an array'])
+  for (const [index, value] of entries.entries()) {
+    const label = isRecord(value) && isString(value.donorId) ? value.donorId : `manifest[${index}]`
+    if (!hasEntryShape(value, reason => errors.push(`${label}: ${reason}`))) continue
+    const entry = value
     const id = entry.donorId
     const fail = (reason: string) => errors.push(`${id}: ${reason}`)
     if (ids.has(id)) fail('duplicate manifest ID')
     ids.add(id)
     const source = sources.find(source => source.id === id)
     if (!source) { fail('unknown canonical ID'); continue }
+    if (!matchesReviewedPolicy(entry)) fail('reviewed classification/identity/projection policy mismatch')
     if (!['adapt', 'conflict', 'deferred', 'existing', 'new'].includes(entry.classification)) fail('invalid classification')
     if (entry.sourceRevision !== V3_EQUIPMENT_PROVENANCE.sourceRevision) fail('source revision drift')
     if (entry.activation !== 'inactive') fail('activation forbidden')

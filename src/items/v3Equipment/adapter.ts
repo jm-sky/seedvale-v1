@@ -20,17 +20,20 @@ export type EquipmentProjection =
   | { readonly kind: 'unknown-id', readonly id: string, readonly activation: 'inactive' }
   | { readonly kind: 'conflict', readonly id: string, readonly activation: 'inactive', readonly errors: readonly string[] }
 
-/** Canonical lookup only. References unchanged V1 authorities; never registers or converts an item. */
+/** Canonical lookup only. Whole-manifest integrity failure blocks every known ID.
+ * References unchanged V1 authorities; never registers or converts an item.
+ */
 export function projectV3Equipment(
   id: string,
   v1: V1Definitions = { definitions: ITEM_DEFS, catalog: ITEM_CATALOG },
-  manifest: readonly CompatibilityEntry[] = V3_EQUIPMENT_COMPATIBILITY,
+  manifest: unknown = V3_EQUIPMENT_COMPATIBILITY,
 ): EquipmentProjection {
   const source = findV3EquipmentDefinition(id)
   if (!source) return Object.freeze({ kind: 'unknown-id', id, activation: 'inactive' })
   const errors = validateEquipmentCompatibility(v1, manifest)
   if (errors.length) return Object.freeze({ kind: 'conflict', id, activation: 'inactive', errors })
-  const compatibility = manifest.find(entry => entry.donorId === id)!
+  // The global validator established shape, coverage and policy before this trusted read.
+  const compatibility = (manifest as readonly CompatibilityEntry[]).find(entry => entry.donorId === id)!
   const base = { activation: 'inactive' as const, source, compatibility }
   if (compatibility.runtimeProjection === 'existing-v1-reference' && compatibility.target) {
     const target = compatibility.target.id

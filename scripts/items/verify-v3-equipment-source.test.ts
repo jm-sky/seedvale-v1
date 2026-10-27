@@ -2,12 +2,45 @@ import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { MeleeWeapon, V3EquipmentDefinition } from '../../src/items/v3Equipment/types'
 import { V3_EQUIPMENT_DEFINITIONS } from '../../src/items/v3Equipment/catalogue'
-import { assertSourceEqual, readReviewedIds, resolvePinnedDefinitions, verifyDefinitions, verifySource } from './verify-v3-equipment-source'
+import { assertSourceEqual, readReviewedIds, resolvePinnedDefinitions, verifyDefinitions, verifyPinnedTreeProof, verifySource } from './verify-v3-equipment-source'
 
 const expected = resolvePinnedDefinitions()
 const copy = () => structuredClone(expected) as V3EquipmentDefinition[]
 
 describe('pinned V3 equipment source verification', () => {
+  const proof = () => JSON.parse(readFileSync(new URL('./fixtures/v3-equipment/git-tree-proof.json', import.meta.url), 'utf8')) as {
+    commit: string
+    trees: Record<string, string>
+  }
+
+  it('proves all five blobs belong to the exact pinned commit offline', () => {
+    expect(() => verifyPinnedTreeProof(proof())).not.toThrow()
+  })
+
+  it('rejects a forged commit even when revision metadata is unchanged', () => {
+    const forged = proof()
+    forged.commit += 'forged evidence\n'
+    expect(() => verifyPinnedTreeProof(forged)).toThrow(/commit proof hash mismatch/)
+  })
+
+  it('rejects altered tree bytes and cannot accept self-declared blob membership', () => {
+    const forged = proof()
+    const root = /^tree (\w+)/.exec(forged.commit)![1]!
+    const bytes = Buffer.from(forged.trees[root]!, 'base64')
+    bytes[bytes.length - 1] = bytes[bytes.length - 1]! ^ 1
+    forged.trees[root] = bytes.toString('base64')
+    expect(() => verifyPinnedTreeProof(forged)).toThrow(/tree proof hash mismatch/)
+  })
+
+  it('clearly rejects missing intermediate membership evidence', () => {
+    const incomplete = proof()
+    const root = /^tree (\w+)/.exec(incomplete.commit)![1]!
+    for (const sha of Object.keys(incomplete.trees)) {
+      if (sha !== root) delete incomplete.trees[sha]
+    }
+    expect(() => verifyPinnedTreeProof(incomplete)).toThrow(/membership cannot be verified: missing tree/)
+  })
+
   it('parses reviewed Markdown with LF or CRLF without changing pinned source bytes', () => {
     const mapping = readFileSync(new URL('../../docs/research/v1-revival/2026-10-27--equipment-id-mapping.md', import.meta.url), 'utf8').replaceAll('\r\n', '\n')
     expect(readReviewedIds(mapping)).toHaveLength(87)

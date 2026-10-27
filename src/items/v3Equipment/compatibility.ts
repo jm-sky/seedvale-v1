@@ -15,7 +15,8 @@ type Policy =
   | readonly ['adapt', ItemKind, 'candidate', 'blocked']
   | readonly ['conflict', ItemKind, 'historical-v1', 'blocked']
 
-// Reviewed against the mapping table and current V1 source, never inferred from availability.
+// Reviewed policy baseline, independent of supplied/expanded manifests. Intentional changes
+// require mapping/identity review and regression updates; evidence prose cannot approve them.
 const POLICY = {
   knife: ['existing', 'knife', 'canonical', 'existing-v1-reference'],
   dagger: ['existing', 'dagger', 'canonical', 'existing-v1-reference'],
@@ -129,6 +130,18 @@ export interface CompatibilityEntry {
   readonly activation: 'inactive'
   readonly unresolvedDecisions: readonly CompatibilityDecision[]
   readonly dependencies: readonly string[]
+}
+
+/** Compare policy authority, not self-declared evidence or matching canonical names. */
+export function matchesReviewedPolicy(entry: CompatibilityEntry): boolean {
+  if (!Object.hasOwn(POLICY, entry.donorId)) return false
+  const [classification, targetId, identityRelation, projection] = POLICY[entry.donorId] as Policy
+  const verified = (classification === 'existing' || classification === 'adapt') && identityRelation !== 'candidate'
+  return entry.classification === classification
+    && entry.target?.id === (verified ? targetId : undefined)
+    && entry.candidateTarget === (verified ? undefined : targetId)
+    && entry.identityRelation === identityRelation
+    && entry.runtimeProjection === (projection ?? 'blocked')
 }
 
 const dependencies = Object.freeze(['Inventory/identity', 'combat/projectiles', 'NPC/loadout', 'economy/acquisition', 'persistence', 'UI/appearance'])
