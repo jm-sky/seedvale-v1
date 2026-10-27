@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "gitSha": "c460b224eadfa395e400da3413815327530adaf7",
+  "runId": "2026-10-27T17-09-10-217Z-tetn2o",
+  "scenario": "forest",
+  "phase": "warm",
+  "canonical": true,
+  "generatedAt": "2026-10-27T17:10:07.474Z",
+  "fixtureVersion": "tools-001-v1",
+  "quality": "High",
+  "hardwareClass": "diagnostic",
+  "notes": "Series rep 2/3, fresh browser per rep, 30 s cooldown before and after, auto-start via ?benchmark= on fixture tools-001-v1. Real Intel Arc 140V through WSL2 Mesa D3D12 -> ANGLE/GL (not the author's native Windows ANGLE/D3D11 path) — classified diagnostic because GL_INVALID_OPERATION (sampler/texture-format mismatch, app-level; also reproduced on SwiftShader) rejects some draws in every run and GPU timer is unavailable.",
+  "instrumentationCommits": [
+    "b21a7eb0",
+    "5cedca33"
+  ],
+  "runbookInstrumentShaNote": "Runbook SHAs 94a74470/e124e866 are absent from this repo history (rewritten); equivalent commits are b21a7eb0 (P0) and 5cedca33 (residual fix), both ancestors of the captured gitSha.",
+  "durationSec": 30,
+  "captureKind": "series",
+  "device": {
+    "webglVendor": "Google Inc. (Microsoft Corporation)",
+    "webglRenderer": "ANGLE (Microsoft Corporation, D3D12 (Intel(R) Arc(TM) 140V GPU (16GB)), OpenGL 4.6)",
+    "drawingBuffer": [
+      1600,
+      900
+    ],
+    "pixelRatio": 1
+  },
+  "manual": {
+    "gpu": "Intel Arc 140V (16GB shared), via WSL2 /dev/dxg + Mesa 25.2.8 d3d12 (GALLIUM_DRIVER=d3d12)",
+    "driver": "Intel WDDM iigd_dch.inf (WSL /usr/lib/wsl/drivers); exact version not captured",
+    "os": "Linux 5.15.167.4-microsoft-standard-WSL2 (WSLg)",
+    "browser": "Google Chrome 147.0.7727.137 headed via Playwright-core 1.54.2, flags --use-gl=angle --use-angle=gl --ignore-gpu-blocklist",
+    "powerThermal": "not captured (laptop AC/power plan unknown); 30 s idle cooldown before/after each run",
+    "notes": "Vite dev server (not preview build), PORT=5577."
+  },
+  "gpuTimer": "unavailable",
+  "passSubmissionsReliability": "observed"
+}

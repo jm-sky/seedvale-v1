@@ -53,3 +53,9 @@ Set `meta.hardwareClass` to `target-gpu` only on verified Arc/real-GPU runs. Fil
 ## Known diagnostic capture
 
 `2026-10-27--032--benchmark-settlement-heavy` — harness smoke on Arc ANGLE, 15 s, pass=`observed`, **not** acceptance baseline.
+
+## Captures after P0
+
+`2026-10-27--033` … `--051` — 3-rep series (settlement-heavy, forest, stream, water) on `c460b224`, Arc 140V via WSL2 Mesa D3D12 → ANGLE/GL, headed Chrome 147, 30 s cooldown before/after each run. Classified `diagnostic` (see `--051--a0a-b0-c0-baseline-summary.md`): NPC population not settled in window, rotation not achievable without pointer lock, `GL_INVALID_OPERATION` sampler mismatch in every run, GPU timer unavailable.
+
+Note: the instrument SHAs above (`94a74470`, `e124e866`) are not in this repo history; the equivalent commits are `5cedca33` and `b21a7eb0`.
