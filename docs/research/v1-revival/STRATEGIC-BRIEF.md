@@ -90,6 +90,17 @@ A lightweight moon and stars aligned with world cardinal directions remain a des
 
 **Longer-term audio direction:** key NPC–player dialogue, short NPC–NPC exchanges, and vocalization varying with NPC/player relations and reputation. Derive behavior from actual relationship/reputation state; detailed coverage and production are not yet planned. English is optional and mixed languages are acceptable; no automatic conversion to English.
 
+**Author-requested NPC voices/dialogue recon scope (2026-10-27; pending investigation, not an approved implementation plan):**
+
+- Verify how actual NPC–player dialogue text and voice selection reflect relationships, reputation and quest state, including correctness and missing variations.
+- Compare V1 NPC–NPC social conversations and campfire exchanges with V3 dialogue variants; identify selective adaptation candidates without replacing V1's conversation/runtime authority.
+- Audit bark spacing, per-speaker and shared/global cooldowns, repeat suppression and cross-NPC deduplication, especially identical weather lines heard three times in different voices.
+- Investigate and correct the reported rain bark occurring during snow; first verify weather-state mapping, transition behavior and trigger conditions.
+- Evaluate richer weather-specific bark conditions and content (rain versus storm, fog, snow), conditional on the actual V1 weather model and available recordings.
+
+**Sequencing:** Perform a bounded source/research recon first; capture findings and possible fixes without authorizing implementation. Keep voice/runtime wiring and any performance-affecting integration deferred under the approved D4 Performance-First freeze, following the roadmap's proposed P5 living-world content phase after P1 exit. This note does not alter approved decisions, roadmap phase order, or approve donor voice ports.
+
+
 Retain the author preference for key names **Mark, Kate, Ann and Peter**. Confirm their identity mapping before renaming; preserve quest and character identity.
 
 **Selected for early content stages:**
