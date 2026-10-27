@@ -123,3 +123,43 @@ A complete *grass presentation* replacement is **medium–high integration compl
 **Evidence gate:** Compare actual rendered density/silhouette and CPU/GPU p50/p95/p99, draw calls by pass, uploaded buffer ranges/allocations, cold tile/clipmap fill hitches and memory in matching V1 scenes. V3's published low millisecond grass deltas and bounded band triangle counts describe **V3 workloads**, not a directly demonstrated V1 improvement. Likewise, V1's 120,000 grass *placement candidates per chunk* cannot be compared numerically to V3's 192 *tile slots* without acceptance and culling measurements.
 
 **Execution guidance:** A strong single model with direct repository access and reliable test/browser tools can research, plan and implement this migration in scoped stages; using Opus plus Sonnet is **not a technical prerequisite**. For a whole renderer/shader integration, an independent design or code review is a valuable risk reducer. Prefer one accountable implementer (GPT Sol or Sonnet/Cursor) with independent focused review (Opus or another capable reviewer) at the architectural boundary and again before removing V1's fallback. No parallel competing implementations; no work order is issued by this research addendum.
+
+---
+
+## Wstępne ustalenia — Grass Visual Direction
+
+**Created at:** 2026-10-27  
+**Created by:** ChatGPT Sol  
+
+Na podstawie porównania screenshots, w sesji z ChatGPT.
+
+| Element                 | Ustalony kierunek                                                      |
+| ----------------------- | ---------------------------------------------------------------------- |
+| Architektura            | V3 — do weryfikacji pod kątem możliwości i wydajności                  |
+| Gęstość                 | Pomiędzy V1 i V3, z priorytetem FPS                                    |
+| Modele trawy            | V1 jako baza; mniej kanciaste liście przy zachowaniu dobrego pokrycia  |
+| Kwiaty                  | Obowiązkowo luźno rozmieszczone kępy billboardów                       |
+| Kolorystyka             | Oliwkowa paleta V1 z lokalnymi akcentami żywej zieleni                 |
+| Podłoże                 | Nieregularność V1, potencjalnie ulepszone tekstury                     |
+| Paprocie, krzewy, zioła | Osobny zakres prac                                                     |
+| Rozmieszczenie          | Tereny osad bardziej uporządkowane, dzikie obszary bardziej zarośnięte |
+
+### Trzy kwestie warte uwagi
+
+1\. Gęstość wizualna ≠ liczba modeli
+
+Szerokie liście mogą skutecznie wypełniać przestrzeń przy mniejszej liczbie instancji. Nie zakładamy więc, że rzadsza trawa V3 automatycznie oznacza lepszą wydajność.
+
+2\. Zróżnicowanie otoczenia
+
+Zamiast jednakowej trawy wszędzie warto docelowo rozważyć profile wizualne:
+
+- `Settlement` — trawa niższa, rzadsza, bardziej uporządkowana.
+- `Meadow` — średnia gęstość, mieszanka zieleni i oliwki, więcej kwiatów.
+- `Wilderness` — gęsta, nieregularna roślinność podobna do V1.
+
+To koncepcja wizualna, nie propozycja nowego systemu. Najpierw trzeba sprawdzić, jakie mechanizmy terenu i roślinności już istnieją.
+
+3\. Tekstura ziemi ma duże znaczenie
+
+Lepsza tekstura podłoża może pozwolić zmniejszyć liczbę modeli trawy bez wyraźnej utraty bogactwa wizualnego.
