@@ -9,6 +9,9 @@ Read the [inventory and decision register](./2026-10-26--ui-migration-research.m
 
 > **Readiness reconciliation — 2026-10-26:** Stages A–C are authorized and implemented; owning proposals/plans record author visual PASS. Earlier blanket “not approved”, screenshot-pending and execution-gate wording below is historical for those delivered slices, not a requirement to reopen them. Later Character/skills and other screens remain unapproved. The Stage C proposal overrides literal opacity-5 for Quick Actions chips only; preserve native disabled/no-dispatch and readable reasons. See the [dated handoff](./2026-10-26--opus-readiness-review.md).
 
+> **Inventory supersession — 2026-10-27:** The author-selected [D2(c)/D5 contract](./2026-10-27--inventory-hybrid-three-panel-contract.md) replaces D2(a), desktop two-column inventory and nested desktop details with hybrid identity/group rows and `InventoryList | ItemDetailCard | EquipmentPanel`. It also defines explicit group-action identity limits and required D9 shared presentation. Historical Stage A/B visual PASS remains evidence for the versions accepted then; revised implementation and visual acceptance are pending. The contract governs this inventory revision wherever older wording below conflicts.
+
+
 ## 1. Shared execution contract (after applicable author approval)
 
 - Refresh affected V1/V3 `main` files against the report pins; follow V1 `CLAUDE.md` and current plan navigation. Do not overwrite concurrent model/weather/docs changes. Create a standard active plan and run its repository preflight only when implementation is actually authorized.

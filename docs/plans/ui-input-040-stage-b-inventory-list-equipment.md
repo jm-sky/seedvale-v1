@@ -10,6 +10,8 @@
 **Subdomains:** `inventory` `presentation` `equipment`
 **Tags:** `v1-revival` `stage-b` `inventory-list` `equipment` `d2` `d5`
 
+> **Inventory revision — 2026-10-27:** Historical completion/visual PASS below is retained. For the subsequent inventory revision, the [D2(c)/D5 contract](../research/v1-revival/2026-10-27--inventory-hybrid-three-panel-contract.md) supersedes the old kind-list, desktop two-column/nested-modal and unchanged-details-navigation constraints. Use its [Cursor handoff](../research/v1-revival/2026-10-27--inventory-hybrid-cursor-handoff.md). New implementation and visual acceptance remain pending; do not reopen or relabel this completed historical plan.
+
 ## Cel
 
 Dwukolumnowy list view (kind-list \| equipment + LoadoutSummary) z lookiem **identycznym z V3** `InventoryList` / `EquipmentPanel` / `LoadoutSummary`, przy V1 state/callbackach. Pure preview porównania; Stage A details bez zmiany kontraktu. Demo D9 list+equipment.

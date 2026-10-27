@@ -6,6 +6,9 @@
 
 > **Readiness reconciliation — 2026-10-26:** The later [UI decisions](./2026-10-26--ui-migration-research.md#5-author-decision-register) supersede donor-conversation reuse suggestions: **do not port V3 NPC–player conversation UI/UX**. Quick Actions requires its own V1 adaptation. Eight armor candidates remain recommendations, neither a mandatory list nor a limit; nails/unnecessary NPC-only tool imports stay excluded.
 
+> **Inventory supersession — 2026-10-27:** The author-selected [D2(c)/D5 contract](./2026-10-27--inventory-hybrid-three-panel-contract.md) replaces D2(a), desktop two-column inventory and nested desktop details with hybrid identity/group rows and `InventoryList | ItemDetailCard | EquipmentPanel`. It also defines explicit group-action identity limits and required D9 shared presentation. Historical Stage A/B visual PASS remains evidence for the versions accepted then; revised implementation and visual acceptance are pending. The contract governs this inventory revision wherever older wording below conflicts.
+
+
 ## Executive findings
 
 - V3 offers reusable Vue presentation, especially item details, meters and comparison layout. Its inventory sandbox is substantially richer than its world inventory. Adopting the design does not require replacing V1 inventory, state, commands or combat controls.

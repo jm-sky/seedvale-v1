@@ -9,6 +9,9 @@
 **Target:** `jm-sky/seedvale-v1` (`legacy/seedvale`)  
 **Design donor:** `jm-sky/seedvale` (V3) `InventoryList` / `EquipmentPanel` / `LoadoutSummary` presentation only
 
+> **Inventory supersession — 2026-10-27:** The author-selected [D2(c)/D5 contract](./2026-10-27--inventory-hybrid-three-panel-contract.md) replaces D2(a), desktop two-column inventory and nested desktop details with hybrid identity/group rows and `InventoryList | ItemDetailCard | EquipmentPanel`. It also defines explicit group-action identity limits and required D9 shared presentation. Historical Stage A/B visual PASS remains evidence for the versions accepted then; revised implementation and visual acceptance are pending. The contract governs this inventory revision wherever older wording below conflicts.
+
+
 ## Podsumowanie dla autora (PL)
 
 Stage B przeprojektowuje **listę ekwipunku** i dodaje **panel założonego sprzętu + porównanie loadoutu** wizualnie **identycznie** jak V3, przy zachowaniu V1 kind-list, mass+size, sześciu slotów, HeldTool vs primaryMelee/primaryRanged oraz wszystkich akcji Stage A (details bez zmiany kontraktu). Preview jest czystym helperem — **nie** equips/removes. Warstwy/tarcza/typed resist/DPS = D4 placeholdery.

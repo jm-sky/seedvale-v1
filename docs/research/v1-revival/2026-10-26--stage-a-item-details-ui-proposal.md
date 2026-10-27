@@ -9,6 +9,9 @@
 **Target:** `jm-sky/seedvale-v1` (`legacy/seedvale`)  
 **Design donor:** `jm-sky/seedvale` (V3) item-card presentation only
 
+> **Inventory supersession — 2026-10-27:** The author-selected [D2(c)/D5 contract](./2026-10-27--inventory-hybrid-three-panel-contract.md) replaces D2(a), desktop two-column inventory and nested desktop details with hybrid identity/group rows and `InventoryList | ItemDetailCard | EquipmentPanel`. It also defines explicit group-action identity limits and required D9 shared presentation. Historical Stage A/B visual PASS remains evidence for the versions accepted then; revised implementation and visual acceptance are pending. The contract governs this inventory revision wherever older wording below conflicts.
+
+
 ## Podsumowanie dla autora (PL)
 
 Propozycja Stage A przeprojektowuje **tylko** ekran szczegółów przedmiotu (`InventoryScreenItemDetails`) wizualnie **identycznie** jak karta V3 (`ItemDetailCard`), **bez** zmiany nawigacji lista→szczegóły ani callbacków V1. Zachowane zostają wszystkie pola i akcje. Liczniki zużycia zbroi, DPS i donorowe „napraw” nie wchodzą do gry — niedostępne metryki jako podpisane placeholdery; niedostępne kontrolki: native `disabled` + dokładnie `opacity-5` + czytelny powód. Brak importu store’ów / mutacji / komend V3. **Zaakceptowane 2026-10-26** (D5 = look V3; flagi 2–6 = defaulty).

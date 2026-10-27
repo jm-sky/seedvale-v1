@@ -10,6 +10,8 @@
 **Subdomains:** `inventory` `presentation`
 **Tags:** `v1-revival` `stage-a` `item-details` `d5`
 
+> **Inventory revision — 2026-10-27:** Historical completion/visual PASS below is retained. For the subsequent inventory revision, the [D2(c)/D5 contract](../research/v1-revival/2026-10-27--inventory-hybrid-three-panel-contract.md) supersedes the old kind-list, desktop two-column/nested-modal and unchanged-details-navigation constraints. Use its [Cursor handoff](../research/v1-revival/2026-10-27--inventory-hybrid-cursor-handoff.md). New implementation and visual acceptance remain pending; do not reopen or relabel this completed historical plan.
+
 ## Cel
 
 Przeprojektować wyłącznie `InventoryScreenItemDetails` tak, by **wygląd karty był identyczny z V3 `ItemDetailCard`**, przy zachowaniu V1 pól, akcji, nawigacji lista↔szczegóły oraz callbacków `ui.inventory.on*`. Dodać niezależne demo D9 na tych samych komponentach prezentacji.

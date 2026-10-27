@@ -7,6 +7,8 @@
 
 ## Current strategic entry point
 
+Current inventory revision: [D2(c)/D5 hybrid rows and three-panel contract](./2026-10-27--inventory-hybrid-three-panel-contract.md) and [complete Cursor implementation prompt](./2026-10-27--inventory-hybrid-cursor-handoff.md). Author decisions dated 2026-10-27 supersede D2(a) and the former desktop two-column/nested-modal contract. V1 semantics/actions remain authoritative; drop/use/placement identity limits are explicit. Research/specification complete, implementation and revised visual acceptance pending. Earlier Stage A/B visual PASS remains historical; it does not verify this revision.
+
 Start revival planning with the [Strategic Brief for Claude Opus 5.5](./STRATEGIC-BRIEF.md). It records the author's agreed goals, scope, exclusions, conditional preferences and open issues from the 2026-10-26 strategy session. Opus owns later coordination, detailed planning, AI-agent documentation optimization and technical review of Cursor changes. Its proposed order for remaining work requires author discussion and approval; bounded Cursor exceptions are recorded in the brief.
 
 R1–R7 remain research evidence, not an approved backlog. The brief resolves selected earlier author questions without changing historical research findings. Use its topic links for bounded reading rather than loading all reports by default.

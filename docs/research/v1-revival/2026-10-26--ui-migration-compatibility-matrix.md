@@ -8,6 +8,9 @@ Read with the [inventory, preservation contract and author decisions](./2026-10-
 
 > **Readiness reconciliation — 2026-10-26:** Historical source mapping, not current implementation status. Accepted A–C proposals supersede the original no-implementation-approval wording for those slices. Stage A omits free Repair/QualityPicker; D4 does not add every donor affordance. Stage C uses muted readable disabled Quick Actions chips instead of literal opacity-5. See the [current decision register](./2026-10-26--ui-migration-research.md#5-author-decision-register).
 
+> **Inventory supersession — 2026-10-27:** The author-selected [D2(c)/D5 contract](./2026-10-27--inventory-hybrid-three-panel-contract.md) replaces D2(a), desktop two-column inventory and nested desktop details with hybrid identity/group rows and `InventoryList | ItemDetailCard | EquipmentPanel`. It also defines explicit group-action identity limits and required D9 shared presentation. Historical Stage A/B visual PASS remains evidence for the versions accepted then; revised implementation and visual acceptance are pending. The contract governs this inventory revision wherever older wording below conflicts.
+
+
 ## 1. How to read this matrix
 
 `prop` is display input unless explicitly a callback/host; `event` is output, not necessarily a gameplay command; `model` includes both its prop and `update:*` event. A model carrying an entire Inventory/Account is not a validated V1 command. Types are transcribed from the actual Vue macros, including optionality; imported types stay named, with their defining dependencies listed in §4. Rows marked `$imported` delegate a third-party interface rather than declaring individual gameplay values.
@@ -24,7 +27,7 @@ V1 producers: `items/inventoryView.ts` (`buildInventoryGroups`, `InventoryInstan
 
 | V3 component / nested value | V3 type | V1 source | Classification | Required adaptation / proposed unavailable behavior |
 | --- | --- | --- | --- | --- |
-| InventoryList `inventory.instances` | `ItemInstance[]` | counts + `groups[].instances` | INCOMPATIBLE | Preserve kind rows and concrete IDs. Count stacks/food batches are not identity-bearing instances; no synthetic gameplay IDs. A UI row key can be a discriminated `kind` key, never passed as an instance ID. |
+| InventoryList `inventory.instances` | `ItemInstance[]` | counts + `groups[].instances` | INCOMPATIBLE | D2(c): project real instance rows and count-kind group rows; preserve concrete IDs. Count stacks/food batches are not identity-bearing instances; no synthetic gameplay IDs. A UI row key can be a discriminated `kind` key, never passed as an instance ID. |
 | inventory `capacityKg`; calculated inventoryWeight | number | totalWeight/maxWeight | RENAME | Real kg. Also retain totalSize/maxSize; donor lacks this V1 limit. |
 | instance `id`, `itemId`, `count` | string/string/number | instance.id, group.kind, group.count | INCOMPATIBLE | ID is AVAILABLE only for real instances; itemId→kind RENAME via curated visual metadata; count is group quantity, not a stack field on every real V1 instance. |
 | instance `quality` | donor QualityName | ArmorQuality/qualityLabel | RENAME | Preserve poor/common/good/masterwork. Non-armor does not automatically have quality. Do not adopt donor factors or picker. |
