@@ -27,3 +27,28 @@ Native Windows is ~1.5× (settlement-heavy) to ~2× (stream, water) faster than 
 
 ## Not claimed / open
 No READY lane: dirty-tree captures, ≤3 reps with non-identical cameras, no cold run, forest/flowers not rerun, no thermal log, `rat_nest.glb` still 404→fallback. Next: rerun on the committed SHA with a fixed pose (≥3 reps, `hardwareClass: target-gpu` is justified for the path itself), then trace the long-frame reps; decide on the GL first-frame fix.
+
+---
+
+## Update — GL fix applied + full rerun (`results/win/*win-fixed-*`)
+
+**Fix (approved: skip mirror until shadow map exists), `src/app/gameLoop.ts`:**
+1. Mirror pass skipped while `sun.castShadow && !sun.shadow.map`.
+2. That alone was **not sufficient**: settlement-heavy still raised 544 errors on first frames, now from the *main* composer pass (per-draw diag: sole caller `createPostProcessing.render`). Cause: the shadow-refresh budget (`shouldUpdateShadowMap`) can skip the very first refresh, so `shadow.map` doesn't exist and the main pass binds the 1×1 placeholder. Added a one-off forced `shadowMap.needsUpdate` while the map is missing (audit option B, small extension beyond the approved mirror-skip — flagged for review).
+3. Verification: per-draw `getError` from page start to ready+3 s on settlement-heavy: 0 errors (before: 544). Per-frame `getError` in all 10 benchmark runs below: **0 error frames** (before fix: 1 per run, pre-window). Chrome console no longer hits the 256-error cap.
+
+**Results (30 s, High, native Arc D3D11; gate `stable` in every run; 0 invalid isolation rows; GPU timer resolved, 0 disjoint):**
+
+| Run | FPS | p1 | frame p95 ms | draw calls | long frames | pop | GPU ms avg / p95 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| settlement-heavy rep1 (default cam = yaw 0) | 29.8 | 23 | 38.0 | 2396 | 1 | 53→53 | 20.2 / 24.8 |
+| settlement-heavy rep2 yaw 0 | 26.1 | 12 | 44.3 | 2370 | 8 | 53→53 | 20.7 / 23.4 |
+| settlement-heavy rep3 yaw 0 | 25.3 | 11 | 80.9 | 2379 | 41 | 53→53 | 20.1 / 23.0 |
+| settlement-heavy rep4 yaw π (control) | 27.1 | 12 | 72.4 | 1574 | 9 | 53→53 | 21.2 / 24.4 |
+| stream rep1 / rep2 | 53.8 / 46.1 | 18 / 16 | 25.6 / 50.1 | 893 / 902 | 5 / 4 | 20→19 | 16.1 / 17.1 |
+| water rep1 / rep2 | 75.8 / 114.4 | 23 / 25 | 16.8 / 9.5 | 323 / 265 | 1 / 0 | 20→20 / 4→4 | 10.3 / 9.7 |
+| forest rep1 / rep2 | 47.5 / 44.6 | 24 / 19 | 24.9 / 29.1 | 1855 / 1829 | 1 / 0 | 20→20 | 19.9 / 21.9 |
+
+Variance notes: settlement-heavy same-pose FPS 25.3–29.8 (CV ≈ 8 %), draw calls stable (±1 %) but long-frame count varies 1/8/41 and degrades over reps (FPS 29.8→26.1→25.3) — possible thermal/accumulation, thermal not recorded, unresolved. water rep2 ran a different scene (NPC 4 vs 20, 265 vs 323 calls): warm repeats after the first run restore the player position and re-seek, so rep2 is **not** comparable to rep1 — treat water/stream/forest reps as single reps. GPU avg is ~20 ms vs ~35–40 ms frame in settlement-heavy (GPU-heavy; not proven bound). Mirror/shadow pass counts unchanged within noise vs the pre-fix native water run (323 calls).
+
+**Status:** all `hardwareClass: diagnostic` (artifacts carry the parent SHA, tree was dirty at capture) → still not READY per runbook. Forest not verified as grass-dominant. Still not done: Chrome trace, cold stream, thermal log, flowers/upload bytes.

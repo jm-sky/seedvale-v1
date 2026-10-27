@@ -1,0 +1,13 @@
+{
+ "schemaVersion": 1,
+ "gitSha": "5b6f1e05f9216a3480cde2c9bc0a2b1182239c23",
+ "runId": "2026-10-27T21-07-18-006Z-w594tv",
+ "scenario": "water",
+ "phase": "warm",
+ "canonical": true,
+ "generatedAt": "2026-10-27T21:08:03.375Z",
+ "fixtureVersion": "tools-001-v1",
+ "quality": "High",
+ "hardwareClass": "diagnostic",
+ "notes": "Native Windows Arc 140V, ANGLE D3D11, Chrome 156; GL first-frame fix applied; tree dirty at capture (gitSha = parent). Fill manual device fields by hand."
+}

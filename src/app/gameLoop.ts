@@ -3125,7 +3125,14 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
     postProcessing.applyFrameBudget(lastRenderMs)
     withCategory(monitor, 'WATER', () => {
       withProgramCensusStage(programCensus, 'mirror-render', () => {
-        const runMirror = () => bundle.ocean.renderMirror(renderer, scene, camera)
+        // Skip until the sun owns a shadow map: before the first shadow refresh
+        // three binds a 1x1 RGBA placeholder to `sampler2DShadow`, which makes
+        // every lit draw in the mirror pass GL_INVALID_OPERATION (first frames
+        // only; see docs/performance/audits/2026-10-27--gl-invalid-operation-diagnosis.md).
+        const runMirror = () => {
+          if (lights.sun.castShadow && !lights.sun.shadow.map) return
+          bundle.ocean.renderMirror(renderer, scene, camera)
+        }
         if (passCollector?.isEnabled()) passCollector.withPass('mirror', null, runMirror)
         else runMirror()
       })
@@ -3144,7 +3151,11 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
       shadowPlayerZ,
       hasNearbyShadowCaster(shadowPlayerX, shadowPlayerZ),
     )
-    if (shadowWanted) renderer.shadowMap.needsUpdate = true
+    // The sun's first shadow render creates `shadow.map`; until then the main
+    // pass would bind three's 1x1 placeholder to `sampler2DShadow`. Force that
+    // first refresh even when the budget skips it (one-off, first frame only).
+    const shadowMapMissing = lights.sun.castShadow && !lights.sun.shadow.map
+    if (shadowWanted || shadowMapMissing) renderer.shadowMap.needsUpdate = true
     passCollector?.noteShadowRefresh(shadowWanted)
     recordShadowBudgetFrame(shadowBudgetState, shadowPlayerX, shadowPlayerZ, shadowWanted)
     postProcessing.updateGodRays(camera, sky.sunPosition, cachedSky.elev)
