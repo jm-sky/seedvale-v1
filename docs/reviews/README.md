@@ -20,6 +20,7 @@ Tematy wymagające **głębszej analizy** (nie quick fix w tej samej sesji): pli
 
 | Review | Scope | Status | File |
 |--------|-------|--------|------|
+| V3 equipment catalogue Stage 3 | Independent compatibility/adapter review; 2 P2 and 2 P3; Stage 4 planning with conditions | `done` | [2026-10-27--027--v3-equipment-catalogue-stage-3-review.md](./2026-10-27--027--v3-equipment-catalogue-stage-3-review.md) |
 | V1 revival Cursor technical review | Models/shoulder, ground/grass snow, UI A–C; four P2 findings and qualified readiness | `done` | [2026-10-26--026--v1-revival-cursor-technical-review.md](./2026-10-26--026--v1-revival-cursor-technical-review.md) |
 | Water quality | Stylized woda — brzegi, shader, vs Water.js | `done` | [2026-08-07--001--water-quality.md](./2026-08-07--001--water-quality.md) |
 | App performance & code health | Całość aplikacji — perf, refactoring, błędy (pierwsze ogólne review) | `done` | [2026-08-08--002--app-performance-and-code-health.md](./2026-08-08--002--app-performance-and-code-health.md) |
