@@ -1,0 +1,13 @@
+{
+ "schemaVersion": 1,
+ "gitSha": "721af157d6b3aee7ad071647716cd4b4403e936b",
+ "runId": "2026-10-27T21-43-28-766Z-8ea4pr",
+ "scenario": "stream",
+ "phase": "warm",
+ "canonical": true,
+ "generatedAt": "2026-10-27T21:44:20.711Z",
+ "fixtureVersion": "tools-001-v1",
+ "quality": "High",
+ "hardwareClass": "target-gpu",
+ "notes": "Native Windows Arc 140V (verified in-page ANGLE D3D11 renderer string), Chrome 156, clean tree at 721af157, fresh profile + 30 s cooldown per rep. Manual: Intel driver 32.0.101.8860; power/thermal not captured."
+}

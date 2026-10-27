@@ -52,3 +52,22 @@ No READY lane: dirty-tree captures, ≤3 reps with non-identical cameras, no col
 Variance notes: settlement-heavy same-pose FPS 25.3–29.8 (CV ≈ 8 %), draw calls stable (±1 %) but long-frame count varies 1/8/41 and degrades over reps (FPS 29.8→26.1→25.3) — possible thermal/accumulation, thermal not recorded, unresolved. water rep2 ran a different scene (NPC 4 vs 20, 265 vs 323 calls): warm repeats after the first run restore the player position and re-seek, so rep2 is **not** comparable to rep1 — treat water/stream/forest reps as single reps. GPU avg is ~20 ms vs ~35–40 ms frame in settlement-heavy (GPU-heavy; not proven bound). Mirror/shadow pass counts unchanged within noise vs the pre-fix native water run (323 calls).
 
 **Status:** all `hardwareClass: diagnostic` (artifacts carry the parent SHA, tree was dirty at capture) → still not READY per runbook. Forest not verified as grass-dominant. Still not done: Chrome trace, cold stream, thermal log, flowers/upload bytes.
+
+---
+
+## READY recapture — clean tree, SHA `721af157d6b3aee7ad071647716cd4b4403e936b`
+
+Dev server restarted after checkout (`context.gitSha` = full SHA in all 12 runs); `fixtureVersion` present; native Arc 140V ANGLE D3D11, Chrome 156, driver 32.0.101.8860; **fresh profile + 30 s cooldown per rep, 3 independent launches per scenario**; 0 GL error frames; GPU timer resolved; population gate `stable`; 0 invalid isolation rows; passSubmissions `observed`; raw+JSON+MD+meta saved (`results/win/*win-ready-*`). Power/thermal not captured.
+
+| Scenario | FPS (3 reps) | CV FPS | frame p95 ms | CV p95 | draw calls | CV calls | long frames | GPU avg ms | NPC |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| settlement-heavy | 23.7 / 26.4 / 28.3 | 7.2 % | 75 / 42 / 42.2 | 29 % | 2441 / 2403 / 2368 | 1.2 % | 21 / 1 / 11 | 23.0 / 21.9 / 20.3 | **69 / 69 / 53** |
+| forest | 50.9 / 47.3 / 45.4 | 4.8 % | 23.0 / 25.2 / 26.3 | 5.5 % | 1852 / 1871 / 1860 | 0.4 % | 2 / 1 / 2 | 18.5 / 19.6 / 21.4 | 20 |
+| stream | 54.9 / 54.2 / 55.7 | 1.1 % | 26.5 / 26.3 / 23.7 | 5.0 % | 904 / 915 / 898 | 0.8 % | 3 / 9 / 12 | 16.6 / 16.6 / 15.8 | 20→19 |
+| water (control) | 75.9 / 76.1 / 79.5 | 2.1 % | 15.6 / 15.3 / 15.2 | 1.1 % | 323 / 324 / 322 | 0.3 % | 0 / 0 / 1 | 10.2 / 10.1 / 10.4 | 20 |
+
+**Verdicts (runbook accept/STOP):**
+- **Water control — READY.**
+- **C0 `forest` + `stream` — READY (with stated limits):** grass resident counts verified (forest 616 454 full + 1 247 320 filler, identical in 3 reps; stream 683 k / 683 k / 599 k — route-timing dependent, treat as variable), variance low. Limits: `forest` contains a settlement, not a clean meadow; **flowers `unavailable`**; stream phase is `warm` only — no cold mode exists in the harness (cold stays BLOCKED); upload bytes not measured.
+- **A0a / B0 `settlement-heavy` — NOT READY (UNVERIFIED):** SHA, passSubmissions `observed` and gate are fine, but the *settled* population differs between launches (NPC 69, 69, 53 — each stable inside its own window), frame p95 CV 29 % and long-frame count 21/1/11. The workload is not matched across reps, so no stable baseline. Cause of the cross-launch population difference is not investigated (likely simulation timing vs worldgen/load order; the gate only guarantees stability within a run). Captured as `diagnostic`. Next step: gate on a target NPC count / settlement resident count or investigate the 69-vs-53 divergence before certifying A/B.
+- Still not done: Chrome trace for long frames, thermal log.
