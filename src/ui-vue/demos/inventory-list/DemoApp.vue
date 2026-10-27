@@ -123,17 +123,6 @@ function formatWeight(kg: number): string {
         Fixture-only: stacks, multi-instance armor, meters. Porównaj nie equips.
         Shared leaves: EquipmentPanel only (list is demo chrome until D9 list leaf wiring).
       </p>
-      <ul
-        v-if="log.length"
-        class="mt-3 space-y-1 font-mono text-xs text-neutral-500"
-      >
-        <li
-          v-for="(line, i) in log"
-          :key="i"
-        >
-          {{ line }}
-        </li>
-      </ul>
     </details>
 
     <div class="sv-inventory-stage-b mx-auto grid max-w-5xl gap-4 rounded-lg border border-neutral-700 bg-(--surface-solid) p-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
@@ -265,5 +254,18 @@ function formatWeight(kg: number): string {
         @select-held="pushLog('Select held')"
       />
     </div>
+
+    <ul
+      v-if="log.length"
+      class="mx-auto max-w-5xl space-y-1 font-mono text-xs text-neutral-500"
+      aria-label="Demo action log"
+    >
+      <li
+        v-for="(line, i) in log"
+        :key="i"
+      >
+        {{ line }}
+      </li>
+    </ul>
   </DemoShell>
 </template>
