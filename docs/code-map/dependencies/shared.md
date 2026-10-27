@@ -113,7 +113,7 @@ Generated from TypeScript imports.
 - `fauna/AnimalLife.ts`
 - `fauna/animalCorpse.ts`
 - `items/sensibleFood.test.ts`
-- `player/PlayerController.ts`
+- `player/PlayerNeeds.staminaSprintHysteresis.test.ts`
 - `player/PlayerNeeds.ts`
 - `player/playerMelee.test.ts`
 - `player/playerMelee.ts`

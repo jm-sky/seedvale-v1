@@ -161,6 +161,8 @@ Generated from TypeScript imports.
 - `items/createItemSpawners.ts`
 - `items/equipment.test.ts`
 - `items/equipment.ts`
+- `items/equipmentPreview.test.ts`
+- `items/equipmentPreview.ts`
 - `items/foodItems.test.ts`
 - `items/foodItems.ts`
 - `items/foodProvenance.test.ts`
@@ -279,6 +281,8 @@ Generated from TypeScript imports.
 - `items/Inventory.ts`
 - `items/equipment.test.ts`
 - `items/equipment.ts`
+- `items/equipmentPreview.test.ts`
+- `items/equipmentPreview.ts`
 - `items/inventoryView.test.ts`
 - `items/inventoryView.ts`
 - `items/trade.test.ts`
@@ -613,6 +617,8 @@ Generated from TypeScript imports.
 - `app/inventoryWiring.ts`
 - `app/saveState.ts`
 - `items/equipment.test.ts`
+- `items/equipmentPreview.test.ts`
+- `items/equipmentPreview.ts`
 - `items/inventoryView.ts`
 - `persistence/saveData.ts`
 - `player/PlayerController.ts`
@@ -620,8 +626,42 @@ Generated from TypeScript imports.
 - `player/characterPresentation.ts`
 - `player/playerDamage.test.ts`
 - `player/playerDamage.ts`
+- `ui-vue/components/items/collectArmorPreviewInstances.ts`
+- `ui-vue/components/items/equipmentPanelTypes.ts`
+- `ui-vue/demos/inventory-list/fixtures.ts`
 - `ui-vue/store.ts`
 - `ui/createInventoryScreen.ts`
+
+## `items/equipmentPreview.test.ts`
+
+**Imports**
+
+- `items/Inventory.ts`
+- `items/armorItemInstances.ts`
+- `items/equipment.ts`
+- `items/equipmentPreview.ts`
+- `items/itemDisplay.ts`
+- `items/itemInstances.ts`
+- `player/characterPresentation.ts`
+
+## `items/equipmentPreview.ts`
+
+**Imports**
+
+- `items/Inventory.ts`
+- `items/armorItemInstances.ts`
+- `items/equipment.ts`
+- `items/itemCatalog.ts`
+- `items/itemDisplay.ts`
+- `items/itemInstances.ts`
+- `items/items.ts`
+- `player/characterPresentation.ts`
+
+**Imported by**
+
+- `items/equipmentPreview.test.ts`
+- `ui-vue/components/items/collectArmorPreviewInstances.ts`
+- `ui-vue/demos/inventory-list/fixtures.ts`
 
 ## `items/everydayItemGlbs.test.ts`
 
@@ -895,6 +935,8 @@ Generated from TypeScript imports.
 - `app/createApp.ts`
 - `app/inventoryWiring.ts`
 - `items/inventoryView.test.ts`
+- `ui-vue/components/items/buildItemDetailPresentation.ts`
+- `ui-vue/components/items/collectArmorPreviewInstances.ts`
 - `ui-vue/store.ts`
 - `ui/createInventoryScreen.ts`
 
@@ -964,6 +1006,7 @@ Generated from TypeScript imports.
 - `items/createPlacedTents.ts`
 - `items/equipment.test.ts`
 - `items/equipment.ts`
+- `items/equipmentPreview.ts`
 - `items/foodFreshness.ts`
 - `items/highQualityWeapons.test.ts`
 - `items/inventoryItemReadAction.ts`
@@ -990,6 +1033,7 @@ Generated from TypeScript imports.
 - `player/playerRanged.test.ts`
 - `player/playerRanged.ts`
 - `settlements-npcs-007.test.ts`
+- `ui-vue/components/items/collectArmorPreviewInstances.ts`
 - `ui-vue/composables/useMerchantTradeState.ts`
 - `ui-vue/playerQuickActions.ts`
 - `world/createSleepingUtilities.ts`
@@ -1028,8 +1072,11 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `items/equipmentPreview.test.ts`
+- `items/equipmentPreview.ts`
 - `items/itemDisplay.test.ts`
 - `player/characterPresentation.ts`
+- `ui-vue/components/items/collectArmorPreviewInstances.ts`
 
 ## `items/itemFuel.test.ts`
 
@@ -1103,6 +1150,8 @@ Generated from TypeScript imports.
 - `items/createDroppedItems.test.ts`
 - `items/equipment.test.ts`
 - `items/equipment.ts`
+- `items/equipmentPreview.test.ts`
+- `items/equipmentPreview.ts`
 - `items/inventoryView.test.ts`
 - `items/inventoryView.ts`
 - `items/itemCapabilities.test.ts`
@@ -1140,6 +1189,7 @@ Generated from TypeScript imports.
 - `settlement/merchantTrade.test.ts`
 - `settlement/merchantTrade.ts`
 - `settlement/settlementArmorQuality.ts`
+- `ui-vue/components/items/collectArmorPreviewInstances.ts`
 - `ui-vue/store.ts`
 - `world/createPlacedContainers.ts`
 - `world/createPlacedTraps.test.ts`
@@ -1273,6 +1323,7 @@ Generated from TypeScript imports.
 - `items/createItemSpawners.ts`
 - `items/equipment.test.ts`
 - `items/equipment.ts`
+- `items/equipmentPreview.ts`
 - `items/foodFreshness.ts`
 - `items/foodItems.ts`
 - `items/foodSafety.ts`
@@ -1347,8 +1398,11 @@ Generated from TypeScript imports.
 - `tools/assetBrowser/gripEdit.ts`
 - `tools/assetBrowser/viewer/createAssetSlot.ts`
 - `tools/assetBrowser/viewer/mountHeldPreview.ts`
+- `ui-vue/components/items/buildItemDetailPresentation.ts`
+- `ui-vue/components/items/itemIllustrations.ts`
 - `ui-vue/composables/useItemCategoryLabels.ts`
 - `ui-vue/composables/useMerchantTradeState.ts`
+- `ui-vue/demos/item-details/fixtures.ts`
 - `ui-vue/lib/questTerminalFeedback.ts`
 - `ui-vue/npcDialogueTrade.test.ts`
 - `ui-vue/playerQuickActions.ts`

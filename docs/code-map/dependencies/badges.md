@@ -22,5 +22,6 @@ Generated from TypeScript imports.
 - `app/saveState.ts`
 - `badges/badges.test.ts`
 - `persistence/saveData.ts`
+- `ui-vue/demos/character-skills/fixtures.ts`
 - `ui-vue/store.ts`
 - `ui/createHud.ts`

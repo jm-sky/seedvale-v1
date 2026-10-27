@@ -233,8 +233,8 @@ Generated from TypeScript imports.
 - `terrain/vegetationRegionBatcher.ts`
 - `ui/createDebugGui.ts`
 - `world/caves/sweepCaveMesh.ts`
-- `world/clouds.ts`
 - `world/createCaves.ts`
+- `world/createSky.ts`
 - `world/groundFog.ts`
 - `world/weatherParticles.ts`
 

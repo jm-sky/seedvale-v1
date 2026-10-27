@@ -761,6 +761,10 @@ graph TD
   ui_input_036["ui-input-036 — Quest dialogue offer / active context separation"]
   ui_input_037["ui-input-037 — Quest log ready-to-report sections"]
   ui_input_038["ui-input-038 — Quest/UI — Interaction Actionability Ranking Parity"]
+  ui_input_039["ui-input-039 — Stage A — Item-details V3 reskin"]
+  ui_input_040["ui-input-040 — Stage B — Inventory list + equipment comparison V3 reskin"]
+  ui_input_041["ui-input-041 — Stage C — Quick Actions V3 MenuPanel reskin"]
+  ui_input_042["ui-input-042 — Stage D — Character / skills V3 reskin"]
   world_001["world-001 — Playtest Gameplay Fixes — Stamina, Fire Time-Skip and Bear Behaviour"]
   world_003["world-003 — Faster Application Startup"]
   world_004["world-004 — Well Depth, Groundwater & Well Protection"]
@@ -851,6 +855,8 @@ graph TD
   world_terrain_050["world-terrain-050 — Agent Performance — Render Census and LOD"]
   world_terrain_051["world-terrain-051 — Lifecycle — Resident Ground Authority Completion"]
   world_terrain_052["world-terrain-052 — Lifecycle — Resident Local Water Agent Authority"]
+  world_terrain_053["world-terrain-053 — Snow patch thresholds and grass burial"]
+  world_terrain_054["world-terrain-054 — Adapt V3 Procedural Clouds to V1 Sky"]
   008 --> items_player_010
   069 --> settlements_npcs_008
   097 --> world_terrain_007
@@ -868,6 +874,7 @@ graph TD
   126 --> settlements_npcs_001
   127 --> world_004
   133 --> world_terrain_003
+  133 --> world_terrain_053
   151 --> npc_013
   151 --> settlements_npcs_004
   155 --> items_player_002
@@ -1401,6 +1408,12 @@ graph TD
   ui_input_028 --> ui_input_038
   ui_input_029 --> ui_input_038
   ui_input_037 --> quests_progression_081
+  ui_input_039 --> ui_input_040
+  ui_input_039 --> ui_input_041
+  ui_input_039 --> ui_input_042
+  ui_input_040 --> ui_input_041
+  ui_input_040 --> ui_input_042
+  ui_input_041 --> ui_input_042
   world_006 --> world_016
   world_007 --> quests_progression_011
   world_008 --> items_player_009

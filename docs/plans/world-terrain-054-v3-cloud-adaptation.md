@@ -3,7 +3,7 @@
 **Created:** 2026-10-26  
 **Created at:** 2026-10-26  
 **Created by:** ChatGPT Sol  
-**Status:** `planned` 📋  
+**Status:** `done` ✅  
 **Type:** polish  
 **Priority:** medium · **Effort:** M  
 **Depends on:** none  

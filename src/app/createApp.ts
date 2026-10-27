@@ -272,7 +272,6 @@ import { createToast } from '../ui/createToast'
 import { reconcileAnimalPackHandoff } from '../world/animalPackHandoff'
 import { TRAP_DEFS } from '../world/animalTraps'
 import { type BeehiveRecord } from '../world/beehives'
-import { createClouds } from '../world/clouds'
 import { createDayNightState, parseTimeOfDayFromUrl, resetDayNightForNewGame } from '../world/dayNight'
 import { type DryingRackRecord } from '../world/dryingRacks'
 import { type FishingBaitState } from '../world/fishing'
@@ -896,8 +895,6 @@ export async function createApp(
   const weatherAudio = createWeatherAudio(worldAudio)
   const weatherParticles = createWeatherParticles({ getLodScale: () => config.quality.lodScale })
   weatherParticles.addTo(scene)
-  const clouds = createClouds()
-  clouds.addTo(scene)
   const groundFog = createGroundFog()
   groundFog.addTo(scene)
   const houseDoors = createHouseDoorTracker()
@@ -3676,7 +3673,7 @@ export async function createApp(
   const gameLoop = createGameLoop({
     bundle, player, camera, renderer, labelRenderer, scene, sky, lights, postProcessing, dayNight,
     isWorldValid: worldRebuildLifecycle.isValid,
-    climate, clouds, groundFog, weatherParticles, weatherAudio, getSeed: () => config.seed,
+    climate, groundFog, weatherParticles, weatherAudio, getSeed: () => config.seed,
     keyboard, mouseLook, touchControls, pauseMenu, npcDialog, npcInspector, npcInspectTrigger, questLog, vueUi, inventoryScreen,
     quickActions, timeSkip, timeSkipOverlay, busy, busyOverlay, restCamp, inventory, heldTool, playerThrow, equipment, mount, lead, landOwnership, toast, hud,
     questManager, syncLostLivestockQuests, onQuestStateSynced: refreshGuardEveningPolicies, ambientAudio, fireAudio, houseDoors, worldAudio, playerTorch, minimap, mapDiscovery, locationProximityDiscovery, openQuestLog, openInventory, openSkills, openCharacter,
@@ -3934,7 +3931,6 @@ export async function createApp(
     fireAudio.dispose()
     weatherAudio.dispose()
     weatherParticles.dispose()
-    clouds.dispose()
     groundFog.dispose()
     configureUiSounds(null)
     configureNpcVoiceSounds(null)

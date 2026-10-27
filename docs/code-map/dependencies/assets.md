@@ -221,6 +221,7 @@ Generated from TypeScript imports.
 
 - `ai/NpcAgent.ts`
 - `assets/loadGltf.test.ts`
+- `characters/assembleCharacter.ts`
 - `debug/caves/caveHeightfieldPlayer.ts`
 - `debug/createModelTestScene.ts`
 - `fauna/animalPackPresentation.ts`
@@ -283,7 +284,6 @@ Generated from TypeScript imports.
 
 - `assets/sharedSurfaceDiffuseTextures.ts`
 - `assets/ubcOutfitMaterials.ts`
-- `world/clouds.ts`
 - `world/groundFog.ts`
 
 ## `assets/mountByAnchorPair.test.ts`

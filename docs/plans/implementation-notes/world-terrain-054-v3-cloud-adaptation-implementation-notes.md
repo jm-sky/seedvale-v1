@@ -3,8 +3,22 @@
 **Created:** 2026-10-26  
 **Created at:** 2026-10-26  
 **Created by:** ChatGPT Sol  
-**Status:** `planned`  
+**Status:** `done` (author accepted 2026-10-27 after Stage 2 tint/softness/ease tuning)  
 **Plan:** [world-terrain-054-v3-cloud-adaptation.md](../world-terrain-054-v3-cloud-adaptation.md)
+
+## Stage 1 implementation evidence (2026-10-26, Composer)
+
+- **Working tree** on V1 `legacy/seedvale` at HEAD `8fce1429` + uncommitted Stage 1 edits (`clouds.ts`, `createSky.ts`, `gameLoop.ts`, `createApp.ts`, tests, plan status).
+- **Focused vitest PASS** (58): `clouds.test.ts`, `createSky.test.ts`, `weatherVisuals.test.ts`, `dayNight.test.ts`, `waterMirror.test.ts`.
+- **ESLint PASS** on the six Stage 1 paths.
+- **`pnpm exec vite build` PASS.** Full `pnpm type-check` / `pnpm build` still fail on pre-existing unrelated errors in `src/tools/assetBrowser/viewer/mountCompareGarments.test.ts` (no clouds/createSky/gameLoop/createApp diagnostics).
+- **Browser/GPU compile and author look:** not run → remain `verification needed` (Stage 2).
+
+### Stage 2 tuning (2026-10-27, author feedback)
+
+Author OK overall; two notes addressed in `clouds.ts` only:
+1. Squareness — rotated/sheared detail UV, third fine G sample, wider softstep + `pow(mask, 0.85)`, slightly larger horizon fade and projection bias.
+2. Fast dissolve — `CLOUD_FOLLOW_S` 3→7; softer mask so cover easing does not clip large regions; slightly slower drift.
 
 ## Verified source baseline / boundaries
 

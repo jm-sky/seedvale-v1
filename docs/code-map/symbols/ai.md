@@ -180,25 +180,25 @@ Generated from exported TypeScript symbols.
 
 ## `ai/NpcAgent.ts`
 
-- `classifyPendingActivity` — function — line 792
-- `configureNpcPlayerReactionAudio` — function — line 1038
-- `CurrentActivity` — type — line 593
-- `CurrentActivityKind` — type — line 565
-- `HUNT_RESUPPLY_ARROW_TARGET` — const — line 907
-- `NPC_HEIGHT` — const — line 501
-- `NPC_SHADOW_DISTANCE` — const — line 506
-- `NpcAgent` — class — line 1210
+- `classifyPendingActivity` — function — line 790
+- `configureNpcPlayerReactionAudio` — function — line 1036
+- `CurrentActivity` — type — line 591
+- `CurrentActivityKind` — type — line 563
+- `HUNT_RESUPPLY_ARROW_TARGET` — const — line 905
+- `NPC_HEIGHT` — const — line 505
+- `NPC_SHADOW_DISTANCE` — const — line 510
+- `NpcAgent` — class — line 1208
   - domain: settlements-npcs
   - system: npc-agent
   - role: Central per-NPC behaviour integration point: needs, FSM/schedule, personality-driven decisions and combat.
   - owns: NpcAuthoritativeState
   - uses: Household, SettlementEconomy, Needs
   - simulation: tick
-- `NpcAgentDeps` — type — line 1055
-- `NpcInspectionSnapshot` — type — line 608
-- `NpcWhy` — type — line 767
-- `projectNpcWhy` — function — line 834
-- `promoteChainKind` — function — line 784
+- `NpcAgentDeps` — type — line 1053
+- `NpcInspectionSnapshot` — type — line 606
+- `NpcWhy` — type — line 765
+- `projectNpcWhy` — function — line 832
+- `promoteChainKind` — function — line 782
 
 ## `ai/npcAnimalThreat.ts`
 
@@ -230,41 +230,25 @@ Generated from exported TypeScript symbols.
 
 ## `ai/npcAppearance.ts`
 
-- `customProfessionHairKinds` — function — line 156
-- `hairAttachmentUrlFor` — function — line 217
-- `NPC_CLOTHING_HUE` — const — line 51
-- `NPC_HAIR_COLOR` — const — line 59
-- `NPC_UBC_BEARD_URL` — const — line 28
-- `NPC_UBC_FEMALE_KNIGHT_URL` — const — line 18
-- `NPC_UBC_FEMALE_PEASANT_URL` — const — line 15
-- `NPC_UBC_FEMALE_RANGER_URL` — const — line 17
-- `NPC_UBC_FEMALE_WIZARD_URL` — const — line 16
-- `NPC_UBC_HAIR_1_URL` — const — line 39
-- `NPC_UBC_HAIR_2_URL` — const — line 40
-- `NPC_UBC_HAIR_LONG_URL` — const — line 27
-- `NPC_UBC_HAIR_SIMPLE_URL` — const — line 26
-- `NPC_UBC_KNIGHT_TINT_URL` — const — line 38
-- `NPC_UBC_MALE_BLACKSMITH_URL` — const — line 22
-- `NPC_UBC_MALE_KNIGHT_UNHELMETED_URL` — const — line 20
-- `NPC_UBC_MALE_WOODCUTTER_URL` — const — line 24
-- `NPC_UBC_PEASANT_TINT_URL` — const — line 30
-- `NPC_UBC_RANGER_TINT_URL` — const — line 36
-- `NPC_UBC_WIZARD_TINT_URL` — const — line 34
-- `NPC_UBC_WOODCUTTER_TINT_URL` — const — line 32
-- `NpcAppearance` — type — line 95
+- `customProfessionHairKinds` — function — line 150
+- `NPC_CLOTHING_HUE` — const — line 22
+- `NPC_HAIR_COLOR` — const — line 30
+- `NPC_UBC_FEMALE_PEASANT_URL` — const — line 244
+- `NPC_UBC_FEMALE_WIZARD_URL` — const — line 245
+- `NPC_UBC_MALE_BLACKSMITH_URL` — const — line 247
+- `NPC_UBC_MALE_KNIGHT_UNHELMETED_URL` — const — line 246
+- `NPC_UBC_MALE_WOODCUTTER_URL` — const — line 248
+- `NPC_WOODCUTTER_CLOTH_TINT` — const — line 39
+- `NpcAppearance` — type — line 61
   - domain: npc
-- `NpcClothingHueId` — type — line 47
-- `NpcHairColorId` — type — line 48
-- `NpcHairKind` — type — line 44
-- `NpcOutfitId` — type — line 42
-- `NpcResolvedHair` — type — line 46
-- `NpcUbcOutfitId` — type — line 43
-- `resolveNpcAppearance` — function — line 342
+- `NpcClothingHueId` — type — line 18
+- `NpcHairColorId` — type — line 19
+- `NpcHairKind` — type — line 16
+- `NpcOutfitId` — type — line 15
+- `NpcResolvedHair` — type — line 17
+- `resolveNpcAppearance` — function — line 161
   - domain: npc
-- `rollCustomProfessionStyle` — function — line 269
-  - domain: npc
-- `ubcVariantModelUrl` — function — line 203
-  - domain: npc
+- `ubcVariantModelUrl` — function — line 234
 
 ## `ai/npcAssistance.ts`
 

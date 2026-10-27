@@ -1,6 +1,13 @@
-import { describe, expect, it } from 'vitest'
+import {
+  LinearFilter,
+  LinearMipmapLinearFilter,
+  NoColorSpace,
+  RepeatWrapping,
+  ShaderMaterial,
+} from 'three'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import type { WeatherState } from './weather'
-import { cloudAppearanceFor, cloudCategoryWeightsFor } from './clouds'
+import { attachCloudsToSky, cloudAppearanceFor, cloudNoiseData } from './clouds'
 
 function weather(overrides: Partial<WeatherState>): WeatherState {
   return { type: 'clear', intensity: 0, temperature: 12, startedAt: 0, endsAt: 0.3, ...overrides }
@@ -89,48 +96,130 @@ describe('cloudAppearanceFor', () => {
   })
 })
 
-describe('cloudCategoryWeightsFor', () => {
-  it('is strongly light for clear weather', () => {
-    const weights = cloudCategoryWeightsFor(weather({ type: 'clear', intensity: 0 }))
-    expect(weights.light).toBeGreaterThan(weights.dense)
-  })
-
-  it('is mixed but dense-biased for cloudy weather at full intensity', () => {
-    const weights = cloudCategoryWeightsFor(weather({ type: 'cloudy', intensity: 1 }))
-    expect(weights.dense).toBeGreaterThan(weights.light)
-    expect(weights.light).toBeGreaterThan(0.1)
-  })
-
-  it('becomes increasingly dense for rain as intensity rises', () => {
-    const low = cloudCategoryWeightsFor(weather({ type: 'rain', intensity: 0.2 }))
-    const high = cloudCategoryWeightsFor(weather({ type: 'rain', intensity: 1 }))
-    expect(high.dense).toBeGreaterThan(low.dense)
-  })
-
-  it('is dense-biased for snow', () => {
-    const weights = cloudCategoryWeightsFor(weather({ type: 'snow', intensity: 1 }))
-    expect(weights.dense).toBeGreaterThan(weights.light)
-  })
-
-  it('keeps the low-coverage fog profile light-biased like clear', () => {
-    const fog = cloudCategoryWeightsFor(weather({ type: 'fog', intensity: 1 }))
-    const clear = cloudCategoryWeightsFor(weather({ type: 'clear', intensity: 0 }))
-    expect(fog.light).toBeCloseTo(clear.light)
-  })
-
-  it('always normalizes to sum to 1', () => {
-    for (const type of ['clear', 'cloudy', 'rain', 'fog', 'snow', 'storm'] as const) {
-      for (const intensity of [0, 0.3, 0.7, 1]) {
-        const weights = cloudCategoryWeightsFor(weather({ type, intensity }))
-        expect(weights.light + weights.dense).toBeCloseTo(1)
-      }
+describe('cloudNoiseData', () => {
+  it('is deterministic and uses a wide R-channel range', () => {
+    const a = cloudNoiseData(64)
+    const b = cloudNoiseData(64)
+    expect(Array.from(a.slice(0, 200))).toEqual(Array.from(b.slice(0, 200)))
+    let min = 255
+    let max = 0
+    for (let i = 0; i < a.length; i += 4) {
+      min = Math.min(min, a[i]!)
+      max = Math.max(max, a[i]!)
     }
+    expect(max - min).toBeGreaterThan(80)
   })
 
-  it('applies a small seasonal bias without flipping weather as the primary signal', () => {
-    const summer = cloudCategoryWeightsFor(weather({ type: 'clear', intensity: 0 }), 'summer')
-    const winter = cloudCategoryWeightsFor(weather({ type: 'clear', intensity: 0 }), 'winter')
-    expect(summer.light).toBeGreaterThan(winter.light)
-    expect(winter.light).toBeGreaterThan(winter.dense)
+  it('writes G detail and opaque alpha', () => {
+    const d = cloudNoiseData(32)
+    let gMin = 255
+    let gMax = 0
+    for (let i = 0; i < d.length; i += 4) {
+      gMin = Math.min(gMin, d[i + 1]!)
+      gMax = Math.max(gMax, d[i + 1]!)
+      expect(d[i + 2]).toBe(0)
+      expect(d[i + 3]).toBe(255)
+    }
+    expect(gMax - gMin).toBeGreaterThan(40)
+  })
+})
+
+function skyLikeMaterial(): ShaderMaterial {
+  return new ShaderMaterial({
+    fragmentShader: `
+      void main() {
+        vec3 direction = normalize(vWorldPosition - cameraPosition);
+        vec3 texColor = vec3(1.0);
+        gl_FragColor = vec4( texColor, 1.0 );
+      }
+    `,
+    vertexShader: 'void main() { gl_Position = vec4(0.0); }',
+  })
+}
+
+describe('attachCloudsToSky', () => {
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
+
+  it('injects uniforms and configures a deterministic noise texture', () => {
+    const material = skyLikeMaterial()
+    const clouds = attachCloudsToSky(material)
+    expect(material.fragmentShader).toContain('uSvCloudNoise')
+    expect(material.fragmentShader).toContain('svApplyClouds')
+    expect(material.fragmentShader.indexOf('svApplyClouds')).toBeLessThan(
+      material.fragmentShader.indexOf('gl_FragColor = vec4( texColor, 1.0 );'),
+    )
+    expect(material.uniforms.uSvCloudNoise?.value).toBe(clouds.noiseTexture)
+    expect(clouds.noiseTexture.wrapS).toBe(RepeatWrapping)
+    expect(clouds.noiseTexture.magFilter).toBe(LinearFilter)
+    expect(clouds.noiseTexture.minFilter).toBe(LinearMipmapLinearFilter)
+    expect(clouds.noiseTexture.colorSpace).toBe(NoColorSpace)
+    clouds.dispose()
+  })
+
+  it('snaps cover on the first update then eases later changes', () => {
+    const material = skyLikeMaterial()
+    const clouds = attachCloudsToSky(material)
+    clouds.update(0.05, weather({ type: 'storm', intensity: 1 }), NOON, true)
+    expect(clouds.shownCover).toBe(1)
+    expect(material.uniforms.uSvCloudCover!.value).toBe(1)
+
+    clouds.update(0.5, weather({ type: 'clear', intensity: 0 }), NOON, true)
+    expect(clouds.shownCover).toBeLessThan(1)
+    expect(clouds.shownCover).toBeGreaterThan(0.5)
+
+    // V1 clamps frame dt to 0.05; follow constant is ~7s → need many steps to settle.
+    for (let i = 0; i < 1000; i++) {
+      clouds.update(0.05, weather({ type: 'clear', intensity: 0 }), NOON, true)
+    }
+    expect(clouds.shownCover).toBeCloseTo(0.15, 2)
+    clouds.dispose()
+  })
+
+  it('drifts with V1 clamped dt and zeros opacity when disabled', () => {
+    const material = skyLikeMaterial()
+    const clouds = attachCloudsToSky(material)
+    clouds.update(0.05, weather({ type: 'cloudy', intensity: 1 }), NOON, true)
+    const afterFirst = clouds.offset.clone()
+    expect(afterFirst.length()).toBeGreaterThan(0)
+
+    // Raw dt above the 0.05 clamp must not accelerate drift beyond a 0.05 step.
+    clouds.update(1, weather({ type: 'cloudy', intensity: 1 }), NOON, true)
+    const afterClamped = clouds.offset.clone()
+    const step = afterClamped.clone().sub(afterFirst)
+
+    clouds.update(0.05, weather({ type: 'cloudy', intensity: 1 }), NOON, true)
+    const afterEqual = clouds.offset.clone()
+    const equalStep = afterEqual.clone().sub(afterClamped)
+    expect(step.x).toBeCloseTo(equalStep.x, 5)
+    expect(step.y).toBeCloseTo(equalStep.y, 5)
+
+    const coverBeforeDisable = clouds.shownCover
+    clouds.update(0.05, weather({ type: 'cloudy', intensity: 1 }), NOON, false)
+    expect(material.uniforms.uSvCloudOpacity!.value).toBe(0)
+    expect(material.uniforms.uSvCloudEnabled!.value).toBe(0)
+    expect(clouds.shownCover).toBeCloseTo(coverBeforeDisable, 5)
+    clouds.dispose()
+  })
+
+  it('throws when the Sky fragment output anchor is missing', () => {
+    const material = new ShaderMaterial({
+      fragmentShader: 'void main() { gl_FragColor = vec4(1.0); }',
+      vertexShader: 'void main() { gl_Position = vec4(0.0); }',
+    })
+    expect(() => attachCloudsToSky(material)).toThrow(/gl_FragColor texColor assignment/)
+  })
+
+  it('disposes the noise texture once and ignores later updates', () => {
+    const material = skyLikeMaterial()
+    const clouds = attachCloudsToSky(material)
+    const spy = vi.spyOn(clouds.noiseTexture, 'dispose')
+    clouds.dispose()
+    clouds.dispose()
+    expect(spy).toHaveBeenCalledTimes(1)
+    const cover = clouds.shownCover
+    clouds.update(0.05, weather({ type: 'storm', intensity: 1 }), NOON, true)
+    expect(clouds.shownCover).toBe(cover)
   })
 })

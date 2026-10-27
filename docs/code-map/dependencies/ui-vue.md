@@ -2,6 +2,65 @@
 
 Generated from TypeScript imports.
 
+## `ui-vue/components/items/buildItemDetailPresentation.test.ts`
+
+**Imports**
+
+- `ui-vue/components/items/buildItemDetailPresentation.ts`
+
+## `ui-vue/components/items/buildItemDetailPresentation.ts`
+
+**Imports**
+
+- `items/inventoryView.ts`
+- `items/items.ts`
+- `ui-vue/components/items/itemIllustrations.ts`
+- `ui-vue/components/items/meters.ts`
+
+**Imported by**
+
+- `ui-vue/components/items/buildItemDetailPresentation.test.ts`
+- `ui-vue/demos/item-details/fixtures.ts`
+
+## `ui-vue/components/items/collectArmorPreviewInstances.ts`
+
+**Imports**
+
+- `items/equipment.ts`
+- `items/equipmentPreview.ts`
+- `items/inventoryView.ts`
+- `items/itemCatalog.ts`
+- `items/itemDisplay.ts`
+- `items/itemInstances.ts`
+- `ui-vue/components/items/equipmentPanelTypes.ts`
+
+## `ui-vue/components/items/equipmentPanelTypes.ts`
+
+**Imports**
+
+- `items/equipment.ts`
+
+**Imported by**
+
+- `ui-vue/components/items/collectArmorPreviewInstances.ts`
+- `ui-vue/demos/inventory-list/fixtures.ts`
+
+## `ui-vue/components/items/itemIllustrations.ts`
+
+**Imports**
+
+- `items/items.ts`
+
+**Imported by**
+
+- `ui-vue/components/items/buildItemDetailPresentation.ts`
+
+## `ui-vue/components/items/meters.ts`
+
+**Imported by**
+
+- `ui-vue/components/items/buildItemDetailPresentation.ts`
+
 ## `ui-vue/composables/useCompactMerchantLayout.ts`
 
 **Imports**
@@ -43,6 +102,40 @@ Generated from TypeScript imports.
 
 - `input/enableTouchScroll.ts`
 - `input/isTouchDevice.ts`
+
+## `ui-vue/demos/character-skills/fixtures.ts`
+
+**Imports**
+
+- `badges/badges.ts`
+- `player/PlayerSkills.ts`
+- `player/characterPresentation.ts`
+- `ui-vue/store.ts`
+
+## `ui-vue/demos/character-skills/main.ts`
+
+## `ui-vue/demos/inventory-list/fixtures.ts`
+
+**Imports**
+
+- `items/equipment.ts`
+- `items/equipmentPreview.ts`
+- `ui-vue/components/items/equipmentPanelTypes.ts`
+
+## `ui-vue/demos/inventory-list/main.ts`
+
+## `ui-vue/demos/item-details/fixtures.ts`
+
+**Imports**
+
+- `items/items.ts`
+- `ui-vue/components/items/buildItemDetailPresentation.ts`
+
+## `ui-vue/demos/item-details/main.ts`
+
+## `ui-vue/demos/quick-actions/fixtures.ts`
+
+## `ui-vue/demos/quick-actions/main.ts`
 
 ## `ui-vue/flavorDialogLifecycle.test.ts`
 
@@ -311,6 +404,12 @@ Generated from TypeScript imports.
 
 - `ui-vue/playerQuickActions.test.ts`
 
+## `ui-vue/quickActionsRecent.ts`
+
+**Imports**
+
+- `ui-vue/store.ts`
+
 ## `ui-vue/reputationPresentation.test.ts`
 
 **Imports**
@@ -374,6 +473,7 @@ Generated from TypeScript imports.
 - `app/dialogueTimeControl.ts`
 - `app/inventoryWiring.ts`
 - `ui-vue/composables/useOverlayScreen.ts`
+- `ui-vue/demos/character-skills/fixtures.ts`
 - `ui-vue/flavorDialogLifecycle.test.ts`
 - `ui-vue/mount.ts`
 - `ui-vue/npcDialogueOpen.test.ts`
@@ -381,6 +481,7 @@ Generated from TypeScript imports.
 - `ui-vue/npcDialogueVoice.test.ts`
 - `ui-vue/playerQuickActions.test.ts`
 - `ui-vue/playerQuickActions.ts`
+- `ui-vue/quickActionsRecent.ts`
 - `ui-vue/worldBoundUiSessions.test.ts`
 - `ui/createHud.ts`
 

@@ -104,6 +104,7 @@ Generated from TypeScript imports.
 - `assets/sharedSurfaceDiffuseTextures.ts`
 - `config/worldConfig.ts`
 - `terrain/chunkMeshData.ts`
+- `terrain/snowField.ts`
 - `terrain/terrainCutout.ts`
 - `terrain/terrainDetailNormalMap.ts`
 
@@ -967,6 +968,7 @@ Generated from TypeScript imports.
 - `terrain/chunkHeightmap.ts`
 - `terrain/distanceLod.ts`
 - `terrain/grassPlacement.ts`
+- `terrain/snowField.ts`
 - `world/waterMirror.ts`
 
 **Imported by**
@@ -1341,6 +1343,21 @@ Generated from TypeScript imports.
 - `world/caves/caveRoute.ts`
 - `world/caves/mouthCarve.ts`
 - `world/caves/productionTopology.floor-continuity.test.ts`
+
+## `terrain/snowField.test.ts`
+
+**Imports**
+
+- `terrain/snowField.ts`
+
+## `terrain/snowField.ts`
+
+**Imported by**
+
+- `app/gameLoop.ts`
+- `terrain/buildChunkGeometry.ts`
+- `terrain/grass.ts`
+- `terrain/snowField.test.ts`
 
 ## `terrain/terrainClassification.ts`
 

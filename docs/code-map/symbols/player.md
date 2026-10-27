@@ -124,24 +124,24 @@ Generated from exported TypeScript symbols.
 
 ## `player/PlayerController.ts`
 
-- `CaveFloorSampler` — type — line 243
-- `CaveGroundQuery` — type — line 238
-- `CaveHorizontalResolver` — type — line 259
-- `CaveOccupancyQuery` — type — line 248
-- `ColliderSource` — type — line 231
-- `HeightSampler` — type — line 216
-- `MOVE_SPEED` — const — line 97
-- `PLAYER_MODEL_URL` — const — line 214
-- `PLAYER_STARTING_ATTRIBUTES` — const — line 117
-- `PlayerController` — class — line 273
+- `CaveFloorSampler` — type — line 254
+- `CaveGroundQuery` — type — line 249
+- `CaveHorizontalResolver` — type — line 270
+- `CaveOccupancyQuery` — type — line 259
+- `ColliderSource` — type — line 242
+- `HeightSampler` — type — line 227
+- `MOVE_SPEED` — const — line 108
+- `PLAYER_MODEL_URL` — const — line 225
+- `PLAYER_STARTING_ATTRIBUTES` — const — line 128
+- `PlayerController` — class — line 284
   - domain: items-player
   - system: player-controller
   - role: Owns player movement, animation and runtime transform state.
   - simulation: tick
-- `PlayerMovementState` — type — line 92
-- `RuntimeGroundSampler` — type — line 222
-- `RuntimeLocalWaterSampler` — type — line 228
-- `SPRINT_MULTIPLIER` — const — line 102
+- `PlayerMovementState` — type — line 103
+- `RuntimeGroundSampler` — type — line 233
+- `RuntimeLocalWaterSampler` — type — line 239
+- `SPRINT_MULTIPLIER` — const — line 113
 
 ## `player/playerDamage.ts`
 
@@ -198,18 +198,18 @@ Generated from exported TypeScript symbols.
 
 ## `player/PlayerNeeds.ts`
 
-- `applyRepresentedPhysicalEffortVigor` — function — line 159
-- `BUSY_ACTION_STAMINA_COST_PER_SEC` — const — line 86
-- `createPlayerNeeds` — function — line 220
-- `DEHYDRATION_HP_PER_SEC` — const — line 193
-- `drinkWater` — function — line 390
-- `eatFood` — function — line 386
-- `hungerSevereDurationSec` — function — line 179
-- `isTakingDeprivationDamage` — function — line 398
-- `physicalEffortBusyOptions` — function — line 136
-- `PhysicalEffortIntensity` — type — line 94
-- `physicalEffortStaminaCostPerSec` — function — line 122
-- `physicalEffortVigorCostPerSec` — function — line 129
+- `applyRepresentedPhysicalEffortVigor` — function — line 174
+- `BUSY_ACTION_STAMINA_COST_PER_SEC` — const — line 101
+- `createPlayerNeeds` — function — line 235
+- `DEHYDRATION_HP_PER_SEC` — const — line 208
+- `drinkWater` — function — line 405
+- `eatFood` — function — line 401
+- `hungerSevereDurationSec` — function — line 194
+- `isTakingDeprivationDamage` — function — line 413
+- `physicalEffortBusyOptions` — function — line 151
+- `PhysicalEffortIntensity` — type — line 109
+- `physicalEffortStaminaCostPerSec` — function — line 137
+- `physicalEffortVigorCostPerSec` — function — line 144
 - `PLAYER_MAX_HUNGER` — const — line 46
 - `PLAYER_MAX_STAMINA` — const — line 44
 - `PLAYER_MAX_THIRST` — const — line 47
@@ -221,17 +221,20 @@ Generated from exported TypeScript symbols.
   - owns: PlayerNeeds
   - uses: StaminaState, VigorState
   - simulation: tick
-- `representedPhysicalEffortVigorPerHour` — function — line 149
-- `resetPlayerNeeds` — function — line 232
-- `restoreNeedsFromSleep` — function — line 380
-- `restorePersistedNeeds` — function — line 253
-- `STARVATION_HP_PER_SEC` — const — line 192
-- `thirstSevereDurationSec` — function — line 182
-- `tickHealthRegen` — function — line 408
-- `tickPlayerMovementVigor` — function — line 358
-- `tickPlayerNeeds` — function — line 278
-- `tickPlayerStamina` — function — line 305
-- `tickRidingStamina` — function — line 338
+- `representedPhysicalEffortVigorPerHour` — function — line 164
+- `resetPlayerNeeds` — function — line 247
+- `restoreNeedsFromSleep` — function — line 395
+- `restorePersistedNeeds` — function — line 268
+- `SPRINT_MIN_STAMINA` — const — line 83
+- `SPRINT_RESUME_STAMINA` — const — line 84
+- `STARVATION_HP_PER_SEC` — const — line 207
+- `thirstSevereDurationSec` — function — line 197
+- `tickHealthRegen` — function — line 423
+- `tickPlayerMovementVigor` — function — line 373
+- `tickPlayerNeeds` — function — line 293
+- `tickPlayerStamina` — function — line 320
+- `tickRidingStamina` — function — line 353
+- `updateSprintOutOfBreath` — function — line 88
 
 ## `player/playerRanged.ts`
 
@@ -295,32 +298,33 @@ Generated from exported TypeScript symbols.
 
 ## `player/playerVisualPreset.ts`
 
-- `companionAnimationUrl` — function — line 25
-- `PLAYER_UBC_ANIMATION_URL` — const — line 19
-- `PLAYER_UBC_KNIGHT_BROWN_URL` — const — line 35
-- `PLAYER_UBC_KNIGHT_CLOTH_BROWN_URL` — const — line 36
-- `PLAYER_UBC_KNIGHT_CLOTH_URL` — const — line 10
-- `PLAYER_UBC_KNIGHT_URL` — const — line 9
-- `PLAYER_UBC_NOBLE_BROWN_URL` — const — line 37
-- `PLAYER_UBC_NOBLE_URL` — const — line 11
-- `PLAYER_UBC_PEASANT_BROWN_URL` — const — line 33
-- `PLAYER_UBC_PEASANT_URL` — const — line 7
-- `PLAYER_UBC_RANGER_BROWN_URL` — const — line 34
-- `PLAYER_UBC_RANGER_URL` — const — line 8
-- `PLAYER_UBC_WIZARD_BROWN_URL` — const — line 38
-- `PLAYER_UBC_WIZARD_URL` — const — line 12
-- `PlayerAppearance` — type — line 58
-- `PlayerEquipmentOutfitId` — type — line 49
-- `PlayerOutfitTint` — type — line 48
-- `PlayerVisualId` — type — line 40
-- `PlayerVisualPreset` — type — line 51
-- `resolveEquipmentOutfit` — function — line 171
-- `resolvePlayerAppearance` — function — line 202
-- `resolvePlayerTint` — function — line 177
-- `resolvePlayerUrlOverride` — function — line 156
-- `resolvePlayerVisualPreset` — function — line 221
-- `UBC_HUMANOID_ANIMATION_URL` — const — line 17
-- `ubcPreloadUrls` — function — line 229
+- `companionAnimationUrl` — function — line 241
+- `PLAYER_UBC_ANIMATION_URL` — const — line 10
+- `PLAYER_UBC_KNIGHT_BROWN_URL` — const — line 20
+- `PLAYER_UBC_KNIGHT_CLOTH_BROWN_URL` — const — line 21
+- `PLAYER_UBC_KNIGHT_CLOTH_URL` — const — line 15
+- `PLAYER_UBC_KNIGHT_URL` — const — line 14
+- `PLAYER_UBC_NOBLE_BROWN_URL` — const — line 22
+- `PLAYER_UBC_NOBLE_URL` — const — line 16
+- `PLAYER_UBC_PEASANT_BROWN_URL` — const — line 18
+- `PLAYER_UBC_PEASANT_URL` — const — line 12
+- `PLAYER_UBC_RANGER_BROWN_URL` — const — line 19
+- `PLAYER_UBC_RANGER_URL` — const — line 13
+- `PLAYER_UBC_WIZARD_BROWN_URL` — const — line 23
+- `PLAYER_UBC_WIZARD_URL` — const — line 17
+- `PlayerAppearance` — type — line 43
+- `PlayerEquipmentOutfitId` — type — line 34
+- `playerOutfitId` — function — line 258
+- `PlayerOutfitTint` — type — line 33
+- `PlayerVisualId` — type — line 25
+- `PlayerVisualPreset` — type — line 36
+- `resolveEquipmentOutfit` — function — line 175
+- `resolvePlayerAppearance` — function — line 205
+- `resolvePlayerTint` — function — line 181
+- `resolvePlayerUrlOverride` — function — line 164
+- `resolvePlayerVisualPreset` — function — line 225
+- `UBC_HUMANOID_ANIMATION_URL` — const — line 8
+- `ubcPreloadUrls` — function — line 253
 
 ## `player/ridingStability.ts`
 

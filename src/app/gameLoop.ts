@@ -41,7 +41,6 @@ import type { QuickActions } from '../ui/createQuickActions'
 import type { TimeSkipOverlay } from '../ui/createTimeSkipOverlay'
 import type { Toast } from '../ui/createToast'
 import type { AnimalAttractionSource } from '../world/animalAttractionSource'
-import type { CloudSystem } from '../world/clouds'
 import type { WorldLights } from '../world/createLights'
 import type { WorldSky } from '../world/createSky'
 import type { CropGrowthStage, CropId } from '../world/cropLifecycle'
@@ -173,12 +172,12 @@ import { drainStamina, getStaminaRatio } from '../shared/StaminaState'
 import { getThirstRatio } from '../shared/ThirstState'
 import { getVigorRatio } from '../shared/VigorState'
 import { isMedicinalForageKind, medicinalHerbInteractRange } from '../terrain/renewableWorldItems'
+import { parseSnowParam } from '../terrain/snowField'
 import { skyParamsFromTime, tickDayNight } from '../world/dayNight'
 import { updateFoliageWind } from '../world/foliageWind'
 import { createLightningRuntime } from '../world/lightningEvents'
 import { WELL_WATER_UNAVAILABLE_DURING_REPAIR } from '../world/playerWell'
 import { resolveOffscreenTransportArrivals } from '../world/transportOffscreen'
-import { parseSnowParam } from '../terrain/snowField'
 import {
   createForcedSurfaceWeatherRuntime,
   resolveSurfaceWeatherForFrame,
@@ -354,7 +353,6 @@ export type GameLoopDeps = {
   postProcessing: PostProcessing
   dayNight: DayNightState
   climate: ClimateState
-  clouds: CloudSystem
   groundFog: GroundFogSystem
   weatherParticles: WeatherParticles
   weatherAudio: WeatherAudio
@@ -741,7 +739,7 @@ const huntableLivestockSeenScratch = new Set<string>()
 export function createGameLoop(deps: GameLoopDeps): GameLoop {
   const {
     bundle, isWorldValid, player, camera, renderer, labelRenderer, scene, sky, lights, postProcessing, dayNight,
-    climate, clouds, groundFog, weatherParticles, weatherAudio, getSeed,
+    climate, groundFog, weatherParticles, weatherAudio, getSeed,
     keyboard, mouseLook, touchControls, pauseMenu, npcDialog, npcInspector, npcInspectTrigger, questLog, vueUi, inventoryScreen,
     quickActions, timeSkip, timeSkipOverlay, busy, busyOverlay, restCamp, inventory, heldTool, playerThrow, equipment, mount, lead, landOwnership, toast, hud,
     questManager, syncLostLivestockQuests, onQuestStateSynced, onPlayerAnimalKill, ambientAudio, fireAudio, houseDoors, worldAudio, playerTorch, minimap, mapDiscovery, locationProximityDiscovery, openQuestLog, openInventory, openSkills, openCharacter,
@@ -2677,7 +2675,7 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
         dt, climate.weather, player.mesh.position.x, player.mesh.position.y, player.mesh.position.z,
         camera.fov, renderer.domElement.clientHeight,
       )
-      clouds.update(dt, climate.weather, cachedSky.elev, player.mesh.position.x, player.mesh.position.z, climate.season)
+      sky.updateClouds(dt, climate.weather, cachedSky.elev)
       groundFog.update(dt, climate.weather, player.mesh.position.x, player.mesh.position.z, bundle.chunkManager.sampleHeight)
       const inCaveInterior = bundle.caves.queryInterior(
         player.mesh.position.x,

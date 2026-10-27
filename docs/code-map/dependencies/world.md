@@ -1624,15 +1624,12 @@ Generated from TypeScript imports.
 
 **Imports**
 
-- `assets/loadTexture.ts`
-- `debug/debugMode.ts`
 - `world/weather.ts`
 
 **Imported by**
 
-- `app/createApp.ts`
-- `app/gameLoop.ts`
 - `world/clouds.test.ts`
+- `world/createSky.ts`
 
 ## `world/collision.test.ts`
 
@@ -2172,11 +2169,21 @@ Generated from TypeScript imports.
 
 - `terrain/chunkManager.ts`
 
+## `world/createSky.test.ts`
+
+**Imports**
+
+- `world/createSky.ts`
+- `world/weather.ts`
+
 ## `world/createSky.ts`
 
 **Imports**
 
+- `debug/debugMode.ts`
+- `world/clouds.ts`
 - `world/dayNight.ts`
+- `world/weather.ts`
 
 **Imported by**
 
@@ -2184,6 +2191,7 @@ Generated from TypeScript imports.
 - `app/graphicsSettings.ts`
 - `app/renderStack.ts`
 - `tools/assetBrowser/viewer/createViewerScene.ts`
+- `world/createSky.test.ts`
 - `world/dayNight.ts`
 
 ## `world/createSleepingUtilities.ts`
@@ -4620,6 +4628,8 @@ Generated from TypeScript imports.
 - `world/caves/cavePresentationFog.test.ts`
 - `world/clouds.test.ts`
 - `world/clouds.ts`
+- `world/createSky.test.ts`
+- `world/createSky.ts`
 - `world/dayNight.test.ts`
 - `world/groundFog.ts`
 - `world/lightningEvents.test.ts`

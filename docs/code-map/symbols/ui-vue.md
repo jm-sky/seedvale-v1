@@ -2,6 +2,36 @@
 
 Generated from exported TypeScript symbols.
 
+## `ui-vue/components/items/buildItemDetailPresentation.ts`
+
+- `buildItemDetailPresentation` — function — line 65
+- `BuildItemDetailPresentationInput` — type — line 34
+- `DetailMeterRow` — type — line 13
+- `DetailStatRow` — type — line 6
+- `ItemDetailPresentation` — type — line 22
+
+## `ui-vue/components/items/collectArmorPreviewInstances.ts`
+
+- `buildEquipmentSlotViews` — function — line 30
+- `collectArmorPreviewInstances` — function — line 10
+
+## `ui-vue/components/items/equipmentPanelTypes.ts`
+
+- `EquipmentSlotView` — type — line 3
+
+## `ui-vue/components/items/itemIllustrations.ts`
+
+- `resolveItemIllustrationSrc` — function — line 28
+
+## `ui-vue/components/items/meters.ts`
+
+- `CONDITION_GOOD_FROM` — const — line 5
+- `CONDITION_WORN_FROM` — const — line 6
+- `conditionTone` — function — line 8
+- `MeterTone` — type — line 3
+- `TONE_BAR` — const — line 14
+- `TONE_TEXT` — const — line 22
+
 ## `ui-vue/composables/useCompactMerchantLayout.ts`
 
 - `useCompactMerchantLayout` — function — line 16
@@ -30,6 +60,37 @@ Generated from exported TypeScript symbols.
 ## `ui-vue/composables/useTouchScroll.ts`
 
 - `useTouchScroll` — function — line 7
+
+## `ui-vue/demos/character-skills/fixtures.ts`
+
+- `characterCriticalFixture` — function — line 65
+- `characterHealthyFixture` — function — line 174
+- `DEMO_BADGES` — const — line 56
+- `DEMO_SCENARIOS` — const — line 25
+- `DemoScenario` — type — line 19
+- `DemoViewId` — type — line 17
+- `SkillsActionCardInput` — type — line 11
+- `skillsFixture` — function — line 204
+
+## `ui-vue/demos/inventory-list/fixtures.ts`
+
+- `DEMO_SCENARIOS` — const — line 26
+- `DemoScenario` — type — line 7
+- `DemoScenarioId` — type — line 5
+- `slotViewsFor` — function — line 92
+
+## `ui-vue/demos/item-details/fixtures.ts`
+
+- `DEMO_FIXTURES` — const — line 23
+- `DemoFixture` — type — line 7
+- `DemoFixtureId` — type — line 5
+
+## `ui-vue/demos/quick-actions/fixtures.ts`
+
+- `DEMO_SCENARIOS` — const — line 27
+- `DemoActionRow` — type — line 10
+- `DemoScenario` — type — line 17
+- `DemoViewId` — type — line 8
 
 ## `ui-vue/hudWeaponShortcuts.ts`
 
@@ -141,12 +202,20 @@ Generated from exported TypeScript symbols.
 
 ## `ui-vue/playerQuickActions.ts`
 
-- `FIRE_COST_ITEMS` — const — line 95
-- `FIRE_QUICK_ACTIONS` — const — line 109
+- `FIRE_COST_ITEMS` — const — line 103
+- `FIRE_QUICK_ACTIONS` — const — line 117
 - `FireActionHandlers` — type — line 20
-- `formatCostItems` — function — line 88
+- `formatCostItems` — function — line 96
+- `formatMissingRequirements` — function — line 72
+  - domain: ui
 - `VisibleFireAction` — type — line 30
-- `visibleFireActions` — function — line 162
+- `visibleFireActions` — function — line 171
+
+## `ui-vue/quickActionsRecent.ts`
+
+- `listQuickActionRecent` — function — line 21
+- `RecentQuickAction` — type — line 9
+- `recordQuickActionRecent` — function — line 26
 
 ## `ui-vue/reputationPresentation.ts`
 

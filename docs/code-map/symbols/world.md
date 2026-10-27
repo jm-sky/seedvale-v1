@@ -800,13 +800,14 @@ Generated from exported TypeScript symbols.
 
 ## `world/clouds.ts`
 
-- `CloudAppearance` — type — line 144
-- `cloudAppearanceFor` — function — line 186
-- `CloudCategory` — type — line 22
-- `CloudCategoryWeights` — type — line 86
-- `cloudCategoryWeightsFor` — function — line 93
-- `CloudSystem` — type — line 249
-- `createClouds` — function — line 281
+- `attachCloudsToSky` — function — line 221
+  - domain: world-terrain
+- `CloudAppearance` — type — line 57
+- `cloudAppearanceFor` — function — line 91
+  - domain: world-terrain
+- `cloudNoiseData` — function — line 110
+  - domain: world-terrain
+- `SkyCloudController` — type — line 205
 
 ## `world/collision.ts`
 
@@ -967,9 +968,9 @@ Generated from exported TypeScript symbols.
 
 ## `world/createSky.ts`
 
-- `createSky` — function — line 32
-- `SkyParams` — type — line 5
-- `WorldSky` — type — line 13
+- `createSky` — function — line 40
+- `SkyParams` — type — line 8
+- `WorldSky` — type — line 16
 
 ## `world/createSleepingUtilities.ts`
 
@@ -2297,32 +2298,40 @@ Generated from exported TypeScript symbols.
 
 ## `world/weather.ts`
 
-- `ClimateState` — type — line 287
-- `computeClimate` — function — line 273
-- `computeRainExposureDays` — function — line 229
-- `computeSnowExposureDays` — function — line 248
-- `computeSurfaceWeather` — function — line 175
+- `ClimateState` — type — line 371
+- `computeClimate` — function — line 357
+- `computeRainExposureDays` — function — line 313
+- `computeSnowExposureDays` — function — line 332
+- `computeSurfaceWeather` — function — line 223
 - `computeWeather` — function — line 125
-- `createClimateState` — function — line 300
+- `createClimateState` — function — line 384
+- `createForcedSurfaceWeatherRuntime` — function — line 258
 - `DAYS_PER_SEASON` — const — line 32
 - `DAYS_PER_YEAR` — const — line 33
+- `ForcedSurfaceWeatherRuntime` — type — line 251
+  - domain: world
 - `getSeason` — function — line 35
 - `getSeasonProgress` — function — line 41
 - `isRainWeather` — function — line 74
   - domain: world
+- `resolveSurfaceWeatherForFrame` — function — line 268
+  - domain: world
 - `Season` — type — line 8
 - `SEASON_LABELS` — const — line 14
-- `SNOW_ACCUMULATE_WINDOW_DAYS` — const — line 149
-- `SNOW_MELT_WINDOW_DAYS` — const — line 152
-- `SurfaceWeatherState` — type — line 160
+- `SNOW_ACCUMULATE_WINDOW_DAYS` — const — line 150
+- `SNOW_MELT_WINDOW_DAYS` — const — line 153
+- `stepSurfaceWeather` — function — line 182
+  - domain: world
+- `SurfaceWeatherState` — type — line 161
+- `SurfaceWeatherStepInput` — type — line 170
 - `temperatureFor` — function — line 78
-- `tickClimate` — function — line 304
+- `tickClimate` — function — line 388
 - `WEATHER_CYCLE_DAYS` — const — line 86
 - `WEATHER_LABELS` — const — line 21
 - `WeatherState` — type — line 110
 - `WeatherType` — type — line 9
 - `WETNESS_DRY_WINDOW_DAYS` — const — line 145
-- `WorldClimateState` — type — line 264
+- `WorldClimateState` — type — line 348
 
 ## `world/weatherParticles.ts`
 

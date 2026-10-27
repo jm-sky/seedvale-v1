@@ -162,6 +162,17 @@ Generated from exported TypeScript symbols.
   - domain: items-player
 - `SavePlayerEquipment` — type — line 37
 
+## `items/equipmentPreview.ts`
+
+- `ArmorPreviewInstance` — type — line 49
+- `emptyLoadoutStats` — function — line 56
+- `EquipPreviewResult` — type — line 38
+- `LoadoutStatView` — type — line 29
+- `previewEquipLoadout` — function — line 135
+  - domain: items-player
+- `previewEquipLoadoutFromSnapshot` — function — line 222
+  - domain: items-player
+
 ## `items/foodFreshness.ts`
 
 - `bait` — function — line 308

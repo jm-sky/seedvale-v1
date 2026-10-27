@@ -1,5 +1,8 @@
-import { type DirectionalLight, MathUtils, type Scene, Vector3 } from 'three'
+import { type DirectionalLight, MathUtils, type Scene, type ShaderMaterial, Vector3 } from 'three'
 import { Sky } from 'three/addons/objects/Sky.js'
+import type { WeatherState } from './weather'
+import { isSystemEnabled } from '../debug/debugMode'
+import { attachCloudsToSky, type SkyCloudController } from './clouds'
 import { sunDirectionalColorFromSunY } from './dayNight'
 
 export type SkyParams = {
@@ -16,6 +19,11 @@ export type WorldSky = {
   setParams: (params: SkyParams, light: DirectionalLight) => void
   applySun: (light: DirectionalLight) => void
   addTo: (scene: Scene) => void
+  /**
+   * Drive procedural cloud cover/tint/drift from V1 weather + sun elevation.
+   * @domain world-terrain
+   */
+  updateClouds: (dt: number, weather: WeatherState, elev: number) => void
   dispose: () => void
 }
 
@@ -51,6 +59,9 @@ export function createSky(params: SkyParams): WorldSky {
   // 0 skips the shader's whole cloud branch (`if (... && cloudCoverage > 0.0)`).
   uniforms['cloudCoverage']!.value = 0
 
+  /** Procedural noise clouds composited into this Sky material (world-terrain-054). */
+  const clouds: SkyCloudController = attachCloudsToSky(sky.material as ShaderMaterial)
+
   const sunPosition = new Vector3()
 
   const applyParams = (p: SkyParams, light?: DirectionalLight) => {
@@ -82,7 +93,11 @@ export function createSky(params: SkyParams): WorldSky {
       scene.add(sky)
       scene.background = null
     },
+    updateClouds(dt, weather, elev) {
+      clouds.update(dt, weather, elev, isSystemEnabled('weather'))
+    },
     dispose() {
+      clouds.dispose()
       sky.geometry.dispose()
       sky.material.dispose()
     },

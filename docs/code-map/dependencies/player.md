@@ -17,6 +17,8 @@ Generated from TypeScript imports.
 - `assets/ubcOutfitMaterials.ts`
 - `audio/createWorldAudio.ts`
 - `audio/playerMoveSounds.ts`
+- `characters/assembleCharacter.ts`
+- `characters/characterTypes.ts`
 - `debug/playerGroundTrace.ts`
 - `debug/playerMovementTrace.ts`
 - `input/Keyboard.ts`
@@ -37,7 +39,6 @@ Generated from TypeScript imports.
 - `player/worldWaterEligibility.ts`
 - `shared/HealthState.ts`
 - `shared/PhysicalAttributes.ts`
-- `shared/StaminaState.ts`
 - `shared/effectivePhysicalAttributes.ts`
 - `shared/enduranceStamina.ts`
 - `shared/injuryRecovery.ts`
@@ -146,6 +147,13 @@ Generated from TypeScript imports.
 - `world/worldContext.ts`
 - `world/worldGeneratedContainers.ts`
 
+## `player/PlayerNeeds.staminaSprintHysteresis.test.ts`
+
+**Imports**
+
+- `player/PlayerNeeds.ts`
+- `shared/StaminaState.ts`
+
 ## `player/PlayerNeeds.test.ts`
 
 **Imports**
@@ -191,6 +199,7 @@ Generated from TypeScript imports.
 - `items/sensibleFood.test.ts`
 - `items/sensibleFood.ts`
 - `player/PlayerController.ts`
+- `player/PlayerNeeds.staminaSprintHysteresis.test.ts`
 - `player/PlayerNeeds.test.ts`
 - `player/playerDamage.test.ts`
 - `player/playerDamage.ts`
@@ -242,6 +251,7 @@ Generated from TypeScript imports.
 - `player/skillEvaluation.test.ts`
 - `player/skillEvaluation.ts`
 - `player/targetedSkillSelection.ts`
+- `ui-vue/demos/character-skills/fixtures.ts`
 - `ui-vue/store.ts`
 - `world/animalTraps.test.ts`
 
@@ -331,7 +341,10 @@ Generated from TypeScript imports.
 
 - `app/createApp.ts`
 - `app/gameLoop.ts`
+- `items/equipmentPreview.test.ts`
+- `items/equipmentPreview.ts`
 - `player/characterPresentation.test.ts`
+- `ui-vue/demos/character-skills/fixtures.ts`
 - `ui-vue/store.ts`
 
 ## `player/humanCarryCapacity.test.ts`
@@ -652,6 +665,7 @@ Generated from TypeScript imports.
 
 **Imports**
 
+- `characters/characterFiles.ts`
 - `player/PlayerController.ts`
 - `player/playerVisualPreset.ts`
 
@@ -659,14 +673,15 @@ Generated from TypeScript imports.
 
 **Imports**
 
+- `characters/baseGarments.ts`
+- `characters/characterFiles.ts`
+- `characters/characterTypes.ts`
 - `debug/debugMode.ts`
 - `player/PlayerController.ts`
 
 **Imported by**
 
 - `ai/NpcAgent.ts`
-- `ai/npcAppearance.test.ts`
-- `ai/npcAppearance.ts`
 - `app/createApp.ts`
 - `assets/assetIndex.ts`
 - `player/playerVisualPreset.test.ts`
@@ -741,7 +756,6 @@ Generated from TypeScript imports.
 
 **Imported by**
 
-- `ai/NpcAgent.ts`
 - `player/PlayerController.ts`
 - `player/ubcAccessoryBind.test.ts`
 - `tools/assetBrowser/viewer/mountAccessoryPreview.ts`

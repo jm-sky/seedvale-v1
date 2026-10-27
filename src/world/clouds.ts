@@ -1,111 +1,26 @@
-import { Color, Group, type Scene, Sprite, SpriteMaterial } from 'three'
-import type { Season, WeatherState, WeatherType } from './weather'
-import { loadTexture } from '../assets/loadTexture'
-import { isSystemEnabled } from '../debug/debugMode'
+/**
+ * Procedural sky clouds attached to V1's THREE.Sky material (plan
+ * world-terrain-054). Replaces the former sprite billboard pool; weather
+ * coverage/tint still come from `cloudAppearanceFor`. Noise algorithm and
+ * dual-plane sampling are adapted from V3 `skyDome.ts`; V1 owns Preetham
+ * sky, fog, lights, and weather state.
+ * @domain world-terrain
+ */
+import {
+  Color,
+  DataTexture,
+  LinearFilter,
+  LinearMipmapLinearFilter,
+  NoColorSpace,
+  RepeatWrapping,
+  RGBAFormat,
+  type ShaderMaterial,
+  Vector2,
+} from 'three'
+import type { WeatherState, WeatherType } from './weather'
 
-/** Sky-level cloud billboards (plan world-terrain-001, cloud variety per plan
- *  world-terrain-014). No literal cloud geometry existed before this —
- *  `weatherVisuals.ts` only faked "cloudy" as dimmer light/hazier fog, and
- *  `createSky.ts` explicitly zeroes the Sky addon's own procedural clouds in
- *  favor of this system. Plain `THREE.Sprite`/`SpriteMaterial` billboards,
- *  not GPU-driven like `weatherParticles.ts` — coverage/tint only need to
- *  change a few times per weather cycle rather than per-particle every
- *  frame, so a custom shader buys nothing here. */
-
-/** Rendering-only visual families (plan world-terrain-014 §1) — not a
- *  meteorological cloud-type simulation. `textures` accepts 1+ paths so
- *  assets can be reclassified/expanded through config alone. Height/scale/
- *  drift ranges are deliberately per-category so the two families read as
- *  visually distinct without per-sprite materials or a shader. Asset
- *  membership below is a first tuning pass (`docs/plans/implementation-notes`
- *  — "classify only the PNGs actually chosen"), not a gameplay contract. */
-export type CloudCategory = 'light' | 'dense'
-
-type CloudCategoryConfig = {
-  textures: readonly string[]
-  heightRange: readonly [number, number]
-  scaleRange: readonly [number, number]
-  driftSpeedRange: readonly [number, number]
-}
-
-const CLOUD_CATEGORIES: Record<CloudCategory, CloudCategoryConfig> = {
-  light: {
-    textures: ['/images/clouds/cloud1.png', '/images/clouds/cloud2.png'],
-    heightRange: [126, 146],
-    scaleRange: [70, 115],
-    driftSpeedRange: [1.3, 1.7],
-  },
-  dense: {
-    textures: ['/images/clouds/cloud3.png', '/images/clouds/cloud4.png'],
-    heightRange: [100, 125],
-    scaleRange: [115, 160],
-    driftSpeedRange: [0.9, 1.3],
-  },
-}
-
-const CLOUD_COUNT = 28
-/** Wind-axis (X) wrap bound. Recycling must land outside `camera.far`
- *  (`createCamera.ts`: 500) so the reroll is never visible: worst-case
- *  distance from the player at wrap is
- *  sqrt(AREA_HALF_WIDTH² + DEPTH_HALF_WIDTH² + (maxCategoryHeight)²) ≈ 527.
- *  Ignores the few-unit camera offset from the player — an intentional
- *  approximation at this scale. */
-const AREA_HALF_WIDTH = 480
-const DEPTH_HALF_WIDTH = 180
 const BASE_COVERAGE = 0.15
 const BASE_TINT = 0xffffff
-
-/** Neutral/clear-baseline category mix and each weather type's target mix
- *  (plan §2 table) — `cloudCategoryWeightsFor` blends baseline toward the
- *  active weather's target by `weather.intensity`, so low-intensity rain
- *  doesn't instantly read identical to a downpour. `fog` keeps the clear
- *  mix since coverage stays low and ground fog (`groundFog.ts`) carries the
- *  weather's visual identity instead (plan §2/§9). Exact values are tuning
- *  parameters, not gameplay contracts. */
-const NEUTRAL_CATEGORY_WEIGHTS: Readonly<Record<CloudCategory, number>> = { light: 0.85, dense: 0.15 }
-
-const WEATHER_CATEGORY_WEIGHTS: Record<WeatherType, Readonly<Record<CloudCategory, number>>> = {
-  clear: { light: 0.85, dense: 0.15 },
-  cloudy: { light: 0.35, dense: 0.65 },
-  rain: { light: 0.05, dense: 0.95 },
-  storm: { light: 0.02, dense: 0.98 },
-  snow: { light: 0.2, dense: 0.8 },
-  fog: { light: 0.85, dense: 0.15 },
-}
-
-/** Small optional seasonal nudge (plan §5) — positive shifts weight toward
- *  `light`, negative toward `dense`. Deliberately tiny relative to the
- *  weather-driven swing above so weather stays the primary signal. */
-const SEASON_CATEGORY_BIAS: Record<Season, number> = {
-  spring: 0,
-  summer: 0.05,
-  autumn: -0.05,
-  winter: -0.05,
-}
-
-export type CloudCategoryWeights = Readonly<Record<CloudCategory, number>>
-
-/** Pure — coverage (`cloudAppearanceFor`) and category selection are
- *  deliberately independent (plan §2): this only decides which family a
- *  cloud uses when it is assigned/recycled, never how many are visible.
- *  Defensively re-normalized so a future config edit that doesn't sum to 1
- *  (or a season bias push past 0/1) can't silently skew selection odds. */
-export function cloudCategoryWeightsFor(weather: WeatherState, season?: Season): CloudCategoryWeights {
-  const target = WEATHER_CATEGORY_WEIGHTS[weather.type]
-  const t = weather.intensity
-  let light = NEUTRAL_CATEGORY_WEIGHTS.light + (target.light - NEUTRAL_CATEGORY_WEIGHTS.light) * t
-  let dense = NEUTRAL_CATEGORY_WEIGHTS.dense + (target.dense - NEUTRAL_CATEGORY_WEIGHTS.dense) * t
-  if (season !== undefined) {
-    const bias = SEASON_CATEGORY_BIAS[season]
-    light += bias
-    dense -= bias
-  }
-  light = Math.max(0, light)
-  dense = Math.max(0, dense)
-  const total = light + dense
-  if (total <= 0) return { light: 0.5, dense: 0.5 }
-  return { light: light / total, dense: dense / total }
-}
 
 type CloudVisualProfile = {
   coverage: number
@@ -115,16 +30,14 @@ type CloudVisualProfile = {
 
 /** `weather.intensity` is always 0 for `clear` (`weather.ts`), so
  *  `BASE_COVERAGE`/`BASE_TINT` already is the "few or no clouds" resting
- *  state the plan calls for — the `clear` entry below is unreachable in
- *  practice and kept only for `Record` completeness. `fog`'s "few clouds;
- *  category mix is secondary to ground fog" (plan §2) means coverage stays
- *  at the baseline too — `groundFog.ts`'s local layer carries fog weather's
+ *  state. `fog` stays at baseline — `groundFog.ts` carries fog weather's
  *  visual identity instead. */
 const CLOUD_VISUAL_PROFILES: Record<WeatherType, CloudVisualProfile> = {
   clear:  { coverage: 0.15, tint: 0xffffff, opacity: 0.8 },
   cloudy: { coverage: 0.85, tint: 0xf1f3f5, opacity: 0.8 },
   rain:   { coverage: 0.95, tint: 0xb8c0c8, opacity: 0.8 },
-  storm:  { coverage: 1.00, tint: 0x9ca6b2, opacity: 0.8 },
+  // Darker + slightly more opaque than rain so storm holds against bright Preetham sky.
+  storm:  { coverage: 1.00, tint: 0x6a7380, opacity: 0.9 },
   snow:   { coverage: 0.75, tint: 0xf7f9fb, opacity: 0.8 },
   fog:    { coverage: 0.15, tint: 0xf5f6f7, opacity: 0.8 },
 }
@@ -148,13 +61,9 @@ export type CloudAppearance = {
 }
 
 /** Ambient "light" clouds are multiplied by across the day/night cycle —
- *  not a replacement tint (that would erase weather-tint differences, e.g.
- *  rain clouds vs clear clouds would look identical at night) but an RGB
- *  multiplier applied on top of whatever `CLOUD_VISUAL_PROFILES` picked, the
- *  same way real clouds dim/cool under a darker sky. Day is a no-op
- *  (1,1,1); dusk/dawn warms and dims slightly; night is a dark cool
- *  blue-grey, chosen bright enough to still read against `dayNight.ts`'s
- *  `NIGHT_FOG` (0x1a2233) instead of blending into it. */
+ *  not a replacement tint (that would erase weather-tint differences) but an
+ *  RGB multiplier on top of `CLOUD_VISUAL_PROFILES`. Day is a no-op; dusk
+ *  warms/dims slightly; night is a dark cool blue-grey. */
 const DAY_CLOUD_LIGHT = new Color(0xffffff)
 const DUSK_CLOUD_LIGHT = new Color(0xffdcc0)
 const NIGHT_CLOUD_LIGHT = new Color(0x5a6b8c)
@@ -164,10 +73,7 @@ const tmpTargetColor = new Color()
 
 /** Mirrors `dayNight.ts`'s `fogColorFromElev` 3-stop smooth blend (same
  *  -0.3/0/0.3 elevation breakpoints) so clouds and fog transition through
- *  dusk/dawn in lockstep instead of drifting apart. `elev` (not `dayFactor`)
- *  because `dayFactor` is clamped to 0 for the entire below-horizon range —
- *  multiplying by it would make clouds vanish at night rather than just
- *  darken. */
+ *  dusk/dawn in lockstep. */
 function cloudLightFromElev(elev: number): Color {
   if (elev <= -0.3) return tmpLightColor.copy(NIGHT_CLOUD_LIGHT)
   if (elev >= 0.3) return tmpLightColor.copy(DAY_CLOUD_LIGHT)
@@ -177,12 +83,11 @@ function cloudLightFromElev(elev: number): Color {
   return tmpLightColor.copy(DUSK_CLOUD_LIGHT).lerp(DAY_CLOUD_LIGHT, elev / 0.3)
 }
 
-/** Pure — mirrors `weatherVisuals.ts`'s `applyWeatherOverlay`: linearly
- *  blends the baseline toward the active weather type's profile by
- *  `weather.intensity`, then applies the day/night ambient multiplier so
- *  night clouds read as dark/cool rather than staying white (plan
- *  world-terrain-001). `storm`/`rain` then clamp coverage to a high floor
- *  so a weak or debug-forced cycle still reads as overcast. */
+/** Pure — blends the baseline toward the active weather type's profile by
+ *  `weather.intensity`, then applies the day/night ambient multiplier.
+ *  `storm`/`rain` clamp coverage to a high floor so a weak cycle still reads
+ *  as overcast.
+ *  @domain world-terrain */
 export function cloudAppearanceFor(weather: WeatherState, elev: number): CloudAppearance {
   const profile = CLOUD_VISUAL_PROFILES[weather.type]
   const t = weather.intensity
@@ -199,154 +104,186 @@ export function cloudAppearanceFor(weather: WeatherState, elev: number): CloudAp
   }
 }
 
-type CloudSprite = {
-  sprite: Sprite
-  localX: number
-  speed: number
-  /** Presentation metadata only, kept for recycling/debugging — category
-   *  identity lives on the sprite until it wraps (plan §3: no global
-   *  reassignment on weather change). */
-  category: CloudCategory
-  /** Fixed at creation, `i / CLOUD_COUNT` — same trick as
-   *  `weatherParticles.ts`'s `aRandom.w` draw-order slot, evaluated on the
-   *  CPU instead of in-shader since each cloud is a real `Object3D`. */
-  visibilityThreshold: number
+/** Tiling value noise (R: large blobs, G: detail). Seeded LCG + lattice from
+ *  V3 `skyDome.cloudNoiseData`; pure and deterministic for tests.
+ *  @domain world-terrain */
+export function cloudNoiseData(n = 256): Uint8Array {
+  const d = new Uint8Array(n * n * 4)
+  let seed = 0x2545f491
+  const rnd = (): number => (seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296
+  const lattice = (cells: number): ((x: number, y: number) => number) => {
+    const g = Float32Array.from({ length: cells * cells }, rnd)
+    return (x, y) => {
+      const fx = (x / n) * cells
+      const fy = (y / n) * cells
+      const i = Math.floor(fx)
+      const j = Math.floor(fy)
+      const sx = (fx - i) * (fx - i) * (3 - 2 * (fx - i))
+      const sy = (fy - j) * (fy - j) * (3 - 2 * (fy - j))
+      const at = (a: number, b: number): number => g[((b % cells) * cells + (a % cells)) % (cells * cells)]!
+      const a = at(i, j) + (at(i + 1, j) - at(i, j)) * sx
+      const b = at(i, j + 1) + (at(i + 1, j + 1) - at(i, j + 1)) * sx
+      return a + (b - a) * sy
+    }
+  }
+  const o1 = lattice(4)
+  const o2 = lattice(8)
+  const o3 = lattice(16)
+  const o4 = lattice(32)
+  for (let y = 0; y < n; y++) {
+    for (let x = 0; x < n; x++) {
+      const k = (y * n + x) * 4
+      d[k] = Math.round((o1(x, y) * 0.55 + o2(x, y) * 0.3 + o3(x, y) * 0.15) * 255)
+      d[k + 1] = Math.round((o3(x, y) * 0.5 + o4(x, y) * 0.5) * 255)
+      d[k + 2] = 0
+      d[k + 3] = 255
+    }
+  }
+  return d
 }
 
-type CategoryMaterials = Record<CloudCategory, SpriteMaterial[]>
+const MAIN_ANCHOR = 'void main() {'
+const OUTPUT_ANCHOR = 'gl_FragColor = vec4( texColor, 1.0 );'
 
-/** Picks a category weighted by `weights`, but falls back to whichever
- *  category actually has loaded materials — guards the
- *  `Math.floor(Math.random() * 0)` / undefined-material case from an empty
- *  or not-yet-loaded category (plan pitfall list) without requiring every
- *  category to ship at least one texture. */
-function pickCategory(weights: CloudCategoryWeights, materials: CategoryMaterials): CloudCategory {
-  const lightAvailable = materials.light.length > 0
-  const denseAvailable = materials.dense.length > 0
-  if (!lightAvailable) return 'dense'
-  if (!denseAvailable) return 'light'
-  return Math.random() < weights.light ? 'light' : 'dense'
+const CLOUD_UNIFORM_DECL = /* glsl */ `
+uniform sampler2D uSvCloudNoise;
+uniform float uSvCloudCover;
+uniform vec3 uSvCloudTint;
+uniform float uSvCloudOpacity;
+uniform vec2 uSvCloudOffset;
+uniform float uSvCloudEnabled;
+
+vec3 svApplyClouds( vec3 texColor, vec3 direction ) {
+	if ( direction.y <= 0.0 || uSvCloudEnabled < 0.5 ) return texColor;
+	vec2 uv = direction.xz / ( direction.y + 0.08 );
+	// Shear/rotate the detail sample so lattice noise does not read as axis-aligned squares.
+	vec2 uvR = vec2( uv.x * 0.866 - uv.y * 0.5, uv.x * 0.5 + uv.y * 0.866 );
+	float r = texture2D( uSvCloudNoise, uv * 0.10 + uSvCloudOffset ).r;
+	float g = texture2D( uSvCloudNoise, uvR * 0.34 + uSvCloudOffset * 1.7 ).g;
+	float g2 = texture2D( uSvCloudNoise, uv * 0.55 + uSvCloudOffset * 2.3 ).g;
+	float n = 0.62 * r + 0.25 * g + 0.13 * g2;
+	float edge = 1.0 - clamp( uSvCloudCover, 0.0, 1.0 );
+	// Wide softstep: softer silhouettes and slower visual dissolve as cover eases.
+	float mask = smoothstep( edge - 0.16, edge + 0.32, n ) * smoothstep( 0.0, 0.16, direction.y );
+	mask = pow( mask, 0.85 );
+	return mix( texColor, uSvCloudTint, mask * clamp( uSvCloudOpacity, 0.0, 1.0 ) );
+}
+`
+
+const CLOUD_APPLY = 'texColor = svApplyClouds( texColor, direction );\n\t\t\t'
+
+/** Cover ease time constant (seconds). Longer than V3's 3s so storm→clear does not melt away. */
+const CLOUD_FOLLOW_S = 7
+const CLOUD_DRIFT = { x: 0.0020, z: 0.0009 }
+
+function assertUniqueAnchor(source: string, anchor: string, label: string): number {
+  let count = 0
+  let idx = -1
+  let from = 0
+  while (true) {
+    const i = source.indexOf(anchor, from)
+    if (i < 0) break
+    count++
+    idx = i
+    from = i + anchor.length
+  }
+  if (count !== 1) {
+    throw new Error(
+      `Sky cloud inject: expected unique ${label} (${JSON.stringify(anchor)}), found ${count}`,
+    )
+  }
+  return idx
 }
 
-function randomize(cs: CloudSprite, materials: CategoryMaterials, weights: CloudCategoryWeights): void {
-  const category = pickCategory(weights, materials)
-  const categoryMaterials = materials[category]
-  const material = categoryMaterials[Math.floor(Math.random() * categoryMaterials.length)]
-  const config = CLOUD_CATEGORIES[category]
-  cs.category = category
-  cs.sprite.material = material
-  const image = material.map!.image as { width: number, height: number }
-  const [scaleMin, scaleMax] = config.scaleRange
-  const width = scaleMin + Math.random() * (scaleMax - scaleMin)
-  cs.sprite.scale.set(width, width * (image.height / image.width), 1)
-  cs.sprite.position.z = (Math.random() * 2 - 1) * DEPTH_HALF_WIDTH
-  const [heightMin, heightMax] = config.heightRange
-  cs.sprite.position.y = heightMin + Math.random() * (heightMax - heightMin)
-  const [speedMin, speedMax] = config.driftSpeedRange
-  cs.speed = speedMin + Math.random() * (speedMax - speedMin)
+function injectCloudShader(fragmentShader: string): string {
+  assertUniqueAnchor(fragmentShader, MAIN_ANCHOR, 'fragment void main()')
+  assertUniqueAnchor(fragmentShader, OUTPUT_ANCHOR, 'gl_FragColor texColor assignment')
+  const withDecls = fragmentShader.replace(MAIN_ANCHOR, `${CLOUD_UNIFORM_DECL}\n${MAIN_ANCHOR}`)
+  return withDecls.replace(OUTPUT_ANCHOR, `${CLOUD_APPLY}${OUTPUT_ANCHOR}`)
 }
 
-export type CloudSystem = {
-  addTo: (scene: Scene) => void
-  update: (dt: number, weather: WeatherState, elev: number, playerX: number, playerZ: number, season?: Season) => void
+export type SkyCloudController = {
+  update: (dt: number, weather: WeatherState, elev: number, enabled: boolean) => void
   dispose: () => void
+  /** Presentation cover after the last update (tests). */
+  readonly shownCover: number
+  /** Drift offset after the last update (tests). */
+  readonly offset: Vector2
+  /** Owned noise texture (tests / dispose spy). */
+  readonly noiseTexture: DataTexture
 }
 
-/** Loads one category's textures independently via `Promise.allSettled` —
- *  one bad/missing candidate PNG in a category must not disable the whole
- *  cloud system (plan implementation-notes pitfall list), unlike the plain
- *  `Promise.all` this mirrors for the single-list case `weatherParticles.ts`
- *  doesn't need. */
-async function loadCategoryMaterials(config: CloudCategoryConfig): Promise<SpriteMaterial[]> {
-  const results = await Promise.allSettled(config.textures.map(loadTexture))
-  const materials: SpriteMaterial[] = []
-  for (const result of results) {
-    if (result.status !== 'fulfilled') continue
-    materials.push(new SpriteMaterial({
-      map: result.value,
-      transparent: true,
-      depthWrite: false,
-      // Sky-layer object, not a ground-level one — matches `createSky.ts`'s
-      // `sky.material.fog = false` ("Don't let scene fog wash out the
-      // dome"). Ground fog (`groundFog.ts`) would otherwise wash clouds out;
-      // weather-driven appearance instead comes entirely from
-      // `cloudAppearanceFor`'s tint/coverage.
-      fog: false,
-      color: BASE_TINT,
-    }))
-  }
-  return materials
-}
-
-export function createClouds(): CloudSystem {
-  const group = new Group()
-  const sprites: CloudSprite[] = []
-  const materials: CategoryMaterials = { light: [], dense: [] }
-
-  void Promise.all([
-    loadCategoryMaterials(CLOUD_CATEGORIES.light),
-    loadCategoryMaterials(CLOUD_CATEGORIES.dense),
-  ]).then(([light, dense]) => {
-    materials.light = light
-    materials.dense = dense
-    if (light.length === 0 && dense.length === 0) return // clouds stay absent
-
-    // Initial assignment uses the clear-sky baseline; the first real
-    // `update()` call will already have the live weather profile for
-    // whatever gets recycled after that.
-    const initialWeights = NEUTRAL_CATEGORY_WEIGHTS
-    for (let i = 0; i < CLOUD_COUNT; i++) {
-      const sprite = new Sprite()
-      // `.position` is set on the CPU every frame below, so Sprite's default
-      // per-object frustum culling is correct and saves draw calls — do NOT
-      // copy `weatherParticles.points.frustumCulled = false`, which exists
-      // there only because rain/snow move in the vertex shader (stale CPU
-      // bounds three.js can't see).
-      const cs: CloudSprite = {
-        sprite,
-        localX: (Math.random() * 2 - 1) * AREA_HALF_WIDTH,
-        speed: 1,
-        category: 'light',
-        visibilityThreshold: i / CLOUD_COUNT,
-      }
-      randomize(cs, materials, initialWeights)
-      sprites.push(cs)
-      group.add(sprite)
-    }
-  }).catch(() => { /* clouds stay absent if textures fail to load */ })
-
-  function update(dt: number, weather: WeatherState, elev: number, playerX: number, playerZ: number, season?: Season): void {
-    group.visible = isSystemEnabled('weather')
-    // XZ-follow only; altitude is baked into each sprite's local Y.
-    group.position.set(playerX, 0, playerZ)
-    if (sprites.length === 0) return
-    const appearance = cloudAppearanceFor(weather, elev)
-    const weights = cloudCategoryWeightsFor(weather, season)
-    for (const cs of sprites) {
-      cs.localX += cs.speed * dt
-      if (cs.localX > AREA_HALF_WIDTH) {
-        cs.localX -= AREA_HALF_WIDTH * 2
-        randomize(cs, materials, weights)
-      }
-      cs.sprite.position.x = cs.localX
-      cs.sprite.visible = cs.visibilityThreshold < appearance.coverage
-    }
-    for (const categoryMaterials of [materials.light, materials.dense]) {
-      for (const material of categoryMaterials) {
-        material.color.setHex(appearance.tint)
-        material.opacity = appearance.opacity
-      }
-    }
+/**
+ * Attach V3-derived procedural clouds to an existing Sky `ShaderMaterial`.
+ * Owns the noise texture and uniforms; does not dispose the Sky material.
+ * @domain world-terrain
+ */
+export function attachCloudsToSky(material: ShaderMaterial): SkyCloudController {
+  if (material.type !== 'ShaderMaterial' && !(material as { isShaderMaterial?: boolean }).isShaderMaterial) {
+    throw new Error('Sky cloud inject: material is not a ShaderMaterial')
   }
 
-  return {
-    addTo: (scene) => scene.add(group),
-    update,
-    dispose: () => {
-      group.removeFromParent()
-      for (const categoryMaterials of [materials.light, materials.dense]) {
-        for (const material of categoryMaterials) material.dispose()
+  const noiseTexture = new DataTexture(cloudNoiseData(256), 256, 256, RGBAFormat)
+  noiseTexture.wrapS = RepeatWrapping
+  noiseTexture.wrapT = RepeatWrapping
+  noiseTexture.magFilter = LinearFilter
+  noiseTexture.minFilter = LinearMipmapLinearFilter
+  noiseTexture.generateMipmaps = true
+  noiseTexture.colorSpace = NoColorSpace
+  noiseTexture.needsUpdate = true
+
+  material.fragmentShader = injectCloudShader(material.fragmentShader)
+  material.uniforms.uSvCloudNoise = { value: noiseTexture }
+  material.uniforms.uSvCloudCover = { value: 0 }
+  material.uniforms.uSvCloudTint = { value: new Color(1, 1, 1) }
+  material.uniforms.uSvCloudOpacity = { value: 0 }
+  material.uniforms.uSvCloudOffset = { value: new Vector2() }
+  material.uniforms.uSvCloudEnabled = { value: 1 }
+  material.needsUpdate = true
+
+  let shownCover = 0
+  let coverSeen = false
+  let disposed = false
+  const tint = new Color()
+  const offset = material.uniforms.uSvCloudOffset!.value as Vector2
+
+  const controller: SkyCloudController = {
+    get shownCover() {
+      return shownCover
+    },
+    get offset() {
+      return offset
+    },
+    get noiseTexture() {
+      return noiseTexture
+    },
+    update(dt, weather, elev, enabled) {
+      if (disposed) return
+      const appearance = cloudAppearanceFor(weather, elev)
+      const clampedDt = Math.min(Math.max(dt, 0), 0.05)
+      const target = Math.min(1, Math.max(0, appearance.coverage))
+      if (!coverSeen) {
+        coverSeen = true
+        shownCover = target
+      } else {
+        shownCover += (target - shownCover) * Math.min(1, clampedDt / CLOUD_FOLLOW_S)
       }
+      tint.setHex(appearance.tint)
+      material.uniforms.uSvCloudCover!.value = shownCover
+      ;(material.uniforms.uSvCloudTint!.value as Color).copy(tint)
+      const opacity = enabled ? Math.min(1, Math.max(0, appearance.opacity)) : 0
+      material.uniforms.uSvCloudOpacity!.value = opacity
+      material.uniforms.uSvCloudEnabled!.value = enabled ? 1 : 0
+      const drift = 1 + shownCover * 0.5
+      offset.x += CLOUD_DRIFT.x * drift * clampedDt
+      offset.y += CLOUD_DRIFT.z * drift * clampedDt
+    },
+    dispose() {
+      if (disposed) return
+      disposed = true
+      noiseTexture.dispose()
     },
   }
+
+  return controller
 }

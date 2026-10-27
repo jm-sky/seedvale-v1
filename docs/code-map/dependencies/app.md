@@ -1148,7 +1148,6 @@ Generated from TypeScript imports.
 - `world/animalPackHandoff.ts`
 - `world/animalTraps.ts`
 - `world/beehives.ts`
-- `world/clouds.ts`
 - `world/createPlacedTraps.ts`
 - `world/dayNight.ts`
 - `world/dryingRacks.ts`
@@ -1321,6 +1320,7 @@ Generated from TypeScript imports.
 - `shared/VigorState.ts`
 - `simulation/observation.ts`
 - `terrain/renewableWorldItems.ts`
+- `terrain/snowField.ts`
 - `ui-vue/mount.ts`
 - `ui/createBusyOverlay.ts`
 - `ui/createHud.ts`
@@ -1335,7 +1335,6 @@ Generated from TypeScript imports.
 - `ui/createToast.ts`
 - `world/WaterSource.ts`
 - `world/animalAttractionSource.ts`
-- `world/clouds.ts`
 - `world/createLights.ts`
 - `world/createSky.ts`
 - `world/cropLifecycle.ts`

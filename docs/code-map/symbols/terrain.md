@@ -49,11 +49,11 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/buildChunkGeometry.ts`
 
-- `buildChunkGeometry` — function — line 414
-- `ChunkMeshResult` — type — line 12
-- `createTerrainMaterial` — function — line 50
-- `TERRAIN_DIRT_DIFFUSE_TUNING` — const — line 41
-- `TerrainWeatherUniforms` — type — line 35
+- `buildChunkGeometry` — function — line 420
+- `ChunkMeshResult` — type — line 18
+- `createTerrainMaterial` — function — line 56
+- `TERRAIN_DIRT_DIFFUSE_TUNING` — const — line 47
+- `TerrainWeatherUniforms` — type — line 41
 
 ## `terrain/cemeteryAssignment.ts`
 
@@ -421,11 +421,11 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/grass.ts`
 
-- `createGrassSystem` — function — line 457
-- `grassBladeLocalPositions` — function — line 343
+- `createGrassSystem` — function — line 510
+- `grassBladeLocalPositions` — function — line 358
   - domain: world-terrain
-- `GrassSystem` — type — line 50
-- `WorldGrassChunk` — type — line 14
+- `GrassSystem` — type — line 59
+- `WorldGrassChunk` — type — line 23
 
 ## `terrain/grassBounds.ts`
 
@@ -645,6 +645,32 @@ Generated from exported TypeScript symbols.
 - `SlopeSample` — interface — line 31
 - `stepWithSlopeAndCollision` — function — line 104
 - `stepWithSlopeAndCollisionResident` — function — line 172
+
+## `terrain/snowField.ts`
+
+- `GRASS_SNOW_BIAS` — const — line 24
+- `GRASS_SNOW_DITHER_AT` — const — line 28
+- `GRASS_SNOW_FROST` — const — line 26
+- `grassSnowBury` — function — line 149
+- `grassSnowCoverAt` — function — line 143
+- `grassSnowFrost` — function — line 154
+- `grassSnowVisible` — function — line 159
+- `parseSnowParam` — function — line 167
+- `SNOW_ALT_M` — const — line 22
+- `SNOW_BIAS` — const — line 20
+- `SNOW_COL` — const — line 30
+- `SNOW_EDGE` — const — line 18
+- `SNOW_FIELD_GLSL` — const — line 58
+- `SNOW_GAIN` — const — line 14
+  - domain: world-terrain
+- `SNOW_ONSET` — const — line 16
+- `snowCover` — function — line 111
+- `snowLatticeHash` — function — line 45
+- `snowNoise` — function — line 86
+- `snowTerrainBias` — function — line 124
+- `SnowTerrainBiasInput` — interface — line 116
+- `snowThreshold` — function — line 102
+- `terrainSnowCoverAt` — function — line 133
 
 ## `terrain/terrainClassification.ts`
 

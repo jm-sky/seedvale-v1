@@ -133,6 +133,7 @@ Generated from TypeScript imports.
 - `assets/ubcOutfitMaterials.ts`
 - `audio/actionSounds.ts`
 - `audio/createWorldAudio.ts`
+- `characters/assembleCharacter.ts`
 - `combat/combatIntent.ts`
 - `combat/criticalHit.ts`
 - `combat/defenseResolver.ts`
@@ -160,7 +161,6 @@ Generated from TypeScript imports.
 - `player/PlayerController.ts`
 - `player/playerDimensions.ts`
 - `player/playerVisualPreset.ts`
-- `player/ubcAccessoryBind.ts`
 - `render/agentPresentationLod.ts`
 - `render/agentPresentationVisibility.ts`
 - `settlement/animalCorpseSanitation.ts`
@@ -699,14 +699,16 @@ Generated from TypeScript imports.
 **Imports**
 
 - `ai/npcAppearance.ts`
-- `player/playerVisualPreset.ts`
+- `characters/characterFiles.ts`
 
 ## `ai/npcAppearance.ts`
 
 **Imports**
 
 - `ai/characters.ts`
-- `player/playerVisualPreset.ts`
+- `characters/baseGarments.ts`
+- `characters/characterFiles.ts`
+- `characters/characterTypes.ts`
 - `settlement/professionStaffing.ts`
 - `world/parseSeed.ts`
 
