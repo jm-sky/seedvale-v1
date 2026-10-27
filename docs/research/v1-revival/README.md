@@ -2,8 +2,8 @@
 
 **Created at:** 2026-10-25  
 **Created by:** ChatGPT GPT-6  
-**Updated at:** 2026-10-26  
-**Updated by:** ChatGPT Sol
+**Updated at:** 2026-10-27\
+**Updated by:** ChatGPT Codex
 
 ## Current strategic entry point
 
@@ -18,6 +18,8 @@ Current technical review: [Astra — Cursor models, snow and UI A–C](../../rev
 Current handoff: [Opus readiness review — 2026-10-26](./2026-10-26--opus-readiness-review.md) — READY WITH QUALIFICATIONS; current commits, cleanup results, evidence limits and remaining decisions. Dated snapshot, not another backlog.
 
 Completed comparisons: [UI/equipment](./2026-10-26--ui-equipment-v1-v3-comparison.md), [dog/elder/cemeteries](./2026-10-26--dog-elder-cemeteries-comparison.md), [clouds/settlement spacing](./2026-10-26--clouds-settlement-spacing-comparison.md). Apply the brief’s newer decisions: unowned rescue dog; clouds without A/B; route/travel calibration rather than a direct grid multiplier.
+
+Equipment catalogue intake (recon only): [architecture and candidate stages](./2026-10-27--equipment-catalogue-recon.md), [complete 87-definition ID mapping](./2026-10-27--equipment-id-mapping.md), [property compatibility and lossless preservation](./2026-10-27--equipment-property-matrix.md). Extends the equipment comparison with current-source counts, aliases/conflicts and an inert typed-source + V1 adapter recommendation; no runtime integration, acquisition or implementation sequence is approved.
 
 Selected performance workstreams: [Three-track rendering roadmap — 2026-10-27](./2026-10-27--performance-three-track-roadmap.md) — author-selected NPC/fauna rendering, settlement draw submissions, and V3 grass/flower presentation; parallel research checklist and provisional staged implementation order. This focused track does not approve specific renderer ports or replace the Strategic Brief.
 
