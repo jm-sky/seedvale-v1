@@ -37,11 +37,14 @@ Research: [Track B deep recon, static/dynamic boundaries, donor comparison and p
 - [ ] Record scene-level visual/runtime acceptance and update plans.
 
 ### C. Grass and flowers presentation — parallel deeper recon, third implementation lane
-- [ ] Reconcile current V1 grass/placement/LOD/weather and the [V2/V3 transfer recon, including §9 and 2026-10-27 visual direction](./2026-10-26--v1-performance-transfer-v2-v3-recon.md).
-- [ ] Compare V1 and V3 tile ownership, placement, geometry, instanced pools, partial uploads, LOD, wind, snow, wetness and streaming; inspect real source, not just donor docs.
-- [ ] Design V1-terrain-authoritative adapter and reversible renderer switch with only one renderer active.
-- [ ] Respect the latest visual direction: V1 olive palette and grounded coverage, less angular blades, billboard flower clumps; fern/shrub/herb changes remain separate.
-- [ ] Produce migration stages and clear keep/revert criteria; V3 grass technology is a candidate until visual/performance confirmation.
+
+Research: [Track C deep recon, V1 surface adapter, lifecycle/pools/uploads and proposed Composer slices (§12)](./2026-10-26--v1-performance-transfer-v2-v3-recon.md#12-track-c-deep-recon--v1-grassflower-renderer-adaptation-2026-10-27). Source reconnaissance complete at V1 `317a5c71` / V3 `94c46473`; no runtime changes, new measurements or visual acceptance. Ground shader/cover clipmap remains a separate candidate.
+
+- [x] Reconcile current V1 grass/placement/LOD/weather and the [V2/V3 transfer recon, including §9 and 2026-10-27 visual direction](./2026-10-26--v1-performance-transfer-v2-v3-recon.md).
+- [x] Compare V1 and V3 tile ownership, placement, geometry, instanced pools, partial uploads, LOD, wind, snow, wetness and streaming; inspect real source, not just donor docs.
+- [x] Design V1-terrain-authoritative adapter and reversible renderer switch with only one renderer active.
+- [x] Respect the latest visual direction: V1 olive palette and grounded coverage, less angular blades, billboard flower clumps; fern/shrub/herb changes remain separate.
+- [x] Produce migration stages and clear keep/revert criteria; V3 grass technology is a candidate until visual/performance confirmation.
 - [ ] Approve prototype, implement in bounded slices, then decide cutover and retirement of V1 fallback.
 - [ ] Record visual/runtime acceptance and lifecycle integrity.
 
@@ -77,4 +80,4 @@ Research: [Track B deep recon, static/dynamic boundaries, donor comparison and p
 | --- | --- | --- | --- |
 | A — actors | Codex | [Existing transfer recon §10](./2026-10-26--v1-performance-transfer-v2-v3-recon.md#10-track-a-deep-recon--npc-and-fauna-rendering-2026-10-27) | Source recon complete; A0a attribution proposed first; implementation/measurements/visual acceptance pending |
 | B — settlements | Codex | [Existing transfer recon §11](./2026-10-26--v1-performance-transfer-v2-v3-recon.md#11-track-b-deep-recon--settlement-rendering-and-static-structures-2026-10-27) | Source recon complete; shared A0a/B0 attribution proposed first; implementation/measurements/visual acceptance pending |
-| C — grass | TBD | existing recon or new analysis | Not started |
+| C — grass | Codex | [Existing transfer recon §12](./2026-10-26--v1-performance-transfer-v2-v3-recon.md#12-track-c-deep-recon--v1-grassflower-renderer-adaptation-2026-10-27) | Source recon complete; C0 baseline/C1 adapter contract proposed first; implementation, measured keep/revert decision and look acceptance pending |
