@@ -1,6 +1,7 @@
-# Sesja: Stage D — closed (visual PASS)
+# Closed — Stage D Character / skills (ui-input-042)
 
-Stage D Character/skills V3 reskin done (`ui-input-042`, author visual PASS 2026-10-26). Live C/U + `character-skills-demo.html`.
+**2026-10-26:** Stage D **visual PASS** (author). Plan `ui-input-042` → `done`.
 
-## Next
-HUD or trade (author pick). Do not re-open A/B/C/D.
+- V3 Character look on V1 SPEA/skills; placeholders opacity-50; 660px shell; slim skills scroll; inline XP.
+- Demo: `character-skills-demo.html`.
+- Next session kick-off: [NEXT-SESSION--stage-e-hud.md](./NEXT-SESSION--stage-e-hud.md).

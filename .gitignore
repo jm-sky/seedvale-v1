@@ -17,4 +17,5 @@ dist
 # Other
 .env
 CLAUDE.local.md
+AGENTS.local.md
 *.blend1
