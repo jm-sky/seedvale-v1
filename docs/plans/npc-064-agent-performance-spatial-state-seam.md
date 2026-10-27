@@ -12,7 +12,9 @@
 ## Plan history and execution status
 
 - **2026-09-21:** original draft established a small runtime spatial seam, one authority, presentation-only visibility, preserved save/offscreen contracts, NPC/fauna scope selection after recon, and no ECS or broad agent rewrite. This direction remains intact; the former open recon section is resolved by the report below. Original draft and wording remain available in Git history.
-- **2026-10-27:** fresh local V1 `main` recon at **`d70b5c074955143090cb531ac80c08f6d065f4e8`**. Expanded into bounded Composer tasks; effort changed from M to XL because the complete migration spans several commits. **No runtime implementation is complete or authorized by this document.** Retain draft status for the parent because later tasks have explicit test/manual gates; the first baseline task is executable now. Do not run the old draft's commit/push footer: this assignment authorizes documentation only and explicitly forbids committing/pushing.
+- **2026-10-27:** fresh local V1 `main` recon at **`d70b5c074955143090cb531ac80c08f6d065f4e8`**. Expanded into bounded Composer tasks; effort changed from M to XL because the complete migration spans several commits. **No runtime implementation is complete or authorized by this document.** Retain draft status for the parent because later tasks have explicit test/manual gates; the first baseline task was executable after recon. The recon assignment authorized documentation only; later Stage 0A work and its focused commit were separately authorized. No push is authorized.
+
+- **2026-10-27, Stage 0A:** test-only characterization implemented against `68fe0ec38f572bab24db8a4ad5b19b9d4b9cf447`; no NPC/movement runtime diff from the recon SHA. After review corrections: **21 new tests; Stage 0A bundle 9 files / 127 tests passed**, focused lint passed. Global type-check has five pre-existing asset-browser test errors, recorded in the [implementation notes](implementation-notes/npc-064-agent-performance-spatial-state-seam-implementation-notes.md). Manual motion/crowd/cave/combat reference clips remain required before Stage 3A. Stage 0B is next; the spatial refactor itself is not implemented.
 
 The [recon report and complete transform access/write ledger](../reviews/2026-10-27--npc-064-spatial-state-recon.md) is the evidence owner. Read it with this plan; Cursor should not repeat the whole architectural recon. At each session, inspect the diff since the pinned SHA only for changed owners/callers. Historical September reviews are context, not current-code authority.
 
@@ -178,8 +180,8 @@ Each task below is one session and one reviewable commit **when separately autho
 
 | Order | Task | Session size | Ready now? | Required evidence before starting / landing |
 | --- | --- | --- | --- | --- |
-| 1 | 0A motion/facing baseline | M–L | **Yes: first task** | Pinned recon; existing baseline tests pass. Test-only commit; record motion reference before 3A. |
-| 2 | 0B lifecycle/checkpoint baseline | L | **Yes after 0A fixture** | No unresolved 0A failures; bounded real-agent/manager handoff harness. |
+| 1 | 0A motion/facing baseline | M–L | **Implemented; targeted checks passed** | 21 new tests; bundle 9 files / 127 tests passed. Global type-check baseline errors recorded in notes. Record motion reference before 3A. |
+| 2 | 0B lifecycle/checkpoint baseline | L | **Yes: next task** | Reuse 0A fixture pattern; add bounded real-agent/manager handoff coverage. |
 | 3 | 1 reader API | M | Conditional | 0A/0B added and green; immutable live-view contract tests. |
 | 4 | 2A simulation/lifecycle consumers | L | Conditional | Stage 1; decoy-mesh consumer tests, checkpoint/interaction freshness, type-check/build. |
 | 5 | 2B presentation/debug consumers | M | Conditional | 2A; audio/map/debug/shadow checks, type-check/build, manual presentation smoke. |
@@ -200,6 +202,10 @@ This revises the original six-stage hypothesis into **11 bounded sessions**: two
 
 **Future work, not part of these commits:** bounded AnimalAgent recon only if later requested, possible measured batching of projection, optional broader ARCH-03 import enforcement after proven seams, eventual render-object reconstruction independent of agent lifetime. Keep `npc-061` and the existing `npc-063`/render-LOD/offscreen continuity plans separate. No new backlog items are created here. NPC-first is the recommended migration; fauna's broader test suite does not outweigh mounted/corpse/habitat/persistence complexity.
 
-## First task to give Cursor Composer
+## Original Stage 0A handoff (targeted checks complete)
 
 > Implement **npc-064 Stage 0A only** against current V1 `main`. Run the repository preflight, read this plan and the linked 2026-10-27 recon, then add `src/ai/NpcAgent.spatial.test.ts` using existing jsdom/fallback-agent patterns. Characterize real-agent surface/cave/mouth movement, resident-ground hold, separation after update, recovery, gameplay yaw/defense and corpse roll with controlled inputs and unchanged RNG consumption. Run the named Stage 0A suites. Do not change runtime code, create spatial APIs, switch authority, fix behavior, edit fauna, commit or push without separate authorization. Report passing checks, missing coverage and manual reference observations still needed before Stage 3A.
+
+## Next task to give Cursor Composer
+
+> Implement **npc-064 Stage 0B only**. Read the implementation notes and run the repository preflight, then add the lifecycle/checkpoint characterization specified above. Exercise real NPC initialization, detailed/offscreen handoff, registry serialization/reification, loaded time-skip and actual manager snapshot/handoff wiring. Preserve existing schema, identity, purpose, provisions and cargo semantics. No runtime changes, spatial API, behavior fixes or fauna edits. Run the Stage 0B regressions and report remaining manual evidence. Do not commit or push without separate authorization for that stage.
