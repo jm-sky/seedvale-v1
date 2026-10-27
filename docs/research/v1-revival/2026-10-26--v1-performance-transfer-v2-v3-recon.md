@@ -167,6 +167,8 @@ Lepsza tekstura podłoża może pozwolić zmniejszyć liczbę modeli trawy bez w
 
 ## 10. Track A deep recon — NPC and fauna rendering (2026-10-27)
 
+> **Delta 2026-10-27:** [NPC/fauna audit](./2026-10-27--revival-audit--npc-fauna-rendering.md) verifies this section at `c460b224`. Corrections: native skinned culling is already active for NPC bodies and fauna (only head/hair/skirt are `frustumCulled=false`), and A0a tooling shipped with P0 — the next step is a certified capture, not new instrumentation.
+
 **Added at:** 2026-10-27<br>
 **Author:** Codex<br>
 **Status:** source reconnaissance complete; proposed Composer slices, not implementation authorization or performance acceptance.<br>
@@ -273,6 +275,8 @@ For each runtime slice, run touched-file lint, the meaningful targeted tests abo
 
 ## 11. Track B deep recon — settlement rendering and static structures (2026-10-27)
 
+> **Delta 2026-10-27:** [settlement delta](./2026-10-27--revival-audit--settlement-rendering.md) — no settlement runtime change since `d1c477f3`; adds observed per-pass family hints from diagnostic 032.
+
 **Added at:** 2026-10-27<br>
 **Author:** Codex<br>
 **Status:** source reconnaissance complete; proposed Composer slices only. No runtime changes, new benchmark, visual acceptance or implementation authorization.<br>
@@ -375,6 +379,8 @@ For an approved runtime slice, run meaningful focused tests, touched-file lint a
 **First Composer handoff after implementation approval:** reconcile the settlements-019 verification gate, reuse A0a and deliver only the missing B0 settlement attribution. Then choose B1 or B2 from the measured leading immutable family. Keep live stock B3/B4 separate and placement bake/culling conditional. Research completion closes no runtime, benchmark or look gate.
 
 ## 12. Track C deep recon — V1 grass/flower renderer adaptation (2026-10-27)
+
+> **Delta 2026-10-27:** [grass/flowers audit](./2026-10-27--revival-audit--grass-flowers-v3.md) — recommends V1-side memory/upload trims before the V3 backend described here; the backend stays a gated candidate.
 
 **Created at:** 2026-10-27<br>
 **Created by:** Codex<br>

@@ -3,9 +3,11 @@
 **Created at:** 2026-10-25  
 **Created by:** ChatGPT GPT-6  
 **Updated at:** 2026-10-27\
-**Updated by:** ChatGPT Codex
+**Updated by:** Claude Opus 5.5
 
 ## Current strategic entry point
+
+**Master Revival Roadmap (proposal, 2026-10-27):** [phases, dependencies, first steps and author decisions](./2026-10-27--master-revival-roadmap.md) — awaiting author approval; performance choices PENDING BASELINE. Area audits: [equipment/armor/combat](./2026-10-27--revival-audit--equipment-armor-combat.md), [NPC/fauna rendering](./2026-10-27--revival-audit--npc-fauna-rendering.md), [settlement rendering (delta)](./2026-10-27--revival-audit--settlement-rendering.md), [grass/flowers V3](./2026-10-27--revival-audit--grass-flowers-v3.md), [strategy/architecture](./2026-10-27--revival-audit--strategy-architecture.md). Status correction: UI Stages D and E have visual PASS and Stage F Trade is implemented (`93cf64ef`, `ui-input-044` verification needed); references below to "Next after E: Trade" are historical.
 
 Current inventory revision: [D2(c)/D5 hybrid rows and three-panel contract](./2026-10-27--inventory-hybrid-three-panel-contract.md), [Cursor prompt](./2026-10-27--inventory-hybrid-cursor-handoff.md), [implementation handoff](./2026-10-27--inventory-hybrid-implementation-handoff.md). Author decisions dated 2026-10-27 supersede D2(a) and the former desktop two-column/nested-modal contract. V1 semantics/actions remain authoritative; drop/use/placement identity limits are explicit. **Implementation landed** on base `58501504` (focused Vitest 76 passed); **revised visual PASS and browser checklist pending**. Earlier Stage A/B visual PASS remains historical; it does not verify this revision.
 

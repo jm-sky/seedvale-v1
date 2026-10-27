@@ -2,8 +2,8 @@
 
 **Created at:** 2026-10-26  
 **Created by:** ChatGPT Sol  
-**Updated at:** 2026-10-26  
-**Updated by:** ChatGPT Sol  
+**Updated at:** 2026-10-27  
+**Updated by:** Claude Opus 5.5  
 **Status:** Current author-agreed direction; remaining-work sequence pending author approval. Author-authorized Cursor exceptions are recorded below.  
 **Target:** `jm-sky/seedvale-v1`
 
@@ -97,6 +97,8 @@ R6/R7 support substantial interconnected V1 behavior, but not universal offscree
 Check current source only where freshness or an unresolved fact matters to a selected decision. Preserve explicit distinctions between source evidence, historical tests, new execution and author acceptance.
 
 ## 5. Completed preparation and current handoff
+
+**Opus roadmap proposal, 2026-10-27:** [Master Revival Roadmap](./2026-10-27--master-revival-roadmap.md) proposes phases, dependencies, agent allocation and decisions D1–D14. It is **not approved** until the author accepts it; this brief's decisions are unchanged. Dated status note: UI Stages D–E have visual PASS and Stage F Trade is implemented (`ui-input-044`, verification needed), so §3/§5 references to A–C as the latest UI state are historical.
 
 **Technical-review update, 2026-10-26:** the author subsequently assigned Astra the bounded review of delivered models, snow and UI A–C. See [Cursor technical review](../../reviews/2026-10-26--026--v1-revival-cursor-technical-review.md) for findings, executed checks and remaining limits. Earlier references here to Opus's future technical review now mean taking over these findings and targeted follow-ups, not repeating this review. Opus's planning and AI-agent documentation optimization ownership is unchanged.
 
