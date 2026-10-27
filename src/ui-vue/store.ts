@@ -1217,6 +1217,8 @@ export function invalidateWorldBoundUiSessions(): void {
   closeHouseholdTransferScreen()
   closeNpcGiveItemScreen()
   closeArtisanOrderScreen()
+  // D2(c): world rebuild must not leave inventory selection/callbacks live.
+  closeInventory()
 }
 
 function resetNpcDialogueMenu(): void {
@@ -1376,6 +1378,18 @@ export function closeInventory(): void {
   ui.inventory.onEquipArmor = null
   ui.inventory.onUnequipArmor = null
   ui.inventory.onSellInstances = null
+  ui.inventory.onConsume = null
+  ui.inventory.onThrow = null
+  ui.inventory.onRead = null
+  ui.inventory.onPlaceTrap = null
+  ui.inventory.onSharpen = null
+  ui.inventory.onPlaceContainer = null
+  ui.inventory.onPlaceTent = null
+  ui.inventory.onSetPrimaryMelee = null
+  ui.inventory.onSetPrimaryRanged = null
+  // Inventory-owned quantity confirms capture an open/session token in the
+  // screen controller and no-op after close — do not blanket-cancel an
+  // unrelated screen's quantity dialog here.
 }
 export function isInventoryOpen(): boolean { return ui.inventory.open }
 

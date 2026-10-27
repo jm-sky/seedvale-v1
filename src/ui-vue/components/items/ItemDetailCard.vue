@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { Component } from 'vue'
 import type { DetailStatRow } from './buildItemDetailPresentation'
+import type { Component } from 'vue'
 
-defineProps<{
+withDefaults(defineProps<{
   title: string
   meta: string
   description: string
@@ -12,8 +12,15 @@ defineProps<{
   /** Lucide (or other) icon when no illustration PNG. */
   fallbackIcon?: Component | null
   solid?: boolean
+  /** Narrow drill-down shows Powrót; desktop inline hides it. */
+  showReturn?: boolean
+  /** Optional id for focus management (narrow details heading). */
+  headingId?: string
   statRows: DetailStatRow[]
-}>()
+}>(), {
+  showReturn: true,
+  headingId: undefined,
+})
 
 defineEmits<{
   'return-to-list': []
@@ -26,7 +33,11 @@ defineEmits<{
     :class="solid ? 'bg-(--surface-solid) shadow-2xl' : 'bg-(--surface)'"
   >
     <header class="mb-2 flex flex-wrap items-baseline justify-between gap-2">
-      <h2 class="flex items-center gap-2 text-xl font-semibold text-neutral-100">
+      <h2
+        :id="headingId"
+        tabindex="-1"
+        class="flex items-center gap-2 text-xl font-semibold text-neutral-100 outline-none"
+      >
         <component
           :is="fallbackIcon"
           v-if="fallbackIcon && !illustrationSrc"
@@ -40,6 +51,7 @@ defineEmits<{
           {{ meta }}
         </p>
         <button
+          v-if="showReturn"
           type="button"
           class="cursor-pointer rounded-md border border-neutral-600 bg-transparent px-2.5 py-1 text-xs text-neutral-200 hover:bg-neutral-800"
           @click="$emit('return-to-list')"

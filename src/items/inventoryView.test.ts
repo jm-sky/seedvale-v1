@@ -41,6 +41,10 @@ describe('buildInventoryGroups — instance-backed coverage (plan items-player-0
     expect(liquidGroup.meterKind).toBe('fill')
     expect(liquidGroup.instances[0]!.meterKind).toBe('fill')
     expect(liquidGroup.instances[0]!.conditionPercent).toBe(50)
+    expect(liquidGroup.instances[0]!.liquid).toBe('water')
+    expect(liquidGroup.instances[0]!.amountLitres).toBe(1)
+    expect(liquidGroup.instances[0]!.capacityLitres).toBe(2)
+    expect(liquidGroup.instances[0]!.effectiveWeightKg).toBeGreaterThan(0)
 
     const tentGroup = groups.find((g) => g.kind === 'tent')!
     expect(tentGroup.meterKind).toBe('condition')
@@ -143,6 +147,9 @@ describe('buildInventoryGroups — consumeUse (plan items-player-024)', () => {
     const group = buildInventoryGroups(inventory).find((g) => g.kind === 'waterskin_small')!
     expect(group.consumeUse!.enabled).toBe(false)
     expect(group.consumeUse!.reasonLabel).toBe('Pusty')
+    expect(group.instances[0]!.liquid).toBeNull()
+    expect(group.instances[0]!.amountLitres).toBe(0)
+    expect(group.instances[0]!.capacityLitres).toBe(2)
   })
 
   it('is enabled for a filled liquid container', () => {

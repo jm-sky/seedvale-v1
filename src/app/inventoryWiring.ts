@@ -637,6 +637,12 @@ export function createInventoryWiring(deps: InventoryWiringDeps): InventoryWirin
   }
 
   const equipTool = (kind: ItemKind, instanceId?: string): void => {
+    // D2(c): reject stale/mismatched explicit IDs before torch side effects or
+    // HeldTool sibling fallback. Legacy no-ID callers keep prior behavior.
+    if (instanceId != null) {
+      const owned = inventory.getInstance(instanceId)
+      if (!owned || owned.kind !== kind) return
+    }
     if (playerTorch.isLit()) playerTorch.extinguish()
     if (!heldTool.equip(kind, instanceId)) return
     primaryWeapons.noteEquipped(kind, heldTool.heldInstanceId())

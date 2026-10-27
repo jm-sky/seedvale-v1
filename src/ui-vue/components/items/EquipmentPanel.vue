@@ -16,6 +16,7 @@ const props = defineProps<{
   slots: readonly EquipmentSlotView[]
   heldTool: ItemKind | null
   heldLabel: string | null
+  heldInstanceId?: string | null
   primaryMelee: PrimaryWeaponChoice | null
   primaryRanged: PrimaryWeaponChoice | null
   primaryMeleeLabel: string | null
@@ -29,9 +30,9 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   'select-slot': [slot: EquipmentSlot, instanceId: string]
-  'unequip-armor': [slot: EquipmentSlot]
-  'unequip-held': []
   'select-held': []
+  'select-primary-melee': []
+  'select-primary-ranged': []
 }>()
 
 const slotOrder = EQUIPMENT_SLOTS
@@ -67,7 +68,7 @@ function primaryLabel(choice: PrimaryWeaponChoice | null, fallback: string | nul
           <template v-if="bySlot.get(slot)?.instanceId">
             <button
               type="button"
-              class="mr-1 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+              class="mr-1 min-h-11 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:min-h-0"
               :class="compareInstanceId === bySlot.get(slot)!.instanceId ? 'text-amber-200' : 'text-neutral-200'"
               @click="emit('select-slot', slot, bySlot.get(slot)!.instanceId!)"
             >
@@ -77,19 +78,11 @@ function primaryLabel(choice: PrimaryWeaponChoice | null, fallback: string | nul
               v-if="bySlot.get(slot)!.qualityLabel"
               :label="bySlot.get(slot)!.qualityLabel!"
             />
-            <button
-              type="button"
-              class="text-xs text-neutral-500 hover:text-neutral-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-              :aria-label="`Zdejmij ${bySlot.get(slot)!.label}`"
-              @click="emit('unequip-armor', slot)"
-            >
-              ✕
-            </button>
           </template>
           <span
             v-else
             class="text-neutral-600"
-          >—</span>
+          >Puste</span>
         </div>
         <!-- D4: future under/outer layer row keeps stable space -->
         <div class="mt-0.5 flex items-center gap-2 text-[10px] text-neutral-500">
@@ -113,7 +106,7 @@ function primaryLabel(choice: PrimaryWeaponChoice | null, fallback: string | nul
           <button
             v-if="heldTool"
             type="button"
-            class="mr-1 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            class="mr-1 min-h-11 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:min-h-0"
             @click="emit('select-held')"
           >
             {{ heldLabel ?? ITEM_DEFS[heldTool].label }}
@@ -121,16 +114,7 @@ function primaryLabel(choice: PrimaryWeaponChoice | null, fallback: string | nul
           <span
             v-else
             class="mr-1 text-neutral-600"
-          >—</span>
-          <button
-            v-if="heldTool"
-            type="button"
-            class="text-xs text-neutral-500 hover:text-neutral-100"
-            aria-label="Odłóż trzymany przedmiot"
-            @click="emit('unequip-held')"
-          >
-            ✕
-          </button>
+          >Puste</span>
         </div>
       </div>
 
@@ -138,8 +122,19 @@ function primaryLabel(choice: PrimaryWeaponChoice | null, fallback: string | nul
         <span class="text-xs text-neutral-500 uppercase">
           Podst. wręcz
         </span>
-        <div class="text-neutral-200">
-          {{ primaryLabel(primaryMelee, primaryMeleeLabel) }}
+        <div>
+          <button
+            v-if="primaryMelee"
+            type="button"
+            class="min-h-11 text-neutral-200 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:min-h-0"
+            @click="emit('select-primary-melee')"
+          >
+            {{ primaryLabel(primaryMelee, primaryMeleeLabel) }}
+          </button>
+          <span
+            v-else
+            class="text-neutral-600"
+          >Puste</span>
         </div>
       </div>
 
@@ -147,8 +142,19 @@ function primaryLabel(choice: PrimaryWeaponChoice | null, fallback: string | nul
         <span class="text-xs text-neutral-500 uppercase">
           Podst. dystans
         </span>
-        <div class="text-neutral-200">
-          {{ primaryLabel(primaryRanged, primaryRangedLabel) }}
+        <div>
+          <button
+            v-if="primaryRanged"
+            type="button"
+            class="min-h-11 text-neutral-200 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:min-h-0"
+            @click="emit('select-primary-ranged')"
+          >
+            {{ primaryLabel(primaryRanged, primaryRangedLabel) }}
+          </button>
+          <span
+            v-else
+            class="text-neutral-600"
+          >Puste</span>
         </div>
       </div>
 

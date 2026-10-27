@@ -4,11 +4,11 @@
 
 **Created by:** Codex (GPT-6)
 
-**Status:** Implementation-ready specification; author product decisions recorded; implementation and visual acceptance pending.
+**Status:** Implementation landed (see [implementation handoff](./2026-10-27--inventory-hybrid-implementation-handoff.md)); focused automated checks passed; **author visual PASS pending**. Historical Stage A/B PASS unchanged.
 
 **Target:** `jm-sky/seedvale-v1` · **Design donor:** `jm-sky/seedvale`
 
-**Companion:** [Complete Cursor implementation prompt](./2026-10-27--inventory-hybrid-cursor-handoff.md)
+**Companion:** [Complete Cursor implementation prompt](./2026-10-27--inventory-hybrid-cursor-handoff.md) · [Implementation handoff](./2026-10-27--inventory-hybrid-implementation-handoff.md)
 
 ## 1. Authority, findings and evidence boundary
 

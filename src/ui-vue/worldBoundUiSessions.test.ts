@@ -9,6 +9,25 @@ import {
   ui,
 } from './store'
 
+function openInventoryStub(): void {
+  ui.inventory.open = true
+  ui.inventory.onDrop = () => {}
+  ui.inventory.onConsume = () => {}
+  ui.inventory.onThrow = () => {}
+  ui.inventory.onRead = () => {}
+  ui.inventory.onPlaceTrap = () => {}
+  ui.inventory.onSharpen = () => 'ok' as const
+  ui.inventory.onPlaceContainer = () => {}
+  ui.inventory.onPlaceTent = () => {}
+  ui.inventory.onSetPrimaryMelee = () => {}
+  ui.inventory.onSetPrimaryRanged = () => {}
+  ui.inventory.onEquip = () => {}
+  ui.inventory.onUnequip = () => {}
+  ui.inventory.onEquipArmor = () => {}
+  ui.inventory.onUnequipArmor = () => {}
+  ui.inventory.onSellInstances = () => 'ok' as const
+}
+
 describe('invalidateWorldBoundUiSessions (plan ui-input-031)', () => {
   const onClose = vi.fn()
   const onConfirm = vi.fn()
@@ -43,5 +62,26 @@ describe('invalidateWorldBoundUiSessions (plan ui-input-031)', () => {
     invalidateWorldBoundUiSessions()
     closeFlavorDialog()
     expect(onClose).not.toHaveBeenCalled()
+  })
+
+  it('closes inventory and clears all inventory callbacks on world-bound invalidation', () => {
+    openInventoryStub()
+    openQuantityDialog('Amount', 3, onConfirm)
+    invalidateWorldBoundUiSessions()
+    expect(ui.inventory.open).toBe(false)
+    expect(ui.inventory.onDrop).toBeNull()
+    expect(ui.inventory.onConsume).toBeNull()
+    expect(ui.inventory.onThrow).toBeNull()
+    expect(ui.inventory.onRead).toBeNull()
+    expect(ui.inventory.onPlaceTrap).toBeNull()
+    expect(ui.inventory.onSharpen).toBeNull()
+    expect(ui.inventory.onPlaceContainer).toBeNull()
+    expect(ui.inventory.onPlaceTent).toBeNull()
+    expect(ui.inventory.onSetPrimaryMelee).toBeNull()
+    expect(ui.inventory.onSetPrimaryRanged).toBeNull()
+    expect(ui.inventory.onEquip).toBeNull()
+    expect(ui.inventory.onSellInstances).toBeNull()
+    expect(ui.quantityDialog.onConfirm).toBeNull()
+    expect(onConfirm).not.toHaveBeenCalled()
   })
 })

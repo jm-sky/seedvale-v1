@@ -1,4 +1,3 @@
-import type { Inventory } from './Inventory'
 import type { ItemKind } from './items'
 import { effectiveInstanceWeight, resolveEffectiveArmorPiece } from './armorItemInstances'
 import { EQUIPMENT_SLOT_LABEL } from './equipment'
@@ -7,6 +6,7 @@ import {
   type FreshnessStage,
   getFoodBatchFreshnessStage,
 } from './foodFreshness'
+import { effectiveCarriedInstanceWeight, type Inventory } from './Inventory'
 import { ITEM_CATALOG } from './itemCatalog'
 import {
   ARMOR_QUALITY_LABELS,
@@ -19,6 +19,7 @@ import {
   isWeaponItemInstance,
   type ItemInstance,
   type LiquidContainerItemInstance,
+  type LiquidContent,
 } from './itemInstances'
 import { ITEM_DEFS } from './items'
 import { type ItemUseView, resolveConsumeUseView } from './itemUseView'
@@ -61,6 +62,10 @@ export type InventoryInstanceRow = {
   movementPenaltyLabel?: string
   recoveryPenaltyLabel?: string
   slotLabel?: string
+  /** Liquid containers only — actual content, never inferred from fill %. */
+  liquid?: LiquidContent | null
+  amountLitres?: number
+  capacityLitres?: number
   sellPrice: number
 }
 
@@ -103,6 +108,7 @@ function buildGenericInstanceGroup(kind: ItemKind, instances: readonly ItemInsta
     meterKind: 'condition',
     conditionPercent: 100,
     sharpnessPercent: null,
+    effectiveWeightKg: effectiveInstanceWeight(inst),
     sellPrice: resolveInstanceSellPrice(inst) ?? 0,
   }))
   return {
@@ -124,6 +130,7 @@ function buildTrapGroup(kind: ItemKind, instances: readonly ItemInstance[]): Inv
     meterKind: 'condition',
     conditionPercent: trapConditionPercent(inst),
     sharpnessPercent: null,
+    effectiveWeightKg: effectiveInstanceWeight(inst),
     sellPrice: resolveInstanceSellPrice(inst) ?? 0,
   }))
   const percents = rows.map((r) => r.conditionPercent)
@@ -149,6 +156,7 @@ function buildWeaponGroup(kind: ItemKind, instances: readonly ItemInstance[]): I
     meterKind: 'durability',
     conditionPercent: weaponDurabilityPercent(inst),
     sharpnessPercent: weaponSharpnessPercent(inst),
+    effectiveWeightKg: effectiveInstanceWeight(inst),
     sellPrice: resolveInstanceSellPrice(inst) ?? 0,
   }))
   const first = rows[0]!
@@ -176,13 +184,20 @@ function liquidFillPercent(instance: LiquidContainerItemInstance): number {
 function buildLiquidContainerGroup(kind: ItemKind, instances: readonly ItemInstance[], inventory: Inventory, nowDays: number): InventoryGroupView | null {
   const containers = instances.filter(isLiquidContainerInstance)
   if (containers.length === 0) return null
-  const rows: InventoryInstanceRow[] = containers.map((inst) => ({
-    id: inst.id,
-    meterKind: 'fill',
-    conditionPercent: liquidFillPercent(inst),
-    sharpnessPercent: null,
-    sellPrice: resolveInstanceSellPrice(inst) ?? 0,
-  }))
+  const rows: InventoryInstanceRow[] = containers.map((inst) => {
+    const capacity = liquidContainerCapacity(inst.kind)
+    return {
+      id: inst.id,
+      meterKind: 'fill' as const,
+      conditionPercent: liquidFillPercent(inst),
+      sharpnessPercent: null,
+      liquid: inst.liquid,
+      amountLitres: inst.amountLitres,
+      capacityLitres: capacity,
+      effectiveWeightKg: effectiveCarriedInstanceWeight(inst),
+      sellPrice: resolveInstanceSellPrice(inst) ?? 0,
+    }
+  })
   const percents = rows.map((r) => r.conditionPercent)
   const allSame = percents.every((p) => p === percents[0])
   return {
@@ -208,6 +223,7 @@ function buildTentGroup(kind: ItemKind, instances: readonly ItemInstance[]): Inv
     meterKind: 'condition',
     conditionPercent: Math.round(inst.condition),
     sharpnessPercent: null,
+    effectiveWeightKg: effectiveInstanceWeight(inst),
     sellPrice: resolveInstanceSellPrice(inst) ?? 0,
   }))
   const percents = rows.map((r) => r.conditionPercent)

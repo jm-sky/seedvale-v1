@@ -206,6 +206,10 @@
  * Stage B (ui-input-040): scoped warm V3 inventory list + equipment tokens.
  * Do not apply globally — only `.sv-inventory-stage-b` (and nested).
  */
+/*
+ * D2(c)/D5 desktop breakpoint is an explicit 1200px floor (not Tailwind lg=1024).
+ * Layout switching is owned by InventoryScreen media/JS; tokens stay scoped here.
+ */
 .sv-inventory-stage-b {
   --surface: oklch(0.23 0.02 60 / 0.92);
   --surface-solid: oklch(0.23 0.02 60 / 0.95);
