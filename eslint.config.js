@@ -12,6 +12,18 @@ export default tseslint.config(
   ...tseslint.configs.recommended,
   ...vue.configs['flat/recommended'],
   {
+    // Node asset/build scripts (and donor generators) use console/process/Buffer.
+    // Flat config has no eslint-env; declare the Node globals those .mjs files need.
+    files: ['**/*.mjs'],
+    languageOptions: {
+      globals: {
+        Buffer: 'readonly',
+        console: 'readonly',
+        process: 'readonly',
+      },
+    },
+  },
+  {
     // `eslint-plugin-vue`'s flat/recommended parses .vue files with
     // vue-eslint-parser but leaves <script> content to espree by default —
     // point it at the TS parser so `<script setup lang="ts">` blocks lint

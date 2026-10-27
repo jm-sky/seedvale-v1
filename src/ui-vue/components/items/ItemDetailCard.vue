@@ -32,6 +32,8 @@ const props = withDefaults(defineProps<{
   headingId: undefined,
   kind: null,
   category: null,
+  illustrationSrc: null,
+  fallbackIcon: null,
 })
 
 defineEmits<{
