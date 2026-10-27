@@ -19,9 +19,9 @@ const PAGES: { id: DemoPage, label: string, href: string }[] = [
 </script>
 
 <template>
-  <div class="min-h-dvh bg-[oklch(0.2_0.015_60)] text-neutral-200">
+  <div class="sv-demo-shell min-h-dvh text-neutral-200">
     <main class="mx-auto flex max-w-7xl flex-col gap-4 p-3 sm:p-6">
-      <div class="flex flex-col gap-4 rounded-xl border border-neutral-700 bg-(--surface) p-4 shadow-2xl backdrop-blur-sm">
+      <div class="flex flex-col gap-4 rounded-xl border border-neutral-700 bg-neutral-800/50 p-4 shadow-2xl backdrop-blur-sm">
         <header class="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
           <h1 class="text-2xl font-semibold tracking-tight text-primary">
             {{ title }}
@@ -50,3 +50,22 @@ const PAGES: { id: DemoPage, label: string, href: string }[] = [
     </main>
   </div>
 </template>
+
+<style>
+/* Demo-only backdrop on the shell itself — avoid -z-10 (paints under body bg). */
+.sv-demo-shell {
+  background-color: oklch(0.14 0.02 55);
+  background-image:
+    radial-gradient(circle at 14% 20%, oklch(0.62 0.12 75 / 0.45), transparent 42%),
+    radial-gradient(circle at 86% 16%, oklch(0.48 0.08 230 / 0.38), transparent 40%),
+    radial-gradient(circle at 68% 88%, oklch(0.42 0.09 145 / 0.32), transparent 45%),
+    linear-gradient(
+      180deg,
+      oklch(0.28 0.05 235) 0%,
+      oklch(0.34 0.055 100) 36%,
+      oklch(0.48 0.09 78) 47%,
+      oklch(0.28 0.05 65) 54%,
+      oklch(0.14 0.025 55) 100%
+    );
+}
+</style>
