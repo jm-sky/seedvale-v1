@@ -50,7 +50,7 @@ function cloneNamedMaterials(
     if (!mesh.isMesh) return
     const source = Array.isArray(mesh.material) ? mesh.material : [mesh.material]
     const cloned = source.map((material) => {
-      if (!names.has(material.name)) return material
+      if (!names.has(material.name) || material.userData[flag]) return material
       const copy = material.clone()
       copy.userData[flag] = true
       copy.userData.sharedGpu = false
@@ -148,12 +148,14 @@ async function loadTintMap(tintUrl: string): Promise<THREE.Texture | null> {
 export async function applyOutfitTint(
   root: THREE.Object3D,
   tintUrl: string | null,
+  isCurrent: () => boolean = () => true,
 ): Promise<boolean> {
   let tintMap: THREE.Texture | null = null
   if (tintUrl) {
     tintMap = await loadTintMap(tintUrl)
     if (!tintMap) return false
   }
+  if (!isCurrent()) return false
   applyMapOnFlag(root, 'ubcOutfitMaterial', tintMap)
   return true
 }
