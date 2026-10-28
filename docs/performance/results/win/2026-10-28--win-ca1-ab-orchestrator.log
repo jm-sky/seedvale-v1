@@ -1,0 +1,49 @@
+2026-10-28T22:00:44.802Z === step 1/14 A single forest warmup-A
+2026-10-28T22:03:11.116Z warmup-A forest: OK forest rep1 sha=d7ddb337 fps=55.9 p95=22.7 draws=1739 npc=20 gpu={"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) Appl
+2026-10-28T22:03:13.270Z cooldown 35s
+2026-10-28T22:03:48.286Z === step 2/14 B single forest warmup-B
+2026-10-28T22:06:15.433Z warmup-B forest: OK forest rep1 sha=bc9a68d1 fps=55.2 p95=24 draws=1746 npc=20 gpu={"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) Appl
+2026-10-28T22:06:17.658Z cooldown 35s
+2026-10-28T22:06:52.667Z === step 3/14 A single forest 2026-10-28--win-ca1-ab-A-run1
+2026-10-28T22:09:20.103Z 2026-10-28--win-ca1-ab-A-run1 forest: OK forest rep1 sha=d7ddb337 fps=55.1 p95=23.3 draws=1749 npc=20 gpu={"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) Appl
+2026-10-28T22:09:22.327Z cooldown 35s
+2026-10-28T22:09:57.341Z === step 4/14 B single forest 2026-10-28--win-ca1-ab-B-run2
+2026-10-28T22:12:26.279Z 2026-10-28--win-ca1-ab-B-run2 forest: OK forest rep1 sha=bc9a68d1 fps=50.9 p95=25.8 draws=1778 npc=20 gpu={"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) Appl
+2026-10-28T22:12:28.534Z cooldown 35s
+2026-10-28T22:13:03.538Z === step 5/14 B single forest 2026-10-28--win-ca1-ab-B-run3
+2026-10-28T22:15:32.777Z 2026-10-28--win-ca1-ab-B-run3 forest: OK forest rep1 sha=bc9a68d1 fps=58.8 p95=21 draws=1738 npc=20 gpu={"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) Appl
+2026-10-28T22:15:34.994Z cooldown 35s
+2026-10-28T22:16:09.997Z === step 6/14 A single forest 2026-10-28--win-ca1-ab-A-run4
+2026-10-28T22:18:38.297Z 2026-10-28--win-ca1-ab-A-run4 forest: OK forest rep1 sha=d7ddb337 fps=58.6 p95=21.3 draws=1744 npc=20 gpu={"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) Appl
+2026-10-28T22:18:40.484Z cooldown 35s
+2026-10-28T22:19:15.489Z === step 7/14 A single forest 2026-10-28--win-ca1-ab-A-run5
+2026-10-28T22:21:44.723Z 2026-10-28--win-ca1-ab-A-run5 forest: OK forest rep1 sha=d7ddb337 fps=59 p95=21.1 draws=1768 npc=20 gpu={"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) Appl
+2026-10-28T22:21:46.977Z cooldown 35s
+2026-10-28T22:22:21.990Z === step 8/14 B single forest 2026-10-28--win-ca1-ab-B-run6
+2026-10-28T22:24:50.849Z 2026-10-28--win-ca1-ab-B-run6 forest: OK forest rep1 sha=bc9a68d1 fps=56.7 p95=23.3 draws=1743 npc=20 gpu={"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) Appl
+2026-10-28T22:24:53.021Z cooldown 35s
+2026-10-28T22:25:28.035Z === step 9/14 A pair stream 2026-10-28--win-ca1-ab-A-pair1
+2026-10-28T22:27:47.287Z 2026-10-28--win-ca1-ab-A-pair1-cold stream: OK stream rep1 sha=d7ddb337 fps=60.1 p95=26.3 draws=856 npc=19 gpu={"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) Appl
+2026-10-28T22:30:07.684Z 2026-10-28--win-ca1-ab-A-pair1-warm stream: OK stream rep1 sha=d7ddb337 fps=60 p95=28.2 draws=877 npc=19 gpu={"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) Appl
+2026-10-28T22:30:10.246Z cooldown 35s
+2026-10-28T22:30:45.252Z === step 10/14 B pair stream 2026-10-28--win-ca1-ab-B-pair2
+2026-10-28T22:33:05.616Z 2026-10-28--win-ca1-ab-B-pair2-cold stream: OK stream rep1 sha=bc9a68d1 fps=61.8 p95=27.2 draws=850 npc=19 gpu={"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) Appl
+2026-10-28T22:35:24.736Z 2026-10-28--win-ca1-ab-B-pair2-warm stream: OK stream rep1 sha=bc9a68d1 fps=61.1 p95=26.1 draws=884 npc=19 gpu={"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) Appl
+2026-10-28T22:35:27.333Z cooldown 35s
+2026-10-28T22:36:02.348Z === step 11/14 B pair stream 2026-10-28--win-ca1-ab-B-pair3
+2026-10-28T22:38:20.285Z 2026-10-28--win-ca1-ab-B-pair3-cold stream: OK stream rep1 sha=bc9a68d1 fps=61.3 p95=24.8 draws=867 npc=19 gpu={"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) Appl
+2026-10-28T22:40:43.343Z 2026-10-28--win-ca1-ab-B-pair3-warm stream: OK stream rep1 sha=bc9a68d1 fps=62 p95=27.4 draws=891 npc=19 gpu={"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) Appl
+2026-10-28T22:40:45.886Z cooldown 35s
+2026-10-28T22:41:20.901Z === step 12/14 A pair stream 2026-10-28--win-ca1-ab-A-pair4
+2026-10-28T22:43:41.151Z 2026-10-28--win-ca1-ab-A-pair4-cold stream: OK stream rep1 sha=d7ddb337 fps=56.8 p95=27.2 draws=869 npc=19 gpu={"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) Appl
+2026-10-28T22:45:58.289Z 2026-10-28--win-ca1-ab-A-pair4-warm stream: OK stream rep1 sha=d7ddb337 fps=63.2 p95=26 draws=885 npc=19 gpu={"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) Appl
+2026-10-28T22:46:00.827Z cooldown 35s
+2026-10-28T22:46:35.841Z === step 13/14 A pair stream 2026-10-28--win-ca1-ab-A-pair5
+2026-10-28T22:48:54.868Z 2026-10-28--win-ca1-ab-A-pair5-cold stream: OK stream rep1 sha=d7ddb337 fps=62.8 p95=24.1 draws=867 npc=19 gpu={"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) Appl
+2026-10-28T22:51:14.780Z 2026-10-28--win-ca1-ab-A-pair5-warm stream: OK stream rep1 sha=d7ddb337 fps=60.6 p95=28.1 draws=878 npc=19 gpu={"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) Appl
+2026-10-28T22:51:17.505Z cooldown 35s
+2026-10-28T22:51:52.516Z === step 14/14 B pair stream 2026-10-28--win-ca1-ab-B-pair6
+2026-10-28T22:54:10.903Z 2026-10-28--win-ca1-ab-B-pair6-cold stream: OK stream rep1 sha=bc9a68d1 fps=58.3 p95=27.3 draws=868 npc=19 gpu={"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) Appl
+2026-10-28T22:56:32.772Z 2026-10-28--win-ca1-ab-B-pair6-warm stream: OK stream rep1 sha=bc9a68d1 fps=60.7 p95=27.4 draws=887 npc=19 gpu={"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) Appl
+2026-10-28T22:56:35.355Z cooldown 35s
+2026-10-28T22:57:10.370Z ALL DONE
