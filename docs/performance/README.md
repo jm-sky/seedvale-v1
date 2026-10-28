@@ -264,3 +264,5 @@ Research/reviews:
 - `docs/performance/results/2026-09-21--031--benchmark-water.md`
 
 Historical benchmark results remain under `docs/performance/results/` and `docs/performance/trace-results/`. Treat them as dated evidence, not current-state declarations.
+
+**Windows Arc series 2026-10-28 (SHA `ccc4d378`):** settlement-heavy + forest 3×30 s — [`results/2026-10-28--win-a1p-settlement-heavy-forest-series.md`](./results/2026-10-28--win-a1p-settlement-heavy-forest-series.md). Forest ≈20 % slower than the `721af157` series (uninvestigated); stream/water not run.
