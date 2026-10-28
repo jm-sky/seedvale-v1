@@ -156,6 +156,35 @@ type Entry = {
   def: SettlementDef
   settlement: Settlement | null
   pendingPromise: Promise<void> | null
+  /** Built by the startup eager-neighbor loop (residency exception while the
+   *  player is still near home). Ordinary hysteresis applies once accepted. */
+  eagerStartup?: boolean
+}
+
+/**
+ * The one residency rule deciding whether a finished (or about-to-start)
+ * non-pinned settlement build may be published (settlements-023 D1). Evaluated
+ * with the latest observed player position, never the last recheck anchor.
+ * Home is always accepted; non-home survives while within `unloadRadius`
+ * (inclusive, the existing hysteresis band); the startup eager-neighbor
+ * exception holds only while the player is still near home (or unknown).
+ *
+ * @domain settlements
+ */
+export function shouldAcceptSettlementResidency(input: {
+  isHome: boolean
+  isEagerStartup: boolean
+  /** Distance from the latest player position to the settlement. */
+  dist: number
+  /** Distance from the latest player position to the home site. */
+  distPlayerToHome: number
+  playerKnown: boolean
+  loadRadius: number
+  unloadRadius: number
+}): boolean {
+  if (input.isHome) return true
+  if (input.dist <= input.unloadRadius) return true
+  return input.isEagerStartup && (!input.playerKnown || input.distPlayerToHome <= input.loadRadius)
 }
 
 /** How many of the home settlement's nearest neighbor settlements get
@@ -909,6 +938,11 @@ export async function createSettlementsManager(
   }
 
   const entries = new Map<string, Entry>()
+  /** Latest observed player position (every `update`), used by the residency
+   *  rule at publication time; `lastCheckX/Z` only anchors recheck movement. */
+  let latestPlayerX = 0
+  let latestPlayerZ = 0
+  let playerPositionKnown = false
 
   /**
    * Travelling-NPC visitors currently `visiting` this (foreign) settlement
@@ -1079,13 +1113,12 @@ export async function createSettlementsManager(
       throw new Error('[SettlementsManager] disposed before home settlement finished building')
     }
     homeSettlement = settlement
-    const entry = entries.get(homeDef.id)
-    if (entry) entry.settlement = settlement
-    else entries.set(homeDef.id, { def: homeDef, settlement, pendingPromise: null })
-    reclaimDetachedHouseholdLivestock(homeDef.id, settlement)
-    settlement.setDayNight(lastDayNight)
-    syncMidpoints()
-    onSettlementAvailable?.({ id: homeDef.id, x: homeDef.x, z: homeDef.z })
+    let entry = entries.get(homeDef.id)
+    if (!entry) {
+      entry = { def: homeDef, settlement: null, pendingPromise: null }
+      entries.set(homeDef.id, entry)
+    }
+    acceptSettlement(entry, settlement, { isHome: true })
     return settlement
   })
   entries.set(homeDef.id, {
@@ -1158,9 +1191,63 @@ export async function createSettlementsManager(
   let lastCheckZ = Number.POSITIVE_INFINITY
   const recheckDistance = loadRadius * 0.25
 
-  function ensureLoaded(def: SettlementDef): void {
-    if (entries.has(def.id)) return
-    const entry: Entry = { def, settlement: null, pendingPromise: null }
+  function residencyAccepts(entry: Entry): boolean {
+    const { def } = entry
+    return shouldAcceptSettlementResidency({
+      isHome: def.isHome,
+      isEagerStartup: entry.eagerStartup === true,
+      dist: Math.hypot(def.x - latestPlayerX, def.z - latestPlayerZ),
+      distPlayerToHome: homeDef ? Math.hypot(homeDef.x - latestPlayerX, homeDef.z - latestPlayerZ) : 0,
+      playerKnown: playerPositionKnown,
+      loadRadius,
+      unloadRadius,
+    })
+  }
+
+  /**
+   * Transfers a freshly built settlement to the manager (settlements-023 D4).
+   * Ownership is assigned first, so a throwing handoff step or notification
+   * listener is logged but never orphans or deletes the accepted runtime.
+   * Shared by the home and streamed paths.
+   *
+   * @domain settlements
+   */
+  function acceptSettlement(entry: Entry, settlement: Settlement, opts: { isHome: boolean }): void {
+    const { def } = entry
+    entry.settlement = settlement
+    try {
+      reclaimDetachedHouseholdLivestock(def.id, settlement)
+      settlement.setDayNight(lastDayNight)
+      // Off-screen → detailed handoff (plan settlements-npcs-019) — a live
+      // `NpcAgent` now exists for any carrier this settlement just
+      // reconstructed; stop off-screen execution ownership before it
+      // resumes its own physical pickup/delivery flow. A no-op for a
+      // carrier with no order, or whose order has no execution metadata
+      // (never went off-screen, or already resolved off-screen to a
+      // terminal state — `findByCarrier` excludes those already).
+      const nowDays = currentNowDays()
+      for (const npc of settlement.npcs) {
+        // Detailed travel ownership is committed only now (settlements-023 D2).
+        npc.commitDetailedTravelOwnership(nowDays)
+        if (!opts.isHome && transportOrders) {
+          const order = transportOrders.findByCarrier(npc.id)
+          if (order?.execution) transportOrders.clearExecution(order.id)
+        }
+      }
+      if (opts.isHome) syncMidpoints()
+    } catch (err) {
+      console.error('[SettlementsManager] settlement handoff step failed', def.id, err)
+    }
+    try {
+      onSettlementAvailable?.({ id: def.id, x: def.x, z: def.z })
+    } catch (err) {
+      console.error('[SettlementsManager] onSettlementAvailable failed', def.id, err)
+    }
+  }
+
+  function ensureLoaded(def: SettlementDef, opts?: { eagerStartup?: boolean }): void {
+    if (disposed || entries.has(def.id)) return
+    const entry: Entry = { def, settlement: null, pendingPromise: null, eagerStartup: opts?.eagerStartup }
     entries.set(def.id, entry)
     syncMidpoints()
     // Authored starter-quest damage (plan quests-progression-073) — seeded
@@ -1171,40 +1258,42 @@ export async function createSettlementsManager(
     if (def.isHome) {
       seedHomeAuthoredRepairDamageIfNeeded(def)
     }
+    /** A pending entry holds its ID until its whole chain (including factory
+     *  rollback) settles, so a continuation only ever acts on its own entry. */
+    const isCurrent = (): boolean => !disposed && entries.get(def.id) === entry
+    const discardEntry = (): void => {
+      entries.delete(def.id)
+      syncMidpoints()
+    }
     entry.pendingPromise = waitForChunks(chunksNear(def.x, def.z, chunkSize))
-      .then(() => createSettlement(def, economyFor(def), settlementDeps))
-      .then((settlement) => {
-        const cur = entries.get(def.id)
-        if (!cur) {
-          // Player wandered back out of range while this was building.
+      .then(async () => {
+        if (!isCurrent()) return
+        if (!residencyAccepts(entry)) {
+          // Player left the unload policy while chunks were loading.
+          discardEntry()
+          return
+        }
+        const settlement = await createSettlement(def, economyFor(def), settlementDeps)
+        if (!isCurrent()) {
           settlement.dispose()
           return
         }
-        cur.settlement = settlement
-        reclaimDetachedHouseholdLivestock(def.id, settlement)
-        settlement.setDayNight(lastDayNight)
-        // Off-screen → detailed handoff (plan settlements-npcs-019) — a live
-        // `NpcAgent` now exists for any carrier this settlement just
-        // reconstructed; stop off-screen execution ownership before it
-        // resumes its own physical pickup/delivery flow. A no-op for a
-        // carrier with no order, or whose order has no execution metadata
-        // (never went off-screen, or already resolved off-screen to a
-        // terminal state — `findByCarrier` excludes those already).
-        if (transportOrders) {
-          for (const npc of settlement.npcs) {
-            const order = transportOrders.findByCarrier(npc.id)
-            if (order?.execution) transportOrders.clearExecution(order.id)
-          }
+        if (!residencyAccepts(entry)) {
+          // Speculative build: dispose only — no unload handoffs (not accepted).
+          settlement.dispose()
+          discardEntry()
+          return
         }
-        onSettlementAvailable?.({ id: def.id, x: def.x, z: def.z })
+        acceptSettlement(entry, settlement, { isHome: false })
       })
       .catch((err: unknown) => {
+        // Factory rejection (already rolled back) or pre-factory failure.
+        if (!isCurrent()) return
         console.error('[SettlementsManager] failed to build settlement', def.id, err)
-        entries.delete(def.id)
+        discardEntry()
       })
       .finally(() => {
-        const cur = entries.get(def.id)
-        if (cur) cur.pendingPromise = null
+        entry.pendingPromise = null
       })
   }
 
@@ -1212,7 +1301,7 @@ export async function createSettlementsManager(
   // range — just triggered immediately so the nearest village(s) are already
   // built (or well underway) long before the player could reach them on foot.
   for (const neighborDef of neighborsFor({ gx: 0, gz: 0 }, roadCtx).slice(0, EAGER_NEIGHBOR_COUNT)) {
-    ensureLoaded(neighborDef)
+    ensureLoaded(neighborDef, { eagerStartup: true })
   }
 
   /** Resolves the live position of an `in-transit` order's destination
@@ -1440,6 +1529,9 @@ export async function createSettlementsManager(
     update(dt, playerPos, playerYaw, timeOfDay, dayFactor, litFires, villages, dayLengthSec, nearbyAnimalThreats, dropLivestockProduct, nowDays, onAnimalVocalize, weather, nearbyPredators, playerObservation, nearbyWildCorpses, scareStimulus) {
       if (nowDays !== undefined) lastNowDays = nowDays
       lastDayLengthSec = dayLengthSec
+      latestPlayerX = playerPos.x
+      latestPlayerZ = playerPos.z
+      playerPositionKnown = true
       const agentCpu = getAgentCpuDiag()
       agentCpu.beginLivestockFrame()
       agentCpu.recordLivestockDetachedCount(detachedLivestock.length)

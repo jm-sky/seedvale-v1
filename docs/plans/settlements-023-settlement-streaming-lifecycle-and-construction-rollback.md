@@ -1,7 +1,7 @@
 # Plan: Settlement async streaming lifecycle and construction rollback
 
 **Created:** 2026-10-28
-**Status:** `planned` 📋
+**Status:** `verification needed` 🔍
 **Type:** bug
 **Priority:** high · **Effort:** XL
 **Depends on:** -
@@ -142,3 +142,7 @@ Pending handling is resolved as retain-until-settled (D1); the remaining require
 During implementation, add/adjust JSDoc for important public/architectural lifecycle functions as needed for preflight discovery; prefer `@domain settlements` on new stable ownership seams.
 
 **Plan status:** planned; independent review findings R1–R6 resolved and technical decisions D1–D5 recorded above. Implementation notes: [settlements-023 implementation notes](./implementation-notes/settlements-023-settlement-streaming-lifecycle-and-construction-rollback-implementation-notes.md).
+
+## Implementation status (2026-10-28)
+
+Implemented D1–D5. Technically verified: `npx tsc --noEmit` (only pre-existing `ui-vue/demos/hud` errors), `pnpm run lint:fix`, `pnpm run test` (all green). New tests: `settlementResidency.test.ts` (predicate/boundaries), `createSettlementRollback.test.ts` (settle-all batch, late sibling). **Not done / limitations:** no `SettlementsManager`/full `createSettlement` integration tests (deferred-promise manager fixture, injected post-attachment failure, fence late-completion, travel continuity across rejection) and no browser/manual check yet — Stage A/D integration coverage remains open.

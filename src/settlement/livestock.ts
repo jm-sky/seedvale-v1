@@ -696,6 +696,9 @@ export async function spawnLivestock(
   const saved = persistence?.getSaved(settlementId)
   const removed = persistence?.getRemoved(settlementId)
   const agents: AnimalAgent[] = []
+  // Partial-attach rollback (settlements-023): agents already added to the scene
+  // are released if a later step throws, before the caller ever sees the list.
+  try {
   const rolledEnsuredAnimals = {
     sheep: false,
   }
@@ -866,6 +869,10 @@ export async function spawnLivestock(
     }
   }
   return agents
+  } catch (err) {
+    disposeLivestock(agents)
+    throw err
+  }
 }
 
 /** Canonical persistent-livestock identity (plan settlements-npcs-048) — bare

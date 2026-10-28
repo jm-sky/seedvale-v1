@@ -118,10 +118,14 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/createSettlement.ts`
 
-- `createSettlement` — function — line 547
-- `CreateSettlementDeps` — type — line 333
-- `Settlement` — type — line 177
-- `settlementSpawnPoint` — function — line 321
+- `AcquiredSettlementResources` — type — line 555
+- `collectAgentBatch` — function — line 578
+  - domain: settlements
+- `createSettlement` — function — line 605
+  - domain: settlements
+- `CreateSettlementDeps` — type — line 335
+- `Settlement` — type — line 179
+- `settlementSpawnPoint` — function — line 323
 
 ## `settlement/decorProps.ts`
 
@@ -450,11 +454,11 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/livestock.ts`
 
-- `attachToDetached` — function — line 977
+- `attachToDetached` — function — line 984
 - `createLivestockRegistry` — function — line 345
-- `detachMerchantPackAnimal` — function — line 1067
+- `detachMerchantPackAnimal` — function — line 1074
   - domain: settlements-npcs
-- `disposeLivestock` — function — line 1136
+- `disposeLivestock` — function — line 1143
 - `fillShepherdFlockKinds` — function — line 49
 - `isPlayerOwnedLivestockRecord` — function — line 106
 - `LIVESTOCK_KINDS` — const — line 82
@@ -464,27 +468,27 @@ Generated from exported TypeScript symbols.
 - `LivestockRegistry` — type — line 187
 - `LivestockSaveRecord` — type — line 96
 - `livestockStrayCandidateFromAgent` — function — line 143
-- `originOfDetachedAnimal` — function — line 966
-- `PackAnimalCandidate` — type — line 1006
-- `PackAnimalJourneyHooks` — type — line 1012
-- `PersistentLivestockContext` — type — line 899
-- `persistentLivestockKey` — function — line 885
-- `PersistentLivestockRef` — type — line 877
-- `resolveLivePersistentAnimal` — function — line 934
-- `resolveLivePersistentAnimalByRef` — function — line 911
-- `resolveMerchantPackAnimalCandidate` — function — line 1033
+- `originOfDetachedAnimal` — function — line 973
+- `PackAnimalCandidate` — type — line 1013
+- `PackAnimalJourneyHooks` — type — line 1019
+- `PersistentLivestockContext` — type — line 906
+- `persistentLivestockKey` — function — line 892
+- `PersistentLivestockRef` — type — line 884
+- `resolveLivePersistentAnimal` — function — line 941
+- `resolveLivePersistentAnimalByRef` — function — line 918
+- `resolveMerchantPackAnimalCandidate` — function — line 1040
   - domain: settlements-npcs
-- `restoreDetachedMerchantPackAnimals` — function — line 1117
-- `restoreDetachedPlayerOwnedLivestock` — function — line 1093
-- `setOwnedAnimalControl` — function — line 1081
+- `restoreDetachedMerchantPackAnimals` — function — line 1124
+- `restoreDetachedPlayerOwnedLivestock` — function — line 1100
+- `setOwnedAnimalControl` — function — line 1088
 - `shouldSpawnDeterministicLivestockSlot` — function — line 115
   - domain: fauna
   - role: Household rolls and merchant-horse slots skip tombstones and player-owned records restored on the detached path (fauna-020 / fauna-030).
 - `spawnAnimalFromRecord` — function — line 236
 - `SpawnAnimalFromRecordDeps` — type — line 220
 - `spawnLivestock` — function — line 621
-- `tickSettlementLivestock` — function — line 1153
-- `transferAnimalOwnership` — function — line 984
+- `tickSettlementLivestock` — function — line 1160
+- `transferAnimalOwnership` — function — line 991
 
 ## `settlement/lodging.ts`
 
@@ -1160,12 +1164,12 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/settlementPalisade.ts`
 
-- `fencePlacementColliders` — function — line 382
+- `fencePlacementColliders` — function — line 388
   - domain: settlements
 - `PALISADE_GATE_HALF_ANGLE` — const — line 20
 - `PALISADE_WALL_HALF_DEPTH` — const — line 27
   - domain: settlements
-- `plantEntrancePalisade` — function — line 359
+- `plantEntrancePalisade` — function — line 361
   - domain: settlements
 - `resolveEntrancePalisadePlacements` — function — line 181
   - domain: settlements
@@ -1173,7 +1177,7 @@ Generated from exported TypeScript symbols.
   - domain: settlements
 - `SettlementEntranceTorchPlacement` — type — line 62
   - domain: settlements
-- `settlementPalisadeColliders` — function — line 401
+- `settlementPalisadeColliders` — function — line 407
   - domain: settlements
 - `SettlementPalisadePlacement` — type — line 54
   - domain: settlements
@@ -1247,13 +1251,15 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/SettlementsManager.ts`
 
-- `createSettlementsManager` — function — line 422
+- `createSettlementsManager` — function — line 451
   - domain: settlements
   - system: settlements-manager
   - role: Owns settlement generation, streaming and per-settlement economy/household/NPC-state registries.
   - owns: SettlementEconomy, Household
   - lifecycle: streaming
-- `SettlementsManager` — type — line 170
+- `SettlementsManager` — type — line 199
+- `shouldAcceptSettlementResidency` — function — line 174
+  - domain: settlements
 
 ## `settlement/settlementStructures.ts`
 

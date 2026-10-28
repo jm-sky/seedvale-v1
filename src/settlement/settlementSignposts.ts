@@ -121,6 +121,10 @@ export async function createSettlementSignposts(params: {
   const signposts: LabeledProp[] = []
   const landPlotSigns: LandPlotSignInstance[] = []
 
+  // Partial-build rollback (settlements-023): CSS2D label objects/DOM nodes are
+  // not removed when `group` is detached, so a throw (e.g. the dock template
+  // load) releases the labels created so far before the caller gets a handle.
+  try {
   // Name plaque by the well — reuses signpost label fade/dispose path.
   {
     const nameX = landmarks.well.x + 1.35
@@ -189,6 +193,11 @@ export async function createSettlementSignposts(params: {
     })
     group.add(prop)
     landPlotSigns.push({ ...inst, plotId: plot.plotId })
+  }
+  } catch (err) {
+    for (const sp of signposts) disposeLabeledProp(sp)
+    for (const sign of landPlotSigns) disposeLabeledProp(sign)
+    throw err
   }
 
   return {

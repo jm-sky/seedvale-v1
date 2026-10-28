@@ -1947,10 +1947,37 @@ export class NpcAgent {
         sampleHeight(reified.lastPosition.x, reified.lastPosition.z),
         reified.lastPosition.z,
       )
-      this.npcState.travel = this.npcState.accompanyCommitment || keepsNpcTravelAfterReify(reified)
-        ? reified
-        : null
+      // The authoritative `npcState.travel` write is deferred to
+      // `commitDetailedTravelOwnership`: a presentation that is discarded
+      // before manager acceptance must not consume off-screen execution.
     }
+  }
+
+  private travelOwnershipCommitted = false
+
+  /**
+   * Takes detailed ownership of this NPC's in-flight travel. Called once by the
+   * settlement manager when it accepts the materialized settlement; until then
+   * off-screen checkpoints keep advancing the untouched record. Re-reifies from
+   * the then-current authoritative travel at `nowDays` and repositions the mesh.
+   * Idempotent.
+   *
+   * @domain npc
+   */
+  commitDetailedTravelOwnership(nowDays: number): void {
+    if (this.travelOwnershipCommitted) return
+    this.travelOwnershipCommitted = true
+    const travel = this.npcState.travel
+    if (this.health.dead || !travel) return
+    const reified = reifyNpcTravel(travel, nowDays)
+    this.mesh.position.set(
+      reified.lastPosition.x,
+      this.sampleHeight(reified.lastPosition.x, reified.lastPosition.z),
+      reified.lastPosition.z,
+    )
+    this.npcState.travel = this.npcState.accompanyCommitment || keepsNpcTravelAfterReify(reified)
+      ? reified
+      : null
   }
 
   static async create(deps: NpcAgentDeps): Promise<NpcAgent> {

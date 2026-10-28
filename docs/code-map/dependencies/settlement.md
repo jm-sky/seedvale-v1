@@ -121,6 +121,7 @@ Generated from TypeScript imports.
 - `debug/npcDebugApi.test.ts`
 - `debug/villageInspector.test.ts`
 - `debug/villageInspector.ts`
+- `settlement/settlementResidency.test.ts`
 
 ## `settlement/VillageFire.test.ts`
 
@@ -432,12 +433,20 @@ Generated from TypeScript imports.
 - `items/cookingFireResolver.ts`
 - `player/playerCombat.ts`
 - `settlement/SettlementsManager.ts`
+- `settlement/createSettlementRollback.test.ts`
 - `settlement/lodgingResolver.ts`
 - `settlement/structureRepairCandidates.ts`
 - `ui-vue/npcDialogueOpen.test.ts`
 - `ui-vue/npcDialogueTrade.test.ts`
 - `ui-vue/npcDialogueVoice.test.ts`
 - `ui-vue/store.ts`
+
+## `settlement/createSettlementRollback.test.ts`
+
+**Imports**
+
+- `ai/NpcAgent.ts`
+- `settlement/createSettlement.ts`
 
 ## `settlement/decorProps.test.ts`
 
@@ -2515,6 +2524,12 @@ Generated from TypeScript imports.
 
 - `settlement/settlementProximity.test.ts`
 - `world/riverWaterQualityResolver.ts`
+
+## `settlement/settlementResidency.test.ts`
+
+**Imports**
+
+- `settlement/SettlementsManager.ts`
 
 ## `settlement/settlementSignposts.test.ts`
 

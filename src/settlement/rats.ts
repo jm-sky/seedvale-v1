@@ -299,9 +299,20 @@ export async function createSettlementRats(deps: SettlementRatsDeps): Promise<Se
     agents.push(agent)
   }
 
-  for (const record of saved?.values() ?? []) {
-    if (removed?.has(record.animalId)) continue
-    spawnOne(record.x, record.z, record.animalId, record)
+  // Partial-attach rollback (settlements-023): a throw while spawning saved
+  // rats releases the ones already added before the caller sees a handle.
+  try {
+    for (const record of saved?.values() ?? []) {
+      if (removed?.has(record.animalId)) continue
+      spawnOne(record.x, record.z, record.animalId, record)
+    }
+  } catch (err) {
+    for (const agent of agents) {
+      agent.dispose()
+      agent.mesh.removeFromParent()
+      disposeObject3D(agent.mesh)
+    }
+    throw err
   }
 
   function spawnNew(): void {

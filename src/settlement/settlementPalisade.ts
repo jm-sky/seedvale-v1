@@ -354,15 +354,21 @@ export function resolveEntranceTorchPlacements(
  * Presentation only — `placements` must be `resolveEntrancePalisadePlacements`'s
  * exact result, the same array collision projects from.
  * Uses `wall.glb` (Quaternius Fantasy RTS) with procedural stake fallback.
+ * `isAlive` (optional) is evaluated after the template await; a false result
+ * skips allocation/attachment and resolves `null`.
  * @domain settlements
  */
 export async function plantEntrancePalisade(
   group: THREE.Group,
   placements: readonly SettlementPalisadePlacement[],
   instanceName = 'settlement-palisade',
+  isAlive?: () => boolean,
 ): Promise<THREE.Object3D | null> {
   if (placements.length === 0) return null
   const wall = await loadPropOrFallback(WALL_URL, WALL_TARGET_HEIGHT, createPalisadeStake)
+  // Late-continuation guard: the owning settlement may have been disposed
+  // while the template was loading (settlements-023 D3).
+  if (isAlive && !isAlive()) return null
   const instanced = buildInstancedProps([wall], placements, instanceName)
   if (!instanced) return null
   group.add(instanced.group)

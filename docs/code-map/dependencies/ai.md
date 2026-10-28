@@ -306,6 +306,7 @@ Generated from TypeScript imports.
 - `player/medicalTreatment.test.ts`
 - `player/medicalTreatment.ts`
 - `settlement/createSettlement.ts`
+- `settlement/createSettlementRollback.test.ts`
 - `ui-vue/lib/drawMinimap.ts`
 - `ui-vue/npcDialogueOpen.test.ts`
 - `ui-vue/npcDialogueTrade.test.ts`

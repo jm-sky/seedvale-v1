@@ -1,4 +1,6 @@
 import {
+  type Group,
+  type Object3D,
   type Scene,
   Vector3,
 } from 'three'
@@ -544,10 +546,93 @@ function paddockWaterHousehold(
   return householdByHomeId.values().next().value
 }
 
+/**
+ * Live resources `createSettlement` has acquired so far. Filled in as each
+ * construction phase attaches something, so a rejection after partial
+ * attachment can release exactly what exists. `release` is idempotent and is
+ * also what the returned `Settlement.dispose()` runs.
+ */
+export type AcquiredSettlementResources = {
+  /** False once released; late continuations (authored fence restore) check it. */
+  alive: boolean
+  released: boolean
+  group: Group | null
+  lightsRegistered: boolean
+  collidersRegistered: boolean
+  treeIds: string[]
+  livestock: Awaited<ReturnType<typeof spawnLivestock>>
+  rats: Awaited<ReturnType<typeof createSettlementRats>> | null
+  signposts: Awaited<ReturnType<typeof createSettlementSignposts>> | null
+  agents: NpcAgent[]
+  release: () => void
+}
+
+/**
+ * Waits for every agent construction to settle (never fail-fast), records the
+ * fulfilled agents in input order on `owned.agents`, then rethrows the first
+ * rejection. A sibling that resolves after the first failure is therefore
+ * already collected for rollback instead of attaching an orphan.
+ *
+ * @domain settlements
+ */
+export async function collectAgentBatch(
+  owned: AcquiredSettlementResources,
+  tasks: Promise<NpcAgent | null>[],
+): Promise<void> {
+  const results = await Promise.allSettled(tasks)
+  let failed = false
+  let reason: unknown
+  for (const result of results) {
+    if (result.status === 'fulfilled') {
+      if (result.value) owned.agents.push(result.value)
+    } else if (!failed) {
+      failed = true
+      reason = result.reason
+    }
+  }
+  if (failed) throw reason
+}
+
+/**
+ * Builds a streamed settlement runtime. Owns cleanup of everything it
+ * attaches (props, colliders, forest presence, animals, signposts, agent
+ * meshes) when construction rejects, so the caller only has to dispose
+ * *successfully returned* settlements. Authoritative registries (NPC state,
+ * households, economy) are never rolled back.
+ *
+ * @domain settlements
+ */
 export async function createSettlement(
   def: SettlementDef,
   economy: SettlementEconomy,
   deps: CreateSettlementDeps,
+): Promise<Settlement> {
+  const owned: AcquiredSettlementResources = {
+    alive: true,
+    released: false,
+    group: null,
+    lightsRegistered: false,
+    collidersRegistered: false,
+    treeIds: [],
+    livestock: [],
+    rats: null,
+    signposts: null,
+    agents: [],
+    release: () => {},
+  }
+  try {
+    return await buildSettlement(def, economy, deps, owned)
+  } catch (err) {
+    owned.release()
+    throw err
+  }
+}
+
+async function buildSettlement(
+  def: SettlementDef,
+  economy: SettlementEconomy,
+  deps: CreateSettlementDeps,
+  owned: AcquiredSettlementResources,
 ): Promise<Settlement> {
   const {
     scene,
@@ -616,6 +701,26 @@ export async function createSettlement(
     : sampleLocalWater
 
   const { bootMark, bootMarkEnd } = useBootMark('createSettlement')
+
+  owned.release = () => {
+    if (owned.released) return
+    owned.released = true
+    owned.alive = false
+    if (owned.lightsRegistered && owned.group) pointLightBudget.unregisterSubtree(owned.group)
+    if (owned.collidersRegistered) clearColliders(def.id)
+    if (forest) for (const id of owned.treeIds) forest.lifecycle.unregisterPresence(id)
+    for (const agent of owned.agents) {
+      agent.dispose()
+      agent.mesh.removeFromParent()
+    }
+    disposeLivestock(owned.livestock)
+    owned.rats?.dispose()
+    owned.signposts?.dispose()
+    if (owned.group) {
+      disposeSettlementGroup(owned.group)
+      owned.group.removeFromParent()
+    }
+  }
 
   // Closes over this settlement's own `def.id` so `NpcAgent` never resolves
   // or imports a settlement id itself (plan quests-progression-001) —
@@ -726,6 +831,7 @@ export async function createSettlement(
     paddockFencePlacements,
     authoredRepairVisuals,
   } = propsResult
+  owned.group = group
   scene.add(group)
   /**
    * Bounded per-NPC authored repair targets (plan quests-progression-073) —
@@ -831,6 +937,7 @@ export async function createSettlement(
   // own campfire (all attached under `group` by `buildSettlementProps`) in a
   // single call, mirrored by `unregisterSubtree(group)` in `dispose()` below.
   pointLightBudget.registerSubtree(group)
+  owned.lightsRegistered = true
 
   const registerSettlementColliders = (): void => {
     const wellColliders = (landmarks.wells && landmarks.wells.length > 0)
@@ -850,6 +957,7 @@ export async function createSettlement(
       ...fencePlacementColliders(paddockFencePlacements),
     ])
   }
+  owned.collidersRegistered = true
   registerSettlementColliders()
   const houseDoors = createHouseDoorController(houseAssemblies)
 
@@ -865,6 +973,7 @@ export async function createSettlement(
         sizeClass: tree.sizeClass,
         sizeJitter: tree.sizeJitter,
       }
+      owned.treeIds.push(tree.id)
       forest.lifecycle.registerPresence(presence)
       const resolved = forest.lifecycle.resolve(
         presence,
@@ -982,7 +1091,7 @@ export async function createSettlement(
   bootMark('spawnLivestock')
   let livestock: Awaited<ReturnType<typeof spawnLivestock>>
   try {
-    livestock = await spawnLivestock(
+    livestock = owned.livestock = await spawnLivestock(
       scene,
       surfaceSampleHeight,
       waterLevel,
@@ -1035,7 +1144,7 @@ export async function createSettlement(
   // Reuses the same household/home-position pairing as
   // `householdExchangeCandidates` above for both spawn anchors and the
   // nearest-household food-drain target.
-  const rats = await createSettlementRats({
+  const rats = owned.rats = await createSettlementRats({
     scene,
     sampleHeight: surfaceSampleHeight,
     waterLevel,
@@ -1059,7 +1168,7 @@ export async function createSettlement(
   bootMark('signposts')
   let signposts: Awaited<ReturnType<typeof createSettlementSignposts>>
   try {
-    signposts = await createSettlementSignposts({
+    signposts = owned.signposts = await createSettlementSignposts({
       def,
       group,
       landmarks,
@@ -1233,7 +1342,7 @@ export async function createSettlement(
   }
 
   bootMark('npcCreation')
-  let agents: NpcAgent[]
+  const agents = owned.agents
   /** Most recent `update()` call's `nowDays` — read by a chicken's
    *  `onCollected` closure (plan fauna-002) and by shepherd flock wool
    *  readiness (plan fauna-004). Mutable-outer-variable-in-closure. */
@@ -1378,7 +1487,7 @@ export async function createSettlement(
   }
 
   try {
-  agents = (await Promise.all(
+  await collectAgentBatch(owned,
     flatMembers.map(async ({ home, household, member, familyIndex, familyMembers }, i) => {
       const npcId = settlementNpcId(def.id, i)
       const stallIndex = merchantStallByNpc.get(npcId) ?? 0
@@ -1474,7 +1583,7 @@ export async function createSettlement(
         },
       })
     }),
-  )).filter((agent): agent is NpcAgent => agent != null)
+  )
   } finally {
     bootMarkEnd('npcCreation')
   }
@@ -1490,7 +1599,7 @@ export async function createSettlement(
   if (visitorSpawns.length > 0) {
     const anchorPosition = workplaceFor(def.id, 'trader', landmarks, 0, 0, 0)?.position
       ?? new Vector3(site.x, site.y, site.z)
-    const visitorAgents = (await Promise.all(visitorSpawns.map((visitorSpawn) => materializeSettlementResident({
+    await collectAgentBatch(owned, visitorSpawns.map((visitorSpawn) => materializeSettlementResident({
       npcId: visitorSpawn.npcId,
       member: visitorSpawn.member,
       familyMembers: visitorSpawn.familyMembers,
@@ -1508,8 +1617,7 @@ export async function createSettlement(
       // second gate here.
       applyPresentationGate: false,
       extraDeps: {},
-    })))).filter((agent): agent is NpcAgent => agent != null)
-    agents.push(...visitorAgents)
+    })))
   }
 
   const spawn = settlementSpawnPoint(def, sampleHeight)
@@ -1526,6 +1634,13 @@ export async function createSettlement(
       shouldAutoLightFire: () => nightAutoLightPolicy.shouldAutoLightFire?.() ?? true,
     },
   })
+
+  /** Drops a fence mesh that finished loading after this settlement was disposed. */
+  function discardLateFence(mesh: Object3D | null): void {
+    if (!mesh) return
+    mesh.removeFromParent()
+    disposeObject3D(mesh)
+  }
 
   let woodshedPlaced = false
 
@@ -1599,11 +1714,19 @@ export async function createSettlement(
       if (!householdDamaged && !visuals.householdFence && visuals.householdNeedsRestorePlant
         && visuals.householdFencePlacements.length > 0) {
         visuals.householdNeedsRestorePlant = false
-        void plantEntrancePalisade(group, visuals.householdFencePlacements, 'settlement-household-fence')
-          .then((mesh) => {
-            visuals.householdFence = mesh
-            registerSettlementColliders()
-          })
+        void plantEntrancePalisade(
+          group,
+          visuals.householdFencePlacements,
+          'settlement-household-fence',
+          () => owned.alive,
+        ).then((mesh) => {
+          if (!owned.alive) {
+            discardLateFence(mesh)
+            return
+          }
+          visuals.householdFence = mesh
+          registerSettlementColliders()
+        })
       }
       const communalDamaged = isStructureRepairProblem(
         structureRepairPolicy('communalFence')!,
@@ -1617,7 +1740,12 @@ export async function createSettlement(
           group,
           visuals.communalFencePlacements,
           visuals.communalFenceInstanceName,
+          () => owned.alive,
         ).then((mesh) => {
+          if (!owned.alive) {
+            discardLateFence(mesh)
+            return
+          }
           visuals.communalFence = mesh
           registerSettlementColliders()
         })
@@ -1737,20 +1865,7 @@ export async function createSettlement(
       fire?.update(dt)
     },
     dispose() {
-      pointLightBudget.unregisterSubtree(group)
-      clearColliders(def.id)
-      if (forest) {
-        for (const tree of landmarks.trees) forest.lifecycle.unregisterPresence(tree.id)
-      }
-      for (const agent of agents) {
-        agent.dispose()
-        agent.mesh.removeFromParent()
-      }
-      disposeLivestock(livestock)
-      rats.dispose()
-      signposts.dispose()
-      disposeSettlementGroup(group)
-      group.removeFromParent()
+      owned.release()
     },
   }
 }

@@ -211,67 +211,63 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   🔴 `M` · **Score:**  35  
    → **unlocks:** 0/0
 
-31. `settlements-023` — **Settlement async streaming lifecycle and construction rollback**  
-  🔴 `XL` · **Score:**  34  
-   → **unlocks:** 1/1
-
-32. `items-player-051` — **Cave-aware dropped-item continuity**  
+31. `items-player-051` — **Cave-aware dropped-item continuity**  
   🔴 `M` · **Score:**  33  
    → **unlocks:** 0/0
 
-33. `npc-061` — **Time-skip and reification surface placement validity**  
+32. `npc-061` — **Time-skip and reification surface placement validity**  
   🔴 `M` · **Score:**  33  
    → **unlocks:** 0/0
 
-34. `world-terrain-042` — **Medicinal herb meadow patches**  
+33. `world-terrain-042` — **Medicinal herb meadow patches**  
   🟡 `M` · **Score:**  33  
    → **unlocks:** 1/1
 
-35. `npc-054` — **NPC desired gifts, gift acceptance and relationship rewards**  
+34. `npc-054` — **NPC desired gifts, gift acceptance and relationship rewards**  
   🔴 `L` · **Score:**  30  
    → **unlocks:** 0/0
 
-36. `settlements-022` — **Founded settlement live runtime and streaming**  
+35. `settlements-022` — **Founded settlement live runtime and streaming**  
   🔴 `L` · **Score:**  28  
    → **unlocks:** 0/0
 
-37. `items-player-014` — **Rope-pullable resource transport**  
+36. `items-player-014` — **Rope-pullable resource transport**  
   🟡 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-38. `world-terrain-039` — **N8AO / post-process cost budget**  
+37. `world-terrain-039` — **N8AO / post-process cost budget**  
   🔴 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-39. `ui-input-025` — **Road travel autopilot for player and mounts**  
+38. `ui-input-025` — **Road travel autopilot for player and mounts**  
   🔴 `L` · **Score:**  26  
    → **unlocks:** 0/0
 
-40. `items-player-044` — **Shoulder and forearm equipment slots**  
+39. `items-player-044` — **Shoulder and forearm equipment slots**  
   🟡 `M` · **Score:**  25  
    → **unlocks:** 0/0
 
-41. `world-036` — **Lightweight unloaded shipwreck and tower lookup**  
+40. `world-036` — **Lightweight unloaded shipwreck and tower lookup**  
   🟡 `M` · **Score:**  25  
    → **unlocks:** 0/0
 
-42. `ui-input-045` — **Equipment panel body-ordered layout (V3 items--006 adapted)**  
+41. `ui-input-045` — **Equipment panel body-ordered layout (V3 items--006 adapted)**  
   🟡 `S` · **Score:**  23  
    → **unlocks:** 0/0
 
-43. `tools-019` — **Debug tooling lifecycle ownership**  
+42. `tools-019` — **Debug tooling lifecycle ownership**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-44. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
+43. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
   🟡 `L` · **Score:**  18  
    → **unlocks:** 0/0
 
-45. `items-player-052` — **Settlement tool ownership and social acquisition**  
+44. `items-player-052` — **Settlement tool ownership and social acquisition**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-46. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
+45. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
@@ -335,9 +331,6 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
 - [`quests-progression-074-small-quest-offer-scope-and-prioritization.md`](quests-progression-074-small-quest-offer-scope-and-prioritization.md)  
   is blocked by:
   - [`quests-progression-069-quest-offer-pacing-and-conservative-settlement-gating.md`](quests-progression-069-quest-offer-pacing-and-conservative-settlement-gating.md)
-- [`settlements-022-founded-settlement-live-runtime-and-streaming.md`](settlements-022-founded-settlement-live-runtime-and-streaming.md)  
-  is blocked by:
-  - [`settlements-023-settlement-streaming-lifecycle-and-construction-rollback.md`](settlements-023-settlement-streaming-lifecycle-and-construction-rollback.md)
 - [`settlements-npcs-051-travelling-merchant-road-party-travel-and-threat-cooperation.md`](settlements-npcs-051-travelling-merchant-road-party-travel-and-threat-cooperation.md)  
   is blocked by:
   - [`world-035-regional-road-travel-itinerary-and-adaptive-traveller-execution.md`](world-035-regional-road-travel-itinerary-and-adaptive-traveller-execution.md)
