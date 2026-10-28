@@ -34,6 +34,8 @@ Freeze exit requires the approved A/B/C scope **completed or explicitly closed**
 
 **Still unapproved:** D2 names; D5/D6 body-hit/armor balance; D7 guard equipment; D8 reflections; D10 actor far detail; D11 outfit material/merge; D12 rescue-dog plan split; D13 small settlement details in reflections; D14 tree wind. Additional area-specific decisions remain open. A recommendation marked “Yes” is not approval.
 
+**Visual direction (approved by author, 2026-10-28):** [VISION.md — Stylized Realism](../../VISION.md#visual-direction--stylized-realism) is the authoritative product goal; [GRAPHICS.md — G19](../../architecture/GRAPHICS.md#standing-decisions) records graphics implementation constraints. This clarifies the existing 50–60 FPS target (45–60 acceptable), separate frametime stability criterion, high visual quality without weakening simulation, and realistic textures as a potential low-poly improvement. Focus keywords: vegetation, lighting effects, fog, atmosphere, fire, water, wind. This direction does **not** approve new runtime work or supersede D4 Performance-First.
+
 ## 2. Primary goals and preservation boundaries
 
 **Primary goals:** smoother, more convenient play and improved atmosphere. D4 now gives A/B/C rendering performance the first implementation phase; unrelated performance-affecting Revival integration follows its completion.
