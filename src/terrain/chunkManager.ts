@@ -1356,6 +1356,15 @@ export function createChunkManager(
     return { minX: x - half, maxX: x + half, minZ: z - half, maxZ: z + half }
   }
 
+  /** Small exact-coordinate LRU for `riverShoreQuery` (each miss scans every
+   *  loaded chunk's chains). Cleared whenever the set of retained river chains
+   *  changes (chunk river retain / chunk removal), so it never outlives its inputs. */
+  const RIVER_SHORE_MEMO_CAP = 128
+  const riverShoreMemo = new Map<string, RiverShoreCandidate | null>()
+  function invalidateRiverShoreMemo(): void {
+    riverShoreMemo.clear()
+  }
+
   /** Retains this chunk's overlapping river tiles and resolves their chains —
    *  called once from `ensureLoaded`, before the tile is even requested, so
    *  `riverChannelSegmentsNear` can feed carving segments into terrain
@@ -1367,6 +1376,7 @@ export function createChunkManager(
       const rect = chunkRectOf(record.coord)
       record.riverTiles = overlappingRiverTiles(rect)
       record.riverChains = record.riverTiles.flatMap((tile) => riverTileCache.retain(tile, fallbackParams))
+      invalidateRiverShoreMemo()
       return record.riverChains
     })
   }
@@ -2496,7 +2506,10 @@ export function createChunkManager(
         }
         // Identity-checked: a cancelled generation must never delete the
         // replacement record a re-`ensureLoaded()` already put under this key.
-        if (chunks.get(key) === record) chunks.delete(key)
+        if (chunks.get(key) === record) {
+          chunks.delete(key)
+          invalidateRiverShoreMemo()
+        }
       })
       .finally(() => {
         if (chunks.get(key) === record) record.pendingPromise = undefined
@@ -2602,6 +2615,7 @@ export function createChunkManager(
       record.environment.removeFromParent()
     }
     chunks.delete(record.key)
+    invalidateRiverShoreMemo()
     getMonitor().recordHitch('STREAMING', performance.now() - unloadT0, 'chunk unload')
   }
 
@@ -2969,6 +2983,15 @@ export function createChunkManager(
       return best
     },
     riverShoreQuery(worldX, worldZ) {
+      // The player's shoreline probe runs every frame at an unchanged position
+      // while standing still; the answer only depends on the loaded chains.
+      const memoKey = `${worldX},${worldZ}`
+      const memoed = riverShoreMemo.get(memoKey)
+      if (memoed !== undefined) {
+        riverShoreMemo.delete(memoKey)
+        riverShoreMemo.set(memoKey, memoed) // refresh recency
+        return memoed
+      }
       let best: RiverShoreCandidate | null = null
       for (const rec of chunks.values()) {
         if (!rec.riverChains || rec.riverChains.length === 0) continue
@@ -2977,6 +3000,10 @@ export function createChunkManager(
           best = candidate
         }
       }
+      if (riverShoreMemo.size >= RIVER_SHORE_MEMO_CAP) {
+        riverShoreMemo.delete(riverShoreMemo.keys().next().value!)
+      }
+      riverShoreMemo.set(memoKey, best)
       return best
     },
     sampleLocalWater(worldX, worldZ) {
