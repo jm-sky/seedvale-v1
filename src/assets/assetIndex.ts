@@ -49,8 +49,9 @@ import {
   FIRE_FX_URL,
   GRAVE_SPECS,
   LANTERN_FLOOR_MAX,
-  LANTERN_URL,
+  LANTERN_STANDING_URL,
   LANTERN_WALL_MAX,
+  LANTERN_WALL_URL,
   REED_SPECS,
   RESOURCE_GOLD_SPECS,
   RESOURCE_ROCK_SPECS,
@@ -70,6 +71,8 @@ import { anchorsForAsset } from './assetAnchorData'
 export type AssetPrepare =
   | { mode: 'height', value: number }
   | { mode: 'fitMax', value: number }
+  /** Fit longest axis but keep the authored origin (see `prepareAuthoredScaleMax`). */
+  | { mode: 'scaleMax', value: number }
   | { mode: 'none' }
 
 export type AssetIndexGroup =
@@ -683,8 +686,8 @@ export function buildAssetIndex(): AssetIndexEntry[] {
   const settlementProps: Array<{ id: string, url: string, label: string, prepare: AssetPrepare }> = [
     { id: 'settlement:crops', url: CROPS_URL, label: 'Garden crops', prepare: { mode: 'fitMax', value: CROPS_FIT_MAX } },
     { id: 'settlement:farm', url: FARM_URL, label: 'Wheat field', prepare: { mode: 'height', value: FARM_HEIGHT } },
-    { id: 'settlement:lantern', url: LANTERN_URL, label: 'Lantern', prepare: { mode: 'fitMax', value: LANTERN_FLOOR_MAX } },
-    { id: 'settlement:lantern_wall', url: LANTERN_URL, label: 'Lantern (wall)', prepare: { mode: 'fitMax', value: LANTERN_WALL_MAX } },
+    { id: 'settlement:lantern', url: LANTERN_STANDING_URL, label: 'Lantern (standing)', prepare: { mode: 'scaleMax', value: LANTERN_FLOOR_MAX } },
+    { id: 'settlement:lantern_wall', url: LANTERN_WALL_URL, label: 'Lantern (wall)', prepare: { mode: 'scaleMax', value: LANTERN_WALL_MAX } },
     { id: 'settlement:torch', url: VILLAGE_TORCH_URL, label: 'Village torch', prepare: { mode: 'height', value: VILLAGE_TORCH_HEIGHT } },
     { id: 'settlement:wall', url: WALL_URL, label: 'Wall segment (RTS palisade)', prepare: { mode: 'height', value: 1.85 } },
     { id: 'settlement:wagon', url: WAGON_URL, label: 'Wagon (Kupiec)', prepare: { mode: 'fitMax', value: WAGON_FIT_MAX } },

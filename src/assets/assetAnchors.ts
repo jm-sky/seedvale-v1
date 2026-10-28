@@ -4,6 +4,8 @@ export type AnchorSpace = 'assetLocal' | 'node'
 export type AssetPrepare =
   | { mode: 'height', value: number }
   | { mode: 'fitMax', value: number }
+  /** Fit longest axis but keep the authored origin (see `prepareAuthoredScaleMax`). */
+  | { mode: 'scaleMax', value: number }
   | { mode: 'none' }
 
 export type AssetAnchorDef = {

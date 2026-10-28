@@ -8,7 +8,7 @@ import type { ClearingLayout } from './villageClearing'
 import type { VillageLandmarkPlan, VillagePlan, VillagePlaza } from './villagePlan'
 import { buildConstructionCatalog } from '../assets/constructionCatalog'
 import { pickHouseDefinition } from '../assets/houseDefinitionExample'
-import { disposeObject3D, loadGltf, prepareProp, preparePropFitMax } from '../assets/loadGltf'
+import { disposeObject3D, loadGltf, prepareAuthoredScaleMax, prepareProp, preparePropFitMax } from '../assets/loadGltf'
 import { DEBUG_HOUSE_LAMP_POSITION, isDebugMode } from '../debug/debugMode'
 import { distanceToSegment } from '../math/segment'
 import { buildInstancedProps, type PropPlacement } from '../render/instancedProps'
@@ -66,8 +66,9 @@ import {
   FARM_HEIGHT,
   FARM_URL,
   LANTERN_FLOOR_MAX,
-  LANTERN_URL,
+  LANTERN_STANDING_URL,
   LANTERN_WALL_MAX,
+  LANTERN_WALL_URL,
   TABLE_LAMP_FIT_MAX,
   TABLE_LAMP_URL,
   TREE_SPECS,
@@ -466,8 +467,9 @@ export {
   FIRE_FX_URL,
   GRAVE_SPECS,
   LANTERN_FLOOR_MAX,
-  LANTERN_URL,
+  LANTERN_STANDING_URL,
   LANTERN_WALL_MAX,
+  LANTERN_WALL_URL,
   LILY_SPECS,
   REED_SPECS,
   RESOURCE_GOLD_SPECS,
@@ -1279,12 +1281,17 @@ export async function buildSettlementProps(
 
   let lanternFloor: THREE.Object3D | null = null
   let lanternWall: THREE.Object3D | null = null
+  // Independent loads: one failing GLB only drops that variant to the
+  // procedural lamp. Authored origin is the mount — scale only, no recentring.
   try {
-    const lantern = await loadGltf(LANTERN_URL)
-    lanternFloor = preparePropFitMax(lantern.clone(true), LANTERN_FLOOR_MAX)
-    lanternWall = preparePropFitMax(lantern.clone(true), LANTERN_WALL_MAX)
+    lanternWall = prepareAuthoredScaleMax(await loadGltf(LANTERN_WALL_URL), LANTERN_WALL_MAX)
   } catch (err) {
-    console.warn('[settlement] lantern.glb unavailable — procedural house lamps', err)
+    console.warn('[settlement] lantern_wall.glb unavailable — procedural wall lamps', err)
+  }
+  try {
+    lanternFloor = prepareAuthoredScaleMax(await loadGltf(LANTERN_STANDING_URL), LANTERN_FLOOR_MAX)
+  } catch (err) {
+    console.warn('[settlement] lantern_standing.glb unavailable — procedural standing lamps', err)
   }
 
   // Plan 169 interior table lamp — same load/prepare/fallback pattern as the
@@ -1499,8 +1506,8 @@ export async function buildSettlementProps(
       lanternTpl,
       lampMount.yaw,
     )
-    // World-size compensation; see `createHouseLight` WIP notes (unfinished —
-    // wall lantern still too small). Scale children, not the group.
+    // World-size compensation (see `createHouseLight`). Scale children, not
+    // the group: the pivot (and the PointLight inside it) shrinks with the hut.
     const invHouseScale = 1 / Math.max(Math.abs(hut.scale.x), 1e-6)
     for (const child of houseLight.object.children) {
       child.scale.multiplyScalar(invHouseScale)

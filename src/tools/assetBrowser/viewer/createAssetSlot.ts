@@ -17,6 +17,7 @@ import {
   invalidateGltf,
   loadGltf,
   loadGltfAnimated,
+  prepareAuthoredScaleMax,
   prepareProp,
   preparePropFitMax,
 } from '../../../assets/loadGltf'
@@ -75,6 +76,7 @@ const _center = new Vector3()
 function applyPrepare(object: Object3D, prepare: AssetPrepare): void {
   if (prepare.mode === 'height') prepareProp(object, prepare.value)
   else if (prepare.mode === 'fitMax') preparePropFitMax(object, prepare.value)
+  else if (prepare.mode === 'scaleMax') prepareAuthoredScaleMax(object, prepare.value)
   // mode 'none' — leave authored meters
 }
 

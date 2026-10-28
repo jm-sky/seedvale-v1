@@ -2,7 +2,7 @@
 
 **Created:** 2026-10-28  
 **Created by:** Claude Opus 5.5 (Blender 5.2 + Blender MCP)  
-**Status:** assets prepared, **not wired** — runtime integration is a separate approved step  
+**Status:** assets prepared and **wired** (see Integration, below); in-game verification pending  
 **Related:** [Track B next optimization](./2026-10-28--settlement-track-b-next-optimization.md) (lantern 9 → 3 primitive candidate)
 
 ## Result
@@ -104,3 +104,21 @@ New sheets show side (support construction), front (looking at the wall), three-
 - [ ] Day: colours match the old lantern. Night: the PointLight glow sits plausibly at the glass.
 - [ ] Draw-call census: exterior lamps 9 → 3 submissions per lamp.
 - [ ] Asset Browser `settlement:lantern*` entries render both variants.
+
+## Integration (2026-10-28, Claude Sonnet 5.5)
+
+No `settlements-019` plan exists in `docs/plans/`; notes live here.
+
+**Mappings.** `LANTERN_WALL_URL` / `LANTERN_STANDING_URL` (`propSpecs.ts`). `lampStyle === 'wall'` → wall GLB; any other style (`floorCenter`) → standing GLB. The two templates load in separate `try` blocks in `props.ts`, so one failing GLB only sends that style to the procedural lamp; the old `lantern.glb` is never a fallback. `LANTERN_URL` stays exported only as the cave-test guard. Asset Browser: `settlement:lantern` → standing, `settlement:lantern_wall` → wall, both with the new prepare mode `scaleMax`.
+
+**Fit / pivot.** New `prepareAuthoredScaleMax` (`loadGltf.ts`) only scales the longest axis; it does not recentre or ground. The pivot sits at the mount and is yawed so glTF +Z points outward, so the wall plate back is on the wall surface (the old 0.18 × size stick-out applies only to the procedural box now). Standing foot sits at the mount height, as before. House-scale compensation is unchanged (props.ts scales each lamp child by 1/hutScale; the PointLight is inside the pivot, so it follows).
+- `LANTERN_WALL_MAX` 0.45 → **0.6** (longest axis = 0.73 m height → scale ≈ 0.82: body ≈ 0.29 m tall, arm ≈ 0.44 m out). Rationale: previous 0.45 gave ≈ 0.22 m body once the post was gone; 0.6 reads as a normal wall fixture on ~3 m walls. **Initial value, not verified in-game.**
+- `LANTERN_FLOOR_MAX` 0.28 unchanged (longest axis is still the 1.8 m post).
+
+**PointLight.** Exterior light is parented to the pivot at the centre of the `*_Light` (glass) mesh bounds (`lanternGlassCenter`), instead of at the mount. Still one exterior + one interior light, same intensities/distances/visibility toggling.
+
+**Tests.** `houseLighting.lantern.test.ts` (real GLBs, `createHouseLight`, rotated/scaled hut mirror of `props.ts`), `caveAdventureProps.test.ts` guard extended, plus existing asset/settlement/perf/tools/app suites.
+
+**Visual verification: not done in-game.** Remaining checklist above still applies (MegaKit + catalog house, rotated/scaled, dusk/night, glass vs light, water reflection, stream out/in, fallback).
+
+**Limitations.** Floor-centre lamps keep the foot at the mount height, same as before. The retuned wall size is a guess. The exterior wall lamp mount on thick MegaKit walls follows the raycast hit surface; no per-house tuning.

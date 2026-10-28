@@ -180,13 +180,23 @@ export const TREE_STUMP_URL = '/models/nature/tree_stump.glb'
 export const TREE_STUMP_HEIGHT = 0.5
 
 export const WALL_URL = '/models/settlement/wall.glb'
+/** Legacy single-GLB lantern (9 primitives). No longer loaded by the settlement
+ *  — kept so cave presentation tests can assert it stays out of caves. */
 export const LANTERN_URL = '/models/settlement/lantern.glb'
+/** Optimized exterior lanterns (3 primitives each). Authored origin is the
+ *  mount: wall = back of the wall plate at plate mid-height, arm +Z;
+ *  standing = ground centre of the post foot, arm +Z. Fit with
+ *  `prepareAuthoredScaleMax` (scale only, never recentre). */
+export const LANTERN_WALL_URL = '/models/settlement/lantern_wall.glb'
+export const LANTERN_STANDING_URL = '/models/settlement/lantern_standing.glb'
 export const VILLAGE_TORCH_URL = '/models/settlement/torch.glb'
 export const FIRE_FX_URL = '/models/fx/fire.glb'
 export const LANTERN_FLOOR_MAX = 0.28
-/** Longest-axis fit for a wall lantern (world metres). WIP: 0.45 still reads
- *  small in-game — see `createHouseLight` notes in `houseLighting.ts`. */
-export const LANTERN_WALL_MAX = 0.45
+/** Longest-axis (height, 0.73 m authored) fit for the wall lantern, world
+ *  metres. 0.6 → scale ≈ 0.82: body ≈ 0.29 m tall, arm ≈ 0.44 m out of the
+ *  wall — a plausible wall fixture on ~3 m house walls. Initial value, tune
+ *  in-game (not browser-verified). */
+export const LANTERN_WALL_MAX = 0.6
 export const VILLAGE_TORCH_HEIGHT = 1.55
 
 /** Plan 169 house interior table lamp (Quaternius Furniture Pack, converted

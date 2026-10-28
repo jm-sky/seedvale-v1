@@ -55,13 +55,16 @@ function lampMountPose(
   mountHeight: number,
   style: HouseLampStyle,
   explicitYaw?: number,
+  /** GLB lanterns keep their authored origin (wall plate back at the mount),
+   *  so they need no stick-out; only the centred procedural box does. */
+  hasGlb = false,
 ): LampMountPose {
   const visualSize = lampVisualSize(style)
   const outwardLen = Math.hypot(mountX, mountZ) || 1
   const nx = mountX / outwardLen
   const nz = mountZ / outwardLen
   const yaw = explicitYaw ?? Math.atan2(nx, nz)
-  const stickOut = style === 'wall' ? visualSize * 0.18 : 0
+  const stickOut = style === 'wall' && !hasGlb ? visualSize * 0.18 : 0
   return {
     nx,
     nz,
@@ -73,17 +76,42 @@ function lampMountPose(
   }
 }
 
+const _glassBox = new THREE.Box3()
+const _glassMeshBox = new THREE.Box3()
+
+/** Centre of the lantern's glass (`*_Light` material) in the template's own
+ *  frame — i.e. the pivot-local point where the flame should sit. Falls back
+ *  to the whole-body centre when no light-coloured material is present. */
+export function lanternGlassCenter(lanternBody: THREE.Object3D, out = new THREE.Vector3()): THREE.Vector3 {
+  lanternBody.updateMatrixWorld(true)
+  _glassBox.makeEmpty()
+  const all = new THREE.Box3()
+  lanternBody.traverse((obj) => {
+    const mesh = obj as THREE.Mesh
+    if (!mesh.isMesh) return
+    _glassMeshBox.copy(mesh.geometry.boundingBox ?? new THREE.Box3().setFromBufferAttribute(mesh.geometry.getAttribute('position') as THREE.BufferAttribute))
+    _glassMeshBox.applyMatrix4(mesh.matrixWorld)
+    all.union(_glassMeshBox)
+    const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material]
+    if (mats.some((m) => m.name.endsWith('_Light'))) _glassBox.union(_glassMeshBox)
+  })
+  return (_glassBox.isEmpty() ? all : _glassBox).getCenter(out)
+}
+
+/** Pivot sits at the mount (authored origin = wall plate back / post foot) and
+ *  is yawed so glTF +Z (the support arm) points outward. Returns the pivot so
+ *  the PointLight can ride inside it at the glass centre. */
 function attachLanternGlb(
   group: THREE.Group,
   lanternBody: THREE.Object3D,
   pose: LampMountPose,
-): void {
+): THREE.Group {
   const pivot = new THREE.Group()
   pivot.position.set(pose.cx, pose.cy, pose.cz)
   pivot.rotation.y = pose.yaw
-  // Preserve `preparePropFitMax` translation (see `createHouseLight` WIP notes).
   pivot.add(lanternBody.clone(true))
   group.add(pivot)
+  return pivot
 }
 
 /** Box lantern sized to the same longest-axis as `LANTERN_*_MAX` (GLB fit). */
@@ -122,12 +150,16 @@ function attachProceduralLantern(
   return lampMat
 }
 
+function createExteriorPointLight(style: HouseLampStyle): THREE.PointLight {
+  return new THREE.PointLight(0xffb35c, 0, style === 'wall' ? 10 : 20, 2)
+}
+
 function attachHousePointLight(
   group: THREE.Group,
   pose: LampMountPose,
   style: HouseLampStyle,
 ): THREE.PointLight {
-  const light = new THREE.PointLight(0xffb35c, 0, style === 'wall' ? 10 : 20, 2)
+  const light = createExteriorPointLight(style)
   const inset = pose.visualSize * 0.18
   light.position.set(pose.cx - pose.nx * inset, pose.cy, pose.cz - pose.nz * inset)
   group.add(light)
@@ -147,20 +179,12 @@ function attachHouseInnerLight(group: THREE.Group): THREE.PointLight {
 /**
  * House night lamp (wall GLB or procedural) + exterior PointLight + interior fill.
  *
- * WIP / unfinished (2026-08-19): wall lantern still looks too small in-game.
- * Do not treat `LANTERN_WALL_MAX = 0.45` as a verified visual size.
+ * GLB lanterns are `lantern_wall.glb` / `lantern_standing.glb` (metres, authored
+ * origin = mount, arm +Z); `props.ts` scales them with `prepareAuthoredScaleMax`
+ * (no recentring). The pivot sits on the mount, yawed outward, and the single
+ * exterior PointLight rides in the pivot at the glass centre. The procedural
+ * fallback keeps the old centred box + wall stick-out.
  *
- * Discoveries so far:
- * - `style === 'wall' ? 0.5 : 1` never scaled the GLB. Village path uses
- *   `lantern.glb` via `preparePropFitMax(LANTERN_WALL_MAX)` in `props.ts`.
- *   Old 0.16 m longest-axis was a fist-sized fixture on a ~3.4 m MegaKit wall.
- * - `lantern.glb` is obj2gltf (Tomáš Bayer / ElwFor_Lantern). Vertex units
- *   ~85 × 180 × 25, origin at the OBJ corner — not metres, not centered.
- *   Longest axis is the tall wooden body; the cage/glass is a small slice of
- *   that bbox, so FitMax-to-0.45 m can still look like a tiny lamp head.
- * - Overwriting the clone's `position` with the mount dropped the FitMax
- *   foot/center offset. Most of the mesh sat inside the wall (sliver outside).
- *   Pivot at the mount + keep FitMax translation on the clone.
  * - `hut.add(lamp)` inherits `hut.scale` (MegaKit `HOUSE_ASSEMBLY_SCALE`;
  *   catalog GLB `prepareProp` can be ~0.1). Compensating the whole lamp group
  *   also moves the mount (hut-local metres). `props.ts` scales each child
@@ -176,13 +200,21 @@ export function createHouseLight(
   explicitYaw?: number,
 ): HouseLight {
   const group = new THREE.Group()
-  const pose = lampMountPose(mountX, mountZ, mountHeight, style, explicitYaw)
+  const pose = lampMountPose(mountX, mountZ, mountHeight, style, explicitYaw, lanternBody !== null)
 
   let lampMat: THREE.MeshBasicMaterial | null = null
-  if (lanternBody) attachLanternGlb(group, lanternBody, pose)
-  else lampMat = attachProceduralLantern(group, pose)
-
-  const light = attachHousePointLight(group, pose, style)
+  let light: THREE.PointLight
+  if (lanternBody) {
+    const pivot = attachLanternGlb(group, lanternBody, pose)
+    // One PointLight, parented to the pivot so it inherits yaw and the
+    // house-scale compensation, placed at the glass instead of the wall.
+    light = createExteriorPointLight(style)
+    light.position.copy(lanternGlassCenter(lanternBody))
+    pivot.add(light)
+  } else {
+    lampMat = attachProceduralLantern(group, pose)
+    light = attachHousePointLight(group, pose, style)
+  }
   const innerLight = attachHouseInnerLight(group)
 
   return {

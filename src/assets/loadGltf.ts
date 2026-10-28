@@ -157,6 +157,25 @@ export function preparePropFitMax(
   return object
 }
 
+/**
+ * Uniformly scale so the largest bbox axis ≈ `targetMax` (world meters) while
+ * keeping the authored origin/pivot (no recentring, no grounding). For assets
+ * whose origin is a deliberate mount point (wall plate back, post foot).
+ */
+export function prepareAuthoredScaleMax(
+  object: Object3D,
+  targetMax: number,
+): Object3D {
+  object.updateMatrixWorld(true)
+  _box.setFromObject(object)
+  _box.getSize(_size)
+  const longest = Math.max(_size.x, _size.y, _size.z)
+  if (longest < 1e-4) return object
+  object.scale.multiplyScalar(targetMax / longest)
+  object.updateMatrixWorld(true)
+  return object
+}
+
 /** Dev-tool only: drop a cached URL and free its GPU resources. Game code never
  *  calls this — shared cache roots stay alive for the app lifetime. */
 export function invalidateGltf(url: string): void {

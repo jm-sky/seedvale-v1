@@ -4,7 +4,7 @@ import * as THREE from 'three'
 import { beforeAll, describe, expect, it } from 'vitest'
 import type { LargeCaveSite } from '../largeCaves'
 import type { CaveTopology } from './caveTopology'
-import { LANTERN_URL } from '../../settlement/propSpecs'
+import { LANTERN_STANDING_URL, LANTERN_URL, LANTERN_WALL_URL } from '../../settlement/propSpecs'
 import { CART_MODEL_YAW_OFFSET } from '../cartProp'
 import { buildAdventureCaveTopology } from './adventureTopology'
 import {
@@ -192,7 +192,7 @@ describe('cave adventure props (plan world-terrain-020 Stage D)', () => {
     let pointLights = 0
     group.traverse((obj) => {
       const url = obj.userData?.assetUrl as string | undefined
-      if (url === LANTERN_URL) settlementLanternAsset = true
+      if (url === LANTERN_URL || url === LANTERN_WALL_URL || url === LANTERN_STANDING_URL) settlementLanternAsset = true
       if ((obj as THREE.PointLight).isPointLight) pointLights++
     })
     expect(settlementLanternAsset).toBe(false)
