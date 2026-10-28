@@ -1,7 +1,7 @@
 # Quest Revival — Session 3: Hunters, fauna, wolves and livestock
 
 **Created:** 2026-10-28  
-**Status:** Wolf-series and R20 rat-plague narrative decisions finalized 2026-10-28; other Group 3 topics pending. **NOT an approved implementation plan.**  
+**Status:** Wolf-series, R20, G01/R36, R05, R07 and R08 author narrative decisions recorded 2026-10-28; technical verification and other Group 3 items remain pending. **NOT an approved implementation plan.**  
 **Repo:** `jm-sky/seedvale-v1`, `main`  
 **Evidence:** [61-record matrix](../2026-10-27--quest-revival-matrix.md) · [runtime findings](../2026-10-27--quest-revival-runtime-evidence.md) · [portfolio analysis](../2026-10-28--quest-portfolio-prioritization.md)  
 **Rule:** Latest author decisions override earlier *recommendations*, not underlying code evidence. Existing V1 definition ≠ verified end-to-end playability. V2 record ≠ an authored V1 quest. D4 Performance-First integration freeze remains binding.
@@ -176,9 +176,9 @@ V3 had (1) a full personal Greybeard investigation with kill/drive/poison choice
 - [x] Select physical clear + permanent destroy within one R31 case, no R30 payout, one main renown per distinct accomplishment; technical arbitration remains to implement.
 - [x] Preserve Kasia's pre-destruction horse contract, ownership reservation and existing death branch; exact runtime verification pending.
 - [x] Approve R20 warehouse interior, mandatory Rat Boss, multi-nest/local-count completion, poisoned-meat risk and warning/reputation contract (above); technical verification and balancing remain open.
-- [ ] Decide whether the stolen lamb belongs to Anna or Molly and how actual custody/restitution works; generated livestock loss remains intact.
+- [x] Decide G01/R36: dedicated home shepherd owns persistent Pip; Piers stole it before play; four recovery routes, reconciliation, residence and real camp cleanup; generic livestock loss remains intact.
 - [x] Record R48 decision: **Defer · low priority**; no implementation work authorized.
-- [ ] Scope boar target identity and optional helper only if justified; preserve conditional ecology and hunter profession.
+- [x] Decide R05 meadow boar, herbalist/Anna fallback, optional unpaid real hunter combat and reward attribution; preserve ecology and hunter profession.
 - [ ] Assess reload, streaming and persistence of identified fauna and active player quests.
 
 ## Session exit conditions
@@ -189,4 +189,48 @@ V3 had (1) a full personal Greybeard investigation with kill/drive/poison choice
 - [x] Record preliminary wolf-series L effort, no detailed estimate until implementation recon.
 - [ ] Keep deferred stories deferred and D4 runtime integration frozen unless separately authorized.
 
-**Next step:** Continue unresolved Group 3 discussions (stolen lamb and hunting polish); wolf series and R20 narrative decisions are recorded. No plan or coding-agent handoff is approved by these checkboxes.
+**Next step:** Group 3 narrative decisions for G01/R36, R05, R07, R08, wolves and R20 are captured below; unresolved technical/reward details remain planning inputs, not approved implementation. No plan or coding-agent handoff is approved by these checkboxes.
+
+
+## Approved G01/R36 Lost Lamb decisions — 2026-10-28
+
+**Author-approved narrative/scope direction, not implementation approval.** Replace the authored V1 `zagubiona-owca` story with the V2 G01 theft of Pip, while retaining independent systemic livestock-loss episodes. One incident must not generate duplicate exclusive claims or rewards. Pip is one real, persistent young sheep from the **home settlement shepherd's household** (male/female shepherd and name undecided; Molly is only a donor placeholder). If staffing does not guarantee a shepherd, resolve that during world generation rather than creating quest-only livestock. Do not silently change Anna's profession.
+
+- **Pre-existing event:** The theft occurred before the player arrives. World initialization places Piers and Pip physically at an already generated roadside camp; the shepherd is missing that particular animal. Do not simulate the theft trip or teleport the sheep upon quest acceptance. Preserve Pip's stable identity and legitimate ownership distinct from Piers's current custody. No quest-only animal clone.
+- **Piers:** a hungry traveller with his own real needs, food, water and finite stock. Initially confined to a viable roadside campsite rather than requiring an unverified general world-travel survival system. His survival and any future departure depend on real needs/resources, not a quest timer or immortality. Pip's needs and survival also remain real. Death remains consequential; no respawn solely to complete G01.
+- **Camp:** use a **branch lean-to/shelter (szałas), NOT a tent**, a stone-ring campfire with longer fuel burn, physical wood/branches, food and water, sleeping place and space for Pip. Piers actually adds finite fuel and consumes supplies through NPC behavior. Existing fauna fire-avoid behavior is helpful, not absolute safety; stone-ring burn-time and all resource actions require source verification.
+- **Recovery:** preserve four meaningful routes: (1) confrontation with evidence, (2) payment with real money transfer, (3) discreet retrieval with meaningful detection, (4) requesting guard Marek's intervention with evidence. Pip must physically follow/be led back to its owner, no quest-flag teleport. A recovery route does not mechanically dictate Piers's ultimate fate. Accidental/external death and loss require truthful outcomes, not false recovery credit.
+- **Reconciliation:** available after different peaceful routes, including after payment, **only if Piers admits theft and agrees to restitution**. After reconciliation the shepherd **always accepts** him to the household; no additional random reputation gate. Acceptance should be made physically feasible (real bed or provisional sleeping place, real household food/water). Piers is a **resident/worker, not automatically a family relative**, and retains his own `npcId`, inventory, needs, relationships and history. Temporary real work at the household may lead to permanent residence and, later, his own house/household when settlement systems permit. Independence is not a quest completion requirement. Piers may otherwise remain independent and eventually leave if world travel is viable.
+- **Camp dismantling:** after moving in, Piers **actually collects personal belongings, moves useful items, and dismantles the lean-to as NPC work**. Recovered branches may remain on the ground as actual resources; the stone fire ring can remain and die out naturally. Do not erase the camp instantly by quest flag. Preserve intermediate dismantling state through save/load and offscreen rebuilding; don't require rendering every twig.
+- **Rewards:** modest local reputation/relationships and realistically sourced money/wool where applicable, not invented infinite stocks; precise values and dialogue pending. Use one main payout per real incident and track different legitimate contributions.
+
+**V1 gaps/verification:** `Household`, NPC authoritative state, profession work, fauna, animal leading and player-employer work contracts exist, but **NPC-employer contracts, outsider residency in an existing household, later independent household creation, general campsite construction/dismantling, stone-ring burn and Piers's sustained supply behavior are not verified as ready**. Avoid parallel quest-only systems. Preserve NPC/animal identity, quest progress, ownership and incidents through save/load. Initial version must not rely on general dangerous cross-world NPC travel.
+
+## Approved R05 Medicinal Meadow Boar decisions — 2026-10-28
+
+**Rewrite the authored narrative, preserve V1 ID `dzik-przy-szlaku` subject to save compatibility.** Marek remains quest giver; no longer assert a blocked road. A **single concrete, persistent, ordinary boar** threatens a **real herb meadow/clearing** and its real herb-gathering activity. The boar already inhabits the place, is not created on offer, and is not a custom boss. Other boars cannot complete the case. No mandatory tracking phase.
+
+- **Affected NPC:** a living professional `herbalist` of the home settlement, if present; otherwise **Anna** as farmer fallback without changing her profession. If a herbalist dies *before the incident binds*, Anna can fill the role. Once the quest binds an NPC, avoid changing it on reload. Anna needs a bounded real occasional household herb-gathering opportunity rather than a fake permanent herbalist role.
+- **Hunter assistance:** the player can ask **any available home-settlement hunter** (not a fabricated named companion); participation is **unpaid**, a shared local interest. Hunter follows by existing NPC accompany behavior and engages the **same bound boar** through generic NPC combat and actual weapon/ammunition, not scripted proximity credit. Hunter may be wounded, flee or die. If helper deals final blow, completed shared hunt still counts. If invited but never actually fought, do not credit assisted combat automatically.
+- **Attribution:** full solo reputation for actual solo player success, lower combat reputation for real joint effort, possible conditional personal relationship gain with assisting hunter. No duplicate primary reward. External animal death or death before offer resolves the factual problem without claiming the player killed it or magically respawning the boar.
+- **Ecology:** boar removal solves this incident, **not** all safety on the meadow; existing destination-threat assessment evaluates other predators. Real herbalist work can resume if safe. Retain realistic dialogue, adjust V1 defense-book/renown/relation rewards later. Current `renown >= 10` offer prerequisite is *not automatically approved* by the author.
+
+**V1 integration risks:** identity/persistent habitat, actual hunter-target combat and attribution, accompany commitments, Anna's non-professional herb routine, materialization/save/reload; no new `QuestHunterCombat` subsystem. The full legacy plan 070 is a design reference, not an automatically approved technical dependency.
+
+## Approved R07 Circle of Hunters decisions — 2026-10-28
+
+- Keep **Hunter I–III progression**; `hunter_iii_complete` then conversations with master, trophy hunter and ambitious member suffice for joining, with **no second test or reputation gate**. Preserve the terminal membership outcome `hunters_brotherhood_joined` and the same inviter and master in R08.
+- The home settlement has a hunter (author-established world constraint) who invites the player. The four-person circle is drawn from home and a nearby settlement: inviter, master, trophy hunter, ambitious member.
+- **Generate/qualify credible roster at world generation**, rather than assigning master/trophy/ambition to arbitrary adults when the quest triggers. Members may have profession `hunter` **or other real jobs with genuine hunting experience**; do not relabel their actual professions. Master is an experienced member in the neighboring settlement. This does NOT mean current V1 source already guarantees four suitable candidates.
+- Extend the existing deterministic `resolveHuntersBrotherhoodBinding` selection and preserve IDs, membership and personal backgrounds across save/rebuild. A minimal, reusable hunting-experience record is a candidate, **not yet a specified or approved data schema**. Do not require four newly spawned NPCs or a parallel guild advancement ladder.
+- The circle is a continuing social relationship, not a second profession. R08 is its follow-up, but may not be immediately available if no unhealthy habitat actually exists.
+
+## Approved R08 Troubling Hunting Ground decisions — 2026-10-28
+
+- Keep the existing post-R07, **conditionally materialized real deer-habitat investigation**. The same bound master asks the player to investigate; do not manufacture unhealthy ecology, an artificial crisis, or a mandatory repair stage.
+- **Scope: reconnaissance and diagnosis only.** Player examines the real site via existing `interact_spawner` and **uses the already-existing in-game distant animal observation** to look at a deer where available. No new tracking, forensic clues, investigation skill or required long-term monitoring. **If no live deer exists, absence must not block reporting**; the habitat diagnosis is the required fallback.
+- Persist actual habitat observation at examination time and report it truthfully even if the live state has since changed. Distinguish observed population loss, mortality, predator pressure and food shortage from proven causes. Resolution does **not** flip a `meadowSafe` or habitat-fixed flag and does not artificially rebalance ecology.
+- The current source `huntersBrotherhoodInvestigation.ts` already chooses unhealthy deer thickets and records `QuestHabitatPressureObservation`. The **existing animal-observation feature is confirmed by author**, but the exact event/animalId hook into `QuestManager` requires targeted code verification. Avoid assuming an automatic quest credit path already exists. No required ecological intervention in R08; later stories can address solutions separately.
+- Keep rewards modest and sourced as appropriate; exact deltas, observation UX, empty habitat, change-during-investigation and save/load scenarios await technical design.
+
+**All four discussions above are closed at the narrative level, not implementation-ready specifications.** Do not write gameplay code or queue implementation during the D4 freeze without separate approval.
