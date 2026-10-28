@@ -82,3 +82,11 @@ What worked (settlement-heavy and forest, SHA `98ddfbd1`, 29.5 s window, 187–2
 - The trace slows the page: FPS under trace (22.6 settlement-heavy, 36.5 forest) must not be used as benchmark numbers.
 
 Known analyzer gap: `scripts/analyze_trace.py` reports "no `timeDeltas`" and ranks application functions by sample count, although the trace does contain `timeDeltas` on every `ProfileChunk`. Use `scripts/perf/cpu_profile_summary.py` for real self/inclusive milliseconds until the analyzer reads them. The start mark itself is not in the trace (it fires before `Tracing.start`); the window begins ~100 ms before `seedvale:trace-start`.
+
+### Bisect in a worktree (lessons, 2026-10-28)
+
+- Use a **short** worktree path (`D:/svbis`); a long scratchpad path breaks the Windows checkout. Share `node_modules` with an NTFS junction, but start Vite directly (`node node_modules/vite/bin/vite.js`, `PORT=<free>`) — **never `pnpm run dev`** there: pnpm's deps check tries `pnpm install`/purge of the junctioned `node_modules` (it aborted only because there was no TTY).
+- The first Vite start in a new worktree re-optimises dependencies and reloads the page mid-run, so the run times out; warm the server once, then benchmark.
+- Remove the junction first (`rmdir <wt>\node_modules`, removes the link only) before deleting the worktree folder.
+- Put the SHA **and a variant label** in the output tag; A/B variants of one SHA otherwise overwrite each other. `SEEDVALE_REPO=<worktree>` makes the driver verify the right SHA.
+- One run per commit is enough for a >5 FPS step; ~2 FPS steps are noise.

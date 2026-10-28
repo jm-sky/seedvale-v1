@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "gitSha": "36e99ef6c31000b683619916b4d19a210408760e",
+  "runId": "2026-10-28T17-18-34-023Z-bnl3y6",
+  "scenario": "forest",
+  "phase": "warm",
+  "canonical": true,
+  "generatedAt": "2026-10-28T17:19:33.765Z",
+  "fixtureVersion": "tools-001-v1",
+  "quality": "High",
+  "hardwareClass": "target-gpu",
+  "notes": "A1' benchmark series 2026-10-28--win-fix1 rep2; native Windows Chrome headed, fresh profile, 30s cooldown"
+}

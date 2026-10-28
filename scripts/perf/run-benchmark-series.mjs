@@ -10,7 +10,7 @@ const CHROME = 'C:/Program Files/Google/Chrome/Application/chrome.exe'
 const DEBUG = 9333
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 mkdirSync(outDir, { recursive: true })
-const expectedSha = execSync('git rev-parse HEAD', { cwd: 'D:/Projekty/private/seedvale-v1' }).toString().trim()
+const expectedSha = execSync('git rev-parse HEAD', { cwd: process.env.SEEDVALE_REPO ?? 'D:/Projekty/private/seedvale-v1' }).toString().trim()
 console.log('expected SHA', expectedSha)
 
 async function cdpConnect() {

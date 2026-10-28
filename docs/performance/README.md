@@ -268,3 +268,5 @@ Historical benchmark results remain under `docs/performance/results/` and `docs/
 **Windows Arc series 2026-10-28 (SHA `ccc4d378`):** settlement-heavy + forest 3×30 s — [`results/2026-10-28--win-a1p-settlement-heavy-forest-series.md`](./results/2026-10-28--win-a1p-settlement-heavy-forest-series.md). Forest ≈20 % slower than the `721af157` series (uninvestigated); stream/water not run.
 
 **Trace 2026-10-28:** [`results/2026-10-28--win-a1p-trace-analysis.md`](./results/2026-10-28--win-a1p-trace-analysis.md) — both scenarios main-thread/CPU-submission bound; `nearestRiverShoreCandidate` ≈ 11 % CPU; forest regression not geometry-related.
+
+**Forest bisect + fixes 2026-10-28:** [`results/2026-10-28--win-forest-bisect-and-fixes.md`](./results/2026-10-28--win-forest-bisect-and-fixes.md) — regression traced to `8fc58ddf` (`boundingBox` restored to `null`); with the envelope-box and `riverShoreQuery` memo fixes (`36e99ef6`) forest 56.0 FPS, settlement-heavy 32.6 FPS.
