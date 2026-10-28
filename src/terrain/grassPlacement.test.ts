@@ -424,3 +424,84 @@ describe('macro meadow variation (world-terrain-012)', () => {
     expect(colorsDiffer).toBe(true)
   })
 })
+
+describe('computeChunkGrass filler gating (CA1)', () => {
+  function run(cx: number, cz: number, mode?: 'full' | 'main' | 'filler'): GrassChunkData {
+    const params = tileParams({ cx, cz })
+    const tile = computeChunkTile(params)
+    return computeChunkGrass(
+      {
+        cx,
+        cz,
+        chunkSize: params.chunkSize,
+        resolution: params.resolution,
+        waterLevel: params.waterLevel,
+        heightScale: params.heightScale,
+        seed: params.seed,
+        candidatesPerChunk: 4000,
+        macroVariationEnabled: true,
+        region: params.region,
+        riverSegments: params.riverSegments,
+        mode,
+      },
+      {
+        heights: tile.heights,
+        biomes: tile.biomes,
+        roadTint: tile.roadTint,
+        mountainRidge: tile.mountainRidge,
+        moistureRegion: tile.moistureRegion,
+      },
+    )
+  }
+
+  const MAIN_IDS = ['tri', 'grain', 'herb'] as const
+
+  it('main mode emits no filler bucket (nothing allocated or transferred)', () => {
+    for (const { cx, cz } of CHUNKS) {
+      expect(run(cx, cz, 'main').filler).toBeUndefined()
+    }
+  })
+
+  it('filler mode emits only filler; full mode keeps near-field filler', () => {
+    for (const { cx, cz } of CHUNKS) {
+      const only = run(cx, cz, 'filler')
+      for (const id of MAIN_IDS) expect(only[id]).toBeUndefined()
+      expect(only.filler?.count ?? 0).toBeGreaterThan(0)
+      expect(run(cx, cz, 'full').filler?.count ?? 0).toBeGreaterThan(0)
+    }
+  })
+
+  it('main buckets are byte-identical in main and full modes (RNG invariance)', () => {
+    for (const { cx, cz } of CHUNKS) {
+      const main = run(cx, cz, 'main')
+      const full = run(cx, cz)
+      for (const id of MAIN_IDS) {
+        expect(main[id]?.count).toBe(full[id]?.count)
+        expect(main[id]?.matrices).toEqual(full[id]?.matrices)
+        expect(main[id]?.baseColors).toEqual(full[id]?.baseColors)
+        expect(main[id]?.phases).toEqual(full[id]?.phases)
+        expect(main[id]?.windFactors).toEqual(full[id]?.windFactors)
+      }
+    }
+  })
+
+  it('filler is identical whether generated alone or with the main pass, and on re-generation', () => {
+    for (const { cx, cz } of CHUNKS) {
+      const alone = run(cx, cz, 'filler').filler!
+      const withMain = run(cx, cz, 'full').filler!
+      const again = run(cx, cz, 'filler').filler!
+      expect(alone.count).toBe(withMain.count)
+      expect(alone.matrices).toEqual(withMain.matrices)
+      expect(alone.baseColors).toEqual(withMain.baseColors)
+      expect(again.matrices).toEqual(alone.matrices)
+      expect(again.bounds).toEqual(alone.bounds)
+    }
+  })
+
+  it('filler does not depend on generation order of other chunks', () => {
+    const first = run(0, 0, 'filler').filler!
+    run(24, 24, 'full')
+    run(-18, 6, 'main')
+    expect(run(0, 0, 'filler').filler!.matrices).toEqual(first.matrices)
+  })
+})

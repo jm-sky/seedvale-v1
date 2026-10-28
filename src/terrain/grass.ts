@@ -7,6 +7,7 @@ import { REFLECTION_SKIPPED_LAYER } from '../world/waterMirror'
 import {
   computeChunkGrass,
   GRASS_SPECIES_ORDER,
+  type GrassBucketData,
   type GrassChunkData,
   type GrassSpeciesId,
 } from './grassPlacement'
@@ -28,6 +29,17 @@ export type WorldGrassChunk = {
    *  buckets (survivors of eligibility/density rejection) — `mesh`'s children's
    *  `count` may be temporarily lower, see `setLodFraction`. */
   readonly fullCount: number
+  /** CA1: whether a filler bucket is currently resident on this chunk. */
+  hasFiller: () => boolean
+  /** CA1: whether any non-filler bucket is resident (a chunk built from a
+   *  filler-only result has none and is dropped when its filler is released). */
+  hasMain: () => boolean
+  /** CA1: adds the filler bucket from a filler-only (or full) result. No-op if
+   *  filler is already resident or `data` has none — never creates a second
+   *  filler mesh. Caller re-applies `setLodFraction` afterwards. */
+  attachFiller: (data: GrassChunkData) => void
+  /** CA1: disposes the filler bucket's mesh/geometry/attributes if resident. */
+  releaseFiller: () => void
   /** Renders only the first `fraction` of instances in each *main* subtype
    *  bucket (0 excluded, clamped to (0, 1]) — cheap distance LOD: no
    *  reallocation, just narrows each InstancedMesh's draw range. Safe because
@@ -593,9 +605,7 @@ export function createGrassSystem(): GrassSystem {
     let instancesFull = 0
     let instancesFiller = 0
 
-    for (const id of GRASS_SPECIES_ORDER) {
-      const bucket = data[id]
-      if (!bucket) continue
+    function addBucket(id: GrassSpeciesId, bucket: GrassBucketData): void {
       const isFiller = id === 'filler'
       buckets += 1
       if (isFiller) instancesFiller += bucket.count
@@ -710,6 +720,11 @@ export function createGrassSystem(): GrassSystem {
       }
     }
 
+    for (const id of GRASS_SPECIES_ORDER) {
+      const bucket = data[id]
+      if (bucket) addBucket(id, bucket)
+    }
+
     if (timed) {
       diag.recordBuild({
         durationMs: performance.now() - tBuild0,
@@ -729,7 +744,28 @@ export function createGrassSystem(): GrassSystem {
 
     return {
       mesh: group,
-      fullCount: totalCount,
+      get fullCount() {
+        let n = 0
+        for (const sub of subMeshes) n += sub.fullCount
+        return n
+      },
+      hasFiller: () => subMeshes.some((sub) => sub.filler),
+      hasMain: () => subMeshes.some((sub) => !sub.filler),
+      attachFiller(fillerData) {
+        const bucket = fillerData.filler
+        if (!bucket || subMeshes.some((sub) => sub.filler)) return
+        addBucket('filler', bucket)
+      },
+      releaseFiller() {
+        for (let i = subMeshes.length - 1; i >= 0; i--) {
+          const sub = subMeshes[i]!
+          if (!sub.filler) continue
+          group.remove(sub.mesh)
+          for (const geo of Object.values(sub.geometryCache)) geo?.dispose()
+          sub.mesh.dispose()
+          subMeshes.splice(i, 1)
+        }
+      },
       geometryCount() {
         let n = 0
         for (const sub of subMeshes) n += Object.keys(sub.geometryCache).length

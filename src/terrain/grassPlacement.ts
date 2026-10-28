@@ -62,7 +62,15 @@ export type GrassComputeParams = {
    *  `ChunkTileParams.riverSegments` — used to reject candidates that fall
    *  inside a river's actual water channel (world-terrain-006). */
   riverSegments: RiverChannelSegment[]
+  /** Which passes to run (CA1). `'main'` skips the filler pass entirely (no
+   *  filler allocation/transfer) for chunks outside the filler range;
+   *  `'filler'` emits only the filler bucket (filler-only regeneration when a
+   *  chunk enters that range). Default `'full'` = both. Filler has its own
+   *  seeded RNG stream, so the result of each pass never depends on the other. */
+  mode?: GrassComputeMode
 }
+
+export type GrassComputeMode = 'full' | 'main' | 'filler'
 
 export type GrassBucketData = {
   count: number
@@ -101,6 +109,8 @@ const ROAD_TINT_FADE_END = 0.38
  *  main `candidatesPerChunk` budget — processed once at chunk build, drawn
  *  only when the player is close (issue 023). */
 const FILLER_CANDIDATE_RATIO = 2
+/** Salt for the independent filler RNG stream (CA1) — see `computeChunkGrass`. */
+const FILLER_RNG_SALT = 0x3c6ef372
 const FILLER_HEIGHT_MIN = 0.05
 const FILLER_HEIGHT_MAX = 0.18
 const FILLER_WIDTH_MIN = 0.04
@@ -359,7 +369,10 @@ export function computeChunkGrass(params: GrassComputeParams, grids: GrassTileGr
     macroVariationEnabled,
     region,
     riverSegments,
+    mode = 'full',
   } = params
+  const runMain = mode !== 'filler'
+  const runFiller = mode !== 'main'
   const o = apronOriginWorld(cx, cz, chunkSize, resolution)
   const sample = (grid: Float32Array, x: number, z: number) =>
     sampleApronGrid(grid, o.apronRes, o.x, o.z, o.step, x, z)
@@ -377,13 +390,13 @@ export function computeChunkGrass(params: GrassComputeParams, grids: GrassTileGr
   // one species/subtype's patch, but that's now an occasional grow, not the
   // default per-chunk allocation size.
   const buckets: Record<GrassSpeciesId, InstanceBucket> = {
-    tri: createBucket(candidatesPerChunk),
-    grain: createBucket(candidatesPerChunk),
-    herb: createBucket(candidatesPerChunk),
-    filler: createBucket(candidatesPerChunk),
+    tri: createBucket(runMain ? candidatesPerChunk : 0),
+    grain: createBucket(runMain ? candidatesPerChunk : 0),
+    herb: createBucket(runMain ? candidatesPerChunk : 0),
+    filler: createBucket(runFiller ? candidatesPerChunk : 0),
   }
 
-  for (let i = 0; i < candidatesPerChunk; i++) {
+  for (let i = 0, n = runMain ? candidatesPerChunk : 0; i < n; i++) {
     const localX = (random() * 2 - 1) * half
     const localZ = (random() * 2 - 1) * half
     const wx = cx * chunkSize + localX
@@ -471,10 +484,13 @@ export function computeChunkGrass(params: GrassComputeParams, grids: GrassTileGr
   }
 
   // Near-field filler pass — short cheap blades to close golf-course gaps
-  // between main clumps. Same eligibility; separate RNG stream via continue
-  // of `random`. Drawn only when chunkManager passes fillerFraction > 0.
-  const fillerCandidates = Math.floor(candidatesPerChunk * FILLER_CANDIDATE_RATIO)
+  // between main clumps. Same eligibility; own RNG stream (CA1) so it can be
+  // generated without — and independently of — the main pass. Only run for
+  // chunks inside the filler range (`mode !== 'main'`, chosen by chunkManager).
+  const fillerRandom = createSeededRandom(seed ^ hashChunk(cx, cz) ^ FILLER_RNG_SALT)
+  const fillerCandidates = runFiller ? Math.floor(candidatesPerChunk * FILLER_CANDIDATE_RATIO) : 0
   for (let i = 0; i < fillerCandidates; i++) {
+    const random = fillerRandom
     const localX = (random() * 2 - 1) * half
     const localZ = (random() * 2 - 1) * half
     const wx = cx * chunkSize + localX

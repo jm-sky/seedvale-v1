@@ -6,6 +6,7 @@ import type { TreeEnvSample, TreeGrowthStage, TreeLifecycle, TreePresence } from
 import type { ChunkTileResult, GrassRequestParams } from './chunkHeightmapProtocol'
 import type { ChunkMeshData, ChunkMeshTileGrids } from './chunkMeshData'
 import type { FbmParams } from './fbm'
+import type { GrassComputeMode } from './grassPlacement'
 import type { FordProjection } from './riverFord'
 import type { RoadBridgeSpec } from './roadBridge'
 import type { WorldKnowledgeWorkerParams } from './worldKnowledgeScan'
@@ -544,6 +545,9 @@ type ChunkRecord = {
   /** A `requestChunkGrass` request is in flight for this chunk (plan 086) —
    *  `grass` stays `undefined` until it resolves. */
   grassPending?: boolean
+  /** CA1: id of the in-flight filler-only request (`undefined` = none). A
+   *  completion whose id no longer matches is stale and discarded. */
+  grassFillerRequestId?: number
   pendingPromise?: Promise<void>
   /** Set while this chunk is waiting for a per-frame finalize slot (plan 112/119).
    *  `mesh` = `buildAndAttachMesh`; `content` = vegetation/env/items after terrain
@@ -1581,6 +1585,23 @@ export function createChunkManager(
     }
   }
 
+  /** Chunk distance below which filler can be displayed - exactly the support
+   *  of `grassFillerLodFraction` (it is 0 at `dist >= fillerRadius`; `lodScale`
+   *  is clamped >= 0.25, so it never zeroes the fraction). */
+  function grassFillerRadius(): number {
+    return 1 + grassFillerCoverage * Math.max(0, effectiveGrassRadius - 1)
+  }
+  /** Filler must be resident for a chunk at `dist` (CA1). */
+  function grassFillerWanted(dist: number): boolean {
+    return dist < grassFillerRadius()
+  }
+  /** Resident filler is kept until this farther distance - one-chunk
+   *  hysteresis (same idea as `grassUnloadRadius`) so walking along the
+   *  boundary does not regenerate/dispose filler every chunk crossing. */
+  function grassFillerKept(dist: number): boolean {
+    return dist < grassFillerRadius() + 1
+  }
+
   /** Applies the dev-only detailed/filler visibility overrides to one chunk's
    *  grass — called from every place that already re-syncs `setLodFraction`
    *  (`ensureGrass`'s worker callback, `syncGrassForRecord`, `setLodScale`,
@@ -1631,6 +1652,9 @@ export function createChunkManager(
     const { x, z } = chunkCenter(coord, config.chunkSize)
     record.grassPending = true
     getGrassBaselineDiag().recordRequest()
+    // CA1: skip the filler pass (no allocation/transfer) for chunks outside
+    // the filler range; `syncFillerForRecord` requests it when they enter.
+    const mode: GrassComputeMode = grassFillerWanted(chebyshevDistance(coord, lastPlayerChunk)) ? 'full' : 'main'
 
     const params: GrassRequestParams = {
       cx: coord.cx,
@@ -1642,6 +1666,7 @@ export function createChunkManager(
       seed: config.seed,
       candidatesPerChunk: config.grass.density,
       macroVariationEnabled: config.grass.macroVariationEnabled,
+      mode,
       region: config.region,
       riverSegments: record.riverChains
         ? riverChannelSegmentsNear(record.riverChains, x, z, config.chunkSize)
@@ -1679,6 +1704,7 @@ export function createChunkManager(
         const grass = grassSystem.buildGrassChunkMeshes(data, x, z)
         getMonitor().recordHitch('GRASS', performance.now() - t0, 'grass generation')
         rec.grass = grass
+        if (!grass) syncFillerForRecord(rec, dist)
         if (grass) {
           const tLod0 = timed ? performance.now() : 0
           const { mainFrac, fillerFrac, geometryTier } = grassLodForDistance(dist)
@@ -1689,6 +1715,7 @@ export function createChunkManager(
           const tAttach0 = timed ? performance.now() : 0
           if (isSystemEnabled('grass')) scene.add(grass.mesh)
           getGrassBaselineDiag().recordStreamIn()
+          syncFillerForRecord(rec, dist)
           if (timed) diag.recordSceneAttach(performance.now() - tAttach0)
           if (timed) {
             const heap1 = readJsHeapUsedBytes()
@@ -1710,11 +1737,103 @@ export function createChunkManager(
     if (record.grass) getGrassBaselineDiag().recordStreamOut()
     record.grass?.dispose()
     record.grass = undefined
+    if (record.grassFillerRequestId !== undefined) {
+      cancelChunkGrass(grassFillerKeyFor(record.key))
+      record.grassFillerRequestId = undefined
+    }
     if (record.grassPending) {
       cancelChunkGrass(record.key)
       record.grassPending = false
       getGrassBaselineDiag().recordCancel()
     }
+  }
+
+  const grassFillerKeyFor = (key: string): string => `${key}#filler`
+  let grassFillerRequestSeq = 0
+
+  /** CA1: keeps a chunk's filler bucket in step with the filler range - requests
+   *  a filler-only placement when the chunk enters it, releases the bucket (and
+   *  cancels an in-flight request) once it leaves the hysteresis band. Filler is
+   *  deterministic per (seed, chunk), so re-entering reproduces the same blades.
+   *  Waits while the main request is pending (its completion re-syncs). */
+  function syncFillerForRecord(record: ChunkRecord, dist: number): void {
+    if (record.grass === undefined || record.grassPending || !record.tile) return
+    const grass = record.grass
+    const hasFiller = grass?.hasFiller() ?? false
+    if (!grassFillerKept(dist)) {
+      if (record.grassFillerRequestId !== undefined) {
+        cancelChunkGrass(grassFillerKeyFor(record.key))
+        record.grassFillerRequestId = undefined
+      }
+      if (hasFiller && grass) {
+        grass.releaseFiller()
+        if (!grass.hasMain()) {
+          // Filler-only chunk: back to "main decided empty".
+          getGrassBaselineDiag().recordStreamOut()
+          grass.dispose()
+          record.grass = null
+        }
+      }
+      return
+    }
+    if (hasFiller || record.grassFillerRequestId !== undefined || !grassFillerWanted(dist)) return
+
+    const tile = record.tile
+    const key = record.key
+    const coord = record.coord
+    const { x, z } = chunkCenter(coord, config.chunkSize)
+    const requestId = ++grassFillerRequestSeq
+    record.grassFillerRequestId = requestId
+    requestChunkGrass(grassFillerKeyFor(key), {
+      cx: coord.cx,
+      cz: coord.cz,
+      chunkSize: config.chunkSize,
+      resolution: config.resolution,
+      waterLevel: config.waterLevel,
+      heightScale: config.heightScale,
+      seed: config.seed,
+      candidatesPerChunk: config.grass.density,
+      macroVariationEnabled: config.grass.macroVariationEnabled,
+      mode: 'filler',
+      region: config.region,
+      riverSegments: record.riverChains
+        ? riverChannelSegmentsNear(record.riverChains, x, z, config.chunkSize)
+        : [],
+      grids: {
+        heights: tile.heights,
+        biomes: tile.biomes,
+        roadTint: tile.roadTint,
+        mountainRidge: tile.mountainRidge,
+        moistureRegion: tile.moistureRegion,
+      },
+    })
+      .then((data) => {
+        const rec = chunks.get(key)
+        if (!rec || rec.grassFillerRequestId !== requestId) return // stale / unloaded
+        rec.grassFillerRequestId = undefined
+        const curDist = chebyshevDistance(coord, lastPlayerChunk)
+        if (rec.grass === undefined || !grassFillerKept(curDist)) return
+        if (rec.grass) {
+          rec.grass.attachFiller(data)
+        } else {
+          const built = grassSystem.buildGrassChunkMeshes(data, x, z)
+          if (!built) return
+          rec.grass = built
+          if (isSystemEnabled('grass')) scene.add(built.mesh)
+          getGrassBaselineDiag().recordStreamIn()
+        }
+        const { mainFrac, fillerFrac, geometryTier } = grassLodForDistance(curDist)
+        rec.grass.setLodFraction(mainFrac, fillerFrac)
+        rec.grass.setGeometryLod(geometryTier)
+        applyGrassDebugVisibility(rec.grass)
+      })
+      .catch((err: unknown) => {
+        const rec = chunks.get(key)
+        if (rec && rec.grassFillerRequestId === requestId) rec.grassFillerRequestId = undefined
+        if (!(err instanceof HeightmapGenerationCancelledError)) {
+          console.error('[chunkManager] grass filler generation failed', err)
+        }
+      })
   }
 
   /** Grass gets its own (smaller) show/hide radius than the terrain `loadRadius` —
@@ -1726,12 +1845,15 @@ export function createChunkManager(
     const dist = chebyshevDistance(record.coord, playerChunk)
     if (dist <= effectiveGrassRadius) {
       ensureGrass(record)
+      syncFillerForRecord(record, dist)
       const { mainFrac, fillerFrac, geometryTier } = grassLodForDistance(dist)
       record.grass?.setLodFraction(mainFrac, fillerFrac)
       record.grass?.setGeometryLod(geometryTier)
       if (record.grass) applyGrassDebugVisibility(record.grass)
     } else if (dist > grassUnloadRadius && (record.grass !== undefined || record.grassPending)) {
       removeGrass(record)
+    } else if (record.grass !== undefined) {
+      syncFillerForRecord(record, dist)
     }
   }
 
@@ -3568,8 +3690,10 @@ export function createChunkManager(
     setGrassFillerCoverage(coverage) {
       grassFillerCoverage = Math.min(1, Math.max(0, coverage))
       for (const record of chunks.values()) {
-        if (!record.grass) continue
+        if (record.grass === undefined) continue
         const dist = chebyshevDistance(record.coord, lastPlayerChunk)
+        syncFillerForRecord(record, dist)
+        if (!record.grass) continue
         const { mainFrac, fillerFrac } = grassLodForDistance(dist)
         record.grass.setLodFraction(mainFrac, fillerFrac)
       }

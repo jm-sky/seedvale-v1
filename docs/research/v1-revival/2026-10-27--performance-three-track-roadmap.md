@@ -46,7 +46,7 @@ Research: [Track C deep recon, V1 surface adapter, lifecycle/pools/uploads and p
 - [x] Respect the latest visual direction: V1 olive palette and grounded coverage, less angular blades, billboard flower clumps; fern/shrub/herb changes remain separate.
 - [x] Preserve researched migration stages and keep/revert criteria as conditional evidence; V3 grass technology remains a candidate.
 - [ ] **C0:** obtain a credible, certified grass-rich and relevant streaming baseline; keep current diagnostic evidence labeled UNVERIFIED.
-- [ ] **CA1:** eliminate filler generation outside its actual useful radius, preserving deterministic placement and visible coverage.
+- [~] **CA1:** eliminate filler generation outside its actual useful radius, preserving deterministic placement and visible coverage. **Implemented + technically verified 2026-10-28; visual/browser acceptance and measured memory/worker effect PENDING; C0 still uncertified** — see [implementation notes](./2026-10-28--ca1-filler-gating--implementation-notes.md).
 - [ ] **CA2:** cap generation/storage of instances that cannot be submitted under current LOD constraints, preserving near-field density and regrowth on approach.
 - [ ] Evaluate CA1/CA2 using relevant memory/upload/frame metrics; no automatic benchmark after each small stage.
 - [ ] Consider a V3 tiled prototype/cutover **only if post-CA evidence justifies further architecture work**; no migration prerequisite or mandatory freeze-exit dependency.
