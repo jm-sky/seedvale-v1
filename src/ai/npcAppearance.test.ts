@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { ANIMS_URL, bodyUrl } from '../characters/characterFiles'
+import { WORK_SKIRTS } from '../characters/characterTypes'
 import {
   NPC_CLOTHING_HUE,
   NPC_HAIR_COLOR,
@@ -10,6 +11,11 @@ import {
 const ANNA = 'home:npc:0'
 const PIOTR = 'home:npc:1'
 const KASIA = 'home:npc:2'
+
+function expectOneWorkSkirt(garments: readonly string[]): void {
+  expect(garments).toHaveLength(1)
+  expect(WORK_SKIRTS as readonly string[]).toContain(garments[0])
+}
 
 describe('resolveNpcAppearance', () => {
   it('maps adult female farmer to Peasant_Boots and male woodcutter to the authored Woodcutter', () => {
@@ -22,7 +28,7 @@ describe('resolveNpcAppearance', () => {
     })
     expect(anna.outfit).toBe('Peasant_Boots')
     expect(anna.kit.sex).toBe('Female')
-    expect(anna.kit.garments).toEqual(['PeasantSkirt'])
+    expectOneWorkSkirt(anna.kit.garments)
     expect(anna.modelUrl).toBe(bodyUrl('Female', 'Peasant_Boots'))
     expect(anna.animationUrl).toBe(ANIMS_URL)
     expect(Object.values(NPC_HAIR_COLOR)).toContain(anna.hairColor)
@@ -53,7 +59,7 @@ describe('resolveNpcAppearance', () => {
     const wife = resolveNpcAppearance({ age: 33, gender: 'female', npcId: 'wood:npc:2', role: 'woodcutter', treeIndex: 2 })
     expect(wife.outfit).toBe('Peasant')
     expect(wife.kit.clothTint).toBe(NPC_WOODCUTTER_CLOTH_TINT)
-    expect(wife.kit.garments).toEqual(['PeasantSkirt'])
+    expectOneWorkSkirt(wife.kit.garments)
     const boy = resolveNpcAppearance({ age: 9, gender: 'male', npcId: 'farm:npc:7', role: 'farmer', treeIndex: 7 })
     expect(boy.outfit).toBe('Peasant')
     const lad = resolveNpcAppearance({ age: 9, gender: 'male', npcId: 'wood:npc:7', role: 'woodcutter', treeIndex: 7 })
@@ -86,7 +92,7 @@ describe('resolveNpcAppearance', () => {
       treeIndex: 3,
     })
     expect(smith.outfit).toBe('Peasant')
-    expect(smith.kit.garments).toEqual(['PeasantSkirt'])
+    expectOneWorkSkirt(smith.kit.garments)
     expect(smith.modelUrl).toBe(bodyUrl('Female', 'Peasant'))
 
     const huntress = resolveNpcAppearance({
@@ -97,7 +103,7 @@ describe('resolveNpcAppearance', () => {
       treeIndex: 5,
     })
     expect(huntress.outfit).toBe('Peasant')
-    expect(huntress.kit.garments).toEqual(['PeasantSkirt'])
+    expectOneWorkSkirt(huntress.kit.garments)
 
     const trader = resolveNpcAppearance({
       age: 40,
@@ -106,9 +112,22 @@ describe('resolveNpcAppearance', () => {
       role: 'trader',
       treeIndex: 2,
     })
-    expect(trader.outfit).toBe('Wizard')
-    expect(trader.kit.garments).toEqual(['PeasantSkirt'])
-    expect(trader.modelUrl).toBe(bodyUrl('Female', 'Wizard'))
+    expect(trader.outfit).toBe('Peasant')
+    expect(trader.kit.garments[0]).toBe('NobleBodice')
+    expect(trader.kit.garments).toHaveLength(2)
+    expect(WORK_SKIRTS).toContain(trader.kit.garments[1])
+    expect(trader.modelUrl).toBe(bodyUrl('Female', 'Peasant'))
+  })
+
+  it('picks the skirt dye deterministically and uses all three dyes', () => {
+    const dyes = new Set<string>()
+    for (let i = 0; i < 40; i++) {
+      const opts = { age: 30, gender: 'female' as const, npcId: `home:npc:${i}`, role: 'farmer' as const, treeIndex: 0 }
+      const a = resolveNpcAppearance(opts)
+      expect(resolveNpcAppearance(opts).kit.garments).toEqual(a.kit.garments)
+      dyes.add(a.kit.garments[0]!)
+    }
+    expect([...dyes].sort()).toEqual([...WORK_SKIRTS].sort())
   })
 
   it('maps guard to Knight_Cloth and hunter to Ranger_NoHood for males', () => {
@@ -151,7 +170,7 @@ describe('resolveNpcAppearance', () => {
       treeIndex: 1,
     })
     expect(girl.outfit).toBe('Peasant')
-    expect(girl.kit.garments).toEqual(['PeasantSkirt'])
+    expectOneWorkSkirt(girl.kit.garments)
   })
 
   it('is deterministic for the same npcId', () => {
@@ -174,7 +193,7 @@ describe('resolveNpcAppearance', () => {
       treeIndex: 1,
     })
     expect(look.outfit).toBe('Herbalist')
-    expect(look.kit.garments).toEqual(['PeasantSkirt'])
+    expectOneWorkSkirt(look.kit.garments)
   })
 
   it('gives women Long or Buns hair only (no BuzzedFemale)', () => {

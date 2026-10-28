@@ -25,15 +25,18 @@ Generated from exported TypeScript symbols.
 
 ## `characters/characterTypes.ts`
 
-- `CHARACTER_OUTFITS` — const — line 41
-- `CHARACTER_SEXES` — const — line 54
-- `CharacterAppearance` — type — line 30
-- `CharacterGarment` — type — line 28
+- `CHARACTER_OUTFITS` — const — line 46
+- `CHARACTER_SEXES` — const — line 67
+- `CharacterAppearance` — type — line 35
+- `CharacterGarment` — type — line 33
 - `CharacterOutfit` — type — line 15
 - `CharacterSex` — type — line 6
-- `HAIR_STYLES` — const — line 58
+- `HAIR_STYLES` — const — line 71
 - `HairNode` — type — line 13
 - `HairStyle` — type — line 10
-- `HEAD_VARIANTS` — const — line 56
+- `HEAD_VARIANTS` — const — line 69
 - `HeadVariant` — type — line 8
-- `SKIRTED_FEMALE_OUTFITS` — const — line 61
+- `MALE_ONLY_OUTFITS` — const — line 65
+- `SKIRTED_FEMALE_OUTFITS` — const — line 77
+- `WORK_SKIRTS` — const — line 74
+- `WorkSkirtGarment` — type — line 30

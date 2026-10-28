@@ -3,7 +3,7 @@
 **Created at:** 2026-10-28
 **Created by:** Claude Opus 5.5 (Claude Code, Blender MCP on Blender 5.2.0 LTS)
 **Base:** V1 `main` @ `49f9c61e`
-**Scope:** Investigation, design and verification only. No production GLB, master `.blend`, script or runtime code was changed. Prototypes exist only in a temporary Blender scene, which is not committed.
+**Scope:** §1–9: investigation, design and verification (prototypes in a temporary Blender scene, not committed). §10: implementation approved by the author on 2026-10-28 (WorkSkirt + trader bodice).
 **Input:** [NPC Character Art Direction §2–3](./2026-10-27--npc-character-art-direction.md), [NPC Blender verification §11](./2026-10-28--npc-character-blender-verification.md).
 **Animation priority (author, in-session):** only the basic clips matter now, **Walk and Run** (`Walk_Loop`, `Sprint_Loop`). Other clips are recorded as informational and can be addressed later.
 
@@ -18,7 +18,7 @@ Evidence labels: **measured** (computed in Blender on the shipped data), **obser
   - **Wizard (trader, incl. Kasia/Kate Hornblower):** the coat's flaps, trim and belt ornament poke through the skirt **at rest**, by up to 2.3 cm. The skirt's waist ring was fitted to the Peasant bodice, not the Wizard coat. **measured + observed**
 - Runtime integration (bone-name rebinding with the eq pack's own inverse bind matrices) reproduces correctly in Blender. Nothing points to a runtime cause. **inferred** (code + Blender reproduction)
 - **Prototype result:** a re-weighted skirt removes all measured Walk poke-through and cuts Run (Sprint) poke-through by ~94 %. This uses a front/back-asymmetric thigh share, a front-and-back calf share below the knee, and a slightly fuller hem (0.36 m). The weighting approach also carries over to a LongSkirt prototype. **measured**
-- **Author decisions (§9):** WorkSkirt only (replaces PeasantSkirt), plain A-line, LongSkirt parked, 2–3 simple colours, remaining Walk/Run artefacts accepted. Noble bodice checked for the trader (§10): it fits better than Wizard once inflated by 2 cm.
+- **Author decisions (§8):** WorkSkirt only (replaces PeasantSkirt), plain A-line, LongSkirt parked, 2–3 simple colours, remaining Walk/Run artefacts accepted. Noble bodice checked for the trader (§9): it fits better than Wizard once inflated by 2 cm.
 - **Recommended approach:** fix the weights and shape in the existing Blender loft script, and reuse the existing eq garment slot. No new clothing system, no runtime cloth, no skeleton change. Seated, kneeling and crouching poses cannot be made clean on the 65-bone skeleton with linear blend skinning alone. They are recorded as a known limitation for later.
 
 ## 2. Audit of the current `EQ_PeasantSkirt`
@@ -172,7 +172,7 @@ Cost estimate (inferred): per female NPC, +112 tris (WorkSkirt) or +280 tris (Lo
 
 ## 7. Open decisions for the author
 
-> Answered on 2026-10-28; see §9. The list is kept as originally asked.
+> Answered on 2026-10-28; see §8. The list is kept as originally asked.
 
 1. **WorkSkirt as the replacement** for PeasantSkirt (recommended), or a third, separate skirt?
 2. **WorkSkirt silhouette:** plain A-line, or kirtled-up (shorter front)? Hem height (0.40 m mid-calf proposed)?
@@ -185,7 +185,7 @@ Cost estimate (inferred): per female NPC, +112 tris (WorkSkirt) or +280 tris (Lo
 7. **Acceptable artefacts:** forward "tent" in Walk and strong shearing in Run, versus residual poke-through.
 8. **Later:** is seated/kneeling quality worth corrective morphs (option F)?
 
-## 9. Author decisions (2026-10-28, in-session)
+## 8. Author decisions (2026-10-28, in-session)
 
 | # | Decision | Consequence for implementation |
 | --- | --- | --- |
@@ -193,13 +193,13 @@ Cost estimate (inferred): per female NPC, +112 tris (WorkSkirt) or +280 tris (Lo
 | 2 | Silhouette left to Claude → **plain A-line, hem 0.40 m** | Simplest. Kirtled-up hem measured the same and stays an optional later look |
 | 3 | LongSkirt hem: the easier option | Moot while LongSkirt is parked; if revived, use the hem just above the ankle (avoids the heel/back-hem fix) |
 | 4 | LongSkirt for the trader/merchant, **or park it** → **parked** | §6 step 3 deferred; the loft and weight scheme carry over unchanged |
-| 5 | Check whether the **Noble top** is better than Wizard for the trader | Checked: see §10 |
+| 5 | Check whether the **Noble top** is better than Wizard for the trader | Checked: see §9 |
 | 6 | **2–3 simple colours** | Proposal: undyed wool brown (today's), faded madder red, woad blue. Pick per NPC deterministically from the existing appearance hash (no new RNG draw order). Build either 3 eq nodes or 3 shared materials created once; not per-NPC material clones |
 | 7 | Remaining artefacts (Walk front "tent", Run shear/back flip) **accepted** | Gate for implementation: Walk ≤ 1 cm poke; Run as in §4.1 or better |
 
 Also in-session: only Walk and Run matter now; other clips later (§4.2–4.3 informational).
 
-## 10. Noble top for the trader (decision 5 check)
+## 9. Noble top for the trader (decision 5 check)
 
 Source: `assets-src/characters/eq/NobleBodice_Female.raw.glb`, made by the same dress script. It is the Noble bodice with puffed shoulders and the skirt cut away at 1.09 m. It is meant to be worn over a base outfit (arms come from the base). It exists as a raw file only and is **not packed** into `eq/Female.glb`. 2824 tris, 512 px Noble atlas (`SV_MI_Noble`). Tested over `Female_Peasant` with the WorkSkirt prototype. **measured** unless noted.
 
@@ -217,6 +217,40 @@ Source: `assets-src/characters/eq/NobleBodice_Female.raw.glb`, made by the same 
   - +1 skinned mesh / draw call and +1 512 px texture per session;
   - the Peasant torso stays underneath (overdraw only).
 - **Verdict (preliminary):** for a female trader, Peasant base + NobleBodice (2 cm inflate) + WorkSkirt fits better than Wizard + skirt, and avoids a Wizard-specific skirt fit. Integration would mean packing `NobleBodice` into `eq/Female.glb`, adding it to `CharacterGarment`, and changing the female trader mapping in `coerceFemaleOutfit`/`baseGarments`. Kate Hornblower's "green dress" would then be a bodice colour question. Look approval is the author's call; not browser-verified.
+
+## 10. Implementation (2026-10-28, after author approval "Zrób")
+
+**Pipeline input:** the author supplied the Quaternius Source pack locally (`_temp/Modular Character Outfits - Fantasy[Source]`, not committed). The scripts reach it via `SV_PACK` and a `_temp/extracted/…` junction. Before any change, a full pack build reproduced both committed `eq/*.glb` files structurally (same nodes, vertices, triangles, bounds, materials, texture sizes; only the encoded bytes differ). **verified**
+
+| Area | Change |
+| --- | --- |
+| `scripts/assets/blender-dress-modules.py` | `PeasantSkirt` → `WorkSkirt`: hem 0.40 m, round hem 0.36 m, 7 loft rings, and new `skirt_weights()` (§5 scheme, `WORK_WEIGHTS`). Three dye keys share one mesh, with flat colours and no texture or UVs (`WORK_COLOURS`: wool sRGB 0.165/0.110/0.051 as before, madder 0.36/0.12/0.08, woad 0.14/0.19/0.30). `build_skirt` gains `rows` / `weights`, with defaults unchanged for LongSkirt/Dress |
+| `assets-src/characters/eq/` | + `WorkSkirt{,Red,Blue}_Female.raw.glb` (504 tris each); − `PeasantSkirt_Female.raw.glb`. Two Blender runs were byte-identical. **verified** |
+| `scripts/assets/build-equipment-modules.mjs` | Modules `WorkSkirt*` (inflate 1.2 cm) and `NobleBodice` (inflate 2 cm, simplify 0.38 → 1072 tris, new `TEX_SIZE` 256 px). Budget counts unique geometry; triangle limit raised 12000 → 13000 for the bodice |
+| `public/assets/characters/eq/Female.glb` | 1895 KB (was 2022 KB), 12989 unique tris, nodes `EQ_WorkSkirt`, `EQ_WorkSkirtRed`, `EQ_WorkSkirtBlue`, `EQ_NobleBodice` (no `EQ_PeasantSkirt`). The Peasant atlas left the pack; the Noble atlas (256 px) joined. Every other module is structurally unchanged. `Male.glb` was not modified (the rebuild was identical in structure, so the committed file was kept). **verified** |
+| `src/characters/characterTypes.ts`, `baseGarments.ts` | `CharacterGarment` = `WorkSkirt` / `WorkSkirtRed` / `WorkSkirtBlue` / `NobleBodice`; `WORK_SKIRTS`; `baseGarments(sex, outfit, skirt = 'WorkSkirt')` |
+| `src/ai/npcAppearance.ts` | Dye = `WORK_SKIRTS[(hash >>> 11) % 3]`: bits no other pick uses, random draw order unchanged, not persisted. Adult female trader → `Peasant` + `NobleBodice` + skirt (was Wizard + skirt) |
+| Asset browser | V2/V3 compare entries still use `PeasantSkirt` from their own `/compare/v*/eq` packs (unchanged) |
+
+**Verification**
+- **Built GLB in Blender** (`public` pack, Female Peasant + `anims.glb`, 17 samples) — **measured**:
+
+  | Body / garment | Clip | Before | After |
+  | --- | --- | --- | --- |
+  | Peasant / WorkSkirt | Walk | 69 | **0** |
+  | Peasant / WorkSkirt | Run (`Sprint_Loop`) | 1812 | **104** (max 17.9 cm, 6 / 17 frames) |
+  | Peasant_Boots / WorkSkirt | Walk | — | **0** |
+  | Peasant_Boots / WorkSkirt | Run | — | 314 |
+  | Noble bodice over the Peasant torso | Idle / Walk / Run | — | ≤ 1.3 / ≤ 1.3 / ≤ 4.1 cm (shoulder blades in Run) |
+
+- Dye lineup and trader look at rest: [13](./assets/2026-10-28--female-skirts/13-shipped-workskirt-dyes-and-trader.jpg). **observed**
+- `vitest` on characters, NPC appearance, assets, cull bounds (real GLBs incl. bodice + skirt through 7 clips, 0 assembly warnings) and the compare-garment viewer: 17 files, 140 tests passed. `vue-tsc --noEmit` and eslint on changed files: clean. **verified**
+- Not done: browser/in-settlement look (author review), performance benchmark (per female NPC +112 tris for the skirt; trader +1072 tris and +1 draw call for the bodice; Female_Wizard no longer used by NPCs).
+
+**Still open:**
+- Kate Hornblower's identity colour: the bodice is the stock Noble red/gold and her skirt dye is random.
+- Seated and kneeling clipping (accepted limitation).
+- LongSkirt (parked).
 
 ## 11. Reproduction notes
 

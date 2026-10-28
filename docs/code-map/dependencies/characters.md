@@ -15,6 +15,7 @@ Generated from TypeScript imports.
 - `ai/NpcAgent.ts`
 - `player/PlayerController.appearance.test.ts`
 - `player/PlayerController.ts`
+- `render/actorCullBounds.assets.test.ts`
 
 ## `characters/baseGarments.ts`
 
@@ -55,6 +56,7 @@ Generated from TypeScript imports.
 
 - `ai/npcAppearance.test.ts`
 - `ai/npcAppearance.ts`
+- `assets/assetIndex.ts`
 - `characters/assembleCharacter.ts`
 - `characters/characterAssets.onDisk.test.ts`
 - `characters/characterFiles.test.ts`
@@ -65,6 +67,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `ai/npcAppearance.test.ts`
 - `ai/npcAppearance.ts`
 - `characters/assembleCharacter.ts`
 - `characters/baseGarments.ts`
@@ -74,3 +77,4 @@ Generated from TypeScript imports.
 - `player/PlayerController.appearance.test.ts`
 - `player/PlayerController.ts`
 - `player/playerVisualPreset.ts`
+- `render/actorCullBounds.assets.test.ts`

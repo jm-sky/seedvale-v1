@@ -174,6 +174,7 @@ Generated from TypeScript imports.
 
 - `ai/NpcAgent.ts`
 - `fauna/AnimalAgent.ts`
+- `render/actorCullBounds.assets.test.ts`
 - `shared/agentAnimationSet.test.ts`
 
 ## `shared/bootMark.ts`

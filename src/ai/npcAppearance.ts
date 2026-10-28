@@ -8,7 +8,7 @@ import type {
 import type { NpcGender, Role } from './characters'
 import { baseGarments } from '../characters/baseGarments'
 import { ANIMS_URL, bodyUrl } from '../characters/characterFiles'
-import { HEAD_VARIANTS } from '../characters/characterTypes'
+import { HEAD_VARIANTS, WORK_SKIRTS } from '../characters/characterTypes'
 import { isAdultAge } from '../settlement/professionStaffing'
 import { createSeededRandom } from '../world/parseSeed'
 
@@ -96,11 +96,12 @@ const ROLE_LOOK: Record<Role, RoleLook> = {
 
 /**
  * Female cast: no Ranger/Knight/Blacksmith production looks this pass.
- * Trader → Wizard; male-only authored outfits keep their previous female look
+ * Trader → Peasant + Noble bodice (fits the work skirt; the Wizard coat poked through it, 2026-10-28);
+ * male-only authored outfits keep their previous female look
  * (Farmer → Peasant_Boots, Woodcutter → Peasant); other coerced roles → Peasant (+ skirt).
  */
 function coerceFemaleOutfit(role: Role, outfit: CharacterOutfit): CharacterOutfit {
-  if (role === 'trader') return 'Wizard'
+  if (role === 'trader') return 'Peasant'
   if (outfit === 'Farmer') return 'Peasant_Boots'
   if (
     outfit === 'Ranger'
@@ -215,7 +216,11 @@ export function resolveNpcAppearance(opts: {
     hair,
     beard,
     clothTint,
-    garments: baseGarments(sex, outfit),
+    garments: [
+      ...(sex === 'Female' && opts.role === 'trader' && adult ? ['NobleBodice' as const] : []),
+      // Dye from hash bits no other pick uses (head 0–1, hair 3+, beard 6): the random draw order is unchanged.
+      ...baseGarments(sex, outfit, WORK_SKIRTS[(h >>> 11) % WORK_SKIRTS.length]),
+    ],
   }
 
   return {

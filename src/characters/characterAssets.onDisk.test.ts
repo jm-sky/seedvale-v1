@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest'
 import type { CharacterAppearance } from './characterTypes'
 import { baseGarments } from './baseGarments'
 import { bodyUrl, characterUrls, eqNodeName, eqUrl, headUrl } from './characterFiles'
-import { CHARACTER_OUTFITS, CHARACTER_SEXES, MALE_ONLY_OUTFITS } from './characterTypes'
+import { CHARACTER_OUTFITS, CHARACTER_SEXES, MALE_ONLY_OUTFITS, WORK_SKIRTS } from './characterTypes'
 
 const PUBLIC = resolve(import.meta.dirname, '../../public')
 
@@ -35,10 +35,11 @@ describe('character kit products on disk', () => {
     expect(existsSync(publicPath('/assets/characters/hair.glb'))).toBe(true)
   })
 
-  it('packs EQ_PeasantSkirt in Female eq', () => {
+  it('packs every work-skirt dye and the Noble bodice in Female eq', () => {
     const json = glbJson(publicPath(eqUrl('Female')))
     const names = (json.nodes ?? []).map((n) => n.name)
-    expect(names).toContain(eqNodeName('PeasantSkirt'))
+    for (const g of [...WORK_SKIRTS, 'NobleBodice'] as const) expect(names).toContain(eqNodeName(g))
+    expect(names).not.toContain('EQ_PeasantSkirt')
   })
 
   it('skirted female appearance lists existing files', () => {
@@ -51,7 +52,7 @@ describe('character kit products on disk', () => {
       clothTint: null,
       garments: baseGarments('Female', 'Wizard'),
     }
-    expect(a.garments).toEqual(['PeasantSkirt'])
+    expect(a.garments).toEqual(['WorkSkirt'])
     for (const url of characterUrls(a)) {
       expect(existsSync(publicPath(url)), url).toBe(true)
     }

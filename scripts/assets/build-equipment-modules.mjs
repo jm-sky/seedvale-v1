@@ -26,13 +26,16 @@ const PUBLIC_OUT = path.join(ROOT, 'public/assets/characters/eq')
 const RAW = path.join(ROOT, 'assets-src/characters/eq')
 
 /** Simplify ratio per module (defaults 0.35): equipment is added on top of a ~10 k-triangle outfit, so keep it small. */
-const RATIO = { IronHelm: 0.35, PlateCuirass: 0.2, Pauldrons: 0.3, LeatherBoots: 0.09, PeasantSkirt: 1, LeatherJerkin: 0.22, Bracers: 0.1, LeatherTrousers: 0.4, Chainmail: 1, StuddedLeather: 1, PaddedJacket: 1, LeatherCap: 1, Gloves: 1 }
+const RATIO = { IronHelm: 0.35, PlateCuirass: 0.2, Pauldrons: 0.3, LeatherBoots: 0.09, WorkSkirt: 1, WorkSkirtRed: 1, WorkSkirtBlue: 1, NobleBodice: 0.38, LeatherJerkin: 0.22, Bracers: 0.1, LeatherTrousers: 0.4, Chainmail: 1, StuddedLeather: 1, PaddedJacket: 1, LeatherCap: 1, Gloves: 1 }
 
 /**
  * Metres each module is pushed out along its vertex normals: the pieces were authored to sit on the matching Knight/Ranger
  * body, but here they go over another outfit's clothes (a farmer's tunic is thicker), where they would sink in and vanish.
  */
-const INFLATE = { IronHelm: 0.012, PlateCuirass: 0.05, Pauldrons: 0.025, LeatherBoots: 0.015, PeasantSkirt: 0.012, LeatherJerkin: 0.02, Bracers: 0.01, LeatherTrousers: 0.015, Chainmail: 0.025, StuddedLeather: 0.02, PaddedJacket: 0.028, LeatherCap: 0.004 }
+const INFLATE = { IronHelm: 0.012, PlateCuirass: 0.05, Pauldrons: 0.025, LeatherBoots: 0.015, WorkSkirt: 0.012, WorkSkirtRed: 0.012, WorkSkirtBlue: 0.012, NobleBodice: 0.02, LeatherJerkin: 0.02, Bracers: 0.01, LeatherTrousers: 0.015, Chainmail: 0.025, StuddedLeather: 0.02, PaddedJacket: 0.028, LeatherCap: 0.004 }
+
+/** Base-colour texture size per module (default 512 px): the Noble bodice only uses a corner of its atlas (pack ≤ 2 MB). */
+const TEX_SIZE = { NobleBodice: 256 }
 
 /** Build-time base-colour multipliers (S2-D3): separates material tiers, never done at runtime or per actor. */
 const TINT = { LeatherJerkin: [0.85, 0.85, 0.85] }
@@ -48,7 +51,11 @@ const MODULES = {
   PlateCuirass: { Male: ['Male_Knight', ['Male_Knight_Body_Armor']], Female: ['Female_Knight', ['Female_Knight_Body_Armor']] },
   Pauldrons: { Male: ['Male_Knight', ['Male_Knight_Acc_Pauldron_Round']], Female: ['Female_Knight', ['Female_Knight_Acc_Pauldrons_Round']] },
   LeatherBoots: { Male: ['Male_Ranger', ['Male_Ranger_Feet_Boots']], Female: ['Female_Ranger', ['Female_Ranger_Feet']] },
-  PeasantSkirt: { Female: ['raw'] },
+  // Female base garments (blender-dress-modules.py): work skirt in three dyes (one node each), trader's Noble bodice.
+  WorkSkirt: { Female: ['raw'] },
+  WorkSkirtRed: { Female: ['raw'] },
+  WorkSkirtBlue: { Female: ['raw'] },
+  NobleBodice: { Female: ['raw'] },
   LeatherJerkin: { Male: ['Male_Ranger', ['Male_Ranger_Body', 'Male_Ranger_Body_Belt_1']], Female: ['Female_Ranger', ['Female_Ranger_Body', 'Female_Ranger_Body_Belt_1']] },
   Bracers: { Male: ['Male_Ranger', ['Male_Ranger_Arms_Bracer']], Female: ['Female_Ranger', ['Female_Ranger_Arms_Bracer']] },
   LeatherTrousers: { Male: ['Male_Ranger', ['Male_Ranger_Legs']], Female: ['Female_Ranger', ['Female_Ranger_Legs']] },
@@ -165,7 +172,7 @@ for (const sex of ['Male', 'Female']) {
     await doc.transform(
       isRaw ? () => undefined : keepParts(keep), dropAnimations(), prune(), dedup(), resample(), baseColorOnly(), ...(FLAT_COLOUR.includes(name) ? [flatColour()] : []),
       weld(), ...(RATIO[name] === 1 ? [] : [simplify({ simplifier: MeshoptSimplifier, ratio: RATIO[name] ?? 0.35, error: 0.03 })]),
-      textureCompress({ encoder: sharp, targetFormat: 'png', resize: [512, 512] }),
+      textureCompress({ encoder: sharp, targetFormat: 'png', resize: [TEX_SIZE[name] ?? 512, TEX_SIZE[name] ?? 512] }),
       flatten(), join({ keepNamed: false }), prune(), inflate(INFLATE[name] ?? 0), tint(TINT[name]), nameNodes(name),
     )
     mergeDocuments(pack, doc)
@@ -182,10 +189,13 @@ for (const sex of ['Male', 'Female']) {
   const dst = path.join(OUT, `${sex}.glb`)
   await io.write(dst, pack)
   const nodes = root.listNodes().filter((n) => n.getMesh()).map((n) => n.getName())
-  const tris = root.listMeshes().reduce((n, m) => n + m.listPrimitives().reduce((k, p) => k + (p.getIndices()?.getCount() ?? 0) / 3, 0), 0)
+  // Unique geometry: dye variants (WorkSkirt*) share their accessors after dedup and are counted once.
+  const indices = new Set(root.listMeshes().flatMap((m) => m.listPrimitives().map((p) => p.getIndices())).filter(Boolean))
+  const tris = [...indices].reduce((n, a) => n + a.getCount() / 3, 0)
   console.log(`${path.relative(ROOT, dst)}  ${Math.round(fs.statSync(dst).size / 1024)} KB  ${Math.round(tris)} tris  nodes: ${nodes.join(', ')}  skins: ${root.listSkins().length}  textures: ${root.listTextures().length}`)
-  if (!outArg && (fs.statSync(dst).size > 2 * 1024 * 1024 || tris > 12000)) {
-    console.error(`${sex} pack is over the stage-2 budget (≤ 2 MB, ≤ 12000 triangles)`)
+  // 13000 tris since the female trader's Noble bodice (2026-10-28 female-skirts investigation; was 12000).
+  if (!outArg && (fs.statSync(dst).size > 2 * 1024 * 1024 || tris > 13000)) {
+    console.error(`${sex} pack is over the stage-2 budget (≤ 2 MB, ≤ 13000 triangles)`)
     process.exitCode = 1
   }
 }

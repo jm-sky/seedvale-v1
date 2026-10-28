@@ -37,7 +37,7 @@ _temp/models/quaternius-x/modular-character-outfits-fantasy-source/
     All_Female.blend    (~14 MB)
 ```
 
-`_temp/extracted/` currently has only the nature MegaKit symlink — **not** this outfit pack. Before re-running Blender scripts, symlink or copy the Source folder to the `PACK` path above (or set `SV_ROOT` / adjust `PACK` in the script).
+The Source pack is not committed. As of 2026-10-28 a local copy sits in `_temp/Modular Character Outfits - Fantasy[Source]/`, with a junction at the `_temp/extracted/…` path above for `build-equipment-modules.mjs`. Blender scripts take it through `SV_PACK` (`SV_ROOT` = repo root). Under Blender MCP, run the export inside a `bpy.context.temp_override(window, screen, area, region)` when the session has no 3D view (the glTF exporter needs `context.active_object`).
 
 `jm-sky/seedvales-v2` never committed these blends (`_temp` git-ignored). Remote tree only has unrelated texture `.blend` files under `docs/assets/textures/`.
 
@@ -49,13 +49,13 @@ All under `scripts/assets/`. Blender 5.x (MCP `execute_blender_code` or Scriptin
 |---|---|---|
 | `blender-character-variants.py` | `All_<Sex>.blend` | `assets-src/characters/{Male,Female}_{Peasant_Boots,Blacksmith,Herbalist}.raw.glb` |
 | `blender-equipment-modules.py` | copy of `All_<Sex>.blend` under `_temp/work/` (source never saved) | `assets-src/characters/eq/<Module>_<Sex>.raw.glb` (Bracers, Jerkin, Trousers, Ranger_Plain, …) |
-| `blender-dress-modules.py` | female Noble/Peasant parts (helpers from equipment script) | `NobleBodice`, `LongSkirt`, `Dress`, `PeasantSkirt` → `eq/*_Female.raw.glb`; optional `save_v2_blend()` → `All_Female_v2.blend` |
+| `blender-dress-modules.py` | female Noble/Peasant parts (helpers from equipment script) | `NobleBodice`, `LongSkirt`, `Dress`, `WorkSkirt` / `WorkSkirtRed` / `WorkSkirtBlue` (same mesh, flat dye colours; replaced `PeasantSkirt` 2026-10-28) → `eq/*_Female.raw.glb`; `build_dresses(only=[…])` limits the keys; optional `save_v2_blend()` → `All_Female_v2.blend` |
 | `blender-armour-modules.py` | Peasant + procedural | Chainmail, StuddedLeather, PaddedJacket, LeatherCap → `eq/` |
 
 Post-process (Node, no Blender):
 
 - `build-characters.mjs --raw` → `public/assets/characters/`
-- `build-equipment-modules.mjs` → `public/assets/characters/eq/` (only listed production modules; not every raw candidate)
+- `build-equipment-modules.mjs` → `public/assets/characters/eq/` (only listed production modules; not every raw candidate). Per-module `RATIO` / `INFLATE` / `TEX_SIZE` tables; pack budget ≤ 2 MB and ≤ 13000 unique triangles (dye variants share accessors and count once). A full run rewrites both sexes: when only one sex changed, check the other is structurally identical and keep its committed file.
 
 Committed raws already exist under `assets-src/characters/` (+ `eq/`). Re-export only when the Source mesh or script recipe changes.
 

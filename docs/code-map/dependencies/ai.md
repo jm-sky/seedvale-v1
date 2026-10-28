@@ -755,6 +755,7 @@ Generated from TypeScript imports.
 
 - `ai/npcAppearance.ts`
 - `characters/characterFiles.ts`
+- `characters/characterTypes.ts`
 
 ## `ai/npcAppearance.ts`
 

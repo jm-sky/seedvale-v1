@@ -113,6 +113,7 @@ Generated from TypeScript imports.
 - `assets/assetAnchorData.ts`
 - `assets/assetAnchors.ts`
 - `assets/assetUrlUtils.ts`
+- `characters/characterFiles.ts`
 - `fauna/AnimalAgent.ts`
 - `fauna/createFauna.ts`
 - `items/heldToolVisual.ts`

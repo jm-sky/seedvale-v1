@@ -70,7 +70,8 @@ describe('actor culling on shipped animated characters', () => {
   ] as const)('contains the assembled %s %s kit through representative clips', async (sex, outfit) => {
     const appearance: CharacterAppearance = {
       sex, outfit, head: 'Base', hair: 'Long', beard: sex === 'Male',
-      garments: sex === 'Female' ? ['PeasantSkirt'] : [], clothTint: null,
+      // Female: the trader's set (bodice + widest garment) also covers the plain work-skirt look.
+      garments: sex === 'Female' ? ['NobleBodice', 'WorkSkirt'] : [], clothTint: null,
     }
     const { scene, animations, warnings } = await assembleCharacter(appearance)
     expect(warnings).toEqual([])

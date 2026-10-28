@@ -26,8 +26,11 @@ export type CharacterOutfit =
   | 'Farmer'
   | 'Woodcutter'
 
+/** Female work skirt, one `eq/Female.glb` node per dye (same mesh). Replaced PeasantSkirt 2026-10-28. */
+export type WorkSkirtGarment = 'WorkSkirt' | 'WorkSkirtRed' | 'WorkSkirtBlue'
+
 /** Base garment from `eq/<Sex>.glb` (render--013). Not inventory. */
-export type CharacterGarment = 'PeasantSkirt'
+export type CharacterGarment = WorkSkirtGarment | 'NobleBodice'
 
 export type CharacterAppearance = {
   sex: CharacterSex
@@ -67,7 +70,10 @@ export const HEAD_VARIANTS: readonly HeadVariant[] = ['Base', 'Lean', 'Round', '
 
 export const HAIR_STYLES: readonly HairStyle[] = ['Buzzed', 'BuzzedFemale', 'Parted', 'Long', 'Buns']
 
-/** Live female outfits that always wear PeasantSkirt. */
+/** Undyed wool, faded madder, woad. */
+export const WORK_SKIRTS: readonly WorkSkirtGarment[] = ['WorkSkirt', 'WorkSkirtRed', 'WorkSkirtBlue']
+
+/** Live female outfits that always wear a work skirt. */
 export const SKIRTED_FEMALE_OUTFITS: ReadonlySet<CharacterOutfit> = new Set([
   'Herbalist',
   'Peasant',

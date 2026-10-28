@@ -2,6 +2,15 @@
 
 Generated from TypeScript imports.
 
+## `render/actorCullBounds.assets.test.ts`
+
+**Imports**
+
+- `characters/assembleCharacter.ts`
+- `characters/characterTypes.ts`
+- `render/actorCullBounds.ts`
+- `shared/agentAnimationSet.ts`
+
 ## `render/actorCullBounds.test.ts`
 
 **Imports**
@@ -13,6 +22,7 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `ai/NpcAgent.ts`
+- `render/actorCullBounds.assets.test.ts`
 - `render/actorCullBounds.test.ts`
 
 ## `render/agentPresentationLod.test.ts`

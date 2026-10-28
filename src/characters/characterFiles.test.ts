@@ -32,7 +32,7 @@ describe('characterFiles', () => {
     expect(hairUrl('Lean')).toBe('/assets/characters/hair_Lean.glb')
     expect(eqUrl('Female')).toBe('/assets/characters/eq/Female.glb')
     expect(ANIMS_URL).toBe('/assets/characters/anims.glb')
-    expect(eqNodeName('PeasantSkirt')).toBe('EQ_PeasantSkirt')
+    expect(eqNodeName('WorkSkirtRed')).toBe('EQ_WorkSkirtRed')
     expect(hairNodeName('Parted')).toBe('HAIR_Parted')
     expect(hairNodeName('Beard')).toBe('HAIR_Beard')
   })
@@ -43,7 +43,7 @@ describe('characterFiles', () => {
       sex: 'Female',
       outfit: 'Peasant',
       hair: 'Long',
-      garments: ['PeasantSkirt'],
+      garments: ['WorkSkirt'],
     }
     expect(characterUrls(a)).toEqual([
       '/assets/characters/Female_Peasant.glb',
@@ -70,11 +70,12 @@ describe('characterFiles', () => {
 })
 
 describe('baseGarments', () => {
-  it('adds PeasantSkirt only for skirted female outfits', () => {
-    expect(baseGarments('Female', 'Peasant')).toEqual(['PeasantSkirt'])
-    expect(baseGarments('Female', 'Peasant_Boots')).toEqual(['PeasantSkirt'])
-    expect(baseGarments('Female', 'Herbalist')).toEqual(['PeasantSkirt'])
-    expect(baseGarments('Female', 'Wizard')).toEqual(['PeasantSkirt'])
+  it('adds a work skirt only for skirted female outfits', () => {
+    expect(baseGarments('Female', 'Peasant')).toEqual(['WorkSkirt'])
+    expect(baseGarments('Female', 'Peasant_Boots')).toEqual(['WorkSkirt'])
+    expect(baseGarments('Female', 'Herbalist')).toEqual(['WorkSkirt'])
+    expect(baseGarments('Female', 'Wizard')).toEqual(['WorkSkirt'])
+    expect(baseGarments('Female', 'Peasant', 'WorkSkirtBlue')).toEqual(['WorkSkirtBlue'])
     expect(baseGarments('Female', 'Ranger')).toEqual([])
     expect(baseGarments('Female', 'Blacksmith')).toEqual([])
     expect(baseGarments('Male', 'Peasant')).toEqual([])

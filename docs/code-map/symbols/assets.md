@@ -74,26 +74,26 @@ Generated from exported TypeScript symbols.
 
 ## `assets/assetIndex.ts`
 
-- `assetEntryMatchesQuery` — function — line 196
-- `assetIndexById` — function — line 685
-- `AssetIndexEntry` — type — line 90
-- `AssetIndexGroup` — type — line 72
-- `AssetIndexStatus` — type — line 85
-- `AssetPrepare` — type — line 67
-- `basenameFromUrl` — function — line 142
-- `buildAssetIndex` — function — line 436
-- `CompareGarment` — type — line 88
-- `customUrlEntry` — function — line 218
-- `entryFromUrl` — function — line 699
-- `filterAssetIndex` — function — line 209
-- `findAssetEntry` — function — line 691
-- `formatAssetLabel` — function — line 191
-- `groupFromModelUrl` — function — line 164
-- `kindFromBasename` — function — line 156
-- `makeParkedEntry` — function — line 247
-- `mergeParkedManifest` — function — line 265
-- `packFromUrl` — function — line 148
-- `resolveLoadEntry` — function — line 236
+- `assetEntryMatchesQuery` — function — line 199
+- `assetIndexById` — function — line 710
+- `AssetIndexEntry` — type — line 93
+- `AssetIndexGroup` — type — line 75
+- `AssetIndexStatus` — type — line 88
+- `AssetPrepare` — type — line 70
+- `basenameFromUrl` — function — line 145
+- `buildAssetIndex` — function — line 439
+- `CompareGarment` — type — line 91
+- `customUrlEntry` — function — line 221
+- `entryFromUrl` — function — line 724
+- `filterAssetIndex` — function — line 212
+- `findAssetEntry` — function — line 716
+- `formatAssetLabel` — function — line 194
+- `groupFromModelUrl` — function — line 167
+- `kindFromBasename` — function — line 159
+- `makeParkedEntry` — function — line 250
+- `mergeParkedManifest` — function — line 268
+- `packFromUrl` — function — line 151
+- `resolveLoadEntry` — function — line 239
 
 ## `assets/assetUrlUtils.ts`
 

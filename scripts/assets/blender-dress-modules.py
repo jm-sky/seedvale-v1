@@ -10,7 +10,9 @@ blender-equipment-modules.py, whose helpers are re-used):
   NobleBodice_Female  bodice with puffed shoulders, no skirt (arms come from the base outfit)
   LongSkirt_Female    ankle-length skirt only           (wear it with any top)
   Dress_Female        bodice + long skirt                   (complete dress)
-  PeasantSkirt_Female plain calf-length wool skirt, layered over the Peasant base (waist at the base bodice, no hem band)
+  WorkSkirt_Female    plain mid-calf A-line work skirt, layered over the Peasant base (waist at the base bodice, no hem band),
+                      flat base colour; WorkSkirtRed_Female / WorkSkirtBlue_Female are the same mesh in the other two dyes.
+                      Replaces PeasantSkirt (knee/calf clipping, docs/research/v1-revival/2026-10-28--female-skirts-investigation.md).
 
 Run: Blender MCP `execute_blender_code`: exec(open(r'<repo>/scripts/assets/blender-dress-modules.py').read()). Env SV_ROOT / SV_OUT as in the other script.
 """
@@ -30,8 +32,18 @@ HEM_RX, HEM_RY = 0.38, 0.40   # hem half-axes (x = sideways, y = front/back)
 THIGH_MAX = 0.9        # share of the skirt weight that follows the thighs (calves below the knee) at hem level
 # modesty: how much the bust relief is flattened (0 = untouched) and how much the corset waist is loosened
 DETAIL['Dress'] = ((0, 0, 1.10), 0.9)   # waist close-up of the fit sheet
-PEASANT_CUT_Z, PEASANT_HEM_Z = 1.02, 0.42   # PeasantSkirt: waist line over the base bodice, hem at mid-calf
-PEASANT_WOOL = (0.20, 0.14, 0.09)             # dark undyed wool brown (nearest flat block of the Peasant atlas)
+WORK_CUT_Z, WORK_HEM_Z = 1.02, 0.40     # WorkSkirt: waist line over the base bodice, hem at mid-calf
+WORK_HEM_R = 0.36                         # round hem (the old PeasantSkirt had 0.30 x 0.29 and clipped the knees)
+WORK_ROWS = 7                             # loft rings below the waist band
+# Skinning (metres, Female Peasant base): pelvis -> thighs fully by RAMP_END; thigh share wf/wb at the front/back centre (sides
+# take the larger), left/right split over +-split; below `knee` (blended over knee_band) cf/cb of that share moves to the calves.
+# Front-heavy thighs keep the stepping knee inside, the back calf share keeps the rear calf inside the hem (Walk / Run).
+WORK_WEIGHTS = dict(wf=0.9, wb=0.6, cf=0.9, cb=0.6, ramp_top=0.97, ramp_end=0.80, split=0.06, knee=0.62, knee_band=0.22)
+WORK_COLOURS = {   # scene-linear base colour, no texture (sRGB in the comments)
+    'WorkSkirt': (0.0232, 0.0116, 0.0040),    # undyed wool brown, the old PeasantSkirt atlas swatch (0.165, 0.110, 0.051)
+    'WorkSkirtRed': (0.107, 0.0137, 0.0070),  # faded madder (0.36, 0.12, 0.08)
+    'WorkSkirtBlue': (0.0170, 0.0300, 0.0730),  # woad (0.14, 0.19, 0.30)
+}
 BUST_FLATTEN = 0.0     # 0.65 made a hole at the sternum (the gold trim sank into the body): left off, original bust shape
 WAIST_LOOSEN = 1.10    # scale of the waist cross-section (the corset is loosened)
 
@@ -128,9 +140,11 @@ def is_gold(r, g, b):
     return r > 0.5 and g > 0.3 and b < 0.25 and r > 1.3 * b + 0.2
 
 
-def build_skirt(arm, bodice, red_uv, gold_uv, name='LongSkirt', cut_z=None, hem_z=None, band=None, hem_rx=None, hem_ry=None, grow=0.006, thigh_max=None):
+def build_skirt(arm, bodice, red_uv, gold_uv, name='LongSkirt', cut_z=None, hem_z=None, band=None, hem_rx=None, hem_ry=None, grow=0.006, thigh_max=None,
+                rows=5, weights=None):
     """Skirt: lofted rings from the waist (the reference mesh `bodice`, at cut_z) to the hem, flared, weights pelvis / thighs / calves.
-    Defaults = the long dress skirt; band = height of the hem band (0 = none)."""
+    Defaults = the long dress skirt; band = height of the hem band (0 = none); rows = loft rings below the waist band;
+    weights = keyword arguments of skirt_weights() (else the original thigh_max ramp)."""
     cut_z = CUT_Z if cut_z is None else cut_z
     hem_z = HEM_Z if hem_z is None else hem_z
     band = HEM_BAND if band is None else band
@@ -165,7 +179,7 @@ def build_skirt(arm, bodice, red_uv, gold_uv, name='LongSkirt', cut_z=None, hem_
     r_hem = radii(cut_z - 0.01, cut_z + 0.02, grow)    # the bodice's cut edge: the skirt starts just outside it
     r_in = radii(cut_z + 0.03, cut_z + 0.07, -0.012)    # hidden inside the bodice (overlap, no gap)
     prof = [(cut_z + 0.06, r_in), (cut_z, r_hem)]
-    zs = [cut_z - 0.08 - (cut_z - 0.08 - hem_z - band) * i / 5 for i in range(6)] + ([hem_z] if band else [])
+    zs = [cut_z - 0.08 - (cut_z - 0.08 - hem_z - band) * i / rows for i in range(rows + 1)] + ([hem_z] if band else [])
     for z in zs:
         t = float(np.clip((cut_z - z) / (cut_z - hem_z), 0, 1)) ** 0.85
         prof.append((z, [r + (hem_r(k) - r) * t for k, r in enumerate(r_hem)]))
@@ -195,6 +209,12 @@ def build_skirt(arm, bodice, red_uv, gold_uv, name='LongSkirt', cut_z=None, hem_
     bpy.context.scene.collection.objects.link(ob)
     for vg in bodice.vertex_groups:
         ob.vertex_groups.new(name=vg.name)
+    me.polygons.foreach_set('use_smooth', [True] * len(me.polygons))
+    ob.parent = arm
+    ob.modifiers.new('Armature', 'ARMATURE').object = arm
+    if weights is not None:
+        skirt_weights(ob, cy, **weights)
+        return ob
     g = {n: ob.vertex_groups[n] for n in ('pelvis', 'thigh_l', 'thigh_r', 'calf_l', 'calf_r')}
     for v in me.vertices:
         s = float(np.clip(v.co.x / 0.12, -1, 1))
@@ -206,10 +226,38 @@ def build_skirt(arm, bodice, red_uv, gold_uv, name='LongSkirt', cut_z=None, hem_
         g['calf_l'].add([v.index], wc * (0.5 + 0.5 * s), 'REPLACE')
         g['calf_r'].add([v.index], wc * (0.5 - 0.5 * s), 'REPLACE')
         g['pelvis'].add([v.index], 1 - wt, 'REPLACE')
-    me.polygons.foreach_set('use_smooth', [True] * len(me.polygons))
-    ob.parent = arm
-    ob.modifiers.new('Armature', 'ARMATURE').object = arm
     return ob
+
+
+def skirt_weights(ob, cy, wf, wb, cf, cb, ramp_top, ramp_end, split, knee, knee_band):
+    """Front/back-asymmetric skirt skinning (see WORK_WEIGHTS). The character faces -y: angle 0 (+y) is the back centre."""
+    g = {n: ob.vertex_groups[n] for n in ('pelvis', 'thigh_l', 'thigh_r', 'calf_l', 'calf_r')}
+    for v in ob.data.vertices:
+        c = math.cos(math.atan2(v.co.x, v.co.y - cy))   # +1 back, -1 front
+        back, front, side = max(0.0, c), max(0.0, -c), 1 - abs(c)
+        thigh_share = wb * back + wf * front + max(wf, wb) * side
+        calf_share = cb * back + cf * front + 0.5 * (cf + cb) * side
+        s = float(np.clip(v.co.x / split, -1, 1))
+        wt = thigh_share * float(np.clip((ramp_top - v.co.z) / (ramp_top - ramp_end), 0, 1))
+        wc = calf_share * wt * float(np.clip((knee - v.co.z) / knee_band, 0, 1))
+        wth = wt - wc
+        g['thigh_l'].add([v.index], wth * (0.5 + 0.5 * s), 'REPLACE')
+        g['thigh_r'].add([v.index], wth * (0.5 - 0.5 * s), 'REPLACE')
+        g['calf_l'].add([v.index], wc * (0.5 + 0.5 * s), 'REPLACE')
+        g['calf_r'].add([v.index], wc * (0.5 - 0.5 * s), 'REPLACE')
+        g['pelvis'].add([v.index], 1 - wt, 'REPLACE')
+
+
+def flat_material(name, rgb):
+    """Untextured material (exported as a glTF base-colour factor)."""
+    mat = bpy.data.materials.get(name) or bpy.data.materials.new(name)
+    mat.use_nodes = True
+    bsdf = principled(mat)
+    bsdf.inputs['Base Color'].default_value = (*rgb, 1.0)
+    bsdf.inputs['Metallic'].default_value = 0.0
+    bsdf.inputs['Roughness'].default_value = 1.0
+    mat.diffuse_color = (*rgb, 1.0)
+    return mat
 
 
 def make_modules(o):
@@ -235,10 +283,19 @@ def make_modules(o):
     mods['LongSkirt'] = [build_skirt(arm, b, red_uv, gold_uv)]
     b2 = bodice('DressBodice')
     mods['Dress'] = [b2, build_skirt(arm, b2, red_uv, gold_uv, 'DressSkirt')]
-    pb = evaluated_copy(o['Female_Peasant_Body'], 'sv_tmp_pb')   # reference for the waist of the peasant skirt (layered over the base)
-    mods['PeasantSkirt'] = [build_skirt(arm, pb, red_uv, gold_uv, 'PeasantSkirt', cut_z=PEASANT_CUT_Z, hem_z=PEASANT_HEM_Z, band=0,
-                                        hem_rx=0.30, hem_ry=0.29, grow=0.012, thigh_max=0.8)]
+    pb = evaluated_copy(o['Female_Peasant_Body'], 'sv_tmp_pb')   # reference for the waist of the work skirt (layered over the base)
+    work = build_skirt(arm, pb, red_uv, gold_uv, 'WorkSkirt', cut_z=WORK_CUT_Z, hem_z=WORK_HEM_Z, band=0, hem_rx=WORK_HEM_R,
+                       hem_ry=WORK_HEM_R, grow=0.012, rows=WORK_ROWS, weights=WORK_WEIGHTS)
     bpy.data.objects.remove(pb)
+    while work.data.uv_layers:   # flat colour: no UVs
+        work.data.uv_layers.remove(work.data.uv_layers[0])
+    for key in WORK_COLOURS:   # one mesh per dye: the pack keeps one EQ_<key> node each
+        ob = work if key == 'WorkSkirt' else work.copy()
+        if ob is not work:
+            ob.data = work.data.copy()
+            ob.name = key
+            bpy.context.scene.collection.objects.link(ob)
+        mods[key] = [ob]
     return mods, mat
 
 
@@ -250,15 +307,13 @@ def build_dresses(only=None):
     mods, noble_mat = make_modules(o)
     bpy.app.driver_namespace['sv_dress_mods'] = mods   # save_v2_blend() keeps these objects
     small = small_material(noble_mat, 'SV_MI_Noble')
-    peasant = small_material(o['Female_Peasant_Body'].material_slots[0].material, 'SV_MI_Peasant')
     for key, objs in mods.items():
         if only and key not in only:
             continue
         for ob in objs:
             ob.data.materials.clear()
-            ob.data.materials.append(peasant if key == 'PeasantSkirt' else small)  # Noble atlas only (no skin parts)
-        if key == 'PeasantSkirt':
-            collapse_uv(objs[0], swatch_for(objs[0], 0, PEASANT_WOOL))
+            # work skirts: flat dye colour; the rest: Noble atlas only (no skin parts)
+            ob.data.materials.append(flat_material(f'SV_{key}', WORK_COLOURS[key]) if key in WORK_COLOURS else small)
         fit = fit_report(objs, bvh)
         path = os.path.join(OUT, f'{key}_Female.raw.glb')
         with contextlib.redirect_stdout(io.StringIO()):
