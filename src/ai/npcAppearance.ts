@@ -35,7 +35,7 @@ export const NPC_HAIR_COLOR: Record<NpcHairColorId, number> = {
   grey: 0xc5c0b8,
 }
 
-/** Woodcutter tint on the Peasant body worn by women/young woodcutters (male adults wear `Woodcutter`). */
+/** Woodcutter tint on the Peasant body worn by adult female woodcutters (adult men wear `Woodcutter`). */
 export const NPC_WOODCUTTER_CLOTH_TINT = 0xc4a574
 
 const MALE_HAIR: readonly (HairStyle | null)[] = ['Parted', 'Buzzed', 'Parted', null]

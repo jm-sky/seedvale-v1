@@ -24,7 +24,38 @@ Compact AI knowledge base for the Seedvale character asset pipeline.
 - `TROUBLESHOOTING.md` — known problems; only confirmed fixes become verified.
 - `VERIFIED/` — tested procedures only.
 
-## Quaternius UBC custom profession NPCs (tools-017)
+## Author-edited V1 outfits → live CharacterKit (2026-10-28)
+
+**This is the live path.** The male master `quaternius/outfits/Quaternius_Outfits_All_Male.blend` holds the
+author's hand-edited collections `Peasant` (hat, cloth leg wraps), `Woodcutter` (boots, suspenders) and
+`Blacksmith` (boots, extra belt, Ranger bracers, dark tunic panel, leather work apron `Male_Blacksmith_Apron`).
+
+```text
+master .blend
+  → scripts/assets/blender-character-variants.py  (SV_BUILD=authored; Blender 5.2, MCP or Scripting tab)
+  → assets-src/characters/Male_{Farmer,Woodcutter,Blacksmith}.raw.glb   (byte-reproducible)
+  → node scripts/assets/build-characters.mjs --raw Male_Farmer Male_Woodcutter Male_Blacksmith
+  → public/assets/characters/Male_{Farmer,Woodcutter,Blacksmith}.glb    (CharacterKit body; assembleCharacter)
+```
+
+Each outfit exports as **one joined skinned mesh** (one draw call per material). Materials sharing a texture
+collapse; Hue/Saturation value-multiply materials (`MI_Blacksmith`, `MI_Blacksmith_Belt`) are baked into their
+512 px copy; every flat colour of an outfit goes into one palette texture. The bone-parented Peasant hat is
+rigidly skinned to `Head`. Run with `os.environ['SV_ROOT'] = r'<repo>'` when exec'd; `SV_OUT` redirects output
+for verification. The blacksmith apron is authored by `scripts/assets/blender-blacksmith-apron.py`
+(re-runnable; replaces only `Male_Blacksmith_Apron`). Female bodies for these outfits do not exist.
+
+Procedural mode (`Peasant_Boots`, `Herbalist`, female `Blacksmith`) needs stock Peasant parts: the male master's
+`Male_Peasant_Feet` is author-edited, so the male build reads `Male_Woodcutter_Feet` and fails fast on author
+materials. The female master is not in this repo (`Female_*` raws cannot be regenerated here).
+
+Evidence and limits: `docs/research/v1-revival/2026-10-28--npc-character-blender-verification.md`.
+
+## Quaternius UBC custom profession NPCs (tools-017) — legacy, not loaded by runtime
+
+`public/models/characters/ubc/npc/*` is not referenced by `src/` since the CharacterKit cut-over; the live
+bodies come from the section above. `custom/<profession>/outfit.glb` are older exports of the same master
+(pre-apron) and `prepare-custom-ubc-npc.py` does not run on Windows as-is (spawns `npx` without a shell).
 
 Separate from MPFB2. Hand-authored outfit GLBs + shared UBC head compose.
 Hair/beard are separate runtime attachments remapped onto the live UBC skeleton.
