@@ -52,6 +52,9 @@ const RAW_ERROR = {
   Male_Peasant_Boots: 0.001,
   Male_Blacksmith: 0.001,
   Male_Herbalist: 0.001,
+  // Author-edited V1 outfits (Peasant family) from blender-character-variants.py authored mode.
+  Male_Farmer: 0.001,
+  Male_Woodcutter: 0.001,
 }
 const DEFAULT_SIMPLIFY_ERROR = 0.004
 const MALE_PEASANT_FAMILY_ERROR = 0.001

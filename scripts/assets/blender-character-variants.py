@@ -18,7 +18,15 @@ public/assets/characters/). The .blend files are never saved; the scene is resto
 
 Run (Blender 5.x, no UI state assumed): open the Scripting workspace, load this file and press Run, or via the
 Blender MCP `execute_blender_code`: exec(open(r'<repo>/scripts/assets/blender-character-variants.py').read()).
-Env SV_ROOT overrides the repo root, SV_VARIANTS="Male,Female" limits the sexes.
+Env SV_ROOT overrides the repo root (required when the script is exec'd), SV_VARIANTS="Male,Female" limits the
+sexes, SV_OUT redirects the .raw.glb output (verification runs), SV_BUILD="procedural,authored" limits the modes.
+
+Authored mode (2026-10-28) exports the author's hand-edited V1 outfits from the male master as-is (AUTHORED
+below): each collection's parts are joined into one skinned mesh (one draw call per material), materials that
+share a texture collapse into one 512 px base-colour copy, flat-colour materials stay flat, and bone-parented
+props (Peasant hat) are rigidly skinned to their deform bone. The male master's `Male_Peasant_*` parts are the
+author's edited Peasant (hat, cloth leg wraps), so the procedural Male build takes its feet from the unedited
+copy in the Woodcutter collection and fails fast if any author material leaks into the procedural parts.
 """
 import os
 
@@ -26,9 +34,32 @@ import bmesh
 import bpy
 import numpy as np
 
-ROOT = os.environ.get('SV_ROOT', r'D:\Projekty\private\SeedVales')
+
+def _repo_root():
+    if os.environ.get('SV_ROOT'):
+        return os.environ['SV_ROOT']
+    if '__file__' in globals() and os.path.basename(__file__) == 'blender-character-variants.py':
+        return os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+    raise RuntimeError('set SV_ROOT to the seedvale-v1 repo root (os.environ["SV_ROOT"] = r"...")')
+
+
+ROOT = _repo_root()
 PACK = os.environ.get('SV_PACK', os.path.join(ROOT, 'docs', 'blender', 'sources', 'characters', 'quaternius', 'outfits'))
-OUT = os.path.join(ROOT, 'assets-src', 'characters')
+OUT = os.environ.get('SV_OUT', os.path.join(ROOT, 'assets-src', 'characters'))
+BUILD = set(os.environ.get('SV_BUILD', 'procedural,authored').split(','))
+# Author-edited outfits in Quaternius_Outfits_All_Male.blend -> <name>.raw.glb (object names are the source truth).
+AUTHORED = {
+    'Male_Farmer': ['Male_Peasant_Arms', 'Male_Peasant_Body', 'Male_Peasant_Feet', 'Male_Peasant_Legs',
+                    'Male_Peasant_Head_Hat'],
+    'Male_Woodcutter': ['Male_Woodcutter_Arms', 'Male_Woodcutter_Body', 'Male_Woodcutter_Feet',
+                        'Male_Woodcutter_Legs'],
+    'Male_Blacksmith': ['Male_Blacksmith_Arms', 'Male_Blacksmith_Arms_Bracer', 'Male_Blacksmith_Body',
+                        'Male_Blacksmith_Body_Belt', 'Male_Blacksmith_Feet', 'Male_Blacksmith_Legs',
+                        'Male_Blacksmith_Apron'],
+}
+# Procedural variants need the stock Quaternius Peasant parts; the male master's Peasant feet are author-edited.
+CLEAN_FEET = {'Male': 'Male_Woodcutter_Feet'}
+STOCK_MATERIALS = {'MI_Peasant', 'MI_Regular_Male', 'MI_Regular_Female'}
 TEX = 512
 BOOT_TRIS = 1800
 APRON_GRID = (8, 14)  # columns x rows of quads -> 2*8*14 = 224 tris
@@ -69,9 +100,9 @@ def principled(mat):
     return next(n for n in mat.node_tree.nodes if n.type == 'BSDF_PRINCIPLED')
 
 
-def small_material(src, name):
-    """Base-colour-only copy of `src` with the texture scaled to TEX px; returns (material, image)."""
-    img = principled(src).inputs['Base Color'].links[0].from_node.image.copy()
+def small_material(src, name, image=None):
+    """Base-colour-only copy of `src` (or of `image`) with the texture scaled to TEX px; returns (material, image)."""
+    img = (image or principled(src).inputs['Base Color'].links[0].from_node.image).copy()
     img.name = name
     img.scale(TEX, TEX)
     img.pack()
@@ -264,12 +295,13 @@ def export(path, parts, arm):
         export_texcoords=True, export_materials='EXPORT', export_image_format='AUTO', export_cameras=False,
         export_lights=False, export_extras=False, export_vertex_color='NONE',
     )
-    print(f'  wrote {os.path.relpath(path, ROOT)}  {os.path.getsize(path) // 1024} KB  tris {sum(tris(p) for p in parts)}')
+    shown = os.path.relpath(path, ROOT) if os.path.splitdrive(path)[0].lower() == os.path.splitdrive(ROOT)[0].lower() else path
+    print(f'  wrote {shown}  {os.path.getsize(path) // 1024} KB  tris {sum(tris(p) for p in parts)}')
 
 
 def build(sex):
     pre = f'{sex}_'
-    peasant = [f'{pre}Peasant_{p}' for p in ('Arms', 'Body', 'Feet', 'Legs')]
+    peasant = [f'{pre}Peasant_{p}' for p in ('Arms', 'Body')] + [CLEAN_FEET.get(sex, f'{pre}Peasant_Feet'), f'{pre}Peasant_Legs']
     boots_name = f'{pre}Ranger_Feet' + ('_Boots' if sex == 'Male' else '')  # naming differs in the pack
     names = ['Armature', *peasant, boots_name, f'{pre}Ranger_Head_Hood']
     snap = snapshot()
@@ -277,6 +309,9 @@ def build(sex):
         objs = load_parts(sex, names)
         arm = objs['Armature']
         arms, body, feet, legs = (objs[n] for n in peasant)
+        leaked = {s.material.name for o in (arms, body, feet, legs) for s in o.material_slots} - STOCK_MATERIALS
+        if leaked:
+            raise RuntimeError(f'{sex}: author-edited materials in procedural Peasant parts: {sorted(leaked)}')
         # 512 px base-colour-only materials (Peasant atlas + skin for the hands)
         small = {}
         atlas_img = None
@@ -310,7 +345,8 @@ def build(sex):
         os.makedirs(OUT, exist_ok=True)
         base = [arms, body, legs]
         export(os.path.join(OUT, f'{pre}Peasant_Boots.raw.glb'), [*base, boots], arm)
-        export(os.path.join(OUT, f'{pre}Blacksmith.raw.glb'), [*base, feet, apron], arm)
+        if f'{pre}Blacksmith' not in AUTHORED:
+            export(os.path.join(OUT, f'{pre}Blacksmith.raw.glb'), [*base, feet, apron], arm)
         export(os.path.join(OUT, f'{pre}Herbalist.raw.glb'), [*base, feet, hood], arm)
     finally:
         for o in list(bpy.data.objects):
@@ -319,6 +355,167 @@ def build(sex):
         restore(snap)
 
 
-for _sex in os.environ.get('SV_VARIANTS', 'Male,Female').split(','):
-    print(_sex)
-    build(_sex)
+def base_color_source(mat):
+    """(image, value multiplier) feeding Base Color, or (None, None) for a flat colour.
+
+    Authored materials may darken a shared atlas with a Hue/Saturation/Value node (MI_Blacksmith, belt); only the
+    neutral-hue, neutral-saturation case (a plain linear multiply) is supported."""
+    if not mat.use_nodes:
+        return None, None
+    links = principled(mat).inputs['Base Color'].links
+    if not links:
+        return None, None
+    node = links[0].from_node
+    value = 1.0
+    if node.type == 'HUE_SAT':
+        h, s, v, f = (node.inputs[k].default_value for k in ('Hue', 'Saturation', 'Value', 'Factor'))
+        if abs(h - 0.5) > 1e-4 or abs(s - 1.0) > 1e-4 or abs(f - 1.0) > 1e-4 or node.inputs['Color'].links == ():
+            raise RuntimeError(f'{mat.name}: unsupported Hue/Saturation node (h={h}, s={s}, f={f})')
+        value = v
+        node = node.inputs['Color'].links[0].from_node
+    if node.type != 'TEX_IMAGE':
+        raise RuntimeError(f'{mat.name}: unsupported Base Color source {node.type}')
+    return node.image, value
+
+
+def srgb_to_linear(c):
+    return np.where(c <= 0.04045, c / 12.92, ((c + 0.055) / 1.055) ** 2.4)
+
+
+def linear_to_srgb(c):
+    c = np.clip(c, 0.0, 1.0)
+    return np.where(c <= 0.0031308, c * 12.92, 1.055 * c ** (1 / 2.4) - 0.055)
+
+
+def scale_value(img, value):
+    """Bake a linear-space brightness multiply into a (byte, sRGB) image copy."""
+    px = np.empty(len(img.pixels), dtype=np.float32)
+    img.pixels.foreach_get(px)
+    px = px.reshape(-1, 4)
+    px[:, :3] = linear_to_srgb(srgb_to_linear(px[:, :3]) * value)
+    img.pixels.foreach_set(px.ravel())
+    img.pack()
+
+
+PALETTE_CELL = 16  # px per flat colour; survives mip levels down to 16x16 at the cell centre
+
+
+def palette_material(name, colors):
+    """One texture holding every flat colour of an outfit -> one material/draw call. Returns (mat, [uv])."""
+    n = 1
+    while n * n < len(colors):
+        n *= 2
+    size = n * PALETTE_CELL
+    img = bpy.data.images.new(name, size, size, alpha=False)
+    px = np.ones((size, size, 4), dtype=np.float32)
+    uvs = []
+    for k, rgba in enumerate(colors):
+        r, c = divmod(k, n)
+        px[r * PALETTE_CELL:(r + 1) * PALETTE_CELL, c * PALETTE_CELL:(c + 1) * PALETTE_CELL, :3] = \
+            linear_to_srgb(np.array(rgba[:3], dtype=np.float32))
+        uvs.append(((c + 0.5) / n, (r + 0.5) / n))  # image row 0 is v = 0
+    img.pixels.foreach_set(px.ravel())
+    img.pack()
+    mat = bpy.data.materials.new(name)
+    mat.use_nodes = True
+    tex = mat.node_tree.nodes.new('ShaderNodeTexImage')
+    tex.image = img
+    tex.interpolation = 'Closest'
+    bsdf = principled(mat)
+    mat.node_tree.links.new(tex.outputs['Color'], bsdf.inputs['Base Color'])
+    bsdf.inputs['Metallic'].default_value = 0.0
+    bsdf.inputs['Roughness'].default_value = 1.0
+    return mat, uvs
+
+
+def bake_part(obj, arm):
+    """Own mesh with every non-armature modifier applied; bone-parented props become rigidly skinned."""
+    own_mesh(obj)
+    for m in [m for m in obj.modifiers if m.type != 'ARMATURE']:
+        apply_mod(obj, m)
+    if obj.parent_type == 'BONE':
+        bone = arm.data.bones[obj.parent_bone]
+        deform = bone if bone.use_deform else next(
+            (b for b in arm.data.bones if b.use_deform and b.name.lower() == bone.name.lower()), None)
+        if deform is None:
+            raise RuntimeError(f'{obj.name}: parent bone {obj.parent_bone} has no deform counterpart')
+        world = obj.matrix_world.copy()
+        obj.parent = None
+        obj.data.transform(world)
+        obj.matrix_world = arm.matrix_world.copy()
+        obj.vertex_groups.new(name=deform.name).add(range(len(obj.data.vertices)), 1.0, 'REPLACE')
+        skin_to(obj, arm)
+
+
+def build_authored(name, parts):
+    snap = snapshot()
+    try:
+        objs = load_parts('Male', ['Armature', *parts])
+        arm = objs['Armature']
+        meshes = [objs[p] for p in parts]
+        mats = {}
+        flats = []  # linear RGBA per flat colour, in first-seen order
+        for o in meshes:
+            bake_part(o, arm)
+            for slot in o.material_slots:
+                src = slot.material
+                img, value = base_color_source(src)
+                if img is None:
+                    rgba = tuple(round(c, 5) for c in principled(src).inputs['Base Color'].default_value)
+                    if rgba not in flats:
+                        flats.append(rgba)
+                    key = ('flat', rgba)
+                    if key not in mats:
+                        mats[key] = flat_material(f'SV_flat_{len(flats)}', rgba)
+                else:
+                    key = ('img', os.path.normcase(bpy.path.abspath(img.filepath)), round(value, 4))
+                    if key not in mats:
+                        mat, small_img = small_material(src, f'SV_{src.name}', img)
+                        if value != 1.0:
+                            scale_value(small_img, value)
+                        mats[key] = mat
+                slot.material = mats[key]
+        flat_mats = {mats[('flat', c)]: i for i, c in enumerate(flats)}
+        joined = meshes[0]
+        with bpy.context.temp_override(active_object=joined, selected_editable_objects=meshes, selected_objects=meshes):
+            bpy.ops.object.join()
+        joined.name = name
+        # One slot per textured material plus one palette slot for every flat colour.
+        me = joined.data
+        palette, palette_uvs = palette_material(f'SV_{name}_Palette', flats) if flats else (None, [])
+        unique = []
+        remap = []
+        for m in me.materials:
+            target = palette if m in flat_mats else m
+            if target not in unique:
+                unique.append(target)
+            remap.append(unique.index(target))
+        uv = me.uv_layers.active.data
+        for poly in me.polygons:
+            m = me.materials[poly.material_index]
+            if m in flat_mats:
+                for li in poly.loop_indices:
+                    uv[li].uv = palette_uvs[flat_mats[m]]
+        idx = [0] * len(me.polygons)
+        me.polygons.foreach_get('material_index', idx)
+        idx = [remap[i] for i in idx]
+        me.materials.clear()
+        for m in unique:
+            me.materials.append(m)
+        me.polygons.foreach_set('material_index', idx)
+        skin_to(joined, arm)
+        os.makedirs(OUT, exist_ok=True)
+        print(f'  {name}: materials {[m.name for m in unique]}')
+        export(os.path.join(OUT, f'{name}.raw.glb'), [joined], arm)
+    finally:
+        restore(snap)
+
+
+if 'procedural' in BUILD:
+    for _sex in os.environ.get('SV_VARIANTS', 'Male,Female').split(','):
+        print(_sex)
+        build(_sex)
+if 'authored' in BUILD:
+    for _name, _parts in AUTHORED.items():
+        print(_name)
+        build_authored(_name, _parts)
