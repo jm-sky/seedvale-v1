@@ -1,7 +1,7 @@
 # Quest Revival — Session 3: Hunters, fauna, wolves and livestock
 
 **Created:** 2026-10-28  
-**Status:** Wolf-series narrative decisions finalized 2026-10-28; remaining Group 3 topics pending. **NOT an approved implementation plan.**  
+**Status:** Wolf-series and R20 rat-plague narrative decisions finalized 2026-10-28; other Group 3 topics pending. **NOT an approved implementation plan.**  
 **Repo:** `jm-sky/seedvale-v1`, `main`  
 **Evidence:** [61-record matrix](../2026-10-27--quest-revival-matrix.md) · [runtime findings](../2026-10-27--quest-revival-runtime-evidence.md) · [portfolio analysis](../2026-10-28--quest-portfolio-prioritization.md)  
 **Rule:** Latest author decisions override earlier *recommendations*, not underlying code evidence. Existing V1 definition ≠ verified end-to-end playability. V2 record ≠ an authored V1 quest. D4 Performance-First integration freeze remains binding.
@@ -136,13 +136,46 @@ V3 had (1) a full personal Greybeard investigation with kill/drive/poison choice
 
 **Preliminary size:** overall wolf redesign **L**; principal technical risks are named-fauna persistence, one-time den renewal, quest-ID/save compatibility, and shared incident/horse reward arbitration. No runtime or performance claim is made.
 
+## Approved R20 Rat Plague decisions — 2026-10-28
+
+**Author-approved gameplay direction; NOT implementation approval.** This section supersedes R20's earlier provisional discussion boundary. Preserve V1's authoritative infestation mechanics rather than replacing them with quest-only flags. Historical V3 curation (2026-10-10) calls for one guaranteed home-settlement plague with systemic damage, nests/rat population, optional Rat Alpha and optional poison. The author has **expanded** that scope with a **mandatory** boss, physical warehouse interior, universal manual player-door interaction, poisoned-meat crafting and local social liability.
+
+### Place, access and encounters
+- Guarantee an infestation in the player's home settlement. Add a **real warehouse building with traversable interior** (author final choice, not a fenced-yard substitute), fitted with storage/crates and real structural repair requirements. Reuse V1 building/interior technology; source/runtime wiring must be inspected before assuming it is ready for this exact use.
+- **All buildings** switch from automatic opening to **player-initiated door interaction**, not just this warehouse. This is a general game-system design decision and must respect NPC navigation, door/lock states, collision, streaming and saves; do not assume all NPCs must manually click doors.
+- Warehouse access requires **permission from Marek (guard)**. Model access separately from door-open interaction; exact handling of trespass, locks and NPC access remains technical design.
+- **1–2 nests inside warehouse plus 1–2 elsewhere in the settlement**, all tied to the same physical infestation incident, not independent quests. All must be destroyed. Distinct stable nest identities and persistence are required.
+- **Rat Boss is a real, persistent animal from the beginning**, not spawned by a reveal trigger; it must **die** to finish R20. Sword/bow/poison or other actual damage sources may kill it. It should be normally visible on entering the small room (provided real LOS), not artificially concealed until a scripted discovery. Threat to its nest **provokes defensive attack** using existing habitat-defense behavior where reusable. No bespoke multi-phase boss or obligatory sneaking investigation.
+- Actor occlusion/player perception behind walls is a **general V1 feature candidate** informed by V3's planned `MAP-02 Sensory Actor Visibility`, not a special R20 invisibility flag. Validate donor implementation status and current V1 systems before adaptation. Simulation owns detection; UI/render/targeting consume it, performance bounded (no per-frame all-actor LOS).
+  
+### Poisoned meat, risk, and responsibility
+- Author requires **player crafting of poisoned meat**, placed as an **actual physical bait item** that animals can consume according to diets. Poison takes effect through real animal state and may kill Rat Boss. A generic fauna/items/crafting capability, not a button that executes a quest kill or an R20-only exception. Current `docs/STATE.md` lists full player-side crafting as not implemented; recipe and systems availability require recon.
+- **Any animal able and willing to eat this bait may be harmed**, including domestic dogs and appropriate livestock only if their food preferences permit it. No species-based quest immunity.
+- **Only bait placement *inside a settlement*** triggers the special warning obligation. Player must warn **Marek (guard) AND at least one settlement resident**, **before placing the first poisoned bait in that settlement incident**. Making/carrying bait is not placement. Outside settlements there is **no warning-based reputation penalty**; physical poison can still harm animals.
+- Missing either warning causes **one base reputation penalty for the incident**, not one penalty per bait; actual attributable harm can trigger **additional, separately balanced consequences**. Warnings can cause real risk-reducing NPC/animal behavior, **never magic poison immunity**. Values, attribution and resident warning behavior remain for technical/social balance. This is optional advance warning, not a hard block on placing poison. Be precise about settlement boundary/identity; no arbitrary radius around Marek.
+
+### Completion and population lifecycle
+- Completion requires **all**: Rat Boss dead; **all incident nests destroyed**; warehouse really repaired; **at most one living ordinary rat physically present in the settlement** (same V1 count threshold, but local scoped). Rat Boss cannot be counted as the permissible survivor.
+- Rats in forests/other settlements **do not block**. Rats present in the settlement but outside current rendering/streaming **do count**; avoid disappearance-based false completions. Author explicitly rejects chasing far-away rats or a counter that counts unloaded animals as absent.
+- Prevent generic rat **respawn/replenishment from immediately defeating progress**: once nests are destroyed, their incident replenishment stops; after resolution provide a **temporary local protection/cooldown** before ordinary ecology can produce new rat pressure. The author requires a practical pause but has **not fixed its duration**. Never re-spawn Rat Boss or reconstitute completed R20 automatically; later independent infestation must have separate incident identity. Do not globally disable rat ecology.
+- V1 already uses `resolve_storage_rat_infestation` + `settlementRatInfestationSnapshot` with `exists`, `storageDamaged`, `nestDestroyed`, `aliveRatCount <= 1`. The new criteria need migration to an authoritative multi-nest, named-boss, spatially filtered count and spawn lifecycle. Absence of registry does not count as completion. Preserve stable quest ID `plaga-szcurow` and reconcile old saves/accepted quests.
+
+### Not yet decided / implementation verification
+- Exact warehouse model/placement, door interaction and permission UX, NPC/animal traversal, and system ownership.
+- Stable nest/boss identities, habitat defense AI reuse, settlement spatial boundary and offscreen counting, migration of old one-nest state, and whether a future independent infestation may recur.
+- Crafting recipe ingredients, poison potency/onset, diet/eating mechanics, poison item ownership and placement, warning propagation and attribution of harm; no existing general poisoned-meat crafting has been verified.
+- Protection/cooldown duration, specific reputation amounts and other balancing numbers. No invented values.
+- Testability/performance of world perception, physical occupancy and saved quest state; V3 `MAP-02` is `planned`, not proof of working V1 functionality.
+
+**Preliminary effort:** **XL** inclusive of general manual doors, actor perception, warehouse, multi-nest ecology, boss and player-crafted poisoned bait. Not a verified estimate or authorization to code. D4 Performance-First integration freeze continues.
+
 ## Focused session checklist — discussion, NOT implementation tasks
 
 - [x] Decide Greybeard identity/story order and lethal-only outcome; R06+G07 one case, R30 merged into R31 (details above).
 - [ ] Verify actual `frenzyWolf` test/simulation behavior and select when wolves approach the settlement without creating an artificial story-only spawn system.
 - [x] Select physical clear + permanent destroy within one R31 case, no R30 payout, one main renown per distinct accomplishment; technical arbitration remains to implement.
 - [x] Preserve Kasia's pre-destruction horse contract, ownership reservation and existing death branch; exact runtime verification pending.
-- [ ] Define rat-boss location in a real warehouse building and the minimum combat/AI scope; assess optional poison effects and warning fairness for livestock/dogs.
+- [x] Approve R20 warehouse interior, mandatory Rat Boss, multi-nest/local-count completion, poisoned-meat risk and warning/reputation contract (above); technical verification and balancing remain open.
 - [ ] Decide whether the stolen lamb belongs to Anna or Molly and how actual custody/restitution works; generated livestock loss remains intact.
 - [x] Record R48 decision: **Defer · low priority**; no implementation work authorized.
 - [ ] Scope boar target identity and optional helper only if justified; preserve conditional ecology and hunter profession.
@@ -156,4 +189,4 @@ V3 had (1) a full personal Greybeard investigation with kill/drive/poison choice
 - [x] Record preliminary wolf-series L effort, no detailed estimate until implementation recon.
 - [ ] Keep deferred stories deferred and D4 runtime integration frozen unless separately authorized.
 
-**Next step:** Use this file as the opening context for the group's independent design session. No plan or coding-agent handoff is approved by these checkboxes.
+**Next step:** Continue unresolved Group 3 discussions (stolen lamb and hunting polish); wolf series and R20 narrative decisions are recorded. No plan or coding-agent handoff is approved by these checkboxes.
