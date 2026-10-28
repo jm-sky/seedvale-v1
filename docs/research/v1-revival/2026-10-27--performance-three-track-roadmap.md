@@ -118,3 +118,7 @@ Preserve the baseline SHA/device/configuration/workload/reports and reuse while 
 | C — delta audit 2026-10-27 | Claude Opus 5.5 | [Grass/flowers audit](./2026-10-27--revival-audit--grass-flowers-v3.md) | Recommends V1-side memory/upload trims first, V3 backend gated on C0; baseline slot ready; PENDING BASELINE |
 
 Cross-track integration, approved priority and remaining proposals: [Master Revival Roadmap](./2026-10-27--master-revival-roadmap.md). Note: diagnostic 032 was captured at `e124e866`, before the minimum instrument SHA `94a74470`; it is not comparable to certified baselines.
+
+## Parked candidate — V1 tree geometry LOD (2026-10-28)
+
+[Six-tree LOD1 + billboard impostor backlog candidate](./2026-10-28--tree-lod-v1-backlog-candidate.md): prepared inert assets in `public/assets/tree-lod/v1/` (`d867f38`); proposed high priority, **not yet ranked or authorized**. Evaluate against active A/B/C work at the next performance-prioritization gate. Preserve existing V1 LOD0, density, height and tree lifecycle; recon/plan first, staged LOD1 then billboard only if approved. This entry does not add a fourth active implementation track or alter D4/D9.
