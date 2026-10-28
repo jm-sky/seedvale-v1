@@ -1,7 +1,7 @@
 # Quest Revival — Session 3: Hunters, fauna, wolves and livestock
 
 **Created:** 2026-10-28  
-**Status:** Author decisions recorded; focused design session pending. **NOT an approved implementation plan.**  
+**Status:** Wolf-series narrative decisions finalized 2026-10-28; remaining Group 3 topics pending. **NOT an approved implementation plan.**  
 **Repo:** `jm-sky/seedvale-v1`, `main`  
 **Evidence:** [61-record matrix](../2026-10-27--quest-revival-matrix.md) · [runtime findings](../2026-10-27--quest-revival-runtime-evidence.md) · [portfolio analysis](../2026-10-28--quest-portfolio-prioritization.md)  
 **Rule:** Latest author decisions override earlier *recommendations*, not underlying code evidence. Existing V1 definition ≠ verified end-to-end playability. V2 record ≠ an authored V1 quest. D4 Performance-First integration freeze remains binding.
@@ -107,12 +107,41 @@ A named Greybeard arc replacing generic wolf story beats, actual threatening wol
 **Player-facing current/donor story:** V2 Q02 presents a sow with piglets below a road and options to clear the den, reroute traffic or keep watch.  
 **Discussion boundary:** Keep for later real navigation/guard/animal-family effects.
 
+## Approved wolf-series decisions — 2026-10-28 (R06, G07/R46, R30, R31, R32)
+
+**This section supersedes the earlier provisional discussion boundaries for these five source records.** It is author-approved narrative/scope direction, not an implementation plan or proof of runtime behavior.
+
+### Story and structure
+- **R06 `grozny-wilk` + V2 G07/R46** become **one authored Greybeard case**, not two named/dangerous wolves. Greybeard is the distinctive, old, solitary wolf with stable identity and a separate resting place. The dog's death and Jacob's family stake may inform dialogue, but the elaborate V2 clue investigation is **not mandatory**.
+- **Anna or Jacob can independently offer the SAME case** with potentially different relation/reputation prerequisites. Accepting from either must preserve contextual dialogue with the other; they may both reward distinct contributions without duplicate main renown. Exact eligibility thresholds, item provenance and Jacob's personal reward are not yet decided.
+- **Greybeard must die** to resolve the case. Sword, bow, traps and poison can be means of death where real mechanics exist. The V2 nonlethal drive-off ending is **removed**. Poison must not be promised as already implemented; avoid building a bespoke quest-only poison subsystem. Greybeard must not respawn or lose identity on stream/save/reload.
+- **After Greybeard dies**, the larger settlement-threatening pack activates **on the following night**, as a saved, once-only story transition. This deliberately **replaces V1's unconditional day-2 activation gate** for this authored incident. Story flags are acceptable as triggers; actual pressure, wolves, trips, combat and habitat state belong to authoritative fauna simulation. **No real wolf migration/territory system required.**
+- Greybeard has his **own resting place**; the larger pack occupies the **existing V1 `wolfDen`/`WOLF_DEN_ID`**, not a new third den. At activation, even an *earlier*-destroyed wolf den is **restored/reoccupied once at night**. After the new-pack incident starts, player destruction must remain permanent. Preserve actor/spawner identities, no double spawn on reload, and reconcile older saves.
+- **R30 `wilcza-jama` is consolidated into R31 `wilki-pod-osada`**, not maintained as a separately paying quest. The combined settlement case requires killing/clearing the bound pack and **permanently destroying its habitat**. Keep clearing vs destruction as distinct *physical states*, but not separate quest payouts. Preserve authored and generated `world:wolf-den-pressure` claims over the same real incident without duplicate exclusive work or renown.
+- The pack must **really approach and threaten the settlement**. Group 1's approved damaged-palisade collision gap allows wolves through; repair improves safety but does not automatically remove the pack. The existing V1 fauna pressure/trips should be reused and the `frenzyWolf` test behavior **still needs targeted verification** (not claimed checked here).
+- **R32 `wilki-u-kupca` is Kasia's distinct dialogue/pre-agreed offer on the same physical R31 incident**, not a second pack or an extra den-destruction mission. The player **must accept Kasia's offer before den destruction**. Reward: transfer one actually existing, reserved merchant horse, plus Kasia relationship, **without another large renown award**. Preserve real ownership transfer, death/unavailability `horse_lost` branch, and save/load. No retroactive horse offer is authorized.
+- **Rewards:** Anna's Greybeard reward retains the V1 Damascus sword plus public recognition (main renown once); Jacob may grant a distinct personal reward/relationship. R31 grants a single main reward for protecting the settlement; R30 grants **no separate payout**. The `obsidian_sword` is **removed from R30 reward** and retained only as a *candidate* for a later hidden treasure (not approved placement, cave or new quest).
+
+### Earlier V3 curation vs selected V1+V3 hybrid
+V3 had (1) a full personal Greybeard investigation with kill/drive/poison choices, (2) a **separate** short R06→R30 wolf-and-den thread, and (3) a larger settlement pack R31/R32 after Greybeard, with narrative territorial displacement. The approved hybrid **keeps** Greybeard-before-pack, the personal Jacob angle as optional dialogue, one shared settlement/merchant problem, and no required ecological migration. It **changes** R06 into Greybeard itself, removes the second wolf and mandatory investigation/drive ending, folds R30 into R31, replaces the day counter with a nocturnal story gate, reuses a physical V1 den (one-time renewal if previously destroyed), and removes the arbitrary obsidian reward.
+
+### Open technical/story details — not additional approved decisions
+- Whether a Greybeard killed **before accepting** R06 can later be reported/credited (assistant recommendation: yes; author has not voted).
+- Exact Anna/Jacob offer gates and Jacob reward; how two conversations credit once while paying distinct earned entitlements.
+- Poison/trap availability, fairness and species-wide mechanics (not an approved requirement to build for this story).
+- Kasia's horse dies/unavailable before handover: preserve current failure/no resurrection, but any compensation is undecided.
+- Exact handling of nocturnal activation across time skips/unload, previously burned den, existing inhabitants, old saves and resuming active quest IDs. Reconcile without adding a parallel fauna system.
+- Whether R31 requires an explicit offer before the player preemptively clears/destroys the newly activated den; completion should reflect real world state, not invent another pack.
+- Exact reward values and alternative source for the obsidian sword remain open; no implementation tickets authorized.
+
+**Preliminary size:** overall wolf redesign **L**; principal technical risks are named-fauna persistence, one-time den renewal, quest-ID/save compatibility, and shared incident/horse reward arbitration. No runtime or performance claim is made.
+
 ## Focused session checklist — discussion, NOT implementation tasks
 
-- [ ] Design one source-of-truth Greybeard identity and story order spanning R06/R30/R31/R32/G07; choose kill/drive/poison implications.
+- [x] Decide Greybeard identity/story order and lethal-only outcome; R06+G07 one case, R30 merged into R31 (details above).
 - [ ] Verify actual `frenzyWolf` test/simulation behavior and select when wolves approach the settlement without creating an artificial story-only spawn system.
-- [ ] Preserve clear-den vs destroy-den states; define shared-incident reward arbitration and guard renown without duplicating claims.
-- [ ] Preserve Kasia's specific horse as a physical reward with ownership reservation and death branch.
+- [x] Select physical clear + permanent destroy within one R31 case, no R30 payout, one main renown per distinct accomplishment; technical arbitration remains to implement.
+- [x] Preserve Kasia's pre-destruction horse contract, ownership reservation and existing death branch; exact runtime verification pending.
 - [ ] Define rat-boss location in a real warehouse building and the minimum combat/AI scope; assess optional poison effects and warning fairness for livestock/dogs.
 - [ ] Decide whether the stolen lamb belongs to Anna or Molly and how actual custody/restitution works; generated livestock loss remains intact.
 - [x] Record R48 decision: **Defer · low priority**; no implementation work authorized.
@@ -121,10 +150,10 @@ A named Greybeard arc replacing generic wolf story beats, actual threatening wol
 
 ## Session exit conditions
 
-- [ ] Record which choices were actually made, and which still need author input.
-- [ ] State the selected gameplay effect and what exists today versus would need new implementation.
-- [ ] List source IDs and save/persistence impacts for any proposed merge, rewrite or retirement.
-- [ ] Reassess incremental development effort and ROI only for the selected variant.
+- [x] Record selected wolf-series decisions separately from remaining author choices (Group 3 not yet finished).
+- [x] Describe selected wolf gameplay and reuse/new scope; implementation and runtime validation pending.
+- [x] Record R06/G07, R30/R31, R32 identity/save compatibility impacts (engineering migration details pending).
+- [x] Record preliminary wolf-series L effort, no detailed estimate until implementation recon.
 - [ ] Keep deferred stories deferred and D4 runtime integration frozen unless separately authorized.
 
 **Next step:** Use this file as the opening context for the group's independent design session. No plan or coding-agent handoff is approved by these checkboxes.
