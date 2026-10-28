@@ -34,6 +34,7 @@ Trwałe reguły. Zmiana = nowy wpis w logu + aktualizacja tej sekcji.
 | G7 | Post-process: EffectComposer + N8AO + SMAA (+ bloom / god rays / film grade). Hardware MSAA wyłączone (i tak bez efektu na targetach composera). **N8AO on/off idzie tylko z presetu/GUI** — nie gasić passa z czasu klatki (oscylator jasna/ciemna na trawie). | `createPostProcessing.ts`, `createRenderer.ts` |
 | G8 | Weryfikacja wizualna = **przeglądarka**, nie sam `tsc`/lint/build. | `CLAUDE.md` |
 | G9 | Droga = tint korytarza na meshu terenu (nie osobny mesh). Miękki brzeg + ziarno dirtu; trawa **soft-fade** w korytarzu, nie hard bald cut. Extra gęstość łąki = **filler LOD** (coverage 0..1, quality knob), nie globalny bump `grass.density`. | `chunkHeightmap` / `biomeColors` / `grass` / `chunkManager`, issue [023](../issues/2026-08-12--023--road-grass-ground-cover.md), plan [world-terrain-005](../plans/archive/world-terrain-005-distance-based-terrain-detail-lod.md) |
+| G19 | **Approved visual direction (2026-10-28): Stylized Realism**, consistent with [VISION.md](../VISION.md#visual-direction--stylized-realism). Aim for high-quality, believable textures, materials, vegetation, lighting, fog, atmosphere, fire, water and wind rather than full photorealism. Target 50–60 FPS on the reference Intel Arc device; 45–60 FPS acceptable, with frametime stability and traversal stutters checked independently. Prefer texture/material improvements for low-poly assets where useful, with measured GPU memory, draw-call and rendering costs. Preserve living-world simulation, existing richness and architectural performance constraints; optimize with existing LOD, instancing, batching and culling mechanisms before accepting visible degradation. No new runtime work or automatic vegetation-density reduction is authorized by this direction. | [VISION.md](../VISION.md#visual-direction--stylized-realism), [Revival Strategic Brief](../research/v1-revival/STRATEGIC-BRIEF.md) |
 | G18 | Road near-field surface detail (koleiny/grudki) = **real vertex displacement baked into the existing corridor height blend** (`roadCandidate`), reusing the pothole mechanism's noise handle/apron sampling — not a shader-only distance-faded displacement, and not a new `RoadMesh`. Rationale: at this scale (few cm) the bumps are imperceptible past typical camera distance anyway (no LOD mechanism needed for the "far stays cheap" half of the contract), and reusing the pothole path means **one** source of road-height truth instead of a second render-only one. Independently toggleable (`surfaceDetailEnabled`) from potholes/edge-wobble. | `chunkHeightmap.ts`'s `roadCandidate`, plan [world-terrain-005](../plans/archive/world-terrain-005-distance-based-terrain-detail-lod.md) |
 | G10 | Asset alignment browser **Game-like** mode reuses `createRenderer` / `createLights` / `createSky` / `skyParamsFromTime` — no parallel preview rig. Post-processing composer runs in **single-view only** (not 4-up). | `src/tools/assetBrowser/`, plan [088](../plans/archive/2026-08-12--088--asset-alignment-browser.md) |
 | G11 | Profile jakości Low/Medium/High/Custom sterują **tylko gałkami live** (pixel ratio, AO/bloom/god rays, odbicia, shadow map, LOD scale). Nie zastępują optymalizacji architektury i nie rebuildują świata. | `src/config/qualityProfiles.ts`, plan [103](../plans/archive/2026-08-13--103--performance-diagnostics-benchmark.md) |
@@ -64,6 +65,13 @@ Trwałe reguły. Zmiana = nowy wpis w logu + aktualizacja tej sekcji.
 ---
 
 ## Log
+
+### 2026-10-28 — Stylized Realism visual direction 📝
+
+- Author approved the cross-project visual target recorded as G19 and in [VISION.md](../VISION.md#visual-direction--stylized-realism); V3's D-RENDER-Q2 is a reference, not an instruction to port V3 rendering.
+- Target 50–60 FPS, acceptable 45–60 FPS on the reference device; judge frametime and travel stutters separately. Continue existing D4 Performance-First sequencing, with no new runtime integration approval.
+- Realistic textures can improve low-poly presentation, but texture memory, materials and draw submissions must be checked. Vegetation, light effects, fog, atmosphere, fire, water and wind are focus keywords, not automatically approved tasks.
+
 
 ### 2026-09-14 — Grass instance bounds from worker placement, not `computeBoundingSphere` 🔧
 
