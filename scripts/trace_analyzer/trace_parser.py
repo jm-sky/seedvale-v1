@@ -5,6 +5,7 @@ events and "B"/"E" begin/end pairs) into normalized `Event`s.
 
 from __future__ import annotations
 
+import re
 from datetime import datetime
 from collections import defaultdict
 import json
@@ -60,21 +61,27 @@ def load_trace(
 
 def get_trace_date_time(path: Path) -> str:
     """
-    Returns the date and time of the trace file.
+    Returns the date and time of the trace file, derived from its name.
+
+    Understands Chrome's default ``Trace-YYYYMMDDTHHMMSS`` and the
+    ``trace-YYYY-MM-DD--HHMM`` naming; returns '' for anything else rather
+    than failing the whole analysis.
     """
-    parts = path.stem.split("-")
-    timestamp = ''
-    for part in parts:
-        if part.split('T')[0].isdigit():
-            timestamp = part
-            break
-
-    date = datetime.strptime(timestamp, "%Y%m%dT%H%M%S") if timestamp else None
-
-    if not timestamp:
-        return ''
-
-    return f'Trace date/time: {date.strftime("%Y-%m-%d %H:%M:%S")}'
+    stem = path.stem
+    match = re.search(r"(\d{8}T\d{6})", stem)
+    if match:
+        date = datetime.strptime(match.group(1), "%Y%m%dT%H%M%S")
+        return f'Trace date/time: {date.strftime("%Y-%m-%d %H:%M:%S")}'
+    match = re.search(r"(\d{4}-\d{2}-\d{2})--(\d{2})(\d{2})", stem)
+    if match:
+        try:
+            date = datetime.strptime(
+                f"{match.group(1)} {match.group(2)}:{match.group(3)}", "%Y-%m-%d %H:%M"
+            )
+        except ValueError:
+            return ''
+        return f'Trace date/time: {date.strftime("%Y-%m-%d %H:%M")}'
+    return ''
 
 
 def trace_start_ms(
