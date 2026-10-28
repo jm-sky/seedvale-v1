@@ -189,6 +189,17 @@ Seedvale should prefer understandable, composable simulation mechanisms before e
 
 A system is stronger when it can continue producing meaningful state changes without requiring the player to trigger every step.
 
+## Visual direction — Stylized Realism
+
+**Approved author direction (2026-10-28).** Seedvale aims for **stylized realism**: beautiful, believable medieval-world graphics, not full photorealism. Preserve the atmosphere and identity of V1.
+
+- **Performance:** target **50–60 FPS** on the reference device (DELL Pro Premium with Intel Arc); **45–60 FPS** is acceptable. Evaluate **frametime stability and traversal stutters separately** from average FPS.
+- **Living world:** pursue high visual quality **without simplifying or weakening the autonomous simulation**.
+- **Materials:** realistic-looking textures (wood, stone, fabrics, bark and other appropriate surfaces) are a preferred, potentially cost-effective way to improve low-poly assets without increasing geometry complexity. Evaluate texture memory, material/draw-call cost and the final look; low-poly stylization is not itself a defect.
+- **Visual focus keywords:** vegetation, lighting effects, fog, atmosphere, fire, water, wind.
+
+These are visual goals, **not blanket approval for new effects, asset replacements or runtime implementation**. Performance changes must preserve existing world richness and follow the current Revival Performance-First constraints. Specific density changes and visual trade-offs require separate evidence and approval.
+
 ## 8. Long-term destination
 
 The long-term Seedvale vision is a generated world populated by agents that are sufficiently coherent to develop their own lives.
