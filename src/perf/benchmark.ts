@@ -329,6 +329,8 @@ export function createBenchmarkRunner(host: BenchmarkHost): BenchmarkRunner {
         host.passCollector.beginSession()
         monitor.setSource('benchmark', true)
         monitor.beginSession()
+        // User-timing marks let an external trace recorder start/stop exactly on the measured window.
+        performance.mark('seedvale:bench-window-start')
         const windowStartedAt = performance.timeOrigin + performance.now()
         try {
           await sleep(durationSec * 1000)
@@ -336,6 +338,7 @@ export function createBenchmarkRunner(host: BenchmarkHost): BenchmarkRunner {
           // Always tear down collector even if the timed window throws.
         }
         const totals = monitor.endSession()
+        performance.mark('seedvale:bench-window-end')
         if (typeof window !== 'undefined') {
           // Epoch-ms bounds of the measured window, so external diagnostics
           // (console GL errors, traces) can be placed relative to it.
