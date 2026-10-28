@@ -1,0 +1,69 @@
+samples=69565 sampled_total_ms=29628
+
+## SELF (top 25)
+    3169 ms  10.7%  nearestRiverShoreCandidate  src/terrain/riverNetwork.ts:214
+    2972 ms  10.0%  updateMatrixWorld  node_modules/.vite/deps/chunk-4SR3H3JQ.js:7265
+    1675 ms   5.7%  projectObject  node_modules/.vite/deps/chunk-4SR3H3JQ.js:42152
+    1589 ms   5.4%  (program)  :1
+     947 ms   3.2%  multiplyMatrices  node_modules/.vite/deps/chunk-4SR3H3JQ.js:5551
+     936 ms   3.2%  renderObject  node_modules/.vite/deps/chunk-4SR3H3JQ.js:37526
+     798 ms   2.7%  renderObject  node_modules/.vite/deps/three_addons_renderers_CSS2DRenderer__js.js:89
+     731 ms   2.5%  WebGLRenderer.renderBufferDirect  node_modules/.vite/deps/chunk-4SR3H3JQ.js:41862
+     694 ms   2.3%  setProgram  node_modules/.vite/deps/chunk-4SR3H3JQ.js:42425
+     654 ms   2.2%  bindVertexArray  :1
+     433 ms   1.5%  getProgram  node_modules/.vite/deps/chunk-4SR3H3JQ.js:42322
+     421 ms   1.4%  texSubImage2D  :1
+     380 ms   1.3%  setValue  node_modules/.vite/deps/chunk-4SR3H3JQ.js:35394
+     371 ms   1.3%  copyArray  node_modules/.vite/deps/chunk-4SR3H3JQ.js:34833
+     358 ms   1.2%  getParameters  node_modules/.vite/deps/chunk-4SR3H3JQ.js:36175
+     342 ms   1.2%  uniformMatrix4fv  :1
+     341 ms   1.2%  refreshUniformsCommon  node_modules/.vite/deps/chunk-4SR3H3JQ.js:40431
+     338 ms   1.1%  upload  node_modules/.vite/deps/chunk-4SR3H3JQ.js:35459
+     309 ms   1.0%  getBindingState  node_modules/.vite/deps/chunk-4SR3H3JQ.js:32677
+     305 ms   1.0%  renderObjects  node_modules/.vite/deps/chunk-4SR3H3JQ.js:42290
+     293 ms   1.0%  update  node_modules/.vite/deps/chunk-4SR3H3JQ.js:34579
+     279 ms   0.9%  needsUpdate  node_modules/.vite/deps/chunk-4SR3H3JQ.js:32724
+     273 ms   0.9%  setValueV3f  node_modules/.vite/deps/chunk-4SR3H3JQ.js:34869
+     258 ms   0.9%  recordDraw  src/perf/passSubmissionCollector.ts:150
+     246 ms   0.8%  classifyObject  src/perf/sceneCensus.ts:111
+
+## INCLUSIVE, project code only (src/), top 25
+   27827 ms  93.9%  tick  src/app/appRenderLoop.ts:81
+   27825 ms  93.9%  onTick  src/app/createApp.ts:3183
+   27794 ms  93.8%  tick  src/app/gameLoop.ts:525
+   24161 ms  81.5%  withCategory  src/perf/monitor.ts:405
+   17758 ms  59.9%  withProgramCensusStage  src/perf/programCensus.ts:517
+   17755 ms  59.9%  withPass  src/perf/passSubmissionCollector.ts:298
+   16798 ms  56.7%  (anon)  src/app/gameLoop.ts:2270
+   14316 ms  48.3%  (anon)  src/app/gameLoop.ts:2272
+   14291 ms  48.2%  render  src/render/createPostProcessing.ts:119
+   14291 ms  48.2%  runBeauty  src/app/gameLoop.ts:2273
+   10394 ms  35.1%  mutable.renderBufferDirect  src/perf/passSubmissionCollector.ts:192
+    3441 ms  11.6%  (anon)  src/app/gameLoop.ts:2246
+    3441 ms  11.6%  (anon)  src/app/gameLoop.ts:2245
+    3431 ms  11.6%  renderMirror  src/world/createOcean.ts:33
+    3431 ms  11.6%  runMirror  src/app/gameLoop.ts:2247
+    3426 ms  11.6%  render  src/world/waterMirror.ts:70
+    3182 ms  10.7%  riverShoreQuery  src/terrain/chunkManager.ts:1681
+    3169 ms  10.7%  nearestRiverShoreCandidate  src/terrain/riverNetwork.ts:214
+    2622 ms   8.8%  buildInteractables  src/app/interactables.ts:319
+    2436 ms   8.2%  resolveWaterBodyShore  src/app/interactables.ts:274
+    2430 ms   8.2%  update  src/fauna/AnimalAgent.ts:2302
+    2113 ms   7.1%  (anon)  src/app/gameLoop.ts:2071
+    2105 ms   7.1%  update  src/fauna/createFauna.ts:732
+    1653 ms   5.6%  (anon)  src/app/gameLoop.ts:2043
+    1651 ms   5.6%  update  src/settlement/SettlementsManager.ts:706
+
+## INCLUSIVE, three.js/render (top 12)
+   27827 ms  93.9%  tick  src/app/appRenderLoop.ts:81
+   27794 ms  93.8%  tick  src/app/gameLoop.ts:525
+   14291 ms  48.2%  render  src/render/createPostProcessing.ts:119
+   14267 ms  48.2%  render  node_modules/.vite/deps/three_examples_jsm_postprocessing_EffectComposer__js.js:199
+   14114 ms  47.6%  render  node_modules/.vite/deps/n8ao.js:3310
+    8779 ms  29.6%  renderObject  node_modules/.vite/deps/chunk-4SR3H3JQ.js:42304
+    6474 ms  21.9%  setProgram  node_modules/.vite/deps/chunk-4SR3H3JQ.js:42425
+    3507 ms  11.8%  updateMatrixWorld  node_modules/.vite/deps/chunk-4SR3H3JQ.js:7265
+    3426 ms  11.6%  render  src/world/waterMirror.ts:70
+    3183 ms  10.7%  renderObject  node_modules/.vite/deps/chunk-4SR3H3JQ.js:37526
+    2765 ms   9.3%  projectObject  node_modules/.vite/deps/chunk-4SR3H3JQ.js:42152
+     842 ms   2.8%  getProgram  node_modules/.vite/deps/chunk-4SR3H3JQ.js:42322
