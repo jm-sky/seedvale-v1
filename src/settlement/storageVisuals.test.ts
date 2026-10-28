@@ -23,6 +23,13 @@ import {
   type WoodPileStage,
   woodPileVisualState,
 } from './storageVisuals'
+import {
+  bakeWoodPileTierTemplates,
+  createInstancedWoodPileVisuals,
+  WOOD_PILE_TIER_NODES,
+  WOOD_PILE_TIER_SCALE,
+  type WoodPileTierTemplates,
+} from './woodPileTiers'
 
 const sampleHeight = () => 0
 
@@ -471,5 +478,193 @@ describe('createFoodStorageVisual', () => {
     const items = new Inventory({ carrot: 4, fish: 2 })
     const sig = foodStorageAllocationSignature(allocateFoodRepresentatives(items))
     expect(sig).toBe('carrot:2|fish:2')
+  })
+})
+
+function tierRoot(opts: { skip?: WoodPileStage, sharedMaterial?: boolean } = {}): THREE.Group {
+  const root = new THREE.Group()
+  const material = new THREE.MeshStandardMaterial()
+  for (const stage of WOOD_PILE_STAGES) {
+    if (stage === opts.skip) continue
+    const node = new THREE.Group()
+    node.name = WOOD_PILE_TIER_NODES[stage]
+    const mesh = new THREE.Mesh(
+      new THREE.BoxGeometry(1, 1, 1).translate(0, 0.5, 0),
+      opts.sharedMaterial === false ? new THREE.MeshStandardMaterial() : material,
+    )
+    node.add(mesh)
+    root.add(node)
+  }
+  return root
+}
+
+function bakedTemplates(): WoodPileTierTemplates {
+  const templates = bakeWoodPileTierTemplates(tierRoot())
+  if (!templates) throw new Error('expected templates')
+  return templates
+}
+
+function instancedMeshes(group: THREE.Object3D): THREE.InstancedMesh[] {
+  const out: THREE.InstancedMesh[] = []
+  group.traverse((o) => { if ((o as THREE.InstancedMesh).isInstancedMesh) out.push(o as THREE.InstancedMesh) })
+  return out
+}
+
+/** Drawn instances per tier node name across a set of groups (visible meshes only). */
+function drawnByGeometry(groups: THREE.Object3D[], templates: WoodPileTierTemplates): Map<WoodPileStage, number> {
+  const out = new Map<WoodPileStage, number>()
+  for (const g of groups) {
+    for (const mesh of instancedMeshes(g)) {
+      if (!mesh.visible || mesh.count === 0) continue
+      const stage = WOOD_PILE_STAGES.find((st) => templates.geometries[st] === mesh.geometry)!
+      out.set(stage, (out.get(stage) ?? 0) + mesh.count)
+    }
+  }
+  return out
+}
+
+describe('wood pile tier templates', () => {
+  it('maps every V1 stage to a distinct V2 firewood tier node', () => {
+    expect(WOOD_PILE_STAGES.map((s) => WOOD_PILE_TIER_NODES[s])).toEqual([
+      'pile_firewood_1', 'pile_firewood_5', 'pile_firewood_7', 'pile_firewood_14', 'pile_firewood_20',
+    ])
+  })
+
+  it('bakes immutable shared-GPU geometry with the presentation scale, one shared material', () => {
+    const templates = bakedTemplates()
+    for (const stage of WOOD_PILE_STAGES) {
+      const g = templates.geometries[stage]
+      expect(g.userData.sharedGpu).toBe(true)
+      g.computeBoundingBox()
+      expect(g.boundingBox!.max.y).toBeCloseTo(WOOD_PILE_TIER_SCALE)
+    }
+    expect(templates.material.userData.sharedGpu).toBe(true)
+  })
+
+  it('returns null (legacy fallback) for a missing tier node or non-shared materials', () => {
+    expect(bakeWoodPileTierTemplates(tierRoot({ skip: 'Pile_10' }))).toBeNull()
+    expect(bakeWoodPileTierTemplates(tierRoot({ sharedMaterial: false }))).toBeNull()
+    expect(bakeWoodPileTierTemplates(new THREE.Group())).toBeNull()
+  })
+})
+
+describe('instanced wood pile visuals', () => {
+  const placements = {
+    primary: { x: 10, z: 20 },
+    overflow: [{ x: 7, z: 21 }, { x: 8, z: 22 }],
+    households: [{ x: 0, z: 0 }, { x: 5, z: 0 }, { x: 10, z: 0 }],
+  }
+
+  it('shows exactly the V1 tier at each quantity threshold', () => {
+    const templates = bakedTemplates()
+    const cases: [number, WoodPileStage | null][] = [
+      [0, null], [1, 'Pile_01'], [2, 'Pile_05'], [5, 'Pile_05'], [6, 'Pile_10'],
+      [10, 'Pile_10'], [11, 'Pile_18'], [20, 'Pile_18'], [21, 'Pile_29'],
+    ]
+    for (const [quantity, stage] of cases) {
+      const visuals = createInstancedWoodPileVisuals(templates, placements, sampleHeight)
+      visuals.households[0]!.sync(quantity)
+      const drawn = drawnByGeometry(visuals.groups, templates)
+      expect([...drawn.entries()], `household quantity ${quantity}`).toEqual(stage ? [[stage, 1]] : [])
+    }
+  })
+
+  it('keeps settlement and household stock independent', () => {
+    const templates = bakedTemplates()
+    const visuals = createInstancedWoodPileVisuals(templates, placements, sampleHeight)
+    visuals.settlement.sync(3)
+    visuals.households[1]!.sync(12)
+    expect(drawnByGeometry(visuals.groups, templates)).toEqual(new Map([['Pile_05', 1], ['Pile_18', 1]]))
+    visuals.households[1]!.sync(0)
+    expect(drawnByGeometry(visuals.groups, templates)).toEqual(new Map([['Pile_05', 1]]))
+    visuals.settlement.sync(0)
+    expect(drawnByGeometry(visuals.groups, templates).size).toBe(0)
+  })
+
+  it('bounds overflow to two extra largest piles at the planned offsets', () => {
+    const templates = bakedTemplates()
+    const visuals = createInstancedWoodPileVisuals(templates, placements, sampleHeight)
+    const overflowGroup = visuals.groups.find((g) => g.name === 'settlement-wood-overflow')!
+    const overflowPositions = (): THREE.Vector3[] => instancedMeshes(overflowGroup).flatMap((m) =>
+      m.visible ? Array.from({ length: m.count }, (_, i) => {
+        const mat = new THREE.Matrix4()
+        m.getMatrixAt(i, mat)
+        return new THREE.Vector3().setFromMatrixPosition(mat)
+      }) : [])
+
+    visuals.settlement.sync(20)
+    expect(overflowPositions()).toHaveLength(0)
+    visuals.settlement.sync(21)
+    expect(overflowPositions().map((v) => [v.x, v.z])).toEqual([[7, 21]])
+    visuals.settlement.sync(41)
+    expect(overflowPositions().map((v) => [v.x, v.z])).toEqual([[7, 21], [8, 22]])
+    visuals.settlement.sync(10_000)
+    expect(overflowPositions()).toHaveLength(2)
+    visuals.settlement.sync(5)
+    expect(overflowPositions()).toHaveLength(0)
+  })
+
+  it('keeps household identity and grounds instances at their anchors', () => {
+    const templates = bakedTemplates()
+    const visuals = createInstancedWoodPileVisuals(templates, placements, (x, z) => x + z)
+    visuals.households[2]!.sync(30)
+    const mesh = instancedMeshes(visuals.groups.find((g) => g.name === 'settlement-wood-household')!)[0]!
+    const mat = new THREE.Matrix4()
+    mesh.getMatrixAt(0, mat)
+    const pos = new THREE.Vector3().setFromMatrixPosition(mat)
+    expect([pos.x, pos.y, pos.z]).toEqual([10, 10, 0])
+  })
+
+  it('reuses meshes and shared GPU resources across repeated tier changes', () => {
+    const templates = bakedTemplates()
+    const visuals = createInstancedWoodPileVisuals(templates, placements, sampleHeight)
+    const quantities = [1, 6, 25, 0, 3, 12, 0, 1, 25, 6]
+    for (let round = 0; round < 5; round++) {
+      for (const q of quantities) {
+        for (const h of visuals.households) h.sync(q)
+        visuals.settlement.sync(q)
+      }
+    }
+    const all = visuals.groups.flatMap(instancedMeshes)
+    expect(all.length).toBeLessThanOrEqual(visuals.groups.length * WOOD_PILE_STAGES.length)
+    for (const m of all) {
+      expect(m.material).toBe(templates.material)
+      expect(Object.values(templates.geometries)).toContain(m.geometry)
+    }
+    // Last quantity (6) → every household in the same tier → one draw.
+    expect(drawnByGeometry(visuals.groups, templates).get('Pile_10')).toBe(placements.households.length + 1)
+  })
+
+  it('tags each pool with its own shadow kind and leaves shared GPU resources on dispose', () => {
+    const templates = bakedTemplates()
+    const visuals = createInstancedWoodPileVisuals(templates, placements, sampleHeight)
+    expect(visuals.groups.map((g) => g.userData[SETTLEMENT_SHADOW_KIND_USERDATA])).toEqual([
+      'storageWoodSettlementPrimary', 'storageWoodSettlementOverflow', 'storageWoodHousehold',
+    ])
+    visuals.settlement.sync(50)
+    for (const h of visuals.households) h.sync(50)
+    const geometryDispose = vi.fn()
+    const materialDispose = vi.fn()
+    for (const g of Object.values(templates.geometries)) g.addEventListener('dispose', geometryDispose)
+    templates.material.addEventListener('dispose', materialDispose)
+    const meshes = visuals.groups.flatMap(instancedMeshes)
+    const instanceDispose = vi.fn()
+    for (const m of meshes) m.addEventListener('dispose', instanceDispose)
+    const root = new THREE.Group()
+    for (const g of visuals.groups) root.add(g)
+    loadGltf.disposeObject3D(root)
+    expect(instanceDispose).toHaveBeenCalledTimes(meshes.length)
+    expect(geometryDispose).not.toHaveBeenCalled()
+    expect(materialDispose).not.toHaveBeenCalled()
+  })
+
+  it('does not rewrite instance buffers when the tier is unchanged', () => {
+    const templates = bakedTemplates()
+    const visuals = createInstancedWoodPileVisuals(templates, placements, sampleHeight)
+    visuals.households[0]!.sync(7)
+    const mesh = instancedMeshes(visuals.groups[2]!)[0]!
+    const version = mesh.instanceMatrix.version
+    visuals.households[0]!.sync(9) // still Pile_10
+    expect(mesh.instanceMatrix.version).toBe(version)
   })
 })

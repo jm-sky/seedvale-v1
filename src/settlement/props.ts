@@ -127,6 +127,7 @@ import {
   residentialStructureId,
 } from './villagePlan'
 import { pathPlansToCorridorData } from './villagePlanner'
+import { createInstancedWoodPileVisuals, loadWoodPileTierTemplates } from './woodPileTiers'
 
 export type SettlementHouseLandmark = {
   position: THREE.Vector3
@@ -1067,27 +1068,33 @@ export async function buildSettlementProps(
   const { x: stockX, z: stockZ } = placeAtPlannedAnchor(
     site, landmarkOf(plan, 'stockpile', 0), 4, 1.5,
   )
-  const stockpile = await loadPrimaryWoodStockpile()
-  placeOnGround(stockpile, stockX, stockZ, sampleHeight)
-  tagSettlementShadowKind(stockpile, 'storageWoodSettlementPrimary')
-  group.add(stockpile)
   landmarks.stockpile.set(stockX, sampleHeight(stockX, stockZ), stockZ)
 
-  // Wood pile visual — progressive `Pile_*` on the primary stockpile, with a
-  // handful of extra full piles (pre-placed, hidden) covering high-stock
-  // overflow without rebuilding geometry at runtime.
-  const woodPileExtras = await loadPropTemplates(
-    WOOD_PILE_EXTRA_OFFSETS.map(() => ({ url: WOOD_PILE_URL, height: WOOD_PILE_HEIGHT })),
-    createStockpile,
-  )
-  for (let i = 0; i < woodPileExtras.length; i++) {
-    const extra = woodPileExtras[i]!
-    const offset = WOOD_PILE_EXTRA_OFFSETS[i]!
-    placeOnGround(extra, stockX + offset.dx, stockZ + offset.dz, sampleHeight)
-    tagSettlementShadowKind(extra, 'storageWoodSettlementOverflow')
-    group.add(extra)
+  // Wood pile visuals (quantity-driven). Preferred path: shared V2-derived
+  // firewood tier templates rendered as instanced pools (`woodPileTiers.ts`),
+  // built below once the household yard points are known. Fallback (tier GLB
+  // missing/failed): the legacy progressive `Pile_*` pile plus pre-placed
+  // hidden extra full piles.
+  const woodTierTemplates = await loadWoodPileTierTemplates()
+  let settlementWoodVisual: WoodPileVisual | null = null
+  if (!woodTierTemplates) {
+    const stockpile = await loadPrimaryWoodStockpile()
+    placeOnGround(stockpile, stockX, stockZ, sampleHeight)
+    tagSettlementShadowKind(stockpile, 'storageWoodSettlementPrimary')
+    group.add(stockpile)
+    const woodPileExtras = await loadPropTemplates(
+      WOOD_PILE_EXTRA_OFFSETS.map(() => ({ url: WOOD_PILE_URL, height: WOOD_PILE_HEIGHT })),
+      createStockpile,
+    )
+    for (let i = 0; i < woodPileExtras.length; i++) {
+      const extra = woodPileExtras[i]!
+      const offset = WOOD_PILE_EXTRA_OFFSETS[i]!
+      placeOnGround(extra, stockX + offset.dx, stockZ + offset.dz, sampleHeight)
+      tagSettlementShadowKind(extra, 'storageWoodSettlementOverflow')
+      group.add(extra)
+    }
+    settlementWoodVisual = createWoodPileVisual(stockpile, woodPileExtras)
   }
-  const settlementWoodVisual = createWoodPileVisual(stockpile, woodPileExtras)
 
   // Settlement storage container (plan 156) — physical representation of
   // `SettlementEconomy`, one per settlement, next to the wood stockpile
@@ -1661,14 +1668,29 @@ export async function buildSettlementProps(
   landmarks.householdWoodStorages = householdWoodPlacements.map(
     (p) => new THREE.Vector3(p.x, p.groundY, p.z),
   )
-  const householdWoodTemplate = await loadPrimaryWoodStockpile()
-  const householdWoodVisuals: WoodPileVisual[] = []
-  for (const p of householdWoodPlacements) {
-    const pile = householdWoodTemplate.clone(true)
-    placeOnGround(pile, p.x, p.z, sampleHeight)
-    tagSettlementShadowKind(pile, 'storageWoodHousehold')
-    group.add(pile)
-    householdWoodVisuals.push(createWoodPileVisual(pile, []))
+  let householdWoodVisuals: WoodPileVisual[] = []
+  if (woodTierTemplates) {
+    const instanced = createInstancedWoodPileVisuals(
+      woodTierTemplates,
+      {
+        primary: { x: stockX, z: stockZ },
+        overflow: WOOD_PILE_EXTRA_OFFSETS.map((o) => ({ x: stockX + o.dx, z: stockZ + o.dz })),
+        households: householdWoodPlacements,
+      },
+      sampleHeight,
+    )
+    for (const woodGroup of instanced.groups) group.add(woodGroup)
+    settlementWoodVisual = instanced.settlement
+    householdWoodVisuals = instanced.households
+  } else {
+    const householdWoodTemplate = await loadPrimaryWoodStockpile()
+    for (const p of householdWoodPlacements) {
+      const pile = householdWoodTemplate.clone(true)
+      placeOnGround(pile, p.x, p.z, sampleHeight)
+      tagSettlementShadowKind(pile, 'storageWoodHousehold')
+      group.add(pile)
+      householdWoodVisuals.push(createWoodPileVisual(pile, []))
+    }
   }
 
   // Household-owned blacksmith workplace(s) (`landmarks.blacksmithWorkplaces`,
@@ -2419,7 +2441,7 @@ export async function buildSettlementProps(
     villageTorches,
     houseAssemblies,
     storageVisual: {
-      settlementWood: settlementWoodVisual,
+      settlementWood: settlementWoodVisual ?? { sync() {}, dispose() {} },
       householdWood: householdWoodVisuals,
       settlementFood: settlementFoodVisual,
       householdFood: householdFoodVisuals,
