@@ -91,7 +91,7 @@ export function installActorCullBounds(root: Object3D): ActorCullBoundsResult {
   for (const mesh of skinned) {
     const m = new Matrix4().multiplyMatrices(refInverse, mesh.matrixWorld)
     if (!isSupportedTransform(m) || !isSupportedTransform(mesh.matrixWorld)) continue
-    // Do not leave a static pose box behind for animated raycast broad-phase.
+    // The tight bind-pose box computed here is scratch only; the final box is the envelope cube.
     const previousBox = mesh.boundingBox
     try {
       mesh.boundingBox = box.makeEmpty()
@@ -143,6 +143,15 @@ export function installActorCullBounds(root: Object3D): ActorCullBoundsResult {
       continue
     }
     mesh.boundingSphere = new Sphere(local.clone(), localRadius)
+    // Native SkinnedMesh.raycast broad-phase: after the sphere test it skips the
+    // per-vertex skinned intersection only when `boundingBox` is non-null. Leaving it
+    // null (forest benchmark: ~47 -> ~38 FPS) makes every ray that touches the sphere
+    // skin and test each triangle. A static bind-pose box would be wrong for animated
+    // poses, so use the same conservative animation envelope as the sphere (its cube).
+    mesh.boundingBox = new Box3().setFromCenterAndSize(
+      local,
+      new Vector3(localRadius * 2, localRadius * 2, localRadius * 2),
+    )
     mesh.frustumCulled = true
     result.culled++
   }

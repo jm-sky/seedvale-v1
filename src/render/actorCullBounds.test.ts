@@ -1,5 +1,6 @@
 import {
   Bone,
+  Box3,
   BoxGeometry,
   Float32BufferAttribute,
   Frustum,
@@ -304,18 +305,20 @@ describe('installActorCullBounds', () => {
     expect(a.headMesh.castShadow).toBe(true)
   })
 
-  it('is repeatable and preserves raycast boxes', () => {
+  it('is repeatable and installs a conservative envelope raycast box', () => {
     const a = makeActor()
-    a.body.computeBoundingBox()
-    const previousBox = a.body.boundingBox
-    const boxValue = previousBox!.clone()
     installActorCullBounds(a.wrapper)
     const sphere = a.body.boundingSphere!.clone()
+    const box = a.body.boundingBox!.clone()
+    // Non-null so native SkinnedMesh.raycast can reject rays before per-vertex skinning.
+    expect(box.isEmpty()).toBe(false)
     expect(installActorCullBounds(a.wrapper)).toEqual({ culled: 2, fallback: 0 })
     expect(a.body.boundingSphere).toEqual(sphere)
-    expect(a.body.boundingBox).toBe(previousBox)
-    expect(a.body.boundingBox).toEqual(boxValue)
-    expect(a.headMesh.boundingBox).toBeNull()
+    expect(a.body.boundingBox).toEqual(box)
+    for (const mesh of [a.body, a.headMesh]) {
+      const s = mesh.boundingSphere!
+      expect(mesh.boundingBox!.containsBox(new Box3().setFromCenterAndSize(s.center, new Vector3().setScalar(s.radius * 2)))).toBe(true)
+    }
   })
 
   it('contains meshes driven by independent rigs in one actor envelope', () => {
