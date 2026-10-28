@@ -1,7 +1,7 @@
 # Quest Revival — Author Decisions and Group Session Index (Round 2)
 
 **Created:** 2026-10-28  
-**Status:** **Author direction recorded; group-level detailed design pending.** No content integration or implementation plan is approved.  
+**Status:** **Group 1 narrative decisions finalized; other groups pending.** No content integration or implementation plan is approved.  
 **Repository:** `jm-sky/seedvale-v1` `main`  
 **Sources:** [original complete 61-row prioritization](./2026-10-28--quest-portfolio-prioritization.md), [61-record source evidence](./2026-10-27--quest-revival-matrix.md), [runtime evidence](./2026-10-27--quest-revival-runtime-evidence.md), [Strategic Brief](./STRATEGIC-BRIEF.md).
 
@@ -9,7 +9,7 @@
 
 - These decisions **supersede conflicting provisional recommendations** in the 2026-10-28 portfolio. They do not rewrite or erase historical V3 curation, previous research findings or confirmed V1 behavior.
 - **Round 1:** The author provided a direction for 60 of 61 catalogue records. R48 (rare hare Q01) remains **open**. A direction of `Rewrite / Polish`, `Keep / Merge` or `Add / Defer` expresses intent, not a finalized technical scope.
-- **Round 2, Group 1:** The author selected linked family dialogue, meaningful shell variation, a real water handover, and merged treatment of Anna's sick child. Then clarified that **NOT all Anna/Piotr quests must remain independent**: some belong to a series, and **one wood quest may be removed**. This latest clarification replaces the earlier tentative “all independent quests” assumption. The exact wood source ID and final structure remain open.
+- **Round 2, Group 1:** Narrative decisions finalized in the [Group 1 dossier](./quest-decision-round-2/01-anna-piotr-settlement-life.md). R26 chooses settlement palisade (Anna) vs household fence (Piotr); R01/R02 serve those two targets; R03 is consolidated into R02 without losing physical repair; R09 follows the household fence. Damaged palisade gap lacks collision and wolves can pass. R21 flowers/honey follows initial family help with contextual humor. Child illness R38+G04 is independent but accelerated by R21, with mild reduced-efficiency child NPC, real medicinal herbs, both preparation routes and high-medicine symptom assistance. R23 permits any three of three shell varieties; R33 requires real water handover with implementation-chosen container. R50/R54 remain deferred. Technical questions, migrations and effort are recorded in dossier; D4 remains binding.
 - **R21 now has a different story.** Busy Piotr asks the player to pick flowers and deliver them to his wife Anna. Anna responds by asking the player to take **honey** to Piotr. Guarantee a **nearby hive with bees**. The old fishing-message courier premise is **superseded**, not a rejected mechanic for all quests. Exact flowers, honey ownership/source and transfer remain to be designed.
 - **Weather policy correction:** There is **no author-imposed prohibition** on story-triggered/scheduled weather. It may be changed where worthwhile. Any proposed mechanism must still keep authoritative simulation and saves coherent; R50 is currently **deferred**, so no storm is approved now.
 - **V1 preservation-first:** All 39 original V1 records have source-level counterparts, but not guaranteed appearance or verified playability. The 22 original V2 stories are absent as authored quests in V1. Preserving generic world-driven animal incidents, physical items, settlement work, quest IDs and consequences remains essential wherever the author is not explicitly changing them.
@@ -29,7 +29,7 @@ These are **separate discussion sessions**, not implementation batches, mileston
 
 ## High-impact cross-group coordination
 
-- **Anna/Piotr / R21 / child illness:** session 1 owns the family series structure, one possible wood-quest consolidation, flower → honey exchange, local hive placement and R38 + G04 cast changes. Do not commit to independent source-ID lifecycles until decided.
+- **Anna/Piotr / R21 / child illness:** Group 1 narrative decisions are finalized (see dossier). Preserve physical palisade/collider and household fence repair, migrate retired R03 and changed R02 targets carefully, and verify hive/child NPC/persistence before any implementation approval.
 - **Greybeard/wolves:** session 3 owns R06/R30/R31/R32/G07's shared wolf identity, real settlement approaches (including `frenzyWolf` comparison), den states, merchant horse and reward arbitration.
 - **Sheep theft:** session 3 owns merging the authored Anna stray story R36 with V2 G01's theft narrative, while generic fauna-origin lost-livestock opportunities survive.
 - **Cemetery:** sessions 2/4 own settlement R37 + Q14 rewrite and merge. Session 7 owns R12's actual grave-access authority. Their physical site equivalence is **not yet proven**.
