@@ -18,6 +18,8 @@
     "plans:recommended-order": "tsx scripts/docs/plans-recommended-order.ts",
     "plans:migrate-metadata": "tsx scripts/docs/migrate-plan-metadata.ts",
     "plans:cleanup-metadata": "tsx scripts/docs/cleanup-plan-metadata.ts",
+    "assets:trees-lod:extract": "node scripts/assets/extract-tree-lod.mjs",
+    "assets:trees-lod:validate": "node scripts/assets/validate-tree-lod.mjs",
     "assets:report": "tsx scripts/docs/generate-local-assets-report.ts",
     "assets:list-character-animations": "tsx scripts/assets/list-character-animations.ts",
     "assets:prepare-custom-ubc-npc": "python3 scripts/assets/prepare-custom-ubc-npc.py --all",

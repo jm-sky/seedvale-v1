@@ -1,0 +1,205 @@
+{
+  "packageVersion": 1,
+  "inert": true,
+  "provenance": {
+    "donor": "jm-sky/seedvale-v3",
+    "donorCommit": "47733d6ba0fe96d4607be22c470c7331c76c2c5c",
+    "donorFiles": [
+      "public/assets/trees.glb",
+      "public/assets/trees-impostors.png",
+      "public/assets/trees-impostors-normal.png",
+      "public/assets/trees-impostors.json",
+      "public/assets/trees-build.json"
+    ],
+    "generator": "scripts/assets/extract-tree-lod.mjs"
+  },
+  "files": {
+    "glb": "trees-lod.glb",
+    "atlas": "trees-lod-impostors.png",
+    "atlasNormal": "trees-lod-impostors-normal.png",
+    "atlasJson": "trees-lod-impostors.json"
+  },
+  "atlas": {
+    "views": 8,
+    "cell": 256,
+    "rowOrigin": "bottom",
+    "width": 2048,
+    "height": 1536,
+    "rows": 6
+  },
+  "trees": [
+    {
+      "v1Model": "birch_1.glb",
+      "v1SpeciesIndex": 3,
+      "v1Height": 4.4,
+      "v3Variant": "Birch_A",
+      "kind": "tree_broad",
+      "glbRoot": "Birch_A",
+      "lod0": {
+        "node": "Birch_A/LOD0",
+        "tris": 2960
+      },
+      "lod1": {
+        "node": "Birch_A/LOD1",
+        "tris": 1000,
+        "how": "tight(w1,n4)",
+        "iou": 0.828
+      },
+      "impostor": {
+        "row": 0,
+        "v3Row": 5,
+        "views": 8,
+        "halfWidth": 3.749,
+        "minY": 0,
+        "maxY": 14.536
+      },
+      "v3Scale": 2.675,
+      "v3Height": 14.536,
+      "v1ToV3HeightRatio": 3.3036
+    },
+    {
+      "v1Model": "maple_1.glb",
+      "v1SpeciesIndex": 4,
+      "v1Height": 4.8,
+      "v3Variant": "Maple_A",
+      "kind": "tree_broad",
+      "glbRoot": "Maple_A",
+      "lod0": {
+        "node": "Maple_A/LOD0",
+        "tris": 2960
+      },
+      "lod1": {
+        "node": "Maple_A/LOD1",
+        "tris": 1000,
+        "how": "tight(w1,n5)",
+        "iou": 0.865
+      },
+      "impostor": {
+        "row": 1,
+        "v3Row": 4,
+        "views": 8,
+        "halfWidth": 8.036,
+        "minY": 0,
+        "maxY": 12.429
+      },
+      "v3Scale": 1.871,
+      "v3Height": 12.429,
+      "v1ToV3HeightRatio": 2.5894
+    },
+    {
+      "v1Model": "deadtree_1.glb",
+      "v1SpeciesIndex": 5,
+      "v1Height": 3.6,
+      "v3Variant": "Dead_A",
+      "kind": "tree_dead",
+      "glbRoot": "Dead_A",
+      "lod0": {
+        "node": "Dead_A/LOD0",
+        "tris": 1960
+      },
+      "lod1": {
+        "node": "Dead_A/LOD1",
+        "tris": 760,
+        "iou": 0.917
+      },
+      "impostor": {
+        "row": 2,
+        "v3Row": 9,
+        "views": 8,
+        "halfWidth": 2.58,
+        "minY": 0,
+        "maxY": 9.5
+      },
+      "v3Scale": 1.536,
+      "v3Height": 9.5,
+      "v1ToV3HeightRatio": 2.6389
+    },
+    {
+      "v1Model": "pine_1.glb",
+      "v1SpeciesIndex": 6,
+      "v1Height": 4.6,
+      "v3Variant": "Pine_A",
+      "kind": "tree_pine",
+      "glbRoot": "Pine_A",
+      "lod0": {
+        "node": "Pine_A/LOD0",
+        "tris": 2128
+      },
+      "lod1": {
+        "node": "Pine_A/LOD1",
+        "tris": 448,
+        "how": "simplified(err 0.2)",
+        "iou": 0.874
+      },
+      "impostor": {
+        "row": 3,
+        "v3Row": 6,
+        "views": 8,
+        "halfWidth": 5.119,
+        "minY": 0,
+        "maxY": 14
+      },
+      "v3Scale": 3.108,
+      "v3Height": 14,
+      "v1ToV3HeightRatio": 3.0435
+    },
+    {
+      "v1Model": "pine_3.glb",
+      "v1SpeciesIndex": 7,
+      "v1Height": 5.2,
+      "v3Variant": "Pine_B",
+      "kind": "tree_pine",
+      "glbRoot": "Pine_B",
+      "lod0": {
+        "node": "Pine_B/LOD0",
+        "tris": 1998
+      },
+      "lod1": {
+        "node": "Pine_B/LOD1",
+        "tris": 449,
+        "how": "simplified(err 0.2)",
+        "iou": 0.897
+      },
+      "impostor": {
+        "row": 4,
+        "v3Row": 7,
+        "views": 8,
+        "halfWidth": 5.643,
+        "minY": 0,
+        "maxY": 12
+      },
+      "v3Scale": 5.109,
+      "v3Height": 12,
+      "v1ToV3HeightRatio": 2.3077
+    },
+    {
+      "v1Model": "pine_5.glb",
+      "v1SpeciesIndex": 8,
+      "v1Height": 4,
+      "v3Variant": "Pine_C",
+      "kind": "tree_pine",
+      "glbRoot": "Pine_C",
+      "lod0": {
+        "node": "Pine_C/LOD0",
+        "tris": 838
+      },
+      "lod1": {
+        "node": "Pine_C/LOD1",
+        "tris": 440,
+        "how": "simplified(err 0.2)",
+        "iou": 0.815
+      },
+      "impostor": {
+        "row": 5,
+        "v3Row": 8,
+        "views": 8,
+        "halfWidth": 5.567,
+        "minY": 0,
+        "maxY": 15
+      },
+      "v3Scale": 3.488,
+      "v3Height": 15,
+      "v1ToV3HeightRatio": 3.75
+    }
+  ]
+}

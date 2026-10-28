@@ -1,0 +1,49 @@
+{
+  "views": 8,
+  "cell": 256,
+  "rowOrigin": "bottom",
+  "rows": [
+    {
+      "name": "Birch_A",
+      "kind": "tree_broad",
+      "halfWidth": 3.749,
+      "minY": 0,
+      "maxY": 14.536
+    },
+    {
+      "name": "Maple_A",
+      "kind": "tree_broad",
+      "halfWidth": 8.036,
+      "minY": 0,
+      "maxY": 12.429
+    },
+    {
+      "name": "Dead_A",
+      "kind": "tree_dead",
+      "halfWidth": 2.58,
+      "minY": 0,
+      "maxY": 9.5
+    },
+    {
+      "name": "Pine_A",
+      "kind": "tree_pine",
+      "halfWidth": 5.119,
+      "minY": 0,
+      "maxY": 14
+    },
+    {
+      "name": "Pine_B",
+      "kind": "tree_pine",
+      "halfWidth": 5.643,
+      "minY": 0,
+      "maxY": 12
+    },
+    {
+      "name": "Pine_C",
+      "kind": "tree_pine",
+      "halfWidth": 5.567,
+      "minY": 0,
+      "maxY": 15
+    }
+  ]
+}
