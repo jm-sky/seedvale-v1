@@ -1,3 +1,4 @@
+import * as THREE from 'three'
 import { describe, expect, it } from 'vitest'
 import type { ObbCollider } from '../world/collision'
 import type { SettlementSite } from './findSettlementSite'
@@ -79,13 +80,13 @@ describe('settlementPalisadeColliders', () => {
     })
   })
 
-  it('copies x/z/rotationY straight from the source placement', () => {
+  it('copies x/z from the source placement and negates yaw into the OBB convention', () => {
     const [collider] = settlementPalisadeColliders([
       placement({ x: 12.5, z: -7.25, rotationY: 1.234 }),
     ])
     expect(collider!.x).toBe(12.5)
     expect(collider!.z).toBe(-7.25)
-    expect((collider as ObbCollider).rotationY).toBe(1.234)
+    expect((collider as ObbCollider).rotationY).toBe(-1.234)
   })
 
   it('produces exactly as many colliders as placements', () => {
@@ -105,11 +106,12 @@ describe('settlementPalisadeColliders', () => {
     expect(colliderContainsPoint(unrotated!, WALL_HALF_LENGTH - 0.1, 0)).toBe(true)
     expect(colliderContainsPoint(unrotated!, 0, PALISADE_WALL_HALF_DEPTH + 0.5)).toBe(false)
 
-    // Rotated 90°: the long axis now runs along world z instead.
+    // Rotated 90°: the visual long axis (+X rotated by rotation.y = π/2)
+    // points at world −z.
     const [rotated] = settlementPalisadeColliders([
       placement({ x: 0, z: 0, rotationY: Math.PI / 2 }),
     ])
-    expect(colliderContainsPoint(rotated!, 0, WALL_HALF_LENGTH - 0.1)).toBe(true)
+    expect(colliderContainsPoint(rotated!, 0, -(WALL_HALF_LENGTH - 0.1))).toBe(true)
     expect(colliderContainsPoint(rotated!, PALISADE_WALL_HALF_DEPTH + 0.5, 0)).toBe(false)
   })
 
@@ -132,7 +134,7 @@ describe('fencePlacementColliders (plan settlements-018)', () => {
     expect(fencePlacementColliders([])).toEqual([])
   })
 
-  it('copies x/z/rotationY and shared wall dimensions from each placement', () => {
+  it('copies x/z, scales wall dimensions by placement.scale and negates yaw', () => {
     const [collider] = fencePlacementColliders([
       placement({ x: 8, z: -2, rotationY: 0.25, scale: 0.62 }),
     ])
@@ -140,10 +142,39 @@ describe('fencePlacementColliders (plan settlements-018)', () => {
       type: 'obb',
       x: 8,
       z: -2,
-      halfWidth: WALL_HALF_LENGTH,
-      halfDepth: PALISADE_WALL_HALF_DEPTH,
-      rotationY: 0.25,
+      halfWidth: WALL_HALF_LENGTH * 0.62,
+      halfDepth: PALISADE_WALL_HALF_DEPTH * 0.62,
+      rotationY: -0.25,
     })
+  })
+
+  it('matches the rendered wall axes at arbitrary yaw (instancedProps transform)', () => {
+    for (const deg of [0, 45, 90, 135]) {
+      for (const scale of [1, 0.62]) {
+        const rotationY = (deg * Math.PI) / 180
+        const p = placement({ x: 7, z: -3, rotationY, scale })
+        const [c] = fencePlacementColliders([p]) as [ObbCollider]
+        // Visual transform exactly as instanceWorldMatrix builds it (rotation.y only).
+        const obj = new THREE.Object3D()
+        obj.rotation.y = rotationY
+        obj.position.set(p.x, 0, p.z)
+        obj.updateMatrixWorld(true)
+        const longEnd = new THREE.Vector3(WALL_HALF_LENGTH * scale, 0, 0).applyMatrix4(obj.matrixWorld)
+        const depthEnd = new THREE.Vector3(0, 0, PALISADE_WALL_HALF_DEPTH * scale).applyMatrix4(obj.matrixWorld)
+        // Just inside the transformed extremities → blocked; just outside → free.
+        const inset = 0.02
+        const toward = (end: THREE.Vector3, k: number): [number, number] => [
+          p.x + (end.x - p.x) * k,
+          p.z + (end.z - p.z) * k,
+        ]
+        const longLen = WALL_HALF_LENGTH * scale
+        const depthLen = PALISADE_WALL_HALF_DEPTH * scale
+        expect(colliderContainsPoint(c, ...toward(longEnd, 1 - inset / longLen))).toBe(true)
+        expect(colliderContainsPoint(c, ...toward(longEnd, 1 + (inset * 2) / longLen))).toBe(false)
+        expect(colliderContainsPoint(c, ...toward(depthEnd, 1 - inset / depthLen))).toBe(true)
+        expect(colliderContainsPoint(c, ...toward(depthEnd, 1 + (inset * 2) / depthLen))).toBe(false)
+      }
+    }
   })
 })
 
@@ -239,6 +270,27 @@ describe('closed palisade / entrance torches (plan settlements-010)', () => {
         let delta = Math.abs(ang - outward)
         if (delta > Math.PI) delta = Math.PI * 2 - delta
         expect(delta).toBeGreaterThan(PALISADE_GATE_HALF_ANGLE)
+      }
+    }
+  })
+
+  it('keeps every gate/path opening physically passable through the rotated colliders', () => {
+    const closedPlan = planWith('closed', [roadA, roadB, path])
+    const placements = resolveEntrancePalisadePlacements(
+      site, 'MD', flatSampleHeight, waterLevel, closedPlan,
+    )
+    const colliders = fencePlacementColliders(placements)
+    const radius = closedPlan.boundary.radius
+    for (const gate of [roadA, roadB, path]) {
+      const outward = Math.atan2(gate.z - site.z, gate.x - site.x)
+      // Walk across the opening (gate centre ± 1.5 m lateral, radial ± 1 m).
+      for (let lateral = -1.5; lateral <= 1.5; lateral += 0.5) {
+        for (let radial = -1; radial <= 1; radial += 0.5) {
+          const r = radius + radial
+          const x = site.x + Math.cos(outward) * r - Math.sin(outward) * lateral
+          const z = site.z + Math.sin(outward) * r + Math.cos(outward) * lateral
+          expect(colliders.some((c) => colliderContainsPoint(c, x, z))).toBe(false)
+        }
       }
     }
   })

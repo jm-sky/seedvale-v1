@@ -379,10 +379,14 @@ export async function plantEntrancePalisade(
  * Shared placement → OBB projection for settlement fence / palisade wall
  * segments. Every finished visible placement gets exactly one `obb`
  * collider; omitted gaps (gate, entrance, corridor rejection) have no
- * counterpart — never fabricate a continuous ring. `rotationY`, `x`, and
- * `z` are copied from the canonical placement so collision matches the
- * rendered wall contract (`WALL_HALF_LENGTH` × `PALISADE_WALL_HALF_DEPTH`).
- * Ignores `placement.scale` (same as entrance palisade).
+ * counterpart — never fabricate a continuous ring. `x`/`z` are copied from the
+ * canonical placement; the footprint is `WALL_HALF_LENGTH` ×
+ * `PALISADE_WALL_HALF_DEPTH` scaled by `placement.scale` (pasture/paddock
+ * fences render at 0.62).
+ *
+ * Yaw: `wall.glb`'s long axis is local +X and the visual uses Three.js
+ * `rotation.y = θ` (+X → `(cos θ, −sin θ)`), whereas the OBB convention in
+ * `world/collision.ts` rotates by `+θ`. The OBB therefore takes `−θ`.
  * @domain settlements
  */
 export function fencePlacementColliders(
@@ -392,9 +396,9 @@ export function fencePlacementColliders(
     type: 'obb' as const,
     x: placement.x,
     z: placement.z,
-    halfWidth: WALL_HALF_LENGTH,
-    halfDepth: PALISADE_WALL_HALF_DEPTH,
-    rotationY: placement.rotationY,
+    halfWidth: WALL_HALF_LENGTH * placement.scale,
+    halfDepth: PALISADE_WALL_HALF_DEPTH * placement.scale,
+    rotationY: 0 - placement.rotationY, // not `-x`: avoids -0 for yaw 0
   }))
 }
 
