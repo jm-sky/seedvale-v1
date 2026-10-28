@@ -2,8 +2,8 @@
 
 **Created at:** 2026-10-25  
 **Created by:** ChatGPT GPT-6  
-**Updated at:** 2026-10-27\
-**Updated by:** Claude Opus 5.5
+**Updated at:** 2026-10-28\
+**Updated by:** ChatGPT GPT-6
 
 ## Current strategic entry point
 
@@ -38,6 +38,9 @@ UI migration: [research](./2026-10-26--ui-migration-research.md), [matrix](./202
 V3 donor intake: [docs/v3-donor/](../../v3-donor/) — staged copies of selected V3 voices (MP3 + text banks), character profiles/refs (including Casimir Eastwood), item illustrations + type/category icons, concept art, and the **51 keep/rewrite curated quests** with full linked v1/v2 source documents for re-curation. Staging only; not a runtime merge or implementation backlog. Character kit GLBs already live under `public/assets/characters/`. See also [v3-donor/quests/](../../v3-donor/quests/).
 
 ## Quest portfolio reconciliation — advisory research
+
+**New decision aid (advisory, author decisions pending):** [Complete 61-quest portfolio — scope, incremental effort, narrative impact and ROI](./2026-10-28--quest-portfolio-prioritization.md). Groups all 39 V1 and 22 V2 source records once; identifies early candidates, shared design decisions and possible thematic batches. Historical V3 keep/rewrite/merge/retire/defer dispositions are not binding on V1. No quest implementation or plan is approved; D4 Performance-First remains binding.
+
 
 The author approved **A — V1 preservation-first** as the research direction: preserve V1 gameplay and use V3 selectively as a narrative donor. [Executive recon](./2026-10-27--quest-revival-recon.md), [complete 61-record comparison and quest-by-quest questions](./2026-10-27--quest-revival-matrix.md), and [current runtime evidence, extra V1 families and verification limits](./2026-10-27--quest-revival-runtime-evidence.md) are **advisory inputs for author discussion**. **No individual quest migration, consolidation, retirement or implementation plan has been approved.** The 39 V1 + 22 V2 source records and additional families remain separately accounted; existing V3 dispositions are historical evidence, not V1 instructions. Documentation-only work is compatible with D4 Performance-First; runtime integration remains frozen.
 
