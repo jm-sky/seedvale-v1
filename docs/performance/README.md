@@ -10,6 +10,8 @@ This is the central overview of Seedvale performance. Current code remains the s
 
 **Revival policy (2026-10-27):** [approved D4 Performance-First / D9 V1-first](../research/v1-revival/STRATEGIC-BRIEF.md#approved-revival-decisions-2026-10-27). Complete A/B/C rendering optimization before unrelated workload-affecting integration; [freeze boundaries and entry/exit](../research/v1-revival/2026-10-27--master-revival-roadmap.md#4-strategy--performance-first). Reuse one certified comparable baseline set, use focused regression checks and measure meaningful keep/revert decisions; no automatic benchmark after every commit/stage. [Full benchmark policy](../research/v1-revival/2026-10-27--master-revival-roadmap.md#10-benchmark-policy-and-intake) governs when to run; the existing runbook still governs capture quality.
 
+**Determinism and workload audit (2026-10-28):** [Deep determinism and benchmark reproducibility](./audits/2026-10-28--deep-determinism-and-benchmark-reproducibility.md) — settlement lifecycle defects, scene readiness/identity, cache timing and minimal corrective sequence. Documentation-only; independent A1′ development may continue.
+
 ## Performance model
 
 Keep three problems separate:
