@@ -9,6 +9,8 @@
 
 > **Draft** — roadmap na wysokim poziomie. Szczegóły implementacyjne zostaną uzupełnione przed rozpoczęciem właściwej realizacji planu.
 
+> **Anulowano (2026-10-28).** Historyczny plan MPFB2, nieprzeznaczony do realizacji. Zachowano oryginalny status `draft` ze względu na kontrakt metadanych/generator dokumentacji. Obecny kierunek postaci opisuje `docs/research/v1-revival/2026-10-27--npc-character-art-direction.md`.
+
 ## Cel
 
 Przygotowanie spójnego pipeline'u modeli **Hero i NPC dla Seedvale** opartego na MPFB2, Blenderze, Mixamo i GLB, z możliwością późniejszej automatyzacji przez Blender MCP.

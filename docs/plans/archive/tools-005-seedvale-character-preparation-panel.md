@@ -8,6 +8,8 @@
 **Domain:** `tools`
 **Tags:** `blender` `mpfb2` `characters` `decimate`
 
+> **Anulowano (2026-10-28).** Historyczny plan MPFB2, nieprzeznaczony do realizacji. Zachowano oryginalny status `draft` ze względu na kontrakt metadanych/generator dokumentacji. Obecny kierunek postaci opisuje `docs/research/v1-revival/2026-10-27--npc-character-art-direction.md`.
+
 ## Cel
 
 Rozbudować istniejący panel **Seedvale Character Tools** w Blenderze o automatyczne przygotowanie postaci przed ręcznym MPFB2 Export Copy oraz automatyczne przygotowanie geometrii do eksportu GLB.

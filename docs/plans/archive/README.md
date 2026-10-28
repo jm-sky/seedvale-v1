@@ -8,6 +8,13 @@ Nowych planów tu **nie przenosimy** ręcznie przy każdym `done`. Plany zostaj�
 
 **Jak używać:** otwórz plan + `*-implementation-notes.md`, gdy dokument domenowy nie wystarcza (dlaczego tak zrobiono, ograniczenia, kroki playtestu). Notes/review leżą obok planu i nie są indeksowane osobno.
 
+## Cancelled legacy MPFB2 plans — 2026-10-28
+
+The following plans were cancelled and moved here without modifying their original `Status: draft` metadata (required by plan tooling). They are historical references, not active work:
+
+- [tools-005 — Seedvale Character Preparation Panel](./tools-005-seedvale-character-preparation-panel.md)
+- [tools-007 — MPFB2 NPC / Hero Character Pipeline](./tools-007--mpfb2-npc-hero-character-pipeline.md)
+
 ---
 
 ## Snapshot 1 — 2026-08-07 – 2026-08-14
