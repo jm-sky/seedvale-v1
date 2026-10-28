@@ -1,7 +1,7 @@
 # Quest Revival — Session 2: NPC relationships and social conflicts
 
 **Created:** 2026-10-28  
-**Status:** Author decisions recorded; focused design session pending. **NOT an approved implementation plan.**  
+**Status:** Group 2 narrative decisions finalized (2026-10-28); technical design and implementation pending. **NOT an approved implementation plan.**  
 **Repo:** `jm-sky/seedvale-v1`, `main`  
 **Evidence:** [61-record matrix](../2026-10-27--quest-revival-matrix.md) · [runtime findings](../2026-10-27--quest-revival-runtime-evidence.md) · [portfolio analysis](../2026-10-28--quest-portfolio-prioritization.md)  
 **Rule:** Latest author decisions override earlier *recommendations*, not underlying code evidence. Existing V1 definition ≠ verified end-to-end playability. V2 record ≠ an authored V1 quest. D4 Performance-First integration freeze remains binding.
@@ -19,9 +19,9 @@ Full V3 parcel/fraud story, lower-priority smith dispute, deferred mysteries, an
 ### R41 — Rusty Debt (`G02`, V2)
 
 **Maturity:** **V2-only story** (not authored in V1).  
-**Author direction:** **Add; low priority**.  
+**Author direction:** **Defer (latest author decision); low priority if revisited**.  
 **Player-facing current/donor story:** V2 G02 mediates an incorrectly made plowshare and payment dispute, with discount, repair-then-pay, return and pressure outcomes.  
-**Discussion boundary:** Introduce later, using actual owner/buyer/item/payment effects. Consider a soft link to Q04 without making it mandatory.
+**Discussion boundary:** No current design or implementation work. Retain V2's four dispute outcomes for later reconsideration; any future tie to Q04 is optional.
 
 ### R42 — Night Torches (`G03`, V2)
 
@@ -51,21 +51,40 @@ Full V3 parcel/fraud story, lower-priority smith dispute, deferred mysteries, an
 **Player-facing current/donor story:** V2's Q14 asks for five grave-tending actions; bad digging causes desecration. This story does not exist in V1.  
 **Discussion boundary:** Redesign with believable caring work and relationships at the settlement cemetery; coordinate explicitly with V1 R37 and R12's separate grave-permission mechanics.
 
-## Focused session checklist — discussion, NOT implementation tasks
+## Final author decisions — 2026-10-28
 
-- [ ] Map V3's complete R34 plot, cast, evidence, property, gift and meaningful outcomes into V1 while retaining gameplay choices; author wants full scope, not a reduced substitute.
-- [ ] Decide whether R34's original privacy-versus-guard choice survives as a branch within the expanded story.
-- [ ] Give R61 a genuine personal reason and persistent care actions; establish exact settlement cemetery ownership/location.
-- [ ] Coordinate R61 with R37 and check whether R12 permission belongs to the same or a different site.
-- [ ] Keep R41 an approved candidate but LOW priority; do not turn R42/R47/R51 deferrals into removals.
-- [ ] Resolve the effects of any new consequences on NPC identity, payer resources and save compatibility before implementation planning.
+### R34 — Full V3 fraud/gift rewrite (approved narrative)
+- Preserve the V3 plot rather than the old sealed-return vs guard moral dilemma: messenger loses correspondence about Kate/Kasia's surprise decorated shield for Mark/Marek; criminals impersonate distant relatives to solicit an advance. Kate is honest, remains safe and in the settlement, and the marriage is not made adversarial. Do not expand family genealogy, criminal identity or clue mechanics beyond the story's needs.
+- Early discovery: showing the letter to Mark reveals a concrete discrepancy; alternatively a travelling merchant's plausible observation can reveal the fraud before payment. The merchant must not be a mandatory blocker; preserve an alternative lead.
+- If Kate pays, the player can recover **all, some or none** of her actual advance based on dialogue/actions. No bespoke pursuit, capture, arrest or general investigation mechanic. Resolution with the wrongdoer can use dialogue and existing systems.
+- Shared finale: Kate commissions a **real decorated shield** for Mark. If she lost money, the player **may voluntarily contribute** real coins and/or persuade the smith to discount the commission after hearing of the fraud; both may combine. The discount must change the actual charge. Show the physical gift, without building a new general-purpose crafting/commission framework merely for this quest.
+- Mark receives the shield; the smith's extra **pauldrons** go to Mark, who gives them to the player as thanks **regardless of player contribution**. Use real item/currency provenance and transfers; do not mint or duplicate the stolen advance. Exact amounts, item stats, smith/messenger identity and dialogues remain implementation design/balancing details.
+- Existing quest ID: `zaginiona-przesylka`; the old outcomes `returned_sealed` / `turned_over_to_guard` and numeric stage indices require explicit save/content-migration review. V1 currently has only rock-den discovery and a two-NPC hand-in, not these expanded consequences.
+- **Effort:** preliminary **M–L** (could rise if shared economic/item infrastructure is missing); not runtime verified.
 
-## Session exit conditions
+### R37 + R61 — Home cemetery and Kazimierz (approved narrative)
+- Merge V1 `zapomniany-cmentarz` (R37) with rewritten V2 Q14 (R61) as **one simple cemetery-care story** at the **home settlement**. Kazimierz, an elderly resident, asks the player to tidy his late wife's grave and a few neighbouring graves. No fence repair, path clearing, generic five-grave quota requirement or new renovation system.
+- Physical tidying visibly improves specific graves, persists through save/load and ideally is recognized if done before the request; modest relationship/gratitude is the main reward. Do not silently mark the whole cemetery clean via a journal-only flag.
+- Kazimierz is the local caretaker and may **recommend** the player to the village reeve (**Sołtys**), but **does not issue grave-excavation permission**.
+- **Home-settlement treasure connection:** V1 `skarb-jaskini-niedzwiedzia` / bear-cave treasure map is bound to a specific grave in the home cemetery (`resolveCemeteryForSettlement(homeSettlementId)`, `mapGraveSpotId`). Sołtys grants lawful permission to excavate **that grave only**. With Kazimierz's recommendation: **no up-front fee**, but the **settlement still receives a promised share of treasure actually acquired**. Without it, reputation governs eligibility/terms; a fee and settlement share may apply, and sufficiently poor standing can result in refusal. Charges go to the settlement treasury, not the reeve. Do not duplicate treasure or tax loot never retained.
+- The bear-cave story remains a separate quest, not folded into cemetery cleaning. Existing code currently allows map recovery without this new authorization; permissions, promise settlement and possible unauthorised excavation consequences require technical design.
+- **R12 stays unchanged.** Chronicles' cemetery/grave is bound to the archaeologist's settlement (potentially MD/LG) with its own selected caretaker and `grave_access_granted` outcome; do not relocate it to the home cemetery or replace that authority with Kazimierz.
+- **Effort:** R37+R61 preliminary **S–M** for care itself; map-grave authorization/share accounting is a separate dependency and effort to scope. Check Kazimierz's stable NPC identity and actual grave binding in current code before implementation.
 
-- [ ] Record which choices were actually made, and which still need author input.
-- [ ] State the selected gameplay effect and what exists today versus would need new implementation.
-- [ ] List source IDs and save/persistence impacts for any proposed merge, rewrite or retirement.
-- [ ] Reassess incremental development effort and ROI only for the selected variant.
-- [ ] Keep deferred stories deferred and D4 runtime integration frozen unless separately authorized.
+### Remaining Group 2 records
+- **R41/G02:** **Defer** (supersedes previous Add/low priority); four V2 dispute outcomes remain reference only.
+- **R42/G03, R47/G08, R51/Q04:** **Defer**, not retire; preserve donor descriptions, do not implement or expand systems for them now.
 
-**Next step:** Use this file as the opening context for the group's independent design session. No plan or coding-agent handoff is approved by these checkboxes.
+## Finalized decision checklist — planning follow-up, NOT coding authorization
+- [x] R34 full V3 story and two detection routes agreed; optional merchant, recovery branches, voluntary funding/discount and common real-item finale.
+- [x] No bespoke arrest, pursuit, investigation or negotiation machinery for R34.
+- [x] R37+R61 merge and Kazimierz's late-wife grave-care story agreed; no fence/path work.
+- [x] Home bear-cave map grave distinguished from Chronicles R12; keep R12 and its foreign-settlement caretaker unchanged.
+- [x] Sołtys grants exact-grave authorization; Kazimierz's recommendation waives initial fee, **not** settlement treasure share.
+- [x] R41/R42/R47/R51 deferred, preserving V2 candidates.
+- [ ] Technical verification: Kazimierz's stable NPC binding, home grave/landmark IDs, persistent physical tidying, pre-quest work reconciliation.
+- [ ] Technical verification: permission effects, save migration/quest IDs, real money and item transfers, settlement treasure-share settlement and handling of treasure returned sealed to Mark.
+- [ ] Technical verification: R34 branch timing, messenger fallback, item quality, payer balances and new-save round-trips; respect D4 Performance-First.
+- [ ] Prepare an implementation plan only upon separate approval.
+
+**Decision state:** Group 2 narrative direction closed. Documentation only; no source code, historic evidence files, milestones or implementation tasks changed.
