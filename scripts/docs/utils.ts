@@ -84,6 +84,19 @@ export const srcRelative = (path: string): string => toPosix(relative(SRC_DIR, p
 
 export const repoRelative = (path: string): string => toPosix(relative(ROOT_DIR, path))
 
+/**
+ * Makes an absolute module path relative to `baseDir`, tolerating Windows
+ * backslashes and drive-letter case differences on either side.
+ */
+export const stripBaseDir = (path: string, baseDir: string): string => {
+  const normalized = path.replaceAll('\\', '/')
+  const base = `${baseDir.replaceAll('\\', '/').replace(/\/+$/, '')}/`
+
+  return normalized.toLowerCase().startsWith(base.toLowerCase())
+    ? normalized.slice(base.length)
+    : normalized
+}
+
 export const getDomain = (path: string): string => path.split('/')[0] ?? 'other'
 
 export const isTsFile = (name: string): boolean => TS_EXTENSIONS.has(extname(name))

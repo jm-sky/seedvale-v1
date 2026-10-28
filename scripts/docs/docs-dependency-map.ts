@@ -8,6 +8,7 @@ import {
   loadSourceFiles,
   repoRelative,
   resolveImport,
+  stripBaseDir,
   walk,
 } from './utils.js'
 
@@ -32,9 +33,7 @@ function getImports(
 
     if (resolved) {
       imports.add(
-        resolved
-          .replace(`${SRC_DIR}/`, '')
-          .replaceAll('\\', '/'),
+        stripBaseDir(resolved, SRC_DIR),
       )
     }
   }
