@@ -96,9 +96,9 @@ A named Greybeard arc replacing generic wolf story beats, actual threatening wol
 ### R48 — A Hare Out of Place (`Q01`, V2)
 
 **Maturity:** **V2-only story** (not authored in V1).  
-**Author direction:** **No author decision yet**.  
+**Author direction:** **Defer · low priority** (author decision 2026-10-28).  
 **Player-facing current/donor story:** V2 Q01 offers observation or hunting of a rare hare with an experienced hunter; V3 retired it for a simpler fox hunt.  
-**Discussion boundary:** Explicitly decide Keep as future candidate / Add / Defer / Retire for V1; do not silently inherit V3 retirement.
+**Discussion boundary:** Preserve the rare-hare/mentor scenario as a low-priority future candidate; no implementation scope is approved. Do not interpret V3's historical retirement as a V1 retirement.
 
 ### R49 — The Hollow Below the Road (`Q02`, V2)
 
@@ -115,7 +115,7 @@ A named Greybeard arc replacing generic wolf story beats, actual threatening wol
 - [ ] Preserve Kasia's specific horse as a physical reward with ownership reservation and death branch.
 - [ ] Define rat-boss location in a real warehouse building and the minimum combat/AI scope; assess optional poison effects and warning fairness for livestock/dogs.
 - [ ] Decide whether the stolen lamb belongs to Anna or Molly and how actual custody/restitution works; generated livestock loss remains intact.
-- [ ] Decide R48 explicitly (currently unselected by author).
+- [x] Record R48 decision: **Defer · low priority**; no implementation work authorized.
 - [ ] Scope boar target identity and optional helper only if justified; preserve conditional ecology and hunter profession.
 - [ ] Assess reload, streaming and persistence of identified fauna and active player quests.
 
