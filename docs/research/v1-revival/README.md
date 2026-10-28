@@ -37,6 +37,10 @@ UI migration: [research](./2026-10-26--ui-migration-research.md), [matrix](./202
 
 V3 donor intake: [docs/v3-donor/](../../v3-donor/) — staged copies of selected V3 voices (MP3 + text banks), character profiles/refs (including Casimir Eastwood), item illustrations + type/category icons, concept art, and the **51 keep/rewrite curated quests** with full linked v1/v2 source documents for re-curation. Staging only; not a runtime merge or implementation backlog. Character kit GLBs already live under `public/assets/characters/`. See also [v3-donor/quests/](../../v3-donor/quests/).
 
+## Quest author decisions — round 2
+
+**Current decision entry point:** [Author direction + seven independent group-session checklists](./2026-10-28--quest-round-2-author-decisions.md) — records the author's 2026-10-28 choices, replaces conflicting *provisional recommendations* from earlier portfolio work, and marks open design questions. The Anna/Piotr family may contain connected stages; one wood quest may be consolidated (exact ID pending). R21 now concerns Piotr's flowers for Anna and Anna's honey for Piotr, requiring a guaranteed nearby hive with bees. This is **docs-only**; the D4 Performance-First integration freeze remains in effect.
+
 ## Quest portfolio reconciliation — advisory research
 
 **New decision aid (advisory, author decisions pending):** [Complete 61-quest portfolio — scope, incremental effort, narrative impact and ROI](./2026-10-28--quest-portfolio-prioritization.md). Groups all 39 V1 and 22 V2 source records once; identifies early candidates, shared design decisions and possible thematic batches. Historical V3 keep/rewrite/merge/retire/defer dispositions are not binding on V1. No quest implementation or plan is approved; D4 Performance-First remains binding.
