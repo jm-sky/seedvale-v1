@@ -16,7 +16,7 @@ The [2026-10-28 determinism audit](../performance/audits/2026-10-28--deep-determ
 At the inspected source revision (`4c5a6c15`, unchanged in runtime through audit commit `9a74103e`):
 
 - `src/settlement/SettlementsManager.ts:recheck` skips pending non-home entries when checking the unload radius. A build completed after teleport/travel can be published outside the residency policy, with no further recheck until the player travels another `loadRadius * 0.25` (75 units under current settings).
-- `SettlementsManager.ts:ensureLoaded` checks only that an entry with the same ID exists. An earlier promise can therefore act on a *replacement* entry after leave/re-enter; its catch/finally can delete or alter replacement state.
+- `SettlementsManager.ts:ensureLoaded` checks only that an entry with the same ID exists. This is a latent identity weakness: current `recheck` skips pending entries, so ordinary pending leave/re-enter replacement is not established on current main. If pending entries are invalidated to correct residency, an earlier promise can act on a *replacement* entry; success/catch/finally must all be guarded.
 - `src/settlement/createSettlement.ts:createSettlement` attaches props and other presentation resources before awaiting later construction phases. In particular, resident agents may be attached as their individual `NpcAgent.create` operations resolve. Rejection after partial attachment lacks a factory-wide rollback, and `Promise.all` rejection does not mean sibling tasks have stopped.
 - `SettlementsManager.ts:unload` performs authoritative agriculture/livestock/rat capture and transport/NPC offscreen handoffs before disposing a *completed* settlement; disposal must preserve that contract. Home is deliberately pinned regardless of distance.
 
@@ -85,12 +85,35 @@ This is **correctness work**, not a change to world generation, population polic
 - Existing home startup, ordinary load/unload hysteresis, authoritative state and offscreen handoff behavior stay intact.
 - Scoped tests and manual checks are documented with explicit failures/limitations, without benchmark performance claims.
 
+## Independent review corrections (2026-10-28)
+
+See [independent review 028](../reviews/2026-10-28--028--settlements-023-streaming-lifecycle-plan-review.md) for pinned evidence, severity, acceptance matrix and recommendations requiring author approval. The following clarify required correctness; they do not authorize runtime work or prescribe a new architecture.
+
+- **Entry lifetime and resource lifetime:** guard continuations before starting a factory after `waitForChunks`, as well as after factory completion. Same-ID entry identity alone does not protect resources registered by stable ID. An obsolete factory/cleanup must not overlap a successor in a way that removes its colliders/forest presence or duplicates NPC/animal presentation. Prefer one resource-producing factory per settlement ID until old cleanup settles; remember renewed demand so rapid re-entry completes without another movement threshold. Any alternative must prove equivalent ownership isolation.
+- **Latest residency inputs:** completion must use latest observed player coordinates, world time and day length, including movement smaller than the recheck threshold. Last distance-recheck coordinates are insufficient. Preserve exact radius boundary semantics and distinguish normal hysteresis from the deliberate startup eager-neighbor exception.
+- **Speculative simulation ownership:** `NpcAgent` construction currently reifies/mutates authoritative travel before manager acceptance. A rejected/failed presentation must not consume offscreen execution without a detailed owner. Establish a narrow acceptance/compensation boundary that preserves concurrent progression; never restore whole old registry snapshots. This is required independently of audit F7 owner changes across awaits.
+- **Helper-owned partial acquisition:** cover resources allocated inside helpers that reject before returning their group/list/controller. Outer factory cleanup cannot release handles it never received. Include `buildSettlementProps`, livestock, rats, sign labels, and both resident and travelling-visitor batches. Use local cleanup or immediate construction-scope ownership; no generic transaction framework is required.
+- **Successful-runtime late work:** the existing authored-fence restoration path in `syncAuthoredRepairPresentation` can attach through `plantEntrancePalisade` after disposal and then register old colliders. Teardown acceptance must cover this narrow lifetime gap, including attachment inside the helper. Keep authored-repair gameplay outside scope.
+- **Manager acceptance failures:** separate factory rejection from exceptions after a complete result returns (reclaim, day/night, handoff, notification). Retain a cleanup owner across acceptance; a shared catch must not delete the only entry for a completed runtime without disposing or retaining it coherently. Apply resource guarantees to the separate initial `homeReady` path, preserving rejection semantics.
+- **Handoff distinction:** ordinary unload of an accepted runtime preserves the existing capture/handoff sequence. Discarding speculative construction must not stamp detailed agriculture, overwrite newer livestock/rat snapshots, reclaim detached animals or clear transport execution as if accepted. Preserve idempotent authoritative initialization/catch-up already committed by construction.
+
+Verification additions to Stages A/D and completion criteria:
+
+- Assert surviving successor colliders/registrations after old success, failure and cleanup; assert no transient duplicate NPC/animal presentations and eventual reload after quick re-entry.
+- Inject failure inside a helper before its result is returned, after an attached resident, and during the visitor batch; resolve late siblings after the first failure and check again.
+- Seed ordinary and purpose-backed offscreen travel plus cargo/transport execution; verify continuity after rejection/failure and across time-skip during construction. IDs alone are insufficient.
+- Check latest-position completion inside a sub-threshold movement, exact hysteresis boundaries, eager startup/home policy, midpoint cleanup, disposal before factory start, and initial home failure.
+- Check exactly-once instance-owned disposal, shared GPU/template survival, labels in the Three.js graph as well as DOM, late fence work, and a throwing acceptance/notification operation.
+- Current-bug tests must reproduce F1/F6 on old code; tests for the new invalidation policy need not fail on a currently unreachable same-ID replacement schedule. Existing helper unit tests do not substitute for real manager/factory integration.
+
+**Author decisions still open:** pending invalidation/draining policy; narrow detailed-travel commit boundary; inclusion or explicit prerequisite ownership of the small fence lifetime guard; notification-only failure policy; explicit lifecycle reuse/order link in `settlements-022`. No decision is silently approved by these corrections. Whole fresh-world failure cleanup remains with `world-039`; New Game transition/save ordering remains with `persistence-007`.
+
 ## Implementation-note handoff / review questions
 
 Before implementation, independently review the feasible cleanup boundary across `createSettlement`, `spawnLivestock`, `createSettlementRats`, signposts, NPC materialization and forest/collider ownership. Verify whether any helper attaches asynchronously after its returned promise and requires its own local guard. Establish a minimal failure-injection seam and existing test-file locations; do not invent them.
 
-Resolve whether to invalidate pending entries at the distance recheck or let them finish and reject at publication. Both are acceptable only if same-ID replacement races, midpoints, home policy and cleanup are correct. Confirm whether an intermediate, separately reviewable Stage B change can land without creating unrecoverable partial-construction leakage.
+Resolve whether to invalidate pending entries at the distance recheck or let them finish and reject at publication. Both are acceptable only if same-ID resource ownership, renewed demand, speculative travel continuity, midpoints, home policy and cleanup are correct. A separately reviewable Stage B change may land only with evidence of no resource overlap/leakage and preserved rejected-build travel continuity; otherwise include the necessary factory safeguards in that change.
 
 During implementation, add/adjust JSDoc for important public/architectural lifecycle functions as needed for preflight discovery; prefer `@domain settlements` on new stable ownership seams.
 
-**Plan status:** draft pending independent review and implementation notes. Plan creation does not authorize runtime implementation.
+**Plan status:** draft; independent review completed with corrections and open author decisions. Implementation notes have not been created. Plan creation does not authorize runtime implementation.

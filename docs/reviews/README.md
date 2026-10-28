@@ -20,6 +20,7 @@ Tematy wymagające **głębszej analizy** (nie quick fix w tej samej sesji): pli
 
 | Review | Scope | Status | File |
 |--------|-------|--------|------|
+| settlements-023 independent plan review | Streaming/rollback ownership and simulation continuity; 2 P1, 3 P2, 1 P3; draft corrected, author decisions open | `done` | [2026-10-28--028--settlements-023-streaming-lifecycle-plan-review.md](./2026-10-28--028--settlements-023-streaming-lifecycle-plan-review.md) |
 | V3 equipment catalogue Stage 3 | Independent compatibility/adapter review; 2 P2 and 2 P3; Stage 4 planning with conditions | `done` | [2026-10-27--027--v3-equipment-catalogue-stage-3-review.md](./2026-10-27--027--v3-equipment-catalogue-stage-3-review.md) |
 | V1 revival Cursor technical review | Models/shoulder, ground/grass snow, UI A–C; four P2 findings and qualified readiness | `done` | [2026-10-26--026--v1-revival-cursor-technical-review.md](./2026-10-26--026--v1-revival-cursor-technical-review.md) |
 | Water quality | Stylized woda — brzegi, shader, vs Water.js | `done` | [2026-08-07--001--water-quality.md](./2026-08-07--001--water-quality.md) |
