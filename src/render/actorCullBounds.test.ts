@@ -70,6 +70,23 @@ function worldSphere(mesh: SkinnedMesh): Sphere {
   return mesh.boundingSphere!.clone().applyMatrix4(mesh.matrixWorld)
 }
 
+function expectVerticesInside(mesh: SkinnedMesh) {
+  mesh.skeleton.update()
+  const sphere = worldSphere(mesh)
+  const p = new Vector3()
+  for (let i = 0; i < mesh.geometry.attributes.position.count; i++) {
+    mesh.getVertexPosition(i, p).applyMatrix4(mesh.matrixWorld)
+    expect(sphere.containsPoint(p), `vertex ${i}`).toBe(true)
+  }
+}
+
+function cameraFrustum(camera: PerspectiveCamera): Frustum {
+  camera.updateMatrixWorld(true)
+  return new Frustum().setFromProjectionMatrix(
+    new Matrix4().multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse),
+  )
+}
+
 describe('installActorCullBounds', () => {
   it('enables culling on every skinned mesh and shares one world envelope', () => {
     const a = makeActor()
@@ -89,29 +106,21 @@ describe('installActorCullBounds', () => {
     // Death/sleep: hips stay, head bone swings down to the ground ~1.6 m out.
     a.head.position.set(1.5, 0, 0)
     a.wrapper.updateMatrixWorld(true)
-    a.headMesh.skeleton.update()
-    const p = new Vector3()
-    a.headMesh.getVertexPosition(0, p)
-    a.headMesh.applyBoneTransform(0, p)
-    p.applyMatrix4(a.headMesh.matrixWorld)
-    expect(worldSphere(a.headMesh).containsPoint(p)).toBe(true)
+    expectVerticesInside(a.body)
+    expectVerticesInside(a.headMesh)
   })
 
   it('covers a 90° root tip (rigid parent rotation) and wrapper scale/position', () => {
     const a = makeActor()
     installActorCullBounds(a.wrapper)
+    a.hips.rotation.x = Math.PI / 6
+    a.head.rotation.z = Math.PI / 4
     a.wrapper.scale.setScalar(0.6)
     a.wrapper.position.set(40, 2, -10)
     a.wrapper.rotation.z = Math.PI / 2
     a.wrapper.updateMatrixWorld(true)
-    a.body.skeleton.update()
-    const p = new Vector3()
-    for (let i = 0; i < a.body.geometry.attributes.position.count; i++) {
-      a.body.getVertexPosition(i, p)
-      a.body.applyBoneTransform(i, p)
-      p.applyMatrix4(a.body.matrixWorld)
-      expect(worldSphere(a.body).containsPoint(p)).toBe(true)
-    }
+    expectVerticesInside(a.body)
+    expectVerticesInside(a.headMesh)
     expect(worldSphere(a.body).radius).toBeGreaterThan(1.2 * 0.6)
   })
 
@@ -194,5 +203,130 @@ describe('installActorCullBounds', () => {
     installActorCullBounds(a.wrapper)
     expect(a.headMesh.frustumCulled).toBe(false)
     expect(a.body.frustumCulled).toBe(true)
+  })
+
+  it.each([
+    [0, 1, 1], [Number.NaN, 1, 1], [Number.POSITIVE_INFINITY, 1, 1],
+  ])('fails open for an invalid mesh scale (%s, %s, %s) with valid siblings', (x, y, z) => {
+    const a = makeActor()
+    a.headMesh.scale.set(x, y, z)
+    expect(installActorCullBounds(a.wrapper)).toEqual({ culled: 1, fallback: 1 })
+    expect(a.headMesh.frustumCulled).toBe(false)
+    expect(a.headMesh.boundingSphere).toBeNull()
+    expectVerticesInside(a.body)
+  })
+
+  it.each([
+    [0, 1, 1], [1, 10, 1], [Number.NaN, 1, 1], [Number.POSITIVE_INFINITY, 1, 1],
+  ])('fails open for an unsupported root scale (%s, %s, %s)', (x, y, z) => {
+    const a = makeActor()
+    a.wrapper.scale.set(x, y, z)
+    expect(installActorCullBounds(a.wrapper)).toEqual({ culled: 0, fallback: 2 })
+    expect(a.body.frustumCulled).toBe(false)
+    expect(a.headMesh.frustumCulled).toBe(false)
+  })
+
+  it('fails open for the crossed nonuniform scales from F1', () => {
+    const a = makeActor()
+    a.body.geometry = skinnedBox(0, [0.002, 2, 0.02], [0, 0, 0]).geometry
+    a.headMesh.removeFromParent()
+    a.body.scale.set(10, 1, 1)
+    a.wrapper.scale.set(1, 10, 1)
+    expect(installActorCullBounds(a.wrapper)).toEqual({ culled: 0, fallback: 1 })
+    expect(a.body.frustumCulled).toBe(false)
+    expect(a.body.boundingSphere).toBeNull()
+  })
+
+  it('rejects mesh nonuniform scale and shear while culling valid siblings', () => {
+    const a = makeActor()
+    const parent = new Group()
+    a.root.add(parent)
+    parent.add(a.headMesh)
+    parent.scale.set(10, 1, 1)
+    expect(installActorCullBounds(a.wrapper)).toEqual({ culled: 1, fallback: 1 })
+    a.headMesh.rotation.z = Math.PI / 4
+    expect(installActorCullBounds(a.wrapper)).toEqual({ culled: 1, fallback: 1 })
+    expect(a.headMesh.frustumCulled).toBe(false)
+  })
+
+  it('rejects shear from a rotated root under a nonuniformly scaled ancestor', () => {
+    const a = makeActor()
+    const parent = new Group()
+    parent.scale.set(10, 1, 1)
+    parent.add(a.wrapper)
+    a.wrapper.rotation.z = Math.PI / 4
+    parent.updateMatrixWorld(true)
+    expect(installActorCullBounds(a.wrapper)).toEqual({ culled: 0, fallback: 2 })
+  })
+
+  it('supports uniform scale with reflection and rotation', () => {
+    const a = makeActor()
+    a.wrapper.scale.set(-0.6, 0.6, 0.6)
+    a.wrapper.rotation.z = Math.PI / 4
+    a.headMesh.scale.setScalar(2)
+    expect(installActorCullBounds(a.wrapper)).toEqual({ culled: 2, fallback: 0 })
+    a.head.position.x = 1.5
+    a.wrapper.updateMatrixWorld(true)
+    expectVerticesInside(a.body)
+    expectVerticesInside(a.headMesh)
+  })
+
+  it('keeps an animated extremity inside the frustum when the sphere center is outside', () => {
+    const a = makeActor()
+    a.wrapper.position.set(6.5, 0, -10)
+    installActorCullBounds(a.wrapper)
+    a.head.position.set(-1.5, 0, 0)
+    a.wrapper.updateMatrixWorld(true)
+    const camera = new PerspectiveCamera(60, 1, 0.1, 100)
+    camera.position.y = 1
+    const frustum = cameraFrustum(camera)
+    expect(frustum.containsPoint(worldSphere(a.headMesh).center)).toBe(false)
+    const p = new Vector3()
+    for (let i = 0; i < a.headMesh.geometry.attributes.position.count; i++) {
+      a.headMesh.getVertexPosition(i, p).applyMatrix4(a.headMesh.matrixWorld)
+      expect(frustum.containsPoint(p)).toBe(true)
+    }
+    expectVerticesInside(a.headMesh)
+    expect(frustum.intersectsObject(a.headMesh)).toBe(true)
+  })
+
+  it('tests camera and light frusta independently for an off-camera caster', () => {
+    const a = makeActor()
+    a.wrapper.position.z = 10
+    a.headMesh.castShadow = true
+    installActorCullBounds(a.wrapper)
+    const camera = new PerspectiveCamera(60, 1, 0.1, 100)
+    const light = new PerspectiveCamera(90, 1, 0.1, 50)
+    light.position.set(0, 10, 0)
+    light.lookAt(0, 0, 10)
+    expect(cameraFrustum(camera).intersectsObject(a.headMesh)).toBe(false)
+    expect(cameraFrustum(light).intersectsObject(a.headMesh)).toBe(true)
+    expect(a.headMesh.castShadow).toBe(true)
+  })
+
+  it('is repeatable and preserves raycast boxes', () => {
+    const a = makeActor()
+    a.body.computeBoundingBox()
+    const previousBox = a.body.boundingBox
+    const boxValue = previousBox!.clone()
+    installActorCullBounds(a.wrapper)
+    const sphere = a.body.boundingSphere!.clone()
+    expect(installActorCullBounds(a.wrapper)).toEqual({ culled: 2, fallback: 0 })
+    expect(a.body.boundingSphere).toEqual(sphere)
+    expect(a.body.boundingBox).toBe(previousBox)
+    expect(a.body.boundingBox).toEqual(boxValue)
+    expect(a.headMesh.boundingBox).toBeNull()
+  })
+
+  it('contains meshes driven by independent rigs in one actor envelope', () => {
+    const a = makeActor()
+    const b = makeActor()
+    b.wrapper.position.x = 1
+    a.wrapper.add(b.wrapper)
+    expect(installActorCullBounds(a.wrapper)).toEqual({ culled: 4, fallback: 0 })
+    a.head.position.x = -1.5
+    b.head.position.x = 1.5
+    a.wrapper.updateMatrixWorld(true)
+    for (const mesh of [a.body, a.headMesh, b.body, b.headMesh]) expectVerticesInside(mesh)
   })
 })

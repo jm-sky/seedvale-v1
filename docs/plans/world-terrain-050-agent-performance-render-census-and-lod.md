@@ -61,6 +61,7 @@ Po reconie plan powinien ustalić:
 - `src/render/actorCullBounds.ts::installActorCullBounds(root)` — jedna współdzielona sfera na aktora (środek = unia bind-pose boxów skinned meshes, promień = półprzekątna + wysokość), liczona w przestrzeni `root`, zapisywana per mesh w jego lokalnej przestrzeni. Ustawia tylko `boundingSphere`/`frustumCulled`; nigdy `visible`. Nieznane bounds → `frustumCulled=false` (fail open).
 - Jedno wywołanie: `NpcAgent` constructor, zaraz po utworzeniu wrappera, przed startem animacji (pokrywa kit i legacy; capsule = no-op).
 - Testy: `src/render/actorCullBounds.test.ts`.
+- Follow-up po [review A1′](../reviews/2026-10-28--029--world-terrain-050-a1-skinned-mesh-culling-review.md): F1–F3 poprawione; kontrakt transformacji, regresje i próbkowanie rzeczywistych animacji kit/legacy opisano w [implementation notes](implementation-notes/world-terrain-050-agent-performance-render-census-and-lod-implementation-notes.md).
 
 **Poza zakresem (wymaga osobnej zgody):** A2′ fauna, A5′ eyes/eyebrows LOD, A0b, A3, A6, A7, settlement/grass, benchmarki, zmiany `settlements-023`. Gracz (`PlayerController`/`ubcAccessoryBind`) bez zmian.
 
