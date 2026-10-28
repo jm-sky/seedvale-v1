@@ -88,6 +88,7 @@ import { type AgentProfile, DEFAULT_CELL_SIZE, findPath, type NavigationQuery, t
 import { beginActivePath, endActivePath, recordPathRequest, recordRepath } from '../navigation/navigationStats'
 import { PLAYER_COLLISION_RADIUS } from '../player/playerDimensions'
 import { companionAnimationUrl } from '../player/playerVisualPreset'
+import { installActorCullBounds } from '../render/actorCullBounds'
 import { resolveAgentPresentationLevel } from '../render/agentPresentationLod'
 import { type AgentPresentationVisibility, createAgentPresentationVisibility } from '../render/agentPresentationVisibility'
 import { resolveNearestWaterWellTarget } from '../settlement/householdWells'
@@ -1870,6 +1871,9 @@ export class NpcAgent {
     if (member.scale !== 1) wrapper.scale.setScalar(member.scale)
     this.mesh = wrapper
     this.mesh.name = 'npc'
+    // A1′ (world-terrain-050): bind-pose actor envelope for native skinned culling;
+    // runs before any clip plays. No-op for the capsule fallback.
+    installActorCullBounds(wrapper)
     this.mesh.position.copy(home.position)
     this.mesh.position.y = sampleHeight(home.position.x, home.position.z)
 

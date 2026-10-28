@@ -33,6 +33,16 @@ Generated from TypeScript imports.
 - `persistence/saveData.ts`
 - `settlement/PlacedFires.test.ts`
 
+## `settlement/SettlementsManager.lifecycle.test.ts`
+
+**Imports**
+
+- `settlement/SettlementsManager.ts`
+- `settlement/createSettlement.ts`
+- `settlement/settlementPlanCache.ts`
+- `settlement/settlementTerrain.ts`
+- `terrain/chunkHeightmap.ts`
+
 ## `settlement/SettlementsManager.ts`
 
 **Imports**
@@ -121,6 +131,8 @@ Generated from TypeScript imports.
 - `debug/npcDebugApi.test.ts`
 - `debug/villageInspector.test.ts`
 - `debug/villageInspector.ts`
+- `settlement/SettlementsManager.lifecycle.test.ts`
+- `settlement/createSettlement.rollback.integration.test.ts`
 - `settlement/settlementResidency.test.ts`
 
 ## `settlement/VillageFire.test.ts`
@@ -331,6 +343,14 @@ Generated from TypeScript imports.
 - `settlement/places.test.ts`
 - `settlement/props.ts`
 
+## `settlement/createSettlement.rollback.integration.test.ts`
+
+**Imports**
+
+- `settlement/SettlementsManager.ts`
+- `settlement/settlementTerrain.ts`
+- `terrain/chunkHeightmap.ts`
+
 ## `settlement/createSettlement.ts`
 
 **Imports**
@@ -432,6 +452,7 @@ Generated from TypeScript imports.
 - `interaction/Interactable.ts`
 - `items/cookingFireResolver.ts`
 - `player/playerCombat.ts`
+- `settlement/SettlementsManager.lifecycle.test.ts`
 - `settlement/SettlementsManager.ts`
 - `settlement/createSettlementRollback.test.ts`
 - `settlement/lodgingResolver.ts`
@@ -2446,6 +2467,7 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `app/worldBundle.ts`
+- `settlement/SettlementsManager.lifecycle.test.ts`
 - `settlement/SettlementsManager.ts`
 - `settlement/lostTreasureChroniclesArchaeologistResident.test.ts`
 - `settlement/lostTreasureChroniclesElderResident.test.ts`
@@ -2594,7 +2616,9 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `debug/locationQueries.ts`
+- `settlement/SettlementsManager.lifecycle.test.ts`
 - `settlement/SettlementsManager.ts`
+- `settlement/createSettlement.rollback.integration.test.ts`
 - `settlement/lostTreasureChroniclesArchaeologistResident.test.ts`
 - `settlement/lostTreasureChroniclesElderResident.test.ts`
 - `settlement/lostTreasureChroniclesSpecialistResident.test.ts`

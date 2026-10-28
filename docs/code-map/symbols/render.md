@@ -2,6 +2,12 @@
 
 Generated from exported TypeScript symbols.
 
+## `render/actorCullBounds.ts`
+
+- `ActorCullBoundsResult` — type — line 4
+- `installActorCullBounds` — function — line 42
+  - domain: world-terrain
+
 ## `render/agentPresentationLod.ts`
 
 - `AGENT_PRESENTATION_MID_DISTANCE_M` — const — line 41

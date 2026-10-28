@@ -317,7 +317,9 @@ Generated from TypeScript imports.
 - `fauna/createFauna.test.ts`
 - `fauna/createFauna.ts`
 - `player/worldWaterEligibility.test.ts`
+- `settlement/SettlementsManager.lifecycle.test.ts`
 - `settlement/SettlementsManager.ts`
+- `settlement/createSettlement.rollback.integration.test.ts`
 - `settlement/findSettlementSite.test.ts`
 - `settlement/findSettlementSite.ts`
 - `settlement/lostTreasureChroniclesArchaeologistResident.test.ts`

@@ -2,6 +2,19 @@
 
 Generated from TypeScript imports.
 
+## `render/actorCullBounds.test.ts`
+
+**Imports**
+
+- `render/actorCullBounds.ts`
+
+## `render/actorCullBounds.ts`
+
+**Imported by**
+
+- `ai/NpcAgent.ts`
+- `render/actorCullBounds.test.ts`
+
 ## `render/agentPresentationLod.test.ts`
 
 **Imports**

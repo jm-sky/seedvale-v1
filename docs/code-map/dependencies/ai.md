@@ -210,6 +210,7 @@ Generated from TypeScript imports.
 - `player/PlayerController.ts`
 - `player/playerDimensions.ts`
 - `player/playerVisualPreset.ts`
+- `render/actorCullBounds.ts`
 - `render/agentPresentationLod.ts`
 - `render/agentPresentationVisibility.ts`
 - `settlement/animalCorpseSanitation.ts`
