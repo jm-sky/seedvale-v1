@@ -4,7 +4,7 @@
 **Status:** `planned` 📋
 **Type:** feature
 **Priority:** high · **Effort:** L
-**Depends on:** ~~settlements-021~~
+**Depends on:** ~~settlements-021~~ settlements-023
 **Domain:** `settlements`
 **Subdomains:** `population` `development` `economy`
 **Tags:** `colony` `streaming` `runtime` `performance` `authored-site`
@@ -181,7 +181,7 @@ Expected founded count jest mały; V1 nie potrzebuje spatial index.
 
 ## Async loading safety
 
-NPC model/materialization jest async, dlatego founded loading musi użyć wspólnego race-safe lifecycle.
+NPC model/materialization jest async, dlatego founded loading musi użyć wspólnego race-safe lifecycle. Ten lifecycle (retain-until-settled pending entries, residency decyzja przy publikacji, commit podróży NPC przy akceptacji, factory rollback) wprowadza [`settlements-023`](./settlements-023-settlement-streaming-lifecycle-and-construction-rollback.md) — 022 ma go reuse’ować, nie budować drugiego.
 
 Current manager ma już `pendingPromise` i po resolve sprawdza, czy entry nadal istnieje, ale pending entries są pomijane przez unload loop. Player może więc wyjść daleko podczas build i runtime mimo wszystko dokończy load przed kolejnym recheckiem.
 

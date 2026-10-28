@@ -1,13 +1,14 @@
 # Plan: Settlement async streaming lifecycle and construction rollback
 
 **Created:** 2026-10-28
-**Status:** `draft` 📝
+**Status:** `planned` 📋
 **Type:** bug
 **Priority:** high · **Effort:** XL
 **Depends on:** -
 **Domain:** `settlements`
 **Subdomains:** `population`
 **Tags:** `streaming` `lifecycle` `simulation` `performance`
+**Model:** Opus, Sonnet
 
 ## Context and evidence
 
@@ -45,7 +46,7 @@ This is **correctness work**, not a change to world generation, population polic
 
 - Define one entry-lifetime validity rule for every async continuation (success, failure and finalization), using captured entry identity or an equivalent generation token **plus** manager lifetime.
 - Reconcile latest player position and existing load/unload hysteresis at completion. A completed non-home entry beyond `unloadRadius` must be disposed/rejected promptly without waiting for another 75-unit movement. Between `loadRadius` and `unloadRadius`, retain legitimate hysteresis rather than forcing an immediate unload.
-- Handle out-of-range **pending** work without allowing a later completion to resurrect it. Avoid a simplistic `entries.delete(id)` that permits a stale continuation to act on a new entry.
+- Handle out-of-range **pending** work without allowing a later completion to resurrect it. Avoid a simplistic `entries.delete(id)` that permits a stale continuation to act on a new entry. Resolved policy: **retain-until-settled** (decision D1 below).
 - Preserve the always-loaded home path and existing eager-neighbor startup semantics at the home position. After teleport, no eager-neighbor exception may retain an invalid distant build.
 - Preserve current detailed-to-offscreen handoff behavior for successfully published settlements, and only perform reverse offscreen-to-detailed handoff for successfully accepted materializations. Do not erase authoritative registries or dispose shared assets prematurely.
 - Keep bounded movement-based checks; adding a permanent per-frame full-settlement scan is not the solution.
@@ -106,14 +107,38 @@ Verification additions to Stages A/D and completion criteria:
 - Check exactly-once instance-owned disposal, shared GPU/template survival, labels in the Three.js graph as well as DOM, late fence work, and a throwing acceptance/notification operation.
 - Current-bug tests must reproduce F1/F6 on old code; tests for the new invalidation policy need not fail on a currently unreachable same-ID replacement schedule. Existing helper unit tests do not substitute for real manager/factory integration.
 
-**Author decisions still open:** pending invalidation/draining policy; narrow detailed-travel commit boundary; inclusion or explicit prerequisite ownership of the small fence lifetime guard; notification-only failure policy; explicit lifecycle reuse/order link in `settlements-022`. No decision is silently approved by these corrections. Whole fresh-world failure cleanup remains with `world-039`; New Game transition/save ordering remains with `persistence-007`.
+Whole fresh-world failure cleanup remains with `world-039`; New Game transition/save ordering remains with `persistence-007`.
+
+## Resolved technical decisions (2026-10-28, plan finalization)
+
+Resolved against `main` at `fc8a8bf3` by targeted source inspection. Verified symbols, the implementation sequence and the test matrix are in the [implementation notes](./implementation-notes/settlements-023-settlement-streaming-lifecycle-and-construction-rollback-implementation-notes.md). None of these decisions changes gameplay rules, radii, persistence schema or worldgen.
+
+- **D1 — Pending lifecycle: retain-until-settled, decide at publication.** A pending entry is never deleted or replaced because of distance; `recheck` keeps skipping it. Because the entry occupies its ID until its promise (including factory rollback) settles, at most one resource-producing factory exists per settlement ID, and renewed demand during construction is remembered automatically (the same entry completes). One residency predicate decides acceptance after `waitForChunks` (before the factory starts) and again at factory completion, using the **latest observed** player position (recorded on every `update`, not `lastCheckX/Z`): home always; non-home iff `dist <= unloadRadius` (existing hysteresis band, equality retained); the startup eager-neighbor exception applies only while the latest player position is within `loadRadius` of the home site, or before any player position has been observed. A rejected result is discarded speculatively (no unload handoffs), its entry deleted and midpoints synced. No recheck-anchor change, forced rescan or per-frame scan is added: after a discard the settlement is in the ordinary unloaded state and returns under the existing 75-unit recheck granularity. Every continuation checks `!disposed && entries.get(id) === entry` and only touches its captured entry.
+- **D2 — Detailed NPC travel ownership is committed at manager acceptance.** The only direct authoritative write in the `NpcAgent` constructor (`npcState.travel` reification) moves to an explicit agent method that the manager calls in its acceptance step, next to the existing transport `clearExecution` handoff. Construction still places the mesh from a non-mutating `reifyNpcTravel` result; the commit re-reifies from the then-current authoritative travel at acceptance time and repositions the mesh. Until acceptance, off-screen checkpoints keep progressing the untouched record, so a discarded presentation needs no compensation and no registry snapshot is restored.
+- **D3 — Fence continuation guard is in scope.** The settlement instance gets a lifetime flag set first in `dispose()`; `plantEntrancePalisade` receives an optional liveness check evaluated after its template await and before allocating/attaching; the caller's continuation skips collider registration (and disposes any returned mesh) when the instance is no longer live. Authored-repair gameplay is unchanged. Without this guard a late registration would also overwrite a successor's `def.id`-keyed colliders.
+- **D4 — Acceptance and notification errors.** Construction rejection (no `Settlement` returned) and acceptance errors are separate paths. Ownership transfers by assigning the entry's `settlement` **first**; the subsequent handoff steps (livestock reclaim, day/night, travel commit, transport execution clearing) run after it, and an exception there is logged while the runtime stays accepted and owned (normal unload/dispose later handles it). `onSettlementAvailable` runs once per accepted materialization inside its own try/catch; a throwing notification is logged, never retried, and does not undo acceptance. Home and streamed paths share one acceptance helper; `homeReady` still rejects on factory failure or manager disposal and resolves once home is accepted, including after a notification-only failure.
+- **D5 — Factory rollback via one acquired-resource release.** `createSettlement` releases resources through a single idempotent release closure that tolerates partially initialized parts and is reused by both the construction failure path and the returned `dispose()` (exactly once). Resident and visitor batches use settle-all collection so no sibling can attach after rollback; fulfilled agents are collected before the first failure is rethrown. Helpers that attach before returning (`spawnLivestock`, `createSettlementRats`, `createSettlementSignposts`) clean up their own unreturned acquisitions locally; `buildSettlementProps` has no global side effects before it returns (its group is added to the scene by the caller), so it needs at most a local group dispose.
+- **022 ordering.** `settlements-022` now depends on `settlements-023` and must reuse this lifecycle instead of building a second one; 023 does not depend on 022 (no cycle).
+
+### Review finding resolution
+
+| Finding | Resolution |
+| --- | --- |
+| R1 (P1) same-ID resource overlap | Structurally prevented by D1 (entry held until the build and its rollback settle) plus the pre-factory guard; D3 prevents late collider re-registration. |
+| R2 (P1) speculative travel consumption | D2 commit-at-acceptance; transport execution clearing stays acceptance-only. |
+| R3 (P2) helper-hidden acquisitions | D5 helper-local cleanup contracts and settle-all batches. |
+| R4 (P2) late fence continuation | D3, in scope. |
+| R5 (P2) acceptance exceptions | D4 assign-first acceptance, isolated notification, shared home/streamed helper. |
+| R6 (P3) overstated same-ID race | Already corrected in Context. Under D1 no same-ID replacement can exist while pending, so successor tests guard the invariant rather than reproduce a current bug. |
+
+No product or scope decision remains open. Residual risks (other pre-acceptance side effects inside `NpcAgent` construction beyond the confirmed travel write, presentation-owner changes during a pending build per audit F7, manager test-fixture cost) are listed in the implementation notes.
 
 ## Implementation-note handoff / review questions
 
 Before implementation, independently review the feasible cleanup boundary across `createSettlement`, `spawnLivestock`, `createSettlementRats`, signposts, NPC materialization and forest/collider ownership. Verify whether any helper attaches asynchronously after its returned promise and requires its own local guard. Establish a minimal failure-injection seam and existing test-file locations; do not invent them.
 
-Resolve whether to invalidate pending entries at the distance recheck or let them finish and reject at publication. Both are acceptable only if same-ID resource ownership, renewed demand, speculative travel continuity, midpoints, home policy and cleanup are correct. A separately reviewable Stage B change may land only with evidence of no resource overlap/leakage and preserved rejected-build travel continuity; otherwise include the necessary factory safeguards in that change.
+Pending handling is resolved as retain-until-settled (D1); the remaining requirement is that same-ID resource ownership, renewed demand, speculative travel continuity, midpoints, home policy and cleanup are correct. A separately reviewable Stage B change may land only with evidence of no resource overlap/leakage and preserved rejected-build travel continuity; otherwise include the necessary factory safeguards in that change.
 
 During implementation, add/adjust JSDoc for important public/architectural lifecycle functions as needed for preflight discovery; prefer `@domain settlements` on new stable ownership seams.
 
-**Plan status:** draft; independent review completed with corrections and open author decisions. Implementation notes have not been created. Plan creation does not authorize runtime implementation.
+**Plan status:** planned; independent review findings R1–R6 resolved and technical decisions D1–D5 recorded above. Implementation notes: [settlements-023 implementation notes](./implementation-notes/settlements-023-settlement-streaming-lifecycle-and-construction-rollback-implementation-notes.md).
