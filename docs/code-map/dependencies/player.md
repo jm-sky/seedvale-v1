@@ -2,6 +2,18 @@
 
 Generated from TypeScript imports.
 
+## `player/PlayerController.appearance.test.ts`
+
+**Imports**
+
+- `assets/loadGltf.ts`
+- `assets/loadTexture.ts`
+- `characters/assembleCharacter.ts`
+- `characters/characterTypes.ts`
+- `input/Keyboard.ts`
+- `items/heldToolVisual.ts`
+- `player/PlayerController.ts`
+
 ## `player/PlayerController.test.ts`
 
 **Imports**
@@ -87,6 +99,7 @@ Generated from TypeScript imports.
 - `items/tentProp.test.ts`
 - `items/tentProp.ts`
 - `navigation/navigation.ts`
+- `player/PlayerController.appearance.test.ts`
 - `player/PlayerController.test.ts`
 - `player/characterPresentation.test.ts`
 - `player/humanCarryCapacity.test.ts`

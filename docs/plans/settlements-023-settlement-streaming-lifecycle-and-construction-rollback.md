@@ -1,7 +1,7 @@
 # Plan: Settlement async streaming lifecycle and construction rollback
 
 **Created:** 2026-10-28
-**Status:** `draft`
+**Status:** `draft` 📝
 **Type:** bug
 **Priority:** high · **Effort:** XL
 **Depends on:** -

@@ -23,7 +23,9 @@ Generated from TypeScript imports.
 - `input/Keyboard.test.ts`
 - `input/MouseLook.ts`
 - `input/createTouchControls.ts`
+- `player/PlayerController.appearance.test.ts`
 - `player/PlayerController.ts`
+- `ui-vue/screens/InventoryScreen.test.ts`
 
 ## `input/MouseLook.ts`
 
@@ -46,6 +48,7 @@ Generated from TypeScript imports.
 - `debug/createCaveHeightfieldTestScene.ts`
 - `debug/flyCam.ts`
 - `input/createTouchControls.ts`
+- `perf/benchmark.ts`
 - `player/PlayerController.ts`
 
 ## `input/createTouchControls.ts`

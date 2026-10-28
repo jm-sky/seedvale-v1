@@ -4,9 +4,9 @@ Generated from exported TypeScript symbols.
 
 ## `characters/assembleCharacter.ts`
 
-- `assembleCharacter` — function — line 145
+- `assembleCharacter` — function — line 148
 - `AssembledCharacter` — type — line 29
-- `kitPreloadUrls` — function — line 197
+- `kitPreloadUrls` — function — line 200
 
 ## `characters/baseGarments.ts`
 

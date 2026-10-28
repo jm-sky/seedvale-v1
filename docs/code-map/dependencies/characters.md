@@ -13,6 +13,7 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `ai/NpcAgent.ts`
+- `player/PlayerController.appearance.test.ts`
 - `player/PlayerController.ts`
 
 ## `characters/baseGarments.ts`
@@ -70,5 +71,6 @@ Generated from TypeScript imports.
 - `characters/characterAssets.onDisk.test.ts`
 - `characters/characterFiles.test.ts`
 - `characters/characterFiles.ts`
+- `player/PlayerController.appearance.test.ts`
 - `player/PlayerController.ts`
 - `player/playerVisualPreset.ts`

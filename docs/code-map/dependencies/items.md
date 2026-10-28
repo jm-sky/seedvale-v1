@@ -192,6 +192,7 @@ Generated from TypeScript imports.
 - `items/trapInstanceTrade.test.ts`
 - `items/treasureGameplay.test.ts`
 - `items/treasureGameplay.ts`
+- `items/v3Equipment/compatibility.test.ts`
 - `items/weaponMaintenance.test.ts`
 - `items/weaponMaintenance.ts`
 - `persistence/saveData.ts`
@@ -244,6 +245,7 @@ Generated from TypeScript imports.
 - `ui-vue/npcDialogueOpen.test.ts`
 - `ui-vue/npcDialogueTrade.test.ts`
 - `ui-vue/npcDialogueVoice.test.ts`
+- `ui-vue/screens/InventoryScreen.test.ts`
 - `world/createPlacedContainers.test.ts`
 - `world/createPlacedContainers.ts`
 - `world/expeditionProvisioning.test.ts`
@@ -299,6 +301,7 @@ Generated from TypeScript imports.
 - `ui-vue/components/items/inventoryHybridActions.test.ts`
 - `ui-vue/components/items/inventoryPresentation.test.ts`
 - `ui-vue/demos/inventory-list/fixtures.ts`
+- `ui-vue/screens/InventoryScreen.test.ts`
 
 ## `items/authoredWorldPickups.test.ts`
 
@@ -840,6 +843,7 @@ Generated from TypeScript imports.
 - `assets/assetIndex.ts`
 - `items/heldToolVisual.test.ts`
 - `items/highQualityWeapons.test.ts`
+- `player/PlayerController.appearance.test.ts`
 - `player/PlayerController.ts`
 - `player/PlayerTorch.ts`
 - `tools/assetBrowser/gripEdit.ts`
@@ -951,6 +955,7 @@ Generated from TypeScript imports.
 - `ui-vue/components/items/inventoryPresentation.test.ts`
 - `ui-vue/components/items/inventoryPresentation.ts`
 - `ui-vue/demos/inventory-list/fixtures.ts`
+- `ui-vue/screens/InventoryScreen.test.ts`
 - `ui-vue/store.ts`
 - `ui/createInventoryScreen.ts`
 
@@ -1037,6 +1042,9 @@ Generated from TypeScript imports.
 - `items/sensibleFood.ts`
 - `items/treasureGameplay.test.ts`
 - `items/treasureGameplay.ts`
+- `items/v3Equipment/adapter.ts`
+- `items/v3Equipment/compatibility.test.ts`
+- `items/v3Equipment/validation.ts`
 - `persistence/saveData.ts`
 - `player/PlayerController.ts`
 - `player/medicalTreatment.ts`
@@ -1382,8 +1390,12 @@ Generated from TypeScript imports.
 - `items/tradeCatalog.ts`
 - `items/treasureGameplay.test.ts`
 - `items/treasureGameplay.ts`
+- `items/v3Equipment/adapter.ts`
+- `items/v3Equipment/compatibility.test.ts`
+- `items/v3Equipment/compatibility.ts`
 - `items/v3Equipment/compatibilityTypes.ts`
 - `items/v3Equipment/contracts.test.ts`
+- `items/v3Equipment/validation.ts`
 - `items/villageTools.test.ts`
 - `persistence/saveData.ts`
 - `player/PlayerTorch.ts`
@@ -1843,6 +1855,70 @@ Generated from TypeScript imports.
 - `items/treasureGameplay.test.ts`
 - `world/worldGeneratedContainers.test.ts`
 
+## `items/v3Equipment/adapter.ts`
+
+**Imports**
+
+- `items/itemCatalog.ts`
+- `items/items.ts`
+- `items/v3Equipment/catalogue.ts`
+- `items/v3Equipment/compatibility.ts`
+- `items/v3Equipment/types.ts`
+- `items/v3Equipment/validation.ts`
+
+**Imported by**
+
+- `items/v3Equipment/compatibility.test.ts`
+
+## `items/v3Equipment/catalogue.test.ts`
+
+**Imports**
+
+- `items/v3Equipment/catalogue.ts`
+- `items/v3Equipment/types.ts`
+
+## `items/v3Equipment/catalogue.ts`
+
+**Imports**
+
+- `items/v3Equipment/types.ts`
+
+**Imported by**
+
+- `items/v3Equipment/adapter.ts`
+- `items/v3Equipment/catalogue.test.ts`
+- `items/v3Equipment/compatibility.test.ts`
+- `items/v3Equipment/compatibility.ts`
+- `items/v3Equipment/validation.ts`
+
+## `items/v3Equipment/compatibility.test.ts`
+
+**Imports**
+
+- `items/Inventory.ts`
+- `items/itemCatalog.ts`
+- `items/items.ts`
+- `items/v3Equipment/adapter.ts`
+- `items/v3Equipment/catalogue.ts`
+- `items/v3Equipment/compatibility.ts`
+- `items/v3Equipment/validation.ts`
+
+## `items/v3Equipment/compatibility.ts`
+
+**Imports**
+
+- `items/items.ts`
+- `items/v3Equipment/catalogue.ts`
+- `items/v3Equipment/compatibilityTypes.ts`
+- `items/v3Equipment/propertyCompatibility.ts`
+- `items/v3Equipment/provenance.ts`
+
+**Imported by**
+
+- `items/v3Equipment/adapter.ts`
+- `items/v3Equipment/compatibility.test.ts`
+- `items/v3Equipment/validation.ts`
+
 ## `items/v3Equipment/compatibilityTypes.ts`
 
 **Imports**
@@ -1852,7 +1928,9 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `items/v3Equipment/compatibility.ts`
 - `items/v3Equipment/contracts.test.ts`
+- `items/v3Equipment/propertyCompatibility.ts`
 
 ## `items/v3Equipment/contracts.test.ts`
 
@@ -1864,18 +1942,54 @@ Generated from TypeScript imports.
 - `items/v3Equipment/provenance.ts`
 - `items/v3Equipment/types.ts`
 
+## `items/v3Equipment/propertyCompatibility.ts`
+
+**Imports**
+
+- `items/v3Equipment/compatibilityTypes.ts`
+- `items/v3Equipment/types.ts`
+
+**Imported by**
+
+- `items/v3Equipment/compatibility.ts`
+- `items/v3Equipment/validation.ts`
+
 ## `items/v3Equipment/provenance.ts`
 
 **Imported by**
 
+- `items/v3Equipment/compatibility.ts`
 - `items/v3Equipment/contracts.test.ts`
+- `items/v3Equipment/validation.ts`
 
 ## `items/v3Equipment/types.ts`
 
 **Imported by**
 
+- `items/v3Equipment/adapter.ts`
+- `items/v3Equipment/catalogue.test.ts`
+- `items/v3Equipment/catalogue.ts`
 - `items/v3Equipment/compatibilityTypes.ts`
 - `items/v3Equipment/contracts.test.ts`
+- `items/v3Equipment/propertyCompatibility.ts`
+- `items/v3Equipment/validation.ts`
+
+## `items/v3Equipment/validation.ts`
+
+**Imports**
+
+- `items/itemCatalog.ts`
+- `items/items.ts`
+- `items/v3Equipment/catalogue.ts`
+- `items/v3Equipment/compatibility.ts`
+- `items/v3Equipment/propertyCompatibility.ts`
+- `items/v3Equipment/provenance.ts`
+- `items/v3Equipment/types.ts`
+
+**Imported by**
+
+- `items/v3Equipment/adapter.ts`
+- `items/v3Equipment/compatibility.test.ts`
 
 ## `items/villageTools.test.ts`
 

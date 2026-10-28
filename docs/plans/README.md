@@ -38,6 +38,7 @@ Unless noted otherwise, `verification needed` means implementation has passed au
 | `quests-progression-067-missing-merchant-systemic-investigation.md`            | 🔴 | L      | world-032                                                                                                                                                                                                                                                                                  | quests-travelling-merchant-journeys       |
 | `quests-progression-068-dangerous-merchant-route-and-persistent-world-consequence.md` | 🟡 | L      | quests-progression-067, world-032, ~~world-031~~, settlements-npcs-051                                                                                                                                                                                                                     | quests-travelling-merchant-journeys       |
 | `quests-progression-082-quest-ui-world-objective-reconciliation-coverage.md`   | 🔴 | M      | ~~quests-progression-078~~, ~~quests-progression-080~~                                                                                                                                                                                                                                     | -                                         |
+| `settlements-023-settlement-streaming-lifecycle-and-construction-rollback.md`  | 🔴 | XL     | -                                                                                                                                                                                                                                                                                          | -                                         |
 | `settlements-npcs-050-merchant-journey-provisioning-and-readiness.md`          | 🔴 | L      | ~~settlements-npcs-048~~, settlements-npcs-049, ~~fauna-039~~, ~~npc-053~~                                                                                                                                                                                                                 | quests-travelling-merchant-journeys       |
 | `settlements-npcs-057-agent-performance-offscreen-pack-animal-continuity.md`   | 🔴 | M      | ~~settlements-npcs-048~~                                                                                                                                                                                                                                                                   | -                                         |
 | `tools-000-weapon-browser-observatory.md`                                      | 🟡 | M      | -                                                                                                                                                                                                                                                                                          | -                                         |
@@ -193,7 +194,7 @@ New plans declare a primary `Domain:` in frontmatter. Use optional `Tags:` only 
 - npc: `065`
 - persistence: `008`
 - quests-progression: `083`
-- settlements: `023`
+- settlements: `024`
 - settlements-npcs: `058`
 - tools: `020`
 - ui-input: `046`

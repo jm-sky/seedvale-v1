@@ -228,10 +228,10 @@ Generated from exported TypeScript symbols.
 
 ## `assets/ubcOutfitMaterials.ts`
 
-- `applyAccessoryTint` — function — line 162
-- `applyClothingHue` — function — line 176
-- `applyHairColor` — function — line 191
-- `applyHairTint` — function — line 209
+- `applyAccessoryTint` — function — line 164
+- `applyClothingHue` — function — line 178
+- `applyHairColor` — function — line 193
+- `applyHairTint` — function — line 211
 - `applyOutfitTint` — function — line 148
 - `cloneAccessoryMaterials` — function — line 78
 - `cloneOutfitMaterials` — function — line 69

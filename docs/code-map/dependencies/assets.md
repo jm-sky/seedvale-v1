@@ -235,6 +235,7 @@ Generated from TypeScript imports.
 - `items/itemModels.ts`
 - `items/items.ts`
 - `items/tentProp.ts`
+- `player/PlayerController.appearance.test.ts`
 - `player/PlayerController.ts`
 - `player/PlayerTorch.ts`
 - `settlement/PlacedFires.ts`
@@ -250,6 +251,7 @@ Generated from TypeScript imports.
 - `settlement/settlementSignposts.ts`
 - `settlement/storageVisuals.test.ts`
 - `settlement/storageVisuals.ts`
+- `settlement/woodPileTiers.ts`
 - `terrain/chunkManager.ts`
 - `terrain/resourceDeposits.ts`
 - `tools/assetBrowser/viewer/createAssetSlot.ts`
@@ -284,6 +286,7 @@ Generated from TypeScript imports.
 
 - `assets/sharedSurfaceDiffuseTextures.ts`
 - `assets/ubcOutfitMaterials.ts`
+- `player/PlayerController.appearance.test.ts`
 - `world/groundFog.ts`
 
 ## `assets/mountByAnchorPair.test.ts`

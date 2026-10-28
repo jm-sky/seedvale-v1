@@ -19,11 +19,19 @@ Generated from exported TypeScript symbols.
 - `getAgentCpuDiag` — function — line 835
 - `setActiveAgentCpuDiag` — function — line 831
 
+## `perf/artifacts.ts`
+
+- `assertArtifactRoundTrip` — function — line 62
+- `buildArtifactBundle` — function — line 32
+- `PerfArtifactBundle` — type — line 25
+- `PerfArtifactMeta` — type — line 10
+
 ## `perf/benchmark.ts`
 
-- `BenchmarkHost` — type — line 55
-- `BenchmarkRunner` — type — line 43
-- `createBenchmarkRunner` — function — line 142
+- `BenchmarkHost` — type — line 82
+- `BenchmarkRunner` — type — line 66
+- `BenchmarkRunOptions` — type — line 57
+- `createBenchmarkRunner` — function — line 203
 
 ## `perf/benchmarkFixture.ts`
 
@@ -35,12 +43,23 @@ Generated from exported TypeScript symbols.
 - `BENCHMARK_SCENARIO_IDS` — const — line 1
 - `BenchmarkScenarioId` — type — line 12
 
+## `perf/buildInfo.ts`
+
+- `createRunId` — function — line 24
+- `getBuildGitSha` — function — line 6
+
 ## `perf/detector.ts`
 
 - `detectFrame` — function — line 76
 - `DetectFrameInput` — type — line 15
 - `primaryCategory` — function — line 97
 - `rankSuspects` — function — line 45
+
+## `perf/deviceMeta.ts`
+
+- `buildGpuTimerStatus` — function — line 42
+- `captureDeviceMeta` — function — line 6
+- `drawingBufferSize` — function — line 90
 
 ## `perf/flags.ts`
 
@@ -54,10 +73,22 @@ Generated from exported TypeScript symbols.
 
 ## `perf/gpuTimer.ts`
 
-- `createGpuTimer` — function — line 51
-- `getGpuTimer` — function — line 131
-- `GpuTimer` — type — line 11
-- `setActiveGpuTimer` — function — line 127
+- `createGpuTimer` — function — line 70
+- `getGpuTimer` — function — line 174
+- `GpuTimer` — type — line 20
+- `GpuTimerProvenance` — type — line 11
+- `setActiveGpuTimer` — function — line 170
+
+## `perf/grassBaseline.ts`
+
+- `createGrassBaselineDiag` — function — line 98
+- `formatGrassBaselineReport` — function — line 246
+- `getGrassBaselineDiag` — function — line 238
+- `GrassBaselineDiag` — type — line 68
+- `GrassBaselineLifecycle` — type — line 11
+  - domain: world-terrain
+- `GrassBaselineSnapshot` — type — line 22
+- `setActiveGrassBaselineDiag` — function — line 234
 
 ## `perf/grassFinalizationDiag.ts`
 
@@ -90,9 +121,9 @@ Generated from exported TypeScript symbols.
 
 ## `perf/isolationProbe.ts`
 
-- `formatIsolationReport` — function — line 205
-- `IsolationHost` — type — line 23
-- `runIsolationProbes` — function — line 95
+- `formatIsolationReport` — function — line 232
+- `IsolationHost` — type — line 31
+- `runIsolationProbes` — function — line 122
 
 ## `perf/log.ts`
 
@@ -106,12 +137,30 @@ Generated from exported TypeScript symbols.
 
 ## `perf/monitor.ts`
 
-- `createPerfMonitor` — function — line 169
+- `createPerfMonitor` — function — line 184
+- `emptySessionTotals` — function — line 84
 - `FrameEndInput` — type — line 35
-- `PerfMonitor` — type — line 77
+- `PerfMonitor` — type — line 88
 - `SessionTotals` — type — line 53
-- `withCategory` — function — line 501
-- `withStage` — function — line 515
+- `withCategory` — function — line 520
+- `withStage` — function — line 534
+
+## `perf/passSubmissionCollector.ts`
+
+- `createPassSubmissionCollector` — function — line 247
+- `emptyPassSubmissionReport` — function — line 538
+- `formatPassSubmissionReport` — function — line 505
+- `getPassSubmissionCollector` — function — line 501
+- `PassAggregate` — type — line 54
+- `PassFrameStats` — type — line 43
+- `PassKind` — type — line 30
+  - domain: world-terrain
+- `PassSubmissionCollector` — type — line 93
+- `PassSubmissionReliability` — type — line 67
+- `PassSubmissionReport` — type — line 69
+- `setActivePassSubmissionCollector` — function — line 497
+- `SubmissionBucketKey` — type — line 32
+- `SubmissionBucketStats` — type — line 38
 
 ## `perf/percentile.ts`
 
@@ -139,10 +188,18 @@ Generated from exported TypeScript symbols.
 - `setActiveProgramCensus` — function — line 900
 - `withProgramCensusStage` — function — line 885
 
+## `perf/rawSidecar.ts`
+
+- `buildRawSidecar` — function — line 34
+- `PerfRawSidecar` — type — line 22
+- `RAW_SIDECAR_FULL_LIMIT` — const — line 4
+- `RawFrameSample` — type — line 13
+- `RawSidecarSampling` — type — line 6
+
 ## `perf/report.ts`
 
-- `buildReport` — function — line 18
-- `formatReport` — function — line 147
+- `buildReport` — function — line 21
+- `formatReport` — function — line 170
 
 ## `perf/sceneCensus.ts`
 
@@ -175,30 +232,42 @@ Generated from exported TypeScript symbols.
 - `SettlementShadowCensus` — type — line 72
 - `VisibilityRestore` — type — line 77
 
+## `perf/timeDistribution.ts`
+
+- `timeDistribution` — function — line 13
+- `TimeDistribution` — type — line 5
+
 ## `perf/types.ts`
 
-- `BudgetKind` — type — line 197
-- `HitchEvent` — type — line 57
-- `HitchReportRow` — type — line 147
-- `IsolationProbeRow` — type — line 155
-- `LONG_FRAME_MS` — const — line 69
-- `LongFrameAttribution` — type — line 87
-- `LongFrameRecord` — type — line 77
-- `LongFrameStage` — type — line 71
-- `PERF_CATEGORIES` — const — line 9
-- `PERF_CATEGORY_COUNT` — const — line 26
-- `PERF_CATEGORY_INDEX` — const — line 28
-- `PERF_SEVERITY_RANK` — const — line 45
-- `PerfAttribution` — type — line 227
-- `PerfCategory` — type — line 24
-- `PerfContext` — type — line 115
-- `PerfDetection` — type — line 205
-- `PerfFilter` — type — line 52
-- `PerfLiveStats` — type — line 176
-- `PerfLogEvent` — type — line 214
-- `PerfReportJson` — type — line 233
-- `PerfSeverity` — type — line 43
-- `PerfSuspect` — type — line 199
-- `ScenarioAnchor` — type — line 93
-- `ScenarioRoute` — type — line 95
-- `ScenarioSettlement` — type — line 104
+- `BenchmarkPhase` — type — line 121
+- `BudgetKind` — type — line 287
+- `CameraControlResult` — type — line 145
+- `CameraPose` — type — line 123
+- `DeviceMeta` — type — line 167
+- `GpuTimerStatus` — type — line 152
+- `HitchEvent` — type — line 61
+- `HitchReportRow` — type — line 232
+- `IsolationProbeRow` — type — line 240
+- `LONG_FRAME_MS` — const — line 73
+- `LongFrameAttribution` — type — line 91
+- `LongFrameRecord` — type — line 81
+- `LongFrameStage` — type — line 75
+- `PERF_CATEGORIES` — const — line 13
+- `PERF_CATEGORY_COUNT` — const — line 30
+- `PERF_CATEGORY_INDEX` — const — line 32
+- `PERF_SEVERITY_RANK` — const — line 49
+- `PerfAttribution` — type — line 317
+- `PerfCategory` — type — line 28
+- `PerfContext` — type — line 184
+- `PerfDetection` — type — line 295
+- `PerfFilter` — type — line 56
+- `PerfLiveStats` — type — line 266
+- `PerfLogEvent` — type — line 304
+- `PerfReportJson` — type — line 323
+- `PerfSeverity` — type — line 47
+- `PerfSuspect` — type — line 289
+- `PopulationGateResult` — type — line 136
+- `PopulationSnapshot` — type — line 128
+- `ScenarioAnchor` — type — line 97
+- `ScenarioRoute` — type — line 99
+- `ScenarioSettlement` — type — line 108

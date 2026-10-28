@@ -704,6 +704,26 @@ Generated from exported TypeScript symbols.
 - `TreasureTrapType` — type — line 49
 - `treasureWorldContainerPrompt` — function — line 341
 
+## `items/v3Equipment/adapter.ts`
+
+- `EquipmentProjection` — type — line 17
+- `projectV3Equipment` — function — line 26
+
+## `items/v3Equipment/catalogue.ts`
+
+- `findV3EquipmentDefinition` — function — line 2347
+- `V3_EQUIPMENT_DEFINITIONS` — const — line 17
+
+## `items/v3Equipment/compatibility.ts`
+
+- `CanonicalV3Id` — type — line 110
+- `Classification` — type — line 8
+- `CompatibilityEntry` — interface — line 113
+- `IdentityRelation` — type — line 9
+- `matchesReviewedPolicy` — function — line 136
+- `V1_VERIFICATION_REVISION` — const — line 111
+- `V3_EQUIPMENT_COMPATIBILITY` — const — line 157
+
 ## `items/v3Equipment/compatibilityTypes.ts`
 
 - `CompatibilityDecision` — interface — line 20
@@ -711,6 +731,12 @@ Generated from exported TypeScript symbols.
 - `EquipmentPropertyPath` — type — line 7
 - `PropertyCompatibility` — interface — line 11
 - `VerifiedV1Target` — interface — line 27
+
+## `items/v3Equipment/propertyCompatibility.ts`
+
+- `PROPERTY_CLASSES` — const — line 6
+- `propertyCompatibilityFor` — function — line 31
+- `propertyPaths` — function — line 23
 
 ## `items/v3Equipment/provenance.ts`
 
@@ -747,6 +773,12 @@ Generated from exported TypeScript symbols.
 - `WeaponCapability` — type — line 46
 - `WeaponClass` — type — line 43
 - `WeaponItem` — type — line 82
+
+## `items/v3Equipment/validation.ts`
+
+- `DeepReadonly` — type — line 10
+- `V1Definitions` — interface — line 12
+- `validateEquipmentCompatibility` — function — line 81
 
 ## `items/weaponMaintenance.ts`
 

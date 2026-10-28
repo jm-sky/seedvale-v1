@@ -850,18 +850,18 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/props.ts`
 
-- `AuthoredRepairVisualHandles` — type — line 363
+- `AuthoredRepairVisualHandles` — type — line 364
   - domain: settlements
-- `BlacksmithWorkplace` — type — line 383
-- `buildSettlementProps` — function — line 794
-- `disposeSettlementGroup` — function — line 2434
-- `SettlementHouseBed` — type — line 165
-- `SettlementHouseLandmark` — type — line 131
-- `SettlementLandmarks` — type — line 186
-- `SettlementLandPlot` — type — line 349
-- `SettlementStorageVisuals` — type — line 341
-- `SettlementTreeLandmark` — type — line 393
-- `SettlementWellLandmark` — type — line 172
+- `BlacksmithWorkplace` — type — line 384
+- `buildSettlementProps` — function — line 795
+- `disposeSettlementGroup` — function — line 2456
+- `SettlementHouseBed` — type — line 166
+- `SettlementHouseLandmark` — type — line 132
+- `SettlementLandmarks` — type — line 187
+- `SettlementLandPlot` — type — line 350
+- `SettlementStorageVisuals` — type — line 342
+- `SettlementTreeLandmark` — type — line 394
+- `SettlementWellLandmark` — type — line 173
 
 ## `settlement/propSpecs.ts`
 
@@ -1551,3 +1551,20 @@ Generated from exported TypeScript symbols.
 - `WELL_QUEUE_SERVING_OFFSET_ANCHOR` — const — line 8
 - `WELL_QUEUE_SERVING_OFFSET_FALLBACK` — const — line 11
 - `WellQueueRestConfig` — type — line 13
+
+## `settlement/woodPileTiers.ts`
+
+- `bakeWoodPileTierTemplates` — function — line 52
+- `createInstancedWoodPileVisuals` — function — line 177
+- `createWoodPileTierPool` — function — line 113
+- `InstancedWoodPileVisuals` — type — line 162
+- `loadWoodPileTierTemplates` — function — line 83
+- `WOOD_PILE_TIER_NODES` — const — line 26
+- `WOOD_PILE_TIER_SCALE` — const — line 38
+- `WOOD_PILE_TIERS_URL` — const — line 23
+  - domain: settlements-npcs
+  - system: storage-visuals
+  - role: Renders wood-pile tiers as shared-geometry instanced meshes with change-driven slot updates.
+- `WoodPilePoint` — type — line 97
+- `WoodPileTierPool` — type — line 99
+- `WoodPileTierTemplates` — type — line 40

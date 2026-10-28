@@ -654,6 +654,7 @@ graph TD
   settlements_020["settlements-020 — Founded settlement bootstrap integrity"]
   settlements_021["settlements-021 — Shared settlement resident runtime"]
   settlements_022["settlements-022 — Founded settlement live runtime and streaming"]
+  settlements_023["settlements-023 — Settlement async streaming lifecycle and construction rollback"]
   settlements_npcs_001["settlements-npcs-001 — Cultivation Hydration & Watering"]
   settlements_npcs_002["settlements-npcs-002 — NPC professions — complete profession work integration"]
   settlements_npcs_003["settlements-npcs-003 — Hunter Arrow Production"]

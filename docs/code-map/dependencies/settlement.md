@@ -1863,6 +1863,7 @@ Generated from TypeScript imports.
 - `settlement/settlementStructures.test.ts`
 - `settlement/settlementStructures.ts`
 - `settlement/storageVisuals.ts`
+- `settlement/woodPileTiers.ts`
 - `world/caves/caveAdventureProps.ts`
 - `world/hiddenFinds.test.ts`
 - `world/hiddenFinds.ts`
@@ -1917,6 +1918,7 @@ Generated from TypeScript imports.
 - `settlement/villagePasture.ts`
 - `settlement/villagePlan.ts`
 - `settlement/villagePlanner.ts`
+- `settlement/woodPileTiers.ts`
 - `simulation/index.ts`
 - `terrain/chunkHeightmap.ts`
 - `terrain/coastPlacement.ts`
@@ -2698,6 +2700,7 @@ Generated from TypeScript imports.
 - `perf/sceneCensus.ts`
 - `settlement/household.ts`
 - `settlement/storageVisuals.ts`
+- `settlement/woodPileTiers.ts`
 
 ## `settlement/storageVisuals.ts`
 
@@ -2713,6 +2716,7 @@ Generated from TypeScript imports.
 
 - `settlement/props.ts`
 - `settlement/storageVisuals.test.ts`
+- `settlement/woodPileTiers.ts`
 
 ## `settlement/structureCondition.test.ts`
 
@@ -3019,3 +3023,17 @@ Generated from TypeScript imports.
 
 - `settlement/createSettlement.ts`
 - `settlement/wellInteractionQueue.test.ts`
+
+## `settlement/woodPileTiers.ts`
+
+**Imports**
+
+- `assets/loadGltf.ts`
+- `perf/sceneCensus.ts`
+- `settlement/propUtils.ts`
+- `settlement/storageVisuals.ts`
+
+**Imported by**
+
+- `settlement/props.ts`
+- `settlement/storageVisuals.test.ts`

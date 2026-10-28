@@ -568,6 +568,10 @@ Generated from TypeScript imports.
 
 - `ui-vue/store.ts`
 
+**Imported by**
+
+- `ui-vue/screens/QuickActionsScreen.test.ts`
+
 ## `ui-vue/reputationPresentation.test.ts`
 
 **Imports**
@@ -579,6 +583,23 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `ui-vue/reputationPresentation.test.ts`
+
+## `ui-vue/screens/InventoryScreen.test.ts`
+
+**Imports**
+
+- `input/Keyboard.ts`
+- `items/Inventory.ts`
+- `items/armorItemInstances.ts`
+- `items/inventoryView.ts`
+- `ui-vue/store.ts`
+
+## `ui-vue/screens/QuickActionsScreen.test.ts`
+
+**Imports**
+
+- `ui-vue/quickActionsRecent.ts`
+- `ui-vue/store.ts`
 
 ## `ui-vue/store.ts`
 
@@ -640,6 +661,8 @@ Generated from TypeScript imports.
 - `ui-vue/playerQuickActions.test.ts`
 - `ui-vue/playerQuickActions.ts`
 - `ui-vue/quickActionsRecent.ts`
+- `ui-vue/screens/InventoryScreen.test.ts`
+- `ui-vue/screens/QuickActionsScreen.test.ts`
 - `ui-vue/worldBoundUiSessions.test.ts`
 - `ui/createHud.ts`
 
