@@ -1,7 +1,7 @@
 # Quest Revival — Session 1: Anna, Piotr and everyday settlement life
 
 **Created:** 2026-10-28  
-**Status:** Author decisions recorded; focused design session pending. **NOT an approved implementation plan.**  
+**Status:** Group 1 narrative decisions finalized; technical details open. **NOT an approved implementation plan.**  
 **Repo:** `jm-sky/seedvale-v1`, `main`  
 **Evidence:** [61-record matrix](../2026-10-27--quest-revival-matrix.md) · [runtime findings](../2026-10-27--quest-revival-runtime-evidence.md) · [portfolio analysis](../2026-10-28--quest-portfolio-prioritization.md)  
 **Rule:** Latest author decisions override earlier *recommendations*, not underlying code evidence. Existing V1 definition ≠ verified end-to-end playability. V2 record ≠ an authored V1 quest. D4 Performance-First integration freeze remains binding.
@@ -19,7 +19,7 @@ Family continuity, physical repairs, a replacement flower-and-honey exchange, ca
 ### R02 — Wood for Piotr (`drewno-dla-piotra`, V1)
 
 **Maturity:** **V1 implemented in source** (offer conditional; runtime playthrough unverified).  
-**Author direction:** **Polish; Piotr owns a real cart**.  
+**Author direction (superseded):** Earlier cart ownership request replaced by the 2026-10-28 final household-fence decision below.  
 **Player-facing current/donor story:** Piotr needs five branches for his logging cart. The existing quest references a real `loggingWagon` repair target.  
 **Discussion boundary:** Ensure the wagon is visibly present and truly owned by Piotr, with credible repair state and memory of earlier help; ownership and presentation need targeted verification.
 
@@ -114,4 +114,82 @@ Family continuity, physical repairs, a replacement flower-and-honey exchange, ca
 - [ ] Reassess incremental development effort and ROI only for the selected variant.
 - [ ] Keep deferred stories deferred and D4 runtime integration frozen unless separately authorized.
 
-**Next step:** Use this file as the opening context for the group's independent design session. No plan or coding-agent handoff is approved by these checkboxes.
+**Next step:** Preserve final decisions below for future planning after D4 authorization. No coding-agent handoff is approved.
+
+## Final Group 1 author decisions — 2026-10-28
+
+**Status:** Narrative direction finalized for all twelve source records; implementation details below remain open. This is a decision dossier, NOT approval to implement; D4 Performance-First freeze remains binding.
+
+### R26 / R01 / R02 / R03 / R09 — family repair storyline
+
+- **R26 `sporne-drewno`:** Anna advocates repairing a **settlement-owned palisade segment**; Piotr advocates repairing the **fence beside his household**. Player hears both and chooses whose request is first; the other remains available. This is a practical priority dispute, not marital antagonism. Independent relationship gains for the chosen priority and subsequent help, with dialogue remembering actual completed events; no automatic negative relation for going second.
+- **R01 `drewno-dla-anny`:** 5 real branches fund a real damaged settlement palisade segment. Repair is performed by NPC work and must visibly restore that segment. Damaged segment has a gap **without collider**; a wolf can pass through it. Repaired geometry/collision must follow the authoritative structure condition; no special quest-only wolf invasion, threat meter, timer, or additional AI system.
+- **R02 `drewno-dla-piotra`:** repurpose to 5 branches for Piotr's **household fence**, with the real fence material sink and subsequent NPC repair. It no longer repairs the `loggingWagon`.
+- **R03 `drewno-na-naprawe`:** consolidate/retire as a separate offered wood errand; its **household fence, repair condition, materials and NPC repair are preserved under R02**. Preserve/migrate old quest progress and terminal outcomes deliberately; never silently reinterpret stage indexes or duplicate repair reservations. The previous specific requirement that Piotr own a working logging cart is superseded: no cart ownership/use mechanic is required by this storyline; existing cart props need not be removed.
+- **R09 `kamienie-dla-piotra`:** follows completion of the **household-fence repair storyline**, as a sequel, with 6 real stones for `residentialFoundation`; keep NPC repair and state-aware dialogue. Exact trigger (hand-in vs physically completed fence repair) is not yet selected; do not imply completion of material delivery equals completion of NPC repair.
+- **Preservation:** Existing V1 source has `communalFence` targeting a pasture-fence segment or fallback, not confirmed as a palisade. New target must be grounded in an actual settlement palisade and its collider/condition lifecycle verified. Existing repair bridge maps R02 to `loggingWagon` and R03 to `householdFence`; rewiring is needed, not already implemented. Maintain durable entity identity and save compatibility.
+
+### R21 — Flowers and Honey (`relay-anna-piotr` rewrite)
+
+- Available after **first meaningful help to Anna or Piotr**, not after all repairs. Exact eligible outcome/event is a technical selection.
+- Busy Piotr asks player for **5 actual gatherable wildflowers** to hand to Anna. Anna responds warmly and with humor; dialogue references earlier repairs when applicable. She then asks for **1 actual honey** delivered to Piotr. They both remember the reciprocal gift, with modest relationship recognition rather than a large material reward.
+- Guarantee a reachable, working hive with **visible bees** near their household. Reuse V1 wild-hive production, harvest, and sting-risk systems. Do not add autonomous bee-agent simulation. Handle empty/previously harvested/destroyed hive without quest softlock; use real inventory transfer. `wildflower` item kind, exact gathering sources and hive fallback details remain design recommendations/technical choices, not approved identifiers.
+- This is independent of the child's illness. Avoid incongruous gift dialogue during active serious family concern, but do not lock illness progression behind R21.
+
+### R38 + G04 — sick child (`ziola-dla-anny` adapted with V2 G04)
+
+- Anna and Piotr's child is a **full NPC**, aged approximately **10–18** (specific age, name, occupation remain open); active schedule and lightweight work continue during illness at reduced efficiency. No mandatory bedridden animation/mechanic.
+- **Mild**, persistent sickness: no death, permanent injury or escalating catastrophe. Recovery restores normal activity/efficiency; family and child remember assistance.
+- One illness quest may start **one in-game day after R21 completion**, with independent fallback **2–3 days after game start** (exact fallback day still open). Whichever condition occurs first offers the same incident once, using deterministic/persisted scheduling and no duplicate trigger. R21 is an accelerator, never a prerequisite.
+- Specific medicinal plants: **yarrow, chamomile, mint**, as ordinary reusable gatherable/crafting items, not quest-only tokens. Player may either bring ingredients for **Anna to prepare treatment** or craft medicine and deliver it. Actual medicinal effect required.
+- High `medicine` skill offers contextual dialogue/actions **before or after** the herb/medicine hand-in: suggest compresses, or at a higher threshold personally use medicine on the child to alleviate symptoms. Distinguish symptom relief from definitive treatment; proposed differentiation, thresholds and exact mechanical effects need technical validation. Reuse existing skill/interaction capabilities wherever possible.
+- No new general disease simulation is authorized. The effect should belong to stable NPC state and persist without relying on loaded visuals.
+
+### R23 — Shells for Kasia
+
+- Keep a real inventory hand-in of **any three shells**, including mixed varieties. Target **three varieties**, with Kasia's reactions differing by kind/rarity, not three mandatory distinct shells. Exact item identifiers, spawning rates and rewards are technical design choices. **House decoration deferred.**
+
+### R33 — Water for Marek
+
+- Marek requests actual water while plausibly **on guard duty**. Player collects water at a real source, carries it in a filled container, and genuinely hands it over; no fictional well-visit-only completion or duplicated/lost containers.
+- **Container method deliberately flexible:** default preference is the player's existing `waterskin` if easiest with current item model. A unique **Mark's waterskin** provided by Marek is acceptable if technically simpler, but NOT required. Decide from existing item/custody/transfer mechanics; do not add a parallel container subsystem solely for this quest.
+
+### R50 / R54 — deferred
+
+- **R50 A Roof Before Rain** and **R54 Six Bowls, One Pan** remain deferred V2 story candidates. Weather manipulation is permissible in principle but no scripted storm or roof/supper implementation is approved.
+
+### Effort and priority — provisional relative estimates
+
+| Cluster | Effort | Priority | Key incremental work |
+|---|---|---|---|
+| R26/R01/R02/R03 | L | high within Group 1 | Physical palisade damage/collider, ownership/repair sink remapping, branching and save migration |
+| R09 | S–M | medium | Sequel availability tied to real fence work and context |
+| R21 | M | medium | Gatherable flowers, two transfers, local hive/bees, fallback and dialogue |
+| R38 + G04 | L | medium | Stable child NPC, illness/efficiency, herbs/crafting, medicine options and scheduling |
+| R23 | M | low–medium | Multiple shell items, acquisition and dialogue |
+| R33 | S–M (potentially M) | medium | Existing water container viability, real transfer and guard availability |
+| R50 / R54 | deferred | deferred | No active scope |
+
+These are **incremental estimates, not verified engineering sizing**; source/runtime research and save migration can alter them. No work is authorized during D4 freeze.
+
+### Remaining open implementation-facing questions (no need to re-ask settled narrative decisions)
+
+- Verify which actual palisade segment, damage/collider rebuild and NPC repair ownership can supply R01 without breaking streaming or offscreen simulation; do not confuse pasture fence with palisade.
+- Decide R09's precise trigger on delivered materials versus physically repaired household fence, with world-state fallback; maintain R26/R01/R02 outcome IDs or explicit migration for saves, including retired R03.
+- Define robust offer pacing, existing-world damage seeding, and deterministic target IDs; check concurrent repairs and pre-repaired outcomes.
+- Select real flower item/source, hive positioning and empty/burned-hive contingency, and actual transfers.
+- Specify child's stable NPC identity, age/name/duties, illness scheduling persistence, medicine thresholds/crafting recipe and whether existing skill actions support treatment without a new general subsystem.
+- Identify current shell and waterskin/container APIs, then choose minimal truthful adaptations for R23/R33; preserve water ownership and Marek's guard schedule.
+- Confirm dialogue/relation consequences, rewards and world effects in new saves and existing in-progress saves; do not claim runtime verification from static inspection.
+
+### Session decisions checklist (design closure, NOT coding tasks)
+
+- [x] Choose R26 priority structure and real physical consequences.
+- [x] Consolidate R03 into R02 while retaining the household fence.
+- [x] Keep R09 as sequel after the fence storyline.
+- [x] Choose R21 timing and flower/honey exchange with context-sensitive humor.
+- [x] Choose full child NPC, mild illness, independent timed fallback, both medicine paths and skill options.
+- [x] Select R23 three interchangeable shell varieties; defer decoration.
+- [x] Require R33 physical water transfer, with flexible container ownership.
+- [x] Keep R50/R54 deferred and D4 freeze.
+- [ ] Validate implementation-specific targets, lifecycle, item APIs, migration and tests when planning is authorized.
