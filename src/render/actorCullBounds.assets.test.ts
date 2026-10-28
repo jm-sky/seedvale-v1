@@ -60,9 +60,16 @@ function verifyPose(wrapper: Object3D) {
 }
 
 describe('actor culling on shipped animated characters', () => {
-  it.each(['Male', 'Female'] as const)('contains the assembled %s kit through representative clips', async (sex) => {
+  it.each([
+    ['Male', 'Peasant'],
+    ['Female', 'Peasant'],
+    // Author-edited V1 outfits: single joined skinned mesh, Farmer hat rigid on Head, Blacksmith apron.
+    ['Male', 'Farmer'],
+    ['Male', 'Woodcutter'],
+    ['Male', 'Blacksmith'],
+  ] as const)('contains the assembled %s %s kit through representative clips', async (sex, outfit) => {
     const appearance: CharacterAppearance = {
-      sex, outfit: 'Peasant', head: 'Base', hair: 'Long', beard: sex === 'Male',
+      sex, outfit, head: 'Base', hair: 'Long', beard: sex === 'Male',
       garments: sex === 'Female' ? ['PeasantSkirt'] : [], clothTint: null,
     }
     const { scene, animations, warnings } = await assembleCharacter(appearance)

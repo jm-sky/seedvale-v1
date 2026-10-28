@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest'
 import type { CharacterAppearance } from './characterTypes'
 import { baseGarments } from './baseGarments'
 import { bodyUrl, characterUrls, eqNodeName, eqUrl, headUrl } from './characterFiles'
-import { CHARACTER_OUTFITS, CHARACTER_SEXES } from './characterTypes'
+import { CHARACTER_OUTFITS, CHARACTER_SEXES, MALE_ONLY_OUTFITS } from './characterTypes'
 
 const PUBLIC = resolve(import.meta.dirname, '../../public')
 
@@ -24,6 +24,7 @@ describe('character kit products on disk', () => {
   it('ships every sex × outfit body plus heads, hair, anims, eq packs', () => {
     for (const sex of CHARACTER_SEXES) {
       for (const outfit of CHARACTER_OUTFITS) {
+        if (sex === 'Female' && MALE_ONLY_OUTFITS.has(outfit)) continue
         const path = publicPath(bodyUrl(sex, outfit))
         expect(existsSync(path), path).toBe(true)
       }

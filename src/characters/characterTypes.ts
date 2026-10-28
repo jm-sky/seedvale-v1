@@ -23,6 +23,8 @@ export type CharacterOutfit =
   | 'Wizard'
   | 'Blacksmith'
   | 'Herbalist'
+  | 'Farmer'
+  | 'Woodcutter'
 
 /** Base garment from `eq/<Sex>.glb` (render--013). Not inventory. */
 export type CharacterGarment = 'PeasantSkirt'
@@ -49,7 +51,15 @@ export const CHARACTER_OUTFITS: readonly CharacterOutfit[] = [
   'Wizard',
   'Blacksmith',
   'Herbalist',
+  'Farmer',
+  'Woodcutter',
 ]
+
+/**
+ * Author-edited V1 outfits exported from the male Blender master only (2026-10-28):
+ * Farmer = hat + cloth leg wraps, Woodcutter = boots + suspenders. No Female body is shipped.
+ */
+export const MALE_ONLY_OUTFITS: ReadonlySet<CharacterOutfit> = new Set(['Farmer', 'Woodcutter'])
 
 export const CHARACTER_SEXES: readonly CharacterSex[] = ['Male', 'Female']
 

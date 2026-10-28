@@ -7,8 +7,11 @@ import {
   NPC_UBC_FEMALE_PEASANT_URL,
   NPC_UBC_FEMALE_WIZARD_URL,
   NPC_UBC_MALE_BLACKSMITH_URL,
+  NPC_UBC_MALE_FARMER_URL,
   NPC_UBC_MALE_KNIGHT_UNHELMETED_URL,
+  NPC_UBC_MALE_WOODCUTTER_URL,
 } from '../ai/npcAppearance'
+import { headUrl } from '../characters/characterFiles'
 import { ANIMAL_DEFS } from '../fauna/AnimalAgent'
 import { FAUNA_URLS } from '../fauna/createFauna'
 import { HELD_GLB } from '../items/heldToolVisual'
@@ -570,6 +573,28 @@ export function buildAssetIndex(): AssetIndexEntry[] {
     prepare: { mode: 'height', value: NPC_HEIGHT },
     skinned: true,
     anchors: anchorsForAsset('character:ubc-male-blacksmith'),
+    headUrl: headUrl('Male', 'Round'),
+  })
+  // Author-edited V1 outfits (Blender master, 2026-10-28).
+  out.push({
+    id: 'character:ubc-male-woodcutter',
+    url: NPC_UBC_MALE_WOODCUTTER_URL,
+    label: 'NPC (UBC Male Woodcutter)',
+    group: 'character',
+    prepare: { mode: 'height', value: NPC_HEIGHT },
+    skinned: true,
+    anchors: anchorsForAsset('character:ubc-male-woodcutter'),
+    headUrl: headUrl('Male', 'Base'),
+  })
+  out.push({
+    id: 'character:ubc-male-farmer',
+    url: NPC_UBC_MALE_FARMER_URL,
+    label: 'NPC (UBC Male Farmer, hat)',
+    group: 'character',
+    prepare: { mode: 'height', value: NPC_HEIGHT },
+    skinned: true,
+    anchors: anchorsForAsset('character:ubc-male-farmer'),
+    headUrl: headUrl('Male', 'Base'),
   })
 
   pushCompareCharacterEntries(out)

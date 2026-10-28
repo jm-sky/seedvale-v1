@@ -35,7 +35,7 @@ export const NPC_HAIR_COLOR: Record<NpcHairColorId, number> = {
   grey: 0xc5c0b8,
 }
 
-/** Woodcutter placeholder tint on Peasant body (no dedicated Woodcutter mesh). */
+/** Woodcutter tint on the Peasant body worn by women/young woodcutters (male adults wear `Woodcutter`). */
 export const NPC_WOODCUTTER_CLOTH_TINT = 0xc4a574
 
 const MALE_HAIR: readonly (HairStyle | null)[] = ['Parted', 'Buzzed', 'Parted', null]
@@ -81,8 +81,8 @@ type RoleLook = {
 }
 
 const ROLE_LOOK: Record<Role, RoleLook> = {
-  farmer: { outfit: 'Peasant_Boots' },
-  woodcutter: { outfit: 'Peasant', clothTint: NPC_WOODCUTTER_CLOTH_TINT },
+  farmer: { outfit: 'Farmer' },
+  woodcutter: { outfit: 'Woodcutter' },
   trader: { outfit: 'Wizard' },
   hunter: { outfit: 'Ranger_NoHood' },
   guard: { outfit: 'Knight_Cloth' },
@@ -96,10 +96,12 @@ const ROLE_LOOK: Record<Role, RoleLook> = {
 
 /**
  * Female cast: no Ranger/Knight/Blacksmith production looks this pass.
- * Trader → Wizard; all other coerced roles → Peasant (+ skirt).
+ * Trader → Wizard; male-only authored outfits keep their previous female look
+ * (Farmer → Peasant_Boots, Woodcutter → Peasant); other coerced roles → Peasant (+ skirt).
  */
 function coerceFemaleOutfit(role: Role, outfit: CharacterOutfit): CharacterOutfit {
   if (role === 'trader') return 'Wizard'
+  if (outfit === 'Farmer') return 'Peasant_Boots'
   if (
     outfit === 'Ranger'
     || outfit === 'Ranger_NoHood'
@@ -107,6 +109,7 @@ function coerceFemaleOutfit(role: Role, outfit: CharacterOutfit): CharacterOutfi
     || outfit === 'Knight_Cloth'
     || outfit === 'Knight_Helm'
     || outfit === 'Blacksmith'
+    || outfit === 'Woodcutter'
   ) {
     return 'Peasant'
   }
@@ -182,6 +185,7 @@ export function resolveNpcAppearance(opts: {
   let hair: HairStyle | null
   let beard: boolean
   let clothTint: number | null = roleLook.clothTint ?? null
+  if (opts.role === 'woodcutter' && adult && outfit === 'Peasant') clothTint = NPC_WOODCUTTER_CLOTH_TINT
   let family: string = outfit
 
   if (opts.role === 'blacksmith' && sex === 'Male' && adult) {
@@ -245,4 +249,5 @@ export const NPC_UBC_FEMALE_PEASANT_URL = bodyUrl('Female', 'Peasant')
 export const NPC_UBC_FEMALE_WIZARD_URL = bodyUrl('Female', 'Wizard')
 export const NPC_UBC_MALE_KNIGHT_UNHELMETED_URL = bodyUrl('Male', 'Knight_Cloth')
 export const NPC_UBC_MALE_BLACKSMITH_URL = bodyUrl('Male', 'Blacksmith')
-export const NPC_UBC_MALE_WOODCUTTER_URL = bodyUrl('Male', 'Peasant')
+export const NPC_UBC_MALE_WOODCUTTER_URL = bodyUrl('Male', 'Woodcutter')
+export const NPC_UBC_MALE_FARMER_URL = bodyUrl('Male', 'Farmer')

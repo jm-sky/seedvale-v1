@@ -12,7 +12,7 @@ const PIOTR = 'home:npc:1'
 const KASIA = 'home:npc:2'
 
 describe('resolveNpcAppearance', () => {
-  it('maps adult farmer to Peasant_Boots and woodcutter to Peasant + tint', () => {
+  it('maps adult female farmer to Peasant_Boots and male woodcutter to the authored Woodcutter', () => {
     const anna = resolveNpcAppearance({
       age: 34,
       gender: 'female',
@@ -35,11 +35,30 @@ describe('resolveNpcAppearance', () => {
       role: 'woodcutter',
       treeIndex: 1,
     })
-    expect(piotr.outfit).toBe('Peasant')
-    expect(piotr.kit.clothTint).toBe(NPC_WOODCUTTER_CLOTH_TINT)
-    expect(piotr.modelUrl).toBe(bodyUrl('Male', 'Peasant'))
+    expect(piotr.outfit).toBe('Woodcutter')
+    expect(piotr.kit.clothTint).toBeNull()
+    expect(piotr.modelUrl).toBe(bodyUrl('Male', 'Woodcutter'))
     expect(piotr.animationUrl).toBe(ANIMS_URL)
     expect(piotr.family).toBe('woodcutter')
+  })
+
+  it('maps adult male farmer to the authored Farmer (hat, leg wraps)', () => {
+    const farmer = resolveNpcAppearance({ age: 41, gender: 'male', npcId: 'farm:npc:3', role: 'farmer', treeIndex: 3 })
+    expect(farmer.outfit).toBe('Farmer')
+    expect(farmer.modelUrl).toBe(bodyUrl('Male', 'Farmer'))
+    expect(farmer.kit.garments).toEqual([])
+  })
+
+  it('keeps the previous looks where no authored body exists (women, children)', () => {
+    const wife = resolveNpcAppearance({ age: 33, gender: 'female', npcId: 'wood:npc:2', role: 'woodcutter', treeIndex: 2 })
+    expect(wife.outfit).toBe('Peasant')
+    expect(wife.kit.clothTint).toBe(NPC_WOODCUTTER_CLOTH_TINT)
+    expect(wife.kit.garments).toEqual(['PeasantSkirt'])
+    const boy = resolveNpcAppearance({ age: 9, gender: 'male', npcId: 'farm:npc:7', role: 'farmer', treeIndex: 7 })
+    expect(boy.outfit).toBe('Peasant')
+    const lad = resolveNpcAppearance({ age: 9, gender: 'male', npcId: 'wood:npc:7', role: 'woodcutter', treeIndex: 7 })
+    expect(lad.outfit).toBe('Peasant')
+    expect(lad.kit.clothTint).toBeNull()
   })
 
   it('maps adult male blacksmith to Blacksmith with Round head and beard', () => {
