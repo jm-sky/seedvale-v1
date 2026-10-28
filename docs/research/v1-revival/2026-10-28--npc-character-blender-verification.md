@@ -55,7 +55,7 @@ Knight, Ranger, Steel bracers, Noble, Wizard and `WGTS_rig` collections were not
 
 | # | Finding | Evidence | Repair |
 | --- | --- | --- | --- |
-| P1 | `build-characters.mjs` imports `@gltf-transform/*`, `meshoptimizer`, `sharp`, none declared in V1 `package.json` → `ERR_MODULE_NOT_FOUND` | **verified** | Added as devDependencies with V3's ranges (`b81bbd80`) |
+| P1 | `build-characters.mjs` imports `@gltf-transform/*`, `meshoptimizer`, `sharp`, none declared in V1 `package.json` → `ERR_MODULE_NOT_FOUND` | **verified** | Added as devDependencies with V3's ranges (`242d40b6`) |
 | P2 | `blender-character-variants.py` default root `D:\Projekty\private\SeedVales` (does not exist) | **verified** | Root from `SV_ROOT` or `__file__`, else a clear error |
 | P3 | Procedural male build loads `Male_Peasant_Feet` by name; in the master it is now the author's leg-wrap mesh (MI_Wizard) → a rerun would silently put leg wraps + Wizard texture on Herbalist/Blacksmith | **verified** (object data) / consequence **inferred** | Male build reads the stock copy `Male_Woodcutter_Feet`; fails fast if any non-stock material reaches procedural parts. Rerun to scratch reproduces shipped `Male_Herbalist`/`Male_Peasant_Boots` raw structure (15030 / 12106 tris, same materials) **verified** |
 | P4 | No path exported the author's collections at all; the procedural script overwrote `Male_Blacksmith.raw.glb` with V3's generic model | **verified** | New authored mode (`SV_BUILD=authored`); male Blacksmith no longer generated procedurally |
@@ -120,9 +120,9 @@ Observed: walk mid-stride front/side views clean, slit opens naturally, no shin 
 
 | Commit | Files |
 | --- | --- |
-| `b81bbd80` fix(assets) | `package.json`, `pnpm-lock.yaml`, `scripts/assets/blender-character-variants.py`, `scripts/assets/build-characters.mjs` |
-| `44fab4a5` assets(characters) | master `.blend`, `scripts/assets/blender-blacksmith-apron.py`, `assets-src/characters/Male_{Farmer,Woodcutter,Blacksmith}.raw.glb`, `public/assets/characters/Male_{Farmer,Woodcutter,Blacksmith}.glb` |
-| `2a97f11c` feat(npc) | `src/characters/characterTypes.ts` (`Farmer`, `Woodcutter`, `MALE_ONLY_OUTFITS`), `src/ai/npcAppearance.ts`, `src/assets/assetIndex.ts`, tests |
+| `242d40b6` fix(assets) | `package.json`, `pnpm-lock.yaml`, `scripts/assets/blender-character-variants.py`, `scripts/assets/build-characters.mjs` |
+| `0581a531` assets(characters) | master `.blend`, `scripts/assets/blender-blacksmith-apron.py`, `assets-src/characters/Male_{Farmer,Woodcutter,Blacksmith}.raw.glb`, `public/assets/characters/Male_{Farmer,Woodcutter,Blacksmith}.glb` |
+| `b37a8ca2` feat(npc) | `src/characters/characterTypes.ts` (`Farmer`, `Woodcutter`, `MALE_ONLY_OUTFITS`), `src/ai/npcAppearance.ts`, `src/assets/assetIndex.ts`, tests |
 
 Mapping (adult unless noted):
 
