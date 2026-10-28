@@ -87,6 +87,7 @@ zmiany geometrii/animacji/tekstur, tylko formatu zapisu (perf review
 | `public/models/items/branch.glb` | AssetQuest | [poly.pizza/m/kvLsgIS5nh](https://poly.pizza/m/kvLsgIS5nh) | CC0 1.0 | `Branch B` — ground drop + lit hand (plan 085) |
 | `public/models/fx/fire.glb` | J-Toastie | [poly.pizza/m/8kb5fydmHf](https://poly.pizza/m/8kb5fydmHf) | **[CC-BY 3.0](https://creativecommons.org/licenses/by/3.0/)** | `Fire` — handheld / village torch / campfire flame (plan 085 / 135); wymagana atrybucja |
 | `public/models/settlement/lantern.glb` | Tomáš Bayer | [poly.pizza/m/d80ay-dCqqj](https://poly.pizza/m/d80ay-dCqqj) | CC0 1.0 | `Lantern` — house night lamp body (plan 085) |
+| `public/models/settlement/lantern_wall.glb`, `lantern_standing.glb` | Tomáš Bayer (derived, Seedvale Blender rebuild) | [poly.pizza/m/d80ay-dCqqj](https://poly.pizza/m/d80ay-dCqqj) | CC0 1.0 | Wall / freestanding split of `Lantern`, 3 primitives each — not wired yet ([report](../research/v1-revival/2026-10-28--settlement-lantern-blender-optimization.md)) |
 | `public/models/settlement/torch.glb` | Quaternius | [poly.pizza/m/Gq38E7hFZw](https://poly.pizza/m/Gq38E7hFZw) | CC0 1.0 | `Torch` — village plaza/gate night posts (plan 085) |
 | `public/models/nature/cactus_a.glb` | Quaternius | [poly.pizza/m/HsEJgRLQWX](https://poly.pizza/m/HsEJgRLQWX) | CC0 1.0 | `Cactus` — chunk vegetation (pustynia) |
 | `public/models/nature/cactus_b.glb` | Quaternius | [poly.pizza/m/Da39rzd54k](https://poly.pizza/m/Da39rzd54k) | CC0 1.0 | `Cactus Flowers` — chunk vegetation (pustynia) |
