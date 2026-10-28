@@ -27,7 +27,7 @@ Read V1 `CLAUDE.md` and the dossier README first, then all five reports, includi
 | [R4 — gameplay][r4] | `996295cbc1410738e6a988faac90942bef4f9c4b` | Common pins below |
 | [R5 — content/experience][r5] | `ed472c0fddef73b59bed4a35938fc1a38c707e90` | Common pins below |
 
-Common reference pins: V2 `jm-sky/seedvales-v2` at `9ba54815493b886eb1bdce032f5209aeb2856c37`; V3 `jm-sky/seedvale` at `17a81bd1ea0cea1920525a92b52d754e155a3ead`. Both were still their respective `main` HEADs when checked for R6.
+Common reference pins: V2 `jm-sky/seedvales-v2` at `9ba54815493b886eb1bdce032f5209aeb2856c37`; V3 `jm-sky/seedvale-v3` at `17a81bd1ea0cea1920525a92b52d754e155a3ead`. Both were still their respective `main` HEADs when checked for R6.
 
 **V1 `main` HEAD at review:** `806360cfcafbadd16f2a249c2bab58e5c89a7acc`. The GitHub comparison from `00a1e033…` to this HEAD reports five commits and exactly seven changed paths: R1–R5 and the two research indexes. **No application, asset, test or configuration change separates these V1 pins.** Different report/documentation SHAs therefore do not create a code-freshness conflict. Intermediate documentation heads cited by the reports—`76362db97cfcb26f5492c63192a5316d3b78cc3a` (R3 context), `ed472c0…` (R4 context), `82bd519f3a983681b3768ff195a696c18c90479a` (R5 reading R4)—are consistent with this comparison. [Revision comparison][revision-diff]
 
@@ -159,22 +159,22 @@ Ask the author about exact preservation scenes/journeys, compatibility expectati
 [revision-diff]: https://github.com/jm-sky/seedvale-v1/compare/00a1e0332aa034104d9021e82b0bf5299c4216e1...806360cfcafbadd16f2a249c2bab58e5c89a7acc
 [s1]: https://github.com/jm-sky/seedvale-v1/blob/806360cfcafbadd16f2a249c2bab58e5c89a7acc/src/ai/NpcAgent.ts
 [s2]: https://github.com/jm-sky/seedvale-v1/blob/806360cfcafbadd16f2a249c2bab58e5c89a7acc/src/app/gameLoop.ts
-[s3]: https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/session/npcLive.ts
-[s4]: https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/session/npcG2Consumer.ts
-[s5]: https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/sim/npc/life.ts
-[s6]: https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/session/sceneSession.ts
-[s7]: https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/save/saveTypes.ts
-[s8]: https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/config/crafting.ts
-[s9]: https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/sim/craft/craftSession.ts
+[s3]: https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/session/npcLive.ts
+[s4]: https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/session/npcG2Consumer.ts
+[s5]: https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/sim/npc/life.ts
+[s6]: https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/session/sceneSession.ts
+[s7]: https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/save/saveTypes.ts
+[s8]: https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/config/crafting.ts
+[s9]: https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/sim/craft/craftSession.ts
 [s10]: https://github.com/jm-sky/seedvale-v1/blob/806360cfcafbadd16f2a249c2bab58e5c89a7acc/src/economy/productionExecutor.ts
 [s11]: https://github.com/jm-sky/seedvale-v1/blob/806360cfcafbadd16f2a249c2bab58e5c89a7acc/src/items/trade.ts
 [s12]: https://github.com/jm-sky/seedvale-v1/blob/806360cfcafbadd16f2a249c2bab58e5c89a7acc/src/quests/QuestManager.test.ts
 [s13]: https://github.com/jm-sky/seedvale-v1/blob/806360cfcafbadd16f2a249c2bab58e5c89a7acc/src/quests/quests.ts
 [s14]: https://github.com/jm-sky/seedvales-v2/blob/9ba54815493b886eb1bdce032f5209aeb2856c37/src/game/data/quests/index.ts
-[s15]: https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/config/quality.ts
-[s16]: https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/session/sceneOptions.ts
-[s17]: https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/session/sessionAudio.ts
+[s15]: https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/config/quality.ts
+[s16]: https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/session/sceneOptions.ts
+[s17]: https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/session/sessionAudio.ts
 [s18]: https://github.com/jm-sky/seedvales-v2/blob/9ba54815493b886eb1bdce032f5209aeb2856c37/src/game/data/quests/q11.ts
 [s19]: https://github.com/jm-sky/seedvale-v1/blob/806360cfcafbadd16f2a249c2bab58e5c89a7acc/src/persistence/saveData.ts
-[s20]: https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/save/parseSave.ts
+[s20]: https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/save/parseSave.ts
 [s21]: https://github.com/jm-sky/seedvale-v1/blob/806360cfcafbadd16f2a249c2bab58e5c89a7acc/src/terrain/chunkHeightmap.ts

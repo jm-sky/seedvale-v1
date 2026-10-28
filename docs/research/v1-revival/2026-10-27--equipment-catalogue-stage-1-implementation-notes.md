@@ -24,7 +24,7 @@ The source tier is not V1 armor quality. Definition durability/edge are not muta
 ## Source revisions and preservation boundary
 
 - Target: `jm-sky/seedvale-v1`, local HEAD `e8ded5f85d581bbc21f3a886dc56a5ae83de4e94`.
-- Donor: `jm-sky/seedvale`, local HEAD `907e17cd2ad487547a25a1f928b2770348183d75`; clean when inspected. No fetch/pull or claim about latest remote main.
+- Donor: `jm-sky/seedvale-v3`, local HEAD `907e17cd2ad487547a25a1f928b2770348183d75`; clean when inspected. No fetch/pull or claim about latest remote main.
 - Recon donor pin: `94c464739d46afb982949fd6ed96b0d74d265b10`. HEAD advanced, but `src/game/data/items/{types,weapons,armor,catalog}.ts` are byte-identical to that pin and the inspected working tree. No equipment baseline drift.
 - Resolved counts: melee **30**, ranged **8**, armor **39**, shields **3**, ammunition **7**, total **87**. Defaults are checked via resolved constructor exports, not text ID counts. Resolved keys: **41**.
 - Initial target status/diff (including staged/untracked files) was clean. Current [Inventory handoff](./2026-10-27--inventory-hybrid-implementation-handoff.md) and its linked contract/prompt were read; current tracked implementation remains authoritative. A checksum snapshot of every initially tracked file confirmed byte-for-byte preservation, including Inventory UI, views, wiring and item/runtime definitions. The separately appearing untracked `docs/plans/ui-input-045-equipment-body-layout.md` belongs to concurrent work and was left untouched.

@@ -9,7 +9,7 @@ Continues [Stage 1](./2026-10-27--equipment-catalogue-stage-1-implementation-not
 ## Source and initial state
 
 - V1 branch `main`, initial HEAD `18a300748e7dc10f37fea72771bdbb723f1173fe`; clean index, tracked worktree and untracked-file list. Reviewed V1 `62e9196e1740df0777f7d18ee57546d2a9dfcda1` and Stage 1 commit `d1087ec8b753efbf607af17c3b6a42ef49257adf` exist locally. Two later commits changed dependencies/lint configuration and Inventory details; current files were authoritative and preserved.
-- Donor `jm-sky/seedvale`: clean local HEAD **`907e17cd2ad487547a25a1f928b2770348183d75`**, exactly matching Stage 1 provenance. No source-pin change. The four source paths remain byte-identical to recon **`94c464739d46afb982949fd6ed96b0d74d265b10`**. This does not claim a freshly fetched donor remote HEAD.
+- Donor `jm-sky/seedvale-v3`: clean local HEAD **`907e17cd2ad487547a25a1f928b2770348183d75`**, exactly matching Stage 1 provenance. No source-pin change. The four source paths remain byte-identical to recon **`94c464739d46afb982949fd6ed96b0d74d265b10`**. This does not claim a freshly fetched donor remote HEAD.
 - Stage 1's six introduced files were inspected; only its verifier, contract tests and provenance comment changed. The provenance values, definition types and compatibility contracts are unchanged.
 
 ## Imported data and API

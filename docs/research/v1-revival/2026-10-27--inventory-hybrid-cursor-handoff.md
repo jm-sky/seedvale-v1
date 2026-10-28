@@ -12,7 +12,7 @@ Copy the complete prompt below into the later implementation session. The linked
 
 ---
 
-You are implementing a bounded V1 Inventory UI revision for Seedvale V1 revival in `jm-sky/seedvale-v1`. Use `jm-sky/seedvale` only as the V3 design donor. Read and follow repository agent instructions and documentation navigation. Author communication is Polish; technical code, documentation and handoff are English. Preserve concurrent changes.
+You are implementing a bounded V1 Inventory UI revision for Seedvale V1 revival in `jm-sky/seedvale-v1`. Use `jm-sky/seedvale-v3` only as the V3 design donor. Read and follow repository agent instructions and documentation navigation. Author communication is Polish; technical code, documentation and handoff are English. Preserve concurrent changes.
 
 Read `docs/research/v1-revival/2026-10-27--inventory-hybrid-three-panel-contract.md` completely. It is the current, implementation-ready D2(c)/D5 authority and includes the complete action/identity matrix and acceptance checklist. Read the supersession notes in the revival README, migration decision register and Stage A/B proposals/plans. Historical PASS applies to previous versions only. Do not reopen the following author decisions:
 

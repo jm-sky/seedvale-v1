@@ -3,7 +3,7 @@
 **Created at:** 2026-10-26  
 **Created by:** ChatGPT Sol  
 **Status:** Phase 1 source research complete; first consultation answers incorporated; later screen design gates open. Stages A–C implemented with recorded author visual PASS; no blanket approval for later work.  
-**Target:** `jm-sky/seedvale-v1` · **Donor:** `jm-sky/seedvale`
+**Target:** `jm-sky/seedvale-v1` · **Donor:** `jm-sky/seedvale-v3`
 
 > **Readiness reconciliation — 2026-10-26:** Stages A–C are authorized and implemented; owning proposals/plans record author visual PASS. Earlier blanket “not approved”, screenshot-pending and execution-gate wording below is historical for those delivered slices, not a requirement to reopen them. Later Character/skills and other screens remain unapproved. The Stage C proposal overrides literal opacity-5 for Quick Actions chips only; preserve native disabled/no-dispatch and readable reasons. See the [dated handoff](./2026-10-26--opus-readiness-review.md).
 
@@ -118,12 +118,12 @@ Source review establishes contracts and ownership. Automated checks must prove t
 Before any implementation handoff: capture the author's D1–D8 answers applicable to that stage, preserve unresolved alternatives, refresh affected source pins and create the repository-standard active plan only after approval. This research does not approve a screen replacement, gameplay change or rollout.
 
 <!-- Pinned source references -->
-[src1]: https://github.com/jm-sky/seedvale/tree/8e3c9ba886ef98cf5301503f66fb0dc9ee514eb6/src/game/ui
+[src1]: https://github.com/jm-sky/seedvale-v3/tree/8e3c9ba886ef98cf5301503f66fb0dc9ee514eb6/src/game/ui
 [src2]: https://github.com/jm-sky/seedvale-v1/tree/454151315df6a95f55f3db4cabe41f8d4d6010c9/src/ui-vue
-[src3]: https://github.com/jm-sky/seedvale/blob/8e3c9ba886ef98cf5301503f66fb0dc9ee514eb6/src/game/ui/items/InventoryScreen.vue
-[src4]: https://github.com/jm-sky/seedvale/blob/8e3c9ba886ef98cf5301503f66fb0dc9ee514eb6/src/game/ui/items/WorldInventoryScreen.vue
-[src5]: https://github.com/jm-sky/seedvale/blob/8e3c9ba886ef98cf5301503f66fb0dc9ee514eb6/src/game/ui/SceneView.vue
-[src6]: https://github.com/jm-sky/seedvale/blob/8e3c9ba886ef98cf5301503f66fb0dc9ee514eb6/src/game/ui/items/ItemsShell.vue
+[src3]: https://github.com/jm-sky/seedvale-v3/blob/8e3c9ba886ef98cf5301503f66fb0dc9ee514eb6/src/game/ui/items/InventoryScreen.vue
+[src4]: https://github.com/jm-sky/seedvale-v3/blob/8e3c9ba886ef98cf5301503f66fb0dc9ee514eb6/src/game/ui/items/WorldInventoryScreen.vue
+[src5]: https://github.com/jm-sky/seedvale-v3/blob/8e3c9ba886ef98cf5301503f66fb0dc9ee514eb6/src/game/ui/SceneView.vue
+[src6]: https://github.com/jm-sky/seedvale-v3/blob/8e3c9ba886ef98cf5301503f66fb0dc9ee514eb6/src/game/ui/items/ItemsShell.vue
 [src7]: https://github.com/jm-sky/seedvale-v1/blob/454151315df6a95f55f3db4cabe41f8d4d6010c9/src/app/inventoryWiring.ts
 [src8]: https://github.com/jm-sky/seedvale-v1/blob/454151315df6a95f55f3db4cabe41f8d4d6010c9/src/ui-vue/store.ts
 [src9]: https://github.com/jm-sky/seedvale-v1/blob/454151315df6a95f55f3db4cabe41f8d4d6010c9/src/items/equipment.ts

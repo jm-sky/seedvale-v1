@@ -1654,7 +1654,7 @@ The first table is a navigation matrix. Each numbered record below supplies beha
 
 **Author question.** Still prefer no apprenticeship story, or retain it as an independent future candidate without expanding the fox quest?
 
-**Evidence.** [source metadata](../../../docs/v3-donor/quests/dispositions/catalog/v2/q01-a-hare-out-of-place/meta.ts); [catalogue/disposition card](../../../docs/v3-donor/quests/dispositions/catalog/v2/q01-a-hare-out-of-place/README.md); [governing curation](../../../docs/v3-donor/quests/decisions/fox-hunt-quest-curation.md). [original V2 definition in live V3 comparison archive](https://github.com/jm-sky/seedvale/blob/907e17cd2ad487547a25a1f928b2770348183d75/docs/comparison/code/SeedVales-v2/src/game/data/quests/q01.ts) (read at donor pin; not V3 runtime).
+**Evidence.** [source metadata](../../../docs/v3-donor/quests/dispositions/catalog/v2/q01-a-hare-out-of-place/meta.ts); [catalogue/disposition card](../../../docs/v3-donor/quests/dispositions/catalog/v2/q01-a-hare-out-of-place/README.md); [governing curation](../../../docs/v3-donor/quests/decisions/fox-hunt-quest-curation.md). [original V2 definition in live V3 comparison archive](https://github.com/jm-sky/seedvale-v3/blob/907e17cd2ad487547a25a1f928b2770348183d75/docs/comparison/code/SeedVales-v2/src/game/data/quests/q01.ts) (read at donor pin; not V3 runtime).
 
 **Fuller original material.** [q01-a-hare-out-of-place.md](../../../docs/v3-donor/quests/sources/v2-design/q01-a-hare-out-of-place.md)
 
@@ -1871,7 +1871,7 @@ The first table is a navigation matrix. Each numbered record below supplies beha
 
 **Author question.** Which options improve actual livestock water access, and who must maintain them?
 
-**Evidence.** [source metadata](../../../docs/v3-donor/quests/dispositions/catalog/v2/q08-the-long-way-to-water/meta.ts); [catalogue/disposition card](../../../docs/v3-donor/quests/dispositions/catalog/v2/q08-the-long-way-to-water/README.md); [governing curation](../../../docs/v3-donor/quests/decisions/water-quests-curation.md). [original V2 definition in live V3 comparison archive](https://github.com/jm-sky/seedvale/blob/907e17cd2ad487547a25a1f928b2770348183d75/docs/comparison/code/SeedVales-v2/src/game/data/quests/q08.ts) (read at donor pin; not V3 runtime).
+**Evidence.** [source metadata](../../../docs/v3-donor/quests/dispositions/catalog/v2/q08-the-long-way-to-water/meta.ts); [catalogue/disposition card](../../../docs/v3-donor/quests/dispositions/catalog/v2/q08-the-long-way-to-water/README.md); [governing curation](../../../docs/v3-donor/quests/decisions/water-quests-curation.md). [original V2 definition in live V3 comparison archive](https://github.com/jm-sky/seedvale-v3/blob/907e17cd2ad487547a25a1f928b2770348183d75/docs/comparison/code/SeedVales-v2/src/game/data/quests/q08.ts) (read at donor pin; not V3 runtime).
 
 **Fuller original material.** [q08-the-long-way-to-water.md](../../../docs/v3-donor/quests/sources/v2-design/q08-the-long-way-to-water.md)
 

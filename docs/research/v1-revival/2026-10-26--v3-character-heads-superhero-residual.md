@@ -3,8 +3,8 @@
 **Created at:** 2026-10-26  
 **Created by:** Cursor (Composer)  
 **Status:** Hazard note for V3→V1 character-asset migration; not a migration plan.  
-**V3 fix commit:** [`74a01f20`](https://github.com/jm-sky/seedvale/commit/74a01f20) (Issue #20 head-pack repair).  
-**Full evidence (V3):** [session notes §11–§12](https://github.com/jm-sky/seedvale/blob/main/docs/issues/2026-10-23--021--peasant-shoulder-session-notes.md).
+**V3 fix commit:** [`74a01f20`](https://github.com/jm-sky/seedvale-v3/commit/74a01f20) (Issue #20 head-pack repair).  
+**Full evidence (V3):** [session notes §11–§12](https://github.com/jm-sky/seedvale-v3/blob/main/docs/issues/2026-10-23--021--peasant-shoulder-session-notes.md).
 
 ## Why this note exists
 
@@ -28,10 +28,10 @@ Eyes / Eyebrows are fine (Head-only weights). Do **not** “fix” by skipping a
 
 V3 repair is **asset rebuild**, not CharacterKit filtering:
 
-1. Shared transforms in V3 [`scripts/assets/head-cut.mjs`](https://github.com/jm-sky/seedvale/blob/main/scripts/assets/head-cut.mjs):
+1. Shared transforms in V3 [`scripts/assets/head-cut.mjs`](https://github.com/jm-sky/seedvale-v3/blob/main/scripts/assets/head-cut.mjs):
    - `headOnly(minY)` — existing neck Y-cut on Superhero materials.
    - `dropArmWeightedTris()` — on Superhero materials, drop any triangle with ≥1 **arm-dominant** vert (largest skin weight on `clavicle_*` / `upperarm_*` / `lowerarm_*` / `hand_*` / finger joints). Keeps Head / `neck_01` / spine face and neck.
-2. Rebuild via [`scripts/assets/build-head-variants.mjs`](https://github.com/jm-sky/seedvale/blob/main/scripts/assets/build-head-variants.mjs) (**Base** + Lean/Round/Warm). FullBody source: extracted UBC path, or fallback `legacy/seedvale/public/models/parked/character-pack/models/`.
+2. Rebuild via [`scripts/assets/build-head-variants.mjs`](https://github.com/jm-sky/seedvale-v3/blob/main/scripts/assets/build-head-variants.mjs) (**Base** + Lean/Round/Warm). FullBody source: extracted UBC path, or fallback `legacy/seedvale/public/models/parked/character-pack/models/`.
 3. Do **not** run V3 `build-assets.mjs` for this (broken `unifySkins` / path layout). Prefer the focused head builder.
 
 **Acceptance after rebuild:** Superhero meshes have **0 arm-dominant used verts**; Eyes/Eyebrows/`SuperHero_*` nodes still present; kit triangle budget still holds. Browser A/B: same camera/pose/`Walk_Loop`, head ON vs OFF — ON must not add SuperHero shoulder/arm skin.

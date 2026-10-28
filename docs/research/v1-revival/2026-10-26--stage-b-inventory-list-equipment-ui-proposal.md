@@ -7,7 +7,7 @@
 **Status:** **IMPLEMENTED — visual PASS** (author 2026-10-26). Accepted earlier same day (D2 = kind-list (a); two-column list|equipment; D5 = V3-identical look). Plan: `ui-input-040-stage-b-inventory-list-equipment`. Live list+equipment + D9 demo `inventory-list-demo.html` landed.
 
 **Target:** `jm-sky/seedvale-v1` (`legacy/seedvale`)  
-**Design donor:** `jm-sky/seedvale` (V3) `InventoryList` / `EquipmentPanel` / `LoadoutSummary` presentation only
+**Design donor:** `jm-sky/seedvale-v3` (V3) `InventoryList` / `EquipmentPanel` / `LoadoutSummary` presentation only
 
 > **Inventory supersession — 2026-10-27:** The author-selected [D2(c)/D5 contract](./2026-10-27--inventory-hybrid-three-panel-contract.md) replaces D2(a), desktop two-column inventory and nested desktop details with hybrid identity/group rows and `InventoryList | ItemDetailCard | EquipmentPanel`. It also defines explicit group-action identity limits and required D9 shared presentation. Historical Stage A/B visual PASS remains evidence for the versions accepted then; revised implementation and visual acceptance are pending. The contract governs this inventory revision wherever older wording below conflicts.
 

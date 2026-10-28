@@ -6,7 +6,7 @@
 
 **Status:** Implementation landed (see [implementation handoff](./2026-10-27--inventory-hybrid-implementation-handoff.md)); focused automated checks passed; **author visual PASS pending**. Historical Stage A/B PASS unchanged.
 
-**Target:** `jm-sky/seedvale-v1` · **Design donor:** `jm-sky/seedvale`
+**Target:** `jm-sky/seedvale-v1` · **Design donor:** `jm-sky/seedvale-v3`
 
 **Companion:** [Complete Cursor implementation prompt](./2026-10-27--inventory-hybrid-cursor-handoff.md) · [Implementation handoff](./2026-10-27--inventory-hybrid-implementation-handoff.md)
 
@@ -42,7 +42,7 @@ Paths in this document are relative to V1 unless prefixed V3. [Original research
 | Exact equip/primary/sharpen/sell paths exist; drop, drink, read and placement do not all select by ID. | [handler facade](../../../src/ui/createInventoryScreen.ts), [inventoryWiring](../../../src/app/inventoryWiring.ts), [createApp](../../../src/app/createApp.ts), [survivalActions](../../../src/app/actions/survivalActions.ts), [placementActions](../../../src/app/actions/placementActions.ts). Action scope must be visible. |
 | HeldTool.equip accepts an invalid explicit ID by falling back to a sibling; equipTool extinguishes a torch before attempting equip. | [HeldTool](../../../src/items/HeldTool.ts), inventoryWiring `equipTool`. Add a narrow explicit-ID validation guard in the app handler before side effects; retain legacy no-ID equip behavior and domain fallback for other callers. |
 | D9 list parity is incomplete today. | [inventory demo](../../../src/ui-vue/demos/inventory-list/DemoApp.vue) explicitly renders separate list markup and says only EquipmentPanel is shared. Extract the list and full detail presentation, including action chrome. |
-| Actual V3 rich screen is **two columns**, with detail and equipment vertically stacked on the right. | [V3 InventoryScreen at inspected HEAD](https://github.com/jm-sky/seedvale/blob/94c464739d46afb982949fd6ed96b0d74d265b10/src/game/ui/items/InventoryScreen.vue). The new three-panel arrangement is an explicit author-directed adaptation, not a claim that this donor source already has three columns. |
+| Actual V3 rich screen is **two columns**, with detail and equipment vertically stacked on the right. | [V3 InventoryScreen at inspected HEAD](https://github.com/jm-sky/seedvale-v3/blob/94c464739d46afb982949fd6ed96b0d74d265b10/src/game/ui/items/InventoryScreen.vue). The new three-panel arrangement is an explicit author-directed adaptation, not a claim that this donor source already has three columns. |
 | World-bound invalidation currently clears quantity callbacks but does not close inventory; closeInventory clears only some inventory callbacks. | [store](../../../src/ui-vue/store.ts) `invalidateWorldBoundUiSessions` / `closeInventory`. Include a bounded cleanup so selection and callbacks cannot survive a world change. No new lifecycle framework. |
 
 **Blockers:** no unresolved product decision blocks the specified first revision. Exact-instance drop/use/placement is unavailable at current callback boundaries, but the explicit group-action fallback below resolves delivery without adding gameplay semantics. Pixel/visual equivalence remains unverified: this research ran no browser or screenshots. Future exact-instance actions would require a separate bounded contract, not silent callback substitution.

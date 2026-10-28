@@ -25,7 +25,7 @@ All three `main` heads were pinned before inspection; subsequent source statemen
 |---|---|---|
 | V1 | `jm-sky/seedvale-v1` | [`00a1e0332aa034104d9021e82b0bf5299c4216e1`](https://github.com/jm-sky/seedvale-v1/commit/00a1e0332aa034104d9021e82b0bf5299c4216e1) |
 | V2 | `jm-sky/seedvales-v2` | [`9ba54815493b886eb1bdce032f5209aeb2856c37`](https://github.com/jm-sky/seedvales-v2/commit/9ba54815493b886eb1bdce032f5209aeb2856c37) |
-| V3 | `jm-sky/seedvale` | [`17a81bd1ea0cea1920525a92b52d754e155a3ead`](https://github.com/jm-sky/seedvale/commit/17a81bd1ea0cea1920525a92b52d754e155a3ead) |
+| V3 | `jm-sky/seedvale-v3` | [`17a81bd1ea0cea1920525a92b52d754e155a3ead`](https://github.com/jm-sky/seedvale-v3/commit/17a81bd1ea0cea1920525a92b52d754e155a3ead) |
 
 Method: GitHub repository trees, repository instructions, targeted documentation and source/test inspection. No application code, settings, budgets or quality profiles were changed. No game tests, builds, browser runs, GPU benchmarks or simulation soaks were executed for R2. Historical test/measurement evidence is attributed to its source, not presented as independently reproduced here. Listed test cases were inspected where specified; additional test files identified in the trees are marked as located only.
 
@@ -413,45 +413,45 @@ Strongest bounded candidates: C1 search-storage adaptation, C3 dependency guards
 [v2-trade]: https://github.com/jm-sky/seedvales-v2/blob/9ba54815493b886eb1bdce032f5209aeb2856c37/src/game/sim/trade.ts
 [v2-vegetation]: https://github.com/jm-sky/seedvales-v2/blob/9ba54815493b886eb1bdce032f5209aeb2856c37/src/game/render/vegetation.ts
 [v2-chunks]: https://github.com/jm-sky/seedvales-v2/blob/9ba54815493b886eb1bdce032f5209aeb2856c37/src/game/render/terrainChunks.ts
-[v3-registry]: https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/sim/agents/registry.ts
-[v3-grid]: https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/sim/agents/spatialGrid.ts
-[v3-scheduler]: https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/sim/agents/scheduler.ts
-[v3-agent-config]: https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/config/agents.ts
-[v3-grid-test]: https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/sim/agents/spatialGrid.test.ts
-[v3-scheduler-test]: https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/sim/agents/scheduler.test.ts
-[v3-live]: https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/session/npcLive.ts
-[v3-g2]: https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/session/npcG2Consumer.ts
-[v3-npc-life]: https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/sim/npc/life.ts
-[v3-npc-config]: https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/config/npcAi.ts
-[v3-scene]: https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/session/sceneSession.ts
-[v3-clock]: https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/core/clock.ts
-[v3-session-clock]: https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/session/sessionClock.ts
-[v3-simulation]: https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/session/sessionSimulation.ts
-[v3-world-step]: https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/session/worldStep.ts
-[v3-astar]: https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/sim/agents/nav/astar.ts
-[v3-raster]: https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/sim/agents/nav/raster.ts
-[v3-navworld]: https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/sim/agents/nav/navWorld.ts
-[v3-queue]: https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/sim/agents/nav/pathQueue.ts
-[v3-live-nav]: https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/sim/npc/liveNav.ts
-[v3-steering]: https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/sim/agents/nav/steering.ts
-[v3-stuck]: https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/sim/agents/nav/stuck.ts
-[v3-stuck-test]: https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/sim/agents/nav/stuck.test.ts
-[v3-review201]: https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/docs/reviews/2026-10-22--201--opus-architecture-review-m4-activation-vegetation-nav-cache.md
-[v3-navresearch]: https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/docs/research/2026-10-17--018--navigation-v1-v2-v3-hybrid-routing.md
-[v3-perfplan]: https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/docs/plans/performance--001--v1-v2-render-and-asset-reuse.md
-[v3-assemble]: https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/session/assembleWorld.ts
-[v3-identity]: https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/world/canonical/worldIdentity.ts
-[v3-lifecycle]: https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/session/worldLifecycle.ts
-[v3-ring]: https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/render/chunkRing.ts
-[v3-save]: https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/save/saveService.ts
-[v3-parse]: https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/save/parseSave.ts
-[v3-restore]: https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/save/restoreSave.ts
-[v3-save-config]: https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/save/saveConstants.ts
-[v3-integrity]: https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/save/saveIntegrity.test.ts
-[v3-idb]: https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/session/idbSaveStorage.ts
-[v3-ports]: https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/docs/state/PORT-LEDGER.md
-[v3-comparison]: https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/docs/comparison/README.md
-[v3-oldreview]: https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/docs/reviews/2026-10-08--001--v1-v2-architecture-review.md
+[v3-registry]: https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/sim/agents/registry.ts
+[v3-grid]: https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/sim/agents/spatialGrid.ts
+[v3-scheduler]: https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/sim/agents/scheduler.ts
+[v3-agent-config]: https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/config/agents.ts
+[v3-grid-test]: https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/sim/agents/spatialGrid.test.ts
+[v3-scheduler-test]: https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/sim/agents/scheduler.test.ts
+[v3-live]: https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/session/npcLive.ts
+[v3-g2]: https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/session/npcG2Consumer.ts
+[v3-npc-life]: https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/sim/npc/life.ts
+[v3-npc-config]: https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/config/npcAi.ts
+[v3-scene]: https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/session/sceneSession.ts
+[v3-clock]: https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/core/clock.ts
+[v3-session-clock]: https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/session/sessionClock.ts
+[v3-simulation]: https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/session/sessionSimulation.ts
+[v3-world-step]: https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/session/worldStep.ts
+[v3-astar]: https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/sim/agents/nav/astar.ts
+[v3-raster]: https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/sim/agents/nav/raster.ts
+[v3-navworld]: https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/sim/agents/nav/navWorld.ts
+[v3-queue]: https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/sim/agents/nav/pathQueue.ts
+[v3-live-nav]: https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/sim/npc/liveNav.ts
+[v3-steering]: https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/sim/agents/nav/steering.ts
+[v3-stuck]: https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/sim/agents/nav/stuck.ts
+[v3-stuck-test]: https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/sim/agents/nav/stuck.test.ts
+[v3-review201]: https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/docs/reviews/2026-10-22--201--opus-architecture-review-m4-activation-vegetation-nav-cache.md
+[v3-navresearch]: https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/docs/research/2026-10-17--018--navigation-v1-v2-v3-hybrid-routing.md
+[v3-perfplan]: https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/docs/plans/performance--001--v1-v2-render-and-asset-reuse.md
+[v3-assemble]: https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/session/assembleWorld.ts
+[v3-identity]: https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/world/canonical/worldIdentity.ts
+[v3-lifecycle]: https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/session/worldLifecycle.ts
+[v3-ring]: https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/render/chunkRing.ts
+[v3-save]: https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/save/saveService.ts
+[v3-parse]: https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/save/parseSave.ts
+[v3-restore]: https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/save/restoreSave.ts
+[v3-save-config]: https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/save/saveConstants.ts
+[v3-integrity]: https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/save/saveIntegrity.test.ts
+[v3-idb]: https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/session/idbSaveStorage.ts
+[v3-ports]: https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/docs/state/PORT-LEDGER.md
+[v3-comparison]: https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/docs/comparison/README.md
+[v3-oldreview]: https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/docs/reviews/2026-10-08--001--v1-v2-architecture-review.md
 [v1-r1]: https://github.com/jm-sky/seedvale-v1/blob/996295cbc1410738e6a988faac90942bef4f9c4b/docs/research/v1-revival/2026-10-25--001--v1-baseline.md
 [v1-agent-audit]: https://github.com/jm-sky/seedvale-v1/blob/00a1e0332aa034104d9021e82b0bf5299c4216e1/docs/reviews/2026-09-21--agent-performance-and-simulation-boundary-followups.md
 [v1-lifecycle-audit]: https://github.com/jm-sky/seedvale-v1/blob/00a1e0332aa034104d9021e82b0bf5299c4216e1/docs/reviews/2026-09-21--player-world-lifecycle-followups.md

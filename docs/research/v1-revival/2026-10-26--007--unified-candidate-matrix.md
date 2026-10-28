@@ -177,7 +177,7 @@ Records inherit §2's evidence boundary. SI/TP refer to prior source research an
 
 - **Problem / opportunity:** Each V1 search allocates maps/keys/nodes and scans an open array.
 - **V1 baseline / preservation:** Bounded local A*, maps and linear open-list scan. Preserve the relevant contracts in §5.
-- **Source evidence:** [V3 `src/game/sim/agents/nav/astar.ts`](https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/sim/agents/nav/astar.ts); [R2 C1](./2026-10-25--002--architecture-and-simulation.md#4-potential-improvement-candidates).
+- **Source evidence:** [V3 `src/game/sim/agents/nav/astar.ts`](https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/sim/agents/nav/astar.ts); [R2 C1](./2026-10-25--002--architecture-and-simulation.md#4-potential-improvement-candidates).
 - **Potential value:** Less search allocation and open-list work; benefit in adapted V1 remains unverified.
 - **Integration concept:** Adapt storage behind findPath; retain cost-aware LOS/smoothing.
 - **Dependencies / compatibility:** NavigationQuery; movement adapters.
@@ -191,7 +191,7 @@ Records inherit §2's evidence boundary. SI/TP refer to prior source research an
 
 - **Problem / opportunity:** Concurrent cold requests can burst, while readiness and route failure need distinct retry semantics.
 - **V1 baseline / preservation:** Local route failure and recovery already exist. Preserve the relevant contracts in §5.
-- **Source evidence:** [V3 `src/game/sim/agents/nav/pathQueue.ts`](https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/sim/agents/nav/pathQueue.ts); [R2 C2](./2026-10-25--002--architecture-and-simulation.md#4-potential-improvement-candidates).
+- **Source evidence:** [V3 `src/game/sim/agents/nav/pathQueue.ts`](https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/sim/agents/nav/pathQueue.ts); [R2 C2](./2026-10-25--002--architecture-and-simulation.md#4-potential-improvement-candidates).
 - **Potential value:** Avoid synchronized requests and false unreachable retries; benefit in adapted V1 remains unverified.
 - **Integration concept:** Adapt readiness states, cancellation and fair quotas.
 - **Dependencies / compatibility:** Intent/revision; clocks; chunk readiness.
@@ -219,7 +219,7 @@ Records inherit §2's evidence boundary. SI/TP refer to prior source research an
 
 - **Problem / opportunity:** Separate existing-row reads and later writes warrant explicit stale-writer/concurrency protection.
 - **V1 baseline / preservation:** Validated v56 slots; separate read/write transactions. Preserve the relevant contracts in §5.
-- **Source evidence:** [V3 `src/game/session/idbSaveStorage.ts`](https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/session/idbSaveStorage.ts); [R2 C4 (writes)](./2026-10-25--002--architecture-and-simulation.md#4-potential-improvement-candidates).
+- **Source evidence:** [V3 `src/game/session/idbSaveStorage.ts`](https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/session/idbSaveStorage.ts); [R2 C4 (writes)](./2026-10-25--002--architecture-and-simulation.md#4-potential-improvement-candidates).
 - **Potential value:** Stronger protection from stale/concurrent publication; benefit in adapted V1 remains unverified.
 - **Integration concept:** Add queue/revision checks at V1 storage owner.
 - **Dependencies / compatibility:** saveDb; snapshot readiness; cross-tab policy.
@@ -233,7 +233,7 @@ Records inherit §2's evidence boundary. SI/TP refer to prior source research an
 
 - **Problem / opportunity:** Final stale guards do not prove cleanup or recoverability after partial construction/background failure.
 - **V1 baseline / preservation:** Stable WorldBundle; stale/failed/published gate. Preserve the relevant contracts in §5.
-- **Source evidence:** [V3 `src/game/save/restoreSave.ts`](https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/save/restoreSave.ts); [R2 C4 (restore); R1 §6.3; R2 E27](./2026-10-25--002--architecture-and-simulation.md#4-potential-improvement-candidates).
+- **Source evidence:** [V3 `src/game/save/restoreSave.ts`](https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/save/restoreSave.ts); [R2 C4 (restore); R1 §6.3; R2 E27](./2026-10-25--002--architecture-and-simulation.md#4-potential-improvement-candidates).
 - **Potential value:** Reduce late publication and partial-construction resource loss; benefit in adapted V1 remains unverified.
 - **Integration concept:** Adapt staged validation/cleanup within existing rebuild owner.
 - **Dependencies / compatibility:** WorldBundle; async boot; domain reconstruction.
@@ -261,7 +261,7 @@ Records inherit §2's evidence boundary. SI/TP refer to prior source research an
 
 - **Problem / opportunity:** Cross-NPC/fauna queries may outgrow current local scans, but an incremental index must justify its maintenance cost.
 - **V1 baseline / preservation:** Reusable fauna buckets and local settlement queries. Preserve the relevant contracts in §5.
-- **Source evidence:** [V3 `src/game/sim/agents/spatialGrid.ts`](https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/sim/agents/spatialGrid.ts); [R2 C6](./2026-10-25--002--architecture-and-simulation.md#4-potential-improvement-candidates).
+- **Source evidence:** [V3 `src/game/sim/agents/spatialGrid.ts`](https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/sim/agents/spatialGrid.ts); [R2 C6](./2026-10-25--002--architecture-and-simulation.md#4-potential-improvement-candidates).
 - **Potential value:** Potentially reduce cross-actor query fan-out; benefit in adapted V1 remains unverified.
 - **Integration concept:** Adapt an index over existing owners only where measured.
 - **Dependencies / compatibility:** Move/remove/restore hooks; layers; candidate order.
@@ -303,7 +303,7 @@ Records inherit §2's evidence boundary. SI/TP refer to prior source research an
 
 - **Problem / opportunity:** A bounded cache may still churn when capacity and the real working set disagree.
 - **V1 baseline / preservation:** Bounded mesh LRU and disposable worldgen caches. Preserve the relevant contracts in §5.
-- **Source evidence:** [V3 `src/game/sim/agents/nav/raster.ts`](https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/sim/agents/nav/raster.ts); [R2 C8 (cache)](./2026-10-25--002--architecture-and-simulation.md#4-potential-improvement-candidates).
+- **Source evidence:** [V3 `src/game/sim/agents/nav/raster.ts`](https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/sim/agents/nav/raster.ts); [R2 C8 (cache)](./2026-10-25--002--architecture-and-simulation.md#4-potential-improvement-candidates).
 - **Potential value:** Avoid regeneration churn at a justified memory budget; benefit in adapted V1 remains unverified.
 - **Integration concept:** Use access traces to size existing caches.
 - **Dependencies / compatibility:** Cache namespaces; retained bytes; teardown.
@@ -345,7 +345,7 @@ Records inherit §2's evidence boundary. SI/TP refer to prior source research an
 
 - **Problem / opportunity:** Some authoritative live spatial state is read through Three.js transforms, complicating presentation-independent checks.
 - **V1 baseline / preservation:** Registries exist; some live spatial truth uses mesh transforms. Preserve the relevant contracts in §5.
-- **Source evidence:** [V3 `src/game/sim/agents/registry.ts`](https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/sim/agents/registry.ts); [R2 C3 (extraction); R2 §2.2/§7](./2026-10-25--002--architecture-and-simulation.md#4-potential-improvement-candidates).
+- **Source evidence:** [V3 `src/game/sim/agents/registry.ts`](https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/sim/agents/registry.ts); [R2 C3 (extraction); R2 §2.2/§7](./2026-10-25--002--architecture-and-simulation.md#4-potential-improvement-candidates).
 - **Potential value:** Permit headless checks and safer independent presentation; benefit in adapted V1 remains unverified.
 - **Integration concept:** Extract only a chosen pose seam behind V1 adapters.
 - **Dependencies / compatibility:** Movement authority; proximity; WorldBundle; [ARCH-03](#arch-03) optional.
@@ -361,7 +361,7 @@ Records inherit §2's evidence boundary. SI/TP refer to prior source research an
 
 - **Problem / opportunity:** An optional local shaping technique may improve silhouettes without changing the whole world generator.
 - **V1 baseline / preservation:** Regional mountain hierarchy and shared terrain queries. Preserve the relevant contracts in §5.
-- **Source evidence:** [V3 `src/game/world/gen/heightfield.ts`](https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/world/gen/heightfield.ts); [R3 C01](./2026-10-25--003--world-and-visuals.md#4-improvement-candidate-inventory).
+- **Source evidence:** [V3 `src/game/world/gen/heightfield.ts`](https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/world/gen/heightfield.ts); [R3 C01](./2026-10-25--003--world-and-visuals.md#4-improvement-candidate-inventory).
 - **Potential value:** Potentially improve massif/valley readability; benefit in adapted V1 remains unverified.
 - **Integration concept:** Adapt shaping within V1 generator.
 - **Dependencies / compatibility:** World identity policy; ground/water/road/cave queries.
@@ -375,7 +375,7 @@ Records inherit §2's evidence boundary. SI/TP refer to prior source research an
 
 - **Problem / opportunity:** Pass/barrier composition offers a distinct landscape choice beyond pointwise ridge smoothing.
 - **V1 baseline / preservation:** Distributed V1 massifs and settlement geography. Preserve the relevant contracts in §5.
-- **Source evidence:** [V3 `src/game/config/terrain.ts`](https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/config/terrain.ts); [R3 C02](./2026-10-25--003--world-and-visuals.md#4-improvement-candidate-inventory).
+- **Source evidence:** [V3 `src/game/config/terrain.ts`](https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/config/terrain.ts); [R3 C02](./2026-10-25--003--world-and-visuals.md#4-improvement-candidate-inventory).
 - **Potential value:** More distinctive passes and exploration views; benefit in adapted V1 remains unverified.
 - **Integration concept:** Evaluate bounded composition without copying finite-world arc.
 - **Dependencies / compatibility:** Author landscape/scale policy; placement and Save.
@@ -389,7 +389,7 @@ Records inherit §2's evidence boundary. SI/TP refer to prior source research an
 
 - **Problem / opportunity:** The detailed streamed horizon need not be the only representation of distant existing V1 terrain.
 - **V1 baseline / preservation:** Streamed V1 detailed horizon. Preserve the relevant contracts in §5.
-- **Source evidence:** [V3 `src/game/render/farTerrain.ts`](https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/render/farTerrain.ts); [R3 C03](./2026-10-25--003--world-and-visuals.md#4-improvement-candidate-inventory).
+- **Source evidence:** [V3 `src/game/render/farTerrain.ts`](https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/render/farTerrain.ts); [R3 C03](./2026-10-25--003--world-and-visuals.md#4-improvement-candidate-inventory).
 - **Potential value:** Longer coherent views at bounded detail; benefit in adapted V1 remains unverified.
 - **Integration concept:** Project V1 geometry through a distant representation.
 - **Dependencies / compatibility:** Near/far sampling; occlusion; GPU budget.
@@ -417,7 +417,7 @@ Records inherit §2's evidence boundary. SI/TP refer to prior source research an
 
 - **Problem / opportunity:** Headwater width transitions can be evaluated independently of drainage topology.
 - **V1 baseline / preservation:** V1 river channel width/depth contracts. Preserve the relevant contracts in §5.
-- **Source evidence:** [V3 `src/game/world/rivers/riverCarve.ts`](https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/world/rivers/riverCarve.ts); [R3 C05 (geometry)](./2026-10-25--003--world-and-visuals.md#4-improvement-candidate-inventory).
+- **Source evidence:** [V3 `src/game/world/rivers/riverCarve.ts`](https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/world/rivers/riverCarve.ts); [R3 C05 (geometry)](./2026-10-25--003--world-and-visuals.md#4-improvement-candidate-inventory).
 - **Potential value:** Smoother stream-head transitions; benefit in adapted V1 remains unverified.
 - **Integration concept:** Adapt taper only within V1 carve rules.
 - **Dependencies / compatibility:** Canonical water/bed; ford projection; Save.
@@ -431,7 +431,7 @@ Records inherit §2's evidence boundary. SI/TP refer to prior source research an
 
 - **Problem / opportunity:** Segment-query indexing may help a demonstrated hot path; the recent V1 query unification already addresses some duplication.
 - **V1 baseline / preservation:** Recently unified V1 shore query already exists. Preserve the relevant contracts in §5.
-- **Source evidence:** [V3 `src/game/world/rivers/riverCarve.ts`](https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/world/rivers/riverCarve.ts); [R3 C05 (index); R2 §6.4](./2026-10-25--003--world-and-visuals.md#4-improvement-candidate-inventory).
+- **Source evidence:** [V3 `src/game/world/rivers/riverCarve.ts`](https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/world/rivers/riverCarve.ts); [R3 C05 (index); R2 §6.4](./2026-10-25--003--world-and-visuals.md#4-improvement-candidate-inventory).
 - **Potential value:** Potentially reduce measured segment-query cost; benefit in adapted V1 remains unverified.
 - **Integration concept:** Adapt indexing only if V1 profile warrants it.
 - **Dependencies / compatibility:** Canonical query parity; invalidation; access trace.
@@ -461,7 +461,7 @@ Records inherit §2's evidence boundary. SI/TP refer to prior source research an
 
 - **Problem / opportunity:** Existing analytic flat-water motion lacks the evaluated shared directional gust-wave treatment.
 - **V1 baseline / preservation:** V1 analytic normals, mirror and day/night palette. Preserve the relevant contracts in §5.
-- **Source evidence:** [V3 `src/game/render/waterWaves.ts`](https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/render/waterWaves.ts); [R3 C07](./2026-10-25--003--world-and-visuals.md#4-improvement-candidate-inventory).
+- **Source evidence:** [V3 `src/game/render/waterWaves.ts`](https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/render/waterWaves.ts); [R3 C07](./2026-10-25--003--world-and-visuals.md#4-improvement-candidate-inventory).
 - **Potential value:** Coherent gust/storm response on lake/ocean; benefit in adapted V1 remains unverified.
 - **Integration concept:** Feed wind into existing flat-water shader.
 - **Dependencies / compatibility:** Wind adapter ([VIS-03](#vis-03) optional); mirror/palette.
@@ -475,7 +475,7 @@ Records inherit §2's evidence boundary. SI/TP refer to prior source research an
 
 - **Problem / opportunity:** Separate wind/amplitude clocks do not establish a coherent directional field across vegetation and water.
 - **V1 baseline / preservation:** Grass amplitude and separate foliage clocks. Preserve the relevant contracts in §5.
-- **Source evidence:** [V3 `src/game/render/wind/wind.ts`](https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/render/wind/wind.ts); [R3 C08](./2026-10-25--003--world-and-visuals.md#4-improvement-candidate-inventory).
+- **Source evidence:** [V3 `src/game/render/wind/wind.ts`](https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/render/wind/wind.ts); [R3 C08](./2026-10-25--003--world-and-visuals.md#4-improvement-candidate-inventory).
 - **Potential value:** Coherent grass/reed/flower/water gust phase; benefit in adapted V1 remains unverified.
 - **Integration concept:** Adapt phase and direction using V1 time/weather.
 - **Dependencies / compatibility:** Weather authority; shader hooks; bounds/units.
@@ -489,7 +489,7 @@ Records inherit §2's evidence boundary. SI/TP refer to prior source research an
 
 - **Problem / opportunity:** Lower-cost distant representations may retain canopy placements better than additional density thinning.
 - **V1 baseline / preservation:** Species-rich region batches and density LOD. Preserve the relevant contracts in §5.
-- **Source evidence:** [V3 `src/game/render/treeImpostors.ts`](https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/render/treeImpostors.ts); [R3 C09 (representation)](./2026-10-25--003--world-and-visuals.md#4-improvement-candidate-inventory).
+- **Source evidence:** [V3 `src/game/render/treeImpostors.ts`](https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/render/treeImpostors.ts); [R3 C09 (representation)](./2026-10-25--003--world-and-visuals.md#4-improvement-candidate-inventory).
 - **Potential value:** Retain placements with lower-cost distant representations; benefit in adapted V1 remains unverified.
 - **Integration concept:** Build representations of selected V1 tree family.
 - **Dependencies / compatibility:** Atlas/UV/normals; species/stages; transitions.
@@ -517,7 +517,7 @@ Records inherit §2's evidence boundary. SI/TP refer to prior source research an
 
 - **Problem / opportunity:** Instanced foliage motion is bypassed in V1 and the source replacement has unresolved cost/acceptance.
 - **V1 baseline / preservation:** V1 instanced sway bypassed after mobile flicker. Preserve the relevant contracts in §5.
-- **Source evidence:** [V3 `src/game/render/treeWind.ts`](https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/render/treeWind.ts); [R3 C10](./2026-10-25--003--world-and-visuals.md#4-improvement-candidate-inventory).
+- **Source evidence:** [V3 `src/game/render/treeWind.ts`](https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/render/treeWind.ts); [R3 C10](./2026-10-25--003--world-and-visuals.md#4-improvement-candidate-inventory).
 - **Potential value:** Visible coherent branch/leaf motion; benefit in adapted V1 remains unverified.
 - **Integration concept:** Adapt weights/depth shader after source defects/gates understood.
 - **Dependencies / compatibility:** Wind input; model weights/bounds; LOD/depth.
@@ -531,7 +531,7 @@ Records inherit §2's evidence boundary. SI/TP refer to prior source research an
 
 - **Problem / opportunity:** Existing ground snow does not provide the selected spatial patch and grass burial presentation.
 - **V1 baseline / preservation:** V1 snow/wetness/melt and ground blend. Preserve the relevant contracts in §5.
-- **Source evidence:** [V3 `src/game/render/snowField.ts`](https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/render/snowField.ts); [R3 C11](./2026-10-25--003--world-and-visuals.md#4-improvement-candidate-inventory).
+- **Source evidence:** [V3 `src/game/render/snowField.ts`](https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/render/snowField.ts); [R3 C11](./2026-10-25--003--world-and-visuals.md#4-improvement-candidate-inventory).
 - **Potential value:** Spatial accumulation appearance and grass frost/burial; benefit in adapted V1 remains unverified.
 - **Integration concept:** Use V1 snow amount with adapted presentation field.
 - **Dependencies / compatibility:** Weather owner; wet/puddle order; near/far materials.
@@ -545,7 +545,7 @@ Records inherit §2's evidence boundary. SI/TP refer to prior source research an
 
 - **Problem / opportunity:** Light-space snapping/fade is a separable stability technique, not a reason to replace V1 cadence.
 - **V1 baseline / preservation:** V1 1024 default and pull-based refresh budget. Preserve the relevant contracts in §5.
-- **Source evidence:** [V3 `src/game/render/atmosphere/sunShadow.ts`](https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/render/atmosphere/sunShadow.ts); [R3 C12 (appearance)](./2026-10-25--003--world-and-visuals.md#4-improvement-candidate-inventory).
+- **Source evidence:** [V3 `src/game/render/atmosphere/sunShadow.ts`](https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/render/atmosphere/sunShadow.ts); [R3 C12 (appearance)](./2026-10-25--003--world-and-visuals.md#4-improvement-candidate-inventory).
 - **Potential value:** Potentially reduce visible shadow movement; benefit in adapted V1 remains unverified.
 - **Integration concept:** Evaluate light-space snap/fade under V1 frustum.
 - **Dependencies / compatibility:** Existing shadowBudget; animated casters; camera/sun.
@@ -559,7 +559,7 @@ Records inherit §2's evidence boundary. SI/TP refer to prior source research an
 
 - **Problem / opportunity:** Shadow cost and refresh reasons need scoped attribution before a quality/performance decision.
 - **V1 baseline / preservation:** V1 perf census and shadow scheduling exist. Preserve the relevant contracts in §5.
-- **Source evidence:** [V3 `src/game/render/atmosphere/sunShadow.ts`](https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/render/atmosphere/sunShadow.ts); [R3 C12 (measurement)](./2026-10-25--003--world-and-visuals.md#4-improvement-candidate-inventory).
+- **Source evidence:** [V3 `src/game/render/atmosphere/sunShadow.ts`](https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/render/atmosphere/sunShadow.ts); [R3 C12 (measurement)](./2026-10-25--003--world-and-visuals.md#4-improvement-candidate-inventory).
 - **Potential value:** Attribute shadow cost before changing quality; benefit in adapted V1 remains unverified.
 - **Integration concept:** Adapt asynchronous pass timing and refresh reasons.
 - **Dependencies / compatibility:** Valid GPU timers; existing perf tools; [ARCH-08](#arch-08) optional.
@@ -573,7 +573,7 @@ Records inherit §2's evidence boundary. SI/TP refer to prior source research an
 
 - **Problem / opportunity:** Selected faces/outfits could add variety, but a newer family can introduce rig seams and cost.
 - **V1 baseline / preservation:** V1 UBC characters, accessories and animation. Preserve the relevant contracts in §5.
-- **Source evidence:** [V3 `src/game/render/actors/characterKit.ts`](https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/render/actors/characterKit.ts); [R3 C13; R4 equipment presentation](./2026-10-25--003--world-and-visuals.md#4-improvement-candidate-inventory).
+- **Source evidence:** [V3 `src/game/render/actors/characterKit.ts`](https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/render/actors/characterKit.ts); [R3 C13; R4 equipment presentation](./2026-10-25--003--world-and-visuals.md#4-improvement-candidate-inventory).
 - **Potential value:** Potentially improve chosen cast variety; benefit in adapted V1 remains unverified.
 - **Integration concept:** Evaluate individual families under V1 rig/material policy.
 - **Dependencies / compatibility:** 65-joint/bind/clip compatibility; attachments; provenance.
@@ -601,7 +601,7 @@ Records inherit §2's evidence boundary. SI/TP refer to prior source research an
 
 - **Problem / opportunity:** Individual prop/roof/well families may add fit or reduce submissions without replacing settlements.
 - **V1 baseline / preservation:** V1 medieval houses/props and related source packs. Preserve the relevant contracts in §5.
-- **Source evidence:** [V3 `scripts/assets/build-well.mjs`](https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/scripts/assets/build-well.mjs); [R3 C15](./2026-10-25--003--world-and-visuals.md#4-improvement-candidate-inventory).
+- **Source evidence:** [V3 `scripts/assets/build-well.mjs`](https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/scripts/assets/build-well.mjs); [R3 C15](./2026-10-25--003--world-and-visuals.md#4-improvement-candidate-inventory).
 - **Potential value:** Potential variety or fewer submissions per family; benefit in adapted V1 remains unverified.
 - **Integration concept:** Select well/roof/fence/yard assets; preserve UV/material maps.
 - **Dependencies / compatibility:** Footprints; source recipes/credits; collision.
@@ -615,7 +615,7 @@ Records inherit §2's evidence boundary. SI/TP refer to prior source research an
 
 - **Problem / opportunity:** Existing Standard surfaces may benefit from bounded environment response if V1 atmosphere survives.
 - **V1 baseline / preservation:** V1 Standard materials, grade and sun/hemi light. Preserve the relevant contracts in §5.
-- **Source evidence:** [V3 `src/game/render/atmosphere/envLight.ts`](https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/render/atmosphere/envLight.ts); [R3 C16](./2026-10-25--003--world-and-visuals.md#4-improvement-candidate-inventory).
+- **Source evidence:** [V3 `src/game/render/atmosphere/envLight.ts`](https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/render/atmosphere/envLight.ts); [R3 C16](./2026-10-25--003--world-and-visuals.md#4-improvement-candidate-inventory).
 - **Potential value:** Potentially enrich existing material response; benefit in adapted V1 remains unverified.
 - **Integration concept:** Evaluate quantized PMREM without changing V1 grade.
 - **Dependencies / compatibility:** Target disposal; interior/cave suppression; GPU budget.
@@ -631,7 +631,7 @@ Records inherit §2's evidence boundary. SI/TP refer to prior source research an
 
 - **Problem / opportunity:** Additional metadata and discriminated validation may improve consistency without changing item authority.
 - **V1 baseline / preservation:** Capability-rich V1 catalog and IDs. Preserve the relevant contracts in §5.
-- **Source evidence:** [V3 `src/game/data/items/catalog.ts`](https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/data/items/catalog.ts); [R4 §5 row 1](./2026-10-25--004--gameplay-systems.md#5-improvement-candidate-inventory).
+- **Source evidence:** [V3 `src/game/data/items/catalog.ts`](https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/data/items/catalog.ts); [R4 §5 row 1](./2026-10-25--004--gameplay-systems.md#5-improvement-candidate-inventory).
 - **Potential value:** Consistent descriptions, provenance and exhaustive validation; benefit in adapted V1 remains unverified.
 - **Integration concept:** Curate fields against V1 definitions; retain capabilities.
 - **Dependencies / compatibility:** Current ItemKinds; all consumers; availability.
@@ -645,7 +645,7 @@ Records inherit §2's evidence boundary. SI/TP refer to prior source research an
 
 - **Problem / opportunity:** The current unlayered armor contract supports less independently authored slot/coverage variation.
 - **V1 baseline / preservation:** Six-slot V1 contract with real aggregate effects. Preserve the relevant contracts in §5.
-- **Source evidence:** [V3 `src/game/data/items/loadout.ts`](https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/data/items/loadout.ts); [R4 §5 row 4](./2026-10-25--004--gameplay-systems.md#5-improvement-candidate-inventory).
+- **Source evidence:** [V3 `src/game/data/items/loadout.ts`](https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/data/items/loadout.ts); [R4 §5 row 4](./2026-10-25--004--gameplay-systems.md#5-improvement-candidate-inventory).
 - **Potential value:** Potentially deeper equipment choices; benefit in adapted V1 remains unverified.
 - **Integration concept:** Evaluate slot/coverage/damage semantics explicitly.
 - **Dependencies / compatibility:** NPC parity; combat; loot/supply; Save; [VIS-10](#vis-10) optional.
@@ -659,7 +659,7 @@ Records inherit §2's evidence boundary. SI/TP refer to prior source research an
 
 - **Problem / opportunity:** V1 lacks a general player recipe interface despite its working specialized crafting subloops.
 - **V1 baseline / preservation:** Cooking, construction, repair and artisans already work. Preserve the relevant contracts in §5.
-- **Source evidence:** [V3 `src/game/ui/items/CraftPanel.vue`](https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/ui/items/CraftPanel.vue); [R4 §5 row 5](./2026-10-25--004--gameplay-systems.md#5-improvement-candidate-inventory).
+- **Source evidence:** [V3 `src/game/ui/items/CraftPanel.vue`](https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/ui/items/CraftPanel.vue); [R4 §5 row 5](./2026-10-25--004--gameplay-systems.md#5-improvement-candidate-inventory).
 - **Potential value:** Fill generic player recipe interaction gap; benefit in adapted V1 remains unverified.
 - **Integration concept:** Adapt panel through V1 authoritative actions for selected recipes.
 - **Dependencies / compatibility:** Real input/output sources; station/busy owners.
@@ -673,7 +673,7 @@ Records inherit §2's evidence boundary. SI/TP refer to prior source research an
 
 - **Problem / opportunity:** Selected completion paths may benefit from staged publication when inputs/capacity change during an action.
 - **V1 baseline / preservation:** V1 preflight recipes, BusyAction and production executor. Preserve the relevant contracts in §5.
-- **Source evidence:** [V3 `src/game/sim/craft/craftSession.ts`](https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/sim/craft/craftSession.ts); [R4 §5 row 6](./2026-10-25--004--gameplay-systems.md#5-improvement-candidate-inventory).
+- **Source evidence:** [V3 `src/game/sim/craft/craftSession.ts`](https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/sim/craft/craftSession.ts); [R4 §5 row 6](./2026-10-25--004--gameplay-systems.md#5-improvement-candidate-inventory).
 - **Potential value:** Avoid partial debit/output on ordinary refusal; benefit in adapted V1 remains unverified.
 - **Integration concept:** Apply staging principle within current owners.
 - **Dependencies / compatibility:** Inventory capacity; cancellation/retry; food inheritance.
@@ -715,7 +715,7 @@ Records inherit §2's evidence boundary. SI/TP refer to prior source research an
 
 - **Problem / opportunity:** Catalog merchant cash/stock semantics differ from conserved ordinary NPC barter and donor commits are stale-state exposed.
 - **V1 baseline / preservation:** Finite stock; ordinary NPC barter conserves coins, catalog path differs. Preserve the relevant contracts in §5.
-- **Source evidence:** [V3 `src/game/session/sceneSession.ts`](https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/session/sceneSession.ts); [R4 §5 row 9; R6 F01](./2026-10-25--004--gameplay-systems.md#5-improvement-candidate-inventory).
+- **Source evidence:** [V3 `src/game/session/sceneSession.ts`](https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/session/sceneSession.ts); [R4 §5 row 9; R6 F01](./2026-10-25--004--gameplay-systems.md#5-improvement-candidate-inventory).
 - **Potential value:** More coherent cash/stock ownership and fresh transactions; benefit in adapted V1 remains unverified.
 - **Integration concept:** Extend owner-backed V1 trade; validate intent at commit.
 - **Dependencies / compatibility:** Physical coins; merchant/household owners; durable Save.
@@ -729,7 +729,7 @@ Records inherit §2's evidence boundary. SI/TP refer to prior source research an
 
 - **Problem / opportunity:** Variant/quality ammunition selection can be explicit without replacing the functioning ranged lifecycle.
 - **V1 baseline / preservation:** V1 ranged ammo debit/release/recovery. Preserve the relevant contracts in §5.
-- **Source evidence:** [V3 `src/game/data/items/ammo.ts`](https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/data/items/ammo.ts); [R4 §5 row 10](./2026-10-25--004--gameplay-systems.md#5-improvement-candidate-inventory).
+- **Source evidence:** [V3 `src/game/data/items/ammo.ts`](https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/data/items/ammo.ts); [R4 §5 row 10](./2026-10-25--004--gameplay-systems.md#5-improvement-candidate-inventory).
 - **Potential value:** Explicit choice/refusal across variants; benefit in adapted V1 remains unverified.
 - **Integration concept:** Map query to V1 lifecycle and exact instance semantics.
 - **Dependencies / compatibility:** Ammo IDs; release timing; NPC shots.
@@ -771,7 +771,7 @@ Records inherit §2's evidence boundary. SI/TP refer to prior source research an
 
 - **Problem / opportunity:** Deadline consolidation could bound food rows only if V1 batch growth is consequential and richer semantics can survive.
 - **V1 baseline / preservation:** Species/storage-rate/effective-age V1 batches. Preserve the relevant contracts in §5.
-- **Source evidence:** [V3 `src/game/data/items/foodBatches.ts`](https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/data/items/foodBatches.ts); [R4 §5 row 14](./2026-10-25--004--gameplay-systems.md#5-improvement-candidate-inventory).
+- **Source evidence:** [V3 `src/game/data/items/foodBatches.ts`](https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/data/items/foodBatches.ts); [R4 §5 row 14](./2026-10-25--004--gameplay-systems.md#5-improvement-candidate-inventory).
 - **Potential value:** Possible bound on row growth if V1 problem is measured; benefit in adapted V1 remains unverified.
 - **Integration concept:** Evaluate deadline idea only with preserved semantics.
 - **Dependencies / compatibility:** Batch/storage provenance; processing; Save; [GAME-12](#game-12).
@@ -857,7 +857,7 @@ Records inherit §2's evidence boundary. SI/TP refer to prior source research an
 
 - **Problem / opportunity:** Ordinary role/activity text could broaden variety without replacing existing quest dialogue precedence.
 - **V1 baseline / preservation:** V1 templates, contextual dialogue and quest overrides. Preserve the relevant contracts in §5.
-- **Source evidence:** [V3 `src/game/data/dialogue/ordinaryConversations.ts`](https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/data/dialogue/ordinaryConversations.ts); [R5 §6 row 5](./2026-10-25--005--content-and-player-experience.md#6-improvement-candidate-inventory).
+- **Source evidence:** [V3 `src/game/data/dialogue/ordinaryConversations.ts`](https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/data/dialogue/ordinaryConversations.ts); [R5 §6 row 5](./2026-10-25--005--content-and-player-experience.md#6-improvement-candidate-inventory).
 - **Potential value:** More local variety and character voice; benefit in adapted V1 remains unverified.
 - **Integration concept:** Select guarded phrases using V1 cast/language/suppliers.
 - **Dependencies / compatibility:** Context truth; precedence; speaker identity.
@@ -871,7 +871,7 @@ Records inherit §2's evidence boundary. SI/TP refer to prior source research an
 
 - **Problem / opportunity:** Semantic barks cannot guarantee an exact transcript-to-recording match for selected authored lines.
 - **V1 baseline / preservation:** Semantic V1 intents and spatial voice playback. Preserve the relevant contracts in §5.
-- **Source evidence:** [V3 `src/game/audio/npcVoiceResolver.ts`](https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/audio/npcVoiceResolver.ts); [R5 §6 row 6](./2026-10-25--005--content-and-player-experience.md#6-improvement-candidate-inventory).
+- **Source evidence:** [V3 `src/game/audio/npcVoiceResolver.ts`](https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/audio/npcVoiceResolver.ts); [R5 §6 row 6](./2026-10-25--005--content-and-player-experience.md#6-improvement-candidate-inventory).
 - **Potential value:** Avoid unrelated recorded text and unstable casting; benefit in adapted V1 remains unverified.
 - **Integration concept:** Validate exact text/profile around current playback owner.
 - **Dependencies / compatibility:** Line IDs; QC; fallback; async cancellation.
@@ -885,7 +885,7 @@ Records inherit §2's evidence boundary. SI/TP refer to prior source research an
 
 - **Problem / opportunity:** Potential new role/timbre coverage must be distinguished from inherited blobs and duplicate scripts.
 - **V1 baseline / preservation:** 109 V1 direct voice MP3s with live bark playback. Preserve the relevant contracts in §5.
-- **Source evidence:** [V3 `docs/dialogue/NPC-VOICE-CATALOG.md`](https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/docs/dialogue/NPC-VOICE-CATALOG.md); [R5 §6 row 7](./2026-10-25--005--content-and-player-experience.md#6-improvement-candidate-inventory).
+- **Source evidence:** [V3 `docs/dialogue/NPC-VOICE-CATALOG.md`](https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/docs/dialogue/NPC-VOICE-CATALOG.md); [R5 §6 row 7](./2026-10-25--005--content-and-player-experience.md#6-improvement-candidate-inventory).
 - **Potential value:** Potential missing role/timbre coverage; benefit in adapted V1 remains unverified.
 - **Integration concept:** Compare selected new files/transcripts/provenance.
 - **Dependencies / compatibility:** Speaker/trigger truth; rights; bark limiter.
@@ -899,7 +899,7 @@ Records inherit §2's evidence boundary. SI/TP refer to prior source research an
 
 - **Problem / opportunity:** V1 successful decoded buffers can remain shared across instances without the inspected byte-budgeted eviction.
 - **V1 baseline / preservation:** V1 shared successful-buffer cache across instances. Preserve the relevant contracts in §5.
-- **Source evidence:** [V3 `src/game/audio/samplePlayer.ts`](https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/audio/samplePlayer.ts); [R5 §6 row 8](./2026-10-25--005--content-and-player-experience.md#6-improvement-candidate-inventory).
+- **Source evidence:** [V3 `src/game/audio/samplePlayer.ts`](https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/audio/samplePlayer.ts); [R5 §6 row 8](./2026-10-25--005--content-and-player-experience.md#6-improvement-candidate-inventory).
 - **Potential value:** Bound long-session decoded memory; benefit in adapted V1 remains unverified.
 - **Integration concept:** Adapt active-source-safe LRU/idle/concurrency policy.
 - **Dependencies / compatibility:** Current audio context; loops; disposal; async fetch.
@@ -913,7 +913,7 @@ Records inherit §2's evidence boundary. SI/TP refer to prior source research an
 
 - **Problem / opportunity:** Approximate encounter-resolved clues may improve exploration beyond exact targets without another knowledge authority.
 - **V1 baseline / preservation:** V1 confidence, location research and distinct social news. Preserve the relevant contracts in §5.
-- **Source evidence:** [V3 `src/game/world/leads/searchArea.ts`](https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/world/leads/searchArea.ts); [R5 §6 row 11](./2026-10-25--005--content-and-player-experience.md#6-improvement-candidate-inventory).
+- **Source evidence:** [V3 `src/game/world/leads/searchArea.ts`](https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/world/leads/searchArea.ts); [R5 §6 row 11](./2026-10-25--005--content-and-player-experience.md#6-improvement-candidate-inventory).
 - **Potential value:** Uncertain clues supporting discovery; benefit in adapted V1 remains unverified.
 - **Integration concept:** Adapt offset/search-area logic into existing knowledge flow.
 - **Dependencies / compatibility:** Location knowledge; encounter resolution; Save.
@@ -929,7 +929,7 @@ Records inherit §2's evidence boundary. SI/TP refer to prior source research an
 
 - **Problem / opportunity:** Current details can present quality/condition hierarchy more clearly through reusable view components.
 - **V1 baseline / preservation:** V1 grouped inventory/details/actions already exist. Preserve the relevant contracts in §5.
-- **Source evidence:** [V3 `src/game/ui/items/ItemDetailCard.vue`](https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/ui/items/ItemDetailCard.vue); [R4 §5 row 2](./2026-10-25--004--gameplay-systems.md#5-improvement-candidate-inventory).
+- **Source evidence:** [V3 `src/game/ui/items/ItemDetailCard.vue`](https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/ui/items/ItemDetailCard.vue); [R4 §5 row 2](./2026-10-25--004--gameplay-systems.md#5-improvement-candidate-inventory).
 - **Potential value:** Clearer quality/condition information; benefit in adapted V1 remains unverified.
 - **Integration concept:** Derive V1 view data; preserve app command callbacks.
 - **Dependencies / compatibility:** V1 facade; units/semantics; input ownership.
@@ -943,7 +943,7 @@ Records inherit §2's evidence boundary. SI/TP refer to prior source research an
 
 - **Problem / opportunity:** Actual equipment tradeoffs may be easier to understand before committing an equip action.
 - **V1 baseline / preservation:** V1 worn modifiers and ownership checks. Preserve the relevant contracts in §5.
-- **Source evidence:** [V3 `src/game/ui/items/EquipmentPanel.vue`](https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/ui/items/EquipmentPanel.vue); [R4 §5 row 3](./2026-10-25--004--gameplay-systems.md#5-improvement-candidate-inventory).
+- **Source evidence:** [V3 `src/game/ui/items/EquipmentPanel.vue`](https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/ui/items/EquipmentPanel.vue); [R4 §5 row 3](./2026-10-25--004--gameplay-systems.md#5-improvement-candidate-inventory).
 - **Potential value:** Understand tradeoffs before equipping; benefit in adapted V1 remains unverified.
 - **Integration concept:** Compute previews through V1 modifier resolver.
 - **Dependencies / compatibility:** Six-slot selection; held choices; actual combat math.
@@ -957,7 +957,7 @@ Records inherit §2's evidence boundary. SI/TP refer to prior source research an
 
 - **Problem / opportunity:** Descriptions/grouping can clarify earned effective capability without promising an unimplemented character model.
 - **V1 baseline / preservation:** V1 SPEA, eight XP skills and effective modifiers. Preserve the relevant contracts in §5.
-- **Source evidence:** [V3 `src/game/ui/character/CharacterScreen.vue`](https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/ui/character/CharacterScreen.vue); [R4 §5 row 13 (UI)](./2026-10-25--004--gameplay-systems.md#5-improvement-candidate-inventory).
+- **Source evidence:** [V3 `src/game/ui/character/CharacterScreen.vue`](https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/ui/character/CharacterScreen.vue); [R4 §5 row 13 (UI)](./2026-10-25--004--gameplay-systems.md#5-improvement-candidate-inventory).
 - **Potential value:** Clearer actual earned capabilities and modifier provenance; benefit in adapted V1 remains unverified.
 - **Integration concept:** Adapt descriptions/groups to V1 authority only.
 - **Dependencies / compatibility:** V1 XP/effective stats; truthful producer/consumer labels.
@@ -971,7 +971,7 @@ Records inherit §2's evidence boundary. SI/TP refer to prior source research an
 
 - **Problem / opportunity:** General free-position personal annotation editing is not established in V1 beyond known-location targets.
 - **V1 baseline / preservation:** Known-location targets; no confirmed free-position editor. Preserve the relevant contracts in §5.
-- **Source evidence:** [V3 `src/game/sim/map/mapAnnotations.ts`](https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/sim/map/mapAnnotations.ts); [R5 §6 row 9](./2026-10-25--005--content-and-player-experience.md#6-improvement-candidate-inventory).
+- **Source evidence:** [V3 `src/game/sim/map/mapAnnotations.ts`](https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/sim/map/mapAnnotations.ts); [R5 §6 row 9](./2026-10-25--005--content-and-player-experience.md#6-improvement-candidate-inventory).
 - **Potential value:** Remember camps, hazards and personal clues; benefit in adapted V1 remains unverified.
 - **Integration concept:** Add bounded notes to V1 map and Save.
 - **Dependencies / compatibility:** Coordinates/catalog/knowledge; additive Save migration.
@@ -985,7 +985,7 @@ Records inherit §2's evidence boundary. SI/TP refer to prior source research an
 
 - **Problem / opportunity:** Dense marker overlap and labels can make existing known places difficult to pick clearly.
 - **V1 baseline / preservation:** V1 picking/labels and selected targets. Preserve the relevant contracts in §5.
-- **Source evidence:** [V3 `src/game/ui/map/mapHitTest.ts`](https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/ui/map/mapHitTest.ts); [R5 §6 row 10](./2026-10-25--005--content-and-player-experience.md#6-improvement-candidate-inventory).
+- **Source evidence:** [V3 `src/game/ui/map/mapHitTest.ts`](https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/ui/map/mapHitTest.ts); [R5 §6 row 10](./2026-10-25--005--content-and-player-experience.md#6-improvement-candidate-inventory).
 - **Potential value:** Select dense markers clearly; benefit in adapted V1 remains unverified.
 - **Integration concept:** Feed pure layout/hit-test with V1 visible/estimated inputs.
 - **Dependencies / compatibility:** Current map projection; zoom; touch/cancel.
@@ -999,7 +999,7 @@ Records inherit §2's evidence boundary. SI/TP refer to prior source research an
 
 - **Problem / opportunity:** Engagement, stale callbacks and time-control patches need one bounded release/revalidation contract.
 - **V1 baseline / preservation:** V1 menu engagement, idle release and time patches. Preserve the relevant contracts in §5.
-- **Source evidence:** [V3 `src/game/session/sessionConversation.ts`](https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/session/sessionConversation.ts); [R5 §6 row 12](./2026-10-25--005--content-and-player-experience.md#6-improvement-candidate-inventory).
+- **Source evidence:** [V3 `src/game/session/sessionConversation.ts`](https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/session/sessionConversation.ts); [R5 §6 row 12](./2026-10-25--005--content-and-player-experience.md#6-improvement-candidate-inventory).
 - **Potential value:** Reject stale choices and release holds reliably; benefit in adapted V1 remains unverified.
 - **Integration concept:** Adapt leases/revalidation at V1 callbacks and clock boundary.
 - **Dependencies / compatibility:** NPC urgency; world revisions; movement/time; trade.
@@ -1013,7 +1013,7 @@ Records inherit §2's evidence boundary. SI/TP refer to prior source research an
 
 - **Problem / opportunity:** Modal focus/held-key transitions can leak movement or commands across editing and gameplay.
 - **V1 baseline / preservation:** V1 overlays/Escape and keyboard/touch paths. Preserve the relevant contracts in §5.
-- **Source evidence:** [V3 `src/game/session/inputOwner.ts`](https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/session/inputOwner.ts); [R5 §6 row 13](./2026-10-25--005--content-and-player-experience.md#6-improvement-candidate-inventory).
+- **Source evidence:** [V3 `src/game/session/inputOwner.ts`](https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/session/inputOwner.ts); [R5 §6 row 13](./2026-10-25--005--content-and-player-experience.md#6-improvement-candidate-inventory).
 - **Potential value:** Avoid held-key leaks and movement while editing; benefit in adapted V1 remains unverified.
 - **Integration concept:** Adapt release/focus/priority rules in current facade.
 - **Dependencies / compatibility:** Hotkeys; nested modal stack; blur/hide.
@@ -1041,7 +1041,7 @@ Records inherit §2's evidence boundary. SI/TP refer to prior source research an
 
 - **Problem / opportunity:** Inspected V1 drawers lack separate road/river polyline layers despite authoritative geometry existing.
 - **V1 baseline / preservation:** V1 terrain/fog/knowledge map; no separate polyline layers in inspected drawers. Preserve the relevant contracts in §5.
-- **Source evidence:** [V3 `src/game/world/map/mapRaster.ts`](https://github.com/jm-sky/seedvale/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/world/map/mapRaster.ts); [R5 §5 map representation; R3 §3](./2026-10-25--005--content-and-player-experience.md#6-improvement-candidate-inventory).
+- **Source evidence:** [V3 `src/game/world/map/mapRaster.ts`](https://github.com/jm-sky/seedvale-v3/blob/17a81bd1ea0cea1920525a92b52d754e155a3ead/src/game/world/map/mapRaster.ts); [R5 §5 map representation; R3 §3](./2026-10-25--005--content-and-player-experience.md#6-improvement-candidate-inventory).
 - **Potential value:** Read crossings, routes and landscape more clearly; benefit in adapted V1 remains unverified.
 - **Integration concept:** Draw V1 authoritative geometry via current projection.
 - **Dependencies / compatibility:** World extents; simplification/cache; discovery policy.

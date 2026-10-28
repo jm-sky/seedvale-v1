@@ -54,11 +54,11 @@ Initial verification failures were resolved without weakening assertions: fixtur
 
 | Path at pinned revision | Verified blob SHA |
 | --- | --- |
-| [items/types.ts](https://github.com/jm-sky/seedvale/blob/907e17cd2ad487547a25a1f928b2770348183d75/src/game/data/items/types.ts) | `3d945658772c450f4832b31276af2b96bf20a5cf` |
-| [items/weapons.ts](https://github.com/jm-sky/seedvale/blob/907e17cd2ad487547a25a1f928b2770348183d75/src/game/data/items/weapons.ts) | `a6de03c815af43b4e39f79027748b8b8d2a83858` |
-| [items/armor.ts](https://github.com/jm-sky/seedvale/blob/907e17cd2ad487547a25a1f928b2770348183d75/src/game/data/items/armor.ts) | `584c9cbf9cc612f735e21af2d73a6d6669b47231` |
-| [items/catalog.ts](https://github.com/jm-sky/seedvale/blob/907e17cd2ad487547a25a1f928b2770348183d75/src/game/data/items/catalog.ts) | `217aeac6533fb0495fec8b768af7dc77ffe4c5f3` |
-| [character/types.ts](https://github.com/jm-sky/seedvale/blob/907e17cd2ad487547a25a1f928b2770348183d75/src/game/data/character/types.ts) | `53b7bff4036da23aa5f66ab7ce7c15ac0a86ae05` |
+| [items/types.ts](https://github.com/jm-sky/seedvale-v3/blob/907e17cd2ad487547a25a1f928b2770348183d75/src/game/data/items/types.ts) | `3d945658772c450f4832b31276af2b96bf20a5cf` |
+| [items/weapons.ts](https://github.com/jm-sky/seedvale-v3/blob/907e17cd2ad487547a25a1f928b2770348183d75/src/game/data/items/weapons.ts) | `a6de03c815af43b4e39f79027748b8b8d2a83858` |
+| [items/armor.ts](https://github.com/jm-sky/seedvale-v3/blob/907e17cd2ad487547a25a1f928b2770348183d75/src/game/data/items/armor.ts) | `584c9cbf9cc612f735e21af2d73a6d6669b47231` |
+| [items/catalog.ts](https://github.com/jm-sky/seedvale-v3/blob/907e17cd2ad487547a25a1f928b2770348183d75/src/game/data/items/catalog.ts) | `217aeac6533fb0495fec8b768af7dc77ffe4c5f3` |
+| [character/types.ts](https://github.com/jm-sky/seedvale-v3/blob/907e17cd2ad487547a25a1f928b2770348183d75/src/game/data/character/types.ts) | `53b7bff4036da23aa5f66ab7ce7c15ac0a86ae05` |
 
 Current-pin membership is therefore independently verified through GitHub. Offline fixture verification alone still does not prove commit membership; keep this limitation explicit. Every future donor-pin update must independently verify all five blobs at the reviewed commit using Git-tree membership or exact-ref GitHub checks before changing metadata. No automatic network fallback or metadata update was added to the offline verifier.
 
