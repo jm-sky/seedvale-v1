@@ -1365,6 +1365,79 @@ Generated from TypeScript imports.
 - `world/caves/productionTopology.ts`
 - `world/createCaves.archetype.test.ts`
 
+## `world/caves/experimental/v3-grid/caveConfig.ts`
+
+**Imported by**
+
+- `world/caves/experimental/v3-grid/caveShape.ts`
+- `world/caves/experimental/v3-grid/gen/caves.ts`
+
+## `world/caves/experimental/v3-grid/caveShape.ts`
+
+**Imports**
+
+- `world/caves/experimental/v3-grid/caveConfig.ts`
+- `world/caves/experimental/v3-grid/caveTypes.ts`
+- `world/caves/experimental/v3-grid/noise.ts`
+- `world/caves/experimental/v3-grid/rng.ts`
+
+**Imported by**
+
+- `world/caves/experimental/v3-grid/gen/caves.ts`
+- `world/caves/experimental/v3-grid/render/caveMesh.ts`
+
+## `world/caves/experimental/v3-grid/caveTypes.ts`
+
+**Imported by**
+
+- `world/caves/experimental/v3-grid/caveShape.ts`
+- `world/caves/experimental/v3-grid/gen/caves.ts`
+- `world/caves/experimental/v3-grid/grid.ts`
+
+## `world/caves/experimental/v3-grid/gen/caves.ts`
+
+**Imports**
+
+- `world/caves/experimental/v3-grid/caveConfig.ts`
+- `world/caves/experimental/v3-grid/caveShape.ts`
+- `world/caves/experimental/v3-grid/caveTypes.ts`
+- `world/caves/experimental/v3-grid/grid.ts`
+- `world/caves/experimental/v3-grid/rng.ts`
+
+## `world/caves/experimental/v3-grid/grid.ts`
+
+**Imports**
+
+- `world/caves/experimental/v3-grid/caveTypes.ts`
+
+**Imported by**
+
+- `world/caves/experimental/v3-grid/gen/caves.ts`
+
+## `world/caves/experimental/v3-grid/noise.ts`
+
+**Imports**
+
+- `world/caves/experimental/v3-grid/rng.ts`
+
+**Imported by**
+
+- `world/caves/experimental/v3-grid/caveShape.ts`
+
+## `world/caves/experimental/v3-grid/render/caveMesh.ts`
+
+**Imports**
+
+- `world/caves/experimental/v3-grid/caveShape.ts`
+
+## `world/caves/experimental/v3-grid/rng.ts`
+
+**Imported by**
+
+- `world/caves/experimental/v3-grid/caveShape.ts`
+- `world/caves/experimental/v3-grid/gen/caves.ts`
+- `world/caves/experimental/v3-grid/noise.ts`
+
 ## `world/caves/mountainCaveSites.test.ts`
 
 **Imports**

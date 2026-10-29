@@ -225,6 +225,8 @@ Generated from TypeScript imports.
 
 ## `ui-vue/demos/character-skills/main.ts`
 
+## `ui-vue/demos/dialogue/main.ts`
+
 ## `ui-vue/demos/hud/fixtures.ts`
 
 **Imports**
@@ -517,6 +519,16 @@ Generated from TypeScript imports.
 
 - `ui-vue/lib/npcGoodsBuyEmptyCopy.test.ts`
 
+## `ui-vue/lib/npcPortrait.ts`
+
+**Imports**
+
+- `ai/NpcAgent.ts`
+
+**Imported by**
+
+- `ui-vue/store.ts`
+
 ## `ui-vue/lib/questLogBuckets.test.ts`
 
 **Imports**
@@ -736,6 +748,7 @@ Generated from TypeScript imports.
 - `settlement/createSettlement.ts`
 - `settlement/settlementGenerator.ts`
 - `shared/PhysicalAttributes.ts`
+- `ui-vue/lib/npcPortrait.ts`
 - `ui/createQuickActions.ts`
 - `ui/createToast.ts`
 - `world/animalTraps.ts`

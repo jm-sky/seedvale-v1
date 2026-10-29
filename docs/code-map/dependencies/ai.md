@@ -309,6 +309,7 @@ Generated from TypeScript imports.
 - `settlement/createSettlement.ts`
 - `settlement/createSettlementRollback.test.ts`
 - `ui-vue/lib/drawMinimap.ts`
+- `ui-vue/lib/npcPortrait.ts`
 - `ui-vue/npcDialogueOpen.test.ts`
 - `ui-vue/npcDialogueTrade.test.ts`
 - `ui-vue/npcDialogueVoice.test.ts`

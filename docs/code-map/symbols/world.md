@@ -664,6 +664,74 @@ Generated from exported TypeScript symbols.
 - `meetsDungeonSemanticContract` — function — line 266
   - domain: world-terrain
 
+## `world/caves/experimental/v3-grid/caveConfig.ts`
+
+- `CAVE` — const — line 16
+- `CAVE_MIN_SPACING_M` — const — line 54
+- `CONTINENT_CAVE_COUNT` — const — line 56
+- `SANDBOX_CAVE_EDGE_MARGIN_M` — const — line 51
+- `SANDBOX_CAVE_MIN_SPACING_M` — const — line 49
+- `SEA_LEVEL` — const — line 9
+
+## `world/caves/experimental/v3-grid/caveShape.ts`
+
+- `buildCaveGrid` — function — line 188
+- `buildMouthPatch` — function — line 334
+- `caveAllPoints` — function — line 93
+- `CaveGrid` — class — line 112
+- `caveRoutes` — function — line 66
+- `CaveSegment` — interface — line 78
+- `caveSegments` — function — line 84
+- `caveTopHeight` — const — line 110
+- `CELL_CLOSED` — const — line 24
+- `CELL_SKY` — const — line 28
+- `CELL_UNDER` — const — line 26
+- `clearanceFor` — const — line 104
+- `mouthPatchHeight` — function — line 409
+- `spineFloor` — const — line 98
+- `SpinePoint` — interface — line 34
+- `spinePoints` — function — line 58
+- `SurfaceFn` — type — line 30
+
+## `world/caves/experimental/v3-grid/caveTypes.ts`
+
+- `Biome` — const — line 9
+- `CaveSize` — type — line 21
+- `GenCave` — interface — line 36
+- `GenCaveBranch` — interface — line 24
+- `WorldWindow` — interface — line 12
+
+## `world/caves/experimental/v3-grid/gen/caves.ts`
+
+- `CAVE_NAMES` — const — line 40
+- `CaveFields` — interface — line 25
+- `caveIsValid` — function — line 130
+- `CavePlaceOptions` — interface — line 196
+- `CONTINENT_CAVE_OPTIONS` — const — line 206
+- `placeCaves` — function — line 212
+- `SANDBOX_CAVE_OPTIONS` — const — line 203
+
+## `world/caves/experimental/v3-grid/grid.ts`
+
+- `idx` — const — line 10
+- `nearestCell` — function — line 31
+- `sampleGrid` — function — line 16
+
+## `world/caves/experimental/v3-grid/noise.ts`
+
+- `Noise2D` — class — line 14
+
+## `world/caves/experimental/v3-grid/render/caveMesh.ts`
+
+- `buildCaveGeometry` — function — line 161
+
+## `world/caves/experimental/v3-grid/rng.ts`
+
+- `hashInts` — function — line 33
+- `hashString` — function — line 44
+- `Rng` — class — line 9
+- `SALTS` — const — line 51
+
 ## `world/caves/mountainCaveSites.ts`
 
 - `MOUNTAIN_CAVE_RIDGE_MIN` — const — line 21
