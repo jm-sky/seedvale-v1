@@ -1,0 +1,569 @@
+# Seedvale Performance Benchmark Report
+
+> Generated: 2026-10-29T13:46:19.665Z
+> Sections:
+> - [Seedvale Benchmark]
+> - [Seedvale Agent CPU]
+> - [Seedvale Grass Baseline]
+> - [Seedvale Pass Submissions]
+> - [Seedvale Long Frame Attribution]
+> - [Seedvale Render Isolation]
+
+---
+
+[Seedvale Benchmark]
+
+Scenario: settlement-heavy
+Duration: 30s
+Frames: 760
+Quality: High
+Pixel ratio: 1.25
+
+Reproducibility:
+  gitSha: 2bca37bcba8388d22d324c73733c03da695da59e
+  runId: 2026-10-29T13-45-10-816Z-64i2qd
+  phase: warm
+  fixture: tools-001-v1
+  seed: 42
+  elapsedDays: 0
+  timeOfDay: 0.292
+  season: spring
+  weather: rain
+  terrainResolution: 193
+  loadRadius: 3
+  grassMacroVariation: ON
+  viewport: 1586x806
+  drawingBuffer: 1982x1007
+  camera: pos=(-572.2, 17.3, -1146.8)
+  anchor: (-572.2, -1158.1)
+  settlement: Podgórze Górska (-2_-4) terrain=mountain size=XL families=8 residents=15 pos=(-572.2, -1158.1)
+  populationGate: stable waited=5821ms npc=53
+  gpuTimer: available=true resolved=true samples=765 span=postprocess+labels
+
+FPS:
+  avg: 27.8
+  min: 10
+  p1: 11
+
+Frame time (wall-clock):
+  avg: 36 ms
+  p50: 35.5 ms
+  p95: 42.8 ms
+  p99: 92.8 ms
+  max: 99.9 ms
+
+Distributions (CPU wall-clock; render may include GPU wait):
+  update: p50=6.8 p95=12.9 p99=61.9 max=74.1 n=760
+  render: p50=27.7 p95=32.4 p99=34.9 max=80.1 n=760
+  frame: p50=35.5 p95=42.8 p99=92.8 max=99.9 n=760
+
+Rendering (combined renderer.info):
+  draw calls: 2091 avg / 2423 max
+  triangles: 7.75M avg
+  mirror draws: 314 avg
+  geometries: 929
+  textures: 765
+
+Pass submissions (actual):
+  reliability: observed
+  frames: 766 shadowRefresh=766 shadowSkipped=0
+  mirror calls avg: 314
+  shadow calls avg: 404
+  main calls avg: 1374
+
+Scene (one-pass estimate):
+  terrain          draws=76 tris=5.60M meshes=76 inst=76
+  grass            draws=74 tris=1.20M meshes=74 inst=117862
+  vegetation       draws=214 tris=755.3k meshes=214 inst=599
+  environment      draws=191 tris=40.0k meshes=191 inst=205
+  settlement       draws=1291 tris=1.36M meshes=1291 inst=3380
+  water            draws=49 tris=3.55M meshes=49 inst=49
+  npc              draws=501 tris=629.5k meshes=501 inst=501
+  fauna            draws=399 tris=152.2k meshes=399 inst=399
+  items            draws=555 tris=44.6k meshes=555 inst=555
+  other            draws=513 tris=30.1k meshes=513 inst=515
+
+Shadow casters (one-pass estimate):
+  terrain          draws=76 tris=5.60M meshes=76 inst=76
+  vegetation       draws=202 tris=732.8k meshes=202 inst=587
+  environment      draws=191 tris=40.0k meshes=191 inst=205
+  settlement       draws=749 tris=826.8k meshes=749 inst=2664
+  npc              draws=32 tris=37.7k meshes=32 inst=32
+  fauna            draws=10 tris=3.2k meshes=10 inst=10
+  items            draws=55 tris=32.2k meshes=55 inst=55
+  other            draws=118 tris=15.2k meshes=118 inst=118
+
+Settlement shadow casters (one-pass estimate):
+  houseStatic      draws=145 tris=259.2k meshes=145 inst=1577
+  houseInteractive draws=56 tris=8.8k meshes=56 inst=56
+  fence            draws=14 tris=54.5k meshes=14 inst=270
+  storageWoodSettlementPrimary draws=5 tris=4.8k meshes=5 inst=5
+  storageWoodSettlementSecondary draws=6 tris=16.9k meshes=6 inst=6
+  storageWoodHousehold draws=5 tris=21.8k meshes=5 inst=28
+  storageContainer draws=76 tris=9.0k meshes=76 inst=122
+  storageHay       draws=8 tris=3.9k meshes=8 inst=8
+  storageTrough    draws=24 tris=7.0k meshes=24 inst=70
+  workplace        draws=26 tris=17.4k meshes=26 inst=26
+  landmarkWellCentral draws=25 tris=9.3k meshes=25 inst=25
+  landmarkWellPasture draws=20 tris=7.5k meshes=20 inst=20
+  landmarkGarden   draws=5 tris=8.8k meshes=5 inst=11
+  landmarkNoticeBoard draws=10 tris=180 meshes=10 inst=10
+  fireHouseInteriorLamp draws=28 tris=3.0k meshes=28 inst=28
+  fireCampfire     draws=40 tris=1.1k meshes=40 inst=40
+  decor            draws=197 tris=391.6k meshes=197 inst=303
+  other            draws=59 tris=1.8k meshes=59 inst=59
+
+Agent detail (one-pass estimate):
+  NPC:
+    by family (sorted by draws):
+      Peasant          agents=28 draws=258 tris=310.4k skinned=258/258
+      blacksmith       agents=5 draws=54 tris=75.6k skinned=54/54
+      Wizard           agents=4 draws=47 tris=46.9k skinned=47/47
+      Herbalist        agents=4 draws=41 tris=52.4k skinned=41/41
+      woodcutter       agents=4 draws=29 tris=44.3k skinned=29/29
+      Peasant_Boots    agents=3 draws=27 tris=36.7k skinned=27/27
+      Farmer           agents=3 draws=25 tris=37.6k skinned=25/25
+      Knight_Cloth     agents=2 draws=20 tris=25.6k skinned=20/20
+    by distance band:
+      mid  agents=3 camera-relevant=2 draws=32 tris=37.7k
+      far  agents=50 camera-relevant=19 draws=469 tris=591.8k
+  Fauna:
+    by family (sorted by draws):
+      horse            agents=10 draws=80 tris=21.8k skinned=80/80
+      dog              agents=13 draws=73 tris=25.2k skinned=73/73
+      sheep            agents=20 draws=40 tris=12.2k skinned=40/40
+      deer             agents=5 draws=35 tris=10.5k skinned=35/35
+      wolf             agents=8 draws=32 tris=15.7k skinned=32/32
+      cow              agents=4 draws=28 tris=9.8k skinned=28/28
+      chicken          agents=5 draws=25 tris=3.2k skinned=0/25
+      donkey           agents=3 draws=21 tris=6.0k skinned=21/21
+      stag             agents=3 draws=18 tris=11.0k skinned=15/18
+      boar             agents=3 draws=15 tris=6.9k skinned=15/15
+      rat              agents=5 draws=10 tris=20.0k skinned=10/10
+      fox              agents=2 draws=8 tris=3.7k skinned=8/8
+      duck             agents=2 draws=6 tris=224 skinned=0/6
+      bear             agents=4 draws=4 tris=2.7k skinned=4/4
+      rabbit           agents=3 draws=3 tris=2.0k skinned=3/3
+      rooster          agents=1 draws=1 tris=1.2k skinned=0/1
+    by distance band:
+      mid  agents=3 camera-relevant=3 draws=10 tris=3.2k
+      far  agents=88 camera-relevant=22 draws=389 tris=149.0k
+
+Systems:
+  WATER          4.1 ms
+  NPC            4.3 ms
+  FAUNA          3.0 ms
+  PHYSICS        0.1 ms
+  RENDER         22.8 ms
+
+Detected bottlenecks:
+  1. RENDER
+  2. NPC
+  3. WATER
+
+Critical spikes:
+  (none)
+
+Hitches (>= 8 ms): total=0
+  (none)
+
+Isolation probes:
+  full               render=22.9 ms draws=2101 tris=7.76M
+  hide-grass         render=21.6 ms draws=2056 tris=7.43M
+  hide-vegetation    render=20.9 ms draws=1904 tris=6.64M
+  hide-vegetation-grass render=20.6 ms draws=1867 tris=6.33M
+  hide-environment   render=20.3 ms draws=1875 tris=7.71M
+  hide-settlement    render=17.1 ms draws=1297 tris=6.87M
+  hide-water         render=20.2 ms draws=2071 tris=6.79M
+  hide-terrain       render=20.5 ms draws=2024 tris=3.70M
+  hide-npc-fauna     render=14.1 ms draws=1730 tris=7.43M
+  no-shadows         render=16.9 ms draws=1697 tris=5.57M
+  no-ao              render=20.4 ms draws=2079 tris=7.75M
+  no-bloom           render=21.9 ms draws=2084 tris=7.77M
+  no-smaa            render=21.4 ms draws=2073 tris=7.75M
+  no-god-rays        render=21.9 ms draws=2058 tris=7.74M
+  no-film-grade      render=21.3 ms draws=2061 tris=7.75M
+  no-postprocessing  render=20.8 ms draws=2030 tris=7.74M
+  no-reflections     render=20.9 ms draws=1748 tris=6.75M
+
+Frame attribution:
+  frame max: 99.9 ms
+  largest labelled hitch: 0 ms
+  unattributed: 99.9 ms
+
+Long frames:
+  threshold: 80 ms
+  count: 25
+  worst: 99.9 ms
+
+Raw sidecar:
+  sampling=full factor=1 exported=760/760
+
+Recommendation:
+Largest frame (99.9 ms) is not explained by labelled hitches (largest 0 ms) — unattributed frame spike, not a category bottleneck.
+
+---
+
+[Seedvale Agent CPU]
+
+Population:
+  NPC (loaded): 53
+  Fauna (agents): 30
+
+NPC:
+  total: 4.3 ms/frame
+  crowd pass: 0.0 ms/frame (13.7 ms cumulative)
+  agent updates: 2.7 ms/frame (2043.0 ms cumulative)
+  livestock: 1.3 ms/frame (1007.1 ms cumulative)
+    loaded tick: 1.3 ms/frame
+    detached tick: 0.0 ms/frame
+    unattributed: 0.0 ms/frame
+    animal updates: 1.3 ms/frame
+    post-update (egg/readyToRemove): 0.0 ms/frame
+    detached bookkeeping: 0.0 ms/frame
+    AnimalAgent sections:
+      sensing: 0.0 ms/frame
+      targeting: 0.0 ms/frame
+      decision: 0.0 ms/frame
+      behaviour: 0.8 ms/frame
+      life/presentation: 0.3 ms/frame
+      other update: 0.1 ms/frame
+    update calls/frame: 56.4
+    unique animals/frame: 50.4
+    duplicate updates/frame: 6.0
+    detached animals/frame: 0.0
+    dog updates/frame: 13.1
+    dog guard scans: 13.1/frame (104.8 predator candidates/frame)
+    pest scans: 6.3/frame (6.3 rat candidates/frame)
+    nearest scans: 25.8/frame (0.0 candidates/frame)
+    water samples: 59.1/frame, 0.00 ms/frame (worst call 0.10 ms)
+    collider queries: 59.1/frame, 0.10 ms/frame (worst call 0.90 ms, 13017.5 colliders/frame)
+    full-rate agents/frame: 0.3
+    reduced-cadence agents/frame: 56.2
+    behaviour executions/frame: 25.9
+    presentation executions/frame: 20.8
+  rats: 0.1 ms/frame (88.1 ms cumulative)
+  social: 0.0 ms/frame (5.2 ms cumulative)
+  streaming: 0.0 ms/frame (0.0 ms cumulative)
+  maintenance: 0.2 ms/frame (143.0 ms cumulative)
+  unattributed: 0.0 ms/frame
+
+FAUNA:
+  total: 3.0 ms/frame
+  agent updates: 3.0 ms/frame (2250.1 ms cumulative)
+  forest sampling: 0.1 ms/frame (64.7 ms cumulative)
+  other (spawners/forage/cleanup/...): 0.0 ms/frame
+
+  AnimalAgent sections:
+    sensing: 0.0 ms/frame (13.1 ms cumulative)
+    targeting: 0.0 ms/frame (22.0 ms cumulative)
+    decision: 0.0 ms/frame (8.6 ms cumulative)
+    behaviour: 2.4 ms/frame (1835.4 ms cumulative)
+    life/presentation: 0.3 ms/frame (246.5 ms cumulative)
+    other update: 0.1 ms/frame
+
+  adaptive candidates:
+    agent updates/frame: 30.2
+    sensing passes/frame: 29.1
+    decision passes/frame: 29.1
+    high-priority agents/frame: 0.0
+    expensive behaviour agents/frame: 17.6
+    full-rate agents/frame: 7.8
+    reduced-cadence agents/frame: 21.3
+    behaviour executions/frame: 17.6
+    presentation executions/frame: 15.5
+
+  sensing/cache:
+    forest samples/frame: 30.2
+    fire scan candidates/frame: 116.5
+    village scan candidates/frame: 1613.9
+    player perception checks/frame: 29.1
+
+  nearest scans: 25.1/frame (19089 calls)
+  nearest candidates checked: 449.1/frame (341316 total)
+  herd leader scans: 0.3/frame (231 calls)
+  herd candidates checked: 9.1/frame (6930 total)
+  proximity rebuild: 0.00 ms/frame
+  spawner bookkeeping: 0.00 ms/frame
+  proximity queries: 24.6/frame (163.9 candidates/frame)
+
+  movement hot-path (plan fauna-033):
+    water samples: 138.2/frame, 0.10 ms/frame (worst call 1.50 ms)
+    collider queries: 138.2/frame, 0.10 ms/frame (worst call 1.40 ms, 2277.3 colliders/frame)
+
+---
+
+[Seedvale Grass Baseline]
+
+Chunks resident: 22
+Resident instances: full=482171 filler=113472
+Submitted instances: full=75310 filler=42552
+Meshes submitted: 74
+LOD submitted fraction: full=0.15618940168529422 filler=0.375
+Flowers: unavailable
+Allocation bytes (estimated): 57181728
+Upload bytes (observed): unavailable
+Lifecycle: req=0 complete=0 discard(unload=0,oor=0) cancel=0 streamIn=0 streamOut=0 invalidate=0
+Finalization: unobserved completions=0
+
+---
+
+[Seedvale Pass Submissions]
+
+Reliability: observed
+Frames: 766
+Shadow refresh frames: 766
+Shadow skipped frames: 0
+
+Mirror:
+  calls avg: 314  tris avg: 993147
+  info calls avg: 314  residual calls avg: 0
+  environment                  calls=44 tris=8866
+  items                        calls=1 tris=632
+  other                        calls=38 tris=2292
+  settlement:decor             calls=1 tris=837
+  settlement:fence             calls=2 tris=9292
+  settlement:fireCampfire      calls=9 tris=114
+  settlement:fireHouseExteriorLamp calls=15 tris=720
+  settlement:fireHouseInteriorLamp calls=5 tris=540
+  settlement:fireVillageTorch  calls=5 tris=358
+  settlement:houseInteractive  calls=15 tris=1650
+  settlement:houseStatic       calls=33 tris=80502
+  settlement:landmarkGarden    calls=5 tris=82803
+  settlement:landmarkNoticeBoard calls=1 tris=18
+  settlement:landmarkWellCentral calls=3 tris=935
+  settlement:landmarkWellHousehold calls=5 tris=9350
+  settlement:landmarkWellPasture calls=3 tris=935
+  settlement:other             calls=10 tris=350
+  settlement:storageBarrel     calls=5 tris=11764
+  settlement:storageContainer  calls=28 tris=2316
+  settlement:storageGoods      calls=40 tris=6974
+  settlement:storageHay        calls=1 tris=488
+  settlement:storageTrough     calls=4 tris=1700
+  settlement:storageWoodHousehold calls=1 tris=5850
+  settlement:storageWoodSettlementPrimary calls=1 tris=546
+  settlement:storageWoodSettlementSecondary calls=1 tris=2816
+  settlement:workplace         calls=11 tris=5293
+  terrain                      calls=8 tris=589824
+  vegetation                   calls=23 tris=165556
+
+Shadow (refresh only):
+  calls avg: 404  tris avg: 2175772
+  info calls avg: 404  residual calls avg: 0
+  environment                  calls=88 tris=22755
+  faunaFamily:chicken          calls=0 tris=51
+  faunaFamily:cow              calls=1 tris=297
+  faunaFamily:dog              calls=6 tris=2031
+  faunaFamily:donkey           calls=0 tris=52
+  faunaFamily:sheep            calls=4 tris=1155
+  items                        calls=13 tris=8427
+  npcFamily:Herbalist          calls=3 tris=3527
+  npcFamily:Peasant            calls=9 tris=10463
+  npcFamily:Wizard             calls=3 tris=3137
+  npcFamily:blacksmith         calls=11 tris=15296
+  other                        calls=30 tris=8730
+  settlement:fence             calls=4 tris=19796
+  settlement:fireCampfire      calls=12 tris=176
+  settlement:fireHouseInteriorLamp calls=8 tris=864
+  settlement:houseInteractive  calls=16 tris=2512
+  settlement:houseStatic       calls=33 tris=89974
+  settlement:landmarkGarden    calls=1 tris=2400
+  settlement:landmarkNoticeBoard calls=2 tris=36
+  settlement:landmarkWellCentral calls=5 tris=1870
+  settlement:landmarkWellPasture calls=5 tris=1870
+  settlement:other             calls=13 tris=240
+  settlement:storageContainer  calls=20 tris=2460
+  settlement:storageHay        calls=1 tris=488
+  settlement:storageTrough     calls=4 tris=1800
+  settlement:storageWoodHousehold calls=1 tris=6240
+  settlement:storageWoodSettlementPrimary calls=1 tris=1092
+  settlement:storageWoodSettlementSecondary calls=2 tris=5632
+  settlement:workplace         calls=9 tris=6690
+  terrain                      calls=19 tris=1400832
+  vegetation                   calls=79 tris=554878
+
+Main:
+  calls avg: 1374  tris avg: 4581903
+  info calls avg: 1777  residual calls avg: 0
+  environment                  calls=95 tris=19665
+  faunaFamily:chicken          calls=15 tris=1944
+  faunaFamily:cow              calls=7 tris=2450
+  faunaFamily:dog              calls=35 tris=11670
+  faunaFamily:donkey           calls=7 tris=2000
+  faunaFamily:horse            calls=24 tris=6546
+  faunaFamily:rat              calls=2 tris=4004
+  faunaFamily:sheep            calls=20 tris=5972
+  grass                        calls=33 tris=315860
+  items                        calls=204 tris=15910
+  npcFamily:Farmer             calls=17 tris=25379
+  npcFamily:Herbalist          calls=11 tris=14911
+  npcFamily:Peasant            calls=119 tris=146157
+  npcFamily:Peasant_Boots      calls=9 tris=12222
+  npcFamily:Wizard             calls=23 tris=23045
+  npcFamily:blacksmith         calls=22 tris=30592
+  other                        calls=141 tris=15117
+  settlement:decor             calls=2 tris=1673
+  settlement:fence             calls=4 tris=18584
+  settlement:fireCampfire      calls=36 tris=455
+  settlement:fireHouseExteriorLamp calls=30 tris=1440
+  settlement:fireHouseInteriorLamp calls=10 tris=1080
+  settlement:fireVillageTorch  calls=15 tris=1073
+  settlement:houseInteractive  calls=30 tris=3300
+  settlement:houseStatic       calls=66 tris=161004
+  settlement:landmarkGarden    calls=12 tris=210456
+  settlement:landmarkNoticeBoard calls=2 tris=36
+  settlement:landmarkWellCentral calls=10 tris=3740
+  settlement:landmarkWellHousehold calls=10 tris=18700
+  settlement:landmarkWellPasture calls=5 tris=1870
+  settlement:other             calls=22 tris=760
+  settlement:storageBarrel     calls=12 tris=26296
+  settlement:storageContainer  calls=58 tris=4884
+  settlement:storageGoods      calls=85 tris=15184
+  settlement:storageHay        calls=2 tris=976
+  settlement:storageTrough     calls=8 tris=3400
+  settlement:storageWoodHousehold calls=2 tris=11700
+  settlement:storageWoodSettlementPrimary calls=2 tris=2184
+  settlement:storageWoodSettlementSecondary calls=4 tris=11264
+  settlement:workplace         calls=37 tris=15494
+  terrain                      calls=28 tris=2064384
+  vegetation                   calls=84 tris=382238
+  water                        calls=14 tris=966656
+
+
+---
+
+[Seedvale Long Frame Attribution]
+
+Threshold: 80 ms
+Long frames: 25
+Shown: 5 worst (by frame ms)
+
+Read: category rows are `withCategory()` spans on that frame; OTHER is
+frame total minus those categories (measurement gap, overlapping work,
+or unwrapped tick code). Stages are coarse streaming/finalize labels
+from the same frame; hitches are existing `recordHitch` events (>= 8 ms).
+
+Worst frame (#1 of 5 shown, 25 total):
+
+[LONG FRAME] 99.9ms
+simulate        74.1ms
+render          25.5ms
+TERRAIN          0.0ms
+GRASS            0.1ms
+VEGETATION       0.0ms
+PROPS            0.0ms
+SHADOWS          0.0ms
+POSTPROCESS      0.0ms
+WATER            0.1ms
+STREAMING        0.0ms
+NPC              4.6ms
+FAUNA           68.0ms
+PHYSICS          0.0ms
+RENDER          25.4ms
+OTHER            1.7ms
+
+Long frame #2:
+
+[LONG FRAME] 97.3ms
+simulate        62.4ms
+render          34.7ms
+TERRAIN          0.0ms
+GRASS            0.0ms
+VEGETATION       0.0ms
+PROPS            0.0ms
+SHADOWS          0.0ms
+POSTPROCESS      0.0ms
+WATER            9.1ms
+STREAMING        0.0ms
+NPC              4.5ms
+FAUNA           54.9ms
+PHYSICS          0.2ms
+RENDER          25.8ms
+OTHER            2.8ms
+
+Long frame #3:
+
+[LONG FRAME] 97ms
+simulate        61.1ms
+render          35.6ms
+TERRAIN          0.0ms
+GRASS            0.0ms
+VEGETATION       0.0ms
+PROPS            0.0ms
+SHADOWS          0.0ms
+POSTPROCESS      0.0ms
+WATER           13.0ms
+STREAMING        0.0ms
+NPC              4.3ms
+FAUNA           55.0ms
+PHYSICS          0.1ms
+RENDER          22.6ms
+OTHER            2.0ms
+
+Long frame #4:
+
+[LONG FRAME] 96.3ms
+simulate        61.7ms
+render          34.4ms
+TERRAIN          0.0ms
+GRASS            0.0ms
+VEGETATION       0.0ms
+PROPS            0.0ms
+SHADOWS          0.0ms
+POSTPROCESS      0.0ms
+WATER            9.1ms
+STREAMING        0.0ms
+NPC              4.6ms
+FAUNA           54.5ms
+PHYSICS          0.0ms
+RENDER          25.3ms
+OTHER            2.8ms
+
+Long frame #5:
+
+[LONG FRAME] 95.5ms
+simulate        60.3ms
+render          35.1ms
+TERRAIN          0.0ms
+GRASS            0.0ms
+VEGETATION       0.0ms
+PROPS            0.0ms
+SHADOWS          0.0ms
+POSTPROCESS      0.0ms
+WATER            9.0ms
+STREAMING        0.0ms
+NPC              4.0ms
+FAUNA           53.9ms
+PHYSICS          0.1ms
+RENDER          26.1ms
+OTHER            2.4ms
+
+---
+
+[Seedvale Render Isolation]
+
+Render time = RENDER category wall-clock (postprocess + label render, performance.now() around the call). This includes any driver/GPU wait unless the CPU/GPU separation section below actually measured GPU-side time — it is not isolated CPU cost on its own.
+
+  baseline             avg=22.9 ms  p95=24.4 ms  max=24.6 ms  Δavg vs baseline=—
+  hide-grass           avg=21.6 ms  p95=23.9 ms  max=25.2 ms  Δavg vs baseline=-1.3 ms (-6%)
+  hide-vegetation      avg=20.9 ms  p95=22.7 ms  max=23.3 ms  Δavg vs baseline=-2.0 ms (-9%)
+  no vegetation/grass  avg=20.6 ms  p95=22.9 ms  max=29.1 ms  Δavg vs baseline=-2.2 ms (-10%)
+  hide-environment     avg=20.3 ms  p95=21.8 ms  max=22.0 ms  Δavg vs baseline=-2.6 ms (-11%)
+  hide-settlement      avg=17.1 ms  p95=18.1 ms  max=18.4 ms  Δavg vs baseline=-5.7 ms (-25%)
+  no water             avg=20.2 ms  p95=22.1 ms  max=22.9 ms  Δavg vs baseline=-2.7 ms (-12%)
+  hide-terrain         avg=20.5 ms  p95=21.9 ms  max=23.2 ms  Δavg vs baseline=-2.4 ms (-10%)
+  hide-npc-fauna       avg=14.1 ms  p95=15.4 ms  max=15.7 ms  Δavg vs baseline=-8.7 ms (-38%)
+  no-shadows           avg=16.9 ms  p95=18.4 ms  max=20.5 ms  Δavg vs baseline=-6.0 ms (-26%)
+  no-ao                avg=20.4 ms  p95=22.0 ms  max=24.8 ms  Δavg vs baseline=-2.4 ms (-11%)
+  no-bloom             avg=21.9 ms  p95=24.6 ms  max=27.4 ms  Δavg vs baseline=-1.0 ms (-4%)
+  no-smaa              avg=21.4 ms  p95=22.6 ms  max=24.9 ms  Δavg vs baseline=-1.5 ms (-6%)
+  no-god-rays          avg=21.9 ms  p95=25.0 ms  max=27.5 ms  Δavg vs baseline=-1.0 ms (-4%)
+  no-film-grade        avg=21.3 ms  p95=22.7 ms  max=23.0 ms  Δavg vs baseline=-1.6 ms (-7%)
+  no postprocessing    avg=20.8 ms  p95=22.8 ms  max=22.9 ms  Δavg vs baseline=-2.1 ms (-9%)
+  no mirrors           avg=20.9 ms  p95=22.6 ms  max=26.7 ms  Δavg vs baseline=-2.0 ms (-9%)
+
+CPU/GPU separation (baseline, same RENDER span):
+  EXT_disjoint_timer_query_webgl2: available (34 samples resolved during the baseline window)
+  GPU elapsed   avg=22.5 ms  p95=32.6 ms  max=36.0 ms
+  CPU wall      avg=22.9 ms  p95=24.4 ms  max=24.6 ms
+  CPU wall time already includes any driver/GPU wait around the render call — read "CPU wall minus GPU elapsed" as an approximate upper bound, not an exact isolated CPU-only cost.

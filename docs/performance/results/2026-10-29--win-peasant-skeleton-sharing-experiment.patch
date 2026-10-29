@@ -1,0 +1,736 @@
+diff --git a/scripts/perf/run-benchmark-series.mjs b/scripts/perf/run-benchmark-series.mjs
+index 1dc972e1..a5d717b0 100644
+--- a/scripts/perf/run-benchmark-series.mjs
++++ b/scripts/perf/run-benchmark-series.mjs
+@@ -47,7 +47,7 @@ function evaluator(ws) {
+ 
+ async function runOne(scenario, rep) {
+   const profile = mkdtempSync(join(tmpdir(), 'sv-bench-'))
+-  const url = `http://localhost:${port}/?benchmark=${scenario}`
++  const url = `http://localhost:${port}/?benchmark=${scenario}${process.env.SEEDVALE_QUERY ?? ''}` // e.g. SEEDVALE_QUERY='&skelShare=0'
+   const chrome = spawn(CHROME, [
+     `--remote-debugging-port=${DEBUG}`, `--user-data-dir=${profile}`, '--no-first-run',
+     '--no-default-browser-check', '--disable-backgrounding-occluded-windows', '--disable-renderer-backgrounding', '--disable-background-timer-throttling', '--window-size=1600,900', '--window-position=0,0', url,
+@@ -71,6 +71,7 @@ async function runOne(scenario, rep) {
+     const gpu = b.report.context.device?.gpu ?? b.report.context.device?.renderer ?? JSON.stringify(b.report.context.device ?? {}).slice(0, 200)
+     const sha = b.meta.gitSha
+     if (sha !== expectedSha) throw new Error(`SHA mismatch ${sha} vs ${expectedSha}`)
++    if (process.env.SEEDVALE_EVAL) b.meta.evalAfter = await ev(process.env.SEEDVALE_EVAL) // e.g. JSON.stringify(window.__seedvaleSkeletonStats())
+     b.meta.hardwareClass = /Arc/i.test(JSON.stringify(b.report.context.device ?? {})) ? 'target-gpu' : 'diagnostic'
+     b.meta.notes = `A1' benchmark series ${tag} rep${rep}; native Windows Chrome headed, fresh profile, ${cooldownSec}s cooldown`
+     const base = join(outDir, `${tag}-${scenario}-rep${rep}`)
+diff --git a/src/ai/NpcAgent.ts b/src/ai/NpcAgent.ts
+index 315f586f..9a888606 100644
+--- a/src/ai/NpcAgent.ts
++++ b/src/ai/NpcAgent.ts
+@@ -64,6 +64,12 @@ import {
+   playNpcCombatDeath,
+ } from '../audio/actionSounds'
+ import { assembleCharacter } from '../characters/assembleCharacter'
++import {
++  disposeActorSkeletons,
++  isShareablePeasantBody,
++  noteUnsharedPeasantBody,
++  sharePeasantBodySkeleton,
++} from '../characters/sharePeasantBodySkeleton'
+ import { MELEE_CRITICAL_MULTIPLIER } from '../combat/criticalHit'
+ import { resolveMeleeRecovery } from '../combat/meleeAgility'
+ import {
+@@ -86,6 +92,8 @@ import { Inventory } from '../items/Inventory'
+ import { ITEM_CATALOG, type RangedConfig, rangedConfigFromThrowable } from '../items/itemCatalog'
+ import { type AgentProfile, DEFAULT_CELL_SIZE, findPath, type NavigationQuery, type PathPoint } from '../navigation/navigation'
+ import { beginActivePath, endActivePath, recordPathRequest, recordRepath } from '../navigation/navigationStats'
++import { isPeasantSkeletonSharingEnabled } from '../perf/flags'
++import { installSkeletonStatsIfEnabled } from '../perf/skeletonStats'
+ import { PLAYER_COLLISION_RADIUS } from '../player/playerDimensions'
+ import { companionAnimationUrl } from '../player/playerVisualPreset'
+ import { installActorCullBounds } from '../render/actorCullBounds'
+@@ -2011,6 +2019,15 @@ export class NpcAgent {
+         scene.traverse((obj) => fixOutfitMeshDarkness(obj))
+         applyClothingHue(scene, clothingHue)
+         applyHairColor(scene, hairColor)
++        if (isShareablePeasantBody(appearance.kit)) {
++          installSkeletonStatsIfEnabled()
++          // A/B arm: `?skelShare=0` registers the bodies for counting but keeps their skeletons.
++          if (isPeasantSkeletonSharingEnabled()) {
++            sharePeasantBodySkeleton(appearance.kit.sex, assembled.bodySkinned ?? [])
++          } else {
++            noteUnsharedPeasantBody(assembled.bodySkinned ?? [])
++          }
++        }
+       } else {
+         const loaded = await loadGltfAnimated(modelUrl)
+         scene = loaded.scene
+@@ -4000,6 +4017,7 @@ export class NpcAgent {
+     this.leaveActiveQueue()
+     this.labelController.dispose()
+     this.anim.stopAll()
++    disposeActorSkeletons(this.mesh)
+     disposeObject3D(this.mesh)
+   }
+ 
+diff --git a/src/characters/assembleCharacter.ts b/src/characters/assembleCharacter.ts
+index 992a8de0..a5d3a74c 100644
+--- a/src/characters/assembleCharacter.ts
++++ b/src/characters/assembleCharacter.ts
+@@ -28,6 +28,8 @@ import {
+ 
+ export type AssembledCharacter = {
+   animations: AnimationClip[]
++  /** Skinned meshes that came with the body GLB (excludes rebound head/hair/garments). */
++  bodySkinned?: readonly SkinnedMesh[]
+   scene: Group
+   warnings: readonly string[]
+ }
+@@ -153,6 +155,11 @@ export async function assembleCharacter(a: CharacterAppearance): Promise<Assembl
+     throw new Error(`assembleCharacter: body has no bones (${bodyUrl(a.sex, a.outfit)})`)
+   }
+ 
++  const bodySkinned: SkinnedMesh[] = []
++  scene.traverse((o) => {
++    if ((o as SkinnedMesh).isSkinnedMesh) bodySkinned.push(o as SkinnedMesh)
++  })
++
+   try {
+     const head = await loadGltf(headUrl(a.sex, a.head))
+     const headResult = rebindAllSkinned(scene, bones, head, 'head')
+@@ -193,7 +200,7 @@ export async function assembleCharacter(a: CharacterAppearance): Promise<Assembl
+     warnings.push(`anims failed: ${String(err)}`)
+   }
+ 
+-  return { scene, animations, warnings }
++  return { scene, animations, warnings, bodySkinned }
+ }
+ 
+ /** Warm kit URLs used by equipment-driven player outfits. */
+diff --git a/src/characters/sharePeasantBodySkeleton.assets.test.ts b/src/characters/sharePeasantBodySkeleton.assets.test.ts
+new file mode 100644
+index 00000000..4a2cc4cb
+--- /dev/null
++++ b/src/characters/sharePeasantBodySkeleton.assets.test.ts
+@@ -0,0 +1,388 @@
++import { readFile } from 'node:fs/promises'
++import { resolve } from 'node:path'
++import {
++  AnimationMixer,
++  DetachedBindMode,
++  Group,
++  LoopOnce,
++  Matrix4,
++  type Object3D,
++  Raycaster,
++  Skeleton,
++  type SkinnedMesh,
++  Vector3,
++} from 'three'
++import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
++import { clone } from 'three/addons/utils/SkeletonUtils.js'
++import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js'
++import { describe, expect, it, vi } from 'vitest'
++import type { CharacterAppearance } from './characterTypes'
++import { installActorCullBounds } from '../render/actorCullBounds'
++import { assembleCharacter } from './assembleCharacter'
++import {
++  disposeActorSkeletons,
++  isShareablePeasantBody,
++  sharePeasantBodySkeleton,
++} from './sharePeasantBodySkeleton'
++
++// Real GLB geometry, rigs and clips through production assembly; only disk
++// loading is substituted and materials dropped (CPU skinning needs no GPU).
++vi.mock('../assets/loadGltf', () => ({
++  loadGltf: async (url: string) => (await loadOnDisk(url)).scene,
++  loadGltfAnimated: (url: string) => loadOnDisk(url),
++}))
++
++async function loadOnDisk(url: string) {
++  const bytes = await readFile(resolve(import.meta.dirname, '../../public', url.slice(1)))
++  const jsonLength = bytes.readUInt32LE(12)
++  const json = JSON.parse(bytes.subarray(20, 20 + jsonLength).toString())
++  for (const mesh of json.meshes ?? []) {
++    for (const primitive of mesh.primitives) delete primitive.material
++  }
++  delete json.materials
++  const text = JSON.stringify(json)
++  const padded = Buffer.from(text.padEnd(Math.ceil(Buffer.byteLength(text) / 4) * 4, ' '))
++  const binaryChunk = bytes.subarray(20 + jsonLength)
++  const glb = Buffer.alloc(20 + padded.length + binaryChunk.length)
++  bytes.copy(glb, 0, 0, 20)
++  glb.writeUInt32LE(glb.length, 8)
++  glb.writeUInt32LE(padded.length, 12)
++  padded.copy(glb, 20)
++  binaryChunk.copy(glb, 20 + padded.length)
++  const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder)
++  return loader.parseAsync(glb.buffer as ArrayBuffer, '')
++}
++
++const SEXES = ['Male', 'Female'] as const
++const EXPECTED = { Male: 5, Female: 4 } as const
++// Male Arms' two primitives share one authored skin, which SkeletonUtils.clone keeps shared.
++const SKELETONS_BEFORE = { Male: 4, Female: 4 } as const
++const CLIPS = ['Idle_Loop', 'Walk_Loop', 'Sprint_Loop', 'Sword_Attack', 'Interact', 'Sitting_Idle_Loop', 'Fixing_Kneeling', 'Death01']
++const POSITION_TOLERANCE = 2e-5
++const NORMAL_TOLERANCE = 1e-4
++
++function appearance(sex: 'Male' | 'Female'): CharacterAppearance {
++  return {
++    sex, outfit: 'Peasant', head: 'Base', hair: sex === 'Male' ? 'Parted' : 'Long', beard: sex === 'Male',
++    garments: sex === 'Female' ? ['NobleBodice', 'WorkSkirt'] : [], clothTint: null,
++  }
++}
++
++function skinned(root: Object3D): SkinnedMesh[] {
++  const out: SkinnedMesh[] = []
++  root.traverse((o) => { if ((o as SkinnedMesh).isSkinnedMesh) out.push(o as SkinnedMesh) })
++  return out
++}
++
++/** NPC-like wrapper: translation, rotation and uniform scale outside, a non-unit child scale inside. */
++function wrap(scene: Group): Group {
++  const wrapper = new Group()
++  scene.scale.setScalar(1.3)
++  wrapper.add(scene)
++  wrapper.position.set(12.5, 3.25, -7)
++  wrapper.rotation.set(0, 0.7, 0)
++  wrapper.scale.setScalar(0.6)
++  wrapper.updateMatrixWorld(true)
++  return wrapper
++}
++
++async function build(sex: 'Male' | 'Female', share: boolean) {
++  const assembled = await assembleCharacter(appearance(sex))
++  expect(assembled.warnings).toEqual([])
++  const bodySkinned = [...assembled.bodySkinned!]
++  const result = share ? sharePeasantBodySkeleton(sex, bodySkinned) : null
++  const wrapper = wrap(assembled.scene)
++  return { ...assembled, bodySkinned, wrapper, result }
++}
++
++/** Skinned vertex normal exactly as the vertex shader: `bindInverse · Σ w·bone·inverse · bind` upper 3×3. */
++function skinnedNormal(mesh: SkinnedMesh, index: number, target: Vector3): Vector3 {
++  const geometry = mesh.geometry
++  const normal = geometry.attributes.normal
++  const skinIndex = geometry.attributes.skinIndex
++  const skinWeight = geometry.attributes.skinWeight
++  const skin = new Matrix4().set(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
++  const offset = new Matrix4()
++  const weighted = new Matrix4()
++  for (let k = 0; k < 4; k++) {
++    const weight = skinWeight.getComponent(index, k)
++    if (weight === 0) continue
++    const bone = mesh.skeleton.bones[skinIndex.getComponent(index, k)]
++    offset.multiplyMatrices(bone.matrixWorld, mesh.skeleton.boneInverses[skinIndex.getComponent(index, k)])
++    weighted.copy(offset).multiplyScalar(weight)
++    for (let e = 0; e < 16; e++) skin.elements[e] += weighted.elements[e]
++  }
++  const full = new Matrix4().multiplyMatrices(mesh.bindMatrixInverse, skin).multiply(mesh.bindMatrix)
++  target.fromBufferAttribute(normal, index).transformDirection(full)
++  return target
++}
++
++function maxPoseDifference(a: Object3D, b: Object3D): { position: number, normal: number, vertices: number } {
++  a.updateMatrixWorld(true)
++  b.updateMatrixWorld(true)
++  const meshesA = skinned(a)
++  const meshesB = skinned(b)
++  expect(meshesA.length).toBe(meshesB.length)
++  const pa = new Vector3()
++  const pb = new Vector3()
++  const na = new Vector3()
++  const nb = new Vector3()
++  let position = 0
++  let normal = 0
++  let vertices = 0
++  meshesA.forEach((ma, i) => {
++    const mb = meshesB[i]
++    ma.skeleton.update()
++    mb.skeleton.update()
++    for (let v = 0; v < ma.geometry.attributes.position.count; v++) {
++      ma.getVertexPosition(v, pa).applyMatrix4(ma.matrixWorld)
++      mb.getVertexPosition(v, pb).applyMatrix4(mb.matrixWorld)
++      position = Math.max(position, pa.distanceTo(pb))
++      skinnedNormal(ma, v, na)
++      skinnedNormal(mb, v, nb)
++      normal = Math.max(normal, na.distanceTo(nb))
++      vertices++
++    }
++  })
++  return { position, normal, vertices }
++}
++
++function samplePoses(
++  original: { scene: Group, animations: import('three').AnimationClip[], wrapper: Group },
++  candidate: { scene: Group, animations: import('three').AnimationClip[], wrapper: Group },
++  visit: (clip: string) => void,
++) {
++  const mixerA = new AnimationMixer(original.scene)
++  const mixerB = new AnimationMixer(candidate.scene)
++  for (const name of CLIPS) {
++    const clipA = original.animations.find((c) => c.name === name)
++    const clipB = candidate.animations.find((c) => c.name === name)
++    expect(clipA, name).toBeDefined()
++    expect(clipB, name).toBeDefined()
++    const actionA = mixerA.clipAction(clipA!).setLoop(LoopOnce, 1).play()
++    const actionB = mixerB.clipAction(clipB!).setLoop(LoopOnce, 1).play()
++    actionA.clampWhenFinished = true
++    actionB.clampWhenFinished = true
++    for (let sample = 0; sample <= 6; sample++) {
++      const t = clipA!.duration * sample / 6
++      mixerA.setTime(t)
++      mixerB.setTime(t)
++      visit(name)
++    }
++    actionA.stop()
++    actionB.stop()
++  }
++}
++
++describe.each(SEXES)('%s Peasant body skeleton sharing (real assets)', (sex) => {
++  it('collapses the body palettes and preserves skinned positions and normals through all clips', async () => {
++    const original = await build(sex, false)
++    const shared = await build(sex, true)
++
++    expect(original.bodySkinned).toHaveLength(EXPECTED[sex])
++    expect(new Set(original.bodySkinned.map((m) => m.skeleton)).size).toBe(SKELETONS_BEFORE[sex])
++    expect(shared.result).toMatchObject({
++      eligible: EXPECTED[sex], skeletonsBefore: SKELETONS_BEFORE[sex], skeletonsAfter: 1, shared: true,
++    })
++    expect(new Set(shared.bodySkinned.map((m) => m.skeleton)).size).toBe(1)
++
++    let worstPosition = 0
++    let worstNormal = 0
++    samplePoses(original, shared, () => {
++      const diff = maxPoseDifference(original.wrapper, shared.wrapper)
++      expect(diff.vertices).toBeGreaterThan(1000)
++      worstPosition = Math.max(worstPosition, diff.position)
++      worstNormal = Math.max(worstNormal, diff.normal)
++    })
++    expect(worstPosition).toBeLessThanOrEqual(POSITION_TOLERANCE)
++    expect(worstNormal).toBeLessThanOrEqual(NORMAL_TOLERANCE)
++  }, 120_000)
++
++  it('keeps structure: identity of bones/geometry, bind mode, draw submissions; leaves head/hair rigs alone', async () => {
++    const original = await build(sex, false)
++    const shared = await build(sex, true)
++    const before = skinned(original.scene)
++    const after = skinned(shared.scene)
++    expect(after).toHaveLength(before.length)
++    after.forEach((mesh, i) => {
++      expect(mesh.name).toBe(before[i].name)
++      expect(mesh.geometry.attributes.position.count).toBe(before[i].geometry.attributes.position.count)
++      expect(mesh.geometry.index?.count).toBe(before[i].geometry.index?.count)
++      expect(Array.isArray(mesh.material)).toBe(Array.isArray(before[i].material))
++      expect(mesh.bindMode).toBe('attached')
++    })
++    // Same Bone objects, in order, for every body mesh of this actor.
++    const bones = shared.bodySkinned[0].skeleton.bones
++    for (const mesh of shared.bodySkinned) expect(mesh.skeleton.bones.every((b, i) => b === bones[i])).toBe(true)
++    // Head / hair / garments keep their own skeletons.
++    const nonBody = after.filter((m) => !shared.bodySkinned.includes(m))
++    expect(nonBody.length).toBeGreaterThan(0)
++    expect(new Set(nonBody.map((m) => m.skeleton)).size).toBe(nonBody.length)
++    expect(nonBody.some((m) => m.skeleton === shared.bodySkinned[0].skeleton)).toBe(false)
++    // Draw submissions: one per skinned mesh, unchanged.
++    expect(after.length).toBe(before.length)
++  }, 60_000)
++
++  it('never shares skeletons or bones between two actors, and the plain assembly path (player) is unshared', async () => {
++    const first = await build(sex, true)
++    const second = await build(sex, true)
++    expect(first.bodySkinned[0].skeleton).not.toBe(second.bodySkinned[0].skeleton)
++    expect(first.bodySkinned[0].skeleton.bones[0]).not.toBe(second.bodySkinned[0].skeleton.bones[0])
++    const player = await build(sex, false)
++    expect(new Set(player.bodySkinned.map((m) => m.skeleton)).size).toBe(SKELETONS_BEFORE[sex])
++    expect(isShareablePeasantBody({ sex, outfit: 'Peasant' })).toBe(true)
++    expect(isShareablePeasantBody({ sex, outfit: 'Peasant_Boots' })).toBe(false)
++    expect(isShareablePeasantBody({ sex, outfit: 'Farmer' })).toBe(false)
++  }, 60_000)
++
++  it('is idempotent and does not mutate canonical inverse binds', async () => {
++    const { bodySkinned } = await build(sex, false)
++    const canonicalInverses = bodySkinned[0].skeleton.boneInverses.map((m) => m.elements.slice())
++    const first = sharePeasantBodySkeleton(sex, bodySkinned)
++    const binds = bodySkinned.map((m) => m.bindMatrix.elements.slice())
++    const skeletons = bodySkinned.map((m) => m.skeleton)
++    const second = sharePeasantBodySkeleton(sex, bodySkinned)
++    expect(first.shared).toBe(true)
++    expect(second).toMatchObject({ shared: true, skeletonsAfter: 1 })
++    expect(bodySkinned.map((m) => m.skeleton)).toEqual(skeletons)
++    bodySkinned.forEach((m, i) => expect(m.bindMatrix.elements).toEqual(binds[i]))
++    bodySkinned[0].skeleton.boneInverses.forEach((m, i) => expect(m.elements).toEqual(canonicalInverses[i]))
++  }, 60_000)
++
++  describe('fail-open', () => {
++    /** Snapshot the original bindings, run the helper on a tampered actor, expect no change. */
++    async function expectUntouched(tamper: (meshes: SkinnedMesh[]) => void) {
++      const { bodySkinned } = await build(sex, false)
++      tamper(bodySkinned)
++      const skeletons = bodySkinned.map((m) => m.skeleton)
++      const binds = bodySkinned.map((m) => m.bindMatrix.elements.slice())
++      const result = sharePeasantBodySkeleton(sex, bodySkinned)
++      expect(result.shared).toBe(false)
++      expect(result.reason).toBeTruthy()
++      expect(bodySkinned.map((m) => m.skeleton)).toEqual(skeletons)
++      bodySkinned.forEach((m, i) => expect(m.bindMatrix.elements).toEqual(binds[i]))
++    }
++    const reskin = (mesh: SkinnedMesh, edit: (bones: Skeleton['bones'], inverses: Matrix4[]) => Skeleton) => {
++      const bones = mesh.skeleton.bones.slice()
++      const inverses = mesh.skeleton.boneInverses.map((m) => m.clone())
++      mesh.skeleton = edit(bones, inverses)
++    }
++
++    it('incompatible inverse-bind matrices', () => expectUntouched((meshes) => {
++      reskin(meshes[1], (bones, inverses) => {
++        inverses[17].elements[13] += 0.01
++        return new Skeleton(bones, inverses)
++      })
++    }))
++    it('reordered bones', () => expectUntouched((meshes) => {
++      reskin(meshes[1], (bones, inverses) => {
++        ;[bones[3], bones[4]] = [bones[4], bones[3]]
++        return new Skeleton(bones, inverses)
++      })
++    }))
++    it('different bone objects', () => expectUntouched((meshes) => {
++      reskin(meshes[1], (bones, inverses) => new Skeleton(bones.map((b) => b.clone(false) as typeof b), inverses))
++    }))
++    it('missing bone references', () => expectUntouched((meshes) => {
++      reskin(meshes[1], (bones, inverses) => new Skeleton(bones.slice(0, -1), inverses.slice(0, -1)))
++    }))
++    it('detached bind mode', () => expectUntouched((meshes) => { meshes[2].bindMode = DetachedBindMode }))
++    it('singular inverse matrix', () => expectUntouched((meshes) => {
++      reskin(meshes[1], (bones, inverses) => {
++        inverses[5].elements.fill(0)
++        return new Skeleton(bones, inverses)
++      })
++    }))
++    it('nonfinite inverse matrix', () => expectUntouched((meshes) => {
++      reskin(meshes[1], (bones, inverses) => {
++        inverses[5].elements[0] = Number.NaN
++        return new Skeleton(bones, inverses)
++      })
++    }))
++    it('nonfinite bind matrix', () => expectUntouched((meshes) => { meshes[1].bindMatrix.elements[12] = Number.NaN }))
++    it('unexpected mesh count', () => expectUntouched((meshes) => { meshes.pop() }))
++  })
++
++  it('keeps conservative bounds and raycast parity, also after clone/rebuild and corpse settle', async () => {
++    const original = await build(sex, false)
++    const shared = await build(sex, true)
++    expect(installActorCullBounds(original.wrapper)).toEqual(installActorCullBounds(shared.wrapper))
++    expect(installActorCullBounds(shared.wrapper).fallback).toBe(0)
++
++    const before = skinned(original.wrapper)
++    const after = skinned(shared.wrapper)
++    after.forEach((mesh, i) => {
++      expect(mesh.frustumCulled).toBe(true)
++      expect(mesh.boundingSphere!.radius).toBeCloseTo(before[i].boundingSphere!.radius, 4)
++      expect(mesh.boundingSphere!.center.distanceTo(before[i].boundingSphere!.center)).toBeLessThan(1e-4)
++      expect(mesh.boundingBox!.min.distanceTo(before[i].boundingBox!.min)).toBeLessThan(1e-3)
++      expect(mesh.boundingBox!.max.distanceTo(before[i].boundingBox!.max)).toBeLessThan(1e-3)
++    })
++
++    const raycast = (root: Object3D) => {
++      root.updateMatrixWorld(true)
++      const center = new Vector3(0, 1.0, 0).applyMatrix4(root.matrixWorld)
++      const hits: { distance: number, face: number | null | undefined, name: string }[] = []
++      for (const height of [-0.7, -0.4, 0, 0.1, 0.3]) {
++        for (const offset of [-0.2, -0.05, 0.05, 0.2]) {
++          const origin = center.clone().add(new Vector3(offset, height, 5))
++          const ray = new Raycaster(origin, new Vector3(0, -0.02, -1).normalize())
++          const hit = ray.intersectObject(root, true)[0]
++          hits.push({ distance: hit?.distance ?? -1, face: hit?.faceIndex, name: hit?.object.name ?? '' })
++        }
++      }
++      return hits
++    }
++    const expectRaycastParity = (requireHit: boolean) => {
++      const a = raycast(original.wrapper)
++      const b = raycast(shared.wrapper)
++      if (requireHit) expect(a.some((h) => h.distance > 0)).toBe(true)
++      b.forEach((hit, i) => {
++        expect(hit.name).toBe(a[i].name)
++        expect(hit.face).toBe(a[i].face)
++        expect(hit.distance).toBeCloseTo(a[i].distance, 4)
++      })
++    }
++    expectRaycastParity(true)
++
++    // Rebuild route: SkeletonUtils.clone re-splits palettes but must keep exact skinning.
++    const rebuilt = clone(shared.wrapper) as Group
++    expect(maxPoseDifference(original.wrapper, rebuilt).position).toBeLessThanOrEqual(POSITION_TOLERANCE)
++
++    // Corpse reconstruction: settle straight on the final death frame, then pick.
++    for (const side of [original, shared]) {
++      const mixer = new AnimationMixer(side.scene)
++      const clip = side.animations.find((c) => c.name === 'Death01')!
++      const action = mixer.clipAction(clip).setLoop(LoopOnce, 1).play()
++      action.clampWhenFinished = true
++      mixer.setTime(clip.duration)
++    }
++    const diff = maxPoseDifference(original.wrapper, shared.wrapper)
++    expect(diff.position).toBeLessThanOrEqual(POSITION_TOLERANCE)
++    expectRaycastParity(false)
++  }, 120_000)
++
++  it('disposes each actor palette once and leaves other actors and canonical data alone', async () => {
++    const first = await build(sex, true)
++    const survivor = await build(sex, true)
++    const palettes = (actor: { wrapper: Group }) => new Set(skinned(actor.wrapper).map((m) => m.skeleton))
++    const dispose = vi.spyOn(Skeleton.prototype, 'dispose')
++    const firstSkeletons = palettes(first)
++    const survivorSkeletons = palettes(survivor)
++    for (const skeleton of [...firstSkeletons, ...survivorSkeletons]) skeleton.computeBoneTexture()
++    const bodyPalette = first.bodySkinned[0].skeleton
++    const bodyTexture = bodyPalette.boneTexture!
++    const textureDispose = vi.fn()
++    bodyTexture.addEventListener('dispose', textureDispose)
++    const inverse = bodyPalette.boneInverses[0].elements.slice()
++
++    expect(disposeActorSkeletons(first.wrapper)).toBe(firstSkeletons.size)
++    expect(dispose).toHaveBeenCalledTimes(firstSkeletons.size)
++    expect(new Set(dispose.mock.contexts)).toEqual(firstSkeletons)
++    expect(textureDispose).toHaveBeenCalledTimes(1)
++    expect(bodyPalette.boneTexture).toBeNull()
++    for (const skeleton of survivorSkeletons) expect(skeleton.boneTexture).not.toBeNull()
++    expect(bodyPalette.boneInverses[0].elements).toEqual(inverse)
++    dispose.mockRestore()
++  }, 60_000)
++})
+diff --git a/src/characters/sharePeasantBodySkeleton.ts b/src/characters/sharePeasantBodySkeleton.ts
+new file mode 100644
+index 00000000..80a6ebc4
+--- /dev/null
++++ b/src/characters/sharePeasantBodySkeleton.ts
+@@ -0,0 +1,161 @@
++/**
++ * Experimental (world-terrain-050, B′): one actor-local `Skeleton` per Peasant
++ * body instead of one per body primitive.
++ *
++ * The shipped Peasant body skins list the same 65 bones in the same order but
++ * carry different inverse-bind matrices that differ by a constant right factor
++ * (`Ipart[j] = Icanonical[j] * Tpart`, verified on every bone). In
++ * `AttachedBindMode` the effective skin operator is
++ * `Mworld⁻¹ · Σ w·BoneWorld[j]·I[j] · Bind`, so swapping the palette for the
++ * canonical one and compensating with `Bind' = Tpart · Bind` preserves skinning.
++ * Geometry, weights, materials and draw submissions are untouched; canonical
++ * inverses are never mutated (they are shared with the loader cache).
++ */
++import { AttachedBindMode, Matrix4, type Object3D, type Skeleton, type SkinnedMesh } from 'three'
++import type { CharacterAppearance } from './characterTypes'
++
++/** Max component error of `Icanonical[j]·T − Ipart[j]`; asset residuals are ≤ 1.4e-7. */
++const FACTOR_TOLERANCE = 1e-5
++
++/** Authored body primitive counts of the verified Peasant bodies. */
++const EXPECTED_BODY_MESHES = { Male: 5, Female: 4 } as const
++
++export type PeasantBodyShareResult = {
++  /** Body meshes considered. */
++  eligible: number
++  skeletonsBefore: number
++  skeletonsAfter: number
++  /** `false` when the original bindings were preserved. */
++  shared: boolean
++  reason?: string
++}
++
++/** Live diagnostic counters (opt-in readers only; plain increments). */
++export type PeasantSkeletonStats = {
++  actors: number
++  eligibleMeshes: number
++  skeletonsBefore: number
++  skeletonsAfter: number
++  failOpen: number
++}
++
++export const peasantSkeletonStats: PeasantSkeletonStats = {
++  actors: 0, eligibleMeshes: 0, skeletonsBefore: 0, skeletonsAfter: 0, failOpen: 0,
++}
++
++/** Skeletons of eligible Peasant bodies (before and after sharing); lets diagnostics count their updates. */
++export const peasantBodySkeletons = new WeakSet<Skeleton>()
++
++/** Only the verified plain Peasant body (not `Peasant_Boots`, professions, legacy models). */
++export function isShareablePeasantBody(kit: Pick<CharacterAppearance, 'sex' | 'outfit'>): boolean {
++  return kit.outfit === 'Peasant'
++}
++
++function distinct(meshes: readonly SkinnedMesh[]): number {
++  return new Set(meshes.map((m) => m.skeleton)).size
++}
++
++/** Experiment arm A: register the bodies for diagnostics only; bindings stay untouched. */
++export function noteUnsharedPeasantBody(meshes: readonly SkinnedMesh[]): void {
++  const count = distinct(meshes)
++  for (const mesh of meshes) peasantBodySkeletons.add(mesh.skeleton)
++  peasantSkeletonStats.actors++
++  peasantSkeletonStats.eligibleMeshes += meshes.length
++  peasantSkeletonStats.skeletonsBefore += count
++  peasantSkeletonStats.skeletonsAfter += count
++}
++
++function usable(matrix: Matrix4): boolean {
++  const det = matrix.determinant()
++  return matrix.elements.every(Number.isFinite) && Number.isFinite(det) && det !== 0
++}
++
++/**
++ * Collapse the body primitives' skeletons into one canonical skeleton when
++ * every compatibility condition holds; otherwise leave all bindings as they
++ * were. All-or-nothing per actor; idempotent.
++ *
++ * Call after the final clone/assembly of the actor, before bounds installation.
++ * Never share the result between actors: the canonical skeleton belongs to the
++ * bones of the meshes passed in.
++ */
++export function sharePeasantBodySkeleton(
++  sex: keyof typeof EXPECTED_BODY_MESHES,
++  meshes: readonly SkinnedMesh[],
++): PeasantBodyShareResult {
++  const before = distinct(meshes)
++  const result: PeasantBodyShareResult = {
++    eligible: meshes.length, skeletonsBefore: before, skeletonsAfter: before, shared: false,
++  }
++  const fail = (reason: string): PeasantBodyShareResult => {
++    peasantSkeletonStats.failOpen++
++    return { ...result, reason }
++  }
++  for (const mesh of meshes) peasantBodySkeletons.add(mesh.skeleton)
++  peasantSkeletonStats.actors++
++  peasantSkeletonStats.eligibleMeshes += meshes.length
++  peasantSkeletonStats.skeletonsBefore += before
++
++  const done = (r: PeasantBodyShareResult): PeasantBodyShareResult => {
++    peasantSkeletonStats.skeletonsAfter += r.skeletonsAfter
++    return r
++  }
++
++  if (meshes.length !== EXPECTED_BODY_MESHES[sex]) return done(fail('unexpected body mesh count'))
++  if (meshes.some((m) => !m.isSkinnedMesh)) return done(fail('not skinned'))
++  if (meshes.some((m) => m.bindMode !== AttachedBindMode)) return done(fail('not attached bind mode'))
++  if (before === 1) return done({ ...result, shared: true })
++
++  const canonical = meshes[0].skeleton
++  const bones = canonical.bones
++  if (bones.length === 0 || bones.some((b) => !b)) return done(fail('missing bones'))
++  for (const mesh of meshes) {
++    const other = mesh.skeleton.bones
++    if (other.length !== bones.length || other.some((b, i) => b !== bones[i])) {
++      return done(fail('bone references differ'))
++    }
++    if (mesh.skeleton.boneInverses.length !== bones.length) return done(fail('missing inverse binds'))
++    if (!usable(mesh.bindMatrix) || !usable(mesh.matrixWorld)) return done(fail('degenerate mesh matrix'))
++  }
++  if (!canonical.boneInverses.every(usable)) return done(fail('degenerate inverse bind'))
++
++  // Plan every rebinding before touching any mesh.
++  const canonicalInverse0 = canonical.boneInverses[0].clone().invert()
++  const plans: { mesh: SkinnedMesh, bind: Matrix4 }[] = []
++  const factor = new Matrix4()
++  const probe = new Matrix4()
++  for (const mesh of meshes) {
++    if (mesh.skeleton === canonical) continue
++    const inverses = mesh.skeleton.boneInverses
++    if (!inverses.every(usable)) return done(fail('degenerate inverse bind'))
++    factor.multiplyMatrices(canonicalInverse0, inverses[0])
++    if (!usable(factor)) return done(fail('degenerate factor'))
++    for (let j = 0; j < bones.length; j++) {
++      probe.multiplyMatrices(canonical.boneInverses[j], factor)
++      const a = probe.elements
++      const b = inverses[j].elements
++      for (let k = 0; k < 16; k++) {
++        if (!(Math.abs(a[k] - b[k]) <= FACTOR_TOLERANCE)) return done(fail('inverse binds not related by a constant factor'))
++      }
++    }
++    plans.push({ mesh, bind: new Matrix4().multiplyMatrices(factor, mesh.bindMatrix) })
++  }
++
++  for (const { mesh, bind } of plans) mesh.bind(canonical, bind)
++  return done({ ...result, skeletonsAfter: distinct(meshes), shared: true })
++}
++
++/**
++ * Dispose every palette (bone texture) owned by an actor's skinned meshes,
++ * once per distinct skeleton. Skeletons are actor-local clones, never loader
++ * cache resources; geometry/materials stay with `disposeObject3D`.
++ */
++export function disposeActorSkeletons(root: Object3D): number {
++  const seen = new Set<Skeleton>()
++  root.traverse((o) => {
++    const mesh = o as SkinnedMesh
++    if (mesh.isSkinnedMesh && mesh.skeleton) seen.add(mesh.skeleton)
++  })
++  for (const skeleton of seen) skeleton.dispose()
++  return seen.size
++}
+diff --git a/src/perf/flags.ts b/src/perf/flags.ts
+index 8f25aa0d..16b3109b 100644
+--- a/src/perf/flags.ts
++++ b/src/perf/flags.ts
+@@ -24,6 +24,21 @@ export function isPerfUrlEnabled(): boolean {
+   return flagOn(p.get('perf'))
+ }
+ 
++/** `?skelShare=0` — experiment arm switch: keep per-primitive Peasant body skeletons
++ *  (A). Default on (B′, `sharePeasantBodySkeleton`). */
++export function isPeasantSkeletonSharingEnabled(): boolean {
++  const p = params()
++  if (!p?.has('skelShare')) return true
++  return flagOn(p.get('skelShare'))
++}
++
++/** `?skelStats=1` — opt-in counters for eligible Peasant body skeleton updates. */
++export function isSkeletonStatsUrlEnabled(): boolean {
++  const p = params()
++  if (!p?.has('skelStats')) return false
++  return flagOn(p.get('skelStats'))
++}
++
+ /** `?programCensus=1` — plan 149 Phase 0 WebGLProgram/material census
+  *  (`src/perf/programCensus.ts`), usable standalone (e.g. under manual play
+  *  or agent-browser) without running the full 30s `stream` benchmark. The
+diff --git a/src/perf/skeletonStats.ts b/src/perf/skeletonStats.ts
+new file mode 100644
+index 00000000..9b145914
+--- /dev/null
++++ b/src/perf/skeletonStats.ts
+@@ -0,0 +1,38 @@
++import { Skeleton } from 'three'
++import { peasantBodySkeletons, peasantSkeletonStats } from '../characters/sharePeasantBodySkeleton'
++import { isSkeletonStatsUrlEnabled } from './flags'
++
++let installed = false
++let updates = 0
++let frames = 0
++const windowMarks: Record<string, { updates: number, frames: number }> = {}
++
++/**
++ * `?skelStats=1`: counts executed `Skeleton.update()` calls on eligible Peasant
++ * body skeletons (three runs it once per skeleton per renderer frame) and
++ * exposes `window.__seedvaleSkeletonStats()`. Not a GPU-upload count: a
++ * texture version bump is not proof of an upload.
++ */
++export function installSkeletonStatsIfEnabled(): void {
++  if (installed || !isSkeletonStatsUrlEnabled()) return
++  installed = true
++  const original = Skeleton.prototype.update
++  Skeleton.prototype.update = function patched(this: Skeleton) {
++    if (peasantBodySkeletons.has(this)) updates++
++    original.call(this)
++  }
++  const tick = () => { frames++; requestAnimationFrame(tick) }
++  requestAnimationFrame(tick)
++  // Benchmark window boundaries (`src/perf/benchmark.ts`): snapshot counters at each mark.
++  const originalMark = performance.mark.bind(performance)
++  performance.mark = ((name: string, options?: PerformanceMarkOptions) => {
++    if (name === 'seedvale:bench-window-start' || name === 'seedvale:bench-window-end') windowMarks[name] = { updates, frames }
++    return originalMark(name, options)
++  }) as typeof performance.mark
++  ;(window as unknown as { __seedvaleSkeletonStats?: () => unknown }).__seedvaleSkeletonStats = () => ({
++    ...peasantSkeletonStats,
++    bodySkeletonUpdates: updates,
++    rafFrames: frames,
++    windowMarks,
++  })
++}

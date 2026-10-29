@@ -47,7 +47,7 @@ function evaluator(ws) {
 
 async function runOne(scenario, rep) {
   const profile = mkdtempSync(join(tmpdir(), 'sv-bench-'))
-  const url = `http://localhost:${port}/?benchmark=${scenario}`
+  const url = `http://localhost:${port}/?benchmark=${scenario}${process.env.SEEDVALE_QUERY ?? ''}` // e.g. SEEDVALE_QUERY='&skelShare=0'
   const chrome = spawn(CHROME, [
     `--remote-debugging-port=${DEBUG}`, `--user-data-dir=${profile}`, '--no-first-run',
     '--no-default-browser-check', '--disable-backgrounding-occluded-windows', '--disable-renderer-backgrounding', '--disable-background-timer-throttling', '--window-size=1600,900', '--window-position=0,0', url,
@@ -71,6 +71,7 @@ async function runOne(scenario, rep) {
     const gpu = b.report.context.device?.gpu ?? b.report.context.device?.renderer ?? JSON.stringify(b.report.context.device ?? {}).slice(0, 200)
     const sha = b.meta.gitSha
     if (sha !== expectedSha) throw new Error(`SHA mismatch ${sha} vs ${expectedSha}`)
+    if (process.env.SEEDVALE_EVAL) b.meta.evalAfter = await ev(process.env.SEEDVALE_EVAL) // e.g. JSON.stringify(window.__seedvaleSkeletonStats())
     b.meta.hardwareClass = /Arc/i.test(JSON.stringify(b.report.context.device ?? {})) ? 'target-gpu' : 'diagnostic'
     b.meta.notes = `A1' benchmark series ${tag} rep${rep}; native Windows Chrome headed, fresh profile, ${cooldownSec}s cooldown`
     const base = join(outDir, `${tag}-${scenario}-rep${rep}`)

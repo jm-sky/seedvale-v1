@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "gitSha": "2bca37bcba8388d22d324c73733c03da695da59e",
+  "runId": "2026-10-29T13-45-10-816Z-64i2qd",
+  "scenario": "settlement-heavy",
+  "phase": "warm",
+  "canonical": true,
+  "generatedAt": "2026-10-29T13:46:19.665Z",
+  "fixtureVersion": "tools-001-v1",
+  "quality": "High",
+  "hardwareClass": "target-gpu",
+  "notes": "A1' benchmark series 2026-10-29--win-skelshare-diagB rep1; native Windows Chrome headed, fresh profile, 35s cooldown",
+  "evalAfter": "{\"actors\":38,\"eligibleMeshes\":163,\"skeletonsBefore\":163,\"skeletonsAfter\":38,\"failOpen\":0,\"bodySkeletonUpdates\":22414,\"rafFrames\":1749,\"windowMarks\":{\"seedvale:bench-window-start\":{\"updates\":2134,\"frames\":249},\"seedvale:bench-window-end\":{\"updates\":12774,\"frames\":1009}}}"
+}
