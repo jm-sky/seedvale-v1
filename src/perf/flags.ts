@@ -97,3 +97,12 @@ export function isGrassMainCapEnabled(): boolean {
   if (!p?.has('grassMainCap')) return true
   return flagOn(p.get('grassMainCap'))
 }
+
+/** Q5 Track B: interior house chests as one settlement `InstancedMesh` group
+ *  (`settlement/props.ts`). On by default; `?chestInstancing=0` restores one
+ *  procedural chest `Group` per house for the A/B. */
+export function isChestInstancingEnabled(): boolean {
+  const p = params()
+  if (!p?.has('chestInstancing')) return true
+  return flagOn(p.get('chestInstancing'))
+}

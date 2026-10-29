@@ -11,6 +11,7 @@ import { pickHouseDefinition } from '../assets/houseDefinitionExample'
 import { disposeObject3D, loadGltf, prepareAuthoredScaleMax, prepareProp, preparePropFitMax } from '../assets/loadGltf'
 import { DEBUG_HOUSE_LAMP_POSITION, isDebugMode } from '../debug/debugMode'
 import { distanceToSegment } from '../math/segment'
+import { isChestInstancingEnabled } from '../perf/flags'
 import { buildInstancedProps, type PropPlacement } from '../render/instancedProps'
 import { pastureWellQueueId, settlementWellQueueId } from '../simulation'
 import { type CoastalSamplers } from '../terrain/coastPlacement'
@@ -1322,6 +1323,8 @@ export async function buildSettlementProps(
   const houseRing = villageSizeConfig(size).houseRingMax * 0.85
   const houseYawRandom = createSeededRandom(seed ^ 0xa11ce)
   const houseAssemblies: HouseAssembly[] = []
+  const chestInstancing = isChestInstancingEnabled()
+  const chestPlacements: PropPlacement[] = []
   const plannedDefs = clearings.houses.map((_, i) => pickHouseDefinition(size, i, seed))
   let builderReady: HouseBuildContext | null = null
   try {
@@ -1458,7 +1461,11 @@ export async function buildSettlementProps(
       // (`invHouseScale`) to cancel out `HOUSE_ASSEMBLY_SCALE`.
       const invHouseScaleFurniture = 1 / Math.max(Math.abs(hut.scale.x), 1e-6)
       const chestFurniture = def.furniture?.find((f) => f.role === 'chest')
-      if (chestFurniture) {
+      if (chestFurniture && chestInstancing) {
+        // Q5 Track B: one settlement-wide instanced group (below the house
+        // loop) instead of five meshes per house.
+        chestPlacements.push(houseChestPlacement(hut, chestFurniture))
+      } else if (chestFurniture) {
         const chest = createPlacedContainerProp()
         chest.position.set(chestFurniture.position.x, chestFurniture.position.y, chestFurniture.position.z)
         chest.rotation.y = chestFurniture.rotationY
@@ -1530,6 +1537,17 @@ export async function buildSettlementProps(
       })
     }
     await yieldProp()
+  }
+
+  if (chestPlacements.length > 0) {
+    // Per-settlement procedural template: `disposeSettlementGroup` releases
+    // its geometry/materials with the instanced meshes, as it did for the
+    // per-house chest groups.
+    const chestInstances = buildInstancedProps([createPlacedContainerProp()], chestPlacements, 'settlement-house-chests')
+    if (chestInstances) {
+      tagSettlementShadowKind(chestInstances.group, 'storageContainer')
+      group.add(chestInstances.group)
+    }
   }
 
   if (houseAssemblies.length > 0) {
@@ -2457,6 +2475,28 @@ export async function buildSettlementProps(
     pastureFencePlacements: pastureFencePlacementsResolved,
     paddockFencePlacements: paddockFencePlacementsResolved,
     authoredRepairVisuals,
+  }
+}
+
+/** World placement of a house's interior chest for `buildInstancedProps`
+ *  (Q5 Track B). Reproduces the per-house child path exactly: furniture
+ *  position through the house's yaw/scale/translation, house + furniture
+ *  yaw, and the house scale cancelled the same way that path cancels it with
+ *  `invHouseScaleFurniture`. The house must have only a Y rotation, as every
+ *  settlement house does (`hut.rotation.y = yaw`). */
+export function houseChestPlacement(
+  hut: THREE.Object3D,
+  furniture: { position: HouseVec3; rotationY: number },
+): PropPlacement {
+  hut.updateMatrix()
+  const world = new THREE.Vector3(furniture.position.x, furniture.position.y, furniture.position.z).applyMatrix4(hut.matrix)
+  return {
+    speciesIndex: 0,
+    x: world.x,
+    z: world.z,
+    groundY: world.y,
+    rotationY: hut.rotation.y + furniture.rotationY,
+    scale: hut.scale.x / Math.max(Math.abs(hut.scale.x), 1e-6),
   }
 }
 
