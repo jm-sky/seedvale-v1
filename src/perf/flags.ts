@@ -79,10 +79,12 @@ export function benchmarkScenarioFromUrl(): BenchmarkScenarioId | null {
   return parseBenchmarkScenarioId(params()?.get('benchmark'))
 }
 
-/** `?frameMatrixOnce=0` — A/B rollback for the single per-frame scene matrix
- *  update (`src/render/frameSceneMatrices.ts`, queue Q14). Default on. */
+/** `?frameMatrixOnce=1` — opt-in single per-frame scene matrix update
+ *  (`src/render/frameSceneMatrices.ts`, queue Q14). Default off until the
+ *  native Windows A/B decides (WSL result was mixed, see
+ *  docs/performance/results/2026-10-29--wsl-q14-frame-matrix-once-ab.md). */
 export function isFrameMatrixOnceEnabled(): boolean {
   const p = params()
-  if (!p?.has('frameMatrixOnce')) return true
+  if (!p?.has('frameMatrixOnce')) return false
   return flagOn(p.get('frameMatrixOnce'))
 }

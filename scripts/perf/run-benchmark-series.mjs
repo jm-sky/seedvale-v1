@@ -16,7 +16,8 @@ const CHROME = process.env.SEEDVALE_CHROME ?? (IS_WIN ? 'C:/Program Files/Google
 const DEBUG = 9333
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 mkdirSync(outDir, { recursive: true })
-const expectedSha = execSync('git rev-parse HEAD', { cwd: process.env.SEEDVALE_REPO ?? (IS_WIN ? 'D:/Projekty/private/seedvale-v1' : process.cwd()) }).toString().trim()
+const REPO = process.env.SEEDVALE_REPO ?? (IS_WIN ? 'D:/Projekty/private/seedvale-v1' : process.cwd())
+const expectedSha = execSync('git rev-parse HEAD', { cwd: REPO }).toString().trim()
 console.log('expected SHA', expectedSha)
 
 async function cdpConnect() {
@@ -76,7 +77,15 @@ async function runOne(scenario, rep) {
     const b = JSON.parse(json)
     const gpu = b.report.context.device?.gpu ?? b.report.context.device?.renderer ?? JSON.stringify(b.report.context.device ?? {}).slice(0, 200)
     const sha = b.meta.gitSha
-    if (sha !== expectedSha) throw new Error(`SHA mismatch ${sha} vs ${expectedSha}`)
+    if (sha !== expectedSha) {
+      // Vite embeds the SHA at server start. A later commit that touches no runtime path
+      // (src/, public/, index.html, config) serves identical code: keep the run, flag it.
+      let runtimeDiff = 'unknown'
+      try { runtimeDiff = execSync(`git diff --name-only ${sha} ${expectedSha} -- src public index.html vite.config.ts package.json pnpm-lock.yaml`, { cwd: REPO }).toString().trim() } catch {}
+      if (runtimeDiff !== '') throw new Error(`SHA mismatch ${sha} vs ${expectedSha}; runtime diff: ${runtimeDiff.slice(0, 200)}`)
+      b.meta.shaNote = `served ${sha}, HEAD ${expectedSha}; no runtime-path diff`
+      console.log(`WARN served SHA ${sha.slice(0, 8)} != HEAD ${expectedSha.slice(0, 8)} (no runtime diff, kept)`)
+    }
     if (process.env.SEEDVALE_EVAL) b.meta.evalAfter = await ev(process.env.SEEDVALE_EVAL) // e.g. JSON.stringify(window.__seedvaleSkeletonStats())
     b.meta.platform = PLATFORM
     b.meta.hardwareClass = IS_WIN && /Arc/i.test(JSON.stringify(b.report.context.device ?? {})) ? 'target-gpu' : PLATFORM === 'wsl' ? 'wsl-baseline' : 'diagnostic'

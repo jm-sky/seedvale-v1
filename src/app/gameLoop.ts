@@ -3128,7 +3128,7 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
     passCollector?.beginFrame()
     postProcessing.applyFrameBudget(lastRenderMs)
     // One scene matrix update shared by the mirror, beauty and label renders
-    // (queue Q14; `?frameMatrixOnce=0` restores per-render traversals).
+    // (queue Q14; opt-in `?frameMatrixOnce=1` until the Windows A/B decides).
     if (frameMatrixOnce) withCategory(monitor, 'RENDER', () => beginFrameSceneMatrices(scene))
     withCategory(monitor, 'WATER', () => {
       withProgramCensusStage(programCensus, 'mirror-render', () => {
