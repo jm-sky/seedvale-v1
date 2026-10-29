@@ -1,8 +1,8 @@
 # Backlog candidate — V1 tree geometry LOD (6 species)
 
 **Created:** 2026-10-28  
-**Status:** candidate — not approved for implementation  
-**Proposed priority:** high, **not yet ranked** against active A/B/C work  
+**Status:** included as required P1 evaluation/closure area by author (2026-10-29); runtime implementation not yet approved  
+**Priority:** included in P1; implementation order relative to A/B/C remains to be determined from evidence  
 **Area:** world vegetation / rendering  
 **Owner for future planning:** existing `world-terrain` domain; confirm current plan ownership/ID under `docs/plans/PLANNING.md` before drafting a formal plan  
 **D4:** performance-relevant candidate, subject to current Performance-First coordination and measurement discipline
@@ -49,11 +49,11 @@ The remaining seven V1 tree models are deliberately **parked**. Do not widen cov
 
 ## Position in the performance queue
 
-**Candidate, high priority proposed; not approved or scheduled.** Evaluate at the next performance-prioritization gate relative to ongoing A (NPC/fauna), B (settlements), C (grass/streaming). It can become a distinct world-vegetation optimization slice only after focused recon and an author-approved implementation plan. Do not interrupt currently approved slices or disturb an existing benchmark baseline.
+**P1-D is required for evaluation and explicit closure (author decision 2026-10-29).** Runtime LOD1 or billboard changes remain unapproved. Evaluate alongside A/B/C on the relevant forest cost and existing evidence. Focused recon and an implementation scope decision are required before any runtime change. Do not interrupt currently approved slices or disturb an existing benchmark baseline.
 
 ### Next decisions / work
 
-1. **Coordination:** compare expected forest ROI against currently evidenced A/B/C hotspots; decide when this candidate should enter the implementation queue.
+1. **Coordination:** compare forest ROI against A/B/C and decide execution order inside P1; document an explicit P1-D outcome.
 2. **Focused architecture recon and plan:** inspect real V1 sources and existing plan IDs/ownership; identify smallest reversible LOD1-first stage, then an independently gated billboard stage. The originally suggested planning model was Opus 5.5; any capable planning agent with repo access can perform it.
 3. **Later implementation, only after author approval:** preserve V1 LOD0 and runtime authority, with targeted regression tests, visual verification and native GPU measurements.
 4. **Keep/revert:** require measurable benefit without density, appearance, interaction, shadow or frame-tail regressions.
