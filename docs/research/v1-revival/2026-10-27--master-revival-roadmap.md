@@ -140,6 +140,10 @@ Only the Performance-First order and D1/D3/D9 direction are approved. Detailed c
 
 This clarifies P3 scope only. It does not override D4 Performance-First or approve a wholesale renderer/worldgen replacement.
 
+### Cave polish — post-P1 candidate (author request, 2026-10-29)
+
+Include a focused **V1 cave polish** work item in later Revival planning, especially **entrance geometry, terrain blending/masking, entrance-to-interior transitions and interior presentation**. Address the reported distant-view defect where cave geometry is culled/not rendered but an exposed bright/white hole remains in the terrain (LOD/visibility continuity). Compare actual V1 and V3 cave implementations before selecting improvements; preserve V1 cave gameplay and world-generation ownership. **Claude Opus owns detailed recon, scope, phase/dependency placement and implementation planning.** This is a roadmap candidate, not an approved implementation plan or exception to the P1 Performance-First freeze.
+
 ## 6. Shared acceptance rules
 
 - **Performance keep rule (still a proposal):** improvement beyond max(2× rep spread, 5 %) in the relevant decision metric (observed family/pass calls/tris, render p50/p95, frame p95/p99), matched workload/device/configuration with both SHAs recorded, `reliability=observed`, and appropriate author visual review. This threshold and area-specific choices are not approved by D4. Memory/upload-only stages are not reported as FPS gains.
