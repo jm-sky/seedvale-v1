@@ -34,7 +34,7 @@ Not done: water mirror (already capped at 30 Hz and every other frame under load
 
 ## 3. Results on `36e99ef6` (3 reps each, 30 s cooldown, population gate `stable`, `target-gpu`)
 
-| Scenario | FPS (3 reps) | mean / CV | p95 ms | mean / CV | draw calls | RENDER ms | NPC |
+| Scenario | FPS (3 reps) | mean / CV | p95 ms | mean / CV | draw calls | RENDER ms (`systems.RENDER` avg, not `renderTime.p50`) | NPC |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | forest | 58.8 / 57.6 / 51.7 | **56.0** / 5.5 % | 20.6 / 21.2 / 24.5 | 22.1 / 7.8 % | 1818 / 1808 / 1815 | 10.7 / 11.0 / 12.5 | 20 |
 | settlement-heavy | 32.0 / 32.5 / 33.4 | **32.6** / 1.8 % | 36.4 / 36.6 / 34.9 | 36.0 / 2.1 % | 2258 / 2180 / 2222 | 20.2 / 19.8 / 19.8 | 53 |

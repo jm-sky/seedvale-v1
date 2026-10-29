@@ -90,3 +90,7 @@ Known analyzer gap: `scripts/analyze_trace.py` reports "no `timeDeltas`" and ran
 - Remove the junction first (`rmdir <wt>\node_modules`, removes the link only) before deleting the worktree folder.
 - Put the SHA **and a variant label** in the output tag; A/B variants of one SHA otherwise overwrite each other. `SEEDVALE_REPO=<worktree>` makes the driver verify the right SHA.
 - One run per commit is enough for a >5 FPS step; ~2 FPS steps are noise.
+
+## Parallel WSL2 baseline (author, 2026-10-29)
+
+Benchmarks may run on WSL2 as a **separate, parallel baseline**. Windows Chrome renders through ANGLE **D3D11**; WSL2 Chrome renders through **OpenGL** (Mesa, D3D12 translation layer), so CPU submission cost, driver behaviour, GPU-timer availability and known errors (e.g. the earlier WSL `GL_INVALID_OPERATION` sampler mismatch) differ. Rules: compare WSL runs only with a WSL baseline on the same SHA/fixture/config; never mix or diff WSL and Windows numbers; record the platform in every result name/header. Keep/revert evidence remains the native Windows Arc A/B unless the author decides otherwise.

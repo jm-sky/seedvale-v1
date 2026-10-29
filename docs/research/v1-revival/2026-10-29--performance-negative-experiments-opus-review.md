@@ -1,7 +1,7 @@
 # Opus review request — unexplained FPS results from three rendering experiments
 
 **Date:** 2026-10-29
-**Status:** pending independent Opus review; **not** an authorization to implement, merge or rerun benchmarks
+**Status:** answered — [review 2026-10-29](./2026-10-29--performance-negative-experiments-review.md); **not** an authorization to implement, merge or rerun benchmarks
 **Owner:** future Claude Opus review session
 **Area:** V1 Revival performance-first D4 / NPC rendering Track A, shared rendering path
 **Source:** author explicitly requested an additional independent investigation because an avoidable code, integration, instrumentation or benchmark mistake may explain missing FPS gains.
