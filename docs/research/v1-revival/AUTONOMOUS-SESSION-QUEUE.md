@@ -69,4 +69,4 @@ Append here (date, task, question, options). Remove when answered and recorded i
 
 Append: commit, track, metric that decides keep/revert, A/B instructions link.
 
-- `08353bcb` + flag opt-in (this push), Track B/shared Q14 B1a — single per-frame scene matrix update. Decides: frame p50 / RENDER p50 (guards mean FPS, p95/p99). Instructions: [WSL A/B report §Windows](../../performance/results/2026-10-29--wsl-q14-frame-matrix-once-ab.md#windows-ab-instructions-queue-4).
+- `e0a42fc7` (+ opt-in flag `277f71b5`), Track B/shared Q14 B1a — single per-frame scene matrix update. Decides: frame p50 / RENDER p50 (guards mean FPS, p95/p99). Instructions: [WSL A/B report §Windows](../../performance/results/2026-10-29--wsl-q14-frame-matrix-once-ab.md#windows-ab-instructions-queue-4).

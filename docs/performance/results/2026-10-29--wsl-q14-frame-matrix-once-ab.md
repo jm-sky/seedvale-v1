@@ -13,7 +13,7 @@
 
 ## Setup
 
-- Build: one build, `591231d7` (`gitSha` verified in every run). A = `&frameMatrixOnce=0`, B = default, which was enabled at measurement time. Since then the flag is opt-in: for a new A/B, A = no parameter, B = `&frameMatrixOnce=1`.
+- Build: one build, `591231d7` (`gitSha` verified in every run; pre-rebase SHA, the same tree as `09cf36fc` on `main`). A = `&frameMatrixOnce=0`, B = default, which was enabled at measurement time. Since then the flag is opt-in: for a new A/B, A = no parameter, B = `&frameMatrixOnce=1`.
 - Fixture: `tools-001-v1`, settlement-heavy, 30 s window, 53 NPC, population gate `stable`.
 - Run conditions: fresh profile per run, 30 s cooldown, one warm-up per arm discarded, order A B B A A B. Driver: `scripts/perf/run-benchmark-series.mjs` (now platform-aware).
 - Artifacts: `results/wsl/2026-10-29--wsl-q14-*`.
