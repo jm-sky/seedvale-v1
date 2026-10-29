@@ -78,3 +78,11 @@ export function parseBenchmarkScenarioId(raw: string | null | undefined): Benchm
 export function benchmarkScenarioFromUrl(): BenchmarkScenarioId | null {
   return parseBenchmarkScenarioId(params()?.get('benchmark'))
 }
+
+/** `?frameMatrixOnce=0` — A/B rollback for the single per-frame scene matrix
+ *  update (`src/render/frameSceneMatrices.ts`, queue Q14). Default on. */
+export function isFrameMatrixOnceEnabled(): boolean {
+  const p = params()
+  if (!p?.has('frameMatrixOnce')) return true
+  return flagOn(p.get('frameMatrixOnce'))
+}

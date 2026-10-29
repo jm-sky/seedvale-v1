@@ -118,6 +118,7 @@ import { isLiquidContainerInstance, LIQUID_CONTAINER_KIND_LIST } from '../items/
 import { ITEM_DEFS, type ItemKind } from '../items/items'
 import { applySharpnessWear, getSharpnessDamageModifier, getWeaponMaintenanceProfile } from '../items/weaponMaintenance'
 import { getGpuTimer, getMonitor, getPassSubmissionCollector, getProgramCensus, withCategory, withProgramCensusStage } from '../perf'
+import { isFrameMatrixOnceEnabled } from '../perf/flags'
 import { buildCharacterPresentation } from '../player/characterPresentation'
 import {
   medicalTreatmentPromptLabel,
@@ -155,6 +156,7 @@ import {
 } from '../player/PlayerNeeds'
 import { createPlayerRanged } from '../player/playerRanged'
 import { awardSkillXp, SKILL_XP_AWARD } from '../player/PlayerSkills'
+import { beginFrameSceneMatrices, endFrameSceneMatrices } from '../render/frameSceneMatrices'
 import {
   anyWithinRadius,
   createShadowBudgetState,
@@ -1002,6 +1004,8 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
     lastAppliedWeatherType = climate.weather.type
     lastAppliedWeatherIntensity = climate.weather.intensity
   }
+
+  const frameMatrixOnce = isFrameMatrixOnceEnabled()
 
   const tick = (): void => {
     const frameStart = performance.now()
@@ -3123,6 +3127,9 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
     const passCollector = getPassSubmissionCollector()
     passCollector?.beginFrame()
     postProcessing.applyFrameBudget(lastRenderMs)
+    // One scene matrix update shared by the mirror, beauty and label renders
+    // (queue Q14; `?frameMatrixOnce=0` restores per-render traversals).
+    if (frameMatrixOnce) withCategory(monitor, 'RENDER', () => beginFrameSceneMatrices(scene))
     withCategory(monitor, 'WATER', () => {
       withProgramCensusStage(programCensus, 'mirror-render', () => {
         // Skip until the sun owns a shadow map: before the first shadow refresh
@@ -3174,6 +3181,7 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
       labelRenderer.render(scene, camera)
       gpuTimer.endFrame()
     })
+    if (frameMatrixOnce) endFrameSceneMatrices(scene)
     passCollector?.endFrame()
     const renderEnd = performance.now()
     const simulateMs = renderStart - frameStart

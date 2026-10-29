@@ -8,11 +8,15 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
 const [, , port, outDir, tag, reps, cooldownSec, ...scenarios] = process.argv
-const CHROME = 'C:/Program Files/Google/Chrome/Application/chrome.exe'
+const IS_WIN = process.platform === 'win32'
+// Platform label kept in every artifact: Windows Chrome = ANGLE D3D11, WSL2 Chrome = OpenGL (Mesa/D3D12).
+// Never compare numbers across platforms (runbook "Parallel WSL2 baseline").
+const PLATFORM = IS_WIN ? 'windows' : 'wsl'
+const CHROME = process.env.SEEDVALE_CHROME ?? (IS_WIN ? 'C:/Program Files/Google/Chrome/Application/chrome.exe' : '/usr/bin/google-chrome')
 const DEBUG = 9333
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 mkdirSync(outDir, { recursive: true })
-const expectedSha = execSync('git rev-parse HEAD', { cwd: process.env.SEEDVALE_REPO ?? 'D:/Projekty/private/seedvale-v1' }).toString().trim()
+const expectedSha = execSync('git rev-parse HEAD', { cwd: process.env.SEEDVALE_REPO ?? (IS_WIN ? 'D:/Projekty/private/seedvale-v1' : process.cwd()) }).toString().trim()
 console.log('expected SHA', expectedSha)
 
 async function cdpConnect() {
@@ -72,8 +76,9 @@ async function runOne(scenario, rep) {
     const sha = b.meta.gitSha
     if (sha !== expectedSha) throw new Error(`SHA mismatch ${sha} vs ${expectedSha}`)
     if (process.env.SEEDVALE_EVAL) b.meta.evalAfter = await ev(process.env.SEEDVALE_EVAL) // e.g. JSON.stringify(window.__seedvaleSkeletonStats())
-    b.meta.hardwareClass = /Arc/i.test(JSON.stringify(b.report.context.device ?? {})) ? 'target-gpu' : 'diagnostic'
-    b.meta.notes = `A1' benchmark series ${tag} rep${rep}; native Windows Chrome headed, fresh profile, ${cooldownSec}s cooldown`
+    b.meta.platform = PLATFORM
+    b.meta.hardwareClass = IS_WIN && /Arc/i.test(JSON.stringify(b.report.context.device ?? {})) ? 'target-gpu' : PLATFORM === 'wsl' ? 'wsl-baseline' : 'diagnostic'
+    b.meta.notes = `benchmark series ${tag} rep${rep}; ${IS_WIN ? 'native Windows' : 'WSL2'} Chrome headed, fresh profile, ${cooldownSec}s cooldown${process.env.SEEDVALE_QUERY ? `, query ${process.env.SEEDVALE_QUERY}` : ''}`
     const base = join(outDir, `${tag}-${scenario}-rep${rep}`)
     writeFileSync(`${base}.json`, JSON.stringify(b.report, null, 2))
     if (b.raw) writeFileSync(`${base}.raw.json`, JSON.stringify(b.raw))
@@ -84,7 +89,7 @@ async function runOne(scenario, rep) {
     ws.close()
   } finally {
     chrome.kill()
-    try { execSync(`taskkill /F /T /PID ${chrome.pid}`, { stdio: 'ignore' }) } catch {}
+    if (IS_WIN) { try { execSync(`taskkill /F /T /PID ${chrome.pid}`, { stdio: 'ignore' }) } catch {} }
     await sleep(3000)
     try { rmSync(profile, { recursive: true, force: true }) } catch {}
   }
