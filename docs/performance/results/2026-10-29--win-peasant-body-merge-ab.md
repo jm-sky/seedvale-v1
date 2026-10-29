@@ -1,8 +1,6 @@
 # D11 — Peasant body merge, native Windows A/B preparation
 
-**Status: PRE-BENCHMARK; KEEP / REVERT PENDING.** The author explicitly instructed
-“dont start benchmark unitil I say so”. No settlement-heavy run, warm-up,
-performance probe or FPS comparison was started. Structural savings are not an
+**Status: BENCHMARKED — verdict REVERT (recommendation; branch preserved, not merged).** Six-run A/B completed at `cee85ed2`; see the in-world, A/B and decision sections below. The preparation text that follows is retained as written. Structural savings are not an
 FPS result. Production behaviour remains unchanged unless explicitly opted in.
 
 ## Source pins and reproduction
@@ -202,60 +200,97 @@ FPS or simulate settlement-heavy. Run it at
 culling, continuous motion and the existing player appearance regression suite
 remain separate pre-acceptance checks.
 
-## A/B protocol — awaiting the author's start signal
+## In-world verification (settlement-heavy, native Windows, Arc 140V) — PARTIAL
 
-One build; native Windows Chrome on verified Intel Arc 140V; High and existing
-viewport/DPR; identical settlement-heavy fixture/seed/camera/time/weather. One
-Chrome/benchmark workload at a time, standard warm-up and cooldown. Minimum
-30 seconds per repetition in order **A B B A A B**. Do not use historical FPS as
-the control and do not overlap this diagnostic with measurements.
+Driven through headed Chrome + CDP (fresh profile, 1600×900, SHA `cee85ed2`, Vite restarted after
+checkout). Only arm **B** (`peasantBodyMerge=1`) was driven interactively; no A in-world comparison
+was made. Screenshots were reviewed by eye; they are not committed (large, mostly fog).
 
-| Order | Arm | Seconds | Avg FPS | Frame p50/p95/p99 | RENDER p50/p95 | Main/shadow calls | Peasant family main/shadow | GPU timing | Long frames / workload |
-| ---: | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | A disabled | NOT RUN | — | — | — | — | — | — | — |
-| 2 | B enabled | NOT RUN | — | — | — | — | — | — | — |
-| 3 | B enabled | NOT RUN | — | — | — | — | — | — | — |
-| 4 | A disabled | NOT RUN | — | — | — | — | — | — | — |
-| 5 | A disabled | NOT RUN | — | — | — | — | — | — | — |
-| 6 | B enabled | NOT RUN | — | — | — | — | — | — | — |
-| Mean | A | — | — | — | — | — | — | — | — |
-| Mean | B | — | — | — | — | — | — | — | — |
+| # | Check | Result |
+| ---: | --- | --- |
+| 1 | Male/female Peasant appearance | **NOT VERIFIED.** The benchmark camera sits on the player at the village well; 53 NPCs are in the `mid`/`far` bands (near = 0–1). Rain/fog hid every NPC body in 2 auto-run + 6 controlled-camera captures (yaw 0–4.71, dist 3.5–10, pitch 0.15–0.5) and in a W/A/D walk capture. No body was inspected at readable size. |
+| 2 | Continuous animation (move/turn/interact) | **NOT VERIFIED.** Only the player (not merged) was seen. |
+| 3 | Camera rotation/movement | Controlled-camera runs and W/A/D movement: no rendering problem. No pointer-lock rotation (not achievable through CDP). |
+| 4 | Frustum-edge culling | **NOT VERIFIED** (no merged body at a frustum edge observed). |
+| 5 | Raycast / picking / NPC interaction | **NOT VERIFIED.** One `E` press with no NPC in range only. Automated raycast parity tests pass (see above). |
+| 6 | Shadows during movement | **NOT VERIFIED** visually. Pass counters confirm Peasant shadow submissions drop as designed (below). |
+| 7 | Streaming / unload / reload | **Partial.** The player walked out of the settlement into new chunks for ~40 s without errors; no NPC reconstruction was observed. |
+| 8 | Material / tint / morph / garment artifacts | **NOT VERIFIED in-world.** The isolated 64-pose sheet remains the only visual evidence. |
+| 9 | Console / WebGL errors | **PASS** for B: `glError = 0`; 0 console errors or exceptions; only `[PERF:*]` / `[LONG FRAME]` warnings and the AudioContext-gesture notice. ([log](./win/2026-10-29--d11-inworld-B-console.json), [walk log](./win/2026-10-29--d11-inworld-B-walk-console.json)) |
 
-Record raw/JSON/Markdown/meta bundles, common experiment SHA, hardware/driver/
-power context, fixtureVersion, observed pass-counter reliability, admitted body
-counts, NPC/fauna counts, unchanged triangles/material appearance and other
-families. Report GPU queries only when actually available. Compare repeatability
-against same-session spread/drift and p95/p99/lifecycle behaviour.
+No correctness regression was found, but checks 1, 2, 4, 5, 6 (visual) and 8 were not observed. **The
+isolated contact sheet is still the only appearance evidence; in-world visual acceptance is not claimed.**
+The benchmark proceeded because no regression was found; it cannot yield KEEP on its own.
 
-## Decision and limitations
+## Controlled A/B — settlement-heavy
 
-**KEEP / REVERT: PENDING.** Neither verdict is justified before the author starts
-A/B and the remaining in-world/acceptance gates pass. The experiment is off by default.
-Do not expand to other models to seek a positive result. KEEP requires repeatable
-frame/FPS benefit beyond noise, observed submission reduction and no meaningful
-visual/tail/lifecycle regression; otherwise REVERT and retain the patch/evidence.
+Pinned build `cee85ed2fa8531600e58aa2d0c646c3cff2cb102` (all six `meta.gitSha` match), one Vite server,
+`hardwareClass: target-gpu`, Intel Arc 140V via ANGLE D3D11, Chrome 156, High quality, 1586×806 @ DPR 1.25,
+fixture `tools-001-v1`, identical seed/camera, rain, timeOfDay 0.2917. Fresh profile per run, 30 s cooldown,
+30 s measured window, one run at a time, order **A B B A A B** (A = `peasantBodyMerge=0`, B = `=1`).
+Pass-counter reliability `observed` and population gate `stable` in all six.
 
-The optimization allocates per-NPC merged geometry/material data; memory and
-construction cost are not yet measured. SkeletonUtils cloning preserves normal
-Three geometry/material sharing semantics: a retained clone must not outlive a
-disposal of shared assembled resources. Production streaming rebuilds from the
-loader cache and merges anew, as exercised in the tests. Independent runtime
-visibility/morph policies for individual cloth parts require fallback, not a new
-per-frame synchronization system. Isolated GPU appearance is verified above;
-real-world culling/picking and continuous presentation were not manually tested.
+| Run | Arm | FPS | Frame mean | p50 | p95 | p99 | max | RENDER p50/p95 | Long frames | Main calls | Shadow calls | Peasant main/shadow | GPU timer avg/p95 |
+| ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- | ---: | ---: | ---: | --- | --- |
+| 1 | A | 28.6 | 35.0 | 34.8 | 41.6 | 91.3 | 108.4 | 27.4 / 32.8 | 11 | 1372 | 401 | 119 / 9 | 24.1 / 26.1 |
+| 2 | B | 29.8 | 33.5 | 34.3 | 41.0 | 47.0 | 97.4 | 27.1 / 32.5 | 1 | 1334 | 403 | 80 / 6 | 29.2 / 33.0 |
+| 3 | B | 27.5 | 36.3 | 35.5 | 45.5 | 91.3 | 108.3 | 27.5 / 33.0 | 26 | 1371 | 403 | 80 / 6 | 24.4 / 26.3 |
+| 4 | A | 27.7 | 36.1 | 34.8 | 44.2 | 96.7 | 131.6 | 27.7 / 33.5 | 25 | 1372 | 407 | 119 / 10 | 28.4 / 38.5 |
+| 5 | A | 28.2 | 35.4 | 34.2 | 41.8 | 89.1 | 496.6 | 27.0 / 32.4 | 14 | 1409 | 403 | 119 / 9 | 24.1 / 29.3 |
+| 6 | B | 29.7 | 33.7 | 34.0 | 40.9 | 53.3 | 100.0 | 26.0 / 32.3 | 5 | 1371 | 399 | 80 / 6 | 30.4 / 35.4 |
+| **Mean** | **A** | **28.17** | 35.50 | 34.60 | 42.53 | 92.37 | — | 27.37 / 32.90 | 16.7 | 1384.3 | 403.7 | **119.0 / 9.3** | 25.5 / 31.3 |
+| **Mean** | **B** | **29.00** | 34.50 | 34.60 | 42.47 | 63.87 | — | 26.87 / 32.60 | 10.7 | 1358.7 | 401.7 | **80.0 / 6.0** | 28.0 / 31.6 |
 
-## Remaining gates before A/B / acceptance
+Bundles: `docs/performance/results/win/d11-ab-run{1..6}-arm{0|1}-settlement-heavy-rep1.*`
+(json / raw / md / meta). The GPU timer was available (querySpan `postprocess+labels`, not a per-draw metric) and is
+bimodal (~24 vs ~29 ms) independent of arm (A 24.1/28.4/24.1; B 29.2/24.4/30.4); it is not interpreted.
 
-- The author must give a separate benchmark start signal. None has been given.
-- Restart Vite after the experimental commit; pin the common A/B SHA and verify
-  the target GPU, fixture, camera, populations and admitted body counts.
-- Perform the in-world visual smoke (continuous animation, camera/frustum edges,
-  picking and shadow transitions) before performance acceptance. Automated bounds,
-  raycast and sampled animation tests already pass; the isolated scene is not a
-  substitute for this gameplay observation.
-- Restore the incomplete local jsdom dependency before running the existing
-  `PlayerController.appearance.test.ts`; its environment failure is documented
-  above and was not repaired as part of this focused experiment.
+### Workload equivalence
 
-No runtime integration into main or default enablement is authorized by this
-experimental commit. Benchmark A/B remains unrun and KEEP / REVERT stays PENDING.
+- Population identical in every run: 53 NPC, 30 fauna, 76 chunks, settlement 8 families / 15 residents; start = end.
+- Peasant family: 28 agents in all runs; census meshes 258 (A) → 174 (B) = exactly −3 per body × 28.
+- Peasant main triangles: **146,157 in all six runs** (geometry unchanged). Wizard, Farmer, Herbalist, blacksmith and
+  Peasant_Boots main buckets are identical in every run; fauna buckets vary slightly (sheep 18–19 calls).
+- Distance bands: 0–1 near, 2–4 mid, 49–51 far; 18–19 camera-relevant agents; no meaningful drift.
+- **Actual Peasant submissions saved:** main 119 → 80 (**−39 per frame, −33 %**), shadow 9.3 → 6.0 (**≈ −3.3 per frame**)
+  — 13 admitted bodies × 3 main calls, constant across all runs.
+- **Total submissions:** main total fell by 26 on average (1384 → 1359), but non-Peasant calls varied from 1253 to 1291 between
+  runs of the *same* arm, so the total is noisy; the Peasant bucket is the clean signal. Saving ≈ 39 of ~2,060 draw calls (~1.9 %).
+
+### Interpretation
+
+- FPS: A 28.6 / 27.7 / 28.2 (spread 0.9); B 29.8 / 27.5 / 29.7 (spread 2.3). The mean difference (+0.83 FPS, +3 %) is smaller
+  than the B spread, and B run 3 is the lowest of all six runs.
+- Frame p50 is identical (34.6 ms) and p95 identical (42.5 ms). RENDER p50 −0.5 ms and p95 −0.3 ms are inside the 26.0–27.7 ms
+  span of single runs. A saving of that size is what 39 of ~2,060 draws would predict, so the effect may be real, but it is
+  **not distinguishable from noise with three runs per arm**.
+- Tail: p99 means (92 vs 64 ms) come from occasional hitch frames (A 89–97 ms in all runs; B 47, 91, 53); B run 3 matches A.
+  Long-frame counts overlap (A 11–25, B 1–26). A run 5 single 497 ms frame is an A outlier. No tail claim is supported.
+- Historical 31–33 FPS figures were not used; this session runs lower (rain, 07:00) and only same-session A/B is compared.
+
+### Construction / streaming / memory
+
+- Per-NPC merge construction time, allocation and GC were **not measured**, and the reports do not record JS heap.
+- Observations only: no B run shows a startup or streaming hitch beyond A (B max frames 97/108/100 ms vs A 108/132/497 ms) and the
+  ~40 s B-arm walk streamed chunks with no errors. This is absence of evidence, not a cost measurement.
+
+## Decision: **REVERT** (recommendation; branch preserved, nothing merged)
+
+- The intended submissions decreased as designed (−39 main, ≈ −3.3 shadow per frame, geometry unchanged).
+- No FPS or frame-time improvement is distinguishable from same-session noise (+0.8 FPS vs 2.3 FPS arm spread; equal p50/p95;
+  RENDER −0.5 ms inside the single-run span). This matches the REVERT rule "no meaningful performance improvement is
+  distinguishable"; KEEP's repeatable-improvement-beyond-noise requirement is not met.
+- In-world visual acceptance was not achieved (PARTIAL), so KEEP was unavailable regardless.
+- The merge adds per-NPC geometry/material allocation (unmeasured) for a ~2 % draw-call saving.
+
+What could change this: ≥6 interleaved runs per arm, a denser or closer-camera fixture with more admitted Peasants so the saving
+exceeds the noise, and a real in-world visual pass for both sexes. These were out of scope (no new instrumentation, no other families).
+
+## Caveats
+
+- In-world checks 1, 2, 4, 5, 6 (visual) and 8 are unverified; only isolated-pose evidence exists, and only arm B was driven.
+- B run 3 reports total draws equal to A, but its Peasant bucket (80 main) confirms the toggle was active; the total differs only
+  through non-Peasant variation.
+- One machine, one session, rain at 07:00; not generalizable to other GPUs.
+- The pre-existing `PlayerController.appearance.test.ts` jsdom environment failure is unchanged.
+- No source code changed in this task; `main` is untouched. The experiment stays on `experiment/d11-peasant-body-merge`.
