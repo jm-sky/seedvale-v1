@@ -2,6 +2,7 @@
 
 **Created:** 2026-10-28  
 **Status:** included as required P1 evaluation/closure area by author (2026-10-29); runtime implementation not yet approved  
+**Recon (2026-10-29):** [tree LOD recon](./2026-10-29--tree-lod-recon.md) — no measured tree bottleneck yet; author question in queue §3  
 **Priority:** included in P1; implementation order relative to A/B/C remains to be determined from evidence  
 **Area:** world vegetation / rendering  
 **Owner for future planning:** existing `world-terrain` domain; confirm current plan ownership/ID under `docs/plans/PLANNING.md` before drafting a formal plan  
