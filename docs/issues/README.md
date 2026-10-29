@@ -12,6 +12,10 @@ Tracked work items (bugs, improvements) live here — not in GitHub Issues.
 | `done` | Fix merged / accepted |
 | `verification needed` | Fix applied; needs manual or QA check |
 
+## Playtest improvement inbox
+
+Untriaged observations are captured in [INBOX.md](./INBOX.md) (IMP-001–IMP-006). These are not yet numbered issues or approved plans; investigate before promoting, and avoid duplicate tracking.
+
 ## Index
 
 | ID | File | Summary | Status |
