@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "gitSha": "0cfb9ed3548021fbb5d0e96e462211d300ef8cac",
+  "runId": "2026-10-29T21-04-42-496Z-9ck5xp",
+  "scenario": "forest",
+  "phase": "warm",
+  "canonical": true,
+  "generatedAt": "2026-10-29T21:06:39.471Z",
+  "fixtureVersion": "tools-001-v1",
+  "quality": "High",
+  "hardwareClass": "wsl-baseline",
+  "notes": "benchmark series 2026-10-29--wsl-ca2-B1 rep1; WSL2 Chrome headed, fresh profile, 20s cooldown",
+  "platform": "wsl"
+}
