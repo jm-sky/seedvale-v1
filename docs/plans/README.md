@@ -1,5 +1,7 @@
 # Plans — Current Planning Map
 
+> **V1 Revival is the current program (2026-10-29).** P1 Performance-First (D4) freezes unrelated runtime integrations: most plans below are **deferred, not cancelled**. Before picking any plan, read the [Strategic Brief](../research/v1-revival/STRATEGIC-BRIEF.md) and the [Autonomous Session Queue](../research/v1-revival/AUTONOMOUS-SESSION-QUEUE.md).
+
 Current planning map for implementation plans: backlog, dependencies, active threads and verification queue. Detailed implementation lives in the plan files; implementation notes and reviews live in their dedicated folders; history lives in [archive/](./archive/README.md).
 
 ## Metadata reference
@@ -62,6 +64,7 @@ Unless noted otherwise, `verification needed` means implementation has passed au
 | `settlements-npcs-025-resource-storage-visualization.md`  | Stages 2/3A implemented on `main`; Stage 3B (open-container fill) remains; visual checks user-owned | ⚪  | M      | ~~settlements-npcs-009~~, ~~settlements-npcs-010~~ |
 | `world-015-seed-library-and-persistent-worldgen-cache.md` | Library + coarse cache shipped; §14 second landmark cache namespace deferred; §20 measurements unperformed | 🔴  | L      | ~~world-013~~ |
 | `world-terrain-010-waterways-and-vegetation.md`           | Phases 2/8/9 deferred — see plan's "Implementation status"            | 🟡  | M      | -      |
+| `world-terrain-050-agent-performance-render-census-and-lod.md` | Revival P1 Track A owner: A1′ cull bounds landed; further slices via the Autonomous Session Queue | 🔴  | M      | ~~world-terrain-041~~ |
 
 ---
 
@@ -135,6 +138,9 @@ Active residual verification-needed plans (unfinished implementation remains):
 | `world-terrain-053-snow-patch-thresholds-and-grass-burial.md` | Browser A/B via `?snow=0..1` (patches, grass burial, melt, rain intact); FPS vs baseline. Automated field tests passed; GPU look **UNVERIFIED** in implementation session. |
 | `items-player-012-player-gathering-and-fire-cooking-polish.md` | Fish cooking + Quick Actions fire category: browser/gameplay check. **Tree branch gathering changes in this plan are still pending implementation** — do not treat the plan as fully shipped. |
 | `world-terrain-040-vegetation-render-budget-v2.md` | Stage 1: user benchmark/browser verification. **Stages 2/3 are not started** — retain as active residual work. |
+| `ui-input-044-stage-f-trade-v3-reskin.md` | Stage F Trade + currency/capability follow-ups: author visual PASS (live Merchant + `merchant-demo.html`). |
+| `ui-input-046-minimap-and-world-map-raster-terrain-and-fog.md` | Minimap/world-map raster + fog (D4 exception): look, zoom steps, fog, performance. |
+| `settlements-023-settlement-streaming-lifecycle-and-construction-rollback.md` | Streaming lifecycle + construction rollback: browser check per plan. |
 
 ---
 
@@ -146,6 +152,8 @@ Done / verification-needed plans that are no longer needed beside active work li
 | ---- | ------------- |
 | `items-player-012-player-gathering-and-fire-cooking-polish.md` | Partial: fish/QA shipped; tree-branch gathering still pending |
 | `world-terrain-040-vegetation-render-budget-v2.md` | Stage 1 only; stages 2/3 not started |
+| `ui-input-039-stage-a-item-details-v3-reskin.md`, `ui-input-040-stage-b-inventory-list-equipment.md`, `ui-input-041-stage-c-quick-actions-v3-reskin.md`, `ui-input-042-stage-d-character-skills-v3-reskin.md`, `ui-input-043-stage-e-hud-v3-reskin.md` | Revival UI Stages A–E, done (author visual PASS); kept until next archive snapshot |
+| `world-terrain-054-v3-cloud-adaptation.md` | Revival clouds, done (no A/B by author decision) |
 
 ---
 
@@ -209,6 +217,11 @@ Loose ends: [LOOSE-ENDS.md](./LOOSE-ENDS.md)
 Current dependency chains and architectural threads. Not a replacement for `Depends on`.
 
 ```text
+V1 Revival P1 (Performance-First, D4)
+  A actors: world-terrain-050 / npc-063   B settlements: (settlements-019 archived)
+  C grass: CA1 → CA2 → evaluate          D trees LOD: recon → world-terrain-055 (to create)
+  → P1 exit → persistence-008 (to create) → worldgen epoch / atmosphere / armor / content
+
 Combat & weapons
   (155 inventory instances) → (160 HQ melee) → (161 weapon maintenance)
   (150 combat mode) + (155) → (162 bows/ranged) → (177 NPC combat melee+ranged — no live AI trigger yet) → 179 animal attack & NPC defense

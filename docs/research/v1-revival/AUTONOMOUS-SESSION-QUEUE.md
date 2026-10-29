@@ -1,0 +1,67 @@
+# V1 Revival — Autonomous Session Queue
+
+**Created:** 2026-10-29 by Claude Opus 5.5 (lead architect session)  
+**Status:** live work queue for long autonomous Opus/Sonnet sessions. Update task status in place; do not fork it into per-session copies.  
+**Authority:** decisions live in the [Strategic Brief](./STRATEGIC-BRIEF.md); phases/policy in the [Master Roadmap](./2026-10-27--master-revival-roadmap.md); P1 progress in the [A/B/C/D tracker](./2026-10-27--performance-three-track-roadmap.md#p1-status-snapshot-2026-10-29). This file only orders work and states per-task gates — it is not a decision ledger.
+
+## 0. Session protocol (read once per session)
+
+1. `git pull --rebase origin main`. Read this file, then the Strategic Brief §1 (decision table + D4 policy). Do not load the whole dossier.
+2. Pick the **first `ready` task** whose model column fits you. Mark it `in progress (<model>, <date>)` and commit that one-line change before starting long work, so parallel sessions do not collide.
+3. Follow [CLAUDE.md](../../../CLAUDE.md) task routing for the task itself (CODE_INDEX → STATE → plan → source). For a formal plan, use `pnpm claude:preflight <plan>`.
+4. Finish = implement → targeted verification → update owner docs (plan/notes/tracker/STATE) → commit → push. Then set the task `done` here with a one-line result + commit link, and continue with the next `ready` task.
+5. **Stop and ask the author** (Polish, survey-style options) instead of guessing when a task hits a `Stop if` condition, an open decision (D2, D5–D8, D10, D12–D14 or an area question), a visual compromise, reduced density/simulation, or omission of an agreed feature. Record the question in §3 and move to the next task that is not blocked.
+
+### Autonomy granted (author, 2026-10-29)
+
+- Autonomous sessions may make **documentation and full runtime implementation changes directly on `main`** (commit + push per CLAUDE.md), including P1 performance slices.
+- This does **not** approve open decisions or widen Revival scope. D4 Performance-First still governs *what* runtime work may merge: P1 A/B/C/D slices, recorded D4 exceptions (map raster `ui-input-046`, dialogue reskin) and critical fixes only. Other runtime work stays deferred until P1 exit.
+- Agents cannot produce certified performance evidence: native **Windows Intel Arc** runs are executed by the author. WSL2/headless runs are diagnostic only. For a keep/revert question, land the change behind a clearly reversible boundary (single commit, or a toggle where the code already has one), write the A/B instructions in the plan/notes ([Arc runbook](../../performance/2026-10-27--arc-baseline-runbook.md)), and list it in §4. Never claim FPS gains without author-run matched evidence.
+- Keep each slice an independently revertable commit; never combine two keep/revert candidates in one A/B (see brief "Deferred performance experiments").
+
+## 1. Queue
+
+Status: `ready` · `in progress` · `blocked (author)` · `blocked (evidence)` · `done`. Model: **O** = Opus (cross-system review, architecture, planning), **S** = Sonnet (bounded implementation/docs from an existing plan), **O/S** = either.
+
+| # | Task | Model | Status | Entry docs | Deliverable / done when | Stop if |
+| --- | --- | --- | --- | --- | --- | --- |
+| Q1 | **Independent review of three negative FPS experiments** (CSS2D matrix skip, Peasant Skeleton sharing, D11 body merge) **+ settlement-heavy critical-path diagnosis** | O | ready | [request](./2026-10-29--performance-negative-experiments-opus-review.md), [NPC recon](./2026-10-29--npc-rendering-optimization-recon.md), [trace analysis](../../performance/results/2026-10-28--win-a1p-trace-analysis.md), branch `experiment/d11-peasant-body-merge` | Review doc per request §Deliverable, plus a ranked shortlist of the next **A** (and if evidence points elsewhere, B) targets for the main-thread/CPU-submission-bound `settlement-heavy` scene (~29–33 FPS vs 50–60 target). Update tracker snapshot. No implementation, no merge of rejected experiments. | A finding requires changing a D-decision |
+| Q2 | **Track D — Trees LOD recon + formal LOD1 plan** | O | ready | [tree LOD dossier](./2026-10-28--tree-lod-v1-backlog-candidate.md), tracker §D, CODE_INDEX vegetation/trees | Focused recon of V1 tree rendering/lifecycle/instancing/shadows; new plan `world-terrain-055-…` (LOD1-first, billboards excluded unless evidence) with A/B protocol for forest + travel. | LOD1 needs density/height/placement/shadow compromise |
+| Q3 | **Track D — implement LOD1** per Q2 plan | S | blocked (Q2) | Q2 plan | LOD1 landed on `main`, focused tests, A/B instructions in notes, §4 entry. | Visual difference noticeable at near/mid range in isolated check |
+| Q4 | **Track C — CA2** (cap generation/storage of instances current LOD cannot submit) | O/S | ready | tracker §C, [CA1 notes](./2026-10-28--ca1-filler-gating--implementation-notes.md), [CA1 A/B](../../performance/results/2026-10-28--win-ca1-filler-gating-ab.md), [grass audit](./2026-10-27--revival-audit--grass-flowers-v3.md) | CA2 landed with determinism/regrowth tests; memory/upload metrics in A/B instructions (not an FPS claim); §4 entry. | Any near-field density or coverage change |
+| Q5 | **Track B — next submission slice** | O/S | ready | [Track B next optimization](./2026-10-28--settlement-track-b-next-optimization.md), [settlement audit](./2026-10-27--revival-audit--settlement-rendering.md), archived `settlements-019` | First verify what already landed (wood-pile tiers `4347c274`, lantern GLBs `405742dc`); then implement the top remaining non-reflection family. Reflection trims need D8/D13 → ask. | Slice touches mirror/reflection content |
+| Q6 | **Track A — next slice** chosen from Q1 shortlist | S | blocked (Q1) | Q1 review, `world-terrain-050`, `npc-063` | One bounded slice landed + A/B instructions. | Q1 shortlist empty or needs D10 |
+| Q7 | **P1 exit packet** — combined A/B/C/D result template, explicit close/defer list for optional candidates (CB, billboards, CSS2D/Skeleton retests), freeze-exit checklist | O | blocked (Q1–Q6) | Master Roadmap §4/§10 | Exit document ready for one author Arc measurement session + visual review; P1 closure recorded in brief/roadmap after author sign-off. | — |
+| Q8 | **`persistence-008` formal plan** (D1: save-format vs `worldgenVersion`/epoch, v57 proposal, understandable pre-Revival refusal) | O | ready | Brief D1, [strategy audit](./2026-10-27--revival-audit--strategy-architecture.md), `docs/state/persistence.md`, `src/persistence/saveData.ts` | Plan file `persistence-008-…` with migration/refusal contract and tests list. **Planning only** — implementation waits for P1 exit (P2). | — |
+| Q9 | **Recon: fog anchoring (IMP-001)** — V1 vs V3 fog sprite placement/updates | O/S | ready | Brief §3 P3 clarification, [INBOX IMP-001](../../issues/INBOX.md#imp-001--fog-sprites-follow-player-movement), V3 at `../seedvale` | Recon note + proposed fix. A small correctness fix with no workload change may land as a recorded D4 exception (reason, workload impact, commit). | Fix changes fog cost/shaders materially |
+| Q10 | **Recon: cave polish + IMP-004 distant bright holes** | O | ready | Master Roadmap §5 "Cave polish", [INBOX IMP-004](../../issues/INBOX.md), `src/world/caves/experimental/v3-grid/` (isolated V3 reference, not wired) | Recon + staged post-P1 plan proposal. IMP-004 LOD-continuity fix may be a D4 exception only if workload-neutral. | — |
+| Q11 | **Recon: NPC voices/barks** (brief §3 author-requested scope: relation/reputation mapping, cooldown/dedup, rain bark during snow) | O/S | ready | Brief §3 "NPC voices/dialogue recon scope" | Recon doc with defects and fix candidates. The snow/rain mapping bug may be fixed as a D4 exception if workload-neutral. | — |
+| Q12 | **AI-agent documentation optimization** (brief §5 Opus mandate): slim dossier README into a current index, archive closed `NEXT-SESSION--*` files, mark superseded dossier docs, check CODE_INDEX routing for Revival owners | O | ready | [Dossier README](./README.md), [documentation audit](./2026-10-26--documentation-backlog-audit.md) | Fewer entry points, no lost decisions; `pnpm docs:sync` clean. | Would delete an un-superseded decision |
+| Q13 | **Older plans vs 2026-10-29 Vision reconciliation** (e.g. EXP/levels, crafting, time pace, combat mortality) | O | blocked (author) | [vision alignment](./2026-10-29--vision-alignment-v1-v3.md) | The record requires a *separately agreed* Opus review — ask the author for go-ahead/scope first. | — |
+
+## 2. Verification queue (author-owned, not agent work)
+
+Agents must not mark these verified. Listed so sessions do not re-verify or block on them.
+
+| Item | What to check | Owner doc |
+| --- | --- | --- |
+| A1′ envelope boundingBox (`36e99ef6`) | NPC picking/interaction at animated poses | [forest bisect](../../performance/results/2026-10-28--win-forest-bisect-and-fixes.md) |
+| CA1 (`bc9a68d1`) | Filler coverage/pop-in on approach | [CA1 notes](./2026-10-28--ca1-filler-gating--implementation-notes.md) |
+| `ui-input-044` Trade + follow-ups | Visual PASS live + `merchant-demo.html` | plan `ui-input-044` |
+| `ui-input-046` Map raster | Minimap/world map look, zoom, fog | plan `ui-input-046` |
+| Dialogue reskin (`297e6ceb`) | V1 dialogue flow/choices intact in new chrome; warm palette across screens | Brief §3 UI |
+| Inventory hybrid revision | Revised visual PASS + browser checklist | [handoff](./2026-10-27--inventory-hybrid-implementation-handoff.md) |
+| WorkSkirt / Blacksmith apron | In-world look review | [skirts](./2026-10-28--female-skirts-investigation.md) |
+| `world-terrain-053` snow | `?snow=0..1` look | plan |
+
+## 3. Questions waiting for the author
+
+Append here (date, task, question, options). Remove when answered and recorded in the owning doc.
+
+- _(none)_
+
+## 4. Landed slices awaiting author Arc A/B
+
+Append: commit, track, metric that decides keep/revert, A/B instructions link.
+
+- _(none yet — existing measured slices are recorded in the tracker snapshot)_

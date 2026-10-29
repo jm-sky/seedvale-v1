@@ -1,208 +1,59 @@
 # Seedvale Roadmap
 
-**Updated:** 2026-08-15
+**Updated:** 2026-10-29 (rewritten by Claude Opus 5.5 to match the 2026-10-29 Vision and the V1 Revival program; previous 2026-08-15 version is in git history)
 
-This document is the **canonical Seedvale roadmap** — product direction and major milestones. It is intentionally not a second implementation-status database. For exact plan status, see [docs/plans/README.md](./plans/README.md). For the factual current codebase state, see [docs/STATE.md](./STATE.md).
+Canonical, **short** product roadmap. It points to owners instead of repeating them:
 
-`docs/roadmap/` (lowercase) is a different, frozen document set — an architecture-design session log, not a roadmap. See [docs/roadmap/README.md](./roadmap/README.md) if you land there.
+| Need | Owner |
+| --- | --- |
+| Product identity and boundaries | [VISION.md](./VISION.md), especially §10 and *Visual direction* |
+| Approved Revival decisions, D4 freeze, agent autonomy | [Strategic Brief](./research/v1-revival/STRATEGIC-BRIEF.md) |
+| Phases P0–P6, dependencies, benchmark policy | [Master Revival Roadmap](./research/v1-revival/2026-10-27--master-revival-roadmap.md) |
+| Current work order for agent sessions | [Autonomous Session Queue](./research/v1-revival/AUTONOMOUS-SESSION-QUEUE.md) |
+| Plan status | [plans/README.md](./plans/README.md) |
+| What the code actually does | [STATE.md](./STATE.md) |
+
+`docs/roadmap/` (lowercase) is a frozen architecture-design session log, not a roadmap — see [docs/roadmap/README.md](./roadmap/README.md).
 
 ## Product direction
 
-**Seedvale — Plant the seed. Watch the world grow.**
+**Seedvale — Plant the seed. Watch the world grow.** A singleplayer, desktop-first, browser-based **adventure-oriented RPG in a deeply simulated living world**: adventure-first player experience, simulation-first world foundations. Grounded medieval realism with explainable mysteries; no gameplay-time LLM; no multiplayer. Full boundaries: [VISION §10](./VISION.md#10-approved-product-boundaries-2026-10-29).
 
-Seedvale is a browser-based 3D sandbox where the player observes and participates in a procedural world containing settlements, NPCs and wildlife. The world should feel alive without requiring the player to drive every important event.
+Visual goal: **stylized realism** at 50–60 FPS (45–60 acceptable) on the reference Intel Arc laptop, with frametime stability judged separately.
 
-Seedvale is:
+## Current program: V1 Revival
 
-- a sandbox/demo and learning/portfolio project,
-- third-person exploration and observation with participation,
-- procedural terrain and settlements,
-- simulation-driven NPC and animal behaviour,
-- emergent stories created by interacting systems.
+V1 is the foundation; V2/V3 are selective donors only. Phases (detail and entry/exit in the Master Roadmap §5):
 
-Seedvale is not intended to become:
+| Phase | Content | Status (2026-10-29) |
+| --- | --- | --- |
+| P0 | Stable reference + benchmark workflow | Operationally complete |
+| **P1** | **Performance-First**: A NPC/fauna rendering, B settlement draw submissions, C grass/flowers (V1-first), D trees LOD | **Active** — D4 integration freeze in force; see [tracker snapshot](./research/v1-revival/2026-10-27--performance-three-track-roadmap.md#p1-status-snapshot-2026-10-29) |
+| P2 | Save-format vs worldgen versioning (`persistence-008`) and one coordinated worldgen epoch (spacing/routes, cemeteries) | Planning allowed; implementation after P1 |
+| P3 | Atmosphere: fog anchoring fix, waterways, shared wind, moon/stars | After P1 (clouds already delivered) |
+| P4 | Layered/body-area armor mechanics → truthful equipment UI → appearance | After P1; D5–D7 open |
+| P5 | Living-world content: voices stage 1, rescue dog, former-adventurer elder; later roaming groups | After P1 |
+| P6 | Remaining UI/models; map raster (D4 exception, implemented) | Partly delivered |
 
-- an MMO or multiplayer game,
-- a full survival/crafting RPG,
-- a player-centric scripted campaign,
-- an LLM-generated simulation replacing deterministic game systems.
+Bounded D4 exceptions already on `main`: minimap/world-map raster (`ui-input-046`) and the V1 dialogue visual reskin. Everything else that changes runtime workload waits for P1 exit.
 
-## Current foundation
+## Long-term themes (after Revival)
 
-The following major foundations are implemented in the codebase; individual features may still require browser verification:
+Directional only; check VISION before planning any of them.
 
-- procedural chunked terrain and worker-based terrain generation,
-- streamed world regions including large ocean/coast/mountain features,
-- day/night, sky, lighting, water, fog and post-processing,
-- settlements with families, houses, roads and environment-aware generation,
-- NPC needs, behaviour, personality/character data and dialogue,
-- predator/prey fauna with health, damage, death and respawn,
-- player inventory/items, dropped items, fire/torch interactions and rest/time skip,
-- quests with stages, world interactions, EXP and NPC relations,
-- IndexedDB save/continue flow,
-- mobile touch controls,
-- game UI screens plus an incremental Vue/Tailwind UI migration,
-- natural resources, environmental elements and the beginning of procedural landmark generation.
+- **Simulation coherence** — shared health/stamina/threat, NPC schedules and places, animal life, persistence and lifecycle boundaries; extend `needs → behaviour → personality → dialogue → relationships → quests → world events` rather than add parallel AI.
+- **Settlements as real places** — identity, resource-aware layout, roads/landmarks in one pipeline, inter-settlement travel and trade; player may eventually lead or found a settlement (autonomous NPC execution).
+- **Exploration and travel** — clues, rumours, maps, caves and authored sites placed per procedural seed; manual travel, riding, physical-route autopilot; no teleportation.
+- **Player life** — skill-by-doing progression (no universal level/EXP), equipment quality/durability/repair, real economy; NPC artisans craft, **no general player crafting system**.
+- **Domain observability** — hierarchical domain history → causal "why" → snapshots → animals → broader domains; baseline in [domain debug audit](./reviews/2026-08-31--domain-debug-and-verification-audit.md).
+- **Large world** — current flat chunk grid with streaming; scale territory incrementally. No cube-sphere/infinite-world rewrite until streaming proves insufficient.
 
-See [docs/STATE.md](./STATE.md) for the implementation-level details and known boundaries.
+## Deliberately excluded
 
-## Roadmap themes
-
-### 1. Strengthen the simulation foundation
-
-The next architectural goal is to make existing systems more coherent rather than continuously adding isolated features.
-
-Focus areas:
-
-- shared health/stamina/threat concepts across agents,
-- deeper NPC schedules and places,
-- animal needs/life simulation,
-- stronger persistence of world/NPC state,
-- clean lifecycle boundaries for streamed/rebuilt world systems.
-
-Relevant work currently includes plans [045](./plans/archive/2026-08-08--045--health-stamina-threat.md), [020](./plans/archive/2026-08-07--020--npc-2-daily-routine-and-place.md), [021](./plans/archive/2026-08-07--021--npc-3-animal-life.md) and [054](./plans/archive/2026-08-10--054--world-bundle-reference-safety-and-small-refactors.md).
-
-### 2. Make settlements feel like real places
-
-The settlement generator should increasingly produce places with identity, useful geography and visible reasons for existing.
-
-Direction:
-
-- coherent village identity and layout,
-- resource-aware settlement placement,
-- roads and landmarks as parts of the same world-generation pipeline,
-- families and roles tied to what a settlement actually has access to,
-- eventually multiple settlements connected through movement, resources and quests.
-
-Relevant plans include [047](./plans/archive/2026-08-09--047--village-generation-overhaul.md), [032](./plans/archive/2026-08-08--032--natural-resources-economy.md) and [049](./plans/archive/2026-08-09--049--procedural-world-landmarks.md).
-
-### 3. Deepen NPC life
-
-NPCs should increasingly behave like inhabitants rather than quest dispensers.
-
-Direction:
-
-- role-driven schedules,
-- workplaces and meaningful places,
-- needs driving activity,
-- personality modifying decisions and dialogue,
-- relationships and family context,
-- fatigue/stamina and threat influencing behaviour,
-- persistence so the world can continue from a believable state.
-
-The design principle is to extend the existing `Needs → behaviour/FSM → personality → dialogue → quests` chain rather than creating independent AI systems.
-
-### 4. Build a living ecosystem
-
-Wildlife should remain an ecosystem rather than a collection of animated models.
-
-Direction:
-
-- hunger/thirst/energy,
-- habitat and territory bias,
-- population dynamics and respawn rules,
-- interaction with settlements and eventually NPCs,
-- behaviour influenced by time of day and environment.
-
-### 5. Give the player a place in the world
-
-Player-facing systems should expand the player's role from observer/participant toward resident without turning Seedvale into a conventional survival game.
-
-Future direction:
-
-- richer inventory/equipment,
-- resource gathering and production,
-- crafting,
-- player home/plot/farm,
-- barter and trade,
-- stronger interaction with settlement economies.
-
-These systems should consume the same `ItemKind`, resource, place, NPC and settlement concepts already used by the simulation instead of introducing parallel economies.
-
-### 6. Improve the presentation
-
-Visual and audio polish should strengthen readability and the feeling of place without becoming a separate technology project.
-
-Direction:
-
-- procedural landmarks and environmental storytelling,
-- clouds and distant mountains,
-- richer biome-specific vegetation,
-- ambient audio sampled from world regions,
-- continued UI migration where it provides a real UX benefit.
-
-### 7. Large world direction
-
-The current world uses a **flat chunk grid with streaming**. A fully spherical/cube-sphere world remains an architectural question, not an implemented feature.
-
-Do not start a cube-sphere rewrite merely because the roadmap mentions it. First establish whether the current streaming model actually becomes a product limitation.
-
-### 8. Simulation observability and domain verification
-
-As Seedvale's simulation becomes more interconnected, debugging must make the resulting behaviour explainable and verifiable.
-
-The goal is not a collection of unrelated debug buttons, but a coherent **domain observability** layer that makes it possible to understand both current state and how the world arrived there.
-
-Priority direction:
-
-- use the existing NPC inspector/trace as the reference model,
-- introduce hierarchical domain history for NPC → household → settlement,
-- make significant domain events observable without logging per-frame state,
-- expose causal explanations (`why`) where decisions or state changes matter,
-- provide structured snapshots of domain state,
-- provide AI-readable exports for diagnosis and verification,
-- extend equivalent observability to animals,
-- later extend it to settlements, households, resources/economy, relationships and emergent quests,
-- support deterministic scenario control where required for verification.
-
-The preferred conceptual model is:
-
-```
-Inspect
-Trace
-Explain
-Control
-Trigger
-Verify
-```
-
-The first high-ROI implementation target is **hierarchical domain history**, building on the existing NPC trace rather than creating independent history systems.
-
-The intended progression is:
-
-```
-History
-  ↓
-Why / causal explanation
-  ↓
-Snapshots
-  ↓
-Animal observability
-  ↓
-Broader domain observability
-  ↓
-AI-readable / human-readable representations
-```
-
-JSON should be treated primarily as the structured transport/export format. Human- and AI-oriented representations may later provide compact semantic descriptions instead of exposing only raw implementation state.
-
-See [Domain Debug & Verification Audit](./reviews/2026-08-31--domain-debug-and-verification-audit.md) for the current baseline and identified gaps.
-
-## Deliberately deferred
-
-The following remain intentionally outside the immediate scope:
-
-- multiplayer/netcode,
-- WebGPU-first rendering,
-- full RPG combat and survival systems,
-- LLM-generated quests as a replacement for deterministic quest logic,
-- a full infinite-world rewrite before the current streaming architecture proves insufficient.
+Multiplayer/netcode, gameplay-time LLM, WebGPU-first rendering, real magic/fantasy monsters, music soundtrack, teleportation, generic autonomous NPC town founding, wholesale replacement of V1 systems by V3.
 
 ## Planning rule
 
-The roadmap is directional. When choosing the next implementation:
-
-1. Check [docs/plans/README.md](./plans/README.md) for actual status and priorities.
-2. Check [docs/STATE.md](./STATE.md) to understand what the code already provides.
-3. Prefer work that strengthens an existing system coupling or removes an architectural bottleneck.
-4. Avoid adding a new subsystem when an existing system can be extended.
+1. Revival work: follow the Strategic Brief and the Autonomous Session Queue.
+2. Otherwise check [plans/README.md](./plans/README.md) for status and [STATE.md](./STATE.md) for what exists.
+3. Prefer strengthening existing couplings or removing bottlenecks over new subsystems.

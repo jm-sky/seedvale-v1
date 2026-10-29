@@ -3,13 +3,15 @@
 **Created at:** 2026-10-26  
 **Created by:** ChatGPT Sol  
 **Updated at:** 2026-10-29  
-**Updated by:** ChatGPT (author-approved D11 and deferred experiment notes)  
+**Updated by:** Claude Opus 5.5 (consistency pass: autonomy grant, dialogue reskin record, P1 status pointers)  
 **Status:** Current author-agreed direction; Revival D1/D3/D4/D9 approved on 2026-10-27, D11 approved on 2026-10-29. Other roadmap proposals remain unapproved. Earlier author-authorized Cursor exceptions are recorded below and are subject to the current D4 integration freeze.  
 **Target:** `jm-sky/seedvale-v1`
 
 ## 1. Start here: mandate and authority
 
 Claude Opus 5.5 owns later coordination, detailed planning, AI-agent documentation optimization and technical review of Cursor changes. Its proposed phases, order, dependencies and verification criteria for **remaining work require author discussion and approval** before execution, except where the approved Revival decisions below settle direction or sequencing. The author separately authorized Cursor's NPC/player model transfer and shoulder repair, snow patches/grass burial, documentation cleanup and accepted UI slices A–C. These are bounded exceptions to the original Opus-first workflow, not blanket implementation approval. D4 now governs further integrations, including previously authorized work. After approval, routine technical decisions are autonomous; return to the author for scope changes or significant compromises, particularly degraded appearance, simplified simulation or omission of an agreed feature.
+
+**Autonomous sessions (author, 2026-10-29):** long autonomous Opus/Sonnet sessions may make documentation and full runtime implementation changes directly on `main`, within the approved decisions below and the D4 freeze. This grants execution autonomy, **not** approval of open decisions, visual compromises or scope growth — those still return to the author. Work order, per-task gates and the author-run Arc A/B handoff: [Autonomous Session Queue](./AUTONOMOUS-SESSION-QUEUE.md).
 
 This brief records explicit author decisions from the strategic conversation. It is the entry point for revival scope, not a technical design or implementation acceptance report. Current code remains authoritative for what exists. Follow [CLAUDE.md](../../../CLAUDE.md) and use the repository's targeted navigation workflow.
 
@@ -84,7 +86,7 @@ A lightweight moon and stars aligned with world cardinal directions remain a des
 
 **D4 exception — map rendering (author decision, 2026-10-29):** the author authorized implementing the shared minimap + world-map terrain/fog raster on `main` now, as a bounded exception to the D4 integration freeze, with both views in scope. Minimap scale: ~200 world units across by default plus one extra step (~400). Work is tracked in [ui-input-046](../../plans/ui-input-046-minimap-and-world-map-raster-terrain-and-fog.md). The exception does not extend to other frozen integrations, and A/B/C measurements must not be compared across this change without accounting for it.
 
-- **The UI should eventually follow V3's design**, delivered in stages, with one explicit exception: **do not migrate V3 Player–NPC dialogue UI/UX** (author decision, 2026-10-26); retain V1 dialogue, with any later visual redesign separately agreed. Reuse suitable Vue components where useful; retain V1 data and commands.
+- **The UI should eventually follow V3's design**, delivered in stages, with one explicit exception: **do not migrate V3 Player–NPC dialogue UI/UX** (author decision, 2026-10-26); retain V1 dialogue, with any later visual redesign separately agreed. **Dialogue visual reskin (author, 2026-10-29):** `297e6ceb` renders V1 `NpcDialogueMenu` through the shared V3-styled `DialogueWindow` (message log, numbered choices, portrait slot) and switches global UI tokens to the warm palette. This is the separately agreed *visual* redesign: V1 dialogue data, commands, flow and conversation authority stay; no V3 conversation logic is adopted. Author visual/interaction PASS pending. Reuse suitable Vue components where useful; retain V1 data and commands.
 - **Quick Actions uses its own V1 adaptation**; Stage C borrows V3 MenuPanel chrome, not a donor Quick Actions system. Keep V1 categories/actions and interaction verification. No V3 conversation screen/design is selected.
 - UI consultation selected **item details first** and **current V1 equipment mechanics**. Stages A–C are now implemented, with author visual PASS recorded in their owning proposals/plans; this is not proof of all gameplay checks. D2 selects kind-list + two-column list/equipment; Stage B's later nested details modal supersedes Stage A-only navigation descriptions. Unavailable controls retain their layout, native disabled state and truthful reasons. Original D4 uses `opacity-5`; **Stage C explicitly supersedes it for Quick Actions chips with muted readable chrome**, adjacent reasons (Recent: tooltip). Do not generalize that exception to every screen. Missing metrics remain labeled unavailable, never invented. Read the [newer decision register](./2026-10-26--ui-migration-research.md#5-author-decision-register) and accepted proposals before planning another screen.
 - Equipment comparison is an expected benefit. Displays and previews must reflect actual game effects.
@@ -139,7 +141,7 @@ Check current source only where freshness or an unresolved fact matters to a sel
 
 ## 5. Completed preparation and current handoff
 
-**Opus roadmap proposal, 2026-10-27:** [Master Revival Roadmap](./2026-10-27--master-revival-roadmap.md) proposes phases, dependencies, agent allocation and decisions D1–D14. Only D1/D3/D4/D9 are newly approved, as recorded in the dated decision record; the roadmap as a whole and its other proposals are not approved. D4 replaces its earlier gated-parallel-lanes strategy. Dated status note: UI Stages D–E have visual PASS and Stage F Trade is implemented (`ui-input-044`, verification needed), so §3/§5 references to A–C as the latest UI state are historical.
+**Opus roadmap proposal, 2026-10-27:** [Master Revival Roadmap](./2026-10-27--master-revival-roadmap.md) proposes phases, dependencies, agent allocation and decisions D1–D14. Only D1/D3/D4/D9 (2026-10-27) and D11 (2026-10-29) are approved, as recorded in the dated decision record; the roadmap as a whole and its other proposals are not approved. D4 replaces its earlier gated-parallel-lanes strategy. Dated status note: UI Stages D–E have visual PASS and Stage F Trade is implemented (`ui-input-044`, verification needed), so §3/§5 references to A–C as the latest UI state are historical.
 
 **Technical-review update, 2026-10-26:** the author subsequently assigned Astra the bounded review of delivered models, snow and UI A–C. See [Cursor technical review](../../reviews/2026-10-26--026--v1-revival-cursor-technical-review.md) for findings, executed checks and remaining limits. Earlier references here to Opus's future technical review now mean taking over these findings and targeted follow-ups, not repeating this review. Opus's planning and AI-agent documentation optimization ownership is unchanged.
 
@@ -156,7 +158,7 @@ The requested bounded comparisons are complete source research, not future assig
 
 **Opus ownership:** optimize documentation specifically for AI agents—entry points, instruction hierarchy, navigation, bounded context loading and reduced duplication—using prepared evidence. This reconciliation session does not perform that optimization or redo Opus's future technical review. Review Cursor changes before making broader acceptance claims; use owning plans/notes rather than repeating broad recon. The readiness review is a dated handoff, not another permanent backlog or roadmap.
 
-**Remaining UI preparation:** [Character/skills consultation](./NEXT-SESSION--stage-d-character.md) is a proposed next slice, not approval to implement or a revival-wide sequence. Its D3 layout/D5 treatment and applicable D7/D8 choices remain open. Preserve the author's [pending terrain/road textures and cave research suggestions](./README.md#additional-author-suggestions--pending-research) as research candidates, not implementation commitments.
+**Remaining UI preparation (updated 2026-10-29):** Stages A–E have visual PASS; Stage F Trade (`ui-input-044`) and the map raster (`ui-input-046`, D4 exception) await author verification; the dialogue reskin is recorded in §3. Further screens (menus etc.) need a new consultation; the `NEXT-SESSION--*` files are closed history. Preserve the author's [pending terrain/road textures and cave research suggestions](./README.md#additional-author-suggestions--pending-research) as research candidates, not implementation commitments.
 
 ## 6. Plan and acceptance expectations
 
@@ -176,6 +178,8 @@ Open items include exact hardware/profile and baseline scenes; detailed armor/vi
 
 | Need | Read only the relevant material |
 | --- | --- |
+| Current work order for autonomous sessions | [Autonomous Session Queue](./AUTONOMOUS-SESSION-QUEUE.md) |
+| P1 performance progress | [A/B/C/D tracker snapshot](./2026-10-27--performance-three-track-roadmap.md#p1-status-snapshot-2026-10-29) |
 | Research status and original index | [Dossier README](./README.md) |
 | Candidate status, preservation and dependencies | [R7](./2026-10-26--007--unified-candidate-matrix.md), especially §5–§6; exact candidate records as needed |
 | Reconciled caveats | [R6](./2026-10-26--006--cross-report-review.md), §3 and §8 |

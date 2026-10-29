@@ -2,7 +2,7 @@
 
 **Created:** 2026-10-27  
 **Created by:** Claude Opus 5.5 (coordinator)  
-**Status:** **D1/D3/D4/D9 APPROVED (2026-10-27)**; all other decisions and detailed mechanisms remain proposals. D4 supersedes gated parallel lanes with **PERFORMANCE-FIRST**. Performance keep/revert choices require scenario-matched evidence; this is not approval of the entire roadmap.  
+**Status:** **D1/D3/D4/D9 APPROVED (2026-10-27), D11 APPROVED (2026-10-29)**; all other decisions and detailed mechanisms remain proposals. D4 supersedes gated parallel lanes with **PERFORMANCE-FIRST**. Performance keep/revert choices require scenario-matched evidence; this is not approval of the entire roadmap.  
 **Pins:** V1 `c460b224` · V3 `907e17cd` · V2 = V3 `legacy/SeedVales` (`9ba54815`)  
 **Method:** five area audits (static source/doc analysis; **no tests, benchmarks or browser runs** in this session), coordinator cross-review and targeted source spot-checks.
 
@@ -59,7 +59,7 @@ graph TD
   BASE --> C[C0 then CA1 then CA2 then evaluate]
   D9[D9 V1-first direction] --> C
   C -. evidence and separate scope decision .-> CB[Conditional V3 backend candidate]
-  DEC[Open area decisions including D8/D10/D11/D13] -. only affected mechanisms .-> A
+  DEC[Open area decisions including D8/D10/D13] -. only affected mechanisms .-> A
   DEC -. only affected mechanisms .-> B
   A --> FINAL[Technical and visual verification plus final combined assessment]
   B --> FINAL
@@ -108,12 +108,12 @@ Documentation, research/reconnaissance, architecture analysis, formal planning, 
 
 ## 5. Phases
 
-Only the Performance-First order and D1/D3/D9 direction are approved. Detailed candidate slices and post-performance phases remain proposals subject to their owning plans/decisions.
+Only the Performance-First order and D1/D3/D9/D11 direction are approved. Current P1 progress: [tracker snapshot](./2026-10-27--performance-three-track-roadmap.md#p1-status-snapshot-2026-10-29); work order: [Autonomous Session Queue](./AUTONOMOUS-SESSION-QUEUE.md). Detailed candidate slices and post-performance phases remain proposals subject to their owning plans/decisions.
 
 | Phase | Content | Entry | Exit / completion evidence |
 | --- | --- | --- | --- |
 | **P0 — Stable reference and baseline** | **Operationally complete (2026-10-29)** for ongoing P1: fixtures, native Arc benchmark series, A/B workflow, trace capture and reports exist. Original WSL2 baseline remains diagnostic; consult dated evidence update. | Baseline preparation; readiness/runbook quality gates | Practical P1 measurement workflow established; formal legacy A0a/B0/C0 READY certification **not claimed**. For each P1 decision require matched, reliable evidence and record gaps. |
-| **P1 — A/B/C/D performance implementation** | A: proposed cull bounds A1′/A2′, attribution/cadence and spawn-churn slices; A5′ far detail and A7 merge remain gated by D10/D11 and area choices. B: leading-family submission work; B1a reflection trims require D8/D13, not a broad water rewrite. C: **C0 → CA1 useful filler radius → CA2 generation/storage cap → evaluate**, then CB only if evidence warrants further architecture. D: **Trees LOD** — bounded recon and decision, LOD1-first with billboard only conditionally; record measured/visual keep-revert or explicit deferment. | P0 operationally complete; use adequate matched native Arc evidence per slice (do not assume old baseline certified); applicable approvals and unresolved decisions for affected slices | Appropriate technical/visual checks, documented keep/revert evidence and **final combined assessment**; approved scope completed or explicitly closed. End freeze; optional candidates do not prolong it. |
+| **P1 — A/B/C/D performance implementation** | A: proposed cull bounds A1′/A2′, attribution/cadence and spawn-churn slices; A5′ far detail remains gated by D10; A7 merge follows approved D11 (first body-only experiment negative). B: leading-family submission work; B1a reflection trims require D8/D13, not a broad water rewrite. C: **C0 → CA1 useful filler radius → CA2 generation/storage cap → evaluate**, then CB only if evidence warrants further architecture. D: **Trees LOD** — bounded recon and decision, LOD1-first with billboard only conditionally; record measured/visual keep-revert or explicit deferment. | P0 operationally complete; use adequate matched native Arc evidence per slice (do not assume old baseline certified); applicable approvals and unresolved decisions for affected slices | Appropriate technical/visual checks, documented keep/revert evidence and **final combined assessment**; approved scope completed or explicitly closed. End freeze; optional candidates do not prolong it. |
 | **P2 — Save policy and coordinated worldgen epoch (deferred implementation)** | Future `persistence-008` policy (v57 proposal) before incompatible generator integration; coordinate spacing/routes and procedural cemeteries as applicable in one epoch. Only selected features enter it; D2 mappings stay open. Target only affected worldgen cache namespaces. | **P1 exit**, D1/D3 direction; future plan/scope approval, D2 only if a name change is included | Understandable incompatible-save refusal, compatible-new-save round-trip; one coordinated new-game boundary; coherent routes/transport/IDs and generation checks per future plan |
 | **P3 — Atmosphere (deferred proposal)** | Shared wind design; **fog sprite anchoring/motion correction** (IMP-001, inspect V1 and V3 first); **streams/rivers**: channel shape and width, bank/bed coloration, riparian vegetation and irregular banks in plan and elevation; cautious, performance-bounded water appearance work (lakes/rivers retain distinct character); softer grass/billboard flowers and moon/stars as scoped. Delivered clouds retained. Changing shaders/geometry/flowers is not implicitly part of CA1/CA2. | **P1 exit** for performance-affecting runtime integration; targeted V1/V3 fog recon and water/terrain ownership and save/worldgen impact checks; applicable design approvals | Author scene review across movement, distances and weather; verify stream/river geometry, bank vegetation, transitions, gameplay depth/physics and representative performance; no inferred reflection/tree-wind approval |
 | **P4 — Armor mechanics, equipment UI/content/appearance (deferred proposal)** | Future hit/slot/layer work → truthful UI → balance/acquisition → appearance under actor contract. No simultaneous runtime armor lane. | **P1 exit**; D5/D6 and other applicable rules/content decisions; save policy for persisted changes | Displayed effects = applied effects, player/NPC parity, compatible-save round-trip; guard kits D7 remain open |
@@ -159,7 +159,7 @@ These are roadmap handoffs, not actions authorized by this documentation reconci
 | # | Step | Owner | Gate |
 | --- | --- | --- | --- |
 | 1 | Pause unrelated workload-affecting merges; select stable reference; certify shared A0a/B0 and applicable C0, preserve SHA/device/config/workload/raw and human reports | three-track roadmap / Arc runbook | READY/STOP; reuse any already certified comparable evidence |
-| 2 | Agree bounded A/B/C implementation scope and remaining area-specific gates using existing audits/plans; do not approve D8/D10/D11/D13 by implication | owning plans / author | P0 operational evidence plus applicable decisions; capture targeted missing evidence where necessary |
+| 2 | Agree bounded A/B/C implementation scope and remaining area-specific gates using existing audits/plans; do not approve D8/D10/D13 by implication | owning plans / author | P0 operational evidence plus applicable decisions; capture targeted missing evidence where necessary |
 | 3 | Deliver approved A slices and leading-family B work; for C deliver CA1 then CA2 after C0. Use focused tests/review and independent reversible commits | world-terrain-050 / npc-063 / settlements-019 / grass owner | meaningful keep/revert questions measured per §10; no stage-by-stage full-suite requirement |
 | 4 | Evaluate CA1/CA2. Consider V3 tiled backend only if evidence warrants a further architecture decision | Track C | preserve coverage and world identity; no automatic CB commitment |
 | 5 | Document final combined A/B/C/D result and technical/visual verification; close or defer optional scope explicitly and end freeze | performance owners / author review | §4 exit criteria |
@@ -171,6 +171,7 @@ Documentation/planning (including future persistence policy preparation), isolat
 
 Allocation remains a proposal; additional agents/parallelism are optional.
 
+- **Autonomous Opus/Sonnet sessions (author, 2026-10-29):** may implement directly on `main` within approved scope and D4; ordering, gates and author-run Arc A/B handoff in the [Autonomous Session Queue](./AUTONOMOUS-SESSION-QUEUE.md).
 - **Cursor (Composer):** approved, file-bounded A/B/C slices with existing owners, focused tests and review. No runtime armor E1–E3, voices wiring, worldgen or atmosphere integration during P1 unless a necessary §4 exception applies.
 - **GPT Astra:** technical review, baseline certification/comparability review, decision-ledger upkeep; no repeated broad research or automatic benchmarks after every slice.
 - **Claude Opus:** cross-system planning/architecture and lifecycle review; persistence/worldgen policy, future armor/wind/appearance contracts may be prepared within §4. Their runtime integrations follow P1. No formal plan creation is part of this reconciliation.
@@ -191,7 +192,7 @@ Authority: [dated author record](./STRATEGIC-BRIEF.md#approved-revival-decisions
 | D8 | Reflection policy: keep / lower cadence / omit detail / sky tint | **OPEN / UNAPPROVED**, informed by baseline |
 | D9 | C0 → CA1 → CA2 → evaluate; V3 tiled backend conditional | **APPROVED** |
 | D10 | Actor far-detail eye/eyebrow appearance | **OPEN / UNAPPROVED** |
-| D11 | Outfit merge/material direction: MeshStandard / Lambert / no merge | **OPEN / UNAPPROVED**, informed by A evidence |
+| D11 | Outfit merge/material direction: MeshStandard / Lambert / no merge | **APPROVED (2026-10-29) — V1-first** `MeshStandardMaterial`, selective compatible merges only; first Peasant body-only experiment measured negative and not merged (see brief) |
 | D12 | Rescue-dog plan 058 split | **OPEN / UNAPPROVED**; prior unowned-dog product decision retained |
 | D13 | Small settlement details omitted from reflections | **OPEN / UNAPPROVED** |
 | D14 | Tree wind | **OPEN / UNAPPROVED** |

@@ -11,6 +11,20 @@ The author selected **A/B/C as mandatory optimization workstreams and, on 2026-1
 
 This focused performance track may advance through research, plans and separately authorized small Cursor/Sol implementation slices without waiting for Claude Opus. It does not approve unrelated revival scope or replace the [Strategic Brief](./STRATEGIC-BRIEF.md), its broader coordination mandate, or the official [planning conventions](../../plans/PLANNING.md). The approved D4 priority and D9 sequence below supersede the former parallel-lanes/migration-first recommendation. Other candidate mechanisms remain proposals, with no expected FPS gains claimed.
 
+## P1 status snapshot (2026-10-29)
+
+Consolidated by Claude Opus 5.5 from commits and native Arc reports; checklists below keep their history. P0 is operationally closed ([Master Roadmap](./2026-10-27--master-revival-roadmap.md) header) — the 2026-10-27 benchmark gate section below is historical. Work order: [Autonomous Session Queue](./AUTONOMOUS-SESSION-QUEUE.md).
+
+| Track | Landed on `main` | Measured (native Arc) | Rejected / deferred | Next |
+| --- | --- | --- | --- | --- |
+| A — actors | A1′ conservative skinned cull bounds `e76f3f9c` → `8fc58ddf` → envelope boundingBox `36e99ef6` | settlement-heavy ≈32.6 FPS, forest ≈56 FPS at `36e99ef6` ([report](../../performance/results/2026-10-28--win-forest-bisect-and-fixes.md)); scene is main-thread/CPU-submission bound ([trace](../../performance/results/2026-10-28--win-a1p-trace-analysis.md)) | CSS2D matrix skip, body Skeleton sharing, D11 Peasant body merge — no repeatable FPS gain, reverted/not merged | Q1 independent review → Q6 slice |
+| B — settlements | Wood piles as instanced V2 tiers `4347c274`; wall/standing lantern GLBs `405742dc` | Lantern draws −4–6 %, FPS effect below noise ([A/B](../../performance/results/2026-10-28--win-lantern1-ab-same-session.md)) | Reflection trims wait for D8/D13 | Q5 |
+| C — grass | CA1 filler gating `bc9a68d1` | Resident filler −50…89 %, ~60–120 MB instance buffers saved; **no FPS claim** ([A/B](../../performance/results/2026-10-28--win-ca1-filler-gating-ab.md)) | CB (V3 backend) conditional | Q4 CA2 |
+| D — trees | Inert LOD assets `d867f38` only | — | Billboards conditional | Q2 recon/plan → Q3 |
+| Other | `riverShoreQuery` memo `29b42a09` (CPU) | part of `36e99ef6` series | — | — |
+
+Gap to target: `settlement-heavy` remains far below the 50–60 FPS goal. P1 exit requires the approved scope **completed or explicitly closed** with a combined result, not reaching the target; whether a remaining gap justifies extra P1 scope is an author decision to raise in Q7.
+
 ## Ordered execution and checklist
 
 ### A. NPC and fauna rendering — first implementation lane
@@ -53,6 +67,8 @@ Research: [Track C deep recon, V1 surface adapter, lifecycle/pools/uploads and p
 - [ ] Record visual/runtime acceptance and lifecycle integrity.
 
 ## Benchmark readiness gate — 2026-10-27
+
+> **Historical (2026-10-29):** P0 was closed operationally on native Arc same-session evidence; unchecked items below are not P1 blockers. See the [dated evidence update](../../performance/results/2026-10-27--051--a0a-b0-c0-baseline-summary.md#2026-10-29-evidence-update--p0-operational-closure).
 
 D4 changes when measurements are needed, not capture quality. Preserve the existing audit/runbook READY/STOP requirements, rep counts and metadata. Reuse an already certified comparable baseline rather than capturing again solely for a new commit SHA.
 

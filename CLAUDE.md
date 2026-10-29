@@ -1,8 +1,17 @@
 # Seedvale — Claude Code Guide
 
-Seedvale is a browser-based 3D sandbox/simulation. The player participates in a living world rather than driving it.
+Seedvale is a browser-based 3D adventure-oriented RPG in a deeply simulated living world (see `docs/VISION.md` §10). The world lives on its own; the player participates rather than drives it.
 
 This file defines how Claude Code should navigate and modify the repository.
+
+## Current program: V1 Revival (read first)
+
+Seedvale V1 is being revived as the foundation (V2/V3 are selective donors). Before any non-trivial task:
+
+1. Read `docs/research/v1-revival/STRATEGIC-BRIEF.md` §1 — approved decisions (D1/D3/D4/D9/D11), the **D4 Performance-First integration freeze**, and the autonomy grant.
+2. Take work from `docs/research/v1-revival/AUTONOMOUS-SESSION-QUEUE.md` (ordered tasks, gates, stop conditions, author-run benchmark handoff).
+
+Under D4, runtime changes that affect workload (CPU/GPU, draw calls, models, worldgen, vegetation, shaders, streaming, loading) merge only for P1 A/B/C/D performance slices, recorded exceptions or critical fixes. Open decisions stay with the author — ask instead of choosing. Communicate with the author in Polish; repository documentation stays in English.
 
 ## Source of truth
 

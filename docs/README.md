@@ -4,6 +4,8 @@ Ten katalog zawiera dokumentację projektu **Seedvale** (Three.js — procedural
 
 ## Główne dokumenty
 
+- **[research/v1-revival/STRATEGIC-BRIEF.md](./research/v1-revival/STRATEGIC-BRIEF.md)** — **aktualny program V1 Revival**: decyzje, freeze D4, autonomia agentów; kolejka zadań: [AUTONOMOUS-SESSION-QUEUE.md](./research/v1-revival/AUTONOMOUS-SESSION-QUEUE.md)
+
 - **[STATE.md](./STATE.md)** — factual current implementation state
 - **[state/](./state/README.md)** — szczegółowy opis aktualnego stanu domen/systemów
 - **[state/water.md](./state/water.md)** — woda (ocean + jeziora + rzeki: stan, decyzje, historia)
