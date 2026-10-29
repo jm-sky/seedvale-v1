@@ -77,14 +77,26 @@ async function runOne(scenario, rep) {
     const b = JSON.parse(json)
     const gpu = b.report.context.device?.gpu ?? b.report.context.device?.renderer ?? JSON.stringify(b.report.context.device ?? {}).slice(0, 200)
     const sha = b.meta.gitSha
+    // Vite dev embeds the SHA at server start but serves the working tree from disk, so the
+    // served *code* is HEAD (+ any uncommitted runtime edits) even when the label is stale.
+    // A mismatch is a warning, never a lost run: the artifact records what was really served.
+    // SEEDVALE_STRICT_SHA=1 restores the old hard failure on a runtime-path diff.
+    const RUNTIME_PATHS = 'src public index.html vite.config.ts package.json pnpm-lock.yaml'
+    let dirty = ''
+    try { dirty = execSync(`git status --porcelain -- ${RUNTIME_PATHS}`, { cwd: REPO }).toString().trim() } catch {}
+    if (dirty !== '') {
+      b.meta.dirtyRuntimePaths = dirty.split('\n').map((l) => l.trim())
+      console.log(`WARN uncommitted runtime changes were served: ${dirty.replace(/\n/g, ', ').slice(0, 200)}`)
+    }
     if (sha !== expectedSha) {
-      // Vite embeds the SHA at server start. A later commit that touches no runtime path
-      // (src/, public/, index.html, config) serves identical code: keep the run, flag it.
       let runtimeDiff = 'unknown'
-      try { runtimeDiff = execSync(`git diff --name-only ${sha} ${expectedSha} -- src public index.html vite.config.ts package.json pnpm-lock.yaml`, { cwd: REPO }).toString().trim() } catch {}
-      if (runtimeDiff !== '') throw new Error(`SHA mismatch ${sha} vs ${expectedSha}; runtime diff: ${runtimeDiff.slice(0, 200)}`)
-      b.meta.shaNote = `served ${sha}, HEAD ${expectedSha}; no runtime-path diff`
-      console.log(`WARN served SHA ${sha.slice(0, 8)} != HEAD ${expectedSha.slice(0, 8)} (no runtime diff, kept)`)
+      try { runtimeDiff = execSync(`git diff --name-only ${sha} ${expectedSha} -- ${RUNTIME_PATHS}`, { cwd: REPO }).toString().trim() } catch {}
+      if (runtimeDiff !== '' && process.env.SEEDVALE_STRICT_SHA === '1') throw new Error(`SHA mismatch ${sha} vs ${expectedSha}; runtime diff: ${runtimeDiff.slice(0, 200)}`)
+      b.meta.servedSha = expectedSha
+      b.meta.shaNote = runtimeDiff === ''
+        ? `label ${sha}, HEAD ${expectedSha}; no runtime-path diff`
+        : `label ${sha} is stale (Vite started before a runtime commit); code served from HEAD ${expectedSha} working tree; runtime diff: ${runtimeDiff.replace(/\n/g, ', ').slice(0, 300)}`
+      console.log(`WARN served SHA label ${sha.slice(0, 8)} != HEAD ${expectedSha.slice(0, 8)} (${runtimeDiff === '' ? 'no runtime diff' : 'runtime diff; label stale, restart Vite to silence'}) — run kept`)
     }
     if (process.env.SEEDVALE_EVAL) b.meta.evalAfter = await ev(process.env.SEEDVALE_EVAL) // e.g. JSON.stringify(window.__seedvaleSkeletonStats())
     b.meta.platform = PLATFORM
