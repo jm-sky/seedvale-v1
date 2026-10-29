@@ -12,30 +12,30 @@
  * unrelated full page reload. Excluded, not the content itself. */
 @source not "../../docs";
 
-/* Design tokens (plan 046 / review 007 C9) — dark game shell is the source of
- * truth. shadcn `:root` aliases map onto the same panel/ink values so leftover
+/* Design tokens (plan 046 / review 007 C9) — warm V3 palette (orange primary) is the
+ * source of truth. shadcn `:root` aliases map onto the same panel/ink values so leftover
  * `bg-background` / `text-foreground` on `body` cannot flash a light page. */
 @theme {
-  --color-panel: rgba(20, 24, 28, 0.92);
-  --color-panel-backdrop: rgba(10, 14, 18, 0.55);
-  --color-ink: #f2f6fa;
+  --color-panel: oklch(0.23 0.02 60 / 0.92);
+  --color-panel-backdrop: oklch(0.12 0.015 60 / 0.55);
+  --color-ink: oklch(0.95 0.02 85);
 
-  --color-primary: oklch(69.6% 0.17 162.48);
+  --color-primary: oklch(0.78 0.12 75);
 }
 
 :root {
   --min-screen-width: 800;
   --radius: 0.625rem;
-  --background: #14181c;
-  --foreground: #f2f6fa;
+  --background: oklch(0.17 0.015 60);
+  --foreground: oklch(0.95 0.02 85);
   --destructive: oklch(0.577 0.245 27.325);
   --border: rgba(255, 255, 255, 0.15);
   --input: rgba(255, 255, 255, 0.15);
-  --ring: oklch(69.6% 0.17 162.48);
-  --popover: rgba(20, 24, 28, 0.92);
-  --popover-foreground: #f2f6fa;
-  --card: rgba(20, 24, 28, 0.92);
-  --card-foreground: #f2f6fa;
+  --ring: oklch(0.78 0.12 75);
+  --popover: oklch(0.23 0.02 60 / 0.92);
+  --popover-foreground: oklch(0.95 0.02 85);
+  --card: oklch(0.23 0.02 60 / 0.92);
+  --card-foreground: oklch(0.95 0.02 85);
 }
 
 @theme inline {

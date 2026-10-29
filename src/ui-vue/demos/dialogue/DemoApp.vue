@@ -5,8 +5,8 @@
  * @domain ui
  */
 import { computed, ref } from 'vue'
+import DialogueWindow, { type DialogueChoice, type DialogueMessage } from '../../components/DialogueWindow.vue'
 import DemoShell from '../DemoShell.vue'
-import DialogueWindow, { type DialogueChoice, type DialogueMessage } from './DialogueWindow.vue'
 
 type MenuId = 'root' | 'talk' | 'quest'
 
@@ -26,18 +26,18 @@ const MENUS: Record<MenuId, MenuEntry[]> = {
     { id: 'trade', label: 'Handel', say: 'Pokaż mi swoje towary.', reply: '(demo) Tu otworzyłby się ekran handlu.' },
     { id: 'quest', label: 'Zadania / Pomoc', goto: 'quest' },
     { id: 'actions', label: 'Akcje', say: 'Mam coś dla Ciebie.', reply: '(demo) Tu otworzyłby się ekran wręczania przedmiotów.' },
-    { id: 'bye', label: 'Do widzenia', muted: true },
+    { id: 'bye', label: 'Do widzenia', variant: 'muted' },
   ],
   talk: [
     { id: 'who', label: 'Kim jesteś?', say: 'Kim jesteś?', reply: 'Casimir Eastwood, do usług. Od lat mieszkam w tej dolinie.' },
     { id: 'valley', label: 'Co słychać w dolinie?', say: 'Co słychać w dolinie?', reply: 'Spokojnie, choć wilki podchodzą coraz bliżej wsi. Zbliża się zima.' },
     { id: 'rumors', label: 'Słyszałeś jakieś plotki?', say: 'Słyszałeś jakieś plotki?', reply: 'Mówią, że w starej jaskini ktoś rozpalił ogień. Nie wiem, czy chcę wiedzieć kto.' },
-    { id: 'back', label: 'Wróć', muted: true },
+    { id: 'back', label: 'Wróć', variant: 'muted' },
   ],
   quest: [
     { id: 'help', label: 'Czy mogę w czymś pomóc?', say: 'Czy mogę w czymś pomóc?', reply: 'Może. Zaginęła mi siekiera — ostatnio widziałem ją przy lesie. Przyniesiesz?' },
     { id: 'accept', label: 'Dobrze, poszukam jej.', say: 'Dobrze, poszukam jej.', reply: 'Dzięki! Wróć, jak ją znajdziesz.' },
-    { id: 'back', label: 'Wróć', muted: true },
+    { id: 'back', label: 'Wróć', variant: 'muted' },
   ],
 }
 

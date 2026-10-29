@@ -5,6 +5,7 @@ import type { QuestDialoguePreviewEntry } from '../quests/QuestManager'
 import { nearestArchetype } from '../ai/dialogue'
 import { aboutSelfLine, aboutVillageLine, currentActivityLine, goodbyeLine } from '../ai/dialogueTemplates'
 import { isAdultAge } from '../settlement/professionStaffing'
+import DialogueWindow, { type DialogueChoice, type DialogueMessage } from './components/DialogueWindow.vue'
 import { useOverlayScreen } from './composables/useOverlayScreen'
 import {
   acceptNpcDialogueOffer,
@@ -129,6 +130,18 @@ const responseText = computed(() => {
     case 'requestWater': return waterLine.value
     default: return ''
   }
+})
+
+/** Conversation log shown in the dialogue window; reset on every open. */
+const messages = ref<DialogueMessage[]>([])
+let nextMessageId = 1
+
+function pushMessage(speaker: DialogueMessage['speaker'], text: string): void {
+  messages.value = [...messages.value, { id: nextMessageId++, speaker, text }]
+}
+
+watch(responseText, (text) => {
+  if (text) pushMessage('npc', text)
 })
 
 function bumpPreview(): void {
@@ -368,17 +381,128 @@ function shortcutLabel(entry: QuestDialoguePreviewEntry): string {
   return `${prefix} ${entry.title}`
 }
 
-function shortcutClass(kind: QuestDialoguePreviewEntry['kind']): string {
-  if (kind === 'report') {
-    return 'cursor-pointer rounded-md bg-white/15 px-3 py-2 text-left text-sm font-medium hover:bg-white/25'
+/** One selectable dialogue option; `say` echoes the label into the log as the player's line. */
+interface MenuChoice extends DialogueChoice {
+  run: () => void
+  say?: boolean
+}
+
+function opt(id: string, label: string, run: () => void, extra: Partial<MenuChoice> = {}): MenuChoice {
+  return { id, label, run, ...extra }
+}
+
+function backChoice(run: () => void): MenuChoice {
+  return opt('back', 'Wróć', run, { variant: 'muted' })
+}
+
+function rootChoices(): MenuChoice[] {
+  const list: MenuChoice[] = []
+  if (state.canTrade) list.push(opt('trade', 'Handel', openTrade, { variant: 'primary' }))
+  if (state.canOrderArtisan) list.push(opt('artisan', 'Zamówienie', openArtisanOrders, { variant: 'primary' }))
+  for (const entry of reportShortcuts.value) {
+    list.push(opt(`report:${entry.questId}`, shortcutLabel(entry), () => openQuestShortcut(entry), { variant: 'primary' }))
   }
-  return 'cursor-pointer rounded-md bg-white/10 px-3 py-2 text-left text-sm font-medium hover:bg-white/20'
+  for (const entry of requiredActionShortcuts.value) {
+    list.push(opt(`required:${entry.questId}`, shortcutLabel(entry), () => openQuestShortcut(entry), { variant: 'primary' }))
+  }
+  list.push(
+    opt('group:help', 'Sprawy i pomoc', () => enterGroup('help')),
+    opt('group:conversation', 'Rozmowa', () => enterGroup('conversation')),
+    opt('group:actions', 'Działania', () => enterGroup('actions')),
+    opt('goodbye', 'Nic, miłego dnia!', () => selectTopic('goodbye'), { variant: 'muted', say: true }),
+  )
+  return list
+}
+
+function groupChoices(g: DialogueGroup): MenuChoice[] {
+  const list: MenuChoice[] = []
+  if (g === 'help') {
+    if (activeMatters.value.length > 0) list.push(opt('activeMatters', 'Aktywne zadania', () => selectTopic('activeMatters'), { say: true }))
+    list.push(
+      opt('help', 'Może w czymś ci pomóc?', () => selectTopic('help'), { say: true }),
+      opt('food', 'Poproś o jedzenie', requestFood, { say: true }),
+      opt('water', 'Poproś o wodę', requestWater, { say: true }),
+    )
+    if (isHomeGuard.value && state.canClaimGuardReward) list.push(opt('guardReward', 'Poproś o uznanie', claimGuardReward, { say: true }))
+  } else if (g === 'conversation') {
+    if (canAskAboutArea.value) list.push(opt('area', 'Opowiedz mi coś o okolicy.', askAboutArea, { say: true, disabled: discoveringArea.value }))
+    list.push(
+      opt('aboutSelf', 'Powiedz coś o sobie.', () => selectTopic('aboutSelf'), { say: true }),
+      opt('currentActivity', 'Co teraz robisz?', () => selectTopic('currentActivity'), { say: true }),
+    )
+    if (showAboutVillage.value) list.push(opt('aboutVillage', 'Powiedz coś o wiosce.', () => selectTopic('aboutVillage'), { say: true }))
+  } else {
+    list.push(
+      opt('giveItem', 'Daj przedmiot', giveItem),
+      opt('proposeJoin', 'Zaproponuj udział w wyprawie', openProposeJoin, { say: true }),
+    )
+  }
+  list.push(backChoice(leaveGroup))
+  return list
+}
+
+function topicChoices(): MenuChoice[] {
+  const t = topic.value
+  if (t === 'proposeJoin') {
+    return [
+      ...JOIN_DURATION_OPTIONS.map((o) => opt(`days:${o.days}`, o.label, () => proposeJoin(o.days), { say: true })),
+      backChoice(backToTopics),
+    ]
+  }
+  if (t === 'activeMatters') {
+    return [
+      ...activeMatters.value.map((entry) => opt(`matter:${entry.questId}`, entry.title, () => selectActiveMatter(entry), { say: true })),
+      backChoice(backToTopics),
+    ]
+  }
+  if (t === 'payment' && !paymentLine.value && state.paymentClaim) {
+    return [
+      opt('pay', `Zapłać ${state.paymentClaim.coins}`, payWage, { variant: 'primary', say: true }),
+      opt('defer', 'Jeszcze nie', deferWage, { variant: 'muted' }),
+    ]
+  }
+  if (t === 'joinProposal' && !joinProposalLine.value && state.joinProposal) {
+    return [
+      opt('joinAccept', 'Weź go ze sobą', acceptJoinProposal, { variant: 'primary', say: true }),
+      opt('joinDecline', 'Nie tym razem', declineJoinProposal, { variant: 'muted', say: true }),
+    ]
+  }
+  if (t === 'help' && hasOffer.value) {
+    const list = [
+      opt('accept', 'Przyjmij', accept, { variant: 'primary', say: true }),
+      opt('decline', 'Odmów', close, { variant: 'muted', say: true }),
+    ]
+    if (helpDrilled.value) list.push(backChoice(helpBack))
+    return list
+  }
+  if (t === 'help') {
+    return [
+      ...helpActions.value.map((action, index) => opt(`action:${index}`, action.label, () => selectHelpAction(index), { variant: 'primary', say: true })),
+      ...helpTopics.value.map((entry, index) => opt(`helpTopic:${index}`, entry.label, () => selectHelpTopic(index), { say: true })),
+      backChoice(helpBack),
+    ]
+  }
+  if (t === 'goodbye') return [opt('close', 'Zamknij', close, { variant: 'muted' })]
+  return [backChoice(backToTopics)]
+}
+
+const choices = computed<MenuChoice[]>(() => {
+  if (topic.value !== null) return topicChoices()
+  return group.value === null ? rootChoices() : groupChoices(group.value)
+})
+
+function onChoose(id: string): void {
+  const choice = choices.value.find((c) => c.id === id)
+  if (!choice || choice.disabled) return
+  if (choice.say) pushMessage('player', choice.label)
+  choice.run()
 }
 
 watch(() => state.open, (open) => {
   if (!open) return
 
   openedAt.value = performance.now()
+  messages.value = []
   resetMenu()
   bumpPreview()
   const initialTopic = resolveNpcDialogueOpenTopic()
@@ -393,380 +517,17 @@ watch(() => state.open, (open) => {
 <template>
   <div
     v-if="state.open"
-    class="pointer-events-auto fixed inset-0 z-20 flex items-center justify-center bg-panel-backdrop backdrop-blur-[2px]"
+    class="pointer-events-auto fixed inset-0 z-20 flex items-center justify-center bg-panel-backdrop p-4 backdrop-blur-[2px]"
     @click.self="closeFromBackdrop"
   >
-    <div
-      class="max-h-[calc(100dvh-32px)] w-[min(420px,calc(100vw-32px))] overflow-y-auto rounded-[10px] bg-panel p-5 text-ink shadow-[0_12px_40px_rgba(0,0,0,0.45)]"
-      style="touch-action: pan-y"
-    >
-      <h2 class="mb-3 text-base font-semibold tracking-wide">
-        {{ state.npcHeading }}
-      </h2>
-      <div
-        v-if="topic === null && group === null"
-        class="flex flex-col gap-2"
-      >
-        <button
-          v-if="state.canTrade"
-          type="button"
-          class="cursor-pointer rounded-md bg-white/10 px-3 py-2 text-left text-sm font-medium hover:bg-white/20"
-          @click="openTrade"
-        >
-          Handel
-        </button>
-        <button
-          v-if="state.canOrderArtisan"
-          type="button"
-          class="cursor-pointer rounded-md bg-white/10 px-3 py-2 text-left text-sm font-medium hover:bg-white/20"
-          @click="openArtisanOrders"
-        >
-          Zamówienie
-        </button>
-        <button
-          v-for="entry in reportShortcuts"
-          :key="`report:${entry.questId}`"
-          type="button"
-          :class="shortcutClass('report')"
-          @click="openQuestShortcut(entry)"
-        >
-          {{ shortcutLabel(entry) }}
-        </button>
-        <button
-          v-for="entry in requiredActionShortcuts"
-          :key="`required:${entry.questId}`"
-          type="button"
-          :class="shortcutClass('required-action')"
-          @click="openQuestShortcut(entry)"
-        >
-          {{ shortcutLabel(entry) }}
-        </button>
-        <button
-          type="button"
-          class="cursor-pointer rounded-md bg-white/5 px-3 py-2 text-left text-sm hover:bg-white/10"
-          @click="enterGroup('help')"
-        >
-          Sprawy i pomoc
-        </button>
-        <button
-          type="button"
-          class="cursor-pointer rounded-md bg-white/5 px-3 py-2 text-left text-sm hover:bg-white/10"
-          @click="enterGroup('conversation')"
-        >
-          Rozmowa
-        </button>
-        <button
-          type="button"
-          class="cursor-pointer rounded-md bg-white/5 px-3 py-2 text-left text-sm hover:bg-white/10"
-          @click="enterGroup('actions')"
-        >
-          Działania
-        </button>
-        <button
-          type="button"
-          class="cursor-pointer rounded-md bg-white/5 px-3 py-2 text-left text-sm hover:bg-white/10"
-          @click="selectTopic('goodbye')"
-        >
-          Nic, miłego dnia!
-        </button>
-      </div>
-      <div
-        v-else-if="topic === null && group === 'help'"
-        class="flex flex-col gap-2"
-      >
-        <button
-          v-if="activeMatters.length > 0"
-          type="button"
-          class="cursor-pointer rounded-md bg-white/5 px-3 py-2 text-left text-sm hover:bg-white/10"
-          @click="selectTopic('activeMatters')"
-        >
-          Aktywne zadania
-        </button>
-        <button
-          type="button"
-          class="cursor-pointer rounded-md bg-white/5 px-3 py-2 text-left text-sm hover:bg-white/10"
-          @click="selectTopic('help')"
-        >
-          Może w czymś ci pomóc?
-        </button>
-        <button
-          type="button"
-          class="cursor-pointer rounded-md bg-white/5 px-3 py-2 text-left text-sm hover:bg-white/10"
-          @click="requestFood"
-        >
-          Poproś o jedzenie
-        </button>
-        <button
-          type="button"
-          class="cursor-pointer rounded-md bg-white/5 px-3 py-2 text-left text-sm hover:bg-white/10"
-          @click="requestWater"
-        >
-          Poproś o wodę
-        </button>
-        <button
-          v-if="isHomeGuard && state.canClaimGuardReward"
-          type="button"
-          class="cursor-pointer rounded-md bg-white/5 px-3 py-2 text-left text-sm hover:bg-white/10"
-          @click="claimGuardReward"
-        >
-          Poproś o uznanie
-        </button>
-        <button
-          type="button"
-          class="cursor-pointer self-start rounded-md bg-white/5 px-3 py-2 text-sm hover:bg-white/10"
-          @click="leaveGroup"
-        >
-          Wróć
-        </button>
-      </div>
-      <div
-        v-else-if="topic === null && group === 'conversation'"
-        class="flex flex-col gap-2"
-      >
-        <button
-          v-if="canAskAboutArea"
-          type="button"
-          class="cursor-pointer rounded-md bg-white/5 px-3 py-2 text-left text-sm hover:bg-white/10"
-          :disabled="discoveringArea"
-          @click="askAboutArea"
-        >
-          Opowiedz mi coś o okolicy.
-        </button>
-        <button
-          type="button"
-          class="cursor-pointer rounded-md bg-white/5 px-3 py-2 text-left text-sm hover:bg-white/10"
-          @click="selectTopic('aboutSelf')"
-        >
-          Powiedz coś o sobie.
-        </button>
-        <button
-          type="button"
-          class="cursor-pointer rounded-md bg-white/5 px-3 py-2 text-left text-sm hover:bg-white/10"
-          @click="selectTopic('currentActivity')"
-        >
-          Co teraz robisz?
-        </button>
-        <button
-          v-if="showAboutVillage"
-          type="button"
-          class="cursor-pointer rounded-md bg-white/5 px-3 py-2 text-left text-sm hover:bg-white/10"
-          @click="selectTopic('aboutVillage')"
-        >
-          Powiedz coś o wiosce.
-        </button>
-        <button
-          type="button"
-          class="cursor-pointer self-start rounded-md bg-white/5 px-3 py-2 text-sm hover:bg-white/10"
-          @click="leaveGroup"
-        >
-          Wróć
-        </button>
-      </div>
-      <div
-        v-else-if="topic === null && group === 'actions'"
-        class="flex flex-col gap-2"
-      >
-        <button
-          type="button"
-          class="cursor-pointer rounded-md bg-white/5 px-3 py-2 text-left text-sm hover:bg-white/10"
-          @click="giveItem"
-        >
-          Daj przedmiot
-        </button>
-        <button
-          type="button"
-          class="cursor-pointer rounded-md bg-white/5 px-3 py-2 text-left text-sm hover:bg-white/10"
-          @click="openProposeJoin"
-        >
-          Zaproponuj udział w wyprawie
-        </button>
-        <button
-          type="button"
-          class="cursor-pointer self-start rounded-md bg-white/5 px-3 py-2 text-sm hover:bg-white/10"
-          @click="leaveGroup"
-        >
-          Wróć
-        </button>
-      </div>
-      <div
-        v-else-if="topic === 'proposeJoin'"
-        class="flex flex-col gap-2"
-      >
-        <p class="text-sm leading-relaxed opacity-90">
-          Na jak długo chcesz zaproponować wspólną wyprawę?
-        </p>
-        <button
-          v-for="opt in JOIN_DURATION_OPTIONS"
-          :key="opt.days"
-          type="button"
-          class="cursor-pointer rounded-md bg-white/5 px-3 py-2 text-left text-sm hover:bg-white/10"
-          @click="proposeJoin(opt.days)"
-        >
-          {{ opt.label }}
-        </button>
-        <button
-          type="button"
-          class="cursor-pointer self-start rounded-md bg-white/5 px-3 py-2 text-sm hover:bg-white/10"
-          @click="backToTopics"
-        >
-          Wróć
-        </button>
-      </div>
-      <div
-        v-else-if="topic === 'activeMatters'"
-        class="flex flex-col gap-2"
-      >
-        <p class="text-sm leading-relaxed opacity-90">
-          {{ responseText }}
-        </p>
-        <button
-          v-for="entry in activeMatters"
-          :key="entry.questId"
-          type="button"
-          class="cursor-pointer rounded-md bg-white/5 px-3 py-2 text-left text-sm hover:bg-white/10"
-          @click="selectActiveMatter(entry)"
-        >
-          {{ entry.title }}
-        </button>
-        <button
-          type="button"
-          class="cursor-pointer self-start rounded-md bg-white/5 px-3 py-2 text-sm hover:bg-white/10"
-          @click="backToTopics"
-        >
-          Wróć
-        </button>
-      </div>
-      <div
-        v-else
-        class="flex flex-col gap-3"
-      >
-        <p class="text-sm leading-relaxed opacity-90">
-          {{ responseText }}
-        </p>
-        <div
-          v-if="topic === 'payment' && !paymentLine && state.paymentClaim"
-          class="flex gap-2"
-        >
-          <button
-            type="button"
-            class="flex-1 cursor-pointer rounded-md bg-white/10 px-3 py-2 text-sm font-medium hover:bg-white/20"
-            @click="payWage"
-          >
-            Zapłać {{ state.paymentClaim.coins }}
-          </button>
-          <button
-            type="button"
-            class="flex-1 cursor-pointer rounded-md bg-white/5 px-3 py-2 text-sm hover:bg-white/10"
-            @click="deferWage"
-          >
-            Jeszcze nie
-          </button>
-        </div>
-        <div
-          v-else-if="topic === 'joinProposal' && !joinProposalLine && state.joinProposal"
-          class="flex gap-2"
-        >
-          <button
-            type="button"
-            class="flex-1 cursor-pointer rounded-md bg-white/10 px-3 py-2 text-sm font-medium hover:bg-white/20"
-            @click="acceptJoinProposal"
-          >
-            Weź go ze sobą
-          </button>
-          <button
-            type="button"
-            class="flex-1 cursor-pointer rounded-md bg-white/5 px-3 py-2 text-sm hover:bg-white/10"
-            @click="declineJoinProposal"
-          >
-            Nie tym razem
-          </button>
-        </div>
-        <div
-          v-else-if="topic === 'help' && hasOffer"
-          class="flex flex-col gap-2"
-        >
-          <div class="flex gap-2">
-            <button
-              type="button"
-              class="flex-1 cursor-pointer rounded-md bg-white/10 px-3 py-2 text-sm font-medium hover:bg-white/20"
-              @click="accept"
-            >
-              Przyjmij
-            </button>
-            <button
-              type="button"
-              class="flex-1 cursor-pointer rounded-md bg-white/5 px-3 py-2 text-sm hover:bg-white/10"
-              @click="close"
-            >
-              Odmów
-            </button>
-          </div>
-          <button
-            v-if="helpDrilled"
-            type="button"
-            class="cursor-pointer self-start rounded-md bg-white/5 px-3 py-2 text-sm hover:bg-white/10"
-            @click="helpBack"
-          >
-            Wróć
-          </button>
-        </div>
-        <template v-else-if="topic === 'help'">
-          <div
-            v-if="helpActions.length"
-            class="flex flex-col gap-2"
-          >
-            <button
-              v-for="(action, index) in helpActions"
-              :key="index"
-              type="button"
-              class="cursor-pointer rounded-md bg-white/10 px-3 py-2 text-left text-sm font-medium hover:bg-white/20"
-              @click="selectHelpAction(index)"
-            >
-              {{ action.label }}
-            </button>
-          </div>
-          <div
-            v-if="helpTopics.length"
-            class="flex flex-col gap-2"
-          >
-            <button
-              v-for="(entry, index) in helpTopics"
-              :key="index"
-              type="button"
-              class="cursor-pointer rounded-md bg-white/5 px-3 py-2 text-left text-sm hover:bg-white/10"
-              @click="selectHelpTopic(index)"
-            >
-              {{ entry.label }}
-            </button>
-          </div>
-          <button
-            type="button"
-            class="cursor-pointer self-start rounded-md bg-white/5 px-3 py-2 text-sm hover:bg-white/10"
-            @click="helpBack"
-          >
-            Wróć
-          </button>
-        </template>
-        <button
-          v-else-if="topic === 'goodbye'"
-          type="button"
-          class="cursor-pointer rounded-md bg-white/5 px-3 py-2 text-sm hover:bg-white/10"
-          @click="close"
-        >
-          Zamknij
-        </button>
-        <button
-          v-else
-          type="button"
-          class="cursor-pointer self-start rounded-md bg-white/5 px-3 py-2 text-sm hover:bg-white/10"
-          @click="backToTopics"
-        >
-          Wróć
-        </button>
-      </div>
-      <div class="mt-3 text-[11px] opacity-60">
-        Esc — zamknij
-      </div>
-    </div>
+    <DialogueWindow
+      :npc-name="state.npcHeading"
+      :portrait-src="state.portraitSrc ?? undefined"
+      :messages="messages"
+      :choices="choices"
+      :esc-closes="false"
+      @choose="onChoose"
+      @close="close"
+    />
   </div>
 </template>

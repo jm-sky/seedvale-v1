@@ -1,7 +1,8 @@
 <script setup lang="ts">
 /**
- * Demo-only NPC dialogue window: header, portrait + history, choices.
- * Pure presentation — state lives in the parent (no world / quest wiring).
+ * NPC dialogue window: header, optional portrait + message history, numbered choices.
+ * Pure presentation — state lives in the parent (used by NpcDialogueMenu and the dialogue demo).
+ * Omit `portraitSrc` to render without a portrait; the history then fills the full width.
  * @domain ui
  */
 import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
@@ -14,11 +15,14 @@ export interface DialogueMessage {
   text: string
 }
 
+export type DialogueChoiceVariant = 'default' | 'primary' | 'muted'
+
 export interface DialogueChoice {
   id: string
   label: string
-  /** Back / Goodbye style — rendered muted. */
-  muted?: boolean
+  /** `primary` highlights main actions (trade, quest report); `muted` is Back / Goodbye. */
+  variant?: DialogueChoiceVariant
+  disabled?: boolean
 }
 
 const props = defineProps<{
@@ -27,6 +31,8 @@ const props = defineProps<{
   portraitSrc?: string
   messages: DialogueMessage[]
   choices: DialogueChoice[]
+  /** Set false when an outer overlay stack already handles Escape. Default true. */
+  escCloses?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -48,12 +54,12 @@ onMounted(scrollToEnd)
 
 function onKey(e: KeyboardEvent): void {
   if (e.key === 'Escape') {
-    emit('close')
+    if (props.escCloses !== false) emit('close')
     return
   }
-  if (e.key >= '1' && e.key <= '9') {
+  if (e.key.length === 1 && e.key >= '1' && e.key <= '9' && !e.ctrlKey && !e.metaKey && !e.altKey) {
     const choice = props.choices[Number(e.key) - 1]
-    if (choice) emit('choose', choice.id)
+    if (choice && !choice.disabled) emit('choose', choice.id)
   }
 }
 
@@ -124,9 +130,15 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey))
         :key="c.id"
         type="button"
         class="flex w-full items-center gap-3 rounded-md border px-3 py-2 text-left text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-        :class="c.muted
-          ? 'border-neutral-700 text-neutral-400 hover:border-neutral-500'
-          : 'border-amber-400/30 bg-amber-400/10 hover:border-amber-400/70 hover:bg-amber-400/20'"
+        :disabled="c.disabled"
+        :class="[
+          c.variant === 'muted'
+            ? 'border-neutral-700 text-neutral-400 hover:border-neutral-500'
+            : c.variant === 'primary'
+              ? 'border-amber-400/60 bg-amber-400/20 font-medium hover:border-amber-400 hover:bg-amber-400/30'
+              : 'border-amber-400/30 bg-amber-400/10 hover:border-amber-400/70 hover:bg-amber-400/20',
+          c.disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer',
+        ]"
         @click="emit('choose', c.id)"
       >
         <kbd

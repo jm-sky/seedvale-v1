@@ -45,6 +45,7 @@ import { DEFAULT_QUALITY_PRESET } from '../config/qualityProfiles'
 import { isTouchDevice } from '../input/isTouchDevice'
 import { NEUTRAL_CHARACTER_EQUIPMENT_VIEW } from '../player/characterPresentation'
 import { type DayNightState, formatClock, phaseName } from '../world/dayNight'
+import { resolveNpcPortraitSrc } from './lib/npcPortrait'
 
 export type VillagerEntry = { npc: Raw<NpcAgent>; settlementName: string; foodSourceType: FoodSourceType }
 type VillagerRefreshEntry = { npc: NpcAgent; settlementName: string; foodSourceType: FoodSourceType }
@@ -61,6 +62,8 @@ type NpcDialogueMenuState = {
   /** Presentation-only dialogue heading (plan npc-052). Canonical
    *  `npc.displayName` is unchanged; elders may get a contextual social title. */
   npcHeading: string
+  /** Portrait image URL for the dialogue window; null renders without a portrait. */
+  portraitSrc: string | null
   settlement: Settlement | null
   timeOfDay: number
   helpResult: QuestDialogOverride | null
@@ -832,7 +835,7 @@ export function emitUiClick(): void {
 }
 
 export const ui = reactive({
-  npcDialogueMenu: { open: false, npc: null, npcHeading: '', settlement: null, timeOfDay: 0, helpResult: null, resolveQuestHelp: null, resolveQuestPreview: null, canClaimGuardReward: false, getCanClaimGuardReward: null, onClaimGuardReward: null, canTrade: false, getCanTrade: null, onOpenTrade: null, canOrderArtisan: false, getCanOrderArtisan: null, onOpenArtisanOrders: null, onRequestFood: null, onRequestWater: null, onAskAboutArea: null, followUp: null, paymentClaim: null, onPayWage: null, onGiveItem: null, joinProposal: null, onRespondToJoinProposal: null, onProposeJoin: null } as NpcDialogueMenuState,
+  npcDialogueMenu: { open: false, npc: null, npcHeading: '', portraitSrc: null, settlement: null, timeOfDay: 0, helpResult: null, resolveQuestHelp: null, resolveQuestPreview: null, canClaimGuardReward: false, getCanClaimGuardReward: null, onClaimGuardReward: null, canTrade: false, getCanTrade: null, onOpenTrade: null, canOrderArtisan: false, getCanOrderArtisan: null, onOpenArtisanOrders: null, onRequestFood: null, onRequestWater: null, onAskAboutArea: null, followUp: null, paymentClaim: null, onPayWage: null, onGiveItem: null, joinProposal: null, onRespondToJoinProposal: null, onProposeJoin: null } as NpcDialogueMenuState,
   villagers: { open: false, entries: [] as VillagerEntry[], page: 0, containers: [] as VillagerContainerOption[] },
   inventory: { open: false, counts: {}, groups: [], totalWeight: 0, maxWeight: 0, totalSize: 0, maxSize: 0, heldTool: null, heldInstanceId: null, primaryMelee: null, primaryRanged: null, onDrop: null, onEquip: null, onUnequip: null, equippedSlots: {}, onEquipArmor: null, onUnequipArmor: null, onConsume: null, onThrow: null, onRead: null, onPlaceTrap: null, onSellInstances: null, onSharpen: null, onPlaceContainer: null, onPlaceTent: null, onSetPrimaryMelee: null, onSetPrimaryRanged: null } as InventoryState,
   pauseMenu: {
@@ -1118,6 +1121,7 @@ export function openNpcDialogueMenu(npc: NpcAgent, settlement: Settlement, quest
     traits: npc.traits,
     relationLevel: questManager.getRelationLevel(npc.id),
   })
+  state.portraitSrc = resolveNpcPortraitSrc(npc)
   state.settlement = settlement
   state.timeOfDay = timeOfDay
   state.helpResult = null
@@ -1226,6 +1230,7 @@ function resetNpcDialogueMenu(): void {
   state.open = false
   state.npc = null
   state.npcHeading = ''
+  state.portraitSrc = null
   state.settlement = null
   state.helpResult = null
   state.resolveQuestHelp = null
