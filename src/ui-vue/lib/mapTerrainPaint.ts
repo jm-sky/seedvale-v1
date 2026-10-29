@@ -10,10 +10,13 @@ const LIGHT = (() => {
   return { x: x / len, y: y / len, z: z / len }
 })()
 /** Hillshade contrast. 128 = flat ground. */
-const SHADE_GAIN = 255
-/** V1 terrain is low (heightScale ~18) next to V3's metre heights; exaggerate
- *  relief so slopes still read at map scale. */
-const RELIEF_EXAGGERATION = 4
+const SHADE_GAIN = 200
+/** Mild vertical exaggeration — V1 slopes (p95 ≈ 0.3) already read at map
+ *  scale; stronger gain saturated steep detail into black streaks. */
+const RELIEF_EXAGGERATION = 1.5
+/** Hillshade multiplier bounds: shadows darken, never blacken. */
+const SHADE_MIN = 0.62
+const SHADE_MAX = 1.3
 
 export type MapTerrainPaintParams = {
   waterLevel: number
@@ -63,8 +66,9 @@ export function paintMapTilePixels(
       const dot = (-gx * LIGHT.x + LIGHT.y - gz * LIGHT.z) / Math.hypot(gx, 1, gz)
       const shade = clamp(128 + SHADE_GAIN * (dot - LIGHT.y), 0, 255)
 
-      let factor = shade / 128
       const isWater = cls === MapRasterClass.Ocean || cls === MapRasterClass.InlandWater
+      // Water surface is flat; shading it only drew dark rims along shores.
+      let factor = isWater ? 1 : clamp(shade / 128, SHADE_MIN, SHADE_MAX)
       if (isWater) {
         const depth = Math.max(0, params.waterLevel - floors[k]!) / heightScale
         factor *= clamp(1.05 - depth * 0.6, 0.6, 1.05)

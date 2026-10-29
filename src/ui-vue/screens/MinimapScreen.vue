@@ -29,7 +29,8 @@ const props = defineProps<{
 const shellClass = computed(() => {
   if (props.embedded) return 'pointer-events-none relative z-[8] flex flex-col items-end gap-1'
   if (touch) return 'pointer-events-none fixed z-[8] flex flex-col items-end gap-1'
-  return 'pointer-events-none fixed z-[8] flex flex-col-reverse items-start gap-1'
+  // Top-right like V3; collapse toggle sits under the lens.
+  return 'pointer-events-none fixed z-[8] flex flex-col-reverse items-end gap-1'
 })
 
 const shellStyle = computed(() => {
@@ -41,8 +42,8 @@ const shellStyle = computed(() => {
     }
   }
   return {
-    bottom: '10px',
-    left: '10px',
+    top: 'max(12px, env(safe-area-inset-top))',
+    right: 'max(12px, env(safe-area-inset-right))',
   }
 })
 
