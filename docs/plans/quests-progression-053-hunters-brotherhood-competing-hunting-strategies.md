@@ -1,5 +1,7 @@
 # Plan: Hunters Brotherhood — competing hunting strategies
 
+> **V1 Revival priority (2026-10-29):** See the [author-approved quest priorities](../research/v1-revival/2026-10-28--quest-round-2-author-decisions.md). Hunters Brotherhood V1+V3 scope requires reconciliation with Group 3 author decisions before implementation. This updates sequencing only; D4 Performance-First and existing approval gates remain in effect.
+
 **Created:** 2026-09-16
 **Status:** `planned` 📋
 **Type:** feature
