@@ -1,0 +1,1803 @@
+{
+  "kind": "correctness-only, NOT benchmark",
+  "gitSha": "91a1db314be88d6908b81de6447bd1513f95870a",
+  "device": "ANGLE (Intel, Intel(R) Arc(TM) 140V GPU (16GB) (0x000064A0) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+  "size": 512,
+  "colorSpace": "srgb",
+  "results": [
+    {
+      "sex": "Male",
+      "clip": "Idle_Loop",
+      "fat": 0,
+      "time": 0.5,
+      "rear": false,
+      "a": {
+        "main": 11,
+        "shadow": 5,
+        "bodyMain": 5,
+        "bodyShadow": 5,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "b": {
+        "main": 8,
+        "shadow": 2,
+        "bodyMain": 2,
+        "bodyShadow": 2,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "infoA": 16,
+      "infoB": 10,
+      "maxChannel": 6,
+      "meanChannel": 0.000052134195963541664,
+      "changedPixels": 15
+    },
+    {
+      "sex": "Male",
+      "clip": "Idle_Loop",
+      "fat": 0,
+      "time": 0.5,
+      "rear": true,
+      "a": {
+        "main": 11,
+        "shadow": 5,
+        "bodyMain": 5,
+        "bodyShadow": 5,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "b": {
+        "main": 8,
+        "shadow": 2,
+        "bodyMain": 2,
+        "bodyShadow": 2,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "infoA": 16,
+      "infoB": 10,
+      "maxChannel": 1,
+      "meanChannel": 0.000006357828776041667,
+      "changedPixels": 4
+    },
+    {
+      "sex": "Male",
+      "clip": "Idle_Loop",
+      "fat": 1,
+      "time": 0.5,
+      "rear": false,
+      "a": {
+        "main": 11,
+        "shadow": 5,
+        "bodyMain": 5,
+        "bodyShadow": 5,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "b": {
+        "main": 8,
+        "shadow": 2,
+        "bodyMain": 2,
+        "bodyShadow": 2,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "infoA": 16,
+      "infoB": 10,
+      "maxChannel": 6,
+      "meanChannel": 0.000064849853515625,
+      "changedPixels": 19
+    },
+    {
+      "sex": "Male",
+      "clip": "Idle_Loop",
+      "fat": 1,
+      "time": 0.5,
+      "rear": true,
+      "a": {
+        "main": 11,
+        "shadow": 5,
+        "bodyMain": 5,
+        "bodyShadow": 5,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "b": {
+        "main": 8,
+        "shadow": 2,
+        "bodyMain": 2,
+        "bodyShadow": 2,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "infoA": 16,
+      "infoB": 10,
+      "maxChannel": 10,
+      "meanChannel": 0.000016530354817708332,
+      "changedPixels": 1
+    },
+    {
+      "sex": "Male",
+      "clip": "Walk_Loop",
+      "fat": 0,
+      "time": 0.5,
+      "rear": false,
+      "a": {
+        "main": 11,
+        "shadow": 5,
+        "bodyMain": 5,
+        "bodyShadow": 5,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "b": {
+        "main": 8,
+        "shadow": 2,
+        "bodyMain": 2,
+        "bodyShadow": 2,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "infoA": 16,
+      "infoB": 10,
+      "maxChannel": 20,
+      "meanChannel": 0.00008646647135416667,
+      "changedPixels": 20
+    },
+    {
+      "sex": "Male",
+      "clip": "Walk_Loop",
+      "fat": 0,
+      "time": 0.5,
+      "rear": true,
+      "a": {
+        "main": 11,
+        "shadow": 5,
+        "bodyMain": 5,
+        "bodyShadow": 5,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "b": {
+        "main": 8,
+        "shadow": 2,
+        "bodyMain": 2,
+        "bodyShadow": 2,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "infoA": 16,
+      "infoB": 10,
+      "maxChannel": 1,
+      "meanChannel": 0.0000025431315104166665,
+      "changedPixels": 2
+    },
+    {
+      "sex": "Male",
+      "clip": "Walk_Loop",
+      "fat": 1,
+      "time": 0.5,
+      "rear": false,
+      "a": {
+        "main": 11,
+        "shadow": 5,
+        "bodyMain": 5,
+        "bodyShadow": 5,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "b": {
+        "main": 8,
+        "shadow": 2,
+        "bodyMain": 2,
+        "bodyShadow": 2,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "infoA": 16,
+      "infoB": 10,
+      "maxChannel": 7,
+      "meanChannel": 0.00006993611653645833,
+      "changedPixels": 23
+    },
+    {
+      "sex": "Male",
+      "clip": "Walk_Loop",
+      "fat": 1,
+      "time": 0.5,
+      "rear": true,
+      "a": {
+        "main": 11,
+        "shadow": 5,
+        "bodyMain": 5,
+        "bodyShadow": 5,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "b": {
+        "main": 8,
+        "shadow": 2,
+        "bodyMain": 2,
+        "bodyShadow": 2,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "infoA": 16,
+      "infoB": 10,
+      "maxChannel": 1,
+      "meanChannel": 0.0000012715657552083333,
+      "changedPixels": 1
+    },
+    {
+      "sex": "Male",
+      "clip": "Sprint_Loop",
+      "fat": 0,
+      "time": 0.5,
+      "rear": false,
+      "a": {
+        "main": 11,
+        "shadow": 5,
+        "bodyMain": 5,
+        "bodyShadow": 5,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "b": {
+        "main": 8,
+        "shadow": 2,
+        "bodyMain": 2,
+        "bodyShadow": 2,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "infoA": 16,
+      "infoB": 10,
+      "maxChannel": 11,
+      "meanChannel": 0.000058492024739583336,
+      "changedPixels": 6
+    },
+    {
+      "sex": "Male",
+      "clip": "Sprint_Loop",
+      "fat": 0,
+      "time": 0.5,
+      "rear": true,
+      "a": {
+        "main": 11,
+        "shadow": 5,
+        "bodyMain": 5,
+        "bodyShadow": 5,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "b": {
+        "main": 8,
+        "shadow": 2,
+        "bodyMain": 2,
+        "bodyShadow": 2,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "infoA": 16,
+      "infoB": 10,
+      "maxChannel": 1,
+      "meanChannel": 0.0000012715657552083333,
+      "changedPixels": 1
+    },
+    {
+      "sex": "Male",
+      "clip": "Sprint_Loop",
+      "fat": 1,
+      "time": 0.5,
+      "rear": false,
+      "a": {
+        "main": 11,
+        "shadow": 5,
+        "bodyMain": 5,
+        "bodyShadow": 5,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "b": {
+        "main": 8,
+        "shadow": 2,
+        "bodyMain": 2,
+        "bodyShadow": 2,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "infoA": 16,
+      "infoB": 10,
+      "maxChannel": 1,
+      "meanChannel": 0.000011444091796875,
+      "changedPixels": 9
+    },
+    {
+      "sex": "Male",
+      "clip": "Sprint_Loop",
+      "fat": 1,
+      "time": 0.5,
+      "rear": true,
+      "a": {
+        "main": 11,
+        "shadow": 5,
+        "bodyMain": 5,
+        "bodyShadow": 5,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "b": {
+        "main": 8,
+        "shadow": 2,
+        "bodyMain": 2,
+        "bodyShadow": 2,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "infoA": 16,
+      "infoB": 10,
+      "maxChannel": 1,
+      "meanChannel": 0.0000012715657552083333,
+      "changedPixels": 1
+    },
+    {
+      "sex": "Male",
+      "clip": "Sword_Attack",
+      "fat": 0,
+      "time": 0.5,
+      "rear": false,
+      "a": {
+        "main": 11,
+        "shadow": 5,
+        "bodyMain": 5,
+        "bodyShadow": 5,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "b": {
+        "main": 8,
+        "shadow": 2,
+        "bodyMain": 2,
+        "bodyShadow": 2,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "infoA": 16,
+      "infoB": 10,
+      "maxChannel": 1,
+      "meanChannel": 0.000006357828776041667,
+      "changedPixels": 5
+    },
+    {
+      "sex": "Male",
+      "clip": "Sword_Attack",
+      "fat": 0,
+      "time": 0.5,
+      "rear": true,
+      "a": {
+        "main": 11,
+        "shadow": 5,
+        "bodyMain": 5,
+        "bodyShadow": 5,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "b": {
+        "main": 8,
+        "shadow": 2,
+        "bodyMain": 2,
+        "bodyShadow": 2,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "infoA": 16,
+      "infoB": 10,
+      "maxChannel": 1,
+      "meanChannel": 0.000011444091796875,
+      "changedPixels": 8
+    },
+    {
+      "sex": "Male",
+      "clip": "Sword_Attack",
+      "fat": 1,
+      "time": 0.5,
+      "rear": false,
+      "a": {
+        "main": 11,
+        "shadow": 5,
+        "bodyMain": 5,
+        "bodyShadow": 5,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "b": {
+        "main": 8,
+        "shadow": 2,
+        "bodyMain": 2,
+        "bodyShadow": 2,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "infoA": 16,
+      "infoB": 10,
+      "maxChannel": 1,
+      "meanChannel": 0.000005086263020833333,
+      "changedPixels": 4
+    },
+    {
+      "sex": "Male",
+      "clip": "Sword_Attack",
+      "fat": 1,
+      "time": 0.5,
+      "rear": true,
+      "a": {
+        "main": 11,
+        "shadow": 5,
+        "bodyMain": 5,
+        "bodyShadow": 5,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "b": {
+        "main": 8,
+        "shadow": 2,
+        "bodyMain": 2,
+        "bodyShadow": 2,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "infoA": 16,
+      "infoB": 10,
+      "maxChannel": 0,
+      "meanChannel": 0,
+      "changedPixels": 0
+    },
+    {
+      "sex": "Male",
+      "clip": "Interact",
+      "fat": 0,
+      "time": 0.5,
+      "rear": false,
+      "a": {
+        "main": 11,
+        "shadow": 5,
+        "bodyMain": 5,
+        "bodyShadow": 5,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "b": {
+        "main": 8,
+        "shadow": 2,
+        "bodyMain": 2,
+        "bodyShadow": 2,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "infoA": 16,
+      "infoB": 10,
+      "maxChannel": 9,
+      "meanChannel": 0.000034332275390625,
+      "changedPixels": 5
+    },
+    {
+      "sex": "Male",
+      "clip": "Interact",
+      "fat": 0,
+      "time": 0.5,
+      "rear": true,
+      "a": {
+        "main": 11,
+        "shadow": 5,
+        "bodyMain": 5,
+        "bodyShadow": 5,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "b": {
+        "main": 8,
+        "shadow": 2,
+        "bodyMain": 2,
+        "bodyShadow": 2,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "infoA": 16,
+      "infoB": 10,
+      "maxChannel": 1,
+      "meanChannel": 0.0000012715657552083333,
+      "changedPixels": 1
+    },
+    {
+      "sex": "Male",
+      "clip": "Interact",
+      "fat": 1,
+      "time": 0.5,
+      "rear": false,
+      "a": {
+        "main": 11,
+        "shadow": 5,
+        "bodyMain": 5,
+        "bodyShadow": 5,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "b": {
+        "main": 8,
+        "shadow": 2,
+        "bodyMain": 2,
+        "bodyShadow": 2,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "infoA": 16,
+      "infoB": 10,
+      "maxChannel": 7,
+      "meanChannel": 0.000030517578125,
+      "changedPixels": 7
+    },
+    {
+      "sex": "Male",
+      "clip": "Interact",
+      "fat": 1,
+      "time": 0.5,
+      "rear": true,
+      "a": {
+        "main": 11,
+        "shadow": 5,
+        "bodyMain": 5,
+        "bodyShadow": 5,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "b": {
+        "main": 8,
+        "shadow": 2,
+        "bodyMain": 2,
+        "bodyShadow": 2,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "infoA": 16,
+      "infoB": 10,
+      "maxChannel": 0,
+      "meanChannel": 0,
+      "changedPixels": 0
+    },
+    {
+      "sex": "Male",
+      "clip": "Sitting_Idle_Loop",
+      "fat": 0,
+      "time": 0.5,
+      "rear": false,
+      "a": {
+        "main": 11,
+        "shadow": 5,
+        "bodyMain": 5,
+        "bodyShadow": 5,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "b": {
+        "main": 8,
+        "shadow": 2,
+        "bodyMain": 2,
+        "bodyShadow": 2,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "infoA": 16,
+      "infoB": 10,
+      "maxChannel": 5,
+      "meanChannel": 0.000030517578125,
+      "changedPixels": 10
+    },
+    {
+      "sex": "Male",
+      "clip": "Sitting_Idle_Loop",
+      "fat": 0,
+      "time": 0.5,
+      "rear": true,
+      "a": {
+        "main": 11,
+        "shadow": 5,
+        "bodyMain": 5,
+        "bodyShadow": 5,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "b": {
+        "main": 8,
+        "shadow": 2,
+        "bodyMain": 2,
+        "bodyShadow": 2,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "infoA": 16,
+      "infoB": 10,
+      "maxChannel": 1,
+      "meanChannel": 0.000005086263020833333,
+      "changedPixels": 4
+    },
+    {
+      "sex": "Male",
+      "clip": "Sitting_Idle_Loop",
+      "fat": 1,
+      "time": 0.5,
+      "rear": false,
+      "a": {
+        "main": 11,
+        "shadow": 5,
+        "bodyMain": 5,
+        "bodyShadow": 5,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "b": {
+        "main": 8,
+        "shadow": 2,
+        "bodyMain": 2,
+        "bodyShadow": 2,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "infoA": 16,
+      "infoB": 10,
+      "maxChannel": 7,
+      "meanChannel": 0.00007756551106770833,
+      "changedPixels": 16
+    },
+    {
+      "sex": "Male",
+      "clip": "Sitting_Idle_Loop",
+      "fat": 1,
+      "time": 0.5,
+      "rear": true,
+      "a": {
+        "main": 11,
+        "shadow": 5,
+        "bodyMain": 5,
+        "bodyShadow": 5,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "b": {
+        "main": 8,
+        "shadow": 2,
+        "bodyMain": 2,
+        "bodyShadow": 2,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "infoA": 16,
+      "infoB": 10,
+      "maxChannel": 0,
+      "meanChannel": 0,
+      "changedPixels": 0
+    },
+    {
+      "sex": "Male",
+      "clip": "Fixing_Kneeling",
+      "fat": 0,
+      "time": 0.5,
+      "rear": false,
+      "a": {
+        "main": 11,
+        "shadow": 5,
+        "bodyMain": 5,
+        "bodyShadow": 5,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "b": {
+        "main": 8,
+        "shadow": 2,
+        "bodyMain": 2,
+        "bodyShadow": 2,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "infoA": 16,
+      "infoB": 10,
+      "maxChannel": 4,
+      "meanChannel": 0.000035603841145833336,
+      "changedPixels": 11
+    },
+    {
+      "sex": "Male",
+      "clip": "Fixing_Kneeling",
+      "fat": 0,
+      "time": 0.5,
+      "rear": true,
+      "a": {
+        "main": 11,
+        "shadow": 5,
+        "bodyMain": 5,
+        "bodyShadow": 5,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "b": {
+        "main": 8,
+        "shadow": 2,
+        "bodyMain": 2,
+        "bodyShadow": 2,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "infoA": 16,
+      "infoB": 10,
+      "maxChannel": 1,
+      "meanChannel": 0.0000012715657552083333,
+      "changedPixels": 1
+    },
+    {
+      "sex": "Male",
+      "clip": "Fixing_Kneeling",
+      "fat": 1,
+      "time": 0.5,
+      "rear": false,
+      "a": {
+        "main": 11,
+        "shadow": 5,
+        "bodyMain": 5,
+        "bodyShadow": 5,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "b": {
+        "main": 8,
+        "shadow": 2,
+        "bodyMain": 2,
+        "bodyShadow": 2,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "infoA": 16,
+      "infoB": 10,
+      "maxChannel": 11,
+      "meanChannel": 0.000057220458984375,
+      "changedPixels": 12
+    },
+    {
+      "sex": "Male",
+      "clip": "Fixing_Kneeling",
+      "fat": 1,
+      "time": 0.5,
+      "rear": true,
+      "a": {
+        "main": 11,
+        "shadow": 5,
+        "bodyMain": 5,
+        "bodyShadow": 5,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "b": {
+        "main": 8,
+        "shadow": 2,
+        "bodyMain": 2,
+        "bodyShadow": 2,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "infoA": 16,
+      "infoB": 10,
+      "maxChannel": 1,
+      "meanChannel": 0.0000012715657552083333,
+      "changedPixels": 1
+    },
+    {
+      "sex": "Male",
+      "clip": "Death01",
+      "fat": 0,
+      "time": 1,
+      "rear": false,
+      "a": {
+        "main": 11,
+        "shadow": 5,
+        "bodyMain": 5,
+        "bodyShadow": 5,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "b": {
+        "main": 8,
+        "shadow": 2,
+        "bodyMain": 2,
+        "bodyShadow": 2,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "infoA": 16,
+      "infoB": 10,
+      "maxChannel": 4,
+      "meanChannel": 0.000029246012369791668,
+      "changedPixels": 12
+    },
+    {
+      "sex": "Male",
+      "clip": "Death01",
+      "fat": 0,
+      "time": 1,
+      "rear": true,
+      "a": {
+        "main": 11,
+        "shadow": 5,
+        "bodyMain": 5,
+        "bodyShadow": 5,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "b": {
+        "main": 8,
+        "shadow": 2,
+        "bodyMain": 2,
+        "bodyShadow": 2,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "infoA": 16,
+      "infoB": 10,
+      "maxChannel": 3,
+      "meanChannel": 0.000034332275390625,
+      "changedPixels": 15
+    },
+    {
+      "sex": "Male",
+      "clip": "Death01",
+      "fat": 1,
+      "time": 1,
+      "rear": false,
+      "a": {
+        "main": 11,
+        "shadow": 5,
+        "bodyMain": 5,
+        "bodyShadow": 5,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "b": {
+        "main": 8,
+        "shadow": 2,
+        "bodyMain": 2,
+        "bodyShadow": 2,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "infoA": 16,
+      "infoB": 10,
+      "maxChannel": 5,
+      "meanChannel": 0.00003814697265625,
+      "changedPixels": 7
+    },
+    {
+      "sex": "Male",
+      "clip": "Death01",
+      "fat": 1,
+      "time": 1,
+      "rear": true,
+      "a": {
+        "main": 11,
+        "shadow": 5,
+        "bodyMain": 5,
+        "bodyShadow": 5,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "b": {
+        "main": 8,
+        "shadow": 2,
+        "bodyMain": 2,
+        "bodyShadow": 2,
+        "mainTriangles": 13217,
+        "shadowTriangles": 8576
+      },
+      "infoA": 16,
+      "infoB": 10,
+      "maxChannel": 1,
+      "meanChannel": 0.000021616617838541668,
+      "changedPixels": 16
+    },
+    {
+      "sex": "Female",
+      "clip": "Idle_Loop",
+      "fat": 0,
+      "time": 0.5,
+      "rear": false,
+      "a": {
+        "main": 11,
+        "shadow": 4,
+        "bodyMain": 4,
+        "bodyShadow": 4,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "b": {
+        "main": 8,
+        "shadow": 1,
+        "bodyMain": 1,
+        "bodyShadow": 1,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "infoA": 15,
+      "infoB": 9,
+      "maxChannel": 0,
+      "meanChannel": 0,
+      "changedPixels": 0
+    },
+    {
+      "sex": "Female",
+      "clip": "Idle_Loop",
+      "fat": 0,
+      "time": 0.5,
+      "rear": true,
+      "a": {
+        "main": 11,
+        "shadow": 4,
+        "bodyMain": 4,
+        "bodyShadow": 4,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "b": {
+        "main": 8,
+        "shadow": 1,
+        "bodyMain": 1,
+        "bodyShadow": 1,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "infoA": 15,
+      "infoB": 9,
+      "maxChannel": 1,
+      "meanChannel": 0.000008900960286458334,
+      "changedPixels": 7
+    },
+    {
+      "sex": "Female",
+      "clip": "Idle_Loop",
+      "fat": 1,
+      "time": 0.5,
+      "rear": false,
+      "a": {
+        "main": 11,
+        "shadow": 4,
+        "bodyMain": 4,
+        "bodyShadow": 4,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "b": {
+        "main": 8,
+        "shadow": 1,
+        "bodyMain": 1,
+        "bodyShadow": 1,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "infoA": 15,
+      "infoB": 9,
+      "maxChannel": 4,
+      "meanChannel": 0.0000152587890625,
+      "changedPixels": 1
+    },
+    {
+      "sex": "Female",
+      "clip": "Idle_Loop",
+      "fat": 1,
+      "time": 0.5,
+      "rear": true,
+      "a": {
+        "main": 11,
+        "shadow": 4,
+        "bodyMain": 4,
+        "bodyShadow": 4,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "b": {
+        "main": 8,
+        "shadow": 1,
+        "bodyMain": 1,
+        "bodyShadow": 1,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "infoA": 15,
+      "infoB": 9,
+      "maxChannel": 1,
+      "meanChannel": 0.000010172526041666666,
+      "changedPixels": 8
+    },
+    {
+      "sex": "Female",
+      "clip": "Walk_Loop",
+      "fat": 0,
+      "time": 0.5,
+      "rear": false,
+      "a": {
+        "main": 11,
+        "shadow": 4,
+        "bodyMain": 4,
+        "bodyShadow": 4,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "b": {
+        "main": 8,
+        "shadow": 1,
+        "bodyMain": 1,
+        "bodyShadow": 1,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "infoA": 15,
+      "infoB": 9,
+      "maxChannel": 1,
+      "meanChannel": 0.0000012715657552083333,
+      "changedPixels": 1
+    },
+    {
+      "sex": "Female",
+      "clip": "Walk_Loop",
+      "fat": 0,
+      "time": 0.5,
+      "rear": true,
+      "a": {
+        "main": 11,
+        "shadow": 4,
+        "bodyMain": 4,
+        "bodyShadow": 4,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "b": {
+        "main": 8,
+        "shadow": 1,
+        "bodyMain": 1,
+        "bodyShadow": 1,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "infoA": 15,
+      "infoB": 9,
+      "maxChannel": 1,
+      "meanChannel": 0.0000012715657552083333,
+      "changedPixels": 1
+    },
+    {
+      "sex": "Female",
+      "clip": "Walk_Loop",
+      "fat": 1,
+      "time": 0.5,
+      "rear": false,
+      "a": {
+        "main": 11,
+        "shadow": 4,
+        "bodyMain": 4,
+        "bodyShadow": 4,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "b": {
+        "main": 8,
+        "shadow": 1,
+        "bodyMain": 1,
+        "bodyShadow": 1,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "infoA": 15,
+      "infoB": 9,
+      "maxChannel": 1,
+      "meanChannel": 0.0000025431315104166665,
+      "changedPixels": 2
+    },
+    {
+      "sex": "Female",
+      "clip": "Walk_Loop",
+      "fat": 1,
+      "time": 0.5,
+      "rear": true,
+      "a": {
+        "main": 11,
+        "shadow": 4,
+        "bodyMain": 4,
+        "bodyShadow": 4,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "b": {
+        "main": 8,
+        "shadow": 1,
+        "bodyMain": 1,
+        "bodyShadow": 1,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "infoA": 15,
+      "infoB": 9,
+      "maxChannel": 1,
+      "meanChannel": 0.0000012715657552083333,
+      "changedPixels": 1
+    },
+    {
+      "sex": "Female",
+      "clip": "Sprint_Loop",
+      "fat": 0,
+      "time": 0.5,
+      "rear": false,
+      "a": {
+        "main": 11,
+        "shadow": 4,
+        "bodyMain": 4,
+        "bodyShadow": 4,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "b": {
+        "main": 8,
+        "shadow": 1,
+        "bodyMain": 1,
+        "bodyShadow": 1,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "infoA": 15,
+      "infoB": 9,
+      "maxChannel": 1,
+      "meanChannel": 0.0000012715657552083333,
+      "changedPixels": 1
+    },
+    {
+      "sex": "Female",
+      "clip": "Sprint_Loop",
+      "fat": 0,
+      "time": 0.5,
+      "rear": true,
+      "a": {
+        "main": 11,
+        "shadow": 4,
+        "bodyMain": 4,
+        "bodyShadow": 4,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "b": {
+        "main": 8,
+        "shadow": 1,
+        "bodyMain": 1,
+        "bodyShadow": 1,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "infoA": 15,
+      "infoB": 9,
+      "maxChannel": 0,
+      "meanChannel": 0,
+      "changedPixels": 0
+    },
+    {
+      "sex": "Female",
+      "clip": "Sprint_Loop",
+      "fat": 1,
+      "time": 0.5,
+      "rear": false,
+      "a": {
+        "main": 11,
+        "shadow": 4,
+        "bodyMain": 4,
+        "bodyShadow": 4,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "b": {
+        "main": 8,
+        "shadow": 1,
+        "bodyMain": 1,
+        "bodyShadow": 1,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "infoA": 15,
+      "infoB": 9,
+      "maxChannel": 1,
+      "meanChannel": 0.0000025431315104166665,
+      "changedPixels": 2
+    },
+    {
+      "sex": "Female",
+      "clip": "Sprint_Loop",
+      "fat": 1,
+      "time": 0.5,
+      "rear": true,
+      "a": {
+        "main": 11,
+        "shadow": 4,
+        "bodyMain": 4,
+        "bodyShadow": 4,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "b": {
+        "main": 8,
+        "shadow": 1,
+        "bodyMain": 1,
+        "bodyShadow": 1,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "infoA": 15,
+      "infoB": 9,
+      "maxChannel": 0,
+      "meanChannel": 0,
+      "changedPixels": 0
+    },
+    {
+      "sex": "Female",
+      "clip": "Sword_Attack",
+      "fat": 0,
+      "time": 0.5,
+      "rear": false,
+      "a": {
+        "main": 11,
+        "shadow": 4,
+        "bodyMain": 4,
+        "bodyShadow": 4,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "b": {
+        "main": 8,
+        "shadow": 1,
+        "bodyMain": 1,
+        "bodyShadow": 1,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "infoA": 15,
+      "infoB": 9,
+      "maxChannel": 1,
+      "meanChannel": 0.00000762939453125,
+      "changedPixels": 6
+    },
+    {
+      "sex": "Female",
+      "clip": "Sword_Attack",
+      "fat": 0,
+      "time": 0.5,
+      "rear": true,
+      "a": {
+        "main": 11,
+        "shadow": 4,
+        "bodyMain": 4,
+        "bodyShadow": 4,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "b": {
+        "main": 8,
+        "shadow": 1,
+        "bodyMain": 1,
+        "bodyShadow": 1,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "infoA": 15,
+      "infoB": 9,
+      "maxChannel": 8,
+      "meanChannel": 0.000026702880859375,
+      "changedPixels": 1
+    },
+    {
+      "sex": "Female",
+      "clip": "Sword_Attack",
+      "fat": 1,
+      "time": 0.5,
+      "rear": false,
+      "a": {
+        "main": 11,
+        "shadow": 4,
+        "bodyMain": 4,
+        "bodyShadow": 4,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "b": {
+        "main": 8,
+        "shadow": 1,
+        "bodyMain": 1,
+        "bodyShadow": 1,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "infoA": 15,
+      "infoB": 9,
+      "maxChannel": 42,
+      "meanChannel": 0.000179290771484375,
+      "changedPixels": 14
+    },
+    {
+      "sex": "Female",
+      "clip": "Sword_Attack",
+      "fat": 1,
+      "time": 0.5,
+      "rear": true,
+      "a": {
+        "main": 11,
+        "shadow": 4,
+        "bodyMain": 4,
+        "bodyShadow": 4,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "b": {
+        "main": 8,
+        "shadow": 1,
+        "bodyMain": 1,
+        "bodyShadow": 1,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "infoA": 15,
+      "infoB": 9,
+      "maxChannel": 1,
+      "meanChannel": 0.000003814697265625,
+      "changedPixels": 2
+    },
+    {
+      "sex": "Female",
+      "clip": "Interact",
+      "fat": 0,
+      "time": 0.5,
+      "rear": false,
+      "a": {
+        "main": 11,
+        "shadow": 4,
+        "bodyMain": 4,
+        "bodyShadow": 4,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "b": {
+        "main": 8,
+        "shadow": 1,
+        "bodyMain": 1,
+        "bodyShadow": 1,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "infoA": 15,
+      "infoB": 9,
+      "maxChannel": 1,
+      "meanChannel": 0.0000012715657552083333,
+      "changedPixels": 1
+    },
+    {
+      "sex": "Female",
+      "clip": "Interact",
+      "fat": 0,
+      "time": 0.5,
+      "rear": true,
+      "a": {
+        "main": 11,
+        "shadow": 4,
+        "bodyMain": 4,
+        "bodyShadow": 4,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "b": {
+        "main": 8,
+        "shadow": 1,
+        "bodyMain": 1,
+        "bodyShadow": 1,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "infoA": 15,
+      "infoB": 9,
+      "maxChannel": 0,
+      "meanChannel": 0,
+      "changedPixels": 0
+    },
+    {
+      "sex": "Female",
+      "clip": "Interact",
+      "fat": 1,
+      "time": 0.5,
+      "rear": false,
+      "a": {
+        "main": 11,
+        "shadow": 4,
+        "bodyMain": 4,
+        "bodyShadow": 4,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "b": {
+        "main": 8,
+        "shadow": 1,
+        "bodyMain": 1,
+        "bodyShadow": 1,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "infoA": 15,
+      "infoB": 9,
+      "maxChannel": 1,
+      "meanChannel": 0.0000012715657552083333,
+      "changedPixels": 1
+    },
+    {
+      "sex": "Female",
+      "clip": "Interact",
+      "fat": 1,
+      "time": 0.5,
+      "rear": true,
+      "a": {
+        "main": 11,
+        "shadow": 4,
+        "bodyMain": 4,
+        "bodyShadow": 4,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "b": {
+        "main": 8,
+        "shadow": 1,
+        "bodyMain": 1,
+        "bodyShadow": 1,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "infoA": 15,
+      "infoB": 9,
+      "maxChannel": 0,
+      "meanChannel": 0,
+      "changedPixels": 0
+    },
+    {
+      "sex": "Female",
+      "clip": "Sitting_Idle_Loop",
+      "fat": 0,
+      "time": 0.5,
+      "rear": false,
+      "a": {
+        "main": 11,
+        "shadow": 4,
+        "bodyMain": 4,
+        "bodyShadow": 4,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "b": {
+        "main": 8,
+        "shadow": 1,
+        "bodyMain": 1,
+        "bodyShadow": 1,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "infoA": 15,
+      "infoB": 9,
+      "maxChannel": 0,
+      "meanChannel": 0,
+      "changedPixels": 0
+    },
+    {
+      "sex": "Female",
+      "clip": "Sitting_Idle_Loop",
+      "fat": 0,
+      "time": 0.5,
+      "rear": true,
+      "a": {
+        "main": 11,
+        "shadow": 4,
+        "bodyMain": 4,
+        "bodyShadow": 4,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "b": {
+        "main": 8,
+        "shadow": 1,
+        "bodyMain": 1,
+        "bodyShadow": 1,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "infoA": 15,
+      "infoB": 9,
+      "maxChannel": 1,
+      "meanChannel": 0.0000012715657552083333,
+      "changedPixels": 1
+    },
+    {
+      "sex": "Female",
+      "clip": "Sitting_Idle_Loop",
+      "fat": 1,
+      "time": 0.5,
+      "rear": false,
+      "a": {
+        "main": 11,
+        "shadow": 4,
+        "bodyMain": 4,
+        "bodyShadow": 4,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "b": {
+        "main": 8,
+        "shadow": 1,
+        "bodyMain": 1,
+        "bodyShadow": 1,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "infoA": 15,
+      "infoB": 9,
+      "maxChannel": 1,
+      "meanChannel": 0.0000012715657552083333,
+      "changedPixels": 1
+    },
+    {
+      "sex": "Female",
+      "clip": "Sitting_Idle_Loop",
+      "fat": 1,
+      "time": 0.5,
+      "rear": true,
+      "a": {
+        "main": 11,
+        "shadow": 4,
+        "bodyMain": 4,
+        "bodyShadow": 4,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "b": {
+        "main": 8,
+        "shadow": 1,
+        "bodyMain": 1,
+        "bodyShadow": 1,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "infoA": 15,
+      "infoB": 9,
+      "maxChannel": 0,
+      "meanChannel": 0,
+      "changedPixels": 0
+    },
+    {
+      "sex": "Female",
+      "clip": "Fixing_Kneeling",
+      "fat": 0,
+      "time": 0.5,
+      "rear": false,
+      "a": {
+        "main": 11,
+        "shadow": 4,
+        "bodyMain": 4,
+        "bodyShadow": 4,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "b": {
+        "main": 8,
+        "shadow": 1,
+        "bodyMain": 1,
+        "bodyShadow": 1,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "infoA": 15,
+      "infoB": 9,
+      "maxChannel": 0,
+      "meanChannel": 0,
+      "changedPixels": 0
+    },
+    {
+      "sex": "Female",
+      "clip": "Fixing_Kneeling",
+      "fat": 0,
+      "time": 0.5,
+      "rear": true,
+      "a": {
+        "main": 11,
+        "shadow": 4,
+        "bodyMain": 4,
+        "bodyShadow": 4,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "b": {
+        "main": 8,
+        "shadow": 1,
+        "bodyMain": 1,
+        "bodyShadow": 1,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "infoA": 15,
+      "infoB": 9,
+      "maxChannel": 0,
+      "meanChannel": 0,
+      "changedPixels": 0
+    },
+    {
+      "sex": "Female",
+      "clip": "Fixing_Kneeling",
+      "fat": 1,
+      "time": 0.5,
+      "rear": false,
+      "a": {
+        "main": 11,
+        "shadow": 4,
+        "bodyMain": 4,
+        "bodyShadow": 4,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "b": {
+        "main": 8,
+        "shadow": 1,
+        "bodyMain": 1,
+        "bodyShadow": 1,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "infoA": 15,
+      "infoB": 9,
+      "maxChannel": 1,
+      "meanChannel": 0.0000025431315104166665,
+      "changedPixels": 2
+    },
+    {
+      "sex": "Female",
+      "clip": "Fixing_Kneeling",
+      "fat": 1,
+      "time": 0.5,
+      "rear": true,
+      "a": {
+        "main": 11,
+        "shadow": 4,
+        "bodyMain": 4,
+        "bodyShadow": 4,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "b": {
+        "main": 8,
+        "shadow": 1,
+        "bodyMain": 1,
+        "bodyShadow": 1,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "infoA": 15,
+      "infoB": 9,
+      "maxChannel": 0,
+      "meanChannel": 0,
+      "changedPixels": 0
+    },
+    {
+      "sex": "Female",
+      "clip": "Death01",
+      "fat": 0,
+      "time": 1,
+      "rear": false,
+      "a": {
+        "main": 11,
+        "shadow": 4,
+        "bodyMain": 4,
+        "bodyShadow": 4,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "b": {
+        "main": 8,
+        "shadow": 1,
+        "bodyMain": 1,
+        "bodyShadow": 1,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "infoA": 15,
+      "infoB": 9,
+      "maxChannel": 6,
+      "meanChannel": 0.000024159749348958332,
+      "changedPixels": 5
+    },
+    {
+      "sex": "Female",
+      "clip": "Death01",
+      "fat": 0,
+      "time": 1,
+      "rear": true,
+      "a": {
+        "main": 11,
+        "shadow": 4,
+        "bodyMain": 4,
+        "bodyShadow": 4,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "b": {
+        "main": 8,
+        "shadow": 1,
+        "bodyMain": 1,
+        "bodyShadow": 1,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "infoA": 15,
+      "infoB": 9,
+      "maxChannel": 1,
+      "meanChannel": 0.000003814697265625,
+      "changedPixels": 2
+    },
+    {
+      "sex": "Female",
+      "clip": "Death01",
+      "fat": 1,
+      "time": 1,
+      "rear": false,
+      "a": {
+        "main": 11,
+        "shadow": 4,
+        "bodyMain": 4,
+        "bodyShadow": 4,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "b": {
+        "main": 8,
+        "shadow": 1,
+        "bodyMain": 1,
+        "bodyShadow": 1,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "infoA": 15,
+      "infoB": 9,
+      "maxChannel": 6,
+      "meanChannel": 0.000025431315104166668,
+      "changedPixels": 6
+    },
+    {
+      "sex": "Female",
+      "clip": "Death01",
+      "fat": 1,
+      "time": 1,
+      "rear": true,
+      "a": {
+        "main": 11,
+        "shadow": 4,
+        "bodyMain": 4,
+        "bodyShadow": 4,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "b": {
+        "main": 8,
+        "shadow": 1,
+        "bodyMain": 1,
+        "bodyShadow": 1,
+        "mainTriangles": 11537,
+        "shadowTriangles": 5915
+      },
+      "infoA": 15,
+      "infoB": 9,
+      "maxChannel": 1,
+      "meanChannel": 0.000006357828776041667,
+      "changedPixels": 4
+    }
+  ],
+  "errors": [],
+  "glError": 0
+}

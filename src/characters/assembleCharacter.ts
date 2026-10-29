@@ -28,6 +28,8 @@ import {
 
 export type AssembledCharacter = {
   animations: AnimationClip[]
+  /** Exact body GLB ownership, captured before head/hair/garment attachment. */
+  bodySkinned?: readonly SkinnedMesh[]
   scene: Group
   warnings: readonly string[]
 }
@@ -149,6 +151,10 @@ export async function assembleCharacter(a: CharacterAppearance): Promise<Assembl
   const warnings: string[] = []
   const { scene, animations: bodyAnims } = await loadGltfAnimated(bodyUrl(a.sex, a.outfit))
   const bones = collectBones(scene)
+  const bodySkinned: SkinnedMesh[] = []
+  scene.traverse((node) => {
+    if ((node as SkinnedMesh).isSkinnedMesh) bodySkinned.push(node as SkinnedMesh)
+  })
   if (bones.size === 0) {
     throw new Error(`assembleCharacter: body has no bones (${bodyUrl(a.sex, a.outfit)})`)
   }
@@ -193,7 +199,7 @@ export async function assembleCharacter(a: CharacterAppearance): Promise<Assembl
     warnings.push(`anims failed: ${String(err)}`)
   }
 
-  return { scene, animations, warnings }
+  return { scene, animations, warnings, bodySkinned }
 }
 
 /** Warm kit URLs used by equipment-driven player outfits. */

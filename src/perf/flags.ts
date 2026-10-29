@@ -2,6 +2,11 @@ import { BENCHMARK_SCENARIO_IDS, type BenchmarkScenarioId } from './benchmarkSce
 
 const BENCHMARK_SCENARIO_ID_SET: ReadonlySet<string> = new Set(BENCHMARK_SCENARIO_IDS)
 
+/** D11 experiment stays opt-in until correctness, visual and A/B acceptance. */
+export function isPeasantBodyMergeEnabled(): boolean {
+  return params()?.get('peasantBodyMerge') === '1'
+}
+
 function params(): URLSearchParams | null {
   if (typeof window === 'undefined') return null
   try {

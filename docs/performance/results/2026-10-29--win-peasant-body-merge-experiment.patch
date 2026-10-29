@@ -1,0 +1,639 @@
+diff --git a/src/ai/NpcAgent.ts b/src/ai/NpcAgent.ts
+index 315f586f..5705412d 100644
+--- a/src/ai/NpcAgent.ts
++++ b/src/ai/NpcAgent.ts
+@@ -64,6 +64,7 @@ import {
+   playNpcCombatDeath,
+ } from '../audio/actionSounds'
+ import { assembleCharacter } from '../characters/assembleCharacter'
++import { disposeMergedBodySkeleton, mergePeasantBody } from '../characters/mergePeasantBody'
+ import { MELEE_CRITICAL_MULTIPLIER } from '../combat/criticalHit'
+ import { resolveMeleeRecovery } from '../combat/meleeAgility'
+ import {
+@@ -86,6 +87,7 @@ import { Inventory } from '../items/Inventory'
+ import { ITEM_CATALOG, type RangedConfig, rangedConfigFromThrowable } from '../items/itemCatalog'
+ import { type AgentProfile, DEFAULT_CELL_SIZE, findPath, type NavigationQuery, type PathPoint } from '../navigation/navigation'
+ import { beginActivePath, endActivePath, recordPathRequest, recordRepath } from '../navigation/navigationStats'
++import { isPeasantBodyMergeEnabled } from '../perf/flags'
+ import { PLAYER_COLLISION_RADIUS } from '../player/playerDimensions'
+ import { companionAnimationUrl } from '../player/playerVisualPreset'
+ import { installActorCullBounds } from '../render/actorCullBounds'
+@@ -2011,6 +2013,9 @@ export class NpcAgent {
+         scene.traverse((obj) => fixOutfitMeshDarkness(obj))
+         applyClothingHue(scene, clothingHue)
+         applyHairColor(scene, hairColor)
++        if (isPeasantBodyMergeEnabled() && appearance.kit.outfit === 'Peasant') {
++          scene.userData.peasantBodyMerge = mergePeasantBody(scene, appearance.kit, assembled.bodySkinned ?? [], animations)
++        }
+       } else {
+         const loaded = await loadGltfAnimated(modelUrl)
+         scene = loaded.scene
+@@ -4000,6 +4005,7 @@ export class NpcAgent {
+     this.leaveActiveQueue()
+     this.labelController.dispose()
+     this.anim.stopAll()
++    disposeMergedBodySkeleton(this.mesh)
+     disposeObject3D(this.mesh)
+   }
+
+diff --git a/src/characters/assembleCharacter.ts b/src/characters/assembleCharacter.ts
+index 992a8de0..9edac876 100644
+--- a/src/characters/assembleCharacter.ts
++++ b/src/characters/assembleCharacter.ts
+@@ -28,6 +28,8 @@ import {
+
+ export type AssembledCharacter = {
+   animations: AnimationClip[]
++  /** Exact body GLB ownership, captured before head/hair/garment attachment. */
++  bodySkinned?: readonly SkinnedMesh[]
+   scene: Group
+   warnings: readonly string[]
+ }
+@@ -149,6 +151,10 @@ export async function assembleCharacter(a: CharacterAppearance): Promise<Assembl
+   const warnings: string[] = []
+   const { scene, animations: bodyAnims } = await loadGltfAnimated(bodyUrl(a.sex, a.outfit))
+   const bones = collectBones(scene)
++  const bodySkinned: SkinnedMesh[] = []
++  scene.traverse((node) => {
++    if ((node as SkinnedMesh).isSkinnedMesh) bodySkinned.push(node as SkinnedMesh)
++  })
+   if (bones.size === 0) {
+     throw new Error(`assembleCharacter: body has no bones (${bodyUrl(a.sex, a.outfit)})`)
+   }
+@@ -193,7 +199,7 @@ export async function assembleCharacter(a: CharacterAppearance): Promise<Assembl
+     warnings.push(`anims failed: ${String(err)}`)
+   }
+
+-  return { scene, animations, warnings }
++  return { scene, animations, warnings, bodySkinned }
+ }
+
+ /** Warm kit URLs used by equipment-driven player outfits. */
+diff --git a/src/perf/flags.ts b/src/perf/flags.ts
+index 8f25aa0d..e437b890 100644
+--- a/src/perf/flags.ts
++++ b/src/perf/flags.ts
+@@ -2,6 +2,11 @@ import { BENCHMARK_SCENARIO_IDS, type BenchmarkScenarioId } from './benchmarkSce
+
+ const BENCHMARK_SCENARIO_ID_SET: ReadonlySet<string> = new Set(BENCHMARK_SCENARIO_IDS)
+
++/** D11 experiment stays opt-in until correctness, visual and A/B acceptance. */
++export function isPeasantBodyMergeEnabled(): boolean {
++  return params()?.get('peasantBodyMerge') === '1'
++}
++
+ function params(): URLSearchParams | null {
+   if (typeof window === 'undefined') return null
+   try {
+diff --git a/src/characters/mergePeasantBody.ts b/src/characters/mergePeasantBody.ts
+new file mode 100644
+--- /dev/null
++++ b/src/characters/mergePeasantBody.ts
+@@ -0,0 +1,234 @@
++import {
++  AttachedBindMode, BufferAttribute, type BufferGeometry, Float32BufferAttribute,
++  Matrix4, MeshStandardMaterial, type Object3D, Skeleton, SkinnedMesh, Vector3,
++} from 'three'
++import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js'
++import type { CharacterAppearance } from './characterTypes'
++
++export type BodyMergeResult = {
++  merged: boolean
++  before: number
++  after: number
++  reason?: string
++}
++
++const EXPECTED = { Male: 5, Female: 4 } as const
++// Float32 inverse-bind quantization: measured shipped residual <= 1.4e-7.
++const FACTOR_EPSILON = 5e-7
++
++function usable(matrix: Matrix4): boolean {
++  return matrix.elements.every(Number.isFinite) && Number.isFinite(matrix.determinant())
++    && Math.abs(matrix.determinant()) > 1e-12
++}
++
++function near(a: Matrix4, b: Matrix4): boolean {
++  return a.elements.every((value, i) => Math.abs(value - b.elements[i]) <= FACTOR_EPSILON)
++}
++
++function equalState(a: unknown, b: unknown): boolean {
++  if (a === b) return true
++  if (!a || !b || typeof a !== 'object' || typeof b !== 'object') return false
++  if (a.constructor !== b.constructor) return false
++  if ('isTexture' in a || 'isTexture' in b) return false // Require actual texture identity.
++  if ('equals' in a && typeof a.equals === 'function') return a.equals(b)
++  if (!Array.isArray(a) && Object.getPrototypeOf(a) !== Object.prototype) return false
++  const left = Object.keys(a), right = Object.keys(b)
++  return left.length === right.length && left.every((key) => Object.hasOwn(b, key)
++    && equalState((a as Record<string, unknown>)[key], (b as Record<string, unknown>)[key]))
++}
++
++function materialsEquivalent(a: MeshStandardMaterial, b: MeshStandardMaterial): boolean {
++  // Compare exact linear color/vector components and texture references. toJSON
++  // quantizes colors to hex and may encode texture images; neither is suitable.
++  const ignored = new Set(['_listeners', 'id', 'name', 'uuid', 'version', 'vertexColors'])
++  const left = Object.keys(a).filter((key) => !ignored.has(key))
++  const right = Object.keys(b).filter((key) => !ignored.has(key))
++  return left.length === right.length && left.every((key) => Object.hasOwn(b, key)
++    && equalState((a as unknown as Record<string, unknown>)[key], (b as unknown as Record<string, unknown>)[key]))
++}
++
++/** Transform directions linearly, without normalization: the skin shader later
++ * applies the compensating bind operator. Normal matrices here would be wrong. */
++function convert(attribute: BufferAttribute, matrix: Matrix4, direction: boolean): BufferAttribute {
++  const values = new Float32Array(attribute.count * attribute.itemSize)
++  const point = new Vector3()
++  const e = matrix.elements
++  for (let i = 0; i < attribute.count; i++) {
++    point.fromBufferAttribute(attribute, i)
++    if (direction) {
++      const { x, y, z } = point
++      point.set(e[0] * x + e[4] * y + e[8] * z,
++        e[1] * x + e[5] * y + e[9] * z, e[2] * x + e[6] * y + e[10] * z)
++    } else point.applyMatrix4(matrix)
++    values.set([point.x, point.y, point.z], i * attribute.itemSize)
++    if (attribute.itemSize === 4) values[i * 4 + 3] = attribute.getW(i)
++  }
++  return new BufferAttribute(values, attribute.itemSize)
++}
++
++/** NPC-only D11 experiment. All validation precedes mutation; unknown bodies
++ * retain their original meshes. Call after appearance preparation, before bounds.
++ *
++ * Ipart = Icanonical * T, C = inverse(Bcanonical) * T * Bpart.
++ * Baking C into base/morph position and direction attributes preserves the skin
++ * operator for every pose. Equal mesh world transforms also preserve Three's
++ * normalMatrix and tangent semantics. Independent part transforms fail open.
++ * No skeleton sharing is installed: the merged cloth owns a new palette.
++ */
++export function mergePeasantBody(
++  root: Object3D,
++  kit: Pick<CharacterAppearance, 'sex' | 'outfit'>,
++  body: readonly SkinnedMesh[],
++  animations: readonly import('three').AnimationClip[] = [],
++): BodyMergeResult {
++  const fail = (reason: string): BodyMergeResult => ({ merged: false, before: body.length, after: body.length, reason })
++  if (kit.outfit !== 'Peasant' || body.length !== EXPECTED[kit.sex]) return fail('unsupported body')
++  if (new Set(body).size !== body.length) return fail('duplicate body ownership')
++  root.updateMatrixWorld(true)
++  const cloth = body.filter((mesh) => !Array.isArray(mesh.material) && mesh.material.name === 'MI_Peasant')
++  if (cloth.length !== 4) return fail('unexpected material boundaries')
++  const first = cloth[0]
++  const material = first.material
++  if (!(material instanceof MeshStandardMaterial) || material.transparent || material.alphaHash || material.flatShading) return fail('unsupported material')
++  if (material.onBeforeCompile !== MeshStandardMaterial.prototype.onBeforeCompile
++    || material.onBeforeRender !== MeshStandardMaterial.prototype.onBeforeRender
++    || material.customProgramCacheKey !== MeshStandardMaterial.prototype.customProgramCacheKey) return fail('custom material shader')
++  const bones = first.skeleton?.bones
++  if (!bones?.length || !usable(first.bindMatrix)) return fail('missing binding')
++  if (bones.length !== first.skeleton.boneInverses.length
++    || !first.skeleton.boneInverses.every(usable)) return fail('missing inverse binds')
++  const descendants = new Set<Object3D>()
++  root.traverse((node) => descendants.add(node))
++  if (body.some((mesh) => !descendants.has(mesh)) || bones.some((bone) => !descendants.has(bone))) return fail('foreign actor ownership')
++  const names = new Set<string>()
++  const uuids = new Set<string>()
++  for (const mesh of cloth) {
++    for (let node: Object3D | null = mesh; node && node !== root; node = node.parent) {
++      names.add(node.name)
++      uuids.add(node.uuid)
++      if (!node.visible || node.layers.mask !== first.layers.mask) return fail('independent visibility')
++    }
++  }
++  // Bone animation is expected; independent mesh/ancestor/morph tracks are not.
++  if (animations.some((clip) => clip.tracks.some((track) => {
++    const target = track.name.split('.')[0]
++    return names.has(target) || uuids.has(target)
++  }))) return fail('animated part transform or morph')
++  const conversions: Matrix4[] = []
++  for (const mesh of cloth) {
++    const m = mesh.material
++    const g = mesh.geometry
++    if (!(m instanceof MeshStandardMaterial) || !materialsEquivalent(m, material)
++      || m.onBeforeCompile !== material.onBeforeCompile || m.customProgramCacheKey !== material.customProgramCacheKey
++      || m.onBeforeRender !== material.onBeforeRender) return fail('material state differs')
++    if (!mesh.isSkinnedMesh || mesh.bindMode !== AttachedBindMode || !mesh.parent || mesh.children.length
++      || !usable(mesh.matrixWorld) || !near(mesh.matrixWorld, first.matrixWorld)
++      || !usable(mesh.bindMatrix) || mesh.castShadow !== first.castShadow || mesh.receiveShadow !== first.receiveShadow
++      || mesh.visible !== first.visible || mesh.frustumCulled !== first.frustumCulled
++      || mesh.renderOrder !== first.renderOrder || mesh.layers.mask !== first.layers.mask
++      || mesh.customDepthMaterial || mesh.customDistanceMaterial
++      || mesh.skeleton.boneTexture
++      || mesh.onBeforeShadow !== first.onBeforeShadow || mesh.onAfterShadow !== first.onAfterShadow
++      || mesh.onBeforeRender !== SkinnedMesh.prototype.onBeforeRender || mesh.onAfterRender !== SkinnedMesh.prototype.onAfterRender
++      || mesh.onBeforeShadow !== SkinnedMesh.prototype.onBeforeShadow || mesh.onAfterShadow !== SkinnedMesh.prototype.onAfterShadow
++      || mesh.raycast !== SkinnedMesh.prototype.raycast) return fail('mesh policy differs')
++    if (mesh.skeleton.bones.length !== bones.length || mesh.skeleton.bones.some((bone, i) => bone !== bones[i])
++      || mesh.skeleton.boneInverses.length !== bones.length
++      || !mesh.skeleton.boneInverses.every(usable)) return fail('incompatible bones')
++    if (!g.index || g.groups.length || g.drawRange.start !== 0 || g.drawRange.count !== Infinity
++      || Object.keys(g.attributes).some((key) => !['color', 'normal', 'position', 'skinIndex', 'skinWeight', 'tangent', 'uv', 'uv1', 'uv2'].includes(key))
++      || !['position', 'normal', 'uv', 'skinIndex', 'skinWeight'].every((key) => g.hasAttribute(key))
++      || Object.keys(g.morphAttributes).some((key) => !['normal', 'position'].includes(key))
++      || g.morphTargetsRelative !== first.geometry.morphTargetsRelative
++      || JSON.stringify(Object.keys(g.morphAttributes).sort()) !== JSON.stringify(Object.keys(first.geometry.morphAttributes).sort())
++      || Object.entries(g.morphAttributes).some(([name, targets]) => targets?.length !== first.geometry.morphAttributes[name as 'position']?.length)
++      || JSON.stringify(mesh.morphTargetDictionary) !== JSON.stringify(first.morphTargetDictionary)
++      || JSON.stringify(mesh.morphTargetInfluences) !== JSON.stringify(first.morphTargetInfluences)) return fail('unsupported geometry or morphs')
++    const factor = first.skeleton.boneInverses[0].clone().invert().multiply(mesh.skeleton.boneInverses[0])
++    if (!usable(factor) || mesh.skeleton.boneInverses.some((inverse, i) =>
++      !near(first.skeleton.boneInverses[i].clone().multiply(factor), inverse))) return fail('incompatible inverse binds')
++    conversions.push(first.bindMatrix.clone().invert().multiply(factor).multiply(mesh.bindMatrix))
++  }
++
++  const geometries: BufferGeometry[] = []
++  let geometry: BufferGeometry | null
++  try {
++    for (const [i, mesh] of cloth.entries()) {
++      const g = mesh.geometry.clone()
++      geometries.push(g)
++      for (const name of ['position', 'normal', 'tangent']) {
++        const attribute = g.getAttribute(name)
++        if (attribute) g.setAttribute(name, convert(attribute as BufferAttribute, conversions[i], name !== 'position'))
++      }
++      for (const name of ['position', 'normal'] as const) {
++        const attributes = g.morphAttributes[name]
++        if (attributes) g.morphAttributes[name] = attributes.map((attribute) =>
++          convert(attribute as BufferAttribute, conversions[i], name !== 'position' || g.morphTargetsRelative))
++      }
++      // Shader multiplication by white preserves primitives without COLOR_0.
++      const color = g.getAttribute('color')
++      if (!color || !(mesh.material as MeshStandardMaterial).vertexColors) {
++        const colorSize = cloth.find((part) => part.geometry.hasAttribute('color'))?.geometry.getAttribute('color').itemSize ?? 3
++        const white = new Float32Array(g.getAttribute('position').count * colorSize).fill(1)
++        g.setAttribute('color', new Float32BufferAttribute(white, colorSize))
++      } else {
++        const values = new Float32Array(color.count * color.itemSize)
++        for (let v = 0; v < color.count; v++) {
++          for (let c = 0; c < color.itemSize; c++) values[v * color.itemSize + c] = color.getComponent(v, c)
++        }
++        g.setAttribute('color', new Float32BufferAttribute(values, color.itemSize))
++      }
++    }
++    geometry = mergeGeometries(geometries, false)
++    if (!geometry) return fail('attribute layouts differ')
++    // Three r185 validates this flag but does not copy it to the result.
++    geometry.morphTargetsRelative = first.geometry.morphTargetsRelative
++  } finally {
++    for (const g of geometries) g.dispose()
++  }
++  geometry.userData = { sharedGpu: false, peasantBodyMerge: true }
++  const mergedMaterial = material.clone()
++  mergedMaterial.userData = { ...material.userData, sharedGpu: false }
++  mergedMaterial.vertexColors = true
++  const merged = new SkinnedMesh(geometry, mergedMaterial)
++  merged.name = 'PeasantBodyCloth'
++  merged.position.copy(first.position)
++  merged.quaternion.copy(first.quaternion)
++  merged.scale.copy(first.scale)
++  merged.matrix.copy(first.matrix)
++  merged.matrixAutoUpdate = first.matrixAutoUpdate
++  merged.castShadow = first.castShadow
++  merged.receiveShadow = first.receiveShadow
++  merged.visible = first.visible
++  merged.frustumCulled = first.frustumCulled
++  merged.layers.mask = first.layers.mask
++  merged.renderOrder = first.renderOrder
++  merged.morphTargetDictionary = { ...first.morphTargetDictionary }
++  merged.morphTargetInfluences = first.morphTargetInfluences?.slice()
++  merged.userData.peasantBodyMerge = { sources: cloth.map((mesh) => ({ name: mesh.name, vertices: mesh.geometry.getAttribute('position').count })) }
++  merged.bind(new Skeleton(bones, first.skeleton.boneInverses.map((inverse) => inverse.clone())), first.bindMatrix)
++  first.parent!.add(merged)
++  for (const mesh of cloth) mesh.removeFromParent()
++  // Retired geometry/inverses are cache-owned. Release only actor material clones.
++  const retainedMaterials = new Set<import('three').Material>()
++  root.traverse((node) => {
++    const mesh = node as SkinnedMesh
++    if (mesh.isMesh) {
++      for (const m of Array.isArray(mesh.material) ? mesh.material : [mesh.material]) retainedMaterials.add(m)
++    }
++  })
++  for (const m of new Set(cloth.map((mesh) => mesh.material))) {
++    if (Array.isArray(m)) continue
++    if (!m.userData.sharedGpu && !retainedMaterials.has(m)) m.dispose()
++  }
++  root.updateMatrixWorld(true)
++  return { merged: true, before: body.length, after: body.length - 3 }
++}
++
++/** Only the new merge palette is owned here; unmerged NPC cleanup is unchanged. */
++export function disposeMergedBodySkeleton(root: Object3D): void {
++  root.traverse((node) => {
++    const mesh = node as SkinnedMesh
++    if (mesh.isSkinnedMesh && mesh.geometry.userData.peasantBodyMerge) mesh.skeleton.dispose()
++  })
++}
+diff --git a/src/characters/mergePeasantBody.assets.test.ts b/src/characters/mergePeasantBody.assets.test.ts
+new file mode 100644
+--- /dev/null
++++ b/src/characters/mergePeasantBody.assets.test.ts
+@@ -0,0 +1,308 @@
++﻿import { readFile } from 'node:fs/promises'
++import { resolve } from 'node:path'
++import {
++  AnimationMixer, Bone, DetachedBindMode, Float32BufferAttribute, Group, LoopOnce, Matrix3,
++  type Object3D, Raycaster, type SkinnedMesh, Texture, Vector3, Vector4,
++} from 'three'
++import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
++import { clone } from 'three/addons/utils/SkeletonUtils.js'
++import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js'
++import { describe, expect, it, vi } from 'vitest'
++import type { CharacterAppearance } from './characterTypes'
++import { disposeObject3D, markSharedGpu } from '../assets/loadGltf'
++import { applyClothingHue, cloneOutfitMaterials, fixOutfitMeshDarkness } from '../assets/ubcOutfitMaterials'
++import { installActorCullBounds } from '../render/actorCullBounds'
++import { assembleCharacter } from './assembleCharacter'
++import { disposeMergedBodySkeleton, mergePeasantBody } from './mergePeasantBody'
++
++vi.mock('../assets/loadGltf', async (original) => ({
++  ...await original<typeof import('../assets/loadGltf')>(),
++  loadGltf: async (url: string) => (await diskClone(url)).scene,
++  loadGltfAnimated: (url: string) => diskClone(url),
++}))
++
++// Real geometry, materials, texture identities, rigs, morphs and clips. Replace
++// image decoding only: no DOM or GPU is required for CPU deformation parity.
++const cache = new Map<string, Promise<Awaited<ReturnType<GLTFLoader['parseAsync']>>>>()
++async function diskClone(url: string) {
++  if (!cache.has(url)) cache.set(url, (async () => {
++    const bytes = await readFile(resolve(import.meta.dirname, '../../public', url.slice(1)))
++    const textures = new Map<number, Texture>()
++    const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder)
++    loader.register(() => ({
++      name: 'TEST_IMAGE_DECODE',
++      loadTexture: async (index: number) => {
++        if (!textures.has(index)) textures.set(index, new Texture())
++        return textures.get(index)!
++      },
++    }))
++    const gltf = await loader.parseAsync(bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength), '')
++    gltf.scene.traverse((node) => {
++      const mesh = node as SkinnedMesh
++      if (mesh.isMesh) { mesh.castShadow = true; mesh.receiveShadow = true }
++    })
++    markSharedGpu(gltf.scene)
++    return gltf
++  })())
++  const source = await cache.get(url)!
++  return { scene: clone(source.scene), animations: source.animations, source: source.scene }
++}
++
++const CLIPS = ['Idle_Loop', 'Walk_Loop', 'Sprint_Loop', 'Sword_Attack', 'Interact', 'Sitting_Idle_Loop', 'Fixing_Kneeling', 'Death01']
++const SEXES = ['Male', 'Female'] as const
++function appearance(sex: 'Male' | 'Female'): CharacterAppearance {
++  return { sex, outfit: 'Peasant', head: 'Base', hair: 'Long', beard: sex === 'Male',
++    garments: sex === 'Female' ? ['NobleBodice', 'WorkSkirt'] : [], clothTint: null }
++}
++function skinned(root: Object3D) {
++  const meshes: SkinnedMesh[] = []
++  root.traverse((node) => { if ((node as SkinnedMesh).isSkinnedMesh) meshes.push(node as SkinnedMesh) })
++  return meshes
++}
++async function build(sex: 'Male' | 'Female') {
++  const assembled = await assembleCharacter(appearance(sex))
++  expect(assembled.warnings).toEqual([])
++  cloneOutfitMaterials(assembled.scene)
++  assembled.scene.traverse(fixOutfitMeshDarkness)
++  applyClothingHue(assembled.scene, 0x9a7965)
++  const wrapper = new Group()
++  wrapper.position.set(12.5, 3.25, -7)
++  wrapper.rotation.set(0.2, 0.7, -0.1)
++  wrapper.scale.setScalar(0.6)
++  assembled.scene.scale.setScalar(1.3)
++  assembled.scene.rotation.set(0.1, -0.3, 0.2)
++  wrapper.add(assembled.scene)
++  wrapper.updateMatrixWorld(true)
++  return { ...assembled, wrapper, body: [...assembled.bodySkinned!] }
++}
++function cloth(root: Object3D) {
++  return skinned(root).filter((m) => !Array.isArray(m.material) && m.material.name === 'MI_Peasant')
++}
++function shaderDirection(mesh: SkinnedMesh, vertex: number, name: 'normal' | 'tangent') {
++  const g = mesh.geometry
++  const attribute = g.getAttribute(name)
++  const n = new Vector3().fromBufferAttribute(attribute, vertex)
++  const morphs = name === 'normal' ? g.morphAttributes.normal : undefined
++  if (morphs) morphs.forEach((morph, i) => {
++    const delta = new Vector3().fromBufferAttribute(morph, vertex)
++    if (!g.morphTargetsRelative) delta.sub(new Vector3().fromBufferAttribute(attribute, vertex))
++    n.addScaledVector(delta, mesh.morphTargetInfluences![i])
++  })
++  const v = new Vector4(n.x, n.y, n.z, 0)
++  mesh.applyBoneTransform(vertex, v)
++  n.set(v.x, v.y, v.z)
++  if (name === 'normal') n.applyMatrix3(new Matrix3().getNormalMatrix(mesh.matrixWorld))
++  else n.applyMatrix3(new Matrix3().setFromMatrix4(mesh.matrixWorld))
++  return n.normalize()
++}
++// Full admitted opaque mesh submission count, independent of geometry groups.
++// Actual WebGL pass counters and FPS are deliberately deferred to the A/B gate.
++function submissions(meshes: SkinnedMesh[]) {
++  return meshes.reduce((sum, mesh) => sum + (Array.isArray(mesh.material) ? mesh.geometry.groups.length : 1), 0)
++}
++
++describe.each(SEXES)('%s real Peasant body merge', (sex) => {
++  it('preserves all vertices, shader normals, UV/color/weights and triangles across actual clips and Fat', async () => {
++    const actor = await build(sex)
++    const original = cloth(actor.scene)
++    const cached = (await cache.get(`/assets/characters/${sex}_Peasant.glb`)!)!.scene
++    const cachedSnapshot = JSON.stringify(cached.toJSON())
++    const sourceGeometry = original.map((m) => m.geometry)
++    const sourceValues = sourceGeometry.map((g) => Array.from(g.getAttribute('position').array))
++    const independent = skinned(actor.scene).filter((m) => !original.includes(m))
++    const before = submissions(actor.body)
++    const triangles = original.reduce((n, m) => n + m.geometry.index!.count / 3, 0)
++    // Reference meshes stay attached to the same actor-local bones in a sibling
++    // subtree, so each comparison samples exactly the same animated pose.
++    const reference = new Group()
++    actor.scene.add(reference)
++    const refs = original.map((m) => {
++      const copy = m.clone(false)
++      reference.add(copy)
++      return copy
++    })
++    const result = mergePeasantBody(actor.scene, appearance(sex), actor.body, actor.animations)
++    expect(result).toMatchObject({ merged: true, before: sex === 'Male' ? 5 : 4, after: sex === 'Male' ? 2 : 1 })
++    reference.removeFromParent()
++    const merged = cloth(actor.scene)[0]
++    actor.scene.add(reference)
++    expect(merged.geometry.groups).toEqual([])
++    expect(merged.geometry.index!.count / 3).toBe(triangles)
++    expect(before - submissions([...independent.filter((m) => actor.body.includes(m)), merged])).toBe(3)
++    expect(independent.every((m) => m.parent !== null)).toBe(true)
++    expect(merged.castShadow).toBe(true)
++    expect(merged.receiveShadow).toBe(true)
++    expect(merged.material).not.toBe(original[0].material)
++    expect(merged.skeleton).not.toBe(original[0].skeleton)
++    const mergedMaterial = merged.material as import('three').MeshStandardMaterial
++    expect(mergedMaterial.map).toBe((original[0].material as import('three').MeshStandardMaterial).map)
++    expect(mergedMaterial.normalMap).toBe((original[0].material as import('three').MeshStandardMaterial).normalMap)
++    let offset = 0
++    for (const ref of refs) {
++      for (const name of ['uv', 'skinIndex', 'skinWeight']) {
++        const a = ref.geometry.getAttribute(name), b = merged.geometry.getAttribute(name)
++        for (let v = 0; v < a.count; v++) for (let c = 0; c < a.itemSize; c++) {
++          expect(b.getComponent(offset + v, c)).toBe(a.getComponent(v, c))
++        }
++      }
++      const colors = ref.geometry.getAttribute('color')
++      for (let v = 0; v < ref.geometry.getAttribute('position').count; v++) for (let c = 0; c < 3; c++) {
++        expect(merged.geometry.getAttribute('color').getComponent(offset + v, c)).toBeCloseTo(colors ? colors.getComponent(v, c) : 1, 7)
++      }
++      offset += ref.geometry.getAttribute('position').count
++    }
++    reference.removeFromParent()
++    expect(installActorCullBounds(actor.wrapper).fallback).toBe(0)
++    actor.scene.add(reference)
++    const mixer = new AnimationMixer(actor.scene)
++    let worstNormal = 0, worstPosition = 0
++    for (const fat of [0, 0.5, 1]) {
++      merged.morphTargetInfluences![0] = fat
++      refs.forEach((m) => { m.morphTargetInfluences![0] = fat })
++      for (const name of CLIPS) {
++        const clip = actor.animations.find((c) => c.name === name)!
++        expect(clip, name).toBeDefined()
++        const action = mixer.clipAction(clip).setLoop(LoopOnce, 1).play()
++        action.clampWhenFinished = true
++        for (let sample = 0; sample <= 8; sample++) {
++          mixer.setTime(clip.duration * sample / 8)
++          actor.wrapper.updateMatrixWorld(true)
++          let offset = 0
++          for (const ref of refs) {
++            for (let v = 0; v < ref.geometry.getAttribute('position').count; v++) {
++              const a = ref.getVertexPosition(v, new Vector3()).applyMatrix4(ref.matrixWorld)
++              const b = merged.getVertexPosition(offset + v, new Vector3()).applyMatrix4(merged.matrixWorld)
++              worstPosition = Math.max(worstPosition, a.distanceTo(b))
++              worstNormal = Math.max(worstNormal, shaderDirection(ref, v, 'normal').distanceTo(shaderDirection(merged, offset + v, 'normal')))
++              const local = b.clone().applyMatrix4(merged.matrixWorld.clone().invert())
++              expect(merged.boundingSphere!.containsPoint(local)).toBe(true)
++              expect(merged.boundingBox!.containsPoint(local)).toBe(true)
++            }
++            offset += ref.geometry.getAttribute('position').count
++          }
++        }
++        action.stop()
++      }
++    }
++    // Float32 baking plus <= 5e-7 inverse-factor residual, in ~2m characters.
++    expect(worstPosition).toBeLessThan(3e-6)
++    expect(worstNormal).toBeLessThan(3e-6)
++    console.info(`${sex} merge max world position=${worstPosition}, normal=${worstNormal}, body submissions=${before}->${before - 3}`)
++    sourceGeometry.forEach((g, i) => expect(Array.from(g.getAttribute('position').array)).toEqual(sourceValues[i]))
++    expect(JSON.stringify(cached.toJSON())).toBe(cachedSnapshot)
++    reference.removeFromParent()
++    mixer.uncacheRoot(actor.scene)
++  }, 60_000)
++
++  it('preserves ray hits, conservative bounds, cloning and actor-owned resource disposal', async () => {
++    const actor = await build(sex)
++    const before = cloth(actor.scene)
++    const sphereOriginal = installActorCullBounds(actor.wrapper)
++    expect(sphereOriginal.fallback).toBe(0)
++    const center = before[0].boundingSphere!.clone().applyMatrix4(before[0].matrixWorld).center
++    const rays = Array.from({ length: 9 }, (_, i) => new Raycaster(
++      center.clone().add(new Vector3((i - 4) * 0.09, 0, 3)), new Vector3(0, 0, -1)))
++    const hits = rays.map((ray) => ray.intersectObjects(before, false))
++    expect(hits.flat().length).toBeGreaterThan(0)
++    expect(mergePeasantBody(actor.scene, appearance(sex), actor.body, actor.animations).merged).toBe(true)
++    expect(installActorCullBounds(actor.wrapper).fallback).toBe(0)
++    const merged = cloth(actor.scene)[0]
++    actor.wrapper.updateMatrixWorld(true)
++    rays.forEach((ray, i) => {
++      const after = ray.intersectObject(merged)
++      expect(after.length).toBe(hits[i].length)
++      after.forEach((hit, j) => expect(hit.point.distanceTo(hits[i][j].point)).toBeLessThan(3e-6))
++    })
++    const copy = clone(actor.wrapper)
++    copy.updateMatrixWorld(true)
++    const copied = cloth(copy)[0]
++    expect(copied.skeleton.bones[0]).not.toBe(merged.skeleton.bones[0])
++    for (let v = 0; v < merged.geometry.getAttribute('position').count; v++) {
++      expect(copied.getVertexPosition(v, new Vector3()).distanceTo(merged.getVertexPosition(v, new Vector3()))).toBeLessThan(1e-9)
++    }
++    // SkeletonUtils clones share geometry/material by design; runtime streaming
++    // reconstructs from cached source instead of retaining an assembled clone.
++    const survivor = await build(sex)
++    expect(mergePeasantBody(survivor.scene, appearance(sex), survivor.body, survivor.animations).merged).toBe(true)
++    const geometryDispose = vi.spyOn(merged.geometry, 'dispose')
++    const materialDispose = vi.spyOn(merged.material as import('three').Material, 'dispose')
++    const skeletonDispose = vi.spyOn(merged.skeleton, 'dispose')
++    const survivorDispose = vi.spyOn(cloth(survivor.scene)[0].geometry, 'dispose')
++    disposeMergedBodySkeleton(actor.wrapper)
++    disposeObject3D(actor.wrapper)
++    expect(geometryDispose).toHaveBeenCalledTimes(1)
++    expect(materialDispose).toHaveBeenCalledTimes(1)
++    expect(skeletonDispose).toHaveBeenCalledTimes(1)
++    expect(survivorDispose).not.toHaveBeenCalled()
++    const rebuilt = await build(sex)
++    expect(rebuilt.body.length).toBe(sex === 'Male' ? 5 : 4)
++    expect(mergePeasantBody(rebuilt.scene, appearance(sex), rebuilt.body, rebuilt.animations).merged).toBe(true)
++    const material = cloth(survivor.scene)[0].material as import('three').MeshStandardMaterial
++    const previous = material.color.clone()
++    applyClothingHue(rebuilt.scene, 0x112233)
++    expect(material.color.equals(previous)).toBe(true)
++  })
++
++  it('preserves authored tangent handedness and shader direction when tangent attributes are present', async () => {
++    const actor = await build(sex)
++    const original = cloth(actor.scene)
++    for (const mesh of original) {
++      mesh.geometry = mesh.geometry.clone()
++      const values = new Float32Array(mesh.geometry.getAttribute('position').count * 4)
++      for (let i = 0; i < values.length; i += 4) { values[i] = 1; values[i + 3] = i % 8 ? -1 : 1 }
++      mesh.geometry.setAttribute('tangent', new Float32BufferAttribute(values, 4))
++    }
++    expect(mergePeasantBody(actor.scene, appearance(sex), actor.body, actor.animations).merged).toBe(true)
++    const merged = cloth(actor.scene)[0]
++    // Detached reference meshes still use this actor's animated bones.
++    original.forEach((mesh) => actor.scene.add(mesh))
++    actor.wrapper.updateMatrixWorld(true)
++    let offset = 0
++    for (const ref of original) {
++      for (let v = 0; v < ref.geometry.getAttribute('position').count; v++) {
++        expect(shaderDirection(ref, v, 'tangent').distanceTo(shaderDirection(merged, offset + v, 'tangent'))).toBeLessThan(3e-6)
++        expect(merged.geometry.getAttribute('tangent').getW(offset + v)).toBe(ref.geometry.getAttribute('tangent').getW(v))
++      }
++      offset += ref.geometry.getAttribute('position').count
++    }
++  })
++
++  it('rejects unsupported variants and repeated application without touching attachments', async () => {
++    const actor = await build(sex)
++    expect(mergePeasantBody(actor.scene, { sex, outfit: 'Peasant_Boots' }, actor.body).merged).toBe(false)
++    expect(mergePeasantBody(actor.scene, appearance(sex), actor.body, actor.animations).merged).toBe(true)
++    const snapshot = skinned(actor.scene).map((mesh) => mesh.uuid)
++    expect(mergePeasantBody(actor.scene, appearance(sex), actor.body, actor.animations).merged).toBe(false)
++    expect(skinned(actor.scene).map((mesh) => mesh.uuid)).toEqual(snapshot)
++  })
++
++  it.each(['binding', 'bone order', 'foreign bone', 'detached', 'singular', 'material', 'sub-hex tint', 'visibility', 'shadow', 'transform', 'morph', 'groups', 'animation', 'missing inverses', 'nonfinite', 'custom shader'])('fails open atomically for %s', async (kind) => {
++    const actor = await build(sex)
++    const meshes = cloth(actor.scene)
++    const target = meshes[1]
++    const clips = [...actor.animations]
++    if (kind === 'binding') { target.skeleton.boneInverses = target.skeleton.boneInverses.map((m) => m.clone()); target.skeleton.boneInverses[3].elements[12] += 0.01 }
++    if (kind === 'bone order') target.skeleton.bones = target.skeleton.bones.slice().reverse()
++    if (kind === 'foreign bone') { target.skeleton.bones = target.skeleton.bones.slice(); target.skeleton.bones[0] = new Bone() }
++    if (kind === 'detached') target.bindMode = DetachedBindMode
++    if (kind === 'missing inverses') meshes[0].skeleton.boneInverses = []
++    if (kind === 'nonfinite') target.position.x = NaN
++    if (kind === 'custom shader') (target.material as import('three').MeshStandardMaterial).onBeforeCompile = () => {}
++    if (kind === 'singular') target.scale.setScalar(0)
++    if (kind === 'material') (target.material as import('three').MeshStandardMaterial).roughness = 0.33
++    if (kind === 'sub-hex tint') (target.material as import('three').MeshStandardMaterial).color.r += 1e-6
++    if (kind === 'visibility') target.visible = false
++    if (kind === 'shadow') target.castShadow = false
++    if (kind === 'transform') target.rotation.y = 0.2
++    if (kind === 'morph') target.morphTargetInfluences![0] = 0.5
++    if (kind === 'groups') { target.geometry = target.geometry.clone(); target.geometry.addGroup(0, 3, 0) }
++    if (kind === 'animation') { const { AnimationClip, NumberKeyframeTrack } = await import('three'); clips.push(new AnimationClip('part', 1, [new NumberKeyframeTrack(`${target.name}.position[x]`, [0, 1], [0, 1])])) }
++    const parents = meshes.map((m) => m.parent)
++    const geometries = meshes.map((m) => m.geometry)
++    const materials = meshes.map((m) => m.material)
++    expect(mergePeasantBody(actor.scene, appearance(sex), actor.body, clips).merged).toBe(false)
++    expect(meshes.map((m) => m.parent)).toEqual(parents)
++    expect(meshes.map((m) => m.geometry)).toEqual(geometries)
++    expect(meshes.map((m) => m.material)).toEqual(materials)
++  })
++})

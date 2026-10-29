@@ -64,6 +64,7 @@ import {
   playNpcCombatDeath,
 } from '../audio/actionSounds'
 import { assembleCharacter } from '../characters/assembleCharacter'
+import { disposeMergedBodySkeleton, mergePeasantBody } from '../characters/mergePeasantBody'
 import { MELEE_CRITICAL_MULTIPLIER } from '../combat/criticalHit'
 import { resolveMeleeRecovery } from '../combat/meleeAgility'
 import {
@@ -86,6 +87,7 @@ import { Inventory } from '../items/Inventory'
 import { ITEM_CATALOG, type RangedConfig, rangedConfigFromThrowable } from '../items/itemCatalog'
 import { type AgentProfile, DEFAULT_CELL_SIZE, findPath, type NavigationQuery, type PathPoint } from '../navigation/navigation'
 import { beginActivePath, endActivePath, recordPathRequest, recordRepath } from '../navigation/navigationStats'
+import { isPeasantBodyMergeEnabled } from '../perf/flags'
 import { PLAYER_COLLISION_RADIUS } from '../player/playerDimensions'
 import { companionAnimationUrl } from '../player/playerVisualPreset'
 import { installActorCullBounds } from '../render/actorCullBounds'
@@ -2011,6 +2013,9 @@ export class NpcAgent {
         scene.traverse((obj) => fixOutfitMeshDarkness(obj))
         applyClothingHue(scene, clothingHue)
         applyHairColor(scene, hairColor)
+        if (isPeasantBodyMergeEnabled() && appearance.kit.outfit === 'Peasant') {
+          scene.userData.peasantBodyMerge = mergePeasantBody(scene, appearance.kit, assembled.bodySkinned ?? [], animations)
+        }
       } else {
         const loaded = await loadGltfAnimated(modelUrl)
         scene = loaded.scene
@@ -4000,6 +4005,7 @@ export class NpcAgent {
     this.leaveActiveQueue()
     this.labelController.dispose()
     this.anim.stopAll()
+    disposeMergedBodySkeleton(this.mesh)
     disposeObject3D(this.mesh)
   }
 
