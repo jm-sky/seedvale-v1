@@ -61,4 +61,4 @@ Do not write the full LOD1 plan or implement Q3 yet.
 2. If trees are not a top cost there either, **close P1-D** in the P1 exit packet as "measured, not needed". The asset package stays inert and becomes a post-P1 candidate.
 3. If they are, write `world-terrain-055` from §5, starting with the isolated visual-parity demo.
 
-Author question: queue §3 (2026-10-29, Q2).
+Author chose step 1 (2026-10-29). The `dense-forest` fixture landed in `a6676a11`. [WSL census](../../performance/results/2026-10-29--wsl-q2a-dense-forest-fixture.md): 2 457 vegetation instances and 3.7M main + 3.7M shadow tree triangles. Steps 2/3 wait for the Windows run.
