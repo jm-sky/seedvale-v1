@@ -20,12 +20,15 @@ const NIGHT_MAX_VOLUME = 0.35
 const FOREST_LOOP_URL = '/sounds/ambient-forest-loop-01.ogg'
 const COAST_LOOP_URL = '/sounds/ambient-coast-seagulls-waves-01.ogg'
 const COAST_SOFT_LOOP_URL = '/sounds/ambient-waves-soft-01.ogg'
-const WIND_LOOP_URL = '/sounds/ambient-wind-loop-01.ogg'
+const WIND_LOOP_URLS = ['/sounds/ambient-wind-loop-01.ogg', '/sounds/ambient-wind-loop-02.ogg']
+const WIND_PEAK_URL = '/sounds/ambient-wind-peak-01.ogg'
+const WIND_PEAK_BLEND_START = 0.80
+const WIND_PEAK_BLEND_END = 0.90
 const MEADOW_LOOP_URL = '/sounds/ambient-meadow-loop-01.ogg'
 const FOREST_MAX_VOLUME = 0.3
 const COAST_MAX_VOLUME = 0.4
 const COAST_SOFT_MAX_VOLUME = 0.28
-const WIND_MAX_VOLUME = 0.32
+const WIND_MAX_VOLUME = 0.95
 const MEADOW_MAX_VOLUME = 0.28
 
 /** Bird ambient (plan world-006 §1) — one sample for now (`-2`/`-3` staged
@@ -174,6 +177,27 @@ export type AmbientAudio = {
   dispose: () => void
 }
 
+function getPeakMix(samplers: AmbientSamplers, playerX: number, playerZ: number): number {
+  const altitude01 = MathUtils.clamp((samplers.sampleFloor(playerX, playerZ) - samplers.waterLevel) / Math.max(samplers.heightScale, 0.001), 0, 1)
+
+  const peakMix = MathUtils.smoothstep(
+    altitude01,
+    WIND_PEAK_BLEND_START,
+    WIND_PEAK_BLEND_END,
+  )
+
+  return peakMix
+}
+
+function getMountainGains(mountainWeight: number, surfaceMix: number, samplers: AmbientSamplers, playerX: number, playerZ: number): { lowGain: number, peakGain: number } {
+  const peakMix = getPeakMix(samplers, playerX, playerZ)
+
+  const lowGain = mountainWeight * (1 - peakMix) * WIND_MAX_VOLUME * surfaceMix
+  const peakGain = mountainWeight * peakMix * WIND_MAX_VOLUME * surfaceMix
+
+  return { lowGain, peakGain }
+}
+
 export function createAmbientAudio(worldAudio: WorldAudio, samplers: AmbientSamplers): AmbientAudio {
   // Forest ambience is the common case near any settlement, so it loads
   // eagerly like before. Night/coast are lazily created on first actual need
@@ -183,7 +207,8 @@ export function createAmbientAudio(worldAudio: WorldAudio, samplers: AmbientSamp
   let nightLoop: AudioLoopHandle | null = null
   let coastLoop: AudioLoopHandle | null = null
   let coastSoftLoop: AudioLoopHandle | null = null
-  let windLoop: AudioLoopHandle | null = null
+  let windLowLoop: AudioLoopHandle | null = null
+  let windPeakLoop: AudioLoopHandle | null = null
   let meadowLoop: AudioLoopHandle | null = null
   let birdsLoop: AudioLoopHandle | null = null
   let frogLoop: AudioLoopHandle | null = null
@@ -243,10 +268,19 @@ export function createAmbientAudio(worldAudio: WorldAudio, samplers: AmbientSamp
       coastSoftLoop = worldAudio.createLoop(COAST_SOFT_LOOP_URL)
     }
     coastSoftLoop?.setTargetGain(w.ocean * COAST_SOFT_MAX_VOLUME * mix.surface)
-    if (!windLoop && w.mountain > 0) {
-      windLoop = worldAudio.createLoop(WIND_LOOP_URL)
+
+    const { lowGain, peakGain } = getMountainGains(w.mountain, mix.surface, samplers, playerX, playerZ)
+    if (!windLowLoop && lowGain > 0) {
+      const url = WIND_LOOP_URLS[Math.floor(Math.random() * WIND_LOOP_URLS.length)]
+      windLowLoop = worldAudio.createLoop(url)
     }
-    windLoop?.setTargetGain(w.mountain * WIND_MAX_VOLUME * mix.surface)
+    if (!windPeakLoop && peakGain > 0) {
+      windPeakLoop = worldAudio.createLoop(WIND_PEAK_URL)
+    }
+
+    windLowLoop?.setTargetGain(lowGain)
+    windPeakLoop?.setTargetGain(peakGain)
+
     if (!meadowLoop && meadow > 0) {
       meadowLoop = worldAudio.createLoop(MEADOW_LOOP_URL)
     }
@@ -271,7 +305,8 @@ export function createAmbientAudio(worldAudio: WorldAudio, samplers: AmbientSamp
     forestLoop.dispose()
     coastLoop?.dispose()
     coastSoftLoop?.dispose()
-    windLoop?.dispose()
+    windLowLoop?.dispose()
+    windPeakLoop?.dispose()
     meadowLoop?.dispose()
     birdsLoop?.dispose()
     frogLoop?.dispose()
