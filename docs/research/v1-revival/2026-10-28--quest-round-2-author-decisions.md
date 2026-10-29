@@ -5,6 +5,22 @@
 **Repository:** `jm-sky/seedvale-v1` `main`  
 **Sources:** [original complete 61-row prioritization](./2026-10-28--quest-portfolio-prioritization.md), [61-record source evidence](./2026-10-27--quest-revival-matrix.md), [runtime evidence](./2026-10-27--quest-revival-runtime-evidence.md), [Strategic Brief](./STRATEGIC-BRIEF.md).
 
+## Author-approved V1 Revival quest implementation priorities — 2026-10-29
+
+**Decision:** The five P1 threads below are the highest priority for future implementation. This does not authorize runtime implementation or supersede the [D4 Performance-First freeze](./STRATEGIC-BRIEF.md). Historic V3 curation remains separate.
+
+1. **Gold Mine — abandoned mine to mining colony (P1):** finish the existing V1 series ([roadmap](../../roadmap/quests-abandoned-gold-mine-colony.md), [plan 010](../../plans/quests-progression-010-abandoned-gold-mine-colony.md)).
+2. **Hunters Brotherhood (P1):** finish the V1 four-act series with selective V3 narrative/content integration. Reconcile the [roadmap](../../roadmap/quests-hunters-brotherhood.md), [plan 053](../../plans/quests-progression-053-hunters-brotherhood-competing-hunting-strategies.md) and [plan 054](../../plans/quests-progression-054-hunters-brotherhood-exceptional-animal-finale.md) with the approved [Group 3 decisions](./quest-decision-round-2/03-hunters-fauna-wolves.md). The exact V1+V3 merge scope remains open.
+3. **Kate and Mark Hornblower — Lost Parcel (P1):** implement the already-approved fraud, recovery and physical shield-gift story, reusing V1 mechanisms ([Group 2](./quest-decision-round-2/02-npc-relationships-social-conflicts.md)).
+4. **Rat Plague (P1):** implement the approved physical warehouse, persistent Rat Boss/nests, manually opened doors, poisoned bait and accountable social consequences ([Group 3](./quest-decision-round-2/03-hunters-fauna-wolves.md)).
+5. **Kazimierz — home cemetery care (additional P1):** merge R37+R61; coordinate the bear-cave grave permission and actual treasure-share contract. This thread is additional to the four above, not a replacement for Rat Plague ([Group 2](./quest-decision-round-2/02-npc-relationships-social-conflicts.md)).
+
+**Next (P2):** Anna and Piotr family / settlement storyline polish and the already-approved physical repairs, flowers and honey changes ([Group 1](./quest-decision-round-2/01-anna-piotr-settlement-life.md)).
+
+**Afterwards (P3 sequencing):** treasure-quest polish and remaining treasure stories, with smaller existing V1 adventures considered separately from later unimplemented Lost Treasure Chronicles chapters ([Group 5](./quest-decision-round-2/05-treasures-caves-artifacts.md), [Chronicles roadmap](../../roadmap/quests-lost-something-chronicles.md)). This does not undo existing defer decisions or approve new Chronicles chapters.
+
+**Constraints:** P1 is one priority cohort, not a strict execution order among its five threads. No change to individual plan metadata/status, no new implementation approval. D4 still blocks unrelated performance-affecting integration until A/B/C closes and combined results are recorded; analysis/docs may proceed.
+
 ## Decision precedence and boundaries
 
 - These decisions **supersede conflicting provisional recommendations** in the 2026-10-28 portfolio. They do not rewrite or erase historical V3 curation, previous research findings or confirmed V1 behavior.
