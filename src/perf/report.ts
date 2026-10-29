@@ -4,6 +4,7 @@ import type { GrassFinalizationReport } from './grassFinalizationDiag'
 import type { SessionTotals } from './monitor'
 import type { PassSubmissionReport } from './passSubmissionCollector'
 import type { IsolationProbeRow, LongFrameAttribution, PerfContext, PerfReportJson } from './types'
+import { formatMatrixWorkLines, type MatrixWorkCensus } from './matrixCensus'
 import { percentile } from './percentile'
 import { buildRawSidecar } from './rawSidecar'
 import { type AgentDetailCensus, SCENE_BUCKETS, type SceneCensus, SETTLEMENT_CONTENT_KINDS, type SettlementShadowCensus } from './sceneCensus'
@@ -27,6 +28,7 @@ export function buildReport(input: {
   shadowCasters?: SceneCensus
   settlementShadowCasters?: SettlementShadowCensus
   agentDetail?: AgentDetailCensus
+  matrixWork?: MatrixWorkCensus
   isolation?: IsolationProbeRow[]
   agentCpu?: AgentCpuReport | null
   grassFinalization?: GrassFinalizationReport | null
@@ -146,6 +148,7 @@ export function buildReport(input: {
     shadowCasters: input.shadowCasters,
     settlementShadowCasters: input.settlementShadowCasters,
     agentDetail: input.agentDetail,
+    matrixWork: input.matrixWork,
     passSubmissions: input.passSubmissions ?? null,
     hitches,
     isolation: input.isolation,
@@ -183,6 +186,7 @@ export function formatReport(report: PerfReportJson): string {
     SETTLEMENT_CONTENT_KINDS,
   )
   const agentDetailLines = formatAgentDetailLines(report.agentDetail)
+  const matrixWorkLines = formatMatrixWorkLines(report.matrixWork)
   const isolationLines = (report.isolation ?? [])
     .map((row) => `  ${row.id.padEnd(18)} render=${row.renderMsAvg.toFixed(1)} ms draws=${row.drawCallsAvg} tris=${formatTriangles(row.trianglesAvg)}`)
     .join('\n')
@@ -290,6 +294,9 @@ export function formatReport(report: PerfReportJson): string {
     '',
     'Agent detail (one-pass estimate):',
     agentDetailLines || '  (not sampled)',
+    '',
+    'Matrix work (one scene traversal, steady state):',
+    matrixWorkLines || '  (not sampled)',
     '',
     'Systems:',
     sysLines || '  (no per-system CPU samples)',

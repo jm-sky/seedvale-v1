@@ -1,6 +1,7 @@
 import type { AgentCpuReport } from './agentCpuDiag'
 import type { GrassBaselineSnapshot } from './grassBaseline'
 import type { GrassFinalizationReport } from './grassFinalizationDiag'
+import type { MatrixWorkCensus } from './matrixCensus'
 import type { PassSubmissionReport } from './passSubmissionCollector'
 import type { PerfRawSidecar } from './rawSidecar'
 import type { AgentDetailCensus, SceneCensus, SettlementShadowCensus } from './sceneCensus'
@@ -359,6 +360,8 @@ export type PerfReportJson = {
   /** Per-family/distance-band NPC/fauna breakdown (plan world-terrain-041),
    *  for choosing/validating presentation-LOD optional-node candidates. */
   agentDetail?: AgentDetailCensus
+  /** World-matrix work of one scene traversal by bucket/owner (Queue Q14 B1b). */
+  matrixWork?: MatrixWorkCensus
   /** Actual per-pass WebGL submissions (A0a/B0). Null when collector disabled. */
   passSubmissions?: PassSubmissionReport | null
   hitches?: HitchReportRow[]

@@ -30,6 +30,7 @@ import {
 } from './heavySettlementScenario'
 import { formatIsolationReport, runIsolationProbes } from './isolationProbe'
 import { formatLongFrameAttribution } from './longFrameFormat'
+import { censusMatrixWork } from './matrixCensus'
 import { formatPassSubmissionReport } from './passSubmissionCollector'
 import { formatProgramAttributionReport, formatProgramCensusReport, formatProgramCompileCostReport, getProgramCensus } from './programCensus'
 import { buildReport, formatReport } from './report'
@@ -360,6 +361,7 @@ export function createBenchmarkRunner(host: BenchmarkHost): BenchmarkRunner {
         // camera-relevance is a point-in-frustum estimate off the same
         // camera the render stack already uses, no extra measurement.
         const agentDetail = censusAgentDetail(host.isolation.scene, player.mesh.position, host.camera)
+        const matrixWork = censusMatrixWork(host.isolation.scene)
         const grassBaseline = getGrassBaselineDiag().snapshotScene(host.isolation.scene)
         // Previously skipped for `stream` — now runs for every scenario so
         // the render-cost breakdown (water/vegetation/postprocessing/mirrors/
@@ -429,6 +431,7 @@ export function createBenchmarkRunner(host: BenchmarkHost): BenchmarkRunner {
           shadowCasters,
           settlementShadowCasters,
           agentDetail,
+          matrixWork,
           isolation,
         })
         console.log(formatReport(report))
