@@ -54,8 +54,10 @@ async function runOne(scenario, rep) {
   const url = `http://localhost:${port}/?benchmark=${scenario}${process.env.SEEDVALE_QUERY ?? ''}` // e.g. SEEDVALE_QUERY='&skelShare=0'
   const chrome = spawn(CHROME, [
     `--remote-debugging-port=${DEBUG}`, `--user-data-dir=${profile}`, '--no-first-run',
-    '--no-default-browser-check', '--disable-backgrounding-occluded-windows', '--disable-renderer-backgrounding', '--disable-background-timer-throttling', '--window-size=1600,900', '--window-position=0,0', url,
-  ], { stdio: 'ignore' })
+    '--no-default-browser-check', '--disable-backgrounding-occluded-windows', '--disable-renderer-backgrounding', '--disable-background-timer-throttling', '--window-size=1600,900', '--window-position=0,0',
+    // WSL2: Mesa defaults to llvmpipe (software); d3d12 reaches the real GPU through /dev/dxg.
+    ...(IS_WIN ? [] : ['--ignore-gpu-blocklist']), url,
+  ], { stdio: 'ignore', env: IS_WIN ? process.env : { GALLIUM_DRIVER: 'd3d12', ...process.env } })
   try {
     const ws = new WebSocket(await cdpConnect())
     await new Promise((r) => (ws.onopen = r))
