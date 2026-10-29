@@ -1,5 +1,8 @@
 # Seedvale V1 Revival — Research Dossier
 
+**Minimap and world map rendering (2026-10-29):** [source recon, author direction and preliminary stages](./2026-10-29--minimap-world-map-rendering-recon.md) — both views must improve through shared terrain/fog rendering; fixed minimap scale or at most one extra zoom step, full-map zoom required. Performance takes priority over implementation brevity; initial terrain modifications may be omitted. Tiled LOD/cache architecture remains a recommendation; no runtime implementation or formal plan authorized.
+
+
 **Created at:** 2026-10-25  
 **Created by:** ChatGPT GPT-6  
 **Updated at:** 2026-10-28\
