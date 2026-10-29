@@ -2,7 +2,7 @@
 
 **Created:** 2026-09-14
 **Status:** `planned` 📋
-**Priority:** medium · **Effort:** L
+**Priority:** low · **Effort:** L
 **Depends on:** items-player-028
 **Domain:** `items-player`
 **Type:** `feature`

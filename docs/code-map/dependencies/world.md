@@ -3502,6 +3502,7 @@ Generated from TypeScript imports.
 - `debug/locationQueries.ts`
 - `main.ts`
 - `ui-vue/lib/mapFogLayer.ts`
+- `ui-vue/lib/mapTerrainPaint.test.ts`
 - `world/locations/locationProximityDiscovery.test.ts`
 - `world/locations/worldLocationCatalog.test.ts`
 - `world/map/mapData.ts`
@@ -3542,6 +3543,7 @@ Generated from TypeScript imports.
 - `ui-vue/lib/mapRasterLayers.ts`
 - `ui-vue/lib/mapTerrainLayer.test.ts`
 - `ui-vue/lib/mapTerrainLayer.ts`
+- `ui-vue/lib/mapTerrainPaint.test.ts`
 - `ui-vue/lib/mapTerrainPaint.ts`
 - `world/map/mapFogGrid.ts`
 - `world/map/mapRasterTile.test.ts`

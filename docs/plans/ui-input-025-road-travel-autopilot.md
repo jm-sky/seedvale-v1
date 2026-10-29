@@ -11,6 +11,8 @@
 **Roadmap:** -
 **Model:** `Sonnet`, `Composer`
 
+**Revival:** Trzeba poprawić plan zgodnie z wizją z revival. Autopilot nie tylko po drogach, ale drogi dają bonus szybkości poruszania się. Można dodać przyspieszenie czasu i prędkości gracza, aby poprawić gameplay.
+
 ## Goal
 
 Dodać opcjonalny autopilot podróży gracza między znanymi miejscami świata, poruszający realną postacią pieszo albo realnym mountem wyłącznie po istniejących drogach i ścieżkach.

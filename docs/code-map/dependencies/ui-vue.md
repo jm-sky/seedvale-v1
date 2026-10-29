@@ -464,6 +464,15 @@ Generated from TypeScript imports.
 - `ui-vue/lib/mapRasterLayers.ts`
 - `ui-vue/lib/mapTerrainLayer.test.ts`
 
+## `ui-vue/lib/mapTerrainPaint.test.ts`
+
+**Imports**
+
+- `config/worldConfig.ts`
+- `ui-vue/lib/mapTerrainPaint.ts`
+- `world/map/mapProjection.ts`
+- `world/map/mapRasterTile.ts`
+
 ## `ui-vue/lib/mapTerrainPaint.ts`
 
 **Imports**
@@ -475,6 +484,7 @@ Generated from TypeScript imports.
 
 - `ui-vue/lib/mapTerrainLayer.test.ts`
 - `ui-vue/lib/mapTerrainLayer.ts`
+- `ui-vue/lib/mapTerrainPaint.test.ts`
 
 ## `ui-vue/lib/minimapLocationMarkers.test.ts`
 

@@ -260,8 +260,8 @@ Generated from exported TypeScript symbols.
 
 ## `ui-vue/lib/mapTerrainPaint.ts`
 
-- `MapTerrainPaintParams` — type — line 18
-- `paintMapTilePixels` — function — line 34
+- `MapTerrainPaintParams` — type — line 21
+- `paintMapTilePixels` — function — line 37
   - domain: ui-input
 
 ## `ui-vue/lib/minimapLocationMarkers.ts`

@@ -135,40 +135,40 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   🔴 `M` · **Score:**  65  
    → **unlocks:** 1/1
 
-12. `items-player-032` — **NPC player-storage resource and context rules**  
-  🟡 `L` · **Score:**  64  
-   → **unlocks:** 1/4
-
-13. `npc-032` — **Expedition needs and survival**  
-  🔴 `L` · **Score:**  98  
-   → **unlocks:** 3/3
-
-14. `npc-034` — **Expedition shared work and activities**  
-  🔴 `M` · **Score:**  75  
-   → **unlocks:** 1/1
-
-15. `npc-033` — **Companion combat cooperation**  
-  🔴 `L` · **Score:**  72  
-   → **unlocks:** 1/1
-
-16. `settlements-npcs-054` — **Transport carrier death and cargo disposition**  
+12. `settlements-npcs-054` — **Transport carrier death and cargo disposition**  
   🔴 `S` · **Score:**  59  
    → **unlocks:** 0/0
 
-17. `settlements-npcs-022` — **Household help and age-based work participation**  
+13. `settlements-npcs-022` — **Household help and age-based work participation**  
   🔴 `M` · **Score:**  57  
    → **unlocks:** 1/1
 
-18. `settlements-npcs-052` — **Persistent economic work cargo and local-transfer conservation**  
+14. `settlements-npcs-052` — **Persistent economic work cargo and local-transfer conservation**  
   🔴 `M` · **Score:**  57  
    → **unlocks:** 0/0
 
-19. `quests-progression-053` — **Hunters Brotherhood — competing hunting strategies**  
+15. `quests-progression-053` — **Hunters Brotherhood — competing hunting strategies**  
   🟡 `L` · **Score:**  56  
    → **unlocks:** 1/1
 
-20. `settlements-npcs-043` — **Settlement Cultivation Hydration, Rain & Farmer Watering**  
+16. `settlements-npcs-043` — **Settlement Cultivation Hydration, Rain & Farmer Watering**  
   🔴 `L` · **Score:**  56  
+   → **unlocks:** 1/1
+
+17. `items-player-032` — **NPC player-storage resource and context rules**  
+  ⚪ `L` · **Score:**  54  
+   → **unlocks:** 1/4
+
+18. `npc-032` — **Expedition needs and survival**  
+  🔴 `L` · **Score:**  98  
+   → **unlocks:** 3/3
+
+19. `npc-034` — **Expedition shared work and activities**  
+  🔴 `M` · **Score:**  75  
+   → **unlocks:** 1/1
+
+20. `npc-033` — **Companion combat cooperation**  
+  🔴 `L` · **Score:**  72  
    → **unlocks:** 1/1
 
 21. `quests-progression-063` — **Healer — Injured Resident**  
@@ -231,36 +231,36 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   🔴 `L` · **Score:**  28  
    → **unlocks:** 0/0
 
-36. `items-player-014` — **Rope-pullable resource transport**  
-  🟡 `M` · **Score:**  27  
-   → **unlocks:** 0/0
-
-37. `world-terrain-039` — **N8AO / post-process cost budget**  
+36. `world-terrain-039` — **N8AO / post-process cost budget**  
   🔴 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-38. `ui-input-025` — **Road travel autopilot for player and mounts**  
+37. `ui-input-025` — **Road travel autopilot for player and mounts**  
   🔴 `L` · **Score:**  26  
    → **unlocks:** 0/0
 
-39. `items-player-044` — **Shoulder and forearm equipment slots**  
+38. `items-player-044` — **Shoulder and forearm equipment slots**  
   🟡 `M` · **Score:**  25  
    → **unlocks:** 0/0
 
-40. `world-036` — **Lightweight unloaded shipwreck and tower lookup**  
+39. `world-036` — **Lightweight unloaded shipwreck and tower lookup**  
   🟡 `M` · **Score:**  25  
    → **unlocks:** 0/0
 
-41. `ui-input-045` — **Equipment panel body-ordered layout (V3 items--006 adapted)**  
+40. `ui-input-045` — **Equipment panel body-ordered layout (V3 items--006 adapted)**  
   🟡 `S` · **Score:**  23  
    → **unlocks:** 0/0
 
-42. `tools-019` — **Debug tooling lifecycle ownership**  
+41. `tools-019` — **Debug tooling lifecycle ownership**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-43. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
+42. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
   🟡 `L` · **Score:**  18  
+   → **unlocks:** 0/0
+
+43. `items-player-014` — **Rope-pullable resource transport**  
+  ⚪ `M` · **Score:**  17  
    → **unlocks:** 0/0
 
 44. `items-player-052` — **Settlement tool ownership and social acquisition**  

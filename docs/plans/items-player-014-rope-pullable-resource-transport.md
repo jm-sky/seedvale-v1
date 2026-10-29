@@ -3,7 +3,7 @@
 **Created:** 2026-09-02
 **Status:** `planned` 📋
 **Type:** feature
-**Priority:** medium · **Effort:** M
+**Priority:** low · **Effort:** M
 **Depends on:** ~~155~~ ~~122~~
 **Domain:** `items-player`
 **Roadmap:** `physical-resource-storage-and-logistics`  

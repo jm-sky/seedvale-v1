@@ -87,6 +87,7 @@ Generated from TypeScript imports.
 - `terrain/buildChunkGeometry.ts`
 - `terrain/chunkManager.ts`
 - `tools/assetBrowser/viewer/createViewer.ts`
+- `ui-vue/lib/mapTerrainPaint.test.ts`
 - `ui-vue/store.ts`
 - `ui/createDebugGui.ts`
 - `world/caves/caveMouthGeometry.test.ts`
