@@ -638,6 +638,16 @@ function sampleRawTexel(
   return { h, floorH, m, continentalness: c, mountainRidge, moistureRegion }
 }
 
+/** Every raw (pre-modifier) terrain field at one world point. */
+export type RawTexelSample = ReturnType<typeof sampleRawTexel>
+
+/** All raw fields from one evaluation — callers needing several fields at the
+ *  same point (map raster/projection) must use this instead of the per-field
+ *  wrappers below, each of which re-runs the full `sampleRawTexel`. */
+export function sampleRawTexelAt(worldX: number, worldZ: number, params: RawSampleParams): RawTexelSample {
+  return sampleRawTexel(worldX, worldZ, noiseHandlesFor(params.seed), params)
+}
+
 /** Exact analytic height at a single world point — no grid, no worker round-trip.
  *  Used both as the tile-builder's inner loop and as the chunk manager's fallback for
  *  points in a not-yet-ready chunk. */

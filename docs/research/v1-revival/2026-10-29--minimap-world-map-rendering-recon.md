@@ -2,7 +2,7 @@
 
 **Created:** 2026-10-29  
 **Status:** Source recon complete; author scope clarified; architecture and stages proposed  
-**Implementation:** None. No formal plan created.  
+**Implementation:** Authorized 2026-10-29 as a D4 exception — see [ui-input-046](../../plans/ui-input-046-minimap-and-world-map-raster-terrain-and-fog.md).  
 **Evidence baseline:** V1 `fe5ff141d3a151032697b8d0e963469e8095ce6b`; V3 `47733d6ba0fe96d4607be22c470c7331c76c2c5c`. These are the inspected snapshots, not a claim about later HEAD.  
 **Method:** GitHub connector source inspection; no runtime, screenshots or benchmarks executed.
 

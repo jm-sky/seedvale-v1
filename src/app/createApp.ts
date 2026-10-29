@@ -257,6 +257,7 @@ import { chunksNear } from '../terrain/chunkGrid'
 import { disposeChunkWorkerPool } from '../terrain/chunkWorkerPool'
 import { sampleFootstepSurface } from '../terrain/footstepSurface'
 import { deserializeMineableRockState, type MineableRockStateStore } from '../terrain/mineableRocks'
+import { createMapRasterLayers, setActiveMapRasterLayers } from '../ui-vue/lib/mapRasterLayers'
 import { formatQuestTerminalToast } from '../ui-vue/lib/questTerminalFeedback'
 import { mountVueUi } from '../ui-vue/mount'
 import { configureAudioVolumes, configureNpcVoiceSounds, configureUiSounds } from '../ui-vue/store'
@@ -1021,6 +1022,9 @@ export async function createApp(
     knowledge: locationKnowledge,
   })
   setActiveMapData(mapData)
+  // Shared minimap/world-map raster terrain + fog (plan ui-input-046).
+  const mapRasterLayers = createMapRasterLayers(mapDiscovery, rawSampleParamsFromWorld(config))
+  setActiveMapRasterLayers(mapRasterLayers)
 
   const inventory = new Inventory(
     initialSave?.inventory,
@@ -2924,6 +2928,7 @@ export async function createApp(
       }
       worldRebuildLifecycle.completePublished()
       mapProjection.setParams(rawSampleParamsFromWorld(config))
+      mapRasterLayers.terrain.setParams(rawSampleParamsFromWorld(config))
       worldLocationCatalog.invalidateScanCache()
       worldKnowledgeResearch.invalidate()
       guardLocalKnowledge.invalidate()
@@ -3941,6 +3946,8 @@ export async function createApp(
     toast.dispose()
     minimap.dispose()
     setActiveMapData(null)
+    setActiveMapRasterLayers(null)
+    mapRasterLayers.dispose()
     setActiveLocationKnowledge(null)
     setActiveNavigationTargets(null)
     keyboard.dispose()

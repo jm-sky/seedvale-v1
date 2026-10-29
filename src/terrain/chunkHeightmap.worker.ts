@@ -2,6 +2,7 @@ import type {
   ChunkWorkerRequest,
   ChunkWorkerResponse,
 } from './chunkHeightmapProtocol'
+import { buildMapTile } from '../world/map/mapRasterTile'
 import { computeChunkCrops } from './chunkCrops'
 import { clearVegetationAroundOldTrees, computeChunkEnvironment } from './chunkEnvironment'
 import { computeChunkTile } from './chunkHeightmap'
@@ -95,6 +96,12 @@ ctx.onmessage = ({ data }) => {
     } else if (kind === 'worldKnowledge') {
       const result = scanWorldKnowledge(data.params)
       ctx.postMessage({ kind: 'worldKnowledge', id, ok: true, result }, [])
+    } else if (kind === 'mapTile') {
+      const tile = buildMapTile(data.params)
+      ctx.postMessage(
+        { kind: 'mapTile', id, ok: true, tile },
+        [tile.heights.buffer, tile.floors.buffer, tile.classes.buffer, tile.riverPoints.buffer, tile.riverRuns.buffer],
+      )
     } else {
       const { params } = data
       const meshData = computeChunkMeshData(params)

@@ -16,9 +16,11 @@ import {
   clampWorldMapZoom,
   drawWorldMapFrame,
   findLocationAtCanvasPoint,
+  WORLD_MAP_RASTER_CONSUMER,
   type WorldMapView,
 } from '../lib/drawMap'
 import { locationKindColor, targetSlotColor } from '../lib/mapColors'
+import { getActiveMapRasterLayers } from '../lib/mapRasterLayers'
 import { locationKindIcon, locationKindLabel } from '../lib/worldLocationDisplay'
 import { closeWorldMap, isWorldMapOpen, ui } from '../store'
 
@@ -138,8 +140,31 @@ function setupCanvas(): void {
   paint()
 }
 
+// Raster tiles arrive asynchronously — repaint once per frame at most.
+let paintFrame = 0
+let stopTileListener: (() => void) | null = null
+function schedulePaint(): void {
+  if (paintFrame) return
+  paintFrame = requestAnimationFrame(() => {
+    paintFrame = 0
+    paint()
+  })
+}
+function stopRasterUpdates(): void {
+  stopTileListener?.()
+  stopTileListener = null
+  if (paintFrame) cancelAnimationFrame(paintFrame)
+  paintFrame = 0
+  getActiveMapRasterLayers()?.terrain.clearConsumer(WORLD_MAP_RASTER_CONSUMER)
+}
+
 watch(() => ui.worldMap.open, async (open) => {
-  if (!open) return
+  if (!open) {
+    stopRasterUpdates()
+    return
+  }
+  stopTileListener?.()
+  stopTileListener = getActiveMapRasterLayers()?.terrain.onTileReady(schedulePaint) ?? null
   view.viewX = ui.worldMap.playerX
   view.viewZ = ui.worldMap.playerZ
   view.zoom = MAP_WORLD_ZOOM_DEFAULT
@@ -234,7 +259,10 @@ const onResize = () => {
 }
 
 window.addEventListener('resize', onResize)
-onUnmounted(() => window.removeEventListener('resize', onResize))
+onUnmounted(() => {
+  window.removeEventListener('resize', onResize)
+  stopRasterUpdates()
+})
 </script>
 
 <template>

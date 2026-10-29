@@ -1,4 +1,5 @@
 import type { CropPlacement } from '../world/cropLifecycle'
+import type { MapTileData, MapTileRequest } from '../world/map/mapRasterTile'
 import type { EnvironmentPlacement } from './chunkEnvironment'
 import type { ChunkTileData, ChunkTileParams } from './chunkHeightmap'
 import type { ItemPlacement } from './chunkItems'
@@ -32,10 +33,12 @@ export type ChunkWorkerRequest =
   | { kind: 'grass', id: number, params: GrassRequestParams }
   | { kind: 'mesh', id: number, params: ChunkMeshDataParams }
   | { kind: 'worldKnowledge', id: number, params: WorldKnowledgeWorkerParams }
+  | { kind: 'mapTile', id: number, params: MapTileRequest }
 
 export type ChunkWorkerResponse =
   | (ChunkTileResult & { kind: 'tile', id: number, ok: true })
   | { kind: 'grass', id: number, ok: true, grass: GrassChunkData }
   | (ChunkMeshData & { kind: 'mesh', id: number, ok: true })
   | { kind: 'worldKnowledge', id: number, ok: true, result: WorldKnowledgeScanResult }
-  | { kind: 'tile' | 'grass' | 'mesh' | 'worldKnowledge', id: number, ok: false, error: string }
+  | { kind: 'mapTile', id: number, ok: true, tile: MapTileData }
+  | { kind: 'tile' | 'grass' | 'mesh' | 'worldKnowledge' | 'mapTile', id: number, ok: false, error: string }

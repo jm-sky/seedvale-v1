@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { MapKnownLocation } from '../../world/map/mapTypes'
-import { MINIMAP_SCALE } from './drawMinimap'
+import { MINIMAP_SCALE, minimapScale } from './drawMinimap'
 import {
   classifyNavigationTargetMinimap,
   isMinimapCanvasPoint,
@@ -99,26 +99,26 @@ describe('classifyNavigationTargetMinimap', () => {
 })
 
 describe('minimap zoom and viewport', () => {
-  it('shrinks query viewport when minimap zoom increases so fewer POI qualify', () => {
+  it('shrinks query viewport at the near zoom step so fewer POI qualify', () => {
     const size = 200
-    const lowZoom = minimapQueryViewport(0, 0, size, MINIMAP_SCALE * 1)
-    const highZoom = minimapQueryViewport(0, 0, size, MINIMAP_SCALE * 3)
+    const lowZoom = minimapQueryViewport(0, 0, size, minimapScale('far'))
+    const highZoom = minimapQueryViewport(0, 0, size, minimapScale('near'))
     expect(highZoom.maxX - highZoom.minX).toBeLessThan(lowZoom.maxX - lowZoom.minX)
-    const atEdge = loc('cemetery:d', 40, 0)
+    const atEdge = loc('cemetery:d', 200, 0)
     const inLow = atEdge.x >= lowZoom.minX && atEdge.x <= lowZoom.maxX
     const inHigh = atEdge.x >= highZoom.minX && atEdge.x <= highZoom.maxX
     expect(inLow).toBe(true)
     expect(inHigh).toBe(false)
   })
 
-  it('drops POI that fall outside the canvas after projection at higher zoom', () => {
+  it('drops POI that fall outside the canvas after projection at the near zoom step', () => {
     const size = 200
     const playerX = 0
     const playerZ = 0
     const yaw = 0
-    const worldX = 45
-    const lowScale = MINIMAP_SCALE
-    const highScale = MINIMAP_SCALE * 3
+    const worldX = 150
+    const lowScale = minimapScale('far')
+    const highScale = minimapScale('near')
     const lowPoint = canvasPoint(worldX, 0, playerX, playerZ, yaw, size, lowScale)
     const highPoint = canvasPoint(worldX, 0, playerX, playerZ, yaw, size, highScale)
     expect(isMinimapCanvasPoint(lowPoint.x, lowPoint.y, size)).toBe(true)

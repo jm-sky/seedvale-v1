@@ -2,16 +2,15 @@ import type { MapKnownLocation, MapViewport } from '../../world/map/mapTypes'
 import { getActiveNavigationTargets } from '../../world/locations/navigationTargets'
 import { worldLocationKindFromId } from '../../world/locations/worldLocationTypes'
 import {
-  MAP_CELL_SIZE,
   MAP_EXTENT_HALF,
-  MAP_WORLD_MAX_CELLS_PER_AXIS,
   MAP_WORLD_ZOOM_MAX,
   MAP_WORLD_ZOOM_MIN,
 } from '../../world/map/mapConfig'
 import { getActiveMapData } from '../../world/map/mapData'
-import { mapCellBounds } from '../../world/map/mapProjection'
-import { LOCATION_KIND_EMOJI, locationKindColor, MAP_FOG_FILL, MAP_UNAVAILABLE_FILL, mapCellFillStyle, targetSlotColor } from './mapColors'
+import { selectMapRasterStep } from '../../world/map/mapRasterTile'
+import { LOCATION_KIND_EMOJI, locationKindColor, MAP_FOG_FILL, MAP_UNAVAILABLE_FILL, targetSlotColor } from './mapColors'
 import { resolveMapLocationLabelPresentations } from './mapLocationLabelLayout'
+import { drawMapRasterLayers, getActiveMapRasterLayers } from './mapRasterLayers'
 
 export type WorldMapView = {
   viewX: number
@@ -62,20 +61,12 @@ export function viewportFor(
 ): MapViewport {
   const halfW = width / 2 / view.zoom
   const halfH = height / 2 / view.zoom
-  const lodStep = lodStepFor(view, width, height)
   return {
     minX: view.viewX - halfW,
     maxX: view.viewX + halfW,
     minZ: view.viewZ - halfH,
     maxZ: view.viewZ + halfH,
-    lodStep,
   }
-}
-
-export function lodStepFor(view: WorldMapView, width: number, _height: number): number {
-  const worldW = width / Math.max(view.zoom, 1e-6)
-  const cellsAcross = worldW / MAP_CELL_SIZE
-  return Math.max(1, Math.ceil(cellsAcross / MAP_WORLD_MAX_CELLS_PER_AXIS))
 }
 
 /**
@@ -87,6 +78,9 @@ export function lodStepFor(view: WorldMapView, width: number, _height: number): 
 export function worldMapPlayerLookDirection(yaw: number): { dirX: number, dirY: number } {
   return { dirX: -Math.sin(yaw), dirY: -Math.cos(yaw) }
 }
+
+/** Terrain-layer consumer id of the world map (see `MapTerrainLayer.clearConsumer`). */
+export const WORLD_MAP_RASTER_CONSUMER = 'worldMap'
 
 function drawUnavailable(ctx: CanvasRenderingContext2D, width: number, height: number): void {
   ctx.fillStyle = MAP_UNAVAILABLE_FILL
@@ -107,8 +101,6 @@ export function drawWorldMapFrame(
   drawUnavailable(ctx, width, height)
 
   const viewport = viewportFor(view, width, height)
-  const step = viewport.lodStep ?? 1
-  const cellPx = MAP_CELL_SIZE * step * view.zoom
   const mapData = getActiveMapData()
 
   ctx.fillStyle = MAP_FOG_FILL
@@ -116,14 +108,19 @@ export function drawWorldMapFrame(
   const fogSize = MAP_EXTENT_HALF * 2 * view.zoom
   ctx.fillRect(fogOrigin.x, fogOrigin.y, fogSize, fogSize)
 
-  if (mapData) {
-    for (const cell of mapData.queryCells(viewport)) {
-      const bounds = mapCellBounds(cell.cx, cell.cz)
-      const { x, y } = worldToCanvas(bounds.minX, bounds.minZ, view, width, height)
-      ctx.fillStyle = mapCellFillStyle(cell)
-      ctx.fillRect(x, y, cellPx + 0.6, cellPx + 0.6)
-    }
+  // Raster terrain LOD follows zoom; `worldToCanvas` as a canvas transform.
+  const layers = getActiveMapRasterLayers()
+  if (layers) {
+    const devicePxPerUnit = view.zoom * Math.abs(ctx.getTransform().a)
+    ctx.save()
+    ctx.translate(width / 2, height / 2)
+    ctx.scale(view.zoom, view.zoom)
+    ctx.translate(-view.viewX, -view.viewZ)
+    drawMapRasterLayers(ctx, layers, WORLD_MAP_RASTER_CONSUMER, viewport, selectMapRasterStep(devicePxPerUnit), view.zoom)
+    ctx.restore()
+  }
 
+  if (mapData) {
     const targetSlotById = new Map((getActiveNavigationTargets()?.list() ?? []).map((t) => [t.id, t.slot]))
     const activeTargetIds = new Set(targetSlotById.keys())
     const knownLocations = mapData.knownLocations(viewport)

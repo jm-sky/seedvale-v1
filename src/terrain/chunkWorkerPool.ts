@@ -1,3 +1,4 @@
+import type { MapTileData, MapTileRequest } from '../world/map/mapRasterTile'
 import type { ChunkTileParams } from './chunkHeightmap'
 import type {
   ChunkTileResult,
@@ -59,6 +60,13 @@ export type ChunkWorkerPool = {
    */
   requestWorldKnowledge(key: string, params: WorldKnowledgeWorkerParams): Promise<WorldKnowledgeScanResult>
   cancelWorldKnowledge(key: string): void
+  /**
+   * Map raster tile (plan ui-input-046). Background kind below world
+   * knowledge, above grass — the map is UI, never what the player stands on.
+   * @domain ui-input
+   */
+  requestMapTile(key: string, params: MapTileRequest): Promise<MapTileData>
+  cancelMapTile(key: string): void
   dispose(): void
   readonly pendingCount: number
   readonly busyCount: number
@@ -102,7 +110,16 @@ type WorldKnowledgeJob = {
   reject: (err: Error) => void
 }
 
-type ChunkJob = TileJob | GrassJob | MeshJob | WorldKnowledgeJob
+type MapTileJob = {
+  kind: 'mapTile'
+  id: number
+  key: string
+  params: MapTileRequest
+  resolve: (data: MapTileData) => void
+  reject: (err: Error) => void
+}
+
+type ChunkJob = TileJob | GrassJob | MeshJob | WorldKnowledgeJob | MapTileJob
 
 function createChunkWorker(): ChunkWorkerLike {
   return new Worker(new URL('./chunkHeightmap.worker.ts', import.meta.url), {
@@ -130,11 +147,12 @@ function toRequest(job: ChunkJob): ChunkWorkerRequest {
   if (job.kind === 'tile') return { kind: 'tile', id: job.id, params: job.params }
   if (job.kind === 'mesh') return { kind: 'mesh', id: job.id, params: job.params }
   if (job.kind === 'worldKnowledge') return { kind: 'worldKnowledge', id: job.id, params: job.params }
+  if (job.kind === 'mapTile') return { kind: 'mapTile', id: job.id, params: job.params }
   return { kind: 'grass', id: job.id, params: job.params }
 }
 
 function isBackgroundJob(job: ChunkJob): boolean {
-  return job.kind === 'grass' || job.kind === 'worldKnowledge'
+  return job.kind === 'grass' || job.kind === 'worldKnowledge' || job.kind === 'mapTile'
 }
 
 export function createChunkWorkerPool(
@@ -149,6 +167,7 @@ export function createChunkWorkerPool(
   const queueTile: TileJob[] = []
   const queueMesh: MeshJob[] = []
   const queueWorldKnowledge: WorldKnowledgeJob[] = []
+  const queueMapTile: MapTileJob[] = []
   const queueGrass: GrassJob[] = []
   const inflight = new Map<number, ChunkJob>()
   const keyToId = new Map<string, number>()
@@ -176,6 +195,8 @@ export function createChunkWorkerPool(
         job = queueMesh.shift()
       } else if (queueWorldKnowledge.length > 0 && canStartBackground()) {
         job = queueWorldKnowledge.shift()
+      } else if (queueMapTile.length > 0 && canStartBackground()) {
+        job = queueMapTile.shift()
       } else if (queueGrass.length > 0 && canStartBackground()) {
         job = queueGrass.shift()
       }
@@ -235,6 +256,8 @@ export function createChunkWorkerPool(
           } else if (job.kind === 'worldKnowledge' && msg.kind === 'worldKnowledge') {
             recordWorldKnowledgeTimings(job, msg.result)
             job.resolve(msg.result)
+          } else if (job.kind === 'mapTile' && msg.kind === 'mapTile') {
+            job.resolve(msg.tile)
           } else {
             job.reject(new Error(`chunk worker kind mismatch (${job.kind})`))
           }
@@ -289,6 +312,12 @@ export function createChunkWorkerPool(
     const knowledgeIndex = queueWorldKnowledge.findIndex((job) => job.id === id)
     if (knowledgeIndex !== -1) {
       const [job] = queueWorldKnowledge.splice(knowledgeIndex, 1)
+      job!.reject(new HeightmapGenerationCancelledError())
+      return
+    }
+    const mapTileIndex = queueMapTile.findIndex((job) => job.id === id)
+    if (mapTileIndex !== -1) {
+      const [job] = queueMapTile.splice(mapTileIndex, 1)
       job!.reject(new HeightmapGenerationCancelledError())
       return
     }
@@ -366,6 +395,20 @@ export function createChunkWorkerPool(
     })
   }
 
+  function cancelMapTile(key: string): void {
+    cancelByNamespacedKey(`mapTile:${key}`)
+  }
+
+  function requestMapTile(key: string, params: MapTileRequest): Promise<MapTileData> {
+    cancelMapTile(key)
+    const id = nextId++
+    keyToId.set(`mapTile:${key}`, id)
+    return new Promise<MapTileData>((resolve, reject) => {
+      queueMapTile.push({ kind: 'mapTile', id, key, params, resolve, reject })
+      pump()
+    })
+  }
+
   function dispose(): void {
     for (const job of queueTile) job.reject(new HeightmapGenerationCancelledError())
     queueTile.length = 0
@@ -373,6 +416,8 @@ export function createChunkWorkerPool(
     queueMesh.length = 0
     for (const job of queueWorldKnowledge) job.reject(new HeightmapGenerationCancelledError())
     queueWorldKnowledge.length = 0
+    for (const job of queueMapTile) job.reject(new HeightmapGenerationCancelledError())
+    queueMapTile.length = 0
     for (const job of queueGrass) job.reject(new HeightmapGenerationCancelledError())
     queueGrass.length = 0
     for (const job of inflight.values()) job.reject(new HeightmapGenerationCancelledError())
@@ -393,9 +438,11 @@ export function createChunkWorkerPool(
     cancelMesh,
     requestWorldKnowledge,
     cancelWorldKnowledge,
+    requestMapTile,
+    cancelMapTile,
     dispose,
     get pendingCount() {
-      return queueTile.length + queueMesh.length + queueWorldKnowledge.length + queueGrass.length
+      return queueTile.length + queueMesh.length + queueWorldKnowledge.length + queueMapTile.length + queueGrass.length
     },
     get busyCount() {
       return inflight.size
@@ -451,6 +498,14 @@ export function requestChunkWorldKnowledge(
 
 export function cancelChunkWorldKnowledge(key: string): void {
   chunkPool?.cancelWorldKnowledge(key)
+}
+
+export function requestChunkMapTile(key: string, params: MapTileRequest): Promise<MapTileData> {
+  return getChunkPool().requestMapTile(key, params)
+}
+
+export function cancelChunkMapTile(key: string): void {
+  chunkPool?.cancelMapTile(key)
 }
 
 export function disposeChunkWorkerPool(): void {

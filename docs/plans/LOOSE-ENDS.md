@@ -10,6 +10,8 @@ Format: `- [ ] YYYY-MM-DD — opis (plan/plik, jeśli istotne)`
 
 - [ ] 2026-08-24 — `Przygotuj teren` na skalistym/górskim gruncie wymaga narzędzi, ale nie ma kary za trudność terenu; jeśli mechanika ma rozróżniać soil/sand/rock także dla większych prac, rozszerzyć istniejący `requiredWork` zamiast dodawać osobny system (world-terrain-002).
 
+- [ ] 2026-10-29 — Mapy rysują teraz raster (ui-input-046), więc per-cell `MapProjection.project`/`cellsInViewport` i `MapData.queryCells` nie mają konsumenta produkcyjnego (tylko testy). Usunąć razem z nieograniczonym cache projekcji, gdy nikt ich nie potrzebuje.
+
 ## Quest-enabling world mechanics
 
 - [ ] 2026-09-12 — settlements-007 wystawia read-only `SettlementsManager.getStructureSnapshot`/`listRepairProblems`, ale żaden quest jeszcze tego nie konsumuje. Po `quests-progression-030`/`031` dodać `structure:<structureId>:repair` opportunity tym samym mechanizmem co wolf-den pressure (016) — nie kopiować repair state do quest layer. Recon: `docs/reviews/2026-09-13--quest-system-architecture-recon.md`.

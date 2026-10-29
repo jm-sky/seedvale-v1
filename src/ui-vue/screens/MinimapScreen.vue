@@ -1,17 +1,18 @@
 <script setup lang="ts">
-import { Minus, Plus } from 'lucide-vue-next'
+import { Minus, Plus, ZoomIn, ZoomOut } from 'lucide-vue-next'
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { isTouchDevice } from '../../input/isTouchDevice'
 import {
-  adjustMinimapZoom,
   drawMinimapFrame,
   getMinimapZoom,
   lastMinimapPlayer,
   type MinimapSettlement,
   minimapSize,
+  type MinimapZoomLevel,
   registerMinimapDrawer,
   setMinimapZoom,
 } from '../lib/drawMinimap'
+import { getActiveMapRasterLayers } from '../lib/mapRasterLayers'
 import { openWorldMap, toggleMinimap, ui } from '../store'
 import type { Vector3 } from 'three'
 
@@ -55,19 +56,39 @@ function setupCanvas(canvas: HTMLCanvasElement): void {
   ctx?.scale(dpr, dpr)
 }
 
+const zoom = ref<MinimapZoomLevel>(getMinimapZoom())
+
+function applyZoom(level: MinimapZoomLevel): void {
+  setMinimapZoom(level)
+  zoom.value = level
+  lastPaint.at = 0
+}
+
+/** Skip repainting an unchanged view; NPC dots still refresh at this cadence. */
+const IDLE_REPAINT_MS = 100
+const lastPaint = { x: Number.NaN, z: Number.NaN, yaw: Number.NaN, zoom: '', revision: -1, at: 0 }
+
 function draw(playerPos: Vector3, settlements: readonly MinimapSettlement[], yaw: number): void {
   if (ui.minimap.collapsed || !ctx) return
+  const now = performance.now()
+  const revision = getActiveMapRasterLayers()?.revision() ?? 0
+  const unchanged = Math.abs(playerPos.x - lastPaint.x) < 0.02
+    && Math.abs(playerPos.z - lastPaint.z) < 0.02
+    && Math.abs(yaw - lastPaint.yaw) < 0.002
+    && zoom.value === lastPaint.zoom
+    && revision === lastPaint.revision
+  if (unchanged && now - lastPaint.at < IDLE_REPAINT_MS) return
   drawMinimapFrame({ ctx, size }, playerPos, settlements, yaw)
+  Object.assign(lastPaint, { x: playerPos.x, z: playerPos.z, yaw, zoom: zoom.value, revision, at: now })
 }
 
 function onCanvasWheel(event: WheelEvent): void {
   event.preventDefault()
-  adjustMinimapZoom(event.deltaY < 0 ? 0.25 : -0.25)
+  applyZoom(event.deltaY < 0 ? 'near' : 'far')
 }
 
 const pointers = new Map<number, { x: number, y: number }>()
 let pinchStart = 0
-let pinchZoom0 = 1
 let pinched = false
 
 function onCanvasPointerDown(event: PointerEvent): void {
@@ -77,17 +98,20 @@ function onCanvasPointerDown(event: PointerEvent): void {
     pinched = true
     const [a, b] = [...pointers.values()]
     pinchStart = Math.hypot(a!.x - b!.x, a!.y - b!.y)
-    pinchZoom0 = getMinimapZoom()
   }
 }
+
+/** Pinch ratio that flips between the two zoom steps. */
+const PINCH_STEP_RATIO = 1.15
 
 function onCanvasPointerMove(event: PointerEvent): void {
   if (!pointers.has(event.pointerId)) return
   pointers.set(event.pointerId, { x: event.clientX, y: event.clientY })
   if (pointers.size !== 2 || pinchStart < 1) return
   const [a, b] = [...pointers.values()]
-  const dist = Math.hypot(a!.x - b!.x, a!.y - b!.y)
-  setMinimapZoom(pinchZoom0 * (dist / pinchStart))
+  const ratio = Math.hypot(a!.x - b!.x, a!.y - b!.y) / pinchStart
+  if (ratio > PINCH_STEP_RATIO) applyZoom('near')
+  else if (ratio < 1 / PINCH_STEP_RATIO) applyZoom('far')
 }
 
 function onCanvasPointerUp(event: PointerEvent): void {
@@ -144,17 +168,44 @@ watch(canvasRef, (canvas) => {
         :size="14"
       />
     </button>
-    <canvas
+    <div
       v-show="!ui.minimap.collapsed"
-      ref="canvasRef"
-      class="pointer-events-auto block cursor-pointer rounded-md border border-white/25 shadow-[0_4px_16px_rgba(0,0,0,0.35)]"
+      class="pointer-events-auto relative rounded-full shadow-[0_4px_16px_rgba(0,0,0,0.35)]"
       :class="touch && !embedded ? 'absolute top-full right-0 mt-1' : ''"
-      @click="onCanvasClick"
-      @wheel.prevent="onCanvasWheel"
-      @pointerdown="onCanvasPointerDown"
-      @pointermove="onCanvasPointerMove"
-      @pointerup="onCanvasPointerUp"
-      @pointercancel="onCanvasPointerUp"
-    />
+    >
+      <canvas
+        ref="canvasRef"
+        class="block cursor-pointer rounded-full"
+        @click="onCanvasClick"
+        @wheel.prevent="onCanvasWheel"
+        @pointerdown="onCanvasPointerDown"
+        @pointermove="onCanvasPointerMove"
+        @pointerup="onCanvasPointerUp"
+        @pointercancel="onCanvasPointerUp"
+      />
+      <!-- V3 lens bezel: highlight on top, heavier shade at the bottom. -->
+      <div class="pointer-events-none absolute inset-0 rounded-full shadow-[inset_0_2px_3px_rgb(255_255_255/45%),inset_0_-8px_18px_rgb(0_0_0/80%),inset_5px_0_12px_rgb(0_0_0/40%),inset_-5px_0_12px_rgb(0_0_0/50%)]" />
+      <div class="absolute right-0 bottom-0 flex flex-col gap-1">
+        <button
+          type="button"
+          class="flex size-6 cursor-pointer items-center justify-center rounded bg-black/60 text-neutral-100 hover:bg-black/80 disabled:cursor-default disabled:opacity-40"
+          aria-label="Przybliż minimapę"
+          :disabled="zoom === 'near'"
+          @click.stop="applyZoom('near')"
+        >
+          <ZoomIn :size="14" />
+        </button>
+        <button
+          type="button"
+          class="flex size-6 cursor-pointer items-center justify-center rounded bg-black/60 text-neutral-100 hover:bg-black/80 disabled:cursor-default disabled:opacity-40"
+          aria-label="Oddal minimapę"
+          :disabled="zoom === 'far'"
+          @click.stop="applyZoom('far')"
+        >
+          <ZoomOut :size="14" />
+        </button>
+      </div>
+    </div>
   </div>
 </template>
+

@@ -1,14 +1,7 @@
 import type { WorldConfig } from '../../config/worldConfig'
 import type { MapBiomeKind, MapCellData, MapCellKey, MapTerrainKind, MapViewport } from './mapTypes'
 import { biomeWeightsAt, forestDensityAt } from '../../terrain/biomeRegions'
-import {
-  type RawSampleParams,
-  sampleContinentalnessAt,
-  sampleFloorAt,
-  sampleHeightAt,
-  sampleMoistureRegionAt,
-  sampleMountainRidgeAt,
-} from '../../terrain/chunkHeightmap'
+import { type RawSampleParams, type RawTexelSample, sampleRawTexelAt } from '../../terrain/chunkHeightmap'
 import { isMountainRidge, isOceanMix, isWetFloor } from '../../terrain/terrainClassification'
 import { MAP_CELL_SIZE, MAP_EXTENT_HALF } from './mapConfig'
 
@@ -76,13 +69,18 @@ export function rawSampleParamsFromWorld(config: WorldConfig): RawSampleParams {
   }
 }
 
-export function projectCellAt(
-  worldX: number, worldZ: number, params: RawSampleParams,
-): Pick<MapCellData, 'terrain' | 'biome' | 'water'> {
-  const floorH = sampleFloorAt(worldX, worldZ, params)
-  const height = sampleHeightAt(worldX, worldZ, params)
-  const continentalness = sampleContinentalnessAt(worldX, worldZ, params)
+export type MapTexelClass = Pick<MapCellData, 'terrain' | 'biome' | 'water'>
+
+/**
+ * Map classification of one raw terrain sample — the single rule shared by
+ * the per-cell projection and the raster map tiles (plan ui-input-046), so
+ * both views can never disagree about what a point is.
+ *
+ * @domain ui-input
+ */
+export function classifyMapTexel(texel: RawTexelSample, params: RawSampleParams): MapTexelClass {
   const { waterLevel, heightScale, region } = params
+  const { h: height, floorH, continentalness } = texel
   const wet = isWetFloor(floorH, waterLevel)
   if (wet) {
     const terrain: MapTerrainKind = isOceanMix(continentalness, region.oceanThreshold, region.coastThreshold) ? 'ocean' : 'inland_water'
@@ -90,8 +88,8 @@ export function projectCellAt(
   }
 
   const altitude01 = Math.max(0, (height - waterLevel) / Math.max(heightScale, 0.001))
-  const ridge = sampleMountainRidgeAt(worldX, worldZ, params)
-  const moistureRegion = sampleMoistureRegionAt(worldX, worldZ, params)
+  const ridge = texel.mountainRidge
+  const moistureRegion = texel.moistureRegion
   const weights = biomeWeightsAt(moistureRegion, altitude01, region)
   const forest = forestDensityAt(moistureRegion, altitude01, continentalness, ridge, region)
 
@@ -113,6 +111,10 @@ export function projectCellAt(
   }
 
   return { terrain, biome, water: false }
+}
+
+export function projectCellAt(worldX: number, worldZ: number, params: RawSampleParams): MapTexelClass {
+  return classifyMapTexel(sampleRawTexelAt(worldX, worldZ, params), params)
 }
 
 export type MapProjection = {
@@ -140,7 +142,6 @@ export function createMapProjection(initial: RawSampleParams): MapProjection {
   return {
     project,
     cellsInViewport(viewport) {
-      const step = Math.max(1, viewport.lodStep ?? 1)
       const minX = Math.max(viewport.minX, -MAP_EXTENT_HALF)
       const maxX = Math.min(viewport.maxX, MAP_EXTENT_HALF)
       const minZ = Math.max(viewport.minZ, -MAP_EXTENT_HALF)
@@ -149,8 +150,8 @@ export function createMapProjection(initial: RawSampleParams): MapProjection {
       const minCell = worldToMapCell(minX, minZ)
       const maxCell = worldToMapCell(maxX - 1e-6, maxZ - 1e-6)
       const out: MapCellData[] = []
-      for (let cz = minCell.cz; cz <= maxCell.cz; cz += step) {
-        for (let cx = minCell.cx; cx <= maxCell.cx; cx += step) {
+      for (let cz = minCell.cz; cz <= maxCell.cz; cz++) {
+        for (let cx = minCell.cx; cx <= maxCell.cx; cx++) {
           out.push(project(cx, cz))
         }
       }

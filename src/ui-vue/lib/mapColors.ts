@@ -1,26 +1,32 @@
 import type { WorldLocationKind } from '../../world/locations/worldLocationTypes'
-import type { MapBiomeKind, MapCellData, MapTerrainKind } from '../../world/map/mapTypes'
 
 /** Fog / unknown terrain — do not reveal biome underneath. */
-export const MAP_FOG_FILL = '#12161a'
-export const MAP_UNAVAILABLE_FILL = '#0b0d10'
+export const MAP_FOG_FILL = '#16130f'
+/** `MAP_FOG_FILL` as RGB for the raster fog mask. */
+export const MAP_FOG_RGB: readonly [number, number, number] = [0x16, 0x13, 0x0f]
+export const MAP_UNAVAILABLE_FILL = '#0e0c09'
+/** Canonical river stroke on the raster maps. */
+export const MAP_RIVER_STROKE = '#4a82bc'
 
-const TERRAIN_FILL: Record<MapTerrainKind, string> = {
-  ocean: '#1a3d5c',
-  inland_water: '#2a6a78',
-  shore: '#d4c090',
-  lowland: '#4f9a3e',
-  highland: '#8a8070',
-  mountain: '#6a6560',
+function hexRgb(hex: string): [number, number, number] {
+  const n = Number.parseInt(hex.slice(1), 16)
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255]
 }
 
-const BIOME_FILL: Record<MapBiomeKind, string | null> = {
-  none: null,
-  forest: '#2d5c32',
-  desert: '#dcc27a',
-  swamp: '#3a4a2e',
-  meadow: '#4f9a3e',
-}
+/** Raster base colour per `MapRasterClass` code (V3-derived tones, plan
+ *  ui-input-046), flattened `r,g,b` triples; index 0 (`None`) is unused. */
+const RASTER_CLASS_HEX = [
+  '#000000', // None
+  '#28466e', // Ocean
+  '#3c6ea0', // InlandWater
+  '#d2c38c', // Shore
+  '#78736e', // Mountain
+  '#6e963c', // Meadow
+  '#3c642d', // Forest
+  '#cdb889', // Desert
+  '#505a32', // Swamp
+]
+export const MAP_RASTER_CLASS_RGB: Uint8Array = Uint8Array.from(RASTER_CLASS_HEX.flatMap(hexRgb))
 
 /** Stable per-slot colour (plan world-012 §13 "Każdy cel ma osobny
  *  kolor/slot") — index 0 unused, slots are 1-3 (`NavigationTargetEntry.slot`). */
@@ -68,11 +74,4 @@ export const LOCATION_KIND_EMOJI: Record<WorldLocationKind, string> = {
   ruins: '🏚️',
   abandonedMine: '⛏️',
   searchArea: '🌲',
-}
-
-export function mapCellFillStyle(cell: MapCellData): string {
-  if (cell.water) return TERRAIN_FILL[cell.terrain]
-  if (cell.terrain === 'mountain') return TERRAIN_FILL.mountain
-  if (cell.terrain === 'shore') return TERRAIN_FILL.shore
-  return BIOME_FILL[cell.biome] ?? TERRAIN_FILL[cell.terrain]
 }

@@ -1,10 +1,10 @@
 import type { NpcAgent } from '../../ai/NpcAgent'
 import { getActiveNavigationTargets } from '../../world/locations/navigationTargets'
 import { worldLocationKindFromId } from '../../world/locations/worldLocationTypes'
-import { MAP_MINIMAP_ZOOM_MAX, MAP_MINIMAP_ZOOM_MIN } from '../../world/map/mapConfig'
 import { getActiveMapData } from '../../world/map/mapData'
-import { mapCellBounds } from '../../world/map/mapProjection'
-import { locationKindColor, MAP_FOG_FILL, mapCellFillStyle, targetSlotColor } from './mapColors'
+import { selectMapRasterStep } from '../../world/map/mapRasterTile'
+import { locationKindColor, MAP_FOG_FILL, targetSlotColor } from './mapColors'
+import { drawMapRasterLayers, getActiveMapRasterLayers } from './mapRasterLayers'
 import { selectNearbyMinimapPois } from './minimapLocationMarkers'
 import type { Vector3 } from 'three'
 
@@ -21,24 +21,39 @@ export function minimapSize(touch: boolean): number {
   return touch ? 130 : 200
 }
 
-/** World units → minimap px at zoom 1×. */
-export const MINIMAP_SCALE = 2
+/** World units → minimap px at the `near` zoom step (≈200 units across a
+ *  200 px minimap; plan ui-input-046). */
+export const MINIMAP_SCALE = 1
 
 export const DEFAULT_ARROW_TIP_SIZE = 7
 
-let minimapZoom = 1
+/** Two discrete minimap scales instead of continuous zoom (author decision,
+ *  2026-10-29): `near` ≈200 units across, `far` ≈400. */
+export type MinimapZoomLevel = 'near' | 'far'
 
-export function getMinimapZoom(): number {
+const MINIMAP_ZOOM_SCALE: Record<MinimapZoomLevel, number> = {
+  near: MINIMAP_SCALE,
+  far: MINIMAP_SCALE / 2,
+}
+
+let minimapZoom: MinimapZoomLevel = 'near'
+
+export function getMinimapZoom(): MinimapZoomLevel {
   return minimapZoom
 }
 
-export function setMinimapZoom(zoom: number): void {
-  minimapZoom = Math.min(MAP_MINIMAP_ZOOM_MAX, Math.max(MAP_MINIMAP_ZOOM_MIN, zoom))
+export function setMinimapZoom(level: MinimapZoomLevel): void {
+  minimapZoom = level
 }
 
-export function adjustMinimapZoom(delta: number): void {
-  setMinimapZoom(minimapZoom + delta)
+/** Minimap px per world unit for `level`. */
+export function minimapScale(level: MinimapZoomLevel = minimapZoom): number {
+  return MINIMAP_ZOOM_SCALE[level]
 }
+
+/** Raster LOD never finer than this on the minimap — its two fixed scales
+ *  don't need 1-unit samples, and that keeps cold travel cheap. */
+const MINIMAP_MIN_RASTER_STEP = 2
 
 export type MinimapDrawContext = {
   ctx: CanvasRenderingContext2D
@@ -82,7 +97,7 @@ export function drawMinimapFrame(
   settlements: readonly MinimapSettlement[],
   yaw: number,
 ): void {
-  const scale = MINIMAP_SCALE * minimapZoom
+  const scale = minimapScale()
   const halfRange = size / 2 / scale
   const arrowRadius = size / 2 - 14
   const northRadius = size / 2 - 10
@@ -116,24 +131,25 @@ export function drawMinimapFrame(
     minZ: playerPos.z - queryRange,
     maxZ: playerPos.z + queryRange,
   }
-  if (mapData) {
-    for (const cell of mapData.queryCells(viewport)) {
-      const bounds = mapCellBounds(cell.cx, cell.cz)
-      const corners = [
-        toMap(bounds.minX, bounds.minZ),
-        toMap(bounds.maxX, bounds.minZ),
-        toMap(bounds.maxX, bounds.maxZ),
-        toMap(bounds.minX, bounds.maxZ),
-      ]
-      ctx.fillStyle = mapCellFillStyle(cell)
-      ctx.beginPath()
-      ctx.moveTo(corners[0]!.x, corners[0]!.y)
-      ctx.lineTo(corners[1]!.x, corners[1]!.y)
-      ctx.lineTo(corners[2]!.x, corners[2]!.y)
-      ctx.lineTo(corners[3]!.x, corners[3]!.y)
-      ctx.closePath()
-      ctx.fill()
-    }
+
+  // Cached raster terrain + fog under the same heading-up transform `toMap` uses.
+  const layers = getActiveMapRasterLayers()
+  if (layers) {
+    const devicePxPerUnit = scale * Math.abs(ctx.getTransform().a)
+    ctx.save()
+    ctx.translate(centerX, centerY)
+    ctx.rotate(yaw)
+    ctx.scale(scale, scale)
+    ctx.translate(-playerPos.x, -playerPos.z)
+    drawMapRasterLayers(
+      ctx,
+      layers,
+      'minimap',
+      viewport,
+      selectMapRasterStep(devicePxPerUnit, MINIMAP_MIN_RASTER_STEP),
+      scale,
+    )
+    ctx.restore()
   }
 
   ctx.fillStyle = '#4a89e0'
@@ -220,6 +236,26 @@ export function drawMinimapFrame(
   // Player: fixed upward triangle (canvas up = look direction).
   ctx.fillStyle = '#f2f6fa'
   drawArrow(ctx, centerX, centerY, 0, -1, 6)
+
+  maskToLens(ctx, size)
+}
+
+/** Round lens (V3 minimap): keep only the inscribed circle, then a dark rim.
+ *  `destination-in` rather than `clip()` — a curved clip came out empty on
+ *  some WSL GPU drivers in V3. */
+function maskToLens(ctx: CanvasRenderingContext2D, size: number): void {
+  const c = size / 2
+  ctx.save()
+  ctx.globalCompositeOperation = 'destination-in'
+  ctx.beginPath()
+  ctx.arc(c, c, c, 0, Math.PI * 2)
+  ctx.fill()
+  ctx.restore()
+  ctx.beginPath()
+  ctx.arc(c, c, c - 1, 0, Math.PI * 2)
+  ctx.strokeStyle = 'rgba(0, 0, 0, 0.6)'
+  ctx.lineWidth = 2
+  ctx.stroke()
 }
 
 type MinimapDrawer = (playerPos: Vector3, settlements: readonly MinimapSettlement[], yaw: number) => void

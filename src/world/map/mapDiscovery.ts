@@ -2,6 +2,15 @@ import type { MapCellKey } from './mapTypes'
 import { MAP_CELL_SIZE, MAP_DISCOVERY_RADIUS } from './mapConfig'
 import { mapCellCenter, mapCellKey, worldToMapCell } from './mapProjection'
 
+/** Discovery delta for presentation caches (map fog). `reset` = the whole
+ *  set was replaced (clear/restore) — consumers must rebuild, even when the
+ *  cell count happens to match. */
+export type MapDiscoveryChange =
+  | { kind: 'added', keys: readonly MapCellKey[] }
+  | { kind: 'reset' }
+
+export type MapDiscoveryListener = (change: MapDiscoveryChange) => void
+
 export type MapDiscovery = {
   isDiscovered(key: MapCellKey): boolean
   /** Reveal cells around `(worldX, worldZ)`. No-op when the player is still
@@ -11,6 +20,10 @@ export type MapDiscovery = {
   restore(cells: readonly string[]): void
   clear(): void
   size(): number
+  /** Bumped on every change (reveal, clear, restore). */
+  revision(): number
+  /** Observe changes; returns an unsubscribe function. */
+  subscribe(listener: MapDiscoveryListener): () => void
 }
 
 function cellRadius(): number {
@@ -38,6 +51,13 @@ export function createMapDiscovery(initial?: readonly string[]): MapDiscovery {
   const discovered = new Set<MapCellKey>(initial)
   let lastCx = Number.NaN
   let lastCz = Number.NaN
+  let revision = 0
+  const listeners = new Set<MapDiscoveryListener>()
+
+  const notify = (change: MapDiscoveryChange) => {
+    revision++
+    for (const listener of listeners) listener(change)
+  }
 
   return {
     isDiscovered(key) {
@@ -54,6 +74,7 @@ export function createMapDiscovery(initial?: readonly string[]): MapDiscovery {
         discovered.add(key)
         added.push(key)
       }
+      if (added.length > 0) notify({ kind: 'added', keys: added })
       return added
     },
     serialize() {
@@ -64,14 +85,23 @@ export function createMapDiscovery(initial?: readonly string[]): MapDiscovery {
       for (const key of cells) discovered.add(key)
       lastCx = Number.NaN
       lastCz = Number.NaN
+      notify({ kind: 'reset' })
     },
     clear() {
       discovered.clear()
       lastCx = Number.NaN
       lastCz = Number.NaN
+      notify({ kind: 'reset' })
     },
     size() {
       return discovered.size
+    },
+    revision() {
+      return revision
+    },
+    subscribe(listener) {
+      listeners.add(listener)
+      return () => listeners.delete(listener)
     },
   }
 }

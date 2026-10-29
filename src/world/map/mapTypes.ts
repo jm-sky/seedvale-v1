@@ -47,6 +47,4 @@ export type MapViewport = {
   maxX: number
   minZ: number
   maxZ: number
-  /** Sample every Nth cell (1 = full resolution). */
-  lodStep?: number
 }
