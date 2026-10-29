@@ -74,6 +74,7 @@ export default defineConfig(({ mode }) => {
           characterSkillsDemo: resolve(rootDir, 'character-skills-demo.html'),
           hudDemo: resolve(rootDir, 'hud-demo.html'),
           merchantDemo: resolve(rootDir, 'merchant-demo.html'),
+          dialogueDemo: resolve(rootDir, 'dialogue-demo.html'),
         },
       },
     },

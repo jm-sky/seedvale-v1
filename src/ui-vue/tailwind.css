@@ -130,9 +130,10 @@
 
 /*
  * Stage D (ui-input-042): scoped warm V3 Character / Skills tokens.
- * Do not apply globally — only `.sv-character` / `.sv-skills` (and nested).
+ * Do not apply globally — only `.sv-character` / `.sv-skills` / `.sv-dialogue` (and nested).
  */
 .sv-character,
+.sv-dialogue,
 .sv-skills {
   --surface: oklch(0.23 0.02 60 / 0.92);
   --surface-solid: oklch(0.23 0.02 60 / 0.95);
@@ -164,6 +165,8 @@
 .sv-ui-scroll,
 .sv-inventory-stage-b,
 .sv-inventory-stage-b *,
+.sv-dialogue,
+.sv-dialogue *,
 .sv-merchant,
 .sv-merchant *,
 .sv-item-detail,
