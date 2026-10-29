@@ -1,13 +1,13 @@
-# V1 Revival — Three-Track Rendering Performance Roadmap
+# V1 Revival — Rendering Performance Roadmap (A/B/C/D)
 
 **Created:** 2026-10-27  
 **Status:** D4 Performance-First and D9 V1-first grass **APPROVED (2026-10-27)**; specific implementation mechanisms/stages still require applicable approval  
 **Target:** `jm-sky/seedvale-v1`  
-**Scope:** (A) NPC/fauna rendering, (B) settlement draw submissions, (C) V1-first grass/flowers optimization; V3 techniques/backend conditional
+**Scope:** (A) NPC/fauna rendering, (B) settlement draw submissions, (C) V1-first grass/flowers optimization, (D) Trees LOD; donor techniques conditional
 
 ## Decision and boundaries
 
-The author selected **all three optimization goals as mandatory workstreams**. Their concrete mechanisms remain subject to technical feasibility, visual quality, simulation preservation, and measured results; in particular, a wholesale V3 grass renderer is not an unconditional transplant. Target approximately 50–60 FPS (45–60 acceptable with justification) and smooth travel on the author's Intel Arc laptop without sacrificing V1's living-world behavior or atmosphere. Keep current visibility/fog unless explicitly reconsidered. Preserve deterministic placement, entity identity, ownership, economy, lifecycle, offscreen continuity, save/load, and visual richness.
+The author selected **A/B/C as mandatory optimization workstreams and, on 2026-10-29, Trees LOD (D) as a mandatory P1 evaluation/closure area**. Their concrete mechanisms remain subject to technical feasibility, visual quality, simulation preservation, and measured results; in particular, a wholesale V3 grass renderer is not an unconditional transplant. Target approximately 50–60 FPS (45–60 acceptable with justification) and smooth travel on the author's Intel Arc laptop without sacrificing V1's living-world behavior or atmosphere. Keep current visibility/fog unless explicitly reconsidered. Preserve deterministic placement, entity identity, ownership, economy, lifecycle, offscreen continuity, save/load, and visual richness.
 
 This focused performance track may advance through research, plans and separately authorized small Cursor/Sol implementation slices without waiting for Claude Opus. It does not approve unrelated revival scope or replace the [Strategic Brief](./STRATEGIC-BRIEF.md), its broader coordination mandate, or the official [planning conventions](../../plans/PLANNING.md). The approved D4 priority and D9 sequence below supersede the former parallel-lanes/migration-first recommendation. Other candidate mechanisms remain proposals, with no expected FPS gains claimed.
 
@@ -119,6 +119,14 @@ Preserve the baseline SHA/device/configuration/workload/reports and reuse while 
 
 Cross-track integration, approved priority and remaining proposals: [Master Revival Roadmap](./2026-10-27--master-revival-roadmap.md). Note: diagnostic 032 was captured at `e124e866`, before the minimum instrument SHA `94a74470`; it is not comparable to certified baselines.
 
-## Parked candidate — V1 tree geometry LOD (2026-10-28)
+## D. Trees LOD — included in P1 (author decision 2026-10-29)
 
-[Six-tree LOD1 + billboard impostor backlog candidate](./2026-10-28--tree-lod-v1-backlog-candidate.md): prepared inert assets in `public/assets/tree-lod/v1/` (`d867f38`); proposed high priority, **not yet ranked or authorized**. Evaluate against active A/B/C work at the next performance-prioritization gate. Preserve existing V1 LOD0, density, height and tree lifecycle; recon/plan first, staged LOD1 then billboard only if approved. This entry does not add a fourth active implementation track or alter D4/D9.
+[Six-tree LOD1 + billboard impostor dossier](./2026-10-28--tree-lod-v1-backlog-candidate.md). The author **approved adding Trees LOD to P1**, not an unconditional implementation or the complete proposed LOD architecture.
+
+- [x] Prepare inert six-tree LOD assets (`public/assets/tree-lod/v1/`, `d867f38`).
+- [ ] Focused recon of current V1 rendering, tree lifecycle, existing LOD/instancing and forest costs; reconcile ownership and dependencies with A/B/C.
+- [ ] Prepare bounded, reversible LOD1-first implementation scope and decide whether to authorize it; billboard impostors require a separate evidence-based decision.
+- [ ] Evaluate with comparable forest/travel native Arc measurements and author visual checks, preserving existing LOD0, density, height, placement, shadows, identity, streaming and authoritative simulation.
+- [ ] Document a **P1 exit verdict**: implemented and verified, or explicitly closed/deferred with reasons and evidence. Trees must not be silently skipped; optional billboard implementation must not prolong P1 indefinitely.
+
+Existing A/B/C execution continues; no automatic full baseline recapture and no wholesale V3 transfer.
