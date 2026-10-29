@@ -63,7 +63,9 @@ Priority atmosphere areas:
 2. Coherent **wind** across grass, vegetation and water; tree motion is conditional on acceptable quality and cost.
 3. Improved **settlements and characters** through selective model/outfit/detail replacement, retaining successful V1 assets, style and inhabitants' identities.
 
-These remain selected product priorities; further runtime changes outside A/B/C are deferred under D4.
+**P3 clarification (author, 2026-10-29):** Fix fog clumps/sprites that appear to move away with the player (issue [IMP-001](../../issues/INBOX.md#imp-001--fog-sprites-follow-player-movement)); first compare actual V1 and V3 fog anchoring/updates, without assuming the donor mechanism is correct for V1. Water is important but **not critical**: favor careful, performance-bounded improvements, avoid V3's reportedly flat/blue appearance. For streams and rivers, specifically improve channel shape/width, irregular horizontal and vertical shorelines, distribution of bankside vegetation, and color of beds and banks; preserve lake/river differentiation. Verify player swimming/depth consistency with [IMP-003](../../issues/INBOX.md#imp-003--swimming-in-visually-shallow-streams). Where terrain/riverbed generation changes create incompatible world topology, Opus must check dependency on the selected P2 worldgen epoch; this does **not** expand P2 by default. These are author-approved product directions, **not** approved algorithms, runtime work or relaxed performance limits.
+
+These remain selected product priorities; further runtime changes outside P1 A/B/C/D are deferred under D4.
 
 **Cemeteries:** improve them using V2 as the reference: individual graves with plaques and **one or more larger crypts**, with crypt count related to settlement size. Exact layout and sizing remain for Opus. Crypt interiors and additional quests have not been selected.
 
