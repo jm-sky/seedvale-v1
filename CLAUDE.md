@@ -4,14 +4,29 @@ Seedvale is a browser-based 3D adventure-oriented RPG in a deeply simulated livi
 
 This file defines how Claude Code should navigate and modify the repository.
 
-## Current program: V1 Revival (read first)
+## Session start — "Continue" protocol
 
-Seedvale V1 is being revived as the foundation (V2/V3 are selective donors). Before any non-trivial task:
+If the author's message is just **"Continue"** (or "Kontynuuj", "next", or no concrete task), do this without asking:
 
-1. Read `docs/research/v1-revival/STRATEGIC-BRIEF.md` §1 — approved decisions (D1/D3/D4/D9/D11), the **D4 Performance-First integration freeze**, and the autonomy grant.
-2. Take work from `docs/research/v1-revival/AUTONOMOUS-SESSION-QUEUE.md` (ordered tasks, gates, stop conditions, author-run benchmark handoff).
+1. `git pull --rebase origin main`.
+2. Open `docs/research/v1-revival/AUTONOMOUS-SESSION-QUEUE.md` and follow its §0 protocol:
+   - first **resume** a task marked `in progress` that has a `Resume:` note (an interrupted session),
+   - otherwise take the **first `ready` task** fitting your model (O = Opus, S = Sonnet; O/S = either).
+3. Read `docs/research/v1-revival/STRATEGIC-BRIEF.md` §1 (decision table + D4 policy) once per session — not the whole dossier.
+4. Work the task to its "done when"; commit + push; update the queue; continue with the next task until the session ends or everything left is blocked.
+5. Answer the author briefly in Polish: what was done (commits), what is waiting for them (queue §2–§4).
 
-Under D4, runtime changes that affect workload (CPU/GPU, draw calls, models, worldgen, vegetation, shaders, streaming, loading) merge only for P1 A/B/C/D performance slices, recorded exceptions or critical fixes. Open decisions stay with the author — ask instead of choosing. Communicate with the author in Polish; repository documentation stays in English.
+If the author gives a concrete task, do that instead — the Revival rules below still apply.
+
+## Current program: V1 Revival
+
+Seedvale V1 is being revived as the foundation (V2/V3 are selective donors only). Approved decisions: D1/D3/D4/D9/D11 in the Strategic Brief; everything else is open.
+
+- **D4 Performance-First freeze:** runtime changes that affect workload (CPU/GPU, draw calls, models, worldgen, vegetation, shaders, streaming, loading) merge only as P1 A/B/C/D performance slices, recorded exceptions or critical fixes. Docs, research, plans, tests and isolated demos may always proceed.
+- **Autonomy (author, 2026-10-29):** docs and runtime implementation directly on `main` within approved scope. Open decisions, visual compromises, reduced density/simulation or dropped features → **stop and ask** (Polish, short options), record the question in queue §3, move on to an unblocked task.
+- **Performance evidence:** only author-run native Windows Intel Arc A/B counts. Agent/WSL2 runs are diagnostic. Never claim FPS gains; hand off via queue §4.
+- **Verification:** do not mark author-owned visual/browser checks as passed (queue §2).
+- Repository documentation in English; conversation with the author in Polish.
 
 ## Source of truth
 

@@ -7,10 +7,12 @@
 ## 0. Session protocol (read once per session)
 
 1. `git pull --rebase origin main`. Read this file, then the Strategic Brief §1 (decision table + D4 policy). Do not load the whole dossier.
-2. Pick the **first `ready` task** whose model column fits you. Mark it `in progress (<model>, <date>)` and commit that one-line change before starting long work, so parallel sessions do not collide.
+2. **Pick a task:** first resume any `in progress` task carrying a `Resume:` note; otherwise take the **first `ready` task** whose model column fits you (a `blocked (Qn)` task becomes `ready` when Qn is `done`). Mark it `in progress (<model>, <date>)`, commit + push that one-line change before long work, so parallel sessions do not collide. An `in progress` task without a `Resume:` note and with no related commit for >24 h is stale — take it over and say so in the status.
 3. Follow [CLAUDE.md](../../../CLAUDE.md) task routing for the task itself (CODE_INDEX → STATE → plan → source). For a formal plan, use `pnpm claude:preflight <plan>`.
-4. Finish = implement → targeted verification → update owner docs (plan/notes/tracker/STATE) → commit → push. Then set the task `done` here with a one-line result + commit link, and continue with the next `ready` task.
-5. **Stop and ask the author** (Polish, survey-style options) instead of guessing when a task hits a `Stop if` condition, an open decision (D2, D5–D8, D10, D12–D14 or an area question), a visual compromise, reduced density/simulation, or omission of an agreed feature. Record the question in §3 and move to the next task that is not blocked.
+4. Finish = implement → targeted verification → update owner docs (plan/notes/tracker/STATE) → commit → push. Then set the task `done` here with a one-line result + commit link, unblock dependent tasks, and continue with the next `ready` task.
+5. **Leaving a task unfinished** (context or session ending): commit work-in-progress that keeps `main` building, and append to its status cell `Resume: <next concrete step; files; open question>` so a bare "Continue" can pick it up.
+6. **Nothing `ready`:** do not invent scope. Report to the author the blocked tasks and the §3 questions, with short options to unblock them.
+7. **Stop and ask the author** (Polish, survey-style options) instead of guessing when a task hits a `Stop if` condition, an open decision (D2, D5–D8, D10, D12–D14 or an area question), a visual compromise, reduced density/simulation, or omission of an agreed feature. Record the question in §3 and move to the next task that is not blocked.
 
 ### Autonomy granted (author, 2026-10-29)
 
