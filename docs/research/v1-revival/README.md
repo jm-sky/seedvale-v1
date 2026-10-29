@@ -10,6 +10,9 @@
 
 ## Current strategic entry point
 
+**Pending Opus independent review (2026-10-29):** [three negative rendering FPS experiments — investigate possible code/instrumentation/benchmark mistakes](./2026-10-29--performance-negative-experiments-opus-review.md). Covers CSS2D matrix skip, Peasant Skeleton sharing and D11 Peasant body mesh merge; no runtime changes or automatic retesting authorized.
+
+
 **Tree LOD candidate (2026-10-28):** [six V1 tree models — LOD1 + 8-view impostors](./2026-10-28--tree-lod-v1-backlog-candidate.md) — assets prepared but inactive; high-priority proposal awaiting comparison with A/B/C, focused planning and author approval. No runtime implementation authorized.
 
 **Settlement lantern split (2026-10-28):** [wall / standing GLBs rebuilt in Blender](./2026-10-28--settlement-lantern-blender-optimization.md) — `lantern_wall.glb` (no post) and `lantern_standing.glb`, 3 primitives / 144 tris each (was 9 / 624). Assets only; runtime still loads `lantern.glb`, integration notes (wall scale/offset) in the report.
