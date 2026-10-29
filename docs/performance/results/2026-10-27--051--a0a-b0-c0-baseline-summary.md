@@ -5,6 +5,24 @@
 **Artifacts:** `2026-10-27--033` … `--050` (`.json` / `.raw.json` / `.md` / `.meta.json` each) + `2026-10-27--051--a0a-b0-c0-baseline-summary.json` (flat per-run table).
 **Runbook:** [`../2026-10-27--arc-baseline-runbook.md`](../2026-10-27--arc-baseline-runbook.md)
 
+## 2026-10-29 evidence update — P0 operational closure
+
+**Scope:** addendum to the historical 2026-10-27 WSL2 report. The original captured SHA, results and UNVERIFIED/BLOCKED verdicts above remain unchanged; this update does not relabel those runs or invent missing GPU measurements.
+
+**Decision for Revival roadmap:** P0 is **operationally complete** and P1 is already underway. There is enough existing evidence and tooling for bounded, same-session A/B keep/revert decisions without running another baseline series *solely to close P0*. This is **not formal certification** of the old A0a/B0/C0 captures. Future changes still need a comparable workload and relevant checks.
+
+Evidence available after the historical capture:
+
+- [Arc runbook — native Windows CDP trace protocol](../2026-10-27--arc-baseline-runbook.md#chrome-trace-of-the-benchmark-window-native-windows-2026-10-28): automated ~30 s Chrome Trace streaming to disk, benchmark-window marks and CPU profile summary; trace overhead means traced FPS cannot substitute for non-traced benchmark FPS. GPU timer remains unavailable in cited evidence.
+- [CA1 grass same-session A/B](./2026-10-28--win-ca1-filler-gating-ab.md): native Windows Arc 140V, three repetitions per variant, forest and cold/warm stream; resident filler reduced 50% in forest and 81–89% in matched stream states, estimated allocations 33–61% lower. **No demonstrated FPS gain**; visual verification was not performed *as part of this experiment*.
+- [Lantern same-session A/B](./2026-10-28--win-lantern1-ab-same-session.md): documents workload-matched comparison and rejects a cross-session apparent FPS regression.
+- [CSS2D matrix-skip same-session A/B](./2026-10-29--win-css2d-matrix-skip-ab.md): native Arc runs with stable NPC population gate (53 NPC), counterbalanced A/B order, no measurable frame-time improvement; **reverted**.
+- **Author visual feedback (2026-10-29):** author reports visual inspection is OK. Exact scenes, builds and changes covered were not recorded, so this is an author-reported general visual check, **not** per-slice browser/visual acceptance or proof that CA1 pop-in and every A/B/C case was checked.
+
+**Remaining qualification:** historical WSL2 measurements are diagnostic, not the reference for absolute native Windows FPS. A/B/C were not exhaustively certified together at one unchanged SHA under the old READY protocol; flower attribution, accurate GPU timing and some rotation/cold gates were missing there. Keep trace results separate from FPS benchmarks and compare only matching scenarios and machine settings. Do **not** require a full new suite automatically: capture targeted additional evidence only when a specific P1 decision cannot be justified using existing comparable results.
+
+---
+
 ## Verdict
 
 | Lane | Status | Why (short) |
