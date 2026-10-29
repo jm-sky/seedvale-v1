@@ -1,7 +1,9 @@
+/* eslint-disable no-empty */
+/* eslint-disable no-undef */
 // Usage: node scripts/perf/run-benchmark-series.mjs <vitePort> <outDir> <tag> <reps> <cooldownSec> <scenario...>  (artifacts: json/raw/md/meta per rep)
 // Drives native Chrome via CDP: fresh profile per rep, ?benchmark=<id> auto-run, saves artifact bundle.
-import { spawn, execSync } from 'node:child_process'
-import { mkdtempSync, writeFileSync, mkdirSync, rmSync } from 'node:fs'
+import { execSync, spawn } from 'node:child_process'
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 

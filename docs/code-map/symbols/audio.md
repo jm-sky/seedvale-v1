@@ -95,12 +95,12 @@ Generated from exported TypeScript symbols.
 
 ## `audio/createAmbientAudio.ts`
 
-- `AmbientAudio` — type — line 155
-- `caveAmbientMix` — function — line 141
-- `createAmbientAudio` — function — line 177
-- `cricketsTimeFactor` — function — line 50
-- `weatherAmbientFactor` — function — line 76
-- `WeatherAmbientFactor` — type — line 67
+- `AmbientAudio` — type — line 158
+- `caveAmbientMix` — function — line 144
+- `createAmbientAudio` — function — line 201
+- `cricketsTimeFactor` — function — line 53
+- `weatherAmbientFactor` — function — line 79
+- `WeatherAmbientFactor` — type — line 70
 
 ## `audio/createWorldAudio.ts`
 

@@ -1,7 +1,9 @@
+/* eslint-disable no-empty */
+/* eslint-disable no-undef */
 // Usage: node scripts/perf/trace-benchmark-window.mjs <vitePort> <outDir> <scenario>  (see arc-baseline-runbook "Chrome trace of the benchmark window")
 // Chrome trace of exactly the benchmark measured window (marks seedvale:bench-window-start/end), streamed to a file via CDP.
-import { spawn, execSync } from 'node:child_process'
-import { mkdtempSync, mkdirSync, rmSync, writeFileSync, appendFileSync } from 'node:fs'
+import { execSync, spawn } from 'node:child_process'
+import { appendFileSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
@@ -53,7 +55,7 @@ try {
   const complete = new Promise((r) => listeners.push((d) => d.method === 'Tracing.tracingComplete' && r(d.params)))
   await send('Tracing.start', {
     transferMode: 'ReturnAsStream', streamFormat: 'json', bufferUsage: 1, // ring buffer sized by Chrome
-    
+
     traceConfig: {
       recordMode: 'recordContinuously',
       includedCategories: ['devtools.timeline', 'disabled-by-default-devtools.timeline', 'disabled-by-default-devtools.timeline.frame',
