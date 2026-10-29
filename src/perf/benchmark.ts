@@ -13,6 +13,7 @@ import { worldToChunk } from '../terrain/chunkGrid'
 import { buildAgentCpuReport, formatAgentCpuReport, getAgentCpuDiag } from './agentCpuDiag'
 import { assertArtifactRoundTrip, buildArtifactBundle, type PerfArtifactBundle } from './artifacts'
 import { createRunId, getBuildGitSha } from './buildInfo'
+import { seekDenseForest } from './denseForestScenario'
 import { buildGpuTimerStatus, captureDeviceMeta, drawingBufferSize } from './deviceMeta'
 import { getGpuTimer } from './gpuTimer'
 import {
@@ -259,6 +260,11 @@ export function createBenchmarkRunner(host: BenchmarkHost): BenchmarkRunner {
           x = found.x
           z = found.z
           anchor = found
+        } else if (id === 'dense-forest') {
+          const found = seekDenseForest(host.chunkManager(), home.x, home.z)
+          x = found.x
+          z = found.z
+          anchor = { x, z }
         } else if (id === 'water') {
           const found = seekWater(host.chunkManager(), home.x, home.z)
           x = found.x
