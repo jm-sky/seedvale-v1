@@ -99,4 +99,5 @@ Generated from TypeScript imports.
 - `world/createCaves.contentAnchors.test.ts`
 - `world/createCaves.test.ts`
 - `world/map/mapProjection.ts`
+- `world/map/mapRasterTile.test.ts`
 - `world/worldContext.ts`

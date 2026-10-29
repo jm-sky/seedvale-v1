@@ -83,16 +83,16 @@ Generated from exported TypeScript symbols.
 
 ## `tools/assetBrowser/viewer/createAssetSlot.ts`
 
-- `AssetSlot` — type — line 37
-- `boundsData` — function — line 372
-- `boxFromModel` — function — line 82
-- `collectMeshStats` — function — line 87
-- `createAssetSlot` — function — line 139
-- `MeshStats` — type — line 32
-- `reconcilePoseClip` — function — line 127
-- `resolveAppliedClipName` — function — line 114
-- `setWireframe` — function — line 390
-- `sortedClipNames` — function — line 109
+- `AssetSlot` — type — line 38
+- `boundsData` — function — line 374
+- `boxFromModel` — function — line 84
+- `collectMeshStats` — function — line 89
+- `createAssetSlot` — function — line 141
+- `MeshStats` — type — line 33
+- `reconcilePoseClip` — function — line 129
+- `resolveAppliedClipName` — function — line 116
+- `setWireframe` — function — line 392
+- `sortedClipNames` — function — line 111
 
 ## `tools/assetBrowser/viewer/createMultiView.ts`
 

@@ -397,6 +397,9 @@ Generated from TypeScript imports.
 - `terrain/waterSample.ts`
 - `terrain/worldKnowledgeScan.test.ts`
 - `terrain/worldKnowledgeScan.ts`
+- `ui-vue/lib/mapRasterLayers.ts`
+- `ui-vue/lib/mapTerrainLayer.test.ts`
+- `ui-vue/lib/mapTerrainLayer.ts`
 - `world/caves/caveMouthGeometry.test.ts`
 - `world/caves/caveSurfaceIntegration.test.ts`
 - `world/caves/caveTerrainCutout.test.ts`
@@ -422,6 +425,8 @@ Generated from TypeScript imports.
 - `world/locations/worldLocationCatalog.ts`
 - `world/map/mapProjection.test.ts`
 - `world/map/mapProjection.ts`
+- `world/map/mapRasterTile.test.ts`
+- `world/map/mapRasterTile.ts`
 - `world/seedLibrary.test.ts`
 - `world/seedLibrary.ts`
 - `world/treasureSites.ts`
@@ -440,6 +445,7 @@ Generated from TypeScript imports.
 - `terrain/chunkVegetation.ts`
 - `terrain/grassPlacement.ts`
 - `terrain/worldKnowledgeScan.ts`
+- `world/map/mapRasterTile.ts`
 
 ## `terrain/chunkHeightmapProtocol.ts`
 
@@ -453,6 +459,7 @@ Generated from TypeScript imports.
 - `terrain/grassPlacement.ts`
 - `terrain/worldKnowledgeScan.ts`
 - `world/cropLifecycle.ts`
+- `world/map/mapRasterTile.ts`
 
 **Imported by**
 
@@ -539,6 +546,7 @@ Generated from TypeScript imports.
 - `terrain/distanceLod.ts`
 - `terrain/fbm.ts`
 - `terrain/grass.ts`
+- `terrain/grassPlacement.ts`
 - `terrain/mineableRocks.ts`
 - `terrain/renewableWorldItems.ts`
 - `terrain/riverFord.ts`
@@ -714,12 +722,14 @@ Generated from TypeScript imports.
 - `terrain/chunkMeshData.ts`
 - `terrain/grassPlacement.ts`
 - `terrain/worldKnowledgeScan.ts`
+- `world/map/mapRasterTile.ts`
 
 **Imported by**
 
 - `app/createApp.ts`
 - `terrain/chunkManager.ts`
 - `terrain/chunkWorkerPool.test.ts`
+- `ui-vue/lib/mapTerrainLayer.ts`
 - `world/locations/worldKnowledgeResearch.test.ts`
 - `world/locations/worldKnowledgeResearch.ts`
 
@@ -915,6 +925,7 @@ Generated from TypeScript imports.
 - `terrain/distanceLod.test.ts`
 - `terrain/grass.ts`
 - `terrain/grassBounds.test.ts`
+- `terrain/grassFillerLifecycle.test.ts`
 - `terrain/grassPlacement.test.ts`
 - `terrain/vegetationRegionBatcher.test.ts`
 - `terrain/vegetationRegionBatcher.ts`
@@ -978,6 +989,7 @@ Generated from TypeScript imports.
 
 - `terrain/chunkManager.ts`
 - `terrain/grassBounds.test.ts`
+- `terrain/grassFillerLifecycle.test.ts`
 - `terrain/grassPlacement.test.ts`
 
 ## `terrain/grassBounds.test.ts`
@@ -995,6 +1007,14 @@ Generated from TypeScript imports.
 
 - `terrain/grassBounds.test.ts`
 - `terrain/grassPlacement.test.ts`
+- `terrain/grassPlacement.ts`
+
+## `terrain/grassFillerLifecycle.test.ts`
+
+**Imports**
+
+- `terrain/distanceLod.ts`
+- `terrain/grass.ts`
 - `terrain/grassPlacement.ts`
 
 ## `terrain/grassPlacement.test.ts`
@@ -1025,9 +1045,11 @@ Generated from TypeScript imports.
 - `perf/grassFinalizationDiag.ts`
 - `terrain/chunkHeightmap.worker.ts`
 - `terrain/chunkHeightmapProtocol.ts`
+- `terrain/chunkManager.ts`
 - `terrain/chunkWorkerPool.ts`
 - `terrain/grass.ts`
 - `terrain/grassBounds.test.ts`
+- `terrain/grassFillerLifecycle.test.ts`
 - `terrain/grassPlacement.test.ts`
 
 ## `terrain/gridContour.ts`
@@ -1251,6 +1273,7 @@ Generated from TypeScript imports.
 - `terrain/waterSample.test.ts`
 - `terrain/waterSample.ts`
 - `world/createRiverWater.ts`
+- `world/map/mapRasterTile.ts`
 - `world/riverGeometry.test.ts`
 - `world/riverGeometry.ts`
 - `world/riverWaterQuality.test.ts`

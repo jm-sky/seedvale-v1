@@ -193,7 +193,7 @@ New plans declare a primary `Domain:` in frontmatter. Use optional `Tags:` only 
 - settlements: `024`
 - settlements-npcs: `058`
 - tools: `020`
-- ui-input: `046`
+- ui-input: `047`
 - world: `040`
 - world-terrain: `055`
 

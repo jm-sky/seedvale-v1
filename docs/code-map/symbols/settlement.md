@@ -426,12 +426,13 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/houseLighting.ts`
 
-- `createHouseLight` — function — line 170
-- `createProceduralTorchPost` — function — line 205
-- `createVillageTorchLight` — function — line 226
+- `createHouseLight` — function — line 194
+- `createProceduralTorchPost` — function — line 237
+- `createVillageTorchLight` — function — line 258
 - `HouseLight` — type — line 23
-- `ResolvedHouseLampMount` — type — line 371
-- `resolveHouseLampMount` — function — line 413
+- `lanternGlassCenter` — function — line 85
+- `ResolvedHouseLampMount` — type — line 403
+- `resolveHouseLampMount` — function — line 445
 - `VillageTorch` — type — line 29
 
 ## `settlement/landmarkProps.ts`
@@ -854,18 +855,18 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/props.ts`
 
-- `AuthoredRepairVisualHandles` — type — line 364
+- `AuthoredRepairVisualHandles` — type — line 365
   - domain: settlements
-- `BlacksmithWorkplace` — type — line 384
-- `buildSettlementProps` — function — line 795
-- `disposeSettlementGroup` — function — line 2456
-- `SettlementHouseBed` — type — line 166
-- `SettlementHouseLandmark` — type — line 132
-- `SettlementLandmarks` — type — line 187
-- `SettlementLandPlot` — type — line 350
-- `SettlementStorageVisuals` — type — line 342
-- `SettlementTreeLandmark` — type — line 394
-- `SettlementWellLandmark` — type — line 173
+- `BlacksmithWorkplace` — type — line 385
+- `buildSettlementProps` — function — line 797
+- `disposeSettlementGroup` — function — line 2463
+- `SettlementHouseBed` — type — line 167
+- `SettlementHouseLandmark` — type — line 133
+- `SettlementLandmarks` — type — line 188
+- `SettlementLandPlot` — type — line 351
+- `SettlementStorageVisuals` — type — line 343
+- `SettlementTreeLandmark` — type — line 395
+- `SettlementWellLandmark` — type — line 174
 
 ## `settlement/propSpecs.ts`
 
@@ -885,7 +886,7 @@ Generated from exported TypeScript symbols.
 - `FARM_HEIGHT` — const — line 125
 - `FARM_URL` — const — line 122
 - `FERN_SPECS` — const — line 46
-- `FIRE_FX_URL` — const — line 185
+- `FIRE_FX_URL` — const — line 193
 - `GRAVE_SPECS` — const — line 110
 - `LANDMARK_BOAT_FIT_MAX` — const — line 162
 - `LANDMARK_BOAT_URL` — const — line 161
@@ -897,9 +898,11 @@ Generated from exported TypeScript symbols.
 - `LANDMARK_TOWER_URL` — const — line 165
 - `LANDMARK_WAGON_FIT_MAX` — const — line 170
 - `LANDMARK_WAGON_URL` — const — line 169
-- `LANTERN_FLOOR_MAX` — const — line 186
-- `LANTERN_URL` — const — line 183
-- `LANTERN_WALL_MAX` — const — line 189
+- `LANTERN_FLOOR_MAX` — const — line 194
+- `LANTERN_STANDING_URL` — const — line 191
+- `LANTERN_URL` — const — line 185
+- `LANTERN_WALL_MAX` — const — line 199
+- `LANTERN_WALL_URL` — const — line 190
 - `LILY_SPECS` — const — line 70
 - `REED_SPECS` — const — line 61
 - `RESOURCE_GOLD_SPECS` — const — line 114
@@ -907,8 +910,8 @@ Generated from exported TypeScript symbols.
 - `ROCK_CLUSTER_SPECS` — const — line 95
 - `ROCK_SPECS` — const — line 87
 - `SEAWEED_SPECS` — const — line 79
-- `TABLE_LAMP_FIT_MAX` — const — line 198
-- `TABLE_LAMP_URL` — const — line 197
+- `TABLE_LAMP_FIT_MAX` — const — line 208
+- `TABLE_LAMP_URL` — const — line 207
 - `THICKET_TREE_SPECS` — const — line 26
 - `TRAP_GOOD_FIT_MAX` — const — line 141
 - `TRAP_GOOD_URL` — const — line 140
@@ -917,8 +920,8 @@ Generated from exported TypeScript symbols.
 - `TREE_STUMP_URL` — const — line 177
 - `VILLAGE_CAMPFIRE_COLLISION_RADIUS` — const — line 152
 - `VILLAGE_MASONRY_FIREPIT_COLLISION_RADIUS` — const — line 154
-- `VILLAGE_TORCH_HEIGHT` — const — line 190
-- `VILLAGE_TORCH_URL` — const — line 184
+- `VILLAGE_TORCH_HEIGHT` — const — line 200
+- `VILLAGE_TORCH_URL` — const — line 192
 - `WALL_URL` — const — line 182
 - `WELL_HEIGHT` — const — line 133
 - `WELL_URL` — const — line 131
@@ -1164,7 +1167,7 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/settlementPalisade.ts`
 
-- `fencePlacementColliders` — function — line 388
+- `fencePlacementColliders` — function — line 392
   - domain: settlements
 - `PALISADE_GATE_HALF_ANGLE` — const — line 20
 - `PALISADE_WALL_HALF_DEPTH` — const — line 27
@@ -1177,7 +1180,7 @@ Generated from exported TypeScript symbols.
   - domain: settlements
 - `SettlementEntranceTorchPlacement` — type — line 62
   - domain: settlements
-- `settlementPalisadeColliders` — function — line 407
+- `settlementPalisadeColliders` — function — line 411
   - domain: settlements
 - `SettlementPalisadePlacement` — type — line 54
   - domain: settlements

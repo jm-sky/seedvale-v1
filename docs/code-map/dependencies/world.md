@@ -3395,11 +3395,15 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `ui-vue/lib/drawMap.ts`
-- `ui-vue/lib/drawMinimap.ts`
+- `ui-vue/lib/mapFogLayer.ts`
 - `world/map/mapData.ts`
 - `world/map/mapDiscovery.ts`
+- `world/map/mapFogGrid.test.ts`
+- `world/map/mapFogGrid.ts`
 - `world/map/mapProjection.test.ts`
 - `world/map/mapProjection.ts`
+- `world/map/mapRasterTile.test.ts`
+- `world/map/mapRasterTile.ts`
 
 ## `world/map/mapData.ts`
 
@@ -3433,9 +3437,39 @@ Generated from TypeScript imports.
 - `app/createApp.ts`
 - `app/gameLoop.ts`
 - `app/saveState.ts`
+- `ui-vue/lib/mapFogLayer.test.ts`
+- `ui-vue/lib/mapFogLayer.ts`
+- `ui-vue/lib/mapRasterLayers.ts`
 - `world/locations/locationProximityDiscovery.test.ts`
 - `world/map/mapData.ts`
+- `world/map/mapFogGrid.test.ts`
 - `world/map/mapProjection.test.ts`
+
+## `world/map/mapFogGrid.test.ts`
+
+**Imports**
+
+- `world/map/mapConfig.ts`
+- `world/map/mapDiscovery.ts`
+- `world/map/mapFogGrid.ts`
+- `world/map/mapProjection.ts`
+
+## `world/map/mapFogGrid.ts`
+
+**Imports**
+
+- `world/map/mapConfig.ts`
+- `world/map/mapProjection.ts`
+- `world/map/mapRasterTile.ts`
+- `world/map/mapTypes.ts`
+
+**Imported by**
+
+- `ui-vue/lib/mapFogLayer.test.ts`
+- `ui-vue/lib/mapFogLayer.ts`
+- `ui-vue/lib/mapTerrainLayer.test.ts`
+- `ui-vue/lib/mapTerrainLayer.ts`
+- `world/map/mapFogGrid.test.ts`
 
 ## `world/map/mapProjection.test.ts`
 
@@ -3467,13 +3501,50 @@ Generated from TypeScript imports.
 - `app/worldBundle.ts`
 - `debug/locationQueries.ts`
 - `main.ts`
-- `ui-vue/lib/drawMap.ts`
-- `ui-vue/lib/drawMinimap.ts`
+- `ui-vue/lib/mapFogLayer.ts`
 - `world/locations/locationProximityDiscovery.test.ts`
 - `world/locations/worldLocationCatalog.test.ts`
 - `world/map/mapData.ts`
 - `world/map/mapDiscovery.ts`
+- `world/map/mapFogGrid.test.ts`
+- `world/map/mapFogGrid.ts`
 - `world/map/mapProjection.test.ts`
+- `world/map/mapRasterTile.test.ts`
+- `world/map/mapRasterTile.ts`
+
+## `world/map/mapRasterTile.test.ts`
+
+**Imports**
+
+- `config/worldConfig.ts`
+- `terrain/chunkHeightmap.ts`
+- `world/map/mapConfig.ts`
+- `world/map/mapProjection.ts`
+- `world/map/mapRasterTile.ts`
+
+## `world/map/mapRasterTile.ts`
+
+**Imports**
+
+- `terrain/chunkHeightmap.ts`
+- `terrain/riverNetwork.ts`
+- `world/map/mapConfig.ts`
+- `world/map/mapProjection.ts`
+
+**Imported by**
+
+- `terrain/chunkHeightmap.worker.ts`
+- `terrain/chunkHeightmapProtocol.ts`
+- `terrain/chunkWorkerPool.ts`
+- `ui-vue/lib/drawMap.ts`
+- `ui-vue/lib/drawMinimap.ts`
+- `ui-vue/lib/mapFogLayer.ts`
+- `ui-vue/lib/mapRasterLayers.ts`
+- `ui-vue/lib/mapTerrainLayer.test.ts`
+- `ui-vue/lib/mapTerrainLayer.ts`
+- `ui-vue/lib/mapTerrainPaint.ts`
+- `world/map/mapFogGrid.ts`
+- `world/map/mapRasterTile.test.ts`
 
 ## `world/map/mapTypes.ts`
 
@@ -3481,7 +3552,6 @@ Generated from TypeScript imports.
 
 - `persistence/saveData.ts`
 - `ui-vue/lib/drawMap.ts`
-- `ui-vue/lib/mapColors.ts`
 - `ui-vue/lib/mapLocationLabelLayout.test.ts`
 - `ui-vue/lib/mapLocationLabelLayout.ts`
 - `ui-vue/lib/minimapLocationMarkers.test.ts`
@@ -3489,6 +3559,7 @@ Generated from TypeScript imports.
 - `world/locations/locationKnowledge.ts`
 - `world/map/mapData.ts`
 - `world/map/mapDiscovery.ts`
+- `world/map/mapFogGrid.ts`
 - `world/map/mapProjection.ts`
 
 ## `world/mineableWork.test.ts`

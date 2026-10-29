@@ -57,43 +57,43 @@ Generated from exported TypeScript symbols.
 
 ## `assets/assetAnchors.ts`
 
-- `ANCHOR_ORIENTATION_REQUIRED` — const — line 26
-- `AnchorIssue` — type — line 39
-- `AnchorIssueKind` — type — line 28
+- `ANCHOR_ORIENTATION_REQUIRED` — const — line 28
+- `AnchorIssue` — type — line 41
+- `AnchorIssueKind` — type — line 30
 - `AnchorSpace` — type — line 2
 - `AnchorType` — type — line 1
-- `AssetAnchorDef` — type — line 9
+- `AssetAnchorDef` — type — line 11
 - `AssetPrepare` — type — line 4
-- `defaultAnchorSpace` — function — line 61
-- `isValidAnchorName` — function — line 47
-- `mergeAnchorDefs` — function — line 76
-- `normalizeGlbAnchorName` — function — line 52
-- `ORIGIN_ANCHOR_DEF` — const — line 149
-- `prepareMatches` — function — line 66
-- `validateAnchorDefs` — function — line 101
+- `defaultAnchorSpace` — function — line 63
+- `isValidAnchorName` — function — line 49
+- `mergeAnchorDefs` — function — line 78
+- `normalizeGlbAnchorName` — function — line 54
+- `ORIGIN_ANCHOR_DEF` — const — line 151
+- `prepareMatches` — function — line 68
+- `validateAnchorDefs` — function — line 103
 
 ## `assets/assetIndex.ts`
 
-- `assetEntryMatchesQuery` — function — line 199
-- `assetIndexById` — function — line 710
-- `AssetIndexEntry` — type — line 93
-- `AssetIndexGroup` — type — line 75
-- `AssetIndexStatus` — type — line 88
-- `AssetPrepare` — type — line 70
-- `basenameFromUrl` — function — line 145
-- `buildAssetIndex` — function — line 439
-- `CompareGarment` — type — line 91
-- `customUrlEntry` — function — line 221
-- `entryFromUrl` — function — line 724
-- `filterAssetIndex` — function — line 212
-- `findAssetEntry` — function — line 716
-- `formatAssetLabel` — function — line 194
-- `groupFromModelUrl` — function — line 167
-- `kindFromBasename` — function — line 159
-- `makeParkedEntry` — function — line 250
-- `mergeParkedManifest` — function — line 268
-- `packFromUrl` — function — line 151
-- `resolveLoadEntry` — function — line 239
+- `assetEntryMatchesQuery` — function — line 202
+- `assetIndexById` — function — line 713
+- `AssetIndexEntry` — type — line 96
+- `AssetIndexGroup` — type — line 78
+- `AssetIndexStatus` — type — line 91
+- `AssetPrepare` — type — line 71
+- `basenameFromUrl` — function — line 148
+- `buildAssetIndex` — function — line 442
+- `CompareGarment` — type — line 94
+- `customUrlEntry` — function — line 224
+- `entryFromUrl` — function — line 727
+- `filterAssetIndex` — function — line 215
+- `findAssetEntry` — function — line 719
+- `formatAssetLabel` — function — line 197
+- `groupFromModelUrl` — function — line 170
+- `kindFromBasename` — function — line 162
+- `makeParkedEntry` — function — line 253
+- `mergeParkedManifest` — function — line 271
+- `packFromUrl` — function — line 154
+- `resolveLoadEntry` — function — line 242
 
 ## `assets/assetUrlUtils.ts`
 
@@ -184,13 +184,14 @@ Generated from exported TypeScript symbols.
 
 ## `assets/loadGltf.ts`
 
-- `disposeObject3D` — function — line 197
+- `disposeObject3D` — function — line 216
 - `GltfAsset` — type — line 40
-- `invalidateGltf` — function — line 162
+- `invalidateGltf` — function — line 181
 - `loadGltf` — function — line 80
 - `loadGltfAnimated` — function — line 95
 - `loadGltfAsset` — function — line 85
-- `markSharedGpu` — function — line 181
+- `markSharedGpu` — function — line 200
+- `prepareAuthoredScaleMax` — function — line 165
 - `prepareProp` — function — line 114
 - `preparePropFitMax` — function — line 139
 - `SMALL_MESH_SHADOW_THRESHOLD` — const — line 30

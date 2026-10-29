@@ -310,11 +310,12 @@ Generated from TypeScript imports.
 
 - `ui-vue/lib/mapColors.ts`
 - `ui-vue/lib/mapLocationLabelLayout.ts`
+- `ui-vue/lib/mapRasterLayers.ts`
 - `world/locations/navigationTargets.ts`
 - `world/locations/worldLocationTypes.ts`
 - `world/map/mapConfig.ts`
 - `world/map/mapData.ts`
-- `world/map/mapProjection.ts`
+- `world/map/mapRasterTile.ts`
 - `world/map/mapTypes.ts`
 
 **Imported by**
@@ -327,12 +328,12 @@ Generated from TypeScript imports.
 
 - `ai/NpcAgent.ts`
 - `ui-vue/lib/mapColors.ts`
+- `ui-vue/lib/mapRasterLayers.ts`
 - `ui-vue/lib/minimapLocationMarkers.ts`
 - `world/locations/navigationTargets.ts`
 - `world/locations/worldLocationTypes.ts`
-- `world/map/mapConfig.ts`
 - `world/map/mapData.ts`
-- `world/map/mapProjection.ts`
+- `world/map/mapRasterTile.ts`
 
 **Imported by**
 
@@ -363,12 +364,42 @@ Generated from TypeScript imports.
 **Imports**
 
 - `world/locations/worldLocationTypes.ts`
-- `world/map/mapTypes.ts`
 
 **Imported by**
 
 - `ui-vue/lib/drawMap.ts`
 - `ui-vue/lib/drawMinimap.ts`
+- `ui-vue/lib/mapFogLayer.test.ts`
+- `ui-vue/lib/mapFogLayer.ts`
+- `ui-vue/lib/mapTerrainLayer.ts`
+- `ui-vue/lib/mapTerrainPaint.ts`
+
+## `ui-vue/lib/mapFogLayer.test.ts`
+
+**Imports**
+
+- `ui-vue/lib/mapColors.ts`
+- `ui-vue/lib/mapFogLayer.ts`
+- `ui-vue/lib/mapTerrainLayer.ts`
+- `world/map/mapDiscovery.ts`
+- `world/map/mapFogGrid.ts`
+
+## `ui-vue/lib/mapFogLayer.ts`
+
+**Imports**
+
+- `ui-vue/lib/mapColors.ts`
+- `ui-vue/lib/mapTerrainLayer.ts`
+- `world/map/mapConfig.ts`
+- `world/map/mapDiscovery.ts`
+- `world/map/mapFogGrid.ts`
+- `world/map/mapProjection.ts`
+- `world/map/mapRasterTile.ts`
+
+**Imported by**
+
+- `ui-vue/lib/mapFogLayer.test.ts`
+- `ui-vue/lib/mapRasterLayers.ts`
 
 ## `ui-vue/lib/mapLocationLabelLayout.test.ts`
 
@@ -387,6 +418,63 @@ Generated from TypeScript imports.
 
 - `ui-vue/lib/drawMap.ts`
 - `ui-vue/lib/mapLocationLabelLayout.test.ts`
+
+## `ui-vue/lib/mapRasterLayers.ts`
+
+**Imports**
+
+- `terrain/chunkHeightmap.ts`
+- `ui-vue/lib/mapFogLayer.ts`
+- `ui-vue/lib/mapTerrainLayer.ts`
+- `world/map/mapDiscovery.ts`
+- `world/map/mapRasterTile.ts`
+
+**Imported by**
+
+- `app/createApp.ts`
+- `ui-vue/lib/drawMap.ts`
+- `ui-vue/lib/drawMinimap.ts`
+
+## `ui-vue/lib/mapTerrainLayer.test.ts`
+
+**Imports**
+
+- `terrain/chunkHeightmap.ts`
+- `ui-vue/lib/mapTerrainLayer.ts`
+- `ui-vue/lib/mapTerrainPaint.ts`
+- `world/map/mapFogGrid.ts`
+- `world/map/mapRasterTile.ts`
+
+## `ui-vue/lib/mapTerrainLayer.ts`
+
+**Imports**
+
+- `perf/active.ts`
+- `terrain/chunkHeightmap.ts`
+- `terrain/chunkWorkerPool.ts`
+- `ui-vue/lib/mapColors.ts`
+- `ui-vue/lib/mapTerrainPaint.ts`
+- `world/map/mapFogGrid.ts`
+- `world/map/mapRasterTile.ts`
+
+**Imported by**
+
+- `ui-vue/lib/mapFogLayer.test.ts`
+- `ui-vue/lib/mapFogLayer.ts`
+- `ui-vue/lib/mapRasterLayers.ts`
+- `ui-vue/lib/mapTerrainLayer.test.ts`
+
+## `ui-vue/lib/mapTerrainPaint.ts`
+
+**Imports**
+
+- `ui-vue/lib/mapColors.ts`
+- `world/map/mapRasterTile.ts`
+
+**Imported by**
+
+- `ui-vue/lib/mapTerrainLayer.test.ts`
+- `ui-vue/lib/mapTerrainLayer.ts`
 
 ## `ui-vue/lib/minimapLocationMarkers.test.ts`
 

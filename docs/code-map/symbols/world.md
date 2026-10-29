@@ -1517,12 +1517,9 @@ Generated from exported TypeScript symbols.
 - `MAP_CELL_SIZE` — const — line 2
 - `MAP_DISCOVERY_RADIUS` — const — line 5
 - `MAP_EXTENT_HALF` — const — line 9
-- `MAP_MINIMAP_ZOOM_MAX` — const — line 13
-- `MAP_MINIMAP_ZOOM_MIN` — const — line 12
-- `MAP_WORLD_MAX_CELLS_PER_AXIS` — const — line 21
-- `MAP_WORLD_ZOOM_DEFAULT` — const — line 18
-- `MAP_WORLD_ZOOM_MAX` — const — line 17
-- `MAP_WORLD_ZOOM_MIN` — const — line 16
+- `MAP_WORLD_ZOOM_DEFAULT` — const — line 14
+- `MAP_WORLD_ZOOM_MAX` — const — line 13
+- `MAP_WORLD_ZOOM_MIN` — const — line 12
 
 ## `world/map/mapData.ts`
 
@@ -1533,21 +1530,57 @@ Generated from exported TypeScript symbols.
 
 ## `world/map/mapDiscovery.ts`
 
-- `cellsInDiscoveryRadius` — function — line 20
-- `createMapDiscovery` — function — line 37
-- `MapDiscovery` — type — line 5
+- `cellsInDiscoveryRadius` — function — line 33
+- `createMapDiscovery` — function — line 50
+- `MapDiscovery` — type — line 14
+- `MapDiscoveryChange` — type — line 8
+- `MapDiscoveryListener` — type — line 12
+
+## `world/map/mapFogGrid.ts`
+
+- `createMapFogGrid` — function — line 40
+  - domain: ui-input
+- `MAP_FOG_EDGE_ALPHA` — const — line 15
+- `MAP_FOG_ORIGIN` — const — line 135
+- `MAP_FOG_SIDE` — const — line 7
+- `MapFogGrid` — type — line 17
 
 ## `world/map/mapProjection.ts`
 
-- `createMapProjection` — function — line 125
-- `mapCellBounds` — function — line 40
-- `mapCellCenter` — function — line 33
-- `mapCellKey` — function — line 22
-- `MapProjection` — type — line 118
-- `parseMapCellKey` — function — line 54
-- `projectCellAt` — function — line 79
-- `rawSampleParamsFromWorld` — function — line 63
-- `worldToMapCell` — function — line 26
+- `classifyMapTexel` — function — line 81
+  - domain: ui-input
+- `createMapProjection` — function — line 127
+- `mapCellBounds` — function — line 33
+- `mapCellCenter` — function — line 26
+- `mapCellKey` — function — line 15
+- `MapProjection` — type — line 120
+- `MapTexelClass` — type — line 72
+- `parseMapCellKey` — function — line 47
+- `projectCellAt` — function — line 116
+- `rawSampleParamsFromWorld` — function — line 56
+- `worldToMapCell` — function — line 19
+
+## `world/map/mapRasterTile.ts`
+
+- `buildMapTile` — function — line 160
+  - domain: ui-input
+- `MAP_COVERAGE_BLOCK` — const — line 25
+- `MAP_RASTER_STEPS` — const — line 21
+- `MAP_TILE_SAMPLES` — const — line 15
+- `MAP_TILE_SIDE` — const — line 17
+- `MapRasterClass` — const — line 28
+- `MapRasterClassCode` — type — line 39
+- `mapRasterClassOf` — function — line 107
+- `MapRasterStep` — type — line 20
+- `MapRect` — type — line 69
+- `mapTileBounds` — function — line 71
+- `MapTileCoord` — type — line 41
+- `MapTileData` — type — line 49
+- `mapTileKey` — function — line 65
+- `MapTileRequest` — type — line 43
+- `mapTilesInRect` — function — line 77
+- `mapTileWorldSize` — function — line 61
+- `selectMapRasterStep` — function — line 95
 
 ## `world/map/mapTypes.ts`
 

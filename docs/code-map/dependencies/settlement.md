@@ -807,6 +807,15 @@ Generated from TypeScript imports.
 - `settlement/createSettlement.ts`
 - `settlement/houseDoors.test.ts`
 
+## `settlement/houseLighting.lantern.test.ts`
+
+**Imports**
+
+- `assets/assetIndex.ts`
+- `assets/loadGltf.ts`
+- `settlement/houseLighting.ts`
+- `settlement/propSpecs.ts`
+
 ## `settlement/houseLighting.ts`
 
 **Imports**
@@ -821,6 +830,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `settlement/houseLighting.lantern.test.ts`
 - `settlement/props.ts`
 - `settlement/settlementVillageTorch.ts`
 - `world/caves/caveAdventureProps.ts`
@@ -1860,6 +1870,7 @@ Generated from TypeScript imports.
 
 - `assets/assetIndex.ts`
 - `settlement/campfireProps.ts`
+- `settlement/houseLighting.lantern.test.ts`
 - `settlement/houseLighting.ts`
 - `settlement/landmarkProps.ts`
 - `settlement/props.ts`

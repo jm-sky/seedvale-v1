@@ -172,32 +172,33 @@ Generated from exported TypeScript symbols.
 
 ## `ui-vue/lib/drawMap.ts`
 
-- `canvasToWorld` — function — line 45
-- `clampWorldMapZoom` — function — line 28
-- `drawWorldMapFrame` — function — line 100
-- `findLocationAtCanvasPoint` — function — line 220
-- `lodStepFor` — function — line 75
-- `viewportFor` — function — line 58
-- `WorldMapDrawContext` — type — line 22
-- `worldMapPlayerLookDirection` — function — line 87
+- `canvasToWorld` — function — line 44
+- `clampWorldMapZoom` — function — line 27
+- `drawWorldMapFrame` — function — line 94
+- `findLocationAtCanvasPoint` — function — line 217
+- `viewportFor` — function — line 57
+- `WORLD_MAP_RASTER_CONSUMER` — const — line 83
+- `WorldMapDrawContext` — type — line 21
+- `worldMapPlayerLookDirection` — function — line 78
   - domain: ui-input
-- `WorldMapView` — type — line 16
-- `worldToCanvas` — function — line 32
+- `WorldMapView` — type — line 15
+- `worldToCanvas` — function — line 31
 
 ## `ui-vue/lib/drawMinimap.ts`
 
-- `adjustMinimapZoom` — function — line 39
-- `DEFAULT_ARROW_TIP_SIZE` — const — line 27
-- `drawMinimapFrame` — function — line 79
-- `getMinimapZoom` — function — line 31
-- `lastMinimapPlayer` — function — line 232
-- `MINIMAP_SCALE` — const — line 25
-- `MinimapDrawContext` — type — line 43
+- `DEFAULT_ARROW_TIP_SIZE` — const — line 28
+- `drawMinimapFrame` — function — line 94
+- `getMinimapZoom` — function — line 41
+- `lastMinimapPlayer` — function — line 268
+- `MINIMAP_SCALE` — const — line 26
+- `MinimapDrawContext` — type — line 58
+- `minimapScale` — function — line 50
 - `MinimapSettlement` — type — line 11
 - `minimapSize` — function — line 20
-- `registerMinimapDrawer` — function — line 238
-- `setMinimapZoom` — function — line 35
-- `updateRegisteredMinimap` — function — line 242
+- `MinimapZoomLevel` — type — line 32
+- `registerMinimapDrawer` — function — line 274
+- `setMinimapZoom` — function — line 45
+- `updateRegisteredMinimap` — function — line 278
 
 ## `ui-vue/lib/firstUpperCase.ts`
 
@@ -210,15 +211,23 @@ Generated from exported TypeScript symbols.
 
 ## `ui-vue/lib/mapColors.ts`
 
-- `LOCATION_KIND_COLOR` — const — line 38
-- `LOCATION_KIND_COLOR_FALLBACK` — const — line 51
-- `LOCATION_KIND_EMOJI` — const — line 62
-- `locationKindColor` — function — line 53
-- `MAP_FOG_FILL` — const — line 5
-- `MAP_UNAVAILABLE_FILL` — const — line 6
-- `mapCellFillStyle` — function — line 73
-- `TARGET_SLOT_COLORS` — const — line 27
-- `targetSlotColor` — function — line 29
+- `LOCATION_KIND_COLOR` — const — line 44
+- `LOCATION_KIND_COLOR_FALLBACK` — const — line 57
+- `LOCATION_KIND_EMOJI` — const — line 68
+- `locationKindColor` — function — line 59
+- `MAP_FOG_FILL` — const — line 4
+- `MAP_FOG_RGB` — const — line 6
+- `MAP_RASTER_CLASS_RGB` — const — line 29
+- `MAP_RIVER_STROKE` — const — line 9
+- `MAP_UNAVAILABLE_FILL` — const — line 7
+- `TARGET_SLOT_COLORS` — const — line 33
+- `targetSlotColor` — function — line 35
+
+## `ui-vue/lib/mapFogLayer.ts`
+
+- `createMapFogLayer` — function — line 36
+  - domain: ui-input
+- `MapFogLayer` — type — line 9
 
 ## `ui-vue/lib/mapLocationLabelLayout.ts`
 
@@ -227,6 +236,32 @@ Generated from exported TypeScript symbols.
 - `resolveMapLocationLabelPresentations` — function — line 104
   - domain: ui-input
 - `suppressedCaveLocationIdsForMineBinding` — function — line 74
+  - domain: ui-input
+
+## `ui-vue/lib/mapRasterLayers.ts`
+
+- `createMapRasterLayers` — function — line 23
+  - domain: ui-input
+- `drawMapRasterLayers` — function — line 54
+  - domain: ui-input
+- `getActiveMapRasterLayers` — function — line 44
+- `MapRasterLayers` — type — line 9
+- `setActiveMapRasterLayers` — function — line 40
+
+## `ui-vue/lib/mapTerrainLayer.ts`
+
+- `createMapTerrainLayer` — function — line 136
+  - domain: ui-input
+- `MapCanvasLike` — type — line 36
+- `MapTerrainLayer` — type — line 73
+- `MapTerrainLayerOptions` — type — line 38
+- `MapTerrainStats` — type — line 66
+- `MapTileRequester` — type — line 31
+
+## `ui-vue/lib/mapTerrainPaint.ts`
+
+- `MapTerrainPaintParams` — type — line 18
+- `paintMapTilePixels` — function — line 34
   - domain: ui-input
 
 ## `ui-vue/lib/minimapLocationMarkers.ts`

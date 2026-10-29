@@ -131,6 +131,7 @@ Generated from TypeScript imports.
 - `assets/assetIndex.test.ts`
 - `assets/constructionCatalog.test.ts`
 - `assets/constructionCatalog.ts`
+- `settlement/houseLighting.lantern.test.ts`
 - `tools/assetBrowser/alignmentEdit.ts`
 - `tools/assetBrowser/state.ts`
 - `tools/assetBrowser/viewer/createAssetSlot.ts`
@@ -244,6 +245,7 @@ Generated from TypeScript imports.
 - `settlement/createSettlement.ts`
 - `settlement/houseBuilder.test.ts`
 - `settlement/houseBuilder.ts`
+- `settlement/houseLighting.lantern.test.ts`
 - `settlement/landmarkProps.ts`
 - `settlement/livestock.ts`
 - `settlement/propUtils.ts`

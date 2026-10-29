@@ -775,6 +775,7 @@ graph TD
   ui_input_043["ui-input-043 — Stage E — HUD V3-like reskin (no compass)"]
   ui_input_044["ui-input-044 — Stage F — Trade V3-identical reskin + V1 filters"]
   ui_input_045["ui-input-045 — Equipment panel body-ordered layout (V3 items--006 adapted)"]
+  ui_input_046["ui-input-046 — Minimap and world map — raster terrain and soft Fog of War (V3 presentation)"]
   world_001["world-001 — Playtest Gameplay Fixes — Stamina, Fire Time-Skip and Bear Behaviour"]
   world_003["world-003 — Faster Application Startup"]
   world_004["world-004 — Well Depth, Groundwater & Well Protection"]

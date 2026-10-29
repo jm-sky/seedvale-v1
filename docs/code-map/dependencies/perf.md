@@ -17,6 +17,7 @@ Generated from TypeScript imports.
 - `perf/index.ts`
 - `terrain/chunkManager.ts`
 - `terrain/chunkWorkerPool.ts`
+- `ui-vue/lib/mapTerrainLayer.ts`
 - `ui/createDebugGui.ts`
 - `world/createCaves.ts`
 - `world/locations/worldKnowledgeResearch.ts`
