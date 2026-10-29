@@ -84,3 +84,43 @@ describe('WorldGrassChunk filler attach/release (CA1)', () => {
     grass.dispose()
   })
 })
+
+describe('WorldGrassChunk capped main regrowth (CA2)', () => {
+  const triMesh = (g: THREE.Group) => g.children.find((c) => c.name === 'chunk-grass-tri') as THREE.InstancedMesh
+  const capped = (): GrassChunkData => ({ tri: { ...bucket(8), potentialCount: 100 } })
+  const uncapped = (): GrassChunkData => ({ tri: bucket(100) })
+
+  it('draws the same counts as the uncapped chunk at or below the cap', () => {
+    const a = createGrassSystem().buildGrassChunkMeshes(capped(), 0, 0)!
+    const b = createGrassSystem().buildGrassChunkMeshes(uncapped(), 0, 0)!
+    for (const fraction of [0, 0.01, 0.05, 0.08]) {
+      a.setLodFraction(fraction)
+      b.setLodFraction(fraction)
+      expect(triMesh(a.mesh).count).toBe(triMesh(b.mesh).count)
+      expect(a.needsMainRegrowth(fraction)).toBe(false)
+    }
+    expect(b.needsMainRegrowth(1)).toBe(false)
+  })
+
+  it('needs regrowth above the cap and draws only the stored prefix until it lands', () => {
+    const grass = createGrassSystem().buildGrassChunkMeshes(capped(), 0, 0)!
+    expect(grass.needsMainRegrowth(0.76)).toBe(true)
+    grass.setLodFraction(0.76)
+    expect(triMesh(grass.mesh).count).toBe(8)
+  })
+
+  it('replaceMain swaps main buckets, keeps filler, disposes the old mesh', () => {
+    const grass = createGrassSystem().buildGrassChunkMeshes(capped(), 0, 0)!
+    grass.attachFiller(fillerData())
+    const old = triMesh(grass.mesh)
+    let disposed = false
+    old.addEventListener('dispose', () => { disposed = true })
+    grass.replaceMain(uncapped())
+    expect(disposed).toBe(true)
+    expect(grass.hasFiller()).toBe(true)
+    expect(grass.mesh.children.filter((c) => c.name === 'chunk-grass-tri')).toHaveLength(1)
+    grass.setLodFraction(0.76)
+    expect(triMesh(grass.mesh).count).toBe(76)
+    expect(grass.needsMainRegrowth(1)).toBe(false)
+  })
+})

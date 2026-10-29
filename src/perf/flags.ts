@@ -88,3 +88,12 @@ export function isFrameMatrixOnceEnabled(): boolean {
   if (!p?.has('frameMatrixOnce')) return true
   return flagOn(p.get('frameMatrixOnce'))
 }
+
+/** CA2 far-band grass main storage cap (`chunkManager.ts` `grassMainCapFor`).
+ *  On by default; `?grassMainCap=0` stores every generated main instance again
+ *  (pre-CA2) for the memory/upload A/B. */
+export function isGrassMainCapEnabled(): boolean {
+  const p = params()
+  if (!p?.has('grassMainCap')) return true
+  return flagOn(p.get('grassMainCap'))
+}

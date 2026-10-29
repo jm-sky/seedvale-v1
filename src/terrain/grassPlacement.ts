@@ -68,6 +68,13 @@ export type GrassComputeParams = {
    *  chunk enters that range). Default `'full'` = both. Filler has its own
    *  seeded RNG stream, so the result of each pass never depends on the other. */
   mode?: GrassComputeMode
+  /** CA2: keep only the instances that distance LOD can submit at this main
+   *  fraction — each main bucket stores its first `grassLodCount(count, f)`
+   *  instances and records the uncapped `count` as `potentialCount`. Placement
+   *  itself (RNG stream, eligibility) is unchanged, so the stored instances are
+   *  the exact prefix `setLodFraction` would draw from the uncapped result.
+   *  Omitted or `>= 1` = no cap. Filler is never capped. */
+  mainCapFraction?: number
 }
 
 export type GrassComputeMode = 'full' | 'main' | 'filler'
@@ -79,6 +86,9 @@ export type GrassBucketData = {
   baseColors: Float32Array // count * 3
   tipColors: Float32Array // count * 3
   windFactors: Float32Array // count
+  /** CA2: uncapped instance count when `mainCapFraction` truncated this bucket
+   *  (`count` is then the stored prefix). Absent = not truncated. */
+  potentialCount?: number
   /** Conservative chunk-local bounding sphere covering every instance of
    *  this bucket, including all geometry LOD variants and shader wind sway.
    *  Computed during placement — not a second pass over `matrices`. */
@@ -86,6 +96,15 @@ export type GrassBucketData = {
 }
 
 export type GrassChunkData = Partial<Record<GrassSpeciesId, GrassBucketData>>
+
+/** Main-bucket instances drawn at LOD `fraction` out of `potential` generated —
+ *  the one formula shared by placement capping (CA2) and
+ *  `WorldGrassChunk.setLodFraction`, so a capped bucket holds exactly what the
+ *  LOD draws. Floors at 1 so far chunks never fully vanish. */
+export function grassLodCount(potential: number, fraction: number): number {
+  const f = Math.max(0, Math.min(1, fraction))
+  return Math.max(1, Math.min(potential, Math.round(potential * f)))
+}
 
 const SLOPE_SAMPLE_STEP = 1.2
 /** Altitude (fraction of `heightScale` above `waterLevel`) above which grass stops —
@@ -554,19 +573,26 @@ export function computeChunkGrass(params: GrassComputeParams, grids: GrassTileGr
     )
   }
 
+  const cap = params.mainCapFraction
+  const head = (values: number[], n: number): number[] => (n === values.length ? values : values.slice(0, n))
   const result: GrassChunkData = {}
   for (const id of GRASS_SPECIES_ORDER) {
     const bucket = buckets[id]
     if (bucket.count === 0) continue
+    // Bounds stay those of every generated instance — conservative for the
+    // stored prefix, and identical to the uncapped build's culling.
     const bounds = finalizeGrassBounds(bucket.bounds)
     if (!bounds) continue
+    const capped = id !== 'filler' && cap !== undefined && cap < 1
+    const count = capped ? grassLodCount(bucket.count, cap) : bucket.count
     result[id] = {
-      count: bucket.count,
-      matrices: bucket.matrixData.slice(0, bucket.count * 16),
-      phases: new Float32Array(bucket.phases),
-      baseColors: new Float32Array(bucket.baseColors),
-      tipColors: new Float32Array(bucket.tipColors),
-      windFactors: new Float32Array(bucket.windFactors),
+      count,
+      matrices: bucket.matrixData.slice(0, count * 16),
+      phases: new Float32Array(head(bucket.phases, count)),
+      baseColors: new Float32Array(head(bucket.baseColors, count * 3)),
+      tipColors: new Float32Array(head(bucket.tipColors, count * 3)),
+      windFactors: new Float32Array(head(bucket.windFactors, count)),
+      ...(capped && count < bucket.count ? { potentialCount: bucket.count } : {}),
       bounds,
     }
   }

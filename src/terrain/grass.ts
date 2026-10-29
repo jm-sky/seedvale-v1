@@ -9,6 +9,7 @@ import {
   GRASS_SPECIES_ORDER,
   type GrassBucketData,
   type GrassChunkData,
+  grassLodCount,
   type GrassSpeciesId,
 } from './grassPlacement'
 import {
@@ -40,6 +41,13 @@ export type WorldGrassChunk = {
   attachFiller: (data: GrassChunkData) => void
   /** CA1: disposes the filler bucket's mesh/geometry/attributes if resident. */
   releaseFiller: () => void
+  /** CA2: whether some main bucket was stored capped (`mainCapFraction`) and
+   *  holds fewer instances than LOD `fraction` would draw — the chunk then
+   *  needs an uncapped main regeneration (`replaceMain`). */
+  needsMainRegrowth: (fraction: number) => boolean
+  /** CA2: swaps every main bucket for the ones in `data` (filler untouched).
+   *  Caller re-applies `setLodFraction`/`setGeometryLod` afterwards. */
+  replaceMain: (data: GrassChunkData) => void
   /** Renders only the first `fraction` of instances in each *main* subtype
    *  bucket (0 excluded, clamped to (0, 1]) — cheap distance LOD: no
    *  reallocation, just narrows each InstancedMesh's draw range. Safe because
@@ -586,7 +594,10 @@ export function createGrassSystem(): GrassSystem {
 
     type SubMesh = {
       mesh: THREE.InstancedMesh
+      /** Stored (resident) instances. */
       fullCount: number
+      /** Instances the uncapped placement generated (CA2); `fullCount` unless capped. */
+      potentialCount: number
       filler: boolean
       // Per-tier geometries, built lazily as `setGeometryLod` actually visits
       // them and kept around (not disposed) for cheap re-swaps if the chunk's
@@ -663,6 +674,7 @@ export function createGrassSystem(): GrassSystem {
       // Diagnostic tags for C0 grass baseline (resident vs submitted) — no
       // gameplay/render behaviour change.
       mesh.userData.grassFullCount = bucket.count
+      mesh.userData.grassPotentialCount = bucket.potentialCount ?? bucket.count
       mesh.userData.grassFiller = isFiller
       mesh.userData.grassSpecies = id
       // Skipped by the water mirror: grass is by far the heaviest bucket
@@ -697,6 +709,7 @@ export function createGrassSystem(): GrassSystem {
       subMeshes.push({
         mesh,
         fullCount: bucket.count,
+        potentialCount: bucket.potentialCount ?? bucket.count,
         filler: isFiller,
         geometryForTier: isFiller ? null : geometryForTier,
         geometryCache,
@@ -723,6 +736,17 @@ export function createGrassSystem(): GrassSystem {
     for (const id of GRASS_SPECIES_ORDER) {
       const bucket = data[id]
       if (bucket) addBucket(id, bucket)
+    }
+
+    function releaseSubMeshes(filler: boolean): void {
+      for (let i = subMeshes.length - 1; i >= 0; i--) {
+        const sub = subMeshes[i]!
+        if (sub.filler !== filler) continue
+        group.remove(sub.mesh)
+        for (const geo of Object.values(sub.geometryCache)) geo?.dispose()
+        sub.mesh.dispose()
+        subMeshes.splice(i, 1)
+      }
     }
 
     if (timed) {
@@ -756,14 +780,14 @@ export function createGrassSystem(): GrassSystem {
         if (!bucket || subMeshes.some((sub) => sub.filler)) return
         addBucket('filler', bucket)
       },
-      releaseFiller() {
-        for (let i = subMeshes.length - 1; i >= 0; i--) {
-          const sub = subMeshes[i]!
-          if (!sub.filler) continue
-          group.remove(sub.mesh)
-          for (const geo of Object.values(sub.geometryCache)) geo?.dispose()
-          sub.mesh.dispose()
-          subMeshes.splice(i, 1)
+      releaseFiller: () => releaseSubMeshes(true),
+      needsMainRegrowth: (fraction) => subMeshes.some((sub) =>
+        !sub.filler && sub.fullCount < grassLodCount(sub.potentialCount, fraction)),
+      replaceMain(mainData) {
+        releaseSubMeshes(false)
+        for (const id of GRASS_SPECIES_ORDER) {
+          const bucket = mainData[id]
+          if (bucket && id !== 'filler') addBucket(id, bucket)
         }
       },
       geometryCount() {
@@ -778,7 +802,7 @@ export function createGrassSystem(): GrassSystem {
           if (sub.filler) {
             sub.mesh.count = Math.min(sub.fullCount, Math.round(sub.fullCount * fillFrac))
           } else {
-            sub.mesh.count = Math.max(1, Math.min(sub.fullCount, Math.round(sub.fullCount * mainFrac)))
+            sub.mesh.count = Math.min(sub.fullCount, grassLodCount(sub.potentialCount, mainFrac))
           }
         }
       },

@@ -12,6 +12,7 @@ import {
   computeChunkGrass,
   GRASS_SPECIES_ORDER,
   type GrassChunkData,
+  grassLodCount,
   macroMeadowNoiseFor,
   macroMeadowWeightAt,
 } from './grassPlacement'
@@ -503,5 +504,76 @@ describe('computeChunkGrass filler gating (CA1)', () => {
     run(24, 24, 'full')
     run(-18, 6, 'main')
     expect(run(0, 0, 'filler').filler!.matrices).toEqual(first.matrices)
+  })
+})
+
+describe('computeChunkGrass main storage cap (CA2)', () => {
+  function run(cx: number, cz: number, mode: 'full' | 'main', mainCapFraction?: number): GrassChunkData {
+    const params = tileParams({ cx, cz })
+    const tile = computeChunkTile(params)
+    return computeChunkGrass(
+      {
+        cx,
+        cz,
+        chunkSize: params.chunkSize,
+        resolution: params.resolution,
+        waterLevel: params.waterLevel,
+        heightScale: params.heightScale,
+        seed: params.seed,
+        candidatesPerChunk: 4000,
+        macroVariationEnabled: true,
+        region: params.region,
+        riverSegments: params.riverSegments,
+        mode,
+        mainCapFraction,
+      },
+      {
+        heights: tile.heights,
+        biomes: tile.biomes,
+        roadTint: tile.roadTint,
+        mountainRidge: tile.mountainRidge,
+        moistureRegion: tile.moistureRegion,
+      },
+    )
+  }
+
+  const MAIN_IDS = ['tri', 'grain', 'herb'] as const
+
+  it('stores exactly the prefix the LOD draws, byte-identical to the uncapped result', () => {
+    let capped = 0
+    for (const { cx, cz } of CHUNKS) {
+      const full = run(cx, cz, 'main')
+      const cap = run(cx, cz, 'main', 0.08)
+      for (const id of MAIN_IDS) {
+        const a = full[id]
+        const b = cap[id]
+        expect(b === undefined).toBe(a === undefined)
+        if (!a || !b) continue
+        const n = grassLodCount(a.count, 0.08)
+        expect(b.count).toBe(n)
+        expect(b.potentialCount ?? b.count).toBe(a.count)
+        if (n < a.count) capped += 1
+        expect(Array.from(b.matrices)).toEqual(Array.from(a.matrices.subarray(0, n * 16)))
+        expect(Array.from(b.phases)).toEqual(Array.from(a.phases.subarray(0, n)))
+        expect(Array.from(b.baseColors)).toEqual(Array.from(a.baseColors.subarray(0, n * 3)))
+        expect(Array.from(b.tipColors)).toEqual(Array.from(a.tipColors.subarray(0, n * 3)))
+        expect(Array.from(b.windFactors)).toEqual(Array.from(a.windFactors.subarray(0, n)))
+        expect(b.bounds).toEqual(a.bounds)
+      }
+    }
+    expect(capped).toBeGreaterThan(0)
+  })
+
+  it('never caps filler, and no cap (or cap >= 1) leaves the result unchanged', () => {
+    const { cx, cz } = CHUNKS[0]!
+    const full = run(cx, cz, 'full')
+    const cap = run(cx, cz, 'full', 0.08)
+    expect(Array.from(cap.filler!.matrices)).toEqual(Array.from(full.filler!.matrices))
+    expect(cap.filler!.potentialCount).toBeUndefined()
+    const one = run(cx, cz, 'main', 1)
+    for (const id of MAIN_IDS) {
+      expect(one[id]?.count).toBe(full[id]?.count)
+      expect(one[id]?.potentialCount).toBeUndefined()
+    }
   })
 })
