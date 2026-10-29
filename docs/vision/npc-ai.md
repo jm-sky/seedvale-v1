@@ -398,7 +398,7 @@ NPC decisions must remain deterministic and simulation-owned.
 
 The player is not required for NPC decision-making. The same decision system must work for detailed near-field simulation and appropriately simplified off-screen simulation.
 
-LLMs may eventually augment dialogue, quests or characterisation, but they must not become the authority for needs, pressures, decisions, plans or world state.
+No gameplay-time LLM is used, including dialogue, quests or characterisation. Deterministic world state, needs, pressures, decisions and plans remain authoritative.
 
 ## Evolution of the current implementation
 
@@ -436,6 +436,10 @@ Needs / Problems / Opportunities
 ```
 
 Natural future integration points include `choose()`, `DecisionContext`, `pickNeed()`, `beginNeed()`, `PlannedAction.next`, action completion/re-evaluation and role-specific decision branches.
+
+## Selected key NPC protection
+
+Some individually important NPCs may have a high Sneak Skill for travel between settlements, or a short escape-oriented stamina/adrenaline and speed boost when fleeing. Such protection increases survival odds without granting immortality or replacing normal NPC decisions. It is not a universal NPC trait.
 
 ## Relationship to other NPC documentation
 

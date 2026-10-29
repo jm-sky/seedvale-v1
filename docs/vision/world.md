@@ -161,6 +161,17 @@ This is an adaptive capability, not a requirement to fully simulate every place 
 
 At the current stage, remote locations do not need to progress independently merely because they exist. A specific quest or other world event may explicitly require a remote place to be generated or simulated earlier.
 
+## Approved world, time and travel direction (2026-10-29)
+
+- **Many seeds:** retain a generic procedural generator rather than one canonical world. Authored locations can be placed in every generated seed, with bounded terrain shaping for special landmarks.
+- **Scale:** grow territory and settlement capacity incrementally according to streaming and simulation capabilities, without rigid product caps or a literal infinity requirement.
+- **Discovery:** NPC rumours, treasure maps, found documents and approximate directions refer to real places. Knowledge of a place differs from visiting it.
+- **Autonomous off-screen activity:** distant settlements should retain meaningful simplified simulation; selected travelling merchants, knights and hunters should retain identity and journey continuity outside rendered regions. No need to simulate all actors at full fidelity.
+- **World time:** configurable, initially about **12 real minutes per in-game day**. Closing the game pauses time; reloading does not catch up elapsed real-world time.
+- **Travel:** walking, riding and real-route autopilot with accelerated time and interrupting threats. Paid transport services may follow; teleportation is not travel.
+
+These principles are long-term vision; no particular generator, time system or streaming implementation is authorized by this document.
+
 ## World changes and persistence
 
 World generation establishes the baseline. Simulation and player actions can modify that baseline.

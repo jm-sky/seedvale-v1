@@ -2,13 +2,17 @@
 
 > **Plant the seed. Watch the world grow.**
 
-Seedvale is a browser-based 3D sandbox simulation built around a living world rather than a player-centred campaign.
+SeedVale is a browser-based **medieval adventure RPG and sandbox built on a deep autonomous living-world simulation**. Authored adventures, exploration and discovery lead the player experience; simulation remains foundational.
 
-The player is part of the world. Settlements, households, NPCs, animals, resources and the environment continue to operate when the player is absent or not observing them.
+The player is part of the world. Settlements, households, NPCs and fauna act independently, including off-screen **while the game is running**. Closing the game pauses world time; no real-time catch-up occurs.
 
 The goal is not to simulate everything at maximum fidelity. The goal is to create a small number of interconnected deterministic systems that produce believable, persistent and sometimes surprising consequences.
 
 ## Core Principles
+
+### Adventure-first, simulation-first
+
+Designed adventures and world-driven opportunities are both first-class. They share authoritative world state and meaningful persistent consequences. Player-facing adventure priority does not authorize weakening the autonomous simulation.
 
 ### The world exists without the player
 
@@ -20,7 +24,7 @@ Prefer reusable systems and world state over isolated scripted behaviours. A fea
 
 ### Deterministic simulation
 
-Important world behaviour is driven by explicit state, rules and decisions. LLMs may eventually augment dialogue, quests or characterisation, but they must not replace deterministic simulation.
+Important world behaviour follows explicit deterministic state, rules and decisions. No LLM or generative AI is used at gameplay runtime; AI tools may assist development.
 
 ### Persistent consequences
 
@@ -176,7 +180,7 @@ Items represent tangible capabilities and possessions. Combat is a shared system
 
 ### 9. Quests & Progression
 
-Quests should increasingly emerge from actual world state: NPC and household problems, settlement conflicts, shortages, relationships, discoveries and environmental events. Progression should reflect participation in the living world rather than a separate campaign layer.
+Authored adventures and world-driven quests are complementary first-class experiences. Skills develop through practice, teachers and books without a universal level or general EXP; consequences connect to normal world systems.
 
 [Quests](./quests.md)
 
@@ -189,7 +193,8 @@ Some systems support every domain and should not become isolated gameplay domain
 - **Rendering** — terrain, vegetation, water, characters and other visual representation.
 - **Performance** — batching, update frequency, memory, workers and main-thread responsiveness.
 - **UI and input** — presenting world state and available interactions without becoming a parallel game model.
-- **Multiplayer readiness** — avoid architectural assumptions that would make future shared simulation unnecessarily difficult, without treating multiplayer as an immediate requirement.
+- **Time and travel** — configurable time (initial target about 12 real minutes per game day), physically grounded travel and no offline real-time catch-up.
+- **Product boundaries** — singleplayer, desktop-first, no multiplayer-readiness requirement or gameplay-time LLM; mobile is a later possibility.
 
 ## Emergent Behaviour
 
@@ -245,9 +250,13 @@ The desired progression is:
 3. **Interconnected economy and ecology** — work, food, resources and environment influence one another.
 4. **Decision-driven behaviour** — NPCs respond to pressures, problems, goals, personality and relationships.
 5. **Persistent history** — actions create consequences, memories, relationships and changing world conditions.
-6. **Emergent gameplay** — quests, conflicts, opportunities and stories increasingly arise from simulation state.
+6. **Authored and emergent adventures** — intentional quests, discoveries and world-driven stories coexist.
 
 This is a direction, not a promise that every system will eventually be simulated at maximum complexity.
+
+## Approved V1/V3 Vision Alignment
+
+The [author decision record](../research/v1-revival/2026-10-29--vision-alignment-v1-v3.md) contains 25 approved product choices from 2026-10-29. This is **vision, not implementation authorization**, and does not displace the Revival Strategic Brief or Quest Curation.
 
 ## Domain Roadmaps
 

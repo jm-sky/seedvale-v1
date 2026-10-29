@@ -24,11 +24,11 @@ These documents expand the principles of this document for individual systems an
 
 ## 1. What Seedvale is
 
-Seedvale is a browser-based 3D sandbox built around a **procedurally generated, living world**.
+SeedVale is a browser-based **medieval adventure RPG and sandbox built around a deeply simulated, procedurally generated living world**. Authored adventures and exploration lead the player experience; autonomous world simulation remains foundational.
 
 The world contains settlements, people, animals, resources, weather/time cycles and other systems that interact with one another. The player enters that world as one of its inhabitants. The world should not exist merely to provide content for the player: it should have its own rhythms, constraints, needs and consequences.
 
-Seedvale is not intended to become an MMO, multiplayer game, theme-park quest RPG, or conventional survival/crafting game. Those systems may exist where they strengthen the central experience, but they are not the reason the world exists.
+SeedVale is a **singleplayer** game, not an MMO, a theme-park quest treadmill or a conventional crafting grind. Authored adventures are central to play, while the world continues independently of them.
 
 ## 2. The central idea
 
@@ -38,7 +38,7 @@ The core fantasy is to enter a world that feels as though it was already alive b
 
 The player is not the chosen one and is not the centre of the simulation. The player can become important to particular people, places and events, but the world does not stop waiting for them.
 
-The long-term goal is therefore not simply to create more content. It is to create a world capable of **producing stories through its own behaviour**.
+The long-term goal combines **memorable designed adventures** with a world capable of **producing additional stories through its own behaviour**.
 
 ## 3. The world is the AI system
 
@@ -64,11 +64,7 @@ consequences
 emergent events and stories
 ```
 
-An NPC should not need an LLM prompt for every action in order to appear intelligent. Needs, personality, abilities, relationships, memory and the environment should already produce meaningful behaviour through ordinary game systems.
-
-LLMs and other generative AI may eventually extend this simulation — for example through richer dialogue, quest generation, characterisation or world events — but they should **augment the underlying simulation rather than replace it**.
-
-This distinction is fundamental: Seedvale should remain a living world even when no generative model is running.
+Needs, personality, abilities, relationships, memory and the environment should produce meaningful behaviour through ordinary deterministic game systems and authored content. **No LLM or generative AI is used at gameplay runtime**, including dialogue and quests. AI tools may assist game development outside runtime.
 
 ## 4. What the player becomes
 
@@ -80,7 +76,7 @@ Those systems are not meant to turn Seedvale into a conventional player-centric 
 
 A player may build a farm while another NPC moves away. The player may become friends with one villager while two other villagers develop a relationship independently. A settlement may prosper or decline while the player is exploring somewhere else.
 
-The player's story should be **one emergent story inside the world's larger story**.
+The player's story combines **authored adventures, personal choices and emergent consequences** inside the world's larger story. Eventually the player may lead an existing settlement or found a new one, setting goals that autonomous inhabitants pursue.
 
 ## 5. The experience we want
 
@@ -98,7 +94,7 @@ The desired feeling is:
 
 > **"I didn't know my world could do that."**
 
-That feeling should come from interactions between systems, not from an increasingly large collection of scripted scenarios.
+That feeling should come from interactions between systems **and** memorable authored adventures grounded in those systems.
 
 ## 6. The simulation layers
 
@@ -108,7 +104,7 @@ Seedvale's long-term simulation should grow as connected layers rather than as i
 
 The procedural world should provide meaningful geography, resources, settlements and environmental conditions. Terrain, water, vegetation, climate and other environmental systems should influence what can happen in a region.
 
-The long-term direction is a substantially larger world, potentially without a conventional visible boundary. The exact technical solution is deliberately open until the simulation and streaming requirements make the choice clear.
+SeedVale supports **multiple procedural world seeds**, not one canonical map. Its generic generator remains the foundation, while authored adventure sites may be placed in every world, including optional localized terrain shaping. World size and settlement capacity grow incrementally without a fixed product cap or a requirement for a technically infinite world.
 
 ### NPCs
 
@@ -149,13 +145,13 @@ These systems should plug into the same world simulation rather than becoming a 
 
 ### Stories and quests
 
-Quests should increasingly emerge from the world.
-
-A quest can originate from a need, relationship, resource problem, settlement event, conflict or other simulation state. Hand-authored quests remain useful, but the long-term direction is a system capable of producing varied situations without requiring every possibility to be scripted manually.
-
-Generative AI may eventually help create or express those situations, but the underlying causes should remain grounded in the simulated world.
+**Authored adventures and world-driven quests are first-class content.** Designed discoveries and stories can introduce their own starting situations while reusing authoritative world systems. NPCs autonomously solve ordinary needs and problems, but introducing new mechanisms that automatically resolve player-facing authored quests requires explicit author approval. Any existing automatic resolution behavior remains unverified. Quests may require fighting humans, but not killing them.
 
 ## 7. Design principles
+
+### Adventure-first experience, simulation-first foundations
+
+Exploration and authored adventures lead player experience. This never authorizes weakening, dropping or replacing deep autonomous simulation, including off-screen settlement and NPC activity.
 
 ### Simulate life, not collections of objects
 
@@ -187,7 +183,7 @@ Seedvale should prefer understandable, composable simulation mechanisms before e
 
 ### The world must survive without the player
 
-A system is stronger when it can continue producing meaningful state changes without requiring the player to trigger every step.
+A system is stronger when it can continue producing meaningful state changes without requiring the player to trigger every step **while the game is running**. Closing the game pauses world time; there is no real-time offline catch-up.
 
 ## Visual direction — Stylized Realism
 
@@ -212,9 +208,9 @@ A mature version of the game should make it possible for the player to:
 4. establish a personal life and relationships within that world;
 5. influence events without controlling the entire simulation;
 6. leave an area and return later to discover consequences that happened in their absence;
-7. encounter stories that could not have been predicted from a fixed script.
+7. experience designed adventures and unexpected world-driven stories.
 
-The ultimate measure of success is not the number of systems or quests. It is whether the player can tell stories about things that **the game did not explicitly tell them to experience**.
+The ultimate measure of success is whether the player remembers both **authored adventures and unscripted moments** with lasting consequences in a living world.
 
 ## 9. How to evaluate a new idea
 
@@ -225,6 +221,23 @@ Before adding a major feature, ask:
 3. Can it produce consequences that persist beyond the immediate interaction?
 4. Does it help NPCs, settlements, fauna or the player behave like participants in the same world?
 5. Does it preserve the idea that the world continues without the player?
-6. Could a simpler systemic solution achieve the same result before introducing a heavier AI/LLM or content-generation layer?
+6. Could established deterministic systems or authored content achieve the result without unnecessary parallel complexity?
 
 If a feature makes the game larger but not more alive, it deserves extra scrutiny.
+
+## 10. Approved product boundaries (2026-10-29)
+
+- **Identity:** adventure-first player experience, simulation-first world foundations. NPCs, economy, fauna, settlements and persistent consequences retain their depth.
+- **Setting:** grounded medieval realism, folklore, legends and explainable mysteries; no real magic or fantasy monsters.
+- **Mode and platforms:** singleplayer only, desktop first; mobile may be adapted later. No multiplayer or multiplayer-readiness requirement.
+- **Runtime:** no gameplay-time LLM; AI tools may assist development.
+- **Exploration and travel:** clues, NPC rumours, maps, caves and authored places in multiple procedural worlds. Manual travel, riding and physical-route autopilot with accelerated time and interrupting danger; paid world transport is a possible later feature. No teleportation.
+- **World time:** player-configurable, initially targeting about **12 real minutes per in-game day** instead of eight; world time stops when the game closes.
+- **Player:** meaningful but not tedious survival, skill development through practice/teachers/books without universal levels/EXP; normal combat defeat causes incapacitation, exceptional death possible without required permadeath.
+- **Settlement leadership:** player may eventually lead or found a settlement with autonomous NPC execution. Generic NPC settlement founding is excluded, except specific authored quest situations.
+- **Combat:** preserve current V1 combat as the baseline. Human zero HP normally causes incapacitation, separate deliberate lethal finishing is a serious crime. Some quests may require combat but not human killing. Layered/body-area armor remains a target; tactical control additions are not automatically approved.
+- **Economy and equipment:** real production, resources, storage and transport; controlled currency creation/removal is allowed. Rich equipment quality and NPC crafting, without automatically introducing deep player crafting.
+- **Animal companions and key NPCs:** real mortality with escape-oriented stamina/adrenaline/speed protection for companions and selected key characters, plus high Sneak Skill for some key inter-settlement travellers. Protection is not immortality.
+- **Audio:** natural world and NPC soundscape, no musical soundtrack.
+
+These decisions establish **vision, not authorization to implement**. They do not modify Quest Curation, existing plans or Revival integration approvals. See [V1/V3 Vision Alignment decision record](./research/v1-revival/2026-10-29--vision-alignment-v1-v3.md).

@@ -288,6 +288,12 @@ CompanionCommands
 
 ---
 
+## Zwierzęta towarzyszące i ochrona ważnych postaci
+
+Zwierzęta towarzyszące graczowi, np. pies lub koń, mogą zginąć na stałe. Mają silny instynkt samozachowawczy: unikają zbędnego ryzyka, uciekają przed zagrożeniem i mogą otrzymać chwilowy **protection feat**: wzrost staminy, adrenaliny i prędkości podczas ucieczki. Ochrona nie zapewnia nieśmiertelności.
+
+Wybrani pojedynczy kluczowi NPC mogą również otrzymać ochronę ucieczki albo wysoki `Sneak Skill` pomagający w podróżach między osadami. Nie tworzy to osobnego AI companionów ani wyjątku od normalnej tożsamości, potrzeb i śmiertelności NPC.
+
 ## Poza zakresem wizji
 
 Nie zakładamy:

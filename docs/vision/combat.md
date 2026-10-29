@@ -22,6 +22,14 @@ Combat should be a shared world interaction used by the player, NPCs and fauna w
 3. Expand equipment and combat consequences.
 4. Connect combat events to settlements, relationships and quests.
 
+## Author-approved combat direction (2026-10-29)
+
+**The existing V1 combat implementation is the foundation and reference.** Prefer simple, accessible RPG combat; optional block, dodge, parry or target-lock mechanics must be evaluated separately and are not implicitly selected from V3.
+
+Human combat at zero HP normally results in **incapacitation**, not immediate death. A separate intentional finishing act may kill and constitutes a serious crime. Untreated wounds, illness, hazards and predators may still be fatal under appropriate shared rules. Normal player combat loss is non-permanent, but exceptional player death remains possible without mandatory permadeath.
+
+Some quests may require fighting humans but **must not require killing them**. Player and NPC armor should provide comparable layered/body-area protection through existing shared combat mechanisms. This vision does not authorize a wholesale combat replacement.
+
 ## Boundaries
 
 Avoid building a separate combat AI stack for each actor type. Reuse shared simulation and combat contracts.

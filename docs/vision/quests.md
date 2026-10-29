@@ -4,7 +4,7 @@
 
 ## Purpose
 
-Quests should expose meaningful opportunities created by the living world rather than function primarily as a list of authored errands.
+Quests should provide **memorable authored adventures, exploration and discoveries** alongside meaningful opportunities created by the living world.
 
 Seedvale deliberately supports both **authored** and **world-driven** quests. The living-world philosophy does not require every quest to originate from simulation.
 
@@ -14,16 +14,21 @@ Not every quest must emerge naturally from simulation state. Authored quests may
 
 Where an authored quest uses an existing world concept, the resulting state should still belong to the appropriate world system. For example, an authored lost-animal quest may deliberately start a real fauna stray episode rather than maintain quest-only animal state.
 
-For repeatable situations that the simulation can generate naturally, prefer this rule:
-
-- **first occurrence:** authored, to guarantee the intended gameplay experience;
-- **later occurrences:** world-driven or random, arising from simulation state.
+For repeatable situations, one **optional** design pattern is an authored first occurrence followed by natural world-driven later occurrences. This pattern is not a requirement to build a generator for every authored quest.
 
 If a suitable world situation already exists, an authored quest should bind to and reuse it instead of creating a duplicate.
 
 Some authored content has no natural simulation source at all. Treasure maps, hidden treasures, authored discoveries and deliberately placed narrative situations are valid content and do not require a world system that would independently generate them.
 
 The world must function independently of the player. That does **not** mean all gameplay content must originate from simulation dynamics.
+
+## Authored placement, quest autonomy and human conflict
+
+Authored story sites, ruins, caves, treasures and encounters may be placed appropriately in each generated world, with localized terrain modification where needed. Rumours, maps and NPC knowledge guide player discovery rather than always reveal exact coordinates.
+
+NPCs remain autonomous in ordinary needs, work, travel and relationships. **Do not introduce new generic mechanisms that automatically resolve, expire or consume authored player-facing quest stories without separate author approval.** Any such existing behavior remains unverified and is not silently removed by this decision.
+
+Some quests can require fighting humans, including bandits or defending settlements, but **no quest should require killing a human**. Incapacitation is sufficient for such objectives; deliberate lethal finishing is a separate serious crime.
 
 ## Target state
 
@@ -92,4 +97,4 @@ This direction starts with `quests-progression-059-settlement-known-deeds-and-re
 
 ## Boundaries
 
-Quest logic must remain deterministic where it interacts with authoritative world state. Authored quests may create or place narrative situations, but they should reuse existing domain systems for shared concepts instead of creating parallel quest-only state. LLMs must not replace the simulation or authoritative quest state.
+Quest logic must remain deterministic where it interacts with authoritative world state. Authored quests may create or place narrative situations, but they should reuse existing domain systems for shared concepts instead of creating parallel quest-only state. No LLM is used at gameplay runtime, including for dialogue or quests.

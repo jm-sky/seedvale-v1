@@ -23,6 +23,12 @@ Settlements should be dynamic communities shaped by population, geography, resou
 3. Add stronger identity and development over time.
 4. Connect multiple settlements through movement, trade and relationships.
 
+## Author-approved leadership and settlement founding (2026-10-29)
+
+Eventually the player can become leader of an existing settlement or found a new one, setting high-level goals while NPC residents autonomously execute work. This is not a direct city-builder micromanagement mode.
+
+Existing settlements can grow, decline, change or experience migration. A **generic NPC mechanism for founding new settlements is not a target**; a specifically authored quest may deliberately create a new settlement. This is long-term product vision, not immediate Revival scope.
+
 ## Boundaries
 
 Settlement systems should reuse NPC, economy, resource, world and place concepts rather than maintaining parallel representations.

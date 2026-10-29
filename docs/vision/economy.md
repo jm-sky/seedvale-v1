@@ -24,6 +24,10 @@ The economy should emerge from real resources, labour, production, storage, cons
 3. Add local trade and market behaviour.
 4. Connect multiple settlements through trade and resource flows.
 
+## Author-approved goods and currency direction (2026-10-29)
+
+Preserve actual resources, labour, production, storage, shortages, logistics, physical transport and trade. Currency can be **created or removed in a controlled manner** when needed for economic stability; strict conservation of total money is not a requirement. This does not permit arbitrary infinite inventories or bypassing real goods and production. Monetary control rules remain a later design decision.
+
 ## Boundaries
 
 Do not create a separate player economy. Extend existing settlement, household, inventory, item and resource mechanisms.

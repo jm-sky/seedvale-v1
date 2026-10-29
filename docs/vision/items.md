@@ -21,6 +21,10 @@ Items should represent tangible goods, tools and equipment shared by player, NPC
 2. Expand equipment and durability where gameplay benefits.
 3. Connect item flows more deeply to economy and settlement logistics.
 
+## Author-approved equipment and crafting direction (2026-10-29)
+
+Materials, workmanship, quality, durability, repair, sharpening and rare/masterwork items are long-term targets. NPC craftspeople should manufacture and maintain equipment as part of genuine resource-based production and trade. The player obtains suitable equipment through existing gameplay, including commerce and rewards; this does not automatically authorize a general deep player crafting system or replacement of V1 equipment architecture.
+
 ## Boundaries
 
 Keep item definitions and capabilities centralized. Avoid handwritten per-system item requirement checks.

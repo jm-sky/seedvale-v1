@@ -22,6 +22,14 @@ The player is a participant in the same world systems as NPCs rather than the ce
 3. Deepen trade and settlement integration.
 4. Improve long-term consequences and world relationships.
 
+## Author-approved player direction (2026-10-29)
+
+- Authored adventures, exploration, clues and discoveries are central to player experience; emergent stories and world simulation remain equally real.
+- Skills develop through practice, teachers and books, with reputation, relationships, equipment and knowledge also reflecting progress. No universal character level or general EXP.
+- Survival has meaningful needs, weather, wounds, illness and expedition supplies, without constant chores or weakening NPC survival systems.
+- Ordinary combat knockout results in unconsciousness, injuries, recovery, time or resource consequences. Exceptional untreated illness or extreme neglect can be fatal; mandatory permadeath is not required and saves can be loaded.
+- In the long term the player may lead an existing settlement or found a new one, setting goals carried out autonomously by inhabitants, not micromanaging a city builder.
+
 ## Boundaries
 
 Avoid player-only versions of simulation systems that already exist for NPCs or settlements.

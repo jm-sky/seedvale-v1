@@ -26,3 +26,7 @@ Fauna should form an ecosystem with needs, habitats, populations, reproduction, 
 ## Boundaries
 
 Species differences should primarily be data and behaviour configuration, not duplicated agent architectures.
+
+## Companion animal survival (vision)
+
+Companion animals may die permanently. They should flee avoidable threats and may receive a temporary stamina, adrenaline and speed boost while escaping. This does not guarantee survival.

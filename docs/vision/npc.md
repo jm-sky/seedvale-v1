@@ -17,7 +17,9 @@ This document is the **index for the NPC domain**. Detailed models belong in foc
 - Work, routines, households and social roles are connected rather than scripted independently.
 - NPCs use real world resources and places to satisfy needs.
 - NPC actions change settlements, economy, relationships and the environment.
-- NPCs can continue meaningful activity without the player being present.
+- NPCs continue autonomous activity while the game is active, including meaningful off-screen settlement simulation.
+- Selected travellers such as wandering merchants, knights and hunters move independently between settlements, retaining identity and continuity across streaming boundaries.
+- Individual key NPCs may have exceptional Sneak Skill for safer inter-settlement journeys or temporary stamina/adrenaline/speed bonuses when escaping danger. Protection is not immortality.
 - Dialogue and quests reflect actual NPC and world state.
 
 ## Profession and age
@@ -99,7 +101,7 @@ Profession generation should eventually distinguish between minimum staffing, ta
 
 ## Domain boundaries
 
-NPC simulation remains deterministic and authoritative. Dialogue or future LLM assistance must not replace simulation state or decision systems.
+NPC simulation remains deterministic and authoritative; no gameplay-time LLM is used in dialogue, character decisions or world state.
 
 The player participates in the same world systems rather than receiving player-only versions of NPC systems.
 
