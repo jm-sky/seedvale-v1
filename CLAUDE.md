@@ -24,7 +24,7 @@ Seedvale V1 is being revived as the foundation (V2/V3 are selective donors only)
 
 - **D4 Performance-First freeze:** runtime changes that affect workload (CPU/GPU, draw calls, models, worldgen, vegetation, shaders, streaming, loading) merge only as P1 A/B/C/D performance slices, recorded exceptions or critical fixes. Docs, research, plans, tests and isolated demos may always proceed.
 - **Autonomy (author, 2026-10-29):** docs and runtime implementation directly on `main` within approved scope. Open decisions, visual compromises, reduced density/simulation or dropped features → **stop and ask** (Polish, short options), record the question in queue §3, move on to an unblocked task.
-- **Performance evidence:** keep/revert evidence = author-run native Windows Intel Arc A/B (Chrome, ANGLE D3D11). A **parallel WSL2 baseline** (Chrome, OpenGL via Mesa/D3D12) is allowed (author, 2026-10-29): WSL A/B compare only against the WSL baseline, never against Windows numbers — the graphics backends differ. Never claim FPS gains; hand off via queue §4.
+- **Performance evidence:** a **parallel WSL2 baseline** (Chrome, OpenGL via Mesa/D3D12) runs alongside native Windows Intel Arc (Chrome, ANGLE D3D11). A good WSL A/B against the WSL baseline is a **green light to land/enable** the optimization; the native Windows A/B confirms it afterwards (revert if Windows regresses). Never compare or mix WSL and Windows numbers — the graphics backends differ (author, 2026-10-29). Never claim FPS gains; hand off via queue §4.
 - **Verification:** do not mark author-owned visual/browser checks as passed (queue §2).
 - Repository documentation in English; conversation with the author in Polish.
 
