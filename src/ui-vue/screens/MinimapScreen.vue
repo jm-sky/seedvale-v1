@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { Minus, Plus, ZoomIn, ZoomOut } from 'lucide-vue-next'
+import { MapIcon } from '@lucide/vue'
+import { Minus, ZoomIn, ZoomOut } from 'lucide-vue-next'
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import MinimapButton from '@/components/MinimapButton.vue'
 import { isTouchDevice } from '../../input/isTouchDevice'
 import {
   drawMinimapFrame,
@@ -26,11 +28,13 @@ const props = defineProps<{
   embedded?: boolean
 }>()
 
+// The shell is the positioning context: `fixed` in the screen corner, or
+// `relative` when HudRightColumn owns placement. Never both — two
+// `position` utilities on one element override each other unpredictably.
+// `min-*` keeps a corner for the toggle while the lens is collapsed.
 const shellClass = computed(() => {
-  if (props.embedded) return 'pointer-events-none relative z-[8] flex flex-col items-end gap-1'
-  if (touch) return 'pointer-events-none fixed z-[8] flex flex-col items-end gap-1'
-  // Top-right like V3; collapse toggle sits under the lens.
-  return 'pointer-events-none fixed z-[8] flex flex-col-reverse items-end gap-1'
+  const base = 'pointer-events-none z-[8] min-h-6 min-w-6'
+  return props.embedded ? `${base} relative` : `${base} fixed`
 })
 
 const shellStyle = computed(() => {
@@ -150,29 +154,9 @@ watch(canvasRef, (canvas) => {
     :class="shellClass"
     :style="shellStyle"
   >
-    <!-- Toggle stays in-flow. Expanded canvas is absolute on the free-floating
-         touch shell so it doesn't shove the bottom-right action cluster; when
-         `embedded` in HudRightColumn the canvas is in-flow so the QA slot
-         shrinks instead. -->
-    <button
-      type="button"
-      class="pointer-events-auto flex min-h-8 min-w-8 cursor-pointer items-center justify-center rounded border border-white/25 bg-[rgba(20,24,28,0.72)] px-2 py-0.5 text-ink hover:bg-[rgba(20,24,28,0.9)]"
-      :aria-label="ui.minimap.collapsed ? 'Pokaż minimapę' : 'Ukryj minimapę'"
-      @click="toggleMinimap"
-    >
-      <Plus
-        v-if="ui.minimap.collapsed"
-        :size="14"
-      />
-      <Minus
-        v-else
-        :size="14"
-      />
-    </button>
     <div
       v-show="!ui.minimap.collapsed"
       class="pointer-events-auto relative rounded-full shadow-[0_4px_16px_rgba(0,0,0,0.35)]"
-      :class="touch && !embedded ? 'absolute top-full right-0 mt-1' : ''"
     >
       <canvas
         ref="canvasRef"
@@ -187,26 +171,28 @@ watch(canvasRef, (canvas) => {
       <!-- V3 lens bezel: highlight on top, heavier shade at the bottom. -->
       <div class="pointer-events-none absolute inset-0 rounded-full shadow-[inset_0_2px_3px_rgb(255_255_255/45%),inset_0_-8px_18px_rgb(0_0_0/80%),inset_5px_0_12px_rgb(0_0_0/40%),inset_-5px_0_12px_rgb(0_0_0/50%)]" />
       <div class="absolute right-0 bottom-0 flex flex-col gap-1">
-        <button
-          type="button"
-          class="flex size-6 cursor-pointer items-center justify-center rounded bg-black/60 text-neutral-100 hover:bg-black/80 disabled:cursor-default disabled:opacity-40"
+        <MinimapButton
+          :icon-component="ZoomIn"
           aria-label="Przybliż minimapę"
           :disabled="zoom === 'near'"
-          @click.stop="applyZoom('near')"
-        >
-          <ZoomIn :size="14" />
-        </button>
-        <button
-          type="button"
-          class="flex size-6 cursor-pointer items-center justify-center rounded bg-black/60 text-neutral-100 hover:bg-black/80 disabled:cursor-default disabled:opacity-40"
+          @click="applyZoom('near')"
+        />
+        <MinimapButton
+          :icon-component="ZoomOut"
           aria-label="Oddal minimapę"
           :disabled="zoom === 'far'"
-          @click.stop="applyZoom('far')"
-        >
-          <ZoomOut :size="14" />
-        </button>
+          @click="applyZoom('far')"
+        />
       </div>
     </div>
+    <!-- Toggle pinned to the shell's top-right corner: over the lens when
+         expanded, alone in the screen corner when collapsed. -->
+    <MinimapButton
+      :icon-component="ui.minimap.collapsed ? MapIcon : Minus"
+      :aria-label="ui.minimap.collapsed ? 'Pokaż minimapę' : 'Ukryj minimapę'"
+      class="absolute top-0 right-0 z-1"
+      @click="toggleMinimap"
+    />
   </div>
 </template>
 

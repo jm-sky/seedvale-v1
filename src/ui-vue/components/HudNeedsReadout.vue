@@ -41,7 +41,7 @@ const rows = computed(() =>
       :key="row.id"
       class="flex items-center gap-2"
     >
-      <span class="w-[4.5rem] shrink-0 text-[11px] leading-none text-neutral-100/85">{{ row.label }}</span>
+      <span class="w-18 shrink-0 text-[11px] leading-none text-neutral-100/85">{{ row.label }}</span>
       <div
         role="progressbar"
         :aria-label="row.label"
@@ -49,7 +49,7 @@ const rows = computed(() =>
         aria-valuemax="100"
         :aria-valuenow="row.percent"
         :data-testid="`need-${row.id}`"
-        class="h-2 flex-1 overflow-hidden rounded bg-white/15"
+        class="h-1.5 flex-1 overflow-hidden rounded bg-white/15 opacity-95"
       >
         <div
           class="h-full transition-[width] duration-200"
