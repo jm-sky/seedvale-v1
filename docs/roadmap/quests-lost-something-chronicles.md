@@ -1,5 +1,7 @@
 # Lost Treasure Chronicles
 
+> **V1 Revival priority (2026-10-29):** See the [author-approved quest priorities](../research/v1-revival/2026-10-28--quest-round-2-author-decisions.md). This updates sequencing only; D4 Performance-First and existing approval gates remain in effect.
+
 ## Direction
 
 Create a large authored quest network about a lost expedition, an encoded chronicle, a treasure map and a final dungeon treasure.
