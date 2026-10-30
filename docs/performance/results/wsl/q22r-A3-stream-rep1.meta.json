@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "gitSha": "448d0534a9372f81e91c0790129e704428a92509",
+  "runId": "2026-10-30T21-04-55-681Z-4wtkg0",
+  "scenario": "stream",
+  "phase": "warm",
+  "canonical": true,
+  "generatedAt": "2026-10-30T21:06:56.708Z",
+  "fixtureVersion": "tools-001-v1",
+  "quality": "High",
+  "hardwareClass": "wsl-baseline",
+  "notes": "benchmark series q22r-A3 rep1; WSL2 Chrome headed, fresh profile, 20s cooldown, query &benchDuration=90",
+  "platform": "wsl"
+}

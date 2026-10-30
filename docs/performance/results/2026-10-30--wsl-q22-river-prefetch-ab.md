@@ -51,3 +51,20 @@ Author request: repeat with n = 3 per arm and decide on good evidence. Added str
 3. The ≥ 1 s `max` noted above for the 30 s route is a different event (`WATER`/`RENDER` first use).
 
 Artifacts: `wsl/q22n3-{A1,B1,B2,B3}-stream-rep1.*`. Probe log (console capture of a failed A rep) is not kept in the repo.
+
+## Clean rerun — n = 3 per arm, 90 s `stream` (Sonnet, 2026-10-30) — **default ON**
+
+Same fixture/route (`?benchDuration=90`), SHA `448d0534` (docs-only after `ec68219a`, no `dirtyRuntimePaths`), one Vite, interleaved A B A B A B (+ one extra A to replace a failed rep). A1 timed out at boot (`q22r-A1-stream-rep1.bootfail.json`: three `ERR_ABORTED` loads only, **no worker exception** — not the original Q24 signature; cause unknown); replaced by A4.
+
+| Rep | Arm | FPS | p50 ms | p95 ms | p99 ms | sync computes | store hits | prefetched |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| A2 | A | 28.5 | 16.6 | 51.5 | 181.0 | 13 | 0 | 0 |
+| A3 | A | 30.5 | 16.4 | 39.9 | 163.9 | 13 | 0 | 0 |
+| A4 | A | 30.9 | 15.3 | 45.9 | 166.8 | 13 | 0 | 0 |
+| B1 | B | 32.8 | 15.2 | 33.7 | 158.0 | 0 | 13 | 25 |
+| B2 | B | 30.3 | 16.6 | 42.1 | 159.8 | 0 | 13 | 26 |
+| B3 | B | 30.5 | 16.2 | 41.5 | 174.1 | 0 | 13 | 25 |
+
+Arm means — A: FPS 30.0, p50 16.1, p95 45.8, p99 170.6. B: FPS 31.2, p50 16.0, p95 39.1, p99 164.0. Every B value lies inside or below the A range except B2 p95/B3 FPS equal to A's — **no p95/p99/hitch regression**; the gain is structural (sync river computes 13 → 0, ≈ 490 ms / worst ≈ 55 ms per window gone), not an FPS claim. All reps share the ≈ 7.6 s `max` frame (Q25, NPC category), independent of the arm.
+
+**Decision (CPU-slice rule): default ON** (`flags.ts`; `?riverPrefetch=0` disables). The native Windows A/B confirms afterwards (revert if Windows regresses) → queue §4.

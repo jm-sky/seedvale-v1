@@ -143,12 +143,13 @@ export function isChestInstancingEnabled(): boolean {
 }
 
 /** Q22 Track E (E2): worker prefetch of river tiles ahead of streaming
- *  (`terrain/riverTileCache.ts`, `chunkManager.ts` `recheck`). Opt-in until the
- *  WSL `stream` A/B: `?riverPrefetch=1` enables it; otherwise `retain` computes
- *  every tile synchronously as before. */
+ *  (`terrain/riverTileCache.ts`, `chunkManager.ts` `recheck`). On by default since
+ *  the WSL `stream` A/B n = 3 per arm (docs/performance/results/
+ *  2026-10-30--wsl-q22-river-prefetch-ab.md); `?riverPrefetch=0` computes every
+ *  tile synchronously as before for the Windows A/B. */
 export function isRiverPrefetchEnabled(): boolean {
   const p = params()
-  if (!p?.has('riverPrefetch')) return false
+  if (!p?.has('riverPrefetch')) return true
   return flagOn(p.get('riverPrefetch'))
 }
 
