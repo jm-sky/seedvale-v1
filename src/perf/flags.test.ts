@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { BENCHMARK_SCENARIO_IDS } from './benchmarkScenarios'
 import {
   DEFAULT_POINT_LIGHT_BUDGET,
+  parseBenchmarkDuration,
   parseBenchmarkScenarioId,
   parseBenchmarkYaw,
   parsePointLightBudgetFlag,
@@ -73,5 +74,15 @@ describe('parseBenchmarkYaw', () => {
     expect(parseBenchmarkYaw('abc')).toBeNull()
     expect(parseBenchmarkYaw('3.1416')).toBeCloseTo(3.1416)
     expect(parseBenchmarkYaw('-1.5')).toBe(-1.5)
+  })
+})
+
+describe('parseBenchmarkDuration', () => {
+  it('accepts whole seconds in 5…300 only', () => {
+    expect(parseBenchmarkDuration(null)).toBeNull()
+    expect(parseBenchmarkDuration('90')).toBe(90)
+    expect(parseBenchmarkDuration('4')).toBeNull()
+    expect(parseBenchmarkDuration('301')).toBeNull()
+    expect(parseBenchmarkDuration('12.5')).toBeNull()
   })
 })

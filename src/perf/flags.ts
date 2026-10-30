@@ -100,6 +100,20 @@ export function benchmarkYawFromUrl(): number | null {
   return parseBenchmarkYaw(params()?.get('benchYaw'))
 }
 
+/** Parse `?benchDuration=<seconds>` — integer 5…300, else `null`. */
+export function parseBenchmarkDuration(raw: string | null | undefined): number | null {
+  if (raw === null || raw === undefined || raw.trim() === '') return null
+  const v = Number(raw)
+  return Number.isInteger(v) && v >= 5 && v <= 300 ? v : null
+}
+
+/** `?benchDuration=<seconds>` — measured-window length for the URL-autorun
+ *  benchmark (e.g. a longer `stream` route that crosses more river tiles);
+ *  absent keeps the default 30 s. */
+export function benchmarkDurationFromUrl(): number | null {
+  return parseBenchmarkDuration(params()?.get('benchDuration'))
+}
+
 /** Single per-frame scene matrix update (`src/render/frameSceneMatrices.ts`, queue Q14).
  *  On by default since the native Windows A/B (frame p50 -3.1 ms, see
  *  docs/performance/results/2026-10-29--win-q14-frame-matrix-once-ab.md);

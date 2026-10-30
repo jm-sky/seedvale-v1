@@ -73,6 +73,7 @@ import { createTradeGrievanceStore } from '../items/tradeGrievance'
 import { type TreasureChestMutation } from '../items/treasureGameplay'
 import { createWeaponInstance, migrateWeaponCountsToInstances } from '../items/weaponMaintenance'
 import {
+  benchmarkDurationFromUrl,
   type BenchmarkFixture,
   benchmarkScenarioFromUrl,
   benchmarkYawFromUrl,
@@ -3943,7 +3944,7 @@ export async function createApp(
   // (worldgen fixture export, plan tools-020).
   if (autoBench && isBenchmarkAutorunEnabled()) {
     const yaw = benchmarkYawFromUrl()
-    void benchmark.run(autoBench, undefined, yaw === null ? {} : { camera: { yaw } })
+    void benchmark.run(autoBench, benchmarkDurationFromUrl() ?? undefined, yaw === null ? {} : { camera: { yaw } })
   }
 
   bootMarksSummary()
