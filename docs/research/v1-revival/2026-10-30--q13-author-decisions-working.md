@@ -1,7 +1,7 @@
 # Q13 — Older plans vs Vision: working author decisions
 
 **Date:** 2026-10-30
-**Status:** partial discussion (8 of 10 ChatGPT-identified areas decided; 2 pending); Opus reconciliation audit pending.
+**Status:** author discussion complete (10 of 10 ChatGPT-identified areas decided); full Opus reconciliation audit pending.
 **Authority:** author decisions in this discussion. The Strategic Brief remains authoritative for Revival integration. Not implementation authorization.
 
 ## Approved in discussion
@@ -15,10 +15,8 @@
 7. **Economy:** Real physical production, storage, movement and consumption of goods. No artificial item spawning to repair economic shortages. Controlled currency sources and sinks permitted; no strict global money conservation. Safeguards unresolved.
 8. **Companions:** Animals can die permanently, but have strong flee/self-preservation and critical escape protection. Selected important NPCs may have stronger travel-risk avoidance, not immortality. Exact mechanisms unresolved.
 
-## Pending author discussion
-
-9. **Settlement leadership and founding:** prior Vision Alignment direction: player may lead/found towns with high-level goals executed by autonomous NPCs; no generic autonomous NPC settlement founding, except authored quest cases. Not yet reconciled in this discussion.
-10. **Survival intensity:** prior Vision Alignment direction: meaningful needs, weather, illness, wounds and expedition supplies without constant chores; preserve NPC needs depth. Not yet reconciled in this discussion.
+9. **Settlement leadership and founding:** The player can lead or found settlements by setting strategic goals executed autonomously by NPCs, rather than direct city-builder micromanagement. Existing settlements can develop independently. A **generic NPC outpost-founding mechanism may be considered in the future**; this is a potential long-term extension, not an approved immediate feature or a mandate for general autonomous town founding. It qualifies the stricter 2026-10-29 Vision Alignment prohibition on generic NPC founding and requires a separate scoped design decision.
+10. **Survival intensity:** Keep the existing V1 player-needs balance as the baseline: eating and drinking approximately every in-game day, with attribute penalties for neglect. No general softening or hardening of player survival is approved. Preserve deep NPC needs and meaningful weather, illness, injury and expedition consequences.
 
 ## Reconciliation handoff
 
