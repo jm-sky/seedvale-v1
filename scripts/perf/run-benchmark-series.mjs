@@ -57,7 +57,9 @@ async function runOne(scenario, rep) {
     `--remote-debugging-port=${DEBUG}`, `--user-data-dir=${profile}`, '--no-first-run',
     '--no-default-browser-check', '--disable-backgrounding-occluded-windows', '--disable-renderer-backgrounding', '--disable-background-timer-throttling', '--window-size=1600,900', '--window-position=0,0',
     // WSL2: Mesa defaults to llvmpipe (software); d3d12 reaches the real GPU through /dev/dxg.
-    ...(IS_WIN ? [] : ['--ignore-gpu-blocklist']), url,
+    // WSL2: no GNOME keyring prompt ("Choose password for new keyring" blocks the page, Q18) and
+    // no "Can't update Chrome" infobar changing the viewport.
+    ...(IS_WIN ? [] : ['--ignore-gpu-blocklist', '--password-store=basic', "--simulate-outdated-no-au=Tue, 31 Dec 2099 23:59:59 GMT"]), url,
   ], { stdio: 'ignore', env: IS_WIN ? process.env : { GALLIUM_DRIVER: 'd3d12', ...process.env } })
   try {
     const ws = new WebSocket(await cdpConnect())
