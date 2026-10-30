@@ -36,6 +36,7 @@ export type NpcPortraitMoodResult = {
 const NPC_PORTRAIT_BASES: Partial<Record<CharacterKey, string>> = {
   kasia_hornblower: 'kate-hornblower',
   marek_hornblower: 'mark-hornblower',
+  archibald: 'archibald',
   piotr_lesniewski: 'peter-woodworth',
   kazimierz: 'casimir-eastwood',
   rudolf: 'rudolf',

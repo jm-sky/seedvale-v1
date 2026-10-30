@@ -89,6 +89,6 @@ describe('npcPortraitSrcFor', () => {
         }
       }
     }
-    expect(mapped).toBe(8 * 4)
+    expect(mapped).toBe(9 * 4)
   })
 })
