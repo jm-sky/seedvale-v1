@@ -2,21 +2,20 @@ import { afterEach, describe, expect, it } from 'vitest'
 import type { RegionParams } from '../terrain/chunkHeightmap'
 import type { SettlementResolveContext } from './settlementPlanCache'
 import type { TerrainSamplers } from './settlementTerrain'
-import { generateSettlementName } from '../shared/SettlementName'
+import { agreeAdjective, generateSettlementBaseName, type SettlementBaseName, settlementOrdinalName } from '../shared/SettlementName'
 import {
-  cellSeed,
   cellsWithinRadius,
-  probeSettlementSite,
+  settlementBaseNameFor,
   type SettlementCell,
+  settlementCellCenter,
 } from './settlementGenerator'
 import {
   compareSettlementNameOrder,
   fallbackSettlementName,
-  pickUniqueSettlementName,
-  predecessorSettlementCells,
+  LOCAL_SETTLEMENT_NAME_RADIUS_M,
+  localSettlementName,
 } from './settlementNameUniqueness'
-import { clearSettlementDefCache, settlementDefFor } from './settlementPlanCache'
-import { resolveSettlementProgressionPolicy } from './settlementProgression'
+import { cachedLostTreasureArchaeologistHostCell, clearSettlementDefCache, settlementDefFor } from './settlementPlanCache'
 
 const flatHeight = (): number => 12
 const samplers: TerrainSamplers = {
@@ -56,25 +55,6 @@ function ctxFor(seed: number): SettlementResolveContext {
   }
 }
 
-function attempt0Name(cell: SettlementCell, ctx: SettlementResolveContext): string | null {
-  const minimumSize = resolveSettlementProgressionPolicy(ctx)?.minimumFor(cell) ?? undefined
-  const probe = probeSettlementSite(
-    cell,
-    ctx.seed,
-    ctx.sampleHeight,
-    ctx.waterLevel,
-    ctx.localSearchRadius,
-    ctx.terrainSamplers,
-    ctx.heightScale,
-    ctx.region,
-    ctx.homeSize ?? 'auto',
-    undefined,
-    minimumSize,
-  )
-  if (!probe.site || probe.terrain === undefined) return null
-  return generateSettlementName(cellSeed(ctx.seed, cell), probe.terrain, probe.dominantResource ?? null, 0)
-}
-
 function nameMap(cells: readonly SettlementCell[], ctx: SettlementResolveContext): Map<string, string> {
   const names = new Map<string, string>()
   for (const cell of cells) {
@@ -84,119 +64,143 @@ function nameMap(cells: readonly SettlementCell[], ctx: SettlementResolveContext
   return names
 }
 
+function baseOf(cell: SettlementCell, ctx: SettlementResolveContext): SettlementBaseName {
+  return settlementBaseNameFor(cell, ctx.seed, ctx.sampleHeight, ctx.waterLevel, ctx.terrainSamplers, ctx.heightScale, ctx.region)
+}
+
 afterEach(() => {
   clearSettlementDefCache()
 })
 
-describe('generateSettlementName attempt salt', () => {
-  it('applies resource flavor deterministically on attempt 0', () => {
+describe('settlement base names', () => {
+  it('agrees adjectives with the noun gender', () => {
+    expect(agreeAdjective('Lipowa', 'm')).toBe('Lipowy')
+    expect(agreeAdjective('Lipowa', 'n')).toBe('Lipowe')
+    expect(agreeAdjective('Głęboka', 'm')).toBe('Głęboki')
+    expect(agreeAdjective('Głęboka', 'pl')).toBe('Głębokie')
+    expect(agreeAdjective('Mewia', 'm')).toBe('Mewi')
+    expect(agreeAdjective('Mewia', 'n')).toBe('Mewie')
+    expect(agreeAdjective('Cicha', 'f')).toBe('Cicha')
+  })
+
+  it('adds agreeing ordinal words, null past the last one', () => {
+    expect(settlementOrdinalName({ name: 'Osowiec', gender: 'm' }, 1)).toBe('Osowiec')
+    expect(settlementOrdinalName({ name: 'Osowiec', gender: 'm' }, 2)).toBe('Osowiec Drugi')
+    expect(settlementOrdinalName({ name: 'Wola Cicha', gender: 'f' }, 3)).toBe('Wola Cicha Trzecia')
+    expect(settlementOrdinalName({ name: 'Rybaki', gender: 'pl' }, 2)).toBe('Rybaki Drugie')
+    expect(settlementOrdinalName({ name: 'Lipowo', gender: 'n' }, 10)).toBe('Lipowo Dziesiąte')
+    expect(settlementOrdinalName({ name: 'Lipowo', gender: 'n' }, 11)).toBeNull()
+  })
+
+  it('is deterministic and applies resource flavor without breaking agreement', () => {
     const resource = { type: 'iron' as const, richness: 1 }
-    const named = generateSettlementName(99, 'mountain', resource, 0)
-    expect(named).toBe(generateSettlementName(99, 'mountain', resource))
+    expect(generateSettlementBaseName(99, 'mountain', resource)).toEqual(generateSettlementBaseName(99, 'mountain', resource))
+    for (let seed = 0; seed < 400; seed++) {
+      const { name } = generateSettlementBaseName(seed, 'forest', resource)
+      expect(name).not.toMatch(/\b(Lipowa|Zielona|Cicha) (Grąd|Gaj|Bór|Jar|Kąt)\b/)
+    }
+  })
+
+  it('has enough distinct forest base names that local duplicates stay rare', () => {
+    const names = new Set<string>()
+    for (let seed = 0; seed < 20000; seed++) names.add(generateSettlementBaseName(seed * 7919, 'forest').name)
+    expect(names.size).toBeGreaterThan(1000)
   })
 })
 
-describe('pickUniqueSettlementName', () => {
-  it('returns attempt 0 when the name is free', () => {
-    expect(
-      pickUniqueSettlementName({
-        takenNames: new Set(),
-        candidate: (attempt) => (attempt === 0 ? 'Lipowo' : 'Zalesie'),
-        fallback: 'Lipowo 1:0',
-      }),
-    ).toBe('Lipowo')
+describe('localSettlementName (author decision 2026-10-30)', () => {
+  const center = (cell: SettlementCell) => ({ x: cell.gx * 280, z: cell.gz * 280 })
+
+  it('suffixes same-name neighbours in stable order and leaves far duplicates alone', () => {
+    const same: SettlementBaseName = { name: 'Osowiec', gender: 'm' }
+    const other: SettlementBaseName = { name: 'Lipowo', gender: 'n' }
+    const sameCells = new Set(['1_0', '2_0', '9_0'])
+    const deps = () => ({
+      baseNameFor: (cell: SettlementCell) => (sameCells.has(`${cell.gx}_${cell.gz}`) ? same : other),
+      centerOf: center,
+      ordinals: new Map<string, number>(),
+      cellKey: (cell: SettlementCell) => `${cell.gx}_${cell.gz}`,
+    })
+    const d = deps()
+    expect(localSettlementName({ gx: 1, gz: 0 }, d)).toBe('Osowiec')
+    expect(localSettlementName({ gx: 2, gz: 0 }, d)).toBe('Osowiec Drugi')
+    // 9_0 is > 1 km from both: plain name again.
+    expect(9 * 280 - 2 * 280).toBeGreaterThan(LOCAL_SETTLEMENT_NAME_RADIUS_M)
+    expect(localSettlementName({ gx: 9, gz: 0 }, d)).toBe('Osowiec')
+    // Lookup order does not matter.
+    const reversed = deps()
+    expect(localSettlementName({ gx: 9, gz: 0 }, reversed)).toBe('Osowiec')
+    expect(localSettlementName({ gx: 2, gz: 0 }, reversed)).toBe('Osowiec Drugi')
+    expect(localSettlementName({ gx: 1, gz: 0 }, reversed)).toBe('Osowiec')
   })
 
-  it('retries then falls back when the candidate pool is exhausted', () => {
-    expect(
-      pickUniqueSettlementName({
-        takenNames: new Set(['Lipowo']),
-        candidate: () => 'Lipowo',
-        fallback: 'Lipowo 1:0',
-        maxAttempts: 3,
-      }),
-    ).toBe('Lipowo 1:0')
+  it('reuses a free ordinal along a chain instead of colliding', () => {
+    // A(1,0) – B(4,0) – C(7,0): A–B and B–C within 1 km, A–C not.
+    const same: SettlementBaseName = { name: 'Wola', gender: 'f' }
+    const other: SettlementBaseName = { name: 'Gaj', gender: 'm' }
+    const sameCells = new Set(['1_0', '4_0', '7_0'])
+    const deps = {
+      baseNameFor: (cell: SettlementCell) => (sameCells.has(`${cell.gx}_${cell.gz}`) ? same : other),
+      centerOf: (cell: SettlementCell) => ({ x: cell.gx * 300, z: cell.gz * 300 }),
+      ordinals: new Map<string, number>(),
+      cellKey: (cell: SettlementCell) => `${cell.gx}_${cell.gz}`,
+    }
+    expect(localSettlementName({ gx: 7, gz: 0 }, deps)).toBe('Wola')
+    expect(localSettlementName({ gx: 4, gz: 0 }, deps)).toBe('Wola Druga')
+    expect(localSettlementName({ gx: 1, gz: 0 }, deps)).toBe('Wola')
   })
 
-  it('disambiguates a taken fallback', () => {
-    expect(
-      pickUniqueSettlementName({
-        takenNames: new Set(['Lipowo', 'Lipowo 1:0']),
-        candidate: () => 'Lipowo',
-        fallback: 'Lipowo 1:0',
-        maxAttempts: 2,
-      }),
-    ).toBe('Lipowo 1:0~2')
+  it('fallbackSettlementName is unique per cell', () => {
+    expect(fallbackSettlementName('Lipowo', { gx: 1, gz: -2 })).toBe('Lipowo 1:-2')
   })
 })
 
-describe('predecessorSettlementCells', () => {
-  it('is the finite disk before the cell in name order', () => {
-    const preds = predecessorSettlementCells({ gx: 1, gz: 0 })
-    expect(preds.some((cell) => cell.gx === 0 && cell.gz === 0)).toBe(true)
-    expect(preds.every((cell) => !(cell.gx === 1 && cell.gz === 0))).toBe(true)
-  })
-})
-
-describe('settlementDefFor unique names (plan settlements-017)', () => {
-  const sampleRadius = 4
+describe('settlementDefFor local unique names', () => {
   const seed = 7
 
-  it('keeps attempt 0 when no predecessor claimed that name', () => {
+  it('names a def by its center-based base name, matching plan identity', () => {
     const ctx = ctxFor(seed)
     const home = settlementDefFor({ gx: 0, gz: 0 }, ctx)
     expect(home).not.toBeNull()
-    expect(home!.name).toBe(attempt0Name({ gx: 0, gz: 0 }, ctx))
+    expect(home!.name).toBe(baseOf({ gx: 0, gz: 0 }, ctx).name)
     expect(home!.name).toBe(home!.plan.identity.name)
   })
 
-  it('gives colliding attempt-0 cells different final names; earlier cell keeps attempt 0', () => {
-    const ctx = ctxFor(seed)
-    const cells = cellsWithinRadius({ gx: 0, gz: 0 }, sampleRadius)
-    const byAttempt0 = new Map<string, SettlementCell[]>()
-    for (const cell of cells) {
-      const name = attempt0Name(cell, ctx)
-      if (!name) continue
-      const list = byAttempt0.get(name) ?? []
-      list.push(cell)
-      byAttempt0.set(name, list)
-    }
-    const collision = [...byAttempt0.values()].find((group) => group.length >= 2)
-    expect(collision, 'expected a duplicate attempt-0 name in the sample').toBeTruthy()
-    const [first, second] = [...collision!].sort(compareSettlementNameOrder)
-    const firstDef = settlementDefFor(first, ctx)
-    const secondDef = settlementDefFor(second, ctx)
-    expect(firstDef).not.toBeNull()
-    expect(secondDef).not.toBeNull()
-    expect(secondDef!.name).not.toBe(firstDef!.name)
-    expect(firstDef!.name).toBe(firstDef!.plan.identity.name)
-  })
-
-  it('is deterministic across cache clears', () => {
-    const cells = cellsWithinRadius({ gx: 0, gz: 0 }, sampleRadius)
-    const first = nameMap(cells, ctxFor(seed))
-    clearSettlementDefCache()
-    const second = nameMap(cells, ctxFor(seed))
-    expect([...second.entries()]).toEqual([...first.entries()])
-  })
-
-  it('does not change names when lookup order is reversed', () => {
-    const cells = cellsWithinRadius({ gx: 0, gz: 0 }, sampleRadius)
+  it('is deterministic across cache clears and lookup order', () => {
+    const cells = cellsWithinRadius({ gx: 0, gz: 0 }, 4)
     const forward = nameMap(cells, ctxFor(seed))
     clearSettlementDefCache()
     const reversed = nameMap([...cells].reverse(), ctxFor(seed))
     expect(reversed).toEqual(forward)
   })
 
-  it('has no duplicate names in a bounded sample', () => {
-    const names = [...nameMap(cellsWithinRadius({ gx: 0, gz: 0 }, 5), ctxFor(seed)).values()]
-    expect(new Set(names).size).toBe(names.length)
+  it('has no duplicate names within the local radius', () => {
+    const ctx = ctxFor(seed)
+    const cells = cellsWithinRadius({ gx: 0, gz: 0 }, 6)
+    const names = nameMap(cells, ctx)
+    const byId = new Map(cells.map((cell) => [`${cell.gx}_${cell.gz}`, cell]))
+    const entries = [...names.entries()]
+    for (let i = 0; i < entries.length; i++) {
+      for (let j = i + 1; j < entries.length; j++) {
+        if (entries[i]![1] !== entries[j]![1]) continue
+        const a = settlementCellCenter(byId.get(entries[i]![0])!, seed)
+        const b = settlementCellCenter(byId.get(entries[j]![0])!, seed)
+        expect(Math.hypot(a.x - b.x, a.z - b.z)).toBeGreaterThan(LOCAL_SETTLEMENT_NAME_RADIUS_M)
+      }
+    }
   })
 
-  it('fallbackSettlementName is unique per cell', () => {
-    expect(fallbackSettlementName('Lipowo', { gx: 1, gz: -2 })).toBe('Lipowo 1:-2')
-    expect(fallbackSettlementName('Lipowo', { gx: 2, gz: -2 })).not.toBe(
-      fallbackSettlementName('Lipowo', { gx: 1, gz: -2 }),
-    )
+  it('orders cells by ring from home first', () => {
+    expect(compareSettlementNameOrder({ gx: 0, gz: 0 }, { gx: -1, gz: -1 })).toBeLessThan(0)
+    expect(compareSettlementNameOrder({ gx: 2, gz: 0 }, { gx: -1, gz: 1 })).toBeGreaterThan(0)
+  })
+})
+
+describe('Lost Treasure host search scope', () => {
+  it('a cell beyond every host search radius never triggers the host search', () => {
+    settlementDefFor({ gx: 9, gz: 0 }, ctxFor(7))
+    expect(cachedLostTreasureArchaeologistHostCell()).toBeUndefined()
+    settlementDefFor({ gx: 2, gz: 0 }, ctxFor(7))
+    expect(cachedLostTreasureArchaeologistHostCell()).not.toBeUndefined()
   })
 })

@@ -18,9 +18,11 @@ import {
 import {
   createSettlementWorldgenCache,
   isValidSettlementDefPayload,
+  isValidSettlementWorldgenPayload,
   parseSettlementCellSubKey,
   SETTLEMENT_DEFINITION_CACHE_NAMESPACE,
   SETTLEMENT_DEFINITION_CACHE_VERSION,
+  SETTLEMENT_LOST_TREASURE_HOSTS_SUB_KEY,
   settlementCellSubKey,
   settlementDefinitionFingerprint,
   type SettlementProgressionIdentity,
@@ -175,7 +177,7 @@ function createSessionCache(options?: { debounceMs?: number, maxRecordsPerSeed?:
     maxRecordsPerSeed: options?.maxRecordsPerSeed,
     hydrateInto(key, value) {
       if (session.has(key)) return
-      session.set(key, value)
+      session.set(key, value as SettlementDef | null)
     },
   })
   function lookup(key: string): SettlementDef | null | undefined {
@@ -579,5 +581,19 @@ describe('settlementPlanCache persistent hydrate (plan settlements-014)', () => 
     const def = settlementDefFor({ gx: 1, gz: 0 }, ctx)
     expect(def).not.toBeNull()
     expect(spy).toHaveBeenCalled()
+  })
+})
+
+describe('isValidSettlementWorldgenPayload (queue Q26)', () => {
+  it('accepts the Lost Treasure host record and rejects malformed ones', () => {
+    const key = SETTLEMENT_LOST_TREASURE_HOSTS_SUB_KEY
+    expect(isValidSettlementWorldgenPayload(key, { elder: '1_0', archaeologist: '-3_2', specialist: null })).toBe(true)
+    expect(isValidSettlementWorldgenPayload(key, { elder: 'x', archaeologist: null, specialist: null })).toBe(false)
+    expect(isValidSettlementWorldgenPayload(key, null)).toBe(false)
+  })
+
+  it('routes cell sub-keys to the def validator', () => {
+    expect(isValidSettlementWorldgenPayload(settlementCellSubKey(2, -3), null)).toBe(true)
+    expect(isValidSettlementWorldgenPayload('unknown', null)).toBe(false)
   })
 })

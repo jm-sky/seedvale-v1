@@ -1,5 +1,6 @@
 import type { HomeVillageSize } from '../config/worldConfig'
 import type { HeightSampler } from '../player/PlayerController'
+import type { SettlementBaseName } from '../shared/SettlementName'
 import type { RawSampleParams, RegionParams } from '../terrain/chunkHeightmap'
 import type { RiverQuery } from '../terrain/riverQuery'
 import type { VillageSize } from './families'
@@ -7,7 +8,6 @@ import type { TerrainSamplers } from './settlementTerrain'
 import { pickNameCulture } from '../ai/nameCultures'
 import { getMonitor } from '../perf/active'
 import { withStage } from '../perf/monitor'
-import { generateSettlementName } from '../shared/SettlementName'
 import { createHomeElderFamily } from './homeAuthoredResidents'
 import {
   createLostTreasureArchaeologistFamily,
@@ -31,25 +31,26 @@ import {
   cellsWithinRadius,
   generateSettlementDef,
   probeSettlementSite,
+  settlementBaseNameFor,
   type SettlementCell,
+  settlementCellCenter,
   type SettlementDef,
   type SettlementSiteProbe,
 } from './settlementGenerator'
-import {
-  fallbackSettlementName,
-  pickUniqueSettlementName,
-  predecessorSettlementCells,
-} from './settlementNameUniqueness'
+import { localSettlementName } from './settlementNameUniqueness'
 import {
   resolveSettlementProgressionPolicy,
   type SettlementProgressionPolicy,
 } from './settlementProgression'
 import {
   parseSettlementCellSubKey,
+  SETTLEMENT_LOST_TREASURE_HOSTS_SUB_KEY,
   settlementCellSubKey,
   settlementDefinitionFingerprint,
+  type SettlementLostTreasureHostsPayload,
   type SettlementProgressionIdentity,
   type SettlementWorldgenCache,
+  type SettlementWorldgenCachePayload,
 } from './settlementWorldgenCache'
 
 /** Shared generation context for the single settlement-definition cache
@@ -99,8 +100,10 @@ export function worldRiverQuery(): RiverQuery | null {
 }
 
 const defCache = new Map<string, SettlementDef | null>()
-const namingInputCache = new Map<string, SettlementSiteProbe>()
-const uniqueNameCache = new Map<string, string | null>()
+/** Site probes for the Lost Treasure host searches only — naming never probes. */
+const siteProbeCache = new Map<string, SettlementSiteProbe>()
+const baseNameCache = new Map<string, SettlementBaseName>()
+const nameOrdinalCache = new Map<string, number>()
 
 /**
  * Optional IndexedDB adapter (plan settlements-014). Main thread attaches
@@ -119,8 +122,9 @@ let specialistHostCellKey: string | null | undefined
 
 export function clearSettlementDefCache(): void {
   defCache.clear()
-  namingInputCache.clear()
-  uniqueNameCache.clear()
+  siteProbeCache.clear()
+  baseNameCache.clear()
+  nameOrdinalCache.clear()
   activeRiverQuery = null
   progressionPolicy = undefined
   elderHostCellKey = undefined
@@ -136,7 +140,12 @@ export function clearSettlementDefCache(): void {
  * @domain settlements
  * @system worldgen-cache
  */
-export function ingestHydratedSettlementDef(subKey: string, def: SettlementDef | null): void {
+export function ingestHydratedSettlementDef(subKey: string, payload: SettlementWorldgenCachePayload): void {
+  if (subKey === SETTLEMENT_LOST_TREASURE_HOSTS_SUB_KEY) {
+    ingestLostTreasureHosts(payload as SettlementLostTreasureHostsPayload)
+    return
+  }
+  const def = payload as SettlementDef | null
   const cell = parseSettlementCellSubKey(subKey)
   if (!cell) return
   const key = cellKey(cell)
@@ -226,44 +235,47 @@ function probeArgs(cell: SettlementCell, ctx: SettlementResolveContext) {
   ] as const
 }
 
-function namingInputsFor(cell: SettlementCell, ctx: SettlementResolveContext): SettlementSiteProbe {
+function siteProbeFor(cell: SettlementCell, ctx: SettlementResolveContext): SettlementSiteProbe {
   const key = cellKey(cell)
-  const cached = namingInputCache.get(key)
+  const cached = siteProbeCache.get(key)
   if (cached) return cached
   const probe = probeSettlementSite(...probeArgs(cell, ctx))
-  namingInputCache.set(key, probe)
+  siteProbeCache.set(key, probe)
   return probe
 }
 
+function baseNameOf(cell: SettlementCell, ctx: SettlementResolveContext): SettlementBaseName {
+  const key = cellKey(cell)
+  const cached = baseNameCache.get(key)
+  if (cached) return cached
+  const base = settlementBaseNameFor(
+    cell,
+    ctx.seed,
+    ctx.sampleHeight,
+    ctx.waterLevel,
+    ctx.terrainSamplers,
+    ctx.heightScale,
+    ctx.region,
+  )
+  baseNameCache.set(key, base)
+  return base
+}
+
 /**
- * Unique display name for `cell` from a stable predecessor order — not stream order.
- * Memoized per world; naming inputs only (no village layout) for predecessors.
+ * Locally unique display name for `cell` (queue Q26, author decision
+ * 2026-10-30): base name from cheap cell-center inputs plus an ordinal suffix
+ * among same-name neighbours within `LOCAL_SETTLEMENT_NAME_RADIUS_M`. No site
+ * search, independent of stream/lookup order.
  *
  * @domain settlements
  */
-function uniqueNameFor(cell: SettlementCell, ctx: SettlementResolveContext): string | null {
-  const key = cellKey(cell)
-  if (uniqueNameCache.has(key)) return uniqueNameCache.get(key)!
-  const inputs = namingInputsFor(cell, ctx)
-  if (!inputs.site || inputs.terrain === undefined) {
-    uniqueNameCache.set(key, null)
-    return null
-  }
-  const takenNames = new Set<string>()
-  for (const predecessor of predecessorSettlementCells(cell)) {
-    const name = uniqueNameFor(predecessor, ctx)
-    if (name) takenNames.add(name)
-  }
-  const seedForCell = cellSeed(ctx.seed, cell)
-  const { terrain, dominantResource = null } = inputs
-  const attempt0 = generateSettlementName(seedForCell, terrain, dominantResource, 0)
-  const name = pickUniqueSettlementName({
-    takenNames,
-    candidate: (attempt) => generateSettlementName(seedForCell, terrain, dominantResource, attempt),
-    fallback: fallbackSettlementName(attempt0, cell),
+function localNameFor(cell: SettlementCell, ctx: SettlementResolveContext): string {
+  return localSettlementName(cell, {
+    baseNameFor: (c) => baseNameOf(c, ctx),
+    centerOf: (c) => settlementCellCenter(c, ctx.seed),
+    ordinals: nameOrdinalCache,
+    cellKey,
   })
-  uniqueNameCache.set(key, name)
-  return name
 }
 
 function applyResolvedSettlementName(def: SettlementDef, name: string): void {
@@ -296,7 +308,7 @@ function probeCandidatesWithin(
   const candidates = []
   for (const cell of cellsWithinRadius(origin, radius)) {
     if (cell.gx === origin.gx && cell.gz === origin.gz) continue
-    const probe = namingInputsFor(cell, ctx)
+    const probe = siteProbeFor(cell, ctx)
     if (!probe.site) continue
     candidates.push({
       cell,
@@ -345,6 +357,10 @@ function authoredResidentsFor(cell: SettlementCell, ctx: SettlementResolveContex
   const nameCulture = pickNameCulture(seedForCell)
   const residents = []
   if (cell.gx === 0 && cell.gz === 0) residents.push(createHomeElderFamily(seedForCell, nameCulture))
+  // Hosts are chosen only among cells within their search radius of home, so
+  // farther cells skip the (probe-heavy) host searches entirely — exact.
+  if (Math.max(Math.abs(cell.gx), Math.abs(cell.gz)) > LOST_TREASURE_HOST_MAX_RING) return residents
+  ensureLostTreasureHosts(ctx)
   const elderHost = elderHostCellFor(ctx)
   if (elderHost && elderHost.gx === cell.gx && elderHost.gz === cell.gz) {
     residents.push(createLostTreasureElderFamily(seedForCell, nameCulture))
@@ -358,6 +374,55 @@ function authoredResidentsFor(cell: SettlementCell, ctx: SettlementResolveContex
     residents.push(createLostTreasureSpecialistFamily(seedForCell, nameCulture))
   }
   return residents
+}
+
+const LOST_TREASURE_HOST_MAX_RING = Math.max(
+  LOST_TREASURE_ELDER_SETTLEMENT_SEARCH_RADIUS,
+  LOST_TREASURE_ARCHAEOLOGIST_SETTLEMENT_SEARCH_RADIUS,
+  LOST_TREASURE_SPECIALIST_SETTLEMENT_SEARCH_RADIUS,
+)
+
+/** Resolve all three Lost Treasure host cells (or reuse the memo, possibly
+ *  hydrated from the worldgen cache) and persist them once, so a later session
+ *  never repeats the ~120 site probes mid-play (queue Q26). */
+function ensureLostTreasureHosts(ctx: SettlementResolveContext): void {
+  if (elderHostCellKey !== undefined && archaeologistHostCellKey !== undefined && specialistHostCellKey !== undefined) return
+  specialistHostCellFor(ctx)
+  persistentDefs?.remember(SETTLEMENT_LOST_TREASURE_HOSTS_SUB_KEY, {
+    elder: elderHostCellKey ?? null,
+    archaeologist: archaeologistHostCellKey ?? null,
+    specialist: specialistHostCellKey ?? null,
+  })
+}
+
+function ingestLostTreasureHosts(payload: SettlementLostTreasureHostsPayload): void {
+  // A value this realm already computed wins (same rule as defs).
+  if (elderHostCellKey !== undefined || archaeologistHostCellKey !== undefined || specialistHostCellKey !== undefined) return
+  elderHostCellKey = payload.elder
+  archaeologistHostCellKey = payload.archaeologist
+  specialistHostCellKey = payload.specialist
+}
+
+/**
+ * Lost Treasure archaeologist host cell for the current world, resolving it
+ * when neither this session nor the worldgen cache has it yet.
+ *
+ * @domain settlements
+ */
+export function lostTreasureArchaeologistHostCell(ctx: SettlementResolveContext): SettlementCell | null {
+  ensureLostTreasureHosts(ctx)
+  return archaeologistHostCellKey ? cellFromId(archaeologistHostCellKey) : null
+}
+
+/**
+ * Lost Treasure specialist host cell for the current world (see
+ * {@link lostTreasureArchaeologistHostCell}).
+ *
+ * @domain settlements
+ */
+export function lostTreasureSpecialistHostCell(ctx: SettlementResolveContext): SettlementCell | null {
+  ensureLostTreasureHosts(ctx)
+  return specialistHostCellKey ? cellFromId(specialistHostCellKey) : null
 }
 
 /** Test/debug seam: `undefined` before first resolve, then the memoized archaeologist host (or `null`). */
@@ -385,10 +450,9 @@ export function settlementDefFor(
   const key = cellKey(cell)
   if (defCache.has(key)) return defCache.get(key)!
   const monitor = getMonitor()
-  const resolvedName = withStage(monitor, 'settlementDefName', () => uniqueNameFor(cell, ctx))
   const residents = withStage(monitor, 'settlementDefResidents', () => authoredResidentsFor(cell, ctx))
   const def = withStage(monitor, 'settlementDefGenerate', () => generateSettlementDef(...probeArgs(cell, ctx), residents))
-  if (def && resolvedName) applyResolvedSettlementName(def, resolvedName)
+  if (def) applyResolvedSettlementName(def, withStage(monitor, 'settlementDefName', () => localNameFor(cell, ctx)))
   defCache.set(key, def)
   persistentDefs?.remember(settlementCellSubKey(cell.gx, cell.gz), def)
   return def

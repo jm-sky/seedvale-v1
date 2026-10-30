@@ -56,7 +56,9 @@ export const SETTLEMENT_DEFINITION_CACHE_NAMESPACE = 'settlement-definitions'
  * resolved progression-policy identity) is fingerprinted separately. An
  * old-version record is a plain cache miss — records are never migrated.
  */
-export const SETTLEMENT_DEFINITION_CACHE_VERSION = 3
+export const SETTLEMENT_DEFINITION_CACHE_VERSION = 4
+// v4 (2026-10-30, queue Q26): locally unique names from cell-center inputs
+// with ordinal suffixes; Lost Treasure host-cell record added.
 
 const DEFAULT_DEBOUNCE_MS = 4000
 /** Bounded per-seed cap of requested cells only — never a full grid scan.
@@ -64,6 +66,19 @@ const DEFAULT_DEBOUNCE_MS = 4000
 const DEFAULT_MAX_RECORDS_PER_SEED = 2048
 
 export type SettlementDefinitionCachePayload = SettlementDef | null
+
+/** Sub-key of the one non-cell record: the world's Lost Treasure host cells. */
+export const SETTLEMENT_LOST_TREASURE_HOSTS_SUB_KEY = 'hosts:lost-treasure'
+
+/** Lost Treasure host cell ids (`gx_gz`) or `null` when the world has none —
+ *  persisted so a later session never repeats the host site searches. */
+export type SettlementLostTreasureHostsPayload = {
+  elder: string | null
+  archaeologist: string | null
+  specialist: string | null
+}
+
+export type SettlementWorldgenCachePayload = SettlementDefinitionCachePayload | SettlementLostTreasureHostsPayload
 
 /** Deterministic identity of the resolved near/far size policy, or `null`
  *  when explicit `homeSize` disables rings. */
@@ -533,6 +548,26 @@ export function isValidSettlementDefPayload(value: unknown): value is Settlement
   return def.plan.identity.name === def.name
 }
 
+function isNullableCellId(value: unknown): value is string | null {
+  return value === null || (typeof value === 'string' && /^-?\d+_-?\d+$/.test(value))
+}
+
+/**
+ * Validate one hydrated record by its sub-key: the Lost Treasure host record
+ * or a cell's `SettlementDef | null`. Invalid data is a miss.
+ *
+ * @domain settlements
+ * @system worldgen-cache
+ */
+export function isValidSettlementWorldgenPayload(subKey: string, value: unknown): value is SettlementWorldgenCachePayload {
+  if (subKey === SETTLEMENT_LOST_TREASURE_HOSTS_SUB_KEY) {
+    if (value === null || typeof value !== 'object') return false
+    const hosts = value as Record<string, unknown>
+    return isNullableCellId(hosts.elder) && isNullableCellId(hosts.archaeologist) && isNullableCellId(hosts.specialist)
+  }
+  return parseSettlementCellSubKey(subKey) !== null && isValidSettlementDefPayload(value)
+}
+
 export type SettlementWorldgenCache = {
   /** Call once per world build/rebuild. Resets session identity and starts a
    *  best-effort async hydrate. Never blocks the caller. */
@@ -543,7 +578,7 @@ export type SettlementWorldgenCache = {
   invalidate(): void
   /** Queue a freshly computed runtime result (including `null`) for debounced
    *  persistence. No-op when the cache is not currently activated. */
-  remember(key: string, def: SettlementDefinitionCachePayload): void
+  remember(key: string, payload: SettlementWorldgenCachePayload): void
   /** Resolves when the current activation's hydrate has finished (hit, empty
    *  store, or storage failure). A later `activate()` / `invalidate()` starts
    *  a new generation. */
@@ -564,7 +599,7 @@ export function createSettlementWorldgenCache(options: {
   maxRecordsPerSeed?: number
   /** Merge one validated hydrated record into the runtime authority.
    *  The caller must keep a runtime-computed value for the same key. */
-  hydrateInto: (key: string, def: SettlementDefinitionCachePayload) => void
+  hydrateInto: (key: string, payload: SettlementWorldgenCachePayload) => void
 }): SettlementWorldgenCache {
   const debounceMs = options.debounceMs ?? DEFAULT_DEBOUNCE_MS
   const maxRecordsPerSeed = options.maxRecordsPerSeed ?? DEFAULT_MAX_RECORDS_PER_SEED
@@ -574,7 +609,7 @@ export function createSettlementWorldgenCache(options: {
   let active = false
   let currentSeed = 0
   let currentFingerprint = ''
-  const dirty = new Map<string, SettlementDefinitionCachePayload>()
+  const dirty = new Map<string, SettlementWorldgenCachePayload>()
   let flushTimer: ReturnType<typeof setTimeout> | null = null
   let disposed = false
   let readyPromise: Promise<void> = Promise.resolve()
@@ -613,8 +648,9 @@ export function createSettlementWorldgenCache(options: {
       for (const record of records) {
         if (record.fingerprint !== fingerprint) continue
         if (!record.key.startsWith(prefix)) continue
-        if (!isValidSettlementDefPayload(record.payload)) continue
-        hydrateInto(record.key.slice(prefix.length), record.payload)
+        const subKey = record.key.slice(prefix.length)
+        if (!isValidSettlementWorldgenPayload(subKey, record.payload)) continue
+        hydrateInto(subKey, record.payload)
       }
     }).catch(() => {
       // Hydrate failure is an empty session for this generation — callers
@@ -646,7 +682,7 @@ export function createSettlementWorldgenCache(options: {
     const entries = [...dirty.entries()]
     dirty.clear()
     const now = Date.now()
-    const records: CacheRecord<SettlementDefinitionCachePayload>[] = entries.map(([subKey, payload]) => ({
+    const records: CacheRecord<SettlementWorldgenCachePayload>[] = entries.map(([subKey, payload]) => ({
       key: cacheKey(seed, SETTLEMENT_DEFINITION_CACHE_NAMESPACE, SETTLEMENT_DEFINITION_CACHE_VERSION, subKey),
       seed,
       namespace: SETTLEMENT_DEFINITION_CACHE_NAMESPACE,
@@ -660,9 +696,9 @@ export function createSettlementWorldgenCache(options: {
     await enforceCacheCap(seed, SETTLEMENT_DEFINITION_CACHE_NAMESPACE, SETTLEMENT_DEFINITION_CACHE_VERSION, maxRecordsPerSeed)
   }
 
-  function remember(key: string, def: SettlementDefinitionCachePayload): void {
+  function remember(key: string, payload: SettlementWorldgenCachePayload): void {
     if (!active || disposed) return
-    dirty.set(key, def)
+    dirty.set(key, payload)
     scheduleFlush()
   }
 

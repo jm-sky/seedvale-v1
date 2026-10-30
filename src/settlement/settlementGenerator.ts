@@ -4,7 +4,7 @@ import type { RegionParams, RiverChannelSegment } from '../terrain/chunkHeightma
 import type { NaturalResource } from '../terrain/naturalResources'
 import type { RiverQuery } from '../terrain/riverQuery'
 import { type NameCulture, pickNameCulture } from '../ai/nameCultures'
-import { generateSettlementName, type SettlementTerrain } from '../shared/SettlementName'
+import { generateSettlementBaseName, type SettlementBaseName, type SettlementTerrain } from '../shared/SettlementName'
 import {
   dominantResourceNear,
   RESOURCE_ROLE,
@@ -185,6 +185,59 @@ function offsetCellCenter(cell: SettlementCell, seedForCell: number): { x: numbe
     x: cell.gx * SETTLEMENT_GRID_STEP + (random() * 2 - 1) * maxOffset,
     z: cell.gz * SETTLEMENT_GRID_STEP + (random() * 2 - 1) * maxOffset,
   }
+}
+
+/**
+ * Nominal (seeded, offset) center of `cell` — home is the origin. Site search
+ * starts here; local name uniqueness measures distances between these.
+ *
+ * @domain settlements
+ */
+export function settlementCellCenter(cell: SettlementCell, seed: number): { x: number, z: number } {
+  if (cell.gx === 0 && cell.gz === 0) return { x: 0, z: 0 }
+  return offsetCellCenter(cell, cellSeed(seed, cell))
+}
+
+/**
+ * Base name (no ordinal suffix) for `cell`, from terrain and dominant resource
+ * at the cell's nominal center — not the selected site — so naming never needs
+ * a site search: each neighbour name for local uniqueness costs one height sample,
+ * one terrain classification and one resource lookup (queue Q26,
+ * `docs/state/settlements.md`). `generateSettlementDef` uses the same value.
+ *
+ * @domain settlements
+ */
+export function settlementBaseNameFor(
+  cell: SettlementCell,
+  seed: number,
+  sampleHeight: HeightSampler,
+  waterLevel: number,
+  terrainSamplers: TerrainSamplers,
+  heightScale: number,
+  region: RegionParams,
+): SettlementBaseName {
+  const seedForCell = cellSeed(seed, cell)
+  const center = settlementCellCenter(cell, seed)
+  const resourceEnv: ResourceEnv = {
+    sampleHeight,
+    sampleContinentalness: terrainSamplers.sampleContinentalness,
+    sampleMountainRidge: terrainSamplers.sampleMountainRidge,
+    sampleMoistureRegion: terrainSamplers.sampleMoistureRegion,
+    waterLevel,
+    heightScale,
+    region,
+  }
+  const terrain = classifySettlementTerrain(
+    center.x,
+    center.z,
+    sampleHeight(center.x, center.z),
+    waterLevel,
+    heightScale,
+    region,
+    terrainSamplers,
+  )
+  const dominantResource = dominantResourceNear(center.x, center.z, RESOURCE_INFLUENCE_RADIUS, seed, resourceEnv)
+  return generateSettlementBaseName(seedForCell, terrain, dominantResource)
 }
 
 /** Deterministic seeded roll for whether a qualifying resource+terrain
@@ -418,7 +471,15 @@ function resolveVillageIdentity(
 
   // Lock provisional size — do not call `rollVillageSize` again (plan 047 §6).
   const size = isOutpost ? 'OUTPOST' : ctx.provisionalSize
-  const name = generateSettlementName(ctx.seedForCell, terrain, dominantResource)
+  const name = settlementBaseNameFor(
+    ctx.cell,
+    ctx.seed,
+    ctx.sampleHeight,
+    ctx.waterLevel,
+    ctx.terrainSamplers,
+    ctx.heightScale,
+    ctx.region,
+  ).name
   const foodSourceType = foodSourceTypeFor(terrain, dominantResource)
   const character = resolveSettlementCharacter({
     seedForCell: ctx.seedForCell,

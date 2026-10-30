@@ -122,9 +122,9 @@ import { cellFromId, cellKey, cellSeed, cellsWithinRadius, probeSettlementSite, 
 import {
   activateSettlementDefinitionCacheForWorld,
   attachSettlementDefinitionPersistence,
-  cachedLostTreasureArchaeologistHostCell,
-  cachedLostTreasureSpecialistHostCell,
   ingestHydratedSettlementDef,
+  lostTreasureArchaeologistHostCell,
+  lostTreasureSpecialistHostCell,
   settlementDefFor,
   settlementDefinitionCacheReady,
   type SettlementResolveContext,
@@ -1920,7 +1920,9 @@ async function buildWorldSystems(
     LOST_TREASURE_ELDER_SETTLEMENT_SEARCH_RADIUS,
     (def) => def.families.some(isLostTreasureElderFamily),
   )
-  const archaeologistHost = cachedLostTreasureArchaeologistHostCell()
+  // Resolving (not memo-only) getters: with a hydrated worldgen cache the
+  // home def no longer triggers the host search, so the memo may be empty.
+  const archaeologistHost = lostTreasureArchaeologistHostCell(homeResolveCtx)
   const archaeologistStoryDef = archaeologistHost
     ? settlementsManager.peekDef(archaeologistHost)
     : null
@@ -1977,7 +1979,7 @@ async function buildWorldSystems(
     })
     : null
   setActiveLostTreasureChronicleSearchBinding(chronicleSearchBinding)
-  const specialistHost = cachedLostTreasureSpecialistHostCell()
+  const specialistHost = lostTreasureSpecialistHostCell(homeResolveCtx)
   const specialistStoryDef = specialistHost
     ? settlementsManager.peekDef(specialistHost)
     : null
