@@ -184,17 +184,17 @@ Generated from exported TypeScript symbols.
 
 ## `assets/loadGltf.ts`
 
-- `disposeObject3D` — function — line 216
-- `GltfAsset` — type — line 40
-- `invalidateGltf` — function — line 181
-- `loadGltf` — function — line 80
-- `loadGltfAnimated` — function — line 95
-- `loadGltfAsset` — function — line 85
-- `markSharedGpu` — function — line 200
-- `prepareAuthoredScaleMax` — function — line 165
-- `prepareProp` — function — line 114
-- `preparePropFitMax` — function — line 139
-- `SMALL_MESH_SHADOW_THRESHOLD` — const — line 30
+- `disposeObject3D` — function — line 217
+- `GltfAsset` — type — line 41
+- `invalidateGltf` — function — line 182
+- `loadGltf` — function — line 81
+- `loadGltfAnimated` — function — line 96
+- `loadGltfAsset` — function — line 86
+- `markSharedGpu` — function — line 201
+- `prepareAuthoredScaleMax` — function — line 166
+- `prepareProp` — function — line 115
+- `preparePropFitMax` — function — line 140
+- `SMALL_MESH_SHADOW_THRESHOLD` — const — line 31
 
 ## `assets/loadTexture.ts`
 

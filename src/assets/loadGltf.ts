@@ -6,6 +6,7 @@ import {
   type Material,
   type Mesh,
   type Object3D,
+  type SkinnedMesh,
   Vector3,
 } from 'three'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
@@ -230,5 +231,12 @@ export function disposeObject3D(object: Object3D): void {
     // mesh: `isInstancedMesh` is `undefined` on a plain Mesh.
     const inst = obj as InstancedMesh
     if (inst.isInstancedMesh) inst.dispose()
+    // Three allocates a per-Skeleton `boneTexture` on first render that only
+    // `Skeleton.dispose()` frees (queue Q15 / Q1 review F1). Actor skeletons
+    // are per-clone (`SkeletonUtils.clone`), never loader-cache shared.
+    // Idempotent for skeletons shared by several meshes, and fail-safe: a
+    // still-rendered skeleton just gets its texture recreated on next draw.
+    const skinned = obj as SkinnedMesh
+    if (skinned.isSkinnedMesh) skinned.skeleton?.dispose()
   })
 }

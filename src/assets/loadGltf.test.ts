@@ -1,4 +1,4 @@
-import { BoxGeometry, InstancedMesh, Mesh, MeshStandardMaterial, Object3D } from 'three'
+import { Bone, BoxGeometry, Group, InstancedMesh, Mesh, MeshStandardMaterial, Object3D, Skeleton, SkinnedMesh } from 'three'
 import { describe, expect, it, vi } from 'vitest'
 import { disposeObject3D } from './loadGltf'
 
@@ -47,5 +47,23 @@ describe('disposeObject3D', () => {
   it('does not choke on a plain (non-mesh) Object3D', () => {
     const group = new Object3D()
     expect(() => disposeObject3D(group)).not.toThrow()
+  })
+
+  it('frees the bone texture of skinned meshes once per shared skeleton (Q15 / F1)', () => {
+    const skeleton = new Skeleton([new Bone(), new Bone()])
+    skeleton.computeBoneTexture()
+    const boneTexture = skeleton.boneTexture!
+    const texSpy = vi.spyOn(boneTexture, 'dispose')
+    const root = new Group()
+    for (let i = 0; i < 2; i++) {
+      const part = new SkinnedMesh(new BoxGeometry(1, 1, 1), new MeshStandardMaterial())
+      part.bind(skeleton)
+      root.add(part)
+    }
+
+    disposeObject3D(root)
+
+    expect(texSpy).toHaveBeenCalledOnce()
+    expect(skeleton.boneTexture).toBeNull()
   })
 })
