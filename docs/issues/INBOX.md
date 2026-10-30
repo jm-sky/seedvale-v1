@@ -26,6 +26,7 @@ Status for every entry: `todo` (unverified). Created: 2026-10-29. IDs here (`IMP
 - **Expected:** No uncovered bright terrain cutouts at any viewing distance.
 - **Area:** world-terrain.
 - **Related:** [existing cave-mouth issue 026](./2026-08-12--026--cave-mouth-flat-prop-not-a-hole.md) (different reported symptom; check overlap before creating a new issue).
+- **Status (2026-10-30, Q10):** root cause found — the distant mouth proxy left an open band between the terrain cut edge and its fan, so low sight lines passed under the single-sided terrain to the sky. Fixed with a proxy skirt (D4 exception, workload-neutral); **author visual check pending**. See [Q10 recon](../research/v1-revival/2026-10-30--q10-cave-polish-recon.md).
 
 ## IMP-005 — Female Hunter offered primary hunter quest in home settlement
 - **Observation:** A woman assigned as `Hunter` in the home settlement offered the hunter quest.

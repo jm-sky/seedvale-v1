@@ -687,6 +687,10 @@ const PROXY_RIM_INSET = 0.12
 const PROXY_CENTER_INSET = 0.45
 /** Preferred drop below the entrance reference height. */
 const PROXY_DROP = 1.15
+/** Funnel lip: outside the opening contour, tucked just under the terrain
+ *  sheet so the cut edge meets proxy rock instead of an open slit. */
+const PROXY_LIP_OUTSET = 0.5
+const PROXY_LIP_SINK = 0.06
 
 /**
  * Minimal CPU buffers for the distant mouth occlusion proxy — a flat
@@ -732,6 +736,28 @@ export function buildCaveMouthProxyBuffers(
     const a = rimStart + i
     const b = rimStart + ((i + 1) % n)
     indices.push(centerIdx, b, a)
+  }
+
+  // Skirt around the aperture (IMP-004): a wall just outside the opening
+  // contour, from right under the terrain sheet down to the fan rim depth,
+  // then a ledge back to the fan rim. Without it a distant low sight line
+  // drops into the opening above the fan and leaves under the single-sided
+  // terrain sheet, showing the sky as a bright hole.
+  const lipStart = positions.length / 3
+  for (let i = 0; i < n; i++) {
+    const p = rim[i]!
+    const lx = p.x + p.ox * PROXY_LIP_OUTSET
+    const lz = p.z + p.oz * PROXY_LIP_OUTSET
+    const lipY = walkSurfaceAt(lx, lz) - PROXY_LIP_SINK
+    const footY = Math.min(positions[(rimStart + i) * 3 + 1]!, lipY)
+    positions.push(lx, lipY, lz, lx, footY, lz)
+  }
+  for (let i = 0; i < n; i++) {
+    const j = (i + 1) % n
+    const lipI = lipStart + i * 2
+    const lipJ = lipStart + j * 2
+    emitMaskQuad(indices, lipI, lipJ, lipJ + 1, lipI + 1)
+    emitMaskQuad(indices, lipI + 1, lipJ + 1, rimStart + j, rimStart + i)
   }
 
   const pos = new Float32Array(positions)

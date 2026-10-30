@@ -331,3 +331,105 @@ describe('cave mouth proxy buffers (world-terrain-026)', () => {
     }
   })
 })
+
+/** Möller–Trumbore: distance along unit `dir` to the nearest triangle, or Infinity. */
+function nearestTriangleHit(
+  positions: Float32Array,
+  indices: Uint32Array,
+  o: readonly [number, number, number],
+  dir: readonly [number, number, number],
+): number {
+  let best = Infinity
+  for (let t = 0; t < indices.length; t += 3) {
+    const a = indices[t]! * 3
+    const b = indices[t + 1]! * 3
+    const c = indices[t + 2]! * 3
+    const e1 = [positions[b]! - positions[a]!, positions[b + 1]! - positions[a + 1]!, positions[b + 2]! - positions[a + 2]!]
+    const e2 = [positions[c]! - positions[a]!, positions[c + 1]! - positions[a + 1]!, positions[c + 2]! - positions[a + 2]!]
+    const p = [dir[1] * e2[2]! - dir[2] * e2[1]!, dir[2] * e2[0]! - dir[0] * e2[2]!, dir[0] * e2[1]! - dir[1] * e2[0]!]
+    const det = e1[0]! * p[0]! + e1[1]! * p[1]! + e1[2]! * p[2]!
+    if (Math.abs(det) < 1e-12) continue
+    const inv = 1 / det
+    const s = [o[0] - positions[a]!, o[1] - positions[a + 1]!, o[2] - positions[a + 2]!]
+    const u = (s[0]! * p[0]! + s[1]! * p[1]! + s[2]! * p[2]!) * inv
+    if (u < 0 || u > 1) continue
+    const q = [s[1]! * e1[2]! - s[2]! * e1[1]!, s[2]! * e1[0]! - s[0]! * e1[2]!, s[0]! * e1[1]! - s[1]! * e1[0]!]
+    const v = (dir[0] * q[0]! + dir[1] * q[1]! + dir[2] * q[2]!) * inv
+    if (v < 0 || u + v > 1) continue
+    const dist = (e2[0]! * q[0]! + e2[1]! * q[1]! + e2[2]! * q[2]!) * inv
+    if (dist > 1e-6 && dist < best) best = dist
+  }
+  return best
+}
+
+describe('cave mouth proxy closes the aperture at distance (IMP-004)', () => {
+  /** A distant, low-elevation sight line that drops into the opening must hit
+   *  the proxy before it is clear of the opening under the (single-sided,
+   *  back-face-culled) terrain sheet — otherwise the sky shows through as a
+   *  bright hole. The skirt sits ~0.5 m outside the contour, so a sight line
+   *  may run under the sheet that far before it meets proxy rock. */
+  it('catches grazing sight lines before they pass under the terrain', () => {
+    const STEP = 0.02
+    const UNDER = 0.1
+    const MAX_OUTSIDE = 0.8
+    for (const id of CAVE_HEIGHTFIELD_FIXTURE_IDS) {
+      const field = build(id)
+      const opening = (x: number, z: number): number => mouthOpeningAt(field, walk, x, z)
+      const { positions, indices } = buildCaveMouthProxyBuffers(field, opening, walk)
+      const targets: { x: number, z: number }[] = []
+      const openCells: { x: number, z: number }[] = []
+      for (let z = field.entrance.z - 6; z <= field.entrance.z + 7; z += 0.2) {
+        for (let x = field.entrance.x - 6; x <= field.entrance.x + 6; x += 0.2) {
+          if (opening(x, z) > 0) openCells.push({ x, z })
+        }
+      }
+      for (let z = field.entrance.z - 5; z <= field.entrance.z + 6; z += 0.5) {
+        for (let x = field.entrance.x - 5; x <= field.entrance.x + 5; x += 0.5) {
+          if (opening(x, z) > 0.05) targets.push({ x, z })
+        }
+      }
+      expect(targets.length).toBeGreaterThan(0)
+      const distanceToOpening = (x: number, z: number): number => {
+        let best = Infinity
+        for (const c of openCells) best = Math.min(best, Math.hypot(c.x - x, c.z - z))
+        return best
+      }
+      const leaks: string[] = []
+      for (const target of targets) {
+        for (let yawDeg = 0; yawDeg < 360; yawDeg += 30) {
+          for (const elevDeg of [1.5, 3, 6, 12]) {
+            const yaw = (yawDeg * Math.PI) / 180
+            const elev = (elevDeg * Math.PI) / 180
+            const dir: [number, number, number] = [
+              Math.cos(yaw) * Math.cos(elev), -Math.sin(elev), Math.sin(yaw) * Math.cos(elev),
+            ]
+            // The sight line enters the opening at the target, just under the
+            // walk surface; skip it when terrain on the eye side blocks it.
+            const ty = walk(target.x, target.z) - 0.01
+            let occluded = false
+            for (let back = STEP; back < 20; back += STEP) {
+              const bx = target.x - dir[0] * back
+              const bz = target.z - dir[2] * back
+              if (ty - dir[1] * back < walk(bx, bz) && opening(bx, bz) <= 0) {
+                occluded = true
+                break
+              }
+            }
+            if (occluded) continue
+            const hit = nearestTriangleHit(positions, indices, [target.x, ty, target.z], dir)
+            for (let d = STEP; d < Math.min(hit, 20); d += STEP) {
+              const x = target.x + dir[0] * d
+              const y = ty + dir[1] * d
+              const z = target.z + dir[2] * d
+              if (opening(x, z) > 0 || y >= walk(x, z) - UNDER) continue
+              if (distanceToOpening(x, z) < MAX_OUTSIDE) continue
+              leaks.push(`${id} target ${target.x.toFixed(1)},${target.z.toFixed(1)} yaw ${yawDeg} elev ${elevDeg}`)
+              break
+            }
+          }
+        }
+      }
+      expect(leaks.slice(0, 5)).toEqual([])
+    }
+  }, 30_000)
+})
