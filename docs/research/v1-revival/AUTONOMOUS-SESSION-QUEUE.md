@@ -66,11 +66,13 @@ Agents must not mark these verified. Listed so sessions do not re-verify or bloc
 
 Append here (date, task, question, options). Remove when answered and recorded in the owning doc.
 
+- 2026-10-30, CA2 (`0cfb9ed3`): Windows `stream` A/B shows a possible tail regression with the grass main cap (n = 2/arm, noisy). Opcje: (a) zostawić flagę włączoną i powtórzyć `stream` n = 3 na arm (rekomendowane), (b) wyłączyć domyślnie do czasu powtórki, (c) cofnąć commit.
+
 
 ## 4. Landed slices awaiting author Arc A/B
 
 Append: commit, track, metric that decides keep/revert, A/B instructions link.
 
-- `b2691195`, Track B Q5 — interior house chest instancing, default on (`?chestInstancing=0` = A). Decides: storageContainer main/shadow/mirror calls with unchanged instances, RENDER p50 (guards mean FPS, p95/p99, long frames). Instructions: [WSL A/B §Windows](../../performance/results/2026-10-29--wsl-q5-house-chest-instancing-ab.md#windows-ab-instructions-queue-4).
+- `b2691195`, Track B Q5 — **Windows A/B done 2026-10-30: keep** ([result](../../performance/results/2026-10-30--win-q5-ca2-ab.md): storageContainer calls 58/20/28 → 18/6/8, draws −80…−115, timing neutral-to-positive, no guard regression). Only the author visual check (§2) remains.
 - `e0a42fc7` (+ flag `277f71b5`, default on after the Windows A/B: [result](../../performance/results/2026-10-29--win-q14-frame-matrix-once-ab.md), frame p50 −3.1 ms, guards held; author Arc re-check welcome), Track B/shared Q14 B1a — single per-frame scene matrix update. Decides: frame p50 / RENDER p50 (guards mean FPS, p95/p99). Instructions: [WSL A/B report §Windows](../../performance/results/2026-10-29--wsl-q14-frame-matrix-once-ab.md#windows-ab-instructions-queue-4).
-- `0cfb9ed3`, Track C CA2 — far-band main grass storage cap (on by default, `?grassMainCap=0` disables). Decides: resident main/allocation down with submitted equal; guards stream p95/p99, long frames, grass hitches. Instructions: [WSL A/B report §Windows](../../performance/results/2026-10-29--wsl-ca2-grass-main-cap-ab.md#windows-ab-instructions-queue-4).
+- `0cfb9ed3`, Track C CA2 — Windows A/B 2026-10-30 ([result](../../performance/results/2026-10-30--win-q5-ca2-ab.md)): resident main −47…−69 %, forest neutral, but **`stream` tail worse in B** (p95/p99, long frames, FPS; n = 2 per arm). Flag still on; see §3 question.
