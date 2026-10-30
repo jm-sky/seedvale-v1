@@ -116,11 +116,11 @@ export function isChestInstancingEnabled(): boolean {
 }
 
 /** Q20 Track A (A1): one skeleton per actor (`render/actorSkeletonSharing.ts`).
- *  Off by default until the WSL A/B green-lights it (D4); `?actorSkeletons=1`
- *  binds all exact-compatible skinned parts (NPC body/head/hair/garments,
- *  fauna parts) to one skeleton per actor. */
+ *  On by default since the WSL A/B (docs/performance/results/
+ *  2026-10-30--wsl-q20-actor-skeleton-sharing-ab.md); `?actorSkeletons=0`
+ *  keeps one cloned skeleton per skinned part for the Windows A/B. */
 export function isActorSkeletonSharingEnabled(): boolean {
   const p = params()
-  if (!p?.has('actorSkeletons')) return false
+  if (!p?.has('actorSkeletons')) return true
   return flagOn(p.get('actorSkeletons'))
 }

@@ -1,6 +1,6 @@
 # Q20 — one skeleton per actor (Track A, A1) — implementation notes
 
-**Date:** 2026-10-30 · **By:** Claude Opus 5.5 · **Commit:** `a416ff2b` · **Status:** implemented + technically verified; **off by default** (`?actorSkeletons=1` enables) until the WSL A/B. No browser/visual check done.
+**Date:** 2026-10-30 · **By:** Claude Opus 5.5 · **Commit:** `a416ff2b` · **Status:** implemented + technically verified; WSL green light ([WSL A/B](../../performance/results/2026-10-30--wsl-q20-actor-skeleton-sharing-ab.md): main skeletons 267 → 49–50, shadow 46 → 12, no guard regression) → **on by default**, `?actorSkeletons=0` disables. Windows A/B and visual check pending. No browser/visual check done.
 
 ## Why
 
@@ -19,7 +19,7 @@ Q6 A0 counters ([WSL result](../../performance/results/2026-10-30--wsl-q18-stabi
 
 - `src/render/actorSkeletonSharing.ts` — `shareActorSkeletons(root)`. Canonical skeleton = first skeleton with the most bones (the body for NPCs). Per mesh, fail open (keeps its skeleton) unless: `AttachedBindMode`, finite/invertible matrices, every weighted bone is a canonical Bone, and `Ipart[j] = Icanon[k]·T` within 1e-5 on all weighted bones. Then `bind(canonical, T·Bind)`; exact because attached-mode skinning is `Mworld⁻¹ · Σ w·BoneWorld·I · Bind`. A reordered part gets a cached shallow geometry copy (all attributes and the index shared by reference, so the same GPU buffers; only a new `skinIndex`), flagged `sharedGpu`, keyed per source geometry + mapping (bounded: parts × body bone orders). Loader bones, inverse binds and geometry are never mutated. Plans all rebinds before applying; idempotent.
 - `NpcAgent` constructor: called on the actor wrapper before `installActorCullBounds` (covers kit and legacy-model NPCs). `AnimalAgent` constructor: on the per-spawn visual clone (wild fauna, livestock, rats). Player unchanged.
-- `src/perf/flags.ts` — `isActorSkeletonSharingEnabled()` (`?actorSkeletons=1`).
+- `src/perf/flags.ts` — `isActorSkeletonSharingEnabled()` (default on; `?actorSkeletons=0` disables).
 - Dispose: unchanged. `disposeObject3D` already calls `skeleton.dispose()` per skinned mesh (Q15), idempotent for a shared skeleton; remapped geometries are `sharedGpu` and skipped.
 
 ## Verification (technical only)
@@ -36,13 +36,13 @@ Q6 A0 counters ([WSL result](../../performance/results/2026-10-30--wsl-q18-stabi
 - Mutation checks: dropping the `T·Bind` compensation fails 64 tests; forcing the male head (tolerance 1) fails 33.
 - `src/ai`, `src/fauna`, `src/characters`, rats: 1 793 tests green; `tsc` clean except the pre-existing `ui-vue` demo errors; ESLint clean.
 
-## Why off by default / not yet measured
+## Measurement
 
-The WSL A/B was not run in this session: three other agent sessions were live in WSL, and the runbook warns a benchmark VM crash kills every WSL process. D4: enable only after a WSL green light (CPU-slice rule).
+Landed off; the author approved the WSL run in the same session. [WSL A/B](../../performance/results/2026-10-30--wsl-q20-actor-skeleton-sharing-ab.md) green (CPU-slice rule) → default flipped on. Windows A/B: same metrics, arms default vs `?actorSkeletons=0`.
 
 ## A/B instructions (WSL first, then Windows)
 
-Same build, `settlement-heavy`, fixture `tools-001-v1`, High, 30 s, fresh profile, 20 s cooldown, order A B B A, nothing else heavy in WSL:
+WSL run done (commands below were the off-by-default arms). Windows: A = `SEEDVALE_QUERY='&actorSkeletons=0'`, B = default. Same build, `settlement-heavy`, fixture `tools-001-v1`, High, 30 s, fresh profile, 20 s cooldown, order A B B A, nothing else heavy in WSL:
 
 ```text
 # A (off, current default)
@@ -57,4 +57,4 @@ SEEDVALE_QUERY='&actorSkeletons=1' node scripts/perf/run-benchmark-series.mjs <p
 
 ## Visual check (author, queue §2)
 
-NPCs of several families (male/female, skirts/bodice, beards, hair styles, professions) and multi-part animals (horse, cow, dog) with `?actorSkeletons=1` vs default: walking, working, sitting, combat, death/corpse — no seams, no detached parts, faces/eyes in place.
+NPCs of several families (male/female, skirts/bodice, beards, hair styles, professions) and multi-part animals (horse, cow, dog) default vs `?actorSkeletons=0`: walking, working, sitting, combat, death/corpse — no seams, no detached parts, faces/eyes in place.

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "gitSha": "5c21bad4f47f865144dddadee40821140eb2ac69",
+  "runId": "2026-10-30T13-10-34-739Z-zxli4h",
+  "scenario": "settlement-heavy",
+  "phase": "warm",
+  "canonical": true,
+  "generatedAt": "2026-10-30T13:12:23.381Z",
+  "fixtureVersion": "tools-001-v1",
+  "quality": "High",
+  "hardwareClass": "wsl-baseline",
+  "notes": "benchmark series 2026-10-30--wsl-q20-skel-A2 rep1; WSL2 Chrome headed, fresh profile, 20s cooldown",
+  "dirtyRuntimePaths": [
+    "M src/world/caves/experimental/v3-grid/gen/caves.ts"
+  ],
+  "platform": "wsl"
+}

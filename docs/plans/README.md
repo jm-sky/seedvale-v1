@@ -122,6 +122,7 @@ Unless noted otherwise, `verification needed` means implementation has passed au
 | ◼️ `npc-062-ubc-runtime-material-darkness-and-authored-outfit-preservation.md` | 🔴 | M      | ~~tools-017~~, ~~npc-055~~                                                                                                                                                                                                                                                                 | -                                         |
 | 💡 `quests-progression-081-quest-ui-completion-readiness-projection.md`        | 🔴 | S      | ~~quests-progression-075~~, ~~ui-input-037~~                                                                                                                                                                                                                                               | -                                         |
 | ◼️ `ui-input-045-equipment-body-layout.md`                                     | 🟡 | S      | ~~ui-input-040~~                                                                                                                                                                                                                                                                           | -                                         |
+| 💡 `ui-input-047-npc-dialogue-semantic-choices-and-spoken-lines.md`            | 🔴 | L      | -                                                                                                                                                                                                                                                                                          | -                                         |
 
 ---
 
@@ -201,7 +202,7 @@ New plans declare a primary `Domain:` in frontmatter. Use optional `Tags:` only 
 - settlements: `024`
 - settlements-npcs: `058`
 - tools: `021`
-- ui-input: `047`
+- ui-input: `048`
 - world: `040`
 - world-terrain: `055`
 

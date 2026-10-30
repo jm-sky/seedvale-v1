@@ -163,7 +163,7 @@ function planRebind(mesh: SkinnedMesh, canonical: Skeleton, canonicalIndex: Map<
  *
  * Call on a per-actor clone (`SkeletonUtils.clone` / `assembleCharacter`),
  * after assembly and before bounds/animation setup. Never on a cache root.
- * Idempotent. Callers gate it on `?actorSkeletons=1` (off by default until the A/B).
+ * Idempotent. Callers skip it under `?actorSkeletons=0` (A/B arm).
  *
  * @domain render
  */

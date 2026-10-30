@@ -55,7 +55,9 @@
    🔴 `L` · 🔒 blocked · unlocks 0/0
 3. `quests-progression-074` — **Small quest offer scope and prioritization**  
    🟡 `S` · 🔒 blocked · unlocks 0/0
-4. `ui-input-045` — **Equipment panel body-ordered layout (V3 items--006 adapted)**  
+4. `ui-input-047` — **NPC dialogue semantic choices and spoken lines**  
+   🔴 `L` · ✅ ready · unlocks 0/0
+5. `ui-input-045` — **Equipment panel body-ordered layout (V3 items--006 adapted)**  
    🟡 `S` · ✅ ready · unlocks 0/0
 
 ---
@@ -247,27 +249,31 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   🟡 `M` · **Score:**  25  
    → **unlocks:** 0/0
 
-40. `ui-input-045` — **Equipment panel body-ordered layout (V3 items--006 adapted)**  
+40. `ui-input-047` — **NPC dialogue semantic choices and spoken lines**  
+  🔴 `L` · **Score:**  24  
+   → **unlocks:** 0/0
+
+41. `ui-input-045` — **Equipment panel body-ordered layout (V3 items--006 adapted)**  
   🟡 `S` · **Score:**  23  
    → **unlocks:** 0/0
 
-41. `tools-019` — **Debug tooling lifecycle ownership**  
+42. `tools-019` — **Debug tooling lifecycle ownership**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-42. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
+43. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
   🟡 `L` · **Score:**  18  
    → **unlocks:** 0/0
 
-43. `items-player-014` — **Rope-pullable resource transport**  
+44. `items-player-014` — **Rope-pullable resource transport**  
   ⚪ `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-44. `items-player-052` — **Settlement tool ownership and social acquisition**  
+45. `items-player-052` — **Settlement tool ownership and social acquisition**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-45. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
+46. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
@@ -777,6 +783,7 @@ graph TD
   ui_input_044["ui-input-044 — Stage F — Trade V3-identical reskin + V1 filters"]
   ui_input_045["ui-input-045 — Equipment panel body-ordered layout (V3 items--006 adapted)"]
   ui_input_046["ui-input-046 — Minimap and world map — raster terrain and soft Fog of War (V3 presentation)"]
+  ui_input_047["ui-input-047 — NPC dialogue semantic choices and spoken lines"]
   world_001["world-001 — Playtest Gameplay Fixes — Stamina, Fire Time-Skip and Bear Behaviour"]
   world_003["world-003 — Faster Application Startup"]
   world_004["world-004 — Well Depth, Groundwater & Well Protection"]
