@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "gitSha": "2e6bb561913e3521d7e908fa3f8cb1ad94dcfaec",
+  "runId": "2026-10-30T16-22-06-071Z-zogmi0",
+  "scenario": "stream",
+  "phase": "warm",
+  "canonical": true,
+  "generatedAt": "2026-10-30T16:24:07.210Z",
+  "fixtureVersion": "tools-001-v1",
+  "quality": "High",
+  "hardwareClass": "wsl-baseline",
+  "notes": "benchmark series q22n3-B2 rep1; WSL2 Chrome headed, fresh profile, 30s cooldown, query &benchDuration=90&riverPrefetch=1",
+  "servedSha": "557e2b9ff82a9aaee688f5136409b517966ba199",
+  "shaNote": "label 2e6bb561913e3521d7e908fa3f8cb1ad94dcfaec is stale (Vite started before a runtime commit); code served from HEAD 557e2b9ff82a9aaee688f5136409b517966ba199 working tree; runtime diff: src/app/createApp.ts, src/app/gameLoop.ts, src/perf/benchmark.ts, src/perf/flags.test.ts, src/perf/flags.ts, src/perf/index.ts, src/perf/occludedActorCohort.test.ts, src/perf/occludedActorCohort.ts, src/perf/types.ts, src/terrain/chunkManager.ts, src/terrain/riverTileCache.test.ts, src/terrain/river",
+  "platform": "wsl"
+}
