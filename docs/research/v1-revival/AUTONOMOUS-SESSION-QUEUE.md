@@ -108,6 +108,8 @@ Agents must not mark these verified. Listed so sessions do not re-verify or bloc
 | Q5 chests (`b2691195`) | Interior chests in furnished houses are present, correctly placed and oriented, same look, cast shadows; compare `?chestInstancing=0` | [Q5 notes](./2026-10-29--q5-house-chest-instancing--implementation-notes.md) |
 | NPC dialogue portraits + home residents | Kasia/Marek/Piotr/Kazimierz/Rudolf/Molly/Jakub show a portrait; Molly herds the home flock; Jakub is the home hunter-quest giver; Kazimierz gives `Przygotowania do zimy` and `Zapomniany cmentarz`, Archibald (neighbour) `Stara uraza`; day↔night switches at dawn/dusk; injured/exhausted NPC shows the tense variant; no portrait for other NPCs | `src/ui-vue/lib/npcPortrait.ts`, [npc state](../../state/npc.md) |
 
+**Author manual check 2026-10-30 (Windows):** walked the world and talked to NPCs on current `main` — "everything looks good". General smoke check (SHA and URL flags not recorded): it does not by itself close the specific §2 items above, and does not cover Q17 E1 unless `?prewarmTemplates=1` was set.
+
 ## 3. Questions waiting for the author
 
 Append here (date, task, question, options). Remove when answered and recorded in the owning doc.
