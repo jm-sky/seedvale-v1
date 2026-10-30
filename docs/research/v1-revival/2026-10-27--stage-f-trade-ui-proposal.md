@@ -96,4 +96,4 @@ Dialogue (D0), Character/inventory/QA/HUD re-litigation, settlement/inventory/sa
 1. **Currency:** **done** 2026-10-27 — UI-only `formatCoins` (`coin` = copper); no save/schema change.
 2. **Capability filter:** **done** 2026-10-27 — custom dropdown (not `<select>`); price/sort stay native selects.
 
-Kick-off / notes: [NEXT-SESSION--stage-f-followups.md](./NEXT-SESSION--stage-f-followups.md). Visual PASS still author screenshots.
+Kick-off / notes: [NEXT-SESSION--stage-f-followups.md](./archive/NEXT-SESSION--stage-f-followups.md). Visual PASS still author screenshots.

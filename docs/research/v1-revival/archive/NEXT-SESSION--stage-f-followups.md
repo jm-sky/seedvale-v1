@@ -10,4 +10,4 @@
 - Visual PASS: live Merchant + `merchant-demo.html` (purse format, capability menu, filters).
 - Optional later: dialogue / artisan / inventory value strings still say „monet” — out of Stage F scope.
 
-Kick-off for broader UI migration: see [README](./README.md) / draft stages later slices.
+Kick-off for broader UI migration: see [README](../README.md) / draft stages later slices.

@@ -56,4 +56,4 @@ Revert Stage F presentation (+ demo entry). Basket/settle/horse/save intact.
 1. **Currency:** ~~open~~ **done** 2026-10-27 — presentation-only `formatCoins` (`coin` = copper); Stage F leaves + demo.
 2. **Capability filter:** ~~open~~ **done** 2026-10-27 — custom dropdown (`MerchantFilterDropdown.vue`); price/sort remain `<select>`.
 
-See [NEXT-SESSION--stage-f-followups.md](../research/v1-revival/NEXT-SESSION--stage-f-followups.md). Visual PASS still author.
+See [NEXT-SESSION--stage-f-followups.md](../research/v1-revival/archive/NEXT-SESSION--stage-f-followups.md). Visual PASS still author.
