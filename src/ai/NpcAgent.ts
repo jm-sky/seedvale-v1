@@ -490,7 +490,7 @@ import {
   type VoluntaryJoinContext,
   type VoluntaryJoinEvaluation,
 } from './voluntaryExpeditionJoin'
-import { type NpcDecisionTarget, weatherShelterPressure } from './weatherPressure'
+import { type NpcDecisionTarget, weatherShelterBarkAllowed, weatherShelterPressure } from './weatherPressure'
 import type { CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js'
 
 function randRange([min, max]: [number, number]): number {
@@ -6611,7 +6611,7 @@ export class NpcAgent {
       this.wanderNear(this.home)
       return
     }
-    this.requestBark('weather_shelter')
+    if (weatherShelterBarkAllowed(this.currentWeather)) this.requestBark('weather_shelter')
     this.startAction({
       kind: 'shelter',
       destination: copyVec3(this.home),

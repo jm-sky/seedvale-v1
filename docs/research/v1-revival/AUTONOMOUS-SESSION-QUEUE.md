@@ -110,7 +110,7 @@ Agents must not mark these verified. Listed so sessions do not re-verify or bloc
 
 Append here (date, task, question, options). Remove when answered and recorded in the owning doc.
 
-- **2026-10-30 · Q11 · Rain bark during snow/storm:** male/guard `weather_shelter` clip says "Rain's coming down hard" for every weather type. Options: (a) pass weather type, rain clip only in rain, **silence** for male/guard in snow/storm (no assets); (b) record a neutral male + guard line, split intent (recommended, needs recordings); (c) leave as is until P5. Also: OK to add a "no immediate repeat of the same clip per area" dedup as a D4 exception?
+- **2026-10-30 · Q11 follow-up:** author chose (b) long-term; interim fallback landed (snow = silence, storm = rain clip). Pending: record neutral male/guard + snow/storm `weather_shelter` mp3s and split the intent; "no immediate repeat of the same clip per area" dedup still unanswered.
 
 
 

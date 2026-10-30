@@ -88,3 +88,13 @@ export function weatherShelterPressure(weather: WeatherState): number {
 
   return Math.min(1, pressure)
 }
+
+/**
+ * Whether a shelter bark may be spoken in this weather. The only generated
+ * `weather_shelter` clips say "Rain's coming down hard" (male/guard), so snow
+ * stays silent until neutral/snow recordings exist (author, 2026-10-30);
+ * storm intentionally reuses the rain clips. Presentation only.
+ */
+export function weatherShelterBarkAllowed(weather: WeatherState | null): boolean {
+  return weather?.type !== 'snow'
+}
