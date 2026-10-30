@@ -16,6 +16,7 @@ Generated from TypeScript imports.
 - `player/PlayerController.appearance.test.ts`
 - `player/PlayerController.ts`
 - `render/actorCullBounds.assets.test.ts`
+- `render/actorSkeletonSharing.assets.test.ts`
 
 ## `characters/baseGarments.ts`
 
@@ -78,3 +79,4 @@ Generated from TypeScript imports.
 - `player/PlayerController.ts`
 - `player/playerVisualPreset.ts`
 - `render/actorCullBounds.assets.test.ts`
+- `render/actorSkeletonSharing.assets.test.ts`

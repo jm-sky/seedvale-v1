@@ -71,7 +71,9 @@ Generated from TypeScript imports.
 - `navigation/navigation.ts`
 - `navigation/navigationStats.ts`
 - `perf/agentCpuDiag.ts`
+- `perf/flags.ts`
 - `player/PlayerController.ts`
+- `render/actorSkeletonSharing.ts`
 - `settlement/household.ts`
 - `settlement/props.ts`
 - `shared/HealthState.ts`

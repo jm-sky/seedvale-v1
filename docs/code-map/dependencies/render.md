@@ -24,6 +24,25 @@ Generated from TypeScript imports.
 - `ai/NpcAgent.ts`
 - `render/actorCullBounds.assets.test.ts`
 - `render/actorCullBounds.test.ts`
+- `render/actorSkeletonSharing.assets.test.ts`
+
+## `render/actorSkeletonSharing.assets.test.ts`
+
+**Imports**
+
+- `assets/loadGltf.ts`
+- `characters/assembleCharacter.ts`
+- `characters/characterTypes.ts`
+- `render/actorCullBounds.ts`
+- `render/actorSkeletonSharing.ts`
+
+## `render/actorSkeletonSharing.ts`
+
+**Imported by**
+
+- `ai/NpcAgent.ts`
+- `fauna/AnimalAgent.ts`
+- `render/actorSkeletonSharing.assets.test.ts`
 
 ## `render/agentPresentationLod.test.ts`
 

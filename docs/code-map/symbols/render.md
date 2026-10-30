@@ -8,6 +8,12 @@ Generated from exported TypeScript symbols.
 - `installActorCullBounds` — function — line 70
   - domain: world-terrain
 
+## `render/actorSkeletonSharing.ts`
+
+- `ActorSkeletonShareResult` — type — line 13
+- `shareActorSkeletons` — function — line 170
+  - domain: render
+
 ## `render/agentPresentationLod.ts`
 
 - `AGENT_PRESENTATION_MID_DISTANCE_M` — const — line 41

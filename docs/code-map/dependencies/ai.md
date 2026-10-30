@@ -208,10 +208,12 @@ Generated from TypeScript imports.
 - `items/items.ts`
 - `navigation/navigation.ts`
 - `navigation/navigationStats.ts`
+- `perf/flags.ts`
 - `player/PlayerController.ts`
 - `player/playerDimensions.ts`
 - `player/playerVisualPreset.ts`
 - `render/actorCullBounds.ts`
+- `render/actorSkeletonSharing.ts`
 - `render/agentPresentationLod.ts`
 - `render/agentPresentationVisibility.ts`
 - `settlement/animalCorpseSanitation.ts`

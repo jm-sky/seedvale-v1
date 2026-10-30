@@ -190,7 +190,9 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `ai/NpcAgent.ts`
 - `app/gameLoop.ts`
+- `fauna/AnimalAgent.ts`
 - `main.ts`
 - `perf/flags.test.ts`
 - `perf/index.ts`

@@ -75,6 +75,7 @@ Generated from exported TypeScript symbols.
 
 - `benchmarkScenarioFromUrl` — function — line 78
 - `DEFAULT_POINT_LIGHT_BUDGET` — const — line 40
+- `isActorSkeletonSharingEnabled` — function — line 122
 - `isBenchmarkAutorunEnabled` — function — line 84
 - `isChestInstancingEnabled` — function — line 112
 - `isFrameMatrixOnceEnabled` — function — line 94
