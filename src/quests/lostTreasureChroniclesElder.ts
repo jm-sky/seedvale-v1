@@ -1,3 +1,4 @@
+import type { FamilyDef } from '../settlement/families'
 import type { NpcId } from '../settlement/npcState'
 import type { SettlementDef } from '../settlement/settlementGenerator'
 import type { SettlementOpportunityNpc } from './opportunities/settlementNpcMaterialization'
@@ -59,8 +60,9 @@ function preferOtherHousehold(
  */
 export function resolveLostTreasureChroniclesElderBinding(
   def: Pick<SettlementDef, 'id' | 'name' | 'families'>,
+  isElderFamily: (family: Pick<FamilyDef, 'id'>) => boolean = isLostTreasureElderFamily,
 ): LostTreasureChroniclesElderBinding | null {
-  const familyIndex = def.families.findIndex(isLostTreasureElderFamily)
+  const familyIndex = def.families.findIndex(isElderFamily)
   if (familyIndex < 0) return null
   const family = def.families[familyIndex]!
   const elderMember = family.members[0]
@@ -101,20 +103,17 @@ export function findLostTreasureChroniclesElderSettlement(
 }
 
 /**
- * Winter + dispute quests bound to the guaranteed elder. Ordinary QuestDefs for QuestManager.
+ * Winter quest of the home elder Kazimierz (binding resolved with
+ * `isHomeElderFamily`). Quest id keeps its historical Chronicles prefix.
  *
  * @domain quests-progression
  */
-export function buildLostTreasureChroniclesElderQuests(
-  binding: LostTreasureChroniclesElderBinding,
-): QuestDef[] {
+export function buildHomeElderWinterQuest(binding: LostTreasureChroniclesElderBinding): QuestDef {
   const elder = { npcId: binding.elderNpcId }
   const helper = { npcId: binding.helperNpcId }
-  const counterpart = { npcId: binding.counterpartNpcId }
   const winterId = LOST_TREASURE_CHRONICLES_ELDER_WINTER_QUEST_ID
-  const disputeId = LOST_TREASURE_CHRONICLES_ELDER_DISPUTE_QUEST_ID
 
-  const winter: QuestDef = {
+  return {
     id: winterId,
     title: 'Przygotowania do zimy',
     description:
@@ -175,8 +174,20 @@ export function buildLostTreasureChroniclesElderQuests(
       },
     ],
   }
+}
 
-  const dispute: QuestDef = {
+/**
+ * Dispute quest of the Chronicles elder Archibald (neighbouring settlement).
+ * Independent of the home winter quest; gates the archaeological thread.
+ *
+ * @domain quests-progression
+ */
+export function buildLostTreasureChroniclesElderDisputeQuest(binding: LostTreasureChroniclesElderBinding): QuestDef {
+  const elder = { npcId: binding.elderNpcId }
+  const counterpart = { npcId: binding.counterpartNpcId }
+  const disputeId = LOST_TREASURE_CHRONICLES_ELDER_DISPUTE_QUEST_ID
+
+  return {
     id: disputeId,
     title: 'Stara uraza',
     description:
@@ -187,16 +198,6 @@ export function buildLostTreasureChroniclesElderQuests(
     settlementId: binding.settlementId,
     offerLine:
       `Mam jeszcze jedną sprawę. ${binding.counterpartName} pożyczył ode mnie siekierę. On mówi, że oddał. Ja jej nie widziałem. Posłuchaj go sam.`,
-    availability: {
-      prerequisites: [{
-        type: 'quest_outcome',
-        questId: winterId,
-        outcomeIds: [
-          LOST_TREASURE_CHRONICLES_WINTER_MATERIAL_OUTCOME,
-          LOST_TREASURE_CHRONICLES_WINTER_NEIGHBOR_OUTCOME,
-        ],
-      }],
-    },
     stages: [
       {
         objective: { type: 'talk_to_npc', npc: elder },
@@ -275,6 +276,4 @@ export function buildLostTreasureChroniclesElderQuests(
       },
     ],
   }
-
-  return [winter, dispute]
 }

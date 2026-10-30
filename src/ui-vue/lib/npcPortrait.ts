@@ -30,13 +30,18 @@ export type NpcPortraitMoodResult = {
  * keyed by stable `CharacterKey` — never by display name. NPCs without an
  * entry render the dialogue window without a portrait.
  *
- * Art present but not yet bound to a V1 character: `casimir-eastwood`,
- * `jacob-hunter`, `molly`, `patric-smith`, `pierce`, `rudolf`.
+ * Art present but not yet bound to a V1 character: `pierce` (traveller,
+ * Lost Lamb quest).
  */
 const NPC_PORTRAIT_BASES: Partial<Record<CharacterKey, string>> = {
   kasia_hornblower: 'kate-hornblower',
   marek_hornblower: 'mark-hornblower',
   piotr_lesniewski: 'peter-woodworth',
+  kazimierz: 'casimir-eastwood',
+  rudolf: 'rudolf',
+  patric_smith: 'patric-smith',
+  jakub: 'jacob-hunter',
+  molly_lambert: 'molly',
 }
 
 /** Below this HP ratio an NPC looks strained regardless of sympathy. */

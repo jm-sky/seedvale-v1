@@ -1785,6 +1785,7 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `app/actions/containerActions.ts`
+- `settlement/houseChestInstancing.test.ts`
 - `settlement/props.ts`
 - `world/createPlacedContainers.ts`
 - `world/worldGeneratedContainers.ts`

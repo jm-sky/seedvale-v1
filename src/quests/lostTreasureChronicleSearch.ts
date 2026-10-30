@@ -15,10 +15,9 @@ import { isLostTreasureElderFamily } from '../settlement/lostTreasureChroniclesE
 import { cemeteryGraveLayout } from '../settlement/props'
 import { rotateOffsetY } from '../settlement/propUtils'
 import {
+  LOST_TREASURE_CHRONICLES_DISPUTE_RECONCILE_OUTCOME,
+  LOST_TREASURE_CHRONICLES_DISPUTE_SUPPORT_ELDER_OUTCOME,
   LOST_TREASURE_CHRONICLES_ELDER_DISPUTE_QUEST_ID,
-  LOST_TREASURE_CHRONICLES_ELDER_WINTER_QUEST_ID,
-  LOST_TREASURE_CHRONICLES_WINTER_MATERIAL_OUTCOME,
-  LOST_TREASURE_CHRONICLES_WINTER_NEIGHBOR_OUTCOME,
   type LostTreasureChroniclesElderBinding,
 } from './lostTreasureChroniclesElder'
 import { type SettlementOpportunityNpc, settlementOpportunityNpcsFromDef } from './opportunities/settlementNpcMaterialization'
@@ -384,10 +383,10 @@ export function buildLostTreasureChronicleSearchQuests(
     availability: {
       prerequisites: [{
         type: 'quest_outcome',
-        questId: LOST_TREASURE_CHRONICLES_ELDER_WINTER_QUEST_ID,
+        questId: LOST_TREASURE_CHRONICLES_ELDER_DISPUTE_QUEST_ID,
         outcomeIds: [
-          LOST_TREASURE_CHRONICLES_WINTER_MATERIAL_OUTCOME,
-          LOST_TREASURE_CHRONICLES_WINTER_NEIGHBOR_OUTCOME,
+          LOST_TREASURE_CHRONICLES_DISPUTE_SUPPORT_ELDER_OUTCOME,
+          LOST_TREASURE_CHRONICLES_DISPUTE_RECONCILE_OUTCOME,
         ],
       }],
     },
@@ -506,10 +505,10 @@ export function buildLostTreasureChronicleSearchQuests(
     availability: {
       prerequisites: [{
         type: 'quest_outcome',
-        questId: LOST_TREASURE_CHRONICLES_ELDER_WINTER_QUEST_ID,
+        questId: LOST_TREASURE_CHRONICLES_ELDER_DISPUTE_QUEST_ID,
         outcomeIds: [
-          LOST_TREASURE_CHRONICLES_WINTER_MATERIAL_OUTCOME,
-          LOST_TREASURE_CHRONICLES_WINTER_NEIGHBOR_OUTCOME,
+          LOST_TREASURE_CHRONICLES_DISPUTE_SUPPORT_ELDER_OUTCOME,
+          LOST_TREASURE_CHRONICLES_DISPUTE_RECONCILE_OUTCOME,
         ],
       }],
     },

@@ -519,14 +519,26 @@ Generated from TypeScript imports.
 
 - `ui-vue/lib/npcGoodsBuyEmptyCopy.test.ts`
 
-## `ui-vue/lib/npcPortrait.ts`
+## `ui-vue/lib/npcPortrait.test.ts`
 
 **Imports**
 
 - `ai/NpcAgent.ts`
+- `ai/characters.ts`
+- `ui-vue/lib/npcPortrait.ts`
+
+## `ui-vue/lib/npcPortrait.ts`
+
+**Imports**
+
+- `ai/Needs.ts`
+- `ai/NpcAgent.ts`
+- `ai/characters.ts`
+- `shared/VigorState.ts`
 
 **Imported by**
 
+- `ui-vue/lib/npcPortrait.test.ts`
 - `ui-vue/store.ts`
 
 ## `ui-vue/lib/questLogBuckets.test.ts`

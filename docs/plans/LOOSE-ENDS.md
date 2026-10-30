@@ -60,6 +60,8 @@ Format: `- [ ] YYYY-MM-DD — opis (plan/plik, jeśli istotne)`
 
 ## Quest / UI / interaction
 
+- [ ] 2026-10-30 — Home elder/reeve follow-ups (author decisions 2026-10-30): (1) rewrite `zapomniany-cmentarz` (now given by home Kazimierz, still a landmark visit) into the approved R37+R61 home-cemetery grave care for his late wife's grave; (2) reeve office powers for Rudolf (`office: 'reeve'`) — bear-cave map-grave permission with Kazimierz's fee waiver and settlement share; (3) if Archibald's settlement has a cemetery used by a quest, grave-excavation permission there must come from a different mechanism than an elder/reeve (no duplicated pattern); (4) Rudolf is still "oldest free man 35+", not a stable dedicated resident.
+
 - [ ] 2026-09-21 — Quest/UI/interaction audit follow-ups not promoted to dedicated plans: dropped-item group stable identity, the narrow `pendingReportOutcomeId` lifecycle invariant, and remaining legacy `promptLabel` action-semantics parsing. Review: `docs/reviews/2026-09-21--quest-ui-interaction-followups.md`.
 
 ## World lifecycle / rebuild

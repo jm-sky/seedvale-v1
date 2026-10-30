@@ -2631,8 +2631,8 @@ export function buildLandmarkQuests(resolve: LandmarkResolver): AuthoredQuestDef
     quests.push({
       id: 'zapomniany-cmentarz',
       title: 'Zapomniany cmentarz',
-      description: 'Kasia prosi, żebyś sprawdził, czy groby na zaniedbanym cmentarzu jeszcze stoją.',
-      giverName: 'Kasia',
+      description: 'Kazimierz prosi, żebyś sprawdził, czy groby na zaniedbanym cmentarzu jeszcze stoją.',
+      giverName: 'Kazimierz',
       offerLine:
         'Cmentarzyk na skraju wioski od dawna zarasta chwastami, nikt tam już nie zagląda. Poszedłbyś sprawdzić, czy groby jeszcze stoją?',
       stages: [
@@ -2650,7 +2650,7 @@ export function buildLandmarkQuests(resolve: LandmarkResolver): AuthoredQuestDef
         {
           id: 'reported',
           state: 'complete',
-          consequences: { relations: [{ npcName: 'Kasia', delta: 1 }] },
+          consequences: { relations: [{ npcName: 'Kazimierz', delta: 1 }] },
         },
       ],
     })

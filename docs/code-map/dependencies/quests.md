@@ -494,6 +494,7 @@ Generated from TypeScript imports.
 
 - `quests/opportunities/settlementNpcMaterialization.ts`
 - `quests/quests.ts`
+- `settlement/families.ts`
 - `settlement/lostTreasureChroniclesElderResident.ts`
 - `settlement/npcIdentity.ts`
 - `settlement/npcState.ts`

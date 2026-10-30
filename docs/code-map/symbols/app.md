@@ -295,13 +295,13 @@ Generated from exported TypeScript symbols.
 
 ## `app/createApp.ts`
 
-- `createApp` — function — line 458
+- `createApp` — function — line 460
   - system: app-composition
   - role: Composition root: builds every long-lived system, threads their dependencies and owns app-level lifecycle (boot, rebuild, dispose).
   - owns: WorldBundle, GameLoop, AppRenderLoop
   - lifecycle: boot
   - integration: Wires world, player, UI, persistence and audio systems together.
-- `NewAppOptions` — type — line 427
+- `NewAppOptions` — type — line 429
 
 ## `app/faunaEncounterComposition.ts`
 
@@ -311,9 +311,9 @@ Generated from exported TypeScript symbols.
 
 ## `app/gameLoop.ts`
 
-- `createGameLoop` — function — line 741
-- `GameLoop` — type — line 701
-- `GameLoopDeps` — type — line 339
+- `createGameLoop` — function — line 743
+- `GameLoop` — type — line 703
+- `GameLoopDeps` — type — line 341
 
 ## `app/graphicsSettings.ts`
 

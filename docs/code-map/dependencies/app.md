@@ -1108,6 +1108,7 @@ Generated from TypeScript imports.
 - `reputation/animalDeeds.ts`
 - `settlement/authoredRepairTargets.ts`
 - `settlement/createSettlement.ts`
+- `settlement/homeAuthoredResidents.ts`
 - `settlement/horseAcquisition.ts`
 - `settlement/household.ts`
 - `settlement/householdWood.ts`
@@ -1292,6 +1293,7 @@ Generated from TypeScript imports.
 - `items/itemInstances.ts`
 - `items/items.ts`
 - `items/weaponMaintenance.ts`
+- `perf/flags.ts`
 - `perf/index.ts`
 - `player/PlayerController.ts`
 - `player/PlayerNeeds.ts`
@@ -1307,6 +1309,7 @@ Generated from TypeScript imports.
 - `player/targetedSkillSelection.ts`
 - `quests/QuestManager.ts`
 - `render/createPostProcessing.ts`
+- `render/frameSceneMatrices.ts`
 - `render/shadowBudget.ts`
 - `reputation/animalDeeds.ts`
 - `settlement/VillageFire.ts`

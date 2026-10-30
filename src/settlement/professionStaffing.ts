@@ -5,6 +5,7 @@ import type { FamilyDef, FamilyMember, VillageSize } from './families'
 import type { FoodSourceType, SettlementCharacter } from './villagePlan'
 import { RESOURCE_ROLE, SIGNIFICANT_RICHNESS } from '../terrain/naturalResources'
 import { createSeededRandom } from '../world/parseSeed'
+import { HOME_ELDER_FAMILY_ID } from './families'
 
 /** Isolated from family/age/name/`characterForSeed` streams. */
 const STAFFING_SALT = 0x53544646
@@ -320,6 +321,8 @@ function isStaffableAdult(member: FamilyMember, family: FamilyDef): boolean {
   if (!isProfessionAdult(member)) return false
   if (member.relation === 'child') return false
   if (isReservedFamily(family)) return false
+  // Home elder Kazimierz keeps his retired farmer baseline (gardening).
+  if (family.id === HOME_ELDER_FAMILY_ID) return false
   return true
 }
 
@@ -453,6 +456,19 @@ export function resolveInitialProfessionStaffing(
   const remaining = [...procedural]
   claimTarget(foodBaselineRole(signals), remaining, assigned, coverage)
   claimTarget(signals.mappedResourceRole ?? null, remaining, assigned, coverage)
+  // Home always has a shepherdess (author decision 2026-10-30, authored
+  // Molly Lambert): only a woman's slot may take it. With no free woman the
+  // role stays reserved (no male shepherd) for `applyHomeAuthoredIdentities`'
+  // fallback Molly household.
+  if (signals.isHome && coverage.shepherd === 0) {
+    const female = remaining.findIndex((slot) => families[slot.familyIndex]!.members[slot.memberIndex]!.character.gender === 'female')
+    if (female >= 0) {
+      remaining.unshift(...remaining.splice(female, 1))
+      claimTarget('shepherd', remaining, assigned, coverage)
+    } else {
+      coverage.shepherd++
+    }
+  }
 
   const random = createSeededRandom(context.seed ^ STAFFING_SALT)
   for (const slot of remaining) {

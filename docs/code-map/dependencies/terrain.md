@@ -519,6 +519,7 @@ Generated from TypeScript imports.
 - `debug/debugMode.ts`
 - `items/items.ts`
 - `perf/active.ts`
+- `perf/flags.ts`
 - `perf/grassBaseline.ts`
 - `perf/grassFinalizationDiag.ts`
 - `perf/monitor.ts`

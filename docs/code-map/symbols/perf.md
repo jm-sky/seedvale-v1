@@ -28,10 +28,10 @@ Generated from exported TypeScript symbols.
 
 ## `perf/benchmark.ts`
 
-- `BenchmarkHost` — type — line 82
-- `BenchmarkRunner` — type — line 66
-- `BenchmarkRunOptions` — type — line 57
-- `createBenchmarkRunner` — function — line 203
+- `BenchmarkHost` — type — line 84
+- `BenchmarkRunner` — type — line 68
+- `BenchmarkRunOptions` — type — line 59
+- `createBenchmarkRunner` — function — line 205
 
 ## `perf/benchmarkFixture.ts`
 
@@ -41,12 +41,22 @@ Generated from exported TypeScript symbols.
 ## `perf/benchmarkScenarios.ts`
 
 - `BENCHMARK_SCENARIO_IDS` — const — line 1
-- `BenchmarkScenarioId` — type — line 12
+- `BenchmarkScenarioId` — type — line 13
 
 ## `perf/buildInfo.ts`
 
 - `createRunId` — function — line 24
 - `getBuildGitSha` — function — line 6
+
+## `perf/denseForestScenario.ts`
+
+- `DENSE_FOREST_MAX_RADIUS` — const — line 27
+- `DENSE_FOREST_RING_STEP` — const — line 26
+- `DenseForestAnchor` — type — line 23
+- `DenseForestProbe` — type — line 17
+  - domain: tools
+- `forestWindowScore` — function — line 38
+- `seekDenseForest` — function — line 52
 
 ## `perf/detector.ts`
 
@@ -65,6 +75,9 @@ Generated from exported TypeScript symbols.
 
 - `benchmarkScenarioFromUrl` — function — line 78
 - `DEFAULT_POINT_LIGHT_BUDGET` — const — line 40
+- `isChestInstancingEnabled` — function — line 104
+- `isFrameMatrixOnceEnabled` — function — line 86
+- `isGrassMainCapEnabled` — function — line 95
 - `isPerfUrlEnabled` — function — line 21
 - `isProgramCensusUrlEnabled` — function — line 31
 - `parseBenchmarkScenarioId` — function — line 71
@@ -135,6 +148,14 @@ Generated from exported TypeScript symbols.
 - `formatLongFrameAttribution` — function — line 42
 - `formatLongFrameRecord` — function — line 13
 
+## `perf/matrixCensus.ts`
+
+- `censusMatrixWork` — function — line 37
+- `formatMatrixWorkLines` — function — line 74
+- `MatrixWorkCensus` — type — line 16
+- `MatrixWorkRoot` — type — line 26
+- `MatrixWorkStats` — type — line 5
+
 ## `perf/monitor.ts`
 
 - `createPerfMonitor` — function — line 184
@@ -198,8 +219,8 @@ Generated from exported TypeScript symbols.
 
 ## `perf/report.ts`
 
-- `buildReport` — function — line 21
-- `formatReport` — function — line 170
+- `buildReport` — function — line 22
+- `formatReport` — function — line 173
 
 ## `perf/sceneCensus.ts`
 
@@ -239,35 +260,35 @@ Generated from exported TypeScript symbols.
 
 ## `perf/types.ts`
 
-- `BenchmarkPhase` — type — line 121
-- `BudgetKind` — type — line 287
-- `CameraControlResult` — type — line 145
-- `CameraPose` — type — line 123
-- `DeviceMeta` — type — line 167
-- `GpuTimerStatus` — type — line 152
-- `HitchEvent` — type — line 61
-- `HitchReportRow` — type — line 232
-- `IsolationProbeRow` — type — line 240
-- `LONG_FRAME_MS` — const — line 73
-- `LongFrameAttribution` — type — line 91
-- `LongFrameRecord` — type — line 81
-- `LongFrameStage` — type — line 75
-- `PERF_CATEGORIES` — const — line 13
-- `PERF_CATEGORY_COUNT` — const — line 30
-- `PERF_CATEGORY_INDEX` — const — line 32
-- `PERF_SEVERITY_RANK` — const — line 49
-- `PerfAttribution` — type — line 317
-- `PerfCategory` — type — line 28
-- `PerfContext` — type — line 184
-- `PerfDetection` — type — line 295
-- `PerfFilter` — type — line 56
-- `PerfLiveStats` — type — line 266
-- `PerfLogEvent` — type — line 304
-- `PerfReportJson` — type — line 323
-- `PerfSeverity` — type — line 47
-- `PerfSuspect` — type — line 289
-- `PopulationGateResult` — type — line 136
-- `PopulationSnapshot` — type — line 128
-- `ScenarioAnchor` — type — line 97
-- `ScenarioRoute` — type — line 99
-- `ScenarioSettlement` — type — line 108
+- `BenchmarkPhase` — type — line 122
+- `BudgetKind` — type — line 288
+- `CameraControlResult` — type — line 146
+- `CameraPose` — type — line 124
+- `DeviceMeta` — type — line 168
+- `GpuTimerStatus` — type — line 153
+- `HitchEvent` — type — line 62
+- `HitchReportRow` — type — line 233
+- `IsolationProbeRow` — type — line 241
+- `LONG_FRAME_MS` — const — line 74
+- `LongFrameAttribution` — type — line 92
+- `LongFrameRecord` — type — line 82
+- `LongFrameStage` — type — line 76
+- `PERF_CATEGORIES` — const — line 14
+- `PERF_CATEGORY_COUNT` — const — line 31
+- `PERF_CATEGORY_INDEX` — const — line 33
+- `PERF_SEVERITY_RANK` — const — line 50
+- `PerfAttribution` — type — line 318
+- `PerfCategory` — type — line 29
+- `PerfContext` — type — line 185
+- `PerfDetection` — type — line 296
+- `PerfFilter` — type — line 57
+- `PerfLiveStats` — type — line 267
+- `PerfLogEvent` — type — line 305
+- `PerfReportJson` — type — line 324
+- `PerfSeverity` — type — line 48
+- `PerfSuspect` — type — line 290
+- `PopulationGateResult` — type — line 137
+- `PopulationSnapshot` — type — line 129
+- `ScenarioAnchor` — type — line 98
+- `ScenarioRoute` — type — line 100
+- `ScenarioSettlement` — type — line 109

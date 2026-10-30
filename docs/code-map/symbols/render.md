@@ -40,6 +40,11 @@ Generated from exported TypeScript symbols.
 
 - `createRenderer` — function — line 6
 
+## `render/frameSceneMatrices.ts`
+
+- `beginFrameSceneMatrices` — function — line 21
+- `endFrameSceneMatrices` — function — line 27
+
 ## `render/godRaysShader.ts`
 
 - `GodRaysShader` — const — line 10

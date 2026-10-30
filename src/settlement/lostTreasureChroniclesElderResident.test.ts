@@ -128,6 +128,26 @@ describe('lost treasure chronicles elder resident', () => {
     expect(selected?.id).toBe('0_1')
   })
 
+  it('gives the home settlement Kazimierz, Rudolf (reeve) and Molly across seeds', () => {
+    for (const seed of [1, 7, 42, 1234, 99991]) {
+      clearSettlementDefCache()
+      const home = settlementDefFor({ gx: 0, gz: 0 }, ctxFor(seed))!
+      const members = flattenedSettlementMembers(home)
+      const keyed = (key: string) => members.filter((m) => m.character.characterKey === key)
+      expect(keyed('kazimierz'), `seed ${seed}`).toHaveLength(1)
+      expect(lifeStageForAge(keyed('kazimierz')[0]!.age)).toBe('elderly')
+      expect(keyed('rudolf'), `seed ${seed}`).toHaveLength(1)
+      expect(keyed('rudolf')[0]!.character.office).toBe('reeve')
+      expect(keyed('molly_lambert'), `seed ${seed}`).toHaveLength(1)
+      expect(keyed('molly_lambert')[0]!.character.role).toBe('shepherd')
+      expect(keyed('archibald')).toHaveLength(0)
+      // Authored names stay unique so quest name binding is unambiguous.
+      for (const name of ['Kazimierz', 'Rudolf', 'Molly', 'Patric', 'Jakub']) {
+        expect(members.filter((m) => m.name === name).length, `${name} @ ${seed}`).toBeLessThanOrEqual(1)
+      }
+    }
+  })
+
   it('does not inject the elder through generateSettlementDef without an authored resident', () => {
     const def = generateSettlementDef({ gx: 1, gz: 0 }, 7, flatHeight, 0, 56, samplers, 1, region)
     expect(def?.families.some(isLostTreasureElderFamily)).toBe(false)
@@ -158,11 +178,12 @@ describe('lost treasure chronicles elder resident', () => {
     expect(['SM', 'MD']).toContain(host.size)
     expect(host.families.filter(isLostTreasureElderFamily)).toHaveLength(1)
 
-    // Kazimierz (age 74, plan settlements-npcs-045) already satisfies the
+    // Archibald (age 74, plan settlements-npcs-045) already satisfies the
     // generic settlement elder invariant on his own — no other resident
     // needs to be promoted just because he's authored, not generated.
-    const kazimierz = flattenedSettlementMembers(host).find((m) => m.name === LOST_TREASURE_ELDER_GIVEN_NAME)
-    expect(lifeStageForAge(kazimierz!.age)).toBe('elderly')
+    const archibald = flattenedSettlementMembers(host).find((m) => m.name === LOST_TREASURE_ELDER_GIVEN_NAME)
+    expect(lifeStageForAge(archibald!.age)).toBe('elderly')
+    expect(archibald!.character.characterKey).toBe('archibald')
 
     const members = flattenedSettlementMembers(host)
     const elderMembers = members.filter((member) => member.name === LOST_TREASURE_ELDER_GIVEN_NAME)

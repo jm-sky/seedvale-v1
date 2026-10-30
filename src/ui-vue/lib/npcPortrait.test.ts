@@ -67,11 +67,19 @@ describe('npcPortraitSrcFor', () => {
   })
 
   it('maps every variant of a mapped character to an existing file', () => {
-    const keys = RESERVED_CHARACTERS.map((c) => c.characterKey).filter((k): k is CharacterKey => k != null)
+    const keys: CharacterKey[] = [
+      ...RESERVED_CHARACTERS.map((c) => c.characterKey).filter((k): k is CharacterKey => k != null),
+      'kazimierz',
+      'rudolf',
+      'patric_smith',
+      'jakub',
+      'molly_lambert',
+      'archibald',
+    ]
     const dayparts: NpcPortraitDaypart[] = ['day', 'night']
     const moods: NpcPortraitMood[] = ['positive', 'negative']
     let mapped = 0
-    for (const key of [...keys, 'kazimierz_nowak' as const]) {
+    for (const key of keys) {
       for (const daypart of dayparts) {
         for (const mood of moods) {
           const src = npcPortraitSrcFor(key, daypart, mood)
@@ -81,6 +89,6 @@ describe('npcPortraitSrcFor', () => {
         }
       }
     }
-    expect(mapped).toBe(3 * 4)
+    expect(mapped).toBe(8 * 4)
   })
 })

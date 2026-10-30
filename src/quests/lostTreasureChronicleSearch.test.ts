@@ -25,9 +25,9 @@ import {
   resolveLostTreasureChronicleSearchBinding,
 } from './lostTreasureChronicleSearch'
 import {
-  buildLostTreasureChroniclesElderQuests,
-  LOST_TREASURE_CHRONICLES_ELDER_WINTER_QUEST_ID,
-  LOST_TREASURE_CHRONICLES_WINTER_MATERIAL_OUTCOME,
+  buildLostTreasureChroniclesElderDisputeQuest,
+  LOST_TREASURE_CHRONICLES_DISPUTE_RECONCILE_OUTCOME,
+  LOST_TREASURE_CHRONICLES_ELDER_DISPUTE_QUEST_ID,
   resolveLostTreasureChroniclesElderBinding,
 } from './lostTreasureChroniclesElder'
 import { QuestManager } from './QuestManager'
@@ -193,7 +193,7 @@ describe('lost treasure chronicle search (quests-progression-038)', () => {
   it('completes the chapter from physical chronicle ownership, not source depletion', () => {
     const { binding, elderBinding } = fixtures()
     const quests = [
-      ...buildLostTreasureChroniclesElderQuests(elderBinding),
+      buildLostTreasureChroniclesElderDisputeQuest(elderBinding),
       ...buildLostTreasureChronicleSearchQuests(binding!),
     ]
     const inventory = new Inventory()
@@ -204,10 +204,10 @@ describe('lost treasure chronicle search (quests-progression-038)', () => {
       inventory,
       {
         progress: [{
-          id: LOST_TREASURE_CHRONICLES_ELDER_WINTER_QUEST_ID,
+          id: LOST_TREASURE_CHRONICLES_ELDER_DISPUTE_QUEST_ID,
           state: 'complete',
-          stageIndex: 1,
-          resolvedOutcomeId: LOST_TREASURE_CHRONICLES_WINTER_MATERIAL_OUTCOME,
+          stageIndex: 3,
+          resolvedOutcomeId: LOST_TREASURE_CHRONICLES_DISPUTE_RECONCILE_OUTCOME,
         }, {
           id: LOST_TREASURE_CHRONICLE_SEARCH_QUEST_ID,
           state: 'active',
@@ -224,7 +224,7 @@ describe('lost treasure chronicle search (quests-progression-038)', () => {
   it('does not complete from a resolved grave while the chronicle is only on the ground', () => {
     const { binding, elderBinding } = fixtures()
     const quests = [
-      ...buildLostTreasureChroniclesElderQuests(elderBinding),
+      buildLostTreasureChroniclesElderDisputeQuest(elderBinding),
       ...buildLostTreasureChronicleSearchQuests(binding!),
     ]
     const qm = new QuestManager(
@@ -233,10 +233,10 @@ describe('lost treasure chronicle search (quests-progression-038)', () => {
       new Inventory(),
       {
         progress: [{
-          id: LOST_TREASURE_CHRONICLES_ELDER_WINTER_QUEST_ID,
+          id: LOST_TREASURE_CHRONICLES_ELDER_DISPUTE_QUEST_ID,
           state: 'complete',
-          stageIndex: 1,
-          resolvedOutcomeId: LOST_TREASURE_CHRONICLES_WINTER_MATERIAL_OUTCOME,
+          stageIndex: 3,
+          resolvedOutcomeId: LOST_TREASURE_CHRONICLES_DISPUTE_RECONCILE_OUTCOME,
         }, {
           id: LOST_TREASURE_CHRONICLE_SEARCH_QUEST_ID,
           state: 'active',
@@ -268,7 +268,7 @@ describe('lost treasure chronicle search (quests-progression-038)', () => {
   it('treats false-site looting as progress, not chapter completion', () => {
     const { binding, elderBinding } = fixtures()
     const quests = [
-      ...buildLostTreasureChroniclesElderQuests(elderBinding),
+      buildLostTreasureChroniclesElderDisputeQuest(elderBinding),
       ...buildLostTreasureChronicleSearchQuests(binding!),
     ]
     const falseContainer = binding!.truth === 'grave'
@@ -278,10 +278,10 @@ describe('lost treasure chronicle search (quests-progression-038)', () => {
       new Inventory(),
       {
         progress: [{
-          id: LOST_TREASURE_CHRONICLES_ELDER_WINTER_QUEST_ID,
+          id: LOST_TREASURE_CHRONICLES_ELDER_DISPUTE_QUEST_ID,
           state: 'complete',
-          stageIndex: 1,
-          resolvedOutcomeId: LOST_TREASURE_CHRONICLES_WINTER_MATERIAL_OUTCOME,
+          stageIndex: 3,
+          resolvedOutcomeId: LOST_TREASURE_CHRONICLES_DISPUTE_RECONCILE_OUTCOME,
         }, {
           id: LOST_TREASURE_CHRONICLE_SEARCH_QUEST_ID,
           state: 'active',
@@ -336,7 +336,7 @@ describe('lost treasure chronicle search (quests-progression-038)', () => {
     let elapsedDays = 0
     let resolves = 0
     const quests = [
-      ...buildLostTreasureChroniclesElderQuests(elderBinding),
+      buildLostTreasureChroniclesElderDisputeQuest(elderBinding),
       ...buildLostTreasureChronicleSearchQuests(binding!),
     ]
     const qm = new QuestManager(
@@ -345,10 +345,10 @@ describe('lost treasure chronicle search (quests-progression-038)', () => {
       new Inventory(),
       {
         progress: [{
-          id: LOST_TREASURE_CHRONICLES_ELDER_WINTER_QUEST_ID,
+          id: LOST_TREASURE_CHRONICLES_ELDER_DISPUTE_QUEST_ID,
           state: 'complete',
-          stageIndex: 1,
-          resolvedOutcomeId: LOST_TREASURE_CHRONICLES_WINTER_MATERIAL_OUTCOME,
+          stageIndex: 3,
+          resolvedOutcomeId: LOST_TREASURE_CHRONICLES_DISPUTE_RECONCILE_OUTCOME,
         }, {
           id: LOST_TREASURE_CHRONICLE_SEARCH_QUEST_ID,
           state: 'active',
@@ -409,7 +409,7 @@ describe('lost treasure chronicle search (quests-progression-038)', () => {
   it('migrates an older active chronicle-search save into revealed ruins knowledge', () => {
     const { binding, elderBinding } = fixtures()
     const quests = [
-      ...buildLostTreasureChroniclesElderQuests(elderBinding),
+      buildLostTreasureChroniclesElderDisputeQuest(elderBinding),
       ...buildLostTreasureChronicleSearchQuests(binding!),
     ]
     const qm = new QuestManager(
@@ -418,10 +418,10 @@ describe('lost treasure chronicle search (quests-progression-038)', () => {
       new Inventory(),
       {
         progress: [{
-          id: LOST_TREASURE_CHRONICLES_ELDER_WINTER_QUEST_ID,
+          id: LOST_TREASURE_CHRONICLES_ELDER_DISPUTE_QUEST_ID,
           state: 'complete',
-          stageIndex: 1,
-          resolvedOutcomeId: LOST_TREASURE_CHRONICLES_WINTER_MATERIAL_OUTCOME,
+          stageIndex: 3,
+          resolvedOutcomeId: LOST_TREASURE_CHRONICLES_DISPUTE_RECONCILE_OUTCOME,
         }, {
           id: LOST_TREASURE_CHRONICLE_SEARCH_QUEST_ID,
           state: 'active',
@@ -452,15 +452,15 @@ describe('lost treasure chronicle search (quests-progression-038)', () => {
     expect(search.outcomes.map((outcome) => outcome.id)).toEqual([LOST_TREASURE_CHRONICLE_ACQUIRED_OUTCOME])
 
     const quests = [
-      ...buildLostTreasureChroniclesElderQuests(elderBinding),
+      buildLostTreasureChroniclesElderDisputeQuest(elderBinding),
       ...buildLostTreasureChronicleSearchQuests(binding!),
     ]
     const qm = new QuestManager(quests, undefined, new Inventory(), {
       progress: [{
-        id: LOST_TREASURE_CHRONICLES_ELDER_WINTER_QUEST_ID,
+        id: LOST_TREASURE_CHRONICLES_ELDER_DISPUTE_QUEST_ID,
         state: 'complete',
-        stageIndex: 1,
-        resolvedOutcomeId: LOST_TREASURE_CHRONICLES_WINTER_MATERIAL_OUTCOME,
+        stageIndex: 3,
+        resolvedOutcomeId: LOST_TREASURE_CHRONICLES_DISPUTE_RECONCILE_OUTCOME,
       }, {
         id: LOST_TREASURE_CHRONICLE_SEARCH_QUEST_ID,
         state: 'active',

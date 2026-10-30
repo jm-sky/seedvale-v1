@@ -281,7 +281,14 @@ Generated from exported TypeScript symbols.
 
 ## `ui-vue/lib/npcPortrait.ts`
 
-- `resolveNpcPortraitSrc` — function — line 8
+- `NpcPortraitDaypart` — type — line 7
+- `NpcPortraitMood` — type — line 10
+- `NpcPortraitMoodReason` — type — line 13
+- `NpcPortraitMoodResult` — type — line 23
+- `npcPortraitSrcFor` — function — line 77
+- `resolveNpcPortraitSrc` — function — line 91
+- `selectNpcPortraitDaypart` — function — line 54
+- `selectNpcPortraitMood` — function — line 64
 
 ## `ui-vue/lib/questLogBuckets.ts`
 

@@ -45,6 +45,7 @@ Generated from TypeScript imports.
 - `debug/npcTrace.ts`
 - `fauna/AnimalLife.ts`
 - `settlement/npcState.ts`
+- `ui-vue/lib/npcPortrait.ts`
 - `ui/createNpcInspector.ts`
 - `ui/npcLabelIconPresentation.ts`
 
@@ -309,6 +310,7 @@ Generated from TypeScript imports.
 - `settlement/createSettlement.ts`
 - `settlement/createSettlementRollback.test.ts`
 - `ui-vue/lib/drawMinimap.ts`
+- `ui-vue/lib/npcPortrait.test.ts`
 - `ui-vue/lib/npcPortrait.ts`
 - `ui-vue/npcDialogueOpen.test.ts`
 - `ui-vue/npcDialogueTrade.test.ts`
@@ -446,6 +448,8 @@ Generated from TypeScript imports.
 - `settlement/artisanProfile.test.ts`
 - `settlement/artisanProfile.ts`
 - `settlement/families.ts`
+- `settlement/homeAuthoredResidents.test.ts`
+- `settlement/homeAuthoredResidents.ts`
 - `settlement/lodgingResolver.test.ts`
 - `settlement/lodgingResolver.ts`
 - `settlement/lostTreasureChroniclesArchaeologistResident.ts`
@@ -460,6 +464,8 @@ Generated from TypeScript imports.
 - `settlement/professionStaffing.ts`
 - `settlement/settlementAgriculture.test.ts`
 - `terrain/naturalResources.ts`
+- `ui-vue/lib/npcPortrait.test.ts`
+- `ui-vue/lib/npcPortrait.ts`
 - `ui-vue/npcDialogueOpen.test.ts`
 - `world/expeditionParty.test.ts`
 
@@ -639,6 +645,7 @@ Generated from TypeScript imports.
 
 - `ai/nameCultures.test.ts`
 - `settlement/families.ts`
+- `settlement/homeAuthoredResidents.ts`
 - `settlement/lostTreasureChroniclesArchaeologistResident.ts`
 - `settlement/lostTreasureChroniclesElderResident.ts`
 - `settlement/lostTreasureChroniclesSpecialistResident.ts`

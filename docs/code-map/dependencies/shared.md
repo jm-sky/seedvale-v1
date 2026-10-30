@@ -161,6 +161,7 @@ Generated from TypeScript imports.
 - `player/playerRanged.ts`
 - `settlement/npcState.ts`
 - `shared/VigorState.test.ts`
+- `ui-vue/lib/npcPortrait.ts`
 
 ## `shared/agentAnimationSet.test.ts`
 

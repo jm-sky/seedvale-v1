@@ -497,6 +497,10 @@ export function generateFamilies(
  *  fixed identity, not demographic roll output. */
 const AUTHORED_RESIDENT_FAMILY_ID_PREFIX = 'family-story-'
 
+/** Authored home elder household (Kazimierz) — see `homeAuthoredResidents.ts`.
+ *  Defined here so staffing can exclude it without an import cycle. */
+export const HOME_ELDER_FAMILY_ID = 'family-story-home-elder'
+
 function isAuthoredResidentFamilyId(id: string): boolean {
   return id.startsWith(AUTHORED_RESIDENT_FAMILY_ID_PREFIX)
 }

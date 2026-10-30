@@ -35,9 +35,9 @@ import {
   resolveLostTreasureChronicleSearchBinding,
 } from './lostTreasureChronicleSearch'
 import {
-  buildLostTreasureChroniclesElderQuests,
-  LOST_TREASURE_CHRONICLES_ELDER_WINTER_QUEST_ID,
-  LOST_TREASURE_CHRONICLES_WINTER_MATERIAL_OUTCOME,
+  buildLostTreasureChroniclesElderDisputeQuest,
+  LOST_TREASURE_CHRONICLES_DISPUTE_RECONCILE_OUTCOME,
+  LOST_TREASURE_CHRONICLES_ELDER_DISPUTE_QUEST_ID,
   resolveLostTreasureChroniclesElderBinding,
 } from './lostTreasureChroniclesElder'
 import { QuestManager } from './QuestManager'
@@ -168,7 +168,7 @@ function makeManager(
   },
 ) {
   const quests = [
-    ...buildLostTreasureChroniclesElderQuests(elderBinding!),
+    buildLostTreasureChroniclesElderDisputeQuest(elderBinding!),
     ...buildLostTreasureChronicleSearchQuests(search),
     buildLostTreasureChronicleDecipheringQuest(binding),
   ]
@@ -178,10 +178,10 @@ function makeManager(
     inventory,
     {
       progress: [{
-        id: LOST_TREASURE_CHRONICLES_ELDER_WINTER_QUEST_ID,
+        id: LOST_TREASURE_CHRONICLES_ELDER_DISPUTE_QUEST_ID,
         state: 'complete',
-        stageIndex: 1,
-        resolvedOutcomeId: LOST_TREASURE_CHRONICLES_WINTER_MATERIAL_OUTCOME,
+        stageIndex: 3,
+        resolvedOutcomeId: LOST_TREASURE_CHRONICLES_DISPUTE_RECONCILE_OUTCOME,
       }, {
         id: LOST_TREASURE_CHRONICLE_SEARCH_QUEST_ID,
         state: 'complete',
@@ -314,7 +314,7 @@ describe('lost treasure chronicle deciphering (quests-progression-039)', () => {
 
     const restoredQm = new QuestManager(
       [
-        ...buildLostTreasureChroniclesElderQuests(elderBinding!),
+        buildLostTreasureChroniclesElderDisputeQuest(elderBinding!),
         ...buildLostTreasureChronicleSearchQuests(search),
         buildLostTreasureChronicleDecipheringQuest(binding!),
       ],

@@ -85,6 +85,7 @@ Generated from TypeScript imports.
 - `perf/artifacts.ts`
 - `perf/benchmarkScenarios.ts`
 - `perf/buildInfo.ts`
+- `perf/denseForestScenario.ts`
 - `perf/deviceMeta.ts`
 - `perf/gpuTimer.ts`
 - `perf/grassBaseline.ts`
@@ -92,6 +93,7 @@ Generated from TypeScript imports.
 - `perf/heavySettlementScenario.ts`
 - `perf/isolationProbe.ts`
 - `perf/longFrameFormat.ts`
+- `perf/matrixCensus.ts`
 - `perf/monitor.ts`
 - `perf/passSubmissionCollector.ts`
 - `perf/programCensus.ts`
@@ -129,6 +131,19 @@ Generated from TypeScript imports.
 
 - `perf/benchmark.ts`
 - `perf/index.ts`
+
+## `perf/denseForestScenario.test.ts`
+
+**Imports**
+
+- `perf/denseForestScenario.ts`
+
+## `perf/denseForestScenario.ts`
+
+**Imported by**
+
+- `perf/benchmark.ts`
+- `perf/denseForestScenario.test.ts`
 
 ## `perf/detector.test.ts`
 
@@ -175,9 +190,12 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `app/gameLoop.ts`
 - `main.ts`
 - `perf/flags.test.ts`
 - `perf/index.ts`
+- `settlement/props.ts`
+- `terrain/chunkManager.ts`
 
 ## `perf/gpuTimer.test.ts`
 
@@ -335,6 +353,25 @@ Generated from TypeScript imports.
 - `perf/monitor.ts`
 - `perf/report.test.ts`
 
+## `perf/matrixCensus.test.ts`
+
+**Imports**
+
+- `perf/matrixCensus.ts`
+
+## `perf/matrixCensus.ts`
+
+**Imports**
+
+- `perf/sceneCensus.ts`
+
+**Imported by**
+
+- `perf/benchmark.ts`
+- `perf/matrixCensus.test.ts`
+- `perf/report.ts`
+- `perf/types.ts`
+
 ## `perf/monitor.ts`
 
 **Imports**
@@ -456,6 +493,7 @@ Generated from TypeScript imports.
 - `perf/agentCpuDiag.ts`
 - `perf/grassBaseline.ts`
 - `perf/grassFinalizationDiag.ts`
+- `perf/matrixCensus.ts`
 - `perf/monitor.ts`
 - `perf/passSubmissionCollector.ts`
 - `perf/percentile.ts`
@@ -487,6 +525,7 @@ Generated from TypeScript imports.
 - `perf/benchmark.ts`
 - `perf/index.ts`
 - `perf/isolationProbe.ts`
+- `perf/matrixCensus.ts`
 - `perf/passSubmissionCollector.ts`
 - `perf/programCensus.ts`
 - `perf/report.test.ts`
@@ -515,6 +554,7 @@ Generated from TypeScript imports.
 - `perf/agentCpuDiag.ts`
 - `perf/grassBaseline.ts`
 - `perf/grassFinalizationDiag.ts`
+- `perf/matrixCensus.ts`
 - `perf/passSubmissionCollector.ts`
 - `perf/rawSidecar.ts`
 - `perf/sceneCensus.ts`

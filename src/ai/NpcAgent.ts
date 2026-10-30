@@ -236,6 +236,7 @@ import {
   type CharacterDef,
   type CharacterKey,
   type NpcGender,
+  type NpcOffice,
   type Role,
   type Trait,
 } from './characters'
@@ -1227,6 +1228,8 @@ export class NpcAgent {
   /** Stable authored identity (`CharacterKey`) for named characters, `null`
    *  for procedural residents. Presentation keys (portraits) use this. */
   readonly characterKey: CharacterKey | null
+  /** Settlement office (`reeve` = Sołtys), `null` for ordinary residents. */
+  readonly office: NpcOffice | null
   /** Display-only — `id` is the matching key for quests/relations.
    *  Authored quest text still mentions first names (`giverName`). */
   readonly displayName: string
@@ -1847,6 +1850,7 @@ export class NpcAgent {
     const character = member.character
     this.name = character.name
     this.characterKey = character.characterKey ?? null
+    this.office = character.office ?? null
     this.displayName = character.lastName ? `${character.name} ${character.lastName}` : character.name
     this.gender = character.gender
     this.voiceProfileId = voiceProfileIdFor(this.gender, character.role)

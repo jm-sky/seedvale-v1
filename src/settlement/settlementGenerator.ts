@@ -26,6 +26,7 @@ import {
   villageSizeConfig,
 } from './families'
 import { DEFAULT_SITE_SEARCH_MARGIN, findSettlementSite } from './findSettlementSite'
+import { applyHomeAuthoredIdentities } from './homeAuthoredResidents'
 import { appendAuthoredResidentFamilies } from './lostTreasureChroniclesElderResident'
 import { findDockLocation } from './minorLocations'
 import { applyProfessionFamilySurnames } from './professionFamilySurnames'
@@ -616,11 +617,11 @@ function generateSettlementCore(
     ? appendAuthoredResidentFamilies(generatedFamilies, authoredResidents)
     : generatedFamilies
   // Elder demographic invariant (plan settlements-npcs-045) runs after
-  // authored residents are appended so an authored elder (e.g. Kazimierz)
-  // can already satisfy it, and before profession staffing so staffing sees
-  // the final adult roster.
+  // authored residents are appended so an authored elder (home Kazimierz,
+  // Chronicles Archibald) can already satisfy it, and before profession
+  // staffing so staffing sees the final adult roster.
   const withElderInvariant = ensureSettlementElder(withAuthoredResident, identity.size, ctx.seedForCell)
-  const families = applyProfessionFamilySurnames(
+  const surnamedFamilies = applyProfessionFamilySurnames(
     resolveInitialProfessionStaffing(
       withElderInvariant,
       {
@@ -635,6 +636,11 @@ function generateSettlementCore(
     ),
     ctx.seedForCell,
   )
+  // Home-only authored identities (Rudolf, Molly, Patric, Jakub) overlay the
+  // final staffed roster — names/keys only, flattened `NpcId`s unchanged.
+  const families = identity.isHome
+    ? applyHomeAuthoredIdentities(surnamedFamilies, ctx.seedForCell, identity.nameCulture)
+    : surnamedFamilies
   const plan = attachPlannedDock(
     createVillagePlan(
       identity,

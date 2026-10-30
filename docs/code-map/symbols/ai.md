@@ -36,10 +36,13 @@ Generated from exported TypeScript symbols.
 
 ## `ai/characters.ts`
 
-- `CharacterDef` — type — line 21
-- `characterForSeed` — function — line 64
+- `AUTHORED_GIVEN_NAMES` — const — line 82
+- `CharacterDef` — type — line 42
+- `characterForSeed` — function — line 101
+- `CharacterKey` — type — line 25
 - `NpcGender` — type — line 5
-- `RESERVED_CHARACTERS` — const — line 54
+- `NpcOffice` — type — line 40
+- `RESERVED_CHARACTERS` — const — line 91
 - `Role` — type — line 13
 - `Trait` — type — line 19
 
@@ -108,18 +111,20 @@ Generated from exported TypeScript symbols.
 
 ## `ai/nameCultures.ts`
 
-- `formatPolishSurnameForGender` — function — line 84
-- `generateFamilySurname` — function — line 103
-- `generateNpcName` — function — line 127
-- `NAME_CULTURES` — const — line 18
-- `NameCulture` — type — line 16
-- `namesForCulture` — function — line 114
-- `pickNameCulture` — function — line 119
-- `surnameForGender` — function — line 110
+- `formatPolishSurnameForGender` — function — line 87
+- `generateFamilySurname` — function — line 106
+- `generateNpcName` — function — line 130
+- `NAME_CULTURES` — const — line 21
+- `NameCulture` — type — line 19
+- `namesForCulture` — function — line 117
+- `pickNameCulture` — function — line 122
+- `surnameForGender` — function — line 113
 
 ## `ai/Needs.ts`
 
 - `createNeedState` — function — line 16
+- `CRITICAL_FOOD_THRESHOLD` — const — line 90
+- `CRITICAL_WATER_THRESHOLD` — const — line 87
 - `FOOD_THRESHOLD_NORMAL` — const — line 97
 - `generateNeedPressures` — function — line 122
 - `NEED_SATISFY_AMOUNT` — const — line 167
@@ -180,25 +185,26 @@ Generated from exported TypeScript symbols.
 
 ## `ai/NpcAgent.ts`
 
-- `classifyPendingActivity` — function — line 791
-- `configureNpcPlayerReactionAudio` — function — line 1037
-- `CurrentActivity` — type — line 592
-- `CurrentActivityKind` — type — line 564
-- `HUNT_RESUPPLY_ARROW_TARGET` — const — line 906
-- `NPC_HEIGHT` — const — line 506
-- `NPC_SHADOW_DISTANCE` — const — line 511
-- `NpcAgent` — class — line 1209
+- `classifyPendingActivity` — function — line 793
+- `configureNpcPlayerReactionAudio` — function — line 1039
+- `CurrentActivity` — type — line 594
+- `CurrentActivityKind` — type — line 566
+- `HUNT_RESUPPLY_ARROW_TARGET` — const — line 908
+- `NPC_HEIGHT` — const — line 508
+- `NPC_SHADOW_DISTANCE` — const — line 513
+- `NpcAgent` — class — line 1224
   - domain: settlements-npcs
   - system: npc-agent
   - role: Central per-NPC behaviour integration point: needs, FSM/schedule, personality-driven decisions and combat.
   - owns: NpcAuthoritativeState
   - uses: Household, SettlementEconomy, Needs
   - simulation: tick
-- `NpcAgentDeps` — type — line 1054
-- `NpcInspectionSnapshot` — type — line 607
-- `NpcWhy` — type — line 766
-- `projectNpcWhy` — function — line 833
-- `promoteChainKind` — function — line 783
+- `NpcAgentDeps` — type — line 1056
+- `NpcDialogueCondition` — type — line 1203
+- `NpcInspectionSnapshot` — type — line 609
+- `NpcWhy` — type — line 768
+- `projectNpcWhy` — function — line 835
+- `promoteChainKind` — function — line 785
 
 ## `ai/npcAnimalThreat.ts`
 

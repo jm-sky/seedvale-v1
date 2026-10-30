@@ -6,7 +6,8 @@ import {
   LOST_TREASURE_ELDER_GIVEN_NAME,
 } from '../settlement/lostTreasureChroniclesElderResident'
 import {
-  buildLostTreasureChroniclesElderQuests,
+  buildHomeElderWinterQuest,
+  buildLostTreasureChroniclesElderDisputeQuest,
   findLostTreasureChroniclesElderSettlement,
   LOST_TREASURE_CHRONICLES_DISPUTE_RECONCILE_OUTCOME,
   LOST_TREASURE_CHRONICLES_DISPUTE_SUPPORT_ELDER_OUTCOME,
@@ -82,6 +83,11 @@ function speak(qm: QuestManager, npcId: string, index = 0): string | undefined {
   return qm.onInteract(npcId)?.actions?.[index]?.onSelect()
 }
 
+
+function buildElderQuests(binding: LostTreasureChroniclesElderBinding) {
+  return [buildHomeElderWinterQuest(binding), buildLostTreasureChroniclesElderDisputeQuest(binding)]
+}
+
 describe('lost treasure chronicles elder quests', () => {
   it('binds the elder by family slot, not display name, and picks other-household adults', () => {
     expect(findLostTreasureChroniclesElderSettlement([
@@ -110,28 +116,21 @@ describe('lost treasure chronicles elder quests', () => {
   })
 
   it('returns valid winter and dispute defs with stable ids', () => {
-    const defs = buildLostTreasureChroniclesElderQuests(testBinding())
+    const defs = buildElderQuests(testBinding())
     expect(() => validateQuestDefinitions(defs)).not.toThrow()
     expect(defs.map((def) => def.id)).toEqual([
       LOST_TREASURE_CHRONICLES_ELDER_WINTER_QUEST_ID,
       LOST_TREASURE_CHRONICLES_ELDER_DISPUTE_QUEST_ID,
     ])
-    expect(defs[1]?.availability?.prerequisites).toEqual([{
-      type: 'quest_outcome',
-      questId: LOST_TREASURE_CHRONICLES_ELDER_WINTER_QUEST_ID,
-      outcomeIds: [
-        LOST_TREASURE_CHRONICLES_WINTER_MATERIAL_OUTCOME,
-        LOST_TREASURE_CHRONICLES_WINTER_NEIGHBOR_OUTCOME,
-      ],
-    }])
+    // Winter (home Kazimierz) and dispute (Chronicles Archibald) are independent.
+    expect(defs[1]?.availability).toBeUndefined()
   })
 
-  it('completes the winter material route, consumes branches once, and leaves dispute locked until then', () => {
-    const defs = buildLostTreasureChroniclesElderQuests(testBinding())
+  it('completes the winter material route and consumes branches once', () => {
+    const defs = [buildHomeElderWinterQuest(testBinding())]
     const inventory = new Inventory()
     inventory.add('branch', LOST_TREASURE_CHRONICLES_WINTER_BRANCH_COUNT + 1)
     const { qm, social } = makeQuestManager(defs, inventory)
-    expect(qm.isQuestAvailable(LOST_TREASURE_CHRONICLES_ELDER_DISPUTE_QUEST_ID)).toBe(false)
     accept(qm, '1_0:npc:2')
     speak(qm, '1_0:npc:2')
     expect(inventory.count('branch')).toBe(1)
@@ -144,11 +143,10 @@ describe('lost treasure chronicles elder quests', () => {
     speak(qm, '1_0:npc:2')
     expect(inventory.count('branch')).toBe(1)
     expect(social).toHaveLength(1)
-    expect(qm.isQuestAvailable(LOST_TREASURE_CHRONICLES_ELDER_DISPUTE_QUEST_ID)).toBe(true)
   })
 
   it('completes the winter neighbor route against the helper, not the elder hand-in', () => {
-    const defs = buildLostTreasureChroniclesElderQuests(testBinding())
+    const defs = [buildHomeElderWinterQuest(testBinding())]
     const inventory = new Inventory()
     inventory.add('branch', LOST_TREASURE_CHRONICLES_WINTER_BRANCH_COUNT)
     const { qm, social } = makeQuestManager(defs, inventory)
@@ -160,11 +158,10 @@ describe('lost treasure chronicles elder quests', () => {
     expect(qm.getRelation('1_0:npc:2')).toBe(2)
     expect(qm.getRelation('1_0:npc:0')).toBe(1)
     expect(social).toEqual([{ settlementId: '1_0', reputation: { trust: 1 } }])
-    expect(qm.isQuestAvailable(LOST_TREASURE_CHRONICLES_ELDER_DISPUTE_QUEST_ID)).toBe(true)
   })
 
   it('does not silently pick the material route when talking to the helper is also possible', () => {
-    const defs = buildLostTreasureChroniclesElderQuests(testBinding())
+    const defs = [buildHomeElderWinterQuest(testBinding())]
     const inventory = new Inventory()
     inventory.add('branch', LOST_TREASURE_CHRONICLES_WINTER_BRANCH_COUNT)
     const { qm } = makeQuestManager(defs, inventory)
@@ -174,8 +171,8 @@ describe('lost treasure chronicles elder quests', () => {
     expect(inventory.count('branch')).toBe(LOST_TREASURE_CHRONICLES_WINTER_BRANCH_COUNT)
   })
 
-  it('unlocks dispute after either winter success and resolves support_elder vs reconcile', () => {
-    const defs = buildLostTreasureChroniclesElderQuests(testBinding())
+  it('resolves dispute support_elder after a restored winter success', () => {
+    const defs = buildElderQuests(testBinding())
     const restored = new QuestManager(defs, undefined, new Inventory(), {
       progress: [{
         id: LOST_TREASURE_CHRONICLES_ELDER_WINTER_QUEST_ID,
@@ -197,20 +194,18 @@ describe('lost treasure chronicles elder quests', () => {
     expect(relationToLevel(restored.getRelation('1_0:npc:2'))).toBe('friendly')
   })
 
-  it('reconcile raises both relations without granting trusted from these two quests', () => {
-    const defs = buildLostTreasureChroniclesElderQuests(testBinding())
+  it('reconcile raises both relations without granting trusted', () => {
+    const defs = [buildLostTreasureChroniclesElderDisputeQuest(testBinding())]
     const { qm, social } = makeQuestManager(defs)
-    accept(qm, '1_0:npc:2')
-    speak(qm, '1_0:npc:0')
     accept(qm, '1_0:npc:2')
     speak(qm, '1_0:npc:2')
     speak(qm, '1_0:npc:1')
     speak(qm, '1_0:npc:2')
     expect(qm.exportProgress().find((entry) => entry.id === LOST_TREASURE_CHRONICLES_ELDER_DISPUTE_QUEST_ID)?.resolvedOutcomeId)
       .toBe(LOST_TREASURE_CHRONICLES_DISPUTE_RECONCILE_OUTCOME)
-    expect(qm.getRelation('1_0:npc:2')).toBe(3)
+    expect(qm.getRelation('1_0:npc:2')).toBe(1)
     expect(qm.getRelation('1_0:npc:1')).toBe(1)
-    expect(relationToLevel(qm.getRelation('1_0:npc:2'))).toBe('friendly')
+    expect(relationToLevel(qm.getRelation('1_0:npc:2'))).toBe('acquainted')
     expect(social.at(-1)).toEqual({ settlementId: '1_0', reputation: { benevolence: 2, integrity: 1 } })
 
     const snapshot = {
@@ -221,13 +216,13 @@ describe('lost treasure chronicles elder quests', () => {
       throw new Error('terminal consequences must not replay')
     })
     expect(restored.getState(LOST_TREASURE_CHRONICLES_ELDER_DISPUTE_QUEST_ID)).toBe('complete')
-    expect(restored.getRelation('1_0:npc:2')).toBe(3)
+    expect(restored.getRelation('1_0:npc:2')).toBe(1)
     restored.onInteract('1_0:npc:2')
     restored.onInteract('1_0:npc:1')
   })
 
   it('keeps reconcile/support_elder outcomes and varies elder reply by relation (plan quests-progression-050)', () => {
-    const defs = buildLostTreasureChroniclesElderQuests(testBinding())
+    const defs = buildElderQuests(testBinding())
     const low = new QuestManager(defs, undefined, new Inventory(), {
       progress: [{
         id: LOST_TREASURE_CHRONICLES_ELDER_WINTER_QUEST_ID,

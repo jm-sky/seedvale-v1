@@ -603,3 +603,23 @@ describe('resolveInitialProfessionStaffing', () => {
     })
   })
 })
+
+describe('home shepherdess guarantee', () => {
+  it('assigns the home shepherd role to a woman even when men come first', () => {
+    const families = [
+      ...adults(5),
+      family('family-5', [member({ name: 'F', role: 'woodcutter', age: 30, gender: 'female' })]),
+    ]
+    const staffed = staff(families, { isHome: true, terrain: 'desert' })
+    const shepherds = staffed.flatMap((f) => f.members).filter((m) => m.character.role === 'shepherd')
+    expect(shepherds).toHaveLength(1)
+    expect(shepherds[0]!.character.gender).toBe('female')
+  })
+
+  it('never staffs a male shepherd at home — the authored Molly fallback covers it', () => {
+    for (const seed of [1, 2, 3, 4, 5]) {
+      const staffed = staff(adults(8), { isHome: true, seed, size: 'LG' })
+      expect(adultRoles(staffed)).not.toContain('shepherd')
+    }
+  })
+})

@@ -27,7 +27,17 @@ export type CharacterKey =
   | 'piotr_lesniewski'
   | 'kasia_hornblower'
   | 'marek_hornblower'
-  | 'kazimierz_nowak'
+  | 'kazimierz'
+  | 'rudolf'
+  | 'patric_smith'
+  | 'jakub'
+  | 'molly_lambert'
+  | 'archibald'
+
+/** Settlement office held by an authored character. `reeve` = Sołtys — a
+ *  data marker only for now; office powers (e.g. grave-excavation
+ *  permission) are not implemented. */
+export type NpcOffice = 'reeve'
 
 export type CharacterDef = {
   name: string
@@ -38,6 +48,8 @@ export type CharacterDef = {
   lastName?: string
   /** Set only for authored characters — see `CharacterKey`. */
   characterKey?: CharacterKey
+  /** See `NpcOffice`. */
+  office?: NpcOffice
   gender: NpcGender
   role: Role
   personality: BigFivePersonality
@@ -63,6 +75,18 @@ const RESERVED_SEEDS: readonly ReservedSeed[] = [
   { name: 'Kasia', lastName: 'Hornblower', characterKey: 'kasia_hornblower', gender: 'female', role: 'trader', traits: ['night_owl'] },
   { name: 'Marek', lastName: 'Hornblower', characterKey: 'marek_hornblower', gender: 'male', role: 'guard', traits: ['sociable'] },
 ]
+
+/** Given names of authored non-reserved characters, keyed by `CharacterKey`.
+ *  Excluded from procedural name generation (with the reserved roster) so an
+ *  authored name stays unique and quest name binding never turns ambiguous. */
+export const AUTHORED_GIVEN_NAMES = {
+  kazimierz: 'Kazimierz',
+  rudolf: 'Rudolf',
+  patric_smith: 'Patric',
+  jakub: 'Jakub',
+  molly_lambert: 'Molly',
+  archibald: 'Archibald',
+} as const satisfies Partial<Record<CharacterKey, string>>
 
 export const RESERVED_CHARACTERS: readonly CharacterDef[] = RESERVED_SEEDS.map((seed, i) => ({
   ...seed,

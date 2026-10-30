@@ -1,16 +1,15 @@
 import type { NameCulture } from '../ai/nameCultures'
 import type { FamilyDef, VillageSize } from './families'
 import type { SettlementCell } from './settlementGenerator'
-import { characterForSeed } from '../ai/characters'
-import { surnameForGender } from '../ai/nameCultures'
+import { AUTHORED_GIVEN_NAMES, characterForSeed } from '../ai/characters'
+import { generateFamilySurname, surnameForGender } from '../ai/nameCultures'
 
 /** Story household id for the Lost Treasure Chronicles elder. Distinct from
  *  `family-reserved-*`, which excludes home-roster adults from staffing and
  *  expeditions. */
 export const LOST_TREASURE_ELDER_FAMILY_ID = 'family-story-lost-treasure-elder'
 
-export const LOST_TREASURE_ELDER_GIVEN_NAME = 'Kazimierz'
-export const LOST_TREASURE_ELDER_LAST_NAME = 'Nowak'
+export const LOST_TREASURE_ELDER_GIVEN_NAME = AUTHORED_GIVEN_NAMES.archibald
 export const LOST_TREASURE_ELDER_AGE = 74
 
 /** Chebyshev grid radius around home used to pick the elder's settlement. */
@@ -81,7 +80,8 @@ export function createLostTreasureElderFamily(
   seedForCell: number,
   nameCulture: NameCulture,
 ): FamilyDef {
-  const lastName = surnameForGender(LOST_TREASURE_ELDER_LAST_NAME, nameCulture, 'male')
+  // Procedural surname: Archibald has no authored one (Nowak belongs to home Kazimierz).
+  const lastName = surnameForGender(generateFamilySurname(seedForCell ^ 0x617263, nameCulture), nameCulture, 'male')
   const character = characterForSeed(seedForCell ^ 0x31de4, 'male')
   return {
     id: LOST_TREASURE_ELDER_FAMILY_ID,
@@ -93,7 +93,7 @@ export function createLostTreasureElderFamily(
         ...character,
         name: LOST_TREASURE_ELDER_GIVEN_NAME,
         lastName,
-        characterKey: 'kazimierz_nowak',
+        characterKey: 'archibald',
         gender: 'male',
         role: 'farmer',
       },

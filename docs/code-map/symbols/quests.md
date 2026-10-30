@@ -206,41 +206,41 @@ Generated from exported TypeScript symbols.
 
 ## `quests/lostTreasureChronicleSearch.ts`
 
-- `buildLostTreasureChronicleSearchQuests` — function — line 355
+- `buildLostTreasureChronicleSearchQuests` — function — line 354
   - domain: quests-progression
-- `CHRONICLE_SEARCH_EVIDENCE_KIND` — const — line 33
-- `ChronicleSearchCemetery` — type — line 43
-- `chronicleSearchGraveBuriedSpotId` — function — line 144
-- `ChronicleSearchLead` — type — line 41
-- `chronicleSearchOfferLine` — function — line 273
-- `chronicleSearchRuinsContainerId` — function — line 148
-- `ChronicleSearchRuinsLandmark` — type — line 52
-- `chronicleSearchRuinsLocationId` — function — line 140
-- `chronicleSearchTruth` — function — line 160
-- `ChronicleSearchTruth` — type — line 40
-- `createChronicleSearchEvidenceInstance` — function — line 156
-- `createEncodedChronicleInstance` — function — line 152
-- `ENCODED_CHRONICLE_KIND` — const — line 32
-- `isChronicleSearchSourceLooted` — function — line 283
-- `isLostTreasureGraveAccessGranted` — function — line 540
-- `LOST_TREASURE_CEMETERY_FAVOUR_QUEST_ID` — const — line 28
-- `LOST_TREASURE_CHRONICLE_ACQUIRED_OUTCOME` — const — line 29
-- `LOST_TREASURE_CHRONICLE_EVIDENCE_INSTANCE_ID` — const — line 36
-- `LOST_TREASURE_CHRONICLE_INSTANCE_ID` — const — line 35
-- `LOST_TREASURE_CHRONICLE_SEARCH_QUEST_ID` — const — line 27
-- `LOST_TREASURE_CHRONICLE_SEARCH_RESERVATION_PREFIX` — const — line 38
-- `LOST_TREASURE_GRAVE_ACCESS_OUTCOME` — const — line 30
-- `lostTreasureChronicleGravePlacement` — function — line 301
+- `CHRONICLE_SEARCH_EVIDENCE_KIND` — const — line 32
+- `ChronicleSearchCemetery` — type — line 42
+- `chronicleSearchGraveBuriedSpotId` — function — line 143
+- `ChronicleSearchLead` — type — line 40
+- `chronicleSearchOfferLine` — function — line 272
+- `chronicleSearchRuinsContainerId` — function — line 147
+- `ChronicleSearchRuinsLandmark` — type — line 51
+- `chronicleSearchRuinsLocationId` — function — line 139
+- `chronicleSearchTruth` — function — line 159
+- `ChronicleSearchTruth` — type — line 39
+- `createChronicleSearchEvidenceInstance` — function — line 155
+- `createEncodedChronicleInstance` — function — line 151
+- `ENCODED_CHRONICLE_KIND` — const — line 31
+- `isChronicleSearchSourceLooted` — function — line 282
+- `isLostTreasureGraveAccessGranted` — function — line 539
+- `LOST_TREASURE_CEMETERY_FAVOUR_QUEST_ID` — const — line 27
+- `LOST_TREASURE_CHRONICLE_ACQUIRED_OUTCOME` — const — line 28
+- `LOST_TREASURE_CHRONICLE_EVIDENCE_INSTANCE_ID` — const — line 35
+- `LOST_TREASURE_CHRONICLE_INSTANCE_ID` — const — line 34
+- `LOST_TREASURE_CHRONICLE_SEARCH_QUEST_ID` — const — line 26
+- `LOST_TREASURE_CHRONICLE_SEARCH_RESERVATION_PREFIX` — const — line 37
+- `LOST_TREASURE_GRAVE_ACCESS_OUTCOME` — const — line 29
+- `lostTreasureChronicleGravePlacement` — function — line 300
   - domain: quests-progression
-- `lostTreasureChronicleRuinsContainerSpec` — function — line 320
+- `lostTreasureChronicleRuinsContainerSpec` — function — line 319
   - domain: quests-progression
-- `LostTreasureChronicleSearchBinding` — type — line 66
+- `LostTreasureChronicleSearchBinding` — type — line 65
   - domain: quests-progression
-- `lostTreasureResearcherSurname` — function — line 136
-- `ResolveChronicleSearchBindingInput` — type — line 191
-- `resolveChronicleSearchLead` — function — line 262
+- `lostTreasureResearcherSurname` — function — line 135
+- `ResolveChronicleSearchBindingInput` — type — line 190
+- `resolveChronicleSearchLead` — function — line 261
   - domain: quests-progression
-- `resolveLostTreasureChronicleSearchBinding` — function — line 205
+- `resolveLostTreasureChronicleSearchBinding` — function — line 204
   - domain: quests-progression
 
 ## `quests/lostTreasureChronicleSearchRuntime.ts`
@@ -250,20 +250,22 @@ Generated from exported TypeScript symbols.
 
 ## `quests/lostTreasureChroniclesElder.ts`
 
-- `buildLostTreasureChroniclesElderQuests` — function — line 108
+- `buildHomeElderWinterQuest` — function — line 111
   - domain: quests-progression
-- `findLostTreasureChroniclesElderSettlement` — function — line 97
+- `buildLostTreasureChroniclesElderDisputeQuest` — function — line 185
   - domain: quests-progression
-- `LOST_TREASURE_CHRONICLES_DISPUTE_RECONCILE_OUTCOME` — const — line 15
-- `LOST_TREASURE_CHRONICLES_DISPUTE_SUPPORT_ELDER_OUTCOME` — const — line 14
-- `LOST_TREASURE_CHRONICLES_ELDER_DISPUTE_QUEST_ID` — const — line 10
-- `LOST_TREASURE_CHRONICLES_ELDER_WINTER_QUEST_ID` — const — line 9
-- `LOST_TREASURE_CHRONICLES_WINTER_BRANCH_COUNT` — const — line 17
-- `LOST_TREASURE_CHRONICLES_WINTER_MATERIAL_OUTCOME` — const — line 12
-- `LOST_TREASURE_CHRONICLES_WINTER_NEIGHBOR_OUTCOME` — const — line 13
-- `LostTreasureChroniclesElderBinding` — type — line 25
+- `findLostTreasureChroniclesElderSettlement` — function — line 99
   - domain: quests-progression
-- `resolveLostTreasureChroniclesElderBinding` — function — line 60
+- `LOST_TREASURE_CHRONICLES_DISPUTE_RECONCILE_OUTCOME` — const — line 16
+- `LOST_TREASURE_CHRONICLES_DISPUTE_SUPPORT_ELDER_OUTCOME` — const — line 15
+- `LOST_TREASURE_CHRONICLES_ELDER_DISPUTE_QUEST_ID` — const — line 11
+- `LOST_TREASURE_CHRONICLES_ELDER_WINTER_QUEST_ID` — const — line 10
+- `LOST_TREASURE_CHRONICLES_WINTER_BRANCH_COUNT` — const — line 18
+- `LOST_TREASURE_CHRONICLES_WINTER_MATERIAL_OUTCOME` — const — line 13
+- `LOST_TREASURE_CHRONICLES_WINTER_NEIGHBOR_OUTCOME` — const — line 14
+- `LostTreasureChroniclesElderBinding` — type — line 26
+  - domain: quests-progression
+- `resolveLostTreasureChroniclesElderBinding` — function — line 61
   - domain: quests-progression
 
 ## `quests/lostTreasureExpedition.ts`

@@ -303,6 +303,8 @@ describe('generateFamilies', () => {
       // settlements-npcs-002 (`blacksmith` joined `RANDOM_ROLES`), each time
       // shifting every subsequent roll in this deterministic stream — the
       // roles below are the new correct output, not a behavior regression.
+      // Names re-pinned when authored names (Kazimierz, Jakub, …) joined the
+      // reserved-name filter (2026-10-30); roles unchanged.
       const families = generateFamilies(7, 'LG', false, 'polish')
       const roles = families.flatMap((f) => f.members.map((m) => `${m.name}:${m.character.role}`))
       expect(roles).toEqual([
@@ -312,9 +314,9 @@ describe('generateFamilies', () => {
         'Paweł:blacksmith',
         'Ola:hunter',
         'Jan:blacksmith',
-        'Sławomir:miner',
+        'Tomek:miner',
         'Katarzyna:guard',
-        'Tomasz:farmer',
+        'Stanisław:farmer',
         'Helena:farmer',
         'Stanisław:farmer',
         'Krystyna:miner',

@@ -6,6 +6,7 @@ import type { VillageSize } from './families'
 import type { TerrainSamplers } from './settlementTerrain'
 import { pickNameCulture } from '../ai/nameCultures'
 import { generateSettlementName } from '../shared/SettlementName'
+import { createHomeElderFamily } from './homeAuthoredResidents'
 import {
   createLostTreasureArchaeologistFamily,
   LOST_TREASURE_ARCHAEOLOGIST_SETTLEMENT_SEARCH_RADIUS,
@@ -341,6 +342,7 @@ function authoredResidentsFor(cell: SettlementCell, ctx: SettlementResolveContex
   const seedForCell = cellSeed(ctx.seed, cell)
   const nameCulture = pickNameCulture(seedForCell)
   const residents = []
+  if (cell.gx === 0 && cell.gz === 0) residents.push(createHomeElderFamily(seedForCell, nameCulture))
   const elderHost = elderHostCellFor(ctx)
   if (elderHost && elderHost.gx === cell.gx && elderHost.gz === cell.gz) {
     residents.push(createLostTreasureElderFamily(seedForCell, nameCulture))

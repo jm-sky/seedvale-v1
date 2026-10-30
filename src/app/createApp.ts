@@ -170,7 +170,8 @@ import {
 } from '../quests/lostTreasureChronicleSearch'
 import { getActiveLostTreasureChronicleSearchBinding } from '../quests/lostTreasureChronicleSearchRuntime'
 import {
-  buildLostTreasureChroniclesElderQuests,
+  buildHomeElderWinterQuest,
+  buildLostTreasureChroniclesElderDisputeQuest,
   findLostTreasureChroniclesElderSettlement,
   resolveLostTreasureChroniclesElderBinding,
 } from '../quests/lostTreasureChroniclesElder'
@@ -240,6 +241,7 @@ import { applySocialConsequence, ReputationManager } from '../reputation/Reputat
 import { createSocialNewsLedger } from '../reputation/SocialNewsLedger'
 import { resolveAuthoredRepairStructureIds } from '../settlement/authoredRepairTargets'
 import { settlementSpawnPoint } from '../settlement/createSettlement'
+import { isHomeElderFamily } from '../settlement/homeAuthoredResidents'
 import { getHorseAcquisitionState, merchantHorseAnimalId } from '../settlement/horseAcquisition'
 import { householdIdFor } from '../settlement/household'
 import { householdWoodItemValue } from '../settlement/householdWood'
@@ -1736,8 +1738,10 @@ export async function createApp(
   const elderSettlement = findLostTreasureChroniclesElderSettlement(elderCandidateDefs)
   if (elderSettlement) {
     const elderBinding = resolveLostTreasureChroniclesElderBinding(elderSettlement)
-    if (elderBinding) opportunityQuestDefs.push(...buildLostTreasureChroniclesElderQuests(elderBinding))
+    if (elderBinding) opportunityQuestDefs.push(buildLostTreasureChroniclesElderDisputeQuest(elderBinding))
   }
+  const homeElderBinding = resolveLostTreasureChroniclesElderBinding(homeDef, isHomeElderFamily)
+  if (homeElderBinding) opportunityQuestDefs.push(buildHomeElderWinterQuest(homeElderBinding))
 
   const chronicleSearchBinding = getActiveLostTreasureChronicleSearchBinding()
   if (chronicleSearchBinding) {
