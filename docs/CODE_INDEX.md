@@ -31,6 +31,9 @@
 - [Graphics settings](../src/app/graphicsSettings.ts) — the live graphics + quality-preset handlers shared by the debug GUI, the Vue world-config screen and the benchmark runner.
 - [Post-processing](../src/render/createPostProcessing.ts) — the EffectComposer pass chain and its per-pass toggles.
 - [PointLight budget](../src/world/pointLightBudget.ts) — scene-level pad/cull that keeps `NUM_POINT_LIGHTS` stable across program variants.
+- [Program prewarm](../src/render/programPrewarm.ts) — plan 149 shader-program prewarm (travel-stutter owner, queue Q17).
+- [Actor skeleton sharing](../src/render/actorSkeletonSharing.ts) — one skeleton per NPC/fauna actor (Q20).
+- [Perf flags & benchmark](../src/perf/flags.ts) — D4 A/B query flags (e.g. `?frameMatrixOnce=0`); scenarios in [benchmarkScenarios](../src/perf/benchmarkScenarios.ts), runner `scripts/perf/run-benchmark-series.mjs` (results in `docs/performance/results/`).
 
 ## Player actions
 
@@ -158,6 +161,7 @@ Each module below takes the shared [`PlayerActionContext`](../src/app/actions/ac
 - [Save schema](../src/persistence/saveData.ts) — the `SaveData` shape, validation/defaulting and version migrations.
 - [Save storage](../src/persistence/saveDb.ts) — IndexedDB slots and the active-save id.
 - [Worldgen cache](../src/persistence/worldgenCacheDb.ts) — disposable `(seed, namespace, version, fingerprint)` store; settlement defs use [settlementWorldgenCache](../src/settlement/settlementWorldgenCache.ts).
+- [Worldgen boot fixture](../src/persistence/worldgenFixture.ts) — versioned bin of worldgen cache records imported into `worldgenCacheDb` before `createWorldBundle` (plan tools-020; `?worldgenFixture=0` disables; exporter `scripts/perf/export-worldgen-fixture.mjs`).
 - [Config persistence](../src/config/persistConfig.ts) — the localStorage graphics / player / world domains (device preferences, not save data).
 
 ## Economy
