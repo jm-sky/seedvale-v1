@@ -1,10 +1,18 @@
 # P1 exit packet — Performance-First freeze (A/B/C/D/E)
 
 **Created:** 2026-10-30 by Claude Opus 5.5 (queue Q7)  
-**Status:** **draft, ready for the author** — one native Windows Arc measurement session (§3) + visual review (§4) + decisions (§6). P1 is **not** closed until the author signs off; closure is then recorded in the [Strategic Brief](./STRATEGIC-BRIEF.md) and [Master Roadmap §4/§5](./2026-10-27--master-revival-roadmap.md#4-strategy--performance-first).  
+**Status:** **CLOSED by author decision 2026-10-30** (§0). §1–§7 remain the record of the proposed packet; the batched Windows session (§3) and visual review (§4) were not run as closure gates.  
 **Exit rule** ([roadmap §4](./2026-10-27--master-revival-roadmap.md#4-strategy--performance-first), brief D4): approved A/B/C/D(/E) scope **completed or explicitly closed**; accepted changes technically and visually verified; **final combined performance result** documented; optional candidates closed/deferred explicitly and never prolonging the freeze. Reaching 50–60 FPS is the target, **not** an exit condition.
 
 Evidence labels: ✅ measured on native Windows Arc · 🟢 WSL green light only (Windows pending) · 🧪 technical (tests) only · ⏳ waiting on the author.
+
+## 0. Closure (author, 2026-10-30)
+
+- P1 ends now; the Performance-First freeze is lifted and work moves to **P2** ([Master Roadmap §5](./2026-10-27--master-revival-roadmap.md#5-phases)).
+- Last P1 fix: Q25/Q26 travel stall — settlement naming probes (`b4e30641`; recon [Q25](./2026-10-30--q25-npc-stream-frames-recon.md)).
+- The author **accepts the current visual state**; no further benchmarks are required for closure (§3 not a gate). §6 (1) answered: the `settlement-heavy` gap does not block further work; optimizations deferred.
+- Combined result (§5): not filled — closure by decision, not by a final combined measurement. Per-slice evidence stays in the linked reports.
+- Deferred (not cancelled): E1 template prewarm (opt-in), E3 character programs (Q23), Q16 occluded-cohort ceiling, Windows confirmations listed in queue §4, CB / CSS2D / Skeleton retests, D10 far LOD, D8/D13 reflections.
 
 ## 1. Per-track verdicts (proposed)
 

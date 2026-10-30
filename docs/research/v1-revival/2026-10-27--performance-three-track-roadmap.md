@@ -1,7 +1,7 @@
 # V1 Revival — Rendering Performance Roadmap (A/B/C/D)
 
 **Created:** 2026-10-27  
-**Status:** D4 Performance-First and D9 V1-first grass **APPROVED (2026-10-27)**; specific implementation mechanisms/stages still require applicable approval  
+**Status:** **P1 CLOSED by the author 2026-10-30** (freeze lifted; remaining candidates deferred — [exit packet](./2026-10-30--p1-exit-packet.md#0-closure-author-2026-10-30)). D4 Performance-First and D9 V1-first grass **APPROVED (2026-10-27)**; specific implementation mechanisms/stages still require applicable approval  
 **Target:** `jm-sky/seedvale-v1`  
 **Scope:** (A) NPC/fauna rendering, (B) settlement draw submissions, (C) V1-first grass/flowers optimization, (D) Trees LOD; donor techniques conditional
 
@@ -142,8 +142,8 @@ Added after the CA2 `stream` attribution showed that the worst travel frames on 
 
 - [x] Recon: which streamed families miss the prewarm (asset census vs program census on `stream`), and why `riverTileBuild` runs synchronously on the main thread (cache, worker or budget options). → [Q17 recon](./2026-10-30--q17-travel-stutter-recon.md): E1 template families landed opt-in (`0a56f8cc`, A/B pending); E2 river-tile worker prefetch (Q22) and E3 character families (Q23) queued.
 - [ ] Bounded slices with tests; WSL `stream` A/B (hitches, long frames, p99, max) as green light, native Windows confirmation.
-- [ ] **NPC multi-second frames on travel (author, 2026-10-30: in P1-E):** 4.5–7.6 s `NPC`-category frames on a 90 s `stream` route, both arms of the Q22 rerun ([findings](../../performance/results/2026-10-30--wsl-q22-river-prefetch-ab.md#findings-from-this-attempt)) → queue Q25 (recon + bounded slice). **Recon done** ([Q25](./2026-10-30--q25-npc-stream-frames-recon.md)): synchronous settlement unique-name site probes in `recheck()`, not NPC simulation; slices E4a/E4b → queue Q26.
-- [ ] P1 exit verdict like A–D. Not a mirror-quality change: whether actors/player appear in reflections, mirror resolution/refresh and reflection caching stay under D8/D13.
+- [x] **NPC multi-second frames on travel (author, 2026-10-30: in P1-E):** 4.5–7.6 s `NPC`-category frames on a 90 s `stream` route, both arms of the Q22 rerun ([findings](../../performance/results/2026-10-30--wsl-q22-river-prefetch-ab.md#findings-from-this-attempt)) → queue Q25 (recon + bounded slice). **Recon done** ([Q25](./2026-10-30--q25-npc-stream-frames-recon.md)): synchronous settlement unique-name site probes in `recheck()`, not NPC simulation; slices E4a/E4b superseded by the author's local-uniqueness decision → **fixed** in `b4e30641` (queue Q26).
+- [x] P1 exit verdict like A–D — closed with P1 (author, 2026-10-30); E1 stays opt-in, E3 (Q23) deferred. Not a mirror-quality change: whether actors/player appear in reflections, mirror resolution/refresh and reflection caching stay under D8/D13.
 
 ## D. Trees LOD — included in P1 (author decision 2026-10-29)
 

@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "gitSha": "b4e3064119c0566719fe0f4e0f6ca90526783f6c",
+  "runId": "2026-10-30T22-13-41-252Z-3azjei",
+  "scenario": "stream",
+  "phase": "warm",
+  "canonical": true,
+  "generatedAt": "2026-10-30T22:15:43.067Z",
+  "fixtureVersion": "tools-001-v1",
+  "quality": "High",
+  "hardwareClass": "wsl-baseline",
+  "notes": "benchmark series q26fix rep1; WSL2 Chrome headed, fresh profile, 10s cooldown, query &benchDuration=90",
+  "dirtyRuntimePaths": [
+    "M public/worldgen-fixtures/415424794-default.svwc",
+    "M public/worldgen-fixtures/42-benchmark.svwc",
+    "M public/worldgen-fixtures/index.json"
+  ],
+  "platform": "wsl"
+}

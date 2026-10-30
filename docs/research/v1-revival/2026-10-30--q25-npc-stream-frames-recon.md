@@ -1,7 +1,7 @@
 # Q25 — multi-second `NPC` frames on the long `stream` route: recon + slice plan (2026-10-30)
 
 **Author:** Claude Opus 5.5 (queue Q25, O→S). **Platform of all numbers:** WSL2 Chrome (OpenGL/Mesa D3D12) — never compare with Windows.
-**Status:** recon done; implementation = queue **Q26** (S). No runtime behaviour changed by this task (only perf stage spans, `b3b52815`).
+**Status:** recon done. **Superseded plan:** the author chose local name uniqueness (2026-10-30), so E4a/E4b (§3–4) were dropped; fix landed as `b4e30641` (queue Q26, §5).
 
 ## 1. Finding
 
@@ -52,3 +52,15 @@ Rejected: main-thread time-slicing — a single probe is already 60–100 ms, so
 **A/B (WSL green light, then Windows):** `stream` `&benchDuration=90`, A default vs B `&settlementProbePrefetch=1` (E4a is exact and lands default-on without A/B), n = 3 per arm, interleaved. Decides: `frame max`, frames ≥ 1 s (expect 3 → 0), `settlementDefResolve` in long frames, p95/p99/hitches no regression. Also check boot time to `ready` does not grow (worker busy with probes during load). E4a alone, expected: first frame drops by the cached part only; report what remains.
 
 **Stop if:** worker/main probes are not identical for any cell (→ record the mismatch, do not ship E4b, ask O); a name of any cell changes versus current `main` for the reference seeds; the fix needs a settlement-definition cache version bump or a new persisted namespace (→ that is E4c, ask first).
+
+## 5. Outcome — author decision and fix (2026-10-30)
+
+The author accepted **local** instead of global uniqueness and changing all existing names. Assessment of the proposed variant: it removes the cause (global predecessor dependency) instead of moving it to a worker; with base names taken from the **cell center** (one height sample, one terrain class, one resource lookup) no site search is needed for uniqueness at all. Implemented (`b4e30641`):
+
+- `generateSettlementBaseName` with larger, gender-tagged dictionaries (adjective agreement fixed, ≥ 1000 distinct forest names in tests); `settlementOrdinalName` → "Osowiec Drugi", "Wola Trzecia", "Rybaki Drugie"; past "Dziesiąty" the `gx:gz` fallback.
+- `settlementNameUniqueness.ts`: ordinal = smallest one not used by an earlier (ring order) same-base cell within **1 km** between nominal cell centers (grid 280 m → every road/signpost neighbour and the next ring or two). Recursion follows only same-base neighbours; stream/lookup order independent. Empty cells take part (no probe), so a rare "X Drugi" may stand without a visible "X".
+- Residual cost found while implementing: the Lost Treasure host searches (elder r1, archaeologist/specialist r5) would have inherited the ~120 probes. They now run only for cells within their radius, and their result is persisted in `settlement-definitions` (`hosts:lost-treasure`). `worldBundle` reads them through resolving getters — the old memo-only read silently dropped the archaeologist/specialist story bindings whenever a hydrated cache skipped the search.
+- Cache/persistence: `settlement-definitions` v3 → v4 (names in defs change); fixtures regenerated. Road routes/caves/locations do not embed names (unchanged). Save format unchanged (names are derived); already-materialized quest texts in old saves keep old names until `persistence-008` refuses pre-Revival saves (P2).
+- Remaining sync work per new settlement cell on a cold world: one def generation (~45–160 ms WSL, includes its own site search) — a normal hitch, not a multi-second stall.
+
+**Technical check (WSL, 1 rep, `stream` `&benchDuration=90`, `b4e30641` + regenerated fixtures, artifacts `wsl/q26fix-*`; not an FPS claim):** settlement streaming total 17.6 s → **1.5 s** per window; the 7.6 / 5.3 / 4.5 s frames are gone (`settlementDefName` now ≤ 30 ms per frame). Worst remaining frames: 1.2 s (`WATER`/`RENDER` first use, pre-existing, unrelated) and 0.67 / 0.42 s where `settlementDefGenerate` builds defs for cells outside the fixture (cold def generation, deferred with P1 — a future candidate is resolving only the site, not the full def, for cells beyond the load radius in `recheck()`).

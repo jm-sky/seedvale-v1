@@ -21,9 +21,9 @@ If the author gives a concrete task, do that instead — the Revival rules below
 
 ## Current program: V1 Revival
 
-Seedvale V1 is being revived as the foundation (V2/V3 are selective donors only). Approved decisions: D1/D3/D4/D9/D11 in the Strategic Brief; everything else is open.
+Seedvale V1 is being revived as the foundation (V2/V3 are selective donors only). Approved decisions: D1/D3/D4 (closed)/D9/D11 and local settlement-name uniqueness in the Strategic Brief; everything else is open.
 
-- **D4 Performance-First freeze:** runtime changes that affect workload (CPU/GPU, draw calls, models, worldgen, vegetation, shaders, streaming, loading) merge only as P1 A/B/C/D performance slices, recorded exceptions or critical fixes. Docs, research, plans, tests and isolated demos may always proceed.
+- **P1 closed, freeze lifted (author, 2026-10-30):** the D4 Performance-First freeze no longer gates runtime work; the current phase is **P2** (save policy `persistence-008` + coordinated worldgen epoch). Performance stays a first-class constraint: keep workload-affecting changes revertable and measure them when they are performance-relevant.
 - **Autonomy (author, 2026-10-29):** docs and runtime implementation directly on `main` within approved scope. Open decisions, visual compromises, reduced density/simulation or dropped features → **stop and ask** (Polish, short options), record the question in queue §3, move on to an unblocked task.
 - **Performance evidence:** a **parallel WSL2 baseline** (Chrome, OpenGL via Mesa/D3D12) runs alongside native Windows Intel Arc (Chrome, ANGLE D3D11). A good WSL A/B against the WSL baseline is a **green light to land/enable** the optimization; the native Windows A/B confirms it afterwards (revert if Windows regresses). Never compare or mix WSL and Windows numbers — the graphics backends differ (author, 2026-10-29). Never claim FPS gains; hand off via queue §4.
 - **Verification:** do not mark author-owned visual/browser checks as passed (queue §2).
