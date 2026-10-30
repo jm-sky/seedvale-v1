@@ -2,6 +2,8 @@
 
 > **Start here (2026-10-29):** [Strategic Brief](./STRATEGIC-BRIEF.md) (decisions, D4 freeze, autonomy) → [Autonomous Session Queue](./AUTONOMOUS-SESSION-QUEUE.md) (ordered tasks and gates) → [P1 tracker snapshot](./2026-10-27--performance-three-track-roadmap.md#p1-status-snapshot-2026-10-29). The entries below are a chronological research index; where they conflict with the brief, the brief wins. Historical notes: UI Stages A–E are done and Trade is implemented; `NEXT-SESSION--*` files are closed.
 
+**NPC/fauna visibility (2026-10-30):** [V2 mechanism, current V1 gaps and smallest occlusion experiment](./2026-10-30--npc-fauna-visibility-v2-analysis.md) — V2 has sensory contacts and 45 s last-known ghosts, but its outdoor LOS tests building footprints, not trees/terrain. V1 already has NPC native culling; the fully occluded submission cohort is unmeasured. Research only; no implementation or benchmark run.
+
 **Minimap and world map rendering (2026-10-29):** [source recon, author direction and preliminary stages](./2026-10-29--minimap-world-map-rendering-recon.md) — both views must improve through shared terrain/fog rendering; fixed minimap scale or at most one extra zoom step, full-map zoom required. Performance takes priority over implementation brevity; initial terrain modifications may be omitted. Tiled LOD/cache architecture remains a recommendation; no runtime implementation or formal plan authorized.
 
 
