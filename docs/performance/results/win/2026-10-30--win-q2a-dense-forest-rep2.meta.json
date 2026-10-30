@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "gitSha": "11547b5c2ceb2ec3eed473f8e24e09a0a87d2681",
+  "runId": "2026-10-30T06-14-00-292Z-e42fs4",
+  "scenario": "dense-forest",
+  "phase": "warm",
+  "canonical": true,
+  "generatedAt": "2026-10-30T06:15:04.074Z",
+  "fixtureVersion": "tools-001-v1",
+  "quality": "High",
+  "hardwareClass": "target-gpu",
+  "notes": "benchmark series 2026-10-30--win-q2a rep2; native Windows Chrome headed, fresh profile, 35s cooldown",
+  "platform": "windows"
+}
