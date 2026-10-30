@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { ref } from 'vue'
+import DemoButton from '@/components/ui/DemoButton.vue'
+
 /**
  * Shared chrome for Character / Inventory / Merchant demos (v3 ItemsShell analog).
  * Full page reload between HTML entries — no world / save.
@@ -11,6 +14,8 @@ defineProps<{
   title: string
 }>()
 
+const logOpen = ref(false)
+
 const PAGES: { id: DemoPage, label: string, href: string }[] = [
   { id: 'character', label: 'Character', href: 'character-skills-demo.html' },
   { id: 'inventory', label: 'Inventory', href: 'inventory-list-demo.html' },
@@ -21,9 +26,9 @@ const PAGES: { id: DemoPage, label: string, href: string }[] = [
 
 <template>
   <div class="sv-demo-shell min-h-dvh text-neutral-200">
-    <main class="mx-auto flex max-w-7xl flex-col gap-4 p-3 sm:p-6">
-      <div class="flex flex-col gap-4 rounded-xl border border-neutral-700 bg-neutral-800/50 p-4 shadow-2xl backdrop-blur-sm">
-        <header class="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+    <main class="mx-auto flex max-w-8xl flex-col gap-4 p-3 sm:p-6">
+      <div class="flex flex-col gap-3 relative">
+        <header class="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 py-1 px-3 rounded-md border border-neutral-700 bg-surface/85 backdrop-blur-md">
           <h1 class="text-2xl font-semibold tracking-tight text-primary">
             {{ title }}
           </h1>
@@ -31,22 +36,52 @@ const PAGES: { id: DemoPage, label: string, href: string }[] = [
             class="flex flex-wrap gap-1"
             aria-label="Demo pages"
           >
-            <a
+            <DemoButton
               v-for="p in PAGES"
               :key="p.id"
               :href="p.href"
-              class="rounded-full border px-3 py-1 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-              :class="p.id === current
-                ? 'border-amber-500 bg-amber-500 text-neutral-950'
-                : 'border-neutral-600 text-neutral-300 hover:border-neutral-400'"
-              :aria-current="p.id === current ? 'page' : undefined"
-            >{{ p.label }}</a>
+              as="a"
+              :active="p.id === current"
+              :label="p.label"
+            />
           </nav>
           <div class="flex w-full flex-wrap items-center gap-2 text-sm text-neutral-300 empty:hidden">
             <slot name="tools" />
           </div>
         </header>
+
+        <details
+          v-if="$slots.controls"
+          class="absolute top-12 right-0 flex flex-col gap-2 max-w-48 rounded-lg border border-neutral-700 bg-surface/85 backdrop-blur-md px-3 py-2 text-sm"
+          open
+        >
+          <summary class="cursor-pointer text-neutral-200 hover:text-neutral-300">
+            Controls
+          </summary>
+          <div class="mt-2 flex flex-wrap gap-2">
+            <slot name="controls" />
+          </div>
+        </details>
         <slot />
+
+        <div
+          v-if="$slots.log"
+          class="absolute -bottom-4 left-0 space-y-1 font-mono text-xs text-neutral-500 overflow-x-auto rounded-lg border border-neutral-700 bg-surface/85 backdrop-blur-md p-3"
+        >
+          <button
+            type="button"
+            class="text-neutral-300 hover:text-neutral-100 font-semibold"
+            @click="logOpen = !logOpen"
+          >
+            {{ logOpen ? 'Hide log' : 'Show log' }}
+          </button>
+          <ul
+            v-if="logOpen"
+            class="space-y-1 text-neutral-300"
+          >
+            <slot name="log" />
+          </ul>
+        </div>
       </div>
     </main>
   </div>

@@ -36,6 +36,8 @@
   --popover-foreground: oklch(0.95 0.02 85);
   --card: oklch(0.23 0.02 60 / 0.92);
   --card-foreground: oklch(0.95 0.02 85);
+  --surface: oklch(0.23 0.02 60 / 0.92);
+  --surface-solid: oklch(0.23 0.02 60 / 0.95);
 }
 
 @theme inline {
@@ -54,6 +56,9 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+
+  --color-surface: var(--surface);
+  --color-surface-solid: var(--surface-solid);
 }
 
 @layer base {

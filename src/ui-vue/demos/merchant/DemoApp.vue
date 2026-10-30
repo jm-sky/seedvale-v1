@@ -5,6 +5,7 @@
  * @domain ui
  */
 import { computed, ref, watch } from 'vue'
+import DemoButton from '@/components/ui/DemoButton.vue'
 import { hasItemKindCategory, type ItemKind } from '../../../items/items'
 import MerchantFilterBar from '../../components/MerchantFilterBar.vue'
 import MerchantItemRow from '../../components/MerchantItemRow.vue'
@@ -218,53 +219,40 @@ function onBuyHorse(label: string): void {
     current="merchant"
     title="Shop (demo)"
   >
-    <details class="rounded-lg border border-neutral-800 bg-neutral-900/40 p-3 text-sm">
-      <summary class="cursor-pointer text-neutral-400 hover:text-neutral-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
-        Demo controls
-      </summary>
-      <div class="mt-3 flex flex-wrap gap-2">
-        <button
-          v-for="s in DEMO_SCENARIOS"
-          :key="s.id"
-          type="button"
-          class="rounded-md border px-2.5 py-1 text-xs"
-          :class="s.id === selectedId ? 'border-amber-400/60 bg-amber-900/30' : 'border-neutral-600 hover:bg-neutral-800'"
-          @click="selectScenario(s.id)"
-        >
-          {{ s.label }}
-        </button>
-        <button
-          type="button"
-          class="rounded-md border border-neutral-600 px-2.5 py-1 text-xs hover:bg-neutral-800"
-          :class="compact ? 'border-amber-400/60 bg-amber-900/30' : ''"
-          @click="compact = !compact"
-        >
-          {{ compact ? 'Compact ON' : 'Compact OFF' }}
-        </button>
-        <button
-          type="button"
-          class="rounded-md border border-neutral-600 px-2.5 py-1 text-xs hover:bg-neutral-800"
-          @click="resetDemo"
-        >
-          Reset
-        </button>
-      </div>
-      <ul
-        v-if="log.length"
-        class="mt-3 space-y-1 font-mono text-xs text-neutral-500"
+    <template #controls>
+      <DemoButton
+        v-for="s in DEMO_SCENARIOS"
+        :key="s.id"
+        :label="s.label"
+        variant="outline"
+        :active="s.id === selectedId"
+        @click="selectScenario(s.id)"
+      />
+      <DemoButton
+        label="Compact ON"
+        variant="outline"
+        :active="compact"
+        @click="compact = !compact"
+      />
+      <DemoButton
+        label="Reset"
+        variant="outline"
+        @click="resetDemo"
+      />
+    </template>
+
+    <template #log>
+      <li
+        v-for="(line, i) in log"
+        :key="i"
       >
-        <li
-          v-for="(line, i) in log"
-          :key="i"
-        >
-          {{ line }}
-        </li>
-      </ul>
-    </details>
+        {{ line }}
+      </li>
+    </template>
 
     <div
       class="sv-merchant mx-auto flex max-w-7xl flex-col overflow-hidden rounded-xl border border-white/15 bg-neutral-900/85 p-5 text-neutral-100 shadow-[0_12px_40px_rgba(0,0,0,0.45)]"
-      :class="compact ? 'min-h-[32rem]' : 'min-h-[36rem]'"
+      :class="compact ? 'min-h-128' : 'min-h-144'"
     >
       <div class="mb-2 flex shrink-0 flex-wrap items-baseline justify-between gap-2 text-sm">
         <h2 class="text-base font-semibold tracking-wide text-primary">

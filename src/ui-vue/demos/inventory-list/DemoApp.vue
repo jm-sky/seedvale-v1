@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import DemoButton from '@/components/ui/DemoButton.vue'
 import type { EquipmentSlot } from '../../../items/equipment'
 import { previewEquipLoadoutFromSnapshot } from '../../../items/equipmentPreview'
 import { itemDisplayName } from '../../../items/itemDisplay'
@@ -150,44 +151,36 @@ if (typeof window !== 'undefined') {
     current="inventory"
     title="Inventory (demo)"
   >
-    <details
-      class="rounded-lg border border-neutral-800 bg-neutral-900/40 p-3 text-sm"
-      open
-    >
-      <summary class="cursor-pointer text-neutral-400 hover:text-neutral-100">
-        Demo controls
-      </summary>
-      <div class="mt-3 flex flex-wrap gap-2">
-        <button
-          v-for="s in DEMO_SCENARIOS"
-          :key="s.id"
-          type="button"
-          class="rounded-md border px-2.5 py-1 text-xs"
-          :class="s.id === selectedId ? 'border-amber-400/60 bg-amber-900/30' : 'border-neutral-600 hover:bg-neutral-800'"
-          @click="selectScenario(s.id)"
-        >
-          {{ s.label }}
-        </button>
-        <button
-          type="button"
-          class="rounded-md border border-neutral-600 px-2.5 py-1 text-xs hover:bg-neutral-800"
-          @click="resetDemo"
-        >
-          Reset
-        </button>
-        <button
-          type="button"
-          class="rounded-md border border-rose-700/60 px-2.5 py-1 text-xs hover:bg-rose-950/40"
-          @click="simulateVanishSelected"
-        >
-          Usuń zaznaczoną sztukę
-        </button>
-      </div>
-      <p class="mt-2 text-xs text-neutral-500">
-        Shared leaves: InventoryList + InventoryItemDetails + EquipmentPanel. Fixture-local only —
-        no live store / WorldBundle / save. {{ scenario.note }}
-      </p>
-    </details>
+    <template #controls>
+      <DemoButton
+        v-for="s in DEMO_SCENARIOS"
+        :key="s.id"
+        :label="s.label"
+        variant="outline"
+        :active="s.id === selectedId"
+        @click="selectScenario(s.id)"
+      />
+      <DemoButton
+        label="Reset"
+        variant="outline"
+        @click="resetDemo"
+      />
+      <DemoButton
+        label="Usuń zaznaczoną sztukę"
+        variant="outline"
+        danger
+        @click="simulateVanishSelected"
+      />
+    </template>
+
+    <template #log>
+      <li
+        v-for="(line, i) in log"
+        :key="i"
+      >
+        {{ line }}
+      </li>
+    </template>
 
     <div
       class="sv-inventory-stage-b mx-auto mt-4 flex w-full max-w-7xl flex-col gap-3 rounded-lg border border-neutral-700 bg-(--surface-solid) p-5"
@@ -253,7 +246,7 @@ if (typeof window !== 'undefined') {
           />
           <div
             v-else
-            class="flex min-h-[12rem] items-center justify-center rounded-lg border border-dashed border-neutral-700 text-sm text-neutral-500"
+            class="flex min-h-48 items-center justify-center rounded-lg border border-dashed border-neutral-700 text-sm text-neutral-500"
           >
             Wybierz przedmiot
           </div>
@@ -359,18 +352,5 @@ if (typeof window !== 'undefined') {
         />
       </div>
     </div>
-
-    <ul
-      v-if="log.length"
-      class="sv-ui-scroll mx-auto mt-3 max-h-28 max-w-7xl space-y-0.5 overflow-y-auto font-mono text-[11px] text-neutral-500"
-      aria-label="Demo action log"
-    >
-      <li
-        v-for="(line, i) in log"
-        :key="i"
-      >
-        {{ line }}
-      </li>
-    </ul>
   </DemoShell>
 </template>
