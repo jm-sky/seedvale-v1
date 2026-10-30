@@ -207,27 +207,27 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/chunkManager.ts`
 
-- `applyChunkWaterDayNight` — function — line 1177
-- `applyModificationToTile` — function — line 938
+- `applyChunkWaterDayNight` — function — line 1182
+- `applyModificationToTile` — function — line 943
 - `ChunkManager` — type — line 563
 - `ChunkManagerConfig` — type — line 345
-- `createChunkManager` — function — line 1202
+- `createChunkManager` — function — line 1207
   - domain: world-terrain
   - system: chunk-manager
   - role: Owns terrain chunk streaming, sampling and environment-facing world queries.
   - simulation: on-demand
   - performance: nearby-only
-- `CropHarvestOutcome` — type — line 1191
-- `drainByBudget` — function — line 1152
+- `CropHarvestOutcome` — type — line 1196
+- `drainByBudget` — function — line 1157
 - `FinalizeStage` — type — line 459
-- `pickNearestQueuedKey` — function — line 1112
-- `pickNextFinalizeKey` — function — line 1130
-- `ResidentChunkSnapshot` — type — line 1017
-- `sampleResidentHeight` — function — line 1037
-- `sampleResidentLocalWater` — function — line 1085
-- `sampleResidentSurfaceGround` — function — line 1057
-- `TerrainModification` — type — line 895
-- `tickChunkWaterSurfaces` — function — line 1165
+- `pickNearestQueuedKey` — function — line 1117
+- `pickNextFinalizeKey` — function — line 1135
+- `ResidentChunkSnapshot` — type — line 1022
+- `sampleResidentHeight` — function — line 1042
+- `sampleResidentLocalWater` — function — line 1090
+- `sampleResidentSurfaceGround` — function — line 1062
+- `TerrainModification` — type — line 900
+- `tickChunkWaterSurfaces` — function — line 1170
 
 ## `terrain/chunkMeshCache.ts`
 

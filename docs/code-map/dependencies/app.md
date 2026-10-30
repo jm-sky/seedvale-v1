@@ -1056,6 +1056,7 @@ Generated from TypeScript imports.
 - `items/tradeGrievance.ts`
 - `items/treasureGameplay.ts`
 - `items/weaponMaintenance.ts`
+- `perf/flags.ts`
 - `perf/index.ts`
 - `persistence/saveData.ts`
 - `persistence/saveDb.ts`

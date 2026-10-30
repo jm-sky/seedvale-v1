@@ -739,4 +739,8 @@ Visual (runs 1 and 3): morning/late-morning home settlement (`Osada Brzozowa`), 
 
 Keep Phase 1 A. Streaming first-use hitch dropped from multi-hundred ms after frame 0 to **<100 ms**. Residual frame-0 cost is controlled loading-time (overlay still up). Program count did not grow. No GL errors. Next: Phase C (instancing/mask families), not another `compileAsync` layer.
 
+## 20. Phase C follow-up — streamed template families (Q17 E1, 2026-10-30)
+
+Windows `stream` evidence showed species absent from the home chunks (`maple_1` bark, `tree_b` `Green`, fern `Leaves`) still linking their program mid-travel in the mirror pass. `prewarmRenderPrograms(renderer, scene, camera, instancedTemplates)` now also stages each loaded batched chunk-content template as its `InstancedMesh` family (`ChunkManager.programPrewarmTemplates()`), same loading window, no per-chunk/per-tick compile. Opt-in `?prewarmTemplates=1` until the A/B. Details, character/river follow-ups: [Q17 recon](../research/v1-revival/2026-10-30--q17-travel-stutter-recon.md).
+
 > **Zrób git commit i push do main, rebase jeżeli trzeba**

@@ -68,9 +68,9 @@ Generated from exported TypeScript symbols.
 
 ## `render/programPrewarm.ts`
 
-- `buildProgramPrewarmStaging` — function — line 134
-- `disposeProgramPrewarmStaging` — function — line 162
-- `prewarmRenderPrograms` — function — line 203
+- `buildProgramPrewarmStaging` — function — line 151
+- `disposeProgramPrewarmStaging` — function — line 196
+- `prewarmRenderPrograms` — function — line 239
 - `ProgramPrewarmResult` — type — line 50
 - `ProgramPrewarmStaging` — type — line 64
 

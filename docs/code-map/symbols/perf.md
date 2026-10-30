@@ -82,6 +82,7 @@ Generated from exported TypeScript symbols.
 - `isGrassMainCapEnabled` — function — line 103
 - `isPerfUrlEnabled` — function — line 21
 - `isProgramCensusUrlEnabled` — function — line 31
+- `isTemplateProgramPrewarmEnabled` — function — line 134
 - `parseBenchmarkScenarioId` — function — line 71
 - `parsePointLightBudgetFlag` — function — line 52
 - `pointLightBudgetFromUrl` — function — line 65
