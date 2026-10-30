@@ -79,10 +79,11 @@ Generated from exported TypeScript symbols.
 - `isBenchmarkAutorunEnabled` — function — line 84
 - `isChestInstancingEnabled` — function — line 112
 - `isFrameMatrixOnceEnabled` — function — line 94
+- `isGodRaysSoftEnabled` — function — line 132
 - `isGrassMainCapEnabled` — function — line 103
 - `isPerfUrlEnabled` — function — line 21
 - `isProgramCensusUrlEnabled` — function — line 31
-- `isTemplateProgramPrewarmEnabled` — function — line 134
+- `isTemplateProgramPrewarmEnabled` — function — line 144
 - `parseBenchmarkScenarioId` — function — line 71
 - `parsePointLightBudgetFlag` — function — line 52
 - `pointLightBudgetFromUrl` — function — line 65

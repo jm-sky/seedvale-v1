@@ -972,7 +972,7 @@ Generated from exported TypeScript symbols.
 
 ## `world/createLights.ts`
 
-- `createLights` — function — line 24
+- `createLights` — function — line 29
 - `WorldLights` — type — line 4
 
 ## `world/createOcean.ts`

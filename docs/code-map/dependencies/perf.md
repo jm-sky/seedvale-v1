@@ -197,6 +197,7 @@ Generated from TypeScript imports.
 - `main.ts`
 - `perf/flags.test.ts`
 - `perf/index.ts`
+- `render/createPostProcessing.ts`
 - `settlement/props.ts`
 - `terrain/chunkManager.ts`
 

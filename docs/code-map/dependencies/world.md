@@ -2037,6 +2037,12 @@ Generated from TypeScript imports.
 - `settlement/createSettlement.ts`
 - `settlement/livestock.ts`
 
+## `world/createLights.test.ts`
+
+**Imports**
+
+- `world/createLights.ts`
+
 ## `world/createLights.ts`
 
 **Imports**
@@ -2049,6 +2055,7 @@ Generated from TypeScript imports.
 - `app/graphicsSettings.ts`
 - `app/renderStack.ts`
 - `tools/assetBrowser/viewer/createViewerScene.ts`
+- `world/createLights.test.ts`
 
 ## `world/createOcean.ts`
 

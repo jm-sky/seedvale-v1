@@ -95,6 +95,7 @@ Generated from TypeScript imports.
 - `config/worldConfig.ts`
 - `debug/debugMode.ts`
 - `debug/renderStateDebug.ts`
+- `perf/flags.ts`
 - `render/godRaysShader.ts`
 - `render/gradedOutputPass.ts`
 

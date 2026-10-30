@@ -38,9 +38,9 @@ Generated from exported TypeScript symbols.
 
 ## `render/createPostProcessing.ts`
 
-- `createPostProcessing` — function — line 61
-- `PostPassId` — type — line 15
-- `PostProcessing` — type — line 17
+- `createPostProcessing` — function — line 62
+- `PostPassId` — type — line 16
+- `PostProcessing` — type — line 18
 
 ## `render/createRenderer.ts`
 
@@ -53,7 +53,7 @@ Generated from exported TypeScript symbols.
 
 ## `render/godRaysShader.ts`
 
-- `GodRaysShader` — const — line 10
+- `GodRaysShader` — const — line 19
 
 ## `render/gradedOutputPass.ts`
 
