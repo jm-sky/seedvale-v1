@@ -79,3 +79,5 @@ Locate where NPC/fauna visuals are assembled and when relative to `prewarmRender
 ## 4. Measurement status
 
 No WSL A/B in this session: three other agent sessions were running in WSL, and the runbook ([§WSL stack and stability](../../performance/2026-10-27--arc-baseline-runbook.md)) asks to stop extra agent sessions before WSL benchmarks (a VM crash kills every WSL process). E1 stays opt-in; the A/B is listed in queue §4.
+
+**Windows A/B (2026-10-30, SHA `fce67e81`, A B B A):** [report](../../performance/results/2026-10-30--win-q17e1-template-prewarm-ab.md). Structural goal met (`MapleTree_Bark`, `Leaves`, `Green` first-use gone, render-side ≥ 100 ms frames gone); mean FPS / p50 / p95 / ≥ 100 ms counts inconclusive at n = 2 → default stays OFF, author question in queue §3.

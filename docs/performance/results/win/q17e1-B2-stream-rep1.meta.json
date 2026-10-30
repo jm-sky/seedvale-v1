@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "gitSha": "fce67e812c8ba3dcc54eaa801154dc2e19f584ce",
+  "runId": "2026-10-30T14-38-37-214Z-w77ouv",
+  "scenario": "stream",
+  "phase": "warm",
+  "canonical": true,
+  "generatedAt": "2026-10-30T14:39:29.269Z",
+  "fixtureVersion": "tools-001-v1",
+  "quality": "High",
+  "hardwareClass": "target-gpu",
+  "notes": "benchmark series q17e1-B2 rep1; native Windows Chrome headed, fresh profile, 30s cooldown, query &prewarmTemplates=1",
+  "platform": "windows"
+}
