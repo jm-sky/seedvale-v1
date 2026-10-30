@@ -8,6 +8,7 @@ import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPa
 import type { WorldConfig } from '../config/worldConfig'
 import { isRenderStateDebugMode } from '../debug/debugMode'
 import { sampleRenderState } from '../debug/renderStateDebug'
+import { isGodRaysSoftEnabled } from '../perf/flags'
 import { GodRaysShader } from './godRaysShader'
 import { createGradedOutputPass } from './gradedOutputPass'
 import type { Camera, PerspectiveCamera, Scene, WebGLRenderer } from 'three'
@@ -102,6 +103,8 @@ export function createPostProcessing(
   composer.addPass(bloomPass)
 
   const godRaysPass = new ShaderPass(GodRaysShader)
+  // `?godRaysSoft=0` — issue-016 shader for the issue-040 before/after A/B.
+  if (!isGodRaysSoftEnabled()) godRaysPass.material.defines.GOD_RAYS_LEGACY = ''
   composer.addPass(godRaysPass)
 
   // Tone mapping / output encoding, then (folded into the same pass — see

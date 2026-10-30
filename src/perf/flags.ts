@@ -125,6 +125,16 @@ export function isActorSkeletonSharingEnabled(): boolean {
   return flagOn(p.get('actorSkeletons'))
 }
 
+/** Issue 040: god-rays shader with per-tap HDR cap, normalised accumulation,
+ *  soft shoulder and jittered taps (`render/godRaysShader.ts`). On by
+ *  default; `?godRaysSoft=0` compiles the issue-016 shader for the
+ *  before/after visual + GPU A/B. */
+export function isGodRaysSoftEnabled(): boolean {
+  const p = params()
+  if (!p?.has('godRaysSoft')) return true
+  return flagOn(p.get('godRaysSoft'))
+}
+
 /** Q17 Track E (E1): loading-window prewarm also compiles the instanced
  *  program families of every loaded chunk-content template
  *  (`render/programPrewarm.ts`, `ChunkManager.programPrewarmTemplates`), so

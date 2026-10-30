@@ -59,6 +59,7 @@ Untriaged observations are captured in [INBOX.md](./INBOX.md) (IMP-001–IMP-006
 | 037 | [2026-08-19--037--village-campfire-flat-pad.md](./2026-08-19--037--village-campfire-flat-pad.md) | Ognisko wioskowe bez równego kawałka terenu | `todo` |
 | 038 | `2026-08-20--038--npc-labels-and-sound-query-param.md` | Ukryć dalsze NPC labels; dodać `noSound=true` query param | `todo` |
 | 039 | [2026-08-24--039--terrain-prepare-level-floorheights-not-updated.md](./2026-08-24--039--terrain-prepare-level-floorheights-not-updated.md) | Wyrównaj/Przygotuj teren (i zwykłe kopanie) nie zmieniają wizualnie terenu — `applyModificationToTile` pisze tylko do `tile.heights`, mesh czyta `tile.floorHeights` | `done` |
+| 040 | [2026-10-30--040--god-rays-glare-and-stepped-edges.md](./2026-10-30--040--god-rays-glare-and-stepped-edges.md) | God rays oślepiają przy niskim słońcu (suma HDR zawsze saturuje clamp 0.2) i mają schodkowe krawędzie — normalizacja, cap HDR per tap, miękkie ramię, jitter; `?godRaysSoft=0` = stary shader | `verification needed` |
 
 Review-owned follow-ups (details remain in the review; no duplicate issue files or approved queue):
 
