@@ -16,10 +16,10 @@
  * @subdomain world-gen
  */
 import { CAVE, CAVE_MIN_SPACING_M, CONTINENT_CAVE_COUNT, SANDBOX_CAVE_EDGE_MARGIN_M, SANDBOX_CAVE_MIN_SPACING_M, SEA_LEVEL } from '../caveConfig'
-import { hashInts, Rng, SALTS } from '../rng'
 import { buildCaveGrid, caveAllPoints, caveRoutes, caveTopHeight, CELL_SKY, CELL_UNDER, clearanceFor, spineFloor } from '../caveShape'
-import { idx, nearestCell, sampleGrid } from '../grid'
 import { Biome, type CaveSize, type GenCave, type GenCaveBranch, type WorldWindow } from '../caveTypes'
+import { idx, nearestCell, sampleGrid } from '../grid'
+import { hashInts, Rng, SALTS } from '../rng'
 
 /** Fields the placement reads: one scene window (sampled with the window's own cell grid). */
 export interface CaveFields {

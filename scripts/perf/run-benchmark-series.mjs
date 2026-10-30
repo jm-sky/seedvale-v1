@@ -59,7 +59,7 @@ async function runOne(scenario, rep) {
     // WSL2: Mesa defaults to llvmpipe (software); d3d12 reaches the real GPU through /dev/dxg.
     // WSL2: no GNOME keyring prompt ("Choose password for new keyring" blocks the page, Q18) and
     // no "Can't update Chrome" infobar changing the viewport.
-    ...(IS_WIN ? [] : ['--ignore-gpu-blocklist', '--password-store=basic', "--simulate-outdated-no-au=Tue, 31 Dec 2099 23:59:59 GMT"]), url,
+    ...(IS_WIN ? [] : ['--ignore-gpu-blocklist', '--password-store=basic', '--simulate-outdated-no-au=Tue, 31 Dec 2099 23:59:59 GMT']), url,
   ], { stdio: 'ignore', env: IS_WIN ? process.env : { GALLIUM_DRIVER: 'd3d12', ...process.env } })
   try {
     const ws = new WebSocket(await cdpConnect())
@@ -69,7 +69,7 @@ async function runOne(scenario, rep) {
     if (!IS_WIN) {
       // A WSL run on a software rasterizer is not a WSL-baseline run (Q18: Mesa
       // falls back to llvmpipe when GALLIUM_DRIVER=d3d12 does not take). Abort early.
-      const renderer = await ev(`(() => { const g = document.createElement('canvas').getContext('webgl2'); const e = g && g.getExtension('WEBGL_debug_renderer_info'); return e ? String(g.getParameter(e.UNMASKED_RENDERER_WEBGL)) : '' })()`)
+      const renderer = await ev('(() => { const g = document.createElement(\'canvas\').getContext(\'webgl2\'); const e = g && g.getExtension(\'WEBGL_debug_renderer_info\'); return e ? String(g.getParameter(e.UNMASKED_RENDERER_WEBGL)) : \'\' })()')
       if (!/D3D12/i.test(renderer) || /llvmpipe|SwiftShader|softpipe/i.test(renderer)) {
         throw new Error(`WSL renderer is not hardware D3D12: "${renderer}" — check GALLIUM_DRIVER=d3d12 / chrome://gpu`)
       }

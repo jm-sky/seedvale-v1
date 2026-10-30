@@ -16,7 +16,7 @@ const profile = mkdtempSync(join(tmpdir(), 'sv-trace-'))
 const chrome = spawn('C:/Program Files/Google/Chrome/Application/chrome.exe', [
   `--remote-debugging-port=${DEBUG}`, `--user-data-dir=${profile}`, '--no-first-run', '--no-default-browser-check',
   '--disable-backgrounding-occluded-windows', '--disable-renderer-backgrounding', '--disable-background-timer-throttling',
-  '--window-size=1600,900', '--window-position=0,0', `http://localhost:${port}/?benchmark=${scenario}${process.env.SEEDVALE_QUERY ?? ""}`,
+  '--window-size=1600,900', '--window-position=0,0', `http://localhost:${port}/?benchmark=${scenario}${process.env.SEEDVALE_QUERY ?? ''}`,
 ], { stdio: 'ignore' })
 
 let id = 0
@@ -72,7 +72,7 @@ try {
   await send('Tracing.end')
   const { stream } = await complete
   console.log('tracingComplete, stream', stream)
-  const file = join(outDir, `trace-${scenario}-${sha.slice(0, 8)}${process.env.SEEDVALE_TRACE_TAG ? "-" + process.env.SEEDVALE_TRACE_TAG : ""}.json`)
+  const file = join(outDir, `trace-${scenario}-${sha.slice(0, 8)}${process.env.SEEDVALE_TRACE_TAG ? '-' + process.env.SEEDVALE_TRACE_TAG : ''}.json`)
   writeFileSync(file, '')
   let chunks = 0
   for (;;) {

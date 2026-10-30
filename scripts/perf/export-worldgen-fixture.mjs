@@ -71,7 +71,7 @@ const chrome = spawn(CHROME, [
   `--remote-debugging-port=${DEBUG}`, `--user-data-dir=${profileDir}`, '--no-first-run', '--no-default-browser-check',
   '--disable-backgrounding-occluded-windows', '--disable-renderer-backgrounding', '--disable-background-timer-throttling',
   '--window-size=1600,900', '--window-position=0,0',
-  ...(IS_WIN ? [] : ['--ignore-gpu-blocklist', '--password-store=basic', "--simulate-outdated-no-au=Tue, 31 Dec 2099 23:59:59 GMT"]), url,
+  ...(IS_WIN ? [] : ['--ignore-gpu-blocklist', '--password-store=basic', '--simulate-outdated-no-au=Tue, 31 Dec 2099 23:59:59 GMT']), url,
 ], { stdio: 'ignore', env: IS_WIN ? process.env : { GALLIUM_DRIVER: 'd3d12', ...process.env } })
 
 try {
