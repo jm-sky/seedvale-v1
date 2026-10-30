@@ -191,6 +191,9 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `persistence/worldgenCacheDb.test.ts`
+- `persistence/worldgenFixture.test.ts`
+- `persistence/worldgenFixture.ts`
+- `persistence/worldgenFixtureCodec.ts`
 - `settlement/roadNetwork.test.ts`
 - `settlement/roadRouteWorldgenCache.test.ts`
 - `settlement/roadRouteWorldgenCache.ts`
@@ -217,3 +220,56 @@ Generated from TypeScript imports.
 - `world/caves/caveWorldgenCache.ts`
 - `world/locations/abandonedCemeteryCache.ts`
 - `world/locations/locationsCoarseCache.ts`
+
+## `persistence/worldgenFixture.test.ts`
+
+**Imports**
+
+- `persistence/worldgenCacheDb.ts`
+- `persistence/worldgenFixture.ts`
+- `persistence/worldgenFixtureCodec.ts`
+- `persistence/worldgenFixtureNamespaces.ts`
+- `settlement/roadRouteWorldgenCache.ts`
+- `settlement/settlementWorldgenCache.ts`
+- `world/caves/caveWorldgenCache.ts`
+- `world/locations/abandonedCemeteryCache.ts`
+- `world/locations/locationsCoarseCache.ts`
+
+## `persistence/worldgenFixture.ts`
+
+**Imports**
+
+- `persistence/worldgenCacheDb.ts`
+- `persistence/worldgenFixtureCodec.ts`
+- `persistence/worldgenFixtureNamespaces.ts`
+
+**Imported by**
+
+- `app/createApp.ts`
+- `persistence/worldgenFixture.test.ts`
+
+## `persistence/worldgenFixtureCodec.ts`
+
+**Imports**
+
+- `persistence/worldgenCacheDb.ts`
+
+**Imported by**
+
+- `persistence/worldgenFixture.test.ts`
+- `persistence/worldgenFixture.ts`
+
+## `persistence/worldgenFixtureNamespaces.ts`
+
+**Imports**
+
+- `settlement/roadRouteWorldgenCache.ts`
+- `settlement/settlementWorldgenCache.ts`
+- `world/caves/caveWorldgenCache.ts`
+- `world/locations/abandonedCemeteryCache.ts`
+- `world/locations/locationsCoarseCache.ts`
+
+**Imported by**
+
+- `persistence/worldgenFixture.test.ts`
+- `persistence/worldgenFixture.ts`

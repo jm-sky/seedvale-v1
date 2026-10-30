@@ -19,6 +19,7 @@ export { createRunId, getBuildGitSha } from './buildInfo'
 export {
   benchmarkScenarioFromUrl,
   DEFAULT_POINT_LIGHT_BUDGET,
+  isBenchmarkAutorunEnabled,
   isPerfUrlEnabled,
   isProgramCensusUrlEnabled,
   parseBenchmarkScenarioId,

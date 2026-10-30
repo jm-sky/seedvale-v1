@@ -1,0 +1,53 @@
+{
+  "format": 1,
+  "fixtures": [
+    {
+      "id": "415424794-default",
+      "file": "415424794-default.svwc",
+      "seed": 415424794,
+      "profile": "default",
+      "fixtureVersion": 1,
+      "hash": "677ccab657bb575e8f47e8eeacf7e4bbd74027b8d8072215bfc36ee8ac4b1feb",
+      "bytes": 2437858,
+      "records": 231,
+      "namespaces": {
+        "caves-v2": {
+          "version": 2,
+          "records": 9
+        },
+        "road-routes": {
+          "version": 1,
+          "records": 116
+        },
+        "settlement-definitions": {
+          "version": 3,
+          "records": 106
+        }
+      }
+    },
+    {
+      "id": "42-benchmark",
+      "file": "42-benchmark.svwc",
+      "seed": 42,
+      "profile": "benchmark",
+      "fixtureVersion": 1,
+      "hash": "25a47d886f036aafba7cf2b638ef3111f8e867b32c1eed44f293aed40f1f1004",
+      "bytes": 3061619,
+      "records": 232,
+      "namespaces": {
+        "caves-v2": {
+          "version": 2,
+          "records": 9
+        },
+        "road-routes": {
+          "version": 1,
+          "records": 115
+        },
+        "settlement-definitions": {
+          "version": 3,
+          "records": 108
+        }
+      }
+    }
+  ]
+}

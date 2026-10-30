@@ -271,10 +271,6 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-46. `tools-020` — **Worldgen cache boot fixture (benchmark seed + reference seed)**  
-  🟡 `M` · **Score:**  17  
-   → **unlocks:** 0/0
-
 ---
 
 ## Initially Blocked

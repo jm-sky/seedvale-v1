@@ -2245,6 +2245,8 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `app/worldBundle.ts`
+- `persistence/worldgenFixture.test.ts`
+- `persistence/worldgenFixtureNamespaces.ts`
 - `settlement/roadNetwork.test.ts`
 - `settlement/roadNetwork.ts`
 - `settlement/roadRouteWorldgenCache.test.ts`
@@ -2736,6 +2738,8 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `app/worldBundle.ts`
+- `persistence/worldgenFixture.test.ts`
+- `persistence/worldgenFixtureNamespaces.ts`
 - `settlement/settlementPlanCache.ts`
 - `settlement/settlementWorldgenCache.test.ts`
 

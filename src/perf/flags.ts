@@ -79,6 +79,14 @@ export function benchmarkScenarioFromUrl(): BenchmarkScenarioId | null {
   return parseBenchmarkScenarioId(params()?.get('benchmark'))
 }
 
+/** `?benchmarkAutorun=0` — boot the `?benchmark=` fixture world without starting
+ *  the run (worldgen fixture export, plan tools-020). */
+export function isBenchmarkAutorunEnabled(): boolean {
+  const p = params()
+  if (!p?.has('benchmarkAutorun')) return true
+  return flagOn(p.get('benchmarkAutorun'))
+}
+
 /** Single per-frame scene matrix update (`src/render/frameSceneMatrices.ts`, queue Q14).
  *  On by default since the native Windows A/B (frame p50 -3.1 ms, see
  *  docs/performance/results/2026-10-29--win-q14-frame-matrix-once-ab.md);

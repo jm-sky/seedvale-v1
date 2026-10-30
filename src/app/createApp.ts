@@ -80,6 +80,7 @@ import {
   createGrassFinalizationDiag,
   createPassSubmissionCollector,
   createPerfMonitor,
+  isBenchmarkAutorunEnabled,
   isPerfUrlEnabled,
   setActiveAgentCpuDiag,
   setActiveGpuTimer,
@@ -97,6 +98,7 @@ import {
   listSaves,
   setActiveSaveId,
 } from '../persistence/saveDb'
+import { exportWorldgenFixture, getWorldgenFixtureStats, importWorldgenFixture } from '../persistence/worldgenFixture'
 import { buildCharacterPresentation } from '../player/characterPresentation'
 import { humanBodyCarryCapacityKg } from '../player/humanCarryCapacity'
 import { createPlayerCombatMode } from '../player/playerCombatMode'
@@ -764,6 +766,10 @@ export async function createApp(
   }
 
   loadingScreen.setStage('terrain')
+  // Plan tools-020 — seed the disposable worldgen cache from the shipped boot
+  // fixture (benchmark seed / reference seed) before any namespace owner hydrates.
+  bootMark('worldgenFixture')
+  await importWorldgenFixture(config.seed, fixture ? 'benchmark' : 'default')
   bootMark('createWorldBundle')
   const { bundle, backgroundReady: worldBundleBackgroundReady } = await createWorldBundle(
     scene,
@@ -3913,9 +3919,13 @@ export async function createApp(
 
   if (typeof window !== 'undefined') {
     window.__seedvaleRunBenchmark = (id, durationSec, options) => benchmark.run(id, durationSec, options)
+    window.__seedvaleWorldgenFixtureStats = getWorldgenFixtureStats
+    window.__seedvaleExportWorldgenFixture = (profile, meta) => exportWorldgenFixture(config.seed, profile, meta)
   }
 
-  if (autoBench) void benchmark.run(autoBench)
+  // `?benchmarkAutorun=0` boots the fixture world without starting the run
+  // (worldgen fixture export, plan tools-020).
+  if (autoBench && isBenchmarkAutorunEnabled()) void benchmark.run(autoBench)
 
   bootMarksSummary()
 

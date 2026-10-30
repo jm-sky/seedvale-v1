@@ -75,9 +75,10 @@ Generated from exported TypeScript symbols.
 
 - `benchmarkScenarioFromUrl` — function — line 78
 - `DEFAULT_POINT_LIGHT_BUDGET` — const — line 40
-- `isChestInstancingEnabled` — function — line 104
-- `isFrameMatrixOnceEnabled` — function — line 86
-- `isGrassMainCapEnabled` — function — line 95
+- `isBenchmarkAutorunEnabled` — function — line 84
+- `isChestInstancingEnabled` — function — line 112
+- `isFrameMatrixOnceEnabled` — function — line 94
+- `isGrassMainCapEnabled` — function — line 103
 - `isPerfUrlEnabled` — function — line 21
 - `isProgramCensusUrlEnabled` — function — line 31
 - `parseBenchmarkScenarioId` — function — line 71

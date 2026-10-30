@@ -1059,6 +1059,7 @@ Generated from TypeScript imports.
 - `perf/index.ts`
 - `persistence/saveData.ts`
 - `persistence/saveDb.ts`
+- `persistence/worldgenFixture.ts`
 - `player/PlayerController.ts`
 - `player/PlayerNeeds.ts`
 - `player/PlayerSkills.ts`

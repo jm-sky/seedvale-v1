@@ -1,7 +1,7 @@
 # Plan: Worldgen cache boot fixture (benchmark seed + reference seed)
 
 **Created:** 2026-10-30  
-**Status:** `planned` 📋  
+**Status:** `verification needed` 🔍
 **Priority:** medium · **Effort:** M  
 **Depends on:** none  
 **Domain:** `tools`  
@@ -117,3 +117,11 @@ Scenario anchor preloads (before the window, so allowed by (a)) are deliberately
 - Caching more data (new namespaces) — only where an owner exists; nothing new in v1.
 - Shipping the fixture in production builds for players (it lives in `public/`, so it is in the build; acceptable size-wise, but the player-facing value is only for these two seeds).
 - The GLB/background boot spans noted above (LOOSE-ENDS).
+
+## Implementation notes (Q21, 2026-10-30)
+
+- Code: `src/persistence/worldgenFixture{,Codec,Namespaces}.ts`, import hook before `createWorldBundle` in `createApp.ts` (boot only — the in-session world-rebuild path does not re-import), `?worldgenFixture=0`, `?benchmarkAutorun=0`.
+- Deviation: no per-owner `flush()` hook. The exporter waits for `__seedvaleReady`, settles 20 s for the debounced writes and re-exports until the record count is stable. Benchmark `meta.worldgenFixture` is read by `run-benchmark-series.mjs` from `window.__seedvaleWorldgenFixtureStats()`.
+- `default` profile is exported via `?fly&seed=415424794` (default `WorldConfig`, no start screen). `locations-coarse` / `abandoned-cemeteries` had 0 records at capture.
+- The seed-42 fixture is 2990 KiB, just under the 3 MB budget: any growth of the namespaces needs a budget decision.
+- Not done: owner hit test (settlement fingerprint match/mismatch — importer never rewrites fingerprints) and the `stream` in-window counter comparison (fixture vs `?worldgenFixture=0`).

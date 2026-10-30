@@ -199,6 +199,7 @@ Generated from exported TypeScript symbols.
 - `getCacheRecord` — function — line 81
   - domain: persistence
   - system: worldgen-cache
+- `listAllCacheRecords` — function — line 205
 - `listCacheRecords` — function — line 57
 - `putCacheRecords` — function — line 127
 
@@ -211,3 +212,43 @@ Generated from exported TypeScript symbols.
   - role: The one stable-fingerprint primitive every worldgen-cache namespace owner uses to turn its deterministic inputs into the `fingerprint` field of a `CacheRecord` (plan world-015 §8). Namespace owners decide *what* goes into the fingerprint; this module only decides how a value becomes a stable string.
   - integration: A fingerprint mismatch is always a plain cache miss, never a migration and never a correctness problem — so this hash may be cheap and non-cryptographic.
 - `worldgenFingerprint` — function — line 43
+
+## `persistence/worldgenFixture.ts`
+
+- `clearWorldgenFixtureMarker` — function — line 181
+- `exportWorldgenFixture` — function — line 153
+- `filterFixtureRecords` — function — line 79
+- `getWorldgenFixtureStats` — function — line 56
+- `importWorldgenFixture` — function — line 93
+- `isWorldgenFixtureEnabled` — function — line 61
+- `WorldgenFixtureExport` — type — line 139
+- `WorldgenFixtureIndex` — type — line 40
+- `WorldgenFixtureIndexEntry` — type — line 27
+- `WorldgenFixtureProfile` — type — line 25
+  - domain: persistence
+  - system: worldgen-cache
+  - role: Boot-time import (and dev export) of a versioned worldgen cache fixture (plan tools-020): the benchmark seed and the reference seed ship their small worldgen cache namespaces in `public/worldgen-fixtures/`, so a fresh browser profile does not regenerate caves, settlement definitions and road routes during the loading phase.
+  - integration: Runs before `createWorldBundle()` so every namespace owner's hydrate sees the records. Fingerprints are never checked or rewritten here — owners already treat a mismatch as a miss, so a stale fixture costs loading time, never correctness. Any failure resolves quietly and the world boots cold.
+- `WorldgenFixtureStats` — type — line 42
+
+## `persistence/worldgenFixtureCodec.ts`
+
+- `decodeWorldgenFixture` — function — line 146
+- `encodeWorldgenFixture` — function — line 118
+- `FixtureTypedArrayKind` — type — line 19
+- `gunzipBytes` — function — line 192
+- `gzipBytes` — function — line 187
+- `WORLDGEN_FIXTURE_FORMAT` — const — line 15
+  - domain: persistence
+  - system: worldgen-cache
+  - role: Binary container for a worldgen cache boot fixture (plan tools-020): a JSON header plus one binary section, gzip-wrapped. Payload typed arrays are moved out of the JSON into the binary section (`{ $ta, offset, length }` references) because IndexedDB structured clone keeps them but JSON does not.
+  - integration: Pure (no IndexedDB / fetch); `worldgenFixture.ts` owns import and export. Decoding never throws — corrupt input yields `null`.
+- `WorldgenFixtureContents` — type — line 39
+- `WorldgenFixtureHeader` — type — line 29
+
+## `persistence/worldgenFixtureNamespaces.ts`
+
+- `WORLDGEN_FIXTURE_NAMESPACES` — const — line 18
+  - domain: persistence
+  - system: worldgen-cache
+  - role: Namespaces that may ship in a worldgen cache boot fixture (plan tools-020) with the owner's *current* version. The importer drops records of any other version (a stale-version record is never evicted by `enforceCacheCap()`), the exporter refuses namespaces not listed here, and `pnpm worldgen:fixture:check` compares `public/worldgen-fixtures/index.json` against it. `chunk-tiles` is deliberately absent (78 MB, no boot gain). A new namespace joins here deliberately, with its owner's constants.

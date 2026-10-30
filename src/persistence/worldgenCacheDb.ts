@@ -198,3 +198,19 @@ export async function enforceCacheCap(seed: number, namespace: string, version: 
     // ignore — cleanup is best-effort, an oversized cache is not a correctness bug
   }
 }
+
+/** Every record for `seed`, any namespace/version — only for the worldgen
+ *  fixture exporter (plan tools-020), which filters to its namespace registry.
+ *  Gameplay paths use the namespaced readers above. */
+export async function listAllCacheRecords(seed: number): Promise<CacheRecord[]> {
+  try {
+    const db = await openSeedvaleDb()
+    try {
+      return await getAllBySeed(db, seed)
+    } finally {
+      db.close()
+    }
+  } catch {
+    return []
+  }
+}

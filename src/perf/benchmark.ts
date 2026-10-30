@@ -573,6 +573,11 @@ declare global {
     __copyBenchmarkReport?: () => void
     __getBenchmarkReport?: () => string
     __seedvaleReady?: boolean
+    __seedvaleWorldgenFixtureStats?: () => import('../persistence/worldgenFixture').WorldgenFixtureStats
+    __seedvaleExportWorldgenFixture?: (
+      profile: import('../persistence/worldgenFixture').WorldgenFixtureProfile,
+      meta: { fixtureVersion: number, gitSha: string },
+    ) => Promise<import('../persistence/worldgenFixture').WorldgenFixtureExport>
     __seedvalePerfWindow?: { startMs: number; endMs: number }
   }
 }

@@ -1266,6 +1266,8 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `app/worldBundle.ts`
+- `persistence/worldgenFixture.test.ts`
+- `persistence/worldgenFixtureNamespaces.ts`
 - `world/caves/caveWorldgenCache.test.ts`
 - `world/createCaves.ts`
 
@@ -2946,6 +2948,8 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `app/createApp.ts`
+- `persistence/worldgenFixture.test.ts`
+- `persistence/worldgenFixtureNamespaces.ts`
 - `world/locations/abandonedCemeteryCache.test.ts`
 - `world/locations/worldLocationCatalog.test.ts`
 - `world/locations/worldLocationCatalog.ts`
@@ -3180,6 +3184,8 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `app/createApp.ts`
+- `persistence/worldgenFixture.test.ts`
+- `persistence/worldgenFixtureNamespaces.ts`
 - `world/locations/locationsCoarseCache.test.ts`
 
 ## `world/locations/lostTreasureEstateSearchArea.test.ts`
