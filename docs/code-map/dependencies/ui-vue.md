@@ -2,6 +2,16 @@
 
 Generated from TypeScript imports.
 
+## `ui-vue/NpcDialogueMenu.test.ts`
+
+**Imports**
+
+- `ai/NpcAgent.ts`
+- `items/Inventory.ts`
+- `quests/QuestManager.ts`
+- `settlement/createSettlement.ts`
+- `ui-vue/store.ts`
+
 ## `ui-vue/components/items/ammoSectionView.test.ts`
 
 **Imports**
@@ -625,6 +635,27 @@ Generated from TypeScript imports.
 - `ui/createTimeSkipOverlay.ts`
 - `ui/createToast.ts`
 
+## `ui-vue/npcDialogueGreeting.test.ts`
+
+**Imports**
+
+- `ai/dialogueTemplates.ts`
+- `ui-vue/npcDialogueGreeting.ts`
+
+## `ui-vue/npcDialogueGreeting.ts`
+
+**Imports**
+
+- `ai/dialogue.ts`
+- `ai/dialogueTemplates.ts`
+- `ai/npcVoiceLines.ts`
+- `quests/quests.ts`
+
+**Imported by**
+
+- `ui-vue/npcDialogueGreeting.test.ts`
+- `ui-vue/store.ts`
+
 ## `ui-vue/npcDialogueOpen.test.ts`
 
 **Imports**
@@ -728,6 +759,7 @@ Generated from TypeScript imports.
 **Imports**
 
 - `ai/NpcAgent.ts`
+- `ai/dialogue.ts`
 - `ai/npcSocialTitle.ts`
 - `ai/npcVoiceLines.ts`
 - `ai/voluntaryExpeditionJoin.ts`
@@ -761,6 +793,7 @@ Generated from TypeScript imports.
 - `settlement/settlementGenerator.ts`
 - `shared/PhysicalAttributes.ts`
 - `ui-vue/lib/npcPortrait.ts`
+- `ui-vue/npcDialogueGreeting.ts`
 - `ui/createQuickActions.ts`
 - `ui/createToast.ts`
 - `world/animalTraps.ts`
@@ -774,6 +807,7 @@ Generated from TypeScript imports.
 - `app/createApp.ts`
 - `app/dialogueTimeControl.ts`
 - `app/inventoryWiring.ts`
+- `ui-vue/NpcDialogueMenu.test.ts`
 - `ui-vue/composables/useOverlayScreen.ts`
 - `ui-vue/demos/character-skills/fixtures.ts`
 - `ui-vue/flavorDialogLifecycle.test.ts`

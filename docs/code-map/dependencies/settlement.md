@@ -457,6 +457,7 @@ Generated from TypeScript imports.
 - `settlement/createSettlementRollback.test.ts`
 - `settlement/lodgingResolver.ts`
 - `settlement/structureRepairCandidates.ts`
+- `ui-vue/NpcDialogueMenu.test.ts`
 - `ui-vue/npcDialogueOpen.test.ts`
 - `ui-vue/npcDialogueTrade.test.ts`
 - `ui-vue/npcDialogueVoice.test.ts`

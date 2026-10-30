@@ -239,6 +239,7 @@ Generated from TypeScript imports.
 - `settlement/storageVisuals.ts`
 - `settlements-npcs-007.test.ts`
 - `terrain/digAction.ts`
+- `ui-vue/NpcDialogueMenu.test.ts`
 - `ui-vue/components/items/inventoryHybridActions.test.ts`
 - `ui-vue/components/items/inventoryPresentation.test.ts`
 - `ui-vue/demos/inventory-list/fixtures.ts`

@@ -63,6 +63,7 @@ Generated from TypeScript imports.
 - `quests/opportunities/rpgQuestMatrices.test.ts`
 - `quests/suspiciousTransportCaveCache.test.ts`
 - `quests/worldKnowledgeResolver.ts`
+- `ui-vue/NpcDialogueMenu.test.ts`
 - `ui-vue/lib/questLogBuckets.test.ts`
 - `ui-vue/lib/questLogBuckets.ts`
 - `ui-vue/lib/questTerminalFeedback.test.ts`
@@ -954,6 +955,7 @@ Generated from TypeScript imports.
 - `ui-vue/lib/questLogBuckets.test.ts`
 - `ui-vue/lib/questLogBuckets.ts`
 - `ui-vue/lib/questTerminalFeedback.test.ts`
+- `ui-vue/npcDialogueGreeting.ts`
 - `ui-vue/npcDialogueOpen.test.ts`
 - `world/locations/guardLocalKnowledge.ts`
 

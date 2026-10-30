@@ -72,7 +72,14 @@ Generated from exported TypeScript symbols.
 - `currentActivityLine` — function — line 112
 - `familyPhrase` — function — line 66
 - `goodbyeLine` — function — line 198
+- `playerAssistanceRequestLine` — function — line 271
+- `playerGuardRewardRequestLine` — function — line 275
+- `playerJoinInvitationLine` — function — line 302
+- `playerJoinProposalAnswerLine` — function — line 284
+- `playerPayWageLine` — function — line 280
+- `playerQuestOfferAnswerLine` — function — line 288
 - `requestAssistanceLine` — function — line 223
+- `stableVariant` — function — line 258
 - `voluntaryJoinResponseLine` — function — line 242
 
 ## `ai/economicPressure.ts`
@@ -809,4 +816,5 @@ Generated from exported TypeScript symbols.
 - `NpcDecisionTarget` — type — line 19
   - domain: npc
 - `WEATHER_SEVERE_SHELTER_THRESHOLD` — const — line 57
+- `weatherShelterBarkAllowed` — function — line 98
 - `weatherShelterPressure` — function — line 68

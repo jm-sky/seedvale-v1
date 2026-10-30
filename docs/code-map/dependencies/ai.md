@@ -311,6 +311,7 @@ Generated from TypeScript imports.
 - `player/medicalTreatment.ts`
 - `settlement/createSettlement.ts`
 - `settlement/createSettlementRollback.test.ts`
+- `ui-vue/NpcDialogueMenu.test.ts`
 - `ui-vue/lib/drawMinimap.ts`
 - `ui-vue/lib/npcPortrait.test.ts`
 - `ui-vue/lib/npcPortrait.ts`
@@ -522,7 +523,9 @@ Generated from TypeScript imports.
 - `ai/reactionChance.ts`
 - `ai/socialBehaviour.ts`
 - `ai/voluntaryExpeditionJoin.ts`
+- `ui-vue/npcDialogueGreeting.ts`
 - `ui-vue/npcDialogueOpen.test.ts`
+- `ui-vue/store.ts`
 - `world/expeditionParty.test.ts`
 
 ## `ai/dialogueTemplates.test.ts`
@@ -549,6 +552,8 @@ Generated from TypeScript imports.
 
 - `ai/dialogueTemplates.test.ts`
 - `app/inventoryWiring.ts`
+- `ui-vue/npcDialogueGreeting.test.ts`
+- `ui-vue/npcDialogueGreeting.ts`
 - `world/locations/guardLocalKnowledge.test.ts`
 - `world/locations/guardLocalKnowledge.ts`
 - `world/locations/npcPlayerFollowUpDelivery.ts`
@@ -1659,6 +1664,7 @@ Generated from TypeScript imports.
 - `ai/npcVoiceLines.test.ts`
 - `app/createApp.ts`
 - `quests/QuestManager.ts`
+- `ui-vue/npcDialogueGreeting.ts`
 - `ui-vue/store.ts`
 
 ## `ai/npcWhy.test.ts`

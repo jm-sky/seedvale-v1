@@ -1,7 +1,7 @@
 # Plan: NPC dialogue semantic choices and spoken lines
 
 **Created:** 2026-10-30
-**Status:** `implemented` ✅ (technically verified; author browser/listening checks pending)
+**Status:** `verification needed` 🔍
 **Type:** polish
 **Priority:** high · **Effort:** L
 **Depends on:** -
