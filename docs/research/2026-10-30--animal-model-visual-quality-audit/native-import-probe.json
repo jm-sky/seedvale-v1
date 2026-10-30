@@ -1,0 +1,34 @@
+[
+  {
+    "name": "sheep",
+    "result": "failed",
+    "exception": "Error: Python: Traceback (most recent call last):\n  File \"/usr/share/blender/scripts/addons_core/io_scene_gltf2/__init__.py\", line 1889, in execute\n    return self.import_gltf2(context)\n           ~~~~~~~~~~~~~~~~~^^^^^^^^^\n  File \"/usr/share/blender/scripts/addons_core/io_scene_gltf2/__init__.py\", line 1922, in import_gltf2\n    return self.unit_import(self.filepath, import_settings)\n           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/share/blender/scripts/addons_core/io_scene_gltf2/__init__.py\", line 1937, in unit_import\n    BlenderGlTF.create(gltf_importer)\n    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^\n  File \"/usr/share/blender/scripts/addons_core/io_scene_gltf2/blender/imp/blender_gltf.py\", line 38, in create\n    BlenderGlTF._create(gltf)\n    ~~~~~~~~~~~~~~~~~~~^^^^^^\n  File \"/usr/share/blender/scripts/addons_core/io_scene_gltf2/blender/imp/blender_gltf.py\", line 45, in _create\n    BlenderScene.create(gltf)\n    ~~~~~~~~~~~~~~~~~~~^^^^^^\n  File \"/usr/share/blender/scripts/addons_core/io_scene_gltf2/blender/imp/scene.py\", line 35, in create\n    BlenderNode.create_vnode(gltf, 'root')\n    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^\n  File \"/usr/share/blender/scripts/addons_core/io_scene_gltf2/blender/imp/node.py\", line 47, in create_vnode\n    BlenderNode.create_vnode(gltf, child)\n    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^\n  File \"/usr/share/blender/scripts/addons_core/io_scene_gltf2/blender/imp/node.py\", line 47, in create_vnode\n    BlenderNode.create_vnode(gltf, child)\n    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^\n  File \"/usr/share/blender/scripts/addons_core/io_scene_gltf2/blender/imp/node.py\", line 36, in create_vnode\n    BlenderNode.create_bones(gltf, vnode_id)\n    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^\n  File \"/usr/share/blender/scripts/addons_core/io_scene_gltf2/blender/imp/node.py\", line 224, in create_bones\n    pose_bone = blender_arma.pose.bones[vnode.blender_bone_name]\n                ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^\nKeyError: 'bpy_prop_collection[key]: key \"root\" not found'\nLocation: /usr/share/blender/scripts/modules/bpy/ops.py:109\n"
+  },
+  {
+    "name": "wolf",
+    "result": "imported",
+    "objects": 4,
+    "armatures": [
+      [
+        "AnimalArmature",
+        51
+      ]
+    ]
+  },
+  {
+    "name": "cow",
+    "result": "imported",
+    "objects": 18,
+    "armatures": [
+      [
+        "AnimalArmature",
+        42
+      ]
+    ]
+  },
+  {
+    "name": "horse",
+    "result": "failed",
+    "exception": "Error: Python: Traceback (most recent call last):\n  File \"/usr/share/blender/scripts/addons_core/io_scene_gltf2/__init__.py\", line 1889, in execute\n    return self.import_gltf2(context)\n           ~~~~~~~~~~~~~~~~~^^^^^^^^^\n  File \"/usr/share/blender/scripts/addons_core/io_scene_gltf2/__init__.py\", line 1922, in import_gltf2\n    return self.unit_import(self.filepath, import_settings)\n           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/share/blender/scripts/addons_core/io_scene_gltf2/__init__.py\", line 1937, in unit_import\n    BlenderGlTF.create(gltf_importer)\n    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^\n  File \"/usr/share/blender/scripts/addons_core/io_scene_gltf2/blender/imp/blender_gltf.py\", line 38, in create\n    BlenderGlTF._create(gltf)\n    ~~~~~~~~~~~~~~~~~~~^^^^^^\n  File \"/usr/share/blender/scripts/addons_core/io_scene_gltf2/blender/imp/blender_gltf.py\", line 45, in _create\n    BlenderScene.create(gltf)\n    ~~~~~~~~~~~~~~~~~~~^^^^^^\n  File \"/usr/share/blender/scripts/addons_core/io_scene_gltf2/blender/imp/scene.py\", line 35, in create\n    BlenderNode.create_vnode(gltf, 'root')\n    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^\n  File \"/usr/share/blender/scripts/addons_core/io_scene_gltf2/blender/imp/node.py\", line 47, in create_vnode\n    BlenderNode.create_vnode(gltf, child)\n    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^\n  File \"/usr/share/blender/scripts/addons_core/io_scene_gltf2/blender/imp/node.py\", line 47, in create_vnode\n    BlenderNode.create_vnode(gltf, child)\n    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^\n  File \"/usr/share/blender/scripts/addons_core/io_scene_gltf2/blender/imp/node.py\", line 36, in create_vnode\n    BlenderNode.create_bones(gltf, vnode_id)\n    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^\n  File \"/usr/share/blender/scripts/addons_core/io_scene_gltf2/blender/imp/node.py\", line 224, in create_bones\n    pose_bone = blender_arma.pose.bones[vnode.blender_bone_name]\n                ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^\nKeyError: 'bpy_prop_collection[key]: key \"Back\" not found'\nLocation: /usr/share/blender/scripts/modules/bpy/ops.py:109\n"
+  }
+]

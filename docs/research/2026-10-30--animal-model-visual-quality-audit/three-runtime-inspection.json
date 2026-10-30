@@ -1,0 +1,1114 @@
+[
+  {
+    "name": "sheep",
+    "meshes": [
+      {
+        "name": "mesh_0",
+        "type": "SkinnedMesh",
+        "vertices": 634,
+        "triangles": 310,
+        "groups": [],
+        "frustumCulled": true,
+        "skinJoints": 24
+      },
+      {
+        "name": "mesh_0_1",
+        "type": "SkinnedMesh",
+        "vertices": 608,
+        "triangles": 300,
+        "groups": [],
+        "frustumCulled": true,
+        "skinJoints": 24
+      }
+    ],
+    "materials": [
+      {
+        "name": "White",
+        "type": "MeshStandardMaterial",
+        "flatShading": false,
+        "roughness": 0.415087104,
+        "metalness": 0.400000006,
+        "colorLinear": [
+          0.640000045,
+          0.640000045,
+          0.640000045
+        ],
+        "side": 0,
+        "map": false,
+        "normalMap": false
+      },
+      {
+        "name": "Black",
+        "type": "MeshStandardMaterial",
+        "flatShading": false,
+        "roughness": 0.415087104,
+        "metalness": 0.400000006,
+        "colorLinear": [
+          0.0299264174,
+          0.0299264174,
+          0.0299264174
+        ],
+        "side": 0,
+        "map": false,
+        "normalMap": false
+      }
+    ],
+    "skeletonObjectsBeforeActorSharing": 1,
+    "height": 0.68,
+    "preparedBounds": [
+      [
+        -0.17331216085473755,
+        0,
+        -0.4611058612096336
+      ],
+      [
+        0.17331216085473755,
+        0.6800000000000002,
+        0.46110586120963354
+      ]
+    ],
+    "clips": [
+      {
+        "name": "Armature|Idle",
+        "duration": 6.266666889190674,
+        "tracks": 13
+      },
+      {
+        "name": "Armature|Jump",
+        "duration": 1.133333444595337,
+        "tracks": 31
+      }
+    ],
+    "snapshots": [
+      "sheep-rest.snapshot.json",
+      "sheep-idle-50.snapshot.json",
+      "sheep-jump-00.snapshot.json",
+      "sheep-jump-25.snapshot.json",
+      "sheep-jump-50.snapshot.json",
+      "sheep-jump-75.snapshot.json"
+    ],
+    "duplicateClipComparisons": []
+  },
+  {
+    "name": "wolf",
+    "meshes": [
+      {
+        "name": "mesh_0",
+        "type": "SkinnedMesh",
+        "vertices": 2616,
+        "triangles": 1298,
+        "groups": [],
+        "frustumCulled": true,
+        "skinJoints": 51
+      },
+      {
+        "name": "mesh_0_1",
+        "type": "SkinnedMesh",
+        "vertices": 36,
+        "triangles": 18,
+        "groups": [],
+        "frustumCulled": true,
+        "skinJoints": 51
+      },
+      {
+        "name": "mesh_0_2",
+        "type": "SkinnedMesh",
+        "vertices": 1274,
+        "triangles": 630,
+        "groups": [],
+        "frustumCulled": true,
+        "skinJoints": 51
+      },
+      {
+        "name": "mesh_0_3",
+        "type": "SkinnedMesh",
+        "vertices": 32,
+        "triangles": 16,
+        "groups": [],
+        "frustumCulled": true,
+        "skinJoints": 51
+      }
+    ],
+    "materials": [
+      {
+        "name": "Main",
+        "type": "MeshStandardMaterial",
+        "flatShading": false,
+        "roughness": 0.5,
+        "metalness": 0,
+        "colorLinear": [
+          0.184248582,
+          0.190174773,
+          0.168465272
+        ],
+        "side": 2,
+        "map": false,
+        "normalMap": false
+      },
+      {
+        "name": "Nose",
+        "type": "MeshStandardMaterial",
+        "flatShading": false,
+        "roughness": 0.5,
+        "metalness": 0,
+        "colorLinear": [
+          0.0272087362,
+          0.0272087362,
+          0.0272087362
+        ],
+        "side": 2,
+        "map": false,
+        "normalMap": false
+      },
+      {
+        "name": "Main_Light",
+        "type": "MeshStandardMaterial",
+        "flatShading": false,
+        "roughness": 0.5,
+        "metalness": 0,
+        "colorLinear": [
+          0.364383847,
+          0.375745684,
+          0.331512779
+        ],
+        "side": 2,
+        "map": false,
+        "normalMap": false
+      },
+      {
+        "name": "Eyes_Black",
+        "type": "MeshStandardMaterial",
+        "flatShading": false,
+        "roughness": 0.5,
+        "metalness": 0,
+        "colorLinear": [
+          0.00901814643,
+          0.00901814643,
+          0.00901814643
+        ],
+        "side": 2,
+        "map": false,
+        "normalMap": false
+      }
+    ],
+    "skeletonObjectsBeforeActorSharing": 1,
+    "height": 0.95,
+    "preparedBounds": [
+      [
+        -0.1876041003524135,
+        1.4434963433540375e-19,
+        -0.9368986809977938
+      ],
+      [
+        0.18760410035241354,
+        0.95,
+        0.9368986809977939
+      ]
+    ],
+    "clips": [
+      {
+        "name": "Attack",
+        "duration": 1.3333333730697632,
+        "tracks": 53
+      },
+      {
+        "name": "Death",
+        "duration": 1.0666667222976685,
+        "tracks": 53
+      },
+      {
+        "name": "Eating",
+        "duration": 2.5333335399627686,
+        "tracks": 53
+      },
+      {
+        "name": "Gallop",
+        "duration": 0.5666667222976685,
+        "tracks": 53
+      },
+      {
+        "name": "Gallop_Jump",
+        "duration": 0.9333333969116211,
+        "tracks": 53
+      },
+      {
+        "name": "Idle",
+        "duration": 3.3333334922790527,
+        "tracks": 53
+      },
+      {
+        "name": "Idle_2",
+        "duration": 3.3333334922790527,
+        "tracks": 53
+      },
+      {
+        "name": "Idle_2_HeadLow",
+        "duration": 4,
+        "tracks": 53
+      },
+      {
+        "name": "Idle_HitReact1",
+        "duration": 0.6666666865348816,
+        "tracks": 53
+      },
+      {
+        "name": "Idle_HitReact2",
+        "duration": 0.6666666865348816,
+        "tracks": 53
+      },
+      {
+        "name": "Jump_ToIdle",
+        "duration": 1.3333333730697632,
+        "tracks": 53
+      },
+      {
+        "name": "Walk",
+        "duration": 1.0666667222976685,
+        "tracks": 53
+      }
+    ],
+    "snapshots": [
+      "wolf-rest.snapshot.json",
+      "wolf-idle-50.snapshot.json",
+      "wolf-walk-00.snapshot.json",
+      "wolf-walk-25.snapshot.json",
+      "wolf-walk-50.snapshot.json",
+      "wolf-walk-75.snapshot.json",
+      "wolf-gallop-50.snapshot.json"
+    ],
+    "duplicateClipComparisons": []
+  },
+  {
+    "name": "cow",
+    "meshes": [
+      {
+        "name": "Cow_1",
+        "type": "SkinnedMesh",
+        "vertices": 2582,
+        "triangles": 1278,
+        "groups": [],
+        "frustumCulled": true,
+        "skinJoints": 42
+      },
+      {
+        "name": "Cow_2",
+        "type": "SkinnedMesh",
+        "vertices": 1312,
+        "triangles": 648,
+        "groups": [],
+        "frustumCulled": true,
+        "skinJoints": 42
+      },
+      {
+        "name": "Cow_3",
+        "type": "SkinnedMesh",
+        "vertices": 124,
+        "triangles": 60,
+        "groups": [],
+        "frustumCulled": true,
+        "skinJoints": 42
+      },
+      {
+        "name": "Cow_4",
+        "type": "SkinnedMesh",
+        "vertices": 296,
+        "triangles": 144,
+        "groups": [],
+        "frustumCulled": true,
+        "skinJoints": 42
+      },
+      {
+        "name": "Cow_5",
+        "type": "SkinnedMesh",
+        "vertices": 100,
+        "triangles": 44,
+        "groups": [],
+        "frustumCulled": true,
+        "skinJoints": 42
+      },
+      {
+        "name": "Cow_6",
+        "type": "SkinnedMesh",
+        "vertices": 12,
+        "triangles": 4,
+        "groups": [],
+        "frustumCulled": true,
+        "skinJoints": 42
+      },
+      {
+        "name": "Cow_7",
+        "type": "SkinnedMesh",
+        "vertices": 544,
+        "triangles": 272,
+        "groups": [],
+        "frustumCulled": true,
+        "skinJoints": 42
+      }
+    ],
+    "materials": [
+      {
+        "name": "Main",
+        "type": "MeshStandardMaterial",
+        "flatShading": false,
+        "roughness": 0.415087103843689,
+        "metalness": 0.400000005960464,
+        "colorLinear": [
+          0.191637501120567,
+          0.0869140028953552,
+          0.021722849458456
+        ],
+        "side": 0,
+        "map": false,
+        "normalMap": false
+      },
+      {
+        "name": "Main_Light",
+        "type": "MeshStandardMaterial",
+        "flatShading": false,
+        "roughness": 0.415087103843689,
+        "metalness": 0.400000005960464,
+        "colorLinear": [
+          0.381588101387024,
+          0.319247156381607,
+          0.232992246747017
+        ],
+        "side": 0,
+        "map": false,
+        "normalMap": false
+      },
+      {
+        "name": "Muzzle",
+        "type": "MeshStandardMaterial",
+        "flatShading": false,
+        "roughness": 0.415087103843689,
+        "metalness": 0.400000005960464,
+        "colorLinear": [
+          0.343376904726028,
+          0.142639115452766,
+          0.0649152621626854
+        ],
+        "side": 0,
+        "map": false,
+        "normalMap": false
+      },
+      {
+        "name": "Hooves",
+        "type": "MeshStandardMaterial",
+        "flatShading": false,
+        "roughness": 0.415087103843689,
+        "metalness": 0.400000005960464,
+        "colorLinear": [
+          0.138681471347809,
+          0.0791198685765266,
+          0.0248468201607466
+        ],
+        "side": 0,
+        "map": false,
+        "normalMap": false
+      },
+      {
+        "name": "Eye_Black",
+        "type": "MeshStandardMaterial",
+        "flatShading": false,
+        "roughness": 0.415087103843689,
+        "metalness": 0.400000005960464,
+        "colorLinear": [
+          0.00721403723582625,
+          0.00721403723582625,
+          0.00721403723582625
+        ],
+        "side": 0,
+        "map": false,
+        "normalMap": false
+      },
+      {
+        "name": "Eye_White",
+        "type": "MeshStandardMaterial",
+        "flatShading": false,
+        "roughness": 0.415087103843689,
+        "metalness": 0.400000005960464,
+        "colorLinear": [
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929
+        ],
+        "side": 0,
+        "map": false,
+        "normalMap": false
+      },
+      {
+        "name": "Horns",
+        "type": "MeshStandardMaterial",
+        "flatShading": false,
+        "roughness": 0.415087103843689,
+        "metalness": 0.400000005960464,
+        "colorLinear": [
+          0.328747600317001,
+          0.285149425268173,
+          0.141176506876945
+        ],
+        "side": 0,
+        "map": false,
+        "normalMap": false
+      }
+    ],
+    "skeletonObjectsBeforeActorSharing": 1,
+    "height": 1.3,
+    "preparedBounds": [
+      [
+        -0.32767168170096206,
+        0,
+        -1.1432123453731111
+      ],
+      [
+        0.32767168170096206,
+        1.2999999999999998,
+        1.1432123453731111
+      ]
+    ],
+    "clips": [
+      {
+        "name": "Attack_Headbutt",
+        "duration": 1,
+        "tracks": 26
+      },
+      {
+        "name": "Attack_Kick",
+        "duration": 1,
+        "tracks": 31
+      },
+      {
+        "name": "Death",
+        "duration": 1,
+        "tracks": 34
+      },
+      {
+        "name": "Eating",
+        "duration": 6,
+        "tracks": 23
+      },
+      {
+        "name": "Gallop",
+        "duration": 0.5833333134651184,
+        "tracks": 37
+      },
+      {
+        "name": "Gallop_Jump",
+        "duration": 2.0416667461395264,
+        "tracks": 39
+      },
+      {
+        "name": "Idle_HitReact_Left",
+        "duration": 0.6666666865348816,
+        "tracks": 23
+      },
+      {
+        "name": "Idle_HitReact_Right",
+        "duration": 0.6666666865348816,
+        "tracks": 24
+      },
+      {
+        "name": "Jump_toIdle",
+        "duration": 1.7083333730697632,
+        "tracks": 39
+      },
+      {
+        "name": "Walk",
+        "duration": 1.1666666269302368,
+        "tracks": 37
+      },
+      {
+        "name": "Idle_Headlow",
+        "duration": 3.3333332538604736,
+        "tracks": 26
+      },
+      {
+        "name": "Idle_2",
+        "duration": 3.3333332538604736,
+        "tracks": 25
+      },
+      {
+        "name": "Idle",
+        "duration": 3.3333332538604736,
+        "tracks": 25
+      },
+      {
+        "name": "AnimalArmature|Attack_Headbutt",
+        "duration": 1,
+        "tracks": 26
+      },
+      {
+        "name": "AnimalArmature|Attack_Kick",
+        "duration": 1,
+        "tracks": 31
+      },
+      {
+        "name": "AnimalArmature|Death",
+        "duration": 1,
+        "tracks": 34
+      },
+      {
+        "name": "AnimalArmature|Eating",
+        "duration": 6,
+        "tracks": 23
+      },
+      {
+        "name": "AnimalArmature|Gallop",
+        "duration": 0.5833333134651184,
+        "tracks": 37
+      },
+      {
+        "name": "AnimalArmature|Gallop_Jump",
+        "duration": 1.4583333730697632,
+        "tracks": 39
+      },
+      {
+        "name": "AnimalArmature|Idle",
+        "duration": 3.3333332538604736,
+        "tracks": 25
+      },
+      {
+        "name": "AnimalArmature|Idle_2",
+        "duration": 3.3333332538604736,
+        "tracks": 25
+      },
+      {
+        "name": "AnimalArmature|Idle_Headlow",
+        "duration": 3.3333332538604736,
+        "tracks": 26
+      },
+      {
+        "name": "AnimalArmature|Idle_HitReact_Left",
+        "duration": 0.6666666865348816,
+        "tracks": 23
+      },
+      {
+        "name": "AnimalArmature|Jump_toIdle",
+        "duration": 1.7083333730697632,
+        "tracks": 39
+      },
+      {
+        "name": "AnimalArmature|Walk",
+        "duration": 1.1666666269302368,
+        "tracks": 37
+      }
+    ],
+    "snapshots": [
+      "cow-rest.snapshot.json",
+      "cow-idle-50.snapshot.json",
+      "cow-walk-00.snapshot.json",
+      "cow-walk-25.snapshot.json",
+      "cow-walk-50.snapshot.json",
+      "cow-walk-75.snapshot.json",
+      "cow-gallop-50.snapshot.json"
+    ],
+    "duplicateClipComparisons": [
+      {
+        "bare": "Attack_Headbutt",
+        "prefixed": "AnimalArmature|Attack_Headbutt",
+        "tracksEqual": false,
+        "durationEqual": true
+      },
+      {
+        "bare": "Attack_Kick",
+        "prefixed": "AnimalArmature|Attack_Kick",
+        "tracksEqual": false,
+        "durationEqual": true
+      },
+      {
+        "bare": "Death",
+        "prefixed": "AnimalArmature|Death",
+        "tracksEqual": false,
+        "durationEqual": true
+      },
+      {
+        "bare": "Eating",
+        "prefixed": "AnimalArmature|Eating",
+        "tracksEqual": false,
+        "durationEqual": true
+      },
+      {
+        "bare": "Gallop",
+        "prefixed": "AnimalArmature|Gallop",
+        "tracksEqual": false,
+        "durationEqual": true
+      },
+      {
+        "bare": "Gallop_Jump",
+        "prefixed": "AnimalArmature|Gallop_Jump",
+        "tracksEqual": false,
+        "durationEqual": false
+      },
+      {
+        "bare": "Idle_HitReact_Left",
+        "prefixed": "AnimalArmature|Idle_HitReact_Left",
+        "tracksEqual": false,
+        "durationEqual": true
+      },
+      {
+        "bare": "Jump_toIdle",
+        "prefixed": "AnimalArmature|Jump_toIdle",
+        "tracksEqual": false,
+        "durationEqual": true
+      },
+      {
+        "bare": "Walk",
+        "prefixed": "AnimalArmature|Walk",
+        "tracksEqual": false,
+        "durationEqual": true
+      },
+      {
+        "bare": "Idle_Headlow",
+        "prefixed": "AnimalArmature|Idle_Headlow",
+        "tracksEqual": false,
+        "durationEqual": true
+      },
+      {
+        "bare": "Idle_2",
+        "prefixed": "AnimalArmature|Idle_2",
+        "tracksEqual": false,
+        "durationEqual": true
+      },
+      {
+        "bare": "Idle",
+        "prefixed": "AnimalArmature|Idle",
+        "tracksEqual": false,
+        "durationEqual": true
+      }
+    ]
+  },
+  {
+    "name": "horse",
+    "meshes": [
+      {
+        "name": "mesh_0",
+        "type": "SkinnedMesh",
+        "vertices": 3070,
+        "triangles": 1532,
+        "groups": [],
+        "frustumCulled": true,
+        "skinJoints": 50
+      },
+      {
+        "name": "mesh_0_1",
+        "type": "SkinnedMesh",
+        "vertices": 506,
+        "triangles": 254,
+        "groups": [],
+        "frustumCulled": true,
+        "skinJoints": 50
+      },
+      {
+        "name": "mesh_0_2",
+        "type": "SkinnedMesh",
+        "vertices": 124,
+        "triangles": 60,
+        "groups": [],
+        "frustumCulled": true,
+        "skinJoints": 50
+      },
+      {
+        "name": "mesh_0_3",
+        "type": "SkinnedMesh",
+        "vertices": 98,
+        "triangles": 50,
+        "groups": [],
+        "frustumCulled": true,
+        "skinJoints": 50
+      },
+      {
+        "name": "mesh_0_4",
+        "type": "SkinnedMesh",
+        "vertices": 180,
+        "triangles": 88,
+        "groups": [],
+        "frustumCulled": true,
+        "skinJoints": 50
+      },
+      {
+        "name": "mesh_0_5",
+        "type": "SkinnedMesh",
+        "vertices": 304,
+        "triangles": 152,
+        "groups": [],
+        "frustumCulled": true,
+        "skinJoints": 50
+      },
+      {
+        "name": "mesh_0_6",
+        "type": "SkinnedMesh",
+        "vertices": 84,
+        "triangles": 40,
+        "groups": [],
+        "frustumCulled": true,
+        "skinJoints": 50
+      },
+      {
+        "name": "mesh_0_7",
+        "type": "SkinnedMesh",
+        "vertices": 14,
+        "triangles": 6,
+        "groups": [],
+        "frustumCulled": true,
+        "skinJoints": 50
+      }
+    ],
+    "materials": [
+      {
+        "name": "Main",
+        "type": "MeshStandardMaterial",
+        "flatShading": false,
+        "roughness": 0.415087104,
+        "metalness": 0.400000006,
+        "colorLinear": [
+          0.156788111,
+          0.0712838322,
+          0.0256225076
+        ],
+        "side": 0,
+        "map": false,
+        "normalMap": false
+      },
+      {
+        "name": "Hair",
+        "type": "MeshStandardMaterial",
+        "flatShading": false,
+        "roughness": 0.415087104,
+        "metalness": 0.400000006,
+        "colorLinear": [
+          0.0317426138,
+          0.0317426138,
+          0.0317426138
+        ],
+        "side": 0,
+        "map": false,
+        "normalMap": false
+      },
+      {
+        "name": "Main_Dark",
+        "type": "MeshStandardMaterial",
+        "flatShading": false,
+        "roughness": 0.415087104,
+        "metalness": 0.400000006,
+        "colorLinear": [
+          0.0885492787,
+          0.0418809019,
+          0.0165237095
+        ],
+        "side": 0,
+        "map": false,
+        "normalMap": false
+      },
+      {
+        "name": "Muzzle",
+        "type": "MeshStandardMaterial",
+        "flatShading": false,
+        "roughness": 0.415087104,
+        "metalness": 0.400000006,
+        "colorLinear": [
+          0.0375680588,
+          0.0275163185,
+          0.0154056028
+        ],
+        "side": 0,
+        "map": false,
+        "normalMap": false
+      },
+      {
+        "name": "Hooves",
+        "type": "MeshStandardMaterial",
+        "flatShading": false,
+        "roughness": 0.415087104,
+        "metalness": 0.400000006,
+        "colorLinear": [
+          0.11784903,
+          0.10540092,
+          0.0872116685
+        ],
+        "side": 0,
+        "map": false,
+        "normalMap": false
+      },
+      {
+        "name": "Main_Light",
+        "type": "MeshStandardMaterial",
+        "flatShading": false,
+        "roughness": 0.415087104,
+        "metalness": 0.400000006,
+        "colorLinear": [
+          0.261097193,
+          0.116292812,
+          0.0401795171
+        ],
+        "side": 0,
+        "map": false,
+        "normalMap": false
+      },
+      {
+        "name": "Eye_Black",
+        "type": "MeshStandardMaterial",
+        "flatShading": false,
+        "roughness": 0.415087104,
+        "metalness": 0.400000006,
+        "colorLinear": [
+          0.00721403724,
+          0.00721403724,
+          0.00721403724
+        ],
+        "side": 0,
+        "map": false,
+        "normalMap": false
+      },
+      {
+        "name": "Eye_White",
+        "type": "MeshStandardMaterial",
+        "flatShading": false,
+        "roughness": 0.415087104,
+        "metalness": 0.400000006,
+        "colorLinear": [
+          0.389513969,
+          0.389513969,
+          0.389513969
+        ],
+        "side": 0,
+        "map": false,
+        "normalMap": false
+      }
+    ],
+    "skeletonObjectsBeforeActorSharing": 1,
+    "height": 1.55,
+    "preparedBounds": [
+      [
+        -0.2263074793022744,
+        1.9767631406547234e-19,
+        -0.9125076236088083
+      ],
+      [
+        0.2263074793022744,
+        1.5500000000000003,
+        0.9125076236088083
+      ]
+    ],
+    "clips": [
+      {
+        "name": "Attack_Headbutt",
+        "duration": 1,
+        "tracks": 28
+      },
+      {
+        "name": "Attack_Kick",
+        "duration": 1,
+        "tracks": 36
+      },
+      {
+        "name": "Death",
+        "duration": 1,
+        "tracks": 34
+      },
+      {
+        "name": "Eating",
+        "duration": 6.000000476837158,
+        "tracks": 27
+      },
+      {
+        "name": "Gallop_Jump",
+        "duration": 1.4666666984558105,
+        "tracks": 45
+      },
+      {
+        "name": "Gallop",
+        "duration": 0.6000000238418579,
+        "tracks": 43
+      },
+      {
+        "name": "Idle_HitReact_Left",
+        "duration": 0.6666666865348816,
+        "tracks": 28
+      },
+      {
+        "name": "Idle_HitReact_Right",
+        "duration": 0.6666666865348816,
+        "tracks": 29
+      },
+      {
+        "name": "Jump_toIdle",
+        "duration": 1.7333334684371948,
+        "tracks": 45
+      },
+      {
+        "name": "Walk",
+        "duration": 1.1666667461395264,
+        "tracks": 38
+      },
+      {
+        "name": "Idle_Headlow",
+        "duration": 3.3333334922790527,
+        "tracks": 31
+      },
+      {
+        "name": "Idle_2",
+        "duration": 3.3333334922790527,
+        "tracks": 27
+      },
+      {
+        "name": "Idle",
+        "duration": 3.3333334922790527,
+        "tracks": 27
+      },
+      {
+        "name": "AnimalArmature|Attack_Headbutt",
+        "duration": 1,
+        "tracks": 28
+      },
+      {
+        "name": "AnimalArmature|Attack_Kick",
+        "duration": 1,
+        "tracks": 36
+      },
+      {
+        "name": "AnimalArmature|Death",
+        "duration": 1,
+        "tracks": 34
+      },
+      {
+        "name": "AnimalArmature|Eating",
+        "duration": 6.000000476837158,
+        "tracks": 27
+      },
+      {
+        "name": "AnimalArmature|Gallop",
+        "duration": 0.6000000238418579,
+        "tracks": 43
+      },
+      {
+        "name": "AnimalArmature|Gallop_Jump",
+        "duration": 1.4666666984558105,
+        "tracks": 45
+      },
+      {
+        "name": "AnimalArmature|Idle",
+        "duration": 3.3333334922790527,
+        "tracks": 27
+      },
+      {
+        "name": "AnimalArmature|Idle_2",
+        "duration": 3.3333334922790527,
+        "tracks": 27
+      },
+      {
+        "name": "AnimalArmature|Idle_Headlow",
+        "duration": 3.3333334922790527,
+        "tracks": 31
+      },
+      {
+        "name": "AnimalArmature|Idle_HitReact_Left",
+        "duration": 0.6666666865348816,
+        "tracks": 28
+      },
+      {
+        "name": "AnimalArmature|Idle_HitReact_Right",
+        "duration": 0.6666666865348816,
+        "tracks": 29
+      },
+      {
+        "name": "AnimalArmature|Jump_toIdle",
+        "duration": 1.7333334684371948,
+        "tracks": 45
+      },
+      {
+        "name": "AnimalArmature|Walk",
+        "duration": 1.1666667461395264,
+        "tracks": 38
+      }
+    ],
+    "snapshots": [
+      "horse-rest.snapshot.json",
+      "horse-idle-50.snapshot.json",
+      "horse-walk-00.snapshot.json",
+      "horse-walk-25.snapshot.json",
+      "horse-walk-50.snapshot.json",
+      "horse-walk-75.snapshot.json",
+      "horse-gallop-50.snapshot.json"
+    ],
+    "duplicateClipComparisons": [
+      {
+        "bare": "Attack_Headbutt",
+        "prefixed": "AnimalArmature|Attack_Headbutt",
+        "tracksEqual": true,
+        "durationEqual": true
+      },
+      {
+        "bare": "Attack_Kick",
+        "prefixed": "AnimalArmature|Attack_Kick",
+        "tracksEqual": false,
+        "durationEqual": true
+      },
+      {
+        "bare": "Death",
+        "prefixed": "AnimalArmature|Death",
+        "tracksEqual": false,
+        "durationEqual": true
+      },
+      {
+        "bare": "Eating",
+        "prefixed": "AnimalArmature|Eating",
+        "tracksEqual": false,
+        "durationEqual": true
+      },
+      {
+        "bare": "Gallop_Jump",
+        "prefixed": "AnimalArmature|Gallop_Jump",
+        "tracksEqual": false,
+        "durationEqual": true
+      },
+      {
+        "bare": "Gallop",
+        "prefixed": "AnimalArmature|Gallop",
+        "tracksEqual": false,
+        "durationEqual": true
+      },
+      {
+        "bare": "Idle_HitReact_Left",
+        "prefixed": "AnimalArmature|Idle_HitReact_Left",
+        "tracksEqual": false,
+        "durationEqual": true
+      },
+      {
+        "bare": "Idle_HitReact_Right",
+        "prefixed": "AnimalArmature|Idle_HitReact_Right",
+        "tracksEqual": false,
+        "durationEqual": true
+      },
+      {
+        "bare": "Jump_toIdle",
+        "prefixed": "AnimalArmature|Jump_toIdle",
+        "tracksEqual": false,
+        "durationEqual": true
+      },
+      {
+        "bare": "Walk",
+        "prefixed": "AnimalArmature|Walk",
+        "tracksEqual": false,
+        "durationEqual": true
+      },
+      {
+        "bare": "Idle_Headlow",
+        "prefixed": "AnimalArmature|Idle_Headlow",
+        "tracksEqual": false,
+        "durationEqual": true
+      },
+      {
+        "bare": "Idle_2",
+        "prefixed": "AnimalArmature|Idle_2",
+        "tracksEqual": false,
+        "durationEqual": true
+      },
+      {
+        "bare": "Idle",
+        "prefixed": "AnimalArmature|Idle",
+        "tracksEqual": false,
+        "durationEqual": true
+      }
+    ]
+  }
+]

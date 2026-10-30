@@ -1,0 +1,30 @@
+{
+  "source": "original GLB decoded and posed by Three.js r185.1; static snapshot reconstructed with original per-vertex normals and PBR scalars",
+  "blender_version": "4.3.2",
+  "samples": 12,
+  "original_prepared_world_bounds": [
+    [
+      -0.18760409951210022,
+      -0.9368987083435059,
+      6.007875654699194e-18
+    ],
+    [
+      0.18760409951210022,
+      0.9368987083435059,
+      0.949999988079071
+    ]
+  ],
+  "render_scale": 1.5789473882342313,
+  "camera_ortho_scale": 4.142078399658203,
+  "images": [
+    "wolf-threequarter.png",
+    "wolf-side.png",
+    "wolf-rear.png",
+    "wolf-gallop-50.png",
+    "wolf-idle-50.png",
+    "wolf-walk-00.png",
+    "wolf-walk-25.png",
+    "wolf-walk-50.png",
+    "wolf-walk-75.png"
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "source": "original GLB decoded and posed by Three.js r185.1; static snapshot reconstructed with original per-vertex normals and PBR scalars",
+  "blender_version": "4.3.2",
+  "samples": 12,
+  "original_prepared_world_bounds": [
+    [
+      -0.32767167687416077,
+      -1.1432123184204102,
+      8.406360940682589e-09
+    ],
+    [
+      0.32767167687416077,
+      1.1432121992111206,
+      1.2999998331069946
+    ]
+  ],
+  "render_scale": 1.1538463094373284,
+  "camera_ortho_scale": 3.693455457687378,
+  "images": [
+    "cow-threequarter.png",
+    "cow-side.png",
+    "cow-rear.png",
+    "cow-gallop-50.png",
+    "cow-idle-50.png",
+    "cow-walk-00.png",
+    "cow-walk-25.png",
+    "cow-walk-50.png",
+    "cow-walk-75.png"
+  ]
+}

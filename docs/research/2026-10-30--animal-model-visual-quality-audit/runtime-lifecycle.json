@@ -1,0 +1,226 @@
+[
+  {
+    "name": "sheep",
+    "url": "/models/fauna/sheep.glb",
+    "actorSkeletonSharing": {
+      "skinned": 2,
+      "skeletonsBefore": 2,
+      "skeletonsAfter": 1,
+      "rebound": 1,
+      "remapped": 0,
+      "kept": 0
+    },
+    "materialsAfterProductionResponse": [
+      {
+        "mesh": "mesh_0",
+        "material": "White",
+        "roughness": 0.415087104,
+        "metalness": 0.400000006,
+        "flatShading": false,
+        "side": 0
+      },
+      {
+        "mesh": "mesh_0_1",
+        "material": "Black",
+        "roughness": 0.415087104,
+        "metalness": 0.400000006,
+        "flatShading": false,
+        "side": 0
+      }
+    ]
+  },
+  {
+    "name": "wolf",
+    "url": "/models/fauna/wolf.glb",
+    "actorSkeletonSharing": {
+      "skinned": 4,
+      "skeletonsBefore": 4,
+      "skeletonsAfter": 1,
+      "rebound": 3,
+      "remapped": 0,
+      "kept": 0
+    },
+    "materialsAfterProductionResponse": [
+      {
+        "mesh": "mesh_0",
+        "material": "Main",
+        "roughness": 0.5,
+        "metalness": 0,
+        "flatShading": false,
+        "side": 2
+      },
+      {
+        "mesh": "mesh_0_1",
+        "material": "Nose",
+        "roughness": 0.5,
+        "metalness": 0,
+        "flatShading": false,
+        "side": 2
+      },
+      {
+        "mesh": "mesh_0_2",
+        "material": "Main_Light",
+        "roughness": 0.5,
+        "metalness": 0,
+        "flatShading": false,
+        "side": 2
+      },
+      {
+        "mesh": "mesh_0_3",
+        "material": "Eyes_Black",
+        "roughness": 0.5,
+        "metalness": 0,
+        "flatShading": false,
+        "side": 2
+      }
+    ]
+  },
+  {
+    "name": "cow",
+    "url": "/models/fauna/cow.glb",
+    "actorSkeletonSharing": {
+      "skinned": 7,
+      "skeletonsBefore": 7,
+      "skeletonsAfter": 1,
+      "rebound": 6,
+      "remapped": 0,
+      "kept": 0
+    },
+    "materialsAfterProductionResponse": [
+      {
+        "mesh": "Cow_1",
+        "material": "Main",
+        "roughness": 0.415087103843689,
+        "metalness": 0.400000005960464,
+        "flatShading": false,
+        "side": 0
+      },
+      {
+        "mesh": "Cow_2",
+        "material": "Main_Light",
+        "roughness": 0.415087103843689,
+        "metalness": 0.400000005960464,
+        "flatShading": false,
+        "side": 0
+      },
+      {
+        "mesh": "Cow_3",
+        "material": "Muzzle",
+        "roughness": 0.415087103843689,
+        "metalness": 0.400000005960464,
+        "flatShading": false,
+        "side": 0
+      },
+      {
+        "mesh": "Cow_4",
+        "material": "Hooves",
+        "roughness": 0.415087103843689,
+        "metalness": 0.400000005960464,
+        "flatShading": false,
+        "side": 0
+      },
+      {
+        "mesh": "Cow_5",
+        "material": "Eye_Black",
+        "roughness": 0.415087103843689,
+        "metalness": 0.400000005960464,
+        "flatShading": false,
+        "side": 0
+      },
+      {
+        "mesh": "Cow_6",
+        "material": "Eye_White",
+        "roughness": 0.415087103843689,
+        "metalness": 0.400000005960464,
+        "flatShading": false,
+        "side": 0
+      },
+      {
+        "mesh": "Cow_7",
+        "material": "Horns",
+        "roughness": 0.415087103843689,
+        "metalness": 0.400000005960464,
+        "flatShading": false,
+        "side": 0
+      }
+    ]
+  },
+  {
+    "name": "horse",
+    "url": "/models/fauna/horse.glb",
+    "actorSkeletonSharing": {
+      "skinned": 8,
+      "skeletonsBefore": 8,
+      "skeletonsAfter": 1,
+      "rebound": 7,
+      "remapped": 0,
+      "kept": 0
+    },
+    "materialsAfterProductionResponse": [
+      {
+        "mesh": "mesh_0",
+        "material": "Main",
+        "roughness": 0.415087104,
+        "metalness": 0.400000006,
+        "flatShading": false,
+        "side": 0
+      },
+      {
+        "mesh": "mesh_0_1",
+        "material": "Hair",
+        "roughness": 0.415087104,
+        "metalness": 0.400000006,
+        "flatShading": false,
+        "side": 0
+      },
+      {
+        "mesh": "mesh_0_2",
+        "material": "Main_Dark",
+        "roughness": 0.415087104,
+        "metalness": 0.400000006,
+        "flatShading": false,
+        "side": 0
+      },
+      {
+        "mesh": "mesh_0_3",
+        "material": "Muzzle",
+        "roughness": 0.415087104,
+        "metalness": 0.400000006,
+        "flatShading": false,
+        "side": 0
+      },
+      {
+        "mesh": "mesh_0_4",
+        "material": "Hooves",
+        "roughness": 0.415087104,
+        "metalness": 0.400000006,
+        "flatShading": false,
+        "side": 0
+      },
+      {
+        "mesh": "mesh_0_5",
+        "material": "Main_Light",
+        "roughness": 0.415087104,
+        "metalness": 0.400000006,
+        "flatShading": false,
+        "side": 0
+      },
+      {
+        "mesh": "mesh_0_6",
+        "material": "Eye_Black",
+        "roughness": 0.415087104,
+        "metalness": 0.400000006,
+        "flatShading": false,
+        "side": 0
+      },
+      {
+        "mesh": "mesh_0_7",
+        "material": "Eye_White",
+        "roughness": 0.415087104,
+        "metalness": 0.400000006,
+        "flatShading": false,
+        "side": 0
+      }
+    ]
+  }
+]

@@ -1,0 +1,30 @@
+{
+  "source": "original GLB decoded and posed by Three.js r185.1; static snapshot reconstructed with original per-vertex normals and PBR scalars",
+  "blender_version": "4.3.2",
+  "samples": 12,
+  "original_prepared_world_bounds": [
+    [
+      -0.2263074815273285,
+      -0.9125075936317444,
+      1.4258895930652216e-07
+    ],
+    [
+      0.2263074815273285,
+      0.9125075340270996,
+      1.5499999523162842
+    ]
+  ],
+  "render_scale": 0.9677420542805609,
+  "camera_ortho_scale": 2.4726014137268066,
+  "images": [
+    "horse-threequarter.png",
+    "horse-side.png",
+    "horse-rear.png",
+    "horse-gallop-50.png",
+    "horse-idle-50.png",
+    "horse-walk-00.png",
+    "horse-walk-25.png",
+    "horse-walk-50.png",
+    "horse-walk-75.png"
+  ]
+}

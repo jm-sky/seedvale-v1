@@ -1,0 +1,29 @@
+{
+  "source": "original GLB decoded and posed by Three.js r185.1; static snapshot reconstructed with original per-vertex normals and PBR scalars",
+  "blender_version": "4.3.2",
+  "samples": 12,
+  "original_prepared_world_bounds": [
+    [
+      -0.17331215739250183,
+      -0.4611057937145233,
+      1.089832313283523e-08
+    ],
+    [
+      0.17331215739250183,
+      0.4611058235168457,
+      0.6799999475479126
+    ]
+  ],
+  "render_scale": 2.20588255844642,
+  "camera_ortho_scale": 2.8480067253112793,
+  "images": [
+    "sheep-threequarter.png",
+    "sheep-side.png",
+    "sheep-rear.png",
+    "sheep-idle-50.png",
+    "sheep-jump-00.png",
+    "sheep-jump-25.png",
+    "sheep-jump-50.png",
+    "sheep-jump-75.png"
+  ]
+}

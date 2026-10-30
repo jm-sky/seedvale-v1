@@ -1,0 +1,32 @@
+[
+  {
+    "url": "http://127.0.0.1:5577/asset-browser.html",
+    "status": 200,
+    "bytes": 658,
+    "sha256": "3a5835538cf8c57d15286cb0a3bf87e68e5841ab635222eccbc80c1376cd94a4"
+  },
+  {
+    "url": "http://127.0.0.1:5577/models/fauna/sheep.glb",
+    "status": 200,
+    "bytes": 39620,
+    "sha256": "1c84319cbae081b21ac9c24557e909bb00ae3aa1e7e00e69f9557c0d441b0dff"
+  },
+  {
+    "url": "http://127.0.0.1:5577/models/fauna/wolf.glb",
+    "status": 200,
+    "bytes": 221552,
+    "sha256": "d91951f072efbcfec07fc5c14dd7121fcb4d96fd0debeb0e9d98b40401020fc3"
+  },
+  {
+    "url": "http://127.0.0.1:5577/models/fauna/cow.glb",
+    "status": 200,
+    "bytes": 1028584,
+    "sha256": "aa0dfbd619bc14838b48f6db02a56c2ee96f055930d957fcc5ef63af567b21ce"
+  },
+  {
+    "url": "http://127.0.0.1:5577/models/fauna/horse.glb",
+    "status": 200,
+    "bytes": 342928,
+    "sha256": "dbe09f4e1a736a773477fbc5cb70875ebfc4ace4ca1302ead0a0cb97aba50851"
+  }
+]
