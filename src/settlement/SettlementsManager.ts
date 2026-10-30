@@ -40,7 +40,9 @@ import { dispatchReadyExpedition, type DispatchReadyExpeditionInput, type Dispat
 import { resolveNpcTravelCheckpoint } from '../ai/npcTravelCheckpoint'
 import { createEconomyRegistry } from '../economy/registry'
 import { createNaturalWaterKindAt } from '../fauna/animalNaturalWater'
+import { getMonitor } from '../perf/active'
 import { getAgentCpuDiag } from '../perf/agentCpuDiag'
+import { withStage } from '../perf/monitor'
 import { type ChunkCoord, chunksNear } from '../terrain/chunkGrid'
 import { DRY_WATER_SAMPLE } from '../terrain/waterSample'
 import { createNullPointLightBudget, type PointLightBudget } from '../world/pointLightBudget'
@@ -1378,16 +1380,19 @@ export async function createSettlementsManager(
   }
 
   function unload(id: string, entry: Entry, nowDays: number, dayLengthSec: number, playerX: number, playerZ: number): void {
-    if (entry.settlement) {
-      stampSettlementAgriculture(entry.settlement, nowDays)
-      livestock.capture(id, entry.settlement.livestock)
-      rats.capture(id, entry.settlement.rats)
-      beginOffscreenTransportHandoff(entry.settlement, nowDays, dayLengthSec)
-      for (const npc of entry.settlement.npcs) {
-        npc.beginOffscreenTravelHandoff(playerX, playerZ, nowDays, dayLengthSec)
-      }
+    const settlement = entry.settlement
+    if (settlement) {
+      withStage(getMonitor(), 'settlementUnloadCapture', () => {
+        stampSettlementAgriculture(settlement, nowDays)
+        livestock.capture(id, settlement.livestock)
+        rats.capture(id, settlement.rats)
+        beginOffscreenTransportHandoff(settlement, nowDays, dayLengthSec)
+        for (const npc of settlement.npcs) {
+          npc.beginOffscreenTravelHandoff(playerX, playerZ, nowDays, dayLengthSec)
+        }
+      })
+      withStage(getMonitor(), 'settlementDispose', () => settlement.dispose())
     }
-    entry.settlement?.dispose()
     entries.delete(id)
     syncMidpoints()
   }
@@ -1397,11 +1402,14 @@ export async function createSettlementsManager(
     lastCheckZ = playerZ
     const playerCell = worldToCell(playerX, playerZ)
 
+    // Perf stages (plan Q25 recon): `settlementDefResolve` is the synchronous
+    // def/name resolve for cells first seen here; the async build is not.
+    const monitor = getMonitor()
     for (const cell of cellsWithinRadius(playerCell, cellRadius)) {
-      const def = defFor(cell)
+      const def = withStage(monitor, 'settlementDefResolve', () => defFor(cell))
       if (!def) continue
       const dist = Math.hypot(def.x - playerX, def.z - playerZ)
-      if (dist <= loadRadius) ensureLoaded(def)
+      if (dist <= loadRadius) withStage(monitor, 'settlementEnsureLoaded', () => ensureLoaded(def))
     }
     for (const [id, entry] of [...entries]) {
       if (entry.def.isHome || entry.pendingPromise) continue
@@ -1414,7 +1422,7 @@ export async function createSettlementsManager(
     // frame. Also covers catch-up right after boot/restore, since `recheck`
     // always fires once immediately (`lastCheckX`/`lastCheckZ` start at
     // `Infinity`).
-    resolveTravelAndTransportCheckpoints(nowDays, dayLengthSec)
+    withStage(monitor, 'settlementCheckpoints', () => resolveTravelAndTransportCheckpoints(nowDays, dayLengthSec))
   }
 
   /** Resolves a currently-loaded settlement's own storage-adjacent anchor,

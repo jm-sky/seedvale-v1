@@ -5,6 +5,8 @@ import type { RiverQuery } from '../terrain/riverQuery'
 import type { VillageSize } from './families'
 import type { TerrainSamplers } from './settlementTerrain'
 import { pickNameCulture } from '../ai/nameCultures'
+import { getMonitor } from '../perf/active'
+import { withStage } from '../perf/monitor'
 import { generateSettlementName } from '../shared/SettlementName'
 import { createHomeElderFamily } from './homeAuthoredResidents'
 import {
@@ -382,8 +384,10 @@ export function settlementDefFor(
 ): SettlementDef | null {
   const key = cellKey(cell)
   if (defCache.has(key)) return defCache.get(key)!
-  const resolvedName = uniqueNameFor(cell, ctx)
-  const def = generateSettlementDef(...probeArgs(cell, ctx), authoredResidentsFor(cell, ctx))
+  const monitor = getMonitor()
+  const resolvedName = withStage(monitor, 'settlementDefName', () => uniqueNameFor(cell, ctx))
+  const residents = withStage(monitor, 'settlementDefResidents', () => authoredResidentsFor(cell, ctx))
+  const def = withStage(monitor, 'settlementDefGenerate', () => generateSettlementDef(...probeArgs(cell, ctx), residents))
   if (def && resolvedName) applyResolvedSettlementName(def, resolvedName)
   defCache.set(key, def)
   persistentDefs?.remember(settlementCellSubKey(cell.gx, cell.gz), def)
