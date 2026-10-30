@@ -28,7 +28,7 @@ export type ChunkWorkerLike = {
   postMessage(message: ChunkWorkerRequest): void
   terminate(): void
   onmessage: ((event: MessageEvent<ChunkWorkerResponse>) => void) | null
-  onerror: ((event: { message?: string }) => void) | null
+  onerror: ((event: { message?: string; filename?: string; lineno?: number; colno?: number }) => void) | null
 }
 
 export type ChunkWorkerPoolOptions = {
@@ -296,7 +296,7 @@ export function createChunkWorkerPool(
       const jobId = workerJob.get(worker)
       workerJob.delete(worker)
       free.push(worker)
-      console.error('[chunkWorkerPool] worker error', event.message)
+      console.error('[chunkWorkerPool] worker error', event.message, event.filename, event.lineno, event.colno)
       if (jobId !== undefined) {
         const job = settleJob(jobId)
         job?.reject(new Error(event.message || 'chunk worker error'))

@@ -59,13 +59,38 @@ async function runOne(scenario, rep) {
     // WSL2: Mesa defaults to llvmpipe (software); d3d12 reaches the real GPU through /dev/dxg.
     // WSL2: no GNOME keyring prompt ("Choose password for new keyring" blocks the page, Q18) and
     // no "Can't update Chrome" infobar changing the viewport.
-    ...(IS_WIN ? [] : ['--ignore-gpu-blocklist', '--password-store=basic', '--simulate-outdated-no-au=Tue, 31 Dec 2099 23:59:59 GMT']), url,
+    ...(IS_WIN ? [] : ['--ignore-gpu-blocklist', '--password-store=basic', '--simulate-outdated-no-au=Tue, 31 Dec 2099 23:59:59 GMT']), 'about:blank',
   ], { stdio: 'ignore', env: IS_WIN ? process.env : { GALLIUM_DRIVER: 'd3d12', ...process.env } })
   try {
     const ws = new WebSocket(await cdpConnect())
     await new Promise((r) => (ws.onopen = r))
     const ev = evaluator(ws)
     ws.send(JSON.stringify({ id: 9999, method: 'Page.bringToFront' }))
+    // Q24: record page + worker exceptions / failed requests from before the first request, so a
+    // boot failure (chunk worker error without a message) leaves evidence instead of a bare timeout.
+    const bootEvents = []
+    const note = (e) => { if (bootEvents.length < 200) bootEvents.push({ t: Date.now(), ...e }) }
+    ws.addEventListener('message', (m) => {
+      const d = JSON.parse(m.data)
+      const sid = d.sessionId ? d.sessionId.slice(0, 6) : 'page'
+      if (d.method === 'Target.attachedToTarget') {
+        const { sessionId, targetInfo } = d.params
+        note({ src: 'target', type: targetInfo.type, url: targetInfo.url })
+        for (const [i, method] of ['Runtime.enable', 'Network.enable', 'Log.enable'].entries()) ws.send(JSON.stringify({ id: 9100 + i, sessionId, method }))
+      } else if (d.method === 'Runtime.exceptionThrown') {
+        const x = d.params.exceptionDetails
+        note({ src: sid, type: 'exception', text: x.exception?.description ?? x.text, url: x.url, line: x.lineNumber, col: x.columnNumber })
+      } else if (d.method === 'Log.entryAdded' && d.params.entry.level === 'error') {
+        note({ src: sid, type: 'log', text: d.params.entry.text, url: d.params.entry.url })
+      } else if (d.method === 'Network.loadingFailed') {
+        note({ src: sid, type: 'loadingFailed', error: d.params.errorText, canceled: d.params.canceled })
+      } else if (d.method === 'Network.responseReceived' && d.params.response.status >= 400) {
+        note({ src: sid, type: 'http', status: d.params.response.status, url: d.params.response.url })
+      }
+    })
+    for (const [i, method] of ['Runtime.enable', 'Network.enable', 'Log.enable'].entries()) ws.send(JSON.stringify({ id: 9200 + i, method }))
+    ws.send(JSON.stringify({ id: 9210, method: 'Target.setAutoAttach', params: { autoAttach: true, waitForDebuggerOnStart: false, flatten: true } }))
+    ws.send(JSON.stringify({ id: 9211, method: 'Page.navigate', params: { url } }))
     if (!IS_WIN) {
       // A WSL run on a software rasterizer is not a WSL-baseline run (Q18: Mesa
       // falls back to llvmpipe when GALLIUM_DRIVER=d3d12 does not take). Abort early.
@@ -82,7 +107,10 @@ async function runOne(scenario, rep) {
         if (await ev('!!window.__seedvalePerfLastArtifacts')) { done = true; break }
       } catch {}
     }
-    if (!done) throw new Error('timeout waiting for benchmark')
+    if (!done) {
+      writeFileSync(join(outDir, `${tag}-${scenario}-rep${rep}.bootfail.json`), JSON.stringify(bootEvents, null, 2))
+      throw new Error(`timeout waiting for benchmark; ${bootEvents.filter((e) => e.type !== 'target').length} page/worker error events in ${tag}-${scenario}-rep${rep}.bootfail.json`)
+    }
     const json = await ev('JSON.stringify(window.__seedvalePerfLastArtifacts)')
     const b = JSON.parse(json)
     const gpu = b.report.context.device?.gpu ?? b.report.context.device?.renderer ?? JSON.stringify(b.report.context.device ?? {}).slice(0, 200)
