@@ -3,9 +3,12 @@ import {
   Camera,
   Group,
   InstancedMesh,
+  type Material,
   Mesh,
   MeshBasicMaterial,
   Scene,
+  Skeleton,
+  SkinnedMesh,
   WebGLRenderer,
 } from 'three'
 import { describe, expect, it } from 'vitest'
@@ -156,5 +159,63 @@ describe('passSubmissionCollector', () => {
     collector.dispose()
     expect(report.shadowRefreshFrames).toBe(1)
     expect(report.shadowSkippedFrames).toBe(1)
+  })
+
+  it('counts material/program switches, actor subset and first-used skeletons per pass (A0)', () => {
+    const collector = createPassSubmissionCollector()
+    const renderer = fakeRenderer()
+    // Program identity as Three links it: one program per material here,
+    // except two materials sharing one program.
+    const programs = new Map<Material, object>()
+    ;(renderer as unknown as { properties: unknown }).properties = {
+      get: (m: Material) => ({ currentProgram: programs.get(m) }),
+    }
+    const shared = {}
+    const terrainMat = new MeshBasicMaterial()
+    const bodyMat = new MeshBasicMaterial()
+    const headMat = new MeshBasicMaterial()
+    programs.set(terrainMat, {})
+    programs.set(bodyMat, shared)
+    programs.set(headMat, shared)
+
+    const terrain = boxMesh('chunk')
+    terrain.material = terrainMat
+    const skeleton = new Skeleton([])
+    const actorRoot = new Group()
+    actorRoot.name = 'npc'
+    actorRoot.userData.npcFamily = 'Peasant'
+    const body = new SkinnedMesh(terrain.geometry, bodyMat)
+    const head = new SkinnedMesh(terrain.geometry, headMat)
+    body.skeleton = skeleton
+    head.skeleton = skeleton
+    actorRoot.add(body, head)
+
+    collector.enable(renderer)
+    collector.beginSession()
+    const beauty = new Camera()
+    const draw = (mesh: Mesh) => renderer.renderBufferDirect(beauty, new Scene(), mesh.geometry, mesh.material as never, mesh, undefined as never)
+    for (let frame = 0; frame < 2; frame++) {
+      collector.beginFrame()
+      collector.noteShadowRefresh(false)
+      collector.withPass('main', beauty, () => {
+        draw(terrain)
+        draw(body) // material + program switch, actor
+        draw(head) // material switch only (shared program), same skeleton
+        draw(body) // material switch only
+      })
+      collector.endFrame()
+    }
+    const report = collector.endSession()
+    collector.disable()
+
+    const cost = report.main!.costAvg
+    expect(cost.materialSwitches).toBe(3)
+    expect(cost.programSwitches).toBe(1)
+    expect(cost.actorCalls).toBe(3)
+    expect(cost.actorMaterialSwitches).toBe(3)
+    expect(cost.actorProgramSwitches).toBe(1)
+    expect(cost.skinnedCalls).toBe(3)
+    // Skeleton is counted once per frame, not once per skinned draw.
+    expect(cost.skeletonsFirstUsed).toBe(1)
   })
 })

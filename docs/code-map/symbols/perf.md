@@ -168,20 +168,21 @@ Generated from exported TypeScript symbols.
 
 ## `perf/passSubmissionCollector.ts`
 
-- `createPassSubmissionCollector` — function — line 247
-- `emptyPassSubmissionReport` — function — line 538
-- `formatPassSubmissionReport` — function — line 505
-- `getPassSubmissionCollector` — function — line 501
-- `PassAggregate` — type — line 54
-- `PassFrameStats` — type — line 43
-- `PassKind` — type — line 30
+- `createPassSubmissionCollector` — function — line 298
+- `emptyPassSubmissionReport` — function — line 652
+- `formatPassSubmissionReport` — function — line 616
+- `getPassSubmissionCollector` — function — line 612
+- `PassAggregate` — type — line 82
+- `PassCostStats` — type — line 60
+- `PassFrameStats` — type — line 70
+- `PassKind` — type — line 32
   - domain: world-terrain
-- `PassSubmissionCollector` — type — line 93
-- `PassSubmissionReliability` — type — line 67
-- `PassSubmissionReport` — type — line 69
-- `setActivePassSubmissionCollector` — function — line 497
-- `SubmissionBucketKey` — type — line 32
-- `SubmissionBucketStats` — type — line 38
+- `PassSubmissionCollector` — type — line 125
+- `PassSubmissionReliability` — type — line 97
+- `PassSubmissionReport` — type — line 99
+- `setActivePassSubmissionCollector` — function — line 608
+- `SubmissionBucketKey` — type — line 34
+- `SubmissionBucketStats` — type — line 40
 
 ## `perf/percentile.ts`
 
