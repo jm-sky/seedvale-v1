@@ -14,15 +14,18 @@
 6. **Nothing `ready`:** do not invent scope. Report to the author the blocked tasks and the §3 questions, with short options to unblock them.
 7. **Stop and ask the author** (Polish, survey-style options) instead of guessing when a task hits a `Stop if` condition, an open decision (D2, D5–D8, D10, D12–D14 or an area question), a visual compromise, reduced density/simulation, or omission of an agreed feature. Record the question in §3 and move to the next task that is not blocked.
 
-### 0.1 Model, sub-agent and context policy (author mandate 2026-10-30, set by Opus)
+### 0.1 Model, sub-agent and context policy (author mandate 2026-10-30, set by Opus; amended same day after review of external suggestions)
 
 **Pick the session model by the next `ready` tasks, not by habit.** Opus 5.5 is best at architecture, cross-system decisions and inferring intent from thin evidence; Sonnet 5.5 is nearly as strong on bounded work at a fraction of the cost; Haiku 5.5 is a capable small model for mechanical work.
 
-| Code | Main-session model | Use for | Do not use for |
-| --- | --- | --- | --- |
-| **O** | Opus | recon → plan/decision, cross-system review, risky runtime slices (actors/skeletons, lifecycle, persistence contracts), P1 exit packet, judging ambiguous A/B evidence | executing a finished plan, waiting on benchmarks, doc housekeeping |
-| **S** | Sonnet | implementing an existing plan, bounded recon with a stated scope, tests, A/B runs + reports, owner-doc updates, doc cleanup | open D-decisions, new architecture, deciding between materially different designs (→ write the question in §3 or hand to O) |
-| **H** | Haiku — **sub-agent only**, never the main session | mechanical sweeps: grep/locate, run a given script and return numbers, `docs:sync`/link checks, table reformatting, summarizing long logs | editing runtime code, interpreting A/B results, anything with a `Stop if` judgement |
+| Code | Main-session model | Effort | Use for | Do not use for |
+| --- | --- | --- | --- | --- |
+| **O** | Opus | high; xhigh for D-decisions, cross-system review, ambiguous A/B | recon → plan/decision, cross-system review, risky runtime slices (actors/skeletons, lifecycle, persistence contracts), P1 exit packet, judging ambiguous A/B evidence | executing a finished plan, waiting on benchmarks, doc housekeeping |
+| **S** | Sonnet | high for implementation/recon; medium for doc cleanup and owner-doc updates | implementing an existing plan, self-planned bounded changes (criteria below), bounded recon with a stated scope, tests, A/B runs + reports, owner-doc updates, doc cleanup | open D-decisions, new architecture, deciding between materially different designs (→ write the question in §3 or hand to O) |
+| **H** | Haiku — **sub-agent only**, never the main session | low | mechanical sweeps: grep/locate, run a given script and return numbers, `docs:sync`/link checks, table reformatting, summarizing long logs | editing runtime code, interpreting A/B results, anything with a `Stop if` judgement |
+
+- **Effort** is chosen by the author when starting the session (`/effort` or settings); the column is the recommended setting for that task class. Try raising Sonnet's effort before re-tagging an S task as O. Agents may set `effort` on sub-agents they launch, using the same column (Haiku sweeps → low).
+- **S may plan a task itself** (no Opus plan needed) when all hold: the change has one state/lifecycle owner; it changes no contract (persistence/save format, lifecycle ownership, determinism, worldgen cache namespaces, shared runtime boundaries); the "done when" is unambiguous; and no ambiguous A/B evidence must be judged. Record the short plan in the task's notes before implementing. Any doubt about these criteria → treat it as a design fork (below).
 
 - `O→S` in the Model column = Opus does recon/plan and then adds a separate S row for the implementation. A Sonnet session that hits a design fork it cannot settle from the plan **stops the task**, records the fork in its `Resume:` note and moves on — it does not guess.
 - **Default next session = Sonnet**, while S tasks are `ready`. Start an Opus session when the first `ready` task is O, or when ≥ 2 S tasks are blocked on design questions.
@@ -31,15 +34,19 @@
 
 1. Default is **no sub-agent**; do the work inline.
 2. Use one when (a) a broad read-only sweep would dump many files into the main context and only the conclusion matters → `Explore` or a Haiku agent; (b) a long-running mechanical job (benchmark series, log digestion) → Haiku agent with the exact command and the exact numbers to return; (c) 2–3 **independent** recons that need no shared decisions → parallel Sonnet agents, the main session merges.
-3. Never delegate: a decision, a runtime edit on a critical path (render/simulation/persistence), or work whose result the main session would have to re-verify file by file.
+3. Never delegate: a decision, any runtime code edit, or work whose result the main session would have to re-verify file by file. Exception: a Haiku agent may make **mechanical documentation-only edits** (link fixes, table reformatting) with an exact spec; the main session reviews the diff before committing. Generated docs are never hand-edited — regenerate with `pnpm docs:sync`.
 4. Brief every sub-agent with: goal, files/entry docs, output format (≤ 30 lines), what not to touch. Opus may orchestrate Sonnet/Haiku agents; Sonnet may orchestrate Haiku agents. No nested orchestration.
 
 **Context budget** (long contexts are slower, costlier and lose precision):
 
-- **~150k tokens:** do not start a new large task; finish the current one.
-- **~200k:** wrap up — commit WIP that keeps `main` building, write the `Resume:` note (§0 step 5), update this queue, report to the author. Do not keep grinding past ~220k; a fresh "Continue" session re-reads only §0, the brief §1 and the task's entry docs.
+- **~150k tokens (warning):** do not start a new large task; finish the current one.
+- **~200k (warning):** wrap up — commit WIP that keeps `main` building, write the `Resume:` note (§0 step 5), update this queue, report to the author.
+- **~220k (hard stop):** do not go past it, except to close a small, nearly finished step (commit + `Resume:`). A fresh "Continue" session re-reads only §0, the brief §1 and the task's entry docs, so handing off is cheap; prefer an explicit `Resume:` note over relying on automatic compaction, which drops detail.
+- **Earlier wrap-up signals**, regardless of size: switching to an unrelated task, re-reading the same files to recover facts, or contradicting an earlier finding of this session. Self-assessed "quality still fine" never justifies passing a threshold.
 - Keep context lean: read files by range, run benchmarks/background jobs without streaming their logs into the conversation (summarize via script or a Haiku agent), never re-read a file just edited.
 - One session ≈ one O task, or a run of S tasks; switch sessions rather than models mid-task.
+
+**Policy evidence log:** every `done` status cell ends with `[<model>/<effort>, ~<k> ctx, fixups: <n>]` — model and effort of the session, approximate context at task end, number of follow-up fix/revert commits known at the time. After ~10 logged tasks an Opus session writes a short retrospective and proposes §0.1 adjustments to the author. No duplicate runs of the same task for comparison.
 
 ### Autonomy granted (author, 2026-10-29)
 
