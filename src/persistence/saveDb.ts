@@ -53,7 +53,7 @@ export type SaveReason = 'manual' | 'autosave' | 'save-as' | 'new-game-transitio
 let pendingNewSaveName: string | null = null
 
 type SaveDiagnosticKind =
-  | 'missing' | 'invalid' | 'migration-failed' | 'unsupported-version'
+  | 'missing' | 'invalid' | 'migration-failed' | 'unsupported-version' | 'incompatible-world'
   | 'read-error' | 'write-error' | 'invalid-outgoing'
 
 /** Dev-console-only breadcrumb for a persistence anomaly. Never pass the

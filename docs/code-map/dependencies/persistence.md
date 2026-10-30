@@ -52,6 +52,7 @@ Generated from TypeScript imports.
 - `items/items.ts`
 - `items/primaryWeapons.ts`
 - `items/tradeGrievance.ts`
+- `persistence/worldgenEpoch.ts`
 - `player/PlayerSkills.ts`
 - `quests/quests.ts`
 - `reputation/ReputationManager.ts`
@@ -135,6 +136,7 @@ Generated from TypeScript imports.
 **Imports**
 
 - `persistence/saveData.ts`
+- `persistence/worldgenEpoch.ts`
 
 **Imported by**
 
@@ -209,6 +211,14 @@ Generated from TypeScript imports.
 - `world/locations/locationsCoarseCache.ts`
 - `world/seedLibrary.test.ts`
 - `world/seedLibrary.ts`
+
+## `persistence/worldgenEpoch.ts`
+
+**Imported by**
+
+- `app/saveState.ts`
+- `persistence/saveData.ts`
+- `persistence/saveSlots.ts`
 
 ## `persistence/worldgenFingerprint.ts`
 

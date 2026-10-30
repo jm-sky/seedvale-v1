@@ -33,6 +33,7 @@ import { serializeTreasureMutations, type TreasureChestMutation } from '../items
 import { CURRENT_SAVE_VERSION, type SaveData, type SaveTerrainModification, type SaveWorkContract } from '../persistence/saveData'
 import { getActiveSaveId, getPendingNewSaveName, listSavesResult, type SaveReason, writeSave, type WriteSaveResult } from '../persistence/saveDb'
 import { resolvePauseActiveSaveName } from '../persistence/saveSlots'
+import { WORLDGEN_EPOCH } from '../persistence/worldgenEpoch'
 import { serializeMineableRockState } from '../terrain/mineableRocks'
 import { pruneRenewableWorldItems } from '../terrain/renewableWorldItems'
 import { isTransportOrderActive } from '../world/transportOrder'
@@ -180,6 +181,7 @@ export function createSaveState(deps: SaveStateDeps): SaveState {
       sky: { ...config.sky },
       player: { ...config.player },
       settlements: { ...config.settlements },
+      worldgenEpoch: WORLDGEN_EPOCH,
     },
     player: {
       x: player.mesh.position.x,

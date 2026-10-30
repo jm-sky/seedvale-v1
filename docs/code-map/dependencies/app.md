@@ -1737,6 +1737,7 @@ Generated from TypeScript imports.
 - `persistence/saveData.ts`
 - `persistence/saveDb.ts`
 - `persistence/saveSlots.ts`
+- `persistence/worldgenEpoch.ts`
 - `player/PlayerController.ts`
 - `player/PlayerTorch.ts`
 - `quests/QuestManager.ts`

@@ -19,6 +19,7 @@ const config = {
   sky: { inclination: 0.5 },
   player: { name: 'Ja' },
   settlements: {},
+  worldgenEpoch: 0,
 } as SaveConfig
 
 const validSave: SaveData = {
@@ -2657,5 +2658,59 @@ describe('schema versioning and migration pipeline (persistence-003)', () => {
       const result = migrateStoredSave({ version: 1 }, 1, 2, { 1: throwing })
       expect(result).toEqual({ ok: false })
     })
+  })
+})
+
+describe('worldgen epoch compatibility (persistence-008)', () => {
+  const { worldgenEpoch: _epoch, ...configV56 } = config
+  const v56Save = { ...validSave, version: 56, config: configV56 }
+
+  it('migrates a v56 save to v57 with the pre-Revival epoch 0 and loads it while the build is at epoch 0', () => {
+    const result = loadStoredSave(v56Save, { worldgenEpoch: 0 })
+    expect(result).toEqual({ status: 'ok', data: validSave })
+    if (result.status !== 'ok') return
+    expect(result.data.config.worldgenEpoch).toBe(0)
+  })
+
+  it('refuses the same v56 save as incompatible-world (not migration-failed) once the build epoch moves on', () => {
+    expect(loadStoredSave(v56Save, { worldgenEpoch: 1 })).toEqual({ status: 'incompatible-world', version: 56, worldgenEpoch: 0 })
+  })
+
+  it('walks the oldest supported save (v1) through the whole chain to epoch 0, and refuses it at epoch 1', () => {
+    const { discoveredLocations: _d, targets: _t, ...v1Map } = validSave.map
+    const v1Save = { ...validSave, version: 1, config: configV56, map: v1Map }
+    const ok = loadStoredSave(v1Save, { worldgenEpoch: 0 })
+    expect(ok.status).toBe('ok')
+    if (ok.status === 'ok') expect(ok.data.config.worldgenEpoch).toBe(0)
+    expect(loadStoredSave(v1Save, { worldgenEpoch: 1 })).toEqual({ status: 'incompatible-world', version: 1, worldgenEpoch: 0 })
+  })
+
+  it('refuses a current-version save from a newer epoch', () => {
+    const newer = { ...validSave, config: { ...config, worldgenEpoch: 2 } }
+    expect(loadStoredSave(newer, { worldgenEpoch: 1 })).toEqual({
+      status: 'incompatible-world',
+      version: CURRENT_SAVE_VERSION,
+      worldgenEpoch: 2,
+    })
+  })
+
+  it('fails closed on a current-version save with a missing, negative or fractional epoch', () => {
+    expect(loadStoredSave({ ...validSave, config: configV56 })).toEqual({ status: 'invalid' })
+    expect(loadStoredSave({ ...validSave, config: { ...config, worldgenEpoch: -1 } })).toEqual({ status: 'invalid' })
+    expect(loadStoredSave({ ...validSave, config: { ...config, worldgenEpoch: 0.5 } })).toEqual({ status: 'invalid' })
+    expect(loadStoredSave({ ...validSave, config: { ...config, worldgenEpoch: '0' } })).toEqual({ status: 'invalid' })
+  })
+
+  it('the v56 → v57 step is pure and touches only version and config.worldgenEpoch', () => {
+    const input = structuredClone(v56Save)
+    const snapshot = structuredClone(input)
+    const result = loadStoredSave(input, { worldgenEpoch: 0 })
+    expect(input).toEqual(snapshot)
+    expect(result).toEqual({ status: 'ok', data: { ...snapshot, version: 57, config: { ...configV56, worldgenEpoch: 0 } } })
+  })
+
+  it('a future format version stays unsupported-version regardless of epoch', () => {
+    const future = { ...validSave, version: CURRENT_SAVE_VERSION + 1, config: { ...config, worldgenEpoch: 9 } }
+    expect(loadStoredSave(future, { worldgenEpoch: 0 })).toEqual({ status: 'unsupported-version', version: CURRENT_SAVE_VERSION + 1 })
   })
 })

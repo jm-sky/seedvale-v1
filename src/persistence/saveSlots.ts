@@ -1,4 +1,5 @@
-import { loadStoredSave, type SaveData } from './saveData'
+import { loadStoredSave, type LoadStoredSaveOptions, type SaveData } from './saveData'
+import { WORLDGEN_EPOCH } from './worldgenEpoch'
 
 export const MAX_SAVES = 8
 export const SAVE_NAME_MAX_LENGTH = 40
@@ -58,31 +59,52 @@ export type InspectedSaveSlot =
   | { status: 'invalid', id: string, name?: string }
   | { status: 'migration-failed', id: string, version: number, name?: string }
   | { status: 'unsupported-version', id: string, version: number, name?: string }
+  | { status: 'incompatible-world', id: string, version: number, worldgenEpoch: number, name?: string }
 
-export function inspectStoredSave(key: string, value: unknown): InspectedSaveSlot {
+export function inspectStoredSave(key: string, value: unknown, options?: LoadStoredSaveOptions): InspectedSaveSlot {
   const envelope = isSaveSlotEnvelope(value)
-  const result = loadStoredSave(envelope ? value.data : value)
+  const result = loadStoredSave(envelope ? value.data : value, options)
   if (result.status === 'ok') {
     const name = envelope ? (value.name.trim() || legacyNameFromSave(result.data)) : legacyNameFromSave(result.data)
     return { status: 'ok', id: key, name, data: result.data }
   }
   const recoveredName = envelope ? value.name.trim() || undefined : undefined
   if (result.status === 'invalid') return { status: 'invalid', id: key, name: recoveredName }
+  if (result.status === 'incompatible-world') {
+    return { status: result.status, id: key, version: result.version, worldgenEpoch: result.worldgenEpoch, name: recoveredName }
+  }
   return { status: result.status, id: key, version: result.version, name: recoveredName }
 }
 
 /** Every status a stored row's own `id` can be shown/managed under, whether
  *  or not the payload could be read as a normal save (plan persistence-004
  *  §5) — the counterpart to `SaveSlotInfo` for a row that isn't loadable. */
-export type UnhealthySaveStatus = 'invalid' | 'migration-failed' | 'unsupported-version'
+export type UnhealthySaveStatus = 'invalid' | 'migration-failed' | 'unsupported-version' | 'incompatible-world'
+
+/** A row that can't be loaded. `worldgenEpoch` is set only for
+ *  `'incompatible-world'` (plan persistence-008), so the label can tell an
+ *  older world from a save written by a newer build. */
+export type UnhealthySaveEntry = {
+  status: UnhealthySaveStatus
+  id: string
+  name?: string
+  version?: number
+  worldgenEpoch?: number
+}
 
 export type SaveManagementEntry =
   | (SaveSlotInfo & { status: 'ok' })
-  | { status: UnhealthySaveStatus, id: string, name?: string, version?: number }
+  | UnhealthySaveEntry
 
 export function toSaveManagementEntry(slot: InspectedSaveSlot): SaveManagementEntry {
   if (slot.status === 'ok') return { status: 'ok', ...toSaveSlotInfo(slot) }
-  return { status: slot.status, id: slot.id, name: slot.name, version: 'version' in slot ? slot.version : undefined }
+  return {
+    status: slot.status,
+    id: slot.id,
+    name: slot.name,
+    version: 'version' in slot ? slot.version : undefined,
+    ...('worldgenEpoch' in slot ? { worldgenEpoch: slot.worldgenEpoch } : {}),
+  }
 }
 
 /** Healthy entries first (existing recency order), unhealthy ones after —
@@ -93,9 +115,17 @@ export function sortSaveManagementEntries(entries: readonly SaveManagementEntry[
   return [...sortSavesByRecency(healthy).map((s): SaveManagementEntry => ({ status: 'ok', ...s })), ...unhealthy]
 }
 
-export function unhealthySaveStatusLabel(status: UnhealthySaveStatus): string {
-  if (status === 'invalid') return 'Uszkodzony'
-  if (status === 'migration-failed') return 'Nieudana migracja'
+export function unhealthySaveStatusLabel(
+  entry: Pick<UnhealthySaveEntry, 'status' | 'worldgenEpoch'>,
+  currentEpoch = WORLDGEN_EPOCH,
+): string {
+  if (entry.status === 'invalid') return 'Uszkodzony'
+  if (entry.status === 'migration-failed') return 'Nieudana migracja'
+  if (entry.status === 'incompatible-world') {
+    return (entry.worldgenEpoch ?? 0) > currentEpoch
+      ? 'Zapis z nowszej wersji świata'
+      : 'Świat sprzed aktualizacji — zacznij nową grę'
+  }
   return 'Nieobsługiwana wersja'
 }
 

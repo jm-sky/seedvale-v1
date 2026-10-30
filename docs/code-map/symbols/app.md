@@ -434,14 +434,14 @@ Generated from exported TypeScript symbols.
 
 ## `app/saveState.ts`
 
-- `createSaveState` — function — line 160
+- `createSaveState` — function — line 161
   - domain: persistence
   - system: save-state
   - role: Assembles the live runtime state into `SaveData` and owns when it is written.
   - produces: SaveData
   - integration: Reads across WorldBundle, player and UI state to build one save.
-- `SaveState` — type — line 45
-- `SaveStateDeps` — type — line 66
+- `SaveState` — type — line 46
+- `SaveStateDeps` — type — line 67
 
 ## `app/userActions.ts`
 

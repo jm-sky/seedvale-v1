@@ -61,6 +61,7 @@ import { PLAYER_TROUGH_CAPACITY_LITRES, PLAYER_TROUGH_REQUIRED_WORK } from '../w
 import { WELL_STAGE_WORK_HOURS } from '../world/playerWell'
 import { STANDING_TORCH_REQUIRED_WORK } from '../world/standingTorch'
 import { realSecondsToGameDays } from '../world/timeConversion'
+import { WORLDGEN_EPOCH } from './worldgenEpoch'
 
 /** Same shape as `StoredConfig` in `config/persistConfig.ts` — kept independent
  *  here so this module doesn't reach into config internals. */
@@ -70,6 +71,10 @@ export type SaveConfig = {
   sky: WorldConfig['sky']
   player: WorldConfig['player']
   settlements: WorldConfig['settlements']
+  /** Worldgen compatibility epoch the save was made in (plan
+   *  persistence-008) — compared against `WORLDGEN_EPOCH` after migration;
+   *  never applied to `WorldConfig`. Non-negative integer, required at v57. */
+  worldgenEpoch: number
 }
 
 /** Player HP/injury consequence snapshot (plan items-player-050) — the
@@ -759,7 +764,7 @@ export type SaveWorkContract =
  *  representation or semantics of `SaveData` change — see the plan's
  *  "Future schema-change workflow". Never duplicate this number elsewhere;
  *  `saveState.ts` imports it instead of declaring its own constant. */
-export const CURRENT_SAVE_VERSION = 56
+export const CURRENT_SAVE_VERSION = 57
 
 /** Canonical save contract for the current schema version. This module
  *  intentionally carries no history of schemas from before the v1 hard cut
@@ -1017,6 +1022,7 @@ function isSaveConfig(value: unknown): value is SaveConfig {
   if (!config.sky || typeof config.sky !== 'object') return false
   if (!config.player || typeof config.player !== 'object') return false
   if (!config.settlements || typeof config.settlements !== 'object') return false
+  if (typeof config.worldgenEpoch !== 'number' || !Number.isInteger(config.worldgenEpoch) || config.worldgenEpoch < 0) return false
   return true
 }
 
@@ -4468,6 +4474,17 @@ const SAVE_MIGRATIONS: Readonly<Record<number, SaveMigration>> = {
   53: migrateSaveV53ToV54,
   54: migrateSaveV54ToV55,
   55: migrateSaveV55ToV56,
+  56: migrateSaveV56ToV57,
+}
+
+/** v56 → v57 (plan persistence-008): `config.worldgenEpoch = 0` — every save
+ *  before this version was made by the pre-Revival generator. The step always
+ *  succeeds; whether that epoch still matches this build is a separate check
+ *  in `loadStoredSave()` (`'incompatible-world'`), not a migration failure. */
+function migrateSaveV56ToV57(data: unknown): unknown {
+  const v = data as Record<string, unknown>
+  const config = (v.config ?? {}) as Record<string, unknown>
+  return { ...v, version: 57, config: { ...config, worldgenEpoch: 0 } }
 }
 
 function detectStoredVersion(value: unknown): number | null {
@@ -4508,19 +4525,30 @@ export function migrateStoredSave(
  *  `'migration-failed'` covers an older, known version whose migration chain
  *  is missing a step, throws, or produces something that still fails
  *  current-schema validation. `'unsupported-version'` covers a version newer
- *  than this build knows about. Only `'ok'` may ever reach runtime. */
+ *  than this build knows about. `'incompatible-world'` (plan persistence-008)
+ *  covers a schema-valid save made in a different worldgen epoch — older or
+ *  newer — whose persisted geography no longer matches this build. Only
+ *  `'ok'` may ever reach runtime. */
 export type StoredSaveResult =
   | { status: 'ok', data: SaveData }
   | { status: 'invalid' }
   | { status: 'migration-failed', version: number }
   | { status: 'unsupported-version', version: number }
+  | { status: 'incompatible-world', version: number, worldgenEpoch: number }
+
+/** Test seam for `loadStoredSave()` — the epoch this build generates,
+ *  defaulting to `WORLDGEN_EPOCH`, so tests never patch the module constant. */
+export type LoadStoredSaveOptions = {
+  worldgenEpoch?: number
+}
 
 /** Central migration pipeline entry point (persistence-003 §3). Detects the
  *  persisted version, migrates in memory up to `CURRENT_SAVE_VERSION`, then
  *  validates against the current schema — never touches storage itself, and
  *  never persists the migrated representation (persistence-003 §7: that only
- *  happens through an ordinary later save). */
-export function loadStoredSave(value: unknown): StoredSaveResult {
+ *  happens through an ordinary later save). A schema-valid result from a
+ *  different worldgen epoch is refused, never migrated (persistence-008). */
+export function loadStoredSave(value: unknown, options: LoadStoredSaveOptions = {}): StoredSaveResult {
   try {
     const version = detectStoredVersion(value)
     if (version === null) return { status: 'invalid' }
@@ -4529,7 +4557,13 @@ export function loadStoredSave(value: unknown): StoredSaveResult {
     const migration = migrateStoredSave(value, version, CURRENT_SAVE_VERSION, SAVE_MIGRATIONS)
     if (!migration.ok) return { status: 'migration-failed', version }
 
-    if (isSaveData(migration.data)) return { status: 'ok', data: migration.data }
+    if (isSaveData(migration.data)) {
+      const worldgenEpoch = migration.data.config.worldgenEpoch
+      if (worldgenEpoch !== (options.worldgenEpoch ?? WORLDGEN_EPOCH)) {
+        return { status: 'incompatible-world', version, worldgenEpoch }
+      }
+      return { status: 'ok', data: migration.data }
+    }
     return version === CURRENT_SAVE_VERSION ? { status: 'invalid' } : { status: 'migration-failed', version }
   } catch {
     return { status: 'invalid' }

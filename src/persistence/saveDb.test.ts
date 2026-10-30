@@ -24,6 +24,7 @@ const config = {
   sky: { inclination: 0.5 },
   player: { name: 'Anna' },
   settlements: {},
+  worldgenEpoch: 0,
 } as SaveConfig
 
 function makeSaveData(overrides?: Partial<Pick<SaveData, 'savedAt' | 'elapsedDays'>>): SaveData {
@@ -418,5 +419,63 @@ describe('listSaveManagementEntries — unhealthy rows stay visible/manageable (
 
     // Deleting the unreadable row left the healthy sibling intact.
     expect((await readSave(healthy.id))?.elapsedDays).toBe(2)
+  })
+})
+
+describe('incompatible-world slots (plan persistence-008)', () => {
+  async function getRawRow(id: string): Promise<unknown> {
+    return new Promise<unknown>((resolve, reject) => {
+      const readDb = indexedDB.open(DB_NAME, DB_VERSION)
+      readDb.onsuccess = () => {
+        const tx = readDb.result.transaction('saves', 'readwrite')
+        const req = tx.objectStore('saves').get(id)
+        req.onsuccess = () => resolve(req.result)
+        req.onerror = () => reject(req.error)
+      }
+    })
+  }
+
+  // A save written by a build with a newer worldgen epoch than this one.
+  const otherWorld = () => {
+    const data = makeSaveData()
+    return { ...data, config: { ...data.config, worldgenEpoch: 99 } }
+  }
+
+  it('surfaces the slot, refuses to load it and never overwrites it', async () => {
+    const created = await createSave('Stary świat', makeSaveData())
+    if (!created.ok) throw new Error('setup failed')
+    const row = { name: 'Stary świat', data: otherWorld() }
+    await putRawRow(created.id, row)
+
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    expect(await readSave(created.id)).toBeNull()
+    const listed = await listSaveManagementEntries()
+    const written = await writeSave(makeSaveData({ elapsedDays: 9 }), created.id)
+    warnSpy.mockRestore()
+
+    expect(listed.ok).toBe(true)
+    if (!listed.ok) return
+    expect(listed.entries).toEqual([{
+      status: 'incompatible-world',
+      id: created.id,
+      name: 'Stary świat',
+      version: CURRENT_SAVE_VERSION,
+      worldgenEpoch: 99,
+    }])
+    expect(written).toEqual({ ok: false, error: 'invalid-existing-slot' })
+    expect(await getRawRow(created.id)).toEqual(row)
+  })
+
+  it('keeps an incompatible legacy current row instead of deleting it', async () => {
+    const raw = otherWorld()
+    await listSaves() // creates the object store
+    await putRawRow('current', raw)
+
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    const slots = await listSaves()
+    warnSpy.mockRestore()
+
+    expect(slots).toHaveLength(0)
+    expect(await getRawRow('current')).toEqual(raw)
   })
 })

@@ -226,7 +226,7 @@ const titles = {
           class="min-w-0 flex-1 px-3 py-2.5 text-left text-sm opacity-70"
         >
           <span class="block font-semibold">{{ entry.name ?? 'Zapis' }}</span>
-          <span class="mt-0.5 block text-[11px] text-red-300">{{ unhealthySaveStatusLabel(entry.status) }} — nie można wczytać</span>
+          <span class="mt-0.5 block text-[11px] text-red-300">{{ unhealthySaveStatusLabel(entry) }} — nie można wczytać</span>
         </div>
         <button
           v-if="entry.status !== 'ok'"

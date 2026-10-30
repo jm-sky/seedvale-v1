@@ -5,6 +5,7 @@ import {
   assertCanCreateSave,
   formatSaveDay,
   generateSaveId,
+  inspectStoredSave,
   isSaveSlotEnvelope,
   legacyNameFromSave,
   MAX_SAVES,
@@ -14,8 +15,11 @@ import {
   resolvePauseActiveSaveName,
   SAVE_NAME_MAX_LENGTH,
   saveErrorMessage,
+  sortSaveManagementEntries,
   sortSavesByRecency,
+  toSaveManagementEntry,
   toSaveSlotInfo,
+  unhealthySaveStatusLabel,
   validateSaveName,
   wrapSave,
 } from './saveSlots'
@@ -26,6 +30,7 @@ const config = {
   sky: { inclination: 0.5 },
   player: { name: 'Anna' },
   settlements: {},
+  worldgenEpoch: 0,
 } as SaveConfig
 
 const currentSave = {
@@ -205,5 +210,32 @@ describe('saveSlots', () => {
   it('maps create errors to Polish copy', () => {
     expect(saveErrorMessage('empty')).toContain('nazwę')
     expect(saveErrorMessage('limit')).toContain('8')
+  })
+})
+
+describe('incompatible-world slots (plan persistence-008)', () => {
+  it('keeps the envelope name and reports the stored epoch when the build epoch moved on', () => {
+    const slot = inspectStoredSave('slot_old', wrapSave('  Stara gra ', loaded()), { worldgenEpoch: 1 })
+    expect(slot).toEqual({ status: 'incompatible-world', id: 'slot_old', version: CURRENT_SAVE_VERSION, worldgenEpoch: 0, name: 'Stara gra' })
+    expect(toSaveManagementEntry(slot)).toEqual({
+      status: 'incompatible-world',
+      id: 'slot_old',
+      name: 'Stara gra',
+      version: CURRENT_SAVE_VERSION,
+      worldgenEpoch: 0,
+    })
+    expect(parseStoredSave('slot_old', wrapSave('Stara gra', loaded()))).not.toBeNull()
+  })
+
+  it('sorts incompatible rows with the other unhealthy rows, after healthy ones', () => {
+    const healthy = { status: 'ok' as const, ...toSaveSlotInfo({ id: 'slot_ok', name: 'Nowa', data: loaded() }) }
+    const incompatible = { status: 'incompatible-world' as const, id: 'slot_old', worldgenEpoch: 0 }
+    expect(sortSaveManagementEntries([incompatible, healthy]).map((e) => e.id)).toEqual(['slot_ok', 'slot_old'])
+  })
+
+  it('labels an older world and a newer-build save differently', () => {
+    expect(unhealthySaveStatusLabel({ status: 'incompatible-world', worldgenEpoch: 0 }, 1)).toBe('Świat sprzed aktualizacji — zacznij nową grę')
+    expect(unhealthySaveStatusLabel({ status: 'incompatible-world', worldgenEpoch: 2 }, 1)).toBe('Zapis z nowszej wersji świata')
+    expect(unhealthySaveStatusLabel({ status: 'migration-failed' })).toBe('Nieudana migracja')
   })
 })

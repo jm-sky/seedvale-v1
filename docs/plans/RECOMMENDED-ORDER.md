@@ -231,55 +231,51 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   🔴 `L` · **Score:**  28  
    → **unlocks:** 0/0
 
-36. `persistence-008` — **Save format vs worldgen epoch (v57) and pre-Revival save refusal**  
+36. `settlements-024` — **Jumpable low campfire collision**  
   🔴 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-37. `settlements-024` — **Jumpable low campfire collision**  
+37. `world-terrain-039` — **N8AO / post-process cost budget**  
   🔴 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-38. `world-terrain-039` — **N8AO / post-process cost budget**  
-  🔴 `M` · **Score:**  27  
-   → **unlocks:** 0/0
-
-39. `ui-input-025` — **Road travel autopilot for player and mounts**  
+38. `ui-input-025` — **Road travel autopilot for player and mounts**  
   🔴 `L` · **Score:**  26  
    → **unlocks:** 0/0
 
-40. `items-player-044` — **Shoulder and forearm equipment slots**  
+39. `items-player-044` — **Shoulder and forearm equipment slots**  
   🟡 `M` · **Score:**  25  
    → **unlocks:** 0/0
 
-41. `world-036` — **Lightweight unloaded shipwreck and tower lookup**  
+40. `world-036` — **Lightweight unloaded shipwreck and tower lookup**  
   🟡 `M` · **Score:**  25  
    → **unlocks:** 0/0
 
-42. `ui-input-045` — **Equipment panel body-ordered layout (V3 items--006 adapted)**  
+41. `ui-input-045` — **Equipment panel body-ordered layout (V3 items--006 adapted)**  
   🟡 `S` · **Score:**  23  
    → **unlocks:** 0/0
 
-43. `tools-019` — **Debug tooling lifecycle ownership**  
+42. `tools-019` — **Debug tooling lifecycle ownership**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-44. `tools-021` — **Align debug OBB overlays with physical colliders**  
+43. `tools-021` — **Align debug OBB overlays with physical colliders**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-45. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
+44. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
   🟡 `L` · **Score:**  18  
    → **unlocks:** 0/0
 
-46. `items-player-014` — **Rope-pullable resource transport**  
+45. `items-player-014` — **Rope-pullable resource transport**  
   ⚪ `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-47. `items-player-052` — **Settlement tool ownership and social acquisition**  
+46. `items-player-052` — **Settlement tool ownership and social acquisition**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-48. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
+47. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 

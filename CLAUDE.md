@@ -203,7 +203,7 @@ Avoid introducing:
 * order-dependent behaviour where ordering matters,
 * different rules for normal progression and time-skip.
 
-When changing deterministic world generation, check affected persistent worldgen cache namespaces. If cached output can change, bump that namespace's version/fingerprint so old data becomes a cache miss; do not invalidate unrelated caches globally.
+When changing deterministic world generation, check affected persistent worldgen cache namespaces. If cached output can change, bump that namespace's version/fingerprint so old data becomes a cache miss; do not invalidate unrelated caches globally. If the change moves, re-identifies, drops or adds anything persisted saves refer to, also bump `WORLDGEN_EPOCH` per the checklist in `src/persistence/worldgenEpoch.ts` (plan persistence-008; one coordinated bump per Revival batch, D3).
 
 ### Lifecycle
 
