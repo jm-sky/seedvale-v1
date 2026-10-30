@@ -1146,27 +1146,32 @@ Generated from exported TypeScript symbols.
 - `cellKey` — function — line 129
 - `cellSeed` — function — line 172
 - `cellsWithinRadius` — function — line 156
-- `generateSettlementDef` — function — line 796
-- `generateVillagePlan` — function — line 726
-- `probeSettlementSite` — function — line 508
+- `generateSettlementDef` — function — line 857
+- `generateVillagePlan` — function — line 787
+- `probeSettlementSite` — function — line 569
   - domain: settlements
 - `SETTLEMENT_GRID_STEP` — const — line 71
+- `settlementBaseNameFor` — function — line 210
+  - domain: settlements
 - `SettlementCell` — type — line 77
+- `settlementCellCenter` — function — line 196
+  - domain: settlements
 - `SettlementDef` — type — line 79
-- `SettlementSiteProbe` — type — line 493
+- `SettlementSiteProbe` — type — line 554
 - `worldToCell` — function — line 133
 
 ## `settlement/settlementNameUniqueness.ts`
 
-- `compareSettlementNameOrder` — function — line 16
+- `compareSettlementNameOrder` — function — line 27
   - domain: settlements
-- `fallbackSettlementName` — function — line 42
+- `fallbackSettlementName` — function — line 40
   - domain: settlements
-- `pickUniqueSettlementName` — function — line 52
+- `LOCAL_SETTLEMENT_NAME_RADIUS_M` — const — line 12
+- `localSettlementName` — function — line 92
   - domain: settlements
-- `predecessorSettlementCells` — function — line 30
+- `LocalSettlementNameDeps` — type — line 44
+- `localSettlementNameOrdinal` — function — line 66
   - domain: settlements
-- `SETTLEMENT_NAME_ATTEMPT_LIMIT` — const — line 4
 
 ## `settlement/settlementNightCycle.ts`
 
@@ -1204,25 +1209,29 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/settlementPlanCache.ts`
 
-- `activateSettlementDefinitionCacheForWorld` — function — line 184
+- `activateSettlementDefinitionCacheForWorld` — function — line 195
   - domain: settlements
   - system: worldgen-cache
-- `attachSettlementDefinitionPersistence` — function — line 152
+- `attachSettlementDefinitionPersistence` — function — line 163
   - domain: settlements
   - system: worldgen-cache
-- `cachedLostTreasureArchaeologistHostCell` — function — line 362
-- `cachedLostTreasureSpecialistHostCell` — function — line 371
-- `cachedSettlementDefCount` — function — line 393
-- `cachedSettlementProgressionPolicy` — function — line 398
-- `clearSettlementDefCache` — function — line 118
-- `ingestHydratedSettlementDef` — function — line 137
+- `cachedLostTreasureArchaeologistHostCell` — function — line 429
+- `cachedLostTreasureSpecialistHostCell` — function — line 438
+- `cachedSettlementDefCount` — function — line 461
+- `cachedSettlementProgressionPolicy` — function — line 466
+- `clearSettlementDefCache` — function — line 123
+- `ingestHydratedSettlementDef` — function — line 143
   - domain: settlements
   - system: worldgen-cache
-- `setSettlementRiverQuery` — function — line 82
-- `settlementDefFor` — function — line 379
-- `settlementDefinitionCacheReady` — function — line 201
-- `SettlementResolveContext` — type — line 56
-- `worldRiverQuery` — function — line 95
+- `lostTreasureArchaeologistHostCell` — function — line 412
+  - domain: settlements
+- `lostTreasureSpecialistHostCell` — function — line 423
+  - domain: settlements
+- `setSettlementRiverQuery` — function — line 85
+- `settlementDefFor` — function — line 446
+- `settlementDefinitionCacheReady` — function — line 212
+- `SettlementResolveContext` — type — line 59
+- `worldRiverQuery` — function — line 98
 
 ## `settlement/settlementProgression.ts`
 
@@ -1270,14 +1279,14 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/SettlementsManager.ts`
 
-- `createSettlementsManager` — function — line 451
+- `createSettlementsManager` — function — line 453
   - domain: settlements
   - system: settlements-manager
   - role: Owns settlement generation, streaming and per-settlement economy/household/NPC-state registries.
   - owns: SettlementEconomy, Household
   - lifecycle: streaming
-- `SettlementsManager` — type — line 199
-- `shouldAcceptSettlementResidency` — function — line 174
+- `SettlementsManager` — type — line 201
+- `shouldAcceptSettlementResidency` — function — line 176
   - domain: settlements
 
 ## `settlement/settlementStructures.ts`
@@ -1328,28 +1337,34 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/settlementWorldgenCache.ts`
 
-- `createSettlementWorldgenCache` — function — line 562
+- `createSettlementWorldgenCache` — function — line 597
   - domain: settlements
   - system: worldgen-cache
-- `isValidSettlementDefPayload` — function — line 500
+- `isValidSettlementDefPayload` — function — line 515
   - domain: settlements
   - system: worldgen-cache
-- `parseSettlementCellSubKey` — function — line 88
+- `isValidSettlementWorldgenPayload` — function — line 562
+  - domain: settlements
+  - system: worldgen-cache
+- `parseSettlementCellSubKey` — function — line 103
 - `SETTLEMENT_DEFINITION_CACHE_NAMESPACE` — const — line 46
   - domain: settlements
   - system: worldgen-cache
   - role: Persistent-cache adapter for `SettlementDef | null` results (plan settlements-014). IndexedDB only hydrates and extends the module-level `defCache` in `settlementPlanCache.ts` — that map stays the synchronous authority. Cached `null` is a real hit (a cell that deterministically has no settlement), never a miss.
   - integration: Disposable derived data only. `settlementDefFor()` stays synchronous; a miss, malformed payload or IndexedDB failure always falls back to `generateSettlementDef()`. Never `SaveData`, never a second reduced `VillagePlan`, never economy / household / NPC runtime state.
 - `SETTLEMENT_DEFINITION_CACHE_VERSION` — const — line 59
-- `settlementCellSubKey` — function — line 83
+- `SETTLEMENT_LOST_TREASURE_HOSTS_SUB_KEY` — const — line 71
+- `settlementCellSubKey` — function — line 98
   - domain: settlements
   - system: worldgen-cache
-- `SettlementDefinitionCachePayload` — type — line 66
-- `settlementDefinitionFingerprint` — function — line 110
+- `SettlementDefinitionCachePayload` — type — line 68
+- `settlementDefinitionFingerprint` — function — line 125
   - domain: settlements
   - system: worldgen-cache
-- `SettlementProgressionIdentity` — type — line 70
-- `SettlementWorldgenCache` — type — line 536
+- `SettlementLostTreasureHostsPayload` — type — line 75
+- `SettlementProgressionIdentity` — type — line 85
+- `SettlementWorldgenCache` — type — line 571
+- `SettlementWorldgenCachePayload` — type — line 81
 
 ## `settlement/storageDestinations.ts`
 

@@ -194,10 +194,10 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/chunkHeightmapProtocol.ts`
 
-- `ChunkTileResult` — type — line 14
-- `ChunkWorkerRequest` — type — line 31
-- `ChunkWorkerResponse` — type — line 38
-- `GrassRequestParams` — type — line 27
+- `ChunkTileResult` — type — line 15
+- `ChunkWorkerRequest` — type — line 32
+- `ChunkWorkerResponse` — type — line 40
+- `GrassRequestParams` — type — line 28
 
 ## `terrain/chunkItems.ts`
 
@@ -207,27 +207,27 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/chunkManager.ts`
 
-- `applyChunkWaterDayNight` — function — line 1182
-- `applyModificationToTile` — function — line 943
-- `ChunkManager` — type — line 563
-- `ChunkManagerConfig` — type — line 345
-- `createChunkManager` — function — line 1207
+- `applyChunkWaterDayNight` — function — line 1187
+- `applyModificationToTile` — function — line 948
+- `ChunkManager` — type — line 565
+- `ChunkManagerConfig` — type — line 347
+- `createChunkManager` — function — line 1212
   - domain: world-terrain
   - system: chunk-manager
   - role: Owns terrain chunk streaming, sampling and environment-facing world queries.
   - simulation: on-demand
   - performance: nearby-only
-- `CropHarvestOutcome` — type — line 1196
-- `drainByBudget` — function — line 1157
-- `FinalizeStage` — type — line 459
-- `pickNearestQueuedKey` — function — line 1117
-- `pickNextFinalizeKey` — function — line 1135
-- `ResidentChunkSnapshot` — type — line 1022
-- `sampleResidentHeight` — function — line 1042
-- `sampleResidentLocalWater` — function — line 1090
-- `sampleResidentSurfaceGround` — function — line 1062
-- `TerrainModification` — type — line 900
-- `tickChunkWaterSurfaces` — function — line 1170
+- `CropHarvestOutcome` — type — line 1201
+- `drainByBudget` — function — line 1162
+- `FinalizeStage` — type — line 461
+- `pickNearestQueuedKey` — function — line 1122
+- `pickNextFinalizeKey` — function — line 1140
+- `ResidentChunkSnapshot` — type — line 1027
+- `sampleResidentHeight` — function — line 1047
+- `sampleResidentLocalWater` — function — line 1095
+- `sampleResidentSurfaceGround` — function — line 1067
+- `TerrainModification` — type — line 905
+- `tickChunkWaterSurfaces` — function — line 1175
 
 ## `terrain/chunkMeshCache.ts`
 
@@ -285,24 +285,26 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/chunkWorkerPool.ts`
 
-- `cancelChunkGrass` — function — line 477
-- `cancelChunkMapTile` — function — line 507
-- `cancelChunkMesh` — function — line 488
-- `cancelChunkTile` — function — line 466
-- `cancelChunkWorldKnowledge` — function — line 499
-- `ChunkWorkerLike` — type — line 26
-- `ChunkWorkerPool` — type — line 42
-- `ChunkWorkerPoolOptions` — type — line 33
-- `createChunkWorkerPool` — function — line 158
-- `defaultChunkWorkerCount` — function — line 130
-- `disposeChunkWorkerPool` — function — line 511
-- `HeightmapGenerationCancelledError` — class — line 14
-- `isChunkWorkerCancelledError` — function — line 21
-- `requestChunkGrass` — function — line 470
-- `requestChunkMapTile` — function — line 503
-- `requestChunkMesh` — function — line 481
-- `requestChunkTile` — function — line 459
-- `requestChunkWorldKnowledge` — function — line 492
+- `cancelChunkGrass` — function — line 526
+- `cancelChunkMapTile` — function — line 556
+- `cancelChunkMesh` — function — line 537
+- `cancelChunkRiverTile` — function — line 568
+- `cancelChunkTile` — function — line 515
+- `cancelChunkWorldKnowledge` — function — line 548
+- `ChunkWorkerLike` — type — line 27
+- `ChunkWorkerPool` — type — line 43
+- `ChunkWorkerPoolOptions` — type — line 34
+- `createChunkWorkerPool` — function — line 178
+- `defaultChunkWorkerCount` — function — line 149
+- `disposeChunkWorkerPool` — function — line 572
+- `HeightmapGenerationCancelledError` — class — line 15
+- `isChunkWorkerCancelledError` — function — line 22
+- `requestChunkGrass` — function — line 519
+- `requestChunkMapTile` — function — line 552
+- `requestChunkMesh` — function — line 530
+- `requestChunkRiverTile` — function — line 560
+- `requestChunkTile` — function — line 508
+- `requestChunkWorldKnowledge` — function — line 541
 
 ## `terrain/chunkWorldItems.ts`
 
@@ -625,8 +627,11 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/riverTileCache.ts`
 
-- `createRiverTileCache` — function — line 24
-- `RiverTileCache` — type — line 14
+- `createRiverTileCache` — function — line 56
+- `RiverTileCache` — type — line 19
+- `RiverTileCacheOptions` — type — line 44
+- `RiverTileCacheStats` — type — line 32
+- `riverTileStatsDelta` — function — line 148
 
 ## `terrain/roadBridge.ts`
 

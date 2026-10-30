@@ -55,6 +55,7 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `ai/NpcAgent.ts`
+- `perf/occludedActorCohort.ts`
 - `perf/sceneCensus.ts`
 - `render/agentPresentationLod.test.ts`
 - `render/agentPresentationVisibility.ts`

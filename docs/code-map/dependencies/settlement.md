@@ -65,7 +65,9 @@ Generated from TypeScript imports.
 - `fauna/ownedAnimalControl.ts`
 - `items/constructionMaterials.ts`
 - `items/createDroppedItems.ts`
+- `perf/active.ts`
 - `perf/agentCpuDiag.ts`
+- `perf/monitor.ts`
 - `player/PlayerController.ts`
 - `settlement/authoredRepairTargets.ts`
 - `settlement/createSettlement.ts`
@@ -2430,7 +2432,6 @@ Generated from TypeScript imports.
 - `settlement/settlementGenerator.ts`
 - `settlement/settlementNameUniqueness.ts`
 - `settlement/settlementPlanCache.ts`
-- `settlement/settlementProgression.ts`
 - `settlement/settlementTerrain.ts`
 - `shared/SettlementName.ts`
 - `terrain/chunkHeightmap.ts`
@@ -2440,6 +2441,7 @@ Generated from TypeScript imports.
 **Imports**
 
 - `settlement/settlementGenerator.ts`
+- `shared/SettlementName.ts`
 
 **Imported by**
 
@@ -2505,6 +2507,8 @@ Generated from TypeScript imports.
 
 - `ai/nameCultures.ts`
 - `config/worldConfig.ts`
+- `perf/active.ts`
+- `perf/monitor.ts`
 - `player/PlayerController.ts`
 - `settlement/families.ts`
 - `settlement/homeAuthoredResidents.ts`
@@ -2560,7 +2564,6 @@ Generated from TypeScript imports.
 
 **Imported by**
 
-- `settlement/settlementNameUniqueness.test.ts`
 - `settlement/settlementPlanCache.ts`
 - `settlement/settlementProgression.test.ts`
 

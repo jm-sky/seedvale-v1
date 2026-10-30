@@ -157,7 +157,15 @@ Generated from exported TypeScript symbols.
 
 ## `shared/SettlementName.ts`
 
-- `generateSettlementName` — function — line 84
+- `agreeAdjective` — function — line 160
+  - domain: settlements
+- `generateSettlementBaseName` — function — line 180
+- `generateSettlementName` — function — line 209
+- `MAX_SETTLEMENT_NAME_ORDINAL` — const — line 224
+- `SettlementBaseName` — type — line 171
+- `SettlementNameGender` — type — line 13
+- `settlementOrdinalName` — function — line 233
+  - domain: settlements
 - `SettlementTerrain` — type — line 8
 
 ## `shared/StaminaState.ts`

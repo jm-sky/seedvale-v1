@@ -1058,6 +1058,7 @@ Generated from TypeScript imports.
 - `items/weaponMaintenance.ts`
 - `perf/flags.ts`
 - `perf/index.ts`
+- `perf/occludedActorCohort.ts`
 - `persistence/saveData.ts`
 - `persistence/saveDb.ts`
 - `persistence/worldgenFixture.ts`
@@ -1297,6 +1298,7 @@ Generated from TypeScript imports.
 - `items/weaponMaintenance.ts`
 - `perf/flags.ts`
 - `perf/index.ts`
+- `perf/occludedActorCohort.ts`
 - `player/PlayerController.ts`
 - `player/PlayerNeeds.ts`
 - `player/PlayerSkills.ts`

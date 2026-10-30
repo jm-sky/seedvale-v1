@@ -15,6 +15,8 @@ Generated from TypeScript imports.
 - `perf/grassFinalizationDiag.test.ts`
 - `perf/grassFinalizationDiag.ts`
 - `perf/index.ts`
+- `settlement/SettlementsManager.ts`
+- `settlement/settlementPlanCache.ts`
 - `terrain/chunkManager.ts`
 - `terrain/chunkWorkerPool.ts`
 - `ui-vue/lib/mapTerrainLayer.ts`
@@ -95,6 +97,7 @@ Generated from TypeScript imports.
 - `perf/longFrameFormat.ts`
 - `perf/matrixCensus.ts`
 - `perf/monitor.ts`
+- `perf/occludedActorCohort.ts`
 - `perf/passSubmissionCollector.ts`
 - `perf/programCensus.ts`
 - `perf/report.ts`
@@ -102,6 +105,7 @@ Generated from TypeScript imports.
 - `perf/types.ts`
 - `settlement/settlementGenerator.ts`
 - `terrain/chunkGrid.ts`
+- `terrain/riverTileCache.ts`
 - `world/dayNight.ts`
 
 **Imported by**
@@ -399,7 +403,29 @@ Generated from TypeScript imports.
 - `perf/rawSidecar.ts`
 - `perf/report.test.ts`
 - `perf/report.ts`
+- `settlement/SettlementsManager.ts`
+- `settlement/settlementPlanCache.ts`
 - `terrain/chunkManager.ts`
+
+## `perf/occludedActorCohort.test.ts`
+
+**Imports**
+
+- `perf/occludedActorCohort.ts`
+
+## `perf/occludedActorCohort.ts`
+
+**Imports**
+
+- `perf/sceneCensus.ts`
+- `render/agentPresentationLod.ts`
+
+**Imported by**
+
+- `app/createApp.ts`
+- `app/gameLoop.ts`
+- `perf/benchmark.ts`
+- `perf/occludedActorCohort.test.ts`
 
 ## `perf/passSubmissionCollector.test.ts`
 
@@ -530,6 +556,7 @@ Generated from TypeScript imports.
 - `perf/index.ts`
 - `perf/isolationProbe.ts`
 - `perf/matrixCensus.ts`
+- `perf/occludedActorCohort.ts`
 - `perf/passSubmissionCollector.ts`
 - `perf/programCensus.ts`
 - `perf/report.test.ts`

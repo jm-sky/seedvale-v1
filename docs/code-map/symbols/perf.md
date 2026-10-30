@@ -28,10 +28,10 @@ Generated from exported TypeScript symbols.
 
 ## `perf/benchmark.ts`
 
-- `BenchmarkHost` — type — line 84
-- `BenchmarkRunner` — type — line 68
-- `BenchmarkRunOptions` — type — line 59
-- `createBenchmarkRunner` — function — line 205
+- `BenchmarkHost` — type — line 92
+- `BenchmarkRunner` — type — line 75
+- `BenchmarkRunOptions` — type — line 66
+- `createBenchmarkRunner` — function — line 216
 
 ## `perf/benchmarkFixture.ts`
 
@@ -73,18 +73,23 @@ Generated from exported TypeScript symbols.
 
 ## `perf/flags.ts`
 
+- `benchmarkDurationFromUrl` — function — line 113
 - `benchmarkScenarioFromUrl` — function — line 78
+- `benchmarkYawFromUrl` — function — line 99
 - `DEFAULT_POINT_LIGHT_BUDGET` — const — line 40
-- `isActorSkeletonSharingEnabled` — function — line 122
+- `isActorSkeletonSharingEnabled` — function — line 160
 - `isBenchmarkAutorunEnabled` — function — line 84
-- `isChestInstancingEnabled` — function — line 112
-- `isFrameMatrixOnceEnabled` — function — line 94
-- `isGodRaysSoftEnabled` — function — line 132
-- `isGrassMainCapEnabled` — function — line 103
+- `isChestInstancingEnabled` — function — line 139
+- `isFrameMatrixOnceEnabled` — function — line 121
+- `isGodRaysSoftEnabled` — function — line 170
+- `isGrassMainCapEnabled` — function — line 130
 - `isPerfUrlEnabled` — function — line 21
 - `isProgramCensusUrlEnabled` — function — line 31
-- `isTemplateProgramPrewarmEnabled` — function — line 144
+- `isRiverPrefetchEnabled` — function — line 150
+- `isTemplateProgramPrewarmEnabled` — function — line 182
+- `parseBenchmarkDuration` — function — line 104
 - `parseBenchmarkScenarioId` — function — line 71
+- `parseBenchmarkYaw` — function — line 91
 - `parsePointLightBudgetFlag` — function — line 52
 - `pointLightBudgetFromUrl` — function — line 65
 
@@ -169,6 +174,28 @@ Generated from exported TypeScript symbols.
 - `SessionTotals` — type — line 53
 - `withCategory` — function — line 520
 - `withStage` — function — line 534
+
+## `perf/occludedActorCohort.ts`
+
+- `ActorCohortMask` — type — line 104
+- `ActorCohortMaskStats` — type — line 89
+- `ActorCohortMode` — type — line 46
+  - domain: tools
+- `boxSamplePoints` — function — line 163
+- `censusOccludedActors` — function — line 208
+- `CohortActor` — type — line 51
+- `CohortActorFamily` — type — line 48
+- `CohortBand` — type — line 58
+- `CohortBandKey` — type — line 73
+- `CohortBandSummary` — type — line 75
+- `collectSettlementBlockers` — function — line 152
+- `createActorCohortMask` — function — line 305
+- `formatOccludedActorCohortReport` — function — line 421
+- `getActorCohortMask` — function — line 453
+- `isOpaqueHit` — function — line 144
+- `OccludedActorCensus` — type — line 77
+- `OccludedActorRow` — type — line 60
+- `parseActorCohortMode` — function — line 119
 
 ## `perf/passSubmissionCollector.ts`
 

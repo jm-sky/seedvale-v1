@@ -84,6 +84,7 @@ Generated from TypeScript imports.
 - `settlement/settlementCharacter.ts`
 - `settlement/settlementGenerator.ts`
 - `settlement/settlementNameUniqueness.test.ts`
+- `settlement/settlementNameUniqueness.ts`
 - `settlement/settlementPlanCache.ts`
 - `settlement/settlementTerrain.ts`
 - `settlement/villageClearing.ts`

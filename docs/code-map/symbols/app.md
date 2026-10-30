@@ -295,13 +295,13 @@ Generated from exported TypeScript symbols.
 
 ## `app/createApp.ts`
 
-- `createApp` — function — line 463
+- `createApp` — function — line 466
   - system: app-composition
   - role: Composition root: builds every long-lived system, threads their dependencies and owns app-level lifecycle (boot, rebuild, dispose).
   - owns: WorldBundle, GameLoop, AppRenderLoop
   - lifecycle: boot
   - integration: Wires world, player, UI, persistence and audio systems together.
-- `NewAppOptions` — type — line 432
+- `NewAppOptions` — type — line 435
 
 ## `app/faunaEncounterComposition.ts`
 
@@ -311,9 +311,9 @@ Generated from exported TypeScript symbols.
 
 ## `app/gameLoop.ts`
 
-- `createGameLoop` — function — line 743
-- `GameLoop` — type — line 703
-- `GameLoopDeps` — type — line 341
+- `createGameLoop` — function — line 744
+- `GameLoop` — type — line 704
+- `GameLoopDeps` — type — line 342
 
 ## `app/graphicsSettings.ts`
 
@@ -468,21 +468,21 @@ Generated from exported TypeScript symbols.
 ## `app/worldBundle.ts`
 
 - `BuiltWorldSystems` — type — line 1248
-- `carryTerrainModificationsAcrossRebuild` — function — line 2553
+- `carryTerrainModificationsAcrossRebuild` — function — line 2555
 - `caveCrateContainerSpecs` — function — line 345
   - domain: world-terrain
 - `caveTreasureContainerSpecs` — function — line 312
-- `createWorldBundle` — function — line 2285
-- `disposeWorldBundle` — function — line 2853
+- `createWorldBundle` — function — line 2287
+- `disposeWorldBundle` — function — line 2855
 - `HOME_RADIUS` — const — line 265
 - `homeChunks` — function — line 369
-- `rebuildWorldBundle` — function — line 2566
+- `rebuildWorldBundle` — function — line 2568
 - `WorldBundle` — type — line 392
   - system: world-bundle
   - role: Owns the lifetime/rebuild boundary for all world systems (terrain, settlements, fauna, items, player-placed structures).
   - owns: WorldBundle
   - lifecycle: rebuild
-- `WorldBundleRebuildOutcome` — type — line 2564
+- `WorldBundleRebuildOutcome` — type — line 2566
 - `WorldStartupLoadingStage` — type — line 1061
 - `WorldStartupLoadingStageListener` — type — line 1063
 

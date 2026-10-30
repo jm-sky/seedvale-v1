@@ -390,6 +390,7 @@ Generated from TypeScript imports.
 - `terrain/riverNetwork.ts`
 - `terrain/riverQuery.test.ts`
 - `terrain/riverQuery.ts`
+- `terrain/riverTileCache.test.ts`
 - `terrain/riverTileCache.ts`
 - `terrain/terrainPreparation.ts`
 - `terrain/unloadedLandmarkLookup.ts`
@@ -444,6 +445,7 @@ Generated from TypeScript imports.
 - `terrain/chunkMeshData.ts`
 - `terrain/chunkVegetation.ts`
 - `terrain/grassPlacement.ts`
+- `terrain/riverNetwork.ts`
 - `terrain/worldKnowledgeScan.ts`
 - `world/map/mapRasterTile.ts`
 
@@ -457,6 +459,7 @@ Generated from TypeScript imports.
 - `terrain/chunkMeshData.ts`
 - `terrain/chunkVegetation.ts`
 - `terrain/grassPlacement.ts`
+- `terrain/riverNetwork.ts`
 - `terrain/worldKnowledgeScan.ts`
 - `world/cropLifecycle.ts`
 - `world/map/mapRasterTile.ts`
@@ -722,6 +725,7 @@ Generated from TypeScript imports.
 - `terrain/chunkHeightmapProtocol.ts`
 - `terrain/chunkMeshData.ts`
 - `terrain/grassPlacement.ts`
+- `terrain/riverNetwork.ts`
 - `terrain/worldKnowledgeScan.ts`
 - `world/map/mapRasterTile.ts`
 
@@ -1260,14 +1264,18 @@ Generated from TypeScript imports.
 - `settlement/villagePasture.test.ts`
 - `settlement/villagePasture.ts`
 - `settlement/villagePlanner.ts`
+- `terrain/chunkHeightmap.worker.ts`
+- `terrain/chunkHeightmapProtocol.ts`
 - `terrain/chunkManager.ts`
 - `terrain/chunkVegetation.test.ts`
 - `terrain/chunkVegetation.ts`
+- `terrain/chunkWorkerPool.ts`
 - `terrain/grassPlacement.test.ts`
 - `terrain/grassPlacement.ts`
 - `terrain/riverNetwork.test.ts`
 - `terrain/riverQuery.test.ts`
 - `terrain/riverQuery.ts`
+- `terrain/riverTileCache.test.ts`
 - `terrain/riverTileCache.ts`
 - `terrain/waterBodyKind.test.ts`
 - `terrain/waterBodyKind.ts`
@@ -1306,6 +1314,14 @@ Generated from TypeScript imports.
 - `terrain/riverQuery.test.ts`
 - `terrain/worldKnowledgeScan.ts`
 
+## `terrain/riverTileCache.test.ts`
+
+**Imports**
+
+- `terrain/chunkHeightmap.ts`
+- `terrain/riverNetwork.ts`
+- `terrain/riverTileCache.ts`
+
 ## `terrain/riverTileCache.ts`
 
 **Imports**
@@ -1315,7 +1331,9 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `perf/benchmark.ts`
 - `terrain/chunkManager.ts`
+- `terrain/riverTileCache.test.ts`
 
 ## `terrain/roadBridge.test.ts`
 
