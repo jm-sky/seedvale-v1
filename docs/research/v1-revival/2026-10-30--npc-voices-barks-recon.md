@@ -22,6 +22,8 @@ It is **not a weather-state mapping bug**. The shelter reaction works on the rea
 
 Recommendation 🟡: F2 (rename existing clip to the rain variant, record one neutral male + guard line); F1 as the interim code change. Neither is applied here — F1's silence variant needs the author's call ("dropped content").
 
+**Update 2026-10-30 (author, second answer):** dedup approved (§2 candidate (a)) and new lines: more rain/storm/snow variants plus other situations (F3) → queue Q30 (dedup), Q31 (lines).
+
 **Update 2026-10-30 (author):** target = F2 (new recordings later). Interim F1 landed: snow → silence, storm → rain clip (`weatherShelterBarkAllowed`, `src/ai/weatherPressure.ts`).
 
 ## 2. Cooldown / dedup / repeated weather lines (✅ unless marked)

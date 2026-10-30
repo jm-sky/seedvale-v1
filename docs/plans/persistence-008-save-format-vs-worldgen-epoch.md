@@ -1,7 +1,7 @@
 # Plan: Save format vs worldgen epoch (v57) and pre-Revival save refusal
 
 **Created:** 2026-10-30  
-**Status:** `verification needed` 🔍
+**Status:** `done` ✅
 **Priority:** high · **Effort:** M  
 **Depends on:** none  
 **Domain:** `persistence`  
@@ -21,7 +21,7 @@ Bumping a worldgen cache namespace does not help: the cache is disposable accele
 
 Landed as one commit (steps 1–5 together): `worldgenEpoch.ts` (`WORLDGEN_EPOCH = 0`, checklist in its JSDoc), `SaveConfig.worldgenEpoch` + fail-closed validation, `CURRENT_SAVE_VERSION = 57` with `migrateSaveV56ToV57`, `loadStoredSave(value, { worldgenEpoch })` epoch step and `'incompatible-world'` result, `inspectStoredSave(..., options)` passthrough, `UnhealthySaveEntry` type with `worldgenEpoch`, direction-aware `unhealthySaveStatusLabel(entry)` used by `StartScreen.vue` / `PauseMenuEntriesSaves.vue`, `saveDb` diagnostic kind, `saveState.ts` writes the epoch. Behaviour-neutral for existing saves at epoch 0.
 
-Tests: plan §Tests 1–5, 7, 8, 9, 10 in `saveData.test.ts`, `saveSlots.test.ts`, `saveDb.test.ts`. Test 6 (`createSaveState()` round-trip) has no harness — `saveState.ts` needs a live runtime; covered instead by `saveDb` create → read of a current-epoch save (outgoing validation + load) and `tsc` on the snapshot literal. Verification: `vue-tsc --noEmit`, eslint, `vitest src/persistence src/app` green. **Pending:** author browser check (§Tests last paragraph).
+Tests: plan §Tests 1–5, 7, 8, 9, 10 in `saveData.test.ts`, `saveSlots.test.ts`, `saveDb.test.ts`. Test 6 (`createSaveState()` round-trip) has no harness — `saveState.ts` needs a live runtime; covered instead by `saveDb` create → read of a current-epoch save (outgoing validation + load) and `tsc` on the snapshot literal. Verification: `vue-tsc --noEmit`, eslint, `vitest src/persistence src/app` green. **Author 2026-10-30:** accepted without the browser check.
 
 Note for Q28: settlement names already changed in `b4e30641` (before this plan landed), so saves made between that commit and this one are labelled epoch 0 like older ones. Whether the Revival bump `0 → 1` should treat that as part of the batch is the author's epoch-scope decision (D3/Q28).
 
