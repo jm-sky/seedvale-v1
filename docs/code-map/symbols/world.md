@@ -338,7 +338,7 @@ Generated from exported TypeScript symbols.
 
 ## `world/caves/caveHeightfieldMesh.ts`
 
-- `buildCaveMouthProxyBuffers` — function — line 698
+- `buildCaveMouthProxyBuffers` — function — line 702
   - domain: world-terrain
 - `buildHeightfieldMeshBuffers` — function — line 119
   - domain: world-terrain
