@@ -889,6 +889,11 @@ export type ChunkManager = {
    *  modification, and never a change to `sampleHeight`/collision. */
   registerTerrainCutouts: (ownerKey: string, cutouts: readonly TerrainCutout[]) => void
   clearTerrainCutouts: (ownerKey: string) => void
+  /** Loaded templates of every chunk-content kind the region batcher draws
+   *  as `InstancedMesh` (vegetation + GLB rocks/logs) — loading-window
+   *  program prewarm input only (Q17 E1, `render/programPrewarm.ts`). Kinds
+   *  still loading are skipped; shared GPU resources, never mutate. */
+  programPrewarmTemplates: () => THREE.Object3D[]
   dispose: () => void
 }
 
@@ -3769,6 +3774,13 @@ export function createChunkManager(
     clearColliders: (ownerKey) => colliderRegistry.clearColliders(ownerKey),
     registerTerrainCutouts: (ownerKey, cutouts) => setTerrainCutouts(ownerKey, cutouts),
     clearTerrainCutouts: (ownerKey) => setTerrainCutouts(ownerKey, null),
+    programPrewarmTemplates() {
+      return [
+        getTreeTemplates, getBushTemplates, getCactusTemplates, getReedTemplates,
+        getFernTemplates, getLilyTemplates, getSeaweedTemplates,
+        getRockTemplates, getRockClusterTemplates, getFallenLogTemplates,
+      ].flatMap((cache) => cache.peek() ?? [])
+    },
     dispose() {
       terrainCutouts.clear()
       allTerrainCutouts = []

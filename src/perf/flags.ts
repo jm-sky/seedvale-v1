@@ -124,3 +124,15 @@ export function isActorSkeletonSharingEnabled(): boolean {
   if (!p?.has('actorSkeletons')) return true
   return flagOn(p.get('actorSkeletons'))
 }
+
+/** Q17 Track E (E1): loading-window prewarm also compiles the instanced
+ *  program families of every loaded chunk-content template
+ *  (`render/programPrewarm.ts`, `ChunkManager.programPrewarmTemplates`), so
+ *  species first met mid-travel (e.g. `maple_1.glb`, ferns) do not pay their
+ *  first-use link in the water mirror pass. Off by default until the WSL
+ *  `stream` A/B; `?prewarmTemplates=1` enables it. */
+export function isTemplateProgramPrewarmEnabled(): boolean {
+  const p = params()
+  if (!p?.has('prewarmTemplates')) return false
+  return flagOn(p.get('prewarmTemplates'))
+}

@@ -73,6 +73,46 @@ describe('buildProgramPrewarmStaging', () => {
     expect(matSpy).not.toHaveBeenCalled()
   })
 
+  it('adds an instanced family for each unplaced template mesh (Q17 E1)', () => {
+    const geometry = new BoxGeometry(1, 1, 1)
+    const bark = new MeshStandardMaterial({ name: 'MapleTree_Bark' })
+    const leaves = new MeshStandardMaterial({ name: 'MapleTree_Leaves' })
+    const template = new Group()
+    template.add(new Mesh(geometry, bark))
+    template.add(new Mesh(geometry, leaves))
+
+    const staging = buildProgramPrewarmStaging(new Scene(), [template])
+
+    expect(staging.rootCount).toBe(2)
+    for (const child of staging.group.children) {
+      const instanced = child as InstancedMesh
+      expect(instanced.isInstancedMesh).toBe(true)
+      expect(instanced.geometry).toBe(geometry)
+      expect(instanced.count).toBe(1)
+    }
+    expect(staging.group.children.map((c) => (c as Mesh).material)).toEqual([bark, leaves])
+    expect(template.children).toHaveLength(2)
+  })
+
+  it('does not duplicate a template family already instanced in the live scene', () => {
+    const geometry = new BoxGeometry(1, 1, 1)
+    const material = new MeshStandardMaterial()
+    const scene = new Scene()
+    scene.add(new InstancedMesh(geometry, material, 8))
+    const template = new Mesh(geometry, material)
+
+    const staging = buildProgramPrewarmStaging(scene, [template, template])
+
+    expect(staging.rootCount).toBe(1)
+  })
+
+  it('skips skinned meshes inside templates', () => {
+    const template = new Group()
+    template.add(new SkinnedMesh(new BoxGeometry(1, 1, 1), new MeshStandardMaterial()))
+    const staging = buildProgramPrewarmStaging(new Scene(), [template])
+    expect(staging.rootCount).toBe(0)
+  })
+
   it('skips lights and empty groups', () => {
     const scene = new Scene()
     scene.add(new Group())

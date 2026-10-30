@@ -126,19 +126,39 @@ function uniqueMaterialCount(group: Group): number {
   return seen.size
 }
 
+/** Instanced stand-in for a template mesh that a region batcher draws as
+ *  `InstancedMesh(templateGeometry, templateMaterial)` (`instancedProps.ts`). */
+function instancedTemplateClone(source: Mesh): InstancedMesh {
+  const clone = new InstancedMesh(source.geometry, source.material, 1)
+  clone.castShadow = source.castShadow
+  clone.receiveShadow = source.receiveShadow
+  clone.frustumCulled = false
+  clone.setMatrixAt(0, _identity)
+  clone.instanceMatrix.needsUpdate = true
+  return clone
+}
+
 /**
  * One representative clone per (shared material × object-flag) family found
  * under `source`. Clones share geometry/material by reference — never cloned
  * as new GPU resources.
+ *
+ * `instancedTemplates` (Q17 E1) are loaded-but-maybe-unplaced chunk-content
+ * templates that the vegetation/environment region batcher only ever draws
+ * instanced: each non-skinned mesh contributes an `InstancedMesh` family, so a
+ * species first streamed in mid-travel already has its program linked.
  */
-export function buildProgramPrewarmStaging(source: Object3D): ProgramPrewarmStaging {
+export function buildProgramPrewarmStaging(
+  source: Object3D,
+  instancedTemplates: readonly Object3D[] = [],
+): ProgramPrewarmStaging {
   const seen = new Set<string>()
   const group = new Group()
   group.name = 'program-prewarm-staging'
   group.matrixAutoUpdate = false
 
-  source.traverse((object) => {
-    if (!isDrawable(object) || !object.geometry || !object.material) return
+  /** Marks the object's (material × flags) families seen; `true` if any was new. */
+  function claim(object: Drawable): boolean {
     const flags = objectProgramFlags(object)
     let needed = false
     for (const material of materialList(object.material)) {
@@ -147,9 +167,23 @@ export function buildProgramPrewarmStaging(source: Object3D): ProgramPrewarmStag
       seen.add(key)
       needed = true
     }
-    if (!needed) return
-    group.add(cloneForStaging(object))
+    return needed
+  }
+
+  source.traverse((object) => {
+    if (!isDrawable(object) || !object.geometry || !object.material) return
+    if (claim(object)) group.add(cloneForStaging(object))
   })
+
+  for (const template of instancedTemplates) {
+    template.traverse((object) => {
+      const mesh = object as Mesh & { isSkinnedMesh?: boolean }
+      if (!mesh.isMesh || mesh.isSkinnedMesh || !mesh.geometry || !mesh.material) return
+      const clone = instancedTemplateClone(mesh)
+      if (claim(clone)) group.add(clone)
+      else clone.dispose()
+    })
+  }
 
   return {
     group,
@@ -195,7 +229,9 @@ function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise
 }
 
 /**
- * Compile the current live scene's program families into the renderer cache
+ * Compile the current live scene's program families (plus the instanced
+ * families of `instancedTemplates`, see {@link buildProgramPrewarmStaging})
+ * into the renderer cache
  * and wait for `KHR_parallel_shader_compile` completion. Must run in the
  * loading window (after lights/fog/PointLight pad sync, before gameplay
  * `tick()`). Does not start the game loop and does not touch ChunkManager.
@@ -204,10 +240,11 @@ export async function prewarmRenderPrograms(
   renderer: WebGLRenderer,
   scene: Scene,
   camera: Camera,
+  instancedTemplates: readonly Object3D[] = [],
 ): Promise<ProgramPrewarmResult> {
   const khrParallelShaderCompile = renderer.extensions.has('KHR_parallel_shader_compile')
   const programCountBefore = programCountOf(renderer)
-  const staging = buildProgramPrewarmStaging(scene)
+  const staging = buildProgramPrewarmStaging(scene, instancedTemplates)
   const dummyTarget = new WebGLRenderTarget(PREWARM_RT_SIZE, PREWARM_RT_SIZE)
   dummyTarget.texture.generateMipmaps = false
   const previousTarget = renderer.getRenderTarget()

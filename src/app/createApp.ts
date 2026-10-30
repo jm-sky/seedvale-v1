@@ -90,6 +90,7 @@ import {
   setActivePassSubmissionCollector,
   setActiveProgramCensus,
 } from '../perf'
+import { isTemplateProgramPrewarmEnabled } from '../perf/flags'
 import {
   beginNewSave,
   createSave,
@@ -909,6 +910,10 @@ export async function createApp(
   bootMark('createWorldContext')
   const worldContext = createWorldContext(() => bundle.chunkManager, config, dayNight)
   bootMarkEnd('createWorldContext')
+  // Q17 E1: streamed chunk-content templates join the loading-window
+  // program prewarm (`?prewarmTemplates=1`; off = home-scene-only).
+  const prewarmTemplates = () =>
+    isTemplateProgramPrewarmEnabled() ? bundle.chunkManager.programPrewarmTemplates() : []
 
   const ambientAudio = createAmbientAudio(worldAudio, worldContext)
   const fireAudio = createFireAudio(worldAudio)
@@ -3008,7 +3013,7 @@ export async function createApp(
       // apply to notice a large-enough timeOfDay delta.
       if (dayNight.enabled) gameLoop.resyncDayNight()
       pointLightBudget.sync(camera)
-      const rebuiltPrewarm = await prewarmRenderPrograms(renderer, scene, camera)
+      const rebuiltPrewarm = await prewarmRenderPrograms(renderer, scene, camera, prewarmTemplates())
       if (typeof window !== 'undefined') window.__seedvaleProgramPrewarm = rebuiltPrewarm
       player.setGround(
         bundle.chunkManager.sampleSurfaceGround,
@@ -3869,7 +3874,7 @@ export async function createApp(
   // this stays inside the loading overlay and never blocks chunk attach.
   pointLightBudget.sync(camera)
   loadingScreen.setStage('render')
-  const programPrewarm = await prewarmRenderPrograms(renderer, scene, camera)
+  const programPrewarm = await prewarmRenderPrograms(renderer, scene, camera, prewarmTemplates())
   if (typeof window !== 'undefined') window.__seedvaleProgramPrewarm = programPrewarm
 
   const renderLoop = createAppRenderLoop({
