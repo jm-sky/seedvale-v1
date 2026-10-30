@@ -8,34 +8,21 @@
 **Domain:** `tools`
 **Subdomains:** `debug`
 **Tags:** `collision` `obb`
+**Model:** Sonnet, Composer
 
-## Problem
+## Goal and scope
 
-After fence collision yaw was corrected, the orange `?debugColliders=1` OBB visualization still appears angled across visible fence sections. This misleads collision debugging even when gameplay collision is correct.
+The orange footprint in the gameplay collider overlay must match the authoritative OBB at every yaw. Apply the mathematical-to-Three.js yaw conversion once in the shared renderer used by gameplay and House Browser. Preserve circle rendering, instance limits, dimensions, placement, disposal and the existing update frequency.
 
-## Confirmed code seam
+## Acceptance and verification
 
-- `src/settlement/settlementPalisade.ts`: `fencePlacementColliders()` intentionally writes `rotationY: -placement.rotationY`, converting from Three.js visual yaw to the mathematical OBB frame in `world/collision.ts`.
-- `src/debug/colliderInstancedVisual.ts`: instanced debug OBB boxes currently use collider `rotationY` directly as a Three.js quaternion yaw.
-- `src/debug/colliderDebugView.ts` and House Browser reuse the shared visualizer.
+- In a scene without WebGL, read the actual instance matrices for translated, non-square boxes at zero, +45°, −45° and 90°. Verify both oriented axes, half-extents and centre against the collision frame. Confirm a circle keeps its original matrix and reducing the input count removes old visible instances.
+- Verify House Browser with padding zero and nonzero. Padding expands the footprint about the same centre and physical axes. The source colliders remain unchanged.
+- Manually inspect an oblique external pasture or paddock fence at `?debugColliders=1`, including a gate gap. In `/house-browser.html`, toggle colliders, padding and door open/closed. The overlay must follow the physical walls and the presence of a closed leaf. Record any disagreement between physical and visible house geometry separately with a reproducible pose.
+- Keep existing collision, house-builder and fence tests green. Record manual observations separately from automated matrix results.
 
-## Scope
+## Boundaries and scheduling
 
-- Correct **presentation-only** conversion of mathematical OBB yaw into Three.js yaw in the shared instance renderer; keep physical `fencePlacementColliders()` unchanged.
-- Verify circle visualization unaffected; verify multiple nonzero positive/negative angles, dimensions and positions.
-- Check shared House Browser collider preview and house wall/door overlays, not just fences. If house collider poses themselves have an unrelated alignment defect, record it separately rather than silently modifying physics.
-- Preserve instancing, bounded instance counts and disposal; avoid per-frame allocations/performance regressions.
+Presentation only. No changes to physical OBB producers, house transforms, collision resolution, fence placement or vertical visualization. No dependency on the campfire plan. Keep the per-frame gameplay path allocation-neutral relative to the existing renderer. Document any significant new public API with `@domain tools`. Runtime merge remains gated by D4 exit or an authorized exception.
 
-## Non-goals
-
-No changes to authoritative OBB collision resolution, fence placement, physics geometry, or house collision bug fixes.
-
-## Verification
-
-- Focused regression tests for nonzero rotations (including +/-45° and 90°), comparing rendered box orientation to the collider's mathematical long axis; zero yaw alone is insufficient.
-- Manual browser visual PASS with `?debugColliders=1` at rotated external fences and House Browser previews.
-- Add JSDoc/`@domain tools` for significant new helper APIs if introduced.
-
-## Revival scheduling
-
-Debug-only visualization changes must respect the Strategic Brief's D4 performance-first freeze; no runtime merge during freeze absent authorized exception, even if gameplay collision is untouched.
+[Implementation notes](implementation-notes/tools-021-collider-debug-obb-orientation-implementation-notes.md)

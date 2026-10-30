@@ -235,43 +235,51 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   🔴 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-37. `world-terrain-039` — **N8AO / post-process cost budget**  
+37. `settlements-024` — **Jumpable low campfire collision**  
   🔴 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-38. `ui-input-025` — **Road travel autopilot for player and mounts**  
+38. `world-terrain-039` — **N8AO / post-process cost budget**  
+  🔴 `M` · **Score:**  27  
+   → **unlocks:** 0/0
+
+39. `ui-input-025` — **Road travel autopilot for player and mounts**  
   🔴 `L` · **Score:**  26  
    → **unlocks:** 0/0
 
-39. `items-player-044` — **Shoulder and forearm equipment slots**  
+40. `items-player-044` — **Shoulder and forearm equipment slots**  
   🟡 `M` · **Score:**  25  
    → **unlocks:** 0/0
 
-40. `world-036` — **Lightweight unloaded shipwreck and tower lookup**  
+41. `world-036` — **Lightweight unloaded shipwreck and tower lookup**  
   🟡 `M` · **Score:**  25  
    → **unlocks:** 0/0
 
-41. `ui-input-045` — **Equipment panel body-ordered layout (V3 items--006 adapted)**  
+42. `ui-input-045` — **Equipment panel body-ordered layout (V3 items--006 adapted)**  
   🟡 `S` · **Score:**  23  
    → **unlocks:** 0/0
 
-42. `tools-019` — **Debug tooling lifecycle ownership**  
+43. `tools-019` — **Debug tooling lifecycle ownership**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-43. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
+44. `tools-021` — **Align debug OBB overlays with physical colliders**  
+  🟡 `S` · **Score:**  19  
+   → **unlocks:** 0/0
+
+45. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
   🟡 `L` · **Score:**  18  
    → **unlocks:** 0/0
 
-44. `items-player-014` — **Rope-pullable resource transport**  
+46. `items-player-014` — **Rope-pullable resource transport**  
   ⚪ `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-45. `items-player-052` — **Settlement tool ownership and social acquisition**  
+47. `items-player-052` — **Settlement tool ownership and social acquisition**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-46. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
+48. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
@@ -660,6 +668,7 @@ graph TD
   settlements_021["settlements-021 — Shared settlement resident runtime"]
   settlements_022["settlements-022 — Founded settlement live runtime and streaming"]
   settlements_023["settlements-023 — Settlement async streaming lifecycle and construction rollback"]
+  settlements_024["settlements-024 — Jumpable low campfire collision"]
   settlements_npcs_001["settlements-npcs-001 — Cultivation Hydration & Watering"]
   settlements_npcs_002["settlements-npcs-002 — NPC professions — complete profession work integration"]
   settlements_npcs_003["settlements-npcs-003 — Hunter Arrow Production"]
@@ -736,6 +745,7 @@ graph TD
   tools_018["tools-018 — Codebase domain and flow audit master"]
   tools_019["tools-019 — Debug tooling lifecycle ownership"]
   tools_020["tools-020 — Worldgen cache boot fixture (benchmark seed + reference seed)"]
+  tools_021["tools-021 — Align debug OBB overlays with physical colliders"]
   ui_input_001["ui-input-001 — Developer Debug API"]
   ui_input_002["ui-input-002 — UI/UX Interaction and Action System Polish"]
   ui_input_003["ui-input-003 — Merchant Trade UI/UX Redesign"]

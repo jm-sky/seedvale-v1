@@ -123,6 +123,8 @@ Unless noted otherwise, `verification needed` means implementation has passed au
 | 💡 `quests-progression-081-quest-ui-completion-readiness-projection.md`        | 🔴 | S      | ~~quests-progression-075~~, ~~ui-input-037~~                                                                                                                                                                                                                                               | -                                         |
 | ◼️ `ui-input-045-equipment-body-layout.md`                                     | 🟡 | S      | ~~ui-input-040~~                                                                                                                                                                                                                                                                           | -                                         |
 | ◼️ `persistence-008-save-format-vs-worldgen-epoch.md`                          | 🔴 | M      | -                                                                                                                                                                                                                                                                                          | -                                         |
+| 💡 `settlements-024-campfire-jumpable-low-collision.md`                        | 🔴 | M      | -                                                                                                                                                                                                                                                                                          | -                                         |
+| 💡 `tools-021-collider-debug-obb-orientation.md`                               | 🟡 | S      | -                                                                                                                                                                                                                                                                                          | -                                         |
 
 ---
 
@@ -199,9 +201,9 @@ New plans declare a primary `Domain:` in frontmatter. Use optional `Tags:` only 
 - npc: `065`
 - persistence: `009`
 - quests-progression: `083`
-- settlements: `024`
+- settlements: `025`
 - settlements-npcs: `058`
-- tools: `021`
+- tools: `022`
 - ui-input: `048`
 - world: `040`
 - world-terrain: `055`

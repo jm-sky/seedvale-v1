@@ -8,29 +8,21 @@
 **Domain:** `settlements`
 **Subdomains:** `buildings`
 **Tags:** `collision` `campfire`
+**Model:** Sonnet, Composer
 
-## Problem
+## Goal and scope
 
-Village firepit collision uses a horizontal `circle` without a vertical extent, effectively blocking player movement at every jump height. The player should be stopped by the solid firepit when walking and be able to jump over it. Cover player-built fires only where they actually register physical colliders; do not silently add obstacles to kinds without existing collision.
+A solid settlement firepit stops a grounded player. A properly timed jump carries the player across the low body. Cover the village pit and raised masonry hearth, retaining both footprints. The player's feet must clear the body at its placed world elevation. Keep the same behavior lit or unlit.
 
-## Scope
+## Acceptance and verification
 
-- Trace authoritative village and placed-fire collider registration and disposal; check `src/settlement/settlementPropColliders.ts`, `PlacedFires.ts`, `propSpecs.ts`, and callers.
-- Represent the solid firepit body (not flames) with appropriately low vertical bounds, using existing `Collider.minY/maxY` and `colliderActiveAtY`. Bounds must be in **world Y**, grounded against placement height/terrain, not merely a fixed absolute `maxY`.
-- Verify player jump motion and collider query's height sampling: crossing must work only when the player physically clears the solid base. If checking just feet Y is insufficient for the intended jump clearance, investigate the minimal compatible change without altering unrelated cave or obstacle behavior.
-- Confirm non-jumping movement stays blocked, player fire interactions remain reachable, and NPC/fauna collision/navigation behavior is consistent. Preserve deterministic simulation and existing ownership/lifecycle.
+- On level terrain, walk and sprint into each pit without jumping. Both stop at the existing contact rim. A timed normal-speed jump crosses the small pit. A timed sprint-jump crosses the centre of the wider masonry hearth. Demonstrate a full crossing before descent, not just a frame above the top.
+- Test both positive and negative placement elevations, equality at the top, and feet just above it. Include grounded approaches from a lower and a higher nearby surface. Neither an elevation difference nor pressing jump while still below the lip grants passage.
+- At 30 and 60 Hz, exercise horizontal collision and the production vertical integrator together. Verify that collision reactivates on descent, an ordinary unbounded obstacle blocks an airborne player, and existing cave Y bands retain both boundaries. Verify the existing ground-agent queries still see the fire disk.
+- Manually check both variants, including interaction from the rim, movement after landing and NPC/fauna approach or avoidance. Re-enter a streamed settlement and check for stale or duplicate collision. Record browser outcome separately from unit results.
 
-## Non-goals
+## Boundaries and scheduling
 
-No general physics engine, jump redesign, fire damage mechanic, wholesale NPC pathfinding changes or collision refactor.
+No changes to jump tuning, NPC/fauna navigation, fire damage, standing on the fire, placed fires, decorative wilderness remains or save data. No dependency on the debug overlay plan. Document any significant new public helper with its owning `@domain`. D4 permits planning and tests. Runtime integration waits for D4 exit or an authorized exception.
 
-## Verification
-
-- Unit tests for firepit collider world-height and `colliderActiveAtY` below/above its bounds; include nonzero ground height and relevant fire variants.
-- Focused movement/regression tests where possible: walking blocked; jump clears; ordinary obstacles and cave Y limits unchanged.
-- Manual browser verification for settlement firepits and applicable player-built fires, including interaction and NPC/fauna behavior. Static inspection/tests do not count as manual PASS.
-- Important public helpers should carry JSDoc and `@domain settlements` where appropriate.
-
-## Revival scheduling
-
-The Strategic Brief's D4 performance-first integration freeze remains in force. Planning and non-runtime tests are allowed; runtime integration requires D4 exit or a documented, authorized exception. This plan does not grant that exception.
+[Implementation notes](implementation-notes/settlements-024-campfire-jumpable-low-collision-implementation-notes.md)
