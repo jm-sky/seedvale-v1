@@ -22,6 +22,7 @@ Consolidated by Claude Opus 5.5 from commits and native Arc reports; checklists 
 | C — grass | CA1 filler gating `bc9a68d1`; CA2 far-band main cap `0cfb9ed3` | CA1: resident filler −50…89 % ([A/B](../../performance/results/2026-10-28--win-ca1-filler-gating-ab.md)); CA2 (WSL): resident main −47…−69 %, submitted identical ([A/B](../../performance/results/2026-10-29--wsl-ca2-grass-main-cap-ab.md)); **no FPS claim** | CB (V3 backend) conditional | CA2 Windows confirm + visual; then evaluate C (Q7) |
 | D — trees | Inert LOD assets `d867f38` only | Trees ≤1.3M tris / ≤214 draws in all fixtures; no dense-forest fixture ([recon](./2026-10-29--tree-lod-recon.md)) | Billboards conditional | Author: dense-forest fixture → close or plan `world-terrain-055` |
 | Other | `riverShoreQuery` memo `29b42a09` (CPU) | part of `36e99ef6` series | — | — |
+| E — travel stutter | — | Windows `stream` (CA2 runs, both arms): mirror-pass first use of streamed programs 200–720 ms, sync `riverTileBuild` 37–128 ms ([attribution](../../performance/results/2026-10-30--win-q5-ca2-ab.md#ca2-stream--post-hoc-tail-attribution-existing-raw-data-no-new-runs)) | — | Q17 recon + slice (added to P1 by the author 2026-10-30) |
 
 Gap to target: `settlement-heavy` remains far below the 50–60 FPS goal. P1 exit requires the approved scope **completed or explicitly closed** with a combined result, not reaching the target; whether a remaining gap justifies extra P1 scope is an author decision to raise in Q7.
 
@@ -134,6 +135,14 @@ Preserve the baseline SHA/device/configuration/workload/reports and reuse while 
 | C — delta audit 2026-10-27 | Claude Opus 5.5 | [Grass/flowers audit](./2026-10-27--revival-audit--grass-flowers-v3.md) | Recommends V1-side memory/upload trims first, V3 backend gated on C0; baseline slot ready; PENDING BASELINE |
 
 Cross-track integration, approved priority and remaining proposals: [Master Revival Roadmap](./2026-10-27--master-revival-roadmap.md). Note: diagnostic 032 was captured at `e124e866`, before the minimum instrument SHA `94a74470`; it is not comparable to certified baselines.
+
+## E. Travel stutter — included in P1 (author decision 2026-10-30)
+
+Added after the CA2 `stream` attribution showed that the worst travel frames on native Windows are not A/B/C/D work: the first draw of a newly streamed program (first paid in the water mirror pass; plan 149 Phase 1 A prewarms only programs present at load) and synchronous river tile builds in `chunkUpdate`. Scope: **frame-time spikes during travel**, not average FPS. Owners: plan 149 (Phase C / streamed program families) and `src/terrain/chunkManager.ts` (`retainRiverTilesFor`).
+
+- [ ] Recon: which streamed families miss the prewarm (asset census vs program census on `stream`), and why `riverTileBuild` runs synchronously on the main thread (cache, worker or budget options).
+- [ ] Bounded slices with tests; WSL `stream` A/B (hitches, long frames, p99, max) as green light, native Windows confirmation.
+- [ ] P1 exit verdict like A–D. Not a mirror-quality change: whether actors/player appear in reflections, mirror resolution/refresh and reflection caching stay under D8/D13.
 
 ## D. Trees LOD — included in P1 (author decision 2026-10-29)
 
