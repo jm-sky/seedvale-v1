@@ -231,43 +231,47 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   🔴 `L` · **Score:**  28  
    → **unlocks:** 0/0
 
-36. `world-terrain-039` — **N8AO / post-process cost budget**  
+36. `persistence-008` — **Save format vs worldgen epoch (v57) and pre-Revival save refusal**  
   🔴 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-37. `ui-input-025` — **Road travel autopilot for player and mounts**  
+37. `world-terrain-039` — **N8AO / post-process cost budget**  
+  🔴 `M` · **Score:**  27  
+   → **unlocks:** 0/0
+
+38. `ui-input-025` — **Road travel autopilot for player and mounts**  
   🔴 `L` · **Score:**  26  
    → **unlocks:** 0/0
 
-38. `items-player-044` — **Shoulder and forearm equipment slots**  
+39. `items-player-044` — **Shoulder and forearm equipment slots**  
   🟡 `M` · **Score:**  25  
    → **unlocks:** 0/0
 
-39. `world-036` — **Lightweight unloaded shipwreck and tower lookup**  
+40. `world-036` — **Lightweight unloaded shipwreck and tower lookup**  
   🟡 `M` · **Score:**  25  
    → **unlocks:** 0/0
 
-40. `ui-input-045` — **Equipment panel body-ordered layout (V3 items--006 adapted)**  
+41. `ui-input-045` — **Equipment panel body-ordered layout (V3 items--006 adapted)**  
   🟡 `S` · **Score:**  23  
    → **unlocks:** 0/0
 
-41. `tools-019` — **Debug tooling lifecycle ownership**  
+42. `tools-019` — **Debug tooling lifecycle ownership**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-42. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
+43. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
   🟡 `L` · **Score:**  18  
    → **unlocks:** 0/0
 
-43. `items-player-014` — **Rope-pullable resource transport**  
+44. `items-player-014` — **Rope-pullable resource transport**  
   ⚪ `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-44. `items-player-052` — **Settlement tool ownership and social acquisition**  
+45. `items-player-052` — **Settlement tool ownership and social acquisition**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-45. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
+46. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
@@ -550,6 +554,7 @@ graph TD
   persistence_005["persistence-005 — Pending New Save Identity in Pause Menu"]
   persistence_006["persistence-006 — Player cave position save/load continuity"]
   persistence_007["persistence-007 — Lifecycle — New Game Rebuild Failure Safety"]
+  persistence_008["persistence-008 — Save format vs worldgen epoch (v57) and pre-Revival save refusal"]
   quests_progression_001["quests-progression-001 — Reputation & Renown Foundation"]
   quests_progression_002["quests-progression-002 — Quest Outcomes, Rewards & Consequences"]
   quests_progression_003["quests-progression-003 — Paid Quests & Player Income"]

@@ -122,6 +122,7 @@ Unless noted otherwise, `verification needed` means implementation has passed au
 | ◼️ `npc-062-ubc-runtime-material-darkness-and-authored-outfit-preservation.md` | 🔴 | M      | ~~tools-017~~, ~~npc-055~~                                                                                                                                                                                                                                                                 | -                                         |
 | 💡 `quests-progression-081-quest-ui-completion-readiness-projection.md`        | 🔴 | S      | ~~quests-progression-075~~, ~~ui-input-037~~                                                                                                                                                                                                                                               | -                                         |
 | ◼️ `ui-input-045-equipment-body-layout.md`                                     | 🟡 | S      | ~~ui-input-040~~                                                                                                                                                                                                                                                                           | -                                         |
+| ◼️ `persistence-008-save-format-vs-worldgen-epoch.md`                          | 🔴 | M      | -                                                                                                                                                                                                                                                                                          | -                                         |
 
 ---
 
@@ -196,7 +197,7 @@ New plans declare a primary `Domain:` in frontmatter. Use optional `Tags:` only 
 - fauna: `049`
 - items-player: `062`
 - npc: `065`
-- persistence: `008`
+- persistence: `009`
 - quests-progression: `083`
 - settlements: `024`
 - settlements-npcs: `058`
@@ -220,7 +221,7 @@ Current dependency chains and architectural threads. Not a replacement for `Depe
 V1 Revival P1 (Performance-First, D4)
   A actors: world-terrain-050 / npc-063   B settlements: (settlements-019 archived)
   C grass: CA1 → CA2 → evaluate          D trees LOD: recon → world-terrain-055 (to create)
-  → P1 exit → persistence-008 (to create) → worldgen epoch / atmosphere / armor / content
+  → P1 exit → `persistence-008` (planned) → worldgen epoch / atmosphere / armor / content
 
 Combat & weapons
   (155 inventory instances) → (160 HQ melee) → (161 weapon maintenance)
