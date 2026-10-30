@@ -142,7 +142,7 @@ Added after the CA2 `stream` attribution showed that the worst travel frames on 
 
 - [x] Recon: which streamed families miss the prewarm (asset census vs program census on `stream`), and why `riverTileBuild` runs synchronously on the main thread (cache, worker or budget options). → [Q17 recon](./2026-10-30--q17-travel-stutter-recon.md): E1 template families landed opt-in (`0a56f8cc`, A/B pending); E2 river-tile worker prefetch (Q22) and E3 character families (Q23) queued.
 - [ ] Bounded slices with tests; WSL `stream` A/B (hitches, long frames, p99, max) as green light, native Windows confirmation.
-- [ ] **NPC multi-second frames on travel (author, 2026-10-30: in P1-E):** 4.5–7.6 s `NPC`-category frames on a 90 s `stream` route, both arms of the Q22 rerun ([findings](../../performance/results/2026-10-30--wsl-q22-river-prefetch-ab.md#findings-from-this-attempt)) → queue Q25 (recon + bounded slice).
+- [ ] **NPC multi-second frames on travel (author, 2026-10-30: in P1-E):** 4.5–7.6 s `NPC`-category frames on a 90 s `stream` route, both arms of the Q22 rerun ([findings](../../performance/results/2026-10-30--wsl-q22-river-prefetch-ab.md#findings-from-this-attempt)) → queue Q25 (recon + bounded slice). **Recon done** ([Q25](./2026-10-30--q25-npc-stream-frames-recon.md)): synchronous settlement unique-name site probes in `recheck()`, not NPC simulation; slices E4a/E4b → queue Q26.
 - [ ] P1 exit verdict like A–D. Not a mirror-quality change: whether actors/player appear in reflections, mirror resolution/refresh and reflection caching stay under D8/D13.
 
 ## D. Trees LOD — included in P1 (author decision 2026-10-29)
