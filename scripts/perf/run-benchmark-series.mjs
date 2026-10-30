@@ -119,6 +119,10 @@ async function runOne(scenario, rep) {
     writeFileSync(`${base}.meta.json`, JSON.stringify(b.meta, null, 2))
     const r = b.report
     console.log(`OK ${scenario} rep${rep} sha=${sha.slice(0, 8)} fps=${r.fps?.avg} p95=${r.frameTime?.p95} draws=${r.rendering?.drawCallsAvg} npc=${r.context?.npcCount} gpu=${String(gpu).slice(0, 60)}`)
+    // Graceful close first: SIGTERM during an in-flight GPU op shows up in WSL as
+    // dxgkrnl `wait_for_completion failed` / `Ioctl failed: -512` (Q18).
+    try { ws.send(JSON.stringify({ id: 9998, method: 'Browser.close' })) } catch {}
+    await sleep(3000)
     ws.close()
   } finally {
     chrome.kill()
