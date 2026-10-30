@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "gitSha": "2e6bb561913e3521d7e908fa3f8cb1ad94dcfaec",
+  "runId": "2026-10-30T15-39-02-667Z-l7hj47",
+  "scenario": "stream",
+  "phase": "warm",
+  "canonical": true,
+  "generatedAt": "2026-10-30T15:40:01.176Z",
+  "fixtureVersion": "tools-001-v1",
+  "quality": "High",
+  "hardwareClass": "wsl-baseline",
+  "notes": "benchmark series q22-B1 rep1; WSL2 Chrome headed, fresh profile, 30s cooldown, query &riverPrefetch=1",
+  "servedSha": "f49be3091bcea1b0b819b7e3491ef8b5a9e2c7b1",
+  "shaNote": "label 2e6bb561913e3521d7e908fa3f8cb1ad94dcfaec, HEAD f49be3091bcea1b0b819b7e3491ef8b5a9e2c7b1; no runtime-path diff",
+  "platform": "wsl"
+}
