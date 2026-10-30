@@ -20,7 +20,8 @@ import { isSystemEnabled } from '../debug/debugMode'
  *
  * A small fixed pool of upright fog cards is created once and recycled.
  * Patches:
- * - stay within a ring around the player,
+ * - live in world space (they do not travel with the player) and are
+ *   recycled into a ring around the player once they leave it,
  * - face the player,
  * - drift slowly,
  * - follow terrain height,
@@ -49,8 +50,10 @@ const VISIBLE_FRACTION_MAX = 1
 
 type FogPatch = {
   mesh: Mesh
-  localX: number
-  localZ: number
+
+  /** World-space position; patches stay put while the player moves. */
+  worldX: number
+  worldZ: number
   driftX: number
   driftZ: number
   spawned: boolean
@@ -77,23 +80,18 @@ function randomDrift(): number {
   return (Math.random() * 2 - 1) * DRIFT_SPEED_MAX
 }
 
-function facePlayer(patch: FogPatch): void {
+function facePlayer(patch: FogPatch, playerX: number, playerZ: number): void {
   patch.mesh.rotation.y = Math.atan2(
-    -patch.localX,
-    -patch.localZ,
+    playerX - patch.worldX,
+    playerZ - patch.worldZ,
   )
 }
 
 function updatePatchHeight(
   patch: FogPatch,
-  playerX: number,
-  playerZ: number,
   sampleHeight: HeightSampler,
 ): void {
-  const groundY = sampleHeight(
-    playerX + patch.localX,
-    playerZ + patch.localZ,
-  )
+  const groundY = sampleHeight(patch.worldX, patch.worldZ)
 
   patch.mesh.position.y = groundY + patch.yOffset
 }
@@ -104,29 +102,22 @@ function updatePatchPosition(
   playerZ: number,
   sampleHeight: HeightSampler,
 ): void {
-  patch.mesh.position.x = patch.localX
-  patch.mesh.position.z = patch.localZ
+  patch.mesh.position.x = patch.worldX
+  patch.mesh.position.z = patch.worldZ
 
-  updatePatchHeight(
-    patch,
-    playerX,
-    playerZ,
-    sampleHeight,
-  )
+  updatePatchHeight(patch, sampleHeight)
 
-  facePlayer(patch)
+  facePlayer(patch, playerX, playerZ)
 }
 
-function shouldRecyclePatch(patch: FogPatch): boolean {
-  const distanceFromPlayer = Math.hypot(
-    patch.localX,
-    patch.localZ,
-  )
+function shouldRecyclePatch(patch: FogPatch, playerX: number, playerZ: number): boolean {
+  const dx = patch.worldX - playerX
+  const dz = patch.worldZ - playerZ
 
   return (
-    Math.abs(patch.localX) > AREA_HALF_EXTENT
-    || Math.abs(patch.localZ) > AREA_HALF_EXTENT
-    || distanceFromPlayer < MIN_DISTANCE_FROM_PLAYER
+    Math.abs(dx) > AREA_HALF_EXTENT
+    || Math.abs(dz) > AREA_HALF_EXTENT
+    || Math.hypot(dx, dz) < MIN_DISTANCE_FROM_PLAYER
   )
 }
 
@@ -139,8 +130,8 @@ function recyclePatch(
 ): void {
   const position = randomFogPosition()
 
-  patch.localX = position.x
-  patch.localZ = position.z
+  patch.worldX = playerX + position.x
+  patch.worldZ = playerZ + position.z
 
   const material = materials[
     Math.floor(Math.random() * materials.length)
@@ -230,8 +221,8 @@ export function createGroundFog(): GroundFogSystem {
       const patch: FogPatch = {
         mesh,
 
-        localX: 0,
-        localZ: 0,
+        worldX: 0,
+        worldZ: 0,
 
         driftX: 0,
         driftZ: 0,
@@ -264,12 +255,6 @@ export function createGroundFog(): GroundFogSystem {
 
     group.visible = isSystemEnabled('weather') && isFog
 
-    group.position.set(
-      playerX,
-      0,
-      playerZ,
-    )
-
     if (patches.length === 0) {
       return
     }
@@ -300,10 +285,10 @@ export function createGroundFog(): GroundFogSystem {
           sampleHeight,
         )
       } else {
-        patch.localX += patch.driftX * dt
-        patch.localZ += patch.driftZ * dt
+        patch.worldX += patch.driftX * dt
+        patch.worldZ += patch.driftZ * dt
 
-        if (shouldRecyclePatch(patch)) {
+        if (shouldRecyclePatch(patch, playerX, playerZ)) {
           recyclePatch(
             patch,
             materials,
