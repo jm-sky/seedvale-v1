@@ -1,6 +1,6 @@
 # Q20 — one skeleton per actor (Track A, A1) — implementation notes
 
-**Date:** 2026-10-30 · **By:** Claude Opus 5.5 · **Commit:** `21fe07bd` · **Status:** implemented + technically verified; **off by default** (`?actorSkeletons=1` enables) until the WSL A/B. No browser/visual check done.
+**Date:** 2026-10-30 · **By:** Claude Opus 5.5 · **Commit:** `a416ff2b` · **Status:** implemented + technically verified; **off by default** (`?actorSkeletons=1` enables) until the WSL A/B. No browser/visual check done.
 
 ## Why
 
