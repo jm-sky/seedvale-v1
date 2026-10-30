@@ -50,7 +50,7 @@ describe('NPC dialogue voice intents', () => {
       stopPlayerReactionVoice,
     })
 
-    openNpcDialogueMenu(npc, stubSettlement, new QuestManager([], undefined, new Inventory()), 12)
+    openNpcDialogueMenu(npc, stubSettlement, new QuestManager([], undefined, new Inventory()), 0.4)
 
     expect(stopPlayerReactionVoice).toHaveBeenCalledTimes(1)
     expect(playAt).toHaveBeenCalledTimes(1)

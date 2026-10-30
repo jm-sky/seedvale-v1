@@ -250,3 +250,61 @@ export function voluntaryJoinResponseLine(accepted: boolean, blockers: readonly 
   if (blockers.includes('not-adult')) return 'To nie dla mnie — jestem na to za młody.'
   return 'Dziękuję za propozycję, ale wolę zostać.'
 }
+
+// --- Player speech for committed dialogue choices (plan ui-input-047) ---
+
+/** Deterministic variant pick from a stable seed (identity/context) — no
+ *  `Math.random()`, so a line chosen once stays stable across rerenders. */
+export function stableVariant<T>(pool: readonly T[], seed: string): T {
+  let hash = 2166136261
+  for (let i = 0; i < seed.length; i++) {
+    hash ^= seed.charCodeAt(i)
+    hash = Math.imul(hash, 16777619)
+  }
+  return pool[(hash >>> 0) % pool.length]!
+}
+
+const REQUEST_FOOD_PLAYER = ['Czy możesz dać mi coś do jedzenia?', 'Masz może coś do jedzenia?', 'Poratowałbyś mnie jedzeniem?'] as const
+const REQUEST_WATER_PLAYER = ['Czy możesz dać mi trochę wody?', 'Masz może coś do picia?', 'Poratowałbyś mnie łykiem wody?'] as const
+
+/** Spoken request — intent only; the callback decides whether it succeeds. */
+export function playerAssistanceRequestLine(requestKind: 'food' | 'water', seed: string): string {
+  return stableVariant(requestKind === 'food' ? REQUEST_FOOD_PLAYER : REQUEST_WATER_PLAYER, seed)
+}
+
+export function playerGuardRewardRequestLine(): string {
+  return 'Chyba zasłużyłem na jakieś uznanie za pomoc.'
+}
+
+/** Spoken payment intent — does not assert that payment succeeded. */
+export function playerPayWageLine(coins: number): string {
+  return `Zapłacę ci ${coins} monet za twoją pracę.`
+}
+
+export function playerJoinProposalAnswerLine(accept: boolean): string {
+  return accept ? 'Dobrze, chodź ze mną.' : 'Nie tym razem, zostań.'
+}
+
+export function playerQuestOfferAnswerLine(accept: boolean): string {
+  return accept ? 'Dobrze, zajmę się tym.' : 'Nie, tym razem nie pomogę.'
+}
+
+function joinDurationPhrase(days: number): string {
+  if (days === 0.5) return 'na pół dnia'
+  if (days === 1) return 'na jeden dzień'
+  if (days === 2) return 'na dwa dni'
+  if (days === 3) return 'na trzy dni'
+  return `na ${days} dni`
+}
+
+/** One complete spoken voluntary-expedition invitation (plan npc-031 / ui-input-047 §C).
+ *  Varies tone only; terms are the requested outing length. */
+export function playerJoinInvitationLine(days: number, seed: string): string {
+  const span = joinDurationPhrase(days)
+  return stableVariant([
+    `Chodź ze mną ${span}. Przyda mi się towarzystwo.`,
+    `Wybieram się w drogę. Wyruszysz ze mną ${span}?`,
+    `Czy dołączysz do mojej wyprawy ${span}?`,
+    `Chodź ze mną ${span}. Co ty na to?`,
+  ], `${seed}|${days}`)
+}

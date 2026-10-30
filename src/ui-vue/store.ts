@@ -31,6 +31,7 @@ import type { ToastVariant } from '../ui/createToast'
 import type { TrapKind } from '../world/animalTraps'
 import type { CropId } from '../world/cropLifecycle'
 import type { SeedChoice, SeedRecord } from '../world/seedLibrary'
+import { nearestArchetype } from '../ai/dialogue'
 import { elderSocialDisplayName } from '../ai/npcSocialTitle'
 import { resolveNpcVoiceLine } from '../ai/npcVoiceLines'
 import {
@@ -46,6 +47,7 @@ import { isTouchDevice } from '../input/isTouchDevice'
 import { NEUTRAL_CHARACTER_EQUIPMENT_VIEW } from '../player/characterPresentation'
 import { type DayNightState, formatClock, phaseName } from '../world/dayNight'
 import { resolveNpcPortraitSrc } from './lib/npcPortrait'
+import { resolveNpcGreetingPresentation } from './npcDialogueGreeting'
 
 export type VillagerEntry = { npc: Raw<NpcAgent>; settlementName: string; foodSourceType: FoodSourceType }
 type VillagerRefreshEntry = { npc: NpcAgent; settlementName: string; foodSourceType: FoodSourceType }
@@ -58,6 +60,15 @@ export type VillagerContainerOption = { id: string, label: string }
 
 type NpcDialogueMenuState = {
   open: boolean
+  /** Monotonic UI session revision (plan ui-input-047 §D): advanced on every
+   *  explicit open and every reset (close, accept, world invalidation). The
+   *  menu keys history and pending async work by it, so reopening the same
+   *  NPC or replacing an open NPC is always a new session. */
+  sessionRevision: number
+  /** Opening greeting line resolved once at open (paired with the played clip,
+   *  or authored text-only). The menu appends this snapshot — it never picks
+   *  text on its own. */
+  greetingText: string
   npc: NpcAgent | null
   /** Presentation-only dialogue heading (plan npc-052). Canonical
    *  `npc.displayName` is unchanged; elders may get a contextual social title. */
@@ -835,7 +846,7 @@ export function emitUiClick(): void {
 }
 
 export const ui = reactive({
-  npcDialogueMenu: { open: false, npc: null, npcHeading: '', portraitSrc: null, settlement: null, timeOfDay: 0, helpResult: null, resolveQuestHelp: null, resolveQuestPreview: null, canClaimGuardReward: false, getCanClaimGuardReward: null, onClaimGuardReward: null, canTrade: false, getCanTrade: null, onOpenTrade: null, canOrderArtisan: false, getCanOrderArtisan: null, onOpenArtisanOrders: null, onRequestFood: null, onRequestWater: null, onAskAboutArea: null, followUp: null, paymentClaim: null, onPayWage: null, onGiveItem: null, joinProposal: null, onRespondToJoinProposal: null, onProposeJoin: null } as NpcDialogueMenuState,
+  npcDialogueMenu: { open: false, sessionRevision: 0, greetingText: '', npc: null, npcHeading: '', portraitSrc: null, settlement: null, timeOfDay: 0, helpResult: null, resolveQuestHelp: null, resolveQuestPreview: null, canClaimGuardReward: false, getCanClaimGuardReward: null, onClaimGuardReward: null, canTrade: false, getCanTrade: null, onOpenTrade: null, canOrderArtisan: false, getCanOrderArtisan: null, onOpenArtisanOrders: null, onRequestFood: null, onRequestWater: null, onAskAboutArea: null, followUp: null, paymentClaim: null, onPayWage: null, onGiveItem: null, joinProposal: null, onRespondToJoinProposal: null, onProposeJoin: null } as NpcDialogueMenuState,
   villagers: { open: false, entries: [] as VillagerEntry[], page: 0, containers: [] as VillagerContainerOption[] },
   inventory: { open: false, counts: {}, groups: [], totalWeight: 0, maxWeight: 0, totalSize: 0, maxSize: 0, heldTool: null, heldInstanceId: null, primaryMelee: null, primaryRanged: null, onDrop: null, onEquip: null, onUnequip: null, equippedSlots: {}, onEquipArmor: null, onUnequipArmor: null, onConsume: null, onThrow: null, onRead: null, onPlaceTrap: null, onSellInstances: null, onSharpen: null, onPlaceContainer: null, onPlaceTent: null, onSetPrimaryMelee: null, onSetPrimaryRanged: null } as InventoryState,
   pauseMenu: {
@@ -1134,12 +1145,20 @@ export function openNpcDialogueMenu(npc: NpcAgent, settlement: Settlement, quest
   state.joinProposal = npc.pendingVoluntaryJoinProposal()
   const followUp = npc.pendingPlayerFollowUp()
   state.followUp = followUp ? { kind: followUp.kind, id: followUp.id } : null
+  const greeting = resolveNpcGreetingPresentation(
+    npc,
+    npc.personality ? nearestArchetype(npc.personality) : 'calm',
+    timeOfDay,
+    questManager.getRelationLevel(npc.id),
+  )
+  state.greetingText = greeting.text
+  state.sessionRevision += 1
   state.open = true
   emitUiOpen()
   // Cut any in-flight lookAtPlayer reaction bark so it cannot stack with the
   // dialogue greeting (same NPC, two human voice clips).
   npc.stopPlayerReactionVoice()
-  playNpcVoice(npc, resolveNpcVoiceLine(npc, 'greeting'))
+  playNpcVoice(npc, greeting.url)
 }
 /** Topic the dialogue menu should open on. Payment wage-claim and a pending
  *  self-initiated join proposal are the only automatic exceptions; quest
@@ -1227,6 +1246,8 @@ export function invalidateWorldBoundUiSessions(): void {
 
 function resetNpcDialogueMenu(): void {
   const state = ui.npcDialogueMenu
+  state.sessionRevision += 1
+  state.greetingText = ''
   state.open = false
   state.npc = null
   state.npcHeading = ''

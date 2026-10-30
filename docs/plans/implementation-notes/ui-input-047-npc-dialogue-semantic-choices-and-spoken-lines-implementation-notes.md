@@ -112,3 +112,14 @@ Use existing Vitest/jsdom + Vue `createApp/h/nextTick` mounting, as in `src/ui-v
 - [Grouping and quest priority](../archive/ui-input-024-npc-dialogue-grouping-and-quest-priority.md)
 - [Offer / active context separation](../archive/ui-input-036-quest-dialogue-offer-active-context-separation.md)
 - [Voice catalog](../../dialogue/NPC-VOICE-CATALOG.md)
+
+## Implementation status (2026-10-30)
+
+**Implemented + technically verified** (`pnpm type-check`, `src/ui-vue`, `src/ai`, `src/quests` Vitest). **Not** browser/listening verified — author checks on seed `415424794` remain open (queue §2).
+
+- `store.ts`: `sessionRevision` (bumped on open and reset) + `greetingText`; greeting resolved once via `ui-vue/npcDialogueGreeting.ts` (clip → catalog-transcript Polish translation, context-gated; `merchant_female_greeting_03`, wrong-time "Morning" clips and missing clips → text-only).
+- `NpcDialogueMenu.vue`: `say` replaced by `kind` + `speech`; response-text watcher removed (explicit pushes only); view/turn tickets guard async area replies; one-shot choice per view; overlay-top guard; offer decline exposed only with `onDecline`.
+- `dialogueTemplates.ts`: `stableVariant` + player speech helpers; four invitation durations.
+- `DialogueWindow.vue`: ignores held-key repeat for 1..9.
+- Tests: `NpcDialogueMenu.test.ts` (mounted), `npcDialogueGreeting.test.ts`. The `npcDialogueVoice` greeting test now passes an in-range `timeOfDay` (was `12`, i.e. night). The TODO'd quest-completion assertions in `npcDialogueVoice.test.ts` were **not** restored.
+- Not covered by mounted tests: full quest-offer matrix, gift/order overlay stacking, held-key repeat.

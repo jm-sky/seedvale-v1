@@ -57,7 +57,7 @@ function onKey(e: KeyboardEvent): void {
     if (props.escCloses !== false) emit('close')
     return
   }
-  if (e.key.length === 1 && e.key >= '1' && e.key <= '9' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+  if (!e.repeat && e.key.length === 1 && e.key >= '1' && e.key <= '9' && !e.ctrlKey && !e.metaKey && !e.altKey) {
     const choice = props.choices[Number(e.key) - 1]
     if (choice && !choice.disabled) emit('choose', choice.id)
   }
