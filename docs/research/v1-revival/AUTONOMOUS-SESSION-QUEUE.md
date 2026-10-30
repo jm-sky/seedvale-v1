@@ -30,7 +30,7 @@
 - `O→S` in the Model column = Opus does recon/plan and then adds a separate S row for the implementation. A Sonnet session that hits a design fork it cannot settle from the plan **stops the task**, records the fork in its `Resume:` note and moves on — it does not guess.
 - **Default next session = Sonnet**, while S tasks are `ready`. Start an Opus session when the first `ready` task is O, or when ≥ 2 S tasks are blocked on design questions.
 
-**External agents (author, 2026-10-30):** the author can run simple, self-contained tasks cheaply in ChatGPT (Sol, Luna, Astra — GitHub connector) and sometimes delegate to Codex. When a task fits (bounded, no open decision, no risky runtime contract), mark it `X` in its Model cell next to the normal code (e.g. `S / X`) and keep its entry docs + "done when" sufficient as a paste-ready brief. Their results are reviewed like any other change before counting as verified.
+**External agents (author, 2026-10-30):** the author can run simple, self-contained tasks cheaply in ChatGPT (Sol, Luna, Astra — GitHub connector) and sometimes delegate to Codex; Cursor Pro (Composer, Grok 4.7, while the plan limit lasts) is also available, and Cursor with a browser is how the author generates voice audio (Fish Audio). When a task fits (bounded, no open decision, no risky runtime contract), mark it `X` in its Model cell next to the normal code (e.g. `S / X`) and keep its entry docs + "done when" sufficient as a paste-ready brief. Their results are reviewed like any other change before counting as verified.
 
 **Sub-agents** (each starts cold and re-reads context — they are the expensive path):
 
