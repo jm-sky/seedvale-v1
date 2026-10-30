@@ -64,6 +64,14 @@ async function runOne(scenario, rep) {
     await new Promise((r) => (ws.onopen = r))
     const ev = evaluator(ws)
     ws.send(JSON.stringify({ id: 9999, method: 'Page.bringToFront' }))
+    if (!IS_WIN) {
+      // A WSL run on a software rasterizer is not a WSL-baseline run (Q18: Mesa
+      // falls back to llvmpipe when GALLIUM_DRIVER=d3d12 does not take). Abort early.
+      const renderer = await ev(`(() => { const g = document.createElement('canvas').getContext('webgl2'); const e = g && g.getExtension('WEBGL_debug_renderer_info'); return e ? String(g.getParameter(e.UNMASKED_RENDERER_WEBGL)) : '' })()`)
+      if (!/D3D12/i.test(renderer) || /llvmpipe|SwiftShader|softpipe/i.test(renderer)) {
+        throw new Error(`WSL renderer is not hardware D3D12: "${renderer}" — check GALLIUM_DRIVER=d3d12 / chrome://gpu`)
+      }
+    }
     const t0 = Date.now()
     let done = false
     while (Date.now() - t0 < 6 * 60_000) {
