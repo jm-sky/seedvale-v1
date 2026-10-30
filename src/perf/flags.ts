@@ -114,3 +114,13 @@ export function isChestInstancingEnabled(): boolean {
   if (!p?.has('chestInstancing')) return true
   return flagOn(p.get('chestInstancing'))
 }
+
+/** Q20 Track A (A1): one skeleton per actor (`render/actorSkeletonSharing.ts`).
+ *  Off by default until the WSL A/B green-lights it (D4); `?actorSkeletons=1`
+ *  binds all exact-compatible skinned parts (NPC body/head/hair/garments,
+ *  fauna parts) to one skeleton per actor. */
+export function isActorSkeletonSharingEnabled(): boolean {
+  const p = params()
+  if (!p?.has('actorSkeletons')) return false
+  return flagOn(p.get('actorSkeletons'))
+}

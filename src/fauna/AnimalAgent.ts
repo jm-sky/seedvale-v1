@@ -25,6 +25,8 @@ import { logNpcThreatBranch } from '../debug/faunaInspector'
 import { DEFAULT_CELL_SIZE, findPath, type NavigationQuery, type PathPoint } from '../navigation/navigation'
 import { beginActivePath, endActivePath, recordPathRequest, recordRepath } from '../navigation/navigationStats'
 import { getAgentCpuDiag } from '../perf/agentCpuDiag'
+import { isActorSkeletonSharingEnabled } from '../perf/flags'
+import { shareActorSkeletons } from '../render/actorSkeletonSharing'
 import { tintPropMaterials } from '../settlement/props'
 import { type AgentAnimationSet, createAgentAnimationSet } from '../shared/agentAnimationSet'
 import { type FollowHysteresisState, resolveFollowHysteresis } from '../shared/followHysteresis'
@@ -1823,6 +1825,8 @@ export class AnimalAgent {
     this.spontaneousVocalizeCooldownSec = initialSpontaneousVocalizeCooldownSec(def.kind)
 
     if (visual) {
+      // Q20 (A1): one bone palette per animal where provably exact (per-spawn clone).
+      if (isActorSkeletonSharingEnabled()) shareActorSkeletons(visual)
       this.mesh = visual
       this.isCapsule = false
     } else {
