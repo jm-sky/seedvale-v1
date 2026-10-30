@@ -94,3 +94,12 @@ V2 offers the pattern of spatial prefiltering, cheap early-outs and cached resul
 Cost scales with candidates × blocker candidates × sample points × update rate, plus invalidation/cache maintenance. A center ray is cheap but unsafe for whole-model culling; conservative coverage costs more. On the measured CPU-sensitive Windows path, detector cost can erase draw savings. Hiding alone also leaves mixers and matrix traversal running; saving those would be a later, separately verified presentation change.
 
 **Decision:** investigate the measurable occluded cohort first. Adapt bounded visibility evaluation if its net gain survives noise and visual checks; leave sensory range, last-known memory and ghosts for an explicit gameplay decision. Autonomous world simulation remains unchanged.
+
+## Opus assessment (2026-10-30)
+
+Accepted as research input for Track A; no runtime change follows from it directly.
+
+- **Agree:** no MAP-02 port; V2 sensory range, last-known contacts and ghosts are a gameplay decision outside P1. Camera occlusion is a rendering-only candidate. The corpse/`mesh.visible` ownership hazard (§2) is a hard constraint for any experiment.
+- **Strongest signal is cost per actor, not occlusion.** Hiding all actors removes −8.3…−9.4 ms RENDER while actors are ~21 % of main submissions, so an actor submission is several times more expensive than an average one (skinned bone-texture upload / `Skeleton.update`, `bindMatrixInverse`, material/program switches). Q6 (A0 per-submission attribution) measures exactly this and is the prerequisite: it tells whether a hidden actor saves only its main-pass draws or also skeleton work.
+- **Ceiling caveat for §4:** an occluded actor inside the 36 m shadow gate still casts shadows, so its skeleton is still updated and uploaded for the shadow pass; only its main-pass draws go away. Occluded actors beyond 36 m would also skip skeleton work. The cohort census in §4.1 should therefore record the near/far split.
+- **Sequencing:** Q6 A0 counters → queue Q16, the §4.1–3 zero-detector cohort ceiling (fixture view, cohort census and a beauty-pass mask behind a debug flag can be prepared without benchmarks; the A/B needs the author's Windows session) → a detector (§4.4) only if the ceiling clears ~2 ms RENDER on Windows.
