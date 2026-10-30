@@ -18,6 +18,17 @@ export type Role = 'woodcutter' | 'farmer' | 'guard' | 'trader' | 'miner' | 'fis
  *  `curious` boosts player-reaction chance (`ai/reactionChance.ts`, plan 117). */
 export type Trait = 'curious' | 'energetic' | 'fast_worker' | 'night_owl' | 'sociable'
 
+/** Stable authored identity key for named characters (reserved home roster,
+ *  authored story residents). Survives renames and runtime reconstruction —
+ *  presentation lookups (e.g. dialogue portraits) key on this, never on the
+ *  display name. Procedural residents have none. */
+export type CharacterKey =
+  | 'anna_lesniewska'
+  | 'piotr_lesniewski'
+  | 'kasia_hornblower'
+  | 'marek_hornblower'
+  | 'kazimierz_nowak'
+
 export type CharacterDef = {
   name: string
   /** Family surname (shared by all members of the same family, gender-agreed
@@ -25,6 +36,8 @@ export type CharacterDef = {
    *  Optional: reserved characters still match authored quest names by
    *  first `name` at materialization time (`giverName` → stable `NpcId`). */
   lastName?: string
+  /** Set only for authored characters — see `CharacterKey`. */
+  characterKey?: CharacterKey
   gender: NpcGender
   role: Role
   personality: BigFivePersonality
@@ -45,10 +58,10 @@ type ReservedSeed = Omit<CharacterDef, 'personality'>
  *  `settlement/families.ts`). Randomizing these would silently break the
  *  only quests the game has. */
 const RESERVED_SEEDS: readonly ReservedSeed[] = [
-  { name: 'Anna', lastName: 'Leśniewska', gender: 'female', role: 'farmer', traits: ['fast_worker'] },
-  { name: 'Piotr', lastName: 'Leśniewski', gender: 'male', role: 'woodcutter', traits: ['energetic'] },
-  { name: 'Kasia', lastName: 'Hornblower', gender: 'female', role: 'trader', traits: ['night_owl'] },
-  { name: 'Marek', lastName: 'Hornblower', gender: 'male', role: 'guard', traits: ['sociable'] },
+  { name: 'Anna', lastName: 'Leśniewska', characterKey: 'anna_lesniewska', gender: 'female', role: 'farmer', traits: ['fast_worker'] },
+  { name: 'Piotr', lastName: 'Leśniewski', characterKey: 'piotr_lesniewski', gender: 'male', role: 'woodcutter', traits: ['energetic'] },
+  { name: 'Kasia', lastName: 'Hornblower', characterKey: 'kasia_hornblower', gender: 'female', role: 'trader', traits: ['night_owl'] },
+  { name: 'Marek', lastName: 'Hornblower', characterKey: 'marek_hornblower', gender: 'male', role: 'guard', traits: ['sociable'] },
 ]
 
 export const RESERVED_CHARACTERS: readonly CharacterDef[] = RESERVED_SEEDS.map((seed, i) => ({

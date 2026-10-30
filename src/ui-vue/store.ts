@@ -1121,7 +1121,7 @@ export function openNpcDialogueMenu(npc: NpcAgent, settlement: Settlement, quest
     traits: npc.traits,
     relationLevel: questManager.getRelationLevel(npc.id),
   })
-  state.portraitSrc = resolveNpcPortraitSrc(npc)
+  state.portraitSrc = resolveNpcPortraitSrc(npc, timeOfDay, questManager.getRelation(npc.id))
   state.settlement = settlement
   state.timeOfDay = timeOfDay
   state.helpResult = null

@@ -93,6 +93,7 @@ export function createLostTreasureElderFamily(
         ...character,
         name: LOST_TREASURE_ELDER_GIVEN_NAME,
         lastName,
+        characterKey: 'kazimierz_nowak',
         gender: 'male',
         role: 'farmer',
       },

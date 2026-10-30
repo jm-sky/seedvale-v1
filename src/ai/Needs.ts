@@ -84,10 +84,10 @@ export type PickNeedOptions = {
  *  fires only for a genuinely urgent need ("bardzo spragniony"), not merely
  *  "worth doing next". Same score multipliers as the normal non-shortage
  *  case — only the threshold moves. */
-const CRITICAL_WATER_THRESHOLD = 0.75
+export const CRITICAL_WATER_THRESHOLD = 0.75
 const CRITICAL_WOOD_THRESHOLD = 0.85
 const CRITICAL_WATER_DUTY_THRESHOLD = 0.85
-const CRITICAL_FOOD_THRESHOLD = 0.7
+export const CRITICAL_FOOD_THRESHOLD = 0.7
 
 /** The non-shortage/non-critical `food` threshold below — exported so
  *  `NpcAgent.computeFoodStrategyCandidates` (plan 167) can tell "genuinely

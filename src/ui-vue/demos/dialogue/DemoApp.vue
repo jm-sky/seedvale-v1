@@ -18,7 +18,7 @@ interface MenuEntry extends DialogueChoice {
   reply?: string
 }
 
-const PORTRAIT = '/images/npc/casimir-eastwood.png'
+const PORTRAIT = '/images/npc/casimir-eastwood-day-positive.webp'
 
 const MENUS: Record<MenuId, MenuEntry[]> = {
   root: [

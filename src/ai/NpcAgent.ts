@@ -234,6 +234,7 @@ import {
 import { resolveBurialPressure } from './burialPressure'
 import {
   type CharacterDef,
+  type CharacterKey,
   type NpcGender,
   type Role,
   type Trait,
@@ -1197,6 +1198,19 @@ export type NpcAgentDeps = {
   requestNpcInitiatedDialogue?: RequestNpcInitiatedDialogue
 }
 
+/** Snapshot returned by `NpcAgent.getDialogueCondition()`. */
+export type NpcDialogueCondition = {
+  /** `currentHp / maxHp`, `0..1`. */
+  hpRatio: number
+  injurySeverity: InjurySeverity
+  /** Forced-rest phase (stamina ran out). */
+  exhausted: boolean
+  /** Remaining daily vigor pool (see `VIGOR_COLLAPSE_THRESHOLD`). */
+  vigor: number
+  hunger: number
+  thirst: number
+}
+
 /**
  * @domain settlements-npcs
  * @system npc-agent
@@ -1210,6 +1224,9 @@ export class NpcAgent {
   readonly mesh: THREE.Object3D
   readonly label: CSS2DObject
   readonly name: string
+  /** Stable authored identity (`CharacterKey`) for named characters, `null`
+   *  for procedural residents. Presentation keys (portraits) use this. */
+  readonly characterKey: CharacterKey | null
   /** Display-only — `id` is the matching key for quests/relations.
    *  Authored quest text still mentions first names (`giverName`). */
   readonly displayName: string
@@ -1829,6 +1846,7 @@ export class NpcAgent {
     this.home = home.position.clone()
     const character = member.character
     this.name = character.name
+    this.characterKey = character.characterKey ?? null
     this.displayName = character.lastName ? `${character.name} ${character.lastName}` : character.name
     this.gender = character.gender
     this.voiceProfileId = voiceProfileIdFor(this.gender, character.role)
@@ -2053,6 +2071,21 @@ export class NpcAgent {
 
   getActiveNeed(): NeedId {
     return this.activeNeed
+  }
+
+  /** Read-only physical condition for dialogue presentation (portrait mood).
+   *  Raw values only — callers own their thresholds. Applies lazy injury
+   *  recovery first, like `createInspectionSnapshot`. */
+  getDialogueCondition(): NpcDialogueCondition {
+    resolveSharedInjuryRecovery(this.npcState, this.nowDays())
+    return {
+      hpRatio: this.health.maxHp > 0 ? this.health.currentHp / this.health.maxHp : 1,
+      injurySeverity: resolveInjurySeverity(this.npcState.physicalInjury, this.health.maxHp),
+      exhausted: this.phase === 'exhausted',
+      vigor: this.vigor.current,
+      hunger: this.needs.hunger,
+      thirst: this.needs.thirst,
+    }
   }
 
   /** Current helper resource-delivery assignment (plan 167), or `null` — read
