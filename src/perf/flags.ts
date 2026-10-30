@@ -87,6 +87,19 @@ export function isBenchmarkAutorunEnabled(): boolean {
   return flagOn(p.get('benchmarkAutorun'))
 }
 
+/** Parse `?benchYaw=<radians>` — finite number, else `null`. */
+export function parseBenchmarkYaw(raw: string | null | undefined): number | null {
+  if (raw === null || raw === undefined || raw.trim() === '') return null
+  const v = Number(raw)
+  return Number.isFinite(v) ? v : null
+}
+
+/** `?benchYaw=<radians>` — controlled camera yaw for the URL-autorun benchmark
+ *  (e.g. the Q16 open-view control arm); absent keeps the loaded look. */
+export function benchmarkYawFromUrl(): number | null {
+  return parseBenchmarkYaw(params()?.get('benchYaw'))
+}
+
 /** Single per-frame scene matrix update (`src/render/frameSceneMatrices.ts`, queue Q14).
  *  On by default since the native Windows A/B (frame p50 -3.1 ms, see
  *  docs/performance/results/2026-10-29--win-q14-frame-matrix-once-ab.md);

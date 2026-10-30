@@ -364,6 +364,11 @@ export type PerfReportJson = {
   matrixWork?: MatrixWorkCensus
   /** Actual per-pass WebGL submissions (A0a/B0). Null when collector disabled. */
   passSubmissions?: PassSubmissionReport | null
+  /** Q16 occluded-actor cohort census + mask stats (`?actorCohort=census|mask` only). */
+  occludedActorCohort?: {
+    census: import('./occludedActorCohort').OccludedActorCensus
+    mask: import('./occludedActorCohort').ActorCohortMaskStats | null
+  }
   hitches?: HitchReportRow[]
   isolation?: IsolationProbeRow[]
   systems: Partial<Record<PerfCategory, number>>

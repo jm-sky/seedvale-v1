@@ -18,6 +18,7 @@ export { BENCHMARK_SCENARIO_IDS } from './benchmarkScenarios'
 export { createRunId, getBuildGitSha } from './buildInfo'
 export {
   benchmarkScenarioFromUrl,
+  benchmarkYawFromUrl,
   DEFAULT_POINT_LIGHT_BUDGET,
   isBenchmarkAutorunEnabled,
   isPerfUrlEnabled,

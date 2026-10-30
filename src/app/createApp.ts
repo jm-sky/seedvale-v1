@@ -1,6 +1,7 @@
 import type { Role } from '../ai/characters'
 import type { PlayerSocialLookup } from '../ai/reactionChance'
 import type { AnimalAgent } from '../fauna/AnimalAgent'
+import type { CohortActor } from '../perf/occludedActorCohort'
 import type { SaveData, SaveTerrainModification } from '../persistence/saveData'
 import type { NpcId } from '../settlement/npcState'
 import type { TerrainModification } from '../terrain/chunkManager'
@@ -74,6 +75,7 @@ import { createWeaponInstance, migrateWeaponCountsToInstances } from '../items/w
 import {
   type BenchmarkFixture,
   benchmarkScenarioFromUrl,
+  benchmarkYawFromUrl,
   createAgentCpuDiag,
   createBenchmarkRunner,
   createGrassBaselineDiag,
@@ -3080,6 +3082,15 @@ export async function createApp(
     monitor: perfMonitor,
     passCollector: passSubmissionCollector,
     look: mouseLook.state,
+    actors: () => {
+      const out: CohortActor[] = []
+      for (const settlement of bundle.settlementsManager.getLoaded()) {
+        for (const npc of settlement.npcs) out.push({ id: npc.id, family: 'npc', root: npc.mesh, isDead: () => npc.health.dead })
+        for (const animal of settlement.livestock) out.push({ id: animal.animalId, family: 'fauna', root: animal.mesh, isDead: () => animal.isDead() })
+      }
+      for (const animal of bundle.fauna.getAgents()) out.push({ id: animal.animalId, family: 'fauna', root: animal.mesh, isDead: () => animal.isDead() })
+      return out
+    },
     applyQualityPreset: graphics.applyNamedQualityPreset,
     isolation: {
       scene,
@@ -3930,7 +3941,10 @@ export async function createApp(
 
   // `?benchmarkAutorun=0` boots the fixture world without starting the run
   // (worldgen fixture export, plan tools-020).
-  if (autoBench && isBenchmarkAutorunEnabled()) void benchmark.run(autoBench)
+  if (autoBench && isBenchmarkAutorunEnabled()) {
+    const yaw = benchmarkYawFromUrl()
+    void benchmark.run(autoBench, undefined, yaw === null ? {} : { camera: { yaw } })
+  }
 
   bootMarksSummary()
 

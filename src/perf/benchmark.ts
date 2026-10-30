@@ -32,6 +32,12 @@ import {
 import { formatIsolationReport, runIsolationProbes } from './isolationProbe'
 import { formatLongFrameAttribution } from './longFrameFormat'
 import { censusMatrixWork } from './matrixCensus'
+import {
+  censusOccludedActors,
+  type CohortActor,
+  formatOccludedActorCohortReport,
+  getActorCohortMask,
+} from './occludedActorCohort'
 import { formatPassSubmissionReport } from './passSubmissionCollector'
 import { formatProgramAttributionReport, formatProgramCensusReport, formatProgramCompileCostReport, getProgramCensus } from './programCensus'
 import { buildReport, formatReport } from './report'
@@ -112,6 +118,9 @@ export type BenchmarkHost = {
   /** Live player camera look state (`createMouseLook().state`) — the same
    *  object `PlayerController.syncCamera` reads every tick. */
   look: LookState
+  /** Loaded NPCs, livestock and wild fauna for the Q16 occluded-actor census
+   *  (`?actorCohort=census|mask` only). Accessor: resolved per run. */
+  actors: () => CohortActor[]
 }
 
 function sleep(ms: number): Promise<void> {
@@ -316,6 +325,24 @@ export function createBenchmarkRunner(host: BenchmarkHost): BenchmarkRunner {
           }, STREAM_UPDATE_MS)
         }
 
+        // Q16 occluded-actor cohort: census once before the window (never
+        // per frame); arms the beauty-pass mask in `mask` mode, revalidation
+        // only in `census` mode so both A/B arms carry the same overhead.
+        const actorCohortMask = getActorCohortMask()
+        let occludedActorCensus = null as ReturnType<typeof censusOccludedActors> | null
+        if (actorCohortMask) {
+          const actors = host.actors()
+          occludedActorCensus = censusOccludedActors({
+            mode: actorCohortMask.mode,
+            actors,
+            camera: host.camera,
+            scene: host.isolation.scene,
+            player: player.mesh.position,
+          })
+          const cohortIds = new Set(occludedActorCensus.occluded.map((row) => row.id))
+          actorCohortMask.arm(actors.filter((actor) => cohortIds.has(actor.id)), host.camera)
+        }
+
         // Phase: measured session (explicit warm — preload + WARMUP_MS above).
         const runId = createRunId()
         const gitSha = getBuildGitSha()
@@ -346,6 +373,7 @@ export function createBenchmarkRunner(host: BenchmarkHost): BenchmarkRunner {
         }
         const totals = monitor.endSession()
         performance.mark('seedvale:bench-window-end')
+        const actorCohortMaskStats = actorCohortMask?.disarm() ?? null
         if (typeof window !== 'undefined') {
           // Epoch-ms bounds of the measured window, so external diagnostics
           // (console GL errors, traces) can be placed relative to it.
@@ -440,6 +468,9 @@ export function createBenchmarkRunner(host: BenchmarkHost): BenchmarkRunner {
           matrixWork,
           isolation,
         })
+        if (occludedActorCensus) {
+          report.occludedActorCohort = { census: occludedActorCensus, mask: actorCohortMaskStats }
+        }
         console.log(formatReport(report))
         console.log(report)
         if (agentCpu) console.log(formatAgentCpuReport(agentCpu))
@@ -483,6 +514,7 @@ export function createBenchmarkRunner(host: BenchmarkHost): BenchmarkRunner {
             programCensus.enabled ? 'Seedvale Program Attribution' : undefined,
             programCensus.enabled ? 'Seedvale Program Compile Cost' : undefined,
             'Seedvale Render Isolation',
+            occludedActorCensus ? 'Seedvale Occluded Actor Cohort' : undefined,
           ].filter((header): header is string => header !== undefined)
 
           content.push('# Seedvale Performance Benchmark Report')
@@ -526,6 +558,12 @@ export function createBenchmarkRunner(host: BenchmarkHost): BenchmarkRunner {
           content.push(formatIsolationReport(isolation))
           content.push('')
 
+          if (occludedActorCensus) {
+            content.push('\n---\n')
+            content.push(formatOccludedActorCohortReport(occludedActorCensus, actorCohortMaskStats))
+            content.push('')
+          }
+
           return content.join('\n')
         }
 
@@ -553,6 +591,7 @@ export function createBenchmarkRunner(host: BenchmarkHost): BenchmarkRunner {
         return report
       } finally {
         host.passCollector.disable()
+        getActorCohortMask()?.disarm()
         if (saved.preset === 'Low' || saved.preset === 'Medium' || saved.preset === 'High') {
           host.applyQualityPreset(saved.preset)
         }

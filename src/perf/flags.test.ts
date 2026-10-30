@@ -3,6 +3,7 @@ import { BENCHMARK_SCENARIO_IDS } from './benchmarkScenarios'
 import {
   DEFAULT_POINT_LIGHT_BUDGET,
   parseBenchmarkScenarioId,
+  parseBenchmarkYaw,
   parsePointLightBudgetFlag,
   pointLightBudgetFromUrl,
 } from './flags'
@@ -62,5 +63,15 @@ describe('parseBenchmarkScenarioId', () => {
     expect(parseBenchmarkScenarioId(null)).toBeNull()
     expect(parseBenchmarkScenarioId(undefined)).toBeNull()
     expect(parseBenchmarkScenarioId('')).toBeNull()
+  })
+})
+
+describe('parseBenchmarkYaw', () => {
+  it('accepts finite radians and rejects anything else', () => {
+    expect(parseBenchmarkYaw(null)).toBeNull()
+    expect(parseBenchmarkYaw('')).toBeNull()
+    expect(parseBenchmarkYaw('abc')).toBeNull()
+    expect(parseBenchmarkYaw('3.1416')).toBeCloseTo(3.1416)
+    expect(parseBenchmarkYaw('-1.5')).toBe(-1.5)
   })
 })

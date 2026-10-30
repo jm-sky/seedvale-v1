@@ -119,6 +119,7 @@ import { ITEM_DEFS, type ItemKind } from '../items/items'
 import { applySharpnessWear, getSharpnessDamageModifier, getWeaponMaintenanceProfile } from '../items/weaponMaintenance'
 import { getGpuTimer, getMonitor, getPassSubmissionCollector, getProgramCensus, withCategory, withProgramCensusStage } from '../perf'
 import { isFrameMatrixOnceEnabled } from '../perf/flags'
+import { getActorCohortMask } from '../perf/occludedActorCohort'
 import { buildCharacterPresentation } from '../player/characterPresentation'
 import {
   medicalTreatmentPromptLabel,
@@ -1006,6 +1007,8 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
   }
 
   const frameMatrixOnce = isFrameMatrixOnceEnabled()
+  // Q16 occluded-actor cohort tooling (`?actorCohort=census|mask`); null by default.
+  const actorCohortMask = getActorCohortMask()
 
   const tick = (): void => {
     const frameStart = performance.now()
@@ -3173,7 +3176,8 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
       gpuTimer.beginFrame()
       withProgramCensusStage(programCensus, 'postprocess-render', () => {
         const runBeauty = () => {
-          postProcessing.render()
+          if (actorCohortMask) actorCohortMask.renderBeauty(renderer, () => postProcessing.render())
+          else postProcessing.render()
         }
         if (passCollector?.isEnabled()) passCollector.withPass('main', camera, runBeauty)
         else runBeauty()
