@@ -1,11 +1,12 @@
 import type { CropPlacement } from '../world/cropLifecycle'
 import type { MapTileData, MapTileRequest } from '../world/map/mapRasterTile'
 import type { EnvironmentPlacement } from './chunkEnvironment'
-import type { ChunkTileData, ChunkTileParams } from './chunkHeightmap'
+import type { ChunkTileData, ChunkTileParams, RawSampleParams } from './chunkHeightmap'
 import type { ItemPlacement } from './chunkItems'
 import type { ChunkMeshData, ChunkMeshDataParams } from './chunkMeshData'
 import type { VegetationPlacement } from './chunkVegetation'
 import type { GrassChunkData, GrassComputeParams, GrassTileGrids } from './grassPlacement'
+import type { RiverChain, RiverTileCoord } from './riverNetwork'
 import type { WorldKnowledgeScanResult, WorldKnowledgeWorkerParams } from './worldKnowledgeScan'
 
 /** A resolved tile's terrain grids plus its vegetation/item/decorative
@@ -34,6 +35,7 @@ export type ChunkWorkerRequest =
   | { kind: 'mesh', id: number, params: ChunkMeshDataParams }
   | { kind: 'worldKnowledge', id: number, params: WorldKnowledgeWorkerParams }
   | { kind: 'mapTile', id: number, params: MapTileRequest }
+  | { kind: 'riverTile', id: number, tile: RiverTileCoord, sampleParams: RawSampleParams }
 
 export type ChunkWorkerResponse =
   | (ChunkTileResult & { kind: 'tile', id: number, ok: true })
@@ -41,4 +43,5 @@ export type ChunkWorkerResponse =
   | (ChunkMeshData & { kind: 'mesh', id: number, ok: true })
   | { kind: 'worldKnowledge', id: number, ok: true, result: WorldKnowledgeScanResult }
   | { kind: 'mapTile', id: number, ok: true, tile: MapTileData }
-  | { kind: 'tile' | 'grass' | 'mesh' | 'worldKnowledge' | 'mapTile', id: number, ok: false, error: string }
+  | { kind: 'riverTile', id: number, ok: true, chains: RiverChain[] }
+  | { kind: 'tile' | 'grass' | 'mesh' | 'worldKnowledge' | 'mapTile' | 'riverTile', id: number, ok: false, error: string }

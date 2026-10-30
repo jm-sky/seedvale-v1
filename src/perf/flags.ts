@@ -115,6 +115,16 @@ export function isChestInstancingEnabled(): boolean {
   return flagOn(p.get('chestInstancing'))
 }
 
+/** Q22 Track E (E2): worker prefetch of river tiles ahead of streaming
+ *  (`terrain/riverTileCache.ts`, `chunkManager.ts` `recheck`). Opt-in until the
+ *  WSL `stream` A/B: `?riverPrefetch=1` enables it; otherwise `retain` computes
+ *  every tile synchronously as before. */
+export function isRiverPrefetchEnabled(): boolean {
+  const p = params()
+  if (!p?.has('riverPrefetch')) return false
+  return flagOn(p.get('riverPrefetch'))
+}
+
 /** Q20 Track A (A1): one skeleton per actor (`render/actorSkeletonSharing.ts`).
  *  On by default since the WSL A/B (docs/performance/results/
  *  2026-10-30--wsl-q20-actor-skeleton-sharing-ab.md); `?actorSkeletons=0`

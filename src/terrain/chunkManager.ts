@@ -14,7 +14,7 @@ import { disposeObject3D } from '../assets/loadGltf'
 import { isSystemEnabled } from '../debug/debugMode'
 import { createItemMesh, type ItemKind } from '../items/items'
 import { getMonitor } from '../perf/active'
-import { isGrassMainCapEnabled } from '../perf/flags'
+import { isGrassMainCapEnabled, isRiverPrefetchEnabled } from '../perf/flags'
 import { getGrassBaselineDiag } from '../perf/grassBaseline'
 import { getGrassFinalizationDiag, readJsHeapUsedBytes } from '../perf/grassFinalizationDiag'
 import { withCategory, withStage } from '../perf/monitor'
@@ -123,10 +123,12 @@ import {
 import {
   cancelChunkGrass,
   cancelChunkMesh,
+  cancelChunkRiverTile,
   cancelChunkTile,
   HeightmapGenerationCancelledError,
   requestChunkGrass,
   requestChunkMesh,
+  requestChunkRiverTile,
   requestChunkTile,
 } from './chunkWorkerPool'
 import {
@@ -1267,7 +1269,10 @@ export function createChunkManager(
   // Bounded, reference-counted cache of computed river tiles (plan 181, Etap
   // 4-6) — a river tile is 256m/side, much coarser than a chunk, computed once
   // and shared by every chunk overlapping it; never a global heightfield.
-  const riverTileCache = createRiverTileCache()
+  const riverPrefetch = isRiverPrefetchEnabled()
+  const riverTileCache = createRiverTileCache(
+    riverPrefetch ? { requestTile: requestChunkRiverTile, cancelTile: cancelChunkRiverTile } : {},
+  )
   // Kick GLB template loads off the chunk-finalize path (plan 119). Memoized
   // at module level, so a later world rebuild is already warm.
   preloadPropTemplates()
@@ -2960,6 +2965,20 @@ export function createChunkManager(
     return false
   }
 
+  /** Q22: asks the worker for river tiles overlapping the ring just outside
+   *  `loadRadius`, so `retainRiverTilesFor` finds them ready as chunks stream in.
+   *  Runs only inside the throttled `recheck`; in-flight/known tiles are no-ops. */
+  function prefetchRiverTilesAround(playerChunk: ChunkCoord): void {
+    const r = config.loadRadius + 2
+    const rect = {
+      minX: (playerChunk.cx - r) * config.chunkSize,
+      maxX: (playerChunk.cx + r + 1) * config.chunkSize,
+      minZ: (playerChunk.cz - r) * config.chunkSize,
+      maxZ: (playerChunk.cz + r + 1) * config.chunkSize,
+    }
+    for (const tile of overlappingRiverTiles(rect)) riverTileCache.prefetch(tile, fallbackParams)
+  }
+
   function recheck(playerX: number, playerZ: number): void {
     lastCheckX = playerX
     lastCheckZ = playerZ
@@ -2981,6 +3000,7 @@ export function createChunkManager(
     const desiredKeys = new Set(desired.map(chunkKey))
 
     loadQueue = desired.filter((coord) => !chunks.has(chunkKey(coord)))
+    if (riverPrefetch) prefetchRiverTilesAround(playerChunk)
     for (const record of [...chunks.values()]) {
       syncGrassForRecord(record, playerChunk)
       syncInstancedLodForRecord(record, playerChunk)

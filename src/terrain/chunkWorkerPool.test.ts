@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import type { ChunkTileParams } from './chunkHeightmap'
+import type { ChunkTileParams, RawSampleParams } from './chunkHeightmap'
 import type { ChunkWorkerRequest, ChunkWorkerResponse, GrassRequestParams } from './chunkHeightmapProtocol'
 import type { ChunkMeshDataParams } from './chunkMeshData'
 import type { WorldKnowledgeWorkerParams } from './worldKnowledgeScan'
@@ -35,7 +35,9 @@ function createControllableWorker(posted: Posted[]): ControllableWorker {
       const request = worker.last
       if (!request || !worker.onmessage) return
       const response = (
-        request.kind === 'worldKnowledge'
+        request.kind === 'riverTile'
+          ? { kind: 'riverTile', id: request.id, ok: true, chains: [] }
+          : request.kind === 'worldKnowledge'
           ? { kind: 'worldKnowledge', id: request.id, ok: true, result: { hits: [], elapsedMs: 0 } }
           : request.kind === 'grass'
             ? { kind: 'grass', id: request.id, ok: true, grass: {} as never }
@@ -209,5 +211,15 @@ describe('chunkWorkerPool world-knowledge scheduling (plan quests-progression-04
     })
     pool.dispose()
     await expect(pending).rejects.toBeInstanceOf(HeightmapGenerationCancelledError)
+  })
+
+  it('runs a riverTile job as a background request and resolves its chains', async () => {
+    const posted: Posted[] = []
+    const pool = createChunkWorkerPool(1, { createWorker: () => createControllableWorker(posted) })
+    const pending = pool.requestRiverTile('1,2', { tx: 1, tz: 2 }, { seed: 7 } as RawSampleParams)
+    expect(posted[0]?.request).toMatchObject({ kind: 'riverTile', tile: { tx: 1, tz: 2 }, sampleParams: { seed: 7 } })
+    posted[0]!.worker.completeOk()
+    await expect(pending).resolves.toEqual([])
+    pool.dispose()
   })
 })

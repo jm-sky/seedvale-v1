@@ -10,6 +10,7 @@ import { computeChunkItems } from './chunkItems'
 import { computeChunkMeshData } from './chunkMeshData'
 import { computeChunkVegetation } from './chunkVegetation'
 import { computeChunkGrass, GRASS_SPECIES_ORDER, type GrassChunkData } from './grassPlacement'
+import { computeRiverTile } from './riverNetwork'
 import { scanWorldKnowledge } from './worldKnowledgeScan'
 
 // `self` is cast rather than adding the `webworker` TS lib, which can't coexist
@@ -96,6 +97,9 @@ ctx.onmessage = ({ data }) => {
     } else if (kind === 'worldKnowledge') {
       const result = scanWorldKnowledge(data.params)
       ctx.postMessage({ kind: 'worldKnowledge', id, ok: true, result }, [])
+    } else if (kind === 'riverTile') {
+      const chains = computeRiverTile(data.tile, data.sampleParams)
+      ctx.postMessage({ kind: 'riverTile', id, ok: true, chains }, [])
     } else if (kind === 'mapTile') {
       const tile = buildMapTile(data.params)
       ctx.postMessage(

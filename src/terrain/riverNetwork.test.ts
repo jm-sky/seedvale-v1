@@ -146,6 +146,14 @@ describe('computeRiverTile', () => {
     expect(a).toEqual(b)
   })
 
+  it('survives the worker structured-clone round trip unchanged (Q22 prefetch)', () => {
+    const params = structuredClone(rawParams(42))
+    const tile = { tx: 0, tz: 0 }
+    const chains = computeRiverTile(tile, params)
+    expect(structuredClone(chains)).toEqual(chains)
+    expect(structuredClone(chains)).toEqual(computeRiverTile(tile, rawParams(42)))
+  })
+
   it('never places a chain point outside the tile core rectangle', () => {
     const params = rawParams(7)
     for (const tile of [{ tx: 0, tz: 0 }, { tx: -3, tz: 5 }, { tx: 12, tz: -8 }]) {
