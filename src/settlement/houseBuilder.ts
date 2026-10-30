@@ -1,5 +1,7 @@
 import {
+  BackSide,
   type BufferGeometry,
+  DoubleSide,
   Group,
   InstancedMesh,
   type Material,
@@ -363,9 +365,33 @@ export async function loadHousePartTemplates(
     const part = catalog.byAssetId.get(assetId)
     if (!part) throw new Error(`HouseBuilder: unknown assetId ${assetId}`)
     const root = await load(part.url)
+    applyHouseShadowSide(root)
     return [assetId, root] as const
   }))
   return new Map(entries)
+}
+
+/** Megakit house parts ship every material `doubleSided`, and three's shadow
+ *  pass renders a `DoubleSide` material's *lit* faces into the depth map. On
+ *  the sun-facing plaster/brick the ~4 cm `shadow.bias` is far below the
+ *  ~0.15–0.25 m depth slope of one 160 m / 1024² texel, so the surface
+ *  self-shadows into diagonal acne bands that slide with `WorldLights.follow`.
+ *  Walls/roofs are slabs (~0.2 m, front + back faces), so rendering only the
+ *  back faces into the shadow map keeps their cast shadows and the shadows
+ *  they receive while the lit face sits safely in front of the stored depth.
+ *  Alpha-tested cards (vines) and transparent glass stay `DoubleSide`: they are
+ *  single planes that would otherwise stop casting. Idempotent; the materials
+ *  are shared with the GLTF cache, which only house parts load. */
+export function applyHouseShadowSide(root: Object3D): void {
+  root.traverse((node) => {
+    const mesh = node as Mesh
+    if (!mesh.isMesh) return
+    const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material]
+    for (const material of materials) {
+      if (material.side !== DoubleSide || material.transparent || material.alphaTest > 0) continue
+      material.shadowSide = BackSide
+    }
+  })
 }
 
 /** Review 011 known fill offsets. Window insert is identity (absent here). */

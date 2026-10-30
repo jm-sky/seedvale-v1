@@ -1,4 +1,4 @@
-import { BoxGeometry, Group, InstancedMesh, Mesh, MeshStandardMaterial, Object3D, Scene } from 'three'
+import { BackSide, BoxGeometry, DoubleSide, Group, InstancedMesh, Mesh, MeshStandardMaterial, Object3D, Scene } from 'three'
 import { describe, expect, it, vi } from 'vitest'
 import type { HouseDefinition } from '../assets/houseDefinitionExampleConfig'
 import { buildConstructionCatalog } from '../assets/constructionCatalog'
@@ -39,6 +39,7 @@ import {
   type HouseBuildContext,
   houseDefinitionAssetIds,
   houseFootprintRadius,
+  loadHousePartTemplates,
   matchingWallPlacement,
   openingLocalPose,
   resolveRoofParts,
@@ -69,6 +70,23 @@ function contextFor(def = TEST_HOUSE_01): HouseBuildContext {
   }
   return { catalog, templates }
 }
+
+describe('house shadow side (shadow-acne fix)', () => {
+  it('renders opaque double-sided parts back-faces-only into the shadow map', async () => {
+    const opaque = new MeshStandardMaterial({ side: DoubleSide })
+    const vine = new MeshStandardMaterial({ side: DoubleSide, alphaTest: 0.5 })
+    const glass = new MeshStandardMaterial({ side: DoubleSide, transparent: true })
+    const front = new MeshStandardMaterial()
+    const root = new Group()
+    root.add(new Mesh(new BoxGeometry(), [opaque, vine]), new Mesh(new BoxGeometry(), glass), new Mesh(new BoxGeometry(), front))
+    const assetId = houseDefinitionAssetIds(TEST_HOUSE_01)[0]!
+    await loadHousePartTemplates(catalog, [assetId], async () => root)
+    expect(opaque.shadowSide).toBe(BackSide)
+    expect(vine.shadowSide).toBeNull()
+    expect(glass.shadowSide).toBeNull()
+    expect(front.shadowSide).toBeNull()
+  })
+})
 
 describe('house layout transforms', () => {
   const footprint = TEST_HOUSE_01.footprint
