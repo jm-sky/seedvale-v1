@@ -11,7 +11,8 @@ If the author's message is just **"Continue"** (or "Kontynuuj", "next", or no co
 1. `git pull --rebase origin main`.
 2. Open `docs/research/v1-revival/AUTONOMOUS-SESSION-QUEUE.md` and follow its §0 protocol:
    - first **resume** a task marked `in progress` that has a `Resume:` note (an interrupted session),
-   - otherwise take the **first `ready` task** fitting your model (O = Opus, S = Sonnet; O/S = either).
+   - otherwise take the **first `ready` task** fitting your model (O = Opus, S = Sonnet, O→S = Opus plans then Sonnet implements, H = Haiku sub-agent only).
+   - follow queue §0.1 for model choice, sub-agents and the context budget (wrap up at ~200k tokens, never grind past ~220k).
 3. Read `docs/research/v1-revival/STRATEGIC-BRIEF.md` §1 (decision table + D4 policy) once per session — not the whole dossier.
 4. Work the task to its "done when"; commit + push; update the queue; continue with the next task until the session ends or everything left is blocked.
 5. Answer the author briefly in Polish: what was done (commits), what is waiting for them (queue §2–§4).
