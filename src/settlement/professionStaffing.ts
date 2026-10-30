@@ -469,6 +469,18 @@ export function resolveInitialProfessionStaffing(
       coverage.shepherd++
     }
   }
+  // Home always has hunter Jakub (author decision 2026-10-30): a man's slot
+  // takes `hunter` regardless of baseline coverage (baseline roles of
+  // procedural slots are about to be reassigned anyway). With no free man,
+  // `applyHomeAuthoredIdentities` appends a fallback Jakub household.
+  if (signals.isHome) {
+    const male = remaining.findIndex((slot) => families[slot.familyIndex]!.members[slot.memberIndex]!.character.gender === 'male')
+    if (male >= 0) {
+      const [slot] = remaining.splice(male, 1)
+      assigned.set(slotKey(slot!), 'hunter')
+      coverage.hunter++
+    }
+  }
 
   const random = createSeededRandom(context.seed ^ STAFFING_SALT)
   for (const slot of remaining) {

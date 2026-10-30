@@ -60,11 +60,13 @@ Format: `- [ ] YYYY-MM-DD — opis (plan/plik, jeśli istotne)`
 
 ## Quest / UI / interaction
 
-- [ ] 2026-10-30 — Home elder/reeve follow-ups (author decisions 2026-10-30): (1) rewrite `zapomniany-cmentarz` (now given by home Kazimierz, still a landmark visit) into the approved R37+R61 home-cemetery grave care for his late wife's grave; (2) reeve office powers for Rudolf (`office: 'reeve'`) — bear-cave map-grave permission with Kazimierz's fee waiver and settlement share; (3) if Archibald's settlement has a cemetery used by a quest, grave-excavation permission there must come from a different mechanism than an elder/reeve (no duplicated pattern); (4) Rudolf is still "oldest free man 35+", not a stable dedicated resident.
+- [ ] 2026-10-30 — Home elder/reeve follow-ups (author decisions 2026-10-30): (1) rewrite `zapomniany-cmentarz` (now given by home Kazimierz, still a landmark visit) into the approved R37+R61 home-cemetery grave care for his late wife's grave; (2) reeve office powers for Rudolf (`office: 'reeve'`) — bear-cave map-grave permission with Kazimierz's fee waiver and settlement share; (3) if Archibald's settlement has a cemetery used by a quest, grave-excavation permission there must come from a different mechanism than an elder/reeve (no duplicated pattern); (4) Rudolf is still "oldest free man 35+", not a stable dedicated resident; (5) Patric Smith must become the guaranteed blacksmith of the nearest settlement larger than home (not bound anywhere yet; `CharacterKey`, name reservation and portrait already exist).
 
 - [ ] 2026-09-21 — Quest/UI/interaction audit follow-ups not promoted to dedicated plans: dropped-item group stable identity, the narrow `pendingReportOutcomeId` lifecycle invariant, and remaining legacy `promptLabel` action-semantics parsing. Review: `docs/reviews/2026-09-21--quest-ui-interaction-followups.md`.
 
 ## World lifecycle / rebuild
+
+- [ ] 2026-10-30 — Reference seed `415424794` (author): store its worldgen cache (settlement definitions, chunk tiles, road routes, …) as a versioned bin/json fixture in the repo for fast world loading; must respect each cache namespace's version/fingerprint so a stale fixture is a cache miss, not wrong data.
 
 - [ ] 2026-10-28 — `SettlementsManager` startuje `EAGER_NEIGHBOR_COUNT` buildów sąsiadów domu niezależnie od pozycji gracza (także przy wczytaniu zapisu daleko od domu). `settlements-023` tylko odrzuca takie buildy przy publikacji, gdy gracz nie jest przy domu; sam zmarnowany koszt startowy pozostaje. Ewentualnie uzależnić eager start od znanej pozycji spawnu — osobno, z pomiarem startupu.
 - [ ] 2026-09-21 — Player/world lifecycle audit follow-ups not promoted to dedicated plans: async spatial-audio revalidation, broader `buildWorldSystems()` partial-construction cleanup boundary, failed-rebuild diagnostic wording, and stale player-health persistence comments. Review: `docs/reviews/2026-09-21--player-world-lifecycle-followups.md`.

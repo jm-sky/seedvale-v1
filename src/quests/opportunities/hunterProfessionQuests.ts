@@ -3,6 +3,7 @@ import type { ItemKind } from '../../items/items'
 import type { NpcId } from '../../settlement/npcState'
 import type { QuestDef } from '../quests'
 import type { OpportunityNpc } from './worldQuestOpportunityTypes'
+import { findPreferredHunter } from './preferredHunter'
 import { adultOpportunityNpcs } from './rpgQuestMatrices'
 
 const HUNTER_QUEST_PREFIX = 'hunter-profession:'
@@ -51,7 +52,7 @@ export function parseHunterProfessionQuestId(questId: string): {
 
 /** Deterministic adult Hunter giver for a settlement (plan quests-progression-020). */
 export function selectHunterQuestGiver(npcs: readonly OpportunityNpc[]): OpportunityNpc | undefined {
-  return adultOpportunityNpcs(npcs).find((npc) => npc.role === 'hunter')
+  return findPreferredHunter(adultOpportunityNpcs(npcs))
 }
 
 function pickSettlementThicket(

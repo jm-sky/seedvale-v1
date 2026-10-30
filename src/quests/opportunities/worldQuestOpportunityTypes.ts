@@ -1,4 +1,4 @@
-import type { Role } from '../../ai/characters'
+import type { CharacterKey, Role } from '../../ai/characters'
 import type { LostLivestockSourceStatus } from '../../fauna/animalStray'
 import type { NpcId } from '../../settlement/npcState'
 
@@ -138,4 +138,6 @@ export type OpportunityNpc = {
   name: string
   role: Role
   child: boolean
+  /** Authored identity (`CharacterDef.characterKey`); absent for procedural NPCs. */
+  characterKey?: CharacterKey
 }

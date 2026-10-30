@@ -128,8 +128,8 @@ describe('lost treasure chronicles elder resident', () => {
     expect(selected?.id).toBe('0_1')
   })
 
-  it('gives the home settlement Kazimierz, Rudolf (reeve) and Molly across seeds', () => {
-    for (const seed of [1, 7, 42, 1234, 99991]) {
+  it('gives the home settlement Kazimierz, Rudolf (reeve), Molly and Jakub across seeds', () => {
+    for (const seed of [1, 7, 42, 1234, 99991, 415424794]) {
       clearSettlementDefCache()
       const home = settlementDefFor({ gx: 0, gz: 0 }, ctxFor(seed))!
       const members = flattenedSettlementMembers(home)
@@ -140,6 +140,8 @@ describe('lost treasure chronicles elder resident', () => {
       expect(keyed('rudolf')[0]!.character.office).toBe('reeve')
       expect(keyed('molly_lambert'), `seed ${seed}`).toHaveLength(1)
       expect(keyed('molly_lambert')[0]!.character.role).toBe('shepherd')
+      expect(keyed('jakub'), `seed ${seed}`).toHaveLength(1)
+      expect(keyed('jakub')[0]!.character.role).toBe('hunter')
       expect(keyed('archibald')).toHaveLength(0)
       // Authored names stay unique so quest name binding is unambiguous.
       for (const name of ['Kazimierz', 'Rudolf', 'Molly', 'Patric', 'Jakub']) {

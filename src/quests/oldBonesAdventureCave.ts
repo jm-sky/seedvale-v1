@@ -12,6 +12,7 @@ import type { WorldGeneratedContainerSpec } from '../world/worldGeneratedContain
 import type { SettlementOpportunityNpc } from './opportunities/settlementNpcMaterialization'
 import type { QuestDef, QuestDialogueReaction } from './quests'
 import { caveWorldLocationId } from '../world/locations/darkForestTreasureSite'
+import { huntersAuthoredFirst } from './opportunities/preferredHunter'
 
 /** Stable reservation key for adventure-cave EMPTY + anchor arbitration. */
 export const OLD_BONES_RESERVATION_KEY = 'quests-progression-025'
@@ -124,10 +125,7 @@ export function selectOldBonesNpcs(
   const giverPool = adultPool.filter((npc) => !claimedIds.has(npc.id))
   if (giverPool.length === 0) return null
 
-  const hunters = giverPool
-    .filter((npc) => npc.role === 'hunter')
-    .slice()
-    .sort((a, b) => a.id.localeCompare(b.id))
+  const hunters = huntersAuthoredFirst(giverPool)
   const woodcutters = giverPool
     .filter((npc) => npc.role === 'woodcutter')
     .slice()

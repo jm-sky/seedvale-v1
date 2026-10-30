@@ -31,6 +31,7 @@ export function settlementOpportunityNpcsFromDef(
         name: member.name,
         role: member.character.role,
         child: member.relation === 'child',
+        ...(member.character.characterKey ? { characterKey: member.character.characterKey } : {}),
         householdId: family.id,
         familyIndex,
       })
@@ -44,5 +45,5 @@ export function settlementOpportunityNpcsFromDef(
 export function settlementOpportunityNpcsFlattened(
   npcs: readonly SettlementOpportunityNpc[],
 ): OpportunityNpc[] {
-  return npcs.map(({ id, name, role, child }) => ({ id, name, role, child }))
+  return npcs.map(({ id, name, role, child, characterKey }) => ({ id, name, role, child, ...(characterKey ? { characterKey } : {}) }))
 }

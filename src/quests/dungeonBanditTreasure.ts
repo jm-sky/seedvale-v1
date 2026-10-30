@@ -12,6 +12,7 @@ import type { OpportunityNpc } from './opportunities/worldQuestOpportunityTypes'
 import type { QuestDef, QuestDialogueReaction, QuestState } from './quests'
 import { DUNGEON_DEEP_CHAMBER_NODE_ID } from '../world/caves/dungeonTopology'
 import { caveWorldLocationId } from '../world/locations/darkForestTreasureSite'
+import { findPreferredHunter } from './opportunities/preferredHunter'
 import { adultOpportunityNpcs } from './opportunities/rpgQuestMatrices'
 
 /** Stable reservation-key prefix for dungeon bandit-cache arbitration. */
@@ -131,7 +132,7 @@ export function selectDungeonBanditNpcs(
   if (homeAdults.length === 0) return null
 
   const giver = homeAdults.find((npc) => npc.role === 'guard')
-    ?? homeAdults.find((npc) => npc.role === 'hunter')
+    ?? findPreferredHunter(homeAdults)
     ?? homeAdults[0]!
 
   const homeClaimantPool = homeAdults.filter((npc) => npc.id !== giver.id)

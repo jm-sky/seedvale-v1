@@ -6,6 +6,7 @@ import {
   hunterProfessionQuestId,
   selectHunterQuestGiver,
 } from './opportunities/hunterProfessionQuests'
+import { findPreferredHunter } from './opportunities/preferredHunter'
 import { adultOpportunityNpcs } from './opportunities/rpgQuestMatrices'
 
 const HUNTERS_BROTHERHOOD_INTRO_PREFIX = 'hunters-brotherhood-intro:'
@@ -78,7 +79,7 @@ function remainingAdults(
 function pickPreferredHunterThenAdult(
   candidates: readonly OpportunityNpc[],
 ): OpportunityNpc | undefined {
-  return candidates.find((npc) => npc.role === 'hunter') ?? candidates[0]
+  return findPreferredHunter(candidates) ?? candidates[0]
 }
 
 function toBinding(

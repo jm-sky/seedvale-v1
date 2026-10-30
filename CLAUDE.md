@@ -293,6 +293,8 @@ pnpm run test
 
 Do not automatically run every expensive check when targeted verification is sufficient.
 
+**Reference world seed: `415424794`** (author, 2026-10-30). Use it for manual/browser checks, deterministic worldgen tests and as the default demo world (`?seed=415424794`). Planned: commit its worldgen cache as a bin/json fixture for fast world loading (see `docs/plans/LOOSE-ENDS.md`).
+
 For Three.js visual/gameplay changes, use the project's browser verification workflow when required. Do not launch headless browser automation by default.
 
 ---

@@ -62,7 +62,7 @@ Agents must not mark these verified. Listed so sessions do not re-verify or bloc
 | `world-terrain-053` snow | `?snow=0..1` look | plan |
 | CA2 (`0cfb9ed3`) | No late grass density fill-in when outer-ring chunks step inward (fast travel); `?grassMainCap=0` for comparison | [CA2 notes](./2026-10-29--ca2-grass-main-cap--implementation-notes.md) |
 | Q5 chests (`b2691195`) | Interior chests in furnished houses are present, correctly placed and oriented, same look, cast shadows; compare `?chestInstancing=0` | [Q5 notes](./2026-10-29--q5-house-chest-instancing--implementation-notes.md) |
-| NPC dialogue portraits + home residents | Kasia/Marek/Piotr/Kazimierz/Rudolf/Molly (+Patric/Jakub when staffed) show a portrait; Molly herds the home flock; Kazimierz gives `Przygotowania do zimy` and `Zapomniany cmentarz`, Archibald (neighbour) `Stara uraza`; day↔night switches at dawn/dusk; injured/exhausted NPC shows the tense variant; no portrait for other NPCs | `src/ui-vue/lib/npcPortrait.ts`, [npc state](../../state/npc.md) |
+| NPC dialogue portraits + home residents | Kasia/Marek/Piotr/Kazimierz/Rudolf/Molly/Jakub show a portrait; Molly herds the home flock; Jakub is the home hunter-quest giver; Kazimierz gives `Przygotowania do zimy` and `Zapomniany cmentarz`, Archibald (neighbour) `Stara uraza`; day↔night switches at dawn/dusk; injured/exhausted NPC shows the tense variant; no portrait for other NPCs | `src/ui-vue/lib/npcPortrait.ts`, [npc state](../../state/npc.md) |
 
 ## 3. Questions waiting for the author
 

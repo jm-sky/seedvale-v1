@@ -29,48 +29,48 @@ Generated from exported TypeScript symbols.
 
 ## `quests/dungeonBanditTreasure.ts`
 
-- `buildDungeonBanditTreasureQuest` — function — line 375
+- `buildDungeonBanditTreasureQuest` — function — line 376
   - domain: quests-progression
-- `createDungeonBanditLedgerInstance` — function — line 91
-- `createDungeonBanditMarkedValuableInstance` — function — line 95
-- `DUNGEON_BANDIT_DEEP_RESERVATION_KEY` — const — line 20
-- `DUNGEON_BANDIT_GIVE_EVIDENCE_TO_GUARD_OUTCOME` — const — line 25
-- `DUNGEON_BANDIT_KEEP_MARKED_PROPERTY_OUTCOME` — const — line 26
-- `DUNGEON_BANDIT_LEDGER_KIND` — const — line 28
-- `DUNGEON_BANDIT_MARKED_VALUABLE_KIND` — const — line 29
-- `DUNGEON_BANDIT_QUEST_PREFIX` — const — line 22
-- `DUNGEON_BANDIT_RETURN_MARKED_PROPERTY_OUTCOME` — const — line 24
-- `DUNGEON_BANDIT_TREASURE_RESERVATION_PREFIX` — const — line 18
-- `dungeonBanditAnchorClaims` — function — line 253
-- `dungeonBanditCaveReservationRequests` — function — line 268
-- `dungeonBanditClaimsMatch` — function — line 279
+- `createDungeonBanditLedgerInstance` — function — line 92
+- `createDungeonBanditMarkedValuableInstance` — function — line 96
+- `DUNGEON_BANDIT_DEEP_RESERVATION_KEY` — const — line 21
+- `DUNGEON_BANDIT_GIVE_EVIDENCE_TO_GUARD_OUTCOME` — const — line 26
+- `DUNGEON_BANDIT_KEEP_MARKED_PROPERTY_OUTCOME` — const — line 27
+- `DUNGEON_BANDIT_LEDGER_KIND` — const — line 29
+- `DUNGEON_BANDIT_MARKED_VALUABLE_KIND` — const — line 30
+- `DUNGEON_BANDIT_QUEST_PREFIX` — const — line 23
+- `DUNGEON_BANDIT_RETURN_MARKED_PROPERTY_OUTCOME` — const — line 25
+- `DUNGEON_BANDIT_TREASURE_RESERVATION_PREFIX` — const — line 19
+- `dungeonBanditAnchorClaims` — function — line 254
+- `dungeonBanditCaveReservationRequests` — function — line 269
+- `dungeonBanditClaimsMatch` — function — line 280
   - domain: quests-progression
-- `dungeonBanditContainerId` — function — line 78
-- `dungeonBanditContainerSpecs` — function — line 351
-- `dungeonBanditDeepReservationKey` — function — line 62
-- `dungeonBanditDeepStashContainerSpec` — function — line 331
+- `dungeonBanditContainerId` — function — line 79
+- `dungeonBanditContainerSpecs` — function — line 352
+- `dungeonBanditDeepReservationKey` — function — line 63
+- `dungeonBanditDeepStashContainerSpec` — function — line 332
   - domain: quests-progression
-- `dungeonBanditInstanceOwned` — function — line 552
+- `dungeonBanditInstanceOwned` — function — line 553
   - domain: quests-progression
-- `dungeonBanditLedgerInstanceId` — function — line 70
-- `dungeonBanditMarkedValuableInstanceId` — function — line 74
-- `dungeonBanditOrphanedInstances` — function — line 583
+- `dungeonBanditLedgerInstanceId` — function — line 71
+- `dungeonBanditMarkedValuableInstanceId` — function — line 75
+- `dungeonBanditOrphanedInstances` — function — line 584
   - domain: quests-progression
-- `DungeonBanditOwnershipDomains` — type — line 532
-- `dungeonBanditQuestId` — function — line 82
-- `DungeonBanditRecoveryContext` — type — line 565
-- `dungeonBanditSideCacheContainerSpecs` — function — line 300
+- `DungeonBanditOwnershipDomains` — type — line 533
+- `dungeonBanditQuestId` — function — line 83
+- `DungeonBanditRecoveryContext` — type — line 566
+- `dungeonBanditSideCacheContainerSpecs` — function — line 301
   - domain: quests-progression
-- `dungeonBanditSideReservationKey` — function — line 66
-- `DungeonBanditTreasureBinding` — type — line 38
+- `dungeonBanditSideReservationKey` — function — line 67
+- `DungeonBanditTreasureBinding` — type — line 39
   - domain: quests-progression
-- `EligibleDungeonBanditCave` — type — line 160
-- `eligibleDungeonBanditCaves` — function — line 172
+- `EligibleDungeonBanditCave` — type — line 161
+- `eligibleDungeonBanditCaves` — function — line 173
   - domain: quests-progression
-- `isDungeonBanditDeepStashLooted` — function — line 363
-- `resolveDungeonBanditTreasureBinding` — function — line 205
+- `isDungeonBanditDeepStashLooted` — function — line 364
+- `resolveDungeonBanditTreasureBinding` — function — line 206
   - domain: quests-progression
-- `selectDungeonBanditNpcs` — function — line 126
+- `selectDungeonBanditNpcs` — function — line 127
   - domain: quests-progression
 
 ## `quests/dungeonBanditTreasureRuntime.ts`
@@ -112,16 +112,16 @@ Generated from exported TypeScript symbols.
 
 ## `quests/huntersBrotherhoodIntroduction.ts`
 
-- `buildHuntersBrotherhoodIntroductionQuest` — function — line 218
+- `buildHuntersBrotherhoodIntroductionQuest` — function — line 219
   - domain: quests-progression
-- `HUNTERS_BROTHERHOOD_JOINED_OUTCOME` — const — line 14
-- `HuntersBrotherhoodBinding` — type — line 25
+- `HUNTERS_BROTHERHOOD_JOINED_OUTCOME` — const — line 15
+- `HuntersBrotherhoodBinding` — type — line 26
   - domain: quests-progression
-- `HuntersBrotherhoodCastInput` — type — line 46
+- `HuntersBrotherhoodCastInput` — type — line 47
   - domain: quests-progression
-- `huntersBrotherhoodIntroductionQuestId` — function — line 64
+- `huntersBrotherhoodIntroductionQuestId` — function — line 65
   - domain: quests-progression
-- `resolveHuntersBrotherhoodBinding` — function — line 116
+- `resolveHuntersBrotherhoodBinding` — function — line 117
   - domain: quests-progression
 
 ## `quests/huntersBrotherhoodInvestigation.ts`
@@ -155,22 +155,22 @@ Generated from exported TypeScript symbols.
 
 ## `quests/lostHunterNaturalCave.ts`
 
-- `buildLostHunterNaturalCaveQuest` — function — line 196
+- `buildLostHunterNaturalCaveQuest` — function — line 197
   - domain: quests-progression
-- `createLostHunterBowInstance` — function — line 65
-- `isLostHunterPackLooted` — function — line 184
-- `LOST_HUNTER_KEEP_BOW_OUTCOME` — const — line 16
-- `LOST_HUNTER_QUEST_PREFIX` — const — line 13
-- `LOST_HUNTER_RETURN_BOW_OUTCOME` — const — line 15
-- `lostHunterBowInstanceId` — function — line 45
-- `LostHunterNaturalCaveBinding` — type — line 23
+- `createLostHunterBowInstance` — function — line 66
+- `isLostHunterPackLooted` — function — line 185
+- `LOST_HUNTER_KEEP_BOW_OUTCOME` — const — line 17
+- `LOST_HUNTER_QUEST_PREFIX` — const — line 14
+- `LOST_HUNTER_RETURN_BOW_OUTCOME` — const — line 16
+- `lostHunterBowInstanceId` — function — line 46
+- `LostHunterNaturalCaveBinding` — type — line 24
   - domain: quests-progression
-- `lostHunterPackContainerId` — function — line 49
-- `lostHunterPackContainerSpec` — function — line 167
-- `lostHunterQuestId` — function — line 53
-- `parseLostHunterQuestId` — function — line 57
-- `resolveLostHunterNaturalCaveBinding` — function — line 133
-- `selectLostHunterNpcs` — function — line 110
+- `lostHunterPackContainerId` — function — line 50
+- `lostHunterPackContainerSpec` — function — line 168
+- `lostHunterQuestId` — function — line 54
+- `parseLostHunterQuestId` — function — line 58
+- `resolveLostHunterNaturalCaveBinding` — function — line 134
+- `selectLostHunterNpcs` — function — line 111
 
 ## `quests/lostHunterNaturalCaveRuntime.ts`
 
@@ -333,31 +333,31 @@ Generated from exported TypeScript symbols.
 
 ## `quests/oldBonesAdventureCave.ts`
 
-- `buildOldBonesAdventureCaveQuest` — function — line 295
+- `buildOldBonesAdventureCaveQuest` — function — line 293
   - domain: quests-progression
-- `createOldBonesSignetInstance` — function — line 66
-- `eligibleOldBonesAdventureAnchors` — function — line 173
+- `createOldBonesSignetInstance` — function — line 67
+- `eligibleOldBonesAdventureAnchors` — function — line 171
   - domain: quests-progression
-- `isOldBonesRemainsLooted` — function — line 283
-- `OLD_BONES_GIVE_TO_SECOND_CLAIMANT_OUTCOME` — const — line 22
-- `OLD_BONES_KEEP_SIGNET_OUTCOME` — const — line 23
-- `OLD_BONES_QUEST_PREFIX` — const — line 19
-- `OLD_BONES_RESERVATION_KEY` — const — line 17
-- `OLD_BONES_RETURN_TO_FIRST_CLAIMANT_OUTCOME` — const — line 21
-- `OLD_BONES_SIGNET_KIND` — const — line 25
-- `OldBonesAdventureCaveBinding` — type — line 32
+- `isOldBonesRemainsLooted` — function — line 281
+- `OLD_BONES_GIVE_TO_SECOND_CLAIMANT_OUTCOME` — const — line 23
+- `OLD_BONES_KEEP_SIGNET_OUTCOME` — const — line 24
+- `OLD_BONES_QUEST_PREFIX` — const — line 20
+- `OLD_BONES_RESERVATION_KEY` — const — line 18
+- `OLD_BONES_RETURN_TO_FIRST_CLAIMANT_OUTCOME` — const — line 22
+- `OLD_BONES_SIGNET_KIND` — const — line 26
+- `OldBonesAdventureCaveBinding` — type — line 33
   - domain: quests-progression
-- `oldBonesAnchorClaim` — function — line 242
-- `oldBonesCaveReservationRequests` — function — line 251
-- `oldBonesProfileReservation` — function — line 232
-- `oldBonesQuestId` — function — line 62
-- `oldBonesRemainsContainerId` — function — line 58
-- `oldBonesRemainsContainerSpec` — function — line 266
+- `oldBonesAnchorClaim` — function — line 240
+- `oldBonesCaveReservationRequests` — function — line 249
+- `oldBonesProfileReservation` — function — line 230
+- `oldBonesQuestId` — function — line 63
+- `oldBonesRemainsContainerId` — function — line 59
+- `oldBonesRemainsContainerSpec` — function — line 264
   - domain: quests-progression
-- `oldBonesSignetInstanceId` — function — line 54
-- `resolveOldBonesAdventureCaveBinding` — function — line 196
+- `oldBonesSignetInstanceId` — function — line 55
+- `resolveOldBonesAdventureCaveBinding` — function — line 194
   - domain: quests-progression
-- `selectOldBonesNpcs` — function — line 93
+- `selectOldBonesNpcs` — function — line 94
   - domain: quests-progression
 
 ## `quests/oldBonesAdventureCaveRuntime.ts`
@@ -376,13 +376,20 @@ Generated from exported TypeScript symbols.
 
 ## `quests/opportunities/hunterProfessionQuests.ts`
 
-- `buildHunterProfessionQuests` — function — line 215
+- `buildHunterProfessionQuests` — function — line 216
   - domain: quests-progression
-- `HUNTER_III_COMPLETE_OUTCOME` — const — line 12
-- `hunterProfessionQuestId` — function — line 30
+- `HUNTER_III_COMPLETE_OUTCOME` — const — line 13
+- `hunterProfessionQuestId` — function — line 31
   - domain: quests-progression
-- `parseHunterProfessionQuestId` — function — line 34
-- `selectHunterQuestGiver` — function — line 53
+- `parseHunterProfessionQuestId` — function — line 35
+- `selectHunterQuestGiver` — function — line 54
+
+## `quests/opportunities/preferredHunter.ts`
+
+- `findPreferredHunter` — function — line 15
+  - domain: quests-progression
+- `huntersAuthoredFirst` — function — line 24
+  - domain: quests-progression
 
 ## `quests/opportunities/rpgQuestMaterialization.ts`
 
@@ -431,7 +438,7 @@ Generated from exported TypeScript symbols.
 
 - `SettlementOpportunityNpc` — type — line 11
   - domain: quests-progression
-- `settlementOpportunityNpcsFlattened` — function — line 44
+- `settlementOpportunityNpcsFlattened` — function — line 45
 - `settlementOpportunityNpcsFromDef` — function — line 22
   - domain: quests-progression
 
@@ -478,15 +485,15 @@ Generated from exported TypeScript symbols.
 
 ## `quests/opportunities/worldQuestMaterialization.ts`
 
-- `buildWorldDrivenSettlementQuests` — function — line 310
+- `buildWorldDrivenSettlementQuests` — function — line 312
   - domain: quests-progression
-- `materializeSettlementQuestOpportunity` — function — line 282
+- `materializeSettlementQuestOpportunity` — function — line 284
   - domain: quests-progression
   - system: settlement-quest-opportunities
   - role: Materializes a selected settlement opportunity into a normal QuestDef.
-- `opportunityNpcsFromSettlement` — function — line 38
+- `opportunityNpcsFromSettlement` — function — line 39
   - domain: quests-progression
-- `selectSettlementQuestGiver` — function — line 57
+- `selectSettlementQuestGiver` — function — line 59
   - domain: quests-progression
 
 ## `quests/opportunities/worldQuestOpportunityTypes.ts`

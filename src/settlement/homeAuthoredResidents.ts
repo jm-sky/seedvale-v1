@@ -20,6 +20,11 @@ const HOME_REEVE_FALLBACK_AGE = 58
 /** A younger free man is not credible as reeve — use the fallback instead. */
 const HOME_REEVE_MIN_AGE = 35
 
+/** Fallback hunter household, appended only when home staffing had no free
+ *  man to make the guaranteed hunter. */
+export const HOME_HUNTER_FALLBACK_FAMILY_ID = 'family-story-home-hunter'
+const HOME_HUNTER_FALLBACK_AGE = 31
+
 /** Fallback shepherdess household, appended only when home staffing had no
  *  free woman to make the guaranteed shepherd (small homes). */
 export const HOME_SHEPHERD_FALLBACK_FAMILY_ID = 'family-story-home-shepherd'
@@ -65,17 +70,31 @@ type ProfessionIdentity = {
   name: string
   /** When set, the whole household takes this surname (gender-agreed). */
   familyLastName?: string
+  /** Guaranteed by home staffing; a single household is appended when no
+   *  matching staffed adult exists. */
+  fallback?: { familyId: string, age: number, seedSalt: number }
 }
 
-/** Named home residents overlaid on generated staff by profession. Present
- *  only when staffing produced a matching adult of that gender — except the
- *  shepherdess (see below). */
+/** Named home residents overlaid on generated staff by profession. Molly
+ *  (shepherdess) and Jakub (hunter) are guaranteed — home staffing reserves
+ *  their role for a woman / a man, with a fallback household otherwise.
+ *  Patric Smith belongs to the nearest larger settlement (not yet bound). */
 const HOME_PROFESSION_IDENTITIES: readonly ProfessionIdentity[] = [
-  // Guaranteed: home staffing reserves `shepherd` for a woman; a fallback
-  // household is appended when none was free.
-  { key: 'molly_lambert', role: 'shepherd', gender: 'female', name: AUTHORED_GIVEN_NAMES.molly_lambert, familyLastName: 'Lambert' },
-  { key: 'patric_smith', role: 'blacksmith', gender: 'male', name: AUTHORED_GIVEN_NAMES.patric_smith, familyLastName: 'Smith' },
-  { key: 'jakub', role: 'hunter', gender: 'male', name: AUTHORED_GIVEN_NAMES.jakub },
+  {
+    key: 'molly_lambert',
+    role: 'shepherd',
+    gender: 'female',
+    name: AUTHORED_GIVEN_NAMES.molly_lambert,
+    familyLastName: 'Lambert',
+    fallback: { familyId: HOME_SHEPHERD_FALLBACK_FAMILY_ID, age: HOME_SHEPHERD_FALLBACK_AGE, seedSalt: 0x6d6f6c6c },
+  },
+  {
+    key: 'jakub',
+    role: 'hunter',
+    gender: 'male',
+    name: AUTHORED_GIVEN_NAMES.jakub,
+    fallback: { familyId: HOME_HUNTER_FALLBACK_FAMILY_ID, age: HOME_HUNTER_FALLBACK_AGE, seedSalt: 0x6a616b75 },
+  },
 ]
 
 type MemberSlot = { familyIndex: number, memberIndex: number }
@@ -198,11 +217,12 @@ function createReeveFallbackFamily(seed: number, nameCulture: NameCulture): Fami
 
 /**
  * Overlays authored identities on the home settlement's final roster (after
- * staffing and profession surnames): Molly Lambert (shepherd), Patric Smith
- * (blacksmith) and Jakub (hunter) by profession, then Rudolf — the future
+ * staffing and profession surnames): Molly Lambert (shepherd) and Jakub
+ * (hunter) by profession, then Rudolf — the future
  * reeve (Sołtys) — as the oldest remaining free man aged 35+. Only names, keys
  * and the office marker change; members are added only as fallback single
- * households (Molly with no free woman shepherd, Rudolf with no free man 35+),
+ * households (Molly / Jakub without a staffed woman shepherd / man hunter,
+ * Rudolf with no free man 35+),
  * appended last so existing `NpcId`s stay stable. Deterministic.
  *
  * @domain settlements-npcs
@@ -216,22 +236,24 @@ export function applyHomeAuthoredIdentities(
   const appended: FamilyDef[] = []
   for (const identity of HOME_PROFESSION_IDENTITIES) {
     // A household surname override never lands in a family that already
-    // carries an authored identity (Molly Lambert and Patric Smith would
-    // otherwise overwrite each other's surname).
+    // carries an authored identity (two authored surnames would overwrite
+    // each other).
     const slot = findSlot(
       next,
       (member) => member.character.role === identity.role && member.character.gender === identity.gender,
       identity.familyLastName != null,
     )
     if (slot) applyIdentity(next, slot, identity)
-    else if (identity.key === 'molly_lambert') {
-      appended.push(createSingleAuthoredFamily(HOME_SHEPHERD_FALLBACK_FAMILY_ID, seed ^ 0x6d6f6c6c, {
+    else if (identity.fallback) {
+      const lastName = identity.familyLastName
+        ?? surnameForGender(generateFamilySurname(seed ^ identity.fallback.seedSalt, nameCulture), nameCulture, identity.gender)
+      appended.push(createSingleAuthoredFamily(identity.fallback.familyId, seed ^ identity.fallback.seedSalt, {
         key: identity.key,
         name: identity.name,
-        lastName: identity.familyLastName!,
+        lastName,
         gender: identity.gender,
         role: identity.role,
-        age: HOME_SHEPHERD_FALLBACK_AGE,
+        age: identity.fallback.age,
       }))
     }
   }

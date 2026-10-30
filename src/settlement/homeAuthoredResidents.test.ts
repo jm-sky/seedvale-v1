@@ -4,6 +4,7 @@ import type { FamilyDef, FamilyMember } from './families'
 import {
   applyHomeAuthoredIdentities,
   createHomeElderFamily,
+  HOME_HUNTER_FALLBACK_FAMILY_ID,
   HOME_REEVE_FALLBACK_FAMILY_ID,
   HOME_SHEPHERD_FALLBACK_FAMILY_ID,
   isHomeElderFamily,
@@ -51,7 +52,7 @@ describe('home authored residents', () => {
     const result = applyHomeAuthoredIdentities(roster(), 1, 'polish')
     const keyed = byKey(result)
     expect(keyed.get('molly_lambert')).toMatchObject({ name: 'Molly', lastName: 'Lambert' })
-    expect(keyed.get('patric_smith')).toMatchObject({ name: 'Patric', lastName: 'Smith' })
+    expect(keyed.get('patric_smith')).toBeUndefined()
     expect(keyed.get('jakub')?.name).toBe('Jakub')
     // Reserved Piotr (70) and authored Kazimierz (74) are never candidates.
     expect(keyed.get('rudolf')).toMatchObject({ name: 'Rudolf', age: 61 })
@@ -62,24 +63,18 @@ describe('home authored residents', () => {
     expect(result[1]!.members.map((m) => m.lastName)).toEqual(['Lambert', 'Lambert'])
   })
 
-  it('never puts two surname-bearing identities in one household', () => {
-    const families: FamilyDef[] = [
-      { id: 'family-2', members: [member('Ewa', 'shepherd', 30, 'female', 'wife'), member('Adam', 'blacksmith', 33, 'male', 'husband')] },
-    ]
-    const keyed = byKey(applyHomeAuthoredIdentities(families, 1, 'polish'))
-    expect(keyed.get('molly_lambert')?.lastName).toBe('Lambert')
-    expect(keyed.get('patric_smith')).toBeUndefined()
-  })
-
-  it('appends a fallback Molly shepherdess household when no woman shepherd exists', () => {
+  it('appends fallback Molly and Jakub households when no woman shepherd / male hunter exists', () => {
     const families: FamilyDef[] = [
       { id: 'family-2', members: [member('Bogdan', 'farmer', 50, 'male')] },
       createHomeElderFamily(1, 'polish'),
     ]
     const result = applyHomeAuthoredIdentities(families, 1, 'polish')
-    expect(result.map((f) => f.id)).toEqual(['family-2', 'family-story-home-elder', HOME_SHEPHERD_FALLBACK_FAMILY_ID])
-    expect(result.at(-1)!.members[0]).toMatchObject({ name: 'Molly', lastName: 'Lambert' })
-    expect(result.at(-1)!.members[0]!.character.role).toBe('shepherd')
+    expect(result.map((f) => f.id)).toEqual(['family-2', 'family-story-home-elder', HOME_SHEPHERD_FALLBACK_FAMILY_ID, HOME_HUNTER_FALLBACK_FAMILY_ID])
+    expect(result.at(-2)!.members[0]).toMatchObject({ name: 'Molly', lastName: 'Lambert' })
+    expect(result.at(-2)!.members[0]!.character.role).toBe('shepherd')
+    expect(result.at(-1)!.members[0]!.character).toMatchObject({ name: 'Jakub', characterKey: 'jakub', role: 'hunter', gender: 'male' })
+    // Bogdan (50) is the free man 35+ → Rudolf, no reeve fallback.
+    expect(result[0]!.members[0]!.character.characterKey).toBe('rudolf')
   })
 
   it('is deterministic', () => {
@@ -92,7 +87,8 @@ describe('home authored residents', () => {
       createHomeElderFamily(1, 'polish'),
     ]
     const result = applyHomeAuthoredIdentities(families, 1, 'polish')
-    expect(result).toHaveLength(families.length + 1)
+    // Jakub fallback (no male hunter) comes first, Rudolf last.
+    expect(result).toHaveLength(families.length + 2)
     expect(result.at(-1)!.id).toBe(HOME_REEVE_FALLBACK_FAMILY_ID)
     expect(result.at(-1)!.members[0]!.character).toMatchObject({ name: 'Rudolf', characterKey: 'rudolf', office: 'reeve' })
   })

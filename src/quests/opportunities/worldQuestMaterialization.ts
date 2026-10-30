@@ -11,6 +11,7 @@ import type {
 } from './worldQuestOpportunityTypes'
 import { flattenedSettlementMembers, settlementNpcId } from '../../settlement/npcIdentity'
 import { RESOLVED_WITHOUT_PLAYER_OUTCOME } from '../quests'
+import { findPreferredHunter } from './preferredHunter'
 import {
   materializeRpgQuestOpportunity,
   type RpgMaterializationContext,
@@ -43,6 +44,7 @@ export function opportunityNpcsFromSettlement(
     name: member.name,
     role: member.character.role,
     child: member.relation === 'child',
+    ...(member.character.characterKey ? { characterKey: member.character.characterKey } : {}),
   }))
 }
 
@@ -62,7 +64,7 @@ export function selectSettlementQuestGiver(
   const pool = adults.length > 0 ? adults : npcs
   if (pool.length === 0) return undefined
   if (kind === 'wolf-den-pressure') {
-    const hunter = pool.find((npc) => npc.role === 'hunter')
+    const hunter = findPreferredHunter(pool)
     if (hunter) return hunter
   }
   if (kind === 'lost-livestock' || kind === 'injured-cow') {

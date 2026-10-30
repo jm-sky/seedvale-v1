@@ -149,6 +149,7 @@ Generated from TypeScript imports.
 
 - `items/itemInstances.ts`
 - `items/items.ts`
+- `quests/opportunities/preferredHunter.ts`
 - `quests/opportunities/rpgQuestMatrices.ts`
 - `quests/opportunities/worldQuestOpportunityTypes.ts`
 - `quests/quests.ts`
@@ -267,6 +268,7 @@ Generated from TypeScript imports.
 **Imports**
 
 - `quests/opportunities/hunterProfessionQuests.ts`
+- `quests/opportunities/preferredHunter.ts`
 - `quests/opportunities/rpgQuestMatrices.ts`
 - `quests/opportunities/worldQuestOpportunityTypes.ts`
 - `quests/quests.ts`
@@ -344,6 +346,7 @@ Generated from TypeScript imports.
 
 - `items/itemInstances.ts`
 - `items/items.ts`
+- `quests/opportunities/preferredHunter.ts`
 - `quests/opportunities/settlementNpcMaterialization.ts`
 - `quests/quests.ts`
 - `settlement/npcState.ts`
@@ -612,6 +615,7 @@ Generated from TypeScript imports.
 
 - `items/itemInstances.ts`
 - `items/items.ts`
+- `quests/opportunities/preferredHunter.ts`
 - `quests/opportunities/settlementNpcMaterialization.ts`
 - `quests/quests.ts`
 - `settlement/npcState.ts`
@@ -668,6 +672,7 @@ Generated from TypeScript imports.
 
 - `fauna/AnimalSpawner.ts`
 - `items/items.ts`
+- `quests/opportunities/preferredHunter.ts`
 - `quests/opportunities/rpgQuestMatrices.ts`
 - `quests/opportunities/worldQuestOpportunityTypes.ts`
 - `quests/quests.ts`
@@ -680,6 +685,29 @@ Generated from TypeScript imports.
 - `quests/huntersBrotherhoodIntroduction.ts`
 - `quests/huntersBrotherhoodInvestigation.test.ts`
 - `quests/opportunities/hunterProfessionQuests.test.ts`
+
+## `quests/opportunities/preferredHunter.test.ts`
+
+**Imports**
+
+- `quests/opportunities/preferredHunter.ts`
+- `quests/opportunities/worldQuestOpportunityTypes.ts`
+
+## `quests/opportunities/preferredHunter.ts`
+
+**Imports**
+
+- `quests/opportunities/worldQuestOpportunityTypes.ts`
+
+**Imported by**
+
+- `quests/dungeonBanditTreasure.ts`
+- `quests/huntersBrotherhoodIntroduction.ts`
+- `quests/lostHunterNaturalCave.ts`
+- `quests/oldBonesAdventureCave.ts`
+- `quests/opportunities/hunterProfessionQuests.ts`
+- `quests/opportunities/preferredHunter.test.ts`
+- `quests/opportunities/worldQuestMaterialization.ts`
 
 ## `quests/opportunities/rpgQuestMaterialization.ts`
 
@@ -807,6 +835,7 @@ Generated from TypeScript imports.
 
 - `fauna/AnimalSpawner.ts`
 - `fauna/animalStray.ts`
+- `quests/opportunities/preferredHunter.ts`
 - `quests/opportunities/rpgQuestMaterialization.ts`
 - `quests/opportunities/rpgQuestMatrices.ts`
 - `quests/opportunities/settlementQuestOpportunities.ts`
@@ -842,6 +871,8 @@ Generated from TypeScript imports.
 - `quests/opportunities/guardProfessionQuests.ts`
 - `quests/opportunities/hunterProfessionQuests.test.ts`
 - `quests/opportunities/hunterProfessionQuests.ts`
+- `quests/opportunities/preferredHunter.test.ts`
+- `quests/opportunities/preferredHunter.ts`
 - `quests/opportunities/rpgQuestMaterialization.ts`
 - `quests/opportunities/rpgQuestMatrices.test.ts`
 - `quests/opportunities/rpgQuestMatrices.ts`

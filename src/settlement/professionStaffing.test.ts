@@ -616,6 +616,17 @@ describe('home shepherdess guarantee', () => {
     expect(shepherds[0]!.character.gender).toBe('female')
   })
 
+  it('always staffs a male home hunter, even when baseline coverage already has one', () => {
+    const families = [
+      family('family-0', [member({ name: 'H', role: 'hunter', age: 30, gender: 'female' })]),
+      ...adults(4).map((f, i) => ({ ...f, id: `family-${i + 1}` })),
+    ]
+    for (const seed of [1, 2, 3]) {
+      const hunters = staff(families, { isHome: true, seed }).flatMap((f) => f.members).filter((m) => m.character.role === 'hunter')
+      expect(hunters.some((m) => m.character.gender === 'male')).toBe(true)
+    }
+  })
+
   it('never staffs a male shepherd at home — the authored Molly fallback covers it', () => {
     for (const seed of [1, 2, 3, 4, 5]) {
       const staffed = staff(adults(8), { isHome: true, seed, size: 'LG' })

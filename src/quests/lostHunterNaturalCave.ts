@@ -9,6 +9,7 @@ import type { SettlementOpportunityNpc } from './opportunities/settlementNpcMate
 import type { QuestDef, QuestDialogueReaction } from './quests'
 import { CaveAuthoredAnchorClaims } from '../world/caves/caveAuthoredAnchorClaims'
 import { caveWorldLocationId } from '../world/locations/darkForestTreasureSite'
+import { huntersAuthoredFirst } from './opportunities/preferredHunter'
 
 export const LOST_HUNTER_QUEST_PREFIX = 'world:lost-hunter:'
 
@@ -100,7 +101,7 @@ function plausibleGiverHousehold(npc: SettlementOpportunityNpc, npcs: readonly S
 }
 
 function witnessRolePool(pool: readonly SettlementOpportunityNpc[]): SettlementOpportunityNpc[] {
-  const hunters = pool.filter((npc) => npc.role === 'hunter').slice().sort((a, b) => a.id.localeCompare(b.id))
+  const hunters = huntersAuthoredFirst(pool)
   if (hunters.length > 0) return hunters
   const woodcutters = pool.filter((npc) => npc.role === 'woodcutter').slice().sort((a, b) => a.id.localeCompare(b.id))
   if (woodcutters.length > 0) return woodcutters

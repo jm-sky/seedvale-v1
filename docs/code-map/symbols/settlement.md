@@ -253,15 +253,16 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/homeAuthoredResidents.ts`
 
-- `applyHomeAuthoredIdentities` — function — line 210
+- `applyHomeAuthoredIdentities` — function — line 230
   - domain: settlements-npcs
-- `createHomeElderFamily` — function — line 44
+- `createHomeElderFamily` — function — line 49
   - domain: settlements-npcs
 - `HOME_ELDER_AGE` — const — line 14
 - `HOME_ELDER_LAST_NAME` — const — line 13
+- `HOME_HUNTER_FALLBACK_FAMILY_ID` — const — line 25
 - `HOME_REEVE_FALLBACK_FAMILY_ID` — const — line 18
-- `HOME_SHEPHERD_FALLBACK_FAMILY_ID` — const — line 25
-- `isHomeElderFamily` — function — line 33
+- `HOME_SHEPHERD_FALLBACK_FAMILY_ID` — const — line 30
+- `isHomeElderFamily` — function — line 38
   - domain: settlements-npcs
 
 ## `settlement/horseAcquisition.ts`
