@@ -164,7 +164,7 @@ import {
   type RiverTileCoord,
 } from './riverNetwork'
 import { createRiverQuery } from './riverQuery'
-import { createRiverTileCache } from './riverTileCache'
+import { createRiverTileCache, type RiverTileCacheStats } from './riverTileCache'
 import { bridgeDeckYAt } from './roadBridge'
 import { cutoutsOverlappingChunk, type TerrainCutout } from './terrainCutout'
 import {
@@ -845,6 +845,9 @@ export type ChunkManager = {
    *  prompt (plan 106). */
   region: RegionParams
   loadedChunkCount: () => number
+  /** Snapshot of the river tile cache counters (Q22 benchmark evidence);
+   *  `resetMax` starts a new `syncMsMax` window after taking the snapshot. */
+  riverTileStats: (resetMax?: boolean) => RiverTileCacheStats
   /** Resolves once every listed chunk has finished generating (or failed/cancelled),
    *  including mesh and content (vegetation/env) finalization. */
   waitForChunks: (coords: ChunkCoord[]) => Promise<void>
@@ -3743,6 +3746,11 @@ export function createChunkManager(
     heightScale: config.heightScale,
     region: config.region,
     loadedChunkCount: () => chunks.size,
+    riverTileStats(resetMax = false) {
+      const snapshot = { ...riverTileCache.stats }
+      if (resetMax) riverTileCache.stats.syncMsMax = 0
+      return snapshot
+    },
     waitForChunks,
     roadCorridorsNear(worldX, worldZ, querySize) {
       const village = villageSegmentsNear(worldX, worldZ, querySize, roadCtx)

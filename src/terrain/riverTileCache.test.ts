@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { RawSampleParams } from './chunkHeightmap'
 import type { RiverChain } from './riverNetwork'
-import { createRiverTileCache } from './riverTileCache'
+import { createRiverTileCache, riverTileStatsDelta } from './riverTileCache'
 
 const computeRiverTile = vi.hoisted(() => vi.fn())
 vi.mock('./riverNetwork', async (importOriginal) => ({
@@ -124,5 +124,15 @@ describe('riverTileCache', () => {
     throwing.prefetch({ tx: 1, tz: 1 }, params)
     throwing.retain({ tx: 1, tz: 1 }, params)
     expect(computeRiverTile).toHaveBeenCalledTimes(2)
+  })
+})
+
+describe('riverTileStatsDelta', () => {
+  it('reports window counters, max taken from the (window-reset) after snapshot', () => {
+    const before = { syncComputes: 2, storeHits: 1, prefetched: 3, syncMsTotal: 40, syncMsMax: 0 }
+    expect(riverTileStatsDelta(before, { ...before, storeHits: 4, prefetched: 5 }))
+      .toEqual({ syncComputes: 0, storeHits: 3, prefetched: 2, syncMsTotal: 0, syncMsMax: 0 })
+    expect(riverTileStatsDelta(before, { ...before, syncComputes: 3, syncMsTotal: 52, syncMsMax: 12 }))
+      .toMatchObject({ syncComputes: 1, syncMsTotal: 12, syncMsMax: 12 })
   })
 })

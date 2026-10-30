@@ -10,6 +10,7 @@ import type { PassSubmissionCollector } from './passSubmissionCollector'
 import type { CameraControlResult, PerfReportJson, PopulationGateResult, PopulationSnapshot, ScenarioSettlement } from './types'
 import { clampDistance, clampPitch } from '../input/MouseLook'
 import { worldToChunk } from '../terrain/chunkGrid'
+import { type RiverTileCacheStats, riverTileStatsDelta } from '../terrain/riverTileCache'
 import { buildAgentCpuReport, formatAgentCpuReport, getAgentCpuDiag } from './agentCpuDiag'
 import { assertArtifactRoundTrip, buildArtifactBundle, type PerfArtifactBundle } from './artifacts'
 import { createRunId, getBuildGitSha } from './buildInfo'
@@ -85,6 +86,7 @@ type TerrainProbe = {
   sampleForestFactor: (x: number, z: number) => number
   sampleHeight: (x: number, z: number) => number
   waterLevel: number
+  riverTileStats: (resetMax?: boolean) => RiverTileCacheStats
 }
 
 export type BenchmarkHost = {
@@ -364,6 +366,7 @@ export function createBenchmarkRunner(host: BenchmarkHost): BenchmarkRunner {
         monitor.setSource('benchmark', true)
         monitor.beginSession()
         // User-timing marks let an external trace recorder start/stop exactly on the measured window.
+        const riverTilesBefore = host.chunkManager().riverTileStats(true)
         performance.mark('seedvale:bench-window-start')
         const windowStartedAt = performance.timeOrigin + performance.now()
         try {
@@ -374,6 +377,7 @@ export function createBenchmarkRunner(host: BenchmarkHost): BenchmarkRunner {
         const totals = monitor.endSession()
         performance.mark('seedvale:bench-window-end')
         const actorCohortMaskStats = actorCohortMask?.disarm() ?? null
+        const riverTiles = riverTileStatsDelta(riverTilesBefore, host.chunkManager().riverTileStats())
         if (typeof window !== 'undefined') {
           // Epoch-ms bounds of the measured window, so external diagnostics
           // (console GL errors, traces) can be placed relative to it.
@@ -468,6 +472,7 @@ export function createBenchmarkRunner(host: BenchmarkHost): BenchmarkRunner {
           matrixWork,
           isolation,
         })
+        report.riverTiles = riverTiles
         if (occludedActorCensus) {
           report.occludedActorCohort = { census: occludedActorCensus, mask: actorCohortMaskStats }
         }
@@ -556,6 +561,8 @@ export function createBenchmarkRunner(host: BenchmarkHost): BenchmarkRunner {
           }
 
           content.push(formatIsolationReport(isolation))
+          content.push('')
+          content.push(`River tiles (window): sync computes=${riverTiles.syncComputes} sync ms total=${riverTiles.syncMsTotal.toFixed(1)} max=${riverTiles.syncMsMax.toFixed(1)} store hits=${riverTiles.storeHits} prefetched=${riverTiles.prefetched}`)
           content.push('')
 
           if (occludedActorCensus) {

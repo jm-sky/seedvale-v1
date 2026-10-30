@@ -36,6 +36,9 @@ export type RiverTileCacheStats = {
   storeHits: number
   /** Worker results accepted into the store. */
   prefetched: number
+  /** Main-thread wall time of `syncComputes` (benchmark structural evidence, Q22). */
+  syncMsTotal: number
+  syncMsMax: number
 }
 
 export type RiverTileCacheOptions = {
@@ -55,7 +58,7 @@ export function createRiverTileCache(options: RiverTileCacheOptions = {}): River
   const entries = new Map<string, CacheEntry>()
   const stored = new Map<string, RiverChain[]>()
   const inflight = new Map<string, symbol>()
-  const stats: RiverTileCacheStats = { syncComputes: 0, storeHits: 0, prefetched: 0 }
+  const stats: RiverTileCacheStats = { syncComputes: 0, storeHits: 0, prefetched: 0, syncMsTotal: 0, syncMsMax: 0 }
 
   function store(key: string, chains: RiverChain[]): void {
     stored.delete(key)
@@ -75,9 +78,18 @@ export function createRiverTileCache(options: RiverTileCacheOptions = {}): River
         const ready = stored.get(key)
         stored.delete(key)
         dropInflight(key)
-        if (ready) stats.storeHits++
-        else stats.syncComputes++
-        entry = { chains: ready ?? computeRiverTile(tile, sampleParams), refCount: 0 }
+        let chains = ready
+        if (chains) {
+          stats.storeHits++
+        } else {
+          const started = performance.now()
+          chains = computeRiverTile(tile, sampleParams)
+          const ms = performance.now() - started
+          stats.syncComputes++
+          stats.syncMsTotal += ms
+          if (ms > stats.syncMsMax) stats.syncMsMax = ms
+        }
+        entry = { chains, refCount: 0 }
         entries.set(key, entry)
       }
       entry.refCount++
@@ -127,5 +139,19 @@ export function createRiverTileCache(options: RiverTileCacheOptions = {}): River
       stored.clear()
     },
     stats,
+  }
+}
+
+/** Counter delta between two {@link RiverTileCacheStats} snapshots. `syncMsMax`
+ *  is taken from `after` — the caller resets it at window start
+ *  (`ChunkManager.riverTileStats(true)`), so it is the window's max. */
+export function riverTileStatsDelta(before: RiverTileCacheStats, after: RiverTileCacheStats): RiverTileCacheStats {
+  const syncComputes = after.syncComputes - before.syncComputes
+  return {
+    syncComputes,
+    storeHits: after.storeHits - before.storeHits,
+    prefetched: after.prefetched - before.prefetched,
+    syncMsTotal: after.syncMsTotal - before.syncMsTotal,
+    syncMsMax: after.syncMsMax,
   }
 }

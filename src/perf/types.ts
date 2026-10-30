@@ -364,6 +364,8 @@ export type PerfReportJson = {
   matrixWork?: MatrixWorkCensus
   /** Actual per-pass WebGL submissions (A0a/B0). Null when collector disabled. */
   passSubmissions?: PassSubmissionReport | null
+  /** River tile cache counter delta over the measured window (Q22 E2 evidence). */
+  riverTiles?: import('../terrain/riverTileCache').RiverTileCacheStats
   /** Q16 occluded-actor cohort census + mask stats (`?actorCohort=census|mask` only). */
   occludedActorCohort?: {
     census: import('./occludedActorCohort').OccludedActorCensus
