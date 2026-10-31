@@ -30,6 +30,8 @@ Facial hair roadmap: `none`, `moustache`, `beard_and_moustache`; optional `stubb
 | **Molly Lambert** | pending stable binding (`M01` authored actor) | ~25–30 (proposed) | **short** | **`slim`** (target; not yet shipped) | **`Warm`** | **`blond`** | **`Long`** | `none` | practical shepherdess | Author-approved appearance based on supplied portrait; age estimate pending canon verification |
 | **Jacob Bowman / Jakub** | `B01` (authored actor; runtime binding pending) | ~35–40 (visual estimate) | tall | **`standard`** | **`Base`** | **`brown`** | **`Long`** | **`beard_and_moustache`** (future variant) | **`Ranger_NoHood`** | Author-approved appearance; beard variant pending |
 
+| **Rudolf (reeve; surname pending)** | pending stable V1 actor binding | ~50–55 (visual estimate) | medium | **`standard`** | **`Base`** | **`brown`** | **`Parted`** | **`beard_and_moustache`** (future variant) | prosperous village reeve; practical fur-trimmed vest, no armour | Author-approved appearance based on supplied portrait; exact outfit asset pending |
+
 **Interpretation notes:** Age estimates derive from the curated character canon, not current V1 generated age (reserved-family ages are presently generated). `standard` face means the author's intended ordinary face; map to the appropriate available head asset during implementation, not automatically to a code variant without visual review. Outfits are narrative/profession choices, not necessarily the precise currently assembled clothing. Mark's `stubble` is a deferred preference, not a current substitute for `none`. Peter's `superhero` selection is explicit even if a three-build taxonomy is eventually adopted: settle how that taxonomy represents his muscular appearance before implementation.
 
 ### Ann visual fidelity
@@ -43,6 +45,10 @@ Author supplied a portrait of Molly with a lamb: youthful, gentle expression, li
 ### Jacob visual direction
 
 Author supplied a V3 Jakub hunter reference showing a friendly, outdoorsy, free-spirited hunter with long tousled brown hair and beard with moustache. Selected `Base` head (explicitly **not** `Warm`), `Long` hair, `brown` tint, tall stature, `standard` build and `Ranger_NoHood` outfit. The desired `beard_and_moustache` requires the planned facial-hair extension; current beard boolean does not guarantee exact match. Visual age ~35–40 is an estimate. Reference was supplied in conversation, not added as an asset to the repository. No runtime changes.
+
+### Rudolf visual direction
+
+Author-approved supplied portrait: experienced village reeve, 50–55 visual years, medium height and standard build; **`Base`** head, **`brown`** hair with **`Parted`** style, **`beard_and_moustache`**. Clothing implies somewhat prosperous but practical village leadership, e.g. dark patterned vest with fur edging, not aristocratic or armoured. Beard is visibly greying in the portrait despite the selected `brown` hair tint; separate beard tint is not approved or implemented, so check asset fidelity later. Exact outfit is not selected from available kit assets. Surname and stable actor binding remain unresolved; don't conflate with donor Ralph Fieldman. No runtime changes.
 
 ## Implementation follow-up (not yet a plan)
 
