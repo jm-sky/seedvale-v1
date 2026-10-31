@@ -1,7 +1,7 @@
 # Q39 — Cemetery size, layout and placement (V2 donor): recon and implementation plan
 
 **Created:** 2026-10-31 by Claude Opus 5.5 (queue Q39, O→S)  
-**Status:** plan. Implementation is queue **Q47** (Sonnet). Two optional, placement-neutral additions wait for the author (§6). The visual result needs author sign-off (queue §2), like every epoch-1 layout slice.  
+**Status:** plan. Implementation is queue **Q47** (Sonnet). Author answered the two optional questions (§6): no fence for now, readable plaques later. The visual result needs author sign-off (queue §2), like every epoch-1 layout slice.  
 **Authority:** [P2 author decisions — Q39](./2026-10-31--p2-author-decisions-q38-q39-q31-q42.md#q39--cemeteries) (reuse the V2 layout and grave/crypt assets, adapted to V1; keep V1 simulation, grave-slot/quest/treasure semantics and stable references; changes belong to epoch 1). [Strategic Brief §3 "Cemeteries"](./STRATEGIC-BRIEF.md) (graves with plaques, crypt count related to settlement size). [Q29 batch plan §2–§3](./2026-10-30--q29-revival-epoch-batch-plan.md) (batch rules). [Cemetery comparison](./2026-10-26--dog-elder-cemeteries-comparison.md) (preservation inputs). The epoch is already `WORLDGEN_EPOCH = 1` (Q33) and stays 1. Source facts were checked against V1 `main` at `bf10c7c` and against V3 `main` at `47733d6` (the V2 snapshot under `docs/comparison/code/SeedVales-v2/`). The code is authoritative.
 
 ## 1. Recon findings (✅ verified)
@@ -111,9 +111,9 @@ All changes are in `cemeteryPlacement.ts` / `chunkEnvironment.ts`, reusing the e
 
 _Filled by Q47._
 
-## 6. Author questions (optional, placement-neutral, not blocking Q47)
+## 6. Author questions — answered 2026-10-31
 
-Recorded in queue §3. Both fit inside the 2.5 m plot margin, so they move nothing and can land after epoch 1 closes.
+1. **Cemetery fence: (c) no fence for now.** A fence may come later for the larger cemeteries (MD/LG) as a separate, placement-neutral follow-up inside the 2.5 m plot margin. It is not part of Q47.
+2. **Readable plaques: (a) later.** This will be a separate small task: an Interactable on the marker, kept apart from digging, with the surname taken from the settlement's families plus an epitaph. It is not part of Q47. Plaques stay visual until then.
 
-1. **Cemetery fence.** The V2 pack contains a stone wall, an iron fence, broken variants, a gate, pillars and an arch. V2 did not use them. Options: (a) low stone wall with a gate at the entrance, broken variant for abandoned cemeteries (≈ +1.5–3 k tris, still the same single merged draw); (b) iron fence with a gate; (c) no fence. **Opus recommends (a).**
-2. **Readable plaques.** V2 had a "Read the inscription" interaction (surname from the settlement's families + epitaph). In V1, digging deliberately has no grave Interactable. Options: (a) later, as a separate small task (Interactable on the marker, separate from digging); (b) now, inside Q47; (c) never, plaques stay visual only. **Opus recommends (a).**
+Rejected for now: stone wall / iron fence in Q47; inscriptions inside Q47.
