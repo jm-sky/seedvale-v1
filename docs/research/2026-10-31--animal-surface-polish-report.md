@@ -11,5 +11,6 @@ Identical: triangle count, vertex positions, JOINTS/WEIGHTS, indices, material n
 
 ## Limits / needs author decision
 - **Not verified:** Blender A/B/C renders, Asset Browser/WebGL look, FPS (no claim). Author-owned visual check pending (queue §2).
+- **Deer/stag (added later):** same pipeline, invariants identical; size deer +27%, stag +30%. Stag antlers (unskinned primitive) are smoothed; its eyes (`Material.011`) stay hard.
 - **File size:** gltf-transform's meshopt encoder is less efficient than gltfpack: sheep +18%, wolf +26%, horse +32% (cow −7%), above the audit's 10% target. Meshopt FILTER mode was rejected because it lossy-quantizes animation data. Fix later by re-running gltfpack on the patched GLBs, or accept (all < 450 KiB).
 - Smoothing angle (50°) and roughness values are first-pass; tune after visual review.
