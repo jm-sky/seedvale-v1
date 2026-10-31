@@ -71,6 +71,7 @@ Generated from TypeScript imports.
 
 - `assets/assetAnchorData.test.ts`
 - `assets/assetIndex.ts`
+- `assets/bodyPreviewEntries.ts`
 - `assets/houseDefinitionExample.ts`
 - `items/heldToolVisual.test.ts`
 - `items/heldToolVisual.ts`
@@ -113,7 +114,10 @@ Generated from TypeScript imports.
 - `assets/assetAnchorData.ts`
 - `assets/assetAnchors.ts`
 - `assets/assetUrlUtils.ts`
+- `assets/bodyBuild.ts`
+- `assets/bodyPreviewEntries.ts`
 - `characters/characterFiles.ts`
+- `characters/characterTypes.ts`
 - `fauna/AnimalAgent.ts`
 - `fauna/createFauna.ts`
 - `items/heldToolVisual.ts`
@@ -129,6 +133,7 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `assets/assetIndex.test.ts`
+- `assets/bodyPreviewEntries.ts`
 - `assets/constructionCatalog.test.ts`
 - `assets/constructionCatalog.ts`
 - `settlement/houseLighting.lantern.test.ts`
@@ -149,6 +154,41 @@ Generated from TypeScript imports.
 
 - `assets/assetIndex.ts`
 - `assets/houseDefinitionExampleConfig.ts`
+
+## `assets/bodyBuild.test.ts`
+
+**Imports**
+
+- `assets/bodyBuild.ts`
+
+## `assets/bodyBuild.ts`
+
+**Imported by**
+
+- `assets/assetIndex.ts`
+- `assets/bodyBuild.test.ts`
+- `assets/bodyPreviewEntries.ts`
+- `tools/assetBrowser/state.ts`
+- `tools/assetBrowser/urlParams.ts`
+- `tools/assetBrowser/viewer/createAssetSlot.ts`
+- `tools/assetBrowser/viewer/createViewer.ts`
+
+## `assets/bodyPreviewEntries.ts`
+
+**Imports**
+
+- `ai/NpcAgent.ts`
+- `assets/assetAnchorData.ts`
+- `assets/assetIndex.ts`
+- `assets/bodyBuild.ts`
+- `characters/baseGarments.ts`
+- `characters/characterFiles.ts`
+- `characters/characterTypes.ts`
+- `player/PlayerController.ts`
+
+**Imported by**
+
+- `assets/assetIndex.ts`
 
 ## `assets/constructionCatalog.test.ts`
 

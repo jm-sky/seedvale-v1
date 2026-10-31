@@ -9,6 +9,7 @@ import {
   mergeParkedManifest,
   resolveLoadEntry,
 } from '../../../assets/assetIndex'
+import { BODY_BUILD_LABELS, BODY_BUILDS } from '../../../assets/bodyBuild'
 import {
   alignmentEdit,
   bumpAlignmentEdit,
@@ -37,6 +38,11 @@ const searchQuery = ref('')
 const wiredIndex = buildAssetIndex()
 const assetIndex = ref<AssetIndexEntry[]>(wiredIndex)
 const indexReady = ref(false)
+/** Inspected character that carries preview body builds (reference first, else target). */
+const bodyBuildOwner = computed(() => {
+  const e = [slotDiagnostics.reference.entry, slotDiagnostics.target.entry].find((x) => x?.bodyBuilds)
+  return e ? e.label : null
+})
 
 const filteredIndex = computed(() => filterAssetIndex(assetIndex.value, searchQuery.value))
 const searchMatchCount = computed(() => filteredIndex.value.length)
@@ -196,6 +202,11 @@ watch(
 )
 
 watch(
+  () => browserState.bodyBuild,
+  () => viewer.value?.applyBodyBuild(browserState.bodyBuild),
+)
+
+watch(
   () => browserState.compareHead,
   () => {
     if (!viewer.value || !indexReady.value) return
@@ -238,6 +249,7 @@ watch(
     browserState.showGround,
     browserState.showOverlay,
     browserState.hairColor,
+    browserState.bodyBuild,
   ] as const,
   () => syncAssetBrowserUrlParams(browserState),
 )
@@ -691,6 +703,25 @@ function lampMountSnippet() {
           v-model="browserState.compareHead"
           type="checkbox"
         > v2/v3 head</label>
+        <template v-if="bodyBuildOwner">
+          <label
+            class="mt-1 block text-xs text-slate-400"
+            :title="`Applies to ${bodyBuildOwner}; Normal / Child are not implemented (see tools-022 notes)`"
+          >Body build · {{ bodyBuildOwner }}</label>
+          <select
+            v-model="browserState.bodyBuild"
+            data-testid="body-build"
+            class="w-full rounded bg-slate-800 px-2 py-1"
+          >
+            <option
+              v-for="b in BODY_BUILDS"
+              :key="b"
+              :value="b"
+            >
+              {{ BODY_BUILD_LABELS[b] }}
+            </option>
+          </select>
+        </template>
         <label class="mt-1 block text-xs text-slate-400">Hair color</label>
         <select
           v-model="browserState.hairColor"

@@ -81,6 +81,7 @@ Generated from TypeScript imports.
 - `app/saveState.ts`
 - `app/userActions.ts`
 - `assets/assetIndex.ts`
+- `assets/bodyPreviewEntries.ts`
 - `debug/caves/caveHeightfieldTraversal.test.ts`
 - `debug/flyCam.ts`
 - `debug/npcDebugApi.ts`

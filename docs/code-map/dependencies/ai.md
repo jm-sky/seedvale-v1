@@ -300,6 +300,7 @@ Generated from TypeScript imports.
 - `app/gameLoop.ts`
 - `app/inventoryWiring.ts`
 - `assets/assetIndex.ts`
+- `assets/bodyPreviewEntries.ts`
 - `debug/npcDebugApi.test.ts`
 - `debug/npcDebugApi.ts`
 - `debug/npcDecisionReport.ts`

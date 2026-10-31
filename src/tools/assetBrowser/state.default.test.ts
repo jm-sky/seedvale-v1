@@ -6,4 +6,8 @@ describe('browserState defaults', () => {
     expect(browserState.referenceId).toBe('character:ubc-peasant')
     expect(browserState.pose).toBe('idle')
   })
+
+  it('defaults to the original Muscular body build', () => {
+    expect(browserState.bodyBuild).toBe('muscular')
+  })
 })

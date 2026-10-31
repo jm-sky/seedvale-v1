@@ -74,30 +74,47 @@ Generated from exported TypeScript symbols.
 
 ## `assets/assetIndex.ts`
 
-- `assetEntryMatchesQuery` — function — line 202
-- `assetIndexById` — function — line 713
-- `AssetIndexEntry` — type — line 96
-- `AssetIndexGroup` — type — line 78
-- `AssetIndexStatus` — type — line 91
-- `AssetPrepare` — type — line 71
-- `basenameFromUrl` — function — line 148
-- `buildAssetIndex` — function — line 442
-- `CompareGarment` — type — line 94
-- `customUrlEntry` — function — line 224
-- `entryFromUrl` — function — line 727
-- `filterAssetIndex` — function — line 215
-- `findAssetEntry` — function — line 719
-- `formatAssetLabel` — function — line 197
-- `groupFromModelUrl` — function — line 170
-- `kindFromBasename` — function — line 162
-- `makeParkedEntry` — function — line 253
-- `mergeParkedManifest` — function — line 271
-- `packFromUrl` — function — line 154
-- `resolveLoadEntry` — function — line 242
+- `assetEntryMatchesQuery` — function — line 209
+- `assetIndexById` — function — line 721
+- `AssetIndexEntry` — type — line 99
+- `AssetIndexGroup` — type — line 81
+- `AssetIndexStatus` — type — line 94
+- `AssetPrepare` — type — line 74
+- `basenameFromUrl` — function — line 155
+- `buildAssetIndex` — function — line 449
+- `CompareGarment` — type — line 97
+- `customUrlEntry` — function — line 231
+- `entryFromUrl` — function — line 735
+- `filterAssetIndex` — function — line 222
+- `findAssetEntry` — function — line 727
+- `formatAssetLabel` — function — line 204
+- `groupFromModelUrl` — function — line 177
+- `kindFromBasename` — function — line 169
+- `makeParkedEntry` — function — line 260
+- `mergeParkedManifest` — function — line 278
+- `packFromUrl` — function — line 161
+- `resolveLoadEntry` — function — line 249
 
 ## `assets/assetUrlUtils.ts`
 
 - `parkedIdFromUrl` — function — line 10
+
+## `assets/bodyBuild.ts`
+
+- `applyBodyBuild` — function — line 53
+- `BODY_BUILD_LABELS` — const — line 13
+- `BODY_BUILDS` — const — line 10
+- `BodyBuild` — type — line 8
+- `BodyBuildResult` — type — line 31
+- `DEFAULT_BODY_BUILD` — const — line 11
+- `parseBodyBuild` — function — line 26
+- `supportedBodyBuilds` — function — line 45
+
+## `assets/bodyPreviewEntries.ts`
+
+- `BODY_PREVIEW_DIR` — const — line 21
+- `bodyPreviewEntries` — function — line 29
+- `bodyPreviewUrl` — function — line 24
 
 ## `assets/constructionCatalog.ts`
 

@@ -36,6 +36,7 @@ function baseState(overrides: Partial<BrowserState> = {}): BrowserState {
     clip: null,
     hairColor: 'brown',
     compareHead: true,
+    bodyBuild: 'muscular',
     resetTransformOnReload: false,
     reportText: '',
     statusMessage: 'Ready',
@@ -110,6 +111,12 @@ describe('parseAssetBrowserUrlParams', () => {
     expect(parseAssetBrowserUrlParams('?clip=')).toEqual({
       clip: null,
     })
+  })
+
+  it('reads build= and ignores unavailable builds (child is not implemented)', () => {
+    expect(parseAssetBrowserUrlParams('?build=heavy')).toEqual({ bodyBuild: 'heavy' })
+    expect(parseAssetBrowserUrlParams('?bodyBuild=Slim')).toEqual({ bodyBuild: 'slim' })
+    expect(parseAssetBrowserUrlParams('?build=child')).toEqual({})
   })
 
   it('reads hairColor=', () => {
@@ -221,5 +228,29 @@ describe('syncAssetBrowserUrlParams', () => {
     })
     syncAssetBrowserUrlParams(baseState({ hairColor: 'blond' }))
     expect(history.at(-1)).toContain('hairColor=blond')
+  })
+
+  it('writes non-default build and omits the default', () => {
+    const history: string[] = []
+    Object.defineProperty(globalThis, 'window', {
+      configurable: true,
+      value: {
+        location: { href: 'http://localhost/asset-browser.html', pathname: '/asset-browser.html', search: '', hash: '' },
+        history: {
+          replaceState(_s: unknown, _t: string, next: string) {
+            history.push(next)
+            const url = new URL(next, 'http://localhost')
+            window.location.pathname = url.pathname
+            window.location.search = url.search
+            window.location.hash = url.hash
+            window.location.href = url.href
+          },
+        },
+      },
+    })
+    syncAssetBrowserUrlParams(baseState({ bodyBuild: 'slim' }))
+    expect(history.at(-1)).toContain('build=slim')
+    syncAssetBrowserUrlParams(baseState())
+    expect(history.at(-1)).not.toContain('build=')
   })
 })

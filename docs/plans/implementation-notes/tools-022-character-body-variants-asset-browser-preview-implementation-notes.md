@@ -186,3 +186,31 @@ Morphs do not inherently add meshes, triangles or draw calls, but they add decod
 Measure the same **single** preview character, renderer/backend, resolution, lighting, camera and animation: original GLB → derivative zero weights → Heavy/Slim. Separate first load/shader warm-up from steady-state frame times; collect renderer.info render calls/triangles, geometries/textures/program counts, load/decode time and switch latency. For quad views report the repeated view renders; do not compare them to single view. Inspect memory/resource counters after repeated switches and unloads (cache retention is expected; unbounded new URLs/instances are not). Report observed costs without claiming game FPS gains or running a world benchmark.
 
 Rollback is removal of browser-only wiring, generator/preview outputs and their tests. Original URL mappings, source GLBs/raws/.blend, saves and NPC/player behavior remain untouched.
+
+## 7. Implementation results (2026-10-31)
+
+**Implemented** (technically verified; visual review by the author still pending):
+
+- `scripts/assets/build-body-preview.mjs` (`pnpm assets:body-preview`) + `body-preview-lib.mjs`: reads shipped GLBs, appends missing `Fat` / `Slim` targets, writes derivatives to `public/assets/characters/body-preview/` (+ `manifest.json`). Sources are never written; output is byte-deterministic (repeat run → identical SHA-1); existing targets (shipped `Fat`) are reused untouched; unrelated targets/weights are preserved.
+- Runtime/Asset Browser: `src/assets/bodyBuild.ts` (`applyBodyBuild`, fail-closed support check), `src/assets/bodyPreviewEntries.ts` (`bodypreview:<sex>-<outfit>` entries, body + base head + `HAIR_Parted|Long` + WorkSkirt via `baseGarments`), `mountCompareGarments.ts` (morph dictionary/influences copied on rebind, `attachCompareHair`), `createAssetSlot.ts` (stale-load guard, in-place `applyBodyBuild`), one "Body build" select in `AssetBrowser.vue`, `?build=` URL param. `assembleCharacter`, `NpcAgent`, `npcAppearance`, saves and all production GLBs are untouched.
+
+**Audit (decoded GLBs, checkout):** all 24 outfit bodies + both eq packs inspected. Male Blacksmith / Farmer / Woodcutter have no morphs (authored); every other body has `Fat` (POSITION+NORMAL); `eq/Male` has `Fat` POSITION-only on 11 meshes; `eq/Female` has none. `anims.glb` clips include Idle_Loop, Walk_Loop, Jog_Fwd_Loop, Sprint_Loop, Sitting_Idle_Loop, Crouch_*, Fixing_Kneeling (no dedicated "bend" clip beyond those).
+**Rest-space contract validated:** regenerating `Fat` from the shipped Male_Peasant with the rest transform (`joint.world × IBM`) matches the stored target within the 11-bit quantization step (test).
+
+**Findings worth keeping**
+- gltf-transform's writer rebuilds `extras.targetNames` from `PrimitiveTarget` names → new targets must be named (`createPrimitiveTarget('Slim')`); a regression test re-reads written bytes.
+- `warpBody`'s arm term radially scales around the arm axis for 0.2<|x|<0.7 at *any* height, so it tore the female skirt hem. Skirts/aprons/robes/noble bodice ("drape") use `warpBody(..., {arms:false})` and a torso-only Slim. Default `warpBody` output is unchanged.
+- Head-pack meshes (`SuperHero_<Sex>`, Eyes, Eyebrows; y ≥ 1.45 m) carry no target; warp influence there is < 1 mm, so they are treated as the zero-movement head zone. Any other body/garment mesh without the target disables the build (status shows which).
+
+**Variant status**
+| Variant | State |
+|---|---|
+| Muscular (original) | ready — all influences zero (default) |
+| Heavy | ready to **view** (shipped Fat + generated for authored bodies/eq); silhouette quality needs author review (female belly is subtle by shipped design) |
+| Slim | ready to **view**, experimental; modest slenderness, thighs change little |
+| Normal | **not implemented** — stock muscle definition is painted/modelled; a spatial warp cannot credibly remove it |
+| Child | **blocked** — needs new proportions/rig (joint centers), no placeholder shipped |
+
+**Cost:** 26 MB for 24 derivative files (+≈10–35 % per file vs original: 0.5–1.6 MB → 0.56–2.5 MB, meshopt FILTER encoding, Float32 position+normal deltas). Derivatives are only fetched in the Asset Browser, but `pnpm build` copies `public/` so they ship in `dist/`; excluding `body-preview/` from the production build is an open follow-up. GPU/memory/FPS were **not** measured; no performance claim is made.
+
+**Verification done:** vitest (generator, `bodyBuild`, morph-preserving rebind, URL/state), `vue-tsc`, eslint, `pnpm build`; Chrome/SwiftShader screenshots of Male Peasant, Female Peasant + WorkSkirt (rest, front/side) and Male Knight seated (Sitting_Idle_Loop). **Not done:** Run/Walk, kneeling, Blacksmith/Farmer/Woodcutter, Ranger/Wizard visual passes, seam inspection at close range, and any native-GPU look — author visual check required (queue §2).

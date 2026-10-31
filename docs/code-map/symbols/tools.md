@@ -41,25 +41,25 @@ Generated from exported TypeScript symbols.
 
 ## `tools/assetBrowser/state.ts`
 
-- `BackgroundPreset` — type — line 13
-- `browserState` — const — line 62
-- `BrowserState` — type — line 18
-- `FocusMode` — type — line 16
-- `LightingPreset` — type — line 12
-- `PoseMode` — type — line 14
-- `RenderMode` — type — line 11
-- `resetSlotDiagnostics` — function — line 170
-- `slotDiagnostics` — const — line 133
-- `SlotDiagnostics` — type — line 109
-- `ViewLayout` — type — line 10
+- `BackgroundPreset` — type — line 14
+- `browserState` — const — line 65
+- `BrowserState` — type — line 19
+- `FocusMode` — type — line 17
+- `LightingPreset` — type — line 13
+- `PoseMode` — type — line 15
+- `RenderMode` — type — line 12
+- `resetSlotDiagnostics` — function — line 174
+- `slotDiagnostics` — const — line 137
+- `SlotDiagnostics` — type — line 113
+- `ViewLayout` — type — line 11
 
 ## `tools/assetBrowser/urlParams.ts`
 
-- `applyAssetBrowserUrlParams` — function — line 205
-- `AssetBrowserUrlParams` — type — line 19
-- `hasAssetBrowserUrlParams` — function — line 200
-- `parseAssetBrowserUrlParams` — function — line 132
-- `syncAssetBrowserUrlParams` — function — line 257
+- `applyAssetBrowserUrlParams` — function — line 211
+- `AssetBrowserUrlParams` — type — line 20
+- `hasAssetBrowserUrlParams` — function — line 206
+- `parseAssetBrowserUrlParams` — function — line 135
+- `syncAssetBrowserUrlParams` — function — line 264
 
 ## `tools/assetBrowser/viewer/cameraPersist.ts`
 
@@ -83,16 +83,16 @@ Generated from exported TypeScript symbols.
 
 ## `tools/assetBrowser/viewer/createAssetSlot.ts`
 
-- `AssetSlot` — type — line 38
-- `boundsData` — function — line 374
-- `boxFromModel` — function — line 84
-- `collectMeshStats` — function — line 89
-- `createAssetSlot` — function — line 141
-- `MeshStats` — type — line 33
-- `reconcilePoseClip` — function — line 129
-- `resolveAppliedClipName` — function — line 116
-- `setWireframe` — function — line 392
-- `sortedClipNames` — function — line 111
+- `AssetSlot` — type — line 39
+- `boundsData` — function — line 401
+- `boxFromModel` — function — line 87
+- `collectMeshStats` — function — line 92
+- `createAssetSlot` — function — line 144
+- `MeshStats` — type — line 34
+- `reconcilePoseClip` — function — line 132
+- `resolveAppliedClipName` — function — line 119
+- `setWireframe` — function — line 419
+- `sortedClipNames` — function — line 114
 
 ## `tools/assetBrowser/viewer/createMultiView.ts`
 
@@ -109,9 +109,9 @@ Generated from exported TypeScript symbols.
 
 ## `tools/assetBrowser/viewer/createViewer.ts`
 
-- `AssetViewer` — type — line 38
-- `createViewer` — function — line 69
-- `syncDiagnostics` — function — line 460
+- `AssetViewer` — type — line 39
+- `createViewer` — function — line 72
+- `syncDiagnostics` — function — line 468
 
 ## `tools/assetBrowser/viewer/createViewerScene.ts`
 
@@ -144,11 +144,12 @@ Generated from exported TypeScript symbols.
 
 ## `tools/assetBrowser/viewer/mountCompareGarments.ts`
 
-- `attachCompareGarments` — function — line 100
-- `attachCompareHead` — function — line 67
-- `attachCompareKit` — function — line 173
+- `attachCompareGarments` — function — line 131
+- `attachCompareHair` — function — line 109
+- `attachCompareHead` — function — line 80
+- `attachCompareKit` — function — line 200
 - `CompareAttachResult` — type — line 7
-- `CompareKitOptions` — type — line 167
+- `CompareKitOptions` — type — line 194
 
 ## `tools/assetBrowser/viewer/mountHeldPreview.ts`
 

@@ -2,6 +2,8 @@ import type { AssetAnchorDef } from './assetAnchors'
 import { parkedIdFromUrl } from './assetUrlUtils'
 
 export { parkedIdFromUrl } from './assetUrlUtils'
+import type { CharacterGarment } from '../characters/characterTypes'
+import type { BodyBuild } from './bodyBuild'
 import { NPC_HEIGHT } from '../ai/NpcAgent'
 import {
   NPC_UBC_FEMALE_PEASANT_URL,
@@ -67,6 +69,7 @@ import {
   WOOD_PILE_URL,
 } from '../settlement/propSpecs'
 import { anchorsForAsset } from './assetAnchorData'
+import { bodyPreviewEntries } from './bodyPreviewEntries'
 
 export type AssetPrepare =
   | { mode: 'height', value: number }
@@ -91,7 +94,7 @@ export type AssetIndexGroup =
 export type AssetIndexStatus = 'wired' | 'parked' | 'extra'
 
 /** Quaternius eq garment node stem; pack node is `EQ_${name}`. */
-export type CompareGarment = 'PeasantSkirt'
+export type CompareGarment = 'PeasantSkirt' | CharacterGarment
 
 export type AssetIndexEntry = {
   id: string
@@ -116,6 +119,10 @@ export type AssetIndexEntry = {
   eqUrl?: string
   /** Base head GLB for compare kits (`/compare/v{2|3}/{Sex}_Head.glb`). One variant per sex. */
   headUrl?: string
+  /** Hair pack + named nodes attached after the body (body-preview entries). */
+  hair?: { url: string, nodes: readonly string[] }
+  /** Body builds this entry's derivative GLB carries targets for (tools-022 preview). */
+  bodyBuilds?: readonly BodyBuild[]
 }
 
 const WAGON_URL = '/models/settlement/megakit/wagon.glb'
@@ -601,6 +608,7 @@ export function buildAssetIndex(): AssetIndexEntry[] {
   })
 
   pushCompareCharacterEntries(out)
+  out.push(...bodyPreviewEntries())
 
   for (const [kind, url] of Object.entries(FAUNA_URLS)) {
     if (!url) continue

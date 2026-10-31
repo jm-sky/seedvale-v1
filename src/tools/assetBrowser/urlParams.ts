@@ -5,6 +5,7 @@ import type {
   PoseMode,
   ViewLayout,
 } from './state'
+import { type BodyBuild, DEFAULT_BODY_BUILD, parseBodyBuild } from '../../assets/bodyBuild'
 import { DEFAULT_HAIR_COLOR, type HairColorId, parseHairColor } from './hairTint'
 
 /**
@@ -34,6 +35,8 @@ export type AssetBrowserUrlParams = {
   clip?: string | null
   lightingPreset?: LightingPreset
   hairColor?: HairColorId
+  /** Preview body build (`build=heavy|slim|muscular`); invalid values are ignored. */
+  bodyBuild?: BodyBuild
   showBbox?: boolean
   showGrid?: boolean
   showAxes?: boolean
@@ -179,6 +182,9 @@ export function parseAssetBrowserUrlParams(
   const hairColor = parseHairColor(firstPresent(params, ['hairColor']))
   if (hairColor !== undefined) out.hairColor = hairColor
 
+  const bodyBuild = parseBodyBuild(firstPresent(params, ['build', 'bodyBuild']))
+  if (bodyBuild !== undefined) out.bodyBuild = bodyBuild
+
   const bbox = parseBool(firstPresent(params, ['bbox', 'showBbox']))
   if (bbox !== undefined) out.showBbox = bbox
 
@@ -232,6 +238,7 @@ export function applyAssetBrowserUrlParams(
   if (parsed.clip !== undefined) state.clip = parsed.clip
   if (parsed.lightingPreset !== undefined) state.lightingPreset = parsed.lightingPreset
   if (parsed.hairColor !== undefined) state.hairColor = parsed.hairColor
+  if (parsed.bodyBuild !== undefined) state.bodyBuild = parsed.bodyBuild
   if (parsed.showBbox !== undefined) state.showBbox = parsed.showBbox
   if (parsed.showGrid !== undefined) state.showGrid = parsed.showGrid
   if (parsed.showAxes !== undefined) state.showAxes = parsed.showAxes
@@ -261,7 +268,7 @@ export function syncAssetBrowserUrlParams(state: BrowserState): void {
   // Canonical names only (drop aliases so the bar stays short).
   for (const alias of [
     'ref', 'targetUrl', 'freeUrl', 'refUrl', 'refAnchor', 'radius', 'zoom', 'activeView',
-    'light', 'preset', 'hair', 'hairTint', 'showBbox', 'showGrid', 'showAxes', 'showGround', 'report',
+    'light', 'preset', 'hair', 'hairTint', 'bodyBuild', 'showBbox', 'showGrid', 'showAxes', 'showGround', 'report',
   ] as const) {
     url.searchParams.delete(alias)
   }
@@ -304,6 +311,9 @@ export function syncAssetBrowserUrlParams(state: BrowserState): void {
 
   if (state.hairColor === DEFAULT_HAIR_COLOR) url.searchParams.delete('hairColor')
   else url.searchParams.set('hairColor', state.hairColor)
+
+  if (state.bodyBuild === DEFAULT_BODY_BUILD) url.searchParams.delete('build')
+  else url.searchParams.set('build', state.bodyBuild)
 
   setBoolFlag(url, 'bbox', state.showBbox, true)
   setBoolFlag(url, 'grid', state.showGrid, true)

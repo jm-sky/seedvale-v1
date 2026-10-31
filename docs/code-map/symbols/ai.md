@@ -297,7 +297,7 @@ Generated from exported TypeScript symbols.
 ## `ai/npcBarkRequest.ts`
 
 - `configureRequestNpcBark` — function — line 51
-- `createRequestNpcBark` — function — line 111
+- `createRequestNpcBark` — function — line 112
 - `getSharedRequestNpcBark` — function — line 55
 - `NpcBarkDecision` — type — line 37
 - `NpcBarkRequest` — type — line 21
@@ -708,7 +708,7 @@ Generated from exported TypeScript symbols.
 
 ## `ai/npcVoiceLines.ts`
 
-- `buildNpcVoiceLookupKeys` — function — line 303
+- `buildNpcVoiceLookupKeys` — function — line 309
 - `FRIENDLY_TALK_SOUND_VOLUME` — const — line 117
 - `NpcVoiceAgeBand` — type — line 75
   - domain: npc
@@ -717,9 +717,9 @@ Generated from exported TypeScript symbols.
 - `NpcVoiceResolveInput` — type — line 78
 - `NpcVoiceSemanticIntent` — type — line 44
 - `REACTION_SOUND_VOLUME` — const — line 111
-- `resolveNpcVoiceLine` — function — line 325
+- `resolveNpcVoiceLine` — function — line 331
   - domain: npc
-- `resolveNpcVoiceLineWithManifest` — function — line 333
+- `resolveNpcVoiceLineWithManifest` — function — line 340
 - `voiceAgeBandForAge` — function — line 92
   - domain: npc
 - `voiceProfileIdFor` — function — line 35

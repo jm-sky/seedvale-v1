@@ -23,8 +23,12 @@ const ss = (a, b, x) => {
 }
 const g = (x, c, s) => Math.exp(-(((x - c) / s) ** 2))
 
-/** Warps one point [x, y, z] at full build (k = 1); `sex` is a key of BODY. */
-export function warpBody(sex, p) {
+/**
+ * Warps one point [x, y, z] at full build (k = 1); `sex` is a key of BODY.
+ * `opts.arms === false` skips the arm term (long skirts/robes flare through the arm-axis radius band and must not use it;
+ * body-preview only — default output is unchanged).
+ */
+export function warpBody(sex, p, opts) {
   const b = BODY[sex]
   let [x, y, z] = p
   const L = b.neckY - b.pelvisY
@@ -45,6 +49,7 @@ export function warpBody(sex, p) {
   x *= 1 + b.hips * gh
   z = b.zc + (z - b.zc) * (1 + 0.2 * gh)
   // arms: radial about the horizontal arm axis, none at the shoulder and none at the hands
+  if (opts && opts.arms === false) return [x, y, z]
   const ga = ss(0.2, 0.3, ax) * ss(0.7, 0.55, ax)
   y = b.armY + (y - b.armY) * (1 + b.arms * ga)
   z = b.armZ + (z - b.armZ) * (1 + b.arms * ga)

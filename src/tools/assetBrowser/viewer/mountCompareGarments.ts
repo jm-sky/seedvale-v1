@@ -21,12 +21,28 @@ function resolveBone(bones: Map<string, Bone>, name: string): Bone | undefined {
   return bones.get(name) ?? bones.get(name.replace(/_\d+$/, ''))
 }
 
+/**
+ * New SkinnedMesh bound to `bones` by joint name. Shares the source geometry (morph attributes travel with it) and
+ * copies the morph dictionary and per-instance influences explicitly instead of trusting constructor defaults.
+ */
+function rebindMesh(src: SkinnedMesh, newBones: Bone[], name: string): SkinnedMesh {
+  const skeleton = new Skeleton(newBones, src.skeleton.boneInverses)
+  const mesh = new SkinnedMesh(src.geometry, src.material)
+  mesh.name = name
+  mesh.frustumCulled = false
+  if (src.morphTargetDictionary) mesh.morphTargetDictionary = { ...src.morphTargetDictionary }
+  if (src.morphTargetInfluences) mesh.morphTargetInfluences = [...src.morphTargetInfluences]
+  mesh.bind(skeleton, src.bindMatrix)
+  return mesh
+}
+
 /** Rebind every SkinnedMesh from `pack` onto `body`'s skeleton (v2 head / eq contract). */
 function rebindAllSkinned(
   body: Object3D,
   bones: Map<string, Bone>,
   pack: Object3D,
   label: string,
+  only?: ReadonlySet<string>,
 ): CompareAttachResult {
   const attached: string[] = []
   const warnings: string[] = []
@@ -34,6 +50,7 @@ function rebindAllSkinned(
   pack.traverse((o) => {
     const src = o as SkinnedMesh
     if (!src.isSkinnedMesh) return
+    if (only && ![...only].some((n) => src.name === n || src.name.startsWith(`${n}_`))) return
 
     const newBones = src.skeleton.bones.map((b) => resolveBone(bones, b.name) ?? b)
     const missing = src.skeleton.bones
@@ -45,12 +62,8 @@ function rebindAllSkinned(
       )
     }
 
-    const skeleton = new Skeleton(newBones, src.skeleton.boneInverses)
-    const mesh = new SkinnedMesh(src.geometry, src.material)
-    mesh.name = src.name || label
-    mesh.frustumCulled = false
+    const mesh = rebindMesh(src, newBones, src.name || label)
     body.add(mesh)
-    mesh.bind(skeleton, src.bindMatrix)
     attached.push(mesh.name)
   })
 
@@ -90,6 +103,24 @@ export async function attachCompareHead(
   }
 
   return rebindAllSkinned(body, bones, pack, 'head')
+}
+
+/** Attach named hair/beard nodes (`HAIR_<style>`) from a hair pack onto a loaded body. */
+export async function attachCompareHair(
+  body: Object3D,
+  entry: Pick<AssetIndexEntry, 'hair'>,
+): Promise<CompareAttachResult> {
+  const hair = entry.hair
+  if (!hair?.nodes.length) return { attached: [], warnings: [] }
+  const bones = collectBones(body)
+  if (bones.size === 0) return { attached: [], warnings: [`Hair skipped: body has no bones (${hair.url})`] }
+  let pack: Object3D
+  try {
+    pack = await loadGltf(hair.url)
+  } catch (err) {
+    return { attached: [], warnings: [`Hair failed to load ${hair.url}: ${String(err)}`] }
+  }
+  return rebindAllSkinned(body, bones, pack, 'hair', new Set(hair.nodes))
 }
 
 /**
@@ -145,12 +176,8 @@ export async function attachCompareGarments(
       warnings.push(`EQ_${mod}: unbound bones ${missing.slice(0, 6).join(', ')}${missing.length > 6 ? '…' : ''}`)
     }
 
-    const skeleton = new Skeleton(newBones, src.skeleton.boneInverses)
-    const mesh = new SkinnedMesh(src.geometry, src.material)
-    mesh.name = src.name
-    mesh.frustumCulled = false
+    const mesh = rebindMesh(src, newBones, src.name)
     body.add(mesh)
-    mesh.bind(skeleton, src.bindMatrix)
     attached.push(src.name)
   })
 
@@ -172,16 +199,17 @@ export type CompareKitOptions = {
 /** Head first, then garments — shared status line for the asset-browser slot. */
 export async function attachCompareKit(
   body: Object3D,
-  entry: Pick<AssetIndexEntry, 'headUrl' | 'garments' | 'eqUrl'>,
+  entry: Pick<AssetIndexEntry, 'headUrl' | 'garments' | 'eqUrl' | 'hair'>,
   opts: CompareKitOptions = {},
 ): Promise<CompareAttachResult> {
   const includeHead = opts.head !== false
   const head = includeHead
     ? await attachCompareHead(body, entry)
     : { attached: [] as string[], warnings: [] as string[] }
+  const hair = includeHead ? await attachCompareHair(body, entry) : { attached: [] as string[], warnings: [] as string[] }
   const garments = await attachCompareGarments(body, entry)
   return {
-    attached: [...head.attached, ...garments.attached],
-    warnings: [...head.warnings, ...garments.warnings],
+    attached: [...head.attached, ...hair.attached, ...garments.attached],
+    warnings: [...head.warnings, ...hair.warnings, ...garments.warnings],
   }
 }

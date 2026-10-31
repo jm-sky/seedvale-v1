@@ -1,7 +1,7 @@
 # Plan: Character body variants — Asset Browser preview
 
 **Created:** 2026-10-31
-**Status:** `planned` 📋
+**Status:** `in progress` 🔄 (Asset Browser prototype implemented; author visual review pending)
 **Type:** feature
 **Priority:** medium · **Effort:** L
 **Depends on:** -
