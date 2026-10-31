@@ -148,3 +148,4 @@ Research: [../research/2026-08-07-3d-asset-sources.md](../research/2026-08-07-3d
 | `public/models/world/tower_stone.glb` | ❓ ustalić | ❓ | ❓ | Stone tower landmark (`tower`) — plan world-terrain-027; attribution TODO |
 | `public/models/nature/old_tree.glb` | ❓ ustalić | ❓ | ❓ | Old tree landmark (`oldTree`) — plan world-terrain-027; attribution TODO |
 | `public/models/parked/ship.glb`, `ship_small.glb`, `port_medium.glb` | ❓ ustalić | ❓ | ❓ | Parked (unwired) — moved from `public/models/` root during world-terrain-027 |
+| `public/models/settlement/profession-dressing.glb` (node `Hamlet_Antlers`) | "Antlers" by Poly by Google | https://poly.pizza/m/9oH6TjelO-W | CC BY 3.0 | Via V3 `public/assets/props.glb`; other nodes Quaternius CC0 / project-owned (Q48) |

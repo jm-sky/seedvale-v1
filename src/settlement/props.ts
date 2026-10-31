@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import type { HouseVec3 } from '../assets/houseDefinitionExampleConfig'
 import type { RoadCorridorSegment } from '../terrain/chunkHeightmap'
+import type { Collider } from '../world/collision'
 import type { AuthoredRepairPresentationInput } from './authoredRepairTargets'
 import type { SettlementSite } from './findSettlementSite'
 import type { FoodSourceType } from './settlementGenerator'
@@ -22,7 +23,7 @@ import { makeTreeId, rollLivingAge, rollSizeClass, type TreeLivingAge, type Tree
 import { blacksmithYardGeometry } from './blacksmithYard'
 import { type CampfireFlame, createLitCampfireVisual, preloadCampfireTemplates } from './campfireProps'
 import { createBush, createCobblePlate, createTree } from './decorProps'
-import { type VillageSize, villageSizeConfig } from './families'
+import { type FamilyDef, type VillageSize, villageSizeConfig } from './families'
 import { createPropYieldGate } from './frameYield'
 import {
   gardenBedCount,
@@ -56,6 +57,8 @@ import {
   generateSparsePlazaCobbles,
   plazaPavingMode,
 } from './plazaPaving'
+import { type DressingPlacement, professionDressingFor } from './professionDressing'
+import { buildProfessionDressingMeshes, loadProfessionDressingPack, professionDressingColliders } from './professionDressingMesh'
 import {
   ANIMAL_TROUGH_HEIGHT,
   ANIMAL_TROUGH_URL,
@@ -862,6 +865,10 @@ export async function buildSettlementProps(
    *  state). Presentation only ever derives from this input; no separate
    *  visual flag is stored. */
   authoredRepairPresentation?: AuthoredRepairPresentationInput,
+  /** `SettlementDef.families` (index-aligned with house plots) — source of the
+   *  generated household professions for the Q48 home dressing. Omitted by
+   *  legacy callers/fixtures → no dressing. */
+  families?: readonly FamilyDef[],
 ): Promise<{
   group: THREE.Group
   landmarks: SettlementLandmarks
@@ -885,6 +892,8 @@ export async function buildSettlementProps(
   paddockFencePlacements: SettlementPalisadePlacement[]
   /** Household yard fence placements (plan Q35), derived from `plot.yard`. */
   yardFencePlacements: SettlementPalisadePlacement[]
+  /** Colliders of the freestanding profession-dressing pieces (Q48). */
+  professionDressingColliders: Collider[]
   /** Live authored-repair mesh handles (plan quests-progression-073) — null
    *  fields when the settlement has no authored presentation. */
   authoredRepairVisuals: AuthoredRepairVisualHandles | null
@@ -1830,6 +1839,45 @@ export async function buildSettlementProps(
     })
   }
 
+  // Profession-signature home dressing (Q48 / Q42 plan): pure projection of the
+  // generated household professions → merged meshes (one per material) + slot
+  // colliders. No cache/persistence; skipped when the pack or plan is missing.
+  let dressingColliders: Collider[] = []
+  if (families && housePlots.length > 0) {
+    const placed: { familyIndex: number, placement: DressingPlacement }[] = []
+    const all: DressingPlacement[] = []
+    for (const [i, plot] of housePlots.entries()) {
+      const familyIndex = plot.familyIndex ?? i
+      const family = families[familyIndex]
+      const houseDef = plannedDefs[i]
+      if (!family || !houseDef) continue
+      for (const placement of professionDressingFor(family, familyIndex, houseDef, plot.yard, seed)) {
+        placed.push({ familyIndex, placement })
+        all.push(placement)
+      }
+    }
+    if (placed.length > 0) {
+      const pack = await loadProfessionDressingPack()
+      if (pack) {
+        const plotByFamily = new Map(housePlots.map((plot, i) => [plot.familyIndex ?? i, plot]))
+        const meshes = buildProfessionDressingMeshes(
+          pack,
+          placed,
+          (fi) => {
+            const plot = plotByFamily.get(fi)
+            return plot ? { x: plot.x, z: plot.z, yaw: plot.houseYaw ?? 0 } : undefined
+          },
+          sampleHeight,
+        )
+        for (const mesh of meshes) {
+          tagSettlementShadowKind(mesh, 'decor')
+          group.add(mesh)
+        }
+        dressingColliders = professionDressingColliders(all)
+      }
+    }
+  }
+
   // Hay stacks near garden pads (plan 082 B / 095). Pickaxe is a one-time
   // stockpile pickup via item spawners (plan 090), not a decorative prop.
   const hayTemplates = await loadPropTemplates(
@@ -2546,6 +2594,7 @@ export async function buildSettlementProps(
     pastureFencePlacements: pastureFencePlacementsResolved,
     paddockFencePlacements: paddockFencePlacementsResolved,
     yardFencePlacements: yardFencePlacementsResolved,
+    professionDressingColliders: dressingColliders,
     authoredRepairVisuals,
   }
 }

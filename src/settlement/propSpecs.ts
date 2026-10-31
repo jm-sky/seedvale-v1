@@ -106,6 +106,9 @@ export const FALLEN_LOG_SPECS = [
 /** V2 cemetery pack (queue Q47): Kay Lousberg "Halloween Bits" (CC0, via Poly Pizza), 1 unit = 1 m, one atlas
  *  material. Pieces are wrapper nodes named after `CemeteryPieceId` (`cemeteryLayout.ts`). Loaded by
  *  `cemeteryPack.ts` WITHOUT height normalisation (`prepareProp`) — the pieces are already in metres. */
+/** Q48 profession-signature home dressing pack (`scripts/assets/extract-profession-dressing.mjs`); nodes in metres, node origin at the kit's mount point. */
+export const PROFESSION_DRESSING_GLB = { url: '/models/settlement/profession-dressing.glb' } as const
+
 export const GRAVEYARD_GLB = { url: '/models/nature/graveyard.glb' } as const
 
 export const RESOURCE_GOLD_SPECS = [
