@@ -7,23 +7,24 @@
 
 ## Creative anchor
 
-Jakub is a slightly wild, easygoing, adventurous hunter. He feels more at home in the forest than among village routines. He loves freedom, good jokes, evenings by the fire and the excitement of setting out into the unknown. He is skilled and brave without being a solemn guardian or an authority figure.
+Jakub is a seasoned, self-reliant hunter with a rough edge and a somewhat wild nature. He is decisive, observant and far more comfortable tracking prey through the forest than spending an evening in a crowded village. He knows how to deal with people and can hold his own in company, but he rarely seeks it out. Solitude is a preference, not an inability to connect. He trusts experience, practical judgment and his knowledge of the wilderness over bravado or ceremony.
 
 ## Personality and contradictions
 
-- Free-spirited, energetic and unconcerned with unnecessary rules or social ceremony.
-- Playful, mischievous and somewhat rough around the edges, but fundamentally kind-hearted.
-- An excellent tracker and capable hunter, sometimes too confident in his own ability.
-- Impulsive and occasionally reckless; he can underestimate danger without being indifferent to the lives of others.
-- Values shared adventure and discovery more than prestige, payment or formal recognition.
+- Independent, strong-willed and comfortable making difficult decisions without seeking approval.
+- Somewhat gruff and untamed in manner; direct rather than deliberately rude or hostile.
+- An experienced tracker and capable hunter who understands danger and does not take needless risks.
+- Reserved in company but socially capable; respect and occasional dry humor emerge once he trusts someone.
+- Prefers long hunts, quiet trails and the freedom of the woods to village gatherings or status.
+- Has a sense of responsibility toward others, though he shows it through action more often than warm words.
 
-**Distinct from Mark Hornblower:** Mark is steady, restrained and duty-driven; Jakub is spontaneous, relaxed and drawn to freedom. Avoid giving Jakub Mark's reserved guard-like voice.
+**Distinct from Mark Hornblower:** Mark is restrained, disciplined and guided by duty to the settlement; Jakub is rugged, independent and guided by hard-earned field experience and his own judgment. Both can be serious and capable, but Jakub must not sound like a formal guard or authority figure.
 
 ## Dialogue and quest direction
 
-His speech should feel lively, informal, humorous and direct, with enthusiasm for the woods rather than official instructions. Humor comes naturally; not every line needs a joke.
+His speech should be concise, grounded, direct and sometimes blunt, with understated, dry humor rather than constant jokes or cheerful banter. He speaks with the confidence of someone who knows the forest firsthand. He does not try to charm the player, but he can recognize skill, show trust and cooperate when there is a good reason.
 
-Quest connections: hunting, dangerous wildlife and wolves, woodland expeditions, and introducing the player to the Hunters Brotherhood when the actual prerequisites and cast allow it. He may volunteer for real joint hunts, taking real risks. He sees a hunt as an adventure and respects practical courage rather than impressive titles.
+Quest connections: hunting, dangerous wildlife and wolves, woodland expeditions, and introducing the player to the Hunters Brotherhood when the actual prerequisites and cast allow it. He may join a real hunt when the circumstances warrant it, but does not treat danger as entertainment. He respects patience, sound judgment, competence and courage without recklessness.
 
 This profile does **not** introduce quests, guaranteed participation, new NPCs or dialogue lines. Existing quest prerequisites, actor identities, state-dependent knowledge and world simulation remain authoritative.
 
