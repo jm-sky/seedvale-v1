@@ -1,0 +1,1537 @@
+{
+  "schema_version": 1,
+  "status": "proposals_not_approved_no_audio_generated",
+  "locale": "en",
+  "scope": "NPC voice/dialogue presentation; no automatic full-game localization",
+  "q31_existing": [
+    {
+      "source": "Q31",
+      "filename": "general_male_weather_shelter_02.mp3",
+      "intent": "weather_shelter",
+      "priority": "P0",
+      "text": "No sense standing out in this. I'm heading in.",
+      "generation_input": "[sigh] No sense standing out in this. [short pause] I'm heading in.",
+      "voice_profile": "general_male",
+      "fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "status": "existing_planned_do_not_regenerate_as_new_work",
+      "source_path": "docs/research/v1-revival/2026-10-31--q31-npc-bark-line-script.md",
+      "conditions": "Existing seekShelter entry; weather-specific chain from Q31; see audit for stricter wording review.",
+      "implementation_dependencies": [
+        "Q40",
+        "D0"
+      ]
+    },
+    {
+      "source": "Q31",
+      "filename": "general_female_weather_shelter_02.mp3",
+      "intent": "weather_shelter",
+      "priority": "P0",
+      "text": "I'm not staying out in this. Inside, quick.",
+      "generation_input": "I'm not staying out in this. [short pause] Inside, quick.",
+      "voice_profile": "general_female",
+      "fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "status": "existing_planned_do_not_regenerate_as_new_work",
+      "source_path": "docs/research/v1-revival/2026-10-31--q31-npc-bark-line-script.md",
+      "conditions": "Existing seekShelter entry; weather-specific chain from Q31; see audit for stricter wording review.",
+      "implementation_dependencies": [
+        "Q40",
+        "D0"
+      ]
+    },
+    {
+      "source": "Q31",
+      "filename": "guard_male_weather_shelter_02.mp3",
+      "intent": "weather_shelter",
+      "priority": "P0",
+      "text": "Weather's turned. Get yourselves under cover.",
+      "generation_input": "Weather's turned. [short pause] Get yourselves under cover.",
+      "voice_profile": "guard_male",
+      "fish_voice_id": "c29549f41b3b4aa498d66d76fba0e887",
+      "status": "existing_planned_do_not_regenerate_as_new_work",
+      "source_path": "docs/research/v1-revival/2026-10-31--q31-npc-bark-line-script.md",
+      "conditions": "Existing seekShelter entry; weather-specific chain from Q31; see audit for stricter wording review.",
+      "implementation_dependencies": [
+        "Q40",
+        "D0"
+      ]
+    },
+    {
+      "source": "Q31",
+      "filename": "general_male_weather_shelter_snow_01.mp3",
+      "intent": "weather_shelter_snow",
+      "priority": "P0",
+      "text": "Snow's coming down thick. Time to get warm.",
+      "generation_input": "[sigh] Snow's coming down thick. [short pause] Time to get warm.",
+      "voice_profile": "general_male",
+      "fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "status": "existing_planned_do_not_regenerate_as_new_work",
+      "source_path": "docs/research/v1-revival/2026-10-31--q31-npc-bark-line-script.md",
+      "conditions": "Existing seekShelter entry; weather-specific chain from Q31; see audit for stricter wording review.",
+      "implementation_dependencies": [
+        "Q40",
+        "D0"
+      ]
+    },
+    {
+      "source": "Q31",
+      "filename": "general_female_weather_shelter_snow_01.mp3",
+      "intent": "weather_shelter_snow",
+      "priority": "P0",
+      "text": "Brr. Too cold to stay out in this snow.",
+      "generation_input": "Brr. [short pause] Too cold to stay out in this snow.",
+      "voice_profile": "general_female",
+      "fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "status": "existing_planned_do_not_regenerate_as_new_work",
+      "source_path": "docs/research/v1-revival/2026-10-31--q31-npc-bark-line-script.md",
+      "conditions": "Existing seekShelter entry; weather-specific chain from Q31; see audit for stricter wording review.",
+      "implementation_dependencies": [
+        "Q40",
+        "D0"
+      ]
+    },
+    {
+      "source": "Q31",
+      "filename": "guard_male_weather_shelter_snow_01.mp3",
+      "intent": "weather_shelter_snow",
+      "priority": "P0",
+      "text": "Snow's piling up. Get indoors before you freeze.",
+      "generation_input": "Snow's piling up. [short pause] Get indoors before you freeze.",
+      "voice_profile": "guard_male",
+      "fish_voice_id": "c29549f41b3b4aa498d66d76fba0e887",
+      "status": "existing_planned_do_not_regenerate_as_new_work",
+      "source_path": "docs/research/v1-revival/2026-10-31--q31-npc-bark-line-script.md",
+      "conditions": "Existing seekShelter entry; weather-specific chain from Q31; see audit for stricter wording review.",
+      "implementation_dependencies": [
+        "Q40",
+        "D0"
+      ]
+    },
+    {
+      "source": "Q31",
+      "filename": "general_male_weather_shelter_storm_01.mp3",
+      "intent": "weather_shelter_storm",
+      "priority": "P0",
+      "text": "Hear that thunder? I'm getting indoors.",
+      "generation_input": "[nervous] Hear that thunder? [short pause] I'm getting indoors.",
+      "voice_profile": "general_male",
+      "fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "status": "existing_planned_do_not_regenerate_as_new_work",
+      "source_path": "docs/research/v1-revival/2026-10-31--q31-npc-bark-line-script.md",
+      "conditions": "Existing seekShelter entry; weather-specific chain from Q31; see audit for stricter wording review.",
+      "implementation_dependencies": [
+        "Q40",
+        "D0"
+      ]
+    },
+    {
+      "source": "Q31",
+      "filename": "general_female_weather_shelter_storm_01.mp3",
+      "intent": "weather_shelter_storm",
+      "priority": "P0",
+      "text": "Lightning! I'm not staying out here.",
+      "generation_input": "[nervous] Lightning! [short pause] I'm not staying out here.",
+      "voice_profile": "general_female",
+      "fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "status": "existing_planned_do_not_regenerate_as_new_work",
+      "source_path": "docs/research/v1-revival/2026-10-31--q31-npc-bark-line-script.md",
+      "conditions": "Existing seekShelter entry; weather-specific chain from Q31; see audit for stricter wording review.",
+      "implementation_dependencies": [
+        "Q40",
+        "D0"
+      ]
+    },
+    {
+      "source": "Q31",
+      "filename": "guard_male_weather_shelter_storm_01.mp3",
+      "intent": "weather_shelter_storm",
+      "priority": "P0",
+      "text": "Storm's on us. Everyone indoors, now!",
+      "generation_input": "[loud] Storm's on us. [short pause] Everyone indoors, now!",
+      "voice_profile": "guard_male",
+      "fish_voice_id": "c29549f41b3b4aa498d66d76fba0e887",
+      "status": "existing_planned_do_not_regenerate_as_new_work",
+      "source_path": "docs/research/v1-revival/2026-10-31--q31-npc-bark-line-script.md",
+      "conditions": "Existing seekShelter entry; weather-specific chain from Q31; see audit for stricter wording review.",
+      "implementation_dependencies": [
+        "Q40",
+        "D0"
+      ]
+    },
+    {
+      "source": "Q31",
+      "filename": "general_female_weather_shelter_rain_01.mp3",
+      "intent": "weather_shelter_rain",
+      "priority": "P0",
+      "text": "This rain won't let up. I'm going inside.",
+      "generation_input": "This rain won't let up. [short pause] I'm going inside.",
+      "voice_profile": "general_female",
+      "fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "status": "existing_planned_do_not_regenerate_as_new_work",
+      "source_path": "docs/research/v1-revival/2026-10-31--q31-npc-bark-line-script.md",
+      "conditions": "Existing seekShelter entry; weather-specific chain from Q31; see audit for stricter wording review.",
+      "implementation_dependencies": [
+        "Q40",
+        "D0"
+      ]
+    },
+    {
+      "source": "Q31",
+      "filename": "general_male_weather_shelter_rain_01.mp3",
+      "intent": "weather_shelter_rain",
+      "priority": "P0",
+      "text": "Soaked through already. I'm going in.",
+      "generation_input": "[sigh] Soaked through already. [short pause] I'm going in.",
+      "voice_profile": "general_male",
+      "fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "status": "existing_planned_do_not_regenerate_as_new_work",
+      "source_path": "docs/research/v1-revival/2026-10-31--q31-npc-bark-line-script.md",
+      "conditions": "Existing seekShelter entry; weather-specific chain from Q31; see audit for stricter wording review.",
+      "implementation_dependencies": [
+        "Q40",
+        "D0"
+      ]
+    },
+    {
+      "source": "Q31",
+      "filename": "guard_male_weather_shelter_rain_01.mp3",
+      "intent": "weather_shelter_rain",
+      "priority": "P0",
+      "text": "Rain's getting heavy. Under a roof, all of you.",
+      "generation_input": "Rain's getting heavy. [short pause] Under a roof, all of you.",
+      "voice_profile": "guard_male",
+      "fish_voice_id": "c29549f41b3b4aa498d66d76fba0e887",
+      "status": "existing_planned_do_not_regenerate_as_new_work",
+      "source_path": "docs/research/v1-revival/2026-10-31--q31-npc-bark-line-script.md",
+      "conditions": "Existing seekShelter entry; weather-specific chain from Q31; see audit for stricter wording review.",
+      "implementation_dependencies": [
+        "Q40",
+        "D0"
+      ]
+    },
+    {
+      "source": "Q31",
+      "filename": "general_male_weather_shelter_03.mp3",
+      "intent": "weather_shelter",
+      "priority": "P1",
+      "text": "That sky's turned against us. Best get under a roof.",
+      "generation_input": "That sky's turned against us. [short pause] Best get under a roof.",
+      "voice_profile": "general_male",
+      "fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "status": "existing_planned_do_not_regenerate_as_new_work",
+      "source_path": "docs/research/v1-revival/2026-10-31--q31-npc-bark-line-script.md",
+      "conditions": "Existing seekShelter entry; weather-specific chain from Q31; see audit for stricter wording review.",
+      "implementation_dependencies": [
+        "Q40",
+        "D0"
+      ]
+    },
+    {
+      "source": "Q31",
+      "filename": "general_female_weather_shelter_03.mp3",
+      "intent": "weather_shelter",
+      "priority": "P1",
+      "text": "Of all the days. I'm getting under cover.",
+      "generation_input": "[sigh] Of all the days. [short pause] I'm getting under cover.",
+      "voice_profile": "general_female",
+      "fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "status": "existing_planned_do_not_regenerate_as_new_work",
+      "source_path": "docs/research/v1-revival/2026-10-31--q31-npc-bark-line-script.md",
+      "conditions": "Existing seekShelter entry; weather-specific chain from Q31; see audit for stricter wording review.",
+      "implementation_dependencies": [
+        "Q40",
+        "D0"
+      ]
+    },
+    {
+      "source": "Q31",
+      "filename": "general_male_weather_shelter_snow_02.mp3",
+      "intent": "weather_shelter_snow",
+      "priority": "P1",
+      "text": "Can't feel my fingers. I'm going in.",
+      "generation_input": "Can't feel my fingers. [short pause] I'm going in.",
+      "voice_profile": "general_male",
+      "fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "status": "existing_planned_do_not_regenerate_as_new_work",
+      "source_path": "docs/research/v1-revival/2026-10-31--q31-npc-bark-line-script.md",
+      "conditions": "Existing seekShelter entry; weather-specific chain from Q31; see audit for stricter wording review.",
+      "implementation_dependencies": [
+        "Q40",
+        "D0"
+      ]
+    },
+    {
+      "source": "Q31",
+      "filename": "general_female_weather_shelter_snow_02.mp3",
+      "intent": "weather_shelter_snow",
+      "priority": "P1",
+      "text": "It's snowing harder. I'm heading home.",
+      "generation_input": "It's snowing harder. [short pause] I'm heading home.",
+      "voice_profile": "general_female",
+      "fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "status": "existing_planned_do_not_regenerate_as_new_work",
+      "source_path": "docs/research/v1-revival/2026-10-31--q31-npc-bark-line-script.md",
+      "conditions": "Existing seekShelter entry; weather-specific chain from Q31; see audit for stricter wording review.",
+      "implementation_dependencies": [
+        "Q40",
+        "D0"
+      ]
+    },
+    {
+      "source": "Q31",
+      "filename": "guard_male_weather_shelter_snow_02.mp3",
+      "intent": "weather_shelter_snow",
+      "priority": "P1",
+      "text": "Can barely see a thing in this snow. Get inside.",
+      "generation_input": "Can barely see a thing in this snow. [short pause] Get inside.",
+      "voice_profile": "guard_male",
+      "fish_voice_id": "c29549f41b3b4aa498d66d76fba0e887",
+      "status": "existing_planned_do_not_regenerate_as_new_work",
+      "source_path": "docs/research/v1-revival/2026-10-31--q31-npc-bark-line-script.md",
+      "conditions": "Existing seekShelter entry; weather-specific chain from Q31; see audit for stricter wording review.",
+      "implementation_dependencies": [
+        "Q40",
+        "D0"
+      ]
+    },
+    {
+      "source": "Q31",
+      "filename": "general_male_weather_shelter_storm_02.mp3",
+      "intent": "weather_shelter_storm",
+      "priority": "P1",
+      "text": "Wind's tearing at everything. Inside, before something comes down.",
+      "generation_input": "[nervous] Wind's tearing at everything. [short pause] Inside, before something comes down.",
+      "voice_profile": "general_male",
+      "fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "status": "existing_planned_do_not_regenerate_as_new_work",
+      "source_path": "docs/research/v1-revival/2026-10-31--q31-npc-bark-line-script.md",
+      "conditions": "Existing seekShelter entry; weather-specific chain from Q31; see audit for stricter wording review.",
+      "implementation_dependencies": [
+        "Q40",
+        "D0"
+      ]
+    },
+    {
+      "source": "Q31",
+      "filename": "general_female_weather_shelter_storm_02.mp3",
+      "intent": "weather_shelter_storm",
+      "priority": "P1",
+      "text": "Listen to that wind. Get inside, quickly.",
+      "generation_input": "Listen to that wind. [short pause] Get inside, quickly.",
+      "voice_profile": "general_female",
+      "fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "status": "existing_planned_do_not_regenerate_as_new_work",
+      "source_path": "docs/research/v1-revival/2026-10-31--q31-npc-bark-line-script.md",
+      "conditions": "Existing seekShelter entry; weather-specific chain from Q31; see audit for stricter wording review.",
+      "implementation_dependencies": [
+        "Q40",
+        "D0"
+      ]
+    },
+    {
+      "source": "Q31",
+      "filename": "guard_male_weather_shelter_storm_02.mp3",
+      "intent": "weather_shelter_storm",
+      "priority": "P1",
+      "text": "Stay clear of the trees. Find a roof and stay there.",
+      "generation_input": "Stay clear of the trees. [short pause] Find a roof and stay there.",
+      "voice_profile": "guard_male",
+      "fish_voice_id": "c29549f41b3b4aa498d66d76fba0e887",
+      "status": "existing_planned_do_not_regenerate_as_new_work",
+      "source_path": "docs/research/v1-revival/2026-10-31--q31-npc-bark-line-script.md",
+      "conditions": "Existing seekShelter entry; weather-specific chain from Q31; see audit for stricter wording review.",
+      "implementation_dependencies": [
+        "Q40",
+        "D0"
+      ]
+    },
+    {
+      "source": "Q31",
+      "filename": "general_female_weather_shelter_rain_02.mp3",
+      "intent": "weather_shelter_rain",
+      "priority": "P1",
+      "text": "Look at it pour. I'll be drenched before I'm home.",
+      "generation_input": "Look at it pour. [short pause] I'll be drenched before I'm home.",
+      "voice_profile": "general_female",
+      "fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "status": "existing_planned_do_not_regenerate_as_new_work",
+      "source_path": "docs/research/v1-revival/2026-10-31--q31-npc-bark-line-script.md",
+      "conditions": "Existing seekShelter entry; weather-specific chain from Q31; see audit for stricter wording review.",
+      "implementation_dependencies": [
+        "Q40",
+        "D0"
+      ]
+    },
+    {
+      "source": "Q31",
+      "filename": "general_female_hungry_01.mp3",
+      "intent": "hungry",
+      "priority": "P2",
+      "text": "I haven't eaten all day. Work can wait.",
+      "generation_input": "[sigh] I haven't eaten all day. [short pause] Work can wait.",
+      "voice_profile": "general_female",
+      "fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "status": "existing_planned_do_not_regenerate_as_new_work",
+      "source_path": "docs/research/v1-revival/2026-10-31--q31-npc-bark-line-script.md",
+      "conditions": "Existing hungry transition only.",
+      "implementation_dependencies": [
+        "Q40",
+        "D0"
+      ]
+    },
+    {
+      "source": "Q31",
+      "filename": "general_female_hungry_02.mp3",
+      "intent": "hungry",
+      "priority": "P2",
+      "text": "My stomach won't stop grumbling. Time for a bite.",
+      "generation_input": "My stomach won't stop grumbling. [short pause] Time for a bite.",
+      "voice_profile": "general_female",
+      "fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "status": "existing_planned_do_not_regenerate_as_new_work",
+      "source_path": "docs/research/v1-revival/2026-10-31--q31-npc-bark-line-script.md",
+      "conditions": "Existing hungry transition only.",
+      "implementation_dependencies": [
+        "Q40",
+        "D0"
+      ]
+    },
+    {
+      "source": "Q31",
+      "filename": "general_male_hungry_02.mp3",
+      "intent": "hungry",
+      "priority": "P2",
+      "text": "I could eat a horse. Well, nearly.",
+      "generation_input": "I could eat a horse. [short pause] Well, nearly.",
+      "voice_profile": "general_male",
+      "fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "status": "existing_planned_do_not_regenerate_as_new_work",
+      "source_path": "docs/research/v1-revival/2026-10-31--q31-npc-bark-line-script.md",
+      "conditions": "Existing hungry transition only.",
+      "implementation_dependencies": [
+        "Q40",
+        "D0"
+      ]
+    },
+    {
+      "source": "Q31",
+      "filename": "general_female_work_finished_01.mp3",
+      "intent": "work_finished",
+      "priority": "P2",
+      "text": "All done. Not bad, if I say so myself.",
+      "generation_input": "All done. [short pause] Not bad, if I say so myself.",
+      "voice_profile": "general_female",
+      "fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "status": "existing_planned_do_not_regenerate_as_new_work",
+      "source_path": "docs/research/v1-revival/2026-10-31--q31-npc-bark-line-script.md",
+      "conditions": "Existing work_finished transition only.",
+      "implementation_dependencies": [
+        "Q40",
+        "D0"
+      ]
+    },
+    {
+      "source": "Q31",
+      "filename": "general_female_work_finished_02.mp3",
+      "intent": "work_finished",
+      "priority": "P2",
+      "text": "Finally finished. My back will thank me.",
+      "generation_input": "[sigh] Finally finished. [short pause] My back will thank me.",
+      "voice_profile": "general_female",
+      "fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "status": "existing_planned_do_not_regenerate_as_new_work",
+      "source_path": "docs/research/v1-revival/2026-10-31--q31-npc-bark-line-script.md",
+      "conditions": "Existing work_finished transition only.",
+      "implementation_dependencies": [
+        "Q40",
+        "D0"
+      ]
+    },
+    {
+      "source": "Q31",
+      "filename": "general_male_work_finished_02.mp3",
+      "intent": "work_finished",
+      "priority": "P2",
+      "text": "That'll do for now.",
+      "generation_input": "That'll do for now.",
+      "voice_profile": "general_male",
+      "fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "status": "existing_planned_do_not_regenerate_as_new_work",
+      "source_path": "docs/research/v1-revival/2026-10-31--q31-npc-bark-line-script.md",
+      "conditions": "Existing work_finished transition only.",
+      "implementation_dependencies": [
+        "Q40",
+        "D0"
+      ]
+    },
+    {
+      "source": "Q31",
+      "filename": "general_female_exhausted_02.mp3",
+      "intent": "exhausted",
+      "priority": "P2",
+      "text": "I can barely keep my eyes open.",
+      "generation_input": "[tired] I can barely keep my eyes open.",
+      "voice_profile": "general_female",
+      "fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "status": "existing_planned_do_not_regenerate_as_new_work",
+      "source_path": "docs/research/v1-revival/2026-10-31--q31-npc-bark-line-script.md",
+      "conditions": "Existing exhausted transition only.",
+      "implementation_dependencies": [
+        "Q40",
+        "D0"
+      ]
+    },
+    {
+      "source": "Q31",
+      "filename": "general_male_exhausted_02.mp3",
+      "intent": "exhausted",
+      "priority": "P2",
+      "text": "My legs are giving out. I need rest.",
+      "generation_input": "[tired] My legs are giving out. [short pause] I need rest.",
+      "voice_profile": "general_male",
+      "fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "status": "existing_planned_do_not_regenerate_as_new_work",
+      "source_path": "docs/research/v1-revival/2026-10-31--q31-npc-bark-line-script.md",
+      "conditions": "Existing exhausted transition only.",
+      "implementation_dependencies": [
+        "Q40",
+        "D0"
+      ]
+    }
+  ],
+  "new_proposals": [
+    {
+      "id": "revival.general_male.danger_alert.11",
+      "priority": "P0",
+      "status": "proposal_pending_author_approval",
+      "text": "Look out! Get clear of it!",
+      "intent": "danger_alert",
+      "conditions": "Existing new perceived animal-threat episode; any species.",
+      "profession": "any",
+      "personality_style": "neutral",
+      "humor": false,
+      "voice_profile": "general_male",
+      "fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "filename": "general_male_danger_alert_11.mp3",
+      "generation_input": "Look out! Get clear of it!",
+      "implementation_dependencies": [
+        "D0",
+        "D1"
+      ]
+    },
+    {
+      "id": "revival.shepherd_male.livestock_danger.11",
+      "priority": "P0",
+      "status": "proposal_pending_author_approval",
+      "text": "The animals are in danger! Keep back!",
+      "intent": "livestock_danger",
+      "conditions": "Existing flock-threat episode; no claim that the predator is a wolf or livestock are sheep.",
+      "profession": "shepherd",
+      "personality_style": "neutral",
+      "humor": false,
+      "voice_profile": "shepherd_male",
+      "fish_voice_id": "4af16ba03cee422996ec29a43e1947ee",
+      "filename": "shepherd_male_livestock_danger_11.mp3",
+      "generation_input": "The animals are in danger! Keep back!",
+      "implementation_dependencies": [
+        "D0",
+        "D1"
+      ]
+    },
+    {
+      "id": "revival.general_male.farewell.11",
+      "priority": "P0",
+      "status": "proposal_pending_author_approval",
+      "text": "Take care. I hope your journey goes well.",
+      "intent": "farewell",
+      "conditions": "Committed farewell; no promise of stock, location or future availability.",
+      "profession": "any",
+      "personality_style": "neutral",
+      "humor": false,
+      "voice_profile": "general_male",
+      "fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "filename": "general_male_farewell_11.mp3",
+      "generation_input": "Take care. I hope your journey goes well.",
+      "implementation_dependencies": [
+        "D0",
+        "D1"
+      ]
+    },
+    {
+      "id": "revival.general_female.danger_alert.11",
+      "priority": "P1",
+      "status": "proposal_pending_author_approval",
+      "text": "Watch out! Move away from it!",
+      "intent": "danger_alert",
+      "conditions": "Existing new perceived animal-threat episode; any species.",
+      "profession": "any",
+      "personality_style": "neutral",
+      "humor": false,
+      "voice_profile": "general_female",
+      "fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "filename": "general_female_danger_alert_11.mp3",
+      "generation_input": "Watch out! Move away from it!",
+      "implementation_dependencies": [
+        "D0",
+        "D1"
+      ]
+    },
+    {
+      "id": "revival.guard_male.combat_start.11",
+      "priority": "P1",
+      "status": "proposal_pending_author_approval",
+      "text": "Stay back. I'll defend myself!",
+      "intent": "combat_start",
+      "conditions": "Existing successful beginCombat, not greeting or a mere threat sighting.",
+      "profession": "guard",
+      "personality_style": "neutral",
+      "humor": false,
+      "voice_profile": "guard_male",
+      "fish_voice_id": "c29549f41b3b4aa498d66d76fba0e887",
+      "filename": "guard_male_combat_start_11.mp3",
+      "generation_input": "Stay back. I'll defend myself!",
+      "implementation_dependencies": [
+        "D0",
+        "D1"
+      ]
+    },
+    {
+      "id": "revival.general_male.call_for_help.11",
+      "priority": "P1",
+      "status": "proposal_pending_author_approval",
+      "text": "Somebody, help me!",
+      "intent": "call_for_help",
+      "conditions": "Real admitted help-request event; producer must first be located or separately implemented.",
+      "profession": "any",
+      "personality_style": "neutral",
+      "humor": false,
+      "voice_profile": "general_male",
+      "fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "filename": "general_male_call_for_help_11.mp3",
+      "generation_input": "Somebody, help me!",
+      "implementation_dependencies": [
+        "D0",
+        "D1",
+        "D6"
+      ]
+    },
+    {
+      "id": "revival.general_female.call_for_help.11",
+      "priority": "P1",
+      "status": "proposal_pending_author_approval",
+      "text": "Please, somebody! I can't manage alone!",
+      "intent": "call_for_help",
+      "conditions": "Real admitted help-request event; producer must first be located or separately implemented.",
+      "profession": "any",
+      "personality_style": "neutral",
+      "humor": false,
+      "voice_profile": "general_female",
+      "fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "filename": "general_female_call_for_help_11.mp3",
+      "generation_input": "Please, somebody! I can't manage alone!",
+      "implementation_dependencies": [
+        "D0",
+        "D1",
+        "D6"
+      ]
+    },
+    {
+      "id": "revival.hunter_male.hungry.11",
+      "priority": "P1",
+      "status": "proposal_pending_author_approval",
+      "text": "Best find something to eat before I carry on.",
+      "intent": "hungry",
+      "conditions": "Existing hungry transition; no promise of hunting or available food.",
+      "profession": "hunter",
+      "personality_style": "neutral",
+      "humor": false,
+      "voice_profile": "hunter_male",
+      "fish_voice_id": "bd22266aba38416cb602e90ce651520c",
+      "filename": "hunter_male_hungry_11.mp3",
+      "generation_input": "Best find something to eat before I carry on.",
+      "implementation_dependencies": [
+        "D0",
+        "D1"
+      ]
+    },
+    {
+      "id": "revival.hunter_male.exhausted.11",
+      "priority": "P1",
+      "status": "proposal_pending_author_approval",
+      "text": "I need a breather. Even good legs have limits.",
+      "intent": "exhausted",
+      "conditions": "Existing exhaustion transition.",
+      "profession": "hunter",
+      "personality_style": "neutral",
+      "humor": false,
+      "voice_profile": "hunter_male",
+      "fish_voice_id": "bd22266aba38416cb602e90ce651520c",
+      "filename": "hunter_male_exhausted_11.mp3",
+      "generation_input": "I need a breather. Even good legs have limits.",
+      "implementation_dependencies": [
+        "D0",
+        "D1"
+      ]
+    },
+    {
+      "id": "revival.hunter_male.weather_shelter.11",
+      "priority": "P1",
+      "status": "proposal_pending_author_approval",
+      "text": "I'll wait this weather out under cover.",
+      "intent": "weather_shelter",
+      "conditions": "Existing seekShelter entry; weather-neutral, no finished arrival claim.",
+      "profession": "hunter",
+      "personality_style": "neutral",
+      "humor": false,
+      "voice_profile": "hunter_male",
+      "fish_voice_id": "bd22266aba38416cb602e90ce651520c",
+      "filename": "hunter_male_weather_shelter_11.mp3",
+      "generation_input": "I'll wait this weather out under cover.",
+      "implementation_dependencies": [
+        "D0",
+        "D1"
+      ]
+    },
+    {
+      "id": "revival.merchant_female.hungry.11",
+      "priority": "P1",
+      "status": "proposal_pending_author_approval",
+      "text": "Time for a bite. An empty stomach is poor company.",
+      "intent": "hungry",
+      "conditions": "Existing hungry transition. Safe, relaxed context only: no acute threat, injury, bereavement or critical need; if severity is unavailable use a neutral fallback.",
+      "profession": "trader",
+      "personality_style": "neutral",
+      "humor": true,
+      "voice_profile": "merchant_female",
+      "fish_voice_id": "d4f161bee1934b47ad3090f05649270c",
+      "filename": "merchant_female_hungry_11.mp3",
+      "generation_input": "Time for a bite. An empty stomach is poor company.",
+      "implementation_dependencies": [
+        "D0",
+        "D1"
+      ]
+    },
+    {
+      "id": "revival.merchant_female.exhausted.11",
+      "priority": "P1",
+      "status": "proposal_pending_author_approval",
+      "text": "I need to rest a moment before I go on.",
+      "intent": "exhausted",
+      "conditions": "Existing exhaustion transition.",
+      "profession": "trader",
+      "personality_style": "neutral",
+      "humor": false,
+      "voice_profile": "merchant_female",
+      "fish_voice_id": "d4f161bee1934b47ad3090f05649270c",
+      "filename": "merchant_female_exhausted_11.mp3",
+      "generation_input": "I need to rest a moment before I go on.",
+      "implementation_dependencies": [
+        "D0",
+        "D1"
+      ]
+    },
+    {
+      "id": "revival.merchant_female.weather_shelter.11",
+      "priority": "P1",
+      "status": "proposal_pending_author_approval",
+      "text": "This can wait. I'm getting out of the weather.",
+      "intent": "weather_shelter",
+      "conditions": "Existing seekShelter entry.",
+      "profession": "trader",
+      "personality_style": "neutral",
+      "humor": false,
+      "voice_profile": "merchant_female",
+      "fish_voice_id": "d4f161bee1934b47ad3090f05649270c",
+      "filename": "merchant_female_weather_shelter_11.mp3",
+      "generation_input": "This can wait. I'm getting out of the weather.",
+      "implementation_dependencies": [
+        "D0",
+        "D1"
+      ]
+    },
+    {
+      "id": "revival.guard_male.hungry.11",
+      "priority": "P1",
+      "status": "proposal_pending_author_approval",
+      "text": "I need a meal before I carry on.",
+      "intent": "hungry",
+      "conditions": "Existing hungry transition; does not claim watch ended.",
+      "profession": "guard",
+      "personality_style": "neutral",
+      "humor": false,
+      "voice_profile": "guard_male",
+      "fish_voice_id": "c29549f41b3b4aa498d66d76fba0e887",
+      "filename": "guard_male_hungry_11.mp3",
+      "generation_input": "I need a meal before I carry on.",
+      "implementation_dependencies": [
+        "D0",
+        "D1"
+      ]
+    },
+    {
+      "id": "revival.guard_male.exhausted.11",
+      "priority": "P1",
+      "status": "proposal_pending_author_approval",
+      "text": "I need a moment to catch my breath.",
+      "intent": "exhausted",
+      "conditions": "Existing exhaustion transition.",
+      "profession": "guard",
+      "personality_style": "neutral",
+      "humor": false,
+      "voice_profile": "guard_male",
+      "fish_voice_id": "c29549f41b3b4aa498d66d76fba0e887",
+      "filename": "guard_male_exhausted_11.mp3",
+      "generation_input": "I need a moment to catch my breath.",
+      "implementation_dependencies": [
+        "D0",
+        "D1"
+      ]
+    },
+    {
+      "id": "revival.shepherd_male.hungry.11",
+      "priority": "P1",
+      "status": "proposal_pending_author_approval",
+      "text": "It's time I found a bite to eat.",
+      "intent": "hungry",
+      "conditions": "Existing hungry transition.",
+      "profession": "shepherd",
+      "personality_style": "neutral",
+      "humor": false,
+      "voice_profile": "shepherd_male",
+      "fish_voice_id": "4af16ba03cee422996ec29a43e1947ee",
+      "filename": "shepherd_male_hungry_11.mp3",
+      "generation_input": "It's time I found a bite to eat.",
+      "implementation_dependencies": [
+        "D0",
+        "D1"
+      ]
+    },
+    {
+      "id": "revival.shepherd_male.exhausted.11",
+      "priority": "P1",
+      "status": "proposal_pending_author_approval",
+      "text": "My legs need a rest. Just a moment.",
+      "intent": "exhausted",
+      "conditions": "Existing exhaustion transition.",
+      "profession": "shepherd",
+      "personality_style": "neutral",
+      "humor": false,
+      "voice_profile": "shepherd_male",
+      "fish_voice_id": "4af16ba03cee422996ec29a43e1947ee",
+      "filename": "shepherd_male_exhausted_11.mp3",
+      "generation_input": "My legs need a rest. Just a moment.",
+      "implementation_dependencies": [
+        "D0",
+        "D1"
+      ]
+    },
+    {
+      "id": "revival.shepherd_male.weather_shelter.11",
+      "priority": "P1",
+      "status": "proposal_pending_author_approval",
+      "text": "Best get myself under cover.",
+      "intent": "weather_shelter",
+      "conditions": "Existing seekShelter entry; no claim flock followed or is safe.",
+      "profession": "shepherd",
+      "personality_style": "neutral",
+      "humor": false,
+      "voice_profile": "shepherd_male",
+      "fish_voice_id": "4af16ba03cee422996ec29a43e1947ee",
+      "filename": "shepherd_male_weather_shelter_11.mp3",
+      "generation_input": "Best get myself under cover.",
+      "implementation_dependencies": [
+        "D0",
+        "D1"
+      ]
+    },
+    {
+      "id": "revival.general_male.profession_reply.woodcutter",
+      "priority": "P1",
+      "status": "proposal_pending_author_approval",
+      "text": "Wood has a grain. Fighting it only tires your arms.",
+      "intent": "profession_reply",
+      "conditions": "Existing about-self/profession topic selected; adult with actual role=woodcutter; general craft observation, no claim of current work, tools or stock.",
+      "profession": "woodcutter",
+      "personality_style": "calm",
+      "humor": false,
+      "voice_profile": "general_male",
+      "fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "filename": "general_male_profession_reply_woodcutter_11.mp3",
+      "generation_input": "Wood has a grain. Fighting it only tires your arms.",
+      "implementation_dependencies": [
+        "D0",
+        "D1",
+        "D3"
+      ]
+    },
+    {
+      "id": "revival.general_female.profession_reply.farmer",
+      "priority": "P1",
+      "status": "proposal_pending_author_approval",
+      "text": "Farm work teaches patience. Whether you wanted the lesson or not.",
+      "intent": "profession_reply",
+      "conditions": "Existing about-self/profession topic selected; adult with actual role=farmer; general craft observation, no claim of current work, tools or stock. Safe, relaxed context only: no acute threat, injury, bereavement or critical need; if severity is unavailable use a neutral fallback.",
+      "profession": "farmer",
+      "personality_style": "cheerful",
+      "humor": true,
+      "voice_profile": "general_female",
+      "fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "filename": "general_female_profession_reply_farmer_11.mp3",
+      "generation_input": "Farm work teaches patience. Whether you wanted the lesson or not.",
+      "implementation_dependencies": [
+        "D0",
+        "D1",
+        "D3"
+      ]
+    },
+    {
+      "id": "revival.guard_male.profession_reply.guard",
+      "priority": "P1",
+      "status": "proposal_pending_author_approval",
+      "text": "I keep watch. Most days, a sharp eye is enough.",
+      "intent": "profession_reply",
+      "conditions": "Existing about-self/profession topic selected; adult with actual role=guard; general craft observation, no claim of current work, tools or stock.",
+      "profession": "guard",
+      "personality_style": "calm",
+      "humor": false,
+      "voice_profile": "guard_male",
+      "fish_voice_id": "c29549f41b3b4aa498d66d76fba0e887",
+      "filename": "guard_male_profession_reply_guard_11.mp3",
+      "generation_input": "I keep watch. Most days, a sharp eye is enough.",
+      "implementation_dependencies": [
+        "D0",
+        "D1",
+        "D3"
+      ]
+    },
+    {
+      "id": "revival.merchant_female.profession_reply.trader",
+      "priority": "P1",
+      "status": "proposal_pending_author_approval",
+      "text": "A clear price saves a long argument.",
+      "intent": "profession_reply",
+      "conditions": "Existing about-self/profession topic selected; adult with actual role=trader; general craft observation, no claim of current work, tools or stock.",
+      "profession": "trader",
+      "personality_style": "calm",
+      "humor": false,
+      "voice_profile": "merchant_female",
+      "fish_voice_id": "d4f161bee1934b47ad3090f05649270c",
+      "filename": "merchant_female_profession_reply_trader_11.mp3",
+      "generation_input": "A clear price saves a long argument.",
+      "implementation_dependencies": [
+        "D0",
+        "D1",
+        "D3"
+      ]
+    },
+    {
+      "id": "revival.general_male.profession_reply.miner",
+      "priority": "P1",
+      "status": "proposal_pending_author_approval",
+      "text": "Underground, care matters more than hurry.",
+      "intent": "profession_reply",
+      "conditions": "Existing about-self/profession topic selected; adult with actual role=miner; general craft observation, no claim of current work, tools or stock.",
+      "profession": "miner",
+      "personality_style": "calm",
+      "humor": false,
+      "voice_profile": "general_male",
+      "fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "filename": "general_male_profession_reply_miner_11.mp3",
+      "generation_input": "Underground, care matters more than hurry.",
+      "implementation_dependencies": [
+        "D0",
+        "D1",
+        "D3"
+      ]
+    },
+    {
+      "id": "revival.general_female.profession_reply.fisher",
+      "priority": "P1",
+      "status": "proposal_pending_author_approval",
+      "text": "Fishing leaves you plenty of time to practise patience.",
+      "intent": "profession_reply",
+      "conditions": "Existing about-self/profession topic selected; adult with actual role=fisher; general craft observation, no claim of current work, tools or stock.",
+      "profession": "fisher",
+      "personality_style": "cheerful",
+      "humor": false,
+      "voice_profile": "general_female",
+      "fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "filename": "general_female_profession_reply_fisher_11.mp3",
+      "generation_input": "Fishing leaves you plenty of time to practise patience.",
+      "implementation_dependencies": [
+        "D0",
+        "D1",
+        "D3"
+      ]
+    },
+    {
+      "id": "revival.hunter_male.profession_reply.hunter",
+      "priority": "P1",
+      "status": "proposal_pending_author_approval",
+      "text": "There's more to hunting than a steady hand. You have to pay attention.",
+      "intent": "profession_reply",
+      "conditions": "Existing about-self/profession topic selected; adult with actual role=hunter; general craft observation, no claim of current work, tools or stock.",
+      "profession": "hunter",
+      "personality_style": "calm",
+      "humor": false,
+      "voice_profile": "hunter_male",
+      "fish_voice_id": "bd22266aba38416cb602e90ce651520c",
+      "filename": "hunter_male_profession_reply_hunter_11.mp3",
+      "generation_input": "There's more to hunting than a steady hand. You have to pay attention.",
+      "implementation_dependencies": [
+        "D0",
+        "D1",
+        "D3"
+      ]
+    },
+    {
+      "id": "revival.general_male.profession_reply.blacksmith",
+      "priority": "P1",
+      "status": "proposal_pending_author_approval",
+      "text": "A rushed edge is work you have to do twice.",
+      "intent": "profession_reply",
+      "conditions": "Existing about-self/profession topic selected; adult with actual role=blacksmith; general craft observation, no claim of current work, tools or stock.",
+      "profession": "blacksmith",
+      "personality_style": "grumpy",
+      "humor": false,
+      "voice_profile": "general_male",
+      "fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "filename": "general_male_profession_reply_blacksmith_11.mp3",
+      "generation_input": "A rushed edge is work you have to do twice.",
+      "implementation_dependencies": [
+        "D0",
+        "D1",
+        "D3"
+      ]
+    },
+    {
+      "id": "revival.shepherd_male.profession_reply.shepherd",
+      "priority": "P1",
+      "status": "proposal_pending_author_approval",
+      "text": "Keeping animals takes patience. They don't listen to explanations.",
+      "intent": "profession_reply",
+      "conditions": "Existing about-self/profession topic selected; adult with actual role=shepherd; general craft observation, no claim of current work, tools or stock. Safe, relaxed context only: no acute threat, injury, bereavement or critical need; if severity is unavailable use a neutral fallback.",
+      "profession": "shepherd",
+      "personality_style": "cheerful",
+      "humor": true,
+      "voice_profile": "shepherd_male",
+      "fish_voice_id": "4af16ba03cee422996ec29a43e1947ee",
+      "filename": "shepherd_male_profession_reply_shepherd_11.mp3",
+      "generation_input": "Keeping animals takes patience. They don't listen to explanations.",
+      "implementation_dependencies": [
+        "D0",
+        "D1",
+        "D3"
+      ]
+    },
+    {
+      "id": "revival.general_female.profession_reply.textile_worker",
+      "priority": "P1",
+      "status": "proposal_pending_author_approval",
+      "text": "A small mistake in the thread can travel a long way.",
+      "intent": "profession_reply",
+      "conditions": "Existing about-self/profession topic selected; adult with actual role=textile_worker; general craft observation, no claim of current work, tools or stock.",
+      "profession": "textile_worker",
+      "personality_style": "curious",
+      "humor": false,
+      "voice_profile": "general_female",
+      "fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "filename": "general_female_profession_reply_textile_worker_11.mp3",
+      "generation_input": "A small mistake in the thread can travel a long way.",
+      "implementation_dependencies": [
+        "D0",
+        "D1",
+        "D3"
+      ]
+    },
+    {
+      "id": "revival.general_female.profession_reply.herbalist",
+      "priority": "P1",
+      "status": "proposal_pending_author_approval",
+      "text": "With herbs, knowing what to leave alone matters too.",
+      "intent": "profession_reply",
+      "conditions": "Existing about-self/profession topic selected; adult with actual role=herbalist; general craft observation, no claim of current work, tools or stock.",
+      "profession": "herbalist",
+      "personality_style": "calm",
+      "humor": false,
+      "voice_profile": "general_female",
+      "fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "filename": "general_female_profession_reply_herbalist_11.mp3",
+      "generation_input": "With herbs, knowing what to leave alone matters too.",
+      "implementation_dependencies": [
+        "D0",
+        "D1",
+        "D3"
+      ]
+    },
+    {
+      "id": "revival.general_male.greeting.stranger_calm",
+      "priority": "P1",
+      "status": "proposal_pending_author_approval",
+      "text": "Hello. What brings you here?",
+      "intent": "greeting",
+      "conditions": "Explicit open; personal relation stranger or acquainted; calm style.",
+      "profession": "any",
+      "personality_style": "calm",
+      "humor": false,
+      "voice_profile": "general_male",
+      "fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "filename": "general_male_greeting_stranger_calm_11.mp3",
+      "generation_input": "Hello. What brings you here?",
+      "implementation_dependencies": [
+        "D0",
+        "D1",
+        "D2",
+        "D3"
+      ]
+    },
+    {
+      "id": "revival.general_female.greeting.stranger_curious",
+      "priority": "P1",
+      "status": "proposal_pending_author_approval",
+      "text": "Hello! What's on your mind today?",
+      "intent": "greeting",
+      "conditions": "Explicit open; stranger or acquainted; curious style.",
+      "profession": "any",
+      "personality_style": "curious",
+      "humor": false,
+      "voice_profile": "general_female",
+      "fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "filename": "general_female_greeting_stranger_curious_11.mp3",
+      "generation_input": "Hello! What's on your mind today?",
+      "implementation_dependencies": [
+        "D0",
+        "D1",
+        "D2",
+        "D3"
+      ]
+    },
+    {
+      "id": "revival.general_female.greeting.familiar_cheerful",
+      "priority": "P1",
+      "status": "proposal_pending_author_approval",
+      "text": "There you are! It's lovely to see you again.",
+      "intent": "greeting",
+      "conditions": "Explicit open; friendly or trusted; cheerful style; no acute emergency.",
+      "profession": "any",
+      "personality_style": "cheerful",
+      "humor": false,
+      "voice_profile": "general_female",
+      "fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "filename": "general_female_greeting_familiar_cheerful_11.mp3",
+      "generation_input": "There you are! It's lovely to see you again.",
+      "implementation_dependencies": [
+        "D0",
+        "D1",
+        "D2",
+        "D3"
+      ]
+    },
+    {
+      "id": "revival.general_male.greeting.familiar_grumpy",
+      "priority": "P1",
+      "status": "proposal_pending_author_approval",
+      "text": "Oh, it's you. Go on, I'm listening.",
+      "intent": "greeting",
+      "conditions": "Explicit open; friendly or trusted; grumpy style; no hostility implied.",
+      "profession": "any",
+      "personality_style": "grumpy",
+      "humor": false,
+      "voice_profile": "general_male",
+      "fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "filename": "general_male_greeting_familiar_grumpy_11.mp3",
+      "generation_input": "Oh, it's you. Go on, I'm listening.",
+      "implementation_dependencies": [
+        "D0",
+        "D1",
+        "D2",
+        "D3"
+      ]
+    },
+    {
+      "id": "revival.guard_male.greeting.familiar_calm",
+      "priority": "P1",
+      "status": "proposal_pending_author_approval",
+      "text": "Welcome back. What can I do for you?",
+      "intent": "greeting",
+      "conditions": "Explicit open; friendly or trusted; guard, any time.",
+      "profession": "guard",
+      "personality_style": "calm",
+      "humor": false,
+      "voice_profile": "guard_male",
+      "fish_voice_id": "c29549f41b3b4aa498d66d76fba0e887",
+      "filename": "guard_male_greeting_familiar_calm_11.mp3",
+      "generation_input": "Welcome back. What can I do for you?",
+      "implementation_dependencies": [
+        "D0",
+        "D1",
+        "D2",
+        "D3"
+      ]
+    },
+    {
+      "id": "revival.merchant_female.greeting.familiar_cheerful",
+      "priority": "P1",
+      "status": "proposal_pending_author_approval",
+      "text": "Back again? I'm glad you stopped to talk.",
+      "intent": "greeting",
+      "conditions": "Explicit open; friendly or trusted; no assumption of shopping or stock.",
+      "profession": "trader",
+      "personality_style": "cheerful",
+      "humor": false,
+      "voice_profile": "merchant_female",
+      "fish_voice_id": "d4f161bee1934b47ad3090f05649270c",
+      "filename": "merchant_female_greeting_familiar_cheerful_11.mp3",
+      "generation_input": "Back again? I'm glad you stopped to talk.",
+      "implementation_dependencies": [
+        "D0",
+        "D1",
+        "D2",
+        "D3"
+      ]
+    },
+    {
+      "id": "revival.general_male.greeting.local_distrust",
+      "priority": "P2",
+      "status": "proposal_pending_author_approval",
+      "text": "I'll hear you out, but let's keep this straightforward.",
+      "intent": "greeting",
+      "conditions": "Explicit open; proposed local trust <= -30, supplied by current settlement reputation; tone only, not refusal or accusation.",
+      "profession": "any",
+      "personality_style": "neutral",
+      "humor": false,
+      "voice_profile": "general_male",
+      "fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "filename": "general_male_greeting_local_distrust_11.mp3",
+      "generation_input": "I'll hear you out, but let's keep this straightforward.",
+      "implementation_dependencies": [
+        "D0",
+        "D1",
+        "D2",
+        "D3",
+        "D4"
+      ]
+    },
+    {
+      "id": "revival.general_female.greeting.local_respect",
+      "priority": "P2",
+      "status": "proposal_pending_author_approval",
+      "text": "You're welcome here. What would you like to talk about?",
+      "intent": "greeting",
+      "conditions": "Explicit open; proposed local trust >= 30 and renown >= 20; local standing only, no specific deed claim.",
+      "profession": "any",
+      "personality_style": "neutral",
+      "humor": false,
+      "voice_profile": "general_female",
+      "fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "filename": "general_female_greeting_local_respect_11.mp3",
+      "generation_input": "You're welcome here. What would you like to talk about?",
+      "implementation_dependencies": [
+        "D0",
+        "D1",
+        "D2",
+        "D3",
+        "D4"
+      ]
+    },
+    {
+      "id": "revival.general_male.weather_remark.fog",
+      "priority": "P2",
+      "status": "proposal_pending_author_approval",
+      "text": "Hard to see far in this fog.",
+      "intent": "weather_remark",
+      "conditions": "New optional remark; actual fog, outdoors, no acute threat; once per observed weather episode.",
+      "profession": "any",
+      "personality_style": "neutral",
+      "humor": false,
+      "voice_profile": "general_male",
+      "fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "filename": "general_male_weather_remark_fog_11.mp3",
+      "generation_input": "Hard to see far in this fog.",
+      "implementation_dependencies": [
+        "D0",
+        "D1",
+        "D5"
+      ]
+    },
+    {
+      "id": "revival.general_female.weather_remark.light_rain",
+      "priority": "P2",
+      "status": "proposal_pending_author_approval",
+      "text": "A little rain. At least I needn't water my sleeves.",
+      "intent": "weather_remark",
+      "conditions": "New optional remark; actual light rain outdoors, no critical need/threat or shelter interruption. Safe, relaxed context only: no acute threat, injury, bereavement or critical need; if severity is unavailable use a neutral fallback.",
+      "profession": "any",
+      "personality_style": "cheerful",
+      "humor": true,
+      "voice_profile": "general_female",
+      "fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "filename": "general_female_weather_remark_light_rain_11.mp3",
+      "generation_input": "A little rain. At least I needn't water my sleeves.",
+      "implementation_dependencies": [
+        "D0",
+        "D1",
+        "D5"
+      ]
+    },
+    {
+      "id": "revival.general_female.weather_remark.clearing",
+      "priority": "P2",
+      "status": "proposal_pending_author_approval",
+      "text": "The rain's stopped. That's a welcome change.",
+      "intent": "weather_remark",
+      "conditions": "New optional remark; verified rain-to-dry edge observed by this NPC, outdoors.",
+      "profession": "any",
+      "personality_style": "neutral",
+      "humor": false,
+      "voice_profile": "general_female",
+      "fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "filename": "general_female_weather_remark_clearing_11.mp3",
+      "generation_input": "The rain's stopped. That's a welcome change.",
+      "implementation_dependencies": [
+        "D0",
+        "D1",
+        "D5"
+      ]
+    },
+    {
+      "id": "revival.general_male.weather_remark.cold_dry",
+      "priority": "P2",
+      "status": "proposal_pending_author_approval",
+      "text": "Cold enough to make me wish I'd stayed inside.",
+      "intent": "weather_remark",
+      "conditions": "New optional remark; actual dry cold outdoors; proposed temperature <= -2 C; no exposure/body-temperature simulation.",
+      "profession": "any",
+      "personality_style": "grumpy",
+      "humor": false,
+      "voice_profile": "general_male",
+      "fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "filename": "general_male_weather_remark_cold_dry_11.mp3",
+      "generation_input": "Cold enough to make me wish I'd stayed inside.",
+      "implementation_dependencies": [
+        "D0",
+        "D1",
+        "D5"
+      ]
+    },
+    {
+      "id": "revival.general_female.thirsty.11",
+      "priority": "P2",
+      "status": "proposal_pending_author_approval",
+      "text": "I need a drink of water before I carry on.",
+      "intent": "thirsty",
+      "conditions": "New bark on existing need=water transition, not household waterDuty; no inferred thirst from weather.",
+      "profession": "any",
+      "personality_style": "neutral",
+      "humor": false,
+      "voice_profile": "general_female",
+      "fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "filename": "general_female_thirsty_11.mp3",
+      "generation_input": "I need a drink of water before I carry on.",
+      "implementation_dependencies": [
+        "D0",
+        "D1",
+        "D6"
+      ]
+    },
+    {
+      "id": "revival.general_male.thirsty.11",
+      "priority": "P2",
+      "status": "proposal_pending_author_approval",
+      "text": "Time to find some water. My throat's dry.",
+      "intent": "thirsty",
+      "conditions": "New bark on existing need=water transition, not waterDuty.",
+      "profession": "any",
+      "personality_style": "neutral",
+      "humor": false,
+      "voice_profile": "general_male",
+      "fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "filename": "general_male_thirsty_11.mp3",
+      "generation_input": "Time to find some water. My throat's dry.",
+      "implementation_dependencies": [
+        "D0",
+        "D1",
+        "D6"
+      ]
+    },
+    {
+      "id": "revival.general_male.injured.11",
+      "priority": "P2",
+      "status": "proposal_pending_author_approval",
+      "text": "That hurts. I need to get it seen to.",
+      "intent": "injured",
+      "conditions": "New bark; real new injury/health event, alive and able to speak; episode-scoped.",
+      "profession": "any",
+      "personality_style": "neutral",
+      "humor": false,
+      "voice_profile": "general_male",
+      "fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "filename": "general_male_injured_11.mp3",
+      "generation_input": "That hurts. I need to get it seen to.",
+      "implementation_dependencies": [
+        "D0",
+        "D1",
+        "D6"
+      ]
+    },
+    {
+      "id": "revival.general_female.danger_passed.11",
+      "priority": "P2",
+      "status": "proposal_pending_author_approval",
+      "text": "It's quiet again. I hope it stays that way.",
+      "intent": "danger_passed",
+      "conditions": "New bark; prior observed threat episode ended and no current threat; no claim attacker died.",
+      "profession": "any",
+      "personality_style": "neutral",
+      "humor": false,
+      "voice_profile": "general_female",
+      "fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "filename": "general_female_danger_passed_11.mp3",
+      "generation_input": "It's quiet again. I hope it stays that way.",
+      "implementation_dependencies": [
+        "D0",
+        "D1",
+        "D6"
+      ]
+    },
+    {
+      "id": "revival.general_male.repair_finished.11",
+      "priority": "P2",
+      "status": "proposal_pending_author_approval",
+      "text": "That's the repair finished. Let's hope it holds.",
+      "intent": "repair_finished",
+      "conditions": "New presentation binding after a real completed repair and committed condition update; not ordinary work_finished.",
+      "profession": "any",
+      "personality_style": "neutral",
+      "humor": false,
+      "voice_profile": "general_male",
+      "fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "filename": "general_male_repair_finished_11.mp3",
+      "generation_input": "That's the repair finished. Let's hope it holds.",
+      "implementation_dependencies": [
+        "D0",
+        "D1",
+        "D6"
+      ]
+    },
+    {
+      "id": "revival.general_female.bereavement.11",
+      "priority": "P2",
+      "status": "proposal_pending_author_approval",
+      "text": "I still catch myself expecting to see them.",
+      "intent": "bereavement",
+      "conditions": "New dialogue eligibility: death of a genuinely known close person plus knowledge/relationship evidence; never global death visibility.",
+      "profession": "any",
+      "personality_style": "neutral",
+      "humor": false,
+      "voice_profile": "general_female",
+      "fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "filename": "general_female_bereavement_11.mp3",
+      "generation_input": "I still catch myself expecting to see them.",
+      "implementation_dependencies": [
+        "D0",
+        "D1",
+        "D6"
+      ]
+    },
+    {
+      "id": "revival.hunter_male.knowledge_ready.11",
+      "priority": "P2",
+      "status": "proposal_pending_author_approval",
+      "text": "I've got something to tell you about the area.",
+      "intent": "knowledge_ready",
+      "conditions": "Existing pending deliver_world_knowledge follow-up; new voice binding, no automatic reveal or consume.",
+      "profession": "hunter",
+      "personality_style": "neutral",
+      "humor": false,
+      "voice_profile": "hunter_male",
+      "fish_voice_id": "bd22266aba38416cb602e90ce651520c",
+      "filename": "hunter_male_knowledge_ready_11.mp3",
+      "generation_input": "I've got something to tell you about the area.",
+      "implementation_dependencies": [
+        "D0",
+        "D1",
+        "D3"
+      ]
+    },
+    {
+      "id": "revival.general_male.campfire_question.rest",
+      "priority": "P2",
+      "status": "proposal_pending_author_approval",
+      "text": "Mind if I enjoy a quiet moment here?",
+      "intent": "campfire_question",
+      "conditions": "Existing valid campfire pair, general_male questioner; select whole pair CF01, no emergency.",
+      "profession": "any",
+      "personality_style": "calm",
+      "humor": false,
+      "voice_profile": "general_male",
+      "fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "filename": "general_male_campfire_question_rest_11.mp3",
+      "generation_input": "Mind if I enjoy a quiet moment here?",
+      "implementation_dependencies": [
+        "D0",
+        "D1",
+        "D7"
+      ]
+    },
+    {
+      "id": "revival.general_female.campfire_answer.rest",
+      "priority": "P2",
+      "status": "proposal_pending_author_approval",
+      "text": "Not at all. A little quiet suits me.",
+      "intent": "campfire_answer",
+      "conditions": "CF01 answer only while the same valid paired conversation remains active; general_female responder.",
+      "profession": "any",
+      "personality_style": "calm",
+      "humor": false,
+      "voice_profile": "general_female",
+      "fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "filename": "general_female_campfire_answer_rest_11.mp3",
+      "generation_input": "Not at all. A little quiet suits me.",
+      "implementation_dependencies": [
+        "D0",
+        "D1",
+        "D7"
+      ]
+    },
+    {
+      "id": "revival.general_female.campfire_question.humor",
+      "priority": "P2",
+      "status": "proposal_pending_author_approval",
+      "text": "Do you think doing nothing counts as practice?",
+      "intent": "campfire_question",
+      "conditions": "Existing valid campfire pair, general_female questioner; CF02, safe relaxed social context. Safe, relaxed context only: no acute threat, injury, bereavement or critical need; if severity is unavailable use a neutral fallback.",
+      "profession": "any",
+      "personality_style": "cheerful",
+      "humor": true,
+      "voice_profile": "general_female",
+      "fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "filename": "general_female_campfire_question_humor_11.mp3",
+      "generation_input": "Do you think doing nothing counts as practice?",
+      "implementation_dependencies": [
+        "D0",
+        "D1",
+        "D7"
+      ]
+    },
+    {
+      "id": "revival.general_male.campfire_answer.humor",
+      "priority": "P2",
+      "status": "proposal_pending_author_approval",
+      "text": "If it does, I'm improving by the minute.",
+      "intent": "campfire_answer",
+      "conditions": "CF02 answer only while same valid pair remains active; general_male responder; safe relaxed context. Safe, relaxed context only: no acute threat, injury, bereavement or critical need; if severity is unavailable use a neutral fallback.",
+      "profession": "any",
+      "personality_style": "cheerful",
+      "humor": true,
+      "voice_profile": "general_male",
+      "fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "filename": "general_male_campfire_answer_humor_11.mp3",
+      "generation_input": "If it does, I'm improving by the minute.",
+      "implementation_dependencies": [
+        "D0",
+        "D1",
+        "D7"
+      ]
+    }
+  ]
+}
