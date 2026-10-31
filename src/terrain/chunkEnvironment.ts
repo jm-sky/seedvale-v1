@@ -1,7 +1,8 @@
 import type { ChunkCoord } from './chunkGrid'
 import type { VegetationPlacement } from './chunkVegetation'
 import { distanceToSegment } from '../math/segment'
-import { cemeteryGraveLayout, type CemeterySize } from '../settlement/props'
+import { cemeteryPlotDistanceToPoint, cemeteryPlotDistanceToSegment, cemeteryPlotExtents, cemeteryPlotRadius } from '../settlement/cemeteryLayout'
+import { type CemeterySize } from '../settlement/props'
 import { siteChunkContainsPoint } from '../world/locations/darkForestTreasureSite'
 import { getActiveDarkForestTreasureSite } from '../world/locations/darkForestTreasureSiteRuntime'
 import { createSeededRandom } from '../world/parseSeed'
@@ -223,6 +224,11 @@ export function cemeteryFitsVillageFringe(
   z: number,
   regional: readonly VillageDisk[],
   clearings: readonly VillageDisk[],
+  /** Circumscribed radius of the cemetery plot (Q47): the fringe band widens by this radius at its outer edge
+   *  (centre distance), and — unless `plot` is given — every clearing is kept this far away. */
+  footprintRadius = 0,
+  /** Exact plot pose (Q47): when given, the rotated plot RECTANGLE must clear every clearing disk by the pad. */
+  plot?: { x: number, z: number, rotationY: number, size: CemeterySize, scale: number },
 ): boolean {
   if (regional.length === 0) return false
   let nearest: VillageDisk | null = null
@@ -236,41 +242,26 @@ export function cemeteryFitsVillageFringe(
   }
   if (!nearest) return false
   const inner = nearest.radius * CEMETERY_INNER_FRAC
-  const outer = nearest.radius * CEMETERY_OUTER_FRAC
+  const outer = nearest.radius * CEMETERY_OUTER_FRAC + footprintRadius
   if (nearestDist < inner || nearestDist > outer) return false
   for (const clearing of clearings) {
-    if (Math.hypot(x - clearing.x, z - clearing.z) <= clearing.radius + CEMETERY_CLEARING_PAD) {
+    const gap = plot ? cemeteryPlotDistanceToPoint(plot, clearing.x, clearing.z) : Math.hypot(x - clearing.x, z - clearing.z) - footprintRadius
+    if (gap <= clearing.radius + CEMETERY_CLEARING_PAD) {
       return false
     }
   }
   return true
 }
 
-/** Upper bound on a grave's own offset from `cemeteryGraveLayout`'s spot
- *  (plan world-terrain-006): `createCemetery`'s deterministic jitter
- *  (`jitterX`/`jitterZ`, up to ~0.125/0.1 × `scale`) plus the grave stone's
- *  own half-footprint (`createGraveStone`'s base box, ~0.25 × `scale`),
- *  rounded up to a round, safely conservative constant. */
-const CEMETERY_GRAVE_CLEARANCE = 0.6
 /** Extra clearance beyond a road/path corridor's own half-width before a
  *  cemetery footprint is accepted — a visible buffer, not just "doesn't
  *  overlap" (plan world-terrain-006). */
 const CEMETERY_ROAD_SAFETY_MARGIN = 2
 
-/** Farthest any grave (including its own jitter/footprint) can sit from the
- *  cemetery's placement point, for a given `size`/`scale` — a rotation-
- *  invariant (circular) upper bound on the real grave-grid footprint. Cheap
- *  to check against road segments without needing the landmark's rotation,
- *  which (unlike position/size/scale) is only rolled once a cemetery is
- *  already accepted. */
+/** Rotation-invariant (circumscribed) bound on the plot rectangle — cheap to check against road segments
+ *  without the landmark's yaw (Q47: `cemeteryPlotRadius`, replaces the old grave-grid bound). */
 function cemeteryFootprintRadius(size: CemeterySize, scale: number): number {
-  const layout = cemeteryGraveLayout(size, scale)
-  let maxDist = 0
-  for (const p of layout) {
-    const d = Math.hypot(p.x, p.z)
-    if (d > maxDist) maxDist = d
-  }
-  return maxDist + CEMETERY_GRAVE_CLEARANCE * scale
+  return cemeteryPlotRadius(size, scale)
 }
 
 /** True when a cemetery's whole grave-grid footprint — not just its center
@@ -285,11 +276,21 @@ export function cemeteryFootprintClearsRoads(
   size: CemeterySize,
   scale: number,
   roadSegments: readonly RoadCorridorSegment[],
+  /** Plot yaw (Q47): when given, the exact rotated plot rectangle is tested instead of the circumscribed
+   *  circle, so a plot may sit closer to a road that runs along one of its sides. */
+  rotationY?: number,
 ): boolean {
-  const radius = cemeteryFootprintRadius(size, scale)
+  if (rotationY === undefined) {
+    const radius = cemeteryFootprintRadius(size, scale)
+    for (const seg of roadSegments) {
+      const dist = distanceToSegment(x, z, seg.ax, seg.az, seg.bx, seg.bz)
+      if (dist < radius + seg.halfWidth + CEMETERY_ROAD_SAFETY_MARGIN) return false
+    }
+    return true
+  }
+  const plot = { x, z, rotationY, size, scale }
   for (const seg of roadSegments) {
-    const dist = distanceToSegment(x, z, seg.ax, seg.az, seg.bx, seg.bz)
-    if (dist < radius + seg.halfWidth + CEMETERY_ROAD_SAFETY_MARGIN) return false
+    if (cemeteryPlotDistanceToSegment(plot, seg.ax, seg.az, seg.bx, seg.bz) < seg.halfWidth + CEMETERY_ROAD_SAFETY_MARGIN) return false
   }
   return true
 }
@@ -358,6 +359,44 @@ export function clearVegetationAroundOldTrees(
     }
     return true
   })
+}
+
+/** Extra clearance around a cemetery plot rectangle for vegetation / rock removal (Q47). */
+const CEMETERY_PLOT_CLEAR_PAD = 1
+const CEMETERY_CLEARED_ENV_KINDS: ReadonlySet<EnvironmentKind> = new Set(['fallenLog', 'largeRock', 'rockCluster'])
+
+/** True when `(wx, wz)` lies inside `cemetery`'s rotated plot rectangle grown by `pad`. */
+function insideCemeteryPlot(cemetery: EnvironmentPlacement, wx: number, wz: number, pad: number): boolean {
+  const { hw, hd } = cemeteryPlotExtents(cemetery.cemeterySize ?? 'SM', cemetery.scale)
+  const dx = wx - cemetery.x
+  const dz = wz - cemetery.z
+  const cos = Math.cos(cemetery.rotationY)
+  const sin = Math.sin(cemetery.rotationY)
+  // Inverse of `cemeteryLocalToWorld`: world = (lx·cos + lz·sin, −lx·sin + lz·cos).
+  const lx = dx * cos - dz * sin
+  const lz = dx * sin + dz * cos
+  return Math.abs(lx) <= hw + pad && Math.abs(lz) <= hd + pad
+}
+
+/** Drop vegetation and decorative rocks/logs inside every cemetery's plot rectangle (+1 m) so graves and
+ *  crypts stand on open ground (Q47 / Q39 plan §2.5.5). Pure / worker-safe — does not mutate its inputs.
+ *  Items are left alone (they carry persisted ids). A cemetery's plot lies inside its owner chunk, so the
+ *  owner chunk's own tile is the only one that needs the pass. */
+export function clearCemeteryPlots(
+  vegetation: readonly VegetationPlacement[],
+  environment: readonly EnvironmentPlacement[],
+): { vegetation: VegetationPlacement[], environment: EnvironmentPlacement[] } {
+  const cemeteries = environment.filter((p) => p.kind === 'cemetery')
+  if (cemeteries.length === 0) {
+    return { vegetation: vegetation as VegetationPlacement[], environment: environment as EnvironmentPlacement[] }
+  }
+  return {
+    vegetation: vegetation.filter((v) => !cemeteries.some((c) => insideCemeteryPlot(c, v.x, v.z, CEMETERY_PLOT_CLEAR_PAD))),
+    environment: environment.filter((p) => {
+      if (!CEMETERY_CLEARED_ENV_KINDS.has(p.kind)) return true
+      return !cemeteries.some((c) => insideCemeteryPlot(c, p.x, p.z, CEMETERY_PLOT_CLEAR_PAD + 0.8 * p.scale))
+    }),
+  }
 }
 
 /** Minimal terrain view `resolveCemeteryPlacement` needs — cemetery

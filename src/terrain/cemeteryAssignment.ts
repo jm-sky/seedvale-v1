@@ -9,7 +9,6 @@ import {
   type SettlementDef,
   worldToCell,
 } from '../settlement/settlementGenerator'
-import { createSeededRandom } from '../world/parseSeed'
 
 /** Lightweight settlement view for worker-safe cemetery assignment/placement. */
 export type CemeterySettlementRef = {
@@ -206,25 +205,17 @@ export function resolveCemeteryTopologyForSettlement(
   return intent
 }
 
-/** Deterministic cemetery layout size from served settlement scale (plan §12). */
-export function rollCemeterySizeForAssignment(
-  servedSizes: readonly VillageSize[],
-  worldSeed: number,
-  assignmentId: string,
-): CemeterySize {
-  const random = createSeededRandom(hashString(`${worldSeed}:${assignmentId}:size`))
-  if (servedSizes.length >= 2) return random() < 0.55 ? 'SM' : 'MD'
-  const size = servedSizes[0] ?? 'SM'
-  switch (size) {
+/** Cemetery size from the served settlement scale (Q47 / Q39 plan §2.2) — strict, so crypt count follows
+ *  settlement size: OUTPOST/SM → SM (1 crypt), MD → MD (2), LG/XL → LG (3); a shared pair (two small
+ *  villages' dead) → MD. No RNG: size is a pure function of the served sizes. */
+export function cemeterySizeForServedSizes(servedSizes: readonly VillageSize[]): CemeterySize {
+  if (servedSizes.length >= 2) return 'MD'
+  switch (servedSizes[0] ?? 'SM') {
     case 'LG':
-      return random() < 0.58 ? 'MD' : 'LG'
-    case 'MD':
-      return random() < 0.62 ? 'MD' : 'LG'
-    case 'OUTPOST':
-    case 'SM':
-      return random() < 0.72 ? 'SM' : 'MD'
     case 'XL':
-      return random() < 0.68 ? 'LG' : 'MD'
+      return 'LG'
+    case 'MD':
+      return 'MD'
     default:
       return 'SM'
   }
@@ -232,15 +223,11 @@ export function rollCemeterySizeForAssignment(
 
 export function cemeteryAssignmentFromTopology(
   topology: CemeteryTopologyIntent,
-  worldSeed: number,
+  _worldSeed: number,
 ): CemeteryAssignment {
   return {
     ...topology,
-    size: rollCemeterySizeForAssignment(
-      topology.settlements.map((s) => s.size),
-      worldSeed,
-      topology.assignmentId,
-    ),
+    size: cemeterySizeForServedSizes(topology.settlements.map((s) => s.size)),
   }
 }
 

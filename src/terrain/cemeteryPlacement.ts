@@ -1,5 +1,13 @@
 import type { CemeterySize } from '../settlement/props'
 import type { CemeteryTerrainSampler, EnvironmentPlacement, VillageDisk } from './chunkEnvironment'
+import {
+  CEMETERY_PIECE_HALF_EXTENTS,
+  cemeteryCryptLayout,
+  cemeteryLocalToWorld,
+  cemeteryPlotDistanceToPoint,
+  cemeteryPlotExtents,
+  cemeteryPlotRadius,
+} from '../settlement/cemeteryLayout'
 import { villageSizeConfig } from '../settlement/families'
 import { cellsWithinRadius, worldToCell } from '../settlement/settlementGenerator'
 import { createSeededRandom } from '../world/parseSeed'
@@ -30,7 +38,17 @@ import { type ChunkTileParams, createWorldTerrainSampler, type RoadCorridorSegme
 const SLOPE_SAMPLE_STEP = 1.5
 const ROAD_TINT_REJECT = 0.15
 const SLOPE_REJECT_LANDMARK = 0.6
-const CEMETERY_MARGIN_BY_SIZE: Record<CemeterySize, number> = { SM: 6, MD: 9, LG: 14 }
+/** Rolled scale range of every cemetery (`CEMETERY_SCALE_MIN + random() * CEMETERY_SCALE_RANGE`). */
+const CEMETERY_SCALE_MIN = 0.9
+const CEMETERY_SCALE_RANGE = 0.3
+/** Slack between the plot rectangle and its owner chunk's edge (rendering samples the owner tile's apron). */
+const CEMETERY_CHUNK_EDGE_MARGIN = 0.5
+/** Every sampled point of the plot must stand this far above the water level. */
+const CEMETERY_WATER_CLEARANCE = 0.3
+/** V2: maximum height spread across the (rotated 3×3 sampled) plot. */
+const CEMETERY_MAX_PLOT_HEIGHT_SPREAD = 2.5
+/** Maximum height spread across one crypt's four corners (the crypt is not tilted; it must not float/bury). */
+const CEMETERY_MAX_CRYPT_HEIGHT_SPREAD = 0.8
 /** Rare deterministic wilderness roll — much lower than the old `0.28` fringe gate. */
 export const ABANDONED_CEMETERY_CHANCE = 0.012
 
@@ -42,7 +60,9 @@ export const ABANDONED_CEMETERY_CHANCE = 0.012
  * @domain world-terrain
  */
 export function abandonedCemeteryMaxOffsetFromCenter(chunkSize: number): number {
-  return chunkSize / 2 - CEMETERY_MARGIN_BY_SIZE.SM
+  // Smallest possible axis-aligned half-extent of an abandoned (SM) plot over every yaw: its short half-width.
+  const { hw } = cemeteryPlotExtents('SM', CEMETERY_SCALE_MIN)
+  return chunkSize / 2 - CEMETERY_CHUNK_EDGE_MARGIN - hw
 }
 
 function abandonedRoll(seed: number, cx: number, cz: number): number {
@@ -95,21 +115,14 @@ function clearingDisks(params: ChunkTileParams): VillageDisk[] {
   return source.map((c) => ({ x: c.x, z: c.z, radius: c.radius }))
 }
 
-function rejectsClearings(x: number, z: number, clearings: readonly VillageDisk[]): boolean {
+type PlotPose = { x: number, z: number, rotationY: number, size: CemeterySize, scale: number }
+
+/** Footprint-vs-clearing: the exact rotated plot rectangle plus the pad must clear every disk. */
+function rejectsClearings(plot: PlotPose, clearings: readonly VillageDisk[]): boolean {
   for (const clearing of clearings) {
-    if (Math.hypot(x - clearing.x, z - clearing.z) <= clearing.radius + CEMETERY_CLEARING_PAD) return true
+    if (cemeteryPlotDistanceToPoint(plot, clearing.x, clearing.z) <= clearing.radius + CEMETERY_CLEARING_PAD) return true
   }
   return false
-}
-
-function dedicatedFringePreference(
-  settlement: CemeterySettlementRef,
-  angle: number,
-  fringeFraction: number,
-): { x: number, z: number } {
-  const radius = villageSizeConfig(settlement.size).footprintRadius
-  const dist = radius * (CEMETERY_INNER_FRAC + (CEMETERY_OUTER_FRAC - CEMETERY_INNER_FRAC) * fringeFraction)
-  return { x: settlement.x + Math.cos(angle) * dist, z: settlement.z + Math.sin(angle) * dist }
 }
 
 function sharedCorridorAnchor(a: CemeterySettlementRef, b: CemeterySettlementRef): { x: number, z: number } {
@@ -121,6 +134,7 @@ function sharedCorridorAccepts(
   z: number,
   settlements: readonly CemeterySettlementRef[],
   clearings: readonly VillageDisk[],
+  plot: PlotPose,
 ): boolean {
   if (settlements.length < 2) return false
   const [a, b] = settlements
@@ -135,22 +149,92 @@ function sharedCorridorAccepts(
     villageSizeConfig(b.size).footprintRadius,
   ) * CEMETERY_OUTER_FRAC
   if (da + db > ab + corridorWidth) return false
-  if (rejectsClearings(x, z, clearings)) return false
+  if (rejectsClearings(plot, clearings)) return false
   return true
+}
+
+/** Axis-aligned half-extents of the plot rectangle rotated by `rotationY`. */
+function rotatedPlotHalfExtents(size: CemeterySize, scale: number, rotationY: number): { ex: number, ez: number } {
+  const { hw, hd } = cemeteryPlotExtents(size, scale)
+  const c = Math.abs(Math.cos(rotationY))
+  const s = Math.abs(Math.sin(rotationY))
+  return { ex: c * hw + s * hd, ez: s * hw + c * hd }
 }
 
 function cemeteryFitsOwnerChunk(
   x: number,
   z: number,
   size: CemeterySize,
+  scale: number,
+  rotationY: number,
   chunkSize: number,
 ): boolean {
   const owner = worldToChunk(x, z, chunkSize)
-  const margin = CEMETERY_MARGIN_BY_SIZE[size]
   const half = chunkSize / 2
+  const { ex, ez } = rotatedPlotHalfExtents(size, scale, rotationY)
   const localX = x - owner.cx * chunkSize
   const localZ = z - owner.cz * chunkSize
-  return Math.abs(localX) <= half - margin && Math.abs(localZ) <= half - margin
+  return Math.abs(localX) <= half - CEMETERY_CHUNK_EDGE_MARGIN - ex && Math.abs(localZ) <= half - CEMETERY_CHUNK_EDGE_MARGIN - ez
+}
+
+/** Entrance (+Z local) towards `(tx, tz)` — same convention as `rotateOffsetY` / `Object3D.rotation.y`. */
+function yawFacing(x: number, z: number, tx: number, tz: number): number {
+  return Math.atan2(tx - x, tz - z)
+}
+
+/** Yaw for a candidate: dedicated → faces its settlement, shared → faces the nearer of the two. */
+function entranceYaw(x: number, z: number, settlements: readonly CemeterySettlementRef[]): number {
+  let best = settlements[0]!
+  let bestDist = Infinity
+  for (const s of settlements) {
+    const d = Math.hypot(s.x - x, s.z - z)
+    if (d < bestDist) {
+      bestDist = d
+      best = s
+    }
+  }
+  return yawFacing(x, z, best.x, best.z)
+}
+
+/** Deterministically clamps a candidate into its owner chunk's valid interior for the given yaw/size/scale
+ *  instead of discarding it (an LG plot leaves only a ~22 m interior square in a 64 m chunk). */
+function projectIntoOwnerChunk(
+  x: number,
+  z: number,
+  size: CemeterySize,
+  scale: number,
+  rotationY: number,
+  chunkSize: number,
+): { x: number, z: number } {
+  const owner = worldToChunk(x, z, chunkSize)
+  const { ex, ez } = rotatedPlotHalfExtents(size, scale, rotationY)
+  // Tiny slack so a point clamped exactly onto the limit is not flipped by floating-point rounding in the fit check.
+  const limitX = Math.max(0, chunkSize / 2 - CEMETERY_CHUNK_EDGE_MARGIN - 0.01 - ex)
+  const limitZ = Math.max(0, chunkSize / 2 - CEMETERY_CHUNK_EDGE_MARGIN - 0.01 - ez)
+  const cx = owner.cx * chunkSize
+  const cz = owner.cz * chunkSize
+  return {
+    x: cx + Math.max(-limitX, Math.min(limitX, x - cx)),
+    z: cz + Math.max(-limitZ, Math.min(limitZ, z - cz)),
+  }
+}
+
+/** The plot's rotated 3×3 sample points (corners, edge midpoints, centre) in world space. */
+function plotSamplePoints(
+  x: number,
+  z: number,
+  size: CemeterySize,
+  scale: number,
+  rotationY: number,
+): { x: number, z: number }[] {
+  const { hw, hd } = cemeteryPlotExtents(size, scale)
+  const out: { x: number, z: number }[] = []
+  for (const sz of [-1, 0, 1]) {
+    for (const sx of [-1, 0, 1]) {
+      out.push(cemeteryLocalToWorld({ x, z, rotationY }, sx * hw, sz * hd))
+    }
+  }
+  return out
 }
 
 function dedicatedRegionalDisks(settlements: readonly CemeterySettlementRef[]): VillageDisk[] {
@@ -171,65 +255,104 @@ function assignmentTerrainSampler(params: ChunkTileParams): CemeteryTerrainSampl
   return createWorldTerrainSampler({ ...params, roadSegments: [...roads] })
 }
 
-/** Shared physical cemetery validation for active/abandoned candidates. */
+/** Shared physical cemetery validation for active/abandoned candidates (footprint-aware, Q47). */
 export function validateCemeteryPhysical(
   x: number,
   z: number,
   size: CemeterySize,
   scale: number,
+  rotationY: number,
   params: ChunkTileParams,
   terrain: CemeteryTerrainSampler,
   placementIntent: 'dedicated' | 'shared' | 'abandoned',
   assignmentSettlements: readonly CemeterySettlementRef[],
 ): boolean {
-  if (!cemeteryFitsOwnerChunk(x, z, size, params.chunkSize)) return false
-  const h = terrain.heightAt(x, z)
-  if (h <= params.waterLevel + 0.3) return false
+  if (!cemeteryFitsOwnerChunk(x, z, size, scale, rotationY, params.chunkSize)) return false
   if (terrain.roadTintAt(x, z) > ROAD_TINT_REJECT) return false
   if (slopeAt(terrain, x, z) > SLOPE_REJECT_LANDMARK) return false
-  if (!cemeteryFootprintClearsRoads(x, z, size, scale, cemeteryRoadSegmentsOf(params))) return false
+  const footprintR = cemeteryPlotRadius(size, scale)
+  if (!cemeteryFootprintClearsRoads(x, z, size, scale, cemeteryRoadSegmentsOf(params), rotationY)) return false
+
+  // Water + height spread over a rotated 3×3 sample of the plot.
+  let lo = Infinity
+  let hi = -Infinity
+  for (const p of plotSamplePoints(x, z, size, scale, rotationY)) {
+    const h = terrain.heightAt(p.x, p.z)
+    if (h <= params.waterLevel + CEMETERY_WATER_CLEARANCE) return false
+    lo = Math.min(lo, h)
+    hi = Math.max(hi, h)
+  }
+  if (hi - lo > CEMETERY_MAX_PLOT_HEIGHT_SPREAD) return false
+  // Crypts are not tilted: the four corners of each must be near-level.
+  const crypt = CEMETERY_PIECE_HALF_EXTENTS.Crypt
+  for (const c of cemeteryCryptLayout(size, scale)) {
+    let cLo = Infinity
+    let cHi = -Infinity
+    for (const [sx, sz] of [[-1, -1], [1, -1], [-1, 1], [1, 1]] as const) {
+      const w = cemeteryLocalToWorld(
+        { x, z, rotationY },
+        c.x + sx * crypt.hx * scale,
+        c.z + sz * crypt.hz * scale,
+      )
+      const h = terrain.heightAt(w.x, w.z)
+      cLo = Math.min(cLo, h)
+      cHi = Math.max(cHi, h)
+    }
+    if (cHi - cLo > CEMETERY_MAX_CRYPT_HEIGHT_SPREAD) return false
+  }
 
   const clearings = clearingDisks(params)
+  const plot: PlotPose = { x, z, rotationY, size, scale }
   if (placementIntent === 'dedicated' && assignmentSettlements.length === 1) {
     const regional = dedicatedRegionalDisks(assignmentSettlements)
-    if (!cemeteryFitsVillageFringe(x, z, regional, clearings)) return false
+    if (!cemeteryFitsVillageFringe(x, z, regional, clearings, footprintR, plot)) return false
   } else if (placementIntent === 'shared') {
-    if (!sharedCorridorAccepts(x, z, assignmentSettlements, clearings)) return false
-  } else if (rejectsClearings(x, z, clearings)) {
+    if (!sharedCorridorAccepts(x, z, assignmentSettlements, clearings, plot)) return false
+  } else if (rejectsClearings(plot, clearings)) {
     return false
   }
   return true
 }
 
+/** Rings × bearings candidate sweep (Q47: widened from 6 × 9 — a V2-sized plot must clear every road/path and
+ *  clearing, so valid spots lie further out and are rarer; the census in the Q39 plan §5 records the effect).
+ *  Dedicated: rings run from the inner fringe edge outward to the outer edge of the (widened) fringe band
+ *  (`1.05·villageR + plotRadius`), 12 bearings per ring; inner rings are tried first so the cemetery stays as
+ *  close to its settlement as the plot allows. */
+const DEDICATED_RINGS = 10
+const DEDICATED_BEARINGS = 12
+const SHARED_RINGS = 9
+
 function* placementCandidates(
   topology: CemeteryTopologyIntent,
   worldSeed: number,
+  plotRadius: number,
 ): Generator<{ x: number, z: number }> {
   const random = createSeededRandom(assignmentVariationSeed(worldSeed, topology.assignmentId) ^ 0x63d8a1)
   const baseAngle = random() * Math.PI * 2
   if (topology.intent === 'shared' && topology.settlements.length === 2) {
     const anchor = sharedCorridorAnchor(topology.settlements[0], topology.settlements[1])
     yield anchor
-    for (let ring = 1; ring <= 6; ring++) {
+    for (let ring = 1; ring <= SHARED_RINGS; ring++) {
       const count = 6 + ring * 2
       for (let i = 0; i < count; i++) {
         const t = (i / count) * Math.PI * 2
-        const r = ring * 4 + random() * 2
+        const r = ring * 4.5 + random() * 2
         yield { x: anchor.x + Math.cos(t) * r, z: anchor.z + Math.sin(t) * r }
       }
     }
     return
   }
   const settlement = topology.settlements[0]!
-  for (let ring = 0; ring <= 5; ring++) {
-    const fringeFraction = ring / 5
-    const angle = baseAngle + ring * 0.55
-    const anchor = dedicatedFringePreference(settlement, angle, fringeFraction)
-    yield anchor
-    for (let i = 1; i <= 4; i++) {
-      const spread = (i / 4) * 0.35
-      yield dedicatedFringePreference(settlement, angle + spread, fringeFraction)
-      yield dedicatedFringePreference(settlement, angle - spread, fringeFraction)
+  const villageR = villageSizeConfig(settlement.size).footprintRadius
+  const inner = villageR * CEMETERY_INNER_FRAC
+  const outer = villageR * CEMETERY_OUTER_FRAC + plotRadius
+  for (let ring = 0; ring < DEDICATED_RINGS; ring++) {
+    const dist = inner + ((outer - inner) * ring) / (DEDICATED_RINGS - 1)
+    const offset = baseAngle + ring * 0.55
+    for (let i = 0; i < DEDICATED_BEARINGS; i++) {
+      const angle = offset + (i / DEDICATED_BEARINGS) * Math.PI * 2
+      yield { x: settlement.x + Math.cos(angle) * dist, z: settlement.z + Math.sin(angle) * dist }
     }
   }
 }
@@ -240,18 +363,27 @@ function tryPlaceTopology(
 ): ResolvedCemeteryPlacement | null {
   const assignment = cemeteryAssignmentFromTopology(topology, params.seed)
   const random = createSeededRandom(assignmentVariationSeed(params.seed, topology.assignmentId) ^ 0x41c2e7)
-  const scale = 0.9 + random() * 0.3
-  const rotationY = random() * Math.PI * 2
+  const scale = CEMETERY_SCALE_MIN + random() * CEMETERY_SCALE_RANGE
+  random() // legacy yaw roll slot — yaw now follows the candidate (entrance towards the settlement)
   const variant = random()
   const intent = topology.intent === 'shared' ? 'shared' : 'dedicated'
   const terrain = assignmentTerrainSampler(params)
-  for (const candidate of placementCandidates(topology, params.seed)) {
+  for (const raw of placementCandidates(topology, params.seed, cemeteryPlotRadius(assignment.size, scale))) {
+    // Project into the owner chunk's valid interior first (a clamp, never a discard).
+    // Yaw faces the settlement from the first projected point; the final point is projected with that same
+    // yaw (not re-derived), so the owner-chunk fit is consistent by construction (a few degrees of entrance
+    // error at most).
+    const yaw0 = entranceYaw(raw.x, raw.z, topology.settlements)
+    const first = projectIntoOwnerChunk(raw.x, raw.z, assignment.size, scale, yaw0, params.chunkSize)
+    const yaw = entranceYaw(first.x, first.z, topology.settlements)
+    const candidate = projectIntoOwnerChunk(raw.x, raw.z, assignment.size, scale, yaw, params.chunkSize)
     if (
       !validateCemeteryPhysical(
         candidate.x,
         candidate.z,
         assignment.size,
         scale,
+        yaw,
         params,
         terrain,
         intent,
@@ -267,7 +399,7 @@ function tryPlaceTopology(
       x: candidate.x,
       z: candidate.z,
       scale,
-      rotationY,
+      rotationY: yaw,
       variant,
       id: cemeteryIdForAssignment(topology.assignmentId, params.seed),
     }
@@ -383,16 +515,18 @@ export function resolveAbandonedCemeteryForChunk(
   const half = chunkSize / 2
   const random = createSeededRandom(seed ^ hashString(`abandoned:${coord.cx},${coord.cz}`))
   const size: CemeterySize = random() < 0.7 ? 'SM' : 'MD'
-  const margin = CEMETERY_MARGIN_BY_SIZE[size]
-  const scale = 0.9 + random() * 0.3
+  const scale = CEMETERY_SCALE_MIN + random() * CEMETERY_SCALE_RANGE
   const rotationY = random() * Math.PI * 2
   const variant = random()
+  const { ex, ez } = rotatedPlotHalfExtents(size, scale, rotationY)
+  const rangeX = Math.max(0, half - CEMETERY_CHUNK_EDGE_MARGIN - ex)
+  const rangeZ = Math.max(0, half - CEMETERY_CHUNK_EDGE_MARGIN - ez)
 
   for (let attempt = 0; attempt < 12; attempt++) {
-    const wx = coord.cx * chunkSize + (random() * 2 - 1) * (half - margin)
-    const wz = coord.cz * chunkSize + (random() * 2 - 1) * (half - margin)
+    const wx = coord.cx * chunkSize + (random() * 2 - 1) * rangeX
+    const wz = coord.cz * chunkSize + (random() * 2 - 1) * rangeZ
     if (
-      !validateCemeteryPhysical(wx, wz, size, scale, params, terrain, 'abandoned', []) ||
+      !validateCemeteryPhysical(wx, wz, size, scale, rotationY, params, terrain, 'abandoned', []) ||
       isTooNearAnySettlement(wx, wz, peekRef)
     ) {
       continue

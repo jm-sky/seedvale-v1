@@ -19,21 +19,20 @@ import { getGrassBaselineDiag } from '../perf/grassBaseline'
 import { getGrassFinalizationDiag, readJsHeapUsedBytes } from '../perf/grassFinalizationDiag'
 import { withCategory, withStage } from '../perf/monitor'
 import { getProgramCensus } from '../perf/programCensus'
+import { cemeteryObbColliders } from '../settlement/cemeteryLayout'
+import { loadCemeteryPack, peekCemeteryPack } from '../settlement/cemeteryPack'
 import { createLandmarkProp, preloadLandmarkTemplates } from '../settlement/landmarkProps'
 import {
   BUSH_SPECS,
   CACTUS_SPECS,
-  CEMETERY_SPECS,
   type CemeterySize,
   createBush,
   createCactus,
   createCampfire,
   createCemetery,
-  createCemeteryPlot,
   createExpeditionRuins,
   createFallenLog,
   createFern,
-  createGraveStone,
   createLargeRock,
   createLilyPad,
   createMonolith,
@@ -45,7 +44,6 @@ import {
   createTree,
   FALLEN_LOG_SPECS,
   FERN_SPECS,
-  GRAVE_SPECS,
   LILY_SPECS,
   loadPropTemplates,
   placeOnGround,
@@ -221,8 +219,6 @@ const getSeaweedTemplates = memoTemplates(SEAWEED_SPECS, () => createSeaweed(1),
 const getRockTemplates = memoTemplates(ROCK_SPECS, () => createLargeRock(1))
 const getRockClusterTemplates = memoTemplates(ROCK_CLUSTER_SPECS, () => createRockCluster(1))
 const getFallenLogTemplates = memoTemplates(FALLEN_LOG_SPECS, () => createFallenLog(1))
-const getCemeteryTemplates = memoTemplates(CEMETERY_SPECS, () => createCemeteryPlot(1))
-const getGraveTemplates = memoTemplates(GRAVE_SPECS, () => createGraveStone(1))
 
 function preloadPropTemplates(): void {
   void getTreeTemplates.start()
@@ -235,8 +231,7 @@ function preloadPropTemplates(): void {
   void getRockTemplates.start()
   void getRockClusterTemplates.start()
   void getFallenLogTemplates.start()
-  void getCemeteryTemplates.start()
-  void getGraveTemplates.start()
+  void loadCemeteryPack()
   void preloadCampfireTemplates()
   void preloadLandmarkTemplates()
   preloadTreeStumpTemplate()
@@ -2091,7 +2086,8 @@ export function createChunkManager(
       }
     }
     if (tile.environment.some((p) => p.kind === 'cemetery')) {
-      if (!getCemeteryTemplates.peek() || !getGraveTemplates.peek()) return false
+      // `undefined` = still loading; `null` (load failed) is ready — createCemetery uses its procedural fallback.
+      if (peekCemeteryPack() === undefined) return false
     }
     return true
   }
@@ -2468,8 +2464,7 @@ export function createChunkManager(
     const rockTemplates = getRockTemplates.peek()
     const rockClusterTemplates = getRockClusterTemplates.peek()
     const fallenLogTemplates = getFallenLogTemplates.peek()
-    const cemeteryPlot = getCemeteryTemplates.peek()?.[0]
-    const graveTemplates = getGraveTemplates.peek() ?? undefined
+    const cemeteryPack = peekCemeteryPack()
 
     const envT0 = performance.now()
     const proceduralEnvPlacements = tile.environment.filter((p) => !GLB_ENV_KINDS.has(p.kind))
@@ -2480,14 +2475,17 @@ export function createChunkManager(
       // to sample terrain correctly, so the yaw can't be left as a
       // `prop.rotation.y` applied on the whole group afterward.
       if (placement.kind === 'cemetery') {
+        const cemeteryT0 = performance.now()
         const prop = createCemetery(
           placement.scale,
           placement.variant,
-          { plot: cemeteryPlot, graves: graveTemplates },
+          cemeteryPack,
           placement.cemeterySize ?? 'SM',
           { worldX: placement.x, worldZ: placement.z, rotationY: placement.rotationY, sampleHeight: sampleTileHeight },
+          placement.id,
         )
         placeOnGround(prop, placement.x, placement.z, sampleTileHeight)
+        getMonitor().recordHitch('PROPS', performance.now() - cemeteryT0, `cemetery ${placement.cemeterySize ?? 'SM'} ${placement.id ?? ''}`)
         return prop
       }
       if (placement.kind === 'stoneCircle') {
@@ -2731,6 +2729,10 @@ export function createChunkManager(
       }
       const radius = ENVIRONMENT_COLLISION_RADIUS[p.kind]
       if (radius > 0) colliders.push({ type: 'circle', x: p.x, z: p.z, radius: radius * p.scale })
+      // Cemetery markers/crypts get per-piece OBBs (Q47); aisles and the plot itself stay walkable.
+      if (p.kind === 'cemetery') {
+        for (const obb of cemeteryObbColliders(p)) colliders.push({ type: 'obb', ...obb })
+      }
     }
     for (const id of record.treeIds ?? []) {
       const presence = config.treeLifecycle.getPresence(id)

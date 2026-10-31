@@ -1,5 +1,15 @@
 import * as THREE from 'three'
+import type { CemeteryPiecePack } from './cemeteryPack'
 import { patchProceduralFoliageMaterial } from '../world/foliageWind'
+import {
+  CEMETERY_PIECE_HALF_EXTENTS,
+  cemeteryCryptLayout,
+  cemeteryGraveLayout,
+  type CemeterySize,
+  isAbandonedCemeteryLandmarkId,
+  pickCemeteryMarkerPiece,
+} from './cemeteryLayout'
+import { buildMergedCemeteryMesh, type CemeteryPieceInstance } from './cemeteryMesh'
 import { applyTerrainTilt, clonePropWithYaw, rotateOffsetY, sampleLocalTerrain, type TerrainSampler } from './propUtils'
 
 /** World placement context an individual stone-circle stone / cemetery grave
@@ -789,163 +799,96 @@ export function createGraveStone(scale = 1): THREE.Group {
   return group
 }
 
-/** Compact cemetery-plot fallback if the Poly cemetery GLB fails to load —
- *  a dirt pad plus three procedural headstones so the silhouette still reads. */
-export function createCemeteryPlot(scale = 1): THREE.Group {
-  const group = new THREE.Group()
-  const dirt = new THREE.MeshStandardMaterial({ color: 0x4a4034, flatShading: true, roughness: 1 })
-  const pad = new THREE.Mesh(new THREE.BoxGeometry(3.4 * scale, 0.08 * scale, 2.4 * scale), dirt)
-  pad.position.y = 0.04 * scale
-  pad.receiveShadow = true
-  group.add(pad)
-  for (let i = 0; i < 3; i++) {
-    const stone = createGraveStone(scale * (0.85 + i * 0.05))
-    stone.position.set((i - 1) * 0.95 * scale, 0, -0.15 * scale)
-    group.add(stone)
-  }
-  return group
-}
-
-export type CemeteryTemplates = {
-  plot?: THREE.Object3D
-  graves?: readonly THREE.Object3D[]
-}
-
-/** Cemetery footprint size (plan 173) — controls the actual grave grid
- *  (block/row/column count, spacing, aisle gaps), not a uniform scale
- *  multiplier on the small layout. */
-export type CemeterySize = 'SM' | 'MD' | 'LG'
-
-type CemeteryLayoutSpec = {
-  /** Side-by-side grave blocks, each `columns` × `rows`, separated by a
-   *  central-aisle gap of `aisleWidth`. */
-  blocks: number
-  columns: number
-  rows: number
-  colSpacing: number
-  rowSpacing: number
-  aisleWidth: number
-  /** Z offset of the first grave row in front of the plot centerpiece. */
-  frontOffset: number
-}
-
-// Spacing widened (world-terrain-006, was 1/1/1.1) — at the old ~1 m
-// row/column spacing, adjacent grave stones (createGraveStone's ~0.5 m base
-// footprint) left barely half a meter of clear ground, reading as an
-// unnaturally packed grid. Aisle widths grow alongside so blocks stay
-// visually separated at the new, wider column pitch.
-const CEMETERY_LAYOUTS: Record<CemeterySize, CemeteryLayoutSpec> = {
-  SM: { blocks: 1, columns: 3, rows: 3, colSpacing: 1.6, rowSpacing: 1.5, aisleWidth: 0, frontOffset: 1.2 },
-  MD: { blocks: 2, columns: 3, rows: 3, colSpacing: 1.6, rowSpacing: 1.5, aisleWidth: 2.2, frontOffset: 1.3 },
-  LG: { blocks: 3, columns: 4, rows: 3, colSpacing: 1.6, rowSpacing: 1.7, aisleWidth: 2.4, frontOffset: 1.4 },
-}
-
-/** Deterministic local grave positions for one cemetery `size` (plan 173) —
- *  side-by-side blocks separated by an aisle gap, centered on the plot
- *  centerpiece. Pure function of `size`/`scale`, so the layout stays stable
- *  across chunk reload; per-grave jitter is applied by the caller. Exported
- *  (plan world-007) so `world/hiddenFinds.ts` can derive the same grave world
- *  positions as Hidden Find dig spots without re-deriving the layout. */
-export function cemeteryGraveLayout(size: CemeterySize, scale: number): { x: number, z: number }[] {
-  const spec = CEMETERY_LAYOUTS[size]
-  const colSpacing = spec.colSpacing * scale
-  const rowSpacing = spec.rowSpacing * scale
-  const aisle = spec.aisleWidth * scale
-  const blockWidth = (spec.columns - 1) * colSpacing
-  const totalWidth = spec.blocks * blockWidth + (spec.blocks - 1) * aisle
-  const startX = -totalWidth / 2
-  const out: { x: number, z: number }[] = []
-  for (let b = 0; b < spec.blocks; b++) {
-    const blockStartX = startX + b * (blockWidth + aisle)
-    for (let row = 0; row < spec.rows; row++) {
-      for (let col = 0; col < spec.columns; col++) {
-        out.push({
-          x: blockStartX + col * colSpacing,
-          z: spec.frontOffset * scale + row * rowSpacing,
-        })
-      }
-    }
-  }
-  return out
-}
+/** Cemetery footprint size — see `cemeteryLayout.ts` (re-exported here for the existing import sites). */
+export type { CemeterySize }
+export { cemeteryCryptLayout, cemeteryGraveLayout, cemeteryPlotExtents } from './cemeteryLayout'
 
 const CEMETERY_TILT_STEP = 0.35
 /** Gravestones are thin slabs — clamp lean tighter than a stone-circle pillar
  *  so a slope doesn't read as a knocked-over headstone. */
 const CEMETERY_GRAVE_MAX_TILT_RAD = THREE.MathUtils.degToRad(12)
+/** Crypts sink slightly below their lowest corner so they never float on uneven ground. */
+const CEMETERY_CRYPT_SINK = 0.1
 
-/** Village-fringe cemetery (plans/2026-08-09--049, "rzadkie" tier) — a Poly
- *  cemetery scene as the readable centrepiece plus a deterministic grave
- *  grid whose actual arrangement (block/row/column count, spacing, aisles)
- *  is driven by `size` (plan 173: meaningful SM/MD/LG layouts, not a scaled
- *  copy of one small cemetery). `variant` (0..1) jitters grave scale/offset/
- *  yaw so no two cemeteries look identical. `terrain`, when given, samples
- *  each grave's own ground height/normal at its exact world position
- *  (plan 173) instead of the whole grid sitting at one height; the plot
- *  centerpiece only gets its height adjusted, not tilted (it's one static
- *  asset, not a per-grave element). */
+/** Cemetery landmark (Q47 / Q39 plan, V2 donor layout) — a rectangular plot (crypt row at the back, grave grid
+ *  with a central aisle, entrance towards +Z) from `cemeteryLayout.ts`, built as ONE merged mesh per cemetery
+ *  from the `graveyard.glb` pieces (1 main + 1 shadow draw). `pack` undefined/null → procedural fallback
+ *  (individual `createGraveStone`s + a box crypt). `variant` (0..1) drives the piece mix; `landmarkId`
+ *  selects the damaged-heavy mix for abandoned (`cemetery:w:`) cemeteries. `terrain`, when given, samples each
+ *  element's own ground height/normal at its exact world position (markers tilt ≤ 12°, crypts sit at their
+ *  lowest corner); without it the layout sits flat. */
 export function createCemetery(
   scale = 1,
   variant = 0.5,
-  templates?: CemeteryTemplates,
+  pack?: CemeteryPiecePack | null,
   size: CemeterySize = 'SM',
   terrain?: TerrainPlacementContext,
+  landmarkId?: string,
 ): THREE.Group {
   const group = new THREE.Group()
   const baseY = terrain ? terrain.sampleHeight(terrain.worldX, terrain.worldZ) : 0
-
-  /** Rotates `obj`'s current local (x,z) offset by the landmark's overall
-   *  yaw, samples terrain at that exact world position, then applies the
-   *  resulting height/tilt — no-op (flat single-height layout) when there's
-   *  no `terrain` context. */
-  const orientElement = (obj: THREE.Object3D, maxTiltRad: number) => {
-    if (!terrain) return
-    const { x: rx, z: rz } = rotateOffsetY(obj.position.x, obj.position.z, terrain.rotationY)
+  const rotationY = terrain?.rotationY ?? 0
+  const abandoned = isAbandonedCemeteryLandmarkId(landmarkId)
+  const sampleAt = (lx: number, lz: number) => {
+    const { x: rx, z: rz } = rotateOffsetY(lx, lz, rotationY)
+    if (!terrain) return { rx, rz, height: 0, normal: new THREE.Vector3(0, 1, 0) }
     const sample = sampleLocalTerrain(terrain.sampleHeight, terrain.worldX + rx, terrain.worldZ + rz, CEMETERY_TILT_STEP)
-    obj.position.x = rx
-    obj.position.z = rz
-    obj.position.y += sample.height - baseY
-    obj.rotation.y += terrain.rotationY
-    applyTerrainTilt(obj, sample.normal, maxTiltRad)
+    return { rx, rz, height: sample.height - baseY, normal: sample.normal }
   }
 
-  if (templates?.plot) {
-    const plot = templates.plot.clone(true)
-    plot.scale.multiplyScalar(scale)
-    orientElement(plot, 0)
-    group.add(plot)
-  } else {
-    const plot = createCemeteryPlot(scale)
-    orientElement(plot, 0)
-    group.add(plot)
-  }
-
-  const layout = cemeteryGraveLayout(size, scale)
-  const graves = templates?.graves
-  for (let i = 0; i < layout.length; i++) {
-    const spot = layout[i]!
-    // Jitter amplitude grew alongside the wider grid spacing above (still well
-    // short of the ~1 m clear gap between neighbouring spots, so adjacent
-    // graves never overlap) — the old, tighter jitter read as too regular a
-    // grid once the base spacing itself was no longer cramped.
-    const jitterX = ((variant * (i + 3)) % 1 - 0.5) * 0.35 * scale
-    const jitterZ = ((variant * (i + 7)) % 1 - 0.5) * 0.28 * scale
-    const yaw = ((variant * (i + 2)) % 1 - 0.5) * 0.18
-    const graveScale = scale * (0.85 + ((variant * (i + 5)) % 1) * 0.25)
-    let stone: THREE.Object3D
-    if (graves && graves.length > 0) {
-      stone = graves[i % graves.length]!.clone(true)
-      stone.scale.multiplyScalar(graveScale)
+  const instances: CemeteryPieceInstance[] = []
+  const slots = cemeteryGraveLayout(size, scale)
+  const fallbackObjects: THREE.Object3D[] = []
+  for (let i = 0; i < slots.length; i++) {
+    const slot = slots[i]!
+    const at = sampleAt(slot.markerX, slot.markerZ)
+    const yaw = rotationY + slot.yaw
+    if (pack) {
+      instances.push({
+        piece: pickCemeteryMarkerPiece(variant, i, abandoned),
+        x: at.rx, y: at.height, z: at.rz, yaw, scale, normal: at.normal, maxTiltRad: CEMETERY_GRAVE_MAX_TILT_RAD,
+      })
     } else {
-      stone = createGraveStone(graveScale)
+      const stone = createGraveStone(scale)
+      stone.position.set(at.rx, at.height, at.rz)
+      stone.rotation.y = yaw
+      applyTerrainTilt(stone, at.normal, CEMETERY_GRAVE_MAX_TILT_RAD)
+      fallbackObjects.push(stone)
     }
-    stone.position.set(spot.x + jitterX, 0, spot.z + jitterZ)
-    stone.rotation.y = yaw
-    orientElement(stone, CEMETERY_GRAVE_MAX_TILT_RAD)
-    group.add(stone)
   }
 
+  const half = CEMETERY_PIECE_HALF_EXTENTS.Crypt
+  for (const crypt of cemeteryCryptLayout(size, scale)) {
+    const center = sampleAt(crypt.x, crypt.z)
+    let low = center.height
+    for (const [cx, cz] of [[-1, -1], [1, -1], [-1, 1], [1, 1]] as const) {
+      low = Math.min(low, sampleAt(crypt.x + cx * half.hx * scale, crypt.z + cz * half.hz * scale).height)
+    }
+    const yaw = rotationY + crypt.yaw
+    const y = low - CEMETERY_CRYPT_SINK * scale
+    if (pack) {
+      instances.push({ piece: 'Crypt', x: center.rx, y, z: center.rz, yaw, scale, normal: null, maxTiltRad: 0 })
+    } else {
+      const box = createFallbackCrypt(scale)
+      box.position.set(center.rx, y, center.rz)
+      box.rotation.y = yaw
+      fallbackObjects.push(box)
+    }
+  }
+
+  if (pack) group.add(buildMergedCemeteryMesh(pack, instances))
+  else for (const obj of fallbackObjects) group.add(obj)
   return group
+}
+
+/** Procedural crypt used only when `graveyard.glb` failed to load (V2 fallback box, 4.2 × 3 × 5.6 m). */
+function createFallbackCrypt(scale: number): THREE.Mesh {
+  const mat = new THREE.MeshStandardMaterial({ color: 0x6c675f, flatShading: true, roughness: 1 })
+  const box = new THREE.Mesh(new THREE.BoxGeometry(4.2 * scale, 3 * scale, 5.6 * scale), mat)
+  box.geometry.translate(0, 1.5 * scale, 0)
+  box.castShadow = true
+  box.receiveShadow = true
+  return box
 }
 
 /** Horseshoe of rocks framing a real terrain depression — visual for the prey

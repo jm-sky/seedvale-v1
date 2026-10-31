@@ -109,7 +109,38 @@ All changes are in `cemeteryPlacement.ts` / `chunkEnvironment.ts`, reusing the e
 
 ## 5. Implementation notes
 
-_Filled by Q47._
+_Q47, Sonnet, 2026-10-31 — **STOPPED at the §4 stop condition** (assignments lost > 5 %). Code is on branch `ccr-8ae45039-q4hoxf` (not `main`); caches/epoch are deliberately **not** bumped and no visual entry was added, because the placement result must not land as is._
+
+### 5.1 Landed on the branch (technically verified: `tsc` clean, targeted tests green)
+
+- **Asset:** `public/models/nature/graveyard.glb` copied byte-identical from V3 (`git hash-object` = `a6ea99f8…`, 289 KB; piece bounds measured with `GLTFLoader`+meshopt: Grave 1.0×0.5×1.06, Gravestone 0.7×0.2, Marker_A 0.56×0.20, Marker_B 0.57×0.29, Damaged 1.04×0.57, Crypt 4.2×5.6×5.6). `cemetery.glb`/`grave_a.glb` deleted (no other references); `CEMETERY_SPECS`/`GRAVE_SPECS` replaced by `GRAVEYARD_GLB`.
+- **Layout** (`src/settlement/cemeteryLayout.ts`, pure, three-free): V2 class table (9/15/25 graves, 1/2/3 crypts), centred plot (`cemeteryPlotExtents` = 8.5×10.5 / 9.8×10.5 / 12.4×12.1 half-extents at scale 1), deterministic jitter hash, marker 0.9 m behind the dig slot, crypt row, piece mix (active/abandoned), per-piece OBB colliders, exact plot↔point and plot↔segment distance. `cemeteryGraveLayout` keeps its role (slot `i`, stable order); items gained `markerX/markerZ/yaw`, so the four slot consumers are unchanged — their tests pass without edits.
+- **Rendering:** `cemeteryPack.ts` (de-quantizing loader, shared atlas material) + `cemeteryMesh.ts` (one merged `BufferGeometry` per cemetery → 1 main + 1 shadow draw), `createCemetery` rewritten (markers tilt ≤ 12°, crypts at the lowest corner −0.1 m, procedural fallback), `chunkManager` uses the pack (`contentTemplatesReady` waits for it; `PROPS` hitch record per cemetery) and registers per-piece OBB colliders in `rebuildColliders`.
+- **Size mapping:** `cemeterySizeForServedSizes` (OUTPOST/SM→SM, MD→MD, LG/XL→LG, shared pair→MD), no RNG.
+- **Placement:** footprint-aware `validateCemeteryPhysical` (rotated 3×3 water/height-spread sample, crypt-corner spread, exact rectangle vs roads/clearings, owner-chunk fit by rotated extents, interior projection instead of discard), entrance yaw towards the settlement, widened candidate sweep (10 rings × 12 bearings dedicated, 9 rings shared). Worker `clearCemeteryPlots` removes vegetation/rocks/logs in the plot (+1 m).
+- **Census** `pnpm worldgen:cemeteries:census` (`scripts/perf/census-cemeteries.ts`, `--json` for before/after diffs).
+
+### 5.2 Why it stopped — census (rings ≤ 5 around origin, `resolvePlacementForTopology` with real roads/clearings)
+
+| seed | assignments placed **before** (`main` at `4cb5f7f`) | placed **after** | `none` before → after | previously-placed now lost |
+| --- | --- | --- | --- | --- |
+| 42 | 74 | 35 (+2 split) | 6 → 47 | **44 / 74 (59 %)** |
+| 415424794 | 84 | 46 (+1 split) | 10 → 49 | **41 / 84 (49 %)** |
+
+Plot–clearing and plot–road overlaps are 0 for everything that is placed (exact rectangle test), abandoned cemeteries in a ±30-chunk window dropped from 2/1 to 0/0, and the mean centre→settlement distance grew from ~25–47 m to ~40–62 m. Per-candidate rejection counters (instrumented run, seed 42 rings ≤ 2): the **road/path clearance** (`halfWidth + 2 m` from the whole rotated rectangle, over the 8-chunk gather that includes the dense village paths) rejects ~55–70 of ~120 candidates per assignment, the road-tint centre check ~15–30, plot height spread (> 2.5 m) ~10–35, water ~2–55; the fringe-band rule almost never decides. Fixes that already helped and are in the code: floating-point-safe interior projection (the first version lost ~40 % of candidates to the owner-chunk check), exact rectangle instead of circumscribed circle, wider sweep. What remains is geometric: a 17×21 m (SM) … 25×24 m (LG) V2 plot simply rarely fits between a settlement's clearings, its path mesh and the owner-chunk boundary.
+
+### 5.3 Options (design fork → author / Opus, see queue §3)
+
+1. **Smaller V2 plots** (e.g. SM ≈ 12×14 m: 3 columns, narrower margin/aisle/tomb row; MD/LG scaled likewise). Keeps the rules; visual compromise → author decision.
+2. **Chunk-straddling plots** with a world height sampler for the apron (plan §4 names this fork). Larger render/ownership change.
+3. **Plan cemeteries before roads/paths** (routes avoid the reserved plot) — natural fit for Q44/Q38 road work; re-run this census after Q37/Q38 anyway (plan §3 step 7).
+4. Relax rules (allow overlapping village *paths*, higher height spread / tint) — not recommended: breaks the 0-overlap acceptance and the author's quality bar.
+
+**Known red tests on the branch (a consequence of the placement regression, intentionally not papered over):** `chunkManager.test.ts › resolveUnloadedLandmark › resolves a cemetery without calling full computeChunkTile()` and `worldKnowledgeScan.test.ts › cemetery scan agrees with resolveUnloadedLandmark for a known seed` search a fixed seed/window for a cemetery that the stricter placement no longer finds there. Re-seed them once the plot-size fork is decided. All other suites (`src/terrain`, `src/settlement`, `src/world`, `src/quests`, `src/assets`: 4088 tests) are green.
+
+### 5.4 Remaining Q47 work after the fork is decided
+
+Cache bumps (`chunk-tiles`, `abandoned-cemeteries`, `locations-coarse` if it stores pose/size; tools-020 fixtures stale → browser re-export), the `PROPS` build-time number on WSL, queue §2 visual entry (marker front axis assumed **+Z**, unverified; crypt scale/sink), CREDITS/MODELS (done on the branch), `pnpm docs:sync`, STATE/CODE_INDEX owner update.
 
 ## 6. Author questions — answered 2026-10-31
 
