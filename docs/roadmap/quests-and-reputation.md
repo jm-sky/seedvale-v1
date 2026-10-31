@@ -10,6 +10,10 @@ It is a roadmap, not an implementation plan. Concrete changes should be split in
 
 **2026-09-13 checkpoint:** implementation recon is in [docs/reviews/2026-09-13--quest-system-architecture-recon.md](../reviews/2026-09-13--quest-system-architecture-recon.md). Do not replace `QuestManager`. Next infrastructure: `quests-progression-028` … `031`. Work contracts remain a sibling of quests, not a JobManager.
 
+## Hunting trophies and wildlife tiers (approved direction, 2026-10-31)
+
+[fauna-049 — Wild animal difficulty tiers, trophies and social recognition](../plans/fauna-049-wild-animal-tiers-and-trophies.md) records the agreed four difficulty tiers, three trophy grades, Survival-dependent harvesting, trade/gifts, Hunter hand-ins and settlement-scoped recognition with improved social-news propagation. This is a new planned feature, not implemented functionality. Coordinate appearance separation with [fauna-032](../plans/fauna-032-exceptional-animal-appearance-morphs.md).
+
 ## Current state
 
 ### Quests
