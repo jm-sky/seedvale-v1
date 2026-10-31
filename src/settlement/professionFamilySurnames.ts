@@ -54,7 +54,8 @@ function familyIndexFromId(id: string): number | null {
   return Number(match[1])
 }
 
-function representativeProfession(family: FamilyDef): Role | null {
+/** Highest-ranked adult profession of a household (surname + dressing owner). */
+export function representativeProfession(family: FamilyDef): Role | null {
   let best: Role | null = null
   let bestRank = Infinity
   for (const member of family.members) {
