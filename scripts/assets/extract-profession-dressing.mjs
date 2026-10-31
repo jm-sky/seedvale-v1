@@ -1,3 +1,7 @@
+import { NodeIO } from '@gltf-transform/core'
+import { ALL_EXTENSIONS } from '@gltf-transform/extensions'
+import { dedup, meshopt, prune } from '@gltf-transform/functions'
+import { MeshoptDecoder, MeshoptEncoder } from 'meshoptimizer'
 /**
  * Extracts the profession-signature home dressing nodes (queue Q48 / Q42 plan §2.3)
  * from the SeedVale-v3 `public/assets/props.glb` into the compact
@@ -10,15 +14,11 @@
  * Usage: node scripts/assets/extract-profession-dressing.mjs <v3-repo-root>
  */
 import path from 'node:path'
-import { NodeIO } from '@gltf-transform/core'
-import { ALL_EXTENSIONS } from '@gltf-transform/extensions'
-import { dedup, meshopt, prune } from '@gltf-transform/functions'
-import { MeshoptDecoder, MeshoptEncoder } from 'meshoptimizer'
 
 const donor = path.resolve(process.argv[2] ?? '../seedvale-v3')
 const KEEP = new Set([
-  'Hamlet_Antlers', 'Hamlet_HidesFrame', 'Hamlet_Shield', 'Hamlet_Banner', 'Hamlet_NetOnWall',
-  'Hamlet_DryingRack', 'Hamlet_Axe', 'Hamlet_Sack', 'Hamlet_Cart', 'Hamlet_HerbBed',
+  'Hamlet_Antlers', 'Hamlet_Axe', 'Hamlet_Banner', 'Hamlet_Cart', 'Hamlet_DryingRack',
+  'Hamlet_HerbBed', 'Hamlet_HidesFrame', 'Hamlet_NetOnWall', 'Hamlet_Sack', 'Hamlet_Shield',
 ])
 const SRC = path.join(donor, 'public/assets/props.glb')
 const DST = path.resolve('public/models/settlement/profession-dressing.glb')

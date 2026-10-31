@@ -815,6 +815,7 @@ async function buildSettlement(
         ? undefined
         : { settlementId: def.id, settlementSeed },
       authoredRepairPresentation,
+      def.families,
     )
   } finally {
     bootMarkEnd('buildSettlementProps')
@@ -831,6 +832,7 @@ async function buildSettlement(
     pastureFencePlacements,
     paddockFencePlacements,
     yardFencePlacements,
+    professionDressingColliders,
     authoredRepairVisuals,
   } = propsResult
   owned.group = group
@@ -959,6 +961,7 @@ async function buildSettlement(
       ...fencePlacementColliders(pastureFencePlacements),
       ...fencePlacementColliders(paddockFencePlacements),
       ...fencePlacementColliders(yardFencePlacements),
+      ...professionDressingColliders,
     ])
   }
   owned.collidersRegistered = true

@@ -27,10 +27,13 @@ type WallKitSpec = {
   halfAlong: number
   /** Half depth out of the wall, m. */
   halfOut: number
-  /** Mount height of the piece centre above ground, m. */
+  /** Height of the GLB node origin above ground, m (placement). */
   mountY: number
-  /** Top of the piece, m (opening-overlap test in Y). */
+  /** Lowest / highest point of the piece above ground, m (opening-overlap test in Y), measured from the pack. */
+  bottomY: number
   topY: number
+  /** Node-origin offset out of the wall face, m (V3 `mat4(0, y, z)`). */
+  outZ: number
 }
 type SlotKitSpec = { halfU: number, halfV: number }
 
@@ -45,10 +48,10 @@ const WINDOW_TOP_Y = 2.3
 export const MAX_WALL_PIECES_PER_HOUSE = 3
 
 export const WALL_KITS: Record<'antlers' | 'shield' | 'banner' | 'netOnWall', WallKitSpec> = {
-  antlers: { halfAlong: 0.46, halfOut: 0.4, mountY: 2.9, topY: 3.64 },
-  shield: { halfAlong: 0.34, halfOut: 0.2, mountY: 1.26, topY: 1.6 },
-  banner: { halfAlong: 0.34, halfOut: 0.15, mountY: 1.15, topY: 1.7 },
-  netOnWall: { halfAlong: 1.03, halfOut: 0.1, mountY: 0.85, topY: 1.5 },
+  antlers: { halfAlong: 0.46, halfOut: 0.4, mountY: 2.9, bottomY: 2.9, topY: 3.64, outZ: 0.01 },
+  shield: { halfAlong: 0.34, halfOut: 0.2, mountY: 1.6, bottomY: 1.27, topY: 1.93, outZ: 0.08 },
+  banner: { halfAlong: 0.34, halfOut: 0.2, mountY: 2.59, bottomY: 1.15, topY: 2.59, outZ: 0.1 },
+  netOnWall: { halfAlong: 1.03, halfOut: 0.11, mountY: 0, bottomY: 1.04, topY: 2.43, outZ: 0 },
 }
 export const SLOT_KITS: Record<'hidesFrame' | 'dryingRack' | 'stumpWithAxe' | 'sacks' | 'handCart' | 'herbBed', SlotKitSpec> = {
   hidesFrame: { halfU: 1.0, halfV: 0.4 },
@@ -134,8 +137,7 @@ export function wallKitFits(
     if (!overlapsX) continue
     const bottom = opening.type === 'door' ? 0 : WINDOW_BOTTOM_Y
     const top = opening.type === 'door' ? DOOR_TOP_Y : WINDOW_TOP_Y
-    const kitBottom = kit.mountY - (kit.topY - kit.mountY)
-    if (kitBottom < top && kit.topY > bottom) return false
+    if (kit.bottomY < top && kit.topY > bottom) return false
   }
   return true
 }
