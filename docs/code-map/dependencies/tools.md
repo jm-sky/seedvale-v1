@@ -82,6 +82,7 @@ Generated from TypeScript imports.
 **Imports**
 
 - `assets/assetIndex.ts`
+- `assets/bodyBuild.ts`
 - `tools/assetBrowser/hairTint.ts`
 - `tools/assetBrowser/urlParams.ts`
 - `tools/assetBrowser/viewer/layoutPersist.ts`
@@ -112,6 +113,7 @@ Generated from TypeScript imports.
 
 **Imports**
 
+- `assets/bodyBuild.ts`
 - `tools/assetBrowser/hairTint.ts`
 - `tools/assetBrowser/state.ts`
 
@@ -174,6 +176,7 @@ Generated from TypeScript imports.
 - `assets/anchorResolve.ts`
 - `assets/assetAnchors.ts`
 - `assets/assetIndex.ts`
+- `assets/bodyBuild.ts`
 - `assets/loadGltf.ts`
 - `assets/ubcOutfitMaterials.ts`
 - `items/items.ts`
@@ -214,6 +217,7 @@ Generated from TypeScript imports.
 
 - `assets/alignAnchors.ts`
 - `assets/assetIndex.ts`
+- `assets/bodyBuild.ts`
 - `config/worldConfig.ts`
 - `render/createPostProcessing.ts`
 - `render/createRenderer.ts`

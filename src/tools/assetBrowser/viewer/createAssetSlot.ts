@@ -12,6 +12,7 @@ import {
 import type { AssetIndexEntry, AssetPrepare } from '../../../assets/assetIndex'
 import { discoverGlbAnchors, refreshResolvedAnchors, resolveAssetAnchors, type ResolvedAnchor } from '../../../assets/anchorResolve'
 import { mergeAnchorDefs } from '../../../assets/assetAnchors'
+import { applyBodyBuild, type BodyBuild, type BodyBuildResult, DEFAULT_BODY_BUILD } from '../../../assets/bodyBuild'
 import {
   disposeObject3D,
   invalidateGltf,
@@ -67,6 +68,8 @@ export type AssetSlot = {
   refreshAnchors: () => void
   /** Re-apply the current hair color without reloading the GLB. */
   applyUbcHairColor: () => void
+  /** Select a preview body build in place (no reload, mixer/clip/camera untouched). `null` when no model. */
+  applyBodyBuild: (build: BodyBuild) => BodyBuildResult | null
   dispose: () => void
 }
 
@@ -147,6 +150,8 @@ export function createAssetSlot(role: 'reference' | 'target', scene: Group): Ass
   let entry: AssetIndexEntry | null = null
   let url: string | null = null
   let reloadCounter = 0
+  /** Bumped on every load/unload; a load that finds it changed discards its result (rapid selection changes). */
+  let loadSeq = 0
   let anchors: ResolvedAnchor[] = []
   let anchorIssues: string[] = []
   let gizmos: AnchorGizmoGroup | null = null
@@ -222,6 +227,7 @@ export function createAssetSlot(role: 'reference' | 'target', scene: Group): Ass
     get meshStats() { return meshStat },
     async load(nextEntry, customUrl) {
       slot.unload()
+      const seq = ++loadSeq
       entry = nextEntry
       url = customUrl ?? nextEntry?.url ?? null
       if (!url || !nextEntry) return
@@ -233,12 +239,17 @@ export function createAssetSlot(role: 'reference' | 'target', scene: Group): Ass
       const loaded = nextEntry.skinned || animCompanionUrl
         ? await loadGltfAnimated(fetchUrl)
         : { scene: await loadGltf(fetchUrl), animations: [] as import('three').AnimationClip[] }
+      if (seq !== loadSeq) {
+        disposeObject3D(loaded.scene)
+        return
+      }
 
       model = loaded.scene
       clips = loaded.animations
       if (animCompanionUrl) {
         try {
           const extra = await loadGltfAnimated(animCompanionUrl)
+          if (seq !== loadSeq) return
           clips = [...loaded.animations, ...extra.animations]
         } catch (err) {
           console.warn(`[asset-browser] failed to load animations ${animCompanionUrl}`, err)
@@ -258,6 +269,7 @@ export function createAssetSlot(role: 'reference' | 'target', scene: Group): Ass
         const kit = await attachCompareKit(model, nextEntry, {
           head: browserState.compareHead,
         })
+        if (seq !== loadSeq) return // unload() already disposed the stale model
         if (kit.warnings.length) {
           browserState.statusMessage = kit.warnings.join('; ')
           console.warn('[asset-browser] compare kit', kit.warnings)
@@ -272,6 +284,7 @@ export function createAssetSlot(role: 'reference' | 'target', scene: Group): Ass
       resolveAnchors()
       refreshBbox()
       mixer = clips.length ? new AnimationMixer(model) : null
+      if (nextEntry.bodyBuilds) slot.applyBodyBuild(browserState.bodyBuild)
     },
     async reload() {
       if (!url) return
@@ -283,6 +296,7 @@ export function createAssetSlot(role: 'reference' | 'target', scene: Group): Ass
       await slot.load(saved, savedUrl)
     },
     unload() {
+      loadSeq++
       if (mixer) {
         mixer.stopAllAction()
         mixer = null
@@ -361,6 +375,19 @@ export function createAssetSlot(role: 'reference' | 'target', scene: Group): Ass
     applyUbcHairColor() {
       if (!model || !url || !companionAnimationUrl(url)) return
       applyHairColor(model, hairColorHexFor(browserState.hairColor))
+    },
+    applyBodyBuild(build) {
+      if (!model || !entry?.bodyBuilds) return null
+      const wanted = entry.bodyBuilds.includes(build) ? build : DEFAULT_BODY_BUILD
+      const result = applyBodyBuild(model, wanted)
+      if (result.unsupported.length && wanted !== DEFAULT_BODY_BUILD) {
+        // Never advertise a partial build: fall back to the original body and say why.
+        applyBodyBuild(model, DEFAULT_BODY_BUILD)
+        browserState.statusMessage = `Build ${build} unavailable (no target on ${result.unsupported.join(', ')}) — showing original`
+      }
+      preparedBox = boxFromModel(model)
+      refreshBbox()
+      return result
     },
     dispose() {
       slot.unload()

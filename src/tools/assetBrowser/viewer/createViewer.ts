@@ -5,6 +5,7 @@ import {
   Vector3,
 } from 'three'
 import type { AssetIndexEntry } from '../../../assets/assetIndex'
+import type { BodyBuild } from '../../../assets/bodyBuild'
 import { solveAnchorAlignment } from '../../../assets/alignAnchors'
 import { createWorldConfig } from '../../../config/worldConfig'
 import { createPostProcessing } from '../../../render/createPostProcessing'
@@ -61,6 +62,8 @@ export type AssetViewer = {
   getCanvas: () => HTMLCanvasElement
   updateReport: () => void
   applyUbcHairColor: () => void
+  /** Apply a preview body build to the inspected character (reference if it has builds, else target). */
+  applyBodyBuild: (build: BodyBuild) => void
 }
 
 const _handCenter = new Vector3()
@@ -436,6 +439,11 @@ export function createViewer(container: HTMLElement): AssetViewer {
     },
     getCanvas: () => canvas,
     updateReport,
+    applyBodyBuild(build) {
+      const owner = reference.entry?.bodyBuilds ? reference : target.entry?.bodyBuilds ? target : null
+      owner?.applyBodyBuild(build)
+      markDirty()
+    },
     applyUbcHairColor() {
       reference.applyUbcHairColor()
       target.applyUbcHairColor()

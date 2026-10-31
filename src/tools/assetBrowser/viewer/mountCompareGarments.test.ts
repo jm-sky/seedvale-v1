@@ -1,6 +1,6 @@
-import { Bone, BufferGeometry, Group, MeshBasicMaterial, Object3D, Skeleton, SkinnedMesh } from 'three'
+import { Bone, BufferAttribute, BufferGeometry, Group, MeshBasicMaterial, Object3D, Skeleton, SkinnedMesh } from 'three'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { attachCompareGarments, attachCompareHead, attachCompareKit } from './mountCompareGarments'
+import { attachCompareGarments, attachCompareHair, attachCompareHead, attachCompareKit } from './mountCompareGarments'
 
 vi.mock('../../../assets/loadGltf', () => ({
   loadGltf: vi.fn(),
@@ -129,3 +129,47 @@ describe('attachCompareKit', () => {
   })
 })
 
+
+function morphGarment(name: string): SkinnedMesh {
+  const mesh = skinnedWithBone(name, 'pelvis')
+  mesh.geometry.setAttribute('position', new BufferAttribute(new Float32Array(9), 3))
+  mesh.geometry.morphAttributes.position = [
+    new BufferAttribute(new Float32Array(9).fill(1), 3),
+    new BufferAttribute(new Float32Array(9).fill(2), 3),
+  ]
+  mesh.updateMorphTargets()
+  mesh.morphTargetDictionary = { Fat: 0, Slim: 1 }
+  mesh.morphTargetInfluences = [0.25, 0.75]
+  return mesh
+}
+
+describe('morph preservation on rebind (tools-022)', () => {
+  it('keeps morph attributes, dictionary and per-instance influences on WorkSkirt', async () => {
+    const { body, bone } = bodyWithPelvis()
+    const src = morphGarment('EQ_WorkSkirt')
+    const pack = new Group()
+    pack.add(src, morphGarment('EQ_WorkSkirtRed'))
+    vi.mocked(loadGltf).mockResolvedValueOnce(pack)
+
+    const result = await attachCompareGarments(body, { garments: ['WorkSkirt'], eqUrl: '/x/eq/Female.glb' })
+    expect(result.attached).toEqual(['EQ_WorkSkirt']) // not the Red dye
+    const out = body.children.find((c) => c.name === 'EQ_WorkSkirt') as SkinnedMesh
+    expect(out.skeleton.bones[0]).toBe(bone)
+    expect(out.geometry.morphAttributes.position).toHaveLength(2)
+    expect(out.morphTargetDictionary).toEqual({ Fat: 0, Slim: 1 })
+    expect(out.morphTargetDictionary).not.toBe(src.morphTargetDictionary)
+    expect(out.morphTargetInfluences).toEqual([0.25, 0.75])
+    expect(out.morphTargetInfluences).not.toBe(src.morphTargetInfluences)
+    out.morphTargetInfluences![0] = 1
+    expect(src.morphTargetInfluences![0]).toBe(0.25)
+  })
+
+  it('attaches only the requested hair node', async () => {
+    const { body } = bodyWithPelvis()
+    const pack = new Group()
+    pack.add(skinnedWithBone('HAIR_Parted', 'pelvis'), skinnedWithBone('HAIR_Long', 'pelvis'))
+    vi.mocked(loadGltf).mockResolvedValueOnce(pack)
+    const result = await attachCompareHair(body, { hair: { url: '/h.glb', nodes: ['HAIR_Parted'] } })
+    expect(result.attached).toEqual(['HAIR_Parted'])
+  })
+})

@@ -1,5 +1,6 @@
 import { reactive } from 'vue'
 import type { AssetIndexEntry } from '../../assets/assetIndex'
+import { type BodyBuild, DEFAULT_BODY_BUILD } from '../../assets/bodyBuild'
 import { DEFAULT_HAIR_COLOR, type HairColorId } from './hairTint'
 import { applyAssetBrowserUrlParams } from './urlParams'
 import { applyLayoutPersist } from './viewer/layoutPersist'
@@ -53,6 +54,8 @@ export type BrowserState = {
    * No effect on UBC / non-compare slots.
    */
   compareHead: boolean
+  /** Preview body build for `bodypreview:*` entries (tools-022); other entries ignore it. */
+  bodyBuild: BodyBuild
   resetTransformOnReload: boolean
   reportText: string
   statusMessage: string
@@ -87,6 +90,7 @@ export const browserState = reactive<BrowserState>({
   clip: null,
   hairColor: DEFAULT_HAIR_COLOR,
   compareHead: true,
+  bodyBuild: DEFAULT_BODY_BUILD,
   resetTransformOnReload: false,
   reportText: '',
   statusMessage: 'Ready',
