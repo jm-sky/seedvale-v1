@@ -1739,6 +1739,8 @@ Generated from TypeScript imports.
 - `settlement/createSettlement.ts`
 - `settlement/houseBuilder.test.ts`
 - `settlement/houseBuilder.ts`
+- `settlement/professionDressingMesh.ts`
+- `settlement/props.ts`
 - `settlement/settlementPalisade.test.ts`
 - `settlement/settlementPalisade.ts`
 - `settlement/settlementPropColliders.ts`
@@ -3795,6 +3797,7 @@ Generated from TypeScript imports.
 - `settlement/merchantTrade.ts`
 - `settlement/npcPhysicalProfile.ts`
 - `settlement/plazaPaving.ts`
+- `settlement/professionDressing.ts`
 - `settlement/professionFamilySurnames.ts`
 - `settlement/professionStaffing.ts`
 - `settlement/props.ts`
@@ -3814,7 +3817,6 @@ Generated from TypeScript imports.
 - `terrain/abandonedMineDeposits.test.ts`
 - `terrain/abandonedMineDeposits.ts`
 - `terrain/biomeColors.ts`
-- `terrain/cemeteryAssignment.ts`
 - `terrain/cemeteryPlacement.ts`
 - `terrain/chunkCrops.ts`
 - `terrain/chunkEnvironment.test.ts`
@@ -3842,6 +3844,7 @@ Generated from TypeScript imports.
 - `world/locations/lostTreasureEstateSearchArea.ts`
 - `world/locations/seedProfile.ts`
 - `world/parseSeed.test.ts`
+- `world/seedLibrary.test.ts`
 - `world/seedLibrary.ts`
 - `world/treasureSites.ts`
 - `world/treeLifecycle.ts`
@@ -4225,6 +4228,7 @@ Generated from TypeScript imports.
 - `persistence/seedRecord.ts`
 - `persistence/worldgenCacheDb.ts`
 - `terrain/chunkHeightmap.ts`
+- `world/parseSeed.ts`
 - `world/seedLibrary.ts`
 
 ## `world/seedLibrary.ts`

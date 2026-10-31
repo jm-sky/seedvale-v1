@@ -74,26 +74,26 @@ Generated from exported TypeScript symbols.
 
 ## `assets/assetIndex.ts`
 
-- `assetEntryMatchesQuery` — function — line 209
-- `assetIndexById` — function — line 721
-- `AssetIndexEntry` — type — line 99
-- `AssetIndexGroup` — type — line 81
-- `AssetIndexStatus` — type — line 94
-- `AssetPrepare` — type — line 74
-- `basenameFromUrl` — function — line 155
-- `buildAssetIndex` — function — line 449
-- `CompareGarment` — type — line 97
-- `customUrlEntry` — function — line 231
-- `entryFromUrl` — function — line 735
-- `filterAssetIndex` — function — line 222
-- `findAssetEntry` — function — line 727
-- `formatAssetLabel` — function — line 204
-- `groupFromModelUrl` — function — line 177
-- `kindFromBasename` — function — line 169
-- `makeParkedEntry` — function — line 260
-- `mergeParkedManifest` — function — line 278
-- `packFromUrl` — function — line 161
-- `resolveLoadEntry` — function — line 249
+- `assetEntryMatchesQuery` — function — line 208
+- `assetIndexById` — function — line 720
+- `AssetIndexEntry` — type — line 98
+- `AssetIndexGroup` — type — line 80
+- `AssetIndexStatus` — type — line 93
+- `AssetPrepare` — type — line 73
+- `basenameFromUrl` — function — line 154
+- `buildAssetIndex` — function — line 448
+- `CompareGarment` — type — line 96
+- `customUrlEntry` — function — line 230
+- `entryFromUrl` — function — line 734
+- `filterAssetIndex` — function — line 221
+- `findAssetEntry` — function — line 726
+- `formatAssetLabel` — function — line 203
+- `groupFromModelUrl` — function — line 176
+- `kindFromBasename` — function — line 168
+- `makeParkedEntry` — function — line 259
+- `mergeParkedManifest` — function — line 277
+- `packFromUrl` — function — line 160
+- `resolveLoadEntry` — function — line 248
 
 ## `assets/assetUrlUtils.ts`
 
@@ -140,18 +140,19 @@ Generated from exported TypeScript symbols.
 - `COTTAGE_6X4_A` — const — line 570
 - `COTTAGE_6X4_B` — const — line 589
 - `COTTAGE_6X4_C` — const — line 698
-- `COTTAGE_DEFINITIONS` — const — line 774
+- `COTTAGE_DEFINITIONS` — const — line 796
 - `gableParts` — function — line 309
-- `HOME_HOUSE_DEFINITIONS` — const — line 792
+- `HOME_HOUSE_DEFINITIONS` — const — line 814
 - `HOUSE_6X6_A` — const — line 609
 - `HOUSE_6X6_B` — const — line 721
 - `HOUSE_8X6_A` — const — line 631
 - `HOUSE_8X6_B` — const — line 653
 - `HOUSE_8X6_C` — const — line 748
-- `HOUSE_DEFINITIONS` — const — line 783
-- `houseDefinitionById` — function — line 826
+- `HOUSE_DEFINITIONS` — const — line 805
+- `houseDefinitionById` — function — line 848
 - `HouseGableEnds` — type — line 303
-- `pickHouseDefinition` — function — line 818
+- `pickHouseDefinition` — function — line 840
+- `STOREHOUSE_DEFINITION` — const — line 781
 - `TEST_HOUSE_01` — const — line 502
 - `TEST_HOUSE_02` — const — line 513
 - `wooden2x1RoofParts` — function — line 279

@@ -1,10 +1,11 @@
 # PLANS PLANNED WITHOUT NOTES
 
 > Generated with `pnpm plans:without-notes`  
-> Date: 2026-10-30 22:28:01  
+> Date: 2026-10-31 23:00:49  
 
 ## PLANS
 
+- `fauna-049-wild-animal-tiers-and-trophies.md`
 - `npc-062-ubc-runtime-material-darkness-and-authored-outfit-preservation.md`
 - `quests-progression-044-lost-treasure-chronicles-final-treasure-claims-and-resolution.md`
 - `quests-progression-045-lost-treasure-chronicles-property-grant-deed-and-persistent-land-reward.md`
@@ -17,6 +18,37 @@
 
 --------------------------------
 ## PROMPTS
+
+### `fauna-049-wild-animal-tiers-and-trophies.md`
+
+Prompt:
+
+```
+Zrób review planu `fauna-049-wild-animal-tiers-and-trophies.md`
+
+Wczytaj:
+- `docs/STATE.md`
+- `docs/plans/PLANNING.md` (Implementation Notes section),
+- `docs/plans/fauna-049-wild-animal-tiers-and-trophies.md`
+- aktualny codebase,
+- potrzebne zależności i powiązane implementacje.
+
+Na podstawie review utwórz w repo plik:
+`docs/plans/implementation-notes/fauna-049-wild-animal-tiers-and-trophies-implementation-notes.md`
+
+Umieść w nim:
+- sugestie dotyczące implementacji,
+- istotne detale techniczne,
+- decyzje architektoniczne,
+- informacje o istniejących systemach i implementacjach, które należy wykorzystać,
+- potencjalne problemy, zależności i pułapki,
+- inne konkretne wskazówki, które ułatwią agentowi AI poprawną implementację planu.
+
+Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
+Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
+
+Pliki dodaj na branch `main` w repozytorium.
+```
 
 ### `npc-062-ubc-runtime-material-darkness-and-authored-outfit-preservation.md`
 

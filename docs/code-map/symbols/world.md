@@ -1331,14 +1331,14 @@ Generated from exported TypeScript symbols.
   - system: worldgen-cache
   - role: Persistent-cache integration for abandoned-cemetery materialization (plan world-025) — stores the deterministic result of a roll-pass `ChunkManager.probeAbandonedCemeteryAtChunk()` so later Near/Guard/Far discovery, other saves on the same seed, and later sessions can skip the expensive `paramsFor` + terrain-sampler path.
   - integration: Disposable derived data only. A miss or storage failure always falls back to the canonical ChunkManager probe. Never player discovery state, never a second cemetery resolver.
-- `ABANDONED_CEMETERY_VERSION` — const — line 25
-- `AbandonedCemeteryCache` — type — line 64
-- `abandonedCemeteryFingerprint` — function — line 44
+- `ABANDONED_CEMETERY_VERSION` — const — line 26
+- `AbandonedCemeteryCache` — type — line 65
+- `abandonedCemeteryFingerprint` — function — line 45
   - domain: world
   - system: worldgen-cache
-- `CachedAbandonedCemeteryResult` — type — line 27
-- `chunkSubKey` — function — line 31
-- `createAbandonedCemeteryCache` — function — line 85
+- `CachedAbandonedCemeteryResult` — type — line 28
+- `chunkSubKey` — function — line 32
+- `createAbandonedCemeteryCache` — function — line 86
   - domain: world
   - system: worldgen-cache
 
@@ -1731,11 +1731,12 @@ Generated from exported TypeScript symbols.
 ## `world/parseSeed.ts`
 
 - `createSeededRandom` — function — line 2
-- `hasExplicitUrlSeed` — function — line 34
+- `hasExplicitUrlSeed` — function — line 39
 - `parseSeedFromUrl` — function — line 14
-- `randomSeed` — function — line 25
-- `setUrlSearchParam` — function — line 41
-- `syncSeedInUrl` — function — line 48
+- `randomSeed` — function — line 30
+- `REFERENCE_SEED` — const — line 27
+- `setUrlSearchParam` — function — line 46
+- `syncSeedInUrl` — function — line 53
 
 ## `world/placementPreview.ts`
 
@@ -2018,11 +2019,11 @@ Generated from exported TypeScript symbols.
 
 ## `world/seedLibrary.ts`
 
-- `clearSeedCache` — function — line 96
-- `DeleteSeedError` — type — line 78
-- `deleteSeedGuarded` — function — line 84
-- `DeleteSeedResult` — type — line 79
-- `ensureSeedRecordsForSeeds` — function — line 68
+- `clearSeedCache` — function — line 99
+- `DeleteSeedError` — type — line 81
+- `deleteSeedGuarded` — function — line 87
+- `DeleteSeedResult` — type — line 82
+- `ensureSeedRecordsForSeeds` — function — line 71
 - `isSeedInLibrary` — function — line 23
 - `resolveInitialSeedChoice` — function — line 35
 - `resolveNewGameSeed` — function — line 54

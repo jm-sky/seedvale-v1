@@ -351,6 +351,51 @@ Generated from TypeScript imports.
 - `settlement/places.test.ts`
 - `settlement/props.ts`
 
+## `settlement/cemeteryLayout.test.ts`
+
+**Imports**
+
+- `settlement/cemeteryLayout.ts`
+
+## `settlement/cemeteryLayout.ts`
+
+**Imported by**
+
+- `settlement/cemeteryLayout.test.ts`
+- `settlement/cemeteryMesh.ts`
+- `settlement/cemeteryPack.ts`
+- `settlement/decorProps.ts`
+- `terrain/cemeteryPlacement.ts`
+- `terrain/chunkEnvironment.test.ts`
+- `terrain/chunkEnvironment.ts`
+- `terrain/chunkManager.ts`
+
+## `settlement/cemeteryMesh.ts`
+
+**Imports**
+
+- `settlement/cemeteryLayout.ts`
+- `settlement/cemeteryPack.ts`
+- `settlement/propUtils.ts`
+
+**Imported by**
+
+- `settlement/decorProps.ts`
+
+## `settlement/cemeteryPack.ts`
+
+**Imports**
+
+- `assets/loadGltf.ts`
+- `settlement/cemeteryLayout.ts`
+- `settlement/propSpecs.ts`
+
+**Imported by**
+
+- `settlement/cemeteryMesh.ts`
+- `settlement/decorProps.ts`
+- `terrain/chunkManager.ts`
+
 ## `settlement/createSettlement.rollback.integration.test.ts`
 
 **Imports**
@@ -488,6 +533,9 @@ Generated from TypeScript imports.
 
 **Imports**
 
+- `settlement/cemeteryLayout.ts`
+- `settlement/cemeteryMesh.ts`
+- `settlement/cemeteryPack.ts`
 - `settlement/propUtils.ts`
 - `world/foliageWind.ts`
 
@@ -526,6 +574,7 @@ Generated from TypeScript imports.
 - `app/gameLoop.ts`
 - `app/worldBundle.ts`
 - `assets/houseDefinitionExample.ts`
+- `assets/storehouseDefinition.test.ts`
 - `config/worldConfig.ts`
 - `debug/locationQueries.ts`
 - `debug/npcDebugApi.ts`
@@ -565,6 +614,8 @@ Generated from TypeScript imports.
 - `settlement/npcStartingWealth.ts`
 - `settlement/plazaPaving.test.ts`
 - `settlement/plazaPaving.ts`
+- `settlement/professionDressing.test.ts`
+- `settlement/professionDressing.ts`
 - `settlement/professionFamilySurnames.test.ts`
 - `settlement/professionFamilySurnames.ts`
 - `settlement/professionStaffing.test.ts`
@@ -1112,7 +1163,11 @@ Generated from TypeScript imports.
 - `settlement/blacksmithYard.test.ts`
 - `settlement/blacksmithYard.ts`
 - `settlement/householdYard.test.ts`
+- `settlement/professionDressing.test.ts`
+- `settlement/professionDressing.ts`
+- `settlement/professionDressingMesh.ts`
 - `settlement/props.ts`
+- `settlement/storehouseLayout.ts`
 - `settlement/villagePlan.ts`
 - `settlement/villagePlanner.test.ts`
 - `settlement/villagePlanner.ts`
@@ -1603,6 +1658,7 @@ Generated from TypeScript imports.
 - `settlement/household.ts`
 - `settlement/props.ts`
 - `settlement/storageDestinations.ts`
+- `settlement/storehouseLayout.ts`
 - `settlement/villagePlan.ts`
 - `world/cultivationAnchor.ts`
 
@@ -1851,6 +1907,57 @@ Generated from TypeScript imports.
 - `settlement/plazaPaving.test.ts`
 - `settlement/props.ts`
 
+## `settlement/professionDressing.test.ts`
+
+**Imports**
+
+- `ai/characters.ts`
+- `assets/houseDefinitionExample.ts`
+- `settlement/families.ts`
+- `settlement/householdYard.ts`
+- `settlement/professionDressing.ts`
+
+## `settlement/professionDressing.ts`
+
+**Imports**
+
+- `ai/characters.ts`
+- `assets/houseDefinitionExampleConfig.ts`
+- `settlement/families.ts`
+- `settlement/householdYard.ts`
+- `settlement/professionFamilySurnames.ts`
+- `settlement/professionStaffing.ts`
+- `world/parseSeed.ts`
+
+**Imported by**
+
+- `settlement/professionDressing.test.ts`
+- `settlement/professionDressingMesh.test.ts`
+- `settlement/professionDressingMesh.ts`
+- `settlement/props.ts`
+
+## `settlement/professionDressingMesh.test.ts`
+
+**Imports**
+
+- `settlement/professionDressing.ts`
+- `settlement/professionDressingMesh.ts`
+
+## `settlement/professionDressingMesh.ts`
+
+**Imports**
+
+- `assets/loadGltf.ts`
+- `settlement/householdYard.ts`
+- `settlement/professionDressing.ts`
+- `settlement/propSpecs.ts`
+- `world/collision.ts`
+
+**Imported by**
+
+- `settlement/professionDressingMesh.test.ts`
+- `settlement/props.ts`
+
 ## `settlement/professionFamilySurnames.test.ts`
 
 **Imports**
@@ -1873,6 +1980,7 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `settlement/homeAuthoredResidents.ts`
+- `settlement/professionDressing.ts`
 - `settlement/professionFamilySurnames.test.ts`
 - `settlement/settlementGenerator.ts`
 
@@ -1911,6 +2019,7 @@ Generated from TypeScript imports.
 - `settlement/householdProfessionStock.ts`
 - `settlement/lostTreasureChroniclesArchaeologistResident.test.ts`
 - `settlement/lostTreasureChroniclesElderResident.test.ts`
+- `settlement/professionDressing.ts`
 - `settlement/professionFamilySurnames.ts`
 - `settlement/professionStaffing.test.ts`
 - `settlement/settlementAgriculture.ts`
@@ -1923,9 +2032,11 @@ Generated from TypeScript imports.
 
 - `assets/assetIndex.ts`
 - `settlement/campfireProps.ts`
+- `settlement/cemeteryPack.ts`
 - `settlement/houseLighting.lantern.test.ts`
 - `settlement/houseLighting.ts`
 - `settlement/landmarkProps.ts`
+- `settlement/professionDressingMesh.ts`
 - `settlement/props.ts`
 - `settlement/settlementPalisade.ts`
 - `settlement/settlementPropColliders.test.ts`
@@ -1951,6 +2062,7 @@ Generated from TypeScript imports.
 
 - `app/actions/groundActions.test.ts`
 - `quests/lostTreasureChronicleSearch.ts`
+- `settlement/cemeteryMesh.ts`
 - `settlement/decorProps.ts`
 - `settlement/props.ts`
 - `settlement/settlementPalisade.ts`
@@ -2000,6 +2112,8 @@ Generated from TypeScript imports.
 - `settlement/householdYard.ts`
 - `settlement/merchantWagon.ts`
 - `settlement/plazaPaving.ts`
+- `settlement/professionDressing.ts`
+- `settlement/professionDressingMesh.ts`
 - `settlement/propSpecs.ts`
 - `settlement/propUtils.ts`
 - `settlement/ratNestPlacement.ts`
@@ -2008,6 +2122,7 @@ Generated from TypeScript imports.
 - `settlement/settlementStructures.ts`
 - `settlement/settlementVillageTorch.ts`
 - `settlement/storageVisuals.ts`
+- `settlement/storehouseLayout.ts`
 - `settlement/villageClearing.ts`
 - `settlement/villagePaddock.ts`
 - `settlement/villagePasture.ts`
@@ -2017,6 +2132,7 @@ Generated from TypeScript imports.
 - `simulation/index.ts`
 - `terrain/chunkHeightmap.ts`
 - `terrain/coastPlacement.ts`
+- `world/collision.ts`
 - `world/containerProp.ts`
 - `world/cultivationAnchor.ts`
 - `world/parseSeed.ts`
@@ -2830,6 +2946,26 @@ Generated from TypeScript imports.
 - `settlement/storageVisuals.test.ts`
 - `settlement/woodPileTiers.ts`
 
+## `settlement/storehouseLayout.test.ts`
+
+**Imports**
+
+- `settlement/storehouseLayout.ts`
+
+## `settlement/storehouseLayout.ts`
+
+**Imports**
+
+- `settlement/householdYard.ts`
+
+**Imported by**
+
+- `settlement/npcResidentAnchors.ts`
+- `settlement/props.ts`
+- `settlement/storehouseLayout.test.ts`
+- `settlement/villagePlan.ts`
+- `settlement/villagePlanner.ts`
+
 ## `settlement/structureCondition.test.ts`
 
 **Imports**
@@ -3020,6 +3156,7 @@ Generated from TypeScript imports.
 - `ai/nameCultures.ts`
 - `settlement/families.ts`
 - `settlement/householdYard.ts`
+- `settlement/storehouseLayout.ts`
 - `shared/SettlementName.ts`
 - `terrain/naturalResources.ts`
 
@@ -3099,6 +3236,7 @@ Generated from TypeScript imports.
 - `settlement/householdWells.ts`
 - `settlement/householdYard.ts`
 - `settlement/pathDryness.ts`
+- `settlement/storehouseLayout.ts`
 - `settlement/villagePaddock.ts`
 - `settlement/villagePasture.ts`
 - `settlement/villagePlan.ts`

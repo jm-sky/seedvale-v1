@@ -136,7 +136,6 @@ Generated from TypeScript imports.
 - `settlement/families.ts`
 - `settlement/props.ts`
 - `settlement/settlementGenerator.ts`
-- `world/parseSeed.ts`
 
 **Imported by**
 
@@ -167,6 +166,7 @@ Generated from TypeScript imports.
 
 **Imports**
 
+- `settlement/cemeteryLayout.ts`
 - `settlement/families.ts`
 - `settlement/props.ts`
 - `settlement/settlementGenerator.ts`
@@ -207,6 +207,7 @@ Generated from TypeScript imports.
 
 **Imports**
 
+- `settlement/cemeteryLayout.ts`
 - `terrain/cemeteryAssignment.ts`
 - `terrain/cemeteryPlacement.ts`
 - `terrain/chunkEnvironment.ts`
@@ -218,6 +219,7 @@ Generated from TypeScript imports.
 **Imports**
 
 - `math/segment.ts`
+- `settlement/cemeteryLayout.ts`
 - `settlement/props.ts`
 - `terrain/biomeRegions.ts`
 - `terrain/cemeteryPlacement.ts`
@@ -529,6 +531,8 @@ Generated from TypeScript imports.
 - `perf/programCensus.ts`
 - `player/PlayerController.ts`
 - `render/instancedProps.ts`
+- `settlement/cemeteryLayout.ts`
+- `settlement/cemeteryPack.ts`
 - `settlement/landmarkProps.ts`
 - `settlement/props.ts`
 - `settlement/roadNetwork.ts`

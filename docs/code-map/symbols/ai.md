@@ -437,27 +437,27 @@ Generated from exported TypeScript symbols.
 
 ## `ai/npcLogistics.ts`
 
-- `buildTransferAction` — function — line 204
-- `canDeliverToPlayerStorage` — function — line 387
-- `canExchangeWithHousehold` — function — line 240
-- `canWithdrawFromEconomy` — function — line 226
-- `completeWoodHarvestDuty` — function — line 127
-- `depositCarriedItems` — function — line 162
-- `depositFoodHarvest` — function — line 150
-- `depositWoodHarvest` — function — line 104
+- `buildTransferAction` — function — line 206
+- `canDeliverToPlayerStorage` — function — line 389
+- `canExchangeWithHousehold` — function — line 242
+- `canWithdrawFromEconomy` — function — line 228
+- `completeWoodHarvestDuty` — function — line 129
+- `depositCarriedItems` — function — line 164
+- `depositFoodHarvest` — function — line 152
+- `depositWoodHarvest` — function — line 106
 - `HELPER_DELIVERY_ITEM_KIND` — const — line 48
 - `HELPER_DELIVERY_MAX_CARRY` — const — line 49
 - `HOUSEHOLD_EXCHANGE_MAX_TRANSFER` — const — line 36
 - `HUNT_YIELD_KINDS` — const — line 53
 - `NpcLogisticsCtx` — type — line 67
-- `planDeliverHuntYieldHome` — function — line 449
-- `planEconomyWithdraw` — function — line 257
-- `planHouseholdExchange` — function — line 319
-- `planPlayerStorageDelivery` — function — line 410
-- `ResourceTransferPlan` — type — line 196
-- `satisfyHouseholdResourceNeed` — function — line 184
-- `woodHarvestBranchEquivalent` — function — line 96
-- `WoodHarvestDeposit` — type — line 93
+- `planDeliverHuntYieldHome` — function — line 451
+- `planEconomyWithdraw` — function — line 259
+- `planHouseholdExchange` — function — line 321
+- `planPlayerStorageDelivery` — function — line 412
+- `ResourceTransferPlan` — type — line 198
+- `satisfyHouseholdResourceNeed` — function — line 186
+- `woodHarvestBranchEquivalent` — function — line 98
+- `WoodHarvestDeposit` — type — line 95
 
 ## `ai/npcMovementRecovery.ts`
 

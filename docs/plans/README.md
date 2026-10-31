@@ -125,6 +125,7 @@ Unless noted otherwise, `verification needed` means implementation has passed au
 | 💡 `settlements-024-campfire-jumpable-low-collision.md`                        | 🔴 | M      | -                                                                                                                                                                                                                                                                                          | -                                         |
 | 💡 `tools-021-collider-debug-obb-orientation.md`                               | 🟡 | S      | -                                                                                                                                                                                                                                                                                          | -                                         |
 | 💡 `world-040-underground-locations-and-portals.md`                            | ⚪ | XL     | items-player-051, fauna-045, ~~world-027~~, ~~persistence-006~~, ~~persistence-008~~                                                                                                                                                                                                       | -                                         |
+| ◼️ `fauna-049-wild-animal-tiers-and-trophies.md`                               | 🟡 | XL     | -                                                                                                                                                                                                                                                                                          | quests-and-reputation                     |
 
 ---
 
@@ -196,7 +197,7 @@ New plans declare a primary `Domain:` in frontmatter. Use optional `Tags:` only 
 ## Next plan IDs
 
 - ai: `001`
-- fauna: `049`
+- fauna: `050`
 - items-player: `062`
 - npc: `065`
 - persistence: `009`

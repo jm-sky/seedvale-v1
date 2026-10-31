@@ -226,11 +226,13 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `assets/constructionCatalog.test.ts`
+- `assets/storehouseDefinition.test.ts`
 - `house-browser/houseBrowserScene.ts`
 - `settlement/blacksmithYard.test.ts`
 - `settlement/houseBuilder.test.ts`
 - `settlement/houseDoors.test.ts`
 - `settlement/householdYard.test.ts`
+- `settlement/professionDressing.test.ts`
 - `settlement/props.ts`
 - `settlement/villagePlanner.ts`
 - `world/residentialBuilding.ts`
@@ -246,6 +248,7 @@ Generated from TypeScript imports.
 - `assets/houseDefinitionExample.ts`
 - `settlement/houseBuilder.test.ts`
 - `settlement/houseBuilder.ts`
+- `settlement/professionDressing.ts`
 - `settlement/props.ts`
 - `world/residentialBuilding.ts`
 
@@ -286,12 +289,14 @@ Generated from TypeScript imports.
 - `render/actorSkeletonSharing.assets.test.ts`
 - `settlement/PlacedFires.ts`
 - `settlement/campfireProps.ts`
+- `settlement/cemeteryPack.ts`
 - `settlement/createSettlement.ts`
 - `settlement/houseBuilder.test.ts`
 - `settlement/houseBuilder.ts`
 - `settlement/houseLighting.lantern.test.ts`
 - `settlement/landmarkProps.ts`
 - `settlement/livestock.ts`
+- `settlement/professionDressingMesh.ts`
 - `settlement/propUtils.ts`
 - `settlement/props.ts`
 - `settlement/rats.ts`
@@ -393,6 +398,13 @@ Generated from TypeScript imports.
 - `terrain/buildChunkGeometryMaterial.test.ts`
 - `world/caves/caveHeightfieldMaterial.test.ts`
 - `world/caves/caveHeightfieldMaterial.ts`
+
+## `assets/storehouseDefinition.test.ts`
+
+**Imports**
+
+- `assets/houseDefinitionExample.ts`
+- `settlement/families.ts`
 
 ## `assets/ubcOutfitMaterials.ts`
 

@@ -113,6 +113,41 @@ Generated from exported TypeScript symbols.
 - `createSimpleFireBase` — function — line 244
 - `preloadCampfireTemplates` — function — line 53
 
+## `settlement/cemeteryLayout.ts`
+
+- `CEMETERY_PIECE_HALF_EXTENTS` — const — line 51
+- `cemeteryCounts` — function — line 114
+- `cemeteryCryptLayout` — function — line 152
+- `CemeteryCryptPose` — type — line 72
+- `cemeteryGraveLayout` — function — line 120
+- `CemeteryGraveSlot` — type — line 60
+- `cemeteryLocalToWorld` — function — line 208
+- `CemeteryMarkerPieceId` — type — line 48
+- `CemeteryObb` — type — line 218
+- `cemeteryObbColliders` — function — line 226
+- `CemeteryPieceId` — type — line 47
+- `cemeteryPlotDistanceToPoint` — function — line 267
+- `cemeteryPlotDistanceToSegment` — function — line 285
+- `cemeteryPlotExtents` — function — line 102
+- `cemeteryPlotRadius` — function — line 108
+- `CemeterySize` — type — line 15
+  - domain: world-terrain
+- `hash01` — function — line 85
+- `isAbandonedCemeteryLandmarkId` — function — line 202
+- `pickCemeteryMarkerPiece` — function — line 190
+
+## `settlement/cemeteryMesh.ts`
+
+- `buildMergedCemeteryMesh` — function — line 31
+- `CemeteryPieceInstance` — type — line 13
+
+## `settlement/cemeteryPack.ts`
+
+- `CemeteryPieceData` — type — line 14
+- `CemeteryPiecePack` — type — line 21
+- `loadCemeteryPack` — function — line 110
+- `peekCemeteryPack` — function — line 135
+
 ## `settlement/createSettlement.ts`
 
 - `AcquiredSettlementResources` — type — line 555
@@ -126,34 +161,30 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/decorProps.ts`
 
-- `cemeteryGraveLayout` — function — line 849
-- `CemeterySize` — type — line 817
-- `CemeteryTemplates` — type — line 809
-- `createBush` — function — line 103
-- `createCactus` — function — line 151
-- `createCaveMouth` — function — line 958
-- `createCemetery` — function — line 887
-- `createCemeteryPlot` — function — line 794
-- `createCobblePlate` — function — line 185
-- `createExpeditionRuins` — function — line 709
-- `createFallenLog` — function — line 493
-- `createFelledTree` — function — line 90
-- `createFern` — function — line 170
-- `createGraveStone` — function — line 776
-- `createLargeRock` — function — line 416
-- `createLilyPad` — function — line 216
-- `createLimbedTree` — function — line 61
-- `createMonolith` — function — line 526
-- `createReed` — function — line 198
-- `createRockCluster` — function — line 453
-- `createSeaweed` — function — line 231
-- `createSmallRuins` — function — line 634
-- `createStoneCircle` — function — line 589
-- `createThicket` — function — line 121
-- `createTree` — function — line 18
-- `createTreeStump` — function — line 40
-- `LargeRockPalette` — type — line 248
-- `TerrainPlacementContext` — type — line 11
+- `createBush` — function — line 113
+- `createCactus` — function — line 161
+- `createCaveMouth` — function — line 901
+- `createCemetery` — function — line 820
+- `createCobblePlate` — function — line 195
+- `createExpeditionRuins` — function — line 719
+- `createFallenLog` — function — line 503
+- `createFelledTree` — function — line 100
+- `createFern` — function — line 180
+- `createGraveStone` — function — line 786
+- `createLargeRock` — function — line 426
+- `createLilyPad` — function — line 226
+- `createLimbedTree` — function — line 71
+- `createMonolith` — function — line 536
+- `createReed` — function — line 208
+- `createRockCluster` — function — line 463
+- `createSeaweed` — function — line 241
+- `createSmallRuins` — function — line 644
+- `createStoneCircle` — function — line 599
+- `createThicket` — function — line 131
+- `createTree` — function — line 28
+- `createTreeStump` — function — line 50
+- `LargeRockPalette` — type — line 258
+- `TerrainPlacementContext` — type — line 21
 
 ## `settlement/families.ts`
 
@@ -433,6 +464,9 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/householdYard.ts`
 
+- `HouseholdYardFenceSegment` — type — line 183
+- `householdYardFenceSegmentId` — function — line 186
+- `householdYardFenceSegments` — function — line 197
 - `HouseholdYardPlan` — type — line 53
 - `householdYardPlanFor` — function — line 113
 - `houseLocalToWorld` — function — line 87
@@ -764,14 +798,14 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/npcResidentAnchors.ts`
 
-- `NpcResidentAnchors` — type — line 28
+- `NpcResidentAnchors` — type — line 29
   - domain: settlements-npcs
   - system: npc-resident-anchors
   - role: Narrow settlement-scoped physical routing/work-anchor contract shared by the procedural adapter and (later) a founded/nonprocedural one.
-- `proceduralResidentAnchorsFromLandmarks` — function — line 87
+- `proceduralResidentAnchorsFromLandmarks` — function — line 94
   - domain: settlements-npcs
-- `residentAnchorsForHome` — function — line 113
-- `resolveNpcSettlementStorage` — function — line 71
+- `residentAnchorsForHome` — function — line 124
+- `resolveNpcSettlementStorage` — function — line 72
 
 ## `settlement/npcStartingWealth.ts`
 
@@ -862,11 +896,36 @@ Generated from exported TypeScript symbols.
 - `PlazaPavingPlacement` — type — line 21
 - `PlazaSurfaceHole` — type — line 28
 
+## `settlement/professionDressing.ts`
+
+- `DressingKit` — type — line 21
+  - domain: settlements-npcs Profession-signature home dressing (queue Q48 / Q42 plan §2.1) — pure, Three.js-free deterministic projection of a household's generated professions onto small wall pieces (house-local) and one freestanding piece inside the yard's reserved profession rectangle. Not persisted and not cached: it is derived at settlement build time from `def.families` and the planned plots, like the blacksmith workplace.
+- `DressingPlacement` — type — line 109
+- `MAX_WALL_PIECES_PER_HOUSE` — const — line 48
+- `professionDressingFor` — function — line 174
+- `SLOT_KITS` — const — line 56
+- `SlotDressingPlacement` — type — line 97
+- `slotKitCorners` — function — line 242
+- `WALL_FACE_OFFSET_M` — const — line 41
+- `WALL_KITS` — const — line 50
+- `WallDressingPlacement` — type — line 83
+- `wallKitFits` — function — line 125
+
+## `settlement/professionDressingMesh.ts`
+
+- `buildProfessionDressingMeshes` — function — line 186
+- `DressingHouse` — type — line 179
+- `extractProfessionDressingPack` — function — line 90
+- `loadProfessionDressingPack` — function — line 115
+- `professionDressingColliders` — function — line 258
+- `ProfessionDressingPack` — type — line 40
+
 ## `settlement/professionFamilySurnames.ts`
 
-- `applyProfessionFamilySurnames` — function — line 122
+- `applyProfessionFamilySurnames` — function — line 123
   - domain: settlements-npcs
 - `isWorldgenFamilyId` — function — line 47
+- `representativeProfession` — function — line 58
 
 ## `settlement/professionStaffing.ts`
 
@@ -883,19 +942,20 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/props.ts`
 
-- `AuthoredRepairVisualHandles` — type — line 366
+- `AuthoredRepairVisualHandles` — type — line 387
   - domain: settlements
-- `BlacksmithWorkplace` — type — line 386
-- `buildSettlementProps` — function — line 798
-- `disposeSettlementGroup` — function — line 2501
-- `houseChestPlacement` — function — line 2485
-- `SettlementHouseBed` — type — line 168
-- `SettlementHouseLandmark` — type — line 134
-- `SettlementLandmarks` — type — line 189
-- `SettlementLandPlot` — type — line 352
-- `SettlementStorageVisuals` — type — line 344
-- `SettlementTreeLandmark` — type — line 396
-- `SettlementWellLandmark` — type — line 175
+- `BlacksmithWorkplace` — type — line 407
+- `buildSettlementProps` — function — line 816
+- `disposeSettlementGroup` — function — line 2624
+- `houseChestPlacement` — function — line 2608
+- `SettlementHouseBed` — type — line 172
+- `SettlementHouseLandmark` — type — line 138
+- `SettlementLandmarks` — type — line 203
+- `SettlementLandPlot` — type — line 373
+- `SettlementStorageVisuals` — type — line 365
+- `SettlementStorehouse` — type — line 194
+- `SettlementTreeLandmark` — type — line 417
+- `SettlementWellLandmark` — type — line 179
 
 ## `settlement/propSpecs.ts`
 
@@ -905,7 +965,6 @@ Generated from exported TypeScript symbols.
 - `CACTUS_SPECS` — const — line 50
 - `CAMPFIRE_FIT_MAX` — const — line 158
 - `CAMPFIRE_UNLIT_URL` — const — line 156
-- `CEMETERY_SPECS` — const — line 106
 - `COBBLE_FIT_MAX` — const — line 175
 - `COBBLE_URL` — const — line 172
 - `CROPS_FIT_MAX` — const — line 129
@@ -916,7 +975,7 @@ Generated from exported TypeScript symbols.
 - `FARM_URL` — const — line 122
 - `FERN_SPECS` — const — line 46
 - `FIRE_FX_URL` — const — line 193
-- `GRAVE_SPECS` — const — line 110
+- `GRAVEYARD_GLB` — const — line 112
 - `LANDMARK_BOAT_FIT_MAX` — const — line 162
 - `LANDMARK_BOAT_URL` — const — line 161
 - `LANDMARK_OLD_TREE_FIT_MAX` — const — line 168
@@ -933,6 +992,7 @@ Generated from exported TypeScript symbols.
 - `LANTERN_WALL_MAX` — const — line 199
 - `LANTERN_WALL_URL` — const — line 190
 - `LILY_SPECS` — const — line 70
+- `PROFESSION_DRESSING_GLB` — const — line 110
 - `REED_SPECS` — const — line 61
 - `RESOURCE_GOLD_SPECS` — const — line 114
 - `RESOURCE_ROCK_SPECS` — const — line 118
@@ -1104,10 +1164,10 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/roadRouteWorldgenCache.ts`
 
-- `createRoadRouteWorldgenCache` — function — line 187
+- `createRoadRouteWorldgenCache` — function — line 188
   - domain: world-terrain
   - system: worldgen-cache
-- `isValidRoadRoutePayload` — function — line 136
+- `isValidRoadRoutePayload` — function — line 137
   - domain: world-terrain
   - system: worldgen-cache
 - `ROAD_ROUTE_CACHE_NAMESPACE` — const — line 28
@@ -1115,12 +1175,12 @@ Generated from exported TypeScript symbols.
   - system: worldgen-cache
   - role: Persistent-cache adapter for inter-settlement / settlement↔minor-location `RoadRoute` results (plan world-terrain-029). IndexedDB only hydrates and extends the module-level `routeCache` in `roadNetwork.ts` — that map stays the synchronous authority. Cached `null` is a real hit (a deterministic failed route), never a miss.
   - integration: Disposable derived data only. Route consumers stay synchronous; a miss, malformed payload or IndexedDB failure always falls back to the canonical `findRoute()` path. Never `SaveData`, never a second crossing classifier, never signposts / per-chunk corridors / bridge specs.
-- `ROAD_ROUTE_CACHE_VERSION` — const — line 42
-- `RoadRouteCachePayload` — type — line 49
-- `roadRouteFingerprint` — function — line 64
+- `ROAD_ROUTE_CACHE_VERSION` — const — line 43
+- `RoadRouteCachePayload` — type — line 50
+- `roadRouteFingerprint` — function — line 65
   - domain: world-terrain
   - system: worldgen-cache
-- `RoadRouteWorldgenCache` — type — line 162
+- `RoadRouteWorldgenCache` — type — line 163
 
 ## `settlement/settlementAgriculture.ts`
 
@@ -1352,34 +1412,34 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/settlementWorldgenCache.ts`
 
-- `createSettlementWorldgenCache` — function — line 600
+- `createSettlementWorldgenCache` — function — line 603
   - domain: settlements
   - system: worldgen-cache
-- `isValidSettlementDefPayload` — function — line 518
+- `isValidSettlementDefPayload` — function — line 521
   - domain: settlements
   - system: worldgen-cache
-- `isValidSettlementWorldgenPayload` — function — line 565
+- `isValidSettlementWorldgenPayload` — function — line 568
   - domain: settlements
   - system: worldgen-cache
-- `parseSettlementCellSubKey` — function — line 105
+- `parseSettlementCellSubKey` — function — line 107
 - `SETTLEMENT_DEFINITION_CACHE_NAMESPACE` — const — line 46
   - domain: settlements
   - system: worldgen-cache
   - role: Persistent-cache adapter for `SettlementDef | null` results (plan settlements-014). IndexedDB only hydrates and extends the module-level `defCache` in `settlementPlanCache.ts` — that map stays the synchronous authority. Cached `null` is a real hit (a cell that deterministically has no settlement), never a miss.
   - integration: Disposable derived data only. `settlementDefFor()` stays synchronous; a miss, malformed payload or IndexedDB failure always falls back to `generateSettlementDef()`. Never `SaveData`, never a second reduced `VillagePlan`, never economy / household / NPC runtime state.
 - `SETTLEMENT_DEFINITION_CACHE_VERSION` — const — line 59
-- `SETTLEMENT_LOST_TREASURE_HOSTS_SUB_KEY` — const — line 73
-- `settlementCellSubKey` — function — line 100
+- `SETTLEMENT_LOST_TREASURE_HOSTS_SUB_KEY` — const — line 75
+- `settlementCellSubKey` — function — line 102
   - domain: settlements
   - system: worldgen-cache
-- `SettlementDefinitionCachePayload` — type — line 70
-- `settlementDefinitionFingerprint` — function — line 127
+- `SettlementDefinitionCachePayload` — type — line 72
+- `settlementDefinitionFingerprint` — function — line 129
   - domain: settlements
   - system: worldgen-cache
-- `SettlementLostTreasureHostsPayload` — type — line 77
-- `SettlementProgressionIdentity` — type — line 87
-- `SettlementWorldgenCache` — type — line 574
-- `SettlementWorldgenCachePayload` — type — line 83
+- `SettlementLostTreasureHostsPayload` — type — line 79
+- `SettlementProgressionIdentity` — type — line 89
+- `SettlementWorldgenCache` — type — line 577
+- `SettlementWorldgenCachePayload` — type — line 85
 
 ## `settlement/storageDestinations.ts`
 
@@ -1432,6 +1492,18 @@ Generated from exported TypeScript symbols.
 - `WoodPileVisual` — type — line 87
 - `woodPileVisualState` — function — line 70
 - `WoodPileVisualState` — type — line 42
+
+## `settlement/storehouseLayout.ts`
+
+- `STOREHOUSE_APRON` — const — line 22
+- `STOREHOUSE_BAY_OFFSET` — const — line 18
+- `STOREHOUSE_BAY_SLOTS` — const — line 16
+  - domain: settlements
+- `STOREHOUSE_BAY_SPACING` — const — line 20
+- `STOREHOUSE_FREE_FLOOR` — const — line 24
+- `storehouseBaySlotFor` — function — line 50
+- `StorehouseLayout` — type — line 26
+- `storehouseLayoutFor` — function — line 38
 
 ## `settlement/structureCondition.ts`
 
@@ -1494,9 +1566,9 @@ Generated from exported TypeScript symbols.
 
 - `ClearingArea` — type — line 11
 - `ClearingLayout` — type — line 21
-- `layoutClearings` — function — line 156
-- `layoutClearingsFromPlan` — function — line 69
-- `plazaCoreRadius` — function — line 61
+- `layoutClearings` — function — line 172
+- `layoutClearingsFromPlan` — function — line 72
+- `plazaCoreRadius` — function — line 64
 
 ## `settlement/VillageFire.ts`
 
@@ -1532,56 +1604,57 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/villagePlan.ts`
 
-- `communalFenceFallbackStructureId` — function — line 231
-- `DEFAULT_PLAZA_RADIUS` — const — line 66
-- `FoodSourceType` — type — line 11
-- `householdFenceStructureId` — function — line 222
-- `householdWellLandmarkId` — function — line 258
-- `householdWellPlotId` — function — line 244
-- `isTreeWorkEligible` — function — line 112
-- `loggingWagonStructureId` — function — line 238
-- `noticeBoardPlotId` — function — line 274
-- `PADDOCK_ID` — const — line 316
-- `paddockPathId` — function — line 318
-- `parseHouseholdWellFamilyIndex` — function — line 250
-- `PASTURE_ID` — const — line 302
-- `pasturePathId` — function — line 311
-- `pastureWellLandmarkId` — function — line 306
-- `plannedCampfireBodyKind` — function — line 104
-- `plannedCampfireFootprint` — function — line 100
-- `PLAZA_CAMPFIRE_FOOTPRINT` — const — line 92
-- `PLAZA_MASONRY_FIREPIT_FOOTPRINT` — const — line 94
-- `PLAZA_TREE_WORK_MARGIN` — const — line 110
-- `plazaRadiusForSize` — function — line 70
-- `plazaUsesMasonryFirepit` — function — line 96
-- `residentialFoundationStructureId` — function — line 215
-- `residentialStructureId` — function — line 206
-- `SettlementCharacter` — type — line 20
+- `communalFenceFallbackStructureId` — function — line 235
+- `DEFAULT_PLAZA_RADIUS` — const — line 67
+- `FoodSourceType` — type — line 12
+- `householdFenceStructureId` — function — line 226
+- `householdWellLandmarkId` — function — line 262
+- `householdWellPlotId` — function — line 248
+- `isTreeWorkEligible` — function — line 113
+- `loggingWagonStructureId` — function — line 242
+- `noticeBoardPlotId` — function — line 284
+- `PADDOCK_ID` — const — line 326
+- `paddockPathId` — function — line 328
+- `parseHouseholdWellFamilyIndex` — function — line 254
+- `PASTURE_ID` — const — line 312
+- `pasturePathId` — function — line 321
+- `pastureWellLandmarkId` — function — line 316
+- `plannedCampfireBodyKind` — function — line 105
+- `plannedCampfireFootprint` — function — line 101
+- `PLAZA_CAMPFIRE_FOOTPRINT` — const — line 93
+- `PLAZA_MASONRY_FIREPIT_FOOTPRINT` — const — line 95
+- `PLAZA_TREE_WORK_MARGIN` — const — line 111
+- `plazaRadiusForSize` — function — line 71
+- `plazaUsesMasonryFirepit` — function — line 97
+- `residentialFoundationStructureId` — function — line 219
+- `residentialStructureId` — function — line 210
+- `SettlementCharacter` — type — line 21
   - domain: settlements
-- `VillageBoundary` — type — line 40
-- `VillageBuildingPlan` — type — line 185
-- `VillageBuildingRole` — type — line 177
-- `VillageCenter` — type — line 48
-- `VillageEntrance` — type — line 396
-- `VillageIdentity` — type — line 24
-- `VillageLandmarkKind` — type — line 262
-- `VillageLandmarkPlan` — type — line 278
-- `VillageLayoutPattern` — type — line 408
-- `VillagePaddockPlan` — type — line 377
+- `storehousePlotId` — function — line 279
+- `VillageBoundary` — type — line 41
+- `VillageBuildingPlan` — type — line 189
+- `VillageBuildingRole` — type — line 181
+- `VillageCenter` — type — line 49
+- `VillageEntrance` — type — line 406
+- `VillageIdentity` — type — line 25
+- `VillageLandmarkKind` — type — line 266
+- `VillageLandmarkPlan` — type — line 288
+- `VillageLayoutPattern` — type — line 418
+- `VillagePaddockPlan` — type — line 387
   - domain: settlements
-- `VillagePastureAnchor` — type — line 337
-- `VillagePastureFenceSegment` — type — line 328
+- `VillagePastureAnchor` — type — line 347
+- `VillagePastureFenceSegment` — type — line 338
   - domain: settlements
-- `VillagePasturePlan` — type — line 352
+- `VillagePasturePlan` — type — line 362
   - domain: settlements
-- `VillagePathPlan` — type — line 292
-- `VillagePlan` — type — line 424
-- `VillagePlaza` — type — line 59
-- `villagePlazaAt` — function — line 83
-- `VillagePlot` — type — line 140
-- `VillagePlotRole` — type — line 138
-- `VillageZone` — type — line 130
-- `VillageZoneKind` — type — line 122
+- `VillagePathPlan` — type — line 302
+- `VillagePlan` — type — line 434
+- `VillagePlaza` — type — line 60
+- `villagePlazaAt` — function — line 84
+- `VillagePlot` — type — line 141
+- `VillagePlotRole` — type — line 139
+- `VillageZone` — type — line 131
+- `VillageZoneKind` — type — line 123
 
 ## `settlement/villagePlanDebug.ts`
 
@@ -1589,16 +1662,16 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/villagePlanner.ts`
 
-- `buildingsAndLandmarksFromPlots` — function — line 1457
-- `chooseLayoutPattern` — function — line 169
-- `HOUSE_COMPOUND_GAP_FACTOR` — const — line 84
-- `householdWellLocalBand` — function — line 96
+- `buildingsAndLandmarksFromPlots` — function — line 1492
+- `chooseLayoutPattern` — function — line 171
+- `HOUSE_COMPOUND_GAP_FACTOR` — const — line 86
+- `householdWellLocalBand` — function — line 98
   - domain: settlements-npcs
-- `pathPlansToCorridorData` — function — line 1832
-- `planLocalPathsAndEntrances` — function — line 1713
-- `planVillageLayout` — function — line 991
-- `PLOT_SCORE_WEIGHTS` — const — line 57
-- `VillageLayoutDraft` — type — line 132
+- `pathPlansToCorridorData` — function — line 1873
+- `planLocalPathsAndEntrances` — function — line 1753
+- `planVillageLayout` — function — line 993
+- `PLOT_SCORE_WEIGHTS` — const — line 59
+- `VillageLayoutDraft` — type — line 134
 
 ## `settlement/wellInteractionQueue.ts`
 

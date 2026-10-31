@@ -462,6 +462,8 @@ Generated from TypeScript imports.
 - `settlement/npcPhysicalProfile.ts`
 - `settlement/npcStartingWealth.ts`
 - `settlement/places.ts`
+- `settlement/professionDressing.test.ts`
+- `settlement/professionDressing.ts`
 - `settlement/professionFamilySurnames.test.ts`
 - `settlement/professionFamilySurnames.ts`
 - `settlement/professionStaffing.test.ts`

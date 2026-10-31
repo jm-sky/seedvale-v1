@@ -57,58 +57,58 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/cemeteryAssignment.ts`
 
-- `ABANDONED_SETTLEMENT_MIN_DISTANCE` — const — line 53
-- `activeTopologyNear` — function — line 267
-- `assignmentVariationSeed` — function — line 247
-- `CEMETERY_SETTLEMENT_GATHER_RADIUS` — const — line 51
-- `CemeteryAssignment` — type — line 34
-- `cemeteryAssignmentFromTopology` — function — line 233
-- `cemeteryAssignmentId` — function — line 97
-- `CemeteryAssignmentIntent` — type — line 24
-- `cemeteryIdForAbandoned` — function — line 108
-- `cemeteryIdForAssignment` — function — line 102
-- `CemeterySettlementRef` — type — line 15
-- `CemeteryTopologyIntent` — type — line 27
-- `clearCemeteryCaches` — function — line 58
-- `collectSettlementRefsNear` — function — line 66
-- `dedicatedCemeteryTopology` — function — line 164
-- `isAbandonedCemeteryId` — function — line 118
-- `isLegacyCemeteryId` — function — line 113
-- `makeSettlementRefPeek` — function — line 41
-- `PeekSettlementDef` — type — line 38
-- `PeekSettlementRef` — type — line 39
-- `resolveCemeteryTopologyForSettlement` — function — line 189
+- `ABANDONED_SETTLEMENT_MIN_DISTANCE` — const — line 52
+- `activeTopologyNear` — function — line 254
+- `assignmentVariationSeed` — function — line 234
+- `CEMETERY_SETTLEMENT_GATHER_RADIUS` — const — line 50
+- `CemeteryAssignment` — type — line 33
+- `cemeteryAssignmentFromTopology` — function — line 224
+- `cemeteryAssignmentId` — function — line 96
+- `CemeteryAssignmentIntent` — type — line 23
+- `cemeteryIdForAbandoned` — function — line 107
+- `cemeteryIdForAssignment` — function — line 101
+- `CemeterySettlementRef` — type — line 14
+- `cemeterySizeForServedSizes` — function — line 211
+- `CemeteryTopologyIntent` — type — line 26
+- `clearCemeteryCaches` — function — line 57
+- `collectSettlementRefsNear` — function — line 65
+- `dedicatedCemeteryTopology` — function — line 163
+- `isAbandonedCemeteryId` — function — line 117
+- `isLegacyCemeteryId` — function — line 112
+- `makeSettlementRefPeek` — function — line 40
+- `PeekSettlementDef` — type — line 37
+- `PeekSettlementRef` — type — line 38
+- `resolveCemeteryTopologyForSettlement` — function — line 188
   - domain: world-terrain
-- `resolveSmSharePartner` — function — line 151
-- `rollCemeterySizeForAssignment` — function — line 210
-- `servedSettlementIdsForCemeteryId` — function — line 255
+- `resolveSmSharePartner` — function — line 150
+- `servedSettlementIdsForCemeteryId` — function — line 242
   - domain: world-terrain
-- `settlementRefFromDef` — function — line 62
-- `SM_SHARING_CELL_RADIUS` — const — line 47
-- `SM_SHARING_MAX_DISTANCE` — const — line 49
+- `settlementRefFromDef` — function — line 61
+- `SM_SHARING_CELL_RADIUS` — const — line 46
+- `SM_SHARING_MAX_DISTANCE` — const — line 48
 
 ## `terrain/cemeteryPlacement.ts`
 
-- `ABANDONED_CEMETERY_CHANCE` — const — line 35
-- `abandonedCemeteryMaxOffsetFromCenter` — function — line 44
+- `ABANDONED_CEMETERY_CHANCE` — const — line 53
+- `abandonedCemeteryMaxOffsetFromCenter` — function — line 62
   - domain: world-terrain
-- `chunkPassesAbandonedCemeteryRoll` — function — line 59
+- `chunkPassesAbandonedCemeteryRoll` — function — line 79
   - domain: world-terrain
-- `clearCemeteryPlacementCaches` — function — line 285
-- `getCachedPlacementForAssignment` — function — line 327
-- `isSharedAssignmentSplit` — function — line 323
-- `placementOwnerChunk` — function — line 415
-- `resolveAbandonedCemeteryAfterRoll` — function — line 364
+- `clearCemeteryPlacementCaches` — function — line 417
+- `getCachedPlacementForAssignment` — function — line 459
+- `isSharedAssignmentSplit` — function — line 455
+- `placementOwnerChunk` — function — line 549
+- `resolveAbandonedCemeteryAfterRoll` — function — line 496
   - domain: world-terrain
-- `resolveAbandonedCemeteryForChunk` — function — line 374
-- `resolveCemeteriesForChunk` — function — line 437
+- `resolveAbandonedCemeteryForChunk` — function — line 506
+- `resolveCemeteriesForChunk` — function — line 571
   - domain: world-terrain
-- `resolveCemeteryPlacement` — function — line 468
-- `ResolvedCemeteryPlacement` — type — line 63
-- `resolvedPlacementToEnvironment` — function — line 334
-- `resolvePlacementForTopology` — function — line 303
+- `resolveCemeteryPlacement` — function — line 602
+- `ResolvedCemeteryPlacement` — type — line 83
+- `resolvedPlacementToEnvironment` — function — line 466
+- `resolvePlacementForTopology` — function — line 435
   - domain: world-terrain
-- `validateCemeteryPhysical` — function — line 175
+- `validateCemeteryPhysical` — function — line 259
 
 ## `terrain/chunkCrops.ts`
 
@@ -116,33 +116,34 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/chunkEnvironment.ts`
 
-- `CEMETERY_CLEARING_PAD` — const — line 137
-- `CEMETERY_INNER_FRAC` — const — line 135
-- `CEMETERY_OUTER_FRAC` — const — line 136
-- `cemeteryFitsVillageFringe` — function — line 221
-- `cemeteryFootprintClearsRoads` — function — line 282
-- `CemeteryTerrainSampler` — type — line 371
-- `clearVegetationAroundOldTrees` — function — line 347
-- `computeChunkEnvironment` — function — line 510
-- `deriveLandmarkId` — function — line 323
-- `deriveMineableRockResourceId` — function — line 333
-- `EnvironmentKind` — type — line 18
-- `EnvironmentPlacement` — type — line 34
-- `isClassicLandmarkKind` — function — line 497
-- `LANDMARK_BIAS_MAX` — const — line 139
-- `LANDMARK_BIAS_MIN` — const — line 138
-- `LANDMARK_LABELS` — const — line 160
-- `LandmarkBiasInput` — type — line 173
-- `LandmarkBiasKind` — type — line 141
-- `landmarkChanceBias` — function — line 194
-- `LandmarkKind` — type — line 146
-- `LandmarkTerrainSampler` — type — line 382
+- `CEMETERY_CLEARING_PAD` — const — line 138
+- `CEMETERY_INNER_FRAC` — const — line 136
+- `CEMETERY_OUTER_FRAC` — const — line 137
+- `cemeteryFitsVillageFringe` — function — line 222
+- `cemeteryFootprintClearsRoads` — function — line 273
+- `CemeteryTerrainSampler` — type — line 410
+- `clearCemeteryPlots` — function — line 385
+- `clearVegetationAroundOldTrees` — function — line 348
+- `computeChunkEnvironment` — function — line 549
+- `deriveLandmarkId` — function — line 324
+- `deriveMineableRockResourceId` — function — line 334
+- `EnvironmentKind` — type — line 19
+- `EnvironmentPlacement` — type — line 35
+- `isClassicLandmarkKind` — function — line 536
+- `LANDMARK_BIAS_MAX` — const — line 140
+- `LANDMARK_BIAS_MIN` — const — line 139
+- `LANDMARK_LABELS` — const — line 161
+- `LandmarkBiasInput` — type — line 174
+- `LandmarkBiasKind` — type — line 142
+- `landmarkChanceBias` — function — line 195
+- `LandmarkKind` — type — line 147
+- `LandmarkTerrainSampler` — type — line 421
   - domain: world-terrain
-- `OLD_TREE_CLEARANCE_RADIUS` — const — line 126
-- `resolveClassicLandmarkPlacement` — function — line 452
+- `OLD_TREE_CLEARANCE_RADIUS` — const — line 127
+- `resolveClassicLandmarkPlacement` — function — line 491
   - domain: world-terrain
-- `rollCemeterySize` — function — line 300
-- `VillageDisk` — type — line 182
+- `rollCemeterySize` — function — line 301
+- `VillageDisk` — type — line 183
 
 ## `terrain/chunkGrid.ts`
 
@@ -207,27 +208,27 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/chunkManager.ts`
 
-- `applyChunkWaterDayNight` — function — line 1187
-- `applyModificationToTile` — function — line 948
-- `ChunkManager` — type — line 565
-- `ChunkManagerConfig` — type — line 347
-- `createChunkManager` — function — line 1212
+- `applyChunkWaterDayNight` — function — line 1182
+- `applyModificationToTile` — function — line 943
+- `ChunkManager` — type — line 560
+- `ChunkManagerConfig` — type — line 342
+- `createChunkManager` — function — line 1207
   - domain: world-terrain
   - system: chunk-manager
   - role: Owns terrain chunk streaming, sampling and environment-facing world queries.
   - simulation: on-demand
   - performance: nearby-only
-- `CropHarvestOutcome` — type — line 1201
-- `drainByBudget` — function — line 1162
-- `FinalizeStage` — type — line 461
-- `pickNearestQueuedKey` — function — line 1122
-- `pickNextFinalizeKey` — function — line 1140
-- `ResidentChunkSnapshot` — type — line 1027
-- `sampleResidentHeight` — function — line 1047
-- `sampleResidentLocalWater` — function — line 1095
-- `sampleResidentSurfaceGround` — function — line 1067
-- `TerrainModification` — type — line 905
-- `tickChunkWaterSurfaces` — function — line 1175
+- `CropHarvestOutcome` — type — line 1196
+- `drainByBudget` — function — line 1157
+- `FinalizeStage` — type — line 456
+- `pickNearestQueuedKey` — function — line 1117
+- `pickNextFinalizeKey` — function — line 1135
+- `ResidentChunkSnapshot` — type — line 1022
+- `sampleResidentHeight` — function — line 1042
+- `sampleResidentLocalWater` — function — line 1090
+- `sampleResidentSurfaceGround` — function — line 1062
+- `TerrainModification` — type — line 900
+- `tickChunkWaterSurfaces` — function — line 1170
 
 ## `terrain/chunkMeshCache.ts`
 
@@ -247,34 +248,34 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/chunkTileWorldgenCache.ts`
 
-- `CHUNK_TILE_CACHE_BYTE_BUDGET` — const — line 69
+- `CHUNK_TILE_CACHE_BYTE_BUDGET` — const — line 70
 - `CHUNK_TILE_CACHE_NAMESPACE` — const — line 30
   - domain: world-terrain
   - system: worldgen-cache
   - role: Persistent-cache adapter for canonical worker-generated chunk tiles (plan world-terrain-031): one `chunk:<cx>:<cz>` record per chunk holding the unchanged `ChunkTileResult` — the eight apron-inclusive terrain grids plus the deterministic vegetation/item/environment/crop placements. Stores the existing worker contract verbatim; there is deliberately no cache-specific terrain model and no `SaveData` field.
   - integration: Disposable derived data only. `ChunkManager.ensureLoaded()` generates exactly the same chunk with an empty cache — a miss, a malformed record or an IndexedDB failure always falls back to the tile worker. The payload is *base* worldgen: player/system terrain modifications, terrain cutouts, tree/crop lifecycle, collected items, resource depletion, mesh data and every Three.js object stay downstream and are never cached here, so two same-seed saves share only deterministic generation output.
-- `CHUNK_TILE_CACHE_VERSION` — const — line 53
-- `CHUNK_TILE_META_SUBKEY` — const — line 58
-- `ChunkTileCacheStats` — type — line 99
-- `ChunkTileCacheStorage` — type — line 235
-- `chunkTileFingerprint` — function — line 92
+- `CHUNK_TILE_CACHE_VERSION` — const — line 54
+- `CHUNK_TILE_META_SUBKEY` — const — line 59
+- `ChunkTileCacheStats` — type — line 100
+- `ChunkTileCacheStorage` — type — line 236
+- `chunkTileFingerprint` — function — line 93
   - domain: world-terrain
   - system: worldgen-cache
-- `chunkTileSubKey` — function — line 76
-- `cloneChunkTileForRuntime` — function — line 212
+- `chunkTileSubKey` — function — line 77
+- `cloneChunkTileForRuntime` — function — line 213
   - domain: world-terrain
   - system: worldgen-cache
-- `estimateChunkTileBytes` — function — line 191
-- `getChunkTileCacheStats` — function — line 125
-- `loadCachedChunkTile` — function — line 336
+- `estimateChunkTileBytes` — function — line 192
+- `getChunkTileCacheStats` — function — line 126
+- `loadCachedChunkTile` — function — line 337
   - domain: world-terrain
   - system: worldgen-cache
-- `persistChunkTile` — function — line 384
+- `persistChunkTile` — function — line 385
   - domain: world-terrain
   - system: worldgen-cache
-- `resetChunkTileCacheMetadata` — function — line 319
-- `resetChunkTileCacheStats` — function — line 129
-- `validateCachedChunkTile` — function — line 169
+- `resetChunkTileCacheMetadata` — function — line 320
+- `resetChunkTileCacheStats` — function — line 130
+- `validateCachedChunkTile` — function — line 170
   - domain: world-terrain
   - system: worldgen-cache
 
