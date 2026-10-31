@@ -5,6 +5,7 @@ import type { SettlementTreeLandmark } from './props'
 import type { VillagePlaza } from './villagePlan'
 import { type SettlementLandmarks } from './props'
 import { resolveHouseholdWoodStorage, settlementStorageDestination } from './storageDestinations'
+import { storehouseBaySlotFor } from './storehouseLayout'
 
 /**
  * Narrow, procedural-independent runtime inputs a live settlement resident
@@ -52,7 +53,7 @@ export type NpcResidentAnchors = {
   dockRoute: readonly Vector3[]
   /** Settlement-scope wood/food delivery destinations — `null` when this
    *  site has no settlement storage (never a fake stockpile/crate). */
-  settlementStorage: { food: Vector3, wood: Vector3 } | null
+  settlementStorage: { food: Vector3, wood: Vector3, foodSlots?: readonly Vector3[] } | null
   /** Extra Guard patrol anchors beyond this resident's own home (which the
    *  caller always prepends) — empty degrades to a home-only/no patrol,
    *  never a synthetic well/market. */
@@ -71,8 +72,14 @@ export type NpcResidentAnchors = {
 export function resolveNpcSettlementStorage(
   storage: NpcResidentAnchors['settlementStorage'],
   kind: HouseholdResourceKind,
+  npcId?: string,
 ): Vector3 | null {
-  return storage ? settlementStorageDestination(kind, storage.wood, storage.food) : null
+  if (!storage) return null
+  // Q43: food goes to one of the storehouse's loading-bay slots, picked by a
+  // stable hash of the NPC id so concurrent carriers spread over the bay.
+  const slots = storage.foodSlots
+  const food = npcId && slots && slots.length > 1 ? slots[storehouseBaySlotFor(npcId, slots.length)]! : storage.food
+  return settlementStorageDestination(kind, storage.wood, food)
 }
 
 /**
@@ -98,7 +105,11 @@ export function proceduralResidentAnchorsFromLandmarks(
     wood: { trees: landmarks.trees, plaza: landmarks.plaza },
     fishingAnchor: landmarks.dock ?? null,
     dockRoute: landmarks.dockRoute,
-    settlementStorage: { food: landmarks.settlementStorage, wood: landmarks.stockpile },
+    settlementStorage: {
+      food: landmarks.settlementStorage,
+      wood: landmarks.stockpile,
+      foodSlots: landmarks.settlementStorageSlots,
+    },
     patrolPoints: [landmarks.well, landmarks.market],
     pasture: landmarks.pasture
       ? { x: landmarks.pasture.position.x, z: landmarks.pasture.position.z, radius: landmarks.pasture.radius }

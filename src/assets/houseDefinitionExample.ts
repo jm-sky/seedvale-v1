@@ -771,6 +771,28 @@ export const HOUSE_8X6_C: HouseDefinition = {
   furniture: house8x6Furniture(),
 }
 
+/**
+ * Settlement storehouse (plan Q43 / Q36). The ONLY place naming the storehouse
+ * model: a windowless 6×4 timber-frame shell with one centre-module front
+ * door, no chimney, no furniture, no lamp. It is deliberately **not** in any
+ * home pool (`pickHouseDefinition` never returns it); resolve it with
+ * `houseDefinitionById`.
+ */
+export const STOREHOUSE_DEFINITION: HouseDefinition = {
+  ...plasterHouse({
+    id: 'storehouse-6x4',
+    width: 6,
+    depth: 4,
+    openings: [{ type: 'door', side: 'front', moduleIndex: 1 }],
+    roof: capRoofWithGables(ROOF_CAP_4X6, GABLE_4, { width: 6, depth: 4 }, 'leftRight', Math.PI / 2),
+    label: 'Magazyn',
+    examine: 'Wspólny magazyn osady — bez okien, z szerokimi drzwiami.',
+    sizeClass: 'cottage',
+    kit: KIT_WOODGRID,
+  }),
+  lamp: undefined,
+}
+
 export const COTTAGE_DEFINITIONS: readonly HouseDefinition[] = [
   COTTAGE_4X4_A,
   COTTAGE_4X4_B,
@@ -824,5 +846,5 @@ export function pickHouseDefinition(size: VillageSize, index: number, seed: numb
 
 /** Planner-picked definition by id (`VillagePlot.houseDefinitionId`). */
 export function houseDefinitionById(id: string): HouseDefinition | undefined {
-  return [...COTTAGE_DEFINITIONS, ...HOUSE_DEFINITIONS].find((d) => d.id === id)
+  return [...COTTAGE_DEFINITIONS, ...HOUSE_DEFINITIONS, STOREHOUSE_DEFINITION].find((d) => d.id === id)
 }

@@ -108,3 +108,20 @@ describe('resolveNpcSettlementStorage', () => {
     expect(resolveNpcSettlementStorage(null, 'wood')).toBeNull()
   })
 })
+
+describe('resolveNpcSettlementStorage — storehouse bay slots (Q43)', () => {
+  const slots = [new Vector3(1, 0, 0), new Vector3(2, 0, 0), new Vector3(3, 0, 0)]
+  const storage = { food: slots[0]!, wood: new Vector3(9, 0, 9), foodSlots: slots }
+
+  it('spreads food over the bay slots by stable npc id; wood stays at the stockpile', () => {
+    const picks = Array.from({ length: 60 }, (_, i) => resolveNpcSettlementStorage(storage, 'food', `npc-${i}`))
+    expect(new Set(picks).size).toBe(3)
+    expect(resolveNpcSettlementStorage(storage, 'food', 'npc-7')).toBe(resolveNpcSettlementStorage(storage, 'food', 'npc-7'))
+    expect(resolveNpcSettlementStorage(storage, 'wood', 'npc-7')).toBe(storage.wood)
+  })
+
+  it('falls back to slot 0 (settlementStorage) without an npc id or slots', () => {
+    expect(resolveNpcSettlementStorage(storage, 'food')).toBe(slots[0])
+    expect(resolveNpcSettlementStorage({ food: slots[0]!, wood: storage.wood }, 'food', 'npc-1')).toBe(slots[0])
+  })
+})

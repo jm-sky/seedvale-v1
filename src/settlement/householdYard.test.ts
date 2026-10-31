@@ -7,11 +7,13 @@ import {
 } from '../assets/houseDefinitionExample'
 import { houseFootprintRadius } from './houseBuilder'
 import {
+  householdYardFenceSegments,
   householdYardPlanFor,
   houseLocalToWorld,
   pointInYard,
   worldToYardLocal,
   YARD_DEPTH,
+  YARD_GATE_WIDTH,
   YARD_PROP_SPACING,
   yawFacing,
 } from './householdYard'
@@ -83,5 +85,44 @@ describe('householdYard compound geometry (Q41)', () => {
     expect(householdYardPlanFor(d.footprint, 1, 2, 0.4, 'LG', 9)).toEqual(
       householdYardPlanFor(d.footprint, 1, 2, 0.4, 'LG', 9),
     )
+  })
+})
+
+describe('householdYardFenceSegments (Q35)', () => {
+  const footprint = { width: 8, depth: 6 }
+  const yard = householdYardPlanFor(footprint, 10, -4, 0.7, 'MD', 123)
+  const segs = householdYardFenceSegments(yard, 3)
+
+  it('uses stable ids and is deterministic', () => {
+    expect(segs.map((s) => s.id)).toEqual(segs.map((_, n) => `household-yard-fence-3-${n}`))
+    expect(householdYardFenceSegments(yard, 3)).toEqual(segs)
+  })
+
+  it('keeps every endpoint on the yard boundary and leaves a gate gap beside the gate slot', () => {
+    for (const s of segs) {
+      for (const [x, z] of [[s.ax, s.az], [s.bx, s.bz]]) {
+        expect(pointInYard(yard, x, z, -1e-6)).toBe(true)
+        expect(pointInYard(yard, x, z, 1e-3) ).toBe(false)
+      }
+    }
+    const g = yard.slots.gate
+    for (const s of segs) {
+      const dx = s.bx - s.ax
+      const dz = s.bz - s.az
+      const t = Math.max(0, Math.min(1, ((g.x - s.ax) * dx + (g.z - s.az) * dz) / (dx * dx + dz * dz)))
+      expect(Math.hypot(s.ax + dx * t - g.x, s.az + dz * t - g.z)).toBeGreaterThanOrEqual(YARD_GATE_WIDTH / 2 - 1e-6)
+    }
+  })
+
+  it('does not fence through yard prop slots', () => {
+    for (const name of ['barrel', 'trough', 'wood', 'storage'] as const) {
+      const p = yard.slots[name]
+      for (const s of segs) {
+        const dx = s.bx - s.ax
+        const dz = s.bz - s.az
+        const t = Math.max(0, Math.min(1, ((p.x - s.ax) * dx + (p.z - s.az) * dz) / (dx * dx + dz * dz)))
+        expect(Math.hypot(s.ax + dx * t - p.x, s.az + dz * t - p.z)).toBeGreaterThan(0.5)
+      }
+    }
   })
 })

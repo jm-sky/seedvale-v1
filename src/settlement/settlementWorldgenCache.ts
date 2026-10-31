@@ -56,7 +56,9 @@ export const SETTLEMENT_DEFINITION_CACHE_NAMESPACE = 'settlement-definitions'
  * resolved progression-policy identity) is fingerprinted separately. An
  * old-version record is a plain cache miss — records are never migrated.
  */
-export const SETTLEMENT_DEFINITION_CACHE_VERSION = 6
+export const SETTLEMENT_DEFINITION_CACHE_VERSION = 7
+// v7 (2026-10-31, queue Q43): settlement storehouse — plot-infra-storehouse-0 (+ houseDefinitionId/houseYaw/storehouse),
+// landmark kind 'storehouse', ClearingLayout.storehouses.
 // v6 (2026-10-31, queue Q41): household compounds — plot.houseDefinitionId/houseYaw/yard/discs,
 // compound spacing, ClearingLayout.yards.
 // v4 (2026-10-30, queue Q26): locally unique names from cell-center inputs
@@ -159,7 +161,7 @@ const LAYOUT_PATTERNS = ['central', 'linear', 'clustered', 'roadside', 'waterfro
 const ZONE_KINDS = ['residential', 'public', 'production', 'food', 'livestock', 'utility'] as const
 const PLOT_ROLES = ['house', 'work', 'food', 'livestock', 'infrastructure', 'sale'] as const
 const BUILDING_ROLES = ['residential', 'production', 'food', 'livestock', 'utility', 'public'] as const
-const LANDMARK_KINDS = ['well', 'stockpile', 'garden', 'market', 'campfire', 'noticeBoard', 'home', 'dock', 'field'] as const
+const LANDMARK_KINDS = ['well', 'stockpile', 'storehouse', 'garden', 'market', 'campfire', 'noticeBoard', 'home', 'dock', 'field'] as const
 const PATH_KINDS = ['path', 'road'] as const
 const FAMILY_RELATIONS = ['husband', 'wife', 'child', 'single'] as const
 
@@ -223,10 +225,11 @@ function isFamilyDef(value: unknown): value is FamilyDef {
 
 function isClearingLayout(value: unknown): value is ClearingLayout {
   if (value === null || typeof value !== 'object') return false
-  const layout = value as { core?: unknown, houses?: unknown, yards?: unknown, gardens?: unknown, regional?: unknown }
+  const layout = value as { core?: unknown, houses?: unknown, yards?: unknown, storehouses?: unknown, gardens?: unknown, regional?: unknown }
   if (!isClearingArea(layout.core)) return false
   if (!Array.isArray(layout.houses) || !layout.houses.every(isClearingArea)) return false
   if (!Array.isArray(layout.yards) || !layout.yards.every(isClearingArea)) return false
+  if (!Array.isArray(layout.storehouses) || !layout.storehouses.every(isClearingArea)) return false
   if (!Array.isArray(layout.gardens) || !layout.gardens.every(isClearingArea)) return false
   if (layout.regional === null || typeof layout.regional !== 'object') return false
   const regional = layout.regional as {

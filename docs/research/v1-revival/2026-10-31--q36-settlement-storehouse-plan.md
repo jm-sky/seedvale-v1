@@ -63,7 +63,13 @@
 
 ## 5. Implementation notes
 
-_(Q43 fills this: census before/after, cache versions, deviations from §2.)_
+**Q43 (Sonnet, 2026-10-31) — landed.**
+
+- **Landed:** `STOREHOUSE_DEFINITION` (only model reference); `plot-infra-storehouse-0` planned after the stockpiles with `houseDefinitionId`/`houseYaw`/`storehouse.baySlots` (`storehouseLayout.ts`), building `building-storehouse-0`, landmark kind `storehouse`, local path; `ClearingLayout.storehouses` pad (chunk tiles, vegetation reject, cache validator); `landmarks.storehouse`, `settlementStorageSlots` (slot 0 === `settlementStorage`), separate `storehouseAssembly` (own colliders, door in the shared door controller, door-sound disc); food visual along the back wall; crate moved to bay-side dressing; NPC food delivery/pickup picks a slot by `hash(npcId) % 3` (`resolveNpcSettlementStorage(storage, kind, npcId)`); wood and offscreen/manager/player paths unchanged (slot 0 / stockpile).
+- **Caches:** `settlement-definitions` 6 → 7, `chunk-tiles` 7 → 8, `road-routes` 3 → 4, `abandoned-cemeteries` 4 → 5. `caves-v2` not checked for plan/clearing reads (open). `WORLDGEN_EPOCH` stays 1. tools-020 fixtures are stale (browser re-export, as after Q41).
+- **Deviation:** the 6 m walls of the 6×4 shell are the door wall and the back wall, so the "long side wall" of §2.1.3 does not exist; bay slots run along the **4 m right end wall** (local +x, 1.0 m out, 1.6 m apart, middle slot = slot 0).
+- **Verification (technical only):** planner test over 5 sizes × 15 seeds — exactly one storehouse, 0 `finalFallback`, 0 disc overlaps, door faces the plaza, family count unchanged, deterministic. Slot-hash spread, definition and anchor tests green. Full `vitest run src`: only the 5 pre-existing failures (NpcAgent.spatialLifecycle, PlayerController.appearance ×3, actorSkeletonSharing.assets) — they also fail without these changes.
+- **Not done / open:** the census script was **not** extended (`census-house-yards.ts`) — seeds 42 / 415424794 rings ≤ 5 not censused; no navigation test that bay slots are reachable/outside colliders on a real build; interior free-floor rectangle is only a layout constant, no obstruction test; draws per settlement not measured; no browser/visual check (queue §2); `SettlementsManager` offscreen delivery still uses slot 0 by design.
 
 ## 6. Author question — answered
 

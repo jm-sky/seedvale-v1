@@ -9,7 +9,7 @@ import { gardenPlazaMinCenterDist, type GardenScale } from './gardenScale'
 import { selectHouseholdWellFamilyIndices } from './householdWells'
 import { pointInYard, yardDisc } from './householdYard'
 import { plazaCoreRadius } from './villageClearing'
-import { householdWellPlotId, noticeBoardPlotId, plannedCampfireFootprint, plazaRadiusForSize } from './villagePlan'
+import { householdWellPlotId, noticeBoardPlotId, plannedCampfireFootprint, plazaRadiusForSize, storehousePlotId } from './villagePlan'
 import { chooseLayoutPattern, householdWellLocalBand, planVillageLayout, PLOT_SCORE_WEIGHTS } from './villagePlanner'
 
 const flatHeight = (): number => 12
@@ -709,5 +709,50 @@ describe('planVillageLayout river channel avoidance', () => {
     const a = planVillageLayout(id, { x: 0, z: 0, y: 12 }, families, 8, flatHeight, WATER, [riverSeg])
     const b = planVillageLayout(id, { x: 0, z: 0, y: 12 }, families, 8, flatHeight, WATER, [riverSeg])
     expect(a.plots).toEqual(b.plots)
+  })
+})
+
+describe('settlement storehouse (Q43 / Q36 plan)', () => {
+  const SIZES: VillageIdentity['size'][] = ['OUTPOST', 'SM', 'MD', 'LG', 'XL']
+  const SEEDS = Array.from({ length: 15 }, (_, i) => i * 11 + 3)
+  const layoutFor = (size: VillageIdentity['size'], seed: number) => {
+    const id = identity({ id: `store_${size}_${seed}`, size })
+    const families = generateFamilies(seed, size, false, 'polish')
+    return { families, layout: planVillageLayout(id, { x: 0, z: 0, y: 12 }, families, seed, flatHeight, WATER) }
+  }
+  const gap = (
+    a: { x: number, z: number, radius: number },
+    b: { x: number, z: number, radius: number },
+  ): number => Math.hypot(a.x - b.x, a.z - b.z) - a.radius - b.radius
+
+  it.each(SIZES)('%s: exactly one storehouse, no last-resort placement, no overlap, door faces the plaza', (size) => {
+    for (const seed of SEEDS) {
+      const { families, layout } = layoutFor(size, seed)
+      const stores = layout.plots.filter((p) => p.id === storehousePlotId())
+      expect(stores, `${size} ${seed}`).toHaveLength(1)
+      const store = stores[0]!
+      expect(store.finalFallback, `${size} ${seed} final fallback`).toBeUndefined()
+      expect(store.houseDefinitionId).toBe('storehouse-6x4')
+      expect(store.storehouse?.baySlots).toHaveLength(3)
+      expect(layout.landmarks.filter((l) => l.kind === 'storehouse')).toHaveLength(1)
+      // family identity untouched
+      expect(layout.plots.filter((p) => p.role === 'house')).toHaveLength(families.length)
+      for (const other of layout.plots) {
+        if (other === store || other.role === 'sale') continue
+        for (const e of other.discs ?? [{ x: other.x, z: other.z, radius: other.radius }]) {
+          expect(gap(store, e), `${size} ${seed} storehouse<->${other.id}`).toBeGreaterThanOrEqual(-0.01)
+        }
+      }
+      // door (local -z) points to the plaza centre (origin)
+      const yaw = store.houseYaw!
+      const front = { x: -Math.sin(yaw), z: -Math.cos(yaw) }
+      const toCenter = { x: -store.x, z: -store.z }
+      const len = Math.hypot(toCenter.x, toCenter.z)
+      expect((front.x * toCenter.x + front.z * toCenter.z) / len).toBeGreaterThan(0.99)
+    }
+  })
+
+  it('is deterministic', () => {
+    expect(layoutFor('MD', 8).layout.plots).toEqual(layoutFor('MD', 8).layout.plots)
   })
 })

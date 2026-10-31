@@ -3,12 +3,11 @@ import type { HouseVec3 } from '../assets/houseDefinitionExampleConfig'
 import type { RoadCorridorSegment } from '../terrain/chunkHeightmap'
 import type { AuthoredRepairPresentationInput } from './authoredRepairTargets'
 import type { SettlementSite } from './findSettlementSite'
-import type { YardSlotName } from './householdYard'
 import type { FoodSourceType } from './settlementGenerator'
 import type { ClearingLayout } from './villageClearing'
 import type { VillageLandmarkPlan, VillagePlan, VillagePlaza } from './villagePlan'
 import { buildConstructionCatalog } from '../assets/constructionCatalog'
-import { houseDefinitionById, pickHouseDefinition } from '../assets/houseDefinitionExample'
+import { houseDefinitionById, pickHouseDefinition, STOREHOUSE_DEFINITION } from '../assets/houseDefinitionExample'
 import { disposeObject3D, loadGltf, prepareAuthoredScaleMax, prepareProp, preparePropFitMax } from '../assets/loadGltf'
 import { DEBUG_HOUSE_LAMP_POSITION, isDebugMode } from '../debug/debugMode'
 import { distanceToSegment } from '../math/segment'
@@ -41,6 +40,7 @@ import {
   loadHousePartTemplates,
 } from './houseBuilder'
 import { type HouseLampMount, type HouseLampStyle, pickHomeHouse, resolveHouseHeight } from './houseCatalog'
+import { householdYardFenceSegments, houseLocalToWorld, type YardSlotName } from './householdYard'
 import {
   createHouseLight,
   createProceduralTorchPost,
@@ -120,6 +120,7 @@ import {
   WOOD_PILE_EXTRA_OFFSETS,
   type WoodPileVisual,
 } from './storageVisuals'
+import { STOREHOUSE_BAY_OFFSET, STOREHOUSE_BAY_SPACING } from './storehouseLayout'
 import { paddockFencePlacements } from './villagePaddock'
 import { fenceSegmentPlacements } from './villagePasture'
 import {
@@ -184,6 +185,16 @@ export type SettlementWellLandmark = {
   familyIndex: number | null
   isCentral: boolean
   queueId: string
+}
+
+/** Presentation/identity of the settlement storehouse (plan Q43). */
+export type SettlementStorehouse = {
+  position: THREE.Vector3
+  yaw: number
+  definitionId: string
+  label: string
+  examine: string
+  footprintRadius: number
 }
 
 export type SettlementLandmarks = {
@@ -315,6 +326,13 @@ export type SettlementLandmarks = {
   /** One settlement-wide storage container position (plan 156), next to the
    *  wood stockpile. Presentation only — `SettlementEconomy` owns the stock. */
   settlementStorage: THREE.Vector3
+  /** Storehouse loading-bay slots (Q43), index 0 === `settlementStorage`.
+   *  Empty only for plot-less legacy plans. NPC food delivery picks one by a
+   *  stable hash of the NPC id (`storehouseBaySlotFor`). */
+  settlementStorageSlots?: THREE.Vector3[]
+  /** The settlement's single storehouse (Q43) — NOT part of `houses`/`homes`.
+   *  Absent for plot-less legacy plans. */
+  storehouse?: SettlementStorehouse
   /** Settlement notice board (plan npc-014) — the one physical publication
    *  point work-contract announcements are posted at. Built unconditionally
    *  like well/market/blacksmith, with a stable identity derived from
@@ -563,7 +581,7 @@ function blocksPathOrClearing(
     const dCore = Math.hypot(tx - clearings.core.x, tz - clearings.core.z)
     if (dCore < courtyardRadius) return true
   }
-  for (const area of [clearings.core, ...clearings.houses, ...(clearings.yards ?? []), ...(clearings.gardens ?? [])]) {
+  for (const area of [clearings.core, ...clearings.houses, ...(clearings.yards ?? []), ...(clearings.storehouses ?? []), ...(clearings.gardens ?? [])]) {
     if (Math.hypot(tx - area.x, tz - area.z) < area.radius + 1) return true
   }
   for (const house of clearings.houses) {
@@ -853,6 +871,10 @@ export async function buildSettlementProps(
   houseLights: HouseLight[]
   villageTorches: SettlementVillageTorch[]
   houseAssemblies: HouseAssembly[]
+  /** Storehouse shell assembly (Q43) — kept apart from `houseAssemblies`,
+   *  which is index-aligned with families. Null when absent or the
+   *  HouseBuilder assets failed to load (crate-only fallback). */
+  storehouseAssembly: HouseAssembly | null
   storageVisual: SettlementStorageVisuals
   /** Final entrance palisade segment placements (plan settlements-015) — the
    *  same plain data just rendered above, shared with `createSettlement.ts`
@@ -864,6 +886,8 @@ export async function buildSettlementProps(
   pastureFencePlacements: SettlementPalisadePlacement[]
   /** Paddock fence placements (plan settlements-018). */
   paddockFencePlacements: SettlementPalisadePlacement[]
+  /** Household yard fence placements (plan Q35), derived from `plot.yard`. */
+  yardFencePlacements: SettlementPalisadePlacement[]
   /** Live authored-repair mesh handles (plan quests-progression-073) — null
    *  fields when the settlement has no authored presentation. */
   authoredRepairVisuals: AuthoredRepairVisualHandles | null
@@ -901,6 +925,7 @@ export async function buildSettlementProps(
     householdStorages: [],
     householdWoodStorages: [],
     settlementStorage: new THREE.Vector3(),
+    settlementStorageSlots: [] as THREE.Vector3[],
     noticeBoard: new THREE.Vector3(),
     plaza: plan?.plaza,
   }
@@ -1104,26 +1129,32 @@ export async function buildSettlementProps(
   // (opposite side from `createSettlement.ts`'s woodshed-complete pile so
   // the two never overlap). Presentation only, larger than the household
   // crates below so it reads as the shared depot.
-  const settlementStorageX = stockX + 1.8
-  const settlementStorageZ = stockZ + 1.1
+  // Q43: with a planned storehouse the storage point is bay slot 0 and the
+  // crate becomes bay-side dressing next to slot 2; plot-less legacy plans
+  // keep the pre-Q43 crate beside the stockpile.
+  const storehousePlot = plan?.plots.find((p) => p.storehouse)
+  const baySlots = storehousePlot?.storehouse?.baySlots ?? []
+  const storehouseYaw = storehousePlot?.houseYaw ?? 0
+  const crateAt = storehousePlot
+    ? houseLocalToWorld(
+        storehousePlot.x,
+        storehousePlot.z,
+        storehouseYaw,
+        STOREHOUSE_DEFINITION.footprint.width / 2 + STOREHOUSE_BAY_OFFSET,
+        STOREHOUSE_BAY_SPACING + 1.3,
+      )
+    : { x: stockX + 1.8, z: stockZ + 1.1 }
   const settlementStorageProp = await loadPropOrFallback(
     '/models/settlement/crate.glb', 1.0, () => createCrate(1.8),
   )
-  placeOnGround(settlementStorageProp, settlementStorageX, settlementStorageZ, sampleHeight)
+  placeOnGround(settlementStorageProp, crateAt.x, crateAt.z, sampleHeight)
   tagSettlementShadowKind(settlementStorageProp, 'storageContainer')
   group.add(settlementStorageProp)
-  landmarks.settlementStorage.set(
-    settlementStorageX,
-    sampleHeight(settlementStorageX, settlementStorageZ),
-    settlementStorageZ,
-  )
-  // Concrete-food visual for the settlement's storage crate above (plan
-  // settlements-npcs-010) — same mechanism `householdFoodVisuals` below use.
-  const settlementFoodVisual = createFoodStorageVisual(
-    group,
-    { x: settlementStorageX, z: settlementStorageZ },
-    sampleHeight,
-  )
+  for (const slot of baySlots) {
+    landmarks.settlementStorageSlots!.push(new THREE.Vector3(slot.x, sampleHeight(slot.x, slot.z), slot.z))
+  }
+  const storagePoint = baySlots[0] ?? crateAt
+  landmarks.settlementStorage.set(storagePoint.x, sampleHeight(storagePoint.x, storagePoint.z), storagePoint.z)
 
   if (ratNest && plan) {
     const nestSite = placeRatNest({
@@ -1335,13 +1366,37 @@ export async function buildSettlementProps(
     const catalog = buildConstructionCatalog()
     const templates = await loadHousePartTemplates(
       catalog,
-      plannedDefs.flatMap(houseDefinitionAssetIds),
+      [...plannedDefs, ...(storehousePlot ? [STOREHOUSE_DEFINITION] : [])].flatMap(houseDefinitionAssetIds),
     )
     builderReady = { catalog, templates }
   } catch (err) {
     console.warn('[settlement] HouseBuilder assets unavailable — catalog GLB houses', err)
   }
   const staticBatch = createHouseStaticBatch()
+
+  // Q43: the storehouse shell. Built standalone (never pushed into
+  // `houseAssemblies`, which is index-aligned with families); its door is
+  // handled by the same door controller in `createSettlement.ts`.
+  let storehouseAssembly: HouseAssembly | null = null
+  if (builderReady && storehousePlot) {
+    const def = STOREHOUSE_DEFINITION
+    const assembly = buildHouse(def, builderReady)
+    const hut = assembly.root
+    hut.rotation.y = storehouseYaw
+    placeOnGround(hut, storehousePlot.x, storehousePlot.z, sampleHeight, def.groundYOffset ?? 0)
+    hut.name = `storehouse:${def.id}`
+    hut.userData.definitionId = def.id
+    group.add(hut)
+    storehouseAssembly = assembly
+    landmarks.storehouse = {
+      position: new THREE.Vector3(storehousePlot.x, sampleHeight(storehousePlot.x, storehousePlot.z), storehousePlot.z),
+      yaw: storehouseYaw,
+      definitionId: def.id,
+      label: def.label ?? 'Magazyn',
+      examine: def.examine ?? '',
+      footprintRadius: houseFootprintRadius(def),
+    }
+  }
 
   for (let i = 0; i < clearings.houses.length; i++) {
     const area = clearings.houses[i]!
@@ -1551,14 +1606,23 @@ export async function buildSettlementProps(
     }
   }
 
-  if (houseAssemblies.length > 0) {
+  if (houseAssemblies.length > 0 || storehouseAssembly) {
     group.add(staticBatch.group)
-    for (const assembly of houseAssemblies) {
+    for (const assembly of storehouseAssembly ? [...houseAssemblies, storehouseAssembly] : houseAssemblies) {
       assembly.root.updateMatrixWorld(true)
       staticBatch.ingest(assembly)
     }
     staticBatch.commit()
   }
+
+  // Concrete-food visual for the settlement storage (plan settlements-npcs-010)
+  // — same mechanism `householdFoodVisuals` use. Inside the storehouse it sits
+  // along the back wall (goods span ~0.7 m, the centre floor stays free);
+  // without a built shell it falls back to the bay-side crate.
+  const foodCenter = storehouseAssembly && storehousePlot
+    ? houseLocalToWorld(storehousePlot.x, storehousePlot.z, storehouseYaw, 0, STOREHOUSE_DEFINITION.footprint.depth / 2 - 0.7)
+    : crateAt
+  const settlementFoodVisual = createFoodStorageVisual(group, foodCenter, sampleHeight)
 
   // A couple of barrels by the stockpile — everyday clutter, purely
   // decorative (plan 044 §1.2).
@@ -2081,6 +2145,17 @@ export async function buildSettlementProps(
     )
   }
 
+  // Household yard fences (Q35) — one instanced wall run per planned yard,
+  // gate gap on the side facing the front path. Pure projection of
+  // `plot.yard`; plot-less legacy plans get none.
+  const yardFencePlacementsResolved: SettlementPalisadePlacement[] = fenceSegmentPlacements(
+    housePlots.flatMap((plot, i) => (plot.yard ? householdYardFenceSegments(plot.yard, plot.familyIndex ?? i) : [])),
+    sampleHeight,
+  )
+  if (yardFencePlacementsResolved.length > 0) {
+    await plantEntrancePalisade(group, yardFencePlacementsResolved, 'settlement-household-yard-fence')
+  }
+
   // Village torch posts — plaza ring (MD+) + gate flanks (plan 085).
   // Never sit in the road: gate posts belong on the palisade wing, not in the
   // open gate gap; plaza posts reject path/road corridors.
@@ -2463,6 +2538,7 @@ export async function buildSettlementProps(
     houseLights,
     villageTorches,
     houseAssemblies,
+    storehouseAssembly,
     storageVisual: {
       settlementWood: settlementWoodVisual ?? { sync() {}, dispose() {} },
       householdWood: householdWoodVisuals,
@@ -2472,6 +2548,7 @@ export async function buildSettlementProps(
     palisadePlacements,
     pastureFencePlacements: pastureFencePlacementsResolved,
     paddockFencePlacements: paddockFencePlacementsResolved,
+    yardFencePlacements: yardFencePlacementsResolved,
     authoredRepairVisuals,
   }
 }

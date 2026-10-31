@@ -20,7 +20,7 @@ import type {
   VillageZone,
   VillageZoneKind,
 } from './villagePlan'
-import { pickHouseDefinition } from '../assets/houseDefinitionExample'
+import { pickHouseDefinition, STOREHOUSE_DEFINITION } from '../assets/houseDefinitionExample'
 import { pointHitsCorridor, projectOntoSegment } from '../math/segment'
 import { RESOURCE_ROLE, SIGNIFICANT_RICHNESS } from '../terrain/naturalResources'
 import { footprintOverlapsRiver } from '../terrain/riverNetwork'
@@ -42,6 +42,7 @@ import {
   yawFacing,
 } from './householdYard'
 import { pathIsDry, SETTLEMENT_WATER_MARGIN } from './pathDryness'
+import { STOREHOUSE_APRON, storehouseLayoutFor } from './storehouseLayout'
 import { appendPaddockPath, planSettlementPaddock } from './villagePaddock'
 import { appendPasturePath, planSettlementPasture } from './villagePasture'
 import {
@@ -50,6 +51,7 @@ import {
   parseHouseholdWellFamilyIndex,
   plannedCampfireFootprint,
   residentialStructureId,
+  storehousePlotId,
   villagePlazaAt,
 } from './villagePlan'
 
@@ -1179,6 +1181,39 @@ export function planVillageLayout(
     )
   }
 
+  // Q43: every settlement gets exactly one storehouse, planned right after the
+  // stockpiles. Mandatory — `finalFallback` is counted by the census (must be 0).
+  {
+    const storehouseRadius = houseFootprintRadius(STOREHOUSE_DEFINITION) + STOREHOUSE_APRON
+    const picked = pickPlot(
+      {
+        id: storehousePlotId(),
+        role: 'infrastructure',
+        zone: utility ?? publicZone,
+        radius: storehouseRadius,
+        familyIndex: null,
+        familyId: null,
+        preferredRing: sizeCfg.footprintRadius * 0.12,
+        attractor: null,
+      },
+      center,
+      boundary,
+      plots,
+      seedForCell,
+      sampleHeight,
+      waterLevel,
+      sizeCfg.houseSpacing,
+      riverSegments,
+    )
+    const yaw = yawFacing(center.x - picked.x, center.z - picked.z)
+    plots.push({
+      ...picked,
+      houseDefinitionId: STOREHOUSE_DEFINITION.id,
+      houseYaw: yaw,
+      storehouse: storehouseLayoutFor(STOREHOUSE_DEFINITION.footprint, picked.x, picked.z, yaw),
+    })
+  }
+
   // Plan 077: garden clusters from house count (~1 unit / 3 houses → S/M/L).
   // Plan 095: keep centers outside the plaza disk (not a footprint fraction).
   const houseCount = families.length
@@ -1549,6 +1584,11 @@ export function buildingsAndLandmarksFromPlots(
       pushLandmark('stockpile', plot, stockpileMatch[1])
       continue
     }
+    if (plot.id === storehousePlotId()) {
+      pushBuilding('utility', plot, 'building-storehouse-0')
+      pushLandmark('storehouse', plot, '0')
+      continue
+    }
     const gardenMatch = /^plot-infra-garden-(\d+)-(S|M|L)$/.exec(plot.id)
     if (gardenMatch) {
       const scale = gardenMatch[2] as GardenScale
@@ -1784,6 +1824,7 @@ export function planLocalPathsAndEntrances(args: {
       plot.role === 'livestock' ||
       plot.role === 'sale' ||
       plot.id.startsWith('plot-infra-stockpile') ||
+      plot.id === storehousePlotId() ||
       plot.id.startsWith('plot-infra-garden')
     if (!important) continue
     const nearZonePath = zones.some(
