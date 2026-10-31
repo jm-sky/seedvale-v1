@@ -1,5 +1,7 @@
 # V1 Revival — Master Roadmap (approved decisions and remaining proposals)
 
+**NPC Voices & Dialogue author decisions (2026-10-31):** Six decisions are now approved: fixed per-NPC voice; selective personality variants (initial two-vs-four delegated to Opus); English NPC dialogue with generic quest voice cues and exact displayed details; staged profession/social diversity with more humor; maximum V3 donor voice reuse; moderate event-grounded living-world speech. **Authoritative detailed record:** [Astra NPC voice audit — §12 author decisions](./2026-10-31--npc-voices-dialogue-audit.md#12-author-decisions--approved-2026-10-31-supersedes-open-questions-in-11). These do not approve every recording or assign an immediate implementation slot; schedule through the session queue and normal plan gates.
+
 **Created:** 2026-10-27  
 **Created by:** Claude Opus 5.5 (coordinator)  
 **Status:** **D1/D3/D4/D9 APPROVED (2026-10-27), D11 APPROVED (2026-10-29)**; all other decisions and detailed mechanisms remain proposals. D4 supersedes gated parallel lanes with **PERFORMANCE-FIRST**. Performance keep/revert choices require scenario-matched evidence; this is not approval of the entire roadmap.  
