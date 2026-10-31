@@ -178,3 +178,52 @@ export function pointInYard(yard: HouseholdYardPlan, x: number, z: number, margi
 export function yardDisc(yard: HouseholdYardPlan): PlanDisc {
   return { x: yard.cx, z: yard.cz, radius: Math.hypot(yard.halfWidth, yard.halfDepth) }
 }
+
+/** One planned household-yard fence run (same shape as pasture segments). */
+export type HouseholdYardFenceSegment = { id: string, ax: number, az: number, bx: number, bz: number }
+
+/** Stable fence segment id (`household-yard-fence-${familyIndex}-${n}`). */
+export function householdYardFenceSegmentId(familyIndex: number, n: number): string {
+  return `household-yard-fence-${familyIndex}-${n}`
+}
+
+/**
+ * Fence segments around one household yard (plan Q35). Pure planner data
+ * derived from `plot.yard` — nothing is persisted. The house back wall
+ * closes the house-width part of the near edge; the two overhang strips,
+ * both sides and the far edge are fenced. The side edge nearest the front
+ * path (`slots.gate`) keeps a `YARD_GATE_WIDTH` gap centred on the gate slot.
+ */
+export function householdYardFenceSegments(
+  yard: HouseholdYardPlan,
+  familyIndex: number,
+): HouseholdYardFenceSegment[] {
+  const hw = yard.halfWidth
+  const depth = yard.halfDepth * 2
+  const houseHalf = Math.max(0, hw - YARD_SIDE_OVERHANG)
+  const gateSign = worldToYardLocal(yard, yard.slots.gate.x, yard.slots.gate.z).u >= 0 ? 1 : -1
+  const gateLo = depth / 2 - YARD_GATE_WIDTH / 2
+  const gateHi = depth / 2 + YARD_GATE_WIDTH / 2
+  // Yard-local (u, v) polylines; v measured from the house-side edge.
+  const edges: [number, number, number, number][] = []
+  for (const sign of [-1, 1]) {
+    edges.push([sign * hw, 0, sign * houseHalf, 0]) // near-edge overhang strip
+    if (sign === gateSign) {
+      edges.push([sign * hw, 0, sign * hw, gateLo], [sign * hw, gateHi, sign * hw, depth])
+    } else {
+      edges.push([sign * hw, 0, sign * hw, depth])
+    }
+  }
+  edges.push([-hw, depth, hw, depth]) // far edge
+  const toWorld = (u: number, v: number): YardPoint => {
+    const c = Math.cos(yard.yaw)
+    const s = Math.sin(yard.yaw)
+    const lz = v - yard.halfDepth
+    return { x: yard.cx + u * c + lz * s, z: yard.cz - u * s + lz * c }
+  }
+  return edges.map(([au, av, bu, bv], n) => {
+    const a = toWorld(au, av)
+    const b = toWorld(bu, bv)
+    return { id: householdYardFenceSegmentId(familyIndex, n), ax: a.x, az: a.z, bx: b.x, bz: b.z }
+  })
+}

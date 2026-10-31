@@ -3,7 +3,6 @@ import type { HouseVec3 } from '../assets/houseDefinitionExampleConfig'
 import type { RoadCorridorSegment } from '../terrain/chunkHeightmap'
 import type { AuthoredRepairPresentationInput } from './authoredRepairTargets'
 import type { SettlementSite } from './findSettlementSite'
-import type { YardSlotName } from './householdYard'
 import type { FoodSourceType } from './settlementGenerator'
 import type { ClearingLayout } from './villageClearing'
 import type { VillageLandmarkPlan, VillagePlan, VillagePlaza } from './villagePlan'
@@ -41,6 +40,7 @@ import {
   loadHousePartTemplates,
 } from './houseBuilder'
 import { type HouseLampMount, type HouseLampStyle, pickHomeHouse, resolveHouseHeight } from './houseCatalog'
+import { householdYardFenceSegments, type YardSlotName } from './householdYard'
 import {
   createHouseLight,
   createProceduralTorchPost,
@@ -864,6 +864,8 @@ export async function buildSettlementProps(
   pastureFencePlacements: SettlementPalisadePlacement[]
   /** Paddock fence placements (plan settlements-018). */
   paddockFencePlacements: SettlementPalisadePlacement[]
+  /** Household yard fence placements (plan Q35), derived from `plot.yard`. */
+  yardFencePlacements: SettlementPalisadePlacement[]
   /** Live authored-repair mesh handles (plan quests-progression-073) — null
    *  fields when the settlement has no authored presentation. */
   authoredRepairVisuals: AuthoredRepairVisualHandles | null
@@ -2081,6 +2083,17 @@ export async function buildSettlementProps(
     )
   }
 
+  // Household yard fences (Q35) — one instanced wall run per planned yard,
+  // gate gap on the side facing the front path. Pure projection of
+  // `plot.yard`; plot-less legacy plans get none.
+  const yardFencePlacementsResolved: SettlementPalisadePlacement[] = fenceSegmentPlacements(
+    housePlots.flatMap((plot, i) => (plot.yard ? householdYardFenceSegments(plot.yard, plot.familyIndex ?? i) : [])),
+    sampleHeight,
+  )
+  if (yardFencePlacementsResolved.length > 0) {
+    await plantEntrancePalisade(group, yardFencePlacementsResolved, 'settlement-household-yard-fence')
+  }
+
   // Village torch posts — plaza ring (MD+) + gate flanks (plan 085).
   // Never sit in the road: gate posts belong on the palisade wing, not in the
   // open gate gap; plaza posts reject path/road corridors.
@@ -2472,6 +2485,7 @@ export async function buildSettlementProps(
     palisadePlacements,
     pastureFencePlacements: pastureFencePlacementsResolved,
     paddockFencePlacements: paddockFencePlacementsResolved,
+    yardFencePlacements: yardFencePlacementsResolved,
     authoredRepairVisuals,
   }
 }

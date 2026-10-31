@@ -829,6 +829,7 @@ async function buildSettlement(
     palisadePlacements,
     pastureFencePlacements,
     paddockFencePlacements,
+    yardFencePlacements,
     authoredRepairVisuals,
   } = propsResult
   owned.group = group
@@ -955,6 +956,7 @@ async function buildSettlement(
       ...settlementPalisadeColliders(palisadePlacements),
       ...fencePlacementColliders(pastureFencePlacements),
       ...fencePlacementColliders(paddockFencePlacements),
+      ...fencePlacementColliders(yardFencePlacements),
     ])
   }
   owned.collidersRegistered = true
