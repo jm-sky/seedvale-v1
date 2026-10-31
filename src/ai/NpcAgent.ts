@@ -5130,6 +5130,7 @@ export class NpcAgent {
       needs: this.needs,
       home: this.home,
       settlementStorage: this.residentAnchors.settlementStorage,
+      npcId: this.id,
       carried: this.carried,
       waitMultiplier: this.waitMultiplier,
       simTime: () => this.simClock,

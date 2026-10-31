@@ -76,6 +76,8 @@ export type NpcLogisticsCtx = {
    *  Stage B, formerly `landmarks`) — `null` when this site has no
    *  settlement storage; a village-storage withdrawal then cannot run. */
   settlementStorage: NpcResidentAnchors['settlementStorage']
+  /** Stable NPC id — selects the storehouse bay slot (Q43). */
+  npcId?: string
   carried: Inventory
   waitMultiplier: number
   simTime: () => number
@@ -258,7 +260,7 @@ export function planEconomyWithdraw(ctx: NpcLogisticsCtx, kind: HouseholdResourc
   const { economy, household } = ctx
   if (!household || !economy) return null
   if (household.shortage(kind) <= 0) return null
-  const pickupDestination = resolveNpcSettlementStorage(ctx.settlementStorage, kind)
+  const pickupDestination = resolveNpcSettlementStorage(ctx.settlementStorage, kind, ctx.npcId)
   if (!pickupDestination) return null
   const maxTransfer = HOUSEHOLD_EXCHANGE_MAX_TRANSFER[kind]
   const pickup = copyVec3(pickupDestination)

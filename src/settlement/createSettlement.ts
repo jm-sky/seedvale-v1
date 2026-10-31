@@ -825,6 +825,7 @@ async function buildSettlement(
     houseLights,
     villageTorches,
     houseAssemblies,
+    storehouseAssembly,
     storageVisual,
     palisadePlacements,
     pastureFencePlacements,
@@ -952,6 +953,7 @@ async function buildSettlement(
     registerColliders(def.id, [
       ...wellColliders,
       ...settlementHouseColliders(landmarks.houses, houseAssemblies),
+      ...(storehouseAssembly ? buildAssemblyCollidersWorld(storehouseAssembly) : []),
       ...settlementPropColliders(landmarks),
       ...settlementPalisadeColliders(palisadePlacements),
       ...fencePlacementColliders(pastureFencePlacements),
@@ -961,7 +963,7 @@ async function buildSettlement(
   }
   owned.collidersRegistered = true
   registerSettlementColliders()
-  const houseDoors = createHouseDoorController(houseAssemblies)
+  const houseDoors = createHouseDoorController(storehouseAssembly ? [...houseAssemblies, storehouseAssembly] : houseAssemblies)
 
   if (forest) {
     const worldDays = forest.getWorldDays()

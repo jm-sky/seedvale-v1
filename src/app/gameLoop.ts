@@ -2810,7 +2810,7 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
         player.mesh.position.x,
         player.mesh.position.z,
         loaded.flatMap((s) =>
-          s.landmarks.houses.map((house) => ({
+          [...s.landmarks.houses, ...(s.landmarks.storehouse ? [s.landmarks.storehouse] : [])].map((house) => ({
             id: `${s.id}:${house.position.x.toFixed(2)}:${house.position.z.toFixed(2)}`,
             x: house.position.x,
             z: house.position.z,

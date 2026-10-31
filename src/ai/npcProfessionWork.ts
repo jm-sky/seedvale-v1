@@ -525,7 +525,7 @@ function resolveDestinationEconomy(
 
 function localStorageUnloadDestination(ctx: NpcWorkContext, order: TransportOrder) {
   const kind: HouseholdResourceKind = isMineableOre(order.itemKind) ? 'wood' : 'food'
-  const destination = resolveNpcSettlementStorage(ctx.settlementStorage, kind)
+  const destination = resolveNpcSettlementStorage(ctx.settlementStorage, kind, ctx.npcId)
   return destination ? copyVec3(destination) : null
 }
 
@@ -653,7 +653,7 @@ function planTransportPickup(
       orders.fail(order.id)
       return null
     }
-    const pickupDestination = resolveNpcSettlementStorage(ctx.settlementStorage, 'food')
+    const pickupDestination = resolveNpcSettlementStorage(ctx.settlementStorage, 'food', ctx.npcId)
     if (!pickupDestination) {
       orders.fail(order.id)
       return null
