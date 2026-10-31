@@ -34,6 +34,7 @@
     "docs:sync:ci": "pnpm run plans:sync && pnpm run docs:generate-plan-docs && pnpm run plans:without-notes && pnpm run docs:readme-index && pnpm run docs:symbol-index && pnpm run docs:dependency-map && pnpm run docs:code-index",
     "worldgen:fixture:check": "tsx scripts/perf/check-worldgen-fixtures.ts",
     "worldgen:spacing:calibrate": "tsx scripts/perf/calibrate-settlement-spacing.ts",
+    "worldgen:yards:census": "tsx scripts/perf/census-house-yards.ts",
     "claude:preflight": "tsx scripts/claude/pre-implementation.ts"
   },
   "dependencies": {
