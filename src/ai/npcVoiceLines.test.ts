@@ -188,9 +188,11 @@ describe('resolveNpcVoiceLine production manifest', () => {
     expect(resolveNpcVoiceLine(npc({ role: 'farmer', age: 40 }), 'hungry')).toBe(
       '/sounds/voices/general_male_hungry_01.mp3',
     )
-    expect(resolveNpcVoiceLine(npc({ role: 'farmer', age: 40 }), 'weather_shelter')).toBe(
+    expect(resolveNpcVoiceLine(npc({ role: 'farmer', age: 40 }), 'weather_shelter_rain')).toBe(
       '/sounds/voices/general_male_weather_shelter_01.mp3',
     )
+    // The male clip names rain, so it is not in the weather-neutral pool (Q31).
+    expect(resolveNpcVoiceLine(npc({ role: 'farmer', age: 40 }), 'weather_shelter')).toBeUndefined()
     expect(resolveNpcVoiceLine(npc({ role: 'farmer', age: 40 }), 'danger_alert')).toBe(
       '/sounds/voices/general_male_danger_alert_01.mp3',
     )

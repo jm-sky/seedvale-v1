@@ -34,7 +34,7 @@ import type { SettlementHerbalGatherHooks } from '../world/herbalGathering'
 import type { ResourceSiteInventories } from '../world/resourceSiteInventory'
 import type { SettlementForestHooks } from '../world/settlementForestHooks'
 import type { WorldSpatialContext } from '../world/spatialContext'
-import type { WeatherState } from '../world/weather'
+import type { WeatherState, WeatherType } from '../world/weather'
 import type { NpcBurialHooks } from './burialPressure'
 import type { GraveVisitCandidate, NpcGraveVisitHooks } from './graveVisitPressure'
 import type { HelperAssignment } from './helperAssignment'
@@ -490,7 +490,7 @@ import {
   type VoluntaryJoinContext,
   type VoluntaryJoinEvaluation,
 } from './voluntaryExpeditionJoin'
-import { type NpcDecisionTarget, weatherShelterBarkAllowed, weatherShelterPressure } from './weatherPressure'
+import { type NpcDecisionTarget, weatherShelterPressure } from './weatherPressure'
 import type { CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js'
 
 function randRange([min, max]: [number, number]): number {
@@ -6611,7 +6611,7 @@ export class NpcAgent {
       this.wanderNear(this.home)
       return
     }
-    if (weatherShelterBarkAllowed(this.currentWeather)) this.requestBark('weather_shelter')
+    this.requestBark('weather_shelter', undefined, this.currentWeather?.type ?? null)
     this.startAction({
       kind: 'shelter',
       destination: copyVec3(this.home),
@@ -7195,6 +7195,7 @@ export class NpcAgent {
   private requestBark(
     intent: NpcBarkIntent,
     episodeKey?: string,
+    weather?: WeatherType | null,
   ): void {
     const request = this.requestNpcBarkOverride ?? getSharedRequestNpcBark()
     const areaKey = this.barkAreaKey()
@@ -7212,6 +7213,7 @@ export class NpcAgent {
       intent,
       nowSim: this.simClock,
       episodeKey,
+      weather,
     })
   }
 

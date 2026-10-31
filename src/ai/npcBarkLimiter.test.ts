@@ -6,7 +6,7 @@ import {
   NPC_OPTIONAL_BARK_MAX_PER_AREA,
   type NpcBarkIntent,
 } from './npcBarkPolicies'
-import { createRequestNpcBark, resolveNpcBarkVoiceUrl } from './npcBarkRequest'
+import { createRequestNpcBark, resolveNpcBarkVoiceUrl, weatherShelterVoiceIntents } from './npcBarkRequest'
 
 function npc(id: string, area = 'settlement-a'): NpcVoiceResolveInput & { id: string; areaKey: string } {
   return {
@@ -152,6 +152,42 @@ describe('resolveNpcBarkVoiceUrl', () => {
     )
     expect(farmer?.url).toBe('/sounds/voices/general_male_danger_alert_01.mp3')
     expect(farmer?.resolvedIntent).toBe('danger_alert')
+  })
+})
+
+describe('weather shelter bark variants (Q31)', () => {
+  const male = { id: 'm', gender: 'male', role: 'farmer', age: 40, voiceProfileId: 'general:male' } as const
+  const guard = { id: 'g', gender: 'male', role: 'guard', age: 40, voiceProfileId: 'guard:male' } as const
+  const female = { id: 'f', gender: 'female', role: 'farmer', age: 40, voiceProfileId: 'general:female' } as const
+
+  it('orders weather-specific intents before the neutral pool; snow never falls back to rain', () => {
+    expect(weatherShelterVoiceIntents('rain')).toEqual(['weather_shelter_rain', 'weather_shelter'])
+    expect(weatherShelterVoiceIntents('storm')).toEqual(['weather_shelter_storm', 'weather_shelter_rain', 'weather_shelter'])
+    expect(weatherShelterVoiceIntents('snow')).toEqual(['weather_shelter_snow', 'weather_shelter'])
+    expect(weatherShelterVoiceIntents(null)).toEqual(['weather_shelter'])
+  })
+
+  it('keeps current-asset behaviour: rain/storm male uses the rain clip, snow male is silent, female neutral', () => {
+    expect(resolveNpcBarkVoiceUrl(male, 'weather_shelter', 'rain')).toEqual({
+      url: '/sounds/voices/general_male_weather_shelter_01.mp3', resolvedIntent: 'weather_shelter_rain',
+    })
+    expect(resolveNpcBarkVoiceUrl(guard, 'weather_shelter', 'storm')?.url)
+      .toBe('/sounds/voices/guard_male_weather_shelter_01.mp3')
+    expect(resolveNpcBarkVoiceUrl(male, 'weather_shelter', 'snow')).toBeUndefined()
+    expect(resolveNpcBarkVoiceUrl(guard, 'weather_shelter', 'snow')).toBeUndefined()
+    expect(resolveNpcBarkVoiceUrl(female, 'weather_shelter', 'snow')).toEqual({
+      url: '/sounds/voices/general_female_weather_shelter_01.mp3', resolvedIntent: 'weather_shelter',
+    })
+  })
+
+  it('throttles every weather variant under the single weather_shelter policy', () => {
+    configureNpcVoicePlayback(() => {})
+    const limiter = new NpcBarkLimiter()
+    const request = createRequestNpcBark(limiter)
+    const base = { position: { x: 0, z: 0 }, areaKey: 'a', intent: 'weather_shelter' as const, nowSim: 0 }
+    expect(request({ ...base, npc: male, weather: 'rain' }).accepted).toBe(true)
+    expect(request({ ...base, npc: male, weather: 'storm' }).accepted).toBe(false)
+    configureNpcVoicePlayback(null)
   })
 })
 

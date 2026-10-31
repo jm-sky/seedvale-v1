@@ -26,6 +26,8 @@ Recommendation 🟡: F2 (rename existing clip to the rain variant, record one ne
 
 **Update 2026-10-30 (author):** target = F2 (new recordings later). Interim F1 landed: snow → silence, storm → rain clip (`weatherShelterBarkAllowed`, `src/ai/weatherPressure.ts`).
 
+**Update 2026-10-31 (Q31):** F2/F3 contract landed — weather-specific intents `weather_shelter_rain|storm|snow` with a fallback chain in `resolveNpcBarkVoiceUrl` replace the interim F1 gate (same audible result with current assets); line script for author generation: [Q31 line script](./2026-10-31--q31-npc-bark-line-script.md).
+
 ## 2. Cooldown / dedup / repeated weather lines (✅ unless marked)
 
 Limiter: `src/ai/npcBarkLimiter.ts`, policies `src/ai/npcBarkPolicies.ts`, wiring `createApp.ts:924` (one shared `NpcBarkLimiter`).

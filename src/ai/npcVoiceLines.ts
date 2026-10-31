@@ -57,6 +57,9 @@ export type NpcVoiceSemanticIntent =
   | 'exhausted'
   | 'hungry'
   | 'weather_shelter'
+  | 'weather_shelter_rain'
+  | 'weather_shelter_storm'
+  | 'weather_shelter_snow'
   | 'danger_alert'
   | 'combat_start'
   | 'call_for_help'
@@ -232,13 +235,19 @@ const GENERATED_VOICE_MANIFEST: Readonly<Record<string, readonly string[]>> = {
   'general:male:hungry': [
     '/sounds/voices/general_male_hungry_01.mp3',
   ],
-  'general:male:weather_shelter': [
-    '/sounds/voices/general_male_weather_shelter_01.mp3',
-  ],
+  // Shelter barks (Q31): `weather_shelter` = weather-neutral text only;
+  // `weather_shelter_<rain|storm|snow>` = text that names that weather. The
+  // request layer tries the weather-specific key first, then falls back
+  // (`weatherShelterVoiceIntents`). The male/guard `_weather_shelter_01`
+  // files say "Rain's coming down hard", so they are keyed as the rain
+  // variant (filename kept to avoid re-recording churn).
   'general:female:weather_shelter': [
     '/sounds/voices/general_female_weather_shelter_01.mp3',
   ],
-  'guard:male:weather_shelter': [
+  'general:male:weather_shelter_rain': [
+    '/sounds/voices/general_male_weather_shelter_01.mp3',
+  ],
+  'guard:male:weather_shelter_rain': [
     '/sounds/voices/guard_male_weather_shelter_01.mp3',
   ],
   'general:male:danger_alert': [
