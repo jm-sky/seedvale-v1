@@ -3,7 +3,7 @@ import { cellsWithinRadius, SETTLEMENT_GRID_STEP, type SettlementCell } from './
 
 /**
  * Two settlements whose nominal cell centers are at most this far apart never
- * share a name. Settlements sit on a 280 m grid (nearest neighbours ≈ 280 m,
+ * share a name. Settlements sit on a 300 m grid (nearest neighbours ≈ 300 m,
  * diagonals ≈ 400 m), so 1 km covers every road/signpost neighbour plus the
  * next ring or two — about 40 cells, the area a player sees named together on
  * signposts, roads and local quests. Farther duplicates are allowed

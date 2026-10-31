@@ -30,7 +30,7 @@ const config = {
   sky: { inclination: 0.5 },
   player: { name: 'Anna' },
   settlements: {},
-  worldgenEpoch: 0,
+  worldgenEpoch: 1,
 } as SaveConfig
 
 const currentSave = {
@@ -139,10 +139,10 @@ describe('saveSlots', () => {
   it('migrates a legacy raw v1 SaveData under current through the pipeline (plan world-012)', () => {
     const { discoveredLocations: _discoveredLocations, targets: _targets, ...v1Map } = currentSave.map
     const legacyV1 = { ...currentSave, version: 1, map: v1Map }
-    const parsed = parseStoredSave('current', legacyV1)
-    expect(parsed).not.toBeNull()
-    expect(parsed?.data.version).toBe(CURRENT_SAVE_VERSION)
-    expect(parsed?.data.map).toEqual({ ...v1Map, discoveredLocations: [], targets: [] })
+    // A raw v1 save predates the worldgen epoch, so it migrates to epoch 0 and is refused by an
+    // epoch-1 build (persistence-008); the field migrations themselves are covered in saveData.test.ts.
+    expect(parseStoredSave('current', legacyV1)).toBeNull()
+    expect(inspectStoredSave('current', legacyV1, { worldgenEpoch: 0 })).toMatchObject({ status: 'ok' })
   })
 
   it('falls back to Zapis when the legacy player name is blank', () => {
@@ -215,7 +215,8 @@ describe('saveSlots', () => {
 
 describe('incompatible-world slots (plan persistence-008)', () => {
   it('keeps the envelope name and reports the stored epoch when the build epoch moved on', () => {
-    const slot = inspectStoredSave('slot_old', wrapSave('  Stara gra ', loaded()), { worldgenEpoch: 1 })
+    const preRevival = (): SaveData => ({ ...loaded(), config: { ...loaded().config, worldgenEpoch: 0 } })
+    const slot = inspectStoredSave('slot_old', wrapSave('  Stara gra ', preRevival()), { worldgenEpoch: 1 })
     expect(slot).toEqual({ status: 'incompatible-world', id: 'slot_old', version: CURRENT_SAVE_VERSION, worldgenEpoch: 0, name: 'Stara gra' })
     expect(toSaveManagementEntry(slot)).toEqual({
       status: 'incompatible-world',
@@ -224,7 +225,7 @@ describe('incompatible-world slots (plan persistence-008)', () => {
       version: CURRENT_SAVE_VERSION,
       worldgenEpoch: 0,
     })
-    expect(parseStoredSave('slot_old', wrapSave('Stara gra', loaded()))).not.toBeNull()
+    expect(inspectStoredSave('slot_old', wrapSave('Stara gra', preRevival()), { worldgenEpoch: 0 }).status).toBe('ok')
   })
 
   it('sorts incompatible rows with the other unhealthy rows, after healthy ones', () => {

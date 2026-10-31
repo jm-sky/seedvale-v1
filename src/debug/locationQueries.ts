@@ -252,7 +252,7 @@ export function riversNearby(
   return results
 }
 
-/** Grid-cell radius (`SETTLEMENT_GRID_STEP = 280` per cell) searched outward
+/** Grid-cell radius (`SETTLEMENT_GRID_STEP = 300` per cell) searched outward
  *  for a village — generous enough to reliably find one near spawn while
  *  staying cheap: `peekDef` is cached and never loads meshes. */
 const VILLAGE_SEARCH_MAX_CELL_RADIUS = 8

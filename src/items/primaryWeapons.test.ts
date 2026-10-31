@@ -173,7 +173,7 @@ describe('primaryWeapons', () => {
 
   it('migrates older saves without primary weapon fields to empty slots', () => {
     const legacy = structuredClone(validLegacyV8Save())
-    const result = loadStoredSave(legacy)
+    const result = loadStoredSave(legacy, { worldgenEpoch: 0 })
     expect(result.status).toBe('ok')
     if (result.status !== 'ok') return
     expect(result.data.version).toBe(CURRENT_SAVE_VERSION)

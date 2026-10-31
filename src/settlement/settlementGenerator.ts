@@ -68,7 +68,7 @@ const OUTPOST_CHANCE = 0.45
  *  the worst-case combination of per-cell noise offset and the local flat-site
  *  search jitter (±24 units, see `findSettlementSite`) keeps neighbors well
  *  above the ~150 unit minimum separation the design calls for. */
-export const SETTLEMENT_GRID_STEP = 280
+export const SETTLEMENT_GRID_STEP = 300
 
 /** Fraction of half the grid step a cell's center may drift by — keeps the
  *  layout from reading as a perfect grid without risking overlap. */

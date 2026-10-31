@@ -38,7 +38,7 @@ export const ROAD_ROUTE_CACHE_NAMESPACE = 'road-routes'
  * fingerprinted separately. An old-version record is a plain cache miss —
  * records are never migrated.
  */
-export const ROAD_ROUTE_CACHE_VERSION = 1
+export const ROAD_ROUTE_CACHE_VERSION = 2
 
 const DEFAULT_DEBOUNCE_MS = 4000
 /** Bounded per-seed cap of requested routes only — never a full pair scan.

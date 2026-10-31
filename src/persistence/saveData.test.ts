@@ -6,12 +6,27 @@ import {
   CURRENT_SAVE_VERSION,
   isSaveData,
   loadSaveData,
-  loadStoredSave,
+  loadStoredSave as loadStoredSaveForEpoch,
+  type LoadStoredSaveOptions,
   migrateStoredSave,
   type SaveConfig,
   type SaveData,
   type SaveMigration,
 } from './saveData'
+
+/** Format-migration tests compare against `validSave`, which carries the current epoch, while the
+ *  v56→v57 step stamps epoch 0 (persistence-008). Unless a test passes an explicit epoch, load old
+ *  saves at epoch 0 and restore the input's epoch on the result so these tests cover the field
+ *  migrations, not the epoch stamp/refusal (those are tested explicitly with `{ worldgenEpoch }`). */
+function loadStoredSave(value: unknown, options: LoadStoredSaveOptions = {}): ReturnType<typeof loadStoredSaveForEpoch> {
+  if (options.worldgenEpoch !== undefined) return loadStoredSaveForEpoch(value, options)
+  const carried = (value as { config?: { worldgenEpoch?: unknown } } | null)?.config?.worldgenEpoch
+  const version = (value as { version?: number } | null)?.version ?? 1
+  if (version >= 57 || typeof carried !== 'number') return loadStoredSaveForEpoch(value, { worldgenEpoch: typeof carried === 'number' ? carried : 0 })
+  const result = loadStoredSaveForEpoch(value, { worldgenEpoch: 0 })
+  if (result.status === 'ok') result.data.config.worldgenEpoch = carried
+  return result
+}
 
 const config = {
   seed: 1,
@@ -19,7 +34,7 @@ const config = {
   sky: { inclination: 0.5 },
   player: { name: 'Ja' },
   settlements: {},
-  worldgenEpoch: 0,
+  worldgenEpoch: 1,
 } as SaveConfig
 
 const validSave: SaveData = {
@@ -2667,7 +2682,7 @@ describe('worldgen epoch compatibility (persistence-008)', () => {
 
   it('migrates a v56 save to v57 with the pre-Revival epoch 0 and loads it while the build is at epoch 0', () => {
     const result = loadStoredSave(v56Save, { worldgenEpoch: 0 })
-    expect(result).toEqual({ status: 'ok', data: validSave })
+    expect(result).toEqual({ status: 'ok', data: { ...validSave, config: { ...validSave.config, worldgenEpoch: 0 } } })
     if (result.status !== 'ok') return
     expect(result.data.config.worldgenEpoch).toBe(0)
   })

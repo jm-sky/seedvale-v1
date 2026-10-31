@@ -14,7 +14,7 @@ export const CAVE_ENTRANCE_DISCOVERY_RADIUS = 32
 
 /**
  * Chebyshev settlement-grid radius checked for physical village arrival.
- * `SETTLEMENT_GRID_STEP` (280) is larger than worst-case site offset +
+ * `SETTLEMENT_GRID_STEP` (300) is larger than worst-case site offset +
  * local search + XL `plan.boundary.radius`, so the player's cell plus its
  * 8 neighbours cover every village whose footprint the player can stand in
  * — never a catalog-wide scan.

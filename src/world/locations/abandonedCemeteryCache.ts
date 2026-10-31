@@ -21,7 +21,7 @@ export const ABANDONED_CEMETERY_NAMESPACE = 'abandoned-cemeteries'
  *  v2: river-aware road routing (plan world-terrain-023) changes regional road
  *  geometry for an unchanged seed, and placement rejects footprints that clear
  *  nearby roads. */
-export const ABANDONED_CEMETERY_VERSION = 2
+export const ABANDONED_CEMETERY_VERSION = 3
 
 export type CachedAbandonedCemeteryResult =
   | { status: 'none' }

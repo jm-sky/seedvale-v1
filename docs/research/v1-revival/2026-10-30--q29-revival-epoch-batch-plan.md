@@ -85,7 +85,7 @@ Window: rings <= 5 (121 cells), pitches 280/300/310/320, p10/p50/p90 in metres.
 
 **Mean median-edge gain vs 280:** pitch 300 ≈ +8.0 %, 310 ≈ +13.4 %, 320 ≈ +16.4 % (per-seed spread +4.6…+20.6 %).
 
-**Recommendation: pitch 310** (+10–15 % target; settlements 88–105 vs 89–99 at 280, i.e. within noise or higher on 4/5 seeds; seed 42 loses 5). Caveat for Q33: seed 1 at 310 has 4 settlements without a road / 5 components (vs 0 / 2 at 280) and the 5 route-deficit seeds are noisy — Q33 must re-check road connectivity on seeds 42 and 415424794 and may fall back to 300 (+8 %) if the reference seed regresses. 320 over-delivers but adds `OUTPOST`s and gives seed 1/42 no better connectivity.
+**Q33 decision (author, 2026-10-31): pitch 300** (landed with `WORLDGEN_EPOCH = 1`). Original recommendation was **310** (+10–15 % target; settlements 88–105 vs 89–99 at 280, i.e. within noise or higher on 4/5 seeds; seed 42 loses 5). Caveat for Q33: seed 1 at 310 has 4 settlements without a road / 5 components (vs 0 / 2 at 280) and the 5 route-deficit seeds are noisy — Q33 must re-check road connectivity on seeds 42 and 415424794 and may fall back to 300 (+8 %) if the reference seed regresses. 320 over-delivers but adds `OUTPOST`s and gives seed 1/42 no better connectivity.
 
 ## 5. Open questions (queue §3)
 

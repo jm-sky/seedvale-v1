@@ -24,7 +24,7 @@ const config = {
   sky: { inclination: 0.5 },
   player: { name: 'Anna' },
   settlements: {},
-  worldgenEpoch: 0,
+  worldgenEpoch: 1,
 } as SaveConfig
 
 function makeSaveData(overrides?: Partial<Pick<SaveData, 'savedAt' | 'elapsedDays'>>): SaveData {
