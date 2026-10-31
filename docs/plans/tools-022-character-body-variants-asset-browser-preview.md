@@ -8,6 +8,7 @@
 **Domain:** `tools`
 **Subdomains:** `development` `diagnostics`
 **Tags:** `visual` `animation` `tooling`
+**Model:** Opus, Sonnet
 
 ## Goal
 
