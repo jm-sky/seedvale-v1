@@ -28,6 +28,7 @@ Facial hair roadmap: `none`, `moustache`, `beard_and_moustache`; optional `stubb
 | **Peter Woodward / Piotr Leśniewski** | `piotr_lesniewski` | ~36 | standard/medium | **`superhero`** | `standard` | brown | short | **`moustache`** | woodcutter | Author choices recorded |
 | **Ann Woodward / Anna Leśniewska** | `anna_lesniewska` (legacy; verify canonical binding) | 32 | medium | **`slim`** (target; not yet shipped) | **`Lean`** | **`brown`** | **`Long`** (not `Buns`) | `none` | practical farmer / work skirt and apron reference | Author-approved appearance; asset fidelity pending |
 | **Molly Lambert** | pending stable binding (`M01` authored actor) | ~25–30 (proposed) | **short** | **`slim`** (target; not yet shipped) | **`Warm`** | **`blond`** | **`Long`** | `none` | practical shepherdess | Author-approved appearance based on supplied portrait; age estimate pending canon verification |
+| **Jacob Bowman / Jakub** | `B01` (authored actor; runtime binding pending) | ~35–40 (visual estimate) | tall | **`standard`** | **`Base`** | **`brown`** | **`Long`** | **`beard_and_moustache`** (future variant) | **`Ranger_NoHood`** | Author-approved appearance; beard variant pending |
 
 **Interpretation notes:** Age estimates derive from the curated character canon, not current V1 generated age (reserved-family ages are presently generated). `standard` face means the author's intended ordinary face; map to the appropriate available head asset during implementation, not automatically to a code variant without visual review. Outfits are narrative/profession choices, not necessarily the precise currently assembled clothing. Mark's `stubble` is a deferred preference, not a current substitute for `none`. Peter's `superhero` selection is explicit even if a three-build taxonomy is eventually adopted: settle how that taxonomy represents his muscular appearance before implementation.
 
@@ -38,6 +39,10 @@ Ann's V3 draft reference (`references/ann-woodward-reference-draft.png`) depicts
 ### Molly visual direction
 
 Author supplied a portrait of Molly with a lamb: youthful, gentle expression, light blond hair loosely braided with flyaways, modest cream linen and brown work clothing. Selected V1-compatible approximation: `Warm` head, `blond` tint, `Long` hair; **short** height, target `slim` build. The portrait's braid is not represented exactly by `Long`; no additional hair asset was approved. Portrait was provided in conversation and is **not** claimed to be committed to repository references. Age ~25–30 is a proposal, not verified canonical age. No runtime override is implemented.
+
+### Jacob visual direction
+
+Author supplied a V3 Jakub hunter reference showing a friendly, outdoorsy, free-spirited hunter with long tousled brown hair and beard with moustache. Selected `Base` head (explicitly **not** `Warm`), `Long` hair, `brown` tint, tall stature, `standard` build and `Ranger_NoHood` outfit. The desired `beard_and_moustache` requires the planned facial-hair extension; current beard boolean does not guarantee exact match. Visual age ~35–40 is an estimate. Reference was supplied in conversation, not added as an asset to the repository. No runtime changes.
 
 ## Implementation follow-up (not yet a plan)
 
