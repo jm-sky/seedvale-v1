@@ -7,5 +7,5 @@ Entry point for any coding agent (Cursor, Codex, Claude Code, etc.).
 Quick start:
 
 - Author says **"Continue"** (or gives no concrete task) → follow *Session start — "Continue" protocol* in `CLAUDE.md`, which takes work from [`docs/research/v1-revival/AUTONOMOUS-SESSION-QUEUE.md`](./docs/research/v1-revival/AUTONOMOUS-SESSION-QUEUE.md).
-- Decisions and the D4 Performance-First freeze: [`docs/research/v1-revival/STRATEGIC-BRIEF.md`](./docs/research/v1-revival/STRATEGIC-BRIEF.md) §1.
+- Approved decisions (D4 freeze closed 2026-10-30): [`docs/research/v1-revival/STRATEGIC-BRIEF.md`](./docs/research/v1-revival/STRATEGIC-BRIEF.md) §1.
 - Talk to the author in Polish; write repository docs in English.
