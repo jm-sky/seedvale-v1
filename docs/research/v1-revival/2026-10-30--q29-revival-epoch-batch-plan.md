@@ -44,6 +44,16 @@
 
 **Delegation (`X`):** Q32 and Q38 are metric scripts with a fixed output table — good ChatGPT/Codex/Cursor candidates; review the script before trusting numbers.
 
+## Q37 — author direction (2026-10-31)
+
+**Status:** Author approves Opus preparing a detailed Q37 plan and performing a bounded, reversible preliminary implementation. This is **not visual acceptance**. The author must visually approve the result before it is considered finished. Keep an explicit rollback path (isolated commits, comparison against baseline, clear keep/revert criteria); do not regard collision tests alone as acceptance.
+
+- **Scope:** Improve settlement composition, character and aesthetics, as well as placement correctness. Examine plazas, wells, campfires, markets, workshops, woodpiles, gardens and remaining props. Preserve functional NPC interactions and accessibility. Do not reduce Q37 to collision elimination.
+- **River proximity:** Investigate and fix observed props placed in/over rivers. Inspect actual river channel and banks, whole prop footprints, height/terrain flattening, late placements and the unconditional final fallback in villagePlanner.pickPlot. Preserve meaningful waterfront placement while ensuring safe clearances.
+- **Roadside guard point (proposal for evaluation, not approved implementation):** Consider a useful observation/standing point next to a road, potentially as part of a patrol. Check guard schedules, approach/navigation, path clearance, road entrance/palisade relation and sightlines. Avoid adding a purely decorative marker disconnected from NPC behaviour.
+- **Dependencies:** Coordinate after Q34 house/yards, Q35 fences/gates and Q36 storehouse. Respect Q29 worldgen epoch, deterministic identities, cache/fixture updates and existing instancing/batching. Avoid unplanned changes to simulation workload.
+- **Verification and handoff:** Opus should specify representative visual inspection cases including river-adjacent layouts, seeds 42 and 415424794, multiple settlement sizes/patterns, player/NPC access, placement/collision checks and per-settlement render submission counts. Preliminary work is allowed, but **author visual sign-off remains mandatory**. If unacceptable, revise or revert.
+
 ## 4. Calibration results
 
 _Filled by Q32._
