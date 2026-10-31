@@ -3,7 +3,6 @@ import { houseDefinitionById } from '../../src/assets/houseDefinitionExample'
 // Queue Q48: diagnostic census of the profession-signature home dressing (pure `professionDressingFor`, no
 // runtime, no Three.js) on generated settlement plans. Diagnostic only — prints a markdown table.
 import { defaultTerrainConfig } from '../../src/config/worldConfig'
-import { villageSizeConfig } from '../../src/settlement/families'
 import { professionDressingFor } from '../../src/settlement/professionDressing'
 import { representativeProfession } from '../../src/settlement/professionFamilySurnames'
 import { cellSeed } from '../../src/settlement/settlementGenerator'
