@@ -16,6 +16,7 @@ Format: `- [ ] YYYY-MM-DD — opis (plan/plik, jeśli istotne)`
 
 - [ ] 2026-09-12 — settlements-007 wystawia read-only `SettlementsManager.getStructureSnapshot`/`listRepairProblems`, ale żaden quest jeszcze tego nie konsumuje. Po `quests-progression-030`/`031` dodać `structure:<structureId>:repair` opportunity tym samym mechanizmem co wolf-den pressure (016) — nie kopiować repair state do quest layer. Recon: `docs/reviews/2026-09-13--quest-system-architecture-recon.md`.
 - [ ] 2026-09-13 — Authored `wilki-pod-osada` i generated `world:wolf-den-pressure:*` opowiadają tę samą historię destroy-den; authored `zagubiona-owca` (`find_animal`) nakłada się na `world:lost-livestock:*`. Nie scalać w infrastrukturze — osobny content cleanup po 030/031.
+- [ ] 2026-10-31 — Rat-infestation quest vs the new settlement storehouse (Q36/Q43, author answer (a)): rats still spawn at household sites and the nest stays behind a house; adapt the quest later (rats inside / at the storehouse wall hole, interior navigation for rats and player, maybe the nest location and quest text). Author: "Potem poprawimy pod quest". Opus plans on request — [Q36 plan §2.2](../research/v1-revival/2026-10-31--q36-settlement-storehouse-plan.md#22-rats--author-answer-2026-10-31-a).
 
 ## Quest system architecture
 
