@@ -29,6 +29,8 @@
 4. **Performance:** fenced yards and the storehouse add draws per settlement — instanced/batched through the existing settlement pipelines (fences like paddock fences, storehouse as a building template); record draws per settlement before/after (structural count, no FPS claim).
 5. **Not in the batch:** cemetery/fence mesh-only polish keeping placement and IDs; storehouse interior; burials into cemetery slots; any change to simulation density.
 
+**Q36 decision precedence (2026-10-31):** The [storehouse author-direction handoff](./2026-10-31--q36-storehouse-author-direction.md) supersedes the provisional per-settlement-size and delivery-door assumptions in the historical Q36 row below. Use the [revised Q36 implementation plan](./2026-10-31--q36-settlement-storehouse-plan.md) and the linked author direction for current scope; this batch table preserves original planning context only. In particular, every settlement requires a storehouse and logistics must not depend on access through a congested or closed doorway.
+
 ## 3. Ordered slices
 
 | Q | Slice | Model | Depends | Changes | Caches | Done when | Stop if |
