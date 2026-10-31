@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { REFERENCE_SEED } from '../../world/parseSeed'
 import { displaySeedName, isSeedInLibrary, type SeedChoice, type SeedRecord } from '../../world/seedLibrary'
 
 const props = defineProps<{
@@ -27,6 +28,12 @@ const sortedSeeds = computed(() => [...props.seeds].sort((a, b) => b.lastUsedAt 
 
 const showUrlSeedOption = computed(() => props.urlSeed != null && !isSeedInLibrary(props.urlSeed, props.seeds))
 
+// Pinned reference seed (ships a worldgen fixture) until it is a library entry
+// or already shown as the URL seed.
+const showReferenceOption = computed(
+  () => !isSeedInLibrary(REFERENCE_SEED, props.seeds) && !(showUrlSeedOption.value && props.urlSeed === REFERENCE_SEED),
+)
+
 const selectValue = computed<string>({
   get: () => (props.modelValue.kind === 'existing' ? String(props.modelValue.seed) : 'generate'),
   set: (raw) => {
@@ -46,6 +53,12 @@ const selectValue = computed<string>({
       :value="String(urlSeed)"
     >
       Seed {{ urlSeed }} z query param
+    </option>
+    <option
+      v-if="showReferenceOption"
+      :value="String(REFERENCE_SEED)"
+    >
+      Seed referencyjny {{ REFERENCE_SEED }} (z cache)
     </option>
     <option
       v-for="seed in sortedSeeds"

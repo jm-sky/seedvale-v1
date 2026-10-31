@@ -3,7 +3,7 @@ import { deleteSeedRecord, getSeedRecord, putSeedRecord, touchSeedLastUsed } fro
 import { minimalSeedRecord, type SeedRecord } from '../persistence/seedRecord'
 import { deleteCacheForSeed } from '../persistence/worldgenCacheDb'
 import { generateSeedName, sampleStartupTerrainProfile } from './locations/seedProfile'
-import { randomSeed } from './parseSeed'
+import { randomSeed, REFERENCE_SEED } from './parseSeed'
 
 /**
  * @domain world
@@ -26,8 +26,8 @@ export function isSeedInLibrary(seed: number, seeds: readonly SeedRecord[]): boo
 
 /** New Game form's initial `SeedChoice`, in priority order: an explicit URL
  *  seed (`urlSeed`, from `hasExplicitUrlSeed()`/`parseSeedFromUrl()` at boot)
- *  beats the most-recently-used library seed, which beats a fresh
- *  `'generate'`. Picking the URL seed here never itself writes a
+ *  beats the most-recently-used library seed, which beats the cached
+ *  `REFERENCE_SEED`. Picking the URL seed here never itself writes a
  *  `SeedRecord` — `resolveNewGameSeed`'s existing `'existing'` branch already
  *  no-ops `touchSeedLastUsed` when no record exists, so a query-param seed
  *  stays out of the persistent library until something else creates a
@@ -35,7 +35,7 @@ export function isSeedInLibrary(seed: number, seeds: readonly SeedRecord[]): boo
 export function resolveInitialSeedChoice(urlSeed: number | null, seeds: readonly SeedRecord[]): SeedChoice {
   if (urlSeed != null) return { kind: 'existing', seed: urlSeed }
   const mostRecentSeed = [...seeds].sort((a, b) => b.lastUsedAt - a.lastUsedAt)[0]
-  return mostRecentSeed ? { kind: 'existing', seed: mostRecentSeed.seed } : { kind: 'generate' }
+  return { kind: 'existing', seed: mostRecentSeed ? mostRecentSeed.seed : REFERENCE_SEED }
 }
 
 async function createSeedRecordForNewSeed(seed: number, buildSampleParams: (seed: number) => RawSampleParams): Promise<void> {
@@ -53,6 +53,9 @@ async function createSeedRecordForNewSeed(seed: number, buildSampleParams: (seed
  *  module depending on either call site's config shape. */
 export async function resolveNewGameSeed(choice: SeedChoice, buildSampleParams: (seed: number) => RawSampleParams): Promise<number> {
   if (choice.kind === 'existing') {
+    // Backfill first so a seed offered without a record (the reference seed,
+    // `?seed=`) becomes a normal library entry once actually used.
+    await ensureSeedRecordsForSeeds([choice.seed])
     await touchSeedLastUsed(choice.seed)
     return choice.seed
   }
