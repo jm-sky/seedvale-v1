@@ -70,7 +70,7 @@ describe('resolveNpcVoiceLineWithManifest hierarchy', () => {
   } as const
 
   it('avoids the given clip when the pool has alternatives, never when it is the only one (Q30)', () => {
-    const merchant = npc({ id: 'x', role: 'merchant', gender: 'female', age: 30 })
+    const merchant = npc({ id: 'x', role: 'trader', gender: 'female', age: 30 })
     for (let i = 0; i < 30; i++) {
       expect(
         resolveNpcVoiceLineWithManifest(hierarchyManifest, merchant, 'greeting', '/m2'),
