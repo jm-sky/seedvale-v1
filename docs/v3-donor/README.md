@@ -10,6 +10,8 @@ Provenance: copied from V3 repo `jm-sky/seedvale` at commit [`199f98e2`](https:/
 
 This tree holds selected V3 assets, character briefs, item data/docs, dialogue text banks, the curated quest portfolio (with full linked v1/v2 sources) and plans so revival work can use them without depending on the V3 working tree. Merging into `public/` or V1 gameplay code is a separate decision.
 
+**Author-side visual identity thread (2026-10-31):** [Named NPC appearance decisions](./characters/NAMED-NPC-APPEARANCE.md) and the character profiles under [`characters/profiles/`](./characters/profiles/) capture independently selected looks for recurring NPCs. They are donor/design context, not evidence of runtime integration or a new Revival roadmap phase. Opus should reconcile these choices with stable character identity, existing model variants and the current V1 code before planning implementation.
+
 ## Packages
 
 | Package | Path | Status | Contents (approx.) |
