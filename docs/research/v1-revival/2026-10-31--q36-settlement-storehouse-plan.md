@@ -1,7 +1,7 @@
 # Q36 — Settlement storehouse: recon and implementation plan
 
 **Created:** 2026-10-31 by Claude Opus 5.5 (queue Q36, O→S) · **Revised same day** after author correction: the first version ignored the [author direction note](./2026-10-31--q36-storehouse-author-direction.md) (MD+ only, closed door, one door target). This version follows that note.  
-**Status:** plan — implementation is queue **Q43** (Sonnet), ready; one author question (§6, rats inside) only shapes a later follow-up, not Q43. Visual result needs author sign-off (queue §2) like every epoch-1 layout slice.  
+**Status:** plan — implementation is queue **Q43** (Sonnet), ready; rats-inside question answered (§6: **(a)**, quest adaptation later). Visual result needs author sign-off (queue §2) like every epoch-1 layout slice.  
 **Authority:** [author direction (requirements 1–7)](./2026-10-31--q36-storehouse-author-direction.md) — binding; [Q29 batch plan §3](./2026-10-30--q29-revival-epoch-batch-plan.md#3-ordered-slices) (batch rules §2; its MD+/single-door-target suggestion is **superseded**); author 2026-10-31: model = temporarily reuse an existing house model, model reference in one place. Epoch is already `WORLDGEN_EPOCH = 1` (Q33). Source facts verified against `main` at `98c3389`; code is authoritative.
 
 ## 1. Recon findings (✅ verified)
@@ -36,9 +36,9 @@
 8. **Terrain pad** `ClearingLayout.storehouses: readonly ClearingArea[]` (one entry) — consumers per F7; separate from family-aligned arrays.
 9. **Never a house.** Not in `landmarks.houses/homes`, `houseAssemblies`, `ClearingLayout.houses`, lodging, house interactables, house lights, chest instancing. Own `landmarks.storehouse` (position, yaw, definitionId, label, examine, footprintRadius, assembly — load-lifetime). Colliders via `buildAssemblyCollidersWorld` in `registerSettlementColliders`.
 
-### 2.2 Waiting for the author (§6)
+### 2.2 Rats — author answer (2026-10-31): (a)
 
-**Rats inside the storehouse.** Today rats never use it (F8). Req. 4 keeps room "for the rat-related scenario" and req. 7 says interior navigation must follow the actors that actually use it. Options are in §6; until answered, Q43 implements §2.1 with rats **unchanged** (they keep spawning at household sites) and only reserves the free interior floor — that part does not depend on the answer.
+**Rats unchanged for now:** they keep spawning at household sites and `storageDamaged` keeps only raising the population target (F8). Q43 only keeps the interior centre floor free (§2.1.4) so the rat scenario can be added later. The quest-side adaptation (rats inside/at the storehouse wall, interior navigation for the actors that use it, possibly the nest location) is a **later follow-up** — "Potem poprawimy pod quest" — planned by Opus when the author asks; recorded in `docs/plans/LOOSE-ENDS.md`.
 
 **Rejected alternatives:** storehouse as an extra `landmarks.houses` entry (F3); unmodified home definition (looks like a home, has bed/lamp); NPC deliveries through the door (single bottleneck, closure would block logistics); MD+-only storehouse (contradicts req. 1).
 
@@ -53,7 +53,7 @@
 7. Caches: `settlement-definitions` 6 → 7, `chunk-tiles` 7 → 8, `road-routes` (bump), `abandoned-cemeteries` (bump, F7), `caves-v2` only if it reads plan/clearings (check, record). `WORLDGEN_EPOCH` stays 1.
 8. Verification: `npx tsc --noEmit`, targeted vitest (`src/settlement`, `src/ai` storage/delivery, `src/world` transport, `src/terrain` cemetery/cache), `pnpm run lint:fix`. Then STATE settlement storage section, Q29 row, §5 notes, queue Q43 status, queue §2 visual check entry.
 
-**Not in Q43:** rats inside the storehouse (§6), a dedicated storehouse model, a closure mechanic, fences (Q35), other placement (Q37), moving wood storage, economy quantities.
+**Not in Q43:** rats inside the storehouse (author (a), later quest follow-up), a dedicated storehouse model, a closure mechanic, fences (Q35), other placement (Q37), moving wood storage, economy quantities.
 
 ## 4. Acceptance and stop conditions
 
@@ -65,9 +65,6 @@
 
 _(Q43 fills this: census before/after, cache versions, deviations from §2.)_
 
-## 6. Open author question
+## 6. Author question — answered
 
-**Q36 · szczury w magazynie** — dziś szczury pojawiają się przy domach, a „uszkodzony magazyn” tylko zwiększa ich liczbę (F8).
-- (a) Na razie bez zmian: szczury jak dziś, wnętrze magazynu tylko z wolną podłogą pod przyszły scenariusz. Q43 nie czeka.
-- (b) Gdy magazyn jest uszkodzony, część szczurów pojawia się **w środku** magazynu i przy dziurze w ścianie; drzwi otwarte dla szczurów, nawigacja wnętrza dla szczurów i gracza (osobny slice po Q43, Opus planuje).
-- (c) Jak (b), ale dodatkowo gniazdo w magazynie zamiast za domem (zmienia quest „gniazdo za domem” i jego tekst).
+**Q36 · szczury w magazynie (2026-10-31): (a)** — rats unchanged, interior keeps free floor for a future scenario; quest adaptation later (author: "Potem poprawimy pod quest"). Rejected for now: (b) part of the infestation inside/at the wall hole with interior navigation; (c) (b) plus the nest inside the storehouse.
