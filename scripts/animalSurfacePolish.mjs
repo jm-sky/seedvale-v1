@@ -17,9 +17,11 @@ const ROUGHNESS = {
   sheep: [[/^black/i, 0.85], [/./, 0.92]],
   wolf: [[/eye/i, 0.3], [/nose/i, 0.45], [/./, 0.82]],
   cow: [[/eye/i, 0.3], [/muzzle/i, 0.55], [/hoof/i, 0.6], [/horn/i, 0.5], [/./, 0.78]],
+  deer: [[/eye/i, 0.3], [/hoof/i, 0.6], [/./, 0.8]],
+  stag: [[/^Material\.011$/, 0.3], [/^Material\.001$/, 0.6], [/./, 0.8]], // .011 eyes, .001 hooves/antlers
   horse: [[/eye/i, 0.3], [/muzzle/i, 0.55], [/hoof/i, 0.6], [/hair/i, 0.7], [/./, 0.62]],
 }
-const KEEP_HARD = /eye|hoof|horn/i // never averaged with neighbours
+const KEEP_HARD = /eye|hoof|horn|^Material\.011$/i // never averaged with neighbours
 
 await Promise.all([MeshoptDecoder.ready, MeshoptEncoder.ready])
 const io = new NodeIO()
@@ -102,14 +104,14 @@ function fingerprint(doc) {
   out.mats = root.listNodes().flatMap((n) => n.getMatrix()) // compared with 1e-5 tolerance (TRS re-serialisation noise)
   out.skins = root.listSkins().map((s) => s.listJoints().length + ':' + h(s.getInverseBindMatrices()?.getArray() ?? [])).join('|')
   out.anims = root.listAnimations().map((a) => a.getName() + ':' + a.listChannels().map((c) => c.getTargetPath() + h(c.getSampler().getInput().getArray()) + h(c.getSampler().getOutput().getArray())).join(',')).join('|')
-  out.prims = root.listMeshes().flatMap((m) => m.listPrimitives().map((p) => ['POSITION', 'JOINTS_0', 'WEIGHTS_0'].map((s) => h(p.getAttribute(s).getArray())).join('/') + ':' + h(p.getIndices().getArray()) + ':' + p.getMaterial().getName())).join('|')
+  out.prims = root.listMeshes().flatMap((m) => m.listPrimitives().map((p) => ['POSITION', 'JOINTS_0', 'WEIGHTS_0'].map((s) => (p.getAttribute(s) ? h(p.getAttribute(s).getArray()) : 'none')).join('/') + ':' + h(p.getIndices().getArray()) + ':' + p.getMaterial().getName())).join('|')
   out.tris = root.listMeshes().flatMap((m) => m.listPrimitives().map((p) => p.getIndices().getCount() / 3)).reduce((a, b) => a + b, 0)
   return out
 }
 
 import { statSync } from 'node:fs'
 const eq = (a, b) => (Array.isArray(a) ? a.length === b.length && a.every((v, i) => Math.abs(v - b[i]) < 1e-5) : a === b)
-for (const name of Object.keys(ROUGHNESS)) {
+for (const name of process.argv.slice(2).length ? process.argv.slice(2) : Object.keys(ROUGHNESS)) {
   const src = `${DIR}/experimental/original/${name}.glb`
   const base = fingerprint(await io.read(src))
   for (const variant of ['B', 'C']) {
