@@ -56,7 +56,7 @@ export const SETTLEMENT_DEFINITION_CACHE_NAMESPACE = 'settlement-definitions'
  * resolved progression-policy identity) is fingerprinted separately. An
  * old-version record is a plain cache miss — records are never migrated.
  */
-export const SETTLEMENT_DEFINITION_CACHE_VERSION = 4
+export const SETTLEMENT_DEFINITION_CACHE_VERSION = 5
 // v4 (2026-10-30, queue Q26): locally unique names from cell-center inputs
 // with ordinal suffixes; Lost Treasure host-cell record added.
 

@@ -35,4 +35,4 @@
  * @domain persistence
  * @system save-schema
  */
-export const WORLDGEN_EPOCH = 0
+export const WORLDGEN_EPOCH = 1

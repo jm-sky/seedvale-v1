@@ -22,7 +22,7 @@ export const LOCATIONS_COARSE_NAMESPACE = 'locations-coarse'
 /** Bump on any change to the tile payload shape or `classifyCoarseCell`'s
  *  algorithm — an old-version record is a cache miss, never migrated
  *  (plan §12). */
-export const LOCATIONS_COARSE_VERSION = 1
+export const LOCATIONS_COARSE_VERSION = 2
 
 export type CoarseTilePayload = { state: Uint8Array, height: Float32Array }
 

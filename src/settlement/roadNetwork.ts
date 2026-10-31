@@ -787,7 +787,7 @@ function orientedFrom(route: RoadRoute, def: { x: number, z: number }): RoutePoi
  *  belonging to one settlement, carrying geometry *and* their canonical river
  *  crossings. Cached per pair/location key, so resolving the same settlement
  *  from multiple nearby chunks is cheap after the first A* search. */
-function roadRoutesForSettlement(def: SettlementDef, ctx: RoadNetworkContext): RoadRoute[] {
+export function roadRoutesForSettlement(def: SettlementDef, ctx: RoadNetworkContext): RoadRoute[] {
   const out: RoadRoute[] = []
   const maxRoads = Math.max(0, ctx.region.roadNetwork.maxNeighborRoads)
 

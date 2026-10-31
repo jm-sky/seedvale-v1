@@ -69,7 +69,36 @@
 
 ## 4. Calibration results
 
-_Filled by Q32._
+_Filled by Q32 (Sonnet, 2026-10-31) with `pnpm worldgen:spacing:calibrate` (generator output unchanged; pitch injected via `setSettlementGridStepOverride`; default terrain config, home search radius 56). "no-road" = settlements with no inter-settlement road; "route deficit" = missing roads vs min(3, others); components/fords are inside the 11×11 cell window, so edge effects add noise. Derived cemetery distances still use the constant (not part of this measurement)._
+
+Window: rings <= 5 (121 cells), pitches 280/300/310/320, p10/p50/p90 in metres.
+
+| seed | pitch | accepted | null | sizes | nearest-nbr | road edges | edge len | no-road | route deficit | components | fords | bridges | median vs 280 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 42 | 280 | 93 | 28 | LG22 MD36 SM27 XL8 | 204/241/276 | 144 | 188/279/378 | 1 | 8 | 4 | 36 | 0 | 0.0 % |
+| 42 | 300 | 88 | 33 | LG24 SM25 MD33 XL6 | 214/256/296 | 139 | 214/292/391 | 1 | 8 | 3 | 29 | 0 | 4.6 % |
+| 42 | 310 | 88 | 33 | LG25 MD30 SM26 XL6 OUTPOST1 | 231/266/300 | 135 | 226/301/425 | 0 | 7 | 3 | 34 | 0 | 7.8 % |
+| 42 | 320 | 90 | 31 | MD31 SM30 LG22 XL6 OUTPOST1 | 233/272/312 | 140 | 233/325/439 | 1 | 9 | 4 | 25 | 0 | 16.3 % |
+| 415424794 | 280 | 93 | 28 | MD30 SM28 XL11 LG24 | 214/247/290 | 145 | 192/268/381 | 0 | 2 | 2 | 23 | 0 | 0.0 % |
+| 415424794 | 300 | 99 | 22 | SM25 LG31 MD32 XL10 OUTPOST1 | 234/265/300 | 153 | 224/297/410 | 1 | 5 | 4 | 30 | 0 | 10.8 % |
+| 415424794 | 310 | 103 | 18 | SM26 LG33 MD33 XL11 | 242/271/310 | 160 | 225/309/412 | 1 | 4 | 3 | 39 | 0 | 15.5 % |
+| 415424794 | 320 | 101 | 20 | SM29 LG33 MD30 XL9 | 247/289/333 | 155 | 257/323/459 | 1 | 5 | 2 | 36 | 0 | 20.6 % |
+| 1 | 280 | 89 | 32 | LG32 SM24 XL9 MD24 | 205/239/290 | 145 | 187/280/412 | 0 | 2 | 2 | 35 | 0 | 0.0 % |
+| 1 | 300 | 92 | 29 | SM29 LG27 MD26 XL9 OUTPOST1 | 223/256/297 | 137 | 218/304/441 | 1 | 7 | 1 | 51 | 0 | 8.4 % |
+| 1 | 310 | 94 | 27 | LG28 SM29 MD27 OUTPOST2 XL8 | 218/269/313 | 140 | 221/326/448 | 4 | 15 | 5 | 36 | 0 | 16.4 % |
+| 1 | 320 | 90 | 31 | LG28 SM29 MD22 XL10 OUTPOST1 | 248/283/323 | 132 | 236/328/422 | 1 | 13 | 4 | 30 | 0 | 16.8 % |
+| 2 | 280 | 99 | 22 | XL10 MD31 LG24 SM34 | 212/242/274 | 151 | 205/283/387 | 0 | 1 | 1 | 29 | 0 | 0.0 % |
+| 2 | 300 | 102 | 19 | XL11 MD32 LG27 SM32 | 223/268/300 | 156 | 221/301/416 | 0 | 3 | 1 | 35 | 0 | 6.3 % |
+| 2 | 310 | 105 | 16 | LG23 MD40 SM32 XL10 | 241/272/309 | 166 | 229/331/443 | 0 | 2 | 1 | 59 | 0 | 16.7 % |
+| 2 | 320 | 105 | 16 | LG24 MD37 SM35 XL8 OUTPOST1 | 245/278/321 | 162 | 239/326/453 | 1 | 6 | 3 | 52 | 0 | 15.0 % |
+| 3 | 280 | 97 | 24 | LG19 MD39 XL8 SM31 | 217/249/289 | 145 | 198/281/391 | 1 | 6 | 4 | 43 | 0 | 0.0 % |
+| 3 | 300 | 96 | 25 | LG18 MD38 XL8 SM32 | 228/268/310 | 149 | 224/308/428 | 0 | 3 | 3 | 33 | 0 | 9.7 % |
+| 3 | 310 | 97 | 24 | LG17 SM31 MD39 XL10 | 232/279/320 | 149 | 239/310/458 | 0 | 4 | 2 | 42 | 0 | 10.4 % |
+| 3 | 320 | 97 | 24 | LG19 SM28 MD41 XL9 | 242/287/321 | 151 | 240/318/455 | 0 | 4 | 3 | 36 | 0 | 13.3 % |
+
+**Mean median-edge gain vs 280:** pitch 300 ≈ +8.0 %, 310 ≈ +13.4 %, 320 ≈ +16.4 % (per-seed spread +4.6…+20.6 %).
+
+**Q33 decision (author, 2026-10-31): pitch 300** (landed with `WORLDGEN_EPOCH = 1`). Original recommendation was **310** (+10–15 % target; settlements 88–105 vs 89–99 at 280, i.e. within noise or higher on 4/5 seeds; seed 42 loses 5). Caveat for Q33: seed 1 at 310 has 4 settlements without a road / 5 components (vs 0 / 2 at 280) and the 5 route-deficit seeds are noisy — Q33 must re-check road connectivity on seeds 42 and 415424794 and may fall back to 300 (+8 %) if the reference seed regresses. 320 over-delivers but adds `OUTPOST`s and gives seed 1/42 no better connectivity.
 
 ## 5. Open questions (queue §3)
 

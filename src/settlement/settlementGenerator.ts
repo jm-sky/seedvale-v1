@@ -68,11 +68,28 @@ const OUTPOST_CHANCE = 0.45
  *  the worst-case combination of per-cell noise offset and the local flat-site
  *  search jitter (±24 units, see `findSettlementSite`) keeps neighbors well
  *  above the ~150 unit minimum separation the design calls for. */
-export const SETTLEMENT_GRID_STEP = 280
+export const SETTLEMENT_GRID_STEP = 300
 
 /** Fraction of half the grid step a cell's center may drift by — keeps the
  *  layout from reading as a perfect grid without risking overlap. */
 const OFFSET_FRACTION = 0.3
+
+let gridStepOverride: number | null = null
+
+/** Effective grid pitch: `SETTLEMENT_GRID_STEP` unless a calibration override is set. */
+function settlementGridStep(): number {
+  return gridStepOverride ?? SETTLEMENT_GRID_STEP
+}
+
+/**
+ * Calibration-only hook (queue Q32, `scripts/perf/calibrate-settlement-spacing.ts`): overrides the
+ * grid pitch used for cell centres/`worldToCell` so spacing candidates can be measured without
+ * editing the constant. `null` restores `SETTLEMENT_GRID_STEP`. Callers must also clear the
+ * settlement/road/cemetery caches; derived cemetery distances keep using the constant.
+ */
+export function setSettlementGridStepOverride(step: number | null): void {
+  gridStepOverride = step
+}
 
 export type SettlementCell = { gx: number, gz: number }
 
@@ -131,9 +148,10 @@ export function cellKey(cell: SettlementCell): string {
 }
 
 export function worldToCell(x: number, z: number): SettlementCell {
+  const step = settlementGridStep()
   return {
-    gx: Math.round(x / SETTLEMENT_GRID_STEP),
-    gz: Math.round(z / SETTLEMENT_GRID_STEP),
+    gx: Math.round(x / step),
+    gz: Math.round(z / step),
   }
 }
 
@@ -180,10 +198,11 @@ export function cellSeed(seed: number, cell: SettlementCell): number {
 
 function offsetCellCenter(cell: SettlementCell, seedForCell: number): { x: number, z: number } {
   const random = createSeededRandom(seedForCell ^ 0x9e3779)
-  const maxOffset = SETTLEMENT_GRID_STEP * 0.5 * OFFSET_FRACTION
+  const step = settlementGridStep()
+  const maxOffset = step * 0.5 * OFFSET_FRACTION
   return {
-    x: cell.gx * SETTLEMENT_GRID_STEP + (random() * 2 - 1) * maxOffset,
-    z: cell.gz * SETTLEMENT_GRID_STEP + (random() * 2 - 1) * maxOffset,
+    x: cell.gx * step + (random() * 2 - 1) * maxOffset,
+    z: cell.gz * step + (random() * 2 - 1) * maxOffset,
   }
 }
 
