@@ -1,5 +1,7 @@
 # V1 Revival — Autonomous Session Queue
 
+**NPC Voices & Dialogue (author decisions 2026-10-31):** Before any voice-related Q30/Q31/Q40 follow-up, casting, recording, dialogue text or event-bark work, read [Astra voice audit §12 — six approved decisions](./2026-10-31--npc-voices-dialogue-audit.md#12-author-decisions--approved-2026-10-31-supersedes-open-questions-in-11). The approved direction includes maximizing V3 donor voice reuse while preserving one fixed voice per NPC. This is a reference/decision update, **not a new ready queue task or a change of existing task status**.
+
 **Created:** 2026-10-29 by Claude Opus 5.5 (lead architect session)  
 **Status:** live work queue for long autonomous Opus/Sonnet sessions. Update task status in place; do not fork it into per-session copies.  
 **Authority:** decisions live in the [Strategic Brief](./STRATEGIC-BRIEF.md); phases/policy in the [Master Roadmap](./2026-10-27--master-revival-roadmap.md); P1 progress in the [A/B/C/D tracker](./2026-10-27--performance-three-track-roadmap.md#p1-status-snapshot-2026-10-29). This file only orders work and states per-task gates — it is not a decision ledger.
