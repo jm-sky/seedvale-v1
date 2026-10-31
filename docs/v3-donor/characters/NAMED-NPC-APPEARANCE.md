@@ -32,6 +32,8 @@ Facial hair roadmap: `none`, `moustache`, `beard_and_moustache`; optional `stubb
 
 | **Rudolf (reeve; surname pending)** | pending stable V1 actor binding | ~50–55 (visual estimate) | medium | **`standard`** | **`Base`** | **`brown`** | **`Parted`** | **`beard_and_moustache`** (future variant) | prosperous village reeve; practical fur-trimmed vest, no armour | Author-approved appearance based on supplied portrait; exact outfit asset pending |
 
+| **Casimir Eastwood / Kazimierz (V3 elder E01; proposed identity)** | `E01` (authored donor actor; V1 binding unresolved) | ~70–75 (visual estimate) | **tall** | **`slim`** (target; not yet shipped) | **`Lean`** | **`grey`** | **`Parted`** | **`stubble`** (future variant) | modest, worn earth-toned village clothes | Author-approved appearance; asset and identity binding pending |
+
 **Interpretation notes:** Age estimates derive from the curated character canon, not current V1 generated age (reserved-family ages are presently generated). `standard` face means the author's intended ordinary face; map to the appropriate available head asset during implementation, not automatically to a code variant without visual review. Outfits are narrative/profession choices, not necessarily the precise currently assembled clothing. Mark's `stubble` is a deferred preference, not a current substitute for `none`. Peter's `superhero` selection is explicit even if a three-build taxonomy is eventually adopted: settle how that taxonomy represents his muscular appearance before implementation.
 
 ### Ann visual fidelity
@@ -49,6 +51,10 @@ Author supplied a V3 Jakub hunter reference showing a friendly, outdoorsy, free-
 ### Rudolf visual direction
 
 Author-approved supplied portrait: experienced village reeve, 50–55 visual years, medium height and standard build; **`Base`** head, **`brown`** hair with **`Parted`** style, **`beard_and_moustache`**. Clothing implies somewhat prosperous but practical village leadership, e.g. dark patterned vest with fur edging, not aristocratic or armoured. Beard is visibly greying in the portrait despite the selected `brown` hair tint; separate beard tint is not approved or implemented, so check asset fidelity later. Exact outfit is not selected from available kit assets. Surname and stable actor binding remain unresolved; don't conflate with donor Ralph Fieldman. No runtime changes.
+
+### Casimir visual direction
+
+Author supplied a garden portrait of an elderly, lean, tall and weathered man with unruly grey hair and short grey stubble. Approved closest existing hairstyle is `Parted`, even though reference hair looks longer and tousled; chosen `Lean` head, `grey` tint, tall height and future `slim` build. His clothing is modest, practical and worn, without an adventurer costume. `stubble` requires a new facial-hair variant. Keep V3 elder `E01` distinct from existing V1 Kazimierz Nowak (74); Casimir Eastwood remains a proposed donor identity, not an authorized runtime rename or merge. Supplied portrait is not committed as a repository asset. No runtime changes.
 
 ## Implementation follow-up (not yet a plan)
 
