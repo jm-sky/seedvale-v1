@@ -27,12 +27,17 @@ Facial hair roadmap: `none`, `moustache`, `beard_and_moustache`; optional `stubb
 | **Kate Hornblower / Kasia Hornblower** | `kasia_hornblower` | ~34 | medium | `standard` (average) | `standard` | **copper brown** (new color) | braid **or** pinned up; **not `Buns`** | `none` | trader | Author choices recorded; hairstyle alternative remains |
 | **Peter Woodward / Piotr Leśniewski** | `piotr_lesniewski` | ~36 | standard/medium | **`superhero`** | `standard` | brown | short | **`moustache`** | woodcutter | Author choices recorded |
 | **Ann Woodward / Anna Leśniewska** | `anna_lesniewska` (legacy; verify canonical binding) | 32 | medium | **`slim`** (target; not yet shipped) | **`Lean`** | **`brown`** | **`Long`** (not `Buns`) | `none` | practical farmer / work skirt and apron reference | Author-approved appearance; asset fidelity pending |
+| **Molly Lambert** | pending stable binding (`M01` authored actor) | ~25–30 (proposed) | **short** | **`slim`** (target; not yet shipped) | **`Warm`** | **`blond`** | **`Long`** | `none` | practical shepherdess | Author-approved appearance based on supplied portrait; age estimate pending canon verification |
 
 **Interpretation notes:** Age estimates derive from the curated character canon, not current V1 generated age (reserved-family ages are presently generated). `standard` face means the author's intended ordinary face; map to the appropriate available head asset during implementation, not automatically to a code variant without visual review. Outfits are narrative/profession choices, not necessarily the precise currently assembled clothing. Mark's `stubble` is a deferred preference, not a current substitute for `none`. Peter's `superhero` selection is explicit even if a three-build taxonomy is eventually adopted: settle how that taxonomy represents his muscular appearance before implementation.
 
 ### Ann visual fidelity
 
 Ann's V3 draft reference (`references/ann-woodward-reference-draft.png`) depicts a lean, work-worn, approachable 32-year-old farmer with loosely pinned brown hair. The author selected the currently supported `Long` hairstyle instead of `Buns` (which reads as Princess Leia buns); `Lean` is the selected head variant and `brown` is the supported tint. Her desired `slim` body is a **future asset/body variant**, not an existing working option. The loose updo in the image is reference direction only, not a requirement to invent or ship another hairstyle. Her farmer outfit should remain practical; the exact apron is subject to existing garment availability. Do not claim the preset is applied in V1 runtime.
+
+### Molly visual direction
+
+Author supplied a portrait of Molly with a lamb: youthful, gentle expression, light blond hair loosely braided with flyaways, modest cream linen and brown work clothing. Selected V1-compatible approximation: `Warm` head, `blond` tint, `Long` hair; **short** height, target `slim` build. The portrait's braid is not represented exactly by `Long`; no additional hair asset was approved. Portrait was provided in conversation and is **not** claimed to be committed to repository references. Age ~25–30 is a proposal, not verified canonical age. No runtime override is implemented.
 
 ## Implementation follow-up (not yet a plan)
 
