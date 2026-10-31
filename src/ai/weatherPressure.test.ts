@@ -5,7 +5,6 @@ import { createNeedState, generateNeedPressures, type NeedState } from './Needs'
 import {
   type NpcDecisionTarget,
   WEATHER_SEVERE_SHELTER_THRESHOLD,
-  weatherShelterBarkAllowed,
   weatherShelterPressure,
 } from './weatherPressure'
 
@@ -99,14 +98,5 @@ describe('weather vs. need arbitration (mirrors NpcAgent.choose())', () => {
     needs.thirst = 0.95
     const heavyRain = weatherShelterPressure({ type: 'rain', intensity: 1, temperature: 5, startedAt: 0, endsAt: 1 })
     expect(decide(needs, heavyRain)).toBe('water')
-  })
-})
-
-describe('weatherShelterBarkAllowed', () => {
-  it('is silent in snow, reuses the rain clip for storm, and speaks without weather info', () => {
-    expect(weatherShelterBarkAllowed(weather({ type: 'snow', intensity: 0.8 }))).toBe(false)
-    expect(weatherShelterBarkAllowed(weather({ type: 'storm', intensity: 0.8 }))).toBe(true)
-    expect(weatherShelterBarkAllowed(weather({ type: 'rain', intensity: 0.8 }))).toBe(true)
-    expect(weatherShelterBarkAllowed(null)).toBe(true)
   })
 })
