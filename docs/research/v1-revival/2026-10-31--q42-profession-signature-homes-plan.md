@@ -102,6 +102,8 @@ New pure module `src/settlement/professionDressing.ts` (three-free): `profession
 1. ❓ **Professions without a V3 donor (shepherd, textile worker, miner pile, herbalist wall bundle):** (a) simple procedural/V1-item stand-ins in the same slice, visually approved later — recommended; (b) only donor-covered professions now, gaps in a later asset pass; (c) commission new models first (Blender/Cursor).
 2. Defaults taken unless the author objects (🟡): primary profession = existing surname-ranking adult; one extra wall piece for a second profession; blacksmith keeps the slot; dressing stays after the professional dies.
 
+**Author answer (2026-10-31):** question 1 → **(a)** procedural / V1-item stand-ins in Q48, visual approval later; author remark "Peasant usually" (clarification pending). Defaults of question 2 stand.
+
 ## 5. Implementation notes
 
 _Filled by Q48._
