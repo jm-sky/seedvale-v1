@@ -316,10 +316,16 @@ Generated from TypeScript imports.
 
 **Imports**
 
+- `assets/houseDefinitionExample.ts`
 - `settlement/blacksmithYard.ts`
+- `settlement/families.ts`
 - `settlement/householdYard.ts`
 
 ## `settlement/blacksmithYard.ts`
+
+**Imports**
+
+- `settlement/householdYard.ts`
 
 **Imported by**
 
@@ -535,6 +541,7 @@ Generated from TypeScript imports.
 - `quests/opportunities/settlementQuestOpportunities.test.ts`
 - `settlement/artisanProfile.test.ts`
 - `settlement/artisanProfile.ts`
+- `settlement/blacksmithYard.test.ts`
 - `settlement/createSettlement.ts`
 - `settlement/families.test.ts`
 - `settlement/findSettlementSite.test.ts`
@@ -543,6 +550,8 @@ Generated from TypeScript imports.
 - `settlement/houseCatalog.ts`
 - `settlement/household.ts`
 - `settlement/householdProfessionStock.ts`
+- `settlement/householdYard.test.ts`
+- `settlement/householdYard.ts`
 - `settlement/livestock.ts`
 - `settlement/lostTreasureChroniclesArchaeologistResident.test.ts`
 - `settlement/lostTreasureChroniclesArchaeologistResident.ts`
@@ -791,7 +800,9 @@ Generated from TypeScript imports.
 - `settlement/houseBuilder.test.ts`
 - `settlement/houseDoors.test.ts`
 - `settlement/houseDoors.ts`
+- `settlement/householdYard.test.ts`
 - `settlement/props.ts`
+- `settlement/villagePlanner.ts`
 - `world/createResidentialBuildings.ts`
 
 ## `settlement/houseCatalog.test.ts`
@@ -813,8 +824,6 @@ Generated from TypeScript imports.
 - `assets/assetIndex.ts`
 - `settlement/houseCatalog.test.ts`
 - `settlement/houseLighting.ts`
-- `settlement/householdYard.test.ts`
-- `settlement/householdYard.ts`
 - `settlement/props.lampMount.test.ts`
 - `settlement/props.ts`
 
@@ -1087,21 +1096,24 @@ Generated from TypeScript imports.
 
 **Imports**
 
-- `settlement/houseCatalog.ts`
+- `assets/houseDefinitionExample.ts`
+- `settlement/families.ts`
+- `settlement/houseBuilder.ts`
 - `settlement/householdYard.ts`
-- `settlement/villagePlanner.ts`
 
 ## `settlement/householdYard.ts`
 
 **Imports**
 
-- `settlement/houseCatalog.ts`
+- `settlement/families.ts`
 
 **Imported by**
 
 - `settlement/blacksmithYard.test.ts`
+- `settlement/blacksmithYard.ts`
 - `settlement/householdYard.test.ts`
 - `settlement/props.ts`
+- `settlement/villagePlan.ts`
 - `settlement/villagePlanner.test.ts`
 - `settlement/villagePlanner.ts`
 
@@ -3007,6 +3019,7 @@ Generated from TypeScript imports.
 
 - `ai/nameCultures.ts`
 - `settlement/families.ts`
+- `settlement/householdYard.ts`
 - `shared/SettlementName.ts`
 - `terrain/naturalResources.ts`
 
@@ -3077,10 +3090,12 @@ Generated from TypeScript imports.
 
 **Imports**
 
+- `assets/houseDefinitionExample.ts`
 - `math/segment.ts`
 - `player/PlayerController.ts`
 - `settlement/families.ts`
 - `settlement/gardenScale.ts`
+- `settlement/houseBuilder.ts`
 - `settlement/householdWells.ts`
 - `settlement/householdYard.ts`
 - `settlement/pathDryness.ts`
@@ -3094,7 +3109,6 @@ Generated from TypeScript imports.
 
 **Imported by**
 
-- `settlement/householdYard.test.ts`
 - `settlement/plazaPaving.test.ts`
 - `settlement/props.ts`
 - `settlement/roadNetwork.ts`

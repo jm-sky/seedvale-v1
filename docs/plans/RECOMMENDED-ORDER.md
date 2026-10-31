@@ -39,11 +39,11 @@
 2. `settlements-npcs-052` — **Persistent economic work cargo and local-transfer conservation**  
    🔴 `M` · ✅ ready · unlocks 0/0 · type: fix
 3. `fauna-045` — **Cave/surface perception boundary and entrance awareness**  
+   🔴 `M` · ✅ ready · unlocks 1/1 · type: bug
+4. `items-player-051` — **Cave-aware dropped-item continuity**  
+   🔴 `M` · ✅ ready · unlocks 1/1 · type: bug
+5. `npc-062` — **UBC NPC runtime material darkness and authored outfit preservation**  
    🔴 `M` · ✅ ready · unlocks 0/0 · type: bug
-4. `npc-062` — **UBC NPC runtime material darkness and authored outfit preservation**  
-   🔴 `M` · ✅ ready · unlocks 0/0 · type: bug
-5. `quests-progression-081` — **Quest/UI — Completion Readiness Projection**  
-   🔴 `S` · ✅ ready · unlocks 0/0 · type: fix
 
 ---
 
@@ -171,48 +171,48 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   🔴 `L` · **Score:**  72  
    → **unlocks:** 1/1
 
-21. `quests-progression-063` — **Healer — Injured Resident**  
+21. `fauna-045` — **Cave/surface perception boundary and entrance awareness**  
+  🔴 `M` · **Score:**  53  
+   → **unlocks:** 1/1
+
+22. `quests-progression-063` — **Healer — Injured Resident**  
   🟡 `M` · **Score:**  49  
    → **unlocks:** 1/1
 
-22. `quests-progression-060` — **Builder — Finish the Local Well**  
+23. `items-player-051` — **Cave-aware dropped-item continuity**  
+  🔴 `M` · **Score:**  47  
+   → **unlocks:** 1/1
+
+24. `quests-progression-060` — **Builder — Finish the Local Well**  
   🔴 `M` · **Score:**  47  
    → **unlocks:** 0/0
 
-23. `quests-progression-074` — **Small quest offer scope and prioritization**  
+25. `quests-progression-074` — **Small quest offer scope and prioritization**  
   🟡 `S` · **Score:**  45  
    → **unlocks:** 0/0
 
-24. `quests-progression-054` — **Hunters Brotherhood — exceptional animal finale**  
+26. `quests-progression-054` — **Hunters Brotherhood — exceptional animal finale**  
   🟡 `L` · **Score:**  44  
    → **unlocks:** 0/0
 
-25. `settlements-npcs-044` — **Authored Outpost Occupants & Construction Lifecycle**  
+27. `settlements-npcs-044` — **Authored Outpost Occupants & Construction Lifecycle**  
   🔴 `L` · **Score:**  40  
    → **unlocks:** 1/1
 
-26. `fauna-045` — **Cave/surface perception boundary and entrance awareness**  
+28. `npc-062` — **UBC NPC runtime material darkness and authored outfit preservation**  
   🔴 `M` · **Score:**  39  
    → **unlocks:** 0/0
 
-27. `npc-062` — **UBC NPC runtime material darkness and authored outfit preservation**  
-  🔴 `M` · **Score:**  39  
-   → **unlocks:** 0/0
-
-28. `quests-progression-081` — **Quest/UI — Completion Readiness Projection**  
+29. `quests-progression-081` — **Quest/UI — Completion Readiness Projection**  
   🔴 `S` · **Score:**  39  
    → **unlocks:** 0/0
 
-29. `quests-progression-058` — **Injured dog discovery thread**  
+30. `quests-progression-058` — **Injured dog discovery thread**  
   🟡 `M` · **Score:**  37  
    → **unlocks:** 0/0
 
-30. `npc-037` — **Work Contracts — Stale Target Discovery and Notice Cleanup**  
+31. `npc-037` — **Work Contracts — Stale Target Discovery and Notice Cleanup**  
   🔴 `M` · **Score:**  35  
-   → **unlocks:** 0/0
-
-31. `items-player-051` — **Cave-aware dropped-item continuity**  
-  🔴 `M` · **Score:**  33  
    → **unlocks:** 0/0
 
 32. `npc-061` — **Time-skip and reification surface placement validity**  
@@ -277,6 +277,10 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
 
 47. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
   🟡 `M` · **Score:**  17  
+   → **unlocks:** 0/0
+
+48. `world-040` — **Underground Locations & Portals**  
+  ⚪ `XL` · **Score:**  14  
    → **unlocks:** 0/0
 
 ---
@@ -347,6 +351,10 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
 - [`ui-input-025-road-travel-autopilot.md`](ui-input-025-road-travel-autopilot.md)  
   is blocked by:
   - [`world-035-regional-road-travel-itinerary-and-adaptive-traveller-execution.md`](world-035-regional-road-travel-itinerary-and-adaptive-traveller-execution.md)
+- [`world-040-underground-locations-and-portals.md`](world-040-underground-locations-and-portals.md)  
+  is blocked by:
+  - [`items-player-051-cave-aware-dropped-item-continuity.md`](items-player-051-cave-aware-dropped-item-continuity.md)
+  - [`fauna-045-cave-surface-perception-boundary-and-entrance-awareness.md`](fauna-045-cave-surface-perception-boundary-and-entrance-awareness.md)
 
 ---
 
@@ -827,6 +835,7 @@ graph TD
   world_037["world-037 — Audio spatial context isolation"]
   world_038["world-038 — WorldAudio async lifecycle and cache recovery"]
   world_039["world-039 — Lifecycle — Fresh World Failure Cleanup"]
+  world_040["world-040 — Underground Locations & Portals"]
   world_terrain_001["world-terrain-001 — Cloud System"]
   world_terrain_002["world-terrain-002 — Terrain Modification & Land Preparation"]
   world_terrain_003["world-terrain-003 — Weather puddles V2 — stronger shader surface effect"]
@@ -1009,6 +1018,7 @@ graph TD
   fauna_041 --> fauna_047
   fauna_042 --> fauna_045
   fauna_042 --> fauna_048
+  fauna_045 --> world_040
   items_player_001 --> fauna_002
   items_player_002 --> items_player_025
   items_player_002 --> items_player_049
@@ -1072,6 +1082,7 @@ graph TD
   items_player_047 --> npc_053
   items_player_047 --> settlements_npcs_049
   items_player_050 --> items_player_056
+  items_player_051 --> world_040
   items_player_056 --> persistence_007
   items_player_057 --> items_player_061
   items_player_059 --> items_player_060
@@ -1153,6 +1164,8 @@ graph TD
   persistence_003 --> persistence_004
   persistence_004 --> persistence_005
   persistence_004 --> persistence_007
+  persistence_006 --> world_040
+  persistence_008 --> world_040
   quests_progression_001 --> quests_progression_002
   quests_progression_001 --> quests_progression_011
   quests_progression_001 --> quests_progression_019
@@ -1487,6 +1500,7 @@ graph TD
   world_027 --> items_player_051
   world_027 --> persistence_006
   world_027 --> world_037
+  world_027 --> world_040
   world_028 --> quests_progression_047
   world_028 --> world_030
   world_028 --> world_036
