@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "gitSha": "977966ac6b0ce19aabe3e3acdf91b9462c21824e",
+  "runId": "2026-10-31T08-35-14-082Z-ppbgkk",
+  "scenario": "current",
+  "phase": "warm",
+  "canonical": false,
+  "generatedAt": "2026-10-31T08:36:15.311Z",
+  "fixtureVersion": "tools-001-v1",
+  "quality": "High",
+  "hardwareClass": "target-gpu",
+  "notes": "benchmark series original rep1; native Windows Chrome headed, fresh profile, 20s cooldown, query &seed=415424794",
+  "dirtyRuntimePaths": [
+    "M public/models/fauna/cow.glb",
+    "M public/models/fauna/horse.glb",
+    "M public/models/fauna/sheep.glb",
+    "M public/models/fauna/wolf.glb"
+  ],
+  "platform": "windows"
+}

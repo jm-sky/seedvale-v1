@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "gitSha": "977966ac6b0ce19aabe3e3acdf91b9462c21824e",
+  "runId": "2026-10-31T08-30-15-078Z-unhyp2",
+  "scenario": "settlement",
+  "phase": "warm",
+  "canonical": true,
+  "generatedAt": "2026-10-31T08:31:17.395Z",
+  "fixtureVersion": "tools-001-v1",
+  "quality": "High",
+  "hardwareClass": "target-gpu",
+  "notes": "benchmark series polished rep2; native Windows Chrome headed, fresh profile, 20s cooldown, query &seed=415424794",
+  "platform": "windows"
+}
