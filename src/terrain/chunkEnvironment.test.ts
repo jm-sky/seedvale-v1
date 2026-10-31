@@ -1,11 +1,13 @@
 import { describe, expect, it } from 'vitest'
 import type { ChunkTileParams, RoadCorridorSegment } from './chunkHeightmap'
+import { cemeteryLocalToWorld, cemeteryPlotExtents } from '../settlement/cemeteryLayout'
 import { createSeededRandom } from '../world/parseSeed'
 import { clearCemeteryCaches } from './cemeteryAssignment'
 import { clearCemeteryPlacementCaches } from './cemeteryPlacement'
 import {
   cemeteryFitsVillageFringe,
   cemeteryFootprintClearsRoads,
+  clearCemeteryPlots,
   clearVegetationAroundOldTrees,
   computeChunkEnvironment,
   deriveLandmarkId,
@@ -141,7 +143,8 @@ describe('cemeteryFootprintClearsRoads (world-terrain-006)', () => {
 
   it('scales the rejected footprint with `scale`', () => {
     const segments = [roadSegment({ halfWidth: 3 })]
-    const y = 15
+    // SM plot circumradius ≈ 13.5 m at scale 1 (+ road half-width 3 + 2 m margin = 18.5 m).
+    const y = 25
     expect(cemeteryFootprintClearsRoads(0, y, 'SM', 1, segments)).toBe(true)
     expect(cemeteryFootprintClearsRoads(0, y, 'SM', 3, segments)).toBe(false)
   })
@@ -507,21 +510,55 @@ describe('resolveCemeteryPlacement (plan world-014)', () => {
     const cemeterySettlements = [{ id: '0_0', gx: 0, gz: 0, x: 0, z: 0, size: 'MD' as const }]
     let viaFullTile: ReturnType<typeof resolveCemeteryPlacement> = null
     let viaLightweight: ReturnType<typeof resolveCemeteryPlacement> = null
-    for (let seed = 0; seed < 120; seed++) {
-      clearCemeteryCaches()
-      clearCemeteryPlacementCaches()
-      const params = tileParams({ seed, cemeterySettlements })
-      viaFullTile = resolveCemeteryPlacement({ cx: 0, cz: 0 }, params, referenceSampler(params))
-      viaLightweight = resolveCemeteryPlacement(
-        { cx: 0, cz: 0 },
-        params,
-        createLocalTerrainSampler({ cx: 0, cz: 0 }, params),
-      )
-      if (viaFullTile) break
+    // Q47: plots are larger and must lie wholly inside their owner chunk, so the cemetery of a settlement at the
+    // chunk-(0,0) centre lands in a neighbouring chunk — scan the 5×5 window around it.
+    search: for (let seed = 0; seed < 120; seed++) {
+      for (let cz = -2; cz <= 2; cz++) {
+        for (let cx = -2; cx <= 2; cx++) {
+          clearCemeteryCaches()
+          clearCemeteryPlacementCaches()
+          const params = tileParams({ seed, cx, cz, cemeterySettlements })
+          viaFullTile = resolveCemeteryPlacement({ cx, cz }, params, referenceSampler(params))
+          viaLightweight = resolveCemeteryPlacement(
+            { cx, cz },
+            params,
+            createLocalTerrainSampler({ cx, cz }, params),
+          )
+          if (viaFullTile) break search
+        }
+      }
     }
     expect(viaFullTile).not.toBeNull()
     expect(viaLightweight).toEqual(viaFullTile)
     expect(viaFullTile?.id?.startsWith('cemetery:a:')).toBe(true)
+  })
+
+  it('places the plot entrance towards the served settlement, wholly inside its owner chunk (Q47)', () => {
+    const cemeterySettlements = [{ id: '0_0', gx: 0, gz: 0, x: 0, z: 0, size: 'MD' as const }]
+    let found = 0
+    for (let seed = 0; seed < 60 && found < 3; seed++) {
+      for (let cz = -2; cz <= 2; cz++) {
+        for (let cx = -2; cx <= 2; cx++) {
+          clearCemeteryCaches()
+          clearCemeteryPlacementCaches()
+          const params = tileParams({ seed, cx, cz, cemeterySettlements })
+          const placed = resolveCemeteryPlacement({ cx, cz }, params, referenceSampler(params))
+          if (!placed) continue
+          found++
+          const { hw, hd } = cemeteryPlotExtents(placed.cemeterySize!, placed.scale)
+          const entrance = cemeteryLocalToWorld(placed, 0, hd)
+          const back = cemeteryLocalToWorld(placed, 0, -hd)
+          expect(Math.hypot(entrance.x, entrance.z)).toBeLessThan(Math.hypot(back.x, back.z))
+          // Every plot corner lies inside the owner chunk (chunk centres at multiples of chunkSize).
+          for (const [sx, sz] of [[-1, -1], [1, -1], [-1, 1], [1, 1]] as const) {
+            const c = cemeteryLocalToWorld(placed, sx * hw, sz * hd)
+            expect(Math.abs(c.x - cx * CHUNK_SIZE)).toBeLessThanOrEqual(CHUNK_SIZE / 2)
+            expect(Math.abs(c.z - cz * CHUNK_SIZE)).toBeLessThanOrEqual(CHUNK_SIZE / 2)
+          }
+        }
+      }
+    }
+    expect(found).toBeGreaterThan(0)
   })
 
   it('matches computeChunkEnvironment’s own cemetery result exactly (id/x/z/scale/rotation/variant/size)', () => {
@@ -761,5 +798,32 @@ describe('resolveClassicLandmarkPlacement (plan world-028)', () => {
     const env = computeChunkEnvironment({ cx: 0, cz: 0 }, computeChunkTile(params), params, [])
     const authored = env.find((p) => p.kind === 'ruins')
     expect(authored?.id).toBe('ruins:authored')
+  })
+})
+
+describe('clearCemeteryPlots (Q47)', () => {
+  const cemetery = {
+    x: 100, z: 50, kind: 'cemetery' as const, scale: 1, rotationY: Math.PI / 2, variant: 0.5, cemeterySize: 'SM' as const, id: 'cemetery:a:x',
+  }
+  const veg = (x: number, z: number) => ({ x, z, kind: 'tree' as const, speciesIndex: 0, scale: 1, rotationY: 0 })
+  const rock = (x: number, z: number) => ({ x, z, kind: 'largeRock' as const, scale: 1, rotationY: 0, variant: 0 })
+
+  it('drops vegetation and rocks inside the ROTATED plot rectangle only', () => {
+    // Yaw π/2: local +Z → world +X, so the plot is long (hd ≈ 10.5) along world X and short (hw ≈ 8.5) along Z.
+    const inVeg = [veg(109, 50), veg(100, 57)]
+    const outVeg = [veg(100, 62), veg(125, 50)]
+    const out = clearCemeteryPlots([...inVeg, ...outVeg], [cemetery, rock(101, 49), rock(100, 66)])
+    expect(out.vegetation).toEqual(outVeg)
+    expect(out.environment).toContain(cemetery)
+    expect(out.environment.some((p) => p.kind === 'largeRock' && p.x === 101)).toBe(false)
+    expect(out.environment.some((p) => p.kind === 'largeRock' && p.x === 100)).toBe(true)
+  })
+
+  it('returns inputs untouched when the chunk has no cemetery', () => {
+    const v = [veg(1, 1)]
+    const e = [rock(2, 2)]
+    const out = clearCemeteryPlots(v, e)
+    expect(out.vegetation).toBe(v)
+    expect(out.environment).toBe(e)
   })
 })

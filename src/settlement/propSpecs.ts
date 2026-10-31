@@ -103,13 +103,10 @@ export const FALLEN_LOG_SPECS = [
   { url: '/models/nature/fallen_log_moss.glb', height: 0.5 },
 ] as const
 
-export const CEMETERY_SPECS = [
-  { url: '/models/nature/cemetery.glb', height: 1.6 },
-] as const
-
-export const GRAVE_SPECS = [
-  { url: '/models/nature/grave_a.glb', height: 0.95 },
-] as const
+/** V2 cemetery pack (queue Q47): Kay Lousberg "Halloween Bits" (CC0, via Poly Pizza), 1 unit = 1 m, one atlas
+ *  material. Pieces are wrapper nodes named after `CemeteryPieceId` (`cemeteryLayout.ts`). Loaded by
+ *  `cemeteryPack.ts` WITHOUT height normalisation (`prepareProp`) — the pieces are already in metres. */
+export const GRAVEYARD_GLB = { url: '/models/nature/graveyard.glb' } as const
 
 export const RESOURCE_GOLD_SPECS = [
   { url: '/models/nature/resource_gold_1.glb', height: 1.1 },

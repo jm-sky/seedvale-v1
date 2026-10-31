@@ -4,7 +4,7 @@ import type {
 } from './chunkHeightmapProtocol'
 import { buildMapTile } from '../world/map/mapRasterTile'
 import { computeChunkCrops } from './chunkCrops'
-import { clearVegetationAroundOldTrees, computeChunkEnvironment } from './chunkEnvironment'
+import { clearCemeteryPlots, clearVegetationAroundOldTrees, computeChunkEnvironment } from './chunkEnvironment'
 import { computeChunkTile } from './chunkHeightmap'
 import { computeChunkItems } from './chunkItems'
 import { computeChunkMeshData } from './chunkMeshData'
@@ -59,7 +59,8 @@ ctx.onmessage = ({ data }) => {
       const vegetation = computeChunkVegetation({ cx: params.cx, cz: params.cz }, tile, params)
       const items = computeChunkItems({ cx: params.cx, cz: params.cz }, tile, params, vegetation)
       const environment = computeChunkEnvironment({ cx: params.cx, cz: params.cz }, tile, params, vegetation)
-      const clearedVegetation = clearVegetationAroundOldTrees(vegetation, environment)
+      const treeCleared = clearVegetationAroundOldTrees(vegetation, environment)
+      const { vegetation: clearedVegetation, environment: clearedEnvironment } = clearCemeteryPlots(treeCleared, environment)
       const crops = computeChunkCrops({ cx: params.cx, cz: params.cz }, tile, params)
       ctx.postMessage(
         {
@@ -76,7 +77,7 @@ ctx.onmessage = ({ data }) => {
           roadTint,
           vegetation: clearedVegetation,
           items,
-          environment,
+          environment: clearedEnvironment,
           crops,
         },
         [

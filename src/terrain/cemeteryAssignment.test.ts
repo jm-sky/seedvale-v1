@@ -4,6 +4,7 @@ import type { CemeterySettlementRef } from './cemeteryAssignment'
 import {
   cemeteryAssignmentId,
   cemeteryIdForAssignment,
+  cemeterySizeForServedSizes,
   clearCemeteryCaches,
   dedicatedCemeteryTopology,
   resolveCemeteryTopologyForSettlement,
@@ -85,5 +86,16 @@ describe('cemeteryAssignment (world-terrain-016)', () => {
     expect(cemeteryId.startsWith('cemetery:a:0_0+1_0:')).toBe(true)
     expect(servedSettlementIdsForCemeteryId(cemeteryId)).toEqual(['0_0', '1_0'])
     expect(servedSettlementIdsForCemeteryId('cemetery:w:1:2:0:abc')).toEqual([])
+  })
+})
+
+describe('cemeterySizeForServedSizes (Q47: crypt count follows settlement size)', () => {
+  it('maps OUTPOST/SM → SM, MD → MD, LG/XL → LG, shared pair → MD', () => {
+    expect(cemeterySizeForServedSizes(['OUTPOST'])).toBe('SM')
+    expect(cemeterySizeForServedSizes(['SM'])).toBe('SM')
+    expect(cemeterySizeForServedSizes(['MD'])).toBe('MD')
+    expect(cemeterySizeForServedSizes(['LG'])).toBe('LG')
+    expect(cemeterySizeForServedSizes(['XL'])).toBe('LG')
+    expect(cemeterySizeForServedSizes(['SM', 'SM'])).toBe('MD')
   })
 })
