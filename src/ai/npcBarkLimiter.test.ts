@@ -19,6 +19,17 @@ function npc(id: string, area = 'settlement-a'): NpcVoiceResolveInput & { id: st
   }
 }
 
+describe('NpcBarkLimiter clip memory (Q30)', () => {
+  it('remembers the last clip per area+intent and prunes it with retention', () => {
+    const limiter = new NpcBarkLimiter()
+    limiter.noteClipPlayed('a', 'exhausted', '/c1', 10)
+    expect(limiter.lastClipUrl('a', 'exhausted')).toBe('/c1')
+    expect(limiter.lastClipUrl('b', 'exhausted')).toBeUndefined()
+    limiter.tryAdmit({ npcId: 'n', areaKey: 'z', intent: 'exhausted', nowSim: 1e6 })
+    expect(limiter.lastClipUrl('a', 'exhausted')).toBeUndefined()
+  })
+})
+
 describe('NpcBarkLimiter', () => {
   it('admits only maxPerAreaWindow exhausted barks in one area/300s and never exceeds optional global', () => {
     const limiter = new NpcBarkLimiter()

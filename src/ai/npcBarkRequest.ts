@@ -88,6 +88,7 @@ export function resolveNpcBarkVoiceUrl(
   npc: NpcBarkRequest['npc'],
   intent: NpcBarkIntent,
   weather?: WeatherType | null,
+  avoidUrl?: string,
 ): { url: string; resolvedIntent: NpcVoiceSemanticIntent } | undefined {
   const candidates: readonly NpcVoiceSemanticIntent[] =
     intent === 'weather_shelter'
@@ -96,7 +97,7 @@ export function resolveNpcBarkVoiceUrl(
         ? ['livestock_danger', 'danger_alert']
         : [intent]
   for (const candidate of candidates) {
-    const url = resolveNpcVoiceLine(npc, candidate)
+    const url = resolveNpcVoiceLine(npc, candidate, avoidUrl)
     if (url) return { url, resolvedIntent: candidate }
   }
   return undefined
@@ -114,7 +115,12 @@ export function createRequestNpcBark(limiter: NpcBarkLimiter): RequestNpcBark {
       return { accepted: false, reason: 'unknown-intent' }
     }
 
-    const resolved = resolveNpcBarkVoiceUrl(request.npc, request.intent, request.weather)
+    const resolved = resolveNpcBarkVoiceUrl(
+      request.npc,
+      request.intent,
+      request.weather,
+      limiter.lastClipUrl(request.areaKey, request.intent),
+    )
     if (!resolved) return { accepted: false, reason: 'no-voice-asset' }
 
     const decision = limiter.tryAdmit({
@@ -126,6 +132,7 @@ export function createRequestNpcBark(limiter: NpcBarkLimiter): RequestNpcBark {
     })
     if (!decision.accepted) return decision
 
+    limiter.noteClipPlayed(request.areaKey, request.intent, resolved.url, request.nowSim)
     playNpcVoiceAt(request.position, resolved.url)
     return { accepted: true, url: resolved.url }
   }

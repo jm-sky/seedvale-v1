@@ -69,6 +69,23 @@ describe('resolveNpcVoiceLineWithManifest hierarchy', () => {
     'merchant:female:greeting': ['/m1', '/m2', '/m3'],
   } as const
 
+  it('avoids the given clip when the pool has alternatives, never when it is the only one (Q30)', () => {
+    const merchant = npc({ id: 'x', role: 'merchant', gender: 'female', age: 30 })
+    for (let i = 0; i < 30; i++) {
+      expect(
+        resolveNpcVoiceLineWithManifest(hierarchyManifest, merchant, 'greeting', '/m2'),
+      ).not.toBe('/m2')
+    }
+    expect(
+      resolveNpcVoiceLineWithManifest(
+        hierarchyManifest,
+        npc({ id: 'o', role: 'farmer', age: 40 }),
+        'greeting',
+        '/general-greeting',
+      ),
+    ).toBe('/general-greeting')
+  })
+
   it('prefers NPC-specific over profession', () => {
     expect(
       resolveNpcVoiceLineWithManifest(
