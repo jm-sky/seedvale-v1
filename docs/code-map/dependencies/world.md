@@ -4781,6 +4781,7 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `ai/NpcAgent.ts`
+- `ai/npcBarkRequest.ts`
 - `ai/weatherPressure.test.ts`
 - `ai/weatherPressure.ts`
 - `app/createApp.ts`

@@ -296,13 +296,14 @@ Generated from exported TypeScript symbols.
 
 ## `ai/npcBarkRequest.ts`
 
-- `configureRequestNpcBark` — function — line 44
-- `createRequestNpcBark` — function — line 76
-- `getSharedRequestNpcBark` — function — line 48
-- `NpcBarkDecision` — type — line 30
-- `NpcBarkRequest` — type — line 20
-- `RequestNpcBark` — type — line 34
-- `resolveNpcBarkVoiceUrl` — function — line 57
+- `configureRequestNpcBark` — function — line 51
+- `createRequestNpcBark` — function — line 111
+- `getSharedRequestNpcBark` — function — line 55
+- `NpcBarkDecision` — type — line 37
+- `NpcBarkRequest` — type — line 21
+- `RequestNpcBark` — type — line 41
+- `resolveNpcBarkVoiceUrl` — function — line 87
+- `weatherShelterVoiceIntents` — function — line 66
 
 ## `ai/npcCaveLocomotion.ts`
 
@@ -707,23 +708,23 @@ Generated from exported TypeScript symbols.
 
 ## `ai/npcVoiceLines.ts`
 
-- `buildNpcVoiceLookupKeys` — function — line 294
-- `FRIENDLY_TALK_SOUND_VOLUME` — const — line 114
-- `NpcVoiceAgeBand` — type — line 72
+- `buildNpcVoiceLookupKeys` — function — line 303
+- `FRIENDLY_TALK_SOUND_VOLUME` — const — line 117
+- `NpcVoiceAgeBand` — type — line 75
   - domain: npc
 - `NpcVoiceProfileId` — type — line 25
   - domain: npc
-- `NpcVoiceResolveInput` — type — line 75
+- `NpcVoiceResolveInput` — type — line 78
 - `NpcVoiceSemanticIntent` — type — line 44
-- `REACTION_SOUND_VOLUME` — const — line 108
-- `resolveNpcVoiceLine` — function — line 316
+- `REACTION_SOUND_VOLUME` — const — line 111
+- `resolveNpcVoiceLine` — function — line 325
   - domain: npc
-- `resolveNpcVoiceLineWithManifest` — function — line 324
-- `voiceAgeBandForAge` — function — line 89
+- `resolveNpcVoiceLineWithManifest` — function — line 333
+- `voiceAgeBandForAge` — function — line 92
   - domain: npc
 - `voiceProfileIdFor` — function — line 35
   - domain: npc
-- `voiceScopeForRole` — function — line 102
+- `voiceScopeForRole` — function — line 105
 
 ## `ai/npcWorkContract.ts`
 
@@ -816,5 +817,4 @@ Generated from exported TypeScript symbols.
 - `NpcDecisionTarget` — type — line 19
   - domain: npc
 - `WEATHER_SEVERE_SHELTER_THRESHOLD` — const — line 57
-- `weatherShelterBarkAllowed` — function — line 98
 - `weatherShelterPressure` — function — line 68

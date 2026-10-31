@@ -860,6 +860,7 @@ Generated from TypeScript imports.
 - `ai/npcVoiceLines.ts`
 - `audio/createWorldAudio.ts`
 - `audio/npcVoicePlayback.ts`
+- `world/weather.ts`
 
 **Imported by**
 
