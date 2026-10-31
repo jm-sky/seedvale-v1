@@ -862,14 +862,14 @@ export function createCemetery(
     const center = sampleAt(crypt.x, crypt.z)
     let low = center.height
     for (const [cx, cz] of [[-1, -1], [1, -1], [-1, 1], [1, 1]] as const) {
-      low = Math.min(low, sampleAt(crypt.x + cx * half.hx * scale, crypt.z + cz * half.hz * scale).height)
+      low = Math.min(low, sampleAt(crypt.x + cx * half.hx * crypt.scale * scale, crypt.z + cz * half.hz * crypt.scale * scale).height)
     }
     const yaw = rotationY + crypt.yaw
-    const y = low - CEMETERY_CRYPT_SINK * scale
+    const y = low - CEMETERY_CRYPT_SINK * scale * crypt.scale
     if (pack) {
-      instances.push({ piece: 'Crypt', x: center.rx, y, z: center.rz, yaw, scale, normal: null, maxTiltRad: 0 })
+      instances.push({ piece: 'Crypt', x: center.rx, y, z: center.rz, yaw, scale: scale * crypt.scale, normal: null, maxTiltRad: 0 })
     } else {
-      const box = createFallbackCrypt(scale)
+      const box = createFallbackCrypt(scale * crypt.scale)
       box.position.set(center.rx, y, center.rz)
       box.rotation.y = yaw
       fallbackObjects.push(box)

@@ -23,12 +23,17 @@ const CLASS_SPECS: Record<CemeterySize, CemeteryClassSpec> = {
   LG: { columns: 7, graves: 25, crypts: 3 },
 }
 
-const GRAVE_DX = 2.6
-const GRAVE_DZ = 3.2
-const AISLE = 1.6
-const MARGIN = 2.5
-const TOMB_ROW = 6.4
-const TOMB_SLOT = 6.2
+// Compact plots (Q47 visual trial, author 2026-10-31): ~40 % less area than the first V2-derived sizes so
+// assignments still place; spacing/margins are the knobs to revise after the in-game review.
+const GRAVE_DX = 2.0
+const GRAVE_DZ = 2.4
+const AISLE = 1.2
+const MARGIN = 1.2
+const TOMB_ROW = 6.6
+/** Clear gap between neighbouring crypts in the back row. */
+const TOMB_GAP = 0.6
+/** Relative crypt scale per class (author: LG = 1 × 100 % + 2 × 80 %, the big one in the middle). */
+const CRYPT_SCALES: Record<CemeterySize, readonly number[]> = { SM: [1], MD: [1, 1], LG: [0.8, 1, 0.8] }
 /** Marker stands this far behind the dig slot (towards the crypts) so the slot is outside the marker OBB. */
 const MARKER_BEHIND_SLOT = 0.9
 const GRAVE_JITTER_X = 0.25
@@ -63,7 +68,8 @@ export type CemeteryGraveSlot = {
   yaw: number
 }
 
-export type CemeteryCryptPose = { x: number, z: number, yaw: number }
+/** `scale` is relative to the landmark scale (1 = full crypt, 0.8 = compact LG side crypts). */
+export type CemeteryCryptPose = { x: number, z: number, yaw: number, scale: number }
 
 function mix32(a: number, b: number): number {
   let h = Math.imul(a ^ 0x9e3779b9, 0x85ebca6b) ^ Math.imul(b + 0x7f4a7c15, 0xc2b2ae35)
@@ -142,19 +148,25 @@ export function cemeteryGraveLayout(size: CemeterySize, scale: number): Cemetery
   return out
 }
 
-/** Crypt poses: centred in the back row, `TOMB_SLOT` apart. */
+/** Crypt poses: centred in the back row, packed left to right with `TOMB_GAP` between footprints. */
 export function cemeteryCryptLayout(size: CemeterySize, scale: number): CemeteryCryptPose[] {
   const g = geometry(size)
-  const n = g.spec.crypts
+  const scales = CRYPT_SCALES[size]
+  const widths = scales.map(cs => 2 * CEMETERY_PIECE_HALF_EXTENTS.Crypt.hx * cs)
+  const total = widths.reduce((a, b) => a + b, 0) + TOMB_GAP * (widths.length - 1)
   const salt = SIZE_SALT[size] + 50
   const z0 = (-g.depth / 2 + MARGIN + TOMB_ROW / 2) * scale
   const out: CemeteryCryptPose[] = []
-  for (let i = 0; i < n; i++) {
+  let cursor = -total / 2
+  for (let i = 0; i < scales.length; i++) {
+    const w = widths[i]!
     out.push({
-      x: ((i - (n - 1) / 2) * TOMB_SLOT + (hash01(i, salt + 1) * 2 - 1) * TOMB_JITTER_X) * scale,
+      x: (cursor + w / 2 + (hash01(i, salt + 1) * 2 - 1) * TOMB_JITTER_X) * scale,
       z: z0 + (hash01(i, salt + 2) * 2 - 1) * TOMB_JITTER_Z * scale,
       yaw: (hash01(i, salt + 3) * 2 - 1) * TOMB_JITTER_YAW,
+      scale: scales[i]!,
     })
+    cursor += w + TOMB_GAP
   }
   return out
 }
@@ -243,8 +255,8 @@ export function cemeteryObbColliders(landmark: {
     out.push({
       x: w.x,
       z: w.z,
-      halfWidth: crypt.hx * landmark.scale,
-      halfDepth: crypt.hz * landmark.scale,
+      halfWidth: crypt.hx * c.scale * landmark.scale,
+      halfDepth: crypt.hz * c.scale * landmark.scale,
       rotationY: -(landmark.rotationY + c.yaw),
     })
   }

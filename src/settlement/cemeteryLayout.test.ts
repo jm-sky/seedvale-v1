@@ -84,11 +84,11 @@ describe('cemeteryLayout', () => {
   it('matches the documented extents at scale 1', () => {
     const hw = SIZES.map((s) => cemeteryPlotExtents(s, 1).hw)
     const hd = SIZES.map((s) => cemeteryPlotExtents(s, 1).hd)
-    expect(hw[0]).toBeCloseTo(8.5, 1)
-    expect(hw[1]).toBeCloseTo(9.8, 1)
-    expect(hw[2]).toBeCloseTo(12.4, 1)
-    expect(hd[0]).toBeCloseTo(10.5, 1)
-    expect(hd[2]).toBeCloseTo(12.1, 1)
+    expect(hw[0]).toBeCloseTo(5.8, 1)
+    expect(hw[1]).toBeCloseTo(6.8, 1)
+    expect(hw[2]).toBeCloseTo(8.8, 1)
+    expect(hd[0]).toBeCloseTo(8.1, 1)
+    expect(hd[2]).toBeCloseTo(9.3, 1)
   })
 
   it.each(SIZES.flatMap((size) => SCALES.map((scale) => [size, scale] as const)))(

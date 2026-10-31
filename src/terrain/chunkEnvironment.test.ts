@@ -809,8 +809,8 @@ describe('clearCemeteryPlots (Q47)', () => {
   const rock = (x: number, z: number) => ({ x, z, kind: 'largeRock' as const, scale: 1, rotationY: 0, variant: 0 })
 
   it('drops vegetation and rocks inside the ROTATED plot rectangle only', () => {
-    // Yaw π/2: local +Z → world +X, so the plot is long (hd ≈ 10.5) along world X and short (hw ≈ 8.5) along Z.
-    const inVeg = [veg(109, 50), veg(100, 57)]
+    // Yaw π/2: local +Z → world +X, so the plot is long (hd ≈ 8.1) along world X and short (hw ≈ 5.8) along Z.
+    const inVeg = [veg(107, 50), veg(100, 55)]
     const outVeg = [veg(100, 62), veg(125, 50)]
     const out = clearCemeteryPlots([...inVeg, ...outVeg], [cemetery, rock(101, 49), rock(100, 66)])
     expect(out.vegetation).toEqual(outVeg)
