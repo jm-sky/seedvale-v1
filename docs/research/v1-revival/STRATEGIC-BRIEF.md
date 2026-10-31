@@ -1,5 +1,7 @@
 # Seedvale V1 Revival — Strategic Brief for Claude Opus 5.5
 
+**NPC Voices & Dialogue — author decisions approved 2026-10-31:** The six topic-specific choices (stable voice, personality variation, English NPC dialogue/quest cues, recording diversity and humor, maximal V3 donor reuse, moderate truthful living-world reactions) are recorded in [Astra NPC voice audit §12](./2026-10-31--npc-voices-dialogue-audit.md#12-author-decisions--approved-2026-10-31-supersedes-open-questions-in-11). Treat §12 as the approved voice-topic decision record; earlier voice-related preferences/questions do not override it. This approval does **not** approve all catalog items, runtime work beyond the queue, or new game-wide language scope.
+
 **Created at:** 2026-10-26  
 **Created by:** ChatGPT Sol  
 **Updated at:** 2026-10-29  
