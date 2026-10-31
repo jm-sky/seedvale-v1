@@ -54,6 +54,19 @@
 - **Dependencies:** Coordinate after Q34 house/yards, Q35 fences/gates and Q36 storehouse. Respect Q29 worldgen epoch, deterministic identities, cache/fixture updates and existing instancing/batching. Avoid unplanned changes to simulation workload.
 - **Verification and handoff:** Opus should specify representative visual inspection cases including river-adjacent layouts, seeds 42 and 415424794, multiple settlement sizes/patterns, player/NPC access, placement/collision checks and per-settlement render submission counts. Preliminary work is allowed, but **author visual sign-off remains mandatory**. If unacceptable, revise or revert.
 
+## Profession-signature homes — author-approved outcome (2026-10-31)
+
+**Decision: required Revival feature, not merely a research candidate.** Houses and their immediate surroundings must visibly communicate the profession of the resident household at a glance, without opening UI. Opus owns technical assessment, scope refinement and planning; this decision does **not** pre-approve a V3 copy, specific implementation, or unverified performance claims.
+
+- **Visual reference / preferred donor:** V3 already achieved the desired effect and reportedly uses optimized assets with the same house models as V1. Inspect actual V3 code, models, materials and placement first; choose direct reuse where compatible, selective adaptation otherwise. V1 remains authoritative.
+- **Initial examples:** hunter — drying hides outside, deer antlers on/above the entrance; guard — wall shield and banner/flag; fisher — drying fishing nets. These establish the visual target, not an exhaustive profession list. Opus should assess coverage for other professions and households with multiple professions.
+- **Placement and ownership:** bind dressing deterministically to the existing household/family and house identity, not a settlement-global profession singleton. Coordinate with `settlements-npcs-024` (profession workplaces), Q34 (yard footprint and access), Q35 (fences/gates), and Q37 (settlement composition). Do not block doors, household props, work anchors, paths, or NPC/player navigation.
+- **Epoch boundary:** wall-mounted/small visual dressing that preserves layout, persistent identities and access can follow the worldgen batch as a reversible visual slice. If a drying rack or other required prop needs reserved yard area or changes settlement layout, Opus must include that spatial reservation in Q34 / epoch 1 **before the batch closes**. Do not assume all examples are footprint-neutral.
+- **Performance:** modest additional render cost is acceptable; zero cost is not expected. Aim for a small, measured impact through compatible optimized models, instancing/batching, sensible material/texture reuse and appropriate visibility handling. Record added geometry, draw submissions and representative settlement performance, not just asset triangle counts. Avoid costly new per-house runtime systems.
+- **Acceptance:** representative visuals must make professions recognizable; compare to V3, inspect multiple house orientations/yard arrangements, ensure deterministic generation and reachable NPC/player access, and verify no material performance regression. Author visual approval is required. Opus may split spatial planning from visual dressing and should keep changes reversible.
+
+**Planning disposition:** treat as a dedicated, explicit profession-house-dressing work item coordinated with Q34/Q37, rather than silently folding it into generic collision/placement cleanup. Exact task ID and implementation order belong to Opus's queue review.
+
 ## 4. Calibration results
 
 _Filled by Q32._
