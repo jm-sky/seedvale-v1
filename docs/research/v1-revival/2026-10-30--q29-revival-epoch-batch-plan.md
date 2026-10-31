@@ -67,6 +67,8 @@
 - **Performance:** modest additional render cost is acceptable; zero cost is not expected. Aim for a small, measured impact through compatible optimized models, instancing/batching, sensible material/texture reuse and appropriate visibility handling. Record added geometry, draw submissions and representative settlement performance, not just asset triangle counts. Avoid costly new per-house runtime systems.
 - **Acceptance:** representative visuals must make professions recognizable; compare to V3, inspect multiple house orientations/yard arrangements, ensure deterministic generation and reachable NPC/player access, and verify no material performance regression. Author visual approval is required. Opus may split spatial planning from visual dressing and should keep changes reversible.
 
+**Q42 plan (2026-10-31):** [profession-signature homes plan](./2026-10-31--q42-profession-signature-homes-plan.md) — every required piece fits the Q41 3×2 m profession slot or the house wall, so no further epoch-1 reservation is needed; implementation is queue Q48 and needs no cache/epoch bump.
+
 **Planning disposition:** treat as a dedicated, explicit profession-house-dressing work item coordinated with Q34/Q37, rather than silently folding it into generic collision/placement cleanup. Exact task ID and implementation order belong to Opus's queue review.
 
 ## 4. Calibration results
