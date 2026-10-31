@@ -1228,7 +1228,7 @@ export function villageSegmentsNear(
   for (const c of cellsWithinRadius(cell, 1)) {
     const def = defFor(c, ctx)
     if (!def) continue
-    const { core, houses, gardens, regional: reg } = def.clearings
+    const { core, houses, yards, gardens, regional: reg } = def.clearings
     const center = def.plan.center
     const sizeCfg = villageSizeConfig(def.size)
     const fullWearR = Math.max(core.radius * 1.15, sizeCfg.houseRingMax * 0.35)
@@ -1246,6 +1246,17 @@ export function villageSegmentsNear(
     }
     for (const area of houses) {
       if (!inBounds(area.x, area.z, area.radius + 2)) continue
+      clearings.push({
+        x: area.x,
+        z: area.z,
+        radius: area.radius,
+        targetH: area.targetH,
+        heightStrength: houseHeightStrength,
+        tintStrength,
+      })
+    }
+    for (const area of yards ?? []) {
+      if (area.radius <= 0 || !inBounds(area.x, area.z, area.radius + 2)) continue
       clearings.push({
         x: area.x,
         z: area.z,

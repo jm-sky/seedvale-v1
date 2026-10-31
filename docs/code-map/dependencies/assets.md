@@ -187,9 +187,12 @@ Generated from TypeScript imports.
 
 - `assets/constructionCatalog.test.ts`
 - `house-browser/houseBrowserScene.ts`
+- `settlement/blacksmithYard.test.ts`
 - `settlement/houseBuilder.test.ts`
 - `settlement/houseDoors.test.ts`
+- `settlement/householdYard.test.ts`
 - `settlement/props.ts`
+- `settlement/villagePlanner.ts`
 - `world/residentialBuilding.ts`
 
 ## `assets/houseDefinitionExampleConfig.ts`

@@ -132,6 +132,7 @@ Generated from exported TypeScript symbols.
 - `HOUSE_8X6_B` — const — line 653
 - `HOUSE_8X6_C` — const — line 748
 - `HOUSE_DEFINITIONS` — const — line 783
+- `houseDefinitionById` — function — line 826
 - `HouseGableEnds` — type — line 303
 - `pickHouseDefinition` — function — line 818
 - `TEST_HOUSE_01` — const — line 502

@@ -2,6 +2,7 @@ import type { NameCulture } from '../ai/nameCultures'
 import type { SettlementTerrain } from '../shared/SettlementName'
 import type { NaturalResource } from '../terrain/naturalResources'
 import type { VillageSize } from './families'
+import type { HouseholdYardPlan, PlanDisc } from './householdYard'
 
 /** How a settlement's population mainly feeds itself (plan 032 §8) — v1 is
  *  data/flavor; props still share a garden unless `field` adds `farm.glb`.
@@ -152,6 +153,24 @@ export type VillagePlot = {
    *  part of the static plan; ownership is separate persistent world state
    *  (`settlement/landOwnership.ts`), never stored here. */
   price?: number
+  /**
+   * House plots only (Q41 / Q34 plan): the HouseBuilder definition id picked
+   * by the planner (`pickHouseDefinition`), so presentation never re-picks.
+   */
+  houseDefinitionId?: string
+  /** House plots only: planner-owned world yaw (Three.js `rotation.y`) — door
+   *  (local `-z`) faces the plaza; real outskirts get a seeded jitter. */
+  houseYaw?: number
+  /** House plots only: yard rectangle behind the house + fixed yard slots
+   *  (barrel/trough/wood/storage row, profession reservation, gate marker). */
+  yard?: HouseholdYardPlan
+  /** Spacing discs of the household compound (house + yard). Plots without
+   *  it are measured as one disc of `radius` at `(x, z)`. */
+  discs?: PlanDisc[]
+  /** Set only when `pickPlot`'s unconditional last-resort position was used
+   *  (no spacing/terrain guarantees) — a census/test metric that must be 0
+   *  for houses. */
+  finalFallback?: true
 }
 
 /** Domain building role — not a GLB/asset id. */

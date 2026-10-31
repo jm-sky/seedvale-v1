@@ -78,4 +78,31 @@ Disc approximation of the real house footprint; "yard crate" = storage slot poin
 
 ## 5. Implementation notes
 
-_Filled by Q41._
+**Q41 landed (Sonnet, 2026-10-31).** Differences from the plan / decisions taken:
+
+- **Yaw convention bug fixed (new finding F10).** The old `yaw = outward + π` mixed the planner's `atan2(z, x)` angle with Three.js `rotation.y`, so the house door (local `-z`) pointed in a mirrored direction, not at the plaza. `householdYard.yawFacing(dx, dz)` now yields the yaw whose front faces the plaza; real outskirts (`dist > houseRing`) still get the ±0.45π seeded jitter (seeded per plot id). Visible change → §2 check.
+- **Plan data:** `VillagePlot.houseDefinitionId / houseYaw / yard / discs / finalFallback?`; the definition is picked in `planVillageLayout` with `pickHouseDefinition(size, familyIndex, seedForCell)` (props keeps a legacy fallback only for plot-less plans). House plot `radius` is now the real `houseFootprintRadius`.
+- **Spacing:** candidates are evaluated as two discs (house + yard disc, `buildHouseCompound`); required edge gap = `houseSpacing × HOUSE_COMPOUND_GAP_FACTOR (0.1)` (SM 1.2 … XL 1.8 m). Non-house plots measure against every disc of existing plots (`discsClearance`). Unconditional last resort is flagged `finalFallback` (0 on all sampled seeds). Household wells: band `min = houseRadius + infra`, `max = min + 12.5`, and the 24-angle local fallback now also rejects positions on a compound.
+- **Yard geometry (`householdYard.ts`):** width = facade + 2 × 1.0 m, depth `YARD_DEPTH` (OUTPOST 4.0, SM 4.5, MD 5.0, LG 5.0, XL 5.5 — untuned, census needed no change), 0.3 m back gap, prop row at 1.0 m depth, 1.3 m spacing, mirrored by a per-plot seeded bit; profession slot 3.0 × 2.0 m at the far edge; gate marker on a seeded side edge. Legacy `householdYardRadius()` / `MAX_HOUSE_FOOTPRINT_RADIUS` / `HOUSEHOLD_YARD_PROP_OFFSETS` / `HOUSE_PLOT_RADIUS` removed.
+- **Consumers:** `ClearingLayout.yards` (flattening via `roadNetwork` clearings, tree reject in `props.ts`, cache validator); yard props and `landmarks.householdStorages / householdWoodStorages` use `plot.yard.slots` (four `coreRandom` draws per house removed; rotation/scale from a per-house stream); **blacksmith workplace moved into the profession slot** (`blacksmithYardGeometry(yard)`, anchor on the gate side) — settlements-npcs-024 behaviour tests unchanged and green.
+- **`footprintRadius` / `houseRingMax` unchanged** (no growth needed → no +40 % stop): see census; `abandoned-cemeteries` was still bumped because settlement clearings now include yards and houses moved.
+- **Import cycle fixed on the way:** `houseBuilder.ts` imported `constructionCatalog` as a value import (`import { type … }`), which pulled `props → … → settlementPlanCache` into the planner and broke `settlementNameUniqueness` (`CELL_REACH` NaN); now `import type`.
+- **Caches:** `settlement-definitions` 5→6, `road-routes` 2→3, `chunk-tiles` 6→7, `abandoned-cemeteries` 3→4. `caves-v2` reads only the home `footprintRadius` (unchanged) → not bumped. `WORLDGEN_EPOCH` stays 1. tools-020 worldgen fixtures are stale until re-exported in the browser (queue §4).
+
+**Census after** (`pnpm worldgen:yards:census`, rings ≤ 5; compound = house disc + yard disc; "outside footprintRadius" counts houses whose compound reaches past `VILLAGE_SIZE_CONFIG.footprintRadius` — mostly terrain/river-pushed outliers that existed before, e.g. MD max 95 m):
+
+| seed | size | houses | compound overlaps | final-fallback | outside footprintRadius | slot ∩ other house/plot | extent p90 / max (m) vs footprintRadius |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 42 | SM | 58 | 0 | 0 | 0 | 0 | 34.7 / 37.3 vs 40 |
+| 42 | MD | 140 | 0 | 0 | 3 | 0 | 43.8 / 95.3 vs 48 |
+| 42 | LG | 143 | 0 | 0 | 0 | 0 | 47.7 / 49.5 vs 56 |
+| 42 | XL | 50 | 0 | 0 | 0 | 0 | 61.3 / 61.3 vs 72 |
+| 415424794 | OUTPOST | 1 | 0 | 0 | 1 | 0 | 24.8 vs 22 |
+| 415424794 | SM | 47 | 0 | 0 | 0 | 0 | 34.4 / 35.6 vs 40 |
+| 415424794 | MD | 134 | 0 | 0 | 0 | 0 | 42.6 / 47.9 vs 48 |
+| 415424794 | LG | 188 | 0 | 0 | 3 | 0 | 49.1 / 62.9 vs 56 |
+| 415424794 | XL | 83 | 0 | 0 | 6 | 0 | 83.1 vs 72 |
+
+Seeds 1, 2, 3 (noise check): 0 compound overlaps and 0 final-fallback houses everywhere; same kind of outliers (MD seed 1 p90 50.3 vs 48, XL seed 2 max 88.4). Baseline was 0 disc collisions but only because spacing was generous and yards were unreserved; settlement extents are essentially unchanged (SM/MD/LG p90 within `footprintRadius`).
+
+**Open for the author (not decided here):** whether to grow `footprintRadius` for OUTPOST (+13 %) and XL (+15 % for seed 415424794) to cover the outliers — below the +40 % stop but a visible scale change; left unchanged. Verification: `npx tsc --noEmit` (only pre-existing `ui-vue` errors), full `vitest` (5 pre-existing failures in `NpcAgent.spatialLifecycle`, `actorSkeletonSharing.assets`, `PlayerController.appearance`, unrelated), lint clean for touched files. No browser verification done.

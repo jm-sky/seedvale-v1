@@ -20,8 +20,9 @@ export const ABANDONED_CEMETERY_NAMESPACE = 'abandoned-cemeteries'
  *  placement algorithm — an old-version record is a cache miss, never migrated.
  *  v2: river-aware road routing (plan world-terrain-023) changes regional road
  *  geometry for an unchanged seed, and placement rejects footprints that clear
- *  nearby roads. */
-export const ABANDONED_CEMETERY_VERSION = 3
+ *  nearby roads.
+ *  v4 (Q41): settlement clearings now include household yards and houses moved. */
+export const ABANDONED_CEMETERY_VERSION = 4
 
 export type CachedAbandonedCemeteryResult =
   | { status: 'none' }

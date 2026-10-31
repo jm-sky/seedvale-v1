@@ -24,6 +24,10 @@ export type ClearingLayout = {
   core: ClearingArea
   /** One per family — its house sits here. Same order as `SettlementDef.families`. */
   houses: readonly ClearingArea[]
+  /** One per family, index-aligned with `houses` — the household yard behind
+   *  the house (Q41) so terrain flattening/vegetation clearing covers it.
+   *  Kept separate from `houses` so consumers of house pads are unchanged. */
+  yards: readonly ClearingArea[]
   /** Garden pads (plan 077 / 100) — tree/grass reject + house-level flatten. */
   gardens: readonly ClearingArea[]
   /** Broad, weak smoothing pass covering the whole village footprint (core +
@@ -95,6 +99,20 @@ export function layoutClearingsFromPlan(
     ),
   }))
 
+  const yards: ClearingArea[] = housePlots.map((plot) => {
+    const yard = plot.yard
+    if (!yard) return { x: plot.x, z: plot.z, radius: 0, targetH: dryClearingHeight(plot.y, waterLevel) }
+    // Disc covering the yard rectangle's usable core (circumscribed would
+    // spill past the side lanes).
+    const radius = Math.hypot(yard.halfWidth, yard.halfDepth) * 0.85
+    return {
+      x: yard.cx,
+      z: yard.cz,
+      radius,
+      targetH: dryClearingHeight(averageHeight(yard.cx, yard.cz, radius, sampleHeight), waterLevel),
+    }
+  })
+
   const gardenLandmarks = plan.landmarks
     .filter((l) => l.kind === 'garden')
     .slice()
@@ -114,6 +132,7 @@ export function layoutClearingsFromPlan(
   const allTargets = [
     core.targetH,
     ...houses.map((h) => h.targetH),
+    ...yards.filter((y) => y.radius > 0).map((y) => y.targetH),
     ...gardens.map((g) => g.targetH),
   ]
   const regional: RegionalSmoothingSegment = {
@@ -127,7 +146,7 @@ export function layoutClearingsFromPlan(
         : params.regionalHeightStrengthFlat,
   }
 
-  return { core, houses, gardens, regional }
+  return { core, houses, yards, gardens, regional }
 }
 
 /**
@@ -183,5 +202,5 @@ export function layoutClearings(
       terrain === 'mountain' ? params.regionalHeightStrengthMountain : params.regionalHeightStrengthFlat,
   }
 
-  return { core, houses, gardens: [], regional }
+  return { core, houses, yards: [], gardens: [], regional }
 }

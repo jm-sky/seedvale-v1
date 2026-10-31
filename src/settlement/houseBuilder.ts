@@ -11,8 +11,8 @@ import {
   Quaternion,
   Vector3,
 } from 'three'
+import type { ConstructionCatalog } from '../assets/constructionCatalog'
 import type { Collider } from '../world/collision'
-import { type ConstructionCatalog } from '../assets/constructionCatalog'
 import {
   HOUSE_MODULE_M,
   type HouseCornerSide,

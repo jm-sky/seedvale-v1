@@ -821,3 +821,8 @@ export function pickHouseDefinition(size: VillageSize, index: number, seed: numb
   const offset = Math.floor(random() * pool.length)
   return pool[(index + offset) % pool.length]!
 }
+
+/** Planner-picked definition by id (`VillagePlot.houseDefinitionId`). */
+export function houseDefinitionById(id: string): HouseDefinition | undefined {
+  return [...COTTAGE_DEFINITIONS, ...HOUSE_DEFINITIONS].find((d) => d.id === id)
+}
