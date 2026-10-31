@@ -3,11 +3,12 @@ import type { HouseVec3 } from '../assets/houseDefinitionExampleConfig'
 import type { RoadCorridorSegment } from '../terrain/chunkHeightmap'
 import type { AuthoredRepairPresentationInput } from './authoredRepairTargets'
 import type { SettlementSite } from './findSettlementSite'
+import type { YardSlotName } from './householdYard'
 import type { FoodSourceType } from './settlementGenerator'
 import type { ClearingLayout } from './villageClearing'
 import type { VillageLandmarkPlan, VillagePlan, VillagePlaza } from './villagePlan'
 import { buildConstructionCatalog } from '../assets/constructionCatalog'
-import { pickHouseDefinition } from '../assets/houseDefinitionExample'
+import { houseDefinitionById, pickHouseDefinition } from '../assets/houseDefinitionExample'
 import { disposeObject3D, loadGltf, prepareAuthoredScaleMax, prepareProp, preparePropFitMax } from '../assets/loadGltf'
 import { DEBUG_HOUSE_LAMP_POSITION, isDebugMode } from '../debug/debugMode'
 import { distanceToSegment } from '../math/segment'
@@ -40,7 +41,6 @@ import {
   loadHousePartTemplates,
 } from './houseBuilder'
 import { type HouseLampMount, type HouseLampStyle, pickHomeHouse, resolveHouseHeight } from './houseCatalog'
-import { HOUSEHOLD_YARD_PROP_OFFSETS } from './householdYard'
 import {
   createHouseLight,
   createProceduralTorchPost,
@@ -563,7 +563,7 @@ function blocksPathOrClearing(
     const dCore = Math.hypot(tx - clearings.core.x, tz - clearings.core.z)
     if (dCore < courtyardRadius) return true
   }
-  for (const area of [clearings.core, ...clearings.houses, ...(clearings.gardens ?? [])]) {
+  for (const area of [clearings.core, ...clearings.houses, ...(clearings.yards ?? []), ...(clearings.gardens ?? [])]) {
     if (Math.hypot(tx - area.x, tz - area.z) < area.radius + 1) return true
   }
   for (const house of clearings.houses) {
@@ -1320,12 +1320,16 @@ export async function buildSettlementProps(
   const housePlots = (plan?.plots.filter((p) => p.role === 'house') ?? [])
     .slice()
     .sort((a, b) => (a.familyIndex ?? 0) - (b.familyIndex ?? 0))
-  const houseRing = villageSizeConfig(size).houseRingMax * 0.85
-  const houseYawRandom = createSeededRandom(seed ^ 0xa11ce)
   const houseAssemblies: HouseAssembly[] = []
   const chestInstancing = isChestInstancingEnabled()
   const chestPlacements: PropPlacement[] = []
-  const plannedDefs = clearings.houses.map((_, i) => pickHouseDefinition(size, i, seed))
+  // The planner owns the compound (definition, yaw, yard — Q41); the pick
+  // below is only a fallback for plans built without one (legacy fixtures).
+  const plannedDefs = clearings.houses.map(
+    (_, i) =>
+      (housePlots[i]?.houseDefinitionId ? houseDefinitionById(housePlots[i]!.houseDefinitionId!) : undefined) ??
+      pickHouseDefinition(size, i, seed),
+  )
   let builderReady: HouseBuildContext | null = null
   try {
     const catalog = buildConstructionCatalog()
@@ -1345,12 +1349,9 @@ export async function buildSettlementProps(
     const outward =
       plot?.rotation ??
       Math.atan2(area.z - clearings.core.z, area.x - clearings.core.x)
-    // Face the plaza (inward); outskirts get a seeded yaw jitter (plan 076).
-    let yaw = outward + Math.PI
-    const dist = Math.hypot(area.x - clearings.core.x, area.z - clearings.core.z)
-    if (dist > houseRing * 0.75) {
-      yaw += (houseYawRandom() - 0.5) * Math.PI * 0.9
-    }
+    // Planner-owned yaw (door faces the plaza; real outskirts jittered, plan 076).
+    // Legacy fallback for plot-less plans keeps the pre-Q41 formula.
+    const yaw = plot?.houseYaw ?? outward + Math.PI
 
     const def = plannedDefs[i]!
     let hut: THREE.Object3D
@@ -1583,25 +1584,30 @@ export async function buildSettlementProps(
   // Placed at every house regardless of the livestock roll (`spawnLivestock`
   // has its own separate seeded roll) — same simplification as garden/hay
   // decorative placement not tracking who actually eats/drinks there.
-  const houseYardPlacements = (offsetDist: number, jitter: number): PropPlacement[] =>
-    landmarks.houses.map((house) => {
-      const angle = Math.atan2(house.position.z - clearings.core.z, house.position.x - clearings.core.x)
-      const spread = (coreRandom() - 0.5) * jitter
-      const dist = house.footprintRadius + offsetDist
-      const x = house.position.x + Math.cos(angle + spread) * dist
-      const z = house.position.z + Math.sin(angle + spread) * dist
+  // Positions come from the planner's yard slots (`plot.yard.slots`, Q41) —
+  // fixed, non-overlapping and independent of prop-building order; only the
+  // cosmetic rotation/scale is rolled, from a per-house stream isolated from
+  // `coreRandom`. `housePlots` is index-aligned with `landmarks.houses`.
+  const YARD_SLOT_SEED: Record<YardSlotName, number> = { barrel: 1, trough: 2, wood: 3, storage: 4 }
+  const houseYardPlacements = (slot: YardSlotName): PropPlacement[] =>
+    landmarks.houses.map((house, i) => {
+      const planned = housePlots[i]?.yard?.slots[slot]
+      // Plot-less plans (legacy fixtures): park the prop beside the house.
+      const x = planned?.x ?? house.position.x + house.footprintRadius + 0.6 + YARD_SLOT_SEED[slot] * 0.6
+      const z = planned?.z ?? house.position.z
+      const roll = createSeededRandom(seed ^ Math.imul(i + 1, 0x9e3779b1) ^ (YARD_SLOT_SEED[slot] * 0x1b873593))
       return {
         speciesIndex: 0,
         x,
         z,
         groundY: sampleHeight(x, z),
-        rotationY: coreRandom() * Math.PI * 2,
-        scale: 0.85 + coreRandom() * 0.25,
+        rotationY: roll() * Math.PI * 2,
+        scale: 0.85 + roll() * 0.25,
       }
     })
   const householdBarrelInstances = buildInstancedProps(
     barrelTemplates,
-    houseYardPlacements(HOUSEHOLD_YARD_PROP_OFFSETS.barrel, 0.9),
+    houseYardPlacements('barrel'),
     'settlement-household-barrels',
   )
   if (householdBarrelInstances) group.add(householdBarrelInstances.group)
@@ -1612,7 +1618,7 @@ export async function buildSettlementProps(
   )
   const troughInstances = buildInstancedProps(
     troughTemplates,
-    houseYardPlacements(HOUSEHOLD_YARD_PROP_OFFSETS.trough, 0.9),
+    houseYardPlacements('trough'),
     'settlement-household-troughs',
   )
   if (troughInstances) group.add(troughInstances.group)
@@ -1666,7 +1672,7 @@ export async function buildSettlementProps(
     [{ url: '/models/settlement/crate.glb', height: 0.6 }],
     () => createCrate(1),
   )
-  const householdStoragePlacements = houseYardPlacements(HOUSEHOLD_YARD_PROP_OFFSETS.storage, 0.9)
+  const householdStoragePlacements = houseYardPlacements('storage')
   landmarks.householdStorages = householdStoragePlacements.map(
     (p) => new THREE.Vector3(p.x, p.groundY, p.z),
   )
@@ -1689,7 +1695,7 @@ export async function buildSettlementProps(
   // progressive pile per house yard, index-aligned with storage crates above.
   // Primary stage only (no overflow clones): yard space is tight and high
   // household stock still maps to `Pile_29`.
-  const householdWoodPlacements = houseYardPlacements(HOUSEHOLD_YARD_PROP_OFFSETS.wood, 0.9)
+  const householdWoodPlacements = houseYardPlacements('wood')
   landmarks.householdWoodStorages = householdWoodPlacements.map(
     (p) => new THREE.Vector3(p.x, p.groundY, p.z),
   )
@@ -1726,17 +1732,9 @@ export async function buildSettlementProps(
   // unconditional settlement-center singleton. Parked assets
   // (`docs/assets/MODELS.md`) promoted to active use here.
   for (const familyIndex of blacksmithFamilyIndices) {
-    const house = landmarks.houses[familyIndex]
-    if (!house) continue
-    const outwardAngle = Math.atan2(
-      house.position.z - clearings.core.z,
-      house.position.x - clearings.core.x,
-    )
-    const geometry = blacksmithYardGeometry(
-      { x: house.position.x, z: house.position.z },
-      house.footprintRadius,
-      outwardAngle,
-    )
+    const yardPlan = housePlots[familyIndex]?.yard
+    if (!yardPlan) continue
+    const geometry = blacksmithYardGeometry(yardPlan)
     // Own deterministic seed stream, isolated from `coreRandom` (plan
     // settlements-npcs-024's yard-basis contract) so the presence/count of
     // blacksmith households never shifts unrelated settlement prop rolls.

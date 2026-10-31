@@ -38,7 +38,8 @@ export const ROAD_ROUTE_CACHE_NAMESPACE = 'road-routes'
  * fingerprinted separately. An old-version record is a plain cache miss —
  * records are never migrated.
  */
-export const ROAD_ROUTE_CACHE_VERSION = 2
+// v3 (2026-10-31, queue Q41): household compounds move houses/paths/entrances.
+export const ROAD_ROUTE_CACHE_VERSION = 3
 
 const DEFAULT_DEBOUNCE_MS = 4000
 /** Bounded per-seed cap of requested routes only — never a full pair scan.

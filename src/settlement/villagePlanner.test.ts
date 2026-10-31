@@ -5,9 +5,9 @@ import type { FamilyDef } from './families'
 import type { VillageIdentity } from './villagePlan'
 import { pointHitsCorridor } from '../math/segment'
 import { generateFamilies } from './families'
-import { gardenClearingRadius, gardenPlazaMinCenterDist, type GardenScale } from './gardenScale'
+import { gardenPlazaMinCenterDist, type GardenScale } from './gardenScale'
 import { selectHouseholdWellFamilyIndices } from './householdWells'
-import { householdYardRadius } from './householdYard'
+import { pointInYard, yardDisc } from './householdYard'
 import { plazaCoreRadius } from './villageClearing'
 import { householdWellPlotId, noticeBoardPlotId, plannedCampfireFootprint, plazaRadiusForSize } from './villagePlan'
 import { chooseLayoutPattern, householdWellLocalBand, planVillageLayout, PLOT_SCORE_WEIGHTS } from './villagePlanner'
@@ -150,8 +150,8 @@ describe('planVillageLayout (plan 047 steps 5–7)', () => {
     const families = generateFamilies(7, 'SM', false, 'polish')
     const layout = planVillageLayout(id, { x: 0, z: 0, y: 12 }, families, 7, flatHeight, WATER)
     const well = layout.plots.find((p) => p.id === 'plot-infra-well')!
-    const minDist = 4.5 + 2.4 + 2.5 // HOUSE_PLOT_RADIUS + INFRA_PLOT_RADIUS + gap
     for (const house of layout.plots.filter((p) => p.role === 'house')) {
+      const minDist = house.radius + 2.4 + 2.5 // real footprint + INFRA_PLOT_RADIUS + gap
       expect(Math.hypot(house.x - well.x, house.z - well.z)).toBeGreaterThanOrEqual(minDist - 0.01)
     }
   })
@@ -170,7 +170,6 @@ describe('planVillageLayout (plan 047 steps 5–7)', () => {
     const householdPlots = layout.plots.filter((p) => p.id.startsWith('plot-household-well-'))
     expect(householdPlots.map((p) => p.familyIndex).sort((a, b) => (a ?? 0) - (b ?? 0))).toEqual(expected)
     expect(new Set(householdPlots.map((p) => p.id)).size).toBe(householdPlots.length)
-    const yardR = householdYardRadius()
     for (const familyIndex of expected) {
       const plot = layout.plots.find((p) => p.id === householdWellPlotId(familyIndex))
       const house = layout.plots.find((p) => p.role === 'house' && p.familyIndex === familyIndex)
@@ -180,7 +179,10 @@ describe('planVillageLayout (plan 047 steps 5–7)', () => {
       const dist = Math.hypot(plot!.x - house!.x, plot!.z - house!.z)
       const band = householdWellLocalBand(house!.radius)
       expect(dist).toBeGreaterThanOrEqual(house!.radius + plot!.radius - 0.01)
-      expect(dist).toBeGreaterThanOrEqual(yardR + plot!.radius - 0.01)
+      const yardEdge = yardDisc(house!.yard!)
+      expect(Math.hypot(plot!.x - yardEdge.x, plot!.z - yardEdge.z)).toBeGreaterThanOrEqual(
+        yardEdge.radius + plot!.radius - 0.01,
+      )
       expect(dist).toBeGreaterThanOrEqual(band.min - 0.01)
       expect(dist).toBeLessThanOrEqual(band.max + 0.01)
     }
@@ -199,7 +201,6 @@ describe('planVillageLayout (plan 047 steps 5–7)', () => {
   it('keeps household wells local to their house and off local path corridors', () => {
     const sizes: VillageIdentity['size'][] = ['SM', 'MD', 'LG', 'XL']
     const seeds = [3, 14, 25, 36, 47]
-    const yardR = householdYardRadius()
     for (const size of sizes) {
       for (const seed of seeds) {
         const id = identity({ id: `hw_geo_${size}_${seed}`, size })
@@ -239,7 +240,11 @@ describe('planVillageLayout (plan 047 steps 5–7)', () => {
           expect(dist, `${size} ${seed} ${well.id} min house`).toBeGreaterThanOrEqual(
             house!.radius + well.radius - 0.01,
           )
-          expect(dist, `${size} ${seed} ${well.id} min yard`).toBeGreaterThanOrEqual(yardR + well.radius - 0.01)
+          const yardEdge = yardDisc(house!.yard!)
+          expect(
+            Math.hypot(well.x - yardEdge.x, well.z - yardEdge.z),
+            `${size} ${seed} ${well.id} min yard`,
+          ).toBeGreaterThanOrEqual(yardEdge.radius + well.radius - 0.01)
           expect(dist, `${size} ${seed} ${well.id} band min`).toBeGreaterThanOrEqual(band.min - 0.01)
           expect(dist, `${size} ${seed} ${well.id} band max`).toBeLessThanOrEqual(band.max + 0.01)
           expect(
@@ -552,66 +557,73 @@ describe('sale plots (plan 129)', () => {
   })
 })
 
-describe('household yard & settlement space (plan settlements-npcs-011)', () => {
-  const SIZES: VillageIdentity['size'][] = ['SM', 'MD', 'LG', 'XL']
+describe('household compound & settlement space (Q41 / plan settlements-npcs-011)', () => {
+  const SIZES: VillageIdentity['size'][] = ['OUTPOST', 'SM', 'MD', 'LG', 'XL']
   const SEEDS = Array.from({ length: 15 }, (_, i) => i * 11 + 3)
-  const yardR = householdYardRadius()
 
   // One deterministic layout per size/seed, reused by every check below —
   // regenerating per-assertion would just multiply the same seeded work.
+  const cache = new Map<string, ReturnType<typeof planVillageLayout>>()
   function layoutsFor(size: VillageIdentity['size']) {
     return SEEDS.map((seed) => {
-      const id = identity({ id: `yard_${size}_${seed}`, size })
-      const families = generateFamilies(seed, size, false, 'polish')
-      return { seed, layout: planVillageLayout(id, { x: 0, z: 0, y: 12 }, families, seed, flatHeight, WATER) }
+      const key = `${size}:${seed}`
+      let layout = cache.get(key)
+      if (!layout) {
+        const id = identity({ id: `yard_${size}_${seed}`, size })
+        const families = generateFamilies(seed, size, false, 'polish')
+        layout = planVillageLayout(id, { x: 0, z: 0, y: 12 }, families, seed, flatHeight, WATER)
+        cache.set(key, layout)
+      }
+      return { seed, layout }
     })
   }
 
-  it.each(SIZES)('%s: household yards do not overlap each other', (size) => {
+  const overlapGap = (
+    a: { x: number, z: number, radius: number },
+    b: { x: number, z: number, radius: number },
+  ): number => Math.hypot(a.x - b.x, a.z - b.z) - a.radius - b.radius
+
+  it.each(SIZES)('%s: every house plot carries a planner-owned compound', (size) => {
+    for (const { seed, layout } of layoutsFor(size)) {
+      for (const house of layout.plots.filter((p) => p.role === 'house')) {
+        expect(house.houseDefinitionId, `${size} ${seed} ${house.id}`).toBeTruthy()
+        expect(house.houseYaw).toBeDefined()
+        expect(house.yard).toBeDefined()
+        expect(house.discs).toHaveLength(2)
+      }
+    }
+  })
+
+  it.each(SIZES)('%s: no household compound overlaps another plot, no last-resort house placement', (size) => {
     for (const { seed, layout } of layoutsFor(size)) {
       const houses = layout.plots.filter((p) => p.role === 'house')
-      for (let i = 0; i < houses.length; i++) {
-        for (let j = i + 1; j < houses.length; j++) {
-          const a = houses[i]!
-          const b = houses[j]!
-          const gap = Math.hypot(a.x - b.x, a.z - b.z) - yardR * 2
-          expect(gap, `${size} seed ${seed} house${i}<->house${j}`).toBeGreaterThanOrEqual(-0.01)
+      for (const house of houses) {
+        expect(house.finalFallback, `${size} seed ${seed} ${house.id} final fallback`).toBeUndefined()
+        for (const other of layout.plots) {
+          if (other === house || other.role === 'sale') continue
+          for (const d of house.discs!) {
+            for (const e of other.discs ?? [{ x: other.x, z: other.z, radius: other.radius }]) {
+              expect(overlapGap(d, e), `${size} seed ${seed} ${house.id}<->${other.id}`).toBeGreaterThanOrEqual(-0.01)
+            }
+          }
         }
       }
     }
   })
 
-  it.each(SIZES)('%s: household yards do not overlap garden clearings', (size) => {
+  it.each(SIZES)('%s: yard props stay inside the yard rectangle', (size) => {
     for (const { seed, layout } of layoutsFor(size)) {
-      const houses = layout.plots.filter((p) => p.role === 'house')
-      const gardens = layout.plots.filter((p) => p.id.startsWith('plot-infra-garden-'))
-      for (let i = 0; i < houses.length; i++) {
-        for (const garden of gardens) {
-          const scale = (garden.id.match(/-(S|M|L)$/)?.[1] ?? 'S') as GardenScale
-          const gap =
-            Math.hypot(houses[i]!.x - garden.x, houses[i]!.z - garden.z) - yardR - gardenClearingRadius(scale)
-          expect(gap, `${size} seed ${seed} house${i}<->${garden.id}`).toBeGreaterThanOrEqual(-0.01)
+      for (const house of layout.plots.filter((p) => p.role === 'house')) {
+        const slots = house.yard!.slots
+        for (const slot of [slots.barrel, slots.trough, slots.wood, slots.storage]) {
+          expect(pointInYard(house.yard!, slot.x, slot.z, 0.5), `${size} seed ${seed} ${house.id}`).toBe(true)
         }
       }
     }
   })
 
-  it.each(SIZES)('%s: household yards do not overlap other infrastructure plots', (size) => {
-    for (const { seed, layout } of layoutsFor(size)) {
-      const houses = layout.plots.filter((p) => p.role === 'house')
-      const infra = layout.plots.filter(
-        (p) => p.role === 'infrastructure' && !p.id.startsWith('plot-infra-garden-'),
-      )
-      for (let i = 0; i < houses.length; i++) {
-        for (const other of infra) {
-          const gap = Math.hypot(houses[i]!.x - other.x, houses[i]!.z - other.z) - yardR - other.radius
-          expect(gap, `${size} seed ${seed} house${i}<->${other.id}`).toBeGreaterThanOrEqual(-0.01)
-        }
-      }
-    }
-  })
-
-  it.each(SIZES)('%s: house/garden/infra plots fit inside the settlement boundary with margin', (size) => {
+  // OUTPOST was never part of this calibration (single house + packed stockpile).
+  it.each(SIZES.filter((s) => s !== 'OUTPOST'))('%s: house/garden/infra plots fit inside the settlement boundary with margin', (size) => {
     // Sale plots (plan 129) deliberately hug the outer ring and are not
     // part of the household-yard/garden capacity this plan calibrates.
     for (const { seed, layout } of layoutsFor(size)) {
@@ -623,6 +635,14 @@ describe('household yard & settlement space (plan settlements-npcs-011)', () => 
         )
       }
     }
+  })
+
+  it('is deterministic for the same seed', () => {
+    const id = identity({ id: 'yard_det', size: 'LG' })
+    const families = generateFamilies(9, 'LG', false, 'polish')
+    const a = planVillageLayout(id, { x: 0, z: 0, y: 12 }, families, 9, flatHeight, WATER)
+    const b = planVillageLayout(id, { x: 0, z: 0, y: 12 }, families, 9, flatHeight, WATER)
+    expect(a.plots.filter((p) => p.role === 'house')).toEqual(b.plots.filter((p) => p.role === 'house'))
   })
 })
 

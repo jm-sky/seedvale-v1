@@ -20,6 +20,7 @@ import type {
   VillageZone,
   VillageZoneKind,
 } from './villagePlan'
+import { pickHouseDefinition } from '../assets/houseDefinitionExample'
 import { pointHitsCorridor, projectOntoSegment } from '../math/segment'
 import { RESOURCE_ROLE, SIGNIFICANT_RICHNESS } from '../terrain/naturalResources'
 import { footprintOverlapsRiver } from '../terrain/riverNetwork'
@@ -32,8 +33,14 @@ import {
   gardenUnitsFromHouses,
   packGardenScales,
 } from './gardenScale'
+import { houseFootprintRadius } from './houseBuilder'
 import { selectHouseholdWellFamilyIndices } from './householdWells'
-import { householdYardRadius } from './householdYard'
+import {
+  householdYardPlanFor,
+  type PlanDisc,
+  yardDisc,
+  yawFacing,
+} from './householdYard'
 import { pathIsDry, SETTLEMENT_WATER_MARGIN } from './pathDryness'
 import { appendPaddockPath, planSettlementPaddock } from './villagePaddock'
 import { appendPasturePath, planSettlementPasture } from './villagePasture'
@@ -68,12 +75,13 @@ const PLOT_CANDIDATE_ATTEMPTS = 10
  *  its edge, not a bank that starts exactly where the pad ends. Deliberately
  *  small: a village is allowed to sit right beside a river. */
 const PLOT_RIVER_MARGIN = 1
-/** Reserved spacing radius for a house plot — must stay >= the household-
- *  yard clearance contract (`householdYard.ts`'s `householdYardRadius()`,
- *  plan 011) so the house's own storage/barrel/trough never spill past
- *  neighbouring plots. Verified in `householdYard.test.ts`, not duplicated
- *  as a separate "yard radius" field here. */
-export const HOUSE_PLOT_RADIUS = 4.5
+/** Legacy nominal house pad radius — only scales house-spoke clearance, the
+ *  fallback ring and the household-well band width. House plots reserve their
+ *  real compound (house disc + yard disc, `householdYard.ts`) instead. */
+const NOMINAL_HOUSE_RADIUS = 4.5
+/** Required free gap between neighbouring household compounds (edge to edge)
+ *  as a fraction of the size's `houseSpacing` (SM 1.0 m … XL 1.8 m). */
+export const HOUSE_COMPOUND_GAP_FACTOR = 0.1
 const INFRA_PLOT_RADIUS = 2.4
 const NOTICE_BOARD_PLOT_RADIUS = 2
 const MARKET_PLOT_RADIUS = INFRA_PLOT_RADIUS * 1.2
@@ -86,8 +94,9 @@ const MARKET_PLOT_RADIUS = INFRA_PLOT_RADIUS * 1.2
  * @domain settlements-npcs
  */
 export function householdWellLocalBand(housePlotRadius: number): { min: number, max: number } {
-  const min = Math.max(housePlotRadius, householdYardRadius()) + INFRA_PLOT_RADIUS
-  return { min, max: min + HOUSE_PLOT_RADIUS }
+  const min = housePlotRadius + INFRA_PLOT_RADIUS
+  // Max leaves room to clear the yard disc behind the house (Q41).
+  return { min, max: min + NOMINAL_HOUSE_RADIUS + 8 }
 }
 const WORK_PLOT_RADIUS = 5.5
 const FOOD_PLOT_RADIUS = 6
@@ -150,7 +159,7 @@ const PATH_POLYLINE_SAMPLES = 3
  * those spokes — otherwise a cottage on the plaza rim can sit on the path
  * to a neighbour further out.
  */
-const HOUSE_SPOKE_CLEARANCE = LOCAL_PATH_HALF_WIDTH + HOUSE_PLOT_RADIUS * 0.55
+const HOUSE_SPOKE_CLEARANCE = LOCAL_PATH_HALF_WIDTH + NOMINAL_HOUSE_RADIUS * 0.55
 
 /**
  * Deterministic base layout pattern from identity + seed (plan 047 §7).
@@ -367,12 +376,7 @@ function heightSpread(x: number, z: number, radius: number, sampleHeight: Height
 }
 
 function minDistToPlots(x: number, z: number, plots: readonly VillagePlot[]): number {
-  let min = Infinity
-  for (const p of plots) {
-    const d = Math.hypot(x - p.x, z - p.z) - p.radius
-    if (d < min) min = d
-  }
-  return min
+  return discsClearance([{ x, z, radius: 0 }], plots)
 }
 
 /**
@@ -429,6 +433,60 @@ type PlotPlacementRequest = {
   avoidSpokes?: readonly { x: number, z: number, halfWidth?: number }[]
   /** Force exact position (well at plaza) — still records a plot. */
   forced?: { x: number, z: number } | null
+  /** House requests: the compound the planner owns (definition, yaw, yard). */
+  house?: HouseCompoundSpec
+}
+
+/** Position-independent inputs of a household compound (Q41). */
+type HouseCompoundSpec = {
+  definitionId: string
+  footprint: { width: number, depth: number }
+  footprintRadius: number
+  size: VillageSize
+  /** Outskirts threshold: houses farther than this get the plan-076 yaw jitter. */
+  outskirtsDist: number
+  /** Plot-id seed for yaw jitter and yard mirroring. */
+  variantSeed: number
+}
+
+type HouseCompound = Pick<VillagePlot, 'houseDefinitionId' | 'houseYaw' | 'yard' | 'discs'>
+
+/**
+ * Compound for a house at `(x, z)`: yaw faces the plaza (door = local `-z`),
+ * real outskirts get a seeded jitter of up to ±0.45π (plan 076); the yard
+ * rectangle sits behind the house; discs = house + yard for spacing.
+ */
+function buildHouseCompound(spec: HouseCompoundSpec, x: number, z: number, center: VillageCenter): HouseCompound {
+  let yaw = yawFacing(center.x - x, center.z - z)
+  if (Math.hypot(x - center.x, z - center.z) > spec.outskirtsDist) {
+    const jitter = createSeededRandom(spec.variantSeed ^ 0xa11ce)()
+    yaw += (jitter - 0.5) * Math.PI * 0.9
+  }
+  const yard = householdYardPlanFor(spec.footprint, x, z, yaw, spec.size, spec.variantSeed)
+  return {
+    houseDefinitionId: spec.definitionId,
+    houseYaw: yaw,
+    yard,
+    discs: [{ x, z, radius: spec.footprintRadius }, yardDisc(yard)],
+  }
+}
+
+function plotDiscs(p: VillagePlot): readonly PlanDisc[] {
+  return p.discs ?? [{ x: p.x, z: p.z, radius: p.radius }]
+}
+
+/** Edge-to-edge clearance between candidate discs and every existing plot disc. */
+function discsClearance(discs: readonly PlanDisc[], plots: readonly VillagePlot[]): number {
+  let min = Infinity
+  for (const p of plots) {
+    for (const e of plotDiscs(p)) {
+      for (const d of discs) {
+        const gap = Math.hypot(d.x - e.x, d.z - e.z) - d.radius - e.radius
+        if (gap < min) min = gap
+      }
+    }
+  }
+  return min
 }
 
 function isLocalAttractorMode(req: PlotPlacementRequest): boolean {
@@ -484,7 +542,9 @@ function scorePlotCandidate(
 
   if (!pathIsDry(center.x, center.z, x, z, waterLevel, sampleHeight)) return null
 
-  const clearance = minDistToPlots(x, z, existing)
+  const clearance = req.house
+    ? discsClearance(buildHouseCompound(req.house, x, z, center).discs!, existing)
+    : minDistToPlots(x, z, existing)
   if (Number.isFinite(clearance) && clearance < minSpacing) return null
 
   if (req.role === 'house') {
@@ -602,8 +662,10 @@ function makePlacedPlot(
   z: number,
   y: number,
   rotation: number,
+  center?: VillageCenter,
 ): VillagePlot {
   return {
+    ...(req.house && center ? buildHouseCompound(req.house, x, z, center) : {}),
     id: req.id,
     role: req.role,
     x,
@@ -664,7 +726,7 @@ function pickPlot(
   }
 
   const random = createSeededRandom(seedForCell ^ hashPlotId(req.id))
-  const minSpacing = req.role === 'house' ? houseSpacing * 0.55 : req.radius * 1.4
+  const minSpacing = req.role === 'house' ? houseSpacing * HOUSE_COMPOUND_GAP_FACTOR : req.radius * 1.4
   const zone = req.zone
   const local = isLocalAttractorMode(req)
   const attractor = req.attractor
@@ -731,7 +793,7 @@ function pickPlot(
     if (score === null) continue
     if (score > bestScore) {
       bestScore = score
-      best = makePlacedPlot(req, x, z, sampleHeight(x, z), angle)
+      best = makePlacedPlot(req, x, z, sampleHeight(x, z), angle, center)
     }
   }
 
@@ -750,7 +812,7 @@ function pickPlot(
         const fz = attractor.z + Math.sin(angle) * capped
         const score = scoreAt(fx, fz, preferredRing)
         if (score === null) continue
-        return makePlacedPlot(req, fx, fz, sampleHeight(fx, fz), angle)
+        return makePlacedPlot(req, fx, fz, sampleHeight(fx, fz), angle, center)
       }
     }
 
@@ -762,14 +824,16 @@ function pickPlot(
         const rawFz = attractor.z + Math.sin(angle) * capped
         const { x: fx, z: fz } = pushOutOfRiver(rawFx, rawFz, center, req.radius, riverSegments)
         if (!localFallbackInvariantsHold(fx, fz, req, center, riverSegments)) continue
-        return makePlacedPlot(req, fx, fz, sampleHeight(fx, fz), angle)
+        // Never settle on a household compound (house or yard disc).
+        if (discsClearance([{ x: fx, z: fz, radius: req.radius }], existing) < 0) continue
+        return makePlacedPlot(req, fx, fz, sampleHeight(fx, fz), angle, center)
       }
     }
 
     const angle = baseAngle + Math.PI / 2
     const fx = attractor.x + Math.cos(angle) * minAtt
     const fz = attractor.z + Math.sin(angle) * minAtt
-    return makePlacedPlot(req, fx, fz, sampleHeight(fx, fz), angle)
+    return makePlacedPlot(req, fx, fz, sampleHeight(fx, fz), angle, center)
   }
 
   // Deterministic fallback: prefer the requested ring (keeps campfire / market
@@ -778,7 +842,7 @@ function pickPlot(
   // already claimed by earlier cottages.
   let fallbackRing = Math.max(
     preferredRing ??
-      (req.role === 'house' ? HOUSE_PLOT_RADIUS * 1.2 : boundary.radius * 0.22),
+      (req.role === 'house' ? NOMINAL_HOUSE_RADIUS * 1.2 : boundary.radius * 0.22),
     req.minCenterDist ?? 0,
   )
   if (req.maxCenterDist != null) fallbackRing = Math.min(fallbackRing, req.maxCenterDist)
@@ -806,7 +870,7 @@ function pickPlot(
         const fz = center.z + Math.sin(angle) * ring
         const score = scoreAt(fx, fz, fallbackRing)
         if (score === null) continue
-        return makePlacedPlot(req, fx, fz, sampleHeight(fx, fz), angle)
+        return makePlacedPlot(req, fx, fz, sampleHeight(fx, fz), angle, center)
       }
       if (req.maxCenterDist != null && ring >= req.maxCenterDist) break
     }
@@ -869,12 +933,15 @@ function pickPlot(
             continue
           }
         }
-        const clearance = minDistToPlots(fx, fz, existing)
-        if (Number.isFinite(clearance) && clearance < req.radius) continue
+        const clearance = req.house
+          ? discsClearance(buildHouseCompound(req.house, fx, fz, center).discs!, existing)
+          : minDistToPlots(fx, fz, existing)
+        // A house request already measures edge-to-edge compound clearance.
+        if (Number.isFinite(clearance) && clearance < (req.house ? 0 : req.radius)) continue
         const ranked = Number.isFinite(clearance) ? clearance : Infinity
         if (ranked > bestClearance) {
           bestClearance = ranked
-          best = makePlacedPlot(req, fx, fz, y, angle)
+          best = makePlacedPlot(req, fx, fz, y, angle, center)
         }
       }
     }
@@ -895,7 +962,7 @@ function pickPlot(
       ? zone.z
       : center.z + Math.sin(baseAngle) * fallbackRing
   const { x: fx, z: fz } = pushOutOfRiver(rawFx, rawFz, center, req.radius, riverSegments)
-  return makePlacedPlot(req, fx, fz, sampleHeight(fx, fz), baseAngle)
+  return { ...makePlacedPlot(req, fx, fz, sampleHeight(fx, fz), baseAngle, center), finalFallback: true }
 }
 
 function hashPlotId(plotId: string): number {
@@ -977,19 +1044,29 @@ export function planVillageLayout(
   const houseRing = sizeCfg.houseRingMax * 0.85
   // Keep cottage pads off the plaza well — house radius + well infra radius +
   // gap so walls do not sit on the square rim (playtest 2026-08-12).
-  const houseMinCenterDist = HOUSE_PLOT_RADIUS + INFRA_PLOT_RADIUS + 2.5
   families.forEach((family, familyIndex) => {
+    const def = pickHouseDefinition(identity.size, familyIndex, seedForCell)
+    const footprintRadius = houseFootprintRadius(def)
+    const houseMinCenterDist = footprintRadius + INFRA_PLOT_RADIUS + 2.5
     plots.push(
       pickPlot(
         {
           id: `plot-house-${familyIndex}`,
           role: 'house',
           zone: residential,
-          radius: HOUSE_PLOT_RADIUS,
+          radius: footprintRadius,
           familyIndex,
           familyId: family.id,
           preferredRing: houseRing,
           minCenterDist: houseMinCenterDist,
+          house: {
+            definitionId: def.id,
+            footprint: def.footprint,
+            footprintRadius,
+            size: identity.size,
+            outskirtsDist: houseRing,
+            variantSeed: seedForCell ^ hashPlotId(`plot-house-${familyIndex}`),
+          },
         },
         center,
         boundary,
@@ -1053,7 +1130,7 @@ export function planVillageLayout(
           familyIndex,
           familyId: family?.id ?? house.familyId,
           preferredRing: minAtt,
-          minCenterDist: houseMinCenterDist,
+          minCenterDist: NOMINAL_HOUSE_RADIUS + INFRA_PLOT_RADIUS + 2.5,
           attractor: { x: house.x, z: house.z },
           minAttractorDistance: minAtt,
           maxAttractorDistance: maxAtt,
