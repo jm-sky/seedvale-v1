@@ -124,6 +124,7 @@ Unless noted otherwise, `verification needed` means implementation has passed au
 | ◼️ `ui-input-045-equipment-body-layout.md`                                     | 🟡 | S      | ~~ui-input-040~~                                                                                                                                                                                                                                                                           | -                                         |
 | 💡 `settlements-024-campfire-jumpable-low-collision.md`                        | 🔴 | M      | -                                                                                                                                                                                                                                                                                          | -                                         |
 | 💡 `tools-021-collider-debug-obb-orientation.md`                               | 🟡 | S      | -                                                                                                                                                                                                                                                                                          | -                                         |
+| 💡 `world-040-underground-locations-and-portals.md`                            | ⚪ | XL     | items-player-051, fauna-045, ~~world-027~~, ~~persistence-006~~, ~~persistence-008~~                                                                                                                                                                                                       | -                                         |
 
 ---
 
@@ -204,7 +205,7 @@ New plans declare a primary `Domain:` in frontmatter. Use optional `Tags:` only 
 - settlements-npcs: `058`
 - tools: `022`
 - ui-input: `048`
-- world: `040`
+- world: `041`
 - world-terrain: `055`
 
 This ids section is maintained automatically from the plan files.
