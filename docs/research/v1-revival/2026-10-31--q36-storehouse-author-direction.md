@@ -12,7 +12,7 @@
 4. **Keep the interior spacious**, including room for the rat-related scenario. Do not pack the building with static barrels/crates/sacks at the expense of usable space.
 5. **Rat infestation / storehouse closure must not block logistics.** Provide an external collection/delivery fallback point that remains available while the storehouse is closed.
 6. **Prevent doorway congestion.** Several NPCs concurrently delivering or waiting must not jam the entrance or block the settlement's logistics.
-7. **Full interior navigation is optional.** The author delegates the decision on whether NPCs actually enter the building, deliver indoors and navigate alongside rats to Opus after examining the current systems and tradeoffs.
+7. **NPC entry into the storehouse is not mandatory.** The author delegates to Opus whether NPCs need to enter the building for deliveries. The author has **not** declared interior navigation optional or waived navigation requirements for any actors that do use the interior (including rats); those requirements must follow the chosen gameplay behavior.
 
 ## Boundaries and handoff to Opus
 
@@ -23,7 +23,7 @@
 - V3 `warehouse-8x6-a` and stockpile assets are **references/candidates only**, not a selected building or rendering architecture. Check actual V1 assets first.
 - Consider collision/clearance and draw-call budgets. Do not claim visual or FPS validation from source inspection.
 - Q29's suggested single door-target and uniform adjacent overflow should be reassessed against the author requirements above.
-- The storehouse's exact appearance/model, size, storage categories and indoor NPC navigation remain **open technical/design decisions**, to be resolved by Opus rather than implicitly fixed here.
+- The storehouse's exact appearance/model, size, storage categories and whether deliveries require NPC entry remain **open technical/design decisions** for Opus. Interior navigation requirements must be established based on the actors and gameplay actually using the space, not presumed optional.
 
 ## References
 
