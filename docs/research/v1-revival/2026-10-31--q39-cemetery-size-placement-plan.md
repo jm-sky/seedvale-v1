@@ -148,3 +148,12 @@ Cache bumps (`chunk-tiles`, `abandoned-cemeteries`, `locations-coarse` if it sto
 2. **Readable plaques: (a) later.** This will be a separate small task: an Interactable on the marker, kept apart from digging, with the surname taken from the settlement's families plus an epitaph. It is not part of Q47. Plaques stay visual until then.
 
 Rejected for now: stone wall / iron fence in Q47; inscriptions inside Q47.
+
+
+## 7. Author decision — 2026-10-31 (Q47 placement sequence)
+
+**Approved first step — small plots as a reversible visual experiment, not final size approval.** Adapt the V2 arrangement to more compact SM/MD/LG plots, preserving **9/15/25 graves and 1/2/3 crypts** respectively, valid walkable aisles, slot identity/order, dig accessibility and non-overlapping OBB colliders. Run the cemetery census on seeds **42** and **415424794**, compare placement loss and overlaps to the baseline, and prepare the result for the author's **in-game visual review**. Do not mark Q47 visually accepted or close it before that review; if density/appearance is unsatisfactory, revise the plot geometry. The plan's >5% placement-loss stop condition still applies: do not silently accept disappeared cemeteries.
+
+**Approved future direction — reserve cemetery footprints before generating roads and village paths.** Coordinate with Q38/Q44 and the shared worldgen sequence; design and implementation are a **separate subsequent stage**, not a prerequisite for the immediate compact-plot visual experiment. This approval concerns the direction only, not an unchecked routing/ownership rewrite. Preserve determinism, cemetery assignments, no-overlap quality and established simulation/quest references. Re-run the census after the coordinated road/layout changes.
+
+**Implementation handoff:** First adapt plot geometry on the existing Q47 branch, measure and expose it for visual verification; then proceed with reserved-plot road planning. Cache/version updates, tests, PROPS measurement and documentation remain required before shipping. See [queue Q47 and §3](./AUTONOMOUS-SESSION-QUEUE.md).

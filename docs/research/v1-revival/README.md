@@ -4,6 +4,8 @@
 
 > **Start here:** [Strategic Brief](./STRATEGIC-BRIEF.md) (approved decisions, D4 freeze, autonomy) → [Autonomous Session Queue](./AUTONOMOUS-SESSION-QUEUE.md) (ordered tasks, gates, author-owned checks) → [P1 tracker snapshot](./2026-10-27--performance-three-track-roadmap.md#p1-status-snapshot-2026-10-29). Everything below is a topic index of research evidence; where it conflicts with the brief, the brief wins. Closed hand-off stubs live in [archive/](./archive/) (`NEXT-SESSION--*`).
 
+**Q47 cemetery placement decision (author, 2026-10-31):** [Q39 plan §7](./2026-10-31--q39-cemetery-size-placement-plan.md#7-author-decision--2026-10-31-q47-placement-sequence) — compact plot visual trial first; later reserve plot footprints before roads (Q38/Q44). Q47 visual acceptance remains pending; track in [queue](./AUTONOMOUS-SESSION-QUEUE.md).
+
 ## Current entry points
 
 | Need | Read |
