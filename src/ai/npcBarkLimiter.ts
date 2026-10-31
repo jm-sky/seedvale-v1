@@ -47,6 +47,8 @@ export class NpcBarkLimiter {
   private readonly areaIntentTimes = new Map<string, TimestampList>()
   private readonly areaOptionalTimes = new Map<string, TimestampList>()
   private readonly episodeSpoken = new Map<string, number>()
+  /** Last clip played per `area|intent` (Q30 dedup); pruned with the rest. */
+  private readonly lastClip = new Map<string, { url: string; at: number }>()
   private readonly retentionSec = longestNpcBarkRetentionSec()
 
   /**
@@ -95,6 +97,16 @@ export class NpcBarkLimiter {
     return { accepted: true }
   }
 
+  /** Clip last played for this area + intent, to avoid an immediate repeat. */
+  lastClipUrl(areaKey: string, intent: NpcBarkIntent): string | undefined {
+    return this.lastClip.get(`${areaKey}|${intent}`)?.url
+  }
+
+  /** Remember an admitted bark's clip (call after `tryAdmit` accepts). */
+  noteClipPlayed(areaKey: string, intent: NpcBarkIntent, url: string, nowSim: number): void {
+    this.lastClip.set(`${areaKey}|${intent}`, { url, at: nowSim })
+  }
+
   private recordAccepted(request: NpcBarkAdmitRequest, policy: NpcBarkPolicy): void {
     const npcKey = `${request.npcId}|${request.intent}`
     this.npcIntentLast.set(npcKey, request.nowSim)
@@ -133,6 +145,9 @@ export class NpcBarkLimiter {
     }
     for (const [key, ts] of this.episodeSpoken) {
       if (ts < cutoff) this.episodeSpoken.delete(key)
+    }
+    for (const [key, clip] of this.lastClip) {
+      if (clip.at < cutoff) this.lastClip.delete(key)
     }
   }
 }

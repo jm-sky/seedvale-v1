@@ -294,9 +294,15 @@ const GENERATED_VOICE_MANIFEST: Readonly<Record<string, readonly string[]>> = {
   ],
 }
 
-function pickFromUrlPool(pool: readonly string[] | undefined): string | undefined {
+function pickFromUrlPool(
+  pool: readonly string[] | undefined,
+  avoidUrl?: string,
+): string | undefined {
   if (!pool || pool.length === 0) return undefined
-  return pool[Math.floor(Math.random() * pool.length)]
+  // Q30: skip the clip just played when an alternative exists; a one-clip
+  // pool still repeats (never silence from dedup alone).
+  const candidates = avoidUrl && pool.length > 1 ? pool.filter((u) => u !== avoidUrl) : pool
+  return candidates[Math.floor(Math.random() * candidates.length)]
 }
 
 /** Most-specific → least-specific generated lookup keys for one NPC + intent. */
@@ -325,8 +331,9 @@ export function buildNpcVoiceLookupKeys(
 export function resolveNpcVoiceLine(
   npc: NpcVoiceResolveInput,
   intent: NpcVoiceSemanticIntent,
+  avoidUrl?: string,
 ): string | undefined {
-  return resolveNpcVoiceLineWithManifest(GENERATED_VOICE_MANIFEST, npc, intent)
+  return resolveNpcVoiceLineWithManifest(GENERATED_VOICE_MANIFEST, npc, intent, avoidUrl)
 }
 
 /** Manifest-injectable resolver — used by unit tests; production calls the bound wrapper. */
@@ -334,9 +341,10 @@ export function resolveNpcVoiceLineWithManifest(
   manifest: Readonly<Record<string, readonly string[]>>,
   npc: NpcVoiceResolveInput,
   intent: NpcVoiceSemanticIntent,
+  avoidUrl?: string,
 ): string | undefined {
   for (const key of buildNpcVoiceLookupKeys(npc, intent)) {
-    const hit = pickFromUrlPool(manifest[key])
+    const hit = pickFromUrlPool(manifest[key], avoidUrl)
     if (hit) return hit
   }
   return undefined

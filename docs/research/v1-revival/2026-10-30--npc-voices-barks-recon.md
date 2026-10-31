@@ -46,6 +46,8 @@ Defects / gaps:
 
 **Fix candidates:** (a) add a small "recently played clip" memory in the limiter/bark layer (no repeat of the same URL within N s per area) — cheap; (b) multiple weather clip variants per scope (assets); (c) tie the budget to distance from the listener (needs player position in the request — new input, hence a design call).
 
+**Update 2026-10-31 (Q30):** candidate (a) landed — per-area+intent last-clip memory in `NpcBarkLimiter`, resolver avoids it when alternatives exist (one-clip pools unchanged).
+
 ## 3. Dialogue text/voice vs. relation, reputation, quest state (✅ unless marked)
 
 - **Opening greeting** (`src/ui-vue/npcDialogueGreeting.ts`): the clip is chosen by `resolveNpcVoiceLine(npc,'greeting')` (scope/gender/age only); `relationLevel` is used **only** in the text-only fallback (`familiar` lines for friendly/trusted). Whenever a clip with a transcript is picked, a stranger and a trusted friend get the identical greeting. **Reputation and renown are not used in dialogue voice/text at all.**
