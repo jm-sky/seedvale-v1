@@ -106,4 +106,8 @@ New pure module `src/settlement/professionDressing.ts` (three-free): `profession
 
 ## 5. Implementation notes
 
-_Filled by Q48._
+### Q48 step 1 (Sonnet, 2026-10-31) — pure assignment landed
+
+- `src/settlement/professionDressing.ts` (+ test): `professionDressingFor(family, familyIndex, houseDef, yard, seed)` → wall pieces (house-local, V3 face offset 0.31 m, opening-aware `wallKitFits`, cap 3, front→left→right→back, own seed stream) and one slot piece (yard `profession` centre, yard yaw). Selected professions only: hunter, guard, fisher, woodcutter, farmer, trader, herbalist; miner/shepherd/textile_worker/blacksmith get no table row (blacksmith homes keep the slot). `representativeProfession` is now exported from `professionFamilySurnames.ts`.
+- 🟡 Opening spans use fixed extents (±0.95 m, door top 2.4 m, window 0.9–2.3 m), not measured MegaKit geometry; revisit if the visual review shows clipping. Antler top (3.64 m) vs eave is still a visual check.
+- **Not done yet:** steps 2–6 (asset extract from V3 `props.glb` — needs `add_repo` jm-sky/seedvale-v3 —, MODELS/CREDITS incl. CC BY antler credit, merged render batch + slot colliders in `props.ts`, census, measurements, §2 visual entry). No cache/epoch change so far.
