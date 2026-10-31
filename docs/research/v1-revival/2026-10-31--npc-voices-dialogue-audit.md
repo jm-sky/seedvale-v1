@@ -242,3 +242,17 @@ Later implementation verification:
 6. Decide whether P2 weather, thirst, injury/aftermath/repair/bereavement, reputation tones and expanded campfire pairs should gain runtime bindings. Their catalog entries are proposals only.
 
 No open proposal above changes the Strategic Brief's approved decision table, simulation model, production assets or queue completion state.
+
+## 12. Author decisions — approved 2026-10-31 (supersedes open questions in §11)
+
+These are explicit author approvals for **NPC Voices & Dialogue** direction, not approval of all proposed catalog rows or immediate runtime implementation. §11 remains the historical list of questions; answers below take precedence over audit recommendations where they differ.
+
+1. **Stable NPC voice:** Each NPC retains one speaker voice across contexts; no cross-voice fallback. Missing compatible audio may use text-only/silence. **Children:** separate boy/girl voice variants, initially only a few lines, **low priority**. Age transition policy remains undecided.
+2. **Personality:** Use the four existing archetypes (`calm`, `cheerful`, `curious`, `grumpy`) for selected dialogue variants, not an exhaustive four-way recording matrix. Opus may choose only two archetypes for the initial stage. No new persistent simulation personality traits approved.
+3. **Language and quests:** All NPC dialogue is to be English; this is not blanket full-game HUD/inventory localization. Generic English *spoken reactions* are permitted for quests while the separately displayed English text retains exact quest objectives, outcomes and dynamic details. Do not misrepresent a generic cue as an exact reading.
+4. **Recording scope and style:** Cover basic reactions **plus profession and social variety**, delivered in stages. Author explicitly wants **more humor and characteristic sayings** than the audit's restrained-humor recommendation. Relevance, real event truth and avoidance of inappropriate jokes in acute emergencies remain requirements; exact Q31 wording corrections and per-line production selections still need editorial/QC handling.
+5. **V3 donors:** **Maximize reuse** of V3 voices, including considering banks previously judged weaker. This does not cancel approved stable voice identity or listening/QC requirements. **Mark Hornblower:** use after listening; author reports Mark's V3 voice sounds good. Bind to the corresponding V1 stable character identity without an automatic rename.
+6. **Living-world speech:** Extend NPC reactions to **real** events (including thirst, injuries, end of danger, completed repairs, relations and campfire variety), with **natural, moderate** spontaneous frequency. Broader omniscient social commentary is not authorized: use facts/knowledge actually available to NPCs. Specific new triggers, budgets, and adapter details are to be planned and verified.
+
+**Implementation boundary:** This record approves product direction and answers the six questions, but does not mark Q30/Q31/Q40 done, authorize generation of every proposed recording, or change production code/assets. Resolve ordinary technical details through existing owners and planning rules.
+
