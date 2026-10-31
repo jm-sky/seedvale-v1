@@ -563,7 +563,7 @@ function blocksPathOrClearing(
     const dCore = Math.hypot(tx - clearings.core.x, tz - clearings.core.z)
     if (dCore < courtyardRadius) return true
   }
-  for (const area of [clearings.core, ...clearings.houses, ...(clearings.yards ?? []), ...(clearings.gardens ?? [])]) {
+  for (const area of [clearings.core, ...clearings.houses, ...(clearings.yards ?? []), ...(clearings.storehouses ?? []), ...(clearings.gardens ?? [])]) {
     if (Math.hypot(tx - area.x, tz - area.z) < area.radius + 1) return true
   }
   for (const house of clearings.houses) {

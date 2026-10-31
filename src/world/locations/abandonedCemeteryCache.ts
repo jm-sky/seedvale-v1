@@ -21,8 +21,9 @@ export const ABANDONED_CEMETERY_NAMESPACE = 'abandoned-cemeteries'
  *  v2: river-aware road routing (plan world-terrain-023) changes regional road
  *  geometry for an unchanged seed, and placement rejects footprints that clear
  *  nearby roads.
- *  v4 (Q41): settlement clearings now include household yards and houses moved. */
-export const ABANDONED_CEMETERY_VERSION = 4
+ *  v4 (Q41): settlement clearings now include household yards and houses moved.
+ *  v5 (Q43): settlement storehouse pad added to the clearings. */
+export const ABANDONED_CEMETERY_VERSION = 5
 
 export type CachedAbandonedCemeteryResult =
   | { status: 'none' }

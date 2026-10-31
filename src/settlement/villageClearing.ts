@@ -28,6 +28,9 @@ export type ClearingLayout = {
    *  the house (Q41) so terrain flattening/vegetation clearing covers it.
    *  Kept separate from `houses` so consumers of house pads are unchanged. */
   yards: readonly ClearingArea[]
+  /** The settlement storehouse pad (Q43) — one entry, separate from the
+   *  family-aligned `houses`/`yards` so household identity is untouched. */
+  storehouses: readonly ClearingArea[]
   /** Garden pads (plan 077 / 100) — tree/grass reject + house-level flatten. */
   gardens: readonly ClearingArea[]
   /** Broad, weak smoothing pass covering the whole village footprint (core +
@@ -113,6 +116,18 @@ export function layoutClearingsFromPlan(
     }
   })
 
+  const storehouses: ClearingArea[] = plan.plots
+    .filter((p) => p.storehouse)
+    .map((plot) => {
+      const radius = Math.max(houseRadius, plot.radius * 0.85)
+      return {
+        x: plot.x,
+        z: plot.z,
+        radius,
+        targetH: dryClearingHeight(averageHeight(plot.x, plot.z, radius, sampleHeight), waterLevel),
+      }
+    })
+
   const gardenLandmarks = plan.landmarks
     .filter((l) => l.kind === 'garden')
     .slice()
@@ -133,6 +148,7 @@ export function layoutClearingsFromPlan(
     core.targetH,
     ...houses.map((h) => h.targetH),
     ...yards.filter((y) => y.radius > 0).map((y) => y.targetH),
+    ...storehouses.map((s) => s.targetH),
     ...gardens.map((g) => g.targetH),
   ]
   const regional: RegionalSmoothingSegment = {
@@ -146,7 +162,7 @@ export function layoutClearingsFromPlan(
         : params.regionalHeightStrengthFlat,
   }
 
-  return { core, houses, yards, gardens, regional }
+  return { core, houses, yards, storehouses, gardens, regional }
 }
 
 /**
@@ -202,5 +218,5 @@ export function layoutClearings(
       terrain === 'mountain' ? params.regionalHeightStrengthMountain : params.regionalHeightStrengthFlat,
   }
 
-  return { core, houses, yards: [], gardens: [], regional }
+  return { core, houses, yards: [], storehouses: [], gardens: [], regional }
 }

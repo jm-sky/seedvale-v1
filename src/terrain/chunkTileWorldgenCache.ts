@@ -49,8 +49,9 @@ export const CHUNK_TILE_CACHE_NAMESPACE = 'chunk-tiles'
  * rare wood with separate id prefixes (plan world-terrain-049).
  * v7 (2026-10-31, queue Q41): household yard clearings (`ClearingLayout.yards`)
  * flatten terrain behind every house; houses moved with the compound planner.
+ * v8 (2026-10-31, queue Q43): settlement storehouse pad (`ClearingLayout.storehouses`).
  */
-export const CHUNK_TILE_CACHE_VERSION = 7
+export const CHUNK_TILE_CACHE_VERSION = 8
 
 /** Small byte-budget manifest record living in the same namespace — see
  *  `ChunkTileMetaPayload`. Its `fingerprint` field is a constant because the

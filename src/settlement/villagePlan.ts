@@ -3,6 +3,7 @@ import type { SettlementTerrain } from '../shared/SettlementName'
 import type { NaturalResource } from '../terrain/naturalResources'
 import type { VillageSize } from './families'
 import type { HouseholdYardPlan, PlanDisc } from './householdYard'
+import type { StorehouseLayout } from './storehouseLayout'
 
 /** How a settlement's population mainly feeds itself (plan 032 §8) — v1 is
  *  data/flavor; props still share a garden unless `field` adds `farm.glb`.
@@ -164,6 +165,9 @@ export type VillagePlot = {
   /** House plots only: yard rectangle behind the house + fixed yard slots
    *  (barrel/trough/wood/storage row, profession reservation, gate marker). */
   yard?: HouseholdYardPlan
+  /** Storehouse plot only (`storehousePlotId()`, Q43): loading-bay slots.
+   *  Reuses `houseDefinitionId` / `houseYaw` for the shell. */
+  storehouse?: StorehouseLayout
   /** Spacing discs of the household compound (house + yard). Plots without
    *  it are measured as one disc of `radius` at `(x, z)`. */
   discs?: PlanDisc[]
@@ -262,6 +266,7 @@ export function householdWellLandmarkId(familyIndex: number): string {
 export type VillageLandmarkKind =
   | 'well'
   | 'stockpile'
+  | 'storehouse'
   | 'garden'
   | 'market'
   | 'campfire'
@@ -269,6 +274,11 @@ export type VillageLandmarkKind =
   | 'home'
   | 'dock'
   | 'field'
+
+/** Stable plot id of the settlement's single storehouse (plan Q43). */
+export function storehousePlotId(): string {
+  return 'plot-infra-storehouse-0'
+}
 
 /** Stable infrastructure plot id for the plaza notice board (plan settlements-011). */
 export function noticeBoardPlotId(): string {
