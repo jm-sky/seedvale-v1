@@ -102,6 +102,7 @@ Window: rings <= 5 (121 cells), pitches 280/300/310/320, p10/p50/p90 in metres.
 
 ## 5. Open questions (queue §3)
 
-1. **Storehouse model:** source? (a) Megakit/other existing pack in `LOCAL_ASSETS` (agent searches first), (b) the author generates/downloads one, (c) temporary: an existing house model re-used as storehouse.
+1. **Storehouse model — answered (author, 2026-10-31): (c)**, temporarily reuse an existing house model.  
+   _Was:_ source? (a) Megakit/other existing pack in `LOCAL_ASSETS` (agent searches first), (b) the author generates/downloads one, (c) temporary: an existing house model re-used as storehouse.
 2. **Crypt/grave models:** V2 `graveyard.glb` (`public/assets/parked/`) is not in the local V2 checkout — (a) the author provides it, (b) different pack.
 3. **Roads:** besides re-validation after spacing, is there a concrete road complaint (shape, too many/few roads, bridges)? Without one, Q38 stays a validation slice.
