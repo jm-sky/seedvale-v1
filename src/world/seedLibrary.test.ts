@@ -4,6 +4,7 @@ import { getSeedRecord, putSeedRecord } from '../persistence/seedDb'
 import { minimalSeedRecord } from '../persistence/seedRecord'
 import { countCacheForSeed } from '../persistence/worldgenCacheDb'
 import { type RawSampleParams } from '../terrain/chunkHeightmap'
+import { REFERENCE_SEED } from './parseSeed'
 import {
   clearSeedCache,
   deleteSeedGuarded,
@@ -169,7 +170,12 @@ describe('resolveInitialSeedChoice (plan persistence-004 §9 follow-up)', () => 
     expect(resolveInitialSeedChoice(null, seeds)).toEqual({ kind: 'existing', seed: 9 })
   })
 
-  it('falls back to "generate" when there is no URL seed and the library is empty', () => {
-    expect(resolveInitialSeedChoice(null, [])).toEqual({ kind: 'generate' })
+  it('falls back to the cached reference seed when there is no URL seed and the library is empty', () => {
+    expect(resolveInitialSeedChoice(null, [])).toEqual({ kind: 'existing', seed: REFERENCE_SEED })
+  })
+
+  it('resolving the reference seed backfills a library record', async () => {
+    expect(await resolveNewGameSeed({ kind: 'existing', seed: REFERENCE_SEED }, fakeSampleParams)).toBe(REFERENCE_SEED)
+    expect(await getSeedRecord(REFERENCE_SEED)).not.toBeNull()
   })
 })

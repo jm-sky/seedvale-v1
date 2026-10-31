@@ -21,6 +21,11 @@ export function parseSeedFromUrl(
   return Number.isFinite(n) ? Math.floor(n) : fallback
 }
 
+/** The author's reference seed: ships a worldgen fixture
+ *  (`public/worldgen-fixtures/`, see `persistence/worldgenFixture.ts`) so it
+ *  loads fast. Offered and preselected on the New Game screen by default. */
+export const REFERENCE_SEED = 415424794
+
 /** Fresh 32-bit seed for "New Game" — distinct from the deterministic URL fallback. */
 export function randomSeed(): number {
   return Math.floor(Math.random() * 0xffffffff)
