@@ -142,6 +142,20 @@ Plot–clearing and plot–road overlaps are 0 for everything that is placed (ex
 
 Cache bumps (`chunk-tiles`, `abandoned-cemeteries`, `locations-coarse` if it stores pose/size; tools-020 fixtures stale → browser re-export), the `PROPS` build-time number on WSL, queue §2 visual entry (marker front axis assumed **+Z**, unverified; crypt scale/sink), CREDITS/MODELS (done on the branch), `pnpm docs:sync`, STATE/CODE_INDEX owner update.
 
+
+### 5.5 Compact-plot trial (Q47, Sonnet, 2026-10-31, on `main`)
+
+Implemented per §7: `GRAVE_DX/DZ` 2.6/3.2 → 2.0/2.4, aisle 1.6 → 1.2, margin 2.5 → 1.2, crypt row 6.4 → 6.6 (needed so first-row markers clear crypt OBBs), crypt gap 0.6 packed by width; per-crypt scale `CemeteryCryptPose.scale` (LG = 0.8 / 1 / 0.8, SM/MD full size) applied in renderer, OBB colliders and placement corner-spread. Counts stay 9/15/25 graves, 1/2/3 crypts. Plot half-extents at scale 1: SM 5.8 × 8.1, MD 6.8 × 8.1, LG 8.8 × 9.3 (was 8.5×10.5 / 9.8×10.5 / 12.4×12.1). Layout/placement/chunkEnvironment tests updated; `src/terrain` + `src/settlement` + `src/world` green (3406 tests); the two red tests of §5.3 are green again.
+
+Census (rings ≤ 5, `pnpm worldgen:cemeteries:census`; 0 plot∩clearing, 0 plot∩road for everything placed):
+
+| seed | placed before V2 | placed now (compact) | `none` before → now | previously placed lost |
+| --- | --- | --- | --- | --- |
+| 42 | 74 | 57 | 6 → 23 | ≈ 23 % |
+| 415424794 | 84 | 76 (+1 split) | 10 → 19 | ≈ 10 % |
+
+**Still over the §4 5 % stop condition**, so Q47 does not close. Pattern: every **dedicated** cemetery of LG/XL/MD settlements fails (seed 42: 12 + 8 + 3; seed 415424794: 10 + 4 + 4), while SM dedicated and all shared/assigned groups place — the dense path network of larger villages is the blocker, which supports the approved "reserve cemetery plots before roads/paths" direction (§7, Q38/Q44) over shrinking plots further. Abandoned cemeteries in ±30 chunks: 0 (was 2 / 1). Caches/epoch not bumped, no visual entry yet.
+
 ## 6. Author questions — answered 2026-10-31
 
 1. **Cemetery fence: (c) no fence for now.** A fence may come later for the larger cemeteries (MD/LG) as a separate, placement-neutral follow-up inside the 2.5 m plot margin. It is not part of Q47.

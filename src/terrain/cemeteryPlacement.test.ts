@@ -199,8 +199,8 @@ describe('abandoned cemetery streamed vs resolver parity (plan world-022)', () =
 
 describe('abandonedCemeteryMaxOffsetFromCenter', () => {
   it('is the SM short-half-width inset (min scale) plus the chunk-edge slack', () => {
-    // SM plot half-width 8.5 m at scale 1 → 7.65 m at the minimum rolled scale 0.9; edge slack 0.5 m.
-    expect(abandonedCemeteryMaxOffsetFromCenter(64)).toBeCloseTo(32 - 0.5 - 7.65, 6)
+    // SM plot half-width 5.8 m at scale 1 → 5.22 m at the minimum rolled scale 0.9; edge slack 0.5 m.
+    expect(abandonedCemeteryMaxOffsetFromCenter(64)).toBeCloseTo(32 - 0.5 - 5.22, 6)
   })
 })
 

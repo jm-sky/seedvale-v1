@@ -291,8 +291,8 @@ export function validateCemeteryPhysical(
     for (const [sx, sz] of [[-1, -1], [1, -1], [-1, 1], [1, 1]] as const) {
       const w = cemeteryLocalToWorld(
         { x, z, rotationY },
-        c.x + sx * crypt.hx * scale,
-        c.z + sz * crypt.hz * scale,
+        c.x + sx * crypt.hx * c.scale * scale,
+        c.z + sz * crypt.hz * c.scale * scale,
       )
       const h = terrain.heightAt(w.x, w.z)
       cLo = Math.min(cLo, h)
