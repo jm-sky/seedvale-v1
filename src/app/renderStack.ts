@@ -8,6 +8,7 @@ import type { WorldSky } from '../world/createSky'
 import type { PointLightBudget } from '../world/pointLightBudget'
 import { isNoShadowsDebugMode } from '../debug/debugMode'
 import { benchmarkScenarioFromUrl, createProgramCensus, isProgramCensusUrlEnabled, pointLightBudgetFromUrl } from '../perf'
+import { shadowFrustumModeFromUrl } from '../perf/flags'
 import { createGpuTimer } from '../perf/gpuTimer'
 import { createPostProcessing } from '../render/createPostProcessing'
 import { createRenderer } from '../render/createRenderer'
@@ -94,7 +95,7 @@ export function createRenderStack(container: HTMLElement, config: WorldConfig): 
     config.postProcessing,
   )
 
-  const lights = createLights(config.postProcessing.shadowMapSize)
+  const lights = createLights(config.postProcessing.shadowMapSize, shadowFrustumModeFromUrl())
   lights.addTo(scene)
 
   // `?pointLightBudget=off` disables the pad without tearing down registration.

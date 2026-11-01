@@ -10,6 +10,9 @@ export type WorldLights = {
    *  frustum only needs to cover the area immediately around the camera, not
    *  the whole loaded region, so its size stays fixed and only the target moves. */
   follow: (x: number, z: number) => void
+  /** Metres the shadow frustum centre is shifted ahead of the player along the
+   *  camera's ground-plane forward (0 for the legacy ±80 frustum). */
+  shadowForwardOffset: number
   /** Live resize of the directional shadow map (plan 103). Disposes the
    *  current GPU target so Three.js reallocates on the next shadow pass. */
   setShadowMapSize: (size: number) => void
@@ -24,9 +27,18 @@ export type WorldLights = {
 /** Sun offset from the followed point; fixed, so the shadow camera's
  *  orientation (and its light-space basis below) never changes. */
 const SUN_OFFSET = new THREE.Vector3(40, 70, 30)
-const SHADOW_FRUSTUM_HALF = 80
+/** Legacy sun shadow half-extent, centred on the player. */
+export const SHADOW_FRUSTUM_HALF = 80
+/** world-terrain-055 S1 (`?shadowFrustum=tight`): tighter half-extent... */
+export const SHADOW_FRUSTUM_TIGHT_HALF = 56
+/** ...centred this far ahead of the player along camera forward (XZ). */
+export const SHADOW_FRUSTUM_TIGHT_FORWARD_OFFSET = 24
 
-export function createLights(shadowMapSize = 1024): WorldLights {
+export type ShadowFrustumMode = 'legacy' | 'tight'
+
+export function createLights(shadowMapSize = 1024, frustumMode: ShadowFrustumMode = 'legacy'): WorldLights {
+  const frustumHalf = frustumMode === 'tight' ? SHADOW_FRUSTUM_TIGHT_HALF : SHADOW_FRUSTUM_HALF
+  const shadowForwardOffset = frustumMode === 'tight' ? SHADOW_FRUSTUM_TIGHT_FORWARD_OFFSET : 0
   // Shadow-camera right/up axes, built exactly like `LightShadow.updateMatrices`
   // (`Camera.lookAt` from the sun towards its target with the default up).
   const shadowRight = new THREE.Vector3()
@@ -49,10 +61,10 @@ export function createLights(shadowMapSize = 1024): WorldLights {
   sun.shadow.mapSize.set(size, size)
   sun.shadow.camera.near = 1
   sun.shadow.camera.far = 200
-  sun.shadow.camera.left = -SHADOW_FRUSTUM_HALF
-  sun.shadow.camera.right = SHADOW_FRUSTUM_HALF
-  sun.shadow.camera.top = SHADOW_FRUSTUM_HALF
-  sun.shadow.camera.bottom = -SHADOW_FRUSTUM_HALF
+  sun.shadow.camera.left = -frustumHalf
+  sun.shadow.camera.right = frustumHalf
+  sun.shadow.camera.top = frustumHalf
+  sun.shadow.camera.bottom = -frustumHalf
   sun.shadow.bias = -0.0002
   // Agents live on AGENT_RENDER_LAYER so the water mirror (layer 0) skips
   // them. Keep them in the shadow camera or NPC/fauna stop casting.
@@ -66,6 +78,7 @@ export function createLights(shadowMapSize = 1024): WorldLights {
     ambient,
     hemi,
     sun,
+    shadowForwardOffset,
     addTo(scene) {
       scene.add(ambient)
       scene.add(hemi)
@@ -77,7 +90,7 @@ export function createLights(shadowMapSize = 1024): WorldLights {
       // the texel grid stays fixed in the world while the player walks —
       // otherwise every shadow edge (and any residual acne) crawls/shimmers.
       // Depth along the light axis is left unsnapped; it doesn't move texels.
-      const texel = (2 * SHADOW_FRUSTUM_HALF) / sun.shadow.mapSize.x
+      const texel = (2 * frustumHalf) / sun.shadow.mapSize.x
       followTarget.set(x, 0, z)
       const r = Math.round(followTarget.dot(shadowRight) / texel) * texel
       const u = Math.round(followTarget.dot(shadowUp) / texel) * texel

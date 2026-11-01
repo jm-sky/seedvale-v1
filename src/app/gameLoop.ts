@@ -835,6 +835,11 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
   /** Pull-based, fail-open shadow-map update budget (plan 145 R1) — see
    *  `render/shadowBudget.ts`. */
   const shadowBudgetState = createShadowBudgetState(player.mesh.position.x, player.mesh.position.z)
+  // Shadow frustum centre (player, or shifted ahead of it in `?shadowFrustum=tight`);
+  // the shadow budget tracks this so a camera turn also triggers a refresh.
+  let shadowCentreX = player.mesh.position.x
+  let shadowCentreZ = player.mesh.position.z
+  const shadowForwardDir = new Vector3()
   /** `?debugColliders=1` — zero runtime presence outside that flag, same
    *  pattern as `npcInspector` above. Lives for the app session (no
    *  `GameLoop.dispose`, mirroring the other debug-only deps here). */
@@ -2828,7 +2833,18 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
         bundle.chunkManager.update(player.mesh.position.x, player.mesh.position.z)
       })
       bundle.caves.update(player.mesh.position.x, player.mesh.position.z, dt)
-      lights.follow(player.mesh.position.x, player.mesh.position.z)
+      shadowCentreX = player.mesh.position.x
+      shadowCentreZ = player.mesh.position.z
+      if (lights.shadowForwardOffset > 0) {
+        // world-terrain-055 S1: aim the frustum where the player looks.
+        camera.getWorldDirection(shadowForwardDir)
+        const flat = Math.hypot(shadowForwardDir.x, shadowForwardDir.z)
+        if (flat > 1e-3) {
+          shadowCentreX += (shadowForwardDir.x / flat) * lights.shadowForwardOffset
+          shadowCentreZ += (shadowForwardDir.z / flat) * lights.shadowForwardOffset
+        }
+      }
+      lights.follow(shadowCentreX, shadowCentreZ)
       bundle.ocean.follow(player.mesh.position.x, player.mesh.position.z)
       colliderDebugView?.update(player.mesh.position.x, player.mesh.position.z, bundle.chunkManager.collidersNear)
       // Computed before `settlementsManager.update` (not after, as before
@@ -3157,8 +3173,8 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
     const shadowPlayerZ = player.mesh.position.z
     const shadowWanted = shouldUpdateShadowMap(
       shadowBudgetState,
-      shadowPlayerX,
-      shadowPlayerZ,
+      shadowCentreX,
+      shadowCentreZ,
       hasNearbyShadowCaster(shadowPlayerX, shadowPlayerZ),
     )
     // The sun's first shadow render creates `shadow.map`; until then the main
@@ -3167,7 +3183,7 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
     const shadowMapMissing = lights.sun.castShadow && !lights.sun.shadow.map
     if (shadowWanted || shadowMapMissing) renderer.shadowMap.needsUpdate = true
     passCollector?.noteShadowRefresh(shadowWanted)
-    recordShadowBudgetFrame(shadowBudgetState, shadowPlayerX, shadowPlayerZ, shadowWanted)
+    recordShadowBudgetFrame(shadowBudgetState, shadowCentreX, shadowCentreZ, shadowWanted)
     postProcessing.updateGodRays(camera, sky.sunPosition, cachedSky.elev)
     withCategory(monitor, 'RENDER', () => {
       // Same span as the CPU `RENDER` category timer above, so isolation

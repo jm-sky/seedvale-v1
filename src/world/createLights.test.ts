@@ -32,3 +32,26 @@ describe('createLights follow (shadow texel snapping)', () => {
     expect(lateral.length()).toBeLessThan(Math.SQRT2 * (160 / 1024) / 2 + 1e-6)
   })
 })
+
+describe('createLights tight shadow frustum (world-terrain-055 S1)', () => {
+  it('defaults to the legacy ±80 frustum with no forward offset', () => {
+    const lights = createLights(1024)
+    expect(lights.shadowForwardOffset).toBe(0)
+    expect(lights.sun.shadow.camera.right).toBe(80)
+  })
+
+  it('uses ±56 with a 24 m forward offset and snaps to the 112/size texel grid', () => {
+    const lights = createLights(1024, 'tight')
+    expect(lights.shadowForwardOffset).toBe(24)
+    expect(lights.sun.shadow.camera.right).toBe(56)
+    expect(lights.sun.shadow.camera.left).toBe(-56)
+    const texel = 112 / 1024
+    for (const [x, z] of [[0.037, -0.011], [13.3, 7.77], [-401.25, 92.6]] as const) {
+      lights.follow(x, z)
+      const origin = shadowViewOrigin(lights)
+      expect(Math.abs(origin.x / texel - Math.round(origin.x / texel))).toBeLessThan(1e-3)
+      expect(Math.abs(origin.y / texel - Math.round(origin.y / texel))).toBeLessThan(1e-3)
+    }
+  })
+})
+

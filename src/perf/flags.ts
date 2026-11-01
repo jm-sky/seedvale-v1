@@ -124,6 +124,13 @@ export function isFrameMatrixOnceEnabled(): boolean {
   return flagOn(p.get('frameMatrixOnce'))
 }
 
+/** world-terrain-055 S1: `?shadowFrustum=tight` uses a ±56 m sun shadow frustum
+ *  shifted 24 m ahead of the player along camera forward. Default `legacy`
+ *  (±80 m centred on the player) until the A/B + visual OK. */
+export function shadowFrustumModeFromUrl(): 'legacy' | 'tight' {
+  return params()?.get('shadowFrustum') === 'tight' ? 'tight' : 'legacy'
+}
+
 /** CA2 far-band grass main storage cap (`chunkManager.ts` `grassMainCapFor`).
  *  On by default; `?grassMainCap=0` stores every generated main instance again
  *  (pre-CA2) for the memory/upload A/B. */
