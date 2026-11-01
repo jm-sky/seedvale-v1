@@ -14,6 +14,8 @@ This is the central overview of Seedvale performance. Current code remains the s
 
 **New scoped plan (2026-11-01):** [world-terrain-056 — render-pass frame distribution, visibility budgeting and map quality](../plans/world-terrain-056-render-pass-frame-distribution-and-map-quality.md) — audit synchronized shadow/reflection costs, test staggered and visibility-aware cadence, and diagnose pixelated shadow/reflection maps. Planning only; changes require measured and visual verification.
 
+**Critical review (2026-11-01):** [world-terrain-056 review — pass cadence, p95/p99, map-resolution ROI](../reviews/2026-11-01--world-terrain-056-render-pass-frame-distribution-review.md) — Stage A is justified; prioritize moving-camera shadow cadence and mirror view relevance; no generic scheduler without overlap evidence. All FPS/tail scenarios in the review are **unverified forecasts**, not measured improvements.
+
 ## Performance model
 
 Keep three problems separate:
