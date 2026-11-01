@@ -12,6 +12,8 @@ This is the central overview of Seedvale performance. Current code remains the s
 
 **Determinism and workload audit (2026-10-28):** [Deep determinism and benchmark reproducibility](./audits/2026-10-28--deep-determinism-and-benchmark-reproducibility.md) — settlement lifecycle defects, scene readiness/identity, cache timing and minimal corrective sequence. Documentation-only; independent A1′ development may continue.
 
+**New scoped plan (2026-11-01):** [world-terrain-056 — render-pass frame distribution, visibility budgeting and map quality](../plans/world-terrain-056-render-pass-frame-distribution-and-map-quality.md) — audit synchronized shadow/reflection costs, test staggered and visibility-aware cadence, and diagnose pixelated shadow/reflection maps. Planning only; changes require measured and visual verification.
+
 ## Performance model
 
 Keep three problems separate:
