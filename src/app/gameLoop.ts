@@ -118,7 +118,7 @@ import { isLiquidContainerInstance, LIQUID_CONTAINER_KIND_LIST } from '../items/
 import { ITEM_DEFS, type ItemKind } from '../items/items'
 import { applySharpnessWear, getSharpnessDamageModifier, getWeaponMaintenanceProfile } from '../items/weaponMaintenance'
 import { getGpuTimer, getMonitor, getPassSubmissionCollector, getProgramCensus, withCategory, withProgramCensusStage } from '../perf'
-import { isFrameMatrixOnceEnabled } from '../perf/flags'
+import { isFrameMatrixOnceEnabled, isShadowActorCadenceEnabled } from '../perf/flags'
 import { getActorCohortMask } from '../perf/occludedActorCohort'
 import { buildCharacterPresentation } from '../player/characterPresentation'
 import {
@@ -1012,6 +1012,7 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
   }
 
   const frameMatrixOnce = isFrameMatrixOnceEnabled()
+  const shadowActorCadence = isShadowActorCadenceEnabled()
   // Q16 occluded-actor cohort tooling (`?actorCohort=census|mask`); null by default.
   const actorCohortMask = getActorCohortMask()
 
@@ -3176,6 +3177,7 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
       shadowCentreX,
       shadowCentreZ,
       hasNearbyShadowCaster(shadowPlayerX, shadowPlayerZ),
+      shadowActorCadence,
     )
     // The sun's first shadow render creates `shadow.map`; until then the main
     // pass would bind three's 1x1 placeholder to `sampler2DShadow`. Force that

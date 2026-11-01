@@ -131,6 +131,14 @@ export function shadowFrustumModeFromUrl(): 'legacy' | 'tight' {
   return params()?.get('shadowFrustum') === 'tight' ? 'tight' : 'legacy'
 }
 
+/** world-terrain-055 S2: `?shadowActorCadence=1` refreshes the sun shadow map
+ *  every 2nd frame when only nearby NPC/fauna motion (not the player/camera)
+ *  triggers it. Default off until the A/B + visual OK. */
+export function isShadowActorCadenceEnabled(): boolean {
+  const p = params()
+  return p?.has('shadowActorCadence') ? flagOn(p.get('shadowActorCadence')) : false
+}
+
 /** CA2 far-band grass main storage cap (`chunkManager.ts` `grassMainCapFor`).
  *  On by default; `?grassMainCap=0` stores every generated main instance again
  *  (pre-CA2) for the memory/upload A/B. */

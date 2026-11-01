@@ -47,16 +47,20 @@ export function shouldUpdateShadowMap(
   playerX: number,
   playerZ: number,
   hasNearbyShadowCaster: boolean,
+  halfRateActorOnly = false,
 ): boolean {
   if (state.framesSinceUpdate >= SHADOW_DIRTY_MAX_STALE_FRAMES) return true
+  const dx = playerX - state.lastPlayerX
+  const dz = playerZ - state.lastPlayerZ
+  const moved = dx * dx + dz * dz > SHADOW_DIRTY_PLAYER_EPS_M * SHADOW_DIRTY_PLAYER_EPS_M
+  // world-terrain-055 S2 (`?shadowActorCadence=1`): when the only trigger is a
+  // nearby NPC/animal (frustum centre stationary), refresh every 2nd frame.
+  if (halfRateActorOnly && !moved) return hasNearbyShadowCaster && state.framesSinceUpdate >= 1
   // Fail-open by design: an NPC/animal in shadow-casting range is treated as
   // "assume moving" rather than tracked for actual per-frame displacement —
   // see module doc. At current populations this is almost always `true` near
   // settlements, which is the expected/measured trade-off, not a bug.
-  if (hasNearbyShadowCaster) return true
-  const dx = playerX - state.lastPlayerX
-  const dz = playerZ - state.lastPlayerZ
-  return dx * dx + dz * dz > SHADOW_DIRTY_PLAYER_EPS_M * SHADOW_DIRTY_PLAYER_EPS_M
+  return hasNearbyShadowCaster || moved
 }
 
 /** Call once per frame after acting on `shouldUpdateShadowMap`'s result, so

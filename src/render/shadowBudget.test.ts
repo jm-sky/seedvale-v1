@@ -71,3 +71,32 @@ describe('anyWithinRadius', () => {
     expect(anyWithinRadius(0, 0, [{ x: 36, z: 0 }], 36, positionOf)).toBe(true)
   })
 })
+
+describe('shouldUpdateShadowMap actor cadence (world-terrain-055 S2)', () => {
+  it('refreshes every 2nd frame when only a nearby caster triggers it', () => {
+    const state = createShadowBudgetState(0, 0)
+    expect(shouldUpdateShadowMap(state, 0, 0, true, true)).toBe(false)
+    recordShadowBudgetFrame(state, 0, 0, false)
+    expect(shouldUpdateShadowMap(state, 0, 0, true, true)).toBe(true)
+    recordShadowBudgetFrame(state, 0, 0, true)
+    expect(shouldUpdateShadowMap(state, 0, 0, true, true)).toBe(false)
+  })
+
+  it('still refreshes every frame when the frustum centre moved', () => {
+    const state = createShadowBudgetState(0, 0)
+    expect(shouldUpdateShadowMap(state, SHADOW_DIRTY_PLAYER_EPS_M * 2, 0, true, true)).toBe(true)
+  })
+
+  it('does nothing without a caster and keeps the stale cap', () => {
+    const state = createShadowBudgetState(0, 0)
+    expect(shouldUpdateShadowMap(state, 0, 0, false, true)).toBe(false)
+    state.framesSinceUpdate = SHADOW_DIRTY_MAX_STALE_FRAMES
+    expect(shouldUpdateShadowMap(state, 0, 0, false, true)).toBe(true)
+  })
+
+  it('is unchanged (every frame with a caster) when the flag is off', () => {
+    const state = createShadowBudgetState(0, 0)
+    expect(shouldUpdateShadowMap(state, 0, 0, true)).toBe(true)
+  })
+})
+
