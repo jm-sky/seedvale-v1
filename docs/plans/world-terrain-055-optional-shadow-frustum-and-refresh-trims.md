@@ -15,6 +15,11 @@
 
 **Both S1 and S2, each with a separate A/B, in the next session** (queue Q50 → Q51). Never combine the two flags in one A/B arm; default flips are decided per slice after WSL A/B, Windows A/B and visual check.
 
+## Progress
+
+- **S1 implemented** (`caab7ae2`, flag `?shadowFrustum=tight`, default legacy). WSL A/B: [report](../performance/results/2026-11-01--wsl-q50-shadow-frustum-ab.md) — shadow calls −11.6 %, shadow triangles −29 %, frame time not distinguishable from noise. Windows A/B and visual check pending.
+- S2: not started (Q51).
+
 ## Goal
 
 Cut the cost of the sun shadow pass in settlements with two small, independently revertable changes to existing owners, without touching settlement/actor lifecycle:

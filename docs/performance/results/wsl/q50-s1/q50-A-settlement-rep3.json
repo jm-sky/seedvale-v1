@@ -1,0 +1,4364 @@
+{
+  "durationSec": 30,
+  "quality": "High",
+  "pixelRatio": 1,
+  "scenario": "settlement",
+  "canonical": true,
+  "frameCount": 286,
+  "fps": {
+    "avg": 32,
+    "min": 1,
+    "p1": 10
+  },
+  "frameTime": {
+    "avg": 31.2,
+    "p50": 27.1,
+    "p95": 35.8,
+    "p99": 102.3,
+    "max": 929.6
+  },
+  "updateTime": {
+    "p50": 5.4,
+    "p95": 8.3,
+    "p99": 53.5,
+    "max": 106.4,
+    "sampleCount": 286
+  },
+  "renderTime": {
+    "p50": 20.8,
+    "p95": 26.3,
+    "p99": 33.8,
+    "max": 923,
+    "sampleCount": 286
+  },
+  "frameWallTime": {
+    "p50": 27.1,
+    "p95": 35.8,
+    "p99": 102.3,
+    "max": 929.6,
+    "sampleCount": 286
+  },
+  "hitchCount": 0,
+  "longFrameCount": 4,
+  "rendering": {
+    "drawCallsAvg": 1845,
+    "drawCallsMax": 2170,
+    "trianglesAvg": 10817431,
+    "mirrorDrawCallsAvg": 323,
+    "geometries": 682,
+    "textures": 324
+  },
+  "scene": {
+    "terrain": {
+      "meshes": 64,
+      "instancedMeshes": 0,
+      "instances": 64,
+      "drawCalls": 64,
+      "triangles": 4717536
+    },
+    "grass": {
+      "meshes": 72,
+      "instancedMeshes": 72,
+      "instances": 549991,
+      "drawCalls": 72,
+      "triangles": 7222770
+    },
+    "vegetation": {
+      "meshes": 102,
+      "instancedMeshes": 102,
+      "instances": 183,
+      "drawCalls": 102,
+      "triangles": 263948
+    },
+    "environment": {
+      "meshes": 48,
+      "instancedMeshes": 31,
+      "instances": 48,
+      "drawCalls": 48,
+      "triangles": 24479
+    },
+    "settlement": {
+      "meshes": 693,
+      "instancedMeshes": 218,
+      "instances": 2109,
+      "drawCalls": 693,
+      "triangles": 865794
+    },
+    "water": {
+      "meshes": 25,
+      "instancedMeshes": 0,
+      "instances": 25,
+      "drawCalls": 25,
+      "triangles": 1777664
+    },
+    "npc": {
+      "meshes": 223,
+      "instancedMeshes": 0,
+      "instances": 223,
+      "drawCalls": 223,
+      "triangles": 289075
+    },
+    "fauna": {
+      "meshes": 241,
+      "instancedMeshes": 0,
+      "instances": 241,
+      "drawCalls": 241,
+      "triangles": 96084
+    },
+    "items": {
+      "meshes": 261,
+      "instancedMeshes": 0,
+      "instances": 261,
+      "drawCalls": 261,
+      "triangles": 31706
+    },
+    "other": {
+      "meshes": 424,
+      "instancedMeshes": 3,
+      "instances": 424,
+      "drawCalls": 424,
+      "triangles": 28643
+    }
+  },
+  "shadowCasters": {
+    "terrain": {
+      "meshes": 64,
+      "instancedMeshes": 0,
+      "instances": 64,
+      "drawCalls": 64,
+      "triangles": 4717536
+    },
+    "grass": {
+      "meshes": 0,
+      "instancedMeshes": 0,
+      "instances": 0,
+      "drawCalls": 0,
+      "triangles": 0
+    },
+    "vegetation": {
+      "meshes": 100,
+      "instancedMeshes": 100,
+      "instances": 181,
+      "drawCalls": 100,
+      "triangles": 257072
+    },
+    "environment": {
+      "meshes": 48,
+      "instancedMeshes": 31,
+      "instances": 48,
+      "drawCalls": 48,
+      "triangles": 24479
+    },
+    "settlement": {
+      "meshes": 452,
+      "instancedMeshes": 161,
+      "instances": 1763,
+      "drawCalls": 452,
+      "triangles": 621164
+    },
+    "water": {
+      "meshes": 0,
+      "instancedMeshes": 0,
+      "instances": 0,
+      "drawCalls": 0,
+      "triangles": 0
+    },
+    "npc": {
+      "meshes": 75,
+      "instancedMeshes": 0,
+      "instances": 75,
+      "drawCalls": 75,
+      "triangles": 98397
+    },
+    "fauna": {
+      "meshes": 54,
+      "instancedMeshes": 0,
+      "instances": 54,
+      "drawCalls": 54,
+      "triangles": 19594
+    },
+    "items": {
+      "meshes": 43,
+      "instancedMeshes": 0,
+      "instances": 43,
+      "drawCalls": 43,
+      "triangles": 26038
+    },
+    "other": {
+      "meshes": 111,
+      "instancedMeshes": 0,
+      "instances": 111,
+      "drawCalls": 111,
+      "triangles": 14514
+    }
+  },
+  "settlementShadowCasters": {
+    "houseStatic": {
+      "meshes": 89,
+      "instancedMeshes": 89,
+      "instances": 816,
+      "drawCalls": 89,
+      "triangles": 109430
+    },
+    "houseInteractive": {
+      "meshes": 34,
+      "instancedMeshes": 0,
+      "instances": 34,
+      "drawCalls": 34,
+      "triangles": 5338
+    },
+    "fence": {
+      "meshes": 4,
+      "instancedMeshes": 4,
+      "instances": 32,
+      "drawCalls": 4,
+      "triangles": 6464
+    },
+    "storage": {
+      "meshes": 0,
+      "instancedMeshes": 0,
+      "instances": 0,
+      "drawCalls": 0,
+      "triangles": 0
+    },
+    "storageWood": {
+      "meshes": 0,
+      "instancedMeshes": 0,
+      "instances": 0,
+      "drawCalls": 0,
+      "triangles": 0
+    },
+    "storageWoodSettlementPrimary": {
+      "meshes": 3,
+      "instancedMeshes": 3,
+      "instances": 3,
+      "drawCalls": 3,
+      "triangles": 2340
+    },
+    "storageWoodSettlementOverflow": {
+      "meshes": 0,
+      "instancedMeshes": 0,
+      "instances": 0,
+      "drawCalls": 0,
+      "triangles": 0
+    },
+    "storageWoodSettlementSecondary": {
+      "meshes": 0,
+      "instancedMeshes": 0,
+      "instances": 0,
+      "drawCalls": 0,
+      "triangles": 0
+    },
+    "storageWoodHousehold": {
+      "meshes": 3,
+      "instancedMeshes": 3,
+      "instances": 14,
+      "drawCalls": 3,
+      "triangles": 10920
+    },
+    "storageContainer": {
+      "meshes": 18,
+      "instancedMeshes": 12,
+      "instances": 62,
+      "drawCalls": 18,
+      "triangles": 4620
+    },
+    "storageBarrel": {
+      "meshes": 0,
+      "instancedMeshes": 0,
+      "instances": 0,
+      "drawCalls": 0,
+      "triangles": 0
+    },
+    "storageHay": {
+      "meshes": 3,
+      "instancedMeshes": 3,
+      "instances": 3,
+      "drawCalls": 3,
+      "triangles": 1464
+    },
+    "storageTrough": {
+      "meshes": 8,
+      "instancedMeshes": 8,
+      "instances": 30,
+      "drawCalls": 8,
+      "triangles": 3000
+    },
+    "storageGoods": {
+      "meshes": 0,
+      "instancedMeshes": 0,
+      "instances": 0,
+      "drawCalls": 0,
+      "triangles": 0
+    },
+    "workplace": {
+      "meshes": 9,
+      "instancedMeshes": 0,
+      "instances": 9,
+      "drawCalls": 9,
+      "triangles": 6030
+    },
+    "landmark": {
+      "meshes": 0,
+      "instancedMeshes": 0,
+      "instances": 0,
+      "drawCalls": 0,
+      "triangles": 0
+    },
+    "landmarkWell": {
+      "meshes": 0,
+      "instancedMeshes": 0,
+      "instances": 0,
+      "drawCalls": 0,
+      "triangles": 0
+    },
+    "landmarkWellCentral": {
+      "meshes": 15,
+      "instancedMeshes": 15,
+      "instances": 15,
+      "drawCalls": 15,
+      "triangles": 5610
+    },
+    "landmarkWellHousehold": {
+      "meshes": 0,
+      "instancedMeshes": 0,
+      "instances": 0,
+      "drawCalls": 0,
+      "triangles": 0
+    },
+    "landmarkWellPasture": {
+      "meshes": 5,
+      "instancedMeshes": 5,
+      "instances": 5,
+      "drawCalls": 5,
+      "triangles": 1870
+    },
+    "landmarkGarden": {
+      "meshes": 3,
+      "instancedMeshes": 3,
+      "instances": 5,
+      "drawCalls": 3,
+      "triangles": 4000
+    },
+    "landmarkField": {
+      "meshes": 0,
+      "instancedMeshes": 0,
+      "instances": 0,
+      "drawCalls": 0,
+      "triangles": 0
+    },
+    "landmarkNoticeBoard": {
+      "meshes": 6,
+      "instancedMeshes": 0,
+      "instances": 6,
+      "drawCalls": 6,
+      "triangles": 108
+    },
+    "fireLight": {
+      "meshes": 0,
+      "instancedMeshes": 0,
+      "instances": 0,
+      "drawCalls": 0,
+      "triangles": 0
+    },
+    "fireHouseExteriorLamp": {
+      "meshes": 0,
+      "instancedMeshes": 0,
+      "instances": 0,
+      "drawCalls": 0,
+      "triangles": 0
+    },
+    "fireHouseInteriorLamp": {
+      "meshes": 14,
+      "instancedMeshes": 0,
+      "instances": 14,
+      "drawCalls": 14,
+      "triangles": 1512
+    },
+    "fireVillageTorch": {
+      "meshes": 0,
+      "instancedMeshes": 0,
+      "instances": 0,
+      "drawCalls": 0,
+      "triangles": 0
+    },
+    "fireCampfire": {
+      "meshes": 4,
+      "instancedMeshes": 0,
+      "instances": 4,
+      "drawCalls": 4,
+      "triangles": 602
+    },
+    "decor": {
+      "meshes": 199,
+      "instancedMeshes": 10,
+      "instances": 302,
+      "drawCalls": 199,
+      "triangles": 380556
+    },
+    "other": {
+      "meshes": 35,
+      "instancedMeshes": 6,
+      "instances": 409,
+      "drawCalls": 35,
+      "triangles": 77300
+    }
+  },
+  "agentDetail": {
+    "npc": {
+      "families": [
+        {
+          "family": "Peasant",
+          "agents": 12,
+          "meshes": 111,
+          "skinnedMeshes": 111,
+          "drawCalls": 111,
+          "triangles": 135056
+        },
+        {
+          "family": "Farmer",
+          "agents": 4,
+          "meshes": 35,
+          "skinnedMeshes": 35,
+          "drawCalls": 35,
+          "triangles": 51659
+        },
+        {
+          "family": "Knight_Cloth",
+          "agents": 3,
+          "meshes": 29,
+          "skinnedMeshes": 29,
+          "drawCalls": 29,
+          "triangles": 37543
+        },
+        {
+          "family": "Peasant_Boots",
+          "agents": 2,
+          "meshes": 18,
+          "skinnedMeshes": 18,
+          "drawCalls": 18,
+          "triangles": 24430
+        },
+        {
+          "family": "Ranger_NoHood",
+          "agents": 1,
+          "meshes": 13,
+          "skinnedMeshes": 13,
+          "drawCalls": 13,
+          "triangles": 15186
+        },
+        {
+          "family": "blacksmith",
+          "agents": 1,
+          "meshes": 10,
+          "skinnedMeshes": 10,
+          "drawCalls": 10,
+          "triangles": 14387
+        },
+        {
+          "family": "woodcutter",
+          "agents": 1,
+          "meshes": 7,
+          "skinnedMeshes": 7,
+          "drawCalls": 7,
+          "triangles": 10814
+        }
+      ],
+      "distanceBands": [
+        {
+          "band": "near",
+          "agents": 0,
+          "cameraRelevantAgents": 0,
+          "meshes": 0,
+          "skinnedMeshes": 0,
+          "drawCalls": 0,
+          "triangles": 0
+        },
+        {
+          "band": "mid",
+          "agents": 8,
+          "cameraRelevantAgents": 3,
+          "meshes": 75,
+          "skinnedMeshes": 75,
+          "drawCalls": 75,
+          "triangles": 98397
+        },
+        {
+          "band": "far",
+          "agents": 16,
+          "cameraRelevantAgents": 9,
+          "meshes": 148,
+          "skinnedMeshes": 148,
+          "drawCalls": 148,
+          "triangles": 190678
+        }
+      ]
+    },
+    "fauna": {
+      "families": [
+        {
+          "family": "deer",
+          "agents": 5,
+          "meshes": 35,
+          "skinnedMeshes": 35,
+          "drawCalls": 35,
+          "triangles": 10490
+        },
+        {
+          "family": "dog",
+          "agents": 6,
+          "meshes": 33,
+          "skinnedMeshes": 33,
+          "drawCalls": 33,
+          "triangles": 11610
+        },
+        {
+          "family": "horse",
+          "agents": 4,
+          "meshes": 32,
+          "skinnedMeshes": 32,
+          "drawCalls": 32,
+          "triangles": 8728
+        },
+        {
+          "family": "chicken",
+          "agents": 5,
+          "meshes": 25,
+          "skinnedMeshes": 0,
+          "drawCalls": 25,
+          "triangles": 3240
+        },
+        {
+          "family": "wolf",
+          "agents": 6,
+          "meshes": 24,
+          "skinnedMeshes": 24,
+          "drawCalls": 24,
+          "triangles": 11772
+        },
+        {
+          "family": "sheep",
+          "agents": 11,
+          "meshes": 22,
+          "skinnedMeshes": 22,
+          "drawCalls": 22,
+          "triangles": 6710
+        },
+        {
+          "family": "stag",
+          "agents": 3,
+          "meshes": 18,
+          "skinnedMeshes": 15,
+          "drawCalls": 18,
+          "triangles": 11010
+        },
+        {
+          "family": "boar",
+          "agents": 3,
+          "meshes": 15,
+          "skinnedMeshes": 15,
+          "drawCalls": 15,
+          "triangles": 6924
+        },
+        {
+          "family": "fox",
+          "agents": 2,
+          "meshes": 8,
+          "skinnedMeshes": 8,
+          "drawCalls": 8,
+          "triangles": 3696
+        },
+        {
+          "family": "cow",
+          "agents": 1,
+          "meshes": 7,
+          "skinnedMeshes": 7,
+          "drawCalls": 7,
+          "triangles": 2450
+        },
+        {
+          "family": "duck",
+          "agents": 2,
+          "meshes": 6,
+          "skinnedMeshes": 0,
+          "drawCalls": 6,
+          "triangles": 224
+        },
+        {
+          "family": "bear",
+          "agents": 6,
+          "meshes": 6,
+          "skinnedMeshes": 6,
+          "drawCalls": 6,
+          "triangles": 3996
+        },
+        {
+          "family": "rat",
+          "agents": 3,
+          "meshes": 6,
+          "skinnedMeshes": 6,
+          "drawCalls": 6,
+          "triangles": 12012
+        },
+        {
+          "family": "rabbit",
+          "agents": 3,
+          "meshes": 3,
+          "skinnedMeshes": 3,
+          "drawCalls": 3,
+          "triangles": 2022
+        },
+        {
+          "family": "rooster",
+          "agents": 1,
+          "meshes": 1,
+          "skinnedMeshes": 0,
+          "drawCalls": 1,
+          "triangles": 1200
+        }
+      ],
+      "distanceBands": [
+        {
+          "band": "near",
+          "agents": 4,
+          "cameraRelevantAgents": 4,
+          "meshes": 17,
+          "skinnedMeshes": 12,
+          "drawCalls": 17,
+          "triangles": 4050
+        },
+        {
+          "band": "mid",
+          "agents": 9,
+          "cameraRelevantAgents": 6,
+          "meshes": 37,
+          "skinnedMeshes": 31,
+          "drawCalls": 37,
+          "triangles": 15544
+        },
+        {
+          "band": "far",
+          "agents": 48,
+          "cameraRelevantAgents": 13,
+          "meshes": 187,
+          "skinnedMeshes": 163,
+          "drawCalls": 187,
+          "triangles": 76490
+        }
+      ]
+    }
+  },
+  "matrixWork": {
+    "buckets": {
+      "terrain": {
+        "nodes": 64,
+        "composed": 64,
+        "multiplied": 64,
+        "skinned": 0
+      },
+      "grass": {
+        "nodes": 93,
+        "composed": 93,
+        "multiplied": 93,
+        "skinned": 0
+      },
+      "vegetation": {
+        "nodes": 125,
+        "composed": 125,
+        "multiplied": 125,
+        "skinned": 0
+      },
+      "environment": {
+        "nodes": 72,
+        "composed": 72,
+        "multiplied": 72,
+        "skinned": 0
+      },
+      "settlement": {
+        "nodes": 1394,
+        "composed": 1394,
+        "multiplied": 1394,
+        "skinned": 0
+      },
+      "water": {
+        "nodes": 25,
+        "composed": 25,
+        "multiplied": 25,
+        "skinned": 0
+      },
+      "npc": {
+        "nodes": 1878,
+        "composed": 1878,
+        "multiplied": 1878,
+        "skinned": 223
+      },
+      "fauna": {
+        "nodes": 2557,
+        "composed": 2557,
+        "multiplied": 2557,
+        "skinned": 206
+      },
+      "items": {
+        "nodes": 399,
+        "composed": 399,
+        "multiplied": 399,
+        "skinned": 0
+      },
+      "other": {
+        "nodes": 686,
+        "composed": 669,
+        "multiplied": 686,
+        "skinned": 9
+      }
+    },
+    "topRoots": [
+      {
+        "name": "fauna",
+        "roots": 61,
+        "nodes": 2557,
+        "composed": 2557,
+        "multiplied": 2557,
+        "skinned": 206
+      },
+      {
+        "name": "npc",
+        "roots": 24,
+        "nodes": 1878,
+        "composed": 1878,
+        "multiplied": 1878,
+        "skinned": 223
+      },
+      {
+        "name": "settlement",
+        "roots": 3,
+        "nodes": 1394,
+        "composed": 1394,
+        "multiplied": 1394,
+        "skinned": 0
+      },
+      {
+        "name": "Group",
+        "roots": 82,
+        "nodes": 518,
+        "composed": 518,
+        "multiplied": 518,
+        "skinned": 9
+      },
+      {
+        "name": "chunk-items",
+        "roots": 26,
+        "nodes": 366,
+        "composed": 366,
+        "multiplied": 366,
+        "skinned": 0
+      },
+      {
+        "name": "chunk-grass",
+        "roots": 21,
+        "nodes": 93,
+        "composed": 93,
+        "multiplied": 93,
+        "skinned": 0
+      },
+      {
+        "name": "chunk",
+        "roots": 64,
+        "nodes": 64,
+        "composed": 64,
+        "multiplied": 64,
+        "skinned": 0
+      },
+      {
+        "name": "Root_Scene",
+        "roots": 14,
+        "nodes": 52,
+        "composed": 52,
+        "multiplied": 52,
+        "skinned": 0
+      },
+      {
+        "name": "Object3D",
+        "roots": 33,
+        "nodes": 33,
+        "composed": 33,
+        "multiplied": 33,
+        "skinned": 0
+      },
+      {
+        "name": "chunk-river",
+        "roots": 26,
+        "nodes": 26,
+        "composed": 26,
+        "multiplied": 26,
+        "skinned": 0
+      },
+      {
+        "name": "chunk-environment",
+        "roots": 4,
+        "nodes": 25,
+        "composed": 25,
+        "multiplied": 25,
+        "skinned": 0
+      },
+      {
+        "name": "chunk-water",
+        "roots": 24,
+        "nodes": 24,
+        "composed": 24,
+        "multiplied": 24,
+        "skinned": 0
+      }
+    ]
+  },
+  "passSubmissions": {
+    "reliability": "observed",
+    "reliabilityReason": null,
+    "frames": 289,
+    "shadowRefreshFrames": 289,
+    "shadowSkippedFrames": 0,
+    "mirror": {
+      "frames": 289,
+      "callsSum": 93670,
+      "trianglesSum": 247324470,
+      "callsAvg": 324,
+      "trianglesAvg": 855794,
+      "costAvg": {
+        "materialSwitches": 110.9,
+        "programSwitches": 54.7,
+        "actorCalls": 0,
+        "actorMaterialSwitches": 0,
+        "actorProgramSwitches": 0,
+        "skinnedCalls": 2,
+        "skeletonsFirstUsed": 2
+      },
+      "byBucket": {
+        "other": {
+          "callsSum": 31610,
+          "trianglesSum": 1680115,
+          "callsAvg": 109,
+          "trianglesAvg": 5814
+        },
+        "terrain": {
+          "callsSum": 2320,
+          "trianglesSum": 170968920,
+          "callsAvg": 8,
+          "trianglesAvg": 591588
+        },
+        "settlement:decor": {
+          "callsSum": 13920,
+          "trianglesSum": 31868245,
+          "callsAvg": 48,
+          "trianglesAvg": 110271
+        },
+        "vegetation": {
+          "callsSum": 580,
+          "trianglesSum": 196040,
+          "callsAvg": 2,
+          "trianglesAvg": 678
+        },
+        "environment": {
+          "callsSum": 145,
+          "trianglesSum": 125860,
+          "callsAvg": 1,
+          "trianglesAvg": 436
+        },
+        "settlement:fireCampfire": {
+          "callsSum": 1160,
+          "trianglesSum": 89513.33333333326,
+          "callsAvg": 4,
+          "trianglesAvg": 310
+        },
+        "settlement:storageTrough": {
+          "callsSum": 870,
+          "trianglesSum": 348000,
+          "callsAvg": 3,
+          "trianglesAvg": 1204
+        },
+        "settlement:fireVillageTorch": {
+          "callsSum": 3625,
+          "trianglesSum": 259308.33333333387,
+          "callsAvg": 13,
+          "trianglesAvg": 897
+        },
+        "settlement:landmarkWellHousehold": {
+          "callsSum": 725,
+          "trianglesSum": 813450,
+          "callsAvg": 3,
+          "trianglesAvg": 2815
+        },
+        "settlement:landmarkWellCentral": {
+          "callsSum": 725,
+          "trianglesSum": 271150,
+          "callsAvg": 3,
+          "trianglesAvg": 938
+        },
+        "settlement:landmarkWellPasture": {
+          "callsSum": 725,
+          "trianglesSum": 271150,
+          "callsAvg": 3,
+          "trianglesAvg": 938
+        },
+        "settlement:storageWoodHousehold": {
+          "callsSum": 290,
+          "trianglesSum": 1244100,
+          "callsAvg": 1,
+          "trianglesAvg": 4305
+        },
+        "settlement:storageWoodSettlementPrimary": {
+          "callsSum": 290,
+          "trianglesSum": 226200,
+          "callsAvg": 1,
+          "trianglesAvg": 783
+        },
+        "settlement:storageContainer": {
+          "callsSum": 2610,
+          "trianglesSum": 570720,
+          "callsAvg": 9,
+          "trianglesAvg": 1975
+        },
+        "settlement:workplace": {
+          "callsSum": 1305,
+          "trianglesSum": 590730,
+          "callsAvg": 5,
+          "trianglesAvg": 2044
+        },
+        "settlement:landmarkGarden": {
+          "callsSum": 870,
+          "trianglesSum": 10172040,
+          "callsAvg": 3,
+          "trianglesAvg": 35197
+        },
+        "settlement:storageBarrel": {
+          "callsSum": 1740,
+          "trianglesSum": 3010200,
+          "callsAvg": 6,
+          "trianglesAvg": 10416
+        },
+        "settlement:storageGoods": {
+          "callsSum": 8555,
+          "trianglesSum": 1636760,
+          "callsAvg": 30,
+          "trianglesAvg": 5664
+        },
+        "settlement:fireHouseExteriorLamp": {
+          "callsSum": 3480,
+          "trianglesSum": 167040,
+          "callsAvg": 12,
+          "trianglesAvg": 578
+        },
+        "settlement:fireHouseInteriorLamp": {
+          "callsSum": 1160,
+          "trianglesSum": 125280,
+          "callsAvg": 4,
+          "trianglesAvg": 433
+        },
+        "settlement:landmarkNoticeBoard": {
+          "callsSum": 290,
+          "trianglesSum": 5220,
+          "callsAvg": 1,
+          "trianglesAvg": 18
+        },
+        "settlement:houseStatic": {
+          "callsSum": 9570,
+          "trianglesSum": 12538150,
+          "callsAvg": 33,
+          "trianglesAvg": 43385
+        },
+        "settlement:houseInteractive": {
+          "callsSum": 3915,
+          "trianglesSum": 430650,
+          "callsAvg": 14,
+          "trianglesAvg": 1490
+        },
+        "settlement:storageHay": {
+          "callsSum": 145,
+          "trianglesSum": 70760,
+          "callsAvg": 1,
+          "trianglesAvg": 245
+        },
+        "settlement:fence": {
+          "callsSum": 580,
+          "trianglesSum": 937280,
+          "callsAvg": 2,
+          "trianglesAvg": 3243
+        },
+        "settlement:other": {
+          "callsSum": 2465,
+          "trianglesSum": 8763220,
+          "callsAvg": 9,
+          "trianglesAvg": 30323
+        }
+      },
+      "residualCallsAvg": 0,
+      "residualTrianglesAvg": -192,
+      "infoCallsAvg": 324,
+      "infoTrianglesAvg": 855794
+    },
+    "shadow": {
+      "frames": 289,
+      "callsSum": 156722,
+      "trianglesSum": 607316902,
+      "callsAvg": 542,
+      "trianglesAvg": 2101443,
+      "costAvg": {
+        "materialSwitches": 151,
+        "programSwitches": 170.1,
+        "actorCalls": 129.3,
+        "actorMaterialSwitches": 0,
+        "actorProgramSwitches": 16.1,
+        "skinnedCalls": 123.3,
+        "skeletonsFirstUsed": 34.1
+      },
+      "byBucket": {
+        "terrain": {
+          "callsSum": 5202,
+          "trianglesSum": 383389712,
+          "callsAvg": 18,
+          "trianglesAvg": 1326608
+        },
+        "other": {
+          "callsSum": 24854,
+          "trianglesSum": 4024614,
+          "callsAvg": 86,
+          "trianglesAvg": 13926
+        },
+        "settlement:landmarkWellCentral": {
+          "callsSum": 1445,
+          "trianglesSum": 540430,
+          "callsAvg": 5,
+          "trianglesAvg": 1870
+        },
+        "settlement:storageContainer": {
+          "callsSum": 1734,
+          "trianglesSum": 551412,
+          "callsAvg": 6,
+          "trianglesAvg": 1908
+        },
+        "settlement:decor": {
+          "callsSum": 54332,
+          "trianglesSum": 106024563,
+          "callsAvg": 188,
+          "trianglesAvg": 366867
+        },
+        "settlement:landmarkGarden": {
+          "callsSum": 289,
+          "trianglesSum": 462400,
+          "callsAvg": 1,
+          "trianglesAvg": 1600
+        },
+        "settlement:workplace": {
+          "callsSum": 1156,
+          "trianglesSum": 1025372,
+          "callsAvg": 4,
+          "trianglesAvg": 3548
+        },
+        "settlement:landmarkNoticeBoard": {
+          "callsSum": 578,
+          "trianglesSum": 10404,
+          "callsAvg": 2,
+          "trianglesAvg": 36
+        },
+        "settlement:houseInteractive": {
+          "callsSum": 4046,
+          "trianglesSum": 635222,
+          "callsAvg": 14,
+          "trianglesAvg": 2198
+        },
+        "settlement:fireHouseInteriorLamp": {
+          "callsSum": 1734,
+          "trianglesSum": 187272,
+          "callsAvg": 6,
+          "trianglesAvg": 648
+        },
+        "settlement:houseStatic": {
+          "callsSum": 9537,
+          "trianglesSum": 14463294,
+          "callsAvg": 33,
+          "trianglesAvg": 50046
+        },
+        "settlement:storageTrough": {
+          "callsSum": 578,
+          "trianglesSum": 346800,
+          "callsAvg": 2,
+          "trianglesAvg": 1200
+        },
+        "settlement:storageWoodSettlementPrimary": {
+          "callsSum": 289,
+          "trianglesSum": 225420,
+          "callsAvg": 1,
+          "trianglesAvg": 780
+        },
+        "settlement:storageWoodHousehold": {
+          "callsSum": 289,
+          "trianglesSum": 1352520,
+          "callsAvg": 1,
+          "trianglesAvg": 4680
+        },
+        "settlement:storageHay": {
+          "callsSum": 289,
+          "trianglesSum": 141032,
+          "callsAvg": 1,
+          "trianglesAvg": 488
+        },
+        "settlement:other": {
+          "callsSum": 3179,
+          "trianglesSum": 9389032,
+          "callsAvg": 11,
+          "trianglesAvg": 32488
+        },
+        "faunaFamily:cow": {
+          "callsSum": 2023,
+          "trianglesSum": 708050,
+          "callsAvg": 7,
+          "trianglesAvg": 2450
+        },
+        "faunaFamily:horse": {
+          "callsSum": 4624,
+          "trianglesSum": 1261196,
+          "callsAvg": 16,
+          "trianglesAvg": 4364
+        },
+        "faunaFamily:dog": {
+          "callsSum": 2890,
+          "trianglesSum": 1109760,
+          "callsAvg": 10,
+          "trianglesAvg": 3840
+        },
+        "faunaFamily:chicken": {
+          "callsSum": 2890,
+          "trianglesSum": 374544,
+          "callsAvg": 10,
+          "trianglesAvg": 1296
+        },
+        "faunaFamily:rooster": {
+          "callsSum": 289,
+          "trianglesSum": 346800,
+          "callsAvg": 1,
+          "trianglesAvg": 1200
+        },
+        "faunaFamily:sheep": {
+          "callsSum": 2312,
+          "trianglesSum": 705160,
+          "callsAvg": 8,
+          "trianglesAvg": 2440
+        },
+        "npcFamily:Knight_Cloth": {
+          "callsSum": 2890,
+          "trianglesSum": 3703824,
+          "callsAvg": 10,
+          "trianglesAvg": 12816
+        },
+        "npcFamily:Ranger_NoHood": {
+          "callsSum": 3757,
+          "trianglesSum": 4388754,
+          "callsAvg": 13,
+          "trianglesAvg": 15186
+        },
+        "npcFamily:Farmer": {
+          "callsSum": 4913,
+          "trianglesSum": 7333375,
+          "callsAvg": 17,
+          "trianglesAvg": 25375
+        },
+        "npcFamily:woodcutter": {
+          "callsSum": 2023,
+          "trianglesSum": 3125246,
+          "callsAvg": 7,
+          "trianglesAvg": 10814
+        },
+        "npcFamily:Peasant_Boots": {
+          "callsSum": 2601,
+          "trianglesSum": 3528112,
+          "callsAvg": 9,
+          "trianglesAvg": 12208
+        },
+        "npcFamily:Peasant": {
+          "callsSum": 5491,
+          "trianglesSum": 6357422,
+          "callsAvg": 19,
+          "trianglesAvg": 21998
+        },
+        "faunaFamily:rat": {
+          "callsSum": 578,
+          "trianglesSum": 1157156,
+          "callsAvg": 2,
+          "trianglesAvg": 4004
+        },
+        "vegetation": {
+          "callsSum": 9248,
+          "trianglesSum": 49905098,
+          "callsAvg": 32,
+          "trianglesAvg": 172682
+        },
+        "environment": {
+          "callsSum": 578,
+          "trianglesSum": 501704,
+          "callsAvg": 2,
+          "trianglesAvg": 1736
+        },
+        "faunaFamily:wolf": {
+          "callsSum": 84,
+          "trianglesSum": 41202,
+          "callsAvg": 0,
+          "trianglesAvg": 143
+        }
+      },
+      "residualCallsAvg": 0,
+      "residualTrianglesAvg": 0,
+      "infoCallsAvg": 542,
+      "infoTrianglesAvg": 2101443
+    },
+    "main": {
+      "frames": 289,
+      "callsSum": 283182,
+      "trianglesSum": 2272445326,
+      "callsAvg": 980,
+      "trianglesAvg": 7863133,
+      "costAvg": {
+        "materialSwitches": 384,
+        "programSwitches": 185,
+        "actorCalls": 196.9,
+        "actorMaterialSwitches": 122,
+        "actorProgramSwitches": 59,
+        "skinnedCalls": 184.9,
+        "skeletonsFirstUsed": 27.5
+      },
+      "byBucket": {
+        "other": {
+          "callsSum": 76296,
+          "trianglesSum": 6083739,
+          "callsAvg": 264,
+          "trianglesAvg": 21051
+        },
+        "grass": {
+          "callsSum": 12427,
+          "trianglesSum": 1448491698,
+          "callsAvg": 43,
+          "trianglesAvg": 5012082
+        },
+        "terrain": {
+          "callsSum": 7803,
+          "trianglesSum": 575066072,
+          "callsAvg": 27,
+          "trianglesAvg": 1989848
+        },
+        "settlement:decor": {
+          "callsSum": 24565,
+          "trianglesSum": 55294659,
+          "callsAvg": 85,
+          "trianglesAvg": 191331
+        },
+        "vegetation": {
+          "callsSum": 2890,
+          "trianglesSum": 1032886,
+          "callsAvg": 10,
+          "trianglesAvg": 3574
+        },
+        "environment": {
+          "callsSum": 4335,
+          "trianglesSum": 2614583,
+          "callsAvg": 15,
+          "trianglesAvg": 9047
+        },
+        "settlement:fireCampfire": {
+          "callsSum": 2312,
+          "trianglesSum": 178409.33333333366,
+          "callsAvg": 8,
+          "trianglesAvg": 617
+        },
+        "settlement:workplace": {
+          "callsSum": 4335,
+          "trianglesSum": 2126462,
+          "callsAvg": 15,
+          "trianglesAvg": 7358
+        },
+        "settlement:storageTrough": {
+          "callsSum": 1734,
+          "trianglesSum": 693600,
+          "callsAvg": 6,
+          "trianglesAvg": 2400
+        },
+        "settlement:fireVillageTorch": {
+          "callsSum": 8670,
+          "trianglesSum": 620194.0000000001,
+          "callsAvg": 30,
+          "trianglesAvg": 2146
+        },
+        "settlement:landmarkWellCentral": {
+          "callsSum": 2890,
+          "trianglesSum": 1080860,
+          "callsAvg": 10,
+          "trianglesAvg": 3740
+        },
+        "settlement:landmarkWellPasture": {
+          "callsSum": 1445,
+          "trianglesSum": 540430,
+          "callsAvg": 5,
+          "trianglesAvg": 1870
+        },
+        "settlement:landmarkWellHousehold": {
+          "callsSum": 1445,
+          "trianglesSum": 1621290,
+          "callsAvg": 5,
+          "trianglesAvg": 5610
+        },
+        "settlement:storageWoodHousehold": {
+          "callsSum": 578,
+          "trianglesSum": 2479620,
+          "callsAvg": 2,
+          "trianglesAvg": 8580
+        },
+        "settlement:storageWoodSettlementPrimary": {
+          "callsSum": 578,
+          "trianglesSum": 450840,
+          "callsAvg": 2,
+          "trianglesAvg": 1560
+        },
+        "settlement:storageContainer": {
+          "callsSum": 5202,
+          "trianglesSum": 1137504,
+          "callsAvg": 18,
+          "trianglesAvg": 3936
+        },
+        "settlement:landmarkGarden": {
+          "callsSum": 1734,
+          "trianglesSum": 20273928,
+          "callsAvg": 6,
+          "trianglesAvg": 70152
+        },
+        "settlement:storageBarrel": {
+          "callsSum": 3468,
+          "trianglesSum": 5999640,
+          "callsAvg": 12,
+          "trianglesAvg": 20760
+        },
+        "settlement:landmarkNoticeBoard": {
+          "callsSum": 1156,
+          "trianglesSum": 20808,
+          "callsAvg": 4,
+          "trianglesAvg": 72
+        },
+        "faunaFamily:wolf": {
+          "callsSum": 4146,
+          "trianglesSum": 2049710,
+          "callsAvg": 14,
+          "trianglesAvg": 7092
+        },
+        "settlement:storageGoods": {
+          "callsSum": 17051,
+          "trianglesSum": 3262232,
+          "callsAvg": 59,
+          "trianglesAvg": 11288
+        },
+        "settlement:fireHouseExteriorLamp": {
+          "callsSum": 6936,
+          "trianglesSum": 332928,
+          "callsAvg": 24,
+          "trianglesAvg": 1152
+        },
+        "faunaFamily:bear": {
+          "callsSum": 578,
+          "trianglesSum": 384948,
+          "callsAvg": 2,
+          "trianglesAvg": 1332
+        },
+        "items": {
+          "callsSum": 289,
+          "trianglesSum": 254320,
+          "callsAvg": 1,
+          "trianglesAvg": 880
+        },
+        "npcFamily:Peasant": {
+          "callsSum": 16184,
+          "trianglesSum": 19635527,
+          "callsAvg": 56,
+          "trianglesAvg": 67943
+        },
+        "settlement:fireHouseInteriorLamp": {
+          "callsSum": 2312,
+          "trianglesSum": 249696,
+          "callsAvg": 8,
+          "trianglesAvg": 864
+        },
+        "settlement:houseStatic": {
+          "callsSum": 19074,
+          "trianglesSum": 24989830,
+          "callsAvg": 66,
+          "trianglesAvg": 86470
+        },
+        "settlement:houseInteractive": {
+          "callsSum": 8670,
+          "trianglesSum": 953700,
+          "callsAvg": 30,
+          "trianglesAvg": 3300
+        },
+        "settlement:storageHay": {
+          "callsSum": 289,
+          "trianglesSum": 141032,
+          "callsAvg": 1,
+          "trianglesAvg": 488
+        },
+        "settlement:other": {
+          "callsSum": 5780,
+          "trianglesSum": 17483344,
+          "callsAvg": 20,
+          "trianglesAvg": 60496
+        },
+        "settlement:fence": {
+          "callsSum": 1156,
+          "trianglesSum": 1868096,
+          "callsAvg": 4,
+          "trianglesAvg": 6464
+        },
+        "faunaFamily:horse": {
+          "callsSum": 2312,
+          "trianglesSum": 630598,
+          "callsAvg": 8,
+          "trianglesAvg": 2182
+        },
+        "faunaFamily:chicken": {
+          "callsSum": 5780,
+          "trianglesSum": 749088,
+          "callsAvg": 20,
+          "trianglesAvg": 2592
+        },
+        "faunaFamily:sheep": {
+          "callsSum": 3468,
+          "trianglesSum": 1057740,
+          "callsAvg": 12,
+          "trianglesAvg": 3660
+        },
+        "faunaFamily:dog": {
+          "callsSum": 6220,
+          "trianglesSum": 2189520,
+          "callsAvg": 22,
+          "trianglesAvg": 7576
+        },
+        "faunaFamily:rooster": {
+          "callsSum": 289,
+          "trianglesSum": 346800,
+          "callsAvg": 1,
+          "trianglesAvg": 1200
+        },
+        "faunaFamily:rat": {
+          "callsSum": 1156,
+          "trianglesSum": 2314312,
+          "callsAvg": 4,
+          "trianglesAvg": 8008
+        },
+        "npcFamily:Farmer": {
+          "callsSum": 4913,
+          "trianglesSum": 7333375,
+          "callsAvg": 17,
+          "trianglesAvg": 25375
+        },
+        "npcFamily:Ranger_NoHood": {
+          "callsSum": 3757,
+          "trianglesSum": 4388754,
+          "callsAvg": 13,
+          "trianglesAvg": 15186
+        },
+        "npcFamily:Peasant_Boots": {
+          "callsSum": 2601,
+          "trianglesSum": 3532158,
+          "callsAvg": 9,
+          "trianglesAvg": 12222
+        },
+        "npcFamily:blacksmith": {
+          "callsSum": 2890,
+          "trianglesSum": 4157843,
+          "callsAvg": 10,
+          "trianglesAvg": 14387
+        },
+        "npcFamily:Knight_Cloth": {
+          "callsSum": 2601,
+          "trianglesSum": 3465110,
+          "callsAvg": 9,
+          "trianglesAvg": 11990
+        },
+        "water": {
+          "callsSum": 867,
+          "trianglesSum": 44982272,
+          "callsAvg": 3,
+          "trianglesAvg": 155648
+        }
+      },
+      "residualCallsAvg": 0,
+      "residualTrianglesAvg": -397,
+      "infoCallsAvg": 1522,
+      "infoTrianglesAvg": 9964575
+    }
+  },
+  "hitches": [],
+  "isolation": [
+    {
+      "id": "full",
+      "renderMsAvg": 16.543333332240582,
+      "renderMsP95": 18.65500000230968,
+      "renderMsMax": 18.899999991059303,
+      "drawCallsAvg": 1843,
+      "trianglesAvg": 10816233,
+      "frames": 30,
+      "status": "ok",
+      "gpuMsAvg": 43.15119132142856,
+      "gpuMsP95": 46.4965834,
+      "gpuMsMax": 46.625208,
+      "gpuSamples": 28
+    },
+    {
+      "id": "hide-grass",
+      "renderMsAvg": 16.33666666696469,
+      "renderMsP95": 19.705000003054735,
+      "renderMsMax": 20.600000001490116,
+      "drawCallsAvg": 1799,
+      "trianglesAvg": 5802684,
+      "frames": 30,
+      "status": "ok",
+      "gpuMsAvg": 48.250775999999995,
+      "gpuMsP95": 52.1808934,
+      "gpuMsMax": 52.612028,
+      "gpuSamples": 28
+    },
+    {
+      "id": "hide-vegetation",
+      "renderMsAvg": 15.543333334227404,
+      "renderMsP95": 18.555000000074507,
+      "renderMsMax": 19.600000001490116,
+      "drawCallsAvg": 1799,
+      "trianglesAvg": 10639301,
+      "frames": 30,
+      "status": "ok",
+      "gpuMsAvg": 68.3809470714286,
+      "gpuMsP95": 74.4289096,
+      "gpuMsMax": 74.566248,
+      "gpuSamples": 28
+    },
+    {
+      "id": "hide-vegetation-grass",
+      "renderMsAvg": 15.626666666318973,
+      "renderMsP95": 17.564999993517993,
+      "renderMsMax": 18.100000001490116,
+      "drawCallsAvg": 1757,
+      "trianglesAvg": 5627934,
+      "frames": 30,
+      "status": "ok",
+      "gpuMsAvg": 74.57922382142856,
+      "gpuMsP95": 77.3804564,
+      "gpuMsMax": 93.346768,
+      "gpuSamples": 28
+    },
+    {
+      "id": "hide-environment",
+      "renderMsAvg": 16.133333333333333,
+      "renderMsP95": 18.200000002980232,
+      "renderMsMax": 20.700000002980232,
+      "drawCallsAvg": 1831,
+      "trianglesAvg": 10807288,
+      "frames": 30,
+      "status": "ok",
+      "gpuMsAvg": 37.469483965517234,
+      "gpuMsP95": 38.475312,
+      "gpuMsMax": 39.402032,
+      "gpuSamples": 29
+    },
+    {
+      "id": "hide-settlement",
+      "renderMsAvg": 10.989999999850989,
+      "renderMsP95": 12.209999999031425,
+      "renderMsMax": 12.5,
+      "drawCallsAvg": 950,
+      "trianglesAvg": 9603409,
+      "frames": 30,
+      "status": "ok",
+      "gpuMsAvg": 21.91501748275862,
+      "gpuMsP95": 24.564375199999997,
+      "gpuMsMax": 25.106042,
+      "gpuSamples": 29
+    },
+    {
+      "id": "hide-water",
+      "renderMsAvg": 16.90333333313465,
+      "renderMsP95": 20.014999995380638,
+      "renderMsMax": 21.80000000447035,
+      "drawCallsAvg": 1843,
+      "trianglesAvg": 10662615,
+      "frames": 30,
+      "status": "ok",
+      "gpuMsAvg": 39.989153379310345,
+      "gpuMsP95": 44.91326,
+      "gpuMsMax": 45.392188,
+      "gpuSamples": 29
+    },
+    {
+      "id": "hide-terrain",
+      "renderMsAvg": 16.33999999985099,
+      "renderMsP95": 19.22999999858439,
+      "renderMsMax": 20.5,
+      "drawCallsAvg": 1792,
+      "trianglesAvg": 6912223,
+      "frames": 30,
+      "status": "ok",
+      "gpuMsAvg": 33.88514975862069,
+      "gpuMsP95": 35.7937808,
+      "gpuMsMax": 36.207915,
+      "gpuSamples": 29
+    },
+    {
+      "id": "hide-npc-fauna",
+      "renderMsAvg": 10.973333332935969,
+      "renderMsP95": 11.954999999329447,
+      "renderMsMax": 12.50000000745058,
+      "drawCallsAvg": 1520,
+      "trianglesAvg": 10518669,
+      "frames": 30,
+      "status": "ok",
+      "gpuMsAvg": 32.58380638709677,
+      "gpuMsP95": 35.780286000000004,
+      "gpuMsMax": 35.980833,
+      "gpuSamples": 31
+    },
+    {
+      "id": "no-shadows",
+      "renderMsAvg": 11.610000000397365,
+      "renderMsP95": 12.31000000461936,
+      "renderMsMax": 13.799999997019768,
+      "drawCallsAvg": 1328,
+      "trianglesAvg": 8716886,
+      "frames": 30,
+      "status": "ok",
+      "gpuMsAvg": 28.51858762068965,
+      "gpuMsP95": 31.001738,
+      "gpuMsMax": 31.233646,
+      "gpuSamples": 29
+    },
+    {
+      "id": "no-ao",
+      "renderMsAvg": 18.24666666612029,
+      "renderMsP95": 22.889999996870753,
+      "renderMsMax": 24.400000005960464,
+      "drawCallsAvg": 1842,
+      "trianglesAvg": 10815228,
+      "frames": 30,
+      "status": "ok",
+      "gpuMsAvg": 54.70654210714286,
+      "gpuMsP95": 61.9786072,
+      "gpuMsMax": 62.811664,
+      "gpuSamples": 28
+    },
+    {
+      "id": "no-bloom",
+      "renderMsAvg": 16.1,
+      "renderMsP95": 19.420000002160666,
+      "renderMsMax": 21.19999999552965,
+      "drawCallsAvg": 1834,
+      "trianglesAvg": 10815146,
+      "frames": 30,
+      "status": "ok",
+      "gpuMsAvg": 73.7927693214286,
+      "gpuMsP95": 75.5795936,
+      "gpuMsMax": 75.825048,
+      "gpuSamples": 28
+    },
+    {
+      "id": "no-smaa",
+      "renderMsAvg": 17.5033333328863,
+      "renderMsP95": 20.855000005289913,
+      "renderMsMax": 23.700000010430813,
+      "drawCallsAvg": 1848,
+      "trianglesAvg": 10818094,
+      "frames": 30,
+      "status": "ok",
+      "gpuMsAvg": 75.37041128571427,
+      "gpuMsP95": 79.3642304,
+      "gpuMsMax": 79.705624,
+      "gpuSamples": 28
+    },
+    {
+      "id": "no-god-rays",
+      "renderMsAvg": 18.426666666318972,
+      "renderMsP95": 23.004999991878865,
+      "renderMsMax": 28.299999997019768,
+      "drawCallsAvg": 1859,
+      "trianglesAvg": 10822468,
+      "frames": 30,
+      "status": "ok",
+      "gpuMsAvg": 74.90340653571427,
+      "gpuMsP95": 77.04562680000001,
+      "gpuMsMax": 88.369632,
+      "gpuSamples": 28
+    },
+    {
+      "id": "no-film-grade",
+      "renderMsAvg": 18.023333334674437,
+      "renderMsP95": 21.45499999858439,
+      "renderMsMax": 21.50000000745058,
+      "drawCallsAvg": 1857,
+      "trianglesAvg": 10821150,
+      "frames": 30,
+      "status": "ok",
+      "gpuMsAvg": 37.92499755172413,
+      "gpuMsP95": 40.2937896,
+      "gpuMsMax": 41.654584,
+      "gpuSamples": 29
+    },
+    {
+      "id": "no-postprocessing",
+      "renderMsAvg": 16.209999999155603,
+      "renderMsP95": 18.860000000521538,
+      "renderMsMax": 29.19999999552965,
+      "drawCallsAvg": 1832,
+      "trianglesAvg": 10820483,
+      "frames": 30,
+      "status": "ok",
+      "gpuMsAvg": 36.224074344827585,
+      "gpuMsP95": 41.008811200000004,
+      "gpuMsMax": 41.178488,
+      "gpuSamples": 29
+    },
+    {
+      "id": "no-reflections",
+      "renderMsAvg": 15.656666667262714,
+      "renderMsP95": 17.30000000447035,
+      "renderMsMax": 17.399999998509884,
+      "drawCallsAvg": 1522,
+      "trianglesAvg": 9964890,
+      "frames": 30,
+      "status": "ok",
+      "gpuMsAvg": 55.59648675,
+      "gpuMsP95": 58.7313068,
+      "gpuMsMax": 79.571616,
+      "gpuSamples": 28
+    }
+  ],
+  "systems": {
+    "WATER": 3.3,
+    "NPC": 2.6,
+    "FAUNA": 2.8,
+    "PHYSICS": 0.2,
+    "RENDER": 20.6
+  },
+  "bottlenecks": [
+    "RENDER",
+    "WATER",
+    "FAUNA"
+  ],
+  "spikes": [],
+  "attribution": {
+    "frameMaxMs": 929.6,
+    "largestHitchMs": 0,
+    "unattributedMs": 929.6
+  },
+  "longFrames": {
+    "thresholdMs": 80,
+    "count": 4,
+    "worst": [
+      {
+        "frameMs": 929.6,
+        "simulateMs": 6.2,
+        "renderMs": 923,
+        "categoryMs": {
+          "WATER": 5.4,
+          "NPC": 3.2,
+          "FAUNA": 1.6,
+          "RENDER": 917.5
+        },
+        "otherMs": 1.9,
+        "stages": [],
+        "hitches": []
+      },
+      {
+        "frameMs": 129.7,
+        "simulateMs": 106.4,
+        "renderMs": 23,
+        "categoryMs": {
+          "WATER": 5.3,
+          "NPC": 2.5,
+          "FAUNA": 102,
+          "PHYSICS": 0.2,
+          "RENDER": 17.7
+        },
+        "otherMs": 2,
+        "stages": [],
+        "hitches": []
+      },
+      {
+        "frameMs": 123.1,
+        "simulateMs": 98.9,
+        "renderMs": 23.9,
+        "categoryMs": {
+          "WATER": 6.7,
+          "NPC": 2.7,
+          "FAUNA": 94.5,
+          "PHYSICS": 0.2,
+          "RENDER": 17.2
+        },
+        "otherMs": 1.8,
+        "stages": [],
+        "hitches": []
+      },
+      {
+        "frameMs": 98.6,
+        "simulateMs": 75.7,
+        "renderMs": 22.6,
+        "categoryMs": {
+          "WATER": 5.1,
+          "STREAMING": 0.1,
+          "NPC": 2.3,
+          "FAUNA": 71.4,
+          "PHYSICS": 0.1,
+          "RENDER": 17.5
+        },
+        "otherMs": 2.1,
+        "stages": [
+          {
+            "label": "chunkUpdate",
+            "ms": 0.1
+          }
+        ],
+        "hitches": []
+      }
+    ]
+  },
+  "recommendation": "Largest frame (929.6 ms) is not explained by labelled hitches (largest 0 ms) — unattributed frame spike, not a category bottleneck.",
+  "context": {
+    "loadedChunks": 64,
+    "npcCount": 24,
+    "faunaCount": 30,
+    "pixelRatio": 1,
+    "quality": "High",
+    "seed": 42,
+    "terrainResolution": 193,
+    "loadRadius": 3,
+    "grassMacroVariation": true,
+    "geometries": 682,
+    "textures": 324,
+    "fixtureVersion": "tools-001-v1",
+    "elapsedDays": 0,
+    "season": "spring",
+    "weather": "rain",
+    "timeOfDay": 0.2916666666666667,
+    "scenarioAnchor": {
+      "x": -8.14339355751872,
+      "z": -11.524926211684942
+    },
+    "viewportWidth": 1600,
+    "viewportHeight": 813,
+    "drawingBufferWidth": 1600,
+    "drawingBufferHeight": 813,
+    "gitSha": "caab7ae2d9e449f3a7f6ac893a26f689386d892e",
+    "runId": "2026-11-01T07-07-02-018Z-nu1bll",
+    "phase": "warm",
+    "cameraPose": {
+      "position": {
+        "x": -8.14339355751872,
+        "y": 11.65697654362191,
+        "z": -0.25245365751639604
+      },
+      "quaternion": {
+        "x": -0.17410813759359595,
+        "y": 0,
+        "z": 0,
+        "w": 0.9847265389049333
+      }
+    },
+    "populationStart": {
+      "npcCount": 24,
+      "faunaCount": 30,
+      "loadedChunks": 64,
+      "settlementFamilyCount": null,
+      "settlementResidentCount": null
+    },
+    "populationEnd": {
+      "npcCount": 24,
+      "faunaCount": 30,
+      "loadedChunks": 64,
+      "settlementFamilyCount": null,
+      "settlementResidentCount": null
+    },
+    "populationGate": {
+      "status": "stable",
+      "waitedMs": 5051,
+      "stableForMs": 5051,
+      "npcCount": 24,
+      "timeoutMs": 90000
+    },
+    "cameraControl": null,
+    "device": {
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+      "platform": "Linux x86_64",
+      "language": "en-US",
+      "webglVendor": "Google Inc. (Microsoft Corporation)",
+      "webglRenderer": "ANGLE (Microsoft Corporation, D3D12 (Intel(R) Arc(TM) 140V GPU (16GB)), OpenGL 4.6)",
+      "manual": {
+        "gpu": null,
+        "driver": null,
+        "os": null,
+        "browser": null,
+        "powerThermal": null,
+        "notes": null
+      }
+    },
+    "gpuTimer": {
+      "available": true,
+      "resolved": true,
+      "samples": 286,
+      "querySpan": "postprocess+labels",
+      "unresolved": 3,
+      "disjoint": 0,
+      "skipped": 0,
+      "avgMs": 52.82,
+      "p95Ms": 78.79,
+      "maxMs": 80.35
+    }
+  },
+  "agentCpu": {
+    "frames": 286,
+    "population": {
+      "npcLoaded": 24,
+      "faunaActive": 30
+    },
+    "npc": {
+      "totalMsPerFrame": 2.6,
+      "crowdPassMsPerFrame": 0,
+      "agentUpdatesMsPerFrame": 1.3,
+      "livestockMsPerFrame": 0.9,
+      "livestockLoadedMsPerFrame": 0.9,
+      "livestockDetachedMsPerFrame": 0,
+      "livestockUnattributedMsPerFrame": 0,
+      "livestockAnimalUpdatesMsPerFrame": 0.9,
+      "livestockPostUpdateMsPerFrame": 0,
+      "livestockDetachedBookkeepingMsPerFrame": 0,
+      "livestockSensingMsPerFrame": 0,
+      "livestockTargetingMsPerFrame": 0,
+      "livestockDecisionMsPerFrame": 0,
+      "livestockBehaviourMsPerFrame": 0.5,
+      "livestockLifePresentationMsPerFrame": 0.3,
+      "livestockOtherUpdateMsPerFrame": 0.1,
+      "livestockUpdateCallsPerFrame": 28.3,
+      "livestockUniqueAnimalsPerFrame": 27.3,
+      "livestockDuplicateUpdatesPerFrame": 1,
+      "livestockDetachedAnimalsPerFrame": 0,
+      "livestockDogUpdatesPerFrame": 6.1,
+      "livestockDogGuardScansPerFrame": 6.1,
+      "livestockGuardPredatorCandidatesPerFrame": 36.4,
+      "livestockPestScansPerFrame": 4,
+      "livestockPestRatCandidatesPerFrame": 4,
+      "livestockNearestScansPerFrame": 20.1,
+      "livestockNearestCandidatesPerFrame": 0,
+      "livestockWaterSampleCallsPerFrame": 50.4,
+      "livestockWaterSampleMsPerFrame": 0,
+      "livestockWaterSampleWorstMs": 0.1,
+      "livestockColliderQueryCallsPerFrame": 50.4,
+      "livestockColliderQueryMsPerFrame": 0,
+      "livestockColliderQueryWorstMs": 0.2,
+      "livestockColliderQueryReturnedPerFrame": 8713.9,
+      "livestockFullRateAgentsPerFrame": 1.2,
+      "livestockReducedCadenceAgentsPerFrame": 27.1,
+      "livestockBehaviourExecutionsPerFrame": 20.1,
+      "livestockPresentationExecutionsPerFrame": 20.1,
+      "ratsMsPerFrame": 0.2,
+      "socialMsPerFrame": 0,
+      "streamingMsPerFrame": 0,
+      "maintenanceMsPerFrame": 0.2,
+      "unattributedMsPerFrame": 0,
+      "crowdPassCumulativeMs": 2.2,
+      "agentUpdatesCumulativeMs": 368.9,
+      "livestockCumulativeMs": 260.3,
+      "ratsCumulativeMs": 59,
+      "socialCumulativeMs": 1.6,
+      "streamingCumulativeMs": 0,
+      "maintenanceCumulativeMs": 46.8
+    },
+    "fauna": {
+      "totalMsPerFrame": 2.8,
+      "agentUpdatesMsPerFrame": 2.7,
+      "otherMsPerFrame": 0,
+      "agentUpdatesCumulativeMs": 780.3,
+      "forestSamplingMsPerFrame": 0.1,
+      "forestSamplingCumulativeMs": 23.8,
+      "sensingMsPerFrame": 0,
+      "sensingCumulativeMs": 6.5,
+      "targetingMsPerFrame": 0,
+      "targetingCumulativeMs": 7.2,
+      "decisionMsPerFrame": 0,
+      "decisionCumulativeMs": 7.9,
+      "behaviourMsPerFrame": 2,
+      "behaviourCumulativeMs": 571.1,
+      "lifePresentationMsPerFrame": 0.5,
+      "lifePresentationCumulativeMs": 130.5,
+      "otherUpdateMsPerFrame": 0.1,
+      "updateCallsPerFrame": 30.3,
+      "sensingPassesPerFrame": 30.3,
+      "decisionPassesPerFrame": 30.3,
+      "highPriorityAgentsPerFrame": 0.9,
+      "expensiveBehaviourAgentsPerFrame": 19.1,
+      "fullRateAgentsPerFrame": 9.9,
+      "reducedCadenceAgentsPerFrame": 20.4,
+      "behaviourExecutionsPerFrame": 20,
+      "presentationExecutionsPerFrame": 20,
+      "forestSamplesPerFrame": 30.3,
+      "fireScanCandidatesPerFrame": 30.3,
+      "villageScanCandidatesPerFrame": 598,
+      "playerPerceptionChecksPerFrame": 30.3,
+      "nearestScansPerFrame": 25,
+      "nearestCandidatesPerFrame": 229.6,
+      "herdLeaderScansPerFrame": 0.2,
+      "herdLeaderCandidatesPerFrame": 5.8,
+      "nearestCalls": 7142,
+      "nearestCandidatesChecked": 65660,
+      "herdLeaderCalls": 55,
+      "herdLeaderCandidatesChecked": 1650,
+      "proximityRebuildMsPerFrame": 0,
+      "spawnerBookkeepingMsPerFrame": 0,
+      "proximityQueriesPerFrame": 25.6,
+      "proximityCandidatesPerFrame": 177.7,
+      "waterSampleCallsPerFrame": 200.5,
+      "waterSampleMsPerFrame": 0.2,
+      "waterSampleWorstMs": 0.6,
+      "colliderQueryCallsPerFrame": 200.5,
+      "colliderQueryMsPerFrame": 0.2,
+      "colliderQueryWorstMs": 1.2,
+      "colliderQueryReturnedPerFrame": 36980
+    }
+  },
+  "grassBaseline": {
+    "chunksResident": 21,
+    "instancesResidentFull": 321136,
+    "instancesResidentFiller": 614615,
+    "instancesSubmittedFull": 260618,
+    "instancesSubmittedFiller": 289373,
+    "meshesSubmitted": 72,
+    "allocationBytesEstimated": 89832096,
+    "uploadBytesObserved": null,
+    "flowers": {
+      "instancesResident": null,
+      "meshes": null,
+      "status": "unavailable"
+    },
+    "lifecycle": {
+      "requests": 0,
+      "completions": 0,
+      "discardsUnloaded": 0,
+      "discardsOutOfRange": 0,
+      "cancels": 0,
+      "streamIns": 0,
+      "streamOuts": 0,
+      "invalidations": 0
+    },
+    "finalization": {
+      "status": "unobserved",
+      "chunksBuilt": 0,
+      "chunksEmpty": 0
+    },
+    "lod": {
+      "submittedFractionFull": 0.811550246624483,
+      "submittedFractionFiller": 0.470819944192706
+    }
+  },
+  "raw": {
+    "schemaVersion": 1,
+    "sampling": {
+      "mode": "full",
+      "factor": 1,
+      "originalCount": 286,
+      "exportedCount": 286
+    },
+    "frames": [
+      {
+        "i": 0,
+        "frameMs": 34.599999994039536,
+        "simulateMs": 7.5,
+        "renderMs": 26.69999999552965,
+        "drawCalls": 2166,
+        "triangles": 11669076
+      },
+      {
+        "i": 1,
+        "frameMs": 26.100000001490116,
+        "simulateMs": 6.200000002980232,
+        "renderMs": 19.5,
+        "drawCalls": 1520,
+        "triangles": 9963390
+      },
+      {
+        "i": 2,
+        "frameMs": 29.19999999552965,
+        "simulateMs": 5.699999995529652,
+        "renderMs": 23.100000001490116,
+        "drawCalls": 2166,
+        "triangles": 11669076
+      },
+      {
+        "i": 3,
+        "frameMs": 24.599999994039536,
+        "simulateMs": 6,
+        "renderMs": 18.299999997019768,
+        "drawCalls": 1520,
+        "triangles": 9963390
+      },
+      {
+        "i": 4,
+        "frameMs": 30.299999997019768,
+        "simulateMs": 5.799999997019768,
+        "renderMs": 24.100000001490116,
+        "drawCalls": 2166,
+        "triangles": 11669076
+      },
+      {
+        "i": 5,
+        "frameMs": 23.299999997019768,
+        "simulateMs": 5.399999998509884,
+        "renderMs": 17.600000001490116,
+        "drawCalls": 1520,
+        "triangles": 9963390
+      },
+      {
+        "i": 6,
+        "frameMs": 27.899999998509884,
+        "simulateMs": 6.199999995529652,
+        "renderMs": 21.399999998509884,
+        "drawCalls": 2166,
+        "triangles": 11669076
+      },
+      {
+        "i": 7,
+        "frameMs": 24.5,
+        "simulateMs": 7.200000002980232,
+        "renderMs": 17,
+        "drawCalls": 1520,
+        "triangles": 9963390
+      },
+      {
+        "i": 8,
+        "frameMs": 929.5999999940395,
+        "simulateMs": 6.199999995529652,
+        "renderMs": 923,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 9,
+        "frameMs": 26.80000000447035,
+        "simulateMs": 7.100000001490116,
+        "renderMs": 19.399999998509884,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 10,
+        "frameMs": 28.799999997019768,
+        "simulateMs": 5.5,
+        "renderMs": 22.799999997019768,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 11,
+        "frameMs": 26.69999999552965,
+        "simulateMs": 9.699999995529652,
+        "renderMs": 16.80000000447035,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 12,
+        "frameMs": 25.700000002980232,
+        "simulateMs": 4.899999998509884,
+        "renderMs": 20.400000005960464,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 13,
+        "frameMs": 24,
+        "simulateMs": 6.4000000059604645,
+        "renderMs": 17.299999997019768,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 14,
+        "frameMs": 29.700000002980232,
+        "simulateMs": 5.5,
+        "renderMs": 23.600000001490116,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 15,
+        "frameMs": 24.299999997019768,
+        "simulateMs": 6.600000001490116,
+        "renderMs": 17.399999998509884,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 16,
+        "frameMs": 30.899999998509884,
+        "simulateMs": 5,
+        "renderMs": 25.599999994039536,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 17,
+        "frameMs": 22.399999998509884,
+        "simulateMs": 5.799999997019768,
+        "renderMs": 16.30000000447035,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 18,
+        "frameMs": 27,
+        "simulateMs": 5.399999998509884,
+        "renderMs": 21.299999997019768,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 19,
+        "frameMs": 24.600000001490116,
+        "simulateMs": 6.299999997019768,
+        "renderMs": 17.899999998509884,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 20,
+        "frameMs": 28.900000005960464,
+        "simulateMs": 6.300000004470348,
+        "renderMs": 22.299999997019768,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 21,
+        "frameMs": 25.100000001490116,
+        "simulateMs": 7.799999997019768,
+        "renderMs": 17,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 22,
+        "frameMs": 27.899999998509884,
+        "simulateMs": 5.100000001490116,
+        "renderMs": 22.5,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 23,
+        "frameMs": 24.399999998509884,
+        "simulateMs": 7.800000004470348,
+        "renderMs": 16.299999997019768,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 24,
+        "frameMs": 28.399999998509884,
+        "simulateMs": 5.100000001490116,
+        "renderMs": 22.899999998509884,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 25,
+        "frameMs": 24.100000001490116,
+        "simulateMs": 6.600000001490116,
+        "renderMs": 17.19999999552965,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 26,
+        "frameMs": 30.100000001490116,
+        "simulateMs": 5,
+        "renderMs": 24.799999997019768,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 27,
+        "frameMs": 24.399999998509884,
+        "simulateMs": 7,
+        "renderMs": 16.69999999552965,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 28,
+        "frameMs": 27.399999998509884,
+        "simulateMs": 4.799999997019768,
+        "renderMs": 22.299999997019768,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 29,
+        "frameMs": 25.899999998509884,
+        "simulateMs": 6.899999998509884,
+        "renderMs": 18.600000001490116,
+        "drawCalls": 1520,
+        "triangles": 9963390
+      },
+      {
+        "i": 30,
+        "frameMs": 27.30000000447035,
+        "simulateMs": 4.800000004470348,
+        "renderMs": 22.100000001490116,
+        "drawCalls": 2166,
+        "triangles": 11669076
+      },
+      {
+        "i": 31,
+        "frameMs": 24.200000002980232,
+        "simulateMs": 6.899999998509884,
+        "renderMs": 17,
+        "drawCalls": 1520,
+        "triangles": 9963390
+      },
+      {
+        "i": 32,
+        "frameMs": 30,
+        "simulateMs": 5.100000001490116,
+        "renderMs": 24.5,
+        "drawCalls": 2166,
+        "triangles": 11669076
+      },
+      {
+        "i": 33,
+        "frameMs": 24.399999998509884,
+        "simulateMs": 6.600000001490116,
+        "renderMs": 17.399999998509884,
+        "drawCalls": 1520,
+        "triangles": 9963390
+      },
+      {
+        "i": 34,
+        "frameMs": 28.700000002980232,
+        "simulateMs": 5.300000004470348,
+        "renderMs": 23,
+        "drawCalls": 2166,
+        "triangles": 11669076
+      },
+      {
+        "i": 35,
+        "frameMs": 25.100000001490116,
+        "simulateMs": 5.899999998509884,
+        "renderMs": 18.80000000447035,
+        "drawCalls": 1520,
+        "triangles": 9963390
+      },
+      {
+        "i": 36,
+        "frameMs": 27.5,
+        "simulateMs": 4.600000001490116,
+        "renderMs": 22.600000001490116,
+        "drawCalls": 2166,
+        "triangles": 11669076
+      },
+      {
+        "i": 37,
+        "frameMs": 24,
+        "simulateMs": 6.100000001490116,
+        "renderMs": 17.600000001490116,
+        "drawCalls": 1520,
+        "triangles": 9963390
+      },
+      {
+        "i": 38,
+        "frameMs": 29.700000002980232,
+        "simulateMs": 4.899999998509884,
+        "renderMs": 24.5,
+        "drawCalls": 2166,
+        "triangles": 11669076
+      },
+      {
+        "i": 39,
+        "frameMs": 23.099999994039536,
+        "simulateMs": 6.0999999940395355,
+        "renderMs": 16.600000001490116,
+        "drawCalls": 1517,
+        "triangles": 9963292
+      },
+      {
+        "i": 40,
+        "frameMs": 26.899999998509884,
+        "simulateMs": 4.5,
+        "renderMs": 22.099999994039536,
+        "drawCalls": 2163,
+        "triangles": 11668978
+      },
+      {
+        "i": 41,
+        "frameMs": 28.100000001490116,
+        "simulateMs": 9.600000001490116,
+        "renderMs": 18.200000002980232,
+        "drawCalls": 1517,
+        "triangles": 9963292
+      },
+      {
+        "i": 42,
+        "frameMs": 27.80000000447035,
+        "simulateMs": 4.800000004470348,
+        "renderMs": 22.599999994039536,
+        "drawCalls": 2163,
+        "triangles": 11668978
+      },
+      {
+        "i": 43,
+        "frameMs": 25.100000001490116,
+        "simulateMs": 7.200000002980232,
+        "renderMs": 17.69999999552965,
+        "drawCalls": 1516,
+        "triangles": 9962560
+      },
+      {
+        "i": 44,
+        "frameMs": 28.5,
+        "simulateMs": 4.399999998509884,
+        "renderMs": 23.700000002980232,
+        "drawCalls": 2161,
+        "triangles": 11667156
+      },
+      {
+        "i": 45,
+        "frameMs": 24.399999998509884,
+        "simulateMs": 6.100000001490116,
+        "renderMs": 18,
+        "drawCalls": 1515,
+        "triangles": 9961470
+      },
+      {
+        "i": 46,
+        "frameMs": 27.700000002980232,
+        "simulateMs": 4.399999998509884,
+        "renderMs": 23,
+        "drawCalls": 2161,
+        "triangles": 11667156
+      },
+      {
+        "i": 47,
+        "frameMs": 23.399999998509884,
+        "simulateMs": 6.700000002980232,
+        "renderMs": 16.399999998509884,
+        "drawCalls": 1515,
+        "triangles": 9961470
+      },
+      {
+        "i": 48,
+        "frameMs": 29.5,
+        "simulateMs": 5.200000002980232,
+        "renderMs": 24,
+        "drawCalls": 2161,
+        "triangles": 11667156
+      },
+      {
+        "i": 49,
+        "frameMs": 23.399999998509884,
+        "simulateMs": 6,
+        "renderMs": 17.100000001490116,
+        "drawCalls": 1515,
+        "triangles": 9961470
+      },
+      {
+        "i": 50,
+        "frameMs": 28.100000001490116,
+        "simulateMs": 4.5,
+        "renderMs": 23.200000002980232,
+        "drawCalls": 2161,
+        "triangles": 11667156
+      },
+      {
+        "i": 51,
+        "frameMs": 25.299999997019768,
+        "simulateMs": 6.600000001490116,
+        "renderMs": 18.399999998509884,
+        "drawCalls": 1515,
+        "triangles": 9961470
+      },
+      {
+        "i": 52,
+        "frameMs": 27.30000000447035,
+        "simulateMs": 4.5,
+        "renderMs": 22.5,
+        "drawCalls": 2161,
+        "triangles": 11667156
+      },
+      {
+        "i": 53,
+        "frameMs": 22.600000001490116,
+        "simulateMs": 5.799999997019768,
+        "renderMs": 16.5,
+        "drawCalls": 1515,
+        "triangles": 9961470
+      },
+      {
+        "i": 54,
+        "frameMs": 61.100000001490116,
+        "simulateMs": 43.80000000447035,
+        "renderMs": 17,
+        "drawCalls": 2161,
+        "triangles": 11667156
+      },
+      {
+        "i": 55,
+        "frameMs": 23.100000001490116,
+        "simulateMs": 5.899999998509884,
+        "renderMs": 16.899999998509884,
+        "drawCalls": 1515,
+        "triangles": 9961470
+      },
+      {
+        "i": 56,
+        "frameMs": 28.099999994039536,
+        "simulateMs": 5.0999999940395355,
+        "renderMs": 22.700000002980232,
+        "drawCalls": 2161,
+        "triangles": 11667156
+      },
+      {
+        "i": 57,
+        "frameMs": 23.5,
+        "simulateMs": 5.700000002980232,
+        "renderMs": 17.5,
+        "drawCalls": 1515,
+        "triangles": 9961470
+      },
+      {
+        "i": 58,
+        "frameMs": 28.80000000447035,
+        "simulateMs": 5.100000001490116,
+        "renderMs": 23.399999998509884,
+        "drawCalls": 2161,
+        "triangles": 11667156
+      },
+      {
+        "i": 59,
+        "frameMs": 21.799999997019768,
+        "simulateMs": 5.399999998509884,
+        "renderMs": 16,
+        "drawCalls": 1515,
+        "triangles": 9961470
+      },
+      {
+        "i": 60,
+        "frameMs": 27.099999994039536,
+        "simulateMs": 4.799999997019768,
+        "renderMs": 21.899999998509884,
+        "drawCalls": 2161,
+        "triangles": 11667156
+      },
+      {
+        "i": 61,
+        "frameMs": 24.899999998509884,
+        "simulateMs": 5.5999999940395355,
+        "renderMs": 19,
+        "drawCalls": 1515,
+        "triangles": 9961470
+      },
+      {
+        "i": 62,
+        "frameMs": 27.399999998509884,
+        "simulateMs": 4.799999997019768,
+        "renderMs": 22.299999997019768,
+        "drawCalls": 2161,
+        "triangles": 11667156
+      },
+      {
+        "i": 63,
+        "frameMs": 23.399999998509884,
+        "simulateMs": 6.399999998509884,
+        "renderMs": 16.700000002980232,
+        "drawCalls": 1515,
+        "triangles": 9961470
+      },
+      {
+        "i": 64,
+        "frameMs": 75.10000000149012,
+        "simulateMs": 4.600000001490116,
+        "renderMs": 70.19999999552965,
+        "drawCalls": 2161,
+        "triangles": 11667156
+      },
+      {
+        "i": 65,
+        "frameMs": 23.299999997019768,
+        "simulateMs": 5.699999995529652,
+        "renderMs": 17.30000000447035,
+        "drawCalls": 1515,
+        "triangles": 9961470
+      },
+      {
+        "i": 66,
+        "frameMs": 28.700000002980232,
+        "simulateMs": 4.700000002980232,
+        "renderMs": 23.700000002980232,
+        "drawCalls": 2161,
+        "triangles": 11667156
+      },
+      {
+        "i": 67,
+        "frameMs": 23.600000001490116,
+        "simulateMs": 5.600000001490116,
+        "renderMs": 17.799999997019768,
+        "drawCalls": 1515,
+        "triangles": 9961470
+      },
+      {
+        "i": 68,
+        "frameMs": 29.19999999552965,
+        "simulateMs": 5,
+        "renderMs": 23.899999998509884,
+        "drawCalls": 2164,
+        "triangles": 11669038
+      },
+      {
+        "i": 69,
+        "frameMs": 24.099999994039536,
+        "simulateMs": 6.299999997019768,
+        "renderMs": 17.299999997019768,
+        "drawCalls": 1520,
+        "triangles": 9963390
+      },
+      {
+        "i": 70,
+        "frameMs": 28.100000001490116,
+        "simulateMs": 4.300000004470348,
+        "renderMs": 23.399999998509884,
+        "drawCalls": 2166,
+        "triangles": 11669076
+      },
+      {
+        "i": 71,
+        "frameMs": 58.100000001490116,
+        "simulateMs": 43.70000000298023,
+        "renderMs": 14.099999994039536,
+        "drawCalls": 1520,
+        "triangles": 9963390
+      },
+      {
+        "i": 72,
+        "frameMs": 27.100000001490116,
+        "simulateMs": 4.300000004470348,
+        "renderMs": 22.5,
+        "drawCalls": 2166,
+        "triangles": 11669076
+      },
+      {
+        "i": 73,
+        "frameMs": 25.30000000447035,
+        "simulateMs": 8,
+        "renderMs": 17.100000001490116,
+        "drawCalls": 1520,
+        "triangles": 9963390
+      },
+      {
+        "i": 74,
+        "frameMs": 27.399999998509884,
+        "simulateMs": 4.5999999940395355,
+        "renderMs": 22.5,
+        "drawCalls": 2166,
+        "triangles": 11669076
+      },
+      {
+        "i": 75,
+        "frameMs": 23.399999998509884,
+        "simulateMs": 5.699999995529652,
+        "renderMs": 17.30000000447035,
+        "drawCalls": 1520,
+        "triangles": 9963390
+      },
+      {
+        "i": 76,
+        "frameMs": 31.19999999552965,
+        "simulateMs": 4.399999998509884,
+        "renderMs": 26.399999998509884,
+        "drawCalls": 2166,
+        "triangles": 11669076
+      },
+      {
+        "i": 77,
+        "frameMs": 24.099999994039536,
+        "simulateMs": 6.5,
+        "renderMs": 17.299999997019768,
+        "drawCalls": 1520,
+        "triangles": 9963390
+      },
+      {
+        "i": 78,
+        "frameMs": 28.5,
+        "simulateMs": 4.300000004470348,
+        "renderMs": 23.899999998509884,
+        "drawCalls": 2166,
+        "triangles": 11669076
+      },
+      {
+        "i": 79,
+        "frameMs": 23.5,
+        "simulateMs": 5.799999997019768,
+        "renderMs": 17.400000005960464,
+        "drawCalls": 1520,
+        "triangles": 9963390
+      },
+      {
+        "i": 80,
+        "frameMs": 27.80000000447035,
+        "simulateMs": 4.200000002980232,
+        "renderMs": 23.200000002980232,
+        "drawCalls": 2166,
+        "triangles": 11669076
+      },
+      {
+        "i": 81,
+        "frameMs": 22,
+        "simulateMs": 5.799999997019768,
+        "renderMs": 15.899999998509884,
+        "drawCalls": 1520,
+        "triangles": 9963390
+      },
+      {
+        "i": 82,
+        "frameMs": 27.299999997019768,
+        "simulateMs": 4,
+        "renderMs": 23,
+        "drawCalls": 2166,
+        "triangles": 11669076
+      },
+      {
+        "i": 83,
+        "frameMs": 22.399999998509884,
+        "simulateMs": 5.799999997019768,
+        "renderMs": 16.200000002980232,
+        "drawCalls": 1522,
+        "triangles": 9965318
+      },
+      {
+        "i": 84,
+        "frameMs": 28.900000005960464,
+        "simulateMs": 4.600000001490116,
+        "renderMs": 24,
+        "drawCalls": 2168,
+        "triangles": 11671004
+      },
+      {
+        "i": 85,
+        "frameMs": 23.80000000447035,
+        "simulateMs": 5.600000001490116,
+        "renderMs": 17.80000000447035,
+        "drawCalls": 1522,
+        "triangles": 9965318
+      },
+      {
+        "i": 86,
+        "frameMs": 27.80000000447035,
+        "simulateMs": 5.100000001490116,
+        "renderMs": 22.399999998509884,
+        "drawCalls": 2168,
+        "triangles": 11671004
+      },
+      {
+        "i": 87,
+        "frameMs": 22.80000000447035,
+        "simulateMs": 5.800000004470348,
+        "renderMs": 16.69999999552965,
+        "drawCalls": 1522,
+        "triangles": 9965318
+      },
+      {
+        "i": 88,
+        "frameMs": 27.600000001490116,
+        "simulateMs": 4.700000002980232,
+        "renderMs": 22.5,
+        "drawCalls": 2168,
+        "triangles": 11671004
+      },
+      {
+        "i": 89,
+        "frameMs": 22,
+        "simulateMs": 5.399999998509884,
+        "renderMs": 16.299999997019768,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 90,
+        "frameMs": 27.899999998509884,
+        "simulateMs": 4.399999998509884,
+        "renderMs": 23.200000002980232,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 91,
+        "frameMs": 23,
+        "simulateMs": 5.699999995529652,
+        "renderMs": 17,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 92,
+        "frameMs": 27.30000000447035,
+        "simulateMs": 4.4000000059604645,
+        "renderMs": 22.69999999552965,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 93,
+        "frameMs": 23.69999999552965,
+        "simulateMs": 5.5,
+        "renderMs": 18,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 94,
+        "frameMs": 26.19999999552965,
+        "simulateMs": 4.100000001490116,
+        "renderMs": 21.69999999552965,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 95,
+        "frameMs": 22,
+        "simulateMs": 6.199999995529652,
+        "renderMs": 15.400000005960464,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 96,
+        "frameMs": 29.599999994039536,
+        "simulateMs": 4.199999995529652,
+        "renderMs": 25.200000002980232,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 97,
+        "frameMs": 23.5,
+        "simulateMs": 5.399999998509884,
+        "renderMs": 17.700000002980232,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 98,
+        "frameMs": 29.19999999552965,
+        "simulateMs": 4.399999998509884,
+        "renderMs": 24.600000001490116,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 99,
+        "frameMs": 24,
+        "simulateMs": 5.600000001490116,
+        "renderMs": 18.19999999552965,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 100,
+        "frameMs": 27.700000002980232,
+        "simulateMs": 4.200000002980232,
+        "renderMs": 23.200000002980232,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 101,
+        "frameMs": 25.30000000447035,
+        "simulateMs": 7.700000002980232,
+        "renderMs": 17.299999997019768,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 102,
+        "frameMs": 27.600000001490116,
+        "simulateMs": 4.100000001490116,
+        "renderMs": 23.100000001490116,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 103,
+        "frameMs": 24.099999994039536,
+        "simulateMs": 6.899999998509884,
+        "renderMs": 16.799999997019768,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 104,
+        "frameMs": 28.19999999552965,
+        "simulateMs": 4.5999999940395355,
+        "renderMs": 23.200000002980232,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 105,
+        "frameMs": 25,
+        "simulateMs": 5.5,
+        "renderMs": 19.100000001490116,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 106,
+        "frameMs": 27.69999999552965,
+        "simulateMs": 4.199999995529652,
+        "renderMs": 23.30000000447035,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 107,
+        "frameMs": 23.80000000447035,
+        "simulateMs": 5.600000001490116,
+        "renderMs": 17.899999998509884,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 108,
+        "frameMs": 28.700000002980232,
+        "simulateMs": 4.700000002980232,
+        "renderMs": 23.700000002980232,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 109,
+        "frameMs": 23.69999999552965,
+        "simulateMs": 5.5999999940395355,
+        "renderMs": 17.900000005960464,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 110,
+        "frameMs": 28.899999998509884,
+        "simulateMs": 4.600000001490116,
+        "renderMs": 24,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 111,
+        "frameMs": 24.200000002980232,
+        "simulateMs": 6.300000004470348,
+        "renderMs": 17.69999999552965,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 112,
+        "frameMs": 30.599999994039536,
+        "simulateMs": 4.5,
+        "renderMs": 25.69999999552965,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 113,
+        "frameMs": 23,
+        "simulateMs": 5.5,
+        "renderMs": 17.200000002980232,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 114,
+        "frameMs": 27.299999997019768,
+        "simulateMs": 4.399999998509884,
+        "renderMs": 22.5,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 115,
+        "frameMs": 24.100000001490116,
+        "simulateMs": 5.600000001490116,
+        "renderMs": 18.200000002980232,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 116,
+        "frameMs": 28.600000001490116,
+        "simulateMs": 4.399999998509884,
+        "renderMs": 23.900000005960464,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 117,
+        "frameMs": 26.700000002980232,
+        "simulateMs": 6,
+        "renderMs": 20.400000005960464,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 118,
+        "frameMs": 27.799999997019768,
+        "simulateMs": 4.699999995529652,
+        "renderMs": 22.700000002980232,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 119,
+        "frameMs": 23.899999998509884,
+        "simulateMs": 6.100000001490116,
+        "renderMs": 17.600000001490116,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 120,
+        "frameMs": 28,
+        "simulateMs": 4.5999999940395355,
+        "renderMs": 23.200000002980232,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 121,
+        "frameMs": 23.399999998509884,
+        "simulateMs": 5.600000001490116,
+        "renderMs": 17.600000001490116,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 122,
+        "frameMs": 28.5,
+        "simulateMs": 4.299999997019768,
+        "renderMs": 23.799999997019768,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 123,
+        "frameMs": 22.600000001490116,
+        "simulateMs": 5.799999997019768,
+        "renderMs": 16.5,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 124,
+        "frameMs": 26.899999998509884,
+        "simulateMs": 4.100000001490116,
+        "renderMs": 22.5,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 125,
+        "frameMs": 24.100000001490116,
+        "simulateMs": 5.5,
+        "renderMs": 18.19999999552965,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 126,
+        "frameMs": 30.69999999552965,
+        "simulateMs": 5,
+        "renderMs": 24.69999999552965,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 127,
+        "frameMs": 26.30000000447035,
+        "simulateMs": 8.399999998509884,
+        "renderMs": 17.400000005960464,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 128,
+        "frameMs": 31.80000000447035,
+        "simulateMs": 4.600000001490116,
+        "renderMs": 26.899999998509884,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 129,
+        "frameMs": 23,
+        "simulateMs": 5.800000004470348,
+        "renderMs": 16.899999998509884,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 130,
+        "frameMs": 28.200000002980232,
+        "simulateMs": 4.300000004470348,
+        "renderMs": 23.5,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 131,
+        "frameMs": 24.600000001490116,
+        "simulateMs": 6.200000002980232,
+        "renderMs": 18,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 132,
+        "frameMs": 27.799999997019768,
+        "simulateMs": 4.299999997019768,
+        "renderMs": 23.200000002980232,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 133,
+        "frameMs": 24.400000005960464,
+        "simulateMs": 7,
+        "renderMs": 17.100000001490116,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 134,
+        "frameMs": 30.700000002980232,
+        "simulateMs": 5,
+        "renderMs": 25.299999997019768,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 135,
+        "frameMs": 23.80000000447035,
+        "simulateMs": 6.100000001490116,
+        "renderMs": 17.399999998509884,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 136,
+        "frameMs": 26.5,
+        "simulateMs": 4.5,
+        "renderMs": 21.600000001490116,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 137,
+        "frameMs": 28.799999997019768,
+        "simulateMs": 5.399999998509884,
+        "renderMs": 23,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 138,
+        "frameMs": 30.200000002980232,
+        "simulateMs": 4.899999998509884,
+        "renderMs": 24.80000000447035,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 139,
+        "frameMs": 24,
+        "simulateMs": 6,
+        "renderMs": 17.80000000447035,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 140,
+        "frameMs": 29.700000002980232,
+        "simulateMs": 5,
+        "renderMs": 24.400000005960464,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 141,
+        "frameMs": 22.899999998509884,
+        "simulateMs": 5.699999995529652,
+        "renderMs": 16.900000005960464,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 142,
+        "frameMs": 28.700000002980232,
+        "simulateMs": 5.200000002980232,
+        "renderMs": 22.899999998509884,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 143,
+        "frameMs": 24.200000002980232,
+        "simulateMs": 6.200000002980232,
+        "renderMs": 17.69999999552965,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 144,
+        "frameMs": 29.30000000447035,
+        "simulateMs": 5,
+        "renderMs": 24.100000001490116,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 145,
+        "frameMs": 23.399999998509884,
+        "simulateMs": 5.700000002980232,
+        "renderMs": 17.399999998509884,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 146,
+        "frameMs": 32,
+        "simulateMs": 5.100000001490116,
+        "renderMs": 26.19999999552965,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 147,
+        "frameMs": 23.400000005960464,
+        "simulateMs": 5.600000001490116,
+        "renderMs": 17.399999998509884,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 148,
+        "frameMs": 44.599999994039536,
+        "simulateMs": 4.699999995529652,
+        "renderMs": 39.5,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 149,
+        "frameMs": 24.900000005960464,
+        "simulateMs": 6.100000001490116,
+        "renderMs": 18.399999998509884,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 150,
+        "frameMs": 30.69999999552965,
+        "simulateMs": 5.0999999940395355,
+        "renderMs": 25.30000000447035,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 151,
+        "frameMs": 22.399999998509884,
+        "simulateMs": 5.399999998509884,
+        "renderMs": 16.700000002980232,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 152,
+        "frameMs": 31.100000001490116,
+        "simulateMs": 4.600000001490116,
+        "renderMs": 26.200000002980232,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 153,
+        "frameMs": 23.30000000447035,
+        "simulateMs": 5.700000002980232,
+        "renderMs": 17.299999997019768,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 154,
+        "frameMs": 30.399999998509884,
+        "simulateMs": 4.699999995529652,
+        "renderMs": 25.30000000447035,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 155,
+        "frameMs": 22.799999997019768,
+        "simulateMs": 5.5,
+        "renderMs": 17,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 156,
+        "frameMs": 28.80000000447035,
+        "simulateMs": 4.700000002980232,
+        "renderMs": 23.600000001490116,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 157,
+        "frameMs": 24.099999994039536,
+        "simulateMs": 5.5999999940395355,
+        "renderMs": 18.200000002980232,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 158,
+        "frameMs": 32.899999998509884,
+        "simulateMs": 5,
+        "renderMs": 27.600000001490116,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 159,
+        "frameMs": 24.5,
+        "simulateMs": 6,
+        "renderMs": 18.19999999552965,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 160,
+        "frameMs": 27.100000001490116,
+        "simulateMs": 4.700000002980232,
+        "renderMs": 22.100000001490116,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 161,
+        "frameMs": 24,
+        "simulateMs": 6.799999997019768,
+        "renderMs": 16.899999998509884,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 162,
+        "frameMs": 31.900000005960464,
+        "simulateMs": 4.4000000059604645,
+        "renderMs": 27.19999999552965,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 163,
+        "frameMs": 24.69999999552965,
+        "simulateMs": 6.799999997019768,
+        "renderMs": 17.600000001490116,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 164,
+        "frameMs": 28.399999998509884,
+        "simulateMs": 5.199999995529652,
+        "renderMs": 22.899999998509884,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 165,
+        "frameMs": 23.19999999552965,
+        "simulateMs": 5.299999997019768,
+        "renderMs": 17.600000001490116,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 166,
+        "frameMs": 27.799999997019768,
+        "simulateMs": 4.699999995529652,
+        "renderMs": 22.80000000447035,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 167,
+        "frameMs": 23.600000001490116,
+        "simulateMs": 5.800000004470348,
+        "renderMs": 17.5,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 168,
+        "frameMs": 28.899999998509884,
+        "simulateMs": 4.600000001490116,
+        "renderMs": 24,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 169,
+        "frameMs": 23.600000001490116,
+        "simulateMs": 5.600000001490116,
+        "renderMs": 17.799999997019768,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 170,
+        "frameMs": 32.30000000447035,
+        "simulateMs": 4.399999998509884,
+        "renderMs": 27.400000005960464,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 171,
+        "frameMs": 23,
+        "simulateMs": 5.399999998509884,
+        "renderMs": 17.30000000447035,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 172,
+        "frameMs": 28.299999997019768,
+        "simulateMs": 4.699999995529652,
+        "renderMs": 23.30000000447035,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 173,
+        "frameMs": 23.200000002980232,
+        "simulateMs": 5.899999998509884,
+        "renderMs": 17,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 174,
+        "frameMs": 28.200000002980232,
+        "simulateMs": 4.9000000059604645,
+        "renderMs": 23.099999994039536,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 175,
+        "frameMs": 23.100000001490116,
+        "simulateMs": 5.799999997019768,
+        "renderMs": 17,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 176,
+        "frameMs": 28.80000000447035,
+        "simulateMs": 4.600000001490116,
+        "renderMs": 23.899999998509884,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 177,
+        "frameMs": 23.19999999552965,
+        "simulateMs": 5.600000001490116,
+        "renderMs": 17.299999997019768,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 178,
+        "frameMs": 35.5,
+        "simulateMs": 4.600000001490116,
+        "renderMs": 30.299999997019768,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 179,
+        "frameMs": 25.100000001490116,
+        "simulateMs": 6.5,
+        "renderMs": 18.200000002980232,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 180,
+        "frameMs": 38.19999999552965,
+        "simulateMs": 5,
+        "renderMs": 32.79999999701977,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 181,
+        "frameMs": 25.69999999552965,
+        "simulateMs": 5.799999997019768,
+        "renderMs": 19.5,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 182,
+        "frameMs": 36.600000001490116,
+        "simulateMs": 5.300000004470348,
+        "renderMs": 31,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 183,
+        "frameMs": 23.19999999552965,
+        "simulateMs": 5.799999997019768,
+        "renderMs": 17.100000001490116,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 184,
+        "frameMs": 32.100000001490116,
+        "simulateMs": 4.899999998509884,
+        "renderMs": 26.899999998509884,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 185,
+        "frameMs": 22.80000000447035,
+        "simulateMs": 5.4000000059604645,
+        "renderMs": 17,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 186,
+        "frameMs": 31.5,
+        "simulateMs": 5,
+        "renderMs": 26.100000001490116,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 187,
+        "frameMs": 22.599999994039536,
+        "simulateMs": 5.199999995529652,
+        "renderMs": 17.200000002980232,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 188,
+        "frameMs": 39.5,
+        "simulateMs": 8.399999998509884,
+        "renderMs": 30.80000000447035,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 189,
+        "frameMs": 24.69999999552965,
+        "simulateMs": 5.600000001490116,
+        "renderMs": 18.69999999552965,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 190,
+        "frameMs": 31.799999997019768,
+        "simulateMs": 4.799999997019768,
+        "renderMs": 26.700000002980232,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 191,
+        "frameMs": 25.099999994039536,
+        "simulateMs": 6.5,
+        "renderMs": 18.299999997019768,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 192,
+        "frameMs": 28.399999998509884,
+        "simulateMs": 5.799999997019768,
+        "renderMs": 22.200000002980232,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 193,
+        "frameMs": 24.099999994039536,
+        "simulateMs": 5.799999997019768,
+        "renderMs": 17.899999998509884,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 194,
+        "frameMs": 31.100000001490116,
+        "simulateMs": 5,
+        "renderMs": 25.69999999552965,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 195,
+        "frameMs": 24.099999994039536,
+        "simulateMs": 6,
+        "renderMs": 17.69999999552965,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 196,
+        "frameMs": 28.30000000447035,
+        "simulateMs": 4.800000004470348,
+        "renderMs": 23,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 197,
+        "frameMs": 22.899999998509884,
+        "simulateMs": 5.5999999940395355,
+        "renderMs": 16.900000005960464,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 198,
+        "frameMs": 28.700000002980232,
+        "simulateMs": 4.799999997019768,
+        "renderMs": 23.600000001490116,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 199,
+        "frameMs": 22.600000001490116,
+        "simulateMs": 5.600000001490116,
+        "renderMs": 16.69999999552965,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 200,
+        "frameMs": 29.100000001490116,
+        "simulateMs": 4.600000001490116,
+        "renderMs": 24.100000001490116,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 201,
+        "frameMs": 23.5,
+        "simulateMs": 6,
+        "renderMs": 17.200000002980232,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 202,
+        "frameMs": 28,
+        "simulateMs": 4.299999997019768,
+        "renderMs": 23.30000000447035,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 203,
+        "frameMs": 22.899999998509884,
+        "simulateMs": 5.399999998509884,
+        "renderMs": 17.200000002980232,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 204,
+        "frameMs": 28.5,
+        "simulateMs": 4.299999997019768,
+        "renderMs": 23.799999997019768,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 205,
+        "frameMs": 21.69999999552965,
+        "simulateMs": 5.699999995529652,
+        "renderMs": 15.700000002980232,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 206,
+        "frameMs": 27.299999997019768,
+        "simulateMs": 4.5,
+        "renderMs": 22.5,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 207,
+        "frameMs": 22.899999998509884,
+        "simulateMs": 5.600000001490116,
+        "renderMs": 17,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 208,
+        "frameMs": 29.5,
+        "simulateMs": 5.300000004470348,
+        "renderMs": 23.399999998509884,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 209,
+        "frameMs": 24.19999999552965,
+        "simulateMs": 6,
+        "renderMs": 17.799999997019768,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 210,
+        "frameMs": 28.899999998509884,
+        "simulateMs": 4.799999997019768,
+        "renderMs": 23.80000000447035,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 211,
+        "frameMs": 62.899999998509884,
+        "simulateMs": 49.600000001490116,
+        "renderMs": 13,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 212,
+        "frameMs": 27.30000000447035,
+        "simulateMs": 4.600000001490116,
+        "renderMs": 22.399999998509884,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 213,
+        "frameMs": 23.399999998509884,
+        "simulateMs": 5.899999998509884,
+        "renderMs": 17.19999999552965,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 214,
+        "frameMs": 28.600000001490116,
+        "simulateMs": 4.700000002980232,
+        "renderMs": 23.5,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 215,
+        "frameMs": 23.100000001490116,
+        "simulateMs": 5.399999998509884,
+        "renderMs": 17.399999998509884,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 216,
+        "frameMs": 29.600000001490116,
+        "simulateMs": 4.5,
+        "renderMs": 24.799999997019768,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 217,
+        "frameMs": 22.799999997019768,
+        "simulateMs": 5.5,
+        "renderMs": 17,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 218,
+        "frameMs": 28.399999998509884,
+        "simulateMs": 5.100000001490116,
+        "renderMs": 23,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 219,
+        "frameMs": 23.299999997019768,
+        "simulateMs": 5.899999998509884,
+        "renderMs": 17.100000001490116,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 220,
+        "frameMs": 30,
+        "simulateMs": 4.799999997019768,
+        "renderMs": 24.899999998509884,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 221,
+        "frameMs": 24.899999998509884,
+        "simulateMs": 7.100000001490116,
+        "renderMs": 17.600000001490116,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 222,
+        "frameMs": 28.69999999552965,
+        "simulateMs": 5.0999999940395355,
+        "renderMs": 23.200000002980232,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 223,
+        "frameMs": 24,
+        "simulateMs": 5.9000000059604645,
+        "renderMs": 17.69999999552965,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 224,
+        "frameMs": 27.799999997019768,
+        "simulateMs": 4.899999998509884,
+        "renderMs": 22.5,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 225,
+        "frameMs": 22.700000002980232,
+        "simulateMs": 5.399999998509884,
+        "renderMs": 17,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 226,
+        "frameMs": 28.5,
+        "simulateMs": 4.5,
+        "renderMs": 23.5,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 227,
+        "frameMs": 27.299999997019768,
+        "simulateMs": 5.5,
+        "renderMs": 21.099999994039536,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 228,
+        "frameMs": 27.100000001490116,
+        "simulateMs": 4.700000002980232,
+        "renderMs": 22,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 229,
+        "frameMs": 35.899999998509884,
+        "simulateMs": 19.799999997019768,
+        "renderMs": 15.799999997019768,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 230,
+        "frameMs": 27.799999997019768,
+        "simulateMs": 4.5,
+        "renderMs": 23,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 231,
+        "frameMs": 22.299999997019768,
+        "simulateMs": 5.600000001490116,
+        "renderMs": 16.299999997019768,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 232,
+        "frameMs": 26.900000005960464,
+        "simulateMs": 4,
+        "renderMs": 22.600000001490116,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 233,
+        "frameMs": 25.19999999552965,
+        "simulateMs": 7.600000001490116,
+        "renderMs": 17.299999997019768,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 234,
+        "frameMs": 28,
+        "simulateMs": 4.300000004470348,
+        "renderMs": 23.399999998509884,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 235,
+        "frameMs": 22.899999998509884,
+        "simulateMs": 5.300000004470348,
+        "renderMs": 17.299999997019768,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 236,
+        "frameMs": 27.5,
+        "simulateMs": 4.399999998509884,
+        "renderMs": 22.80000000447035,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 237,
+        "frameMs": 22.600000001490116,
+        "simulateMs": 5.800000004470348,
+        "renderMs": 16.5,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 238,
+        "frameMs": 28,
+        "simulateMs": 4.200000002980232,
+        "renderMs": 23.5,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 239,
+        "frameMs": 24.399999998509884,
+        "simulateMs": 5.600000001490116,
+        "renderMs": 18.399999998509884,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 240,
+        "frameMs": 27.5,
+        "simulateMs": 4.100000001490116,
+        "renderMs": 23.19999999552965,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 241,
+        "frameMs": 23,
+        "simulateMs": 5.399999998509884,
+        "renderMs": 17.30000000447035,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 242,
+        "frameMs": 27.799999997019768,
+        "simulateMs": 4.299999997019768,
+        "renderMs": 23.299999997019768,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 243,
+        "frameMs": 22.400000005960464,
+        "simulateMs": 5.9000000059604645,
+        "renderMs": 16.099999994039536,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 244,
+        "frameMs": 27.899999998509884,
+        "simulateMs": 4.199999995529652,
+        "renderMs": 23.400000005960464,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 245,
+        "frameMs": 23.30000000447035,
+        "simulateMs": 5.5,
+        "renderMs": 17.600000001490116,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 246,
+        "frameMs": 27.899999998509884,
+        "simulateMs": 4.5,
+        "renderMs": 23.100000001490116,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 247,
+        "frameMs": 23.200000002980232,
+        "simulateMs": 5.600000001490116,
+        "renderMs": 17.299999997019768,
+        "drawCalls": 1524,
+        "triangles": 9965352
+      },
+      {
+        "i": 248,
+        "frameMs": 28.100000001490116,
+        "simulateMs": 4.5,
+        "renderMs": 23.30000000447035,
+        "drawCalls": 2170,
+        "triangles": 11671038
+      },
+      {
+        "i": 249,
+        "frameMs": 46.29999999701977,
+        "simulateMs": 33.5,
+        "renderMs": 12.5,
+        "drawCalls": 1523,
+        "triangles": 9965334
+      },
+      {
+        "i": 250,
+        "frameMs": 29.299999997019768,
+        "simulateMs": 6.299999997019768,
+        "renderMs": 22.600000001490116,
+        "drawCalls": 2169,
+        "triangles": 11671020
+      },
+      {
+        "i": 251,
+        "frameMs": 36.399999998509884,
+        "simulateMs": 16.700000002980232,
+        "renderMs": 19.399999998509884,
+        "drawCalls": 1522,
+        "triangles": 9965318
+      },
+      {
+        "i": 252,
+        "frameMs": 27.100000001490116,
+        "simulateMs": 4.899999998509884,
+        "renderMs": 22,
+        "drawCalls": 2168,
+        "triangles": 11671004
+      },
+      {
+        "i": 253,
+        "frameMs": 23.399999998509884,
+        "simulateMs": 6.799999997019768,
+        "renderMs": 16.30000000447035,
+        "drawCalls": 1522,
+        "triangles": 9965318
+      },
+      {
+        "i": 254,
+        "frameMs": 27.899999998509884,
+        "simulateMs": 5,
+        "renderMs": 22.599999994039536,
+        "drawCalls": 2168,
+        "triangles": 11671004
+      },
+      {
+        "i": 255,
+        "frameMs": 24.799999997019768,
+        "simulateMs": 6.399999998509884,
+        "renderMs": 18.200000002980232,
+        "drawCalls": 1522,
+        "triangles": 9965318
+      },
+      {
+        "i": 256,
+        "frameMs": 98.60000000149012,
+        "simulateMs": 75.70000000298023,
+        "renderMs": 22.600000001490116,
+        "drawCalls": 2168,
+        "triangles": 11671004
+      },
+      {
+        "i": 257,
+        "frameMs": 21.799999997019768,
+        "simulateMs": 5.899999998509884,
+        "renderMs": 15.699999995529652,
+        "drawCalls": 1522,
+        "triangles": 9965318
+      },
+      {
+        "i": 258,
+        "frameMs": 28.399999998509884,
+        "simulateMs": 4.799999997019768,
+        "renderMs": 23.30000000447035,
+        "drawCalls": 2168,
+        "triangles": 11671004
+      },
+      {
+        "i": 259,
+        "frameMs": 24.100000001490116,
+        "simulateMs": 6.799999997019768,
+        "renderMs": 17,
+        "drawCalls": 1522,
+        "triangles": 9965318
+      },
+      {
+        "i": 260,
+        "frameMs": 27.099999994039536,
+        "simulateMs": 4.399999998509884,
+        "renderMs": 22.299999997019768,
+        "drawCalls": 2168,
+        "triangles": 11671004
+      },
+      {
+        "i": 261,
+        "frameMs": 29.400000005960464,
+        "simulateMs": 12.5,
+        "renderMs": 16.5,
+        "drawCalls": 1520,
+        "triangles": 9963390
+      },
+      {
+        "i": 262,
+        "frameMs": 28.099999994039536,
+        "simulateMs": 4.899999998509884,
+        "renderMs": 22.899999998509884,
+        "drawCalls": 2166,
+        "triangles": 11669076
+      },
+      {
+        "i": 263,
+        "frameMs": 25.19999999552965,
+        "simulateMs": 6.0999999940395355,
+        "renderMs": 18.80000000447035,
+        "drawCalls": 1520,
+        "triangles": 9963390
+      },
+      {
+        "i": 264,
+        "frameMs": 27.700000002980232,
+        "simulateMs": 4.600000001490116,
+        "renderMs": 22.69999999552965,
+        "drawCalls": 2166,
+        "triangles": 11669076
+      },
+      {
+        "i": 265,
+        "frameMs": 23.399999998509884,
+        "simulateMs": 5.5,
+        "renderMs": 17.69999999552965,
+        "drawCalls": 1520,
+        "triangles": 9963390
+      },
+      {
+        "i": 266,
+        "frameMs": 30.099999994039536,
+        "simulateMs": 4.699999995529652,
+        "renderMs": 25,
+        "drawCalls": 2166,
+        "triangles": 11669076
+      },
+      {
+        "i": 267,
+        "frameMs": 23.899999998509884,
+        "simulateMs": 5.699999995529652,
+        "renderMs": 17.900000005960464,
+        "drawCalls": 1520,
+        "triangles": 9963390
+      },
+      {
+        "i": 268,
+        "frameMs": 33.20000000298023,
+        "simulateMs": 10.200000002980232,
+        "renderMs": 22.600000001490116,
+        "drawCalls": 2166,
+        "triangles": 11669076
+      },
+      {
+        "i": 269,
+        "frameMs": 23.200000002980232,
+        "simulateMs": 5.700000002980232,
+        "renderMs": 17.19999999552965,
+        "drawCalls": 1520,
+        "triangles": 9963390
+      },
+      {
+        "i": 270,
+        "frameMs": 29,
+        "simulateMs": 4.699999995529652,
+        "renderMs": 24,
+        "drawCalls": 2166,
+        "triangles": 11669076
+      },
+      {
+        "i": 271,
+        "frameMs": 23.899999998509884,
+        "simulateMs": 5.800000004470348,
+        "renderMs": 17.69999999552965,
+        "drawCalls": 1520,
+        "triangles": 9963390
+      },
+      {
+        "i": 272,
+        "frameMs": 123.10000000149012,
+        "simulateMs": 98.89999999850988,
+        "renderMs": 23.899999998509884,
+        "drawCalls": 2166,
+        "triangles": 11669076
+      },
+      {
+        "i": 273,
+        "frameMs": 23.899999998509884,
+        "simulateMs": 5.600000001490116,
+        "renderMs": 18,
+        "drawCalls": 1520,
+        "triangles": 9963390
+      },
+      {
+        "i": 274,
+        "frameMs": 27.100000001490116,
+        "simulateMs": 4.600000001490116,
+        "renderMs": 22.200000002980232,
+        "drawCalls": 2166,
+        "triangles": 11669076
+      },
+      {
+        "i": 275,
+        "frameMs": 18.899999998509884,
+        "simulateMs": 5.5,
+        "renderMs": 13.099999994039536,
+        "drawCalls": 1520,
+        "triangles": 9963390
+      },
+      {
+        "i": 276,
+        "frameMs": 28.19999999552965,
+        "simulateMs": 5.0999999940395355,
+        "renderMs": 22.700000002980232,
+        "drawCalls": 2166,
+        "triangles": 11669076
+      },
+      {
+        "i": 277,
+        "frameMs": 22.600000001490116,
+        "simulateMs": 5.4000000059604645,
+        "renderMs": 17,
+        "drawCalls": 1520,
+        "triangles": 9963390
+      },
+      {
+        "i": 278,
+        "frameMs": 28.700000002980232,
+        "simulateMs": 4.799999997019768,
+        "renderMs": 23.600000001490116,
+        "drawCalls": 2166,
+        "triangles": 11669076
+      },
+      {
+        "i": 279,
+        "frameMs": 22.899999998509884,
+        "simulateMs": 5.199999995529652,
+        "renderMs": 17.5,
+        "drawCalls": 1520,
+        "triangles": 9963390
+      },
+      {
+        "i": 280,
+        "frameMs": 27.30000000447035,
+        "simulateMs": 4.800000004470348,
+        "renderMs": 22.19999999552965,
+        "drawCalls": 2166,
+        "triangles": 11669076
+      },
+      {
+        "i": 281,
+        "frameMs": 22.69999999552965,
+        "simulateMs": 5.100000001490116,
+        "renderMs": 17.299999997019768,
+        "drawCalls": 1520,
+        "triangles": 9963390
+      },
+      {
+        "i": 282,
+        "frameMs": 29.69999999552965,
+        "simulateMs": 5.899999998509884,
+        "renderMs": 23.5,
+        "drawCalls": 2166,
+        "triangles": 11669076
+      },
+      {
+        "i": 283,
+        "frameMs": 23.69999999552965,
+        "simulateMs": 6.5,
+        "renderMs": 17,
+        "drawCalls": 1520,
+        "triangles": 9963390
+      },
+      {
+        "i": 284,
+        "frameMs": 129.69999999552965,
+        "simulateMs": 106.39999999850988,
+        "renderMs": 23,
+        "drawCalls": 2166,
+        "triangles": 11669076
+      },
+      {
+        "i": 285,
+        "frameMs": 22.69999999552965,
+        "simulateMs": 4.5999999940395355,
+        "renderMs": 17.700000002980232,
+        "drawCalls": 1520,
+        "triangles": 9963390
+      }
+    ]
+  },
+  "riverTiles": {
+    "syncComputes": 0,
+    "storeHits": 0,
+    "prefetched": 0,
+    "syncMsTotal": 0,
+    "syncMsMax": 0
+  }
+}
