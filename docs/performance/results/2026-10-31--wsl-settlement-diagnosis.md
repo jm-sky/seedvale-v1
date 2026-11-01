@@ -54,7 +54,7 @@ Re-read against plan 145 (shadow budget) and world-terrain-038 (shadow content):
 - **S1** — forward-shifted, tighter shadow frustum (`createLights.ts` / `gameLoop.ts`; plan 145 X3 had rejected shrinking only for lack of this evidence).
 - **S2** — half-rate shadow refresh when only NPC/fauna motion triggers it (`shadowBudget.ts`).
 
-Plan: [world-terrain-055](../../plans/world-terrain-055-optional-shadow-frustum-and-refresh-trims.md); decision question in queue §3. Settlement-tree batching stays the non-simple Track B candidate above.
+Plan: [world-terrain-055](../../plans/world-terrain-055-optional-shadow-frustum-and-refresh-trims.md); **author 2026-11-01: both, separate A/Bs** → queue Q50, Q51. Settlement-tree batching stays the non-simple Track B candidate above.
 
 ## Caveats
 

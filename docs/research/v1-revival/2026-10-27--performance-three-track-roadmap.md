@@ -32,7 +32,7 @@ Not scheduled; each needs an explicit author go before implementation (visual tr
 
 | Added | Candidate | Evidence | Plan | Decision |
 | --- | --- | --- | --- | --- |
-| 2026-11-01 | Shadow pass trims: S1 forward-shifted tighter sun frustum, S2 half-rate refresh for actor-only motion (both flag-gated, default off) | [WSL settlement diagnosis](../../performance/results/2026-10-31--wsl-settlement-diagnosis.md): `no-shadows` −6.0 ms, shadow `decor` 183 vs main 78 calls | [world-terrain-055](../../plans/world-terrain-055-optional-shadow-frustum-and-refresh-trims.md) | ⏳ queue §3 |
+| 2026-11-01 | Shadow pass trims: S1 forward-shifted tighter sun frustum, S2 half-rate refresh for actor-only motion (both flag-gated, default off) | [WSL settlement diagnosis](../../performance/results/2026-10-31--wsl-settlement-diagnosis.md): `no-shadows` −6.0 ms, shadow `decor` 183 vs main 78 calls | [world-terrain-055](../../plans/world-terrain-055-optional-shadow-frustum-and-refresh-trims.md) | ✅ author 2026-11-01: both, separate A/Bs → queue Q50, Q51 |
 | 2026-10-31 | Settlement trees (`decor`) through vegetation batcher / instanced templates | same report | — (owner analysis of `landmarks.trees` first) | ⏳ not simple: lifecycle change |
 
 ## Ordered execution and checklist

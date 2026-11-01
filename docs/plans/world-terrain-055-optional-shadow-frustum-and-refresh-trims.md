@@ -1,15 +1,19 @@
 # Plan: Optional shadow frustum and refresh trims (settlement shadow pass)
 
 **Created:** 2026-11-01
-**Status:** `draft` 📝
+**Status:** `planned` 📋
 **Type:** optimization
-**Priority:** low · **Effort:** S
+**Priority:** medium · **Effort:** S
 **Depends on:** -
 **Domain:** `world-terrain`
 **Subdomains:** `lighting`
 **Tags:** `rendering` `performance` `shadows`
 
-> **Optional — waiting for an author decision (queue §3, 2026-11-01).** Not part of P2 scope. Both slices change the image slightly (shadow coverage / shadow refresh rate), so neither lands by default without the author's choice. No FPS gain is claimed.
+> **Approved for implementation (author, 2026-11-01)** — see [Author decision](#author-decision-2026-11-01). Both slices change the image slightly (shadow coverage / shadow refresh rate), so each stays behind its flag, default off, until its own A/B and the author's visual OK. No FPS gain is claimed.
+
+## Author decision (2026-11-01)
+
+**Both S1 and S2, each with a separate A/B, in the next session** (queue Q50 → Q51). Never combine the two flags in one A/B arm; default flips are decided per slice after WSL A/B, Windows A/B and visual check.
 
 ## Goal
 
