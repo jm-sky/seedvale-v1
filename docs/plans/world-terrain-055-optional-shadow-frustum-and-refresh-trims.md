@@ -18,7 +18,8 @@
 ## Progress
 
 - **S1 implemented** (`caab7ae2`, flag `?shadowFrustum=tight`, default legacy). WSL A/B: [report](../performance/results/2026-11-01--wsl-q50-shadow-frustum-ab.md) — shadow calls −11.6 %, shadow triangles −29 %, frame time not distinguishable from noise. Windows A/B and visual check pending.
-- S2: not started (Q51).
+- **S2 implemented** (`a7c2852c`), [WSL A/B](../performance/results/2026-11-01--wsl-q51-shadow-actor-cadence-ab.md): draws −260, render p50 −1.9 ms.
+- **Both flags default ON** (author 2026-11-01, no WSL regression); revert via `?shadowFrustum=legacy` / `?shadowActorCadence=0`. Windows A/B + visual check pending; revert if either fails.
 
 ## Goal
 

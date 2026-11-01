@@ -124,19 +124,22 @@ export function isFrameMatrixOnceEnabled(): boolean {
   return flagOn(p.get('frameMatrixOnce'))
 }
 
-/** world-terrain-055 S1: `?shadowFrustum=tight` uses a ±56 m sun shadow frustum
- *  shifted 24 m ahead of the player along camera forward. Default `legacy`
- *  (±80 m centred on the player) until the A/B + visual OK. */
+/** world-terrain-055 S1: ±56 m sun shadow frustum shifted 24 m ahead of the
+ *  player along camera forward. On by default (author 2026-11-01, WSL A/B: no
+ *  regression, shadow calls −11.6 %); `?shadowFrustum=legacy` restores ±80 m
+ *  centred on the player. Windows A/B + visual check still pending (queue §4/§2). */
 export function shadowFrustumModeFromUrl(): 'legacy' | 'tight' {
-  return params()?.get('shadowFrustum') === 'tight' ? 'tight' : 'legacy'
+  return params()?.get('shadowFrustum') === 'legacy' ? 'legacy' : 'tight'
 }
 
-/** world-terrain-055 S2: `?shadowActorCadence=1` refreshes the sun shadow map
- *  every 2nd frame when only nearby NPC/fauna motion (not the player/camera)
- *  triggers it. Default off until the A/B + visual OK. */
+/** world-terrain-055 S2: refresh the sun shadow map every 2nd frame when only
+ *  nearby NPC/fauna motion (not the player/camera) triggers it. On by default
+ *  (author 2026-11-01, WSL A/B: draws −260/frame, no regression);
+ *  `?shadowActorCadence=0` restores per-frame refresh. */
 export function isShadowActorCadenceEnabled(): boolean {
   const p = params()
-  return p?.has('shadowActorCadence') ? flagOn(p.get('shadowActorCadence')) : false
+  if (!p?.has('shadowActorCadence')) return true
+  return flagOn(p.get('shadowActorCadence'))
 }
 
 /** CA2 far-band grass main storage cap (`chunkManager.ts` `grassMainCapFor`).
