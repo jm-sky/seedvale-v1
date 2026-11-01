@@ -26,6 +26,15 @@ Consolidated by Claude Opus 5.5 from commits and native Arc reports; checklists 
 
 Gap to target: `settlement-heavy` remains far below the 50–60 FPS goal. P1 exit requires the approved scope **completed or explicitly closed** with a combined result, not reaching the target; whether a remaining gap justifies extra P1 scope is an author decision to raise in Q7. **Exit packet:** [2026-10-30 P1 exit packet](./2026-10-30--p1-exit-packet.md) (verdicts, close/defer list, batched Windows session, checklist).
 
+## Optional post-P1 candidates (awaiting author decision)
+
+Not scheduled; each needs an explicit author go before implementation (visual trade-off). No FPS gain claimed.
+
+| Added | Candidate | Evidence | Plan | Decision |
+| --- | --- | --- | --- | --- |
+| 2026-11-01 | Shadow pass trims: S1 forward-shifted tighter sun frustum, S2 half-rate refresh for actor-only motion (both flag-gated, default off) | [WSL settlement diagnosis](../../performance/results/2026-10-31--wsl-settlement-diagnosis.md): `no-shadows` −6.0 ms, shadow `decor` 183 vs main 78 calls | [world-terrain-055](../../plans/world-terrain-055-optional-shadow-frustum-and-refresh-trims.md) | ⏳ queue §3 |
+| 2026-10-31 | Settlement trees (`decor`) through vegetation batcher / instanced templates | same report | — (owner analysis of `landmarks.trees` first) | ⏳ not simple: lifecycle change |
+
 ## Ordered execution and checklist
 
 ### A. NPC and fauna rendering — first implementation lane

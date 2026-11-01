@@ -47,6 +47,15 @@ Findings:
 - **Track B candidate: settlement trees through the existing vegetation batcher / instanced templates.** Structural target: `settlement:decor` calls 78/44/183 → ≈ template count per pass. Needs: owner analysis of `landmarks.trees`, then WSL `settlement` A/B n = 3 per arm (structural: decor calls per pass; guards: frame p50/p95/p99, long frames), then Windows A/B.
 - Optional: shadow-pass distance cull for small props (visual compromise → author decision).
 
+### Follow-up 2026-11-01 (Opus): simple candidates → optional plan
+
+Re-read against plan 145 (shadow budget) and world-terrain-038 (shadow content): the shadow-pass excess (`decor` 183 shadow vs 78 main calls) comes from the fixed ±80 m frustum centred on the player, and the shadow map refreshes every frame in settlements. Two small, flag-gated changes in existing owners, **not done before**, are written up as an optional plan awaiting the author's decision (both are slight visual changes):
+
+- **S1** — forward-shifted, tighter shadow frustum (`createLights.ts` / `gameLoop.ts`; plan 145 X3 had rejected shrinking only for lack of this evidence).
+- **S2** — half-rate shadow refresh when only NPC/fauna motion triggers it (`shadowBudget.ts`).
+
+Plan: [world-terrain-055](../../plans/world-terrain-055-optional-shadow-frustum-and-refresh-trims.md); decision question in queue §3. Settlement-tree batching stays the non-simple Track B candidate above.
+
 ## Caveats
 
 - Single rep; probe deltas below ~1 ms are noise. Only the ≥ 6 ms probes (settlement, npc-fauna, shadows) are clearly above it.

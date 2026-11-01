@@ -51,6 +51,7 @@ Unless noted otherwise, `verification needed` means implementation has passed au
 | `world-terrain-015-water-reflection-content-budget.md`                         | ⚪ | S      | -                                                                                                                                                                                                                                                                                          | -                                         |
 | `world-terrain-051-lifecycle-resident-ground-authority-completion.md`          | 🔴 | S      | ~~world-terrain-044~~                                                                                                                                                                                                                                                                      | -                                         |
 | `world-terrain-052-lifecycle-resident-local-water-agent-authority.md`          | 🔴 | M      | ~~world-terrain-044~~, ~~world-terrain-045~~                                                                                                                                                                                                                                               | -                                         |
+| `world-terrain-055-optional-shadow-frustum-and-refresh-trims.md`               | ⚪ | S      | -                                                                                                                                                                                                                                                                                          | -                                         |
 
 ---
 
@@ -207,7 +208,7 @@ New plans declare a primary `Domain:` in frontmatter. Use optional `Tags:` only 
 - tools: `023`
 - ui-input: `048`
 - world: `041`
-- world-terrain: `055`
+- world-terrain: `056`
 
 This ids section is maintained automatically from the plan files.
 

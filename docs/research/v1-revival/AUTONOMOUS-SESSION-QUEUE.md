@@ -158,6 +158,8 @@ Agents may run these checks themselves (seed `415424794`) and mark an item verif
 - **ANSWERED 2026-10-31 · Q47 krypty:** limit ~3 krypt na cmentarz (LG ≈ 3), reszta to zwykłe groby; krypty mogą być mniejsze, np. 1 × pełny rozmiar + 2 × 80 %. [Q39 plan §7](./2026-10-31--q39-cemetery-size-placement-plan.md#7-author-decision--2026-10-31-q47-placement-sequence).
 Append here (date, task, question, options). Remove when answered and recorded in the owning doc.
 
+- **OPEN 2026-11-01 · opcjonalne cięcia cieni w osadach ([world-terrain-055](../../plans/world-terrain-055-optional-shadow-frustum-and-refresh-trims.md)):** robimy? (a) S1 — węższy frustum cienia przesunięty przed gracza (±56 m, +24 m; ostrzejsze bliskie cienie, ryzyko brakujących cieni na bokach daleko); (b) S2 — cienie NPC/zwierząt odświeżane co 2. klatkę, gdy gracz stoi (opóźnienie ~1 klatki); (c) oba, osobne A/B; (d) nie teraz. Obie za flagą, domyślnie wyłączone do A/B + oceny wizualnej.
+
 
 
 

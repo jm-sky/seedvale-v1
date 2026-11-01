@@ -35,6 +35,8 @@ V1 is the foundation; V2/V3 are selective donors only. Phases (detail and entry/
 | P5 | Living-world content: voices stage 1, rescue dog, former-adventurer elder; later roaming groups | After P1 |
 | P6 | Remaining UI/models; map raster (D4 exception, implemented) | Partly delivered |
 
+Optional performance candidates waiting for an author decision (not scheduled): [performance tracker — optional post-P1 candidates](./research/v1-revival/2026-10-27--performance-three-track-roadmap.md#optional-post-p1-candidates-awaiting-author-decision).
+
 Bounded D4 exceptions already on `main`: minimap/world-map raster (`ui-input-046`) and the V1 dialogue visual reskin. Everything else that changes runtime workload waits for P1 exit.
 
 ## Long-term themes (after Revival)
