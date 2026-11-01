@@ -77,21 +77,23 @@ Generated from exported TypeScript symbols.
 - `benchmarkScenarioFromUrl` — function — line 78
 - `benchmarkYawFromUrl` — function — line 99
 - `DEFAULT_POINT_LIGHT_BUDGET` — const — line 40
-- `isActorSkeletonSharingEnabled` — function — line 160
+- `isActorSkeletonSharingEnabled` — function — line 178
 - `isBenchmarkAutorunEnabled` — function — line 84
-- `isChestInstancingEnabled` — function — line 139
+- `isChestInstancingEnabled` — function — line 157
 - `isFrameMatrixOnceEnabled` — function — line 121
-- `isGodRaysSoftEnabled` — function — line 170
-- `isGrassMainCapEnabled` — function — line 130
+- `isGodRaysSoftEnabled` — function — line 188
+- `isGrassMainCapEnabled` — function — line 148
 - `isPerfUrlEnabled` — function — line 21
 - `isProgramCensusUrlEnabled` — function — line 31
-- `isRiverPrefetchEnabled` — function — line 150
-- `isTemplateProgramPrewarmEnabled` — function — line 182
+- `isRiverPrefetchEnabled` — function — line 168
+- `isShadowActorCadenceEnabled` — function — line 139
+- `isTemplateProgramPrewarmEnabled` — function — line 200
 - `parseBenchmarkDuration` — function — line 104
 - `parseBenchmarkScenarioId` — function — line 71
 - `parseBenchmarkYaw` — function — line 91
 - `parsePointLightBudgetFlag` — function — line 52
 - `pointLightBudgetFromUrl` — function — line 65
+- `shadowFrustumModeFromUrl` — function — line 131
 
 ## `perf/gpuTimer.ts`
 

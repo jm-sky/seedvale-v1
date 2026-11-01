@@ -197,6 +197,7 @@ Generated from TypeScript imports.
 - `ai/NpcAgent.ts`
 - `app/createApp.ts`
 - `app/gameLoop.ts`
+- `app/renderStack.ts`
 - `fauna/AnimalAgent.ts`
 - `main.ts`
 - `perf/flags.test.ts`

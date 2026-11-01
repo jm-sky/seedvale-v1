@@ -81,9 +81,9 @@ Generated from exported TypeScript symbols.
 
 ## `render/shadowBudget.ts`
 
-- `anyWithinRadius` — function — line 84
+- `anyWithinRadius` — function — line 88
 - `createShadowBudgetState` — function — line 37
-- `recordShadowBudgetFrame` — function — line 64
+- `recordShadowBudgetFrame` — function — line 68
 - `SHADOW_DIRTY_MAX_STALE_FRAMES` — const — line 27
 - `SHADOW_DIRTY_PLAYER_EPS_M` — const — line 22
 - `ShadowBudgetState` — type — line 29

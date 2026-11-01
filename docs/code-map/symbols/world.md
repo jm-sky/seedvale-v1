@@ -972,7 +972,11 @@ Generated from exported TypeScript symbols.
 
 ## `world/createLights.ts`
 
-- `createLights` — function — line 29
+- `createLights` — function — line 39
+- `SHADOW_FRUSTUM_HALF` — const — line 31
+- `SHADOW_FRUSTUM_TIGHT_FORWARD_OFFSET` — const — line 35
+- `SHADOW_FRUSTUM_TIGHT_HALF` — const — line 33
+- `ShadowFrustumMode` — type — line 37
 - `WorldLights` — type — line 4
 
 ## `world/createOcean.ts`

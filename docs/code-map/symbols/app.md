@@ -423,8 +423,8 @@ Generated from exported TypeScript symbols.
 
 ## `app/renderStack.ts`
 
-- `createRenderStack` — function — line 48
-- `RenderStack` — type — line 29
+- `createRenderStack` — function — line 49
+- `RenderStack` — type — line 30
 
 ## `app/restCampSequence.ts`
 

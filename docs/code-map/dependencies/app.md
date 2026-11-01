@@ -1690,6 +1690,7 @@ Generated from TypeScript imports.
 
 - `config/worldConfig.ts`
 - `debug/debugMode.ts`
+- `perf/flags.ts`
 - `perf/gpuTimer.ts`
 - `perf/index.ts`
 - `perf/programCensus.ts`
