@@ -129,6 +129,7 @@ Unless noted otherwise, `verification needed` means implementation has passed au
 | ◼️ `world-terrain-055-optional-shadow-frustum-and-refresh-trims.md`            | 🟡 | S      | -                                                                                                                                                                                                                                                                                          | -                                         |
 | 💡 `world-terrain-058-finite-continent-and-global-hydrology.md`                | 🔴 | XL     | -                                                                                                                                                                                                                                                                                          | -                                         |
 | ◼️ `world-terrain-059-world-scale-travel-time-and-sparse-settlements.md`       | 🔴 | XL     | world-terrain-058                                                                                                                                                                                                                                                                          | -                                         |
+| ◼️ `npc-065-stable-npc-voice-casting-and-donor-qc.md`                          | 🟡 | L      | -                                                                                                                                                                                                                                                                                          | -                                         |
 
 ---
 
@@ -202,7 +203,7 @@ New plans declare a primary `Domain:` in frontmatter. Use optional `Tags:` only 
 - ai: `001`
 - fauna: `050`
 - items-player: `062`
-- npc: `065`
+- npc: `066`
 - persistence: `009`
 - quests-progression: `083`
 - settlements: `025`
