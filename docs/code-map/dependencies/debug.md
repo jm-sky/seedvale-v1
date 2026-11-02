@@ -53,6 +53,7 @@ Generated from TypeScript imports.
 - `input/MouseLook.ts`
 - `player/cameraBoom.ts`
 - `terrain/slopeConstraint.ts`
+- `world/travelUnits.ts`
 
 **Imported by**
 
@@ -108,6 +109,7 @@ Generated from TypeScript imports.
 - `player/playerDimensions.ts`
 - `world/caves/caveHeightfieldQuery.ts`
 - `world/caves/mouthCarve.ts`
+- `world/travelUnits.ts`
 
 ## `debug/caves/caveHeightfieldTraversal.ts`
 

@@ -273,6 +273,7 @@ Generated from TypeScript imports.
 - `world/spatialContext.ts`
 - `world/standingTorch.ts`
 - `world/timeConversion.ts`
+- `world/travelUnits.ts`
 - `world/treeHarvest.ts`
 - `world/waterMirror.ts`
 - `world/weather.ts`

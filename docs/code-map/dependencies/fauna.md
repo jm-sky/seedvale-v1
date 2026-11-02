@@ -179,6 +179,7 @@ Generated from TypeScript imports.
 - `fauna/waterTraversal.ts`
 - `shared/StaminaState.ts`
 - `world/timeConversion.ts`
+- `world/travelUnits.ts`
 
 ## `fauna/AnimalLife.ts`
 
@@ -187,6 +188,7 @@ Generated from TypeScript imports.
 - `ai/Needs.ts`
 - `shared/StaminaState.ts`
 - `world/timeConversion.ts`
+- `world/travelUnits.ts`
 
 **Imported by**
 
@@ -574,6 +576,7 @@ Generated from TypeScript imports.
 
 - `fauna/AnimalLife.ts`
 - `world/timeConversion.ts`
+- `world/travelUnits.ts`
 
 ## `fauna/animalNames.test.ts`
 

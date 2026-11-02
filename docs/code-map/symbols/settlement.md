@@ -1284,22 +1284,22 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/settlementPalisade.ts`
 
-- `fencePlacementColliders` — function — line 392
+- `fencePlacementColliders` — function — line 422
   - domain: settlements
 - `PALISADE_GATE_HALF_ANGLE` — const — line 20
 - `PALISADE_WALL_HALF_DEPTH` — const — line 27
   - domain: settlements
-- `plantEntrancePalisade` — function — line 361
+- `plantEntrancePalisade` — function — line 391
   - domain: settlements
-- `resolveEntrancePalisadePlacements` — function — line 181
+- `resolveEntrancePalisadePlacements` — function — line 210
   - domain: settlements
-- `resolveEntranceTorchPlacements` — function — line 288
+- `resolveEntranceTorchPlacements` — function — line 318
   - domain: settlements
-- `SettlementEntranceTorchPlacement` — type — line 62
+- `SettlementEntranceTorchPlacement` — type — line 73
   - domain: settlements
-- `settlementPalisadeColliders` — function — line 411
+- `settlementPalisadeColliders` — function — line 441
   - domain: settlements
-- `SettlementPalisadePlacement` — type — line 54
+- `SettlementPalisadePlacement` — type — line 65
   - domain: settlements
 - `WALL_HALF_LENGTH` — const — line 18
 
@@ -1375,14 +1375,14 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/SettlementsManager.ts`
 
-- `createSettlementsManager` — function — line 453
+- `createSettlementsManager` — function — line 454
   - domain: settlements
   - system: settlements-manager
   - role: Owns settlement generation, streaming and per-settlement economy/household/NPC-state registries.
   - owns: SettlementEconomy, Household
   - lifecycle: streaming
-- `SettlementsManager` — type — line 201
-- `shouldAcceptSettlementResidency` — function — line 176
+- `SettlementsManager` — type — line 202
+- `shouldAcceptSettlementResidency` — function — line 177
   - domain: settlements
 
 ## `settlement/settlementStructures.ts`

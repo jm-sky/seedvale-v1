@@ -49,6 +49,7 @@ Generated from TypeScript imports.
 - `terrain/dig.ts`
 - `terrain/footstepSurface.ts`
 - `terrain/grassPlacement.ts`
+- `world/map/mapProjection.ts`
 
 ## `terrain/biomeRegions.test.ts`
 

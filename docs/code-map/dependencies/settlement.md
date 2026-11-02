@@ -123,6 +123,7 @@ Generated from TypeScript imports.
 - `world/transportOffscreen.ts`
 - `world/transportOrder.ts`
 - `world/transportTravelArrival.ts`
+- `world/travelUnits.ts`
 - `world/weather.ts`
 
 **Imported by**

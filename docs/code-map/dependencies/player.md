@@ -60,6 +60,7 @@ Generated from TypeScript imports.
 - `terrain/waterSample.ts`
 - `ui/agentStatusLabel.ts`
 - `world/collision.ts`
+- `world/travelUnits.ts`
 
 **Imported by**
 

@@ -256,7 +256,7 @@ Generated from exported TypeScript symbols.
 
 - `ANIMAL_STAMINA_MAX` — const — line 44
 - `AnimalLifeState` — type — line 74
-- `AnimalMetabolismConfig` — type — line 18
+- `AnimalMetabolismConfig` — type — line 19
 - `BIAS_STRENGTH` — const — line 62
 - `consumeFood` — function — line 138
 - `createAnimalLifeState` — function — line 85

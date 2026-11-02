@@ -2522,6 +2522,7 @@ Generated from TypeScript imports.
 
 - `world/createSky.ts`
 - `world/timeConversion.ts`
+- `world/travelUnits.ts`
 
 **Imported by**
 
@@ -3578,6 +3579,7 @@ Generated from TypeScript imports.
 **Imports**
 
 - `config/worldConfig.ts`
+- `terrain/biomeColors.ts`
 - `terrain/biomeRegions.ts`
 - `terrain/chunkHeightmap.ts`
 - `terrain/terrainClassification.ts`
@@ -4461,6 +4463,7 @@ Generated from TypeScript imports.
 - `world/timeConversion.test.ts`
 - `world/timeSkip.ts`
 - `world/transportOffscreen.ts`
+- `world/travelUnits.ts`
 
 ## `world/timeSkip.test.ts`
 
@@ -4530,6 +4533,7 @@ Generated from TypeScript imports.
 - `world/timeConversion.ts`
 - `world/transportOrder.ts`
 - `world/transportTransactions.ts`
+- `world/travelUnits.ts`
 
 **Imported by**
 
@@ -4638,6 +4642,25 @@ Generated from TypeScript imports.
 
 - `app/worldBundle.ts`
 - `world/createPlacedTraps.ts`
+
+## `world/travelUnits.ts`
+
+**Imports**
+
+- `world/timeConversion.ts`
+
+**Imported by**
+
+- `ai/NpcAgent.ts`
+- `debug/caves/caveHeightfieldPlayer.ts`
+- `debug/caves/caveHeightfieldTraversal.test.ts`
+- `fauna/AnimalLife.test.ts`
+- `fauna/AnimalLife.ts`
+- `fauna/animalMetabolismGameplay.test.ts`
+- `player/PlayerController.ts`
+- `settlement/SettlementsManager.ts`
+- `world/dayNight.ts`
+- `world/transportOffscreen.ts`
 
 ## `world/treasureSites.test.ts`
 

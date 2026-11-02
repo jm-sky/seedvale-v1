@@ -1128,18 +1128,18 @@ Generated from exported TypeScript symbols.
 
 ## `world/dayNight.ts`
 
-- `createDayNightState` — function — line 43
-- `DayNightState` — type — line 29
-- `DEFAULT_TIME_OF_DAY` — const — line 27
-- `formatClock` — function — line 217
-- `formatWorldDayClock` — function — line 226
-- `parseTimeOfDayFromUrl` — function — line 201
-- `phaseName` — function — line 231
-- `resetDayNightForNewGame` — function — line 57
-- `skyParamsFromTime` — function — line 72
-- `sunDirectionalColorFromSunY` — function — line 144
+- `createDayNightState` — function — line 44
+- `DayNightState` — type — line 30
+- `DEFAULT_TIME_OF_DAY` — const — line 28
+- `formatClock` — function — line 218
+- `formatWorldDayClock` — function — line 227
+- `parseTimeOfDayFromUrl` — function — line 202
+- `phaseName` — function — line 232
+- `resetDayNightForNewGame` — function — line 58
+- `skyParamsFromTime` — function — line 73
+- `sunDirectionalColorFromSunY` — function — line 145
   - domain: world
-- `tickDayNight` — function — line 62
+- `tickDayNight` — function — line 63
 
 ## `world/dryingRacks.ts`
 
@@ -1619,18 +1619,18 @@ Generated from exported TypeScript symbols.
 
 ## `world/map/mapProjection.ts`
 
-- `classifyMapTexel` — function — line 81
+- `classifyMapTexel` — function — line 82
   - domain: ui-input
-- `createMapProjection` — function — line 127
-- `mapCellBounds` — function — line 33
-- `mapCellCenter` — function — line 26
-- `mapCellKey` — function — line 15
-- `MapProjection` — type — line 120
-- `MapTexelClass` — type — line 72
-- `parseMapCellKey` — function — line 47
-- `projectCellAt` — function — line 116
-- `rawSampleParamsFromWorld` — function — line 56
-- `worldToMapCell` — function — line 19
+- `createMapProjection` — function — line 128
+- `mapCellBounds` — function — line 32
+- `mapCellCenter` — function — line 25
+- `mapCellKey` — function — line 14
+- `MapProjection` — type — line 121
+- `MapTexelClass` — type — line 71
+- `parseMapCellKey` — function — line 46
+- `projectCellAt` — function — line 117
+- `rawSampleParamsFromWorld` — function — line 55
+- `worldToMapCell` — function — line 18
 
 ## `world/map/mapRasterTile.ts`
 
@@ -2172,15 +2172,15 @@ Generated from exported TypeScript symbols.
 
 ## `world/transportOffscreen.ts`
 
-- `estimateOffscreenTravelDays` — function — line 41
-- `OffscreenTransportLookup` — type — line 72
-- `resolveOffscreenTransportArrivals` — function — line 136
-- `resolveSettlementStorageHandoffPosition` — function — line 108
+- `estimateOffscreenTravelDays` — function — line 40
+- `OffscreenTransportLookup` — type — line 71
+- `resolveOffscreenTransportArrivals` — function — line 135
+- `resolveSettlementStorageHandoffPosition` — function — line 107
   - domain: settlements-npcs
-- `resolveTransportEndpointInventory` — function — line 63
-- `shouldUseLegacyTransportExecutionHandoff` — function — line 87
+- `resolveTransportEndpointInventory` — function — line 62
+- `shouldUseLegacyTransportExecutionHandoff` — function — line 86
   - domain: settlements-npcs
-- `TransportEndpointLookup` — type — line 55
+- `TransportEndpointLookup` — type — line 54
 
 ## `world/transportOrder.ts`
 
@@ -2219,6 +2219,15 @@ Generated from exported TypeScript symbols.
 - `disposeTrapProp` — function — line 132
 - `preloadTrapProps` — function — line 41
 - `setTrapPropState` — function — line 118
+
+## `world/travelUnits.ts`
+
+- `DEFAULT_DAY_LENGTH_SEC` — const — line 13
+- `DEFAULT_GAME_HOUR_REAL_SEC` — const — line 25
+- `NPC_TRAVEL_SPEED` — const — line 22
+- `NPC_WALK_SPEED` — const — line 19
+- `PLAYER_WALK_SPEED` — const — line 16
+- `TRAVEL_HOUR_M` — const — line 33
 
 ## `world/treasureSites.ts`
 
