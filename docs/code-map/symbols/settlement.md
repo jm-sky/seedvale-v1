@@ -1595,8 +1595,8 @@ Generated from exported TypeScript symbols.
 ## `settlement/villagePasture.ts`
 
 - `appendPasturePath` — function — line 450
-- `fenceSegmentPlacements` — function — line 497
-- `pastureFencePlacements` — function — line 526
+- `fenceSegmentPlacements` — function — line 507
+- `pastureFencePlacements` — function — line 547
 - `PasturePlanArgs` — type — line 88
 - `pastureRadiusFor` — function — line 81
 - `planSettlementPasture` — function — line 359

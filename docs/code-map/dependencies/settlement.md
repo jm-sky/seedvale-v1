@@ -656,6 +656,14 @@ Generated from TypeScript imports.
 - `world/expeditionParty.ts`
 - `world/hiddenFinds.ts`
 
+## `settlement/fenceSegmentPlacements.test.ts`
+
+**Imports**
+
+- `settlement/householdYard.ts`
+- `settlement/settlementPalisade.ts`
+- `settlement/villagePasture.ts`
+
 ## `settlement/findSettlementSite.test.ts`
 
 **Imports**
@@ -1162,6 +1170,7 @@ Generated from TypeScript imports.
 
 - `settlement/blacksmithYard.test.ts`
 - `settlement/blacksmithYard.ts`
+- `settlement/fenceSegmentPlacements.test.ts`
 - `settlement/householdYard.test.ts`
 - `settlement/professionDressing.test.ts`
 - `settlement/professionDressing.ts`
@@ -2624,6 +2633,7 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `settlement/createSettlement.ts`
+- `settlement/fenceSegmentPlacements.test.ts`
 - `settlement/props.ts`
 - `settlement/settlementPalisade.test.ts`
 - `settlement/villagePaddock.test.ts`
@@ -3144,6 +3154,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `settlement/fenceSegmentPlacements.test.ts`
 - `settlement/props.ts`
 - `settlement/villagePaddock.ts`
 - `settlement/villagePasture.test.ts`

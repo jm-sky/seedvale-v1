@@ -61,8 +61,8 @@ Generated from exported TypeScript symbols.
 
 ## `render/instancedProps.ts`
 
-- `buildInstancedProps` — function — line 129
-- `InstancedPropGroup` — type — line 27
+- `buildInstancedProps` — function — line 133
+- `InstancedPropGroup` — type — line 30
 - `PropPlacement` — type — line 15
 - `PropPrimitive` — type — line 7
 
