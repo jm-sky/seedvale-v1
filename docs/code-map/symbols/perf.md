@@ -28,10 +28,10 @@ Generated from exported TypeScript symbols.
 
 ## `perf/benchmark.ts`
 
-- `BenchmarkHost` — type — line 92
-- `BenchmarkRunner` — type — line 75
-- `BenchmarkRunOptions` — type — line 66
-- `createBenchmarkRunner` — function — line 216
+- `BenchmarkHost` — type — line 99
+- `BenchmarkRunner` — type — line 82
+- `BenchmarkRunOptions` — type — line 73
+- `createBenchmarkRunner` — function — line 223
 
 ## `perf/benchmarkFixture.ts`
 
@@ -41,7 +41,7 @@ Generated from exported TypeScript symbols.
 ## `perf/benchmarkScenarios.ts`
 
 - `BENCHMARK_SCENARIO_IDS` — const — line 1
-- `BenchmarkScenarioId` — type — line 13
+- `BenchmarkScenarioId` — type — line 14
 
 ## `perf/buildInfo.ts`
 
@@ -77,17 +77,18 @@ Generated from exported TypeScript symbols.
 - `benchmarkScenarioFromUrl` — function — line 78
 - `benchmarkYawFromUrl` — function — line 99
 - `DEFAULT_POINT_LIGHT_BUDGET` — const — line 40
-- `isActorSkeletonSharingEnabled` — function — line 178
+- `isActorSkeletonSharingEnabled` — function — line 188
 - `isBenchmarkAutorunEnabled` — function — line 84
-- `isChestInstancingEnabled` — function — line 157
+- `isChestInstancingEnabled` — function — line 167
 - `isFrameMatrixOnceEnabled` — function — line 121
-- `isGodRaysSoftEnabled` — function — line 188
-- `isGrassMainCapEnabled` — function — line 148
+- `isGodRaysSoftEnabled` — function — line 198
+- `isGrassMainCapEnabled` — function — line 158
 - `isPerfUrlEnabled` — function — line 21
 - `isProgramCensusUrlEnabled` — function — line 31
-- `isRiverPrefetchEnabled` — function — line 168
+- `isRiverPrefetchEnabled` — function — line 178
 - `isShadowActorCadenceEnabled` — function — line 139
-- `isTemplateProgramPrewarmEnabled` — function — line 200
+- `isShadowMotionCadenceEnabled` — function — line 149
+- `isTemplateProgramPrewarmEnabled` — function — line 210
 - `parseBenchmarkDuration` — function — line 104
 - `parseBenchmarkScenarioId` — function — line 71
 - `parseBenchmarkYaw` — function — line 91
@@ -169,13 +170,13 @@ Generated from exported TypeScript symbols.
 
 ## `perf/monitor.ts`
 
-- `createPerfMonitor` — function — line 184
-- `emptySessionTotals` — function — line 84
+- `createPerfMonitor` — function — line 206
+- `emptySessionTotals` — function — line 100
 - `FrameEndInput` — type — line 35
-- `PerfMonitor` — type — line 88
-- `SessionTotals` — type — line 53
-- `withCategory` — function — line 520
-- `withStage` — function — line 534
+- `PerfMonitor` — type — line 104
+- `SessionTotals` — type — line 62
+- `withCategory` — function — line 548
+- `withStage` — function — line 562
 
 ## `perf/occludedActorCohort.ts`
 
@@ -245,11 +246,12 @@ Generated from exported TypeScript symbols.
 
 ## `perf/rawSidecar.ts`
 
-- `buildRawSidecar` — function — line 34
-- `PerfRawSidecar` — type — line 22
+- `buildRawSidecar` — function — line 47
+- `PerfRawSidecar` — type — line 34
 - `RAW_SIDECAR_FULL_LIMIT` — const — line 4
-- `RawFrameSample` — type — line 13
+- `RawFrameSample` — type — line 16
 - `RawSidecarSampling` — type — line 6
+- `SHADOW_REASON_CODES` — const — line 14
 
 ## `perf/report.ts`
 
@@ -287,6 +289,19 @@ Generated from exported TypeScript symbols.
 - `SettlementShadowCensus` — type — line 72
 - `VisibilityRestore` — type — line 77
 
+## `perf/settlementWalkRoute.ts`
+
+- `SETTLEMENT_WALK_FAST_TURN_RAD` — const — line 14
+- `SETTLEMENT_WALK_FAST_TURN_SEC` — const — line 15
+- `SETTLEMENT_WALK_LOOP_SEC` — const — line 16
+- `SETTLEMENT_WALK_RADIUS_M` — const — line 8
+- `SETTLEMENT_WALK_ROUTE` — const — line 18
+- `SETTLEMENT_WALK_SPEED_MPS` — const — line 9
+- `SETTLEMENT_WALK_UPDATE_MS` — const — line 10
+- `SETTLEMENT_WALK_YAW_SWEEP_RAD` — const — line 12
+- `settlementWalkPosition` — function — line 32
+- `settlementWalkYawOffset` — function — line 41
+
 ## `perf/timeDistribution.ts`
 
 - `timeDistribution` — function — line 13
@@ -294,15 +309,15 @@ Generated from exported TypeScript symbols.
 
 ## `perf/types.ts`
 
-- `BenchmarkPhase` — type — line 122
-- `BudgetKind` — type — line 288
-- `CameraControlResult` — type — line 146
-- `CameraPose` — type — line 124
-- `DeviceMeta` — type — line 168
-- `GpuTimerStatus` — type — line 153
+- `BenchmarkPhase` — type — line 128
+- `BudgetKind` — type — line 294
+- `CameraControlResult` — type — line 152
+- `CameraPose` — type — line 130
+- `DeviceMeta` — type — line 174
+- `GpuTimerStatus` — type — line 159
 - `HitchEvent` — type — line 62
-- `HitchReportRow` — type — line 233
-- `IsolationProbeRow` — type — line 241
+- `HitchReportRow` — type — line 239
+- `IsolationProbeRow` — type — line 247
 - `LONG_FRAME_MS` — const — line 74
 - `LongFrameAttribution` — type — line 92
 - `LongFrameRecord` — type — line 82
@@ -311,18 +326,18 @@ Generated from exported TypeScript symbols.
 - `PERF_CATEGORY_COUNT` — const — line 31
 - `PERF_CATEGORY_INDEX` — const — line 33
 - `PERF_SEVERITY_RANK` — const — line 50
-- `PerfAttribution` — type — line 318
+- `PerfAttribution` — type — line 324
 - `PerfCategory` — type — line 29
-- `PerfContext` — type — line 185
-- `PerfDetection` — type — line 296
+- `PerfContext` — type — line 191
+- `PerfDetection` — type — line 302
 - `PerfFilter` — type — line 57
-- `PerfLiveStats` — type — line 267
-- `PerfLogEvent` — type — line 305
-- `PerfReportJson` — type — line 324
+- `PerfLiveStats` — type — line 273
+- `PerfLogEvent` — type — line 311
+- `PerfReportJson` — type — line 330
 - `PerfSeverity` — type — line 48
-- `PerfSuspect` — type — line 290
-- `PopulationGateResult` — type — line 137
-- `PopulationSnapshot` — type — line 129
+- `PerfSuspect` — type — line 296
+- `PopulationGateResult` — type — line 143
+- `PopulationSnapshot` — type — line 135
 - `ScenarioAnchor` — type — line 98
 - `ScenarioRoute` — type — line 100
-- `ScenarioSettlement` — type — line 109
+- `ScenarioSettlement` — type — line 115

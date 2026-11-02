@@ -41,6 +41,15 @@ export type FrameEndInput = {
   textures?: number
   mirrorDrawCalls?: number
   mirrorTriangles?: number
+  /** world-terrain-056 S0: shadow refresh actually requested this frame. */
+  shadowRefreshed?: boolean
+  /** Index into `SHADOW_REASON_CODES` (see `rawSidecar.ts`). */
+  shadowReasonCode?: number
+  /** Frames / ms since the previous actual shadow refresh (before this frame). */
+  framesSinceShadow?: number
+  msSinceShadow?: number
+  /** Shadow frustum-centre displacement (m) since the last refresh. */
+  shadowCentreDeltaM?: number
   /**
    * `performance.now()` at the start of `gameLoop.tick()`. When set, the
    * committed frame duration includes same-task microtasks queued during the
@@ -76,6 +85,13 @@ export type SessionTotals = {
   longFrameCount: number
   longFrames: LongFrameRecord[]
   mirrorDrawCallsSum: number
+  /** world-terrain-056 S0 per-frame series (optional: absent in old fixtures). */
+  mirrorDrawCallsSeries?: number[]
+  shadowRefreshedSeries?: number[]
+  shadowReasonSeries?: number[]
+  framesSinceShadowSeries?: number[]
+  msSinceShadowSeries?: number[]
+  shadowCentreDeltaSeries?: number[]
   geometriesLast: number
   texturesLast: number
 }
@@ -135,6 +151,12 @@ function emptySession(): SessionTotals {
     longFrameCount: 0,
     longFrames: [],
     mirrorDrawCallsSum: 0,
+    mirrorDrawCallsSeries: [],
+    shadowRefreshedSeries: [],
+    shadowReasonSeries: [],
+    framesSinceShadowSeries: [],
+    msSinceShadowSeries: [],
+    shadowCentreDeltaSeries: [],
     geometriesLast: 0,
     texturesLast: 0,
   }
@@ -305,6 +327,12 @@ export function createPerfMonitor(budgetMs = 1000 / 60): PerfMonitor {
       session.trianglesSeries.push(input.triangles)
       session.renderCategoryMs.push(accum[PERF_CATEGORY_INDEX.RENDER]!)
       session.mirrorDrawCallsSum += input.mirrorDrawCalls ?? 0
+      session.mirrorDrawCallsSeries?.push(input.mirrorDrawCalls ?? 0)
+      session.shadowRefreshedSeries?.push(input.shadowRefreshed ? 1 : 0)
+      session.shadowReasonSeries?.push(input.shadowReasonCode ?? 0)
+      session.framesSinceShadowSeries?.push(input.framesSinceShadow ?? 0)
+      session.msSinceShadowSeries?.push(input.msSinceShadow ?? 0)
+      session.shadowCentreDeltaSeries?.push(input.shadowCentreDeltaM ?? 0)
       session.geometriesLast = input.geometries ?? session.geometriesLast
       session.texturesLast = input.textures ?? session.texturesLast
       for (let c = 0; c < PERF_CATEGORY_COUNT; c++) {

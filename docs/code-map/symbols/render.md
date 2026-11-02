@@ -81,10 +81,16 @@ Generated from exported TypeScript symbols.
 
 ## `render/shadowBudget.ts`
 
-- `anyWithinRadius` — function — line 88
-- `createShadowBudgetState` — function — line 37
-- `recordShadowBudgetFrame` — function — line 68
+- `anyWithinRadius` — function — line 148
+- `createShadowBudgetState` — function — line 55
+- `decideShadowUpdate` — function — line 73
+- `recordShadowBudgetFrame` — function — line 123
 - `SHADOW_DIRTY_MAX_STALE_FRAMES` — const — line 27
 - `SHADOW_DIRTY_PLAYER_EPS_M` — const — line 22
-- `ShadowBudgetState` — type — line 29
-- `shouldUpdateShadowMap` — function — line 45
+- `SHADOW_MOTION_D_HARD_M` — const — line 32
+- `SHADOW_MOTION_MS_MAX` — const — line 34
+- `SHADOW_MOTION_YAW_HARD_RAD` — const — line 33
+- `ShadowBudgetState` — type — line 44
+- `ShadowMotionCadenceInput` — type — line 37
+- `ShadowUpdateReason` — type — line 66
+- `shouldUpdateShadowMap` — function — line 110

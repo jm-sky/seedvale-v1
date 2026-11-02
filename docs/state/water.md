@@ -113,6 +113,7 @@ Ocean powstaje w `rebuildWorldBundle()`; rozmiar plane = `(unloadRadius * 2 + 4)
 | Paleta dzień/noc | `setWaterDayNight(dayFactor, sunDirection)` lerp 6 kolorów + sun specular |
 | Shader | `src/world/waterMaterial.ts` — jeden program-ród, `USE_CHUNK_MASK` na jeziorach |
 | Ocean singleton | ten sam shader, `uOcean = 1`; radial fade poza `loadRadius`; lustro 256² (`waterMirror.ts`) |
+| Rozdzielczość odbić | `WorldConfig.postProcessing.waterReflectionSize` ∈ {128, 256 (default), 512, 1024}; live `WaterMirror.setSize`; Vue Pauza → Świat → Grafika; lil-gui |
 | Toggle odbić | `WorldConfig.postProcessing.waterReflections`; Vue Pauza → Świat → Grafika; lil-gui Post-processing; `seedvale:graphics:v1` |
 | Mokry piasek | terrain fragment: przyciemnienie albedo w paśmie `waterLevel` .. `+0.4` |
 | Szwy chunków | mesh wody = `chunkSize` (bez overlap 1.02); faza fal wspólna (world-space) |

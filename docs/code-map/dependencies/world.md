@@ -4761,6 +4761,7 @@ Generated from TypeScript imports.
 - `ai/NpcAgent.ts`
 - `app/renderStack.ts`
 - `app/worldBundle.ts`
+- `config/worldConfig.ts`
 - `fauna/AnimalAgent.ts`
 - `terrain/chunkManager.ts`
 - `terrain/grass.ts`

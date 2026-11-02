@@ -118,8 +118,9 @@ import { isLiquidContainerInstance, LIQUID_CONTAINER_KIND_LIST } from '../items/
 import { ITEM_DEFS, type ItemKind } from '../items/items'
 import { applySharpnessWear, getSharpnessDamageModifier, getWeaponMaintenanceProfile } from '../items/weaponMaintenance'
 import { getGpuTimer, getMonitor, getPassSubmissionCollector, getProgramCensus, withCategory, withProgramCensusStage } from '../perf'
-import { isFrameMatrixOnceEnabled, isShadowActorCadenceEnabled } from '../perf/flags'
+import { isFrameMatrixOnceEnabled, isShadowActorCadenceEnabled, isShadowMotionCadenceEnabled } from '../perf/flags'
 import { getActorCohortMask } from '../perf/occludedActorCohort'
+import { SHADOW_REASON_CODES } from '../perf/rawSidecar'
 import { buildCharacterPresentation } from '../player/characterPresentation'
 import {
   medicalTreatmentPromptLabel,
@@ -161,8 +162,8 @@ import { beginFrameSceneMatrices, endFrameSceneMatrices } from '../render/frameS
 import {
   anyWithinRadius,
   createShadowBudgetState,
+  decideShadowUpdate,
   recordShadowBudgetFrame,
-  shouldUpdateShadowMap,
 } from '../render/shadowBudget'
 import { villageSizeConfig } from '../settlement/families'
 import { purchaseLandPlot } from '../settlement/landPurchase'
@@ -1013,6 +1014,9 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
 
   const frameMatrixOnce = isFrameMatrixOnceEnabled()
   const shadowActorCadence = isShadowActorCadenceEnabled()
+  const shadowMotionCadence = isShadowMotionCadenceEnabled()
+  const shadowMotionInput = { yaw: 0, nowMs: 0 }
+  let lastShadowRefreshMs = performance.now()
   // Q16 occluded-actor cohort tooling (`?actorCohort=census|mask`); null by default.
   const actorCohortMask = getActorCohortMask()
 
@@ -3172,20 +3176,38 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
     // unset below is a no-op skip, not a missed update (plan 145 R1).
     const shadowPlayerX = player.mesh.position.x
     const shadowPlayerZ = player.mesh.position.z
-    const shadowWanted = shouldUpdateShadowMap(
+    shadowMotionInput.yaw = mouseLook.state.yaw
+    shadowMotionInput.nowMs = performance.now()
+    const shadowMotion = shadowMotionCadence ? shadowMotionInput : undefined
+    const shadowDecision = decideShadowUpdate(
       shadowBudgetState,
       shadowCentreX,
       shadowCentreZ,
       hasNearbyShadowCaster(shadowPlayerX, shadowPlayerZ),
       shadowActorCadence,
+      shadowMotion,
     )
     // The sun's first shadow render creates `shadow.map`; until then the main
     // pass would bind three's 1x1 placeholder to `sampler2DShadow`. Force that
     // first refresh even when the budget skips it (one-off, first frame only).
     const shadowMapMissing = lights.sun.castShadow && !lights.sun.shadow.map
-    if (shadowWanted || shadowMapMissing) renderer.shadowMap.needsUpdate = true
-    passCollector?.noteShadowRefresh(shadowWanted)
-    recordShadowBudgetFrame(shadowBudgetState, shadowCentreX, shadowCentreZ, shadowWanted)
+    // world-terrain-056 S0: record what was actually requested (forced first
+    // refresh included), not just the budget's answer.
+    const shadowReason = shadowDecision === 'none' && shadowMapMissing ? 'force' : shadowDecision
+    const shadowRefreshed = shadowReason !== 'none'
+    const shadowNowMs = performance.now()
+    const framesSinceShadow = shadowBudgetState.framesSinceUpdate
+    const msSinceShadow = shadowNowMs - lastShadowRefreshMs
+    const shadowCentreDeltaM = Math.hypot(
+      shadowCentreX - shadowBudgetState.lastPlayerX,
+      shadowCentreZ - shadowBudgetState.lastPlayerZ,
+    )
+    if (shadowRefreshed) {
+      renderer.shadowMap.needsUpdate = true
+      lastShadowRefreshMs = shadowNowMs
+    }
+    passCollector?.noteShadowRefresh(shadowRefreshed)
+    recordShadowBudgetFrame(shadowBudgetState, shadowCentreX, shadowCentreZ, shadowRefreshed, shadowMotion)
     postProcessing.updateGodRays(camera, sky.sunPosition, cachedSky.elev)
     withCategory(monitor, 'RENDER', () => {
       // Same span as the CPU `RENDER` category timer above, so isolation
@@ -3219,6 +3241,11 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
       textures: renderer.info.memory.textures,
       mirrorDrawCalls,
       mirrorTriangles,
+      shadowRefreshed,
+      shadowReasonCode: SHADOW_REASON_CODES.indexOf(shadowReason),
+      framesSinceShadow,
+      msSinceShadow: Math.min(msSinceShadow, 99999),
+      shadowCentreDeltaM,
     })
     programCensus.tickFrame()
     // Drains any GPU timer queries that completed since the last tick —

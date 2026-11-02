@@ -14,7 +14,9 @@ export type WorldOcean = {
    *  geometry/texture rebuild), unlike a chunked world's terrain/water. */
   follow: (x: number, z: number) => void
   setReflections: (enabled: boolean) => void
-  /** Shared 128² planar pass — throttled to 30 Hz inside `waterMirror`. */
+  /** Live reflection RT size (128/256/512/1024). */
+  setReflectionSize: (size: number) => void
+  /** Shared planar planar pass — throttled to 30 Hz inside `waterMirror`. */
   renderMirror: (renderer: WebGLRenderer, scene: Scene, camera: Camera) => void
   addTo: (scene: Scene) => void
   dispose: () => void
@@ -63,6 +65,9 @@ export function createOcean(
     },
     setReflections(enabled) {
       waterMirror.setEnabled(enabled)
+    },
+    setReflectionSize(size) {
+      waterMirror.setSize(size)
     },
     renderMirror(renderer, scene, camera) {
       waterMirror.render(renderer, scene, camera)

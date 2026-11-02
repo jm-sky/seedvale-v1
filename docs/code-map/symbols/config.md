@@ -32,27 +32,27 @@ Generated from exported TypeScript symbols.
 
 ## `config/worldConfig.ts`
 
-- `AoQuality` — type — line 13
-- `applyStoredPlayer` — function — line 516
-- `applyStoredPostProcessing` — function — line 540
-- `applyStoredQuality` — function — line 525
-- `applyStoredSettlements` — function — line 403
-- `applyStoredSky` — function — line 508
-- `applyStoredTerrain` — function — line 418
-- `createBenchmarkWorldConfig` — function — line 623
-- `createWorldConfig` — function — line 567
-- `DEFAULT_PLAYER_NAME` — const — line 177
-- `defaultTerrainConfig` — function — line 560
-- `DetailNormalConfig` — type — line 21
-- `HomeVillageSize` — type — line 10
-- `PLAYER_NAME_MAX_LENGTH` — const — line 180
-- `PlayerNameError` — type — line 182
-- `playerNameErrorMessage` — function — line 203
-- `PlayerNameValidation` — type — line 184
-- `triangleCount` — function — line 635
-- `validatePlayerName` — function — line 195
+- `AoQuality` — type — line 14
+- `applyStoredPlayer` — function — line 520
+- `applyStoredPostProcessing` — function — line 544
+- `applyStoredQuality` — function — line 529
+- `applyStoredSettlements` — function — line 407
+- `applyStoredSky` — function — line 512
+- `applyStoredTerrain` — function — line 422
+- `createBenchmarkWorldConfig` — function — line 628
+- `createWorldConfig` — function — line 572
+- `DEFAULT_PLAYER_NAME` — const — line 180
+- `defaultTerrainConfig` — function — line 565
+- `DetailNormalConfig` — type — line 22
+- `HomeVillageSize` — type — line 11
+- `PLAYER_NAME_MAX_LENGTH` — const — line 183
+- `PlayerNameError` — type — line 185
+- `playerNameErrorMessage` — function — line 206
+- `PlayerNameValidation` — type — line 187
+- `triangleCount` — function — line 640
+- `validatePlayerName` — function — line 198
   - domain: ui-input
-- `WorldConfig` — type — line 49
+- `WorldConfig` — type — line 50
   - domain: world
   - system: world-config
   - role: Owns terrain/graphics/gameplay tunables shared by the debug GUI, world-config screen and benchmark runner.

@@ -56,6 +56,7 @@ Generated from TypeScript imports.
 - `terrain/chunkHeightmap.ts`
 - `terrain/fbm.ts`
 - `world/parseSeed.ts`
+- `world/waterMirror.ts`
 
 **Imported by**
 

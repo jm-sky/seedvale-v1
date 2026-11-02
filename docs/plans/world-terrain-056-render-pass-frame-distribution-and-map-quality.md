@@ -1,7 +1,7 @@
 # Plan: Render-pass frame distribution, visibility budgeting and map quality
 
 **Created:** 2026-11-01
-**Status:** `planned` 📋
+**Status:** `in progress` 🔄 (S0 code, S1, S3 landed 2026-11-02; S2 blocked on author; S4/S5 + WSL reports pending)
 **Type:** optimization
 **Priority:** high · **Effort:** XL
 **Depends on:** -
@@ -157,3 +157,13 @@ S0 → S1 → S2 (S1 and S2 independent; never in one A/B arm) → S3 → S4 →
 - [Revival Strategic Brief](../research/v1-revival/STRATEGIC-BRIEF.md)
 - [Revival performance tracker](../research/v1-revival/2026-10-27--performance-three-track-roadmap.md)
 - [WSL Q51 result](../performance/results/2026-11-01--wsl-q51-shadow-actor-cadence-ab.md)
+
+## Implementation notes (2026-11-02, Sonnet, cloud session — no benchmarks run)
+
+- **Author change (2026-11-02):** candidate flags are **default ON** during play (`?shadowMotionCadence=0` reverts); Windows/WSL tests and benchmarks come later. Cloud session = technical checks only.
+- **S0 (`44301fa`):** `decideShadowUpdate` returns the trigger (`none|move|actor|stale|force`; `shouldUpdateShadowMap` kept as wrapper). `gameLoop` records the *actual* request (forced first refresh = `force`). Raw sidecar `schemaVersion: 2` adds `mirrorDrawCalls`, `shadowRefreshed`, `shadowReason` (+ `shadowReasonCodes`), `framesSinceShadow`, `msSinceShadow`, `shadowCentreDeltaM`. Mirror "drawn" is derived from `mirrorDrawCalls > 0` (the counter is read right after the mirror span, `renderer.info` is reset per frame) — `WaterMirror` cadence state was **not** touched. `settlement-walk`: `src/perf/settlementWalkRoute.ts` (12 m radius loop, 3 m/s, ±0.35 rad yaw sweep, ±90° fast turn per loop; constants in report `context.route`). Analysis: `scripts/perf/analyze-pass-coincidence.mjs`. **Open:** WSL runs + `docs/performance/results/…-056-s0-…md` and effective RT sizes per preset.
+- **S1:** `shadowBudget.ts` — motion cadence via optional `ShadowMotionCadenceInput` (yaw, nowMs); escapes `SHADOW_MOTION_D_HARD_M = 1.5`, `SHADOW_MOTION_YAW_HARD_RAD = 12°`, `SHADOW_MOTION_MS_MAX = 66` (+ existing 10-frame cap); `isShadowMotionCadenceEnabled()` default true. Tests: alternation at 60 FPS, yaw/teleport/ms escapes, stationary/actor unchanged. The 66 ms escape means ≤ ~15 FPS never alternates.
+- **S2 not implemented — design finding:** the ocean mesh is a ring beyond `loadRadius` that is also visible over land (no terrain streamed there), so it is in frustum in nearly every horizontal view; a frustum relevance gate would almost never skip. Question recorded in queue §3.
+- **S3:** `WorldConfig.postProcessing.waterReflectionSize` (normalised via `normalizeWaterMirrorSize`), `WaterMirror.setSize` (same texture object — verified in a unit test), `ocean.setReflectionSize`, applied in `applyLiveGraphics`/`updatePostProcessingFromGui`, Vue select + debug GUI. Quality presets untouched (all 128). Local config only → no save-version bump.
+- Pre-existing, unrelated: `actorSkeletonSharing.assets.test.ts` (cow.glb) fails on a clean tree; `lint` error in `docs/research/…/sample_three.mjs`.
+- **Author 2026-11-02:** S3 default reflection size = **256** (was 128); S5 may still compare sizes. Presets inherit it.

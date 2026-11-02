@@ -250,6 +250,25 @@ function onHomeSizeSelect(event: Event): void {
           >
           Odbicia wody
         </label>
+        <label
+          class="mb-1 block text-xs opacity-75"
+          for="seedvale-water-reflection-size"
+        >Rozdzielczość odbić wody</label>
+        <select
+          id="seedvale-water-reflection-size"
+          v-model.number="state.config!.postProcessing.waterReflectionSize"
+          :disabled="!state.config!.postProcessing.waterReflections"
+          class="mb-3 w-full rounded-md border border-white/15 bg-[rgb(28,34,40)] px-2.5 py-2 text-sm text-ink outline-none focus:border-blue-400/60 disabled:opacity-50 [color-scheme:dark]"
+          @change="onGraphicsChange"
+        >
+          <option
+            v-for="size in [128, 256, 512, 1024]"
+            :key="size"
+            :value="size"
+          >
+            {{ size }}
+          </option>
+        </select>
         <label class="mb-3 flex items-center gap-2 text-sm">
           <input
             v-model="state.config!.postProcessing.terrainCastsShadow"

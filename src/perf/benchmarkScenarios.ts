@@ -4,6 +4,7 @@ export const BENCHMARK_SCENARIO_IDS = [
   'dense-forest',
   'settlement',
   'settlement-heavy',
+  'settlement-walk',
   'water',
   'night',
   'stress',

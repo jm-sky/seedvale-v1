@@ -255,43 +255,39 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   🟡 `S` · **Score:**  23  
    → **unlocks:** 0/0
 
-42. `world-terrain-056` — **Render-pass frame distribution, visibility budgeting and map quality**  
-  🔴 `XL` · **Score:**  20  
-   → **unlocks:** 0/0
-
-43. `tools-019` — **Debug tooling lifecycle ownership**  
+42. `tools-019` — **Debug tooling lifecycle ownership**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-44. `tools-021` — **Align debug OBB overlays with physical colliders**  
+43. `tools-021` — **Align debug OBB overlays with physical colliders**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-45. `world-terrain-055` — **Optional shadow frustum and refresh trims (settlement shadow pass)**  
+44. `world-terrain-055` — **Optional shadow frustum and refresh trims (settlement shadow pass)**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-46. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
+45. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
   🟡 `L` · **Score:**  18  
    → **unlocks:** 0/0
 
-47. `items-player-014` — **Rope-pullable resource transport**  
+46. `items-player-014` — **Rope-pullable resource transport**  
   ⚪ `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-48. `items-player-052` — **Settlement tool ownership and social acquisition**  
+47. `items-player-052` — **Settlement tool ownership and social acquisition**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-49. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
+48. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-50. `world-040` — **Underground Locations & Portals**  
+49. `world-040` — **Underground Locations & Portals**  
   ⚪ `XL` · **Score:**  14  
    → **unlocks:** 0/0
 
-51. `fauna-049` — **Wild animal difficulty tiers, trophies and social recognition**  
+50. `fauna-049` — **Wild animal difficulty tiers, trophies and social recognition**  
   🟡 `XL` · **Score:**  10  
    → **unlocks:** 0/0
 

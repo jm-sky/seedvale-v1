@@ -142,6 +142,16 @@ export function isShadowActorCadenceEnabled(): boolean {
   return flagOn(p.get('shadowActorCadence'))
 }
 
+/** world-terrain-056 S1: alternate shadow refresh frames while the frustum
+ *  centre moves (escapes in `shadowBudget.ts`). Default ON (author 2026-11-02:
+ *  keep candidate flags on during play; benchmarks later);
+ *  `?shadowMotionCadence=0` restores refresh on every moving frame. */
+export function isShadowMotionCadenceEnabled(): boolean {
+  const p = params()
+  if (!p?.has('shadowMotionCadence')) return true
+  return flagOn(p.get('shadowMotionCadence'))
+}
+
 /** CA2 far-band grass main storage cap (`chunkManager.ts` `grassMainCapFor`).
  *  On by default; `?grassMainCap=0` stores every generated main instance again
  *  (pre-CA2) for the memory/upload A/B. */

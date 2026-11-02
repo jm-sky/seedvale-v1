@@ -3,6 +3,7 @@ import type { RegionParams } from '../terrain/chunkHeightmap'
 import type { FbmParams } from '../terrain/fbm'
 import { isDebugMode } from '../debug/debugMode'
 import { parseSeedFromUrl } from '../world/parseSeed'
+import { normalizeWaterMirrorSize } from '../world/waterMirror'
 import { loadDomainConfigs } from './persistConfig'
 import { applyQualityPreset, DEFAULT_QUALITY_PRESET, isQualityPreset, knobsFromConfig, matchQualityPreset, type QualityPreset } from './qualityProfiles'
 
@@ -139,6 +140,8 @@ export type WorldConfig = {
     /** Shared planar water mirror (128²). Off skips the extra scene pass;
      *  water falls back to sky color + sun specular. */
     waterReflections: boolean
+    /** Planar water reflection RT size (256 default; world-terrain-056 S3). */
+    waterReflectionSize: number
     /** Directional-light shadow map edge (plan 103). Live resize, no rebuild. */
     shadowMapSize: number
   }
@@ -375,6 +378,7 @@ function baseConfig(seed: number, resolution: number): WorldConfig {
       // (issue: default-off read as a visual regression), opt-in via GUI.
       terrainCastsShadow: true,
       waterReflections: true,
+      waterReflectionSize: 256,
       shadowMapSize: 1024,
     },
     quality: {
@@ -545,6 +549,7 @@ export function applyStoredPostProcessing(
   Object.assign(target, p)
   if (!SHADOW_MAP_SIZES.has(target.shadowMapSize)) target.shadowMapSize = 1024
   if (target.shadowMapSize === 2048) target.shadowMapSize = 1024
+  target.waterReflectionSize = normalizeWaterMirrorSize(target.waterReflectionSize)
 }
 
 /**

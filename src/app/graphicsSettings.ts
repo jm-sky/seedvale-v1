@@ -67,6 +67,7 @@ export function createGraphicsSettings(deps: GraphicsSettingsDeps): GraphicsSett
   const applyLiveGraphics = () => {
     postProcessing.applyConfig(config.postProcessing)
     bundle.ocean.setReflections(config.postProcessing.waterReflections)
+    bundle.ocean.setReflectionSize(config.postProcessing.waterReflectionSize)
     bundle.chunkManager.setWaterReflections(config.postProcessing.waterReflections)
     const pixelRatio = Math.min(window.devicePixelRatio, config.postProcessing.pixelRatioCap)
     renderer.setPixelRatio(pixelRatio)
@@ -80,6 +81,7 @@ export function createGraphicsSettings(deps: GraphicsSettingsDeps): GraphicsSett
   const updatePostProcessingFromGui = () => {
     postProcessing.applyConfig(config.postProcessing)
     bundle.ocean.setReflections(config.postProcessing.waterReflections)
+    bundle.ocean.setReflectionSize(config.postProcessing.waterReflectionSize)
     bundle.chunkManager.setWaterReflections(config.postProcessing.waterReflections)
     syncQualityLabel()
     saveGraphics(config)

@@ -26,41 +26,96 @@ export const SHADOW_DIRTY_PLAYER_EPS_M = 0.05
  *  streaming/tree/terrain event to a fraction of a second. */
 export const SHADOW_DIRTY_MAX_STALE_FRAMES = 10
 
+/** world-terrain-056 S1 (`shadowMotionCadence`): while the frustum centre is
+ *  moving, alternate frames (refresh, skip, refresh…) unless one of these
+ *  escapes fires. Start values from the plan — tune from the A/B + visual check. */
+export const SHADOW_MOTION_D_HARD_M = 1.5
+export const SHADOW_MOTION_YAW_HARD_RAD = (12 * Math.PI) / 180
+export const SHADOW_MOTION_MS_MAX = 66
+
+/** Per-frame inputs for the motion cadence; passing it enables the cadence. */
+export type ShadowMotionCadenceInput = {
+  /** Camera yaw (rad) this frame. */
+  yaw: number
+  /** `performance.now()` this frame. */
+  nowMs: number
+}
+
 export type ShadowBudgetState = {
   /** Player X/Z at the last shadow-map update (not the last frame). */
   lastPlayerX: number
   lastPlayerZ: number
   /** Frames since the shadow map last actually updated. */
   framesSinceUpdate: number
+  /** Camera yaw / `performance.now()` at the last refresh (motion cadence only). */
+  lastYaw?: number
+  lastUpdateMs?: number
 }
 
 export function createShadowBudgetState(playerX: number, playerZ: number): ShadowBudgetState {
   return { lastPlayerX: playerX, lastPlayerZ: playerZ, framesSinceUpdate: 0 }
 }
 
-/** Pure decision — extracted so it's unit-testable without a WebGL context or
- *  live agents (same split as `shouldRenderMirror`/`shouldSuppressAo`).
- *  `hasNearbyShadowCaster` is computed by the caller (see `anyWithinRadius`)
- *  from whatever NPC/fauna lists it already has on hand this frame. */
+function angleDelta(a: number, b: number): number {
+  const d = Math.abs(a - b) % (2 * Math.PI)
+  return d > Math.PI ? 2 * Math.PI - d : d
+}
+
+/** Why the shadow map was (or was not) refreshed this frame. `force` is set by
+ *  the caller (missing map), never by {@link decideShadowUpdate}. */
+export type ShadowUpdateReason = 'none' | 'move' | 'actor' | 'stale' | 'force'
+
+/** Pure decision with the trigger that fired — extracted so it's unit-testable
+ *  without a WebGL context or live agents (same split as
+ *  `shouldRenderMirror`/`shouldSuppressAo`). `hasNearbyShadowCaster` is computed
+ *  by the caller (see `anyWithinRadius`) from whatever NPC/fauna lists it
+ *  already has on hand this frame. Returns a string literal: no allocation. */
+export function decideShadowUpdate(
+  state: ShadowBudgetState,
+  playerX: number,
+  playerZ: number,
+  hasNearbyShadowCaster: boolean,
+  halfRateActorOnly = false,
+  motion?: ShadowMotionCadenceInput,
+): ShadowUpdateReason {
+  if (state.framesSinceUpdate >= SHADOW_DIRTY_MAX_STALE_FRAMES) return 'stale'
+  const dx = playerX - state.lastPlayerX
+  const dz = playerZ - state.lastPlayerZ
+  const moved = dx * dx + dz * dz > SHADOW_DIRTY_PLAYER_EPS_M * SHADOW_DIRTY_PLAYER_EPS_M
+  // world-terrain-055 S2 (`?shadowActorCadence=1`): when the only trigger is a
+  // nearby NPC/animal (frustum centre stationary), refresh every 2nd frame.
+  if (halfRateActorOnly && !moved) {
+    return hasNearbyShadowCaster && state.framesSinceUpdate >= 1 ? 'actor' : 'none'
+  }
+  // Fail-open by design: an NPC/animal in shadow-casting range is treated as
+  // "assume moving" rather than tracked for actual per-frame displacement —
+  // see module doc. At current populations this is almost always `true` near
+  // settlements, which is the expected/measured trade-off, not a bug.
+  if (moved) {
+    // world-terrain-056 S1: refresh every 2nd frame while moving, except when
+    // the view changed enough (displacement / yaw / elapsed ms) that a stale
+    // map would be visible. Low FPS (frame ≥ MS_MAX) therefore never alternates.
+    if (motion && state.framesSinceUpdate < 1) {
+      const escape = dx * dx + dz * dz > SHADOW_MOTION_D_HARD_M * SHADOW_MOTION_D_HARD_M
+        || angleDelta(motion.yaw, state.lastYaw ?? motion.yaw) > SHADOW_MOTION_YAW_HARD_RAD
+        || motion.nowMs - (state.lastUpdateMs ?? -Infinity) > SHADOW_MOTION_MS_MAX
+      if (!escape) return 'none'
+    }
+    return 'move'
+  }
+  return hasNearbyShadowCaster ? 'actor' : 'none'
+}
+
+/** Boolean wrapper over {@link decideShadowUpdate} (kept for callers/tests). */
 export function shouldUpdateShadowMap(
   state: ShadowBudgetState,
   playerX: number,
   playerZ: number,
   hasNearbyShadowCaster: boolean,
   halfRateActorOnly = false,
+  motion?: ShadowMotionCadenceInput,
 ): boolean {
-  if (state.framesSinceUpdate >= SHADOW_DIRTY_MAX_STALE_FRAMES) return true
-  const dx = playerX - state.lastPlayerX
-  const dz = playerZ - state.lastPlayerZ
-  const moved = dx * dx + dz * dz > SHADOW_DIRTY_PLAYER_EPS_M * SHADOW_DIRTY_PLAYER_EPS_M
-  // world-terrain-055 S2 (`?shadowActorCadence=1`): when the only trigger is a
-  // nearby NPC/animal (frustum centre stationary), refresh every 2nd frame.
-  if (halfRateActorOnly && !moved) return hasNearbyShadowCaster && state.framesSinceUpdate >= 1
-  // Fail-open by design: an NPC/animal in shadow-casting range is treated as
-  // "assume moving" rather than tracked for actual per-frame displacement —
-  // see module doc. At current populations this is almost always `true` near
-  // settlements, which is the expected/measured trade-off, not a bug.
-  return hasNearbyShadowCaster || moved
+  return decideShadowUpdate(state, playerX, playerZ, hasNearbyShadowCaster, halfRateActorOnly, motion) !== 'none'
 }
 
 /** Call once per frame after acting on `shouldUpdateShadowMap`'s result, so
@@ -70,10 +125,15 @@ export function recordShadowBudgetFrame(
   playerX: number,
   playerZ: number,
   updated: boolean,
+  motion?: ShadowMotionCadenceInput,
 ): void {
   if (updated) {
     state.lastPlayerX = playerX
     state.lastPlayerZ = playerZ
+    if (motion) {
+      state.lastYaw = motion.yaw
+      state.lastUpdateMs = motion.nowMs
+    }
     state.framesSinceUpdate = 0
   } else {
     state.framesSinceUpdate += 1
