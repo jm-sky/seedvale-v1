@@ -27,7 +27,6 @@ import { tintBucketGlb } from '../../../items/items'
 import { companionAnimationUrl } from '../../../player/playerVisualPreset'
 import { hairColorHexFor } from '../hairTint'
 import { browserState } from '../state'
-import { compareCompanionAnimationUrl } from './compareCompanionAnimation'
 import { type AnchorGizmoGroup, createAnchorGizmos } from './createAnchorGizmos'
 import { attachCompareKit } from './mountCompareGarments'
 
@@ -233,9 +232,7 @@ export function createAssetSlot(role: 'reference' | 'target', scene: Group): Ass
       if (!url || !nextEntry) return
 
       const fetchUrl = reloadCounter > 0 ? `${url}?r=${reloadCounter}` : url
-      const ubcAnimUrl = companionAnimationUrl(url)
-      const compareAnimUrl = compareCompanionAnimationUrl(url)
-      const animCompanionUrl = ubcAnimUrl ?? compareAnimUrl
+      const animCompanionUrl = companionAnimationUrl(url)
       const loaded = nextEntry.skinned || animCompanionUrl
         ? await loadGltfAnimated(fetchUrl)
         : { scene: await loadGltf(fetchUrl), animations: [] as import('three').AnimationClip[] }
@@ -257,8 +254,8 @@ export function createAssetSlot(role: 'reference' | 'target', scene: Group): Ass
       }
       nativeBox = boxFromModel(model)
       applyPrepare(model, nextEntry.prepare)
-      // UBC hair tint only — Quaternius compare bodies do not use MI_Hair_* materials.
-      if (ubcAnimUrl) {
+      // Kit hair tint only — kit bodies carry the UBC MI_Hair_* materials.
+      if (animCompanionUrl) {
         cloneOutfitMaterials(model)
         applyHairColor(model, hairColorHexFor(browserState.hairColor))
       }
@@ -272,7 +269,7 @@ export function createAssetSlot(role: 'reference' | 'target', scene: Group): Ass
         if (seq !== loadSeq) return // unload() already disposed the stale model
         if (kit.warnings.length) {
           browserState.statusMessage = kit.warnings.join('; ')
-          console.warn('[asset-browser] compare kit', kit.warnings)
+          console.warn('[asset-browser] kit preview', kit.warnings)
         } else if (kit.attached.length) {
           browserState.statusMessage = `Attached ${kit.attached.join(', ')}`
         }

@@ -698,11 +698,11 @@ function lampMountSnippet() {
         > Wireframe</label>
         <label
           class="flex items-center gap-2 text-xs"
-          title="Attach Male_Head / Female_Head on v2/v3 compare bodies"
+          title="Attach Male_Head / Female_Head on kit bodies that declare a head"
         ><input
           v-model="browserState.compareHead"
           type="checkbox"
-        > v2/v3 head</label>
+        > kit head</label>
         <template v-if="bodyBuildOwner">
           <label
             class="mt-1 block text-xs text-slate-400"

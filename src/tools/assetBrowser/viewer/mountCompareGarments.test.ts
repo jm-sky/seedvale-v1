@@ -43,7 +43,7 @@ describe('attachCompareHead', () => {
     pack.add(skinnedWithBone('Head', 'pelvis'))
     vi.mocked(loadGltf).mockResolvedValueOnce(pack)
 
-    const result = await attachCompareHead(body, { headUrl: '/compare/v3/Male_Head.glb' })
+    const result = await attachCompareHead(body, { headUrl: '/assets/characters/Male_Head.glb' })
     expect(result.attached).toEqual(['Head'])
     expect(result.warnings).toEqual([])
     const attached = body.children.find((c) => c.name === 'Head') as SkinnedMesh
@@ -62,7 +62,7 @@ describe('attachCompareGarments', () => {
     const body = new Object3D()
     const result = await attachCompareGarments(body, {
       garments: ['PeasantSkirt'],
-      eqUrl: '/compare/v3/eq/Female.glb',
+      eqUrl: '/assets/characters/eq/Female.glb',
     })
     expect(result.attached).toEqual([])
     expect(result.warnings[0]).toMatch(/no bones/i)
@@ -78,7 +78,7 @@ describe('attachCompareGarments', () => {
 
     const result = await attachCompareGarments(body, {
       garments: ['PeasantSkirt'],
-      eqUrl: '/compare/v3/eq/Female.glb',
+      eqUrl: '/assets/characters/eq/Female.glb',
     })
     expect(result.attached).toEqual(['EQ_PeasantSkirt'])
     expect(result.warnings).toEqual([])
@@ -100,9 +100,9 @@ describe('attachCompareKit', () => {
       .mockResolvedValueOnce(eqPack)
 
     const result = await attachCompareKit(body, {
-      headUrl: '/compare/v3/Female_Head.glb',
+      headUrl: '/assets/characters/Female_Head.glb',
       garments: ['PeasantSkirt'],
-      eqUrl: '/compare/v3/eq/Female.glb',
+      eqUrl: '/assets/characters/eq/Female.glb',
     })
     expect(result.attached).toEqual(['Head', 'EQ_PeasantSkirt'])
     expect(result.warnings).toEqual([])
@@ -117,15 +117,15 @@ describe('attachCompareKit', () => {
     const result = await attachCompareKit(
       body,
       {
-        headUrl: '/compare/v3/Female_Head.glb',
+        headUrl: '/assets/characters/Female_Head.glb',
         garments: ['PeasantSkirt'],
-        eqUrl: '/compare/v3/eq/Female.glb',
+        eqUrl: '/assets/characters/eq/Female.glb',
       },
       { head: false },
     )
     expect(result.attached).toEqual(['EQ_PeasantSkirt'])
     expect(loadGltf).toHaveBeenCalledTimes(1)
-    expect(loadGltf).toHaveBeenCalledWith('/compare/v3/eq/Female.glb')
+    expect(loadGltf).toHaveBeenCalledWith('/assets/characters/eq/Female.glb')
   })
 })
 
