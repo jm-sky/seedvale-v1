@@ -396,7 +396,7 @@ export function fencePlacementColliders(
     type: 'obb' as const,
     x: placement.x,
     z: placement.z,
-    halfWidth: WALL_HALF_LENGTH * placement.scale,
+    halfWidth: WALL_HALF_LENGTH * placement.scale * (placement.lengthScale ?? 1),
     halfDepth: PALISADE_WALL_HALF_DEPTH * placement.scale,
     rotationY: 0 - placement.rotationY, // not `-x`: avoids -0 for yaw 0
   }))

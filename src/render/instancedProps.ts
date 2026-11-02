@@ -19,6 +19,9 @@ export type PropPlacement = {
   groundY: number
   rotationY: number
   scale: number
+  /** Optional extra scale along the template's local X (long axis) only — fits a fence piece to a
+   *  segment shorter than one piece without lowering it. Default 1. */
+  lengthScale?: number
   /** Key for later single-instance removal (e.g. `treeId`). Placements
    *  without one can never be targeted by `removeByKey`. */
   key?: string
@@ -105,6 +108,7 @@ function instanceWorldMatrix(templateRoot: THREE.Object3D, placement: PropPlacem
   _scratch.quaternion.copy(templateRoot.quaternion)
   _scratch.scale.copy(templateRoot.scale) // s0 from prepareProp
   _scratch.scale.multiplyScalar(placement.scale) // ≡ cloneProp
+  if (placement.lengthScale !== undefined) _scratch.scale.x *= placement.lengthScale
   _scratch.rotation.y = placement.rotationY // ≡ cloneProp/clonePropWithYaw
   _scratch.position.set( // ≡ placeOnGround
     placement.x + templateRoot.position.x,

@@ -485,31 +485,51 @@ export function appendPasturePath(
   })
 }
 
-const FENCE_POST_SPACING = 2.2
 const FENCE_SCALE = 0.62
+/** Half the rendered length of one `wall.glb` piece (centred pivot, long axis local +X). */
+/** Mirrors `WALL_HALF_LENGTH` (settlementPalisade.ts, 2.2 m at authored scale; kept local so this planner stays three-free). */
+const FENCE_PIECE_HALF_LENGTH = 2.2 * FENCE_SCALE
 
 /**
  * Instanced `wall.glb` placements along planned fence segments.
  * `rotationY` uses the same local-+X `yawToward` convention as the
  * settlement palisade — `atan2(dx, dz)` would stand each post 90° off
  * the segment (the "comb" look).
+ *
+ * `wall.glb` has a **centred** pivot and is ~2.7 m long at `FENCE_SCALE`, so a
+ * piece centred on a segment end would stick ~1.4 m past it — through the
+ * neighbouring segment at a corner ("+" / "T" crossings) and into a gate gap.
+ * Pieces are therefore centred at least one half-length inside the segment,
+ * evenly spaced so neighbours touch or overlap (no gaps). A segment shorter
+ * than one piece gets a single piece shortened along its long axis
+ * (`lengthScale`, height unchanged) so it fits exactly between the endpoints.
  */
 export function fenceSegmentPlacements(
   segments: readonly VillagePastureFenceSegment[],
   sampleHeight: HeightSampler,
 ): PropPlacement[] {
   const out: PropPlacement[] = []
+  const h = FENCE_PIECE_HALF_LENGTH
   for (const seg of segments) {
     const dx = seg.bx - seg.ax
     const dz = seg.bz - seg.az
     const len = Math.hypot(dx, dz)
     if (len < 0.5) continue
     const yaw = yawToward(dx, dz)
-    const count = Math.max(2, Math.round(len / FENCE_POST_SPACING))
-    for (let i = 0; i < count; i++) {
-      const t = count === 1 ? 0 : i / (count - 1)
-      const x = seg.ax + dx * t
-      const z = seg.az + dz * t
+    const ux = dx / len
+    const uz = dz / len
+    const centres: number[] = []
+    let lengthScale: number | undefined
+    if (len <= 2 * h) {
+      centres.push(len / 2)
+      lengthScale = len / (2 * h)
+    } else {
+      const gaps = Math.ceil((len - 2 * h) / (2 * h))
+      for (let i = 0; i <= gaps; i++) centres.push(h + ((len - 2 * h) * i) / gaps)
+    }
+    for (const d of centres) {
+      const x = seg.ax + ux * d
+      const z = seg.az + uz * d
       out.push({
         speciesIndex: 0,
         x,
@@ -517,6 +537,7 @@ export function fenceSegmentPlacements(
         groundY: sampleHeight(x, z),
         rotationY: yaw,
         scale: FENCE_SCALE,
+        ...(lengthScale !== undefined ? { lengthScale } : {}),
       })
     }
   }
