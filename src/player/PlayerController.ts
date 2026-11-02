@@ -72,6 +72,7 @@ import {
 import { applySlopeMovementConstraint, sampleSlope } from '../terrain/slopeConstraint'
 import { applyBarPercent, computeBarPercent, createAgentLabel, createLabelBar } from '../ui/agentStatusLabel'
 import { type Collider, colliderActiveAtY, resolvePosition, resolvePositionAudited } from '../world/collision'
+import { PLAYER_WALK_SPEED } from '../world/travelUnits'
 import { resolveCameraBoom, withCaveFloorFallback } from './cameraBoom'
 import { humanBodyCarryCapacityKg } from './humanCarryCapacity'
 import { PLAYER_COLLISION_RADIUS, PLAYER_HEIGHT, rockCeilingMaxY } from './playerDimensions'
@@ -110,7 +111,7 @@ export type PlayerMovementState = 'stationary' | 'moving' | 'sprinting'
 /** Exported so other systems (e.g. mounted speed's horse > human invariant,
  *  plan fauna-008) can compare against the authoritative player speed
  *  instead of duplicating these numbers. */
-export const MOVE_SPEED = 8
+export const MOVE_SPEED = PLAYER_WALK_SPEED
 // Body dimensions (and the ceiling clamp derived from them) live in
 // `playerDimensions.ts` (neutral owner); re-exported so existing importers
 // keep one entry point.

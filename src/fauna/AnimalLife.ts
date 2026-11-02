@@ -6,6 +6,7 @@ import {
   type StaminaState,
 } from '../shared/StaminaState'
 import { gameDaysToRealSeconds } from '../world/timeConversion'
+import { DEFAULT_DAY_LENGTH_SEC } from '../world/travelUnits'
 
 export { SLEEP_HUNGER_THIRST_RATE }
 
@@ -24,10 +25,9 @@ export type AnimalMetabolismConfig = {
 }
 
 /** Game-day pacing aligned with player survival (plan 106: ~3d hunger / ~2.5d
- *  thirst to traverse the 0–1 urge scale) at the default 480s day length —
+ *  thirst to traverse the 0–1 urge scale) at the default day length (`travelUnits.ts`) —
  *  replaces the legacy ~0.03/s rates that hit `NEED_ELEVATED_THRESHOLD` in
  *  under a minute of real time. */
-const DEFAULT_DAY_LENGTH_SEC = 480
 const ANIMAL_HUNGER_EMPTY_GAME_DAYS = 3
 const ANIMAL_THIRST_EMPTY_GAME_DAYS = 2.5
 

@@ -89,3 +89,26 @@ Order: **T1** (independent, can run any time) · **W3 → W4 → W5 → W2′**,
 - **Boot**: hydrology 2.25 × cells; mitigated by cache + fixture (tools-020), measured in 058 H2.
 - **Emptiness**: the world may feel empty — accepted for now (author), reviewed in game after W4 + H3.
 - **Census baselines**: Q37/Q44/Q47/Q58 numbers must be re-taken after W4 (far fewer settlements).
+
+## Implementation notes
+
+### T1 — time + speeds (Q82, Sonnet, 2026-11-02)
+
+New light module `src/world/travelUnits.ts` (no Three.js): `DEFAULT_DAY_LENGTH_SEC` 720, `PLAYER_WALK_SPEED` 6, `NPC_WALK_SPEED` 2.4, `NPC_TRAVEL_SPEED` 3.6, `TRAVEL_HOUR_M` (= 180 m). Existing saves keep their own `dayLengthSec`; only new worlds get 720.
+
+| Site | Before | After |
+| --- | --- | --- |
+| `dayNight.createDayNightState` | 480 | `DEFAULT_DAY_LENGTH_SEC` |
+| `PlayerController.MOVE_SPEED` (sprint ×1.8 unchanged) | 8 | `PLAYER_WALK_SPEED` (6) |
+| `caveHeightfieldPlayer` mirror of `MOVE_SPEED` | 8 | imports `PLAYER_WALK_SPEED` |
+| `transportOffscreen.OFFSCREEN_TRAVEL_SPEED` (merchant journeys, expeditions via `estimateOffscreenTravelDays`) | 2.4 mirror | `NPC_TRAVEL_SPEED` import |
+| `NpcAgent.WALK_SPEED` / fallback `dayLengthSec` | 2.4 / 600 | `NPC_WALK_SPEED` / default |
+| `SettlementsManager` fallback `lastDayLengthSec` | 480 | default |
+| `AnimalLife` metabolism default | 480 | default (needs pacing stays in game days) |
+| Mounted speed invariant (`mountedSpeed.test`) | horse/donkey mount speeds > 8 / 14.4 | still holds against 6 / 10.8 (only margin grew); no retune |
+| Persistence migration constant `FAUNA_CORPSE_MIGRATION_DAY_LENGTH_SEC` | 480 | unchanged (historic) |
+| `JUVENILE_MATURITY_SECONDS` 600 | ~1.25 days | ~0.83 days (value unchanged; comment updated) |
+
+Tests adjusted for intent, not loosened: `AnimalLife`/`animalMetabolismGameplay` use the default constant; `NpcAgent.spatialLifecycle` committed-travel test uses a 2000 m destination (the 3.6 m/s march would arrive within 8 h over 500 m); cave traversal test compares against `PLAYER_WALK_SPEED`.
+
+**Not done (open, needs a gameplay decision before it lands):** decision 8's *on-screen* inter-settlement legs at `NPC_TRAVEL_SPEED` (expedition/road travel outside a settlement radius, run/walk blend) — only the off-screen estimate uses 3.6 so far. `src/world/createCaves.test.ts` "mouth exit onto 1 m terrain tiles" is red on `main` before and after this change (unrelated). Walk/sprint feel at 6 m/s and the 12-minute day are not browser-verified → queue §2.

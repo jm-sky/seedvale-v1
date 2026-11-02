@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { getStaminaRatio, isExhausted } from '../shared/StaminaState'
 import { gameDaysToRealSeconds } from '../world/timeConversion'
+import { DEFAULT_DAY_LENGTH_SEC } from '../world/travelUnits'
 import {
   ANIMAL_STAMINA_MAX,
   type AnimalMetabolismConfig,
@@ -30,7 +31,7 @@ describe('AnimalLife', () => {
     const life = createAnimalLifeState(0)
     life.hunger = 0
     life.thirst = 0
-    const dayLengthSec = 480
+    const dayLengthSec = DEFAULT_DAY_LENGTH_SEC
     tickAnimalLife(life, gameDaysToRealSeconds(3, dayLengthSec), false)
     expect(life.hunger).toBe(1)
     expect(life.thirst).toBe(1)

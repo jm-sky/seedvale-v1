@@ -56,6 +56,7 @@ import {
   shouldUseLegacyTransportExecutionHandoff,
 } from '../world/transportOffscreen'
 import { resolveTransportTravelArrivals } from '../world/transportTravelArrival'
+import { DEFAULT_DAY_LENGTH_SEC } from '../world/travelUnits'
 import { resolveAuthoredRepairStructureIds } from './authoredRepairTargets'
 import { createSettlement, type CreateSettlementDeps, type Settlement } from './createSettlement'
 import {
@@ -934,7 +935,7 @@ export async function createSettlementsManager(
   // verbatim at both call sites below; `def`/`economy` stay per-call since
   // they differ between the home settlement and every streamed-in neighbor.
   let lastNowDays = 0
-  let lastDayLengthSec = 480
+  let lastDayLengthSec = DEFAULT_DAY_LENGTH_SEC
   function currentNowDays(): number {
     return getNowDays?.() ?? lastNowDays
   }

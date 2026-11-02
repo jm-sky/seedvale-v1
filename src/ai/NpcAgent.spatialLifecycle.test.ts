@@ -529,11 +529,11 @@ describe('npc-064 Stage 0B — loaded time-skip spatial placement', () => {
     npc.personalInventory.addInstance(waterskin)
     internals(npc).npcState.travel = beginOffscreenNpcTravel(
       { x: 10, z: 0 },
-      { x: 500, z: 0 },
+      { x: 2000, z: 0 },
       0,
       480,
       {
-        destination: { x: 500, z: 0 },
+        destination: { x: 2000, z: 0 },
         lastPosition: { x: 10, z: 0 },
         purpose: { kind: 'expedition', assignmentId: 'exp-skip-0b' },
       },
@@ -553,7 +553,7 @@ describe('npc-064 Stage 0B — loaded time-skip spatial placement', () => {
     })
     expect(internals(npc).npcState.travel?.execution).toBeUndefined()
     expect(npc.mesh.position.x).toBeGreaterThan(10)
-    expect(npc.mesh.position.x).toBeLessThan(500)
+    expect(npc.mesh.position.x).toBeLessThan(2000)
     expect(npc.mesh.position.y).toBe(sampleHeight(npc.mesh.position.x, npc.mesh.position.z))
     expect(internals(npc).pendingAction).toBeNull()
     expect(internals(npc).phase).not.toBe('goTo')

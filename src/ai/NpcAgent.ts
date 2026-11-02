@@ -205,6 +205,7 @@ import {
   standingTorchRemainingWork,
 } from '../world/standingTorch'
 import { gameHoursToRealSeconds } from '../world/timeConversion'
+import { DEFAULT_DAY_LENGTH_SEC, NPC_WALK_SPEED } from '../world/travelUnits'
 import { harvestWorldTreeFully } from '../world/treeHarvest'
 import { AGENT_RENDER_LAYER, assignRenderLayer } from '../world/waterMirror'
 import {
@@ -497,7 +498,7 @@ function randRange([min, max]: [number, number]): number {
   return min + Math.random() * (max - min)
 }
 
-const WALK_SPEED = 2.4
+const WALK_SPEED = NPC_WALK_SPEED
 const ARRIVE = 0.55
 /** Default bounded context for a self-initiated voluntary-join proposal
  *  (plan npc-031) — the NPC has no way to know the player's own plans, so it
@@ -1680,7 +1681,7 @@ export class NpcAgent {
    *  travel-time estimation needs the real-seconds↔game-hours ratio, but
    *  isn't itself called from `update()`, so it's stashed here rather than
    *  threaded through every idle-dispatch signature. */
-  private dayLengthSec = 600
+  private dayLengthSec = DEFAULT_DAY_LENGTH_SEC
   /** Generic item carrier reused from the player's own `Inventory` (plan
    *  131) — an NPC's brief hold between extracting a world resource (ore) and
    *  delivering it, not persistent personal belongings. Small capacity: one
