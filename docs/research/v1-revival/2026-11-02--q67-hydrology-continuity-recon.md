@@ -1,6 +1,6 @@
 # Q67 — Hydrology continuity recon (2026-11-02)
 
-**Status:** recon done (Opus, 2026-11-02). **Author decision Q68 (2026-11-02): option A** — see §6.6. Next: Opus plan (queue Q69). No runtime code changed; the only new code is the diagnostic census tool.
+**Status:** recon done (Opus, 2026-11-02). **Author decision Q68 (2026-11-02): option A** — see §6.6. Plan done (Q69): [world-terrain-058](../../plans/world-terrain-058-finite-continent-and-global-hydrology.md), slices queue Q71–Q80. No runtime code changed; the only new code is the diagnostic census tool.
 
 **Author direction (2026-11-02, this session):** a global hydrology model is acceptable even if it changes the current architecture; a **large, random, finite world** is acceptable — "large" means the home settlement plus 4–6 settlement areas in almost every direction (walking one way meets 4–6 settlements) and at least one `XL` settlement; **no interim quick fixes** — implement the whole solution per plan. V2/V3 hydrology may be used as donors.
 
