@@ -637,6 +637,7 @@ Generated from TypeScript imports.
 - `settlement/settlementWorldgenCache.ts`
 - `settlement/villageClearing.test.ts`
 - `settlement/villageClearing.ts`
+- `settlement/villageLanes.test.ts`
 - `settlement/villagePaddock.test.ts`
 - `settlement/villagePaddock.ts`
 - `settlement/villagePasture.test.ts`
@@ -1177,6 +1178,8 @@ Generated from TypeScript imports.
 - `settlement/professionDressingMesh.ts`
 - `settlement/props.ts`
 - `settlement/storehouseLayout.ts`
+- `settlement/villageLanes.test.ts`
+- `settlement/villageLanes.ts`
 - `settlement/villagePlan.ts`
 - `settlement/villagePlanner.test.ts`
 - `settlement/villagePlanner.ts`
@@ -1838,6 +1841,7 @@ Generated from TypeScript imports.
 - `settlement/findSettlementSite.test.ts`
 - `settlement/findSettlementSite.ts`
 - `settlement/villageClearing.ts`
+- `settlement/villageLanes.ts`
 - `settlement/villagePaddock.ts`
 - `settlement/villagePasture.ts`
 - `settlement/villagePlanner.ts`
@@ -3087,6 +3091,28 @@ Generated from TypeScript imports.
 - `settlement/villageClearing.test.ts`
 - `settlement/villagePlanner.test.ts`
 
+## `settlement/villageLanes.test.ts`
+
+**Imports**
+
+- `settlement/families.ts`
+- `settlement/householdYard.ts`
+- `settlement/villagePlan.ts`
+- `settlement/villagePlanner.ts`
+
+## `settlement/villageLanes.ts`
+
+**Imports**
+
+- `player/PlayerController.ts`
+- `settlement/householdYard.ts`
+- `settlement/pathDryness.ts`
+- `settlement/villagePlan.ts`
+
+**Imported by**
+
+- `settlement/villagePlanner.ts`
+
 ## `settlement/villagePaddock.test.ts`
 
 **Imports**
@@ -3201,6 +3227,8 @@ Generated from TypeScript imports.
 - `settlement/structureCondition.ts`
 - `settlement/structureRepairCandidates.ts`
 - `settlement/villageClearing.ts`
+- `settlement/villageLanes.test.ts`
+- `settlement/villageLanes.ts`
 - `settlement/villagePaddock.test.ts`
 - `settlement/villagePaddock.ts`
 - `settlement/villagePasture.test.ts`
@@ -3248,6 +3276,7 @@ Generated from TypeScript imports.
 - `settlement/householdYard.ts`
 - `settlement/pathDryness.ts`
 - `settlement/storehouseLayout.ts`
+- `settlement/villageLanes.ts`
 - `settlement/villagePaddock.ts`
 - `settlement/villagePasture.ts`
 - `settlement/villagePlan.ts`
@@ -3262,6 +3291,7 @@ Generated from TypeScript imports.
 - `settlement/props.ts`
 - `settlement/roadNetwork.ts`
 - `settlement/settlementGenerator.ts`
+- `settlement/villageLanes.test.ts`
 - `settlement/villagePaddock.test.ts`
 - `settlement/villagePasture.test.ts`
 - `settlement/villagePlanner.test.ts`

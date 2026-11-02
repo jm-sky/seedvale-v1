@@ -121,6 +121,7 @@ Generated from TypeScript imports.
 - `settlement/settlementProgression.ts`
 - `settlement/settlementSignposts.ts`
 - `settlement/villageClearing.ts`
+- `settlement/villageLanes.ts`
 - `settlement/villagePaddock.ts`
 - `settlement/villagePasture.ts`
 - `settlement/villagePlanner.ts`

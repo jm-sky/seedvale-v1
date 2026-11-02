@@ -1579,11 +1579,21 @@ Generated from exported TypeScript symbols.
 - `VillageFire` — type — line 43
 - `VillageFireHooks` — type — line 38
 
+## `settlement/villageLanes.ts`
+
+- `createLaneRouter` — function — line 374
+- `laneAccessPoint` — function — line 247
+- `LaneDestination` — type — line 62
+- `LaneEntrance` — type — line 91
+- `LaneRouter` — type — line 372
+- `planVillageLanes` — function — line 267
+- `VillageLanePlan` — type — line 93
+
 ## `settlement/villagePaddock.ts`
 
 - `appendPaddockPath` — function — line 391
 - `horseVendorSetupChance` — function — line 68
-- `paddockFencePlacements` — function — line 429
+- `paddockFencePlacements` — function — line 438
 - `PaddockPlanArgs` — type — line 95
 - `paddockRadiusFor` — function — line 82
 - `paddockSlotCountForRadius` — function — line 87
@@ -1595,8 +1605,8 @@ Generated from exported TypeScript symbols.
 ## `settlement/villagePasture.ts`
 
 - `appendPasturePath` — function — line 450
-- `fenceSegmentPlacements` — function — line 507
-- `pastureFencePlacements` — function — line 547
+- `fenceSegmentPlacements` — function — line 516
+- `pastureFencePlacements` — function — line 556
 - `PasturePlanArgs` — type — line 88
 - `pastureRadiusFor` — function — line 81
 - `planSettlementPasture` — function — line 359
@@ -1662,16 +1672,16 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/villagePlanner.ts`
 
-- `buildingsAndLandmarksFromPlots` — function — line 1492
-- `chooseLayoutPattern` — function — line 171
-- `HOUSE_COMPOUND_GAP_FACTOR` — const — line 86
-- `householdWellLocalBand` — function — line 98
+- `buildingsAndLandmarksFromPlots` — function — line 1511
+- `chooseLayoutPattern` — function — line 172
+- `HOUSE_COMPOUND_GAP_FACTOR` — const — line 87
+- `householdWellLocalBand` — function — line 99
   - domain: settlements-npcs
-- `pathPlansToCorridorData` — function — line 1873
-- `planLocalPathsAndEntrances` — function — line 1753
-- `planVillageLayout` — function — line 993
-- `PLOT_SCORE_WEIGHTS` — const — line 59
-- `VillageLayoutDraft` — type — line 134
+- `pathPlansToCorridorData` — function — line 1904
+- `planLocalPathsAndEntrances` — function — line 1780
+- `planVillageLayout` — function — line 1014
+- `PLOT_SCORE_WEIGHTS` — const — line 60
+- `VillageLayoutDraft` — type — line 135
 
 ## `settlement/wellInteractionQueue.ts`
 

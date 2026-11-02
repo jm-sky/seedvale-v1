@@ -23,12 +23,12 @@ Generated from exported TypeScript symbols.
 
 ## `input/MouseLook.ts`
 
-- `CAMERA_DISTANCE_DEFAULT` — const — line 26
-- `CAMERA_DISTANCE_MAX` — const — line 25
-- `CAMERA_DISTANCE_MIN` — const — line 24
-- `clampDistance` — function — line 45
-- `clampPitch` — function — line 49
-- `createMouseLook` — function — line 67
-- `exitGamePointerLock` — function — line 55
-- `LookState` — type — line 4
-- `requestGamePointerLock` — function — line 62
+- `CAMERA_DISTANCE_DEFAULT` — const — line 27
+- `CAMERA_DISTANCE_MAX` — const — line 26
+- `CAMERA_DISTANCE_MIN` — const — line 25
+- `clampDistance` — function — line 46
+- `clampPitch` — function — line 50
+- `createMouseLook` — function — line 68
+- `exitGamePointerLock` — function — line 56
+- `LookState` — type — line 5
+- `requestGamePointerLock` — function — line 63

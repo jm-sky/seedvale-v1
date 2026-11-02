@@ -31,6 +31,7 @@ Generated from TypeScript imports.
 
 **Imports**
 
+- `debug/flyCam.ts`
 - `input/Keyboard.ts`
 - `input/isTouchDevice.ts`
 

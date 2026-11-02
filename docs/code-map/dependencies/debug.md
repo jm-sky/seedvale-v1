@@ -292,6 +292,7 @@ Generated from TypeScript imports.
 
 - `app/createApp.ts`
 - `app/gameLoop.ts`
+- `input/MouseLook.ts`
 - `main.ts`
 
 ## `debug/householdHistory.ts`

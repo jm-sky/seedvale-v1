@@ -174,6 +174,7 @@ Generated from TypeScript imports.
 - `terrain/chunkEnvironment.ts`
 - `terrain/chunkGrid.ts`
 - `terrain/chunkHeightmap.ts`
+- `terrain/riverNetwork.ts`
 - `world/parseSeed.ts`
 
 **Imported by**
@@ -1269,6 +1270,7 @@ Generated from TypeScript imports.
 - `settlement/villagePasture.test.ts`
 - `settlement/villagePasture.ts`
 - `settlement/villagePlanner.ts`
+- `terrain/cemeteryPlacement.ts`
 - `terrain/chunkHeightmap.worker.ts`
 - `terrain/chunkHeightmapProtocol.ts`
 - `terrain/chunkManager.ts`
