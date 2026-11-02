@@ -175,6 +175,7 @@ Agents may run these checks themselves (seed `415424794`) and mark an item verif
 
 | Item | What to check | Owner doc |
 | --- | --- | --- |
+| Q83 / 059 W3 world map (seed `415424794`) | World map shows the whole island with sea margin inside ±6144; no clipped coast; fog/raster tiles load at the new extent; map opens without a hitch | [059 W3](../../plans/world-terrain-059-world-scale-travel-time-and-sparse-settlements.md#slices) |
 | Q65 home pasture (seed `415424794`) | Home village has a fenced pasture with trough and livestock; no overlap with houses/roads; census 0 pasture∩plot/road not yet run | [Queue Q65](#1-queue) |
 | Q66 palisade fragments (seed `415424794`, top-down + ground level) | Home village shows palisade wings at each road/path entrance plus 1–2 short landward sections (no full ring, not into the sea); gates/lanes stay walkable; check an all-coastal-entrance village; draws per settlement not measured yet | [Queue Q66](#1-queue) |
 | Q67 home stream mouth (seed `415424794`, top-down near `(74, −17)…(70, −36)`: does the ribbon vanish where its surface drops below sea level, ~20 m before the bay?) + minimap/world biome bands near home | [Q67 recon §1, §8](./2026-11-02--q67-hydrology-continuity-recon.md) |
