@@ -128,6 +128,7 @@ Unless noted otherwise, `verification needed` means implementation has passed au
 | ◼️ `fauna-049-wild-animal-tiers-and-trophies.md`                               | 🟡 | XL     | -                                                                                                                                                                                                                                                                                          | quests-and-reputation                     |
 | ◼️ `world-terrain-055-optional-shadow-frustum-and-refresh-trims.md`            | 🟡 | S      | -                                                                                                                                                                                                                                                                                          | -                                         |
 | 💡 `world-terrain-058-finite-continent-and-global-hydrology.md`                | 🔴 | XL     | -                                                                                                                                                                                                                                                                                          | -                                         |
+| ◼️ `world-terrain-059-world-scale-travel-time-and-sparse-settlements.md`       | 🔴 | XL     | world-terrain-058                                                                                                                                                                                                                                                                          | -                                         |
 
 ---
 
@@ -209,7 +210,7 @@ New plans declare a primary `Domain:` in frontmatter. Use optional `Tags:` only 
 - tools: `023`
 - ui-input: `048`
 - world: `041`
-- world-terrain: `059`
+- world-terrain: `060`
 
 This ids section is maintained automatically from the plan files.
 

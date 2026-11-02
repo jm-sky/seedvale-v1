@@ -1,7 +1,7 @@
 # PLANS PLANNED WITHOUT NOTES
 
 > Generated with `pnpm plans:without-notes`  
-> Date: 2026-11-02 07:34:08  
+> Date: 2026-11-02 19:09:50  
 
 ## PLANS
 
@@ -16,6 +16,7 @@
 - `tools-019-debug-tooling-lifecycle-ownership.md`
 - `ui-input-045-equipment-body-layout.md`
 - `world-terrain-055-optional-shadow-frustum-and-refresh-trims.md`
+- `world-terrain-059-world-scale-travel-time-and-sparse-settlements.md`
 
 --------------------------------
 ## PROMPTS
@@ -346,6 +347,37 @@ Wczytaj:
 
 Na podstawie review utwórz w repo plik:
 `docs/plans/implementation-notes/world-terrain-055-optional-shadow-frustum-and-refresh-trims-implementation-notes.md`
+
+Umieść w nim:
+- sugestie dotyczące implementacji,
+- istotne detale techniczne,
+- decyzje architektoniczne,
+- informacje o istniejących systemach i implementacjach, które należy wykorzystać,
+- potencjalne problemy, zależności i pułapki,
+- inne konkretne wskazówki, które ułatwią agentowi AI poprawną implementację planu.
+
+Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
+Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
+
+Pliki dodaj na branch `main` w repozytorium.
+```
+
+### `world-terrain-059-world-scale-travel-time-and-sparse-settlements.md`
+
+Prompt:
+
+```
+Zrób review planu `world-terrain-059-world-scale-travel-time-and-sparse-settlements.md`
+
+Wczytaj:
+- `docs/STATE.md`
+- `docs/plans/PLANNING.md` (Implementation Notes section),
+- `docs/plans/world-terrain-059-world-scale-travel-time-and-sparse-settlements.md`
+- aktualny codebase,
+- potrzebne zależności i powiązane implementacje.
+
+Na podstawie review utwórz w repo plik:
+`docs/plans/implementation-notes/world-terrain-059-world-scale-travel-time-and-sparse-settlements-implementation-notes.md`
 
 Umieść w nim:
 - sugestie dotyczące implementacji,

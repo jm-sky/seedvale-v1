@@ -1625,15 +1625,15 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/villagePasture.ts`
 
-- `appendPasturePath` — function — line 556
-- `fenceSegmentPlacements` — function — line 597
-- `pastureFencePlacements` — function — line 637
-- `PasturePlanArgs` — type — line 89
-- `pastureRadiusFor` — function — line 82
-- `planSettlementPasture` — function — line 360
-- `planSpurPoints` — function — line 473
-- `settlementWantsPasture` — function — line 73
-- `spurClearsFence` — function — line 452
+- `appendPasturePath` — function — line 559
+- `fenceSegmentPlacements` — function — line 600
+- `pastureFencePlacements` — function — line 640
+- `PasturePlanArgs` — type — line 92
+- `pastureRadiusFor` — function — line 85
+- `planSettlementPasture` — function — line 363
+- `planSpurPoints` — function — line 476
+- `settlementWantsPasture` — function — line 76
+- `spurClearsFence` — function — line 455
 
 ## `settlement/villagePlan.ts`
 
