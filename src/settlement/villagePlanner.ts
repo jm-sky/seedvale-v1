@@ -43,6 +43,7 @@ import {
 } from './householdYard'
 import { pathIsDry, SETTLEMENT_WATER_MARGIN } from './pathDryness'
 import { STOREHOUSE_APRON, storehouseLayoutFor } from './storehouseLayout'
+import { createLaneRouter, laneAccessPoint, type LaneDestination, planVillageLanes } from './villageLanes'
 import { appendPaddockPath, planSettlementPaddock } from './villagePaddock'
 import { appendPasturePath, planSettlementPasture } from './villagePasture'
 import {
@@ -1478,8 +1479,9 @@ export function planVillageLayout(
     pasture,
     pathCorridors,
   })
-  if (pasture) appendPasturePath(paths, pasture, sampleHeight, waterLevel)
-  if (paddock) appendPaddockPath(paths, paddock, sampleHeight, waterLevel)
+  const laneRouter = createLaneRouter(plots)
+  if (pasture) appendPasturePath(paths, pasture, sampleHeight, waterLevel, laneRouter)
+  if (paddock) appendPaddockPath(paths, paddock, sampleHeight, waterLevel, laneRouter)
   return { boundary, center, pattern, zones, plots, buildings, landmarks, paths, entrances, plaza, pasture, paddock }
 }
 
@@ -1727,21 +1729,6 @@ function pickEntranceAtAngle(
   }
 }
 
-function pushDryPath(
-  paths: VillagePathPlan[],
-  id: string,
-  a: PathEndpoint,
-  b: PathEndpoint,
-  kind: 'path' | 'road',
-  sampleHeight: HeightSampler,
-  waterLevel: number,
-): boolean {
-  if (!pathIsDry(a.x, a.z, b.x, b.z, waterLevel, sampleHeight)) return false
-  if (Math.hypot(a.x - b.x, a.z - b.z) < 1.5) return false
-  paths.push(makePath(id, a, b, kind))
-  return true
-}
-
 /**
  * Local paths + semantic entrances (plan 047 §9.9). Global inter-settlement
  * roads stay in `RoadNetwork` and will consume `entrances` later.
@@ -1761,7 +1748,7 @@ export function planLocalPathsAndEntrances(args: {
   seedForCell: number
   sampleHeight: HeightSampler
   waterLevel: number
-}): { paths: VillagePathPlan[], entrances: VillageEntrance[] } {
+}): { paths: VillagePathPlan[], entrances: VillageEntrance[], unresolvedLanes: string[] } {
   const {
     identity,
     center,
@@ -1774,7 +1761,6 @@ export function planLocalPathsAndEntrances(args: {
     waterLevel,
   } = args
   const sizeCfg = villageSizeConfig(identity.size)
-  const paths: VillagePathPlan[] = []
   const waterAngle = downhillAngle(center.x, center.z, boundary.radius, sampleHeight)
   const count = entranceCountFor(identity)
   const angles = preferredEntranceAngles(pattern, seedForCell, count, waterAngle)
@@ -1798,21 +1784,10 @@ export function planLocalPathsAndEntrances(args: {
     )
   })
 
-  for (const entrance of entrances) {
-    pushDryPath(
-      paths,
-      `path-entrance-${entrance.id}`,
-      entrance,
-      center,
-      entrance.kind,
-      sampleHeight,
-      waterLevel,
-    )
-  }
-
+  const destinations: LaneDestination[] = []
   for (const zone of zones) {
     if (zone.kind === 'public') continue
-    pushDryPath(paths, `path-zone-${zone.kind}`, center, zone, 'path', sampleHeight, waterLevel)
+    destinations.push({ id: `path-zone-${zone.kind}`, access: { x: zone.x, z: zone.z }, ownPlotId: null, optional: true })
   }
 
   for (const plot of plots) {
@@ -1833,7 +1808,11 @@ export function planLocalPathsAndEntrances(args: {
     if (nearZonePath && (plot.role === 'food' || plot.role === 'work' || plot.role === 'livestock')) {
       continue
     }
-    pushDryPath(paths, `path-plot-${plot.id}`, center, plot, 'path', sampleHeight, waterLevel)
+    destinations.push({ id: `path-plot-${plot.id}`, access: laneAccessPoint(plot, center),
+      // Only the storehouse bay sits inside its own apron disc.
+      ownPlotId: plot.storehouse ? plot.id : null,
+      around: { x: plot.x, z: plot.z, r: plot.radius },
+    })
   }
 
   const houses = plots.filter((p) => p.role === 'house')
@@ -1841,16 +1820,26 @@ export function planLocalPathsAndEntrances(args: {
     sizeCfg.pathDensity >= 0.45 ? 1 : Math.max(1, Math.ceil(houses.length / 2))
   houses.forEach((house, i) => {
     if (i % houseStride !== 0) return
-    pushDryPath(
-      paths,
-      `path-house-${house.familyIndex ?? i}`,
-      center,
-      house,
-      'path',
-      sampleHeight,
-      waterLevel,
-    )
+    destinations.push({
+      id: `path-house-${house.familyIndex ?? i}`,
+      access: laneAccessPoint(house, center),
+      ownPlotId: null,
+      around: { x: house.x, z: house.z, r: house.radius },
+    })
   })
+
+  const lanes = planVillageLanes({
+    center,
+    plots,
+    entrances,
+    destinations,
+    plazaRadius: villagePlazaAt(center, identity.size).radius,
+    pathHalfWidth: LOCAL_PATH_HALF_WIDTH,
+    roadHalfWidth: LOCAL_ROAD_HALF_WIDTH,
+    sampleHeight,
+    waterLevel,
+  })
+  const paths: VillagePathPlan[] = lanes.paths
 
   if (houses.length > 0 && !paths.some((p) => p.id.startsWith('path-house-'))) {
     const house = houses[0]!
@@ -1863,7 +1852,7 @@ export function planLocalPathsAndEntrances(args: {
     }
   }
 
-  return { paths, entrances }
+  return { paths, entrances, unresolvedLanes: lanes.unresolved }
 }
 
 /**

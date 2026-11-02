@@ -393,6 +393,8 @@ export function appendPaddockPath(
   paddock: VillagePaddockPlan,
   sampleHeight: HeightSampler,
   waterLevel: number,
+  /** Obstacle-aware connector (Q57); straight spur when absent or no route. */
+  route?: (from: { x: number, z: number }, to: { x: number, z: number }) => { x: number, z: number }[] | null,
 ): void {
   const target = paddock.entrance
   let nearest: { x: number, z: number } | null = null
@@ -410,17 +412,24 @@ export function appendPaddockPath(
   if (!nearest) return
   if (nearestDist < 1.5) return
   if (!pathIsDry(nearest.x, nearest.z, target.x, target.z, waterLevel, sampleHeight)) return
+  const detour = route?.(nearest, target) ?? null
   const mid = {
     x: nearest.x + (target.x - nearest.x) * 0.5,
     z: nearest.z + (target.z - nearest.z) * 0.5,
   }
+  const points = detour ?? [
+    { x: nearest.x, z: nearest.z },
+    { x: mid.x, z: mid.z },
+    { x: target.x, z: target.z },
+  ]
+  for (let i = 0; i < points.length - 1; i++) {
+    const a = points[i]!
+    const b = points[i + 1]!
+    if (!pathIsDry(a.x, a.z, b.x, b.z, waterLevel, sampleHeight)) return
+  }
   paths.push({
     id: paddockPathId(),
-    points: [
-      { x: nearest.x, z: nearest.z },
-      { x: mid.x, z: mid.z },
-      { x: target.x, z: target.z },
-    ],
+    points,
     halfWidth: PATH_HALF_WIDTH,
     kind: 'path',
   })

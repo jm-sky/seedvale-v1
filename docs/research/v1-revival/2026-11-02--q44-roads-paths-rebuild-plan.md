@@ -116,6 +116,17 @@ Order is fixed because the planner is sequential and roads read the final plans.
 
 Append before/after rows per slice (same columns as §1.2).
 
+### Q57 (R1 — obstacle-aware village lanes, Sonnet 2026-11-02, `main`)
+
+Implemented in new `settlement/villageLanes.ts` (pure): trunk lanes entrance → plaza-rim root (16 rim roots), then every destination (house door, storehouse bay, other important plot's plaza-facing edge; zone centres optional) attached to the nearest obstacle-free point of the network (≤ 10 candidates, ≤ 3 tangent detours); obstacles = non-plaza plot discs (0.9 R), yard rectangles (+0.8 m), household wells (R + 1.7, +1.0 for road-width lanes). A blocked door rotates around its plot; pasture/paddock spurs reuse the same router (`createLaneRouter`). Lane ids unchanged. Caches: `settlement-definitions` 7→8, `chunk-tiles` 8→9.
+
+| seed | paths | paths crossing non-plaza plots | paths crossing yards | plot classes still hit |
+| --- | --- | --- | --- | --- |
+| 42 before → after | 1410 → 1285 | 390 → **4** | 79 → **2** | storehouse 3, plaza 2, stockpile 1 |
+| 415424794 before → after | 1564 → 1425 | 471 → **7** | 97 → **6** | house 6, stockpile 3, plaza 2, food 1 |
+
+Roads (inter-settlement) unchanged by this slice (as designed): road rows identical to §1.2. **Not 0:** the residual ≈ 0.3–0.5 % of lanes are unresolved attachments (a door/gate inside another plot's clearance, e.g. a house door next to its own household well, or a gate inside a sale-plot disc) — kept as the straight fallback and reported (`planLocalPathsAndEntrances().unresolvedLanes`), never dropped (Q57 stop condition; destinations are not removed). Tests: `villageLanes.test.ts` (census rules on 48 layouts, door/bay endpoints, determinism). Cemetery census (seed 415424794): dedicated LG/MD/XL/SM still fail until Q58 reserves plots; yard census unchanged in kind. Visual/browser check of the lane look: not done (author §2 entry pending).
+
 ## 6. Author decisions (also queue §3)
 
 **ANSWERED 2026-11-02 (author):** **D1 (a)** RNG graph + fallback · **D2 custom** — main road **~7–8 m** wide (`roadHalfWidth` 5 → 3.5–4), ruts must stay **clearly visible**: only a slight reduction (rut depth 0.15 → ~0.11–0.12, micro-bumps reduced moderately), tuned in game · **D3 (a)** shared lanes + spurs to doors · **D4 (b)** allow **+1 entrance** when neighbours lie in a fourth distinct direction (palisade/torches/pasture must handle the extra gap). Options below kept for the record.
