@@ -80,6 +80,8 @@ Format: `- [ ] YYYY-MM-DD — opis (plan/plik, jeśli istotne)`
 
 ## Performance / rendering
 
+- [ ] 2026-11-02 — Kamera third-person przy oddaleniu potrafi gwałtownie przybliżyć się do postaci, gdy przeszkoda (obserwowane przy drzewach) skraca `resolveCameraBoom`. Małe kolidery drzew (`radius < 1.2`) są już ignorowane, więc najpierw zdiagnozować rzeczywistą przyczynę (`terrain` / duży collider / cave occupancy). Docelowo roślinność przesłaniającą postać tymczasowo ukrywać lub wygaszać zamiast skracać boom; zachować kolizję kamery z terenem, budynkami i jaskiniami. Uwzględnić `InstancedMesh` i LOD — bez ukrywania całego batcha. `src/player/PlayerController.ts`, `src/player/cameraBoom.ts`.
+
 - [x] 2026-10-27 — `src/world/createSky.test.ts` expected storm cloud opacity `0.8`, while current `createSky` yields `0.9`. Reproduced on unmodified `890b58ff` during review-026 P2 verification. Reconciled the stale assertion with the shipped `0.9` profile during the [verification follow-up](../reviews/2026-10-27--review-026-p2-verification.md); no cloud implementation or author-approved atmosphere changed.
 
 - [ ] 2026-09-21 — Agent performance / simulation-boundary audit follow-ups that were **not** promoted to dedicated plans: camera-vs-simulation invariants, player-distance fidelity boundaries, broad Agent runtime-controller scope, fauna cadence/proximity reuse, ground/water query ownership, collider candidate volume watchlist, livestock duplicate-update diagnostic identity validation, NPC presentation/animation cost attribution, and shadow-cost ownership. Review: `docs/reviews/2026-09-21--agent-performance-and-simulation-boundary-followups.md`.
