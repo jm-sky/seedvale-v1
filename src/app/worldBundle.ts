@@ -1351,6 +1351,7 @@ async function buildWorldSystems(
   const waterMirror = createWaterMirror({
     waterLevel: config.terrain.waterLevel,
     enabled: config.postProcessing.waterReflections,
+    size: config.postProcessing.waterReflectionSize,
   })
   bootMarkEnd('createWaterMirror')
 

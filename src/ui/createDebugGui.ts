@@ -695,6 +695,10 @@ export function createDebugGui(
     .name('Water reflections')
     .onChange(handlers.onPostProcessingChange)
   postFx
+    .add(config.postProcessing, 'waterReflectionSize', { '128': 128, '256': 256, '512': 512, '1024': 1024 })
+    .name('Water reflection size')
+    .onChange(handlers.onPostProcessingChange)
+  postFx
     .add(config.postProcessing, 'shadowMapSize', { '512': 512, '1024': 1024, '2048': 2048 })
     .name('Shadow map size')
     .onFinishChange(handlers.onShadowMapSizeChange)

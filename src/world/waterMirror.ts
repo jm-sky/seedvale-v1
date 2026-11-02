@@ -42,8 +42,16 @@ export const REFLECTION_SKIPPED_LAYER = 3
  *  items (which never cast shadows) don't have to start doing so. */
 export const REFLECTION_DISTANT_LAYER = 4
 
-/** One shared planar-reflection pass (128²) for every water material. */
+/** Default size of the shared planar-reflection pass for every water material. */
 export const WATER_MIRROR_SIZE = 128
+
+/** Selectable reflection RT sizes (Settings; world-terrain-056 S3). */
+export const WATER_MIRROR_SIZES = [128, 256, 512, 1024] as const
+
+/** Unknown / hand-edited values fall back to the 128 default. */
+export function normalizeWaterMirrorSize(value: unknown): number {
+  return (WATER_MIRROR_SIZES as readonly number[]).includes(value as number) ? (value as number) : WATER_MIRROR_SIZE
+}
 
 /** Mirror re-renders at most this often — every-other-frame at 60 Hz (plan
  *  113 P1). Still a full scene pass, so don't raise this without a benchmark. */
@@ -103,6 +111,8 @@ export type WaterMirror = {
   uniforms: WaterMirrorUniforms
   setEnabled: (enabled: boolean) => void
   isEnabled: () => boolean
+  /** Live-resizes the shared RT (same texture object, so bound uniforms stay valid). */
+  setSize: (size: number) => void
   /** Re-renders the scene into the RT. No-op when disabled or disposed. */
   render: (renderer: WebGLRenderer, scene: Scene, camera: Camera) => void
   dispose: () => void
@@ -126,8 +136,10 @@ const _rotation = new Matrix4()
 export function createWaterMirror(opts: {
   waterLevel: number
   enabled: boolean
+  size?: number
 }): WaterMirror {
-  const renderTarget = new WebGLRenderTarget(WATER_MIRROR_SIZE, WATER_MIRROR_SIZE)
+  const initialSize = normalizeWaterMirrorSize(opts.size)
+  const renderTarget = new WebGLRenderTarget(initialSize, initialSize)
   renderTarget.texture.generateMipmaps = false
   renderTarget.texture.minFilter = LinearFilter
   renderTarget.texture.magFilter = LinearFilter
@@ -157,6 +169,11 @@ export function createWaterMirror(opts: {
       uniforms.uReflections.value = next ? 1 : 0
     },
     isEnabled: () => enabled && !disposed,
+    setSize(size) {
+      const next = normalizeWaterMirrorSize(size)
+      if (disposed || next === renderTarget.width) return
+      renderTarget.setSize(next, next)
+    },
     render(renderer, scene, camera) {
       if (!enabled || disposed) return
 
