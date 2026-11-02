@@ -123,7 +123,10 @@ export function resolveAppliedClipName(
 ): string | null {
   if (pose === 'rest' && (clip == null || clip === '')) return null
   if (clip && names.includes(clip)) return clip
-  return names.find((n) => /idle/i.test(n)) ?? names[0] ?? null
+  return names.find((n) => n === 'Idle_Loop')
+    ?? names.find((n) => /idle/i.test(n))
+    ?? names[0]
+    ?? null
 }
 
 /** Drop a missing clip after a model swap: idle if present, else first clip.

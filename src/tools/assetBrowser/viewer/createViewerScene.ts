@@ -76,9 +76,15 @@ function createPreviewLighting(scene: Scene, world: Group): PreviewLighting {
   const group = new Group()
   world.add(group)
 
-  const alignAmbient = new AmbientLight(0xffffff, 0.55)
-  const alignDir = new DirectionalLight(0xffffff, 0.85)
+  const alignAmbient = new AmbientLight(0xffffff, 0.8)
+  const alignDir = new DirectionalLight(0xffffff, 1.2)
   alignDir.position.set(4, 8, 6)
+
+  const fillLight = new DirectionalLight(0xd6e8ff, 0.85)
+  fillLight.position.set(-5, 4, 3)
+
+  const rimLight = new DirectionalLight(0xffffff, 1.15)
+  rimLight.position.set(1, 7, -6)
 
   const gameLights = createLights()
   const sky = createSky(skyParamsFromTime(0.5))
@@ -95,7 +101,7 @@ function createPreviewLighting(scene: Scene, world: Group): PreviewLighting {
   torchLight.visible = false
   group.add(torchLight)
 
-  group.add(alignAmbient, alignDir)
+  group.add(alignAmbient, alignDir, fillLight, rimLight)
 
   const _offset = new Vector3()
 

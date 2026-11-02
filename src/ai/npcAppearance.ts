@@ -19,7 +19,7 @@ export type NpcOutfitId = CharacterOutfit
 export type NpcHairKind = HairStyle | 'bald'
 export type NpcResolvedHair = NpcHairKind
 export type NpcClothingHueId = 'identity' | 'warm' | 'cool' | 'muted'
-/** `copper` is reserved for named presets (Kasia); the procedural pool never rolls it. */
+/** `copper` is reserved for named presets (Kasia) */
 export type NpcHairColorId = 'black' | 'brown' | 'redhead' | 'blond' | 'grey' | 'copper'
 
 /** Multiply on cloned cloth materials after kit assemble. */
@@ -34,10 +34,10 @@ export const NPC_CLOTHING_HUE: Record<NpcClothingHueId, number> = {
 export const NPC_HAIR_COLOR: Record<NpcHairColorId, number> = {
   black: 0x1c1614,
   brown: 0x6b3d22,
-  redhead: 0xb44a28,
+  redhead: 0xef7442,
   blond: 0xd8b56a,
   grey: 0xc5c0b8,
-  copper: 0x8c4a2a,
+  copper: 0xac4a2a,
 }
 
 /** Woodcutter tint on the Peasant body worn by adult female woodcutters (adult men wear `Woodcutter`). */
@@ -49,7 +49,7 @@ const FEMALE_HAIR: readonly HairStyle[] = ['Long', 'Long', 'Buns']
 const BLACKSMITH_HAIR: readonly (HairStyle | null)[] = [null, 'Parted']
 const WOODCUTTER_HAIR: readonly HairStyle[] = ['Parted', 'Long']
 const CLOTHING_HUE_IDS: readonly NpcClothingHueId[] = ['identity', 'warm', 'cool', 'muted']
-const NON_GREY_HAIR_COLOR_IDS: readonly NpcHairColorId[] = ['black', 'brown', 'redhead', 'blond']
+const NON_GREY_HAIR_COLOR_IDS: readonly NpcHairColorId[] = ['black', 'brown', 'redhead', 'blond', 'copper']
 const BEARD_CHANCE = 0.35
 const GREY_HAIR_MIN_AGE = 50
 const GREY_HAIR_SENIOR_AGE = 60
