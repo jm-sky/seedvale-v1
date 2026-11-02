@@ -2,6 +2,8 @@
 
 **P2 decisions (author, 2026-10-31):** [Q38 roads, Q39 cemeteries, Q31 voice/weather and Q42 profession homes](./2026-10-31--p2-author-decisions-q38-q39-q31-q42.md) are approved directions. Read the linked handoff before planning those tasks; conflicting provisional questions are superseded.
 
+**NPC voice/dialogue writing ownership (author decision 2026-11-02):** GPT Astra exclusively drafts all **new** NPC lines, dialogue, utterances, and textual variants, including Q90 and future expansions. Claude Opus may plan, analyze and coordinate; Claude Sonnet may implement, integrate audio and test, but neither authors new NPC spoken/dialogue copy. The author reviews/approves scripts and generates Fish Audio recordings. Technical transcription/QC of existing recordings is not creative writing. See [npc-065 S5](../../plans/npc-065-stable-npc-voice-casting-and-donor-qc.md#slices) and [queue Q90](./AUTONOMOUS-SESSION-QUEUE.md).
+
 **NPC Voices & Dialogue — author decisions approved 2026-10-31:** The six topic-specific choices (stable voice, personality variation, English NPC dialogue/quest cues, recording diversity and humor, maximal V3 donor reuse, moderate truthful living-world reactions) are recorded in [Astra NPC voice audit §12](./2026-10-31--npc-voices-dialogue-audit.md#12-author-decisions--approved-2026-10-31-supersedes-open-questions-in-11). Treat §12 as the approved voice-topic decision record; earlier voice-related preferences/questions do not override it. This approval does **not** approve all catalog items, runtime work beyond the queue, or new game-wide language scope.
 
 **Created at:** 2026-10-26  
