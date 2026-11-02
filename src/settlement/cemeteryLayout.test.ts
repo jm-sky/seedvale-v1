@@ -42,13 +42,13 @@ function insideObb(o: ReturnType<typeof cemeteryObbColliders>[number], x: number
 }
 
 describe('cemeteryLayout', () => {
-  it('has the V2 class counts (8/15/25 graves, 1/2/3 crypts)', () => {
-    expect(SIZES.map((s) => cemeteryGraveLayout(s, 1).length)).toEqual([8, 15, 25])
+  it('has the V2 class counts (8/15/21 graves, 1/2/3 crypts)', () => {
+    expect(SIZES.map((s) => cemeteryGraveLayout(s, 1).length)).toEqual([8, 15, 21])
     expect(SIZES.map((s) => cemeteryCryptLayout(s, 1).length)).toEqual([1, 2, 3])
     expect(SIZES.map((s) => cemeteryCounts(s))).toEqual([
       { graves: 8, crypts: 1 },
       { graves: 15, crypts: 2 },
-      { graves: 25, crypts: 3 },
+      { graves: 21, crypts: 3 },
     ])
   })
 
@@ -88,7 +88,7 @@ describe('cemeteryLayout', () => {
     expect(hw[1]).toBeCloseTo(6.8, 1)
     expect(hw[2]).toBeCloseTo(8.8, 1)
     expect(hd[0]).toBeCloseTo(6.9, 1)
-    expect(hd[2]).toBeCloseTo(9.3, 1)
+    expect(hd[2]).toBeCloseTo(8.1, 1)
   })
 
   it.each(SIZES.flatMap((size) => SCALES.map((scale) => [size, scale] as const)))(

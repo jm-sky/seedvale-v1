@@ -38,7 +38,7 @@ type CemeteryClassSpec = { columns: number, graves: number, crypts: number }
 const CLASS_SPECS: Record<CemeterySize, CemeteryClassSpec> = {
   SM: { columns: 4, graves: 8, crypts: 1 },
   MD: { columns: 5, graves: 15, crypts: 2 },
-  LG: { columns: 7, graves: 25, crypts: 3 },
+  LG: { columns: 7, graves: 21, crypts: 3 },
 }
 
 // Compact plots (Q47 visual trial, author 2026-10-31): ~40 % less area than the first V2-derived sizes so
