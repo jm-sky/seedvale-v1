@@ -914,7 +914,7 @@ export async function createApp(
   const worldContext = createWorldContext(() => bundle.chunkManager, config, dayNight)
   bootMarkEnd('createWorldContext')
   // Q17 E1: streamed chunk-content templates join the loading-window
-  // program prewarm (`?prewarmTemplates=1`; off = home-scene-only).
+  // program prewarm (default ON; `?prewarmTemplates=0` = home-scene-only).
   const prewarmTemplates = () =>
     isTemplateProgramPrewarmEnabled() ? bundle.chunkManager.programPrewarmTemplates() : []
 

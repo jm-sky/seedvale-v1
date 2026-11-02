@@ -152,6 +152,16 @@ export function isShadowMotionCadenceEnabled(): boolean {
   return flagOn(p.get('shadowMotionCadence'))
 }
 
+/** Stutter diagnosis 2026-11-02: on a frame that refreshes the shadow map,
+ *  a due water-mirror pass yields to the next frame (at most one frame in a
+ *  row) so the two full scene passes never stack. Default ON;
+ *  `?mirrorShadowStagger=0` restores the independent cadences. */
+export function isMirrorShadowStaggerEnabled(): boolean {
+  const p = params()
+  if (!p?.has('mirrorShadowStagger')) return true
+  return flagOn(p.get('mirrorShadowStagger'))
+}
+
 /** CA2 far-band grass main storage cap (`chunkManager.ts` `grassMainCapFor`).
  *  On by default; `?grassMainCap=0` stores every generated main instance again
  *  (pre-CA2) for the memory/upload A/B. */
@@ -214,10 +224,12 @@ export function isGodRaysSoftEnabled(): boolean {
  *  program families of every loaded chunk-content template
  *  (`render/programPrewarm.ts`, `ChunkManager.programPrewarmTemplates`), so
  *  species first met mid-travel (e.g. `maple_1.glb`, ferns) do not pay their
- *  first-use link in the water mirror pass. Off by default until the WSL
- *  `stream` A/B; `?prewarmTemplates=1` enables it. */
+ *  first-use link in the water mirror pass. Default ON since the 2026-11-02
+ *  stutter diagnosis (author: optimisations on, benchmarks later; the
+ *  2026-10-30 Windows A/B removed the render-side link spikes, guards
+ *  inconclusive); `?prewarmTemplates=0` restores home-scene-only prewarm. */
 export function isTemplateProgramPrewarmEnabled(): boolean {
   const p = params()
-  if (!p?.has('prewarmTemplates')) return false
+  if (!p?.has('prewarmTemplates')) return true
   return flagOn(p.get('prewarmTemplates'))
 }

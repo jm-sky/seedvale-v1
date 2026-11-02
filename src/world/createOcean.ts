@@ -17,7 +17,8 @@ export type WorldOcean = {
   /** Live reflection RT size (128/256/512/1024). */
   setReflectionSize: (size: number) => void
   /** Shared planar planar pass — throttled to 30 Hz inside `waterMirror`. */
-  renderMirror: (renderer: WebGLRenderer, scene: Scene, camera: Camera) => void
+  /** See `WaterMirror.render` for `yieldFrame`. */
+  renderMirror: (renderer: WebGLRenderer, scene: Scene, camera: Camera, yieldFrame?: boolean) => void
   addTo: (scene: Scene) => void
   dispose: () => void
 }
@@ -69,8 +70,8 @@ export function createOcean(
     setReflectionSize(size) {
       waterMirror.setSize(size)
     },
-    renderMirror(renderer, scene, camera) {
-      waterMirror.render(renderer, scene, camera)
+    renderMirror(renderer, scene, camera, yieldFrame) {
+      waterMirror.render(renderer, scene, camera, yieldFrame)
     },
     addTo(scene) {
       scene.add(mesh)

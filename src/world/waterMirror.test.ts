@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { shouldRenderMirror } from './waterMirror'
+import { applyMirrorYield, shouldRenderMirror } from './waterMirror'
 
 /** 30 Hz cap — the mirror's minimum spacing between two rendered passes. */
 const INTERVAL = 1 / 30
@@ -106,5 +106,32 @@ describe('water mirror size (world-terrain-056 S3)', () => {
     mirror.setSize(999) // unknown → default 256
     expect((tex.image as { width: number }).width).toBe(256)
     mirror.dispose()
+  })
+})
+
+describe('applyMirrorYield', () => {
+  it('passes the cadence decision through when the frame is not busy', () => {
+    expect(applyMirrorYield(true, false, false)).toEqual({ render: true, yielded: false })
+    expect(applyMirrorYield(false, false, false)).toEqual({ render: false, yielded: false })
+  })
+
+  it('postpones a due pass on a shadow-refresh frame', () => {
+    expect(applyMirrorYield(true, true, false)).toEqual({ render: false, yielded: true })
+  })
+
+  it('never yields two calls in a row, so the mirror cannot starve', () => {
+    let yielded = false
+    const rendered: boolean[] = []
+    // Shadow refresh on every frame, mirror due on every frame.
+    for (let i = 0; i < 6; i++) {
+      const gate = applyMirrorYield(true, true, yielded)
+      yielded = gate.yielded
+      rendered.push(gate.render)
+    }
+    expect(rendered).toEqual([false, true, false, true, false, true])
+  })
+
+  it('does not consume the yield when the pass was not due anyway', () => {
+    expect(applyMirrorYield(false, true, false)).toEqual({ render: false, yielded: false })
   })
 })

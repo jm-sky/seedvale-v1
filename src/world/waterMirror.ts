@@ -88,6 +88,19 @@ export function shouldRenderMirror(state: MirrorCadenceState): boolean {
   return state.nowSec - state.lastRenderSec >= MIRROR_MIN_INTERVAL_S
 }
 
+/** `yieldFrame` gate on top of `shouldRenderMirror` (stutter diagnosis
+ *  2026-11-02): a due pass yields to a frame that already refreshes the
+ *  shadow map, but never on two calls in a row — so the mirror is delayed
+ *  by at most one frame and never starved. Pure for unit tests. */
+export function applyMirrorYield(
+  wanted: boolean,
+  yieldFrame: boolean,
+  yieldedLastCall: boolean,
+): { render: boolean, yielded: boolean } {
+  if (wanted && yieldFrame && !yieldedLastCall) return { render: false, yielded: true }
+  return { render: wanted, yielded: false }
+}
+
 export function assignRenderLayer(root: Object3D, layer: number): void {
   root.traverse((obj) => {
     obj.layers.set(layer)
@@ -113,8 +126,12 @@ export type WaterMirror = {
   isEnabled: () => boolean
   /** Live-resizes the shared RT (same texture object, so bound uniforms stay valid). */
   setSize: (size: number) => void
-  /** Re-renders the scene into the RT. No-op when disabled or disposed. */
-  render: (renderer: WebGLRenderer, scene: Scene, camera: Camera) => void
+  /** Re-renders the scene into the RT. No-op when disabled or disposed.
+   *  `yieldFrame` (stutter diagnosis 2026-11-02): this frame already carries
+   *  another full scene pass (the shadow-map refresh) — a due mirror pass is
+   *  postponed to the next call, never twice in a row, so the two passes
+   *  phase-shift instead of stacking in one frame. */
+  render: (renderer: WebGLRenderer, scene: Scene, camera: Camera, yieldFrame?: boolean) => void
   dispose: () => void
 }
 
@@ -161,6 +178,7 @@ export function createWaterMirror(opts: {
   let lastRenderSec = -Infinity
   let lastCallSec = -Infinity
   let renderedLastCall = false
+  let yieldedLastCall = false
 
   return {
     uniforms,
@@ -174,11 +192,17 @@ export function createWaterMirror(opts: {
       if (disposed || next === renderTarget.width) return
       renderTarget.setSize(next, next)
     },
-    render(renderer, scene, camera) {
+    render(renderer, scene, camera, yieldFrame = false) {
       if (!enabled || disposed) return
 
       const nowSec = performance.now() * 0.001
-      const wanted = shouldRenderMirror({ nowSec, lastCallSec, lastRenderSec, renderedLastCall })
+      const gate = applyMirrorYield(
+        shouldRenderMirror({ nowSec, lastCallSec, lastRenderSec, renderedLastCall }),
+        yieldFrame,
+        yieldedLastCall,
+      )
+      yieldedLastCall = gate.yielded
+      const wanted = gate.render
       lastCallSec = nowSec
       renderedLastCall = wanted
       if (!wanted) return

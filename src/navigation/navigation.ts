@@ -200,7 +200,26 @@ export function findPath(
   const goalCell = resolveWalkableGoalCell(goalCellExact, walkable, cellWorld, inBounds)
   if (!goalCell) return null
 
-  const key = (cx: number, cz: number): string => `${cx},${cz}`
+  // Grid-cell keys are numeric over the bounds grown by one cell on every
+  // side (the diagonal corner-cutting guard probes at most one cell past
+  // `inBounds`), so `walkable`/`cellCost` can be memoised per cell for this
+  // one search — both are pure for the duration of a synchronous `findPath`
+  // call, and the same cell is otherwise re-probed up to ~3× per neighbour
+  // expansion (stutter diagnosis 2026-11-02: failed searches hitting
+  // `maxNodes` were the suspected FAUNA spike).
+  const gridW = maxCx - minCx + 3
+  const key = (cx: number, cz: number): number => (cx - minCx + 1) + (cz - minCz + 1) * gridW
+  const walkableMemo = new Map<number, boolean>()
+  const walkableCell = (cx: number, cz: number): boolean => {
+    const k = key(cx, cz)
+    let ok = walkableMemo.get(k)
+    if (ok === undefined) {
+      const w = cellWorld(cx, cz)
+      ok = walkable(w.x, w.z)
+      walkableMemo.set(k, ok)
+    }
+    return ok
+  }
   const startKey = key(0, 0)
   const goalKey = key(goalCell.cx, goalCell.cz)
   const goalWorld = cellWorld(goalCell.cx, goalCell.cz)
@@ -209,20 +228,19 @@ export function findPath(
     cellWorld(cx, cz).z - goalWorld.z,
   )
 
-  type Open = { key: string, cx: number, cz: number, f: number }
-  const gScore = new Map<string, number>([[startKey, 0]])
-  const cameFrom = new Map<string, string>()
-  const nodeAt = new Map<string, { cx: number, cz: number }>([[startKey, { cx: 0, cz: 0 }]])
-  const closed = new Set<string>()
-  const open: Open[] = [{ key: startKey, cx: 0, cz: 0, f: heuristic(0, 0) }]
+  const gScore = new Map<number, number>([[startKey, 0]])
+  const cameFrom = new Map<number, number>()
+  const nodeAt = new Map<number, { cx: number, cz: number }>([[startKey, { cx: 0, cz: 0 }]])
+  const closed = new Set<number>()
+  // Binary min-heap ordered by (f, insertion seq): pops exactly the entry the
+  // former linear scan picked (lowest f, earliest pushed on ties), so routes
+  // are unchanged — only the O(open) scan + splice per pop is gone.
+  const open = new OpenHeap()
+  open.push(startKey, 0, 0, heuristic(0, 0))
   let visited = 0
 
-  while (open.length > 0) {
-    let bestIdx = 0
-    for (let i = 1; i < open.length; i++) {
-      if (open[i]!.f < open[bestIdx]!.f) bestIdx = i
-    }
-    const current = open.splice(bestIdx, 1)[0]!
+  while (open.size > 0) {
+    const current = open.pop()
     if (closed.has(current.key)) continue
     closed.add(current.key)
     visited++
@@ -244,12 +262,10 @@ export function findPath(
       if (isDiagonal) {
         // Corner-cutting guard: a diagonal step is only valid if both
         // orthogonal neighbors it would clip are themselves walkable.
-        const a = cellWorld(current.cx + dcx, current.cz)
-        const b = cellWorld(current.cx, current.cz + dcz)
-        if (!walkable(a.x, a.z) || !walkable(b.x, b.z)) continue
+        if (!walkableCell(current.cx + dcx, current.cz) || !walkableCell(current.cx, current.cz + dcz)) continue
       }
+      if (!walkableCell(ncx, ncz)) continue
       const world = cellWorld(ncx, ncz)
-      if (!walkable(world.x, world.z)) continue
       const geometric = isDiagonal ? cellSize * Math.SQRT2 : cellSize
       const stepCost = geometric * cellCostAt(world.x, world.z, query.cellCost)
       const tentativeG = curG + stepCost
@@ -257,10 +273,63 @@ export function findPath(
       gScore.set(nKey, tentativeG)
       cameFrom.set(nKey, current.key)
       nodeAt.set(nKey, { cx: ncx, cz: ncz })
-      open.push({ key: nKey, cx: ncx, cz: ncz, f: tentativeG + heuristic(ncx, ncz) })
+      open.push(nKey, ncx, ncz, tentativeG + heuristic(ncx, ncz))
     }
   }
   return null
+}
+
+type OpenEntry = { key: number, cx: number, cz: number, f: number, seq: number }
+
+/** Min-heap for A*'s open set, ordered by `f` then insertion `seq`. */
+class OpenHeap {
+  private readonly items: OpenEntry[] = []
+  private nextSeq = 0
+
+  get size(): number {
+    return this.items.length
+  }
+
+  push(key: number, cx: number, cz: number, f: number): void {
+    const items = this.items
+    items.push({ key, cx, cz, f, seq: this.nextSeq++ })
+    let i = items.length - 1
+    while (i > 0) {
+      const parent = (i - 1) >> 1
+      if (!openLess(items[i]!, items[parent]!)) break
+      const tmp = items[i]!
+      items[i] = items[parent]!
+      items[parent] = tmp
+      i = parent
+    }
+  }
+
+  pop(): OpenEntry {
+    const items = this.items
+    const top = items[0]!
+    const last = items.pop()!
+    if (items.length > 0) {
+      items[0] = last
+      let i = 0
+      for (;;) {
+        const l = 2 * i + 1
+        const r = l + 1
+        let m = i
+        if (l < items.length && openLess(items[l]!, items[m]!)) m = l
+        if (r < items.length && openLess(items[r]!, items[m]!)) m = r
+        if (m === i) break
+        const tmp = items[i]!
+        items[i] = items[m]!
+        items[m] = tmp
+        i = m
+      }
+    }
+    return top
+  }
+}
+
+function openLess(a: OpenEntry, b: OpenEntry): boolean {
+  return a.f < b.f || (a.f === b.f && a.seq < b.seq)
 }
 
 function resolveWalkableGoalCell(
@@ -289,13 +358,13 @@ function resolveWalkableGoalCell(
 }
 
 function reconstructPath(
-  cameFrom: ReadonlyMap<string, string>,
-  nodeAt: ReadonlyMap<string, { cx: number, cz: number }>,
-  goalKey: string,
+  cameFrom: ReadonlyMap<number, number>,
+  nodeAt: ReadonlyMap<number, { cx: number, cz: number }>,
+  goalKey: number,
   start: PathPoint,
   cellWorld: (cx: number, cz: number) => PathPoint,
 ): PathPoint[] {
-  const keys: string[] = [goalKey]
+  const keys: number[] = [goalKey]
   let cursor = goalKey
   while (cameFrom.has(cursor)) {
     cursor = cameFrom.get(cursor)!

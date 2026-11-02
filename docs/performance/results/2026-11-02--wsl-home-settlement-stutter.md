@@ -47,3 +47,24 @@ Tracing with `disabled-by-default-v8.cpu_profiler` + devtools.timeline inflates 
 ## Tooling change
 
 `scripts/perf/trace-benchmark-window.mjs` now works on WSL (Chrome path, `GALLIUM_DRIVER=d3d12`, `--password-store=basic` — without it Chrome blocks on the GNOME keyring prompt — and non-`taskkill` shutdown).
+
+## Opus review (2026-11-02)
+
+Recent changes vs the 2026-10-31 `settlement` run (same scene counters, seed 42):
+
+| Change | Evidence | Reading |
+|---|---|---|
+| Water reflection RT 128 → 256 | mirror draw calls 320 → 319 (unchanged); 256² is ~65k px | 🟡 not a cause; the mirror's cost is its draw-call pass, not RT size — reverting to 128 would not help |
+| Natural bush models (world-terrain-057) | vegetation tris 264k → 268k, draws unchanged (per-model tris 3–5× higher, instanced) | ✅ not a cause in this scene; LOD optional |
+| Bear/boar V3 models | fauna tris 96k → 97k, draws unchanged; bear lighter than before | ✅ not a steady-state cause; 🟡 may add first-use program links (not covered by home-scene prewarm) |
+| NPC body builds (`npcBuilds`) | NPC draws 223 → 225 | ✅ not a steady-state cause; 🟡 morph targets add program variants (first-use links) |
+
+FAUNA spikes predate these changes (2026-10-31 already had a 71 ms FAUNA frame). Suspect (🟡, unmeasured — navigation stats are not in the benchmark JSON): wild-animal `findPath` searches that fail at `maxNodes` (1500) with a costly per-cell `isWalkable` (water sample + collider query + slope), re-probing each cell up to ~3× per expansion, with a linear open-list scan, and a second full search on the `preferDry` retry.
+
+## Follow-up landed 2026-11-02 (Opus)
+
+Author decision: land as optimisations, benchmark later (queue §4). No FPS claim.
+
+1. **A\* (`src/navigation/navigation.ts`)** — per-search walkability memo by grid cell, binary heap ordered by (f, insertion seq), numeric keys. Routes and `visitedNodes` are identical to the old search (`navigation.equivalence.test.ts`, 400 random obstacle fields vs the verbatim old implementation in `navigationReference.testing.ts`). Synthetic failing 1500-node search (Vitest/Node, not in-game): 27.1 → 6.5 ms, `isWalkable` calls 11 787 → 1 617. Applies to NPCs too.
+2. **`mirrorShadowStagger`** (default ON, `?mirrorShadowStagger=0`) — the shadow decision is taken before the mirror pass; a due mirror pass yields one frame when the shadow map refreshes (never twice in a row: mirror delayed ≤ 1 frame, never starved).
+3. **`prewarmTemplates` default ON** (`?prewarmTemplates=0`) — streamed vegetation template programs compile in the loading window instead of mid-walk. Not covered: character/fauna program families (Q23, still deferred) — candidate for the 931 ms `GetProgramiv` stall if it was a fauna/NPC variant.

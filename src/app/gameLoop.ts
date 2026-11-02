@@ -118,7 +118,7 @@ import { isLiquidContainerInstance, LIQUID_CONTAINER_KIND_LIST } from '../items/
 import { ITEM_DEFS, type ItemKind } from '../items/items'
 import { applySharpnessWear, getSharpnessDamageModifier, getWeaponMaintenanceProfile } from '../items/weaponMaintenance'
 import { getGpuTimer, getMonitor, getPassSubmissionCollector, getProgramCensus, withCategory, withProgramCensusStage } from '../perf'
-import { isFrameMatrixOnceEnabled, isShadowActorCadenceEnabled, isShadowMotionCadenceEnabled } from '../perf/flags'
+import { isFrameMatrixOnceEnabled, isMirrorShadowStaggerEnabled, isShadowActorCadenceEnabled, isShadowMotionCadenceEnabled } from '../perf/flags'
 import { getActorCohortMask } from '../perf/occludedActorCohort'
 import { SHADOW_REASON_CODES } from '../perf/rawSidecar'
 import { buildCharacterPresentation } from '../player/characterPresentation'
@@ -1015,6 +1015,7 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
   const frameMatrixOnce = isFrameMatrixOnceEnabled()
   const shadowActorCadence = isShadowActorCadenceEnabled()
   const shadowMotionCadence = isShadowMotionCadenceEnabled()
+  const mirrorShadowStagger = isMirrorShadowStaggerEnabled()
   const shadowMotionInput = { yaw: 0, nowMs: 0 }
   let lastShadowRefreshMs = performance.now()
   // Q16 occluded-actor cohort tooling (`?actorCohort=census|mask`); null by default.
@@ -3154,22 +3155,9 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
     // One scene matrix update shared by the mirror, beauty and label renders
     // (queue Q14; opt-in `?frameMatrixOnce=1` until the Windows A/B decides).
     if (frameMatrixOnce) withCategory(monitor, 'RENDER', () => beginFrameSceneMatrices(scene))
-    withCategory(monitor, 'WATER', () => {
-      withProgramCensusStage(programCensus, 'mirror-render', () => {
-        // Skip until the sun owns a shadow map: before the first shadow refresh
-        // three binds a 1x1 RGBA placeholder to `sampler2DShadow`, which makes
-        // every lit draw in the mirror pass GL_INVALID_OPERATION (first frames
-        // only; see docs/performance/audits/2026-10-27--gl-invalid-operation-diagnosis.md).
-        const runMirror = () => {
-          if (lights.sun.castShadow && !lights.sun.shadow.map) return
-          bundle.ocean.renderMirror(renderer, scene, camera)
-        }
-        if (passCollector?.isEnabled()) passCollector.withPass('mirror', null, runMirror)
-        else runMirror()
-      })
-    })
-    const mirrorDrawCalls = renderer.info.render.calls
-    const mirrorTriangles = renderer.info.render.triangles
+    // Shadow decision is taken before the mirror pass (pure; committed below
+    // via `needsUpdate`) so a due mirror can yield a refresh frame
+    // (`mirrorShadowStagger`, stutter diagnosis 2026-11-02).
     // Shadow map at most once, against the beauty camera — not during the
     // mirror pass, which keeps `autoUpdate` off (plan 113 P1). `needsUpdate`
     // resets to `false` after `WebGLRenderer` consumes it, so leaving it
@@ -3195,6 +3183,22 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
     // refresh included), not just the budget's answer.
     const shadowReason = shadowDecision === 'none' && shadowMapMissing ? 'force' : shadowDecision
     const shadowRefreshed = shadowReason !== 'none'
+    withCategory(monitor, 'WATER', () => {
+      withProgramCensusStage(programCensus, 'mirror-render', () => {
+        // Skip until the sun owns a shadow map: before the first shadow refresh
+        // three binds a 1x1 RGBA placeholder to `sampler2DShadow`, which makes
+        // every lit draw in the mirror pass GL_INVALID_OPERATION (first frames
+        // only; see docs/performance/audits/2026-10-27--gl-invalid-operation-diagnosis.md).
+        const runMirror = () => {
+          if (lights.sun.castShadow && !lights.sun.shadow.map) return
+          bundle.ocean.renderMirror(renderer, scene, camera, mirrorShadowStagger && shadowRefreshed)
+        }
+        if (passCollector?.isEnabled()) passCollector.withPass('mirror', null, runMirror)
+        else runMirror()
+      })
+    })
+    const mirrorDrawCalls = renderer.info.render.calls
+    const mirrorTriangles = renderer.info.render.triangles
     const shadowNowMs = performance.now()
     const framesSinceShadow = shadowBudgetState.framesSinceUpdate
     const msSinceShadow = shadowNowMs - lastShadowRefreshMs

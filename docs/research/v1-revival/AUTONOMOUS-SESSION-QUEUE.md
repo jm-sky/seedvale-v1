@@ -240,6 +240,8 @@ Append here (date, task, question, options). Remove when answered and recorded i
 
 - NPC body builds (2026-11-02, **default ON**, `?npcBuilds=0` reverts): ~40 % NPCs load derivative body/eq GLBs (extra unique geometry per outfit + 2 morph targets). Decide keep on WSL `settlement-walk` A `&npcBuilds=0` / B default (A B B A): frame p50/p95, draws, programs, JS heap; then Windows confirm.
 
+- Home-settlement stutter follow-up (2026-11-02, author: "land as optimisations, benchmark later"; [diagnosis](../../performance/results/2026-11-02--wsl-home-settlement-stutter.md#follow-up-landed-2026-11-02-opus)): (1) `findPath` A* memo + heap — **route-identical** (equivalence test vs the old search), no flag; (2) `mirrorShadowStagger` **default ON** (`?mirrorShadowStagger=0` reverts) — a due mirror pass yields one frame to a shadow-refresh frame; (3) Q17 E1 `prewarmTemplates` **flipped to default ON** (`?prewarmTemplates=0` reverts; supersedes the §3 "default stays OFF" note). Decide keep: WSL `settlement` (FAUNA spikes ≥ 80 ms per run) and `settlement-walk` (frames > 80 ms, max, p99; load time for (3)) A = `&mirrorShadowStagger=0&prewarmTemplates=0` vs B default, A B B A; A* has no off switch — compare FAUNA tails against the 2026-11-02 report. Then Windows confirm.
+
 Append: commit, track, metric that decides keep/revert, A/B instructions link.
 
 **P1 closed 2026-10-30 (author):** the entries below are no longer closure gates — keep them as optional confirmations; a regression found later is handled as a normal fix.
