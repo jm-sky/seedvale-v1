@@ -70,9 +70,8 @@ function noise3(x, y, z, seed) {
   const f = (t) => t * t * (3 - 2 * t)
   const fx = f(x - xi), fy = f(y - yi), fz = f(z - zi)
   const l = (a, b, t) => a + (b - a) * t
-  let out = 0
   const c = (dx, dy, dz) => hash3(xi + dx, yi + dy, zi + dz, seed)
-  out = l(
+  const out = l(
     l(l(c(0, 0, 0), c(1, 0, 0), fx), l(c(0, 1, 0), c(1, 1, 0), fx), fy),
     l(l(c(0, 0, 1), c(1, 0, 1), fx), l(c(0, 1, 1), c(1, 1, 1), fx), fy),
     fz,
