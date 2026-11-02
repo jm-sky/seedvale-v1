@@ -18,6 +18,10 @@
 9. **Settlement leadership and founding:** The player can lead or found settlements by setting strategic goals executed autonomously by NPCs, rather than direct city-builder micromanagement. Existing settlements can develop independently. A **generic NPC outpost-founding mechanism may be considered in the future**; this is a potential long-term extension, not an approved immediate feature or a mandate for general autonomous town founding. It qualifies the stricter 2026-10-29 Vision Alignment prohibition on generic NPC founding and requires a separate scoped design decision.
 10. **Survival intensity:** Keep the existing V1 player-needs balance as the baseline: eating and drinking approximately every in-game day, with attribute penalties for neglect. No general softening or hardening of player survival is approved. Preserve deep NPC needs and meaningful weather, illness, injury and expedition consequences.
 
+## Focused audit handoffs
+
+- [2026-11-02 — Q13 progression, batch 1](./2026-11-02--q13-progression-audit-handoff.md) — findings for plans `001` / `059` / `066`, confirmed skill-XP UI mismatch, author decision C to defer known-deed social-exposure design. Opus owns Q13 integration; no automatic implementation.
+
 ## Reconciliation handoff
 
 These ten areas were grouped by ChatGPT, **not** listed by Opus in Q13. Q13 explicitly requires a separately agreed Opus review against current V1 code/tests and older plans. Opus should verify precise conflicts and further omitted areas, reconcile plan intent against actual implementation, preserve V1 simulation depth, and seek author decisions on any uncovered forks. This document alone does **not** close Q13 or authorize changes to runtime code or existing plans.
