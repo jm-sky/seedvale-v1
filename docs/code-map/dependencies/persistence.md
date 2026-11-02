@@ -203,6 +203,7 @@ Generated from TypeScript imports.
 - `settlement/settlementWorldgenCache.ts`
 - `terrain/chunkTileWorldgenCache.test.ts`
 - `terrain/chunkTileWorldgenCache.ts`
+- `terrain/worldHydrologyCache.ts`
 - `world/caves/caveWorldgenCache.test.ts`
 - `world/caves/caveWorldgenCache.ts`
 - `world/locations/abandonedCemeteryCache.test.ts`
@@ -227,6 +228,7 @@ Generated from TypeScript imports.
 - `settlement/roadRouteWorldgenCache.ts`
 - `settlement/settlementWorldgenCache.ts`
 - `terrain/chunkTileWorldgenCache.ts`
+- `terrain/worldHydrologyRegistry.ts`
 - `world/caves/caveWorldgenCache.ts`
 - `world/locations/abandonedCemeteryCache.ts`
 - `world/locations/locationsCoarseCache.ts`
@@ -241,6 +243,7 @@ Generated from TypeScript imports.
 - `persistence/worldgenFixtureNamespaces.ts`
 - `settlement/roadRouteWorldgenCache.ts`
 - `settlement/settlementWorldgenCache.ts`
+- `terrain/worldHydrologyCache.ts`
 - `world/caves/caveWorldgenCache.ts`
 - `world/locations/abandonedCemeteryCache.ts`
 - `world/locations/locationsCoarseCache.ts`
@@ -275,6 +278,7 @@ Generated from TypeScript imports.
 
 - `settlement/roadRouteWorldgenCache.ts`
 - `settlement/settlementWorldgenCache.ts`
+- `terrain/worldHydrologyCache.ts`
 - `world/caves/caveWorldgenCache.ts`
 - `world/locations/abandonedCemeteryCache.ts`
 - `world/locations/locationsCoarseCache.ts`

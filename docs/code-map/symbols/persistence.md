@@ -256,7 +256,7 @@ Generated from exported TypeScript symbols.
 
 ## `persistence/worldgenFixtureNamespaces.ts`
 
-- `WORLDGEN_FIXTURE_NAMESPACES` — const — line 18
+- `WORLDGEN_FIXTURE_NAMESPACES` — const — line 19
   - domain: persistence
   - system: worldgen-cache
   - role: Namespaces that may ship in a worldgen cache boot fixture (plan tools-020) with the owner's *current* version. The importer drops records of any other version (a stale-version record is never evicted by `enforceCacheCap()`), the exporter refuses namespaces not listed here, and `pnpm worldgen:fixture:check` compares `public/worldgen-fixtures/index.json` against it. `chunk-tiles` is deliberately absent (78 MB, no boot gain). A new namespace joins here deliberately, with its owner's constants.

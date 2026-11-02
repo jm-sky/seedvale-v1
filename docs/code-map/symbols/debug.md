@@ -31,11 +31,11 @@ Generated from exported TypeScript symbols.
 
 ## `debug/caves/caveHeightfieldTerrain.ts`
 
-- `CAVE_HEIGHTFIELD_TERRAIN_ANCHOR` — const — line 36
-- `CAVE_HEIGHTFIELD_TERRAIN_SEED` — const — line 24
-- `sampleCaveHeightfieldBaseSurface` — function — line 73
+- `CAVE_HEIGHTFIELD_TERRAIN_ANCHOR` — const — line 37
+- `CAVE_HEIGHTFIELD_TERRAIN_SEED` — const — line 25
+- `sampleCaveHeightfieldBaseSurface` — function — line 75
   - domain: world-terrain
-- `sampleCaveHeightfieldWalkSurface` — function — line 90
+- `sampleCaveHeightfieldWalkSurface` — function — line 92
   - domain: world-terrain
 
 ## `debug/caves/caveHeightfieldTraversal.ts`

@@ -1927,6 +1927,7 @@ Generated from TypeScript imports.
 - `terrain/resourceDeposits.ts`
 - `terrain/terrainPreparation.ts`
 - `terrain/terrainVisualHorizon.ts`
+- `terrain/worldHydrologyRuntime.ts`
 - `world/animalTraps.ts`
 - `world/authoredWorldConsequences.ts`
 - `world/beehives.ts`
