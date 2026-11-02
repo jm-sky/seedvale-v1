@@ -2344,6 +2344,16 @@ Generated from TypeScript imports.
 - `settlement/createSettlement.ts`
 - `settlement/rats.test.ts`
 
+## `settlement/roadEntranceAngles.test.ts`
+
+**Imports**
+
+- `settlement/settlementGenerator.ts`
+- `settlement/settlementPlanCache.ts`
+- `settlement/settlementTerrain.ts`
+- `settlement/villagePlanner.ts`
+- `terrain/chunkHeightmap.ts`
+
 ## `settlement/roadNetwork.test.ts`
 
 **Imports**
@@ -2585,6 +2595,7 @@ Generated from TypeScript imports.
 - `settlement/minorLocations.ts`
 - `settlement/npcIdentity.ts`
 - `settlement/props.ts`
+- `settlement/roadEntranceAngles.test.ts`
 - `settlement/roadNetwork.ts`
 - `settlement/settlementGenerator.test.ts`
 - `settlement/settlementNameUniqueness.test.ts`
@@ -2723,6 +2734,7 @@ Generated from TypeScript imports.
 - `settlement/lostTreasureChroniclesArchaeologistResident.test.ts`
 - `settlement/lostTreasureChroniclesElderResident.test.ts`
 - `settlement/lostTreasureChroniclesSpecialistResident.test.ts`
+- `settlement/roadEntranceAngles.test.ts`
 - `settlement/roadNetwork.ts`
 - `settlement/settlementNameUniqueness.test.ts`
 - `settlement/settlementProgression.test.ts`
@@ -2872,6 +2884,7 @@ Generated from TypeScript imports.
 - `settlement/lostTreasureChroniclesArchaeologistResident.test.ts`
 - `settlement/lostTreasureChroniclesElderResident.test.ts`
 - `settlement/lostTreasureChroniclesSpecialistResident.test.ts`
+- `settlement/roadEntranceAngles.test.ts`
 - `settlement/roadNetwork.ts`
 - `settlement/settlementGenerator.test.ts`
 - `settlement/settlementGenerator.ts`
@@ -3346,6 +3359,7 @@ Generated from TypeScript imports.
 
 - `settlement/plazaPaving.test.ts`
 - `settlement/props.ts`
+- `settlement/roadEntranceAngles.test.ts`
 - `settlement/roadNetwork.ts`
 - `settlement/settlementGenerator.ts`
 - `settlement/villageLanes.test.ts`

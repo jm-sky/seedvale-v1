@@ -337,6 +337,7 @@ Generated from TypeScript imports.
 - `settlement/lostTreasureChroniclesSpecialistResident.test.ts`
 - `settlement/minorLocations.ts`
 - `settlement/props.ts`
+- `settlement/roadEntranceAngles.test.ts`
 - `settlement/roadNetwork.test.ts`
 - `settlement/roadNetwork.ts`
 - `settlement/roadRiverCrossing.test.ts`

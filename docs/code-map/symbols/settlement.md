@@ -979,65 +979,65 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/propSpecs.ts`
 
-- `ANIMAL_TROUGH_HEIGHT` — const — line 137
-- `ANIMAL_TROUGH_URL` — const — line 135
-- `BUSH_SPECS` — const — line 33
-- `CACTUS_SPECS` — const — line 50
-- `CAMPFIRE_FIT_MAX` — const — line 158
-- `CAMPFIRE_UNLIT_URL` — const — line 156
-- `COBBLE_FIT_MAX` — const — line 175
-- `COBBLE_URL` — const — line 172
-- `CROPS_FIT_MAX` — const — line 129
-- `CROPS_URL` — const — line 127
-- `DOCK_SPECS` — const — line 83
-- `FALLEN_LOG_SPECS` — const — line 99
-- `FARM_HEIGHT` — const — line 125
-- `FARM_URL` — const — line 122
-- `FERN_SPECS` — const — line 46
-- `FIRE_FX_URL` — const — line 193
-- `GRAVEYARD_GLB` — const — line 112
-- `LANDMARK_BOAT_FIT_MAX` — const — line 162
-- `LANDMARK_BOAT_URL` — const — line 161
-- `LANDMARK_OLD_TREE_FIT_MAX` — const — line 168
-- `LANDMARK_OLD_TREE_URL` — const — line 167
-- `LANDMARK_SHIPWRECK_FIT_MAX` — const — line 164
-- `LANDMARK_SHIPWRECK_URL` — const — line 163
-- `LANDMARK_TOWER_FIT_MAX` — const — line 166
-- `LANDMARK_TOWER_URL` — const — line 165
-- `LANDMARK_WAGON_FIT_MAX` — const — line 170
-- `LANDMARK_WAGON_URL` — const — line 169
-- `LANTERN_FLOOR_MAX` — const — line 194
-- `LANTERN_STANDING_URL` — const — line 191
-- `LANTERN_URL` — const — line 185
-- `LANTERN_WALL_MAX` — const — line 199
-- `LANTERN_WALL_URL` — const — line 190
-- `LILY_SPECS` — const — line 70
-- `PROFESSION_DRESSING_GLB` — const — line 110
-- `REED_SPECS` — const — line 61
-- `RESOURCE_GOLD_SPECS` — const — line 114
-- `RESOURCE_ROCK_SPECS` — const — line 118
-- `ROCK_CLUSTER_SPECS` — const — line 95
-- `ROCK_SPECS` — const — line 87
-- `SEAWEED_SPECS` — const — line 79
-- `TABLE_LAMP_FIT_MAX` — const — line 208
-- `TABLE_LAMP_URL` — const — line 207
+- `ANIMAL_TROUGH_HEIGHT` — const — line 141
+- `ANIMAL_TROUGH_URL` — const — line 139
+- `BUSH_SPECS` — const — line 38
+- `CACTUS_SPECS` — const — line 54
+- `CAMPFIRE_FIT_MAX` — const — line 162
+- `CAMPFIRE_UNLIT_URL` — const — line 160
+- `COBBLE_FIT_MAX` — const — line 179
+- `COBBLE_URL` — const — line 176
+- `CROPS_FIT_MAX` — const — line 133
+- `CROPS_URL` — const — line 131
+- `DOCK_SPECS` — const — line 87
+- `FALLEN_LOG_SPECS` — const — line 103
+- `FARM_HEIGHT` — const — line 129
+- `FARM_URL` — const — line 126
+- `FERN_SPECS` — const — line 50
+- `FIRE_FX_URL` — const — line 197
+- `GRAVEYARD_GLB` — const — line 116
+- `LANDMARK_BOAT_FIT_MAX` — const — line 166
+- `LANDMARK_BOAT_URL` — const — line 165
+- `LANDMARK_OLD_TREE_FIT_MAX` — const — line 172
+- `LANDMARK_OLD_TREE_URL` — const — line 171
+- `LANDMARK_SHIPWRECK_FIT_MAX` — const — line 168
+- `LANDMARK_SHIPWRECK_URL` — const — line 167
+- `LANDMARK_TOWER_FIT_MAX` — const — line 170
+- `LANDMARK_TOWER_URL` — const — line 169
+- `LANDMARK_WAGON_FIT_MAX` — const — line 174
+- `LANDMARK_WAGON_URL` — const — line 173
+- `LANTERN_FLOOR_MAX` — const — line 198
+- `LANTERN_STANDING_URL` — const — line 195
+- `LANTERN_URL` — const — line 189
+- `LANTERN_WALL_MAX` — const — line 203
+- `LANTERN_WALL_URL` — const — line 194
+- `LILY_SPECS` — const — line 74
+- `PROFESSION_DRESSING_GLB` — const — line 114
+- `REED_SPECS` — const — line 65
+- `RESOURCE_GOLD_SPECS` — const — line 118
+- `RESOURCE_ROCK_SPECS` — const — line 122
+- `ROCK_CLUSTER_SPECS` — const — line 99
+- `ROCK_SPECS` — const — line 91
+- `SEAWEED_SPECS` — const — line 83
+- `TABLE_LAMP_FIT_MAX` — const — line 212
+- `TABLE_LAMP_URL` — const — line 211
 - `THICKET_TREE_SPECS` — const — line 26
-- `TRAP_GOOD_FIT_MAX` — const — line 141
-- `TRAP_GOOD_URL` — const — line 140
+- `TRAP_GOOD_FIT_MAX` — const — line 145
+- `TRAP_GOOD_URL` — const — line 144
 - `TREE_SPECS` — const — line 6
-- `TREE_STUMP_HEIGHT` — const — line 180
-- `TREE_STUMP_URL` — const — line 177
-- `VILLAGE_CAMPFIRE_COLLISION_RADIUS` — const — line 152
-- `VILLAGE_MASONRY_FIREPIT_COLLISION_RADIUS` — const — line 154
-- `VILLAGE_TORCH_HEIGHT` — const — line 200
-- `VILLAGE_TORCH_URL` — const — line 192
-- `WALL_URL` — const — line 182
-- `WELL_HEIGHT` — const — line 133
-- `WELL_URL` — const — line 131
-- `WOOD_PILE_COLLISION_RADIUS` — const — line 150
-- `WOOD_PILE_HEIGHT` — const — line 147
-- `WOOD_PILE_PROGRESSIVE_URL` — const — line 145
-- `WOOD_PILE_URL` — const — line 143
+- `TREE_STUMP_HEIGHT` — const — line 184
+- `TREE_STUMP_URL` — const — line 181
+- `VILLAGE_CAMPFIRE_COLLISION_RADIUS` — const — line 156
+- `VILLAGE_MASONRY_FIREPIT_COLLISION_RADIUS` — const — line 158
+- `VILLAGE_TORCH_HEIGHT` — const — line 204
+- `VILLAGE_TORCH_URL` — const — line 196
+- `WALL_URL` — const — line 186
+- `WELL_HEIGHT` — const — line 137
+- `WELL_URL` — const — line 135
+- `WOOD_PILE_COLLISION_RADIUS` — const — line 154
+- `WOOD_PILE_HEIGHT` — const — line 151
+- `WOOD_PILE_PROGRESSIVE_URL` — const — line 149
+- `WOOD_PILE_URL` — const — line 147
 
 ## `settlement/propUtils.ts`
 
@@ -1240,9 +1240,9 @@ Generated from exported TypeScript symbols.
 - `cellKey` — function — line 146
 - `cellSeed` — function — line 190
 - `cellsWithinRadius` — function — line 174
-- `generateSettlementDef` — function — line 876
-- `generateVillagePlan` — function — line 806
-- `probeSettlementSite` — function — line 588
+- `generateSettlementDef` — function — line 892
+- `generateVillagePlan` — function — line 820
+- `probeSettlementSite` — function — line 600
   - domain: settlements
 - `setSettlementGridStepOverride` — function — line 90
 - `SETTLEMENT_GRID_STEP` — const — line 71
@@ -1252,7 +1252,7 @@ Generated from exported TypeScript symbols.
 - `settlementCellCenter` — function — line 215
   - domain: settlements
 - `SettlementDef` — type — line 96
-- `SettlementSiteProbe` — type — line 573
+- `SettlementSiteProbe` — type — line 585
 - `worldToCell` — function — line 150
 
 ## `settlement/settlementNameUniqueness.ts`
@@ -1310,20 +1310,20 @@ Generated from exported TypeScript symbols.
 - `attachSettlementDefinitionPersistence` — function — line 163
   - domain: settlements
   - system: worldgen-cache
-- `cachedLostTreasureArchaeologistHostCell` — function — line 429
-- `cachedLostTreasureSpecialistHostCell` — function — line 438
-- `cachedSettlementDefCount` — function — line 461
-- `cachedSettlementProgressionPolicy` — function — line 466
+- `cachedLostTreasureArchaeologistHostCell` — function — line 464
+- `cachedLostTreasureSpecialistHostCell` — function — line 473
+- `cachedSettlementDefCount` — function — line 496
+- `cachedSettlementProgressionPolicy` — function — line 501
 - `clearSettlementDefCache` — function — line 123
 - `ingestHydratedSettlementDef` — function — line 143
   - domain: settlements
   - system: worldgen-cache
-- `lostTreasureArchaeologistHostCell` — function — line 412
+- `lostTreasureArchaeologistHostCell` — function — line 447
   - domain: settlements
-- `lostTreasureSpecialistHostCell` — function — line 423
+- `lostTreasureSpecialistHostCell` — function — line 458
   - domain: settlements
 - `setSettlementRiverQuery` — function — line 85
-- `settlementDefFor` — function — line 446
+- `settlementDefFor` — function — line 481
 - `settlementDefinitionCacheReady` — function — line 212
 - `SettlementResolveContext` — type — line 59
 - `worldRiverQuery` — function — line 98
@@ -1694,15 +1694,16 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/villagePlanner.ts`
 
-- `buildingsAndLandmarksFromPlots` — function — line 1553
+- `buildingsAndLandmarksFromPlots` — function — line 1556
 - `chooseLayoutPattern` — function — line 176
 - `HOUSE_COMPOUND_GAP_FACTOR` — const — line 91
 - `householdWellLocalBand` — function — line 103
   - domain: settlements-npcs
-- `pathPlansToCorridorData` — function — line 1966
-- `planLocalPathsAndEntrances` — function — line 1837
+- `pathPlansToCorridorData` — function — line 2015
+- `planLocalPathsAndEntrances` — function — line 1884
 - `planVillageLayout` — function — line 1018
 - `PLOT_SCORE_WEIGHTS` — const — line 62
+- `roadEntranceAngles` — function — line 1770
 - `VillageLayoutDraft` — type — line 139
 
 ## `settlement/wellInteractionQueue.ts`
