@@ -1,4 +1,4 @@
-import type { KitBeardChoice, KitHairChoice, KitHeadChoice } from '../../assets/characterKitEntries'
+import type { KitFacialHairChoice, KitHairChoice, KitHeadChoice } from '../../assets/characterKitEntries'
 import type {
   BrowserState,
   FocusMode,
@@ -7,7 +7,7 @@ import type {
   ViewLayout,
 } from './state'
 import { type BodyBuild, DEFAULT_BODY_BUILD, parseBodyBuild } from '../../characters/bodyBuild'
-import { HAIR_STYLES, HEAD_VARIANTS } from '../../characters/characterTypes'
+import { FACIAL_HAIRS, HAIR_STYLES, HEAD_VARIANTS } from '../../characters/characterTypes'
 import { DEFAULT_HAIR_COLOR, type HairColorId, parseHairColor } from './hairTint'
 
 /**
@@ -39,10 +39,10 @@ export type AssetBrowserUrlParams = {
   hairColor?: HairColorId
   /** Preview body build (`build=heavy|slim|muscular`); invalid values are ignored. */
   bodyBuild?: BodyBuild
-  /** Kit overrides (`head=Lean`, `hairStyle=Long|none`, `beard=on|off`); absent = entry default. */
+  /** Kit overrides (`head=Lean`, `hairStyle=Long|none`, `facialHair=none|moustache|beard`; legacy `beard=on|off` = beard/none); absent = entry default. */
   kitHead?: KitHeadChoice
   kitHair?: KitHairChoice
-  kitBeard?: KitBeardChoice
+  kitFacialHair?: KitFacialHairChoice
   showBbox?: boolean
   showGrid?: boolean
   showAxes?: boolean
@@ -198,7 +198,10 @@ export function parseAssetBrowserUrlParams(
   const kitHair = hairStyle === 'none' ? 'none' : HAIR_STYLES.find((h) => h.toLowerCase() === hairStyle)
   if (kitHair) out.kitHair = kitHair
   const beard = parseBool(firstPresent(params, ['beard']))
-  if (beard !== undefined) out.kitBeard = beard ? 'on' : 'off'
+  if (beard !== undefined) out.kitFacialHair = beard ? 'beard' : 'none'
+  const facialHair = firstPresent(params, ['facialHair'])?.trim().toLowerCase()
+  const kitFacialHair = FACIAL_HAIRS.find((x) => x === facialHair)
+  if (kitFacialHair) out.kitFacialHair = kitFacialHair
 
   const bbox = parseBool(firstPresent(params, ['bbox', 'showBbox']))
   if (bbox !== undefined) out.showBbox = bbox
@@ -256,7 +259,7 @@ export function applyAssetBrowserUrlParams(
   if (parsed.bodyBuild !== undefined) state.bodyBuild = parsed.bodyBuild
   if (parsed.kitHead !== undefined) state.kitHead = parsed.kitHead
   if (parsed.kitHair !== undefined) state.kitHair = parsed.kitHair
-  if (parsed.kitBeard !== undefined) state.kitBeard = parsed.kitBeard
+  if (parsed.kitFacialHair !== undefined) state.kitFacialHair = parsed.kitFacialHair
   if (parsed.showBbox !== undefined) state.showBbox = parsed.showBbox
   if (parsed.showGrid !== undefined) state.showGrid = parsed.showGrid
   if (parsed.showAxes !== undefined) state.showAxes = parsed.showAxes
@@ -337,8 +340,9 @@ export function syncAssetBrowserUrlParams(state: BrowserState): void {
   else url.searchParams.set('head', state.kitHead)
   if (state.kitHair === 'auto') url.searchParams.delete('hairStyle')
   else url.searchParams.set('hairStyle', state.kitHair)
-  if (state.kitBeard === 'auto') url.searchParams.delete('beard')
-  else url.searchParams.set('beard', state.kitBeard === 'on' ? '1' : '0')
+  url.searchParams.delete('beard')
+  if (state.kitFacialHair === 'auto') url.searchParams.delete('facialHair')
+  else url.searchParams.set('facialHair', state.kitFacialHair)
 
   setBoolFlag(url, 'bbox', state.showBbox, true)
   setBoolFlag(url, 'grid', state.showGrid, true)

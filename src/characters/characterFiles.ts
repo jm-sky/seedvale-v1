@@ -7,6 +7,7 @@ import type {
   CharacterGarment,
   CharacterOutfit,
   CharacterSex,
+  FacialHair,
   HairNode,
   HeadVariant,
 } from './characterTypes'
@@ -59,6 +60,11 @@ export function hairNodeName(node: HairNode): string {
   return `HAIR_${node}`
 }
 
+/** Hair-pack nodes of a facial-hair choice (none → no node). */
+export function facialHairNodes(facialHair: FacialHair): HairNode[] {
+  return facialHair === 'beard' ? ['Beard'] : facialHair === 'moustache' ? ['Moustache'] : []
+}
+
 export function eqNodeName(garment: CharacterGarment): string {
   return `EQ_${garment}`
 }
@@ -66,7 +72,7 @@ export function eqNodeName(garment: CharacterGarment): string {
 /** Every file an appearance loads (body, head, optional hair/eq, anims). */
 export function characterUrls(a: CharacterAppearance): string[] {
   const files = [bodyUrlForBuild(a.sex, a.outfit, a.build), headUrl(a.sex, a.head)]
-  if (a.hair !== null || a.beard) files.push(hairUrl(a.head))
+  if (a.hair !== null || a.facialHair !== 'none') files.push(hairUrl(a.head))
   if (a.garments.length > 0) files.push(eqUrlForBuild(a.sex, a.build))
   files.push(ANIMS_URL)
   return files

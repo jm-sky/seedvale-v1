@@ -137,7 +137,7 @@ function expectSkinningParity(
 
 function appearance(sex: 'Male' | 'Female', overrides: Partial<CharacterAppearance> = {}): CharacterAppearance {
   return {
-    sex, outfit: 'Peasant', head: 'Base', hair: sex === 'Male' ? 'Parted' : 'Long', beard: sex === 'Male',
+    sex, outfit: 'Peasant', head: 'Base', hair: sex === 'Male' ? 'Parted' : 'Long', facialHair: sex === 'Male' ? 'beard' : 'none',
     garments: sex === 'Female' ? ['NobleBodice', 'WorkSkirt'] : [], clothTint: null, ...overrides,
   }
 }

@@ -9,8 +9,11 @@ export type HeadVariant = 'Base' | 'Lean' | 'Round' | 'Warm'
 
 export type HairStyle = 'Buzzed' | 'BuzzedFemale' | 'Parted' | 'Long' | 'Buns'
 
-/** Node key inside `hair.glb`: style or beard. */
-export type HairNode = HairStyle | 'Beard'
+/** Facial hair of a kit look (`HAIR_Moustache` / `HAIR_Beard` nodes in the hair packs). */
+export type FacialHair = 'none' | 'moustache' | 'beard'
+
+/** Node key inside `hair.glb`: style, moustache or beard. */
+export type HairNode = HairStyle | 'Moustache' | 'Beard'
 
 export type CharacterOutfit =
   | 'Peasant'
@@ -48,7 +51,7 @@ export type CharacterAppearance = {
   outfit: CharacterOutfit
   head: HeadVariant
   hair: HairStyle | null
-  beard: boolean
+  facialHair: FacialHair
   /** Multiply on cloth materials; null keeps authored colours. */
   clothTint: number | null
   garments: readonly CharacterGarment[]
@@ -85,6 +88,8 @@ export const CHARACTER_SEXES: readonly CharacterSex[] = ['Male', 'Female']
 export const HEAD_VARIANTS: readonly HeadVariant[] = ['Base', 'Lean', 'Round', 'Warm']
 
 export const HAIR_STYLES: readonly HairStyle[] = ['Buzzed', 'BuzzedFemale', 'Parted', 'Long', 'Buns']
+
+export const FACIAL_HAIRS: readonly FacialHair[] = ['none', 'moustache', 'beard']
 
 /** Undyed wool, faded madder, woad. */
 export const WORK_SKIRTS: readonly WorkSkirtGarment[] = ['WorkSkirt', 'WorkSkirtRed', 'WorkSkirtBlue']

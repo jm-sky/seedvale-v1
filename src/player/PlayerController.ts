@@ -653,7 +653,7 @@ export class PlayerController {
         animationUrl,
       )
       if (kit) {
-        player.currentKitKey = `${kit.sex}|${kit.outfit}|${kit.head}|${kit.hair}|${kit.beard}|${kit.clothTint}|${kit.garments.join(',')}`
+        player.currentKitKey = `${kit.sex}|${kit.outfit}|${kit.head}|${kit.hair}|${kit.facialHair}|${kit.clothTint}|${kit.garments.join(',')}`
         player.currentTintUrl = null
       }
       return player
@@ -855,7 +855,7 @@ export class PlayerController {
     // Every request supersedes in-flight work, even a return to the installed kit.
     const token = ++this.appearanceLoadToken
     const kitKey = opts.kit
-      ? `${opts.kit.sex}|${opts.kit.outfit}|${opts.kit.head}|${opts.kit.hair}|${opts.kit.beard}|${opts.kit.clothTint}|${opts.kit.garments.join(',')}`
+      ? `${opts.kit.sex}|${opts.kit.outfit}|${opts.kit.head}|${opts.kit.hair}|${opts.kit.facialHair}|${opts.kit.clothTint}|${opts.kit.garments.join(',')}`
       : ''
     if (
       opts.modelUrl === this.currentModelUrl

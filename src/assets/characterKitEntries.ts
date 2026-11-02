@@ -1,16 +1,16 @@
 /**
  * @domain tools
  * Asset Browser character list: one entry per live CharacterKit body (sex × outfit), assembled like the game kit —
- * body + head + hair (+ beard) + work skirt. Bodies and eq load from the morph-carrying build derivatives
+  * body + head + hair (+ moustache/beard) + work skirt. Bodies and eq load from the morph-carrying build derivatives
  * (`BODY_BUILD_DIR`) so every entry offers the muscular/heavy/slim switch; with the build at muscular they match
  * the original files. Head/hair/beard can be overridden live (`withKitLook`).
  */
-import type { HairStyle, HeadVariant } from '../characters/characterTypes'
+import type { FacialHair, HairStyle, HeadVariant } from '../characters/characterTypes'
 import type { AssetIndexEntry } from './assetIndex'
 import { NPC_HEIGHT } from '../ai/NpcAgent'
 import { baseGarments } from '../characters/baseGarments'
 import { BODY_BUILDS } from '../characters/bodyBuild'
-import { bodyBuildVariantUrl, bodyUrl, eqUrl, hairNodeName, hairUrl, headUrl } from '../characters/characterFiles'
+import { bodyBuildVariantUrl, bodyUrl, eqUrl, facialHairNodes, hairNodeName, hairUrl, headUrl } from '../characters/characterFiles'
 import {
   CHARACTER_OUTFITS,
   CHARACTER_SEXES,
@@ -25,12 +25,12 @@ export const PLAYER_REFERENCE_ID = 'character:player'
 /** `'auto'` keeps the entry's default; otherwise the override applied to every kit entry. */
 export type KitHeadChoice = 'auto' | HeadVariant
 export type KitHairChoice = 'auto' | 'none' | HairStyle
-export type KitBeardChoice = 'auto' | 'on' | 'off'
+export type KitFacialHairChoice = 'auto' | FacialHair
 
 export type KitLook = {
   kitHead: KitHeadChoice
   kitHair: KitHairChoice
-  kitBeard: KitBeardChoice
+  kitFacialHair: KitFacialHairChoice
 }
 
 /** One entry per live outfit body; Male Peasant keeps the `character:player` id. */
@@ -60,20 +60,20 @@ export function characterKitEntries(): AssetIndexEntry[] {
         garments: skirt ? garments : undefined,
         eqUrl: skirt ? bodyBuildVariantUrl(eqUrl(sex)) : undefined,
         bodyBuilds: BODY_BUILDS,
-        kit: { sex, head, hair, beard: false },
+        kit: { sex, head, hair, facialHair: 'none' },
       })
     }
   }
   return out
 }
 
-/** Entry with the browser's head/hair/beard overrides applied (non-kit entries are returned unchanged). */
+/** Entry with the browser's head/hair/facial hair overrides applied (non-kit entries are returned unchanged). */
 export function withKitLook(entry: AssetIndexEntry, look: KitLook): AssetIndexEntry {
   const kit = entry.kit
   if (!kit) return entry
   const head = look.kitHead === 'auto' ? kit.head : look.kitHead
   const hair = look.kitHair === 'auto' ? kit.hair : look.kitHair === 'none' ? null : look.kitHair
-  const beard = look.kitBeard === 'auto' ? kit.beard : look.kitBeard === 'on'
-  const nodes = [...(hair ? [hairNodeName(hair)] : []), ...(beard ? [hairNodeName('Beard')] : [])]
+  const facialHair = look.kitFacialHair === 'auto' ? kit.facialHair : look.kitFacialHair
+  const nodes = [...(hair ? [hairNodeName(hair)] : []), ...facialHairNodes(facialHair).map(hairNodeName)]
   return { ...entry, headUrl: headUrl(kit.sex, head), hair: { url: hairUrl(head), nodes } }
 }

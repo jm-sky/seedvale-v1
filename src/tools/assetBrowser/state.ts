@@ -1,6 +1,6 @@
 import { reactive } from 'vue'
 import type { AssetIndexEntry } from '../../assets/assetIndex'
-import type { KitBeardChoice, KitHairChoice, KitHeadChoice } from '../../assets/characterKitEntries'
+import type { KitFacialHairChoice, KitHairChoice, KitHeadChoice } from '../../assets/characterKitEntries'
 import { type BodyBuild, DEFAULT_BODY_BUILD } from '../../characters/bodyBuild'
 import { DEFAULT_HAIR_COLOR, type HairColorId } from './hairTint'
 import { applyAssetBrowserUrlParams } from './urlParams'
@@ -60,7 +60,7 @@ export type BrowserState = {
   /** Head / hair / beard overrides for kit entries (`withKitLook`); `auto` = entry default. */
   kitHead: KitHeadChoice
   kitHair: KitHairChoice
-  kitBeard: KitBeardChoice
+  kitFacialHair: KitFacialHairChoice
   resetTransformOnReload: boolean
   reportText: string
   statusMessage: string
@@ -98,7 +98,7 @@ export const browserState = reactive<BrowserState>({
   bodyBuild: DEFAULT_BODY_BUILD,
   kitHead: 'auto',
   kitHair: 'auto',
-  kitBeard: 'auto',
+  kitFacialHair: 'auto',
   resetTransformOnReload: false,
   reportText: '',
   statusMessage: 'Ready',

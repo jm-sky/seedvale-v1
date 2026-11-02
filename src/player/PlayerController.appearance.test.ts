@@ -48,7 +48,7 @@ function model() {
 
 const kit: CharacterAppearance = {
   sex: 'Male', outfit: 'Ranger', head: 'Base', hair: null,
-  beard: false, clothTint: null, garments: [],
+  facialHair: 'none', clothTint: null, garments: [],
 }
 const base = { modelUrl: 'A.glb', animationUrl: 'anims.glb', tintUrl: null }
 const players: PlayerController[] = []

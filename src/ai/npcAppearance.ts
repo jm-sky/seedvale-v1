@@ -3,6 +3,7 @@ import type {
   CharacterAppearance,
   CharacterOutfit,
   CharacterSex,
+  FacialHair,
   HairStyle,
   HeadVariant,
 } from '../characters/characterTypes'
@@ -55,17 +56,17 @@ const GREY_HAIR_SENIOR_AGE = 60
 const GREY_HAIR_CHANCE_MIDDLE = 0.15
 const GREY_HAIR_CHANCE_SENIOR = 0.75
 const APPEARANCE_SEED_SALT = 0x41505045
-/** Separate stream so the build roll never shifts the existing hair/hue/beard draws. */
+/** Separate stream so the build roll never shifts the existing hair/hue/facial-hair draws. */
 const BUILD_SEED_SALT = 0x4255494c
 
 /**
  * Fixed look of a named recurring NPC (`docs/v3-donor/characters/NAMED-NPC-APPEARANCE.md`), keyed by stable
  * `CharacterKey`. Only fields the kit supports today; outfit still follows the role (it already matches the doc).
- * Unsupported doc fields and their stand-ins: height (not modelled), moustache/stubble (boolean beard only),
+ * Unsupported doc fields and their stand-ins: height (not modelled), stubble (no stubble model),
  * braid/updo (→ `Long`), "short" hair (→ `Buzzed`), 4-build `superhero` (→ `muscular`, the original body).
  */
 export type NamedNpcLook = {
-  beard: boolean
+  facialHair: FacialHair
   build: BodyBuild
   hair: HairStyle | null
   hairColor: NpcHairColorId
@@ -78,17 +79,17 @@ export type NamedNpcLook = {
  * @domain npc
  */
 export const NAMED_NPC_LOOKS: Readonly<Partial<Record<CharacterKey, NamedNpcLook>>> = {
-  // stubble later; `none` now
-  marek_hornblower: { build: 'muscular', head: 'Base', hair: 'Buzzed', hairColor: 'brown', beard: false },
+  // stubble not in kit; `none` now
+  marek_hornblower: { build: 'muscular', head: 'Base', hair: 'Buzzed', hairColor: 'brown', facialHair: 'none' },
   // braid / pinned-up not in kit → Long (never Buns)
-  kasia_hornblower: { build: 'muscular', head: 'Base', hair: 'Long', hairColor: 'copper', beard: false },
-  // `superhero` build; moustache not in kit → clean-shaven until the facial-hair extension
-  piotr_lesniewski: { build: 'muscular', head: 'Base', hair: 'Buzzed', hairColor: 'brown', beard: false },
-  anna_lesniewska: { build: 'slim', head: 'Lean', hair: 'Long', hairColor: 'brown', beard: false },
-  molly_lambert: { build: 'slim', head: 'Warm', hair: 'Long', hairColor: 'blond', beard: false },
-  // beard_and_moustache → full beard
-  jakub: { build: 'muscular', head: 'Base', hair: 'Long', hairColor: 'brown', beard: true },
-  rudolf: { build: 'muscular', head: 'Base', hair: 'Parted', hairColor: 'brown', beard: true },
+  kasia_hornblower: { build: 'muscular', head: 'Base', hair: 'Long', hairColor: 'copper', facialHair: 'none' },
+  // `superhero` build; chevron moustache (HAIR_Moustache), no beard
+  piotr_lesniewski: { build: 'muscular', head: 'Base', hair: 'Buzzed', hairColor: 'brown', facialHair: 'moustache' },
+  anna_lesniewska: { build: 'slim', head: 'Lean', hair: 'Long', hairColor: 'brown', facialHair: 'none' },
+  molly_lambert: { build: 'slim', head: 'Warm', hair: 'Long', hairColor: 'blond', facialHair: 'none' },
+  // beard_and_moustache → full beard (the moustache is part of the beard model)
+  jakub: { build: 'muscular', head: 'Base', hair: 'Long', hairColor: 'brown', facialHair: 'beard' },
+  rudolf: { build: 'muscular', head: 'Base', hair: 'Parted', hairColor: 'brown', facialHair: 'beard' },
 }
 
 /**
@@ -99,7 +100,7 @@ export const NAMED_NPC_LOOKS: Readonly<Partial<Record<CharacterKey, NamedNpcLook
  */
 export type NpcAppearance = {
   animationUrl: string
-  beard: boolean
+  facialHair: FacialHair
   /** @deprecated Kit embeds hair; kept null for callers that still read it. */
   beardAttachmentUrl: string | null
   clothingHue: number
@@ -213,7 +214,7 @@ export function resolveNpcAppearance(opts: {
 
   let head: HeadVariant = HEAD_VARIANTS[h % HEAD_VARIANTS.length]!
   let hair: HairStyle | null
-  let beard: boolean
+  let facialHair: FacialHair
   let clothTint: number | null = roleLook.clothTint ?? null
   if (opts.role === 'woodcutter' && adult && outfit === 'Peasant') clothTint = NPC_WOODCUTTER_CLOTH_TINT
   let family: string = outfit
@@ -221,28 +222,28 @@ export function resolveNpcAppearance(opts: {
   if (opts.role === 'blacksmith' && sex === 'Male' && adult) {
     head = 'Round'
     hair = BLACKSMITH_HAIR[pickIndex(random, BLACKSMITH_HAIR.length)] ?? null
-    beard = true
+    facialHair = 'beard'
     clothTint = null
     family = 'blacksmith'
   } else if (opts.role === 'woodcutter' && sex === 'Male' && adult) {
     hair = WOODCUTTER_HAIR[pickIndex(random, WOODCUTTER_HAIR.length)]!
-    beard = random() < BEARD_CHANCE
+    facialHair = random() < BEARD_CHANCE ? 'beard' : 'none'
     family = 'woodcutter'
   } else if (sex === 'Female') {
     hair = FEMALE_HAIR[(h >>> 3) % FEMALE_HAIR.length]!
-    beard = false
+    facialHair = 'none'
   } else {
     hair = adult
       ? MALE_HAIR[(h >>> 3) % (opts.age >= 50 ? MALE_HAIR.length : MALE_HAIR.length - 1)]!
       : 'Parted'
-    beard = adult && (opts.age >= 50 || ((h >>> 6) & 1) === 1)
+    facialHair = adult && (opts.age >= 50 || ((h >>> 6) & 1) === 1) ? 'beard' : 'none'
   }
 
   const named = opts.characterKey ? NAMED_NPC_LOOKS[opts.characterKey] : undefined
   if (named) {
     head = named.head
     hair = named.hair
-    beard = named.beard
+    facialHair = named.facialHair
     build = named.build
     hairColor = NPC_HAIR_COLOR[named.hairColor]
   }
@@ -252,7 +253,7 @@ export function resolveNpcAppearance(opts: {
     outfit,
     head,
     hair,
-    beard,
+    facialHair,
     clothTint,
     garments: [
       ...(sex === 'Female' && opts.role === 'trader' && adult ? ['NobleBodice' as const] : []),
@@ -264,7 +265,7 @@ export function resolveNpcAppearance(opts: {
 
   return {
     animationUrl: ANIMS_URL,
-    beard,
+    facialHair,
     beardAttachmentUrl: null,
     clothingHue,
     family,

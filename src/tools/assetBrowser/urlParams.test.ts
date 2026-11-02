@@ -39,7 +39,7 @@ function baseState(overrides: Partial<BrowserState> = {}): BrowserState {
     bodyBuild: 'muscular',
     kitHead: 'auto',
     kitHair: 'auto',
-    kitBeard: 'auto',
+    kitFacialHair: 'auto',
     resetTransformOnReload: false,
     reportText: '',
     statusMessage: 'Ready',
@@ -120,6 +120,15 @@ describe('parseAssetBrowserUrlParams', () => {
     expect(parseAssetBrowserUrlParams('?build=heavy')).toEqual({ bodyBuild: 'heavy' })
     expect(parseAssetBrowserUrlParams('?bodyBuild=Slim')).toEqual({ bodyBuild: 'slim' })
     expect(parseAssetBrowserUrlParams('?build=child')).toEqual({})
+  })
+
+  it('reads facialHair= and the legacy beard= flag', () => {
+    expect(parseAssetBrowserUrlParams('?facialHair=Moustache')).toEqual({ kitFacialHair: 'moustache' })
+    expect(parseAssetBrowserUrlParams('?facialHair=beard')).toEqual({ kitFacialHair: 'beard' })
+    expect(parseAssetBrowserUrlParams('?facialHair=none')).toEqual({ kitFacialHair: 'none' })
+    expect(parseAssetBrowserUrlParams('?beard=1')).toEqual({ kitFacialHair: 'beard' })
+    expect(parseAssetBrowserUrlParams('?beard=0')).toEqual({ kitFacialHair: 'none' })
+    expect(parseAssetBrowserUrlParams('?facialHair=goatee')).toEqual({})
   })
 
   it('reads hairColor=', () => {

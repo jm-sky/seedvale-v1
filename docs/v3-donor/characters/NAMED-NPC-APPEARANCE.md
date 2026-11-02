@@ -17,7 +17,7 @@ Visual age, height, body build, face/head variant, hair color, hairstyle, facial
 
 Body builds: if the eventual set contains **3 variants** (`standard`, `slim`, `fat`), Mark is `standard`; if **4** (`standard`, `superhero`, `slim`, `fat`), Mark is `superhero`. `superhero` denotes the muscular proportions of the current free Character Pack body. `standard` in the four-variant setup denotes a future more natural body. Body proportions are planned as Blender variants; initial fallback may scale the base model but proportional scaling does not truly change build. Keep height separate from build.
 
-Facial hair roadmap: `none`, `moustache`, `beard_and_moustache`; optional `stubble` (unshaven) as a future fourth variant. Current runtime supports beard as boolean, so the requested facial-hair distinctions need an extension.
+Facial hair roadmap: `none`, `moustache`, `beard_and_moustache`; optional `stubble` (unshaven) as a future fourth variant. Runtime supports `facialHair: none | moustache | beard` (since 2026-11-02); stubble remains future.
 
 ## Character appearance table
 
@@ -60,11 +60,11 @@ Author supplied a garden portrait of an elderly, lean, tall and weathered man wi
 
 Body-build set is **3 variants**: `muscular` (original Character Pack body, author "base") / `slim` / `heavy`. Per the 3-build rule above, `standard` → `muscular`; Peter's `superhero` → `muscular` too (same body today).
 
-| characterKey | build | head | hair | colour | beard | stand-ins (🟡 author visual review) |
+| characterKey | build | head | hair | colour | facial hair | stand-ins (🟡 author visual review) |
 | --- | --- | --- | --- | --- | --- | --- |
 | `marek_hornblower` | muscular | Base | Buzzed | brown | no | "short" → `Buzzed`; stubble later |
 | `kasia_hornblower` | muscular | Base | Long | copper (new tint `0x8c4a2a`) | no | braid/updo → `Long` |
-| `piotr_lesniewski` | muscular | Base | Buzzed | brown | no | moustache not in kit → clean-shaven |
+| `piotr_lesniewski` | muscular | Base | Buzzed | brown | moustache | chevron moustache (`HAIR_Moustache`, 2026-11-02); no beard |
 | `anna_lesniewska` | slim | Lean | Long | brown | no | — |
 | `molly_lambert` | slim | Warm | Long | blond | no | short height not modelled |
 | `jakub` | muscular | Base | Long | brown | yes | beard_and_moustache → full beard; outfit via hunter role (`Ranger_NoHood`) |
@@ -75,7 +75,7 @@ Not applied: Casimir/E01 (kept distinct from V1 `kazimierz`), height, outfits be
 ## Implementation follow-up (not yet a plan)
 
 - Add stable character-keyed appearance overrides without rewriting the procedural NPC resolver or identity/save lifecycle.
-- Support the missing moustache, beard-plus-moustache and optional stubble visual models; current boolean beard cannot express them.
+- Moustache done (2026-11-02, `facialHair: 'none' | 'moustache' | 'beard'`); still missing: optional stubble model and a separate beard-plus-moustache look (the `Beard` node already includes its own moustache area).
 - Add copper-brown hair and Kate's braid/updo distinct from `Buns`; verify available CharacterKit nodes before Blender work.
 - Evaluate Blender `standard`/`superhero`/`slim`/`fat` bodies and lightweight initial fallback; check skeleton, rig, clothing fit, animation, LOD and rendering cost before adopting variants.
 - Validate the selected appearance visually against curated V3 references and test that it survives streaming and save/load.

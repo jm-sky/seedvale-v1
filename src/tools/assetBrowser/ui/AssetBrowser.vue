@@ -208,7 +208,7 @@ watch(
 )
 
 watch(
-  () => [browserState.compareHead, browserState.kitHead, browserState.kitHair, browserState.kitBeard] as const,
+  () => [browserState.compareHead, browserState.kitHead, browserState.kitHair, browserState.kitFacialHair] as const,
   () => {
     if (!viewer.value || !indexReady.value) return
     const ref = resolveLoadEntry(assetIndex.value, {
@@ -253,7 +253,7 @@ watch(
     browserState.bodyBuild,
     browserState.kitHead,
     browserState.kitHair,
-    browserState.kitBeard,
+    browserState.kitFacialHair,
   ] as const,
   () => syncAssetBrowserUrlParams(browserState),
 )
@@ -766,17 +766,20 @@ function lampMountSnippet() {
           </select>
           <label class="mt-1 block text-xs text-slate-400">Zarost</label>
           <select
-            v-model="browserState.kitBeard"
-            data-testid="kit-beard"
+            v-model="browserState.kitFacialHair"
+            data-testid="kit-facial-hair"
             class="w-full rounded bg-slate-800 px-2 py-1"
           >
             <option value="auto">
               Domyślny
             </option>
-            <option value="off">
+            <option value="none">
               Brak
             </option>
-            <option value="on">
+            <option value="moustache">
+              Wąsy
+            </option>
+            <option value="beard">
               Broda
             </option>
           </select>

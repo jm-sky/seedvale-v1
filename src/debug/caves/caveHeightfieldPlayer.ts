@@ -47,7 +47,7 @@ const CAVE_WALKER_KIT: CharacterAppearance = {
   outfit: 'Peasant',
   head: 'Base',
   hair: 'Parted',
-  beard: false,
+  facialHair: 'none',
   clothTint: null,
   garments: baseGarments('Male', 'Peasant'),
 }

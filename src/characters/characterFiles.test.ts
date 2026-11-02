@@ -7,6 +7,7 @@ import {
   characterUrls,
   eqNodeName,
   eqUrl,
+  facialHairNodes,
   hairNodeName,
   hairUrl,
   headUrl,
@@ -18,7 +19,7 @@ const base: CharacterAppearance = {
   outfit: 'Peasant',
   head: 'Base',
   hair: 'Parted',
-  beard: false,
+  facialHair: 'none',
   clothTint: null,
   garments: [],
 }
@@ -35,6 +36,10 @@ describe('characterFiles', () => {
     expect(eqNodeName('WorkSkirtRed')).toBe('EQ_WorkSkirtRed')
     expect(hairNodeName('Parted')).toBe('HAIR_Parted')
     expect(hairNodeName('Beard')).toBe('HAIR_Beard')
+    expect(hairNodeName('Moustache')).toBe('HAIR_Moustache')
+    expect(facialHairNodes('none')).toEqual([])
+    expect(facialHairNodes('moustache')).toEqual(['Moustache'])
+    expect(facialHairNodes('beard')).toEqual(['Beard'])
   })
 
   it('lists load order for a skirted female', () => {

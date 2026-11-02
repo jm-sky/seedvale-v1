@@ -3,7 +3,7 @@ import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import type { CharacterAppearance } from './characterTypes'
 import { baseGarments } from './baseGarments'
-import { bodyUrl, bodyUrlForBuild, characterUrls, eqNodeName, eqUrl, eqUrlForBuild, headUrl } from './characterFiles'
+import { bodyUrl, bodyUrlForBuild, characterUrls, eqNodeName, eqUrl, eqUrlForBuild, hairNodeName, headUrl } from './characterFiles'
 import { CHARACTER_OUTFITS, CHARACTER_SEXES, hasOutfitBody, WORK_SKIRTS } from './characterTypes'
 
 const PUBLIC = resolve(import.meta.dirname, '../../public')
@@ -44,13 +44,21 @@ describe('character kit products on disk', () => {
     expect(names).not.toContain('EQ_PeasantSkirt')
   })
 
+  it('packs HAIR_Moustache next to HAIR_Beard in all four hair packs', () => {
+    for (const file of ['hair', 'hair_Round', 'hair_Lean', 'hair_Warm']) {
+      const names = (glbJson(publicPath(`/assets/characters/${file}.glb`)).nodes ?? []).map((n) => n.name)
+      expect(names, file).toContain(hairNodeName('Moustache'))
+      expect(names, file).toContain(hairNodeName('Beard'))
+    }
+  })
+
   it('skirted female appearance lists existing files', () => {
     const a: CharacterAppearance = {
       sex: 'Female',
       outfit: 'Herbalist',
       head: 'Base',
       hair: 'Long',
-      beard: false,
+      facialHair: 'none',
       clothTint: null,
       garments: baseGarments('Female', 'Herbalist'),
       build: 'slim',

@@ -67,7 +67,7 @@ function maleKit(outfit: CharacterOutfit, clothTint: number | null = null): Char
     outfit,
     head: 'Base',
     hair: 'Parted',
-    beard: false,
+    facialHair: 'none',
     clothTint,
     garments: baseGarments('Male', outfit),
   }

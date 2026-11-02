@@ -78,7 +78,7 @@ describe('resolveNpcAppearance', () => {
     })
     expect(smith.outfit).toBe('Blacksmith')
     expect(smith.kit.head).toBe('Round')
-    expect(smith.kit.beard).toBe(true)
+    expect(smith.kit.facialHair).toBe('beard')
     expect(smith.modelUrl).toBe(bodyUrl('Male', 'Blacksmith'))
     expect(smith.family).toBe('blacksmith')
     expect(['bald', 'Parted']).toContain(smith.hair)
@@ -161,7 +161,7 @@ describe('resolveNpcAppearance', () => {
       treeIndex: 0,
     })
     expect(boy.outfit).toBe('Peasant')
-    expect(boy.kit.beard).toBe(false)
+    expect(boy.kit.facialHair).toBe('none')
 
     const girl = resolveNpcAppearance({
       age: 10,
@@ -219,7 +219,7 @@ describe('resolveNpcAppearance', () => {
       role: 'blacksmith',
       treeIndex: 1,
     })
-    expect(smith.kit.beard).toBe(true)
+    expect(smith.kit.facialHair).toBe('beard')
     expect(smith.kit.hair === null || smith.kit.hair === 'Parted').toBe(true)
 
     const beards = Array.from({ length: 40 }, (_, i) => resolveNpcAppearance({
@@ -228,9 +228,10 @@ describe('resolveNpcAppearance', () => {
       npcId: `town:npc:m:${i}`,
       role: 'farmer',
       treeIndex: i,
-    }).kit.beard)
-    expect(beards.some(Boolean)).toBe(true)
-    expect(beards.some((b) => !b)).toBe(true)
+    }).kit.facialHair)
+    expect(beards.some((b) => b === 'beard')).toBe(true)
+    expect(beards.some((b) => b === 'none')).toBe(true)
+    expect(beards).not.toContain('moustache') // no random moustaches yet
   })
 
   it('rolls body builds ~60/20/20 deterministically, independent of the other picks', () => {
@@ -245,7 +246,7 @@ describe('resolveNpcAppearance', () => {
 
   it('applies the fixed named-NPC look over the procedural roll', () => {
     const anna = resolveNpcAppearance({ age: 32, characterKey: 'anna_lesniewska', gender: 'female', npcId: ANNA, role: 'farmer', treeIndex: 0 })
-    expect(anna.kit).toMatchObject({ build: 'slim', head: 'Lean', hair: 'Long', beard: false, outfit: 'Peasant_Boots' })
+    expect(anna.kit).toMatchObject({ build: 'slim', head: 'Lean', hair: 'Long', facialHair: 'none', outfit: 'Peasant_Boots' })
     expect(anna.hairColor).toBe(NPC_HAIR_COLOR.brown)
     const kasia = resolveNpcAppearance({ age: 34, characterKey: 'kasia_hornblower', gender: 'female', npcId: KASIA, role: 'trader', treeIndex: 2 })
     expect(kasia.kit).toMatchObject({ build: 'muscular', hair: 'Long', outfit: 'Peasant' })
@@ -256,5 +257,12 @@ describe('resolveNpcAppearance', () => {
     expect(rudolfA.kit).toEqual(rudolfB.kit)
     expect(rudolfA.hairColor).toBe(rudolfB.hairColor)
     expect(NAMED_NPC_LOOKS.kazimierz).toBeUndefined()
+  })
+
+  it('gives Piotr Leśniewski a moustache (no beard) and keeps the beard-and-moustache NPCs bearded', () => {
+    const piotr = resolveNpcAppearance({ age: 40, characterKey: 'piotr_lesniewski', gender: 'male', npcId: 'p:npc:1', role: 'farmer', treeIndex: 0 })
+    expect(piotr.kit.facialHair).toBe('moustache')
+    expect(piotr.kit.hair).toBe('Buzzed')
+    expect(resolveNpcAppearance({ age: 40, characterKey: 'jakub', gender: 'male', npcId: 'p:npc:2', role: 'farmer', treeIndex: 0 }).kit.facialHair).toBe('beard')
   })
 })

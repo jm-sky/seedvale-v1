@@ -63,12 +63,13 @@ describe('assetIndex', () => {
   it('swaps head/hair/beard on kit entries only', () => {
     const index = buildAssetIndex()
     const player = index.find((e) => e.id === 'character:player')!
-    const look = withKitLook(player, { kitHead: 'Lean', kitHair: 'Long', kitBeard: 'on' })
+    const look = withKitLook(player, { kitHead: 'Lean', kitHair: 'Long', kitFacialHair: 'beard' })
     expect(look.headUrl).toBe('/assets/characters/Male_Head_Lean.glb')
     expect(look.hair).toEqual({ url: '/assets/characters/hair_Lean.glb', nodes: ['HAIR_Long', 'HAIR_Beard'] })
-    expect(withKitLook(player, { kitHead: 'auto', kitHair: 'none', kitBeard: 'off' }).hair?.nodes).toEqual([])
+    expect(withKitLook(player, { kitHead: 'auto', kitHair: 'none', kitFacialHair: 'none' }).hair?.nodes).toEqual([])
+    expect(withKitLook(player, { kitHead: 'Warm', kitHair: 'none', kitFacialHair: 'moustache' }).hair).toEqual({ url: '/assets/characters/hair_Warm.glb', nodes: ['HAIR_Moustache'] })
     const axe = index.find((e) => e.id === 'held:axe')!
-    expect(withKitLook(axe, { kitHead: 'Lean', kitHair: 'Long', kitBeard: 'on' })).toBe(axe)
+    expect(withKitLook(axe, { kitHead: 'Lean', kitHair: 'Long', kitFacialHair: 'beard' })).toBe(axe)
   })
 
   it('held:axe and item:axe differ in prepare (registry drift guard)', () => {

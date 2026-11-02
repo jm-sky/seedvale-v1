@@ -69,7 +69,7 @@ describe('actor culling on shipped animated characters', () => {
     ['Male', 'Blacksmith'],
   ] as const)('contains the assembled %s %s kit through representative clips', async (sex, outfit) => {
     const appearance: CharacterAppearance = {
-      sex, outfit, head: 'Base', hair: 'Long', beard: sex === 'Male',
+      sex, outfit, head: 'Base', hair: 'Long', facialHair: sex === 'Male' ? 'beard' : 'none',
       // Female: the trader's set (bodice + widest garment) also covers the plain work-skirt look.
       garments: sex === 'Female' ? ['NobleBodice', 'WorkSkirt'] : [], clothTint: null,
     }

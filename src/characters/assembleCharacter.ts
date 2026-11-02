@@ -22,6 +22,7 @@ import {
   characterUrls,
   eqNodeName,
   eqUrlForBuild,
+  facialHairNodes,
   hairNodeName,
   hairUrl,
   headUrl,
@@ -139,7 +140,7 @@ function applyClothTint(root: Object3D, tint: number | null): void {
 function hairNodesFor(a: CharacterAppearance): string[] {
   const nodes: HairNode[] = []
   if (a.hair !== null) nodes.push(a.hair)
-  if (a.beard) nodes.push('Beard')
+  nodes.push(...facialHairNodes(a.facialHair))
   return nodes.map(hairNodeName)
 }
 

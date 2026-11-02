@@ -3,7 +3,7 @@ import { parkedIdFromUrl } from './assetUrlUtils'
 
 export { parkedIdFromUrl } from './assetUrlUtils'
 import type { BodyBuild } from '../characters/bodyBuild'
-import type { CharacterGarment, CharacterSex, HairStyle, HeadVariant } from '../characters/characterTypes'
+import type { CharacterGarment, CharacterSex, FacialHair, HairStyle, HeadVariant } from '../characters/characterTypes'
 import { ANIMAL_DEFS } from '../fauna/AnimalAgent'
 import { FAUNA_URLS } from '../fauna/createFauna'
 import { HELD_GLB } from '../items/heldToolVisual'
@@ -104,7 +104,7 @@ export type AssetIndexEntry = {
   /** Body builds this entry's derivative GLB carries targets for (tools-022 preview). */
   bodyBuilds?: readonly BodyBuild[]
   /** CharacterKit defaults, so the browser can swap head/hair/beard (`withKitLook`). */
-  kit?: { sex: CharacterSex, head: HeadVariant, hair: HairStyle | null, beard: boolean }
+  kit?: { sex: CharacterSex, head: HeadVariant, hair: HairStyle | null, facialHair: FacialHair }
 }
 
 const WAGON_URL = '/models/settlement/megakit/wagon.glb'
