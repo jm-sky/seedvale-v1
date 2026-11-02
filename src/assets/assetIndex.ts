@@ -3,35 +3,17 @@ import { parkedIdFromUrl } from './assetUrlUtils'
 
 export { parkedIdFromUrl } from './assetUrlUtils'
 import type { BodyBuild } from '../characters/bodyBuild'
-import type { CharacterGarment } from '../characters/characterTypes'
-import { NPC_HEIGHT } from '../ai/NpcAgent'
-import {
-  NPC_UBC_FEMALE_PEASANT_URL,
-  NPC_UBC_MALE_BLACKSMITH_URL,
-  NPC_UBC_MALE_FARMER_URL,
-  NPC_UBC_MALE_KNIGHT_UNHELMETED_URL,
-  NPC_UBC_MALE_WOODCUTTER_URL,
-} from '../ai/npcAppearance'
-import { headUrl } from '../characters/characterFiles'
+import type { CharacterGarment, CharacterSex, HairStyle, HeadVariant } from '../characters/characterTypes'
 import { ANIMAL_DEFS } from '../fauna/AnimalAgent'
 import { FAUNA_URLS } from '../fauna/createFauna'
 import { HELD_GLB } from '../items/heldToolVisual'
 import { ITEM_GLB_SPECS } from '../items/itemModels'
-import { PLAYER_HEIGHT } from '../player/PlayerController'
 import {
   PLAYER_UBC_KNIGHT_PAULDRON_ROUND_URL,
   PLAYER_UBC_KNIGHT_PAULDRON_SPIKE_URL,
   PLAYER_UBC_LEATHER_PAULDRON_URL,
   PLAYER_UBC_RANGER_PAULDRON_URL,
 } from '../player/playerEquipmentVisual'
-import {
-  PLAYER_UBC_KNIGHT_CLOTH_URL,
-  PLAYER_UBC_KNIGHT_URL,
-  PLAYER_UBC_NOBLE_URL,
-  PLAYER_UBC_PEASANT_URL,
-  PLAYER_UBC_RANGER_URL,
-  PLAYER_UBC_WIZARD_URL,
-} from '../player/playerVisualPreset'
 import { BRANCH_HELD_MAX, BRANCH_URL } from '../player/torchLightPresets'
 import { HOUSE_CATALOG } from '../settlement/houseCatalog'
 import { LIVESTOCK_URLS } from '../settlement/livestock'
@@ -67,7 +49,7 @@ import {
   WOOD_PILE_URL,
 } from '../settlement/propSpecs'
 import { anchorsForAsset } from './assetAnchorData'
-import { bodyPreviewEntries } from './bodyPreviewEntries'
+import { characterKitEntries } from './characterKitEntries'
 
 export type AssetPrepare =
   | { mode: 'height', value: number }
@@ -121,6 +103,8 @@ export type AssetIndexEntry = {
   hair?: { url: string, nodes: readonly string[] }
   /** Body builds this entry's derivative GLB carries targets for (tools-022 preview). */
   bodyBuilds?: readonly BodyBuild[]
+  /** CharacterKit defaults, so the browser can swap head/hair/beard (`withKitLook`). */
+  kit?: { sex: CharacterSex, head: HeadVariant, hair: HairStyle | null, beard: boolean }
 }
 
 const WAGON_URL = '/models/settlement/megakit/wagon.glb'
@@ -374,61 +358,8 @@ function pushHeightSpecs(
 export function buildAssetIndex(): AssetIndexEntry[] {
   const out: AssetIndexEntry[] = []
 
-  // `character:player` is the default player reference (also the held-item alignment id).
-  out.push({
-    id: 'character:player',
-    url: PLAYER_UBC_PEASANT_URL,
-    label: 'Player (default: V1 Male Peasant)',
-    group: 'character',
-    prepare: { mode: 'height', value: PLAYER_HEIGHT },
-    skinned: true,
-    anchors: anchorsForAsset('character:player'),
-  })
-  out.push({
-    id: 'character:ubc-ranger',
-    url: PLAYER_UBC_RANGER_URL,
-    label: 'Player (V1 Male Ranger)',
-    group: 'character',
-    prepare: { mode: 'height', value: PLAYER_HEIGHT },
-    skinned: true,
-    anchors: anchorsForAsset('character:ubc-ranger'),
-  })
-  out.push({
-    id: 'character:ubc-knight',
-    url: PLAYER_UBC_KNIGHT_URL,
-    label: 'Player (V1 Male Knight, helm)',
-    group: 'character',
-    prepare: { mode: 'height', value: PLAYER_HEIGHT },
-    skinned: true,
-    anchors: anchorsForAsset('character:ubc-knight'),
-  })
-  out.push({
-    id: 'character:ubc-knight-cloth',
-    url: PLAYER_UBC_KNIGHT_CLOTH_URL,
-    label: 'Player (V1 Male Knight, cloth)',
-    group: 'character',
-    prepare: { mode: 'height', value: PLAYER_HEIGHT },
-    skinned: true,
-    anchors: anchorsForAsset('character:ubc-knight-cloth'),
-  })
-  out.push({
-    id: 'character:ubc-noble',
-    url: PLAYER_UBC_NOBLE_URL,
-    label: 'Player (V1 Male Noble)',
-    group: 'character',
-    prepare: { mode: 'height', value: PLAYER_HEIGHT },
-    skinned: true,
-    anchors: anchorsForAsset('character:ubc-noble'),
-  })
-  out.push({
-    id: 'character:ubc-wizard',
-    url: PLAYER_UBC_WIZARD_URL,
-    label: 'Player (V1 Male Wizard)',
-    group: 'character',
-    prepare: { mode: 'height', value: PLAYER_HEIGHT },
-    skinned: true,
-    anchors: anchorsForAsset('character:ubc-wizard'),
-  })
+  // Live CharacterKit bodies (one list; Male Peasant = `character:player`, the default reference).
+  out.push(...characterKitEntries())
   out.push({
     id: 'character:ubc-leather-pauldron',
     url: PLAYER_UBC_LEATHER_PAULDRON_URL,
@@ -465,57 +396,6 @@ export function buildAssetIndex(): AssetIndexEntry[] {
     skinned: true,
     anchors: anchorsForAsset('character:ubc-knight-pauldron-round'),
   })
-  out.push({
-    id: 'character:ubc-female-peasant',
-    url: NPC_UBC_FEMALE_PEASANT_URL,
-    label: 'NPC (V1 Female Peasant)',
-    group: 'character',
-    prepare: { mode: 'height', value: NPC_HEIGHT },
-    skinned: true,
-    anchors: anchorsForAsset('character:ubc-female-peasant'),
-  })
-  out.push({
-    id: 'character:ubc-male-knight-unhelmeted',
-    url: NPC_UBC_MALE_KNIGHT_UNHELMETED_URL,
-    label: 'NPC (V1 Male Knight, unhelmeted)',
-    group: 'character',
-    prepare: { mode: 'height', value: NPC_HEIGHT },
-    skinned: true,
-    anchors: anchorsForAsset('character:ubc-male-knight-unhelmeted'),
-  })
-  out.push({
-    id: 'character:ubc-male-blacksmith',
-    url: NPC_UBC_MALE_BLACKSMITH_URL,
-    label: 'NPC (V1 Male Blacksmith)',
-    group: 'character',
-    prepare: { mode: 'height', value: NPC_HEIGHT },
-    skinned: true,
-    anchors: anchorsForAsset('character:ubc-male-blacksmith'),
-    headUrl: headUrl('Male', 'Round'),
-  })
-  // Author-edited V1 outfits (Blender master, 2026-10-28).
-  out.push({
-    id: 'character:ubc-male-woodcutter',
-    url: NPC_UBC_MALE_WOODCUTTER_URL,
-    label: 'NPC (V1 Male Woodcutter)',
-    group: 'character',
-    prepare: { mode: 'height', value: NPC_HEIGHT },
-    skinned: true,
-    anchors: anchorsForAsset('character:ubc-male-woodcutter'),
-    headUrl: headUrl('Male', 'Base'),
-  })
-  out.push({
-    id: 'character:ubc-male-farmer',
-    url: NPC_UBC_MALE_FARMER_URL,
-    label: 'NPC (V1 Male Farmer, hat)',
-    group: 'character',
-    prepare: { mode: 'height', value: NPC_HEIGHT },
-    skinned: true,
-    anchors: anchorsForAsset('character:ubc-male-farmer'),
-    headUrl: headUrl('Male', 'Base'),
-  })
-
-  out.push(...bodyPreviewEntries())
 
   for (const [kind, url] of Object.entries(FAUNA_URLS)) {
     if (!url) continue

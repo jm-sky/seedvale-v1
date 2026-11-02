@@ -287,10 +287,3 @@ export function ubcVariantModelUrl(
 ): string {
   return bodyUrl(toSex(gender), outfit)
 }
-
-/** Kit body URLs (legacy export names kept for assetIndex / docs). */
-export const NPC_UBC_FEMALE_PEASANT_URL = bodyUrl('Female', 'Peasant')
-export const NPC_UBC_MALE_KNIGHT_UNHELMETED_URL = bodyUrl('Male', 'Knight_Cloth')
-export const NPC_UBC_MALE_BLACKSMITH_URL = bodyUrl('Male', 'Blacksmith')
-export const NPC_UBC_MALE_WOODCUTTER_URL = bodyUrl('Male', 'Woodcutter')
-export const NPC_UBC_MALE_FARMER_URL = bodyUrl('Male', 'Farmer')

@@ -149,13 +149,6 @@ export const HELD_TOOL_GRIP_ANCHORS: Partial<Record<string, readonly AssetAnchor
 export const ASSET_ANCHORS: Record<string, readonly AssetAnchorDef[]> = {
   'settlement:well': [WELL_INTERACTION],
   'character:player': CHARACTER_ANCHORS_UBC,
-  'character:ubc-ranger': CHARACTER_ANCHORS_UBC,
-  'character:ubc-knight': CHARACTER_ANCHORS_UBC,
-  'character:ubc-knight-cloth': CHARACTER_ANCHORS_UBC,
-  'character:ubc-noble': CHARACTER_ANCHORS_UBC,
-  'character:ubc-wizard': CHARACTER_ANCHORS_UBC,
-  'character:ubc-male-knight-unhelmeted': CHARACTER_ANCHORS_UBC,
-  'character:ubc-male-blacksmith': CHARACTER_ANCHORS_UBC,
   'house:hut_a': [floorCenterLampMount(8.5)],
   'house:hut_b': [floorCenterLampMount(8.0)],
   'house:hut_c': [floorCenterLampMount(6.5)],

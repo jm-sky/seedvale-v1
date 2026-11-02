@@ -10,6 +10,7 @@ import {
   resolveLoadEntry,
 } from '../../../assets/assetIndex'
 import { BODY_BUILD_LABELS, BODY_BUILDS } from '../../../characters/bodyBuild'
+import { HAIR_STYLES, HEAD_VARIANTS } from '../../../characters/characterTypes'
 import {
   alignmentEdit,
   bumpAlignmentEdit,
@@ -207,7 +208,7 @@ watch(
 )
 
 watch(
-  () => browserState.compareHead,
+  () => [browserState.compareHead, browserState.kitHead, browserState.kitHair, browserState.kitBeard] as const,
   () => {
     if (!viewer.value || !indexReady.value) return
     const ref = resolveLoadEntry(assetIndex.value, {
@@ -250,6 +251,9 @@ watch(
     browserState.showOverlay,
     browserState.hairColor,
     browserState.bodyBuild,
+    browserState.kitHead,
+    browserState.kitHair,
+    browserState.kitBeard,
   ] as const,
   () => syncAssetBrowserUrlParams(browserState),
 )
@@ -722,6 +726,61 @@ function lampMountSnippet() {
             </option>
           </select>
         </template>
+        <template v-if="bodyBuildOwner">
+          <label class="mt-1 block text-xs text-slate-400">Head</label>
+          <select
+            v-model="browserState.kitHead"
+            data-testid="kit-head"
+            class="w-full rounded bg-slate-800 px-2 py-1"
+          >
+            <option value="auto">
+              Domyślna
+            </option>
+            <option
+              v-for="h in HEAD_VARIANTS"
+              :key="h"
+              :value="h"
+            >
+              {{ h }}
+            </option>
+          </select>
+          <label class="mt-1 block text-xs text-slate-400">Fryzura</label>
+          <select
+            v-model="browserState.kitHair"
+            data-testid="kit-hair"
+            class="w-full rounded bg-slate-800 px-2 py-1"
+          >
+            <option value="auto">
+              Domyślna
+            </option>
+            <option value="none">
+              Łysy
+            </option>
+            <option
+              v-for="h in HAIR_STYLES"
+              :key="h"
+              :value="h"
+            >
+              {{ h }}
+            </option>
+          </select>
+          <label class="mt-1 block text-xs text-slate-400">Zarost</label>
+          <select
+            v-model="browserState.kitBeard"
+            data-testid="kit-beard"
+            class="w-full rounded bg-slate-800 px-2 py-1"
+          >
+            <option value="auto">
+              Domyślny
+            </option>
+            <option value="off">
+              Brak
+            </option>
+            <option value="on">
+              Broda
+            </option>
+          </select>
+        </template>
         <label class="mt-1 block text-xs text-slate-400">Hair color</label>
         <select
           v-model="browserState.hairColor"
@@ -741,6 +800,9 @@ function lampMountSnippet() {
           </option>
           <option value="grey">
             Siwy
+          </option>
+          <option value="copper">
+            Miedziany
           </option>
         </select>
         <label class="mt-1 block text-xs text-slate-400">Pose</label>

@@ -11,6 +11,7 @@ import {
   parkedIdFromUrl,
   resolveLoadEntry,
 } from './assetIndex'
+import { withKitLook } from './characterKitEntries'
 
 describe('assetIndex', () => {
   it('has unique ids', () => {
@@ -38,17 +39,36 @@ describe('assetIndex', () => {
     }
   })
 
-  it('defaults the player reference to the V1 Male Peasant kit body with skinned metadata', () => {
+  it('lists one kit entry per live body; the player reference is the Male Peasant kit with head + hair', () => {
     const index = buildAssetIndex()
     const player = index.find((e) => e.id === 'character:player')
-    expect(player?.url).toBe('/assets/characters/Male_Peasant.glb')
+    expect(player?.url).toBe('/assets/characters/body-preview/Male_Peasant.glb')
     expect(player?.label).toMatch(/default/)
     expect(player?.skinned).toBe(true)
+    expect(player?.headUrl).toBe('/assets/characters/Male_Head.glb')
+    expect(player?.hair?.nodes).toEqual(['HAIR_Parted'])
+    expect(player?.anchors.some((a) => a.name === 'hand.right')).toBe(true)
 
-    const blacksmith = index.find((e) => e.id === 'character:ubc-male-blacksmith')
-    expect(blacksmith?.group).toBe('character')
-    expect(blacksmith?.skinned).toBe(true)
+    const blacksmith = index.find((e) => e.id === 'character:male-blacksmith')
     expect(blacksmith?.headUrl).toBe('/assets/characters/Male_Head_Round.glb')
+
+    const characters = index.filter((e) => e.group === 'character')
+    expect(characters.every((e) => e.kit && e.headUrl && e.bodyBuilds)).toBe(true)
+    expect(new Set(characters.map((e) => e.url)).size).toBe(characters.length)
+    expect(characters.some((e) => /preview/i.test(e.label))).toBe(false)
+    expect(characters.filter((e) => e.kit?.sex === 'Female').map((e) => e.id).sort())
+      .toEqual(['character:female-herbalist', 'character:female-peasant', 'character:female-peasant-boots'])
+  })
+
+  it('swaps head/hair/beard on kit entries only', () => {
+    const index = buildAssetIndex()
+    const player = index.find((e) => e.id === 'character:player')!
+    const look = withKitLook(player, { kitHead: 'Lean', kitHair: 'Long', kitBeard: 'on' })
+    expect(look.headUrl).toBe('/assets/characters/Male_Head_Lean.glb')
+    expect(look.hair).toEqual({ url: '/assets/characters/hair_Lean.glb', nodes: ['HAIR_Long', 'HAIR_Beard'] })
+    expect(withKitLook(player, { kitHead: 'auto', kitHair: 'none', kitBeard: 'off' }).hair?.nodes).toEqual([])
+    const axe = index.find((e) => e.id === 'held:axe')!
+    expect(withKitLook(axe, { kitHead: 'Lean', kitHair: 'Long', kitBeard: 'on' })).toBe(axe)
   })
 
   it('held:axe and item:axe differ in prepare (registry drift guard)', () => {

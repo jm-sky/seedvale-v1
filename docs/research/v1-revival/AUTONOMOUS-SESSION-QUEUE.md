@@ -172,8 +172,8 @@ Agents may run these checks themselves (seed `415424794`) and mark an item verif
 - **ANSWERED 2026-10-31 · Q47 krypty:** limit ~3 krypt na cmentarz (LG ≈ 3), reszta to zwykłe groby; krypty mogą być mniejsze, np. 1 × pełny rozmiar + 2 × 80 %. [Q39 plan §7](./2026-10-31--q39-cemetery-size-placement-plan.md#7-author-decision--2026-10-31-q47-placement-sequence).
 Append here (date, task, question, options). Remove when answered and recorded in the owning doc.
 
-- **OPEN 2026-11-02 · retune Heavy (`warpBody`):** commit `138f30cf` (Haiku) zmienił Heavy: brzuch 0.2→0.08 m, dodał klatkę (chest/chestDepth), Slim osłabiony do 85 %. Zachowałem to (Fat regenerowany w miejscu, bez duplikatu). (a) zostaje · (b) wracamy do fabrycznego `Fat` z paczki.
-- **OPEN 2026-11-02 · stand-iny wyglądu nazwanych NPC:** Piotr „moustache” → bez zarostu (a) / pełna broda (b); „short” Marek/Piotr → `Buzzed` (a) / `Parted` (b). Kolor `copper` Kasi `0x8c4a2a` do oceny.
+- **ANSWERED 2026-11-02 · retune Heavy/Slim:** autor sam poprawił Heavy (mniejszy brzuch, głębsza klatka) i Slim (mniej chudy) — **zostaje**; `Fat` regenerowany w miejscu (`REGENERATED_MORPHS`).
+- **ANSWERED 2026-11-02 · wąsy Piotra:** autor chce prawdziwe wąsy → nowy węzeł `HAIR_Moustache` (Blender, wszystkie `hair*.glb`), potem `facialHair` w kicie. Do czasu assetu Piotr bez zarostu. **OPEN:** „short” Marek/Piotr → `Buzzed` (a) / `Parted` (b); odcień `copper` Kasi do oceny w asset browserze (`hairColor=copper`).
 
 - **OPEN 2026-11-02 · Q54 bramka istotności mirrora (world-terrain-056 S2):** ocean jest rysowany jako pierścień za `loadRadius` (192–256 m) także nad lądem, więc w prawie każdym widoku poziomym jest w frustum — bramka „czy woda jest widoczna” prawie nigdy nie pominie mirrora (tylko patrzenie mocno w dół/w górę). Opcje: (a) porzucić S2 (zalecane); (b) bramka tylko dla chunk water + ocean pominięty gdy kamera patrzy w dół poniżej progu (heurystyka); (c) najpierw zmierzyć w S0 jaki % klatek ma mirror poza widokiem wody.
 - **NOTE 2026-11-02 (author):** flagi kandydatów domyślnie WŁĄCZONE w grze; testy/benchmarki Windows/WSL później (zmiana względem planu 056).

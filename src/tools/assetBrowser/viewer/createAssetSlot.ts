@@ -12,6 +12,7 @@ import {
 import type { AssetIndexEntry, AssetPrepare } from '../../../assets/assetIndex'
 import { discoverGlbAnchors, refreshResolvedAnchors, resolveAssetAnchors, type ResolvedAnchor } from '../../../assets/anchorResolve'
 import { mergeAnchorDefs } from '../../../assets/assetAnchors'
+import { withKitLook } from '../../../assets/characterKitEntries'
 import {
   disposeObject3D,
   invalidateGltf,
@@ -254,16 +255,11 @@ export function createAssetSlot(role: 'reference' | 'target', scene: Group): Ass
       }
       nativeBox = boxFromModel(model)
       applyPrepare(model, nextEntry.prepare)
-      // Kit hair tint only — kit bodies carry the UBC MI_Hair_* materials.
-      if (animCompanionUrl) {
-        cloneOutfitMaterials(model)
-        applyHairColor(model, hairColorHexFor(browserState.hairColor))
-      }
       if (nextEntry.id === 'item:wooden_bucket') tintBucketGlb(model, 'wooden_bucket')
       else if (nextEntry.id === 'item:copper_bucket') tintBucketGlb(model, 'copper_bucket')
       if (nextEntry.id === 'held:wooden_torch') model.rotation.x = Math.PI / 2
       if (nextEntry.headUrl || (nextEntry.garments?.length && nextEntry.eqUrl)) {
-        const kit = await attachCompareKit(model, nextEntry, {
+        const kit = await attachCompareKit(model, withKitLook(nextEntry, browserState), {
           head: browserState.compareHead,
         })
         if (seq !== loadSeq) return // unload() already disposed the stale model
@@ -273,6 +269,11 @@ export function createAssetSlot(role: 'reference' | 'target', scene: Group): Ass
         } else if (kit.attached.length) {
           browserState.statusMessage = `Attached ${kit.attached.join(', ')}`
         }
+      }
+      // Kit hair tint only — after the kit attach so the rebound hair/beard (MI_Hair_*) is cloned and tinted too.
+      if (animCompanionUrl) {
+        cloneOutfitMaterials(model)
+        applyHairColor(model, hairColorHexFor(browserState.hairColor))
       }
       preparedBox = boxFromModel(model)
       meshStat = collectMeshStats(model)

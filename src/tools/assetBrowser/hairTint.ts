@@ -17,5 +17,6 @@ export function parseHairColor(raw: string | undefined): HairColorId | undefined
   if (v === 'redhead' || v === 'red') return 'redhead'
   if (v === 'blond') return 'blond'
   if (v === 'grey' || v === 'gray') return 'grey'
+  if (v === 'copper') return 'copper'
   return undefined
 }

@@ -214,3 +214,13 @@ Rollback is removal of browser-only wiring, generator/preview outputs and their 
 **Cost:** 26 MB for 24 derivative files (+≈10–35 % per file vs original: 0.5–1.6 MB → 0.56–2.5 MB, meshopt FILTER encoding, Float32 position+normal deltas). Derivatives are only fetched in the Asset Browser, but `pnpm build` copies `public/` so they ship in `dist/`; excluding `body-preview/` from the production build is an open follow-up. GPU/memory/FPS were **not** measured; no performance claim is made.
 
 **Verification done:** vitest (generator, `bodyBuild`, morph-preserving rebind, URL/state), `vue-tsc`, eslint, `pnpm build`; Chrome/SwiftShader screenshots of Male Peasant, Female Peasant + WorkSkirt (rest, front/side) and Male Knight seated (Sitting_Idle_Loop). **Not done:** Run/Walk, kneeling, Blacksmith/Farmer/Woodcutter, Ranger/Wizard visual passes, seam inspection at close range, and any native-GPU look — author visual check required (queue §2).
+
+## Update 2026-11-02 — one character list, kit look switches
+
+- `bodyPreviewEntries.ts` → `src/assets/characterKitEntries.ts`: the hand-written player/NPC character entries and the
+  `bodypreview:*` duplicates are merged into one list, one entry per live body (`character:player` = Male Peasant,
+  others `character:<sex>-<outfit>`). Every entry loads the build derivative, attaches head + hair (+ skirt) and offers
+  the build switch. Old ids (`character:ubc-ranger`, `bodypreview:male-peasant`, …) are gone.
+- New Head / Fryzura / Zarost selects (`kitHead`/`kitHair`/`kitBeard`, URL `head=`, `hairStyle=`, `beard=`), applied via
+  `withKitLook`. Hair tint now runs after the kit attach, so rebound hair/beard is tinted too.
+- Body builds are also live in game since 2026-11-02 (`src/characters/bodyBuild.ts`, M102).
