@@ -6,6 +6,8 @@
 
 **Q47 cemetery placement decision (author, 2026-10-31):** [Q39 plan §7](./2026-10-31--q39-cemetery-size-placement-plan.md#7-author-decision--2026-10-31-q47-placement-sequence) — compact plot visual trial first; later reserve plot footprints before roads (Q38/Q44). Q47 visual acceptance remains pending; track in [queue](./AUTONOMOUS-SESSION-QUEUE.md).
 
+**Vegetation visual polish (author, 2026-11-02):** [world-terrain-057 — natural bush replacement and berry variant](../../plans/world-terrain-057-natural-bush-model-replacement.md) stages three queued GLBs, removes five artificial V1 bushes from active rendering, and prefers a Blender-authored berry variant. Planned, not yet implemented or visually verified.
+
 **UI palette audit:** [Vue color coverage — 98-file register and agent handoff](./2026-11-02--ui-vue-color-coverage-audit.md) (preliminary; finish per-file color checks before any CSS-only changes).
 
 ## Current entry points
