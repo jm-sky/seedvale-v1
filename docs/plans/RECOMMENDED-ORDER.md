@@ -263,24 +263,32 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-44. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
+44. `world-terrain-055` — **Optional shadow frustum and refresh trims (settlement shadow pass)**  
+  🟡 `S` · **Score:**  19  
+   → **unlocks:** 0/0
+
+45. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
   🟡 `L` · **Score:**  18  
    → **unlocks:** 0/0
 
-45. `items-player-014` — **Rope-pullable resource transport**  
+46. `items-player-014` — **Rope-pullable resource transport**  
   ⚪ `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-46. `items-player-052` — **Settlement tool ownership and social acquisition**  
+47. `items-player-052` — **Settlement tool ownership and social acquisition**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-47. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
+48. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-48. `world-040` — **Underground Locations & Portals**  
+49. `world-040` — **Underground Locations & Portals**  
   ⚪ `XL` · **Score:**  14  
+   → **unlocks:** 0/0
+
+50. `fauna-049` — **Wild animal difficulty tiers, trophies and social recognition**  
+  🟡 `XL` · **Score:**  10  
    → **unlocks:** 0/0
 
 ---
@@ -441,6 +449,7 @@ graph TD
   fauna_046["fauna-046 — Stamina-aware animal water crossing risk"]
   fauna_047["fauna-047 — Deer thicket capacity and natural population recovery"]
   fauna_048["fauna-048 — Agent Performance — Fauna Village Query Scaling"]
+  fauna_049["fauna-049 — Wild animal difficulty tiers, trophies and social recognition"]
   items_player_001["items-player-001 — Containers, Waterskins & Copper Items"]
   items_player_002["items-player-002 — Food provenance, freshness and storage"]
   items_player_003["items-player-003 — Player Physical Effort — Stamina & Vigor"]
@@ -891,6 +900,8 @@ graph TD
   world_terrain_052["world-terrain-052 — Lifecycle — Resident Local Water Agent Authority"]
   world_terrain_053["world-terrain-053 — Snow patch thresholds and grass burial"]
   world_terrain_054["world-terrain-054 — Adapt V3 Procedural Clouds to V1 Sky"]
+  world_terrain_055["world-terrain-055 — Optional shadow frustum and refresh trims (settlement shadow pass)"]
+  world_terrain_056["world-terrain-056 — Render-pass frame distribution, visibility budgeting and map quality"]
   008 --> items_player_010
   069 --> settlements_npcs_008
   097 --> world_terrain_007

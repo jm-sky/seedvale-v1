@@ -102,6 +102,7 @@ Generated from TypeScript imports.
 - `perf/programCensus.ts`
 - `perf/report.ts`
 - `perf/sceneCensus.ts`
+- `perf/settlementWalkRoute.ts`
 - `perf/types.ts`
 - `settlement/settlementGenerator.ts`
 - `terrain/chunkGrid.ts`
@@ -500,6 +501,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `app/gameLoop.ts`
 - `perf/artifacts.ts`
 - `perf/index.ts`
 - `perf/rawSidecar.test.ts`
@@ -567,6 +569,19 @@ Generated from TypeScript imports.
 - `settlement/propUtils.ts`
 - `settlement/storageVisuals.test.ts`
 - `settlement/woodPileTiers.ts`
+
+## `perf/settlementWalkRoute.test.ts`
+
+**Imports**
+
+- `perf/settlementWalkRoute.ts`
+
+## `perf/settlementWalkRoute.ts`
+
+**Imported by**
+
+- `perf/benchmark.ts`
+- `perf/settlementWalkRoute.test.ts`
 
 ## `perf/timeDistribution.ts`
 

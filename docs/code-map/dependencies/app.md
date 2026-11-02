@@ -1299,6 +1299,7 @@ Generated from TypeScript imports.
 - `perf/flags.ts`
 - `perf/index.ts`
 - `perf/occludedActorCohort.ts`
+- `perf/rawSidecar.ts`
 - `player/PlayerController.ts`
 - `player/PlayerNeeds.ts`
 - `player/PlayerSkills.ts`
