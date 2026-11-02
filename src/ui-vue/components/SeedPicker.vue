@@ -46,7 +46,7 @@ const selectValue = computed<string>({
   <select
     :id="id"
     v-model="selectValue"
-    class="w-full rounded-md border border-white/15 bg-white/5 px-3 py-2.5 text-sm outline-none focus:border-blue-400/60"
+    class="w-full rounded-md border border-white/15 bg-white/5 px-3 py-2.5 text-sm outline-none focus:border-primary/60"
   >
     <option
       v-if="showUrlSeedOption"
