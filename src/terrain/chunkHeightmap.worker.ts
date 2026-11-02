@@ -11,6 +11,8 @@ import { computeChunkMeshData } from './chunkMeshData'
 import { computeChunkVegetation } from './chunkVegetation'
 import { computeChunkGrass, GRASS_SPECIES_ORDER, type GrassChunkData } from './grassPlacement'
 import { computeRiverTile } from './riverNetwork'
+import { sampleRawFloorRows, WORLD_HYDROLOGY_GRID } from './worldHydrology'
+import { installWorldHydrology } from './worldHydrologyRegistry'
 import { scanWorldKnowledge } from './worldKnowledgeScan'
 
 // `self` is cast rather than adding the `webworker` TS lib, which can't coexist
@@ -41,6 +43,14 @@ function grassTransferList(grass: GrassChunkData): Transferable[] {
 }
 
 ctx.onmessage = ({ data }) => {
+  if (data.kind === 'installHydrology') {
+    try {
+      installWorldHydrology(data.hydrologyId, data.data)
+    } catch (err) {
+      console.error('[chunkHeightmap.worker] hydrology install failed', err)
+    }
+    return
+  }
   const { id, kind } = data
   try {
     if (kind === 'tile') {
@@ -98,6 +108,9 @@ ctx.onmessage = ({ data }) => {
     } else if (kind === 'worldKnowledge') {
       const result = scanWorldKnowledge(data.params)
       ctx.postMessage({ kind: 'worldKnowledge', id, ok: true, result }, [])
+    } else if (kind === 'hydrologyRows') {
+      const rows = sampleRawFloorRows(data.params, WORLD_HYDROLOGY_GRID, data.rowStart, data.rowEnd)
+      ctx.postMessage({ kind: 'hydrologyRows', id, ok: true, rows }, [rows.buffer])
     } else if (kind === 'riverTile') {
       const chains = computeRiverTile(data.tile, data.sampleParams)
       ctx.postMessage({ kind: 'riverTile', id, ok: true, chains }, [])

@@ -2,6 +2,7 @@ import type { MapTileData, MapTileRequest } from '../world/map/mapRasterTile'
 import type { ChunkTileParams, RawSampleParams } from './chunkHeightmap'
 import type {
   ChunkTileResult,
+  ChunkWorkerJobRequest,
   ChunkWorkerRequest,
   ChunkWorkerResponse,
   GrassRequestParams,
@@ -9,6 +10,7 @@ import type {
 import type { ChunkMeshData, ChunkMeshDataParams } from './chunkMeshData'
 import type { GrassChunkData } from './grassPlacement'
 import type { RiverChain, RiverTileCoord } from './riverNetwork'
+import type { WorldHydrology } from './worldHydrology'
 import type { WorldKnowledgeScanResult, WorldKnowledgeWorkerParams } from './worldKnowledgeScan'
 import { getMonitor } from '../perf/active'
 
@@ -76,6 +78,18 @@ export type ChunkWorkerPool = {
    */
   requestRiverTile(key: string, tile: RiverTileCoord, sampleParams: RawSampleParams): Promise<RiverChain[]>
   cancelRiverTile(key: string): void
+  /**
+   * Installs global hydrology in every worker, now and in any worker created later (plan world-terrain-058 H2). A
+   * worker handles messages in order, so every job posted after this call sees the data.
+   * @domain world-terrain
+   */
+  installHydrology(hydrologyId: string, data: WorldHydrology): void
+  /**
+   * Raw floor rows `[rowStart, rowEnd)` of the hydrology grid, for boot-time strip sampling. Foreground priority
+   * (boot waits for it), never cancelled by a newer request of another key.
+   * @domain world-terrain
+   */
+  requestHydrologyRows(key: string, params: RawSampleParams, rowStart: number, rowEnd: number): Promise<Float32Array>
   dispose(): void
   readonly pendingCount: number
   readonly busyCount: number
@@ -138,7 +152,18 @@ type RiverTileJob = {
   reject: (err: Error) => void
 }
 
-type ChunkJob = TileJob | GrassJob | MeshJob | WorldKnowledgeJob | MapTileJob | RiverTileJob
+type HydrologyRowsJob = {
+  kind: 'hydrologyRows'
+  id: number
+  key: string
+  params: RawSampleParams
+  rowStart: number
+  rowEnd: number
+  resolve: (data: Float32Array) => void
+  reject: (err: Error) => void
+}
+
+type ChunkJob = TileJob | GrassJob | MeshJob | WorldKnowledgeJob | MapTileJob | RiverTileJob | HydrologyRowsJob
 
 function createChunkWorker(): ChunkWorkerLike {
   return new Worker(new URL('./chunkHeightmap.worker.ts', import.meta.url), {
@@ -162,7 +187,8 @@ function recordWorldKnowledgeTimings(job: WorldKnowledgeJob, result: WorldKnowle
   console.info(`[PERF:PROPS] debug: worldKnowledge:total ${totalMs.toFixed(1)} ms`)
 }
 
-function toRequest(job: ChunkJob): ChunkWorkerRequest {
+function toRequest(job: ChunkJob): ChunkWorkerJobRequest {
+  if (job.kind === 'hydrologyRows') return { kind: 'hydrologyRows', id: job.id, params: job.params, rowStart: job.rowStart, rowEnd: job.rowEnd }
   if (job.kind === 'tile') return { kind: 'tile', id: job.id, params: job.params }
   if (job.kind === 'mesh') return { kind: 'mesh', id: job.id, params: job.params }
   if (job.kind === 'worldKnowledge') return { kind: 'worldKnowledge', id: job.id, params: job.params }
@@ -184,12 +210,14 @@ export function createChunkWorkerPool(
   const free: ChunkWorkerLike[] = []
   // Tile/mesh outrank world knowledge; knowledge outranks grass. Background
   // kinds share headroom so they never occupy every worker (plan quests-progression-047).
+  const queueHydrologyRows: HydrologyRowsJob[] = []
   const queueTile: TileJob[] = []
   const queueMesh: MeshJob[] = []
   const queueWorldKnowledge: WorldKnowledgeJob[] = []
   const queueMapTile: MapTileJob[] = []
   const queueRiverTile: RiverTileJob[] = []
   const queueGrass: GrassJob[] = []
+  const installedHydrology = new Map<string, WorldHydrology>()
   const inflight = new Map<number, ChunkJob>()
   const keyToId = new Map<string, number>()
   const workerJob = new Map<ChunkWorkerLike, number>()
@@ -210,7 +238,9 @@ export function createChunkWorkerPool(
   function pump(): void {
     while (free.length > 0) {
       let job: ChunkJob | undefined
-      if (queueTile.length > 0) {
+      if (queueHydrologyRows.length > 0) {
+        job = queueHydrologyRows.shift()
+      } else if (queueTile.length > 0) {
         job = queueTile.shift()
       } else if (queueMesh.length > 0) {
         job = queueMesh.shift()
@@ -281,6 +311,8 @@ export function createChunkWorkerPool(
             job.resolve(msg.result)
           } else if (job.kind === 'riverTile' && msg.kind === 'riverTile') {
             job.resolve(msg.chains)
+          } else if (job.kind === 'hydrologyRows' && msg.kind === 'hydrologyRows') {
+            job.resolve(msg.rows)
           } else if (job.kind === 'mapTile' && msg.kind === 'mapTile') {
             job.resolve(msg.tile)
           } else {
@@ -305,17 +337,27 @@ export function createChunkWorkerPool(
     }
   }
 
-  for (let i = 0; i < size; i++) {
+  /** The one worker creation path: a worker created at any time gets the installed hydrology before any job. */
+  function spawn(): void {
     const worker = createWorker()
     attach(worker)
+    for (const [hydrologyId, data] of installedHydrology) worker.postMessage({ kind: 'installHydrology', hydrologyId, data })
     workers.push(worker)
     free.push(worker)
   }
+
+  for (let i = 0; i < size; i++) spawn()
 
   function cancelByNamespacedKey(namespacedKey: string): void {
     const id = keyToId.get(namespacedKey)
     if (id === undefined) return
     keyToId.delete(namespacedKey)
+    const hydrologyRowsIndex = queueHydrologyRows.findIndex((job) => job.id === id)
+    if (hydrologyRowsIndex !== -1) {
+      const [job] = queueHydrologyRows.splice(hydrologyRowsIndex, 1)
+      job!.reject(new HeightmapGenerationCancelledError())
+      return
+    }
     const tileIndex = queueTile.findIndex((job) => job.id === id)
     if (tileIndex !== -1) {
       const [job] = queueTile.splice(tileIndex, 1)
@@ -454,7 +496,26 @@ export function createChunkWorkerPool(
     })
   }
 
+  function installHydrology(hydrologyId: string, data: WorldHydrology): void {
+    if (installedHydrology.get(hydrologyId) === data) return
+    installedHydrology.set(hydrologyId, data)
+    for (const worker of workers) worker.postMessage({ kind: 'installHydrology', hydrologyId, data })
+  }
+
+  function requestHydrologyRows(key: string, params: RawSampleParams, rowStart: number, rowEnd: number): Promise<Float32Array> {
+    cancelByNamespacedKey(`hydrologyRows:${key}`)
+    const id = nextId++
+    keyToId.set(`hydrologyRows:${key}`, id)
+    return new Promise<Float32Array>((resolve, reject) => {
+      queueHydrologyRows.push({ kind: 'hydrologyRows', id, key, params, rowStart, rowEnd, resolve, reject })
+      pump()
+    })
+  }
+
   function dispose(): void {
+    for (const job of queueHydrologyRows) job.reject(new HeightmapGenerationCancelledError())
+    queueHydrologyRows.length = 0
+    installedHydrology.clear()
     for (const job of queueTile) job.reject(new HeightmapGenerationCancelledError())
     queueTile.length = 0
     for (const job of queueMesh) job.reject(new HeightmapGenerationCancelledError())
@@ -489,9 +550,11 @@ export function createChunkWorkerPool(
     cancelMapTile,
     requestRiverTile,
     cancelRiverTile,
+    installHydrology,
+    requestHydrologyRows,
     dispose,
     get pendingCount() {
-      return queueTile.length + queueMesh.length + queueWorldKnowledge.length + queueMapTile.length + queueRiverTile.length + queueGrass.length
+      return queueHydrologyRows.length + queueTile.length + queueMesh.length + queueWorldKnowledge.length + queueMapTile.length + queueRiverTile.length + queueGrass.length
     },
     get busyCount() {
       return inflight.size
@@ -567,6 +630,19 @@ export function requestChunkRiverTile(
 
 export function cancelChunkRiverTile(key: string): void {
   chunkPool?.cancelRiverTile(key)
+}
+
+export function installChunkWorkerHydrology(hydrologyId: string, data: WorldHydrology): void {
+  getChunkPool().installHydrology(hydrologyId, data)
+}
+
+export function requestChunkHydrologyRows(
+  key: string,
+  params: RawSampleParams,
+  rowStart: number,
+  rowEnd: number,
+): Promise<Float32Array> {
+  return getChunkPool().requestHydrologyRows(key, params, rowStart, rowEnd)
 }
 
 export function disposeChunkWorkerPool(): void {

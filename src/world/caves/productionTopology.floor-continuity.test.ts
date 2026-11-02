@@ -269,6 +269,7 @@ describe('seed 1136726869 chamber ramp is walkable both ways', () => {
     const t = config.terrain
     const params: RawSampleParams = {
       seed: config.seed,
+      hydrologyId: 'test-hydrology',
       heightScale: t.heightScale,
       waterLevel: t.waterLevel,
       noiseScale: t.noiseScale,

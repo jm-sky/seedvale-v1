@@ -22,6 +22,7 @@ function tileParams(overrides: Partial<ChunkTileParams> = {}): ChunkTileParams {
     chunkSize: 64,
     resolution: 17,
     seed: 1,
+    hydrologyId: 'test-hydrology',
     heightScale: 18,
     waterLevel: 0.45,
     noiseScale: 120,
@@ -72,6 +73,7 @@ function tileParams(overrides: Partial<ChunkTileParams> = {}): ChunkTileParams {
 
 function snapshotFromParams(params: ChunkTileParams): WorldKnowledgeTerrainSnapshot {
   return {
+    hydrologyId: params.hydrologyId,
     chunkSize: params.chunkSize,
     resolution: params.resolution,
     seed: params.seed,

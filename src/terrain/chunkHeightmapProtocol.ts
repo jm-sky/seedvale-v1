@@ -7,6 +7,7 @@ import type { ChunkMeshData, ChunkMeshDataParams } from './chunkMeshData'
 import type { VegetationPlacement } from './chunkVegetation'
 import type { GrassChunkData, GrassComputeParams, GrassTileGrids } from './grassPlacement'
 import type { RiverChain, RiverTileCoord } from './riverNetwork'
+import type { WorldHydrology } from './worldHydrology'
 import type { WorldKnowledgeScanResult, WorldKnowledgeWorkerParams } from './worldKnowledgeScan'
 
 /** A resolved tile's terrain grids plus its vegetation/item/decorative
@@ -36,6 +37,14 @@ export type ChunkWorkerRequest =
   | { kind: 'worldKnowledge', id: number, params: WorldKnowledgeWorkerParams }
   | { kind: 'mapTile', id: number, params: MapTileRequest }
   | { kind: 'riverTile', id: number, tile: RiverTileCoord, sampleParams: RawSampleParams }
+  /** Raw floor rows `[rowStart, rowEnd)` of the hydrology grid (plan world-terrain-058 H2). */
+  | { kind: 'hydrologyRows', id: number, params: RawSampleParams, rowStart: number, rowEnd: number }
+  /** Installs global hydrology into the worker's registry. No response: a worker handles messages in order, so every
+   *  job posted after it sees the data. */
+  | { kind: 'installHydrology', hydrologyId: string, data: WorldHydrology }
+
+/** Requests that carry a job id and get exactly one response. */
+export type ChunkWorkerJobRequest = Exclude<ChunkWorkerRequest, { kind: 'installHydrology' }>
 
 export type ChunkWorkerResponse =
   | (ChunkTileResult & { kind: 'tile', id: number, ok: true })
@@ -44,4 +53,5 @@ export type ChunkWorkerResponse =
   | { kind: 'worldKnowledge', id: number, ok: true, result: WorldKnowledgeScanResult }
   | { kind: 'mapTile', id: number, ok: true, tile: MapTileData }
   | { kind: 'riverTile', id: number, ok: true, chains: RiverChain[] }
-  | { kind: 'tile' | 'grass' | 'mesh' | 'worldKnowledge' | 'mapTile' | 'riverTile', id: number, ok: false, error: string }
+  | { kind: 'hydrologyRows', id: number, ok: true, rows: Float32Array }
+  | { kind: ChunkWorkerJobRequest['kind'], id: number, ok: false, error: string }

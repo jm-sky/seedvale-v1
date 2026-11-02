@@ -40,6 +40,7 @@ function terrainParams(): RawSampleParams {
   const t = config.terrain
   return {
     seed: config.seed,
+    hydrologyId: 'test-hydrology',
     heightScale: t.heightScale,
     waterLevel: t.waterLevel,
     noiseScale: t.noiseScale,

@@ -12,6 +12,7 @@ import { createRiverQuery } from './riverQuery'
 function rawParams(seed: number): RawSampleParams {
   return {
     seed,
+    hydrologyId: 'test-hydrology',
     heightScale: 18,
     waterLevel: 0.45,
     noiseScale: 105,

@@ -266,6 +266,11 @@ export type ChunkTileParams = {
     fbm: FbmParams
   }
   region: RegionParams
+  /** Identity of the global hydrology this terrain is conditioned by (plan world-terrain-058 H2):
+   *  hash of seed + `WORLD_HYDROLOGY_VERSION` + hydrology options + terrain inputs. Hashed into every
+   *  fingerprint that hashes these params, so a hydrology change invalidates dependent caches. The data
+   *  itself lives in `worldHydrologyRegistry.ts`; produced by `rawSampleParamsFromWorld`. */
+  hydrologyId: string
   /** True for chunks pinned as the settlement's home block — skips per-chunk
    *  vegetation generation there, since the settlement plants its own bespoke
    *  forest layout (`src/settlement/props.ts`). */

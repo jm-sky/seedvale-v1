@@ -2,10 +2,12 @@ import { createNoise2D } from 'simplex-noise'
 import { projectOntoSegment } from '../math/segment'
 import { createSeededRandom } from '../world/parseSeed'
 import { type RawSampleParams, sampleFloorAt } from './chunkHeightmap'
+import { WORLD_HALF_EXTENT } from './continentMask'
 import {
   DEFAULT_RIVER_THRESHOLDS,
   MEANDER_NOISE_SEED_XOR,
   meanderChainPointsWith,
+  RIVER_CELL_STEP,
   RIVER_MEANDER_TAPER_DISTANCE,
   type RiverChain,
   type RiverPoint,
@@ -80,6 +82,14 @@ export const DEFAULT_WORLD_HYDROLOGY_OPTIONS: WorldHydrologyOptions = {
   mouthRampM: 24,
   seed: 0,
 }
+
+/** The one hydrology grid: the whole finite world at `RIVER_CELL_STEP` (1537² cells for ±6144 m). */
+export const WORLD_HYDROLOGY_GRID = {
+  size: Math.round((2 * WORLD_HALF_EXTENT) / RIVER_CELL_STEP) + 1,
+  cellStep: RIVER_CELL_STEP,
+  originX: -WORLD_HALF_EXTENT,
+  originZ: -WORLD_HALF_EXTENT,
+} as const
 
 export type WorldHydrologyGrid = {
   /** Raw floor heights, row-major (`iz * size + ix`), `size * size` long. Not modified. */

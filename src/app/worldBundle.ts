@@ -148,6 +148,7 @@ import {
   type SettlementMiningHooks,
 } from '../terrain/resourceDeposits'
 import { terrainVisualHorizon, type TerrainVisualHorizon } from '../terrain/terrainVisualHorizon'
+import { ensureWorldHydrology } from '../terrain/worldHydrologyRuntime'
 import {
   type AuthoredWorldConsequenceId,
   type AuthoredWorldConsequenceRegistry,
@@ -536,6 +537,7 @@ function buildChunkManager(
     fbm: config.terrain.fbm,
     biome: config.terrain.biome,
     region: config.terrain.region,
+    hydrologyId: rawSampleParamsFromWorld(config).hydrologyId,
     settlementSearchRadius: HOME_RADIUS,
     flatShading: config.terrain.flatShading,
     collectedItemIds,
@@ -1333,6 +1335,16 @@ async function buildWorldSystems(
   } = seed
 
   const resourceSiteInventories = initialResourceSiteInventories ?? createResourceSiteInventories()
+
+  // Plan world-terrain-058 H2 — global hydrology is installed (registry, cache or compute, then every chunk worker)
+  // before anything that samples terrain for this world: the chunk manager, caches fingerprinted by it, roads.
+  bootMark('worldHydrology')
+  const hydrologyInstall = await ensureWorldHydrology(rawSampleParamsFromWorld(config))
+  bootMarkEnd('worldHydrology')
+  console.info(
+    `[world-hydrology] ${hydrologyInstall.source} id=${hydrologyInstall.hydrologyId} hash=${hydrologyInstall.hash} total=${hydrologyInstall.totalMs.toFixed(0)}ms`
+    + (hydrologyInstall.source === 'computed' ? ` sample=${hydrologyInstall.sampleMs.toFixed(0)}ms compute=${hydrologyInstall.computeMs.toFixed(0)}ms` : ''),
+  )
 
   // Plan world-terrain-029 — hydrate persisted road routes into the module-level
   // `routeCache` before the first streamed chunk can call `segmentsNear()`.

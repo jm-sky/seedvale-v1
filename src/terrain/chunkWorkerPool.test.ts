@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import type { ChunkTileParams, RawSampleParams } from './chunkHeightmap'
-import type { ChunkWorkerRequest, ChunkWorkerResponse, GrassRequestParams } from './chunkHeightmapProtocol'
+import type { ChunkWorkerJobRequest, ChunkWorkerRequest, ChunkWorkerResponse, GrassRequestParams } from './chunkHeightmapProtocol'
 import type { ChunkMeshDataParams } from './chunkMeshData'
+import type { WorldHydrology } from './worldHydrology'
 import type { WorldKnowledgeWorkerParams } from './worldKnowledgeScan'
 import {
   type ChunkWorkerLike,
@@ -10,7 +11,8 @@ import {
 } from './chunkWorkerPool'
 
 type ControllableWorker = ChunkWorkerLike & {
-  last: ChunkWorkerRequest | null
+  /** Last job request (install messages are only in `posted`). */
+  last: ChunkWorkerJobRequest | null
   terminated: boolean
   completeOk(): void
   completeError(error: string): void
@@ -25,7 +27,7 @@ function createControllableWorker(posted: Posted[]): ControllableWorker {
     terminated: false,
     last: null,
     postMessage(message) {
-      worker.last = message
+      if (message.kind !== 'installHydrology') worker.last = message
       posted.push({ worker, request: message })
     },
     terminate() {
@@ -35,7 +37,9 @@ function createControllableWorker(posted: Posted[]): ControllableWorker {
       const request = worker.last
       if (!request || !worker.onmessage) return
       const response = (
-        request.kind === 'riverTile'
+        request.kind === 'hydrologyRows'
+          ? { kind: 'hydrologyRows', id: request.id, ok: true, rows: new Float32Array([request.rowStart]) }
+          : request.kind === 'riverTile'
           ? { kind: 'riverTile', id: request.id, ok: true, chains: [] }
           : request.kind === 'worldKnowledge'
           ? { kind: 'worldKnowledge', id: request.id, ok: true, result: { hits: [], elapsedMs: 0 } }
@@ -92,6 +96,7 @@ const dummyKnowledge = {
   originZ: 0,
   maxChunkRadius: 1,
   terrain: {
+    hydrologyId: 'test-hydrology',
     chunkSize: 64,
     resolution: 17,
     seed: 1,
@@ -221,5 +226,33 @@ describe('chunkWorkerPool world-knowledge scheduling (plan quests-progression-04
     posted[0]!.worker.completeOk()
     await expect(pending).resolves.toEqual([])
     pool.dispose()
+  })
+
+  it('posts installHydrology to every worker and runs hydrology strips before queued tiles', async () => {
+    const posted: Posted[] = []
+    const pool = createChunkWorkerPool(2, { createWorker: () => createControllableWorker(posted) })
+    const data = { version: 1 } as WorldHydrology
+    pool.installHydrology('h-test', data)
+    const installs = posted.filter((p) => p.request.kind === 'installHydrology')
+    expect(installs).toHaveLength(2)
+    expect(new Set(installs.map((p) => p.worker)).size).toBe(2)
+    // Same data again is a no-op (no second structured clone per worker).
+    pool.installHydrology('h-test', data)
+    expect(posted.filter((p) => p.request.kind === 'installHydrology')).toHaveLength(2)
+
+    const first = pool.requestTile('t1', dummyTile)
+    const second = pool.requestTile('t2', dummyTile)
+    const third = pool.requestTile('t3', dummyTile)
+    const rows = pool.requestHydrologyRows('r', {} as RawSampleParams, 3, 5)
+    // Both workers took tiles; the strip waits, then outranks the third tile.
+    posted.filter((p) => p.request.kind === 'tile')[0]!.worker.completeOk()
+    await first
+    const job = posted.filter((p) => p.request.kind !== 'installHydrology').at(-1)!
+    expect(job.request).toMatchObject({ kind: 'hydrologyRows', rowStart: 3, rowEnd: 5 })
+    job.worker.completeOk()
+    await expect(rows).resolves.toEqual(new Float32Array([3]))
+    pool.dispose()
+    await expect(second).rejects.toBeInstanceOf(HeightmapGenerationCancelledError)
+    await expect(third).rejects.toBeInstanceOf(HeightmapGenerationCancelledError)
   })
 })

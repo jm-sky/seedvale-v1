@@ -5,6 +5,7 @@ import { generateSeedName, sampleStartupTerrainProfile } from './seedProfile'
 function params(overrides: Partial<RawSampleParams> = {}): RawSampleParams {
   return {
     seed: 1,
+    hydrologyId: 'test-hydrology',
     heightScale: 18,
     waterLevel: 0.45,
     noiseScale: 120,

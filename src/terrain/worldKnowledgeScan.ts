@@ -35,6 +35,8 @@ export type WorldKnowledgeQueryKind = 'nearest-landmark' | 'nearby-landmarks'
  * @domain world-terrain
  */
 export type WorldKnowledgeTerrainSnapshot = {
+  /** `RawSampleParams.hydrologyId` (plan world-terrain-058 H2). */
+  hydrologyId: string
   chunkSize: number
   resolution: number
   seed: number
@@ -88,6 +90,7 @@ let preparedEpoch = ''
 
 function rawSampleParamsFromTerrain(terrain: WorldKnowledgeTerrainSnapshot): RawSampleParams {
   return {
+    hydrologyId: terrain.hydrologyId,
     seed: terrain.seed,
     heightScale: terrain.heightScale,
     waterLevel: terrain.waterLevel,
@@ -162,6 +165,7 @@ function cloneTerrainFields(coord: ChunkCoord, terrain: WorldKnowledgeTerrainSna
     chunkSize: terrain.chunkSize,
     resolution: terrain.resolution,
     seed: terrain.seed,
+    hydrologyId: terrain.hydrologyId,
     heightScale: terrain.heightScale,
     waterLevel: terrain.waterLevel,
     noiseScale: terrain.noiseScale,

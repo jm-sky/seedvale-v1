@@ -23,6 +23,7 @@ import { isInsideRiverChannel } from './riverNetwork'
 function tileParams(overrides: Partial<ChunkTileParams> = {}): ChunkTileParams {
   const raw: RawSampleParams = {
     seed: 42,
+    hydrologyId: 'test-hydrology',
     heightScale: 18,
     waterLevel: 0.45,
     noiseScale: 120,

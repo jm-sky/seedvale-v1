@@ -397,6 +397,7 @@ describe('resolveUnloadedLandmark (plan world-014)', () => {
       chunkSize: 64,
       resolution: 17,
       seed: 1,
+      hydrologyId: 'test-hydrology',
       heightScale: 18,
       waterLevel: 0.45,
       noiseScale: 120,

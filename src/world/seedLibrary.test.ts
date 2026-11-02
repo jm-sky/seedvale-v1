@@ -25,6 +25,7 @@ afterEach(() => {
 function fakeSampleParams(seed: number): RawSampleParams {
   return {
     seed,
+    hydrologyId: 'test-hydrology',
     heightScale: 18,
     waterLevel: 0.45,
     noiseScale: 120,

@@ -4,6 +4,7 @@ import { sandBandAt } from '../../terrain/biomeColors'
 import { biomeWeightsAt, forestDensityAt } from '../../terrain/biomeRegions'
 import { type RawSampleParams, type RawTexelSample, sampleRawTexelAt } from '../../terrain/chunkHeightmap'
 import { isMountainRidge, isOceanMix, isWetFloor } from '../../terrain/terrainClassification'
+import { hydrologyIdFor } from '../../terrain/worldHydrologyRegistry'
 import { MAP_CELL_SIZE, MAP_EXTENT_HALF } from './mapConfig'
 
 /** Altitude fraction (of heightScale above water) where lowland becomes highland. */
@@ -53,7 +54,7 @@ export function parseMapCellKey(key: MapCellKey): { cx: number, cz: number } | n
 }
 
 export function rawSampleParamsFromWorld(config: WorldConfig): RawSampleParams {
-  return {
+  const terrain: Omit<RawSampleParams, 'hydrologyId'> = {
     seed: config.seed,
     heightScale: config.terrain.heightScale,
     waterLevel: config.terrain.waterLevel,
@@ -66,6 +67,7 @@ export function rawSampleParamsFromWorld(config: WorldConfig): RawSampleParams {
     biome: config.terrain.biome,
     region: config.terrain.region,
   }
+  return { ...terrain, hydrologyId: hydrologyIdFor(terrain) }
 }
 
 export type MapTexelClass = Pick<MapCellData, 'terrain' | 'biome' | 'water'>

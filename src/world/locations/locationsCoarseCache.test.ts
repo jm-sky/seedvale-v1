@@ -22,6 +22,7 @@ afterEach(() => {
 function params(overrides: Partial<RawSampleParams> = {}): RawSampleParams {
   return {
     seed: 1,
+    hydrologyId: 'test-hydrology',
     heightScale: 18,
     waterLevel: 0.45,
     noiseScale: 120,
@@ -75,7 +76,7 @@ describe('locationsCoarseFingerprint (plan world-015 §8)', () => {
 
   it('is independent of object key order', () => {
     const a = params()
-    const b = { region: a.region, seed: a.seed, waterLevel: a.waterLevel, heightScale: a.heightScale, noiseScale: a.noiseScale, detailAmplitude: a.detailAmplitude, hillsScale: a.hillsScale, hillsAmplitude: a.hillsAmplitude, hillsFbm: a.hillsFbm, fbm: a.fbm, biome: a.biome } as RawSampleParams
+    const b = { region: a.region, seed: a.seed, hydrologyId: a.hydrologyId, waterLevel: a.waterLevel, heightScale: a.heightScale, noiseScale: a.noiseScale, detailAmplitude: a.detailAmplitude, hillsScale: a.hillsScale, hillsAmplitude: a.hillsAmplitude, hillsFbm: a.hillsFbm, fbm: a.fbm, biome: a.biome } as RawSampleParams
     expect(locationsCoarseFingerprint(a)).toBe(locationsCoarseFingerprint(b))
   })
 })

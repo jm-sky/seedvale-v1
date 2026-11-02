@@ -19,6 +19,7 @@ import {
 function rawParams(overrides: Partial<RawSampleParams> = {}): RawSampleParams {
   return {
     seed: 42,
+    hydrologyId: 'test-hydrology',
     heightScale: 18,
     waterLevel: 0.45,
     noiseScale: 120,

@@ -17,7 +17,6 @@ import { villageSizeConfig } from '../../src/settlement/families'
 import { cellsWithinRadius, type SettlementDef } from '../../src/settlement/settlementGenerator'
 import { clearSettlementDefCache, setSettlementRiverQuery, settlementDefFor } from '../../src/settlement/settlementPlanCache'
 import { sampleHeightAt } from '../../src/terrain/chunkHeightmap'
-import { WORLD_HALF_EXTENT } from '../../src/terrain/continentMask'
 import {
   computeRiverTileDiagnostics,
   RIVER_CELL_STEP,
@@ -27,7 +26,8 @@ import {
   riverTileKey,
 } from '../../src/terrain/riverNetwork'
 import { createRiverQuery } from '../../src/terrain/riverQuery'
-import { ChainEnd, computeWorldHydrology, hashWorldHydrology, sampleRawFloorRows, sparseBlockValue, unpackChains } from '../../src/terrain/worldHydrology'
+import { ChainEnd, computeWorldHydrology, hashWorldHydrology, sampleRawFloorRows, sparseBlockValue, unpackChains, WORLD_HYDROLOGY_GRID } from '../../src/terrain/worldHydrology'
+import { hydrologyIdFor } from '../../src/terrain/worldHydrologyRegistry'
 import { worldKnowledgeRoadContext, type WorldKnowledgeTerrainSnapshot } from '../../src/terrain/worldKnowledgeScan'
 
 function arg(name: string, fallback: string): string {
@@ -44,11 +44,12 @@ const dist = (a: P, b: P) => Math.hypot(a.x - b.x, a.z - b.z)
 
 function sampleParamsFor(seed: number): RawSampleParams {
   const t = defaultTerrainConfig(65)
-  return {
+  const params = {
     seed, heightScale: t.heightScale, waterLevel: t.waterLevel, noiseScale: t.noiseScale,
     detailAmplitude: t.detailAmplitude, hillsScale: t.hillsScale, hillsAmplitude: t.hillsAmplitude,
     hillsFbm: t.hillsFbm, fbm: t.fbm, biome: t.biome, region: t.region,
-  } as RawSampleParams
+  }
+  return { ...params, hydrologyId: hydrologyIdFor(params) }
 }
 
 function snapshotFor(seed: number): WorldKnowledgeTerrainSnapshot {
@@ -182,9 +183,8 @@ function measure(seed: number) {
 
 function measureGlobal(seed: number) {
   const params = sampleParamsFor(seed)
-  const cellStep = RIVER_CELL_STEP
-  const size = Math.round((2 * WORLD_HALF_EXTENT) / cellStep) + 1
-  const grid = { size, cellStep, originX: -WORLD_HALF_EXTENT, originZ: -WORLD_HALF_EXTENT }
+  const grid = { ...WORLD_HYDROLOGY_GRID }
+  const { size, cellStep } = grid
   const t0 = performance.now()
   const floor = sampleRawFloorRows(params, grid, 0, size)
   const sampleMs = performance.now() - t0

@@ -74,6 +74,7 @@ function dryLandTile(apronRes: number): ChunkTileData {
 function params(overrides: Partial<ChunkTileParams> = {}): ChunkTileParams {
   return {
     seed: 42,
+    hydrologyId: 'test-hydrology',
     heightScale: 18,
     waterLevel: 0,
     noiseScale: 120,

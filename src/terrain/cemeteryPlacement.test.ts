@@ -26,6 +26,7 @@ function tileParams(overrides: Partial<ChunkTileParams> = {}): ChunkTileParams {
     chunkSize: CHUNK_SIZE,
     resolution: 17,
     seed: 1,
+    hydrologyId: 'test-hydrology',
     heightScale: 18,
     waterLevel: 0.45,
     noiseScale: 120,

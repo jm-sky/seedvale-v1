@@ -17,6 +17,7 @@
 import type { CaveEntrance } from '../../world/caveVolume'
 import { defaultTerrainConfig } from '../../config/worldConfig'
 import { type RawSampleParams, sampleHeightAt } from '../../terrain/chunkHeightmap'
+import { hydrologyIdFor } from '../../terrain/worldHydrologyRegistry'
 import { mouthCarveDepth } from '../../world/caves/mouthCarve'
 
 /** World seed the harness terrain is sampled from. Fixed so the spike is
@@ -41,7 +42,7 @@ const TERRAIN_RESOLUTION = 65
 
 function terrainParams(): RawSampleParams {
   const terrain = defaultTerrainConfig(TERRAIN_RESOLUTION)
-  return {
+  const params: Omit<RawSampleParams, 'hydrologyId'> = {
     seed: CAVE_HEIGHTFIELD_TERRAIN_SEED,
     heightScale: terrain.heightScale,
     waterLevel: terrain.waterLevel,
@@ -54,6 +55,7 @@ function terrainParams(): RawSampleParams {
     biome: terrain.biome,
     region: terrain.region,
   }
+  return { ...params, hydrologyId: hydrologyIdFor(params) }
 }
 
 const PARAMS = terrainParams()

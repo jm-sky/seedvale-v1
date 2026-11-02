@@ -359,6 +359,8 @@ export type ChunkManagerConfig = {
   fbm: FbmParams
   biome: { noiseScale: number; fbm: FbmParams }
   region: RegionParams
+  /** `RawSampleParams.hydrologyId` of this world (plan world-terrain-058 H2) — see `rawSampleParamsFromWorld`. */
+  hydrologyId: string
   /** `findSettlementSite`'s local flat-site search radius (`HOME_RADIUS` in
    *  `createApp.ts`) — needed here only to resolve `SettlementDef`s for road
    *  segments near a chunk (`roadNetwork.ts`), same value `SettlementsManager`
@@ -1339,6 +1341,7 @@ export function createChunkManager(
     fbm: config.fbm,
     biome: config.biome,
     region: config.region,
+    hydrologyId: config.hydrologyId,
   }
 
   // Canonical river geometry for *placement* (settlement sites, village
@@ -1435,6 +1438,7 @@ export function createChunkManager(
       chunkSize: config.chunkSize,
       resolution: config.resolution,
       seed: config.seed,
+      hydrologyId: config.hydrologyId,
       heightScale: config.heightScale,
       waterLevel: config.waterLevel,
       noiseScale: config.noiseScale,
@@ -3433,6 +3437,7 @@ export function createChunkManager(
         originZ: input.originZ,
         maxChunkRadius: input.maxChunkRadius,
         terrain: {
+          hydrologyId: config.hydrologyId,
           chunkSize: config.chunkSize,
           resolution: config.resolution,
           seed: config.seed,
