@@ -1,5 +1,6 @@
 import type { KeyState } from './Keyboard'
 import { isTouchDevice } from './isTouchDevice'
+import { readFlyConfig } from '../debug/flyCam'
 
 export type LookState = {
   yaw: number
@@ -99,7 +100,9 @@ export function createMouseLook(target: HTMLElement, keys: KeyState): {
     if (document.pointerLockElement !== target) return
     state.yaw -= event.movementX * SENSITIVITY
     state.pitch -= event.movementY * SENSITIVITY
-    state.pitch = clamp(state.pitch, PITCH_MIN, pitchMaxFor(state.distance))
+    state.pitch = readFlyConfig()
+      ? clamp(state.pitch, -Math.PI / 2, Math.PI / 2)
+      : clamp(state.pitch, PITCH_MIN, pitchMaxFor(state.distance))
   }
 
   const onWheel = (event: WheelEvent) => {
@@ -112,7 +115,9 @@ export function createMouseLook(target: HTMLElement, keys: KeyState): {
       CAMERA_DISTANCE_MIN,
       CAMERA_DISTANCE_MAX,
     )
-    state.pitch = Math.min(state.pitch, pitchMaxFor(state.distance))
+    if (!readFlyConfig()) {
+      state.pitch = Math.min(state.pitch, pitchMaxFor(state.distance))
+    }
     event.preventDefault()
   }
 

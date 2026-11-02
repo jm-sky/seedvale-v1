@@ -56,7 +56,7 @@ export const SETTLEMENT_DEFINITION_CACHE_NAMESPACE = 'settlement-definitions'
  * resolved progression-policy identity) is fingerprinted separately. An
  * old-version record is a plain cache miss — records are never migrated.
  */
-export const SETTLEMENT_DEFINITION_CACHE_VERSION = 10
+export const SETTLEMENT_DEFINITION_CACHE_VERSION = 11
 // v7 (2026-10-31, queue Q43): settlement storehouse — plot-infra-storehouse-0 (+ houseDefinitionId/houseYaw/storehouse),
 // landmark kind 'storehouse', ClearingLayout.storehouses.
 // v6 (2026-10-31, queue Q41): household compounds — plot.houseDefinitionId/houseYaw/yard/discs,

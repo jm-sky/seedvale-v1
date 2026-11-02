@@ -349,6 +349,11 @@ function tieBreakNoise(seedForCell: number, plotId: string): number {
   return (h >>> 0) / 4294967295 * 1e-4
 }
 
+/** Hard cap on terrain height spread across a house's yard (m). */
+const YARD_MAX_HEIGHT_SPREAD = 4
+/** Yard slope weighs more than the house pad's own spread when scoring a site. */
+const YARD_SPREAD_SCORE_FACTOR = 1.5
+
 function localSlope(x: number, z: number, y: number, sampleHeight: HeightSampler): number {
   const step = LOCAL_SLOPE_STEP
   const samples = [
@@ -545,8 +550,22 @@ function scorePlotCandidate(
 
   if (!pathIsDry(center.x, center.z, x, z, waterLevel, sampleHeight)) return null
 
-  const clearance = req.house
-    ? discsClearance(buildHouseCompound(req.house, x, z, center).discs!, existing)
+  // The yard behind a house is part of the compound: judge its ground too
+  // (a house on a flat pad must not drag its yard/garden up a steep bank).
+  let yardSpread = 0
+  let compoundDiscs: PlanDisc[] | null = null
+  if (req.house) {
+    const compound = buildHouseCompound(req.house, x, z, center)
+    compoundDiscs = compound.discs!
+    if (compound.yard) {
+      const yd = yardDisc(compound.yard)
+      yardSpread = heightSpread(yd.x, yd.z, yd.radius * 0.85, sampleHeight)
+      if (yardSpread > YARD_MAX_HEIGHT_SPREAD) return null
+    }
+  }
+
+  const clearance = compoundDiscs
+    ? discsClearance(compoundDiscs, existing)
     : minDistToPlots(x, z, existing)
   if (Number.isFinite(clearance) && clearance < minSpacing) return null
 
@@ -580,7 +599,8 @@ function scorePlotCandidate(
   let score =
     10 -
     slope * w.slope -
-    spread * w.heightSpread +
+    spread * w.heightSpread -
+    yardSpread * w.heightSpread * YARD_SPREAD_SCORE_FACTOR +
     w.pathDryBonus +
     tieBreakNoise(seedForCell, req.id)
 

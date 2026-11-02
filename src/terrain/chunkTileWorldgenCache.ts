@@ -54,8 +54,9 @@ export const CHUNK_TILE_CACHE_NAMESPACE = 'chunk-tiles'
  * v10 (2026-11-02, queue Q57 feedback): no zone spurs, shore lane, all entrance lanes road width.
  * v11 (2026-11-02): cemetery placement rejects river channels.
  * v12 (2026-11-02): lanes root inside the plaza; yard clearance counts lane half width.
+ * v13 (2026-11-02): house sites also judged by yard ground (steep yards rejected/penalised).
  */
-export const CHUNK_TILE_CACHE_VERSION = 12
+export const CHUNK_TILE_CACHE_VERSION = 13
 
 /** Small byte-budget manifest record living in the same namespace — see
  *  `ChunkTileMetaPayload`. Its `fingerprint` field is a constant because the
