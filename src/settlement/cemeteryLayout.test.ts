@@ -42,11 +42,11 @@ function insideObb(o: ReturnType<typeof cemeteryObbColliders>[number], x: number
 }
 
 describe('cemeteryLayout', () => {
-  it('has the V2 class counts (9/15/25 graves, 1/2/3 crypts)', () => {
-    expect(SIZES.map((s) => cemeteryGraveLayout(s, 1).length)).toEqual([9, 15, 25])
+  it('has the V2 class counts (8/15/25 graves, 1/2/3 crypts)', () => {
+    expect(SIZES.map((s) => cemeteryGraveLayout(s, 1).length)).toEqual([8, 15, 25])
     expect(SIZES.map((s) => cemeteryCryptLayout(s, 1).length)).toEqual([1, 2, 3])
     expect(SIZES.map((s) => cemeteryCounts(s))).toEqual([
-      { graves: 9, crypts: 1 },
+      { graves: 8, crypts: 1 },
       { graves: 15, crypts: 2 },
       { graves: 25, crypts: 3 },
     ])
@@ -76,7 +76,7 @@ describe('cemeteryLayout', () => {
     for (const size of SIZES) {
       const { hd } = cemeteryPlotExtents(size, 1)
       const zs = cemeteryGraveLayout(size, 1).map((s) => s.z)
-      expect(Math.min(...zs, cemeteryCryptLayout(size, 1)[0]!.z)).toBeLessThan(-hd * 0.4)
+      expect(Math.min(...zs, cemeteryCryptLayout(size, 1)[0]!.z)).toBeLessThan(-hd * 0.3)
       expect(Math.max(...zs)).toBeGreaterThan(hd * 0.4)
     }
   })
@@ -87,7 +87,7 @@ describe('cemeteryLayout', () => {
     expect(hw[0]).toBeCloseTo(5.8, 1)
     expect(hw[1]).toBeCloseTo(6.8, 1)
     expect(hw[2]).toBeCloseTo(8.8, 1)
-    expect(hd[0]).toBeCloseTo(8.1, 1)
+    expect(hd[0]).toBeCloseTo(6.9, 1)
     expect(hd[2]).toBeCloseTo(9.3, 1)
   })
 

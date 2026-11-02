@@ -147,7 +147,10 @@ function useSeedFromLibrary(seed: number): void {
       @close="view = 'main'"
       @use-seed="useSeedFromLibrary"
     />
-    <UiPanel v-else class="border border-amber-200/20 bg-[oklch(0.23_0.02_60_/_0.95)] shadow-2xl">
+    <UiPanel
+      v-else
+      class="border border-amber-200/20 bg-[oklch(0.23_0.02_60_/_0.95)] shadow-2xl"
+    >
       <h1 class="mb-4.5 text-center text-[22px] font-semibold tracking-wide text-primary">
         Seedvale
       </h1>

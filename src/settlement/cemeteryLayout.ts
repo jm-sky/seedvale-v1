@@ -36,7 +36,7 @@ type CemeteryClassSpec = { columns: number, graves: number, crypts: number }
 
 /** V2 class table with fixed counts (V2 base + 1, the midpoint of V2's range). */
 const CLASS_SPECS: Record<CemeterySize, CemeteryClassSpec> = {
-  SM: { columns: 4, graves: 9, crypts: 1 },
+  SM: { columns: 4, graves: 8, crypts: 1 },
   MD: { columns: 5, graves: 15, crypts: 2 },
   LG: { columns: 7, graves: 25, crypts: 3 },
 }
