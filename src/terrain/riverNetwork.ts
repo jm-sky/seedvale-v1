@@ -557,8 +557,8 @@ const RIVER_MEANDER_DETAIL_SCALE = RIVER_MEANDER_SCALE * 2.6
 const RIVER_MEANDER_WIDTH_FACTOR = 1.1
 const RIVER_MEANDER_MIN_AMPLITUDE = 0.35
 const RIVER_MEANDER_MAX_AMPLITUDE = 6
-const RIVER_MEANDER_TAPER_DISTANCE = 32
-const MEANDER_NOISE_SEED_XOR = 0x5bd1e995
+export const RIVER_MEANDER_TAPER_DISTANCE = 32
+export const MEANDER_NOISE_SEED_XOR = 0x5bd1e995
 
 function meanderTaper(p: RiverPoint, coreRect: WorldRect): number {
   const edgeDist = Math.min(
@@ -577,6 +577,16 @@ function meanderTaper(p: RiverPoint, coreRect: WorldRect): number {
  *  slow "bend" wavelength plus a faster wiggle) keep it from reading as one
  *  perfect sine wave. */
 function meanderChainPoints(points: RiverPoint[], coreRect: WorldRect, noise: NoiseFunction2D): RiverPoint[] {
+  return meanderChainPointsWith(points, noise, (p) => meanderTaper(p, coreRect))
+}
+
+/** Meander with a caller-supplied amplitude taper (0..1 per point and index); the first/last point never move.
+ *  Used by the global hydrology chains (`worldHydrology.ts`), which taper towards their own ends instead of a tile rect. */
+export function meanderChainPointsWith(
+  points: RiverPoint[],
+  noise: NoiseFunction2D,
+  taperAt: (p: RiverPoint, index: number) => number,
+): RiverPoint[] {
   if (points.length < 3) return points
   return points.map((p, i) => {
     if (i === 0 || i === points.length - 1) return p
@@ -600,7 +610,7 @@ function meanderChainPoints(points: RiverPoint[], coreRect: WorldRect, noise: No
       RIVER_MEANDER_MIN_AMPLITUDE,
       RIVER_MEANDER_MAX_AMPLITUDE,
     )
-    const amplitude = baseAmplitude * meanderTaper(p, coreRect)
+    const amplitude = baseAmplitude * taperAt(p, i)
 
     return { ...p, x: p.x + nx * n * amplitude, z: p.z + nz * n * amplitude }
   })
@@ -832,7 +842,7 @@ const CHAIKIN_PASSES = 2
  * and reintroduce a seam; smoothing the canonical chain once keeps every
  * consumer clipping identical, already-smoothed data.
  */
-function smoothChainPoints(points: RiverPoint[], passes: number = CHAIKIN_PASSES): RiverPoint[] {
+export function smoothChainPoints(points: RiverPoint[], passes: number = CHAIKIN_PASSES): RiverPoint[] {
   let current = points
   for (let pass = 0; pass < passes; pass++) {
     if (current.length < 3) break

@@ -64,6 +64,33 @@ Recon by Opus 2026-11-02 (queue Q69) at `21e5de82`. Verify against current code 
 - Player: `src/player/PlayerController.ts` (swim state ~L94, `verticalMotion.ts`), water eligibility `src/player/worldWaterEligibility.ts`. Push-back = horizontal velocity term while swimming/wading outside the edge radius; hard clamp of the position at ±4096 m for every movement owner (player, `NpcAgent`, fauna `animalRoaming.ts`).
 - Map: `MAP_EXTENT_HALF` already 4096 (`mapConfig.ts`).
 
+## H1 results (Q73, 2026-11-02)
+
+Landed: `src/terrain/worldHydrology.ts` (pure; `computeWorldHydrology`, `sampleRawFloorRows`, sparse blocks, `unpackChains`, `hashWorldHydrology`), `src/terrain/worldHydrology.test.ts` (synthetic grids), census `pnpm worldgen:rivers:census --model=global [--check-strips=4] [--verbose]`. Shared helpers exported from `riverNetwork.ts`: `smoothChainPoints`, `meanderChainPointsWith(points, noise, taperAt)` (the tile version now delegates to it), `MEANDER_NOISE_SEED_XOR`, `RIVER_MEANDER_TAPER_DISTANCE`. Grid is 1537² (±6144, step 8 m), raw floor from `sampleFloorAt` (no registry exists yet).
+
+Differences from the plan text, all deliberate:
+
+- **Flow tie-breaking** uses steepest slope per distance (not V3's `+0.0005` diagonal bias, which with ε = 2e-4 hid the diagonal parent on flats and made breaches fail: `noExit` 1710 → 12).
+- **Large pits are lakes without a breach attempt** (V3 behaviour); the plan wording "breach when a graded cut exists" would drain every shallow big basin. Revisit if lakes look wrong.
+- **Chains end at the shoreline**, not at the first sea cell: the last point is interpolated between the last land cell and the water cell and sits exactly at the receiver level (sea `waterLevel`, lake level). A branch ending in a join is snapped onto the finished trunk polyline (exact topological join); the surface is non-increasing downstream (join: trunk level wins, the stretch upstream is lifted).
+- **Meander** is kept, tapered to 0 over 32 m towards both ends of each chain (tile-rect taper dropped).
+- Breach cut cap is checked against the **original** floor (cumulative cuts from several breaches cannot exceed it).
+- `breachMinFloorM` 0 (pits whose floor is above the water can be breached towards the sea; targets are clamped to `waterLevel + 0.02`).
+
+Calibration (defaults in `DEFAULT_WORLD_HYDROLOGY_OPTIONS`; `lakeMinCells` 120 → **80** because 80 cells = 0.51 ha is exactly the "no lake under 0.5 ha" floor):
+
+| Seed | land km² | chains / km | ends sea · lake · join · edge | dry sinks | seabed km | mouth err | pits | breach tried / ok | max cut | filled pits (% land) | lakes (ha min · median · max) | sea-level lakes | sample / compute |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 42 | 34.8 | 1806 / 288.6 | 768 · 356 · 682 · 0 | 0 | 0.32 | 0.000 m | 12262 | 11993 / 11022 | 3.00 m | 2588 (**3.93 %**) | 254 (0.51 · 0.86 · 45.3) | 15 | 4.4 s / 1.1 s |
+| 415424794 | 36.4 | 1838 / 283.6 | 725 · 401 · 712 · 0 | 0 | 0.25 | 0.000 m | 12583 | 12300 / 11413 | 3.00 m | 2644 (**3.55 %**) | 264 (0.51 · 0.92 · 42.2) | 27 | 4.1 s / 0.9 s |
+
+- Determinism: identical hash from one pass and from 4 row strips (`678da264` seed 42, `f2d77d47` seed 415424794 at `WORLD_HYDROLOGY_VERSION` 1); no `Math.random`.
+- Seabed length 0.25–0.32 km (< 0.12 % of chain length) is the final shoreline segment of sea mouths seen at grid quantisation (last two segments / near-end), not chains over open sea. Mid-chain "seabed" seen earlier was a census artefact (raw sample at the midpoint vs the carved grid cell); the census now judges ground at grid level (`cell floor + correction`).
+- Knob sweep on 415424794 (filled % of land): cut 3 m/len 48: 9.98 % → 6.07 % after the flow fix → 4.40 % with `lakeMinCells` 80 → 3.55 % with `breachMinFloorM` 0; cut 4 m: 3.20 % → 2.8 % (seed 42). Breach length 96 changes nothing (failures are `tooDeep`: 385 pits at 3 m, 84 at 4 m, plus 0 short-floor ones). Flank slope/radius have no measurable effect on the filled share.
+- **Open fork (queue §3, Q73):** the targets "max breach cut ≤ 3 m" and "filled ≤ 3 % of land" cannot both be met; options and recommendation are recorded there. Lake density (~250–265 lakes per ~36 km², median 0.9 ha) is also a look decision.
+- Fills reach 4.3–6.3 m in the deepest small pits (2.5 k cells > 2 m); they are flat-bottomed meadows by policy.
+- Not done here (by slice design): runtime install, cache namespace, `hydrologyId`, correction in `sampleRawTexel`, river tiles as a view (H2/H3); heads near settlements (H4). No cache versions bumped (nothing consumes the module yet).
+
 ## Pitfalls
 
 - Hydrology must never read the corrected terrain, settlements, roads or `waterH` (cycle). Settlement code may read hydrology, never the other way round.

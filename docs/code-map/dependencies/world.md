@@ -3839,6 +3839,7 @@ Generated from TypeScript imports.
 - `terrain/resourceDeposits.ts`
 - `terrain/riverNetwork.ts`
 - `terrain/terrainDetailNormalMap.ts`
+- `terrain/worldHydrology.ts`
 - `world/caveGenerator.ts`
 - `world/caves/caveCrateLoot.ts`
 - `world/caves/caveRng.ts`

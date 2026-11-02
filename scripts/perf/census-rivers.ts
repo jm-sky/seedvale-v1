@@ -1,6 +1,7 @@
 import type { RoadNetworkContext } from '../../src/settlement/roadNetwork'
 import type { RawSampleParams } from '../../src/terrain/chunkHeightmap'
 // Usage: pnpm worldgen:rivers:census [--seeds=42,415424794] [--tiles=8] [--rings=5] [--json]
+//        pnpm worldgen:rivers:census --model=global [--seeds=...] [--check-strips=4] [--json]   (058 H1: global hydrology census)
 //
 // Q67 hydrology-continuity census (read-only, diagnostic). Walks every river
 // tile in a (2*tiles)^2 square around the origin with the production
@@ -16,6 +17,7 @@ import { villageSizeConfig } from '../../src/settlement/families'
 import { cellsWithinRadius, type SettlementDef } from '../../src/settlement/settlementGenerator'
 import { clearSettlementDefCache, setSettlementRiverQuery, settlementDefFor } from '../../src/settlement/settlementPlanCache'
 import { sampleHeightAt } from '../../src/terrain/chunkHeightmap'
+import { WORLD_HALF_EXTENT } from '../../src/terrain/continentMask'
 import {
   computeRiverTileDiagnostics,
   RIVER_CELL_STEP,
@@ -25,6 +27,7 @@ import {
   riverTileKey,
 } from '../../src/terrain/riverNetwork'
 import { createRiverQuery } from '../../src/terrain/riverQuery'
+import { ChainEnd, computeWorldHydrology, hashWorldHydrology, sampleRawFloorRows, sparseBlockValue, unpackChains } from '../../src/terrain/worldHydrology'
 import { worldKnowledgeRoadContext, type WorldKnowledgeTerrainSnapshot } from '../../src/terrain/worldKnowledgeScan'
 
 function arg(name: string, fallback: string): string {
@@ -175,6 +178,105 @@ function measure(seed: number) {
   const home = defs.find((d) => d.isHome)
   const homeEndings = home ? endings.filter((e) => dist(e, home) < 600) : []
   return { seed, computeMs, tiles: (2 * tilesHalf) ** 2, renderedChains, totalVisibleKm, underwaterKm, lostDrySinkLong, lostDrySinkContinuationLong, counts, endings, sourcesNearSettlement, home: home ? { id: home.id, x: home.x, z: home.z, R: R(home) } : null, homeEndings, settlements: defs.length }
+}
+
+function measureGlobal(seed: number) {
+  const params = sampleParamsFor(seed)
+  const cellStep = RIVER_CELL_STEP
+  const size = Math.round((2 * WORLD_HALF_EXTENT) / cellStep) + 1
+  const grid = { size, cellStep, originX: -WORLD_HALF_EXTENT, originZ: -WORLD_HALF_EXTENT }
+  const t0 = performance.now()
+  const floor = sampleRawFloorRows(params, grid, 0, size)
+  const sampleMs = performance.now() - t0
+  const h = computeWorldHydrology({ ...grid, floor }, { waterLevel: params.waterLevel, seed })
+  const hash = hashWorldHydrology(h)
+  const strips = Number(arg('check-strips', '0'))
+  let stripsHash: string | null = null
+  if (strips > 1) {
+    const parts: Float32Array[] = []
+    for (let s = 0; s < strips; s++) parts.push(sampleRawFloorRows(params, grid, Math.floor((s * size) / strips), Math.floor(((s + 1) * size) / strips)))
+    const joined = new Float32Array(size * size)
+    let o = 0
+    for (const p of parts) { joined.set(p, o); o += p.length }
+    stripsHash = hashWorldHydrology(computeWorldHydrology({ ...grid, floor: joined }, { waterLevel: params.waterLevel, seed }))
+  }
+  const chains = unpackChains(h.chains)
+  let seabedKm = 0
+  const seabedByEnd: Record<number, number> = {}
+  const seabedWhere: Record<string, number> = {}
+  let totalKm = 0
+  let mouthMax = 0
+  let mouthN = 0
+  let monotoneBreaks = 0
+  chains.forEach((c, i) => {
+    const pts = c.points
+    const flags = h.chains.flags[i]!
+    for (let k = 0; k < pts.length - 1; k++) {
+      const len = dist(pts[k]!, pts[k + 1]!) / 1000
+      totalKm += len
+      const mx = (pts[k]!.x + pts[k + 1]!.x) / 2
+      const mz = (pts[k]!.z + pts[k + 1]!.z) / 2
+      // Raw height plus the correction layer (raised below-sea basins and filled pits are ground, not seabed).
+      const cx = Math.round((mx - grid.originX) / cellStep)
+      const cz = Math.round((mz - grid.originZ) / cellStep)
+      const corr = sparseBlockValue(h.correction, cx, cz)
+      // Grid-level ground (the model the hydrology reasons about): raw cell floor + correction.
+      if (floor[cz * size + cx]! + corr <= params.waterLevel + 1e-4) {
+        seabedKm += len
+        seabedByEnd[flags & 15] = (seabedByEnd[flags & 15] ?? 0) + len
+        const fromEnd = pts.length - 1 - k
+        const bucket = k === 0 ? 'head' : fromEnd <= 2 ? 'last-2' : fromEnd <= 8 ? 'near-end' : 'mid'
+        seabedWhere[bucket] = (seabedWhere[bucket] ?? 0) + len
+      }
+      if (pts[k + 1]!.elevation > pts[k]!.elevation + 0.06) {
+        monotoneBreaks++
+        if (process.argv.includes('--verbose')) console.log(`  rise ${(pts[k + 1]!.elevation - pts[k]!.elevation).toFixed(2)} m at ${pts[k]!.x.toFixed(0)},${pts[k]!.z.toFixed(0)} chain ${i} pt ${k}/${pts.length} end ${flags & 15}`)
+      }
+    }
+    if ((flags & 15) === ChainEnd.Sea) {
+      mouthMax = Math.max(mouthMax, Math.abs(pts[pts.length - 1]!.elevation - params.waterLevel))
+      mouthN++
+    }
+  })
+  const lakeHa = h.lakes.map((l) => l.areaM2 / 1e4).sort((a, b) => a - b)
+  const landKm2 = (h.stats.landCells * cellStep * cellStep) / 1e6
+  const filledPct = (100 * h.stats.filledCells) / Math.max(1, h.stats.landCells)
+  // Home stream: nearest chain point to the home settlement (default world home), and how that chain ends.
+  clearSettlementDefCache()
+  setSettlementRiverQuery(createRiverQuery(params))
+  const ctx: RoadNetworkContext = worldKnowledgeRoadContext(snapshotFor(seed))
+  const home = cellsWithinRadius({ gx: 0, gz: 0 }, 0).map((c) => settlementDefFor(c, ctx)).find((d) => d?.isHome)
+  let homeStream = 'n/a'
+  if (home) {
+    let best = Infinity
+    let bi = -1
+    chains.forEach((c, i) => c.points.forEach((p) => { const d = dist(p, home); if (d < best) { best = d; bi = i } }))
+    const f = bi >= 0 ? h.chains.flags[bi]! : 0
+    homeStream = bi < 0 ? 'no chain' : `nearest chain ${best.toFixed(0)} m from home, ends ${['sea', 'lake', 'join', 'edge'][f & 15]}${f & 16 ? ' (lake-fed)' : ''}`
+  }
+  return {
+    seed, size, sampleMs, computeMs: h.stats.computeMs, hash, stripsHash, stats: h.stats, landKm2, filledPct,
+    chains: chains.length, totalKm, seabedKm, mouthMax, mouthN, monotoneBreaks,
+    lakes: h.lakes.length, lakeHa: { min: lakeHa[0] ?? 0, median: lakeHa[Math.floor(lakeHa.length / 2)] ?? 0, max: lakeHa[lakeHa.length - 1] ?? 0 },
+    homeStream, seabedByEnd, seabedWhere,
+  }
+}
+
+if (arg('model', 'tiles') === 'global') {
+  for (const seed of seeds) {
+    const r = measureGlobal(seed)
+    if (asJson) { console.log(JSON.stringify(r, null, 2)); continue }
+    const st = r.stats
+    console.log(`\n=== seed ${seed} (global, ${r.size}² cells): sample ${(r.sampleMs / 1000).toFixed(1)} s, compute ${(r.computeMs / 1000).toFixed(1)} s, land ${r.landKm2.toFixed(1)} km²`)
+    console.log(`dry sinks ${st.drySinks} · edge drains ${st.edgeDrains} · chains ${r.chains} (${r.totalKm.toFixed(1)} km) ends sea ${st.chainEnds.sea} lake ${st.chainEnds.lake} join ${st.chainEnds.join} edge ${st.chainEnds.edge}`)
+    console.log(`seabed chain length ${r.seabedKm.toFixed(3)} km · mouth level error max ${r.mouthMax.toFixed(3)} m over ${r.mouthN} sea mouths · elevation rises > 0.06 m: ${r.monotoneBreaks}`)
+    console.log(`pits ${st.pits} · breach tried ${st.breachTried} ok ${st.breached} (cut cells ${st.cutCells}, max cut ${st.maxCutM.toFixed(2)} m) · filled pits ${st.filledPits} (${r.filledPct.toFixed(2)} % of land) · raised below-sea cells ${st.raisedCells}`)
+    console.log(`lakes ${r.lakes} (ha min/median/max ${r.lakeHa.min.toFixed(2)}/${r.lakeHa.median.toFixed(2)}/${r.lakeHa.max.toFixed(2)}) · sea-level lakes ${st.terminalLakes} (${st.terminalCells} cells)`)
+    console.log(`seabed by chain end (km) ${JSON.stringify(r.seabedByEnd)} · by position ${JSON.stringify(r.seabedWhere)}`)
+    console.log(`home stream: ${r.homeStream}`)
+    console.log(`hash ${r.hash}${r.stripsHash ? ` · strips hash ${r.stripsHash} ${r.stripsHash === r.hash ? 'MATCH' : 'MISMATCH'}` : ''}`)
+  }
+  process.exit(0)
 }
 
 const results = seeds.map(measure)

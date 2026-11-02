@@ -410,6 +410,7 @@ Generated from TypeScript imports.
 - `terrain/unloadedLandmarkLookup.ts`
 - `terrain/waterSample.test.ts`
 - `terrain/waterSample.ts`
+- `terrain/worldHydrology.ts`
 - `terrain/worldKnowledgeScan.test.ts`
 - `terrain/worldKnowledgeScan.ts`
 - `ui-vue/lib/mapRasterLayers.ts`
@@ -1315,6 +1316,7 @@ Generated from TypeScript imports.
 - `terrain/waterBodyKind.ts`
 - `terrain/waterSample.test.ts`
 - `terrain/waterSample.ts`
+- `terrain/worldHydrology.ts`
 - `world/createRiverWater.ts`
 - `world/map/mapRasterTile.ts`
 - `world/riverGeometry.test.ts`
@@ -1659,6 +1661,25 @@ Generated from TypeScript imports.
 - `terrain/chunkManager.ts`
 - `terrain/waterSample.test.ts`
 - `world/animalPackHandoff.test.ts`
+
+## `terrain/worldHydrology.test.ts`
+
+**Imports**
+
+- `terrain/worldHydrology.ts`
+
+## `terrain/worldHydrology.ts`
+
+**Imports**
+
+- `math/segment.ts`
+- `terrain/chunkHeightmap.ts`
+- `terrain/riverNetwork.ts`
+- `world/parseSeed.ts`
+
+**Imported by**
+
+- `terrain/worldHydrology.test.ts`
 
 ## `terrain/worldKnowledgeScan.test.ts`
 

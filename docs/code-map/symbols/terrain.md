@@ -583,8 +583,8 @@ Generated from exported TypeScript symbols.
 ## `terrain/riverNetwork.ts`
 
 - `canonicalWaterHeight` — function — line 213
-- `computeRiverTile` — function — line 856
-- `computeRiverTileDiagnostics` — function — line 872
+- `computeRiverTile` — function — line 866
+- `computeRiverTileDiagnostics` — function — line 882
   - domain: world-terrain
 - `DEFAULT_RIVER_THRESHOLDS` — const — line 57
 - `depthFromAccumulation` — function — line 197
@@ -592,18 +592,21 @@ Generated from exported TypeScript symbols.
 - `flowFactor` — function — line 137
 - `footprintOverlapsRiver` — function — line 381
 - `isInsideRiverChannel` — function — line 368
+- `MEANDER_NOISE_SEED_XOR` — const — line 561
+- `meanderChainPointsWith` — function — line 585
 - `nearestRiverBankDistance` — function — line 351
 - `nearestRiverBankPoint` — function — line 398
 - `nearestRiverHydrologyContext` — function — line 451
 - `nearestRiverShoreCandidate` — function — line 501
 - `overlappingRiverTiles` — function — line 84
 - `RIVER_CELL_STEP` — const — line 40
+- `RIVER_MEANDER_TAPER_DISTANCE` — const — line 560
 - `RIVER_TILE_HALO` — const — line 39
 - `RIVER_TILE_SIZE` — const — line 33
 - `RiverChain` — type — line 98
-- `RiverChainDiagnostic` — type — line 642
-- `RiverChainRejection` — type — line 633
-- `RiverChainTerminal` — type — line 612
+- `RiverChainDiagnostic` — type — line 652
+- `RiverChainRejection` — type — line 643
+- `RiverChainTerminal` — type — line 622
 - `riverChannelSegmentsNear` — function — line 240
 - `RiverHydrologyContext` — type — line 441
 - `RiverPoint` — type — line 97
@@ -614,6 +617,7 @@ Generated from exported TypeScript symbols.
 - `riverTileKey` — function — line 69
 - `RiverWaterSample` — type — line 308
 - `riverWaterSampleAt` — function — line 319
+- `smoothChainPoints` — function — line 845
 - `submergedDepthFromFlow` — function — line 188
 - `widthFromAccumulation` — function — line 151
 - `WorldRect` — type — line 73
@@ -799,6 +803,28 @@ Generated from exported TypeScript symbols.
   - system: water
   - role: Single physical "what water, if any, is at this point" answer (plan fauna-015) — the one thing world/terrain owns so fauna (and, later, any other gameplay consumer) never re-derives lake/ocean vs. river depth logic itself. Pure/allocation-light so it's safe to call from a hot per-agent movement path; `ChunkManager.sampleLocalWater` is the only wiring that turns real chunk/river data into these inputs.
 - `sampleLocalWater` — function — line 48
+
+## `terrain/worldHydrology.ts`
+
+- `ChainEnd` — const — line 105
+- `ChainEndKind` — type — line 106
+- `computeWorldHydrology` — function — line 660
+- `DEFAULT_WORLD_HYDROLOGY_OPTIONS` — const — line 66
+- `hashWorldHydrology` — function — line 1021
+- `HydrologyLake` — type — line 117
+- `PackedChains` — type — line 108
+- `packSparseBlocks` — function — line 538
+- `sampleRawFloorRows` — function — line 180
+- `SPARSE_BLOCK_SIZE` — const — line 94
+- `SparseBlocks` — type — line 97
+- `sparseBlockValue` — function — line 581
+- `unpackChains` — function — line 1003
+- `WORLD_HYDROLOGY_VERSION` — const — line 32
+  - domain: world-terrain
+- `WorldHydrology` — type — line 159
+- `WorldHydrologyGrid` — type — line 84
+- `WorldHydrologyOptions` — type — line 34
+- `WorldHydrologyStats` — type — line 130
 
 ## `terrain/worldKnowledgeScan.ts`
 

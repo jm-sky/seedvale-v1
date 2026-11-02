@@ -61,6 +61,8 @@ Each slice is one revertable commit series, verified, with owner docs updated. C
 | **E1** | World edge (decision 12) + map edge presentation | S | Player cannot pass ±4096 m; push-back felt from the edge band (browser check); NPC/fauna never leave the box; tests for the clamp |
 | **P1** | WSL A/B (`boot`, `stream`, `settlement` runs) new vs `?hydrology=legacy`; then **delete** the legacy per-tile path (`computeHydrologyRegion` runtime use, worker `riverTile` compute); re-export fixtures; re-take Q37/Q44 census baselines | S | WSL report in `docs/performance/results/`; no stream/hitch regression or a recorded reason; legacy code gone; fixtures ≤ 3 MB compressed each; queue §4 lists the Windows confirmation |
 
+**Progress:** H1 landed 2026-11-02 (Q73) — pure module + census; calibration fork pending ([notes](./implementation-notes/world-terrain-058-finite-continent-and-global-hydrology-implementation-notes.md#h1-results-q73-2026-11-02)).
+
 Ordering: W1 → W2 (may run in parallel with H1) → H1 → H2 → H3 → H4 → L1 → L2 → E1 → P1. Queue Q60 waits for H3 (final rivers and coastline); Q70 (biome borders) is unblocked by W1.
 
 ### W1 calibration — continent size and settlement density (Q71, 2026-11-02) — superseded by 059 W3/W4

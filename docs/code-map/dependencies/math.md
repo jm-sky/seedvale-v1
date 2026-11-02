@@ -34,6 +34,7 @@ Generated from TypeScript imports.
 - `terrain/chunkEnvironment.ts`
 - `terrain/chunkHeightmap.ts`
 - `terrain/riverNetwork.ts`
+- `terrain/worldHydrology.ts`
 - `world/caveVolume.ts`
 - `world/caves/caveContentAnchors.ts`
 - `world/largeCaves.ts`
