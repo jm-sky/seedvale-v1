@@ -100,3 +100,22 @@ describe('shouldUpdateShadowMap actor cadence (world-terrain-055 S2)', () => {
   })
 })
 
+
+describe('decideShadowUpdate reasons (world-terrain-056 S0)', () => {
+  it('reports the trigger and agrees with shouldUpdateShadowMap', async () => {
+    const m = await import('./shadowBudget')
+    const s = m.createShadowBudgetState(0, 0)
+    expect(m.decideShadowUpdate(s, 0, 0, false)).toBe('none')
+    expect(m.decideShadowUpdate(s, 1, 0, false)).toBe('move')
+    expect(m.decideShadowUpdate(s, 0, 0, true)).toBe('actor')
+    s.framesSinceUpdate = 0
+    expect(m.decideShadowUpdate(s, 0, 0, true, true)).toBe('none')
+    s.framesSinceUpdate = 1
+    expect(m.decideShadowUpdate(s, 0, 0, true, true)).toBe('actor')
+    s.framesSinceUpdate = m.SHADOW_DIRTY_MAX_STALE_FRAMES
+    expect(m.decideShadowUpdate(s, 0, 0, false)).toBe('stale')
+    for (const [x, near, half] of [[0, false, false], [1, false, true], [0, true, true], [0, true, false]] as const) {
+      expect(m.shouldUpdateShadowMap(s, x, 0, near, half)).toBe(m.decideShadowUpdate(s, x, 0, near, half) !== 'none')
+    }
+  })
+})

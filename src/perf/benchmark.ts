@@ -43,6 +43,13 @@ import { formatPassSubmissionReport } from './passSubmissionCollector'
 import { formatProgramAttributionReport, formatProgramCensusReport, formatProgramCompileCostReport, getProgramCensus } from './programCensus'
 import { buildReport, formatReport } from './report'
 import { censusAgentDetail, censusScene, censusSettlementShadowCasters, censusShadowCasters } from './sceneCensus'
+import {
+  SETTLEMENT_WALK_ROUTE,
+  SETTLEMENT_WALK_SPEED_MPS,
+  SETTLEMENT_WALK_UPDATE_MS,
+  settlementWalkPosition,
+  settlementWalkYawOffset,
+} from './settlementWalkRoute'
 import type { Camera, WebGLRenderer } from 'three'
 
 /** Post-preload settle window (plan tools-001 §3) — lets lazy
@@ -247,7 +254,7 @@ export function createBenchmarkRunner(host: BenchmarkHost): BenchmarkRunner {
         let timeOfDay = saved.timeOfDay
         let anchor: { x: number; z: number } | undefined
         let scenarioSettlement: ScenarioSettlement | undefined
-        if (id === 'settlement') {
+        if (id === 'settlement' || id === 'settlement-walk') {
           x = home.x
           z = home.z
           anchor = { x, z }
@@ -325,6 +332,15 @@ export function createBenchmarkRunner(host: BenchmarkHost): BenchmarkRunner {
             const elapsedSec = (performance.now() - streamStart) / 1000
             player.setPosition(x + STREAM_SPEED_MPS * elapsedSec, z)
           }, STREAM_UPDATE_MS)
+        } else if (id === 'settlement-walk') {
+          // world-terrain-056 S0: deterministic walk loop + yaw sweep/fast turn.
+          const baseYaw = host.look.yaw
+          streamTimer = window.setInterval(() => {
+            const elapsedSec = (performance.now() - streamStart) / 1000
+            const p = settlementWalkPosition(x, z, elapsedSec)
+            player.setPosition(p.x, p.z)
+            host.look.yaw = baseYaw + settlementWalkYawOffset(elapsedSec)
+          }, SETTLEMENT_WALK_UPDATE_MS)
         }
 
         // Q16 occluded-actor cohort: census once before the window (never
@@ -441,7 +457,9 @@ export function createBenchmarkRunner(host: BenchmarkHost): BenchmarkRunner {
             scenarioSettlement,
             route: id === 'stream'
               ? { startX: x, startZ: z, speedMps: STREAM_SPEED_MPS, updateMs: STREAM_UPDATE_MS, durationSec }
-              : undefined,
+              : id === 'settlement-walk'
+                ? { startX: x, startZ: z, speedMps: SETTLEMENT_WALK_SPEED_MPS, updateMs: SETTLEMENT_WALK_UPDATE_MS, durationSec, ...SETTLEMENT_WALK_ROUTE }
+                : undefined,
             viewportWidth: typeof window !== 'undefined' ? window.innerWidth : undefined,
             viewportHeight: typeof window !== 'undefined' ? window.innerHeight : undefined,
             drawingBufferWidth: buf.width,

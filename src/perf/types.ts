@@ -103,6 +103,12 @@ export type ScenarioRoute = {
   speedMps: number
   updateMs: number
   durationSec: number
+  /** `settlement-walk` extras (world-terrain-056 S0). */
+  radiusM?: number
+  loopSec?: number
+  yawSweepRad?: number
+  fastTurnRad?: number
+  fastTurnSec?: number
 }
 
 /** Settlement identity for settlement-targeted scenarios (plan tools-016). */

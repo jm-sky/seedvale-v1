@@ -37,3 +37,21 @@ describe('buildRawSidecar', () => {
     expect(raw.frames.length).toBeLessThanOrEqual(RAW_SIDECAR_FULL_LIMIT)
   })
 })
+
+describe('buildRawSidecar v2 (world-terrain-056 S0)', () => {
+  it('exports shadow/mirror per-frame fields', async () => {
+    const { emptySessionTotals } = await import('./monitor')
+    const t = emptySessionTotals()
+    t.frameMs.push(16)
+    t.mirrorDrawCallsSeries!.push(40)
+    t.shadowRefreshedSeries!.push(1)
+    t.shadowReasonSeries!.push(4)
+    t.framesSinceShadowSeries!.push(3)
+    t.msSinceShadowSeries!.push(50.04)
+    t.shadowCentreDeltaSeries!.push(1.23456)
+    const raw = buildRawSidecar(t)
+    expect(raw.schemaVersion).toBe(2)
+    expect(raw.shadowReasonCodes[4]).toBe('force')
+    expect(raw.frames[0]).toMatchObject({ mirrorDrawCalls: 40, shadowRefreshed: 1, shadowReason: 4, framesSinceShadow: 3, msSinceShadow: 50, shadowCentreDeltaM: 1.235 })
+  })
+})
