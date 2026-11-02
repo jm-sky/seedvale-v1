@@ -368,7 +368,7 @@ export function computeChunkVegetation(
 }
 
 /** Index into `BUSH_SPECS` (`props.ts`) — must match the flower-model entries
- *  appended there (`flower_clump_1`, `flower_clump_2`, `bush_flowers_1`). */
+ *  there (`flower_clump_1`, `flower_clump_2`, `bush_with_flowers`). */
 const FLOWER_BUSH_SPECIES_INDICES = [2, 3, 4]
 const MEADOW_NOISE_FREQ = 0.018
 const MEADOW_THRESHOLD = 0.62

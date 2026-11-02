@@ -30,15 +30,19 @@ export const THICKET_TREE_SPECS = [
   TREE_SPECS[3],
 ] as const
 
+/** Natural bush catalog (plan world-terrain-057). Slot indices are unchanged
+ *  from the old hedge-like set so worldgen `speciesIndex` values, the flower
+ *  meadow indices 2–4 and the settlement flower marker (index 2) stay put.
+ *  0 green medium · 1 branchy plain · 2–3 flower clumps · 4 flowering bush ·
+ *  5 raspberry (red berries) · 6 blueberry (branchy, purple-blue berries). */
 export const BUSH_SPECS = [
-  { url: '/models/nature/bush_a.glb', height: 1.4 },
-  { url: '/models/nature/bush_b.glb', height: 1.8 },
+  { url: '/models/nature/bush_medium_green.glb', height: 1.3 },
+  { url: '/models/nature/bush_branchy.glb', height: 1.0 },
   { url: '/models/nature/flower_clump_1.glb', height: 0.4 },
   { url: '/models/nature/flower_clump_2.glb', height: 0.4 },
-  { url: '/models/nature/bush_flowers_1.glb', height: 0.6 },
-  /** Extra shrub silhouettes — appended so meadow flower indices 2–4 stay put. */
-  { url: '/models/nature/bush_c.glb', height: 1.5 },
-  { url: '/models/nature/bush_berries_1.glb', height: 1.2 },
+  { url: '/models/nature/bush_with_flowers.glb', height: 0.7 },
+  { url: '/models/nature/bush_berry_red.glb', height: 1.2 },
+  { url: '/models/nature/bush_berry_blue.glb', height: 0.9 },
 ] as const
 
 /** Forest-floor undergrowth (plan 140) — its own `VegetationKind`, not folded
