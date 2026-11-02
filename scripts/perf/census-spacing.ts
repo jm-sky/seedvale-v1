@@ -8,6 +8,7 @@ import { clearRoadNetworkCaches, type RoadNetworkContext, roadRoutesForSettlemen
 import { cellKey, type SettlementDef } from '../../src/settlement/settlementGenerator'
 import { SETTLEMENT_MIN_DISTANCE_M } from '../../src/settlement/settlementLayout'
 import { clearSettlementDefCache, setSettlementRiverQuery, settlementDefFor, settlementLayoutFor } from '../../src/settlement/settlementPlanCache'
+import { settlementGraphHops } from '../../src/settlement/settlementProgression'
 import { clearCemeteryCaches } from '../../src/terrain/cemeteryAssignment'
 import { WORLD_HALF_EXTENT } from '../../src/terrain/continentMask'
 import { createRiverQuery } from '../../src/terrain/riverQuery'
@@ -71,6 +72,16 @@ for (const seed of seeds) {
   }
   const sizes: Record<string, number> = {}
   for (const d of defs) sizes[d.size] = (sizes[d.size] ?? 0) + 1
+  // 059 W2′: sizes by graph hops from home (decision 6)
+  const hops = settlementGraphHops(layout)
+  const byHop = new Map<number, string[]>()
+  for (const d of defs) {
+    const h = hops.get(d.id) ?? -1
+    byHop.set(h, [...(byHop.get(h) ?? []), d.size])
+  }
+  const hopLine = [...byHop].sort((a, b) => a[0] - b[0]).map(([h, v]) => `hop${h < 0 ? '∞' : h}: ${v.join('/')}`).join(' · ')
+  const xl = defs.filter((d) => d.size === 'XL').map((d) => `hop${hops.get(d.id)} ${(Math.hypot(d.x, d.z) / 1000).toFixed(1)} km`)
+  console.log(`<!-- seed ${seed} ${hopLine} · XL: ${xl.join(', ') || 'none'} -->`)
   // land coverage: dry sample points on a 120 m grid within 1800 m of a settlement
   let covered = 0, land = 0
   const step = 120

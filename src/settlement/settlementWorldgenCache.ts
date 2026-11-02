@@ -56,7 +56,7 @@ export const SETTLEMENT_DEFINITION_CACHE_NAMESPACE = 'settlement-definitions'
  * resolved progression-policy identity) is fingerprinted separately. An
  * old-version record is a plain cache miss — records are never migrated.
  */
-export const SETTLEMENT_DEFINITION_CACHE_VERSION = 18
+export const SETTLEMENT_DEFINITION_CACHE_VERSION = 19
 // v7 (2026-10-31, queue Q43): settlement storehouse — plot-infra-storehouse-0 (+ houseDefinitionId/houseYaw/storehouse),
 // landmark kind 'storehouse', ClearingLayout.storehouses.
 // v6 (2026-10-31, queue Q41): household compounds — plot.houseDefinitionId/houseYaw/yard/discs,
@@ -84,12 +84,11 @@ export type SettlementLostTreasureHostsPayload = {
 
 export type SettlementWorldgenCachePayload = SettlementDefinitionCachePayload | SettlementLostTreasureHostsPayload
 
-/** Deterministic identity of the resolved near/far size policy, or `null`
- *  when explicit `homeSize` disables rings. */
+/** Deterministic identity of the resolved graph-hop size policy (cells whose
+ *  size is assigned), or `null` when explicit `homeSize` disables it. */
 export type SettlementProgressionIdentity = {
   homeSize: RolledVillageSize
-  near: { gx: number, gz: number, minimum: RolledVillageSize } | null
-  far: { gx: number, gz: number, minimum: RolledVillageSize } | null
+  overrides: { gx: number, gz: number, size: RolledVillageSize }[]
 } | null
 
 /**

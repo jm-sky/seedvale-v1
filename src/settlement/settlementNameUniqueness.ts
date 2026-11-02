@@ -3,13 +3,13 @@ import { cellsWithinRadius, SETTLEMENT_GRID_STEP, type SettlementCell } from './
 
 /**
  * Two settlements whose nominal cell centers are at most this far apart never
- * share a name. Settlements sit on a 300 m grid (nearest neighbours ≈ 300 m,
- * diagonals ≈ 400 m), so 1 km covers every road/signpost neighbour plus the
- * next ring or two — about 40 cells, the area a player sees named together on
- * signposts, roads and local quests. Farther duplicates are allowed
- * (author decision 2026-10-30: local, not global, uniqueness).
+ * share a name. With the sparse 059 layout (neighbours ≈ 1.1–2.4 km) 2.5 km is
+ * about one graph hop: every road/signpost neighbour plus a little more — the
+ * area a player sees named together on signposts, roads and local quests.
+ * Farther duplicates are allowed (author decisions 2026-10-30: local, not
+ * global, uniqueness; 2026-11-02: widened from 1 km to ~2.5 km).
  */
-export const LOCAL_SETTLEMENT_NAME_RADIUS_M = 1000
+export const LOCAL_SETTLEMENT_NAME_RADIUS_M = 2500
 
 const CELL_REACH = Math.ceil(LOCAL_SETTLEMENT_NAME_RADIUS_M / SETTLEMENT_GRID_STEP) + 1
 

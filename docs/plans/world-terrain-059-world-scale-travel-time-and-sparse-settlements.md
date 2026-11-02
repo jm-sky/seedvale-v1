@@ -168,3 +168,15 @@ Decision 4 targets met except "no settlement without a road".
 1. Cave exclusion from real settlements (epoch-coupled, see above).
 2. Local name-uniqueness radius (1 km → ?) — product call.
 3. `villageNearest` and large-radius catalog scans → iterate `layout.sites` (no behaviour change, optional).
+
+### W2′ — sizes by graph hops (Q72, Sonnet, 2026-11-02)
+
+**Implemented + technically verified** (`pnpm vitest run src/settlement` 1319 green; type-check; census). Not browser-verified.
+
+- `settlementProgression.ts` rewritten: `resolveSettlementProgressionPolicy(input, riverQuery, layout)` runs BFS hops over `layout.neighborsOf`, probes every non-home layout site once for its natural size, applies hop caps (hop 1 ≤ MD, hop 2 ≤ LG), then three guarantees, each promoting the seeded-first **feasible** (site exists, not a resource outpost, re-probed at the promoted size) candidate only if no qualifying one exists: MD+ at hop 1; LG+ in hops 1–3 (hop 1 is capped, so effectively 2–3); XL at hops 3–4 within 4 km of home, falling back to hop 2 only if none is feasible. 🟡 *Decision 6 says "hop 2 ≤ LG" and "XL at hop 2–4"; read as: the cap applies to rolled sizes, the XL guarantee may use hop 2 as a last resort.*
+- Policy outcome = `overrides` (cells whose size differs from the ordinary roll). Generator param `minimumSize` → `assignedSize` (exact size for non-home cells; was a floor). Cache identity `SettlementProgressionIdentity` is now `{ homeSize, overrides[] }`; `SETTLEMENT_DEFINITION_CACHE_VERSION` 18 → 19 (epoch batch, no `WORLDGEN_EPOCH` bump of its own).
+- Name-uniqueness window widened **1 km → 2.5 km** (author, queue §3 Q85-2); cache version 19 covers the name change. `CELL_REACH` follows (10 cells); unselected cells are null, so the wider scan stays cheap.
+- `census-spacing.ts` prints sizes per hop. Census (seeds 42 / 415424794; layout 817 / 684 ms): 42 → `SM9 MD5 LG7 XL1` (hop1 MD/SM, XL at hop 3, 2.6 km); 415424794 → `SM7 MD10 LG4 XL1` (hop1 MD/MD, XL at hop 3, 2.9 km). All guarantees hold on both seeds; edge/coverage numbers unchanged from W4.
+- Not changed: caves vs. lattice pseudo-villages (decision below).
+
+**Author decisions recorded (2026-11-02):** name window → widened (done here). Caves: *delegated to the agent* → **(a) do it in the epoch batch** (cave exclusion from `settlementLayoutFor(ctx).sites`; moves cave sites, so it rides the same coordinated `WORLDGEN_EPOCH` bump); queued as a follow-up.

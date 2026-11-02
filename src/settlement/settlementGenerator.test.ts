@@ -173,7 +173,7 @@ describe('generateVillagePlan / generateSettlementDef (plan 047 seam)', () => {
     expect(other.identity.size).toBe(rollVillageSize('forest', cellSeed(88, cell)))
   })
 
-  it('minimumSize raises a small roll but keeps a naturally larger XL', () => {
+  it('assignedSize replaces the rolled size exactly (up or down)', () => {
     const cell = { gx: 6, gz: 0 }
     let xlSeed: number | undefined
     let smSeed: number | undefined
@@ -184,7 +184,7 @@ describe('generateVillagePlan / generateSettlementDef (plan 047 seam)', () => {
     }
     expect(xlSeed).toBeDefined()
     expect(smSeed).toBeDefined()
-    expect(defOf(cell, xlSeed!, flatHeight, 0, 56, samplers, 1, region, 'auto', undefined, 'LG').size).toBe('XL')
+    expect(defOf(cell, xlSeed!, flatHeight, 0, 56, samplers, 1, region, 'auto', undefined, 'LG').size).toBe('LG')
     expect(defOf(cell, smSeed!, flatHeight, 0, 56, samplers, 1, region, 'auto', undefined, 'LG').size).toBe('LG')
   })
 

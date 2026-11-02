@@ -229,8 +229,7 @@ describe('settlementDefinitionFingerprint (plan settlements-014)', () => {
   it('is stable for identical params, radius, home size and progression identity', () => {
     const progression: SettlementProgressionIdentity = {
       homeSize: 'SM',
-      near: { gx: 1, gz: 0, minimum: 'MD' },
-      far: { gx: 4, gz: -2, minimum: 'LG' },
+      overrides: [{ gx: 1, gz: 0, size: 'MD' }, { gx: 4, gz: -2, size: 'LG' }],
     }
     const input = { params: params(), localSearchRadius: 56, homeSize: 'auto' as const, progression }
     expect(settlementDefinitionFingerprint(input)).toBe(settlementDefinitionFingerprint(input))
@@ -255,10 +254,10 @@ describe('settlementDefinitionFingerprint (plan settlements-014)', () => {
 
   it('changes when resolved progression-policy identity changes', () => {
     const base = fingerprintFor({
-      progression: { homeSize: 'SM', near: { gx: 1, gz: 0, minimum: 'MD' }, far: null },
+      progression: { homeSize: 'SM', overrides: [{ gx: 1, gz: 0, size: 'MD' }] },
     })
     expect(fingerprintFor({
-      progression: { homeSize: 'SM', near: { gx: 0, gz: 1, minimum: 'MD' }, far: null },
+      progression: { homeSize: 'SM', overrides: [{ gx: 0, gz: 1, size: 'MD' }] },
     })).not.toBe(base)
     expect(fingerprintFor({ progression: null })).not.toBe(base)
   })
@@ -467,15 +466,7 @@ describe('settlementPlanCache persistent hydrate (plan settlements-014)', () => 
       progression: (() => {
         const policy = cachedSettlementProgressionPolicy()
         if (policy === undefined || policy === null) return null
-        return {
-          homeSize: policy.homeSize,
-          near: policy.near
-            ? { gx: policy.near.cell.gx, gz: policy.near.cell.gz, minimum: policy.near.minimum }
-            : null,
-          far: policy.far
-            ? { gx: policy.far.cell.gx, gz: policy.far.cell.gz, minimum: policy.far.minimum }
-            : null,
-        }
+        return { homeSize: policy.homeSize, overrides: policy.overrides.map((o) => ({ gx: o.cell.gx, gz: o.cell.gz, size: o.size })) }
       })(),
     })
     await putCacheRecords([record(11, cell.gx, cell.gz, fp, generated)])
@@ -499,11 +490,7 @@ describe('settlementPlanCache persistent hydrate (plan settlements-014)', () => 
     const fp = fingerprintFor({
       params: params({ seed: 11 }),
       progression: policy
-        ? {
-            homeSize: policy.homeSize,
-            near: policy.near ? { gx: policy.near.cell.gx, gz: policy.near.cell.gz, minimum: policy.near.minimum } : null,
-            far: policy.far ? { gx: policy.far.cell.gx, gz: policy.far.cell.gz, minimum: policy.far.minimum } : null,
-          }
+        ? { homeSize: policy.homeSize, overrides: policy.overrides.map((o) => ({ gx: o.cell.gx, gz: o.cell.gz, size: o.size })) }
         : null,
     })
     await putCacheRecords([record(11, cell.gx, cell.gz, fp, null)])
@@ -526,15 +513,7 @@ describe('settlementPlanCache persistent hydrate (plan settlements-014)', () => 
     const fp = fingerprintFor({
       params: params({ seed: 21 }),
       progression: policy && policy !== undefined
-        ? {
-            homeSize: policy.homeSize,
-            near: policy.near
-              ? { gx: policy.near.cell.gx, gz: policy.near.cell.gz, minimum: policy.near.minimum }
-              : null,
-            far: policy.far
-              ? { gx: policy.far.cell.gx, gz: policy.far.cell.gz, minimum: policy.far.minimum }
-              : null,
-          }
+        ? { homeSize: policy.homeSize, overrides: policy.overrides.map((o) => ({ gx: o.cell.gx, gz: o.cell.gz, size: o.size })) }
         : null,
     })
     clearSettlementDefCache()
@@ -570,11 +549,11 @@ describe('settlementPlanCache persistent hydrate (plan settlements-014)', () => 
     const stored = realDef({ gx: 1, gz: 0 }, 41)
     const fpA = fingerprintFor({
       params: params({ seed: 41 }),
-      progression: { homeSize: 'SM', near: { gx: 1, gz: 0, minimum: 'MD' }, far: null },
+      progression: { homeSize: 'SM', overrides: [{ gx: 1, gz: 0, size: 'MD' }] },
     })
     const fpB = fingerprintFor({
       params: params({ seed: 41 }),
-      progression: { homeSize: 'SM', near: { gx: 0, gz: 1, minimum: 'MD' }, far: null },
+      progression: { homeSize: 'SM', overrides: [{ gx: 0, gz: 1, size: 'MD' }] },
     })
     expect(fpA).not.toBe(fpB)
     await putCacheRecords([record(41, 1, 0, fpA, stored)])

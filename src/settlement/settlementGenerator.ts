@@ -19,7 +19,6 @@ import {
   ensureSettlementElder,
   type FamilyDef,
   generateFamilies,
-  maxRolledVillageSize,
   minRolledVillageSize,
   type RolledVillageSize,
   rollVillageSize,
@@ -349,7 +348,7 @@ function resolveSettlementContext(
   region: RegionParams,
   homeSize: HomeVillageSize = 'auto',
   riverQuery?: RiverQuery,
-  minimumSize?: RolledVillageSize,
+  assignedSize?: RolledVillageSize,
 ): SettlementGenContext {
   const isHome = cell.gx === 0 && cell.gz === 0
   const seedForCell = cellSeed(seed, cell)
@@ -399,8 +398,9 @@ function resolveSettlementContext(
   // roll stream and clamp the result, so we do not introduce a new RNG.
   if (isHome && homeSize === 'auto') {
     provisionalSize = minRolledVillageSize(provisionalSize, 'MD')
-  } else if (!isHome && minimumSize) {
-    provisionalSize = maxRolledVillageSize(provisionalSize, minimumSize)
+  } else if (!isHome && assignedSize) {
+    // Graph-hop progression (059 W2′) assigns the exact size.
+    provisionalSize = assignedSize
   }
 
   // One river query per settlement, sized to cover every position site search
@@ -617,7 +617,7 @@ export function probeSettlementSite(
   region: RegionParams,
   homeSize: HomeVillageSize = 'auto',
   riverQuery?: RiverQuery,
-  minimumSize?: RolledVillageSize,
+  assignedSize?: RolledVillageSize,
 ): SettlementSiteProbe {
   const ctx = resolveSettlementContext(
     cell,
@@ -630,7 +630,7 @@ export function probeSettlementSite(
     region,
     homeSize,
     riverQuery,
-    minimumSize,
+    assignedSize,
   )
   const site = chooseSettlementSite(ctx)
   if (!site) {
@@ -683,7 +683,7 @@ function generateSettlementCore(
   region: RegionParams,
   homeSize: HomeVillageSize = 'auto',
   riverQuery?: RiverQuery,
-  minimumSize?: RolledVillageSize,
+  assignedSize?: RolledVillageSize,
   authoredResident?: FamilyDef | readonly FamilyDef[],
   neighborSites: readonly SiteXZ[] = [],
 ): SettlementCore | null {
@@ -698,7 +698,7 @@ function generateSettlementCore(
     region,
     homeSize,
     riverQuery,
-    minimumSize,
+    assignedSize,
   )
   const site = chooseSettlementSite(ctx)
   if (!site) return null
@@ -837,7 +837,7 @@ export function generateVillagePlan(
   region: RegionParams,
   homeSize: HomeVillageSize = 'auto',
   riverQuery?: RiverQuery,
-  minimumSize?: RolledVillageSize,
+  assignedSize?: RolledVillageSize,
   authoredResident?: FamilyDef | readonly FamilyDef[],
   neighborSites: readonly SiteXZ[] = [],
 ): VillagePlan | null {
@@ -852,7 +852,7 @@ export function generateVillagePlan(
     region,
     homeSize,
     riverQuery,
-    minimumSize,
+    assignedSize,
     authoredResident,
     neighborSites,
   )?.plan ?? null
@@ -893,7 +893,7 @@ function settlementDefFromPlan(
  *  Thin compatibility wrapper over `generateSettlementCore` (plan 047): one
  *  generation pass, then clearings + `SettlementDef` projection.
  *  Order still follows plan 032 §1's "teren → środowisko → zasoby → wioski".
- *  `minimumSize` is an optional progression floor for a normal (non-home)
+ *  `assignedSize` is an optional exact progression size for a normal (non-home)
  *  cell; omitted cells keep the ordinary `rollVillageSize()` path.
  *  `authoredResident` appends extra household(s) before staffing/plan (used
  *  for Lost Treasure Chronicles authored residents). Outposts ignore it.
@@ -909,7 +909,7 @@ export function generateSettlementDef(
   region: RegionParams,
   homeSize: HomeVillageSize = 'auto',
   riverQuery?: RiverQuery,
-  minimumSize?: RolledVillageSize,
+  assignedSize?: RolledVillageSize,
   authoredResident?: FamilyDef | readonly FamilyDef[],
   neighborSites: readonly SiteXZ[] = [],
 ): SettlementDef | null {
@@ -924,7 +924,7 @@ export function generateSettlementDef(
     region,
     homeSize,
     riverQuery,
-    minimumSize,
+    assignedSize,
     authoredResident,
     neighborSites,
   )

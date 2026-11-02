@@ -176,12 +176,7 @@ function progressionIdentityOf(
   if (!policy) return null
   return {
     homeSize: policy.homeSize,
-    near: policy.near
-      ? { gx: policy.near.cell.gx, gz: policy.near.cell.gz, minimum: policy.near.minimum }
-      : null,
-    far: policy.far
-      ? { gx: policy.far.cell.gx, gz: policy.far.cell.gz, minimum: policy.far.minimum }
-      : null,
+    overrides: policy.overrides.map((o) => ({ gx: o.cell.gx, gz: o.cell.gz, size: o.size })),
   }
 }
 
@@ -250,7 +245,7 @@ function probeArgs(cell: SettlementCell, ctx: SettlementResolveContext) {
     ctx.region,
     ctx.homeSize ?? 'auto',
     activeRiverQuery ?? undefined,
-    progressionPolicyFor(ctx)?.minimumFor(cell) ?? undefined,
+    progressionPolicyFor(ctx)?.sizeFor(cell) ?? undefined,
   ] as const
 }
 

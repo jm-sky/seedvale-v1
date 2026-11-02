@@ -1236,25 +1236,25 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/settlementGenerator.ts`
 
-- `cellFromId` — function — line 171
-- `cellKey` — function — line 155
-- `cellSeed` — function — line 199
-- `cellsWithinRadius` — function — line 183
+- `cellFromId` — function — line 170
+- `cellKey` — function — line 154
+- `cellSeed` — function — line 198
+- `cellsWithinRadius` — function — line 182
 - `generateSettlementDef` — function — line 901
 - `generateVillagePlan` — function — line 829
 - `probeSettlementSite` — function — line 609
   - domain: settlements
-- `setSettlementGridStepOverride` — function — line 91
-- `SETTLEMENT_GRID_STEP` — const — line 72
-- `settlementBaseNameFor` — function — line 238
+- `setSettlementGridStepOverride` — function — line 90
+- `SETTLEMENT_GRID_STEP` — const — line 71
+- `settlementBaseNameFor` — function — line 237
   - domain: settlements
-- `SettlementCell` — type — line 95
-- `settlementCellCenter` — function — line 224
+- `SettlementCell` — type — line 94
+- `settlementCellCenter` — function — line 223
   - domain: settlements
-- `settlementCellInsideWorld` — function — line 149
-- `SettlementDef` — type — line 97
+- `settlementCellInsideWorld` — function — line 148
+- `SettlementDef` — type — line 96
 - `SettlementSiteProbe` — type — line 594
-- `worldToCell` — function — line 159
+- `worldToCell` — function — line 158
 
 ## `settlement/settlementLayout.ts`
 
@@ -1318,49 +1318,50 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/settlementPlanCache.ts`
 
-- `activateSettlementDefinitionCacheForWorld` — function — line 201
+- `activateSettlementDefinitionCacheForWorld` — function — line 196
   - domain: settlements
   - system: worldgen-cache
 - `attachSettlementDefinitionPersistence` — function — line 169
   - domain: settlements
   - system: worldgen-cache
-- `cachedLostTreasureArchaeologistHostCell` — function — line 473
-- `cachedLostTreasureSpecialistHostCell` — function — line 482
-- `cachedSettlementDefCount` — function — line 510
-- `cachedSettlementProgressionPolicy` — function — line 515
+- `cachedLostTreasureArchaeologistHostCell` — function — line 468
+- `cachedLostTreasureSpecialistHostCell` — function — line 477
+- `cachedSettlementDefCount` — function — line 505
+- `cachedSettlementProgressionPolicy` — function — line 510
 - `clearSettlementDefCache` — function — line 128
 - `ingestHydratedSettlementDef` — function — line 149
   - domain: settlements
   - system: worldgen-cache
-- `lostTreasureArchaeologistHostCell` — function — line 456
+- `lostTreasureArchaeologistHostCell` — function — line 451
   - domain: settlements
-- `lostTreasureSpecialistHostCell` — function — line 467
+- `lostTreasureSpecialistHostCell` — function — line 462
   - domain: settlements
 - `setSettlementRiverQuery` — function — line 87
-- `settlementDefFor` — function — line 490
-- `settlementDefinitionCacheReady` — function — line 218
-- `settlementLayoutFor` — function — line 229
+- `settlementDefFor` — function — line 485
+- `settlementDefinitionCacheReady` — function — line 213
+- `settlementLayoutFor` — function — line 224
   - domain: settlements
 - `SettlementResolveContext` — type — line 61
 - `worldRiverQuery` — function — line 100
 
 ## `settlement/settlementProgression.ts`
 
-- `chebyshevCellDistance` — function — line 56
-- `orderProgressionCandidates` — function — line 90
+- `orderProgressionCandidates` — function — line 110
   - domain: settlements
-- `resolveSettlementProgressionPolicy` — function — line 154
+- `resolveSettlementProgressionPolicy` — function — line 155
   - domain: settlements
-- `SETTLEMENT_PROGRESSION_FAR_ORDER_SALT` — const — line 21
-- `SETTLEMENT_PROGRESSION_FAR_RING` — const — line 17
-- `SETTLEMENT_PROGRESSION_NEAR_ORDER_SALT` — const — line 20
-- `SETTLEMENT_PROGRESSION_NEAR_RING` — const — line 15
-- `SettlementProgressionPolicy` — type — line 48
+- `SETTLEMENT_PROGRESSION_HOP_CAPS` — const — line 18
+- `SETTLEMENT_PROGRESSION_LG_HOPS` — const — line 23
+- `SETTLEMENT_PROGRESSION_LG_ORDER_SALT` — const — line 31
+- `SETTLEMENT_PROGRESSION_MD_ORDER_SALT` — const — line 30
+- `SETTLEMENT_PROGRESSION_XL_HOPS` — const — line 25
+- `SETTLEMENT_PROGRESSION_XL_MAX_DISTANCE_M` — const — line 27
+- `SETTLEMENT_PROGRESSION_XL_ORDER_SALT` — const — line 32
+- `settlementGraphHops` — function — line 75
+- `SettlementProgressionOverride` — type — line 48
+- `SettlementProgressionPolicy` — type — line 59
   - domain: settlements
-- `settlementProgressionRingCells` — function — line 65
-  - domain: settlements
-- `SettlementProgressionTarget` — type — line 37
-- `SettlementProgressionWorldInput` — type — line 26
+- `SettlementProgressionWorldInput` — type — line 36
 
 ## `settlement/settlementPropColliders.ts`
 
@@ -1448,16 +1449,16 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/settlementWorldgenCache.ts`
 
-- `createSettlementWorldgenCache` — function — line 607
+- `createSettlementWorldgenCache` — function — line 606
   - domain: settlements
   - system: worldgen-cache
-- `isValidSettlementDefPayload` — function — line 525
+- `isValidSettlementDefPayload` — function — line 524
   - domain: settlements
   - system: worldgen-cache
-- `isValidSettlementWorldgenPayload` — function — line 572
+- `isValidSettlementWorldgenPayload` — function — line 571
   - domain: settlements
   - system: worldgen-cache
-- `parseSettlementCellSubKey` — function — line 107
+- `parseSettlementCellSubKey` — function — line 106
 - `SETTLEMENT_DEFINITION_CACHE_NAMESPACE` — const — line 46
   - domain: settlements
   - system: worldgen-cache
@@ -1465,16 +1466,16 @@ Generated from exported TypeScript symbols.
   - integration: Disposable derived data only. `settlementDefFor()` stays synchronous; a miss, malformed payload or IndexedDB failure always falls back to `generateSettlementDef()`. Never `SaveData`, never a second reduced `VillagePlan`, never economy / household / NPC runtime state.
 - `SETTLEMENT_DEFINITION_CACHE_VERSION` — const — line 59
 - `SETTLEMENT_LOST_TREASURE_HOSTS_SUB_KEY` — const — line 75
-- `settlementCellSubKey` — function — line 102
+- `settlementCellSubKey` — function — line 101
   - domain: settlements
   - system: worldgen-cache
 - `SettlementDefinitionCachePayload` — type — line 72
-- `settlementDefinitionFingerprint` — function — line 129
+- `settlementDefinitionFingerprint` — function — line 128
   - domain: settlements
   - system: worldgen-cache
 - `SettlementLostTreasureHostsPayload` — type — line 79
 - `SettlementProgressionIdentity` — type — line 89
-- `SettlementWorldgenCache` — type — line 581
+- `SettlementWorldgenCache` — type — line 580
 - `SettlementWorldgenCachePayload` — type — line 85
 
 ## `settlement/storageDestinations.ts`

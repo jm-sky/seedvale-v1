@@ -101,3 +101,5 @@ Format: `- [ ] YYYY-MM-DD — opis (plan/plik, jeśli istotne)`
 - [ ] 2026-11-02 — `findRoute` open set is a linear scan over a `Map` (O(n²), 2–5 s per 1.2–2 km edge, 65–76 s for all edges); a binary heap fixes it but changes route geometry — fold into Q60 (`settlement/roadNetwork.ts`).
 - [ ] 2026-11-02 — worldgen fixtures (`worldgen:fixture:check`) were already stale before W4 (settlement-definitions v4 vs v18, road-routes v1 vs v7, caves v2 vs v4); regenerate under `tools-020`.
 
+
+- **2026-11-02 · worldgen fixtures stale** (`pnpm worldgen:fixture:check`: `415424794-default`, `42-benchmark` — settlement-definitions v4 vs current v19, caves-v2, road-routes). Already stale before Q72 (layout/roads/caves bumps); regenerate once at the end of the epoch batch (`tools-020`, queue Q19).

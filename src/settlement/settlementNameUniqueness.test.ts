@@ -114,7 +114,7 @@ describe('localSettlementName (author decision 2026-10-30)', () => {
   it('suffixes same-name neighbours in stable order and leaves far duplicates alone', () => {
     const same: SettlementBaseName = { name: 'Osowiec', gender: 'm' }
     const other: SettlementBaseName = { name: 'Lipowo', gender: 'n' }
-    const sameCells = new Set(['1_0', '2_0', '9_0'])
+    const sameCells = new Set(['1_0', '2_0', '14_0'])
     const deps = () => ({
       baseNameFor: (cell: SettlementCell) => (sameCells.has(`${cell.gx}_${cell.gz}`) ? same : other),
       centerOf: center,
@@ -124,29 +124,29 @@ describe('localSettlementName (author decision 2026-10-30)', () => {
     const d = deps()
     expect(localSettlementName({ gx: 1, gz: 0 }, d)).toBe('Osowiec')
     expect(localSettlementName({ gx: 2, gz: 0 }, d)).toBe('Osowiec Drugi')
-    // 9_0 is > 1 km from both: plain name again.
-    expect(9 * 280 - 2 * 280).toBeGreaterThan(LOCAL_SETTLEMENT_NAME_RADIUS_M)
-    expect(localSettlementName({ gx: 9, gz: 0 }, d)).toBe('Osowiec')
+    // 14_0 is > 2.5 km from both: plain name again.
+    expect(14 * 280 - 2 * 280).toBeGreaterThan(LOCAL_SETTLEMENT_NAME_RADIUS_M)
+    expect(localSettlementName({ gx: 14, gz: 0 }, d)).toBe('Osowiec')
     // Lookup order does not matter.
     const reversed = deps()
-    expect(localSettlementName({ gx: 9, gz: 0 }, reversed)).toBe('Osowiec')
+    expect(localSettlementName({ gx: 14, gz: 0 }, reversed)).toBe('Osowiec')
     expect(localSettlementName({ gx: 2, gz: 0 }, reversed)).toBe('Osowiec Drugi')
     expect(localSettlementName({ gx: 1, gz: 0 }, reversed)).toBe('Osowiec')
   })
 
   it('reuses a free ordinal along a chain instead of colliding', () => {
-    // A(1,0) – B(4,0) – C(7,0): A–B and B–C within 1 km, A–C not.
+    // A(1,0) – B(7,0) – C(13,0): A–B and B–C (1.8 km) within 2.5 km, A–C (3.6 km) not.
     const same: SettlementBaseName = { name: 'Wola', gender: 'f' }
     const other: SettlementBaseName = { name: 'Gaj', gender: 'm' }
-    const sameCells = new Set(['1_0', '4_0', '7_0'])
+    const sameCells = new Set(['1_0', '7_0', '13_0'])
     const deps = {
       baseNameFor: (cell: SettlementCell) => (sameCells.has(`${cell.gx}_${cell.gz}`) ? same : other),
       centerOf: (cell: SettlementCell) => ({ x: cell.gx * 300, z: cell.gz * 300 }),
       ordinals: new Map<string, number>(),
       cellKey: (cell: SettlementCell) => `${cell.gx}_${cell.gz}`,
     }
-    expect(localSettlementName({ gx: 7, gz: 0 }, deps)).toBe('Wola')
-    expect(localSettlementName({ gx: 4, gz: 0 }, deps)).toBe('Wola Druga')
+    expect(localSettlementName({ gx: 13, gz: 0 }, deps)).toBe('Wola')
+    expect(localSettlementName({ gx: 7, gz: 0 }, deps)).toBe('Wola Druga')
     expect(localSettlementName({ gx: 1, gz: 0 }, deps)).toBe('Wola')
   })
 
