@@ -402,7 +402,7 @@ const WATER_EXIT_SEARCH_RADIUS = 14
 const WATER_EXIT_SEARCH_ATTEMPTS = 16
 
 /** HP/sec drained by `tickDrowning()` while `swimming` and stamina-exhausted
- *  (plan fauna-015 §7) — same order of magnitude as a real attack (see
+ *  by a non-`waterAdapted` species (plan fauna-015 §7) — same order of magnitude as a real attack (see
  *  `faunaCombat.ts`'s `MAX_HP`/damage tables), so a swimmer that runs out of
  *  stamina has a real window to reach shore before it actually dies. */
 const DROWNING_DAMAGE_PER_SEC = 5
@@ -2569,7 +2569,15 @@ export class AnimalAgent {
     const metabolism = drainMul === 1
       ? this.def.metabolism
       : { ...this.def.metabolism, staminaDrainRate: this.def.metabolism.staminaDrainRate * drainMul }
-    tickAnimalLife(this.life, dt, this.sprinting, { hungerThirstRate }, metabolism, this.swimExertionNow())
+    tickAnimalLife(
+      this.life,
+      dt,
+      this.sprinting,
+      { hungerThirstRate },
+      metabolism,
+      this.swimExertionNow(),
+      this.def.water?.waterAdapted === true,
+    )
   }
 
   /** Movement-critical tail (plan fauna-028) — the two position-derived
@@ -5844,7 +5852,7 @@ export class AnimalAgent {
    *  `collapse()`), without that method's combat-only blood/provocation
    *  side effects — the source here is environmental, not an attacker. */
   private tickDrowning(dt: number): void {
-    if (this.health.dead || !shouldApplyDrowningDamage(this.waterMode, isExhausted(this.life.stamina))) return
+    if (this.health.dead || !shouldApplyDrowningDamage(this.waterMode, isExhausted(this.life.stamina), this.def.water)) return
     damageHealth(this.health, DROWNING_DAMAGE_PER_SEC * dt)
     if (this.health.dead) this.collapse()
   }

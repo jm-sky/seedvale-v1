@@ -1,4 +1,6 @@
 import { describe, expect, it } from 'vitest'
+import { isExhausted } from '../shared/StaminaState'
+import { createAnimalLifeState, DEFAULT_ANIMAL_METABOLISM, tickAnimalLife } from './AnimalLife'
 import {
   autonomousDestinationAccepts,
   classifyWaterTraversal,
@@ -65,28 +67,72 @@ describe('swimStaminaExertion (plan fauna-015 §5/§6)', () => {
   it('is much lower for a waterAdapted species (duck) than the generic default', () => {
     expect(swimStaminaExertion({ waterAdapted: true })).toBeLessThan(swimStaminaExertion(undefined))
   })
+
+  it('charges a waterAdapted species no planner cost for calm swimming (regen, not drain)', () => {
+    expect(swimStaminaExertion({ waterAdapted: true })).toBe(0)
+  })
 })
 
 describe('shouldApplyDrowningDamage (plan fauna-015 §7)', () => {
   it('zero stamina on dry land does not drown', () => {
-    expect(shouldApplyDrowningDamage('dry', true)).toBe(false)
+    expect(shouldApplyDrowningDamage('dry', true, undefined)).toBe(false)
   })
 
   it('zero stamina while wading does not drown', () => {
-    expect(shouldApplyDrowningDamage('wading', true)).toBe(false)
+    expect(shouldApplyDrowningDamage('wading', true, undefined)).toBe(false)
   })
 
-  it('zero stamina while swimming drowns', () => {
-    expect(shouldApplyDrowningDamage('swimming', true)).toBe(true)
+  it('zero stamina while swimming drowns a land animal', () => {
+    expect(shouldApplyDrowningDamage('swimming', true, undefined)).toBe(true)
+    expect(shouldApplyDrowningDamage('swimming', true, { canSwim: true })).toBe(true)
   })
 
   it('swimming with stamina remaining does not drown', () => {
-    expect(shouldApplyDrowningDamage('swimming', false)).toBe(false)
+    expect(shouldApplyDrowningDamage('swimming', false, undefined)).toBe(false)
   })
 
   it('leaving swimming for wading/dry stops drowning immediately, even still exhausted', () => {
-    expect(shouldApplyDrowningDamage('wading', true)).toBe(false)
-    expect(shouldApplyDrowningDamage('dry', true)).toBe(false)
+    expect(shouldApplyDrowningDamage('wading', true, undefined)).toBe(false)
+    expect(shouldApplyDrowningDamage('dry', true, undefined)).toBe(false)
+  })
+
+  it('a waterAdapted species at zero stamina while swimming never drowns', () => {
+    expect(shouldApplyDrowningDamage('swimming', true, { waterAdapted: true })).toBe(false)
+  })
+
+  it('waterAdapted does not change dry/wading or non-exhausted swimming outcomes', () => {
+    expect(shouldApplyDrowningDamage('dry', true, { waterAdapted: true })).toBe(false)
+    expect(shouldApplyDrowningDamage('wading', true, { waterAdapted: true })).toBe(false)
+    expect(shouldApplyDrowningDamage('swimming', false, { waterAdapted: true })).toBe(false)
+  })
+})
+
+describe('prolonged swimming stamina vs drowning (fauna water-adaptation)', () => {
+  const SIM_STEP_SEC = 0.5
+  const SWIM_SECONDS = 600
+
+  it('a waterAdapted duck starting at zero stamina swims 600 s calmly without drowning', () => {
+    const duck = { waterAdapted: true }
+    const life = createAnimalLifeState(0)
+    life.stamina.current = 0
+    const exertion = swimStaminaExertion(duck)
+    for (let t = 0; t < SWIM_SECONDS; t += SIM_STEP_SEC) {
+      tickAnimalLife(life, SIM_STEP_SEC, false, {}, DEFAULT_ANIMAL_METABOLISM, exertion, duck.waterAdapted)
+      expect(shouldApplyDrowningDamage('swimming', isExhausted(life.stamina), duck)).toBe(false)
+    }
+    expect(life.stamina.current).toBeGreaterThan(0)
+  })
+
+  it('an exhausted land animal swimming for the same time is drowning-eligible', () => {
+    const life = createAnimalLifeState(0)
+    life.stamina.current = 1
+    const exertion = swimStaminaExertion(undefined)
+    let drowningSeconds = 0
+    for (let t = 0; t < SWIM_SECONDS; t += SIM_STEP_SEC) {
+      tickAnimalLife(life, SIM_STEP_SEC, false, {}, DEFAULT_ANIMAL_METABOLISM, exertion, false)
+      if (shouldApplyDrowningDamage('swimming', isExhausted(life.stamina), undefined)) drowningSeconds += SIM_STEP_SEC
+    }
+    expect(drowningSeconds).toBeGreaterThan(0)
   })
 })
 

@@ -14,6 +14,7 @@ import {
   tickAnimalLife,
   WATER_RELIEF,
 } from './AnimalLife'
+import { swimStaminaExertion } from './waterTraversal'
 
 describe('AnimalLife', () => {
   it('offsets hunger/thirst per instance so animals do not tick in unison', () => {
@@ -184,5 +185,37 @@ describe('swim exertion (plan fauna-015 §6)', () => {
     life.stamina.current = 0.5
     tickAnimalLife(life, 1, false, {}, DEFAULT_ANIMAL_METABOLISM)
     expect(life.stamina.current).toBeGreaterThan(0.5)
+  })
+
+  it('a land animal swimming still drains stamina', () => {
+    const life = createAnimalLifeState(0)
+    life.stamina.current = 0.5
+    tickAnimalLife(life, 1, false, {}, DEFAULT_ANIMAL_METABOLISM, 1, false)
+    expect(life.stamina.current).toBeLessThan(0.5)
+  })
+})
+
+describe('water-adapted swimming stamina policy (fauna water adaptation)', () => {
+  const duckExertion = swimStaminaExertion({ waterAdapted: true })
+
+  it('a water-adapted animal swimming calmly regenerates stamina', () => {
+    const life = createAnimalLifeState(0)
+    life.stamina.current = 0.5
+    tickAnimalLife(life, 1, false, {}, DEFAULT_ANIMAL_METABOLISM, duckExertion, true)
+    expect(life.stamina.current).toBeCloseTo(0.5 + DEFAULT_ANIMAL_METABOLISM.staminaRegenRate, 10)
+  })
+
+  it('a water-adapted animal sprinting in water loses stamina at the sprint rate', () => {
+    const life = createAnimalLifeState(0)
+    life.stamina.current = 0.5
+    tickAnimalLife(life, 1, true, {}, DEFAULT_ANIMAL_METABOLISM, duckExertion, true)
+    expect(life.stamina.current).toBeCloseTo(0.5 - DEFAULT_ANIMAL_METABOLISM.staminaDrainRate, 10)
+  })
+
+  it('a water-adapted animal at zero stamina swimming calmly recovers instead of staying exhausted', () => {
+    const life = createAnimalLifeState(0)
+    life.stamina.current = 0
+    tickAnimalLife(life, 1, false, {}, DEFAULT_ANIMAL_METABOLISM, duckExertion, true)
+    expect(life.stamina.current).toBeGreaterThan(0)
   })
 })

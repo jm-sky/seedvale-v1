@@ -62,28 +62,37 @@ export function classifyWaterTraversal(
 /** Generic swim exertion — same order of magnitude as sprinting, since both
  *  drain `AnimalLifeState.stamina` through the same `staminaDrainRate`. */
 const SWIM_STAMINA_EXERTION_DEFAULT = 1
-/** `waterAdapted` swim exertion (plan fauna-015 §5/§6) — low enough that a
- *  duck floating/swimming normally regenerates faster than it drains net
- *  (`STAMINA_REGEN_RATE` vs. `staminaDrainRate * this`), so ordinary surface
- *  swimming never reads as a short emergency sprint toward drowning. */
-const SWIM_STAMINA_EXERTION_ADAPTED = 0.15
+/** `waterAdapted` swim exertion (plan fauna-015 §5/§6) — calm swimming is
+ *  not a drain at all for a water-adapted species: `tickAnimalLife` regenerates
+ *  stamina while it swims without sprinting, and charges sprinting in water at
+ *  the ordinary sprint rate. The planner therefore charges zero stamina for
+ *  calm water-adapted swimming (never a negative "gain" — regen is not counted
+ *  in route feasibility, so the prediction stays conservative). */
+const SWIM_STAMINA_EXERTION_ADAPTED = 0
 
 /** `tickAnimalLife`'s swim-exertion multiplier for a currently-swimming
  *  animal — pass `undefined` (not this) when the animal isn't swimming, so
  *  the existing sprint/rest stamina bookkeeping is untouched (plan
- *  fauna-015 §6). */
+ *  fauna-015 §6). For a `waterAdapted` species this is the calm-swim
+ *  planner cost only; the runtime policy lives in `tickAnimalLife`. */
 export function swimStaminaExertion(capability: AnimalWaterCapability | undefined): number {
   return capability?.waterAdapted ? SWIM_STAMINA_EXERTION_ADAPTED : SWIM_STAMINA_EXERTION_DEFAULT
 }
 
 /** Drowning invariant (plan fauna-015 §7), extracted as a pure predicate so
  *  it's directly unit-testable without instantiating `AnimalAgent`: damage
- *  applies only while actually `swimming` *and* stamina-exhausted.
- *  Exhaustion while `dry`/`wading` is fatigue, never drowning, and leaving
- *  `swimming` (even still exhausted) stops damage immediately — there is no
- *  separate drowning-health countdown. */
-export function shouldApplyDrowningDamage(mode: WaterTraversalMode, staminaExhausted: boolean): boolean {
-  return mode === 'swimming' && staminaExhausted
+ *  applies only while actually `swimming`, stamina-exhausted, *and* the
+ *  species is not `waterAdapted` (a duck that runs out of stamina in water is
+ *  not drowning — it regenerates while swimming calmly). Exhaustion while
+ *  `dry`/`wading` is fatigue, never drowning, and leaving `swimming` (even
+ *  still exhausted) stops damage immediately — there is no separate
+ *  drowning-health countdown. */
+export function shouldApplyDrowningDamage(
+  mode: WaterTraversalMode,
+  staminaExhausted: boolean,
+  capability: AnimalWaterCapability | undefined,
+): boolean {
+  return mode === 'swimming' && staminaExhausted && capability?.waterAdapted !== true
 }
 
 /**

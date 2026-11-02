@@ -101,6 +101,11 @@ export function createAnimalLifeState(
  * unchanged. Locomotion/traversal (`AnimalAgent`/`waterTraversal.ts`) owns
  * *when* an animal is swimming — this only owns what that costs in the
  * shared stamina resource, so swimming never needs a second energy pool.
+ *
+ * `waterAdapted` (`AnimalWaterCapability`, duck-style) — while swimming, a
+ * water-adapted animal treats calm swimming as ordinary rest (regenerates)
+ * and pays the full sprint rate only when `sprinting`; a land animal's
+ * `swimExertion` drain is unchanged.
  */
 export function tickAnimalLife(
   life: AnimalLifeState,
@@ -109,11 +114,12 @@ export function tickAnimalLife(
   options: TickNeedsOptions = {},
   metabolism: AnimalMetabolismConfig = DEFAULT_ANIMAL_METABOLISM,
   swimExertion?: number,
+  waterAdapted = false,
 ): void {
   const hungerThirstRate = options.hungerThirstRate ?? 1
   life.hunger = Math.min(1, life.hunger + dt * metabolism.hungerRate * hungerThirstRate)
   life.thirst = Math.min(1, life.thirst + dt * metabolism.thirstRate * hungerThirstRate)
-  if (swimExertion !== undefined) {
+  if (swimExertion !== undefined && !waterAdapted) {
     drainStamina(life.stamina, dt * metabolism.staminaDrainRate * swimExertion)
   } else if (sprinting) {
     drainStamina(life.stamina, dt * metabolism.staminaDrainRate)
