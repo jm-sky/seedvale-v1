@@ -1,0 +1,277 @@
+===================================
+# Running Analyze Trace v16
+===================================
+
+Reading: docs/performance/trace-results/raw/trace-settlement-walk-a05ea60d-home-settlement-walk.json
+
+
+------------------------------------------------------------------------
+## TRACE ANALYSIS
+------------------------------------------------------------------------
+Events: 374,061
+
+Building X + B/E call tree...
+Timed intervals: 229,400
+
+Calculating call tree...
+
+------------------------------------------------------------------------
+## TOP 5 REAL CPU OPERATIONS
+------------------------------------------------------------------------
+1. 1,040.5 ms self  ThreadControllerImpl::RunTask
+   CPU
+   Total: 1,040.7 ms   Self: 1,040.5 ms
+   pid=857761 tid=1 ph=X
+
+   Call tree:
+→ RunTask (1,040.7 ms)
+  → ThreadControllerImpl::RunTask (1,040.7 ms)
+
+2. 1,033.8 ms self  FunctionCall
+   CPU
+   Total: 1,036.7 ms   Self: 1,033.8 ms
+   pid=857761 tid=1 ph=X
+
+   Call tree:
+→ FireAnimationFrame (1,037.3 ms)
+  → FunctionCall (1,036.7 ms)
+
+3. 931.2 ms self  CommandBufferProxyImpl::WaitForGetOffset
+   CPU
+   Total: 931.2 ms   Self: 931.2 ms
+   pid=857761 tid=1 ph=X
+
+   Call tree:
+→ GLES2Implementation::GetProgramiv (931.2 ms)
+  → ImplementationBase::WaitForCmd (931.2 ms)
+    → CommandBufferHelper::Finish (931.2 ms)
+      → CommandBufferProxyImpl::WaitForGetOffset (931.2 ms)
+
+4. 406.5 ms self  ThreadControllerImpl::RunTask
+   CPU
+   Total: 406.9 ms   Self: 406.5 ms
+   pid=857761 tid=1 ph=X
+
+   Call tree:
+→ RunTask (407.0 ms)
+  → ThreadControllerImpl::RunTask (406.9 ms)
+
+5. 402.5 ms self  FunctionCall
+   CPU
+   Total: 402.5 ms   Self: 402.5 ms
+   pid=857761 tid=1 ph=X
+
+   Call tree:
+→ FireAnimationFrame (403.5 ms)
+  → FunctionCall (402.5 ms)
+
+
+------------------------------------------------------------------------
+## TOP 5 AGGREGATED REAL CPU OPERATIONS
+------------------------------------------------------------------------
+1. 16,538.8 ms self  NativeViewGLSurfaceEGL:RealSwapBuffers
+   Total: 16,538.8 ms   Calls: 188   CPU
+2. 10,633.7 ms self  CommandBufferService:PutChanged
+   Total: 11,058.0 ms   Calls: 7575   CPU
+3. 10,629.4 ms self  FunctionCall
+   Total: 10,882.4 ms   Calls: 4116   CPU
+4. 9,767.7 ms self  ThreadControllerImpl::RunTask
+   Total: 42,189.7 ms   Calls: 30235   CPU
+5. 3,055.5 ms self  CommandBufferProxyImpl::WaitForGetOffset
+   Total: 3,055.5 ms   Calls: 470   CPU
+
+------------------------------------------------------------------------
+## TOP 5 LONG CPU TASKS / HITCHES
+------------------------------------------------------------------------
+Ranked by wall-clock duration of top-level (root) call-tree nodes — each root is a disjoint span on its own thread, so this list cannot double-count nested work. An event name such as "RunTask" is not assumed to be a hitch by itself; ranking is purely by duration.
+
+1. 1,040.7 ms  RunTask
+   CPU
+   Start: 7,878.7 ms (trace-relative)   pid=857761 tid=1 ph=X
+
+   Call tree:
+→ RunTask (1,040.7 ms)
+
+2. 1,037.3 ms  FireAnimationFrame
+   CPU
+   Start: 7,879.1 ms (trace-relative)   pid=857761 tid=1 ph=X
+
+   Call tree:
+→ FireAnimationFrame (1,037.3 ms)
+
+3. 931.2 ms  GLES2Implementation::GetProgramiv
+   CPU
+   Start: 7,914.0 ms (trace-relative)   pid=857761 tid=1 ph=X
+
+   Call tree:
+→ GLES2Implementation::GetProgramiv (931.2 ms)
+
+4. 407.0 ms  RunTask
+   CPU
+   Start: 12,658.8 ms (trace-relative)   pid=857761 tid=1 ph=X
+
+   Call tree:
+→ RunTask (407.0 ms)
+
+5. 403.5 ms  FireAnimationFrame
+   CPU
+   Start: 12,659.5 ms (trace-relative)   pid=857761 tid=1 ph=X
+
+   Call tree:
+→ FireAnimationFrame (403.5 ms)
+
+
+------------------------------------------------------------------------
+## FRAME / HITCH SUMMARY
+------------------------------------------------------------------------
+Frames: 188
+Median frame duration: 146.7 ms
+Average frame duration: 157.7 ms
+P95 frame duration: 242.8 ms
+P99 frame duration: 408.0 ms
+Longest frame: 1,041.2 ms (start 7,879.2 ms, trace-relative)
+Frames > 16.7 ms (<60 FPS): 188
+Frames > 33.3 ms (<30 FPS): 184
+Frames > 100 ms: 181
+
+Extracting embedded CPU profiles...
+CPU profiles: 1
+
+------------------------------------------------------------------------
+## TOP 5 WEBGL / THREE.JS / SHADER OPERATIONS
+------------------------------------------------------------------------
+1. getProgramInfoLog
+   SHADER / PROGRAM   Profile CPU: 0.0 ms   Samples: 9362   Profiles: 1   Nodes: 1
+
+   Profile call tree:
+   → getProgramInfoLog
+
+2. uniformMatrix4fv
+   WebGL   Profile CPU: 0.0 ms   Samples: 4528   Profiles: 1   Nodes: 1
+
+   Profile call tree:
+   → uniformMatrix4fv
+
+3. projectObject
+   THREE.JS RENDERER   Profile CPU: 0.0 ms   Samples: 2987   Profiles: 1   Nodes: 1
+   Location: http://localhost:5577/node_modules/.vite/deps/chunk-4SR3H3JQ.js?v=708a1888:42152:27
+
+   Profile call tree:
+   → projectObject
+
+4. renderObject
+   THREE.JS RENDERER   Profile CPU: 0.0 ms   Samples: 1801   Profiles: 1   Nodes: 1
+   Location: http://localhost:5577/node_modules/.vite/deps/three_addons_renderers_CSS2DRenderer__js.js?v=708a1888:89:26
+
+   Profile call tree:
+   → renderObject
+
+5. renderObject
+   THREE.JS RENDERER   Profile CPU: 0.0 ms   Samples: 1495   Profiles: 1   Nodes: 1
+   Location: http://localhost:5577/node_modules/.vite/deps/chunk-4SR3H3JQ.js?v=708a1888:37526:24
+
+   Profile call tree:
+   → renderObject
+
+
+------------------------------------------------------------------------
+## TOP APPLICATION CPU OPERATIONS
+------------------------------------------------------------------------
+This trace's embedded CPU profiles carry no `timeDeltas` (per-sample timing), so sampled CPU time cannot be computed for any function, application or otherwise. Ranking below falls back to sample/node count, which reflects sampling frequency, not wall-clock CPU cost. To get real per-function CPU time, re-record with a capture path that preserves `timeDeltas` on `disabled-by-default-v8.cpu_profiler` `ProfileChunk` events.
+
+1. nearestRiverShoreCandidate
+   APPLICATION   Sampled CPU: 0.0 ms   Samples: 2295   Profiles: 1   Nodes: 1
+   Location: http://localhost:5577/src/terrain/riverNetwork.ts:214:43
+
+   Profile call tree:
+   → nearestRiverShoreCandidate
+
+2. recordDraw
+   APPLICATION   Sampled CPU: 0.0 ms   Samples: 537   Profiles: 1   Nodes: 1
+   Location: http://localhost:5577/src/perf/passSubmissionCollector.ts:220:22
+
+   Profile call tree:
+   → recordDraw
+
+3. colliderSignedDistance
+   APPLICATION   Sampled CPU: 0.0 ms   Samples: 416   Profiles: 1   Nodes: 1
+   Location: http://localhost:5577/src/world/collision.ts:22:39
+
+   Profile call tree:
+   → colliderSignedDistance
+
+4. classifyObject
+   APPLICATION   Sampled CPU: 0.0 ms   Samples: 365   Profiles: 1   Nodes: 1
+   Location: http://localhost:5577/src/perf/sceneCensus.ts:111:31
+
+   Profile call tree:
+   → classifyObject
+
+5. tick
+   APPLICATION   Sampled CPU: 0.0 ms   Samples: 314   Profiles: 1   Nodes: 1
+   Location: http://localhost:5577/src/app/gameLoop.ts:538:16
+
+   Profile call tree:
+   → tick
+
+
+------------------------------------------------------------------------
+## TOP 5 TRACE WEBGL / SHADER EVENTS
+------------------------------------------------------------------------
+No WebGL/Three.js/shader trace events found.
+
+------------------------------------------------------------------------
+## GPU SUMMARY
+------------------------------------------------------------------------
+Total GPU task time: 12,329.2 ms
+Total GPU task self: 12,329.2 ms
+GPU task calls: 8053
+
+------------------------------------------------------------------------
+### TOP 5 GPU TASKS
+------------------------------------------------------------------------
+1. 183.2 ms  GPUTask
+   GPU
+   pid=857725 tid=857725 ph=X
+   Total: 183.2 ms
+
+   Call tree:
+→ GPUTask (183.2 ms)
+
+2. 111.1 ms  GPUTask
+   GPU
+   pid=857725 tid=857725 ph=X
+   Total: 111.1 ms
+
+   Call tree:
+→ GPUTask (111.1 ms)
+
+3. 92.6 ms  GPUTask
+   GPU
+   pid=857725 tid=857725 ph=X
+   Total: 92.6 ms
+
+   Call tree:
+→ GPUTask (92.6 ms)
+
+4. 87.9 ms  GPUTask
+   GPU
+   pid=857725 tid=857725 ph=X
+   Total: 87.9 ms
+
+   Call tree:
+→ GPUTask (87.9 ms)
+
+5. 82.8 ms  GPUTask
+   GPU
+   pid=857725 tid=857725 ph=X
+   Total: 82.8 ms
+
+   Call tree:
+→ GPUTask (82.8 ms)
+
+
+DONE
+------------------------------
+Saving to "docs/performance/trace-results/trace-settlement-walk-a05ea60d-home-settlement-walk.md
+------------------------------

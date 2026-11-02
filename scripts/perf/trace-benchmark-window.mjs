@@ -9,15 +9,17 @@ import { join } from 'node:path'
 
 const [, , port, outDir, scenario] = process.argv
 const DEBUG = 9334
+const IS_WIN = process.platform === 'win32'
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 mkdirSync(outDir, { recursive: true })
-const sha = execSync('git rev-parse HEAD', { cwd: 'D:/Projekty/private/seedvale-v1' }).toString().trim()
+const sha = execSync('git rev-parse HEAD', { cwd: process.env.SEEDVALE_REPO ?? (IS_WIN ? 'D:/Projekty/private/seedvale-v1' : process.cwd()) }).toString().trim()
 const profile = mkdtempSync(join(tmpdir(), 'sv-trace-'))
-const chrome = spawn('C:/Program Files/Google/Chrome/Application/chrome.exe', [
+const chrome = spawn(process.env.SEEDVALE_CHROME ?? (IS_WIN ? 'C:/Program Files/Google/Chrome/Application/chrome.exe' : '/usr/bin/google-chrome'), [
   `--remote-debugging-port=${DEBUG}`, `--user-data-dir=${profile}`, '--no-first-run', '--no-default-browser-check',
   '--disable-backgrounding-occluded-windows', '--disable-renderer-backgrounding', '--disable-background-timer-throttling',
+  ...(IS_WIN ? [] : ['--ignore-gpu-blocklist', '--password-store=basic', '--simulate-outdated-no-au=Tue, 31 Dec 2099 23:59:59 GMT']),
   '--window-size=1600,900', '--window-position=0,0', `http://localhost:${port}/?benchmark=${scenario}${process.env.SEEDVALE_QUERY ?? ''}`,
-], { stdio: 'ignore' })
+], { stdio: 'ignore', env: IS_WIN ? process.env : { ...process.env, GALLIUM_DRIVER: 'd3d12' } })
 
 let id = 0
 const pending = new Map()
@@ -89,7 +91,7 @@ try {
 } catch (e) {
   console.log('FAIL', e.message)
 } finally {
-  try { execSync(`taskkill /F /T /PID ${chrome.pid}`, { stdio: 'ignore' }) } catch {}
+  try { if (IS_WIN) execSync(`taskkill /F /T /PID ${chrome.pid}`, { stdio: 'ignore' }); else chrome.kill('SIGTERM') } catch {}
   await sleep(2000)
   try { rmSync(profile, { recursive: true, force: true }) } catch {}
   process.exit(0)
