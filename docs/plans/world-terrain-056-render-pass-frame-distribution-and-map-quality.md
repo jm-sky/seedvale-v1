@@ -1,7 +1,7 @@
 # Plan: Render-pass frame distribution, visibility budgeting and map quality
 
 **Created:** 2026-11-01
-**Status:** `ready` — Sonnet execution slices S0–S5 below (2026-11-02); Stages A–D remain the reference scope, narrowed by the review and author decisions
+**Status:** `planned` 📋
 **Type:** optimization
 **Priority:** high · **Effort:** XL
 **Depends on:** -
