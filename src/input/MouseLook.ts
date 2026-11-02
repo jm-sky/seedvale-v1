@@ -1,6 +1,6 @@
 import type { KeyState } from './Keyboard'
-import { isTouchDevice } from './isTouchDevice'
 import { readFlyConfig } from '../debug/flyCam'
+import { isTouchDevice } from './isTouchDevice'
 
 export type LookState = {
   yaw: number
