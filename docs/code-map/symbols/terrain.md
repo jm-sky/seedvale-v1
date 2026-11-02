@@ -57,57 +57,53 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/cemeteryAssignment.ts`
 
-- `ABANDONED_SETTLEMENT_MIN_DISTANCE` — const — line 59
-- `activeTopologyNear` — function — line 264
-- `assignmentVariationSeed` — function — line 244
-- `CEMETERY_SETTLEMENT_GATHER_RADIUS` — const — line 57
+- `ABANDONED_SETTLEMENT_MIN_DISTANCE` — const — line 55
+- `activeTopologyNear` — function — line 198
+- `assignmentVariationSeed` — function — line 178
+- `CEMETERY_SETTLEMENT_GATHER_RADIUS` — const — line 53
 - `CemeteryAssignment` — type — line 40
-- `cemeteryAssignmentFromTopology` — function — line 234
-- `cemeteryAssignmentId` — function — line 114
+- `cemeteryAssignmentFromTopology` — function — line 168
+- `cemeteryAssignmentId` — function — line 110
 - `CemeteryAssignmentIntent` — type — line 30
-- `cemeteryIdForAbandoned` — function — line 125
-- `cemeteryIdForAssignment` — function — line 119
+- `cemeteryIdForAbandoned` — function — line 121
+- `cemeteryIdForAssignment` — function — line 115
 - `CemeterySettlementRef` — type — line 16
 - `CemeteryTopologyIntent` — type — line 33
-- `clearCemeteryCaches` — function — line 64
-- `collectSettlementRefsNear` — function — line 83
-- `dedicatedCemeteryTopology` — function — line 187
-- `isAbandonedCemeteryId` — function — line 135
-- `isLegacyCemeteryId` — function — line 130
+- `clearCemeteryCaches` — function — line 60
+- `collectSettlementRefsNear` — function — line 79
+- `dedicatedCemeteryTopology` — function — line 136
+- `isAbandonedCemeteryId` — function — line 131
+- `isLegacyCemeteryId` — function — line 126
 - `makeSettlementRefPeek` — function — line 47
 - `PeekSettlementDef` — type — line 44
 - `PeekSettlementRef` — type — line 45
-- `resolveCemeteryTopologyForSettlement` — function — line 212
+- `resolveCemeteryTopologyForSettlement` — function — line 150
   - domain: world-terrain
-- `resolveSmSharePartner` — function — line 174
-- `servedSettlementIdsForCemeteryId` — function — line 252
+- `servedSettlementIdsForCemeteryId` — function — line 186
   - domain: world-terrain
-- `settlementRefFromDef` — function — line 74
-- `SM_SHARING_CELL_RADIUS` — const — line 53
-- `SM_SHARING_MAX_DISTANCE` — const — line 55
+- `settlementRefFromDef` — function — line 70
 
 ## `terrain/cemeteryPlacement.ts`
 
-- `ABANDONED_CEMETERY_CHANCE` — const — line 50
-- `abandonedCemeteryMaxOffsetFromCenter` — function — line 59
+- `ABANDONED_CEMETERY_CHANCE` — const — line 49
+- `abandonedCemeteryMaxOffsetFromCenter` — function — line 58
   - domain: world-terrain
-- `chunkPassesAbandonedCemeteryRoll` — function — line 76
+- `chunkPassesAbandonedCemeteryRoll` — function — line 75
   - domain: world-terrain
-- `clearCemeteryPlacementCaches` — function — line 356
-- `getCachedPlacementForAssignment` — function — line 398
-- `isSharedAssignmentSplit` — function — line 394
-- `placementOwnerChunk` — function — line 488
-- `resolveAbandonedCemeteryAfterRoll` — function — line 435
+- `clearCemeteryPlacementCaches` — function — line 308
+- `getCachedPlacementForAssignment` — function — line 342
+- `placementOwnerChunk` — function — line 432
+- `resolveAbandonedCemeteryAfterRoll` — function — line 379
   - domain: world-terrain
-- `resolveAbandonedCemeteryForChunk` — function — line 445
-- `resolveCemeteriesForChunk` — function — line 510
+- `resolveAbandonedCemeteryForChunk` — function — line 389
+- `resolveCemeteriesForChunk` — function — line 454
   - domain: world-terrain
-- `resolveCemeteryPlacement` — function — line 541
-- `ResolvedCemeteryPlacement` — type — line 80
-- `resolvedPlacementToEnvironment` — function — line 405
-- `resolvePlacementForTopology` — function — line 374
+- `resolveCemeteryPlacement` — function — line 478
+- `ResolvedCemeteryPlacement` — type — line 79
+- `resolvedPlacementToEnvironment` — function — line 349
+- `resolvePlacementForTopology` — function — line 324
   - domain: world-terrain
-- `validateCemeteryPhysical` — function — line 191
+- `validateCemeteryPhysical` — function — line 162
 
 ## `terrain/chunkCrops.ts`
 
@@ -206,27 +202,27 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/chunkManager.ts`
 
-- `applyChunkWaterDayNight` — function — line 1182
-- `applyModificationToTile` — function — line 943
-- `ChunkManager` — type — line 560
-- `ChunkManagerConfig` — type — line 342
-- `createChunkManager` — function — line 1207
+- `applyChunkWaterDayNight` — function — line 1181
+- `applyModificationToTile` — function — line 942
+- `ChunkManager` — type — line 559
+- `ChunkManagerConfig` — type — line 341
+- `createChunkManager` — function — line 1206
   - domain: world-terrain
   - system: chunk-manager
   - role: Owns terrain chunk streaming, sampling and environment-facing world queries.
   - simulation: on-demand
   - performance: nearby-only
-- `CropHarvestOutcome` — type — line 1196
-- `drainByBudget` — function — line 1157
-- `FinalizeStage` — type — line 456
-- `pickNearestQueuedKey` — function — line 1117
-- `pickNextFinalizeKey` — function — line 1135
-- `ResidentChunkSnapshot` — type — line 1022
-- `sampleResidentHeight` — function — line 1042
-- `sampleResidentLocalWater` — function — line 1090
-- `sampleResidentSurfaceGround` — function — line 1062
-- `TerrainModification` — type — line 900
-- `tickChunkWaterSurfaces` — function — line 1170
+- `CropHarvestOutcome` — type — line 1195
+- `drainByBudget` — function — line 1156
+- `FinalizeStage` — type — line 455
+- `pickNearestQueuedKey` — function — line 1116
+- `pickNextFinalizeKey` — function — line 1134
+- `ResidentChunkSnapshot` — type — line 1021
+- `sampleResidentHeight` — function — line 1041
+- `sampleResidentLocalWater` — function — line 1089
+- `sampleResidentSurfaceGround` — function — line 1061
+- `TerrainModification` — type — line 899
+- `tickChunkWaterSurfaces` — function — line 1169
 
 ## `terrain/chunkMeshCache.ts`
 

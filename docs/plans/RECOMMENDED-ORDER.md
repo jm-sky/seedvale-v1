@@ -215,83 +215,91 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   🔴 `M` · **Score:**  35  
    → **unlocks:** 0/0
 
-32. `npc-061` — **Time-skip and reification surface placement validity**  
+32. `world-terrain-058` — **Finite continent and global hydrology**  
+  🔴 `XL` · **Score:**  34  
+   → **unlocks:** 1/1
+
+33. `npc-061` — **Time-skip and reification surface placement validity**  
   🔴 `M` · **Score:**  33  
    → **unlocks:** 0/0
 
-33. `world-terrain-042` — **Medicinal herb meadow patches**  
+34. `world-terrain-042` — **Medicinal herb meadow patches**  
   🟡 `M` · **Score:**  33  
    → **unlocks:** 1/1
 
-34. `npc-054` — **NPC desired gifts, gift acceptance and relationship rewards**  
+35. `npc-054` — **NPC desired gifts, gift acceptance and relationship rewards**  
   🔴 `L` · **Score:**  30  
    → **unlocks:** 0/0
 
-35. `settlements-022` — **Founded settlement live runtime and streaming**  
+36. `settlements-022` — **Founded settlement live runtime and streaming**  
   🔴 `L` · **Score:**  28  
    → **unlocks:** 0/0
 
-36. `settlements-024` — **Jumpable low campfire collision**  
+37. `settlements-024` — **Jumpable low campfire collision**  
   🔴 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-37. `world-terrain-039` — **N8AO / post-process cost budget**  
+38. `world-terrain-039` — **N8AO / post-process cost budget**  
   🔴 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-38. `ui-input-025` — **Road travel autopilot for player and mounts**  
+39. `ui-input-025` — **Road travel autopilot for player and mounts**  
   🔴 `L` · **Score:**  26  
    → **unlocks:** 0/0
 
-39. `items-player-044` — **Shoulder and forearm equipment slots**  
+40. `items-player-044` — **Shoulder and forearm equipment slots**  
   🟡 `M` · **Score:**  25  
    → **unlocks:** 0/0
 
-40. `world-036` — **Lightweight unloaded shipwreck and tower lookup**  
+41. `world-036` — **Lightweight unloaded shipwreck and tower lookup**  
   🟡 `M` · **Score:**  25  
    → **unlocks:** 0/0
 
-41. `ui-input-045` — **Equipment panel body-ordered layout (V3 items--006 adapted)**  
+42. `ui-input-045` — **Equipment panel body-ordered layout (V3 items--006 adapted)**  
   🟡 `S` · **Score:**  23  
    → **unlocks:** 0/0
 
-42. `world-terrain-058` — **Finite continent and global hydrology**  
-  🔴 `XL` · **Score:**  20  
+43. `world-terrain-059` — **World scale, travel time and sparse settlements**  
+  🔴 `XL` · **Score:**  22  
    → **unlocks:** 0/0
 
-43. `tools-019` — **Debug tooling lifecycle ownership**  
+44. `tools-019` — **Debug tooling lifecycle ownership**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-44. `tools-021` — **Align debug OBB overlays with physical colliders**  
+45. `tools-021` — **Align debug OBB overlays with physical colliders**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-45. `world-terrain-055` — **Optional shadow frustum and refresh trims (settlement shadow pass)**  
+46. `world-terrain-055` — **Optional shadow frustum and refresh trims (settlement shadow pass)**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-46. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
+47. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
   🟡 `L` · **Score:**  18  
    → **unlocks:** 0/0
 
-47. `items-player-014` — **Rope-pullable resource transport**  
+48. `items-player-014` — **Rope-pullable resource transport**  
   ⚪ `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-48. `items-player-052` — **Settlement tool ownership and social acquisition**  
+49. `items-player-052` — **Settlement tool ownership and social acquisition**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-49. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
+50. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-50. `world-040` — **Underground Locations & Portals**  
+51. `npc-065` — **Stable NPC Voice Casting, V3 Donor QC and Selective Recording**  
+  🟡 `L` · **Score:**  14  
+   → **unlocks:** 0/0
+
+52. `world-040` — **Underground Locations & Portals**  
   ⚪ `XL` · **Score:**  14  
    → **unlocks:** 0/0
 
-51. `fauna-049` — **Wild animal difficulty tiers, trophies and social recognition**  
+53. `fauna-049` — **Wild animal difficulty tiers, trophies and social recognition**  
   🟡 `XL` · **Score:**  10  
    → **unlocks:** 0/0
 
@@ -367,6 +375,9 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   is blocked by:
   - [`items-player-051-cave-aware-dropped-item-continuity.md`](items-player-051-cave-aware-dropped-item-continuity.md)
   - [`fauna-045-cave-surface-perception-boundary-and-entrance-awareness.md`](fauna-045-cave-surface-perception-boundary-and-entrance-awareness.md)
+- [`world-terrain-059-world-scale-travel-time-and-sparse-settlements.md`](world-terrain-059-world-scale-travel-time-and-sparse-settlements.md)  
+  is blocked by:
+  - [`world-terrain-058-finite-continent-and-global-hydrology.md`](world-terrain-058-finite-continent-and-global-hydrology.md)
 
 ---
 
@@ -572,6 +583,7 @@ graph TD
   npc_062["npc-062 — UBC NPC runtime material darkness and authored outfit preservation"]
   npc_063["npc-063 — Agent Performance — NPC Update Cost Attribution"]
   npc_064["npc-064 — Agent Performance — Spatial State Seam"]
+  npc_065["npc-065 — Stable NPC Voice Casting, V3 Donor QC and Selective Recording"]
   persistence_001["persistence-001 — Full Simulation Persistence"]
   persistence_002["persistence-002 — save integrity guard"]
   persistence_003["persistence-003 — save schema versioning and future migrations"]
@@ -908,6 +920,7 @@ graph TD
   world_terrain_056["world-terrain-056 — Render-pass frame distribution, visibility budgeting and map quality"]
   world_terrain_057["world-terrain-057 — Natural bush model replacement and berry variant"]
   world_terrain_058["world-terrain-058 — Finite continent and global hydrology"]
+  world_terrain_059["world-terrain-059 — World scale, travel time and sparse settlements"]
   008 --> items_player_010
   069 --> settlements_npcs_008
   097 --> world_terrain_007
@@ -1588,4 +1601,5 @@ graph TD
   world_terrain_045 --> world_terrain_052
   world_terrain_047 --> world_terrain_048
   world_terrain_049 --> world_terrain_042
+  world_terrain_058 --> world_terrain_059
 ```

@@ -3,12 +3,11 @@ import type { CemeterySettlementRef } from './cemeteryAssignment'
 import type { CemeteryTerrainSampler } from './chunkEnvironment'
 import type { ChunkTileParams } from './chunkHeightmap'
 import { clearCemeteryCaches } from './cemeteryAssignment'
-import { dedicatedCemeteryTopology, makeSettlementRefPeek, resolveCemeteryTopologyForSettlement } from './cemeteryAssignment'
+import { makeSettlementRefPeek, resolveCemeteryTopologyForSettlement } from './cemeteryAssignment'
 import {
   abandonedCemeteryMaxOffsetFromCenter,
   chunkPassesAbandonedCemeteryRoll,
   clearCemeteryPlacementCaches,
-  isSharedAssignmentSplit,
   resolveAbandonedCemeteryAfterRoll,
   resolveAbandonedCemeteryForChunk,
   resolveCemeteriesForChunk,
@@ -209,13 +208,14 @@ describe('assignment-driven cemetery placement (world-terrain-016)', () => {
   const b: CemeterySettlementRef = { id: '1_0', gx: 1, gz: 0, x: 280, z: 0, size: 'SM' }
   const pair = [a, b]
 
-  it('places a shared SM cemetery at the same id/position regardless of calling chunk', () => {
+  it('places each SM cemetery at the same id/position regardless of calling chunk (Q81-b: no sharing)', () => {
     let found: ResolvedCemeteryPlacement | null = null
     for (let seed = 1; seed <= 240; seed++) {
       clearCemeteryCaches()
       clearCemeteryPlacementCaches()
       const topology = resolveCemeteryTopologyForSettlement('0_0', makeSettlementRefPeek(pair))!
-      expect(topology.intent).toBe('shared')
+      expect(topology.intent).toBe('dedicated')
+      expect(topology.servedSettlementIds).toEqual(['0_0'])
       const fromA = resolvePlacementForTopology(topology, tileParams({ seed, cx: 0, cz: 0, cemeterySettlements: pair }))
       clearCemeteryPlacementCaches()
       const fromB = resolvePlacementForTopology(
@@ -226,14 +226,13 @@ describe('assignment-driven cemetery placement (world-terrain-016)', () => {
       expect(fromA.id).toBe(fromB.id)
       expect(fromA.x).toBe(fromB.x)
       expect(fromA.z).toBe(fromB.z)
-      expect(fromA.servedSettlementIds).toEqual(['0_0', '1_0'])
       found = fromA
       break
     }
     expect(found).not.toBeNull()
   })
 
-  it('emits a shared cemetery from only the owner chunk', () => {
+  it('emits a cemetery from only the owner chunk', () => {
     let seedUsed = 0
     let placed: ResolvedCemeteryPlacement | null = null
     for (let seed = 1; seed <= 240; seed++) {
@@ -258,40 +257,5 @@ describe('assignment-driven cemetery placement (world-terrain-016)', () => {
       .filter((p) => p.id === placed!.id)
     expect(viaOwner).toHaveLength(1)
     expect(viaFar).toHaveLength(0)
-  })
-
-  it('falls back to two dedicated cemeteries when the shared corridor is blocked', () => {
-    const blockedCorridor = [{ x: 140, z: 0, radius: 80 }]
-    let dedicatedA: ResolvedCemeteryPlacement | null = null
-    let dedicatedB: ResolvedCemeteryPlacement | null = null
-    for (let seed = 1; seed <= 240; seed++) {
-      clearCemeteryCaches()
-      clearCemeteryPlacementCaches()
-      const params = tileParams({
-        seed,
-        cemeterySettlements: pair,
-        cemeteryClearings: blockedCorridor,
-        clearings: blockedCorridor.map((c) => ({
-          x: c.x,
-          z: c.z,
-          radius: c.radius,
-          targetH: 1,
-          heightStrength: 0.8,
-          tintStrength: 0.75,
-        })),
-      })
-      const topology = resolveCemeteryTopologyForSettlement('0_0', makeSettlementRefPeek(pair))!
-      expect(topology.intent).toBe('shared')
-      expect(resolvePlacementForTopology(topology, params)).toBeNull()
-      expect(isSharedAssignmentSplit(topology.assignmentId)).toBe(true)
-      dedicatedA = resolvePlacementForTopology(dedicatedCemeteryTopology(a), params)
-      dedicatedB = resolvePlacementForTopology(dedicatedCemeteryTopology(b), params)
-      if (dedicatedA && dedicatedB) break
-    }
-    expect(dedicatedA).not.toBeNull()
-    expect(dedicatedB).not.toBeNull()
-    expect(dedicatedA!.id).not.toBe(dedicatedB!.id)
-    expect(dedicatedA!.servedSettlementIds).toEqual(['0_0'])
-    expect(dedicatedB!.servedSettlementIds).toEqual(['1_0'])
   })
 })

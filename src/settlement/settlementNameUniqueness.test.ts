@@ -15,7 +15,7 @@ import {
   LOCAL_SETTLEMENT_NAME_RADIUS_M,
   localSettlementName,
 } from './settlementNameUniqueness'
-import { cachedLostTreasureArchaeologistHostCell, clearSettlementDefCache, settlementDefFor } from './settlementPlanCache'
+import { cachedLostTreasureArchaeologistHostCell, clearSettlementDefCache, settlementDefFor, settlementLayoutFor } from './settlementPlanCache'
 
 const flatHeight = (): number => 12
 const samplers: TerrainSamplers = {
@@ -198,9 +198,11 @@ describe('settlementDefFor local unique names', () => {
 
 describe('Lost Treasure host search scope', () => {
   it('a cell beyond every host search radius never triggers the host search', () => {
-    settlementDefFor({ gx: 9, gz: 0 }, ctxFor(7))
+    const sites = settlementLayoutFor(ctxFor(7)).sites.slice(1).map((site) => site.cell)
+    const ring = (cell: { gx: number, gz: number }) => Math.max(Math.abs(cell.gx), Math.abs(cell.gz))
+    settlementDefFor(sites.find((cell) => ring(cell) > 10)!, ctxFor(7))
     expect(cachedLostTreasureArchaeologistHostCell()).toBeUndefined()
-    settlementDefFor({ gx: 2, gz: 0 }, ctxFor(7))
+    settlementDefFor(sites.find((cell) => ring(cell) <= 10)!, ctxFor(7))
     expect(cachedLostTreasureArchaeologistHostCell()).not.toBeUndefined()
   })
 })

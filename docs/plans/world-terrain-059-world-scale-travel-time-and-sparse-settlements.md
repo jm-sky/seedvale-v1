@@ -112,3 +112,32 @@ New light module `src/world/travelUnits.ts` (no Three.js): `DEFAULT_DAY_LENGTH_S
 Tests adjusted for intent, not loosened: `AnimalLife`/`animalMetabolismGameplay` use the default constant; `NpcAgent.spatialLifecycle` committed-travel test uses a 2000 m destination (the 3.6 m/s march would arrive within 8 h over 500 m); cave traversal test compares against `PLAYER_WALK_SPEED`.
 
 **Not done (open, needs a gameplay decision before it lands):** decision 8's *on-screen* inter-settlement legs at `NPC_TRAVEL_SPEED` (expedition/road travel outside a settlement radius, run/walk blend) — only the off-screen estimate uses 3.6 so far. `src/world/createCaves.test.ts` "mouth exit onto 1 m terrain tiles" is red on `main` before and after this change (unrelated). Walk/sprint feel at 6 m/s and the 12-minute day are not browser-verified → queue §2.
+
+### W4 — global selection + neighbour graph (Q84, Sonnet, 2026-11-02)
+
+**Implemented / technically verified** (type-check, lint, full `pnpm vitest run` 8948 tests, build green; nothing browser-verified).
+
+- `src/settlement/settlementLayout.ts` (new, the one owner): `computeSettlementLayout` — cheap per-cell suitability (centre + 4 probes at 40 m, all dry, slope/ridge penalty, seeded jitter) → greedy Poisson-disc in score order, **home first**, radius 1150 m (`SETTLEMENT_SPACING_M`) relaxing by 100 m towards the 720 m floor (`SETTLEMENT_MIN_DISTANCE_M = 4 × TRAVEL_HOUR_M`) until `SETTLEMENT_TARGET_COUNT = 22`. Each candidate is confirmed with the real `probeSettlementSite` (no river query, no progression floor, so the layout stays hydrology-independent) and distances use the probed **site** positions. Graph: relative-neighbourhood graph, Gabriel fallback for degree-1 sites (≤ 1800 m), edges > 2400 m dropped unless they are the only link, edges > 1800 m pruned when both ends keep ≥ 2 other links and stay connected.
+- `settlementPlanCache`: `settlementLayoutFor(ctx)` (memoized, cleared with the def cache, perf stage `settlementLayout`); unselected cells → `null` def / no-site probe before any site search; `neighborSitesFor` (entrances) reads the graph; progression ring targets are filtered to selected cells.
+- `roadNetwork`: `neighborsFor` = graph neighbours; `segmentsNear`/`fordsNear`/`bridgesNear` use new `routeOwnersNear` (owners near the rect + both ends of every graph edge whose bbox ±120 m meets it) instead of the lattice ring-1 scan, which cannot see a 1–2.4 km edge crossing a far chunk.
+- Cemeteries: **Q81-b (a)** — SM sharing removed (`resolveSmSharePartner`, `SM_SHARING_*`, `'shared'` intent, shared corridor placement, `split` state, tests, census branch); every settlement dedicated.
+- Lost Treasure host search radii widened (cells, Chebyshev): elder 1 → 6, archaeologist/specialist 5 → 10, because ring 1 (≤ 450 m) can never hold a settlement now.
+- Caches bumped: settlement definitions 17 → 18, road routes 6 → 7, chunk tiles 18 → 19 (epoch already 1). Worldgen fixtures were already stale (v17 vs fixture v4) — unchanged, regenerate with `tools-020`.
+- `pnpm worldgen:spacing:census` replaces `worldgen:spacing:calibrate` (deleted, its pitch lever is gone).
+
+**Census** (`pnpm worldgen:spacing:census --roads=1`; edges are site-to-site straight lines):
+
+| seed | settlements | nearest-nbr min / p50 | edges | edge p10 / p50 / p90 / max | in 720–1800 m | > 2400 m | components | land ≤ 1800 m | sizes | layout | settlements with no road | all routes built |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 42 | 22 | 1230 / 1325 | 29 | 1258 / 1490 / 1747 / 2025 | 93 % | 0 | 1 | 100 % | SM10 MD4 LG7 XL1 | ~0.75 s | **1** (`-6_11`) | 76 s |
+| 415424794 | 22 | 1158 / 1295 | 26 | 1227 / 1474 / 1757 / 1864 | 96 % | 0 | 1 | 100 % | SM7 MD8 LG7 | ~0.73 s | **1** | 65 s |
+
+Decision 4 targets met except "no settlement without a road".
+
+**Findings / open**
+- **Road-less settlement (1 per seed).** Not a spacing issue: the A* start is enclosed by river channels the router must reject (`evaluateRoadRiverCrossing`: span > `MAX_BRIDGE_SPAN` / shallow angle) — 399 nodes explored, both graph edges fail, even with wider search margins (0.3/0.6 × length) and 2 extra fallback candidates. The layout is deliberately hydrology-independent; **058 H4 (hydrology-aware site refinement) or a bridge policy change must resolve it** — asked in queue §3.
+- **Layout cost ~0.7 s per realm** (≈ 30 site probes ≈ 11 ms each + ~1.7k × up to 5 height samples), not "milliseconds"; computed in every realm (main + terrain workers). A persisted `settlement-layout` cache namespace + fixture was **not** done (queue Q84 follow-up).
+- **Route build time**: ~2–5 s per 1.2–2 km edge (A* open set is a linear scan over a Map → O(n²) in ~30k nodes); 65–76 s for all 26–29 edges. Cached per pair, but a cold first walk will hitch — a binary-heap open set is the cheap fix, route geometry would change (Q60 owns it; roads need a rebuild anyway).
+- Progression rings (1–2 / 3–5 cells) no longer match: the near ring never holds a selected cell, so `near` is mostly `null`; W2′ (graph hops) replaces it. Until then big-village guarantees near home are weaker.
+- Names: `LOCAL_SETTLEMENT_NAME_RADIUS_M` (1 km) now almost never matches (nearest neighbour ≥ 1.1 km) — harmless, revisit in W5.
+

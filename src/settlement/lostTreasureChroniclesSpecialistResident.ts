@@ -15,7 +15,7 @@ export const LOST_TREASURE_SPECIALIST_AGE = 61
 
 /** Same Chebyshev radius as the archaeologist host search — a third
  *  settlement is preferred when one exists, never required. */
-export const LOST_TREASURE_SPECIALIST_SETTLEMENT_SEARCH_RADIUS = 5
+export const LOST_TREASURE_SPECIALIST_SETTLEMENT_SEARCH_RADIUS = 10
 
 const PREFERRED_SPECIALIST_SETTLEMENT_SIZES: ReadonlySet<VillageSize> = new Set(['LG', 'MD', 'XL'])
 

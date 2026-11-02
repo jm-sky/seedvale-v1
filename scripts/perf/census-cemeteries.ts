@@ -12,14 +12,12 @@ import { cellsWithinRadius, type SettlementDef } from '../../src/settlement/sett
 import { clearSettlementDefCache, setSettlementRiverQuery, settlementDefFor } from '../../src/settlement/settlementPlanCache'
 import {
   clearCemeteryCaches,
-  dedicatedCemeteryTopology,
   makeSettlementRefPeek,
   resolveCemeteryTopologyForSettlement,
   settlementRefFromDef,
 } from '../../src/terrain/cemeteryAssignment'
 import {
   clearCemeteryPlacementCaches,
-  isSharedAssignmentSplit,
   resolveAbandonedCemeteryForChunk,
   type ResolvedCemeteryPlacement,
   resolvePlacementForTopology,
@@ -105,19 +103,7 @@ function census(seed: number, statuses: Record<string, string>): { rows: Record<
       row.dist.push(d)
     }
     const placed = resolvePlacementForTopology(topology, params, terrainFn)
-    if (placed) { record(`${topology.intent === 'shared' ? 'shared' : placed.size} (${placed.size})`, placed); continue }
-    if (topology.intent === 'shared' && isSharedAssignmentSplit(topology.assignmentId)) {
-      const row = (rows['shared→split'] ??= blank())
-      row.assignments++
-      row.split++
-      statuses[topology.assignmentId] = 'split'
-      for (const s of topology.settlements) {
-        const dedicated = dedicatedCemeteryTopology(s)
-        const fb = resolvePlacementForTopology(dedicated, params, terrainFn)
-        record(`fallback-dedicated (${fb?.size ?? '-'})`, fb, dedicated)
-      }
-      continue
-    }
+    if (placed) { record(`${placed.size} (${placed.size})`, placed); continue }
     record(`dedicated:${ref.size}`, null)
   }
   let abandoned = 0

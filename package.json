@@ -35,7 +35,7 @@
     "docs:sync": "tsx scripts/docs/plans-sync.ts && tsx scripts/docs/generate-plan-docs.ts && tsx scripts/docs/planned-plans-without-notes.ts && tsx scripts/docs/docs-readme-index.ts && tsx scripts/docs/docs-symbol-index.ts && tsx scripts/docs/docs-dependency-map.ts && tsx scripts/docs/docs-code-index.ts && tsx scripts/docs/plans-recommended-order.ts",
     "docs:sync:ci": "pnpm run plans:sync && pnpm run docs:generate-plan-docs && pnpm run plans:without-notes && pnpm run docs:readme-index && pnpm run docs:symbol-index && pnpm run docs:dependency-map && pnpm run docs:code-index",
     "worldgen:fixture:check": "tsx scripts/perf/check-worldgen-fixtures.ts",
-    "worldgen:spacing:calibrate": "tsx scripts/perf/calibrate-settlement-spacing.ts",
+    "worldgen:spacing:census": "tsx scripts/perf/census-spacing.ts",
     "worldgen:cemeteries:census": "tsx scripts/perf/census-cemeteries.ts",
     "worldgen:yards:census": "tsx scripts/perf/census-house-yards.ts",
     "worldgen:roads:census": "tsx scripts/perf/census-roads.ts",

@@ -13,6 +13,7 @@ import {
   ingestHydratedSettlementDef,
   settlementDefFor,
   settlementDefinitionCacheReady,
+  settlementLayoutFor,
   type SettlementResolveContext,
 } from './settlementPlanCache'
 import {
@@ -110,7 +111,6 @@ const region = {
 } as RegionParams
 
 const flatHeight = (): number => 12
-const wetHeight = (): number => -2
 
 function ctxFor(
   seed: number,
@@ -127,6 +127,11 @@ function ctxFor(
     region,
     homeSize,
   }
+}
+
+/** A non-home cell the world's settlement layout selected (059 W4: the lattice ring is no longer populated). */
+function neighbourCell(ctx: SettlementResolveContext) {
+  return settlementLayoutFor(ctx).sites[1]!.cell
 }
 
 function fingerprintFor(
@@ -451,7 +456,8 @@ describe('settlementPlanCache persistent hydrate (plan settlements-014)', () => 
     const cache = persistCache()
     const ctx = ctxFor(11)
     activateSettlementDefinitionCacheForWorld(ctx, params({ seed: 11 }))
-    const generated = settlementDefFor({ gx: 1, gz: 0 }, ctx)
+    const cell = neighbourCell(ctx)
+    const generated = settlementDefFor(cell, ctx)
     expect(generated).not.toBeNull()
     await sleep(0)
     cache.dispose()
@@ -472,43 +478,49 @@ describe('settlementPlanCache persistent hydrate (plan settlements-014)', () => 
         }
       })(),
     })
-    await putCacheRecords([record(11, 1, 0, fp, generated)])
+    await putCacheRecords([record(11, cell.gx, cell.gz, fp, generated)])
 
     clearSettlementDefCache()
     const cold = persistCache()
     const spy = vi.spyOn(settlementGenerator, 'generateSettlementDef')
     activateSettlementDefinitionCacheForWorld(ctxFor(11), params({ seed: 11 }))
     await settlementDefinitionCacheReady()
-    const hydrated = settlementDefFor({ gx: 1, gz: 0 }, ctxFor(11))
+    const hydrated = settlementDefFor(cell, ctxFor(11))
     expect(hydrated).toEqual(generated)
     expect(spy).not.toHaveBeenCalled()
     cold.dispose()
   })
 
-  it('cached null from settlementDefFor is a hit, not a miss', async () => {
-    const ctx = ctxFor(11, wetHeight)
-    const cache = persistCache({ debounceMs: 20 })
+  it('a persisted null for a selected cell is a hit, not a miss', async () => {
+    const ctx = ctxFor(11)
+    const cell = neighbourCell(ctx)
     activateSettlementDefinitionCacheForWorld(ctx, params({ seed: 11 }))
-    await settlementDefinitionCacheReady()
-    expect(settlementDefFor({ gx: 2, gz: 3 }, ctx)).toBeNull()
-    await sleep(50)
-    const rows = await listCacheRecords(11, SETTLEMENT_DEFINITION_CACHE_NAMESPACE, SETTLEMENT_DEFINITION_CACHE_VERSION)
-    expect(rows.some((row) => row.payload === null)).toBe(true)
-    cache.dispose()
-
+    const policy = cachedSettlementProgressionPolicy()
+    const fp = fingerprintFor({
+      params: params({ seed: 11 }),
+      progression: policy
+        ? {
+            homeSize: policy.homeSize,
+            near: policy.near ? { gx: policy.near.cell.gx, gz: policy.near.cell.gz, minimum: policy.near.minimum } : null,
+            far: policy.far ? { gx: policy.far.cell.gx, gz: policy.far.cell.gz, minimum: policy.far.minimum } : null,
+          }
+        : null,
+    })
+    await putCacheRecords([record(11, cell.gx, cell.gz, fp, null)])
     clearSettlementDefCache()
     const cold = persistCache()
     const spy = vi.spyOn(settlementGenerator, 'generateSettlementDef')
-    activateSettlementDefinitionCacheForWorld(ctxFor(11, wetHeight), params({ seed: 11 }))
+    activateSettlementDefinitionCacheForWorld(ctxFor(11), params({ seed: 11 }))
     await settlementDefinitionCacheReady()
-    expect(settlementDefFor({ gx: 2, gz: 3 }, ctxFor(11, wetHeight))).toBeNull()
+    expect(settlementDefFor(cell, ctxFor(11))).toBeNull()
     expect(spy).not.toHaveBeenCalled()
     cold.dispose()
   })
 
   it('in-flight hydrate cannot overwrite a newly generated result', async () => {
-    const stale = realDef({ gx: 1, gz: 0 }, 1)
     const ctx = ctxFor(21)
+    const cell = neighbourCell(ctx)
+    const stale = realDef(cell, 1)
     activateSettlementDefinitionCacheForWorld(ctx, params({ seed: 21 }))
     const policy = cachedSettlementProgressionPolicy()
     const fp = fingerprintFor({
@@ -526,13 +538,13 @@ describe('settlementPlanCache persistent hydrate (plan settlements-014)', () => 
         : null,
     })
     clearSettlementDefCache()
-    await putCacheRecords([record(21, 1, 0, fp, stale)])
+    await putCacheRecords([record(21, cell.gx, cell.gz, fp, stale)])
     persistCache()
     const liveCtx = ctxFor(21)
     activateSettlementDefinitionCacheForWorld(liveCtx, params({ seed: 21 }))
-    const generated = settlementDefFor({ gx: 1, gz: 0 }, liveCtx)
+    const generated = settlementDefFor(cell, liveCtx)
     await settlementDefinitionCacheReady()
-    expect(settlementDefFor({ gx: 1, gz: 0 }, liveCtx)).toEqual(generated)
+    expect(settlementDefFor(cell, liveCtx)).toEqual(generated)
     expect(generated).not.toEqual(stale)
   })
 
@@ -541,14 +553,16 @@ describe('settlementPlanCache persistent hydrate (plan settlements-014)', () => 
     const ctxA = ctxFor(31)
     activateSettlementDefinitionCacheForWorld(ctxA, params({ seed: 31 }))
     await settlementDefinitionCacheReady()
-    const defA = settlementDefFor({ gx: 1, gz: 0 }, ctxA)
+    const cellA = neighbourCell(ctxA)
+    const defA = settlementDefFor(cellA, ctxA)
     expect(defA).not.toBeNull()
     clearSettlementDefCache()
     const ctxB = ctxFor(32)
     activateSettlementDefinitionCacheForWorld(ctxB, params({ seed: 32 }))
     await settlementDefinitionCacheReady()
-    expect(settlementDefFor({ gx: 1, gz: 0 }, ctxB)?.id).toBe('1_0')
-    expect(settlementDefFor({ gx: 1, gz: 0 }, ctxB)).not.toEqual(defA)
+    const cellB = neighbourCell(ctxB)
+    expect(settlementDefFor(cellB, ctxB)?.id).toBe(`${cellB.gx}_${cellB.gz}`)
+    expect(settlementDefFor(cellB, ctxB)).not.toEqual(defA)
     cache.dispose()
   })
 
@@ -578,7 +592,7 @@ describe('settlementPlanCache persistent hydrate (plan settlements-014)', () => 
     const ctx = ctxFor(51)
     activateSettlementDefinitionCacheForWorld(ctx, params({ seed: 51 }))
     await expect(settlementDefinitionCacheReady()).resolves.toBeUndefined()
-    const def = settlementDefFor({ gx: 1, gz: 0 }, ctx)
+    const def = settlementDefFor(neighbourCell(ctx), ctx)
     expect(def).not.toBeNull()
     expect(spy).toHaveBeenCalled()
   })

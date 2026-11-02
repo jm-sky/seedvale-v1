@@ -94,3 +94,10 @@ Format: `- [ ] YYYY-MM-DD — opis (plan/plik, jeśli istotne)`
 - [ ] 2026-10-28 — `scripts/analyze_trace.py` nie używa `timeDeltas` z `ProfileChunk` (raportuje sample counts); do czasu poprawy używać `scripts/perf/cpu_profile_summary.py`.
 - [ ] 2026-11-02 — Q58 bumped `settlement-definitions` (11 → 12) and `chunk-tiles` (13 → 14): the committed `tools-020` boot fixtures (seed 42 + 415424794) are version-filtered out, so boot is back to the pre-fixture time until they are re-exported (`scripts/perf/export-worldgen-fixture.mjs`, needs a browser session). Re-export once the Q59/Q60 batch has landed (one regeneration for the batch).
 - [x] 2026-11-02 — **Absorbed by world-terrain-059** (global settlement selection + RNG neighbour graph, 20–25 settlements). Was: (world-terrain-058 Q71) Settlement density lever "wild cells": at pitch 300 almost every land cell holds a settlement (~140–160 on the 2.3–2.9 km continent). If the world still feels too densely settled after H3, add seeded empty cells together with Q62 (RNG road graph from site positions). Today `neighborsFor`/`neighborSitesFor`/cemetery sharing only see ring-1 neighbours, so thinning before Q62 would leave villages without roads. Reasoning: plan 058 §W1 calibration.
+
+## Settlement layout (059 W4)
+
+- [ ] 2026-11-02 — `settlementLayoutFor` is recomputed in every realm (~0.7 s: ~30 site probes + cell scoring); persist it as a `settlement-layout` worldgen-cache namespace with a fixture (059 decision 2) — `settlement/settlementLayout.ts`, `settlementPlanCache.ts`.
+- [ ] 2026-11-02 — `findRoute` open set is a linear scan over a `Map` (O(n²), 2–5 s per 1.2–2 km edge, 65–76 s for all edges); a binary heap fixes it but changes route geometry — fold into Q60 (`settlement/roadNetwork.ts`).
+- [ ] 2026-11-02 — worldgen fixtures (`worldgen:fixture:check`) were already stale before W4 (settlement-definitions v4 vs v18, road-routes v1 vs v7, caves v2 vs v4); regenerate under `tools-020`.
+

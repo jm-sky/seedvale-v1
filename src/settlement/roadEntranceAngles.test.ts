@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it } from 'vitest'
 import type { RegionParams } from '../terrain/chunkHeightmap'
 import type { TerrainSamplers } from './settlementTerrain'
 import { cellsWithinRadius, probeSettlementSite } from './settlementGenerator'
-import { clearSettlementDefCache, settlementDefFor, type SettlementResolveContext } from './settlementPlanCache'
+import { clearSettlementDefCache, settlementDefFor, settlementLayoutFor, type SettlementResolveContext } from './settlementPlanCache'
 import { roadEntranceAngles } from './villagePlanner'
 
 const deg = (d: number): number => (d * Math.PI) / 180
@@ -62,7 +62,10 @@ describe('neighbour-facing entrances in generated defs', () => {
   afterEach(() => clearSettlementDefCache())
 
   it('probe site equals the final def site (probe-based neighbour bearings are exact)', () => {
-    for (const cell of cellsWithinRadius({ gx: 0, gz: 0 }, 1)) {
+    // Sample the lattice ring plus every selected site: unselected cells resolve to no def and no site.
+    const cells = [...cellsWithinRadius({ gx: 0, gz: 0 }, 1), ...settlementLayoutFor(ctx).sites.map((site) => site.cell)]
+    for (const cell of cells) {
+      if (!settlementLayoutFor(ctx).has(cell)) continue
       const probe = probeSettlementSite(cell, ctx.seed, ctx.sampleHeight, ctx.waterLevel, ctx.localSearchRadius, ctx.terrainSamplers, ctx.heightScale, ctx.region)
       const def = settlementDefFor(cell, ctx)
       expect(def === null).toBe(probe.site === null)
@@ -73,11 +76,10 @@ describe('neighbour-facing entrances in generated defs', () => {
     }
   })
 
-  it('every ring-1 nearest neighbour has an entrance within 90° of its bearing', () => {
+  it('every layout-graph neighbour of home has an entrance within 90° of its bearing', () => {
     const home = settlementDefFor({ gx: 0, gz: 0 }, ctx)!
-    const nearest = cellsWithinRadius({ gx: 0, gz: 0 }, 1)
-      .filter((c) => c.gx !== 0 || c.gz !== 0)
-      .map((c) => settlementDefFor(c, ctx))
+    const nearest = settlementLayoutFor(ctx).neighborsOf({ gx: 0, gz: 0 })
+      .map((n) => settlementDefFor(n.cell, ctx))
       .filter((d) => d !== null)
       .sort((a, b) => Math.hypot(a.x - home.x, a.z - home.z) - Math.hypot(b.x - home.x, b.z - home.z))[0]!
     const bearing = Math.atan2(nearest.z - home.z, nearest.x - home.x)

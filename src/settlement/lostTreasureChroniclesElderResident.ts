@@ -13,7 +13,7 @@ export const LOST_TREASURE_ELDER_GIVEN_NAME = AUTHORED_GIVEN_NAMES.archibald
 export const LOST_TREASURE_ELDER_AGE = 74
 
 /** Chebyshev grid radius around home used to pick the elder's settlement. */
-export const LOST_TREASURE_ELDER_SETTLEMENT_SEARCH_RADIUS = 1
+export const LOST_TREASURE_ELDER_SETTLEMENT_SEARCH_RADIUS = 6
 
 const PREFERRED_ELDER_SETTLEMENT_SIZES: ReadonlySet<VillageSize> = new Set(['MD', 'SM'])
 

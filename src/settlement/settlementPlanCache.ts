@@ -38,6 +38,7 @@ import {
   type SettlementDef,
   type SettlementSiteProbe,
 } from './settlementGenerator'
+import { computeSettlementLayout, type SettlementLayout } from './settlementLayout'
 import { localSettlementName } from './settlementNameUniqueness'
 import {
   resolveSettlementProgressionPolicy,
@@ -112,6 +113,9 @@ const nameOrdinalCache = new Map<string, number>()
  */
 let persistentDefs: SettlementWorldgenCache | null = null
 
+/** Global selection + neighbour graph for the current world (059 W4). Cleared with defs. */
+let layout: SettlementLayout | undefined
+
 /** Derived near/far size policy for the current world. Cleared with defs. */
 let progressionPolicy: SettlementProgressionPolicy | null | undefined
 /** Memoized host cell key for the Lost Treasure Chronicles elder, or `null` when none. */
@@ -127,6 +131,7 @@ export function clearSettlementDefCache(): void {
   baseNameCache.clear()
   nameOrdinalCache.clear()
   activeRiverQuery = null
+  layout = undefined
   progressionPolicy = undefined
   elderHostCellKey = undefined
   archaeologistHostCellKey = undefined
@@ -214,9 +219,22 @@ export function settlementDefinitionCacheReady(): Promise<void> {
   return persistentDefs?.ready() ?? Promise.resolve()
 }
 
+/**
+ * The world's settlement layout (global Poisson-disc selection + neighbour graph),
+ * computed once per world from seed + terrain only. Every cell outside it resolves
+ * to no settlement; roads, entrances and cemeteries read neighbours from its graph.
+ *
+ * @domain settlements
+ */
+export function settlementLayoutFor(ctx: SettlementResolveContext): SettlementLayout {
+  if (layout) return layout
+  layout = withStage(getMonitor(), 'settlementLayout', () => computeSettlementLayout(ctx))
+  return layout
+}
+
 function progressionPolicyFor(ctx: SettlementResolveContext): SettlementProgressionPolicy | null {
   if (progressionPolicy !== undefined) return progressionPolicy
-  progressionPolicy = resolveSettlementProgressionPolicy(ctx, activeRiverQuery ?? undefined)
+  progressionPolicy = resolveSettlementProgressionPolicy(ctx, activeRiverQuery ?? undefined, settlementLayoutFor(ctx))
   return progressionPolicy
 }
 
@@ -236,7 +254,14 @@ function probeArgs(cell: SettlementCell, ctx: SettlementResolveContext) {
   ] as const
 }
 
+const NO_SITE_PROBE: SettlementSiteProbe = {
+  provisionalSize: 'SM',
+  site: null,
+  wouldBeOutpost: false,
+}
+
 function siteProbeFor(cell: SettlementCell, ctx: SettlementResolveContext): SettlementSiteProbe {
+  if (!settlementLayoutFor(ctx).has(cell)) return NO_SITE_PROBE
   const key = cellKey(cell)
   const cached = siteProbeCache.get(key)
   if (cached) return cached
@@ -245,39 +270,22 @@ function siteProbeFor(cell: SettlementCell, ctx: SettlementResolveContext): Sett
   return probe
 }
 
-/** Ring-1 neighbour sites of `cell` (probe only), nearest first. */
-function ringSitesNearestFirst(cell: SettlementCell, ctx: SettlementResolveContext): { x: number, z: number }[] {
-  const own = siteProbeFor(cell, ctx).site
-  if (!own) return []
-  return cellsWithinRadius(cell, 1)
-    .filter((n) => !(n.gx === cell.gx && n.gz === cell.gz))
-    .map((n) => siteProbeFor(n, ctx).site)
-    .filter((site): site is NonNullable<typeof site> => site !== null)
-    .map((site) => ({ x: site.x, z: site.z, d: Math.hypot(site.x - own.x, site.z - own.z) }))
-    .sort((l, r) => l.d - r.d)
-}
-
 /**
- * Neighbour sites a village must open road entrances toward (Q59): its own
- * `maxNeighborRoads` nearest ring-1 neighbours, plus every neighbour that has
- * this village among *its* nearest ones (an edge exists when either side picks
- * it, see `roadRoutesForSettlement`). Probe only — the probe site equals the
- * final def site because both resolve identical inputs (`probeArgs`).
+ * Neighbour sites a village opens road entrances toward (Q59, 059 W4): its graph
+ * neighbours in `settlementLayoutFor` (relative-neighbourhood graph over the selected
+ * sites, nearest first). The graph is symmetric, so both ends of an edge agree.
+ * Probe only — the probe site equals the final def site because both resolve
+ * identical inputs (`probeArgs`).
  */
 function neighborSitesFor(cell: SettlementCell, ctx: SettlementResolveContext): { x: number, z: number }[] {
   const own = siteProbeFor(cell, ctx).site
   if (!own) return []
-  const limit = Math.max(0, ctx.region.roadNetwork.maxNeighborRoads ?? 3)
-  const sites = ringSitesNearestFirst(cell, ctx)
-  const wanted = sites.slice(0, limit)
-  for (const n of cellsWithinRadius(cell, 1)) {
-    if (n.gx === cell.gx && n.gz === cell.gz) continue
-    const nSite = siteProbeFor(n, ctx).site
-    if (!nSite || wanted.some((w) => w.x === nSite.x && w.z === nSite.z)) continue
-    const theirs = ringSitesNearestFirst(n, ctx).slice(0, limit)
-    if (theirs.some((t) => t.x === own.x && t.z === own.z)) wanted.push({ x: nSite.x, z: nSite.z })
+  const out: { x: number, z: number }[] = []
+  for (const n of settlementLayoutFor(ctx).neighborsOf(cell)) {
+    const site = siteProbeFor(n.cell, ctx).site
+    if (site) out.push({ x: site.x, z: site.z })
   }
-  return wanted
+  return out
 }
 
 function baseNameOf(cell: SettlementCell, ctx: SettlementResolveContext): SettlementBaseName {
@@ -486,6 +494,10 @@ export function settlementDefFor(
   if (!settlementCellInsideWorld(cell)) return null
   const key = cellKey(cell)
   if (defCache.has(key)) return defCache.get(key)!
+  if (!settlementLayoutFor(ctx).has(cell)) {
+    defCache.set(key, null)
+    return null
+  }
   const monitor = getMonitor()
   const residents = withStage(monitor, 'settlementDefResidents', () => authoredResidentsFor(cell, ctx))
   const def = withStage(monitor, 'settlementDefGenerate', () => generateSettlementDef(...probeArgs(cell, ctx), residents, neighborSitesFor(cell, ctx)))

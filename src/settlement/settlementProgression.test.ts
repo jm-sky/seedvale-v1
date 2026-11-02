@@ -4,10 +4,12 @@ import type { SettlementResolveContext } from './settlementPlanCache'
 import type { TerrainSamplers } from './settlementTerrain'
 import { rollVillageSize } from './families'
 import { cellSeed, generateSettlementDef, SETTLEMENT_GRID_STEP } from './settlementGenerator'
+import { computeSettlementLayout } from './settlementLayout'
 import {
   cachedSettlementProgressionPolicy,
   clearSettlementDefCache,
   settlementDefFor,
+  settlementLayoutFor,
 } from './settlementPlanCache'
 import {
   orderProgressionCandidates,
@@ -81,53 +83,57 @@ afterEach(() => {
 
 describe('settlement progression around home', () => {
   it('resolves identical near/far targets regardless of lookup order', () => {
-    const seed = 42
+    // 059 W4: only globally selected cells can be targets; seed 7 has a far-ring settlement
+    // (the near ring, 300–600 m from home, can no longer hold one — W2′ re-expresses this in graph hops).
+    const seed = 7
     const ctx = ctxFor(seed)
-    const policyA = resolveSettlementProgressionPolicy(ctx)
+    const policyA = resolveSettlementProgressionPolicy(ctx, undefined, computeSettlementLayout(ctx))
     expect(policyA).not.toBeNull()
+    expect(policyA!.far).not.toBeNull()
 
     const farFirst = settlementDefFor(policyA!.far!.cell, ctx)
-    const nearFirst = settlementDefFor(policyA!.near!.cell, ctx)
     const home = settlementDefFor({ gx: 0, gz: 0 }, ctx)
 
     clearSettlementDefCache()
     const homeFirst = settlementDefFor({ gx: 0, gz: 0 }, ctx)
-    const nearSecond = settlementDefFor(policyA!.near!.cell, ctx)
     const farSecond = settlementDefFor(policyA!.far!.cell, ctx)
     const policyB = cachedSettlementProgressionPolicy()
 
-    expect(policyB?.near?.cell).toEqual(policyA!.near!.cell)
+    expect(policyB?.near?.cell).toEqual(policyA!.near?.cell)
     expect(policyB?.far?.cell).toEqual(policyA!.far!.cell)
-    expect(policyB?.near?.minimum).toBe(policyA!.near!.minimum)
     expect(policyB?.far?.minimum).toBe(policyA!.far!.minimum)
-    expect(nearFirst).toEqual(nearSecond)
     expect(farFirst).toEqual(farSecond)
     expect(home).toEqual(homeFirst)
   })
 
   it('near minimum follows auto home and far minimum is LG', () => {
     const seeds = [7, 19, 88, 201, 404, 1001]
+    let farSeen = false
     for (const seed of seeds) {
       clearSettlementDefCache()
-      const policy = resolveSettlementProgressionPolicy(ctxFor(seed))
+      const ctx = ctxFor(seed)
+      const policy = resolveSettlementProgressionPolicy(ctx, undefined, computeSettlementLayout(ctx))
       expect(policy).not.toBeNull()
       expect(policy!.homeSize === 'SM' || policy!.homeSize === 'MD').toBe(true)
-      expect(policy!.near).not.toBeNull()
-      expect(policy!.far).not.toBeNull()
-      expect(policy!.near!.minimum).toBe(policy!.homeSize === 'SM' ? 'MD' : 'LG')
-      expect(policy!.far!.minimum).toBe('LG')
-
-      const nearDef = settlementDefFor(policy!.near!.cell, ctxFor(seed))
-      const farDef = settlementDefFor(policy!.far!.cell, ctxFor(seed))
-      expect(nearDef).not.toBeNull()
-      expect(farDef).not.toBeNull()
-      expect(nearDef!.size).not.toBe('OUTPOST')
-      expect(farDef!.size).not.toBe('OUTPOST')
-      const nearRank = ['SM', 'MD', 'LG', 'XL'].indexOf(nearDef!.size)
-      const farRank = ['SM', 'MD', 'LG', 'XL'].indexOf(farDef!.size)
-      expect(nearRank).toBeGreaterThanOrEqual(['SM', 'MD', 'LG', 'XL'].indexOf(policy!.near!.minimum))
-      expect(farRank).toBeGreaterThanOrEqual(['SM', 'MD', 'LG', 'XL'].indexOf('LG'))
+      // Targets exist only where the global selection put a settlement in the ring (W2′ replaces rings).
+      if (policy!.near) {
+        expect(policy!.near.minimum).toBe(policy!.homeSize === 'SM' ? 'MD' : 'LG')
+        const nearDef = settlementDefFor(policy!.near.cell, ctxFor(seed))
+        expect(nearDef).not.toBeNull()
+        expect(nearDef!.size).not.toBe('OUTPOST')
+        expect(['SM', 'MD', 'LG', 'XL'].indexOf(nearDef!.size))
+          .toBeGreaterThanOrEqual(['SM', 'MD', 'LG', 'XL'].indexOf(policy!.near.minimum))
+      }
+      if (policy!.far) {
+        farSeen = true
+        expect(policy!.far.minimum).toBe('LG')
+        const farDef = settlementDefFor(policy!.far.cell, ctxFor(seed))
+        expect(farDef).not.toBeNull()
+        expect(farDef!.size).not.toBe('OUTPOST')
+        expect(['SM', 'MD', 'LG', 'XL'].indexOf(farDef!.size)).toBeGreaterThanOrEqual(2)
+      }
     }
+    expect(farSeen).toBe(true)
   })
 
   it('explicit homeSize does not rewrite home or apply ring overrides', () => {
@@ -136,7 +142,7 @@ describe('settlement progression around home', () => {
     expect(resolveSettlementProgressionPolicy(ctx)).toBeNull()
     const home = settlementDefFor({ gx: 0, gz: 0 }, ctx)
     expect(home?.size).toBe('XL')
-    const other = { gx: 2, gz: 1 }
+    const other = settlementLayoutFor(ctx).sites[1]!.cell
     const fromCache = settlementDefFor(other, ctx)
     const ordinary = generateSettlementDef(
       other, seed, flatHeight, 0, 56, samplers, 1, region, 'XL',
@@ -205,8 +211,10 @@ describe('settlement progression around home', () => {
   it('leaves ordinary non-target cells on the rollVillageSize path', () => {
     const seed = 19
     const policy = resolveSettlementProgressionPolicy(ctxFor(seed))
-    const outsider = { gx: 8, gz: 8 }
-    expect(policy?.minimumFor(outsider)).toBeNull()
+    const outsider = settlementLayoutFor(ctxFor(seed)).sites.slice(1)
+      .map((site) => site.cell)
+      .find((cell) => policy?.minimumFor(cell) === null)!
+    expect(outsider).toBeDefined()
     const fromCache = settlementDefFor(outsider, ctxFor(seed))
     const ordinary = generateSettlementDef(
       outsider, seed, flatHeight, 0, 56, samplers, 1, region,

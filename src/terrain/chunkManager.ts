@@ -81,7 +81,6 @@ import { buildChunkGeometry, createTerrainMaterial } from './buildChunkGeometry'
 import {
   CEMETERY_SETTLEMENT_GATHER_RADIUS,
   collectSettlementRefsNear,
-  dedicatedCemeteryTopology,
   makeSettlementRefPeek,
   resolveCemeteryTopologyForSettlement,
 } from './cemeteryAssignment'
@@ -1501,19 +1500,6 @@ export function createChunkManager(
     const topology = resolveCemeteryTopologyForSettlement(settlementId, peekRef)
     if (!topology) return undefined
     const placed = resolvePlacementForTopology(topology, params)
-      ?? (topology.intent === 'shared'
-        ? resolvePlacementForTopology(
-          dedicatedCemeteryTopology({
-            id: def.id,
-            gx: def.gx,
-            gz: def.gz,
-            x: def.x,
-            z: def.z,
-            size: def.size,
-          }),
-          params,
-        )
-        : null)
     if (!placed) return undefined
     return { id: placed.id, x: placed.x, z: placed.z, cemeterySize: placed.size }
   }

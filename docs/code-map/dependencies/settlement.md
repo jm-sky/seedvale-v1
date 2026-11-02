@@ -2600,6 +2600,7 @@ Generated from TypeScript imports.
 - `settlement/roadEntranceAngles.test.ts`
 - `settlement/roadNetwork.ts`
 - `settlement/settlementGenerator.test.ts`
+- `settlement/settlementLayout.ts`
 - `settlement/settlementNameUniqueness.test.ts`
 - `settlement/settlementNameUniqueness.ts`
 - `settlement/settlementPlanCache.ts`
@@ -2627,6 +2628,25 @@ Generated from TypeScript imports.
 - `world/locations/worldLocationCatalog.ts`
 - `world/riverWaterQualityResolver.test.ts`
 - `world/riverWaterQualityResolver.ts`
+
+## `settlement/settlementLayout.ts`
+
+**Imports**
+
+- `config/worldConfig.ts`
+- `player/PlayerController.ts`
+- `settlement/settlementGenerator.ts`
+- `settlement/settlementTerrain.ts`
+- `terrain/chunkHeightmap.ts`
+- `terrain/continentMask.ts`
+- `world/parseSeed.ts`
+- `world/travelUnits.ts`
+
+**Imported by**
+
+- `settlement/settlementPlanCache.ts`
+- `settlement/settlementProgression.test.ts`
+- `settlement/settlementProgression.ts`
 
 ## `settlement/settlementNameUniqueness.test.ts`
 
@@ -2720,6 +2740,7 @@ Generated from TypeScript imports.
 - `settlement/lostTreasureChroniclesElderResident.ts`
 - `settlement/lostTreasureChroniclesSpecialistResident.ts`
 - `settlement/settlementGenerator.ts`
+- `settlement/settlementLayout.ts`
 - `settlement/settlementNameUniqueness.ts`
 - `settlement/settlementProgression.ts`
 - `settlement/settlementTerrain.ts`
@@ -2750,6 +2771,7 @@ Generated from TypeScript imports.
 
 - `settlement/families.ts`
 - `settlement/settlementGenerator.ts`
+- `settlement/settlementLayout.ts`
 - `settlement/settlementPlanCache.ts`
 - `settlement/settlementProgression.ts`
 - `settlement/settlementTerrain.ts`
@@ -2763,6 +2785,7 @@ Generated from TypeScript imports.
 - `player/PlayerController.ts`
 - `settlement/families.ts`
 - `settlement/settlementGenerator.ts`
+- `settlement/settlementLayout.ts`
 - `settlement/settlementTerrain.ts`
 - `terrain/chunkHeightmap.ts`
 - `terrain/riverQuery.ts`
@@ -2890,6 +2913,7 @@ Generated from TypeScript imports.
 - `settlement/roadNetwork.ts`
 - `settlement/settlementGenerator.test.ts`
 - `settlement/settlementGenerator.ts`
+- `settlement/settlementLayout.ts`
 - `settlement/settlementNameUniqueness.test.ts`
 - `settlement/settlementPlanCache.ts`
 - `settlement/settlementProgression.test.ts`

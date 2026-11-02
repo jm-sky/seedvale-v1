@@ -3,6 +3,7 @@ import type { HeightSampler } from '../player/PlayerController'
 import type { RegionParams } from '../terrain/chunkHeightmap'
 import type { RiverQuery } from '../terrain/riverQuery'
 import type { RolledVillageSize } from './families'
+import type { SettlementLayout } from './settlementLayout'
 import type { TerrainSamplers } from './settlementTerrain'
 import {
   cellsWithinRadius,
@@ -132,8 +133,10 @@ function pickRingTarget(
   minimum: RolledVillageSize,
   input: SettlementProgressionWorldInput,
   riverQuery: RiverQuery | undefined,
+  layout: SettlementLayout | undefined,
 ): SettlementProgressionTarget | null {
-  const ordered = orderProgressionCandidates(seed, settlementProgressionRingCells(ring), salt)
+  const ringCells = settlementProgressionRingCells(ring).filter((cell) => !layout || layout.has(cell))
+  const ordered = orderProgressionCandidates(seed, ringCells, salt)
   for (const cell of ordered) {
     const probe = probeCandidate(cell, input, riverQuery, minimum)
     if (!probe.site || probe.wouldBeOutpost) continue
@@ -151,6 +154,7 @@ function pickRingTarget(
 export function resolveSettlementProgressionPolicy(
   input: SettlementProgressionWorldInput,
   riverQuery?: RiverQuery,
+  layout?: SettlementLayout,
 ): SettlementProgressionPolicy | null {
   if ((input.homeSize ?? 'auto') !== 'auto') return null
 
@@ -175,6 +179,7 @@ export function resolveSettlementProgressionPolicy(
     nearMinimum,
     input,
     riverQuery,
+    layout,
   )
   const far = pickRingTarget(
     input.seed,
@@ -183,6 +188,7 @@ export function resolveSettlementProgressionPolicy(
     FAR_RING_MINIMUM,
     input,
     riverQuery,
+    layout,
   )
 
   const byKey = new Map<string, RolledVillageSize>()

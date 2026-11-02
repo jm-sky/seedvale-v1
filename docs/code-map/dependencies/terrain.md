@@ -348,6 +348,7 @@ Generated from TypeScript imports.
 - `settlement/roadRouteWorldgenCache.ts`
 - `settlement/settlementGenerator.test.ts`
 - `settlement/settlementGenerator.ts`
+- `settlement/settlementLayout.ts`
 - `settlement/settlementNameUniqueness.test.ts`
 - `settlement/settlementPalisade.ts`
 - `settlement/settlementPlanCache.ts`
@@ -823,6 +824,7 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `settlement/settlementGenerator.ts`
+- `settlement/settlementLayout.ts`
 - `terrain/chunkHeightmap.ts`
 - `terrain/continentMask.test.ts`
 

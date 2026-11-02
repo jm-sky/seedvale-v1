@@ -25,7 +25,6 @@ import {
   cemeteryIdForAssignment,
   type CemeterySettlementRef,
   type CemeteryTopologyIntent,
-  dedicatedCemeteryTopology,
   makeSettlementRefPeek,
   type PeekSettlementRef,
 } from './cemeteryAssignment'
@@ -113,40 +112,12 @@ function rejectsClearings(plot: PlotPose, clearings: readonly VillageDisk[]): bo
   return false
 }
 
-function sharedCorridorAnchor(a: CemeterySettlementRef, b: CemeterySettlementRef): { x: number, z: number } {
-  return { x: (a.x + b.x) * 0.5, z: (a.z + b.z) * 0.5 }
-}
-
-function sharedCorridorAccepts(
-  x: number,
-  z: number,
-  settlements: readonly CemeterySettlementRef[],
-  clearings: readonly VillageDisk[],
-  plot: PlotPose,
-): boolean {
-  if (settlements.length < 2) return false
-  const [a, b] = settlements
-  const ab = Math.hypot(b.x - a.x, b.z - a.z)
-  const da = Math.hypot(x - a.x, z - a.z)
-  const db = Math.hypot(x - b.x, z - b.z)
-  const innerA = villageSizeConfig(a.size).footprintRadius * CEMETERY_INNER_FRAC
-  const innerB = villageSizeConfig(b.size).footprintRadius * CEMETERY_INNER_FRAC
-  if (da < innerA || db < innerB) return false
-  const corridorWidth = Math.max(
-    villageSizeConfig(a.size).footprintRadius,
-    villageSizeConfig(b.size).footprintRadius,
-  ) * CEMETERY_OUTER_FRAC
-  if (da + db > ab + corridorWidth) return false
-  if (rejectsClearings(plot, clearings)) return false
-  return true
-}
-
 /** Entrance (+Z local) towards `(tx, tz)` — same convention as `rotateOffsetY` / `Object3D.rotation.y`. */
 function yawFacing(x: number, z: number, tx: number, tz: number): number {
   return Math.atan2(tx - x, tz - z)
 }
 
-/** Yaw for a candidate: dedicated → faces its settlement, shared → faces the nearer of the two. */
+/** Yaw for a candidate: faces its (nearest served) settlement. */
 function entranceYaw(x: number, z: number, settlements: readonly CemeterySettlementRef[]): number {
   let best = settlements[0]!
   let bestDist = Infinity
@@ -196,7 +167,7 @@ export function validateCemeteryPhysical(
   rotationY: number,
   params: ChunkTileParams,
   terrain: CemeteryTerrainSampler,
-  placementIntent: 'dedicated' | 'shared' | 'abandoned',
+  placementIntent: 'dedicated' | 'abandoned',
   assignmentSettlements: readonly CemeterySettlementRef[],
   /** Road/path clearance beyond the corridor half width; reserved poses use `RESERVED_ROAD_MARGIN`. */
   roadMargin?: number,
@@ -211,8 +182,6 @@ export function validateCemeteryPhysical(
   if (placementIntent === 'dedicated' && assignmentSettlements.length === 1) {
     const regional = dedicatedRegionalDisks(assignmentSettlements)
     if (!cemeteryFitsVillageFringe(x, z, regional, clearings, footprintR, plot)) return false
-  } else if (placementIntent === 'shared') {
-    if (!sharedCorridorAccepts(x, z, assignmentSettlements, clearings, plot)) return false
   } else if (rejectsClearings(plot, clearings)) {
     return false
   }
@@ -226,7 +195,6 @@ export function validateCemeteryPhysical(
  *  close to its settlement as the plot allows. */
 const DEDICATED_RINGS = 10
 const DEDICATED_BEARINGS = 12
-const SHARED_RINGS = 9
 
 function* placementCandidates(
   topology: CemeteryTopologyIntent,
@@ -235,19 +203,6 @@ function* placementCandidates(
 ): Generator<{ x: number, z: number }> {
   const random = createSeededRandom(assignmentVariationSeed(worldSeed, topology.assignmentId) ^ 0x63d8a1)
   const baseAngle = random() * Math.PI * 2
-  if (topology.intent === 'shared' && topology.settlements.length === 2) {
-    const anchor = sharedCorridorAnchor(topology.settlements[0], topology.settlements[1])
-    yield anchor
-    for (let ring = 1; ring <= SHARED_RINGS; ring++) {
-      const count = 6 + ring * 2
-      for (let i = 0; i < count; i++) {
-        const t = (i / count) * Math.PI * 2
-        const r = ring * 4.5 + random() * 2
-        yield { x: anchor.x + Math.cos(t) * r, z: anchor.z + Math.sin(t) * r }
-      }
-    }
-    return
-  }
   const settlement = topology.settlements[0]!
   const villageR = villageSizeConfig(settlement.size).footprintRadius
   const inner = villageR * CEMETERY_INNER_FRAC
@@ -269,9 +224,8 @@ function placeFromReservation(
   size: CemeterySize,
   params: ChunkTileParams,
   terrain: CemeteryTerrainSampler,
-  intent: 'dedicated' | 'shared',
 ): CemeteryPlotPoseFull | null {
-  if (intent !== 'dedicated' || topology.settlements.length !== 1) return null
+  if (topology.settlements.length !== 1) return null
   const r = topology.settlements[0]!.reservation
   if (!r || r.size !== size) return null
   if (!validateCemeteryPhysical(r.x, r.z, size, r.scale, r.rotationY, params, terrain, 'dedicated', topology.settlements, RESERVED_ROAD_MARGIN)) {
@@ -291,9 +245,8 @@ function tryPlaceTopology(
   const scale = CEMETERY_SCALE_MIN + random() * CEMETERY_SCALE_RANGE
   random() // legacy yaw roll slot — yaw now follows the candidate (entrance towards the settlement)
   const variant = random()
-  const intent = topology.intent === 'shared' ? 'shared' : 'dedicated'
   const terrain = assignmentTerrainSampler(params)
-  const reserved = placeFromReservation(topology, assignment.size, params, terrain, intent)
+  const reserved = placeFromReservation(topology, assignment.size, params, terrain)
   if (reserved) {
     return {
       assignmentId: topology.assignmentId,
@@ -325,7 +278,7 @@ function tryPlaceTopology(
         yaw,
         params,
         terrain,
-        intent,
+        'dedicated',
         topology.settlements,
       )
     ) {
@@ -348,7 +301,6 @@ function tryPlaceTopology(
 
 type CachedAssignmentPlacement =
   | { status: 'placed', placement: ResolvedCemeteryPlacement }
-  | { status: 'split' }
   | { status: 'none' }
 
 const resolvedPlacementByAssignment = new Map<string, CachedAssignmentPlacement>()
@@ -367,8 +319,6 @@ function cachedPlacementOf(assignmentId: string): CachedAssignmentPlacement | un
 
 /**
  * Resolve one assignment's winning placement — shared across chunk generation and catalog lookup.
- * Shared search that finds no valid corridor is cached as `split`; callers then place a dedicated
- * cemetery per served settlement without perturbing unrelated pairs.
  * @domain world-terrain
  */
 export function resolvePlacementForTopology(
@@ -378,21 +328,15 @@ export function resolvePlacementForTopology(
 ): ResolvedCemeteryPlacement | null {
   const cached = cachedPlacementOf(topology.assignmentId)
   if (cached?.status === 'placed') return cached.placement
-  if (cached?.status === 'split' || cached?.status === 'none') return null
+  if (cached?.status === 'none') return null
 
   const placed = tryPlaceTopology(topology, params)
   if (placed) {
     rememberPlacement(topology.assignmentId, { status: 'placed', placement: placed })
     return placed
   }
-  rememberPlacement(topology.assignmentId, {
-    status: topology.intent === 'shared' ? 'split' : 'none',
-  })
+  rememberPlacement(topology.assignmentId, { status: 'none' })
   return null
-}
-
-export function isSharedAssignmentSplit(assignmentId: string): boolean {
-  return cachedPlacementOf(assignmentId)?.status === 'split'
 }
 
 export function getCachedPlacementForAssignment(assignmentId: string): ResolvedCemeteryPlacement | null | undefined {
@@ -522,13 +466,6 @@ export function resolveCemeteriesForChunk(
     const resolved = resolvePlacementForTopology(topology, params, terrain)
     if (resolved) {
       emitIfOwned(resolved, coord, params.chunkSize, seenIds, placements)
-      continue
-    }
-    if (topology.intent !== 'shared') continue
-    for (const settlement of topology.settlements) {
-      const dedicated = dedicatedCemeteryTopology(settlement)
-      const fallback = resolvePlacementForTopology(dedicated, params, terrain)
-      if (fallback) emitIfOwned(fallback, coord, params.chunkSize, seenIds, placements)
     }
   }
 

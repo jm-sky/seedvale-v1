@@ -8,9 +8,7 @@ import {
   clearCemeteryCaches,
   dedicatedCemeteryTopology,
   resolveCemeteryTopologyForSettlement,
-  resolveSmSharePartner,
   servedSettlementIdsForCemeteryId,
-  SM_SHARING_MAX_DISTANCE,
 } from './cemeteryAssignment'
 
 function ref(id: string, gx: number, gz: number, size: 'SM' | 'MD' | 'LG' | 'XL' = 'SM'): CemeterySettlementRef {
@@ -25,69 +23,26 @@ function peekMap(refs: CemeterySettlementRef[]) {
 describe('cemeteryAssignment (world-terrain-016)', () => {
   beforeEach(() => clearCemeteryCaches())
 
-  it('pairs nearby SM settlements mutually and symmetrically', () => {
+  it('gives every settlement — SM included — its own dedicated cemetery (Q81-b, 059 W4)', () => {
     const a = ref('0_0', 0, 0, 'SM')
     const b = ref('1_0', 1, 0, 'SM')
     const peek = peekMap([a, b])
-    expect(resolveSmSharePartner(a, peek)?.id).toBe('1_0')
-    expect(resolveSmSharePartner(b, peek)?.id).toBe('0_0')
     const topoA = resolveCemeteryTopologyForSettlement('0_0', peek)!
     const topoB = resolveCemeteryTopologyForSettlement('1_0', peek)!
-    expect(topoA.intent).toBe('shared')
-    expect(topoB.assignmentId).toBe(topoA.assignmentId)
-    expect(topoA.servedSettlementIds).toEqual(['0_0', '1_0'])
+    expect(topoA.intent).toBe('dedicated')
+    expect(topoB.intent).toBe('dedicated')
+    expect(topoA.servedSettlementIds).toEqual(['0_0'])
+    expect(topoB.servedSettlementIds).toEqual(['1_0'])
+    expect(topoA.assignmentId).not.toBe(topoB.assignmentId)
+    expect(topoA).toEqual(dedicatedCemeteryTopology(a))
   })
 
-  it('never pairs the home settlement: it keeps its own dedicated cemetery (Q58)', () => {
-    const home = { ...ref('0_0', 0, 0, 'SM'), isHome: true }
-    const neighbour = ref('1_0', 1, 0, 'SM')
-    const peek = peekMap([home, neighbour])
-    expect(resolveSmSharePartner(home, peek)).toBeNull()
-    expect(resolveSmSharePartner(neighbour, peek)).toBeNull()
-    expect(resolveCemeteryTopologyForSettlement('0_0', peek)!.intent).toBe('dedicated')
-    expect(resolveCemeteryTopologyForSettlement('1_0', peek)!.intent).toBe('dedicated')
-  })
-
-  it('is order-independent for shared SM pairing', () => {
-    const a = ref('0_0', 0, 0, 'SM')
-    const b = ref('1_0', 1, 0, 'SM')
-    const peek = peekMap([a, b])
-    const first = resolveCemeteryTopologyForSettlement('0_0', peek)!
+  it('is order-independent', () => {
+    const peek = peekMap([ref('0_0', 0, 0, 'SM'), ref('1_0', 1, 0, 'MD')])
+    const first = resolveCemeteryTopologyForSettlement('1_0', peek)!
     clearCemeteryCaches()
-    const second = resolveCemeteryTopologyForSettlement('1_0', peek)!
-    expect(first.assignmentId).toBe(second.assignmentId)
-  })
-
-  it('keeps MD/LG/XL dedicated and out of sharing', () => {
-    const sm = ref('0_0', 0, 0, 'SM')
-    const md = ref('1_0', 1, 0, 'MD')
-    const peek = peekMap([sm, md])
-    const mdTopo = resolveCemeteryTopologyForSettlement('1_0', peek)!
-    expect(mdTopo.intent).toBe('dedicated')
-    expect(mdTopo.servedSettlementIds).toEqual(['1_0'])
-    expect(resolveSmSharePartner(md, peek)).toBeNull()
-  })
-
-  it('does not pair SM settlements beyond sharing distance', () => {
-    const a = ref('0_0', 0, 0, 'SM')
-    const far = ref('2_0', 2, 0, 'SM')
-    far.x = SM_SHARING_MAX_DISTANCE + 20
-    const peek = peekMap([a, far])
-    expect(resolveSmSharePartner(a, peek)).toBeNull()
-  })
-
-  it('uses each SM\'s own neighborhood so a third SM does not steal an existing mutual pair', () => {
-    const a = ref('0_0', 0, 0, 'SM')
-    const b = ref('1_0', 1, 0, 'SM')
-    const c = ref('2_0', 2, 0, 'SM')
-    const peek = peekMap([a, b, c])
-    expect(resolveSmSharePartner(a, peek)?.id).toBe('1_0')
-    expect(resolveSmSharePartner(b, peek)?.id).toBe('0_0')
-    expect(resolveSmSharePartner(c, peek)).toBeNull()
-    const topoA = resolveCemeteryTopologyForSettlement('0_0', peek)!
-    const topoC = resolveCemeteryTopologyForSettlement('2_0', peek)!
-    expect(topoA.intent).toBe('shared')
-    expect(topoC).toEqual(dedicatedCemeteryTopology(c))
+    resolveCemeteryTopologyForSettlement('0_0', peek)
+    expect(resolveCemeteryTopologyForSettlement('1_0', peek)!.assignmentId).toBe(first.assignmentId)
   })
 
   it('derives stable cemetery ids and reverse lookup', () => {

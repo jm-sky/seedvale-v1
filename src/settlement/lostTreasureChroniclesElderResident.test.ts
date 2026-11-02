@@ -17,7 +17,7 @@ import { flattenedSettlementMembers, settlementNpcId } from './npcIdentity'
 import { lifeStageForAge } from './npcPhysicalProfile'
 import { resolveInitialProfessionStaffing } from './professionStaffing'
 import { generateSettlementDef } from './settlementGenerator'
-import { clearSettlementDefCache, settlementDefFor } from './settlementPlanCache'
+import { clearSettlementDefCache, settlementDefFor, settlementLayoutFor } from './settlementPlanCache'
 
 const flatHeight = (): number => 12
 const samplers: TerrainSamplers = {
@@ -161,23 +161,18 @@ describe('lost treasure chronicles elder resident', () => {
     const home = settlementDefFor({ gx: 0, gz: 0 }, ctx)
     expect(home?.families.some(isLostTreasureElderFamily)).toBe(false)
 
-    const neighbors = [
-      settlementDefFor({ gx: 1, gz: 0 }, ctx),
-      settlementDefFor({ gx: -1, gz: 0 }, ctx),
-      settlementDefFor({ gx: 0, gz: 1 }, ctx),
-      settlementDefFor({ gx: 0, gz: -1 }, ctx),
-      settlementDefFor({ gx: 1, gz: 1 }, ctx),
-      settlementDefFor({ gx: -1, gz: -1 }, ctx),
-      settlementDefFor({ gx: 1, gz: -1 }, ctx),
-      settlementDefFor({ gx: -1, gz: 1 }, ctx),
-    ].filter((def) => def != null)
+    // 059 W4: neighbours are the globally selected settlements (home excluded), not the lattice ring.
+    const neighbors = settlementLayoutFor(ctx).sites
+      .slice(1)
+      .map((site) => settlementDefFor(site.cell, ctx))
+      .filter((def) => def != null)
 
     const hosts = neighbors.filter((def) => def.families.some(isLostTreasureElderFamily))
     expect(hosts).toHaveLength(1)
     const host = hosts[0]!
     expect(host.isHome).toBe(false)
     expect(host.size).not.toBe('OUTPOST')
-    expect(['SM', 'MD']).toContain(host.size)
+    // SM/MD preferred when one is within the search radius; the sparse 059 layout may offer none (selector falls back).
     expect(host.families.filter(isLostTreasureElderFamily)).toHaveLength(1)
 
     // Archibald (age 74, plan settlements-npcs-045) already satisfies the
@@ -207,7 +202,9 @@ describe('lost treasure chronicles elder resident', () => {
   it('does not leak the elder into an unrelated distant settlement', () => {
     const ctx = ctxFor(7)
     settlementDefFor({ gx: 0, gz: 0 }, ctx)
-    const far = settlementDefFor({ gx: 8, gz: 8 }, ctx)
+    const farCell = settlementLayoutFor(ctx).sites.map((site) => site.cell)
+      .find((cell) => Math.max(Math.abs(cell.gx), Math.abs(cell.gz)) > 10)!
+    const far = settlementDefFor(farCell, ctx)
     expect(far?.families.some(isLostTreasureElderFamily)).toBe(false)
   })
 })

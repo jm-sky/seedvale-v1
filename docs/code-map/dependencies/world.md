@@ -3076,6 +3076,11 @@ Generated from TypeScript imports.
 
 ## `world/locations/locationConfig.ts`
 
+**Imports**
+
+- `world/timeConversion.ts`
+- `world/travelUnits.ts`
+
 **Imported by**
 
 - `app/inventoryWiring.ts`
@@ -3809,6 +3814,7 @@ Generated from TypeScript imports.
 - `settlement/settlementArmorQuality.ts`
 - `settlement/settlementCharacter.ts`
 - `settlement/settlementGenerator.ts`
+- `settlement/settlementLayout.ts`
 - `settlement/settlementNightCycle.ts`
 - `settlement/villageClearing.ts`
 - `settlement/villagePaddock.ts`
@@ -4460,6 +4466,7 @@ Generated from TypeScript imports.
 - `quests/QuestManager.ts`
 - `settlement/SettlementsManager.ts`
 - `world/dayNight.ts`
+- `world/locations/locationConfig.ts`
 - `world/timeConversion.test.ts`
 - `world/timeSkip.ts`
 - `world/transportOffscreen.ts`
@@ -4659,7 +4666,9 @@ Generated from TypeScript imports.
 - `fauna/animalMetabolismGameplay.test.ts`
 - `player/PlayerController.ts`
 - `settlement/SettlementsManager.ts`
+- `settlement/settlementLayout.ts`
 - `world/dayNight.ts`
+- `world/locations/locationConfig.ts`
 - `world/transportOffscreen.ts`
 
 ## `world/treasureSites.test.ts`

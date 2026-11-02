@@ -17,7 +17,7 @@ export const LOST_TREASURE_ARCHAEOLOGIST_AGE = 54
 
 /** Chebyshev grid radius around home used to pick the archaeologist's settlement.
  *  Wider than the elder's radius-1 neighbourhood so a larger town can exist. */
-export const LOST_TREASURE_ARCHAEOLOGIST_SETTLEMENT_SEARCH_RADIUS = 5
+export const LOST_TREASURE_ARCHAEOLOGIST_SETTLEMENT_SEARCH_RADIUS = 10
 
 const PREFERRED_ARCHAEOLOGIST_SETTLEMENT_SIZES: ReadonlySet<VillageSize> = new Set(['LG', 'MD', 'XL'])
 

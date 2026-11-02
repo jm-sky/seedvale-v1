@@ -27,7 +27,7 @@ export type CemeterySettlementRef = {
   reservation?: CemeteryReservationPose
 }
 
-export type CemeteryAssignmentIntent = 'dedicated' | 'shared'
+export type CemeteryAssignmentIntent = 'dedicated'
 
 /** Topology-level cemetery assignment before terrain placement is resolved. */
 export type CemeteryTopologyIntent = {
@@ -49,10 +49,6 @@ export function makeSettlementRefPeek(refs: readonly CemeterySettlementRef[]): P
   return (cell) => map.get(`${cell.gx}_${cell.gz}`) ?? null
 }
 
-/** Chebyshev grid radius for local `SM` sharing candidacy (plan §6). */
-export const SM_SHARING_CELL_RADIUS = 1
-/** Max world distance two `SM` settlements may be apart to share (plan §6). */
-export const SM_SHARING_MAX_DISTANCE = SETTLEMENT_GRID_STEP * 1.15
 /** Grid radius around a chunk center when gathering settlement refs for placement. */
 export const CEMETERY_SETTLEMENT_GATHER_RADIUS = 2
 /** Wilderness abandoned cemeteries must stay at least this far from live settlements. */
@@ -136,53 +132,6 @@ export function isAbandonedCemeteryId(id: string): boolean {
   return id.startsWith('cemetery:w:')
 }
 
-function isHomeRef(ref: CemeterySettlementRef): boolean {
-  return ref.isHome === true
-}
-
-function eligibleSmPartner(self: CemeterySettlementRef, other: CemeterySettlementRef): boolean {
-  if (other.id === self.id) return false
-  // The home settlement always keeps its own cemetery (Q58, author 2026-11-02).
-  if (isHomeRef(self) || isHomeRef(other)) return false
-  if (other.size !== 'SM' || self.size !== 'SM') return false
-  const cellDist = Math.max(Math.abs(other.gx - self.gx), Math.abs(other.gz - self.gz))
-  if (cellDist > SM_SHARING_CELL_RADIUS) return false
-  return Math.hypot(other.x - self.x, other.z - self.z) <= SM_SHARING_MAX_DISTANCE
-}
-
-function rankSmPartners(self: CemeterySettlementRef, candidates: readonly CemeterySettlementRef[]): CemeterySettlementRef[] {
-  return candidates
-    .filter((c) => eligibleSmPartner(self, c))
-    .sort((a, b) => {
-      const da = Math.hypot(a.x - self.x, a.z - self.z)
-      const db = Math.hypot(b.x - self.x, b.z - self.z)
-      if (da !== db) return da - db
-      return a.id.localeCompare(b.id)
-    })
-}
-
-function refsAround(self: CemeterySettlementRef, peekRef: PeekSettlementRef): CemeterySettlementRef[] {
-  const nearby: CemeterySettlementRef[] = []
-  for (const cell of cellsWithinRadius({ gx: self.gx, gz: self.gz }, SM_SHARING_CELL_RADIUS)) {
-    const ref = peekRef(cell)
-    if (ref) nearby.push(ref)
-  }
-  return nearby
-}
-
-/** Mutual-best local `SM` pairing — order-independent (plan §6, implementation notes). */
-export function resolveSmSharePartner(
-  self: CemeterySettlementRef,
-  peekRef: PeekSettlementRef,
-): CemeterySettlementRef | null {
-  if (self.size !== 'SM') return null
-  const ranked = rankSmPartners(self, refsAround(self, peekRef))
-  const best = ranked[0]
-  if (!best) return null
-  const reverse = rankSmPartners(best, refsAround(best, peekRef))
-  return reverse[0]?.id === self.id ? best : null
-}
-
 /** Dedicated assignment for one settlement — also the shared-placement fallback. */
 export function dedicatedCemeteryTopology(def: CemeterySettlementRef): CemeteryTopologyIntent {
   const served = [def.id]
@@ -194,19 +143,8 @@ export function dedicatedCemeteryTopology(def: CemeterySettlementRef): CemeteryT
   }
 }
 
-function sharedIntent(a: CemeterySettlementRef, b: CemeterySettlementRef): CemeteryTopologyIntent {
-  const served = [a.id, b.id].sort((x, y) => x.localeCompare(y))
-  const settlements = served[0] === a.id ? [a, b] : [b, a]
-  return {
-    assignmentId: cemeteryAssignmentId(served),
-    servedSettlementIds: served,
-    settlements,
-    intent: 'shared',
-  }
-}
-
 /**
- * Deterministic topology intent for one settlement — pairing before terrain placement.
+ * Deterministic topology intent for one settlement — always dedicated since 059 W4.
  * @domain world-terrain
  */
 export function resolveCemeteryTopologyForSettlement(
@@ -218,14 +156,10 @@ export function resolveCemeteryTopologyForSettlement(
   if (!cell) return null
   const self = peekRef(cell)
   if (!self || self.id !== settlementId) return null
-  let intent: CemeteryTopologyIntent
-  if (self.size === 'SM') {
-    const partner = resolveSmSharePartner(self, peekRef)
-    intent = partner ? sharedIntent(self, partner) : dedicatedCemeteryTopology(self)
-  } else {
-    intent = dedicatedCemeteryTopology(self)
-  }
-  for (const id of intent.servedSettlementIds) topologyCache.set(id, intent)
+  // 059 W4 / Q81-b (author 2026-11-02): villages are ≥ 720 m apart, so SM sharing is gone —
+  // every settlement (SM included) gets its own, size-mapped cemetery.
+  const intent = dedicatedCemeteryTopology(self)
+  topologyCache.set(settlementId, intent)
   return intent
 }
 

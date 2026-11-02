@@ -1120,49 +1120,49 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/roadNetwork.ts`
 
-- `activateRoadRouteWorldgenCache` — function — line 133
+- `activateRoadRouteWorldgenCache` — function — line 135
   - domain: world-terrain
   - system: worldgen-cache
-- `attachRoadRoutePersistence` — function — line 122
+- `attachRoadRoutePersistence` — function — line 124
   - domain: world-terrain
-- `bridgesNear` — function — line 1141
+- `bridgesNear` — function — line 1178
   - domain: world-terrain
-- `bridgeSpecOf` — function — line 1100
-- `clearRoadNetworkCaches` — function — line 192
-- `clearRoadNetworkMemoryCaches` — function — line 179
+- `bridgeSpecOf` — function — line 1137
+- `clearRoadNetworkCaches` — function — line 194
+- `clearRoadNetworkMemoryCaches` — function — line 181
   - domain: world-terrain
-- `entranceToward` — function — line 216
-- `findRoute` — function — line 336
+- `entranceToward` — function — line 218
+- `findRoute` — function — line 335
   - domain: world-terrain
-- `fordsNear` — function — line 1030
+- `fordsNear` — function — line 1070
   - domain: world-terrain
-- `ingestHydratedRoadRoute` — function — line 112
+- `ingestHydratedRoadRoute` — function — line 114
   - domain: world-terrain
-- `meanderRoute` — function — line 599
-- `MidpointSignpost` — type — line 862
-- `midpointSignpostsFor` — function — line 876
+- `meanderRoute` — function — line 598
+- `MidpointSignpost` — type — line 861
+- `midpointSignpostsFor` — function — line 875
 - `neighborsFor` — function — line 247
-- `peekRoadRouteCache` — function — line 143
-- `RoadNetworkContext` — type — line 63
-- `RoadRoute` — type — line 89
-- `roadRouteLocationKey` — function — line 165
+- `peekRoadRouteCache` — function — line 145
+- `RoadNetworkContext` — type — line 65
+- `RoadRoute` — type — line 91
+- `roadRouteLocationKey` — function — line 167
   - domain: world-terrain
   - system: worldgen-cache
-- `roadRoutePairKey` — function — line 154
+- `roadRoutePairKey` — function — line 156
   - domain: world-terrain
   - system: worldgen-cache
-- `roadRoutesForSettlement` — function — line 790
-- `roadRouteWorldgenCacheReady` — function — line 138
-- `RoadSegment` — type — line 53
-- `RoadSegmentKind` — type — line 51
-- `RoutePoint` — type — line 41
-- `RouteSearchOptions` — type — line 301
-- `routeToMinorLocation` — function — line 927
-- `segmentsNear` — function — line 952
-- `SettlementSignpost` — type — line 827
-- `signpostsForSettlement` — function — line 839
-- `VillageSegments` — type — line 1173
-- `villageSegmentsNear` — function — line 1197
+- `roadRoutesForSettlement` — function — line 789
+- `roadRouteWorldgenCacheReady` — function — line 140
+- `RoadSegment` — type — line 55
+- `RoadSegmentKind` — type — line 53
+- `RoutePoint` — type — line 43
+- `RouteSearchOptions` — type — line 300
+- `routeToMinorLocation` — function — line 926
+- `segmentsNear` — function — line 995
+- `SettlementSignpost` — type — line 826
+- `signpostsForSettlement` — function — line 838
+- `VillageSegments` — type — line 1207
+- `villageSegmentsNear` — function — line 1231
 
 ## `settlement/roadRiverCrossing.ts`
 
@@ -1256,6 +1256,19 @@ Generated from exported TypeScript symbols.
 - `SettlementSiteProbe` — type — line 594
 - `worldToCell` — function — line 159
 
+## `settlement/settlementLayout.ts`
+
+- `computeSettlementLayout` — function — line 132
+  - domain: settlements
+- `LayoutSite` — type — line 68
+- `SETTLEMENT_BAND_MAX_EDGE_M` — const — line 45
+- `SETTLEMENT_MAX_EDGE_M` — const — line 42
+- `SETTLEMENT_MIN_DISTANCE_M` — const — line 33
+- `SETTLEMENT_SPACING_M` — const — line 36
+- `SETTLEMENT_TARGET_COUNT` — const — line 40
+- `SettlementLayout` — type — line 74
+- `SettlementLayoutInput` — type — line 57
+
 ## `settlement/settlementNameUniqueness.ts`
 
 - `compareSettlementNameOrder` — function — line 27
@@ -1305,47 +1318,49 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/settlementPlanCache.ts`
 
-- `activateSettlementDefinitionCacheForWorld` — function — line 196
+- `activateSettlementDefinitionCacheForWorld` — function — line 201
   - domain: settlements
   - system: worldgen-cache
-- `attachSettlementDefinitionPersistence` — function — line 164
+- `attachSettlementDefinitionPersistence` — function — line 169
   - domain: settlements
   - system: worldgen-cache
-- `cachedLostTreasureArchaeologistHostCell` — function — line 465
-- `cachedLostTreasureSpecialistHostCell` — function — line 474
-- `cachedSettlementDefCount` — function — line 498
-- `cachedSettlementProgressionPolicy` — function — line 503
-- `clearSettlementDefCache` — function — line 124
-- `ingestHydratedSettlementDef` — function — line 144
+- `cachedLostTreasureArchaeologistHostCell` — function — line 473
+- `cachedLostTreasureSpecialistHostCell` — function — line 482
+- `cachedSettlementDefCount` — function — line 510
+- `cachedSettlementProgressionPolicy` — function — line 515
+- `clearSettlementDefCache` — function — line 128
+- `ingestHydratedSettlementDef` — function — line 149
   - domain: settlements
   - system: worldgen-cache
-- `lostTreasureArchaeologistHostCell` — function — line 448
+- `lostTreasureArchaeologistHostCell` — function — line 456
   - domain: settlements
-- `lostTreasureSpecialistHostCell` — function — line 459
+- `lostTreasureSpecialistHostCell` — function — line 467
   - domain: settlements
-- `setSettlementRiverQuery` — function — line 86
-- `settlementDefFor` — function — line 482
-- `settlementDefinitionCacheReady` — function — line 213
-- `SettlementResolveContext` — type — line 60
-- `worldRiverQuery` — function — line 99
+- `setSettlementRiverQuery` — function — line 87
+- `settlementDefFor` — function — line 490
+- `settlementDefinitionCacheReady` — function — line 218
+- `settlementLayoutFor` — function — line 229
+  - domain: settlements
+- `SettlementResolveContext` — type — line 61
+- `worldRiverQuery` — function — line 100
 
 ## `settlement/settlementProgression.ts`
 
-- `chebyshevCellDistance` — function — line 55
-- `orderProgressionCandidates` — function — line 89
+- `chebyshevCellDistance` — function — line 56
+- `orderProgressionCandidates` — function — line 90
   - domain: settlements
-- `resolveSettlementProgressionPolicy` — function — line 151
+- `resolveSettlementProgressionPolicy` — function — line 154
   - domain: settlements
-- `SETTLEMENT_PROGRESSION_FAR_ORDER_SALT` — const — line 20
-- `SETTLEMENT_PROGRESSION_FAR_RING` — const — line 16
-- `SETTLEMENT_PROGRESSION_NEAR_ORDER_SALT` — const — line 19
-- `SETTLEMENT_PROGRESSION_NEAR_RING` — const — line 14
-- `SettlementProgressionPolicy` — type — line 47
+- `SETTLEMENT_PROGRESSION_FAR_ORDER_SALT` — const — line 21
+- `SETTLEMENT_PROGRESSION_FAR_RING` — const — line 17
+- `SETTLEMENT_PROGRESSION_NEAR_ORDER_SALT` — const — line 20
+- `SETTLEMENT_PROGRESSION_NEAR_RING` — const — line 15
+- `SettlementProgressionPolicy` — type — line 48
   - domain: settlements
-- `settlementProgressionRingCells` — function — line 64
+- `settlementProgressionRingCells` — function — line 65
   - domain: settlements
-- `SettlementProgressionTarget` — type — line 36
-- `SettlementProgressionWorldInput` — type — line 25
+- `SettlementProgressionTarget` — type — line 37
+- `SettlementProgressionWorldInput` — type — line 26
 
 ## `settlement/settlementPropColliders.ts`
 

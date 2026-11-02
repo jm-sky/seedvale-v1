@@ -25,6 +25,7 @@ import {
   riverHitsOnEdge,
 } from './roadRiverCrossing'
 import {
+  cellKey,
   cellsWithinRadius,
   type SettlementCell,
   type SettlementDef,
@@ -33,6 +34,7 @@ import {
 import {
   clearSettlementDefCache,
   settlementDefFor,
+  settlementLayoutFor,
   type SettlementResolveContext,
   worldRiverQuery,
 } from './settlementPlanCache'
@@ -233,23 +235,20 @@ export function entranceToward(
   return { x: best.x, z: best.z }
 }
 
-/** All of a settlement's candidate neighbor settlements (by actual site
- *  distance, not grid distance — `findSettlementSite` jitters each cell's
- *  center), nearest first — the full ring-1 set (up to 8), *not* capped to
- *  `maxNeighborRoads`. Callers cap: `roadRoutesForSettlement` walks this
- *  list trying each in turn until `maxNeighborRoads` routes actually succeed
- *  (a nearby candidate across open water/impassable terrain shouldn't leave a
- *  settlement with zero roads when a slightly farther one would connect fine).
- *  Deterministic and effectively symmetric: both sides resolve the same
- *  `SettlementDef`s from the same seed, so whichever settlement asks first,
- *  the edge (and its cached route, keyed by sorted id pair) comes out the
- *  same either way. */
+/** A settlement's neighbours in the world's settlement layout graph (059 W4: relative-
+ *  neighbourhood graph over the globally selected sites, replacing the old lattice ring-1
+ *  set), nearest first by actual site distance — *not* capped to `maxNeighborRoads`.
+ *  Callers cap: `roadRoutesForSettlement` walks this list trying each in turn until
+ *  `maxNeighborRoads` routes actually succeed (a nearby candidate across open
+ *  water/impassable terrain shouldn't leave a settlement with zero roads when a slightly
+ *  farther one would connect fine). The graph is symmetric and a pure function of the seed,
+ *  so whichever settlement asks first, the edge (and its cached route, keyed by sorted id
+ *  pair) comes out the same either way. */
 export function neighborsFor(cell: SettlementCell, ctx: RoadNetworkContext): SettlementDef[] {
   const self = defFor(cell, ctx)
   if (!self) return []
-  return cellsWithinRadius(cell, 1)
-    .filter((c) => !(c.gx === cell.gx && c.gz === cell.gz))
-    .map((c) => defFor(c, ctx))
+  return settlementLayoutFor(ctx).neighborsOf(cell)
+    .map((site) => defFor(site.cell, ctx))
     .filter((def): def is SettlementDef => def !== null)
     .map((def) => ({ def, dist: Math.hypot(def.x - self.x, def.z - self.z) }))
     .sort((a, b) => a.dist - b.dist)
@@ -944,6 +943,50 @@ export function routeToMinorLocation(
   return [route.segments[0]!.a, ...route.segments.map((s) => s.b)]
 }
 
+/** Route search margin around a graph edge's straight line (A* grid margin + meander + corridor). */
+const ROUTE_BBOX_MARGIN_M = 120
+/** A settlement this close to the query rect owns local routes (minor locations, docks). */
+const LOCAL_ROUTE_OWNER_MARGIN_M = 450
+
+/**
+ * Settlements whose routes can reach the world rect: those whose own site is near it
+ * (local minor-location routes), plus both ends of every layout-graph edge whose bounding
+ * box meets it. Replaces the lattice ring-1 scan, which cannot see a 1–2.4 km edge passing
+ * through a chunk far from both endpoints (059 W4). Stable order (layout order).
+ */
+function routeOwnersNear(
+  ctx: RoadNetworkContext,
+  minX: number,
+  maxX: number,
+  minZ: number,
+  maxZ: number,
+): SettlementDef[] {
+  const layout = settlementLayoutFor(ctx)
+  const owners = new Set<number>()
+  const sites = layout.sites
+  const index = new Map(sites.map((s, i) => [cellKey(s.cell), i]))
+  sites.forEach((s, i) => {
+    if (
+      s.x >= minX - LOCAL_ROUTE_OWNER_MARGIN_M && s.x <= maxX + LOCAL_ROUTE_OWNER_MARGIN_M
+      && s.z >= minZ - LOCAL_ROUTE_OWNER_MARGIN_M && s.z <= maxZ + LOCAL_ROUTE_OWNER_MARGIN_M
+    ) owners.add(i)
+    for (const n of layout.neighborsOf(s.cell)) {
+      const j = index.get(cellKey(n.cell))!
+      if (j < i) continue // each undirected edge once
+      const m = ROUTE_BBOX_MARGIN_M
+      if (
+        Math.max(s.x, n.x) + m < minX || Math.min(s.x, n.x) - m > maxX
+        || Math.max(s.z, n.z) + m < minZ || Math.min(s.z, n.z) - m > maxZ
+      ) continue
+      owners.add(i)
+      owners.add(j)
+    }
+  })
+  return [...owners].sort((a, b) => a - b)
+    .map((i) => defFor(sites[i]!.cell, ctx))
+    .filter((def): def is SettlementDef => def !== null)
+}
+
 /** Road/path corridor segments near a chunk's world-space footprint —
  *  resolves (or reuses cached) settlement/route data for the grid cells
  *  within 1 of the chunk's cell, filtered to segments whose corridor could
@@ -955,7 +998,6 @@ export function segmentsNear(
   chunkSize: number,
   ctx: RoadNetworkContext,
 ): RoadCorridorSegment[] {
-  const cell = worldToCell(worldX, worldZ)
   const half = chunkSize / 2
   const minX = worldX - half
   const maxX = worldX + half
@@ -963,9 +1005,7 @@ export function segmentsNear(
   const maxZ = worldZ + half
 
   const out: RoadCorridorSegment[] = []
-  for (const c of cellsWithinRadius(cell, 1)) {
-    const def = defFor(c, ctx)
-    if (!def) continue
+  for (const def of routeOwnersNear(ctx, minX, maxX, minZ, maxZ)) {
     for (const seg of roadRoutesForSettlement(def, ctx).flatMap((route) => route.segments)) {
       const isRoad = seg.kind === 'road'
       const halfWidth = isRoad ? ctx.region.roadNetwork.roadHalfWidth : ctx.region.roadNetwork.pathHalfWidth
@@ -1033,7 +1073,6 @@ export function fordsNear(
   size: number,
   ctx: RoadNetworkContext,
 ): FordProjection[] {
-  const cell = worldToCell(worldX, worldZ)
   const half = size / 2
   const minX = worldX - half
   const maxX = worldX + half
@@ -1041,9 +1080,7 @@ export function fordsNear(
   const maxZ = worldZ + half
 
   const out: FordProjection[] = []
-  for (const c of cellsWithinRadius(cell, 1)) {
-    const def = defFor(c, ctx)
-    if (!def) continue
+  for (const def of routeOwnersNear(ctx, minX, maxX, minZ, maxZ)) {
     for (const route of roadRoutesForSettlement(def, ctx)) {
       for (const crossing of route.crossings) {
         if (crossing.kind !== 'ford') continue
@@ -1144,7 +1181,6 @@ export function bridgesNear(
   size: number,
   ctx: RoadNetworkContext,
 ): RoadBridgeSpec[] {
-  const cell = worldToCell(worldX, worldZ)
   const half = size / 2
   const minX = worldX - half
   const maxX = worldX + half
@@ -1152,9 +1188,7 @@ export function bridgesNear(
   const maxZ = worldZ + half
 
   const byId = new Map<string, RoadBridgeSpec>()
-  for (const c of cellsWithinRadius(cell, 1)) {
-    const def = defFor(c, ctx)
-    if (!def) continue
+  for (const def of routeOwnersNear(ctx, minX, maxX, minZ, maxZ)) {
     for (const route of roadRoutesForSettlement(def, ctx)) {
       if (route.kind !== 'road') continue
       for (const crossing of route.crossings) {

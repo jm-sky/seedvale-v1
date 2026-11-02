@@ -1410,32 +1410,32 @@ Generated from exported TypeScript symbols.
 
 ## `world/locations/locationConfig.ts`
 
-- `CEMETERY_SEARCH_CHUNK_RADIUS` — const — line 45
-- `FAR_RANGE_KM` — const — line 32
-- `GUARD_LANDMARK_POOL_SIZE` — const — line 83
-- `GUARD_REVEAL_MAX` — const — line 85
-- `GUARD_REVEAL_MIN` — const — line 84
-- `KM_PER_DAY` — const — line 15
-- `kmToDays` — function — line 25
-- `kmToWorldUnits` — function — line 21
-- `LAKE_FLOOD_FILL_SAFETY_CAP` — const — line 79
-- `LOCATION_SCAN_STEP` — const — line 39
-- `LOCATION_TILE_CELLS` — const — line 63
-- `MAX_CEMETERY_SETTLEMENTS_SEARCHED` — const — line 53
-- `MEDIUM_RANGE_KM` — const — line 31
-- `MERCHANT_MAP_LANDMARK_POOL_SIZE` — const — line 88
-- `MIN_LAKE_CELLS` — const — line 57
-- `NEAR_RANGE_KM` — const — line 30
-- `PEAK_MERGE_RADIUS_CELLS` — const — line 71
-- `PEAK_NEIGHBOR_MARGIN_CELLS` — const — line 70
-- `PEAK_SCAN_HALO_CELLS` — const — line 72
-- `WORLD_UNITS_PER_KM` — const — line 11
-- `worldUnitsToKm` — function — line 17
+- `CEMETERY_SEARCH_CHUNK_RADIUS` — const — line 46
+- `FAR_RANGE_HOURS` — const — line 33
+- `GUARD_LANDMARK_POOL_SIZE` — const — line 84
+- `GUARD_REVEAL_MAX` — const — line 86
+- `GUARD_REVEAL_MIN` — const — line 85
+- `HOURS_PER_DAY` — const — line 15
+- `hoursToDays` — function — line 25
+- `hoursToWorldUnits` — function — line 21
+- `LAKE_FLOOD_FILL_SAFETY_CAP` — const — line 80
+- `LOCATION_SCAN_STEP` — const — line 40
+- `LOCATION_TILE_CELLS` — const — line 64
+- `MAX_CEMETERY_SETTLEMENTS_SEARCHED` — const — line 54
+- `MEDIUM_RANGE_HOURS` — const — line 32
+- `MERCHANT_MAP_LANDMARK_POOL_SIZE` — const — line 89
+- `MIN_LAKE_CELLS` — const — line 58
+- `NEAR_RANGE_HOURS` — const — line 31
+- `PEAK_MERGE_RADIUS_CELLS` — const — line 72
+- `PEAK_NEIGHBOR_MARGIN_CELLS` — const — line 71
+- `PEAK_SCAN_HALO_CELLS` — const — line 73
+- `WORLD_UNITS_PER_HOUR` — const — line 13
+- `worldUnitsToHours` — function — line 17
 
 ## `world/locations/locationDiscovery.ts`
 
 - `classifyRange` — function — line 5
-- `formatDistance` — function — line 21
+- `formatDistance` — function — line 19
 - `isWithinRange` — function — line 11
 - `landmarksInBand` — function — line 66
 - `landmarksInBandAsync` — function — line 77
@@ -1561,7 +1561,7 @@ Generated from exported TypeScript symbols.
 
 ## `world/locations/worldLocationCatalog.ts`
 
-- `abandonedCemeteryChunkIntersectsKmBand` — function — line 230
+- `abandonedCemeteryChunkIntersectsHoursBand` — function — line 230
   - domain: world
 - `COOPERATIVE_ABANDONED_PROBE_THRESHOLD` — const — line 155
 - `createWorldLocationCatalog` — function — line 296

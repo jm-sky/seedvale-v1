@@ -27,6 +27,7 @@ import {
   cachedLostTreasureArchaeologistHostCell,
   clearSettlementDefCache,
   settlementDefFor,
+  settlementLayoutFor,
 } from './settlementPlanCache'
 
 const flatHeight = (): number => 12
@@ -171,16 +172,11 @@ describe('lost treasure chronicles archaeologist resident', () => {
     expect(home?.families.some(isLostTreasureElderFamily)).toBe(false)
     expect(home?.families.some(isLostTreasureArchaeologistFamily)).toBe(false)
 
-    const neighbors = [
-      settlementDefFor({ gx: 1, gz: 0 }, ctx),
-      settlementDefFor({ gx: -1, gz: 0 }, ctx),
-      settlementDefFor({ gx: 0, gz: 1 }, ctx),
-      settlementDefFor({ gx: 0, gz: -1 }, ctx),
-      settlementDefFor({ gx: 1, gz: 1 }, ctx),
-      settlementDefFor({ gx: -1, gz: -1 }, ctx),
-      settlementDefFor({ gx: 1, gz: -1 }, ctx),
-      settlementDefFor({ gx: -1, gz: 1 }, ctx),
-    ].filter((def) => def != null)
+    // 059 W4: neighbours are the globally selected settlements (home excluded), not the lattice ring.
+    const neighbors = settlementLayoutFor(ctx).sites
+      .slice(1)
+      .map((site) => settlementDefFor(site.cell, ctx))
+      .filter((def) => def != null)
 
     const elderHosts = neighbors.filter((def) => def.families.some(isLostTreasureElderFamily))
     expect(elderHosts).toHaveLength(1)
@@ -219,7 +215,9 @@ describe('lost treasure chronicles archaeologist resident', () => {
   it('does not leak the archaeologist into an unrelated distant settlement', () => {
     const ctx = ctxFor(7)
     settlementDefFor({ gx: 0, gz: 0 }, ctx)
-    const far = settlementDefFor({ gx: 8, gz: 8 }, ctx)
+    const farCell = settlementLayoutFor(ctx).sites.map((site) => site.cell)
+      .find((cell) => Math.max(Math.abs(cell.gx), Math.abs(cell.gz)) > 10)!
+    const far = settlementDefFor(farCell, ctx)
     expect(far?.families.some(isLostTreasureArchaeologistFamily)).toBe(false)
     expect(far?.families.some(isLostTreasureElderFamily)).toBe(false)
   })
