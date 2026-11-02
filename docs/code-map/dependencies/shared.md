@@ -113,6 +113,7 @@ Generated from TypeScript imports.
 - `fauna/AnimalLife.test.ts`
 - `fauna/AnimalLife.ts`
 - `fauna/animalCorpse.ts`
+- `fauna/waterTraversal.test.ts`
 - `items/sensibleFood.test.ts`
 - `player/PlayerNeeds.staminaSprintHysteresis.test.ts`
 - `player/PlayerNeeds.ts`

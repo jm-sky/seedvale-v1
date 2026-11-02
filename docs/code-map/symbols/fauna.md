@@ -258,14 +258,14 @@ Generated from exported TypeScript symbols.
 - `AnimalLifeState` — type — line 74
 - `AnimalMetabolismConfig` — type — line 18
 - `BIAS_STRENGTH` — const — line 62
-- `consumeFood` — function — line 132
+- `consumeFood` — function — line 138
 - `createAnimalLifeState` — function — line 85
 - `DEFAULT_ANIMAL_METABOLISM` — const — line 49
-- `drinkWater` — function — line 138
+- `drinkWater` — function — line 144
 - `FOOD_RELIEF` — const — line 69
 - `NEED_ELEVATED_THRESHOLD` — const — line 66
 - `STAMINA_REST_THRESHOLD` — const — line 59
-- `tickAnimalLife` — function — line 105
+- `tickAnimalLife` — function — line 110
 - `WATER_RELIEF` — const — line 72
 
 ## `fauna/animalMeat.ts`
@@ -860,21 +860,21 @@ Generated from exported TypeScript symbols.
 ## `fauna/waterTraversal.ts`
 
 - `AnimalWaterCapability` — type — line 22
-- `autonomousDestinationAccepts` — function — line 103
+- `autonomousDestinationAccepts` — function — line 112
 - `classifyWaterTraversal` — function — line 51
-- `evaluateWaterRouteFeasibility` — function — line 209
-- `isDispreferredSwim` — function — line 125
-- `predictSwimStaminaCost` — function — line 156
-- `shouldApplyDrowningDamage` — function — line 85
-- `SWIM_PREFER_DRY_CELL_COST` — const — line 99
-- `SWIM_SAFETY_RESERVE_RATIO` — const — line 148
-- `swimStaminaExertion` — function — line 75
+- `evaluateWaterRouteFeasibility` — function — line 218
+- `isDispreferredSwim` — function — line 134
+- `predictSwimStaminaCost` — function — line 165
+- `shouldApplyDrowningDamage` — function — line 90
+- `SWIM_PREFER_DRY_CELL_COST` — const — line 108
+- `SWIM_SAFETY_RESERVE_RATIO` — const — line 157
+- `swimStaminaExertion` — function — line 78
 - `wadeDepthFor` — function — line 40
-- `WaterRouteFeasibility` — type — line 180
-- `WaterRouteIntent` — type — line 94
-- `WaterRouteRejectionReason` — type — line 178
-- `WaterRouteSample` — type — line 173
-- `waterTraversalCellCost` — function — line 114
+- `WaterRouteFeasibility` — type — line 189
+- `WaterRouteIntent` — type — line 103
+- `WaterRouteRejectionReason` — type — line 187
+- `WaterRouteSample` — type — line 182
+- `waterTraversalCellCost` — function — line 123
 - `WaterTraversalMode` — type — line 13
   - domain: fauna
   - system: water-traversal

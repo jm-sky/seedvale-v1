@@ -39,6 +39,13 @@ Generated from TypeScript imports.
 - `audio/ambientEvents.test.ts`
 - `audio/createAmbientAudio.ts`
 
+## `audio/ambientWeights.test.ts`
+
+**Imports**
+
+- `audio/ambientWeights.ts`
+- `terrain/chunkHeightmap.ts`
+
 ## `audio/ambientWeights.ts`
 
 **Imports**
@@ -48,6 +55,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `audio/ambientWeights.test.ts`
 - `audio/createAmbientAudio.ts`
 
 ## `audio/animalSounds.test.ts`

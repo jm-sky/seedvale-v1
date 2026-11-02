@@ -311,6 +311,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `audio/ambientWeights.test.ts`
 - `audio/ambientWeights.ts`
 - `config/worldConfig.ts`
 - `debug/caves/caveHeightfieldTerrain.ts`

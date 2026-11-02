@@ -176,6 +176,7 @@ Generated from TypeScript imports.
 **Imports**
 
 - `fauna/AnimalLife.ts`
+- `fauna/waterTraversal.ts`
 - `shared/StaminaState.ts`
 - `world/timeConversion.ts`
 
@@ -199,6 +200,7 @@ Generated from TypeScript imports.
 - `fauna/animalMetabolismGameplay.test.ts`
 - `fauna/animalNeedArbitration.test.ts`
 - `fauna/animalNeedArbitration.ts`
+- `fauna/waterTraversal.test.ts`
 
 ## `fauna/AnimalSpawner.test.ts`
 
@@ -1447,13 +1449,16 @@ Generated from TypeScript imports.
 
 **Imports**
 
+- `fauna/AnimalLife.ts`
 - `fauna/waterTraversal.ts`
+- `shared/StaminaState.ts`
 
 ## `fauna/waterTraversal.ts`
 
 **Imported by**
 
 - `fauna/AnimalAgent.ts`
+- `fauna/AnimalLife.test.ts`
 - `fauna/animalDefs.ts`
 - `fauna/animalForaging.ts`
 - `fauna/waterTraversal.test.ts`
