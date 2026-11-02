@@ -243,26 +243,23 @@ Generated from exported TypeScript symbols.
 
 ## `ai/npcAppearance.ts`
 
-- `customProfessionHairKinds` — function — line 154
-- `NPC_CLOTHING_HUE` — const — line 22
-- `NPC_HAIR_COLOR` — const — line 30
-- `NPC_UBC_FEMALE_PEASANT_URL` — const — line 253
-- `NPC_UBC_FEMALE_WIZARD_URL` — const — line 254
-- `NPC_UBC_MALE_BLACKSMITH_URL` — const — line 256
-- `NPC_UBC_MALE_FARMER_URL` — const — line 258
-- `NPC_UBC_MALE_KNIGHT_UNHELMETED_URL` — const — line 255
-- `NPC_UBC_MALE_WOODCUTTER_URL` — const — line 257
-- `NPC_WOODCUTTER_CLOTH_TINT` — const — line 39
-- `NpcAppearance` — type — line 61
+- `customProfessionHairKinds` — function — line 180
+- `NAMED_NPC_LOOKS` — const — line 80
   - domain: npc
-- `NpcClothingHueId` — type — line 18
-- `NpcHairColorId` — type — line 19
-- `NpcHairKind` — type — line 16
-- `NpcOutfitId` — type — line 15
-- `NpcResolvedHair` — type — line 17
-- `resolveNpcAppearance` — function — line 165
+- `NamedNpcLook` — type — line 67
+- `NPC_CLOTHING_HUE` — const — line 25
+- `NPC_HAIR_COLOR` — const — line 33
+- `NPC_WOODCUTTER_CLOTH_TINT` — const — line 43
+- `NpcAppearance` — type — line 100
   - domain: npc
-- `ubcVariantModelUrl` — function — line 243
+- `NpcClothingHueId` — type — line 20
+- `NpcHairColorId` — type — line 22
+- `NpcHairKind` — type — line 18
+- `NpcOutfitId` — type — line 17
+- `NpcResolvedHair` — type — line 19
+- `resolveNpcAppearance` — function — line 191
+  - domain: npc
+- `ubcVariantModelUrl` — function — line 282
 
 ## `ai/npcAssistance.ts`
 

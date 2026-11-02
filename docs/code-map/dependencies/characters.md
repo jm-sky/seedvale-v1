@@ -7,6 +7,7 @@ Generated from TypeScript imports.
 **Imports**
 
 - `assets/loadGltf.ts`
+- `characters/bodyBuild.ts`
 - `characters/characterFiles.ts`
 - `characters/characterTypes.ts`
 
@@ -28,11 +29,35 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `ai/npcAppearance.ts`
-- `assets/bodyPreviewEntries.ts`
+- `assets/characterKitEntries.ts`
 - `characters/characterAssets.onDisk.test.ts`
 - `characters/characterFiles.test.ts`
 - `debug/caves/caveHeightfieldPlayer.ts`
 - `player/playerVisualPreset.ts`
+
+## `characters/bodyBuild.test.ts`
+
+**Imports**
+
+- `characters/bodyBuild.ts`
+
+## `characters/bodyBuild.ts`
+
+**Imports**
+
+- `characters/characterTypes.ts`
+
+**Imported by**
+
+- `ai/npcAppearance.ts`
+- `assets/assetIndex.ts`
+- `assets/characterKitEntries.ts`
+- `characters/assembleCharacter.ts`
+- `characters/bodyBuild.test.ts`
+- `tools/assetBrowser/state.ts`
+- `tools/assetBrowser/urlParams.ts`
+- `tools/assetBrowser/viewer/createAssetSlot.ts`
+- `tools/assetBrowser/viewer/createViewer.ts`
 
 ## `characters/characterAssets.onDisk.test.ts`
 
@@ -60,8 +85,7 @@ Generated from TypeScript imports.
 
 - `ai/npcAppearance.test.ts`
 - `ai/npcAppearance.ts`
-- `assets/assetIndex.ts`
-- `assets/bodyPreviewEntries.ts`
+- `assets/characterKitEntries.ts`
 - `characters/assembleCharacter.ts`
 - `characters/characterAssets.onDisk.test.ts`
 - `characters/characterFiles.test.ts`
@@ -75,9 +99,10 @@ Generated from TypeScript imports.
 - `ai/npcAppearance.test.ts`
 - `ai/npcAppearance.ts`
 - `assets/assetIndex.ts`
-- `assets/bodyPreviewEntries.ts`
+- `assets/characterKitEntries.ts`
 - `characters/assembleCharacter.ts`
 - `characters/baseGarments.ts`
+- `characters/bodyBuild.ts`
 - `characters/characterAssets.onDisk.test.ts`
 - `characters/characterFiles.test.ts`
 - `characters/characterFiles.ts`
@@ -87,3 +112,4 @@ Generated from TypeScript imports.
 - `player/playerVisualPreset.ts`
 - `render/actorCullBounds.assets.test.ts`
 - `render/actorSkeletonSharing.assets.test.ts`
+- `tools/assetBrowser/urlParams.ts`

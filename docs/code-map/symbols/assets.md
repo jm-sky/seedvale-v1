@@ -40,13 +40,13 @@ Generated from exported TypeScript symbols.
 ## `assets/assetAnchorData.ts`
 
 - `ADVENTURER_HAND_SPACE` — const — line 26
-- `anchorsForAsset` — function — line 166
+- `anchorsForAsset` — function — line 159
 - `ASSET_ANCHORS` — const — line 149
 - `CHARACTER_ANCHORS_UBC` — const — line 87
 - `HandAttachSpace` — type — line 18
 - `handAttachSpaceFromSocket` — function — line 77
 - `HELD_TOOL_GRIP_ANCHORS` — const — line 144
-- `heldToolHasGripAnchor` — function — line 173
+- `heldToolHasGripAnchor` — function — line 166
 - `RIGHT_HAND_BONE_NAMES` — const — line 9
 - `UBC_HAND_FROM_WRIST_R` — const — line 37
 - `UBC_HAND_OFFSET` — const — line 41
@@ -73,47 +73,40 @@ Generated from exported TypeScript symbols.
 
 ## `assets/assetIndex.ts`
 
-- `assetEntryMatchesQuery` — function — line 207
-- `assetIndexById` — function — line 628
-- `AssetIndexEntry` — type — line 97
-- `AssetIndexGroup` — type — line 79
-- `AssetIndexStatus` — type — line 92
-- `AssetPrepare` — type — line 72
-- `basenameFromUrl` — function — line 153
-- `buildAssetIndex` — function — line 374
-- `CompareGarment` — type — line 95
-- `customUrlEntry` — function — line 229
-- `entryFromUrl` — function — line 642
-- `filterAssetIndex` — function — line 220
-- `findAssetEntry` — function — line 634
-- `formatAssetLabel` — function — line 202
-- `groupFromModelUrl` — function — line 175
-- `kindFromBasename` — function — line 167
-- `makeParkedEntry` — function — line 258
-- `mergeParkedManifest` — function — line 276
-- `packFromUrl` — function — line 159
-- `resolveLoadEntry` — function — line 247
+- `assetEntryMatchesQuery` — function — line 191
+- `assetIndexById` — function — line 508
+- `AssetIndexEntry` — type — line 79
+- `AssetIndexGroup` — type — line 61
+- `AssetIndexStatus` — type — line 74
+- `AssetPrepare` — type — line 54
+- `basenameFromUrl` — function — line 137
+- `buildAssetIndex` — function — line 358
+- `CompareGarment` — type — line 77
+- `customUrlEntry` — function — line 213
+- `entryFromUrl` — function — line 522
+- `filterAssetIndex` — function — line 204
+- `findAssetEntry` — function — line 514
+- `formatAssetLabel` — function — line 186
+- `groupFromModelUrl` — function — line 159
+- `kindFromBasename` — function — line 151
+- `makeParkedEntry` — function — line 242
+- `mergeParkedManifest` — function — line 260
+- `packFromUrl` — function — line 143
+- `resolveLoadEntry` — function — line 231
 
 ## `assets/assetUrlUtils.ts`
 
 - `parkedIdFromUrl` — function — line 10
 
-## `assets/bodyBuild.ts`
+## `assets/characterKitEntries.ts`
 
-- `applyBodyBuild` — function — line 53
-- `BODY_BUILD_LABELS` — const — line 13
-- `BODY_BUILDS` — const — line 10
-- `BodyBuild` — type — line 8
-- `BodyBuildResult` — type — line 31
-- `DEFAULT_BODY_BUILD` — const — line 11
-- `parseBodyBuild` — function — line 26
-- `supportedBodyBuilds` — function — line 45
-
-## `assets/bodyPreviewEntries.ts`
-
-- `BODY_PREVIEW_DIR` — const — line 21
-- `bodyPreviewEntries` — function — line 29
-- `bodyPreviewUrl` — function — line 24
+- `characterKitEntries` — function — line 37
+- `KitBeardChoice` — type — line 28
+- `KitHairChoice` — type — line 27
+- `KitHeadChoice` — type — line 26
+- `KitLook` — type — line 30
+- `PLAYER_REFERENCE_ID` — const — line 23
+- `withKitLook` — function — line 71
 
 ## `assets/constructionCatalog.ts`
 

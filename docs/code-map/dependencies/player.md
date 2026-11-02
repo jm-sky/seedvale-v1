@@ -80,8 +80,7 @@ Generated from TypeScript imports.
 - `app/restCampSequence.ts`
 - `app/saveState.ts`
 - `app/userActions.ts`
-- `assets/assetIndex.ts`
-- `assets/bodyPreviewEntries.ts`
+- `assets/characterKitEntries.ts`
 - `debug/caves/caveHeightfieldTraversal.test.ts`
 - `debug/flyCam.ts`
 - `debug/npcDebugApi.ts`
@@ -695,7 +694,6 @@ Generated from TypeScript imports.
 
 - `ai/NpcAgent.ts`
 - `app/createApp.ts`
-- `assets/assetIndex.ts`
 - `player/playerVisualPreset.test.ts`
 - `tools/assetBrowser/viewer/createAssetSlot.ts`
 

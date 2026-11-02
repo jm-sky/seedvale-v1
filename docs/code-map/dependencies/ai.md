@@ -299,8 +299,7 @@ Generated from TypeScript imports.
 - `app/dialogueTimeControl.ts`
 - `app/gameLoop.ts`
 - `app/inventoryWiring.ts`
-- `assets/assetIndex.ts`
-- `assets/bodyPreviewEntries.ts`
+- `assets/characterKitEntries.ts`
 - `debug/npcDebugApi.test.ts`
 - `debug/npcDebugApi.ts`
 - `debug/npcDecisionReport.ts`
@@ -781,6 +780,7 @@ Generated from TypeScript imports.
 
 - `ai/characters.ts`
 - `characters/baseGarments.ts`
+- `characters/bodyBuild.ts`
 - `characters/characterFiles.ts`
 - `characters/characterTypes.ts`
 - `settlement/professionStaffing.ts`
@@ -790,7 +790,6 @@ Generated from TypeScript imports.
 
 - `ai/NpcAgent.ts`
 - `ai/npcAppearance.test.ts`
-- `assets/assetIndex.ts`
 - `tools/assetBrowser/hairTint.test.ts`
 - `tools/assetBrowser/hairTint.ts`
 

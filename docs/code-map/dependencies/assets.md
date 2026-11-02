@@ -71,7 +71,7 @@ Generated from TypeScript imports.
 
 - `assets/assetAnchorData.test.ts`
 - `assets/assetIndex.ts`
-- `assets/bodyPreviewEntries.ts`
+- `assets/characterKitEntries.ts`
 - `assets/houseDefinitionExample.ts`
 - `items/heldToolVisual.test.ts`
 - `items/heldToolVisual.ts`
@@ -104,27 +104,23 @@ Generated from TypeScript imports.
 **Imports**
 
 - `assets/assetIndex.ts`
+- `assets/characterKitEntries.ts`
 
 ## `assets/assetIndex.ts`
 
 **Imports**
 
-- `ai/NpcAgent.ts`
-- `ai/npcAppearance.ts`
 - `assets/assetAnchorData.ts`
 - `assets/assetAnchors.ts`
 - `assets/assetUrlUtils.ts`
-- `assets/bodyBuild.ts`
-- `assets/bodyPreviewEntries.ts`
-- `characters/characterFiles.ts`
+- `assets/characterKitEntries.ts`
+- `characters/bodyBuild.ts`
 - `characters/characterTypes.ts`
 - `fauna/AnimalAgent.ts`
 - `fauna/createFauna.ts`
 - `items/heldToolVisual.ts`
 - `items/itemModels.ts`
-- `player/PlayerController.ts`
 - `player/playerEquipmentVisual.ts`
-- `player/playerVisualPreset.ts`
 - `player/torchLightPresets.ts`
 - `settlement/houseCatalog.ts`
 - `settlement/livestock.ts`
@@ -133,7 +129,7 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `assets/assetIndex.test.ts`
-- `assets/bodyPreviewEntries.ts`
+- `assets/characterKitEntries.ts`
 - `assets/constructionCatalog.test.ts`
 - `assets/constructionCatalog.ts`
 - `settlement/houseLighting.lantern.test.ts`
@@ -155,40 +151,26 @@ Generated from TypeScript imports.
 - `assets/assetIndex.ts`
 - `assets/houseDefinitionExampleConfig.ts`
 
-## `assets/bodyBuild.test.ts`
-
-**Imports**
-
-- `assets/bodyBuild.ts`
-
-## `assets/bodyBuild.ts`
-
-**Imported by**
-
-- `assets/assetIndex.ts`
-- `assets/bodyBuild.test.ts`
-- `assets/bodyPreviewEntries.ts`
-- `tools/assetBrowser/state.ts`
-- `tools/assetBrowser/urlParams.ts`
-- `tools/assetBrowser/viewer/createAssetSlot.ts`
-- `tools/assetBrowser/viewer/createViewer.ts`
-
-## `assets/bodyPreviewEntries.ts`
+## `assets/characterKitEntries.ts`
 
 **Imports**
 
 - `ai/NpcAgent.ts`
 - `assets/assetAnchorData.ts`
 - `assets/assetIndex.ts`
-- `assets/bodyBuild.ts`
 - `characters/baseGarments.ts`
+- `characters/bodyBuild.ts`
 - `characters/characterFiles.ts`
 - `characters/characterTypes.ts`
 - `player/PlayerController.ts`
 
 **Imported by**
 
+- `assets/assetIndex.test.ts`
 - `assets/assetIndex.ts`
+- `tools/assetBrowser/state.ts`
+- `tools/assetBrowser/urlParams.ts`
+- `tools/assetBrowser/viewer/createAssetSlot.ts`
 
 ## `assets/constructionCatalog.test.ts`
 

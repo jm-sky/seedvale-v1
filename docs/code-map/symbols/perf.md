@@ -81,14 +81,15 @@ Generated from exported TypeScript symbols.
 - `isBenchmarkAutorunEnabled` — function — line 84
 - `isChestInstancingEnabled` — function — line 167
 - `isFrameMatrixOnceEnabled` — function — line 121
-- `isGodRaysSoftEnabled` — function — line 198
+- `isGodRaysSoftEnabled` — function — line 207
 - `isGrassMainCapEnabled` — function — line 158
+- `isNpcBodyBuildsEnabled` — function — line 197
 - `isPerfUrlEnabled` — function — line 21
 - `isProgramCensusUrlEnabled` — function — line 31
 - `isRiverPrefetchEnabled` — function — line 178
 - `isShadowActorCadenceEnabled` — function — line 139
 - `isShadowMotionCadenceEnabled` — function — line 149
-- `isTemplateProgramPrewarmEnabled` — function — line 210
+- `isTemplateProgramPrewarmEnabled` — function — line 219
 - `parseBenchmarkDuration` — function — line 104
 - `parseBenchmarkScenarioId` — function — line 71
 - `parseBenchmarkYaw` — function — line 91
