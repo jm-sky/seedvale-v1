@@ -261,10 +261,13 @@ function baseConfig(seed: number, resolution: number): WorldConfig {
         // still the plain 0..1 field other systems read; heightScale/hillsAmplitude
         // untouched), so this targets mountain height specifically.
         mountainGain: 1.8,
+        // Q71 author decision (2026-11-02, "a + b"): slightly smaller continent
+        // than the plan's 2.6–3.2 km → ~150 settlements at pitch 300, ~4–6 on a
+        // compass walk from home; rationale in plan world-terrain-058 §W1 calibration.
         continentMask: {
-          innerRadius: 1900,
-          coastRadiusMin: 2600,
-          coastRadiusMax: 3200,
+          innerRadius: 1750,
+          coastRadiusMin: 2300,
+          coastRadiusMax: 2900,
           edgeBand: 600,
           centreJitter: 250,
         },

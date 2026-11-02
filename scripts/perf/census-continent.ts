@@ -3,8 +3,11 @@
 //  - land fraction within R = 2.5 km of the origin (floor above sea level),
 //  - sea at every border cell (perimeter of the ±4096 m box),
 //  - coast radius per compass direction (first sea sample walking outward),
-//  - settlements along each of 8 compass rays from home (centre within 300 m of the
-//    ray, before the coast): the plan wants 4–6 on ≥ 6 rays,
+//  - settlements along each of 8 compass rays from home (centre within ±150 m = half
+//    the grid pitch of the ray, before the coast — the villages a walk in that
+//    direction passes; a ±300 m band double-counts the adjacent grid row). W1 target
+//    (Q71 author decision 2026-11-02): per seed median 4–6 and ≥ 5 rays with 3–7,
+//  - total settlements on the continent (informative, ~120–180 expected),
 //  - home settlement centre (compare with `--nomask` for "home unchanged").
 import { defaultTerrainConfig } from '../../src/config/worldConfig'
 import { cellsWithinRadius, type SettlementDef } from '../../src/settlement/settlementGenerator'
@@ -23,7 +26,7 @@ const rings = Number(arg('rings', '13'))
 const noMask = process.argv.includes('--nomask')
 const asJson = process.argv.includes('--json')
 const LAND_R = 2500
-const RAY_BAND = 300
+const RAY_BAND = 150
 
 function snapshot(seed: number): WorldKnowledgeTerrainSnapshot {
   const t = defaultTerrainConfig(65)
@@ -90,7 +93,7 @@ function measure(seed: number): Record<string, unknown> {
     for (const d of defs) {
       const along = d.x * dx + d.z * dz
       const across = Math.abs(d.x * -dz + d.z * dx)
-      if (along > 0 && across <= RAY_BAND && along <= coast[i]! + 100) n++
+      if (along > 50 && across <= RAY_BAND && along <= coast[i]! + 100) n++
     }
     return n
   })
@@ -101,7 +104,8 @@ function measure(seed: number): Record<string, unknown> {
     borderLandCells: `${borderLand}/${borderCells}`,
     coastRadiusPerRay: coast.join(' '),
     settlementsPerRay: rayCounts.join(' '),
-    raysWith4to6: rayCounts.filter((n) => n >= 4 && n <= 6).length,
+    rayMedian: [...rayCounts].sort((a, b) => a - b).slice(3, 5).reduce((a, b) => a + b, 0) / 2,
+    raysWith3to7: rayCounts.filter((n) => n >= 3 && n <= 7).length,
     settlementsTotal: defs.length,
     home: home ? `${home.x.toFixed(1)},${home.z.toFixed(1)}` : 'none',
   }
