@@ -392,7 +392,7 @@ function baseConfig(seed: number, resolution: number): WorldConfig {
       name: DEFAULT_PLAYER_NAME,
     },
     settlements: {
-      homeSize: 'auto',
+      homeSize: 'SM',
     },
   }
 }

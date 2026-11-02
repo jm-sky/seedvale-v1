@@ -72,7 +72,7 @@
 
 4. **Next session (author, 2026-11-01): Q50 then Q51 first** (world-terrain-055 shadow trims, separate A/Bs).
 5. **Next session (author, 2026-11-02): Sonnet — Q52 → Q53 → Q54 → Q55 → Q56** ([world-terrain-056 execution scope](../../plans/world-terrain-056-render-pass-frame-distribution-and-map-quality.md#execution-scope-for-sonnet-2026-11-02--supersedes-stages-ad-where-they-conflict)); then back to the main roadmap.
-6. **Roads/paths rebuild (2026-11-02):** [Q44 plan](./2026-11-02--q44-roads-paths-rebuild-plan.md) → Sonnet Q57 → Q58 (unblocks Q47) → Q59 → Q37 → Q60 → Q61 → (D1) Q62 → (D2) Q63 → Q64.
+6. **Roads/paths rebuild (2026-11-02; Q57 done, next = Q58):** author feedback after Q57 (2026-11-02) already applied on `main` — no zone spurs, `path-shore` lane to the last dry shore point (jetty/boat later), all entrance lanes road-width, cemetery plots reject river channels, **default home village size now `SM`** (`worldConfig.settlements.homeSize`, within epoch 1). Home cemetery currently may not place at all (dedicated MD/LG/XL always fail until Q58) — re-check the home settlement after Q58. Recommended model for Q58: **Sonnet, high effort** (single owner, numeric done-when; Opus only if the reservation pushes out a house/storehouse). Original order: [Q44 plan](./2026-11-02--q44-roads-paths-rebuild-plan.md) → Sonnet Q57 → Q58 (unblocks Q47) → Q59 → Q37 → Q60 → Q61 → (D1) Q62 → (D2) Q63 → Q64.
 
 **Rule (author, 2026-10-30):** while any benchmark series runs, no session saves runtime files under `src/` (Vite serves the live tree; the runner flags such reps with `dirtyRuntimePaths`). Runtime work then goes to a separate git worktree, or waits.
 
