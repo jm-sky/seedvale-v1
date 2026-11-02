@@ -143,6 +143,10 @@ Computed from the coverage table, assuming casting as in §1 and all existing cl
 
 Expected size: ~20 P0 + ~18 P1 clips instead of Q31's 29 + catalog's 52. Q31 P1/P2 snow/storm second variants and catalog rows for speakers not in this table are superseded until re-prioritized. Recording keeps the existing Fish UUID per speaker so new clips stay in the same voice.
 
+## Writing ownership (author decision 2026-11-02)
+
+GPT Astra authors all new NPC dialogue, utterances, lines and textual variants, including S5/Q90 and future expansions. Opus handles planning/recon/coordination only; Sonnet handles implementation/integration/tests only. The author approves the text and generates Fish Audio recordings. Automatic transcripts/QC of existing audio remain technical work, not creative writing.
+
 ## Slices
 
 | Slice | Model | Content | Done when |
@@ -151,7 +155,7 @@ Expected size: ~20 P0 + ~18 P1 clips instead of Q31's 29 + catalog's 52. Q31 P1/
 | S2 Casting listen | author | Listen ≈ 39 casting clips + mismatches + Mark → accept/reject speakers, confirm weights | Verdicts recorded in ledger; queue §3 answered |
 | S3 Runtime casting + registry | S/high | §1–§3 with registry seeded from **already-public, `pass`** primaries; tests below | Tests green; `type-check`, `lint`; STATE/catalog updated; browser listen on seed `415424794` → §2 |
 | S4 Donor import | S | §5 for `pass` donors; registry entries | Files present = registry entries; resolver tests over real registry; SOUNDS.md |
-| S5 Missing-line script | O→author/X | §6 recomputed from ledger; write new rows (English, humor per §12.4 except emergencies) | Author-approved line script; Q40 then registers delivered files |
+| S5 Missing-line script | GPT Astra → author | §6 recomputed from ledger; write new rows (English, humor per §12.4 except emergencies) | Author-approved line script; Q40 then registers delivered files |
 
 S3 may land before S4 (reuse can follow incrementally). S3 must not start before S1+S2 for speakers whose clips would otherwise become audible unverified; it may start with only the speakers already registered today if S2 is late.
 
