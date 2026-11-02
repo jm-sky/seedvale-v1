@@ -11,6 +11,7 @@
     "lint:fix": "eslint . --fix",
     "preview": "vite preview",
     "test": "vitest run",
+    "check-and-sync": "pnpm lint:fix && pnpm type-check && pnpm docs:sync",
     "trace:analyze": "./scripts/analyze_trace.sh",
     "plans:without-notes": "tsx scripts/docs/planned-plans-without-notes.ts",
     "plans:sync": "tsx scripts/docs/plans-sync.ts",

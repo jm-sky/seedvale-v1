@@ -23,10 +23,18 @@ export type AmbientSamplers = {
  *  the surf is still audible — audio-only tuning, doesn't touch
  *  `RegionParams` (which drives terrain generation, not sound). */
 const COAST_AUDIO_FADE = 0.08
-/** `altitude01` (as in `biomeColors.ts`) above which mountain wind is heard
- *  regardless of standing exactly on a `mountainRidge` texel. */
+/** `altitude01` (as in `biomeColors.ts`) above which mountain wind is boosted
+ *  toward full strength — but only inside mountain ridge terrain. Altitude alone
+ *  never activates mountain wind (grassy hills stay silent). */
 const HIGHLAND_WIND_START = 0.55
 const HIGHLAND_WIND_END = 0.75
+/** `mountainRidge` range over which the player is considered to be entering /
+ *  inside a mountain region. Low start so the wind begins at the edge of ridge
+ *  terrain (matches where rock starts to show in `biomeColors.ts`). */
+const MOUNTAIN_RIDGE_START = 0.05
+const MOUNTAIN_RIDGE_END = 0.30
+/** Wind floor on mountain slopes inside a region, before highland boost. */
+const MOUNTAIN_BASE_WIND = 0.5
 
 /** Composes existing terrain samplers into per-layer ambient gains (0-1) at a
  *  world position — mirrors what the player sees (same thresholds as
@@ -48,8 +56,13 @@ export function ambientWeightsAt(x: number, z: number, s: AmbientSamplers): Ambi
   )
   const { forest } = biomeWeightsAt(s.sampleMoistureRegion(x, z), altitude01, s.region)
 
+  const mountainRegion = MathUtils.smoothstep(
+    s.sampleMountainRidge(x, z),
+    MOUNTAIN_RIDGE_START,
+    MOUNTAIN_RIDGE_END,
+  )
   const highland = MathUtils.smoothstep(altitude01, HIGHLAND_WIND_START, HIGHLAND_WIND_END)
-  const mountain = Math.max(s.sampleMountainRidge(x, z), highland)
+  const mountain = mountainRegion * MathUtils.lerp(MOUNTAIN_BASE_WIND, 1, highland)
 
   return { ocean, forest: forest * (1 - ocean) * (1 - mountain), mountain }
 }
