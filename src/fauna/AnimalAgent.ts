@@ -1420,7 +1420,7 @@ export class AnimalAgent {
    *  owner `NpcAgent` already uses (`shared/agentAnimationSet.ts`). A key
    *  with no matching clip is a safe, silent fallback (existing locomotion
    *  keeps playing, no crash) — not every species/pack exports all three
-   *  combat/death clips (e.g. sheep/chicken/bear have none, cow only has
+   *  combat/death clips (e.g. sheep/chicken have none, cow only has
    *  `Death`). */
   private readonly anim: AgentAnimationSet<AnimalAnimClip>
   /** Countdown while a one-shot attack/hurt clip should keep pre-empting
@@ -1871,8 +1871,8 @@ export class AnimalAgent {
     this.anim.resolve({
       idle: ['Idle', 'Idle_2'],
       walk: ['Walk'],
-      // Quaternius packs export `Gallop`; some others `Run`. No run clip
-      // (wild_boar) still sprints on `Walk` — first match wins, same idiom
+      // Quaternius packs export `Gallop`; some others `Run`. Species with no run
+      // clip (e.g. rabbit) still sprint on `Walk` — first match wins, same idiom
       // as Idle/Idle_2. `updateAnim()` also falls back at play time.
       gallop: ['Gallop', 'Run', 'Walk'],
       // Predators export `Attack`; deer/stag/horse/donkey export
@@ -3248,7 +3248,7 @@ export class AnimalAgent {
 
   /** Death presentation: plays the GLB's own `Death` clip when the species
    *  has one (plan npc-009) and lingers on its last frame — same as
-   *  `NpcAgent.die()`. Species/packs with no clip (sheep, chicken, bear,
+   *  `NpcAgent.die()`. Species/packs with no clip (sheep, chicken,
    *  capsule fallback) tip immediately instead of freezing standing up. */
   private collapse(): void {
     // D1 (plan fauna-017 step 6b): a predator that dies while holding a
