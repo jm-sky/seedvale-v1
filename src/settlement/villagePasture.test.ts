@@ -64,6 +64,19 @@ describe('settlement pasture (plan settlements-009)', () => {
     expect(layoutFor('OUTPOST', 11).pasture).toBeUndefined()
   })
 
+  it('home SM receives a pasture smaller than MD; non-home SM does not (Q65)', () => {
+    expect(settlementWantsPasture('SM', true)).toBe(true)
+    expect(pastureRadiusFor('SM', 4, true)!).toBeLessThanOrEqual(11)
+    expect(pastureRadiusFor('SM', 4)).toBeNull()
+    for (const seed of [11, 21, 415424794]) {
+      const id = identity({ id: `SM_home_${seed}`, size: 'SM', isHome: true })
+      const fams = generateFamilies(seed, 'SM', false, 'polish')
+      const layout = planVillageLayout(id, { x: 0, z: 0, y: 12 }, fams, seed, flatHeight, WATER, [])
+      expect(layout.pasture).toBeDefined()
+      expect(layout.pasture!.fenceSegments.length).toBeGreaterThan(0)
+    }
+  })
+
   it('MD/LG/XL always receive a pasture on flat dry ground, scaled by VillageSize', () => {
     const md = layoutFor('MD', 21)
     const lg = layoutFor('LG', 21)

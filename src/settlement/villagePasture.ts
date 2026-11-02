@@ -70,8 +70,11 @@ const BASE_RADIUS: Record<VillageSize, number | null> = {
   XL: 20,
 }
 
-export function settlementWantsPasture(size: VillageSize): boolean {
-  return BASE_RADIUS[size] != null
+/** Home-settlement `SM` pasture (Q65, author 2026-11-02): smaller than MD (≤ 11 m). */
+const HOME_SM_RADIUS = 8
+
+export function settlementWantsPasture(size: VillageSize, isHome = false): boolean {
+  return BASE_RADIUS[size] != null || (isHome && size === 'SM')
 }
 
 /**
@@ -79,15 +82,15 @@ export function settlementWantsPasture(size: VillageSize): boolean {
  * a deterministic livestock-count proxy (plan generation runs before live
  * `AnimalAgent` spawn, so runtime flock size must not change the layout).
  */
-export function pastureRadiusFor(size: VillageSize, familyCount: number): number | null {
-  const base = BASE_RADIUS[size]
+export function pastureRadiusFor(size: VillageSize, familyCount: number, isHome = false): number | null {
+  const base = BASE_RADIUS[size] ?? (isHome && size === 'SM' ? HOME_SM_RADIUS : null)
   if (base == null) return null
   const boost = Math.max(-1, Math.min(2.5, (familyCount - 4) * 0.35))
   return base + boost
 }
 
 export type PasturePlanArgs = {
-  identity: Pick<VillageIdentity, 'size'>
+  identity: Pick<VillageIdentity, 'size' | 'isHome'>
   center: VillageCenter
   boundary: VillageBoundary
   plots: readonly VillagePlot[]
@@ -358,7 +361,7 @@ function candidateScore(
  * wet or overlapping fallback.
  */
 export function planSettlementPasture(args: PasturePlanArgs): VillagePasturePlan | undefined {
-  const radius = pastureRadiusFor(args.identity.size, args.families.length)
+  const radius = pastureRadiusFor(args.identity.size, args.families.length, args.identity.isHome)
   if (radius == null) return undefined
 
   const {
