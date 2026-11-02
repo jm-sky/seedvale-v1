@@ -17,7 +17,10 @@ import {
 } from 'three'
 import type { KeyState } from '../../input/Keyboard'
 import type { CaveWalkWorld } from './caveHeightfieldWalkWorld'
-import { loadGltfAnimated, prepareProp } from '../../assets/loadGltf'
+import { prepareProp } from '../../assets/loadGltf'
+import { assembleCharacter } from '../../characters/assembleCharacter'
+import { baseGarments } from '../../characters/baseGarments'
+import type { CharacterAppearance } from '../../characters/characterTypes'
 import {
   CAMERA_DISTANCE_DEFAULT,
   CAMERA_DISTANCE_MIN,
@@ -38,7 +41,16 @@ const MOVE_SPEED = 8
 const SPRINT_MULTIPLIER = 1.8
 const LOOK_AT_OFFSET_FAR = 0.9
 const LOOK_AT_OFFSET_NEAR = 1.6
-const PLAYER_MODEL_URL = '/models/characters/Adventurer.glb'
+/** Default V1 Male Peasant kit body (same literal as the player's default preset). */
+const CAVE_WALKER_KIT: CharacterAppearance = {
+  sex: 'Male',
+  outfit: 'Peasant',
+  head: 'Base',
+  hair: 'Parted',
+  beard: false,
+  clothTint: null,
+  garments: baseGarments('Male', 'Peasant'),
+}
 
 export type CaveHeightfieldWalker = {
   root: Object3D
@@ -49,13 +61,13 @@ export type CaveHeightfieldWalker = {
 }
 
 /**
- * Loads the production Adventurer model at player scale and returns a
+ * Assembles the default V1 Male Peasant kit at player scale and returns a
  * debug-only walk controller for the heightfield spike harness.
  *
  * @domain world-terrain
  */
 export async function createCaveHeightfieldWalker(): Promise<CaveHeightfieldWalker> {
-  const { scene: model, animations } = await loadGltfAnimated(PLAYER_MODEL_URL)
+  const { scene: model, animations } = await assembleCharacter(CAVE_WALKER_KIT)
   prepareProp(model, HEIGHTFIELD_PLAYER_HEIGHT)
   model.traverse((obj) => { obj.castShadow = true })
 

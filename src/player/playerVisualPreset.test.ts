@@ -1,9 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { ANIMS_URL, bodyUrl } from '../characters/characterFiles'
 import {
-  PLAYER_MODEL_URL,
-} from './PlayerController'
-import {
   companionAnimationUrl,
   PLAYER_UBC_ANIMATION_URL,
   PLAYER_UBC_KNIGHT_URL,
@@ -28,7 +25,6 @@ describe('resolvePlayerUrlOverride', () => {
   it('accepts the whitelist without taking a raw path from the URL', () => {
     expect(resolvePlayerUrlOverride('?player=peasant')).toBe('peasant')
     expect(resolvePlayerUrlOverride('player=ranger')).toBe('ranger')
-    expect(resolvePlayerUrlOverride('?player=adventurer')).toBe('adventurer')
     expect(resolvePlayerUrlOverride('?player=knight')).toBe('knight')
     expect(resolvePlayerUrlOverride('?player=knight_cloth')).toBe('knight_cloth')
     expect(resolvePlayerUrlOverride('?player=noble')).toBe('noble')
@@ -38,6 +34,13 @@ describe('resolvePlayerUrlOverride', () => {
   it('returns null for unknown values', () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
     expect(resolvePlayerUrlOverride('?player=../../secret')).toBeNull()
+    expect(warn).toHaveBeenCalled()
+    warn.mockRestore()
+  })
+
+  it('treats the retired ?player=adventurer as unknown', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    expect(resolvePlayerUrlOverride('?player=adventurer')).toBeNull()
     expect(warn).toHaveBeenCalled()
     warn.mockRestore()
   })
@@ -78,13 +81,16 @@ describe('resolvePlayerAppearance', () => {
     )
   })
 
+  it('falls back to the equipment outfit when the retired ?player=adventurer is requested', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    const appearance = resolvePlayerAppearance({ search: '?player=adventurer', bodyKind: 'leather_armor' })
+    expect(appearance.id).toBe('ranger')
+    expect(appearance.modelUrl).toBe(PLAYER_UBC_RANGER_URL)
+    expect(appearance.kit?.outfit).toBe('Ranger')
+    warn.mockRestore()
+  })
+
   it('lets ?player= win over equipped armor', () => {
-    expect(
-      resolvePlayerAppearance({ search: '?player=adventurer', bodyKind: 'leather_armor' }).id,
-    ).toBe('adventurer')
-    expect(
-      resolvePlayerAppearance({ search: '?player=adventurer', bodyKind: 'leather_armor' }).kit,
-    ).toBeNull()
     expect(
       resolvePlayerAppearance({ search: '?player=ranger', bodyKind: null }).id,
     ).toBe('ranger')
@@ -110,13 +116,15 @@ describe('resolvePlayerAppearance', () => {
       tint: 'brown',
       tintUrl: PLAYER_UBC_RANGER_BROWN_URL,
     })
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
     expect(
       resolvePlayerAppearance({ search: '?player=adventurer&playerTint=brown', bodyKind: null }),
     ).toMatchObject({
-      id: 'adventurer',
-      tint: 'default',
-      tintUrl: null,
+      id: 'peasant',
+      tint: 'brown',
+      tintUrl: PLAYER_UBC_PEASANT_BROWN_URL,
     })
+    warn.mockRestore()
   })
 })
 
@@ -129,13 +137,10 @@ describe('resolvePlayerVisualPreset', () => {
     expect(preset.kit?.outfit).toBe('Peasant')
   })
 
-  it('still exposes Adventurer only through the whitelist', () => {
-    expect(resolvePlayerVisualPreset('?player=adventurer')).toEqual({
-      id: 'adventurer',
-      modelUrl: PLAYER_MODEL_URL,
-      animationUrl: null,
-      kit: null,
-    })
+  it('exposes only kit presets (no legacy Adventurer model)', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    expect(resolvePlayerVisualPreset('?player=adventurer').id).toBe('peasant')
+    warn.mockRestore()
   })
 })
 
@@ -144,17 +149,17 @@ describe('companionAnimationUrl', () => {
     expect(companionAnimationUrl(PLAYER_UBC_PEASANT_URL)).toBe(ANIMS_URL)
     expect(companionAnimationUrl(`${PLAYER_UBC_RANGER_URL}?r=3`)).toBe(ANIMS_URL)
     expect(companionAnimationUrl(ANIMS_URL)).toBeNull()
-    expect(companionAnimationUrl(PLAYER_MODEL_URL)).toBeNull()
+    expect(companionAnimationUrl('/models/characters/other.glb')).toBeNull()
     expect(companionAnimationUrl(bodyUrl('Female', 'Wizard'))).toBe(ANIMS_URL)
   })
 })
 
 describe('ubcPreloadUrls', () => {
-  it('warms the other equipment-driven kit body meshes and skips Adventurer', () => {
+  it('warms the other equipment-driven kit body meshes and skips non-equipment models', () => {
     expect(ubcPreloadUrls(PLAYER_UBC_PEASANT_URL)).toEqual([
       PLAYER_UBC_RANGER_URL,
       PLAYER_UBC_KNIGHT_URL,
     ])
-    expect(ubcPreloadUrls(PLAYER_MODEL_URL)).toEqual([])
+    expect(ubcPreloadUrls(PLAYER_UBC_WIZARD_URL)).toEqual([])
   })
 })

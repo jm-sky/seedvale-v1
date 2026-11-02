@@ -35,7 +35,7 @@ describe('assetAnchorData Phase 6', () => {
 
   it('UBC character anchors share the hand_r space Euler and offset', () => {
     for (const id of [
-      'character:ubc-peasant',
+      'character:player',
       'character:ubc-ranger',
       'character:ubc-knight',
       'character:ubc-knight-cloth',
@@ -48,9 +48,6 @@ describe('assetAnchorData Phase 6', () => {
       expect(hand?.rotation).toEqual(UBC_HAND_FROM_WRIST_R)
       expect(hand?.position).toEqual(UBC_HAND_OFFSET)
     }
-    const adventurer = anchorsForAsset('character:player').find((a) => a.name === 'hand.right')
-    expect(adventurer?.rotation).toEqual(ADVENTURER_HAND_SPACE.rotation)
-    expect(adventurer?.position).toEqual(ADVENTURER_HAND_SPACE.position)
   })
 })
 

@@ -84,18 +84,6 @@ export function handAttachSpaceFromSocket(socket: NamedParentNode): HandAttachSp
   return ADVENTURER_HAND_SPACE
 }
 
-export const CHARACTER_ANCHORS: readonly AssetAnchorDef[] = [
-  {
-    name: 'hand.right',
-    type: 'attachment',
-    node: RIGHT_HAND_BONE_NAMES,
-    // Adventurer `WristR` already matches `HELD_ATTACH` (+Y ≈ fingertips,
-    // −Z ≈ body centre).
-    position: ADVENTURER_HAND_SPACE.position,
-    rotation: ADVENTURER_HAND_SPACE.rotation,
-  },
-]
-
 export const CHARACTER_ANCHORS_UBC: readonly AssetAnchorDef[] = [
   {
     name: 'hand.right',
@@ -160,8 +148,7 @@ export const HELD_TOOL_GRIP_ANCHORS: Partial<Record<string, readonly AssetAnchor
 
 export const ASSET_ANCHORS: Record<string, readonly AssetAnchorDef[]> = {
   'settlement:well': [WELL_INTERACTION],
-  'character:player': CHARACTER_ANCHORS,
-  'character:ubc-peasant': CHARACTER_ANCHORS_UBC,
+  'character:player': CHARACTER_ANCHORS_UBC,
   'character:ubc-ranger': CHARACTER_ANCHORS_UBC,
   'character:ubc-knight': CHARACTER_ANCHORS_UBC,
   'character:ubc-knight-cloth': CHARACTER_ANCHORS_UBC,

@@ -16,7 +16,9 @@ import { createRenderer } from '../render/createRenderer'
 import { urlParamValue } from './debugMode'
 
 const MODEL_TEST_HEIGHT = 1.8
-const DEFAULT_MODEL_TEST_NAME = 'Adventurer'
+const DEFAULT_MODEL_TEST_NAME = 'Male_Peasant'
+const DEFAULT_ANIMS_TEST_NAME = 'anims'
+const CHARACTER_ASSET_ROOT = '/assets/characters'
 
 function safeCharacterAssetName(raw: string | null, fallback: string): string {
   if (raw === null || raw === '') return fallback
@@ -34,8 +36,8 @@ function safeCharacterAssetName(raw: string | null, fallback: string): string {
  * bundle/NPC-AI/UI/audio/persistence — see `src/debug/debugMode.ts`'s
  * `isModelTestMode()`.
  *
- * `?model=Adventurer` (default) or `?model=ubc/male_peasant`.
- * Optional `?anims=ubc/ual_humanoid` loads extra clips (UBC outfits have none).
+ * `?model=Male_Peasant` (default) or any kit body under `/assets/characters/`.
+ * `?anims=<name>` loads extra clips from `/assets/characters/` (default `anims`, the shared kit clip pack).
  */
 export async function createModelTestScene(container: HTMLElement): Promise<() => void> {
   const renderer = createRenderer(container)
@@ -65,12 +67,12 @@ export async function createModelTestScene(container: HTMLElement): Promise<() =
   scene.add(sun)
 
   const modelName = safeCharacterAssetName(urlParamValue('model'), DEFAULT_MODEL_TEST_NAME)
-  const modelUrl = `/models/characters/${modelName}.glb`
+  const modelUrl = `${CHARACTER_ASSET_ROOT}/${modelName}.glb`
   const { scene: model, animations: modelAnimations } = await loadGltfAnimated(modelUrl)
   let animations = modelAnimations
-  const animsName = safeCharacterAssetName(urlParamValue('anims'), '')
+  const animsName = safeCharacterAssetName(urlParamValue('anims'), DEFAULT_ANIMS_TEST_NAME)
   if (animsName) {
-    const animsUrl = `/models/characters/${animsName}.glb`
+    const animsUrl = `${CHARACTER_ASSET_ROOT}/${animsName}.glb`
     try {
       const extra = await loadGltfAnimated(animsUrl)
       animations = [...modelAnimations, ...extra.animations]
@@ -92,8 +94,8 @@ export async function createModelTestScene(container: HTMLElement): Promise<() =
 
   if (animations.length > 0) {
     mixer = new AnimationMixer(model)
-    // `animations[0]` isn't reliably idle (character packs like Adventurer.glb
-    // often lead with e.g. a death/hit-react clip) — prefer a named idle clip,
+    // `animations[0]` isn't reliably idle (character packs often lead with
+    // e.g. a death/hit-react clip) — prefer a named idle clip,
     // same lookup PlayerController/NpcAgent use, and fall back to the first
     // clip only if none of those names are present.
     const idleClip = animations.find((clip) => /idle/i.test(clip.name)) ?? animations[0]

@@ -50,8 +50,8 @@ export type BrowserState = {
   /** UBC `MI_Hair_*` color multiply; no-op on non-UBC meshes. */
   hairColor: HairColorId
   /**
-   * When true, attach base `*_Head.glb` on v2/v3 compare bodies.
-   * No effect on UBC / non-compare slots.
+   * When true, attach the entry's `headUrl` (base `*_Head.glb`) to kit bodies.
+   * No effect on entries without a head.
    */
   compareHead: boolean
   /** Preview body build for `bodypreview:*` entries (tools-022); other entries ignore it. */
@@ -63,7 +63,7 @@ export type BrowserState = {
 }
 
 export const browserState = reactive<BrowserState>({
-  referenceId: 'character:ubc-peasant',
+  referenceId: 'character:player',
   targetId: null,
   freeUrl: '',
   referenceFreeUrl: '',

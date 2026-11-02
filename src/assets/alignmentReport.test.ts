@@ -15,7 +15,7 @@ describe('alignmentReport', () => {
       status: 'ALIGNED',
       referenceAssetId: 'character:player',
       targetAssetId: 'held:axe',
-      referenceUrl: '/models/characters/Adventurer.glb',
+      referenceUrl: '/assets/characters/Male_Peasant.glb',
       targetUrl: '/models/items/axe.glb',
       referenceAnchor: 'hand.right',
       targetAnchor: 'origin',

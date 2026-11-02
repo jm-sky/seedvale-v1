@@ -33,8 +33,8 @@ function slot(opts: {
     bone.name = 'root'
     model.add(bone)
   }
-  const id = opts.id ?? 'character:ubc-peasant'
-  const url = opts.url ?? '/models/characters/ubc/male_peasant.glb'
+  const id = opts.id ?? 'character:player'
+  const url = opts.url ?? '/assets/characters/Male_Peasant.glb'
   return {
     model,
     entry: entry({
@@ -93,7 +93,7 @@ describe('computeAccessoryPreviewState', () => {
 
   it('skips overlay when the reference has no skeleton (Adventurer / empty)', () => {
     const state = computeAccessoryPreviewState(
-      slot({ bones: false, id: 'character:player', url: '/models/characters/player.glb' }),
+      slot({ bones: false, id: 'character:player', url: '/assets/characters/Male_Peasant.glb' }),
       slot({
         id: 'character:ubc-leather-pauldron',
         url: PLAYER_UBC_LEATHER_PAULDRON_URL,

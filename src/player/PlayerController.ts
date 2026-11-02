@@ -231,9 +231,6 @@ type PlayerPose = 'stand' | 'crouch' | 'lie'
   - `Sword.slash`
 */
 
-/** Quaternius Ultimate Modular Men — distinct from the NPC roster. */
-export const PLAYER_MODEL_URL = '/models/characters/Adventurer.glb'
-
 export type HeightSampler = (x: number, z: number) => number
 /** `ChunkManager.sampleRuntimeHeight`/`sampleRuntimeSurfaceGround` (plan
  *  world-terrain-044) — `null` when the owning chunk is absent, generating,
@@ -392,8 +389,8 @@ export class PlayerController {
   } | null = null
   private readonly isCapsule: boolean
   /**
-   * Adventurer / capsule cannot live-swap to UBC (no shared rig).
-   * Set when `create()` loaded Adventurer (`animationUrl` null).
+   * A capsule or a non-kit model without `animationUrl` cannot live-swap (no shared rig).
+   * Set when `create()` loaded such a model (`animationUrl` null).
    */
   private readonly appearanceLocked: boolean
   /** The GLB scene root (or capsule mesh) — rotated independently of `mesh`
@@ -434,7 +431,7 @@ export class PlayerController {
   private rangedReleaseAction: THREE.AnimationAction | null = null
   private jumpPhase: 'none' | 'start' | 'loop' | 'land' = 'none'
   private jumpLandLockRemaining = 0
-  private currentModelUrl = PLAYER_MODEL_URL
+  private currentModelUrl = ''
   private currentAnimationUrl: string | null = null
   private currentTintUrl: string | null = null
   private currentKitKey = ''
@@ -602,7 +599,7 @@ export class PlayerController {
     caveOccupancy: CaveOccupancyQuery,
     caveHorizontal: CaveHorizontalResolver,
     sampleFootstepSurface: (x: number, z: number) => FootstepSurface,
-    modelUrl = PLAYER_MODEL_URL,
+    modelUrl: string,
     animationUrl: string | null = null,
     preloadUrls: readonly string[] = [],
     kit: CharacterAppearance | null = null,
@@ -718,7 +715,7 @@ export class PlayerController {
       caveOccupancy,
       caveHorizontal,
       sampleFootstepSurface,
-      PLAYER_MODEL_URL,
+      '',
       null,
     )
   }
@@ -846,8 +843,7 @@ export class PlayerController {
 
   /**
    * Live-swap UBC outfits (and optional brown albedo) without rebuilding the
-   * world. Adventurer override and the capsule fallback are locked for the
-   * session — changing those requires a reload with `?player=`.
+   * world. The capsule fallback is locked for the session.
    */
   async applyAppearance(opts: {
     animationUrl: string | null
@@ -980,7 +976,7 @@ export class PlayerController {
 
   /**
    * Attach or replace a slot-aware UBC accessory visual on the current player
-   * skeleton. Adventurer / capsule sessions no-op presentation only.
+   * skeleton. Capsule sessions no-op presentation only.
    *
    * @domain items-player
    */

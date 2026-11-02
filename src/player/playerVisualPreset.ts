@@ -2,7 +2,6 @@ import type { CharacterAppearance, CharacterOutfit } from '../characters/charact
 import { baseGarments } from '../characters/baseGarments'
 import { ANIMS_URL, bodyUrl } from '../characters/characterFiles'
 import { urlParamValue } from '../debug/debugMode'
-import { PLAYER_MODEL_URL } from './PlayerController'
 
 /** @deprecated Prefer kit `ANIMS_URL`; alias kept for asset-browser UBC compare paths. */
 export const UBC_HUMANOID_ANIMATION_URL = ANIMS_URL
@@ -23,7 +22,6 @@ export const PLAYER_UBC_NOBLE_BROWN_URL = '/assets/characters/tex/Peasant_3.png'
 export const PLAYER_UBC_WIZARD_BROWN_URL = '/assets/characters/tex/Wizard_2.png'
 
 export type PlayerVisualId =
-  | 'adventurer'
   | 'peasant'
   | 'ranger'
   | 'knight'
@@ -46,7 +44,6 @@ export type PlayerAppearance = PlayerVisualPreset & {
 }
 
 const PLAYER_VISUAL_IDS: readonly PlayerVisualId[] = [
-  'adventurer',
   'peasant',
   'ranger',
   'knight',
@@ -55,7 +52,7 @@ const PLAYER_VISUAL_IDS: readonly PlayerVisualId[] = [
   'wizard',
 ]
 
-const VISUAL_OUTFIT: Record<Exclude<PlayerVisualId, 'adventurer'>, CharacterOutfit> = {
+const VISUAL_OUTFIT: Record<PlayerVisualId, CharacterOutfit> = {
   peasant: 'Peasant',
   ranger: 'Ranger',
   knight: 'Knight_Helm',
@@ -77,12 +74,6 @@ function maleKit(outfit: CharacterOutfit, clothTint: number | null = null): Char
 }
 
 const PRESETS: Record<PlayerVisualId, PlayerVisualPreset> = {
-  adventurer: {
-    id: 'adventurer',
-    modelUrl: PLAYER_MODEL_URL,
-    animationUrl: null,
-    kit: null,
-  },
   peasant: {
     id: 'peasant',
     modelUrl: PLAYER_UBC_PEASANT_URL,
@@ -178,11 +169,7 @@ export function resolveEquipmentOutfit(bodyKind: string | null | undefined): Pla
   return 'knight'
 }
 
-export function resolvePlayerTint(
-  search: string | null | undefined,
-  outfit: PlayerVisualId,
-): PlayerOutfitTint {
-  if (outfit === 'adventurer') return 'default'
+export function resolvePlayerTint(search: string | null | undefined): PlayerOutfitTint {
   const raw = readNamedParam('playerTint', search)
   if (raw === null) return 'default'
   const value = raw.toLowerCase()
@@ -209,7 +196,7 @@ export function resolvePlayerAppearance(opts?: {
   const override = resolvePlayerUrlOverride(opts?.search)
   const id: PlayerVisualId = override ?? resolveEquipmentOutfit(opts?.bodyKind ?? null)
   const preset = PRESETS[id]
-  const tint = resolvePlayerTint(opts?.search, id)
+  const tint = resolvePlayerTint(opts?.search)
   let kit = preset.kit
   if (kit && tint === 'brown') {
     kit = { ...kit, clothTint: BROWN_CLOTH_TINT }
@@ -235,18 +222,13 @@ export function resolvePlayerVisualPreset(
 }
 
 /**
- * Companion clips for kit bodies (`anims.glb`). Adventurer / non-kit URLs → null.
- * Asset-browser still calls this for compare slots.
+ * Companion clips for kit bodies (`anims.glb`). Non-kit URLs → null.
  */
 export function companionAnimationUrl(modelUrl: string): string | null {
   const path = modelUrl.split('?')[0] ?? modelUrl
   if (!path.endsWith('.glb')) return null
   if (path === ANIMS_URL) return null
   if (path.startsWith('/assets/characters/') && !path.includes('/eq/')) return ANIMS_URL
-  // Legacy UBC paths (parked / compare)
-  if (path.startsWith('/models/characters/ubc/') && path !== '/models/characters/ubc/ual_humanoid.glb') {
-    return ANIMS_URL
-  }
   return null
 }
 
@@ -255,7 +237,6 @@ export function ubcPreloadUrls(currentModelUrl: string): readonly string[] {
   return EQUIPMENT_MODEL_URLS.filter((url) => url !== currentModelUrl)
 }
 
-export function playerOutfitId(id: PlayerVisualId): CharacterOutfit | null {
-  if (id === 'adventurer') return null
+export function playerOutfitId(id: PlayerVisualId): CharacterOutfit {
   return VISUAL_OUTFIT[id]
 }
