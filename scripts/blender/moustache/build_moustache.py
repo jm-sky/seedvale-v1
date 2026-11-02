@@ -45,8 +45,8 @@ for i, u in enumerate(U):
     side = 1 if u >= 0 else -1
     asym = 1.0 + (0.05 if side > 0 else -0.03)               # natural, slightly lopsided
     x = u * 0.042 * asym
-    cy = 1.634 - 0.021 * a ** 1.3 - (0.002 if side > 0 else 0)  # chevron: peak in the middle, ends droop
-    h = 0.0150 * (1 - a ** 1.5) + 0.0040                     # tall in the middle, thin at the corners
+    cy = 1.638 - 0.016 * a ** 1.3 - (0.002 if side > 0 else 0)  # chevron: peak in the middle, ends droop
+    h = 0.0110 * (1 - a ** 1.5) + 0.0035                     # tall in the middle, thin at the corners
     top = cy + h * 0.62 + 0.0016 * wob(i, 1)                   # ragged upper edge
     bot = cy - h * 0.62 + 0.0040 * wob(i, 2) * (0.4 + a) - (0.0025 * (1 - 0.5 * a) if i % 2 else 0)     # tufty lower edge, lower than the lip line
     ys = [top, top - (top - bot) * 0.30, top - (top - bot) * 0.68, bot]
