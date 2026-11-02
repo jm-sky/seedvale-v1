@@ -1,5 +1,6 @@
 import type { WorldConfig } from '../../config/worldConfig'
 import type { MapBiomeKind, MapCellData, MapCellKey, MapTerrainKind, MapViewport } from './mapTypes'
+import { sandBandAt } from '../../terrain/biomeColors'
 import { biomeWeightsAt, forestDensityAt } from '../../terrain/biomeRegions'
 import { type RawSampleParams, type RawTexelSample, sampleRawTexelAt } from '../../terrain/chunkHeightmap'
 import { isMountainRidge, isOceanMix, isWetFloor } from '../../terrain/terrainClassification'
@@ -7,8 +8,6 @@ import { MAP_CELL_SIZE, MAP_EXTENT_HALF } from './mapConfig'
 
 /** Altitude fraction (of heightScale above water) where lowland becomes highland. */
 const HIGHLAND_ALTITUDE = 0.45
-/** Shore band above waterLevel, matching the sand-band scale (~0.6–3). */
-const SHORE_BAND = 2.4
 const BIOME_DOMINANT = 0.35
 const FOREST_CANOPY = 0.4
 
@@ -74,11 +73,13 @@ export type MapTexelClass = Pick<MapCellData, 'terrain' | 'biome' | 'water'>
 /**
  * Map classification of one raw terrain sample — the single rule shared by
  * the per-cell projection and the raster map tiles (plan ui-input-046), so
- * both views can never disagree about what a point is.
+ * both views can never disagree about what a point is. The shore uses the
+ * terrain's own noise-varying `sandBandAt` (Q70), so map and world agree on
+ * where the beach ends.
  *
  * @domain ui-input
  */
-export function classifyMapTexel(texel: RawTexelSample, params: RawSampleParams): MapTexelClass {
+export function classifyMapTexel(texel: RawTexelSample, params: RawSampleParams, worldX: number, worldZ: number): MapTexelClass {
   const { waterLevel, heightScale, region } = params
   const { h: height, floorH, continentalness } = texel
   const wet = isWetFloor(floorH, waterLevel)
@@ -95,7 +96,7 @@ export function classifyMapTexel(texel: RawTexelSample, params: RawSampleParams)
 
   let terrain: MapTerrainKind
   if (isMountainRidge(ridge)) terrain = 'mountain'
-  else if (height - waterLevel < SHORE_BAND) terrain = 'shore'
+  else if (height - waterLevel < sandBandAt(worldX, worldZ, params.seed)) terrain = 'shore'
   else if (altitude01 >= HIGHLAND_ALTITUDE) terrain = 'highland'
   else terrain = 'lowland'
 
@@ -114,7 +115,7 @@ export function classifyMapTexel(texel: RawTexelSample, params: RawSampleParams)
 }
 
 export function projectCellAt(worldX: number, worldZ: number, params: RawSampleParams): MapTexelClass {
-  return classifyMapTexel(sampleRawTexelAt(worldX, worldZ, params), params)
+  return classifyMapTexel(sampleRawTexelAt(worldX, worldZ, params), params, worldX, worldZ)
 }
 
 export type MapProjection = {

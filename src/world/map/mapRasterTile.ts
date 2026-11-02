@@ -189,7 +189,7 @@ export function buildMapTile(request: MapTileRequest): MapTileData {
       const k = j * side + i
       heights[k] = texel.h
       floors[k] = texel.floorH
-      classes[k] = mapRasterClassOf(classifyMapTexel(texel, params))
+      classes[k] = mapRasterClassOf(classifyMapTexel(texel, params, x, z))
     }
   }
 
