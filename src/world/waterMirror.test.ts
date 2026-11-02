@@ -93,7 +93,7 @@ describe('water mirror size (world-terrain-056 S3)', () => {
     const m = await import('./waterMirror')
     expect(m.normalizeWaterMirrorSize(256)).toBe(256)
     expect(m.normalizeWaterMirrorSize(1024)).toBe(1024)
-    for (const bad of [0, 64, 2048, '512', NaN, undefined, null]) expect(m.normalizeWaterMirrorSize(bad)).toBe(128)
+    for (const bad of [0, 64, 2048, '512', NaN, undefined, null]) expect(m.normalizeWaterMirrorSize(bad)).toBe(256)
   })
 
   it('setSize resizes the RT but keeps the texture object bound in uniforms', async () => {
@@ -103,8 +103,8 @@ describe('water mirror size (world-terrain-056 S3)', () => {
     mirror.setSize(512)
     expect(mirror.uniforms.uMirror.value).toBe(tex)
     expect((tex.image as { width: number }).width).toBe(512)
-    mirror.setSize(999) // unknown → default 128
-    expect((tex.image as { width: number }).width).toBe(128)
+    mirror.setSize(999) // unknown → default 256
+    expect((tex.image as { width: number }).width).toBe(256)
     mirror.dispose()
   })
 })

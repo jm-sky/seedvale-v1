@@ -140,7 +140,7 @@ export type WorldConfig = {
     /** Shared planar water mirror (128²). Off skips the extra scene pass;
      *  water falls back to sky color + sun specular. */
     waterReflections: boolean
-    /** Planar water reflection RT size (128 default; world-terrain-056 S3). */
+    /** Planar water reflection RT size (256 default; world-terrain-056 S3). */
     waterReflectionSize: number
     /** Directional-light shadow map edge (plan 103). Live resize, no rebuild. */
     shadowMapSize: number
@@ -378,7 +378,7 @@ function baseConfig(seed: number, resolution: number): WorldConfig {
       // (issue: default-off read as a visual regression), opt-in via GUI.
       terrainCastsShadow: true,
       waterReflections: true,
-      waterReflectionSize: 128,
+      waterReflectionSize: 256,
       shadowMapSize: 1024,
     },
     quality: {

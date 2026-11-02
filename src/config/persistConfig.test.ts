@@ -126,7 +126,7 @@ function minimalConfig(): WorldConfig {
     },
     sky: { inclination: 0.36, azimuth: 0.25, turbidity: 2.2, rayleigh: 2.4 },
     postProcessing: {
-      waterReflectionSize: 128,
+      waterReflectionSize: 256,
       aoEnabled: true,
       aoRadius: 2,
       aoIntensity: 3,
@@ -243,16 +243,16 @@ describe('persistConfig domains (issue 019)', () => {
 })
 
 describe('waterReflectionSize normalisation (world-terrain-056 S3)', () => {
-  it('keeps valid sizes and resets unknown ones to 128', async () => {
+  it('keeps valid sizes and resets unknown ones to 256', async () => {
     const { applyStoredPostProcessing } = await import('./worldConfig')
-    const pp = { shadowMapSize: 1024, waterReflectionSize: 128 } as WorldConfig['postProcessing']
+    const pp = { shadowMapSize: 1024, waterReflectionSize: 256 } as WorldConfig['postProcessing']
     applyStoredPostProcessing(pp, { waterReflectionSize: 512 })
     expect(pp.waterReflectionSize).toBe(512)
     applyStoredPostProcessing(pp, { waterReflectionSize: 77 })
-    expect(pp.waterReflectionSize).toBe(128)
+    expect(pp.waterReflectionSize).toBe(256)
     // Old saves without the field: target keeps its default, normalised.
-    const old = { shadowMapSize: 1024, waterReflectionSize: 128 } as WorldConfig['postProcessing']
+    const old = { shadowMapSize: 1024, waterReflectionSize: 256 } as WorldConfig['postProcessing']
     applyStoredPostProcessing(old, { aoEnabled: false })
-    expect(old.waterReflectionSize).toBe(128)
+    expect(old.waterReflectionSize).toBe(256)
   })
 })

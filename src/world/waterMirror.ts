@@ -43,12 +43,12 @@ export const REFLECTION_SKIPPED_LAYER = 3
 export const REFLECTION_DISTANT_LAYER = 4
 
 /** Default size of the shared planar-reflection pass for every water material. */
-export const WATER_MIRROR_SIZE = 128
+export const WATER_MIRROR_SIZE = 256
 
 /** Selectable reflection RT sizes (Settings; world-terrain-056 S3). */
 export const WATER_MIRROR_SIZES = [128, 256, 512, 1024] as const
 
-/** Unknown / hand-edited values fall back to the 128 default. */
+/** Unknown / hand-edited values fall back to the 256 default. */
 export function normalizeWaterMirrorSize(value: unknown): number {
   return (WATER_MIRROR_SIZES as readonly number[]).includes(value as number) ? (value as number) : WATER_MIRROR_SIZE
 }
