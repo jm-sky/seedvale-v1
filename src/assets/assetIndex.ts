@@ -7,7 +7,6 @@ import type { BodyBuild } from './bodyBuild'
 import { NPC_HEIGHT } from '../ai/NpcAgent'
 import {
   NPC_UBC_FEMALE_PEASANT_URL,
-  NPC_UBC_FEMALE_WIZARD_URL,
   NPC_UBC_MALE_BLACKSMITH_URL,
   NPC_UBC_MALE_FARMER_URL,
   NPC_UBC_MALE_KNIGHT_UNHELMETED_URL,
@@ -474,15 +473,6 @@ export function buildAssetIndex(): AssetIndexEntry[] {
     prepare: { mode: 'height', value: NPC_HEIGHT },
     skinned: true,
     anchors: anchorsForAsset('character:ubc-female-peasant'),
-  })
-  out.push({
-    id: 'character:ubc-female-wizard',
-    url: NPC_UBC_FEMALE_WIZARD_URL,
-    label: 'NPC (V1 Female Wizard)',
-    group: 'character',
-    prepare: { mode: 'height', value: NPC_HEIGHT },
-    skinned: true,
-    anchors: anchorsForAsset('character:ubc-female-wizard'),
   })
   out.push({
     id: 'character:ubc-male-knight-unhelmeted',

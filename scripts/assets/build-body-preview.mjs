@@ -15,6 +15,16 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { addPreviewTargets, PREVIEW_MORPHS } from './body-preview-lib.mjs'
 
+export const EXCLUDED_FEMALE_OUTFITS = new Set([
+  'Blacksmith',
+  'Knight',
+  'Knight_Cloth',
+  'Knight_Helm',
+  'Ranger',
+  'Ranger_NoHood',
+  'Wizard',
+])
+
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const args = process.argv.slice(2)
 const opt = (name, def) => {
@@ -34,6 +44,10 @@ if (out === src || out.startsWith(src + path.sep) === false && src.startsWith(ou
 export function previewInputs(dir) {
   const bodies = fs.readdirSync(dir)
     .filter((f) => /^(Male|Female)_(?!Head)[A-Za-z_]+\.glb$/.test(f))
+    .filter((f) =>
+      !f.startsWith('Female_') ||
+      !EXCLUDED_FEMALE_OUTFITS.has(f.slice(7, -4))
+    )
     .map((f) => ({ file: f, sex: f.startsWith('Male') ? 'Male' : 'Female' }))
   const eq = ['Male', 'Female'].map((sex) => ({ file: `eq/${sex}.glb`, sex }))
   return [...bodies, ...eq].filter((e) => fs.existsSync(path.join(dir, e.file)))

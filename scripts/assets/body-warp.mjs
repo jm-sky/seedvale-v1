@@ -13,8 +13,32 @@
  */
 export const BODY_MORPH = 'Fat'
 export const BODY = {
-  Male: { pelvisY: 0.949, neckY: 1.52, armY: 1.455, armZ: -0.065, zc: -0.03, belly: 0.2, waist: 0.42, hips: 0.26, arms: 0.26 },
-  Female: { pelvisY: 0.932, neckY: 1.485, armY: 1.418, armZ: -0.054, zc: -0.005, belly: 0.13, waist: 0.3, hips: 0.3, arms: 0.26 },
+  Male: {
+    pelvisY: 0.949,
+    neckY: 1.52,
+    armY: 1.455,
+    armZ: -0.065,
+    zc: -0.03,
+    chest: 0.1,
+    chestDepth: 0.2,
+    belly: 0.08,
+    waist: 0.42,
+    hips: 0.26,
+    arms: 0.26
+  },
+  Female: {
+    pelvisY: 0.932,
+    neckY: 1.485,
+    armY: 1.418,
+    armZ: -0.054,
+    zc: -0.005,
+    chest: 0.1,
+    chestDepth: 0.3,
+    belly: 0.08,
+    waist: 0.3,
+    hips: 0.3,
+    arms: 0.26
+  },
 }
 
 const ss = (a, b, x) => {
@@ -43,7 +67,8 @@ export function warpBody(sex, p, opts) {
   x *= 1 + b.waist * gb * torso
   z = b.zc + (z - b.zc) * (1 + 0.18 * gb * torso)
   // chest
-  x *= 1 + 0.1 * g(t, 0.65, 0.2) * top * torso
+  x *= 1 + b.chest * g(t, 0.65, 0.2) * top * torso
+  z = b.zc + (z - b.zc) * (1 + b.chestDepth * g(t, 0.65, 0.25) * top * torso)
   // hips and thighs
   const gh = g(t, -0.25, 0.3)
   x *= 1 + b.hips * gh

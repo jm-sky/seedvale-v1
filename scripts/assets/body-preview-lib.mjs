@@ -17,9 +17,33 @@ export const SLIM_MORPH = 'Slim'
 export const PREVIEW_MORPHS = [BODY_MORPH, SLIM_MORPH]
 
 /** Slim rest-pose warp constants (metres); same frame/heights as `BODY` in body-warp.mjs. */
+export const SLIM_STRENGTH = 0.85
 export const SLIM = {
-  Male: { pelvisY: 0.949, neckY: 1.52, armY: 1.455, armZ: -0.065, zc: -0.03, legX: 0.1, waist: 0.32, depth: 0.26, chest: 0.13, arms: 0.32, legs: 0.28 },
-  Female: { pelvisY: 0.932, neckY: 1.485, armY: 1.418, armZ: -0.054, zc: -0.005, legX: 0.095, waist: 0.26, depth: 0.22, chest: 0.1, arms: 0.3, legs: 0.26 },
+  Male: {
+    pelvisY: 0.949,
+    neckY: 1.52,
+    armY: 1.455,
+    armZ: -0.065,
+    zc: -0.03,
+    legX: 0.1,
+    waist: 0.32,
+    depth: 0.26,
+    chest: 0.13,
+    arms: 0.32,
+    legs: 0.28 },
+  Female: {
+    pelvisY: 0.932,
+    neckY: 1.485,
+    armY: 1.418,
+    armZ: -0.054,
+    zc: -0.005,
+    legX: 0.095,
+    waist: 0.26,
+    depth: 0.22,
+    chest: 0.1,
+    arms: 0.3,
+    legs: 0.26
+  },
 }
 
 const ss = (a, b, x) => {
@@ -58,7 +82,12 @@ export function warpSlim(sex, p, opts) {
   const ga = ss(0.2, 0.3, ax) * ss(0.7, 0.55, ax)
   y = b.armY + (y - b.armY) * (1 - b.arms * ga)
   z = b.armZ + (z - b.armZ) * (1 - b.arms * ga)
-  return [x, y, z]
+
+return [
+  p[0] + (x - p[0]) * SLIM_STRENGTH,
+  p[1] + (y - p[1]) * SLIM_STRENGTH,
+  p[2] + (z - p[2]) * SLIM_STRENGTH,
+]
 }
 
 export const WARPS = {
@@ -182,7 +211,7 @@ export function addPreviewTargets(doc, sex, { morphs = PREVIEW_MORPHS, fileLabel
     }
     const added = []
     for (const morph of morphs) {
-      if (names.includes(morph)) continue
+      if (names.includes(morph) && morph !== 'Fat') continue
       if (!WARPS[morph]) throw new Error(`unknown morph ${morph}`)
       const warp = (p) => WARPS[morph](sex, p, { drape: DRAPE_MESH.test(`${node.getName()} ${mesh.getName()}`) })
       for (const prim of prims) {

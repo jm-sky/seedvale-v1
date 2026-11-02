@@ -62,7 +62,7 @@ export const CHARACTER_OUTFITS: readonly CharacterOutfit[] = [
  * Author-edited V1 outfits exported from the male Blender master only (2026-10-28):
  * Farmer = hat + cloth leg wraps, Woodcutter = boots + suspenders. No Female body is shipped.
  */
-export const MALE_ONLY_OUTFITS: ReadonlySet<CharacterOutfit> = new Set(['Farmer', 'Woodcutter'])
+export const MALE_ONLY_OUTFITS: ReadonlySet<CharacterOutfit> = new Set(['Blacksmith', 'Farmer', 'Ranger', 'Wizard', 'Woodcutter'])
 
 export const CHARACTER_SEXES: readonly CharacterSex[] = ['Male', 'Female']
 
