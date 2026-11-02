@@ -42,7 +42,7 @@ describe('map raster tile grid', () => {
 describe('map texel classification', () => {
   it('matches the per-cell projection for the same point', () => {
     for (const [x, z] of [[4, 4], [-300, 120], [1500, -900]] as const) {
-      expect(classifyMapTexel(sampleRawTexelAt(x, z, params), params)).toEqual(projectCellAt(x, z, params))
+      expect(classifyMapTexel(sampleRawTexelAt(x, z, params), params, x, z)).toEqual(projectCellAt(x, z, params))
     }
   })
 })
