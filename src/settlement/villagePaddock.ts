@@ -6,7 +6,7 @@ import { type PropPlacement } from '../render/instancedProps'
 import { footprintOverlapsRiver } from '../terrain/riverNetwork'
 import { createSeededRandom } from '../world/parseSeed'
 import { pathIsDry, SETTLEMENT_WATER_MARGIN } from './pathDryness'
-import { fenceSegmentPlacements } from './villagePasture'
+import { fenceSegmentPlacements, planSpurPoints } from './villagePasture'
 import {
   PADDOCK_ID,
   paddockPathId,
@@ -46,6 +46,8 @@ const ANGLE_CANDIDATES = 16
 const DIST_STEPS = [0, 3, 7]
 const ENTRANCE_AVOID_RAD = 0.5
 const PATH_HALF_WIDTH = 1.5
+/** Minimum distance from the entrance point to the nearest fence end (spur half width + fence clearance + slack). */
+const GATE_FENCE_END_CLEARANCE = PATH_HALF_WIDTH + 0.3 + 0.3
 const RING_OUTER_PAD = 12
 const PASTURE_CLEARANCE = 3
 
@@ -261,6 +263,12 @@ function layoutOnCandidate(
     const az = cz + Math.sin(t0) * radius
     const bx = cx + Math.cos(t1) * radius
     const bz = cz + Math.sin(t1) * radius
+    // The gate spur (corridor 2 × 1.5 m + 0.3 clearance per side) must fit between the fence ends: a run
+    // that stops closer than this to the entrance would be clipped by it whatever the approach (Q58).
+    if (
+      Math.hypot(ax - entrance.x, az - entrance.z) < GATE_FENCE_END_CLEARANCE ||
+      Math.hypot(bx - entrance.x, bz - entrance.z) < GATE_FENCE_END_CLEARANCE
+    ) continue
     if (wetOrRiver((ax + bx) / 2, (az + bz) / 2, FENCE_CLEARANCE, sampleHeight, waterLevel, riverSegments)) {
       return null
     }
@@ -388,6 +396,17 @@ export function planSettlementPaddock(args: PaddockPlanArgs): VillagePaddockPlan
   return best?.plan
 }
 
+/** Metres in front of the paddock gap where its spur lines up before entering head-on. */
+const GATE_APRON_LENGTH = 3.5
+
+/** Point just outside the ring at the entrance (radially out from the paddock centre, i.e. village-facing). */
+function paddockGateApron(paddock: VillagePaddockPlan): { x: number, z: number } {
+  const dx = paddock.entrance.x - paddock.x
+  const dz = paddock.entrance.z - paddock.z
+  const len = Math.hypot(dx, dz) || 1
+  return { x: paddock.entrance.x + (dx / len) * GATE_APRON_LENGTH, z: paddock.entrance.z + (dz / len) * GATE_APRON_LENGTH }
+}
+
 export function appendPaddockPath(
   paths: VillagePathPlan[],
   paddock: VillagePaddockPlan,
@@ -395,38 +414,13 @@ export function appendPaddockPath(
   waterLevel: number,
   /** Obstacle-aware connector (Q57); straight spur when absent or no route. */
   route?: (from: { x: number, z: number }, to: { x: number, z: number }) => { x: number, z: number }[] | null,
+  segmentClear?: (a: { x: number, z: number }, b: { x: number, z: number }) => boolean,
 ): void {
-  const target = paddock.entrance
-  let nearest: { x: number, z: number } | null = null
-  let nearestDist = Infinity
-  for (const path of paths) {
-    if (path.id === paddockPathId()) continue
-    for (const point of path.points) {
-      const d = Math.hypot(point.x - target.x, point.z - target.z)
-      if (d < nearestDist) {
-        nearestDist = d
-        nearest = point
-      }
-    }
-  }
-  if (!nearest) return
-  if (nearestDist < 1.5) return
-  if (!pathIsDry(nearest.x, nearest.z, target.x, target.z, waterLevel, sampleHeight)) return
-  const detour = route?.(nearest, target) ?? null
-  const mid = {
-    x: nearest.x + (target.x - nearest.x) * 0.5,
-    z: nearest.z + (target.z - nearest.z) * 0.5,
-  }
-  const points = detour ?? [
-    { x: nearest.x, z: nearest.z },
-    { x: mid.x, z: mid.z },
-    { x: target.x, z: target.z },
-  ]
-  for (let i = 0; i < points.length - 1; i++) {
-    const a = points[i]!
-    const b = points[i + 1]!
-    if (!pathIsDry(a.x, a.z, b.x, b.z, waterLevel, sampleHeight)) return
-  }
+  const points = planSpurPoints({
+    paths, ownPathId: paddockPathId(), target: paddock.entrance, fence: paddock.fenceSegments,
+    sampleHeight, waterLevel, route, segmentClear, apron: paddockGateApron(paddock),
+  })
+  if (!points) return
   paths.push({
     id: paddockPathId(),
     points,

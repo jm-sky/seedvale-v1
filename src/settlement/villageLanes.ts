@@ -1,5 +1,7 @@
 import type { HeightSampler } from '../player/PlayerController'
 import type { VillagePathPlan, VillagePlot } from './villagePlan'
+import { cemeteryLocalToWorld, cemeteryPlotExtents } from './cemeteryLayout'
+import { CEMETERY_PLOT_ID } from './cemeteryReservation'
 import { houseLocalToWorld, pointInYard, yardDisc } from './householdYard'
 import { pathIsDry } from './pathDryness'
 
@@ -16,6 +18,7 @@ import { pathIsDry } from './pathDryness'
  *
  * @domain settlements
  */
+
 
 type Pt = { x: number, z: number }
 
@@ -37,6 +40,11 @@ const MAX_SEGMENT_LENGTH = 14
 const MAX_ATTACH_CANDIDATES = 10
 /** Nearest-point candidates this close to a spur's access end are skipped. */
 const SPUR_END_NO_ATTACH = 3
+/** Extra metres between a lane's edge and the cemetery's circumscribed circle. */
+const CEMETERY_LANE_MARGIN = 1
+const CEMETERY_OBSTACLE_ID = CEMETERY_PLOT_ID
+/** Distance in front of the cemetery gate where its lane ends (lane half width 1.5 + terrain margin 0.25 + slack). */
+const CEMETERY_GATE_LANE_STOP = 2
 /** Sampling step for rectangle obstacles. */
 const YARD_SAMPLE_STEP = 1
 /** Shorter lanes are not worth a corridor. */
@@ -103,6 +111,12 @@ function obstaclesFromPlots(plots: readonly VillagePlot[], laneHalfWidth: number
   const out: Obstacle[] = []
   for (const plot of plots) {
     if (isPlazaFurniture(plot)) continue
+    if (plot.role === 'cemetery') {
+      // Q58: the reserved cemetery rectangle reaches its circumscribed radius at the corners, so the whole
+      // corridor (centreline + half width + margin) stays outside that circle.
+      out.push({ kind: 'disc', id: plot.id, x: plot.x, z: plot.z, small: false, r: plot.radius + laneHalfWidth + CEMETERY_LANE_MARGIN })
+      continue
+    }
     out.push({
       kind: 'disc',
       id: plot.id,
@@ -172,6 +186,14 @@ function firstHit(
 function obstaclesExcludingPoint(obstacles: readonly Obstacle[], p: Pt): readonly Obstacle[] {
   const containing = obstacles.filter((o) => firstHit(p, p, [o], null) !== null)
   return containing.length === 0 ? obstacles : obstacles.filter((o) => !containing.includes(o))
+}
+
+/** The cemetery obstacle alone, shrunk just enough that the route's goal lies outside it (a gate / entrance
+ *  that sits inside the safety margin must still be reachable). */
+function cemeteryObstaclesFor(obstacles: readonly Obstacle[], goal: Pt): Obstacle[] {
+  return obstacles
+    .filter((o): o is DiscObstacle => o.kind === 'disc' && o.id === CEMETERY_OBSTACLE_ID)
+    .map((o) => ({ ...o, r: Math.min(o.r, Math.hypot(goal.x - o.x, goal.z - o.z) - 0.05) }))
 }
 
 function pathLength(points: readonly Pt[]): number {
@@ -249,6 +271,11 @@ export function laneAccessPoint(plot: VillagePlot, center: Pt): Pt {
     const bay = plot.storehouse.baySlots[0]!
     return { x: bay.x, z: bay.z }
   }
+  if (plot.role === 'cemetery' && plot.cemetery) {
+    // Gate side (+Z local faces the plaza): the lane stops just in front of the entrance, its edge clear of the plot.
+    const { hd } = cemeteryPlotExtents(plot.cemetery.size, plot.cemetery.scale)
+    return cemeteryLocalToWorld({ x: plot.x, z: plot.z, rotationY: plot.rotation }, 0, hd + CEMETERY_GATE_LANE_STOP)
+  }
   if (plot.role === 'house' && plot.houseYaw !== undefined) {
     return houseLocalToWorld(plot.x, plot.z, plot.houseYaw, 0, -plot.radius)
   }
@@ -318,7 +345,7 @@ export function planVillageLanes(args: {
       emit(`path-entrance-${entrance.id}`, chosen, entrance.kind, false)
     } else if (pathIsDry(from.x, from.z, center.x, center.z, waterLevel, sampleHeight)) {
       unresolved.push(`path-entrance-${entrance.id}`)
-      emit(`path-entrance-${entrance.id}`, [from, center], entrance.kind, false)
+      emit(`path-entrance-${entrance.id}`, routeAround(from, center, cemeteryObstaclesFor(obstacles, from), null, MAX_DETOUR_DEPTH) ?? [from, center], entrance.kind, false)
     }
   }
 
@@ -361,7 +388,8 @@ export function planVillageLanes(args: {
     // Fallback: report, but never drop the destination (Q57 stop condition).
     if (pathIsDry(center.x, center.z, a.x, a.z, waterLevel, sampleHeight)) {
       unresolved.push(dest.id)
-      emit(dest.id, [{ x: center.x, z: center.z }, a], 'path', true)
+      const straight: Pt[] = [{ x: center.x, z: center.z }, a]
+      emit(dest.id, routeAround(straight[0]!, a, cemeteryObstaclesFor(obstacles, a), dest.ownPlotId, MAX_DETOUR_DEPTH) ?? straight, 'path', true)
     }
   }
 
@@ -374,7 +402,9 @@ export type LaneRouter = (from: Pt, to: Pt) => Pt[] | null
 export function createLaneRouter(plots: readonly VillagePlot[], laneHalfWidth = 1.5): LaneRouter {
   const obstacles = obstaclesFromPlots(plots, laneHalfWidth)
   return (from, to) => {
+    // Full obstacle set first; if that cannot be routed, at least keep the lane off the cemetery (Q58).
     const route = routeAround(from, to, obstacles, null, MAX_DETOUR_DEPTH)
+      ?? routeAround(from, to, cemeteryObstaclesFor(obstacles, to), null, MAX_DETOUR_DEPTH)
     return route ? subdivide(route) : null
   }
 }

@@ -136,7 +136,7 @@ export type VillageZone = {
   radius: number
 }
 
-export type VillagePlotRole = 'house' | 'work' | 'food' | 'livestock' | 'infrastructure' | 'sale'
+export type VillagePlotRole = 'house' | 'work' | 'food' | 'livestock' | 'infrastructure' | 'sale' | 'cemetery'
 
 export type VillagePlot = {
   id: string
@@ -150,6 +150,9 @@ export type VillagePlot = {
   /** Stable 1:1 link for house plots — same order as `FamilyDef` list. */
   familyIndex: number | null
   familyId: string | null
+  /** Cemetery plot only (`CEMETERY_PLOT_ID`, Q58): the reserved own-cemetery pose. `x`/`z` is the plot
+   *  centre, `rotation` the entrance yaw (+Z local faces the plaza), `radius` the circumscribed plot radius. */
+  cemetery?: { size: 'SM' | 'MD' | 'LG', scale: number }
   /** Coin price (plan 129) — only set for `role === 'sale'`. Deterministic,
    *  part of the static plan; ownership is separate persistent world state
    *  (`settlement/landOwnership.ts`), never stored here. */

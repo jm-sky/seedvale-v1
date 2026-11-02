@@ -56,7 +56,7 @@ export const SETTLEMENT_DEFINITION_CACHE_NAMESPACE = 'settlement-definitions'
  * resolved progression-policy identity) is fingerprinted separately. An
  * old-version record is a plain cache miss — records are never migrated.
  */
-export const SETTLEMENT_DEFINITION_CACHE_VERSION = 11
+export const SETTLEMENT_DEFINITION_CACHE_VERSION = 12
 // v7 (2026-10-31, queue Q43): settlement storehouse — plot-infra-storehouse-0 (+ houseDefinitionId/houseYaw/storehouse),
 // landmark kind 'storehouse', ClearingLayout.storehouses.
 // v6 (2026-10-31, queue Q41): household compounds — plot.houseDefinitionId/houseYaw/yard/discs,
@@ -159,7 +159,7 @@ const FOOD_SOURCES = ['field', 'fishing', 'foraging', 'garden'] as const
 const CHARACTERS = ['default', 'closed'] as const
 const LAYOUT_PATTERNS = ['central', 'linear', 'clustered', 'roadside', 'waterfront'] as const
 const ZONE_KINDS = ['residential', 'public', 'production', 'food', 'livestock', 'utility'] as const
-const PLOT_ROLES = ['house', 'work', 'food', 'livestock', 'infrastructure', 'sale'] as const
+const PLOT_ROLES = ['house', 'work', 'food', 'livestock', 'infrastructure', 'sale', 'cemetery'] as const
 const BUILDING_ROLES = ['residential', 'production', 'food', 'livestock', 'utility', 'public'] as const
 const LANDMARK_KINDS = ['well', 'stockpile', 'storehouse', 'garden', 'market', 'campfire', 'noticeBoard', 'home', 'dock', 'field'] as const
 const PATH_KINDS = ['path', 'road'] as const
@@ -330,6 +330,10 @@ function isPlot(value: unknown): value is VillagePlot {
   if (!isFiniteNum(plot.radius) || !isFiniteNum(plot.rotation)) return false
   if (!isNullableString(plot.zoneId) || !isNullableInteger(plot.familyIndex) || !isNullableString(plot.familyId)) return false
   if (plot.price !== undefined && !isFiniteNum(plot.price)) return false
+  if (plot.role === 'cemetery') {
+    const cemetery = (plot as { cemetery?: { size?: unknown, scale?: unknown } }).cemetery
+    if (!cemetery || !isOneOf(cemetery.size, ['SM', 'MD', 'LG'] as const) || !isFiniteNum(cemetery.scale)) return false
+  }
   return true
 }
 

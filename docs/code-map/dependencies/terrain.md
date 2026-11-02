@@ -133,6 +133,8 @@ Generated from TypeScript imports.
 
 **Imports**
 
+- `settlement/cemeteryLayout.ts`
+- `settlement/cemeteryReservation.ts`
 - `settlement/families.ts`
 - `settlement/props.ts`
 - `settlement/settlementGenerator.ts`
@@ -166,6 +168,7 @@ Generated from TypeScript imports.
 
 **Imports**
 
+- `settlement/cemeteryFit.ts`
 - `settlement/cemeteryLayout.ts`
 - `settlement/families.ts`
 - `settlement/props.ts`
@@ -174,7 +177,6 @@ Generated from TypeScript imports.
 - `terrain/chunkEnvironment.ts`
 - `terrain/chunkGrid.ts`
 - `terrain/chunkHeightmap.ts`
-- `terrain/riverNetwork.ts`
 - `world/parseSeed.ts`
 
 **Imported by**
@@ -220,6 +222,7 @@ Generated from TypeScript imports.
 **Imports**
 
 - `math/segment.ts`
+- `settlement/cemeteryFit.ts`
 - `settlement/cemeteryLayout.ts`
 - `settlement/props.ts`
 - `terrain/biomeRegions.ts`
@@ -271,6 +274,7 @@ Generated from TypeScript imports.
 - `app/worldBundle.ts`
 - `perf/benchmark.ts`
 - `settlement/SettlementsManager.ts`
+- `settlement/cemeteryFit.ts`
 - `terrain/cemeteryPlacement.test.ts`
 - `terrain/cemeteryPlacement.ts`
 - `terrain/chunkCrops.ts`
@@ -323,6 +327,8 @@ Generated from TypeScript imports.
 - `player/worldWaterEligibility.test.ts`
 - `settlement/SettlementsManager.lifecycle.test.ts`
 - `settlement/SettlementsManager.ts`
+- `settlement/cemeteryFit.ts`
+- `settlement/cemeteryReservation.ts`
 - `settlement/createSettlement.rollback.integration.test.ts`
 - `settlement/findSettlementSite.test.ts`
 - `settlement/findSettlementSite.ts`
@@ -1265,12 +1271,12 @@ Generated from TypeScript imports.
 - `fauna/animalNaturalWater.test.ts`
 - `fauna/animalNaturalWater.ts`
 - `settlement/SettlementsManager.ts`
+- `settlement/cemeteryFit.ts`
 - `settlement/findSettlementSite.ts`
 - `settlement/villagePaddock.ts`
 - `settlement/villagePasture.test.ts`
 - `settlement/villagePasture.ts`
 - `settlement/villagePlanner.ts`
-- `terrain/cemeteryPlacement.ts`
 - `terrain/chunkHeightmap.worker.ts`
 - `terrain/chunkHeightmapProtocol.ts`
 - `terrain/chunkManager.ts`

@@ -1,9 +1,13 @@
 import type { CemeterySize } from '../settlement/props'
 import type { CemeteryTerrainSampler, EnvironmentPlacement, VillageDisk } from './chunkEnvironment'
 import {
-  CEMETERY_PIECE_HALF_EXTENTS,
-  cemeteryCryptLayout,
-  cemeteryLocalToWorld,
+  CEMETERY_CHUNK_EDGE_MARGIN,
+  type CemeteryGround,
+  cemeteryGroundFits,
+  projectIntoOwnerChunk,
+  rotatedPlotHalfExtents,
+} from '../settlement/cemeteryFit'
+import {
   cemeteryPlotDistanceToPoint,
   cemeteryPlotExtents,
   cemeteryPlotRadius,
@@ -34,22 +38,14 @@ import {
 } from './chunkEnvironment'
 import { type ChunkCoord, worldToChunk } from './chunkGrid'
 import { type ChunkTileParams, createWorldTerrainSampler, type RoadCorridorSegment } from './chunkHeightmap'
-import { footprintOverlapsRiver } from './riverNetwork'
 
-const SLOPE_SAMPLE_STEP = 1.5
 const ROAD_TINT_REJECT = 0.15
-const SLOPE_REJECT_LANDMARK = 0.6
+/** Road/path clearance (beyond the corridor half width) for a planner-reserved pose — the planner already
+ *  routed its own lanes around it with a wider margin, so only genuinely overlapping roads reject it. */
+const RESERVED_ROAD_MARGIN = 0.25
 /** Rolled scale range of every cemetery (`CEMETERY_SCALE_MIN + random() * CEMETERY_SCALE_RANGE`). */
 const CEMETERY_SCALE_MIN = 0.9
 const CEMETERY_SCALE_RANGE = 0.3
-/** Slack between the plot rectangle and its owner chunk's edge (rendering samples the owner tile's apron). */
-const CEMETERY_CHUNK_EDGE_MARGIN = 0.5
-/** Every sampled point of the plot must stand this far above the water level. */
-const CEMETERY_WATER_CLEARANCE = 0.3
-/** V2: maximum height spread across the (rotated 3×3 sampled) plot. */
-const CEMETERY_MAX_PLOT_HEIGHT_SPREAD = 2.5
-/** Maximum height spread across one crypt's four corners (the crypt is not tilted; it must not float/bury). */
-const CEMETERY_MAX_CRYPT_HEIGHT_SPREAD = 0.8
 /** Rare deterministic wilderness roll — much lower than the old `0.28` fringe gate. */
 export const ABANDONED_CEMETERY_CHANCE = 0.012
 
@@ -102,15 +98,6 @@ function hashString(value: string): number {
   return h >>> 0
 }
 
-function slopeAt(terrain: CemeteryTerrainSampler, wx: number, wz: number): number {
-  const d = SLOPE_SAMPLE_STEP
-  return (
-    (Math.abs(terrain.heightAt(wx + d, wz) - terrain.heightAt(wx - d, wz)) +
-      Math.abs(terrain.heightAt(wx, wz + d) - terrain.heightAt(wx, wz - d))) /
-    (2 * d)
-  )
-}
-
 function clearingDisks(params: ChunkTileParams): VillageDisk[] {
   const source = params.cemeteryClearings ?? params.clearings
   return source.map((c) => ({ x: c.x, z: c.z, radius: c.radius }))
@@ -154,30 +141,6 @@ function sharedCorridorAccepts(
   return true
 }
 
-/** Axis-aligned half-extents of the plot rectangle rotated by `rotationY`. */
-function rotatedPlotHalfExtents(size: CemeterySize, scale: number, rotationY: number): { ex: number, ez: number } {
-  const { hw, hd } = cemeteryPlotExtents(size, scale)
-  const c = Math.abs(Math.cos(rotationY))
-  const s = Math.abs(Math.sin(rotationY))
-  return { ex: c * hw + s * hd, ez: s * hw + c * hd }
-}
-
-function cemeteryFitsOwnerChunk(
-  x: number,
-  z: number,
-  size: CemeterySize,
-  scale: number,
-  rotationY: number,
-  chunkSize: number,
-): boolean {
-  const owner = worldToChunk(x, z, chunkSize)
-  const half = chunkSize / 2
-  const { ex, ez } = rotatedPlotHalfExtents(size, scale, rotationY)
-  const localX = x - owner.cx * chunkSize
-  const localZ = z - owner.cz * chunkSize
-  return Math.abs(localX) <= half - CEMETERY_CHUNK_EDGE_MARGIN - ex && Math.abs(localZ) <= half - CEMETERY_CHUNK_EDGE_MARGIN - ez
-}
-
 /** Entrance (+Z local) towards `(tx, tz)` — same convention as `rotateOffsetY` / `Object3D.rotation.y`. */
 function yawFacing(x: number, z: number, tx: number, tz: number): number {
   return Math.atan2(tx - x, tz - z)
@@ -195,47 +158,6 @@ function entranceYaw(x: number, z: number, settlements: readonly CemeterySettlem
     }
   }
   return yawFacing(x, z, best.x, best.z)
-}
-
-/** Deterministically clamps a candidate into its owner chunk's valid interior for the given yaw/size/scale
- *  instead of discarding it (an LG plot leaves only a ~22 m interior square in a 64 m chunk). */
-function projectIntoOwnerChunk(
-  x: number,
-  z: number,
-  size: CemeterySize,
-  scale: number,
-  rotationY: number,
-  chunkSize: number,
-): { x: number, z: number } {
-  const owner = worldToChunk(x, z, chunkSize)
-  const { ex, ez } = rotatedPlotHalfExtents(size, scale, rotationY)
-  // Tiny slack so a point clamped exactly onto the limit is not flipped by floating-point rounding in the fit check.
-  const limitX = Math.max(0, chunkSize / 2 - CEMETERY_CHUNK_EDGE_MARGIN - 0.01 - ex)
-  const limitZ = Math.max(0, chunkSize / 2 - CEMETERY_CHUNK_EDGE_MARGIN - 0.01 - ez)
-  const cx = owner.cx * chunkSize
-  const cz = owner.cz * chunkSize
-  return {
-    x: cx + Math.max(-limitX, Math.min(limitX, x - cx)),
-    z: cz + Math.max(-limitZ, Math.min(limitZ, z - cz)),
-  }
-}
-
-/** The plot's rotated 3×3 sample points (corners, edge midpoints, centre) in world space. */
-function plotSamplePoints(
-  x: number,
-  z: number,
-  size: CemeterySize,
-  scale: number,
-  rotationY: number,
-): { x: number, z: number }[] {
-  const { hw, hd } = cemeteryPlotExtents(size, scale)
-  const out: { x: number, z: number }[] = []
-  for (const sz of [-1, 0, 1]) {
-    for (const sx of [-1, 0, 1]) {
-      out.push(cemeteryLocalToWorld({ x, z, rotationY }, sx * hw, sz * hd))
-    }
-  }
-  return out
 }
 
 function dedicatedRegionalDisks(settlements: readonly CemeterySettlementRef[]): VillageDisk[] {
@@ -256,6 +178,15 @@ function assignmentTerrainSampler(params: ChunkTileParams): CemeteryTerrainSampl
   return createWorldTerrainSampler({ ...params, roadSegments: [...roads] })
 }
 
+function groundOf(params: ChunkTileParams, terrain: CemeteryTerrainSampler): CemeteryGround {
+  return {
+    heightAt: (x, z) => terrain.heightAt(x, z),
+    waterLevel: params.waterLevel,
+    riverSegments: params.riverSegments,
+    chunkSize: params.chunkSize,
+  }
+}
+
 /** Shared physical cemetery validation for active/abandoned candidates (footprint-aware, Q47). */
 export function validateCemeteryPhysical(
   x: number,
@@ -267,43 +198,13 @@ export function validateCemeteryPhysical(
   terrain: CemeteryTerrainSampler,
   placementIntent: 'dedicated' | 'shared' | 'abandoned',
   assignmentSettlements: readonly CemeterySettlementRef[],
+  /** Road/path clearance beyond the corridor half width; reserved poses use `RESERVED_ROAD_MARGIN`. */
+  roadMargin?: number,
 ): boolean {
-  if (!cemeteryFitsOwnerChunk(x, z, size, scale, rotationY, params.chunkSize)) return false
   if (terrain.roadTintAt(x, z) > ROAD_TINT_REJECT) return false
-  if (slopeAt(terrain, x, z) > SLOPE_REJECT_LANDMARK) return false
   const footprintR = cemeteryPlotRadius(size, scale)
-  if (!cemeteryFootprintClearsRoads(x, z, size, scale, cemeteryRoadSegmentsOf(params), rotationY)) return false
-
-  // Never on a river / stream: channels are carved below the sampled surface and may not read as water.
-  if (params.riverSegments.length > 0 && footprintOverlapsRiver(params.riverSegments, x, z, footprintR)) return false
-
-  // Water + height spread over a rotated 3×3 sample of the plot.
-  let lo = Infinity
-  let hi = -Infinity
-  for (const p of plotSamplePoints(x, z, size, scale, rotationY)) {
-    const h = terrain.heightAt(p.x, p.z)
-    if (h <= params.waterLevel + CEMETERY_WATER_CLEARANCE) return false
-    lo = Math.min(lo, h)
-    hi = Math.max(hi, h)
-  }
-  if (hi - lo > CEMETERY_MAX_PLOT_HEIGHT_SPREAD) return false
-  // Crypts are not tilted: the four corners of each must be near-level.
-  const crypt = CEMETERY_PIECE_HALF_EXTENTS.Crypt
-  for (const c of cemeteryCryptLayout(size, scale)) {
-    let cLo = Infinity
-    let cHi = -Infinity
-    for (const [sx, sz] of [[-1, -1], [1, -1], [-1, 1], [1, 1]] as const) {
-      const w = cemeteryLocalToWorld(
-        { x, z, rotationY },
-        c.x + sx * crypt.hx * c.scale * scale,
-        c.z + sz * crypt.hz * c.scale * scale,
-      )
-      const h = terrain.heightAt(w.x, w.z)
-      cLo = Math.min(cLo, h)
-      cHi = Math.max(cHi, h)
-    }
-    if (cHi - cLo > CEMETERY_MAX_CRYPT_HEIGHT_SPREAD) return false
-  }
+  if (!cemeteryFootprintClearsRoads(x, z, size, scale, cemeteryRoadSegmentsOf(params), rotationY, roadMargin)) return false
+  if (!cemeteryGroundFits({ x, z, rotationY, size, scale }, groundOf(params, terrain))) return false
 
   const clearings = clearingDisks(params)
   const plot: PlotPose = { x, z, rotationY, size, scale }
@@ -361,6 +262,26 @@ function* placementCandidates(
   }
 }
 
+/** Dedicated assignments first try the planner's reservation (Q58); it must still validate on the live
+ *  terrain (roads, clearings, chunk size) — otherwise the candidate search below runs as before. */
+function placeFromReservation(
+  topology: CemeteryTopologyIntent,
+  size: CemeterySize,
+  params: ChunkTileParams,
+  terrain: CemeteryTerrainSampler,
+  intent: 'dedicated' | 'shared',
+): CemeteryPlotPoseFull | null {
+  if (intent !== 'dedicated' || topology.settlements.length !== 1) return null
+  const r = topology.settlements[0]!.reservation
+  if (!r || r.size !== size) return null
+  if (!validateCemeteryPhysical(r.x, r.z, size, r.scale, r.rotationY, params, terrain, 'dedicated', topology.settlements, RESERVED_ROAD_MARGIN)) {
+    return null
+  }
+  return r
+}
+
+type CemeteryPlotPoseFull = { x: number, z: number, rotationY: number, scale: number }
+
 function tryPlaceTopology(
   topology: CemeteryTopologyIntent,
   params: ChunkTileParams,
@@ -372,6 +293,20 @@ function tryPlaceTopology(
   const variant = random()
   const intent = topology.intent === 'shared' ? 'shared' : 'dedicated'
   const terrain = assignmentTerrainSampler(params)
+  const reserved = placeFromReservation(topology, assignment.size, params, terrain, intent)
+  if (reserved) {
+    return {
+      assignmentId: topology.assignmentId,
+      servedSettlementIds: topology.servedSettlementIds,
+      size: assignment.size,
+      x: reserved.x,
+      z: reserved.z,
+      scale: reserved.scale,
+      rotationY: reserved.rotationY,
+      variant,
+      id: cemeteryIdForAssignment(topology.assignmentId, params.seed),
+    }
+  }
   for (const raw of placementCandidates(topology, params.seed, cemeteryPlotRadius(assignment.size, scale))) {
     // Project into the owner chunk's valid interior first (a clamp, never a discard).
     // Yaw faces the settlement from the first projected point; the final point is projected with that same

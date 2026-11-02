@@ -38,6 +38,16 @@ describe('cemeteryAssignment (world-terrain-016)', () => {
     expect(topoA.servedSettlementIds).toEqual(['0_0', '1_0'])
   })
 
+  it('never pairs the home settlement: it keeps its own dedicated cemetery (Q58)', () => {
+    const home = { ...ref('0_0', 0, 0, 'SM'), isHome: true }
+    const neighbour = ref('1_0', 1, 0, 'SM')
+    const peek = peekMap([home, neighbour])
+    expect(resolveSmSharePartner(home, peek)).toBeNull()
+    expect(resolveSmSharePartner(neighbour, peek)).toBeNull()
+    expect(resolveCemeteryTopologyForSettlement('0_0', peek)!.intent).toBe('dedicated')
+    expect(resolveCemeteryTopologyForSettlement('1_0', peek)!.intent).toBe('dedicated')
+  })
+
   it('is order-independent for shared SM pairing', () => {
     const a = ref('0_0', 0, 0, 'SM')
     const b = ref('1_0', 1, 0, 'SM')

@@ -11,8 +11,26 @@
  * @domain world-terrain
  */
 
+import type { VillageSize } from './families'
+
 /** Cemetery footprint size (plan 173) — drives crypt/grave counts and plot extents. */
 export type CemeterySize = 'SM' | 'MD' | 'LG'
+
+/** Cemetery size from the served settlement scale (Q47 / Q39 plan §2.2) — strict, so crypt count follows
+ *  settlement size: OUTPOST/SM → SM (1 crypt), MD → MD (2), LG/XL → LG (3); a shared pair (two small
+ *  villages' dead) → MD. No RNG: size is a pure function of the served sizes. */
+export function cemeterySizeForServedSizes(servedSizes: readonly VillageSize[]): CemeterySize {
+  if (servedSizes.length >= 2) return 'MD'
+  switch (servedSizes[0] ?? 'SM') {
+    case 'LG':
+    case 'XL':
+      return 'LG'
+    case 'MD':
+      return 'MD'
+    default:
+      return 'SM'
+  }
+}
 
 type CemeteryClassSpec = { columns: number, graves: number, crypts: number }
 

@@ -3788,6 +3788,7 @@ Generated from TypeScript imports.
 - `reputation/socialExposure.ts`
 - `settlement/artisanCraft.ts`
 - `settlement/artisanProfile.ts`
+- `settlement/cemeteryReservation.ts`
 - `settlement/families.ts`
 - `settlement/findSettlementSite.ts`
 - `settlement/houseCatalog.ts`

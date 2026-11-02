@@ -1,6 +1,7 @@
 import type { ChunkCoord } from './chunkGrid'
 import type { VegetationPlacement } from './chunkVegetation'
 import { distanceToSegment } from '../math/segment'
+import { CEMETERY_CLEARING_PAD } from '../settlement/cemeteryFit'
 import { cemeteryPlotDistanceToPoint, cemeteryPlotDistanceToSegment, cemeteryPlotExtents, cemeteryPlotRadius } from '../settlement/cemeteryLayout'
 import { type CemeterySize } from '../settlement/props'
 import { siteChunkContainsPoint } from '../world/locations/darkForestTreasureSite'
@@ -135,7 +136,7 @@ const CEMETERY_SIZE_WEIGHTS: readonly [CemeterySize, number][] = [
 /** Cemetery sits on the village smoothing-disk fringe, past house clearings. */
 export const CEMETERY_INNER_FRAC = 0.55
 export const CEMETERY_OUTER_FRAC = 1.05
-export const CEMETERY_CLEARING_PAD = 2
+export { CEMETERY_CLEARING_PAD }
 export const LANDMARK_BIAS_MIN = 0.2
 export const LANDMARK_BIAS_MAX = 2
 
@@ -279,18 +280,21 @@ export function cemeteryFootprintClearsRoads(
   /** Plot yaw (Q47): when given, the exact rotated plot rectangle is tested instead of the circumscribed
    *  circle, so a plot may sit closer to a road that runs along one of its sides. */
   rotationY?: number,
+  /** Clearance beyond the corridor half width (default `CEMETERY_ROAD_SAFETY_MARGIN`). A planner-reserved
+   *  cemetery (Q58) passes a small value: the planner already routed every village lane around it. */
+  safetyMargin = CEMETERY_ROAD_SAFETY_MARGIN,
 ): boolean {
   if (rotationY === undefined) {
     const radius = cemeteryFootprintRadius(size, scale)
     for (const seg of roadSegments) {
       const dist = distanceToSegment(x, z, seg.ax, seg.az, seg.bx, seg.bz)
-      if (dist < radius + seg.halfWidth + CEMETERY_ROAD_SAFETY_MARGIN) return false
+      if (dist < radius + seg.halfWidth + safetyMargin) return false
     }
     return true
   }
   const plot = { x, z, rotationY, size, scale }
   for (const seg of roadSegments) {
-    if (cemeteryPlotDistanceToSegment(plot, seg.ax, seg.az, seg.bx, seg.bz) < seg.halfWidth + CEMETERY_ROAD_SAFETY_MARGIN) return false
+    if (cemeteryPlotDistanceToSegment(plot, seg.ax, seg.az, seg.bx, seg.bz) < seg.halfWidth + safetyMargin) return false
   }
   return true
 }

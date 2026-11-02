@@ -1,5 +1,7 @@
 import type { VillageSize } from '../settlement/families'
 import type { CemeterySize } from '../settlement/props'
+import { cemeterySizeForServedSizes } from '../settlement/cemeteryLayout'
+import { CEMETERY_PLOT_ID, type CemeteryReservationPose } from '../settlement/cemeteryReservation'
 import {
   cellFromId,
   cellSeed,
@@ -18,6 +20,11 @@ export type CemeterySettlementRef = {
   x: number
   z: number
   size: VillageSize
+  /** True for the home settlement — it never shares a cemetery (Q58). */
+  isHome?: boolean
+  /** Planner-reserved own-cemetery pose (Q58) — dedicated placement reads it first. Absent when the
+   *  settlement does not reserve one or nothing fit; the terrain search then runs as before. */
+  reservation?: CemeteryReservationPose
 }
 
 export type CemeteryAssignmentIntent = 'dedicated' | 'shared'
@@ -58,8 +65,19 @@ export function clearCemeteryCaches(): void {
   topologyCache.clear()
 }
 
+function reservationOfPlan(def: SettlementDef): CemeteryReservationPose | null {
+  const plot = def.plan?.plots.find((p) => p.id === CEMETERY_PLOT_ID)
+  if (!plot?.cemetery) return null
+  return { x: plot.x, z: plot.z, rotationY: plot.rotation, size: plot.cemetery.size, scale: plot.cemetery.scale }
+}
+
 export function settlementRefFromDef(def: SettlementDef): CemeterySettlementRef {
-  return { id: def.id, gx: def.gx, gz: def.gz, x: def.x, z: def.z, size: def.size }
+  const reservation = reservationOfPlan(def)
+  return {
+    id: def.id, gx: def.gx, gz: def.gz, x: def.x, z: def.z, size: def.size,
+    ...(def.isHome ? { isHome: true } : {}),
+    ...(reservation ? { reservation } : {}),
+  }
 }
 
 export function collectSettlementRefsNear(
@@ -118,8 +136,14 @@ export function isAbandonedCemeteryId(id: string): boolean {
   return id.startsWith('cemetery:w:')
 }
 
+function isHomeRef(ref: CemeterySettlementRef): boolean {
+  return ref.isHome === true
+}
+
 function eligibleSmPartner(self: CemeterySettlementRef, other: CemeterySettlementRef): boolean {
   if (other.id === self.id) return false
+  // The home settlement always keeps its own cemetery (Q58, author 2026-11-02).
+  if (isHomeRef(self) || isHomeRef(other)) return false
   if (other.size !== 'SM' || self.size !== 'SM') return false
   const cellDist = Math.max(Math.abs(other.gx - self.gx), Math.abs(other.gz - self.gz))
   if (cellDist > SM_SHARING_CELL_RADIUS) return false
@@ -205,21 +229,7 @@ export function resolveCemeteryTopologyForSettlement(
   return intent
 }
 
-/** Cemetery size from the served settlement scale (Q47 / Q39 plan §2.2) — strict, so crypt count follows
- *  settlement size: OUTPOST/SM → SM (1 crypt), MD → MD (2), LG/XL → LG (3); a shared pair (two small
- *  villages' dead) → MD. No RNG: size is a pure function of the served sizes. */
-export function cemeterySizeForServedSizes(servedSizes: readonly VillageSize[]): CemeterySize {
-  if (servedSizes.length >= 2) return 'MD'
-  switch (servedSizes[0] ?? 'SM') {
-    case 'LG':
-    case 'XL':
-      return 'LG'
-    case 'MD':
-      return 'MD'
-    default:
-      return 'SM'
-  }
-}
+export { cemeterySizeForServedSizes }
 
 export function cemeteryAssignmentFromTopology(
   topology: CemeteryTopologyIntent,

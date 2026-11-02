@@ -351,6 +351,22 @@ Generated from TypeScript imports.
 - `settlement/places.test.ts`
 - `settlement/props.ts`
 
+## `settlement/cemeteryFit.ts`
+
+**Imports**
+
+- `settlement/cemeteryLayout.ts`
+- `terrain/chunkGrid.ts`
+- `terrain/chunkHeightmap.ts`
+- `terrain/riverNetwork.ts`
+
+**Imported by**
+
+- `settlement/cemeteryReservation.ts`
+- `settlement/villagePlanner.test.ts`
+- `terrain/cemeteryPlacement.ts`
+- `terrain/chunkEnvironment.ts`
+
 ## `settlement/cemeteryLayout.test.ts`
 
 **Imports**
@@ -359,12 +375,22 @@ Generated from TypeScript imports.
 
 ## `settlement/cemeteryLayout.ts`
 
+**Imports**
+
+- `settlement/families.ts`
+
 **Imported by**
 
+- `settlement/cemeteryFit.ts`
 - `settlement/cemeteryLayout.test.ts`
 - `settlement/cemeteryMesh.ts`
 - `settlement/cemeteryPack.ts`
+- `settlement/cemeteryReservation.ts`
 - `settlement/decorProps.ts`
+- `settlement/villageLanes.ts`
+- `settlement/villagePlanner.test.ts`
+- `settlement/villagePlanner.ts`
+- `terrain/cemeteryAssignment.ts`
 - `terrain/cemeteryPlacement.ts`
 - `terrain/chunkEnvironment.test.ts`
 - `terrain/chunkEnvironment.ts`
@@ -395,6 +421,26 @@ Generated from TypeScript imports.
 - `settlement/cemeteryMesh.ts`
 - `settlement/decorProps.ts`
 - `terrain/chunkManager.ts`
+
+## `settlement/cemeteryReservation.ts`
+
+**Imports**
+
+- `player/PlayerController.ts`
+- `settlement/cemeteryFit.ts`
+- `settlement/cemeteryLayout.ts`
+- `settlement/families.ts`
+- `settlement/householdYard.ts`
+- `terrain/chunkHeightmap.ts`
+- `world/parseSeed.ts`
+
+**Imported by**
+
+- `settlement/villageLanes.ts`
+- `settlement/villagePasture.ts`
+- `settlement/villagePlanner.test.ts`
+- `settlement/villagePlanner.ts`
+- `terrain/cemeteryAssignment.ts`
 
 ## `settlement/createSettlement.rollback.integration.test.ts`
 
@@ -591,6 +637,8 @@ Generated from TypeScript imports.
 - `settlement/artisanProfile.test.ts`
 - `settlement/artisanProfile.ts`
 - `settlement/blacksmithYard.test.ts`
+- `settlement/cemeteryLayout.ts`
+- `settlement/cemeteryReservation.ts`
 - `settlement/createSettlement.ts`
 - `settlement/families.test.ts`
 - `settlement/findSettlementSite.test.ts`
@@ -1171,6 +1219,7 @@ Generated from TypeScript imports.
 
 - `settlement/blacksmithYard.test.ts`
 - `settlement/blacksmithYard.ts`
+- `settlement/cemeteryReservation.ts`
 - `settlement/fenceSegmentPlacements.test.ts`
 - `settlement/householdYard.test.ts`
 - `settlement/professionDressing.test.ts`
@@ -3105,6 +3154,8 @@ Generated from TypeScript imports.
 **Imports**
 
 - `player/PlayerController.ts`
+- `settlement/cemeteryLayout.ts`
+- `settlement/cemeteryReservation.ts`
 - `settlement/householdYard.ts`
 - `settlement/pathDryness.ts`
 - `settlement/villagePlan.ts`
@@ -3170,6 +3221,7 @@ Generated from TypeScript imports.
 - `math/segment.ts`
 - `player/PlayerController.ts`
 - `render/instancedProps.ts`
+- `settlement/cemeteryReservation.ts`
 - `settlement/families.ts`
 - `settlement/pastureWater.ts`
 - `settlement/pathDryness.ts`
@@ -3252,6 +3304,9 @@ Generated from TypeScript imports.
 **Imports**
 
 - `math/segment.ts`
+- `settlement/cemeteryFit.ts`
+- `settlement/cemeteryLayout.ts`
+- `settlement/cemeteryReservation.ts`
 - `settlement/families.ts`
 - `settlement/gardenScale.ts`
 - `settlement/householdWells.ts`
@@ -3269,6 +3324,8 @@ Generated from TypeScript imports.
 - `assets/houseDefinitionExample.ts`
 - `math/segment.ts`
 - `player/PlayerController.ts`
+- `settlement/cemeteryLayout.ts`
+- `settlement/cemeteryReservation.ts`
 - `settlement/families.ts`
 - `settlement/gardenScale.ts`
 - `settlement/houseBuilder.ts`

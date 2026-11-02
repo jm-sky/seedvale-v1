@@ -21,10 +21,12 @@ import type {
   VillageZoneKind,
 } from './villagePlan'
 import { pickHouseDefinition, STOREHOUSE_DEFINITION } from '../assets/houseDefinitionExample'
-import { pointHitsCorridor, projectOntoSegment } from '../math/segment'
+import { distanceToSegment, pointHitsCorridor, projectOntoSegment } from '../math/segment'
 import { RESOURCE_ROLE, SIGNIFICANT_RICHNESS } from '../terrain/naturalResources'
 import { footprintOverlapsRiver } from '../terrain/riverNetwork'
 import { createSeededRandom } from '../world/parseSeed'
+import { cemeteryPlotRadius } from './cemeteryLayout'
+import { CEMETERY_PLOT_ID, planCemeteryReservation } from './cemeteryReservation'
 import { villageSizeConfig } from './families'
 import {
   gardenPlazaMinCenterDist,
@@ -82,6 +84,8 @@ const PLOT_RIVER_MARGIN = 1
  *  fallback ring and the household-well band width. House plots reserve their
  *  real compound (house disc + yard disc, `householdYard.ts`) instead. */
 const NOMINAL_HOUSE_RADIUS = 4.5
+/** `layoutClearingsFromPlan` clears house pads / yards at this fraction of the planner's compound discs. */
+const CLEARING_DISC_FACTOR = 0.85
 /** Required free gap between neighbouring household compounds (edge to edge)
  *  as a fraction of the size's `houseSpacing` (SM 1.0 m … XL 1.8 m). */
 export const HOUSE_COMPOUND_GAP_FACTOR = 0.1
@@ -1124,6 +1128,7 @@ export function planVillageLayout(
       seedForCell,
       sampleHeight,
       waterLevel,
+      undefined,
     )
   })
   const householdWellSpokes = [
@@ -1418,6 +1423,37 @@ export function planVillageLayout(
     )
   }
 
+  // Q58 — own-cemetery reservation (OUTPOST/MD/LG/XL + the home settlement): after every house, yard and
+  // infrastructure plot, before sale plots and paths, so only optional plots can lose space. No fit → no
+  // reservation; terrain placement then runs its candidate search as before.
+  const cemeteryPose = planCemeteryReservation({
+    size: identity.size,
+    isHome: identity.isHome,
+    center,
+    seedForCell,
+    // Household compounds are measured like the terrain-side clearings (house pad and yard disc at 0.85 of
+    // the compound disc — `layoutClearingsFromPlan`), everything else by its full plot disc.
+    existing: plots.flatMap((p) => plotDiscs(p).map((d) => (p.role === 'house' ? { ...d, radius: d.radius * CLEARING_DISC_FACTOR } : d))),
+    sampleHeight,
+    waterLevel,
+    riverSegments,
+  })
+  if (cemeteryPose) {
+    plots.push({
+      id: CEMETERY_PLOT_ID,
+      role: 'cemetery',
+      x: cemeteryPose.x,
+      z: cemeteryPose.z,
+      y: sampleHeight(cemeteryPose.x, cemeteryPose.z),
+      radius: cemeteryPlotRadius(cemeteryPose.size, cemeteryPose.scale),
+      rotation: cemeteryPose.rotationY,
+      zoneId: null,
+      familyIndex: null,
+      familyId: null,
+      cemetery: { size: cemeteryPose.size, scale: cemeteryPose.scale },
+    })
+  }
+
   // Plan 129 — settlement sale plots. Placed through the same shared
   // scorer/spacing pipeline as every other plot (outer-ring preference via
   // `preferredRing`, not a second placement solver); `price` is attached
@@ -1497,8 +1533,14 @@ export function planVillageLayout(
     pathCorridors,
   })
   const laneRouter = createLaneRouter(plots)
-  if (pasture) appendPasturePath(paths, pasture, sampleHeight, waterLevel, laneRouter)
-  if (paddock) appendPaddockPath(paths, paddock, sampleHeight, waterLevel, laneRouter)
+  const cemeteryReservation = plots.find((p) => p.role === 'cemetery')
+  const keepsOffCemetery = cemeteryReservation
+    ? (a: { x: number, z: number }, b: { x: number, z: number }): boolean =>
+        distanceToSegment(cemeteryReservation.x, cemeteryReservation.z, a.x, a.z, b.x, b.z) >=
+        cemeteryReservation.radius + LOCAL_PATH_HALF_WIDTH + 0.5
+    : undefined
+  if (pasture) appendPasturePath(paths, pasture, sampleHeight, waterLevel, laneRouter, keepsOffCemetery)
+  if (paddock) appendPaddockPath(paths, paddock, sampleHeight, waterLevel, laneRouter, keepsOffCemetery)
   return { boundary, center, pattern, zones, plots, buildings, landmarks, paths, entrances, plaza, pasture, paddock }
 }
 
@@ -1583,7 +1625,7 @@ export function buildingsAndLandmarksFromPlots(
 
     // Sale plots (plan 129) get no building/landmark — an empty plot with a
     // sign, materialized directly from `plots` by `props.ts`/`createSettlement.ts`.
-    if (plot.role === 'sale') continue
+    if (plot.role === 'sale' || plot.role === 'cemetery') continue
 
     // infrastructure — kind from stable plot id
     if (plot.id === 'plot-infra-well') {
@@ -1735,6 +1777,7 @@ function pickEntranceAtAngle(
   seedForCell: number,
   sampleHeight: HeightSampler,
   waterLevel: number,
+  cemetery: VillagePlot | undefined,
 ): VillageEntrance {
   const random = createSeededRandom(seedForCell ^ Math.imul(index + 1, 0x9e3779b1) ^ 0xe771)
   const tryAngle = (angle: number, radius: number): VillageEntrance | null => {
@@ -1742,6 +1785,8 @@ function pickEntranceAtAngle(
     const z = center.z + Math.sin(angle) * radius
     const y = sampleHeight(x, z)
     if (y <= waterLevel + SETTLEMENT_WATER_MARGIN) return null
+    // Q58: a road/path mouth never opens inside the reserved cemetery (circumscribed circle + road corridor).
+    if (cemetery && Math.hypot(x - cemetery.x, z - cemetery.z) < cemetery.radius + LOCAL_ROAD_HALF_WIDTH + 1) return null
     if (!pathIsDry(x, z, center.x, center.z, waterLevel, sampleHeight)) return null
     return { id: `entrance-${index}`, x, z, y, angle, kind }
   }
@@ -1755,6 +1800,18 @@ function pickEntranceAtAngle(
   for (let t = 0.9; t >= 0.25; t -= 0.08) {
     const hit = tryAngle(preferredAngle, boundary.radius * t)
     if (hit) return hit
+  }
+
+  // Q58: a reserved cemetery can cover the whole preferred sector of a small settlement — sweep the circle
+  // outward from the preferred bearing (±15° steps, alternating sides) before the unchecked fallback.
+  if (cemetery) {
+    for (let k = 1; k <= 12; k++) {
+      const angle = preferredAngle + (k % 2 === 1 ? 1 : -1) * Math.ceil(k / 2) * (Math.PI / 12)
+      for (const t of [0.92, 0.75, 0.6]) {
+        const hit = tryAngle(angle, boundary.radius * t)
+        if (hit) return hit
+      }
+    }
   }
 
   const x = center.x + Math.cos(preferredAngle) * boundary.radius * 0.5
@@ -1805,6 +1862,7 @@ export function planLocalPathsAndEntrances(args: {
   const count = entranceCountFor(identity)
   const angles = preferredEntranceAngles(pattern, seedForCell, count, waterAngle)
 
+  const cemeteryPlot = plots.find((p) => p.role === 'cemetery')
   const entrances = angles.map((angle, index) => {
     const kind: 'road' | 'path' =
       identity.size === 'OUTPOST'
@@ -1821,6 +1879,7 @@ export function planLocalPathsAndEntrances(args: {
       seedForCell,
       sampleHeight,
       waterLevel,
+      cemeteryPlot,
     )
   })
 
@@ -1840,6 +1899,7 @@ export function planLocalPathsAndEntrances(args: {
       plot.role === 'food' ||
       plot.role === 'livestock' ||
       plot.role === 'sale' ||
+      plot.role === 'cemetery' ||
       plot.id.startsWith('plot-infra-stockpile') ||
       plot.id === storehousePlotId() ||
       plot.id.startsWith('plot-infra-garden')
@@ -1852,7 +1912,7 @@ export function planLocalPathsAndEntrances(args: {
     }
     destinations.push({ id: `path-plot-${plot.id}`, access: laneAccessPoint(plot, center),
       // Only the storehouse bay sits inside its own apron disc.
-      ownPlotId: plot.storehouse ? plot.id : null,
+      ownPlotId: plot.storehouse || plot.role === 'cemetery' ? plot.id : null,
       around: { x: plot.x, z: plot.z, r: plot.radius },
     })
   }
@@ -1889,7 +1949,9 @@ export function planLocalPathsAndEntrances(args: {
       x: center.x + (house.x - center.x) * 0.55,
       z: center.z + (house.z - center.z) * 0.55,
     }
-    if (pathIsDry(center.x, center.z, mid.x, mid.z, waterLevel, sampleHeight)) {
+    const cemeteryBlocks = cemeteryPlot !== undefined &&
+      distanceToSegment(cemeteryPlot.x, cemeteryPlot.z, center.x, center.z, mid.x, mid.z) < cemeteryPlot.radius + LOCAL_PATH_HALF_WIDTH + 1
+    if (!cemeteryBlocks && pathIsDry(center.x, center.z, mid.x, mid.z, waterLevel, sampleHeight)) {
       paths.push(makePath('path-house-fallback-0', center, mid, 'path'))
     }
   }

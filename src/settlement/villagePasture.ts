@@ -10,6 +10,7 @@ import {
 import { type PropPlacement } from '../render/instancedProps'
 import { footprintOverlapsRiver } from '../terrain/riverNetwork'
 import { createSeededRandom } from '../world/parseSeed'
+import { CEMETERY_LANE_ID } from './cemeteryReservation'
 import { PASTURE_WELL_TROUGH_BUCKET_REACH } from './pastureWater'
 import { pathIsDry, SETTLEMENT_WATER_MARGIN } from './pathDryness'
 import {
@@ -447,6 +448,111 @@ function angularDelta(a: number, b: number): number {
  * onto the pasture gap. Uses the same `VillagePathPlan` shape as core paths.
  * No-op when the connection is wet.
  */
+/** True when a spur polyline stays clear of its own fence runs (a spur hugging the gap would clip them). */
+export function spurClearsFence(
+  points: readonly { x: number, z: number }[],
+  fence: readonly { ax: number, az: number, bx: number, bz: number }[],
+  halfWidth: number,
+): boolean {
+  const corridors: CorridorSegment2D[] = []
+  for (let i = 0; i < points.length - 1; i++) {
+    corridors.push({ ax: points[i]!.x, az: points[i]!.z, bx: points[i + 1]!.x, bz: points[i + 1]!.z, halfWidth })
+  }
+  return !fence.some((f) => segmentHitsCorridor(f.ax, f.az, f.bx, f.bz, corridors, 0.3))
+}
+
+/** Attach points tried per spur before settling for the nearest one. */
+const SPUR_ATTACH_CANDIDATES = 12
+
+/**
+ * Shared spur builder for pasture / paddock: attach to the nearest existing path point with an obstacle-aware
+ * route (straight spur when none); when that spur would clip its own fence, the next-nearest attach points
+ * are tried (Q58 — new reservations change which path ends nearest), and the nearest one is kept only if
+ * none is clear. Returns `null` for "no spur".
+ */
+export function planSpurPoints(args: {
+  paths: readonly VillagePathPlan[]
+  ownPathId: string
+  target: { x: number, z: number }
+  fence: readonly { ax: number, az: number, bx: number, bz: number }[]
+  sampleHeight: HeightSampler
+  waterLevel: number
+  route?: (from: { x: number, z: number }, to: { x: number, z: number }) => { x: number, z: number }[] | null
+  /** Optional waypoint in front of the gap: the spur reaches it first and then enters the gap head-on, so
+   *  an oblique approach cannot clip the fence ends beside the gap. */
+  apron?: { x: number, z: number }
+  /** Extra per-segment gate (the planner keeps spurs off the reserved cemetery). */
+  segmentClear?: (a: { x: number, z: number }, b: { x: number, z: number }) => boolean
+}): { x: number, z: number }[] | null {
+  const { paths, ownPathId, target, fence, sampleHeight, waterLevel, route, apron, segmentClear } = args
+  const candidates: { x: number, z: number, d: number }[] = []
+  // Per path: its nearest point (diverse attach sides, e.g. the lane on the far side of a cemetery) …
+  const perPath: { x: number, z: number, d: number }[] = []
+  for (const path of paths) {
+    if (path.id === ownPathId || path.id === CEMETERY_LANE_ID) continue
+    let best: { x: number, z: number, d: number } | null = null
+    for (const point of path.points) {
+      const d = Math.hypot(point.x - target.x, point.z - target.z)
+      const entry = { x: point.x, z: point.z, d }
+      candidates.push(entry)
+      if (!best || d < best.d) best = entry
+    }
+    if (best) perPath.push(best)
+  }
+  candidates.sort((a, b) => a.d - b.d || a.x - b.x || a.z - b.z)
+  perPath.sort((a, b) => a.d - b.d || a.x - b.x || a.z - b.z)
+  // … then the globally nearest points.
+  const ordered = [...perPath, ...candidates.filter((c) => !perPath.includes(c))]
+  const build = (from: { x: number, z: number }, requireFence: boolean): { x: number, z: number }[] | null => {
+    // The apron is skipped when it would sit inside the cemetery clearance (the straight run then decides).
+    const useApron = apron !== undefined && (!segmentClear || segmentClear(apron, target))
+    const goal = useApron ? apron : target
+    if (!pathIsDry(from.x, from.z, goal.x, goal.z, waterLevel, sampleHeight)) return null
+    const detour = route?.(from, goal) ?? null
+    const straight = [
+      { x: from.x, z: from.z },
+      { x: from.x + (goal.x - from.x) * 0.5, z: from.z + (goal.z - from.z) * 0.5 },
+      { x: goal.x, z: goal.z },
+    ]
+    const options = detour ? [detour, straight] : [straight]
+    for (const leg of options) {
+      const points = useApron ? [...leg, { x: target.x, z: target.z }] : leg
+      let dry = true
+      for (let i = 0; i < points.length - 1 && dry; i++) {
+        dry = pathIsDry(points[i]!.x, points[i]!.z, points[i + 1]!.x, points[i + 1]!.z, waterLevel, sampleHeight)
+      }
+      for (let i = 0; i < points.length - 1 && dry && segmentClear; i++) dry = segmentClear(points[i]!, points[i + 1]!)
+      if (dry && (!requireFence || spurClearsFence(points, fence, PATH_HALF_WIDTH))) return points
+    }
+    return null
+  }
+
+  const nearest = candidates[0]
+  if (!nearest || nearest.d < 1.5) return null
+  for (const requireFence of [true, false]) {
+    for (const candidate of ordered.slice(0, SPUR_ATTACH_CANDIDATES)) {
+      const points = build(candidate, requireFence)
+      if (points) return points
+    }
+  }
+  // Nothing is clear of the fence and the cemetery: keep the original behaviour (nearest attach point, detour else straight).
+  const detour = route?.(nearest, target) ?? null
+  const points = detour ?? [
+    { x: nearest.x, z: nearest.z },
+    { x: nearest.x + (target.x - nearest.x) * 0.5, z: nearest.z + (target.z - nearest.z) * 0.5 },
+    { x: target.x, z: target.z },
+  ]
+  for (let i = 0; i < points.length - 1; i++) {
+    if (!pathIsDry(points[i]!.x, points[i]!.z, points[i + 1]!.x, points[i + 1]!.z, waterLevel, sampleHeight)) return null
+  }
+  return pathIsDry(nearest.x, nearest.z, target.x, target.z, waterLevel, sampleHeight) ? points : null
+}
+
+/**
+ * Append a local dirt path from the nearest existing village path/entrance
+ * onto the pasture gap. Uses the same `VillagePathPlan` shape as core paths.
+ * No-op when the connection is wet.
+ */
 export function appendPasturePath(
   paths: VillagePathPlan[],
   pasture: VillagePasturePlan,
@@ -454,38 +560,13 @@ export function appendPasturePath(
   waterLevel: number,
   /** Obstacle-aware connector (Q57); straight spur when absent or no route. */
   route?: (from: { x: number, z: number }, to: { x: number, z: number }) => { x: number, z: number }[] | null,
+  segmentClear?: (a: { x: number, z: number }, b: { x: number, z: number }) => boolean,
 ): void {
-  const target = pasture.connection
-  let nearest: { x: number, z: number } | null = null
-  let nearestDist = Infinity
-  for (const path of paths) {
-    if (path.id === pasturePathId()) continue
-    for (const point of path.points) {
-      const d = Math.hypot(point.x - target.x, point.z - target.z)
-      if (d < nearestDist) {
-        nearestDist = d
-        nearest = point
-      }
-    }
-  }
-  if (!nearest) return
-  if (nearestDist < 1.5) return
-  if (!pathIsDry(nearest.x, nearest.z, target.x, target.z, waterLevel, sampleHeight)) return
-  const detour = route?.(nearest, target) ?? null
-  const mid = {
-    x: nearest.x + (target.x - nearest.x) * 0.5,
-    z: nearest.z + (target.z - nearest.z) * 0.5,
-  }
-  const points = detour ?? [
-    { x: nearest.x, z: nearest.z },
-    { x: mid.x, z: mid.z },
-    { x: target.x, z: target.z },
-  ]
-  for (let i = 0; i < points.length - 1; i++) {
-    const a = points[i]!
-    const b = points[i + 1]!
-    if (!pathIsDry(a.x, a.z, b.x, b.z, waterLevel, sampleHeight)) return
-  }
+  const points = planSpurPoints({
+    paths, ownPathId: pasturePathId(), target: pasture.connection, fence: pasture.fenceSegments,
+    sampleHeight, waterLevel, route, segmentClear,
+  })
+  if (!points) return
   paths.push({
     id: pasturePathId(),
     points,

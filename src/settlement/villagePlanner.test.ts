@@ -4,6 +4,9 @@ import type { NaturalResource } from '../terrain/naturalResources'
 import type { FamilyDef } from './families'
 import type { VillageIdentity } from './villagePlan'
 import { pointHitsCorridor } from '../math/segment'
+import { CEMETERY_CLEARING_PAD } from './cemeteryFit'
+import { cemeteryPlotDistanceToPoint, cemeteryPlotDistanceToSegment } from './cemeteryLayout'
+import { CEMETERY_PLOT_ID } from './cemeteryReservation'
 import { generateFamilies } from './families'
 import { gardenPlazaMinCenterDist, type GardenScale } from './gardenScale'
 import { selectHouseholdWellFamilyIndices } from './householdWells'
@@ -599,7 +602,8 @@ describe('household compound & settlement space (Q41 / plan settlements-npcs-011
       for (const house of houses) {
         expect(house.finalFallback, `${size} seed ${seed} ${house.id} final fallback`).toBeUndefined()
         for (const other of layout.plots) {
-          if (other === house || other.role === 'sale') continue
+          // Cemetery: circumscribed disc is conservative — its rectangle clearance is asserted separately.
+          if (other === house || other.role === 'sale' || other.role === 'cemetery') continue
           for (const d of house.discs!) {
             for (const e of other.discs ?? [{ x: other.x, z: other.z, radius: other.radius }]) {
               expect(overlapGap(d, e), `${size} seed ${seed} ${house.id}<->${other.id}`).toBeGreaterThanOrEqual(-0.01)
@@ -627,7 +631,8 @@ describe('household compound & settlement space (Q41 / plan settlements-npcs-011
     // part of the household-yard/garden capacity this plan calibrates.
     for (const { seed, layout } of layoutsFor(size)) {
       for (const plot of layout.plots) {
-        if (plot.role === 'sale') continue
+        // Sale plots and the cemetery reservation (Q58) sit on the outer band by design.
+        if (plot.role === 'sale' || plot.role === 'cemetery') continue
         const dist = Math.hypot(plot.x - layout.center.x, plot.z - layout.center.z)
         expect(dist + plot.radius, `${size} seed ${seed} ${plot.id}`).toBeLessThanOrEqual(
           layout.boundary.radius + 0.5,
@@ -737,7 +742,8 @@ describe('settlement storehouse (Q43 / Q36 plan)', () => {
       // family identity untouched
       expect(layout.plots.filter((p) => p.role === 'house')).toHaveLength(families.length)
       for (const other of layout.plots) {
-        if (other === store || other.role === 'sale') continue
+        // The cemetery's circumscribed disc is conservative; its rectangle clearance is asserted in the Q58 block.
+        if (other === store || other.role === 'sale' || other.role === 'cemetery') continue
         for (const e of other.discs ?? [{ x: other.x, z: other.z, radius: other.radius }]) {
           expect(gap(store, e), `${size} ${seed} storehouse<->${other.id}`).toBeGreaterThanOrEqual(-0.01)
         }
@@ -753,5 +759,74 @@ describe('settlement storehouse (Q43 / Q36 plan)', () => {
 
   it('is deterministic', () => {
     expect(layoutFor('MD', 8).layout.plots).toEqual(layoutFor('MD', 8).layout.plots)
+  })
+})
+
+describe('planVillageLayout cemetery reservation (Q58)', () => {
+  const SEEDS = Array.from({ length: 12 }, (_, i) => i * 11 + 3)
+  const plan = (size: VillageIdentity['size'], seed: number, isHome = false) => {
+    const id = identity({ id: `cem_${size}_${seed}`, size, isHome })
+    const families = generateFamilies(seed, size, isHome, 'polish')
+    return planVillageLayout(id, { x: 0, z: 0, y: 12 }, families, seed, flatHeight, WATER)
+  }
+  const poseOf = (layout: ReturnType<typeof plan>) => {
+    const plot = layout.plots.find((p) => p.id === CEMETERY_PLOT_ID)
+    return plot
+      ? { plot, pose: { x: plot.x, z: plot.z, rotationY: plot.rotation, size: plot.cemetery!.size, scale: plot.cemetery!.scale } }
+      : null
+  }
+
+  it.each(['OUTPOST', 'MD', 'LG', 'XL'] as const)('%s: always reserves one cemetery', (size) => {
+    for (const seed of SEEDS) {
+      const hit = poseOf(plan(size, seed))
+      expect(hit, `${size} seed ${seed}`).not.toBeNull()
+      expect(hit!.plot.role).toBe('cemetery')
+    }
+  })
+
+  it('SM reserves only for the home settlement', () => {
+    for (const seed of SEEDS) {
+      expect(poseOf(plan('SM', seed)), `SM seed ${seed}`).toBeNull()
+      expect(poseOf(plan('SM', seed, true)), `home SM seed ${seed}`).not.toBeNull()
+    }
+  })
+
+  it.each(['OUTPOST', 'SM', 'MD', 'LG', 'XL'] as const)('%s: rectangle clears every other plot disc and every path; entrance faces the plaza', (size) => {
+    for (const seed of SEEDS) {
+      const layout = plan(size, seed, size === 'SM')
+      const hit = poseOf(layout)
+      if (!hit) continue
+      for (const other of layout.plots) {
+        if (other.id === CEMETERY_PLOT_ID) continue
+        for (const d of other.discs ?? [{ x: other.x, z: other.z, radius: other.radius }]) {
+          // Household compounds are measured like the terrain-side clearings (0.85 of the compound disc).
+          const gap = cemeteryPlotDistanceToPoint(hit.pose, d.x, d.z) - d.radius * (other.role === 'house' ? 0.85 : 1)
+          expect(gap, `${size} seed ${seed} ${other.id}`).toBeGreaterThanOrEqual(CEMETERY_CLEARING_PAD - 0.01)
+        }
+      }
+      for (const path of layout.paths) {
+        // The lane that serves the cemetery ends at its gate side on purpose.
+        if (path.id === `path-plot-${CEMETERY_PLOT_ID}`) continue
+        for (let i = 0; i < path.points.length - 1; i++) {
+          const a = path.points[i]!
+          const b = path.points[i + 1]!
+          expect(
+            cemeteryPlotDistanceToSegment(hit.pose, a.x, a.z, b.x, b.z) - path.halfWidth,
+            `${size} seed ${seed} ${path.id}`,
+          ).toBeGreaterThanOrEqual(0.25)
+        }
+      }
+      const toCenter = Math.atan2(layout.center.x - hit.pose.x, layout.center.z - hit.pose.z)
+      expect(Math.cos(toCenter - hit.pose.rotationY)).toBeGreaterThan(0.99)
+    }
+  })
+
+  it('is deterministic and does not change the house layout', () => {
+    for (const size of ['MD', 'LG'] as const) {
+      const a = plan(size, 7)
+      const b = plan(size, 7)
+      expect(a.plots).toEqual(b.plots)
+      expect(a.plots.filter((p) => p.role === 'house').length).toBeGreaterThan(0)
+    }
   })
 })

@@ -113,28 +113,39 @@ Generated from exported TypeScript symbols.
 - `createSimpleFireBase` — function — line 244
 - `preloadCampfireTemplates` — function — line 53
 
+## `settlement/cemeteryFit.ts`
+
+- `CEMETERY_CHUNK_EDGE_MARGIN` — const — line 23
+- `CEMETERY_CLEARING_PAD` — const — line 32
+- `cemeteryFitsOwnerChunk` — function — line 52
+- `CemeteryGround` — type — line 35
+- `cemeteryGroundFits` — function — line 113
+- `CemeteryPlotPose` — type — line 42
+- `projectIntoOwnerChunk` — function — line 70
+- `rotatedPlotHalfExtents` — function — line 45
+
 ## `settlement/cemeteryLayout.ts`
 
-- `CEMETERY_PIECE_HALF_EXTENTS` — const — line 51
-- `cemeteryCounts` — function — line 114
-- `cemeteryCryptLayout` — function — line 152
-- `CemeteryCryptPose` — type — line 72
-- `cemeteryGraveLayout` — function — line 120
-- `CemeteryGraveSlot` — type — line 60
-- `cemeteryLocalToWorld` — function — line 208
-- `CemeteryMarkerPieceId` — type — line 48
-- `CemeteryObb` — type — line 218
-- `cemeteryObbColliders` — function — line 226
-- `CemeteryPieceId` — type — line 47
-- `cemeteryPlotDistanceToPoint` — function — line 267
-- `cemeteryPlotDistanceToSegment` — function — line 285
-- `cemeteryPlotExtents` — function — line 102
-- `cemeteryPlotRadius` — function — line 108
-- `CemeterySize` — type — line 15
-  - domain: world-terrain
-- `hash01` — function — line 85
-- `isAbandonedCemeteryLandmarkId` — function — line 202
-- `pickCemeteryMarkerPiece` — function — line 190
+- `CEMETERY_PIECE_HALF_EXTENTS` — const — line 69
+- `cemeteryCounts` — function — line 132
+- `cemeteryCryptLayout` — function — line 170
+- `CemeteryCryptPose` — type — line 90
+- `cemeteryGraveLayout` — function — line 138
+- `CemeteryGraveSlot` — type — line 78
+- `cemeteryLocalToWorld` — function — line 226
+- `CemeteryMarkerPieceId` — type — line 66
+- `CemeteryObb` — type — line 236
+- `cemeteryObbColliders` — function — line 244
+- `CemeteryPieceId` — type — line 65
+- `cemeteryPlotDistanceToPoint` — function — line 285
+- `cemeteryPlotDistanceToSegment` — function — line 303
+- `cemeteryPlotExtents` — function — line 120
+- `cemeteryPlotRadius` — function — line 126
+- `CemeterySize` — type — line 17
+- `cemeterySizeForServedSizes` — function — line 22
+- `hash01` — function — line 103
+- `isAbandonedCemeteryLandmarkId` — function — line 220
+- `pickCemeteryMarkerPiece` — function — line 208
 
 ## `settlement/cemeteryMesh.ts`
 
@@ -147,6 +158,15 @@ Generated from exported TypeScript symbols.
 - `CemeteryPiecePack` — type — line 21
 - `loadCemeteryPack` — function — line 110
 - `peekCemeteryPack` — function — line 135
+
+## `settlement/cemeteryReservation.ts`
+
+- `CEMETERY_LANE_ID` — const — line 43
+- `CEMETERY_PLOT_ID` — const — line 40
+- `CemeteryReservationPose` — type — line 45
+- `DEFAULT_RESERVATION_CHUNK_SIZE` — const — line 37
+- `planCemeteryReservation` — function — line 74
+- `settlementReservesCemetery` — function — line 56
 
 ## `settlement/createSettlement.ts`
 
@@ -1412,13 +1432,13 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/settlementWorldgenCache.ts`
 
-- `createSettlementWorldgenCache` — function — line 603
+- `createSettlementWorldgenCache` — function — line 607
   - domain: settlements
   - system: worldgen-cache
-- `isValidSettlementDefPayload` — function — line 521
+- `isValidSettlementDefPayload` — function — line 525
   - domain: settlements
   - system: worldgen-cache
-- `isValidSettlementWorldgenPayload` — function — line 568
+- `isValidSettlementWorldgenPayload` — function — line 572
   - domain: settlements
   - system: worldgen-cache
 - `parseSettlementCellSubKey` — function — line 107
@@ -1438,7 +1458,7 @@ Generated from exported TypeScript symbols.
   - system: worldgen-cache
 - `SettlementLostTreasureHostsPayload` — type — line 79
 - `SettlementProgressionIdentity` — type — line 89
-- `SettlementWorldgenCache` — type — line 577
+- `SettlementWorldgenCache` — type — line 581
 - `SettlementWorldgenCachePayload` — type — line 85
 
 ## `settlement/storageDestinations.ts`
@@ -1581,54 +1601,56 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/villageLanes.ts`
 
-- `createLaneRouter` — function — line 374
-- `laneAccessPoint` — function — line 247
-- `LaneDestination` — type — line 62
-- `LaneEntrance` — type — line 91
-- `LaneRouter` — type — line 372
-- `planVillageLanes` — function — line 267
-- `VillageLanePlan` — type — line 93
+- `createLaneRouter` — function — line 402
+- `laneAccessPoint` — function — line 269
+- `LaneDestination` — type — line 70
+- `LaneEntrance` — type — line 99
+- `LaneRouter` — type — line 400
+- `planVillageLanes` — function — line 294
+- `VillageLanePlan` — type — line 101
 
 ## `settlement/villagePaddock.ts`
 
-- `appendPaddockPath` — function — line 391
-- `horseVendorSetupChance` — function — line 68
-- `paddockFencePlacements` — function — line 438
-- `PaddockPlanArgs` — type — line 95
-- `paddockRadiusFor` — function — line 82
-- `paddockSlotCountForRadius` — function — line 87
-- `planSettlementPaddock` — function — line 312
+- `appendPaddockPath` — function — line 410
+- `horseVendorSetupChance` — function — line 70
+- `paddockFencePlacements` — function — line 432
+- `PaddockPlanArgs` — type — line 97
+- `paddockRadiusFor` — function — line 84
+- `paddockSlotCountForRadius` — function — line 89
+- `planSettlementPaddock` — function — line 320
   - domain: settlements
-- `settlementRollsHorseVendor` — function — line 76
-- `vendorHorseAnimalId` — function — line 91
+- `settlementRollsHorseVendor` — function — line 78
+- `vendorHorseAnimalId` — function — line 93
 
 ## `settlement/villagePasture.ts`
 
-- `appendPasturePath` — function — line 450
-- `fenceSegmentPlacements` — function — line 516
-- `pastureFencePlacements` — function — line 556
-- `PasturePlanArgs` — type — line 88
-- `pastureRadiusFor` — function — line 81
-- `planSettlementPasture` — function — line 359
-- `settlementWantsPasture` — function — line 72
+- `appendPasturePath` — function — line 556
+- `fenceSegmentPlacements` — function — line 597
+- `pastureFencePlacements` — function — line 637
+- `PasturePlanArgs` — type — line 89
+- `pastureRadiusFor` — function — line 82
+- `planSettlementPasture` — function — line 360
+- `planSpurPoints` — function — line 473
+- `settlementWantsPasture` — function — line 73
+- `spurClearsFence` — function — line 452
 
 ## `settlement/villagePlan.ts`
 
-- `communalFenceFallbackStructureId` — function — line 235
+- `communalFenceFallbackStructureId` — function — line 238
 - `DEFAULT_PLAZA_RADIUS` — const — line 67
 - `FoodSourceType` — type — line 12
-- `householdFenceStructureId` — function — line 226
-- `householdWellLandmarkId` — function — line 262
-- `householdWellPlotId` — function — line 248
+- `householdFenceStructureId` — function — line 229
+- `householdWellLandmarkId` — function — line 265
+- `householdWellPlotId` — function — line 251
 - `isTreeWorkEligible` — function — line 113
-- `loggingWagonStructureId` — function — line 242
-- `noticeBoardPlotId` — function — line 284
-- `PADDOCK_ID` — const — line 326
-- `paddockPathId` — function — line 328
-- `parseHouseholdWellFamilyIndex` — function — line 254
-- `PASTURE_ID` — const — line 312
-- `pasturePathId` — function — line 321
-- `pastureWellLandmarkId` — function — line 316
+- `loggingWagonStructureId` — function — line 245
+- `noticeBoardPlotId` — function — line 287
+- `PADDOCK_ID` — const — line 329
+- `paddockPathId` — function — line 331
+- `parseHouseholdWellFamilyIndex` — function — line 257
+- `PASTURE_ID` — const — line 315
+- `pasturePathId` — function — line 324
+- `pastureWellLandmarkId` — function — line 319
 - `plannedCampfireBodyKind` — function — line 105
 - `plannedCampfireFootprint` — function — line 101
 - `PLAZA_CAMPFIRE_FOOTPRINT` — const — line 93
@@ -1636,29 +1658,29 @@ Generated from exported TypeScript symbols.
 - `PLAZA_TREE_WORK_MARGIN` — const — line 111
 - `plazaRadiusForSize` — function — line 71
 - `plazaUsesMasonryFirepit` — function — line 97
-- `residentialFoundationStructureId` — function — line 219
-- `residentialStructureId` — function — line 210
+- `residentialFoundationStructureId` — function — line 222
+- `residentialStructureId` — function — line 213
 - `SettlementCharacter` — type — line 21
   - domain: settlements
-- `storehousePlotId` — function — line 279
+- `storehousePlotId` — function — line 282
 - `VillageBoundary` — type — line 41
-- `VillageBuildingPlan` — type — line 189
-- `VillageBuildingRole` — type — line 181
+- `VillageBuildingPlan` — type — line 192
+- `VillageBuildingRole` — type — line 184
 - `VillageCenter` — type — line 49
-- `VillageEntrance` — type — line 406
+- `VillageEntrance` — type — line 409
 - `VillageIdentity` — type — line 25
-- `VillageLandmarkKind` — type — line 266
-- `VillageLandmarkPlan` — type — line 288
-- `VillageLayoutPattern` — type — line 418
-- `VillagePaddockPlan` — type — line 387
+- `VillageLandmarkKind` — type — line 269
+- `VillageLandmarkPlan` — type — line 291
+- `VillageLayoutPattern` — type — line 421
+- `VillagePaddockPlan` — type — line 390
   - domain: settlements
-- `VillagePastureAnchor` — type — line 347
-- `VillagePastureFenceSegment` — type — line 338
+- `VillagePastureAnchor` — type — line 350
+- `VillagePastureFenceSegment` — type — line 341
   - domain: settlements
-- `VillagePasturePlan` — type — line 362
+- `VillagePasturePlan` — type — line 365
   - domain: settlements
-- `VillagePathPlan` — type — line 302
-- `VillagePlan` — type — line 434
+- `VillagePathPlan` — type — line 305
+- `VillagePlan` — type — line 437
 - `VillagePlaza` — type — line 60
 - `villagePlazaAt` — function — line 84
 - `VillagePlot` — type — line 141
@@ -1672,16 +1694,16 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/villagePlanner.ts`
 
-- `buildingsAndLandmarksFromPlots` — function — line 1511
-- `chooseLayoutPattern` — function — line 172
-- `HOUSE_COMPOUND_GAP_FACTOR` — const — line 87
-- `householdWellLocalBand` — function — line 99
+- `buildingsAndLandmarksFromPlots` — function — line 1553
+- `chooseLayoutPattern` — function — line 176
+- `HOUSE_COMPOUND_GAP_FACTOR` — const — line 91
+- `householdWellLocalBand` — function — line 103
   - domain: settlements-npcs
-- `pathPlansToCorridorData` — function — line 1904
-- `planLocalPathsAndEntrances` — function — line 1780
-- `planVillageLayout` — function — line 1014
-- `PLOT_SCORE_WEIGHTS` — const — line 60
-- `VillageLayoutDraft` — type — line 135
+- `pathPlansToCorridorData` — function — line 1966
+- `planLocalPathsAndEntrances` — function — line 1837
+- `planVillageLayout` — function — line 1018
+- `PLOT_SCORE_WEIGHTS` — const — line 62
+- `VillageLayoutDraft` — type — line 139
 
 ## `settlement/wellInteractionQueue.ts`
 

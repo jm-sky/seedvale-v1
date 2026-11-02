@@ -109,6 +109,7 @@ Generated from TypeScript imports.
 - `player/playerDamage.ts`
 - `settlement/PlacedFires.ts`
 - `settlement/SettlementsManager.ts`
+- `settlement/cemeteryReservation.ts`
 - `settlement/createSettlement.ts`
 - `settlement/findSettlementSite.ts`
 - `settlement/livestock.ts`

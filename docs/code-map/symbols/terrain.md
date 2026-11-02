@@ -57,58 +57,57 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/cemeteryAssignment.ts`
 
-- `ABANDONED_SETTLEMENT_MIN_DISTANCE` — const — line 52
-- `activeTopologyNear` — function — line 254
-- `assignmentVariationSeed` — function — line 234
-- `CEMETERY_SETTLEMENT_GATHER_RADIUS` — const — line 50
-- `CemeteryAssignment` — type — line 33
-- `cemeteryAssignmentFromTopology` — function — line 224
-- `cemeteryAssignmentId` — function — line 96
-- `CemeteryAssignmentIntent` — type — line 23
-- `cemeteryIdForAbandoned` — function — line 107
-- `cemeteryIdForAssignment` — function — line 101
-- `CemeterySettlementRef` — type — line 14
-- `cemeterySizeForServedSizes` — function — line 211
-- `CemeteryTopologyIntent` — type — line 26
-- `clearCemeteryCaches` — function — line 57
-- `collectSettlementRefsNear` — function — line 65
-- `dedicatedCemeteryTopology` — function — line 163
-- `isAbandonedCemeteryId` — function — line 117
-- `isLegacyCemeteryId` — function — line 112
-- `makeSettlementRefPeek` — function — line 40
-- `PeekSettlementDef` — type — line 37
-- `PeekSettlementRef` — type — line 38
-- `resolveCemeteryTopologyForSettlement` — function — line 188
+- `ABANDONED_SETTLEMENT_MIN_DISTANCE` — const — line 59
+- `activeTopologyNear` — function — line 264
+- `assignmentVariationSeed` — function — line 244
+- `CEMETERY_SETTLEMENT_GATHER_RADIUS` — const — line 57
+- `CemeteryAssignment` — type — line 40
+- `cemeteryAssignmentFromTopology` — function — line 234
+- `cemeteryAssignmentId` — function — line 114
+- `CemeteryAssignmentIntent` — type — line 30
+- `cemeteryIdForAbandoned` — function — line 125
+- `cemeteryIdForAssignment` — function — line 119
+- `CemeterySettlementRef` — type — line 16
+- `CemeteryTopologyIntent` — type — line 33
+- `clearCemeteryCaches` — function — line 64
+- `collectSettlementRefsNear` — function — line 83
+- `dedicatedCemeteryTopology` — function — line 187
+- `isAbandonedCemeteryId` — function — line 135
+- `isLegacyCemeteryId` — function — line 130
+- `makeSettlementRefPeek` — function — line 47
+- `PeekSettlementDef` — type — line 44
+- `PeekSettlementRef` — type — line 45
+- `resolveCemeteryTopologyForSettlement` — function — line 212
   - domain: world-terrain
-- `resolveSmSharePartner` — function — line 150
-- `servedSettlementIdsForCemeteryId` — function — line 242
+- `resolveSmSharePartner` — function — line 174
+- `servedSettlementIdsForCemeteryId` — function — line 252
   - domain: world-terrain
-- `settlementRefFromDef` — function — line 61
-- `SM_SHARING_CELL_RADIUS` — const — line 46
-- `SM_SHARING_MAX_DISTANCE` — const — line 48
+- `settlementRefFromDef` — function — line 74
+- `SM_SHARING_CELL_RADIUS` — const — line 53
+- `SM_SHARING_MAX_DISTANCE` — const — line 55
 
 ## `terrain/cemeteryPlacement.ts`
 
-- `ABANDONED_CEMETERY_CHANCE` — const — line 54
-- `abandonedCemeteryMaxOffsetFromCenter` — function — line 63
+- `ABANDONED_CEMETERY_CHANCE` — const — line 50
+- `abandonedCemeteryMaxOffsetFromCenter` — function — line 59
   - domain: world-terrain
-- `chunkPassesAbandonedCemeteryRoll` — function — line 80
+- `chunkPassesAbandonedCemeteryRoll` — function — line 76
   - domain: world-terrain
-- `clearCemeteryPlacementCaches` — function — line 421
-- `getCachedPlacementForAssignment` — function — line 463
-- `isSharedAssignmentSplit` — function — line 459
-- `placementOwnerChunk` — function — line 553
-- `resolveAbandonedCemeteryAfterRoll` — function — line 500
+- `clearCemeteryPlacementCaches` — function — line 356
+- `getCachedPlacementForAssignment` — function — line 398
+- `isSharedAssignmentSplit` — function — line 394
+- `placementOwnerChunk` — function — line 488
+- `resolveAbandonedCemeteryAfterRoll` — function — line 435
   - domain: world-terrain
-- `resolveAbandonedCemeteryForChunk` — function — line 510
-- `resolveCemeteriesForChunk` — function — line 575
+- `resolveAbandonedCemeteryForChunk` — function — line 445
+- `resolveCemeteriesForChunk` — function — line 510
   - domain: world-terrain
-- `resolveCemeteryPlacement` — function — line 606
-- `ResolvedCemeteryPlacement` — type — line 84
-- `resolvedPlacementToEnvironment` — function — line 470
-- `resolvePlacementForTopology` — function — line 439
+- `resolveCemeteryPlacement` — function — line 541
+- `ResolvedCemeteryPlacement` — type — line 80
+- `resolvedPlacementToEnvironment` — function — line 405
+- `resolvePlacementForTopology` — function — line 374
   - domain: world-terrain
-- `validateCemeteryPhysical` — function — line 260
+- `validateCemeteryPhysical` — function — line 191
 
 ## `terrain/chunkCrops.ts`
 
@@ -116,34 +115,33 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/chunkEnvironment.ts`
 
-- `CEMETERY_CLEARING_PAD` — const — line 138
-- `CEMETERY_INNER_FRAC` — const — line 136
-- `CEMETERY_OUTER_FRAC` — const — line 137
-- `cemeteryFitsVillageFringe` — function — line 222
-- `cemeteryFootprintClearsRoads` — function — line 273
-- `CemeteryTerrainSampler` — type — line 410
-- `clearCemeteryPlots` — function — line 385
-- `clearVegetationAroundOldTrees` — function — line 348
-- `computeChunkEnvironment` — function — line 549
-- `deriveLandmarkId` — function — line 324
-- `deriveMineableRockResourceId` — function — line 334
-- `EnvironmentKind` — type — line 19
-- `EnvironmentPlacement` — type — line 35
-- `isClassicLandmarkKind` — function — line 536
-- `LANDMARK_BIAS_MAX` — const — line 140
-- `LANDMARK_BIAS_MIN` — const — line 139
-- `LANDMARK_LABELS` — const — line 161
-- `LandmarkBiasInput` — type — line 174
-- `LandmarkBiasKind` — type — line 142
-- `landmarkChanceBias` — function — line 195
-- `LandmarkKind` — type — line 147
-- `LandmarkTerrainSampler` — type — line 421
+- `CEMETERY_INNER_FRAC` — const — line 137
+- `CEMETERY_OUTER_FRAC` — const — line 138
+- `cemeteryFitsVillageFringe` — function — line 223
+- `cemeteryFootprintClearsRoads` — function — line 274
+- `CemeteryTerrainSampler` — type — line 414
+- `clearCemeteryPlots` — function — line 389
+- `clearVegetationAroundOldTrees` — function — line 352
+- `computeChunkEnvironment` — function — line 553
+- `deriveLandmarkId` — function — line 328
+- `deriveMineableRockResourceId` — function — line 338
+- `EnvironmentKind` — type — line 20
+- `EnvironmentPlacement` — type — line 36
+- `isClassicLandmarkKind` — function — line 540
+- `LANDMARK_BIAS_MAX` — const — line 141
+- `LANDMARK_BIAS_MIN` — const — line 140
+- `LANDMARK_LABELS` — const — line 162
+- `LandmarkBiasInput` — type — line 175
+- `LandmarkBiasKind` — type — line 143
+- `landmarkChanceBias` — function — line 196
+- `LandmarkKind` — type — line 148
+- `LandmarkTerrainSampler` — type — line 425
   - domain: world-terrain
-- `OLD_TREE_CLEARANCE_RADIUS` — const — line 127
-- `resolveClassicLandmarkPlacement` — function — line 491
+- `OLD_TREE_CLEARANCE_RADIUS` — const — line 128
+- `resolveClassicLandmarkPlacement` — function — line 495
   - domain: world-terrain
-- `rollCemeterySize` — function — line 301
-- `VillageDisk` — type — line 183
+- `rollCemeterySize` — function — line 305
+- `VillageDisk` — type — line 184
 
 ## `terrain/chunkGrid.ts`
 
