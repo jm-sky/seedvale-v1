@@ -15,12 +15,12 @@ import {
   PointLight,
   Vector3,
 } from 'three'
+import type { CharacterAppearance } from '../../characters/characterTypes'
 import type { KeyState } from '../../input/Keyboard'
 import type { CaveWalkWorld } from './caveHeightfieldWalkWorld'
 import { prepareProp } from '../../assets/loadGltf'
 import { assembleCharacter } from '../../characters/assembleCharacter'
 import { baseGarments } from '../../characters/baseGarments'
-import type { CharacterAppearance } from '../../characters/characterTypes'
 import {
   CAMERA_DISTANCE_DEFAULT,
   CAMERA_DISTANCE_MIN,
