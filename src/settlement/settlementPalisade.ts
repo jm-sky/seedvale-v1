@@ -34,6 +34,17 @@ const PALISADE_SEGMENTS_PER_SIDE: Record<VillageSize, number> = {
   XL: 4,
 }
 
+/** Extra short landward sections away from every entrance (author Q66,
+ *  2026-11-02: "a few fences in a few places", no full ring) and how many wall
+ *  segments each holds. */
+const PALISADE_EXTRA_SECTIONS: Record<VillageSize, { sections: number; segments: number }> = {
+  OUTPOST: { sections: 1, segments: 1 },
+  SM: { sections: 2, segments: 2 },
+  MD: { sections: 2, segments: 2 },
+  LG: { sections: 2, segments: 3 },
+  XL: { sections: 2, segments: 3 },
+}
+
 /** Fallback palisade stake if `wall.glb` fails to load. */
 function createPalisadeStake(): THREE.Group {
   const g = new THREE.Group()
@@ -143,32 +154,50 @@ function rejectSegment(
   return pointHitsCorridor(x, z, corridors, WALL_HALF_LENGTH + 0.4)
 }
 
-function pushWingSegments(
-  placements: SettlementPalisadePlacement[],
-  site: SettlementSite,
-  radius: number,
-  outward: number,
+function twoPi(a: number): number {
+  const m = a % (Math.PI * 2)
+  return m < 0 ? m + Math.PI * 2 : m
+}
+
+/** Wall-segment angles of the extra landward sections: the widest angular gaps
+ *  between the gates (ties → lower start angle, deterministic), each centred
+ *  in its gap and only used when the gap fits gates + the section. */
+function landwardSectionAngles(
+  gateAngles: readonly number[],
   gateHalf: number,
   step: number,
-  segmentsPerSide: number,
-  sampleHeight: (x: number, z: number) => number,
-  coastEnv: CoastalSamplers,
-  corridors: readonly RoadCorridorSegment[],
-): void {
-  for (const side of [-1, 1] as const) {
-    for (let i = 0; i < segmentsPerSide; i++) {
-      const ang = outward + side * (gateHalf + step * (i + 0.5))
-      const x = site.x + Math.cos(ang) * radius
-      const z = site.z + Math.sin(ang) * radius
-      if (rejectSegment(x, z, coastEnv, corridors)) continue
-      placements.push(segmentPlacement(site, radius, ang, sampleHeight))
+  config: { sections: number; segments: number },
+): number[] {
+  const sorted = gateAngles.map(twoPi).sort((a, b) => a - b)
+  const gaps: { start: number; width: number }[] = []
+  if (sorted.length === 0) gaps.push({ start: 0, width: Math.PI * 2 })
+  else {
+    for (let i = 0; i < sorted.length; i++) {
+      const start = sorted[i]!
+      const next = i + 1 < sorted.length ? sorted[i + 1]! : sorted[0]! + Math.PI * 2
+      gaps.push({ start, width: next - start })
     }
   }
+  gaps.sort((a, b) => b.width - a.width || a.start - b.start)
+  const need = (sorted.length === 0 ? 0 : 2 * gateHalf) + config.segments * step
+  const angles: number[] = []
+  for (const gap of gaps.slice(0, config.sections)) {
+    if (gap.width < need) continue
+    const mid = gap.start + gap.width / 2
+    for (let j = 0; j < config.segments; j++) {
+      angles.push(mid + (j - (config.segments - 1) / 2) * step)
+    }
+  }
+  return angles
 }
 
 /**
  * Resolves the final settlement entrance palisade segment placements.
- * `default` keeps short palisade wings beside the main inland entrance.
+ * `default` keeps short palisade wings beside **every** inland road/path
+ * entrance plus a few short landward sections in the widest gaps between
+ * entrances (never a full ring; Q66). Coastal candidates are rejected one by
+ * one, so a village whose entrances are all coastal still gets its landward
+ * sections.
  * `closed` fills substantially more of the same ring, leaving a gate gap at
  * every planned inland road/path entrance and still rejecting coast/corridor
  * hits. Not a second palisade implementation.
@@ -192,12 +221,7 @@ export function resolveEntrancePalisadePlacements(
 
   const coastEnv: CoastalSamplers = coast ?? { sampleHeight, waterLevel }
   const radius = palisadeRadius(plan, size)
-  const entrances = plan?.entrances ?? []
   const inland = inlandEntrancesOf(plan, coastEnv)
-  if (!inland[0] && entrances.length > 0) {
-    // Every planned entrance is coastal — skip palisade rather than wall the sea.
-    return []
-  }
 
   const gateHalf = palisadeGateHalf(radius, corridors)
   const step = palisadeStep(radius)
@@ -226,25 +250,31 @@ export function resolveEntrancePalisadePlacements(
     return placements
   }
 
-  const entrance = primaryEntrance(inland)
-  const outward = entrance ? entranceOutward(entrance, site) : 0
-  const gateX = site.x + Math.cos(outward) * radius
-  const gateZ = site.z + Math.sin(outward) * radius
-  if (isCoastalPlacement(gateX, gateZ, coastEnv)) return []
-
+  // No planned entrances at all (legacy/undefined plan): one gate at angle 0.
+  const noPlan = (plan?.entrances.length ?? 0) === 0
+  const gates = noPlan ? [0] : inland.map((entrance) => entranceOutward(entrance, site))
   const placements: SettlementPalisadePlacement[] = []
-  pushWingSegments(
-    placements,
-    site,
-    radius,
-    outward,
-    gateHalf,
-    step,
-    segmentsPerSide,
-    sampleHeight,
-    coastEnv,
-    corridors,
-  )
+  const used: number[] = []
+  const tryPush = (ang: number): void => {
+    if (gates.some((gate) => shortestAngleDelta(ang, gate) < gateHalf)) return
+    if (used.some((u) => shortestAngleDelta(ang, u) < step * 0.9)) return
+    const x = site.x + Math.cos(ang) * radius
+    const z = site.z + Math.sin(ang) * radius
+    if (rejectSegment(x, z, coastEnv, corridors)) return
+    used.push(ang)
+    placements.push(segmentPlacement(site, radius, ang, sampleHeight))
+  }
+
+  for (const outward of gates) {
+    for (const side of [-1, 1] as const) {
+      for (let i = 0; i < segmentsPerSide; i++) {
+        tryPush(outward + side * (gateHalf + step * (i + 0.5)))
+      }
+    }
+  }
+  for (const ang of landwardSectionAngles(gates, gateHalf, step, PALISADE_EXTRA_SECTIONS[size])) {
+    tryPush(ang)
+  }
   return placements
 }
 
