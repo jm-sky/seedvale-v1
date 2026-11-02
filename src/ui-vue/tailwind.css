@@ -15,50 +15,91 @@
 /* Design tokens (plan 046 / review 007 C9) — warm V3 palette (orange primary) is the
  * source of truth. shadcn `:root` aliases map onto the same panel/ink values so leftover
  * `bg-background` / `text-foreground` on `body` cannot flash a light page. */
-@theme {
-  --color-panel: oklch(0.23 0.02 60 / 0.92);
-  --color-panel-backdrop: oklch(0.12 0.015 60 / 0.55);
-  --color-ink: oklch(0.95 0.02 85);
 
-  --color-primary: oklch(0.78 0.12 75);
-}
+/* ==========================================
+   SeedVale Design System — Color Palette
+   ========================================== */
 
 :root {
   --min-screen-width: 800;
   --radius: 0.625rem;
-  --background: oklch(0.17 0.015 60);
-  --foreground: oklch(0.95 0.02 85);
+
+  /* Surfaces */
+  --sv-background: oklch(0.17 0.015 60);
+  --sv-panel: oklch(0.23 0.02 60 / 0.92);
+  --sv-panel-solid: oklch(0.23 0.02 60 / 0.95);
+  --sv-panel-detail: oklch(0.23 0.02 60 / 0.98);
+  --sv-backdrop: oklch(0.12 0.015 60 / 0.55);
+
+  /* Text and accents */
+  --sv-ink: oklch(0.95 0.02 85);
+  --sv-primary: oklch(0.78 0.12 75);
+  --sv-border: oklch(0.45 0.03 70 / 0.6);
+
+  /* Semantic */
+  --sv-good: oklch(0.75 0.15 145);
+  --sv-bad: oklch(0.68 0.19 27);
+  --sv-warn: oklch(0.8 0.15 80);
+  --sv-edge: oklch(0.78 0.1 230);
+
+  /* Neutral scale — V3 */
+  --sv-neutral-50: oklch(0.97 0.012 85);
+  --sv-neutral-100: oklch(0.95 0.02 85);
+  --sv-neutral-200: oklch(0.89 0.025 82);
+  --sv-neutral-300: oklch(0.82 0.03 80);
+  --sv-neutral-400: oklch(0.72 0.035 78);
+  --sv-neutral-500: oklch(0.6 0.035 72);
+  --sv-neutral-600: oklch(0.47 0.035 68);
+  --sv-neutral-700: oklch(0.38 0.03 65);
+  --sv-neutral-800: oklch(0.3 0.025 62);
+  --sv-neutral-900: oklch(0.23 0.02 60);
+  --sv-neutral-950: oklch(0.17 0.015 60);
+
+  /* Existing shadcn compatibility */
+  --background: var(--sv-background);
+  --foreground: var(--sv-ink);
   --destructive: oklch(0.577 0.245 27.325);
   --border: rgba(255, 255, 255, 0.15);
   --input: rgba(255, 255, 255, 0.15);
-  --ring: oklch(0.78 0.12 75);
-  --popover: oklch(0.23 0.02 60 / 0.92);
-  --popover-foreground: oklch(0.95 0.02 85);
-  --card: oklch(0.23 0.02 60 / 0.92);
-  --card-foreground: oklch(0.95 0.02 85);
-  --surface: oklch(0.23 0.02 60 / 0.92);
-  --surface-solid: oklch(0.23 0.02 60 / 0.95);
+  --ring: var(--sv-primary);
+  --popover: var(--sv-panel);
+  --popover-foreground: var(--sv-ink);
+  --card: var(--sv-panel);
+  --card-foreground: var(--sv-ink);
+  --surface: var(--sv-panel);
+  --surface-solid: var(--sv-panel-solid);
 }
 
 @theme inline {
   --font-heading: var(--font-sans);
+
+  --color-panel: var(--sv-panel);
+  --color-panel-backdrop: var(--sv-backdrop);
+  --color-ink: var(--sv-ink);
+  --color-primary: var(--sv-primary);
+
+  --color-good: var(--sv-good);
+  --color-bad: var(--sv-bad);
+  --color-warn: var(--sv-warn);
+  --color-edge: var(--sv-edge);
+
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);
   --color-destructive: var(--destructive);
-  --color-popover-foreground: var(--popover-foreground);
   --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
+  --color-popover-foreground: var(--popover-foreground);
   --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
   --color-foreground: var(--foreground);
   --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-solid: var(--surface-solid);
+
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-
-  --color-surface: var(--surface);
-  --color-surface-solid: var(--surface-solid);
 }
 
 @layer base {
@@ -79,88 +120,47 @@
   }
 }
 
-/*
- * Stage F (ui-input-044): scoped warm V3 Trade / Merchant tokens.
- * Do not apply globally — only `.sv-merchant` (and nested).
- */
-.sv-merchant {
-  --surface: oklch(0.23 0.02 60 / 0.92);
-  --surface-solid: oklch(0.23 0.02 60 / 0.95);
-  --color-neutral-50: oklch(0.97 0.012 85);
-  --color-neutral-100: oklch(0.95 0.02 85);
-  --color-neutral-200: oklch(0.89 0.025 82);
-  --color-neutral-300: oklch(0.82 0.03 80);
-  --color-neutral-400: oklch(0.72 0.035 78);
-  --color-neutral-500: oklch(0.6 0.035 72);
-  --color-neutral-600: oklch(0.47 0.035 68);
-  --color-neutral-700: oklch(0.38 0.03 65);
-  --color-neutral-800: oklch(0.3 0.025 62);
-  --color-neutral-900: oklch(0.23 0.02 60);
-  --color-neutral-950: oklch(0.17 0.015 60);
-  --color-good: oklch(0.75 0.15 145);
-  --color-bad: oklch(0.68 0.19 27);
-  --color-warn: oklch(0.8 0.15 80);
-  --color-edge: oklch(0.78 0.1 230);
-  --color-primary: oklch(0.78 0.12 75);
-  color: oklch(0.95 0.02 85);
-  border-color: oklch(0.45 0.03 70 / 0.6);
-}
 
-/*
- * Stage E (ui-input-043): scoped warm V3 HUD tokens.
- * Do not apply globally — only `.sv-hud` (and nested).
- */
-.sv-hud {
-  --surface: oklch(0.23 0.02 60 / 0.92);
-  --surface-solid: oklch(0.23 0.02 60 / 0.95);
-  --color-neutral-50: oklch(0.97 0.012 85);
-  --color-neutral-100: oklch(0.95 0.02 85);
-  --color-neutral-200: oklch(0.89 0.025 82);
-  --color-neutral-300: oklch(0.82 0.03 80);
-  --color-neutral-400: oklch(0.72 0.035 78);
-  --color-neutral-500: oklch(0.6 0.035 72);
-  --color-neutral-600: oklch(0.47 0.035 68);
-  --color-neutral-700: oklch(0.38 0.03 65);
-  --color-neutral-800: oklch(0.3 0.025 62);
-  --color-neutral-900: oklch(0.23 0.02 60);
-  --color-neutral-950: oklch(0.17 0.015 60);
-  --color-good: oklch(0.75 0.15 145);
-  --color-bad: oklch(0.68 0.19 27);
-  --color-warn: oklch(0.8 0.15 80);
-  --color-edge: oklch(0.78 0.1 230);
-  --color-primary: oklch(0.78 0.12 75);
-  color: oklch(0.95 0.02 85);
-  border-color: oklch(0.45 0.03 70 / 0.6);
-}
+/* Shared V3 palette — scoped to migrated UI */
 
-/*
- * Stage D (ui-input-042): scoped warm V3 Character / Skills tokens.
- * Do not apply globally — only `.sv-character` / `.sv-skills` / `.sv-dialogue` (and nested).
- */
+.sv-merchant,
+.sv-hud,
 .sv-character,
 .sv-dialogue,
-.sv-skills {
-  --surface: oklch(0.23 0.02 60 / 0.92);
-  --surface-solid: oklch(0.23 0.02 60 / 0.95);
-  --color-neutral-50: oklch(0.97 0.012 85);
-  --color-neutral-100: oklch(0.95 0.02 85);
-  --color-neutral-200: oklch(0.89 0.025 82);
-  --color-neutral-300: oklch(0.82 0.03 80);
-  --color-neutral-400: oklch(0.72 0.035 78);
-  --color-neutral-500: oklch(0.6 0.035 72);
-  --color-neutral-600: oklch(0.47 0.035 68);
-  --color-neutral-700: oklch(0.38 0.03 65);
-  --color-neutral-800: oklch(0.3 0.025 62);
-  --color-neutral-900: oklch(0.23 0.02 60);
-  --color-neutral-950: oklch(0.17 0.015 60);
-  --color-good: oklch(0.75 0.15 145);
-  --color-bad: oklch(0.68 0.19 27);
-  --color-warn: oklch(0.8 0.15 80);
-  --color-edge: oklch(0.78 0.1 230);
-  --color-primary: oklch(0.78 0.12 75);
-  color: oklch(0.95 0.02 85);
-  border-color: oklch(0.45 0.03 70 / 0.6);
+.sv-skills,
+.sv-quick-actions,
+.sv-inventory-stage-b,
+.sv-item-detail {
+  --surface: var(--sv-panel);
+  --surface-solid: var(--sv-panel-solid);
+
+  --color-neutral-50: var(--sv-neutral-50);
+  --color-neutral-100: var(--sv-neutral-100);
+  --color-neutral-200: var(--sv-neutral-200);
+  --color-neutral-300: var(--sv-neutral-300);
+  --color-neutral-400: var(--sv-neutral-400);
+  --color-neutral-500: var(--sv-neutral-500);
+  --color-neutral-600: var(--sv-neutral-600);
+  --color-neutral-700: var(--sv-neutral-700);
+  --color-neutral-800: var(--sv-neutral-800);
+  --color-neutral-900: var(--sv-neutral-900);
+  --color-neutral-950: var(--sv-neutral-950);
+
+  --color-good: var(--sv-good);
+  --color-bad: var(--sv-bad);
+  --color-warn: var(--sv-warn);
+  --color-edge: var(--sv-edge);
+  --color-primary: var(--sv-primary);
+
+  color: var(--sv-ink);
+  border-color: var(--sv-border);
 }
+
+/* Preserve Item Detail's stronger opacity */
+.sv-item-detail {
+  --surface-solid: var(--sv-panel-detail);
+}
+
 
 /*
  * Slim warm scrollbar for Character, Inventory, Merchant, Item detail and demos.
@@ -220,96 +220,4 @@
 .sv-item-detail::-webkit-scrollbar-thumb:hover,
 .sv-item-detail *::-webkit-scrollbar-thumb:hover {
   background: oklch(0.62 0.04 72 / 0.65);
-}
-
-/*
- * Stage C (ui-input-041): scoped warm V3 Quick Actions / MenuPanel tokens.
- * Do not apply globally — only `.sv-quick-actions` (and nested).
- */
-.sv-quick-actions {
-  --surface: oklch(0.23 0.02 60 / 0.92);
-  --surface-solid: oklch(0.23 0.02 60 / 0.95);
-  --color-neutral-50: oklch(0.97 0.012 85);
-  --color-neutral-100: oklch(0.95 0.02 85);
-  --color-neutral-200: oklch(0.89 0.025 82);
-  --color-neutral-300: oklch(0.82 0.03 80);
-  --color-neutral-400: oklch(0.72 0.035 78);
-  --color-neutral-500: oklch(0.6 0.035 72);
-  --color-neutral-600: oklch(0.47 0.035 68);
-  --color-neutral-700: oklch(0.38 0.03 65);
-  --color-neutral-800: oklch(0.3 0.025 62);
-  --color-neutral-900: oklch(0.23 0.02 60);
-  --color-neutral-950: oklch(0.17 0.015 60);
-  --color-good: oklch(0.75 0.15 145);
-  --color-bad: oklch(0.68 0.19 27);
-  --color-warn: oklch(0.8 0.15 80);
-  --color-edge: oklch(0.78 0.1 230);
-  --color-primary: oklch(0.78 0.12 75);
-  color: oklch(0.95 0.02 85);
-  border-color: oklch(0.45 0.03 70 / 0.6);
-}
-
-/*
- * Stage B (ui-input-040): scoped warm V3 inventory list + equipment tokens.
- * Do not apply globally — only `.sv-inventory-stage-b` (and nested).
- */
-/*
- * D2(c)/D5: desktop uses V3 two-column composition (list | details+equipment).
- * Narrow drill-down switches below an explicit 1200px floor (not Tailwind lg=1024).
- */
-.sv-inventory-stage-b {
-  --surface: oklch(0.23 0.02 60 / 0.92);
-  --surface-solid: oklch(0.23 0.02 60 / 0.95);
-  --color-neutral-50: oklch(0.97 0.012 85);
-  --color-neutral-100: oklch(0.95 0.02 85);
-  --color-neutral-200: oklch(0.89 0.025 82);
-  --color-neutral-300: oklch(0.82 0.03 80);
-  --color-neutral-400: oklch(0.72 0.035 78);
-  --color-neutral-500: oklch(0.6 0.035 72);
-  --color-neutral-600: oklch(0.47 0.035 68);
-  --color-neutral-700: oklch(0.38 0.03 65);
-  --color-neutral-800: oklch(0.3 0.025 62);
-  --color-neutral-900: oklch(0.23 0.02 60);
-  --color-neutral-950: oklch(0.17 0.015 60);
-  --color-good: oklch(0.75 0.15 145);
-  --color-bad: oklch(0.68 0.19 27);
-  --color-warn: oklch(0.8 0.15 80);
-  --color-edge: oklch(0.78 0.1 230);
-  --color-primary: oklch(0.78 0.12 75);
-  color: oklch(0.95 0.02 85);
-  border-color: oklch(0.45 0.03 70 / 0.6);
-}
-
-/*
- * Stage A (ui-input-039): scoped warm V3 item-card tokens.
- * Do not apply globally — only descendants of `.sv-item-detail`.
- */
-.sv-item-detail {
-  --surface: oklch(0.23 0.02 60 / 0.92);
-  --surface-solid: oklch(0.23 0.02 60 / 0.98);
-  --color-neutral-50: oklch(0.97 0.012 85);
-  --color-neutral-100: oklch(0.95 0.02 85);
-  --color-neutral-200: oklch(0.89 0.025 82);
-  --color-neutral-300: oklch(0.82 0.03 80);
-  --color-neutral-400: oklch(0.72 0.035 78);
-  --color-neutral-500: oklch(0.6 0.035 72);
-  --color-neutral-600: oklch(0.47 0.035 68);
-  --color-neutral-700: oklch(0.38 0.03 65);
-  --color-neutral-800: oklch(0.3 0.025 62);
-  --color-neutral-900: oklch(0.23 0.02 60);
-  --color-neutral-950: oklch(0.17 0.015 60);
-  --color-good: oklch(0.75 0.15 145);
-  --color-bad: oklch(0.68 0.19 27);
-  --color-warn: oklch(0.8 0.15 80);
-  --color-edge: oklch(0.78 0.1 230);
-  --color-primary: oklch(0.78 0.12 75);
-  color: oklch(0.95 0.02 85);
-  border-color: oklch(0.45 0.03 70 / 0.6);
-}
-
-@theme {
-  --color-good: oklch(0.75 0.15 145);
-  --color-bad: oklch(0.68 0.19 27);
-  --color-warn: oklch(0.8 0.15 80);
-  --color-edge: oklch(0.78 0.1 230);
 }

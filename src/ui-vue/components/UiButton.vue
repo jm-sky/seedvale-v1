@@ -16,7 +16,7 @@ const props = withDefaults(defineProps<{
 
 const variantClass = computed(() => {
   if (props.variant === 'primary') {
-    return 'border-white/15 bg-blue-600 text-white hover:bg-blue-500'
+    return 'border-primary/40 bg-primary text-neutral-950 hover:bg-primary/80'
   }
   if (props.variant === 'danger') {
     return 'border-red-400/40 bg-transparent text-red-300 hover:bg-red-400/10'

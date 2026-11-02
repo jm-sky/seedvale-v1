@@ -270,7 +270,7 @@ function useSeedFromLibrary(seed: number): void {
         </p>
         <UiButton
           variant="primary"
-          class="mb-2 w-full !border-primary/40 !bg-primary !text-neutral-950 hover:!bg-amber-300"
+          class="mb-2 w-full"
           @click="submitNew"
         >
           Rozpocznij
