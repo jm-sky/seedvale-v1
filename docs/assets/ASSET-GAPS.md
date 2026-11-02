@@ -68,7 +68,7 @@ NPCs are functional, but character variety is now behind the rest of the world p
 
 Gameplay NPCs all use **Universal Base Characters (UBC)** outfits (plan npc-055): Peasant / Wizard / Ranger / Knight, with shared clips from `ual_humanoid.glb`. Children are scaled Peasant UBC stand-ins. Legacy Modular Men/Women NPC pool GLBs were removed.
 
-The player pipeline uses the same UBC family and companion asset. Runtime UBC assets include male Peasant, Ranger, Knight, Knight Cloth, Noble and Wizard variants under `public/models/characters/ubc/`.
+The player pipeline uses the same UBC family and companion asset. Runtime character bodies are the CharacterKit under `public/assets/characters/`; `public/models/characters/ubc/` now keeps only the pauldron accessories, the Noble pauldron tint and the UAL clip pack (legacy body GLBs removed 2026-11-02).
 
 There are also 14 low-poly medieval people models under `public/models/characters/medieval/`, but they are static/background candidates rather than animated `NpcAgent` characters.
 

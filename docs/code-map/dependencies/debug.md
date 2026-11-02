@@ -44,6 +44,9 @@ Generated from TypeScript imports.
 **Imports**
 
 - `assets/loadGltf.ts`
+- `characters/assembleCharacter.ts`
+- `characters/baseGarments.ts`
+- `characters/characterTypes.ts`
 - `debug/caves/caveHeightfieldTraversal.ts`
 - `debug/caves/caveHeightfieldWalkWorld.ts`
 - `input/Keyboard.ts`

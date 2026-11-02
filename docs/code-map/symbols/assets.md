@@ -40,14 +40,13 @@ Generated from exported TypeScript symbols.
 ## `assets/assetAnchorData.ts`
 
 - `ADVENTURER_HAND_SPACE` — const — line 26
-- `anchorsForAsset` — function — line 179
-- `ASSET_ANCHORS` — const — line 161
-- `CHARACTER_ANCHORS` — const — line 87
-- `CHARACTER_ANCHORS_UBC` — const — line 99
+- `anchorsForAsset` — function — line 166
+- `ASSET_ANCHORS` — const — line 149
+- `CHARACTER_ANCHORS_UBC` — const — line 87
 - `HandAttachSpace` — type — line 18
 - `handAttachSpaceFromSocket` — function — line 77
-- `HELD_TOOL_GRIP_ANCHORS` — const — line 156
-- `heldToolHasGripAnchor` — function — line 186
+- `HELD_TOOL_GRIP_ANCHORS` — const — line 144
+- `heldToolHasGripAnchor` — function — line 173
 - `RIGHT_HAND_BONE_NAMES` — const — line 9
 - `UBC_HAND_FROM_WRIST_R` — const — line 37
 - `UBC_HAND_OFFSET` — const — line 41
@@ -75,18 +74,18 @@ Generated from exported TypeScript symbols.
 ## `assets/assetIndex.ts`
 
 - `assetEntryMatchesQuery` — function — line 208
-- `assetIndexById` — function — line 720
+- `assetIndexById` — function — line 638
 - `AssetIndexEntry` — type — line 98
 - `AssetIndexGroup` — type — line 80
 - `AssetIndexStatus` — type — line 93
 - `AssetPrepare` — type — line 73
 - `basenameFromUrl` — function — line 154
-- `buildAssetIndex` — function — line 448
+- `buildAssetIndex` — function — line 375
 - `CompareGarment` — type — line 96
 - `customUrlEntry` — function — line 230
-- `entryFromUrl` — function — line 734
+- `entryFromUrl` — function — line 652
 - `filterAssetIndex` — function — line 221
-- `findAssetEntry` — function — line 726
+- `findAssetEntry` — function — line 644
 - `formatAssetLabel` — function — line 203
 - `groupFromModelUrl` — function — line 176
 - `kindFromBasename` — function — line 168

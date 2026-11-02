@@ -140,19 +140,6 @@ Generated from TypeScript imports.
 - `tools/assetBrowser/viewer/cameraPersist.test.ts`
 - `tools/assetBrowser/viewer/createMultiView.ts`
 
-## `tools/assetBrowser/viewer/compareCompanionAnimation.test.ts`
-
-**Imports**
-
-- `tools/assetBrowser/viewer/compareCompanionAnimation.ts`
-
-## `tools/assetBrowser/viewer/compareCompanionAnimation.ts`
-
-**Imported by**
-
-- `tools/assetBrowser/viewer/compareCompanionAnimation.test.ts`
-- `tools/assetBrowser/viewer/createAssetSlot.ts`
-
 ## `tools/assetBrowser/viewer/createAnchorGizmos.ts`
 
 **Imports**
@@ -183,7 +170,6 @@ Generated from TypeScript imports.
 - `player/playerVisualPreset.ts`
 - `tools/assetBrowser/hairTint.ts`
 - `tools/assetBrowser/state.ts`
-- `tools/assetBrowser/viewer/compareCompanionAnimation.ts`
 - `tools/assetBrowser/viewer/createAnchorGizmos.ts`
 - `tools/assetBrowser/viewer/mountCompareGarments.ts`
 

@@ -108,8 +108,6 @@ Generated from TypeScript imports.
 - `player/physicalWorkStrength.test.ts`
 - `player/playerDamage.test.ts`
 - `player/playerDamage.ts`
-- `player/playerVisualPreset.test.ts`
-- `player/playerVisualPreset.ts`
 - `settlement/PlacedFires.ts`
 - `settlement/SettlementsManager.ts`
 - `settlement/createSettlement.ts`
@@ -682,7 +680,6 @@ Generated from TypeScript imports.
 **Imports**
 
 - `characters/characterFiles.ts`
-- `player/PlayerController.ts`
 - `player/playerVisualPreset.ts`
 
 ## `player/playerVisualPreset.ts`
@@ -693,7 +690,6 @@ Generated from TypeScript imports.
 - `characters/characterFiles.ts`
 - `characters/characterTypes.ts`
 - `debug/debugMode.ts`
-- `player/PlayerController.ts`
 
 **Imported by**
 

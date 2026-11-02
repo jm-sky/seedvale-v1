@@ -25,8 +25,8 @@ Generated from exported TypeScript symbols.
 
 ## `debug/caves/caveHeightfieldPlayer.ts`
 
-- `CaveHeightfieldWalker` — type — line 43
-- `createCaveHeightfieldWalker` — function — line 57
+- `CaveHeightfieldWalker` — type — line 55
+- `createCaveHeightfieldWalker` — function — line 69
   - domain: world-terrain
 
 ## `debug/caves/caveHeightfieldTerrain.ts`
@@ -86,7 +86,7 @@ Generated from exported TypeScript symbols.
 
 ## `debug/createModelTestScene.ts`
 
-- `createModelTestScene` — function — line 40
+- `createModelTestScene` — function — line 42
 
 ## `debug/debugMode.ts`
 

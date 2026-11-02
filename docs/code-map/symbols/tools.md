@@ -72,10 +72,6 @@ Generated from exported TypeScript symbols.
 - `restoreCamerasFromPersist` — function — line 109
 - `saveCameraPersist` — function — line 64
 
-## `tools/assetBrowser/viewer/compareCompanionAnimation.ts`
-
-- `compareCompanionAnimationUrl` — function — line 5
-
 ## `tools/assetBrowser/viewer/createAnchorGizmos.ts`
 
 - `AnchorGizmoGroup` — type — line 13
@@ -83,16 +79,16 @@ Generated from exported TypeScript symbols.
 
 ## `tools/assetBrowser/viewer/createAssetSlot.ts`
 
-- `AssetSlot` — type — line 39
-- `boundsData` — function — line 401
-- `boxFromModel` — function — line 87
-- `collectMeshStats` — function — line 92
-- `createAssetSlot` — function — line 144
-- `MeshStats` — type — line 34
-- `reconcilePoseClip` — function — line 132
-- `resolveAppliedClipName` — function — line 119
-- `setWireframe` — function — line 419
-- `sortedClipNames` — function — line 114
+- `AssetSlot` — type — line 38
+- `boundsData` — function — line 398
+- `boxFromModel` — function — line 86
+- `collectMeshStats` — function — line 91
+- `createAssetSlot` — function — line 143
+- `MeshStats` — type — line 33
+- `reconcilePoseClip` — function — line 131
+- `resolveAppliedClipName` — function — line 118
+- `setWireframe` — function — line 416
+- `sortedClipNames` — function — line 113
 
 ## `tools/assetBrowser/viewer/createMultiView.ts`
 

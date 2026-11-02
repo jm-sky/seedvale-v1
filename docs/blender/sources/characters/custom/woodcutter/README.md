@@ -7,7 +7,7 @@ modular parts.
 | Field | Value |
 |-------|-------|
 | Export | `outfit.glb` |
-| Runtime | `public/models/characters/ubc/npc/male_woodcutter.glb` |
+| Runtime | Legacy output `public/models/characters/ubc/npc/male_woodcutter.glb` removed 2026-11-02; live body is `public/assets/characters/Male_Woodcutter.glb` |
 | Manifest | `woodcutter` in `prepare-custom-ubc-npc.py` |
 
 Export settings: Selected Objects + Armature, Skinning ON, animations OFF,

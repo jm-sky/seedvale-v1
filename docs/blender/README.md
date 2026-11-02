@@ -54,7 +54,9 @@ Evidence and limits: `docs/research/v1-revival/2026-10-28--npc-character-blender
 ## Quaternius UBC custom profession NPCs (tools-017) — legacy, not loaded by runtime
 
 `public/models/characters/ubc/npc/*` is not referenced by `src/` since the CharacterKit cut-over; the live
-bodies come from the section above. `custom/<profession>/outfit.glb` are older exports of the same master
+bodies come from the section above. The generated `ubc/npc/*` and `ubc/hair/*` outputs were removed from `public/`
+on 2026-11-02 (see [the cleanup report](../reviews/2026-11-02--legacy-character-assets-cleanup.md)); the live blacksmith and
+woodcutter bodies are `public/assets/characters/Male_Blacksmith.glb` and `Male_Woodcutter.glb`. `custom/<profession>/outfit.glb` are older exports of the same master
 (pre-apron) and `prepare-custom-ubc-npc.py` does not run on Windows as-is (spawns `npx` without a shell).
 
 Separate from MPFB2. Hand-authored outfit GLBs + shared UBC head compose.
@@ -103,6 +105,7 @@ Outputs:
 ### Inspect gate
 
 ```bash
+# After regenerating (outputs are not committed as of 2026-11-02):
 npx @gltf-transform/cli inspect public/models/characters/ubc/npc/male_blacksmith.glb
 npx @gltf-transform/cli inspect public/models/characters/ubc/hair/hair_simple.glb
 ```

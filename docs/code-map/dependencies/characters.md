@@ -13,6 +13,7 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `ai/NpcAgent.ts`
+- `debug/caves/caveHeightfieldPlayer.ts`
 - `player/PlayerController.appearance.test.ts`
 - `player/PlayerController.ts`
 - `render/actorCullBounds.assets.test.ts`
@@ -30,6 +31,7 @@ Generated from TypeScript imports.
 - `assets/bodyPreviewEntries.ts`
 - `characters/characterAssets.onDisk.test.ts`
 - `characters/characterFiles.test.ts`
+- `debug/caves/caveHeightfieldPlayer.ts`
 - `player/playerVisualPreset.ts`
 
 ## `characters/characterAssets.onDisk.test.ts`
@@ -79,6 +81,7 @@ Generated from TypeScript imports.
 - `characters/characterAssets.onDisk.test.ts`
 - `characters/characterFiles.test.ts`
 - `characters/characterFiles.ts`
+- `debug/caves/caveHeightfieldPlayer.ts`
 - `player/PlayerController.appearance.test.ts`
 - `player/PlayerController.ts`
 - `player/playerVisualPreset.ts`
