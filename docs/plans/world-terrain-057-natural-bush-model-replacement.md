@@ -15,7 +15,7 @@ Replace V1's visually artificial hedge-like and polyhedral bushes with a small s
 
 ## Author-provided assets (staged, not yet visually or technically accepted)
 
-Under `public/models/nature/queue/`:
+Staged under `public/models/nature/queue/` (moved 2026-11-02 to `assets-src/nature/`; `bush_with_flowers.glb` runtime copy lives in `public/models/nature/`):
 - `bush_small.glb` — V3 Blender-edited bush, approximately 80 triangles (verify this queued export matches the V3 runtime asset).
 - `bush_medium_red.glb` — Quaternius Bush, Poly Pizza EoTERLq3z2, approximately 900 triangles; red seasonal source, evaluate green material/texture variant.
 - `bush_with_flowers.glb` — Quaternius Bush with Flowers, Poly Pizza U1ymDy8tbY, approximately 1.4k triangles.
@@ -27,7 +27,7 @@ Variants prepared in Blender (2026-11-02, **author chose the branchy silhouette 
 - `bush_berry_red.glb` — green medium bush with red raspberry clusters (~2170 tris; thin out berries if the performance gate fails).
 The dome-shaped `bush_small` berry variant was dropped.
 
-**Wired 2026-11-02** into `BUSH_SPECS` (same 7 slots: 0 green medium, 1 branchy, 2–3 flower clumps, 4 `bush_with_flowers`, 5 raspberry, 6 blueberry); runtime GLBs copied to `public/models/nature/`, sources stay in `queue/`. Not run, not browser/visual/performance checked. Old `bush_a/b/c`, `bush_flowers_1`, `bush_berries_1` GLBs still on disk (no active reference); procedural `createBush()` fallback untouched; `bush_with_flowers.glb` is still `BLEND` alpha.
+**Wired 2026-11-02** into `BUSH_SPECS` (same 7 slots: 0 green medium, 1 branchy, 2–3 flower clumps, 4 `bush_with_flowers`, 5 raspberry, 6 blueberry); runtime GLBs copied to `public/models/nature/`, sources (incl. `bush_berries_source.blend`) in `assets-src/nature/`. Not run, not browser/visual/performance checked. Old `bush_a/b/c`, `bush_flowers_1`, `bush_berries_1` GLBs still on disk (no active reference); procedural `createBush()` fallback untouched; `bush_with_flowers.glb` is still `BLEND` alpha.
 
 Counts and material/texture properties are preliminary: inspect actual queued binaries, materials, primitives, alpha handling, dimensions, origin, licensing attribution and Blender source availability before integration. Keep original/source assets for reproducibility.
 

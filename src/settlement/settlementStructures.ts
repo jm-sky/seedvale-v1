@@ -261,7 +261,7 @@ export function createCrate(scale = 1): THREE.Group {
   return crate
 }
 
-/** Fallback if `parked/anvil.glb` fails to load (plan settlements-npcs-002)
+/** Fallback if `settlement/anvil.glb` fails to load (plan settlements-npcs-002)
  *  — a simple stepped iron block on a stump, same flat-shaded low-poly style
  *  as the other structure fallbacks. */
 export function createAnvil(): THREE.Group {
@@ -288,7 +288,7 @@ export function createAnvil(): THREE.Group {
   return anvil
 }
 
-/** Fallback if `parked/workbench-grind.glb` fails to load (plan
+/** Fallback if `settlement/workbench-grind.glb` fails to load (plan
  *  settlements-npcs-002) — a plain bench with a disc-shaped grindstone. */
 export function createGrindWorkbench(): THREE.Group {
   const bench = new THREE.Group()

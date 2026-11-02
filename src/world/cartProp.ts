@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import { disposeObject3D, loadGltf, markSharedGpu, preparePropFitMax } from '../assets/loadGltf'
 
 /** Parked Quaternius pushcart — folder name is historical (see lily pad). */
-export const CART_MODEL_URL = '/models/parked/cart.glb'
+export const CART_MODEL_URL = '/models/settlement/cart.glb'
 /** Longest-axis fit; merchant wagon uses 3.8, this is a hand cart. */
 export const CART_FIT_MAX = 2.2
 /** Applied on top of animal yaw if the GLB's forward axis is inverted. */

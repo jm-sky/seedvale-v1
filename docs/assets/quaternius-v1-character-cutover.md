@@ -21,4 +21,4 @@ Set `SV_ROOT` to this package root when running Blender scripts. Female Blender 
 
 ## Heads
 
-Prefer `node scripts/assets/build-head-variants.mjs` after any head recipe change. Parked Superhero FullBody fallback: `public/models/parked/character-pack/models`. Do not hide `SuperHero_*` meshes at runtime.
+Prefer `node scripts/assets/build-head-variants.mjs` after any head recipe change. Parked Superhero FullBody fallback: `assets-src/characters/superhero-base`. Do not hide `SuperHero_*` meshes at runtime.

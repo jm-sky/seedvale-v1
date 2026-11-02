@@ -1810,14 +1810,14 @@ export async function buildSettlementProps(
     // blacksmith households never shifts unrelated settlement prop rolls.
     const yawRandom = createSeededRandom(seed ^ 0xb1acc17 ^ Math.imul(familyIndex + 1, 0x9e3779b9))
 
-    const anvil = await loadPropOrFallback('/models/parked/anvil.glb', 0.75, () => createAnvil())
+    const anvil = await loadPropOrFallback('/models/settlement/anvil.glb', 0.75, () => createAnvil())
     anvil.rotation.y = yawRandom() * Math.PI * 2
     placeOnGround(anvil, geometry.anvil.x, geometry.anvil.z, sampleHeight)
     tagSettlementShadowKind(anvil, 'workplace')
     group.add(anvil)
 
     const grindWorkbench = await loadPropOrFallback(
-      '/models/parked/workbench-grind.glb', 0.95, () => createGrindWorkbench(),
+      '/models/settlement/workbench-grind.glb', 0.95, () => createGrindWorkbench(),
     )
     grindWorkbench.rotation.y = yawRandom() * Math.PI * 2
     placeOnGround(grindWorkbench, geometry.workbench.x, geometry.workbench.z, sampleHeight)

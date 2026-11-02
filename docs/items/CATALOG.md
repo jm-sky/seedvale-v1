@@ -146,7 +146,7 @@ implemented, and what is planned. Code source of truth for weights/labels:
 | seed_potato | sadzeniaki ziemniaka | — | — | none (Kupiec) | procedural | plan 126; Quick Actions "Zasadź: ziemniak" — plants a `potato` `CropLifecycle` entity in a settlement garden |
 | seed_cabbage | nasiona kapusty | — | — | none (Kupiec) | procedural | plan 126; Quick Actions "Zasadź: kapustę" — plants a `cabbage` `CropLifecycle` entity in a settlement garden |
 | rope | lina | — | — | none (Kupiec) | `items/rope.glb` | plan world-004; ordinary carried item (not a capability) — carrying ≥1 is required to draw water from a deep player-built well (drink/fill), never consumed |
-| book_* (18 kinds: `riding`/`archery`/`survival`/`traps`/`sneak`/`defense` × `basic`/`intermediate`/`advanced`) | see plan for titles | — | — | none (Kupiec + one `HiddenFindLoot` entry) | `parked/books/Closed-*.glb` (3 files shared across all 18, decorrelated from tier) | plan items-player-016; `knowledge` category; Inventory "Czytaj" raises `ITEM_CATALOG[kind].book.skill` to `.targetSkillValue` (20→40/40→60/60→80%) if current skill is within `[requiredSkillValue, targetSkillValue)`; book is never consumed |
+| book_* (18 kinds: `riding`/`archery`/`survival`/`traps`/`sneak`/`defense` × `basic`/`intermediate`/`advanced`) | see plan for titles | — | — | none (Kupiec + one `HiddenFindLoot` entry) | `items/books/Closed-*.glb` (3 files shared across all 18, decorrelated from tier) | plan items-player-016; `knowledge` category; Inventory "Czytaj" raises `ITEM_CATALOG[kind].book.skill` to `.targetSkillValue` (20→40/40→60/60→80%) if current skill is within `[requiredSkillValue, targetSkillValue)`; book is never consumed |
 
 ## Roadmap (not done)
 

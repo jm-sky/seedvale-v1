@@ -15,7 +15,6 @@ public/models/
 ├── fx/
 ├── items/
 ├── nature/
-├── parked/
 ├── settlement/
 └── world/
 ```
@@ -164,11 +163,7 @@ Current known asset:
 _temp/items/FishingRod_Lvl2.fbx
 ```
 
-There is also a copy under:
-
-```text
-public/models/parked/
-```
+(The former copy under `public/models/parked/` was removed 2026-11-02.)
 
 Before wiring the staging version into runtime:
 

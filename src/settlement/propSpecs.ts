@@ -72,7 +72,7 @@ export const REED_SPECS = [
  *  fit every other `*_SPECS` table here uses; `height` is reused as that
  *  fit-max target (pad diameter, not vertical height). */
 export const LILY_SPECS = [
-  { url: '/models/parked/Lilypad-01.glb', height: 0.55 },
+  { url: '/models/nature/lilypad_01.glb', height: 0.55 },
 ] as const
 
 /** Shallow coastal-ocean rooted vegetation (plan world-terrain-010 Phase 7)
@@ -162,7 +162,7 @@ export const CAMPFIRE_UNLIT_URL = '/models/settlement/campfire_unlit.glb'
 export const CAMPFIRE_FIT_MAX = 1.2
 
 /** Procedural landmark GLBs (plan world-terrain-027). */
-export const LANDMARK_BOAT_URL = '/models/parked/boat.glb'
+export const LANDMARK_BOAT_URL = '/models/settlement/boat.glb'
 export const LANDMARK_BOAT_FIT_MAX = 3.2
 export const LANDMARK_SHIPWRECK_URL = '/models/world/shipwreck.glb'
 export const LANDMARK_SHIPWRECK_FIT_MAX = 12

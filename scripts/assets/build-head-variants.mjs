@@ -24,7 +24,7 @@ const OUT = path.join(ROOT, 'public/assets/characters')
 /** Canonical extracted layout; fallback is legacy parked FullBody (both sexes + textures). */
 const BASECHAR_CANDIDATES = [
   path.join(ROOT, '_temp/extracted/Universal_Base_CharactersStandard/Universal Base Characters[Standard]/Base Characters/Godot - UE'),
-  path.join(ROOT, 'public/models/parked/character-pack/models'),
+  path.join(ROOT, 'assets-src/characters/superhero-base'),
 ]
 /** glTF URI aliases that point at differently named files in the parked pack. */
 const TEXTURE_ALIASES = [

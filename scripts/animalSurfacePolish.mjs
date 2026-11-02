@@ -1,20 +1,21 @@
 /**
  * Animal surface polish (P2 experiment): patches PBR scalars (B) and selectively smoothed
  * normals (C) into the fauna GLBs without touching geometry, skins or animations.
- * Usage: node scripts/animalSurfacePolish.mjs [name…]  (reads public/models/fauna/experimental/original/*.glb;
+ * Usage: node scripts/animalSurfacePolish.mjs [name…]  (reads assets-src/fauna/original/*.glb;
  * bear/boar read the V3 sources in public/models/fauna/v3/ — see SOURCES)
- * Writes experimental/<name>.B.glb and <name>.C.glb, then verifies invariants against the original.
+ * Writes _temp/fauna-polish/<name>.B.glb and <name>.C.glb (gitignored; copy the chosen one to public/models/fauna/), then verifies invariants against the original.
  */
 import { NodeIO } from '@gltf-transform/core'
 import { ALL_EXTENSIONS } from '@gltf-transform/extensions'
 import { MeshoptDecoder, MeshoptEncoder } from 'meshoptimizer'
 
 const DIR = 'public/models/fauna'
+const OUT_DIR = '_temp/fauna-polish'
 const SMOOTH_DEG_DEFAULT = 50
 /** Per-model smoothing angle (deg); bear is the most faceted low-poly mesh. */
 const SMOOTH_DEG = { bear: 70, boar: 58 }
 let COS = Math.cos((SMOOTH_DEG_DEFAULT * Math.PI) / 180)
-/** Non-default source files (V3 migration); everything else: experimental/original/<name>.glb. */
+/** Non-default source files (V3 migration); everything else: assets-src/fauna/original/<name>.glb. */
 const SOURCES = { bear: `${DIR}/v3/Bear.glb`, boar: `${DIR}/v3/Boar.glb` }
 
 /** [pattern, roughness] — first match wins; metalness is always 0 (dielectric). */
@@ -192,19 +193,20 @@ function fingerprint(doc) {
   return out
 }
 
-import { statSync } from 'node:fs'
+import { mkdirSync, statSync } from 'node:fs'
 const eq = (a, b) => (Array.isArray(a) ? a.length === b.length && a.every((v, i) => Math.abs(v - b[i]) < 1e-5) : a === b)
 for (const name of process.argv.slice(2).length ? process.argv.slice(2) : Object.keys(ROUGHNESS)) {
-  const src = SOURCES[name] ?? `${DIR}/experimental/original/${name}.glb`
+  const src = SOURCES[name] ?? `assets-src/fauna/original/${name}.glb`
   COS = Math.cos(((SMOOTH_DEG[name] ?? SMOOTH_DEG_DEFAULT) * Math.PI) / 180)
   KEEP_HARD = KEEP_HARD_BY_MODEL[name] ?? KEEP_HARD_DEFAULT
+  mkdirSync(OUT_DIR, { recursive: true })
   const base = fingerprint(await io.read(src))
   for (const variant of ['B', 'C']) {
     const doc = await io.read(src)
     applyMaterials(doc, name)
     if (variant === 'C') { applyBaseColor(doc, name); applyFurVariation(doc, name) }
     const n = variant === 'C' ? smoothNormals(doc) : 0
-    const out = `${DIR}/experimental/${name}.${variant}.glb`
+    const out = `${OUT_DIR}/${name}.${variant}.glb`
     await io.write(out, doc)
     const fp = fingerprint(await io.read(out))
     const same = Object.keys(base).every((k) => eq(base[k], fp[k]))
