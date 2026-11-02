@@ -55,7 +55,7 @@ Each slice is one revertable commit series, verified, with owner docs updated. C
 | **H3** | Correction layer in `sampleRawTexel` + river tiles as a view (decisions 3, 8); per-tile path behind `?hydrology=legacy` only for the A/B | S | River census on runtime data equals H1; chunk/map/placement consumers unchanged in API; terrain/river/settlement tests green; browser: home stream continuous to the bay (§2 entry) |
 | **H4** | Sources vs settlements (decision 10) | S | Census: visible heads inside a footprint 0 on both seeds (home included), within 24 m ≤ 2 per seed; settlement count change ≤ 2 % |
 | **L1** | Lake water semantics (decision 9): `waterH` in the raw sample, `sampleLocalWater`, `isWetFloor`/`resolveWaterShore`, and the audited `<= waterLevel` sites (placement, fauna/NPC water, wells, fishing, swimming, drinking, footsteps, map classification) | S (high) | Audit table in the implementation notes, every site resolved; tests: a lake point is water for swimming/drinking/fishing/placement, a dry point next to it is not; census: 0 trees/items/houses/road segments inside lakes |
-| **L2** | Lake rendering: `createChunkWater` per distinct level in a chunk, lake material (`lakeScaleFor`), reflection per author answer (§Open questions) | S | Draw calls per lake chunk +1 at most; screenshots of 2–3 lakes for the author (§2); no water at a wrong level in loaded chunks |
+| **L2** | Lake rendering: `createChunkWater` per distinct level in a chunk, lake material (`lakeScaleFor`), no planar mirror on lakes (author, option a) | S | Draw calls per lake chunk +1 at most; screenshots of 2–3 lakes for the author (§2); no water at a wrong level in loaded chunks |
 | **E1** | World edge (decision 12) + map edge presentation | S | Player cannot pass ±4096 m; push-back felt from the edge band (browser check); NPC/fauna never leave the box; tests for the clamp |
 | **P1** | WSL A/B (`boot`, `stream`, `settlement` runs) new vs `?hydrology=legacy`; then **delete** the legacy per-tile path (`computeHydrologyRegion` runtime use, worker `riverTile` compute); re-export fixtures; re-take Q37/Q44 census baselines | S | WSL report in `docs/performance/results/`; no stream/hitch regression or a recorded reason; legacy code gone; fixtures ≤ 3 MB compressed each; queue §4 lists the Windows confirmation |
 
@@ -79,7 +79,7 @@ Ordering: W1 → W2 (may run in parallel with H1) → H1 → H2 → H3 → H4 �
 
 ## Open questions (author)
 
-- **Lake reflection (L2, visual compromise):** (a) lakes without the planar mirror, sky/fog tint only — cheapest; reflection is ≤ ~1–2 % of the water colour at normal angles (recommended) · (b) the mirror plane follows the level of the nearest visible water body · (c) a second mirror pass for lakes (extra scene submit). Blocks L2 only.
+- **Lake reflection (L2) — ANSWERED 2026-11-02 (author): (a)** lakes render without the planar mirror (sky/fog tint only); sea and rivers unchanged. L2 disables the mirror sample on water meshes whose level is not `waterLevel`.
 
 ## Risks
 
