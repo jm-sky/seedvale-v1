@@ -14,6 +14,8 @@
 
 Replace the per-tile river extraction with **one global hydrology pass over a finite 8 × 8 km continent**, so every stream drains to the sea or a lake, rivers are continuous across tiles, end exactly at their mouth and inland lakes exist above sea level. Settlement sizes grow outward from home with a guaranteed `XL` within reach, and the world gets an edge (open sea, push-back current, hard boundary at ±4096 m).
 
+> **Superseded in part by [world-terrain-059](./world-terrain-059-world-scale-travel-time-and-sparse-settlements.md) (author, 2026-11-02, Q81):** world **12 × 12 km (±6144)**, land radius ~3.8–4.6 km, **20–25 settlements** chosen by a global selection pass (720–1800 m between neighbours), sizes by graph hops. This changes decisions 1, 2, 11 and 12 below (grid 1537², radius, W2 rings → hops, edge ±6144) and the §W1 calibration. Slice order: 059 W3 → W4 → W5 → W2′, then H1 onward; H4 needs 059 W4.
+
 Author decision Q68 (2026-11-02): option A — see [Q67 recon §6.6](../research/v1-revival/2026-11-02--q67-hydrology-continuity-recon.md#66-author-decisions--q68-2026-11-02). Evidence and failure classes C1–C5: [Q67 recon §1–§3](../research/v1-revival/2026-11-02--q67-hydrology-continuity-recon.md). No interim quick fixes (author): the slices below land in order, each one keeping `main` building and the world playable.
 
 ## Current state (verified 2026-11-02)
@@ -61,7 +63,7 @@ Each slice is one revertable commit series, verified, with owner docs updated. C
 
 Ordering: W1 → W2 (may run in parallel with H1) → H1 → H2 → H3 → H4 → L1 → L2 → E1 → P1. Queue Q60 waits for H3 (final rivers and coastline); Q70 (biome borders) is unblocked by W1.
 
-### W1 calibration — continent size and settlement density (Q71, 2026-11-02)
+### W1 calibration — continent size and settlement density (Q71, 2026-11-02) — superseded by 059 W3/W4
 
 Author decision: compromise **(a) + (b)** — a slightly smaller continent and fewer settlements; the numbers (4–5 settlements on a walk in one direction, 12–20 on the continent) are orientative, the priority is a varied world to explore; size, density and pitch delegated to Opus (pitch 300 m kept unless there is a strong reason).
 
