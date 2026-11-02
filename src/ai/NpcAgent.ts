@@ -86,7 +86,7 @@ import { Inventory } from '../items/Inventory'
 import { ITEM_CATALOG, type RangedConfig, rangedConfigFromThrowable } from '../items/itemCatalog'
 import { type AgentProfile, DEFAULT_CELL_SIZE, findPath, type NavigationQuery, type PathPoint } from '../navigation/navigation'
 import { beginActivePath, endActivePath, recordPathRequest, recordRepath } from '../navigation/navigationStats'
-import { isActorSkeletonSharingEnabled } from '../perf/flags'
+import { isActorSkeletonSharingEnabled, isNpcBodyBuildsEnabled } from '../perf/flags'
 import { PLAYER_COLLISION_RADIUS } from '../player/playerDimensions'
 import { companionAnimationUrl } from '../player/playerVisualPreset'
 import { installActorCullBounds } from '../render/actorCullBounds'
@@ -2013,6 +2013,7 @@ export class NpcAgent {
   static async create(deps: NpcAgentDeps): Promise<NpcAgent> {
     const appearance = resolveNpcAppearance({
       age: deps.member.age,
+      characterKey: deps.member.character.characterKey,
       gender: deps.member.character.gender,
       npcId: deps.npcId ?? `anon:${deps.treeIndex}`,
       role: deps.member.character.role,
@@ -2027,7 +2028,8 @@ export class NpcAgent {
       let scene
       let animations
       if (autoLook) {
-        const assembled = await assembleCharacter(appearance.kit)
+        const kit = isNpcBodyBuildsEnabled() ? appearance.kit : { ...appearance.kit, build: 'muscular' as const }
+        const assembled = await assembleCharacter(kit)
         for (const w of assembled.warnings) console.warn(`[npc] kit: ${w}`)
         scene = assembled.scene
         animations = assembled.animations

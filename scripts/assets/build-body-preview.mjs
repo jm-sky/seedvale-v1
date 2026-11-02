@@ -13,17 +13,9 @@ import { createHash } from 'node:crypto'
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+// Node ≥ 22.18 strips types natively; characterTypes.ts is import-free, so the outfit allowlist has one owner.
+import { FEMALE_OUTFITS } from '../../src/characters/characterTypes.ts'
 import { addPreviewTargets, PREVIEW_MORPHS } from './body-preview-lib.mjs'
-
-export const EXCLUDED_FEMALE_OUTFITS = new Set([
-  'Blacksmith',
-  'Knight',
-  'Knight_Cloth',
-  'Knight_Helm',
-  'Ranger',
-  'Ranger_NoHood',
-  'Wizard',
-])
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const args = process.argv.slice(2)
@@ -40,14 +32,15 @@ if (out === src || out.startsWith(src + path.sep) === false && src.startsWith(ou
   throw new Error('output must not alias the source directory')
 }
 
-/** Explicit allowlist: shipped outfit bodies + eq packs (heads/hair/anims are reused from the originals). */
+/**
+ * Explicit allowlist: live outfit bodies + eq packs (heads/hair/anims are reused from the originals). Female bodies
+ * outside `FEMALE_OUTFITS` (e.g. Female_Knight/Ranger kept as equipment-module sources) are skipped.
+ */
 export function previewInputs(dir) {
+  const female = new Set(FEMALE_OUTFITS)
   const bodies = fs.readdirSync(dir)
     .filter((f) => /^(Male|Female)_(?!Head)[A-Za-z_]+\.glb$/.test(f))
-    .filter((f) =>
-      !f.startsWith('Female_') ||
-      !EXCLUDED_FEMALE_OUTFITS.has(f.slice(7, -4))
-    )
+    .filter((f) => !f.startsWith('Female_') || female.has(f.slice('Female_'.length, -'.glb'.length)))
     .map((f) => ({ file: f, sex: f.startsWith('Male') ? 'Male' : 'Female' }))
   const eq = ['Male', 'Female'].map((sex) => ({ file: `eq/${sex}.glb`, sex }))
   return [...bodies, ...eq].filter((e) => fs.existsSync(path.join(dir, e.file)))

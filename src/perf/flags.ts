@@ -191,6 +191,15 @@ export function isActorSkeletonSharingEnabled(): boolean {
   return flagOn(p.get('actorSkeletons'))
 }
 
+/** NPC body builds (slim/heavy morph derivatives, `characters/bodyBuild.ts`, 2026-11-02). On by default
+ *  (author-requested feature); `?npcBuilds=0` forces every NPC onto the original body files with no build
+ *  morph — the A arm of the WSL/Windows A/B (extra GLB variants + morph texture fetches). */
+export function isNpcBodyBuildsEnabled(): boolean {
+  const p = params()
+  if (!p?.has('npcBuilds')) return true
+  return flagOn(p.get('npcBuilds'))
+}
+
 /** Issue 040: god-rays shader with per-tap HDR cap, normalised accumulation,
  *  soft shoulder and jittered taps (`render/godRaysShader.ts`). On by
  *  default; `?godRaysSoft=0` compiles the issue-016 shader for the

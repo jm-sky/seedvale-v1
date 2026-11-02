@@ -181,10 +181,17 @@ export function computeTarget(prim, rest, warp) {
 }
 
 /**
+ * Build morphs whose shipped copy is regenerated in place from the current warp (author retuned `warpBody` chest/belly,
+ * 2026-11-02, so the shipped Character Pack `Fat` no longer matches the Heavy build). Same index, no duplicate name.
+ */
+export const REGENERATED_MORPHS = new Set([BODY_MORPH])
+
+/**
  * @domain tools
- * Add the missing preview morph targets (`Fat`, `Slim`) to every skinned mesh of `doc`. Existing targets (incl. the
- * shipped `Fat`) are kept untouched; unrelated target names/weights are preserved; new targets are appended in order
- * so target indices of existing morphs never change. Returns a per-mesh report.
+ * Add the missing build morph targets (`Fat`, `Slim`) to every skinned mesh of `doc`. An existing target in
+ * `REGENERATED_MORPHS` is rewritten in place (same index); other existing targets and unrelated names/weights are
+ * preserved; new targets are appended in order so target indices of existing morphs never change. Idempotent.
+ * Returns a per-mesh report.
  */
 export function addPreviewTargets(doc, sex, { morphs = PREVIEW_MORPHS, fileLabel = 'glb' } = {}) {
   const report = []
@@ -210,20 +217,30 @@ export function addPreviewTargets(doc, sex, { morphs = PREVIEW_MORPHS, fileLabel
       if (p.listTargets().length !== names.length) throw new Error(`${label}: target count does not match extras.targetNames`)
     }
     const added = []
+    const regenerated = []
     for (const morph of morphs) {
-      if (names.includes(morph) && morph !== 'Fat') continue
+      const existing = names.indexOf(morph)
+      if (existing >= 0 && !REGENERATED_MORPHS.has(morph)) continue
       if (!WARPS[morph]) throw new Error(`unknown morph ${morph}`)
       const warp = (p) => WARPS[morph](sex, p, { drape: DRAPE_MESH.test(`${node.getName()} ${mesh.getName()}`) })
       for (const prim of prims) {
         const { dp, dn } = computeTarget(prim, rest, warp)
+        const buffer = prim.getAttribute('POSITION').getBuffer()
         // The glTF writer derives mesh extras.targetNames from the target names, so name the target itself.
-        const tgt = doc.createPrimitiveTarget(morph)
-        tgt.setAttribute('POSITION', doc.createAccessor().setType('VEC3').setArray(dp).setBuffer(prim.getAttribute('POSITION').getBuffer()))
-        if (dn) tgt.setAttribute('NORMAL', doc.createAccessor().setType('VEC3').setArray(dn).setBuffer(prim.getAttribute('POSITION').getBuffer()))
-        prim.addTarget(tgt)
+        const tgt = existing >= 0 ? prim.listTargets()[existing] : doc.createPrimitiveTarget(morph)
+        for (const [semantic, data] of [['POSITION', dp], ['NORMAL', dn]]) {
+          const old = tgt.getAttribute(semantic)
+          tgt.setAttribute(semantic, data ? doc.createAccessor().setType('VEC3').setArray(data).setBuffer(buffer) : null)
+          if (old && old.listParents().every((p) => p === doc.getRoot())) old.dispose()
+        }
+        if (existing < 0) prim.addTarget(tgt)
       }
-      names.push(morph)
-      added.push(morph)
+      if (existing >= 0) {
+        regenerated.push(morph)
+      } else {
+        names.push(morph)
+        added.push(morph)
+      }
     }
     if (added.length) {
       mesh.setExtras({ ...extras, targetNames: names })
@@ -231,7 +248,7 @@ export function addPreviewTargets(doc, sex, { morphs = PREVIEW_MORPHS, fileLabel
       while (w.length < names.length) w.push(0)
       mesh.setWeights(w)
     }
-    report.push({ mesh: mesh.getName(), added, targets: names })
+    report.push({ mesh: mesh.getName(), added, regenerated, targets: names })
   }
   return report
 }

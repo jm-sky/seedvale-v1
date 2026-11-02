@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { ANIMS_URL, bodyUrl } from '../characters/characterFiles'
 import { WORK_SKIRTS } from '../characters/characterTypes'
 import {
+  NAMED_NPC_LOOKS,
   NPC_CLOTHING_HUE,
   NPC_HAIR_COLOR,
   NPC_WOODCUTTER_CLOTH_TINT,
@@ -230,5 +231,30 @@ describe('resolveNpcAppearance', () => {
     }).kit.beard)
     expect(beards.some(Boolean)).toBe(true)
     expect(beards.some((b) => !b)).toBe(true)
+  })
+
+  it('rolls body builds ~60/20/20 deterministically, independent of the other picks', () => {
+    const looks = Array.from({ length: 2000 }, (_, i) => ({ age: 30, gender: 'male' as const, npcId: `s:npc:${i}`, role: 'miner' as const, treeIndex: i }))
+    const counts = { muscular: 0, slim: 0, heavy: 0 }
+    for (const opts of looks) counts[resolveNpcAppearance(opts).kit.build]++
+    expect(counts.muscular / looks.length).toBeCloseTo(0.6, 1)
+    expect(counts.slim / looks.length).toBeCloseTo(0.2, 1)
+    expect(counts.heavy / looks.length).toBeCloseTo(0.2, 1)
+    expect(resolveNpcAppearance(looks[7]!)).toEqual(resolveNpcAppearance(looks[7]!))
+  })
+
+  it('applies the fixed named-NPC look over the procedural roll', () => {
+    const anna = resolveNpcAppearance({ age: 32, characterKey: 'anna_lesniewska', gender: 'female', npcId: ANNA, role: 'farmer', treeIndex: 0 })
+    expect(anna.kit).toMatchObject({ build: 'slim', head: 'Lean', hair: 'Long', beard: false, outfit: 'Peasant_Boots' })
+    expect(anna.hairColor).toBe(NPC_HAIR_COLOR.brown)
+    const kasia = resolveNpcAppearance({ age: 34, characterKey: 'kasia_hornblower', gender: 'female', npcId: KASIA, role: 'trader', treeIndex: 2 })
+    expect(kasia.kit).toMatchObject({ build: 'muscular', hair: 'Long', outfit: 'Peasant' })
+    expect(kasia.hairColor).toBe(NPC_HAIR_COLOR.copper)
+    // Same key, different npcId/age → same look (identity follows the key, not the procedural seed).
+    const rudolfA = resolveNpcAppearance({ age: 52, characterKey: 'rudolf', gender: 'male', npcId: 'a:npc:1', role: 'farmer', treeIndex: 1 })
+    const rudolfB = resolveNpcAppearance({ age: 70, characterKey: 'rudolf', gender: 'male', npcId: 'b:npc:9', role: 'farmer', treeIndex: 9 })
+    expect(rudolfA.kit).toEqual(rudolfB.kit)
+    expect(rudolfA.hairColor).toBe(rudolfB.hairColor)
+    expect(NAMED_NPC_LOOKS.kazimierz).toBeUndefined()
   })
 })

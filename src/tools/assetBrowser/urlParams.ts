@@ -5,7 +5,7 @@ import type {
   PoseMode,
   ViewLayout,
 } from './state'
-import { type BodyBuild, DEFAULT_BODY_BUILD, parseBodyBuild } from '../../assets/bodyBuild'
+import { type BodyBuild, DEFAULT_BODY_BUILD, parseBodyBuild } from '../../characters/bodyBuild'
 import { DEFAULT_HAIR_COLOR, type HairColorId, parseHairColor } from './hairTint'
 
 /**

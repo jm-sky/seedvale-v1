@@ -21,8 +21,8 @@ import {
   CHARACTER_OUTFITS,
   type CharacterAppearance,
   HAIR_STYLES,
+  hasOutfitBody,
   HEAD_VARIANTS,
-  MALE_ONLY_OUTFITS,
 } from '../characters/characterTypes'
 import { installActorCullBounds } from './actorCullBounds'
 import { shareActorSkeletons } from './actorSkeletonSharing'
@@ -158,7 +158,7 @@ const clipsByName = (animations: readonly AnimationClip[], names: readonly strin
   })
 
 const OUTFIT_CASES = (['Male', 'Female'] as const).flatMap((sex) =>
-  CHARACTER_OUTFITS.filter((o) => sex === 'Male' || !MALE_ONLY_OUTFITS.has(o)).map((outfit) => [sex, outfit] as const))
+  CHARACTER_OUTFITS.filter((o) => hasOutfitBody(sex, o)).map((outfit) => [sex, outfit] as const))
 
 describe('shareActorSkeletons on assembled NPC kits', () => {
   it.each(OUTFIT_CASES)('%s %s: one body palette, exact skinning through the clip set', async (sex, outfit) => {

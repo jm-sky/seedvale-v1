@@ -1,6 +1,6 @@
 import { reactive } from 'vue'
 import type { AssetIndexEntry } from '../../assets/assetIndex'
-import { type BodyBuild, DEFAULT_BODY_BUILD } from '../../assets/bodyBuild'
+import { type BodyBuild, DEFAULT_BODY_BUILD } from '../../characters/bodyBuild'
 import { DEFAULT_HAIR_COLOR, type HairColorId } from './hairTint'
 import { applyAssetBrowserUrlParams } from './urlParams'
 import { applyLayoutPersist } from './viewer/layoutPersist'

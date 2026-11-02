@@ -161,6 +161,7 @@ Agents may run these checks themselves (seed `415424794`) and mark an item verif
 | Q50 tight sun shadow frustum (`caab7ae2`, now default) | `?seed=415424794`, settlement at noon and low sun: default vs `&shadowFrustum=legacy` — no missing shadows at side/far edges of a wide view, no edge popping on a quick 360° turn, water edge/reflections intact, long tree shadows from behind the camera still reach into view |
 | Q53 shadow motion cadence (S1, default ON) | `?seed=415424794`, settlement: walk, slow and fast (~90°) turns, low sun long shadows, NPC shadows; compare `&shadowMotionCadence=0`. Judge lag/swimming (alternation ≈ 30 Hz shadow at 60 FPS, escapes: >1.5 m, >12° yaw, >66 ms) | [plan §S1](../../plans/world-terrain-056-render-pass-frame-distribution-and-map-quality.md#s1--candidate-a-shadow-cadence-under-motion-shadowmotioncadence1-default-off) |
 | Q55 water reflection size (S3) | Pause → World → Graphics → "Rozdzielczość odbić wody": 128/256/512/1024 changes the reflection live (no rebuild, no black frame), disabled when reflections are off, value persists after reload, default 256 | [plan §S3](../../plans/world-terrain-056-render-pass-frame-distribution-and-map-quality.md#s3--water-reflection-resolution-setting-settings-choice-default-unchanged) |
+| NPC body builds + named looks (2026-11-02) | `?seed=415424794`, home settlement + one other: slim/heavy NPCs read as builds (no torn skirts/sleeves, hands/feet OK while walking/working/sitting), compare `&npcBuilds=0`; Anna/Molly slim, Kasia copper hair, Marek/Piotr `Buzzed` as "short", Jakub/Rudolf beard | [named looks](../../v3-donor/characters/NAMED-NPC-APPEARANCE.md#runtime-mapping-2026-11-02) |
 
 **Author manual check 2026-10-30 (Windows):** walked the world and talked to NPCs on current `main` — "everything looks good". General smoke check (SHA and URL flags not recorded): it does not by itself close the specific §2 items above, and does not cover Q17 E1 unless `?prewarmTemplates=1` was set.
 
@@ -170,6 +171,9 @@ Agents may run these checks themselves (seed `415424794`) and mark an item verif
 - **ANSWERED 2026-10-31 · Q42/Q48 dekoracje domów:** dekoracje **tylko dla wybranych zawodów**, jak w V3, albo proste modele zastępcze; zawód bez dobrego wyróżnika może zostać bez dekoracji. **Bez zmian modeli postaci NPC** (wcześniejszy wpis o tincie zielarki / Q49 wycofany — nieporozumienie). Domyślne ustawienia Q42 bez sprzeciwu. [Q42 plan §4](./2026-10-31--q42-profession-signature-homes-plan.md#4-author-questions-also-queue-3).
 - **ANSWERED 2026-10-31 · Q47 krypty:** limit ~3 krypt na cmentarz (LG ≈ 3), reszta to zwykłe groby; krypty mogą być mniejsze, np. 1 × pełny rozmiar + 2 × 80 %. [Q39 plan §7](./2026-10-31--q39-cemetery-size-placement-plan.md#7-author-decision--2026-10-31-q47-placement-sequence).
 Append here (date, task, question, options). Remove when answered and recorded in the owning doc.
+
+- **OPEN 2026-11-02 · retune Heavy (`warpBody`):** commit `138f30cf` (Haiku) zmienił Heavy: brzuch 0.2→0.08 m, dodał klatkę (chest/chestDepth), Slim osłabiony do 85 %. Zachowałem to (Fat regenerowany w miejscu, bez duplikatu). (a) zostaje · (b) wracamy do fabrycznego `Fat` z paczki.
+- **OPEN 2026-11-02 · stand-iny wyglądu nazwanych NPC:** Piotr „moustache” → bez zarostu (a) / pełna broda (b); „short” Marek/Piotr → `Buzzed` (a) / `Parted` (b). Kolor `copper` Kasi `0x8c4a2a` do oceny.
 
 - **OPEN 2026-11-02 · Q54 bramka istotności mirrora (world-terrain-056 S2):** ocean jest rysowany jako pierścień za `loadRadius` (192–256 m) także nad lądem, więc w prawie każdym widoku poziomym jest w frustum — bramka „czy woda jest widoczna” prawie nigdy nie pominie mirrora (tylko patrzenie mocno w dół/w górę). Opcje: (a) porzucić S2 (zalecane); (b) bramka tylko dla chunk water + ocean pominięty gdy kamera patrzy w dół poniżej progu (heurystyka); (c) najpierw zmierzyć w S0 jaki % klatek ma mirror poza widokiem wody.
 - **NOTE 2026-11-02 (author):** flagi kandydatów domyślnie WŁĄCZONE w grze; testy/benchmarki Windows/WSL później (zmiana względem planu 056).
@@ -195,6 +199,8 @@ Append here (date, task, question, options). Remove when answered and recorded i
 ## 4. Landed slices awaiting author Arc A/B
 
 - `44301fa` + S1 commit, world-terrain-056 S0/S1 (**S1 default ON**, `?shadowMotionCadence=0` reverts): WSL `settlement-walk` n = 3 (A `&shadowMotionCadence=0` / B default, A B B A) with `node scripts/perf/analyze-pass-coincidence.mjs <raw sidecars>`; plus one S0 baseline report (`settlement`, `settlement-walk`, `water`) → `docs/performance/results/`. Windows: same A/B. Revert default if tails regress or §2 visual fails.
+
+- NPC body builds (2026-11-02, **default ON**, `?npcBuilds=0` reverts): ~40 % NPCs load derivative body/eq GLBs (extra unique geometry per outfit + 2 morph targets). Decide keep on WSL `settlement-walk` A `&npcBuilds=0` / B default (A B B A): frame p50/p95, draws, programs, JS heap; then Windows confirm.
 
 Append: commit, track, metric that decides keep/revert, A/B instructions link.
 

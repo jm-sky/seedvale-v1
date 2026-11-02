@@ -3,8 +3,8 @@ import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import type { CharacterAppearance } from './characterTypes'
 import { baseGarments } from './baseGarments'
-import { bodyUrl, characterUrls, eqNodeName, eqUrl, headUrl } from './characterFiles'
-import { CHARACTER_OUTFITS, CHARACTER_SEXES, MALE_ONLY_OUTFITS, WORK_SKIRTS } from './characterTypes'
+import { bodyUrl, bodyUrlForBuild, characterUrls, eqNodeName, eqUrl, eqUrlForBuild, headUrl } from './characterFiles'
+import { CHARACTER_OUTFITS, CHARACTER_SEXES, hasOutfitBody, WORK_SKIRTS } from './characterTypes'
 
 const PUBLIC = resolve(import.meta.dirname, '../../public')
 
@@ -13,18 +13,20 @@ function publicPath(url: string): string {
   return resolve(PUBLIC, url.replace(/^\//, ''))
 }
 
-function glbJson(path: string): { nodes?: { name?: string }[] } {
+type GlbJson = { meshes?: { name?: string, extras?: { targetNames?: string[] } }[], nodes?: { name?: string }[] }
+
+function glbJson(path: string): GlbJson {
   const buf = readFileSync(path)
   const chunkLen = buf.readUInt32LE(12)
   const jsonBytes = buf.subarray(20, 20 + chunkLen)
-  return JSON.parse(jsonBytes.toString('utf8').replace(/\0+$/, '')) as { nodes?: { name?: string }[] }
+  return JSON.parse(jsonBytes.toString('utf8').replace(/\0+$/, '')) as GlbJson
 }
 
 describe('character kit products on disk', () => {
   it('ships every sex × outfit body plus heads, hair, anims, eq packs', () => {
     for (const sex of CHARACTER_SEXES) {
       for (const outfit of CHARACTER_OUTFITS) {
-        if (sex === 'Female' && MALE_ONLY_OUTFITS.has(outfit)) continue
+        if (!hasOutfitBody(sex, outfit)) continue
         const path = publicPath(bodyUrl(sex, outfit))
         expect(existsSync(path), path).toBe(true)
       }
@@ -45,16 +47,39 @@ describe('character kit products on disk', () => {
   it('skirted female appearance lists existing files', () => {
     const a: CharacterAppearance = {
       sex: 'Female',
-      outfit: 'Wizard',
+      outfit: 'Herbalist',
       head: 'Base',
       hair: 'Long',
       beard: false,
       clothTint: null,
-      garments: baseGarments('Female', 'Wizard'),
+      garments: baseGarments('Female', 'Herbalist'),
+      build: 'slim',
     }
     expect(a.garments).toEqual(['WorkSkirt'])
     for (const url of characterUrls(a)) {
       expect(existsSync(publicPath(url)), url).toBe(true)
+    }
+  })
+
+  it('ships a build derivative (Fat + Slim, each exactly once) for every live body and eq pack', () => {
+    for (const sex of CHARACTER_SEXES) {
+      const files = CHARACTER_OUTFITS.filter((o) => hasOutfitBody(sex, o)).map((o) => bodyUrlForBuild(sex, o, 'heavy'))
+      for (const url of [...files, eqUrlForBuild(sex, 'slim')]) {
+        const path = publicPath(url)
+        expect(existsSync(path), path).toBe(true)
+        for (const mesh of glbJson(path).meshes ?? []) {
+          const names = mesh.extras?.targetNames ?? []
+          if (names.length === 0) continue
+          expect(names.filter((n) => n === 'Fat'), `${url} ${mesh.name}`).toHaveLength(1)
+          expect(names.filter((n) => n === 'Slim'), `${url} ${mesh.name}`).toHaveLength(1)
+        }
+      }
+    }
+  })
+
+  it('ships no body or build derivative for male-only outfits on Female', () => {
+    for (const outfit of CHARACTER_OUTFITS.filter((o) => !hasOutfitBody('Female', o))) {
+      expect(existsSync(publicPath(bodyUrlForBuild('Female', outfit, 'slim'))), outfit).toBe(false)
     }
   })
 })

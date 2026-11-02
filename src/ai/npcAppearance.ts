@@ -1,14 +1,16 @@
 import type {
+  BodyBuild,
   CharacterAppearance,
   CharacterOutfit,
   CharacterSex,
   HairStyle,
   HeadVariant,
 } from '../characters/characterTypes'
-import type { NpcGender, Role } from './characters'
+import type { CharacterKey, NpcGender, Role } from './characters'
 import { baseGarments } from '../characters/baseGarments'
+import { pickBodyBuild } from '../characters/bodyBuild'
 import { ANIMS_URL, bodyUrl } from '../characters/characterFiles'
-import { HEAD_VARIANTS, WORK_SKIRTS } from '../characters/characterTypes'
+import { hasOutfitBody, HEAD_VARIANTS, WORK_SKIRTS } from '../characters/characterTypes'
 import { isAdultAge } from '../settlement/professionStaffing'
 import { createSeededRandom } from '../world/parseSeed'
 
@@ -16,7 +18,8 @@ export type NpcOutfitId = CharacterOutfit
 export type NpcHairKind = HairStyle | 'bald'
 export type NpcResolvedHair = NpcHairKind
 export type NpcClothingHueId = 'identity' | 'warm' | 'cool' | 'muted'
-export type NpcHairColorId = 'black' | 'brown' | 'redhead' | 'blond' | 'grey'
+/** `copper` is reserved for named presets (Kasia); the procedural pool never rolls it. */
+export type NpcHairColorId = 'black' | 'brown' | 'redhead' | 'blond' | 'grey' | 'copper'
 
 /** Multiply on cloned cloth materials after kit assemble. */
 export const NPC_CLOTHING_HUE: Record<NpcClothingHueId, number> = {
@@ -33,6 +36,7 @@ export const NPC_HAIR_COLOR: Record<NpcHairColorId, number> = {
   redhead: 0xb44a28,
   blond: 0xd8b56a,
   grey: 0xc5c0b8,
+  copper: 0x8c4a2a,
 }
 
 /** Woodcutter tint on the Peasant body worn by adult female woodcutters (adult men wear `Woodcutter`). */
@@ -51,6 +55,41 @@ const GREY_HAIR_SENIOR_AGE = 60
 const GREY_HAIR_CHANCE_MIDDLE = 0.15
 const GREY_HAIR_CHANCE_SENIOR = 0.75
 const APPEARANCE_SEED_SALT = 0x41505045
+/** Separate stream so the build roll never shifts the existing hair/hue/beard draws. */
+const BUILD_SEED_SALT = 0x4255494c
+
+/**
+ * Fixed look of a named recurring NPC (`docs/v3-donor/characters/NAMED-NPC-APPEARANCE.md`), keyed by stable
+ * `CharacterKey`. Only fields the kit supports today; outfit still follows the role (it already matches the doc).
+ * Unsupported doc fields and their stand-ins: height (not modelled), moustache/stubble (boolean beard only),
+ * braid/updo (→ `Long`), "short" hair (→ `Buzzed`), 4-build `superhero` (→ `muscular`, the original body).
+ */
+export type NamedNpcLook = {
+  beard: boolean
+  build: BodyBuild
+  hair: HairStyle | null
+  hairColor: NpcHairColorId
+  head: HeadVariant
+}
+
+/**
+ * Casimir (V3 E01) is deliberately absent: the doc keeps him distinct from V1 `kazimierz` (no binding approved).
+ *
+ * @domain npc
+ */
+export const NAMED_NPC_LOOKS: Readonly<Partial<Record<CharacterKey, NamedNpcLook>>> = {
+  // stubble later; `none` now
+  marek_hornblower: { build: 'muscular', head: 'Base', hair: 'Buzzed', hairColor: 'brown', beard: false },
+  // braid / pinned-up not in kit → Long (never Buns)
+  kasia_hornblower: { build: 'muscular', head: 'Base', hair: 'Long', hairColor: 'copper', beard: false },
+  // `superhero` build; moustache not in kit → clean-shaven until the facial-hair extension
+  piotr_lesniewski: { build: 'muscular', head: 'Base', hair: 'Buzzed', hairColor: 'brown', beard: false },
+  anna_lesniewska: { build: 'slim', head: 'Lean', hair: 'Long', hairColor: 'brown', beard: false },
+  molly_lambert: { build: 'slim', head: 'Warm', hair: 'Long', hairColor: 'blond', beard: false },
+  // beard_and_moustache → full beard
+  jakub: { build: 'muscular', head: 'Base', hair: 'Long', hairColor: 'brown', beard: true },
+  rudolf: { build: 'muscular', head: 'Base', hair: 'Parted', hairColor: 'brown', beard: true },
+}
 
 /**
  * Derived NPC look. Appearance is not persisted — reload recomputes from
@@ -69,7 +108,8 @@ export type NpcAppearance = {
   /** @deprecated Kit embeds hair; kept null for callers that still read it. */
   hairAttachmentUrl: string | null
   hairColor: number
-  kit: CharacterAppearance
+  /** Kit with `build` always set (procedural roll or named preset). */
+  kit: CharacterAppearance & { build: BodyBuild }
   modelUrl: string
   outfit: NpcOutfitId
   tintUrl: string | null
@@ -95,26 +135,12 @@ const ROLE_LOOK: Record<Role, RoleLook> = {
 }
 
 /**
- * Female cast: no Ranger/Knight/Blacksmith production looks this pass.
- * Trader → Peasant + Noble bodice (fits the work skirt; the Wizard coat poked through it, 2026-10-28);
- * male-only authored outfits keep their previous female look
- * (Farmer → Peasant_Boots, Woodcutter → Peasant); other coerced roles → Peasant (+ skirt).
+ * Female cast wears only `FEMALE_OUTFITS`. Trader → Peasant + Noble bodice (the Wizard coat poked through the
+ * work skirt, 2026-10-28); Farmer → Peasant_Boots; every other male-only outfit → Peasant (+ skirt).
  */
-function coerceFemaleOutfit(role: Role, outfit: CharacterOutfit): CharacterOutfit {
-  if (role === 'trader') return 'Peasant'
-  if (outfit === 'Farmer') return 'Peasant_Boots'
-  if (
-    outfit === 'Ranger'
-    || outfit === 'Ranger_NoHood'
-    || outfit === 'Knight'
-    || outfit === 'Knight_Cloth'
-    || outfit === 'Knight_Helm'
-    || outfit === 'Blacksmith'
-    || outfit === 'Woodcutter'
-  ) {
-    return 'Peasant'
-  }
-  return outfit
+function coerceFemaleOutfit(outfit: CharacterOutfit): CharacterOutfit {
+  if (hasOutfitBody('Female', outfit)) return outfit
+  return outfit === 'Farmer' ? 'Peasant_Boots' : 'Peasant'
 }
 
 function appearanceSeed(npcId: string): () => number {
@@ -164,6 +190,8 @@ export function customProfessionHairKinds(role: Role): readonly NpcResolvedHair[
  */
 export function resolveNpcAppearance(opts: {
   age: number
+  /** Named NPC → fixed look from `NAMED_NPC_LOOKS` (overrides the procedural head/hair/beard/build). */
+  characterKey?: CharacterKey | null
   gender: NpcGender
   npcId: string
   role: Role
@@ -173,14 +201,15 @@ export function resolveNpcAppearance(opts: {
   const sex = toSex(opts.gender)
   const roleLook = adult ? ROLE_LOOK[opts.role] : { outfit: 'Peasant' as const }
   let outfit = roleLook.outfit
-  if (sex === 'Female') outfit = coerceFemaleOutfit(opts.role, outfit)
+  if (sex === 'Female') outfit = coerceFemaleOutfit(outfit)
 
   const h = hashNpcId(opts.npcId)
   const random = appearanceSeed(opts.npcId)
   const hairColorId = rollHairColor(random, opts.age)
   const clothingHueId = CLOTHING_HUE_IDS[pickIndex(random, CLOTHING_HUE_IDS.length)]!
   const clothingHue = NPC_CLOTHING_HUE[clothingHueId]
-  const hairColor = NPC_HAIR_COLOR[hairColorId]
+  let hairColor = NPC_HAIR_COLOR[hairColorId]
+  let build = pickBodyBuild(createSeededRandom(hashNpcId(opts.npcId) ^ BUILD_SEED_SALT)())
 
   let head: HeadVariant = HEAD_VARIANTS[h % HEAD_VARIANTS.length]!
   let hair: HairStyle | null
@@ -209,7 +238,16 @@ export function resolveNpcAppearance(opts: {
     beard = adult && (opts.age >= 50 || ((h >>> 6) & 1) === 1)
   }
 
-  const kit: CharacterAppearance = {
+  const named = opts.characterKey ? NAMED_NPC_LOOKS[opts.characterKey] : undefined
+  if (named) {
+    head = named.head
+    hair = named.hair
+    beard = named.beard
+    build = named.build
+    hairColor = NPC_HAIR_COLOR[named.hairColor]
+  }
+
+  const kit: NpcAppearance['kit'] = {
     sex,
     outfit,
     head,
@@ -221,6 +259,7 @@ export function resolveNpcAppearance(opts: {
       // Dye from hash bits no other pick uses (head 0–1, hair 3+, beard 6): the random draw order is unchanged.
       ...baseGarments(sex, outfit, WORK_SKIRTS[(h >>> 11) % WORK_SKIRTS.length]),
     ],
+    build,
   }
 
   return {
@@ -251,7 +290,6 @@ export function ubcVariantModelUrl(
 
 /** Kit body URLs (legacy export names kept for assetIndex / docs). */
 export const NPC_UBC_FEMALE_PEASANT_URL = bodyUrl('Female', 'Peasant')
-export const NPC_UBC_FEMALE_WIZARD_URL = bodyUrl('Female', 'Wizard')
 export const NPC_UBC_MALE_KNIGHT_UNHELMETED_URL = bodyUrl('Male', 'Knight_Cloth')
 export const NPC_UBC_MALE_BLACKSMITH_URL = bodyUrl('Male', 'Blacksmith')
 export const NPC_UBC_MALE_WOODCUTTER_URL = bodyUrl('Male', 'Woodcutter')

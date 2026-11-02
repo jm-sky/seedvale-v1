@@ -2,8 +2,8 @@ import type { AssetAnchorDef } from './assetAnchors'
 import { parkedIdFromUrl } from './assetUrlUtils'
 
 export { parkedIdFromUrl } from './assetUrlUtils'
+import type { BodyBuild } from '../characters/bodyBuild'
 import type { CharacterGarment } from '../characters/characterTypes'
-import type { BodyBuild } from './bodyBuild'
 import { NPC_HEIGHT } from '../ai/NpcAgent'
 import {
   NPC_UBC_FEMALE_PEASANT_URL,

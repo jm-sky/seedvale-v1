@@ -3,7 +3,7 @@
 **Created:** 2026-10-31  
 **Status:** In progress — author-approved appearance selections; documentation only  
 **Scope:** V1 Revival, named recurring NPCs  
-**Implementation:** Not authorized by this record; future plan required
+**Implementation:** Partial runtime presets landed 2026-11-02 (author request) — `NAMED_NPC_LOOKS` in `src/ai/npcAppearance.ts`; see "Runtime mapping" below
 
 ## Purpose
 
@@ -55,6 +55,22 @@ Author-approved supplied portrait: experienced village reeve, 50–55 visual yea
 ### Casimir visual direction
 
 Author supplied a garden portrait of an elderly, lean, tall and weathered man with unruly grey hair and short grey stubble. Approved closest existing hairstyle is `Parted`, even though reference hair looks longer and tousled; chosen `Lean` head, `grey` tint, tall height and future `slim` build. His clothing is modest, practical and worn, without an adventurer costume. `stubble` requires a new facial-hair variant. Keep V3 elder `E01` distinct from existing V1 Kazimierz Nowak (74); Casimir Eastwood remains a proposed donor identity, not an authorized runtime rename or merge. Supplied portrait is not committed as a repository asset. No runtime changes.
+
+## Runtime mapping (2026-11-02)
+
+Body-build set is **3 variants**: `muscular` (original Character Pack body, author "base") / `slim` / `heavy`. Per the 3-build rule above, `standard` → `muscular`; Peter's `superhero` → `muscular` too (same body today).
+
+| characterKey | build | head | hair | colour | beard | stand-ins (🟡 author visual review) |
+| --- | --- | --- | --- | --- | --- | --- |
+| `marek_hornblower` | muscular | Base | Buzzed | brown | no | "short" → `Buzzed`; stubble later |
+| `kasia_hornblower` | muscular | Base | Long | copper (new tint `0x8c4a2a`) | no | braid/updo → `Long` |
+| `piotr_lesniewski` | muscular | Base | Buzzed | brown | no | moustache not in kit → clean-shaven |
+| `anna_lesniewska` | slim | Lean | Long | brown | no | — |
+| `molly_lambert` | slim | Warm | Long | blond | no | short height not modelled |
+| `jakub` | muscular | Base | Long | brown | yes | beard_and_moustache → full beard; outfit via hunter role (`Ranger_NoHood`) |
+| `rudolf` | muscular | Base | Parted | brown | yes | beard_and_moustache → full beard; outfit via role |
+
+Not applied: Casimir/E01 (kept distinct from V1 `kazimierz`), height, outfits beyond the existing role mapping.
 
 ## Implementation follow-up (not yet a plan)
 

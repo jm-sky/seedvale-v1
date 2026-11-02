@@ -26,7 +26,7 @@ const base: CharacterAppearance = {
 describe('characterFiles', () => {
   it('builds body/head/hair/eq/anims paths under /assets/characters/', () => {
     expect(bodyUrl('Male', 'Blacksmith')).toBe('/assets/characters/Male_Blacksmith.glb')
-    expect(bodyUrl('Female', 'Wizard')).toBe('/assets/characters/Female_Wizard.glb')
+    expect(bodyUrl('Female', 'Herbalist')).toBe('/assets/characters/Female_Herbalist.glb')
     expect(headUrl('Female', 'Base')).toBe('/assets/characters/Female_Head.glb')
     expect(headUrl('Male', 'Round')).toBe('/assets/characters/Male_Head_Round.glb')
     expect(hairUrl('Lean')).toBe('/assets/characters/hair_Lean.glb')
@@ -74,7 +74,7 @@ describe('baseGarments', () => {
     expect(baseGarments('Female', 'Peasant')).toEqual(['WorkSkirt'])
     expect(baseGarments('Female', 'Peasant_Boots')).toEqual(['WorkSkirt'])
     expect(baseGarments('Female', 'Herbalist')).toEqual(['WorkSkirt'])
-    expect(baseGarments('Female', 'Wizard')).toEqual(['WorkSkirt'])
+    expect(baseGarments('Female', 'Wizard')).toEqual([]) // male-only outfit
     expect(baseGarments('Female', 'Peasant', 'WorkSkirtBlue')).toEqual(['WorkSkirtBlue'])
     expect(baseGarments('Female', 'Ranger')).toEqual([])
     expect(baseGarments('Female', 'Blacksmith')).toEqual([])

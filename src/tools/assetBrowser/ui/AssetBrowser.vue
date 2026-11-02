@@ -9,7 +9,7 @@ import {
   mergeParkedManifest,
   resolveLoadEntry,
 } from '../../../assets/assetIndex'
-import { BODY_BUILD_LABELS, BODY_BUILDS } from '../../../assets/bodyBuild'
+import { BODY_BUILD_LABELS, BODY_BUILDS } from '../../../characters/bodyBuild'
 import {
   alignmentEdit,
   bumpAlignmentEdit,

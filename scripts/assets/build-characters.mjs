@@ -69,13 +69,18 @@ const io = new NodeIO().registerExtensions(ALL_EXTENSIONS).registerDependencies(
   'meshopt.decoder': (await import('meshoptimizer')).MeshoptDecoder,
 })
 
-/** Pack-derived variants (extra outfits). Base Peasant/Ranger are listed separately as BASE_OUTFITS. */
+/**
+ * Pack-derived variants (extra outfits). Base Peasant/Ranger are listed separately as BASE_OUTFITS.
+ * Female Knight_Helm/Knight_Cloth/Ranger_NoHood/Wizard are not built: the live female cast wears only
+ * `FEMALE_OUTFITS` (src/characters/characterTypes.ts, author 2026-11-02). `Female_Knight` (like base `Female_Ranger`)
+ * stays as a source of the Female equipment modules (`build-equipment-modules.mjs`), not as a live outfit.
+ */
 const VARIANTS = [
   ...['Male', 'Female'].map((sex) => ({ name: `${sex}_Knight`, source: `${sex}_Knight`, drop: ['Head_Armet', 'Head_Horns'], ratio: 0.35, error: DEFAULT_SIMPLIFY_ERROR })),
-  ...['Male', 'Female'].map((sex) => ({ name: `${sex}_Knight_Helm`, source: `${sex}_Knight`, drop: ['Head_Horns'], ratio: 0.35, error: DEFAULT_SIMPLIFY_ERROR })),
-  ...['Male', 'Female'].map((sex) => ({ name: `${sex}_Knight_Cloth`, source: `${sex}_Knight_Cloth`, drop: ['Head_Armet', 'Head_Horns'], ratio: 0.35, error: DEFAULT_SIMPLIFY_ERROR })),
-  ...['Male', 'Female'].map((sex) => ({ name: `${sex}_Ranger_NoHood`, source: `${sex}_Ranger`, drop: ['Head_Hood'], ratio: 0.35, error: DEFAULT_SIMPLIFY_ERROR })),
-  ...['Male', 'Female'].map((sex) => ({ name: `${sex}_Wizard`, source: `${sex}_Wizard`, drop: [], ratio: 0.5, error: DEFAULT_SIMPLIFY_ERROR })),
+  { name: 'Male_Knight_Helm', source: 'Male_Knight', drop: ['Head_Horns'], ratio: 0.35, error: DEFAULT_SIMPLIFY_ERROR },
+  { name: 'Male_Knight_Cloth', source: 'Male_Knight_Cloth', drop: ['Head_Armet', 'Head_Horns'], ratio: 0.35, error: DEFAULT_SIMPLIFY_ERROR },
+  { name: 'Male_Ranger_NoHood', source: 'Male_Ranger', drop: ['Head_Hood'], ratio: 0.35, error: DEFAULT_SIMPLIFY_ERROR },
+  { name: 'Male_Wizard', source: 'Male_Wizard', drop: [], ratio: 0.5, error: DEFAULT_SIMPLIFY_ERROR },
 ]
 
 /** Base outfits historically built by build-assets (Peasant/Ranger). Head parts stay; CharacterKit uses separate heads. */

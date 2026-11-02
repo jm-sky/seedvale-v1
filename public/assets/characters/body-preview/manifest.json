@@ -8,25 +8,25 @@
       "sex": "Female",
       "srcSha": "9aa4c291f76d4103",
       "srcBytes": 490164,
-      "outBytes": 698812,
+      "outBytes": 664052,
       "meshes": 5,
-      "added": 10
+      "added": 6
     },
     "Female_Peasant.glb": {
       "sex": "Female",
       "srcSha": "888a93efe7e020ea",
       "srcBytes": 508348,
-      "outBytes": 694568,
+      "outBytes": 659808,
       "meshes": 4,
-      "added": 8
+      "added": 4
     },
     "Female_Peasant_Boots.glb": {
       "sex": "Female",
       "srcSha": "a4734ad1482c9417",
       "srcBytes": 494616,
-      "outBytes": 745720,
+      "outBytes": 705492,
       "meshes": 4,
-      "added": 8
+      "added": 4
     },
     "Male_Blacksmith.glb": {
       "sex": "Male",
@@ -48,73 +48,73 @@
       "sex": "Male",
       "srcSha": "7cdbca2873759945",
       "srcBytes": 740224,
-      "outBytes": 985516,
+      "outBytes": 945668,
       "meshes": 5,
-      "added": 10
+      "added": 6
     },
     "Male_Knight.glb": {
       "sex": "Male",
       "srcSha": "82e8b37d6595bb24",
       "srcBytes": 874244,
-      "outBytes": 1220004,
+      "outBytes": 1150836,
       "meshes": 6,
-      "added": 12
+      "added": 6
     },
     "Male_Knight_Cloth.glb": {
       "sex": "Male",
       "srcSha": "6d7421f6b5a6bdd8",
       "srcBytes": 797704,
-      "outBytes": 1046716,
+      "outBytes": 1000536,
       "meshes": 5,
-      "added": 10
+      "added": 5
     },
     "Male_Knight_Helm.glb": {
       "sex": "Male",
       "srcSha": "399f69605fc855b6",
       "srcBytes": 896292,
-      "outBytes": 1274156,
+      "outBytes": 1204984,
       "meshes": 7,
-      "added": 14
+      "added": 8
     },
     "Male_Peasant.glb": {
       "sex": "Male",
       "srcSha": "d30bf7590bb76db6",
       "srcBytes": 775208,
-      "outBytes": 988472,
+      "outBytes": 948620,
       "meshes": 4,
-      "added": 8
+      "added": 4
     },
     "Male_Peasant_Boots.glb": {
       "sex": "Male",
       "srcSha": "efc14ec6426e98a8",
       "srcBytes": 707740,
-      "outBytes": 913228,
+      "outBytes": 873252,
       "meshes": 4,
-      "added": 8
+      "added": 4
     },
     "Male_Ranger.glb": {
       "sex": "Male",
       "srcSha": "cdb095e907dc13f6",
       "srcBytes": 1046552,
-      "outBytes": 1572712,
+      "outBytes": 1500392,
       "meshes": 9,
-      "added": 18
+      "added": 10
     },
     "Male_Ranger_NoHood.glb": {
       "sex": "Male",
       "srcSha": "b5c97b7ad1018e0e",
       "srcBytes": 1024984,
-      "outBytes": 1527552,
+      "outBytes": 1455244,
       "meshes": 8,
-      "added": 16
+      "added": 8
     },
     "Male_Wizard.glb": {
       "sex": "Male",
       "srcSha": "b3bfa8b09af89fe4",
       "srcBytes": 884900,
-      "outBytes": 1099076,
+      "outBytes": 1055392,
       "meshes": 6,
-      "added": 12
+      "added": 6
     },
     "Male_Woodcutter.glb": {
       "sex": "Male",
@@ -128,9 +128,9 @@
       "sex": "Male",
       "srcSha": "fe9ef3f800ef645a",
       "srcBytes": 1741056,
-      "outBytes": 2298880,
+      "outBytes": 2261224,
       "meshes": 13,
-      "added": 26
+      "added": 15
     },
     "eq/Female.glb": {
       "sex": "Female",

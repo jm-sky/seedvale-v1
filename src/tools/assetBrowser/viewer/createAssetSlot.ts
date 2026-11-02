@@ -12,7 +12,6 @@ import {
 import type { AssetIndexEntry, AssetPrepare } from '../../../assets/assetIndex'
 import { discoverGlbAnchors, refreshResolvedAnchors, resolveAssetAnchors, type ResolvedAnchor } from '../../../assets/anchorResolve'
 import { mergeAnchorDefs } from '../../../assets/assetAnchors'
-import { applyBodyBuild, type BodyBuild, type BodyBuildResult, DEFAULT_BODY_BUILD } from '../../../assets/bodyBuild'
 import {
   disposeObject3D,
   invalidateGltf,
@@ -23,6 +22,7 @@ import {
   preparePropFitMax,
 } from '../../../assets/loadGltf'
 import { applyHairColor, cloneOutfitMaterials, disposeOutfitMaterialClones } from '../../../assets/ubcOutfitMaterials'
+import { applyBodyBuild, type BodyBuild, type BodyBuildResult, DEFAULT_BODY_BUILD } from '../../../characters/bodyBuild'
 import { tintBucketGlb } from '../../../items/items'
 import { companionAnimationUrl } from '../../../player/playerVisualPreset'
 import { hairColorHexFor } from '../hairTint'

@@ -15,12 +15,13 @@ import {
 } from 'three'
 import type { CharacterAppearance, HairNode } from './characterTypes'
 import { loadGltf, loadGltfAnimated } from '../assets/loadGltf'
+import { applyBodyBuild, needsBuildMorphs } from './bodyBuild'
 import {
   ANIMS_URL,
-  bodyUrl,
+  bodyUrlForBuild,
   characterUrls,
   eqNodeName,
-  eqUrl,
+  eqUrlForBuild,
   hairNodeName,
   hairUrl,
   headUrl,
@@ -147,10 +148,11 @@ function hairNodesFor(a: CharacterAppearance): string[] {
  */
 export async function assembleCharacter(a: CharacterAppearance): Promise<AssembledCharacter> {
   const warnings: string[] = []
-  const { scene, animations: bodyAnims } = await loadGltfAnimated(bodyUrl(a.sex, a.outfit))
+  const bodyFile = bodyUrlForBuild(a.sex, a.outfit, a.build)
+  const { scene, animations: bodyAnims } = await loadGltfAnimated(bodyFile)
   const bones = collectBones(scene)
   if (bones.size === 0) {
-    throw new Error(`assembleCharacter: body has no bones (${bodyUrl(a.sex, a.outfit)})`)
+    throw new Error(`assembleCharacter: body has no bones (${bodyFile})`)
   }
 
   try {
@@ -174,7 +176,7 @@ export async function assembleCharacter(a: CharacterAppearance): Promise<Assembl
 
   if (a.garments.length > 0) {
     try {
-      const eq = await loadGltf(eqUrl(a.sex))
+      const eq = await loadGltf(eqUrlForBuild(a.sex, a.build))
       const eqNames = a.garments.map(eqNodeName)
       const eqResult = rebindNamedNodes(scene, bones, eq, eqNames, 'eq')
       warnings.push(...eqResult.warnings)
@@ -184,6 +186,13 @@ export async function assembleCharacter(a: CharacterAppearance): Promise<Assembl
   }
 
   applyClothTint(scene, a.clothTint)
+
+  // Rebound packs reuse the source geometry (morph dictionaries included), so one pass over the assembled
+  // root drives body + garments; head/hair carry no build morph and are skipped by `applyBodyBuild`.
+  if (needsBuildMorphs(a.build)) {
+    const result = applyBodyBuild(scene, a.build)
+    if (result.unsupported.length > 0) warnings.push(`build ${a.build}: no morph on ${result.unsupported.join(', ')}`)
+  }
 
   let animations = bodyAnims
   try {

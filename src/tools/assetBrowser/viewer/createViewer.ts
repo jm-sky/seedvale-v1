@@ -5,7 +5,7 @@ import {
   Vector3,
 } from 'three'
 import type { AssetIndexEntry } from '../../../assets/assetIndex'
-import type { BodyBuild } from '../../../assets/bodyBuild'
+import type { BodyBuild } from '../../../characters/bodyBuild'
 import { solveAnchorAlignment } from '../../../assets/alignAnchors'
 import { createWorldConfig } from '../../../config/worldConfig'
 import { createPostProcessing } from '../../../render/createPostProcessing'
