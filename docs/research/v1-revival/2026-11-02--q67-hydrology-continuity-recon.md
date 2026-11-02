@@ -1,6 +1,6 @@
 # Q67 — Hydrology continuity recon (2026-11-02)
 
-**Status:** recon done (Opus, 2026-11-02). **Waiting for the author:** world model choice (§6, queue §3). No runtime code changed; the only new code is the diagnostic census tool.
+**Status:** recon done (Opus, 2026-11-02). **Author decision Q68 (2026-11-02): option A** — see §6.6. Next: Opus plan (queue Q69). No runtime code changed; the only new code is the diagnostic census tool.
 
 **Author direction (2026-11-02, this session):** a global hydrology model is acceptable even if it changes the current architecture; a **large, random, finite world** is acceptable — "large" means the home settlement plus 4–6 settlement areas in almost every direction (walking one way meets 4–6 settlements) and at least one `XL` settlement; **no interim quick fixes** — implement the whole solution per plan. V2/V3 hydrology may be used as donors.
 
@@ -112,6 +112,12 @@ There is a new boot-time cost (seconds, then cached) and a memory cost (tens of 
 1. World model: **A** (finite 8 × 8 km, recommended) · **B** (infinite, two-level) · **C** (patch only — ruled out on 2026-11-02, listed for completeness).
 2. XL guarantee: (a) somewhere in the world · (b) within ~1.5 km of home (recommended, so the player can reach it early) · (c) no guarantee.
 3. World edge: (a) open sea plus a gentle push-back current beyond the last coast (recommended) · (b) an invisible wall at ±4096 m · (c) decide later, no boundary until boats exist.
+
+### 6.6 Author decisions — Q68 (2026-11-02)
+
+1. **World model: A** — finite 8 × 8 km continent with global hydrology.
+2. **Settlement sizes grow with distance from home** (an earlier rule, carried over from V2 `centres.ts`: home SM, the neighbour MD about a day's march by route, then LG — quoted in V3 `docs/research/2026-10-10--004--settlement-layout-brainstorm.md`). The intended sequence outward from home is **MD → LG → XL** or **MD → LG/XL**, so exploration and quests escalate. This includes the XL guarantee within reach of home (option b, ~1.5 km). The plan must state how the current per-cell weighted roll (`rollVillageSize`, `SIZE_WEIGHTS` in `src/settlement/families.ts`) becomes distance-aware without breaking local variety.
+3. **World edge: (a) with (b) as backstop** — open sea with a gentle push-back current beyond the last coast, plus a hard boundary at ±4096 m.
 
 ## 7. Cache, epoch and ordering
 
