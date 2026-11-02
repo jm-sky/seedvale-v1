@@ -1,6 +1,7 @@
 import { Color } from 'three'
 import type { SkyParams } from './createSky'
 import { realSecondsToGameDays } from './timeConversion'
+import { DEFAULT_DAY_LENGTH_SEC } from './travelUnits'
 
 const NIGHT_FOG = new Color(0x1a2233)
 const DUSK_FOG = new Color(0xc4876a)
@@ -46,7 +47,7 @@ export function createDayNightState(
   return {
     timeOfDay: DEFAULT_TIME_OF_DAY,
     elapsedDays: 0,
-    dayLengthSec: 480,
+    dayLengthSec: DEFAULT_DAY_LENGTH_SEC,
     timeMultiplier: 1,
     enabled: true,
     ...overrides,

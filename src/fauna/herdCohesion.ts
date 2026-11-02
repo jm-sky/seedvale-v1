@@ -63,8 +63,8 @@ export const HERD_FOLLOW_RADIUS: Record<HerdTightness, readonly [number, number]
 export const MOTHER_FOLLOW_RADIUS: readonly [number, number] = [1, 3]
 
 /** Seconds a juvenile spends aging before it matures into an adult.
- *  Anchored against `dayNight.ts`'s default `dayLengthSec` (480) — roughly
- *  1.25 in-game days, long enough to visibly read as "young" for a while,
+ *  Anchored against `dayNight.ts`'s default `dayLengthSec` (720) — roughly
+ *  0.8 in-game days, long enough to visibly read as "young" for a while,
  *  short enough that most play sessions see a maturity transition. */
 export const JUVENILE_MATURITY_SECONDS = 600
 

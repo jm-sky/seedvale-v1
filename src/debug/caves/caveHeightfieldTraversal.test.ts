@@ -4,6 +4,7 @@ import { MOVE_SPEED, SPRINT_MULTIPLIER } from '../../player/PlayerController'
 import { PLAYER_COLLISION_RADIUS, PLAYER_HEIGHT } from '../../player/playerDimensions'
 import { heightfieldGroundColumn, heightfieldStandingClearance } from '../../world/caves/caveHeightfieldQuery'
 import { CAVE_APPROACH_OFFSET, CAVE_APPROACH_RADIUS } from '../../world/caves/mouthCarve'
+import { PLAYER_WALK_SPEED } from '../../world/travelUnits'
 import {
   buildCaveHeightfieldFixture,
   caveHeightfieldBaseSurfaceAt,
@@ -83,7 +84,7 @@ describe('cave heightfield traversal (plan world-terrain-018 → 019 production 
     expect(HEIGHTFIELD_PLAYER_RADIUS).toBe(PLAYER_COLLISION_RADIUS)
     expect(HEIGHTFIELD_PLAYER_HEIGHT).toBe(PLAYER_HEIGHT)
     expect(HEIGHTFIELD_MIN_STANDING_GAP).toBe(heightfieldStandingClearance(PLAYER_HEIGHT))
-    expect(MOVE_SPEED).toBe(8)
+    expect(MOVE_SPEED).toBe(PLAYER_WALK_SPEED)
     expect(SPRINT_MULTIPLIER).toBe(1.8)
   })
 

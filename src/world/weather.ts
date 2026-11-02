@@ -82,7 +82,7 @@ export function temperatureFor(season: Season, type: WeatherType): number {
 /** Fixed-length weather "cycle" (in `elapsedDays`) — the bucket
  *  `computeWeather` hashes on, so any moment's weather can be derived
  *  directly (plan §7) instead of simulating/replaying intermediate
- *  transitions. ~2.4 real minutes at the default `dayLengthSec = 480`. */
+ *  transitions. ~3.6 real minutes at the default `dayLengthSec = 720`. */
 export const WEATHER_CYCLE_DAYS = 0.3
 
 /** Deterministic per-(seed, cycle, salt) hash → [0,1) — same Wang-style

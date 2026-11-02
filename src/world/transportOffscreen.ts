@@ -8,6 +8,7 @@ import { tryAdvanceDevelopment } from '../economy/npcWork'
 import { creditDeliveredOreToStock, sourcedDeliveryProvenance } from '../economy/oreTransportDemand'
 import { realSecondsToGameDays } from './timeConversion'
 import { executeTransportUnload } from './transportTransactions'
+import { NPC_TRAVEL_SPEED } from './travelUnits'
 
 /**
  * World-owned off-screen transport progression (plan settlements-npcs-019).
@@ -26,12 +27,10 @@ import { executeTransportUnload } from './transportTransactions'
  * @domain settlements-npcs
  */
 
-/** Off-screen travel speed — matches `NpcAgent`'s own `WALK_SPEED`, the
- *  movement model an off-screen carrier is assumed to keep using. Duplicated
- *  (not imported) so this module stays independent of `NpcAgent.ts`'s heavy
- *  runtime/THREE dependencies — keep this in sync with `NpcAgent.ts`'s
- *  `WALK_SPEED` if that ever changes. */
-const OFFSCREEN_TRAVEL_SPEED = 2.4
+/** Off-screen travel speed — the NPC "fast march" (plan 059 decision 8),
+ *  imported from the light `travelUnits` module so this file stays free of
+ *  `NpcAgent.ts`'s runtime/THREE dependencies. */
+const OFFSCREEN_TRAVEL_SPEED = NPC_TRAVEL_SPEED
 
 /** Simplest deterministic estimate consistent with the current movement
  *  model (plan settlements-npcs-019 "Travel duration") — straight-line

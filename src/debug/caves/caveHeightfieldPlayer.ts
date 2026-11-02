@@ -28,6 +28,7 @@ import {
 } from '../../input/MouseLook'
 import { resolveCameraBoom, withCaveFloorFallback } from '../../player/cameraBoom'
 import { applySlopeMovementConstraint } from '../../terrain/slopeConstraint'
+import { PLAYER_WALK_SPEED } from '../../world/travelUnits'
 import {
   HEIGHTFIELD_PLAYER_HEIGHT,
   integrateDebugVertical,
@@ -37,7 +38,7 @@ import {
  *  Duplicated rather than imported so the harness does not pull the whole
  *  gameplay module graph in; `caveHeightfieldTraversal.test.ts` asserts the
  *  two never drift. Body dimensions come from `playerDimensions.ts`. */
-const MOVE_SPEED = 8
+const MOVE_SPEED = PLAYER_WALK_SPEED
 const SPRINT_MULTIPLIER = 1.8
 const LOOK_AT_OFFSET_FAR = 0.9
 const LOOK_AT_OFFSET_NEAR = 1.6

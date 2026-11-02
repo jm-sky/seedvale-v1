@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { gameDaysToRealSeconds } from '../world/timeConversion'
+import { DEFAULT_DAY_LENGTH_SEC } from '../world/travelUnits'
 import { createAnimalLifeState, DEFAULT_ANIMAL_METABOLISM, NEED_ELEVATED_THRESHOLD, tickAnimalLife } from './AnimalLife'
 
 describe('DEFAULT_ANIMAL_METABOLISM thirst pacing', () => {
@@ -20,7 +21,7 @@ describe('DEFAULT_ANIMAL_METABOLISM thirst pacing', () => {
   it('empties thirst on roughly the same game-day scale as player needs', () => {
     const life = createAnimalLifeState(0, DEFAULT_ANIMAL_METABOLISM)
     life.thirst = 0
-    const dayLengthSec = 480
+    const dayLengthSec = DEFAULT_DAY_LENGTH_SEC
     const seconds = gameDaysToRealSeconds(2.5, dayLengthSec)
     tickAnimalLife(life, seconds, false, {}, DEFAULT_ANIMAL_METABOLISM)
     expect(life.thirst).toBeGreaterThan(0.95)
