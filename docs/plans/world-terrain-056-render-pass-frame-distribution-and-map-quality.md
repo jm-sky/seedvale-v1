@@ -1,7 +1,7 @@
 # Plan: Render-pass frame distribution, visibility budgeting and map quality
 
 **Created:** 2026-11-01
-**Status:** `planned` 📋
+**Status:** `ready` — Sonnet execution slices S0–S5 below (2026-11-02); Stages A–D remain the reference scope, narrowed by the review and author decisions
 **Type:** optimization
 **Priority:** high · **Effort:** XL
 **Depends on:** -
@@ -78,6 +78,77 @@ An on-screen pixelation/aliasing artifact may originate from sun shadow 512/1024
 - No unconditional new global scheduler, full simulation refactor, default 2048 shadow setting or unconditional LOD content deletion.
 - Respect existing world-terrain-055, legacy plan 145, current reflection policy and still-open Revival D8/D13 decisions (reflection content/detail is not silently approved by this plan). Changes in *which* NPCs/objects appear in reflections require separate author approval.
 - A–D are a scoped investigation and candidate experiments; **not an authorization to ship visual compromises** without visual evidence and author acceptance.
+
+## Execution scope for Sonnet (2026-11-02) — supersedes Stages A–D where they conflict
+
+Written by Opus after the [critical review](../reviews/2026-11-01--world-terrain-056-render-pass-frame-distribution-review.md) (decision: approve Stage A with changes; no scheduler, cadence or resolution change pre-approved) and these **author decisions (2026-11-02)**:
+
+1. **Scope:** Stage A + **two separate candidates behind flags, default OFF**: (a) shadow cadence under player/camera motion, (b) mirror water-relevance gate. Each gets its own WSL A/B. The shadow-vs-mirror arbiter (review ROI #3) and any scheduler are **out of this session**.
+2. **Focus scenarios: FPS < 45 → `settlement` / `settlement-heavy`**, static *and* moving. Forest/water/ordinary are secondary guards, not optimisation targets.
+3. **Map quality: the observed pixelation is the water reflection** (128² mirror). Author: "worth raising to 1024, or give a choice in Settings". This plan implements the **Settings choice** (sizes 128 / 256 / 512 / 1024); the **default stays 128** until the A/B + screenshots in S5 let the author pick a default (queue §3). Shadow map resolution is **not** touched (no shadow artefact reported).
+4. Author's quality preset is unknown → S0 records the effective live RT sizes.
+
+Model: **S** (Sonnet, high effort). Every slice is an independently revertable commit. No `src/` edits while a benchmark runs. Never claim FPS gains; Windows Arc confirmation goes to queue §4, visual checks to queue §2.
+
+### Verified anchors in current code (Opus, 2026-11-02 — re-verify, code is authoritative)
+
+- `src/app/gameLoop.ts` ≈ L3140–3230 (`tick`): order = `syncPointLightBudget` → `passCollector.beginFrame` → `beginFrameSceneMatrices` → **mirror** (`bundle.ocean.renderMirror`, skipped while `lights.sun.shadow.map` is missing) → `shouldUpdateShadowMap(...)` → `needsUpdate` (also forced by `shadowMapMissing`) → `noteShadowRefresh(shadowWanted)` → `recordShadowBudgetFrame(..., shadowWanted)` → god rays → `gpuTimer.beginFrame` → composer/beauty (shadow pass renders *inside* it) + CSS2D → `gpuTimer.endFrame` → `monitor.endFrame({...})`.
+  - Bug-shaped hazard: `noteShadowRefresh`/`recordShadowBudgetFrame` receive `shadowWanted`, not `shadowWanted || shadowMapMissing` (the forced first refresh is recorded as skipped).
+  - Shadow centre: `shadowCentreX/Z` (L≈840, updated ≈L2837) — forward-shifted under the default tight frustum, so camera yaw moves it.
+- `src/render/shadowBudget.ts`: pure `shouldUpdateShadowMap(state, x, z, hasNearbyCaster, halfRateActorOnly)`; state = last centre + `framesSinceUpdate`; eps 0.05 m; cap 10 frames. **Owner of shadow cadence — extend here.**
+- `src/world/waterMirror.ts`: `WATER_MIRROR_SIZE = 128` (single shared RT created in `createWaterMirror`, `LinearFilter`, no mipmaps); `shouldRenderMirror` pure; in `render()` the state `renderedLastCall = wanted` / `lastRenderSec = nowSec` is set **before** the camera-below-plane / non-perspective early returns (wanted ≠ drawn). Created once in `src/app/worldBundle.ts` ≈L1351. **Owner of mirror cadence, RT and relevance — extend here.**
+- Settings path for render-target knobs: `QualityKnobs` + presets (`src/config/qualityProfiles.ts`), `WorldConfig.postProcessing` (`src/config/worldConfig.ts`, defaults ≈L377, normalisation `applyStoredPostProcessing` ≈L540 — pattern: `SHADOW_MAP_SIZES` set + fallback), live apply in `src/app/graphicsSettings.ts` (`lights.setShadowMapSize`, `ocean.setReflections`), UI in `src/ui-vue/screens/WorldConfigScreen.vue` (≈L281 shadow size select), also `src/ui/createDebugGui.ts`, `src/ui-vue/store.ts`. This is local config persistence, **not** the save file → no `CURRENT_SAVE_VERSION` bump.
+- Perf tooling: `src/perf/rawSidecar.ts` (per-frame `RawFrameSample`, schema v1, ≤ 6000 frames), `src/perf/monitor.ts` (`endFrame` inputs incl. `mirrorDrawCalls`), `src/perf/passSubmissionCollector.ts` (`noteShadowRefresh`, counts only), `src/perf/gpuTimer.ts` (brackets beauty only), `src/perf/benchmark.ts` (scenarios; `settlement` is static; `stream` moves the player along +X via `setInterval` from wall clock), `scripts/perf/run-benchmark-series.mjs`, `scripts/perf/summarize-ab.mjs`, flags in `src/perf/flags.ts`.
+
+### S0 — Pass-coincidence trace + moving settlement fixture (no behaviour change)
+
+1. Extend the **raw sidecar** (bump its `schemaVersion` to 2, keep v1 readers working or update `summarize-ab.mjs`) with per-frame: `shadowRefreshed` (actually requested to three, incl. the missing-map force), `shadowReason` (`move` | `actor` | `stale` | `force` | `none`), `mirrorDrawn` (actual draw, not "wanted"), `mirrorDrawCalls`, `framesSinceShadow`, `msSinceShadow`, `shadowCentreDeltaM`. Reuse the monitor → sidecar path; no new collector. Overhead: a few numbers per frame into preallocated/existing arrays; no GPU query readback.
+   - To report the reason, make the shadow decision return a reason (e.g. `decideShadowUpdate` returning `{ update, reason }`, with `shouldUpdateShadowMap` kept as a thin wrapper so tests and callers stay valid). Fix the `shadowWanted` vs forced bookkeeping (record what was actually requested). Make `WaterMirror.render` expose whether it **drew** (return boolean or `lastDrawn()`), and move the cadence-state update after the early-outs **only if** that does not change cadence semantics measurably — otherwise record "wanted" and "drawn" separately and leave cadence as is (note it in implementation notes).
+2. Add a `settlement-walk` benchmark scenario (in `benchmark.ts` / `benchmarkScenarios.ts`): same anchor as `settlement`; deterministic wall-clock-derived route (walk loop through the plaza at walking speed + a slow yaw sweep and one fast ~90° turn per loop), implemented like the `stream` route (derive from elapsed time, not per-tick steps). Record route constants in the report `context`. Seed `415424794`.
+3. Analysis script (extend `summarize-ab.mjs` or a small sibling in `scripts/perf/`): frame classes **neither / shadow-only / mirror-only / both** → share of frames, p50/p95/p99 frameMs and renderMs per class and for the whole run; shadow/mirror refresh interval histogram; max gap.
+4. WSL run, current default, `settlement`, `settlement-walk` (n = 3), plus one `water` guard run → `docs/performance/results/2026-11-xx--wsl-056-s0-pass-coincidence.md`. Also record effective live RT sizes (shadow map, mirror RT, AO buffers, DPR) at each preset.
+
+**Done when:** tests for the reason/drawn bookkeeping and the route function; checks green; report committed. **Stop condition (from review):** if `both` frames are rare (< ~10 %) and class tails show no shadow/mirror-driven tail, record that the arbiter is not needed (closes review ROI #3); S1/S2 still proceed on their own merit.
+
+### S1 — Candidate A: shadow cadence under motion (`?shadowMotionCadence=1`, default OFF)
+
+In `shadowBudget.ts` (pure, unit-tested), when the trigger is centre motion (reason `move`): require ≥ 1 skipped frame since the last refresh (alternate) **unless** an escape fires: centre displacement since the **last actual refresh** > `D_HARD` (start 1.5 m), camera yaw change since last refresh > `YAW_HARD` (start 12°, so add last-refresh yaw to state — passed in by the caller, no new owner), elapsed since last refresh > `MS_MAX` (start 66 ms) — milliseconds **and** the existing 10-frame cap — or forced (missing map, teleport = displacement escape, quality resize). Actor-only half-rate (Q51) unchanged. Constants exported and documented; no per-frame allocation.
+
+- Tests: alternation while walking; fast turn / teleport / max-ms escapes at 20, 35, 60 FPS step sizes; stationary behaviour identical to today; flag off = identical decisions to today (table test).
+- WSL A/B `settlement-walk`, A default / B `&shadowMotionCadence=1`, A B B A, n = 3 per arm; static `settlement` as a no-change guard. Report shadow refresh share, class p95/p99, render p50. Keep/revert per CLAUDE.md WSL rule; **default stays OFF** — default flip needs author visual acceptance (queue §2: walking, slow/fast yaw, low sun long shadows, NPC shadows; at ~35 FPS alternation ≈ 17 Hz shadow — author judges lag/swimming).
+
+### S2 — Candidate B: mirror water-relevance gate (`?mirrorRelevance=1`, default OFF)
+
+In `waterMirror.ts` (decision owner) + the minimum plumbing from its consumers: skip the mirror draw when **no reflective surface sampling the shared RT** intersects the main camera frustum. Consumers per review: ocean (`createOcean.ts`) and chunk water (`createWater.ts`, shares the texture); the river material (`createRiverWater.ts`) only if it samples the RT — verify. Broad phase only: frustum vs cached per-surface bounding boxes/spheres that already exist (mesh `geometry.boundingSphere`/chunk bounds); **no scene traversal**, no per-frame allocation. Fail-open: unknown bounds, first frames after a chunk load, teleport → draw. When the gate turns from skip to draw, draw immediately that frame (no stale RT shown: the RT is only sampled by surfaces that were invisible).
+
+- Tests: pure relevance function (visible / invisible / boundary / empty / fail-open), cadence state not advanced as "drawn" on a relevance skip.
+- WSL A/B `settlement` and `settlement-walk` (A default / B `&mirrorRelevance=1`, n = 3, A B B A) + `water` guard (gain must be ≈ 0 and no regression there). Report skipped-by-relevance share and mirror draw calls. Visual (queue §2): shoreline approach, fast turn towards water, teleport onto a beach — no one-frame stale/black reflection.
+- **Not in scope:** changing *what* is reflected (D8/D13 open).
+
+### S3 — Water reflection resolution setting (Settings choice; default unchanged)
+
+1. `WorldConfig.postProcessing.waterReflectionSize` ∈ {128, 256, 512, 1024}, default **128**; normalise unknown values to 128 (mirror `SHADOW_MAP_SIZES` pattern). Add to `QualityKnobs`/presets only if the existing preset/Custom detection requires it — keep all presets at 128 for now (no silent visual change).
+2. `WaterMirror.setSize(n)` → `renderTarget.setSize(n, n)` (live, no world rebuild; the RT object and texture uniform stay the same instance — verify the texture identity survives `setSize`, otherwise rebind). Apply in `graphicsSettings.ts` next to `setReflections`. Dispose path unchanged.
+3. UI: select in `WorldConfigScreen.vue` next to "Water reflections" (disabled when reflections are off), label with the size; debug GUI entry if the shadow size has one. Polish UI copy follows existing i18n/labels pattern.
+4. Optional quality-only check (not a behaviour change, same commit only if trivial): with larger RT, enabling mipmaps or keeping `LinearFilter` — **do not change** filtering/shader here; record observations for S5.
+
+**Done when:** config persistence/normalisation tests (`persistConfig.test.ts`, `worldConfig` tests), live resize test with a stub/mock where the project already does so; type-check/lint/test/build green; browser check that the select changes the RT size (`?seed=415424794`).
+
+### S4 — Reflection size cost (measurement only)
+
+WSL, `settlement` and `water`, sizes 128 / 256 / 512 / 1024 (via config/query; add a `?mirrorSize=` override in `flags.ts` if needed for the runner), n = 3 each, with S2 gate both off and on if S2 was kept. Report FPS, frame/render p50/p95/p99, mirror refresh share. Expectation to verify, not assume: CPU submission unchanged, GPU fill ×4 per step (1024 = 64× the texels of 128).
+
+### S5 — Visual evidence for the author (default decision)
+
+Screenshots at the same spot (reference seed, lake/river shore near a settlement, still water + low angle + daylight + low sun) for 128 / 256 / 512 / 1024 → `docs/performance/results/` (or `docs/reviews/` if visual-only). Note the shader attenuation in `waterMaterial.ts` (reflection ≤ ~18 %, typically ~1–2 %): if 1024 barely differs from 256/512, say so. **Ask the author** (queue §3, Polish, options): default size per preset (e.g. Low 128 / Medium 256 / High 512 or 1024) given S4 numbers. Do not change defaults without the answer.
+
+### Not in this session
+
+Shadow-vs-mirror arbiter / any scheduler (only if S0 shows material overlap → new O task); AO/SMAA/bloom cadence; shadow-map resolution / 2048 clamp; reflection content changes (D8/D13); streaming / shader first-use hitches (other owners).
+
+### Order and gates
+
+S0 → S1 → S2 (S1 and S2 independent; never in one A/B arm) → S3 → S4 → S5. If the session runs short: S0 + S1 are the minimum useful handoff; S3 can be done without S1/S2. Update this plan's status, an `--implementation-notes.md`, `docs/STATE.md` (rendering/water settings), queue rows and `docs/performance/README.md` links as slices land.
 
 ## References
 
