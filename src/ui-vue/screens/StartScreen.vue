@@ -138,7 +138,7 @@ function useSeedFromLibrary(seed: number): void {
 
 <template>
   <div
-    class="pointer-events-auto fixed inset-0 z-11 flex items-center justify-center bg-panel-backdrop backdrop-blur-[2px]"
+    class="pointer-events-auto fixed inset-0 z-11 flex items-center justify-center bg-[radial-gradient(ellipse_at_top,#3b3226,#15120e)] p-4"
     data-test-id="start-screen"
   >
     <SeedLibrary
@@ -147,8 +147,8 @@ function useSeedFromLibrary(seed: number): void {
       @close="view = 'main'"
       @use-seed="useSeedFromLibrary"
     />
-    <UiPanel v-else>
-      <h1 class="mb-4.5 text-center text-[22px] font-semibold tracking-wide">
+    <UiPanel v-else class="border border-amber-200/20 bg-[oklch(0.23_0.02_60_/_0.95)] shadow-2xl">
+      <h1 class="mb-4.5 text-center text-[22px] font-semibold tracking-wide text-primary">
         Seedvale
       </h1>
 
@@ -161,7 +161,7 @@ function useSeedFromLibrary(seed: number): void {
             v-for="entry in entries"
             :key="entry.id"
             class="flex items-stretch overflow-hidden rounded-md border border-white/15 bg-white/5"
-            :class="entry.status === 'ok' && entry.id === activeId ? 'border-blue-400/70 bg-blue-500/20' : ''"
+            :class="entry.status === 'ok' && entry.id === activeId ? 'border-primary/60 bg-primary/10' : ''"
           >
             <button
               v-if="entry.status === 'ok'"
@@ -195,7 +195,7 @@ function useSeedFromLibrary(seed: number): void {
         <UiButton
           v-if="healthySlots.length > 0"
           variant="primary"
-          class="mb-2 w-full"
+          class="mb-2 w-full !border-primary/40 !bg-primary !text-neutral-950 hover:!bg-amber-300"
           @click="emit('choose', { type: 'continue' })"
         >
           Kontynuuj
@@ -241,7 +241,7 @@ function useSeedFromLibrary(seed: number): void {
           id="seedvale-new-player-name"
           ref="playerNameInput"
           v-model="playerName"
-          class="mb-2.5 w-full rounded-md border border-white/15 bg-white/5 px-3 py-2.5 text-sm outline-none focus:border-blue-400/60"
+          class="mb-2.5 w-full rounded-md border border-white/15 bg-white/5 px-3 py-2.5 text-sm outline-none focus:border-primary/60"
           type="text"
           autocomplete="off"
           :maxlength="PLAYER_NAME_MAX_LENGTH"
@@ -256,7 +256,7 @@ function useSeedFromLibrary(seed: number): void {
         <input
           id="seedvale-new-save-name"
           v-model="name"
-          class="mb-2.5 w-full rounded-md border border-white/15 bg-white/5 px-3 py-2.5 text-sm outline-none focus:border-blue-400/60"
+          class="mb-2.5 w-full rounded-md border border-white/15 bg-white/5 px-3 py-2.5 text-sm outline-none focus:border-primary/60"
           type="text"
           autocomplete="off"
           :maxlength="SAVE_NAME_MAX_LENGTH"
@@ -270,7 +270,7 @@ function useSeedFromLibrary(seed: number): void {
         </p>
         <UiButton
           variant="primary"
-          class="mb-2 w-full"
+          class="mb-2 w-full !border-primary/40 !bg-primary !text-neutral-950 hover:!bg-amber-300"
           @click="submitNew"
         >
           Rozpocznij
