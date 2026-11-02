@@ -1,7 +1,7 @@
 # Plan: Render-pass frame distribution, visibility budgeting and map quality
 
 **Created:** 2026-11-01
-**Status:** `in progress` 🔄 (S0 code, S1, S3 landed 2026-11-02; S2 blocked on author; S4/S5 + WSL reports pending)
+**Status:** `in progress` 🔄 (S0 code, S1, S3 landed 2026-11-02; S2 recon complete, candidate awaiting author decision; S4/S5 + WSL reports pending)
 **Type:** optimization
 **Priority:** high · **Effort:** XL
 **Depends on:** -
@@ -124,6 +124,14 @@ In `waterMirror.ts` (decision owner) + the minimum plumbing from its consumers: 
 - Tests: pure relevance function (visible / invisible / boundary / empty / fail-open), cadence state not advanced as "drawn" on a relevance skip.
 - WSL A/B `settlement` and `settlement-walk` (A default / B `&mirrorRelevance=1`, n = 3, A B B A) + `water` guard (gain must be ≈ 0 and no regression there). Report skipped-by-relevance share and mirror draw calls. Visual (queue §2): shoreline approach, fast turn towards water, teleport onto a beach — no one-frame stale/black reflection.
 - **Not in scope:** changing *what* is reflected (D8/D13 open).
+
+### S2 diagnostic addendum (2026-11-02; GitHub-only recon, no implementation or new measurements)
+
+- **Revise the candidate, do not discard S2 yet.** Ocean mesh frustum visibility is misleading: the 768 m follow-player plane has a shader-only radial mask, while the default outdoor fog becomes fully opaque at 160 m (`terrainVisualHorizon`); the ocean ring begins at 192 m from the player, and the regular third-person camera is at most 22 m away. Thus its reflection contribution is normally fog-hidden. Fail open when the actual fog/camera/configuration does not guarantee this.
+- **Proposed cheap gate:** during `createChunkWater`/chunk finalization, cache conservative small (e.g. 4×4) wet-region bounds derived from existing height data; maintain them on chunk attach/remesh/unload. Before an *already due* mirror refresh, test cached wet regions against the main-camera frustum and current fog far plane; skip only if none is potentially visible. River ribbons do not sample the mirror RT. No scene traversal, raycasts, height probes per frame, or GPU occlusion queries; fail open on missing/unknown chunk state, rebuild, teleport and boundary transitions. Resume with an immediate mirror refresh.
+- **Estimated overhead (not measured):** roughly 0.03–0.2 ms per due-frame relevance check plus a small one-time per-chunk mask build; low memory overhead. Terrain/building occlusion is intentionally not detected, yielding false positives (extra renders), not missing reflections.
+- **Evidence/limits:** historical WSL `settlement` reflection-off isolation: −1.8 ms render; `settlement-heavy`: ~295 mirror draw calls per frame on average, and ~6 ms median render difference between mirror/non-mirror frame classes (not a controlled pass-cost measurement). Neither proves the share of safely skippable mirrors, and measurements predate the default 256² RT. If most due mirrors are skipped, ~0.5–3 ms/frame and ~1–3 FPS near 35 FPS are **illustrative scenarios, not an A/B result**; confidence in FPS gain is low.
+- **Gate:** first measure due-mirror skip share/CPU check time in `settlement`, `settlement-walk`, `settlement-heavy` and `water`, then separate WSL A/B (and native Windows/visual validation). Keep only with ≥ ~0.5 ms net improvement in representative heavy settlement and no p95/p99 or shoreline/fast-turn/teleport visual regression. **No production change approved by this diagnostic.**
 
 ### S3 — Water reflection resolution setting (Settings choice; default unchanged)
 
