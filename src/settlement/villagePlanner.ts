@@ -1749,10 +1749,10 @@ function entranceCountFor(identity: VillageIdentity): number {
 /** Neighbour bearings closer than this merge into one entrance (Q59, ~40°). */
 const ENTRANCE_BEARING_MERGE_RAD = (40 * Math.PI) / 180
 
-/** Extra entrances allowed beyond the per-size count when neighbours lie in more
- *  distinct directions (author D4 (b): +1). Census 2026-11-02 (seed 42): +1 leaves
- *  ~6 % of road ends facing away, uncapped (max 4) ~0.4 % — see queue §3. */
-const NEIGHBOR_ENTRANCE_EXTRA = 1
+/** Max road entrances per village (author 2026-11-02, Q59 option (c)): one per
+ *  distinct neighbour direction, at most this many. Census seed 42: the earlier
+ *  "+1" cap left ~6 % of road ends facing away, this ~0.4 %. */
+const MAX_NEIGHBOR_ENTRANCES = 4
 
 function angularDistance(a: number, b: number): number {
   return Math.abs(Math.atan2(Math.sin(a - b), Math.cos(a - b)))
@@ -1762,8 +1762,8 @@ function angularDistance(a: number, b: number): number {
  * Entrance angles for a village (Q59, Q44 R3). Bearings to the ring-1
  * neighbours (nearest first) win over the seeded layout axis so inter-settlement
  * roads leave through a gap that faces their target. Bearings within ~40° merge
- * into one entrance; the per-size count applies, +1 when neighbours lie in more
- * distinct directions than that (author D4 (b)). Slots left over keep the
+ * into one entrance; one entrance per distinct direction, at least the per-size
+ * count and at most 4 (author 2026-11-02, supersedes D4 (b) "+1"). Slots left over keep the
  * layout-pattern angles, skipping ones that duplicate a neighbour direction.
  * Pure and deterministic; with no neighbours it equals `preferredEntranceAngles`.
  */
@@ -1779,7 +1779,7 @@ export function roadEntranceAngles(
     if (clusters.every((c) => angularDistance(c, bearing) >= ENTRANCE_BEARING_MERGE_RAD)) clusters.push(bearing)
   }
   if (clusters.length === 0) return preferredEntranceAngles(pattern, seedForCell, count, waterAngle)
-  const target = Math.min(clusters.length, count + NEIGHBOR_ENTRANCE_EXTRA)
+  const target = Math.max(count, Math.min(clusters.length, MAX_NEIGHBOR_ENTRANCES))
   const angles = clusters.slice(0, target)
   if (angles.length < target) {
     for (const angle of preferredEntranceAngles(pattern, seedForCell, count, waterAngle)) {

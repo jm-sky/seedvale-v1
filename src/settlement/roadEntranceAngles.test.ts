@@ -26,10 +26,10 @@ describe('roadEntranceAngles (Q59)', () => {
     expect(angles.filter((a) => diff(a, deg(30)) < deg(1))).toHaveLength(0)
   })
 
-  it('allows only +1 entrance beyond the per-size count', () => {
-    const bearings = [deg(0), deg(90), deg(180), deg(270)]
-    expect(roadEntranceAngles('clustered', 7, 1, 0, bearings)).toEqual([deg(0), deg(90)])
-    expect(roadEntranceAngles('clustered', 7, 2, 0, bearings)).toHaveLength(3)
+  it('opens one entrance per distinct neighbour direction, at most 4', () => {
+    const four = [deg(0), deg(90), deg(180), deg(270)]
+    expect(roadEntranceAngles('clustered', 7, 1, 0, four)).toEqual(four)
+    expect(roadEntranceAngles('clustered', 7, 2, 0, [...four, deg(45), deg(135)])).toHaveLength(4)
   })
 
   it('fills spare slots with layout angles that do not duplicate a neighbour direction', () => {
