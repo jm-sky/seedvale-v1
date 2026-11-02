@@ -17,10 +17,10 @@ import {
   chunkSubKey,
   createAbandonedCemeteryCache,
 } from './abandonedCemeteryCache'
-import { FAR_RANGE_KM, LOCATION_SCAN_STEP, MEDIUM_RANGE_KM, NEAR_RANGE_KM, WORLD_UNITS_PER_KM } from './locationConfig'
+import { FAR_RANGE_HOURS, LOCATION_SCAN_STEP, MEDIUM_RANGE_HOURS, NEAR_RANGE_HOURS, WORLD_UNITS_PER_HOUR } from './locationConfig'
 import { createLocationKnowledge } from './locationKnowledge'
 import {
-  abandonedCemeteryChunkIntersectsKmBand,
+  abandonedCemeteryChunkIntersectsHoursBand,
   createWorldLocationCatalog,
   settlementLocationId,
 } from './worldLocationCatalog'
@@ -133,7 +133,7 @@ function findRollChunk(
   seed: number,
   passes: boolean,
   pred: (cx: number, cz: number) => boolean,
-  limit = 80,
+  limit = 140,
 ): { cx: number, cz: number } {
   for (let cz = -limit; cz <= limit; cz++) {
     for (let cx = -limit; cx <= limit; cx++) {
@@ -375,7 +375,7 @@ describe('createWorldLocationCatalog', () => {
     expect(catalog.landmarksWithin(320, -140, 50).some((location) => location.kind === 'searchArea')).toBe(false)
   })
 
-  it('nearestSettlements is bounded by maxKm and sorted nearest-first', () => {
+  it('nearestSettlements is bounded by maxHours and sorted nearest-first', () => {
     const defs = new Map<string, SettlementDef>([
       ['0_0', makeSettlementDef(0, 0, 'Home')],
       ['1_0', makeSettlementDef(1, 0, 'East')],
@@ -389,8 +389,8 @@ describe('createWorldLocationCatalog', () => {
       getSampleParams: () => rawParams(),
       getChunkSize: () => 64,
     })
-    // 280 world units = 14 km; East sits at 14km, Far at 70km.
-    const near = catalog.nearestSettlements(0, 0, 20)
+    // 280 world units = travel hours.
+    const near = catalog.nearestSettlements(0, 0, 4)
     expect(near.map((l) => l.name)).toEqual(['Home', 'East'])
   })
 
@@ -449,21 +449,21 @@ describe('coarse terrain scan (plan world-013)', () => {
 
   it('cold query equals warm query (repeated call on the same catalog)', () => {
     const catalog = scanOnlyCatalog(42)
-    const first = byId(catalog.landmarksWithin(0, 0, FAR_RANGE_KM))
-    const second = byId(catalog.landmarksWithin(0, 0, FAR_RANGE_KM))
+    const first = byId(catalog.landmarksWithin(0, 0, FAR_RANGE_HOURS))
+    const second = byId(catalog.landmarksWithin(0, 0, FAR_RANGE_HOURS))
     expect(second).toEqual(first)
   })
 
   it('Near -> Guard -> Far order gives the same results as Far -> Guard -> Near', () => {
     const forward = scanOnlyCatalog(42)
-    const near1 = byId(forward.landmarksInRange(0, 0, 0, NEAR_RANGE_KM))
-    const guard1 = byId(forward.landmarksInRange(0, 0, 0, MEDIUM_RANGE_KM))
-    const far1 = byId(forward.landmarksInRange(0, 0, MEDIUM_RANGE_KM, FAR_RANGE_KM))
+    const near1 = byId(forward.landmarksInRange(0, 0, 0, NEAR_RANGE_HOURS))
+    const guard1 = byId(forward.landmarksInRange(0, 0, 0, MEDIUM_RANGE_HOURS))
+    const far1 = byId(forward.landmarksInRange(0, 0, MEDIUM_RANGE_HOURS, FAR_RANGE_HOURS))
 
     const backward = scanOnlyCatalog(42)
-    const far2 = byId(backward.landmarksInRange(0, 0, MEDIUM_RANGE_KM, FAR_RANGE_KM))
-    const guard2 = byId(backward.landmarksInRange(0, 0, 0, MEDIUM_RANGE_KM))
-    const near2 = byId(backward.landmarksInRange(0, 0, 0, NEAR_RANGE_KM))
+    const far2 = byId(backward.landmarksInRange(0, 0, MEDIUM_RANGE_HOURS, FAR_RANGE_HOURS))
+    const guard2 = byId(backward.landmarksInRange(0, 0, 0, MEDIUM_RANGE_HOURS))
+    const near2 = byId(backward.landmarksInRange(0, 0, 0, NEAR_RANGE_HOURS))
 
     expect(near2).toEqual(near1)
     expect(guard2).toEqual(guard1)
@@ -472,63 +472,63 @@ describe('coarse terrain scan (plan world-013)', () => {
 
   it('invalidateScanCache forces resampling instead of silently reusing stale terrain data', () => {
     const catalog = scanOnlyCatalog(42)
-    catalog.landmarksWithin(0, 0, MEDIUM_RANGE_KM)
+    catalog.landmarksWithin(0, 0, MEDIUM_RANGE_HOURS)
     const firstSampled = catalog.getScanDiagnostics().sampledCells
     expect(firstSampled).toBeGreaterThan(0)
 
     catalog.invalidateScanCache()
     expect(catalog.getScanDiagnostics().sampledCells).toBe(0)
 
-    catalog.landmarksWithin(0, 0, MEDIUM_RANGE_KM)
+    catalog.landmarksWithin(0, 0, MEDIUM_RANGE_HOURS)
     expect(catalog.getScanDiagnostics().sampledCells).toBe(firstSampled)
   })
 
   it('an overlapping query reuses already-classified cells instead of resampling them', () => {
     const shared = scanOnlyCatalog(42)
-    shared.landmarksInRange(0, 0, 0, MEDIUM_RANGE_KM)
+    shared.landmarksInRange(0, 0, 0, MEDIUM_RANGE_HOURS)
     const afterGuard = shared.getScanDiagnostics().sampledCells
-    shared.landmarksInRange(0, 0, MEDIUM_RANGE_KM, FAR_RANGE_KM)
+    shared.landmarksInRange(0, 0, MEDIUM_RANGE_HOURS, FAR_RANGE_HOURS)
     const afterFarOnTopOfGuard = shared.getScanDiagnostics().sampledCells - afterGuard
     expect(shared.getScanDiagnostics().cacheHitCells).toBeGreaterThan(0)
 
     const coldFar = scanOnlyCatalog(42)
-    coldFar.landmarksInRange(0, 0, MEDIUM_RANGE_KM, FAR_RANGE_KM)
+    coldFar.landmarksInRange(0, 0, MEDIUM_RANGE_HOURS, FAR_RANGE_HOURS)
     const coldFarSampled = coldFar.getScanDiagnostics().sampledCells
 
     expect(afterFarOnTopOfGuard).toBeLessThanOrEqual(coldFarSampled)
   })
 
-  it('landmarksWithin(maxKm) is equivalent to landmarksInRange(0, maxKm)', () => {
+  it('landmarksWithin(maxHours) is equivalent to landmarksInRange(0, maxHours)', () => {
     const a = scanOnlyCatalog(42)
     const b = scanOnlyCatalog(42)
-    expect(byId(a.landmarksWithin(0, 0, FAR_RANGE_KM))).toEqual(byId(b.landmarksInRange(0, 0, 0, FAR_RANGE_KM)))
+    expect(byId(a.landmarksWithin(0, 0, FAR_RANGE_HOURS))).toEqual(byId(b.landmarksInRange(0, 0, 0, FAR_RANGE_HOURS)))
   })
 
   it('a Far-band query never returns a location from inside its own inner bound', () => {
     const catalog = scanOnlyCatalog(42)
-    const far = catalog.landmarksInRange(0, 0, MEDIUM_RANGE_KM, FAR_RANGE_KM)
+    const far = catalog.landmarksInRange(0, 0, MEDIUM_RANGE_HOURS, FAR_RANGE_HOURS)
     for (const loc of far) {
-      const km = Math.hypot(loc.x, loc.z) / 20
-      expect(km).toBeGreaterThan(MEDIUM_RANGE_KM)
+      const hours = Math.hypot(loc.x, loc.z) / 20
+      expect(hours).toBeGreaterThan(MEDIUM_RANGE_HOURS)
     }
   })
 
   it('splitting a wide query into adjacent bands and unioning gives the same set as one wide query (boundary-safe lake/peak extraction)', () => {
     const whole = scanOnlyCatalog(42)
-    const wholeResult = byId(whole.landmarksWithin(0, 0, FAR_RANGE_KM))
+    const wholeResult = byId(whole.landmarksWithin(0, 0, FAR_RANGE_HOURS))
 
     const split = scanOnlyCatalog(42)
-    const near = split.landmarksInRange(0, 0, 0, NEAR_RANGE_KM)
-    const medium = split.landmarksInRange(0, 0, NEAR_RANGE_KM, MEDIUM_RANGE_KM)
-    const far = split.landmarksInRange(0, 0, MEDIUM_RANGE_KM, FAR_RANGE_KM)
+    const near = split.landmarksInRange(0, 0, 0, NEAR_RANGE_HOURS)
+    const medium = split.landmarksInRange(0, 0, NEAR_RANGE_HOURS, MEDIUM_RANGE_HOURS)
+    const far = split.landmarksInRange(0, 0, MEDIUM_RANGE_HOURS, FAR_RANGE_HOURS)
     const splitResult = byId([...near, ...medium, ...far])
 
     expect(splitResult).toEqual(wholeResult)
   })
 
   it('a different seed/config can change results (sanity check the fixture isn\'t trivially empty everywhere)', () => {
-    const a = scanOnlyCatalog(1).landmarksWithin(0, 0, FAR_RANGE_KM)
-    const b = scanOnlyCatalog(2).landmarksWithin(0, 0, FAR_RANGE_KM)
+    const a = scanOnlyCatalog(1).landmarksWithin(0, 0, FAR_RANGE_HOURS)
+    const b = scanOnlyCatalog(2).landmarksWithin(0, 0, FAR_RANGE_HOURS)
     expect(byId(a)).not.toEqual(byId(b))
   })
 })
@@ -543,7 +543,7 @@ describe('persistent worldgen cache hooks (plan world-015 §11/§13/§15)', () =
   const CELL_NONE = 1
 
   // A query fully inside tile (0, 0)'s own bounds, including the halo margin
-  // `scanLakesAndPeaks` adds around minKm/maxKm — centered on cell (5, 5) with
+  // `scanLakesAndPeaks` adds around minHours/maxHours — centered on cell (5, 5) with
   // a near-zero radius so the scanned rectangle (roughly grid cells 2..8 on
   // each axis) never crosses into a neighboring, unhydrated tile.
   const TILE_LOCAL_CELL = 5
@@ -665,17 +665,17 @@ describe('abandoned cemetery scan (plan world-022)', () => {
     }
   }
 
-  it('keeps an abandoned cemetery just inside minKm and just at maxKm', () => {
+  it('keeps an abandoned cemetery just inside minHours and just at maxHours', () => {
     const justOverMin = findRollChunk(SEED, true, (cx, cz) => {
-      const km = Math.hypot(cx * CHUNK, cz * CHUNK) / WORLD_UNITS_PER_KM
-      return km > MEDIUM_RANGE_KM && km <= MEDIUM_RANGE_KM + 4
+      const hours = Math.hypot(cx * CHUNK, cz * CHUNK) / WORLD_UNITS_PER_HOUR
+      return hours > MEDIUM_RANGE_HOURS && hours <= MEDIUM_RANGE_HOURS + 4
     })
     const atMax = findRollChunk(SEED, true, (cx, cz) => {
-      const km = Math.hypot(cx * CHUNK, cz * CHUNK) / WORLD_UNITS_PER_KM
-      return km > FAR_RANGE_KM - 4 && km <= FAR_RANGE_KM
+      const hours = Math.hypot(cx * CHUNK, cz * CHUNK) / WORLD_UNITS_PER_HOUR
+      return hours > FAR_RANGE_HOURS - 4 && hours <= FAR_RANGE_HOURS
     })
     const catalog = catalogFor([cemeteryAtChunk(justOverMin.cx, justOverMin.cz), cemeteryAtChunk(atMax.cx, atMax.cz)])
-    const far = catalog.landmarksInRange(0, 0, MEDIUM_RANGE_KM, FAR_RANGE_KM)
+    const far = catalog.landmarksInRange(0, 0, MEDIUM_RANGE_HOURS, FAR_RANGE_HOURS)
     const ids = far.filter((l) => l.kind === 'cemetery').map((l) => l.id)
     expect(ids).toContain(`cemetery:w:${justOverMin.cx}:${justOverMin.cz}:0:test`)
     expect(ids).toContain(`cemetery:w:${atMax.cx}:${atMax.cz}:0:test`)
@@ -684,37 +684,37 @@ describe('abandoned cemetery scan (plan world-022)', () => {
   it('does not probe obvious Far inner-band chunks or bounding-square corners', () => {
     const probeLog: { cx: number, cz: number }[] = []
     const inner = findRollChunk(SEED, true, (cx, cz) => {
-      const km = Math.hypot(cx * CHUNK, cz * CHUNK) / WORLD_UNITS_PER_KM
-      return km < 10
+      const hours = Math.hypot(cx * CHUNK, cz * CHUNK) / WORLD_UNITS_PER_HOUR
+      return hours < 10
     })
-    const corner = { cx: 62, cz: 62 }
+    const corner = { cx: 130, cz: 130 }
     const catalog = catalogFor(
       [cemeteryAtChunk(inner.cx, inner.cz), cemeteryAtChunk(corner.cx, corner.cz)],
       probeLog,
     )
-    const far = catalog.landmarksInRange(0, 0, MEDIUM_RANGE_KM, FAR_RANGE_KM)
+    const far = catalog.landmarksInRange(0, 0, MEDIUM_RANGE_HOURS, FAR_RANGE_HOURS)
     expect(far.some((l) => l.id.includes(`${inner.cx}:${inner.cz}`))).toBe(false)
     expect(probeLog.some((c) => c.cx === inner.cx && c.cz === inner.cz)).toBe(false)
     expect(probeLog.some((c) => c.cx === corner.cx && c.cz === corner.cz)).toBe(false)
-    expect(abandonedCemeteryChunkIntersectsKmBand(inner.cx, inner.cz, 0, 0, CHUNK, MEDIUM_RANGE_KM, FAR_RANGE_KM)).toBe(false)
-    expect(abandonedCemeteryChunkIntersectsKmBand(corner.cx, corner.cz, 0, 0, CHUNK, MEDIUM_RANGE_KM, FAR_RANGE_KM)).toBe(false)
+    expect(abandonedCemeteryChunkIntersectsHoursBand(inner.cx, inner.cz, 0, 0, CHUNK, MEDIUM_RANGE_HOURS, FAR_RANGE_HOURS)).toBe(false)
+    expect(abandonedCemeteryChunkIntersectsHoursBand(corner.cx, corner.cz, 0, 0, CHUNK, MEDIUM_RANGE_HOURS, FAR_RANGE_HOURS)).toBe(false)
   })
 
   it('does not call the expensive probe for a chunk rejected by the cheap abandoned roll', () => {
     const probeLog: { cx: number, cz: number }[] = []
     const fail = findRollChunk(SEED, false, (cx, cz) => {
-      const km = Math.hypot(cx * CHUNK, cz * CHUNK) / WORLD_UNITS_PER_KM
-      return km > MEDIUM_RANGE_KM && km <= FAR_RANGE_KM
+      const hours = Math.hypot(cx * CHUNK, cz * CHUNK) / WORLD_UNITS_PER_HOUR
+      return hours > MEDIUM_RANGE_HOURS && hours <= FAR_RANGE_HOURS
     })
     const catalog = catalogFor([cemeteryAtChunk(fail.cx, fail.cz)], probeLog)
-    catalog.landmarksInRange(0, 0, MEDIUM_RANGE_KM, FAR_RANGE_KM)
+    catalog.landmarksInRange(0, 0, MEDIUM_RANGE_HOURS, FAR_RANGE_HOURS)
     expect(probeLog.some((c) => c.cx === fail.cx && c.cz === fail.cz)).toBe(false)
     expect(catalog.getScanDiagnostics().cemeteryChunksRejectedByAbandonedRoll).toBeGreaterThan(0)
   })
 
   it('Far expensive probes are a small subset of considered chunks (range + roll prune)', () => {
     const catalog = catalogFor([])
-    catalog.landmarksInRange(0, 0, MEDIUM_RANGE_KM, FAR_RANGE_KM)
+    catalog.landmarksInRange(0, 0, MEDIUM_RANGE_HOURS, FAR_RANGE_HOURS)
     const d = catalog.getScanDiagnostics()
     expect(d.cemeteryChunksConsidered).toBeGreaterThan(1000)
     expect(d.cemeteryChunksRejectedByRange).toBeGreaterThan(0)
@@ -725,23 +725,23 @@ describe('abandoned cemetery scan (plan world-022)', () => {
 
   it('Near / Guard / Far keep query-order independence including abandoned cemeteries', () => {
     const a = findRollChunk(SEED, true, (cx, cz) => {
-      const km = Math.hypot(cx * CHUNK, cz * CHUNK) / WORLD_UNITS_PER_KM
-      return km > 2 && km <= NEAR_RANGE_KM
+      const hours = Math.hypot(cx * CHUNK, cz * CHUNK) / WORLD_UNITS_PER_HOUR
+      return hours > 2 && hours <= NEAR_RANGE_HOURS
     })
     const b = findRollChunk(SEED, true, (cx, cz) => {
-      const km = Math.hypot(cx * CHUNK, cz * CHUNK) / WORLD_UNITS_PER_KM
-      return km > MEDIUM_RANGE_KM && km <= MEDIUM_RANGE_KM + 8 && !(cx === a.cx && cz === a.cz)
+      const hours = Math.hypot(cx * CHUNK, cz * CHUNK) / WORLD_UNITS_PER_HOUR
+      return hours > MEDIUM_RANGE_HOURS && hours <= MEDIUM_RANGE_HOURS + 8 && !(cx === a.cx && cz === a.cz)
     })
     const fixtures = [cemeteryAtChunk(a.cx, a.cz), cemeteryAtChunk(b.cx, b.cz)]
     const forward = catalogFor(fixtures)
-    const near1 = forward.landmarksInRange(0, 0, 0, NEAR_RANGE_KM).map((l) => l.id).sort()
-    const guard1 = forward.landmarksInRange(0, 0, 0, MEDIUM_RANGE_KM).map((l) => l.id).sort()
-    const far1 = forward.landmarksInRange(0, 0, MEDIUM_RANGE_KM, FAR_RANGE_KM).map((l) => l.id).sort()
+    const near1 = forward.landmarksInRange(0, 0, 0, NEAR_RANGE_HOURS).map((l) => l.id).sort()
+    const guard1 = forward.landmarksInRange(0, 0, 0, MEDIUM_RANGE_HOURS).map((l) => l.id).sort()
+    const far1 = forward.landmarksInRange(0, 0, MEDIUM_RANGE_HOURS, FAR_RANGE_HOURS).map((l) => l.id).sort()
 
     const backward = catalogFor(fixtures)
-    const far2 = backward.landmarksInRange(0, 0, MEDIUM_RANGE_KM, FAR_RANGE_KM).map((l) => l.id).sort()
-    const guard2 = backward.landmarksInRange(0, 0, 0, MEDIUM_RANGE_KM).map((l) => l.id).sort()
-    const near2 = backward.landmarksInRange(0, 0, 0, NEAR_RANGE_KM).map((l) => l.id).sort()
+    const far2 = backward.landmarksInRange(0, 0, MEDIUM_RANGE_HOURS, FAR_RANGE_HOURS).map((l) => l.id).sort()
+    const guard2 = backward.landmarksInRange(0, 0, 0, MEDIUM_RANGE_HOURS).map((l) => l.id).sort()
+    const near2 = backward.landmarksInRange(0, 0, 0, NEAR_RANGE_HOURS).map((l) => l.id).sort()
     expect(near2).toEqual(near1)
     expect(guard2).toEqual(guard1)
     expect(far2).toEqual(far1)
@@ -749,16 +749,16 @@ describe('abandoned cemetery scan (plan world-022)', () => {
 
   it('async cooperative path matches sync and reports monotonic progress ending at 1', async () => {
     const pass = findRollChunk(SEED, true, (cx, cz) => {
-      const km = Math.hypot(cx * CHUNK, cz * CHUNK) / WORLD_UNITS_PER_KM
-      return km > MEDIUM_RANGE_KM && km <= FAR_RANGE_KM
+      const hours = Math.hypot(cx * CHUNK, cz * CHUNK) / WORLD_UNITS_PER_HOUR
+      return hours > MEDIUM_RANGE_HOURS && hours <= FAR_RANGE_HOURS
     })
     const fixtures = [cemeteryAtChunk(pass.cx, pass.cz)]
-    const sync = catalogFor(fixtures).landmarksInRange(0, 0, MEDIUM_RANGE_KM, FAR_RANGE_KM)
+    const sync = catalogFor(fixtures).landmarksInRange(0, 0, MEDIUM_RANGE_HOURS, FAR_RANGE_HOURS)
       .map((l) => l.id)
       .sort()
     const progress: number[] = []
     const asyncCat = catalogFor(fixtures)
-    const asyncResult = await asyncCat.landmarksInRangeAsync(0, 0, MEDIUM_RANGE_KM, FAR_RANGE_KM, {
+    const asyncResult = await asyncCat.landmarksInRangeAsync(0, 0, MEDIUM_RANGE_HOURS, FAR_RANGE_HOURS, {
       yieldEveryProbes: 1,
       yieldToPaint: async () => {},
       onProgress: (p) => progress.push(p),
@@ -771,15 +771,15 @@ describe('abandoned cemetery scan (plan world-022)', () => {
 
   it('yields do not expose a prefix result — the promise resolves with the full set once', async () => {
     const pass = findRollChunk(SEED, true, (cx, cz) => {
-      const km = Math.hypot(cx * CHUNK, cz * CHUNK) / WORLD_UNITS_PER_KM
-      return km > MEDIUM_RANGE_KM && km <= FAR_RANGE_KM
+      const hours = Math.hypot(cx * CHUNK, cz * CHUNK) / WORLD_UNITS_PER_HOUR
+      return hours > MEDIUM_RANGE_HOURS && hours <= FAR_RANGE_HOURS
     })
     let settled = false
     const promise = catalogFor([cemeteryAtChunk(pass.cx, pass.cz)]).landmarksInRangeAsync(
       0,
       0,
-      MEDIUM_RANGE_KM,
-      FAR_RANGE_KM,
+      MEDIUM_RANGE_HOURS,
+      FAR_RANGE_HOURS,
       {
         yieldEveryProbes: 1,
         yieldToPaint: async () => {
@@ -795,8 +795,8 @@ describe('abandoned cemetery scan (plan world-022)', () => {
   describe('abandoned cemetery worldgen cache (plan world-025)', () => {
     it('cached positive result produces the same WorldLocation and skips the expensive probe', () => {
       const pass = findRollChunk(SEED, true, (cx, cz) => {
-        const km = Math.hypot(cx * CHUNK, cz * CHUNK) / WORLD_UNITS_PER_KM
-        return km > MEDIUM_RANGE_KM && km <= FAR_RANGE_KM
+        const hours = Math.hypot(cx * CHUNK, cz * CHUNK) / WORLD_UNITS_PER_HOUR
+        return hours > MEDIUM_RANGE_HOURS && hours <= FAR_RANGE_HOURS
       })
       const fixture = cemeteryAtChunk(pass.cx, pass.cz)
       const probeLog: { cx: number, cz: number }[] = []
@@ -806,34 +806,34 @@ describe('abandoned cemetery scan (plan world-022)', () => {
         x: fixture.x,
         z: fixture.z,
       }]])
-      const result = catalogFor([fixture], probeLog, SEED, cache).landmarksInRange(0, 0, MEDIUM_RANGE_KM, FAR_RANGE_KM)
+      const result = catalogFor([fixture], probeLog, SEED, cache).landmarksInRange(0, 0, MEDIUM_RANGE_HOURS, FAR_RANGE_HOURS)
       expect(result.some((l) => l.id === fixture.id && l.kind === 'cemetery' && l.x === fixture.x && l.z === fixture.z)).toBe(true)
       expect(probeLog.some((c) => c.cx === pass.cx && c.cz === pass.cz)).toBe(false)
     })
 
     it('cached negative result produces no cemetery and skips the expensive probe', () => {
       const pass = findRollChunk(SEED, true, (cx, cz) => {
-        const km = Math.hypot(cx * CHUNK, cz * CHUNK) / WORLD_UNITS_PER_KM
-        return km > MEDIUM_RANGE_KM && km <= FAR_RANGE_KM
+        const hours = Math.hypot(cx * CHUNK, cz * CHUNK) / WORLD_UNITS_PER_HOUR
+        return hours > MEDIUM_RANGE_HOURS && hours <= FAR_RANGE_HOURS
       })
       const fixture = cemeteryAtChunk(pass.cx, pass.cz)
       const probeLog: { cx: number, cz: number }[] = []
       const cache = memoryCache([[chunkSubKey(pass.cx, pass.cz), { status: 'none' }]])
-      const result = catalogFor([fixture], probeLog, SEED, cache).landmarksInRange(0, 0, MEDIUM_RANGE_KM, FAR_RANGE_KM)
+      const result = catalogFor([fixture], probeLog, SEED, cache).landmarksInRange(0, 0, MEDIUM_RANGE_HOURS, FAR_RANGE_HOURS)
       expect(result.some((l) => l.id === fixture.id)).toBe(false)
       expect(probeLog.some((c) => c.cx === pass.cx && c.cz === pass.cz)).toBe(false)
     })
 
     it('cache miss probes once and remembers immediately', () => {
       const pass = findRollChunk(SEED, true, (cx, cz) => {
-        const km = Math.hypot(cx * CHUNK, cz * CHUNK) / WORLD_UNITS_PER_KM
-        return km > MEDIUM_RANGE_KM && km <= FAR_RANGE_KM
+        const hours = Math.hypot(cx * CHUNK, cz * CHUNK) / WORLD_UNITS_PER_HOUR
+        return hours > MEDIUM_RANGE_HOURS && hours <= FAR_RANGE_HOURS
       })
       const fixture = cemeteryAtChunk(pass.cx, pass.cz)
       const probeLog: { cx: number, cz: number }[] = []
       const cache = memoryCache()
       const catalog = catalogFor([fixture], probeLog, SEED, cache)
-      catalog.landmarksInRange(0, 0, MEDIUM_RANGE_KM, FAR_RANGE_KM)
+      catalog.landmarksInRange(0, 0, MEDIUM_RANGE_HOURS, FAR_RANGE_HOURS)
       expect(probeLog.filter((c) => c.cx === pass.cx && c.cz === pass.cz)).toHaveLength(1)
       expect(cache.lookup(pass.cx, pass.cz)).toEqual({
         status: 'found',
@@ -845,22 +845,22 @@ describe('abandoned cemetery scan (plan world-022)', () => {
 
     it('same-session repeat does not probe the same eligible chunk again', () => {
       const pass = findRollChunk(SEED, true, (cx, cz) => {
-        const km = Math.hypot(cx * CHUNK, cz * CHUNK) / WORLD_UNITS_PER_KM
-        return km > MEDIUM_RANGE_KM && km <= FAR_RANGE_KM
+        const hours = Math.hypot(cx * CHUNK, cz * CHUNK) / WORLD_UNITS_PER_HOUR
+        return hours > MEDIUM_RANGE_HOURS && hours <= FAR_RANGE_HOURS
       })
       const fixture = cemeteryAtChunk(pass.cx, pass.cz)
       const probeLog: { cx: number, cz: number }[] = []
       const cache = memoryCache()
       const catalog = catalogFor([fixture], probeLog, SEED, cache)
-      catalog.landmarksInRange(0, 0, MEDIUM_RANGE_KM, FAR_RANGE_KM)
-      catalog.landmarksInRange(0, 0, MEDIUM_RANGE_KM, FAR_RANGE_KM)
+      catalog.landmarksInRange(0, 0, MEDIUM_RANGE_HOURS, FAR_RANGE_HOURS)
+      catalog.landmarksInRange(0, 0, MEDIUM_RANGE_HOURS, FAR_RANGE_HOURS)
       expect(probeLog.filter((c) => c.cx === pass.cx && c.cz === pass.cz)).toHaveLength(1)
     })
 
     it('landmarksInRangeAsync waits for cache hydration before expensive probes', async () => {
       const pass = findRollChunk(SEED, true, (cx, cz) => {
-        const km = Math.hypot(cx * CHUNK, cz * CHUNK) / WORLD_UNITS_PER_KM
-        return km > MEDIUM_RANGE_KM && km <= FAR_RANGE_KM
+        const hours = Math.hypot(cx * CHUNK, cz * CHUNK) / WORLD_UNITS_PER_HOUR
+        return hours > MEDIUM_RANGE_HOURS && hours <= FAR_RANGE_HOURS
       })
       let release!: () => void
       const gate = new Promise<void>((resolve) => { release = resolve })
@@ -869,8 +869,8 @@ describe('abandoned cemetery scan (plan world-022)', () => {
       const pending = catalogFor([cemeteryAtChunk(pass.cx, pass.cz)], probeLog, SEED, cache).landmarksInRangeAsync(
         0,
         0,
-        MEDIUM_RANGE_KM,
-        FAR_RANGE_KM,
+        MEDIUM_RANGE_HOURS,
+        FAR_RANGE_HOURS,
         {
           yieldEveryProbes: 1,
           yieldToPaint: async () => {},
@@ -886,55 +886,55 @@ describe('abandoned cemetery scan (plan world-022)', () => {
     it('landmarksInRange stays synchronous and does not await hydration', () => {
       const probeLog: { cx: number, cz: number }[] = []
       const cache = memoryCache(undefined, () => new Promise(() => {}))
-      const result = catalogFor([], probeLog, SEED, cache).landmarksInRange(0, 0, MEDIUM_RANGE_KM, FAR_RANGE_KM)
+      const result = catalogFor([], probeLog, SEED, cache).landmarksInRange(0, 0, MEDIUM_RANGE_HOURS, FAR_RANGE_HOURS)
       expect(Array.isArray(result)).toBe(true)
       expect(probeLog.length).toBeGreaterThan(0)
     })
 
     it('sync and async return identical location sets with a shared cache', async () => {
       const pass = findRollChunk(SEED, true, (cx, cz) => {
-        const km = Math.hypot(cx * CHUNK, cz * CHUNK) / WORLD_UNITS_PER_KM
-        return km > MEDIUM_RANGE_KM && km <= FAR_RANGE_KM
+        const hours = Math.hypot(cx * CHUNK, cz * CHUNK) / WORLD_UNITS_PER_HOUR
+        return hours > MEDIUM_RANGE_HOURS && hours <= FAR_RANGE_HOURS
       })
       const fixtures = [cemeteryAtChunk(pass.cx, pass.cz)]
       const cache = memoryCache()
-      const sync = catalogFor(fixtures, undefined, SEED, cache).landmarksInRange(0, 0, MEDIUM_RANGE_KM, FAR_RANGE_KM)
+      const sync = catalogFor(fixtures, undefined, SEED, cache).landmarksInRange(0, 0, MEDIUM_RANGE_HOURS, FAR_RANGE_HOURS)
         .map((l) => l.id)
         .sort()
       const asyncResult = await catalogFor(fixtures, undefined, SEED, cache).landmarksInRangeAsync(
         0,
         0,
-        MEDIUM_RANGE_KM,
-        FAR_RANGE_KM,
+        MEDIUM_RANGE_HOURS,
+        FAR_RANGE_HOURS,
       )
       expect(asyncResult.map((l) => l.id).sort()).toEqual(sync)
     })
 
     it('Near → Far and Far → Near stay deterministic with cache reuse', () => {
       const a = findRollChunk(SEED, true, (cx, cz) => {
-        const km = Math.hypot(cx * CHUNK, cz * CHUNK) / WORLD_UNITS_PER_KM
-        return km > 2 && km <= NEAR_RANGE_KM
+        const hours = Math.hypot(cx * CHUNK, cz * CHUNK) / WORLD_UNITS_PER_HOUR
+        return hours > 2 && hours <= NEAR_RANGE_HOURS
       })
       const b = findRollChunk(SEED, true, (cx, cz) => {
-        const km = Math.hypot(cx * CHUNK, cz * CHUNK) / WORLD_UNITS_PER_KM
-        return km > MEDIUM_RANGE_KM && km <= MEDIUM_RANGE_KM + 8 && !(cx === a.cx && cz === a.cz)
+        const hours = Math.hypot(cx * CHUNK, cz * CHUNK) / WORLD_UNITS_PER_HOUR
+        return hours > MEDIUM_RANGE_HOURS && hours <= MEDIUM_RANGE_HOURS + 8 && !(cx === a.cx && cz === a.cz)
       })
       const fixtures = [cemeteryAtChunk(a.cx, a.cz), cemeteryAtChunk(b.cx, b.cz)]
       const cache = memoryCache()
       const forward = catalogFor(fixtures, undefined, SEED, cache)
-      const near1 = forward.landmarksInRange(0, 0, 0, NEAR_RANGE_KM).map((l) => l.id).sort()
-      const far1 = forward.landmarksInRange(0, 0, MEDIUM_RANGE_KM, FAR_RANGE_KM).map((l) => l.id).sort()
+      const near1 = forward.landmarksInRange(0, 0, 0, NEAR_RANGE_HOURS).map((l) => l.id).sort()
+      const far1 = forward.landmarksInRange(0, 0, MEDIUM_RANGE_HOURS, FAR_RANGE_HOURS).map((l) => l.id).sort()
       const backward = catalogFor(fixtures, undefined, SEED, cache)
-      const far2 = backward.landmarksInRange(0, 0, MEDIUM_RANGE_KM, FAR_RANGE_KM).map((l) => l.id).sort()
-      const near2 = backward.landmarksInRange(0, 0, 0, NEAR_RANGE_KM).map((l) => l.id).sort()
+      const far2 = backward.landmarksInRange(0, 0, MEDIUM_RANGE_HOURS, FAR_RANGE_HOURS).map((l) => l.id).sort()
+      const near2 = backward.landmarksInRange(0, 0, 0, NEAR_RANGE_HOURS).map((l) => l.id).sort()
       expect(near2).toEqual(near1)
       expect(far2).toEqual(far1)
     })
 
     it('cached existence does not modify LocationKnowledge', () => {
       const pass = findRollChunk(SEED, true, (cx, cz) => {
-        const km = Math.hypot(cx * CHUNK, cz * CHUNK) / WORLD_UNITS_PER_KM
-        return km > MEDIUM_RANGE_KM && km <= FAR_RANGE_KM
+        const hours = Math.hypot(cx * CHUNK, cz * CHUNK) / WORLD_UNITS_PER_HOUR
+        return hours > MEDIUM_RANGE_HOURS && hours <= FAR_RANGE_HOURS
       })
       const fixture = cemeteryAtChunk(pass.cx, pass.cz)
       const knowledge = createLocationKnowledge()
@@ -944,14 +944,14 @@ describe('abandoned cemetery scan (plan world-022)', () => {
         x: fixture.x,
         z: fixture.z,
       }]])
-      catalogFor([fixture], undefined, SEED, cache).landmarksInRange(0, 0, MEDIUM_RANGE_KM, FAR_RANGE_KM)
+      catalogFor([fixture], undefined, SEED, cache).landmarksInRange(0, 0, MEDIUM_RANGE_HOURS, FAR_RANGE_HOURS)
       expect(knowledge.list()).toEqual([])
     })
 
     it('old seed results cannot leak after a later cache activation', () => {
       const pass = findRollChunk(SEED, true, (cx, cz) => {
-        const km = Math.hypot(cx * CHUNK, cz * CHUNK) / WORLD_UNITS_PER_KM
-        return km > MEDIUM_RANGE_KM && km <= FAR_RANGE_KM
+        const hours = Math.hypot(cx * CHUNK, cz * CHUNK) / WORLD_UNITS_PER_HOUR
+        return hours > MEDIUM_RANGE_HOURS && hours <= FAR_RANGE_HOURS
       })
       const fixture = cemeteryAtChunk(pass.cx, pass.cz)
       const probeLog: { cx: number, cz: number }[] = []
@@ -962,15 +962,15 @@ describe('abandoned cemetery scan (plan world-022)', () => {
         z: fixture.z,
       }]])
       cache.activate(99, 'other-world')
-      const result = catalogFor([fixture], probeLog, SEED, cache).landmarksInRange(0, 0, MEDIUM_RANGE_KM, FAR_RANGE_KM)
+      const result = catalogFor([fixture], probeLog, SEED, cache).landmarksInRange(0, 0, MEDIUM_RANGE_HOURS, FAR_RANGE_HOURS)
       expect(result.some((l) => l.id === fixture.id)).toBe(true)
       expect(probeLog.some((c) => c.cx === pass.cx && c.cz === pass.cz)).toBe(true)
     })
 
     it('progress stays monotonic and ends at 1 with zero, partial, or full cache hits', async () => {
       const pass = findRollChunk(SEED, true, (cx, cz) => {
-        const km = Math.hypot(cx * CHUNK, cz * CHUNK) / WORLD_UNITS_PER_KM
-        return km > MEDIUM_RANGE_KM && km <= FAR_RANGE_KM
+        const hours = Math.hypot(cx * CHUNK, cz * CHUNK) / WORLD_UNITS_PER_HOUR
+        return hours > MEDIUM_RANGE_HOURS && hours <= FAR_RANGE_HOURS
       })
       const fixture = cemeteryAtChunk(pass.cx, pass.cz)
 
@@ -979,8 +979,8 @@ describe('abandoned cemetery scan (plan world-022)', () => {
         await catalogFor([fixture], undefined, SEED, cache).landmarksInRangeAsync(
           0,
           0,
-          MEDIUM_RANGE_KM,
-          FAR_RANGE_KM,
+          MEDIUM_RANGE_HOURS,
+          FAR_RANGE_HOURS,
           {
             yieldEveryProbes: 1,
             yieldToPaint: async () => {},
@@ -996,7 +996,7 @@ describe('abandoned cemetery scan (plan world-022)', () => {
       const partial = memoryCache([[chunkSubKey(pass.cx, pass.cz), { status: 'none' }]])
       await progressOf(partial)
       const warm = memoryCache()
-      catalogFor([fixture], undefined, SEED, warm).landmarksInRange(0, 0, MEDIUM_RANGE_KM, FAR_RANGE_KM)
+      catalogFor([fixture], undefined, SEED, warm).landmarksInRange(0, 0, MEDIUM_RANGE_HOURS, FAR_RANGE_HOURS)
       await progressOf(warm)
     })
 
@@ -1011,8 +1011,8 @@ describe('abandoned cemetery scan (plan world-022)', () => {
 
       it('reuses a persisted cache after a fresh activation without probing again', async () => {
         const pass = findRollChunk(SEED, true, (cx, cz) => {
-          const km = Math.hypot(cx * CHUNK, cz * CHUNK) / WORLD_UNITS_PER_KM
-          return km > MEDIUM_RANGE_KM && km <= FAR_RANGE_KM
+          const hours = Math.hypot(cx * CHUNK, cz * CHUNK) / WORLD_UNITS_PER_HOUR
+          return hours > MEDIUM_RANGE_HOURS && hours <= FAR_RANGE_HOURS
         })
         const fixture = cemeteryAtChunk(pass.cx, pass.cz)
         const fp = 'fp-warm'
@@ -1021,7 +1021,7 @@ describe('abandoned cemetery scan (plan world-022)', () => {
         coldCache.activate(SEED, fp)
         await coldCache.ready()
         const coldIds = catalogFor([fixture], coldLog, SEED, coldCache)
-          .landmarksInRange(0, 0, MEDIUM_RANGE_KM, FAR_RANGE_KM)
+          .landmarksInRange(0, 0, MEDIUM_RANGE_HOURS, FAR_RANGE_HOURS)
           .map((l) => l.id)
           .sort()
         expect(coldLog.some((c) => c.cx === pass.cx && c.cz === pass.cz)).toBe(true)
@@ -1033,7 +1033,7 @@ describe('abandoned cemetery scan (plan world-022)', () => {
         warmCache.activate(SEED, fp)
         await warmCache.ready()
         const warmIds = catalogFor([fixture], warmLog, SEED, warmCache)
-          .landmarksInRange(0, 0, MEDIUM_RANGE_KM, FAR_RANGE_KM)
+          .landmarksInRange(0, 0, MEDIUM_RANGE_HOURS, FAR_RANGE_HOURS)
           .map((l) => l.id)
           .sort()
         expect(warmIds).toEqual(coldIds)

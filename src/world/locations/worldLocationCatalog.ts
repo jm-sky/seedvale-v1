@@ -14,7 +14,7 @@ import {
 import { sampleContinentalnessAt, sampleFloorAt, sampleHeightAt, sampleMountainRidgeAt } from '../../terrain/chunkHeightmap'
 import { isMountainRidge, isOceanMix, isWetFloor } from '../../terrain/terrainClassification'
 import {
-  kmToWorldUnits,
+  hoursToWorldUnits,
   LAKE_FLOOD_FILL_SAFETY_CAP,
   LOCATION_SCAN_STEP,
   LOCATION_TILE_CELLS,
@@ -22,7 +22,7 @@ import {
   MIN_LAKE_CELLS,
   PEAK_MERGE_RADIUS_CELLS,
   PEAK_SCAN_HALO_CELLS,
-  worldUnitsToKm,
+  worldUnitsToHours,
 } from './locationConfig'
 import { landmarkName } from './worldLocationNames'
 
@@ -107,7 +107,7 @@ export type LocationScanDiagnostics = {
   cemeteryMs: number
   /** Chunks visited by the abandoned-cemetery bounding scan this session. */
   cemeteryChunksConsidered: number
-  /** Chunks whose possible cemetery AABB cannot meet `(minKm, maxKm]`. */
+  /** Chunks whose possible cemetery AABB cannot meet `(minHours, maxHours]`. */
   cemeteryChunksRejectedByRange: number
   /** Chunks rejected by `chunkPassesAbandonedCemeteryRoll` before probe. */
   cemeteryChunksRejectedByAbandonedRoll: number
@@ -171,26 +171,26 @@ export type WorldLocationCatalog = {
    * @domain ui-input
    */
   abandonedMineBinding(): { mineId: string, caveLocationId: string } | null
-  /** Settlements within `maxKm` of `(x, z)`, nearest first (plan §8 — no
+  /** Settlements within `maxHours` of `(x, z)`, nearest first (plan §8 — no
    *  `discoveryWeight`, always distance-ordered). */
-  nearestSettlements(x: number, z: number, maxKm: number): WorldLocation[]
+  nearestSettlements(x: number, z: number, maxHours: number): WorldLocation[]
   /**
    * Cave / settlement-cemetery / authored ruins / abandoned-mine candidates
-   * in `(minKm, maxKm]`. Skips lake/peak classification and abandoned-cemetery
+   * in `(minHours, maxHours]`. Skips lake/peak classification and abandoned-cemetery
    * probes so it stays cheap on the main thread (plan quests-progression-047).
    */
-  stableLandmarksInRange(x: number, z: number, minKm: number, maxKm: number): WorldLocation[]
-  /** cave + cemetery + lake + mountainPeak + abandonedMine candidates within `maxKm` of
+  stableLandmarksInRange(x: number, z: number, minHours: number, maxHours: number): WorldLocation[]
+  /** cave + cemetery + lake + mountainPeak + abandonedMine candidates within `maxHours` of
    *  `(x, z)` — unsorted; callers apply the distance-filter → weighted-pick
    *  pipeline themselves (`locationDiscovery.ts`). Equivalent to
-   *  `landmarksInRange(x, z, 0, maxKm)`. */
-  landmarksWithin(x: number, z: number, maxKm: number): WorldLocation[]
-  /** Same candidates as `landmarksWithin`, narrowed to `(minKm, maxKm]`
+   *  `landmarksInRange(x, z, 0, maxHours)`. */
+  landmarksWithin(x: number, z: number, maxHours: number): WorldLocation[]
+  /** Same candidates as `landmarksWithin`, narrowed to `(minHours, maxHours]`
    *  up front (plan world-013 §8) — the expensive coarse terrain sampling
    *  itself is bounded to that band (plus a small boundary halo), instead of
-   *  generating `0..maxKm` and filtering afterwards. `landmarksWithin` is the
-   *  `minKm = 0` case of this. */
-  landmarksInRange(x: number, z: number, minKm: number, maxKm: number): WorldLocation[]
+   *  generating `0..maxHours` and filtering afterwards. `landmarksWithin` is the
+   *  `minHours = 0` case of this. */
+  landmarksInRange(x: number, z: number, minHours: number, maxHours: number): WorldLocation[]
   /**
    * Cooperative `landmarksInRange` (plan world-022). Result is identical to
    * the sync method. Yields between abandoned-cemetery probe batches when
@@ -203,8 +203,8 @@ export type WorldLocationCatalog = {
   landmarksInRangeAsync(
     x: number,
     z: number,
-    minKm: number,
-    maxKm: number,
+    minHours: number,
+    maxHours: number,
     options?: LandmarkQueryOptions,
   ): Promise<WorldLocation[]>
   /** Drops the internal coarse-terrain tile cache and cemetery-lookup cache
@@ -217,24 +217,24 @@ export type WorldLocationCatalog = {
   getScanDiagnostics(): LocationScanDiagnostics
 }
 
-function distanceKm(ax: number, az: number, bx: number, bz: number): number {
-  return worldUnitsToKm(Math.hypot(ax - bx, az - bz))
+function distanceHours(ax: number, az: number, bx: number, bz: number): number {
+  return worldUnitsToHours(Math.hypot(ax - bx, az - bz))
 }
 
 /**
  * Whether an abandoned cemetery placed anywhere inside chunk `(cx, cz)`
- * could satisfy the half-open band `(minKm, maxKm]` around `(originX, originZ)`.
+ * could satisfy the half-open band `(minHours, maxHours]` around `(originX, originZ)`.
  * Uses the SM-margin reach so a cemetery on the chunk fringe is not dropped.
  * @domain world
  */
-export function abandonedCemeteryChunkIntersectsKmBand(
+export function abandonedCemeteryChunkIntersectsHoursBand(
   cx: number,
   cz: number,
   originX: number,
   originZ: number,
   chunkSize: number,
-  minKm: number,
-  maxKm: number,
+  minHours: number,
+  maxHours: number,
 ): boolean {
   const reach = abandonedCemeteryMaxOffsetFromCenter(chunkSize)
   const centerX = cx * chunkSize
@@ -243,8 +243,8 @@ export function abandonedCemeteryChunkIntersectsKmBand(
   const absDz = Math.abs(originZ - centerZ)
   const minDist = Math.hypot(Math.max(absDx - reach, 0), Math.max(absDz - reach, 0))
   const maxDist = Math.hypot(absDx + reach, absDz + reach)
-  const minWorld = kmToWorldUnits(minKm)
-  const maxWorld = kmToWorldUnits(maxKm)
+  const minWorld = hoursToWorldUnits(minHours)
+  const maxWorld = hoursToWorldUnits(maxHours)
   if (minDist > maxWorld) return false
   if (maxDist <= minWorld) return false
   return true
@@ -441,17 +441,17 @@ export function createWorldLocationCatalog(deps: WorldLocationCatalogDeps): Worl
     return out
   }
 
-  function nearestSettlements(x: number, z: number, maxKm: number): WorldLocation[] {
+  function nearestSettlements(x: number, z: number, maxHours: number): WorldLocation[] {
     const center = worldToCell(x, z)
-    const radiusCells = Math.ceil(kmToWorldUnits(maxKm) / SETTLEMENT_GRID_STEP) + 1
+    const radiusCells = Math.ceil(hoursToWorldUnits(maxHours) / SETTLEMENT_GRID_STEP) + 1
     const out: WorldLocation[] = []
     for (const cell of cellsWithinRadius(center, radiusCells)) {
       const def = lookupSettlement(cell)
       if (!def) continue
-      if (distanceKm(x, z, def.x, def.z) > maxKm) continue
+      if (distanceHours(x, z, def.x, def.z) > maxHours) continue
       out.push(settlementLocation(def))
     }
-    out.sort((a, b) => distanceKm(x, z, a.x, a.z) - distanceKm(x, z, b.x, b.z) || a.id.localeCompare(b.id))
+    out.sort((a, b) => distanceHours(x, z, a.x, a.z) - distanceHours(x, z, b.x, b.z) || a.id.localeCompare(b.id))
     return out
   }
 
@@ -469,26 +469,26 @@ export function createWorldLocationCatalog(deps: WorldLocationCatalogDeps): Worl
     return loc
   }
 
-  function cemeteryCandidates(x: number, z: number, minKm: number, maxKm: number): WorldLocation[] {
-    const { seen, out } = settlementCemeteryCandidates(x, z, minKm, maxKm)
-    const toProbe = collectAbandonedChunksToProbe(x, z, minKm, maxKm)
-    appendAbandonedProbes(toProbe, x, z, minKm, maxKm, seen, out)
+  function cemeteryCandidates(x: number, z: number, minHours: number, maxHours: number): WorldLocation[] {
+    const { seen, out } = settlementCemeteryCandidates(x, z, minHours, maxHours)
+    const toProbe = collectAbandonedChunksToProbe(x, z, minHours, maxHours)
+    appendAbandonedProbes(toProbe, x, z, minHours, maxHours, seen, out)
     return out
   }
 
   function settlementCemeteryCandidates(
     x: number,
     z: number,
-    minKm: number,
-    maxKm: number,
+    minHours: number,
+    maxHours: number,
   ): { seen: Set<string>, out: WorldLocation[] } {
     const center = worldToCell(x, z)
-    const searchMarginKm = 5
-    const radiusCells = Math.ceil(kmToWorldUnits(maxKm + searchMarginKm) / SETTLEMENT_GRID_STEP) + 1
+    const searchMarginHours = 5
+    const radiusCells = Math.ceil(hoursToWorldUnits(maxHours + searchMarginHours) / SETTLEMENT_GRID_STEP) + 1
     const settlements = cellsWithinRadius(center, radiusCells)
       .map((cell) => lookupSettlement(cell))
       .filter((def): def is SettlementDef => def != null)
-      .sort((a, b) => distanceKm(x, z, a.x, a.z) - distanceKm(x, z, b.x, b.z))
+      .sort((a, b) => distanceHours(x, z, a.x, a.z) - distanceHours(x, z, b.x, b.z))
       .slice(0, MAX_CEMETERY_SETTLEMENTS_SEARCHED)
 
     const seen = new Set<string>()
@@ -496,8 +496,8 @@ export function createWorldLocationCatalog(deps: WorldLocationCatalogDeps): Worl
     for (const def of settlements) {
       const loc = cemeteryForSettlement(def)
       if (!loc || seen.has(loc.id)) continue
-      const km = distanceKm(x, z, loc.x, loc.z)
-      if (km > maxKm || km <= minKm) continue
+      const hours = distanceHours(x, z, loc.x, loc.z)
+      if (hours > maxHours || hours <= minHours) continue
       seen.add(loc.id)
       out.push(loc)
     }
@@ -507,12 +507,12 @@ export function createWorldLocationCatalog(deps: WorldLocationCatalogDeps): Worl
   function collectAbandonedChunksToProbe(
     x: number,
     z: number,
-    minKm: number,
-    maxKm: number,
+    minHours: number,
+    maxHours: number,
   ): { cx: number, cz: number }[] {
     const chunkSize = getChunkSize()
     const reach = abandonedCemeteryMaxOffsetFromCenter(chunkSize)
-    const outerWorld = kmToWorldUnits(maxKm) + reach
+    const outerWorld = hoursToWorldUnits(maxHours) + reach
     const minCx = Math.floor((x - outerWorld) / chunkSize)
     const maxCx = Math.floor((x + outerWorld) / chunkSize)
     const minCz = Math.floor((z - outerWorld) / chunkSize)
@@ -522,7 +522,7 @@ export function createWorldLocationCatalog(deps: WorldLocationCatalogDeps): Worl
     for (let cz = minCz; cz <= maxCz; cz++) {
       for (let cx = minCx; cx <= maxCx; cx++) {
         diagnostics.cemeteryChunksConsidered++
-        if (!abandonedCemeteryChunkIntersectsKmBand(cx, cz, x, z, chunkSize, minKm, maxKm)) {
+        if (!abandonedCemeteryChunkIntersectsHoursBand(cx, cz, x, z, chunkSize, minHours, maxHours)) {
           diagnostics.cemeteryChunksRejectedByRange++
           continue
         }
@@ -540,15 +540,15 @@ export function createWorldLocationCatalog(deps: WorldLocationCatalogDeps): Worl
     result: CachedAbandonedCemeteryResult,
     x: number,
     z: number,
-    minKm: number,
-    maxKm: number,
+    minHours: number,
+    maxHours: number,
     seen: Set<string>,
     out: WorldLocation[],
   ): void {
     if (result.status !== 'found') return
     if (!isAbandonedCemeteryId(result.id) || seen.has(result.id)) return
-    const km = distanceKm(x, z, result.x, result.z)
-    if (km > maxKm || km <= minKm) return
+    const hours = distanceHours(x, z, result.x, result.z)
+    if (hours > maxHours || hours <= minHours) return
     seen.add(result.id)
     diagnostics.cemeteryAbandonedResolved++
     out.push(cemeteryLocationFromResolved(result))
@@ -559,14 +559,14 @@ export function createWorldLocationCatalog(deps: WorldLocationCatalogDeps): Worl
     coord: { cx: number, cz: number },
     x: number,
     z: number,
-    minKm: number,
-    maxKm: number,
+    minHours: number,
+    maxHours: number,
     seen: Set<string>,
     out: WorldLocation[],
   ): void {
     const cached = abandonedCemeteryCache?.lookup(coord.cx, coord.cz)
     if (cached) {
-      applyAbandonedResult(cached, x, z, minKm, maxKm, seen, out)
+      applyAbandonedResult(cached, x, z, minHours, maxHours, seen, out)
       return
     }
     diagnostics.cemeteryExpensiveProbes++
@@ -575,27 +575,27 @@ export function createWorldLocationCatalog(deps: WorldLocationCatalogDeps): Worl
       ? { status: 'found', id: abandoned.id, x: abandoned.x, z: abandoned.z }
       : { status: 'none' }
     abandonedCemeteryCache?.remember(coord.cx, coord.cz, result)
-    applyAbandonedResult(result, x, z, minKm, maxKm, seen, out)
+    applyAbandonedResult(result, x, z, minHours, maxHours, seen, out)
   }
 
   function appendAbandonedProbes(
     toProbe: readonly { cx: number, cz: number }[],
     x: number,
     z: number,
-    minKm: number,
-    maxKm: number,
+    minHours: number,
+    maxHours: number,
     seen: Set<string>,
     out: WorldLocation[],
   ): void {
-    for (const coord of toProbe) resolveAbandonedChunk(coord, x, z, minKm, maxKm, seen, out)
+    for (const coord of toProbe) resolveAbandonedChunk(coord, x, z, minHours, maxHours, seen, out)
   }
 
   async function appendAbandonedProbesAsync(
     toProbe: readonly { cx: number, cz: number }[],
     x: number,
     z: number,
-    minKm: number,
-    maxKm: number,
+    minHours: number,
+    maxHours: number,
     seen: Set<string>,
     out: WorldLocation[],
     options: LandmarkQueryOptions | undefined,
@@ -616,7 +616,7 @@ export function createWorldLocationCatalog(deps: WorldLocationCatalogDeps): Worl
       const batchStart = performance.now()
       let batchCount = 0
       do {
-        resolveAbandonedChunk(toProbe[i]!, x, z, minKm, maxKm, seen, out)
+        resolveAbandonedChunk(toProbe[i]!, x, z, minHours, maxHours, seen, out)
         i++
         batchCount++
         if (yieldEvery != null && batchCount >= yieldEvery) break
@@ -630,12 +630,12 @@ export function createWorldLocationCatalog(deps: WorldLocationCatalogDeps): Worl
     onProgress?.(1)
   }
 
-  function caveCandidates(x: number, z: number, minKm: number, maxKm: number): WorldLocation[] {
+  function caveCandidates(x: number, z: number, minHours: number, maxHours: number): WorldLocation[] {
     const seed = getSeed()
     const out: WorldLocation[] = []
     for (const def of getCaves().definitions()) {
-      const km = distanceKm(x, z, def.entrance.x, def.entrance.z)
-      if (km > maxKm || km <= minKm) continue
+      const hours = distanceHours(x, z, def.entrance.x, def.entrance.z)
+      if (hours > maxHours || hours <= minHours) continue
       const id = `cave:${def.caveId}`
       out.push({ id, kind: 'cave', x: def.entrance.x, z: def.entrance.z, name: landmarkName(seed, 'cave', id), discoveryWeight: weightOf(seed, id) })
     }
@@ -673,7 +673,7 @@ export function createWorldLocationCatalog(deps: WorldLocationCatalogDeps): Worl
   /** Lazily-materialized `LOCATION_TILE_CELLS`² tiles of coarse-cell state,
    *  keyed by stable tile identity (plan world-013 §3/§4) — shared across
    *  every Near/Guard/Far query touching a tile, instead of one cache entry
-   *  per exact `(x, z, maxKm)` query. A cell is sampled at most once for the
+   *  per exact `(x, z, maxHours)` query. A cell is sampled at most once for the
    *  life of the cache; overlapping queries reuse already-classified cells. */
   const tiles = new Map<string, { state: Uint8Array, height: Float32Array }>()
 
@@ -727,8 +727,8 @@ export function createWorldLocationCatalog(deps: WorldLocationCatalogDeps): Worl
     return classified
   }
 
-  function cellCenterKm(x: number, z: number, gx: number, gz: number): number {
-    return distanceKm(x, z, (gx + 0.5) * LOCATION_SCAN_STEP, (gz + 0.5) * LOCATION_SCAN_STEP)
+  function cellCenterHours(x: number, z: number, gx: number, gz: number): number {
+    return distanceHours(x, z, (gx + 0.5) * LOCATION_SCAN_STEP, (gz + 0.5) * LOCATION_SCAN_STEP)
   }
 
   /** Flood-fills connected `inland_water` coarse cells starting from
@@ -739,7 +739,7 @@ export function createWorldLocationCatalog(deps: WorldLocationCatalogDeps): Worl
    *  therefore depends only on the real connected component, never on which
    *  query happened to discover it first — the determinism guarantee notes
    *  §9 requires (Guard → Near → Far must equal Far → Guard → Near). */
-  function floodFillLakes(x: number, z: number, minKm: number, maxKm: number, seeds: Set<number>, params: RawSampleParams): WorldLocation[] {
+  function floodFillLakes(x: number, z: number, minHours: number, maxHours: number, seeds: Set<number>, params: RawSampleParams): WorldLocation[] {
     const visited = new Set<number>()
     const out: WorldLocation[] = []
     for (const seedKey of seeds) {
@@ -770,8 +770,8 @@ export function createWorldLocationCatalog(deps: WorldLocationCatalogDeps): Worl
       const repGx = Math.round(sumGx / count)
       const repGz = Math.round(sumGz / count)
       const loc = scanGridLocation('lake', repGx, repGz)
-      const km = distanceKm(x, z, loc.x, loc.z)
-      if (km > minKm && km <= maxKm) out.push(loc)
+      const hours = distanceHours(x, z, loc.x, loc.z)
+      if (hours > minHours && hours <= maxHours) out.push(loc)
     }
     return out
   }
@@ -782,7 +782,7 @@ export function createWorldLocationCatalog(deps: WorldLocationCatalogDeps): Worl
    *  boundary margin so a peak/maximum right at the query edge is still
    *  evaluated against its true neighbors instead of an implicit "not
    *  mountain" outside a scan rectangle (the old code's boundary bug). */
-  function extractPeaks(x: number, z: number, minKm: number, maxKm: number, candidates: { gx: number, gz: number, h: number }[], params: RawSampleParams): WorldLocation[] {
+  function extractPeaks(x: number, z: number, minHours: number, maxHours: number, candidates: { gx: number, gz: number, h: number }[], params: RawSampleParams): WorldLocation[] {
     const peakCandidates: { gx: number, gz: number, h: number }[] = []
     for (const cand of candidates) {
       let isMax = true
@@ -805,26 +805,26 @@ export function createWorldLocationCatalog(deps: WorldLocationCatalogDeps): Worl
     const out: WorldLocation[] = []
     for (const peak of kept) {
       const loc = scanGridLocation('mountainPeak', peak.gx, peak.gz)
-      const km = distanceKm(x, z, loc.x, loc.z)
-      if (km > minKm && km <= maxKm) out.push(loc)
+      const hours = distanceHours(x, z, loc.x, loc.z)
+      if (hours > minHours && hours <= maxHours) out.push(loc)
     }
     return out
   }
 
   /** Coarse-terrain scan for `lake`/`mountainPeak` candidates in
-   *  `(minKm, maxKm]` of `(x, z)` (plan world-013 §7/§8) — classifies only
-   *  the circular annulus `[minKm - halo, maxKm + halo]` (never the whole
-   *  enclosing square, never a full `0..maxKm` re-scan), through the shared
+   *  `(minHours, maxHours]` of `(x, z)` (plan world-013 §7/§8) — classifies only
+   *  the circular annulus `[minHours - halo, maxHours + halo]` (never the whole
+   *  enclosing square, never a full `0..maxHours` re-scan), through the shared
    *  `coarseCellAt` tile cache so overlapping Near/Guard/Far queries reuse
    *  each other's work. Coarse and approximate by design (notes §7/§22
    *  pitfalls) — a gameplay discovery aid, not a cartography-grade
    *  hydrology/orography system. */
-  function scanLakesAndPeaks(x: number, z: number, minKm: number, maxKm: number): WorldLocation[] {
+  function scanLakesAndPeaks(x: number, z: number, minHours: number, maxHours: number): WorldLocation[] {
     const params = getSampleParams()
-    const haloKm = worldUnitsToKm(PEAK_SCAN_HALO_CELLS * LOCATION_SCAN_STEP)
-    const outerKm = maxKm + haloKm
-    const innerKm = Math.max(0, minKm - haloKm)
-    const outerWorld = kmToWorldUnits(outerKm)
+    const haloHours = worldUnitsToHours(PEAK_SCAN_HALO_CELLS * LOCATION_SCAN_STEP)
+    const outerHours = maxHours + haloHours
+    const innerHours = Math.max(0, minHours - haloHours)
+    const outerWorld = hoursToWorldUnits(outerHours)
 
     const minCx = Math.floor((x - outerWorld) / LOCATION_SCAN_STEP)
     const maxCx = Math.floor((x + outerWorld) / LOCATION_SCAN_STEP)
@@ -836,8 +836,8 @@ export function createWorldLocationCatalog(deps: WorldLocationCatalogDeps): Worl
     const mountainCandidates: { gx: number, gz: number, h: number }[] = []
     for (let gz = minCz; gz <= maxCz; gz++) {
       for (let gx = minCx; gx <= maxCx; gx++) {
-        const km = cellCenterKm(x, z, gx, gz)
-        if (km > outerKm || km < innerKm) continue
+        const hours = cellCenterHours(x, z, gx, gz)
+        if (hours > outerHours || hours < innerHours) continue
         const cell = coarseCellAt(gx, gz, params)
         if (cell.kind === CELL_WATER) waterSeeds.add(cellKeyOf(gx, gz))
         else if (cell.kind === CELL_MOUNTAIN) mountainCandidates.push({ gx, gz, h: cell.height })
@@ -846,79 +846,79 @@ export function createWorldLocationCatalog(deps: WorldLocationCatalogDeps): Worl
     diagnostics.classificationMs += performance.now() - classifyStart
 
     const lakeStart = performance.now()
-    const lakes = floodFillLakes(x, z, minKm, maxKm, waterSeeds, params)
+    const lakes = floodFillLakes(x, z, minHours, maxHours, waterSeeds, params)
     diagnostics.lakeExtractionMs += performance.now() - lakeStart
 
     const peakStart = performance.now()
-    const peaks = extractPeaks(x, z, minKm, maxKm, mountainCandidates, params)
+    const peaks = extractPeaks(x, z, minHours, maxHours, mountainCandidates, params)
     diagnostics.peakExtractionMs += performance.now() - peakStart
 
     return [...lakes, ...peaks]
   }
 
-  function abandonedMineCandidate(x: number, z: number, minKm: number, maxKm: number): WorldLocation[] {
+  function abandonedMineCandidate(x: number, z: number, minHours: number, maxHours: number): WorldLocation[] {
     const loc = abandonedMineLocation()
     if (!loc) return []
-    const km = distanceKm(x, z, loc.x, loc.z)
-    if (km > maxKm || km <= minKm) return []
+    const hours = distanceHours(x, z, loc.x, loc.z)
+    if (hours > maxHours || hours <= minHours) return []
     return [loc]
   }
 
-  function landmarksInRange(x: number, z: number, minKm: number, maxKm: number): WorldLocation[] {
+  function landmarksInRange(x: number, z: number, minHours: number, maxHours: number): WorldLocation[] {
     const cemeteryStart = performance.now()
-    const cemeteries = cemeteryCandidates(x, z, minKm, maxKm)
+    const cemeteries = cemeteryCandidates(x, z, minHours, maxHours)
     diagnostics.cemeteryMs += performance.now() - cemeteryStart
     return [
-      ...caveCandidates(x, z, minKm, maxKm),
+      ...caveCandidates(x, z, minHours, maxHours),
       ...cemeteries,
-      ...scanLakesAndPeaks(x, z, minKm, maxKm),
-      ...abandonedMineCandidate(x, z, minKm, maxKm),
+      ...scanLakesAndPeaks(x, z, minHours, maxHours),
+      ...abandonedMineCandidate(x, z, minHours, maxHours),
     ]
   }
 
   async function landmarksInRangeAsync(
     x: number,
     z: number,
-    minKm: number,
-    maxKm: number,
+    minHours: number,
+    maxHours: number,
     options?: LandmarkQueryOptions,
   ): Promise<WorldLocation[]> {
     const cemeteryStart = performance.now()
-    const { seen, out } = settlementCemeteryCandidates(x, z, minKm, maxKm)
+    const { seen, out } = settlementCemeteryCandidates(x, z, minHours, maxHours)
     await abandonedCemeteryCache?.ready()
-    const toProbe = collectAbandonedChunksToProbe(x, z, minKm, maxKm)
+    const toProbe = collectAbandonedChunksToProbe(x, z, minHours, maxHours)
     const remaining: { cx: number, cz: number }[] = []
     for (const coord of toProbe) {
       const cached = abandonedCemeteryCache?.lookup(coord.cx, coord.cz)
-      if (cached) applyAbandonedResult(cached, x, z, minKm, maxKm, seen, out)
+      if (cached) applyAbandonedResult(cached, x, z, minHours, maxHours, seen, out)
       else remaining.push(coord)
     }
-    await appendAbandonedProbesAsync(remaining, x, z, minKm, maxKm, seen, out, options)
+    await appendAbandonedProbesAsync(remaining, x, z, minHours, maxHours, seen, out, options)
     diagnostics.cemeteryMs += performance.now() - cemeteryStart
     return [
-      ...caveCandidates(x, z, minKm, maxKm),
+      ...caveCandidates(x, z, minHours, maxHours),
       ...out,
-      ...scanLakesAndPeaks(x, z, minKm, maxKm),
-      ...abandonedMineCandidate(x, z, minKm, maxKm),
+      ...scanLakesAndPeaks(x, z, minHours, maxHours),
+      ...abandonedMineCandidate(x, z, minHours, maxHours),
     ]
   }
 
-  function stableLandmarksInRange(x: number, z: number, minKm: number, maxKm: number): WorldLocation[] {
-    const { out } = settlementCemeteryCandidates(x, z, minKm, maxKm)
+  function stableLandmarksInRange(x: number, z: number, minHours: number, maxHours: number): WorldLocation[] {
+    const { out } = settlementCemeteryCandidates(x, z, minHours, maxHours)
     const ruins = authoredRuinsLocations().filter((loc) => {
-      const km = distanceKm(x, z, loc.x, loc.z)
-      return km <= maxKm && km > minKm
+      const hours = distanceHours(x, z, loc.x, loc.z)
+      return hours <= maxHours && hours > minHours
     })
     return [
-      ...caveCandidates(x, z, minKm, maxKm),
+      ...caveCandidates(x, z, minHours, maxHours),
       ...out,
       ...ruins,
-      ...abandonedMineCandidate(x, z, minKm, maxKm),
+      ...abandonedMineCandidate(x, z, minHours, maxHours),
     ]
   }
 
-  function landmarksWithin(x: number, z: number, maxKm: number): WorldLocation[] {
-    return landmarksInRange(x, z, 0, maxKm)
+  function landmarksWithin(x: number, z: number, maxHours: number): WorldLocation[] {
+    return landmarksInRange(x, z, 0, maxHours)
   }
 
   return {

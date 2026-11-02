@@ -4,32 +4,33 @@
  * covers map-cell/canvas rendering.
  */
 
-/** Presentational world-unit → km conversion (plan world-012 §14/notes §14).
- *  Chosen so the plan's far range (200 km) lands just inside
- *  `world/map/mapConfig.ts`'s `MAP_EXTENT_HALF` (6144 world units), keeping
- *  every discoverable location within the world map's meaningful extent. */
-export const WORLD_UNITS_PER_KM = 20
+import { GAME_HOURS_PER_DAY } from '../timeConversion'
+import { TRAVEL_HOUR_M } from '../travelUnits'
 
-/** "1 day of travel = 20 km" (plan §4) — a gameplay/UI unit, not an NPC/
- *  player movement speed. */
-export const KM_PER_DAY = 20
+/** World units (metres) a walking player covers in one game hour (plan
+ *  world-059 decision 9). Location distances are expressed as travel time in
+ *  hours; km no longer appears in player-facing text. */
+export const WORLD_UNITS_PER_HOUR = TRAVEL_HOUR_M
 
-export function worldUnitsToKm(worldUnits: number): number {
-  return worldUnits / WORLD_UNITS_PER_KM
+export const HOURS_PER_DAY = GAME_HOURS_PER_DAY
+
+export function worldUnitsToHours(worldUnits: number): number {
+  return worldUnits / WORLD_UNITS_PER_HOUR
 }
 
-export function kmToWorldUnits(km: number): number {
-  return km * WORLD_UNITS_PER_KM
+export function hoursToWorldUnits(hours: number): number {
+  return hours * WORLD_UNITS_PER_HOUR
 }
 
-export function kmToDays(km: number): number {
-  return km / KM_PER_DAY
+export function hoursToDays(hours: number): number {
+  return hours / HOURS_PER_DAY
 }
 
-/** Range thresholds (plan §4), in km. */
-export const NEAR_RANGE_KM = 20
-export const MEDIUM_RANGE_KM = 60
-export const FAR_RANGE_KM = 200
+/** Range thresholds in travel hours (plan world-059 decision 9): near <= 4 h,
+ *  medium <= 12 h, far = whole continent (12 km square diagonal ~48 h). */
+export const NEAR_RANGE_HOURS = 4
+export const MEDIUM_RANGE_HOURS = 12
+export const FAR_RANGE_HOURS = 50
 
 /** Fixed grid step (world units) used to scan for lake/mountain-peak
  *  candidates — independent of any particular search's distance bound, so a
@@ -46,7 +47,7 @@ export const CEMETERY_SEARCH_CHUNK_RADIUS = 3
 
 /** Caps how many nearby settlements a landmark search checks for a cemetery
  *  — cemetery search is real chunk-generation work (notes §4/§22), so a
- *  "far" query (200 km, potentially dozens of settlement cells) stays
+ *  "far" query (whole continent, potentially dozens of settlement cells) stays
  *  bounded rather than scanning every settlement in range. Closest
  *  settlements first, so this only ever drops the least-relevant (farthest)
  *  candidates. */
@@ -59,12 +60,12 @@ export const MIN_LAKE_CELLS = 3
 /** Coarse terrain cache tile edge, in `LOCATION_SCAN_STEP` cells (plan
  *  world-013 §4) — one tile is a small `Uint8Array`/`Float32Array` pair,
  *  materialized lazily per cell, shared across every Near/Guard/Far query
- *  that touches it instead of one result cache per exact `(x, z, maxKm)`. */
+ *  that touches it instead of one result cache per exact `(x, z, maxHours)`. */
 export const LOCATION_TILE_CELLS = 16
 
 /** Peak neighbourhood/near-duplicate-merge halo, in `LOCATION_SCAN_STEP`
  *  cells (plan world-013 §9) — a range-aware query's candidate window
- *  extends this far past `minKm`/`maxKm` so a peak sitting right at the
+ *  extends this far past `minHours`/`maxHours` so a peak sitting right at the
  *  query boundary is still evaluated with its full 8-neighbourhood and
  *  merge radius, the same as if the scan had reached further. */
 export const PEAK_NEIGHBOR_MARGIN_CELLS = 1

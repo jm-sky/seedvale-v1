@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { WorldLocation } from './worldLocationTypes'
-import { FAR_RANGE_KM, MEDIUM_RANGE_KM, NEAR_RANGE_KM, WORLD_UNITS_PER_KM } from './locationConfig'
+import { FAR_RANGE_HOURS, MEDIUM_RANGE_HOURS, NEAR_RANGE_HOURS, WORLD_UNITS_PER_HOUR } from './locationConfig'
 import {
   classifyRange,
   formatDistance,
@@ -13,30 +13,31 @@ import {
 import { emptyLocationScanDiagnostics, type WorldLocationCatalog } from './worldLocationCatalog'
 
 function loc(id: string, km: number, discoveryWeight = 0): WorldLocation {
-  return { id, kind: 'cave', x: km * WORLD_UNITS_PER_KM, z: 0, name: id, discoveryWeight }
+  return { id, kind: 'cave', x: km * WORLD_UNITS_PER_HOUR, z: 0, name: id, discoveryWeight }
 }
 
 describe('classifyRange', () => {
-  it('buckets km into near/medium/far at the plan §4 thresholds', () => {
+  it('buckets hours into near/medium/far at the plan §4 thresholds', () => {
     expect(classifyRange(0)).toBe('near')
-    expect(classifyRange(NEAR_RANGE_KM)).toBe('near')
-    expect(classifyRange(NEAR_RANGE_KM + 0.01)).toBe('medium')
-    expect(classifyRange(MEDIUM_RANGE_KM)).toBe('medium')
-    expect(classifyRange(MEDIUM_RANGE_KM + 0.01)).toBe('far')
-    expect(classifyRange(FAR_RANGE_KM)).toBe('far')
+    expect(classifyRange(NEAR_RANGE_HOURS)).toBe('near')
+    expect(classifyRange(NEAR_RANGE_HOURS + 0.01)).toBe('medium')
+    expect(classifyRange(MEDIUM_RANGE_HOURS)).toBe('medium')
+    expect(classifyRange(MEDIUM_RANGE_HOURS + 0.01)).toBe('far')
+    expect(classifyRange(FAR_RANGE_HOURS)).toBe('far')
   })
 })
 
 describe('formatDistance', () => {
-  it('reads as "N km · ~M dni drogi" and never shows the raw near/medium/far bucket', () => {
-    const text = formatDistance(37)
-    expect(text).toContain('37 km')
-    expect(text).toContain('dni drogi')
-    expect(text).not.toMatch(/near|medium|far/i)
+  it('reads as travel time and never shows km or the raw near/medium/far bucket', () => {
+    expect(formatDistance(3)).toBe('ok. 3 h drogi')
+    expect(formatDistance(12)).toBe('pół dnia drogi')
+    expect(formatDistance(24)).toBe('dzień drogi')
+    expect(formatDistance(40)).toContain('dni drogi')
+    for (const h of [3, 12, 24, 40]) expect(formatDistance(h)).not.toMatch(/km|near|medium|far/i)
   })
 
-  it('calls out a sub-day distance distinctly', () => {
-    expect(formatDistance(2)).toContain('mniej niż dzień drogi')
+  it('calls out a sub-hour distance distinctly', () => {
+    expect(formatDistance(0.5)).toContain('mniej niż godzina drogi')
   })
 })
 
@@ -92,35 +93,35 @@ describe('pickRandomSubset / pickRandomReveal', () => {
 
 describe('landmarksInBand / settlementsInBand', () => {
   function fakeCatalog(all: readonly WorldLocation[]): WorldLocationCatalog {
-    const kmOf = (x: number, z: number, l: WorldLocation) => Math.hypot(l.x - x, l.z - z) / WORLD_UNITS_PER_KM
+    const hoursOf = (x: number, z: number, l: WorldLocation) => Math.hypot(l.x - x, l.z - z) / WORLD_UNITS_PER_HOUR
     return {
       getById: (id) => all.find((l) => l.id === id) ?? null,
-      nearestSettlements: (x, z, maxKm) => all.filter((l) => kmOf(x, z, l) <= maxKm),
-      landmarksWithin: (x, z, maxKm) => all.filter((l) => kmOf(x, z, l) <= maxKm),
-      landmarksInRange: (x, z, minKm, maxKm) => all.filter((l) => kmOf(x, z, l) > minKm && kmOf(x, z, l) <= maxKm),
-      landmarksInRangeAsync: async (x, z, minKm, maxKm) => all.filter((l) => kmOf(x, z, l) > minKm && kmOf(x, z, l) <= maxKm),
+      nearestSettlements: (x, z, maxHours) => all.filter((l) => hoursOf(x, z, l) <= maxHours),
+      landmarksWithin: (x, z, maxHours) => all.filter((l) => hoursOf(x, z, l) <= maxHours),
+      landmarksInRange: (x, z, minHours, maxHours) => all.filter((l) => hoursOf(x, z, l) > minHours && hoursOf(x, z, l) <= maxHours),
+      landmarksInRangeAsync: async (x, z, minHours, maxHours) => all.filter((l) => hoursOf(x, z, l) > minHours && hoursOf(x, z, l) <= maxHours),
       abandonedMine: () => null,
       abandonedMineBinding: () => null,
-      stableLandmarksInRange: (x, z, minKm, maxKm) => all.filter((l) => kmOf(x, z, l) > minKm && kmOf(x, z, l) <= maxKm),
+      stableLandmarksInRange: (x, z, minHours, maxHours) => all.filter((l) => hoursOf(x, z, l) > minHours && hoursOf(x, z, l) <= maxHours),
       invalidateScanCache: () => {},
       getScanDiagnostics: () => emptyLocationScanDiagnostics(),
     }
   }
 
   it('excludes the inner band, so Far Map never repeats what Near Map already covers', () => {
-    const all = [loc('near1', 10), loc('mid1', 40), loc('far1', 100)]
+    const all = [loc('near1', 2), loc('mid1', 8), loc('far1', 30)]
     const catalog = fakeCatalog(all)
-    const near = landmarksInBand(catalog, 0, 0, 0, NEAR_RANGE_KM)
-    const far = landmarksInBand(catalog, 0, 0, MEDIUM_RANGE_KM, FAR_RANGE_KM)
+    const near = landmarksInBand(catalog, 0, 0, 0, NEAR_RANGE_HOURS)
+    const far = landmarksInBand(catalog, 0, 0, MEDIUM_RANGE_HOURS, FAR_RANGE_HOURS)
     expect(near.map((l) => l.id)).toEqual(['near1'])
     expect(far.map((l) => l.id)).toEqual(['far1'])
     expect(near.some((l) => far.some((f) => f.id === l.id))).toBe(false)
   })
 
   it('applies the same band exclusion to settlements', () => {
-    const all = [loc('s-near', 5), loc('s-far', 150)]
+    const all = [loc('s-near', 2), loc('s-far', 40)]
     const catalog = fakeCatalog(all)
-    expect(settlementsInBand(catalog, 0, 0, 0, NEAR_RANGE_KM).map((l) => l.id)).toEqual(['s-near'])
-    expect(settlementsInBand(catalog, 0, 0, MEDIUM_RANGE_KM, FAR_RANGE_KM).map((l) => l.id)).toEqual(['s-far'])
+    expect(settlementsInBand(catalog, 0, 0, 0, NEAR_RANGE_HOURS).map((l) => l.id)).toEqual(['s-near'])
+    expect(settlementsInBand(catalog, 0, 0, MEDIUM_RANGE_HOURS, FAR_RANGE_HOURS).map((l) => l.id)).toEqual(['s-far'])
   })
 })

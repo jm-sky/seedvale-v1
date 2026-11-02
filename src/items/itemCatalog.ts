@@ -1544,7 +1544,7 @@ export const ITEM_CATALOG: Record<ItemKind, ItemCatalogEntry> = {
     melee: null,
     spawn: 'none',
     modelUrl: null,
-    notes: 'Plan world-012 — Kupiec stock. A knowledge-delivery token: purchase reveals nearby (0-20 km) landmarks/settlements into `LocationKnowledge` immediately; the item itself has no other effect.',
+    notes: 'Plan world-012 — Kupiec stock. A knowledge-delivery token: purchase reveals nearby (0-4 h) landmarks/settlements into `LocationKnowledge` immediately; the item itself has no other effect.',
   },
   map_far: {
     kind: 'map_far',
@@ -1553,7 +1553,7 @@ export const ITEM_CATALOG: Record<ItemKind, ItemCatalogEntry> = {
     melee: null,
     spawn: 'none',
     modelUrl: null,
-    notes: 'Plan world-012 — Kupiec stock. A knowledge-delivery token: purchase reveals distant (60-200 km) landmarks/settlements into `LocationKnowledge` immediately; the item itself has no other effect.',
+    notes: 'Plan world-012 — Kupiec stock. A knowledge-delivery token: purchase reveals distant (12-50 h) landmarks/settlements into `LocationKnowledge` immediately; the item itself has no other effect.',
   },
   treasure_map_dark_forest: {
     kind: 'treasure_map_dark_forest',

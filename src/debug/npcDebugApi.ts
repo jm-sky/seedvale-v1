@@ -45,7 +45,7 @@ import {
   type TemporaryConditionsState,
 } from '../shared/temporaryConditions'
 import { DARK_FOREST_TREASURE_LOCATION_ID } from '../world/locations/darkForestTreasureSite'
-import { FAR_RANGE_KM } from '../world/locations/locationConfig'
+import { FAR_RANGE_HOURS } from '../world/locations/locationConfig'
 import { isAdminMode, isDebugMode } from './debugMode'
 import { type HistoryFilter } from './domainHistory'
 import { getCurrentFrenzyWolf, getFrenzyWolves, getNextFrenzyWolf } from './faunaInspector'
@@ -199,11 +199,11 @@ export type TeleportToDebugApi = {
 /** `debug.worldLocations` (plan world-012 §19) — inspects/mutates
  *  `LocationKnowledge` directly, never `MapDiscovery`'s cell Fog of War
  *  (notes §19: "Reveal" powinno mutować wyłącznie location knowledge). All
- *  queries are bounded to `FAR_RANGE_KM` around the player — there is no
+ *  queries are bounded to `FAR_RANGE_HOURS` around the player — there is no
  *  bounded "every location in an infinite world" query. */
 export type WorldLocationDebugEntry = WorldLocation & { discovered: boolean }
 export type WorldLocationsDebugApi = {
-  /** Every cave/cemetery/lake/mountainPeak/settlement within `FAR_RANGE_KM`
+  /** Every cave/cemetery/lake/mountainPeak/settlement within `FAR_RANGE_HOURS`
    *  of the player, each flagged with whether it's currently known. */
   list: (rangeKm?: number) => WorldLocationDebugEntry[]
   listUndiscovered: () => WorldLocationDebugEntry[]
@@ -447,7 +447,7 @@ export type SeedvaleDebugApi = {
   teleportTo: TeleportToDebugApi
   /** Hidden-treasure dig markers (quick task) — inspect/teleport for testing. */
   hiddenTreasure: HiddenTreasureDebugApi
-  /** World Locations discovery (plan world-012) — bounded to `FAR_RANGE_KM`
+  /** World Locations discovery (plan world-012) — bounded to `FAR_RANGE_HOURS`
    *  of the player, see `WorldLocationsDebugApi`'s doc. */
   worldLocations: WorldLocationsDebugApi
   /** Lightweight `navigation/navigationStats.ts` counters (plan npc-006) —
@@ -691,8 +691,8 @@ export function installNpcDebugApi(
     list: (rangeKm?: number) => {
       const { x, z } = getPlayerPosition()
       const all = [
-        ...worldLocations.catalog.landmarksWithin(x, z, rangeKm ?? FAR_RANGE_KM),
-        ...worldLocations.catalog.nearestSettlements(x, z, rangeKm ?? FAR_RANGE_KM),
+        ...worldLocations.catalog.landmarksWithin(x, z, rangeKm ?? FAR_RANGE_HOURS),
+        ...worldLocations.catalog.nearestSettlements(x, z, rangeKm ?? FAR_RANGE_HOURS),
       ]
       return all.map((location) => ({ ...location, discovered: worldLocations.knowledge.has(location.id) }))
     },

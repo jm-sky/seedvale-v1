@@ -84,10 +84,10 @@ import { horseVendorNpcId } from '../settlement/merchantTrade'
 import { hideBusy, showBusy, ui } from '../ui-vue/store'
 import { GUARD_AREA_RESEARCH_PENDING } from '../world/locations/guardLocalKnowledge'
 import {
-  FAR_RANGE_KM,
-  MEDIUM_RANGE_KM,
+  FAR_RANGE_HOURS,
+  MEDIUM_RANGE_HOURS,
   MERCHANT_MAP_LANDMARK_POOL_SIZE,
-  NEAR_RANGE_KM,
+  NEAR_RANGE_HOURS,
 } from '../world/locations/locationConfig'
 import {
   landmarksInBandAsync,
@@ -887,14 +887,14 @@ export function createInventoryWiring(deps: InventoryWiringDeps): InventoryWirin
   const applyLocationMap = async (range: 'map_near' | 'map_far'): Promise<number> => {
     const originX = player.mesh.position.x
     const originZ = player.mesh.position.z
-    const minKm = range === 'map_near' ? 0 : MEDIUM_RANGE_KM
-    const maxKm = range === 'map_near' ? NEAR_RANGE_KM : FAR_RANGE_KM
+    const minHours = range === 'map_near' ? 0 : MEDIUM_RANGE_HOURS
+    const maxHours = range === 'map_near' ? NEAR_RANGE_HOURS : FAR_RANGE_HOURS
     const landmarks = await withLocationDiscoveryBusy((onProgress) =>
-      landmarksInBandAsync(locationCatalog, originX, originZ, minKm, maxKm, { onProgress }),
+      landmarksInBandAsync(locationCatalog, originX, originZ, minHours, maxHours, { onProgress }),
     )
     const settlements = range === 'map_near'
-      ? settlementsInBand(locationCatalog, originX, originZ, 0, NEAR_RANGE_KM)
-      : settlementsInBand(locationCatalog, originX, originZ, MEDIUM_RANGE_KM, FAR_RANGE_KM)
+      ? settlementsInBand(locationCatalog, originX, originZ, 0, NEAR_RANGE_HOURS)
+      : settlementsInBand(locationCatalog, originX, originZ, MEDIUM_RANGE_HOURS, FAR_RANGE_HOURS)
     let newly = 0
     for (const location of [...weightedTopN(landmarks, MERCHANT_MAP_LANDMARK_POOL_SIZE), ...settlements]) {
       if (locationKnowledge.reveal(location.id, 'discovered', 'map')) newly++

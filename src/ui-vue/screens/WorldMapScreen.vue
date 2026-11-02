@@ -2,7 +2,7 @@
 import { computed, nextTick, onUnmounted, ref, watch } from 'vue'
 import type { MapKnownLocation } from '../../world/map/mapTypes'
 import { isTouchDevice } from '../../input/isTouchDevice'
-import { worldUnitsToKm } from '../../world/locations/locationConfig'
+import { worldUnitsToHours } from '../../world/locations/locationConfig'
 import { formatDistance } from '../../world/locations/locationDiscovery'
 import { getActiveNavigationTargets, MAX_NAVIGATION_TARGETS } from '../../world/locations/navigationTargets'
 import { worldLocationKindFromId } from '../../world/locations/worldLocationTypes'
@@ -79,9 +79,9 @@ const targetList = computed(() => {
     .sort((a, b) => a.slot - b.slot)
 })
 
-const selectedDistanceKm = computed(() => {
+const selectedDistanceHours = computed(() => {
   if (!selected.value) return 0
-  return worldUnitsToKm(Math.hypot(selected.value.x - ui.worldMap.playerX, selected.value.z - ui.worldMap.playerZ))
+  return worldUnitsToHours(Math.hypot(selected.value.x - ui.worldMap.playerX, selected.value.z - ui.worldMap.playerZ))
 })
 
 const selectedIsTarget = computed(() => !!selected.value && (getActiveNavigationTargets()?.has(selected.value.id) ?? false))
@@ -382,7 +382,7 @@ onUnmounted(() => {
             </div>
           </div>
           <div class="text-xs opacity-90">
-            {{ formatDistance(selectedDistanceKm) }}
+            {{ formatDistance(selectedDistanceHours) }}
           </div>
           <div class="mt-1 flex gap-2">
             <button

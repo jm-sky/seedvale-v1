@@ -10,8 +10,8 @@ import {
   GUARD_LANDMARK_POOL_SIZE,
   GUARD_REVEAL_MAX,
   GUARD_REVEAL_MIN,
-  MEDIUM_RANGE_KM,
-  worldUnitsToKm,
+  MEDIUM_RANGE_HOURS,
+  worldUnitsToHours,
 } from './locationConfig'
 import { pickRandomReveal, weightedTopN } from './locationDiscovery'
 
@@ -81,8 +81,8 @@ export type GuardLocalKnowledgeDeps = {
   getWorldSeed: () => number
   locationKnowledge: LocationKnowledge
   getLocation: (id: string) => WorldLocation | null
-  listStableLocations: (originX: number, originZ: number, maxKm: number) => readonly WorldLocation[]
-  nearestSettlements: (originX: number, originZ: number, maxKm: number) => readonly WorldLocation[]
+  listStableLocations: (originX: number, originZ: number, maxHours: number) => readonly WorldLocation[]
+  nearestSettlements: (originX: number, originZ: number, maxHours: number) => readonly WorldLocation[]
   homeLocationId: () => string | null
   searchChunkRadius?: number
   /** Idempotently arms the asking NPC's one authoritative Player follow-up
@@ -95,8 +95,8 @@ export type GuardLocalKnowledgeDeps = {
   ) => NpcPlayerFollowUp | null
 }
 
-function locationInRange(location: WorldLocation, originX: number, originZ: number, maxKm: number): boolean {
-  return worldUnitsToKm(Math.hypot(location.x - originX, location.z - originZ)) <= maxKm
+function locationInRange(location: WorldLocation, originX: number, originZ: number, maxHours: number): boolean {
+  return worldUnitsToHours(Math.hypot(location.x - originX, location.z - originZ)) <= maxHours
 }
 
 function hashSeed(seed: number, ids: readonly string[]): number {
@@ -130,7 +130,7 @@ export function createGuardLocalKnowledge(deps: GuardLocalKnowledgeDeps): GuardL
       .map((ref) => deps.getLocation(ref.id))
       .filter((location): location is WorldLocation => location != null)
     const merged = new Map<string, WorldLocation>()
-    for (const location of [...fromWorker, ...deps.listStableLocations(originX, originZ, MEDIUM_RANGE_KM)]) {
+    for (const location of [...fromWorker, ...deps.listStableLocations(originX, originZ, MEDIUM_RANGE_HOURS)]) {
       merged.set(location.id, location)
     }
     const pool = weightedTopN([...merged.values()], GUARD_LANDMARK_POOL_SIZE)
@@ -174,7 +174,7 @@ export function createGuardLocalKnowledge(deps: GuardLocalKnowledgeDeps): GuardL
       .map((entry) => deps.getLocation(entry.id))
       .filter((location): location is WorldLocation => location != null)
       .filter((location) => location.id !== homeId && location.kind !== 'settlement')
-      .filter((location) => locationInRange(location, originX, originZ, MEDIUM_RANGE_KM))
+      .filter((location) => locationInRange(location, originX, originZ, MEDIUM_RANGE_HOURS))
   }
 
   return {
