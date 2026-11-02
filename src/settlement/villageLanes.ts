@@ -25,8 +25,10 @@ const PLOT_CLEARANCE_FACTOR = 0.9
 const SMALL_PLOT_LANE_CLEARANCE = 1.7
 /** Extra clearance for road-width (entrance) lanes around those small plots. */
 const ROAD_LANE_EXTRA_CLEARANCE = 1.0
-/** Extra metres kept clear around a household yard rectangle. */
-const YARD_LANE_MARGIN = 0.8
+/** Metres kept clear between a lane's *edge* (centreline + half width) and a household yard rectangle. */
+const YARD_LANE_CLEARANCE = 0.8
+/** Lanes root this far inside the plaza rim so the corridor overlaps the paved square (no grass seam). */
+const PLAZA_ROOT_INSET = 2.5
 /** Tangent detour clearance beyond an obstacle radius. */
 const DETOUR_CLEARANCE = 1.0
 /** Longest straight polyline segment (terrain follows relief per vertex). */
@@ -52,6 +54,8 @@ type YardObstacle = {
   z: number
   /** Bounding-disc radius including the lane margin. */
   r: number
+  /** Centreline clearance: lane half width + `YARD_LANE_CLEARANCE`. */
+  margin: number
 }
 type Obstacle = DiscObstacle | YardObstacle
 
@@ -95,7 +99,7 @@ export type VillageLanePlan = {
 const isPlazaFurniture = (plot: VillagePlot): boolean =>
   /market|campfire|notice|plot-infra-well$/.test(plot.id)
 
-function obstaclesFromPlots(plots: readonly VillagePlot[]): Obstacle[] {
+function obstaclesFromPlots(plots: readonly VillagePlot[], laneHalfWidth: number): Obstacle[] {
   const out: Obstacle[] = []
   for (const plot of plots) {
     if (isPlazaFurniture(plot)) continue
@@ -117,7 +121,8 @@ function obstaclesFromPlots(plots: readonly VillagePlot[]): Obstacle[] {
         yard: plot.yard,
         x: d.x,
         z: d.z,
-        r: d.radius + YARD_LANE_MARGIN,
+        r: d.radius + laneHalfWidth + YARD_LANE_CLEARANCE,
+        margin: laneHalfWidth + YARD_LANE_CLEARANCE,
       })
     }
   }
@@ -152,7 +157,7 @@ function firstHit(
       const steps = Math.max(1, Math.ceil(len / YARD_SAMPLE_STEP))
       for (let i = 0; i <= steps; i++) {
         const s = i / steps
-        if (pointInYard(o.yard, a.x + (b.x - a.x) * s, a.z + (b.z - a.z) * s, -YARD_LANE_MARGIN)) {
+        if (pointInYard(o.yard, a.x + (b.x - a.x) * s, a.z + (b.z - a.z) * s, -o.margin)) {
           t = s
           break
         }
@@ -272,7 +277,8 @@ export function planVillageLanes(args: {
   waterLevel: number
 }): VillageLanePlan {
   const { center, entrances, plazaRadius, pathHalfWidth, roadHalfWidth, sampleHeight, waterLevel } = args
-  const obstacles = obstaclesFromPlots(args.plots)
+  const obstacles = obstaclesFromPlots(args.plots, pathHalfWidth)
+  const roadYardObstacles = obstaclesFromPlots(args.plots, roadHalfWidth)
   const lanes: Lane[] = []
   const paths: VillagePathPlan[] = []
   const unresolved: string[] = []
@@ -285,11 +291,12 @@ export function planVillageLanes(args: {
   }
 
   // Road-width lanes (entrances) keep a wider berth around small plots.
-  const roadObstacles = obstacles.map((o) =>
+  const roadObstacles = roadYardObstacles.map((o) =>
     o.kind === 'disc' && o.small ? { ...o, r: o.r + ROAD_LANE_EXTRA_CLEARANCE } : o)
+  const rootRadius = Math.max(plazaRadius * 0.5, plazaRadius - PLAZA_ROOT_INSET)
   const rim: Pt[] = Array.from({ length: PLAZA_RIM_ROOTS }, (_, i) => ({
-    x: center.x + Math.cos((i / PLAZA_RIM_ROOTS) * Math.PI * 2) * plazaRadius,
-    z: center.z + Math.sin((i / PLAZA_RIM_ROOTS) * Math.PI * 2) * plazaRadius,
+    x: center.x + Math.cos((i / PLAZA_RIM_ROOTS) * Math.PI * 2) * rootRadius,
+    z: center.z + Math.sin((i / PLAZA_RIM_ROOTS) * Math.PI * 2) * rootRadius,
   }))
   const nearestFirst = (pts: readonly Pt[], to: Pt): Pt[] =>
     [...pts].sort((p, q) => Math.hypot(p.x - to.x, p.z - to.z) - Math.hypot(q.x - to.x, q.z - to.z)
@@ -364,8 +371,8 @@ export function planVillageLanes(args: {
 /** Obstacle-aware connector for spurs added after the lane tree (pasture / paddock). */
 export type LaneRouter = (from: Pt, to: Pt) => Pt[] | null
 
-export function createLaneRouter(plots: readonly VillagePlot[]): LaneRouter {
-  const obstacles = obstaclesFromPlots(plots)
+export function createLaneRouter(plots: readonly VillagePlot[], laneHalfWidth = 1.5): LaneRouter {
+  const obstacles = obstaclesFromPlots(plots, laneHalfWidth)
   return (from, to) => {
     const route = routeAround(from, to, obstacles, null, MAX_DETOUR_DEPTH)
     return route ? subdivide(route) : null
