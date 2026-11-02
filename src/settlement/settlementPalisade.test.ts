@@ -239,6 +239,55 @@ describe('resolveEntrancePalisadePlacements', () => {
   })
 })
 
+describe('default palisade fragments (Q66)', () => {
+  const roadA = entrance({ id: 'entrance-0', kind: 'road', angle: 0 })
+  const pathB = entrance({ id: 'entrance-1', kind: 'path', angle: Math.PI / 2 })
+  const plan = planWith('default', [roadA, pathB])
+  const coast = { sampleHeight: flatSampleHeight, waterLevel }
+  const angOf = (p: SettlementPalisadePlacement): number => Math.atan2(p.z, p.x)
+
+  it('adds wings at every inland entrance and keeps each gate gap open', () => {
+    const placements = resolveEntrancePalisadePlacements(site, 'SM', flatSampleHeight, waterLevel, plan, coast)
+    const near = (gate: number): number =>
+      placements.filter((p) => Math.abs(Math.atan2(Math.sin(angOf(p) - gate), Math.cos(angOf(p) - gate))) < 1).length
+    expect(near(0)).toBeGreaterThan(0)
+    expect(near(Math.PI / 2)).toBeGreaterThan(0)
+    for (const p of placements) {
+      for (const gate of [0, Math.PI / 2]) {
+        const d = Math.abs(Math.atan2(Math.sin(angOf(p) - gate), Math.cos(angOf(p) - gate)))
+        expect(d).toBeGreaterThanOrEqual(PALISADE_GATE_HALF_ANGLE)
+      }
+    }
+  })
+
+  it('stays a few fragments, not a ring', () => {
+    const closed = resolveEntrancePalisadePlacements(
+      site, 'SM', flatSampleHeight, waterLevel, planWith('closed', [roadA, pathB]), coast,
+    )
+    const placements = resolveEntrancePalisadePlacements(site, 'SM', flatSampleHeight, waterLevel, plan, coast)
+    expect(placements.length).toBeLessThan(closed.length)
+    expect(placements.length).toBeGreaterThan(2 * 2)
+  })
+
+  it('still builds landward sections when every entrance is coastal', () => {
+    const seaEast = {
+      sampleHeight: (x: number) => (x > 5 ? -100 : 10),
+      waterLevel,
+    }
+    const placements = resolveEntrancePalisadePlacements(
+      site, 'SM', flatSampleHeight, waterLevel, planWith('default', [roadA]), seaEast,
+    )
+    expect(placements.length).toBeGreaterThan(0)
+    expect(placements.every((p) => p.x <= 5)).toBe(true)
+  })
+
+  it('is deterministic with several entrances', () => {
+    const a = resolveEntrancePalisadePlacements(site, 'MD', flatSampleHeight, waterLevel, plan, coast)
+    const b = resolveEntrancePalisadePlacements(site, 'MD', flatSampleHeight, waterLevel, plan, coast)
+    expect(a).toEqual(b)
+  })
+})
+
 describe('closed palisade / entrance torches (plan settlements-010)', () => {
   const roadA = entrance({ id: 'entrance-0', kind: 'road', angle: 0 })
   const roadB = entrance({ id: 'entrance-1', kind: 'road', angle: Math.PI })
