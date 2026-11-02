@@ -457,7 +457,6 @@ describe('planVillageLayout (plan 047 steps 5–7)', () => {
     }
 
     expect(layout.paths.some((p) => p.id.startsWith('path-entrance-'))).toBe(true)
-    expect(layout.paths.some((p) => p.id.startsWith('path-zone-'))).toBe(true)
     expect(layout.paths.some((p) => p.id.startsWith('path-house-'))).toBe(true)
 
     for (const path of layout.paths) {

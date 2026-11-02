@@ -1092,12 +1092,9 @@ export function planVillageLayout(
     waterAngle,
   )
   const predictedEntrances = entranceAngles.map((angle, index) => {
-    const kind: 'road' | 'path' =
-      identity.size === 'OUTPOST'
-        ? 'path'
-        : index === 0 || identity.size === 'LG' || identity.size === 'XL'
-          ? 'road'
-          : 'path'
+    // Any entrance may be the end of an inter-settlement road (Q57 feedback:
+    // a thin lane behind a wide road looked like a break) — only outposts stay paths.
+    const kind: 'road' | 'path' = identity.size === 'OUTPOST' ? 'path' : 'road'
     return pickEntranceAtAngle(
       angle,
       index,
@@ -1653,6 +1650,29 @@ function makePath(
   }
 }
 
+/** How far beyond the boundary (× radius) a shore may be to get a water lane. */
+const SHORE_REACH_FACTOR = 1.8
+
+/** Last dry point before open water along `angle` from the plaza edge, or null if no water within `reach`. */
+function findShorePoint(
+  center: VillageCenter,
+  angle: number,
+  fromRadius: number,
+  reach: number,
+  sampleHeight: HeightSampler,
+  waterLevel: number,
+): { x: number, z: number } | null {
+  const step = 1.5
+  const wet = (r: number): boolean =>
+    sampleHeight(center.x + Math.cos(angle) * r, center.z + Math.sin(angle) * r) <= waterLevel + SETTLEMENT_WATER_MARGIN
+  let last: number | null = null
+  for (let r = fromRadius; r <= reach; r += step) {
+    if (wet(r)) return last === null || last - fromRadius < 4 ? null : { x: center.x + Math.cos(angle) * last, z: center.z + Math.sin(angle) * last }
+    last = r
+  }
+  return null
+}
+
 function entranceCountFor(identity: VillageIdentity): number {
   if (identity.size === 'OUTPOST') return 1
   const density = villageSizeConfig(identity.size).pathDensity
@@ -1785,10 +1805,12 @@ export function planLocalPathsAndEntrances(args: {
   })
 
   const destinations: LaneDestination[] = []
-  for (const zone of zones) {
-    if (zone.kind === 'public') continue
-    destinations.push({ id: `path-zone-${zone.kind}`, access: { x: zone.x, z: zone.z }, ownPlotId: null, optional: true })
-  }
+  // Zone centres are abstract points (no building at the end) — no lanes to them.
+  // Water access instead: one lane to the last dry shore point downhill (future
+  // jetty / boat props go there).
+  const plazaRadius = villagePlazaAt(center, identity.size).radius
+  const shore = findShorePoint(center, waterAngle, plazaRadius, boundary.radius * SHORE_REACH_FACTOR, sampleHeight, waterLevel)
+  if (shore) destinations.push({ id: 'path-shore', access: shore, ownPlotId: null })
 
   for (const plot of plots) {
     if (plot.role === 'house') continue
@@ -1833,7 +1855,7 @@ export function planLocalPathsAndEntrances(args: {
     plots,
     entrances,
     destinations,
-    plazaRadius: villagePlazaAt(center, identity.size).radius,
+    plazaRadius,
     pathHalfWidth: LOCAL_PATH_HALF_WIDTH,
     roadHalfWidth: LOCAL_ROAD_HALF_WIDTH,
     sampleHeight,

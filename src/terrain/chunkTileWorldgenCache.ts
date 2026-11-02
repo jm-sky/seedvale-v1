@@ -51,8 +51,9 @@ export const CHUNK_TILE_CACHE_NAMESPACE = 'chunk-tiles'
  * flatten terrain behind every house; houses moved with the compound planner.
  * v8 (2026-10-31, queue Q43): settlement storehouse pad (`ClearingLayout.storehouses`).
  * v9 (2026-11-02, queue Q57): obstacle-aware village lane network (path corridors changed).
+ * v10 (2026-11-02, queue Q57 feedback): no zone spurs, shore lane, all entrance lanes road width.
  */
-export const CHUNK_TILE_CACHE_VERSION = 9
+export const CHUNK_TILE_CACHE_VERSION = 10
 
 /** Small byte-budget manifest record living in the same namespace — see
  *  `ChunkTileMetaPayload`. Its `fingerprint` field is a constant because the
