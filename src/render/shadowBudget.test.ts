@@ -119,3 +119,49 @@ describe('decideShadowUpdate reasons (world-terrain-056 S0)', () => {
     }
   })
 })
+
+describe('shadow motion cadence (world-terrain-056 S1)', () => {
+  const D2R = Math.PI / 180
+  it('alternates while walking at 60 FPS', async () => {
+    const m = await import('./shadowBudget')
+    const s = m.createShadowBudgetState(0, 0)
+    let x = 0
+    let t = 1000
+    let refreshes = 0
+    for (let f = 0; f < 20; f++) {
+      x += 0.05 // 3 m/s at 60 FPS
+      t += 16.7
+      const mo = { yaw: 0, nowMs: t }
+      const up = m.decideShadowUpdate(s, x, 0, false, false, mo) !== 'none'
+      if (up) refreshes++
+      m.recordShadowBudgetFrame(s, x, 0, up, mo)
+    }
+    expect(refreshes).toBeGreaterThanOrEqual(9)
+    expect(refreshes).toBeLessThanOrEqual(11)
+  })
+  it('escapes: fast yaw, teleport, max-ms (low FPS)', async () => {
+    const m = await import('./shadowBudget')
+    const mk = () => {
+      const s = m.createShadowBudgetState(0, 0)
+      s.lastUpdateMs = 1000
+      s.lastYaw = 0
+      return s
+    }
+    const alt = { yaw: 0, nowMs: 1016 }
+    expect(m.decideShadowUpdate(mk(), 0.1, 0, false, false, alt)).toBe('none')
+    expect(m.decideShadowUpdate(mk(), 0.1, 0, false, false, { yaw: 13 * D2R, nowMs: 1016 })).toBe('move')
+    expect(m.decideShadowUpdate(mk(), 30, 0, false, false, alt)).toBe('move')
+    for (const frameMs of [50, 28, 16.7]) {
+      const r = m.decideShadowUpdate(mk(), 0.1, 0, false, false, { yaw: 0, nowMs: 1000 + frameMs })
+      expect(r).toBe(frameMs > m.SHADOW_MOTION_MS_MAX ? 'move' : 'none')
+    }
+    expect(m.decideShadowUpdate(mk(), 0.1, 0, false, false, { yaw: 0, nowMs: 1000 + 70 })).toBe('move')
+  })
+  it('flag off / stationary behave as before', async () => {
+    const m = await import('./shadowBudget')
+    const s = m.createShadowBudgetState(0, 0)
+    expect(m.decideShadowUpdate(s, 0.1, 0, false)).toBe('move')
+    expect(m.decideShadowUpdate(s, 0, 0, false, false, { yaw: 0, nowMs: 5 })).toBe('none')
+    expect(m.decideShadowUpdate(s, 0, 0, true, false, { yaw: 0, nowMs: 5 })).toBe('actor')
+  })
+})
