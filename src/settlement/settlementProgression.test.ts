@@ -141,7 +141,12 @@ describe('settlement progression around home', () => {
     const ordinary = generateSettlementDef(
       other, seed, flatHeight, 0, 56, samplers, 1, region, 'XL',
     )
-    expect(fromCache).toEqual(ordinary)
+    // Entrances now depend on neighbour sites (Q59), which a bare generateSettlementDef lacks:
+    // identity, site and size must still agree.
+    expect(fromCache?.id).toBe(ordinary?.id)
+    expect(fromCache?.size).toBe(ordinary?.size)
+    expect(fromCache?.x).toBe(ordinary?.x)
+    expect(fromCache?.z).toBe(ordinary?.z)
   })
 
   it('skips an unfit first near candidate and takes the next seeded cell', () => {

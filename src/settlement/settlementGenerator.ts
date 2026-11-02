@@ -521,6 +521,16 @@ function resolveVillageIdentity(
   }
 }
 
+type SiteXZ = { x: number, z: number }
+
+/** Bearings (rad) from `site` to `neighborSites`, nearest neighbour first (Q59 entrance planning). */
+function bearingsToSites(site: SiteXZ, neighborSites: readonly SiteXZ[]): number[] {
+  return neighborSites
+    .map((n) => ({ d: Math.hypot(n.x - site.x, n.z - site.z), a: Math.atan2(n.z - site.z, n.x - site.x) }))
+    .sort((l, r) => l.d - r.d)
+    .map((n) => n.a)
+}
+
 /** Steps 4–9: identity + site + families → authoritative `VillagePlan` with
  *  boundary/center/pattern/zones/plots/buildings/landmarks/paths/entrances.
  *  Clearings still compatibility-projected separately until terrain adapter. */
@@ -532,6 +542,7 @@ function createVillagePlan(
   sampleHeight: HeightSampler,
   waterLevel: number,
   riverSegments: readonly RiverChannelSegment[],
+  neighborBearings: readonly number[],
 ): VillagePlan {
   const sizeCfg = villageSizeConfig(identity.size)
   const layout = planVillageLayout(
@@ -542,6 +553,7 @@ function createVillagePlan(
     sampleHeight,
     waterLevel,
     riverSegments,
+    neighborBearings,
   )
   return {
     identity,
@@ -664,6 +676,7 @@ function generateSettlementCore(
   riverQuery?: RiverQuery,
   minimumSize?: RolledVillageSize,
   authoredResident?: FamilyDef | readonly FamilyDef[],
+  neighborSites: readonly SiteXZ[] = [],
 ): SettlementCore | null {
   const ctx = resolveSettlementContext(
     cell,
@@ -730,6 +743,7 @@ function generateSettlementCore(
       ctx.sampleHeight,
       ctx.waterLevel,
       ctx.riverSegments,
+      bearingsToSites(site, neighborSites),
     ),
     {
       sampleHeight: ctx.sampleHeight,
@@ -816,6 +830,7 @@ export function generateVillagePlan(
   riverQuery?: RiverQuery,
   minimumSize?: RolledVillageSize,
   authoredResident?: FamilyDef | readonly FamilyDef[],
+  neighborSites: readonly SiteXZ[] = [],
 ): VillagePlan | null {
   return generateSettlementCore(
     cell,
@@ -830,6 +845,7 @@ export function generateVillagePlan(
     riverQuery,
     minimumSize,
     authoredResident,
+    neighborSites,
   )?.plan ?? null
 }
 
@@ -886,6 +902,7 @@ export function generateSettlementDef(
   riverQuery?: RiverQuery,
   minimumSize?: RolledVillageSize,
   authoredResident?: FamilyDef | readonly FamilyDef[],
+  neighborSites: readonly SiteXZ[] = [],
 ): SettlementDef | null {
   const core = generateSettlementCore(
     cell,
@@ -900,6 +917,7 @@ export function generateSettlementDef(
     riverQuery,
     minimumSize,
     authoredResident,
+    neighborSites,
   )
   if (!core) return null
   const { plan, families, sampleHeight: height, waterLevel: water, region: reg } = core

@@ -1023,6 +1023,7 @@ export function planVillageLayout(
   sampleHeight: HeightSampler,
   waterLevel: number,
   riverSegments: readonly RiverChannelSegment[] = [],
+  neighborBearings: readonly number[] = [],
 ): VillageLayoutDraft {
   const sizeCfg = villageSizeConfig(identity.size)
   const pattern = chooseLayoutPattern(identity, seedForCell)
@@ -1109,11 +1110,12 @@ export function planVillageLayout(
 
   const selectedHouseholdWells = selectHouseholdWellFamilyIndices(families, seedForCell)
   const waterAngle = downhillAngle(center.x, center.z, boundary.radius, sampleHeight)
-  const entranceAngles = preferredEntranceAngles(
+  const entranceAngles = roadEntranceAngles(
     pattern,
     seedForCell,
     entranceCountFor(identity),
     waterAngle,
+    neighborBearings,
   )
   const predictedEntrances = entranceAngles.map((angle, index) => {
     // Any entrance may be the end of an inter-settlement road (Q57 feedback:
@@ -1495,6 +1497,7 @@ export function planVillageLayout(
     seedForCell,
     sampleHeight,
     waterLevel,
+    neighborBearings,
   })
   // Canonical local path corridors for satellite fence clearance (plan
   // settlements-018). Satellite spur paths are appended after fence layout
@@ -1743,6 +1746,50 @@ function entranceCountFor(identity: VillageIdentity): number {
   return Math.min(3, Math.max(2, Math.round(1 + density * 1.5)))
 }
 
+/** Neighbour bearings closer than this merge into one entrance (Q59, ~40°). */
+const ENTRANCE_BEARING_MERGE_RAD = (40 * Math.PI) / 180
+
+/** Extra entrances allowed beyond the per-size count when neighbours lie in more
+ *  distinct directions (author D4 (b): +1). Census 2026-11-02 (seed 42): +1 leaves
+ *  ~6 % of road ends facing away, uncapped (max 4) ~0.4 % — see queue §3. */
+const NEIGHBOR_ENTRANCE_EXTRA = 1
+
+function angularDistance(a: number, b: number): number {
+  return Math.abs(Math.atan2(Math.sin(a - b), Math.cos(a - b)))
+}
+
+/**
+ * Entrance angles for a village (Q59, Q44 R3). Bearings to the ring-1
+ * neighbours (nearest first) win over the seeded layout axis so inter-settlement
+ * roads leave through a gap that faces their target. Bearings within ~40° merge
+ * into one entrance; the per-size count applies, +1 when neighbours lie in more
+ * distinct directions than that (author D4 (b)). Slots left over keep the
+ * layout-pattern angles, skipping ones that duplicate a neighbour direction.
+ * Pure and deterministic; with no neighbours it equals `preferredEntranceAngles`.
+ */
+export function roadEntranceAngles(
+  pattern: VillageLayoutPattern,
+  seedForCell: number,
+  count: number,
+  waterAngle: number,
+  neighborBearings: readonly number[],
+): number[] {
+  const clusters: number[] = []
+  for (const bearing of neighborBearings) {
+    if (clusters.every((c) => angularDistance(c, bearing) >= ENTRANCE_BEARING_MERGE_RAD)) clusters.push(bearing)
+  }
+  if (clusters.length === 0) return preferredEntranceAngles(pattern, seedForCell, count, waterAngle)
+  const target = Math.min(clusters.length, count + NEIGHBOR_ENTRANCE_EXTRA)
+  const angles = clusters.slice(0, target)
+  if (angles.length < target) {
+    for (const angle of preferredEntranceAngles(pattern, seedForCell, count, waterAngle)) {
+      if (angles.length >= target) break
+      if (angles.every((a) => angularDistance(a, angle) >= ENTRANCE_BEARING_MERGE_RAD)) angles.push(angle)
+    }
+  }
+  return angles
+}
+
 function preferredEntranceAngles(
   pattern: VillageLayoutPattern,
   seedForCell: number,
@@ -1845,6 +1892,8 @@ export function planLocalPathsAndEntrances(args: {
   seedForCell: number
   sampleHeight: HeightSampler
   waterLevel: number
+  /** Bearings (rad) to ring-1 neighbour sites, nearest first (Q59). */
+  neighborBearings?: readonly number[]
 }): { paths: VillagePathPlan[], entrances: VillageEntrance[], unresolvedLanes: string[] } {
   const {
     identity,
@@ -1860,7 +1909,7 @@ export function planLocalPathsAndEntrances(args: {
   const sizeCfg = villageSizeConfig(identity.size)
   const waterAngle = downhillAngle(center.x, center.z, boundary.radius, sampleHeight)
   const count = entranceCountFor(identity)
-  const angles = preferredEntranceAngles(pattern, seedForCell, count, waterAngle)
+  const angles = roadEntranceAngles(pattern, seedForCell, count, waterAngle, args.neighborBearings ?? [])
 
   const cemeteryPlot = plots.find((p) => p.role === 'cemetery')
   const entrances = angles.map((angle, index) => {

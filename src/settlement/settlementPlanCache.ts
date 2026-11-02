@@ -244,6 +244,41 @@ function siteProbeFor(cell: SettlementCell, ctx: SettlementResolveContext): Sett
   return probe
 }
 
+/** Ring-1 neighbour sites of `cell` (probe only), nearest first. */
+function ringSitesNearestFirst(cell: SettlementCell, ctx: SettlementResolveContext): { x: number, z: number }[] {
+  const own = siteProbeFor(cell, ctx).site
+  if (!own) return []
+  return cellsWithinRadius(cell, 1)
+    .filter((n) => !(n.gx === cell.gx && n.gz === cell.gz))
+    .map((n) => siteProbeFor(n, ctx).site)
+    .filter((site): site is NonNullable<typeof site> => site !== null)
+    .map((site) => ({ x: site.x, z: site.z, d: Math.hypot(site.x - own.x, site.z - own.z) }))
+    .sort((l, r) => l.d - r.d)
+}
+
+/**
+ * Neighbour sites a village must open road entrances toward (Q59): its own
+ * `maxNeighborRoads` nearest ring-1 neighbours, plus every neighbour that has
+ * this village among *its* nearest ones (an edge exists when either side picks
+ * it, see `roadRoutesForSettlement`). Probe only — the probe site equals the
+ * final def site because both resolve identical inputs (`probeArgs`).
+ */
+function neighborSitesFor(cell: SettlementCell, ctx: SettlementResolveContext): { x: number, z: number }[] {
+  const own = siteProbeFor(cell, ctx).site
+  if (!own) return []
+  const limit = Math.max(0, ctx.region.roadNetwork.maxNeighborRoads ?? 3)
+  const sites = ringSitesNearestFirst(cell, ctx)
+  const wanted = sites.slice(0, limit)
+  for (const n of cellsWithinRadius(cell, 1)) {
+    if (n.gx === cell.gx && n.gz === cell.gz) continue
+    const nSite = siteProbeFor(n, ctx).site
+    if (!nSite || wanted.some((w) => w.x === nSite.x && w.z === nSite.z)) continue
+    const theirs = ringSitesNearestFirst(n, ctx).slice(0, limit)
+    if (theirs.some((t) => t.x === own.x && t.z === own.z)) wanted.push({ x: nSite.x, z: nSite.z })
+  }
+  return wanted
+}
+
 function baseNameOf(cell: SettlementCell, ctx: SettlementResolveContext): SettlementBaseName {
   const key = cellKey(cell)
   const cached = baseNameCache.get(key)
@@ -451,7 +486,7 @@ export function settlementDefFor(
   if (defCache.has(key)) return defCache.get(key)!
   const monitor = getMonitor()
   const residents = withStage(monitor, 'settlementDefResidents', () => authoredResidentsFor(cell, ctx))
-  const def = withStage(monitor, 'settlementDefGenerate', () => generateSettlementDef(...probeArgs(cell, ctx), residents))
+  const def = withStage(monitor, 'settlementDefGenerate', () => generateSettlementDef(...probeArgs(cell, ctx), residents, neighborSitesFor(cell, ctx)))
   if (def) applyResolvedSettlementName(def, withStage(monitor, 'settlementDefName', () => localNameFor(cell, ctx)))
   defCache.set(key, def)
   persistentDefs?.remember(settlementCellSubKey(cell.gx, cell.gz), def)
