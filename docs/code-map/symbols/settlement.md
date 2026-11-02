@@ -1236,24 +1236,25 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/settlementGenerator.ts`
 
-- `cellFromId` — function — line 162
-- `cellKey` — function — line 146
-- `cellSeed` — function — line 190
-- `cellsWithinRadius` — function — line 174
-- `generateSettlementDef` — function — line 892
-- `generateVillagePlan` — function — line 820
-- `probeSettlementSite` — function — line 600
+- `cellFromId` — function — line 171
+- `cellKey` — function — line 155
+- `cellSeed` — function — line 199
+- `cellsWithinRadius` — function — line 183
+- `generateSettlementDef` — function — line 901
+- `generateVillagePlan` — function — line 829
+- `probeSettlementSite` — function — line 609
   - domain: settlements
-- `setSettlementGridStepOverride` — function — line 90
-- `SETTLEMENT_GRID_STEP` — const — line 71
-- `settlementBaseNameFor` — function — line 229
+- `setSettlementGridStepOverride` — function — line 91
+- `SETTLEMENT_GRID_STEP` — const — line 72
+- `settlementBaseNameFor` — function — line 238
   - domain: settlements
-- `SettlementCell` — type — line 94
-- `settlementCellCenter` — function — line 215
+- `SettlementCell` — type — line 95
+- `settlementCellCenter` — function — line 224
   - domain: settlements
-- `SettlementDef` — type — line 96
-- `SettlementSiteProbe` — type — line 585
-- `worldToCell` — function — line 150
+- `settlementCellInsideWorld` — function — line 149
+- `SettlementDef` — type — line 97
+- `SettlementSiteProbe` — type — line 594
+- `worldToCell` — function — line 159
 
 ## `settlement/settlementNameUniqueness.ts`
 
@@ -1304,29 +1305,29 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/settlementPlanCache.ts`
 
-- `activateSettlementDefinitionCacheForWorld` — function — line 195
+- `activateSettlementDefinitionCacheForWorld` — function — line 196
   - domain: settlements
   - system: worldgen-cache
-- `attachSettlementDefinitionPersistence` — function — line 163
+- `attachSettlementDefinitionPersistence` — function — line 164
   - domain: settlements
   - system: worldgen-cache
-- `cachedLostTreasureArchaeologistHostCell` — function — line 464
-- `cachedLostTreasureSpecialistHostCell` — function — line 473
-- `cachedSettlementDefCount` — function — line 496
-- `cachedSettlementProgressionPolicy` — function — line 501
-- `clearSettlementDefCache` — function — line 123
-- `ingestHydratedSettlementDef` — function — line 143
+- `cachedLostTreasureArchaeologistHostCell` — function — line 465
+- `cachedLostTreasureSpecialistHostCell` — function — line 474
+- `cachedSettlementDefCount` — function — line 498
+- `cachedSettlementProgressionPolicy` — function — line 503
+- `clearSettlementDefCache` — function — line 124
+- `ingestHydratedSettlementDef` — function — line 144
   - domain: settlements
   - system: worldgen-cache
-- `lostTreasureArchaeologistHostCell` — function — line 447
+- `lostTreasureArchaeologistHostCell` — function — line 448
   - domain: settlements
-- `lostTreasureSpecialistHostCell` — function — line 458
+- `lostTreasureSpecialistHostCell` — function — line 459
   - domain: settlements
-- `setSettlementRiverQuery` — function — line 85
-- `settlementDefFor` — function — line 481
-- `settlementDefinitionCacheReady` — function — line 212
-- `SettlementResolveContext` — type — line 59
-- `worldRiverQuery` — function — line 98
+- `setSettlementRiverQuery` — function — line 86
+- `settlementDefFor` — function — line 482
+- `settlementDefinitionCacheReady` — function — line 213
+- `SettlementResolveContext` — type — line 60
+- `worldRiverQuery` — function — line 99
 
 ## `settlement/settlementProgression.ts`
 

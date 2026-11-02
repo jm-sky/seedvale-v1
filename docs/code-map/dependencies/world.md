@@ -3825,6 +3825,7 @@ Generated from TypeScript imports.
 - `terrain/chunkHeightmap.ts`
 - `terrain/chunkItems.ts`
 - `terrain/chunkVegetation.ts`
+- `terrain/continentMask.test.ts`
 - `terrain/grassPlacement.ts`
 - `terrain/naturalResources.ts`
 - `terrain/resourceDeposits.ts`

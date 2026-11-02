@@ -33,23 +33,23 @@ Generated from exported TypeScript symbols.
 ## `config/worldConfig.ts`
 
 - `AoQuality` — type — line 14
-- `applyStoredPlayer` — function — line 520
-- `applyStoredPostProcessing` — function — line 544
-- `applyStoredQuality` — function — line 529
-- `applyStoredSettlements` — function — line 407
-- `applyStoredSky` — function — line 512
-- `applyStoredTerrain` — function — line 422
-- `createBenchmarkWorldConfig` — function — line 628
-- `createWorldConfig` — function — line 572
+- `applyStoredPlayer` — function — line 532
+- `applyStoredPostProcessing` — function — line 556
+- `applyStoredQuality` — function — line 541
+- `applyStoredSettlements` — function — line 414
+- `applyStoredSky` — function — line 524
+- `applyStoredTerrain` — function — line 429
+- `createBenchmarkWorldConfig` — function — line 640
+- `createWorldConfig` — function — line 584
 - `DEFAULT_PLAYER_NAME` — const — line 180
-- `defaultTerrainConfig` — function — line 565
+- `defaultTerrainConfig` — function — line 577
 - `DetailNormalConfig` — type — line 22
 - `HomeVillageSize` — type — line 11
 - `PLAYER_NAME_MAX_LENGTH` — const — line 183
 - `PlayerNameError` — type — line 185
 - `playerNameErrorMessage` — function — line 206
 - `PlayerNameValidation` — type — line 187
-- `triangleCount` — function — line 640
+- `triangleCount` — function — line 652
 - `validatePlayerName` — function — line 198
   - domain: ui-input
 - `WorldConfig` — type — line 50

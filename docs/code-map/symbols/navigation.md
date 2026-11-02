@@ -14,6 +14,10 @@ Generated from exported TypeScript symbols.
   - domain: npc
 - `PathResult` — type — line 76
 
+## `navigation/navigationReference.testing.ts`
+
+- `referenceFindPath` — function — line 69
+
 ## `navigation/navigationStats.ts`
 
 - `beginActivePath` — function — line 62

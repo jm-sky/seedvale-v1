@@ -2553,6 +2553,7 @@ Generated from TypeScript imports.
 - `settlement/villagePlanner.ts`
 - `shared/SettlementName.ts`
 - `terrain/chunkHeightmap.ts`
+- `terrain/continentMask.ts`
 - `terrain/naturalResources.ts`
 - `terrain/riverQuery.ts`
 - `world/parseSeed.ts`

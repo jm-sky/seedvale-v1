@@ -307,6 +307,7 @@ Generated from TypeScript imports.
 - `math/segment.ts`
 - `terrain/cemeteryAssignment.ts`
 - `terrain/chunkGrid.ts`
+- `terrain/continentMask.ts`
 - `terrain/fbm.ts`
 - `terrain/riverFord.ts`
 - `terrain/roadBridge.ts`
@@ -807,6 +808,22 @@ Generated from TypeScript imports.
 - `terrain/chunkItems.ts`
 - `terrain/coastalResources.test.ts`
 - `terrain/dig.ts`
+
+## `terrain/continentMask.test.ts`
+
+**Imports**
+
+- `config/worldConfig.ts`
+- `terrain/continentMask.ts`
+- `world/parseSeed.ts`
+
+## `terrain/continentMask.ts`
+
+**Imported by**
+
+- `settlement/settlementGenerator.ts`
+- `terrain/chunkHeightmap.ts`
+- `terrain/continentMask.test.ts`
 
 ## `terrain/depositMining.test.ts`
 
@@ -1394,6 +1411,7 @@ Generated from TypeScript imports.
 - `debug/caves/caveHeightfieldPlayer.ts`
 - `fauna/AnimalAgent.ts`
 - `navigation/navigation.ts`
+- `navigation/navigationReference.testing.ts`
 - `player/PlayerController.ts`
 - `player/caveSlopeSampling.test.ts`
 - `terrain/slopeConstraint.test.ts`

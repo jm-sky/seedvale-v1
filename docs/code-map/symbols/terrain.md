@@ -158,38 +158,38 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/chunkHeightmap.ts`
 
-- `apronGridWeights` — function — line 720
-- `ApronGridWeights` — type — line 711
-- `apronOriginWorld` — function — line 691
-- `ChunkTileData` — type — line 365
-- `ChunkTileParams` — type — line 238
-- `ClearingSegment` — type — line 170
-- `computeChunkTile` — function — line 1148
-- `createLocalTerrainSampler` — function — line 1233
+- `apronGridWeights` — function — line 728
+- `ApronGridWeights` — type — line 719
+- `apronOriginWorld` — function — line 699
+- `ChunkTileData` — type — line 369
+- `ChunkTileParams` — type — line 242
+- `ClearingSegment` — type — line 174
+- `computeChunkTile` — function — line 1156
+- `createLocalTerrainSampler` — function — line 1241
   - domain: world-terrain
-- `createWorldTerrainSampler` — function — line 1275
+- `createWorldTerrainSampler` — function — line 1283
   - domain: world-terrain
-- `extractCoreGrid` — function — line 775
-- `LocalTerrainSampler` — type — line 1208
+- `extractCoreGrid` — function — line 783
+- `LocalTerrainSampler` — type — line 1216
   - domain: world-terrain
-- `RawSampleParams` — type — line 345
-- `RawTexelSample` — type — line 642
-- `RegionalSmoothingSegment` — type — line 230
-- `RegionParams` — type — line 21
-- `RiverChannelSegment` — type — line 206
-- `RoadCorridorSegment` — type — line 152
-- `RoadNetworkParams` — type — line 89
-- `sampleApronGrid` — function — line 758
-- `sampleApronGridWeighted` — function — line 743
-- `sampleBiomeAt` — function — line 662
-- `sampleContinentalnessAt` — function — line 666
-- `sampleFloorAt` — function — line 658
-- `sampleHeightAt` — function — line 654
-- `sampleMoistureRegionAt` — function — line 674
-- `sampleMountainRidgeAt` — function — line 682
-- `sampleRawTexelAt` — function — line 647
-- `VegetationKind` — type — line 19
-- `VillageClearingParams` — type — line 70
+- `RawSampleParams` — type — line 349
+- `RawTexelSample` — type — line 650
+- `RegionalSmoothingSegment` — type — line 234
+- `RegionParams` — type — line 22
+- `RiverChannelSegment` — type — line 210
+- `RoadCorridorSegment` — type — line 156
+- `RoadNetworkParams` — type — line 93
+- `sampleApronGrid` — function — line 766
+- `sampleApronGridWeighted` — function — line 751
+- `sampleBiomeAt` — function — line 670
+- `sampleContinentalnessAt` — function — line 674
+- `sampleFloorAt` — function — line 666
+- `sampleHeightAt` — function — line 662
+- `sampleMoistureRegionAt` — function — line 682
+- `sampleMountainRidgeAt` — function — line 690
+- `sampleRawTexelAt` — function — line 655
+- `VegetationKind` — type — line 20
+- `VillageClearingParams` — type — line 74
 
 ## `terrain/chunkHeightmapProtocol.ts`
 
@@ -329,6 +329,14 @@ Generated from exported TypeScript symbols.
 - `COAST_INLAND_MARGIN` — const — line 16
 - `CoastalSamplers` — type — line 6
 - `isCoastalPlacement` — function — line 19
+
+## `terrain/continentMask.ts`
+
+- `coastRadiusAt` — function — line 49
+- `continentCentre` — function — line 38
+- `continentMaskAt` — function — line 64
+- `ContinentMaskParams` — type — line 17
+- `WORLD_HALF_EXTENT` — const — line 30
 
 ## `terrain/depositMining.ts`
 

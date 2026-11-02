@@ -981,7 +981,7 @@ Generated from exported TypeScript symbols.
 
 ## `world/createOcean.ts`
 
-- `createOcean` — function — line 35
+- `createOcean` — function — line 36
 - `WorldOcean` — type — line 9
 
 ## `world/createPalisades.ts`
@@ -2369,20 +2369,21 @@ Generated from exported TypeScript symbols.
 ## `world/waterMirror.ts`
 
 - `AGENT_RENDER_LAYER` — const — line 24
-- `assignRenderLayer` — function — line 91
-- `bindWaterMirror` — function — line 277
-- `createWaterMirror` — function — line 136
+- `applyMirrorYield` — function — line 95
+- `assignRenderLayer` — function — line 104
+- `bindWaterMirror` — function — line 301
+- `createWaterMirror` — function — line 153
 - `MirrorCadenceState` — type — line 74
 - `normalizeWaterMirrorSize` — function — line 52
 - `REFLECTION_DISTANT_LAYER` — const — line 43
 - `REFLECTION_SKIPPED_LAYER` — const — line 35
-- `setSubtreeCastShadow` — function — line 97
+- `setSubtreeCastShadow` — function — line 110
 - `shouldRenderMirror` — function — line 85
 - `WATER_MIRROR_SIZE` — const — line 46
 - `WATER_MIRROR_SIZES` — const — line 49
 - `WATER_RENDER_LAYER` — const — line 19
-- `WaterMirror` — type — line 110
-- `WaterMirrorUniforms` — type — line 104
+- `WaterMirror` — type — line 123
+- `WaterMirrorUniforms` — type — line 117
 
 ## `world/WaterSource.ts`
 

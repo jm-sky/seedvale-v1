@@ -87,6 +87,7 @@ Generated from TypeScript imports.
 - `settlement/settlementWorldgenCache.ts`
 - `terrain/buildChunkGeometry.ts`
 - `terrain/chunkManager.ts`
+- `terrain/continentMask.test.ts`
 - `tools/assetBrowser/viewer/createViewer.ts`
 - `ui-vue/lib/mapTerrainPaint.test.ts`
 - `ui-vue/store.ts`
