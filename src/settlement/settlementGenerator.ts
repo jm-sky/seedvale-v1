@@ -5,6 +5,7 @@ import type { NaturalResource } from '../terrain/naturalResources'
 import type { RiverQuery } from '../terrain/riverQuery'
 import { type NameCulture, pickNameCulture } from '../ai/nameCultures'
 import { generateSettlementBaseName, type SettlementBaseName, type SettlementTerrain } from '../shared/SettlementName'
+import { WORLD_HALF_EXTENT } from '../terrain/continentMask'
 import {
   dominantResourceNear,
   RESOURCE_ROLE,
@@ -141,6 +142,14 @@ export type SettlementDef = {
   /** Authoritative local layout (plan 047). `SettlementDef` remains a thin
    *  compatibility projection for existing runtime consumers. */
   plan: VillagePlan
+}
+
+/** Cells whose grid centre lies beyond `±(WORLD_HALF_EXTENT − step)` are outside the
+ *  finite continent (plan world-terrain-058): no settlement is generated there. */
+export function settlementCellInsideWorld(cell: SettlementCell): boolean {
+  const limit = WORLD_HALF_EXTENT - settlementGridStep()
+  const step = settlementGridStep()
+  return Math.abs(cell.gx * step) <= limit && Math.abs(cell.gz * step) <= limit
 }
 
 export function cellKey(cell: SettlementCell): string {

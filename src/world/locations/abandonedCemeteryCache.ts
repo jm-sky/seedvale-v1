@@ -23,7 +23,7 @@ export const ABANDONED_CEMETERY_NAMESPACE = 'abandoned-cemeteries'
  *  nearby roads.
  *  v4 (Q41): settlement clearings now include household yards and houses moved.
  *  v5 (Q43): settlement storehouse pad added to the clearings. */
-export const ABANDONED_CEMETERY_VERSION = 5
+export const ABANDONED_CEMETERY_VERSION = 6
 
 export type CachedAbandonedCemeteryResult =
   | { status: 'none' }

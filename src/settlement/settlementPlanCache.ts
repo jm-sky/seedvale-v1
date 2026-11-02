@@ -34,6 +34,7 @@ import {
   settlementBaseNameFor,
   type SettlementCell,
   settlementCellCenter,
+  settlementCellInsideWorld,
   type SettlementDef,
   type SettlementSiteProbe,
 } from './settlementGenerator'
@@ -482,6 +483,7 @@ export function settlementDefFor(
   cell: SettlementCell,
   ctx: SettlementResolveContext,
 ): SettlementDef | null {
+  if (!settlementCellInsideWorld(cell)) return null
   const key = cellKey(cell)
   if (defCache.has(key)) return defCache.get(key)!
   const monitor = getMonitor()

@@ -5,6 +5,7 @@ import type { ChunkCoord } from './chunkGrid'
 import { LinearSpline } from '../math/linearSpline'
 import { projectOntoSegment } from '../math/segment'
 import { createSeededRandom } from '../world/parseSeed'
+import { continentMaskAt, type ContinentMaskParams } from './continentMask'
 import { fbm01, type FbmParams } from './fbm'
 import { fordBedHeight, fordInfluenceAt, type FordProjection } from './riverFord'
 import { isOnAnyBridgeDeck, type RoadBridgeSpec } from './roadBridge'
@@ -61,6 +62,9 @@ export type RegionParams = {
    *  `waterLevel` — see `biomeRegions.ts`. */
   swampThreshold: number
   swampThresholdWidth: number
+  /** Finite-continent mask (plan world-terrain-058). Absent = unbounded legacy terrain
+   *  (hand-built test params); the default world config always sets it. */
+  continentMask?: ContinentMaskParams
   /** Tunables for road/path corridor width + strength — see `roadNetwork.ts`. */
   roadNetwork: RoadNetworkParams
   /** Tunables for village clearing radius/strength — see `villageClearing.ts`. */
@@ -518,12 +522,16 @@ function sampleRawTexel(
   // Macro region axes — decorrelated so mountain ranges can cut across continents
   // at any elevation above sea level, instead of always coinciding with the
   // highest band of a single field (which reads as concentric "bullseye" rings).
-  const c = fbm01(
+  const cRaw = fbm01(
     noise.continent,
     wx / region.continentScale,
     wz / region.continentScale,
     region.continentFbm,
   )
+  // Finite continent (058 W1): clamp continentalness towards open sea at the edge.
+  const c = region.continentMask
+    ? Math.min(cRaw, continentMaskAt(wx, wz, noise, region.continentMask))
+    : cRaw
   const mt = fbm01(
     noise.mountain,
     wx / region.mountainScale,

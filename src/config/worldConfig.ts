@@ -261,6 +261,13 @@ function baseConfig(seed: number, resolution: number): WorldConfig {
         // still the plain 0..1 field other systems read; heightScale/hillsAmplitude
         // untouched), so this targets mountain height specifically.
         mountainGain: 1.8,
+        continentMask: {
+          innerRadius: 1900,
+          coastRadiusMin: 2600,
+          coastRadiusMax: 3200,
+          edgeBand: 600,
+          centreJitter: 250,
+        },
         oceanThreshold: 0.32,
         coastThreshold: 0.45,
         oceanDetailWeight: 0.25,
@@ -458,6 +465,7 @@ export function applyStoredTerrain(
     const defaultMountainFbm = target.region.mountainFbm
     const defaultMoistureRegionFbm = target.region.moistureRegionFbm
     const defaultRoadNetwork = target.region.roadNetwork
+    const defaultContinentMask = target.region.continentMask
     const defaultVillage = target.region.village
     target.region = { ...target.region, ...r }
     target.region.continentFbm =
@@ -472,6 +480,10 @@ export function applyStoredTerrain(
       r.moistureRegionFbm && typeof r.moistureRegionFbm === 'object'
         ? { ...defaultMoistureRegionFbm, ...r.moistureRegionFbm }
         : defaultMoistureRegionFbm
+    target.region.continentMask =
+      r.continentMask && typeof r.continentMask === 'object'
+        ? { ...defaultContinentMask, ...r.continentMask }
+        : defaultContinentMask
     target.region.roadNetwork =
       r.roadNetwork && typeof r.roadNetwork === 'object'
         ? { ...defaultRoadNetwork, ...r.roadNetwork }

@@ -40,7 +40,7 @@ export const ROAD_ROUTE_CACHE_NAMESPACE = 'road-routes'
  */
 // v3 (2026-10-31, queue Q41): household compounds move houses/paths/entrances.
 // v4 (2026-10-31, queue Q43): storehouse plot + local path moves plots/entrances.
-export const ROAD_ROUTE_CACHE_VERSION = 5
+export const ROAD_ROUTE_CACHE_VERSION = 6
 
 const DEFAULT_DEBOUNCE_MS = 4000
 /** Bounded per-seed cap of requested routes only — never a full pair scan.
