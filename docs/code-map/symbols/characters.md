@@ -4,9 +4,9 @@ Generated from exported TypeScript symbols.
 
 ## `characters/assembleCharacter.ts`
 
-- `assembleCharacter` — function — line 149
-- `AssembledCharacter` — type — line 30
-- `kitPreloadUrls` — function — line 209
+- `assembleCharacter` — function — line 150
+- `AssembledCharacter` — type — line 31
+- `kitPreloadUrls` — function — line 210
 
 ## `characters/baseGarments.ts`
 
@@ -27,36 +27,39 @@ Generated from exported TypeScript symbols.
 
 ## `characters/characterFiles.ts`
 
-- `ANIMS_URL` — const — line 19
-- `BODY_BUILD_DIR` — const — line 17
-- `bodyBuildVariantUrl` — function — line 30
-- `bodyUrl` — function — line 25
-- `bodyUrlForBuild` — function — line 35
-- `characterUrls` — function — line 67
-- `eqNodeName` — function — line 62
-- `eqUrl` — function — line 54
-- `eqUrlForBuild` — function — line 41
-- `hairNodeName` — function — line 58
-- `hairUrl` — function — line 50
-- `headUrl` — function — line 46
+- `ANIMS_URL` — const — line 20
+- `BODY_BUILD_DIR` — const — line 18
+- `bodyBuildVariantUrl` — function — line 31
+- `bodyUrl` — function — line 26
+- `bodyUrlForBuild` — function — line 36
+- `characterUrls` — function — line 73
+- `eqNodeName` — function — line 68
+- `eqUrl` — function — line 55
+- `eqUrlForBuild` — function — line 42
+- `facialHairNodes` — function — line 64
+- `hairNodeName` — function — line 59
+- `hairUrl` — function — line 51
+- `headUrl` — function — line 47
 
 ## `characters/characterTypes.ts`
 
-- `BodyBuild` — type — line 38
-- `CHARACTER_OUTFITS` — const — line 59
-- `CHARACTER_SEXES` — const — line 83
-- `CharacterAppearance` — type — line 46
-- `CharacterGarment` — type — line 44
-- `CharacterOutfit` — type — line 15
+- `BodyBuild` — type — line 41
+- `CHARACTER_OUTFITS` — const — line 62
+- `CHARACTER_SEXES` — const — line 86
+- `CharacterAppearance` — type — line 49
+- `CharacterGarment` — type — line 47
+- `CharacterOutfit` — type — line 18
 - `CharacterSex` — type — line 6
-- `FEMALE_OUTFITS` — const — line 74
-- `FemaleOutfit` — type — line 35
-- `HAIR_STYLES` — const — line 87
-- `HairNode` — type — line 13
+- `FACIAL_HAIRS` — const — line 92
+- `FacialHair` — type — line 13
+- `FEMALE_OUTFITS` — const — line 77
+- `FemaleOutfit` — type — line 38
+- `HAIR_STYLES` — const — line 90
+- `HairNode` — type — line 16
 - `HairStyle` — type — line 10
-- `hasOutfitBody` — function — line 79
-- `HEAD_VARIANTS` — const — line 85
+- `hasOutfitBody` — function — line 82
+- `HEAD_VARIANTS` — const — line 88
 - `HeadVariant` — type — line 8
-- `SKIRTED_FEMALE_OUTFITS` — const — line 93
-- `WORK_SKIRTS` — const — line 90
-- `WorkSkirtGarment` — type — line 41
+- `SKIRTED_FEMALE_OUTFITS` — const — line 98
+- `WORK_SKIRTS` — const — line 95
+- `WorkSkirtGarment` — type — line 44

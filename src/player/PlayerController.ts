@@ -95,14 +95,9 @@ import {
   worldWaterAppliesInCurrentSpace,
 } from './worldWaterEligibility'
 
-/** Release a runtime clone without freeing loader-shared geometry or textures. */
+/** Release a runtime clone without freeing loader-shared geometry or textures.
+ *  `disposeObject3D` also releases each clone's skeleton bone texture. */
 function disposePlayerVisual(root: THREE.Object3D): void {
-  const skeletons = new Set<THREE.Skeleton>()
-  root.traverse((object) => {
-    const mesh = object as THREE.SkinnedMesh
-    if (mesh.isSkinnedMesh) skeletons.add(mesh.skeleton)
-  })
-  skeletons.forEach((skeleton) => skeleton.dispose())
   disposeObject3D(root)
 }
 

@@ -443,9 +443,9 @@ describe('npc-064 Stage 0B — SettlementsManager wiring probe', () => {
 
     const unloadIdx = src.indexOf('function unload(')
     expect(unloadIdx).toBeGreaterThan(-1)
-    const unloadBody = src.slice(unloadIdx, unloadIdx + 700)
+    const unloadBody = src.slice(unloadIdx, unloadIdx + 1200)
     const handoffIdx = unloadBody.indexOf('beginOffscreenTravelHandoff')
-    const disposeIdx = unloadBody.indexOf('entry.settlement?.dispose()')
+    const disposeIdx = unloadBody.indexOf('settlement.dispose()')
     expect(handoffIdx).toBeGreaterThan(-1)
     expect(disposeIdx).toBeGreaterThan(-1)
     expect(handoffIdx).toBeLessThan(disposeIdx)

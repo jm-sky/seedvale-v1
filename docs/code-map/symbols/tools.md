@@ -55,11 +55,11 @@ Generated from exported TypeScript symbols.
 
 ## `tools/assetBrowser/urlParams.ts`
 
-- `applyAssetBrowserUrlParams` — function — line 226
+- `applyAssetBrowserUrlParams` — function — line 229
 - `AssetBrowserUrlParams` — type — line 22
-- `hasAssetBrowserUrlParams` — function — line 221
+- `hasAssetBrowserUrlParams` — function — line 224
 - `parseAssetBrowserUrlParams` — function — line 141
-- `syncAssetBrowserUrlParams` — function — line 282
+- `syncAssetBrowserUrlParams` — function — line 285
 
 ## `tools/assetBrowser/viewer/cameraPersist.ts`
 
@@ -80,14 +80,14 @@ Generated from exported TypeScript symbols.
 ## `tools/assetBrowser/viewer/createAssetSlot.ts`
 
 - `AssetSlot` — type — line 39
-- `boundsData` — function — line 399
+- `boundsData` — function — line 402
 - `boxFromModel` — function — line 87
 - `collectMeshStats` — function — line 92
-- `createAssetSlot` — function — line 144
+- `createAssetSlot` — function — line 147
 - `MeshStats` — type — line 34
-- `reconcilePoseClip` — function — line 132
+- `reconcilePoseClip` — function — line 135
 - `resolveAppliedClipName` — function — line 119
-- `setWireframe` — function — line 417
+- `setWireframe` — function — line 420
 - `sortedClipNames` — function — line 114
 
 ## `tools/assetBrowser/viewer/createMultiView.ts`
@@ -111,7 +111,7 @@ Generated from exported TypeScript symbols.
 
 ## `tools/assetBrowser/viewer/createViewerScene.ts`
 
-- `applySceneBackground` — function — line 148
+- `applySceneBackground` — function — line 154
 - `createViewerScene` — function — line 46
 - `PreviewLighting` — type — line 26
 

@@ -29,6 +29,7 @@ for (const name of Object.keys(heights)) {
     root.updateMatrixWorld(true);for(const m of meshes)m.skeleton?.update()
     const data={name,label,height:heights[name],materials:report.materials,meshes:[]}
     for(const m of meshes){
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const normals=[],positions=[];const n=new THREE.Vector3(),p=new THREE.Vector3(),v=new THREE.Vector3()
       const bone=new THREE.Matrix4(),index=new THREE.Vector4(),skin=new THREE.Matrix4(),weight=new THREE.Vector4()
       const normalMatrix=new THREE.Matrix3().getNormalMatrix(m.matrixWorld)

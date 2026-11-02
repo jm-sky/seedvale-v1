@@ -101,7 +101,7 @@ Generated from exported TypeScript symbols.
 ## `assets/characterKitEntries.ts`
 
 - `characterKitEntries` — function — line 37
-- `KitBeardChoice` — type — line 28
+- `KitFacialHairChoice` — type — line 28
 - `KitHairChoice` — type — line 27
 - `KitHeadChoice` — type — line 26
 - `KitLook` — type — line 30

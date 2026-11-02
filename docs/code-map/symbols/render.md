@@ -10,8 +10,8 @@ Generated from exported TypeScript symbols.
 
 ## `render/actorSkeletonSharing.ts`
 
-- `ActorSkeletonShareResult` — type — line 13
-- `shareActorSkeletons` — function — line 170
+- `ActorSkeletonShareResult` — type — line 14
+- `shareActorSkeletons` — function — line 180
   - domain: render
 
 ## `render/agentPresentationLod.ts`

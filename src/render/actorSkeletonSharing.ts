@@ -3,6 +3,7 @@ import {
   type Bone,
   BufferAttribute,
   BufferGeometry,
+  type InterleavedBufferAttribute,
   Matrix4,
   type Object3D,
   type Skeleton,
@@ -41,19 +42,28 @@ function plainAttribute(geometry: BufferGeometry, name: string): BufferAttribute
   return attr
 }
 
-/** `null` when skin attributes are missing or interleaved (fail open). */
+/** Skin attribute readable per component: plain or interleaved, 4 wide. */
+function readableAttribute(geometry: BufferGeometry, name: string): BufferAttribute | InterleavedBufferAttribute | null {
+  const attr = geometry.getAttribute(name) as BufferAttribute | InterleavedBufferAttribute | undefined
+  if (!attr || attr.itemSize !== 4) return null
+  return attr
+}
+
+/** `null` when skin attributes are missing (fail open). Interleaved
+ *  attributes (e.g. after glTF re-export) are read component-wise. */
 function usedBones(geometry: BufferGeometry): readonly number[] | null {
   if (usedBonesByGeometry.has(geometry)) return usedBonesByGeometry.get(geometry)!
-  const index = plainAttribute(geometry, 'skinIndex')
-  const weight = plainAttribute(geometry, 'skinWeight')
+  const index = readableAttribute(geometry, 'skinIndex')
+  const weight = readableAttribute(geometry, 'skinWeight')
   let used: number[] | null = null
   if (index && weight && index.count === weight.count) {
     const set = new Set<number>()
-    const n = index.count * 4
-    for (let i = 0; i < n; i++) {
-      if (weight.array[i] > 0) set.add(index.array[i])
+    for (let i = 0; i < index.count; i++) {
+      for (let c = 0; c < 4; c++) {
+        if (weight.getComponent(i, c) > 0) set.add(index.getComponent(i, c))
+      }
     }
-    used = [...set].sort((a, b) => a - b)
+    used = [...set].sort((x, y) => x - y)
   }
   usedBonesByGeometry.set(geometry, used)
   return used

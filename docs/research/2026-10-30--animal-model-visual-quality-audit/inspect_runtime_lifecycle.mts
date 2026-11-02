@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import fs from 'node:fs'
 import { MeshoptDecoder } from '/workspace/seedvale-v1/node_modules/three/examples/jsm/libs/meshopt_decoder.module.js'
 import { GLTFLoader } from '/workspace/seedvale-v1/node_modules/three/examples/jsm/loaders/GLTFLoader.js'
@@ -12,7 +13,7 @@ for(const name of ['sheep','wolf','cow','horse']){
  applyNaturalMaterialResponseForUrl(url,gltf.scene)
  const actor=clone(gltf.scene)
  const result=shareActorSkeletons(actor)
- const mats=[]
+ const mats:any[]=[]
  actor.traverse((o:any)=>{if(o.isMesh)mats.push({mesh:o.name,material:o.material.name,roughness:o.material.roughness,metalness:o.material.metalness,flatShading:o.material.flatShading,side:o.material.side})})
  rows.push({name,url,actorSkeletonSharing:result,materialsAfterProductionResponse:mats})
 }
