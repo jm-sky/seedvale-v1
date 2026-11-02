@@ -39,6 +39,7 @@
     "worldgen:cemeteries:census": "tsx scripts/perf/census-cemeteries.ts",
     "worldgen:yards:census": "tsx scripts/perf/census-house-yards.ts",
     "worldgen:roads:census": "tsx scripts/perf/census-roads.ts",
+    "worldgen:rivers:census": "tsx scripts/perf/census-rivers.ts",
     "worldgen:dressing:census": "tsx scripts/perf/census-profession-dressing.ts",
     "claude:preflight": "tsx scripts/claude/pre-implementation.ts"
   },
