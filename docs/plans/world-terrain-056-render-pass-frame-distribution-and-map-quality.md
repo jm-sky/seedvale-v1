@@ -85,7 +85,7 @@ Written by Opus after the [critical review](../reviews/2026-11-01--world-terrain
 
 1. **Scope:** Stage A + **two separate candidates behind flags, default OFF**: (a) shadow cadence under player/camera motion, (b) mirror water-relevance gate. Each gets its own WSL A/B. The shadow-vs-mirror arbiter (review ROI #3) and any scheduler are **out of this session**.
 2. **Focus scenarios: FPS < 45 → `settlement` / `settlement-heavy`**, static *and* moving. Forest/water/ordinary are secondary guards, not optimisation targets.
-3. **Map quality: the observed pixelation is the water reflection** (128² mirror). Author: "worth raising to 1024, or give a choice in Settings". This plan implements the **Settings choice** (sizes 128 / 256 / 512 / 1024); the **default stays 128** until the A/B + screenshots in S5 let the author pick a default (queue §3). Shadow map resolution is **not** touched (no shadow artefact reported).
+3. **Map quality: the observed pixelation is the water reflection** (128² mirror). Author: "worth raising to 1024, or give a choice in Settings". This plan implements the **Settings choice** (sizes 128 / 256 / 512 / 1024); the **default stays 128** until the A/B + screenshots in S5 let the author pick a default (queue §3). Shadow map resolution is **not** touched. **Author confirmed (2026-11-02, in-game observation): pixels are visible only in the water reflection; shadows look fine.**
 4. Author's quality preset is unknown → S0 records the effective live RT sizes.
 
 Model: **S** (Sonnet, high effort). Every slice is an independently revertable commit. No `src/` edits while a benchmark runs. Never claim FPS gains; Windows Arc confirmation goes to queue §4, visual checks to queue §2.

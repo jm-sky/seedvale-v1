@@ -185,7 +185,7 @@ Append here (date, task, question, options). Remove when answered and recorded i
 - **ANSWERED 2026-10-31 · Q31 banki `_b` z V3:** routing według stałego `voiceProfileId` przed importem; nie mieszać barw. [P2 author decisions](./2026-10-31--p2-author-decisions-q38-q39-q31-q42.md).
 - **ANSWERED 2026-10-31 · Q31 weather remarks:** dodać kontekstowe reakcje, z prawdziwymi zdarzeniami i umiarkowaną częstotliwością; dokładny trigger/budget ustala recon Q46. [P2 author decisions](./2026-10-31--p2-author-decisions-q38-q39-q31-q42.md).
 
-- **ANSWERED 2026-11-02 · world-terrain-056 zakres:** autor wybrał Stage A + dwóch kandydatów za flagami (cienie w ruchu, bramka widoczności wody), fokus na scenariuszach < 45 FPS (settlement). Pikseloza = **odbicia w wodzie** → wybór rozdzielczości odbić w Settings (128/256/512/1024); domyślna zostaje 128 do decyzji po Q56. → Q52–Q56.
+- **ANSWERED 2026-11-02 · world-terrain-056 zakres:** autor wybrał Stage A + dwóch kandydatów za flagami (cienie w ruchu, bramka widoczności wody), fokus na scenariuszach < 45 FPS (settlement). Pikseloza = **tylko odbicia w wodzie, cienie OK** (autor potwierdził w grze 2026-11-02) → wybór rozdzielczości odbić w Settings (128/256/512/1024); domyślna zostaje 128 do decyzji po Q56. → Q52–Q56.
 
 ## 4. Landed slices awaiting author Arc A/B
 
