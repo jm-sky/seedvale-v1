@@ -265,9 +265,9 @@ function baseConfig(seed: number, resolution: number): WorldConfig {
         // than the plan's 2.6–3.2 km → ~150 settlements at pitch 300, ~4–6 on a
         // compass walk from home; rationale in plan world-terrain-058 §W1 calibration.
         continentMask: {
-          innerRadius: 1750,
-          coastRadiusMin: 2300,
-          coastRadiusMax: 2900,
+          innerRadius: 2900,
+          coastRadiusMin: 3800,
+          coastRadiusMax: 4600,
           edgeBand: 600,
           centreJitter: 250,
         },

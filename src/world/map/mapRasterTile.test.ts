@@ -10,6 +10,7 @@ import {
   MapRasterClass,
   mapTileBounds,
   mapTilesInRect,
+  mapTileWorldSize,
   selectMapRasterStep,
 } from './mapRasterTile'
 
@@ -28,7 +29,8 @@ describe('map raster LOD selection', () => {
 describe('map raster tile grid', () => {
   it('aligns tiles to the world grid and clamps to the map extent', () => {
     const tiles = mapTilesInRect(16, { minX: -1e6, maxX: 1e6, minZ: -1e6, maxZ: 1e6 })
-    expect(tiles).toHaveLength(64)
+    const side = (MAP_EXTENT_HALF * 2) / mapTileWorldSize(16)
+    expect(tiles).toHaveLength(side * side)
     const bounds = tiles.map(mapTileBounds)
     expect(Math.min(...bounds.map((b) => b.minX))).toBe(-MAP_EXTENT_HALF)
     expect(Math.max(...bounds.map((b) => b.maxZ))).toBe(MAP_EXTENT_HALF)

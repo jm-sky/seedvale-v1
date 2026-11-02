@@ -6,7 +6,7 @@ export const MAP_DISCOVERY_RADIUS = 48
 
 /** Half-extent of the world-map canvas, centred on the origin. Outside this
  *  the map draws an unavailable fill instead of sampling more terrain. */
-export const MAP_EXTENT_HALF = 4096
+export const MAP_EXTENT_HALF = 6144
 
 /** World-map Canvas zoom: world units → CSS pixels. */
 export const MAP_WORLD_ZOOM_MIN = 0.08

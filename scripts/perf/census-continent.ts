@@ -1,7 +1,7 @@
-// Usage: pnpm worldgen:continent:census [--seeds=42,415424794] [--rings=13] [--nomask] [--json]
+// Usage: pnpm worldgen:continent:census [--seeds=42,415424794] [--rings=21] [--nomask] [--json]
 // World-terrain-058 slice W1: finite-continent census (read-only, diagnostic).
 //  - land fraction within R = 2.5 km of the origin (floor above sea level),
-//  - sea at every border cell (perimeter of the ±4096 m box),
+//  - sea at every border cell (perimeter of the ±6144 m box),
 //  - coast radius per compass direction (first sea sample walking outward),
 //  - settlements along each of 8 compass rays from home (centre within ±150 m = half
 //    the grid pitch of the ray, before the coast — the villages a walk in that
@@ -22,7 +22,7 @@ function arg(name: string, fallback: string): string {
   return hit ? hit.slice(name.length + 3) : fallback
 }
 const seeds = arg('seeds', '42,415424794').split(',').map(Number)
-const rings = Number(arg('rings', '13'))
+const rings = Number(arg('rings', '21'))
 const noMask = process.argv.includes('--nomask')
 const asJson = process.argv.includes('--json')
 const LAND_R = 2500

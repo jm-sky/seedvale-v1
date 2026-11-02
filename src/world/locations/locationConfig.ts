@@ -6,7 +6,7 @@
 
 /** Presentational world-unit → km conversion (plan world-012 §14/notes §14).
  *  Chosen so the plan's far range (200 km) lands just inside
- *  `world/map/mapConfig.ts`'s `MAP_EXTENT_HALF` (4096 world units), keeping
+ *  `world/map/mapConfig.ts`'s `MAP_EXTENT_HALF` (6144 world units), keeping
  *  every discoverable location within the world map's meaningful extent. */
 export const WORLD_UNITS_PER_KM = 20
 

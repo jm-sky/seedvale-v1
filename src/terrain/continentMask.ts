@@ -27,7 +27,7 @@ export type ContinentMaskParams = {
 }
 
 /** Hard world boundary half-extent (m); nothing generates beyond it. */
-export const WORLD_HALF_EXTENT = 4096
+export const WORLD_HALF_EXTENT = 6144
 
 const WOBBLE_BASE_FREQ = 1.1
 const WOBBLE_DETAIL_FREQ = 3.3
