@@ -52,8 +52,9 @@ export const CHUNK_TILE_CACHE_NAMESPACE = 'chunk-tiles'
  * v8 (2026-10-31, queue Q43): settlement storehouse pad (`ClearingLayout.storehouses`).
  * v9 (2026-11-02, queue Q57): obstacle-aware village lane network (path corridors changed).
  * v10 (2026-11-02, queue Q57 feedback): no zone spurs, shore lane, all entrance lanes road width.
+ * v11 (2026-11-02): cemetery placement rejects river channels.
  */
-export const CHUNK_TILE_CACHE_VERSION = 10
+export const CHUNK_TILE_CACHE_VERSION = 11
 
 /** Small byte-budget manifest record living in the same namespace — see
  *  `ChunkTileMetaPayload`. Its `fingerprint` field is a constant because the

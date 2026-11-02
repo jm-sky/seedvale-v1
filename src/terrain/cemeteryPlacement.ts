@@ -34,6 +34,7 @@ import {
 } from './chunkEnvironment'
 import { type ChunkCoord, worldToChunk } from './chunkGrid'
 import { type ChunkTileParams, createWorldTerrainSampler, type RoadCorridorSegment } from './chunkHeightmap'
+import { footprintOverlapsRiver } from './riverNetwork'
 
 const SLOPE_SAMPLE_STEP = 1.5
 const ROAD_TINT_REJECT = 0.15
@@ -272,6 +273,9 @@ export function validateCemeteryPhysical(
   if (slopeAt(terrain, x, z) > SLOPE_REJECT_LANDMARK) return false
   const footprintR = cemeteryPlotRadius(size, scale)
   if (!cemeteryFootprintClearsRoads(x, z, size, scale, cemeteryRoadSegmentsOf(params), rotationY)) return false
+
+  // Never on a river / stream: channels are carved below the sampled surface and may not read as water.
+  if (params.riverSegments.length > 0 && footprintOverlapsRiver(params.riverSegments, x, z, footprintR)) return false
 
   // Water + height spread over a rotated 3×3 sample of the plot.
   let lo = Infinity
