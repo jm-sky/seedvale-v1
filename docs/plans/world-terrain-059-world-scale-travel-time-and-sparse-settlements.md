@@ -141,3 +141,30 @@ Decision 4 targets met except "no settlement without a road".
 - Progression rings (1–2 / 3–5 cells) no longer match: the near ring never holds a selected cell, so `near` is mostly `null`; W2′ (graph hops) replaces it. Until then big-village guarantees near home are weaker.
 - Names: `LOCAL_SETTLEMENT_NAME_RADIUS_M` (1 km) now almost never matches (nearest neighbour ≥ 1.1 km) — harmless, revisit in W5.
 
+
+### W5 — grid-step consumers audit (Q85, Sonnet, 2026-11-02)
+
+**Audit only — no runtime code changed** (nothing to verify beyond type/tests; nothing browser-verified). `SETTLEMENT_GRID_STEP` is still 300 and `cellsWithinRadius` is still a Chebyshev square, so **no consumer scans more cells per call than before W4**; unselected cells now return `null` before any site search (W4), so each scanned cell is cheaper than it was. The only radii that grew are the Lost Treasure host searches (W4, below). What changed is *meaning*: a cell is no longer a settlement, so "cells within N" is now a coarse candidate filter, and several radii are now too small or lattice-assuming.
+
+| Consumer | Use | Verdict |
+| --- | --- | --- |
+| `settlementProximity.settlementsWithinDistance` | cells ⌈d/300⌉+1, exact-filtered by distance | OK — correct for any d; sparse cells are cheap nulls. A large d (> ~3 km) scans (2⌈d/300⌉+3)² cells, so a future caller wanting km-scale queries should use `layout.sites` instead. |
+| `settlementProximity.NEAR_SETTLEMENT_DISTANCE` (150 m) | "near a settlement" | OK — site-local, not neighbour-related. |
+| `digFinds.isWithinSettlementDigFootprint` | cell radius from boundary ≤ ~72 m + margin → 2 | OK — footprint-local, per-cell semantics intended. |
+| `locationProximityDiscovery` (`SETTLEMENT_PROXIMITY_CELL_RADIUS = 1`) | physical arrival | OK — footprint-local. |
+| `closedPredatorPressure` | 100 m around a closed settlement | OK (comment still says step 280 — cosmetic). |
+| `naturalResources` | own finer grid | OK — independent of settlements. |
+| `SettlementsManager` residency scan (~line 1192) | cells ⌈loadRadius/300⌉+1 around the player | OK — bounded by loadRadius, same cost as before; could iterate `layout.sites` (22 entries) instead of ~(2r+1)² cells, a perf nicety only. |
+| `worldLocationCatalog.nearestSettlements` / `settlementCemeteryCandidates` | cells ⌈hoursToUnits(h)/300⌉+1 (+5 h margin) | OK functionally; for large `maxHours` the square grows quadratically (10 h ≈ 5.4 km → 40² cells) while only ≤ 22 cells are selected. **Candidate for `layout.sites` iteration** (O(22), same results) when `lookupSettlement` is reachable from the layout; deferred, low priority. |
+| `settlementNameUniqueness` (`LOCAL_SETTLEMENT_NAME_RADIUS_M` = 1000, `CELL_REACH` 5) | local duplicate-name window | **Stale radius**: nearest neighbour ≥ 1.1 km, so the window almost never contains another settlement → duplicate names across neighbours are possible again. Needs author call (Q below): widen to ~2.5 km (≈ one graph hop) or keep. |
+| `debug/locationQueries.villageNearest` (`VILLAGE_SEARCH_MAX_CELL_RADIUS` 8 = 2.4 km) | debug "nearest village" | **Too small**: with ~1.3 km spacing and 22 sites spread over the world, nearest can exceed 2.4 km → `null`. Debug-only; fix = read `layout.sites`. |
+| `cemeteryAssignment.CEMETERY_SETTLEMENT_GATHER_RADIUS` (2) / `ABANDONED_SETTLEMENT_MIN_DISTANCE` (225 m) | cemetery placement gathering / wilderness cemetery spacing | OK for dedicated cemeteries (each lives in its own settlement); 225 m wilderness clearance is now small relative to 1.1 km spacing — fine, only a minimum. |
+| **`createCaves.cavePlacementInput`** | `cellsWithinRadius({0,0}, 3)` mapped to **lattice positions** `gx·300, gz·300` as 49 pseudo-village exclusion footprints | **Stale / wrong**: positions no longer coincide with real settlements (real sites are layout-selected, jittered). Caves avoid 48 empty points and may sit on real villages. Fix = exclusion from `settlementLayoutFor(ctx).sites` + real footprints; **moves cave sites → cave manifest/cache bump and counts toward the coordinated worldgen epoch (D3)**, so not done here — queued. |
+| `settlementLayout` (`limit` = ⌈WORLD_HALF_EXTENT/300⌉) | candidate cell bound | OK — the layout owner itself. |
+| `settlementGenerator.cellsWithinRadius` | helper | OK. |
+| Lost Treasure host radii (W4: elder 1→6, archaeologist/specialist 5→10 cells) | host search | Largest growth: 13² / 21² cell scans, **once per world** (memoized host cell) — acceptable; not per-frame. |
+
+**Follow-ups (author decisions / epoch-coupled):**
+1. Cave exclusion from real settlements (epoch-coupled, see above).
+2. Local name-uniqueness radius (1 km → ?) — product call.
+3. `villageNearest` and large-radius catalog scans → iterate `layout.sites` (no behaviour change, optional).
