@@ -39,3 +39,20 @@ Status for every entry: `todo` (unverified). Created: 2026-10-29. IDs here (`IMP
 - **Investigate:** Materials, normals, directional/ambient lights, shading, tone mapping and any character-specific rendering paths, using reproducible scene conditions.
 - **Expected:** Characters visibly respond to sunlight without artificial brightness detached from environment lighting.
 - **Area:** character rendering / npc / world.
+
+## IMP-007 — Sheep have no Walk animation
+- **Observation:** Sheep have a `Jump` animation but no `Walk` animation.
+- **Candidate approaches:** Evaluate using `Jump` temporarily for locomotion, or author a dedicated `Walk` animation in Blender later. Neither approach is approved yet.
+- **Investigate:** Current sheep GLB clips, animation state mapping and whether the jump clip is suitable for a walk loop.
+- **Area:** fauna / animation / assets.
+
+## IMP-008 — Settlement animals sometimes move too fast
+- **Observation:** Animals, including sheep, horses and dogs, sometimes walk too quickly around settlements.
+- **Investigate:** Actual movement speeds and state transitions versus animation playback rate, species-specific tuning and settlement behavior; avoid changing authoritative locomotion solely to mask visual mismatch.
+- **Area:** fauna / settlements / animation.
+
+## IMP-009 — House lamps should light only at night
+- **Observation:** Lamps mounted on houses are lit during daytime.
+- **Expected:** House lamps illuminate only at night, following authoritative world day/night state; keep visual emissions and actual light sources in sync.
+- **Investigate:** Existing day/night controls, lamp materials and light lifecycle, including distant/streamed settlements and performance.
+- **Area:** settlements / world / rendering.
