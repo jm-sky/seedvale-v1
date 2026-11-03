@@ -1074,8 +1074,10 @@ Generated from exported TypeScript symbols.
 
 ## `world/createWater.ts`
 
-- `createChunkWater` — function — line 46
-- `WorldWater` — type — line 15
+- `createChunkWater` — function — line 101
+- `lakeLevelsInChunk` — function — line 54
+- `maskHeightsForLakeLevel` — function — line 75
+- `WorldWater` — type — line 17
 
 ## `world/createWorkContracts.ts`
 

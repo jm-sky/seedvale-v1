@@ -1748,6 +1748,7 @@ Generated from TypeScript imports.
 - `terrain/lakeWater.test.ts`
 - `terrain/waterBodies.ts`
 - `terrain/waterSample.ts`
+- `world/createWater.ts`
 - `world/map/mapProjection.ts`
 
 ## `terrain/worldEdge.test.ts`

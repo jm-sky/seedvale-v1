@@ -2399,16 +2399,24 @@ Generated from TypeScript imports.
 - `world/transportTravelArrival.test.ts`
 - `world/transportTravelArrival.ts`
 
+## `world/createWater.test.ts`
+
+**Imports**
+
+- `world/createWater.ts`
+
 ## `world/createWater.ts`
 
 **Imports**
 
+- `terrain/waterSurface.ts`
 - `world/waterMaterial.ts`
 - `world/waterMirror.ts`
 
 **Imported by**
 
 - `terrain/chunkManager.ts`
+- `world/createWater.test.ts`
 
 ## `world/createWorkContracts.test.ts`
 
