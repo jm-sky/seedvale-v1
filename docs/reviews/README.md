@@ -1,6 +1,6 @@
 # Reviews
 
-**System-level review coverage:** [SYSTEM-REVIEW-MATRIX.md](./SYSTEM-REVIEW-MATRIX.md) — area inventory, Revival readiness, and separate GPT / Anthropic critical review tracking (inventory pending).
+**System-level review coverage:** [SYSTEM-REVIEW-MATRIX.md](./SYSTEM-REVIEW-MATRIX.md) — 27 review areas / 94 subsystem candidates, Revival readiness, and separate GPT / Anthropic critical review tracking.
 
 Planned review runs — **one AI session per file**. Split scopes where useful.
 
