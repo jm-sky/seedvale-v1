@@ -386,7 +386,30 @@ describe('house colliders', () => {
     expect(obb.z).toBeCloseTo(19)
     expect(obb.halfWidth).toBeCloseTo(1)
     expect(obb.halfDepth).toBeCloseTo(0.2)
-    expect(obb.rotationY).toBeCloseTo(Math.PI / 2)
+    // Collider convention = Three.js yaw negated (local x axis → world (0, -1)).
+    expect(obb.rotationY).toBeCloseTo(-Math.PI / 2)
+  })
+
+  it('keeps wall OBBs on the real walls at a non-axis yaw (Q37)', () => {
+    for (const yaw of [0.6, Math.PI / 4, 2.2, -1.1]) {
+      const world = buildHouseCollidersWorld(COTTAGE_6X4_A, 3, -4, yaw, COTTAGE_6X4_A.openings.map(() => true))
+      // House-local → world with the Three.js `rotation.y` mapping the mesh uses.
+      const toWorld = (lx: number, lz: number) => ({
+        x: 3 + lx * Math.cos(yaw) + lz * Math.sin(yaw),
+        z: -4 - lx * Math.sin(yaw) + lz * Math.cos(yaw),
+      })
+      const hit = (lx: number, lz: number) => {
+        const p = toWorld(lx, lz)
+        return world.some((c) => colliderContainsPoint(c, p.x, p.z))
+      }
+      const halfD = COTTAGE_6X4_A.footprint.depth / 2
+      const halfW = COTTAGE_6X4_A.footprint.width / 2
+      for (let lx = -halfW + 0.25; lx <= halfW - 0.25; lx += 0.5) {
+        expect(hit(lx, halfD), `back wall at lx ${lx}, yaw ${yaw}`).toBe(true)
+        expect(hit(lx, halfD + 1), `1 m behind the back wall at lx ${lx}, yaw ${yaw}`).toBe(false)
+      }
+      expect(hit(0, 0)).toBe(false)
+    }
   })
 
   it('transforms a circle collider with house yaw and assembly scale (unchanged semantics)', () => {

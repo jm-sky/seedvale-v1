@@ -39,6 +39,7 @@
     "worldgen:caves:census": "tsx scripts/perf/census-caves.ts",
     "worldgen:cemeteries:census": "tsx scripts/perf/census-cemeteries.ts",
     "worldgen:yards:census": "tsx scripts/perf/census-house-yards.ts",
+    "worldgen:access:census": "tsx scripts/perf/census-settlement-access.ts",
     "worldgen:roads:census": "tsx scripts/perf/census-roads.ts",
     "worldgen:continent:census": "tsx scripts/perf/census-continent.ts",
     "worldgen:rivers:census": "tsx scripts/perf/census-rivers.ts",

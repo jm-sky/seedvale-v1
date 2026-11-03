@@ -635,6 +635,15 @@ export function buildHouseDoorCollidersLocal(
   return colliders
 }
 
+/**
+ * House-local colliders → world for a house root at `(worldX, worldZ)` with
+ * Three.js `rotation.y = yaw`. Positions use the Three.js yaw mapping; an OBB's
+ * `rotationY` is in the collider convention (`collision.ts`: local x axis is
+ * world `(cos r, sin r)`), which is the Three.js yaw negated — hence `- yaw`
+ * (same as `fencePlacementColliders` / `professionDressingColliders`). With
+ * `+ yaw` every wall OBB of a house not at a multiple of 90° was mirrored off
+ * its wall (Q37 access census, 2026-11-03).
+ */
 export function transformHouseCollidersToWorld(
   localColliders: readonly Collider[],
   worldX: number,
@@ -659,7 +668,7 @@ export function transformHouseCollidersToWorld(
       z,
       halfWidth: collider.halfWidth * scale,
       halfDepth: collider.halfDepth * scale,
-      rotationY: collider.rotationY + yaw,
+      rotationY: collider.rotationY - yaw,
     }
   })
 }
