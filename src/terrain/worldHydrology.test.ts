@@ -55,6 +55,22 @@ describe('computeWorldHydrology', () => {
     expect(a).toBe(b)
   })
 
+  // Guard for review 030 F4: `hydrologyId` hashes the version, not the output, so an algorithm change with unchanged
+  // options would serve stale hydrology from IndexedDB and boot fixtures under a valid id.
+  it('pins the output of fixed synthetic grids (golden hashes)', () => {
+    const pit = valleyGrid((f) => {
+      for (let dz = -3; dz <= 3; dz++) for (let dx = -3; dx <= 3; dx++) f[(64 + dz) * N + 60 + dx] -= 3
+    })
+    const hashes = {
+      valley: hashWorldHydrology(computeWorldHydrology(valleyGrid(), { seed: 7 })),
+      pit: hashWorldHydrology(computeWorldHydrology(pit, { seed: 7 })),
+    }
+    expect(
+      hashes,
+      'computeWorldHydrology output changed: bump WORLD_HYDROLOGY_VERSION (src/terrain/worldHydrology.ts), re-export the worldgen fixtures (node scripts/perf/export-worldgen-fixture.mjs) and update these hashes',
+    ).toEqual({ valley: 'a6fa19df', pit: '4414228f' })
+  })
+
   it('fills a small pit through the correction layer', () => {
     const iz = 64
     const ix = 60

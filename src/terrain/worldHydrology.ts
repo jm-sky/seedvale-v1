@@ -30,7 +30,11 @@ import { SPARSE_BLOCK_SIZE, unpackChains } from './worldHydrologyStore'
  * @subdomain hydrology
  */
 
-/** Bump when the algorithm or its defaults change (feeds `hydrologyId` in H2). */
+/**
+ * Bump when the algorithm or its defaults change (feeds `hydrologyId` in H2) — i.e. whenever the output for the same
+ * input changes. The golden-hash test in `worldHydrology.test.ts` fails then; after bumping, re-export the worldgen
+ * fixtures and update the hashes (stale IndexedDB records and fixtures are dropped by the id).
+ */
 export const WORLD_HYDROLOGY_VERSION = 1
 
 export type WorldHydrologyOptions = {
