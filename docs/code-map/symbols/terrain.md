@@ -283,28 +283,28 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/chunkWorkerPool.ts`
 
-- `cancelChunkGrass` — function — line 589
-- `cancelChunkMapTile` — function — line 619
-- `cancelChunkMesh` — function — line 600
-- `cancelChunkRiverTile` — function — line 631
-- `cancelChunkTile` — function — line 578
-- `cancelChunkWorldKnowledge` — function — line 611
+- `cancelChunkGrass` — function — line 639
+- `cancelChunkMapTile` — function — line 669
+- `cancelChunkMesh` — function — line 650
+- `cancelChunkRiverTile` — function — line 681
+- `cancelChunkTile` — function — line 628
+- `cancelChunkWorldKnowledge` — function — line 661
 - `ChunkWorkerLike` — type — line 29
 - `ChunkWorkerPool` — type — line 45
 - `ChunkWorkerPoolOptions` — type — line 36
 - `createChunkWorkerPool` — function — line 204
 - `defaultChunkWorkerCount` — function — line 174
-- `disposeChunkWorkerPool` — function — line 648
+- `disposeChunkWorkerPool` — function — line 698
 - `HeightmapGenerationCancelledError` — class — line 17
-- `installChunkWorkerHydrology` — function — line 635
+- `installChunkWorkerHydrology` — function — line 685
 - `isChunkWorkerCancelledError` — function — line 24
-- `requestChunkGrass` — function — line 582
-- `requestChunkHydrologyRows` — function — line 639
-- `requestChunkMapTile` — function — line 615
-- `requestChunkMesh` — function — line 593
-- `requestChunkRiverTile` — function — line 623
-- `requestChunkTile` — function — line 571
-- `requestChunkWorldKnowledge` — function — line 604
+- `requestChunkGrass` — function — line 632
+- `requestChunkHydrologyRows` — function — line 689
+- `requestChunkMapTile` — function — line 665
+- `requestChunkMesh` — function — line 643
+- `requestChunkRiverTile` — function — line 673
+- `requestChunkTile` — function — line 621
+- `requestChunkWorldKnowledge` — function — line 654
 
 ## `terrain/chunkWorldItems.ts`
 
