@@ -2461,23 +2461,23 @@ Generated from exported TypeScript symbols.
 
 ## `world/weatherVisuals.ts`
 
-- `applyLightningFlash` — function — line 154
+- `applyLightningFlash` — function — line 170
   - domain: world
-- `applyWeatherOverlay` — function — line 40
-- `applyWeatherSkyOverlay` — function — line 111
+- `applyWeatherOverlay` — function — line 49
+- `applyWeatherSkyOverlay` — function — line 127
   - domain: world
-- `capOutdoorFogToTerrainHorizon` — function — line 74
+- `capOutdoorFogToTerrainHorizon` — function — line 90
   - domain: world-terrain
-- `CAVE_INTERIOR_FOG_COLOR` — const — line 172
-- `CAVE_INTERIOR_FOG_FAR` — const — line 174
-- `CAVE_INTERIOR_FOG_NEAR` — const — line 173
-- `fogColorLuminance` — function — line 198
-- `GRASS_WIND_AMP_MAX` — const — line 125
-- `grassWindAmpFor` — function — line 140
+- `CAVE_INTERIOR_FOG_COLOR` — const — line 188
+- `CAVE_INTERIOR_FOG_FAR` — const — line 190
+- `CAVE_INTERIOR_FOG_NEAR` — const — line 189
+- `fogColorLuminance` — function — line 214
+- `GRASS_WIND_AMP_MAX` — const — line 141
+- `grassWindAmpFor` — function — line 156
   - domain: world
-- `resolveSceneFog` — function — line 179
-- `SceneFogParams` — type — line 176
-- `WeatherSkyOverlay` — type — line 83
+- `resolveSceneFog` — function — line 195
+- `SceneFogParams` — type — line 192
+- `WeatherSkyOverlay` — type — line 99
 - `WeatherVisualOverlay` — type — line 11
 
 ## `world/wellGroundwater.ts`
