@@ -56,6 +56,8 @@
 - **Dependencies:** Coordinate after Q34 house/yards, Q35 fences/gates and Q36 storehouse. Respect Q29 worldgen epoch, deterministic identities, cache/fixture updates and existing instancing/batching. Avoid unplanned changes to simulation workload.
 - **Verification and handoff:** Opus should specify representative visual inspection cases including river-adjacent layouts, seeds 42 and 415424794, multiple settlement sizes/patterns, player/NPC access, placement/collision checks and per-settlement render submission counts. Preliminary work is allowed, but **author visual sign-off remains mandatory**. If unacceptable, revise or revert.
 
+**Q37 plan (2026-11-03):** [settlement composition plan](./2026-11-03--q37-settlement-composition-plan.md) — evidence, slices Q93–Q95, visual inspection cases, author questions.
+
 ## Profession-signature homes — author-approved outcome (2026-10-31)
 
 **Decision: required Revival feature, not merely a research candidate.** Houses and their immediate surroundings must visibly communicate the profession of the resident household at a glance, without opening UI. Opus owns technical assessment, scope refinement and planning; this decision does **not** pre-approve a V3 copy, specific implementation, or unverified performance claims.
