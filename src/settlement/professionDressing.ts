@@ -45,7 +45,9 @@ export const WALL_FACE_OFFSET_M: Record<HouseWallSide, number> = { front: 0.314,
 /** Kits that hang beside the entrance (guard post): spots are tried nearest-to-door first. */
 const NEAR_DOOR_KITS: ReadonlySet<keyof typeof WALL_KITS> = new Set(['banner', 'shield'])
 /** Door/window opening extents used for the overlap test. */
-const OPENING_HALF_SPAN_M = 0.95
+/** Real cut-out half widths measured from the GLBs (door_flat 0.65, window_wide_flat 0.60) + a hair of clearance. */
+const DOOR_HALF_SPAN_M = 0.67
+const WINDOW_HALF_SPAN_M = 0.62
 const DOOR_TOP_Y = 2.4
 const WINDOW_BOTTOM_Y = 0.9
 const WINDOW_TOP_Y = 2.3
@@ -180,7 +182,7 @@ export function wallKitFits(
   for (const opening of def.openings as readonly HouseOpening[]) {
     if (opening.side !== side || opening.moduleIndex == null) continue
     const centre = moduleCentre(def, side, opening.moduleIndex)
-    const overlapsX = Math.abs(along - centre) < OPENING_HALF_SPAN_M + kit.halfAlong
+    const overlapsX = Math.abs(along - centre) < (opening.type === 'door' ? DOOR_HALF_SPAN_M : WINDOW_HALF_SPAN_M) + kit.halfAlong
     if (!overlapsX) continue
     const bottom = opening.type === 'door' ? 0 : WINDOW_BOTTOM_Y
     const top = opening.type === 'door' ? DOOR_TOP_Y : WINDOW_TOP_Y
@@ -271,6 +273,8 @@ export function professionDressingFor(
 
 /** Free-scan step (m) used once no module-centred spot is free. */
 const FALLBACK_SCAN_STEP_M = 0.25
+/** Entrance kits scan finely: the gap between a door and the next window is only ~0.75 m for a 0.68 m shield. */
+const NEAR_DOOR_SCAN_STEP_M = 0.01
 
 /** Candidate spots, best first: jittered module centres per side (original behaviour), then a fine
  *  deterministic scan of every wall so a free stretch is found before a piece is dropped. */
@@ -286,7 +290,8 @@ function wallCandidates(
   }
   for (const side of SIDE_ORDER) {
     const half = sideLength(def, side) / 2
-    for (let a = -half; a <= half + 1e-9; a += FALLBACK_SCAN_STEP_M) out.push({ side, along: a })
+    const step = NEAR_DOOR_KITS.has(kit) ? NEAR_DOOR_SCAN_STEP_M : FALLBACK_SCAN_STEP_M
+    for (let a = -half; a <= half + 1e-9; a += step) out.push({ side, along: a })
   }
   if (NEAR_DOOR_KITS.has(kit)) {
     // Entrance dressing: one list, nearest to the door first (stable sort keeps the order above on ties).

@@ -143,10 +143,10 @@ describe('wall-piece collision avoidance (HOUSE-GUARD)', () => {
 
   it('drops a piece only after every valid spot is used up (no room → omitted, shield wins)', () => {
     const base = DEFS[0]!
-    // Every wall module has a window: the banner (tall) has no valid spot, the shield too → nothing placed, no throw.
+    // A 2×2 house, one window per wall: no stretch is wide enough for a 0.68 m piece → nothing placed, no throw.
     const sides = ['front', 'back', 'left', 'right'] as const
-    const openings = sides.flatMap((side) => [0, 1].map((moduleIndex) => ({ type: 'window', side, moduleIndex }))) as unknown as typeof base.openings
-    const packed = { ...base, openings }
+    const openings = sides.map((side) => ({ type: 'window', side, moduleIndex: 0 })) as unknown as typeof base.openings
+    const packed = { ...base, footprint: { width: 2, depth: 2 }, openings, lamp: undefined }
     expect(wallsOf(packed, ['guard'], REF_SEED)).toEqual([])
   })
 
@@ -171,11 +171,14 @@ describe('wall-piece collision avoidance (HOUSE-GUARD)', () => {
     }
   })
 
-  it('hangs the guard shield beside the entrance: front wall or the adjacent side, never behind', () => {
+  it('hangs the guard shield on the entrance wall right beside the door (≤ 1.1 m from its centre)', () => {
     for (const def of DEFS) {
+      const door = def.openings.find((o) => o.type === 'door')!
+      const doorAlong = -def.footprint.width / 2 + (door.moduleIndex! + 0.5) * 2
       const shield = wallsOf(def, ['guard'], REF_SEED)[0]!
       expect(shield.kit).toBe('shield')
-      expect(shield.side).not.toBe('back')
+      expect(shield.side).toBe(door.side)
+      expect(Math.abs(alongOf(shield) - doorAlong)).toBeLessThanOrEqual(1.1)
     }
   })
 })
