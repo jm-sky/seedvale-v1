@@ -91,7 +91,8 @@ describe('computeWorldHydrology', () => {
         }
       }
     })
-    const h = computeWorldHydrology(g, { breachMaxCutM: 0.5 })
+    // The basin (~250 cells) is below the calibrated world default (600); pin the mechanism threshold.
+    const h = computeWorldHydrology(g, { breachMaxCutM: 0.5, lakeMinCells: 120 })
     expect(h.lakes.length).toBeGreaterThanOrEqual(1)
     const lake = h.lakes[0]!
     expect(lake.cells).toBeGreaterThan(120)

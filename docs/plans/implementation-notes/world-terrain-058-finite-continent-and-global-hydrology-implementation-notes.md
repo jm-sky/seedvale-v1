@@ -152,6 +152,26 @@ Landed (technically verified; **not** browser-verified — queue §2).
 - Tests: `src/world/createWater.test.ts` (level grouping, mask).
 - **Open:** screenshots of 2–3 lakes for the author, shore/foam look, no water at a wrong level (queue §2).
 
+## Q96 lake threshold (2026-11-03)
+
+Author feedback (dev server, seed 415424794): since L2 the home area looks like a swamp — ~264 small ponds became visible water. Author chose **`lakeMinCells` 80 → 600** (`DEFAULT_WORLD_HYDROLOGY_OPTIONS`; the option is part of `hydrologyIdFor`, so the hydrology id and every downstream fingerprint keyed on `RawSampleParams.hydrologyId` change without a manual version bump; epoch stays 1, Q80 re-exports fixtures).
+
+- Sweep: `pnpm exec tsx scripts/perf/census-lakes-near-home.ts --cells=80,300,600,1000 --depths=0.3,0.6,1` (distinct lakes whose basin comes within 300 / 600 / 1000 m of home). `lakeMinDepthM` 0.3–1 m makes no difference (surviving pits are deep), so it stays 0.3.
+
+| seed | `lakeMinCells` | lakes | median ha | filled % land | ≤ 300 / 600 / 1000 m of home |
+| --- | --- | --- | --- | --- | --- |
+| 415424794 | 80 (was) | 264 | 0.9 | 3.5 | 3 / 13 / 27 |
+| 415424794 | 300 | 45 | 3.6 | 8.3 | 0 / 1 / 6 |
+| 415424794 | **600** | 20 | 6.4 | 10.0 | 0 / 1 / 2 |
+| 415424794 | 1000 | 9 | 11.9 | 11.6 | 0 / 0 / 1 |
+| 42 | 80 (was) | 254 | 0.9 | 3.9 | 2 / 10 / 21 |
+| 42 | **600** | 16 | 5.6 | 11.1 | 1 / 1 / 3 |
+| 42 | 1000 | 6 | 10.6 | 12.4 | 0 / 0 / 1 |
+
+- `census-rivers --model=global` after: dry sinks 0, mouth error 0, seabed 0.24 / 0.32 km; chains 2301 / 2277 (more streams: filled pits now drain onward), stream heads 1602 → 2273 (415424794); **H4 heads inside a footprint 0 → 2 on both seeds** (non-home fallback sites `-4_3`, `-4_-2`, `0_4` on 415424794; home unaffected) — accepted as fallbacks, re-check after Q80 with the W4 selection. Sea-level (terminal) lakes unchanged (27 / 15; rendered before L2 already). L1 lake pads 0.
+- Access census (rings ≤ 8): unreachable 0 on both seeds; settlements re-sized/moved slightly (42 LG 3 → 2; 415424794 SM 2 → 3, LG 2 → 3); wet objects 0. `-4_3` (415424794) now gets a cemetery again (the lake that took its dry candidates in Q94 is gone). The census object-overlap check now measures a cemetery as its rotated rectangle (`cemeteryPlotDistanceToPoint`, like the planner) instead of its circumscribed circle — the two "cemetery ∩ house/yard" pairs it reported were that circle (gap −0.77 / −1.59 m), 0 with the real shape.
+- Road census (rings 5): identical before/after on both seeds.
+
 ## Pitfalls
 
 - Hydrology must never read the corrected terrain, settlements, roads or `waterH` (cycle). Settlement code may read hydrology, never the other way round.

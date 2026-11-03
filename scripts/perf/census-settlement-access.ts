@@ -15,6 +15,7 @@ import { houseDefinitionById, STOREHOUSE_DEFINITION } from '../../src/assets/hou
 import { defaultTerrainConfig } from '../../src/config/worldConfig'
 import { findPath, type PathPoint } from '../../src/navigation/navigation'
 import { PLAYER_COLLISION_RADIUS } from '../../src/player/playerDimensions'
+import { cemeteryPlotDistanceToPoint } from '../../src/settlement/cemeteryLayout'
 import { buildHouseCollidersWorld } from '../../src/settlement/houseBuilder'
 import { householdYardFenceSegments } from '../../src/settlement/householdYard'
 import { VILLAGE_CAMPFIRE_COLLISION_RADIUS, VILLAGE_MASONRY_FIREPIT_COLLISION_RADIUS, WOOD_PILE_COLLISION_RADIUS } from '../../src/settlement/propSpecs'
@@ -162,7 +163,10 @@ function composition(def: SettlementDef, t: Tally, seed: number): void {
     for (const q of plots) {
       if (q === o || q.role === 'sale') continue
       for (const e of discsOf(q)) {
-        const gap = Math.hypot(o.x - e.x, o.z - e.z) - o.radius - e.radius
+        // A cemetery is a rotated rectangle (its plot radius is the circumscribed circle) — measure it as one.
+        const gap = o.cemetery
+          ? cemeteryPlotDistanceToPoint({ x: o.x, z: o.z, rotationY: o.rotation ?? 0, ...o.cemetery }, e.x, e.z) - e.radius
+          : Math.hypot(o.x - e.x, o.z - e.z) - o.radius - e.radius
         if (gap < 0) {
           overlap = true
           const key = [kindOf(o.id), q.role === 'house' ? 'house/yard' : kindOf(q.id)].sort().join(' ∩ ')

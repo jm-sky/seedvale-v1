@@ -74,7 +74,8 @@ export const DEFAULT_WORLD_HYDROLOGY_OPTIONS: WorldHydrologyOptions = {
   breachSideSlope: 0.5,
   breachMaxRadCells: 4,
   breachMinFloorM: 0,
-  lakeMinCells: 80,
+  // Q96 (author 2026-11-03): 600 cells (~3.8 ha) — 20 lakes on seed 415424794, 16 on 42 (was 80 → ~260 ponds).
+  lakeMinCells: 600,
   lakeMinDepthM: 0.3,
   terminalMinCells: 120,
   streamAccumulation: DEFAULT_RIVER_THRESHOLDS.stream,
