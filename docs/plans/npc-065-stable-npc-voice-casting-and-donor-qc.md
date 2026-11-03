@@ -190,3 +190,12 @@ These are author-approved voice **casting** decisions, not per-clip transcript/Q
 | `hunter_male_b` — Cowboy | `a2cecd3eda8b44178b7f1bc1379edae0` | **Accepted provisionally** | Average but usable. Jacob Hunter or a different NPC is possible; do not assume this voice was Jacob's V3 voice without verifying V3 assignment. |
 
 Implementation invariant: blocklisted Fish voice IDs must remain excluded irrespective of speaker profile aliases or future additions. All remaining S2 speakers and individual clip verdicts stay pending further review.
+
+### S2 second listening round — 2026-11-03 (author decisions)
+
+- `general_male` / Casual Male: **HOLD — suspected inconsistent actual speaker**. `general_male_farewell_01.mp3` sounds pleasant, whereas `general_male_exhausted_01.mp3` sounds raspy/like a different voice. Both currently map to Fish voice ID `c2a3921fd7024b9189cb912bdfe5266a` in the QC ledger. Investigate source/generation provenance per file; **do not silently treat the shared catalog ID as proof of identical audible identity**. No bank-wide casting approval yet.
+- `general_female` / Warm Conversational: **HOLD — suspected inconsistent actual speaker**. `general_female_greeting_01.mp3` sounds flat, `general_female_exhausted_01.mp3` bright and emotional. Both currently map to `5e3be339f2df45e6a1a338bb2ce94800`. Verify generation/source provenance before admitting this bank as a consistent speaker. No blanket rejection/approval.
+- `guard_male`: **accepted**; author notes Mark Hornblower's separate voice sounds better. This is not a proposal to recast Mark.
+- `hunter_male` / Arthur (`bd22266aba38416cb602e90ce651520c`): **accepted; author selects for Jacob, the hunter**. Verify named-character key / assignment before runtime integration. V3 quest docs call the hunter Jacob Bowman (not 'Jacob Hunter' as a surname).
+
+All above are listening/casting judgments, **not** transcript validation or global per-clip QC verdicts. Keep the ledger's unheard rows pending, especially for the two inconsistent banks.
