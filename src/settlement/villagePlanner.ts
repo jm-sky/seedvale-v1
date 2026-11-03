@@ -972,8 +972,15 @@ function pickPlot(
             continue
           }
         }
-        const clearance = req.house
-          ? discsClearance(buildHouseCompound(req.house, fx, fz, center).discs!, existing)
+        const compound = req.house ? buildHouseCompound(req.house, fx, fz, center) : null
+        // Q37: the yard is part of the compound here too — the scored path rejects a wet yard
+        // (058 L1), and this clearance fallback used to place houses whose yard stood in a lake.
+        if (compound?.yard) {
+          const yd = yardDisc(compound.yard)
+          if (!discIsDry(yd.x, yd.z, yd.radius * 0.85, waterLevel, sampleHeight)) continue
+        }
+        const clearance = compound
+          ? discsClearance(compound.discs!, existing)
           : minDistToPlots(fx, fz, existing)
         // A house request already measures edge-to-edge compound clearance.
         if (Number.isFinite(clearance) && clearance < (req.house ? 0 : req.radius)) continue

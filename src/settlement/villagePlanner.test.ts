@@ -641,6 +641,33 @@ describe('household compound & settlement space (Q41 / plan settlements-npcs-011
     }
   })
 
+  it('keeps every house yard on dry land when small lakes dot the site (Q37, clearance fallback)', () => {
+    // Land view (058 L1): water-covered points read as `WATER`. Ponds of r = 7 m on a 26 m grid,
+    // with the plaza kept dry, leave room for houses but not for every compound orientation —
+    // the clearance fallback must apply the same dry-yard rule as the scored path.
+    const pondHeight = (x: number, z: number): number => {
+      if (Math.hypot(x, z) < 24) return 12
+      const gx = x - Math.round(x / 26) * 26
+      const gz = z - Math.round(z / 26) * 26
+      return Math.hypot(gx, gz) < 7 ? WATER : 12
+    }
+    const dryAt = (x: number, z: number) => pondHeight(x, z) > WATER + 0.5
+    for (const size of ['MD', 'LG', 'XL'] as const) {
+      for (const seed of SEEDS) {
+        const id = identity({ id: `ponds_${size}_${seed}`, size })
+        const families = generateFamilies(seed, size, false, 'polish')
+        const layout = planVillageLayout(id, { x: 0, z: 0, y: 12 }, families, seed, pondHeight, WATER)
+        const houses = layout.plots.filter((p) => p.role === 'house')
+        expect(houses).toHaveLength(families.length)
+        for (const house of houses) {
+          if (house.finalFallback) continue // counted by the census; this test is about placed compounds
+          const yd = yardDisc(house.yard!)
+          expect(dryAt(yd.x, yd.z), `${size} seed ${seed} ${house.id} yard centre`).toBe(true)
+        }
+      }
+    }
+  })
+
   it('is deterministic for the same seed', () => {
     const id = identity({ id: 'yard_det', size: 'LG' })
     const families = generateFamilies(9, 'LG', false, 'polish')

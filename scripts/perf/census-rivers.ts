@@ -284,10 +284,25 @@ function measureGlobal(seed: number) {
     const named: [string, readonly { x: number, z: number, radius: number }[]][] = [['core', [c.core]], ['house', c.houses], ['yard', c.yards], ['storehouse', c.storehouses], ['garden', c.gardens]]
     for (const [kind, pads] of named) for (const pad of pads) {
       padsChecked++
-      if (wetAt(pad.x, pad.z)) { lakePads++; console.log(`  LAKE ${kind} ${d.id} (${d.size}) @ ${pad.x.toFixed(0)},${pad.z.toFixed(0)} r=${pad.radius.toFixed(1)} centre ${d.x.toFixed(0)},${d.z.toFixed(0)}`) }
+      if (wetAt(pad.x, pad.z)) {
+        lakePads++
+        // Q37: name the owning plot (nearest plot or compound disc) and whether pickPlot fell back unconditionally.
+        let owner = d.plan.plots[0]
+        let ownerD = Infinity
+        for (const p of d.plan.plots) {
+          for (const disc of p.discs ?? [{ x: p.x, z: p.z, radius: p.radius }]) {
+            const dd = Math.hypot(disc.x - pad.x, disc.z - pad.z)
+            if (dd < ownerD) { ownerD = dd; owner = p }
+          }
+        }
+        console.log(`  LAKE ${kind} ${d.id} (${d.size}) @ ${pad.x.toFixed(0)},${pad.z.toFixed(0)} r=${pad.radius.toFixed(1)} centre ${d.x.toFixed(0)},${d.z.toFixed(0)} · plot ${owner?.id} ${owner?.finalFallback ? 'FINAL-FALLBACK' : 'placed'} @ ${owner?.x.toFixed(0)},${owner?.z.toFixed(0)} wet=${owner ? wetAt(owner.x, owner.z) : '?'}`)
+      }
     }
   }
-  const lakeCensus = { settlements: siteDefs.length, padsChecked, lakeCenters, lakePads }
+  // Q37: planner health under the production (conditioned) hydrology — houses and unconditional last-resort plots.
+  const houses = siteDefs.reduce((n, d) => n + d.plan.plots.filter((p) => p.role === 'house').length, 0)
+  const finalFallbacks = siteDefs.reduce((n, d) => n + d.plan.plots.filter((p) => p.finalFallback).length, 0)
+  const lakeCensus = { settlements: siteDefs.length, houses, finalFallbacks, padsChecked, lakeCenters, lakePads }
   const headCensus = { settlements: siteDefs.length, heads: heads.length, headsInside, headsNear24, headFallbacks }
   const home = siteDefs.find((d) => d.isHome)
   let homeStream = 'n/a'
