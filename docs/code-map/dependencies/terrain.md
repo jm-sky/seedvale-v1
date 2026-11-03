@@ -852,6 +852,8 @@ Generated from TypeScript imports.
 - `settlement/settlementLayout.ts`
 - `terrain/chunkHeightmap.ts`
 - `terrain/continentMask.test.ts`
+- `terrain/worldEdge.test.ts`
+- `terrain/worldEdge.ts`
 - `terrain/worldHydrology.ts`
 
 ## `terrain/depositMining.test.ts`
@@ -1747,6 +1749,26 @@ Generated from TypeScript imports.
 - `terrain/waterBodies.ts`
 - `terrain/waterSample.ts`
 - `world/map/mapProjection.ts`
+
+## `terrain/worldEdge.test.ts`
+
+**Imports**
+
+- `terrain/continentMask.ts`
+- `terrain/worldEdge.ts`
+
+## `terrain/worldEdge.ts`
+
+**Imports**
+
+- `terrain/continentMask.ts`
+
+**Imported by**
+
+- `ai/NpcAgent.ts`
+- `fauna/AnimalAgent.ts`
+- `player/PlayerController.ts`
+- `terrain/worldEdge.test.ts`
 
 ## `terrain/worldHydrology.test.ts`
 

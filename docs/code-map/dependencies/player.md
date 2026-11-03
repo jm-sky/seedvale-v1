@@ -58,6 +58,7 @@ Generated from TypeScript imports.
 - `terrain/footstepSurface.ts`
 - `terrain/slopeConstraint.ts`
 - `terrain/waterSample.ts`
+- `terrain/worldEdge.ts`
 - `ui/agentStatusLabel.ts`
 - `world/collision.ts`
 - `world/travelUnits.ts`

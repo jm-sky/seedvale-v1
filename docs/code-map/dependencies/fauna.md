@@ -86,6 +86,7 @@ Generated from TypeScript imports.
 - `simulation/observation.ts`
 - `terrain/slopeConstraint.ts`
 - `terrain/waterSample.ts`
+- `terrain/worldEdge.ts`
 - `ui/agentStatusLabel.ts`
 - `world/WaterSource.ts`
 - `world/animalAttractionSource.ts`

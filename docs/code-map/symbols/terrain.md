@@ -826,6 +826,15 @@ Generated from exported TypeScript symbols.
   - system: water
   - role: Single owner of the "is this point wet" rule after plan world-terrain-058 L1: the clamped surface height `h` (`max(floorH, waterH)`, `waterH` = sea level or a lake's level) lies above the floor. Leaf module (no imports) so terrain, placement and gameplay code share one predicate instead of comparing a height against `waterLevel`, which only ever described the sea.
 
+## `terrain/worldEdge.ts`
+
+- `clampToWorldBox` — function — line 27
+- `isInsideWorldBox` — function — line 22
+- `WORLD_EDGE_BAND` — const — line 13
+- `WORLD_EDGE_BAND_START` — const — line 19
+- `WORLD_EDGE_MAX_PUSH_SPEED` — const — line 16
+- `worldEdgePushVelocity` — function — line 39
+
 ## `terrain/worldHydrology.ts`
 
 - `ChainEnd` — const — line 115

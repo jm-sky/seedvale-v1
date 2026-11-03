@@ -248,6 +248,7 @@ Generated from TypeScript imports.
 - `terrain/resourceDeposits.ts`
 - `terrain/slopeConstraint.ts`
 - `terrain/terrainPreparation.ts`
+- `terrain/worldEdge.ts`
 - `ui/agentStatusLabel.ts`
 - `ui/labelDistance.ts`
 - `ui/npcLabelIconPresentation.ts`
