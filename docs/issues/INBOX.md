@@ -19,6 +19,7 @@ Status for every entry: `todo` (unverified). Created: 2026-10-29. IDs here (`IMP
 - **Investigate:** Compare stream surface, terrain/riverbed elevation, water-depth calculation, swim thresholds and player visual/root positioning.
 - **Expected:** Movement/swimming state and character placement match visually represented water depth.
 - **Area:** world-terrain / items-player.
+- **Status (2026-11-03):** root cause found — `PlayerController` took the swim branch for any eligible water sample with no depth gate (streams ~0.12 m deep included). Fixed (stage A): swimming now starts at depth 1.2 m and ends below 1.0 m (hysteresis, `nextSwimming` in `worldWaterEligibility.ts`); shallower water is waded as normal grounded locomotion, feet on the bed (`wadeFeetY`; lake/ocean ground is clamped to the water plane so the true floor is used there). `MAX_SWIM_DEPTH` (visual cap) unchanged; no worldgen/river changes. Stage B (riverbank bed vs carved terrain mismatch) not confirmed or implemented; **author in-game check pending** (stream centre/banks, ford, shallow lake edge, deep transition).
 
 ## IMP-004 — Distant cave entrances leave bright terrain holes
 - **Observation:** At long range cave entrance geometry stops rendering while its terrain cutout remains visible, leaving a glowing white hole.

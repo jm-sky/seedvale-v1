@@ -92,7 +92,9 @@ import { accumulateSneakUse, applySneakSpeedModifier, createPlayerSkills, type P
 import { bindAccessoryToPlayerSkeleton } from './ubcAccessoryBind'
 import { integrateVerticalMotion } from './verticalMotion'
 import {
+  nextSwimming,
   swimFeetY,
+  wadeFeetY,
   worldWaterAppliesInCurrentSpace,
 } from './worldWaterEligibility'
 
@@ -467,7 +469,8 @@ export class PlayerController {
    *  §1). Runtime-only and reset whenever Sneak switches off — standing still
    *  with the toggle on earns nothing. */
   private sneakUseDistance = 0
-  private wasInWater = false
+  /** Swim state only (deep water, hysteresis) — wading in shallows is ordinary grounded locomotion. */
+  private swimming = false
   private footstepAccum = 0
   private playAt: PlayAt | null = null
   private readonly forward = new THREE.Vector3()
@@ -1447,7 +1450,7 @@ export class PlayerController {
     this.meleeAttacking = false
     this.rangedDrawing = false
     this.sneakUseDistance = 0
-    this.wasInWater = false
+    this.swimming = false
     this.footstepAccum = 0
     this.defenseAttempt = 0
     this.playAction(this.idleAction)
@@ -1625,7 +1628,7 @@ export class PlayerController {
         const groundDebug = this.peekGroundQueryDebug?.() ?? null
         let groundSource: PlayerMovementTraceTick['groundSource'] = groundDebug?.source ?? 'surface'
         const debugWaterSample = this.sampleResidentLocalWater(startX, startZ)
-        if (debugWaterSample !== null && this.worldWaterOwnsVertical(startX, startZ, ground, debugWaterSample)) {
+        if (this.swimming && debugWaterSample !== null && this.worldWaterOwnsVertical(startX, startZ, ground, debugWaterSample)) {
           groundSource = 'water'
         }
         this.movementTraceFrame += 1
@@ -1870,7 +1873,7 @@ export class PlayerController {
     if (this.meleeAttacking && this.attackAction) return
     if (this.rangedDrawing && this.aimDrawAction) return
     if (this.jumpPhase !== 'none') return
-    if (this.wasInWater && (this.swimIdleAction || this.swimWalkAction)) {
+    if (this.swimming && (this.swimIdleAction || this.swimWalkAction)) {
       if (!this.moving) {
         this.playAction(this.swimIdleAction ?? this.swimWalkAction)
         return
@@ -2009,10 +2012,14 @@ export class PlayerController {
     const inWorldWater = waterSample !== null
       && waterSample.present
       && this.worldWaterOwnsVertical(x, z, ground, waterSample)
-    if (waterSample !== null && waterSample.present && inWorldWater) {
-      // Underwater: sink toward the real seabed instead of the flattened-to-waterLevel
+    const swimmingNow = inWorldWater && waterSample !== null && waterSample.present
+      && nextSwimming(false, waterSample.depth)
+    if (swimmingNow && waterSample !== null && waterSample.present) {
+      // Deep water: sink toward the real seabed instead of the flattened-to-waterLevel
       // mesh, capped so deep water still leaves the head above the surface.
       this.mesh.position.y = swimFeetY(waterSample.waterSurfaceHeight, waterSample.floorHeight)
+    } else if (inWorldWater && waterSample !== null && waterSample.present) {
+      this.mesh.position.y = wadeFeetY(ground.height, waterSample.waterSurfaceHeight, waterSample.floorHeight)
     } else {
       this.mesh.position.y = ground.height
     }
@@ -2020,7 +2027,7 @@ export class PlayerController {
     this.grounded = true
     this.jumpRequested = false
     this.endJumpPhase()
-    this.wasInWater = inWorldWater
+    this.swimming = swimmingNow
     this.footstepAccum = 0
     this.modelRoot.rotation.x = 0
     this.emitGroundTrace('snap', x, yBefore, z, groundedBefore, vyBefore, ground.height)
@@ -2044,11 +2051,12 @@ export class PlayerController {
       // horizontal step gate).
       return
     }
-    if (waterSample.present && this.worldWaterOwnsVertical(x, z, ground, waterSample)) {
-      if (!this.wasInWater && this.playAt) {
+    const ownsWater = waterSample.present && this.worldWaterOwnsVertical(x, z, ground, waterSample)
+    if (ownsWater && waterSample.present && nextSwimming(this.swimming, waterSample.depth)) {
+      if (!this.swimming && this.playAt) {
         playWaterLap(this.playAt, { x, y: waterSample.waterSurfaceHeight, z })
       }
-      this.wasInWater = true
+      this.swimming = true
       this.mesh.position.y = swimFeetY(waterSample.waterSurfaceHeight, waterSample.floorHeight)
       this.verticalVelocity = 0
       this.grounded = true
@@ -2058,22 +2066,26 @@ export class PlayerController {
       this.emitGroundTrace('swim', x, yBefore, z, groundedBefore, vyBefore, groundY)
       return
     }
-    this.wasInWater = false
+    this.swimming = false
+    // Wading: stand on the bed (lake/ocean ground is clamped to the water plane).
+    const walkGroundY = ownsWater && waterSample.present
+      ? wadeFeetY(groundY, waterSample.waterSurfaceHeight, waterSample.floorHeight)
+      : groundY
 
     const next = integrateVerticalMotion({
       y: this.mesh.position.y,
       verticalVelocity: this.verticalVelocity,
       grounded: this.grounded,
-      groundY,
+      groundY: walkGroundY,
       dt,
       jumpRequested: this.jumpRequested,
-      maxY: rockCeilingMaxY(ground.ceiling, groundY),
+      maxY: rockCeilingMaxY(ground.ceiling, walkGroundY),
     })
     this.jumpRequested = false
     this.mesh.position.y = next.y
     this.verticalVelocity = next.verticalVelocity
     this.grounded = next.grounded
-    this.emitGroundTrace('vertical', x, yBefore, z, groundedBefore, vyBefore, groundY)
+    this.emitGroundTrace('vertical', x, yBefore, z, groundedBefore, vyBefore, walkGroundY)
 
     if (next.tookOff && this.playAt) {
       playJumpTakeoff(this.playAt, { x, y: next.y, z })
@@ -2192,7 +2204,7 @@ export class PlayerController {
   }
 
   private tickFootsteps(dt: number): void {
-    if (!this.playAt || !this.moving || !this.grounded || this.wasInWater) {
+    if (!this.playAt || !this.moving || !this.grounded || this.swimming) {
       if (!this.moving) this.footstepAccum = 0
       return
     }

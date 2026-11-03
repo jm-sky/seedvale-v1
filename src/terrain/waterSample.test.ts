@@ -147,3 +147,22 @@ describe('sampleLocalWater with chunk-rect cached segments vs. the old per-query
     }
   })
 })
+
+/** IMP-003 — swim classification reads `depth`, so shallow margins must report
+ *  small depths and outside-channel points must be dry. */
+describe('sampleLocalWater depth for swim classification', () => {
+  it('reports a shallow lake margin as shallow using the true floor, not the clamped height', () => {
+    const sample = sampleLocalWater(WATER_LEVEL, WATER_LEVEL - 0.15, WATER_LEVEL, [], 0, 0)
+    expect(sample.present && sample.depth).toBeCloseTo(0.15, 6)
+  })
+
+  it('reports deep sea water above the entry depth', () => {
+    const sample = sampleLocalWater(WATER_LEVEL, WATER_LEVEL - 6, WATER_LEVEL, [], 0, 0)
+    expect(sample.present && sample.depth).toBeGreaterThan(1.2)
+  })
+
+  it('is dry beyond the water edge of a river channel', () => {
+    const sample = sampleLocalWater(WATER_LEVEL + 20, WATER_LEVEL + 20, WATER_LEVEL, [riverSegment()], 0, 3)
+    expect(sample.present).toBe(false)
+  })
+})

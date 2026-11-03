@@ -51,3 +51,35 @@ export function swimFeetY(waterLevel: number, terrainFloorY: number): number {
   const depth = Math.min(waterLevel - terrainFloorY, MAX_SWIM_DEPTH)
   return waterLevel - depth
 }
+
+/**
+ * Water depth (surface − bed) at which the player starts swimming (IMP-003).
+ * Shallower water — streams, fords, lake/sea margins — is waded: normal
+ * grounded locomotion with feet on the bed. Distinct from `MAX_SWIM_DEPTH`,
+ * which only caps how deep a swimmer visually sinks.
+ */
+export const SWIM_ENTER_DEPTH = 1.2
+
+/**
+ * Depth below which a swimmer stands up again. 0.2 m under the entry depth:
+ * larger than per-frame bed/bank noise at sprint speed, so lap sound and
+ * swim/walk animation cannot flicker on the threshold, yet small enough that
+ * leaving deep water does not feel sticky.
+ */
+export const SWIM_EXIT_DEPTH = SWIM_ENTER_DEPTH - 0.2
+
+/** Swim/wade classification with hysteresis. `wasSwimming` is the previous
+ *  *swimming* state (not mere water presence). */
+export function nextSwimming(wasSwimming: boolean, depth: number): boolean {
+  return depth >= (wasSwimming ? SWIM_EXIT_DEPTH : SWIM_ENTER_DEPTH)
+}
+
+/**
+ * Feet Y while wading (water owns the column but depth is below swim depth).
+ * Lake/ocean terrain heights are clamped to the water plane, so a clamped
+ * ground (`>= surface`) is replaced by the true bed; river channels are
+ * carved into the ground itself, which stays authoritative.
+ */
+export function wadeFeetY(groundHeight: number, waterSurfaceHeight: number, floorHeight: number): number {
+  return groundHeight >= waterSurfaceHeight ? floorHeight : groundHeight
+}

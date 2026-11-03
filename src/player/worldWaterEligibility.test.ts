@@ -13,7 +13,12 @@ import { mouthCarveDepth } from '../world/caves/mouthCarve'
 import { buildProductionCaveTopology } from '../world/caves/productionTopology'
 import { type LargeCaveSite, openingDirection } from '../world/largeCaves'
 import {
+  MAX_SWIM_DEPTH,
+  nextSwimming,
+  SWIM_ENTER_DEPTH,
+  SWIM_EXIT_DEPTH,
   swimFeetY,
+  wadeFeetY,
   worldWaterAppliesInCurrentSpace,
 } from './worldWaterEligibility'
 
@@ -206,5 +211,58 @@ describe('seed 1136726869 closed interior below waterLevel', () => {
       caveCeiling: cave!.openSky ? null : cave!.ceilingY,
     })).toBe(false)
     expect(swimFeetY(built.waterLevel, surfaceY)).toBeCloseTo(surfaceY, 1)
+  })
+})
+
+describe('depth-aware swimming (IMP-003)', () => {
+  it('keeps the entry depth distinct from the visual submersion cap', () => {
+    expect(SWIM_ENTER_DEPTH).toBe(1.2)
+    expect(SWIM_EXIT_DEPTH).toBeLessThan(SWIM_ENTER_DEPTH)
+    expect(MAX_SWIM_DEPTH).toBe(1.2)
+  })
+
+  it('wades through shallow streams and declared fords', () => {
+    for (const depth of [0, 0.1, 0.12, 0.2, 0.6, 1.19]) {
+      expect(nextSwimming(false, depth)).toBe(false)
+    }
+  })
+
+  it('starts swimming exactly at the entry depth', () => {
+    expect(nextSwimming(false, 1.19)).toBe(false)
+    expect(nextSwimming(false, 1.2)).toBe(true)
+    expect(nextSwimming(false, 1.21)).toBe(true)
+    expect(nextSwimming(false, 5)).toBe(true)
+  })
+
+  it('stands up only below the exit depth (walking → swimming → walking)', () => {
+    expect(nextSwimming(true, 1.19)).toBe(true)
+    expect(nextSwimming(true, SWIM_EXIT_DEPTH)).toBe(true)
+    expect(nextSwimming(true, SWIM_EXIT_DEPTH - 0.01)).toBe(false)
+    expect(nextSwimming(true, 0.12)).toBe(false)
+  })
+
+  it('does not flip on depth oscillation inside the hysteresis band', () => {
+    let swimming = false
+    const flips: boolean[] = []
+    for (const depth of [1.1, 1.25, 1.1, 1.05, 1.15, 1.22, 1.01, 1.18]) {
+      const next = nextSwimming(swimming, depth)
+      if (next !== swimming) flips.push(next)
+      swimming = next
+    }
+    expect(flips).toEqual([true])
+    expect(nextSwimming(swimming, 0.9)).toBe(false)
+  })
+
+  it('caps deep-water submersion independently of the entry depth', () => {
+    expect(swimFeetY(WATER_LEVEL, -20)).toBeCloseTo(WATER_LEVEL - MAX_SWIM_DEPTH, 5)
+    expect(swimFeetY(10, 8.5)).toBeCloseTo(10 - 1.2, 5)
+  })
+
+  it('wades on the true bed when lake/ocean ground is clamped to the water plane', () => {
+    expect(wadeFeetY(WATER_LEVEL, WATER_LEVEL, 0.3)).toBeCloseTo(0.3, 5)
+  })
+
+  it('wades on the carved river ground, not the sampled bed or water plane', () => {
+    expect(wadeFeetY(18.95, 19, 18.88)).toBeCloseTo(18.95, 5)
   })
 })
