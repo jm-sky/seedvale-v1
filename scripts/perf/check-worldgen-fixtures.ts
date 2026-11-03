@@ -17,7 +17,7 @@ for (const f of index.fixtures) {
   const problems: string[] = []
   if (!existsSync(join(dir, f.file))) problems.push('file missing')
   else if (statSync(join(dir, f.file)).size !== f.bytes) problems.push('size differs from index')
-  if (f.bytes > 3 * 1024 * 1024) problems.push(`over 3 MB budget (${f.bytes} B)`)
+  if (f.bytes > 6 * 1024 * 1024) problems.push(`over 6 MB budget (${f.bytes} B)`)
   for (const [ns, v] of Object.entries(f.namespaces)) {
     const current = WORLDGEN_FIXTURE_NAMESPACES[ns]
     if (current === undefined) problems.push(`${ns}: not in registry`)

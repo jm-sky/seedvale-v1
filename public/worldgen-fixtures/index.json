@@ -6,22 +6,26 @@
       "file": "415424794-default.svwc",
       "seed": 415424794,
       "profile": "default",
-      "fixtureVersion": 2,
-      "hash": "f652881caa87be9f61d8aebf6eb2689e5ef3b1fb107b02283d76734c12a4c0cd",
-      "bytes": 2437970,
-      "records": 232,
+      "fixtureVersion": 3,
+      "hash": "1e9a26b4700434492492930404ff598fedb17272cf1efde3dc92eb5038e16206",
+      "bytes": 4896753,
+      "records": 46,
       "namespaces": {
         "caves-v2": {
-          "version": 2,
-          "records": 9
+          "version": 6,
+          "records": 10
+        },
+        "hydrology": {
+          "version": 1,
+          "records": 1
         },
         "road-routes": {
-          "version": 1,
-          "records": 116
+          "version": 12,
+          "records": 17
         },
         "settlement-definitions": {
-          "version": 4,
-          "records": 107
+          "version": 25,
+          "records": 18
         }
       }
     },
@@ -30,22 +34,26 @@
       "file": "42-benchmark.svwc",
       "seed": 42,
       "profile": "benchmark",
-      "fixtureVersion": 2,
-      "hash": "264e34c3cb5be24752afe6f70244ad1aa6c7613dd91e09b3ce0c07b276ce4fda",
-      "bytes": 3061632,
-      "records": 233,
+      "fixtureVersion": 3,
+      "hash": "5c59aaecec8d7f60ed713a39fcce672842f448e4edff2018ccfa61485591d7aa",
+      "bytes": 5968472,
+      "records": 51,
       "namespaces": {
         "caves-v2": {
-          "version": 2,
-          "records": 9
+          "version": 6,
+          "records": 11
+        },
+        "hydrology": {
+          "version": 1,
+          "records": 1
         },
         "road-routes": {
-          "version": 1,
-          "records": 115
+          "version": 12,
+          "records": 19
         },
         "settlement-definitions": {
-          "version": 4,
-          "records": 109
+          "version": 25,
+          "records": 20
         }
       }
     }

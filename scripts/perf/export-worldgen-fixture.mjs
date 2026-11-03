@@ -115,7 +115,7 @@ try {
   index.fixtures = [...index.fixtures.filter((f) => f.id !== id), entry].sort((a, b) => a.id.localeCompare(b.id))
   writeFileSync(indexPath, JSON.stringify(index, null, 2) + '\n')
   console.log(`wrote ${file}: ${(bytes.length / 1024).toFixed(0)} KiB gzip, ${exp.records} records`, JSON.stringify(exp.namespaces))
-  if (bytes.length > 3 * 1024 * 1024) console.log('STOP: fixture exceeds the 3 MB compressed budget (plan tools-020) — report to the author')
+  if (bytes.length > 6 * 1024 * 1024) console.log('STOP: fixture exceeds the 6 MB compressed budget (plan tools-020) — report to the author')
   try { ws.send(JSON.stringify({ id: 9998, method: 'Browser.close' })) } catch {}
   await sleep(3000)
   ws.close()

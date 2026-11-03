@@ -123,5 +123,5 @@ Scenario anchor preloads (before the window, so allowed by (a)) are deliberately
 - Code: `src/persistence/worldgenFixture{,Codec,Namespaces}.ts`, import hook before `createWorldBundle` in `createApp.ts` (boot only — the in-session world-rebuild path does not re-import), `?worldgenFixture=0`, `?benchmarkAutorun=0`.
 - Deviation: no per-owner `flush()` hook. The exporter waits for `__seedvaleReady`, settles 20 s for the debounced writes and re-exports until the record count is stable. Benchmark `meta.worldgenFixture` is read by `run-benchmark-series.mjs` from `window.__seedvaleWorldgenFixtureStats()`.
 - `default` profile is exported via `?fly&seed=415424794` (default `WorldConfig`, no start screen). `locations-coarse` / `abandoned-cemeteries` had 0 records at capture.
-- The seed-42 fixture is 2990 KiB, just under the 3 MB budget: any growth of the namespaces needs a budget decision.
+- The seed-42 fixture was 2990 KiB under the old 3 MB budget; with the 058 hydrology namespace and current namespace versions it is ~5.8 MB gzip. Budget raised to 6 MB (author, 2026-11-03, Q80).
 - Not done: owner hit test (settlement fingerprint match/mismatch — importer never rewrites fingerprints) and the `stream` in-window counter comparison (fixture vs `?worldgenFixture=0`).
