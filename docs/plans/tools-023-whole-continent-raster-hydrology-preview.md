@@ -8,6 +8,7 @@
 **Domain:** `tools`
 **Subdomains:** `development` `diagnostics`
 **Tags:** `worldgen` `hydrology` `map` `visualization`
+**Model:** Sonnet, Composer
 
 ## Goal
 
