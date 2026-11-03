@@ -582,7 +582,7 @@ export function createBenchmarkRunner(host: BenchmarkHost): BenchmarkRunner {
 
           content.push(formatIsolationReport(isolation))
           content.push('')
-          content.push(`River tiles (window): sync computes=${riverTiles.syncComputes} sync ms total=${riverTiles.syncMsTotal.toFixed(1)} max=${riverTiles.syncMsMax.toFixed(1)} store hits=${riverTiles.storeHits} prefetched=${riverTiles.prefetched}`)
+          content.push(`River tiles (window): sync computes=${riverTiles.syncComputes} sync ms total=${riverTiles.syncMsTotal.toFixed(1)} max=${riverTiles.syncMsMax.toFixed(1)} store hits=${riverTiles.storeHits}`)
           content.push('')
 
           if (occludedActorCensus) {

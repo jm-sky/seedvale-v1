@@ -9,7 +9,6 @@ import type {
 } from './chunkHeightmapProtocol'
 import type { ChunkMeshData, ChunkMeshDataParams } from './chunkMeshData'
 import type { GrassChunkData } from './grassPlacement'
-import type { RiverChain, RiverTileCoord } from './riverNetwork'
 import type { WorldHydrology } from './worldHydrology'
 import type { WorldKnowledgeScanResult, WorldKnowledgeWorkerParams } from './worldKnowledgeScan'
 import { getMonitor } from '../perf/active'
@@ -70,14 +69,6 @@ export type ChunkWorkerPool = {
    */
   requestMapTile(key: string, params: MapTileRequest): Promise<MapTileData>
   cancelMapTile(key: string): void
-  /**
-   * River tile hydrology prefetch (Q22 / plan 181). Background kind: the
-   * main-thread `riverTileCache` falls back to a synchronous compute when the
-   * result is not ready, so this never gates chunk loading.
-   * @domain world-terrain
-   */
-  requestRiverTile(key: string, tile: RiverTileCoord, sampleParams: RawSampleParams): Promise<RiverChain[]>
-  cancelRiverTile(key: string): void
   /**
    * Installs global hydrology in every worker, now and in any worker created later (plan world-terrain-058 H2). A
    * worker handles messages in order, so every job posted after this call sees the data.
@@ -142,16 +133,6 @@ type MapTileJob = {
   reject: (err: Error) => void
 }
 
-type RiverTileJob = {
-  kind: 'riverTile'
-  id: number
-  key: string
-  tile: RiverTileCoord
-  sampleParams: RawSampleParams
-  resolve: (data: RiverChain[]) => void
-  reject: (err: Error) => void
-}
-
 type HydrologyRowsJob = {
   kind: 'hydrologyRows'
   id: number
@@ -163,7 +144,7 @@ type HydrologyRowsJob = {
   reject: (err: Error) => void
 }
 
-type ChunkJob = TileJob | GrassJob | MeshJob | WorldKnowledgeJob | MapTileJob | RiverTileJob | HydrologyRowsJob
+type ChunkJob = TileJob | GrassJob | MeshJob | WorldKnowledgeJob | MapTileJob | HydrologyRowsJob
 
 function createChunkWorker(): ChunkWorkerLike {
   return new Worker(new URL('./chunkHeightmap.worker.ts', import.meta.url), {
@@ -193,12 +174,11 @@ function toRequest(job: ChunkJob): ChunkWorkerJobRequest {
   if (job.kind === 'mesh') return { kind: 'mesh', id: job.id, params: job.params }
   if (job.kind === 'worldKnowledge') return { kind: 'worldKnowledge', id: job.id, params: job.params }
   if (job.kind === 'mapTile') return { kind: 'mapTile', id: job.id, params: job.params }
-  if (job.kind === 'riverTile') return { kind: 'riverTile', id: job.id, tile: job.tile, sampleParams: job.sampleParams }
   return { kind: 'grass', id: job.id, params: job.params }
 }
 
 function isBackgroundJob(job: ChunkJob): boolean {
-  return job.kind === 'grass' || job.kind === 'worldKnowledge' || job.kind === 'mapTile' || job.kind === 'riverTile'
+  return job.kind === 'grass' || job.kind === 'worldKnowledge' || job.kind === 'mapTile'
 }
 
 export function createChunkWorkerPool(
@@ -215,7 +195,6 @@ export function createChunkWorkerPool(
   const queueMesh: MeshJob[] = []
   const queueWorldKnowledge: WorldKnowledgeJob[] = []
   const queueMapTile: MapTileJob[] = []
-  const queueRiverTile: RiverTileJob[] = []
   const queueGrass: GrassJob[] = []
   const installedHydrology = new Map<string, WorldHydrology>()
   const inflight = new Map<number, ChunkJob>()
@@ -251,8 +230,6 @@ export function createChunkWorkerPool(
         job = queueMesh.shift()
       } else if (queueWorldKnowledge.length > 0 && canStartBackground()) {
         job = queueWorldKnowledge.shift()
-      } else if (queueRiverTile.length > 0 && canStartBackground()) {
-        job = queueRiverTile.shift()
       } else if (queueMapTile.length > 0 && canStartBackground()) {
         job = queueMapTile.shift()
       } else if (queueGrass.length > 0 && canStartBackground()) {
@@ -315,8 +292,6 @@ export function createChunkWorkerPool(
           } else if (job.kind === 'worldKnowledge' && msg.kind === 'worldKnowledge') {
             recordWorldKnowledgeTimings(job, msg.result)
             job.resolve(msg.result)
-          } else if (job.kind === 'riverTile' && msg.kind === 'riverTile') {
-            job.resolve(msg.chains)
           } else if (job.kind === 'hydrologyRows' && msg.kind === 'hydrologyRows') {
             job.resolve(msg.rows)
           } else if (job.kind === 'mapTile' && msg.kind === 'mapTile') {
@@ -372,13 +347,12 @@ export function createChunkWorkerPool(
     else if (job.kind === 'tile') queueTile.unshift(job)
     else if (job.kind === 'mesh') queueMesh.unshift(job)
     else if (job.kind === 'worldKnowledge') queueWorldKnowledge.unshift(job)
-    else if (job.kind === 'riverTile') queueRiverTile.unshift(job)
     else if (job.kind === 'mapTile') queueMapTile.unshift(job)
     else queueGrass.unshift(job)
   }
 
   function rejectQueued(makeError: () => Error): void {
-    const queues: ChunkJob[][] = [queueHydrologyRows, queueTile, queueMesh, queueWorldKnowledge, queueMapTile, queueRiverTile, queueGrass]
+    const queues: ChunkJob[][] = [queueHydrologyRows, queueTile, queueMesh, queueWorldKnowledge, queueMapTile, queueGrass]
     for (const queue of queues) {
       for (const job of queue) job.reject(makeError())
       queue.length = 0
@@ -427,12 +401,6 @@ export function createChunkWorkerPool(
     const knowledgeIndex = queueWorldKnowledge.findIndex((job) => job.id === id)
     if (knowledgeIndex !== -1) {
       const [job] = queueWorldKnowledge.splice(knowledgeIndex, 1)
-      job!.reject(new HeightmapGenerationCancelledError())
-      return
-    }
-    const riverTileIndex = queueRiverTile.findIndex((job) => job.id === id)
-    if (riverTileIndex !== -1) {
-      const [job] = queueRiverTile.splice(riverTileIndex, 1)
       job!.reject(new HeightmapGenerationCancelledError())
       return
     }
@@ -531,20 +499,6 @@ export function createChunkWorkerPool(
     })
   }
 
-  function cancelRiverTile(key: string): void {
-    cancelByNamespacedKey(`riverTile:${key}`)
-  }
-
-  function requestRiverTile(key: string, tile: RiverTileCoord, sampleParams: RawSampleParams): Promise<RiverChain[]> {
-    cancelRiverTile(key)
-    const id = nextId++
-    keyToId.set(`riverTile:${key}`, id)
-    return new Promise<RiverChain[]>((resolve, reject) => {
-      queueRiverTile.push({ kind: 'riverTile', id, key, tile, sampleParams, resolve, reject })
-      pump()
-    })
-  }
-
   function installHydrology(hydrologyId: string, data: WorldHydrology): void {
     if (installedHydrology.get(hydrologyId) === data) return
     installedHydrology.set(hydrologyId, data)
@@ -573,8 +527,6 @@ export function createChunkWorkerPool(
     queueWorldKnowledge.length = 0
     for (const job of queueMapTile) job.reject(new HeightmapGenerationCancelledError())
     queueMapTile.length = 0
-    for (const job of queueRiverTile) job.reject(new HeightmapGenerationCancelledError())
-    queueRiverTile.length = 0
     for (const job of queueGrass) job.reject(new HeightmapGenerationCancelledError())
     queueGrass.length = 0
     for (const job of inflight.values()) job.reject(new HeightmapGenerationCancelledError())
@@ -598,13 +550,11 @@ export function createChunkWorkerPool(
     cancelWorldKnowledge,
     requestMapTile,
     cancelMapTile,
-    requestRiverTile,
-    cancelRiverTile,
     installHydrology,
     requestHydrologyRows,
     dispose,
     get pendingCount() {
-      return queueHydrologyRows.length + queueTile.length + queueMesh.length + queueWorldKnowledge.length + queueMapTile.length + queueRiverTile.length + queueGrass.length
+      return queueHydrologyRows.length + queueTile.length + queueMesh.length + queueWorldKnowledge.length + queueMapTile.length + queueGrass.length
     },
     get busyCount() {
       return inflight.size
@@ -668,18 +618,6 @@ export function requestChunkMapTile(key: string, params: MapTileRequest): Promis
 
 export function cancelChunkMapTile(key: string): void {
   chunkPool?.cancelMapTile(key)
-}
-
-export function requestChunkRiverTile(
-  key: string,
-  tile: RiverTileCoord,
-  sampleParams: RawSampleParams,
-): Promise<RiverChain[]> {
-  return getChunkPool().requestRiverTile(key, tile, sampleParams)
-}
-
-export function cancelChunkRiverTile(key: string): void {
-  chunkPool?.cancelRiverTile(key)
 }
 
 export function installChunkWorkerHydrology(hydrologyId: string, data: WorldHydrology): void {

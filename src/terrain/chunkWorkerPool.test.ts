@@ -42,8 +42,6 @@ function createControllableWorker(posted: Posted[]): ControllableWorker {
       const response = (
         request.kind === 'hydrologyRows'
           ? { kind: 'hydrologyRows', id: request.id, ok: true, rows: new Float32Array([request.rowStart]) }
-          : request.kind === 'riverTile'
-          ? { kind: 'riverTile', id: request.id, ok: true, chains: [] }
           : request.kind === 'worldKnowledge'
           ? { kind: 'worldKnowledge', id: request.id, ok: true, result: { hits: [], elapsedMs: 0 } }
           : request.kind === 'grass'
@@ -222,16 +220,6 @@ describe('chunkWorkerPool world-knowledge scheduling (plan quests-progression-04
     })
     pool.dispose()
     await expect(pending).rejects.toBeInstanceOf(HeightmapGenerationCancelledError)
-  })
-
-  it('runs a riverTile job as a background request and resolves its chains', async () => {
-    const posted: Posted[] = []
-    const pool = createChunkWorkerPool(1, { createWorker: () => createControllableWorker(posted) })
-    const pending = pool.requestRiverTile('1,2', { tx: 1, tz: 2 }, { seed: 7 } as RawSampleParams)
-    expect(posted[0]?.request).toMatchObject({ kind: 'riverTile', tile: { tx: 1, tz: 2 }, sampleParams: { seed: 7 } })
-    posted[0]!.worker.completeOk()
-    await expect(pending).resolves.toEqual([])
-    pool.dispose()
   })
 
   it('posts installHydrology to every worker and runs hydrology strips before queued tiles', async () => {

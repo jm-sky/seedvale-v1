@@ -10,7 +10,6 @@ import { computeChunkItems } from './chunkItems'
 import { computeChunkMeshData } from './chunkMeshData'
 import { computeChunkVegetation } from './chunkVegetation'
 import { computeChunkGrass, GRASS_SPECIES_ORDER, type GrassChunkData } from './grassPlacement'
-import { computeRiverTile } from './riverNetwork'
 import { sampleRawFloorRows, WORLD_HYDROLOGY_GRID } from './worldHydrology'
 import { installWorldHydrology } from './worldHydrologyRegistry'
 import { scanWorldKnowledge } from './worldKnowledgeScan'
@@ -111,9 +110,6 @@ ctx.onmessage = ({ data }) => {
     } else if (kind === 'hydrologyRows') {
       const rows = sampleRawFloorRows(data.params, WORLD_HYDROLOGY_GRID, data.rowStart, data.rowEnd)
       ctx.postMessage({ kind: 'hydrologyRows', id, ok: true, rows }, [rows.buffer])
-    } else if (kind === 'riverTile') {
-      const chains = computeRiverTile(data.tile, data.sampleParams)
-      ctx.postMessage({ kind: 'riverTile', id, ok: true, chains }, [])
     } else if (kind === 'mapTile') {
       const tile = buildMapTile(data.params)
       ctx.postMessage(
