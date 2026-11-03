@@ -44,7 +44,7 @@ describe('hydrology correction', () => {
 
   it('is zero for unconditioned ids and throws for a missing id', () => {
     expect(hydrologyCorrectionAt(UNCONDITIONED_HYDROLOGY_ID, 1, 1)).toBe(0)
-    expect(hydrologyCorrectionAt('legacy-abc', 1, 1)).toBe(0)
+    expect(hydrologyCorrectionAt('unconditioned', 1, 1)).toBe(0)
     expect(() => hydrologyCorrectionAt('missing', 1, 1)).toThrow(/not installed/)
   })
 })

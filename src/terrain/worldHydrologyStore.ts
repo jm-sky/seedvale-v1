@@ -16,12 +16,9 @@ export const SPARSE_BLOCK_SIZE = 64
 /** Id of "no global hydrology": tests and tools that never install one. Terrain stays uncorrected, rivers per tile. */
 export const UNCONDITIONED_HYDROLOGY_ID = 'unconditioned'
 
-/** Prefix of ids produced under `?hydrology=legacy` (the pre-058 per-tile path, kept only for the A/B until P1). */
-export const LEGACY_HYDROLOGY_PREFIX = 'legacy-'
-
 /** True when `id` selects the uncorrected terrain + per-tile river path (no hydrology data exists or is needed). */
 export function isUnconditionedHydrologyId(id: string): boolean {
-  return id === UNCONDITIONED_HYDROLOGY_ID || id.startsWith(LEGACY_HYDROLOGY_PREFIX)
+  return id === UNCONDITIONED_HYDROLOGY_ID
 }
 
 const installed = new Map<string, WorldHydrology>()
