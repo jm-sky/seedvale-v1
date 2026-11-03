@@ -100,8 +100,8 @@ Each module below takes the shared [`PlayerActionContext`](../src/app/actions/ac
 - [Weather](../src/world/weather.ts) — deterministic season/weather, rain/storm exposure, and climate cache.
 - [Lightning events](../src/world/lightningEvents.ts) — deterministic storm lightning/thunder schedule and one-shot presentation runtime.
 - [Weather audio](../src/audio/weatherSounds.ts) — rain/storm loops and distance-banded thunder one-shots.
-- [Cemetery assignment](../src/terrain/cemeteryAssignment.ts) — settlement↔cemetery topology (dedicated or shared `SM`) and reverse lookup; abandoned cemeteries have no served settlements.
-- [Cemetery placement](../src/terrain/cemeteryPlacement.ts) — bounded dedicated/shared/abandoned cemetery search over the shared physical gates in `chunkEnvironment.ts`.
+- [Cemetery assignment](../src/terrain/cemeteryAssignment.ts) — settlement↔cemetery topology (dedicated only since Q84) and reverse lookup; abandoned cemeteries have no served settlements.
+- [Cemetery placement](../src/terrain/cemeteryPlacement.ts) — bounded dedicated/abandoned cemetery search (reads the planner-reserved pose first, Q58) over the shared physical gates in `chunkEnvironment.ts`.
 - [Classic landmarks](../src/terrain/chunkEnvironment.ts) — shared `resolveClassicLandmarkPlacement` for `monolith`/`stoneCircle`/`smallRuins`; streamed generation and unloaded `findLandmarkNear` consume the same resolver.
 - [Unloaded landmark lookup](../src/terrain/unloadedLandmarkLookup.ts) — ring scan + lightweight unloaded resolvers shared by `findLandmarkNear` and worker world-knowledge jobs.
 - [World-knowledge scan](../src/terrain/worldKnowledgeScan.ts) — bounded worker-safe nearest/nearby landmark ring scan reused by the `worldKnowledge` job on [chunkWorkerPool](../src/terrain/chunkWorkerPool.ts) (plan quests-progression-047).
