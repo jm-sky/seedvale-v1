@@ -177,3 +177,16 @@ S3 may land before S4 (reuse can follow incrementally). S3 must not start before
 ## Performance
 
 Casting: one hash per candidate at NPC construction. Resolution: map lookup + filter of ≤ ~6 clips per request, at existing request frequency. No per-frame work, no new audio pipeline, +≤ 10 MB lazily fetched MP3s.
+
+## Author casting decisions — 2026-11-03 (S2, first listening round)
+
+These are author-approved voice **casting** decisions, not per-clip transcript/QC passes. Do not convert unheard ledger rows into `pass` solely from this section.
+
+| Speaker | Fish voice ID | Decision | Casting guidance |
+| --- | --- | --- | --- |
+| `general_male_b` — Brian British | `65c0b8155c464a648161af8877404f11` | **REJECTED PERMANENTLY / GLOBAL DO-NOT-USE** | Artificial, mechanical, flat delivery. Never generate new clips with this Fish voice ID, cast it to any NPC, import its donor audio to runtime, or register existing clips. Earlier rejection was Mark-only; this 2026-11-03 decision supersedes it globally. Retain archived donor files for provenance only, not runtime use. |
+| `guard_male_b` — Dramatic Character Male | `7a18a1851d2649108c48ec9f2c80eb2c` | **Accepted provisionally** | Theatrical but usable; consider blacksmith or another guard/watchman, **not Mark Hornblower**. Role fit to be confirmed. |
+| `general_female_b` — Hannah | `9a9cf47702da476aa4629e2506d4a857` | **Accepted** | Good, pleasant voice; Molly is a candidate, not yet a locked NPC assignment. |
+| `hunter_male_b` — Cowboy | `a2cecd3eda8b44178b7f1bc1379edae0` | **Accepted provisionally** | Average but usable. Jacob Hunter or a different NPC is possible; do not assume this voice was Jacob's V3 voice without verifying V3 assignment. |
+
+Implementation invariant: blocklisted Fish voice IDs must remain excluded irrespective of speaker profile aliases or future additions. All remaining S2 speakers and individual clip verdicts stay pending further review.
