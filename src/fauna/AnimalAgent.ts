@@ -192,6 +192,7 @@ import {
   scareFleeOrigin,
   shouldScare,
 } from './animalScare'
+import { ANIMAL_MIN_REAL_STEP_M, ANIMAL_TURN_RATE_RAD_PER_SEC, turnYawToward } from './animalSteering'
 import {
   type AnimalStrayState,
   beginStrayState,
@@ -3571,6 +3572,7 @@ export class AnimalAgent {
     // never read by movement/AI logic itself.
     const debugPrevX = this.mesh.position.x
     const debugPrevZ = this.mesh.position.z
+    const debugPrevYaw = this.mesh.rotation.y
     this.currentVillages = villages
     this.currentOthers = others
     this.tickProximity = proximity
@@ -3854,7 +3856,19 @@ export class AnimalAgent {
         }
       }
       if (diagOn) agentCpuDiag.addFaunaBehaviourMs(performance.now() - behaviourT0)
-      this.clampBounds()
+      const pulledBack = this.clampBounds()
+      if (pulledBack && this.moving) {
+        // The leash undid this tick's step: report what really happened
+        // (idle, original facing) and drop the out-of-bounds wander target
+        // so the animal re-picks an in-band one instead of pushing into the
+        // boundary every tick. Needs/trips/nav keep their own lifecycles.
+        const netStep = Math.hypot(this.mesh.position.x - debugPrevX, this.mesh.position.z - debugPrevZ)
+        if (netStep < ANIMAL_MIN_REAL_STEP_M) {
+          this.moving = false
+          this.mesh.rotation.y = debugPrevYaw
+          this.wanderTimer = 0
+        }
+      }
       // Diagnostic-only — only reads x/z, so it doesn't depend on whether the
       // movement tail's own `snapY()` has run yet (see `debugLastStepDist`'s
       // field doc).
@@ -6045,9 +6059,6 @@ export class AnimalAgent {
     const dist = this.tmp.length()
     if (dist < 0.4) return
     this.tmp.multiplyScalar(1 / dist)
-    this.mesh.rotation.y = Math.atan2(this.tmp.x, this.tmp.z)
-    this.moving = true
-    this.locomotionSpeed = speed
 
     // Steep terrain scales down (and, past the max walkable angle, removes)
     // the uphill component of the step — across-slope/downhill are
@@ -6077,8 +6088,21 @@ export class AnimalAgent {
         sampleHeight: this.sampleHeight,
         isWalkable: (x, z) => this.isWalkable(x, z),
       })
+    // Locomotion state and facing follow the step that actually happened: a
+    // fully blocked/slope-cancelled step neither plays the walk clip nor
+    // re-aims the body (it would otherwise spin in place while stuck), and
+    // facing turns at a bounded rate so a target that flips between ticks
+    // wobbles instead of snapping 180°.
+    if (!result.moved) return
     this.mesh.position.x = result.x
     this.mesh.position.z = result.z
+    this.mesh.rotation.y = turnYawToward(
+      this.mesh.rotation.y,
+      Math.atan2(this.tmp.x, this.tmp.z),
+      ANIMAL_TURN_RATE_RAD_PER_SEC * dt,
+    )
+    this.moving = true
+    this.locomotionSpeed = speed
   }
 
   /** `steerToward` wrapper that adds real stuck-recovery (plan npc-006) —
@@ -6331,41 +6355,45 @@ export class AnimalAgent {
     )
   }
 
-  private clampBounds(): void {
+  /** Enforces the area leash; returns `true` when it pulled the animal back. */
+  private clampBounds(): boolean {
     this.maybeClearPaddockStayOnExit()
     if (this._paddockBound && this._paddockStay) {
-      if (this.isPlayerOwned() && (this.mounted || this._leadAttached)) return
+      if (this.isPlayerOwned() && (this.mounted || this._leadAttached)) return false
       const clamped = clampIntoFencedArea(
         this.mesh.position.x,
         this.mesh.position.z,
         this._paddockBound,
       )
+      const pulledBack = clamped.x !== this.mesh.position.x || clamped.z !== this.mesh.position.z
       this.mesh.position.x = clamped.x
       this.mesh.position.z = clamped.z
-      return
+      return pulledBack
     }
-    if (this.isPlayerOwned() || this._leadAttached || isStrayEpisodeActive(this._stray)) return
+    if (this.isPlayerOwned() || this._leadAttached || isStrayEpisodeActive(this._stray)) return false
     // A committed trip (plan fauna-016 §4, fauna-019 §6) may legitimately
     // carry the animal past the local roam band — its own destination
     // search already bounds how far, and a cave resident's route to/from
     // the entrance is not expressible as a flat radius around `home` at
     // all. Ordinary local wander (`this.trip === null`) keeps this bound
     // exactly as before.
-    if (this.trip) return
+    if (this.trip) return false
     // Thunder scare is a short committed flee impulse (plan world-026):
     // clamp would cancel the displacement the impulse is meant to cause.
-    if (this.scareRemainingSec > 0) return
+    if (this.scareRemainingSec > 0) return false
     // A committed contextual safe-anchor escape (plan fauna-037) may
     // legitimately carry household livestock past the local roam band on
     // its way to a shepherd/home/settlement anchor — same reasoning as the
     // thunder-scare bypass above, recomputed fresh every tick rather than a
     // persisted flee-episode registry (see `domesticFleeEscapeActive`'s doc).
-    if (this.domesticFleeEscapeActive) return
-    if (this.shouldUsePastureRoam()) return
+    if (this.domesticFleeEscapeActive) return false
+    if (this.shouldUsePastureRoam()) return false
     if (this._pastureRoam && this.ownerHouseId && !this.isPlayerOwned()) {
       const dist = Math.hypot(this.mesh.position.x - this.home.x, this.mesh.position.z - this.home.z)
-      if (dist > ROAM_RADIUS) return
+      if (dist > ROAM_RADIUS) return false
     }
+    const preX = this.mesh.position.x
+    const preZ = this.mesh.position.z
     this.mesh.position.x = THREE.MathUtils.clamp(
       this.mesh.position.x,
       this.home.x - ROAM_RADIUS,
@@ -6376,6 +6404,7 @@ export class AnimalAgent {
       this.home.z - ROAM_RADIUS,
       this.home.z + ROAM_RADIUS,
     )
+    return this.mesh.position.x !== preX || this.mesh.position.z !== preZ
   }
 
   /** Ground-height seam every movement mode shares (plan fauna-019 §4): a
