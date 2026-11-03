@@ -245,34 +245,34 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/chunkTileWorldgenCache.ts`
 
-- `CHUNK_TILE_CACHE_BYTE_BUDGET` — const — line 76
+- `CHUNK_TILE_CACHE_BYTE_BUDGET` — const — line 78
 - `CHUNK_TILE_CACHE_NAMESPACE` — const — line 30
   - domain: world-terrain
   - system: worldgen-cache
   - role: Persistent-cache adapter for canonical worker-generated chunk tiles (plan world-terrain-031): one `chunk:<cx>:<cz>` record per chunk holding the unchanged `ChunkTileResult` — the eight apron-inclusive terrain grids plus the deterministic vegetation/item/environment/crop placements. Stores the existing worker contract verbatim; there is deliberately no cache-specific terrain model and no `SaveData` field.
   - integration: Disposable derived data only. `ChunkManager.ensureLoaded()` generates exactly the same chunk with an empty cache — a miss, a malformed record or an IndexedDB failure always falls back to the tile worker. The payload is *base* worldgen: player/system terrain modifications, terrain cutouts, tree/crop lifecycle, collected items, resource depletion, mesh data and every Three.js object stay downstream and are never cached here, so two same-seed saves share only deterministic generation output.
-- `CHUNK_TILE_CACHE_VERSION` — const — line 60
-- `CHUNK_TILE_META_SUBKEY` — const — line 65
-- `ChunkTileCacheStats` — type — line 106
-- `ChunkTileCacheStorage` — type — line 242
-- `chunkTileFingerprint` — function — line 99
+- `CHUNK_TILE_CACHE_VERSION` — const — line 62
+- `CHUNK_TILE_META_SUBKEY` — const — line 67
+- `ChunkTileCacheStats` — type — line 108
+- `ChunkTileCacheStorage` — type — line 244
+- `chunkTileFingerprint` — function — line 101
   - domain: world-terrain
   - system: worldgen-cache
-- `chunkTileSubKey` — function — line 83
-- `cloneChunkTileForRuntime` — function — line 219
+- `chunkTileSubKey` — function — line 85
+- `cloneChunkTileForRuntime` — function — line 221
   - domain: world-terrain
   - system: worldgen-cache
-- `estimateChunkTileBytes` — function — line 198
-- `getChunkTileCacheStats` — function — line 132
-- `loadCachedChunkTile` — function — line 343
+- `estimateChunkTileBytes` — function — line 200
+- `getChunkTileCacheStats` — function — line 134
+- `loadCachedChunkTile` — function — line 345
   - domain: world-terrain
   - system: worldgen-cache
-- `persistChunkTile` — function — line 391
+- `persistChunkTile` — function — line 393
   - domain: world-terrain
   - system: worldgen-cache
-- `resetChunkTileCacheMetadata` — function — line 326
-- `resetChunkTileCacheStats` — function — line 136
-- `validateCachedChunkTile` — function — line 176
+- `resetChunkTileCacheMetadata` — function — line 328
+- `resetChunkTileCacheStats` — function — line 138
+- `validateCachedChunkTile` — function — line 178
   - domain: world-terrain
   - system: worldgen-cache
 
@@ -837,24 +837,24 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/worldHydrology.ts`
 
-- `ChainEnd` — const — line 115
-- `ChainEndKind` — type — line 116
-- `computeWorldHydrology` — function — line 670
+- `ChainEnd` — const — line 116
+- `ChainEndKind` — type — line 117
+- `computeWorldHydrology` — function — line 671
 - `DEFAULT_WORLD_HYDROLOGY_OPTIONS` — const — line 68
-- `hashWorldHydrology` — function — line 1013
-- `HydrologyLake` — type — line 127
-- `PackedChains` — type — line 118
-- `packSparseBlocks` — function — line 548
-- `sampleRawFloorRows` — function — line 190
-- `SparseBlocks` — type — line 107
-- `sparseBlockValue` — function — line 591
-- `WORLD_HYDROLOGY_GRID` — const — line 87
+- `hashWorldHydrology` — function — line 1014
+- `HydrologyLake` — type — line 128
+- `PackedChains` — type — line 119
+- `packSparseBlocks` — function — line 549
+- `sampleRawFloorRows` — function — line 191
+- `SparseBlocks` — type — line 108
+- `sparseBlockValue` — function — line 592
+- `WORLD_HYDROLOGY_GRID` — const — line 88
 - `WORLD_HYDROLOGY_VERSION` — const — line 34
   - domain: world-terrain
-- `WorldHydrology` — type — line 169
-- `WorldHydrologyGrid` — type — line 94
+- `WorldHydrology` — type — line 170
+- `WorldHydrologyGrid` — type — line 95
 - `WorldHydrologyOptions` — type — line 36
-- `WorldHydrologyStats` — type — line 140
+- `WorldHydrologyStats` — type — line 141
 
 ## `terrain/worldHydrologyCache.ts`
 
