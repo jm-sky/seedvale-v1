@@ -87,7 +87,7 @@ export function createPalisades(
       z: record.z,
       halfWidth: PALISADE_FOOTPRINT_RADIUS,
       halfDepth: PALISADE_HALF_LENGTH,
-      rotationY: record.yaw,
+      rotationY: 0 - record.yaw, // collider convention = Three.js yaw negated (see transformHouseCollidersToWorld)
     }])
   }
 

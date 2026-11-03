@@ -1,8 +1,9 @@
 import { Scene } from 'three'
 import { describe, expect, it } from 'vitest'
+import { type Collider, colliderContainsPoint } from './collision'
 import { createResidentialBuildings } from './createResidentialBuildings'
 import { createUnfinishedResidentialBuildingRecord } from './residentialBuilding'
-import { RESIDENTIAL_BUILDING_DEFINITIONS } from './residentialBuilding'
+import { RESIDENTIAL_BUILDING_DEFINITIONS, residentialBuildingDefinition } from './residentialBuilding'
 
 const sampleHeight = (): number => 0
 
@@ -54,6 +55,26 @@ describe('createResidentialBuildings (plan settlements-005)', () => {
     expect(buildings.find('residential:done')?.stage).toBe('completed')
     expect(buildings.remove('residential:done')).toBeNull()
     expect(buildings.find('residential:done')).toBeTruthy()
+    buildings.dispose()
+  })
+
+  it('collider footprint follows the mesh yaw (Three.js rotation.y)', () => {
+    const registered: Collider[] = []
+    const yaw = 0.6
+    const buildings = createResidentialBuildings(
+      new Scene(),
+      sampleHeight,
+      (_key, colliders) => { registered.push(...colliders) },
+      () => {},
+      [createUnfinishedResidentialBuildingRecord({ id: 'residential:yaw', kind: 'small_house', x: 5, z: -3, yaw })],
+    )
+    const { width, depth } = residentialBuildingDefinition('small_house').footprint
+    // Footprint corner just inside, mapped with the mesh's Three.js yaw.
+    const lx = width / 2 - 0.05
+    const lz = depth / 2 - 0.05
+    const x = 5 + lx * Math.cos(yaw) + lz * Math.sin(yaw)
+    const z = -3 - lx * Math.sin(yaw) + lz * Math.cos(yaw)
+    expect(registered.some((c) => colliderContainsPoint(c, x, z))).toBe(true)
     buildings.dispose()
   })
 })

@@ -92,7 +92,7 @@ export function createResidentialBuildings(
       z: record.z,
       halfWidth: width / 2,
       halfDepth: depth / 2,
-      rotationY: record.yaw,
+      rotationY: 0 - record.yaw, // collider convention = Three.js yaw negated (see transformHouseCollidersToWorld)
     }])
   }
 
