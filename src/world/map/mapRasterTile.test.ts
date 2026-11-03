@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { createBenchmarkWorldConfig } from '../../config/worldConfig'
 import { sampleRawTexelAt } from '../../terrain/chunkHeightmap'
+import { withWindowHydrology } from '../../terrain/testWindowHydrology'
 import { UNCONDITIONED_HYDROLOGY_ID } from '../../terrain/worldHydrologyStore'
 import { MAP_EXTENT_HALF } from './mapConfig'
 import { classifyMapTexel, projectCellAt, rawSampleParamsFromWorld } from './mapProjection'
@@ -16,6 +17,8 @@ import {
 } from './mapRasterTile'
 
 const params = { ...rawSampleParamsFromWorld(createBenchmarkWorldConfig({ seed: 1234, terrainResolution: 65, loadRadius: 2 })), hydrologyId: UNCONDITIONED_HYDROLOGY_ID }
+
+const riverParams = withWindowHydrology(params)
 
 describe('map raster LOD selection', () => {
   it('picks the coarsest step that keeps ≥1.5 device px per sample', () => {
@@ -75,7 +78,7 @@ describe('buildMapTile', () => {
 
   it('keeps every river point inside its tile once and never duplicates segments across tiles', () => {
     const coverage: [number, number][] = [[0, 0]]
-    const tiles = [0, 1].flatMap((tx) => [0, 1].map((tz) => buildMapTile({ step: 2, tx, tz, params, coverage })))
+    const tiles = [0, 1].flatMap((tx) => [0, 1].map((tz) => buildMapTile({ step: 2, tx, tz, params: riverParams, coverage })))
     const segments = new Set<string>()
     for (const tile of tiles) {
       let offset = 0
@@ -91,5 +94,6 @@ describe('buildMapTile', () => {
       }
       expect(offset * 3).toBe(tile.riverPoints.length)
     }
+    expect(segments.size).toBeGreaterThan(0)
   })
 })

@@ -13,10 +13,10 @@ import type { PackedChains, SparseBlocks, WorldHydrology } from './worldHydrolog
 
 export const SPARSE_BLOCK_SIZE = 64
 
-/** Id of "no global hydrology": tests and tools that never install one. Terrain stays uncorrected, rivers per tile. */
+/** Id of "no global hydrology": the raw floor with no water network (no correction, lakes, stream heads or rivers). Tests and tools that never install one; also the key the hydrology itself is computed from. */
 export const UNCONDITIONED_HYDROLOGY_ID = 'unconditioned'
 
-/** True when `id` selects the uncorrected terrain + per-tile river path (no hydrology data exists or is needed). */
+/** True when `id` selects the raw floor with no water network (no hydrology data exists or is needed). */
 export function isUnconditionedHydrologyId(id: string): boolean {
   return id === UNCONDITIONED_HYDROLOGY_ID
 }
@@ -162,7 +162,7 @@ const headsCache = new WeakMap<WorldHydrology, StreamHead[]>()
 /**
  * Visible stream heads of a world's global chains (058 H4): the first point of every chain that does not start at a
  * lake outlet. Lake-fed heads are excluded — the lake is the source, there is no spring to protect. Empty for
- * unconditioned/legacy ids (no global chains). Throws when `hydrologyId` is not installed.
+ * unconditioned ids (no global chains). Throws when `hydrologyId` is not installed.
  */
 export function streamHeadsFor(hydrologyId: string): readonly StreamHead[] {
   if (isUnconditionedHydrologyId(hydrologyId)) return []

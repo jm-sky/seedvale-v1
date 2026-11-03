@@ -30,7 +30,7 @@ export type RiverQuery = {
    *  centred on `(x, z)` — same filtering `chunkManager` applies per chunk. */
   segmentsNear(x: number, z: number, size: number): RiverChannelSegment[]
   /** Visible, non-lake-fed stream heads inside the `size`-sided box centred on `(x, z)` (058 H4). Empty for
-   *  unconditioned/legacy hydrology. */
+   *  unconditioned hydrology. */
   headsNear(x: number, z: number, size: number): StreamHead[]
 }
 

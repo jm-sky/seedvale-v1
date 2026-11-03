@@ -6,6 +6,7 @@ import {
   riverChannelSegmentsNear,
 } from './riverNetwork'
 import { createRiverQuery } from './riverQuery'
+import { withWindowHydrology } from './testWindowHydrology'
 import { UNCONDITIONED_HYDROLOGY_ID } from './worldHydrologyStore'
 
 /** Defaults aligned with `worldConfig` base terrain, same fixture shape as
@@ -81,7 +82,7 @@ function rawParams(seed: number): RawSampleParams {
 }
 
 describe('createRiverQuery', () => {
-  const params = rawParams(1922931019)
+  const params = withWindowHydrology(rawParams(1922931019))
   const X = 120
   const Z = -80
   const SIZE = 128
@@ -99,6 +100,10 @@ describe('createRiverQuery', () => {
       SIZE,
     )
     expect(createRiverQuery(params).segmentsNear(X, Z, SIZE)).toEqual(expected)
+  })
+
+  it('finds river segments in the hydrology window (the comparisons above are not vacuous)', () => {
+    expect(createRiverQuery(params).segmentsNear(0, 0, 1000).length).toBeGreaterThan(0)
   })
 
   it('is deterministic across queries and across query instances', () => {
