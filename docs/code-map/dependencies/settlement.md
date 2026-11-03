@@ -2164,6 +2164,12 @@ Generated from TypeScript imports.
 - `world/treasureSites.test.ts`
 - `world/treasureSites.ts`
 
+## `settlement/props.haySpot.test.ts`
+
+**Imports**
+
+- `settlement/props.ts`
+
 ## `settlement/props.lampMount.test.ts`
 
 **Imports**
@@ -2253,6 +2259,7 @@ Generated from TypeScript imports.
 - `settlement/npcResidentAnchors.ts`
 - `settlement/places.test.ts`
 - `settlement/places.ts`
+- `settlement/props.haySpot.test.ts`
 - `settlement/props.lampMount.test.ts`
 - `settlement/settlementNightCycle.ts`
 - `settlement/settlementSignposts.test.ts`

@@ -46,6 +46,8 @@ Generated from TypeScript imports.
 
 - `terrain/biomeColors.test.ts`
 - `terrain/chunkMeshData.ts`
+- `terrain/chunkVegetation.test.ts`
+- `terrain/chunkVegetation.ts`
 - `terrain/dig.ts`
 - `terrain/footstepSurface.ts`
 - `terrain/grassPlacement.ts`
@@ -716,6 +718,7 @@ Generated from TypeScript imports.
 
 **Imports**
 
+- `terrain/biomeColors.ts`
 - `terrain/chunkHeightmap.ts`
 - `terrain/chunkVegetation.ts`
 - `terrain/riverNetwork.ts`
@@ -726,6 +729,7 @@ Generated from TypeScript imports.
 
 **Imports**
 
+- `terrain/biomeColors.ts`
 - `terrain/biomeRegions.ts`
 - `terrain/chunkGrid.ts`
 - `terrain/chunkHeightmap.ts`

@@ -969,9 +969,10 @@ Generated from exported TypeScript symbols.
 - `AuthoredRepairVisualHandles` — type — line 387
   - domain: settlements
 - `BlacksmithWorkplace` — type — line 407
-- `buildSettlementProps` — function — line 816
-- `disposeSettlementGroup` — function — line 2620
-- `houseChestPlacement` — function — line 2604
+- `buildSettlementProps` — function — line 853
+- `disposeSettlementGroup` — function — line 2656
+- `dryHaySpot` — function — line 704
+- `houseChestPlacement` — function — line 2640
 - `SettlementHouseBed` — type — line 172
 - `SettlementHouseLandmark` — type — line 138
 - `SettlementLandmarks` — type — line 203
