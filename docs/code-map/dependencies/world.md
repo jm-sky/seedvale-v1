@@ -3644,6 +3644,7 @@ Generated from TypeScript imports.
 
 - `config/worldConfig.ts`
 - `terrain/chunkHeightmap.ts`
+- `terrain/testWindowHydrology.ts`
 - `terrain/worldHydrologyStore.ts`
 - `world/map/mapConfig.ts`
 - `world/map/mapProjection.ts`
@@ -3867,7 +3868,6 @@ Generated from TypeScript imports.
 - `terrain/grassPlacement.ts`
 - `terrain/naturalResources.ts`
 - `terrain/resourceDeposits.ts`
-- `terrain/riverNetwork.ts`
 - `terrain/terrainDetailNormalMap.ts`
 - `terrain/worldHydrology.ts`
 - `world/caveGenerator.ts`
