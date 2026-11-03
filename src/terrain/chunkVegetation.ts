@@ -14,6 +14,7 @@ import {
   type TreeLivingAge,
   type TreeSizeClass,
 } from '../world/treeLifecycle'
+import { SAND_BAND_MAX, sandBandAt } from './biomeColors'
 import { biomeWeightsAt, forestDensityAt } from './biomeRegions'
 import {
   apronOriginWorld,
@@ -304,6 +305,9 @@ export function computeChunkVegetation(
       const bushChance = (0.15 + (1 - moisture) * 0.35) * (1 - forestDensity * 0.85)
       kind = random() < bushChance ? 'bush' : 'tree'
     }
+    // Q96: no trees/bushes on the beach — the same sea-relative sand band that keeps grass off the shore
+    // (`grassPlacement`, terrain colouring). Lake banks are handled by the wet rule above.
+    if ((kind === 'tree' || kind === 'bush') && h - waterLevel < SAND_BAND_MAX && h <= waterLevel + sandBandAt(wx, wz, params.seed)) continue
 
     const speciesCount = params.vegetationSpeciesCount[kind]
     const speciesIndex =
@@ -674,6 +678,8 @@ function riparianPatches(
       return
     }
 
+    // Q96: shore trees stay off the sea beach sand band (reeds/ferns above may grow there).
+    if (h - waterLevel < SAND_BAND_MAX && h <= waterLevel + sandBandAt(x, z, params.seed)) return
     const ridge = sample(tile.mountainRidge, x, z)
     if (altitude > TREELINE_ALTITUDE || ridge > MOUNTAIN_RIDGE_REJECT) return
     if (riparianRandom() < RIPARIAN_OPEN_SHORE_CHANCE) return

@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { sandBandAt } from './biomeColors'
 import {
   apronOriginWorld,
   type ChunkTileData,
@@ -281,7 +282,9 @@ describe('computeChunkVegetation — Deep Forest tuning (plan 182)', () => {
       const bushes = placements.filter((p) => p.kind === 'bush').length
       return trees / Math.max(1, trees + bushes)
     }
-    expect(treeRatio(deep)).toBeGreaterThan(0.85)
+    // 0.8 (was 0.85): the sampled chunks include coast, where Q96 keeps trees off the beach sand band while
+    // meadow flower bushes (own pass) stay — inland composition is unchanged.
+    expect(treeRatio(deep)).toBeGreaterThan(0.8)
     expect(treeRatio(deep)).toBeGreaterThan(treeRatio(open))
   })
 
@@ -580,5 +583,25 @@ describe('computeChunkVegetation — shallow coastal seaweed (plan world-terrain
       }
     }
     expect(deepOceanSeaweedCount).toBe(0)
+  })
+})
+
+describe('computeChunkVegetation — beach (Q96)', () => {
+  it('places no tree inside the sea-relative sand band', () => {
+    let checked = 0
+    for (let i = 0; i < 12; i++) {
+      const coord = { cx: i, cz: -i }
+      const p = tileParams({ cx: coord.cx, cz: coord.cz, seed: 42 + i })
+      const tile = computeChunkTile(p)
+      const o = apronOriginWorld(coord.cx, coord.cz, p.chunkSize, p.resolution)
+      for (const v of computeChunkVegetation(coord, tile, p)) {
+        // Bushes share the rule but are indistinguishable here from the meadow-flower pass (own shore rule).
+        if (v.kind !== 'tree') continue
+        const h = sampleApronGrid(tile.heights, o.apronRes, o.x, o.z, o.step, v.x, v.z)
+        expect(h).toBeGreaterThan(p.waterLevel + sandBandAt(v.x, v.z, p.seed))
+        checked++
+      }
+    }
+    expect(checked).toBeGreaterThan(50)
   })
 })

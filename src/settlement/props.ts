@@ -692,6 +692,43 @@ const CORE_PROP_SITE_ATTEMPTS = 5
 const CORE_PROP_JITTER = 3.5
 const CORE_PROP_WATER_MARGIN = 0.8
 
+/** Hay stack footprint radius (m) checked against water around its centre (model ~2.4 m across at scale 1.15). */
+const HAY_DRY_RIM_RADIUS = 1.6
+const HAY_SPOT_ATTEMPTS = 8
+
+/**
+ * Q96: a garden hay stack spot that keeps its whole footprint `CORE_PROP_WATER_MARGIN` above water (land view:
+ * lakes read as `waterLevel`). Tries the rolled angle first, then golden-angle steps around the garden — no extra
+ * RNG draws, so later props keep their rolls. Falls back to the highest-ground candidate (the lodging hay must exist).
+ */
+export function dryHaySpot(
+  gx: number,
+  gz: number,
+  ang: number,
+  dist: number,
+  sampleHeight: (x: number, z: number) => number,
+  waterLevel: number,
+): { x: number, z: number } {
+  let best = { x: gx + Math.cos(ang) * dist, z: gz + Math.sin(ang) * dist }
+  let bestLow = -Infinity
+  for (let k = 0; k < HAY_SPOT_ATTEMPTS; k++) {
+    const a = ang + k * 2.399963
+    const x = gx + Math.cos(a) * dist
+    const z = gz + Math.sin(a) * dist
+    let low = sampleHeight(x, z)
+    for (let r = 0; r < 4; r++) {
+      const ra = a + (r * Math.PI) / 2
+      low = Math.min(low, sampleHeight(x + Math.cos(ra) * HAY_DRY_RIM_RADIUS, z + Math.sin(ra) * HAY_DRY_RIM_RADIUS))
+    }
+    if (low > waterLevel + CORE_PROP_WATER_MARGIN) return { x, z }
+    if (low > bestLow) {
+      bestLow = low
+      best = { x, z }
+    }
+  }
+  return best
+}
+
 /** Same 4-direction flatness cross-probe as `findSettlementSite.ts`, applied to
  *  a prop's preferred offset from the village core — tries the exact offset
  *  first (attempt 0, jitter 0), then a few jittered candidates, picks the
@@ -1891,8 +1928,7 @@ export async function buildSettlementProps(
         : undefined) ?? 'S'
     const ang = coreRandom() * Math.PI * 2
     const dist = gardenPlotRadius(hayScale) + 1.4 + coreRandom() * 1.2
-    const hx = g.x + Math.cos(ang) * dist
-    const hz = g.z + Math.sin(ang) * dist
+    const { x: hx, z: hz } = dryHaySpot(g.x, g.z, ang, dist, sampleHeight, waterLevel)
     hayPlacements.push({
       speciesIndex: 0,
       x: hx,

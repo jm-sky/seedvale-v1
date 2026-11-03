@@ -58,8 +58,9 @@ export const CHUNK_TILE_CACHE_NAMESPACE = 'chunk-tiles'
  * v22 (2026-11-03, queue Q37): clearance-fallback houses need a dry yard (house/yard clearings move).
  * v23 (2026-11-03, queue Q93): lane/road paving follows the new building-clear lane routes.
  * v24 (2026-11-03, queue Q94): object pads move off lake rims.
+ * v25 (2026-11-03, queue Q96): no trees inside the beach sand band.
  */
-export const CHUNK_TILE_CACHE_VERSION = 24
+export const CHUNK_TILE_CACHE_VERSION = 25
 
 /** Small byte-budget manifest record living in the same namespace — see
  *  `ChunkTileMetaPayload`. Its `fingerprint` field is a constant because the
