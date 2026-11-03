@@ -71,6 +71,8 @@
 - **Verification (technical only):** planner test over 5 sizes × 15 seeds — exactly one storehouse, 0 `finalFallback`, 0 disc overlaps, door faces the plaza, family count unchanged, deterministic. Slot-hash spread, definition and anchor tests green. Full `vitest run src`: only the 5 pre-existing failures (NpcAgent.spatialLifecycle, PlayerController.appearance ×3, actorSkeletonSharing.assets) — they also fail without these changes.
 - **Not done / open:** the census script was **not** extended (`census-house-yards.ts`) — seeds 42 / 415424794 rings ≤ 5 not censused; no navigation test that bay slots are reachable/outside colliders on a real build; interior free-floor rectangle is only a layout constant, no obstruction test; draws per settlement not measured; no browser/visual check (queue §2); `SettlementsManager` offscreen delivery still uses slot 0 by design.
 
+**Q37 census (Opus, 2026-11-03).** `pnpm exec tsx scripts/perf/census-house-yards.ts --seeds=42,415424794 --rings=8` (now on the production conditioned hydrology, 058 lakes): every settlement on both seeds has exactly one storehouse (42: SM 4 / MD 4 / LG 3 / XL 1; 415424794: SM 2 / MD 7 / LG 2), 0 final fallbacks, 0 storehouse disc ∩ other plot, 0 bay slots inside another plot. Still open: bay-slot / yard-gate reachability on a real build (navigation test) — queue Q37.
+
 ## 6. Author question — answered
 
 **Q36 · szczury w magazynie (2026-10-31): (a)** — rats unchanged, interior keeps free floor for a future scenario; quest adaptation later (author: "Potem poprawimy pod quest"). Rejected for now: (b) part of the infestation inside/at the wall hole with interior navigation; (c) (b) plus the nest inside the storehouse.
