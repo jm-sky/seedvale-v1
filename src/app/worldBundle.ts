@@ -253,7 +253,7 @@ import {
   type TreasureSiteDefinition,
 } from '../world/treasureSites'
 import { createWaterMirror, type WaterMirror } from '../world/waterMirror'
-import { createWorldContext, type WorldContext } from '../world/worldContext'
+import { createWorldContext, withLandHeightView, type WorldContext } from '../world/worldContext'
 import {
   createWorldGeneratedContainers,
   type SaveWorldGeneratedContainer,
@@ -1440,11 +1440,13 @@ async function buildWorldSystems(
 
   bootMark('createWorldContext')
   const worldContext = createWorldContext(() => chunkManager, config, dayNight)
+  /** Placement view (lakes read as water) for resource/forage/mine placement — plan 058 L1. */
+  const placementContext = withLandHeightView(worldContext)
   bootMarkEnd('createWorldContext')
   const landmarkMineDeposits: MineableDepositDefinition[] = []
   let cavesRef: Caves | null = null
   const resolveResourceSitePosition = (resourceId: string): { x: number, z: number } | null => {
-    const resource = resourceById(resourceId, config.seed, worldContext)
+    const resource = resourceById(resourceId, config.seed, placementContext)
     if (resource) return { x: resource.x, z: resource.z }
     const mineDeposit = landmarkMineDeposits.find((definition) => definition.id === resourceId)
     return mineDeposit ? { x: mineDeposit.x, z: mineDeposit.z } : null
@@ -1469,8 +1471,8 @@ async function buildWorldSystems(
   bootMark('createGrassForagePatches')
   const grassForage = createGrassForagePatches(
     scene,
-    worldContext.sampleHeight,
-    worldContext.waterLevel,
+    placementContext.sampleHeight,
+    placementContext.waterLevel,
     config.seed,
     (x, z) => worldContext.sampleForestFactor(x, z) < 0.5,
     grassForageOverrides,
@@ -1478,7 +1480,7 @@ async function buildWorldSystems(
   bootMarkEnd('createGrassForagePatches')
 
   bootMark('buildResourceDeposits')
-  const resourceDeposits = buildResourceDeposits(scene, worldContext, config.seed, resourceDepletion, {
+  const resourceDeposits = buildResourceDeposits(scene, placementContext, config.seed, resourceDepletion, {
     extraDefinitions: () => landmarkMineDeposits,
     caveFloorY: (caveId, x, y, z) => cavesRef?.queryGroundIn(caveId, x, y, z)?.floorY ?? null,
   })
@@ -1765,7 +1767,7 @@ async function buildWorldSystems(
         worldSeed: config.seed,
         landmark: abandonedMine,
         placement,
-        sampleHeight: worldContext.sampleHeight,
+        sampleHeight: worldContext.sampleLandHeight,
         waterLevel: worldContext.waterLevel,
         spatialContextAt: (x, y, z) => caves.spatialContextAt(x, y, z),
         contentAnchors: caves.contentAnchorsOf(abandonedMine.caveId),

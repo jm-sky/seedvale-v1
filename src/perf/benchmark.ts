@@ -92,6 +92,8 @@ type TerrainProbe = {
   waitForChunks: (coords: { cx: number; cz: number }[]) => Promise<void>
   sampleForestFactor: (x: number, z: number) => number
   sampleHeight: (x: number, z: number) => number
+  /** Placement land view (plan 058 L1); forwarded to `seekDenseForest`. */
+  sampleLandHeight?: (x: number, z: number) => number
   waterLevel: number
   riverTileStats: (resetMax?: boolean) => RiverTileCacheStats
 }

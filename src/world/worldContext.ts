@@ -17,6 +17,10 @@ import { skyParamsFromTime } from './dayNight'
 export type WorldContext = {
   readonly seed: number
   sampleHeight: HeightSampler
+  /** Placement view of `sampleHeight`: wet points (sea or lake) report
+   *  `waterLevel`, so legacy `h <= waterLevel + margin` tests reject lakes
+   *  (plan 058 L1). Use for placement; keep `sampleHeight` for ground/physics. */
+  sampleLandHeight: HeightSampler
   sampleFloor: HeightSampler
   sampleContinentalness: (x: number, z: number) => number
   sampleMountainRidge: (x: number, z: number) => number
@@ -44,6 +48,7 @@ export function createWorldContext(
   return {
     get seed() { return config.seed },
     sampleHeight: (x, z) => getChunkManager().sampleHeight(x, z),
+    sampleLandHeight: (x, z) => getChunkManager().sampleLandHeight(x, z),
     sampleFloor: (x, z) => getChunkManager().sampleFloor(x, z),
     sampleContinentalness: (x, z) => getChunkManager().sampleContinentalness(x, z),
     sampleMountainRidge: (x, z) => getChunkManager().sampleMountainRidge(x, z),
@@ -58,4 +63,11 @@ export function createWorldContext(
     get elapsedDays() { return dayNight.elapsedDays },
     get dayFactor() { return skyParamsFromTime(dayNight.timeOfDay).dayFactor },
   }
+}
+
+/** Same context with `sampleHeight` replaced by the placement land view
+ *  (lakes read as `waterLevel`). Prototype-derived so the live getters
+ *  (`waterLevel`, `timeOfDay`, ...) keep working. Plan 058 L1. */
+export function withLandHeightView(ctx: WorldContext): WorldContext {
+  return Object.create(ctx, { sampleHeight: { value: ctx.sampleLandHeight, enumerable: true } }) as WorldContext
 }

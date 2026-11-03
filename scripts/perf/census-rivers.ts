@@ -16,7 +16,7 @@ import { defaultTerrainConfig } from '../../src/config/worldConfig'
 import { villageSizeConfig } from '../../src/settlement/families'
 import { cellsWithinRadius, type SettlementDef } from '../../src/settlement/settlementGenerator'
 import { clearSettlementDefCache, setSettlementRiverQuery, settlementDefFor } from '../../src/settlement/settlementPlanCache'
-import { sampleHeightAt } from '../../src/terrain/chunkHeightmap'
+import { sampleFloorAt, sampleHeightAt } from '../../src/terrain/chunkHeightmap'
 import {
   computeRiverTileDiagnostics,
   RIVER_CELL_STEP,
@@ -26,6 +26,7 @@ import {
   riverTileKey,
 } from '../../src/terrain/riverNetwork'
 import { createRiverQuery } from '../../src/terrain/riverQuery'
+import { isWetFloor } from '../../src/terrain/waterSurface'
 import { ChainEnd, computeWorldHydrology, hashWorldHydrology, sampleRawFloorRows, sparseBlockValue, unpackChains, WORLD_HYDROLOGY_GRID } from '../../src/terrain/worldHydrology'
 import { hydrologyIdFor } from '../../src/terrain/worldHydrologyRegistry'
 import { installWorldHydrology, streamHeadsFor, UNCONDITIONED_HYDROLOGY_ID } from '../../src/terrain/worldHydrologyStore'
@@ -271,6 +272,22 @@ function measureGlobal(seed: number) {
     // A settlement still within footprint + 24 m of a head is a site-search fallback (nothing else passed).
     if (near) headFallbacks++
   }
+  // 058 L1 (Q77): settlement centres and clearing pads (core/houses/yards/storehouse/gardens) must not stand in a
+  // lake (production wet rule, conditioned hydrology installed above). Sea-level wet counts too.
+  const wetAt = (x: number, z: number) => isWetFloor(sampleHeightAt(x, z, condParams), sampleFloorAt(x, z, condParams))
+  let lakeCenters = 0
+  let lakePads = 0
+  let padsChecked = 0
+  for (const d of siteDefs) {
+    if (wetAt(d.x, d.z)) { lakeCenters++; console.log(`  LAKE centre ${d.id} @ ${d.x.toFixed(0)},${d.z.toFixed(0)}`) }
+    const c = d.clearings
+    const named: [string, readonly { x: number, z: number, radius: number }[]][] = [['core', [c.core]], ['house', c.houses], ['yard', c.yards], ['storehouse', c.storehouses], ['garden', c.gardens]]
+    for (const [kind, pads] of named) for (const pad of pads) {
+      padsChecked++
+      if (wetAt(pad.x, pad.z)) { lakePads++; console.log(`  LAKE ${kind} ${d.id} (${d.size}) @ ${pad.x.toFixed(0)},${pad.z.toFixed(0)} r=${pad.radius.toFixed(1)} centre ${d.x.toFixed(0)},${d.z.toFixed(0)}`) }
+    }
+  }
+  const lakeCensus = { settlements: siteDefs.length, padsChecked, lakeCenters, lakePads }
   const headCensus = { settlements: siteDefs.length, heads: heads.length, headsInside, headsNear24, headFallbacks }
   const home = siteDefs.find((d) => d.isHome)
   let homeStream = 'n/a'
@@ -285,7 +302,7 @@ function measureGlobal(seed: number) {
     seed, size, sampleMs, computeMs: h.stats.computeMs, hash, stripsHash, stats: h.stats, landKm2, filledPct,
     chains: chains.length, totalKm, seabedKm, mouthMax, mouthN, monotoneBreaks,
     lakes: h.lakes.length, lakeHa: { min: lakeHa[0] ?? 0, median: lakeHa[Math.floor(lakeHa.length / 2)] ?? 0, max: lakeHa[lakeHa.length - 1] ?? 0 },
-    homeStream, seabedByEnd, seabedWhere, headCensus,
+    homeStream, seabedByEnd, seabedWhere, headCensus, lakeCensus,
   }
 }
 
@@ -302,6 +319,7 @@ if (arg('model', 'tiles') === 'global') {
     console.log(`seabed by chain end (km) ${JSON.stringify(r.seabedByEnd)} · by position ${JSON.stringify(r.seabedWhere)}`)
     console.log(`home stream: ${r.homeStream}`)
     console.log(`stream heads (H4): ${JSON.stringify(r.headCensus)}`)
+    console.log(`lake census (L1): ${JSON.stringify(r.lakeCensus)}`)
     console.log(`hash ${r.hash}${r.stripsHash ? ` · strips hash ${r.stripsHash} ${r.stripsHash === r.hash ? 'MATCH' : 'MISMATCH'}` : ''}`)
   }
   process.exit(0)

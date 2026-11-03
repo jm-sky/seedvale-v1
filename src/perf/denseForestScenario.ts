@@ -17,6 +17,8 @@
 export type DenseForestProbe = {
   sampleForestFactor: (x: number, z: number) => number
   sampleHeight: (x: number, z: number) => number
+  /** Placement land view (lakes read as `waterLevel`, plan 058 L1); falls back to `sampleHeight`. */
+  sampleLandHeight?: (x: number, z: number) => number
   waterLevel: number
 }
 
@@ -56,7 +58,7 @@ export function seekDenseForest(probe: DenseForestProbe, originX: number, origin
       const angle = (a / DENSE_FOREST_ANGLES) * Math.PI * 2
       const x = originX + Math.cos(angle) * r
       const z = originZ + Math.sin(angle) * r
-      if (probe.sampleHeight(x, z) < probe.waterLevel + DRY_MARGIN) continue
+      if ((probe.sampleLandHeight ?? probe.sampleHeight)(x, z) < probe.waterLevel + DRY_MARGIN) continue
       const score = forestWindowScore(probe, x, z)
       if (score > best.score) best = { x, z, score }
     }

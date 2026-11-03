@@ -387,6 +387,16 @@ function heightSpread(x: number, z: number, radius: number, sampleHeight: Height
   return max - min
 }
 
+/** True when the disc centre and four rim points all stand above `waterLevel + SETTLEMENT_WATER_MARGIN`. */
+function discIsDry(x: number, z: number, radius: number, waterLevel: number, sampleHeight: HeightSampler): boolean {
+  const limit = waterLevel + SETTLEMENT_WATER_MARGIN
+  return sampleHeight(x, z) > limit
+    && sampleHeight(x + radius, z) > limit
+    && sampleHeight(x - radius, z) > limit
+    && sampleHeight(x, z + radius) > limit
+    && sampleHeight(x, z - radius) > limit
+}
+
 function minDistToPlots(x: number, z: number, plots: readonly VillagePlot[]): number {
   return discsClearance([{ x, z, radius: 0 }], plots)
 }
@@ -565,6 +575,8 @@ function scorePlotCandidate(
       const yd = yardDisc(compound.yard)
       yardSpread = heightSpread(yd.x, yd.z, yd.radius * 0.85, sampleHeight)
       if (yardSpread > YARD_MAX_HEIGHT_SPREAD) return null
+      // 058 L1 (Q77): the yard must be dry land too (sea or lake reads as `waterLevel` in the land view).
+      if (!discIsDry(yd.x, yd.z, yd.radius * 0.85, waterLevel, sampleHeight)) return null
     }
   }
 

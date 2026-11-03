@@ -101,3 +101,20 @@ describe('lake level in the raw sample', () => {
     expect(hydrologyLakeLevelAt(id, x + 400, z)).toBe(-Infinity)
   })
 })
+
+describe('withLandHeightView (plan 058 L1)', () => {
+  it('swaps sampleHeight for the land view and keeps live getters', async () => {
+    const { withLandHeightView } = await import('../world/worldContext')
+    let level = 1
+    const ctx = {
+      sampleHeight: () => 5,
+      sampleLandHeight: () => 1,
+      get waterLevel() { return level },
+    } as unknown as import('../world/worldContext').WorldContext
+    const view = withLandHeightView(ctx)
+    expect(view.sampleHeight(0, 0)).toBe(1)
+    expect(ctx.sampleHeight(0, 0)).toBe(5)
+    level = 2
+    expect(view.waterLevel).toBe(2)
+  })
+})

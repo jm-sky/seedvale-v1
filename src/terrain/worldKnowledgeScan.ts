@@ -13,7 +13,7 @@ import { isClassicLandmarkKind, type LandmarkKind } from './chunkEnvironment'
 import { chunkCenter, type ChunkCoord, worldToChunk } from './chunkGrid'
 import {
   sampleContinentalnessAt,
-  sampleHeightAt,
+  sampleLandHeightAt,
   sampleMoistureRegionAt,
   sampleMountainRidgeAt,
 } from './chunkHeightmap'
@@ -118,7 +118,7 @@ export function worldKnowledgeRoadContext(terrain: WorldKnowledgeTerrainSnapshot
   const raw = rawSampleParamsFromTerrain(terrain)
   return {
     seed: terrain.seed,
-    sampleHeight: (x, z) => sampleHeightAt(x, z, raw),
+    sampleHeight: (x, z) => sampleLandHeightAt(x, z, raw),
     waterLevel: terrain.waterLevel,
     terrainSamplers: {
       sampleContinentalness: (x, z) => sampleContinentalnessAt(x, z, raw),
