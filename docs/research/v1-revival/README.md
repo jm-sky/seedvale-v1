@@ -4,7 +4,7 @@
 
 > **Start here:** [Strategic Brief](./STRATEGIC-BRIEF.md) (approved decisions, D4 freeze, autonomy) → [Autonomous Session Queue](./AUTONOMOUS-SESSION-QUEUE.md) (ordered tasks, gates, author-owned checks) → [P1 tracker snapshot](./2026-10-27--performance-three-track-roadmap.md#p1-status-snapshot-2026-10-29). Everything below is a topic index of research evidence; where it conflicts with the brief, the brief wins. Closed hand-off stubs live in [archive/](./archive/) (`NEXT-SESSION--*`).
 
-**Q47 cemetery placement decision (author, 2026-10-31):** [Q39 plan §7](./2026-10-31--q39-cemetery-size-placement-plan.md#7-author-decision--2026-10-31-q47-placement-sequence) — compact plot visual trial first; later reserve plot footprints before roads (Q38/Q44). Q47 visual acceptance remains pending; track in [queue](./AUTONOMOUS-SESSION-QUEUE.md).
+**Q47 cemetery placement decision (author, 2026-10-31):** [Q39 plan §7](./2026-10-31--q39-cemetery-size-placement-plan.md#7-author-decision--2026-10-31-q47-placement-sequence) — compact plot visual trial first; later reserve plot footprints before roads (Q38/Q44). Author visual review of the compact look: OK (2026-11-03); plot reservation landed in Q58; track the rest in [queue](./AUTONOMOUS-SESSION-QUEUE.md).
 
 **Vegetation visual polish (author, 2026-11-02):** [world-terrain-057 — natural bush replacement and berry variant](../../plans/world-terrain-057-natural-bush-model-replacement.md) stages three queued GLBs, removes five artificial V1 bushes from active rendering, and prefers a Blender-authored berry variant. Planned, not yet implemented or visually verified.
 
@@ -15,7 +15,7 @@
 | Need | Read |
 | --- | --- |
 | Decisions (D1/D3/D4/D9/D11 approved; rest open) | [Strategic Brief](./STRATEGIC-BRIEF.md#approved-revival-decisions-2026-10-27), [Master Revival Roadmap](./2026-10-27--master-revival-roadmap.md) (phases, dependencies, first steps; proposals other than approved D-items are unapproved) |
-| What to work on next | [Autonomous Session Queue](./AUTONOMOUS-SESSION-QUEUE.md) |
+| What to work on next | [Autonomous Session Queue](./AUTONOMOUS-SESSION-QUEUE.md) (done rows / answered questions: [archive](./AUTONOMOUS-SESSION-QUEUE--archive.md)) |
 | Latest readiness / review snapshots (dated, not backlogs) | [Opus readiness review](./2026-10-26--opus-readiness-review.md), [Astra technical review — Cursor models, snow, UI A–C](../../reviews/2026-10-26--026--v1-revival-cursor-technical-review.md), [documentation & backlog audit](./2026-10-26--documentation-backlog-audit.md) |
 | Strategy audits (delta) | [strategy/architecture](./2026-10-27--revival-audit--strategy-architecture.md), [equipment/armor/combat](./2026-10-27--revival-audit--equipment-armor-combat.md), [NPC/fauna rendering](./2026-10-27--revival-audit--npc-fauna-rendering.md), [settlement rendering](./2026-10-27--revival-audit--settlement-rendering.md), [grass/flowers V3](./2026-10-27--revival-audit--grass-flowers-v3.md) |
 
