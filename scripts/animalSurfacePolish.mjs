@@ -13,10 +13,10 @@ const DIR = 'public/models/fauna'
 const OUT_DIR = '_temp/fauna-polish'
 const SMOOTH_DEG_DEFAULT = 50
 /** Per-model smoothing angle (deg); bear is the most faceted low-poly mesh. */
-const SMOOTH_DEG = { bear: 70, boar: 58 }
+const SMOOTH_DEG = { bear: 70, boar: 58, husky: 55, shiba: 55, donkey: 50, fox: 55, rat: 60 }
 let COS = Math.cos((SMOOTH_DEG_DEFAULT * Math.PI) / 180)
 /** Non-default source files (V3 migration); everything else: assets-src/fauna/original/<name>.glb. */
-const SOURCES = { bear: `${DIR}/v3/Bear.glb`, boar: `${DIR}/v3/Boar.glb` }
+const SOURCES = { husky: 'assets-src/fauna/original/dog_husky.glb', shiba: 'assets-src/fauna/original/dog_shiba.glb', bear: `${DIR}/v3/Bear.glb`, boar: `${DIR}/v3/Boar.glb` }
 
 /** [pattern, roughness] — first match wins; metalness is always 0 (dielectric). */
 const ROUGHNESS = {
@@ -29,13 +29,46 @@ const ROUGHNESS = {
   // V3 boar: #54 body, #60 mane/dark hair, #55 grey (tusks/hooves), #56 eyes, #57 pink (snout/ears)
   boar: [[/^Material #56/, 0.3], [/^Material #55/, 0.5], [/^Material #57/, 0.6], [/^Material #60/, 0.85], [/./, 0.85]],
   horse: [[/eye/i, 0.3], [/muzzle/i, 0.55], [/hoof/i, 0.6], [/hair/i, 0.7], [/./, 0.62]],
+  // dog_husky: Material = dark grey coat, .001 = white/light, .006 black (nose/claws), .003/.002 eyes
+  husky: [[/^Material\.00[23]$/, 0.3], [/^Material\.006$/, 0.5], [/./, 0.82]],
+  shiba: [[/^Eyes_/, 0.3], [/^Black$/, 0.5], [/./, 0.82]],
+  donkey: [[/^Eye_/, 0.3], [/^Muzzle$/, 0.55], [/^Hooves$/, 0.6], [/^Hair$/, 0.75], [/./, 0.8]],
+  fox: [[/^Black$/, 0.45], [/./, 0.8]],
+  rat: [[/^Pink$/, 0.7], [/./, 0.82]],
 }
 const KEEP_HARD_DEFAULT = /eye|hoof|horn|^Material\.011$/i // never averaged with neighbours
-const KEEP_HARD_BY_MODEL = { boar: /^Material #5[567]/ } // grey/eyes/pink detail primitives stay crisp
+const KEEP_HARD_BY_MODEL = {
+  boar: /^Material #5[567]/, // grey/eyes/pink detail primitives stay crisp
+  husky: /^Material\.00[236]$/, // eyes + black nose/claws
+  shiba: /^(Eyes_|Black$)/,
+  donkey: /^(Eye_|Muzzle$|Hooves$)/,
+  fox: /^Black$/,
+}
 let KEEP_HARD = KEEP_HARD_DEFAULT
 
 /** Linear base-colour overrides applied before roughness (boar: darker, browner, less red). */
 const BASE_COLOR = {
+  // sRGB-ish intent noted per entry; values are linear. Source GLBs had a grey-green "light" slot and metalness 0.4.
+  husky: [
+    [/^Material$/, [0.100, 0.105, 0.112]], // dark grey saddle (was near-black 0.05)
+    [/^Material\.001$/, [0.72, 0.71, 0.68]], // white mask/chest/legs (was 0.29 grey-green)
+  ],
+  shiba: [
+    [/^Main$/, [0.30, 0.118, 0.030]], // warm rufous
+    [/^Main_Light$/, [0.62, 0.52, 0.38]], // cream urajiro
+  ],
+  donkey: [
+    [/^Main$/, [0.175, 0.155, 0.135]], // warmer grey-brown
+    [/^Main_Light$/, [0.46, 0.42, 0.36]], // pale belly/muzzle
+  ],
+  fox: [
+    [/^Main_Light$/, [0.66, 0.60, 0.48]], // cream belly/chest/tail tip (was grey-green 0.36)
+    [/^Grey$/, [0.050, 0.040, 0.034]], // dark socks (was 0.10)
+  ],
+  rat: [
+    [/^Grey$/, [0.130, 0.098, 0.078]], // grey-brown (was purplish 0.11,0.10,0.105)
+    [/^Pink$/, [0.56, 0.34, 0.31]],
+  ],
   boar: [
     [/^Material #54/, [0.058, 0.036, 0.024]], // body: was [0.115,0.03,0.02] (reddish)
     [/^Material #60/, [0.016, 0.010, 0.007]], // mane/dark hair: was [0.022,0.004,0.001]
@@ -44,6 +77,10 @@ const BASE_COLOR = {
 /** Fur tone variation baked into COLOR_0 (multiplies base colour/texture; zero extra draws/textures).
  *  [material pattern, amplitude, warm shift] — low-frequency deterministic value noise on rest-pose position. */
 const FUR_VARIATION = {
+  husky: [[/^Material(\.001)?$/, 0.08, 0]],
+  shiba: [[/^Main(_Light)?$/, 0.10, 0.02]],
+  donkey: [[/^Main(_Light)?$/, 0.10, 0.01]],
+  fox: [[/^Main$/, 0.10, 0.02]],
   bear: [[/./, 0.18, 0.02]],
   boar: [[/^Material #54/, 0.20, 0.03], [/^Material #60/, 0.14, 0.02]],
 }
@@ -88,7 +125,7 @@ function applyFurVariation(doc, name) {
   for (const mesh of doc.getRoot().listMeshes()) {
     for (const p of mesh.listPrimitives()) {
       const rule = rules.find(([re]) => re.test(p.getMaterial()?.getName() ?? ''))
-      if (!rule) continue
+      if (!rule || p.getAttribute('COLOR_0')) continue // never overwrite existing vertex colours
       const [, amp, warm] = rule
       const pos = p.getAttribute('POSITION')
       const buf = doc.getRoot().listBuffers()[0]
