@@ -481,6 +481,7 @@ Generated from TypeScript imports.
 **Imports**
 
 - `config/worldConfig.ts`
+- `terrain/worldHydrologyStore.ts`
 - `ui-vue/lib/mapTerrainPaint.ts`
 - `world/map/mapProjection.ts`
 - `world/map/mapRasterTile.ts`

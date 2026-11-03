@@ -24,6 +24,7 @@ import {
   tickChunkWaterSurfaces,
 } from './chunkManager'
 import { FORD_WATER_DEPTH, type FordProjection } from './riverFord'
+import { UNCONDITIONED_HYDROLOGY_ID } from './worldHydrologyStore'
 
 // Small grid so texel math is easy to reason about by hand: resolution 5,
 // chunkSize 32 -> step 8, apronRes 7 (world x/z per texel: -24,-16,-8,0,8,16,24
@@ -397,7 +398,7 @@ describe('resolveUnloadedLandmark (plan world-014)', () => {
       chunkSize: 64,
       resolution: 17,
       seed: 1,
-      hydrologyId: 'test-hydrology',
+      hydrologyId: UNCONDITIONED_HYDROLOGY_ID,
       heightScale: 18,
       waterLevel: 0.45,
       noiseScale: 120,

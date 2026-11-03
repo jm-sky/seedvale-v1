@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { RawSampleParams } from '../../terrain/chunkHeightmap'
 import type { WorldLocation } from '../locations/worldLocationTypes'
+import { UNCONDITIONED_HYDROLOGY_ID } from '../../terrain/worldHydrologyStore'
 import { createLocationKnowledge } from '../locations/locationKnowledge'
 import { emptyLocationScanDiagnostics } from '../locations/worldLocationCatalog'
 import { MAP_CELL_SIZE, MAP_DISCOVERY_RADIUS } from './mapConfig'
@@ -19,7 +20,7 @@ import {
 function rawParams(overrides: Partial<RawSampleParams> = {}): RawSampleParams {
   return {
     seed: 42,
-    hydrologyId: 'test-hydrology',
+    hydrologyId: UNCONDITIONED_HYDROLOGY_ID,
     heightScale: 18,
     waterLevel: 0.45,
     noiseScale: 120,

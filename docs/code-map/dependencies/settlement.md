@@ -2434,6 +2434,7 @@ Generated from TypeScript imports.
 - `settlement/roadRiverCrossing.ts`
 - `settlement/roadRouteWorldgenCache.ts`
 - `terrain/chunkHeightmap.ts`
+- `terrain/worldHydrologyStore.ts`
 
 ## `settlement/roadRouteWorldgenCache.ts`
 
@@ -2955,6 +2956,7 @@ Generated from TypeScript imports.
 - `settlement/settlementTerrain.ts`
 - `settlement/settlementWorldgenCache.ts`
 - `terrain/chunkHeightmap.ts`
+- `terrain/worldHydrologyStore.ts`
 
 ## `settlement/settlementWorldgenCache.ts`
 

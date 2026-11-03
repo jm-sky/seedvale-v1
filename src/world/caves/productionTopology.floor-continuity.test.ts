@@ -1,15 +1,15 @@
+import { describe, expect, it } from 'vitest'
 /** Floor-ramp continuity: topology stations and the gameplay heightfield
  *  floor between passage / widening / chamber / branch must stay within
  *  player walk grade. Mouth surface↔carve↔interior is covered separately
  *  with a hybrid outdoor/cave floor sampler (world-terrain-034). */
-
-import { describe, expect, it } from 'vitest'
 import type { LargeCaveSite } from '../largeCaves'
 import type { CaveTopologyPoint } from './caveTopology'
 import { createBenchmarkWorldConfig } from '../../config/worldConfig'
 import { measureSlope } from '../../fauna/createFauna'
 import { type RawSampleParams, sampleHeightAt } from '../../terrain/chunkHeightmap'
 import { SLOPE_MAX_WALKABLE_DEG } from '../../terrain/slopeConstraint'
+import { UNCONDITIONED_HYDROLOGY_ID } from '../../terrain/worldHydrologyStore'
 import { queryHeightfieldGround } from './caveHeightfieldQuery'
 import {
   buildCaveHeightfieldRepresentation,
@@ -269,7 +269,7 @@ describe('seed 1136726869 chamber ramp is walkable both ways', () => {
     const t = config.terrain
     const params: RawSampleParams = {
       seed: config.seed,
-      hydrologyId: 'test-hydrology',
+      hydrologyId: UNCONDITIONED_HYDROLOGY_ID,
       heightScale: t.heightScale,
       waterLevel: t.waterLevel,
       noiseScale: t.noiseScale,

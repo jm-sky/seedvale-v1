@@ -1,7 +1,7 @@
 import type { RawSampleParams } from './chunkHeightmap'
-import type { WorldHydrology } from './worldHydrology'
 import { worldgenFingerprint } from '../persistence/worldgenFingerprint'
 import { DEFAULT_WORLD_HYDROLOGY_OPTIONS, WORLD_HYDROLOGY_VERSION, type WorldHydrologyOptions } from './worldHydrology'
+import { clearWorldHydrology, hasWorldHydrology, installWorldHydrology, LEGACY_HYDROLOGY_PREFIX, worldHydrologyFor } from './worldHydrologyStore'
 
 /**
  * Module registry of installed global hydrology, keyed by `hydrologyId` (plan world-terrain-058 decision 4; same
@@ -28,44 +28,31 @@ export function worldHydrologyOptionsFor(params: Pick<RawSampleParams, 'seed' | 
  * Explicit field pick, so extra properties of a wider params object never leak into the id.
  */
 export function hydrologyIdFor(p: HydrologyTerrainInputs): string {
-  return `h${WORLD_HYDROLOGY_VERSION}-${worldgenFingerprint({
-    options: worldHydrologyOptionsFor(p),
-    terrain: {
-      seed: p.seed,
-      heightScale: p.heightScale,
-      waterLevel: p.waterLevel,
-      noiseScale: p.noiseScale,
-      detailAmplitude: p.detailAmplitude,
-      hillsScale: p.hillsScale,
-      hillsAmplitude: p.hillsAmplitude,
-      hillsFbm: p.hillsFbm,
-      fbm: p.fbm,
-      biome: p.biome,
-      region: p.region,
-    },
-  })}`
+  const terrain = {
+    seed: p.seed,
+    heightScale: p.heightScale,
+    waterLevel: p.waterLevel,
+    noiseScale: p.noiseScale,
+    detailAmplitude: p.detailAmplitude,
+    hillsScale: p.hillsScale,
+    hillsAmplitude: p.hillsAmplitude,
+    hillsFbm: p.hillsFbm,
+    fbm: p.fbm,
+    biome: p.biome,
+    region: p.region,
+  }
+  // `?hydrology=legacy` (A/B against the pre-058 per-tile rivers): no data, uncorrected terrain, own cache keys.
+  if (legacyHydrologyRequested()) return `${LEGACY_HYDROLOGY_PREFIX}${worldgenFingerprint({ terrain })}`
+  return `h${WORLD_HYDROLOGY_VERSION}-${worldgenFingerprint({ options: worldHydrologyOptionsFor(p), terrain })}`
 }
 
-const installed = new Map<string, WorldHydrology>()
-
-/** Installs `data` under `id` (replaces an earlier install of the same id). */
-export function installWorldHydrology(id: string, data: WorldHydrology): void {
-  installed.set(id, data)
+/** `?hydrology=legacy` in the page URL (main thread only; workers receive the resulting id inside their params). */
+function legacyHydrologyRequested(): boolean {
+  try {
+    return typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('hydrology') === 'legacy'
+  } catch {
+    return false
+  }
 }
 
-export function hasWorldHydrology(id: string): boolean {
-  return installed.has(id)
-}
-
-/** The installed hydrology for `id`; throws when none is installed (see module doc). */
-export function worldHydrologyFor(id: string): WorldHydrology {
-  const data = installed.get(id)
-  if (!data) throw new Error(`world hydrology "${id}" is not installed`)
-  return data
-}
-
-/** Drops installed hydrology — all of it, or one id. World rebuilds and tests. */
-export function clearWorldHydrology(id?: string): void {
-  if (id === undefined) installed.clear()
-  else installed.delete(id)
-}
+export { clearWorldHydrology, hasWorldHydrology, installWorldHydrology, worldHydrologyFor }

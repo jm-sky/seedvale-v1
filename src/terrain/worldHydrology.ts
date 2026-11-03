@@ -1,7 +1,7 @@
 import { createNoise2D } from 'simplex-noise'
 import { projectOntoSegment } from '../math/segment'
 import { createSeededRandom } from '../world/parseSeed'
-import { type RawSampleParams, sampleFloorAt } from './chunkHeightmap'
+import { type RawSampleParams, sampleRawFloorUncorrected } from './chunkHeightmap'
 import { WORLD_HALF_EXTENT } from './continentMask'
 import {
   DEFAULT_RIVER_THRESHOLDS,
@@ -9,10 +9,10 @@ import {
   meanderChainPointsWith,
   RIVER_CELL_STEP,
   RIVER_MEANDER_TAPER_DISTANCE,
-  type RiverChain,
   type RiverPoint,
   smoothChainPoints,
 } from './riverNetwork'
+import { SPARSE_BLOCK_SIZE, unpackChains } from './worldHydrologyStore'
 
 /**
  * Global hydrology over a finite grid (plan world-terrain-058, slice H1). Pure: no Three.js, no registry, no
@@ -101,7 +101,7 @@ export type WorldHydrologyGrid = {
   originZ: number
 }
 
-export const SPARSE_BLOCK_SIZE = 64
+export { SPARSE_BLOCK_SIZE, unpackChains }
 
 /** Non-empty `SPARSE_BLOCK_SIZE`² blocks of a dense grid, sorted by block id (`bz * blocksPerRow + bx`). */
 export type SparseBlocks<T extends Float32Array | Uint16Array> = {
@@ -198,7 +198,7 @@ export function sampleRawFloorRows(
   let o = 0
   for (let iz = rowStart; iz < rowEnd; iz++) {
     const z = originZ + iz * cellStep
-    for (let ix = 0; ix < size; ix++) out[o++] = sampleFloorAt(originX + ix * cellStep, z, params)
+    for (let ix = 0; ix < size; ix++) out[o++] = sampleRawFloorUncorrected(originX + ix * cellStep, z, params)
   }
   return out
 }
@@ -1007,24 +1007,6 @@ export function computeWorldHydrology(
     chains: { points, offsets, flags: Uint8Array.from(outFlags) },
     stats,
   }
-}
-
-/** Packed chains → `RiverChain[]` (the shape the existing consumers use). */
-export function unpackChains(chains: PackedChains): RiverChain[] {
-  const out: RiverChain[] = []
-  for (let i = 0; i + 1 < chains.offsets.length; i++) {
-    const pts: RiverPoint[] = []
-    for (let p = chains.offsets[i]!; p < chains.offsets[i + 1]!; p++) {
-      pts.push({
-        x: chains.points[p * 4]!,
-        z: chains.points[p * 4 + 1]!,
-        elevation: chains.points[p * 4 + 2]!,
-        accumulation: chains.points[p * 4 + 3]!,
-      })
-    }
-    out.push({ points: pts })
-  }
-  return out
 }
 
 /** FNV-1a over the result arrays — compared across runs / worker counts and logged at boot (H2). */

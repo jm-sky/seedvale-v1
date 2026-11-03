@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { type ChunkTileData, type ChunkTileParams, type RegionParams } from './chunkHeightmap'
 import { computeChunkItems } from './chunkItems'
+import { UNCONDITIONED_HYDROLOGY_ID } from './worldHydrologyStore'
 
 const REGION: RegionParams = {
   continentScale: 2200,
@@ -74,7 +75,7 @@ function dryLandTile(apronRes: number): ChunkTileData {
 function params(overrides: Partial<ChunkTileParams> = {}): ChunkTileParams {
   return {
     seed: 42,
-    hydrologyId: 'test-hydrology',
+    hydrologyId: UNCONDITIONED_HYDROLOGY_ID,
     heightScale: 18,
     waterLevel: 0,
     noiseScale: 120,

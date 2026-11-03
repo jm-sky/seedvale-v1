@@ -1,9 +1,8 @@
+import * as THREE from 'three'
 /** Plan world-terrain-020 Stage B + world-terrain-028 — `createCaves()` owns
  *  the content-anchor seam: adventure caves expose the required roles against
  *  their retained heightfield; natural/dungeon caves expose archetype story/loot
  *  anchors; availability does not wait on presentation streaming. */
-
-import * as THREE from 'three'
 import { beforeAll, describe, expect, it } from 'vitest'
 import type { ChunkManager } from '../terrain/chunkManager'
 import type { TerrainCutout } from '../terrain/terrainCutout'
@@ -16,6 +15,7 @@ import {
   sampleHeightAt,
   sampleMountainRidgeAt,
 } from '../terrain/chunkHeightmap'
+import { UNCONDITIONED_HYDROLOGY_ID } from '../terrain/worldHydrologyStore'
 import { landmarkRequiredMineCaveId } from './caves/abandonedMineLandmark'
 import { orderHomeAdventureCandidates } from './caves/caveArchetype'
 import { CAVE_CONTENT_PLACEMENT } from './caves/caveContentAnchors'
@@ -34,7 +34,7 @@ function terrainParams(): RawSampleParams {
   const t = config.terrain
   return {
     seed: config.seed,
-    hydrologyId: 'test-hydrology',
+    hydrologyId: UNCONDITIONED_HYDROLOGY_ID,
     heightScale: t.heightScale,
     waterLevel: t.waterLevel,
     noiseScale: t.noiseScale,

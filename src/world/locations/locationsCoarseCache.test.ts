@@ -2,6 +2,7 @@ import { IDBFactory } from 'fake-indexeddb'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { cacheKey, listCacheRecords, putCacheRecords } from '../../persistence/worldgenCacheDb'
 import { type RawSampleParams } from '../../terrain/chunkHeightmap'
+import { UNCONDITIONED_HYDROLOGY_ID } from '../../terrain/worldHydrologyStore'
 import {
   createCoarseCachePersistence,
   LOCATIONS_COARSE_NAMESPACE,
@@ -22,7 +23,7 @@ afterEach(() => {
 function params(overrides: Partial<RawSampleParams> = {}): RawSampleParams {
   return {
     seed: 1,
-    hydrologyId: 'test-hydrology',
+    hydrologyId: UNCONDITIONED_HYDROLOGY_ID,
     heightScale: 18,
     waterLevel: 0.45,
     noiseScale: 120,

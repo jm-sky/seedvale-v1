@@ -1,10 +1,9 @@
+import * as THREE from 'three'
 /** Plan world-terrain-030 — the persistent cave worldgen cache as
  *  `createWorldBundle()` actually wires it: a fresh `createCaves()` pass
  *  persists its manifest + per-cave derived records, and a second pass
  *  hydrated from those records must produce an identical world. Cave
  *  generation semantics themselves are covered by the existing cave tests. */
-
-import * as THREE from 'three'
 import { beforeAll, describe, expect, it, vi } from 'vitest'
 import type { CacheRecord } from '../../persistence/worldgenCacheDb'
 import type { ChunkManager } from '../../terrain/chunkManager'
@@ -19,6 +18,7 @@ import {
   sampleHeightAt,
   sampleMountainRidgeAt,
 } from '../../terrain/chunkHeightmap'
+import { UNCONDITIONED_HYDROLOGY_ID } from '../../terrain/worldHydrologyStore'
 import { type Caves, createCaves } from '../createCaves'
 import {
   CAVE_MANIFEST_SUBKEY,
@@ -40,7 +40,7 @@ function terrainParams(): RawSampleParams {
   const t = config.terrain
   return {
     seed: config.seed,
-    hydrologyId: 'test-hydrology',
+    hydrologyId: UNCONDITIONED_HYDROLOGY_ID,
     heightScale: t.heightScale,
     waterLevel: t.waterLevel,
     noiseScale: t.noiseScale,

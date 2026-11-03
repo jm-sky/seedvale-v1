@@ -10,6 +10,7 @@ import { cellKey } from '../../settlement/settlementGenerator'
 import { chunkPassesAbandonedCemeteryRoll } from '../../terrain/cemeteryPlacement'
 import { sampleContinentalnessAt, sampleFloorAt, sampleMountainRidgeAt } from '../../terrain/chunkHeightmap'
 import { isMountainRidge, isOceanMix, isWetFloor } from '../../terrain/terrainClassification'
+import { UNCONDITIONED_HYDROLOGY_ID } from '../../terrain/worldHydrologyStore'
 import { projectCellAt } from '../map/mapProjection'
 import {
   type AbandonedCemeteryCache,
@@ -28,7 +29,7 @@ import {
 function rawParams(overrides: Partial<RawSampleParams> = {}): RawSampleParams {
   return {
     seed: 42,
-    hydrologyId: 'test-hydrology',
+    hydrologyId: UNCONDITIONED_HYDROLOGY_ID,
     heightScale: 18,
     waterLevel: 0.45,
     noiseScale: 120,

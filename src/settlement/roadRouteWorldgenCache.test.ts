@@ -4,6 +4,7 @@ import type { RoadRoute, RoutePoint } from './roadNetwork'
 import type { RoadRiverCrossing } from './roadRiverCrossing'
 import { cacheKey, listCacheRecords, putCacheRecords } from '../persistence/worldgenCacheDb'
 import { type RawSampleParams } from '../terrain/chunkHeightmap'
+import { UNCONDITIONED_HYDROLOGY_ID } from '../terrain/worldHydrologyStore'
 import {
   createRoadRouteWorldgenCache,
   isValidRoadRoutePayload,
@@ -24,7 +25,7 @@ afterEach(() => {
 function params(overrides: Partial<RawSampleParams> = {}): RawSampleParams {
   return {
     seed: 1,
-    hydrologyId: 'test-hydrology',
+    hydrologyId: UNCONDITIONED_HYDROLOGY_ID,
     heightScale: 18,
     waterLevel: 0.45,
     noiseScale: 120,

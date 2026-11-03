@@ -16,6 +16,7 @@ import {
 } from './cemeteryPlacement'
 import { worldToChunk } from './chunkGrid'
 import { createLocalTerrainSampler } from './chunkHeightmap'
+import { UNCONDITIONED_HYDROLOGY_ID } from './worldHydrologyStore'
 
 const CHUNK_SIZE = 64
 
@@ -26,7 +27,7 @@ function tileParams(overrides: Partial<ChunkTileParams> = {}): ChunkTileParams {
     chunkSize: CHUNK_SIZE,
     resolution: 17,
     seed: 1,
-    hydrologyId: 'test-hydrology',
+    hydrologyId: UNCONDITIONED_HYDROLOGY_ID,
     heightScale: 18,
     waterLevel: 0.45,
     noiseScale: 120,

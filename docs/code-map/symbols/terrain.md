@@ -154,38 +154,39 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/chunkHeightmap.ts`
 
-- `apronGridWeights` — function — line 733
-- `ApronGridWeights` — type — line 724
-- `apronOriginWorld` — function — line 704
-- `ChunkTileData` — type — line 374
-- `ChunkTileParams` — type — line 242
-- `ClearingSegment` — type — line 174
-- `computeChunkTile` — function — line 1161
-- `createLocalTerrainSampler` — function — line 1246
+- `apronGridWeights` — function — line 756
+- `ApronGridWeights` — type — line 747
+- `apronOriginWorld` — function — line 727
+- `ChunkTileData` — type — line 375
+- `ChunkTileParams` — type — line 243
+- `ClearingSegment` — type — line 175
+- `computeChunkTile` — function — line 1184
+- `createLocalTerrainSampler` — function — line 1269
   - domain: world-terrain
-- `createWorldTerrainSampler` — function — line 1288
+- `createWorldTerrainSampler` — function — line 1311
   - domain: world-terrain
-- `extractCoreGrid` — function — line 788
-- `LocalTerrainSampler` — type — line 1221
+- `extractCoreGrid` — function — line 811
+- `LocalTerrainSampler` — type — line 1244
   - domain: world-terrain
-- `RawSampleParams` — type — line 354
-- `RawTexelSample` — type — line 655
-- `RegionalSmoothingSegment` — type — line 234
-- `RegionParams` — type — line 22
-- `RiverChannelSegment` — type — line 210
-- `RoadCorridorSegment` — type — line 156
-- `RoadNetworkParams` — type — line 93
-- `sampleApronGrid` — function — line 771
-- `sampleApronGridWeighted` — function — line 756
-- `sampleBiomeAt` — function — line 675
-- `sampleContinentalnessAt` — function — line 679
-- `sampleFloorAt` — function — line 671
-- `sampleHeightAt` — function — line 667
-- `sampleMoistureRegionAt` — function — line 687
-- `sampleMountainRidgeAt` — function — line 695
-- `sampleRawTexelAt` — function — line 660
-- `VegetationKind` — type — line 20
-- `VillageClearingParams` — type — line 74
+- `RawSampleParams` — type — line 355
+- `RawTexelSample` — type — line 673
+- `RegionalSmoothingSegment` — type — line 235
+- `RegionParams` — type — line 23
+- `RiverChannelSegment` — type — line 211
+- `RoadCorridorSegment` — type — line 157
+- `RoadNetworkParams` — type — line 94
+- `sampleApronGrid` — function — line 794
+- `sampleApronGridWeighted` — function — line 779
+- `sampleBiomeAt` — function — line 698
+- `sampleContinentalnessAt` — function — line 702
+- `sampleFloorAt` — function — line 694
+- `sampleHeightAt` — function — line 685
+- `sampleMoistureRegionAt` — function — line 710
+- `sampleMountainRidgeAt` — function — line 718
+- `sampleRawFloorUncorrected` — function — line 690
+- `sampleRawTexelAt` — function — line 678
+- `VegetationKind` — type — line 21
+- `VillageClearingParams` — type — line 75
 
 ## `terrain/chunkHeightmapProtocol.ts`
 
@@ -572,6 +573,12 @@ Generated from exported TypeScript symbols.
   - domain: world
 - `SettlementMiningHooks` — type — line 156
 
+## `terrain/riverChainClip.ts`
+
+- `clipChainsToRect` — function — line 84
+- `clipChainToRect` — function — line 54
+- `RiverChainIndex` — class — line 89
+
 ## `terrain/riverFord.ts`
 
 - `FORD_WATER_DEPTH` — const — line 31
@@ -585,45 +592,45 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/riverNetwork.ts`
 
-- `canonicalWaterHeight` — function — line 213
-- `computeRiverTile` — function — line 866
-- `computeRiverTileDiagnostics` — function — line 882
+- `canonicalWaterHeight` — function — line 216
+- `computeRiverTile` — function — line 869
+- `computeRiverTileDiagnostics` — function — line 900
   - domain: world-terrain
-- `DEFAULT_RIVER_THRESHOLDS` — const — line 57
-- `depthFromAccumulation` — function — line 197
-- `exposedBankFromFlow` — function — line 183
-- `flowFactor` — function — line 137
-- `footprintOverlapsRiver` — function — line 381
-- `isInsideRiverChannel` — function — line 368
-- `MEANDER_NOISE_SEED_XOR` — const — line 561
-- `meanderChainPointsWith` — function — line 585
-- `nearestRiverBankDistance` — function — line 351
-- `nearestRiverBankPoint` — function — line 398
-- `nearestRiverHydrologyContext` — function — line 451
-- `nearestRiverShoreCandidate` — function — line 501
-- `overlappingRiverTiles` — function — line 84
-- `RIVER_CELL_STEP` — const — line 40
-- `RIVER_MEANDER_TAPER_DISTANCE` — const — line 560
-- `RIVER_TILE_HALO` — const — line 39
-- `RIVER_TILE_SIZE` — const — line 33
-- `RiverChain` — type — line 98
-- `RiverChainDiagnostic` — type — line 652
-- `RiverChainRejection` — type — line 643
-- `RiverChainTerminal` — type — line 622
-- `riverChannelSegmentsNear` — function — line 240
-- `RiverHydrologyContext` — type — line 441
-- `RiverPoint` — type — line 97
-- `RiverShoreCandidate` — type — line 493
-- `RiverTileCoord` — type — line 63
-- `riverTileCoordOf` — function — line 65
-- `riverTileCoreRect` — function — line 76
-- `riverTileKey` — function — line 69
-- `RiverWaterSample` — type — line 308
-- `riverWaterSampleAt` — function — line 319
-- `smoothChainPoints` — function — line 845
-- `submergedDepthFromFlow` — function — line 188
-- `widthFromAccumulation` — function — line 151
-- `WorldRect` — type — line 73
+- `DEFAULT_RIVER_THRESHOLDS` — const — line 60
+- `depthFromAccumulation` — function — line 200
+- `exposedBankFromFlow` — function — line 186
+- `flowFactor` — function — line 140
+- `footprintOverlapsRiver` — function — line 384
+- `isInsideRiverChannel` — function — line 371
+- `MEANDER_NOISE_SEED_XOR` — const — line 564
+- `meanderChainPointsWith` — function — line 588
+- `nearestRiverBankDistance` — function — line 354
+- `nearestRiverBankPoint` — function — line 401
+- `nearestRiverHydrologyContext` — function — line 454
+- `nearestRiverShoreCandidate` — function — line 504
+- `overlappingRiverTiles` — function — line 87
+- `RIVER_CELL_STEP` — const — line 43
+- `RIVER_MEANDER_TAPER_DISTANCE` — const — line 563
+- `RIVER_TILE_HALO` — const — line 42
+- `RIVER_TILE_SIZE` — const — line 36
+- `RiverChain` — type — line 101
+- `RiverChainDiagnostic` — type — line 655
+- `RiverChainRejection` — type — line 646
+- `RiverChainTerminal` — type — line 625
+- `riverChannelSegmentsNear` — function — line 243
+- `RiverHydrologyContext` — type — line 444
+- `RiverPoint` — type — line 100
+- `RiverShoreCandidate` — type — line 496
+- `RiverTileCoord` — type — line 66
+- `riverTileCoordOf` — function — line 68
+- `riverTileCoreRect` — function — line 79
+- `riverTileKey` — function — line 72
+- `RiverWaterSample` — type — line 311
+- `riverWaterSampleAt` — function — line 322
+- `smoothChainPoints` — function — line 848
+- `submergedDepthFromFlow` — function — line 191
+- `widthFromAccumulation` — function — line 154
+- `WorldRect` — type — line 76
 
 ## `terrain/riverQuery.ts`
 
@@ -813,15 +820,13 @@ Generated from exported TypeScript symbols.
 - `ChainEndKind` — type — line 116
 - `computeWorldHydrology` — function — line 670
 - `DEFAULT_WORLD_HYDROLOGY_OPTIONS` — const — line 68
-- `hashWorldHydrology` — function — line 1031
+- `hashWorldHydrology` — function — line 1013
 - `HydrologyLake` — type — line 127
 - `PackedChains` — type — line 118
 - `packSparseBlocks` — function — line 548
 - `sampleRawFloorRows` — function — line 190
-- `SPARSE_BLOCK_SIZE` — const — line 104
 - `SparseBlocks` — type — line 107
 - `sparseBlockValue` — function — line 591
-- `unpackChains` — function — line 1013
 - `WORLD_HYDROLOGY_GRID` — const — line 87
 - `WORLD_HYDROLOGY_VERSION` — const — line 34
   - domain: world-terrain
@@ -842,25 +847,35 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/worldHydrologyRegistry.ts`
 
-- `clearWorldHydrology` — function — line 68
-- `hasWorldHydrology` — function — line 56
 - `hydrologyIdFor` — function — line 30
-- `installWorldHydrology` — function — line 52
-- `worldHydrologyFor` — function — line 61
 - `worldHydrologyOptionsFor` — function — line 21
 
 ## `terrain/worldHydrologyRuntime.ts`
 
-- `computeWorldHydrologyFor` — function — line 61
-- `ensureWorldHydrology` — function — line 93
-- `EnsureWorldHydrologyOptions` — type — line 74
-- `sampleRowsOnThisThread` — const — line 130
-- `sampleWorldHydrologyFloor` — function — line 42
-- `WORLD_HYDROLOGY_STRIPS` — const — line 36
-- `WorldHydrologyFloorSampler` — type — line 33
-- `WorldHydrologyInstallResult` — type — line 20
-- `WorldHydrologyInstallSource` — type — line 18
+- `computeWorldHydrologyFor` — function — line 62
+- `ensureWorldHydrology` — function — line 94
+- `EnsureWorldHydrologyOptions` — type — line 75
+- `sampleRowsOnThisThread` — const — line 134
+- `sampleWorldHydrologyFloor` — function — line 43
+- `WORLD_HYDROLOGY_STRIPS` — const — line 37
+- `WorldHydrologyFloorSampler` — type — line 34
+- `WorldHydrologyInstallResult` — type — line 21
+- `WorldHydrologyInstallSource` — type — line 19
   - domain: world-terrain
+
+## `terrain/worldHydrologyStore.ts`
+
+- `clearWorldHydrology` — function — line 46
+- `hasWorldHydrology` — function — line 34
+- `hydrologyCorrectionAt` — function — line 93
+- `installWorldHydrology` — function — line 30
+- `isUnconditionedHydrologyId` — function — line 23
+- `LEGACY_HYDROLOGY_PREFIX` — const — line 20
+- `SPARSE_BLOCK_SIZE` — const — line 14
+  - domain: world-terrain
+- `UNCONDITIONED_HYDROLOGY_ID` — const — line 17
+- `unpackChains` — function — line 112
+- `worldHydrologyFor` — function — line 39
 
 ## `terrain/worldKnowledgeScan.ts`
 

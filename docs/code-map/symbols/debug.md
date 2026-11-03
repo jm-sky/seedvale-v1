@@ -33,9 +33,9 @@ Generated from exported TypeScript symbols.
 
 - `CAVE_HEIGHTFIELD_TERRAIN_ANCHOR` — const — line 37
 - `CAVE_HEIGHTFIELD_TERRAIN_SEED` — const — line 25
-- `sampleCaveHeightfieldBaseSurface` — function — line 75
+- `sampleCaveHeightfieldBaseSurface` — function — line 76
   - domain: world-terrain
-- `sampleCaveHeightfieldWalkSurface` — function — line 92
+- `sampleCaveHeightfieldWalkSurface` — function — line 93
   - domain: world-terrain
 
 ## `debug/caves/caveHeightfieldTraversal.ts`

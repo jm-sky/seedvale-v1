@@ -23,12 +23,13 @@ import {
   riverTileKey,
   widthFromAccumulation,
 } from './riverNetwork'
+import { UNCONDITIONED_HYDROLOGY_ID } from './worldHydrologyStore'
 
 /** Defaults aligned with `worldConfig` base terrain (plan 062/181). */
 function rawParams(seed: number, overrides: Partial<RawSampleParams> = {}): RawSampleParams {
   return {
     seed,
-    hydrologyId: 'test-hydrology',
+    hydrologyId: UNCONDITIONED_HYDROLOGY_ID,
     heightScale: 18,
     waterLevel: 0.45,
     noiseScale: 105,

@@ -6,6 +6,7 @@ import { clearCemeteryCaches } from './cemeteryAssignment'
 import { clearCemeteryPlacementCaches } from './cemeteryPlacement'
 import * as chunkHeightmap from './chunkHeightmap'
 import { resolveUnloadedLandmark, ringChunkOffsets } from './unloadedLandmarkLookup'
+import { UNCONDITIONED_HYDROLOGY_ID } from './worldHydrologyStore'
 import {
   chunkParamsForWorldKnowledgeScan,
   prepareWorldKnowledgeScan,
@@ -22,7 +23,7 @@ function tileParams(overrides: Partial<ChunkTileParams> = {}): ChunkTileParams {
     chunkSize: 64,
     resolution: 17,
     seed: 1,
-    hydrologyId: 'test-hydrology',
+    hydrologyId: UNCONDITIONED_HYDROLOGY_ID,
     heightScale: 18,
     waterLevel: 0.45,
     noiseScale: 120,

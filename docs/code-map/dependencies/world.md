@@ -966,6 +966,7 @@ Generated from TypeScript imports.
 - `fauna/createFauna.ts`
 - `terrain/chunkHeightmap.ts`
 - `terrain/slopeConstraint.ts`
+- `terrain/worldHydrologyStore.ts`
 - `world/caves/caveHeightfieldRepresentation.ts`
 - `world/caves/caveIdentity.ts`
 - `world/caves/mouthCarve.ts`
@@ -1086,6 +1087,7 @@ Generated from TypeScript imports.
 - `config/worldConfig.ts`
 - `fauna/createFauna.ts`
 - `terrain/chunkHeightmap.ts`
+- `terrain/worldHydrologyStore.ts`
 - `world/caveGenerator.ts`
 - `world/caveVolume.ts`
 - `world/caves/spikeTestCave.ts`
@@ -1101,6 +1103,7 @@ Generated from TypeScript imports.
 - `terrain/chunkHeightmap.ts`
 - `terrain/chunkMeshData.ts`
 - `terrain/terrainCutout.ts`
+- `terrain/worldHydrologyStore.ts`
 - `world/caves/caveHeightfieldRepresentation.ts`
 - `world/caves/caveTerrainCutout.ts`
 - `world/caves/mouthCarve.ts`
@@ -1246,6 +1249,7 @@ Generated from TypeScript imports.
 - `terrain/chunkHeightmap.ts`
 - `terrain/chunkManager.ts`
 - `terrain/terrainCutout.ts`
+- `terrain/worldHydrologyStore.ts`
 - `world/caves/caveWorldgenCache.ts`
 - `world/collision.ts`
 - `world/createCaves.ts`
@@ -1544,6 +1548,7 @@ Generated from TypeScript imports.
 - `fauna/createFauna.ts`
 - `terrain/chunkHeightmap.ts`
 - `terrain/slopeConstraint.ts`
+- `terrain/worldHydrologyStore.ts`
 - `world/caves/caveHeightfieldQuery.ts`
 - `world/caves/caveHeightfieldRepresentation.ts`
 - `world/caves/caveOrientation.ts`
@@ -1852,6 +1857,7 @@ Generated from TypeScript imports.
 - `terrain/chunkHeightmap.ts`
 - `terrain/chunkManager.ts`
 - `terrain/terrainCutout.ts`
+- `terrain/worldHydrologyStore.ts`
 - `world/caves/caveAdventureProps.ts`
 - `world/caves/cavePresentationLifecycle.ts`
 - `world/collision.ts`
@@ -1867,6 +1873,7 @@ Generated from TypeScript imports.
 - `terrain/chunkHeightmap.ts`
 - `terrain/chunkManager.ts`
 - `terrain/terrainCutout.ts`
+- `terrain/worldHydrologyStore.ts`
 - `world/caves/abandonedMineLandmark.ts`
 - `world/caves/adventureTopology.ts`
 - `world/caves/caveArchetype.ts`
@@ -1886,6 +1893,7 @@ Generated from TypeScript imports.
 - `terrain/chunkHeightmap.ts`
 - `terrain/chunkManager.ts`
 - `terrain/terrainCutout.ts`
+- `terrain/worldHydrologyStore.ts`
 - `world/caves/abandonedMineLandmark.ts`
 - `world/caves/caveArchetype.ts`
 - `world/caves/caveContentAnchors.ts`
@@ -1910,6 +1918,7 @@ Generated from TypeScript imports.
 - `terrain/chunkHeightmap.ts`
 - `terrain/chunkManager.ts`
 - `terrain/terrainCutout.ts`
+- `terrain/worldHydrologyStore.ts`
 - `world/caveVolume.ts`
 - `world/caves/abandonedMineLandmark.ts`
 - `world/caves/caveArchetype.ts`
@@ -2945,6 +2954,7 @@ Generated from TypeScript imports.
 
 - `persistence/worldgenCacheDb.ts`
 - `terrain/chunkHeightmap.ts`
+- `terrain/worldHydrologyStore.ts`
 - `world/locations/abandonedCemeteryCache.ts`
 
 ## `world/locations/abandonedCemeteryCache.ts`
@@ -3186,6 +3196,7 @@ Generated from TypeScript imports.
 
 - `persistence/worldgenCacheDb.ts`
 - `terrain/chunkHeightmap.ts`
+- `terrain/worldHydrologyStore.ts`
 - `world/locations/locationsCoarseCache.ts`
 
 ## `world/locations/locationsCoarseCache.ts`
@@ -3208,6 +3219,7 @@ Generated from TypeScript imports.
 **Imports**
 
 - `terrain/chunkHeightmap.ts`
+- `terrain/worldHydrologyStore.ts`
 - `world/locations/darkForestTreasureSite.ts`
 - `world/locations/lostTreasureEstateSearchArea.ts`
 
@@ -3297,6 +3309,7 @@ Generated from TypeScript imports.
 **Imports**
 
 - `terrain/chunkHeightmap.ts`
+- `terrain/worldHydrologyStore.ts`
 - `world/locations/seedProfile.ts`
 
 ## `world/locations/seedProfile.ts`
@@ -3363,6 +3376,7 @@ Generated from TypeScript imports.
 
 - `terrain/chunkWorkerPool.ts`
 - `terrain/unloadedLandmarkLookup.ts`
+- `terrain/worldHydrologyStore.ts`
 - `terrain/worldKnowledgeScan.ts`
 - `world/locations/worldKnowledgeResearch.ts`
 
@@ -3393,6 +3407,7 @@ Generated from TypeScript imports.
 - `terrain/chunkHeightmap.ts`
 - `terrain/chunkManager.ts`
 - `terrain/terrainClassification.ts`
+- `terrain/worldHydrologyStore.ts`
 - `world/caveVolume.ts`
 - `world/createCaves.ts`
 - `world/locations/abandonedCemeteryCache.ts`
@@ -3571,6 +3586,7 @@ Generated from TypeScript imports.
 **Imports**
 
 - `terrain/chunkHeightmap.ts`
+- `terrain/worldHydrologyStore.ts`
 - `world/locations/locationKnowledge.ts`
 - `world/locations/worldLocationCatalog.ts`
 - `world/locations/worldLocationTypes.ts`
@@ -3617,6 +3633,7 @@ Generated from TypeScript imports.
 
 - `config/worldConfig.ts`
 - `terrain/chunkHeightmap.ts`
+- `terrain/worldHydrologyStore.ts`
 - `world/map/mapConfig.ts`
 - `world/map/mapProjection.ts`
 - `world/map/mapRasterTile.ts`
@@ -4241,6 +4258,7 @@ Generated from TypeScript imports.
 - `persistence/seedRecord.ts`
 - `persistence/worldgenCacheDb.ts`
 - `terrain/chunkHeightmap.ts`
+- `terrain/worldHydrologyStore.ts`
 - `world/parseSeed.ts`
 - `world/seedLibrary.ts`
 

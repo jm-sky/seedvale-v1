@@ -1,5 +1,6 @@
 import { createNoise2D, type NoiseFunction2D } from 'simplex-noise'
 import type { RawSampleParams, RiverChannelSegment } from './chunkHeightmap'
+import type { WorldHydrology } from './worldHydrology'
 import { projectOntoSegment } from '../math/segment'
 import { createSeededRandom } from '../world/parseSeed'
 import {
@@ -13,6 +14,8 @@ import {
   probeDownstreamTerminal,
   type StreamThresholds,
 } from './hydrology'
+import { clipChainsToRect, RiverChainIndex } from './riverChainClip'
+import { isUnconditionedHydrologyId, unpackChains, worldHydrologyFor } from './worldHydrologyStore'
 
 /**
  * River network extraction (plan 181, Etap 4). Builds on the pure D8 prototype
@@ -868,7 +871,22 @@ export function computeRiverTile(
   sampleParams: RawSampleParams,
   thresholds: StreamThresholds = DEFAULT_RIVER_THRESHOLDS,
 ): RiverChain[] {
-  return computeTile(tile, sampleParams, thresholds, null)
+  if (isUnconditionedHydrologyId(sampleParams.hydrologyId)) return computeTile(tile, sampleParams, thresholds, null)
+  return globalRiverTile(tile, sampleParams.hydrologyId)
+}
+
+type GlobalChainView = { index: RiverChainIndex }
+const globalViews = new WeakMap<WorldHydrology, GlobalChainView>()
+
+/** The tile view of the installed global chains (plan world-terrain-058 H3): chains clipped to the tile core rect. */
+function globalRiverTile(tile: RiverTileCoord, hydrologyId: string): RiverChain[] {
+  const hydrology = worldHydrologyFor(hydrologyId)
+  let view = globalViews.get(hydrology)
+  if (!view) {
+    view = { index: new RiverChainIndex(unpackChains(hydrology.chains), RIVER_TILE_SIZE) }
+    globalViews.set(hydrology, view)
+  }
+  return clipChainsToRect(view.index.candidates(tile.tx, tile.tz), riverTileCoreRect(tile))
 }
 
 /**

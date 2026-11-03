@@ -10,6 +10,7 @@ import { fbm01, type FbmParams } from './fbm'
 import { fordBedHeight, fordInfluenceAt, type FordProjection } from './riverFord'
 import { isOnAnyBridgeDeck, type RoadBridgeSpec } from './roadBridge'
 import { computeBodyScale, detectWaterBodies } from './waterBodies'
+import { hydrologyCorrectionAt } from './worldHydrologyStore'
 import { worleyRidge } from './worleyNoise'
 
 /** `lily` (plan world-terrain-010) is shallow-water-only surface vegetation —
@@ -498,7 +499,7 @@ function noiseHandlesFor(seed: number): NoiseHandles {
   return handles
 }
 
-function sampleRawTexel(
+function sampleRawTexelUncorrected(
   wx: number,
   wz: number,
   noise: NoiseHandles,
@@ -651,8 +652,25 @@ function sampleRawTexel(
   return { h, floorH, m, continentalness: c, mountainRidge, moistureRegion }
 }
 
+/**
+ * The terrain as the world sees it: the analytic field plus the global-hydrology correction layer (breach cuts, filled
+ * pits — plan world-terrain-058 decision 3). Throws when `params.hydrologyId` has no installed data.
+ */
+function sampleRawTexel(
+  wx: number,
+  wz: number,
+  noise: NoiseHandles,
+  params: RawSampleParams,
+): RawTexelSample {
+  const raw = sampleRawTexelUncorrected(wx, wz, noise, params)
+  const correction = hydrologyCorrectionAt(params.hydrologyId, wx, wz)
+  if (correction === 0) return raw
+  const floorH = raw.floorH + correction
+  return { ...raw, floorH, h: floorH < params.waterLevel ? params.waterLevel : floorH }
+}
+
 /** Every raw (pre-modifier) terrain field at one world point. */
-export type RawTexelSample = ReturnType<typeof sampleRawTexel>
+export type RawTexelSample = ReturnType<typeof sampleRawTexelUncorrected>
 
 /** All raw fields from one evaluation — callers needing several fields at the
  *  same point (map raster/projection) must use this instead of the per-field
@@ -666,6 +684,11 @@ export function sampleRawTexelAt(worldX: number, worldZ: number, params: RawSamp
  *  points in a not-yet-ready chunk. */
 export function sampleHeightAt(worldX: number, worldZ: number, params: RawSampleParams): number {
   return sampleRawTexel(worldX, worldZ, noiseHandlesFor(params.seed), params).h
+}
+
+/** Floor height **without** the hydrology correction — the only input global hydrology may read (no cycle). */
+export function sampleRawFloorUncorrected(worldX: number, worldZ: number, params: RawSampleParams): number {
+  return sampleRawTexelUncorrected(worldX, worldZ, noiseHandlesFor(params.seed), params).floorH
 }
 
 export function sampleFloorAt(worldX: number, worldZ: number, params: RawSampleParams): number {

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { createBenchmarkWorldConfig } from '../../config/worldConfig'
 import { sampleRawTexelAt } from '../../terrain/chunkHeightmap'
+import { UNCONDITIONED_HYDROLOGY_ID } from '../../terrain/worldHydrologyStore'
 import { MAP_EXTENT_HALF } from './mapConfig'
 import { classifyMapTexel, projectCellAt, rawSampleParamsFromWorld } from './mapProjection'
 import {
@@ -14,7 +15,7 @@ import {
   selectMapRasterStep,
 } from './mapRasterTile'
 
-const params = rawSampleParamsFromWorld(createBenchmarkWorldConfig({ seed: 1234, terrainResolution: 65, loadRadius: 2 }))
+const params = { ...rawSampleParamsFromWorld(createBenchmarkWorldConfig({ seed: 1234, terrainResolution: 65, loadRadius: 2 })), hydrologyId: UNCONDITIONED_HYDROLOGY_ID }
 
 describe('map raster LOD selection', () => {
   it('picks the coarsest step that keeps ≥1.5 device px per sample', () => {

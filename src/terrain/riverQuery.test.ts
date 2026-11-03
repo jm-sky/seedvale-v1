@@ -6,13 +6,14 @@ import {
   riverChannelSegmentsNear,
 } from './riverNetwork'
 import { createRiverQuery } from './riverQuery'
+import { UNCONDITIONED_HYDROLOGY_ID } from './worldHydrologyStore'
 
 /** Defaults aligned with `worldConfig` base terrain, same fixture shape as
  *  `riverNetwork.test.ts`. */
 function rawParams(seed: number): RawSampleParams {
   return {
     seed,
-    hydrologyId: 'test-hydrology',
+    hydrologyId: UNCONDITIONED_HYDROLOGY_ID,
     heightScale: 18,
     waterLevel: 0.45,
     noiseScale: 105,

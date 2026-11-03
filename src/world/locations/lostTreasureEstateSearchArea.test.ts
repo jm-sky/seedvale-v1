@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { RawSampleParams } from '../../terrain/chunkHeightmap'
+import { UNCONDITIONED_HYDROLOGY_ID } from '../../terrain/worldHydrologyStore'
 import { DARK_FOREST_TREASURE_LOCATION_ID } from './darkForestTreasureSite'
 import {
   LOST_TREASURE_ESTATE_SEARCH_AREA_LOCATION_ID,
@@ -8,6 +9,7 @@ import {
 
 function rawParams(): RawSampleParams {
   return {
+    hydrologyId: UNCONDITIONED_HYDROLOGY_ID,
     seed: 42,
     heightScale: 18,
     waterLevel: 0.45,

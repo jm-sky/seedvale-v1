@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest'
 import type { WorldKnowledgeWorkerParams } from '../../terrain/worldKnowledgeScan'
 import { HeightmapGenerationCancelledError } from '../../terrain/chunkWorkerPool'
 import * as unloadedLandmarkLookup from '../../terrain/unloadedLandmarkLookup'
+import { UNCONDITIONED_HYDROLOGY_ID } from '../../terrain/worldHydrologyStore'
 import { createWorldKnowledgeResearch, type WorldKnowledgeQuery } from './worldKnowledgeResearch'
 
 const query: WorldKnowledgeQuery = {
@@ -23,7 +24,7 @@ function dummyParams(query: WorldKnowledgeQuery): WorldKnowledgeWorkerParams {
       chunkSize: 64,
       resolution: 17,
       seed: 1,
-      hydrologyId: 'test-hydrology',
+      hydrologyId: UNCONDITIONED_HYDROLOGY_ID,
       heightScale: 18,
       waterLevel: 0.45,
       noiseScale: 120,

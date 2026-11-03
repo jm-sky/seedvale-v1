@@ -4,6 +4,7 @@ import { installChunkWorkerHydrology, requestChunkHydrologyRows } from './chunkW
 import { computeWorldHydrology, hashWorldHydrology, sampleRawFloorRows, WORLD_HYDROLOGY_GRID } from './worldHydrology'
 import { readCachedWorldHydrology, writeCachedWorldHydrology } from './worldHydrologyCache'
 import { hasWorldHydrology, installWorldHydrology, worldHydrologyFor, worldHydrologyOptionsFor } from './worldHydrologyRegistry'
+import { isUnconditionedHydrologyId } from './worldHydrologyStore'
 
 /**
  * Boot-time install of the global hydrology (plan world-terrain-058 H2): registry → persistent cache (or boot
@@ -15,7 +16,7 @@ import { hasWorldHydrology, installWorldHydrology, worldHydrologyFor, worldHydro
  * @subdomain hydrology
  */
 
-export type WorldHydrologyInstallSource = 'registry' | 'cache' | 'computed'
+export type WorldHydrologyInstallSource = 'registry' | 'cache' | 'computed' | 'unconditioned'
 
 export type WorldHydrologyInstallResult = {
   hydrologyId: string
@@ -104,6 +105,9 @@ async function install(params: RawSampleParams, options: EnsureWorldHydrologyOpt
   const id = params.hydrologyId
   const installInWorkers = options.installInWorkers ?? installChunkWorkerHydrology
   const cache = options.cache ?? { read: readCachedWorldHydrology, write: writeCachedWorldHydrology }
+  if (isUnconditionedHydrologyId(id)) {
+    return { hydrologyId: id, source: 'unconditioned', hash: '-', totalMs: 0, sampleMs: 0, computeMs: 0 }
+  }
   const sampleRows = options.sampleRows ?? ((p, a, b) => requestChunkHydrologyRows(`${id}:${a}`, p, a, b))
 
   if (hasWorldHydrology(id)) {

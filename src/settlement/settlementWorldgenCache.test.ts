@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { RawSampleParams, RegionParams } from '../terrain/chunkHeightmap'
 import type { TerrainSamplers } from './settlementTerrain'
 import { cacheKey, listCacheRecords, putCacheRecords } from '../persistence/worldgenCacheDb'
+import { UNCONDITIONED_HYDROLOGY_ID } from '../terrain/worldHydrologyStore'
 import * as settlementGenerator from './settlementGenerator'
 import { generateSettlementDef, type SettlementDef } from './settlementGenerator'
 import {
@@ -45,7 +46,7 @@ afterEach(() => {
 function params(overrides: Partial<RawSampleParams> = {}): RawSampleParams {
   return {
     seed: 1,
-    hydrologyId: 'test-hydrology',
+    hydrologyId: UNCONDITIONED_HYDROLOGY_ID,
     heightScale: 18,
     waterLevel: 0.45,
     noiseScale: 120,

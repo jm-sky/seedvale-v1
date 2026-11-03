@@ -27,7 +27,7 @@ import {
 } from '../../src/terrain/riverNetwork'
 import { createRiverQuery } from '../../src/terrain/riverQuery'
 import { ChainEnd, computeWorldHydrology, hashWorldHydrology, sampleRawFloorRows, sparseBlockValue, unpackChains, WORLD_HYDROLOGY_GRID } from '../../src/terrain/worldHydrology'
-import { hydrologyIdFor } from '../../src/terrain/worldHydrologyRegistry'
+import { UNCONDITIONED_HYDROLOGY_ID } from '../../src/terrain/worldHydrologyStore'
 import { worldKnowledgeRoadContext, type WorldKnowledgeTerrainSnapshot } from '../../src/terrain/worldKnowledgeScan'
 
 function arg(name: string, fallback: string): string {
@@ -49,7 +49,7 @@ function sampleParamsFor(seed: number): RawSampleParams {
     detailAmplitude: t.detailAmplitude, hillsScale: t.hillsScale, hillsAmplitude: t.hillsAmplitude,
     hillsFbm: t.hillsFbm, fbm: t.fbm, biome: t.biome, region: t.region,
   }
-  return { ...params, hydrologyId: hydrologyIdFor(params) }
+  return { ...params, hydrologyId: UNCONDITIONED_HYDROLOGY_ID }
 }
 
 function snapshotFor(seed: number): WorldKnowledgeTerrainSnapshot {

@@ -103,6 +103,18 @@ Landed: `hydrologyId` in `RawSampleParams` (required; produced by `rawSamplePara
 - **Memory (open, measured):** payload per copy **6.46 MiB (seed 42) / 6.48 MiB (415424794)** — correction 211 blocks = 3.4 MiB, basin 142–156 blocks = 1.2 MiB, chains ≈ 1.9 MiB. The plan's budget "≤ 4 MB per copy" is exceeded for correction + basin alone (4.6 MiB) and in total; × (main + up to 6 workers) ≈ 45 MiB. Options when H3 starts (not decided): `Float16`-style quantisation of the correction (cm), shrinking blocks 64 → 32, or keeping chains out of the workers (they only need correction + basin + lake table; chains are used on the main thread and in `riverTile` jobs that move to the main thread in H3).
 - **Fixtures (open, for P1):** a `hydrology` record is ≈ 2.05 MiB gzip per seed, on top of today's 2.4–3.0 MB fixtures → the ≤ 3 MB cap would be exceeded after the P1 re-export. Until then the existing fixtures simply contain no `hydrology` record (cold compute once per browser profile). Decide in P1 (e.g. drop chains from the fixture record and recompute them, or raise the cap).
 
+## H3 results (Q75, 2026-11-03)
+
+Landed (technically verified; **not** browser-verified): the correction layer and the river-tile view.
+
+- `sampleRawTexel` (`chunkHeightmap.ts`) = `sampleRawTexelUncorrected` + `hydrologyCorrectionAt(params.hydrologyId, x, z)` (bilinear between the 4 surrounding 8 m cells; exact at cell centres where hydrology was computed; `floorH += corr`, `h = max(floorH, waterLevel)`). `sampleRawFloorUncorrected` is the only input hydrology reads (`sampleRawFloorRows`) — no cycle.
+- New leaf `worldHydrologyStore.ts` (install map, correction sampler with a direct block directory, `unpackChains`, `SPARSE_BLOCK_SIZE`; types-only imports, so `chunkHeightmap` can depend on it). `worldHydrologyRegistry.ts` re-exports the install API. Missing id **throws** in the sampler.
+- `computeRiverTile` = the global chains clipped to the tile core rect (`riverChainClip.ts`: Liang–Barsky per segment, interpolated boundary points, `RiverChainIndex` buckets per 256 m tile). Signature and all five consumers unchanged. Check (seeds 42 / 415424794): tiled total length = global chain length (288.55 / 283.55 km, H1 census 288.6 / 283.6).
+- **Unconditioned ids** (`UNCONDITIONED_HYDROLOGY_ID = 'unconditioned'`, and `legacy-…`): no correction, per-tile `computeTile`, no install. Used by (a) `?hydrology=legacy` for the P1 A/B (`hydrologyIdFor` reads the URL on the main thread; workers get the id in their params; own cache keys), (b) hand-built test params (replaces `'test-hydrology'`), the legacy tile census, the cave debug heightfield (synthetic terrain; nothing installs hydrology there), and a few map tests.
+- Observation (not a defect yet): at ~14 % of chain points the corrected ground is > 0.6 m above the chain water surface (chain points are smoothed/meandered off the 8 m cells and carving lowers the bed in chunks) — to be judged in the browser check of the home stream.
+- Payload-size options from H2 untouched (6.5 MiB per copy): workers still need chains because `riverTile` jobs run there.
+- **Still open for H3 done-when:** browser check "home stream continuous to the bay" (queue §2), and Q37/Q44/Q47/Q58 census baselines must be re-taken (terrain changed under every fingerprint via `hydrologyId`).
+
 ## Pitfalls
 
 - Hydrology must never read the corrected terrain, settlements, roads or `waterH` (cycle). Settlement code may read hydrology, never the other way round.

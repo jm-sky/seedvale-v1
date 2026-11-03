@@ -1,11 +1,12 @@
 import { describe, expect, it } from 'vitest'
 import type { RawSampleParams } from '../../terrain/chunkHeightmap'
+import { UNCONDITIONED_HYDROLOGY_ID } from '../../terrain/worldHydrologyStore'
 import { generateSeedName, sampleStartupTerrainProfile } from './seedProfile'
 
 function params(overrides: Partial<RawSampleParams> = {}): RawSampleParams {
   return {
     seed: 1,
-    hydrologyId: 'test-hydrology',
+    hydrologyId: UNCONDITIONED_HYDROLOGY_ID,
     heightScale: 18,
     waterLevel: 0.45,
     noiseScale: 120,

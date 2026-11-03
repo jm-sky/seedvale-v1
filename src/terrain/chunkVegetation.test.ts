@@ -12,6 +12,7 @@ import {
 import { computeChunkVegetation } from './chunkVegetation'
 import { isInsideRiverChannel, nearestRiverBankDistance } from './riverNetwork'
 import { computeBodyScale, detectWaterBodies } from './waterBodies'
+import { UNCONDITIONED_HYDROLOGY_ID } from './worldHydrologyStore'
 
 /** Same base terrain as `grassPlacement.test.ts`'s `tileParams` — `region`
  *  thresholds are overridden per test to force a specific biome so fern
@@ -21,7 +22,7 @@ function tileParams(
 ): ChunkTileParams {
   const raw: RawSampleParams = {
     seed: 42,
-    hydrologyId: 'test-hydrology',
+    hydrologyId: UNCONDITIONED_HYDROLOGY_ID,
     heightScale: 18,
     waterLevel: 0.45,
     noiseScale: 120,

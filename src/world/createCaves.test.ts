@@ -1,3 +1,4 @@
+import * as THREE from 'three'
 /** Plan world-terrain-019 — `createCaves()` wiring: heightfield
  *  presentation streamed through the existing controller, terrain cutouts
  *  registered with the chunk manager, and *every* spatial query (ground /
@@ -5,8 +6,6 @@
  *  containment / camera) on the one heightfield — no SDF, no column index,
  *  no cave collider registration. Analytic terrain (seed `1136726869`),
  *  fake `ChunkManager`, real `THREE.Scene`. */
-
-import * as THREE from 'three'
 import { beforeAll, describe, expect, it, vi } from 'vitest'
 import type { ChunkManager } from '../terrain/chunkManager'
 import type { TerrainCutout } from '../terrain/terrainCutout'
@@ -25,6 +24,7 @@ import {
   sampleHeightAt,
   sampleMountainRidgeAt,
 } from '../terrain/chunkHeightmap'
+import { UNCONDITIONED_HYDROLOGY_ID } from '../terrain/worldHydrologyStore'
 import { landmarkRequiredMineCaveId } from './caves/abandonedMineLandmark'
 import { assignCaveArchetypes } from './caves/caveArchetype'
 import { CAVE_FLOOR_GRACE, CAVE_UNDERGROUND_MISS } from './caves/caveGroundQuery'
@@ -86,7 +86,7 @@ function fakeChunkManager(): FakeChunkManager {
   const t = config.terrain
   const params: RawSampleParams = {
     seed: config.seed,
-    hydrologyId: 'test-hydrology',
+    hydrologyId: UNCONDITIONED_HYDROLOGY_ID,
     heightScale: t.heightScale,
     waterLevel: t.waterLevel,
     noiseScale: t.noiseScale,

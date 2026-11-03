@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { createBenchmarkWorldConfig } from '../config/worldConfig'
 import { measureSlope } from '../fauna/createFauna'
 import { type RawSampleParams, sampleHeightAt } from '../terrain/chunkHeightmap'
+import { UNCONDITIONED_HYDROLOGY_ID } from '../terrain/worldHydrologyStore'
 import { heightfieldOccupancyAt, queryHeightfieldGround } from '../world/caves/caveHeightfieldQuery'
 import {
   buildCaveHeightfieldRepresentation,
@@ -85,7 +86,7 @@ function buildSeedCave(seed: number, entrance: { x: number, z: number }) {
   const t = config.terrain
   const params: RawSampleParams = {
     seed: config.seed,
-    hydrologyId: 'test-hydrology',
+    hydrologyId: UNCONDITIONED_HYDROLOGY_ID,
     heightScale: t.heightScale,
     waterLevel: t.waterLevel,
     noiseScale: t.noiseScale,

@@ -27,6 +27,7 @@ import {
   createLocalTerrainSampler,
   sampleApronGridWeighted,
 } from './chunkHeightmap'
+import { UNCONDITIONED_HYDROLOGY_ID } from './worldHydrologyStore'
 
 function roadSegment(overrides: Partial<RoadCorridorSegment> = {}): RoadCorridorSegment {
   return {
@@ -209,7 +210,7 @@ describe('landmark variety (world-terrain-027)', () => {
       chunkSize: CHUNK_SIZE,
       resolution: RESOLUTION,
       seed: 1,
-      hydrologyId: 'test-hydrology',
+      hydrologyId: UNCONDITIONED_HYDROLOGY_ID,
       heightScale: 18,
       waterLevel: 0.45,
       noiseScale: 120,
@@ -416,7 +417,7 @@ describe('resolveCemeteryPlacement (plan world-014)', () => {
       chunkSize: CHUNK_SIZE,
       resolution: RESOLUTION,
       seed: 1,
-      hydrologyId: 'test-hydrology',
+      hydrologyId: UNCONDITIONED_HYDROLOGY_ID,
       heightScale: 18,
       waterLevel: 0.45,
       noiseScale: 120,
@@ -598,7 +599,7 @@ describe('resolveClassicLandmarkPlacement (plan world-028)', () => {
       chunkSize: CHUNK_SIZE,
       resolution: RESOLUTION,
       seed: 1,
-      hydrologyId: 'test-hydrology',
+      hydrologyId: UNCONDITIONED_HYDROLOGY_ID,
       heightScale: 18,
       waterLevel: 0.45,
       noiseScale: 120,

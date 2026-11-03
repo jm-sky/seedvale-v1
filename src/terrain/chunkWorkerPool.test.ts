@@ -9,6 +9,7 @@ import {
   createChunkWorkerPool,
   HeightmapGenerationCancelledError,
 } from './chunkWorkerPool'
+import { UNCONDITIONED_HYDROLOGY_ID } from './worldHydrologyStore'
 
 type ControllableWorker = ChunkWorkerLike & {
   /** Last job request (install messages are only in `posted`). */
@@ -96,7 +97,7 @@ const dummyKnowledge = {
   originZ: 0,
   maxChunkRadius: 1,
   terrain: {
-    hydrologyId: 'test-hydrology',
+    hydrologyId: UNCONDITIONED_HYDROLOGY_ID,
     chunkSize: 64,
     resolution: 17,
     seed: 1,

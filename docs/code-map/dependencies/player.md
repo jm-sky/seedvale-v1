@@ -798,6 +798,7 @@ Generated from TypeScript imports.
 - `fauna/createFauna.ts`
 - `player/worldWaterEligibility.ts`
 - `terrain/chunkHeightmap.ts`
+- `terrain/worldHydrologyStore.ts`
 - `world/caves/caveHeightfieldQuery.ts`
 - `world/caves/caveHeightfieldRepresentation.ts`
 - `world/caves/mouthCarve.ts`

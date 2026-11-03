@@ -87,7 +87,7 @@ Generated from TypeScript imports.
 
 - `config/worldConfig.ts`
 - `terrain/chunkHeightmap.ts`
-- `terrain/worldHydrologyRegistry.ts`
+- `terrain/worldHydrologyStore.ts`
 - `world/caveVolume.ts`
 - `world/caves/mouthCarve.ts`
 

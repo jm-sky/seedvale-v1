@@ -1,6 +1,5 @@
-/** Plan world-terrain-020 Stage D — adventure props attach/dispose with cave streaming. */
-
 import * as THREE from 'three'
+/** Plan world-terrain-020 Stage D — adventure props attach/dispose with cave streaming. */
 import { Scene } from 'three'
 import { beforeAll, describe, expect, it } from 'vitest'
 import type { ChunkManager } from '../terrain/chunkManager'
@@ -14,6 +13,7 @@ import {
   sampleHeightAt,
   sampleMountainRidgeAt,
 } from '../terrain/chunkHeightmap'
+import { UNCONDITIONED_HYDROLOGY_ID } from '../terrain/worldHydrologyStore'
 import {
   CAVE_ADVENTURE_PROPS_GROUP_NAME,
   preloadCaveAdventurePropTemplates,
@@ -30,7 +30,7 @@ function terrainParams(): RawSampleParams {
   const t = config.terrain
   return {
     seed: config.seed,
-    hydrologyId: 'test-hydrology',
+    hydrologyId: UNCONDITIONED_HYDROLOGY_ID,
     heightScale: t.heightScale,
     waterLevel: t.waterLevel,
     noiseScale: t.noiseScale,

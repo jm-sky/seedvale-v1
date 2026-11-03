@@ -17,13 +17,14 @@ import {
   macroMeadowWeightAt,
 } from './grassPlacement'
 import { isInsideRiverChannel } from './riverNetwork'
+import { UNCONDITIONED_HYDROLOGY_ID } from './worldHydrologyStore'
 
 /** Defaults aligned with `worldConfig` base terrain (same values as
  *  `chunkHeightmap.test.ts`'s `rawParams`, extended to a full `ChunkTileParams`). */
 function tileParams(overrides: Partial<ChunkTileParams> = {}): ChunkTileParams {
   const raw: RawSampleParams = {
     seed: 42,
-    hydrologyId: 'test-hydrology',
+    hydrologyId: UNCONDITIONED_HYDROLOGY_ID,
     heightScale: 18,
     waterLevel: 0.45,
     noiseScale: 120,

@@ -1,12 +1,13 @@
 import { describe, expect, it } from 'vitest'
 import { createBenchmarkWorldConfig } from '../../config/worldConfig'
+import { UNCONDITIONED_HYDROLOGY_ID } from '../../terrain/worldHydrologyStore'
 import { rawSampleParamsFromWorld } from '../../world/map/mapProjection'
 import { buildMapTile, MAP_TILE_SIDE, MapRasterClass } from '../../world/map/mapRasterTile'
 import { paintMapTilePixels } from './mapTerrainPaint'
 
 describe('paintMapTilePixels on real terrain', () => {
   it('shades steep V1 detail without blackening it', () => {
-    const params = rawSampleParamsFromWorld(createBenchmarkWorldConfig({ seed: 1234, terrainResolution: 65, loadRadius: 2 }))
+    const params = { ...rawSampleParamsFromWorld(createBenchmarkWorldConfig({ seed: 1234, terrainResolution: 65, loadRadius: 2 })), hydrologyId: UNCONDITIONED_HYDROLOGY_ID }
     let land = 0
     let dark = 0
     let min = 255

@@ -1,9 +1,8 @@
+import * as THREE from 'three'
 /** Plan world-terrain-020 Stage A — archetype assignment as `createCaves()`
  *  actually wires it: real analytic terrain, the unchanged siting authority,
  *  and topology acceptance owned by the recipes. Pure ordering/roll/fallback
  *  contracts live in `caves/caveArchetype.test.ts`. */
-
-import * as THREE from 'three'
 import { beforeAll, describe, expect, it } from 'vitest'
 import type { ChunkManager } from '../terrain/chunkManager'
 import type { TerrainCutout } from '../terrain/terrainCutout'
@@ -16,6 +15,7 @@ import {
   sampleHeightAt,
   sampleMountainRidgeAt,
 } from '../terrain/chunkHeightmap'
+import { UNCONDITIONED_HYDROLOGY_ID } from '../terrain/worldHydrologyStore'
 import { landmarkRequiredMineCaveId } from './caves/abandonedMineLandmark'
 import {
   ADVENTURE_FINAL_CHAMBER_NODE_ID,
@@ -47,7 +47,7 @@ function terrainParams(): RawSampleParams {
   const t = config.terrain
   return {
     seed: config.seed,
-    hydrologyId: 'test-hydrology',
+    hydrologyId: UNCONDITIONED_HYDROLOGY_ID,
     heightScale: t.heightScale,
     waterLevel: t.waterLevel,
     noiseScale: t.noiseScale,

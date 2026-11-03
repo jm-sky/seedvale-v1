@@ -1,17 +1,17 @@
+import { describe, expect, it } from 'vitest'
 /** Plan world-terrain-019 Milestone B — the production cave mouth as a real
  *  terrain hole. Builds Grota Czarnego Kamienia (seed `1136726869`) through
  *  the production topology + heightfield, derives the terrain cutout and
  *  applies it to the real 64 m / resolution-65 chunk grid the way
  *  `ChunkManager.buildAndAttachMesh` does. Pure: analytic terrain, no
  *  `ChunkManager`, no worker, no browser. */
-
-import { describe, expect, it } from 'vitest'
 import type { ChunkMeshData } from '../../terrain/chunkMeshData'
 import type { CaveHeightfieldRepresentation, SurfaceSampler } from './caveHeightfieldRepresentation'
 import { createBenchmarkWorldConfig } from '../../config/worldConfig'
 import { measureSlope } from '../../fauna/createFauna'
 import { type RawSampleParams, sampleHeightAt } from '../../terrain/chunkHeightmap'
 import { buildCutChunkAttributes, cutoutsOverlappingChunk, type TerrainCutout } from '../../terrain/terrainCutout'
+import { UNCONDITIONED_HYDROLOGY_ID } from '../../terrain/worldHydrologyStore'
 import { buildCaveHeightfieldRepresentation, mouthOpeningAt, sampleHeightfieldAt } from './caveHeightfieldRepresentation'
 import { caveOpenSkyBounds, caveTerrainCutout } from './caveTerrainCutout'
 import { mouthCarveDepth } from './mouthCarve'
@@ -27,7 +27,7 @@ function surfaceSampler(seed: number): SurfaceSampler {
   const t = config.terrain
   const params: RawSampleParams = {
     seed: config.seed,
-    hydrologyId: 'test-hydrology',
+    hydrologyId: UNCONDITIONED_HYDROLOGY_ID,
     heightScale: t.heightScale,
     waterLevel: t.waterLevel,
     noiseScale: t.noiseScale,

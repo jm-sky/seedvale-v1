@@ -4,6 +4,7 @@ import { getSeedRecord, putSeedRecord } from '../persistence/seedDb'
 import { minimalSeedRecord } from '../persistence/seedRecord'
 import { countCacheForSeed } from '../persistence/worldgenCacheDb'
 import { type RawSampleParams } from '../terrain/chunkHeightmap'
+import { UNCONDITIONED_HYDROLOGY_ID } from '../terrain/worldHydrologyStore'
 import { REFERENCE_SEED } from './parseSeed'
 import {
   clearSeedCache,
@@ -25,7 +26,7 @@ afterEach(() => {
 function fakeSampleParams(seed: number): RawSampleParams {
   return {
     seed,
-    hydrologyId: 'test-hydrology',
+    hydrologyId: UNCONDITIONED_HYDROLOGY_ID,
     heightScale: 18,
     waterLevel: 0.45,
     noiseScale: 120,
