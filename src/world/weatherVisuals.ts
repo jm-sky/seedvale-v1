@@ -36,10 +36,20 @@ const WEATHER_VISUAL_PROFILES: Record<WeatherType, WeatherVisualProfile> = {
 const tmpFogColor = new Color()
 const tmpTintColor = new Color()
 
-/** Pure — `intensity` (0 for `clear`) linearly blends profile onto `base`. */
+function colorLuma(c: Color): number {
+  return 0.2126 * c.r + 0.7152 * c.g + 0.0722 * c.b
+}
+
+/** Pure — `intensity` (0 for `clear`) linearly blends profile onto `base`.
+ *  `elev` (optional, the weather-independent day/night elevation from
+ *  `skyParamsFromTime`) keeps the tint from brightening the night base fog:
+ *  below the horizon (full effect at elev ≤ -0.3, matching the fog breakpoints)
+ *  the tint is scaled down to at most the base fog's luminance. Omitted or
+ *  `elev >= 0` → unchanged. */
 export function applyWeatherOverlay(
   base: { fogColor: number, fogNear: number, fogFar: number },
   weather: WeatherState,
+  elev?: number,
 ): WeatherVisualOverlay {
   const profile = WEATHER_VISUAL_PROFILES[weather.type]
   const t = weather.intensity
@@ -50,6 +60,12 @@ export function applyWeatherOverlay(
   if (profile.fogTint !== null && t > 0) {
     tmpFogColor.setHex(base.fogColor)
     tmpTintColor.setHex(profile.fogTint)
+    const nightWeight = elev === undefined ? 0 : Math.min(1, Math.max(0, -elev / 0.3))
+    if (nightWeight > 0) {
+      const tintLuma = colorLuma(tmpTintColor)
+      const cap = tintLuma > 0 ? Math.min(1, colorLuma(tmpFogColor) / tintLuma) : 1
+      tmpTintColor.multiplyScalar(1 - (1 - cap) * nightWeight)
+    }
     tmpFogColor.lerp(tmpTintColor, profile.fogTintStrength * t)
     fogColor = tmpFogColor.getHex()
   }

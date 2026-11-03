@@ -57,6 +57,49 @@ describe('applyWeatherOverlay', () => {
     const storm = applyWeatherOverlay(baseFog, weather({ type: 'storm', intensity: 1 }))
     expect(storm.lightScale).toBeLessThan(rain.lightScale)
   })
+
+  describe('night fog tint', () => {
+    const nightFog = { fogColor: 0x1a2233, fogNear: 160, fogFar: 230 }
+    const types = ['cloudy', 'rain', 'storm', 'fog', 'snow'] as const
+
+    it('does not brighten the night base fog for any weather type', () => {
+      const baseLuma = fogColorLuminance(nightFog.fogColor)
+      for (const type of types) {
+        const o = applyWeatherOverlay(nightFog, weather({ type, intensity: 1 }), -1)
+        expect(fogColorLuminance(o.fogColor), type).toBeLessThanOrEqual(baseLuma + 0.005)
+      }
+    })
+
+    it('would brighten night fog without elev (regression guard for the cap)', () => {
+      const o = applyWeatherOverlay(nightFog, weather({ type: 'cloudy', intensity: 1 }))
+      expect(fogColorLuminance(o.fogColor)).toBeGreaterThan(fogColorLuminance(nightFog.fogColor) + 0.02)
+    })
+
+    it('leaves daytime fog colour identical (elev >= 0 equals omitted elev)', () => {
+      for (const type of types) {
+        const w = weather({ type, intensity: 0.8 })
+        const ref = applyWeatherOverlay(baseFog, w)
+        expect(applyWeatherOverlay(baseFog, w, 0).fogColor, type).toBe(ref.fogColor)
+        expect(applyWeatherOverlay(baseFog, w, 1).fogColor, type).toBe(ref.fogColor)
+      }
+    })
+
+    it('transitions continuously through dusk', () => {
+      const w = weather({ type: 'cloudy', intensity: 1 })
+      const luma = (e: number) => fogColorLuminance(applyWeatherOverlay(nightFog, w, e).fogColor)
+      expect(luma(-0.15)).toBeLessThanOrEqual(luma(0) + 1e-9)
+      expect(luma(-0.15)).toBeGreaterThanOrEqual(luma(-0.3) - 1e-9)
+    })
+
+    it('does not change distances or light scale', () => {
+      const w = weather({ type: 'cloudy', intensity: 1 })
+      const a = applyWeatherOverlay(nightFog, w, -1)
+      const b = applyWeatherOverlay(nightFog, w)
+      expect(a.fogNear).toBe(b.fogNear)
+      expect(a.fogFar).toBe(b.fogFar)
+      expect(a.lightScale).toBe(b.lightScale)
+    })
+  })
 })
 
 describe('applyLightningFlash', () => {

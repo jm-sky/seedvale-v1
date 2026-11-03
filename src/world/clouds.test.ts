@@ -80,6 +80,13 @@ describe('cloudAppearanceFor', () => {
     expect(b).toBeGreaterThanOrEqual(r)
   })
 
+  it('keeps night cloud light dim (cloudy night does not exceed ~half brightness)', () => {
+    const night = cloudAppearanceFor(weather({ type: 'cloudy', intensity: 1 }), -1)
+    const day = cloudAppearanceFor(weather({ type: 'cloudy', intensity: 1 }), NOON)
+    const maxChannel = (c: number) => Math.max((c >> 16) & 0xff, (c >> 8) & 0xff, c & 0xff)
+    expect(maxChannel(night.tint)).toBeLessThan(maxChannel(day.tint) * 0.5)
+  })
+
   it('transitions smoothly through dusk rather than snapping', () => {
     const day = cloudAppearanceFor(weather({ type: 'clear', intensity: 0 }), 0.3)
     const dusk = cloudAppearanceFor(weather({ type: 'clear', intensity: 0 }), 0.15)

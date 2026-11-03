@@ -66,7 +66,7 @@ export type CloudAppearance = {
  *  warms/dims slightly; night is a dark cool blue-grey. */
 const DAY_CLOUD_LIGHT = new Color(0xffffff)
 const DUSK_CLOUD_LIGHT = new Color(0xffdcc0)
-const NIGHT_CLOUD_LIGHT = new Color(0x5a6b8c)
+const NIGHT_CLOUD_LIGHT = new Color(0x3a475f)
 const tmpLightColor = new Color()
 const tmpBaseColor = new Color()
 const tmpTargetColor = new Color()

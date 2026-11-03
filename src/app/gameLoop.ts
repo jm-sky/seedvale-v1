@@ -324,7 +324,7 @@ function applyDayNight(
   // `elev` (returned below) stay weather-independent so grass/water/ocean
   // shading keeps one time-of-day signal. Lightning flash is a short extra
   // overlay and never writes day/night state.
-  const overlay = applyWeatherOverlay({ fogColor: p.fogColor, fogNear: p.fogNear, fogFar: p.fogFar }, weather)
+  const overlay = applyWeatherOverlay({ fogColor: p.fogColor, fogNear: p.fogNear, fogFar: p.fogFar }, weather, p.elev)
   const cappedOverlay = capOutdoorFogToTerrainHorizon(overlay, horizon)
   const presented = applyLightningFlash(cappedOverlay, inCaveInterior ? 0 : flashAmount)
   lights.sun.intensity = p.sunIntensity * presented.lightScale
