@@ -335,15 +335,15 @@ Generated from exported TypeScript symbols.
 ## `settlement/houseBuilder.ts`
 
 - `applyHouseShadowSide` — function — line 385
-- `buildAssemblyCollidersWorld` — function — line 683
-- `buildHouse` — function — line 745
-- `buildHouseCollidersWorld` — function — line 668
+- `buildAssemblyCollidersWorld` — function — line 692
+- `buildHouse` — function — line 754
+- `buildHouseCollidersWorld` — function — line 677
 - `buildHouseDoorCollidersLocal` — function — line 620
 - `BuildHouseOptions` — type — line 310
 - `buildHouseWallCollidersLocal` — function — line 586
 - `censusAssembly` — function — line 453
 - `cornerLocalPosition` — function — line 216
-- `createHouseStaticBatch` — function — line 902
+- `createHouseStaticBatch` — function — line 911
 - `DOOR_1_FLAT_HINGE_OFFSET_X` — const — line 41
 - `DOOR_ANIM_SPEED` — const — line 43
 - `DOOR_OPEN_ANGLE` — const — line 42
@@ -368,7 +368,7 @@ Generated from exported TypeScript symbols.
 - `matchingWallPlacement` — function — line 254
 - `openingLocalPose` — function — line 279
 - `resolveRoofParts` — function — line 292
-- `transformHouseCollidersToWorld` — function — line 638
+- `transformHouseCollidersToWorld` — function — line 647
 - `WALL_YAW` — const — line 91
 - `wallLocalTransform` — function — line 195
 
