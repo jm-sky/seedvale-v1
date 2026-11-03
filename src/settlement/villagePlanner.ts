@@ -387,6 +387,21 @@ function heightSpread(x: number, z: number, radius: number, sampleHeight: Height
   return max - min
 }
 
+/** Q94: fraction of an object plot's radius whose rim must stand on dry ground. */
+const OBJECT_DISC_DRY_RIM = 0.8
+
+/** Q94: centre + eight rim points of an object plot's disc (diagonals too — a lake bay can cut a corner). */
+function objectDiscIsDry(x: number, z: number, radius: number, waterLevel: number, sampleHeight: HeightSampler): boolean {
+  const limit = waterLevel + SETTLEMENT_WATER_MARGIN
+  const r = radius * OBJECT_DISC_DRY_RIM
+  if (sampleHeight(x, z) <= limit) return false
+  for (let k = 0; k < 8; k++) {
+    const a = (k / 8) * Math.PI * 2
+    if (sampleHeight(x + Math.cos(a) * r, z + Math.sin(a) * r) <= limit) return false
+  }
+  return true
+}
+
 /** True when the disc centre and four rim points all stand above `waterLevel + SETTLEMENT_WATER_MARGIN`. */
 function discIsDry(x: number, z: number, radius: number, waterLevel: number, sampleHeight: HeightSampler): boolean {
   const limit = waterLevel + SETTLEMENT_WATER_MARGIN
@@ -579,6 +594,10 @@ function scorePlotCandidate(
       if (!discIsDry(yd.x, yd.z, yd.radius * 0.85, waterLevel, sampleHeight)) return null
     }
   }
+
+  // Q94: object discs (storehouse, garden, field, campfire, …) stand on dry ground at the rim too,
+  // like the house yard rule above (the planner used to judge only the centre).
+  if (!req.house && !objectDiscIsDry(x, z, req.radius, waterLevel, sampleHeight)) return null
 
   const clearance = compoundDiscs
     ? discsClearance(compoundDiscs, existing)
@@ -979,6 +998,8 @@ function pickPlot(
           const yd = yardDisc(compound.yard)
           if (!discIsDry(yd.x, yd.z, yd.radius * 0.85, waterLevel, sampleHeight)) continue
         }
+        // Q94: object discs stand on dry ground at the rim too (see the scored path).
+        if (!req.house && !objectDiscIsDry(fx, fz, req.radius, waterLevel, sampleHeight)) continue
         const clearance = compound
           ? discsClearance(compound.discs!, existing)
           : minDistToPlots(fx, fz, existing)

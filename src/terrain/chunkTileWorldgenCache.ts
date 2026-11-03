@@ -57,8 +57,9 @@ export const CHUNK_TILE_CACHE_NAMESPACE = 'chunk-tiles'
  * v13 (2026-11-02): house sites also judged by yard ground (steep yards rejected/penalised).
  * v22 (2026-11-03, queue Q37): clearance-fallback houses need a dry yard (house/yard clearings move).
  * v23 (2026-11-03, queue Q93): lane/road paving follows the new building-clear lane routes.
+ * v24 (2026-11-03, queue Q94): object pads move off lake rims.
  */
-export const CHUNK_TILE_CACHE_VERSION = 23
+export const CHUNK_TILE_CACHE_VERSION = 24
 
 /** Small byte-budget manifest record living in the same namespace — see
  *  `ChunkTileMetaPayload`. Its `fingerprint` field is a constant because the

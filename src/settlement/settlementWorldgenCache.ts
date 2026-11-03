@@ -58,7 +58,8 @@ export const SETTLEMENT_DEFINITION_CACHE_NAMESPACE = 'settlement-definitions'
  */
 // v23 (2026-11-03, queue Q37): clearance-fallback houses also need a dry yard (no yard pads in lakes).
 // v24 (2026-11-03, queue Q93): lane/spur routes keep off house/storehouse corridors; no shore lane inside a building.
-export const SETTLEMENT_DEFINITION_CACHE_VERSION = 24
+// v25 (2026-11-03, queue Q94): object discs keep a dry rim (layouts move; LG -4_3 on seed 415424794 has no cemetery).
+export const SETTLEMENT_DEFINITION_CACHE_VERSION = 25
 // v7 (2026-10-31, queue Q43): settlement storehouse — plot-infra-storehouse-0 (+ houseDefinitionId/houseYaw/storehouse),
 // landmark kind 'storehouse', ClearingLayout.storehouses.
 // v6 (2026-10-31, queue Q41): household compounds — plot.houseDefinitionId/houseYaw/yard/discs,
