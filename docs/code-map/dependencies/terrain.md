@@ -1379,6 +1379,7 @@ Generated from TypeScript imports.
 
 - `terrain/chunkHeightmap.ts`
 - `terrain/riverNetwork.ts`
+- `terrain/worldHydrologyStore.ts`
 
 **Imported by**
 
@@ -1815,6 +1816,7 @@ Generated from TypeScript imports.
 - `terrain/riverNetwork.test.ts`
 - `terrain/riverNetwork.ts`
 - `terrain/riverQuery.test.ts`
+- `terrain/riverQuery.ts`
 - `terrain/worldHydrology.ts`
 - `terrain/worldHydrologyRegistry.ts`
 - `terrain/worldHydrologyRuntime.ts`

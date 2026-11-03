@@ -634,9 +634,9 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/riverQuery.ts`
 
-- `createRiverQuery` — function — line 46
+- `createRiverQuery` — function — line 50
   - domain: terrain
-- `RiverQuery` — type — line 27
+- `RiverQuery` — type — line 28
   - domain: terrain
   - system: water
   - role: Analytic "what river geometry is around here" seam for *placement* code (settlement sites, village plots) that runs long before — and independently of — chunk streaming. Returns the same canonical `RiverChannelSegment[]` terrain carving and the water ribbon are built from (`riverChannelSegmentsNear`), so placement never reasons about rivers through a second, approximate representation.
@@ -873,8 +873,10 @@ Generated from exported TypeScript symbols.
 - `LEGACY_HYDROLOGY_PREFIX` — const — line 20
 - `SPARSE_BLOCK_SIZE` — const — line 14
   - domain: world-terrain
+- `StreamHead` — type — line 112
+- `streamHeadsFor` — function — line 121
 - `UNCONDITIONED_HYDROLOGY_ID` — const — line 17
-- `unpackChains` — function — line 112
+- `unpackChains` — function — line 140
 - `worldHydrologyFor` — function — line 39
 
 ## `terrain/worldKnowledgeScan.ts`

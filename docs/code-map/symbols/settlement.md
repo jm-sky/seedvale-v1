@@ -229,12 +229,13 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/findSettlementSite.ts`
 
-- `DEFAULT_SITE_SEARCH_MARGIN` — const — line 52
-- `findSettlementSite` — function — line 170
-- `SettlementFootprintHint` — type — line 15
+- `DEFAULT_SITE_SEARCH_MARGIN` — const — line 55
+- `findSettlementSite` — function — line 176
+- `SettlementFootprintHint` — type — line 18
 - `SettlementSite` — type — line 7
-- `SITE_RIVER_CLEARANCE` — const — line 60
-- `SITE_SCORE_WEIGHTS` — const — line 28
+- `SITE_RIVER_CLEARANCE` — const — line 63
+- `SITE_SCORE_WEIGHTS` — const — line 31
+- `SITE_STREAM_HEAD_CLEARANCE` — const — line 66
 
 ## `settlement/foundedSettlement.ts`
 
@@ -1251,9 +1252,9 @@ Generated from exported TypeScript symbols.
 - `cellKey` — function — line 154
 - `cellSeed` — function — line 198
 - `cellsWithinRadius` — function — line 182
-- `generateSettlementDef` — function — line 901
-- `generateVillagePlan` — function — line 829
-- `probeSettlementSite` — function — line 609
+- `generateSettlementDef` — function — line 910
+- `generateVillagePlan` — function — line 838
+- `probeSettlementSite` — function — line 618
   - domain: settlements
 - `setSettlementGridStepOverride` — function — line 90
 - `SETTLEMENT_GRID_STEP` — const — line 71
@@ -1264,7 +1265,7 @@ Generated from exported TypeScript symbols.
   - domain: settlements
 - `settlementCellInsideWorld` — function — line 148
 - `SettlementDef` — type — line 96
-- `SettlementSiteProbe` — type — line 594
+- `SettlementSiteProbe` — type — line 603
 - `worldToCell` — function — line 158
 
 ## `settlement/settlementLayout.ts`
