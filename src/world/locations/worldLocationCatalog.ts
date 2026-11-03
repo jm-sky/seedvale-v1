@@ -12,7 +12,7 @@ import {
   chunkPassesAbandonedCemeteryRoll,
 } from '../../terrain/cemeteryPlacement'
 import { sampleContinentalnessAt, sampleFloorAt, sampleHeightAt, sampleMountainRidgeAt } from '../../terrain/chunkHeightmap'
-import { isMountainRidge, isOceanMix, isWetFloor } from '../../terrain/terrainClassification'
+import { isFloorBelowSea, isMountainRidge, isOceanMix } from '../../terrain/terrainClassification'
 import {
   hoursToWorldUnits,
   LAKE_FLOOD_FILL_SAFETY_CAP,
@@ -652,7 +652,7 @@ export function createWorldLocationCatalog(deps: WorldLocationCatalogDeps): Worl
   function classifyCoarseCell(wx: number, wz: number, params: RawSampleParams): { kind: number, height: number } {
     diagnostics.sampleFloorCalls++
     const floorH = sampleFloorAt(wx, wz, params)
-    if (isWetFloor(floorH, params.waterLevel)) {
+    if (isFloorBelowSea(floorH, params.waterLevel)) {
       diagnostics.sampleContinentalnessCalls++
       const continentalness = sampleContinentalnessAt(wx, wz, params)
       if (isOceanMix(continentalness, params.region.oceanThreshold, params.region.coastThreshold)) {

@@ -1,5 +1,5 @@
 import { type RawSampleParams, sampleContinentalnessAt, sampleFloorAt, sampleMountainRidgeAt } from '../../terrain/chunkHeightmap'
-import { isMountainRidge, isOceanMix, isWetFloor } from '../../terrain/terrainClassification'
+import { isFloorBelowSea, isMountainRidge, isOceanMix } from '../../terrain/terrainClassification'
 import { createSeededRandom } from '../parseSeed'
 import { LOCATION_SCAN_STEP } from './locationConfig'
 
@@ -44,7 +44,7 @@ export function sampleStartupTerrainProfile(params: RawSampleParams, originX = 0
       const wz = originZ + gz * LOCATION_SCAN_STEP
       total++
       const floorH = sampleFloorAt(wx, wz, params)
-      if (isWetFloor(floorH, params.waterLevel)) {
+      if (isFloorBelowSea(floorH, params.waterLevel)) {
         const continentalness = sampleContinentalnessAt(wx, wz, params)
         if (isOceanMix(continentalness, params.region.oceanThreshold, params.region.coastThreshold)) ocean++
         else water++

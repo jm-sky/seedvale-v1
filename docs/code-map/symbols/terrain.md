@@ -674,9 +674,9 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/terrainClassification.ts`
 
-- `isMountainRidge` — function — line 25
-- `isOceanMix` — function — line 21
-- `isWetFloor` — function — line 17
+- `isFloorBelowSea` — function — line 18
+- `isMountainRidge` — function — line 26
+- `isOceanMix` — function — line 22
 - `MOUNTAIN_RIDGE_THRESHOLD` — const — line 13
 - `OCEAN_MIX_GATE` — const — line 15
 

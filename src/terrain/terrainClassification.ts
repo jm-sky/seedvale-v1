@@ -14,7 +14,8 @@ export const MOUNTAIN_RIDGE_THRESHOLD = 0.15
 /** Ocean vs. inland-water split of the `oceanMixAt` continentalness gate. */
 export const OCEAN_MIX_GATE = 0.5
 
-export function isWetFloor(floorH: number, waterLevel: number): boolean {
+/** Sea-only test: the floor lies below `waterLevel`. Lakes are NOT covered — for "is water on this texel" use `isWetFloor` from `waterSurface.ts`. */
+export function isFloorBelowSea(floorH: number, waterLevel: number): boolean {
   return floorH < waterLevel - 1e-4
 }
 

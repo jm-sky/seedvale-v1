@@ -9,7 +9,7 @@ import type { WorldLocation } from './worldLocationTypes'
 import { cellKey } from '../../settlement/settlementGenerator'
 import { chunkPassesAbandonedCemeteryRoll } from '../../terrain/cemeteryPlacement'
 import { sampleContinentalnessAt, sampleFloorAt, sampleMountainRidgeAt } from '../../terrain/chunkHeightmap'
-import { isMountainRidge, isOceanMix, isWetFloor } from '../../terrain/terrainClassification'
+import { isFloorBelowSea, isMountainRidge, isOceanMix } from '../../terrain/terrainClassification'
 import { UNCONDITIONED_HYDROLOGY_ID } from '../../terrain/worldHydrologyStore'
 import { projectCellAt } from '../map/mapProjection'
 import {
@@ -437,7 +437,7 @@ describe('coarse terrain scan (plan world-013)', () => {
         const wz = (gz + 0.5) * LOCATION_SCAN_STEP
         const projected = projectCellAt(wx, wz, params)
         const floorH = sampleFloorAt(wx, wz, params)
-        if (isWetFloor(floorH, params.waterLevel)) {
+        if (isFloorBelowSea(floorH, params.waterLevel)) {
           const continentalness = sampleContinentalnessAt(wx, wz, params)
           const expected = isOceanMix(continentalness, params.region.oceanThreshold, params.region.coastThreshold) ? 'ocean' : 'inland_water'
           expect(projected.terrain).toBe(expected)
