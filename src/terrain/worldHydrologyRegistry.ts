@@ -1,7 +1,7 @@
 import type { RawSampleParams } from './chunkHeightmap'
 import { worldgenFingerprint } from '../persistence/worldgenFingerprint'
 import { DEFAULT_WORLD_HYDROLOGY_OPTIONS, WORLD_HYDROLOGY_VERSION, type WorldHydrologyOptions } from './worldHydrology'
-import { clearWorldHydrology, hasWorldHydrology, installWorldHydrology, worldHydrologyFor } from './worldHydrologyStore'
+import { clearWorldHydrology, hasWorldHydrology, installWorldHydrology, retainOnlyWorldHydrology, worldHydrologyFor } from './worldHydrologyStore'
 
 /**
  * Module registry of installed global hydrology, keyed by `hydrologyId` (plan world-terrain-058 decision 4; same
@@ -44,4 +44,4 @@ export function hydrologyIdFor(p: HydrologyTerrainInputs): string {
   return `h${WORLD_HYDROLOGY_VERSION}-${worldgenFingerprint({ options: worldHydrologyOptionsFor(p), terrain })}`
 }
 
-export { clearWorldHydrology, hasWorldHydrology, installWorldHydrology, worldHydrologyFor }
+export { clearWorldHydrology, hasWorldHydrology, installWorldHydrology, retainOnlyWorldHydrology, worldHydrologyFor }

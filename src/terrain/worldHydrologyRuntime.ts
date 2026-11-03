@@ -3,7 +3,7 @@ import type { WorldHydrology } from './worldHydrology'
 import { installChunkWorkerHydrology, requestChunkHydrologyRows } from './chunkWorkerPool'
 import { computeWorldHydrology, hashWorldHydrology, sampleRawFloorRows, WORLD_HYDROLOGY_GRID } from './worldHydrology'
 import { readCachedWorldHydrology, writeCachedWorldHydrology } from './worldHydrologyCache'
-import { hasWorldHydrology, installWorldHydrology, worldHydrologyFor, worldHydrologyOptionsFor } from './worldHydrologyRegistry'
+import { hasWorldHydrology, installWorldHydrology, retainOnlyWorldHydrology, worldHydrologyFor, worldHydrologyOptionsFor } from './worldHydrologyRegistry'
 import { isUnconditionedHydrologyId } from './worldHydrologyStore'
 
 /**
@@ -87,7 +87,8 @@ export type EnsureWorldHydrologyOptions = {
 const pending = new Map<string, Promise<WorldHydrologyInstallResult>>()
 
 /**
- * Makes the hydrology of `params` available in this realm and in every chunk worker. Idempotent and de-duplicated:
+ * Makes the hydrology of `params` available in this realm and in every chunk worker, and drops every other installed
+ * hydrology (single-world retention, review 030 F3). Idempotent and de-duplicated:
  * concurrent calls for one id share the work; a later call for an installed id only re-installs it in a worker pool
  * that was recreated meanwhile (a no-op for the current pool).
  */
@@ -112,6 +113,7 @@ async function install(params: RawSampleParams, options: EnsureWorldHydrologyOpt
 
   if (hasWorldHydrology(id)) {
     const data = worldHydrologyFor(id)
+    retainOnlyWorldHydrology(id)
     installInWorkers(id, data)
     return { hydrologyId: id, source: 'registry', hash: hashWorldHydrology(data), totalMs: performance.now() - t0, sampleMs: 0, computeMs: 0 }
   }
@@ -119,12 +121,14 @@ async function install(params: RawSampleParams, options: EnsureWorldHydrologyOpt
   const cached = await cache.read(params.seed, id)
   if (cached) {
     installWorldHydrology(id, cached)
+    retainOnlyWorldHydrology(id)
     installInWorkers(id, cached)
     return { hydrologyId: id, source: 'cache', hash: hashWorldHydrology(cached), totalMs: performance.now() - t0, sampleMs: 0, computeMs: 0 }
   }
 
   const { hydrology, sampleMs, computeMs } = await computeWorldHydrologyFor(params, sampleRows)
   installWorldHydrology(id, hydrology)
+  retainOnlyWorldHydrology(id)
   installInWorkers(id, hydrology)
   void cache.write(params.seed, id, hydrology)
   return { hydrologyId: id, source: 'computed', hash: hashWorldHydrology(hydrology), totalMs: performance.now() - t0, sampleMs, computeMs }

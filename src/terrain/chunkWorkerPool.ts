@@ -71,7 +71,9 @@ export type ChunkWorkerPool = {
   cancelMapTile(key: string): void
   /**
    * Installs global hydrology in every worker, now and in any worker created later (plan world-terrain-058 H2). A
-   * worker handles messages in order, so every job posted after this call sees the data.
+   * worker handles messages in order, so every job posted after this call sees the data. Replace semantics (review 030
+   * F3): installing an id drops every other id from the pool's record and, worker-side, from each worker's store, so
+   * only the current world's hydrology is retained and a replacement worker receives just that one.
    * @domain world-terrain
    */
   installHydrology(hydrologyId: string, data: WorldHydrology): void
@@ -500,7 +502,8 @@ export function createChunkWorkerPool(
   }
 
   function installHydrology(hydrologyId: string, data: WorldHydrology): void {
-    if (installedHydrology.get(hydrologyId) === data) return
+    if (installedHydrology.size === 1 && installedHydrology.get(hydrologyId) === data) return
+    installedHydrology.clear()
     installedHydrology.set(hydrologyId, data)
     for (const worker of workers) worker.postMessage({ kind: 'installHydrology', hydrologyId, data })
   }

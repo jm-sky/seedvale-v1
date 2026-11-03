@@ -63,6 +63,21 @@ describe('ensureWorldHydrology', () => {
     expect(installInWorkers).toHaveBeenCalledOnce()
   })
 
+  it('keeps only the current world: ensuring B evicts A, ensuring A again re-reads the cache (review 030 F3)', async () => {
+    const other = rawSampleParamsFromWorld(testConfig(43))
+    const otherHydrology = { ...fakeHydrology }
+    const read = vi.fn(async (_seed: number, id: string) => (id === params.hydrologyId ? fakeHydrology : otherHydrology))
+    const options = { cache: { read, write: vi.fn() }, installInWorkers: vi.fn() }
+    await ensureWorldHydrology(params, options)
+    await ensureWorldHydrology(other, options)
+    expect(hasWorldHydrology(other.hydrologyId)).toBe(true)
+    expect(hasWorldHydrology(params.hydrologyId)).toBe(false)
+    const again = await ensureWorldHydrology(params, options)
+    expect(again.source).toBe('cache')
+    expect(read).toHaveBeenCalledTimes(3)
+    expect(hasWorldHydrology(other.hydrologyId)).toBe(false)
+  })
+
   it('shares one in-flight install between concurrent callers', async () => {
     const read = vi.fn(async () => fakeHydrology)
     const options = { cache: { read, write: vi.fn() }, installInWorkers: vi.fn() }

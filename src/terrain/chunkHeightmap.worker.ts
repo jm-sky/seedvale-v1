@@ -11,7 +11,7 @@ import { computeChunkMeshData } from './chunkMeshData'
 import { computeChunkVegetation } from './chunkVegetation'
 import { computeChunkGrass, GRASS_SPECIES_ORDER, type GrassChunkData } from './grassPlacement'
 import { sampleRawFloorRows, WORLD_HYDROLOGY_GRID } from './worldHydrology'
-import { installWorldHydrology } from './worldHydrologyRegistry'
+import { installWorldHydrology, retainOnlyWorldHydrology } from './worldHydrologyRegistry'
 import { scanWorldKnowledge } from './worldKnowledgeScan'
 
 // `self` is cast rather than adding the `webworker` TS lib, which can't coexist
@@ -44,7 +44,9 @@ function grassTransferList(grass: GrassChunkData): Transferable[] {
 ctx.onmessage = ({ data }) => {
   if (data.kind === 'installHydrology') {
     try {
+      // Replace semantics (review 030 F3): a worker holds the hydrology of the current world only.
       installWorldHydrology(data.hydrologyId, data.data)
+      retainOnlyWorldHydrology(data.hydrologyId)
     } catch (err) {
       console.error('[chunkHeightmap.worker] hydrology install failed', err)
     }

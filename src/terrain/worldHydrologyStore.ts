@@ -45,6 +45,17 @@ export function clearWorldHydrology(id?: string): void {
   else installed.delete(id)
 }
 
+/**
+ * Single-world retention (review 030 F3): keeps only `id`, drops every other installed hydrology (each is ~6.5 MiB).
+ * Called when a world installs its hydrology — an earlier world's consumers are disposed before the next world's
+ * systems are built (`rebuildWorldBundle`), so nothing live still reads the dropped ids.
+ */
+export function retainOnlyWorldHydrology(id: string): void {
+  for (const key of [...installed.keys()]) {
+    if (key !== id) installed.delete(key)
+  }
+}
+
 // ---- correction sampling -------------------------------------------------------------------------------------------
 
 type CorrectionSampler = {

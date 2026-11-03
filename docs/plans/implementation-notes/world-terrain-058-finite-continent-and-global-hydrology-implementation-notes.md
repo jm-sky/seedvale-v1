@@ -191,5 +191,6 @@ Author feedback (dev server, seed 415424794): since L2 the home area looks like 
 - Hydrology must never read the corrected terrain, settlements, roads or `waterH` (cycle). Settlement code may read hydrology, never the other way round.
 - A sampler call before install must fail loudly; a silent fallback would write uncorrected terrain into the caches under a corrected fingerprint.
 - Memory: one structured-clone copy per worker; keep payloads sparse (64 × 64-cell blocks) and measure in H2.
+- Single-world retention (review 030 F3, Q103): `ensureWorldHydrology` evicts every other installed id from the main store (`retainOnlyWorldHydrology`); `chunkWorkerPool.installHydrology` has replace semantics (pool record cleared, each worker's handler retains only the new id), so a replacement worker receives only the current world's hydrology. Safe because `rebuildWorldBundle` disposes the old chunk manager before building the new world; do not call `ensureWorldHydrology` for a second id while an old world still streams.
 - Every slice that changes worldgen bumps its namespaces; fixtures are re-exported once in P1 (the importer filters stale versions, so stale fixtures only cost a cold boot meanwhile — note it in boot-times if measured).
 - The census numbers in Q44/Q47/Q58 notes become stale after H3; do not compare across.

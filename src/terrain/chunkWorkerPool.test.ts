@@ -250,6 +250,26 @@ describe('chunkWorkerPool world-knowledge scheduling (plan quests-progression-04
     await expect(third).rejects.toBeInstanceOf(HeightmapGenerationCancelledError)
   })
 
+  it('retains only the current hydrology: a replacement worker after install A then B receives only B (review 030 F3)', () => {
+    const posted: Posted[] = []
+    const created: ControllableWorker[] = []
+    const pool = createChunkWorkerPool(1, { createWorker: () => { const w = createControllableWorker(posted); created.push(w); return w } })
+    const a = { version: 1 } as WorldHydrology
+    const b = { version: 2 } as WorldHydrology
+    pool.installHydrology('h-a', a)
+    pool.installHydrology('h-b', b)
+    created[0]!.die()
+    expect(created).toHaveLength(2)
+    const installs = posted.filter((p) => p.worker === created[1] && p.request.kind === 'installHydrology')
+    expect(installs.map((p) => (p.request as { hydrologyId: string }).hydrologyId)).toEqual(['h-b'])
+    // Installing A again re-posts it (it was dropped), and drops B in turn.
+    pool.installHydrology('h-a', a)
+    created[1]!.die()
+    const fresh = posted.filter((p) => p.worker === created[2] && p.request.kind === 'installHydrology')
+    expect(fresh.map((p) => (p.request as { hydrologyId: string }).hydrologyId)).toEqual(['h-a'])
+    pool.dispose()
+  })
+
   it('replaces a dead worker and retries its job once on the fresh worker (Q80)', async () => {
     const posted: Posted[] = []
     const created: ControllableWorker[] = []
