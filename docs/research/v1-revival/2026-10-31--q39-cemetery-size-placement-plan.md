@@ -1,7 +1,7 @@
 # Q39 — Cemetery size, layout and placement (V2 donor): recon and implementation plan
 
 **Created:** 2026-10-31 by Claude Opus 5.5 (queue Q39, O→S)  
-**Status:** plan. Implementation is queue **Q47** (Sonnet). Author answered the two optional questions (§6): no fence for now, readable plaques later. The visual result needs author sign-off (queue §2), like every epoch-1 layout slice.  
+**Status:** implemented — queue **Q47** done 2026-11-03 (build time §5.4). Author answered the two optional questions (§6): no fence for now, readable plaques later. The visual result needs author sign-off (queue §2), like every epoch-1 layout slice.  
 **Authority:** [P2 author decisions — Q39](./2026-10-31--p2-author-decisions-q38-q39-q31-q42.md#q39--cemeteries) (reuse the V2 layout and grave/crypt assets, adapted to V1; keep V1 simulation, grave-slot/quest/treasure semantics and stable references; changes belong to epoch 1). [Strategic Brief §3 "Cemeteries"](./STRATEGIC-BRIEF.md) (graves with plaques, crypt count related to settlement size). [Q29 batch plan §2–§3](./2026-10-30--q29-revival-epoch-batch-plan.md) (batch rules). [Cemetery comparison](./2026-10-26--dog-elder-cemeteries-comparison.md) (preservation inputs). The epoch is already `WORLDGEN_EPOCH = 1` (Q33) and stays 1. Source facts were checked against V1 `main` at `bf10c7c` and against V3 `main` at `47733d6` (the V2 snapshot under `docs/comparison/code/SeedVales-v2/`). The code is authoritative.
 
 ## 1. Recon findings (✅ verified)
@@ -141,6 +141,17 @@ Plot–clearing and plot–road overlaps are 0 for everything that is placed (ex
 ### 5.4 Remaining Q47 work after the fork is decided
 
 Cache bumps (`chunk-tiles`, `abandoned-cemeteries`, `locations-coarse` if it stores pose/size; tools-020 fixtures stale → browser re-export), the `PROPS` build-time number on WSL, queue §2 visual entry (marker front axis assumed **+Z**, unverified; crypt scale/sink), CREDITS/MODELS (done on the branch), `pnpm docs:sync`, STATE/CODE_INDEX owner update.
+
+**Build time — WSL, recorded 2026-11-03 (Opus, closes Q47).** WSL2 Chrome, ANGLE D3D12 → Intel Arc 140V, Vite dev server at `fd677e13`. Measured **in the running game page** (`?seed=415424794&perf`, after 60 s of boot/streaming, so the JIT/GC state is the game's), by dynamically importing the live `createCemetery` + `loadCemeteryPack` modules and building each class 60 times (merged mesh with the real pack; synthetic smooth height function in place of the tile sampler; first 10 builds dropped for the quantiles). Two independent runs:
+
+| Class | p50 ms | p95 ms | max ms (warm) |
+| --- | --- | --- | --- |
+| SM | 0.5 / 0.5 | 1.1 / 1.2 | 1.1 / 1.5 |
+| MD | 0.6 / 0.7 | 1.3 / 4.0 | 2.1 / 12.4 |
+| LG | 0.8 / 0.9 | 1.3 / 2.6 | 2.0 / 12.1 |
+| LG abandoned | 1.6 / 0.9 | 5.0 / 1.2 | 22.4 / 1.4 |
+
+The p50 gate (≤ ~2 ms per LG) is met. The rare 11–22 ms maxima moved between classes from run to run (abandoned in run 1, live in run 2), so they are GC/main-thread pauses inside the running game, not a cost of a class; the stop condition (> ~4 ms per cemetery) is not hit by the typical build. A cemetery build ≥ 8 ms would also show up as a `PROPS` hitch labelled `cemetery <size> <id>` in normal perf reports. Diagnostic browser measurement, not a benchmark A/B; Windows not measured.
 
 
 ### 5.5 Compact-plot trial (Q47, Sonnet, 2026-10-31, on `main`)
