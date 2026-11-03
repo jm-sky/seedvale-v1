@@ -2572,7 +2572,8 @@ Generated from exported TypeScript symbols.
 
 ## `world/worldContext.ts`
 
-- `createWorldContext` — function — line 39
+- `createWorldContext` — function — line 43
+- `withLandHeightView` — function — line 71
 - `WorldContext` — type — line 17
 
 ## `world/worldGeneratedContainers.ts`

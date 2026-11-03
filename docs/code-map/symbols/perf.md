@@ -28,10 +28,10 @@ Generated from exported TypeScript symbols.
 
 ## `perf/benchmark.ts`
 
-- `BenchmarkHost` — type — line 99
+- `BenchmarkHost` — type — line 101
 - `BenchmarkRunner` — type — line 82
 - `BenchmarkRunOptions` — type — line 73
-- `createBenchmarkRunner` — function — line 223
+- `createBenchmarkRunner` — function — line 225
 
 ## `perf/benchmarkFixture.ts`
 
@@ -50,13 +50,13 @@ Generated from exported TypeScript symbols.
 
 ## `perf/denseForestScenario.ts`
 
-- `DENSE_FOREST_MAX_RADIUS` — const — line 27
-- `DENSE_FOREST_RING_STEP` — const — line 26
-- `DenseForestAnchor` — type — line 23
+- `DENSE_FOREST_MAX_RADIUS` — const — line 29
+- `DENSE_FOREST_RING_STEP` — const — line 28
+- `DenseForestAnchor` — type — line 25
 - `DenseForestProbe` — type — line 17
   - domain: tools
-- `forestWindowScore` — function — line 38
-- `seekDenseForest` — function — line 52
+- `forestWindowScore` — function — line 40
+- `seekDenseForest` — function — line 54
 
 ## `perf/detector.ts`
 

@@ -1723,16 +1723,16 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/villagePlanner.ts`
 
-- `buildingsAndLandmarksFromPlots` — function — line 1556
+- `buildingsAndLandmarksFromPlots` — function — line 1568
 - `chooseLayoutPattern` — function — line 176
 - `HOUSE_COMPOUND_GAP_FACTOR` — const — line 91
 - `householdWellLocalBand` — function — line 103
   - domain: settlements-npcs
-- `pathPlansToCorridorData` — function — line 2015
-- `planLocalPathsAndEntrances` — function — line 1884
-- `planVillageLayout` — function — line 1018
+- `pathPlansToCorridorData` — function — line 2027
+- `planLocalPathsAndEntrances` — function — line 1896
+- `planVillageLayout` — function — line 1030
 - `PLOT_SCORE_WEIGHTS` — const — line 62
-- `roadEntranceAngles` — function — line 1770
+- `roadEntranceAngles` — function — line 1782
 - `VillageLayoutDraft` — type — line 139
 
 ## `settlement/wellInteractionQueue.ts`
