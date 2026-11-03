@@ -17,6 +17,8 @@ type ControllableWorker = ChunkWorkerLike & {
   terminated: boolean
   completeOk(): void
   completeError(error: string): void
+  /** Fires the worker `error` event (a dead worker, e.g. an aborted module-graph load). */
+  die(): void
 }
 
 type Posted = { worker: ControllableWorker, request: ChunkWorkerRequest }
@@ -75,6 +77,9 @@ function createControllableWorker(posted: Posted[]): ControllableWorker {
                 }
       ) as ChunkWorkerResponse
       worker.onmessage({ data: response } as MessageEvent<ChunkWorkerResponse>)
+    },
+    die() {
+      worker.onerror?.({})
     },
     completeError(error) {
       const request = worker.last
@@ -255,5 +260,39 @@ describe('chunkWorkerPool world-knowledge scheduling (plan quests-progression-04
     pool.dispose()
     await expect(second).rejects.toBeInstanceOf(HeightmapGenerationCancelledError)
     await expect(third).rejects.toBeInstanceOf(HeightmapGenerationCancelledError)
+  })
+
+  it('replaces a dead worker and retries its job once on the fresh worker (Q80)', async () => {
+    const posted: Posted[] = []
+    const created: ControllableWorker[] = []
+    const pool = createChunkWorkerPool(1, { createWorker: () => { const w = createControllableWorker(posted); created.push(w); return w } })
+    const data = { version: 1 } as WorldHydrology
+    pool.installHydrology('h-test', data)
+    const rows = pool.requestHydrologyRows('r', {} as RawSampleParams, 0, 4)
+    created[0]!.die()
+    expect(created[0]!.terminated).toBe(true)
+    expect(created).toHaveLength(2)
+    // The replacement got the installed hydrology before the retried strip.
+    const toFresh = posted.filter((p) => p.worker === created[1]).map((p) => p.request.kind)
+    expect(toFresh).toEqual(['installHydrology', 'hydrologyRows'])
+    created[1]!.completeOk()
+    await expect(rows).resolves.toEqual(new Float32Array([0]))
+    pool.dispose()
+  })
+
+  it('rejects a job whose retry also dies, and stops respawning after the budget', async () => {
+    const posted: Posted[] = []
+    const created: ControllableWorker[] = []
+    const pool = createChunkWorkerPool(1, { createWorker: () => { const w = createControllableWorker(posted); created.push(w); return w } })
+    const tile = pool.requestTile('t', dummyTile)
+    created[0]!.die()
+    created[1]!.die()
+    await expect(tile).rejects.toThrow('chunk worker error')
+    created[2]!.die()
+    // Budget (2 × size) spent: no live worker left, queued work is rejected instead of hanging.
+    expect(created).toHaveLength(3)
+    await expect(pool.requestTile('t2', dummyTile)).rejects.toThrow('no live workers')
+    expect(pool.pendingCount).toBe(0)
+    pool.dispose()
   })
 })

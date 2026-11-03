@@ -221,6 +221,10 @@ export function createChunkWorkerPool(
   const inflight = new Map<number, ChunkJob>()
   const keyToId = new Map<string, number>()
   const workerJob = new Map<ChunkWorkerLike, number>()
+  /** Jobs already retried once after their worker died (see `worker.onerror`). */
+  const retriedJobs = new Set<number>()
+  /** Replacement budget for dead workers, so a worker that can never load does not respawn forever. */
+  let respawnsLeft = size * 2
   let nextId = 0
 
   const maxInflightBackground = Math.max(1, size - 1)
@@ -236,6 +240,7 @@ export function createChunkWorkerPool(
   }
 
   function pump(): void {
+    if (workers.length === 0) rejectQueued(() => new Error('chunk worker pool has no live workers'))
     while (free.length > 0) {
       let job: ChunkJob | undefined
       if (queueHydrologyRows.length > 0) {
@@ -265,6 +270,7 @@ export function createChunkWorkerPool(
   function settleJob(msgId: number): ChunkJob | undefined {
     const job = inflight.get(msgId)
     inflight.delete(msgId)
+    retriedJobs.delete(msgId)
     if (job) {
       const namespacedKey = `${job.kind}:${job.key}`
       if (keyToId.get(namespacedKey) === msgId) {
@@ -325,15 +331,57 @@ export function createChunkWorkerPool(
       pump()
     }
     worker.onerror = (event) => {
+      // The worker's own handler catches job errors and answers `ok: false`, so an `error` event means the worker
+      // is dead or unusable — e.g. under Vite dev a module worker whose ~450-module graph load is aborted fires a
+      // bare `Event` (Q80). Jobs posted to it would never answer: replace it and retry its job once.
+      console.error('[chunkWorkerPool] worker error — replacing worker', event.message, event.filename, event.lineno, event.colno)
       const jobId = workerJob.get(worker)
-      workerJob.delete(worker)
-      free.push(worker)
-      console.error('[chunkWorkerPool] worker error', event.message, event.filename, event.lineno, event.colno)
-      if (jobId !== undefined) {
-        const job = settleJob(jobId)
-        job?.reject(new Error(event.message || 'chunk worker error'))
+      retire(worker)
+      if (respawnsLeft > 0) {
+        respawnsLeft--
+        spawn()
+      }
+      const job = jobId === undefined ? undefined : inflight.get(jobId)
+      if (job) {
+        if (!retriedJobs.has(job.id) && workers.length > 0) {
+          retriedJobs.add(job.id)
+          inflight.delete(job.id)
+          requeueFront(job)
+        } else {
+          settleJob(job.id)?.reject(new Error(event.message || 'chunk worker error'))
+        }
       }
       pump()
+    }
+  }
+
+  /** Drops a dead worker from the pool; late messages from it are ignored. */
+  function retire(worker: ChunkWorkerLike): void {
+    worker.onmessage = null
+    worker.onerror = null
+    worker.terminate()
+    workerJob.delete(worker)
+    const index = workers.indexOf(worker)
+    if (index !== -1) workers.splice(index, 1)
+    const freeIndex = free.indexOf(worker)
+    if (freeIndex !== -1) free.splice(freeIndex, 1)
+  }
+
+  function requeueFront(job: ChunkJob): void {
+    if (job.kind === 'hydrologyRows') queueHydrologyRows.unshift(job)
+    else if (job.kind === 'tile') queueTile.unshift(job)
+    else if (job.kind === 'mesh') queueMesh.unshift(job)
+    else if (job.kind === 'worldKnowledge') queueWorldKnowledge.unshift(job)
+    else if (job.kind === 'riverTile') queueRiverTile.unshift(job)
+    else if (job.kind === 'mapTile') queueMapTile.unshift(job)
+    else queueGrass.unshift(job)
+  }
+
+  function rejectQueued(makeError: () => Error): void {
+    const queues: ChunkJob[][] = [queueHydrologyRows, queueTile, queueMesh, queueWorldKnowledge, queueMapTile, queueRiverTile, queueGrass]
+    for (const queue of queues) {
+      for (const job of queue) job.reject(makeError())
+      queue.length = 0
     }
   }
 
@@ -397,6 +445,7 @@ export function createChunkWorkerPool(
     const job = inflight.get(id)
     if (job) {
       inflight.delete(id)
+      retriedJobs.delete(id)
       job.reject(new HeightmapGenerationCancelledError())
     }
   }
@@ -530,6 +579,7 @@ export function createChunkWorkerPool(
     queueGrass.length = 0
     for (const job of inflight.values()) job.reject(new HeightmapGenerationCancelledError())
     inflight.clear()
+    retriedJobs.clear()
     keyToId.clear()
     workerJob.clear()
     for (const worker of workers) worker.terminate()
