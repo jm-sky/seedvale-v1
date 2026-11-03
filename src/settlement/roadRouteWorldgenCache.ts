@@ -42,7 +42,8 @@ export const ROAD_ROUTE_CACHE_NAMESPACE = 'road-routes'
 // v4 (2026-10-31, queue Q43): storehouse plot + local path moves plots/entrances.
 // v8 (2026-11-03, queue Q60): village-aware A* (routes avoid plots/yards/plaza).
 // v10 (2026-11-03, queue Q37): clearance-fallback houses move off lake yards (plots/entrances).
-export const ROAD_ROUTE_CACHE_VERSION = 10
+// v11 (2026-11-03, queue Q93): entrance lanes keep off house/storehouse corridors.
+export const ROAD_ROUTE_CACHE_VERSION = 11
 
 const DEFAULT_DEBOUNCE_MS = 4000
 /** Bounded per-seed cap of requested routes only — never a full pair scan.

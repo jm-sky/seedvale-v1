@@ -22,9 +22,10 @@ export const ABANDONED_CEMETERY_NAMESPACE = 'abandoned-cemeteries'
  *  geometry for an unchanged seed, and placement rejects footprints that clear
  *  nearby roads.
  *  v4 (Q41): settlement clearings now include household yards and houses moved.
- *  v5 (Q43): settlement storehouse pad added to the clearings. */
-/** v7 (Q37): clearance-fallback houses need a dry yard (settlement clearings move). */
-export const ABANDONED_CEMETERY_VERSION = 7
+ *  v5 (Q43): settlement storehouse pad added to the clearings.
+ *  v7 (Q37): clearance-fallback houses need a dry yard (settlement clearings move).
+ *  v8 (Q93): lanes keep off house/storehouse corridors (path plans move). */
+export const ABANDONED_CEMETERY_VERSION = 8
 
 export type CachedAbandonedCemeteryResult =
   | { status: 'none' }

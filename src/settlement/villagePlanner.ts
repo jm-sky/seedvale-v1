@@ -45,7 +45,7 @@ import {
 } from './householdYard'
 import { pathIsDry, SETTLEMENT_WATER_MARGIN } from './pathDryness'
 import { STOREHOUSE_APRON, storehouseLayoutFor } from './storehouseLayout'
-import { createLaneRouter, laneAccessPoint, type LaneDestination, planVillageLanes } from './villageLanes'
+import { createBuildingClearance, createLaneRouter, laneAccessPoint, type LaneDestination, planVillageLanes } from './villageLanes'
 import { appendPaddockPath, planSettlementPaddock } from './villagePaddock'
 import { appendPasturePath, planSettlementPasture } from './villagePasture'
 import {
@@ -1556,11 +1556,11 @@ export function planVillageLayout(
   })
   const laneRouter = createLaneRouter(plots)
   const cemeteryReservation = plots.find((p) => p.role === 'cemetery')
-  const keepsOffCemetery = cemeteryReservation
-    ? (a: { x: number, z: number }, b: { x: number, z: number }): boolean =>
-        distanceToSegment(cemeteryReservation.x, cemeteryReservation.z, a.x, a.z, b.x, b.z) >=
-        cemeteryReservation.radius + LOCAL_PATH_HALF_WIDTH + 0.5
-    : undefined
+  const keepsOffBuildings = createBuildingClearance(plots)
+  const keepsOffCemetery = (a: { x: number, z: number }, b: { x: number, z: number }): boolean =>
+    keepsOffBuildings(a, b) && (!cemeteryReservation ||
+      distanceToSegment(cemeteryReservation.x, cemeteryReservation.z, a.x, a.z, b.x, b.z) >=
+      cemeteryReservation.radius + LOCAL_PATH_HALF_WIDTH + 0.5)
   if (pasture) appendPasturePath(paths, pasture, sampleHeight, waterLevel, laneRouter, keepsOffCemetery)
   if (paddock) appendPaddockPath(paths, paddock, sampleHeight, waterLevel, laneRouter, keepsOffCemetery)
   return { boundary, center, pattern, zones, plots, buildings, landmarks, paths, entrances, plaza, pasture, paddock }
@@ -1957,7 +1957,8 @@ export function planLocalPathsAndEntrances(args: {
   // jetty / boat props go there).
   const plazaRadius = villagePlazaAt(center, identity.size).radius
   const shore = findShorePoint(center, waterAngle, plazaRadius, boundary.radius * SHORE_REACH_FACTOR, sampleHeight, waterLevel)
-  if (shore) destinations.push({ id: 'path-shore', access: shore, ownPlotId: null })
+  // Q93: a shore lane may not end inside a house/storehouse corridor — no shore lane then (never a path through a building).
+  if (shore && createBuildingClearance(plots)(shore, shore)) destinations.push({ id: 'path-shore', access: shore, ownPlotId: null })
 
   for (const plot of plots) {
     if (plot.role === 'house') continue

@@ -24,6 +24,8 @@ type Pt = { x: number, z: number }
 
 /** Lane may not come closer than this fraction of a plot radius to its centre. */
 const PLOT_CLEARANCE_FACTOR = 0.9
+/** Q93: extra metres between a lane's edge and a house/storehouse footprint disc (on top of the lane half width). */
+const BUILDING_LANE_MARGIN = 0.3
 /** Household wells keep the whole corridor (radius + lane half width, road 2.4) off the well. */
 const SMALL_PLOT_LANE_CLEARANCE = 1.7
 /** Extra clearance for road-width (entrance) lanes around those small plots. */
@@ -53,7 +55,16 @@ const MAX_DETOUR_DEPTH = 3
 /** Root points around the plaza rim lanes may attach to. */
 const PLAZA_RIM_ROOTS = 16
 
-type DiscObstacle = { kind: 'disc', id: string, x: number, z: number, r: number, small: boolean }
+type DiscObstacle = {
+  kind: 'disc'
+  id: string
+  x: number
+  z: number
+  r: number
+  small: boolean
+  /** Q93: corridor padding already inside `r` (lane half width + margin). Point-in-footprint tests use `r - pad`. */
+  pad?: number
+}
 type YardObstacle = {
   kind: 'yard'
   id: string
@@ -85,7 +96,8 @@ const ACCESS_NUDGES = [0, 0.35, -0.35, 0.7, -0.7, 1.05, -1.05, 1.4, -1.4, 1.9, -
 
 /** First access point (door side preferred) not already inside a foreign obstacle. */
 function resolveAccess(dest: LaneDestination, obstacles: readonly Obstacle[]): Pt {
-  const free = (p: Pt): boolean => firstHit(p, p, obstacles, dest.ownPlotId) === null
+  const footprints = obstacles.map(footprintOnly)
+  const free = (p: Pt): boolean => firstHit(p, p, footprints, dest.ownPlotId) === null
   if (free(dest.access) || !dest.around) return dest.access
   const { x, z, r } = dest.around
   const base = Math.atan2(dest.access.z - z, dest.access.x - x)
@@ -107,6 +119,10 @@ export type VillageLanePlan = {
 const isPlazaFurniture = (plot: VillagePlot): boolean =>
   /market|campfire|notice|plot-infra-well$/.test(plot.id)
 
+/** Walled buildings (houses, storehouse): the lane corridor — not only its centreline — stays off the footprint. */
+const isBuildingPlot = (plot: VillagePlot): boolean =>
+  plot.role === 'house' || /storehouse/.test(plot.id)
+
 function obstaclesFromPlots(plots: readonly VillagePlot[], laneHalfWidth: number): Obstacle[] {
   const out: Obstacle[] = []
   for (const plot of plots) {
@@ -125,7 +141,10 @@ function obstaclesFromPlots(plots: readonly VillagePlot[], laneHalfWidth: number
       small: plot.id.startsWith('plot-household-well-'),
       r: plot.id.startsWith('plot-household-well-')
         ? plot.radius + SMALL_PLOT_LANE_CLEARANCE
-        : plot.radius * PLOT_CLEARANCE_FACTOR,
+        : isBuildingPlot(plot)
+          ? plot.radius * PLOT_CLEARANCE_FACTOR + laneHalfWidth + BUILDING_LANE_MARGIN
+          : plot.radius * PLOT_CLEARANCE_FACTOR,
+      ...(isBuildingPlot(plot) && !plot.id.startsWith('plot-household-well-') ? { pad: laneHalfWidth + BUILDING_LANE_MARGIN } : {}),
     })
     if (plot.yard) {
       const d = yardDisc(plot.yard)
@@ -182,9 +201,18 @@ function firstHit(
   return best
 }
 
+/** The obstacle without its lane-corridor padding (Q93): where a door / gate / access point sits relative to the footprint. */
+const footprintOnly = (o: Obstacle): Obstacle => (o.kind === 'disc' && o.pad ? { ...o, r: o.r - o.pad } : o)
+
+/** Q93: corridor padding applied to the building discs, tried from full to none before a lane is called unresolved. */
+const BUILDING_PAD_STEPS = [1, 0.5, 0] as const
+/** Obstacles with the building corridor padding scaled by `k` (1 = full, 0 = footprint only). */
+const withBuildingPad = (obstacles: readonly Obstacle[], k: number): readonly Obstacle[] =>
+  k === 1 ? obstacles : obstacles.map((o) => (o.kind === 'disc' && o.pad ? { ...o, r: o.r - o.pad * (1 - k) } : o))
+
 /** Obstacles that already contain `p` (the lane's own start/end) are not crossable by definition. */
 function obstaclesExcludingPoint(obstacles: readonly Obstacle[], p: Pt): readonly Obstacle[] {
-  const containing = obstacles.filter((o) => firstHit(p, p, [o], null) !== null)
+  const containing = obstacles.filter((o) => firstHit(p, p, [footprintOnly(o)], null) !== null)
   return containing.length === 0 ? obstacles : obstacles.filter((o) => !containing.includes(o))
 }
 
@@ -334,18 +362,27 @@ export function planVillageLanes(args: {
     let chosen: Pt[] | null = null
     // A gate that already sits inside a plot disc cannot be helped here.
     const gateObstacles = obstaclesExcludingPoint(entrance.kind === 'road' ? roadObstacles : obstacles, from)
-    for (const root of nearestFirst(rim, from).slice(0, MAX_ATTACH_CANDIDATES)) {
-      const route = routeAround(from, root, gateObstacles, null, MAX_DETOUR_DEPTH)
-      if (route && polylineDry(route, waterLevel, sampleHeight)) {
-        chosen = route
-        break
+    for (const k of BUILDING_PAD_STEPS) {
+      const padded = withBuildingPad(gateObstacles, k)
+      for (const root of nearestFirst(rim, from).slice(0, MAX_ATTACH_CANDIDATES)) {
+        const route = routeAround(from, root, padded, null, MAX_DETOUR_DEPTH)
+        if (route && polylineDry(route, waterLevel, sampleHeight)) {
+          chosen = route
+          break
+        }
       }
+      if (chosen) break
     }
     if (chosen) {
       emit(`path-entrance-${entrance.id}`, chosen, entrance.kind, false)
     } else if (pathIsDry(from.x, from.z, center.x, center.z, waterLevel, sampleHeight)) {
       unresolved.push(`path-entrance-${entrance.id}`)
-      emit(`path-entrance-${entrance.id}`, routeAround(from, center, cemeteryObstaclesFor(obstacles, from), null, MAX_DETOUR_DEPTH) ?? [from, center], entrance.kind, false)
+      // Q93: never a straight line through a building — try all obstacles, else cemetery-only if that is building-free.
+      const full = routeAround(from, center, gateObstacles, null, MAX_DETOUR_DEPTH)
+      const lite = routeAround(from, center, cemeteryObstaclesFor(obstacles, from), null, MAX_DETOUR_DEPTH) ?? [from, center]
+      const buildings = gateObstacles.filter((o) => o.kind === 'disc' && o.id !== CEMETERY_OBSTACLE_ID).map(footprintOnly)
+      const route = (full && polylineDry(full, waterLevel, sampleHeight) ? full : null) ?? (lite.every((q, i) => i === 0 || firstHit(lite[i - 1]!, q, buildings, null) === null) ? lite : null)
+      if (route) emit(`path-entrance-${entrance.id}`, route, entrance.kind, false)
     }
   }
 
@@ -373,14 +410,18 @@ export function planVillageLanes(args: {
       || p.x - q.x || p.z - q.z)
 
     let placed = false
-    let tried = 0
-    for (const attach of candidates) {
-      if (tried++ >= MAX_ATTACH_CANDIDATES) break
-      const route = routeAround(attach, a, destObstacles, dest.ownPlotId, MAX_DETOUR_DEPTH)
-      if (!route || !polylineDry(route, waterLevel, sampleHeight)) continue
-      emit(dest.id, route, 'path', true)
-      placed = true
-      break
+    for (const k of BUILDING_PAD_STEPS) {
+      const padded = withBuildingPad(destObstacles, k)
+      let tried = 0
+      for (const attach of candidates) {
+        if (tried++ >= MAX_ATTACH_CANDIDATES) break
+        const route = routeAround(attach, a, padded, dest.ownPlotId, MAX_DETOUR_DEPTH)
+        if (!route || !polylineDry(route, waterLevel, sampleHeight)) continue
+        emit(dest.id, route, 'path', true)
+        placed = true
+        break
+      }
+      if (placed) break
     }
     if (placed) continue
 
@@ -389,11 +430,22 @@ export function planVillageLanes(args: {
     if (pathIsDry(center.x, center.z, a.x, a.z, waterLevel, sampleHeight)) {
       unresolved.push(dest.id)
       const straight: Pt[] = [{ x: center.x, z: center.z }, a]
-      emit(dest.id, routeAround(straight[0]!, a, cemeteryObstaclesFor(obstacles, a), dest.ownPlotId, MAX_DETOUR_DEPTH) ?? straight, 'path', true)
+      // Q93: the straight line is only a last resort when it does not cross a building.
+      const full = routeAround(straight[0]!, a, destObstacles, dest.ownPlotId, MAX_DETOUR_DEPTH)
+      const lite = routeAround(straight[0]!, a, cemeteryObstaclesFor(obstacles, a), dest.ownPlotId, MAX_DETOUR_DEPTH) ?? straight
+      const buildings = destObstacles.filter((o) => o.kind === 'disc' && o.id !== CEMETERY_OBSTACLE_ID).map(footprintOnly)
+      const route = (full && polylineDry(full, waterLevel, sampleHeight) ? full : null) ?? (lite.every((q, i) => i === 0 || firstHit(lite[i - 1]!, q, buildings, dest.ownPlotId) === null) ? lite : null)
+      if (route) emit(dest.id, route, 'path', true)
     }
   }
 
   return { paths, unresolved }
+}
+
+/** Q93: per-segment gate for spurs routed outside the lane tree — a segment may not enter a house/storehouse corridor. */
+export function createBuildingClearance(plots: readonly VillagePlot[], laneHalfWidth = 1.5): (a: Pt, b: Pt) => boolean {
+  const buildings = obstaclesFromPlots(plots.filter(isBuildingPlot), laneHalfWidth).filter((o) => o.kind === 'disc')
+  return (a, b) => firstHit(a, b, buildings, null) === null
 }
 
 /** Obstacle-aware connector for spurs added after the lane tree (pasture / paddock). */

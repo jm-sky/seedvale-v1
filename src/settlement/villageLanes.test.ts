@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import type { VillageIdentity } from './villagePlan'
 import { generateFamilies } from './families'
 import { pointInYard } from './householdYard'
+import { storehousePlotId } from './villagePlan'
 import { planLocalPathsAndEntrances, planVillageLayout } from './villagePlanner'
 
 const flat = (): number => 12
@@ -114,5 +115,28 @@ describe('village lane network (Q57)', () => {
     const core = layout.paths.filter((p) => p.id !== 'path-pasture' && p.id !== 'path-paddock')
     expect(again.paths).toEqual(core)
     expect(again.unresolvedLanes.length).toBeLessThanOrEqual(1)
+  })
+})
+
+describe('lane clearance around buildings (Q93)', () => {
+  it('never routes a lane centreline through a house or storehouse footprint', () => {
+    let lanes = 0
+    for (const size of SIZES) {
+      for (const seed of SEEDS) {
+        const { layout } = layoutFor(size, seed)
+        const buildings = layout.plots.filter((p) => p.role === 'house' || p.id === storehousePlotId())
+        for (const path of layout.paths) {
+          lanes++
+          const pts = dense(path.points)
+          for (const b of buildings) {
+            // A lane may end at its own building's door (on the footprint rim).
+            if (path.id.endsWith(b.id.replace('plot-', ''))) continue
+            const inside = pts.some((d) => Math.hypot(d.x - b.x, d.z - b.z) < b.radius * 0.9 - 0.05)
+            expect(inside, `${size} ${seed} ${path.id} through ${b.id}`).toBe(false)
+          }
+        }
+      }
+    }
+    expect(lanes).toBeGreaterThan(500)
   })
 })
