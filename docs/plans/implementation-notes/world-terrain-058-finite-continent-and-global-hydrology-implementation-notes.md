@@ -141,6 +141,17 @@ Landed (technically verified; **not** browser-verified; **partial** — see "Ope
   - **Census (2026-11-03, `pnpm exec tsx scripts/perf/census-rivers.ts --model=global`, now prints `lake census (L1)`):** settlement centres and clearing pads (core/house/yard/storehouse/garden) standing in a wet cell, rings 5. Before the `worldKnowledgeRoadContext` fix: seed 42 → 1 centre + 18 pads in lakes. After: seed 42 → 0/0; seed 415424794 → 0 centres, **2 yard pads of one LG settlement (`-4_3`) still wet**. `villagePlanner.scorePlotCandidate` now rejects wet yards (`discIsDry`; settlement def cache → 22), but these two come through `pickPlot`'s unconditional final fallback → **belongs to Q37** (planner fix, not a prop fix). Trees/items/road segments were *not* censused per-object here; they rely on the unit-tested wet rule in the chunk-array sites (browser check outstanding, queue §2).
 - Cache bumps: `CHUNK_TILE_CACHE_VERSION` 21, `SETTLEMENT_DEFINITION_CACHE_VERSION` 22, `ROAD_ROUTE_CACHE_VERSION` 9 (`WORLDGEN_EPOCH` already 1 in this batch). Tests: `lakeWater.test.ts` (wet rule, `sampleLocalWater`, body grouping, raw-sample lake, land view).
 
+## L2 results (Q78, 2026-11-03)
+
+Landed (technically verified; **not** browser-verified — queue §2).
+
+- `createChunkWater` (`src/world/createWater.ts`) now builds one plane per distinct water level in a chunk: the sea-level plane (unchanged mask, planar mirror bound) plus one plane per lake level from `lakeLevelsInChunk` (wet texels `h − floor > WET_EPS` above `waterLevel + 0.35`, grouped at 1 cm, plane at the group's highest texel, `y = level + 0.07`). `WorldWater` gained `meshes`; `mesh` stays as the first handle; `addTo` adds all planes and `update`/`setDayNight`/`dispose` cover every material, so `chunkManager` only changed `scene.add(rec.water.mesh)` → `rec.water.addTo(scene)`.
+- Lake planes use a masked height texture (`maskHeightsForLakeLevel`): own-level wet texels keep the level, dry banks at/above it keep their floor (soft shoreline/foam as at the sea), other levels and lower dry ground are lifted +10 m out of the shader's cover band. The shader is unchanged — `uWaterLevel` is the lake level, so depth shading uses `level − floor`. `bodyScale` already groups by surface (L1), so `lakeScaleFor` applies.
+- No planar mirror on lake planes (`bindWaterMirror` skipped → `uReflections` stays 0: sky/fog tint + sun specular), per author option (a). Rivers and sea unchanged.
+- Cost: dry chunks `null` as before; a lake chunk adds 1 draw call per extra level (typically 1). The mask array + texture are per lake chunk build (one `Float32Array` of `resolution²`).
+- Tests: `src/world/createWater.test.ts` (level grouping, mask).
+- **Open:** screenshots of 2–3 lakes for the author, shore/foam look, no water at a wrong level (queue §2).
+
 ## Pitfalls
 
 - Hydrology must never read the corrected terrain, settlements, roads or `waterH` (cycle). Settlement code may read hydrology, never the other way round.

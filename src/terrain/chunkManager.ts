@@ -2248,7 +2248,7 @@ export function createChunkManager(
         config.waterLevel,
         config.waterMirror,
       )
-      if (rec.water) scene.add(rec.water.mesh)
+      if (rec.water) rec.water.addTo(scene)
       const waterMs = performance.now() - waterT0
       getMonitor().recordStage('waterFinalize', waterMs)
       getMonitor().recordHitch('WATER', waterMs, 'chunk water')
