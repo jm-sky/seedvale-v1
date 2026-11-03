@@ -868,14 +868,14 @@ Generated from exported TypeScript symbols.
 
 ## `world/clouds.ts`
 
-- `attachCloudsToSky` — function — line 221
+- `attachCloudsToSky` — function — line 247
   - domain: world-terrain
 - `CloudAppearance` — type — line 57
 - `cloudAppearanceFor` — function — line 91
   - domain: world-terrain
 - `cloudNoiseData` — function — line 110
   - domain: world-terrain
-- `SkyCloudController` — type — line 205
+- `SkyCloudController` — type — line 231
 
 ## `world/collision.ts`
 

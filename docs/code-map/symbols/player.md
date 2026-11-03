@@ -124,23 +124,23 @@ Generated from exported TypeScript symbols.
 
 ## `player/PlayerController.ts`
 
-- `CaveFloorSampler` — type — line 257
-- `CaveGroundQuery` — type — line 252
-- `CaveHorizontalResolver` — type — line 273
-- `CaveOccupancyQuery` — type — line 262
-- `ColliderSource` — type — line 245
-- `HeightSampler` — type — line 230
-- `MOVE_SPEED` — const — line 114
-- `PLAYER_STARTING_ATTRIBUTES` — const — line 134
-- `PlayerController` — class — line 287
+- `CaveFloorSampler` — type — line 259
+- `CaveGroundQuery` — type — line 254
+- `CaveHorizontalResolver` — type — line 275
+- `CaveOccupancyQuery` — type — line 264
+- `ColliderSource` — type — line 247
+- `HeightSampler` — type — line 232
+- `MOVE_SPEED` — const — line 116
+- `PLAYER_STARTING_ATTRIBUTES` — const — line 136
+- `PlayerController` — class — line 289
   - domain: items-player
   - system: player-controller
   - role: Owns player movement, animation and runtime transform state.
   - simulation: tick
-- `PlayerMovementState` — type — line 109
-- `RuntimeGroundSampler` — type — line 236
-- `RuntimeLocalWaterSampler` — type — line 242
-- `SPRINT_MULTIPLIER` — const — line 119
+- `PlayerMovementState` — type — line 111
+- `RuntimeGroundSampler` — type — line 238
+- `RuntimeLocalWaterSampler` — type — line 244
+- `SPRINT_MULTIPLIER` — const — line 121
 
 ## `player/playerDamage.ts`
 
@@ -388,7 +388,11 @@ Generated from exported TypeScript symbols.
 
 - `MAX_SWIM_DEPTH` — const — line 18
   - domain: items-player
+- `nextSwimming` — function — line 73
+- `SWIM_ENTER_DEPTH` — const — line 61
+- `SWIM_EXIT_DEPTH` — const — line 69
 - `swimFeetY` — function — line 50
+- `wadeFeetY` — function — line 83
 - `worldWaterAppliesInCurrentSpace` — function — line 43
 - `WorldWaterEligibilityInput` — type — line 24
 - `WorldWaterOccupancy` — type — line 20

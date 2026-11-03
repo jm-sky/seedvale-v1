@@ -126,27 +126,27 @@ Generated from exported TypeScript symbols.
 
 - `capRoof` — function — line 299
 - `capRoofWithGables` — function — line 329
-- `COTTAGE_4X4_A` — const — line 531
-- `COTTAGE_4X4_B` — const — line 549
-- `COTTAGE_4X4_C` — const — line 675
-- `COTTAGE_6X4_A` — const — line 570
-- `COTTAGE_6X4_B` — const — line 589
-- `COTTAGE_6X4_C` — const — line 698
-- `COTTAGE_DEFINITIONS` — const — line 796
+- `COTTAGE_4X4_A` — const — line 530
+- `COTTAGE_4X4_B` — const — line 548
+- `COTTAGE_4X4_C` — const — line 674
+- `COTTAGE_6X4_A` — const — line 569
+- `COTTAGE_6X4_B` — const — line 588
+- `COTTAGE_6X4_C` — const — line 697
+- `COTTAGE_DEFINITIONS` — const — line 795
 - `gableParts` — function — line 309
-- `HOME_HOUSE_DEFINITIONS` — const — line 814
-- `HOUSE_6X6_A` — const — line 609
-- `HOUSE_6X6_B` — const — line 721
-- `HOUSE_8X6_A` — const — line 631
-- `HOUSE_8X6_B` — const — line 653
-- `HOUSE_8X6_C` — const — line 748
-- `HOUSE_DEFINITIONS` — const — line 805
-- `houseDefinitionById` — function — line 848
+- `HOME_HOUSE_DEFINITIONS` — const — line 813
+- `HOUSE_6X6_A` — const — line 608
+- `HOUSE_6X6_B` — const — line 720
+- `HOUSE_8X6_A` — const — line 630
+- `HOUSE_8X6_B` — const — line 652
+- `HOUSE_8X6_C` — const — line 747
+- `HOUSE_DEFINITIONS` — const — line 804
+- `houseDefinitionById` — function — line 847
 - `HouseGableEnds` — type — line 303
-- `pickHouseDefinition` — function — line 840
-- `STOREHOUSE_DEFINITION` — const — line 781
-- `TEST_HOUSE_01` — const — line 502
-- `TEST_HOUSE_02` — const — line 513
+- `pickHouseDefinition` — function — line 839
+- `STOREHOUSE_DEFINITION` — const — line 780
+- `TEST_HOUSE_01` — const — line 501
+- `TEST_HOUSE_02` — const — line 512
 - `wooden2x1RoofParts` — function — line 279
 
 ## `assets/houseDefinitionExampleConfig.ts`

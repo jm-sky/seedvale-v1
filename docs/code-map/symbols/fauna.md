@@ -16,32 +16,32 @@ Generated from exported TypeScript symbols.
 
 ## `fauna/AnimalAgent.ts`
 
-- `AnimalAgent` — class — line 1253
+- `AnimalAgent` — class — line 1255
   - domain: fauna
   - system: animal-agent
   - role: Central per-animal behaviour integration point: predator/prey AI, needs, health, production (livestock) and riding (mounts).
   - uses: HealthState, StaminaState
   - simulation: tick
-- `AnimalAgentDebugInfo` — type — line 646
-- `AnimalAgentDeps` — type — line 1018
-- `AnimalSaveState` — type — line 781
-- `AnimalUpdateContext` — type — line 1099
-- `BURY_DURATION_SEC` — const — line 443
-- `canPredatorPursueIntoVillage` — function — line 865
-- `FAUNA_SHADOW_DISTANCE` — const — line 412
-- `FaunaAiBranch` — type — line 567
-- `FaunaNavRescueDebugInfo` — type — line 614
-- `FaunaWaterCrossingDebugInfo` — type — line 628
-- `FRENZY_VILLAGE_ARRIVAL_RADIUS` — const — line 502
-- `FrenzyWolfCandidate` — type — line 953
-- `HARVEST_MEAT_DURATION_SEC` — const — line 446
-- `isWithinVillageRadius` — function — line 846
-- `NearbyNpcCandidate` — type — line 948
-- `pickNearestEligibleWolf` — function — line 962
-- `pickRabidTarget` — function — line 987
-- `RABIES_BITE_INFECTION_CHANCE` — const — line 430
-- `villageFleeBiasFalloff` — function — line 873
-- `VillageInfo` — type — line 840
+- `AnimalAgentDebugInfo` — type — line 648
+- `AnimalAgentDeps` — type — line 1020
+- `AnimalSaveState` — type — line 783
+- `AnimalUpdateContext` — type — line 1101
+- `BURY_DURATION_SEC` — const — line 445
+- `canPredatorPursueIntoVillage` — function — line 867
+- `FAUNA_SHADOW_DISTANCE` — const — line 414
+- `FaunaAiBranch` — type — line 569
+- `FaunaNavRescueDebugInfo` — type — line 616
+- `FaunaWaterCrossingDebugInfo` — type — line 630
+- `FRENZY_VILLAGE_ARRIVAL_RADIUS` — const — line 504
+- `FrenzyWolfCandidate` — type — line 955
+- `HARVEST_MEAT_DURATION_SEC` — const — line 448
+- `isWithinVillageRadius` — function — line 848
+- `NearbyNpcCandidate` — type — line 950
+- `pickNearestEligibleWolf` — function — line 964
+- `pickRabidTarget` — function — line 989
+- `RABIES_BITE_INFECTION_CHANCE` — const — line 432
+- `villageFleeBiasFalloff` — function — line 875
+- `VillageInfo` — type — line 842
 
 ## `fauna/animalAreaBound.ts`
 
@@ -145,28 +145,28 @@ Generated from exported TypeScript symbols.
 
 ## `fauna/animalDefs.ts`
 
-- `ANIMAL_DEFS` — const — line 432
+- `ANIMAL_DEFS` — const — line 436
 - `ANIMAL_LABELS` — const — line 51
-- `AnimalActivityConfig` — type — line 234
-- `AnimalAffinityConfig` — type — line 247
+- `AnimalActivityConfig` — type — line 238
+- `AnimalAffinityConfig` — type — line 251
 - `AnimalDef` — type — line 70
-- `AnimalDietConfig` — type — line 277
+- `AnimalDietConfig` — type — line 281
 - `AnimalKind` — type — line 29
 - `AnimalLifeStage` — type — line 24
 - `AnimalRole` — type — line 16
   - domain: fauna
   - role: Species taxonomy and per-kind tuning data for `AnimalAgent` — no runtime/agent state, no Three.js. Moved out of `AnimalAgent.ts` (plan fauna-017 step 1): 31% of that file was this module's data sitting above the class. Re-exported wholesale from `AnimalAgent.ts` via `export *`, so every existing importer of species types/`ANIMAL_DEFS` is unaffected.
 - `AnimalSociability` — type — line 20
-- `dietAcceptsItem` — function — line 410
-- `DraftConfig` — type — line 308
-- `HumanDangerConfig` — type — line 208
-- `LeadConfig` — type — line 302
-- `LivestockProductionConfig` — type — line 337
-- `LivestockProductKind` — type — line 324
-- `MountPointConfig` — type — line 315
-- `PackConfig` — type — line 224
-- `ScavengingConfig` — type — line 288
-- `WaterTripConfig` — type — line 256
+- `dietAcceptsItem` — function — line 414
+- `DraftConfig` — type — line 312
+- `HumanDangerConfig` — type — line 212
+- `LeadConfig` — type — line 306
+- `LivestockProductionConfig` — type — line 341
+- `LivestockProductKind` — type — line 328
+- `MountPointConfig` — type — line 319
+- `PackConfig` — type — line 228
+- `ScavengingConfig` — type — line 292
+- `WaterTripConfig` — type — line 260
 
 ## `fauna/animalDialogue.ts`
 
@@ -506,8 +506,11 @@ Generated from exported TypeScript symbols.
 
 - `calmWanderWalkBaseline` — function — line 12
   - domain: fauna
+- `LocomotionClipKey` — type — line 44
 - `NIGHT_PREY_WALK_MULT` — const — line 4
 - `resolveAutonomousWalkSpeed` — function — line 24
+  - domain: fauna
+- `resolveLocomotionPlayback` — function — line 54
   - domain: fauna
 
 ## `fauna/bloodSplat.ts`
@@ -730,24 +733,28 @@ Generated from exported TypeScript symbols.
 
 ## `fauna/ownedAnimalControl.ts`
 
-- `createDefaultOwnedAnimalControlState` — function — line 22
-- `createFollowOwnedAnimalControlState` — function — line 26
+- `createDefaultOwnedAnimalControlState` — function — line 35
+- `createFollowOwnedAnimalControlState` — function — line 39
+- `FOLLOW_RUN_START_DISTANCE` — const — line 20
+- `FOLLOW_RUN_STOP_DISTANCE` — const — line 21
 - `FOLLOW_START_DISTANCE` — const — line 14
 - `FOLLOW_STOP_DISTANCE` — const — line 15
-- `hydrateOwnedAnimalControl` — function — line 101
-- `isOwnedStayBlockingRoutineTrips` — function — line 75
+- `hydrateOwnedAnimalControl` — function — line 114
+- `isOwnedStayBlockingRoutineTrips` — function — line 88
   - domain: fauna
   - role: True when player-owned Stay must refuse routine AnimalTrip start/continue.
 - `OwnedAnimalControlMode` — type — line 4
 - `OwnedAnimalControlState` — type — line 6
-- `OwnedControlMovement` — type — line 30
-- `resolveOwnedControlMovement` — function — line 40
+- `OwnedControlMovement` — type — line 43
+- `resolveFollowCatchUp` — function — line 24
+  - domain: fauna
+- `resolveOwnedControlMovement` — function — line 53
   - domain: fauna
   - role: Follow/Stay movement policy for player-owned livestock (fauna-020 / fauna-030). Stay uses the same hysteresis primitive as Follow, targeting `stayAnchor`.
-- `setOwnedAnimalControlMode` — function — line 82
-- `snapshotOwnedAnimalControl` — function — line 92
-- `STAY_RETURN_START` — const — line 18
-- `STAY_RETURN_STOP` — const — line 20
+- `setOwnedAnimalControlMode` — function — line 95
+- `snapshotOwnedAnimalControl` — function — line 105
+- `STAY_RETURN_START` — const — line 31
+- `STAY_RETURN_STOP` — const — line 33
 
 ## `fauna/persistentOccupants.ts`
 

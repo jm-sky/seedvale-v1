@@ -509,14 +509,14 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/houseLighting.ts`
 
-- `createHouseLight` — function — line 194
-- `createProceduralTorchPost` — function — line 237
-- `createVillageTorchLight` — function — line 258
-- `HouseLight` — type — line 23
-- `lanternGlassCenter` — function — line 85
-- `ResolvedHouseLampMount` — type — line 403
-- `resolveHouseLampMount` — function — line 445
-- `VillageTorch` — type — line 29
+- `createHouseLight` — function — line 239
+- `createProceduralTorchPost` — function — line 288
+- `createVillageTorchLight` — function — line 309
+- `HouseLight` — type — line 68
+- `lanternGlassCenter` — function — line 130
+- `ResolvedHouseLampMount` — type — line 454
+- `resolveHouseLampMount` — function — line 496
+- `VillageTorch` — type — line 74
 
 ## `settlement/landmarkProps.ts`
 
@@ -918,18 +918,21 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/professionDressing.ts`
 
-- `DressingKit` — type — line 21
+- `DressingKit` — type — line 22
   - domain: settlements-npcs Profession-signature home dressing (queue Q48 / Q42 plan §2.1) — pure, Three.js-free deterministic projection of a household's generated professions onto small wall pieces (house-local) and one freestanding piece inside the yard's reserved profession rectangle. Not persisted and not cached: it is derived at settlement build time from `def.families` and the planned plots, like the blacksmith workplace.
-- `DressingPlacement` — type — line 109
-- `MAX_WALL_PIECES_PER_HOUSE` — const — line 48
-- `professionDressingFor` — function — line 174
-- `SLOT_KITS` — const — line 56
-- `SlotDressingPlacement` — type — line 97
-- `slotKitCorners` — function — line 242
-- `WALL_FACE_OFFSET_M` — const — line 41
-- `WALL_KITS` — const — line 50
-- `WallDressingPlacement` — type — line 83
-- `wallKitFits` — function — line 125
+- `DressingPlacement` — type — line 116
+- `houseLampMountFor` — function — line 144
+- `lampWallObstacle` — function — line 149
+- `MAX_WALL_PIECES_PER_HOUSE` — const — line 55
+- `professionDressingFor` — function — line 223
+- `SLOT_KITS` — const — line 63
+- `SlotDressingPlacement` — type — line 104
+- `slotKitCorners` — function — line 333
+- `WALL_FACE_OFFSET_M` — const — line 44
+- `WALL_KITS` — const — line 57
+- `WallDressingPlacement` — type — line 90
+- `wallKitFits` — function — line 172
+- `WallObstacle` — type — line 133
 
 ## `settlement/professionDressingMesh.ts`
 
@@ -966,8 +969,8 @@ Generated from exported TypeScript symbols.
   - domain: settlements
 - `BlacksmithWorkplace` — type — line 407
 - `buildSettlementProps` — function — line 816
-- `disposeSettlementGroup` — function — line 2624
-- `houseChestPlacement` — function — line 2608
+- `disposeSettlementGroup` — function — line 2620
+- `houseChestPlacement` — function — line 2604
 - `SettlementHouseBed` — type — line 172
 - `SettlementHouseLandmark` — type — line 138
 - `SettlementLandmarks` — type — line 203
@@ -1120,49 +1123,49 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/roadNetwork.ts`
 
-- `activateRoadRouteWorldgenCache` — function — line 135
+- `activateRoadRouteWorldgenCache` — function — line 136
   - domain: world-terrain
   - system: worldgen-cache
-- `attachRoadRoutePersistence` — function — line 124
+- `attachRoadRoutePersistence` — function — line 125
   - domain: world-terrain
-- `bridgesNear` — function — line 1178
+- `bridgesNear` — function — line 1228
   - domain: world-terrain
-- `bridgeSpecOf` — function — line 1137
-- `clearRoadNetworkCaches` — function — line 194
-- `clearRoadNetworkMemoryCaches` — function — line 181
+- `bridgeSpecOf` — function — line 1187
+- `clearRoadNetworkCaches` — function — line 195
+- `clearRoadNetworkMemoryCaches` — function — line 182
   - domain: world-terrain
-- `entranceToward` — function — line 218
-- `findRoute` — function — line 335
+- `entranceToward` — function — line 219
+- `findRoute` — function — line 338
   - domain: world-terrain
-- `fordsNear` — function — line 1070
+- `fordsNear` — function — line 1120
   - domain: world-terrain
-- `ingestHydratedRoadRoute` — function — line 114
+- `ingestHydratedRoadRoute` — function — line 115
   - domain: world-terrain
-- `meanderRoute` — function — line 598
-- `MidpointSignpost` — type — line 861
-- `midpointSignpostsFor` — function — line 875
-- `neighborsFor` — function — line 247
-- `peekRoadRouteCache` — function — line 145
-- `RoadNetworkContext` — type — line 65
-- `RoadRoute` — type — line 91
-- `roadRouteLocationKey` — function — line 167
-  - domain: world-terrain
-  - system: worldgen-cache
-- `roadRoutePairKey` — function — line 156
+- `meanderRoute` — function — line 608
+- `MidpointSignpost` — type — line 911
+- `midpointSignpostsFor` — function — line 925
+- `neighborsFor` — function — line 248
+- `peekRoadRouteCache` — function — line 146
+- `RoadNetworkContext` — type — line 66
+- `RoadRoute` — type — line 92
+- `roadRouteLocationKey` — function — line 168
   - domain: world-terrain
   - system: worldgen-cache
-- `roadRoutesForSettlement` — function — line 789
-- `roadRouteWorldgenCacheReady` — function — line 140
-- `RoadSegment` — type — line 55
-- `RoadSegmentKind` — type — line 53
-- `RoutePoint` — type — line 43
-- `RouteSearchOptions` — type — line 300
-- `routeToMinorLocation` — function — line 926
-- `segmentsNear` — function — line 995
-- `SettlementSignpost` — type — line 826
-- `signpostsForSettlement` — function — line 838
-- `VillageSegments` — type — line 1207
-- `villageSegmentsNear` — function — line 1231
+- `roadRoutePairKey` — function — line 157
+  - domain: world-terrain
+  - system: worldgen-cache
+- `roadRoutesForSettlement` — function — line 839
+- `roadRouteWorldgenCacheReady` — function — line 141
+- `RoadSegment` — type — line 56
+- `RoadSegmentKind` — type — line 54
+- `RoutePoint` — type — line 44
+- `RouteSearchOptions` — type — line 301
+- `routeToMinorLocation` — function — line 976
+- `segmentsNear` — function — line 1045
+- `SettlementSignpost` — type — line 876
+- `signpostsForSettlement` — function — line 888
+- `VillageSegments` — type — line 1257
+- `villageSegmentsNear` — function — line 1281
 
 ## `settlement/roadRiverCrossing.ts`
 
@@ -1184,10 +1187,10 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/roadRouteWorldgenCache.ts`
 
-- `createRoadRouteWorldgenCache` — function — line 188
+- `createRoadRouteWorldgenCache` — function — line 189
   - domain: world-terrain
   - system: worldgen-cache
-- `isValidRoadRoutePayload` — function — line 137
+- `isValidRoadRoutePayload` — function — line 138
   - domain: world-terrain
   - system: worldgen-cache
 - `ROAD_ROUTE_CACHE_NAMESPACE` — const — line 28
@@ -1195,12 +1198,20 @@ Generated from exported TypeScript symbols.
   - system: worldgen-cache
   - role: Persistent-cache adapter for inter-settlement / settlement↔minor-location `RoadRoute` results (plan world-terrain-029). IndexedDB only hydrates and extends the module-level `routeCache` in `roadNetwork.ts` — that map stays the synchronous authority. Cached `null` is a real hit (a deterministic failed route), never a miss.
   - integration: Disposable derived data only. Route consumers stay synchronous; a miss, malformed payload or IndexedDB failure always falls back to the canonical `findRoute()` path. Never `SaveData`, never a second crossing classifier, never signposts / per-chunk corridors / bridge specs.
-- `ROAD_ROUTE_CACHE_VERSION` — const — line 43
-- `RoadRouteCachePayload` — type — line 50
-- `roadRouteFingerprint` — function — line 65
+- `ROAD_ROUTE_CACHE_VERSION` — const — line 44
+- `RoadRouteCachePayload` — type — line 51
+- `roadRouteFingerprint` — function — line 66
   - domain: world-terrain
   - system: worldgen-cache
-- `RoadRouteWorldgenCache` — type — line 163
+- `RoadRouteWorldgenCache` — type — line 164
+
+## `settlement/routeObstacles.ts`
+
+- `buildRouteObstacles` — function — line 30
+- `ROUTE_ENDPOINT_FREE_RADIUS` — const — line 25
+- `ROUTE_OBSTACLE_PAD` — const — line 23
+- `RouteObstacles` — type — line 15
+  - domain: settlements
 
 ## `settlement/settlementAgriculture.ts`
 

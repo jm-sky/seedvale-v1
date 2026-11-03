@@ -671,6 +671,7 @@ Generated from TypeScript imports.
 - `settlement/professionStaffing.ts`
 - `settlement/props.ts`
 - `settlement/roadNetwork.ts`
+- `settlement/routeObstacles.ts`
 - `settlement/settlementAgriculture.test.ts`
 - `settlement/settlementAgriculture.ts`
 - `settlement/settlementArmorQuality.ts`
@@ -973,6 +974,13 @@ Generated from TypeScript imports.
 - `settlement/houseLighting.ts`
 - `settlement/propSpecs.ts`
 
+## `settlement/houseLighting.test.ts`
+
+**Imports**
+
+- `assets/loadGltf.ts`
+- `settlement/houseLighting.ts`
+
 ## `settlement/houseLighting.ts`
 
 **Imports**
@@ -982,13 +990,16 @@ Generated from TypeScript imports.
 - `assets/assetAnchors.ts`
 - `settlement/houseCatalog.ts`
 - `settlement/propSpecs.ts`
+- `settlement/settlementNightCycle.ts`
 - `shared/getFireParticles.ts`
 - `shared/torchConfig.ts`
 
 **Imported by**
 
 - `settlement/houseLighting.lantern.test.ts`
+- `settlement/houseLighting.test.ts`
 - `settlement/props.ts`
+- `settlement/settlementNightCycle.test.ts`
 - `settlement/settlementVillageTorch.ts`
 - `world/caves/caveAdventureProps.ts`
 - `world/caves/caveHeightfieldPresentation.ts`
@@ -1227,6 +1238,7 @@ Generated from TypeScript imports.
 - `settlement/professionDressing.ts`
 - `settlement/professionDressingMesh.ts`
 - `settlement/props.ts`
+- `settlement/routeObstacles.ts`
 - `settlement/storehouseLayout.ts`
 - `settlement/villageLanes.test.ts`
 - `settlement/villageLanes.ts`
@@ -1990,6 +2002,7 @@ Generated from TypeScript imports.
 - `settlement/householdYard.ts`
 - `settlement/professionFamilySurnames.ts`
 - `settlement/professionStaffing.ts`
+- `settlement/propSpecs.ts`
 - `world/parseSeed.ts`
 
 **Imported by**
@@ -2099,6 +2112,7 @@ Generated from TypeScript imports.
 - `settlement/houseLighting.lantern.test.ts`
 - `settlement/houseLighting.ts`
 - `settlement/landmarkProps.ts`
+- `settlement/professionDressing.ts`
 - `settlement/professionDressingMesh.ts`
 - `settlement/props.ts`
 - `settlement/settlementPalisade.ts`
@@ -2376,6 +2390,7 @@ Generated from TypeScript imports.
 - `settlement/minorLocations.ts`
 - `settlement/roadRiverCrossing.ts`
 - `settlement/roadRouteWorldgenCache.ts`
+- `settlement/routeObstacles.ts`
 - `settlement/settlementGenerator.ts`
 - `settlement/settlementPlanCache.ts`
 - `settlement/settlementTerrain.ts`
@@ -2455,6 +2470,26 @@ Generated from TypeScript imports.
 - `settlement/roadNetwork.test.ts`
 - `settlement/roadNetwork.ts`
 - `settlement/roadRouteWorldgenCache.test.ts`
+
+## `settlement/routeObstacles.test.ts`
+
+**Imports**
+
+- `settlement/routeObstacles.ts`
+- `settlement/settlementGenerator.ts`
+
+## `settlement/routeObstacles.ts`
+
+**Imports**
+
+- `settlement/families.ts`
+- `settlement/householdYard.ts`
+- `settlement/settlementGenerator.ts`
+
+**Imported by**
+
+- `settlement/roadNetwork.ts`
+- `settlement/routeObstacles.test.ts`
 
 ## `settlement/settlementAgriculture.test.ts`
 
@@ -2600,6 +2635,8 @@ Generated from TypeScript imports.
 - `settlement/props.ts`
 - `settlement/roadEntranceAngles.test.ts`
 - `settlement/roadNetwork.ts`
+- `settlement/routeObstacles.test.ts`
+- `settlement/routeObstacles.ts`
 - `settlement/settlementGenerator.test.ts`
 - `settlement/settlementLayout.ts`
 - `settlement/settlementNameUniqueness.test.ts`
@@ -2675,6 +2712,7 @@ Generated from TypeScript imports.
 
 **Imports**
 
+- `settlement/houseLighting.ts`
 - `settlement/settlementNightCycle.ts`
 
 ## `settlement/settlementNightCycle.ts`
@@ -2689,6 +2727,7 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `settlement/createSettlement.ts`
+- `settlement/houseLighting.ts`
 - `settlement/settlementNightCycle.test.ts`
 
 ## `settlement/settlementPalisade.test.ts`

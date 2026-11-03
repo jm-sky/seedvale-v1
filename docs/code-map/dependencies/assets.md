@@ -276,6 +276,7 @@ Generated from TypeScript imports.
 - `settlement/houseBuilder.test.ts`
 - `settlement/houseBuilder.ts`
 - `settlement/houseLighting.lantern.test.ts`
+- `settlement/houseLighting.test.ts`
 - `settlement/landmarkProps.ts`
 - `settlement/livestock.ts`
 - `settlement/professionDressingMesh.ts`
