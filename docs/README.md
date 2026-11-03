@@ -25,7 +25,7 @@ Ten katalog zawiera dokumentację projektu **Seedvale** (Three.js — procedural
 | Katalog | Przeznaczenie |
 |---------|---------------|
 | [issues/](./issues/README.md) | Błędy, usprawnienia, dług techniczny |
-| [reviews/](./reviews/README.md) | Sesje przeglądu |
+| [reviews/](./reviews/README.md) | Sesje przeglądu; [system critical review matrix](./reviews/SYSTEM-REVIEW-MATRIX.md) — gotowość obszarów i pokrycie review GPT / Anthropic |
 | [research/](./research/README.md) | Analizy, spike'i, porównania przed decyzją |
 | [plans/](./plans/README.md) | Plany implementacji (wszystkie statusy) |
 | [plans/archive/](./plans/archive/README.md) | Jednorazowo zamrożony batch planów z 2026-08-07–2026-08-14 |
@@ -49,7 +49,7 @@ Zamrożona historia pierwszego okresu. Nie source of truth dla stanu kodu.
 Analizy i porównania — indeks w [research/README.md](./research/README.md).
 
 ### `reviews/`
-Sesje przeglądu — indeks w [reviews/README.md](./reviews/README.md).
+Sesje przeglądu — indeks w [reviews/README.md](./reviews/README.md); [SYSTEM-REVIEW-MATRIX.md](./reviews/SYSTEM-REVIEW-MATRIX.md) śledzi krytyczne review obszarów.
 
 ### `prompts/`
 Meta-prompty do powtarzalnych zadań (struktura docs, review, itd.).
