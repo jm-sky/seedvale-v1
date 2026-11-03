@@ -2,6 +2,8 @@
 
 Krótkie notatki o pobocznych blokadach, konkretnych bugach i brakujących mechanizmach odkrytych podczas implementacji planów, ale poza ich zakresem.
 
+Playtest observations and preliminary visual/gameplay improvements belong in the [Improvement Inbox](../issues/INBOX.md); do not duplicate them here.
+
 To nie jest issue tracker ani historia zmian. Gdy wpis zostanie naprawiony, pokryty planem albo stanie się nieaktualny — usuń go. Gdy dojrzeje do osobnej pracy — przenieś go do planu / issue zamiast rozbudowywać tutaj.
 
 Format: `- [ ] YYYY-MM-DD — opis (plan/plik, jeśli istotne)`
