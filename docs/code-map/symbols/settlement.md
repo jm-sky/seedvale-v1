@@ -1188,10 +1188,10 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/roadRouteWorldgenCache.ts`
 
-- `createRoadRouteWorldgenCache` — function — line 189
+- `createRoadRouteWorldgenCache` — function — line 190
   - domain: world-terrain
   - system: worldgen-cache
-- `isValidRoadRoutePayload` — function — line 138
+- `isValidRoadRoutePayload` — function — line 139
   - domain: world-terrain
   - system: worldgen-cache
 - `ROAD_ROUTE_CACHE_NAMESPACE` — const — line 28
@@ -1199,12 +1199,12 @@ Generated from exported TypeScript symbols.
   - system: worldgen-cache
   - role: Persistent-cache adapter for inter-settlement / settlement↔minor-location `RoadRoute` results (plan world-terrain-029). IndexedDB only hydrates and extends the module-level `routeCache` in `roadNetwork.ts` — that map stays the synchronous authority. Cached `null` is a real hit (a deterministic failed route), never a miss.
   - integration: Disposable derived data only. Route consumers stay synchronous; a miss, malformed payload or IndexedDB failure always falls back to the canonical `findRoute()` path. Never `SaveData`, never a second crossing classifier, never signposts / per-chunk corridors / bridge specs.
-- `ROAD_ROUTE_CACHE_VERSION` — const — line 44
-- `RoadRouteCachePayload` — type — line 51
-- `roadRouteFingerprint` — function — line 66
+- `ROAD_ROUTE_CACHE_VERSION` — const — line 45
+- `RoadRouteCachePayload` — type — line 52
+- `roadRouteFingerprint` — function — line 67
   - domain: world-terrain
   - system: worldgen-cache
-- `RoadRouteWorldgenCache` — type — line 164
+- `RoadRouteWorldgenCache` — type — line 165
 
 ## `settlement/routeObstacles.ts`
 
@@ -1461,34 +1461,34 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/settlementWorldgenCache.ts`
 
-- `createSettlementWorldgenCache` — function — line 606
+- `createSettlementWorldgenCache` — function — line 607
   - domain: settlements
   - system: worldgen-cache
-- `isValidSettlementDefPayload` — function — line 524
+- `isValidSettlementDefPayload` — function — line 525
   - domain: settlements
   - system: worldgen-cache
-- `isValidSettlementWorldgenPayload` — function — line 571
+- `isValidSettlementWorldgenPayload` — function — line 572
   - domain: settlements
   - system: worldgen-cache
-- `parseSettlementCellSubKey` — function — line 106
+- `parseSettlementCellSubKey` — function — line 107
 - `SETTLEMENT_DEFINITION_CACHE_NAMESPACE` — const — line 46
   - domain: settlements
   - system: worldgen-cache
   - role: Persistent-cache adapter for `SettlementDef | null` results (plan settlements-014). IndexedDB only hydrates and extends the module-level `defCache` in `settlementPlanCache.ts` — that map stays the synchronous authority. Cached `null` is a real hit (a cell that deterministically has no settlement), never a miss.
   - integration: Disposable derived data only. `settlementDefFor()` stays synchronous; a miss, malformed payload or IndexedDB failure always falls back to `generateSettlementDef()`. Never `SaveData`, never a second reduced `VillagePlan`, never economy / household / NPC runtime state.
-- `SETTLEMENT_DEFINITION_CACHE_VERSION` — const — line 59
-- `SETTLEMENT_LOST_TREASURE_HOSTS_SUB_KEY` — const — line 75
-- `settlementCellSubKey` — function — line 101
+- `SETTLEMENT_DEFINITION_CACHE_VERSION` — const — line 60
+- `SETTLEMENT_LOST_TREASURE_HOSTS_SUB_KEY` — const — line 76
+- `settlementCellSubKey` — function — line 102
   - domain: settlements
   - system: worldgen-cache
-- `SettlementDefinitionCachePayload` — type — line 72
-- `settlementDefinitionFingerprint` — function — line 128
+- `SettlementDefinitionCachePayload` — type — line 73
+- `settlementDefinitionFingerprint` — function — line 129
   - domain: settlements
   - system: worldgen-cache
-- `SettlementLostTreasureHostsPayload` — type — line 79
-- `SettlementProgressionIdentity` — type — line 89
-- `SettlementWorldgenCache` — type — line 580
-- `SettlementWorldgenCachePayload` — type — line 85
+- `SettlementLostTreasureHostsPayload` — type — line 80
+- `SettlementProgressionIdentity` — type — line 90
+- `SettlementWorldgenCache` — type — line 581
+- `SettlementWorldgenCachePayload` — type — line 86
 
 ## `settlement/storageDestinations.ts`
 
@@ -1723,16 +1723,16 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/villagePlanner.ts`
 
-- `buildingsAndLandmarksFromPlots` — function — line 1568
+- `buildingsAndLandmarksFromPlots` — function — line 1575
 - `chooseLayoutPattern` — function — line 176
 - `HOUSE_COMPOUND_GAP_FACTOR` — const — line 91
 - `householdWellLocalBand` — function — line 103
   - domain: settlements-npcs
-- `pathPlansToCorridorData` — function — line 2027
-- `planLocalPathsAndEntrances` — function — line 1896
-- `planVillageLayout` — function — line 1030
+- `pathPlansToCorridorData` — function — line 2034
+- `planLocalPathsAndEntrances` — function — line 1903
+- `planVillageLayout` — function — line 1037
 - `PLOT_SCORE_WEIGHTS` — const — line 62
-- `roadEntranceAngles` — function — line 1782
+- `roadEntranceAngles` — function — line 1789
 - `VillageLayoutDraft` — type — line 139
 
 ## `settlement/wellInteractionQueue.ts`
