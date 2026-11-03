@@ -22,6 +22,8 @@
 
 - [2026-11-02 — Q13 progression, batch 1](./2026-11-02--q13-progression-audit-handoff.md) — findings for plans `001` / `059` / `066`, confirmed skill-XP UI mismatch, author decision C to defer known-deed social-exposure design. Opus owns Q13 integration; no automatic implementation.
 
+- [2026-11-03 — Q13 Opus reconciliation](./2026-11-03--q13-plans-vs-vision-reconciliation.md) — merged result: R1–R10 findings, aligned areas, author questions Q13-a…d, delegation plan (queue Q107).
+
 ## Reconciliation handoff
 
 These ten areas were grouped by ChatGPT, **not** listed by Opus in Q13. Q13 explicitly requires a separately agreed Opus review against current V1 code/tests and older plans. Opus should verify precise conflicts and further omitted areas, reconcile plan intent against actual implementation, preserve V1 simulation depth, and seek author decisions on any uncovered forks. This document alone does **not** close Q13 or authorize changes to runtime code or existing plans.
