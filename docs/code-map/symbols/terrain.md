@@ -283,26 +283,26 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/chunkWorkerPool.ts`
 
-- `cancelChunkGrass` — function — line 589
-- `cancelChunkMapTile` — function — line 619
-- `cancelChunkMesh` — function — line 600
-- `cancelChunkTile` — function — line 578
-- `cancelChunkWorldKnowledge` — function — line 611
+- `cancelChunkGrass` — function — line 592
+- `cancelChunkMapTile` — function — line 622
+- `cancelChunkMesh` — function — line 603
+- `cancelChunkTile` — function — line 581
+- `cancelChunkWorldKnowledge` — function — line 614
 - `ChunkWorkerLike` — type — line 28
 - `ChunkWorkerPool` — type — line 44
 - `ChunkWorkerPoolOptions` — type — line 35
-- `createChunkWorkerPool` — function — line 184
-- `defaultChunkWorkerCount` — function — line 155
-- `disposeChunkWorkerPool` — function — line 636
+- `createChunkWorkerPool` — function — line 186
+- `defaultChunkWorkerCount` — function — line 157
+- `disposeChunkWorkerPool` — function — line 639
 - `HeightmapGenerationCancelledError` — class — line 16
-- `installChunkWorkerHydrology` — function — line 623
+- `installChunkWorkerHydrology` — function — line 626
 - `isChunkWorkerCancelledError` — function — line 23
-- `requestChunkGrass` — function — line 582
-- `requestChunkHydrologyRows` — function — line 627
-- `requestChunkMapTile` — function — line 615
-- `requestChunkMesh` — function — line 593
-- `requestChunkTile` — function — line 571
-- `requestChunkWorldKnowledge` — function — line 604
+- `requestChunkGrass` — function — line 585
+- `requestChunkHydrologyRows` — function — line 630
+- `requestChunkMapTile` — function — line 618
+- `requestChunkMesh` — function — line 596
+- `requestChunkTile` — function — line 574
+- `requestChunkWorldKnowledge` — function — line 607
 
 ## `terrain/chunkWorldItems.ts`
 
@@ -851,9 +851,9 @@ Generated from exported TypeScript symbols.
 ## `terrain/worldHydrologyRuntime.ts`
 
 - `computeWorldHydrologyFor` — function — line 62
-- `ensureWorldHydrology` — function — line 94
+- `ensureWorldHydrology` — function — line 95
 - `EnsureWorldHydrologyOptions` — type — line 75
-- `sampleRowsOnThisThread` — const — line 134
+- `sampleRowsOnThisThread` — const — line 138
 - `sampleWorldHydrologyFloor` — function — line 43
 - `WORLD_HYDROLOGY_STRIPS` — const — line 37
 - `WorldHydrologyFloorSampler` — type — line 34
@@ -865,16 +865,17 @@ Generated from exported TypeScript symbols.
 
 - `clearWorldHydrology` — function — line 43
 - `hasWorldHydrology` — function — line 31
-- `hydrologyCorrectionAt` — function — line 120
-- `hydrologyLakeLevelAt` — function — line 142
+- `hydrologyCorrectionAt` — function — line 131
+- `hydrologyLakeLevelAt` — function — line 153
 - `installWorldHydrology` — function — line 27
 - `isUnconditionedHydrologyId` — function — line 20
+- `retainOnlyWorldHydrology` — function — line 53
 - `SPARSE_BLOCK_SIZE` — const — line 14
   - domain: world-terrain
-- `StreamHead` — type — line 158
-- `streamHeadsFor` — function — line 167
+- `StreamHead` — type — line 169
+- `streamHeadsFor` — function — line 178
 - `UNCONDITIONED_HYDROLOGY_ID` — const — line 17
-- `unpackChains` — function — line 186
+- `unpackChains` — function — line 197
 - `worldHydrologyFor` — function — line 36
 
 ## `terrain/worldKnowledgeScan.ts`
