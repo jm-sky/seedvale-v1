@@ -174,7 +174,15 @@ Author feedback (dev server, seed 415424794): since L2 the home area looks like 
 - **Beach trees (Q96):** `computeChunkVegetation` main pass (trees + bushes) and the riparian shore-tree branch reject points with `h ≤ waterLevel + sandBandAt(x, z, seed)` — the same sea-relative sand band that keeps grass off the shore and colours the beach (lake banks keep the L1 wet rule; reeds/ferns at the waterline unchanged). Proxy measurement: ~10–12 % of the previously tree-eligible land (> 0.3 m above sea) lies in the sand band (island 10.7 / 10.1 %, within 1 km of home 12.5 / 7.5 % on 415424794 / 42) — that is the beach area that loses trees. `CHUNK_TILE_CACHE_VERSION` 24 → 25. Test: `chunkVegetation.test.ts` "beach (Q96)"; the plan-182 deep-forest tree/bush ratio floor 0.85 → 0.8 (coastal sample chunks; meadow flower bushes keep their own shore rule).
 - **Garden hay stack (Q96):** `buildSettlementProps` placed it at a random angle around a garden without any water check. `dryHaySpot` (`props.ts`) keeps the rolled angle when the centre and four rim samples at 1.6 m are `CORE_PROP_WATER_MARGIN` (0.8 m) above water in the land view, otherwise tries 7 golden-angle steps (no extra RNG draws), else the highest candidate. Runtime prop only (no cache). Paddock haystack already used `wetOrRiver`. Other runtime props → Q95.
 
+## P1 progress (Q80, 2026-11-03)
+
+- First WSL A/B: new path booted 3/8. Cause (Opus recon): the pool is created during page load for the hydrology strips; under Vite dev a module worker sometimes dies loading its ~445-module graph (bare `Event`; prod build/preview 4/4 OK), and `chunkWorkerPool` kept the dead worker in `free` and rejected the strip, so `ensureWorldHydrology` rejected. Fixed in `a46044f6`: an `error` event retires the worker, spawns a replacement (installed hydrology first) and retries the job once (bounded respawns). Dev boots 6/6, hydrology hash stable (`6e4144d9`).
+- WSL A/B n=3 after the fix: 12/12 boots; stream no regression; settlement −3.5 fps with a recorded reason (different world content: more water meshes/triangles and settlement draws). [Report](../../performance/results/2026-11-03--wsl-q80-p1-hydrology-ab.md).
+- Remaining P1: delete legacy, re-export fixtures, census baselines, §4 Windows entry (queue Q80 Resume).
+
 ## Pitfalls
+
+- Pool workers created during page load (any boot-time worker job) are exposed to the Vite dev module-load abort above; the pool's replace-and-retry covers it — do not "fix" it by delaying the hydrology install.
 
 - Hydrology must never read the corrected terrain, settlements, roads or `waterH` (cycle). Settlement code may read hydrology, never the other way round.
 - A sampler call before install must fail loudly; a silent fallback would write uncorrected terrain into the caches under a corrected fingerprint.

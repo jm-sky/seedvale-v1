@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "gitSha": "a25e47aa423419e56bb240801251d699bb6b8759",
+  "runId": "2026-11-03T16-50-39-198Z-fusb03",
+  "scenario": "stream",
+  "phase": "warm",
+  "canonical": true,
+  "generatedAt": "2026-11-03T16:51:37.810Z",
+  "fixtureVersion": "tools-001-v1",
+  "quality": "High",
+  "hardwareClass": "wsl-baseline",
+  "notes": "benchmark series B2 rep1; WSL2 Chrome headed, fresh profile, 30s cooldown, query &hydrology=legacy",
+  "servedSha": "a46044f67f7cce7285da6e4efac6a1f1aaafb963",
+  "shaNote": "label a25e47aa423419e56bb240801251d699bb6b8759 is stale (Vite started before a runtime commit); code served from HEAD a46044f67f7cce7285da6e4efac6a1f1aaafb963 working tree; runtime diff: src/terrain/chunkWorkerPool.test.ts, src/terrain/chunkWorkerPool.ts",
+  "platform": "wsl"
+}

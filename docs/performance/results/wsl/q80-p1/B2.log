@@ -1,0 +1,26 @@
+expected SHA a46044f67f7cce7285da6e4efac6a1f1aaafb963
+--- stream rep1 start 2026-11-03T16:48:39.272Z
+WARN served SHA label a25e47aa != HEAD a46044f6 (runtime diff; label stale, restart Vite to silence) — run kept
+OK stream rep1 sha=a25e47aa fps=61.8 p95=25.9 draws=379 npc=8 gpu={"userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/53
+cooldown 30s
+--- stream rep2 start 2026-11-03T16:52:14.417Z
+WARN served SHA label a25e47aa != HEAD a46044f6 (runtime diff; label stale, restart Vite to silence) — run kept
+OK stream rep2 sha=a25e47aa fps=58.2 p95=26 draws=386 npc=8 gpu={"userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/53
+cooldown 30s
+--- stream rep3 start 2026-11-03T16:55:46.101Z
+WARN served SHA label a25e47aa != HEAD a46044f6 (runtime diff; label stale, restart Vite to silence) — run kept
+OK stream rep3 sha=a25e47aa fps=55.9 p95=36.6 draws=384 npc=8 gpu={"userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/53
+cooldown 30s
+--- settlement rep1 start 2026-11-03T16:59:17.990Z
+WARN served SHA label a25e47aa != HEAD a46044f6 (runtime diff; label stale, restart Vite to silence) — run kept
+OK settlement rep1 sha=a25e47aa fps=56.8 p95=19.9 draws=1120 npc=8 gpu={"userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/53
+cooldown 30s
+--- settlement rep2 start 2026-11-03T17:03:22.629Z
+WARN served SHA label a25e47aa != HEAD a46044f6 (runtime diff; label stale, restart Vite to silence) — run kept
+OK settlement rep2 sha=a25e47aa fps=54.8 p95=20.7 draws=1116 npc=8 gpu={"userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/53
+cooldown 30s
+--- settlement rep3 start 2026-11-03T17:07:26.229Z
+WARN served SHA label a25e47aa != HEAD a46044f6 (runtime diff; label stale, restart Vite to silence) — run kept
+OK settlement rep3 sha=a25e47aa fps=55 p95=20.5 draws=1116 npc=8 gpu={"userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/53
+cooldown 30s
+ALL DONE
