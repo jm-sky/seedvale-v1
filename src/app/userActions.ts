@@ -96,7 +96,7 @@ const getUserActions = (
     evaluateGroundPlacement({
       x,
       z,
-      sampleHeight: (sx, sz) => bundle.chunkManager.sampleHeight(sx, sz),
+      sampleHeight: (sx, sz) => bundle.chunkManager.sampleLandHeight(sx, sz),
       waterLevel: bundle.chunkManager.waterLevel,
       blockers: blockersNear(x, z),
       peers: bundle.placedFires.nodes(),

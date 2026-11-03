@@ -16,6 +16,7 @@ import {
   type RoadCorridorSegment,
   sampleApronGrid,
 } from './chunkHeightmap'
+import { isWetFloor } from './waterSurface'
 
 export type EnvironmentKind =
   | 'largeRock'
@@ -581,7 +582,7 @@ export function computeChunkEnvironment(
     const wx = coord.cx * chunkSize + (rockRandom() * 2 - 1) * half
     const wz = coord.cz * chunkSize + (rockRandom() * 2 - 1) * half
     const h = sample(tile.heights, wx, wz)
-    if (h <= waterLevel + 0.3) continue
+    if (h <= waterLevel + 0.3 || isWetFloor(h, sample(tile.floorHeights, wx, wz))) continue
     if (sample(tile.roadTint, wx, wz) > ROAD_TINT_REJECT) continue // road/path/clearing
 
     if (slopeAt(wx, wz) > SLOPE_REJECT_ROCK) continue
@@ -614,7 +615,7 @@ export function computeChunkEnvironment(
     const wx = coord.cx * chunkSize + (logRandom() * 2 - 1) * half
     const wz = coord.cz * chunkSize + (logRandom() * 2 - 1) * half
     const h = sample(tile.heights, wx, wz)
-    if (h <= waterLevel + 0.4) continue
+    if (h <= waterLevel + 0.4 || isWetFloor(h, sample(tile.floorHeights, wx, wz))) continue
     if (sample(tile.roadTint, wx, wz) > ROAD_TINT_REJECT) continue // road/path/clearing
     if (slopeAt(wx, wz) > SLOPE_REJECT_FLAT) continue
 
@@ -648,7 +649,7 @@ export function computeChunkEnvironment(
     const wx = coord.cx * chunkSize + (fireRandom() * 2 - 1) * half
     const wz = coord.cz * chunkSize + (fireRandom() * 2 - 1) * half
     const h = sample(tile.heights, wx, wz)
-    if (h <= waterLevel + 0.4) continue
+    if (h <= waterLevel + 0.4 || isWetFloor(h, sample(tile.floorHeights, wx, wz))) continue
     if (slopeAt(wx, wz) > SLOPE_REJECT_FLAT) continue
     if (sample(tile.roadTint, wx, wz) > ROAD_TINT_REJECT) continue
     if (fireRandom() > CAMPFIRE_CHANCE) continue
@@ -666,7 +667,10 @@ export function computeChunkEnvironment(
 
   // --- Classic landmarks: shared resolver (plan world-028) ---
   const landmarkTerrain: LandmarkTerrainSampler = {
-    heightAt: (wx, wz) => sample(tile.heights, wx, wz),
+    heightAt: (wx, wz) => {
+      const h = sample(tile.heights, wx, wz)
+      return isWetFloor(h, sample(tile.floorHeights, wx, wz)) ? waterLevel : h
+    },
     roadTintAt: (wx, wz) => sample(tile.roadTint, wx, wz),
     mountainRidgeAt: (wx, wz) => sample(tile.mountainRidge, wx, wz),
     moistureRegionAt: (wx, wz) => sample(tile.moistureRegion, wx, wz),
@@ -783,7 +787,7 @@ export function computeChunkEnvironment(
       const h = sample(tile.heights, wx, wz)
       if (
         inChunk
-        && h > waterLevel + 0.35
+        && h > waterLevel + 0.35 && !isWetFloor(h, sample(tile.floorHeights, wx, wz))
         && slopeAt(wx, wz) <= SLOPE_REJECT_LANDMARK
         && !inVillageClearing(wx, wz, 2)
         && wagonRandom() <= WAGON_CHANCE
@@ -842,11 +846,11 @@ export function computeChunkEnvironment(
     const ridge = sample(tile.mountainRidge, wx, wz)
     const altitude01 = (h - waterLevel) / Math.max(heightScale, 0.001)
     const coastal =
-      isCoastalBand(continentalness) && h > waterLevel + 1.2 && h <= waterLevel + 8
+      isCoastalBand(continentalness) && h > waterLevel + 1.2 && !isWetFloor(h, sample(tile.floorHeights, wx, wz)) && h <= waterLevel + 8
     const mountain = ridge >= 0.45 && altitude01 >= 0.35
     if (
       (coastal || mountain)
-      && h > waterLevel + 0.5
+      && h > waterLevel + 0.5 && !isWetFloor(h, sample(tile.floorHeights, wx, wz))
       && sample(tile.roadTint, wx, wz) <= ROAD_TINT_REJECT
       && footprintSlopeOk(wx, wz, TOWER_FOOTPRINT_RADIUS, SLOPE_REJECT_LANDMARK)
       && footprintClearsRoads(wx, wz, TOWER_FOOTPRINT_RADIUS)
@@ -882,6 +886,7 @@ export function computeChunkEnvironment(
     if (
       suitable
       && h > waterLevel + 0.6
+      && !isWetFloor(h, sample(tile.floorHeights, wx, wz))
       && sample(tile.roadTint, wx, wz) <= ROAD_TINT_REJECT
       && footprintSlopeOk(wx, wz, OLD_TREE_FOOTPRINT_RADIUS, SLOPE_REJECT_LANDMARK)
       && footprintClearsRoads(wx, wz, OLD_TREE_FOOTPRINT_RADIUS)

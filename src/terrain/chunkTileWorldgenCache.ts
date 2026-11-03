@@ -56,7 +56,7 @@ export const CHUNK_TILE_CACHE_NAMESPACE = 'chunk-tiles'
  * v12 (2026-11-02): lanes root inside the plaza; yard clearance counts lane half width.
  * v13 (2026-11-02): house sites also judged by yard ground (steep yards rejected/penalised).
  */
-export const CHUNK_TILE_CACHE_VERSION = 20
+export const CHUNK_TILE_CACHE_VERSION = 21
 
 /** Small byte-budget manifest record living in the same namespace — see
  *  `ChunkTileMetaPayload`. Its `fingerprint` field is a constant because the

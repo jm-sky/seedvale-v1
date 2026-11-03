@@ -228,7 +228,7 @@ export function createFoodSourceHooks(
         const reason = evaluateGroundPlacement({
           x,
           z,
-          sampleHeight: chunkManager.sampleHeight,
+          sampleHeight: chunkManager.sampleLandHeight,
           waterLevel: chunkManager.waterLevel,
           blockers: [],
           peers,

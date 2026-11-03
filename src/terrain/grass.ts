@@ -863,6 +863,7 @@ export function createGrassSystem(): GrassSystem {
       },
       {
         heights: tile.heights,
+        floorHeights: tile.floorHeights,
         biomes: tile.biomes,
         roadTint: tile.roadTint,
         mountainRidge: tile.mountainRidge,

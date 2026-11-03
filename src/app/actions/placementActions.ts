@@ -598,7 +598,7 @@ export function createPlacementActions(ctx: PlayerActionContext): PlacementActio
     evaluate: (site) => evaluateTentPlacement({
       x: site.x,
       z: site.z,
-      sampleHeight: (x, z) => bundle.chunkManager.sampleHeight(x, z),
+      sampleHeight: (x, z) => bundle.chunkManager.sampleLandHeight(x, z),
       waterLevel: bundle.chunkManager.waterLevel,
       blockers: tentBlockers(site.x, site.z),
       otherTents: bundle.placedTents.nodes(),
@@ -669,7 +669,7 @@ export function createPlacementActions(ctx: PlayerActionContext): PlacementActio
       const reason = evaluateGroundPlacement({
         x: site.x,
         z: site.z,
-        sampleHeight: (sx, sz) => bundle.chunkManager.sampleHeight(sx, sz),
+        sampleHeight: (sx, sz) => bundle.chunkManager.sampleLandHeight(sx, sz),
         waterLevel: bundle.chunkManager.waterLevel,
         blockers: tentBlockers(site.x, site.z),
         peers: [...bundle.placedTraps.nodes(), ...bundle.placedTents.nodes()],
@@ -731,7 +731,7 @@ export function createPlacementActions(ctx: PlayerActionContext): PlacementActio
       const reason = evaluateGroundPlacement({
         x: site.x,
         z: site.z,
-        sampleHeight: (sx, sz) => bundle.chunkManager.sampleHeight(sx, sz),
+        sampleHeight: (sx, sz) => bundle.chunkManager.sampleLandHeight(sx, sz),
         waterLevel: bundle.chunkManager.waterLevel,
         blockers: tentBlockers(site.x, site.z),
         peers: bundle.playerWells.nodes(),
@@ -1084,7 +1084,7 @@ export function createPlacementActions(ctx: PlayerActionContext): PlacementActio
       const reason = evaluateGroundPlacement({
         x: site.x,
         z: site.z,
-        sampleHeight: (sx, sz) => bundle.chunkManager.sampleHeight(sx, sz),
+        sampleHeight: (sx, sz) => bundle.chunkManager.sampleLandHeight(sx, sz),
         waterLevel: bundle.chunkManager.waterLevel,
         blockers: tentBlockers(site.x, site.z),
         peers: bundle.playerGardens.nodes(),
@@ -1210,7 +1210,7 @@ export function createPlacementActions(ctx: PlayerActionContext): PlacementActio
     const reason = evaluateGroundPlacement({
       x,
       z,
-      sampleHeight: (sx, sz) => bundle.chunkManager.sampleHeight(sx, sz),
+      sampleHeight: (sx, sz) => bundle.chunkManager.sampleLandHeight(sx, sz),
       waterLevel: bundle.chunkManager.waterLevel,
       blockers: tentBlockers(x, z),
       peers,
@@ -1257,7 +1257,7 @@ export function createPlacementActions(ctx: PlayerActionContext): PlacementActio
     const reason = evaluateGroundPlacement({
       x,
       z,
-      sampleHeight: (sx, sz) => bundle.chunkManager.sampleHeight(sx, sz),
+      sampleHeight: (sx, sz) => bundle.chunkManager.sampleLandHeight(sx, sz),
       waterLevel: bundle.chunkManager.waterLevel,
       blockers: [],
       peers,
@@ -1297,7 +1297,7 @@ export function createPlacementActions(ctx: PlayerActionContext): PlacementActio
       const reason = evaluateGroundPlacement({
         x: site.x,
         z: site.z,
-        sampleHeight: (sx, sz) => bundle.chunkManager.sampleHeight(sx, sz),
+        sampleHeight: (sx, sz) => bundle.chunkManager.sampleLandHeight(sx, sz),
         waterLevel: bundle.chunkManager.waterLevel,
         blockers: tentBlockers(site.x, site.z),
         peers: bundle.standingTorches.nodes(),
@@ -1399,7 +1399,7 @@ export function createPlacementActions(ctx: PlayerActionContext): PlacementActio
       const reason = evaluateGroundPlacement({
         x: site.x,
         z: site.z,
-        sampleHeight: (x, z) => bundle.chunkManager.sampleHeight(x, z),
+        sampleHeight: (x, z) => bundle.chunkManager.sampleLandHeight(x, z),
         waterLevel: bundle.chunkManager.waterLevel,
         blockers: tentBlockers(site.x, site.z),
         peers: bundle.playerTroughs.nodes(),
@@ -1548,7 +1548,7 @@ export function createPlacementActions(ctx: PlayerActionContext): PlacementActio
       const reason = evaluateGroundPlacement({
         x: site.x,
         z: site.z,
-        sampleHeight: (sx, sz) => bundle.chunkManager.sampleHeight(sx, sz),
+        sampleHeight: (sx, sz) => bundle.chunkManager.sampleLandHeight(sx, sz),
         waterLevel: bundle.chunkManager.waterLevel,
         blockers: tentBlockers(site.x, site.z),
         peers: bundle.palisades.nodes(),
@@ -1667,7 +1667,7 @@ export function createPlacementActions(ctx: PlayerActionContext): PlacementActio
       const reason = evaluateGroundPlacement({
         x: site.x,
         z: site.z,
-        sampleHeight: (sx, sz) => bundle.chunkManager.sampleHeight(sx, sz),
+        sampleHeight: (sx, sz) => bundle.chunkManager.sampleLandHeight(sx, sz),
         waterLevel: bundle.chunkManager.waterLevel,
         blockers: tentBlockers(site.x, site.z),
         peers: bundle.sleepingUtilities.bedrolls.nodes(),
@@ -1738,7 +1738,7 @@ export function createPlacementActions(ctx: PlayerActionContext): PlacementActio
       const reason = evaluateGroundPlacement({
         x: site.x,
         z: site.z,
-        sampleHeight: (sx, sz) => bundle.chunkManager.sampleHeight(sx, sz),
+        sampleHeight: (sx, sz) => bundle.chunkManager.sampleLandHeight(sx, sz),
         waterLevel: bundle.chunkManager.waterLevel,
         blockers: tentBlockers(site.x, site.z),
         peers: bundle.sleepingUtilities.platforms.nodes(),
@@ -1824,7 +1824,7 @@ export function createPlacementActions(ctx: PlayerActionContext): PlacementActio
           yaw: site.yaw,
           width: def.footprint.width,
           depth: def.footprint.depth,
-          sampleHeight: (sx, sz) => bundle.chunkManager.sampleHeight(sx, sz),
+          sampleHeight: (sx, sz) => bundle.chunkManager.sampleLandHeight(sx, sz),
           waterLevel: bundle.chunkManager.waterLevel,
           blockers: tentBlockers(site.x, site.z),
           peers: bundle.residentialBuildings.nodes(),
@@ -1848,10 +1848,10 @@ export function createPlacementActions(ctx: PlayerActionContext): PlacementActio
     const size = coveringPreparationSize(def.footprint.width, def.footprint.depth)
     const chunkManager = bundle.chunkManager
     const { center, samples } = resolvePreparationSamples(x, z, size, chunkManager.chunkSize, chunkManager.resolution)
-    const originalHeights = samples.map((s) => ({ x: s.x, z: s.z, height: chunkManager.sampleHeight(s.x, s.z) }))
+    const originalHeights = samples.map((s) => ({ x: s.x, z: s.z, height: chunkManager.sampleLandHeight(s.x, s.z) }))
     const targetHeight = originalHeights.reduce((sum, s) => sum + s.height, 0) / originalHeights.length
     const env: DigEnv = {
-      sampleHeight: chunkManager.sampleHeight,
+      sampleHeight: chunkManager.sampleLandHeight,
       sampleMountainRidge: chunkManager.sampleMountainRidge,
       waterLevel: chunkManager.waterLevel,
       seed: chunkManager.seed,

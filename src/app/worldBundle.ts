@@ -683,7 +683,7 @@ function buildSettlementsManager(
 ): Promise<SettlementsManager> {
   return createSettlementsManager(
     scene,
-    chunkManager.sampleHeight,
+    chunkManager.sampleLandHeight,
     chunkManager.waterLevel,
     chunkManager.sampleLocalWater,
     HOME_RADIUS,
@@ -784,7 +784,7 @@ function collectNearbyClosedSettlements(
     const probe = probeSettlementSite(
       cell,
       seed,
-      chunkManager.sampleHeight,
+      chunkManager.sampleLandHeight,
       config.terrain.waterLevel,
       HOME_RADIUS,
       {
@@ -877,7 +877,7 @@ function buildFauna(
   }
 
   const naturalWaterKindAt = createNaturalWaterKindAt({
-    sampleHeight: chunkManager.sampleHeight,
+    sampleHeight: chunkManager.sampleLandHeight,
     waterLevel: chunkManager.waterLevel,
     sampleContinentalness: chunkManager.sampleContinentalness,
     region: chunkManager.region,
@@ -896,7 +896,7 @@ function buildFauna(
     : dungeonOccupancy.bindings
   return createFauna(
     scene,
-    chunkManager.sampleHeight,
+    chunkManager.sampleLandHeight,
     chunkManager.sampleForestFactor,
     chunkManager.waterLevel,
     chunkManager.sampleLocalWater,
@@ -1023,7 +1023,7 @@ function buildItemSpawners(
   )
   return createItemSpawners(
     scene,
-    chunkManager.sampleHeight,
+    chunkManager.sampleLandHeight,
     chunkManager.waterLevel,
     HOME_RADIUS,
     settlement.center,
@@ -1379,7 +1379,7 @@ async function buildWorldSystems(
   // skip `generateSettlementDef()`. A miss or storage failure regenerates.
   const homeResolveCtx: SettlementResolveContext = {
     seed: config.seed,
-    sampleHeight: chunkManager.sampleHeight,
+    sampleHeight: chunkManager.sampleLandHeight,
     waterLevel: config.terrain.waterLevel,
     localSearchRadius: HOME_RADIUS,
     terrainSamplers: {

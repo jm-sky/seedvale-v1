@@ -23,6 +23,7 @@ import {
   type VegetationKind,
 } from './chunkHeightmap'
 import { isInsideRiverChannel, nearestRiverBankDistance } from './riverNetwork'
+import { isWetFloor } from './waterSurface'
 
 export type VegetationPlacement = {
   x: number
@@ -81,6 +82,9 @@ const DEEP_AGE_BIAS_MAX = 1.6
 
 /** Skews `random01` toward 1 (biases `rollSizeClass` toward `large`) as
  *  `bias` grows past 1; `bias === 1` is a no-op (identity). */
+/** Vegetation tolerates the bilinear leak of a carved river-bank texel (up to 25 cm of apparent depth; reeds grow at the waterline) and rejects only clearly wet (lake) points. */
+const RIPARIAN_WET_EPS = 0.25
+
 function biasHigh(random01: number, bias: number): number {
   return 1 - (1 - random01) ** bias
 }
@@ -238,7 +242,7 @@ export function computeChunkVegetation(
     // 0.5) so lake-edge candidates survive to reach the `nearWaterline` reed
     // branch below instead of being rejected before `kind` is even decided.
     const waterClearance = biome.swamp > 0.4 ? 0.05 : 0.3
-    if (h <= waterLevel + waterClearance) continue // underwater/shoreline
+    if (h <= waterLevel + waterClearance || isWetFloor(h, sample(tile.floorHeights, wx, wz), RIPARIAN_WET_EPS)) continue // underwater/shoreline
 
     const d = SLOPE_SAMPLE_STEP
     const slope =
@@ -410,7 +414,7 @@ function flowerMeadowPatches(
     if (mask < MEADOW_THRESHOLD) continue
 
     const h = sample(tile.heights, cx, cz)
-    if (h <= waterLevel + 0.5) continue
+    if (h <= waterLevel + 0.5 || isWetFloor(h, sample(tile.floorHeights, cx, cz), RIPARIAN_WET_EPS)) continue
     if (params.riverSegments.length > 0 && isInsideRiverChannel(params.riverSegments, cx, cz)) continue
     const altitude = (h - waterLevel) / Math.max(heightScale, 0.001)
     if (altitude > MEADOW_ALTITUDE_LIMIT) continue
@@ -440,7 +444,7 @@ function flowerMeadowPatches(
       const fx = cx + Math.cos(a) * r
       const fz = cz + Math.sin(a) * r
       const fh = sample(tile.heights, fx, fz)
-      if (fh <= waterLevel + 0.4) continue
+      if (fh <= waterLevel + 0.4 || isWetFloor(fh, sample(tile.floorHeights, fx, fz), RIPARIAN_WET_EPS)) continue
       if (sample(tile.roadTint, fx, fz) > ROAD_TINT_REJECT) continue
       if (params.riverSegments.length > 0 && isInsideRiverChannel(params.riverSegments, fx, fz)) continue
 
@@ -504,7 +508,7 @@ function fernPatches(
     const cz = coord.cz * chunkSize + (fernRandom() * 2 - 1) * half
 
     const h = sample(tile.heights, cx, cz)
-    if (h <= waterLevel + 0.3) continue // underwater/shoreline
+    if (h <= waterLevel + 0.3 || isWetFloor(h, sample(tile.floorHeights, cx, cz), RIPARIAN_WET_EPS)) continue // underwater/shoreline
     if (params.riverSegments.length > 0 && isInsideRiverChannel(params.riverSegments, cx, cz)) continue
     const altitude = (h - waterLevel) / Math.max(heightScale, 0.001)
     if (altitude > TREELINE_ALTITUDE) continue // above treeline
@@ -539,7 +543,7 @@ function fernPatches(
       const fx = cx + Math.cos(a) * r
       const fz = cz + Math.sin(a) * r
       const fh = sample(tile.heights, fx, fz)
-      if (fh <= waterLevel + 0.2) continue
+      if (fh <= waterLevel + 0.2 || isWetFloor(fh, sample(tile.floorHeights, fx, fz), RIPARIAN_WET_EPS)) continue
       if (sample(tile.roadTint, fx, fz) > ROAD_TINT_REJECT) continue
       if (params.riverSegments.length > 0 && isInsideRiverChannel(params.riverSegments, fx, fz)) continue
 
@@ -630,7 +634,7 @@ function riparianPatches(
 
   const place = (x: number, z: number): void => {
     const h = sample(tile.heights, x, z)
-    if (h <= waterLevel + 0.05) return // still underwater
+    if (h <= waterLevel + 0.05 || isWetFloor(h, sample(tile.floorHeights, x, z), RIPARIAN_WET_EPS)) return // still underwater
     if (params.riverSegments.length > 0 && isInsideRiverChannel(params.riverSegments, x, z)) return
     if (sample(tile.roadTint, x, z) > ROAD_TINT_REJECT) return
 
@@ -707,7 +711,7 @@ function riparianPatches(
     const cz = coord.cz * chunkSize + (riparianRandom() * 2 - 1) * half
 
     const h = sample(tile.heights, cx, cz)
-    if (h <= waterLevel + 0.05) continue
+    if (h <= waterLevel + 0.05 || isWetFloor(h, sample(tile.floorHeights, cx, cz), RIPARIAN_WET_EPS)) continue
     const altitude = (h - waterLevel) / Math.max(heightScale, 0.001)
     const moistureRegion = sample(tile.moistureRegion, cx, cz)
     const moisture = sample(tile.biomes, cx, cz)

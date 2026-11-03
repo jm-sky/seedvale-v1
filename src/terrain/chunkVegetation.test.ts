@@ -409,7 +409,7 @@ describe('computeChunkVegetation — lily pads (plan world-terrain-010, Phase 6)
         heights[idx] = Math.max(floorH, waterLevel)
       }
     }
-    const bodies = detectWaterBodies(heights, o.apronRes, waterLevel, o.step)
+    const bodies = detectWaterBodies(heights, heights, o.apronRes, waterLevel, o.step)
     const bodyScale = computeBodyScale(bodies, { continentalness, oceanThreshold: 0.32, coastThreshold: 0.45 })
     const tile: ChunkTileData = {
       heights,
@@ -450,7 +450,7 @@ describe('computeChunkVegetation — lily pads (plan world-terrain-010, Phase 6)
     // Force every wet texel to read as ocean (bodyScale saturates to 1).
     tile.continentalness.fill(0.1)
     const oceanBodyScale = computeBodyScale(
-      detectWaterBodies(tile.heights, o.apronRes, waterLevel, o.step),
+      detectWaterBodies(tile.heights, tile.floorHeights, o.apronRes, waterLevel, o.step),
       { continentalness: tile.continentalness, oceanThreshold: 0.32, coastThreshold: 0.45 },
     )
     const oceanTile: ChunkTileData = { ...tile, bodyScale: oceanBodyScale }
@@ -503,7 +503,7 @@ describe('computeChunkVegetation — shallow coastal seaweed (plan world-terrain
         heights[idx] = Math.max(floorH, waterLevel)
       }
     }
-    const bodies = detectWaterBodies(heights, o.apronRes, waterLevel, o.step)
+    const bodies = detectWaterBodies(heights, heights, o.apronRes, waterLevel, o.step)
     const bodyScale = computeBodyScale(bodies, { continentalness, oceanThreshold: 0.32, coastThreshold: 0.45 })
     const tile: ChunkTileData = {
       heights,

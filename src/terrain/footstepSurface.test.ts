@@ -12,6 +12,7 @@ function stub(overrides: {
 }): ChunkManager {
   return {
     sampleHeight: () => overrides.height ?? 8,
+    sampleLandHeight: () => overrides.height ?? 8,
     waterLevel: overrides.waterLevel ?? 0,
     seed: overrides.seed ?? 1,
     sampleMountainRidge: () => overrides.ridge ?? 0,

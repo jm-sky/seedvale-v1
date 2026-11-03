@@ -165,7 +165,7 @@ export function createWorkContractActions(
     evaluate: (site) => evaluateGroundPlacement({
       x: site.x,
       z: site.z,
-      sampleHeight: (sx, sz) => bundle.chunkManager.sampleHeight(sx, sz),
+      sampleHeight: (sx, sz) => bundle.chunkManager.sampleLandHeight(sx, sz),
       waterLevel: bundle.chunkManager.waterLevel,
       blockers: tentBlockers(site.x, site.z),
       // A contract's flag/well must not overlap an unrelated existing well

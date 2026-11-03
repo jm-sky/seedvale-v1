@@ -13,6 +13,7 @@ import {
   type GrassBucketBounds,
 } from './grassBounds'
 import { isInsideRiverChannel } from './riverNetwork'
+import { isWetFloor } from './waterSurface'
 
 export type { GrassBucketBounds }
 
@@ -34,6 +35,8 @@ export const GRASS_SPECIES_ORDER: readonly GrassSpeciesId[] = ['tri', 'grain', '
  *  grass placement actually reads. */
 export type GrassTileGrids = {
   heights: Float32Array
+  /** Seabed/lakebed: with `heights` it tells wet cells apart from shore (plan 058 L1). */
+  floorHeights: Float32Array
   biomes: Float32Array
   roadTint: Float32Array
   mountainRidge: Float32Array
@@ -423,7 +426,7 @@ export function computeChunkGrass(params: GrassComputeParams, grids: GrassTileGr
 
     const h = sample(grids.heights, wx, wz)
     const sandBand = sandBandAt(wx, wz, seed)
-    if (h <= waterLevel + sandBand) continue // underwater/shoreline sand
+    if (h <= waterLevel + sandBand || isWetFloor(h, sample(grids.floorHeights, wx, wz))) continue // underwater/shoreline sand
     if (riverSegments.length > 0 && isInsideRiverChannel(riverSegments, wx, wz)) continue // river channel
 
     const altitude = (h - waterLevel) / Math.max(heightScale, 0.001)
@@ -517,7 +520,7 @@ export function computeChunkGrass(params: GrassComputeParams, grids: GrassTileGr
 
     const h = sample(grids.heights, wx, wz)
     const sandBand = sandBandAt(wx, wz, seed)
-    if (h <= waterLevel + sandBand) continue
+    if (h <= waterLevel + sandBand || isWetFloor(h, sample(grids.floorHeights, wx, wz))) continue
     if (riverSegments.length > 0 && isInsideRiverChannel(riverSegments, wx, wz)) continue // river channel
 
     const altitude = (h - waterLevel) / Math.max(heightScale, 0.001)

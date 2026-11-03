@@ -5,7 +5,7 @@ import { biomeWeightsAt, forestBiomeAt, forestDensityAt } from '../../terrain/bi
 import {
   sampleContinentalnessAt,
   sampleFloorAt,
-  sampleHeightAt,
+  sampleHeightAt, sampleLandHeightAt,
   sampleMoistureRegionAt,
   sampleMountainRidgeAt,
 } from '../../terrain/chunkHeightmap'
@@ -135,7 +135,7 @@ function candidatePassesTier(
   z: number,
   tier: SiteTier,
 ): boolean {
-  const h = sampleHeightAt(x, z, sampleParams)
+  const h = sampleLandHeightAt(x, z, sampleParams)
   if (h <= sampleParams.waterLevel + WATER_MARGIN) return false
   if (sampleContinentalnessAt(x, z, sampleParams) < sampleParams.region.oceanThreshold) return false
   if (slopeAt(sampleParams, x, z) > SLOPE_REJECT) return false

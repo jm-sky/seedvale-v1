@@ -43,7 +43,7 @@ describe('computeBodyScale', () => {
 
   it('marks land as 0', () => {
     const heights = filledHeights(resolution, waterLevel, false)
-    const detection = detectWaterBodies(heights, resolution, waterLevel, step)
+    const detection = detectWaterBodies(heights, heights, resolution, waterLevel, step)
     const continentalness = new Float32Array(resolution * resolution).fill(0.2)
     const scale = computeBodyScale(detection, {
       continentalness,
@@ -55,7 +55,7 @@ describe('computeBodyScale', () => {
 
   it('does not promote a huge inland lake to ocean (area >> 35% of the chunk)', () => {
     const heights = filledHeights(resolution, waterLevel, true)
-    const detection = detectWaterBodies(heights, resolution, waterLevel, step)
+    const detection = detectWaterBodies(heights, heights, resolution, waterLevel, step)
     expect(detection.bodies[0]!.worldArea).toBe(resolution * resolution)
     const continentalness = new Float32Array(resolution * resolution).fill(0.7)
     const scale = computeBodyScale(detection, {
@@ -69,7 +69,7 @@ describe('computeBodyScale', () => {
 
   it('marks cells below oceanThreshold as ocean (bodyScale 1)', () => {
     const heights = filledHeights(resolution, waterLevel, true)
-    const detection = detectWaterBodies(heights, resolution, waterLevel, step)
+    const detection = detectWaterBodies(heights, heights, resolution, waterLevel, step)
     const continentalness = new Float32Array(resolution * resolution).fill(0.2)
     const scale = computeBodyScale(detection, {
       continentalness,
@@ -81,7 +81,7 @@ describe('computeBodyScale', () => {
 
   it('splits a flooded grid: inland cells stay lakes, ocean-threshold cells are 1', () => {
     const heights = filledHeights(resolution, waterLevel, true)
-    const detection = detectWaterBodies(heights, resolution, waterLevel, step)
+    const detection = detectWaterBodies(heights, heights, resolution, waterLevel, step)
     const continentalness = new Float32Array(resolution * resolution)
     for (let i = 0; i < continentalness.length; i++) {
       continentalness[i] = i < continentalness.length / 2 ? 0.2 : 0.7

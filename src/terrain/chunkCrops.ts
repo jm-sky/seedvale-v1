@@ -8,6 +8,7 @@ import {
   type ChunkTileParams,
   sampleApronGrid,
 } from './chunkHeightmap'
+import { isWetFloor } from './waterSurface'
 
 /** Independent candidate pool, own RNG salt/id prefix (plan 172) — same
  *  worker-safe/deterministic contract as `chunkItems.ts`'s flora pool, kept
@@ -58,7 +59,7 @@ export function computeChunkCrops(
     const wz = coord.cz * chunkSize + localZ
 
     const h = sample(tile.heights, wx, wz)
-    if (h <= waterLevel + 0.3) continue // underwater/shoreline
+    if (h <= waterLevel + 0.3 || isWetFloor(h, sample(tile.floorHeights, wx, wz))) continue // underwater/shoreline
 
     const d = SLOPE_SAMPLE_STEP
     const slope =

@@ -7,7 +7,7 @@ import { biomeWeightsAt, forestBiomeAt, forestDensityAt } from '../terrain/biome
 import {
   sampleContinentalnessAt,
   sampleFloorAt,
-  sampleHeightAt,
+  sampleHeightAt, sampleLandHeightAt,
   sampleMoistureRegionAt,
   sampleMountainRidgeAt,
 } from '../terrain/chunkHeightmap'
@@ -195,7 +195,7 @@ function forestFactorAt(sampleParams: RawSampleParams, x: number, z: number): nu
 }
 
 function isWalkableTreasureTerrain(sampleParams: RawSampleParams, x: number, z: number): boolean {
-  const h = sampleHeightAt(x, z, sampleParams)
+  const h = sampleLandHeightAt(x, z, sampleParams)
   if (h <= sampleParams.waterLevel + WATER_MARGIN) return false
   if (sampleContinentalnessAt(x, z, sampleParams) < sampleParams.region.oceanThreshold) return false
   if (slopeAt(sampleParams, x, z) > SLOPE_REJECT) return false

@@ -152,7 +152,7 @@ export function buildDigContextualFindContext(
 /** Builds the terrain sampler env for contextual-find composition at dig time. */
 export function digContextualFindEnvFromChunkManager(chunkManager: ChunkManager): DigContextualFindEnv {
   return {
-    sampleHeight: chunkManager.sampleHeight,
+    sampleHeight: chunkManager.sampleLandHeight,
     sampleMountainRidge: chunkManager.sampleMountainRidge,
     waterLevel: chunkManager.waterLevel,
     seed: chunkManager.seed,

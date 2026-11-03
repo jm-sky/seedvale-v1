@@ -1,4 +1,5 @@
 import { MathUtils } from 'three'
+import { isWetTexel, LAKE_SURFACE_EPS } from './waterSurface'
 
 export type WaterBody = {
   id: number
@@ -17,7 +18,6 @@ export type BodyScaleParams = {
   coastThreshold: number
 }
 
-const WATER_EPS = 1e-4
 const LAKE_AREA_SATURATE = 300
 /**
  * Ocean cells are written as 1 (continentalness, not lake area). Inland lakes
@@ -29,12 +29,14 @@ export const OCEAN_BODY_SCALE_DISCARD = 0.9
 export const LAKE_SCALE_MAX = 0.85
 
 /**
- * BFS flood-fill over `h <= waterLevel` cells (4-connectivity) to find discrete
- * water bodies within one chunk's (apron-inclusive) grid. Area is used only to
- * scale inland-lake waves — not to decide ocean vs lake.
+ * BFS flood-fill over wet cells (4-connectivity) to find discrete water bodies within one chunk's (apron-inclusive)
+ * grid. A cell is wet when it is at/below sea level or its surface lies above its floor (`isWetTexel`, plan 058 L1);
+ * neighbours join a body only when their surfaces agree, so a lake and a stream or sea at another level stay separate.
+ * Area is used only to scale inland-lake waves — not to decide ocean vs lake.
  */
 export function detectWaterBodies(
   heights: Float32Array,
+  floorHeights: Float32Array,
   resolution: number,
   waterLevel: number,
   step: number,
@@ -42,11 +44,13 @@ export function detectWaterBodies(
   const bodyId = new Int32Array(resolution * resolution).fill(-1)
   const bodies: WaterBody[] = []
   const queue = new Int32Array(resolution * resolution)
+  const wet = (i: number): boolean => isWetTexel(heights[i]!, floorHeights[i]!, waterLevel)
 
   for (let start = 0; start < resolution * resolution; start++) {
-    if (bodyId[start] !== -1 || heights[start]! > waterLevel + WATER_EPS) continue
+    if (bodyId[start] !== -1 || !wet(start)) continue
 
     const id = bodies.length
+    const surface = heights[start]!
     let head = 0
     let tail = 0
     queue[tail++] = start
@@ -69,7 +73,7 @@ export function detectWaterBodies(
       for (const [nx, nz] of neighbors) {
         if (nx < 0 || nz < 0 || nx >= resolution || nz >= resolution) continue
         const nIdx = nz * resolution + nx
-        if (bodyId[nIdx] !== -1 || heights[nIdx]! > waterLevel + WATER_EPS) continue
+        if (bodyId[nIdx] !== -1 || !wet(nIdx) || Math.abs(heights[nIdx]! - surface) > LAKE_SURFACE_EPS) continue
         bodyId[nIdx] = id
         queue[tail++] = nIdx
       }

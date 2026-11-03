@@ -198,7 +198,7 @@ export function createContainerActions(
       evaluate: (site) => evaluateGroundPlacement({
         x: site.x,
         z: site.z,
-        sampleHeight: (sx, sz) => bundle.chunkManager.sampleHeight(sx, sz),
+        sampleHeight: (sx, sz) => bundle.chunkManager.sampleLandHeight(sx, sz),
         waterLevel: bundle.chunkManager.waterLevel,
         blockers: tentBlockers(site.x, site.z),
         peers: bundle.placedContainers.nodes(),

@@ -4,6 +4,7 @@ import { sandBandAt } from '../../terrain/biomeColors'
 import { biomeWeightsAt, forestDensityAt } from '../../terrain/biomeRegions'
 import { type RawSampleParams, type RawTexelSample, sampleRawTexelAt } from '../../terrain/chunkHeightmap'
 import { isMountainRidge, isOceanMix, isWetFloor } from '../../terrain/terrainClassification'
+import { isWetFloor as isWetSurface } from '../../terrain/waterSurface'
 import { hydrologyIdFor } from '../../terrain/worldHydrologyRegistry'
 import { MAP_CELL_SIZE, MAP_EXTENT_HALF } from './mapConfig'
 
@@ -84,7 +85,8 @@ export type MapTexelClass = Pick<MapCellData, 'terrain' | 'biome' | 'water'>
 export function classifyMapTexel(texel: RawTexelSample, params: RawSampleParams, worldX: number, worldZ: number): MapTexelClass {
   const { waterLevel, heightScale, region } = params
   const { h: height, floorH, continentalness } = texel
-  const wet = isWetFloor(floorH, waterLevel)
+  // Sea (floor below sea level) or lake (surface above floor, plan 058 L1).
+  const wet = isWetFloor(floorH, waterLevel) || isWetSurface(height, floorH)
   if (wet) {
     const terrain: MapTerrainKind = isOceanMix(continentalness, region.oceanThreshold, region.coastThreshold) ? 'ocean' : 'inland_water'
     return { terrain, biome: 'none', water: true }

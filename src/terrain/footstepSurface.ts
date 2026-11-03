@@ -33,7 +33,7 @@ function distanceToSegment(x: number, z: number, seg: RoadCorridorSegment): numb
  *  sand/road, not stone. Desert biome is `sand` (visual dust/sand), not
  *  packed-dirt — the `dirt` surface stays on the type for A/B packs. */
 export function sampleFootstepSurface(chunkManager: ChunkManager, x: number, z: number): FootstepSurface {
-  const height = chunkManager.sampleHeight(x, z)
+  const height = chunkManager.sampleLandHeight(x, z)
   if (height < chunkManager.waterLevel + sandBandAt(x, z, chunkManager.seed)) return 'sand'
 
   const nearbyRoads = chunkManager.roadCorridorsNear(x, z, ROAD_QUERY_SIZE)

@@ -1,6 +1,7 @@
 import type { RiverChannelSegment } from './chunkHeightmap'
 import { fordBedHeight, fordInfluenceAt, type FordProjection } from './riverFord'
 import { riverWaterSampleAt } from './riverNetwork'
+import { isWetTexel } from './waterSurface'
 
 /**
  * @domain terrain
@@ -26,9 +27,9 @@ export const DRY_WATER_SAMPLE: LocalWaterSample = { present: false }
 /**
  * Pure composition of already-sampled terrain fields into one `LocalWaterSample`.
  *
- * `clampedHeight` is the `heights` field (clamped to `waterLevel` on any
- * water-covered cell, per `water.md`'s W-series decisions) — `<= waterLevel`
- * is exactly the existing lake/ocean "is this cell water" signal. `riverSegments`
+ * `clampedHeight` is the `heights` field (clamped up to the water surface — sea
+ * `waterLevel` or a lake's level — on any water-covered cell) — a cell is
+ * lake/ocean water when it is at/below `waterLevel` or its surface lies above its floor (`isWetTexel`, plan 058 L1). `riverSegments`
  * should already be narrowed to the point's own chunk (see
  * `ChunkManager.sampleLocalWater`) — an empty array is the common "no river
  * loaded here" case and short-circuits straight to the lake/ocean check.
@@ -68,12 +69,13 @@ export function sampleLocalWater(
       }
     }
   }
-  if (clampedHeight <= waterLevel) {
+  if (isWetTexel(clampedHeight, floorHeight, waterLevel)) {
+    // Sea: `clampedHeight` is `waterLevel`; lake (058 L1): it is the lake level — the surface is always the clamped height.
     return {
       present: true,
-      waterSurfaceHeight: waterLevel,
+      waterSurfaceHeight: clampedHeight,
       floorHeight,
-      depth: Math.max(0, waterLevel - floorHeight),
+      depth: Math.max(0, clampedHeight - floorHeight),
     }
   }
   return DRY_WATER_SAMPLE

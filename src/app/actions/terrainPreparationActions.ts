@@ -184,7 +184,7 @@ export function createTerrainPreparationActions(
   }
 
   const digEnv = (): DigEnv => ({
-    sampleHeight: bundle.chunkManager.sampleHeight,
+    sampleHeight: bundle.chunkManager.sampleLandHeight,
     sampleMountainRidge: bundle.chunkManager.sampleMountainRidge,
     waterLevel: bundle.chunkManager.waterLevel,
     seed: bundle.chunkManager.seed,
@@ -277,7 +277,7 @@ export function createTerrainPreparationActions(
     const { center, samples } = resolvePreparationSamples(aimX, aimZ, preview.size, chunkManager.chunkSize, chunkManager.resolution)
     const centerHeight = chunkManager.sampleHeight(center.x, center.z)
     const targetHeight = centerHeight + preview.heightOffset
-    const originalHeights: HeightSample[] = samples.map((s) => ({ x: s.x, z: s.z, height: chunkManager.sampleHeight(s.x, s.z) }))
+    const originalHeights: HeightSample[] = samples.map((s) => ({ x: s.x, z: s.z, height: chunkManager.sampleLandHeight(s.x, s.z) }))
 
     const validation = validatePreparationSamples(originalHeights, targetHeight, digEnv())
     let valid = validation.ok
@@ -291,7 +291,7 @@ export function createTerrainPreparationActions(
       const placement = evaluateGroundPlacement({
         x: center.x,
         z: center.z,
-        sampleHeight: chunkManager.sampleHeight,
+        sampleHeight: chunkManager.sampleLandHeight,
         waterLevel: chunkManager.waterLevel,
         blockers: blockersNear(center.x, center.z),
         peers: [],

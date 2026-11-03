@@ -14,7 +14,7 @@ function makeBundle(overrides: Partial<{ nearestBuildable: PlacedFireEntry | nul
     buildGrate: vi.fn(() => true),
   }
   return {
-    chunkManager: { sampleHeight: () => 10, waterLevel: 0 },
+    chunkManager: { sampleHeight: () => 10, sampleLandHeight: () => 10, waterLevel: 0 },
     placedFires: {
       nodes: () => [],
       place: placed.place,

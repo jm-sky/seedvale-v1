@@ -10,7 +10,8 @@ import { fbm01, type FbmParams } from './fbm'
 import { fordBedHeight, fordInfluenceAt, type FordProjection } from './riverFord'
 import { isOnAnyBridgeDeck, type RoadBridgeSpec } from './roadBridge'
 import { computeBodyScale, detectWaterBodies } from './waterBodies'
-import { hydrologyCorrectionAt } from './worldHydrologyStore'
+import { isWetFloor } from './waterSurface'
+import { hydrologyCorrectionAt, hydrologyLakeLevelAt } from './worldHydrologyStore'
 import { worleyRidge } from './worleyNoise'
 
 /** `lily` (plan world-terrain-010) is shallow-water-only surface vegetation —
@@ -505,8 +506,11 @@ function sampleRawTexelUncorrected(
   noise: NoiseHandles,
   params: RawSampleParams,
 ): {
+  /** Clamped surface height: `max(floorH, waterH)`. */
   h: number
   floorH: number
+  /** Water-surface level of the cell's water body (sea `waterLevel`, or a lake's level, plan 058 L1). */
+  waterH: number
   m: number
   continentalness: number
   mountainRidge: number
@@ -636,6 +640,7 @@ function sampleRawTexelUncorrected(
     peakDetailTerm
   const floorH = nCombined * heightScale
   const h = floorH < waterLevel ? waterLevel : floorH
+  const waterH = waterLevel
 
   const m = fbm01(noise.biome, wx / biome.noiseScale, wz / biome.noiseScale, biome.fbm)
 
@@ -649,7 +654,7 @@ function sampleRawTexelUncorrected(
     region.moistureRegionFbm,
   )
 
-  return { h, floorH, m, continentalness: c, mountainRidge, moistureRegion }
+  return { h, floorH, waterH, m, continentalness: c, mountainRidge, moistureRegion }
 }
 
 /**
@@ -664,9 +669,12 @@ function sampleRawTexel(
 ): RawTexelSample {
   const raw = sampleRawTexelUncorrected(wx, wz, noise, params)
   const correction = hydrologyCorrectionAt(params.hydrologyId, wx, wz)
-  if (correction === 0) return raw
   const floorH = raw.floorH + correction
-  return { ...raw, floorH, h: floorH < params.waterLevel ? params.waterLevel : floorH }
+  // Lake rule (058 L1): inside a lake basin the surface is the lake level wherever the corrected floor lies below it.
+  const lake = hydrologyLakeLevelAt(params.hydrologyId, wx, wz)
+  const waterH = lake > floorH && lake > raw.waterH ? lake : raw.waterH
+  if (correction === 0 && waterH === raw.waterH) return raw
+  return { ...raw, floorH, waterH, h: floorH < waterH ? waterH : floorH }
 }
 
 /** Every raw (pre-modifier) terrain field at one world point. */
@@ -684,6 +692,13 @@ export function sampleRawTexelAt(worldX: number, worldZ: number, params: RawSamp
  *  points in a not-yet-ready chunk. */
 export function sampleHeightAt(worldX: number, worldZ: number, params: RawSampleParams): number {
   return sampleRawTexel(worldX, worldZ, noiseHandlesFor(params.seed), params).h
+}
+
+/** Dry-land placement view of `sampleHeightAt`: water-covered points (sea or lake) report `waterLevel` (plan 058 L1),
+ *  so `height <= waterLevel + margin` water/shore tests also reject lakes. Never use it for walking or object Y. */
+export function sampleLandHeightAt(worldX: number, worldZ: number, params: RawSampleParams): number {
+  const t = sampleRawTexel(worldX, worldZ, noiseHandlesFor(params.seed), params)
+  return isWetFloor(t.h, t.floorH) ? params.waterLevel : t.h
 }
 
 /** Floor height **without** the hydrology correction — the only input global hydrology may read (no cycle). */
@@ -1096,6 +1111,7 @@ function applyRiverChannel(
 type ChunkTexel = {
   h: number
   floorH: number
+  waterH: number
   m: number
   continentalness: number
   mountainRidge: number
@@ -1164,8 +1180,9 @@ function computeChunkTexel(
 
   return {
     // Visual mesh uses `floorHeights` (bathtub). This clamp is the walk/mask lid.
-    h: floorH < params.waterLevel ? params.waterLevel : floorH,
+    h: floorH < sample.waterH ? sample.waterH : floorH,
     floorH,
+    waterH: sample.waterH,
     m: sample.m,
     continentalness: sample.continentalness,
     mountainRidge: sample.mountainRidge,
@@ -1216,7 +1233,7 @@ export function computeChunkTile(params: ChunkTileParams): ChunkTileData {
     }
   }
 
-  const waterBodies = detectWaterBodies(heights, apronRes, waterLevel, step)
+  const waterBodies = detectWaterBodies(heights, floorHeights, apronRes, waterLevel, step)
   const bodyScale = computeBodyScale(waterBodies, {
     continentalness,
     oceanThreshold: params.region.oceanThreshold,
@@ -1323,7 +1340,11 @@ export function createWorldTerrainSampler(
     return texel
   }
   return {
-    heightAt: (x, z) => texelAt(x, z).h,
+    // Cemetery fitting is dry-land placement: water-covered points (sea or lake) read as `waterLevel`.
+    heightAt: (x, z) => {
+      const t = texelAt(x, z)
+      return isWetFloor(t.h, t.floorH) ? params.waterLevel : t.h
+    },
     roadTintAt: (x, z) => texelAt(x, z).roadTint,
   }
 }

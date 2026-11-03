@@ -158,6 +158,7 @@ describe('computeChunkGrass', () => {
         },
         {
           heights: tile.heights,
+          floorHeights: tile.floorHeights,
           biomes: tile.biomes,
           roadTint: tile.roadTint,
           mountainRidge: tile.mountainRidge,
@@ -173,6 +174,7 @@ describe('computeChunkGrass', () => {
     const tile = computeChunkTile(params)
     const grids = {
       heights: tile.heights,
+      floorHeights: tile.floorHeights,
       biomes: tile.biomes,
       roadTint: tile.roadTint,
       mountainRidge: tile.mountainRidge,
@@ -225,6 +227,7 @@ describe('computeChunkGrass', () => {
       },
       {
         heights: tile.heights,
+        floorHeights: tile.floorHeights,
         biomes: tile.biomes,
         roadTint: tile.roadTint,
         mountainRidge: tile.mountainRidge,
@@ -265,6 +268,7 @@ describe('computeChunkGrass', () => {
       },
       {
         heights: tile.heights,
+        floorHeights: tile.floorHeights,
         biomes: tile.biomes,
         roadTint: tile.roadTint,
         mountainRidge: tile.mountainRidge,
@@ -340,6 +344,7 @@ describe('computeChunkGrass', () => {
         },
         {
           heights: tile.heights,
+          floorHeights: tile.floorHeights,
           biomes: tile.biomes,
           roadTint: tile.roadTint,
           mountainRidge: tile.mountainRidge,
@@ -391,6 +396,7 @@ describe('macro meadow variation (world-terrain-012)', () => {
     const tile = computeChunkTile(params)
     const grids = {
       heights: tile.heights,
+      floorHeights: tile.floorHeights,
       biomes: tile.biomes,
       roadTint: tile.roadTint,
       mountainRidge: tile.mountainRidge,
@@ -449,6 +455,7 @@ describe('computeChunkGrass filler gating (CA1)', () => {
       },
       {
         heights: tile.heights,
+        floorHeights: tile.floorHeights,
         biomes: tile.biomes,
         roadTint: tile.roadTint,
         mountainRidge: tile.mountainRidge,
@@ -531,6 +538,7 @@ describe('computeChunkGrass main storage cap (CA2)', () => {
       },
       {
         heights: tile.heights,
+        floorHeights: tile.floorHeights,
         biomes: tile.biomes,
         roadTint: tile.roadTint,
         mountainRidge: tile.mountainRidge,

@@ -172,6 +172,7 @@ import {
 } from './unloadedLandmarkLookup'
 import { createVegetationRegionBatcher } from './vegetationRegionBatcher'
 import { type LocalWaterSample, sampleLocalWater as sampleLocalWaterPure } from './waterSample'
+import { isWetFloor } from './waterSurface'
 
 // Loaded once and reused across every chunk (GLTF loader also caches by URL, but
 // this avoids rebuilding the template array + re-running `prepareProp` per chunk).
@@ -571,6 +572,10 @@ export type ChunkManager = {
    *  every loaded (and later-loaded) chunk shares this one material. */
   setWeatherSurface: (wetness: number, snowAmount: number) => void
   sampleHeight: HeightSampler
+  /** Ground height as dry-land placement sees it: water-covered points (sea **or lake**, plan 058 L1) report
+   *  `waterLevel`, so legacy `height <= waterLevel + margin` water/shore tests keep working for lakes. For
+   *  planning and spawning only — walking/physics use `sampleHeight` (the real water surface). */
+  sampleLandHeight: HeightSampler
   sampleFloor: HeightSampler
   /** Deck Y of the nearest loaded/relevant declared bridge at `(x, z)`, or
    *  `null` outside every deck footprint — the shared movement-ground primer
@@ -1354,9 +1359,13 @@ export function createChunkManager(
   // Built once, referencing `readField` (defined further below — safe, `function`
   // declarations hoist) — used only to resolve nearby settlements'/routes' road
   // segments (`roadNetwork.ts`), never to sample terrain for rendering itself.
+  const landHeightAt: HeightSampler = (x, z) => {
+    const h = readField('heights', x, z)
+    return isWetFloor(h, readField('floorHeights', x, z)) ? config.waterLevel : h
+  }
   const roadCtx: RoadNetworkContext = {
     seed: config.seed,
-    sampleHeight: (x, z) => readField('heights', x, z),
+    sampleHeight: landHeightAt,
     waterLevel: config.waterLevel,
     terrainSamplers: {
       sampleContinentalness: (x, z) => readField('continentalness', x, z),
@@ -1679,6 +1688,7 @@ export function createChunkManager(
         : [],
       grids: {
         heights: tile.heights,
+        floorHeights: tile.floorHeights,
         biomes: tile.biomes,
         roadTint: tile.roadTint,
         mountainRidge: tile.mountainRidge,
@@ -3157,6 +3167,7 @@ export function createChunkManager(
       terrainMaterial.weatherUniforms.uSnowAmount.value = snowAmount
     },
     sampleHeight: (x, z) => readField('heights', x, z),
+    sampleLandHeight: landHeightAt,
     sampleFloor: (x, z) => readField('floorHeights', x, z),
     sampleBridgeDeck: sampleBridgeDeckAt,
     sampleSurfaceGround: (x, z) => sampleBridgeDeckAt(x, z) ?? readField('heights', x, z),

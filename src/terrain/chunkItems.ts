@@ -11,6 +11,7 @@ import {
   sampleApronGrid,
 } from './chunkHeightmap'
 import { isShellSpawnShore, SHELL_SPAWN_MIN_HEIGHT_ABOVE_WATER } from './coastalResources'
+import { isWetFloor } from './waterSurface'
 
 export type ItemPlacement = {
   /** Stable, deterministic (`cx:cz:localIndex`) — not random. Lets the save file
@@ -164,7 +165,7 @@ export function computeChunkItems(
     const wz = coord.cz * chunkSize + localZ
 
     const h = sample(tile.heights, wx, wz)
-    if (h <= waterLevel + SHELL_SPAWN_MIN_HEIGHT_ABOVE_WATER) continue // underwater/shoreline
+    if (h <= waterLevel + SHELL_SPAWN_MIN_HEIGHT_ABOVE_WATER || isWetFloor(h, sample(tile.floorHeights, wx, wz))) continue // underwater/shoreline
 
     const d = SLOPE_SAMPLE_STEP
     const slope =
@@ -349,7 +350,7 @@ export function computeChunkItems(
     const wz = coord.cz * chunkSize + localZ
 
     const h = sample(tile.heights, wx, wz)
-    if (h <= waterLevel + 0.5) continue
+    if (h <= waterLevel + 0.5 || isWetFloor(h, sample(tile.floorHeights, wx, wz))) continue
 
     const d = SLOPE_SAMPLE_STEP
     const slope =

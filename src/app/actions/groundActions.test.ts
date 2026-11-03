@@ -268,6 +268,7 @@ const NEAREST_VILLAGE = {
 /** Inland DigContextualFindEnv fields for dig-completion mocks (world-terrain-048). */
 const DIG_CHUNK_ENV = {
   sampleHeight: () => 4,
+  sampleLandHeight: () => 4,
   sampleMountainRidge: () => 0,
   waterLevel: 2,
   heightScale: 40,

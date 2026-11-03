@@ -63,6 +63,36 @@ type CorrectionSampler = {
 
 const samplers = new WeakMap<WorldHydrology, CorrectionSampler>()
 
+type LakeSampler = {
+  originX: number
+  originZ: number
+  cellStep: number
+  size: number
+  data: Uint16Array
+  directory: Int32Array
+  blocksPerRow: number
+  /** Level (m) per 1-based lake id; index 0 unused. */
+  levels: Float32Array
+}
+
+const lakeSamplers = new WeakMap<WorldHydrology, LakeSampler>()
+
+function lakeSamplerFor(h: WorldHydrology): LakeSampler {
+  let s = lakeSamplers.get(h)
+  if (!s) {
+    const { blocksPerRow, blockIds, data } = h.basin
+    const directory = new Int32Array(blocksPerRow * blocksPerRow).fill(-1)
+    blockIds.forEach((id, i) => {
+      directory[id] = i
+    })
+    const levels = new Float32Array(h.lakes.length + 1)
+    for (const lake of h.lakes) levels[lake.id] = lake.level
+    s = { originX: h.originX, originZ: h.originZ, cellStep: h.cellStep, size: h.size, data, directory, blocksPerRow, levels }
+    lakeSamplers.set(h, s)
+  }
+  return s
+}
+
 function samplerFor(h: WorldHydrology): CorrectionSampler {
   let s = samplers.get(h)
   if (!s) {
@@ -104,6 +134,25 @@ export function hydrologyCorrectionAt(hydrologyId: string, wx: number, wz: numbe
   const c01 = cellCorrection(s, ix, iz + 1)
   const c11 = cellCorrection(s, ix + 1, iz + 1)
   return (c00 * (1 - fx) + c10 * fx) * (1 - fz) + (c01 * (1 - fx) + c11 * fx) * fz
+}
+
+/**
+ * Lake water-surface level (m) at a world point, or `-Infinity` when the point is outside every lake basin (plan
+ * world-terrain-058 L1). The basin grid stores flooded cells dilated by one cell, so the nearest-node lookup covers the
+ * whole wet area; whether the point is actually wet is decided by the caller (`floor < level`, the L1 rule), which also
+ * trims the dilated rim. Unconditioned ids have no lakes. Throws when the id has no installed data.
+ */
+export function hydrologyLakeLevelAt(hydrologyId: string, wx: number, wz: number): number {
+  if (isUnconditionedHydrologyId(hydrologyId)) return -Infinity
+  const s = lakeSamplerFor(worldHydrologyFor(hydrologyId))
+  const ix = Math.round((wx - s.originX) / s.cellStep)
+  const iz = Math.round((wz - s.originZ) / s.cellStep)
+  if (ix < 0 || iz < 0 || ix >= s.size || iz >= s.size) return -Infinity
+  const B = SPARSE_BLOCK_SIZE
+  const block = s.directory[Math.floor(iz / B) * s.blocksPerRow + Math.floor(ix / B)]!
+  if (block < 0) return -Infinity
+  const id = s.data[block * B * B + (iz % B) * B + (ix % B)]!
+  return id === 0 ? -Infinity : s.levels[id]!
 }
 
 /** Lake-outlet flag in `PackedChains.flags` (bit 4). */
