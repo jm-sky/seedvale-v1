@@ -167,6 +167,17 @@ Census (rings ≤ 5, `pnpm worldgen:cemeteries:census`; 0 plot∩clearing, 0 plo
 
 **Still over the §4 5 % stop condition**, so Q47 does not close. Pattern: every **dedicated** cemetery of LG/XL/MD settlements fails (seed 42: 12 + 8 + 3; seed 415424794: 10 + 4 + 4), while SM dedicated and all shared/assigned groups place — the dense path network of larger villages is the blocker, which supports the approved "reserve cemetery plots before roads/paths" direction (§7, Q38/Q44) over shrinking plots further. Abandoned cemeteries in ±30 chunks: 0 (was 2 / 1). Caches/epoch not bumped, no visual entry yet.
 
+### 5.6 Q47 census baseline re-take (S, 2026-11-03, after Q80 P1)
+
+`pnpm worldgen:cemeteries:census` (rings ≤ 5, production hydrology, 059 sparse grid; not comparable with §5.2/§5.5 windows of 70–100 assignments). `none` = 0 on both seeds, plot∩clearing 0, plot∩road 0:
+
+| seed | assignments | placed | split | none | mean centre→settlement |
+| --- | --- | --- | --- | --- | --- |
+| 42 | MD 1 + SM 2 = 3 | 3 | 0 | 0 | 36.7–37.2 m |
+| 415424794 | LG 1 + MD 5 = 6 | 6 | 0 | 0 | 49.4–53.0 m |
+
+Abandoned scan (±30 chunks): 19 / 24 cemeteries.
+
 ## 6. Author questions — answered 2026-10-31
 
 1. **Cemetery fence: (c) no fence for now.** A fence may come later for the larger cemeteries (MD/LG) as a separate, placement-neutral follow-up inside the 2.5 m plot margin. It is not part of Q47.

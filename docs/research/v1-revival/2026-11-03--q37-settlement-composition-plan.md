@@ -21,6 +21,7 @@ Tool: `pnpm worldgen:access:census` (`scripts/perf/census-settlement-access.ts`,
 | **F2 path/road centreline ≤ 0.3 m from a foreign house/storehouse wall** (the lane walks through the building) | seed 42: 6 · seed 415424794: 4. Ribbon (± half width) touching a wall: 28 / 29 | fixed (Q93, 2026-11-03): centreline-in-building 0 / 0, ribbon ∩ wall 4 / 1 |
 | **F3 object discs partly on wet floor** (rim samples at 0.8 r) | seed 42: 1 (SM `0_10` field) · seed 415424794: 5, all in LG `-4_3` (storehouse, L garden, campfire, field, cemetery) | open → Q94 |
 | F4 entrance roads over the core of fields / gardens / livestock / storehouse / market discs | 17 (most are fields and gardens) | author question (§5) |
+| **Re-take after P1 (Q80, 2026-11-03, `main`, production hydrology, rings ≤ 8)** | `pnpm worldgen:access:census`: 0 unreachable yard gates / storage slots / bay slots on both seeds (route/straight p90 1.24–1.35, max 1.79); objects overlapping 0, wet 0 (seed 42: 128 objects, 415424794: 144); path ribbon ∩ building wall 4 / 4 (42 / 415424794); runtime props in wall 0, in house disc 0, wet 0. Matches the Q93–Q95 results — no regression. | recorded |
 
 F2 cases (seed · size · cell · path → building): 42 SM `-2_-8` entrance-1 → house-0; 42 MD `2_-6` pasture path → house-1; 42 LG `10_-1` entrance-2 (road) → storehouse; **42 SM `0_0` (home)** entrance-1 → house-1 and storehouse; 42 LG `-7_7` entrance-0 (road) → house-2; 415424794 LG `-4_3` entrance-1/2 (roads) → houses 1/2 and the shore path → house-2; 415424794 LG `-2_9` sale-plot path → house-3.
 

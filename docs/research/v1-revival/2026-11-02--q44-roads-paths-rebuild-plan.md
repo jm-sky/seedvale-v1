@@ -142,6 +142,17 @@ plot∩clearing 0, plot∩road 0 on all placed cemeteries.
 
 **Done-when status: partly met.** Seed 415424794 meets `none ≤ 10`; seed 42 does **not** (11 vs ≤ 6). Per-assignment diagnosis (seed 42): the remaining rejections are almost all **inter-settlement main roads (half width 5.0) crossing the reserved plot** — those routes are still village-blind until Q60 (R4 village-aware A\*) — plus a few settlements where nothing fits the band (LG/MD: ground + crowded houses). So Q47's census gate needs a re-run **after Q60**; Q58 itself is landed and verified technically (type-check, lint, 8933 tests, build). Not browser-checked (look of the cemetery lane/gate: author §2).
 
+### Q80 baseline re-take (S, 2026-11-03, `main` after P1: production global hydrology, legacy path deleted, 059 sparse settlements)
+
+`pnpm worldgen:roads:census` (rings ≤ 5). **Not comparable with §1.2/Q57–Q60 rows:** the 059 grid has far fewer settlements in the same window (3 / 6 instead of 88 / 99) and rivers/lakes changed (H3/L1/Q96). New baseline for Q61:
+
+| seed | settl. | roads | no road | foreign | own back | plots | yards | entrance faces away | crossings | parallel | sinuosity p50/p90 | sharp turns /km | paths | paths ∩ plots | paths ∩ yards |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 42 | 3 | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1.36 / 1.36 | 14.5 | 36 | 0 | 0 |
+| 415424794 | 6 | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1.18 / 1.21 | 10.5 | 101 | 0 | 0 |
+
+Sample is tiny (2 / 4 roads), so sharp turns/km are indicative only; Q61 should also report a wider window (`--rings`) before/after.
+
 ## 6. Author decisions (also queue §3)
 
 **ANSWERED 2026-11-02 (author):** **D1 (a)** RNG graph + fallback · **D2 custom** — main road **~7–8 m** wide (`roadHalfWidth` 5 → 3.5–4), ruts must stay **clearly visible**: only a slight reduction (rut depth 0.15 → ~0.11–0.12, micro-bumps reduced moderately), tuned in game · **D3 (a)** shared lanes + spurs to doors · **D4 (b)** allow **+1 entrance** when neighbours lie in a fourth distinct direction (palisade/torches/pasture must handle the extra gap). Options below kept for the record.
