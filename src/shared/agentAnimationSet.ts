@@ -44,6 +44,10 @@ export type AgentAnimationSet<K extends string> = {
    *  whatever a fresh-alive setup already started playing. No-op if `key`
    *  didn't resolve to a clip. */
   settleAtEnd: (key: K) => void
+  /** Sets the playback rate of `key`'s clip (presentation only; no-op when it
+   *  didn't resolve or is already at `scale`). Used to match locomotion loops
+   *  to real speed — never call it for one-shot clips. */
+  setTimeScale: (key: K, scale: number) => void
   /** Whether `key` resolved to a real clip (`resolve()` found a match). */
   has: (key: K) => boolean
   /** Advances the underlying `AnimationMixer` — call once per tick. */
@@ -130,6 +134,10 @@ export function createAgentAnimationSet<K extends string>(
       action.time = action.getClip().duration
       current = action
       mixer.update(0)
+    },
+    setTimeScale: (key, scale) => {
+      const action = actions.get(key)
+      if (action && action.timeScale !== scale) action.timeScale = scale
     },
     has: (key) => actions.get(key) != null,
     update: (dt) => {

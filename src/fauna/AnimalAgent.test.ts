@@ -231,6 +231,24 @@ describe('AnimalAgent', () => {
     })).not.toThrow()
   })
 
+  // IMP-007: the sheep GLB ships only Idle + Jump — Jump loops as its walk.
+  it('IMP-007: sheep without a Walk clip loop Jump as locomotion, others unaffected', () => {
+    const track = new THREE.NumberKeyframeTrack('.rotation[y]', [0, 1], [0, 1])
+    const clips = [new THREE.AnimationClip('Armature|Idle', 2, [track]), new THREE.AnimationClip('Armature|Jump', 1, [track])]
+    const sheep = new AnimalAgent(makeDeps({ def: ANIMAL_DEFS.sheep, animalId: 'jump-sheep', animations: clips }))
+    const priv = sheep as unknown as { anim: { has: (k: string) => boolean }, moving: boolean, locomotionSpeed: number, updateAnim: () => void }
+    expect(priv.anim.has('walk')).toBe(true)
+    priv.moving = true
+    priv.locomotionSpeed = ANIMAL_DEFS.sheep.calmWalkSpeed!
+    expect(() => priv.updateAnim()).not.toThrow()
+    priv.moving = false
+    expect(() => priv.updateAnim()).not.toThrow()
+
+    // A cow with only a Jump clip must NOT adopt it as Walk.
+    const cow = new AnimalAgent(makeDeps({ def: ANIMAL_DEFS.cow, animalId: 'jump-cow', animations: [new THREE.AnimationClip('Armature|Jump', 1, [track])] }))
+    expect((cow as unknown as { anim: { has: (k: string) => boolean } }).anim.has('walk')).toBe(false)
+  })
+
   // D2: a hurt mount's `hurtAnimTimer` must count down while ridden instead
   // of freezing until dismount — before this fix, `driveMounted()` skipped
   // every timer decrement entirely, so `updateAnim()`'s hurt-clip gate

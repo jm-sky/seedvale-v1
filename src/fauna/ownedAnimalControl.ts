@@ -14,6 +14,19 @@ export type OwnedAnimalControlState = {
 export const FOLLOW_START_DISTANCE = 12
 export const FOLLOW_STOP_DISTANCE = 6
 
+/** Follow catch-up run (IMP-008): the animal walks while within this distance
+ *  of the player and only runs once it has fallen well behind, until it is
+ *  back within the stop distance. Hysteresis avoids gait flicker. */
+export const FOLLOW_RUN_START_DISTANCE = 20
+export const FOLLOW_RUN_STOP_DISTANCE = 9
+
+/** Hysteresis for the Follow catch-up run. @domain fauna */
+export function resolveFollowCatchUp(running: boolean, distance: number): boolean {
+  if (!running && distance > FOLLOW_RUN_START_DISTANCE) return true
+  if (running && distance < FOLLOW_RUN_STOP_DISTANCE) return false
+  return running
+}
+
 /** Distance from `stayAnchor` at which Stay starts walking back (plan fauna-030). */
 export const STAY_RETURN_START = 12
 /** Distance from `stayAnchor` at which Stay stops return movement (plan fauna-030). */

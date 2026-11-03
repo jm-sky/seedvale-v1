@@ -1,10 +1,13 @@
 import { describe, expect, it } from 'vitest'
 import {
   createDefaultOwnedAnimalControlState,
+  FOLLOW_RUN_START_DISTANCE,
+  FOLLOW_RUN_STOP_DISTANCE,
   FOLLOW_START_DISTANCE,
   FOLLOW_STOP_DISTANCE,
   hydrateOwnedAnimalControl,
   isOwnedStayBlockingRoutineTrips,
+  resolveFollowCatchUp,
   resolveOwnedControlMovement,
   setOwnedAnimalControlMode,
   snapshotOwnedAnimalControl,
@@ -95,5 +98,16 @@ describe('ownedAnimalControl', () => {
     expect(restored.mode).toBe('stay')
     expect(restored.stayAnchor).toEqual({ x: 7, z: 9 })
     expect(restored.following).toBe(false)
+  })
+})
+
+describe('Follow catch-up run (IMP-008)', () => {
+  it('walks inside the follow band, runs only after falling far behind, with hysteresis', () => {
+    expect(FOLLOW_RUN_START_DISTANCE).toBeGreaterThan(FOLLOW_START_DISTANCE)
+    expect(FOLLOW_RUN_STOP_DISTANCE).toBeGreaterThan(FOLLOW_STOP_DISTANCE)
+    expect(resolveFollowCatchUp(false, FOLLOW_START_DISTANCE + 1)).toBe(false)
+    expect(resolveFollowCatchUp(false, FOLLOW_RUN_START_DISTANCE + 1)).toBe(true)
+    expect(resolveFollowCatchUp(true, FOLLOW_RUN_START_DISTANCE - 5)).toBe(true)
+    expect(resolveFollowCatchUp(true, FOLLOW_RUN_STOP_DISTANCE - 1)).toBe(false)
   })
 })

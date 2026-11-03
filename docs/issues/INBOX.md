@@ -45,11 +45,13 @@ Status for every entry: `todo` (unverified). Created: 2026-10-29. IDs here (`IMP
 - **Observation:** Sheep have a `Jump` animation but no `Walk` animation.
 - **Candidate approaches:** Evaluate using `Jump` temporarily for locomotion, or author a dedicated `Walk` animation in Blender later. Neither approach is approved yet.
 - **Investigate:** Current sheep GLB clips, animation state mapping and whether the jump clip is suitable for a walk loop.
+- **Status (2026-11-03):** implemented — sheep (Idle + Jump only) loop `Jump` as walk via `walkClipFallbacks`. Awaiting author's visual check; dedicated Blender Walk still the long-term fix.
 - **Area:** fauna / animation / assets.
 
 ## IMP-008 — Settlement animals sometimes move too fast
 - **Observation:** Animals, including sheep, horses and dogs, sometimes walk too quickly around settlements.
 - **Investigate:** Actual movement speeds and state transitions versus animation playback rate, species-specific tuning and settlement behavior; avoid changing authoritative locomotion solely to mask visual mismatch.
+- **Status (2026-11-03):** implemented — `calmWalkSpeed` for sheep 1.2 / dog 1.9 / donkey 1.4 (horse 1.35 existing); owned Follow now walks and only runs (gallop clip, stamina) after falling >20 m behind (was always sprint speed on the Walk clip); locomotion clip playback rate follows real speed. Awaiting author's visual check.
 - **Area:** fauna / settlements / animation.
 
 ## IMP-009 — House lamps should light only at night

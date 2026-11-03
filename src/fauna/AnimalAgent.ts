@@ -228,6 +228,7 @@ import {
 import {
   calmWanderWalkBaseline,
   resolveAutonomousWalkSpeed,
+  resolveLocomotionPlayback,
 } from './animalWalkSpeed'
 import {
   DOG_BARK_COOLDOWN_SEC,
@@ -283,6 +284,7 @@ import {
   isOwnedStayBlockingRoutineTrips,
   type OwnedAnimalControlMode,
   type OwnedAnimalControlState,
+  resolveFollowCatchUp,
   resolveOwnedControlMovement,
   setOwnedAnimalControlMode,
   snapshotOwnedAnimalControl,
@@ -1409,6 +1411,11 @@ export class AnimalAgent {
   private lastWaterTripBucket = -1
   private moving = false
   private sprinting = false
+  /** Speed (m/s) of the last autonomous/mounted step — presentation only
+   *  (clip playback rate in `updateAnim()`); never read by movement logic. */
+  private locomotionSpeed = 0
+  /** Runtime-only Follow catch-up run commitment (not persisted). */
+  private followRunning = false
   /** True while a player is riding this animal (plan fauna-003) — suppresses
    *  the AI decision branch in `update()` (the riding system drives movement
    *  instead, via `driveMounted()`), but needs/stamina/hp/animation
@@ -1870,7 +1877,7 @@ export class AnimalAgent {
     this.anim = createAgentAnimationSet<AnimalAnimClip>(animRoot, animations)
     this.anim.resolve({
       idle: ['Idle', 'Idle_2'],
-      walk: ['Walk'],
+      walk: ['Walk', ...(this.def.walkClipFallbacks ?? [])],
       // Quaternius packs export `Gallop`; some others `Run`. Species with no run
       // clip (e.g. rabbit) still sprint on `Walk` — first match wins, same idiom
       // as Idle/Idle_2. `updateAnim()` also falls back at play time.
@@ -2487,6 +2494,7 @@ export class AnimalAgent {
 
       const trainingSpeed = this.trainingModifiers().speed
       const speed = (this.sprinting ? mount.sprintSpeed : mount.walkSpeed) * speedMultiplier * trainingSpeed
+      this.locomotionSpeed = speed
 
       // Resident/runtime ground (plan world-terrain-044) when the spawn site
       // wired one — holds the step instead of silently stepping onto raw
@@ -4728,9 +4736,22 @@ export class AnimalAgent {
       this.cancelSourceTarget()
       this.setIntent('wander', { x: movement.x, z: movement.z })
       this.sourceDest.set(movement.x, 0, movement.z)
-      this.steerToward(this.sourceDest, this.sprintSpeedNow(), dt)
+      // Walk while reasonably close; catch up at a run only after falling well
+      // behind (IMP-008). The run sets `sprinting` so the gallop clip, stamina
+      // drain and exhaustion fallback all stay consistent with the speed.
+      this.followRunning = resolveFollowCatchUp(
+        this.followRunning,
+        Math.hypot(movement.x - this.mesh.position.x, movement.z - this.mesh.position.z),
+      )
+      if (this.followRunning && !isExhausted(this.life.stamina)) {
+        this.sprinting = true
+        this.steerToward(this.sourceDest, this.sprintSpeedNow(), dt)
+      } else {
+        this.steerToward(this.sourceDest, this.walkSpeedNow(), dt)
+      }
       return true
     }
+    this.followRunning = false
     if (movement.kind === 'returnToAnchor') {
       this.cancelSourceTarget()
       this.setIntent('wander', { x: movement.x, z: movement.z })
@@ -6026,6 +6047,7 @@ export class AnimalAgent {
     this.tmp.multiplyScalar(1 / dist)
     this.mesh.rotation.y = Math.atan2(this.tmp.x, this.tmp.z)
     this.moving = true
+    this.locomotionSpeed = speed
 
     // Steep terrain scales down (and, past the max walkable angle, removes)
     // the uphill component of the step — across-slope/downhill are
@@ -6419,12 +6441,25 @@ export class AnimalAgent {
     // every frame. Death itself never reaches this method while `mounted` is
     // false: `update()`'s own `health.dead` branch returns before calling it.
     if (this.hurtAnimTimer > 0 || this.attackAnimTimer > 0) return
-    if (this.sprinting) {
-      this.anim.play(this.anim.has('gallop') ? 'gallop' : this.anim.has('walk') ? 'walk' : 'idle')
-    } else if (this.moving) {
-      this.anim.play(this.anim.has('walk') ? 'walk' : 'idle')
-    } else {
+    if (!this.moving) {
       this.anim.play('idle')
+      return
     }
+    // Pick the locomotion clip and match its playback rate to the real speed
+    // (IMP-008) — presentation only. Falls back gallop → walk → idle when a
+    // species lacks a clip (e.g. sheep sprint on their looped walk stand-in).
+    const playback = resolveLocomotionPlayback(
+      this.def,
+      this.locomotionSpeed,
+      this.sprinting,
+      this.anim.has('gallop'),
+    )
+    const key = this.anim.has(playback.clip) ? playback.clip : this.anim.has('walk') ? 'walk' : null
+    if (!key) {
+      this.anim.play('idle')
+      return
+    }
+    this.anim.play(key)
+    this.anim.setTimeScale(key, playback.timeScale)
   }
 }

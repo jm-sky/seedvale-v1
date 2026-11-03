@@ -160,4 +160,13 @@ describe('createAgentAnimationSet', () => {
     anim.stopAll()
     expect(() => anim.update(0.1)).not.toThrow()
   })
+
+  it('setTimeScale changes only the targeted looped clip rate', () => {
+    const { anim } = setup()
+    anim.playImmediate('idle')
+    anim.play('walk')
+    anim.setTimeScale('walk', 0.6)
+    anim.setTimeScale('missing' as Clip, 2)
+    expect(() => anim.update(0.1)).not.toThrow()
+  })
 })

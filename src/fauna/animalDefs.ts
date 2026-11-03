@@ -84,6 +84,10 @@ export type AnimalDef = {
    *  `walkSpeed` behaviour. Species-specific tuning lives here; the movement
    *  executor must not branch on `kind`. */
   calmWalkSpeed?: number
+  /** Extra clip names tried (in order) after `Walk` when the GLB has no walk
+   *  clip of its own — a stop-gap locomotion loop for one species (IMP-007:
+   *  sheep reuse `Jump`). Per-def so other species' clip mapping is untouched. */
+  walkClipFallbacks?: readonly string[]
   /** Predator-only: radius (m) within which it spots and chases the nearest prey.
    *  Meaningless for prey defs (their threat detection uses `fleeRange` instead). */
   detectRange: number
@@ -653,6 +657,8 @@ export const ANIMAL_DEFS: Record<AnimalKind, AnimalDef> = {
     // human baseline (see `horse` above) even though it stays under horse.
     walkSpeed: 2.4,
     sprintSpeed: 5.4,
+    // IMP-008: ordinary settlement stroll, in line with the horse (1.35).
+    calmWalkSpeed: 1.4,
     detectRange: 0,
     fleeRange: 9,
     playerNoticeRange: 0,
@@ -698,6 +704,11 @@ export const ANIMAL_DEFS: Record<AnimalKind, AnimalDef> = {
     modelHeight: 0.68,
     walkSpeed: 2.2,
     sprintSpeed: 5.4,
+    // IMP-008: ordinary settlement/pasture grazing stroll (was walkSpeed 2.2).
+    calmWalkSpeed: 1.2,
+    // IMP-007: the sheep GLB ships only Idle + Jump (no Walk) — loop Jump
+    // as locomotion until a dedicated Walk is authored in Blender.
+    walkClipFallbacks: ['Jump'],
     detectRange: 0,
     fleeRange: 12,
     playerNoticeRange: 0,
@@ -759,6 +770,8 @@ export const ANIMAL_DEFS: Record<AnimalKind, AnimalDef> = {
     modelHeight: 0.55,
     walkSpeed: 3.0,
     sprintSpeed: 6.8,
+    // IMP-008: ordinary household-dog stroll (was walkSpeed 3.0).
+    calmWalkSpeed: 1.9,
     detectRange: 0,
     fleeRange: 0,
     playerNoticeRange: 0,
