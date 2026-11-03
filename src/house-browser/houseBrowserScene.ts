@@ -5,6 +5,7 @@ import {
   Color,
   DirectionalLight,
   GridHelper,
+  Group,
   Mesh,
   MeshStandardMaterial,
   PerspectiveCamera,
@@ -13,6 +14,7 @@ import {
   Vector3,
 } from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
+import type { HouseDefinition } from '../assets/houseDefinitionExampleConfig'
 import { buildConstructionCatalog, type ConstructionCatalog } from '../assets/constructionCatalog'
 import { HOME_HOUSE_DEFINITIONS } from '../assets/houseDefinitionExample'
 import { createRenderer } from '../render/createRenderer'
@@ -25,6 +27,7 @@ import {
   loadHousePartTemplates,
 } from '../settlement/houseBuilder'
 import { createColliderPreview } from './colliderPreview'
+import { createDressingPreview } from './dressingPreview'
 import {
   type CameraView,
   DEFAULT_HOUSE_BROWSER_CONFIG,
@@ -33,6 +36,7 @@ import {
   type HouseBrowserScene,
 } from './houseBrowserTypes'
 import { createHouseLoadGuard } from './houseLoadGuard'
+import { createLampPreview, defaultLampFor } from './lampPreview'
 
 export type HouseBrowserSceneCallbacks = {
   onAssemblyChange?: (info: HouseBrowserAssemblyInfo | null) => void
@@ -71,14 +75,26 @@ export function createHouseBrowserScene(
   const grid = new GridHelper(60, 30)
   scene.add(grid)
 
-  scene.add(new AmbientLight(0xffffff, 0.6))
+  const ambient = new AmbientLight(0xffffff, 0.6)
+  scene.add(ambient)
   const sun = new DirectionalLight(0xffffff, 1.2)
   sun.position.set(8, 12, 6)
   sun.castShadow = true
   scene.add(sun)
 
-  const colliderPreview = createColliderPreview(scene)
+  // Turntable stage: house, lamp, dressing and colliders rotate together (preview only).
+  const stage = new Group()
+  scene.add(stage)
+  const colliderPreview = createColliderPreview(stage as unknown as Scene)
   const loadGuard = createHouseLoadGuard()
+
+  const lampPreview = createLampPreview(() => refreshDressing())
+  const dressingPreview = createDressingPreview(stage)
+  let definition: HouseDefinition | null = null
+
+  function refreshDressing(): void {
+    dressingPreview.update(definition, config.profession, lampPreview.current())
+  }
 
   let catalog: ConstructionCatalog | null = null
   let assembly: HouseAssembly | null = null
@@ -106,6 +122,15 @@ export function createHouseBrowserScene(
     colliderPreview.setPadding(config.colliderPadding)
     for (const door of assembly?.doors ?? []) door.setOpen(config.doorsOpen)
     refreshColliders()
+    applyDayNight()
+    lampPreview.apply(config.lamp)
+  }
+
+  function applyDayNight(): void {
+    const night = config.lamp.night
+    ambient.intensity = night ? 0.08 : 0.6
+    sun.intensity = night ? 0.1 : 1.2
+    ;(scene.background as Color).set(night ? 0x0b1020 : 0x87ceeb)
   }
 
   applyConfigToScene()
@@ -124,11 +149,20 @@ export function createHouseBrowserScene(
 
   function attachAssembly(next: HouseAssembly): void {
     if (assembly) {
-      scene.remove(assembly.root)
+      lampPreview.dispose()
+      stage.remove(assembly.root)
       assembly.dispose()
     }
     assembly = next
-    scene.add(next.root)
+    stage.add(next.root)
+    definition = HOME_HOUSE_DEFINITIONS.find((def) => def.id === next.definitionId) ?? null
+    const defaultLamp = definition ? defaultLampFor(definition) : { x: 0, y: 1.85, z: 0, style: 'wall' as const, yawDeg: null }
+    // New house: lamp restarts from its definition (panel is told via onAssemblyChange).
+    config = { ...config, lamp: { ...config.lamp, x: defaultLamp.x, y: defaultLamp.y, z: defaultLamp.z, yawDeg: defaultLamp.yawDeg } }
+    if (definition) lampPreview.attach(next.root, definition)
+    dressingPreview.attach(next.root)
+    lampPreview.apply(config.lamp)
+    refreshDressing()
     // Snap doors to the current toggle state immediately (rather than animating
     // in from closed) so the auto-fit bounds below reflect the real pose.
     for (const door of next.doors) {
@@ -147,6 +181,7 @@ export function createHouseBrowserScene(
       census: next.census,
       colliderCount: colliders.length,
       doorCount: next.doors.length,
+      defaultLamp,
     })
   }
 
@@ -174,8 +209,10 @@ export function createHouseBrowserScene(
   }
 
   function setConfig(next: HouseBrowserConfig): void {
+    const professionChanged = next.profession !== config.profession
     config = next
     applyConfigToScene()
+    if (professionChanged) refreshDressing()
   }
 
   function resetCamera(): void {
@@ -233,10 +270,13 @@ export function createHouseBrowserScene(
     running = false
     window.removeEventListener('resize', onResize)
     controls.dispose()
+    lampPreview.dispose()
+    dressingPreview.dispose()
     if (assembly) {
-      scene.remove(assembly.root)
+      stage.remove(assembly.root)
       assembly.dispose()
     }
+    scene.remove(stage)
     colliderPreview.dispose()
     scene.remove(ground)
     groundGeometry.dispose()

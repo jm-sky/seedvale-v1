@@ -147,8 +147,10 @@ function kitItems(kit: DressingKit): Item[] {
         { node: 'Hamlet_Axe', local: at(0.05, STUMP_HEIGHT_M, 0).multiply(_lean.makeRotationZ(0.25)) },
       ]
     default: {
-      const spec = (WALL_KITS as Record<string, { mountY: number, outZ: number }>)[kit]
-      return [{ node: KIT_NODE[kit][0]!, local: spec ? at(0, spec.mountY, spec.outZ) : new THREE.Matrix4() }]
+      const spec = (WALL_KITS as Record<string, { mountY: number, outZ: number, scale?: number }>)[kit]
+      const local = spec ? at(0, spec.mountY, spec.outZ) : new THREE.Matrix4()
+      if (spec?.scale) local.multiply(new THREE.Matrix4().makeScale(spec.scale, spec.scale, spec.scale))
+      return [{ node: KIT_NODE[kit][0]!, local }]
     }
   }
 }

@@ -1,5 +1,5 @@
 import type { Role } from '../ai/characters'
-import type { HouseDefinition, HouseOpening, HouseWallSide } from '../assets/houseDefinitionExampleConfig'
+import type { HouseDefinition, HouseLampMount, HouseOpening, HouseWallSide } from '../assets/houseDefinitionExampleConfig'
 import type { FamilyDef } from './families'
 import { HOUSE_MODULE_M } from '../assets/houseDefinitionExampleConfig'
 import { createSeededRandom } from '../world/parseSeed'
@@ -35,6 +35,8 @@ type WallKitSpec = {
   topY: number
   /** Node-origin offset out of the wall face, m (V3 `mat4(0, y, z)`). */
   outZ: number
+  /** Uniform model scale about the node origin (default 1); the extents above already include it. */
+  scale?: number
 }
 type SlotKitSpec = { halfU: number, halfV: number }
 
@@ -42,7 +44,7 @@ type SlotKitSpec = { halfU: number, halfV: number }
  *  asymmetric about its origin (z -0.314..+0.093) and `wallLocalTransform` rotates it so the thick side faces
  *  outward on front/back (0.314) but inward on left/right (exterior only 0.093) — measured from the GLB. */
 export const WALL_FACE_OFFSET_M: Record<HouseWallSide, number> = { front: 0.314, back: 0.314, left: 0.093, right: 0.093 }
-/** Kits that hang beside the entrance (guard post): spots are tried nearest-to-door first. */
+/** Fallback order for entrance kits when no preferred spot exists (shield: widest free gap on the door wall; banner: blank wall): nearest-to-door first. */
 const NEAR_DOOR_KITS: ReadonlySet<keyof typeof WALL_KITS> = new Set(['banner', 'shield'])
 /** Door/window opening extents used for the overlap test. */
 /** Real cut-out half widths measured from the GLBs (door_flat 0.65, window_wide_flat 0.60) + a hair of clearance. */
@@ -55,8 +57,9 @@ const WINDOW_TOP_Y = 2.3
 export const MAX_WALL_PIECES_PER_HOUSE = 3
 
 export const WALL_KITS: Record<'antlers' | 'shield' | 'banner' | 'netOnWall', WallKitSpec> = {
-  antlers: { halfAlong: 0.46, halfOut: 0.4, mountY: 2.9, bottomY: 2.9, topY: 3.64, outZ: 0.01 },
-  shield: { halfAlong: 0.34, halfOut: 0.2, mountY: 1.6, bottomY: 1.27, topY: 1.93, outZ: 0.08 },
+  antlers: { halfAlong: 0.46, halfOut: 0.34, mountY: 1.95, bottomY: 1.95, topY: 2.69, outZ: -0.06 },
+  // 1.3x the original (0.34/0.2/1.6±0.33/0.08); origin stays at the original height.
+  shield: { halfAlong: 0.442, halfOut: 0.26, mountY: 1.6, bottomY: 1.171, topY: 2.029, outZ: 0.104, scale: 1.3 },
   banner: { halfAlong: 0.34, halfOut: 0.2, mountY: 2.59, bottomY: 1.15, topY: 2.59, outZ: 0.1 },
   netOnWall: { halfAlong: 1.03, halfOut: 0.11, mountY: 0, bottomY: 1.04, topY: 2.43, outZ: 0 },
 }
@@ -141,7 +144,7 @@ const LANTERN_ABOVE_M = 0.25 * LANTERN_WALL_K
 const LANTERN_BELOW_M = 0.48 * LANTERN_WALL_K
 
 /** Mount used by the house builder when a definition has no lamp (single source for `props.ts`). */
-export function houseLampMountFor(def: HouseDefinition): { x: number, y: number, z: number } {
+export function houseLampMountFor(def: HouseDefinition): HouseLampMount {
   return def.lamp?.mount ?? { x: def.footprint.width * 0.25, y: 1.85, z: -def.footprint.depth / 2 - 0.12 }
 }
 
@@ -271,6 +274,8 @@ export function professionDressingFor(
   return out
 }
 
+/** Resolution (m) of the free-gap search used for the entrance shield. */
+const GAP_SCAN_STEP_M = 0.01
 /** Free-scan step (m) used once no module-centred spot is free. */
 const FALLBACK_SCAN_STEP_M = 0.25
 /** Entrance kits scan finely: the gap between a door and the next window is only ~0.75 m for a 0.68 m shield. */
@@ -315,6 +320,32 @@ function doorPoint(def: HouseDefinition): { x: number, z: number } | null {
   return { x: p.x, z: p.z }
 }
 
+function wallHasOpenings(def: HouseDefinition, side: HouseWallSide): boolean {
+  return (def.openings as readonly HouseOpening[]).some((o) => o.side === side && o.moduleIndex != null)
+}
+
+/** Centre of the longest stretch of `side` where `spec` fits (the middle of the free gap), or `null`. */
+function widestGapCentre(
+  def: HouseDefinition,
+  side: HouseWallSide,
+  spec: WallKitSpec,
+  used: readonly WallObstacle[],
+): number | null {
+  const half = sideLength(def, side) / 2
+  const steps = Math.round((2 * half) / GAP_SCAN_STEP_M)
+  let best: { start: number, end: number } | null = null
+  let run: { start: number, end: number } | null = null
+  for (let i = 0; i <= steps; i++) {
+    if (wallKitFits(def, side, -half + i * GAP_SCAN_STEP_M, spec, used)) {
+      run = run ? { start: run.start, end: i } : { start: i, end: i }
+      if (!best || run.end - run.start > best.end - best.start) best = run
+    } else {
+      run = null
+    }
+  }
+  return best ? -half + ((best.start + best.end) / 2) * GAP_SCAN_STEP_M : null
+}
+
 function placeWallKit(
   def: HouseDefinition,
   kit: keyof typeof WALL_KITS,
@@ -323,6 +354,20 @@ function placeWallKit(
   random: () => number,
 ): { side: HouseWallSide, along: number } | null {
   const jitter = (random() - 0.5) // seeded ±0.5 m
+  if (kit === 'shield' || kit === 'antlers') {
+    // Entrance kits share one spot: the centre of the widest free gap (for the shield's footprint) on the
+    // door wall; antlers hang at the same spot, higher up.
+    const door = (def.openings as readonly HouseOpening[]).find((o) => o.type === 'door' && o.side != null)
+    const along = door?.side ? widestGapCentre(def, door.side, WALL_KITS.shield, used) : null
+    if (door?.side && along !== null && wallKitFits(def, door.side, along, spec, used)) return { side: door.side, along }
+  }
+  if (kit === 'banner') {
+    // Prefer a wall with no openings at all, hung at its middle (windows/door stay uncluttered).
+    for (const side of SIDE_ORDER) {
+      if (wallHasOpenings(def, side)) continue
+      if (wallKitFits(def, side, 0, spec, used)) return { side, along: 0 }
+    }
+  }
   for (const c of wallCandidates(def, jitter, kit)) {
     if (wallKitFits(def, c.side, c.along, spec, used)) return c
   }

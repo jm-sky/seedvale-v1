@@ -601,6 +601,8 @@ export const COTTAGE_6X4_B: HouseDefinition = {
     examine: 'Chata z oknem na ogród i wejściem z boku elewacji.',
     sizeClass: 'cottage',
   }),
+  // Hand-tuned in House Browser: beside the door, flat to the front wall.
+  lamp: { style: 'wall', mount: { x: -2, y: 2.51, z: -2.22, yaw: Math.PI } },
   furniture: cottage6x4Furniture(),
 }
 

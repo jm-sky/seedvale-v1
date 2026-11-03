@@ -75,7 +75,8 @@ export type HouseInteractionPoint = {
   facing?: number
 }
 
-export type HouseLampMount = { x: number, y: number, z: number }
+/** House-local lamp mount (metres). Optional `yaw` (radians, 0 faces +Z, π faces the front wall -Z) overrides the default outward-through-the-mount facing. */
+export type HouseLampMount = { x: number, y: number, z: number, yaw?: number }
 
 export type HouseFurnitureRole = 'bed' | 'table' | 'chest' | 'lamp'
 

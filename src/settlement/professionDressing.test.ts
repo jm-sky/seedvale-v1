@@ -171,14 +171,27 @@ describe('wall-piece collision avoidance (HOUSE-GUARD)', () => {
     }
   })
 
-  it('hangs the guard shield on the entrance wall right beside the door (≤ 1.1 m from its centre)', () => {
+  it('hangs the guard shield on the entrance wall, centred in the widest free gap', () => {
     for (const def of DEFS) {
       const door = def.openings.find((o) => o.type === 'door')!
-      const doorAlong = -def.footprint.width / 2 + (door.moduleIndex! + 0.5) * 2
       const shield = wallsOf(def, ['guard'], REF_SEED)[0]!
       expect(shield.kit).toBe('shield')
       expect(shield.side).toBe(door.side)
-      expect(Math.abs(alongOf(shield) - doorAlong)).toBeLessThanOrEqual(1.1)
     }
+    const b = DEFS.find((d) => d.id === 'cottage-6x4-b')!
+    const shield = wallsOf(b, ['guard'], REF_SEED)[0]!
+    // door at x=-2 (right edge -1.33), window at x=+2 (left edge 1.38): gap centre ≈ 0
+    expect(Math.abs(alongOf(shield))).toBeLessThan(0.1)
+  })
+
+  it('hangs the banner on a wall without openings when one has room', () => {
+    for (const def of DEFS) {
+      const blank = (['front', 'left', 'right', 'back'] as const).filter((side) => !def.openings.some((o) => o.side === side))
+      if (blank.length === 0) continue
+      const banner = wallsOf(def, ['guard'], REF_SEED).find((w) => w.kit === 'banner')
+      if (banner) expect(blank).toContain(banner.side)
+    }
+    const b = DEFS.find((d) => d.id === 'cottage-6x4-b')!
+    expect(wallsOf(b, ['guard'], REF_SEED).find((w) => w.kit === 'banner')?.side).toBe('right')
   })
 })

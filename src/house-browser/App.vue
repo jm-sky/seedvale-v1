@@ -5,6 +5,8 @@ import CameraControls from './components/CameraControls.vue'
 import ColliderControls from './components/ColliderControls.vue'
 import HouseInfo from './components/HouseInfo.vue'
 import HouseList from './components/HouseList.vue'
+import LampControls from './components/LampControls.vue'
+import ProfessionControls from './components/ProfessionControls.vue'
 import SceneControls from './components/SceneControls.vue'
 import { createHouseBrowserScene } from './houseBrowserScene'
 import {
@@ -55,6 +57,10 @@ onMounted(() => {
   scene = createHouseBrowserScene(viewport.value, {
     onAssemblyChange: (info) => {
       assemblyInfo.value = info
+      if (info) {
+        const { x, y, z, yawDeg } = info.defaultLamp
+        config.lamp = { ...config.lamp, x, y, z, yawDeg }
+      }
       errorMessage.value = null
     },
     onError: (message) => {
@@ -93,6 +99,11 @@ function clearQueryParam(name: string): void {
 function selectHouse(id: string): void {
   putIntoQueryParam('house', id)
   selectedId.value = id
+}
+
+function resetLamp(): void {
+  const d = assemblyInfo.value?.defaultLamp
+  if (d) config.lamp = { ...config.lamp, x: d.x, y: d.y, z: d.z, yawDeg: d.yawDeg }
 }
 
 function resetCamera(): void {
@@ -143,6 +154,12 @@ function updateDoorsOpen(doorsOpen: boolean): void {
         @update:doors-open="updateDoorsOpen($event)"
         @update:visible="updateColliderVisibility($event)"
       />
+      <LampControls
+        v-model:lamp="config.lamp"
+        :default-lamp="assemblyInfo?.defaultLamp ?? null"
+        @reset="resetLamp"
+      />
+      <ProfessionControls v-model:profession="config.profession" />
       <CameraControls
         @reset="resetCamera"
         @view="setCameraView"
