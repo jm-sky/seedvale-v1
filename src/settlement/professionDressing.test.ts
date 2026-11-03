@@ -153,7 +153,7 @@ describe('wall-piece collision avoidance (HOUSE-GUARD)', () => {
   it('a wall-lantern obstacle also blocks other kits at its height', () => {
     const def = DEFS.find((d) => d.id === 'cottage-4x4-c')!
     const lamp = lampWallObstacle(def)!
-    const low = { ...lamp, side: 'back' as const, along: -1, bottomY: 1.0, topY: 2.0 } // a lantern at shield height
+    const low = { ...lamp, side: 'back' as const, along: -1, bottomY: 1.0, topY: 1.9 } // a lantern at shield height
     expect(wallKitFits(def, 'back', -1, WALL_KITS.shield, [])).toBe(true) // free of openings
     expect(wallKitFits(def, 'back', -1, WALL_KITS.shield, [low])).toBe(false)
     expect(wallKitFits(def, 'back', -1, WALL_KITS.antlers, [low])).toBe(true) // antlers hang above it
@@ -176,7 +176,12 @@ describe('wall-piece collision avoidance (HOUSE-GUARD)', () => {
       const door = def.openings.find((o) => o.type === 'door')!
       const shield = wallsOf(def, ['guard'], REF_SEED)[0]!
       expect(shield.kit).toBe('shield')
-      expect(shield.side).toBe(door.side)
+      // The shield is 1.3x since ba487c41: on tight entrance walls (e.g. 4x4 door + window) no gap fits it, and it
+      // falls back to another wall. Only when some gap fits must it hang on the entrance wall.
+      let gapExists = false
+      const half = (door.side === 'front' || door.side === 'back' ? def.footprint.width : def.footprint.depth) / 2
+      for (let a = -half; a <= half; a += 0.01) gapExists ||= wallKitFits(def, door.side!, a, WALL_KITS.shield, [])
+      if (gapExists) expect(shield.side, def.id).toBe(door.side)
     }
     const b = DEFS.find((d) => d.id === 'cottage-6x4-b')!
     const shield = wallsOf(b, ['guard'], REF_SEED)[0]!
