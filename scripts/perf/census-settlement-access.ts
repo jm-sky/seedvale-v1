@@ -16,8 +16,10 @@ import { defaultTerrainConfig } from '../../src/config/worldConfig'
 import { findPath, type PathPoint } from '../../src/navigation/navigation'
 import { PLAYER_COLLISION_RADIUS } from '../../src/player/playerDimensions'
 import { cemeteryPlotDistanceToPoint } from '../../src/settlement/cemeteryLayout'
+import { villageSizeConfig } from '../../src/settlement/families'
 import { buildHouseCollidersWorld } from '../../src/settlement/houseBuilder'
 import { householdYardFenceSegments } from '../../src/settlement/householdYard'
+import { MERCHANT_HORSE_RADIUS, MERCHANT_WAGON_RADIUS, pickMerchantWagonPose } from '../../src/settlement/merchantWagon'
 import { VILLAGE_CAMPFIRE_COLLISION_RADIUS, VILLAGE_MASONRY_FIREPIT_COLLISION_RADIUS, WOOD_PILE_COLLISION_RADIUS } from '../../src/settlement/propSpecs'
 import { cellsWithinRadius, type SettlementDef } from '../../src/settlement/settlementGenerator'
 import { fencePlacementColliders } from '../../src/settlement/settlementPalisade'
@@ -134,6 +136,8 @@ type Tally = {
   pathThroughBuilding: number
   /** Stricter: the path centreline itself comes within 0.3 m of a wall (walks through the building). */
   pathCentrelineInBuilding: number
+  /** Q95 runtime props (mirror of `props.ts` positions): count / in a wall / in a yard-or-plot disc / wet / on a path. */
+  props: Map<string, { n: number, wall: number, disc: number, wet: number, path: number }>
 }
 
 let wetAt: (x: number, z: number) => boolean = () => false
@@ -205,6 +209,83 @@ function composition(def: SettlementDef, t: Tally, seed: number): void {
   }
 }
 
+
+/**
+ * Q95: plan-level mirror of the runtime prop positions in `props.ts` — well torch (0.75 m from the well, away from
+ * the plaza core), plaza torch ring (`infrastructure.campfires > 0`, before the runtime corridor/well/campfire
+ * rejects, nudge applied the same way), market crate + barrel (+0.7, +0.3), merchant wagon + horse
+ * (`pickMerchantWagonPose` with the plan-anchor obstacle recipe; runtime places it only in home forest villages, here
+ * every settlement is probed). Entrance torches are left out: `resolveEntranceTorchPlacements` already keeps them on
+ * the palisade wing outside the road corridor. Each point is tested against house/storehouse wall colliders, house
+ * compound discs, wet floor and plan path ribbons.
+ */
+function runtimeProps(def: SettlementDef, t: Tally, seed: number, walls: readonly Tagged[]): void {
+  const plan = def.plan
+  const core = plan.plaza
+  const lm = (kind: string, index = 0) => plan.landmarks.find((l) => l.kind === kind && l.index === index)
+  const well = lm('well')
+  const points: Array<{ kind: string, x: number, z: number, r: number }> = []
+  const onPath = (x: number, z: number, margin: number): boolean => plan.paths.some((path) => {
+    for (let k = 1; k < path.points.length; k++) {
+      if (distToSegment(x, z, path.points[k - 1]!.x, path.points[k - 1]!.z, path.points[k]!.x, path.points[k]!.z) < path.halfWidth + margin) return true
+    }
+    return false
+  })
+  if (well) {
+    const ang = Math.atan2(well.z - core.z, well.x - core.x)
+    points.push({ kind: 'well torch', x: well.x + Math.cos(ang) * 0.75, z: well.z + Math.sin(ang) * 0.75, r: 0.3 })
+  }
+  if (villageSizeConfig(def.size).infrastructure.campfires > 0) {
+    const plazaR = Math.max(3.5, core.radius * 1.05)
+    const count = def.size === 'XL' ? 4 : def.size === 'LG' ? 3 : 2
+    const campfire = lm('campfire')
+    for (let i = 0; i < count; i++) {
+      const ang = (i / count) * Math.PI * 2 + 0.55
+      const x = core.x + Math.cos(ang) * plazaR
+      const z = core.z + Math.sin(ang) * plazaR
+      if (well && Math.hypot(x - well.x, z - well.z) < 3.2) continue
+      if (campfire && Math.hypot(x - campfire.x, z - campfire.z) < 2.8) continue
+      // Runtime drops a torch on a path corridor (0.85 m margin) after one outward nudge; mirror that.
+      if (onPath(x, z, 0.85)) {
+        const nx = core.x + Math.cos(ang) * (plazaR + 1.4)
+        const nz = core.z + Math.sin(ang) * (plazaR + 1.4)
+        if (onPath(nx, nz, 0.85)) continue
+        points.push({ kind: 'plaza torch', x: nx, z: nz, r: 0.3 })
+      } else points.push({ kind: 'plaza torch', x, z, r: 0.3 })
+    }
+  }
+  const markets = plan.landmarks.filter((l) => l.kind === 'market')
+  for (const [i, m] of markets.entries()) {
+    points.push({ kind: 'market crate', x: m.x, z: m.z, r: 0.4 })
+    points.push({ kind: 'market barrel', x: m.x + 0.7, z: m.z + 0.3, r: 0.4 })
+    if (i > 0) continue
+    const obstacles = plan.landmarks
+      .filter((l) => ['campfire', 'garden', 'stockpile', 'well'].includes(l.kind))
+      .map((l) => ({ x: l.x, z: l.z, r: l.kind === 'well' ? 2 : l.kind === 'campfire' ? 1.5 : l.kind === 'garden' ? 3 : 2.5 }))
+    for (const h of plan.plots.filter((p) => p.role === 'house')) obstacles.push({ x: h.x, z: h.z, r: 2.8 })
+    const pose = pickMerchantWagonPose(m.x, m.z, obstacles)
+    points.push({ kind: 'merchant wagon', x: pose.wagonX, z: pose.wagonZ, r: MERCHANT_WAGON_RADIUS })
+    points.push({ kind: 'merchant horse', x: pose.horseX, z: pose.horseZ, r: MERCHANT_HORSE_RADIUS })
+  }
+  for (const pt of points) {
+    const row = t.props.get(pt.kind) ?? { n: 0, wall: 0, disc: 0, wet: 0, path: 0 }
+    t.props.set(pt.kind, row)
+    row.n++
+    const hitWall = walls.find((c) => colliderSignedDistance(c, pt.x, pt.z) < pt.r)
+    const hitDisc = plan.plots.find((q) => q.role === 'house' && (q.discs ?? [{ x: q.x, z: q.z, radius: q.radius }])
+      .some((e) => Math.hypot(pt.x - e.x, pt.z - e.z) < e.radius))
+    const wet = wetAt(pt.x, pt.z)
+    const path = onPath(pt.x, pt.z, 0)
+    if (hitWall) row.wall++
+    if (hitDisc) row.disc++
+    if (wet) row.wet++
+    if (path) row.path++
+    if (debug && (hitWall || hitDisc || wet || path)) {
+      console.log(`prop ${pt.kind} seed ${seed} ${def.size} ${def.id} (${pt.x.toFixed(1)}, ${pt.z.toFixed(1)}):${hitWall ? ` wall ${hitWall.tag}` : ''}${hitDisc ? ` disc ${hitDisc.id}` : ''}${wet ? ' wet' : ''}${path ? ' on path' : ''}`)
+    }
+  }
+}
+
 function census(seed: number): Record<string, Tally> {
   clearSettlementDefCache()
   const snap = terrainSnapshot(seed, productionHydrologyId(seed))
@@ -227,7 +308,7 @@ function census(seed: number): Record<string, Tally> {
     const t = (out[def.size] ??= {
       settlements: 0, gates: 0, gateFail: 0, yards: 0, yardFail: 0, bays: 0, bayFail: 0, goalBlocked: 0,
       settlementsWithAny: 0, routeRatio: [], objects: 0, objectOverlap: 0, objectWet: 0, objectCrossedByPath: 0,
-      objectPairs: new Map(), pathThroughBuilding: 0, pathCentrelineInBuilding: 0,
+      objectPairs: new Map(), pathThroughBuilding: 0, pathCentrelineInBuilding: 0, props: new Map(),
     })
     t.settlements++
     if (debug) console.log(`settlement seed ${seed} ${def.size} ${def.id} centre ${def.x.toFixed(0)},${def.z.toFixed(0)}${def.isHome ? ' (home)' : ''}`)
@@ -247,6 +328,7 @@ function census(seed: number): Record<string, Tally> {
     if (!start) throw new Error(`no clear plaza start in ${def.id}`)
     composition(def, t, seed)
     const walls = colliders.filter((c) => /^plot-(house|infra-storehouse)/.test(c.tag) && !c.tag.includes('fence'))
+    runtimeProps(def, t, seed, walls)
     for (const path of def.plan.paths) {
       const hitTags = new Set<string>()
       const coreTags = new Set<string>()
@@ -348,5 +430,16 @@ for (const [seed, res] of results) {
     if (!t) continue
     const pairs = [...t.objectPairs].sort((a, b) => b[1] - a[1]).map(([k, n]) => `${k} ${n}`).join('; ') || '—'
     console.log(`| ${seed} | ${size} | ${t.objects} | ${t.objectOverlap} | ${t.objectWet} | ${t.objectCrossedByPath} | ${t.pathThroughBuilding} / ${t.pathCentrelineInBuilding} | ${pairs} |`)
+  }
+}
+
+console.log('')
+console.log('Runtime props (Q95, plan-level mirror of props.ts positions): count; in a house/storehouse wall; in a house-compound disc; on wet floor; on a plan path ribbon (plaza torches pre-filtered like the runtime).')
+console.log('')
+console.log('| seed | size | prop | n | in wall | in house disc | wet | on path |')
+console.log('| --- | --- | --- | --- | --- | --- | --- | --- |')
+for (const [seed, res] of results) {
+  for (const size of ['OUTPOST', 'SM', 'MD', 'LG', 'XL'] as const) {
+    for (const [kind, r] of [...(res[size]?.props ?? [])].sort()) console.log(`| ${seed} | ${size} | ${kind} | ${r.n} | ${r.wall} | ${r.disc} | ${r.wet} | ${r.path} |`)
   }
 }
