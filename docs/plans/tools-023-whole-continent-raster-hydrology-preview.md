@@ -1,7 +1,7 @@
 # Plan: Whole-continent raster and hydrology preview
 
 **Created:** 2026-11-03
-**Status:** `planned` 📋
+**Status:** `implemented` ✅ (browser run of the page itself pending — see implementation notes)
 **Type:** infrastructure
 **Priority:** medium · **Effort:** M
 **Depends on:** -

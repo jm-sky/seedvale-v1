@@ -75,6 +75,7 @@ export default defineConfig(({ mode }) => {
           hudDemo: resolve(rootDir, 'hud-demo.html'),
           merchantDemo: resolve(rootDir, 'merchant-demo.html'),
           dialogueDemo: resolve(rootDir, 'dialogue-demo.html'),
+          continentPreview: resolve(rootDir, 'continent-preview.html'),
         },
       },
     },

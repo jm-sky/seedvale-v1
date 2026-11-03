@@ -40,10 +40,16 @@ export type MapRasterClassCode = (typeof MapRasterClass)[keyof typeof MapRasterC
 
 export type MapTileCoord = { step: MapRasterStep, tx: number, tz: number }
 
+/** River visibility: `standard` drops hairline streams per LOD (gameplay map);
+ *  `all` keeps every canonical chain segment (author diagnostics only). */
+export type MapRiverDetail = 'standard' | 'all'
+
 export type MapTileRequest = MapTileCoord & {
   params: RawSampleParams
   /** Discovered coverage blocks (`[bx, bz]`) overlapping this tile. */
   coverage: readonly (readonly [number, number])[]
+  /** Opt-in river visibility; omitted = `standard` (unchanged gameplay behaviour). */
+  riverDetail?: MapRiverDetail
 }
 
 export type MapTileData = {
@@ -213,7 +219,7 @@ function buildTileRivers(
   covered: ReadonlySet<number>,
 ): { points: Float32Array, runs: Uint32Array } {
   const { step, params } = request
-  const minWidth = step * RIVER_MIN_WIDTH_PER_STEP
+  const minWidth = request.riverDetail === 'all' ? 0 : step * RIVER_MIN_WIDTH_PER_STEP
   const fingerprint = JSON.stringify(params)
   const out: number[] = []
   const runs: number[] = []

@@ -26,3 +26,10 @@
 - Full-extent preview can render subtle streams too thin to see, especially with coarse LOD filtering. Distinguish map-only stroke/visibility settings from a hydrology density change.
 - Avoid `MapFogGrid` initialization tricks that would mutate/persist game discovery.
 - No browser, performance, or PNG quality checks were run during planning; all observations above are from source inspection.
+
+## Implementation (2026-11-04)
+
+- Page: `continent-preview.html` + `src/ui-vue/demos/continent-preview/` (Tools menu entry in `toolRegistry.ts`; `?seed=…&autostart=1`). Logic: `src/world/map/continentPreview.ts` (full-coverage requests, all-or-nothing batch collector with abort), `src/ui-vue/lib/continentPreviewRender.ts`; `buildRiverStrokes` extracted to `mapRiverStrokes.ts`.
+- Opt-in `riverDetail: 'all'` on `MapTileRequest` disables only the per-LOD min-width filter; default (`standard`) unchanged. River stroke min 1.5 px is visual exaggeration.
+- Headless variant: `pnpm tsx scripts/tools/continent-preview-png.ts <seed> <out.png> [all|standard]` (same builder/painter, main thread, ~6 s per seed). Output PNGs for seeds `415424794` and `42`: `docs/research/v1-revival/continent-previews/`. Note: the script's compositor is its own nearest-sample/dot-stroke (not canvas), so pixels differ slightly from the page.
+- Verified: vitest (tile count, coverage, ungated sampling, collector failure/abort), type-check, build. **Not browser-verified:** headless Chrome via CDP stalled in this environment, so the Vue page was never observed running; the PNGs come from the script. Author should open the page once (queue §2).

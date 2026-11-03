@@ -27,4 +27,10 @@ export const TOOLS: readonly ToolDefinition[] = [
     description: 'Browse available game assets',
     path: '/asset-browser.html',
   },
+  {
+    id: 'continent-preview',
+    label: 'Continent Preview',
+    description: 'Whole-continent terrain and river network PNG (author diagnostic)',
+    path: '/continent-preview.html',
+  },
 ]
