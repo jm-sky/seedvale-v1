@@ -119,6 +119,7 @@ Generated from TypeScript imports.
 - `settlement/pathDryness.ts`
 - `settlement/rats.ts`
 - `settlement/roadNetwork.ts`
+- `settlement/routeShape.ts`
 - `settlement/settlementGenerator.ts`
 - `settlement/settlementLayout.ts`
 - `settlement/settlementPlanCache.ts`

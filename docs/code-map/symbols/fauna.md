@@ -552,25 +552,29 @@ Generated from exported TypeScript symbols.
 
 ## `fauna/createFauna.ts`
 
-- `clearsRiverChannel` — function — line 303
-- `createFauna` — function — line 600
+- `clearsRiverChannel` — function — line 335
+- `createFauna` — function — line 632
 - `Fauna` — type — line 110
-- `FAUNA_URLS` — const — line 510
-- `faunaGltfUrls` — function — line 525
-- `findHomeCaveSpawner` — function — line 469
-- `isDeerEdgeHabitat` — function — line 357
-- `isNearRoadCorridor` — function — line 338
-- `isValidWildFaunaSpawnSite` — function — line 313
-- `measureSlope` — function — line 396
-- `resolveWildFaunaSpawnPosition` — function — line 324
-- `SPAWNER_DESTROY_ACCUSATIVE` — const — line 486
-- `SPAWNER_DESTROYING_GENITIVE` — const — line 494
-- `SPAWNER_LABELS` — const — line 478
+- `FAUNA_URLS` — const — line 542
+- `faunaGltfUrls` — function — line 557
+- `findHomeCaveSpawner` — function — line 501
+- `habitatSpawnerRingAttempts` — function — line 298
+- `isDeerEdgeHabitat` — function — line 389
+- `isNearRoadCorridor` — function — line 370
+- `isPredatorDenSpec` — function — line 290
+- `isValidWildFaunaSpawnSite` — function — line 345
+- `measureSlope` — function — line 428
+- `MIN_PREDATOR_DEN_SEPARATION` — const — line 287
+- `PREDATOR_DEN_RING_OFFSET` — const — line 282
+- `resolveWildFaunaSpawnPosition` — function — line 356
+- `SPAWNER_DESTROY_ACCUSATIVE` — const — line 518
+- `SPAWNER_DESTROYING_GENITIVE` — const — line 526
+- `SPAWNER_LABELS` — const — line 510
 - `SPAWNER_RING_OFFSET` — const — line 275
-- `SPAWNER_SPECS` — const — line 432
-- `spawnerDestroyBusyLabel` — function — line 505
-- `spawnerDestroyPromptLabel` — function — line 501
-- `spawnerId` — function — line 462
+- `SPAWNER_SPECS` — const — line 464
+- `spawnerDestroyBusyLabel` — function — line 537
+- `spawnerDestroyPromptLabel` — function — line 533
+- `spawnerId` — function — line 494
 
 ## `fauna/destinationThreatHooks.ts`
 

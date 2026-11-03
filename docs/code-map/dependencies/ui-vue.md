@@ -235,6 +235,8 @@ Generated from TypeScript imports.
 
 ## `ui-vue/demos/character-skills/main.ts`
 
+## `ui-vue/demos/continent-preview/main.ts`
+
 ## `ui-vue/demos/dialogue/main.ts`
 
 ## `ui-vue/demos/hud/fixtures.ts`
@@ -316,6 +318,16 @@ Generated from TypeScript imports.
 
 - `ui-vue/hudWeaponShortcuts.test.ts`
 
+## `ui-vue/lib/continentPreviewRender.ts`
+
+**Imports**
+
+- `ui-vue/lib/mapColors.ts`
+- `ui-vue/lib/mapRiverStrokes.ts`
+- `ui-vue/lib/mapTerrainPaint.ts`
+- `world/map/mapConfig.ts`
+- `world/map/mapRasterTile.ts`
+
 ## `ui-vue/lib/drawMap.ts`
 
 **Imports**
@@ -379,6 +391,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `ui-vue/lib/continentPreviewRender.ts`
 - `ui-vue/lib/drawMap.ts`
 - `ui-vue/lib/drawMinimap.ts`
 - `ui-vue/lib/mapFogLayer.test.ts`
@@ -447,6 +460,17 @@ Generated from TypeScript imports.
 - `ui-vue/lib/drawMap.ts`
 - `ui-vue/lib/drawMinimap.ts`
 
+## `ui-vue/lib/mapRiverStrokes.ts`
+
+**Imports**
+
+- `world/map/mapRasterTile.ts`
+
+**Imported by**
+
+- `ui-vue/lib/continentPreviewRender.ts`
+- `ui-vue/lib/mapTerrainLayer.ts`
+
 ## `ui-vue/lib/mapTerrainLayer.test.ts`
 
 **Imports**
@@ -465,6 +489,7 @@ Generated from TypeScript imports.
 - `terrain/chunkHeightmap.ts`
 - `terrain/chunkWorkerPool.ts`
 - `ui-vue/lib/mapColors.ts`
+- `ui-vue/lib/mapRiverStrokes.ts`
 - `ui-vue/lib/mapTerrainPaint.ts`
 - `world/map/mapFogGrid.ts`
 - `world/map/mapRasterTile.ts`
@@ -495,6 +520,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `ui-vue/lib/continentPreviewRender.ts`
 - `ui-vue/lib/mapTerrainLayer.test.ts`
 - `ui-vue/lib/mapTerrainLayer.ts`
 - `ui-vue/lib/mapTerrainPaint.test.ts`

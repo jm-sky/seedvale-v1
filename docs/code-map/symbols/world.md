@@ -1586,6 +1586,19 @@ Generated from exported TypeScript symbols.
 - `WorldLocationKind` — type — line 1
 - `worldLocationKindFromId` — function — line 49
 
+## `world/map/continentPreview.ts`
+
+- `collectContinentTiles` — function — line 89
+  - domain: tools
+- `CollectContinentTilesOptions` — type — line 73
+- `CONTINENT_PREVIEW_STEP` — const — line 23
+  - domain: tools
+- `ContinentPreviewAbortedError` — class — line 66
+- `ContinentTileRequester` — type — line 61
+- `continentTileRequests` — function — line 48
+  - domain: tools
+- `coverageBlocksFor` — function — line 28
+
 ## `world/map/mapConfig.ts`
 
 - `MAP_CELL_SIZE` — const — line 2
@@ -1636,7 +1649,7 @@ Generated from exported TypeScript symbols.
 
 ## `world/map/mapRasterTile.ts`
 
-- `buildMapTile` — function — line 160
+- `buildMapTile` — function — line 166
   - domain: ui-input
 - `MAP_COVERAGE_BLOCK` — const — line 25
 - `MAP_RASTER_STEPS` — const — line 21
@@ -1644,17 +1657,18 @@ Generated from exported TypeScript symbols.
 - `MAP_TILE_SIDE` — const — line 17
 - `MapRasterClass` — const — line 28
 - `MapRasterClassCode` — type — line 39
-- `mapRasterClassOf` — function — line 107
+- `mapRasterClassOf` — function — line 113
 - `MapRasterStep` — type — line 20
-- `MapRect` — type — line 69
-- `mapTileBounds` — function — line 71
+- `MapRect` — type — line 75
+- `MapRiverDetail` — type — line 45
+- `mapTileBounds` — function — line 77
 - `MapTileCoord` — type — line 41
-- `MapTileData` — type — line 49
-- `mapTileKey` — function — line 65
-- `MapTileRequest` — type — line 43
-- `mapTilesInRect` — function — line 77
-- `mapTileWorldSize` — function — line 61
-- `selectMapRasterStep` — function — line 95
+- `MapTileData` — type — line 55
+- `mapTileKey` — function — line 71
+- `MapTileRequest` — type — line 47
+- `mapTilesInRect` — function — line 83
+- `mapTileWorldSize` — function — line 67
+- `selectMapRasterStep` — function — line 101
 
 ## `world/map/mapTypes.ts`
 

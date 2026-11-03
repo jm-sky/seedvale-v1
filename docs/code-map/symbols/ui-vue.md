@@ -170,6 +170,12 @@ Generated from exported TypeScript symbols.
 - `HudWeaponShortcutAction` — type — line 3
 - `hudWeaponShortcuts` — function — line 19
 
+## `ui-vue/lib/continentPreviewRender.ts`
+
+- `CONTINENT_PREVIEW_PX` — const — line 15
+- `renderContinentCanvas` — function — line 25
+  - domain: tools
+
 ## `ui-vue/lib/drawMap.ts`
 
 - `canvasToWorld` — function — line 44
@@ -248,15 +254,20 @@ Generated from exported TypeScript symbols.
 - `MapRasterLayers` — type — line 9
 - `setActiveMapRasterLayers` — function — line 40
 
+## `ui-vue/lib/mapRiverStrokes.ts`
+
+- `buildRiverStrokes` — function — line 6
+- `RiverStroke` — type — line 3
+
 ## `ui-vue/lib/mapTerrainLayer.ts`
 
-- `createMapTerrainLayer` — function — line 136
+- `createMapTerrainLayer` — function — line 111
   - domain: ui-input
-- `MapCanvasLike` — type — line 36
-- `MapTerrainLayer` — type — line 73
-- `MapTerrainLayerOptions` — type — line 38
-- `MapTerrainStats` — type — line 66
-- `MapTileRequester` — type — line 31
+- `MapCanvasLike` — type — line 37
+- `MapTerrainLayer` — type — line 72
+- `MapTerrainLayerOptions` — type — line 39
+- `MapTerrainStats` — type — line 65
+- `MapTileRequester` — type — line 32
 
 ## `ui-vue/lib/mapTerrainPaint.ts`
 

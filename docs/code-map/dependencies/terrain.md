@@ -355,6 +355,7 @@ Generated from TypeScript imports.
 - `settlement/roadRiverCrossing.ts`
 - `settlement/roadRouteWorldgenCache.test.ts`
 - `settlement/roadRouteWorldgenCache.ts`
+- `settlement/routeShape.ts`
 - `settlement/settlementGenerator.test.ts`
 - `settlement/settlementGenerator.ts`
 - `settlement/settlementLayout.ts`
@@ -451,6 +452,7 @@ Generated from TypeScript imports.
 - `world/locations/seedProfile.ts`
 - `world/locations/worldLocationCatalog.test.ts`
 - `world/locations/worldLocationCatalog.ts`
+- `world/map/continentPreview.ts`
 - `world/map/mapProjection.test.ts`
 - `world/map/mapProjection.ts`
 - `world/map/mapRasterTile.test.ts`
@@ -1598,6 +1600,7 @@ Generated from TypeScript imports.
 
 - `terrain/riverNetwork.test.ts`
 - `terrain/riverQuery.test.ts`
+- `world/map/continentPreview.test.ts`
 - `world/map/mapRasterTile.test.ts`
 
 ## `terrain/unloadedLandmarkLookup.ts`
@@ -1906,6 +1909,7 @@ Generated from TypeScript imports.
 - `world/locations/seedProfile.test.ts`
 - `world/locations/worldKnowledgeResearch.test.ts`
 - `world/locations/worldLocationCatalog.test.ts`
+- `world/map/continentPreview.test.ts`
 - `world/map/mapProjection.test.ts`
 - `world/map/mapRasterTile.test.ts`
 - `world/seedLibrary.test.ts`

@@ -3509,12 +3509,39 @@ Generated from TypeScript imports.
 - `world/locations/worldLocationTypes.test.ts`
 - `world/map/mapProjection.test.ts`
 
+## `world/map/continentPreview.test.ts`
+
+**Imports**
+
+- `config/worldConfig.ts`
+- `terrain/testWindowHydrology.ts`
+- `terrain/worldHydrologyStore.ts`
+- `world/map/continentPreview.ts`
+- `world/map/mapConfig.ts`
+- `world/map/mapProjection.ts`
+- `world/map/mapRasterTile.ts`
+
+## `world/map/continentPreview.ts`
+
+**Imports**
+
+- `terrain/chunkHeightmap.ts`
+- `world/map/mapConfig.ts`
+- `world/map/mapRasterTile.ts`
+
+**Imported by**
+
+- `world/map/continentPreview.test.ts`
+
 ## `world/map/mapConfig.ts`
 
 **Imported by**
 
+- `ui-vue/lib/continentPreviewRender.ts`
 - `ui-vue/lib/drawMap.ts`
 - `ui-vue/lib/mapFogLayer.ts`
+- `world/map/continentPreview.test.ts`
+- `world/map/continentPreview.ts`
 - `world/map/mapData.ts`
 - `world/map/mapDiscovery.ts`
 - `world/map/mapFogGrid.test.ts`
@@ -3630,6 +3657,7 @@ Generated from TypeScript imports.
 - `ui-vue/lib/mapTerrainPaint.test.ts`
 - `world/locations/locationProximityDiscovery.test.ts`
 - `world/locations/worldLocationCatalog.test.ts`
+- `world/map/continentPreview.test.ts`
 - `world/map/mapData.ts`
 - `world/map/mapDiscovery.ts`
 - `world/map/mapFogGrid.test.ts`
@@ -3664,14 +3692,18 @@ Generated from TypeScript imports.
 - `terrain/chunkHeightmap.worker.ts`
 - `terrain/chunkHeightmapProtocol.ts`
 - `terrain/chunkWorkerPool.ts`
+- `ui-vue/lib/continentPreviewRender.ts`
 - `ui-vue/lib/drawMap.ts`
 - `ui-vue/lib/drawMinimap.ts`
 - `ui-vue/lib/mapFogLayer.ts`
 - `ui-vue/lib/mapRasterLayers.ts`
+- `ui-vue/lib/mapRiverStrokes.ts`
 - `ui-vue/lib/mapTerrainLayer.test.ts`
 - `ui-vue/lib/mapTerrainLayer.ts`
 - `ui-vue/lib/mapTerrainPaint.test.ts`
 - `ui-vue/lib/mapTerrainPaint.ts`
+- `world/map/continentPreview.test.ts`
+- `world/map/continentPreview.ts`
 - `world/map/mapFogGrid.ts`
 - `world/map/mapRasterTile.test.ts`
 

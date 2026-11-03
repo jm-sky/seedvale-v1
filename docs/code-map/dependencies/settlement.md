@@ -2407,6 +2407,7 @@ Generated from TypeScript imports.
 - `settlement/roadRiverCrossing.ts`
 - `settlement/roadRouteWorldgenCache.ts`
 - `settlement/routeObstacles.ts`
+- `settlement/routeShape.ts`
 - `settlement/settlementGenerator.ts`
 - `settlement/settlementPlanCache.ts`
 - `settlement/settlementTerrain.ts`
@@ -2455,6 +2456,7 @@ Generated from TypeScript imports.
 - `settlement/roadRiverCrossing.test.ts`
 - `settlement/roadRouteWorldgenCache.test.ts`
 - `settlement/roadRouteWorldgenCache.ts`
+- `settlement/routeShape.ts`
 
 ## `settlement/roadRouteWorldgenCache.test.ts`
 
@@ -2506,6 +2508,27 @@ Generated from TypeScript imports.
 
 - `settlement/roadNetwork.ts`
 - `settlement/routeObstacles.test.ts`
+- `settlement/routeShape.ts`
+
+## `settlement/routeShape.test.ts`
+
+**Imports**
+
+- `settlement/routeShape.ts`
+
+## `settlement/routeShape.ts`
+
+**Imports**
+
+- `player/PlayerController.ts`
+- `settlement/roadRiverCrossing.ts`
+- `settlement/routeObstacles.ts`
+- `terrain/chunkHeightmap.ts`
+
+**Imported by**
+
+- `settlement/roadNetwork.ts`
+- `settlement/routeShape.test.ts`
 
 ## `settlement/settlementAgriculture.test.ts`
 
