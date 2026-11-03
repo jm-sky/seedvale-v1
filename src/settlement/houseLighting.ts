@@ -12,14 +12,59 @@ import {
   type HouseLampStyle,
 } from './houseCatalog'
 import { LANTERN_FLOOR_MAX, LANTERN_WALL_MAX } from './propSpecs'
+import { NIGHT_FIRE_THRESHOLD } from './settlementNightCycle'
 
 const HOUSE_LAMP_OFF_COLOR = new THREE.Color(0x3a2c22)
 const HOUSE_LAMP_ON_COLOR = new THREE.Color(0xffb35c)
 /** Original procedural box height (metres) used as the scale reference. */
 const PROCEDURAL_LANTERN_REF_MAX = 0.16
 
+/** Unlit glass of a GLB lantern: same smoky tone as the procedural fallback. */
+const GLB_GLASS_OFF_COLOR = HOUSE_LAMP_OFF_COLOR
+const GLB_GLASS_EMISSIVE_ON = 1.4
+
+/** Per-template-material on/off pair, shared by every lamp instance (never
+ *  mutated per instance: lamps just swap `mesh.material` between the two).
+ *  Flagged `sharedGpu` so `disposeObject3D` leaves them alone. */
+const glassMaterialCache = new WeakMap<THREE.Material, { on: THREE.Material, off: THREE.Material }>()
+
+function glassMaterialPair(source: THREE.Material): { on: THREE.Material, off: THREE.Material } {
+  let pair = glassMaterialCache.get(source)
+  if (pair) return pair
+  const on = source.clone()
+  const off = source.clone()
+  on.userData = { sharedGpu: true }
+  off.userData = { sharedGpu: true }
+  const onStd = on as THREE.MeshStandardMaterial
+  const offStd = off as THREE.MeshStandardMaterial
+  if (onStd.color && onStd.emissive) {
+    onStd.emissive.copy(onStd.color)
+    onStd.emissiveIntensity = GLB_GLASS_EMISSIVE_ON
+    offStd.color.copy(GLB_GLASS_OFF_COLOR)
+    offStd.emissive.setScalar(0)
+    offStd.emissiveIntensity = 0
+  }
+  pair = { on, off }
+  glassMaterialCache.set(source, pair)
+  return pair
+}
+
+/** Collects `*_Light` glass meshes of a (cloned) lantern body and gives each an
+ *  instance-local material slot pointing at the shared on/off pair. */
+function collectGlassMeshes(body: THREE.Object3D): { mesh: THREE.Mesh, pair: { on: THREE.Material, off: THREE.Material } }[] {
+  const out: { mesh: THREE.Mesh, pair: { on: THREE.Material, off: THREE.Material } }[] = []
+  body.traverse((obj) => {
+    const mesh = obj as THREE.Mesh
+    if (!mesh.isMesh || Array.isArray(mesh.material)) return
+    if (!mesh.material.name.endsWith('_Light')) return
+    out.push({ mesh, pair: glassMaterialPair(mesh.material) })
+  })
+  return out
+}
+
 /** House night lamp: GLB body (or procedural boxes) + one unshadowed PointLight.
- *  `setNightIntensity(t)` is 0 = daylight / unlit, 1 = full night glow. */
+ *  Strictly two-state: `setNightIntensity(t)` lights the lamp when
+ *  `t > NIGHT_FIRE_THRESHOLD` and extinguishes it otherwise — no fade. */
 export type HouseLight = {
   readonly object: THREE.Object3D
   setNightIntensity: (t: number) => void
@@ -203,9 +248,12 @@ export function createHouseLight(
   const pose = lampMountPose(mountX, mountZ, mountHeight, style, explicitYaw, lanternBody !== null)
 
   let lampMat: THREE.MeshBasicMaterial | null = null
+  let glass: ReturnType<typeof collectGlassMeshes> = []
   let light: THREE.PointLight
   if (lanternBody) {
     const pivot = attachLanternGlb(group, lanternBody, pose)
+    glass = collectGlassMeshes(pivot)
+    for (const g of glass) g.mesh.material = g.pair.off
     // One PointLight, parented to the pivot so it inherits yaw and the
     // house-scale compensation, placed at the glass instead of the wall.
     light = createExteriorPointLight(style)
@@ -217,21 +265,24 @@ export function createHouseLight(
   }
   const innerLight = attachHouseInnerLight(group)
 
-  return {
+  const houseLight: HouseLight = {
     object: group,
     setNightIntensity(t) {
-      const clamped = Math.max(0, Math.min(1, t))
-      if (lampMat) lampMat.color.lerpColors(HOUSE_LAMP_OFF_COLOR, HOUSE_LAMP_ON_COLOR, clamped)
-      light.intensity = clamped * (style === 'wall' ? 2.5 : 5)
-      innerLight.intensity = clamped * 2
+      // Two states only (IMP-009): glass material and PointLights switch together.
+      const on = t > NIGHT_FIRE_THRESHOLD
+      if (lampMat) lampMat.color.copy(on ? HOUSE_LAMP_ON_COLOR : HOUSE_LAMP_OFF_COLOR)
+      for (const g of glass) g.mesh.material = on ? g.pair.on : g.pair.off
+      light.intensity = on ? (style === 'wall' ? 2.5 : 5) : 0
+      innerLight.intensity = on ? 2 : 0
       // Plan 157 §3.2 — Three's WebGLLights only collects visible lights, so
       // an off lamp that stays `visible = true` still costs a
       // NUM_POINT_LIGHTS slot / program cache variant for nothing.
-      const on = clamped > 0
       light.visible = on
       innerLight.visible = on
     },
   }
+  houseLight.setNightIntensity(0) // start extinguished until the day/night cycle applies
+  return houseLight
 }
 
 export function createProceduralTorchPost(): THREE.Object3D {

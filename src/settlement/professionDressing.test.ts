@@ -8,6 +8,7 @@ import {
 } from '../assets/houseDefinitionExample'
 import { householdYardPlanFor } from './householdYard'
 import {
+  lampWallObstacle,
   MAX_WALL_PIECES_PER_HOUSE,
   professionDressingFor,
   SLOT_KITS,
@@ -82,3 +83,77 @@ describe('professionDressingFor (Q48)', () => {
     expect(kinds.has('fisher')).toBe(true)
   })
 })
+
+describe('wall-piece collision avoidance (HOUSE-GUARD)', () => {
+  const REF_SEED = 415424794
+  const wallsOf = (def: (typeof DEFS)[number], roles: Role[], seed: number, fi = 0) =>
+    professionDressingFor(family(roles), fi, def, householdYardPlanFor(def.footprint, 0, 0, 0, 'MD', 1), seed)
+      .filter((p): p is WallDressingPlacement => p.kind === 'wall')
+  const alongOf = (w: WallDressingPlacement) => (w.side === 'front' || w.side === 'back' ? w.x : w.z)
+
+  it('never overlaps the wall lantern, openings or another piece (all defs, many seeds)', () => {
+    for (const def of DEFS) {
+      const lamp = lampWallObstacle(def)!
+      for (let seed = 0; seed < 25; seed++) {
+        for (const roles of [['guard'], ['hunter', 'guard'], ['guard', 'fisher', 'hunter']] as Role[][]) {
+          const walls = wallsOf(def, roles, REF_SEED + seed, seed)
+          walls.forEach((w, i) => {
+            const spec = WALL_KITS[w.kit]
+            if (w.side === lamp.side) {
+              const clearX = Math.abs(alongOf(w) - lamp.along) >= lamp.half + spec.halfAlong
+              const clearY = spec.bottomY >= lamp.topY || spec.topY <= lamp.bottomY
+              expect(clearX || clearY).toBe(true)
+            }
+            expect(wallKitFits(def, w.side, alongOf(w), spec)).toBe(true)
+            for (const o of walls.slice(0, i)) {
+              if (o.side !== w.side) continue
+              const os = WALL_KITS[o.kit]
+              const clearX = Math.abs(alongOf(o) - alongOf(w)) >= os.halfAlong + spec.halfAlong
+              const clearY = spec.bottomY >= os.topY || spec.topY <= os.bottomY
+              expect(clearX || clearY).toBe(true)
+            }
+          })
+        }
+      }
+    }
+  })
+
+  it('reference case: cottage-4x4-c shield no longer sits on the lantern (was x=0.98 vs lamp x=1)', () => {
+    const def = DEFS.find((d) => d.id === 'cottage-4x4-c')!
+    const lamp = lampWallObstacle(def)!
+    expect(lamp).toMatchObject({ side: 'front', along: 1 })
+    const [shield, banner] = wallsOf(def, ['guard'], REF_SEED)
+    expect(shield?.kit).toBe('shield')
+    expect(banner?.kit).toBe('banner')
+    expect(shield!.side === 'front' && Math.abs(shield!.x - lamp.along) < 0.44).toBe(false)
+  })
+
+  it('places the shield before the banner and both when a free wall exists', () => {
+    for (const def of DEFS) {
+      const kits = wallsOf(def, ['guard'], REF_SEED).map((w) => w.kit)
+      expect(kits).toEqual(['shield', 'banner'])
+    }
+  })
+
+  it('is deterministic for the same seed', () => {
+    for (const def of DEFS) expect(wallsOf(def, ['guard'], REF_SEED, 3)).toEqual(wallsOf(def, ['guard'], REF_SEED, 3))
+  })
+
+  it('drops a piece only after every valid spot is used up (no room → omitted, shield wins)', () => {
+    const base = DEFS[0]!
+    // Every wall module has a window: the banner (tall) has no valid spot, the shield too → nothing placed, no throw.
+    const sides = ['front', 'back', 'left', 'right'] as const
+    const openings = sides.flatMap((side) => [0, 1].map((moduleIndex) => ({ type: 'window', side, moduleIndex }))) as unknown as typeof base.openings
+    const packed = { ...base, openings }
+    expect(wallsOf(packed, ['guard'], REF_SEED)).toEqual([])
+  })
+
+  it('a wall-lantern obstacle also blocks other kits at its height', () => {
+    const def = DEFS.find((d) => d.id === 'cottage-4x4-c')!
+    const lamp = lampWallObstacle(def)!
+    expect(wallKitFits(def, lamp.side, lamp.along, WALL_KITS.shield)).toBe(true) // openings alone allow it
+    expect(wallKitFits(def, lamp.side, lamp.along, WALL_KITS.shield, [lamp])).toBe(false)
+    expect(wallKitFits(def, lamp.side, lamp.along, WALL_KITS.antlers, [lamp])).toBe(true) // antlers hang above the lantern
+  })
+})
+

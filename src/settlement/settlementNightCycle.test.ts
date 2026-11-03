@@ -1,9 +1,22 @@
+import * as THREE from 'three'
 import { describe, expect, it, vi } from 'vitest'
+import { createHouseLight } from './houseLighting'
 import {
   createSettlementNightCycle,
   NIGHT_FIRE_THRESHOLD,
   shouldAutoLightNightFire,
 } from './settlementNightCycle'
+
+/** Minimal lantern with the real GLB material names (`ElwFor_Lantern_*`) — no disk/DOM needed. */
+function makeGlbLantern(): THREE.Group {
+  const g = new THREE.Group()
+  for (const [name, color] of [['ElwFor_Lantern_Brown', 0x4b3319], ['ElwFor_Lantern_Light', 0xffc20a]] as const) {
+    const mat = new THREE.MeshStandardMaterial({ name, color })
+    mat.userData.sharedGpu = true
+    g.add(new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.1, 0.1), mat))
+  }
+  return g
+}
 
 function fakeFire(initiallyLit: boolean) {
   let lit = initiallyLit
@@ -121,5 +134,35 @@ describe('createSettlementNightCycle', () => {
     cycle.apply(NIGHT_FIRE_THRESHOLD - 0.1)
     cycle.apply(NIGHT_FIRE_THRESHOLD + 0.1)
     expect(fire.light).not.toHaveBeenCalled()
+  })
+})
+
+describe('createSettlementNightCycle + real house lamps (IMP-009)', () => {
+  const lampState = (l: import('./props').HouseLight) => {
+    const lights: THREE.PointLight[] = []
+    let glass: THREE.Material | null = null
+    l.object.traverse((o) => {
+      if ((o as THREE.PointLight).isPointLight) lights.push(o as THREE.PointLight)
+      const m = o as THREE.Mesh
+      if (m.isMesh && (m.material as THREE.Material).name.endsWith('_Light')) glass = m.material as THREE.Material
+    })
+    return { lights, glass: glass as THREE.MeshStandardMaterial | null }
+  }
+
+  it('flips the lamp in one step at the threshold, with no fade (t=0.6 off, 0.61 on)', () => {
+    const lamp = createHouseLight(1, 1, 0, 'wall', makeGlbLantern())
+    const cycle = createSettlementNightCycle({ settlementSeed: 1, size: 'SM', fire: undefined, villageTorches: [], houseLights: [lamp] })
+    const seen: number[] = []
+    for (const t of [0, 0.5, 0.6, 0.61, 1, 0.6, 0.3]) {
+      cycle.apply(t)
+      const { lights, glass } = lampState(lamp)
+      const on = t > NIGHT_FIRE_THRESHOLD
+      for (const l of lights) expect(l.visible).toBe(on)
+      expect(lights.every((l) => (l.intensity > 0) === on)).toBe(true)
+      expect(glass!.emissiveIntensity > 0).toBe(on)
+      if (on) seen.push(...lights.map((l) => l.intensity))
+    }
+    // t=0.61 and t=1 give identical intensities
+    expect(seen.slice(0, 2)).toEqual(seen.slice(2, 4))
   })
 })

@@ -6,6 +6,7 @@ import { createSeededRandom } from '../world/parseSeed'
 import { type HouseholdYardPlan, houseLocalToWorld } from './householdYard'
 import { representativeProfession } from './professionFamilySurnames'
 import { isAdultAge } from './professionStaffing'
+import { LANTERN_WALL_MAX } from './propSpecs'
 
 /**
  * @domain settlements-npcs
@@ -121,15 +122,57 @@ function moduleCentre(def: HouseDefinition, side: HouseWallSide, index: number):
   return -sideLength(def, side) / 2 + HOUSE_MODULE_M / 2 + HOUSE_MODULE_M * index
 }
 
-/** Does a kit centred at `along` (metres from wall midpoint) clear all openings on `side`? */
+/** Something already occupying a wall face: `along` is the centre (m from the wall midpoint),
+ *  `half` its half width, `bottomY..topY` its vertical extent. Openings are handled separately. */
+export type WallObstacle = { side: HouseWallSide, along: number, half: number, bottomY: number, topY: number }
+
+/** Clearance kept around an obstacle, m. */
+const OBSTACLE_MARGIN_M = 0.05
+/** Authored wall-lantern extents (`lantern_wall.glb`: 0.24 wide, 0.25 above / 0.48 below the mount), at the in-game fit scale. */
+const LANTERN_WALL_K = LANTERN_WALL_MAX / 0.73
+const LANTERN_HALF_ALONG_M = 0.12 * LANTERN_WALL_K
+const LANTERN_ABOVE_M = 0.25 * LANTERN_WALL_K
+const LANTERN_BELOW_M = 0.48 * LANTERN_WALL_K
+
+/** Mount used by the house builder when a definition has no lamp (single source for `props.ts`). */
+export function houseLampMountFor(def: HouseDefinition): { x: number, y: number, z: number } {
+  return def.lamp?.mount ?? { x: def.footprint.width * 0.25, y: 1.85, z: -def.footprint.depth / 2 - 0.12 }
+}
+
+/** The exterior wall lantern as a wall obstacle (`null` for a standing/floor lamp). Pure + deterministic. */
+export function lampWallObstacle(def: HouseDefinition): WallObstacle | null {
+  if ((def.lamp?.style ?? 'wall') !== 'wall') return null
+  const m = houseLampMountFor(def)
+  const nx = Math.abs(m.x) / (def.footprint.width / 2)
+  const nz = Math.abs(m.z) / (def.footprint.depth / 2)
+  const side: HouseWallSide = nz >= nx ? (m.z < 0 ? 'front' : 'back') : (m.x < 0 ? 'left' : 'right')
+  return {
+    side,
+    along: nz >= nx ? m.x : m.z,
+    half: LANTERN_HALF_ALONG_M,
+    bottomY: m.y - LANTERN_BELOW_M,
+    topY: m.y + LANTERN_ABOVE_M,
+  }
+}
+
+function overlapsObstacle(side: HouseWallSide, along: number, kit: WallKitSpec, o: WallObstacle): boolean {
+  return o.side === side
+    && Math.abs(along - o.along) < o.half + kit.halfAlong + OBSTACLE_MARGIN_M
+    && kit.bottomY < o.topY + OBSTACLE_MARGIN_M
+    && kit.topY > o.bottomY - OBSTACLE_MARGIN_M
+}
+
+/** Does a kit centred at `along` (metres from wall midpoint) clear all openings (and `obstacles`) on `side`? */
 export function wallKitFits(
   def: HouseDefinition,
   side: HouseWallSide,
   along: number,
   kit: WallKitSpec,
+  obstacles: readonly WallObstacle[] = [],
 ): boolean {
   const half = sideLength(def, side) / 2
   if (Math.abs(along) + kit.halfAlong > half - 0.15) return false
+  if (obstacles.some((o) => overlapsObstacle(side, along, kit, o))) return false
   for (const opening of def.openings as readonly HouseOpening[]) {
     if (opening.side !== side || opening.moduleIndex == null) continue
     const centre = moduleCentre(def, side, opening.moduleIndex)
@@ -194,12 +237,15 @@ export function professionDressingFor(
     const kit = PROFESSION_TABLE[role]?.wall[0]
     if (kit) { wallKits.push({ kit, role }); break }
   }
-  const used: { side: HouseWallSide, along: number, half: number }[] = []
+  // Occupied wall space: the exterior lantern first, then every piece placed so far.
+  const used: WallObstacle[] = []
+  const lamp = lampWallObstacle(houseDef)
+  if (lamp) used.push(lamp)
   for (const { kit, role } of wallKits.slice(0, MAX_WALL_PIECES_PER_HOUSE)) {
     const spec = WALL_KITS[kit]
     const placed = placeWallKit(houseDef, spec, used, random)
     if (!placed) continue
-    used.push({ side: placed.side, along: placed.along, half: spec.halfAlong })
+    used.push({ side: placed.side, along: placed.along, half: spec.halfAlong, bottomY: spec.bottomY, topY: spec.topY })
     const pose = wallPose(houseDef, placed.side, placed.along, spec)
     out.push({ id: nextId(), kind: 'wall', kit, role, side: placed.side, ...pose, normal: SIDE_NORMAL[placed.side] })
   }
@@ -219,21 +265,33 @@ export function professionDressingFor(
   return out
 }
 
+/** Free-scan step (m) used once no module-centred spot is free. */
+const FALLBACK_SCAN_STEP_M = 0.25
+
+/** Candidate spots, best first: jittered module centres per side (original behaviour), then a fine
+ *  deterministic scan of every wall so a free stretch is found before a piece is dropped. */
+function wallCandidates(def: HouseDefinition, jitter: number): { side: HouseWallSide, along: number }[] {
+  const out: { side: HouseWallSide, along: number }[] = []
+  for (const side of SIDE_ORDER) {
+    const modules = Math.round(sideLength(def, side) / HOUSE_MODULE_M)
+    for (let i = 0; i < modules; i++) out.push({ side, along: moduleCentre(def, side, i) + jitter * 0.5 })
+  }
+  for (const side of SIDE_ORDER) {
+    const half = sideLength(def, side) / 2
+    for (let a = -half; a <= half + 1e-9; a += FALLBACK_SCAN_STEP_M) out.push({ side, along: a })
+  }
+  return out
+}
+
 function placeWallKit(
   def: HouseDefinition,
   spec: WallKitSpec,
-  used: readonly { side: HouseWallSide, along: number, half: number }[],
+  used: readonly WallObstacle[],
   random: () => number,
 ): { side: HouseWallSide, along: number } | null {
   const jitter = (random() - 0.5) // seeded ±0.5 m
-  for (const side of SIDE_ORDER) {
-    const modules = Math.round(sideLength(def, side) / HOUSE_MODULE_M)
-    for (let i = 0; i < modules; i++) {
-      const along = moduleCentre(def, side, i) + jitter * 0.5
-      if (!wallKitFits(def, side, along, spec)) continue
-      if (used.some((u) => u.side === side && Math.abs(u.along - along) < u.half + spec.halfAlong + 0.05)) continue
-      return { side, along }
-    }
+  for (const c of wallCandidates(def, jitter)) {
+    if (wallKitFits(def, c.side, c.along, spec, used)) return c
   }
   return null
 }

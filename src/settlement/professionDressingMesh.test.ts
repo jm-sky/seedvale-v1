@@ -64,4 +64,21 @@ describe('professionDressingMesh (Q48)', () => {
     expect(cols).toHaveLength(2)
     expect(cols[0]).toMatchObject({ type: 'obb', halfWidth: 1.2, halfDepth: 0.5 })
   })
+
+  it.each([0, 0.7, Math.PI / 2, -2.4])('wall piece stays on the wall face for house yaw %s', async (yaw) => {
+    const p = await pack()
+    const origin = { x: 40, z: -20, yaw }
+    const [m] = buildProfessionDressingMeshes(
+      p, [{ familyIndex: 0, placement: { ...wall('shield', 'front', 0), x: 1, z: -2.5 } }], () => origin, () => 0,
+    )
+    const box = new THREE.Box3().setFromBufferAttribute(m!.geometry.getAttribute('position') as THREE.BufferAttribute)
+    // wall point & outward normal of the front face in world space
+    const wallPoint = new THREE.Vector3(origin.x + Math.cos(yaw) * 1 + Math.sin(yaw) * -2.5, 0, origin.z - Math.sin(yaw) * 1 + Math.cos(yaw) * -2.5)
+    const outward = new THREE.Vector3(-Math.sin(yaw), 0, -Math.cos(yaw))
+    const c = box.getCenter(new THREE.Vector3())
+    const depth = c.clone().sub(wallPoint).setY(0).dot(outward)
+    expect(depth).toBeGreaterThan(-0.15) // not buried in the wall
+    expect(depth).toBeLessThan(0.25) // within the shield's own depth, not floating off the wall
+  })
 })
+

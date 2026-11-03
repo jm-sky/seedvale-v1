@@ -57,7 +57,7 @@ import {
   generateSparsePlazaCobbles,
   plazaPavingMode,
 } from './plazaPaving'
-import { type DressingPlacement, professionDressingFor } from './professionDressing'
+import { type DressingPlacement, houseLampMountFor, professionDressingFor } from './professionDressing'
 import { buildProfessionDressingMeshes, loadProfessionDressingPack, professionDressingColliders } from './professionDressingMesh'
 import {
   ANIMAL_TROUGH_HEIGHT,
@@ -1425,14 +1425,10 @@ export async function buildSettlementProps(
     let groundYOffset = def.groundYOffset ?? 0
     let footprintRadius = houseFootprintRadius(def)
     let lampStyle: HouseLampStyle = def.lamp?.style ?? 'wall'
-    let lampMount: ResolvedHouseLampMount = def.lamp?.mount
-      ? { ...def.lamp.mount, source: 'definition' }
-      : {
-          x: def.footprint.width * 0.25,
-          y: 1.85,
-          z: -def.footprint.depth / 2 - 0.12,
-          source: 'definitionDefault',
-        }
+    let lampMount: ResolvedHouseLampMount = {
+      ...houseLampMountFor(def),
+      source: def.lamp?.mount ? 'definition' : 'definitionDefault',
+    }
 
     let builtAssembly: HouseAssembly | null = null
     if (builderReady) {

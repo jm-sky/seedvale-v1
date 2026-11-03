@@ -58,4 +58,5 @@ Status for every entry: `todo` (unverified). Created: 2026-10-29. IDs here (`IMP
 - **Observation:** Lamps mounted on houses are lit during daytime.
 - **Expected:** House lamps illuminate only at night, following authoritative world day/night state; keep visual emissions and actual light sources in sync.
 - **Investigate:** Existing day/night controls, lamp materials and light lifecycle, including distant/streamed settlements and performance.
+- **Status (2026-11-03):** implemented — cause: GLB lantern glass (`ElwFor_Lantern_Light`) is a plain lit yellow base colour with no emissive, so it looked "on" in daylight. `createHouseLight` is now strictly two-state at `NIGHT_FIRE_THRESHOLD` (glass swaps between shared on/off material clones; PointLights visible only when on). Awaiting author's visual check (day/night, browser not run by agent). Interior table lamp (`lamp.glb`) is a static mesh with no light — untouched.
 - **Area:** settlements / world / rendering.
