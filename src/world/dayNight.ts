@@ -106,11 +106,12 @@ export function skyParamsFromTime(timeOfDay: number): SkyParams & {
     rayleigh = 0.55
   }
 
-  // Direct stays dominant at noon; trim indirect fill so shade keeps contrast
-  // (world-029) without raising night floors or dawn/dusk intensity spikes.
+  // Direct stays dominant at noon; indirect fill is day-scaled only (night
+  // floors unchanged) and moderately raised so agents/props facing away from
+  // the sun stay readable while shade keeps contrast (world-029).
   const sunIntensity = 0.15 + dayFactor * 1.2
-  const ambientIntensity = 0.12 + dayFactor * 0.2
-  const hemiIntensity = 0.15 + dayFactor * 0.3
+  const ambientIntensity = 0.12 + dayFactor * 0.33
+  const hemiIntensity = 0.15 + dayFactor * 0.5
 
   // Start fog further out so mid-ground hills stay readable. These are
   // atmospheric-only inputs — the terrain-streaming-safe cap is applied

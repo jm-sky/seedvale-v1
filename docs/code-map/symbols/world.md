@@ -972,11 +972,11 @@ Generated from exported TypeScript symbols.
 
 ## `world/createLights.ts`
 
-- `createLights` — function — line 39
-- `SHADOW_FRUSTUM_HALF` — const — line 31
-- `SHADOW_FRUSTUM_TIGHT_FORWARD_OFFSET` — const — line 35
-- `SHADOW_FRUSTUM_TIGHT_HALF` — const — line 33
-- `ShadowFrustumMode` — type — line 37
+- `createLights` — function — line 47
+- `SHADOW_FRUSTUM_HALF` — const — line 39
+- `SHADOW_FRUSTUM_TIGHT_FORWARD_OFFSET` — const — line 43
+- `SHADOW_FRUSTUM_TIGHT_HALF` — const — line 41
+- `ShadowFrustumMode` — type — line 45
 - `WorldLights` — type — line 4
 
 ## `world/createOcean.ts`
@@ -1131,13 +1131,13 @@ Generated from exported TypeScript symbols.
 - `createDayNightState` — function — line 44
 - `DayNightState` — type — line 30
 - `DEFAULT_TIME_OF_DAY` — const — line 28
-- `formatClock` — function — line 218
-- `formatWorldDayClock` — function — line 227
-- `parseTimeOfDayFromUrl` — function — line 202
-- `phaseName` — function — line 232
+- `formatClock` — function — line 219
+- `formatWorldDayClock` — function — line 228
+- `parseTimeOfDayFromUrl` — function — line 203
+- `phaseName` — function — line 233
 - `resetDayNightForNewGame` — function — line 58
 - `skyParamsFromTime` — function — line 73
-- `sunDirectionalColorFromSunY` — function — line 145
+- `sunDirectionalColorFromSunY` — function — line 146
   - domain: world
 - `tickDayNight` — function — line 63
 

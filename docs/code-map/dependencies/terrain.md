@@ -1688,6 +1688,7 @@ Generated from TypeScript imports.
 - `fauna/animalCaveJourney.test.ts`
 - `fauna/animalForaging.ts`
 - `fauna/animalHarvest.test.ts`
+- `fauna/animalSteering.test.ts`
 - `fauna/animalVariants.test.ts`
 - `fauna/createFauna.ts`
 - `fauna/faunaProximity.test.ts`

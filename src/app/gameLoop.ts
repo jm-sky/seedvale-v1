@@ -317,6 +317,9 @@ function applyDayNight(
     },
     lights.sun,
   )
+  // `lights.follow()` owns the sun position every frame, so the sky's own
+  // position write is overridden — feed it the visible sun direction here.
+  lights.setSunDirection(sky.sunPosition)
   // Weather overlays fog/light and Sky.js turbidity/rayleigh. `dayFactor`/
   // `elev` (returned below) stay weather-independent so grass/water/ocean
   // shading keeps one time-of-day signal. Lightning flash is a short extra

@@ -10,6 +10,11 @@ export type WorldLights = {
    *  frustum only needs to cover the area immediately around the camera, not
    *  the whole loaded region, so its size stays fixed and only the target moves. */
   follow: (x: number, z: number) => void
+  /** Point the directional light along `dir` (direction *towards* the sun, e.g.
+   *  `WorldSky.sunPosition`). Elevation is floored so night/horizon light stays
+   *  above the ground and the shadow footprint bounded; the shadow-camera basis
+   *  used for texel snapping is rebuilt. Cheap no-op when the direction is unchanged. */
+  setSunDirection: (dir: THREE.Vector3) => void
   /** Metres the shadow frustum centre is shifted ahead of the player along the
    *  camera's ground-plane forward (0 for the legacy ±80 frustum). */
   shadowForwardOffset: number
@@ -24,9 +29,12 @@ export type WorldLights = {
   dispose: () => void
 }
 
-/** Sun offset from the followed point; fixed, so the shadow camera's
- *  orientation (and its light-space basis below) never changes. */
+/** Initial sun offset from the followed point. Its direction is updated through
+ *  `setSunDirection` (day/night); its length stays fixed (shadow camera `far`). */
 const SUN_OFFSET = new THREE.Vector3(40, 70, 30)
+const SUN_OFFSET_LENGTH = SUN_OFFSET.length()
+/** Lowest `y` (of the unit sun direction) the real light is allowed to reach. */
+const MIN_SUN_DIRECTION_Y = 0.28
 /** Legacy sun shadow half-extent, centred on the player. */
 export const SHADOW_FRUSTUM_HALF = 80
 /** world-terrain-055 S1 (`?shadowFrustum=tight`): tighter half-extent... */
@@ -39,21 +47,27 @@ export type ShadowFrustumMode = 'legacy' | 'tight'
 export function createLights(shadowMapSize = 1024, frustumMode: ShadowFrustumMode = 'legacy'): WorldLights {
   const frustumHalf = frustumMode === 'tight' ? SHADOW_FRUSTUM_TIGHT_HALF : SHADOW_FRUSTUM_HALF
   const shadowForwardOffset = frustumMode === 'tight' ? SHADOW_FRUSTUM_TIGHT_FORWARD_OFFSET : 0
+  const sunOffset = SUN_OFFSET.clone()
   // Shadow-camera right/up axes, built exactly like `LightShadow.updateMatrices`
   // (`Camera.lookAt` from the sun towards its target with the default up).
   const shadowRight = new THREE.Vector3()
   const shadowUp = new THREE.Vector3()
   const shadowForward = new THREE.Vector3()
-  new THREE.Matrix4()
-    .lookAt(SUN_OFFSET, new THREE.Vector3(), THREE.Object3D.DEFAULT_UP)
-    .extractBasis(shadowRight, shadowUp, shadowForward)
+  const lookMatrix = new THREE.Matrix4()
+  const updateShadowBasis = (): void => {
+    lookMatrix
+      .lookAt(sunOffset, new THREE.Vector3(), THREE.Object3D.DEFAULT_UP)
+      .extractBasis(shadowRight, shadowUp, shadowForward)
+  }
+  updateShadowBasis()
+  const flooredDir = new THREE.Vector3()
   const followTarget = new THREE.Vector3()
 
   const ambient = new THREE.AmbientLight(0xc5d8ea, 0.35)
   const hemi = new THREE.HemisphereLight(0x9ec9ff, 0x6b8f4a, 0.55)
 
   const sun = new THREE.DirectionalLight(0xfff0d4, 1.4)
-  sun.position.copy(SUN_OFFSET)
+  sun.position.copy(sunOffset)
   sun.castShadow = true
   // 1024 is enough for the ~160-unit shadow frustum around the player;
   // 2048 mostly burned fill-rate without a matching clarity gain (perf 012).
@@ -99,9 +113,25 @@ export function createLights(shadowMapSize = 1024, frustumMode: ShadowFrustumMod
         .copy(shadowRight).multiplyScalar(r)
         .addScaledVector(shadowUp, u)
         .addScaledVector(shadowForward, f)
-      sun.position.copy(followTarget).add(SUN_OFFSET)
+      sun.position.copy(followTarget).add(sunOffset)
       sun.target.position.copy(followTarget)
       sun.target.updateMatrixWorld()
+    },
+    setSunDirection(dir) {
+      flooredDir.copy(dir)
+      if (flooredDir.lengthSq() < 1e-12) return
+      flooredDir.normalize()
+      if (flooredDir.y < MIN_SUN_DIRECTION_Y) {
+        // Keep the azimuth, lift to the floor elevation.
+        const horiz = Math.hypot(flooredDir.x, flooredDir.z)
+        const k = horiz > 1e-6 ? Math.sqrt(1 - MIN_SUN_DIRECTION_Y ** 2) / horiz : 0
+        flooredDir.set(flooredDir.x * k, MIN_SUN_DIRECTION_Y, flooredDir.z * k)
+        if (horiz <= 1e-6) flooredDir.set(0.5, MIN_SUN_DIRECTION_Y, 0.5).normalize()
+      }
+      flooredDir.multiplyScalar(SUN_OFFSET_LENGTH)
+      if (flooredDir.distanceToSquared(sunOffset) < 1e-6) return
+      sunOffset.copy(flooredDir)
+      updateShadowBasis()
     },
     setShadowMapSize(next) {
       const resolved = next === 512 ? 512 : 1024

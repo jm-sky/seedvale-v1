@@ -39,6 +39,15 @@ describe('skyParamsFromTime', () => {
     expect(p.sunIntensity).toBeGreaterThan(p.hemiIntensity)
   })
 
+  it('keeps night indirect floors low while lifting daytime fill', () => {
+    const night = skyParamsFromTime(0)
+    const noon = skyParamsFromTime(0.5)
+    expect(night.ambientIntensity).toBeLessThanOrEqual(0.15)
+    expect(night.hemiIntensity).toBeLessThanOrEqual(0.15)
+    expect(noon.ambientIntensity).toBeCloseTo(0.45, 5)
+    expect(noon.hemiIntensity).toBeCloseTo(0.65, 5)
+  })
+
   it('matches dawn and dusk intensities (symmetric elevation)', () => {
     const dawn = skyParamsFromTime(0.25)
     const dusk = skyParamsFromTime(0.75)

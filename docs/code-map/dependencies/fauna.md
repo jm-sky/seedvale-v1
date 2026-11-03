@@ -46,6 +46,7 @@ Generated from TypeScript imports.
 - `fauna/animalPackPresentation.ts`
 - `fauna/animalRoaming.ts`
 - `fauna/animalScare.ts`
+- `fauna/animalSteering.ts`
 - `fauna/animalStray.ts`
 - `fauna/animalTerritory.ts`
 - `fauna/animalUpdateCadence.ts`
@@ -123,6 +124,7 @@ Generated from TypeScript imports.
 - `fauna/animalHarvest.test.ts`
 - `fauna/animalHarvest.ts`
 - `fauna/animalMeat.ts`
+- `fauna/animalSteering.test.ts`
 - `fauna/animalTrophyLoot.ts`
 - `fauna/animalVariants.test.ts`
 - `fauna/closedPredatorPressure.ts`
@@ -406,6 +408,7 @@ Generated from TypeScript imports.
 - `fauna/animalPackPresentation.ts`
 - `fauna/animalRoaming.ts`
 - `fauna/animalRoamingTrips.test.ts`
+- `fauna/animalSteering.test.ts`
 - `fauna/animalStray.ts`
 - `fauna/animalVariants.test.ts`
 - `fauna/animalWalkSpeed.test.ts`
@@ -728,6 +731,22 @@ Generated from TypeScript imports.
 - `fauna/AnimalAgent.test.ts`
 - `fauna/AnimalAgent.ts`
 - `fauna/animalScare.test.ts`
+
+## `fauna/animalSteering.test.ts`
+
+**Imports**
+
+- `fauna/AnimalAgent.ts`
+- `fauna/animalDefs.ts`
+- `fauna/animalSteering.ts`
+- `terrain/waterSample.ts`
+
+## `fauna/animalSteering.ts`
+
+**Imported by**
+
+- `fauna/AnimalAgent.ts`
+- `fauna/animalSteering.test.ts`
 
 ## `fauna/animalStray.test.ts`
 
