@@ -110,17 +110,37 @@ describe('cloudNoiseData', () => {
     expect(max - min).toBeGreaterThan(80)
   })
 
-  it('writes G detail and opaque alpha', () => {
-    const d = cloudNoiseData(32)
-    let gMin = 255
-    let gMax = 0
+  it('writes G detail, B patch map and opaque alpha', () => {
+    const d = cloudNoiseData(64)
+    const range = [255, 0, 255, 0]
     for (let i = 0; i < d.length; i += 4) {
-      gMin = Math.min(gMin, d[i + 1]!)
-      gMax = Math.max(gMax, d[i + 1]!)
-      expect(d[i + 2]).toBe(0)
+      range[0] = Math.min(range[0]!, d[i + 1]!)
+      range[1] = Math.max(range[1]!, d[i + 1]!)
+      range[2] = Math.min(range[2]!, d[i + 2]!)
+      range[3] = Math.max(range[3]!, d[i + 2]!)
       expect(d[i + 3]).toBe(255)
     }
-    expect(gMax - gMin).toBeGreaterThan(40)
+    expect(range[1]! - range[0]!).toBeGreaterThan(40)
+    expect(range[3]! - range[2]!).toBeGreaterThan(40)
+  })
+
+  it('tiles without a seam (wrap step is no larger than interior steps)', () => {
+    const n = 64
+    const d = cloudNoiseData(n)
+    for (const c of [0, 1, 2]) {
+      let maxInterior = 0
+      let maxWrap = 0
+      for (let y = 0; y < n; y++) {
+        for (let x = 0; x < n; x++) {
+          const v = d[(y * n + x) * 4 + c]!
+          const right = d[(y * n + ((x + 1) % n)) * 4 + c]!
+          const step = Math.abs(v - right)
+          if (x === n - 1) maxWrap = Math.max(maxWrap, step)
+          else maxInterior = Math.max(maxInterior, step)
+        }
+      }
+      expect(maxWrap).toBeLessThanOrEqual(maxInterior)
+    }
   })
 })
 
@@ -150,6 +170,7 @@ describe('attachCloudsToSky', () => {
     expect(material.fragmentShader.indexOf('svApplyClouds')).toBeLessThan(
       material.fragmentShader.indexOf('gl_FragColor = vec4( texColor, 1.0 );'),
     )
+    expect(material.fragmentShader).toContain('svApplyClouds( texColor, direction, vSunDirection )')
     expect(material.uniforms.uSvCloudNoise?.value).toBe(clouds.noiseTexture)
     expect(clouds.noiseTexture.wrapS).toBe(RepeatWrapping)
     expect(clouds.noiseTexture.magFilter).toBe(LinearFilter)

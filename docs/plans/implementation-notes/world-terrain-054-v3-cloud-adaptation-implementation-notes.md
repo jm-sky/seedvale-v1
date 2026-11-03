@@ -95,3 +95,12 @@ Stop the affected stage and report evidence (do not choose a different architect
 ## Planning-session verification limits
 
 Confirmed from source: two repositories and pinned HEADs, donor noise/shader/timing, V1 current owners, Three `0.185.1` lock and r185 Sky shader, existing test paths, render pipeline, app/mirror/context boundaries. **Not run here:** V1 or V3 builds/tests, `pnpm docs:sync` locally, browser/WebGL shader compilation, GPU timing, author visual review or context recovery. The V1 [Docs Sync workflow](https://github.com/jm-sky/seedvale-v1/blob/8fb0f7677ba31e267a1487932a4a24d83eb0d4bb/.github/workflows/docs-sync.yml) automatically runs `docs:sync:ci` after a `main` push changing `docs/plans/**` and commits generated indexes; check that run separately. Do not hand-edit generated plan indexes.
+
+## Stage 3 visual pass (2026-11-03)
+
+- **Projection:** `dir.xz / (dir.y * 0.8 + 0.28)` replaces `/ (dir.y + 0.08)` (no UV blow-up at the horizon); horizon fade widened to `dir.y` 0–0.28 and hazes toward the sky colour.
+- **Noise (`cloudNoiseData`):** contrast-stretched R masses, ridged/billowy G detail, B = low-frequency patch map (was unused). Texture content changed; still deterministic and tiling.
+- **Shape/coverage:** B shifts the local threshold at partial cover (gaps), vanishing near cover 1 (storm stays solid); detail erodes thin edges; wider soft density ramp.
+- **Lighting:** one extra R tap toward the sun gives shaded/lit sides (shade floor 0.78) plus a small silver lining; fades out as the sun drops (night uses the existing tint multiplier). Weather profiles unchanged.
+- **Cost:** 3 → 4 texture taps per sky fragment above the horizon; no new passes.
+- **Verification:** unit tests, type-check, lint pass. **Not verified:** GPU shader compile and the look in a browser; FPS not measured. → author review (queue §2).

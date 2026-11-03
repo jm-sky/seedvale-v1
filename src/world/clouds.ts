@@ -104,7 +104,7 @@ export function cloudAppearanceFor(weather: WeatherState, elev: number): CloudAp
   }
 }
 
-/** Tiling value noise (R: large blobs, G: detail). Seeded LCG + lattice from
+/** Tiling value noise (R: large masses, G: ridged billow detail, B: low-frequency patches). Seeded LCG + lattice from
  *  V3 `skyDome.cloudNoiseData`; pure and deterministic for tests.
  *  @domain world-terrain */
 export function cloudNoiseData(n = 256): Uint8Array {
@@ -126,16 +126,24 @@ export function cloudNoiseData(n = 256): Uint8Array {
       return a + (b - a) * sy
     }
   }
+  const o0 = lattice(3)
   const o1 = lattice(4)
   const o2 = lattice(8)
   const o3 = lattice(16)
   const o4 = lattice(32)
+  const clamp01 = (v: number): number => Math.min(1, Math.max(0, v))
+  // Value noise clusters around 0.5; stretch so threshold sweeps have real range.
+  const stretch = (v: number): number => clamp01((v - 0.5) * 1.6 + 0.5)
   for (let y = 0; y < n; y++) {
     for (let x = 0; x < n; x++) {
       const k = (y * n + x) * 4
-      d[k] = Math.round((o1(x, y) * 0.55 + o2(x, y) * 0.3 + o3(x, y) * 0.15) * 255)
-      d[k + 1] = Math.round((o3(x, y) * 0.5 + o4(x, y) * 0.5) * 255)
-      d[k + 2] = 0
+      // R: large cloud masses.
+      d[k] = Math.round(stretch(o1(x, y) * 0.55 + o2(x, y) * 0.3 + o3(x, y) * 0.15) * 255)
+      // G: billowy detail — ridged octaves give puffy cauliflower edges.
+      const ridge = (v: number): number => 1 - Math.abs(2 * v - 1)
+      d[k + 1] = Math.round(stretch(ridge(o3(x, y)) * 0.55 + ridge(o4(x, y)) * 0.45) * 255)
+      // B: very low frequency weather patches (gaps / dense banks).
+      d[k + 2] = Math.round(stretch(o0(x, y) * 0.7 + o1(x, y) * 0.3) * 255)
       d[k + 3] = 255
     }
   }
@@ -153,24 +161,42 @@ uniform float uSvCloudOpacity;
 uniform vec2 uSvCloudOffset;
 uniform float uSvCloudEnabled;
 
-vec3 svApplyClouds( vec3 texColor, vec3 direction ) {
+vec3 svApplyClouds( vec3 texColor, vec3 direction, vec3 sunDir ) {
 	if ( direction.y <= 0.0 || uSvCloudEnabled < 0.5 ) return texColor;
-	vec2 uv = direction.xz / ( direction.y + 0.08 );
-	// Shear/rotate the detail sample so lattice noise does not read as axis-aligned squares.
+	// Bounded flattened-dome projection: finite at the horizon (no UV blow-up / mip smear).
+	vec2 uv = direction.xz / ( direction.y * 0.8 + 0.28 );
 	vec2 uvR = vec2( uv.x * 0.866 - uv.y * 0.5, uv.x * 0.5 + uv.y * 0.866 );
-	float r = texture2D( uSvCloudNoise, uv * 0.10 + uSvCloudOffset ).r;
+	vec2 base = uv * 0.10 + uSvCloudOffset;
+	vec4 m = texture2D( uSvCloudNoise, base );
 	float g = texture2D( uSvCloudNoise, uvR * 0.34 + uSvCloudOffset * 1.7 ).g;
 	float g2 = texture2D( uSvCloudNoise, uv * 0.55 + uSvCloudOffset * 2.3 ).g;
-	float n = 0.62 * r + 0.25 * g + 0.13 * g2;
-	float edge = 1.0 - clamp( uSvCloudCover, 0.0, 1.0 );
-	// Wide softstep: softer silhouettes and slower visual dissolve as cover eases.
-	float mask = smoothstep( edge - 0.16, edge + 0.32, n ) * smoothstep( 0.0, 0.16, direction.y );
-	mask = pow( mask, 0.85 );
-	return mix( texColor, uSvCloudTint, mask * clamp( uSvCloudOpacity, 0.0, 1.0 ) );
+	float cover = clamp( uSvCloudCover, 0.0, 1.0 );
+	float edge = 1.0 - pow( cover, 0.85 );
+	// Low-frequency patches open gaps at partial cover; storm (cover ~1) stays solid.
+	edge += ( m.b - 0.5 ) * 0.35 * ( 1.0 - smoothstep( 0.85, 1.0, cover ) );
+	float detail = 0.6 * g + 0.4 * g2;
+	// Billowy detail erodes thin edges only, so cores stay solid.
+	float n = m.r - ( 1.0 - detail ) * 0.22 * ( 1.0 - smoothstep( 0.0, 0.5, m.r - edge + 0.25 ) ) + ( detail - 0.5 ) * 0.12;
+	float density = smoothstep( edge - 0.05, edge + 0.40, n );
+
+	// Cheap sun shading: thicker toward the sun => this side is shadowed.
+	float sunUp = smoothstep( -0.05, 0.25, sunDir.y );
+	vec2 sunStep = normalize( sunDir.xz + vec2( 1e-4 ) ) * 0.035;
+	float nSun = texture2D( uSvCloudNoise, base + sunStep ).r;
+	float lit = clamp( 0.5 + ( n - nSun ) * 3.0, 0.0, 1.0 );
+	float shade = mix( 0.78, 1.0, lit );
+	float silver = pow( max( dot( direction, sunDir ), 0.0 ), 8.0 ) * ( 1.0 - density );
+	vec3 cloudCol = uSvCloudTint * mix( 1.0, shade, sunUp ) + vec3( 0.25 ) * silver * sunUp * uSvCloudTint;
+
+	// Horizon: fade out and haze toward the sky colour instead of hard-cutting.
+	float hz = smoothstep( 0.0, 0.28, direction.y );
+	cloudCol = mix( texColor, cloudCol, 0.55 + 0.45 * hz );
+	float a = density * hz * clamp( uSvCloudOpacity, 0.0, 1.0 );
+	return mix( texColor, cloudCol, a );
 }
 `
 
-const CLOUD_APPLY = 'texColor = svApplyClouds( texColor, direction );\n\t\t\t'
+const CLOUD_APPLY = 'texColor = svApplyClouds( texColor, direction, vSunDirection );\n\t\t\t'
 
 /** Cover ease time constant (seconds). Longer than V3's 3s so storm→clear does not melt away. */
 const CLOUD_FOLLOW_S = 7
