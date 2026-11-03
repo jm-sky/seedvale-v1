@@ -1,0 +1,47 @@
+[
+  {
+    "t": 1793720587097,
+    "src": "target",
+    "type": "worker",
+    "url": "http://localhost:5577/src/terrain/chunkHeightmap.worker.ts?worker_file&type=module"
+  },
+  {
+    "t": 1793720587101,
+    "src": "target",
+    "type": "worker",
+    "url": "http://localhost:5577/src/terrain/chunkHeightmap.worker.ts?worker_file&type=module"
+  },
+  {
+    "t": 1793720587102,
+    "src": "target",
+    "type": "worker",
+    "url": "http://localhost:5577/src/terrain/chunkHeightmap.worker.ts?worker_file&type=module"
+  },
+  {
+    "t": 1793720587102,
+    "src": "target",
+    "type": "worker",
+    "url": "http://localhost:5577/src/terrain/chunkHeightmap.worker.ts?worker_file&type=module"
+  },
+  {
+    "t": 1793720587103,
+    "src": "target",
+    "type": "worker",
+    "url": "http://localhost:5577/src/terrain/chunkHeightmap.worker.ts?worker_file&type=module"
+  },
+  {
+    "t": 1793720587104,
+    "src": "target",
+    "type": "worker",
+    "url": "http://localhost:5577/src/terrain/chunkHeightmap.worker.ts?worker_file&type=module"
+  },
+  {
+    "t": 1793720587108,
+    "src": "page",
+    "type": "exception",
+    "text": "Error: chunk worker error\n    at worker.onerror (http://localhost:5577/src/terrain/chunkWorkerPool.ts:161:21)",
+    "url": "http://localhost:5577/src/terrain/chunkWorkerPool.ts",
+    "line": 160,
+    "col": 20
+  }
+]

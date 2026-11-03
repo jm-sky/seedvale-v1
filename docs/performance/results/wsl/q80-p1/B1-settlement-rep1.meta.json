@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "gitSha": "0fd9a5443e86d86e8f0324e138ffad505b644fc2",
+  "runId": "2026-11-03T15-19-47-357Z-wiczue",
+  "scenario": "settlement",
+  "phase": "warm",
+  "canonical": true,
+  "generatedAt": "2026-11-03T15:21:17.161Z",
+  "fixtureVersion": "tools-001-v1",
+  "quality": "High",
+  "hardwareClass": "wsl-baseline",
+  "notes": "benchmark series B1 rep1; WSL2 Chrome headed, fresh profile, 30s cooldown, query &hydrology=legacy",
+  "servedSha": "a25e47aa423419e56bb240801251d699bb6b8759",
+  "shaNote": "label 0fd9a5443e86d86e8f0324e138ffad505b644fc2 is stale (Vite started before a runtime commit); code served from HEAD a25e47aa423419e56bb240801251d699bb6b8759 working tree; runtime diff: src/settlement/props.haySpot.test.ts, src/settlement/props.ts, src/settlement/roadRouteWorldgenCache.ts, src/settlement/settlementWorldgenCache.ts, src/settlement/villagePlanner.ts, src/terrain/chunkTileWorldgenCache.ts, src/terrain/chunkVegetation.test.ts, src/terrain/chunkVegetation.ts, src/terrai",
+  "platform": "wsl"
+}
