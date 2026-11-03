@@ -27,7 +27,7 @@ for (const seed of seeds) {
   setSettlementRiverQuery(createRiverQuery({
     seed, heightScale: snap.heightScale, waterLevel: snap.waterLevel, noiseScale: snap.noiseScale,
     detailAmplitude: snap.detailAmplitude, hillsScale: snap.hillsScale, hillsAmplitude: snap.hillsAmplitude,
-    hillsFbm: snap.hillsFbm, fbm: snap.fbm, biome: snap.biome, region: snap.region,
+    hillsFbm: snap.hillsFbm, fbm: snap.fbm, biome: snap.biome, region: snap.region, hydrologyId: snap.hydrologyId,
   }))
   const ctx = worldKnowledgeRoadContext(snap)
   const sites = settlementLayoutFor(ctx).sites

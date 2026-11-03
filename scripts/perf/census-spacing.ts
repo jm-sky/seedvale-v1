@@ -1,8 +1,3 @@
-// Usage: pnpm worldgen:spacing:census [--seeds=42,415424794] [--roads=1]
-// 059 W4 census: global settlement selection + neighbour graph (replaces the Q32 calibrate tool).
-// Reports count, nearest-neighbour, graph edge lengths (straight line, site to site), land coverage
-// within 1800 m, connectivity, size histogram, layout time and (with --roads=1) road coverage/build time.
-// Diagnostic only — not part of `pnpm test`.
 import { defaultTerrainConfig } from '../../src/config/worldConfig'
 import { clearRoadNetworkCaches, type RoadNetworkContext, roadRoutesForSettlement } from '../../src/settlement/roadNetwork'
 import { cellKey, type SettlementDef } from '../../src/settlement/settlementGenerator'
@@ -12,6 +7,12 @@ import { settlementGraphHops } from '../../src/settlement/settlementProgression'
 import { clearCemeteryCaches } from '../../src/terrain/cemeteryAssignment'
 import { WORLD_HALF_EXTENT } from '../../src/terrain/continentMask'
 import { createRiverQuery } from '../../src/terrain/riverQuery'
+// Usage: pnpm worldgen:spacing:census [--seeds=42,415424794] [--roads=1]
+// 059 W4 census: global settlement selection + neighbour graph (replaces the Q32 calibrate tool).
+// Reports count, nearest-neighbour, graph edge lengths (straight line, site to site), land coverage
+// within 1800 m, connectivity, size histogram, layout time and (with --roads=1) road coverage/build time.
+// Diagnostic only — not part of `pnpm test`.
+import { UNCONDITIONED_HYDROLOGY_ID } from '../../src/terrain/worldHydrologyStore'
 import { worldKnowledgeRoadContext, type WorldKnowledgeTerrainSnapshot } from '../../src/terrain/worldKnowledgeScan'
 
 const HOME_RADIUS = 56
@@ -29,7 +30,7 @@ function snapshot(seed: number): WorldKnowledgeTerrainSnapshot {
     noiseScale: t.noiseScale, detailAmplitude: t.detailAmplitude, hillsScale: t.hillsScale,
     hillsAmplitude: t.hillsAmplitude, hillsFbm: t.hillsFbm, fbm: t.fbm, biome: t.biome, region: t.region,
     vegetationSpeciesCount: {} as WorldKnowledgeTerrainSnapshot['vegetationSpeciesCount'],
-    homeChunks: [], localSearchRadius: HOME_RADIUS,
+    homeChunks: [], localSearchRadius: HOME_RADIUS, hydrologyId: UNCONDITIONED_HYDROLOGY_ID,
   }
 }
 const q = (v: number[], p: number) => { const s = [...v].sort((a, b) => a - b); return s.length ? s[Math.min(s.length - 1, Math.floor(p * s.length))]! : NaN }
@@ -43,7 +44,7 @@ for (const seed of seeds) {
   setSettlementRiverQuery(createRiverQuery({
     seed, heightScale: snap.heightScale, waterLevel: snap.waterLevel, noiseScale: snap.noiseScale,
     detailAmplitude: snap.detailAmplitude, hillsScale: snap.hillsScale, hillsAmplitude: snap.hillsAmplitude,
-    hillsFbm: snap.hillsFbm, fbm: snap.fbm, biome: snap.biome, region: snap.region,
+    hillsFbm: snap.hillsFbm, fbm: snap.fbm, biome: snap.biome, region: snap.region, hydrologyId: snap.hydrologyId,
   }))
   const ctx: RoadNetworkContext = worldKnowledgeRoadContext(snap)
   const t0 = performance.now()

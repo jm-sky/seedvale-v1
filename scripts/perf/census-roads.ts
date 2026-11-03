@@ -22,6 +22,7 @@ import { cellsWithinRadius, type SettlementDef } from '../../src/settlement/sett
 import { clearSettlementDefCache, setSettlementRiverQuery, settlementDefFor } from '../../src/settlement/settlementPlanCache'
 import { clearCemeteryCaches } from '../../src/terrain/cemeteryAssignment'
 import { createRiverQuery } from '../../src/terrain/riverQuery'
+import { UNCONDITIONED_HYDROLOGY_ID } from '../../src/terrain/worldHydrologyStore'
 import { worldKnowledgeRoadContext, type WorldKnowledgeTerrainSnapshot } from '../../src/terrain/worldKnowledgeScan'
 
 const HOME_RADIUS = 56
@@ -41,7 +42,7 @@ function terrainSnapshot(seed: number): WorldKnowledgeTerrainSnapshot {
     noiseScale: t.noiseScale, detailAmplitude: t.detailAmplitude, hillsScale: t.hillsScale, hillsAmplitude: t.hillsAmplitude,
     hillsFbm: t.hillsFbm, fbm: t.fbm, biome: t.biome, region: t.region,
     vegetationSpeciesCount: {} as WorldKnowledgeTerrainSnapshot['vegetationSpeciesCount'],
-    homeChunks: [], localSearchRadius: HOME_RADIUS,
+    homeChunks: [], localSearchRadius: HOME_RADIUS, hydrologyId: UNCONDITIONED_HYDROLOGY_ID,
   }
 }
 
@@ -100,7 +101,7 @@ function measure(seed: number): Row {
   setSettlementRiverQuery(createRiverQuery({
     seed, heightScale: snap.heightScale, waterLevel: snap.waterLevel, noiseScale: snap.noiseScale,
     detailAmplitude: snap.detailAmplitude, hillsScale: snap.hillsScale, hillsAmplitude: snap.hillsAmplitude,
-    hillsFbm: snap.hillsFbm, fbm: snap.fbm, biome: snap.biome, region: snap.region,
+    hillsFbm: snap.hillsFbm, fbm: snap.fbm, biome: snap.biome, region: snap.region, hydrologyId: snap.hydrologyId,
   }))
   const ctx: RoadNetworkContext = worldKnowledgeRoadContext(snap)
   const defs: SettlementDef[] = []
@@ -165,6 +166,8 @@ function measure(seed: number): Row {
         if (dense.some((p) => dist(plot, p) < plot.radius * 0.8)) {
           plotHit = true
           roadPlotRoles[roleOf(plot)] = (roadPlotRoles[roleOf(plot)] ?? 0) + 1
+          const hit = dense.find((p) => dist(plot, p) < plot.radius * 0.8)!
+          console.error(`plotHit seed ${seed} ${a.id}|${b.id} plot ${plot.id} (${roleOf(plot)}) at ${hit.x.toFixed(0)},${hit.z.toFixed(0)} dEnd ${Math.min(dist(hit, dense[0]!), dist(hit, dense[dense.length - 1]!)).toFixed(0)} m`)
         }
         if (plot.yard && dense.some((p) => pointInYard(plot.yard!, p.x, p.z))) yardHit = true
       }

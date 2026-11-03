@@ -1,14 +1,15 @@
-// Usage: pnpm worldgen:yards:census [--seeds=42,415424794] [--rings=5]
-// Queue Q34/Q41: diagnostic census of household compounds on generated settlement plans (no runtime, no
-// Three.js). Reads the planner-owned compound (`plot.discs` = house disc + yard disc, `plot.yard.slots`,
-// `plot.finalFallback`) — nothing is re-derived here. Discs approximate the rectangular footprints
-// conservatively. Diagnostic only — prints a markdown table; not part of `pnpm test`.
 import { defaultTerrainConfig } from '../../src/config/worldConfig'
 import { villageSizeConfig } from '../../src/settlement/families'
 import { yawFacing } from '../../src/settlement/householdYard'
 import { cellsWithinRadius, type SettlementDef } from '../../src/settlement/settlementGenerator'
 import { clearSettlementDefCache, setSettlementRiverQuery, settlementDefFor } from '../../src/settlement/settlementPlanCache'
 import { createRiverQuery } from '../../src/terrain/riverQuery'
+// Usage: pnpm worldgen:yards:census [--seeds=42,415424794] [--rings=5]
+// Queue Q34/Q41: diagnostic census of household compounds on generated settlement plans (no runtime, no
+// Three.js). Reads the planner-owned compound (`plot.discs` = house disc + yard disc, `plot.yard.slots`,
+// `plot.finalFallback`) — nothing is re-derived here. Discs approximate the rectangular footprints
+// conservatively. Diagnostic only — prints a markdown table; not part of `pnpm test`.
+import { UNCONDITIONED_HYDROLOGY_ID } from '../../src/terrain/worldHydrologyStore'
 import { worldKnowledgeRoadContext, type WorldKnowledgeTerrainSnapshot } from '../../src/terrain/worldKnowledgeScan'
 
 /** `HOME_RADIUS` in `src/app/worldBundle.ts` (not imported: that module pulls in the whole runtime). */
@@ -30,7 +31,7 @@ function terrainSnapshot(seed: number): WorldKnowledgeTerrainSnapshot {
     noiseScale: t.noiseScale, detailAmplitude: t.detailAmplitude, hillsScale: t.hillsScale,
     hillsAmplitude: t.hillsAmplitude, hillsFbm: t.hillsFbm, fbm: t.fbm, biome: t.biome, region: t.region,
     vegetationSpeciesCount: {} as WorldKnowledgeTerrainSnapshot['vegetationSpeciesCount'],
-    homeChunks: [], localSearchRadius: HOME_RADIUS,
+    homeChunks: [], localSearchRadius: HOME_RADIUS, hydrologyId: UNCONDITIONED_HYDROLOGY_ID,
   }
 }
 
@@ -53,7 +54,7 @@ function census(seed: number): Record<string, Tally> {
   setSettlementRiverQuery(createRiverQuery({
     seed, heightScale: snap.heightScale, waterLevel: snap.waterLevel, noiseScale: snap.noiseScale,
     detailAmplitude: snap.detailAmplitude, hillsScale: snap.hillsScale, hillsAmplitude: snap.hillsAmplitude,
-    hillsFbm: snap.hillsFbm, fbm: snap.fbm, biome: snap.biome, region: snap.region,
+    hillsFbm: snap.hillsFbm, fbm: snap.fbm, biome: snap.biome, region: snap.region, hydrologyId: snap.hydrologyId,
   }))
   const ctx = worldKnowledgeRoadContext(snap)
   const out: Record<string, Tally> = {}

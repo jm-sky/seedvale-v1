@@ -1,10 +1,3 @@
-// Usage: pnpm worldgen:cemeteries:census [--seeds=42,415424794] [--rings=5] [--abandonedChunks=30] [--json=path]
-// Queue Q47 (Q39 plan §3 step 7): diagnostic census of cemetery placement on generated worlds (no runtime, no
-// Three.js scene). For every settlement in the window it resolves the assignment topology + placement exactly
-// as chunk generation does (`resolvePlacementForTopology`), then reports placed / split / none per size,
-// plot–clearing and plot–road overlaps, and the mean centre distance to the served settlement. Abandoned
-// (wilderness) cemeteries are scanned over a chunk window. `--json` writes per-assignment statuses so a
-// before/after run can be diffed (every assignment placed before must still resolve). Diagnostic only.
 import { writeFileSync } from 'node:fs'
 import { defaultTerrainConfig } from '../../src/config/worldConfig'
 import { cemeteryPlotDistanceToPoint, cemeteryPlotDistanceToSegment } from '../../src/settlement/cemeteryLayout'
@@ -25,6 +18,14 @@ import {
 import { worldToChunk } from '../../src/terrain/chunkGrid'
 import { createWorldTerrainSampler } from '../../src/terrain/chunkHeightmap'
 import { createRiverQuery } from '../../src/terrain/riverQuery'
+// Usage: pnpm worldgen:cemeteries:census [--seeds=42,415424794] [--rings=5] [--abandonedChunks=30] [--json=path]
+// Queue Q47 (Q39 plan §3 step 7): diagnostic census of cemetery placement on generated worlds (no runtime, no
+// Three.js scene). For every settlement in the window it resolves the assignment topology + placement exactly
+// as chunk generation does (`resolvePlacementForTopology`), then reports placed / split / none per size,
+// plot–clearing and plot–road overlaps, and the mean centre distance to the served settlement. Abandoned
+// (wilderness) cemeteries are scanned over a chunk window. `--json` writes per-assignment statuses so a
+// before/after run can be diffed (every assignment placed before must still resolve). Diagnostic only.
+import { UNCONDITIONED_HYDROLOGY_ID } from '../../src/terrain/worldHydrologyStore'
 import {
   chunkParamsForWorldKnowledgeScan,
   worldKnowledgeRoadContext,
@@ -50,7 +51,7 @@ function terrainSnapshot(seed: number): WorldKnowledgeTerrainSnapshot {
     noiseScale: t.noiseScale, detailAmplitude: t.detailAmplitude, hillsScale: t.hillsScale,
     hillsAmplitude: t.hillsAmplitude, hillsFbm: t.hillsFbm, fbm: t.fbm, biome: t.biome, region: t.region,
     vegetationSpeciesCount: {} as WorldKnowledgeTerrainSnapshot['vegetationSpeciesCount'],
-    homeChunks: [], localSearchRadius: HOME_RADIUS,
+    homeChunks: [], localSearchRadius: HOME_RADIUS, hydrologyId: UNCONDITIONED_HYDROLOGY_ID,
   }
 }
 
@@ -66,7 +67,7 @@ function census(seed: number, statuses: Record<string, string>): { rows: Record<
   setSettlementRiverQuery(createRiverQuery({
     seed, heightScale: snap.heightScale, waterLevel: snap.waterLevel, noiseScale: snap.noiseScale,
     detailAmplitude: snap.detailAmplitude, hillsScale: snap.hillsScale, hillsAmplitude: snap.hillsAmplitude,
-    hillsFbm: snap.hillsFbm, fbm: snap.fbm, biome: snap.biome, region: snap.region,
+    hillsFbm: snap.hillsFbm, fbm: snap.fbm, biome: snap.biome, region: snap.region, hydrologyId: snap.hydrologyId,
   }))
   const ctx = worldKnowledgeRoadContext(snap)
   const defs: SettlementDef[] = []

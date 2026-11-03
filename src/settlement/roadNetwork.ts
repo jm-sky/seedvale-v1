@@ -24,6 +24,7 @@ import {
   evaluateRoadRiverCrossing,
   riverHitsOnEdge,
 } from './roadRiverCrossing'
+import { buildRouteObstacles, type RouteObstacles } from './routeObstacles'
 import {
   cellKey,
   cellsWithinRadius,
@@ -311,6 +312,8 @@ export type RouteSearchOptions = RoutingOptions & {
   routeKind: RoadSegmentKind
   /** Stable route identity; canonical crossing ids derive from it. */
   routeId: string
+  /** Village footprints to route around (Q60); absent = village-blind routing (the fallback). */
+  obstacles?: RouteObstacles
 }
 
 /**
@@ -350,6 +353,7 @@ export function findRoute(
     riverSegments,
     routeKind,
     routeId,
+    obstacles,
   } = opts
   // Wide enough that the search grid has room to route *around* a mountain
   // when that's cheaper, not just straight through it (see MOUNTAIN_COST_WEIGHT).
@@ -452,13 +456,19 @@ export function findRoute(
 
       const from = toWorld(cur.ix, cur.iz)
       const to = toWorld(nix, niz)
+      let footprintCost = 1
+      if (obstacles) {
+        const mid = { x: (from.x + to.x) * 0.5, z: (from.z + to.z) * 0.5 }
+        if (obstacles.isBlocked(to.x, to.z) || obstacles.isBlocked(mid.x, mid.z)) continue
+        footprintCost = obstacles.costMultiplier(mid.x, mid.z)
+      }
       const infrastructure = crossingCost(curKey, nKey, from.x, from.z, to.x, to.z)
       if (infrastructure === null) continue
 
       const stepDist = Math.hypot(dx * gridStep, dz * gridStep)
       const ridge = (ridgeAt(cur.ix, cur.iz) + ridgeAt(nix, niz)) * 0.5
       const cost =
-        stepDist * (1 + MOUNTAIN_COST_WEIGHT * ridge * ridge) +
+        stepDist * footprintCost * (1 + MOUNTAIN_COST_WEIGHT * ridge * ridge) +
         elevationWeight * Math.abs(heightAt(nix, niz) - heightAt(cur.ix, cur.iz)) +
         infrastructure
       const tentativeG = (gScore.get(curKey) ?? Infinity) + cost
@@ -726,6 +736,46 @@ function searchOptionsFor(
   }
 }
 
+/** Settlements whose footprint can touch the search envelope of `a`→`b` (layout sites only; defs are cached). */
+function defsNearEnvelope(
+  a: { x: number, z: number },
+  b: { x: number, z: number },
+  ctx: RoadNetworkContext,
+): SettlementDef[] {
+  const margin = DEFAULT_ROUTING_OPTIONS.gridStep * 5
+  const minX = Math.min(a.x, b.x) - margin
+  const maxX = Math.max(a.x, b.x) + margin
+  const minZ = Math.min(a.z, b.z) - margin
+  const maxZ = Math.max(a.z, b.z) + margin
+  const reach = villageSizeConfig('XL').footprintRadius * 1.2
+  const out: SettlementDef[] = []
+  for (const site of settlementLayoutFor(resolveCtx(ctx)).sites) {
+    if (site.x < minX - reach || site.x > maxX + reach || site.z < minZ - reach || site.z > maxZ + reach) continue
+    const def = defFor(site.cell, ctx)
+    if (def) out.push(def)
+  }
+  return out
+}
+
+/** Village-aware search first (Q60); if the footprints leave no way through, fall back to the village-blind
+ *  search so connectivity never drops. */
+function findRouteAvoidingVillages(
+  from: { x: number, z: number },
+  to: { x: number, z: number },
+  endpointDefs: readonly SettlementDef[],
+  ctx: RoadNetworkContext,
+  routeKind: RoadSegmentKind,
+  routeId: string,
+): RoadRoute | null {
+  const options = searchOptionsFor(from, to, ctx, routeKind, routeId)
+  const obstacles = buildRouteObstacles(
+    defsNearEnvelope(from, to, ctx),
+    [from, to],
+    endpointDefs.map((d) => d.id),
+  )
+  return findRoute(from, to, { ...options, obstacles }) ?? findRoute(from, to, options)
+}
+
 /** The inter-settlement road between two settlements, resolved once and shared
  *  by roads, signposts and midpoint signposts.
  *
@@ -746,7 +796,7 @@ function routeBetween(
   const [first, second] = def.id < neighbor.id ? [def, neighbor] : [neighbor, def]
   const from = entranceToward(first, second)
   const to = entranceToward(second, first)
-  const route = findRoute(from, to, searchOptionsFor(from, to, ctx, 'road', key))
+  const route = findRouteAvoidingVillages(from, to, [first, second], ctx, 'road', key)
   return storeRoute(key, route)
 }
 
@@ -764,7 +814,7 @@ function routeToLocation(
   if (cached !== undefined) return cached
 
   const from = entranceToward(def, loc)
-  const route = findRoute(from, loc, searchOptionsFor(from, loc, ctx, 'path', key))
+  const route = findRouteAvoidingVillages(from, loc, [def], ctx, 'path', key)
   return storeRoute(key, route)
 }
 
