@@ -57,7 +57,7 @@ const WINDOW_TOP_Y = 2.3
 export const MAX_WALL_PIECES_PER_HOUSE = 3
 
 export const WALL_KITS: Record<'antlers' | 'shield' | 'banner' | 'netOnWall', WallKitSpec> = {
-  antlers: { halfAlong: 0.46, halfOut: 0.34, mountY: 1.95, bottomY: 1.95, topY: 2.69, outZ: -0.06 },
+  antlers: { halfAlong: 0.46, halfOut: 0.34, mountY: 1.95, bottomY: 1.95, topY: 2.69, outZ: 0.15 },
   // 1.3x the original (0.34/0.2/1.6±0.33/0.08); origin stays at the original height.
   shield: { halfAlong: 0.442, halfOut: 0.26, mountY: 1.6, bottomY: 1.171, topY: 2.029, outZ: 0.104, scale: 1.3 },
   banner: { halfAlong: 0.34, halfOut: 0.2, mountY: 2.59, bottomY: 1.15, topY: 2.59, outZ: 0.1 },
