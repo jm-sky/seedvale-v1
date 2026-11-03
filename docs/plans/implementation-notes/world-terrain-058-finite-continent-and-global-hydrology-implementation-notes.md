@@ -115,6 +115,16 @@ Landed (technically verified; **not** browser-verified): the correction layer an
 - Payload-size options from H2 untouched (6.5 MiB per copy): workers still need chains because `riverTile` jobs run there.
 - **Still open for H3 done-when:** browser check "home stream continuous to the bay" (queue §2), and Q37/Q44/Q47/Q58 census baselines must be re-taken (terrain changed under every fingerprint via `hydrologyId`).
 
+## H4 results (Q76, 2026-11-03)
+
+Landed (technically verified; **not** browser-verified): sites avoid visible stream heads.
+
+- `streamHeadsFor(hydrologyId)` (`worldHydrologyStore.ts`): first point of every global chain whose `flags` bit 4 (lake outlet) is **not** set; cached per installed hydrology, `[]` for unconditioned/legacy ids. `RiverQuery.headsNear(x, z, size)` exposes it to placement code (clipped tile chains lose the true head, so the query reads the global list, not tiles).
+- `findSettlementSite(…, streamHeads)`: a candidate with a head within `footprintRadius + SITE_STREAM_HEAD_CLEARANCE (24 m)` is held back; the best such candidate is returned flagged `nearStreamHead` only when nothing else passes. `chooseSettlementSite`: home keeps widening (72 / 120 m) past a flagged site and falls back to the first flagged site; non-home takes the flagged site (decision 10: keep current behaviour when no candidate passes). `SettlementGenContext.streamHeads` is resolved once beside `riverSegments`.
+- `SETTLEMENT_DEFINITION_CACHE_VERSION` 19 → 20 (site search changed; hydrology/terrain caches untouched).
+- Census (`pnpm worldgen:rivers:census --model=global`, new "stream heads (H4)" line; installs the computed hydrology under its real id, rings = 5 grid cells): seed 42 — 3 settlements, heads inside 0, within 24 m 0; seed 415424794 — 5 settlements, inside **0** (home included: before the home widening it was a head 35 m from the home centre), within 24 m **1** (`0_4`, 62 m from centre, fallback), i.e. ≤ 2. Settlement count unchanged (the head rule only moves or flags a site, never drops it). **Caveat:** this census still enumerates the grid cells (`cellsWithinRadius`), not the 059 W4 global selection; re-run it after Q80.
+- Home river-enclosed road-less settlement (§3 Q84-a): not re-checked here — needs the road census/browser.
+
 ## Pitfalls
 
 - Hydrology must never read the corrected terrain, settlements, roads or `waterH` (cycle). Settlement code may read hydrology, never the other way round.

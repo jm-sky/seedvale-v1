@@ -310,6 +310,8 @@ type SettlementGenContext = {
    *  re-querying hydrology. Empty when no `riverQuery` was supplied (tests /
    *  callers that don't model rivers) or when no river is near. */
   riverSegments: RiverChannelSegment[]
+  /** Visible stream heads around the site-search box + footprint (058 H4); empty without a `riverQuery`. */
+  streamHeads: readonly { x: number, z: number }[]
 }
 
 /** Slack (world units) added to the settlement's river-segment query box so a
@@ -430,6 +432,7 @@ function resolveSettlementContext(
     region,
     provisionalSize,
     riverSegments,
+    streamHeads: riverQuery?.headsNear(center.x, center.z, riverReach * 2) ?? [],
   }
 }
 
@@ -455,16 +458,22 @@ function chooseSettlementSite(ctx: SettlementGenContext): { x: number, z: number
       footprint,
       searchMargin,
       ctx.riverSegments,
+      ctx.streamHeads,
     )
 
   const site = tryMargin(DEFAULT_SITE_SEARCH_MARGIN)
-  if (site) return site
-  if (!ctx.isHome) return null
+  if (site && !site.nearStreamHead) return site
+  if (!ctx.isHome) return site
 
+  // Home widens the search also when the only dry site sits on a stream head (058 H4 fallback); a site that
+  // clears every head wins, else the first fallback found stays.
+  let headFallback = site
   for (const margin of HOME_SITE_EXPAND_MARGINS) {
     const expanded = tryMargin(margin)
-    if (expanded) return expanded
+    if (expanded && !expanded.nearStreamHead) return expanded
+    headFallback ??= expanded
   }
+  if (headFallback) return headFallback
   return {
     x: ctx.center.x,
     z: ctx.center.z,

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { RiverChannelSegment } from '../terrain/chunkHeightmap'
 import { villageSizeConfig } from './families'
-import { findSettlementSite, SITE_RIVER_CLEARANCE, SITE_SCORE_WEIGHTS } from './findSettlementSite'
+import { DEFAULT_SITE_SEARCH_MARGIN, findSettlementSite, SITE_RIVER_CLEARANCE, SITE_SCORE_WEIGHTS, SITE_STREAM_HEAD_CLEARANCE } from './findSettlementSite'
 import { SETTLEMENT_WATER_MARGIN } from './pathDryness'
 
 const WATER = 0
@@ -110,5 +110,26 @@ describe('findSettlementSite river channel avoidance', () => {
     const a = requireSite(flat, WATER, HALF, 77, { x: 0, z: 0 }, undefined, MD_FOOTPRINT, undefined, [riverSeg])
     const b = requireSite(flat, WATER, HALF, 77, { x: 0, z: 0 }, undefined, MD_FOOTPRINT, undefined, [riverSeg])
     expect(a).toEqual(b)
+  })
+})
+
+describe('findSettlementSite stream heads (058 H4)', () => {
+  const WIDE_MARGIN = 160
+  const flat = () => 12
+  const args = [flat, WATER, HALF, 5, { x: 0, z: 0 }, undefined, MD_FOOTPRINT] as const
+
+  it('rejects candidates whose footprint + clearance contains a stream head', () => {
+    const base = requireSite(...args, WIDE_MARGIN)
+    const head = { x: base.x + 2, z: base.z }
+    const site = requireSite(...args, WIDE_MARGIN, [], [head])
+    expect(Math.hypot(site.x - head.x, site.z - head.z)).toBeGreaterThan(
+      MD_FOOTPRINT.footprintRadius + SITE_STREAM_HEAD_CLEARANCE,
+    )
+    expect(site.nearStreamHead).toBeUndefined()
+  })
+
+  it('keeps the best candidate as a flagged fallback when every candidate is near a head', () => {
+    const site = requireSite(...args, DEFAULT_SITE_SEARCH_MARGIN, [], [{ x: 0, z: 0 }])
+    expect(site.nearStreamHead).toBe(true)
   })
 })

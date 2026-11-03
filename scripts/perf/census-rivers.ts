@@ -27,7 +27,8 @@ import {
 } from '../../src/terrain/riverNetwork'
 import { createRiverQuery } from '../../src/terrain/riverQuery'
 import { ChainEnd, computeWorldHydrology, hashWorldHydrology, sampleRawFloorRows, sparseBlockValue, unpackChains, WORLD_HYDROLOGY_GRID } from '../../src/terrain/worldHydrology'
-import { UNCONDITIONED_HYDROLOGY_ID } from '../../src/terrain/worldHydrologyStore'
+import { hydrologyIdFor } from '../../src/terrain/worldHydrologyRegistry'
+import { installWorldHydrology, streamHeadsFor, UNCONDITIONED_HYDROLOGY_ID } from '../../src/terrain/worldHydrologyStore'
 import { worldKnowledgeRoadContext, type WorldKnowledgeTerrainSnapshot } from '../../src/terrain/worldKnowledgeScan'
 
 function arg(name: string, fallback: string): string {
@@ -242,10 +243,36 @@ function measureGlobal(seed: number) {
   const landKm2 = (h.stats.landCells * cellStep * cellStep) / 1e6
   const filledPct = (100 * h.stats.filledCells) / Math.max(1, h.stats.landCells)
   // Home stream: nearest chain point to the home settlement (default world home), and how that chain ends.
+  // 058 H4: install the computed hydrology under its real id so settlement generation sees the stream heads, then
+  // count visible heads inside / within 24 m of every footprint (rings around the origin) and site fallbacks.
+  const hid = hydrologyIdFor(params)
+  installWorldHydrology(hid, h)
+  const condParams: RawSampleParams = { ...params, hydrologyId: hid }
   clearSettlementDefCache()
-  setSettlementRiverQuery(createRiverQuery(params))
-  const ctx: RoadNetworkContext = worldKnowledgeRoadContext(snapshotFor(seed))
-  const home = cellsWithinRadius({ gx: 0, gz: 0 }, 0).map((c) => settlementDefFor(c, ctx)).find((d) => d?.isHome)
+  setSettlementRiverQuery(createRiverQuery(condParams))
+  const ctx: RoadNetworkContext = worldKnowledgeRoadContext({ ...snapshotFor(seed), hydrologyId: hid })
+  const heads = streamHeadsFor(hid)
+  const siteDefs: SettlementDef[] = []
+  for (const cell of cellsWithinRadius({ gx: 0, gz: 0 }, rings)) {
+    const d = settlementDefFor(cell, ctx)
+    if (d) siteDefs.push(d)
+  }
+  let headsInside = 0
+  let headsNear24 = 0
+  let headFallbacks = 0
+  for (const d of siteDefs) {
+    const r = villageSizeConfig(d.size).footprintRadius
+    let near = false
+    for (const hd of heads) {
+      const dd = dist(d, hd)
+      if (dd < r) { headsInside++; near = true } else if (dd < r + 24) { headsNear24++; near = true }
+      if ((dd < r + 24) && process.argv.includes('--verbose')) console.log(`  head ${hd.x.toFixed(0)},${hd.z.toFixed(0)} d=${dd.toFixed(0)} R=${r} ${d.id}${d.isHome ? ' (home)' : ''}`)
+    }
+    // A settlement still within footprint + 24 m of a head is a site-search fallback (nothing else passed).
+    if (near) headFallbacks++
+  }
+  const headCensus = { settlements: siteDefs.length, heads: heads.length, headsInside, headsNear24, headFallbacks }
+  const home = siteDefs.find((d) => d.isHome)
   let homeStream = 'n/a'
   if (home) {
     let best = Infinity
@@ -258,7 +285,7 @@ function measureGlobal(seed: number) {
     seed, size, sampleMs, computeMs: h.stats.computeMs, hash, stripsHash, stats: h.stats, landKm2, filledPct,
     chains: chains.length, totalKm, seabedKm, mouthMax, mouthN, monotoneBreaks,
     lakes: h.lakes.length, lakeHa: { min: lakeHa[0] ?? 0, median: lakeHa[Math.floor(lakeHa.length / 2)] ?? 0, max: lakeHa[lakeHa.length - 1] ?? 0 },
-    homeStream, seabedByEnd, seabedWhere,
+    homeStream, seabedByEnd, seabedWhere, headCensus,
   }
 }
 
@@ -274,6 +301,7 @@ if (arg('model', 'tiles') === 'global') {
     console.log(`lakes ${r.lakes} (ha min/median/max ${r.lakeHa.min.toFixed(2)}/${r.lakeHa.median.toFixed(2)}/${r.lakeHa.max.toFixed(2)}) · sea-level lakes ${st.terminalLakes} (${st.terminalCells} cells)`)
     console.log(`seabed by chain end (km) ${JSON.stringify(r.seabedByEnd)} · by position ${JSON.stringify(r.seabedWhere)}`)
     console.log(`home stream: ${r.homeStream}`)
+    console.log(`stream heads (H4): ${JSON.stringify(r.headCensus)}`)
     console.log(`hash ${r.hash}${r.stripsHash ? ` · strips hash ${r.stripsHash} ${r.stripsHash === r.hash ? 'MATCH' : 'MISMATCH'}` : ''}`)
   }
   process.exit(0)

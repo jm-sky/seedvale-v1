@@ -106,6 +106,34 @@ export function hydrologyCorrectionAt(hydrologyId: string, wx: number, wz: numbe
   return (c00 * (1 - fx) + c10 * fx) * (1 - fz) + (c01 * (1 - fx) + c11 * fx) * fz
 }
 
+/** Lake-outlet flag in `PackedChains.flags` (bit 4). */
+const LAKE_FED_FLAG = 16
+
+export type StreamHead = { x: number, z: number }
+
+const headsCache = new WeakMap<WorldHydrology, StreamHead[]>()
+
+/**
+ * Visible stream heads of a world's global chains (058 H4): the first point of every chain that does not start at a
+ * lake outlet. Lake-fed heads are excluded — the lake is the source, there is no spring to protect. Empty for
+ * unconditioned/legacy ids (no global chains). Throws when `hydrologyId` is not installed.
+ */
+export function streamHeadsFor(hydrologyId: string): readonly StreamHead[] {
+  if (isUnconditionedHydrologyId(hydrologyId)) return []
+  const data = worldHydrologyFor(hydrologyId)
+  let heads = headsCache.get(data)
+  if (!heads) {
+    heads = []
+    const { offsets, points, flags } = data.chains
+    for (let i = 0; i + 1 < offsets.length; i++) {
+      if (offsets[i + 1]! <= offsets[i]! || (flags[i]! & LAKE_FED_FLAG)) continue
+      heads.push({ x: points[offsets[i]! * 4]!, z: points[offsets[i]! * 4 + 1]! })
+    }
+    headsCache.set(data, heads)
+  }
+  return heads
+}
+
 // ---- chains --------------------------------------------------------------------------------------------------------
 
 /** Packed chains → `RiverChain[]` (the shape the existing consumers use). */

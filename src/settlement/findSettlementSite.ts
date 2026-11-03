@@ -8,6 +8,9 @@ export type SettlementSite = {
   x: number
   z: number
   y: number
+  /** True when every acceptable candidate had a stream head inside footprint + `SITE_STREAM_HEAD_CLEARANCE`, so
+   *  the best of those was kept (058 H4 fallback; counted by the hydrology census). */
+  nearStreamHead?: true
 }
 
 /** Optional footprint for village-scale suitability (plan 047 §6). When
@@ -58,6 +61,9 @@ export const DEFAULT_SITE_SEARCH_MARGIN = 24
  *  individual plots enforce their own footprints separately
  *  (`villagePlanner.ts`). */
 export const SITE_RIVER_CLEARANCE = 8
+
+/** Extra clearance (m) around the village footprint kept free of a visible stream head (058 H4, decision 10). */
+export const SITE_STREAM_HEAD_CLEARANCE = 24
 
 type FootprintMetrics = {
   dryRatio: number
@@ -177,6 +183,7 @@ export function findSettlementSite(
   footprint?: SettlementFootprintHint,
   searchMargin: number = DEFAULT_SITE_SEARCH_MARGIN,
   riverSegments: readonly RiverChannelSegment[] = [],
+  streamHeads: readonly { x: number, z: number }[] = [],
 ): SettlementSite | null {
   const random = createSeededRandom(seed ^ 0xc0ffee)
   const margin =
@@ -185,6 +192,10 @@ export function findSettlementSite(
       : searchMargin
   let best: SettlementSite | null = null
   let bestScore = -Infinity
+  // Best candidate that only fails the stream-head rule — kept when nothing else passes (058 H4).
+  let headFallback: SettlementSite | null = null
+  let headFallbackScore = -Infinity
+  const headReach = (footprint?.footprintRadius ?? 0) + SITE_STREAM_HEAD_CLEARANCE
 
   for (let i = 0; i < SITE_CANDIDATE_ATTEMPTS; i++) {
     const x = center.x + (random() * 2 - 1) * margin
@@ -223,11 +234,18 @@ export function findSettlementSite(
       resourceAttraction,
       footprintMetrics,
     )
+    if (streamHeads.some((h) => Math.hypot(h.x - x, h.z - z) <= headReach)) {
+      if (score > headFallbackScore) {
+        headFallbackScore = score
+        headFallback = { x, z, y, nearStreamHead: true }
+      }
+      continue
+    }
     if (score > bestScore) {
       bestScore = score
       best = { x, z, y }
     }
   }
 
-  return best
+  return best ?? headFallback
 }

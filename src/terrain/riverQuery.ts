@@ -6,6 +6,7 @@ import {
   riverChannelSegmentsNear,
   riverTileKey,
 } from './riverNetwork'
+import { type StreamHead, streamHeadsFor } from './worldHydrologyStore'
 
 /**
  * @domain terrain
@@ -28,6 +29,9 @@ export type RiverQuery = {
   /** Canonical channel segments whose carve reach overlaps a `size`-sided box
    *  centred on `(x, z)` — same filtering `chunkManager` applies per chunk. */
   segmentsNear(x: number, z: number, size: number): RiverChannelSegment[]
+  /** Visible, non-lake-fed stream heads inside the `size`-sided box centred on `(x, z)` (058 H4). Empty for
+   *  unconditioned/legacy hydrology. */
+  headsNear(x: number, z: number, size: number): StreamHead[]
 }
 
 /** Tiles kept resident. A river tile is 256 m/side, so this covers a very
@@ -73,6 +77,12 @@ export function createRiverQuery(sampleParams: RawSampleParams): RiverQuery {
         chains.push(...chainsFor(tile.tx, tile.tz))
       }
       return chains.length === 0 ? [] : riverChannelSegmentsNear(chains, x, z, size)
+    },
+    headsNear(x, z, size) {
+      const half = size / 2
+      return streamHeadsFor(sampleParams.hydrologyId).filter(
+        (h) => Math.abs(h.x - x) <= half && Math.abs(h.z - z) <= half,
+      )
     },
   }
 }
