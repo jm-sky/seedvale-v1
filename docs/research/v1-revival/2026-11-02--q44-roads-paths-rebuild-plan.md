@@ -153,6 +153,21 @@ plot∩clearing 0, plot∩road 0 on all placed cemeteries.
 
 Sample is tiny (2 / 4 roads), so sharp turns/km are indicative only; Q61 should also report a wider window (`--rings`) before/after.
 
+### Q61 (R5 — route shape: string-pulling + corner rounding, Sonnet 2026-11-03, `main`)
+
+New pure `settlement/routeShape.ts`, called from `findRoute` between the crossing anchors and the meander. (1) **String-pulling:** greedy line-of-sight shortcut, taken only if the line is dry, off hard village obstacles, has **no river hit**, never skips a locked anchor, and costs ≤ the A* chain it replaces (same cost formula: distance × ridge × footprint + elevation). (2) **Corner rounding:** Chaikin ×2 per run between locked points (anchors/ends stay exact), resampled at 6 m. (3) **Fallback ladder:** rounded → string-pulled only → anchor-exact chain; each rung must be clear and keep `sameCrossingTopology` vs the planned crossings (meander still falls back to its rung's own geometry). Caches: `road-routes` 8→9, `chunk-tiles` 20→21, `caves-v2` 6→7. Tests: `routeShape.test.ts`; existing bridge/ford/crossing tests green (full suite, type-check, lint, build).
+
+Census `--rings=12` (22 settlements, 18/19 roads), before → after:
+
+| seed | sharp turns /km | sinuosity p50/p90 | no road | plot hits | crossings |
+| --- | --- | --- | --- | --- | --- |
+| 42 | 8.1 → **2.4** | 1.29/1.48 → 1.22/1.40 | 1 → 1 | 1 → 1 | 0 → 0 |
+| 415424794 | 8.9 → **4.2** | 1.21/1.48 → 1.18/1.38 | 2 → 2 | 1 → 1 | 0 → 0 |
+
+`--rings=5` (2 / 4 roads): sharp 14.5 → 3.5 / 10.5 → 4.0, sinuosity p50 1.36 → 1.28 / 1.18 → 1.12.
+
+**Done-when status: partly met.** Sharp turns ≤ 3/km met on seed 42 only (4.2 on 415424794; remaining turns are presumably at locked anchors/route ends or obstacle detours — not analysed). Sinuosity p50 moved −0.07 / −0.03 (target ±0.03): the shortening is the point of string-pulling (A* 8-direction chains carry ~7 % overhead), so the ±0.03 band looks too tight — author/Opus call. Crossing records: topology guard + unchanged crossing counts, no per-route test comparing against the pre-shape chain was added. Not browser-checked (look of curves: author §2).
+
 ## 6. Author decisions (also queue §3)
 
 **ANSWERED 2026-11-02 (author):** **D1 (a)** RNG graph + fallback · **D2 custom** — main road **~7–8 m** wide (`roadHalfWidth` 5 → 3.5–4), ruts must stay **clearly visible**: only a slight reduction (rut depth 0.15 → ~0.11–0.12, micro-bumps reduced moderately), tuned in game · **D3 (a)** shared lanes + spurs to doors · **D4 (b)** allow **+1 entrance** when neighbours lie in a fourth distinct direction (palisade/torches/pasture must handle the extra gap). Options below kept for the record.

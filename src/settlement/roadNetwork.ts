@@ -25,6 +25,7 @@ import {
   riverHitsOnEdge,
 } from './roadRiverCrossing'
 import { buildRouteObstacles, type RouteObstacles } from './routeObstacles'
+import { polylineIsClear, roundCorners, stringPull } from './routeShape'
 import {
   cellKey,
   cellsWithinRadius,
@@ -508,23 +509,44 @@ export function findRoute(
   const planned = crossingsForPolyline(anchored.points, riverSegments, routeKind, routeId)
   if (!planned) return null
 
-  const meandered = meanderRoute(
-    anchored.points,
+  // Q61 shape ladder: string-pulled + rounded → string-pulled only → anchor-exact A* chain. Each rung
+  // must stay clear (dry, off village obstacles) and keep the river-crossing topology of `planned`.
+  const shapeEnv = {
     sampleHeight,
-    meanderAmplitude,
-    meanderScale,
-    seed,
-    anchored.locked,
-  )
-  let finalPoints = meandered
-  let crossings = crossingsForPolyline(meandered, riverSegments, routeKind, routeId)
-  if (!crossings || !sameCrossingTopology(crossings, planned)) {
-    // Meander changed the route's river topology. Deterministically fall back
-    // to the anchor-exact geometry rather than shipping a road whose crossing
-    // records no longer describe it — "the meander is only a few metres" is
-    // not an argument at stream/bank scale.
-    finalPoints = anchored.points
-    crossings = planned
+    sampleMountainRidge,
+    waterLevel,
+    waterClearance: ROUTE_WATER_CLEARANCE,
+    elevationWeight,
+    mountainCostWeight: MOUNTAIN_COST_WEIGHT,
+    riverSegments,
+    obstacles,
+  }
+  const pulled = stringPull(anchored.points, anchored.locked, shapeEnv)
+  const rounded = roundCorners(pulled.points, pulled.locked, sampleHeight)
+  const rungs = [rounded, { points: pulled.points, locked: pulled.locked }, anchored]
+  let finalPoints = anchored.points
+  let crossings = planned
+  for (const rung of rungs) {
+    if (rung !== anchored && !polylineIsClear(rung.points, shapeEnv)) continue
+    const meandered = meanderRoute(
+      rung.points,
+      sampleHeight,
+      meanderAmplitude,
+      meanderScale,
+      seed,
+      rung.locked,
+    )
+    // The meander can also change topology — then fall back to the rung's own geometry.
+    for (const candidate of [meandered, rung.points]) {
+      if (rung !== anchored && !polylineIsClear(candidate, shapeEnv)) continue
+      const found = crossingsForPolyline(candidate, riverSegments, routeKind, routeId)
+      if (found && sameCrossingTopology(found, planned)) {
+        finalPoints = candidate
+        crossings = found
+        break
+      }
+    }
+    if (finalPoints !== anchored.points) break
   }
 
   const points = smoothProfile(finalPoints, smoothingWindow)
