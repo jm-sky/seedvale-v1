@@ -199,3 +199,13 @@ Implementation invariant: blocklisted Fish voice IDs must remain excluded irresp
 - `hunter_male` / Arthur (`bd22266aba38416cb602e90ce651520c`): **accepted; author selects for Jacob, the hunter**. Verify named-character key / assignment before runtime integration. V3 quest docs call the hunter Jacob Bowman (not 'Jacob Hunter' as a surname).
 
 All above are listening/casting judgments, **not** transcript validation or global per-clip QC verdicts. Keep the ledger's unheard rows pending, especially for the two inconsistent banks.
+
+### S2 further author listening decisions — 2026-11-03
+
+- `merchant_female_b` (catalog: Laura): usable mature female voice, but not for Kate/Kasia Hornblower. Author says sampled voice does not sound like Laura; verify actual source ID.
+- `merchant_female` (catalog: Expressive Female): greeting sample fits merchant Kate/Kasia Hornblower; source ID likely correct but not independently verified.
+- `shepherd_male_b` (Sleepless Historian): accepted, calm male voice; final NPC role undecided.
+- `shepherd_male` (Hetalia Russia): accepted; author recognizes voice in the samples. Fish bookmark describes female voice; verify gender metadata/role before casting.
+- `mark_hornblower` (Friendly Male Voice, `2adcdee4b3ce4b648dc16ea65430ea76`): **accepted for Mark Hornblower**. Listened to daily, danger alert and farewell samples. Keep separate from other guard voices.
+
+These are casting judgments, not individual transcript-QC verdicts. Unverified source IDs must not be treated as proven.
