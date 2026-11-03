@@ -1761,6 +1761,7 @@ Generated from TypeScript imports.
 - `world/createPalisades.ts`
 - `world/createPlayerGardens.ts`
 - `world/createPlayerWells.ts`
+- `world/createResidentialBuildings.test.ts`
 - `world/createResidentialBuildings.ts`
 
 ## `world/condition.test.ts`
@@ -2230,6 +2231,7 @@ Generated from TypeScript imports.
 
 **Imports**
 
+- `world/collision.ts`
 - `world/createResidentialBuildings.ts`
 - `world/residentialBuilding.ts`
 
