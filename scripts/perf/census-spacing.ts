@@ -7,13 +7,13 @@ import { settlementGraphHops } from '../../src/settlement/settlementProgression'
 import { clearCemeteryCaches } from '../../src/terrain/cemeteryAssignment'
 import { WORLD_HALF_EXTENT } from '../../src/terrain/continentMask'
 import { createRiverQuery } from '../../src/terrain/riverQuery'
+import { worldKnowledgeRoadContext, type WorldKnowledgeTerrainSnapshot } from '../../src/terrain/worldKnowledgeScan'
 // Usage: pnpm worldgen:spacing:census [--seeds=42,415424794] [--roads=1]
 // 059 W4 census: global settlement selection + neighbour graph (replaces the Q32 calibrate tool).
 // Reports count, nearest-neighbour, graph edge lengths (straight line, site to site), land coverage
 // within 1800 m, connectivity, size histogram, layout time and (with --roads=1) road coverage/build time.
 // Diagnostic only — not part of `pnpm test`.
-import { UNCONDITIONED_HYDROLOGY_ID } from '../../src/terrain/worldHydrologyStore'
-import { worldKnowledgeRoadContext, type WorldKnowledgeTerrainSnapshot } from '../../src/terrain/worldKnowledgeScan'
+import { censusHydrologyId } from './censusHydrology'
 
 const HOME_RADIUS = 56
 function arg(name: string, fallback: string): string {
@@ -30,7 +30,7 @@ function snapshot(seed: number): WorldKnowledgeTerrainSnapshot {
     noiseScale: t.noiseScale, detailAmplitude: t.detailAmplitude, hillsScale: t.hillsScale,
     hillsAmplitude: t.hillsAmplitude, hillsFbm: t.hillsFbm, fbm: t.fbm, biome: t.biome, region: t.region,
     vegetationSpeciesCount: {} as WorldKnowledgeTerrainSnapshot['vegetationSpeciesCount'],
-    homeChunks: [], localSearchRadius: HOME_RADIUS, hydrologyId: UNCONDITIONED_HYDROLOGY_ID,
+    homeChunks: [], localSearchRadius: HOME_RADIUS, hydrologyId: censusHydrologyId(seed),
   }
 }
 const q = (v: number[], p: number) => { const s = [...v].sort((a, b) => a - b); return s.length ? s[Math.min(s.length - 1, Math.floor(p * s.length))]! : NaN }

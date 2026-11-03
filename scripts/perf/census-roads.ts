@@ -22,8 +22,8 @@ import { cellsWithinRadius, type SettlementDef } from '../../src/settlement/sett
 import { clearSettlementDefCache, setSettlementRiverQuery, settlementDefFor } from '../../src/settlement/settlementPlanCache'
 import { clearCemeteryCaches } from '../../src/terrain/cemeteryAssignment'
 import { createRiverQuery } from '../../src/terrain/riverQuery'
-import { UNCONDITIONED_HYDROLOGY_ID } from '../../src/terrain/worldHydrologyStore'
 import { worldKnowledgeRoadContext, type WorldKnowledgeTerrainSnapshot } from '../../src/terrain/worldKnowledgeScan'
+import { censusHydrologyId } from './censusHydrology'
 
 const HOME_RADIUS = 56
 
@@ -42,7 +42,7 @@ function terrainSnapshot(seed: number): WorldKnowledgeTerrainSnapshot {
     noiseScale: t.noiseScale, detailAmplitude: t.detailAmplitude, hillsScale: t.hillsScale, hillsAmplitude: t.hillsAmplitude,
     hillsFbm: t.hillsFbm, fbm: t.fbm, biome: t.biome, region: t.region,
     vegetationSpeciesCount: {} as WorldKnowledgeTerrainSnapshot['vegetationSpeciesCount'],
-    homeChunks: [], localSearchRadius: HOME_RADIUS, hydrologyId: UNCONDITIONED_HYDROLOGY_ID,
+    homeChunks: [], localSearchRadius: HOME_RADIUS, hydrologyId: censusHydrologyId(seed),
   }
 }
 

@@ -7,9 +7,9 @@ import { defaultTerrainConfig } from '../../src/config/worldConfig'
 import { villageSizeConfig } from '../../src/settlement/families'
 import { clearSettlementDefCache, setSettlementRiverQuery, settlementLayoutFor } from '../../src/settlement/settlementPlanCache'
 import { createRiverQuery } from '../../src/terrain/riverQuery'
-import { UNCONDITIONED_HYDROLOGY_ID } from '../../src/terrain/worldHydrologyStore'
 import { worldKnowledgeRoadContext, type WorldKnowledgeTerrainSnapshot } from '../../src/terrain/worldKnowledgeScan'
 import { pickLargeCaveSites, type VillageFootprint } from '../../src/world/largeCaves'
+import { censusHydrologyId } from './censusHydrology'
 
 const HOME_RADIUS = 56
 const seeds = (process.argv.find((a) => a.startsWith('--seeds='))?.slice(8) ?? '42,415424794').split(',').map(Number)
@@ -22,7 +22,7 @@ for (const seed of seeds) {
     noiseScale: t.noiseScale, detailAmplitude: t.detailAmplitude, hillsScale: t.hillsScale,
     hillsAmplitude: t.hillsAmplitude, hillsFbm: t.hillsFbm, fbm: t.fbm, biome: t.biome, region: t.region,
     vegetationSpeciesCount: {} as WorldKnowledgeTerrainSnapshot['vegetationSpeciesCount'],
-    homeChunks: [], localSearchRadius: HOME_RADIUS, hydrologyId: UNCONDITIONED_HYDROLOGY_ID,
+    homeChunks: [], localSearchRadius: HOME_RADIUS, hydrologyId: censusHydrologyId(seed),
   }
   setSettlementRiverQuery(createRiverQuery({
     seed, heightScale: snap.heightScale, waterLevel: snap.waterLevel, noiseScale: snap.noiseScale,

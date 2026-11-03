@@ -18,6 +18,11 @@ import {
 import { worldToChunk } from '../../src/terrain/chunkGrid'
 import { createWorldTerrainSampler } from '../../src/terrain/chunkHeightmap'
 import { createRiverQuery } from '../../src/terrain/riverQuery'
+import {
+  chunkParamsForWorldKnowledgeScan,
+  worldKnowledgeRoadContext,
+  type WorldKnowledgeTerrainSnapshot,
+} from '../../src/terrain/worldKnowledgeScan'
 // Usage: pnpm worldgen:cemeteries:census [--seeds=42,415424794] [--rings=5] [--abandonedChunks=30] [--json=path]
 // Queue Q47 (Q39 plan §3 step 7): diagnostic census of cemetery placement on generated worlds (no runtime, no
 // Three.js scene). For every settlement in the window it resolves the assignment topology + placement exactly
@@ -25,12 +30,7 @@ import { createRiverQuery } from '../../src/terrain/riverQuery'
 // plot–clearing and plot–road overlaps, and the mean centre distance to the served settlement. Abandoned
 // (wilderness) cemeteries are scanned over a chunk window. `--json` writes per-assignment statuses so a
 // before/after run can be diffed (every assignment placed before must still resolve). Diagnostic only.
-import { UNCONDITIONED_HYDROLOGY_ID } from '../../src/terrain/worldHydrologyStore'
-import {
-  chunkParamsForWorldKnowledgeScan,
-  worldKnowledgeRoadContext,
-  type WorldKnowledgeTerrainSnapshot,
-} from '../../src/terrain/worldKnowledgeScan'
+import { censusHydrologyId } from './censusHydrology'
 
 /** `HOME_RADIUS` in `src/app/worldBundle.ts` (not imported: that module pulls in the whole runtime). */
 const HOME_RADIUS = 56
@@ -51,7 +51,7 @@ function terrainSnapshot(seed: number): WorldKnowledgeTerrainSnapshot {
     noiseScale: t.noiseScale, detailAmplitude: t.detailAmplitude, hillsScale: t.hillsScale,
     hillsAmplitude: t.hillsAmplitude, hillsFbm: t.hillsFbm, fbm: t.fbm, biome: t.biome, region: t.region,
     vegetationSpeciesCount: {} as WorldKnowledgeTerrainSnapshot['vegetationSpeciesCount'],
-    homeChunks: [], localSearchRadius: HOME_RADIUS, hydrologyId: UNCONDITIONED_HYDROLOGY_ID,
+    homeChunks: [], localSearchRadius: HOME_RADIUS, hydrologyId: censusHydrologyId(seed),
   }
 }
 
