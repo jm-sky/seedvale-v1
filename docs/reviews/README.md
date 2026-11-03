@@ -22,6 +22,7 @@ Tematy wymagające **głębszej analizy** (nie quick fix w tej samej sesji): pli
 
 | Review | Scope | Status | File |
 |--------|-------|--------|------|
+| Geography + global hydrology architecture (058 after Q80 legacy removal) | Core design sound; 5 P2 (predicate name clash, catalog lakes-as-land, hydrology never released, no version guard, stale state docs), 3 P3; follow-ups Q102–Q106 | `done` | [2026-11-03--030--geography-hydrology-architecture-review.md](./2026-11-03--030--geography-hydrology-architecture-review.md) |
 | world-terrain-050 A1′ independent code review | PASS WITH FOLLOW-UPS; 3 P2, bounds mathematics, native shadows and lifecycle | `done` | [2026-10-28--029--world-terrain-050-a1-skinned-mesh-culling-review.md](./2026-10-28--029--world-terrain-050-a1-skinned-mesh-culling-review.md) |
 | settlements-023 independent plan review | Streaming/rollback ownership and simulation continuity; 2 P1, 3 P2, 1 P3; draft corrected, author decisions open | `done` | [2026-10-28--028--settlements-023-streaming-lifecycle-plan-review.md](./2026-10-28--028--settlements-023-streaming-lifecycle-plan-review.md) |
 | V3 equipment catalogue Stage 3 | Independent compatibility/adapter review; 2 P2 and 2 P3; Stage 4 planning with conditions | `done` | [2026-10-27--027--v3-equipment-catalogue-stage-3-review.md](./2026-10-27--027--v3-equipment-catalogue-stage-3-review.md) |
