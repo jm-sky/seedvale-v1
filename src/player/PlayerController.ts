@@ -70,6 +70,7 @@ import {
   type TemporaryConditionsState,
 } from '../shared/temporaryConditions'
 import { applySlopeMovementConstraint, sampleSlope } from '../terrain/slopeConstraint'
+import { clampToWorldBox, worldEdgePushVelocity } from '../terrain/worldEdge'
 import { applyBarPercent, computeBarPercent, createAgentLabel, createLabelBar } from '../ui/agentStatusLabel'
 import { type Collider, colliderActiveAtY, resolvePosition, resolvePositionAudited } from '../world/collision'
 import { PLAYER_WALK_SPEED } from '../world/travelUnits'
@@ -1684,6 +1685,7 @@ export class PlayerController {
       this.mesh.rotation.y = Math.atan2(this.wish.x, this.wish.z)
     }
 
+    this.applyWorldEdge(dt)
     this.updateVerticalMotion(dt)
     this.flushMovementTraceRecord()
     this.tickFootsteps(dt)
@@ -1992,6 +1994,20 @@ export class PlayerController {
       this.collidersNearAtHeight(candidateX, candidateZ),
     )
     return this.caveHorizontal(resolved.x, resolved.z, this.mesh.position.y, PLAYER_COLLISION_RADIUS, PLAYER_HEIGHT)
+  }
+
+  /** World edge (plan world-terrain-058 E1): a swimmer in the outer band is pushed back
+   *  towards the continent faster than swim speed; the hard box clamp applies always. */
+  private applyWorldEdge(dt: number): void {
+    const p = this.mesh.position
+    if (this.swimming) {
+      const push = worldEdgePushVelocity(p.x, p.z)
+      p.x += push.x * dt
+      p.z += push.z * dt
+    }
+    const clamped = clampToWorldBox(p.x, p.z)
+    p.x = clamped.x
+    p.z = clamped.z
   }
 
   /** Teleport case (construction, `setPosition`, `setGround`) — snaps straight

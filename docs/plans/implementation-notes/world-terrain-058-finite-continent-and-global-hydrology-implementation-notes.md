@@ -62,7 +62,8 @@ Recon by Opus 2026-11-02 (queue Q69) at `21e5de82`. Verify against current code 
 ### E1 — world edge
 
 - Player: `src/player/PlayerController.ts` (swim state ~L94, `verticalMotion.ts`), water eligibility `src/player/worldWaterEligibility.ts`. Push-back = horizontal velocity term while swimming/wading outside the edge radius; hard clamp of the position at ±4096 m for every movement owner (player, `NpcAgent`, fauna `animalRoaming.ts`).
-- Map: `MAP_EXTENT_HALF` already 4096 (`mapConfig.ts`).
+- Map: `MAP_EXTENT_HALF` is 6144 (`mapConfig.ts`).
+- **Landed (Q79, 2026-11-03):** `src/terrain/worldEdge.ts` (pure: `clampToWorldBox`, `isInsideWorldBox`, `worldEdgePushVelocity`; box ±`WORLD_HALF_EXTENT` 6144 per 059 W3, not 4096). Push-back band = last 300 m (Chebyshev, per axis), linear 0 → 9 m/s (> walk 6 m/s) toward the origin, applied only while `swimming`; hard clamp always (`PlayerController.applyWorldEdge`, before `updateVerticalMotion`). NPC/fauna: `isInsideWorldBox` gate in `NpcAgent.isWalkable`/`isWalkableExterior` and `AnimalAgent.isWalkable` (they are land-bound, so the sea already keeps them in; this is defensive). Tests: `worldEdge.test.ts`. Not done: teleports (`setPosition`) are not clamped; push-back is felt/browser-unverified (queue §2).
 
 ## H1 results (Q73, 2026-11-02)
 

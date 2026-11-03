@@ -170,6 +170,7 @@ import {
   type TerrainPreparationRecord,
   terrainPreparationRemainingWork,
 } from '../terrain/terrainPreparation'
+import { isInsideWorldBox } from '../terrain/worldEdge'
 import { type AgentStatusLabelController, createAgentStatusLabelController } from '../ui/agentStatusLabel'
 import { gazeOpacityFactor } from '../ui/labelDistance'
 import { activityIconPresentation } from '../ui/npcLabelIconPresentation'
@@ -7258,6 +7259,7 @@ export class NpcAgent {
   }
 
   private isWalkable(x: number, z: number): boolean {
+    if (!isInsideWorldBox(x, z)) return false
     if (this.sampleHeight(x, z) <= this.waterLevel + WATER_MARGIN) return false
     return this.isWalkableCaveColliders(x, z)
   }
@@ -7279,6 +7281,7 @@ export class NpcAgent {
   /** Rescue/wander probe: no 097 occupied-exit exception — a point inside
    *  any nearby disk is not a valid recovery target (plan 108). */
   private isWalkableExterior(x: number, z: number): boolean {
+    if (!isInsideWorldBox(x, z)) return false
     if (this.sampleHeight(x, z) <= this.waterLevel + WATER_MARGIN) return false
     return isExteriorPoint(x, z, this.collidersNearAtHeight(x, z))
   }

@@ -54,6 +54,7 @@ import {
   resolveStableObservationLevel,
 } from '../simulation/observation'
 import { stepWithSlopeAndCollision, stepWithSlopeAndCollisionResident } from '../terrain/slopeConstraint'
+import { isInsideWorldBox } from '../terrain/worldEdge'
 import { type AgentStatusLabelController, createAgentStatusLabelController } from '../ui/agentStatusLabel'
 import { recordBloodHit } from '../world/bloodTraces'
 import { colliderActiveAtY, colliderContainsPoint } from '../world/collision'
@@ -5778,6 +5779,7 @@ export class AnimalAgent {
    *  `driveMounted()` call, same as every other `addFauna*Ms` counter; a
    *  no-op with no `performance.now()` calls while perf monitoring is off. */
   private isWalkable(x: number, z: number): boolean {
+    if (!isInsideWorldBox(x, z)) return false
     const agentCpuDiag = getAgentCpuDiag()
     const diagOn = agentCpuDiag.isEnabled()
     const waterT0 = diagOn ? performance.now() : 0
