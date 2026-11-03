@@ -201,6 +201,7 @@ Generated from TypeScript imports.
 - `terrain/biomeRegions.ts`
 - `terrain/chunkGrid.ts`
 - `terrain/chunkHeightmap.ts`
+- `terrain/waterSurface.ts`
 - `world/cropLifecycle.ts`
 - `world/parseSeed.ts`
 
@@ -233,6 +234,7 @@ Generated from TypeScript imports.
 - `terrain/chunkGrid.ts`
 - `terrain/chunkHeightmap.ts`
 - `terrain/chunkVegetation.ts`
+- `terrain/waterSurface.ts`
 - `world/locations/darkForestTreasureSite.ts`
 - `world/locations/darkForestTreasureSiteRuntime.ts`
 - `world/parseSeed.ts`
@@ -316,6 +318,7 @@ Generated from TypeScript imports.
 - `terrain/riverFord.ts`
 - `terrain/roadBridge.ts`
 - `terrain/waterBodies.ts`
+- `terrain/waterSurface.ts`
 - `terrain/worldHydrologyStore.ts`
 - `terrain/worleyNoise.ts`
 - `world/parseSeed.ts`
@@ -402,6 +405,7 @@ Generated from TypeScript imports.
 - `terrain/grassPlacement.ts`
 - `terrain/hydrology.test.ts`
 - `terrain/hydrology.ts`
+- `terrain/lakeWater.test.ts`
 - `terrain/naturalResources.test.ts`
 - `terrain/naturalResources.ts`
 - `terrain/riverNetwork.test.ts`
@@ -517,6 +521,7 @@ Generated from TypeScript imports.
 - `terrain/chunkHeightmap.ts`
 - `terrain/chunkVegetation.ts`
 - `terrain/coastalResources.ts`
+- `terrain/waterSurface.ts`
 - `world/parseSeed.ts`
 - `world/treeLifecycle.ts`
 
@@ -591,6 +596,7 @@ Generated from TypeScript imports.
 - `terrain/unloadedLandmarkLookup.ts`
 - `terrain/vegetationRegionBatcher.ts`
 - `terrain/waterSample.ts`
+- `terrain/waterSurface.ts`
 - `terrain/worldKnowledgeScan.ts`
 - `world/collision.ts`
 - `world/createBridge.ts`
@@ -724,6 +730,7 @@ Generated from TypeScript imports.
 - `terrain/chunkGrid.ts`
 - `terrain/chunkHeightmap.ts`
 - `terrain/riverNetwork.ts`
+- `terrain/waterSurface.ts`
 - `world/parseSeed.ts`
 - `world/treeLifecycle.ts`
 
@@ -1096,6 +1103,7 @@ Generated from TypeScript imports.
 - `terrain/fbm.ts`
 - `terrain/grassBounds.ts`
 - `terrain/riverNetwork.ts`
+- `terrain/waterSurface.ts`
 - `world/parseSeed.ts`
 
 **Imported by**
@@ -1136,6 +1144,20 @@ Generated from TypeScript imports.
 
 - `terrain/hydrology.test.ts`
 - `terrain/riverNetwork.ts`
+
+## `terrain/lakeWater.test.ts`
+
+**Imports**
+
+- `config/worldConfig.ts`
+- `terrain/chunkHeightmap.ts`
+- `terrain/waterBodies.ts`
+- `terrain/waterSample.ts`
+- `terrain/waterSurface.ts`
+- `terrain/worldHydrology.ts`
+- `terrain/worldHydrologyRegistry.ts`
+- `terrain/worldHydrologyStore.ts`
+- `world/map/mapProjection.ts`
 
 ## `terrain/mineableDeposit.test.ts`
 
@@ -1631,10 +1653,15 @@ Generated from TypeScript imports.
 
 ## `terrain/waterBodies.ts`
 
+**Imports**
+
+- `terrain/waterSurface.ts`
+
 **Imported by**
 
 - `terrain/chunkHeightmap.ts`
 - `terrain/chunkVegetation.test.ts`
+- `terrain/lakeWater.test.ts`
 - `terrain/terrainClassification.ts`
 - `terrain/waterBodies.test.ts`
 - `terrain/waterBodyKind.ts`
@@ -1680,6 +1707,7 @@ Generated from TypeScript imports.
 - `terrain/chunkHeightmap.ts`
 - `terrain/riverFord.ts`
 - `terrain/riverNetwork.ts`
+- `terrain/waterSurface.ts`
 
 **Imported by**
 
@@ -1700,8 +1728,25 @@ Generated from TypeScript imports.
 - `settlement/livestock.ts`
 - `settlement/rats.ts`
 - `terrain/chunkManager.ts`
+- `terrain/lakeWater.test.ts`
 - `terrain/waterSample.test.ts`
 - `world/animalPackHandoff.test.ts`
+
+## `terrain/waterSurface.ts`
+
+**Imported by**
+
+- `terrain/chunkCrops.ts`
+- `terrain/chunkEnvironment.ts`
+- `terrain/chunkHeightmap.ts`
+- `terrain/chunkItems.ts`
+- `terrain/chunkManager.ts`
+- `terrain/chunkVegetation.ts`
+- `terrain/grassPlacement.ts`
+- `terrain/lakeWater.test.ts`
+- `terrain/waterBodies.ts`
+- `terrain/waterSample.ts`
+- `world/map/mapProjection.ts`
 
 ## `terrain/worldHydrology.test.ts`
 
@@ -1726,6 +1771,7 @@ Generated from TypeScript imports.
 - `terrain/chunkHeightmapProtocol.ts`
 - `terrain/chunkWorkerPool.test.ts`
 - `terrain/chunkWorkerPool.ts`
+- `terrain/lakeWater.test.ts`
 - `terrain/riverNetwork.ts`
 - `terrain/worldHydrology.test.ts`
 - `terrain/worldHydrologyCache.ts`
@@ -1760,6 +1806,7 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `terrain/chunkHeightmap.worker.ts`
+- `terrain/lakeWater.test.ts`
 - `terrain/worldHydrologyRuntime.test.ts`
 - `terrain/worldHydrologyRuntime.ts`
 - `world/map/mapProjection.ts`
@@ -1813,6 +1860,7 @@ Generated from TypeScript imports.
 - `terrain/chunkWorkerPool.test.ts`
 - `terrain/grassPlacement.test.ts`
 - `terrain/hydrology.test.ts`
+- `terrain/lakeWater.test.ts`
 - `terrain/riverNetwork.test.ts`
 - `terrain/riverNetwork.ts`
 - `terrain/riverQuery.test.ts`

@@ -89,6 +89,7 @@ Generated from TypeScript imports.
 - `terrain/buildChunkGeometry.ts`
 - `terrain/chunkManager.ts`
 - `terrain/continentMask.test.ts`
+- `terrain/lakeWater.test.ts`
 - `terrain/worldHydrologyRuntime.test.ts`
 - `tools/assetBrowser/viewer/createViewer.ts`
 - `ui-vue/lib/mapTerrainPaint.test.ts`

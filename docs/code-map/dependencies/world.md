@@ -3603,6 +3603,7 @@ Generated from TypeScript imports.
 - `terrain/biomeRegions.ts`
 - `terrain/chunkHeightmap.ts`
 - `terrain/terrainClassification.ts`
+- `terrain/waterSurface.ts`
 - `terrain/worldHydrologyRegistry.ts`
 - `world/map/mapConfig.ts`
 - `world/map/mapTypes.ts`
@@ -3613,6 +3614,7 @@ Generated from TypeScript imports.
 - `app/worldBundle.ts`
 - `debug/locationQueries.ts`
 - `main.ts`
+- `terrain/lakeWater.test.ts`
 - `terrain/worldHydrologyRuntime.test.ts`
 - `ui-vue/lib/mapFogLayer.ts`
 - `ui-vue/lib/mapTerrainPaint.test.ts`

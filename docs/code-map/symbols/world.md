@@ -1619,18 +1619,18 @@ Generated from exported TypeScript symbols.
 
 ## `world/map/mapProjection.ts`
 
-- `classifyMapTexel` — function — line 84
+- `classifyMapTexel` — function — line 85
   - domain: ui-input
-- `createMapProjection` — function — line 130
-- `mapCellBounds` — function — line 33
-- `mapCellCenter` — function — line 26
-- `mapCellKey` — function — line 15
-- `MapProjection` — type — line 123
-- `MapTexelClass` — type — line 73
-- `parseMapCellKey` — function — line 47
-- `projectCellAt` — function — line 119
-- `rawSampleParamsFromWorld` — function — line 56
-- `worldToMapCell` — function — line 19
+- `createMapProjection` — function — line 132
+- `mapCellBounds` — function — line 34
+- `mapCellCenter` — function — line 27
+- `mapCellKey` — function — line 16
+- `MapProjection` — type — line 125
+- `MapTexelClass` — type — line 74
+- `parseMapCellKey` — function — line 48
+- `projectCellAt` — function — line 121
+- `rawSampleParamsFromWorld` — function — line 57
+- `worldToMapCell` — function — line 20
 
 ## `world/map/mapRasterTile.ts`
 
