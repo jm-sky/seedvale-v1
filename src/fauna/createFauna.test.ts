@@ -5,10 +5,15 @@ import {
   clearsRiverChannel,
   FAUNA_URLS,
   faunaGltfUrls,
+  habitatSpawnerRingAttempts,
   isDeerEdgeHabitat,
   isNearRoadCorridor,
+  isPredatorDenSpec,
   isValidWildFaunaSpawnSite,
+  MIN_PREDATOR_DEN_SEPARATION,
+  PREDATOR_DEN_RING_OFFSET,
   resolveWildFaunaSpawnPosition,
+  SPAWNER_RING_OFFSET,
   SPAWNER_SPECS,
   spawnerId,
 } from './createFauna'
@@ -199,5 +204,24 @@ describe('isDeerEdgeHabitat (plan fauna-016 §1 — deer/stag forest-edge spawn 
 
   it('rejects deep forest', () => {
     expect(isDeerEdgeHabitat(0.95)).toBe(false)
+  })
+})
+
+describe('habitat spawner rings (queue Q100)', () => {
+  it('places every predator den in its own ring, beyond the near habitat ring', () => {
+    const dens = SPAWNER_SPECS.filter(isPredatorDenSpec)
+    expect(dens.map((s) => s.type).sort()).toEqual(['rockDen', 'rockDen', 'wolfDen'])
+    expect(PREDATOR_DEN_RING_OFFSET[0]).toBeGreaterThan(SPAWNER_RING_OFFSET[1])
+    expect(MIN_PREDATOR_DEN_SEPARATION).toBeGreaterThanOrEqual(50)
+    for (const den of dens) {
+      const attempts = habitatSpawnerRingAttempts(den)
+      expect(attempts[0]).toEqual({ ring: PREDATOR_DEN_RING_OFFSET, denSpacing: true })
+      // Last resort is the pre-Q100 rule, so a mandatory den is never dropped.
+      expect(attempts.at(-1)).toEqual({ ring: SPAWNER_RING_OFFSET, denSpacing: false })
+    }
+  })
+
+  it('keeps the deer thicket in the near ring without den spacing', () => {
+    expect(habitatSpawnerRingAttempts({ type: 'thicket' })).toEqual([{ ring: SPAWNER_RING_OFFSET, denSpacing: false }])
   })
 })

@@ -49,4 +49,11 @@ for (const seed of seeds) {
   const withReal = pickLargeCaveSites({ ...base, villages: real })
   const inside = (list: typeof withReal) => list.filter((c) => real.some((v) => Math.hypot(c.x - v.x, c.z - v.z) < v.radius)).length
   console.log(`seed ${seed}: settlements ${sites.length} | caves home-only ${homeOnly.length} (inside real footprint: ${inside(homeOnly)}) | caves real-footprints ${withReal.length} (inside: ${inside(withReal)})`)
+  const homeSite = sites.find((s) => s.cell.gx === 0 && s.cell.gz === 0) ?? { x: 0, z: 0 }
+  const homeDist = withReal.map((c) => Math.hypot(c.x - homeSite.x, c.z - homeSite.z)).sort((a, b) => a - b)
+  let minPair = Infinity
+  for (let i = 0; i < withReal.length; i++) for (let j = i + 1; j < withReal.length; j++) {
+    minPair = Math.min(minPair, Math.hypot(withReal[i].x - withReal[j].x, withReal[i].z - withReal[j].z))
+  }
+  console.log(`  home (${homeSite.x.toFixed(0)}, ${homeSite.z.toFixed(0)}): nearest caves ${homeDist.slice(0, 3).map((d) => d.toFixed(0)).join(' / ')} m | within 300 m ${homeDist.filter((d) => d < 300).length} | min cave-cave ${minPair.toFixed(0)} m`)
 }

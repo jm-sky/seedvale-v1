@@ -274,6 +274,38 @@ const SPAWN_RING_OFFSET: Record<SpawnProfile, [number, number]> = {
  *  spawner ring instead of a fixed guess. */
 export const SPAWNER_RING_OFFSET: [number, number] = [25, 45]
 
+/** [minOffset, maxOffset] past the footprint radius for **predator dens**
+ *  (`rockDen`, `wolfDen`) — queue Q100 (author 2026-11-03: wolf/bear dens
+ *  sat right at the home village edge, too near and too dense). The deer
+ *  thicket keeps `SPAWNER_RING_OFFSET`. A den that finds no site here falls
+ *  back to `SPAWNER_RING_OFFSET`, so no den is ever dropped. */
+export const PREDATOR_DEN_RING_OFFSET: [number, number] = [70, 130]
+
+/** Minimum distance (m) between two predator dens, and between a den and any
+ *  large-cave mouth (`denAvoidPoints`) — queue Q100: every den reuses the
+ *  cave-mouth prop, so clustered dens read as a cluster of caves. */
+export const MIN_PREDATOR_DEN_SEPARATION = 60
+
+/** Whether a `SPAWNER_SPECS` entry is a predator den (Q100 ring + spacing). */
+export function isPredatorDenSpec(spec: { type: PreySpawner['type'] }): boolean {
+  return spec.type === 'rockDen' || spec.type === 'wolfDen'
+}
+
+/** Ordered `[ring, keepDenSpacing]` attempts for one habitat spawner (Q100):
+ *  predator dens try their own ring with den spacing, then the near ring with
+ *  spacing, then the near ring without it (the pre-Q100 rule) — a mandatory
+ *  den (quests bind to the wolf den / home rock den) is never dropped. */
+export function habitatSpawnerRingAttempts(
+  spec: { type: PreySpawner['type'] },
+): readonly { ring: readonly [number, number], denSpacing: boolean }[] {
+  if (!isPredatorDenSpec(spec)) return [{ ring: SPAWNER_RING_OFFSET, denSpacing: false }]
+  return [
+    { ring: PREDATOR_DEN_RING_OFFSET, denSpacing: true },
+    { ring: SPAWNER_RING_OFFSET, denSpacing: true },
+    { ring: SPAWNER_RING_OFFSET, denSpacing: false },
+  ]
+}
+
 /** Minimum distance (world units) between any two wild-fauna spawn points
  *  placed while building one settlement's fauna — ring spawns and cave/
  *  thicket spawners share one running list so e.g. a cave spawner can't land
@@ -699,6 +731,10 @@ export async function createFauna(
    *  Optional so existing callers/tests without a `ChunkManager` keep
    *  compiling. */
   sampleResidentSurfaceGround?: RuntimeGroundSampler,
+  /** Large-cave mouth positions (queue Q100) — predator dens keep
+   *  `MIN_PREDATOR_DEN_SEPARATION` from them so a den never reads as a
+   *  second cave next to a real one. Optional; omitted = no constraint. */
+  denAvoidPoints?: readonly { x: number, z: number }[],
 ): Promise<Fauna> {
   const { bootMark, bootMarkEnd } = useBootMark('createFauna')
 
@@ -1023,7 +1059,10 @@ export async function createFauna(
       coastThreshold: coast?.coastThreshold,
     })
   }
-  const [spawnerMinOffset, spawnerMaxOffset] = SPAWNER_RING_OFFSET
+  /** Predator dens placed so far + large-cave mouths (Q100 spacing). */
+  const denSpacingPoints: { x: number, z: number }[] = [...(denAvoidPoints ?? [])]
+  const denSpaced = (x: number, z: number): boolean =>
+    denSpacingPoints.every((p) => Math.hypot(p.x - x, p.z - z) >= MIN_PREDATOR_DEN_SEPARATION)
   /** Per-`type` counter feeding `spawnerId()` — lets a second `rockDen`-type
    *  entry (e.g. the bear den) get its own stable id instead of colliding
    *  with the first (plan 188). */
@@ -1039,37 +1078,25 @@ export async function createFauna(
     const baseFilter = spec.type === 'thicket'
       ? (x: number, z: number) => spawnerSiteOk(x, z) && sampleForestFactor(x, z) > 0.28
       : spawnerSiteOk
-    const filter = (x: number, z: number) => baseFilter(x, z) && farFromOtherSpawns(x, z)
-    // Rock den prefers a sloped site (plan 083 — carved depression reads as
-    // cut into a hillside); falls back to any valid flat site if none found.
-    const slopedFilter = (x: number, z: number) =>
-      filter(x, z) && measureSlope(x, z, CAVE_SLOPE_SAMPLE_RADIUS, sampleHeight).drop >= CAVE_MIN_SLOPE_DROP
-    const pos = spec.type === 'rockDen'
-      ? findWalkableNear(
-          settlementCenter.x,
-          settlementCenter.z,
-          footprintRadius + spawnerMinOffset,
-          footprintRadius + spawnerMaxOffset,
-          slopedFilter,
-          72,
-        ) ?? findWalkableNear(
-          settlementCenter.x,
-          settlementCenter.z,
-          footprintRadius + spawnerMinOffset,
-          footprintRadius + spawnerMaxOffset,
-          filter,
-          72,
-        )
-      : findWalkableNear(
-          settlementCenter.x,
-          settlementCenter.z,
-          footprintRadius + spawnerMinOffset,
-          footprintRadius + spawnerMaxOffset,
-          filter,
-          72,
-        )
+    let pos: { x: number, z: number } | null = null
+    for (const attempt of habitatSpawnerRingAttempts(spec)) {
+      const filter = (x: number, z: number) =>
+        baseFilter(x, z) && farFromOtherSpawns(x, z) && (!attempt.denSpacing || denSpaced(x, z))
+      // Rock den prefers a sloped site (plan 083 — carved depression reads as
+      // cut into a hillside); falls back to any valid flat site if none found.
+      const slopedFilter = (x: number, z: number) =>
+        filter(x, z) && measureSlope(x, z, CAVE_SLOPE_SAMPLE_RADIUS, sampleHeight).drop >= CAVE_MIN_SLOPE_DROP
+      const minR = footprintRadius + attempt.ring[0]
+      const maxR = footprintRadius + attempt.ring[1]
+      pos = (spec.type === 'rockDen'
+        ? findWalkableNear(settlementCenter.x, settlementCenter.z, minR, maxR, slopedFilter, 72)
+        : null)
+        ?? findWalkableNear(settlementCenter.x, settlementCenter.z, minR, maxR, filter, 72)
+      if (pos) break
+    }
     if (!pos) continue
     placedSpawnPoints.push(pos)
+    if (isPredatorDenSpec(spec)) denSpacingPoints.push(pos)
     const spawner: PreySpawner = {
       ...pos,
       ...spec,
@@ -1214,8 +1241,9 @@ export async function createFauna(
     }
     for (const extra of pressure.extraSpawners) {
       const rng = createSeededRandom(closedPressurePlacementSeed(seed, extra.id))
-      const minDist = extra.footprintRadius + spawnerMinOffset
-      const maxDist = extra.footprintRadius + spawnerMaxOffset
+      // Closed-settlement pressure dens keep the near ring (not part of Q100).
+      const minDist = extra.footprintRadius + SPAWNER_RING_OFFSET[0]
+      const maxDist = extra.footprintRadius + SPAWNER_RING_OFFSET[1]
       const filter = (x: number, z: number) => spawnerSiteOk(x, z) && farFromOtherSpawns(x, z)
       const slopedFilter = (x: number, z: number) =>
         filter(x, z) && measureSlope(x, z, CAVE_SLOPE_SAMPLE_RADIUS, sampleHeight).drop >= CAVE_MIN_SLOPE_DROP

@@ -54,7 +54,7 @@ import type { TreeLifecycle } from '../world/treeLifecycle'
 import type { WorkContractRecord } from '../world/workContract'
 import { createNaturalWaterKindAt } from '../fauna/animalNaturalWater'
 import { type SavedSpawnPointState, snapshotSpawnPointState } from '../fauna/AnimalSpawner'
-import { createFauna, type Fauna, SPAWNER_RING_OFFSET } from '../fauna/createFauna'
+import { createFauna, type Fauna, PREDATOR_DEN_RING_OFFSET, SPAWNER_RING_OFFSET } from '../fauna/createFauna'
 import { createDestinationThreatHooks } from '../fauna/destinationThreatHooks'
 import { buildDungeonResidentsPlan } from '../fauna/dungeonResidents'
 import { createHuntingHooks } from '../fauna/huntingHooks'
@@ -865,7 +865,8 @@ function buildFauna(
     // 080 — was a flat 45–65 m from home); size the query so its half-extent
     // covers that reach plus a road halfWidth clearance margin, same 10 m
     // margin the original fixed 150 (→ half 75, ring max 65) already implied.
-    const spawnerMaxReach = footprintRadius + SPAWNER_RING_OFFSET[1]
+    // Q100: predator dens use their own, wider ring — cover whichever reaches further.
+    const spawnerMaxReach = footprintRadius + Math.max(SPAWNER_RING_OFFSET[1], PREDATOR_DEN_RING_OFFSET[1])
     center = new Vector3(homeDef.x, homeDef.y, homeDef.z)
     roadSegments = chunkManager.roadCorridorsNear(
       center.x,
@@ -937,6 +938,7 @@ function buildFauna(
     onAnimalDeathSound,
     closedSettlements,
     chunkManager.sampleRuntimeSurfaceGround,
+    caves?.definitions().map((def) => ({ x: def.entrance.x, z: def.entrance.z })),
   ).finally(() => bootMarkEnd('createFauna'))
 }
 
