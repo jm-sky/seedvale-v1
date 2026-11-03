@@ -38,8 +38,12 @@ type WallKitSpec = {
 }
 type SlotKitSpec = { halfU: number, halfV: number }
 
-/** Distance of a wall piece back from the exterior wall face (V3 `WALL_FACE_OFFSET_M`). */
-export const WALL_FACE_OFFSET_M = 0.31
+/** Distance of the exterior wall face from the footprint line, per side. The MegaKit plaster module is
+ *  asymmetric about its origin (z -0.314..+0.093) and `wallLocalTransform` rotates it so the thick side faces
+ *  outward on front/back (0.314) but inward on left/right (exterior only 0.093) — measured from the GLB. */
+export const WALL_FACE_OFFSET_M: Record<HouseWallSide, number> = { front: 0.314, back: 0.314, left: 0.093, right: 0.093 }
+/** Kits that hang beside the entrance (guard post): spots are tried nearest-to-door first. */
+const NEAR_DOOR_KITS: ReadonlySet<keyof typeof WALL_KITS> = new Set(['banner', 'shield'])
 /** Door/window opening extents used for the overlap test. */
 const OPENING_HALF_SPAN_M = 0.95
 const DOOR_TOP_Y = 2.4
@@ -188,7 +192,7 @@ export function wallKitFits(
 function wallPose(def: HouseDefinition, side: HouseWallSide, along: number, kit: WallKitSpec) {
   const n = SIDE_NORMAL[side]
   const off = (side === 'front' || side === 'back' ? def.footprint.depth : def.footprint.width) / 2
-    + WALL_FACE_OFFSET_M
+    + WALL_FACE_OFFSET_M[side]
   // tangent along the wall in house-local axes
   const t = side === 'front' || side === 'back' ? { x: 1, z: 0 } : { x: 0, z: 1 }
   return { x: n.x * off + t.x * along, y: kit.mountY, z: n.z * off + t.z * along }
@@ -243,7 +247,7 @@ export function professionDressingFor(
   if (lamp) used.push(lamp)
   for (const { kit, role } of wallKits.slice(0, MAX_WALL_PIECES_PER_HOUSE)) {
     const spec = WALL_KITS[kit]
-    const placed = placeWallKit(houseDef, spec, used, random)
+    const placed = placeWallKit(houseDef, kit, spec, used, random)
     if (!placed) continue
     used.push({ side: placed.side, along: placed.along, half: spec.halfAlong, bottomY: spec.bottomY, topY: spec.topY })
     const pose = wallPose(houseDef, placed.side, placed.along, spec)
@@ -270,7 +274,11 @@ const FALLBACK_SCAN_STEP_M = 0.25
 
 /** Candidate spots, best first: jittered module centres per side (original behaviour), then a fine
  *  deterministic scan of every wall so a free stretch is found before a piece is dropped. */
-function wallCandidates(def: HouseDefinition, jitter: number): { side: HouseWallSide, along: number }[] {
+function wallCandidates(
+  def: HouseDefinition,
+  jitter: number,
+  kit: keyof typeof WALL_KITS,
+): { side: HouseWallSide, along: number }[] {
   const out: { side: HouseWallSide, along: number }[] = []
   for (const side of SIDE_ORDER) {
     const modules = Math.round(sideLength(def, side) / HOUSE_MODULE_M)
@@ -280,17 +288,37 @@ function wallCandidates(def: HouseDefinition, jitter: number): { side: HouseWall
     const half = sideLength(def, side) / 2
     for (let a = -half; a <= half + 1e-9; a += FALLBACK_SCAN_STEP_M) out.push({ side, along: a })
   }
+  if (NEAR_DOOR_KITS.has(kit)) {
+    // Entrance dressing: one list, nearest to the door first (stable sort keeps the order above on ties).
+    const door = doorPoint(def)
+    if (door) {
+      const dist = (c: { side: HouseWallSide, along: number }) => {
+        const p = wallPose(def, c.side, c.along, WALL_KITS[kit])
+        return Math.hypot(p.x - door.x, p.z - door.z)
+      }
+      return out.map((c) => ({ c, d: dist(c) })).sort((a, b) => a.d - b.d).map((e) => e.c)
+    }
+  }
   return out
+}
+
+/** House-local centre of the first door (on its wall line), or `null` when there is none. */
+function doorPoint(def: HouseDefinition): { x: number, z: number } | null {
+  const door = (def.openings as readonly HouseOpening[]).find((o) => o.type === 'door' && o.side != null && o.moduleIndex != null)
+  if (!door?.side || door.moduleIndex == null) return null
+  const p = wallPose(def, door.side, moduleCentre(def, door.side, door.moduleIndex), WALL_KITS.shield)
+  return { x: p.x, z: p.z }
 }
 
 function placeWallKit(
   def: HouseDefinition,
+  kit: keyof typeof WALL_KITS,
   spec: WallKitSpec,
   used: readonly WallObstacle[],
   random: () => number,
 ): { side: HouseWallSide, along: number } | null {
   const jitter = (random() - 0.5) // seeded ±0.5 m
-  for (const c of wallCandidates(def, jitter)) {
+  for (const c of wallCandidates(def, jitter, kit)) {
     if (wallKitFits(def, c.side, c.along, spec, used)) return c
   }
   return null

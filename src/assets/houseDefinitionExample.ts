@@ -430,15 +430,14 @@ function lampFor(
 ): { style: 'wall', mount: HouseLampMount } {
   const widthMods = Math.round(footprint.width / HOUSE_MODULE_M)
   const door = openings.find((o) => o.type === 'door' && o.side === 'front')
-  let module = Math.floor(widthMods / 2)
-  if (door) {
-    module = door.moduleIndex + 1 < widthMods ? door.moduleIndex + 1 : Math.max(0, door.moduleIndex - 1)
-  }
+  // Above the door (keeps the wall beside it free for entrance dressing, e.g. the guard's shield);
+  // the lantern hangs 0.39 m below the mount, so y 2.85 clears the 2.4 m door opening.
+  const module = door ? door.moduleIndex : Math.floor(widthMods / 2)
   return {
     style: 'wall',
     mount: {
       x: -footprint.width / 2 + (module + 0.5) * HOUSE_MODULE_M,
-      y: 1.85,
+      y: door ? 2.85 : 1.85,
       z: -footprint.depth / 2 - 0.12,
     },
   }

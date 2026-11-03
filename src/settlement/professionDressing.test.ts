@@ -13,6 +13,7 @@ import {
   professionDressingFor,
   SLOT_KITS,
   slotKitCorners,
+  WALL_FACE_OFFSET_M,
   WALL_KITS,
   type WallDressingPlacement,
   wallKitFits,
@@ -121,11 +122,12 @@ describe('wall-piece collision avoidance (HOUSE-GUARD)', () => {
   it('reference case: cottage-4x4-c shield no longer sits on the lantern (was x=0.98 vs lamp x=1)', () => {
     const def = DEFS.find((d) => d.id === 'cottage-4x4-c')!
     const lamp = lampWallObstacle(def)!
-    expect(lamp).toMatchObject({ side: 'front', along: 1 })
+    // The lantern now hangs above the door (door module 0 → x=-1), leaving the wall beside it free.
+    expect(lamp).toMatchObject({ side: 'front', along: -1 })
+    expect(lamp.bottomY).toBeGreaterThan(2.4)
     const [shield, banner] = wallsOf(def, ['guard'], REF_SEED)
     expect(shield?.kit).toBe('shield')
     expect(banner?.kit).toBe('banner')
-    expect(shield!.side === 'front' && Math.abs(shield!.x - lamp.along) < 0.44).toBe(false)
   })
 
   it('places the shield before the banner and both when a free wall exists', () => {
@@ -151,9 +153,29 @@ describe('wall-piece collision avoidance (HOUSE-GUARD)', () => {
   it('a wall-lantern obstacle also blocks other kits at its height', () => {
     const def = DEFS.find((d) => d.id === 'cottage-4x4-c')!
     const lamp = lampWallObstacle(def)!
-    expect(wallKitFits(def, lamp.side, lamp.along, WALL_KITS.shield)).toBe(true) // openings alone allow it
-    expect(wallKitFits(def, lamp.side, lamp.along, WALL_KITS.shield, [lamp])).toBe(false)
-    expect(wallKitFits(def, lamp.side, lamp.along, WALL_KITS.antlers, [lamp])).toBe(true) // antlers hang above the lantern
+    const low = { ...lamp, side: 'back' as const, along: -1, bottomY: 1.0, topY: 2.0 } // a lantern at shield height
+    expect(wallKitFits(def, 'back', -1, WALL_KITS.shield, [])).toBe(true) // free of openings
+    expect(wallKitFits(def, 'back', -1, WALL_KITS.shield, [low])).toBe(false)
+    expect(wallKitFits(def, 'back', -1, WALL_KITS.antlers, [low])).toBe(true) // antlers hang above it
+  })
+
+  it('sits flush on every side (left/right exterior face is only 0.093 m out, front/back 0.314 m)', () => {
+    for (const def of DEFS) {
+      for (let seed = 0; seed < 10; seed++) {
+        for (const w of wallsOf(def, ['guard', 'hunter'], REF_SEED + seed, seed)) {
+          const alongAxis = w.side === 'front' || w.side === 'back' ? def.footprint.depth : def.footprint.width
+          const off = Math.abs(w.side === 'front' || w.side === 'back' ? w.z : w.x) - alongAxis / 2
+          expect(off).toBeCloseTo(WALL_FACE_OFFSET_M[w.side], 6)
+        }
+      }
+    }
+  })
+
+  it('hangs the guard shield beside the entrance: front wall or the adjacent side, never behind', () => {
+    for (const def of DEFS) {
+      const shield = wallsOf(def, ['guard'], REF_SEED)[0]!
+      expect(shield.kit).toBe('shield')
+      expect(shield.side).not.toBe('back')
+    }
   })
 })
-
