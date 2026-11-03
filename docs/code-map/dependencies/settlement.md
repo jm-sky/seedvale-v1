@@ -2621,7 +2621,6 @@ Generated from TypeScript imports.
 - `terrain/digFinds.ts`
 - `ui-vue/store.ts`
 - `world/createCaves.test.ts`
-- `world/createCaves.ts`
 - `world/expeditionParty.ts`
 - `world/locations/locationProximityDiscovery.test.ts`
 - `world/locations/locationProximityDiscovery.ts`

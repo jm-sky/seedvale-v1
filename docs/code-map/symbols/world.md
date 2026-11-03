@@ -941,14 +941,14 @@ Generated from exported TypeScript symbols.
 
 ## `world/createCaves.ts`
 
-- `CaveInteriorQueryChannel` — type — line 134
-- `Caves` — type — line 136
-- `createCaves` — function — line 410
+- `CaveInteriorQueryChannel` — type — line 133
+- `Caves` — type — line 135
+- `createCaves` — function — line 412
   - system: caves
   - role: Owns cave topologies, retained heightfield representations (presentation mesh + terrain mouth cutout + every spatial query), streamed interior presentation, and deterministic adventure content anchors; `PlayerController` ground goes through `queryGround`, lateral containment through `resolveHorizontal`, camera and swim eligibility through `occupancyAt`. `queryInterior` is the hysteretic cave-interior signal: `player` (default, audio) and `camera` (scene fog) keep separate confirmation slots.
   - owns: Caves
   - lifecycle: rebuild
-- `CreateCavesOptions` — type — line 354
+- `CreateCavesOptions` — type — line 353
   - domain: world-terrain
   - system: worldgen-cache
 

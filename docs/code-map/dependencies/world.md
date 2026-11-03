@@ -1943,7 +1943,6 @@ Generated from TypeScript imports.
 - `perf/active.ts`
 - `settlement/families.ts`
 - `settlement/houseLighting.ts`
-- `settlement/settlementGenerator.ts`
 - `shared/bootMark.ts`
 - `terrain/chunkManager.ts`
 - `world/caveVolume.ts`
