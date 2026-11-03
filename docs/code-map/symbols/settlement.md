@@ -921,27 +921,27 @@ Generated from exported TypeScript symbols.
 
 - `DressingKit` — type — line 22
   - domain: settlements-npcs Profession-signature home dressing (queue Q48 / Q42 plan §2.1) — pure, Three.js-free deterministic projection of a household's generated professions onto small wall pieces (house-local) and one freestanding piece inside the yard's reserved profession rectangle. Not persisted and not cached: it is derived at settlement build time from `def.families` and the planned plots, like the blacksmith workplace.
-- `DressingPlacement` — type — line 116
-- `houseLampMountFor` — function — line 144
-- `lampWallObstacle` — function — line 149
-- `MAX_WALL_PIECES_PER_HOUSE` — const — line 55
-- `professionDressingFor` — function — line 223
-- `SLOT_KITS` — const — line 63
-- `SlotDressingPlacement` — type — line 104
-- `slotKitCorners` — function — line 333
-- `WALL_FACE_OFFSET_M` — const — line 44
-- `WALL_KITS` — const — line 57
-- `WallDressingPlacement` — type — line 90
-- `wallKitFits` — function — line 172
-- `WallObstacle` — type — line 133
+- `DressingPlacement` — type — line 119
+- `houseLampMountFor` — function — line 147
+- `lampWallObstacle` — function — line 152
+- `MAX_WALL_PIECES_PER_HOUSE` — const — line 57
+- `professionDressingFor` — function — line 226
+- `SLOT_KITS` — const — line 66
+- `SlotDressingPlacement` — type — line 107
+- `slotKitCorners` — function — line 378
+- `WALL_FACE_OFFSET_M` — const — line 46
+- `WALL_KITS` — const — line 59
+- `WallDressingPlacement` — type — line 93
+- `wallKitFits` — function — line 175
+- `WallObstacle` — type — line 136
 
 ## `settlement/professionDressingMesh.ts`
 
-- `buildProfessionDressingMeshes` — function — line 186
-- `DressingHouse` — type — line 179
+- `buildProfessionDressingMeshes` — function — line 188
+- `DressingHouse` — type — line 181
 - `extractProfessionDressingPack` — function — line 90
 - `loadProfessionDressingPack` — function — line 115
-- `professionDressingColliders` — function — line 258
+- `professionDressingColliders` — function — line 260
 - `ProfessionDressingPack` — type — line 40
 
 ## `settlement/professionFamilySurnames.ts`

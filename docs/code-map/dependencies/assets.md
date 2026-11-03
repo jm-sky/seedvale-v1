@@ -209,6 +209,7 @@ Generated from TypeScript imports.
 
 - `assets/constructionCatalog.test.ts`
 - `assets/storehouseDefinition.test.ts`
+- `house-browser/dressingPreview.test.ts`
 - `house-browser/houseBrowserScene.ts`
 - `settlement/blacksmithYard.test.ts`
 - `settlement/houseBuilder.test.ts`
@@ -228,6 +229,9 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `assets/houseDefinitionExample.ts`
+- `house-browser/dressingPreview.ts`
+- `house-browser/houseBrowserScene.ts`
+- `house-browser/lampPreview.ts`
 - `settlement/houseBuilder.test.ts`
 - `settlement/houseBuilder.ts`
 - `settlement/professionDressing.ts`
@@ -258,6 +262,7 @@ Generated from TypeScript imports.
 - `fauna/bloodSplat.ts`
 - `fauna/createFauna.ts`
 - `fauna/harvestedRemains.ts`
+- `house-browser/lampPreview.ts`
 - `items/campBlanketProp.ts`
 - `items/createDroppedItems.ts`
 - `items/createItemSpawners.ts`

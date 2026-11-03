@@ -627,6 +627,7 @@ Generated from TypeScript imports.
 - `debug/npcDebugApi.ts`
 - `debug/npcInspector.ts`
 - `economy/initial.ts`
+- `house-browser/dressingPreview.ts`
 - `perf/heavySettlementScenario.test.ts`
 - `perf/heavySettlementScenario.ts`
 - `quests/lostTreasureChronicleDeciphering.test.ts`
@@ -996,6 +997,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `house-browser/lampPreview.ts`
 - `settlement/houseLighting.lantern.test.ts`
 - `settlement/houseLighting.test.ts`
 - `settlement/props.ts`
@@ -1229,6 +1231,8 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `house-browser/dressingPreview.test.ts`
+- `house-browser/dressingPreview.ts`
 - `settlement/blacksmithYard.test.ts`
 - `settlement/blacksmithYard.ts`
 - `settlement/cemeteryReservation.ts`
@@ -2007,6 +2011,9 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `house-browser/dressingPreview.test.ts`
+- `house-browser/dressingPreview.ts`
+- `house-browser/lampPreview.ts`
 - `settlement/professionDressing.test.ts`
 - `settlement/professionDressingMesh.test.ts`
 - `settlement/professionDressingMesh.ts`
@@ -2031,6 +2038,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `house-browser/dressingPreview.ts`
 - `settlement/professionDressingMesh.test.ts`
 - `settlement/props.ts`
 
@@ -2107,6 +2115,7 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `assets/assetIndex.ts`
+- `house-browser/lampPreview.ts`
 - `settlement/campfireProps.ts`
 - `settlement/cemeteryPack.ts`
 - `settlement/houseLighting.lantern.test.ts`

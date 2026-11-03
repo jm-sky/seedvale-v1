@@ -446,6 +446,8 @@ Generated from TypeScript imports.
 - `app/createApp.ts`
 - `economy/npcWork.ts`
 - `economy/production.ts`
+- `house-browser/dressingPreview.test.ts`
+- `house-browser/dressingPreview.ts`
 - `quests/caveLocationDescription.ts`
 - `quests/huntersBrotherhoodIntroduction.test.ts`
 - `quests/opportunities/worldQuestOpportunityTypes.ts`
