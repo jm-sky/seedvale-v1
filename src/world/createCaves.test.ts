@@ -72,6 +72,13 @@ function productionHeightfield(caveId: string): ReturnType<typeof buildCaveHeigh
   return buildCaveHeightfieldRepresentation(topology, walkSurfaceAt).heightfield
 }
 
+/** Fixed exclusion discs standing in for a world settlement layout (lattice-spaced, home at origin). */
+const TEST_VILLAGES = cellsWithinRadius({ gx: 0, gz: 0 }, 3).map((cell) => ({
+  x: cell.gx * SETTLEMENT_GRID_STEP,
+  z: cell.gz * SETTLEMENT_GRID_STEP,
+  radius: villageSizeConfig('MD').footprintRadius,
+}))
+
 const SEED = 1136726869
 
 type FakeChunkManager = ChunkManager & {
@@ -132,7 +139,7 @@ let caves: Caves
 beforeAll(() => {
   scene = new THREE.Scene()
   chunkManager = fakeChunkManager()
-  caves = createCaves(scene, chunkManager, SEED, villageSizeConfig('MD').footprintRadius, 0.45)
+  caves = createCaves(scene, chunkManager, SEED, villageSizeConfig('MD').footprintRadius, 0.45, undefined, { settlementFootprints: TEST_VILLAGES })
 })
 
 function caveGroup(caveId: string, targetScene = scene): THREE.Object3D | undefined {
@@ -397,7 +404,7 @@ describe('createCaves (world-terrain-019 B)', () => {
 
     // Fresh state: two exterior samples, then two interior samples.
     caves.dispose()
-    caves = createCaves(scene, chunkManager, SEED, villageSizeConfig('MD').footprintRadius, 0.45)
+    caves = createCaves(scene, chunkManager, SEED, villageSizeConfig('MD').footprintRadius, 0.45, undefined, { settlementFootprints: TEST_VILLAGES })
     expect(caves.queryInterior(ax, ay, az)).toBe(false)
     expect(caves.queryInterior(ax, ay, az)).toBe(false)
     // A single interior sample does not flip the confirmed state.
@@ -429,7 +436,7 @@ describe('createCaves (world-terrain-019 B)', () => {
     const ay = chunkManager.sampleBaseHeight(ax, az) - mouthCarveDepth(ax, az, def.entrance) + 0.2
 
     caves.dispose()
-    caves = createCaves(scene, chunkManager, SEED, villageSizeConfig('MD').footprintRadius, 0.45)
+    caves = createCaves(scene, chunkManager, SEED, villageSizeConfig('MD').footprintRadius, 0.45, undefined, { settlementFootprints: TEST_VILLAGES })
 
     // First sample per channel is taken immediately (empty hysteresis).
     expect(caves.queryInterior(deep!.x, deep!.y, deep!.z, 'camera')).toBe(true)
@@ -589,7 +596,7 @@ describe('createCaves (world-terrain-019 B)', () => {
     function isolatedCaves(): { scene: THREE.Scene, caves: Caves, chunkManager: FakeChunkManager } {
       const scene = new THREE.Scene()
       const chunkManager = fakeChunkManager()
-      const caves = createCaves(scene, chunkManager, SEED, villageSizeConfig('MD').footprintRadius, 0.45)
+      const caves = createCaves(scene, chunkManager, SEED, villageSizeConfig('MD').footprintRadius, 0.45, undefined, { settlementFootprints: TEST_VILLAGES })
       return { scene, caves, chunkManager }
     }
 
@@ -674,12 +681,7 @@ describe('createCaves (world-terrain-019 B)', () => {
     })()
     expect(afterStream).toEqual(mine)
 
-    const homeFootprint = villageSizeConfig('MD').footprintRadius
-    const villages = cellsWithinRadius({ gx: 0, gz: 0 }, 3).map((cell) => ({
-      x: cell.gx * SETTLEMENT_GRID_STEP,
-      z: cell.gz * SETTLEMENT_GRID_STEP,
-      radius: cell.gx === 0 && cell.gz === 0 ? homeFootprint : villageSizeConfig('MD').footprintRadius,
-    }))
+    const villages = TEST_VILLAGES
     const sites = pickLargeCaveSites({
       seed: SEED,
       sampleHeight: (x, z) => chunkManager.sampleHeight(x, z),

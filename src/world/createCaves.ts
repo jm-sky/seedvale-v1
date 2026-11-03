@@ -9,7 +9,6 @@ import { isBootMarkMode, isSystemEnabled } from '../debug/debugMode'
 import { type CaveGroundQueryDebug, writeHitSnapshot } from '../debug/playerGroundTrace'
 import { getMonitor } from '../perf/active'
 import { villageSizeConfig } from '../settlement/families'
-import { cellsWithinRadius, SETTLEMENT_GRID_STEP } from '../settlement/settlementGenerator'
 import { useBootMark } from '../shared/bootMark'
 import {
   type AbandonedMineLandmark,
@@ -111,7 +110,7 @@ import {
 import { buildProductionCaveTopology } from './caves/productionTopology'
 import { topologyToCaveDefinition } from './caves/topologyAdapter'
 import { type CaveBounds, type CaveDefinition } from './caveVolume'
-import { type LargeCavePlacementInput, type LargeCaveSite, pickLargeCaveSites } from './largeCaves'
+import { type LargeCavePlacementInput, type LargeCaveSite, pickLargeCaveSites, type VillageFootprint } from './largeCaves'
 import { createNullPointLightBudget, type PointLightBudget } from './pointLightBudget'
 import {
   caveSpatialContext,
@@ -358,6 +357,9 @@ export type CreateCavesOptions = {
   /** Called once worldgen finished with what was actually (re)generated, so
    *  the caller can schedule a best-effort batched write. Never awaited. */
   onWorldgenBuilt?: (result: CaveWorldgenBuildResult) => void
+  /** Real settlement exclusion discs (home included) from the world's
+   *  settlement layout. Without it caves only avoid the home village. */
+  settlementFootprints?: readonly VillageFootprint[]
 }
 
 /**
@@ -440,11 +442,8 @@ export function createCaves(
 
   const cavePlacementInput = (): LargeCavePlacementInput => {
     const homeFootprint = Math.max(homeRadius, villageSizeConfig('MD').footprintRadius)
-    const villages = cellsWithinRadius({ gx: 0, gz: 0 }, 3).map((cell) => ({
-      x: cell.gx * SETTLEMENT_GRID_STEP,
-      z: cell.gz * SETTLEMENT_GRID_STEP,
-      radius: cell.gx === 0 && cell.gz === 0 ? homeFootprint : villageSizeConfig('MD').footprintRadius,
-    }))
+    const villages: readonly VillageFootprint[] = options?.settlementFootprints
+      ?? [{ x: 0, z: 0, radius: homeFootprint }]
     return {
       seed,
       sampleHeight: (x, z) => chunkManager.sampleHeight(x, z),

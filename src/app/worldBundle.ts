@@ -122,11 +122,13 @@ import { cellFromId, cellKey, cellSeed, cellsWithinRadius, probeSettlementSite, 
 import {
   activateSettlementDefinitionCacheForWorld,
   attachSettlementDefinitionPersistence,
+  cachedSettlementProgressionPolicy,
   ingestHydratedSettlementDef,
   lostTreasureArchaeologistHostCell,
   lostTreasureSpecialistHostCell,
   settlementDefFor,
   settlementDefinitionCacheReady,
+  settlementLayoutFor,
   type SettlementResolveContext,
   worldRiverQuery,
 } from '../settlement/settlementPlanCache'
@@ -1728,6 +1730,14 @@ async function buildWorldSystems(
   bootMarkEnd('caveWorldgenCacheRead')
 
   bootMark('createCaves')
+  const policy = cachedSettlementProgressionPolicy()
+  const settlementFootprints = settlementLayoutFor(homeResolveCtx).sites.map((site) => ({
+    x: site.x,
+    z: site.z,
+    radius: site.cell.gx === 0 && site.cell.gz === 0
+      ? Math.max(caveHomeFootprintRadius, villageSizeConfig('MD').footprintRadius)
+      : villageSizeConfig(policy?.sizeFor(site.cell) ?? 'MD').footprintRadius,
+  }))
   const caves = createCaves(
     scene,
     chunkManager,
@@ -1737,6 +1747,7 @@ async function buildWorldSystems(
     pointLightBudget,
     {
       hydratedWorldgen: hydratedCaveWorldgen,
+      settlementFootprints,
       onWorldgenBuilt: (result) => {
         // Best-effort and deliberately not awaited — cave availability must
         // never depend on persistence.
