@@ -150,10 +150,10 @@ Generated from exported TypeScript symbols.
 - `LocationResult` — type — line 26
 - `mountainNearest` — function — line 45
 - `oceanNearest` — function — line 73
-- `riverNearest` — function — line 135
-- `riversNearby` — function — line 230
+- `riverNearest` — function — line 134
+- `riversNearby` — function — line 224
   - domain: ui-input
-- `villageNearest` — function — line 260
+- `villageNearest` — function — line 254
 
 ## `debug/locationSearch.ts`
 

@@ -80,10 +80,9 @@ export function oceanNearest(origin: WorldPoint, ctx: WorldContext): LocationRes
 
 /** Debug-only "is this land safe to stand on" gate (plan `ui-input-008`) —
  *  rejects a chain point sitting at/near the global `waterLevel`, so a chain
- *  terminating in a lake/ocean (`HydrologyFlag.OCEAN_OUTLET` legitimately
- *  covers both) is never picked as the representative teleport point. Not a
- *  hydrology constant: `computeRiverTile()`/`HydrologyFlag` are untouched —
- *  this only filters the debug projection layer's own candidate selection.
+ *  terminating in the sea (or a lake outlet) is never picked as the
+ *  representative teleport point. Not a hydrology constant: it only filters
+ *  the debug projection layer's own candidate selection.
  *  @domain ui-input */
 const RIVER_DEBUG_LAND_MARGIN = 0.5
 
@@ -125,8 +124,8 @@ function qualifyingChainPoint(chains: readonly RiverChain[], origin: WorldPoint,
 }
 
 /** Probe granularity is a whole river tile (`RIVER_TILE_SIZE = 256`), not a
- *  point — `computeRiverTile` builds a small hydrology grid per call, so
- *  probing point-by-point would be far more expensive than necessary. Calls
+ *  point — `computeRiverTile` clips the installed global chains to the tile
+ *  (cheap, but still per tile rather than per point). Calls
  *  the pure `computeRiverTile` directly, never `riverTileCache.retain`/
  *  `release` (that cache is ref-counted and tied to chunk load/unload —
  *  calling it from here would corrupt its accounting). */
@@ -149,20 +148,15 @@ export function riverNearest(origin: WorldPoint, config: WorldConfig): LocationR
 /** How close a chain's terminal point must land to another chain's head
  *  point to treat them as the *same* physical river split across a river
  *  tile boundary, rather than two unrelated streams (plan `ui-input-008`).
- *  Chain endpoints are the raw, un-meandered/un-smoothed grid points
- *  (`buildChains`/`meanderChainPoints` never move the first/last point), and
- *  neighbouring tiles sample the exact same world-aligned lattice
- *  (`RIVER_TILE_SIZE` is a whole multiple of `RIVER_CELL_STEP`), so a real
- *  continuation lands within one diagonal D8 step of its neighbour's own
- *  head. */
+ *  Chains are clipped from the global chains, so a continuation
+ *  across a tile boundary starts at the interpolated clip point, well within
+ *  one D8 step of its neighbour's end. */
 const RIVER_CHAIN_STITCH_MAX_DISTANCE = RIVER_CELL_STEP * 1.5
 
 /** A continuation's accumulation should closely match the point it
- *  continues from — two tiles' own halo-bounded catchment estimates for the
- *  same physical drainage line near their shared edge are expected to agree
- *  closely (see `RIVER_TILE_HALO`'s doc in `riverNetwork.ts`) but not
- *  bit-for-bit, so this stays a relative tolerance rather than an exact
- *  match. */
+ *  continues from. Tiles are clips of one global chain, so the boundary
+ *  points are interpolated rather than recomputed; keep a relative tolerance
+ *  rather than an exact match. */
 const RIVER_CHAIN_STITCH_ACCUMULATION_TOLERANCE = 0.25
 
 function isChainContinuation(from: RiverPoint, to: RiverPoint): boolean {

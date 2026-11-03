@@ -6,41 +6,20 @@ import { isUnconditionedHydrologyId, unpackChains, worldHydrologyFor } from './w
 import type { NoiseFunction2D } from 'simplex-noise'
 
 /**
- * River network extraction (plan 181, Etap 4). Builds on the pure D8 prototype
- * in `hydrology.ts` — still no Three.js/ChunkManager/worker here.
- *
- * Key design choice: the world is partitioned into fixed, seed-independent
- * "river tiles" that tile the plane without gaps or overlaps. Each tile is
- * analysed once over its own core plus a fixed halo (the halo only improves
- * accumulation accuracy near the tile's own edges — it never extends rendered
- * geometry into a neighbour tile). Chains are built by walking consecutive
- * *classified* cells via their D8 flow direction, truncated at the tile core
- * boundary — not by tracing from a source across the whole halo — so a tile
- * never needs data owned by a neighbour, and every world point's river data is
- * owned by exactly one tile, computed identically regardless of which chunk
- * triggered it.
+ * River geometry helpers shared by placement, rendering and gameplay (plan 181, rebuilt on global hydrology by plan
+ * world-terrain-058 H3). The chains themselves are computed once per world by `worldHydrology.ts` (D8 flow over the
+ * whole finite continent); this module turns them into what consumers need: fixed, seed-independent 256 m "river
+ * tiles" (`computeRiverTile` = the installed global chains clipped to the tile core rect, so every world point belongs
+ * to exactly one tile whichever chunk asks), flow-scaled width/depth, the canonical water/bed heights, the channel
+ * segments used by carving, and the nearest-bank/shore queries. Still no Three.js/ChunkManager/worker here.
  */
 
 export const RIVER_TILE_SIZE = 256
-// Halo > core (was equal) — each tile's own accumulation estimate near its
-// edges is only as good as how much upstream catchment its window sees. A
-// too-small halo makes two neighbouring tiles' accumulation for the "same"
-// physical drainage line diverge enough that one classifies it as a river and
-// the other doesn't, showing up as a gap right at the tile seam.
-export const RIVER_TILE_HALO = 384
 export const RIVER_CELL_STEP = 8
 
-// Calibrated empirically against real generation: lower thresholds produced
-// dozens of 1-2 cell noise blips per tile (terrain wrinkles briefly crossing
-// an accumulation threshold, not real channels). These values give ~2-4 real,
-// reasonably long chains per tile.
-//
-// This is also THE knob to raise river frequency/density for testing: lower
-// `stream` (and `river`/`majorRiver` proportionally) to classify more cells
-// as rivers — e.g. `{ stream: 5, river: 20, majorRiver: 80 }` gives a much
-// denser network. `MIN_CHAIN_POINTS` below (drops short noise blips) may also
-// need lowering if `stream` goes very low, or short real streams get filtered
-// out too.
+// Calibrated empirically against real generation: lower thresholds produced dozens of 1-2 cell noise blips (terrain
+// wrinkles briefly crossing an accumulation threshold, not real channels). `worldHydrology` uses `stream` as its chain
+// threshold (`DEFAULT_WORLD_HYDROLOGY_OPTIONS.streamAccumulation`); `flowFactor` scales width/depth from these.
 /** Accumulation thresholds (cells) that classify stream / river / major river. */
 export type StreamThresholds = {
   stream: number

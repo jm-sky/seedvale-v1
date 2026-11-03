@@ -4,7 +4,7 @@
 
 **Nie jest:** planem implementacji ([plans/](../plans/README.md)), logiem całej grafiki ([GRAPHICS.md](../architecture/GRAPHICS.md) — tam zostają kontrakty G4–G6), ani katalogiem assetów.
 
-**Last verified:** 2026-09-06 (rzeki: technicznie zweryfikowane, browser check rzek/wodospadów jeszcze nie zrobiony — zob. Otwarte)
+**Last verified:** 2026-11-03 against code (global hydrology 058 H1–L2, Q96, Q80 legacy removal; Architecture, W13, Rivers and the query contract re-checked; river/lake browser checks still open — see Otwarte and queue §2)
 
 Gdy ten plik rozjeżdża się z kodem — **wygrywa kod**, potem aktualizujemy ten dokument.
 
@@ -39,7 +39,8 @@ Trwałe reguły. Zmiana = aktualizacja tej tabeli (historia decyzji zostaje w pl
 | W10 | Przezroczystość **z głębokości** (`floorHeights`): przy brzegu widać piasek, w głębi gęstsza/ciemniejsza. Nie akwarium, nie prawie-opaque. | faza 2 ✅ |
 | W11 | Brzeg: miękki fade + linia piany z maski + mokry piasek na terenie. | faza 2 ✅ |
 | W12 | Ruch: jezioro = drobne zmarszczki world-space; ocean = wolniejsza, większa fala. Rzeki (od planu 181) mają **własny**, osobny lekki materiał (`riverWaterMaterial.ts`) — nie tę samą rodzinę shadera co jezioro/ocean, choć reużywa jego dzień/noc uniform-setterów bez zmian. | faza 2 ✅; rzeki: plan 181 |
-| W13 | Rzeki są **geometrią osobną od jezior/oceanu**: każdy world point należy do dokładnie jednego 256 m "river tile" (deterministyczne, seed-independent), nie do klasyfikacji `bodyScale`/`vCover`. Rzeki **nie** karmią z powrotem `sampleFloorAt`/gameplay terrain poza samym channel carving (plan 189, tylko obniża wysokość, nigdy nie podnosi). Wodospady istnieją jako sygnał renderowania wstążki (`aFall` w `riverGeometry.ts` / `riverWaterMaterial.ts`), bez osobnej geometrii. Pełna parytetowość shadera/renderu z jeziorem/oceanem (reflection binding, depth-based foam) i worker offload dla hydrologii pozostają świadomie odłożone. | plany 181/189, [terrain-and-world-generation.md](../state/terrain-and-world-generation.md) |
+| W13 | **Jedna globalna hydrologia na świat** (plan 058): `computeWorldHydrology` liczy raz cały skończony kontynent (sieć łańcuchów rzek, jeziora, warstwa korekty terenu); identyfikuje ją `RawSampleParams.hydrologyId`, brak instalacji = twardy błąd (żadnego cichego fallbacku). Hydrologia czyta **tylko** nieskorygowane podłoże (`sampleRawFloorUncorrected`) — nigdy skorygowany teren, osad, dróg ani `waterH` (brak cyklu). Rzeki to geometria osobna od jezior/oceanu: 256 m "river tile" jest **widokiem** (przycięciem) globalnych łańcuchów, nie osobną analizą. Korekta (wypełnione doły +, przecięte przełęcze −) jest częścią `sampleRawTexel`, więc `sampleFloorAt`/gameplay widzą hydrologię; carving kanału (plan 189) tylko obniża. Wodospady = sygnał renderowania (`aFall`). Pełna parytetowość shadera rzeka/jezioro/ocean pozostaje odłożona; flow/jeziora/łańcuchy liczą się na main thread (~0.6 s w Node), na workerach tylko próbkowanie podłoża. | plan [058](../plans/world-terrain-058-finite-continent-and-global-hydrology.md), [notes](../plans/implementation-notes/world-terrain-058-finite-continent-and-global-hydrology-implementation-notes.md), [terrain-and-world-generation.md](../state/terrain-and-world-generation.md) |
+| W14 | **Woda ≠ „poniżej morza”.** Jezioro leży ponad `waterLevel`; pytanie „czy tu jest woda” rozstrzyga reguła `h − floorH > WET_EPS` (`terrain/waterSurface.ts` `isWetFloor`), nie porównanie z `waterLevel` (to opisuje tylko morze). Wybór zapytania: tabela poniżej. | plan 058 L1, [review 030](../reviews/2026-11-03--030--geography-hydrology-architecture-review.md) |
 
 ---
 
@@ -67,27 +68,34 @@ Rozmowa: pół-realistyczna, trochę przezroczysta, bez ciężkiego CPU/GPU. Pot
 ## Architektura
 
 ```text
-heightmap (worker)
-  heights[]      — ląd + pokrywa walk/mask (clamp do waterLevel)
-  floorHeights[] — prawdziwa wysokość (mesh terenu + shader głębokości + pływanie)
+terrain params ──► hydrologyId (seed, WORLD_HYDROLOGY_VERSION, options, terrain inputs)
+boot stage `worldHydrology` (worldHydrologyRuntime.ts, before the chunk manager):
+  registry → IndexedDB `hydrology` (also a boot-fixture namespace) → compute:
+  raw floor in 12 row strips on the worker pool → computeWorldHydrology (main thread)
+  → installWorldHydrology (main) + installHydrology (every chunk worker); one world retained
         ↓
-detectWaterBodies()  — BFS 4-sąsiedztwo w obrębie JEDNEGO chunka (+ apron)
+heightmap (worker): sampleRawTexel = uncorrected floor + hydrology correction
+  heights[]      — max(floorH, waterH): ląd + pokrywa (sea level albo poziom jeziora), clamp dla walk/mask
+  floorHeights[] — prawdziwa (skorygowana) wysokość: mesh terenu + shader głębokości + pływanie
+        ↓
+detectWaterBodies()  — BFS 4-sąsiedztwo w obrębie JEDNEGO chunka (+ apron), grupowanie po poziomie powierzchni
         ↓
 computeBodyScale()   — 0 ląd · jezioro < 0.9 · 1.0 ocean (kontynentalność)
         ↓
 src/world/waterMaterial.ts     jedna rodzina ShaderMaterial (uOcean 0..1)
         ↓
-src/world/waterMirror.ts       jeden RT 128² @ 30 Hz; y = waterLevel; hide water (layer 1) + agents (layer 2)
+src/world/waterMirror.ts       jeden RT (default 256²) @ 30 Hz; y = waterLevel; hide water (layer 1) + agents (layer 2)
         ↓
 ┌───────────────────────────────────┬─────────────────────────────────────┐
 │ createChunkWater (per chunk)      │ createOcean (singleton, WorldBundle)│
-│ USE_CHUNK_MASK: vCover + depth    │ uOcean = 1, bez heightmapy          │
-│ uOcean z bodyScale (jezioro/morze)│ radial fade poza loadRadius         │
-│ fale world.xz; piana z vCover     │ fale world.xz (swell)               │
-│ y = waterLevel + 0.07, order 1    │ y = waterLevel + 0.02, order 0      │
+│ jedna plane na poziom wody: morze │ uOcean = 1, bez heightmapy          │
+│ (lustro) + każde jezioro (bez     │ radial fade poza loadRadius         │
+│ lustra, maska wysokości poziomu)  │ fale world.xz (swell)               │
+│ y = level + 0.07, order 1         │ y = waterLevel + 0.02, order 0      │
 │ PlaneGeometry chunkSize, ≤256 seg.│ Plane + 64 seg., follow(player)     │
-│ bindWaterMirror (wspólne uMirror) │ owns RT; renderMirror w gameLoop    │
 └───────────────────────────────────┴─────────────────────────────────────┘
+rzeki: worldHydrology chains → riverTileCache (ref-counted clip per 256 m tile) → createRiverWater (wstążka per chunk)
+       + applyRiverChannel (carving) + riverQuery (placement, analityczny) — osobny materiał `riverWaterMaterial.ts`
 ```
 
 Klasyfikacja oceanu: `continentalness` vs `oceanThreshold` / `coastThreshold` (`oceanMixAt`). Pole stawu w chunku **nie** promuje go na ocean. `lakeScaleFor` jest capowane do `LAKE_SCALE_MAX` 0.85.
@@ -106,13 +114,13 @@ Ocean powstaje w `rebuildWorldBundle()`; rozmiar plane = `(unloadRadius * 2 + 4)
 | `bodyScale` | 0 ląd; inland `min(lakeScaleFor(area), 0.85)`; 1 = ocean (`oceanMixAt` > 0.9) |
 | Mesh terenu pod wodą | `floorHeights` — wanna pod taflą; `heights` zostaje clampem dla maski / trawy / `sampleHeight` |
 | Batymetria | `floorHeights` → mesh + shader (`depth = waterLevel - floorH`) + pływak / ambient |
-| Maska chunk water | `vCover` z heightmapy; `discard` gdy `< 0.02`. Komórki oceanu **rysowane** (nie discard) |
+| Maska chunk water | `vCover` z heightmapy; `discard` gdy `< 0.02`. Komórki oceanu **rysowane** (nie discard). Jezioro: osobna plane na poziom, maska wysokości własnego poziomu (`maskHeightsForLakeLevel`) |
 | Fale | 3–4 sine w **world.xz**; jezioro drobne zmarszczki, ocean wolniejszy swell (`mix` z `vOcean`) |
 | Foam | z `1 - vCover` + `fwidth(vCover)` przy brzegu, nie z amplitudy fali |
 | Kolor | `mix(shallow, deep, depthT)` + fresnel; palety jezioro vs ocean |
 | Paleta dzień/noc | `setWaterDayNight(dayFactor, sunDirection)` lerp 6 kolorów + sun specular |
 | Shader | `src/world/waterMaterial.ts` — jeden program-ród, `USE_CHUNK_MASK` na jeziorach |
-| Ocean singleton | ten sam shader, `uOcean = 1`; radial fade poza `loadRadius`; lustro 256² (`waterMirror.ts`) |
+| Ocean singleton | ten sam shader, `uOcean = 1`; radial fade poza `loadRadius`; lustro (`waterMirror.ts`, rozmiar niżej) |
 | Rozdzielczość odbić | `WorldConfig.postProcessing.waterReflectionSize` ∈ {128, 256 (default), 512, 1024}; live `WaterMirror.setSize`; Vue Pauza → Świat → Grafika; lil-gui |
 | Toggle odbić | `WorldConfig.postProcessing.waterReflections`; Vue Pauza → Świat → Grafika; lil-gui Post-processing; `seedvale:graphics:v1` |
 | Mokry piasek | terrain fragment: przyciemnienie albedo w paśmie `waterLevel` .. `+0.4` |
@@ -127,6 +135,9 @@ src/world/waterMirror.ts
 src/world/createOcean.ts
 src/world/createWater.ts
 src/terrain/waterBodies.ts
+src/terrain/waterSurface.ts        isWetFloor (water covers a point: sea + lake), WET_EPS
+src/terrain/waterSample.ts         sampleLocalWater (physical: sea + lake + river)
+src/terrain/terrainClassification.ts  isFloorBelowSea (sea-only, map/catalog)
 src/terrain/chunkHeightmap.ts      detect + bodyScale + clamp heights
 src/terrain/chunkManager.ts        createChunkWater / update / setDayNight
 src/terrain/buildChunkGeometry.ts  mesh z floorHeights (wanna); mokry piasek (uWaterLevel)
@@ -136,34 +147,23 @@ src/terrain/biomeColors.ts         pas piasku / dna (smoothstep, issue 001)
 src/player/PlayerController.ts     pływanie po floorHeights
 ```
 
-### Rzeki (cieki śródlądowe, plany 181/189)
+### Rzeki (cieki śródlądowe, plany 181/189, globalna hydrologia 058)
 
-> **Zmiana 2026-11-03 (Q80, 058 P1): ścieżka rzek per-tile opisana w kolejnych akapitach tej sekcji została usunięta** (`hydrology.ts`, `computeHydrologyRegion`, `buildChains`, `computeRiverTileDiagnostics`, zadanie workera `riverTile`, `?riverPrefetch`, `?hydrology=legacy`). Rzeki to teraz przycięte globalne łańcuchy z zainstalowanej hydrologii (`worldHydrology.ts` → `computeRiverTile` = widok kafla); `UNCONDITIONED_HYDROLOGY_ID` = surowe podłoże bez sieci wodnej (brak rzek, jezior, korekty). Akapity niżej opisują stan historyczny (plany 006/011/013).
+Rzeki to przycięte globalne łańcuchy zainstalowanej hydrologii: `worldHydrology.ts` (czysty, deterministyczny, worker-safe; D8 flow na siatce 8 m całego kontynentu, naprawa dołków przez korektę, jeziora, łańcuchy) → `riverNetwork.ts` `computeRiverTile` = widok kafla 256 m (`riverChainClip.ts`, przycięcie do rect rdzenia; wszystkie punkty świata należą do dokładnie jednego kafla). `UNCONDITIONED_HYDROLOGY_ID` = surowe podłoże bez sieci wodnej (testy/narzędzia; brak rzek, jezior, korekty). Historia per-tile (D8 per kafel + halo, dry-sink repair, ciągłość ujścia, diagnostyka terminali) została usunięta w Q80 — zob. plan [058](../plans/world-terrain-058-finite-continent-and-global-hydrology.md), [notes](../plans/implementation-notes/world-terrain-058-finite-continent-and-global-hydrology-implementation-notes.md) i archiwalne plany 006/011/013.
 
-Pure `src/terrain/hydrology.ts` (D8 flow direction + iterative accumulation nad ograniczoną siatką analizy, sampled z `sampleFloorAt`) karmi `src/terrain/riverNetwork.ts`: świat jest podzielony na stałe, seed-independent 256 m "river tiles" (każdy analizowany z 256 m halo wyłącznie dla dokładności akumulacji przy własnych krawędziach — nigdy po to, by rozciągnąć renderowaną geometrię na sąsiedni tile), więc dane rzeki w każdym punkcie świata należą do dokładnie jednego tile'a niezależnie od tego, który chunk go wyzwala. Sklasyfikowane komórki (po flow accumulation) tworzą połączone łańcuchy przez D8, wygładzone (Chaikin corner-cutting ×2, endpoints fixed — nie meandrowanie w sensie erozji) plus deterministyczne world-space meandrowanie (seeded `simplex-noise`, tapered do 0 w promieniu 32 jednostek od krawędzi tile'a, więc punkty nigdy nie wychodzą poza swój tile).
+Boot/instalacja: `RawSampleParams.hydrologyId` wchodzi do każdego fingerprintu cache'u. Zmiana wyniku algorytmu wymaga bumpa `WORLD_HYDROLOGY_VERSION` (+ re-eksport fixtures; pilnuje tego golden-hash test w `worldHydrology.test.ts`). Pool/workery trzymają hydrologię **jednego** świata (`retainOnlyWorldHydrology`, replace semantics `installHydrology`); ładunek ≈ 6.6–6.8 MiB na kopię (main + każdy worker). Jeziora (`lakeMinCells` 600, Q96) są w warstwie danych terenu (`waterH`) i w widoku „land view” (`sampleLandHeight`), nie w osobnym systemie.
 
-**Dry-sink repair (plan world-terrain-011).** Plan world-terrain-006 zaczął odrzucać cały łańcuch rzeki, gdy trafiał na suchy zamknięty D8 sink (`reachedInvalidReceiver` w `buildChains()`) — poprawne dla widocznego "rzeka kończy się w powietrzu", ale zbyt agresywne: jeden suchy dołek potrafił skasować całą sensowną górną zlewnię. `computeHydrologyRegion()` liczy teraz w dwóch przejściach: surowe D8 + accumulation, potem `resolveMeaningfulDrySinks()` próbuje ograniczonej, deterministycznej naprawy tylko dla suchych `SINK` (nie `OCEAN_OUTLET`) z accumulation >= progu (`DepressionRepairOptions.minAccumulationForRepair`, w `computeRiverTile()` ustawiony na `thresholds.stream` tej samej klasyfikacji, nie osobny system gęstości) — słabe/szumowe dołki zostają sinkiem bez próby. Dla kwalifikujących się sinków `findBreachPath()` robi ograniczone (priority-queue, minimax po elevation, deterministyczny tie-break po flat index) poszukiwanie najtańszej drogi do komórki o niższej surowej elevation niż sam sink, w obrębie już-spróbkowanego okna (nigdy nie sampluje dalej); znaleziona ścieżka dostaje ściśle malejący profil "working elevation" (tylko obniżanie, nigdy podnoszenie — `BREACH_MIN_STEP` gwarantuje ścisły spadek), odrzucany gdy przekracza budżet (`maxSearchCells`/`maxPathCells`) lub wymagane cięcie (`maxCutDepth`/`maxTotalCut`) — głębokie/duże baseny zostają nierozwiązane zamiast sztucznego kanionu. Jeśli którykolwiek breach zostanie zaakceptowany, D8 + accumulation liczone są **raz** na skorygowanej elevation (nie iteracyjnie do punktu stałego); zwrócone `HydrologyRegion.elevation` to wersja po naprawie, bo to ona napędza `RiverPoint.elevation` (kanoniczna `waterH`/`bedH` i channel carving) — naprawiony sink fizycznie obniża wyrzeźbiony teren przez ten sam `applyRiverChannel()`, bez osobnej reprezentacji jeziora. `buildChains()`'s `reachedInvalidReceiver` zostaje jako ostatni defensywny guard tylko dla tego, co naprawa zostawiła nierozwiązane. Żadnego globalnego stanu, workera ani jeziora — to nadal follow-up, nie część tego fixa.
-
-**Global hydrology install (plan world-terrain-058 H2, 2026-11-02; nothing consumes it yet — H3 does).** `RawSampleParams.hydrologyId` (hash of seed, `WORLD_HYDROLOGY_VERSION`, hydrology options and every terrain input) identifies the world's global hydrology; the data lives in `src/terrain/worldHydrologyRegistry.ts` (`worldHydrologyFor(id)` throws when not installed). Boot stage `worldHydrology` (`worldHydrologyRuntime.ts`, before the chunk manager) installs it: registry → IndexedDB namespace `hydrology` (also a boot-fixture namespace) → compute from 12 raw-floor row strips sampled across the chunk worker pool, then `installHydrology` to every worker. Per-tile rivers above are unchanged until H3.
-
-
-**Ciągłość ujścia + adaptacja terenu (plan world-terrain-013).** Widoczna sucha przerwa ~50–100 m przed morzem okazała się defektem *ekstrakcji*, nie hydrologii: `buildChains()` stosował próg `MIN_CHAIN_POINTS = 8` do każdego tile-lokalnego fragmentu, a rzeka wchodząca do sąsiedniego core'a jest celowo traktowana jak nowa lokalna głowa (`hasClassifiedUpstream` patrzy tylko na sklasyfikowane komórki **core**) — więc poprawna kontynuacja krótsza niż 8 komórek D8 (~64 m) do własnego odbiornika była wyrzucana w całości. `buildChains()` liczy teraz dodatkowo `hasClassifiedInflow` nad całym oknem (core **i** halo): głowa zasilana sklasyfikowanym dopływem spoza core'a to kontynuacja, nie szum progowy, i obowiązuje ją `MIN_CONTINUATION_CHAIN_POINTS = 2` zamiast pełnego cutoffu; izolowane lokalne źródła zachowują stary próg, więc krótkie blipy nadal są filtrowane. Bez drugiej reprezentacji rzeki, bez snapowania do brzegu, bez stanu cross-tile — własność tile'i, halo i `reachedInvalidReceiver` bez zmian.
-
-Diagnostyka terminali (`RiverChainTerminal`/`RiverChainRejection`/`RiverChainDiagnostic` + `computeRiverTileDiagnostics()`) jest **tylko** narzędziem testowym/diagnostycznym: produkcyjne `computeRiverTile()` i `riverTileCache` nadal cache'ują wyłącznie kompaktowe `RiverChain[]`, bez metadanych terminala. `probeDownstreamTerminal()` (`hydrology.ts`, `DEFAULT_DOWNSTREAM_PROBE_STEPS = 48` ≈ 384 m halo przy 8 m kroku) odpowiada na ograniczone pytania "co jest poniżej tej komórki" idąc istniejącą topologią D8 (`water-receiver` / `dry-sink` / `dry-boundary-exit` / `rerouted` / `budget-exceeded`) — nigdy nie sampluje terenu, nie szuka geometrycznie najbliższej wody i nie generuje sąsiedniego tile'a/chunku.
-
-Sama naprawa sinków została **rozwinięta w miejscu**, nie zduplikowana: `findBreachPath()` porządkuje frontier prawdziwym kosztem minimax (najwyższa elevation, którą musi przekroczyć najtańsza znana trasa, z relaksacją poprzednika), zbiera do `maxEscapeCandidates` ucieczek zamiast zatrzymywać się na pierwszej i wycenia każdą jawną, monotoniczną funkcją kosztu (max cięcie ≫ suma cięcia ≫ długość ścieżki ≫ jakość odbiornika) — dłuższa, płytsza trasa wygrywa z krótką i głęboką, a kandydat, którego własny bieg w dół rozwiązuje się w kolejnym *nierozwiązanym suchym sinku*, jest odrzucany (ucieczka do drugiej zamkniętej niecki to nie ujście). Odrzucony kandydat nie przerywa już całego wyszukiwania, więc sink za zbyt drogą grzędą może zostać rozwiązany tańszą bramą. Nowe jawne budżety (`maxEscapeCandidates`, `receiverProbeSteps`) dołączają do istniejących w `DepressionRepairOptions`, a `maxPathCells` liczy teraz jednoznacznie komórki wnętrza, które breach faktycznie obniża. Semantyka `OCEAN_OUTLET`, pojedynczy końcowy recompute D8 + accumulation i kanoniczna ścieżka łańcuch → carving/render pozostają bez zmian; realnie zamknięte niecki i duże bariery nadal zostają nierozwiązane (kandydaci na przyszłe semantyki jeziora/spill level).
-
-`src/terrain/riverTileCache.ts` liczy tile raz (synchronicznie, main thread, ~18ms zmierzone) i reference-countuje go po załadowanych chunkach pokrywających go (ta sama idea co chunk-membership counting w `vegetationRegionBatcher.ts`); `ChunkManager` attach/dispose per-chunk river ribbon (`src/world/riverGeometry.ts`'s `clipChainToRect`/`buildRiverRibbonGeometry`) razem z `WorldWater`. Szerokość wstążki pochodzi z eased `flowFactor()` (0..1) z `widthFromAccumulation()`, więc małe strumienie są wizualnie subtelniejsze niż główne rzeki; per-vertex `aFlow` attribute pozwala fragment shaderowi (`riverWaterMaterial.ts`) zmiękczać alpha brzegu/foam/streak dla nisko-przepływowych wstążek.
+`src/terrain/riverTileCache.ts` zwraca kafel jako tani clip na main thread (bez prefetchu; `stats.syncMsMax` do obserwacji) i reference-countuje go po załadowanych chunkach (store ≤ 12 zwolnionych kafli); `ChunkManager` attach/dispose per-chunk river ribbon (`src/world/riverGeometry.ts`'s `clipChainToRect`/`buildRiverRibbonGeometry`) razem z `WorldWater`. Szerokość wstążki pochodzi z eased `flowFactor()` (0..1) z `widthFromAccumulation()`, więc małe strumienie są wizualnie subtelniejsze niż główne rzeki; per-vertex `aFlow` pozwala fragment shaderowi (`riverWaterMaterial.ts`) zmiękczać alpha brzegu/foam/streak.
 
 River channel carving (plan 189, kanoniczny przekrój — plan world-terrain-010) dodaje trzeci `computeChunkTile` terrain-modifier stage (`chunkHeightmap.ts`'s `applyRiverChannel`, po roads/clearings) — `riverNetwork.ts`'s `riverChannelSegmentsNear` zamienia ten sam kanoniczny, już-zmeandrowany łańcuch (który renderuje wstążka wody) na `RiverChannelSegment[]`. Zamiast jednego `halfWidth`/`depth`, segment niesie osobno: `waterHalfWidth` (wąska szerokość wody — ta sama co `widthFromAccumulation`, i to ona napędza `nearestRiverBankDistance`/gameplay "water edge") i szerszy `channelHalfWidth` (krawędź brzegu, `waterHalfWidth` + flow-scaled margines — celowa przestrzeń na czytelny brzeg + roślinność nadwodną), plus `bedH`/`waterH` per endpoint. `waterH = elevation - exposedBankFromFlow(flow)` i `bedH = waterH - submergedDepthFromFlow(flow)` — oba budżety (`EXPOSED_BANK_MIN/MAX` 0.15–0.8 m, `SUBMERGED_DEPTH_MIN/MAX` 0.12–1.6 m) są niezależne i zawsze dodatnie, więc inwariant `bedY < waterY < bankTopY` i `waterWidth < channelWidth` trzyma się z konstrukcji, nawet dla ledwo-sklasyfikowanego strumienia. `applyRiverChannel`'s `riverChannelCandidate` liczy teraz kawałkowy przekrój po `dist` (płaskie dno → podwodne zbocze do `waterH` → wynurzony brzeg do `floorH` tego samego teksela), nie jeden stały `bedH` + zewnętrzny falloff. Channel bed height jest ściśle malejące w dół rzeki z konstrukcji (D8 elevation ściśle maleje, accumulation nigdy nie maleje — udowodnione w testach), więc nie potrzeba osobnego passu korekcji monotoniczności. Carving tylko obniża teren (`Math.min(...)`), nigdy nie podnosi.
 
 Wstążka wody (`riverGeometry.ts`) **nie** sampluje już renderowanego terenu — Y liczy `canonicalWaterHeight(point)` (`= elevation - exposedBankFromFlow(flow)`), czysta funkcja hydrologii punktu, deterministyczna i ciągła między chunkami tak samo jak `elevation`/`accumulation`. `RIVER_SURFACE_OFFSET` to teraz tylko epsilon anty-z-fighting (0.02, nie 0.2) — przed plan world-terrain-010 ten sam stały offset *był* efektywną głębokością małych strumieni (`MIN_CHANNEL_DEPTH` 0.15 < offset 0.2), co dawało wodę na/ponad otaczającym terenem ("blue ribbon"); teraz `exposedBankFromFlow` gwarantuje minimalny recessed dystans niezależnie od offsetu.
 
-Rzeki **nie** karmią z powrotem `sampleFloorAt`/gameplay terrain poza samym carvingiem powyżej. Wodospady (plan 181, Etap 7 dokończenie 2026-08-25) są renderowane bez osobnej geometrii/systemu: `riverGeometry.ts`'s `waterfallFactor()` liczy per-vertex rise-over-run między kolejnymi punktami tej samej już-wyciętej per-chunk `run` (z ich własnej cached `elevation`, bez dodatkowego samplowania), zapisywane jako nowy `aFall` attribute obok `aFlow`; `riverWaterMaterial.ts` miesza wstążkę w stronę prawie-opaque piany + szybszy, wielokierunkowy wzór "mgły" przy stromym spadku. Pełny shader/rendering parity z jeziorem/oceanem (reflection binding, depth-based foam), asymetryczne (lewy≠prawy) profile brzegów i worker offload dla hydrologii pozostają świadomie odłożone bez pomiarowego uzasadnienia (patrz [plans/LOOSE-ENDS.md](../plans/LOOSE-ENDS.md)). Browser verification kanonicznego przekroju jeszcze nie zrobiony (plan world-terrain-010).
+Rzeki **nie** zmieniają `sampleFloorAt`/gameplay terrain poza samym carvingiem powyżej (korekta hydrologii jest osobną warstwą, liczoną z nieskorygowanego podłoża). Wodospady (plan 181, Etap 7 dokończenie 2026-08-25) są renderowane bez osobnej geometrii/systemu: `riverGeometry.ts`'s `waterfallFactor()` liczy per-vertex rise-over-run między kolejnymi punktami tej samej już-wyciętej per-chunk `run` (z ich własnej cached `elevation`, bez dodatkowego samplowania), zapisywane jako nowy `aFall` attribute obok `aFlow`; `riverWaterMaterial.ts` miesza wstążkę w stronę prawie-opaque piany + szybszy, wielokierunkowy wzór "mgły" przy stromym spadku. Pełny shader/rendering parity z jeziorem/oceanem (reflection binding, depth-based foam) i asymetryczne (lewy≠prawy) profile brzegów pozostają świadomie odłożone bez pomiarowego uzasadnienia (patrz [plans/LOOSE-ENDS.md](../plans/LOOSE-ENDS.md)). Browser verification kanonicznego przekroju jeszcze nie zrobiony (plan world-terrain-010).
 
 **Integracja rzek z resztą worldgenu (2026-09-06).** Rzeki są teraz respektowane przez placement osad, fauny i przez drogi — wszędzie przez tę samą kanoniczną geometrię (`RiverChannelSegment[]`), nigdy przez drugą reprezentację:
 
-- **Osady.** `terrain/riverQuery.ts` (`createRiverQuery(sampleParams)`) to analityczny seam "jaka geometria rzeki jest w tym pudełku" dla placementu, który działa niezależnie od streamingu chunków (dlatego świadomie osobny od reference-counted `riverTileCache.ts`; oba liczą przez to samo czyste `computeRiverTile`, więc nie mogą się rozjechać). Query jest rejestrowane world-scoped w `settlementPlanCache.ts` (`setSettlementRiverQuery`) — cache defów jest world-scoped i "pierwszy pytający wygrywa", więc pole w kontekście dałoby layout zależny od tego, kto zapytał pierwszy. `settlementGenerator.ts` rozwiązuje segmenty **raz na osadę** (pudełko = najszersze site-search + footprint) i podaje je do `findSettlementSite` (twardy reject placu o `SITE_RIVER_CLEARANCE` = 8 m) i `planVillageLayout` (każdy plot odrzucany przez `footprintOverlapsRiver(segments, x, z, radius + 1)` — **footprint, nie punkt środkowy**). Ostatnia deska ratunku w `pickPlot` (bezwarunkowa z definicji) dostała `pushOutOfRiver` — krokowe wypchnięcie promieniowo od centrum wioski. Wioska nadal może stać **przy** rzece i wokół niej; zabroniony jest tylko aktywny kanał.
+- **Osady.** `terrain/riverQuery.ts` (`createRiverQuery(sampleParams)`) to analityczny seam "jaka geometria rzeki jest w tym pudełku" dla placementu, który działa niezależnie od streamingu chunków (dlatego świadomie osobny od reference-counted `riverTileCache.ts`; oba czytają ten sam widok globalnych łańcuchów przez `computeRiverTile`, więc nie mogą się rozjechać). Query jest rejestrowane world-scoped w `settlementPlanCache.ts` (`setSettlementRiverQuery`) — cache defów jest world-scoped i "pierwszy pytający wygrywa", więc pole w kontekście dałoby layout zależny od tego, kto zapytał pierwszy. `riverQuery` czyta też listę głów strumieni (`headsNear`, plan 058 H4; `findSettlementSite` odsuwa plac od głowy o 24 m). `settlementGenerator.ts` rozwiązuje segmenty **raz na osadę** (pudełko = najszersze site-search + footprint) i podaje je do `findSettlementSite` (twardy reject placu o `SITE_RIVER_CLEARANCE` = 8 m) i `planVillageLayout` (każdy plot odrzucany przez `footprintOverlapsRiver(segments, x, z, radius + 1)` — **footprint, nie punkt środkowy**). Ostatnia deska ratunku w `pickPlot` (bezwarunkowa z definicji) dostała `pushOutOfRiver` — krokowe wypchnięcie promieniowo od centrum wioski. Wioska nadal może stać **przy** rzece i wokół niej; zabroniony jest tylko aktywny kanał.
 - **Ford i most (droga × rzeka, plan world-terrain-023, 2026-09-14).** Routing zna rzeki i sam decyduje o każdym przecięciu. `settlement/roadRiverCrossing.ts` jest jedyną instancją decyzyjną: `riverHitsOnEdge()` testuje **krawędzie** A* (nie węzły — 9-metrowy krok przeskoczyłby 3-metrowy strumień między dwoma suchymi węzłami) przeciw kanonicznemu footprintowi wody, `evaluateRoadRiverCrossing()` klasyfikuje trafienie jako `ford` (tani), `bridge` (drogi — ~240 + 14/m rozpiętości) albo odrzuca krawędź (za długie przęsło, zbyt skośne przejście, most na ścieżce do minor location — `path` jest w V1 wyłącznie ford-only). Dzięki temu dobry bród kilkaset metrów dalej wygrywa z niepotrzebnym mostem tym samym modelem kosztu A*, a nieobsługiwalne przejście wymusza objazd albo brak trasy — nigdy „gołej” drogi w rzece. Ford wymaga **i** szerokości (< 9 m wody), **i** głębokości (≤ 1.1 m) — wąski, ale głęboki kanał nie zostaje brodem.
 
   Wynikiem trasy jest `RoadRoute { points, segments, kind, crossings }` w tym samym, symetrycznym `routeCache` (trasa liczona w kanonicznej orientacji po posortowanych id osad, żeby kolejność pytających nie zmieniała worldgenu). Ten `routeCache` może zostać zhydratowany z disposable namespace `road-routes` (plan world-terrain-029) — hydracja odtwarza kanoniczny wynik łącznie z `crossings` i nie reklasyfikuje brodów/mostów. Kanoniczne rekordy `RoadRiverCrossing` są wyprowadzane z **finalnej** polilinii (po meandrze i kotwicach przecięć, przed wygładzaniem profilu), więc invariant „każde przecięcie ma dokładnie jeden rekord i odwrotnie" trzyma się z konstrukcji; kotwice przecięć i ich punkty dojścia są zablokowane przed meandrem, a rozjazd topologii deterministycznie cofa geometrię do wariantu bez meandra.
@@ -178,8 +178,13 @@ Nadwodna/przybrzeżna roślinność (plan world-terrain-010, Fazy 4/6): `chunkVe
 Wejścia kodu:
 
 ```text
-src/terrain/hydrology.ts
-src/terrain/riverNetwork.ts
+src/terrain/worldHydrology.ts         pure global hydrology (+ WORLD_HYDROLOGY_VERSION)
+src/terrain/worldHydrologyStore.ts    install map, correction/lake/stream-head samplers
+src/terrain/worldHydrologyRegistry.ts hydrologyIdFor, public install API
+src/terrain/worldHydrologyRuntime.ts  boot install (registry → cache → compute), single-world retention
+src/terrain/worldHydrologyCache.ts    IndexedDB namespace `hydrology`
+src/terrain/riverChainClip.ts         clip of global chains to a tile rect
+src/terrain/riverNetwork.ts           tile view, width/depth, canonical heights, channel segments
 src/terrain/riverTileCache.ts
 src/world/riverGeometry.ts
 src/world/riverWaterMaterial.ts
@@ -195,6 +200,19 @@ Implementacja P0–P1 (unifikacja materiału jezioro/ocean, depth fade, brzeg, f
 
 ---
 
+## Water/land query contract
+
+Which question → which function (review 030; verified against code 2026-11-03). Do not compare a height against `waterLevel` to ask "is there water" — that only describes the sea.
+
+| Question | Use | Covers |
+| --- | --- | --- |
+| Is there water here, how deep, what kind (movement, swimming, fauna, drinking)? | `sampleLocalWater` (via `ChunkManager` / `WorldBundle`) | sea + lake + river (river wins), fords, bridges |
+| Can I place a static object / site / plot here (dry land)? | `sampleLandHeight[At]` **and** a river check (`footprintOverlapsRiver` / `riverShoreDistance`) | land view: sea + lake → `waterLevel`; rivers are **not** in the land view |
+| Is this chunk texel wet (worker arrays)? | `isWetFloor(heights[i], floorHeights[i])` (`waterSurface.ts`) | sea + lake |
+| Is this near the sea / coastal (beach, shells, ocean tint)? | `waterLevel` comparisons, `isWaterOrShore`, `sandBandAt`, `oceanMixAt` | sea only, by design |
+| Is the floor below sea level (map/catalog classification)? | `isFloorBelowSea` (`terrainClassification.ts`) | sea only — the world-location catalog still reads lakes as land (queue Q106) |
+| Walking / object Y | `sampleHeight` / `sampleSurfaceGround` | true surface (never the land view) |
+
 ## Physical water query & WaterSource
 
 `terrain/waterSample.ts`'s `sampleLocalWater()` jest jedyną, współdzieloną odpowiedzią "czy i jaka woda jest fizycznie w tym punkcie" (jezioro/ocean z `floorHeights`, rzeka z kanonicznych `waterH`/`bedH` — rzeka zawsze wygrywa gdy oba nakładają się). Główny konsument: `fauna/waterTraversal.ts`'s czysty klasyfikator dry/wading/swimming/blocked, dzielony 1:1 przez autonomiczny i dosiadany ruch fauny (zob. [fauna.md](./fauna.md#behaviour)).
@@ -203,7 +221,7 @@ Implementacja P0–P1 (unifikacja materiału jezioro/ocean, depth fade, brzeg, f
 
 ## Persistence
 
-Teren/hydrologia/geometria wody są deterministyczną rekonstrukcją `(seed, region params)` — nigdy nie persystowane. Persystowany jest tylko stan zbudowany przez gracza (rekord studni, `SaveData.playerWells`, z `waterDepth`/`waterKind` zamrożonym raz przy postawieniu). Cache'e wewnątrzsesyjne (`riverTileCache`, brak analogicznego cache'u dla jezior/oceanu) są zwykłymi, nietrwałymi cache'ami nad czystymi funkcjami — nigdy źródłem prawdy. Zob. [persistence.md](./persistence.md) po pełną klasyfikację.
+Teren/hydrologia/geometria wody są deterministyczną rekonstrukcją `(seed, region params)` — nigdy nie persystowane w saveach (IndexedDB `hydrology` i boot fixture to wyłącznie cache obliczeń, wyprowadzany z `hydrologyId`). Persystowany jest tylko stan zbudowany przez gracza (rekord studni, `SaveData.playerWells`, z `waterDepth`/`waterKind` zamrożonym raz przy postawieniu). Cache'e wewnątrzsesyjne (`riverTileCache`, brak analogicznego cache'u dla jezior/oceanu) są zwykłymi, nietrwałymi cache'ami nad czystymi funkcjami — nigdy źródłem prawdy. Zob. [persistence.md](./persistence.md) po pełną klasyfikację.
 
 ---
 
@@ -214,7 +232,9 @@ Teren/hydrologia/geometria wody są deterministyczną rekonstrukcją `(seed, reg
 | Blotches w lustrze oceanu | `verification needed` | issue [009](../issues/2026-08-10--009--ocean-normal-map-reflection-blotches.md) — pass 256² wrócił w fazie 3; nie zagęszczać detail normals |
 | Artefakty oceanu na telefonie | notatka | [plans/README.md](../plans/README.md) Quick notes; wyłączenie odbić (W9) |
 | Rzeki: browser/perf verification | `verification needed` | plany [181](../plans/archive/2026-08-21--181--natural-mountains-and-rivers.md) / [189](../plans/archive/2026-08-21--189--river-channel-carving.md) |
-| Rzeki: pełna parytetowość z jeziorem/oceanem, worker offload dla hydrologii | `todo`, świadomie odłożone bez pomiarowego uzasadnienia | [plans/LOOSE-ENDS.md](../plans/LOOSE-ENDS.md) |
+| Rzeki: pełna parytetowość z jeziorem/oceanem | `todo`, świadomie odłożone bez pomiarowego uzasadnienia | [plans/LOOSE-ENDS.md](../plans/LOOSE-ENDS.md) |
+| Rzeki/jeziora po 058: browser check (ciągłość strumienia do zatoki, wstążka vs skorygowany teren, szwy na zbiegach) | `verification needed` | queue §2 (Q77/Q78), Q92/Q98 |
+| Katalog lokacji widzi jeziora jako ląd | `todo` | queue Q106 |
 
 ---
 

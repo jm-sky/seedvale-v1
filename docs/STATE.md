@@ -33,7 +33,7 @@ Procedurally chunked, streamed terrain with instanced vegetation/rocks, tree lif
 - Generation/streaming/vegetation/mountains/weather: [state/terrain-and-world-generation.md](./state/terrain-and-world-generation.md)
 - Ocean, lakes and rivers: [state/water.md](./state/water.md)
 - Visual/shader contracts (why something renders the way it does): [GRAPHICS.md](./architecture/GRAPHICS.md)
-- Still not implemented: full river/lake shader parity, hydrology worker offload, distant background mountains, cube-sphere/spherical world.
+- Hydrology is global (plan 058): one `computeWorldHydrology` per world, installed at boot and in every chunk worker (floor sampling is parallel on the worker pool; the flow/lake/chain computation runs on the main thread). Still not implemented: full river/lake shader parity, distant background mountains, cube-sphere/spherical world.
 
 ### World locations / discovery
 

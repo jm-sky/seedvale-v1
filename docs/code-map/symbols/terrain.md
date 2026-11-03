@@ -568,41 +568,40 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/riverNetwork.ts`
 
-- `canonicalWaterHeight` — function — line 192
-- `computeRiverTile` — function — line 628
-- `DEFAULT_RIVER_THRESHOLDS` — const — line 51
-- `depthFromAccumulation` — function — line 176
-- `exposedBankFromFlow` — function — line 162
-- `flowFactor` — function — line 116
-- `footprintOverlapsRiver` — function — line 360
-- `isInsideRiverChannel` — function — line 347
-- `MEANDER_NOISE_SEED_XOR` — const — line 540
-- `meanderChainPointsWith` — function — line 544
-- `nearestRiverBankDistance` — function — line 330
-- `nearestRiverBankPoint` — function — line 377
-- `nearestRiverHydrologyContext` — function — line 430
-- `nearestRiverShoreCandidate` — function — line 480
-- `overlappingRiverTiles` — function — line 78
-- `RIVER_CELL_STEP` — const — line 31
-- `RIVER_MEANDER_TAPER_DISTANCE` — const — line 539
-- `RIVER_TILE_HALO` — const — line 30
-- `RIVER_TILE_SIZE` — const — line 24
-- `RiverChain` — type — line 92
-- `riverChannelSegmentsNear` — function — line 219
-- `RiverHydrologyContext` — type — line 420
-- `RiverPoint` — type — line 91
-- `RiverShoreCandidate` — type — line 472
-- `RiverTileCoord` — type — line 57
-- `riverTileCoordOf` — function — line 59
-- `riverTileCoreRect` — function — line 70
-- `riverTileKey` — function — line 63
-- `RiverWaterSample` — type — line 287
-- `riverWaterSampleAt` — function — line 298
-- `smoothChainPoints` — function — line 607
-- `StreamThresholds` — type — line 45
-- `submergedDepthFromFlow` — function — line 167
-- `widthFromAccumulation` — function — line 130
-- `WorldRect` — type — line 67
+- `canonicalWaterHeight` — function — line 171
+- `computeRiverTile` — function — line 607
+- `DEFAULT_RIVER_THRESHOLDS` — const — line 30
+- `depthFromAccumulation` — function — line 155
+- `exposedBankFromFlow` — function — line 141
+- `flowFactor` — function — line 95
+- `footprintOverlapsRiver` — function — line 339
+- `isInsideRiverChannel` — function — line 326
+- `MEANDER_NOISE_SEED_XOR` — const — line 519
+- `meanderChainPointsWith` — function — line 523
+- `nearestRiverBankDistance` — function — line 309
+- `nearestRiverBankPoint` — function — line 356
+- `nearestRiverHydrologyContext` — function — line 409
+- `nearestRiverShoreCandidate` — function — line 459
+- `overlappingRiverTiles` — function — line 57
+- `RIVER_CELL_STEP` — const — line 18
+- `RIVER_MEANDER_TAPER_DISTANCE` — const — line 518
+- `RIVER_TILE_SIZE` — const — line 17
+- `RiverChain` — type — line 71
+- `riverChannelSegmentsNear` — function — line 198
+- `RiverHydrologyContext` — type — line 399
+- `RiverPoint` — type — line 70
+- `RiverShoreCandidate` — type — line 451
+- `RiverTileCoord` — type — line 36
+- `riverTileCoordOf` — function — line 38
+- `riverTileCoreRect` — function — line 49
+- `riverTileKey` — function — line 42
+- `RiverWaterSample` — type — line 266
+- `riverWaterSampleAt` — function — line 277
+- `smoothChainPoints` — function — line 586
+- `StreamThresholds` — type — line 24
+- `submergedDepthFromFlow` — function — line 146
+- `widthFromAccumulation` — function — line 109
+- `WorldRect` — type — line 46
 
 ## `terrain/riverQuery.ts`
 
@@ -814,24 +813,24 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/worldHydrology.ts`
 
-- `ChainEnd` — const — line 116
-- `ChainEndKind` — type — line 117
-- `computeWorldHydrology` — function — line 671
-- `DEFAULT_WORLD_HYDROLOGY_OPTIONS` — const — line 68
-- `hashWorldHydrology` — function — line 1014
-- `HydrologyLake` — type — line 128
-- `PackedChains` — type — line 119
-- `packSparseBlocks` — function — line 549
-- `sampleRawFloorRows` — function — line 191
-- `SparseBlocks` — type — line 108
-- `sparseBlockValue` — function — line 592
-- `WORLD_HYDROLOGY_GRID` — const — line 88
-- `WORLD_HYDROLOGY_VERSION` — const — line 34
+- `ChainEnd` — const — line 120
+- `ChainEndKind` — type — line 121
+- `computeWorldHydrology` — function — line 675
+- `DEFAULT_WORLD_HYDROLOGY_OPTIONS` — const — line 72
+- `hashWorldHydrology` — function — line 1018
+- `HydrologyLake` — type — line 132
+- `PackedChains` — type — line 123
+- `packSparseBlocks` — function — line 553
+- `sampleRawFloorRows` — function — line 195
+- `SparseBlocks` — type — line 112
+- `sparseBlockValue` — function — line 596
+- `WORLD_HYDROLOGY_GRID` — const — line 92
+- `WORLD_HYDROLOGY_VERSION` — const — line 38
   - domain: world-terrain
-- `WorldHydrology` — type — line 170
-- `WorldHydrologyGrid` — type — line 95
-- `WorldHydrologyOptions` — type — line 36
-- `WorldHydrologyStats` — type — line 141
+- `WorldHydrology` — type — line 174
+- `WorldHydrologyGrid` — type — line 99
+- `WorldHydrologyOptions` — type — line 40
+- `WorldHydrologyStats` — type — line 145
 
 ## `terrain/worldHydrologyCache.ts`
 

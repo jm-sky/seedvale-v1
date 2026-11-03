@@ -4,7 +4,7 @@
 
 **Not:** a rendering/visual-contract log (that's [GRAPHICS.md](../architecture/GRAPHICS.md) — shader/material *why*), the ocean/lake/river domain (that's [WATER.md](../state/water.md)), a plan (that's [plans/](../plans/README.md)), or the whole-codebase snapshot (that's [STATE.md](../STATE.md)).
 
-**Last verified:** 2026-09-11
+**Last verified:** 2026-11-03 (Hydrology / rivers section and stage list re-checked against 058; the rest as of 2026-09-11)
 
 When this file and the code disagree, the code wins — update this file.
 
@@ -31,7 +31,7 @@ When this file and the code disagree, the code wins — update this file.
 
 - Mountain massifs are shaped in `chunkHeightmap.ts`'s `sampleRawTexel()`, tuned (plan 181) toward wider, continuous massifs with softer foothills and fewer sharp noise-driven peaks/pits — overall mountain coverage/amplitude (`mountainGain`/`heightScale`) is unchanged. Exact tuning constants live in `worldConfig.ts`'s `RegionParams` and are not restated here; see plan 181 for the tuning history.
 - Peak/massif height hierarchy (plan 191) is layered on top of the same function: whole-massif amplitude varies with how far the mountain envelope sits past its gate, a handful of dominant peaks per massif get boosted ridge gain (reusing the `mountain` noise handle at a finer frequency) while subordinate ridges stay lower, dominant summits get restrained asymmetric detail (reusing the `hills` handle), and valleys/saddles between ridges deepen via a boosted `hillsTerm`. No new noise handle, worker or config field; `mountainRidge`'s own semantics (connected ridge strength, read by vegetation/rock/biome-color/naturalResources) are unchanged — see the plan's implementation notes for the exact terms/constants.
-- Waterfalls are implemented (plan 181, Etap 7 completion, 2026-08-25) as a per-vertex rendering signal on the existing river ribbon — no separate geometry/system. Full shader/rendering parity between rivers and lake/ocean, and hydrology worker offload, remain deliberately deferred ([LOOSE-ENDS](../plans/LOOSE-ENDS.md)).
+- Waterfalls are implemented (plan 181, Etap 7 completion, 2026-08-25) as a per-vertex rendering signal on the existing river ribbon — no separate geometry/system. Full shader/rendering parity between rivers and lake/ocean remains deliberately deferred ([LOOSE-ENDS](../plans/LOOSE-ENDS.md)).
 - Rivers themselves (hydrology, tiling, ribbon geometry, channel carving) are documented in [WATER.md](../state/water.md), not here — they're a water feature, not a terrain-shape one, even though carving does lower the heightmap.
 
 ## Vegetation, rocks & landmarks
@@ -77,6 +77,8 @@ When this file and the code disagree, the code wins — update this file.
 ## Hydrology / rivers
 
 The hydrology simulation, river-tile geometry, and rendering are canonical in [water.md](./water.md) — this domain owns only the terrain-side integration surface:
+
+- Global hydrology (plan 058): `sampleRawTexel` = uncorrected floor + `hydrologyCorrectionAt(params.hydrologyId, x, z)`, and returns `waterH` (sea level or the lake level) with `h = max(floorH, waterH)`. `RawSampleParams.hydrologyId` is part of every terrain/worldgen fingerprint; sampling with an id that is not installed throws. The hydrology reads only `sampleRawFloorUncorrected` (no cycle). Which water/land query to use: [water.md → Water/land query contract](./water.md#waterland-query-contract).
 
 - River channel carving is stage 3 of [Terrain shaping stages](#terrain-shaping-stages) above (`applyRiverChannel`), consuming the declared ford projections `settlement/roadNetwork.ts` supplies (`terrain/riverFord.ts` owns the shaping maths only). Stage 2's road corridor blend also suppresses its own height/tint contribution inside a declared bridge's deck footprint (`terrain/roadBridge.ts`'s `isOnBridgeDeck`, `ChunkTileParams.bridgeProjections`, plan world-terrain-033), so a road never carves a causeway through the river a bridge spans.
 - `terrain/riverQuery.ts` exposes an analytical, streaming-independent river-geometry lookup that `settlement/findSettlementSite.ts`/`villagePlanner.ts` consume to hard-reject a settlement site/plot overlapping a live river channel.
