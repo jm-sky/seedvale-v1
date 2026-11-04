@@ -291,6 +291,8 @@ describe('pure canonical adapter', () => {
     expect(inventory.toJSON()).toEqual(inventoryBefore)
     expect([inventory.count('arrow'), inventory.count('broadhead_arrow'), inventory.count('war_arrow')]).toEqual([2, 3, 4])
     expect(projectV3Equipment('obsidian_knife').kind).toBe('new-candidate')
-    expect(ITEM_CATALOG).not.toHaveProperty('padded_cap')
+    // 066 A authored V1 rows for padded_cap & co. under their own kinds; policy stays `new` (no projection).
+    expect(ITEM_CATALOG).not.toHaveProperty('leather_cap')
+    expect(projectV3Equipment('padded_cap').kind).toBe('new-candidate')
   })
 })

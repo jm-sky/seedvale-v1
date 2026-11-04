@@ -119,6 +119,14 @@ export type ItemKind =
   | 'knight_pauldron_round'
   | 'leather_bracers'
   | 'steel_bracers'
+  /** Plan items-player-066 A — layered armor batch (padding under, outer limb/head pieces). */
+  | 'padded_cap'
+  | 'padded_jacket'
+  | 'padded_hose'
+  | 'iron_helm'
+  | 'leather_gloves'
+  | 'leather_trousers'
+  | 'leather_boots'
   | 'berries'
   | 'apple'
   | 'nuts'
@@ -1109,6 +1117,69 @@ export const ITEM_DEFS: Record<ItemKind, ItemDef> = {
     size: 'SM',
     color: 0x9aa0a8,
     description: 'Stalowe ochraniacze przedramion. Działają mechanicznie; model na postaci nie jest jeszcze dostępny.',
+  },
+  padded_cap: {
+    kind: 'padded_cap',
+    label: 'watowany czepiec',
+    categories: ['armor'],
+    weight: 0.3,
+    size: 'SM',
+    color: 0xcfc3a6,
+    description: 'Gruby czepiec z watowanego płótna. Tłumi uderzenia, nosi się pod hełmem.',
+  },
+  padded_jacket: {
+    kind: 'padded_jacket',
+    label: 'watowana kurta',
+    categories: ['armor'],
+    weight: 3,
+    size: 'LG',
+    color: 0xcfc3a6,
+    description: 'Pikowana kurta noszona pod kolczugą. Dobrze tłumi obuchy, słabo chroni przed cięciem.',
+  },
+  padded_hose: {
+    kind: 'padded_hose',
+    label: 'watowane nogawice',
+    categories: ['armor'],
+    weight: 1.4,
+    size: 'MD',
+    color: 0xcfc3a6,
+    description: 'Pikowane nogawice noszone pod właściwą ochroną nóg lub samodzielnie.',
+  },
+  iron_helm: {
+    kind: 'iron_helm',
+    label: 'żelazny hełm',
+    categories: ['armor'],
+    weight: 2.2,
+    size: 'MD',
+    color: 0x8a9098,
+    description: 'Prosty żelazny hełm kowalskiej roboty. Dobra ochrona głowy przed cięciem i pchnięciem.',
+  },
+  leather_gloves: {
+    kind: 'leather_gloves',
+    label: 'skórzane rękawice',
+    categories: ['armor'],
+    weight: 0.3,
+    size: 'SM',
+    color: 0x6b4a2f,
+    description: 'Robocze rękawice ze skóry. Niewielka ochrona dłoni.',
+  },
+  leather_trousers: {
+    kind: 'leather_trousers',
+    label: 'skórzane spodnie',
+    categories: ['armor'],
+    weight: 1.8,
+    size: 'MD',
+    color: 0x6b4a2f,
+    description: 'Grube skórzane spodnie. Chronią nogi przed zwierzęcym pyskiem i cięciem.',
+  },
+  leather_boots: {
+    kind: 'leather_boots',
+    label: 'skórzane buty',
+    categories: ['armor'],
+    weight: 1.2,
+    size: 'MD',
+    color: 0x6b4a2f,
+    description: 'Mocne skórzane buty. Chronią stopy przed uderzeniem i skaleczeniem.',
   },
   obsidian_knife: {
     kind: 'obsidian_knife',
