@@ -1563,16 +1563,16 @@ Generated from exported TypeScript symbols.
 
 ## `world/locations/worldLocationCatalog.ts`
 
-- `abandonedCemeteryChunkIntersectsHoursBand` — function — line 230
+- `abandonedCemeteryChunkIntersectsHoursBand` — function — line 231
   - domain: world
-- `COOPERATIVE_ABANDONED_PROBE_THRESHOLD` — const — line 155
-- `createWorldLocationCatalog` — function — line 296
-- `emptyLocationScanDiagnostics` — function — line 120
-- `LandmarkQueryOptions` — type — line 144
-- `LocationScanDiagnostics` — type — line 93
-- `settlementLocationId` — function — line 946
-- `WorldLocationCatalog` — type — line 157
-- `WorldLocationCatalogDeps` — type — line 29
+- `COOPERATIVE_ABANDONED_PROBE_THRESHOLD` — const — line 156
+- `createWorldLocationCatalog` — function — line 299
+- `emptyLocationScanDiagnostics` — function — line 121
+- `LandmarkQueryOptions` — type — line 145
+- `LocationScanDiagnostics` — type — line 94
+- `settlementLocationId` — function — line 952
+- `WorldLocationCatalog` — type — line 158
+- `WorldLocationCatalogDeps` — type — line 30
 
 ## `world/locations/worldLocationNames.ts`
 

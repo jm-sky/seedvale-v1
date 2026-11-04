@@ -3416,6 +3416,7 @@ Generated from TypeScript imports.
 - `terrain/chunkHeightmap.ts`
 - `terrain/chunkManager.ts`
 - `terrain/terrainClassification.ts`
+- `terrain/waterSurface.ts`
 - `terrain/worldHydrologyStore.ts`
 - `world/caveVolume.ts`
 - `world/createCaves.ts`
@@ -3436,6 +3437,7 @@ Generated from TypeScript imports.
 - `terrain/chunkHeightmap.ts`
 - `terrain/chunkManager.ts`
 - `terrain/terrainClassification.ts`
+- `terrain/waterSurface.ts`
 - `world/caves/abandonedMineLandmark.ts`
 - `world/createCaves.ts`
 - `world/locations/abandonedCemeteryCache.ts`
