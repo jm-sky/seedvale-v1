@@ -26,14 +26,14 @@ Replace the global multiplicative armor reduction with: seven exclusive body reg
 - Golden tests: proposal §4.2 fixtures (13 / 20 / 9.9 / 12.75 / 4.455 HP, full block 0), profile weight sums = 100 and boundary rolls, salted hash vectors, expected-protection helper (15.75 % mail-only reference pierce).
 - **No runtime caller.** Nothing reads `damageType` or the resolver yet. If `EquipmentSlot` still contains `arms` when S1 lands, `equipmentTypes.ts` re-exports the current union and 044 switches it.
 
-### S2 — Layered equipment state and save (gate Q-IC1; Wave 2 branch)
+### S2 — Layered equipment state and save (gate Q-IC1; Wave 2 on main)
 
 - `ArmorConfig` gains `layer` + `resist` (replacing `damageReduction` on the same commit as S3/066 A — see release rule); `EquipmentState` keyed by `EquipmentPositionKey` (14 positions), `equip(instanceId, inventory)` infers position from catalog, `unequip(position)`; restore order canonical slot, under then outer; invalid refs discarded, items kept.
 - Durable `incomingPhysicalHitOrdinal` per human: player (`PlayerController` seam, replacing private `defenseAttempt`) and NPC (`NpcAuthoritativeState` + `NpcStateSnapshot`, replacing `NpcAgent.defenseAttempt`).
 - One save migration (token rule): `playerEquipment` slot keys → `slot:outer` (proposal §10.1 steps 1–7, starting from 044's shipped `shoulders`/`forearms` shape); absent ordinals → 0. No `WORLDGEN_EPOCH` bump.
 - `armorMutationRevision` on `Inventory` + selection revision on `EquipmentState` (proposal §10.3) — the cache contract consumed by npc-068.
 
-### S3 — Combat integration (gate Q-IC1 + Q-IC2; Wave 2 branch)
+### S3 — Combat integration (gate Q-IC1 + Q-IC2; Wave 2 on main)
 
 - `applyPlayerDamage` and `NpcAgent.applyIncomingCombatDamage` call `resolveIncomingHumanHit` with a discriminated physical/non-physical input; remove `incomingDamageMultiplier` from `EquipmentModifiers` (restrictions stay).
 - Typed `PhysicalHit` from every source: player/NPC melee (weapon `damageType`), projectiles (`damageType` snapshotted on the projectile at fire time), fauna (species → profile/type mapping; bear large-maul/cut, small biters low-bite/pierce; explicit mapping over every species that can reach the callback), container trap (hands/cut, unblockable), mount fall (fall profile/blunt, unblockable); starvation/dehydration bypass.
@@ -42,7 +42,7 @@ Replace the global multiplicative armor reduction with: seven exclusive body reg
 
 ## Release rule (binding)
 
-S2, S3, items-player-066 slice A and ui-input-048 reach `main` **together** from branch `side/combat-layered-release` after Opus review R-B. Never ship typed damage with global-protection labels; no permanent dual armor mode. S1 is on `main` before the branch starts.
+S2, S3, items-player-066 slice A and ui-input-048 land **directly on `main`** in one orchestrated Wave 2 session (author decision 2026-11-04, no integration branch); the wave counts as released only after Opus review R-B. Never ship typed damage with global-protection labels; no permanent dual armor mode. S1 is on `main` before the branch starts.
 
 ## Non-goals
 

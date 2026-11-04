@@ -15,7 +15,7 @@ Executor: GPT-6 Sol. Coordination: [side-initiative index](../research/v1-reviva
 
 ## Slices
 
-### A — First batch (Wave 2 branch, ships in the first player release)
+### A — First batch (Wave 2 on main, ships in the first player release)
 
 - Re-author the six existing kinds + `leather_bracers`/`steel_bracers` (from 044) with `layer` + typed `resist` + restrictions exactly per proposal §5.1 tables; keep IDs, masses, prices.
 - Register seven new ordinary kinds: `padded_cap`, `padded_jacket`, `padded_hose` (`under`), `iron_helm`, `leather_gloves`, `leather_trousers`, `leather_boots` (`outer`) — instance-backed `ArmorKind`s, proposal §5.1 rows. Donor records stay immutable; these are V1-authored rows that share the donor ID.

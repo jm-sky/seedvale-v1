@@ -46,7 +46,7 @@ Wave 1 — no author input needed
   063 ledger (isolated; parallel-safe) ──────┘
   npc-067 prelude (after 062 melee NPC-family slice, same npcCombat.ts)
 
-Wave 2 — after Q-IC1 + Q-IC2, on integration branch `side/combat-layered-release`
+Wave 2 — after Q-IC1 + Q-IC2, directly on `main` (author decision 2026-11-04; no integration branch)
   065 S2 ─> 065 S3 ─> 066 A (first batch) ─> 048 UI ─> Opus review ─> merge = first player release
 
 Wave 3
@@ -57,7 +57,7 @@ Wave 4
   066 C balance closure (author playtest) · 044-V / S8 visuals when assets exist
 ```
 
-**Why an integration branch for Wave 2:** combat proposal §11 forbids releasing typed damage with old global-protection labels and forbids a permanent dual armor mode. 065 S2 changes the save shape, so the four stages must reach `main` together. The branch rebases on `main` regularly; this is the only sanctioned exception to "work on main" in this initiative.
+**Wave 2 on `main` (author decision 2026-11-04, replaces the former `side/combat-layered-release` integration branch):** 065 S2, 065 S3, 066 A and 048 are implemented as small commits directly on `main` in one orchestrated session; Opus review R-B runs **after** the whole wave. The combat proposal §11 rules still bind: no permanent dual armor mode and no typed damage shown with global-protection labels. Therefore the wave is treated as **unreleased until R-B passes** — `main` between S2 and 048 is an intermediate state, not a player release, and the four stages are not to be split across sessions with other work interleaved on the armor hot files. The save migration is the tip migration (`CURRENT_SAVE_VERSION + 1` read after `git pull --rebase`).
 
 ### 4.2 Hot files — never edited by two concurrent sessions
 
@@ -106,7 +106,7 @@ Not needed now: A8 destruction/reappearance policy — asked only before 064 sli
 ## 7. Required Opus / Astra involvement
 
 - **Opus review R-A** — 063 ledger protocol + its enabled-issuer list, before 064 slice U (Stage 4 proposal: independent review is an acceptance condition).
-- **Opus review R-B** — Wave 2 branch before merge (065 S2/S3 + 066 A + 048): formulas vs proposal fixtures, migration chain, preview = actual.
+- **Opus review R-B** — Wave 2 on `main`, after the whole wave and before it counts as released (065 S2/S3 + 066 A + 048): formulas vs proposal fixtures, migration chain, preview = actual.
 - **Opus spot review** — first 062 melee batch's authored profiles (sets the envelope for the remaining batches); optional afterwards.
 - **Astra:** not required. Only if Q-IC1/Q-IC2 is rejected and the mechanic needs redesign, or if any slice needs new NPC spoken lines (none planned).
 
@@ -114,7 +114,7 @@ Not needed now: A8 destruction/reappearance policy — asked only before 064 sli
 
 Completed on main: 065 S1; 044-M (save v58); 045 layout (technical verification, browser pending); 062 W0–W5; 063 ledger with guarded acquisition and save migration; npc-067 P1–P4. Focused test results and manual gaps live in each plan's notes. No layered runtime or upper-tier issuer is released. WORLDGEN_EPOCH remains unchanged.
 
-**Current handoff:** review 033 R1–R3 and F2–F5 are resolved: W2a merchant candidates removed, no-source guard extended through W2b, Common prices re-anchored, sword defense/mass and catalog documentation corrected. W2c/W2d are complete (melee batch done); 062 is complete (W0–W5); the next initiative step is Wave 2 (065 S2 on `side/combat-layered-release`) in the documented order. 063 infrastructure is implemented with no production issuer; **Opus R-A is still required before 064 U**. npc-067 P2/P4 are implemented (ready-weapon defense, exact-instance condition/wear and missing-weapon cancellation); browser smoke checks remain pending. 062 is complete, so 065 S2 may start; use `side/combat-layered-release`, then 066 A + 048 + R-B before integration. 044-V still waits for valid skinned GLBs. No Revival queue priorities or geography work changed.
+**Current handoff:** review 033 R1–R3 and F2–F5 are resolved: W2a merchant candidates removed, no-source guard extended through W2b, Common prices re-anchored, sword defense/mass and catalog documentation corrected. W2c/W2d are complete (melee batch done); 062 is complete (W0–W5); the next initiative step is Wave 2 (065 S2 on `main`) in the documented order. 063 infrastructure is implemented with no production issuer; **Opus R-A is still required before 064 U**. npc-067 P2/P4 are implemented (ready-weapon defense, exact-instance condition/wear and missing-weapon cancellation); browser smoke checks remain pending. 062 is complete, so 065 S2 may start; implement it directly on `main` (decision 2026-11-04), then 066 A + 048, then R-B. 044-V still waits for valid skinned GLBs. No Revival queue priorities or geography work changed.
 
 ### Review 033 R1 correction — 2026-11-04
 
