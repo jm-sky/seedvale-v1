@@ -14,6 +14,9 @@ import {
   inventoryFromContents,
   snapshotInventoryContents,
 } from '../items/Inventory'
+import { WEAPON_MAINTENANCE_KIND_LIST } from '../items/itemInstances'
+import { isUpperTierIdentity } from '../items/upperTierIdentities'
+import { createWeaponInstance } from '../items/weaponMaintenance'
 import { applyDerivedStaminaMax } from '../shared/enduranceStamina'
 import { createHealthState, type HealthState } from '../shared/HealthState'
 import { createStaminaState, type StaminaState } from '../shared/StaminaState'
@@ -277,7 +280,7 @@ function fromSnapshot(id: NpcId, snapshot: NpcStateSnapshot, maxima?: NpcPhysica
       : (snapshot.health.dead ? createLegacyTerminalNpcPostDeath() : null),
     temporaryConditions: restoreTemporaryConditions(snapshot.temporaryConditions),
     graveVisits: snapshot.graveVisits?.map((entry) => ({ ...entry })) ?? [],
-    personalInventory: inventoryFromContents(snapshot.personalInventory),
+    personalInventory: inventoryFromPersonalContents(snapshot.personalInventory),
     transportCargo: inventoryFromContents(snapshot.transportCargo, TRANSPORT_CARGO_MAX_WEIGHT),
     merchantStock: inventoryFromContents(snapshot.merchantStock, MERCHANT_STOCK_MAX_WEIGHT, Infinity),
     merchantStockInitialized: snapshot.merchantStockInitialized === true,
@@ -293,6 +296,24 @@ function fromSnapshot(id: NpcId, snapshot: NpcStateSnapshot, maxima?: NpcPhysica
   }
   if (maxima) applyDerivedStaminaMax(state.stamina, maxima.maxStamina)
   return state
+}
+
+/** Restores NPC belongings while normalizing old count-backed weapons into
+ *  instance-backed condition state. Build the converted snapshot before
+ *  constructing Inventory so capacity checks cannot discard over-capacity
+ *  legacy contents during hydration. */
+function inventoryFromPersonalContents(snapshot?: InventoryContentsSnapshot): Inventory {
+  if (!snapshot) return inventoryFromContents(snapshot)
+  const counts = { ...snapshot.counts }
+  const instances = [...snapshot.instances]
+  for (const kind of WEAPON_MAINTENANCE_KIND_LIST) {
+    if (isUpperTierIdentity(kind)) continue
+    const count = counts[kind] ?? 0
+    if (count <= 0) continue
+    delete counts[kind]
+    for (let i = 0; i < count; i++) instances.push(createWeaponInstance(kind))
+  }
+  return inventoryFromContents({ ...snapshot, counts, instances })
 }
 
 /** Max HP/stamina/vigor for a newly created `NpcAuthoritativeState` — the

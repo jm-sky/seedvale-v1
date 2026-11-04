@@ -9,8 +9,8 @@
 
 ## P2 ready-weapon defense
 
-- Today: `resolveNpcDefenseConfig(carried)` (`npcCombat.ts:290`) is called from the incoming-damage resolver (`npcCombat.ts:~419`, `const defense = resolveNpcDefenseConfig(params.carried)`). The caller is `NpcAgent.applyIncomingCombatDamage` (`NpcAgent.ts:~2502`, which increments the private `defenseAttempt` at `:2505`).
-- Change the resolver input from "carried inventory" to "ready defense source" supplied by `NpcAgent` from its current combat mode (it already knows melee vs ranged mode and the selected weapons through `resolveNpcMeleeWeapon`/`resolveNpcRangedWeapon`). Keep the pure resolver free of `NpcAgent` imports.
+- `resolveNpcDefenseConfig(readyWeaponKind)` now receives the selected weapon identity. `NpcAgent.applyIncomingCombatDamage` selects its validated melee weapon in melee mode, ranged weapon in ranged mode (no ranged catalog item blocks today), and the ordinary best melee selection outside combat.
+- The pure resolver still owns no `NpcAgent` behavior; worn armor continues to use the existing carried inventory path.
 - Do **not** touch `defenseAttempt` — 065 S2 replaces it with the durable ordinal.
 
 ## P3 attacker identity
@@ -23,6 +23,16 @@
 
 - `NpcMeleeWeapon` (`npcCombat.ts:43`); player precedent for exact-instance wear: `gameLoop.ts:1422` maps `isWeaponItemInstance(inst) ? applySharpnessWear(inst, profile) : inst` and `getSharpnessDamageModifier` (import at `gameLoop.ts:119`). Reuse those helpers (`src/items/weaponMaintenance.ts:110`) for NPCs; write back through `Inventory.updateInstance` (or the existing instance-update API the player path uses).
 - Tie order: score, then kind, then instance ID (lexical) — matches the npc-053 lexical tie-break convention.
+
+## P2/P4 implementation — 2026-11-04
+
+NPC defense now follows the selected ready weapon by kind. Ranged mode passes the ranged weapon kind, which currently has no blocking defense; a sword elsewhere in the bag cannot block. Mode switches update the ready defense immediately. Outside combat, the normal best melee selection remains the surprise-contact defense source. No defense meter, stamina charge or stagger was added.
+
+NPC melee resolution scores maintenance-backed instances with the existing sharpness damage curve and breaks equal scores by kind then instance ID. NPC personal-inventory snapshots normalize legacy weapon counts into instances before constructing the runtime inventory. The conversion happens on the snapshot data, preserving every unit even for legacy inventories already over capacity; saving and restoring again leaves the count at zero and keeps the same number of instances. Count-backed melee tools retain a null instance ID. The selected config and instance identity are snapshotted when the swing starts; at impact, a missing instance cancels the hit, and a real hit applies one wear operation to that exact instance. The selection is refreshed while the attack lifecycle is idle, so inventory changes also update approach range before the next swing.
+
+Player melee now snapshots the held maintenance instance ID/kind when the swing starts. If that instance leaves inventory before the hit edge, the swing does no damage and consumes no condition. The existing catalog config and condition behavior otherwise remain the same.
+
+Focused tests cover ready-weapon defense, sharpness-based selection, exact-instance wear and removal, consecutive attacks using the updated sharpness at 30/60/120 Hz, player swing cancellation at 30/60/120 Hz, and count conservation/idempotent NPC inventory restoration. Manual browser check remains pending: crossbow guard under reload near a wolf, then melee switch.
 
 ## Order and lanes
 
@@ -37,3 +47,5 @@ Replaced perpendicular-distance selection with earliest quadratic segment–circ
 Both fauna→human callbacks carry actual animal ID and species. `AnimalAgent` supplies identity from its own authoritative fields; both `createFauna` forwarding sites pass the callback unchanged (including its extra/settlement-owned agents). There are no separate onHumanHit/onNpcHit providers under `src/settlement`; gameLoop is the live recipient for both. Player and NPC damage use the actual ID as attackerKey. Species is available at the callback seam for 065; no typed damage/profile runtime is activated here.
 
 171 focused tests pass (AnimalAgent/createFauna/defenseResolver), including public-update tests for actual player/NPC contacts with correct ID/species and no callback to the other target. Vue type-check, scoped ESLint and production build verified. No browser verification or aggression behavior change. Defense outcomes can differ from previous encounters because the deterministic key is now per animal, as intended.
+
+Coordinated verification (2026-11-04): 179 focused NPC/player/maintenance/restore tests, shared 2425-test regression run (166 files), Vue type-check, scoped ESLint and production build pass. See side-initiative index §8. Manual gameplay/visual PASS remains pending.

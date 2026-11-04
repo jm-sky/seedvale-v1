@@ -2,7 +2,9 @@ import { describe, expect, it } from 'vitest'
 import type { MeleeConfig } from '../items/itemCatalog'
 import { COMBAT_TARGET_CONE_DOT } from '../app/interactables'
 import { MELEE_AGILITY_NEUTRAL } from '../combat/meleeAgility'
+import { Inventory } from '../items/Inventory'
 import { ITEM_CATALOG } from '../items/itemCatalog'
+import { createWeaponInstance } from '../items/weaponMaintenance'
 import { createStaminaState, type StaminaState } from '../shared/StaminaState'
 import { createVigorState } from '../shared/VigorState'
 import {
@@ -14,6 +16,7 @@ import {
   meleeSwingAngle,
   pickCombatTarget,
   resolveMeleeHits,
+  resolveMeleeWeaponSnapshot,
   yawToward,
 } from './playerMelee'
 
@@ -123,6 +126,26 @@ describe('createPlayerMelee lifecycle', () => {
       elapsed += step
     }
     expect(hits).toBe(1)
+  })
+
+  it.each([30, 60, 120])('cancels an exact-instance swing if its weapon leaves inventory before impact (%i Hz)', (hz) => {
+    const inventory = new Inventory(undefined, 5)
+    const weapon = createWeaponInstance('knife')
+    inventory.addInstance(weapon)
+    const snapshot = { id: weapon.id, kind: weapon.kind }
+    const melee = createPlayerMelee()
+    const stamina = createStaminaState(100)
+    expect(attackNearbyTarget(melee, KNIFE, stamina).started).toBe(true)
+    inventory.removeInstance(weapon.id)
+
+    let canceledHits = 0
+    const frame = 1 / hz
+    for (let elapsed = 0; elapsed < KNIFE.windUp + KNIFE.hitWindow + 0.1; elapsed += frame) {
+      const tick = melee.update(frame)
+      if (tick.hitReady && !resolveMeleeWeaponSnapshot(inventory, snapshot)) canceledHits++
+    }
+    expect(canceledHits).toBe(1)
+    expect(resolveMeleeWeaponSnapshot(inventory, snapshot)).toBeNull()
   })
 
   it('a large dt cascades through every remaining phase in one update call', () => {

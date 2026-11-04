@@ -321,8 +321,10 @@ import {
 } from './npcColliderRim'
 import {
   applyNpcMeleeHit,
+  applyNpcMeleeWeaponWear,
   applyNpcRangedHit,
   chooseCombatMode,
+  isNpcMeleeWeaponHeld,
   type NpcMeleeWeapon,
   type NpcRangedWeapon,
   resolveIncomingNpcDamage,
@@ -1424,6 +1426,8 @@ export class NpcAgent {
    *  started — cached so a mid-combat inventory change can't silently swap
    *  the active weapon's timing out from under an in-flight swing. */
   private combatMeleeWeapon: NpcMeleeWeapon | null = null
+  /** Weapon/config committed to the current swing at its start edge. */
+  private combatAttackWeapon: NpcMeleeWeapon | null = null
   /** Bow resolved from `carried` when a `mode: 'ranged'` combat started —
    *  same caching reason as `combatMeleeWeapon`. */
   private combatRangedWeapon: NpcRangedWeapon | null = null
@@ -2487,7 +2491,7 @@ export class NpcAgent {
 
   /** Incoming combat damage (plan 177 §8/§10 — `animal → NPC`, `NPC → NPC`,
    *  `player → NPC` all share this one entry point): resolves this NPC's own
-   *  defense (whatever `personalInventory` currently exposes) before the HP loss
+   *  ready-weapon defense before the HP loss
    *  itself goes through the same `takeDamage()` every other damage source
    *  uses. Returns the resolved outcome so a caller (e.g. a future
    *  animal-attack decision) can react (retaliate, flee) without
@@ -2503,9 +2507,19 @@ export class NpcAgent {
   }): ResolvedDefense {
     if (this.health.dead) return { outcome: 'none', finalDamage: 0, attempted: false }
     this.defenseAttempt += 1
+    const readyWeaponKind = this.combatIntent
+      ? this.combatIntent.mode === 'melee'
+        ? this.combatMeleeWeapon && isNpcMeleeWeaponHeld(this.personalInventory, this.combatMeleeWeapon)
+          ? this.combatMeleeWeapon.kind
+          : null
+        : this.combatRangedWeapon && this.personalInventory.holdsAny(this.combatRangedWeapon.kind)
+          ? this.combatRangedWeapon.kind
+          : null
+      : resolveNpcMeleeWeapon(this.personalInventory, this.role)?.kind ?? null
     const resolved = resolveIncomingNpcDamage({
       amount: params.amount,
       carried: this.personalInventory,
+      readyWeaponKind,
       defenderId: this.id,
       defenderX: this.mesh.position.x,
       defenderZ: this.mesh.position.z,
@@ -2620,6 +2634,7 @@ export class NpcAgent {
 
     this.combatIntent = intent
     this.combatMeleeWeapon = meleeWeapon
+    this.combatAttackWeapon = null
     this.combatRangedWeapon = rangedWeapon
     this.combatAttack.reset()
     this.combatRangedAttack.reset()
@@ -2645,6 +2660,7 @@ export class NpcAgent {
       const meleeWeapon = resolveNpcMeleeWeapon(this.personalInventory, this.role)
       if (!meleeWeapon) return false
       this.combatMeleeWeapon = meleeWeapon
+      this.combatAttackWeapon = null
       // Abandons any in-flight draw/reload without manufacturing a shot or
       // spending ammo (plan §5) — the in-flight `combatProjectile`, if any,
       // is left to resolve on its own (already-fired, ammo already spent).
@@ -2653,6 +2669,7 @@ export class NpcAgent {
       const rangedWeapon = resolveNpcRangedWeapon(this.personalInventory, this.role)
       if (!rangedWeapon || !this.resolveRangedAmmo(rangedWeapon.ranged)) return false
       this.combatRangedWeapon = rangedWeapon
+      this.combatAttackWeapon = null
       this.combatAttack.reset()
     }
     this.combatIntent = { ...this.combatIntent, mode }
@@ -2683,7 +2700,12 @@ export class NpcAgent {
    *  idle during melee mode; `tickRangedAttackCycle` drives whichever one is
    *  actually active regardless of `intent.mode`. */
   private tickMeleeCombat(dt: number, intent: CombatIntent, targetPos: { x: number, z: number }): void {
-    const weapon = this.combatMeleeWeapon
+    const selectedAtTickStart = this.combatAttack.state() === 'idle'
+    let weapon = this.combatMeleeWeapon
+    if (selectedAtTickStart) {
+      weapon = resolveNpcMeleeWeapon(this.personalInventory, this.role)
+      this.combatMeleeWeapon = weapon
+    }
     if (!weapon) {
       this.endCombat('failed')
       return
@@ -2739,16 +2761,21 @@ export class NpcAgent {
           [{ id: intent.target.ref.id, x: targetPos.x, z: targetPos.z, alive: true }],
         )
         if (hits.length > 0) {
-          this.combatAttackAttempt += 1
-          applyNpcMeleeHit(intent.target, tick.config, this.effectiveMeleeStrength(), this.id, `melee:${intent.target.ref.id}`, this.combatAttackAttempt)
-          this.trace.record({ simTime: this.simClock, type: 'combat.hit', targetId: intent.target.ref.id })
-          if (isNpcCombatDebugMode()) {
-            console.log('[NPC COMBAT]', `npc=${this.id}/${this.name}/${this.role}`, `attack.hit target=${intent.target.ref.id}`)
-          }
-          this.playCombatImpactSound(intent.target, targetPos)
-          if (!intent.target.isAlive()) {
-            this.endCombat('complete')
-            return
+          const attackWeapon = this.combatAttackWeapon
+          if (attackWeapon && applyNpcMeleeWeaponWear(this.personalInventory, attackWeapon)) {
+            this.combatAttackAttempt += 1
+            applyNpcMeleeHit(intent.target, tick.config, this.effectiveMeleeStrength(), this.id, `melee:${intent.target.ref.id}`, this.combatAttackAttempt)
+            this.trace.record({ simTime: this.simClock, type: 'combat.hit', targetId: intent.target.ref.id })
+            if (isNpcCombatDebugMode()) {
+              console.log('[NPC COMBAT]', `npc=${this.id}/${this.name}/${this.role}`, `attack.hit target=${intent.target.ref.id}`)
+            }
+            this.playCombatImpactSound(intent.target, targetPos)
+            if (!intent.target.isAlive()) {
+              this.endCombat('complete')
+              return
+            }
+          } else if (isNpcCombatDebugMode()) {
+            console.log('[NPC COMBAT]', `npc=${this.id}/${this.name}/${this.role}`, 'attack.cancelled reason=weaponMissing')
           }
         } else if (isNpcCombatDebugMode()) {
           console.log(
@@ -2763,10 +2790,16 @@ export class NpcAgent {
       }
     }
 
-    if (inRange && this.combatAttack.state() === 'idle') {
-      if (this.stamina.current >= weapon.melee.staminaCost) {
-        drainStamina(this.stamina, weapon.melee.staminaCost)
-        this.combatAttack.start(weapon.melee, resolveMeleeRecovery(weapon.melee.recovery, this.effectiveMeleeAgility()))
+    if (this.combatAttack.state() === 'idle') {
+      // A large dt can finish recovery in this update. Re-resolve after the
+      // lifecycle transition so the next attack uses current condition and
+      // ownership; an attack idle at tick entry already has this snapshot.
+      const readyWeapon = selectedAtTickStart ? weapon : resolveNpcMeleeWeapon(this.personalInventory, this.role)
+      if (readyWeapon && dist <= readyWeapon.melee.range && this.stamina.current >= readyWeapon.melee.staminaCost) {
+        this.combatMeleeWeapon = readyWeapon
+        this.combatAttackWeapon = readyWeapon
+        drainStamina(this.stamina, readyWeapon.melee.staminaCost)
+        this.combatAttack.start(readyWeapon.melee, resolveMeleeRecovery(readyWeapon.melee.recovery, this.effectiveMeleeAgility()))
         this.anim.playOnce('attackMelee')
       } else if (isNpcCombatDebugMode() && this.simClock - this.lastStaminaSkipLogSec > 1) {
         this.lastStaminaSkipLogSec = this.simClock
@@ -3056,6 +3089,7 @@ export class NpcAgent {
     const onKill = outcome === 'complete' ? this.combatIntent?.onKill : undefined
     this.combatIntent = null
     this.combatMeleeWeapon = null
+    this.combatAttackWeapon = null
     this.combatRangedWeapon = null
     // Clears the guard-assistance emergency run (plan npc-048) — a no-op for
     // any other combat, which never sets `run` in the first place.
@@ -3114,6 +3148,7 @@ export class NpcAgent {
     }
     this.combatIntent = null
     this.combatMeleeWeapon = null
+    this.combatAttackWeapon = null
     this.combatRangedWeapon = null
     this.combatAttack.reset()
     this.combatRangedAttack.reset()

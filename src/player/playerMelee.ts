@@ -1,4 +1,6 @@
+import type { Inventory } from '../items/Inventory'
 import type { MeleeConfig } from '../items/itemCatalog'
+import type { ItemKind } from '../items/items'
 import { resolveMeleeRecovery } from '../combat/meleeAgility'
 import {
   createMeleeAttackLifecycle,
@@ -6,6 +8,7 @@ import {
   type MeleeHitCandidate,
   type MeleeState,
 } from '../combat/meleeAttack'
+import { isWeaponItemInstance, type WeaponItemInstance } from '../items/itemInstances'
 import { drainStamina, type StaminaState } from '../shared/StaminaState'
 import { drainVigor, type VigorState } from '../shared/VigorState'
 import { physicalEffortVigorCostPerSec } from './PlayerNeeds'
@@ -19,6 +22,17 @@ import { physicalEffortVigorCostPerSec } from './PlayerNeeds'
  *  quest/audio/toast side effects. */
 export type { MeleeHitCandidate, MeleeState } from '../combat/meleeAttack'
 export { resolveMeleeHits, yawToward } from '../combat/meleeAttack'
+
+/** Returns the exact weapon instance captured when a swing began, or null
+ *  when that instance has left the player's inventory before impact. */
+export function resolveMeleeWeaponSnapshot(
+  inventory: Inventory,
+  snapshot: { id: string, kind: ItemKind } | null,
+): WeaponItemInstance | null {
+  if (!snapshot) return null
+  const instance = inventory.getInstance(snapshot.id)
+  return instance && isWeaponItemInstance(instance) && instance.kind === snapshot.kind ? instance : null
+}
 
 export type MeleeTickResult = MeleeAttackTickResult
 

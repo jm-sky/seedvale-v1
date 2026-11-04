@@ -9,8 +9,11 @@ import { createArmorInstance } from '../items/armorItemInstances'
 import { NEUTRAL_EQUIPMENT_MODIFIERS, resolveEquipmentModifiers } from '../items/equipment'
 import { Inventory } from '../items/Inventory'
 import { ITEM_CATALOG } from '../items/itemCatalog'
+import { isWeaponMaintenanceKind } from '../items/itemInstances'
+import { createWeaponInstance } from '../items/weaponMaintenance'
 import {
   applyNpcMeleeHit,
+  applyNpcMeleeWeaponWear,
   applyNpcRangedHit,
   chooseCombatMode,
   npcMeleeWeaponFamily,
@@ -33,6 +36,11 @@ const ALL_CURRENT_MELEE_KINDS: readonly ItemKind[] = (Object.keys(ITEM_CATALOG) 
 const ALL_CURRENT_RANGED_KINDS: readonly ItemKind[] = (Object.keys(ITEM_CATALOG) as ItemKind[])
   .filter((kind) => ITEM_CATALOG[kind].ranged != null)
 
+function addMeleeWeapon(inventory: Inventory, kind: ItemKind): void {
+  if (isWeaponMaintenanceKind(kind)) inventory.addInstance(createWeaponInstance(kind))
+  else inventory.add(kind, 1)
+}
+
 function fakeTarget(overrides: Partial<CombatTargetHandle> = {}): CombatTargetHandle & { damages: number[] } {
   const damages: number[] = []
   return {
@@ -54,26 +62,53 @@ describe('resolveNpcMeleeWeapon', () => {
 
   it('resolves a melee-capable carried kind straight from ITEM_CATALOG', () => {
     const carried = new Inventory(undefined, 5)
-    carried.add('knife', 1)
+    addMeleeWeapon(carried, 'knife')
     const weapon = resolveNpcMeleeWeapon(carried, 'trader')
     expect(weapon?.kind).toBe('knife')
-    expect(weapon?.melee).toBe(KNIFE)
+    expect(weapon?.melee).toEqual(KNIFE)
+    expect(weapon?.instanceId).not.toBeNull()
+  })
+
+  it('scores maintenance instances by sharpness and returns the selected exact instance', () => {
+    const carried = new Inventory(undefined, 10)
+    const blunt = { ...createWeaponInstance('long_sword'), sharpness: 0.05 }
+    const sharp = createWeaponInstance('long_sword')
+    carried.addInstance(blunt)
+    carried.addInstance(sharp)
+    const selected = resolveNpcMeleeWeapon(carried, 'guard')
+    expect(selected?.instanceId).toBe(sharp.id)
+    expect(selected?.melee.damage).toBe(ITEM_CATALOG.long_sword.melee?.damage)
+  })
+
+  it('cancels the hit when its snapshotted maintenance instance is gone, otherwise wears only that instance', () => {
+    const carried = new Inventory(undefined, 10)
+    const first = createWeaponInstance('sword')
+    const second = createWeaponInstance('sword')
+    carried.addInstance(first)
+    carried.addInstance(second)
+    const selected = resolveNpcMeleeWeapon(carried, 'guard')!
+    expect(selected.instanceId).toBe(first.id)
+    carried.removeInstance(first.id)
+    expect(applyNpcMeleeWeaponWear(carried, selected)).toBe(false)
+    const next = resolveNpcMeleeWeapon(carried, 'guard')!
+    expect(applyNpcMeleeWeaponWear(carried, next)).toBe(true)
+    expect(carried.getInstance(second.id)).toMatchObject({ sharpness: 0.988, durability: 0.9985 })
   })
 
   it('guard picks the best owned sword rather than a higher-raw-damage battle_axe', () => {
     const carried = new Inventory(undefined, 20)
-    carried.add('short_sword', 1)
-    carried.add('long_sword', 1)
-    carried.add('masterwork_sword', 1)
-    carried.add('battle_axe', 1)
+    addMeleeWeapon(carried, 'short_sword')
+    addMeleeWeapon(carried, 'long_sword')
+    addMeleeWeapon(carried, 'masterwork_sword')
+    addMeleeWeapon(carried, 'battle_axe')
     expect(resolveNpcMeleeWeapon(carried, 'guard')?.kind).toBe('masterwork_sword')
   })
 
   it('trader picks the best owned compact weapon', () => {
     const carried = new Inventory(undefined, 20)
-    carried.add('knife', 1)
-    carried.add('dagger', 1)
-    carried.add('damascus_knife', 1)
+    addMeleeWeapon(carried, 'knife')
+    addMeleeWeapon(carried, 'dagger')
+    addMeleeWeapon(carried, 'damascus_knife')
     expect(resolveNpcMeleeWeapon(carried, 'trader')?.kind).toBe('damascus_knife')
   })
 
@@ -83,8 +118,8 @@ describe('resolveNpcMeleeWeapon', () => {
     // = 14/(0.11+0.08+0.17) ≈ 38.89 — a genuinely higher *base* score than
     // short_sword, but well short of short_sword's bonused 50.
     const carried = new Inventory(undefined, 20)
-    carried.add('short_sword', 1)
-    carried.add('dagger', 1)
+    addMeleeWeapon(carried, 'short_sword')
+    addMeleeWeapon(carried, 'dagger')
     expect(resolveNpcMeleeWeapon(carried, 'guard')?.kind).toBe('short_sword')
   })
 
@@ -95,8 +130,8 @@ describe('resolveNpcMeleeWeapon', () => {
     // over that bonused threshold, so it wins despite being outside trader's
     // preferred family.
     const carried = new Inventory(undefined, 20)
-    carried.add('damascus_knife', 1)
-    carried.add('obsidian_sword', 1)
+    addMeleeWeapon(carried, 'damascus_knife')
+    addMeleeWeapon(carried, 'obsidian_sword')
     expect(resolveNpcMeleeWeapon(carried, 'trader')?.kind).toBe('obsidian_sword')
   })
 
@@ -106,10 +141,10 @@ describe('resolveNpcMeleeWeapon', () => {
       const a = new Inventory(undefined, 10000)
       const b = new Inventory(undefined, 10000)
       for (const kind of ALL_CURRENT_MELEE_KINDS) {
-        a.add(kind, 1)
+        addMeleeWeapon(a, kind)
       }
       for (const kind of [...ALL_CURRENT_MELEE_KINDS].reverse()) {
-        b.add(kind, 1)
+        addMeleeWeapon(b, kind)
       }
       expect(resolveNpcMeleeWeapon(a, role)?.kind).toBe(resolveNpcMeleeWeapon(b, role)?.kind)
     }
@@ -294,14 +329,22 @@ describe('resolveNpcDefenseConfig', () => {
   it('returns null when carrying nothing that can block', () => {
     const carried = new Inventory(undefined, 5)
     carried.add('branch', 1)
-    expect(resolveNpcDefenseConfig(carried)).toBeNull()
+    expect(resolveNpcDefenseConfig(null)).toBeNull()
   })
 
   it('resolves a defense config from a carried blocking item', () => {
     const carried = new Inventory(undefined, 5)
-    carried.add('long_sword', 1)
-    const defense = resolveNpcDefenseConfig(carried)
+    addMeleeWeapon(carried, 'long_sword')
+    const defense = resolveNpcDefenseConfig(resolveNpcMeleeWeapon(carried, 'guard')?.kind ?? null)
     expect(defense?.canBlock).toBe(true)
+  })
+
+  it('uses only the selected ready weapon, even when a blocking sword remains in the bag', () => {
+    const carried = new Inventory(undefined, 5)
+    addMeleeWeapon(carried, 'long_sword')
+    expect(carried.holdsAny('long_sword')).toBe(true)
+    expect(resolveNpcDefenseConfig(null)).toBeNull()
+    expect(resolveNpcDefenseConfig(resolveNpcMeleeWeapon(carried, 'guard')?.kind ?? null)?.canBlock).toBe(true)
   })
 })
 
@@ -437,6 +480,7 @@ describe('resolveIncomingNpcDamage', () => {
   const baseParams = {
     amount: 20,
     carried: new Inventory(undefined, 5),
+    readyWeaponKind: null,
     defenderId: 'npc:1',
     defenderX: 0,
     defenderZ: 0,
@@ -462,15 +506,15 @@ describe('resolveIncomingNpcDamage', () => {
 
   it('active block happens before passive armor: a full block still leaves zero final damage with armor worn', () => {
     const carried = new Inventory(undefined, 20)
-    carried.add('long_sword', 1)
+    addMeleeWeapon(carried, 'long_sword')
     carried.addInstance(createArmorInstance('chainmail', 'common'))
     let attempt = 1
     let result = resolveIncomingNpcDamage({
-      ...baseParams, carried, attackerX: 0, attackerZ: 2, attempt,
+      ...baseParams, carried, readyWeaponKind: resolveNpcMeleeWeapon(carried, 'guard')?.kind ?? null, attackerX: 0, attackerZ: 2, attempt,
     })
     while (result.outcome !== 'full' && attempt < 500) {
       attempt += 1
-      result = resolveIncomingNpcDamage({ ...baseParams, carried, attackerX: 0, attackerZ: 2, attempt })
+      result = resolveIncomingNpcDamage({ ...baseParams, carried, readyWeaponKind: resolveNpcMeleeWeapon(carried, 'guard')?.kind ?? null, attackerX: 0, attackerZ: 2, attempt })
     }
     expect(result.outcome).toBe('full')
     expect(result.finalDamage).toBe(0)
@@ -478,26 +522,26 @@ describe('resolveIncomingNpcDamage', () => {
 
   it('converts steerTo facing convention correctly — an attacker ahead of a forward-facing NPC is in arc', () => {
     const carried = new Inventory(undefined, 5)
-    carried.add('long_sword', 1)
+    addMeleeWeapon(carried, 'long_sword')
     // defenderFacingYaw 0 means facing +Z under steerTo's atan2(dirX, dirZ)
     // convention — an attacker further along +Z stands in front.
     let attempt = 1
     let result = resolveIncomingNpcDamage({
-      ...baseParams, carried, defenderFacingYaw: 0, attackerX: 0, attackerZ: 2, attempt,
+      ...baseParams, carried, readyWeaponKind: resolveNpcMeleeWeapon(carried, 'guard')?.kind ?? null, defenderFacingYaw: 0, attackerX: 0, attackerZ: 2, attempt,
     })
     while (!result.attempted && attempt < 200) {
       attempt += 1
-      result = resolveIncomingNpcDamage({ ...baseParams, carried, defenderFacingYaw: 0, attackerX: 0, attackerZ: 2, attempt })
+      result = resolveIncomingNpcDamage({ ...baseParams, carried, readyWeaponKind: resolveNpcMeleeWeapon(carried, 'guard')?.kind ?? null, defenderFacingYaw: 0, attackerX: 0, attackerZ: 2, attempt })
     }
     expect(result.attempted).toBe(true)
   })
 
   it('an attacker behind a forward-facing NPC is out of arc — never attempted', () => {
     const carried = new Inventory(undefined, 5)
-    carried.add('long_sword', 1)
+    addMeleeWeapon(carried, 'long_sword')
     for (let attempt = 1; attempt < 50; attempt++) {
       const result = resolveIncomingNpcDamage({
-        ...baseParams, carried, defenderFacingYaw: 0, attackerX: 0, attackerZ: -2, attempt,
+        ...baseParams, carried, readyWeaponKind: resolveNpcMeleeWeapon(carried, 'guard')?.kind ?? null, defenderFacingYaw: 0, attackerX: 0, attackerZ: -2, attempt,
       })
       expect(result.attempted).toBe(false)
       expect(result.finalDamage).toBe(20)

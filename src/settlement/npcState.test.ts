@@ -6,6 +6,24 @@ import { damageHealth } from '../shared/HealthState'
 import { createNpcAuthoritativeState, createNpcStateRegistry } from './npcState'
 
 describe('createNpcStateRegistry', () => {
+  it('normalizes legacy personal weapon counts without losing over-capacity units or duplicating on a second restore', () => {
+    const source = createNpcStateRegistry()
+    const npcId = 'legacy:weapon-counts'
+    source.getOrCreate(npcId, 0)
+    const snapshot = source.serialize()
+    snapshot[npcId]!.personalInventory = { counts: { long_sword: 100 }, instances: [] }
+
+    const restored = createNpcStateRegistry(snapshot)
+    const inventory = restored.getOrCreate(npcId, 0).personalInventory
+    expect(inventory.count('long_sword')).toBe(0)
+    expect(inventory.countInstances('long_sword')).toBe(100)
+
+    const restoredAgain = createNpcStateRegistry(restored.serialize())
+    const secondInventory = restoredAgain.getOrCreate(npcId, 0).personalInventory
+    expect(secondInventory.count('long_sword')).toBe(0)
+    expect(secondInventory.countInstances('long_sword')).toBe(100)
+  })
+
   it('hydrates the same state object when an npc id is seen again (agent dispose/recreate)', () => {
     const registry = createNpcStateRegistry()
     const first = registry.getOrCreate('0_0:npc:0', 0)

@@ -4,7 +4,8 @@ import { describe, expect, it } from 'vitest'
 import type { CombatIntent } from '../combat/combatIntent'
 import type { RangedAttackLifecycle } from '../combat/rangedLifecycle'
 import type { NpcMeleeWeapon, NpcRangedWeapon } from './npcCombat'
-import { createWeaponInstance } from '../items/weaponMaintenance'
+import { ITEM_CATALOG } from '../items/itemCatalog'
+import { createWeaponInstance, getSharpnessDamageModifier } from '../items/weaponMaintenance'
 import { proceduralResidentAnchorsFromLandmarks, residentAnchorsForHome } from '../settlement/npcResidentAnchors'
 import { NpcAgent } from './NpcAgent'
 
@@ -88,9 +89,11 @@ type CombatInternals = {
   combatMeleeWeapon: NpcMeleeWeapon | null
   combatRangedWeapon: NpcRangedWeapon | null
   combatRangedAttack: RangedAttackLifecycle
+  combatAttackWeapon: NpcMeleeWeapon | null
   combatImprovisedThrowUsed: boolean
   tickRangedCombat: (dt: number, intent: CombatIntent, targetPos: { x: number, z: number }) => void
   tickMeleeCombat: (dt: number, intent: CombatIntent, targetPos: { x: number, z: number }) => void
+  switchCombatMode: (mode: CombatIntent['mode']) => boolean
 }
 
 function combatInternals(npc: NpcAgent): CombatInternals {
@@ -159,6 +162,73 @@ describe('NpcAgent crossbow reload interruption (plan items-player-059 §5/§7)'
 
     expect(c.combatIntent?.mode).toBe('ranged')
     expect(c.combatRangedAttack.state()).toBe('reload')
+  })
+})
+
+describe('NpcAgent ready-weapon defense (plan npc-067 P2)', () => {
+  it('does not block with a carried sword during ranged mode, then uses it after switching to melee', async () => {
+    const npc = await createCombatTestNpc('guard-ready-defense', 'guard')
+    npc.personalInventory.add('crossbow', 1)
+    npc.personalInventory.add('bolt', 2)
+    const target = stubTarget(() => 2)
+    expect(npc.beginCombat({ target, mode: 'ranged' })).toBe(true)
+
+    const rangedDefense = npc.applyIncomingCombatDamage({ amount: 10, attackerX: 0, attackerZ: 2, attackerKey: 'wolf:1' })
+    expect(rangedDefense.attempted).toBe(false)
+
+    const c = combatInternals(npc)
+    expect(c.switchCombatMode('melee')).toBe(true)
+    const meleeDefense = npc.applyIncomingCombatDamage({ amount: 10, attackerX: 0, attackerZ: 2, attackerKey: 'wolf:1' })
+    expect(meleeDefense.attempted).toBe(true)
+  })
+})
+
+describe('NpcAgent exact-instance melee lifecycle (plan npc-067 P4)', () => {
+  it.each([30, 60, 120])('applies one hit and one weapon wear at %i Hz', async (hz) => {
+    const npc = await createCombatTestNpc(`npc-wear-${hz}`, 'guard')
+    const sword = npc.personalInventory.getInstances('long_sword')[0]!
+    const damages: number[] = []
+    const target: CombatIntent['target'] = {
+      ref: { id: 'wear-target', kind: 'animal' },
+      getPosition: () => ({ x: 1, z: 0 }),
+      isAlive: () => true,
+      applyDamage: (damage) => damages.push(damage),
+    }
+    expect(npc.beginCombat({ target, mode: 'melee' })).toBe(true)
+    const c = combatInternals(npc)
+    let secondSwingDamage: number | null = null
+    for (let i = 0; i < hz * 5 && secondSwingDamage == null; i++) {
+      c.tickMeleeCombat(1 / hz, c.combatIntent!, { x: 1, z: 0 })
+      const snapDamage = c.combatAttackWeapon?.melee.damage
+      if (damages.length > 0 && snapDamage != null && snapDamage < ITEM_CATALOG.long_sword.melee!.damage) {
+        secondSwingDamage = snapDamage
+      }
+    }
+    expect(damages).toHaveLength(1)
+    expect(npc.personalInventory.getInstance(sword.id)).toMatchObject({ sharpness: 0.988, durability: 0.9985 })
+    expect(secondSwingDamage).toBeCloseTo(ITEM_CATALOG.long_sword.melee!.damage * getSharpnessDamageModifier(0.988))
+  })
+
+  it('cancels the swing if its exact weapon instance leaves inventory before impact', async () => {
+    const npc = await createCombatTestNpc('npc-weapon-removed', 'guard')
+    const sword = npc.personalInventory.getInstances('long_sword')[0]!
+    const damages: number[] = []
+    const target: CombatIntent['target'] = {
+      ref: { id: 'removed-target', kind: 'animal' },
+      getPosition: () => ({ x: 1, z: 0 }),
+      isAlive: () => true,
+      applyDamage: (damage) => damages.push(damage),
+    }
+    expect(npc.beginCombat({ target, mode: 'melee' })).toBe(true)
+    const c = combatInternals(npc)
+    c.tickMeleeCombat(0.01, c.combatIntent!, { x: 1, z: 0 }) // start attack and snapshot weapon
+    expect(c.combatAttackWeapon?.instanceId).toBe(sword.id)
+    npc.personalInventory.removeInstance(sword.id)
+    for (let i = 0; i < 120; i++) {
+      if (!c.combatIntent) break
+      c.tickMeleeCombat(1 / 60, c.combatIntent, { x: 1, z: 0 })
+    }
+    expect(damages).toEqual([])
   })
 })
 

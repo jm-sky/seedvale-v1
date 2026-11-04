@@ -16,6 +16,12 @@ import {
   resolveEquipmentModifiers,
 } from '../items/equipment'
 import { type DefenseConfig, ITEM_CATALOG, type MeleeConfig, type RangedConfig } from '../items/itemCatalog'
+import { isWeaponItemInstance, isWeaponMaintenanceKind, type WeaponItemInstance } from '../items/itemInstances'
+import {
+  applySharpnessWear,
+  getSharpnessDamageModifier,
+  getWeaponMaintenanceProfile,
+} from '../items/weaponMaintenance'
 
 /**
  * NPC-specific combat glue (plan 177, extended by plan npc-053) — resolves an
@@ -31,15 +37,12 @@ import { type DefenseConfig, ITEM_CATALOG, type MeleeConfig, type RangedConfig }
 const MELEE_CAPABLE_KINDS: readonly ItemKind[] = (Object.keys(ITEM_CATALOG) as ItemKind[])
   .filter((kind) => ITEM_CATALOG[kind].melee != null)
 
-const DEFENSE_CAPABLE_KINDS: readonly ItemKind[] = (Object.keys(ITEM_CATALOG) as ItemKind[])
-  .filter((kind) => ITEM_CATALOG[kind].defense?.canBlock)
-
 /** Ranged-capable item kinds (bows) — same discovery-only role as
  *  `MELEE_CAPABLE_KINDS` (plan 177 §7 / plan npc-053). */
 const RANGED_CAPABLE_KINDS: readonly ItemKind[] = (Object.keys(ITEM_CATALOG) as ItemKind[])
   .filter((kind) => ITEM_CATALOG[kind].ranged != null)
 
-export type NpcMeleeWeapon = { kind: ItemKind, melee: MeleeConfig }
+export type NpcMeleeWeapon = { kind: ItemKind, melee: MeleeConfig, instanceId: string | null }
 export type NpcRangedWeapon = { kind: ItemKind, ranged: RangedConfig }
 
 /** Small pure weapon-family classification (plan npc-053 §4) — used only for
@@ -184,22 +187,41 @@ function pickBestCandidate<T extends ScoredCandidate>(candidates: readonly T[]):
  *  `NpcAgent.beginCombat`). */
 export function resolveNpcMeleeWeapon(inventory: Inventory, role: Role): NpcMeleeWeapon | null {
   const preferred = NPC_MELEE_FAMILY_PREFERENCE[role]
-  const candidates: Array<ScoredCandidate & { melee: MeleeConfig }> = []
+  const candidates: Array<ScoredCandidate & { melee: MeleeConfig, instanceId: string | null }> = []
   for (const kind of MELEE_CAPABLE_KINDS) {
     if (!inventory.holdsAny(kind)) continue
-    const melee = ITEM_CATALOG[kind].melee
-    if (!melee) continue
-    const baseScore = meleeCombatScore(melee)
     const isPreferred = preferred.includes(npcMeleeWeaponFamily(kind))
-    candidates.push({
-      kind,
-      melee,
-      baseScore,
-      effectiveScore: isPreferred ? baseScore * PROFESSION_FAMILY_BONUS_MULTIPLIER : baseScore,
-    })
+    const catalogMelee = ITEM_CATALOG[kind].melee
+    if (!catalogMelee) continue
+    const instances = inventory.getInstances(kind).filter(isWeaponItemInstance)
+    const weaponInstances: Array<WeaponItemInstance | null> = instances.length > 0
+      ? [...instances]
+      : isWeaponMaintenanceKind(kind) ? [] : [null]
+    for (const instance of weaponInstances) {
+      const melee = instance
+        ? { ...catalogMelee, damage: catalogMelee.damage * getSharpnessDamageModifier(instance.sharpness) }
+        : catalogMelee
+      const baseScore = meleeCombatScore(melee)
+      candidates.push({
+        kind,
+        melee,
+        instanceId: instance?.id ?? null,
+        baseScore,
+        effectiveScore: isPreferred ? baseScore * PROFESSION_FAMILY_BONUS_MULTIPLIER : baseScore,
+      })
+    }
   }
-  const best = pickBestCandidate(candidates)
-  return best ? { kind: best.kind, melee: best.melee } : null
+  let best: typeof candidates[number] | null = null
+  for (const candidate of candidates) {
+    if (
+      best == null
+      || candidate.effectiveScore > best.effectiveScore
+      || (candidate.effectiveScore === best.effectiveScore && candidate.baseScore > best.baseScore)
+      || (candidate.effectiveScore === best.effectiveScore && candidate.baseScore === best.baseScore && candidate.kind < best.kind)
+      || (candidate.effectiveScore === best.effectiveScore && candidate.baseScore === best.baseScore && candidate.kind === best.kind && (candidate.instanceId ?? '') < (best.instanceId ?? ''))
+    ) best = candidate
+  }
+  return best ? { kind: best.kind, melee: best.melee, instanceId: best.instanceId } : null
 }
 
 /** Resolves the best bow an NPC currently owns (plan npc-053 §5/§6/§7/§8/
@@ -292,15 +314,29 @@ export function resolveNpcAmmoKind(carried: Inventory, ranged: RangedConfig): It
   return resolveNpcAmmo([carried], ranged)?.kind ?? null
 }
 
-/** Resolves the first carried item that can block, if any — same
- *  "smallest existing-compatible source" as `resolveNpcMeleeWeapon`; `null`
- *  is the normal case for an NPC with nothing defensive carried. */
-export function resolveNpcDefenseConfig(carried: Inventory): DefenseConfig | null {
-  for (const kind of DEFENSE_CAPABLE_KINDS) {
-    if (!carried.holdsAny(kind)) continue
-    return ITEM_CATALOG[kind].defense ?? null
-  }
-  return null
+/** Resolves defense from the validated ready melee weapon; NPCs in ranged mode
+ *  and NPCs without a ready melee weapon cannot block from a carried bag item. */
+export function resolveNpcDefenseConfig(readyWeaponKind: ItemKind | null): DefenseConfig | null {
+  return readyWeaponKind ? ITEM_CATALOG[readyWeaponKind].defense ?? null : null
+}
+
+/** Checks that a resolved NPC melee weapon still belongs to its owner. */
+export function isNpcMeleeWeaponHeld(inventory: Inventory, weapon: NpcMeleeWeapon): boolean {
+  if (weapon.instanceId == null) return inventory.holdsAny(weapon.kind)
+  const instance = inventory.getInstance(weapon.instanceId)
+  return instance != null && isWeaponItemInstance(instance) && instance.kind === weapon.kind
+}
+
+/** Applies one hit of condition wear to the exact held NPC weapon snapshot.
+ *  Returns false if the selected instance disappeared before impact. */
+export function applyNpcMeleeWeaponWear(inventory: Inventory, weapon: NpcMeleeWeapon): boolean {
+  if (weapon.instanceId == null) return inventory.holdsAny(weapon.kind)
+  const instance = inventory.getInstance(weapon.instanceId)
+  if (!instance || !isWeaponItemInstance(instance) || instance.kind !== weapon.kind) return false
+  return inventory.updateInstance(weapon.instanceId, (current) => {
+    if (!isWeaponItemInstance(current)) return current
+    return applySharpnessWear(current, getWeaponMaintenanceProfile(current.kind))
+  })
 }
 
 /** One resolved melee hit — the shared Strength contribution (plan npc-019
@@ -402,7 +438,7 @@ export function resolveNpcArmorEquipment(inventory: Inventory): EquipmentState {
 
 /** Incoming damage against an NPC (plan 177 §8/§10 — `animal → NPC`,
  *  `NPC → NPC`, `player → NPC` are all the same shape) — active defense
- *  first via whatever `carried` currently exposes, then derived worn armor
+ *  first via the ready melee weapon, then derived worn armor
  *  (plan npc-053 §14, same shared `resolveEquipmentModifiers()` the player
  *  uses) scales whatever damage remains; the caller applies `finalDamage` to
  *  `HealthState` itself (this stays a pure resolver, no `HealthState`
@@ -412,6 +448,7 @@ export function resolveNpcArmorEquipment(inventory: Inventory): EquipmentState {
 export function resolveIncomingNpcDamage(params: {
   amount: number
   carried: Inventory
+  readyWeaponKind: ItemKind | null
   defenderId: string
   defenderX: number
   defenderZ: number
@@ -425,7 +462,7 @@ export function resolveIncomingNpcDamage(params: {
   attempt: number
   defenseSkillValue?: number
 }): ResolvedDefense {
-  const defense = resolveNpcDefenseConfig(params.carried)
+  const defense = resolveNpcDefenseConfig(params.readyWeaponKind)
   const inArc = params.attackerX != null && params.attackerZ != null
     ? isAttackFromDefensibleDirection(
         params.defenderX,

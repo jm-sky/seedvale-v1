@@ -149,6 +149,7 @@ import {
   type MeleeHitCandidate,
   meleeSwingAngle,
   resolveMeleeHits,
+  resolveMeleeWeaponSnapshot,
   yawToward,
 } from '../player/playerMelee'
 import {
@@ -905,6 +906,9 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
    *  during wind-up. Cleared back to `null` on hit resolution/cancel so the
    *  next attack always recomputes its own direction. */
   let attackYaw: number | null = null
+  /** Exact maintenance weapon committed to the active swing. A transfer or
+   *  removal during wind-up cancels its hit instead of creating a ghost hit. */
+  let attackWeaponSnapshot: { id: string, kind: ItemKind } | null = null
 
   /** Ranged attack lifecycle (plan 162) — same draw/release/recovery shape
    *  as `playerMelee`, `ITEM_CATALOG[kind].ranged` supplies the per-bow
@@ -932,6 +936,7 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
       player.endMeleeAttack()
       player.setMeleeSwing(null)
       attackYaw = null
+      attackWeaponSnapshot = null
     }
     if (playerRanged.isDrawing()) {
       playerRanged.reset()
@@ -1376,19 +1381,20 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
         // window, so the fallback below never actually fires — kept only as
         // a type-level safety net, never a "normal" live-yaw path (plan
         // items-player-011).
-        const hitIds = resolveMeleeHits(
+        const snapshotInstance = resolveMeleeWeaponSnapshot(inventory, attackWeaponSnapshot)
+        const weaponStillHeld = !attackWeaponSnapshot
+          || snapshotInstance != null
+        const hitIds = weaponStillHeld ? resolveMeleeHits(
           player.mesh.position.x,
           player.mesh.position.z,
           attackYaw ?? mouseLook.state.yaw,
           meleeTick.config,
           meleeCandidates,
-        )
+        ) : []
         // Plan 161 — current held instance's sharpness (if any) modifies this
         // swing's damage; wear is applied once per resolved hit below, never
         // on a miss (no `hitIds`) and never more than once per target.
-        const heldInstanceId = heldTool.heldInstanceId()
-        const heldInstance = heldInstanceId ? inventory.getInstance(heldInstanceId) : null
-        const weaponInstance = heldInstance && isWeaponItemInstance(heldInstance) ? heldInstance : null
+        const weaponInstance = snapshotInstance
         const sharpnessModifier = weaponInstance ? getSharpnessDamageModifier(weaponInstance.sharpness) : 1
         for (const id of hitIds) {
           const animal = meleeAnimalById.get(id)
@@ -1435,6 +1441,7 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
         // One attack commits to one yaw; the rest of the swing (and the next
         // request) is free to use live camera yaw again.
         attackYaw = null
+        attackWeaponSnapshot = null
       }
 
       // Ranged attack tick (plan 162) — same shape as the melee tick above:
@@ -2384,6 +2391,8 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
                   equipmentModifiers.meleeRecoveryMultiplier,
                 )
                 if (result.started) {
+                  const heldInstanceId = heldTool.heldInstanceId()
+                  attackWeaponSnapshot = heldInstanceId ? { id: heldInstanceId, kind: held } : null
                   playerCombat.enter()
                   playerCombat.noteActivity()
                   playerCombat.setSoftLock(livingTargetIdForAnimal(target.animal.animalId))
@@ -3011,6 +3020,7 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
                 player.endMeleeAttack()
                 player.setMeleeSwing(null)
                 attackYaw = null
+                attackWeaponSnapshot = null
                 playerRanged.reset()
                 player.endRangedDraw()
                 rangedTargetId = null
