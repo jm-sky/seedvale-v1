@@ -46,3 +46,36 @@ No generator, routing, threshold, or settlement-count implementation is authoriz
 4. Convert approved strategic direction to **small plans** under normal planning rules after targeted code recon. Track planning/execution in the [session queue](./AUTONOMOUS-SESSION-QUEUE.md), not in this decision record.
 
 **No code was changed and no runtime, visual or performance verification was performed to approve these decisions.**
+
+## Q116 follow-up — author direction and calibration caveats (2026-11-04)
+
+**Authority:** direct author feedback after reading [S0 baseline](./2026-11-04--geography-s0-baseline.md). These are **product preferences and constraints**, not selected algorithms, acceptance numbers or permission to implement. Opus may propose better solutions, showing trade-offs and obtaining author review for material changes. This section refines G4, G5 and G8 above; where earlier Q114 impressions differ, the newer feedback wins.
+
+### Q116-a — mountain profile (G8): preferred direction
+
+- Author prefers **higher mountains, with highest peaks around 60–80 m**, compared with S0's 33–38 m. This is a preferred peak range for visual calibration, not a mandatory height for every mountain.
+- Preserve connected ranges, passes and local dramatic summits. Have Opus assess terrain, river, route and generation-cost implications; compare previews before freezing exact parameters.
+
+### Q116-b — stream density (G4): preferred direction
+
+- Target approximately **50% less total watercourse length** than the current baseline, mostly by reducing minor streams; do **not** interpret this as removing half the major rivers.
+- Calibrate after macro relief and climate-weighted runoff (061). Preserve coherent main rivers and tributary hierarchy, with dry drainage in appropriate regions. This newer preference supersedes Q114's preliminary 1920 m² preview preference (−21%) as the intended density direction, not as a fixed threshold.
+
+### Q116-c — left road from home (G5): **unresolved — verify route identity**
+
+- The author **accepts about four minutes of real walking**; the specific criticized in-game road appeared **winding and had several bridges**. The S0 measured home → `-4_-2` route on seed `415424794` (1429 m, polyline/direct ratio 1.04, five river crossings, estimated four real minutes at 6 m/s) may not be the same perceived route or may not represent the visible road geometry.
+- **Do not infer** from that census that the player's objection is a four-minute journey or an eight-game-hour time-scale problem. Reproduce the author's actual home-left route, confirm seed, destination, visible road, bridge crossings, route polyline and timed in-game traversal. Differentiate simulation estimates from actual play.
+- Do **not** change settlement density, travel speed or time scaling solely on this disputed observation. Existing G5 geography-led settlement comparison remains, but the specific travel complaint requires verification before re-calibrating its targets.
+
+### Q116-d — wilderness and settlement safety (G5): revised product definition
+
+- **Reject “land >5 game-hours / ~900 m from any settlement” as the definition or target for wilderness.** Land near a settlement may still be forest, swamp, wolf habitat and dangerous wilderness. The S0 11–14% result remains a valid *distance-to-settlement diagnostic*, not a measure of wilderness or a justification for a ≥20% wilderness target.
+- Each settlement should have a **deterministic, limited relative-safety belt**, dependent on **settlement size and character**, including local geography and nearby wildlife threats. Smaller villages have only a small margin of relatively worked/safe land; larger towns can have broader pasture/field areas before forest or wetland.
+- Existing **“closed” settlement character** (more palisades/guards) is important: closed settlements near forests and wildlife can have **narrower** safety belts, with palisades/guards as a *response to danger*, not proof of a safer surrounding region.
+- **No magical safe zone.** Wildlife threats, including wolves, can approach and attack settlements. Roads likewise do not guarantee safety.
+- Geography-led settlement siting and possible clusters remain sensible, but **do not force large empty regions just to reach a percentage**. Evaluate wilderness through land cover, land use, habitats/threats and exposure rather than a settlement-radius cutoff.
+- Treat the safety belt as a **design goal to reconcile with existing V1 settlement, fauna, guard, palisade and spawning/simulation systems**. Opus should verify existing mechanics and propose the smallest compatible, deterministic approach; no new parallel safety/spawn system, fixed radii, suppression rules or implementation is approved here.
+
+### Required Opus follow-up
+
+Update candidate metrics and stage plans 060/061/063 only **after** reconciling these directions with current code, scope and acceptance tests. In particular, retire the proposed ≥20% “>5h wilderness” gate, preserve the distance-to-settlement census as a neutral diagnostic, and recheck the specific road before claiming a travel-time defect. Present meaningful trade-offs or a better technically grounded alternative for author review.
