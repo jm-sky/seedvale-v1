@@ -69,6 +69,7 @@ describe('settlementAgriculture (plan settlements-npcs-030)', () => {
       hasHunter: true,
       hasWoodcutter: false,
       hasBlacksmith: false,
+      hasTextileWorker: false,
       adultFarmerCount: 1,
     })
   })
@@ -80,6 +81,7 @@ describe('settlementAgriculture (plan settlements-npcs-030)', () => {
       hasHunter: false,
       hasWoodcutter: false,
       hasBlacksmith: false,
+      hasTextileWorker: false,
       adultFarmerCount: 0,
     })
   })
@@ -91,6 +93,7 @@ describe('settlementAgriculture (plan settlements-npcs-030)', () => {
       hasHunter: true,
       hasWoodcutter: false,
       hasBlacksmith: false,
+      hasTextileWorker: false,
       adultFarmerCount: 0,
     })
   })
@@ -103,6 +106,7 @@ describe('settlementAgriculture (plan settlements-npcs-030)', () => {
       hasHunter: false,
       hasWoodcutter: true,
       hasBlacksmith: true,
+      hasTextileWorker: false,
       adultFarmerCount: 0,
     })
     expect(householdStartingContextFromFamily(family([
@@ -111,6 +115,7 @@ describe('settlementAgriculture (plan settlements-npcs-030)', () => {
       hasHunter: false,
       hasWoodcutter: false,
       hasBlacksmith: false,
+      hasTextileWorker: false,
       adultFarmerCount: 0,
     })
   })

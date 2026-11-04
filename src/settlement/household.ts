@@ -281,6 +281,8 @@ export type HouseholdStartingContext = {
   hasWoodcutter?: boolean
   /** Adult Blacksmith coverage — bounded sword/pauldron trade stock. */
   hasBlacksmith?: boolean
+  /** Adult Textile Worker coverage — finite padding starter goods (plan items-player-066 A). */
+  hasTextileWorker?: boolean
   adultFarmerCount?: number
   /** Optional settlement-scale trade stock inputs. Absent → SM defaults. */
   tradeStock?: HouseholdTradeStockContext

@@ -147,6 +147,7 @@ function resolveHunterGrants(starting: HouseholdStartingContext, householdId: st
   pushGrant(grants, 'waterskin_small', 1)
   pushGrant(grants, 'leather_pauldron', 1, armorQualityFor(starting, householdId, 'leather_pauldron', 0))
   pushGrant(grants, 'leather_bracers', 1, armorQualityFor(starting, householdId, 'leather_bracers', 0))
+  pushGrant(grants, 'leather_boots', 1, armorQualityFor(starting, householdId, 'leather_boots', 0))
 
   if (rank >= 2 || forest) {
     pushGrant(grants, 'hunting_bow', 1)
@@ -156,6 +157,10 @@ function resolveHunterGrants(starting: HouseholdStartingContext, householdId: st
   }
   if (rank >= 3 || (rank >= 2 && forest)) {
     pushGrant(grants, 'leather_armor', 1, armorQualityFor(starting, householdId, 'leather_armor', 0))
+  }
+  if (rank >= 2) {
+    pushGrant(grants, 'leather_gloves', 1, armorQualityFor(starting, householdId, 'leather_gloves', 0))
+    pushGrant(grants, 'leather_trousers', 1, armorQualityFor(starting, householdId, 'leather_trousers', 0))
   }
   if (rank >= 3) {
     pushGrant(grants, 'broadhead_arrow', forest ? 6 : 4)
@@ -254,6 +259,9 @@ function resolveBlacksmithGrants(starting: HouseholdStartingContext, householdId
 
   if (armor || !profile?.exclusive) {
     pushGrant(grants, 'steel_bracers', 1, artisanArmorQualityFor(starting, householdId, 'steel_bracers', 0, profile))
+    if (rank >= 2 || armorBias) {
+      pushGrant(grants, 'iron_helm', 1, artisanArmorQualityFor(starting, householdId, 'iron_helm', 0, profile))
+    }
     pushGrant(
       grants,
       'knight_pauldron_round',
@@ -284,6 +292,21 @@ function resolveBlacksmithGrants(starting: HouseholdStartingContext, householdId
 }
 
 /**
+ * Textile-worker household starter padding: one common-quality cap, jacket and
+ * hose per eligible household (plan items-player-066 A, proposal §8.1). Finite
+ * stock only — no textile-skill quality profile and no domestic manufacture.
+ *
+ * @domain items-player
+ */
+function resolveTextileWorkerGrants(): StarterGrant[] {
+  return [
+    { kind: 'padded_cap', count: 1, armorQuality: 'common' },
+    { kind: 'padded_jacket', count: 1, armorQuality: 'common' },
+    { kind: 'padded_hose', count: 1, armorQuality: 'common' },
+  ]
+}
+
+/**
  * Deterministic profession starter grants for genuine first construction.
  * Pure — callers materialize through `applyProfessionTradeStock`.
  *
@@ -301,6 +324,7 @@ export function resolveProfessionStarterGrants(
     pushGrant(grants, 'sickle', FARMER_TRADE_TOOL_COUNT)
   }
   if (starting.hasBlacksmith) grants.push(...resolveBlacksmithGrants(starting, householdId))
+  if (starting.hasTextileWorker) grants.push(...resolveTextileWorkerGrants())
   return grants
 }
 
@@ -319,6 +343,7 @@ export function householdStartingContextFromFamily(
     hasHunter: family.members.some((member) => member.character.role === 'hunter'),
     hasWoodcutter: coverage.woodcutter > 0,
     hasBlacksmith: coverage.blacksmith > 0,
+    hasTextileWorker: coverage.textile_worker > 0,
     adultFarmerCount: coverage.farmer,
     ...(tradeStock ? { tradeStock } : {}),
   }

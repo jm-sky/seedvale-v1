@@ -262,6 +262,21 @@ export const BLACKSMITH_PAULDRON_PRODUCTION = blacksmithRecipe(
   1,
   { difficulty: 60, minSkill: 52, specialization: 'armor' },
 )
+/** Layered armor batch (plan items-player-066 A, proposal §8.2): one instance, not exclusive. */
+export const BLACKSMITH_STEEL_BRACERS_PRODUCTION = blacksmithRecipe(
+  'blacksmith.steel_bracers',
+  'steel_bracers',
+  1,
+  1,
+  { difficulty: 35, minSkill: 28, specialization: 'armor' },
+)
+export const BLACKSMITH_IRON_HELM_PRODUCTION = blacksmithRecipe(
+  'blacksmith.iron_helm',
+  'iron_helm',
+  2,
+  1,
+  { difficulty: 45, minSkill: 38, specialization: 'armor' },
+)
 export const BLACKSMITH_CHAINMAIL_PRODUCTION = blacksmithRecipe(
   'blacksmith.chainmail',
   'chainmail',
@@ -302,8 +317,10 @@ export const BLACKSMITH_ORDER_PRODUCTIONS: readonly ProductionDef[] = [
   BLACKSMITH_IRON_ROD_PRODUCTION,
   BLACKSMITH_KNIFE_PRODUCTION,
   BLACKSMITH_AXE_PRODUCTION,
+  BLACKSMITH_STEEL_BRACERS_PRODUCTION,
   BLACKSMITH_PICKAXE_PRODUCTION,
   BLACKSMITH_SHORT_SWORD_PRODUCTION,
+  BLACKSMITH_IRON_HELM_PRODUCTION,
   BLACKSMITH_LONG_SWORD_PRODUCTION,
   BLACKSMITH_PAULDRON_PRODUCTION,
   BLACKSMITH_CHAINMAIL_PRODUCTION,
@@ -390,8 +407,10 @@ const PRODUCTION_BY_ID: ReadonlyMap<string, ProductionDef> = new Map(
     BLACKSMITH_IRON_ROD_PRODUCTION,
     BLACKSMITH_KNIFE_PRODUCTION,
     BLACKSMITH_AXE_PRODUCTION,
+    BLACKSMITH_STEEL_BRACERS_PRODUCTION,
     BLACKSMITH_PICKAXE_PRODUCTION,
     BLACKSMITH_SHORT_SWORD_PRODUCTION,
+    BLACKSMITH_IRON_HELM_PRODUCTION,
     BLACKSMITH_LONG_SWORD_PRODUCTION,
     BLACKSMITH_PAULDRON_PRODUCTION,
     BLACKSMITH_CHAINMAIL_PRODUCTION,
