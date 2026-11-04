@@ -115,3 +115,7 @@ Not needed now: A8 destruction/reappearance policy — asked only before 064 sli
 Completed on main: 065 S1; 044-M (save v58); 045 layout (technical verification, browser pending); 062 W0/W1/W2a; npc-067 P1/P3. Focused test results and manual gaps live in each plan's notes. No layered runtime or upper-tier issuer is released. WORLDGEN_EPOCH remains unchanged.
 
 **Current gate:** first 062 W2a authored-profile Opus spot review done ([review 033](../../reviews/2026-11-04--033--items-062-w2a-first-melee-batch-spot-review.md)): **W2b NO-GO until R1** — W2a kinds are live `MERCHANT_STOCK` (merchant source); remove them, keep prices, add a 062-wide no-source guard test, correct docs. Then GO; R2/R3 ride with W2b. W2b–d/W3/W4/W5 follow the documented order after that review. Independently ready next: 063 ledger (no enabled issuer; R-A before U), and npc-067 P2/P4 (ready-defense and exact-instance condition/wear). Do not start 065 S2 until 062 ranged + npc-067 are complete; use `side/combat-layered-release`, then 066 A + 048 + R-B before integration. 044-V still waits for valid skinned GLBs. No Revival queue priorities or geography work changed.
+
+### Review 033 R1 correction — 2026-11-04
+
+The initial W2a no-source claim was false: `MERCHANT_STOCK` enabled acquisition. R1 removes those four candidates while retaining prices and existing save ownership. A shared 062 no-source guard sweeps ordinary/premium/home pools and generated assortments. With R1 green and on main, W2b is GO. Historical review verdict above refers to the pre-correction baseline.

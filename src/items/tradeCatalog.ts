@@ -117,12 +117,8 @@ export const MERCHANT_PRICES: Readonly<Partial<Record<ItemKind, number>>> = {
   book_defense_advanced: 110,
 }
 
-/** Display order for the trade screen — matches the plan 090 mockup. */
+/** Live merchant assortment candidates and trade display order (plan 090). */
 export const MERCHANT_STOCK: readonly ItemKind[] = [
-  'obsidian_knife',
-  'halberd',
-  'mace',
-  'sword',
   'knife',
   'firestarter',
   'blanket',
