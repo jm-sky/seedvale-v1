@@ -8,6 +8,8 @@
 
 Evidence labels: ✅ verified in code/committed artifact this session · 📏 published measurement (dated, quoted) · 🟡 inference/hypothesis · 🎯 proposed target (needs validation).
 
+> **Author disposition (2026-11-04):** G1–G9 strategic choices are now approved in [the decision record](./2026-11-04--geography-exploration-author-decisions-g1-g9.md). That record supersedes §8 options where they differ: G2 permits **inland deserts**, G9 mandates **separation** of large structures from large settlements; G5 author comparison and G8 peak steepness/height remain calibration tasks. V2 waterfall and rumour/map-area and V3 steep peaks/road passes are **donor recon candidates**, not approved transplants. This proposal's implementation mechanisms and thresholds are still proposals; no runtime work is authorized here.
+
 ## Revision 1 (2026-11-04) — response to author review
 
 The author asked for a critical evaluation of five remarks before approval. Outcome:
