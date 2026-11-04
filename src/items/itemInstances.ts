@@ -87,6 +87,10 @@ export function isArmorItemInstance(instance: ItemInstance): instance is ArmorIt
 export type WeaponMaintenanceKind =
   | 'obsidian_knife'
   | 'obsidian_dagger'
+  | 'ashgrove_dagger'
+  | 'millbrook_shortsword'
+  | 'fenmoor_sword'
+  | 'stonebridge_longsword'
   | 'halberd'
   | 'sword'
   | 'knife'
@@ -112,6 +116,10 @@ export type WeaponMaintenanceKind =
 export const WEAPON_MAINTENANCE_KIND_LIST: readonly WeaponMaintenanceKind[] = [
   'obsidian_knife',
   'obsidian_dagger',
+  'ashgrove_dagger',
+  'millbrook_shortsword',
+  'fenmoor_sword',
+  'stonebridge_longsword',
   'halberd',
   'sword',
   'axe',

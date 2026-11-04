@@ -1211,6 +1211,30 @@ export const ITEM_CATALOG: Record<ItemKind, ItemCatalogEntry> = {
     defense: { canBlock: true, baseBlockChance: 0.2, partialReduction: 0.35 }, spawn: 'none', modelUrl: null,
     notes: '062 W2b: count-backed blunt weapon; reach favors defensive spacing; no world source.',
   },
+  ashgrove_dagger: {
+    kind: 'ashgrove_dagger', label: 'sztylet z Ashgrove', holdable: true,
+    melee: { damageType: 'pierce', damage: 21, range: 1.75, arcDot: 0.6, windUp: 0.11, hitWindow: 0.08, recovery: 0.17, staminaCost: 5 },
+    defense: { canBlock: true, baseBlockChance: 0.12, partialReduction: 0.25 }, spawn: 'none', modelUrl: null,
+    notes: '062 W2c: Masterwork authored V1 profile; weapon-only, procedural fallback, no world source.',
+  },
+  millbrook_shortsword: {
+    kind: 'millbrook_shortsword', label: 'krótki miecz z Millbrook', holdable: true,
+    melee: { damageType: 'cut', damage: 28, range: 2.2, arcDot: 0.5, windUp: 0.17, hitWindow: 0.1, recovery: 0.24, staminaCost: 8 },
+    defense: { canBlock: true, baseBlockChance: 0.25, partialReduction: 0.45 }, spawn: 'none', modelUrl: null,
+    notes: '062 W2c: Masterwork authored V1 profile; procedural fallback, no world source.',
+  },
+  fenmoor_sword: {
+    kind: 'fenmoor_sword', label: 'miecz z Fenmoor', holdable: true,
+    melee: { damageType: 'cut', damage: 33, range: 2.45, arcDot: 0.42, windUp: 0.22, hitWindow: 0.11, recovery: 0.3, staminaCost: 10 },
+    defense: { canBlock: true, baseBlockChance: 0.25, partialReduction: 0.45 }, spawn: 'none', modelUrl: null,
+    notes: '062 W2c: distinct Masterwork kind (A3); masterwork_sword is untouched; no world source.',
+  },
+  stonebridge_longsword: {
+    kind: 'stonebridge_longsword', label: 'długi miecz z Stonebridge', holdable: true,
+    melee: { damageType: 'cut', damage: 38, range: 2.7, arcDot: 0.35, windUp: 0.28, hitWindow: 0.12, recovery: 0.36, staminaCost: 12 },
+    defense: { canBlock: true, baseBlockChance: 0.25, partialReduction: 0.45 }, spawn: 'none', modelUrl: null,
+    notes: '062 W2c: Masterwork authored V1 profile; procedural fallback, no world source.',
+  },
   berries: {
     kind: 'berries',
     label: 'jagody',

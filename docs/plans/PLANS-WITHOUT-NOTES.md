@@ -1,7 +1,7 @@
 # PLANS PLANNED WITHOUT NOTES
 
 > Generated with `pnpm plans:without-notes`  
-> Date: 2026-11-04 11:56:03  
+> Date: 2026-11-04 14:18:27  
 
 ## PLANS
 
@@ -15,7 +15,7 @@
 - `settlements-npcs-052-persistent-economic-work-cargo-and-local-transfer-conservation.md`
 - `settlements-npcs-054-transport-carrier-death-and-cargo-disposition.md`
 - `tools-019-debug-tooling-lifecycle-ownership.md`
-- `tools-026-geography-baseline-diagnostics.md`
+- `world-041-landmark-catalog-and-rumour-leads.md`
 - `world-terrain-055-optional-shadow-frustum-and-refresh-trims.md`
 - `world-terrain-059-world-scale-travel-time-and-sparse-settlements.md`
 - `world-terrain-060-macro-relief-ranges-passes-and-landforms.md`
@@ -336,22 +336,22 @@ Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywisty
 Pliki dodaj na branch `main` w repozytorium.
 ```
 
-### `tools-026-geography-baseline-diagnostics.md`
+### `world-041-landmark-catalog-and-rumour-leads.md`
 
 Prompt:
 
 ```
-Zrób review planu `tools-026-geography-baseline-diagnostics.md`
+Zrób review planu `world-041-landmark-catalog-and-rumour-leads.md`
 
 Wczytaj:
 - `docs/STATE.md`
 - `docs/plans/PLANNING.md` (Implementation Notes section),
-- `docs/plans/tools-026-geography-baseline-diagnostics.md`
+- `docs/plans/world-041-landmark-catalog-and-rumour-leads.md`
 - aktualny codebase,
 - potrzebne zależności i powiązane implementacje.
 
 Na podstawie review utwórz w repo plik:
-`docs/plans/implementation-notes/tools-026-geography-baseline-diagnostics-implementation-notes.md`
+`docs/plans/implementation-notes/world-041-landmark-catalog-and-rumour-leads-implementation-notes.md`
 
 Umieść w nim:
 - sugestie dotyczące implementacji,

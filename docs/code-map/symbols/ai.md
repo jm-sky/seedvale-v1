@@ -335,25 +335,25 @@ Generated from exported TypeScript symbols.
 
 ## `ai/npcCombat.ts`
 
-- `applyNpcMeleeHit` — function — line 351
-- `applyNpcMeleeWeaponWear` — function — line 332
-- `applyNpcRangedHit` — function — line 376
-- `chooseCombatMode` — function — line 275
-- `isNpcMeleeWeaponHeld` — function — line 324
-- `NpcAmmoSource` — type — line 292
+- `applyNpcMeleeHit` — function — line 355
+- `applyNpcMeleeWeaponWear` — function — line 336
+- `applyNpcRangedHit` — function — line 380
+- `chooseCombatMode` — function — line 279
+- `isNpcMeleeWeaponHeld` — function — line 328
+- `NpcAmmoSource` — type — line 296
 - `NpcMeleeWeapon` — type — line 45
-- `npcMeleeWeaponFamily` — function — line 90
+- `npcMeleeWeaponFamily` — function — line 94
 - `NpcMeleeWeaponFamily` — type — line 50
 - `NpcRangedWeapon` — type — line 46
-- `npcRangedWeaponFamily` — function — line 112
+- `npcRangedWeaponFamily` — function — line 116
 - `NpcRangedWeaponFamily` — type — line 51
-- `resolveIncomingNpcDamage` — function — line 448
-- `resolveNpcAmmo` — function — line 298
-- `resolveNpcAmmoKind` — function — line 313
-- `resolveNpcArmorEquipment` — function — line 423
-- `resolveNpcDefenseConfig` — function — line 319
-- `resolveNpcMeleeWeapon` — function — line 188
-- `resolveNpcRangedWeapon` — function — line 239
+- `resolveIncomingNpcDamage` — function — line 452
+- `resolveNpcAmmo` — function — line 302
+- `resolveNpcAmmoKind` — function — line 317
+- `resolveNpcArmorEquipment` — function — line 427
+- `resolveNpcDefenseConfig` — function — line 323
+- `resolveNpcMeleeWeapon` — function — line 192
+- `resolveNpcRangedWeapon` — function — line 243
 
 ## `ai/npcCrowd.ts`
 

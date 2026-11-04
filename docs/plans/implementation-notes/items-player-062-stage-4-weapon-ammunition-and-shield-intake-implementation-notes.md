@@ -115,3 +115,11 @@ Per author direction following review 033 F2, Common melee prices follow existin
 Registered exactly `obsidian_dagger`, `club`, `war_hammer`, and `staff` with the W0 melee/damage/defense/mass tuples, procedural identity-preserving ground and held fallback, NPC families (`compact` / `tool`), and no source. Obsidian dagger is condition-backed; blunt weapons remain count-backed. Existing mace sphere fallback is preserved. R1 guard now covers all eight 062 melee kinds. No save version or worldgen epoch change.
 
 Verification: 113 tests across seven focused catalog/ownership/geometry, source-guard, maintenance, donor-policy and S1 math files pass; scoped ESLint passes. NPC-family/save suites, Vue type-check and production build also pass in the coordinated verification recorded in the side-initiative index §8. No browser verification.
+
+## W2c implementation — 2026-11-04
+
+Registered exactly `ashgrove_dagger`, `millbrook_shortsword`, `fenmoor_sword` and `stonebridge_longsword` with the W0 melee/defense/mass/price tuples, NPC families (`compact` / `sword`), condition-backed maintenance instances and identity-preserving procedural ground/held fallbacks (reusing the knife, short-sword and long-sword fallback geometry). `fenmoor_sword` is a distinct kind; `masterwork_sword` is untouched (A3). No source, kit or reward enabled; the shared no-source guard now covers all twelve 062 melee kinds. No save-version or worldgen-epoch change (additive kinds; save round-trip fixture extended).
+
+Note: donor policy rows for ashgrove/millbrook/stonebridge remain `deferred` (W1 fixture of 25 deferred is unchanged); the policy gates donor activation, not V1 authored kinds, and no policy test needed changing. W2d (five upper-tier profiles) is next and is gated by 063 factory guards for any release; no source.
+
+Verification: 156 files / 2257 tests (`src/items`, `src/settlement`, `npcCombat`, `saveData`), Vue type-check, scoped ESLint and production build pass. No browser verification.

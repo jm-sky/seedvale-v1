@@ -51,6 +51,10 @@ export const HELD_ATTACH: Record<ToolKind, HeldAttach> = {
   obsidian_dagger: { position: [0, 0.12, -0.01], rotation: [Math.PI, 0, Math.PI / 2], scale: 1.1 },
   club: { position: [0.02, 0.11, -0.02], rotation: [Math.PI / 2, 0, 0], scale: 1.15, gripLocalOffset: [0, 0, -0.12] },
   war_hammer: { position: [0.02, 0.11, -0.02], rotation: [Math.PI / 2, 0, 0], scale: 1.25, gripLocalOffset: [0, 0, -0.16] },
+  ashgrove_dagger: { position: [0, 0.12, -0.01], rotation: [Math.PI, 0, Math.PI / 2], scale: 1.1 },
+  millbrook_shortsword: { position: [0.02, 0.11, -0.02], rotation: [Math.PI / 2, 0, 0], scale: 1.2 },
+  fenmoor_sword: { position: [0.02, 0.11, -0.02], rotation: [Math.PI / 2, 0, 0], scale: 1.25 },
+  stonebridge_longsword: { position: [0.02, 0.11, -0.02], rotation: [Math.PI / 2, 0, 0], scale: 1.3 },
   staff: { position: [0.02, 0.11, -0.02], rotation: [Math.PI / 2, 0, 0], scale: 1.15, gripLocalOffset: [0, 0, -0.25] },
 
   axe: {

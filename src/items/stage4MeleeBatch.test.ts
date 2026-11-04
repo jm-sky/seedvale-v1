@@ -11,12 +11,12 @@ import { createItemMesh, ITEM_DEFS } from './items'
 import { createAcquiredInstance } from './trade'
 import { tradeValue } from './tradeCatalog'
 
-const kinds = ['obsidian_knife', 'halberd', 'mace', 'sword', 'obsidian_dagger', 'club', 'war_hammer', 'staff'] as const
+const kinds = ['obsidian_knife', 'halberd', 'mace', 'sword', 'obsidian_dagger', 'club', 'war_hammer', 'staff', 'ashgrove_dagger', 'millbrook_shortsword', 'fenmoor_sword', 'stonebridge_longsword'] as const
 
-describe('062 W2a/W2b authored melee intake', () => {
+describe('062 W2a/W2b/W2c authored melee intake', () => {
   it('uses the shared melee/held pipeline and has no catalog source', () => {
-    const expected = { obsidian_knife: ['pierce', 'compact', 30], halberd: ['cut', 'spear', 45], mace: ['blunt', 'tool', 30], sword: ['cut', 'sword', 45], obsidian_dagger: ['pierce', 'compact', 36], club: ['blunt', 'tool', 12], war_hammer: ['blunt', 'tool', 45], staff: ['blunt', 'tool', 15] } as const
-    const weights = { obsidian_knife: .35, halberd: 3.5, mace: 1.8, sword: 1.9, obsidian_dagger: .45, club: 1.2, war_hammer: 3, staff: 1 } as const
+    const expected = { obsidian_knife: ['pierce', 'compact', 30], halberd: ['cut', 'spear', 45], mace: ['blunt', 'tool', 30], sword: ['cut', 'sword', 45], obsidian_dagger: ['pierce', 'compact', 36], club: ['blunt', 'tool', 12], war_hammer: ['blunt', 'tool', 45], staff: ['blunt', 'tool', 15], ashgrove_dagger: ['pierce', 'compact', 160], millbrook_shortsword: ['cut', 'sword', 220], fenmoor_sword: ['cut', 'sword', 300], stonebridge_longsword: ['cut', 'sword', 320] } as const
+    const weights = { obsidian_knife: .35, halberd: 3.5, mace: 1.8, sword: 1.9, obsidian_dagger: .45, club: 1.2, war_hammer: 3, staff: 1, ashgrove_dagger: .4, millbrook_shortsword: 1.2, fenmoor_sword: 1.5, stonebridge_longsword: 1.8 } as const
     for (const kind of kinds) {
       expect(ITEM_CATALOG[kind].spawn).toBe('none')
       expect(ITEM_DEFS[kind].weight).toBe(weights[kind])
@@ -45,7 +45,7 @@ describe('062 W2a/W2b authored melee intake', () => {
     for (const kind of kinds) {
       const inventory = new Inventory()
       const acquired = createAcquiredInstance(kind)
-      expect(isWeaponMaintenanceKind(kind)).toBe(kind === 'obsidian_knife' || kind === 'halberd' || kind === 'sword' || kind === 'obsidian_dagger')
+      expect(isWeaponMaintenanceKind(kind)).toBe(kind === 'obsidian_knife' || kind === 'halberd' || kind === 'sword' || kind === 'obsidian_dagger' || ['ashgrove_dagger', 'fenmoor_sword', 'millbrook_shortsword', 'stonebridge_longsword'].includes(kind))
       if (acquired) expect(inventory.addInstance(acquired)).toBe(true)
       else inventory.add(kind, 1)
       const held = createHeldTool(inventory)

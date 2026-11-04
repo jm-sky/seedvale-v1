@@ -71,6 +71,10 @@ export type MeleeToolKind = Extract<
   | 'club'
   | 'war_hammer'
   | 'staff'
+  | 'ashgrove_dagger'
+  | 'millbrook_shortsword'
+  | 'fenmoor_sword'
+  | 'stonebridge_longsword'
   | 'sword'
 >
 

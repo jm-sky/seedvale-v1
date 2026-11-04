@@ -22,6 +22,10 @@ export type ItemKind =
   | 'club'
   | 'war_hammer'
   | 'staff'
+  | 'ashgrove_dagger'
+  | 'millbrook_shortsword'
+  | 'fenmoor_sword'
+  | 'stonebridge_longsword'
   | 'long_sword'
   | 'spear'
   | 'short_sword'
@@ -1111,6 +1115,42 @@ export const ITEM_DEFS: Record<ItemKind, ItemDef> = {
     color: 0x755035,
     description: 'Lekka broń drzewcowa zapewniająca zasięg i kontrolę.',
   },
+  ashgrove_dagger: {
+    kind: 'ashgrove_dagger',
+    label: 'sztylet z Ashgrove',
+    categories: ['weapon'],
+    weight: 0.4,
+    size: 'SM',
+    color: 0xb9bcc4,
+    description: 'Mistrzowsko wykuty sztylet. Szybki, celny i lepiej wyważony od zwykłego.',
+  },
+  millbrook_shortsword: {
+    kind: 'millbrook_shortsword',
+    label: 'krótki miecz z Millbrook',
+    categories: ['weapon'],
+    weight: 1.2,
+    size: 'MD',
+    color: 0xc2c6cc,
+    description: 'Mistrzowsko wykuty krótki miecz. Lekki, szybki i pewnie leży w dłoni.',
+  },
+  fenmoor_sword: {
+    kind: 'fenmoor_sword',
+    label: 'miecz z Fenmoor',
+    categories: ['weapon'],
+    weight: 1.5,
+    size: 'MD',
+    color: 0xaeb8bd,
+    description: 'Mistrzowsko wykuty miecz z bagiennych kuźni. Zrównoważony zasięg i siła cięcia.',
+  },
+  stonebridge_longsword: {
+    kind: 'stonebridge_longsword',
+    label: 'długi miecz z Stonebridge',
+    categories: ['weapon'],
+    weight: 1.8,
+    size: 'LG',
+    color: 0xb4b9c1,
+    description: 'Mistrzowsko wykuty długi miecz. Duży zasięg i mocne cięcie kosztem wolniejszego zamachu.',
+  },
   mace: {
     kind: 'mace',
     label: 'buzdygan',
@@ -1932,7 +1972,7 @@ function buildProceduralItemMesh(kind: ItemKind): THREE.Object3D {
     mesh.castShadow = true
     return mesh
   }
-  if (kind === 'knife' || kind === 'damascus_knife' || kind === 'dagger' || kind === 'obsidian_knife' || kind === 'obsidian_dagger') {
+  if (kind === 'knife' || kind === 'damascus_knife' || kind === 'dagger' || kind === 'obsidian_knife' || kind === 'obsidian_dagger' || kind === 'ashgrove_dagger') {
     const group = new THREE.Group()
     const blade = new THREE.Mesh(
       new THREE.ConeGeometry(0.035, 0.22, 4),
@@ -1954,7 +1994,8 @@ function buildProceduralItemMesh(kind: ItemKind): THREE.Object3D {
   }
   if (
     kind === 'long_sword' || kind === 'damascus_long_sword' ||
-    kind === 'masterwork_sword' || kind === 'obsidian_sword' || kind === 'sword'
+    kind === 'masterwork_sword' || kind === 'obsidian_sword' || kind === 'sword' ||
+    kind === 'fenmoor_sword' || kind === 'stonebridge_longsword'
   ) {
     const group = new THREE.Group()
     const blade = new THREE.Mesh(
@@ -1971,7 +2012,7 @@ function buildProceduralItemMesh(kind: ItemKind): THREE.Object3D {
     group.add(blade)
     return group
   }
-  if (kind === 'short_sword' || kind === 'damascus_short_sword') {
+  if (kind === 'short_sword' || kind === 'damascus_short_sword' || kind === 'millbrook_shortsword') {
     const group = new THREE.Group()
     const blade = new THREE.Mesh(
       new THREE.ConeGeometry(0.03, 0.16, 4),
