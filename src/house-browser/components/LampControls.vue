@@ -48,14 +48,6 @@ function patch(p: Partial<HouseBrowserLampConfig>): void {
       >
       Show Lamp
     </label>
-    <label class="flex items-center gap-2 text-sm">
-      <input
-        type="checkbox"
-        :checked="lamp.night"
-        @change="patch({ night: ($event.target as HTMLInputElement).checked })"
-      >
-      Night
-    </label>
     <div
       v-for="axis in AXES"
       :key="axis.key"

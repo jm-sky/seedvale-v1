@@ -1,7 +1,7 @@
 # Plan: Developer tools UI layout and quick controls
 
 **Created:** 2026-11-04
-**Status:** `planned` 📋
+**Status:** `verification needed` 🔍 (implemented 2026-11-04; type-check, lint, tests, build pass; manual browser check pending)
 **Type:** polish
 **Priority:** medium · **Effort:** L
 **Depends on:** -

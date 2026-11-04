@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, reactive, ref, watch } from 'vue'
+import { computed, onMounted, onUnmounted, reactive, ref, watch } from 'vue'
 import { HOME_HOUSE_DEFINITIONS } from '../assets/houseDefinitionExample'
-import CameraControls from './components/CameraControls.vue'
+import ToolbarToggle from '../tools/ui/ToolbarToggle.vue'
+import ToolsTopbar from '../tools/ui/ToolsTopbar.vue'
 import ColliderControls from './components/ColliderControls.vue'
 import HouseInfo from './components/HouseInfo.vue'
 import HouseList from './components/HouseList.vue'
@@ -119,6 +120,19 @@ function updateColliderVisibility(visible: boolean): void {
   putIntoQueryParam('showColliders', visible.toString())
 }
 
+const night = computed({
+  get: () => config.lamp.night,
+  set: (v: boolean) => { config.lamp = { ...config.lamp, night: v } },
+})
+const doorCount = computed(() => assemblyInfo.value?.doorCount ?? 0)
+const CAMERA_VIEWS: { id: CameraView, label: string }[] = [
+  { id: 'front', label: 'Front' },
+  { id: 'back', label: 'Back' },
+  { id: 'left', label: 'Left' },
+  { id: 'right', label: 'Right' },
+  { id: 'top', label: 'Top' },
+]
+
 function updateDoorsOpen(doorsOpen: boolean): void {
   config.doorsOpen = doorsOpen
   putIntoQueryParam('doorsOpen', doorsOpen.toString())
@@ -126,56 +140,102 @@ function updateDoorsOpen(doorsOpen: boolean): void {
 </script>
 
 <template>
-  <div class="flex h-full w-full bg-[#14181c] text-ink">
-    <aside class="flex w-80 shrink-0 flex-col gap-4 overflow-y-auto border-r border-white/10 bg-black/20 p-4">
-      <h1 class="text-lg font-semibold tracking-wide">
-        House Browser
-      </h1>
-      <HouseList
-        :houses="houses"
-        :selected-id="selectedId"
-        @select="selectHouse"
-      />
-      <HouseInfo
-        :definition="houses.find((h) => h.id === selectedId) ?? null"
-        :assembly-info="assemblyInfo"
-      />
-      <SceneControls
-        v-model:show-grid="config.showGrid"
-        v-model:show-ground="config.showGround"
-        v-model:show-shadows="config.showShadows"
-        v-model:camera-auto-fit="config.cameraAutoFit"
-      />
-      <ColliderControls
-        v-model:padding="config.colliderPadding"
-        :doors-open="config.doorsOpen"
-        :visible="config.showColliders"
-        :door-count="assemblyInfo?.doorCount ?? 0"
-        @update:doors-open="updateDoorsOpen($event)"
-        @update:visible="updateColliderVisibility($event)"
-      />
-      <LampControls
-        v-model:lamp="config.lamp"
-        :default-lamp="assemblyInfo?.defaultLamp ?? null"
-        @reset="resetLamp"
-      />
-      <ProfessionControls v-model:profession="config.profession" />
-      <CameraControls
-        @reset="resetCamera"
-        @view="setCameraView"
-      />
-      <p
-        v-if="errorMessage"
-        class="rounded bg-red-950/60 p-2 text-xs text-red-200"
-      >
-        {{ errorMessage }}
-      </p>
-    </aside>
-    <main class="relative flex-1">
-      <div
-        ref="viewport"
-        class="absolute inset-0"
-      />
-    </main>
+  <div class="flex h-full w-full flex-col bg-[#14181c] text-ink">
+    <ToolsTopbar active-id="house-browser" />
+    <div class="flex min-h-0 flex-1">
+      <aside class="flex w-80 shrink-0 flex-col gap-4 overflow-y-auto border-r border-white/10 bg-black/20 p-4">
+        <HouseList
+          :houses="houses"
+          :selected-id="selectedId"
+          @select="selectHouse"
+        />
+        <HouseInfo
+          :definition="houses.find((h) => h.id === selectedId) ?? null"
+          :assembly-info="assemblyInfo"
+        />
+        <SceneControls
+          v-model:camera-auto-fit="config.cameraAutoFit"
+        />
+        <ColliderControls
+          v-model:padding="config.colliderPadding"
+        />
+        <LampControls
+          v-model:lamp="config.lamp"
+          :default-lamp="assemblyInfo?.defaultLamp ?? null"
+          @reset="resetLamp"
+        />
+        <ProfessionControls v-model:profession="config.profession" />
+        <p
+          v-if="errorMessage"
+          class="rounded bg-red-950/60 p-2 text-xs text-red-200"
+        >
+          {{ errorMessage }}
+        </p>
+      </aside>
+      <main class="relative flex-1">
+        <div
+          ref="viewport"
+          class="absolute inset-0"
+        />
+        <div class="pointer-events-none absolute inset-x-2 top-2 flex flex-wrap items-start justify-between gap-2">
+          <div
+            class="pointer-events-auto flex flex-wrap gap-1 rounded bg-black/55 p-1"
+            role="toolbar"
+            aria-label="Scene switches"
+          >
+            <ToolbarToggle
+              v-model="night"
+              title="Night lighting (lamp preview)"
+            >
+              Night
+            </ToolbarToggle>
+            <ToolbarToggle
+              :model-value="config.doorsOpen"
+              :disabled="doorCount === 0"
+              :title="`Open doors (${doorCount})`"
+              @update:model-value="updateDoorsOpen"
+            >
+              Doors
+            </ToolbarToggle>
+            <ToolbarToggle v-model="config.showGrid">
+              Grid
+            </ToolbarToggle>
+            <ToolbarToggle v-model="config.showGround">
+              Ground
+            </ToolbarToggle>
+            <ToolbarToggle v-model="config.showShadows">
+              Shadows
+            </ToolbarToggle>
+            <ToolbarToggle
+              :model-value="config.showColliders"
+              @update:model-value="updateColliderVisibility"
+            >
+              Colliders
+            </ToolbarToggle>
+          </div>
+          <div
+            class="pointer-events-auto flex flex-wrap gap-1 rounded bg-black/55 p-1"
+            role="toolbar"
+            aria-label="Camera"
+          >
+            <ToolbarToggle
+              :toggle="false"
+              title="Reset / fit camera"
+              @click="resetCamera"
+            >
+              Reset / Fit
+            </ToolbarToggle>
+            <ToolbarToggle
+              v-for="view in CAMERA_VIEWS"
+              :key="view.id"
+              :toggle="false"
+              @click="setCameraView(view.id)"
+            >
+              {{ view.label }}
+            </ToolbarToggle>
+          </div>
+        </div>
+      </main>
+    </div>
   </div>
 </template>

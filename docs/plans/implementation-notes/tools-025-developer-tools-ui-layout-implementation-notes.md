@@ -40,3 +40,10 @@ Existing tests worth retaining/running: `src/house-browser/colliderPreview.test.
 ## Model selection
 
 **Model:** Sonnet, Composer — predominantly Vue/Tailwind layout changes with clearly established state ownership; use Opus review if implementation touches viewer lifecycle or split-view interaction internals.
+
+## Implementation (2026-11-04)
+
+- Shared `src/tools/ui/ToolsTopbar.vue` (nav from `TOOLS`; Continent Preview under `Tools ▾`) and `ToolbarToggle.vue`.
+- House Browser: overlay toolbars (Night → `config.lamp.night`, Doors/Colliders via existing URL-sync methods, Grid/Ground/Shadows, Reset/Fit + views). Sidebar keeps auto-fit, collider padding, lamp, profession; `CameraControls.vue` removed.
+- Asset Browser: overlay toolbars (Grid/Axes/Ground/Bounds, lighting, Layout/view, Reframe, Align frame/pos, Reset transform) bound to `browserState`; duplicates removed from sidebar. Page title is now "Asset Browser".
+- Checked: type-check, lint, `src/house-browser` + `src/tools` vitest (73 pass), build. **Not browser-verified** (pointer events over canvas, quad drag, narrow widths, `viewer.resize()` after the new topbar) → queue §2. Concept PNG not available, not added.
