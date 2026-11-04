@@ -1,4 +1,6 @@
+import type { DamageType } from '../combat/damageTypes'
 import type { SkillId } from '../player/PlayerSkills'
+import type { EquipmentSlot } from './equipmentTypes'
 import type { LiquidContent } from './itemInstances'
 import type { ItemKind } from './items'
 import { type InjurySeverity, injurySeverityRank, type TreatableInjurySeverity } from '../shared/injurySeverity'
@@ -23,6 +25,8 @@ export type ItemSpawnKind =
  *  source of truth for damage/timing/range/stamina — `player/playerMelee.ts`
  *  reads this directly instead of a parallel weapon-stat table. */
 export type MeleeConfig = {
+  /** Dominant physical channel; consumed by the future layered release. */
+  damageType?: DamageType
   damage: number
   /** Max XZ distance (world units) a target can be hit from. */
   range: number
@@ -54,7 +58,7 @@ export type DefenseConfig = {
  *  `items/equipment.ts`'s `resolveEquipmentModifiers()` is the only reader —
  *  do not branch on equipped item kind anywhere else. */
 export type ArmorConfig = {
-  slot: 'head' | 'body' | 'arms' | 'hands' | 'legs' | 'feet'
+  slot: EquipmentSlot
   /** Fraction of post-active-defense incoming damage removed. */
   damageReduction: number
   /** Multiplier on a melee attack's `MeleeConfig.staminaCost` — the weapon's
@@ -74,6 +78,8 @@ export type ArmorConfig = {
  *  `MeleeConfig`, read directly by `player/playerRanged.ts` and the shared
  *  projectile resolver instead of a parallel "bow system". */
 export type RangedConfig = {
+  /** Dominant physical channel; consumed by the future layered release. */
+  damageType?: DamageType
   damage: number
   /** Max projectile travel distance (world units). */
   range: number
@@ -116,6 +122,8 @@ export type RangedConfig = {
  *  and not an NPC ranged-family candidate. Converted to a synthetic
  *  `RangedConfig` at the fire seam so projectile/accuracy reuse stays shared. */
 export type ThrowableConfig = {
+  /** Dominant physical channel; consumed by the future layered release. */
+  damageType?: DamageType
   damage: number
   range: number
   projectileSpeed: number
@@ -362,7 +370,7 @@ export const ITEM_CATALOG: Record<ItemKind, ItemCatalogEntry> = {
     label: 'kamień',
     holdable: false,
     melee: null,
-    throwable: {
+    throwable: { damageType: 'blunt',
       damage: 4,
       range: 6,
       projectileSpeed: 14,
@@ -432,7 +440,7 @@ export const ITEM_CATALOG: Record<ItemKind, ItemCatalogEntry> = {
     label: 'nóż',
     holdable: true,
     capabilities: ['branch_trimming', 'meat_harvesting'],
-    melee: { damage: 12, range: 1.6, arcDot: 0.6, windUp: 0.12, hitWindow: 0.08, recovery: 0.18, staminaCost: 4 },
+    melee: { damageType: 'pierce', damage: 12, range: 1.6, arcDot: 0.6, windUp: 0.12, hitWindow: 0.08, recovery: 0.18, staminaCost: 4 },
     defense: { canBlock: true, baseBlockChance: 0.12, partialReduction: 0.35 },
     spawn: 'starting',
     modelUrl: '/models/items/knife.glb',
@@ -442,7 +450,7 @@ export const ITEM_CATALOG: Record<ItemKind, ItemCatalogEntry> = {
     kind: 'long_sword',
     label: 'miecz',
     holdable: true,
-    melee: { damage: 28, range: 2.6, arcDot: 0.35, windUp: 0.28, hitWindow: 0.12, recovery: 0.38, staminaCost: 12 },
+    melee: { damageType: 'cut', damage: 28, range: 2.6, arcDot: 0.35, windUp: 0.28, hitWindow: 0.12, recovery: 0.38, staminaCost: 12 },
     defense: { canBlock: true, baseBlockChance: 0.28, partialReduction: 0.55 },
     spawn: 'none',
     modelUrl: '/models/items/long_sword.glb',
@@ -452,7 +460,7 @@ export const ITEM_CATALOG: Record<ItemKind, ItemCatalogEntry> = {
     kind: 'spear',
     label: 'dzida',
     holdable: true,
-    melee: { damage: 20, range: 3.0, arcDot: 0.6, windUp: 0.24, hitWindow: 0.1, recovery: 0.3, staminaCost: 9 },
+    melee: { damageType: 'pierce', damage: 20, range: 3.0, arcDot: 0.6, windUp: 0.24, hitWindow: 0.1, recovery: 0.3, staminaCost: 9 },
     defense: { canBlock: true, baseBlockChance: 0.18, partialReduction: 0.4 },
     spawn: 'none',
     modelUrl: '/models/items/spear.glb',
@@ -462,7 +470,7 @@ export const ITEM_CATALOG: Record<ItemKind, ItemCatalogEntry> = {
     kind: 'short_sword',
     label: 'krótki miecz',
     holdable: true,
-    melee: { damage: 18, range: 2.1, arcDot: 0.5, windUp: 0.18, hitWindow: 0.1, recovery: 0.26, staminaCost: 7 },
+    melee: { damageType: 'cut', damage: 18, range: 2.1, arcDot: 0.5, windUp: 0.18, hitWindow: 0.1, recovery: 0.26, staminaCost: 7 },
     defense: { canBlock: true, baseBlockChance: 0.22, partialReduction: 0.45 },
     spawn: 'none',
     modelUrl: '/models/items/short_sword.glb',
@@ -492,7 +500,7 @@ export const ITEM_CATALOG: Record<ItemKind, ItemCatalogEntry> = {
     label: 'łopata',
     holdable: true,
     capabilities: ['soil_digging'],
-    melee: { damage: 8, range: 2.0, arcDot: 0.45, windUp: 0.25, hitWindow: 0.1, recovery: 0.35, staminaCost: 8 },
+    melee: { damageType: 'blunt', damage: 8, range: 2.0, arcDot: 0.45, windUp: 0.25, hitWindow: 0.1, recovery: 0.35, staminaCost: 8 },
     defense: { canBlock: true, baseBlockChance: 0.1, partialReduction: 0.25 },
     spawn: 'village_onetime',
     modelUrl: '/models/items/shovel.glb',
@@ -503,7 +511,7 @@ export const ITEM_CATALOG: Record<ItemKind, ItemCatalogEntry> = {
     label: 'siekiera',
     holdable: true,
     capabilities: ['wood_chopping', 'prying'],
-    melee: { damage: 20, range: 2.0, arcDot: 0.4, windUp: 0.3, hitWindow: 0.12, recovery: 0.4, staminaCost: 10 },
+    melee: { damageType: 'cut', damage: 20, range: 2.0, arcDot: 0.4, windUp: 0.3, hitWindow: 0.12, recovery: 0.4, staminaCost: 10 },
     defense: { canBlock: true, baseBlockChance: 0.2, partialReduction: 0.45 },
     spawn: 'village_onetime',
     modelUrl: '/models/items/axe.glb',
@@ -514,7 +522,7 @@ export const ITEM_CATALOG: Record<ItemKind, ItemCatalogEntry> = {
     label: 'widły',
     holdable: true,
     capabilities: ['prying'],
-    melee: { damage: 14, range: 2.4, arcDot: 0.5, windUp: 0.2, hitWindow: 0.12, recovery: 0.28, staminaCost: 7 },
+    melee: { damageType: 'pierce', damage: 14, range: 2.4, arcDot: 0.5, windUp: 0.2, hitWindow: 0.12, recovery: 0.28, staminaCost: 7 },
     defense: { canBlock: true, baseBlockChance: 0.22, partialReduction: 0.5 },
     spawn: 'village_onetime',
     modelUrl: '/models/items/pitchfork.glb',
@@ -525,7 +533,7 @@ export const ITEM_CATALOG: Record<ItemKind, ItemCatalogEntry> = {
     kind: 'sickle',
     label: 'sierp',
     holdable: true,
-    melee: { damage: 12, range: 1.8, arcDot: 0.55, windUp: 0.15, hitWindow: 0.1, recovery: 0.2, staminaCost: 5 },
+    melee: { damageType: 'cut', damage: 12, range: 1.8, arcDot: 0.55, windUp: 0.15, hitWindow: 0.1, recovery: 0.2, staminaCost: 5 },
     defense: { canBlock: true, baseBlockChance: 0.14, partialReduction: 0.32 },
     spawn: 'village_onetime',
     modelUrl: '/models/items/sickle.glb',
@@ -537,7 +545,7 @@ export const ITEM_CATALOG: Record<ItemKind, ItemCatalogEntry> = {
     label: 'nożyce do wełny',
     holdable: true,
     capabilities: ['shearing'],
-    melee: { damage: 8, range: 1.5, arcDot: 0.55, windUp: 0.14, hitWindow: 0.08, recovery: 0.18, staminaCost: 4 },
+    melee: { damageType: 'cut', damage: 8, range: 1.5, arcDot: 0.55, windUp: 0.14, hitWindow: 0.08, recovery: 0.18, staminaCost: 4 },
     defense: { canBlock: true, baseBlockChance: 0.1, partialReduction: 0.25 },
     spawn: 'none',
     modelUrl: null,
@@ -944,7 +952,7 @@ export const ITEM_CATALOG: Record<ItemKind, ItemCatalogEntry> = {
     label: 'nóż damasceński',
     holdable: true,
     capabilities: ['branch_trimming', 'meat_harvesting'],
-    melee: { damage: 16, range: 1.6, arcDot: 0.6, windUp: 0.11, hitWindow: 0.08, recovery: 0.16, staminaCost: 4 },
+    melee: { damageType: 'pierce', damage: 16, range: 1.6, arcDot: 0.6, windUp: 0.11, hitWindow: 0.08, recovery: 0.16, staminaCost: 4 },
     defense: { canBlock: true, baseBlockChance: 0.16, partialReduction: 0.4 },
     spawn: 'none',
     modelUrl: '/models/items/damascus_knife.glb',
@@ -954,7 +962,7 @@ export const ITEM_CATALOG: Record<ItemKind, ItemCatalogEntry> = {
     kind: 'damascus_short_sword',
     label: 'krótki miecz damasceński',
     holdable: true,
-    melee: { damage: 24, range: 2.15, arcDot: 0.5, windUp: 0.16, hitWindow: 0.1, recovery: 0.22, staminaCost: 7 },
+    melee: { damageType: 'cut', damage: 24, range: 2.15, arcDot: 0.5, windUp: 0.16, hitWindow: 0.1, recovery: 0.22, staminaCost: 7 },
     defense: { canBlock: true, baseBlockChance: 0.26, partialReduction: 0.5 },
     spawn: 'none',
     modelUrl: '/models/items/damascus_short_sword.glb',
@@ -964,7 +972,7 @@ export const ITEM_CATALOG: Record<ItemKind, ItemCatalogEntry> = {
     kind: 'damascus_long_sword',
     label: 'długi miecz damasceński',
     holdable: true,
-    melee: { damage: 40, range: 2.65, arcDot: 0.35, windUp: 0.27, hitWindow: 0.12, recovery: 0.36, staminaCost: 13 },
+    melee: { damageType: 'cut', damage: 40, range: 2.65, arcDot: 0.35, windUp: 0.27, hitWindow: 0.12, recovery: 0.36, staminaCost: 13 },
     defense: { canBlock: true, baseBlockChance: 0.34, partialReduction: 0.6 },
     spawn: 'none',
     modelUrl: '/models/items/damascus_long_sword.glb',
@@ -974,7 +982,7 @@ export const ITEM_CATALOG: Record<ItemKind, ItemCatalogEntry> = {
     kind: 'obsidian_sword',
     label: 'obsydianowy miecz',
     holdable: true,
-    melee: { damage: 46, range: 2.5, arcDot: 0.38, windUp: 0.24, hitWindow: 0.11, recovery: 0.32, staminaCost: 11 },
+    melee: { damageType: 'cut', damage: 46, range: 2.5, arcDot: 0.38, windUp: 0.24, hitWindow: 0.11, recovery: 0.32, staminaCost: 11 },
     defense: { canBlock: true, baseBlockChance: 0.22, partialReduction: 0.45 },
     spawn: 'none',
     modelUrl: '/models/items/obsidian_sword.glb',
@@ -985,7 +993,7 @@ export const ITEM_CATALOG: Record<ItemKind, ItemCatalogEntry> = {
     label: 'topór bojowy',
     holdable: true,
     capabilities: ['wood_chopping', 'prying'],
-    melee: { damage: 28, range: 2.15, arcDot: 0.28, windUp: 0.38, hitWindow: 0.14, recovery: 0.5, staminaCost: 14 },
+    melee: { damageType: 'cut', damage: 28, range: 2.15, arcDot: 0.28, windUp: 0.38, hitWindow: 0.14, recovery: 0.5, staminaCost: 14 },
     defense: { canBlock: true, baseBlockChance: 0.24, partialReduction: 0.5 },
     spawn: 'none',
     modelUrl: '/models/items/battle_axe.glb',
@@ -995,7 +1003,7 @@ export const ITEM_CATALOG: Record<ItemKind, ItemCatalogEntry> = {
     kind: 'masterwork_sword',
     label: 'mistrzowski miecz',
     holdable: true,
-    melee: { damage: 34, range: 2.6, arcDot: 0.35, windUp: 0.26, hitWindow: 0.12, recovery: 0.34, staminaCost: 12 },
+    melee: { damageType: 'cut', damage: 34, range: 2.6, arcDot: 0.35, windUp: 0.26, hitWindow: 0.12, recovery: 0.34, staminaCost: 12 },
     defense: { canBlock: true, baseBlockChance: 0.32, partialReduction: 0.58 },
     spawn: 'none',
     modelUrl: '/models/items/masterwork_sword.glb',
@@ -1006,7 +1014,7 @@ export const ITEM_CATALOG: Record<ItemKind, ItemCatalogEntry> = {
     label: 'sztylet',
     holdable: true,
     capabilities: ['branch_trimming', 'meat_harvesting'],
-    melee: { damage: 14, range: 1.7, arcDot: 0.58, windUp: 0.11, hitWindow: 0.08, recovery: 0.17, staminaCost: 4 },
+    melee: { damageType: 'pierce', damage: 14, range: 1.7, arcDot: 0.58, windUp: 0.11, hitWindow: 0.08, recovery: 0.17, staminaCost: 4 },
     defense: { canBlock: true, baseBlockChance: 0.14, partialReduction: 0.38 },
     spawn: 'none',
     modelUrl: null,
@@ -1016,7 +1024,7 @@ export const ITEM_CATALOG: Record<ItemKind, ItemCatalogEntry> = {
     kind: 'hatchet',
     label: 'toporek',
     holdable: true,
-    melee: { damage: 18, range: 1.85, arcDot: 0.42, windUp: 0.2, hitWindow: 0.1, recovery: 0.28, staminaCost: 7 },
+    melee: { damageType: 'cut', damage: 18, range: 1.85, arcDot: 0.42, windUp: 0.2, hitWindow: 0.1, recovery: 0.28, staminaCost: 7 },
     defense: { canBlock: true, baseBlockChance: 0.16, partialReduction: 0.4 },
     spawn: 'none',
     modelUrl: null,
@@ -1262,7 +1270,7 @@ export const ITEM_CATALOG: Record<ItemKind, ItemCatalogEntry> = {
     label: 'krótki łuk',
     holdable: true,
     melee: null,
-    ranged: { damage: 14, range: 11, projectileSpeed: 26, drawTime: 0.32, recovery: 0.22, staminaCost: 6, accuracy: 0.72, ammoKinds: ['arrow', 'broadhead_arrow', 'war_arrow'] },
+    ranged: { damageType: 'pierce', damage: 14, range: 11, projectileSpeed: 26, drawTime: 0.32, recovery: 0.22, staminaCost: 6, accuracy: 0.72, ammoKinds: ['arrow', 'broadhead_arrow', 'war_arrow'] },
     spawn: 'none',
     modelUrl: '/models/items/short_bow.glb',
     notes: 'Plan 162 — Kupiec stock. Fast draw, short range, lowest damage of the three bows.',
@@ -1272,7 +1280,7 @@ export const ITEM_CATALOG: Record<ItemKind, ItemCatalogEntry> = {
     label: 'łuk myśliwski',
     holdable: true,
     melee: null,
-    ranged: { damage: 20, range: 15, projectileSpeed: 30, drawTime: 0.45, recovery: 0.3, staminaCost: 8, accuracy: 0.78, ammoKinds: ['arrow', 'broadhead_arrow', 'war_arrow'], criticalChance: 0.05 },
+    ranged: { damageType: 'pierce', damage: 20, range: 15, projectileSpeed: 30, drawTime: 0.45, recovery: 0.3, staminaCost: 8, accuracy: 0.78, ammoKinds: ['arrow', 'broadhead_arrow', 'war_arrow'], criticalChance: 0.05 },
     spawn: 'none',
     modelUrl: '/models/items/hunting_bow.glb',
     notes: 'Plan 162 — Kupiec stock. Balanced range/damage/draw speed.',
@@ -1379,7 +1387,7 @@ export const ITEM_CATALOG: Record<ItemKind, ItemCatalogEntry> = {
     label: 'długi łuk',
     holdable: true,
     melee: null,
-    ranged: { damage: 28, range: 20, projectileSpeed: 34, drawTime: 0.65, recovery: 0.4, staminaCost: 11, accuracy: 0.7, ammoKinds: ['arrow', 'broadhead_arrow', 'war_arrow'], criticalChance: 0.08 },
+    ranged: { damageType: 'pierce', damage: 28, range: 20, projectileSpeed: 34, drawTime: 0.65, recovery: 0.4, staminaCost: 11, accuracy: 0.7, ammoKinds: ['arrow', 'broadhead_arrow', 'war_arrow'], criticalChance: 0.08 },
     spawn: 'none',
     modelUrl: '/models/items/long_bow.glb',
     notes: 'Plan 162 — Kupiec stock. Longest range/highest damage, slowest draw.',
@@ -1389,7 +1397,7 @@ export const ITEM_CATALOG: Record<ItemKind, ItemCatalogEntry> = {
     label: 'mistrzowski łuk myśliwski',
     holdable: true,
     melee: null,
-    ranged: { damage: 24, range: 17, projectileSpeed: 32, drawTime: 0.38, recovery: 0.25, staminaCost: 7, accuracy: 0.9, ammoKinds: ['arrow', 'broadhead_arrow', 'war_arrow'], criticalChance: 0.1 },
+    ranged: { damageType: 'pierce', damage: 24, range: 17, projectileSpeed: 32, drawTime: 0.38, recovery: 0.25, staminaCost: 7, accuracy: 0.9, ammoKinds: ['arrow', 'broadhead_arrow', 'war_arrow'], criticalChance: 0.1 },
     spawn: 'none',
     modelUrl: null,
     notes: 'Plan items-player-047 — quest/exceptional reward, not Kupiec stock (never MERCHANT_STOCK or PREMIUM_MERCHANT_KINDS). Fastest, most accurate bow; less raw damage than long_bow.',
@@ -1399,7 +1407,7 @@ export const ITEM_CATALOG: Record<ItemKind, ItemCatalogEntry> = {
     label: 'kusza',
     holdable: true,
     melee: null,
-    ranged: {
+    ranged: { damageType: 'pierce',
       damage: 34,
       range: 18,
       projectileSpeed: 40,
@@ -1422,7 +1430,7 @@ export const ITEM_CATALOG: Record<ItemKind, ItemCatalogEntry> = {
     label: 'proca',
     holdable: true,
     melee: null,
-    ranged: {
+    ranged: { damageType: 'blunt',
       damage: 8,
       range: 11,
       projectileSpeed: 22,
@@ -1907,6 +1915,15 @@ export const ARROW_DAMAGE_BONUS: Partial<Record<ItemKind, number>> = {
   war_arrow: 8,
 }
 
+/** Ammo classification is authored separately from bow damage and bonus values. */
+export const AMMO_DAMAGE_TYPE: Partial<Record<ItemKind, DamageType>> = {
+  arrow: 'pierce',
+  broadhead_arrow: 'cut',
+  war_arrow: 'pierce',
+  bolt: 'pierce',
+  stone: 'blunt',
+}
+
 /** Ranged-capable held tools — mirrors `isMeleeTool` (`fauna/faunaCombat.ts`),
  *  a type predicate so callers narrow `held` before indexing `ITEM_CATALOG`. */
 export function isRangedTool<K extends ItemKind | null | undefined>(kind: K): kind is Extract<K, ItemKind> {
@@ -1926,6 +1943,7 @@ export function rangedConfigFromThrowable(kind: ItemKind): RangedConfig | null {
   if (!throwable) return null
   return {
     damage: throwable.damage,
+    damageType: throwable.damageType,
     range: throwable.range,
     projectileSpeed: throwable.projectileSpeed,
     drawTime: throwable.drawTime,

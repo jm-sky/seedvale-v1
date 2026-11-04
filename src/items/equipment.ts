@@ -1,3 +1,4 @@
+import type { EquipmentSlot } from './equipmentTypes'
 import type { Inventory } from './Inventory'
 import type { ArmorItemInstance, ItemInstance } from './itemInstances'
 import {
@@ -12,7 +13,7 @@ import {
 import { ITEM_DEFS } from './items'
 
 /** Wearable-equipment slots (plan items-player-030). */
-export type EquipmentSlot = 'head' | 'body' | 'arms' | 'hands' | 'legs' | 'feet'
+export type { EquipmentSlot } from './equipmentTypes'
 
 export const EQUIPMENT_SLOTS: readonly EquipmentSlot[] = [
   'head',

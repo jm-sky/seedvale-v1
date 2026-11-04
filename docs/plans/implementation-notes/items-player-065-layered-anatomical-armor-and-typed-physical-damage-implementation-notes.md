@@ -37,3 +37,11 @@
 ## Order
 
 S1 (main) → wait for 044-M + npc-067 + 062 W3 on main → branch: S2 (state + save) → S3 (integration) → hand to 066 A and 048 on the same branch.
+
+## S1 implementation — 2026-11-04
+
+- Added dependency-light equipment vocabulary (legacy slot union until 044-M), physical channels, per-channel quality/cap and layer composition, seven-region profiles, framed salted FNV-1a sampler, expected protection and pure incoming-hit resolver. No runtime damage caller.
+- Catalog melee/ranged/throwable configs now carry optional `damageType`; all active configs and compatible ammo are explicitly tagged. Existing bonuses/timings/damage stay unchanged. Synthetic throw configs retain their tag.
+- Golden damage fixtures, full/partial/rear/unblockable defense, quality/caps, profile boundaries (including zero weights), salted vectors and exhaustive catalog classification: 25 focused tests pass (new suite + defenseResolver + itemCatalog). Vue type-check and scoped ESLint pass; production build checked at slice end. No browser check: S1 has no changed gameplay.
+- Preflight used `node --import tsx scripts/claude/pre-implementation.ts items-player-065`; pnpm's tsx CLI cannot open its IPC pipe in this sandbox.
+- Integer profile boundaries are compared as normalized cumulative fractions to avoid floating-point multiplication assigning an exact boundary to the previous region.
