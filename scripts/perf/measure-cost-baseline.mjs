@@ -61,7 +61,7 @@ async function sample(ws, url, label) {
   await send('Page.navigate', { url })
   // New-game menu: wait for the "Rozpocznij" button, then time click → __seedvaleReady (menu itself is not boot cost).
   for (let i = 0; i < 60; i++) {
-    if (await ev(`(()=>{const b=[...document.querySelectorAll('button')].find(x=>/Rozpocznij/.test(x.textContent));if(b){b.click();return true}return false})()`)) break
+    if (await ev('(()=>{const b=[...document.querySelectorAll(\'button\')].find(x=>/Rozpocznij/.test(x.textContent));if(b){b.click();return true}return false})()')) break
     await sleep(500)
   }
   const t0 = Date.now()
