@@ -213,6 +213,16 @@ The author bookmarked the following **candidates**, not approved castings or rec
 
 These candidates are separate from the existing `general_male` casting decision, which remains unresolved. Before producing replacements, select and audition an actual Fish Audio speaker. Do not alter the clip registry, casting table, or Q90 gap computation based only on bookmarks.
 
+### S2 approved male voice direction — 2026-11-04
+
+**Author decision:** use these Fish Audio bookmarked voices for different NPC purposes (casting direction; not clip QC or completed implementation):
+
+- **FairyTail 1** — Fish voice ID `689b47ca83dd48dba90b160affb8a118`: primary `general_male` for adult men.
+- **george** — Fish voice ID `372ef39bf5bf4fd38c5c56bce607aba6`: `general_old_male` for older men.
+- **Rick Sanchez** — Fish voice ID `d2e75a3e3fd6419893057c02a375a113`: `general_male_v2` as an alternative speaker for per-NPC assignment, potentially suitable for fishermen; do not lock it exclusively to the fisherman profession.
+
+Each NPC retains one selected speaker across utterances (never randomly switches voice per line). Within eligible adult male general candidates, keep the author's approved **equal casting weights**; apply age, gender, role and named-character restrictions first. The older male speaker is age-eligible, not a requirement to retroactively change an existing NPC voice with age progression. No generated clips for these three voices have yet passed QC, and this decision does not authorize unverified audio in runtime. S3/S5 should use these approved targets when assessing voice coverage and recording needs; precise internal speaker identifiers remain implementation choices.
+
 ### S2 further author listening decisions — 2026-11-03
 
 - `merchant_female_b` (catalog: Laura): usable mature female voice, but not for Kate/Kasia Hornblower. Author says sampled voice does not sound like Laura; verify actual source ID.
