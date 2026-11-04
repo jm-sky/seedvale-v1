@@ -1580,6 +1580,7 @@ Generated from TypeScript imports.
 - `ai/npcTradeAvailability.test.ts`
 - `app/inventoryWiring.ts`
 - `settlement/householdProfessionStock.test.ts`
+- `settlement/layeredArmorSources.test.ts`
 - `ui-vue/npcDialogueTrade.test.ts`
 
 ## `ai/npcTravel.test.ts`

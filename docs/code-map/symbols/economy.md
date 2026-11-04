@@ -88,20 +88,22 @@ Generated from exported TypeScript symbols.
 - `ARROWS_FROM_BEAM_PRODUCTION` — const — line 91
 - `ARROWS_FROM_BRANCH_PRODUCTION` — const — line 82
 - `BLACKSMITH_AXE_PRODUCTION` — const — line 246
-- `BLACKSMITH_BATTLE_AXE_PRODUCTION` — const — line 272
-- `BLACKSMITH_CHAINMAIL_PRODUCTION` — const — line 265
-- `BLACKSMITH_DAMASCUS_KNIFE_PRODUCTION` — const — line 279
+- `BLACKSMITH_BATTLE_AXE_PRODUCTION` — const — line 287
+- `BLACKSMITH_CHAINMAIL_PRODUCTION` — const — line 280
+- `BLACKSMITH_DAMASCUS_KNIFE_PRODUCTION` — const — line 294
+- `BLACKSMITH_IRON_HELM_PRODUCTION` — const — line 273
 - `BLACKSMITH_IRON_ROD_PRODUCTION` — const — line 213
   - domain: settlements-npcs
 - `BLACKSMITH_KNIFE_PRODUCTION` — const — line 243
 - `BLACKSMITH_LONG_SWORD_PRODUCTION` — const — line 255
-- `BLACKSMITH_MASTERWORK_SWORD_PRODUCTION` — const — line 286
-- `BLACKSMITH_ORDER_PRODUCTIONS` — const — line 301
+- `BLACKSMITH_MASTERWORK_SWORD_PRODUCTION` — const — line 301
+- `BLACKSMITH_ORDER_PRODUCTIONS` — const — line 316
   - domain: settlements-npcs
 - `BLACKSMITH_PAULDRON_PRODUCTION` — const — line 258
 - `BLACKSMITH_PICKAXE_PRODUCTION` — const — line 249
 - `BLACKSMITH_SHORT_SWORD_PRODUCTION` — const — line 252
-- `DRESSING_PRODUCTION` — const — line 316
+- `BLACKSMITH_STEEL_BRACERS_PRODUCTION` — const — line 266
+- `DRESSING_PRODUCTION` — const — line 333
 - `FARMING_PRODUCTION` — const — line 52
 - `FISHING_PRODUCTION` — const — line 59
 - `FLAX_LINEN_PRODUCTION` — const — line 179
@@ -112,10 +114,10 @@ Generated from exported TypeScript symbols.
 - `HUNTER_BOW_STOCK_CAP` — const — line 141
 - `LINEN_BANDAGE_PRODUCTION` — const — line 189
 - `MINING_PRODUCTION` — const — line 66
-- `produceFirstAvailableItemRecipe` — function — line 354
+- `produceFirstAvailableItemRecipe` — function — line 371
 - `ProductionDef` — type — line 15
-- `productionDefById` — function — line 406
-- `productionForRole` — function — line 373
+- `productionDefById` — function — line 425
+- `productionForRole` — function — line 390
 - `SHORT_BOW_FROM_BEAM_PRODUCTION` — const — line 125
 - `SHORT_BOW_FROM_BRANCH_PRODUCTION` — const — line 116
   - domain: settlements-npcs

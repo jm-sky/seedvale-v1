@@ -184,6 +184,7 @@ Generated from TypeScript imports.
 - `items/itemFuel.ts`
 - `items/itemUseView.test.ts`
 - `items/itemUseView.ts`
+- `items/layeredArmorBatch.test.ts`
 - `items/liquidContainer.test.ts`
 - `items/liquidContainer.ts`
 - `items/poisonedMeat.test.ts`
@@ -242,6 +243,7 @@ Generated from TypeScript imports.
 - `settlement/householdWood.ts`
 - `settlement/landPurchase.test.ts`
 - `settlement/landPurchase.ts`
+- `settlement/layeredArmorSources.test.ts`
 - `settlement/merchantTrade.test.ts`
 - `settlement/merchantTrade.ts`
 - `settlement/npcPostDeath.test.ts`
@@ -311,6 +313,7 @@ Generated from TypeScript imports.
 - `items/equipmentPreview.ts`
 - `items/inventoryView.test.ts`
 - `items/inventoryView.ts`
+- `items/layeredArmorBatch.test.ts`
 - `items/trade.test.ts`
 - `items/trade.ts`
 - `items/upperTierIssuance.ts`
@@ -670,6 +673,7 @@ Generated from TypeScript imports.
 - `items/equipmentPreview.test.ts`
 - `items/equipmentPreview.ts`
 - `items/inventoryView.ts`
+- `items/layeredArmorBatch.test.ts`
 - `persistence/saveData.ts`
 - `player/PlayerController.ts`
 - `player/characterPresentation.test.ts`
@@ -720,6 +724,7 @@ Generated from TypeScript imports.
 - `items/equipment.ts`
 - `items/equipmentPreview.ts`
 - `items/itemCatalog.ts`
+- `items/layeredArmorBatch.test.ts`
 - `ui-vue/components/items/collectArmorPreviewInstances.ts`
 - `ui-vue/components/items/equipmentLayout.ts`
 - `ui-vue/components/items/equipmentPanelTypes.ts`
@@ -1103,6 +1108,7 @@ Generated from TypeScript imports.
 - `items/itemFuel.ts`
 - `items/itemInstances.test.ts`
 - `items/itemUseView.ts`
+- `items/layeredArmorBatch.test.ts`
 - `items/liquidContainer.ts`
 - `items/primaryWeapons.ts`
 - `items/sensibleFood.ts`
@@ -1264,6 +1270,7 @@ Generated from TypeScript imports.
 - `items/itemUseView.test.ts`
 - `items/itemUseView.ts`
 - `items/items.ts`
+- `items/layeredArmorBatch.test.ts`
 - `items/liquidContainer.ts`
 - `items/primaryWeapons.ts`
 - `items/stage4Bows.test.ts`
@@ -1297,6 +1304,7 @@ Generated from TypeScript imports.
 - `settlement/foundedSettlementBootstrap.ts`
 - `settlement/householdProfessionStock.test.ts`
 - `settlement/householdProfessionStock.ts`
+- `settlement/layeredArmorSources.test.ts`
 - `settlement/merchantTrade.test.ts`
 - `settlement/merchantTrade.ts`
 - `settlement/npcState.ts`
@@ -1463,6 +1471,7 @@ Generated from TypeScript imports.
 - `items/itemInstances.ts`
 - `items/itemModels.ts`
 - `items/itemUseView.ts`
+- `items/layeredArmorBatch.test.ts`
 - `items/poisonedMeat.test.ts`
 - `items/poisonedMeat.ts`
 - `items/primaryWeapons.ts`
@@ -1516,6 +1525,7 @@ Generated from TypeScript imports.
 - `settlement/householdProfessionStock.ts`
 - `settlement/householdResourceTransfer.ts`
 - `settlement/householdWood.ts`
+- `settlement/layeredArmorSources.test.ts`
 - `settlement/merchantTrade.test.ts`
 - `settlement/merchantTrade.ts`
 - `settlement/npcPostDeath.ts`
@@ -1578,6 +1588,20 @@ Generated from TypeScript imports.
 - `world/treeHarvest.ts`
 - `world/treeLifecycle.ts`
 - `world/worldGeneratedContainers.ts`
+
+## `items/layeredArmorBatch.test.ts`
+
+**Imports**
+
+- `combat/hitLocation.ts`
+- `items/Inventory.ts`
+- `items/armorItemInstances.ts`
+- `items/equipment.ts`
+- `items/equipmentTypes.ts`
+- `items/itemCatalog.ts`
+- `items/itemInstances.ts`
+- `items/items.ts`
+- `items/tradeCatalog.ts`
 
 ## `items/liquidContainer.test.ts`
 
@@ -1941,6 +1965,7 @@ Generated from TypeScript imports.
 - `items/books.test.ts`
 - `items/highQualityWeapons.test.ts`
 - `items/inventoryView.ts`
+- `items/layeredArmorBatch.test.ts`
 - `items/stage4Ammo.test.ts`
 - `items/stage4Bows.test.ts`
 - `items/stage4Deferred.test.ts`
@@ -1957,6 +1982,7 @@ Generated from TypeScript imports.
 - `quests/guardRewards.test.ts`
 - `quests/guardRewards.ts`
 - `settlement/artisanCraft.ts`
+- `settlement/layeredArmorSources.test.ts`
 - `settlement/merchantTrade.test.ts`
 - `settlement/merchantTrade.ts`
 - `ui-vue/components/items/buildInventoryDetailStatRows.ts`

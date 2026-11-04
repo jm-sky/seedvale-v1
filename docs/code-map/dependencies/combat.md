@@ -90,6 +90,7 @@ Generated from TypeScript imports.
 - `combat/incomingHumanHit.ts`
 - `fauna/faunaCombat.ts`
 - `items/equipment.ts`
+- `items/layeredArmorBatch.test.ts`
 - `player/characterPresentation.test.ts`
 - `player/characterPresentation.ts`
 - `player/playerDamage.test.ts`

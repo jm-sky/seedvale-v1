@@ -401,11 +401,11 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/household.ts`
 
-- `createHousehold` — function — line 409
-- `createHouseholdRegistry` — function — line 653
-- `FARMER_STARTING_SEED_COUNT` — const — line 290
+- `createHousehold` — function — line 411
+- `createHouseholdRegistry` — function — line 655
+- `FARMER_STARTING_SEED_COUNT` — const — line 292
 - `HayForageState` — type — line 129
-- `Household` — type — line 293
+- `Household` — type — line 295
 - `HOUSEHOLD_WOOD_RESERVE_TARGET` — const — line 99
 - `HouseholdAgricultureState` — type — line 218
 - `HouseholdDepositResult` — type — line 38
@@ -415,8 +415,8 @@ Generated from exported TypeScript symbols.
   - role: Owns one family's own food/wood/water stock, between NPC carrying and `SettlementEconomy`.
   - owns: Household
   - uses: SettlementEconomy
-- `householdIdFor` — function — line 375
-- `HouseholdRegistry` — type — line 618
+- `householdIdFor` — function — line 377
+- `HouseholdRegistry` — type — line 620
 - `HouseholdResourceKind` — type — line 56
 - `HouseholdSnapshot` — type — line 230
 - `HouseholdStartingContext` — type — line 274
@@ -435,18 +435,18 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/householdProfessionStock.ts`
 
-- `applyProfessionTradeStock` — function — line 352
+- `applyProfessionTradeStock` — function — line 377
   - domain: settlements-npcs
 - `BLACKSMITH_TRADE_PAULDRON_COUNT` — const — line 32
 - `BLACKSMITH_TRADE_SWORD_COUNT` — const — line 31
 - `FARMER_TRADE_TOOL_COUNT` — const — line 30
-- `householdStartingContextFromFamily` — function — line 313
+- `householdStartingContextFromFamily` — function — line 337
   - domain: settlements-npcs
 - `HUNTER_STARTER_DRIED_MEAT` — const — line 36
 - `HUNTER_STARTER_HERB` — const — line 37
 - `HUNTER_STARTER_TRADE_ARROWS` — const — line 35
 - `HUNTER_STARTER_TRADE_SHORT_BOWS` — const — line 29
-- `resolveProfessionStarterGrants` — function — line 292
+- `resolveProfessionStarterGrants` — function — line 315
   - domain: settlements-npcs
 - `StarterGrant` — type — line 39
 - `WOODCUTTER_TRADE_AXE_COUNT` — const — line 28
@@ -683,30 +683,30 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/merchantTrade.ts`
 
-- `generateMerchantAssortment` — function — line 473
-- `HOME_STARTER_MERCHANT_KINDS` — const — line 94
-- `horseVendorNpcId` — function — line 254
-- `isPremiumMerchantGood` — function — line 185
-- `MERCHANT_ARMOR_QUALITY_WEIGHTS` — const — line 568
+- `generateMerchantAssortment` — function — line 484
+- `HOME_STARTER_MERCHANT_KINDS` — const — line 96
+- `horseVendorNpcId` — function — line 265
+- `isPremiumMerchantGood` — function — line 196
+- `MERCHANT_ARMOR_QUALITY_WEIGHTS` — const — line 579
 - `MERCHANT_SPECIALIZATIONS` — const — line 42
-- `MerchantArmorQualityContext` — type — line 578
+- `MerchantArmorQualityContext` — type — line 589
 - `MerchantAssortmentContext` — type — line 56
 - `MerchantProfile` — type — line 50
-- `merchantProfileFor` — function — line 245
+- `merchantProfileFor` — function — line 256
 - `MerchantSpecialization` — type — line 35
   - domain: settlements
-- `merchantStockQuantity` — function — line 563
+- `merchantStockQuantity` — function — line 574
 - `PREMIUM_MERCHANT_KINDS` — const — line 69
-- `premiumAvailabilityChance` — function — line 190
-- `resolveMerchantArmorQuality` — function — line 613
+- `premiumAvailabilityChance` — function — line 201
+- `resolveMerchantArmorQuality` — function — line 624
   - domain: settlements
-- `resolveMerchantProfiles` — function — line 226
+- `resolveMerchantProfiles` — function — line 237
   - domain: settlements
-- `resolvePremiumMerchantAssignment` — function — line 399
+- `resolvePremiumMerchantAssignment` — function — line 410
   - domain: settlements
-- `seedMerchantStockIfNeeded` — function — line 637
-- `settlementHasPremiumOffer` — function — line 387
-- `specializationAffinity` — function — line 290
+- `seedMerchantStockIfNeeded` — function — line 648
+- `settlementHasPremiumOffer` — function — line 398
+- `specializationAffinity` — function — line 301
 
 ## `settlement/merchantWagon.ts`
 

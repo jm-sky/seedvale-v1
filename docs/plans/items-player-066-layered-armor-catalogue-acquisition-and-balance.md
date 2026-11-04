@@ -1,7 +1,7 @@
 # Plan: Layered armor catalogue, ordinary acquisition and balance
 
 **Created:** 2026-11-04
-**Status:** `planned` 📋 (Q-IC1/Q-IC2 approved 2026-11-04; depends on 065 S3)
+**Status:** `planned` 📋
 **Type:** feature
 **Priority:** high · **Effort:** L
 **Depends on:** items-player-065

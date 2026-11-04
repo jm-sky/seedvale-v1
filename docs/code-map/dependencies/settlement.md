@@ -256,6 +256,7 @@ Generated from TypeScript imports.
 - `ai/npcProfessionWork.ts`
 - `app/inventoryWiring.ts`
 - `settlement/artisanOrders.test.ts`
+- `settlement/layeredArmorSources.test.ts`
 
 ## `settlement/artisanProfile.test.ts`
 
@@ -1083,6 +1084,7 @@ Generated from TypeScript imports.
 - `settlement/householdProfessionStock.ts`
 - `settlement/householdResourceTransfer.test.ts`
 - `settlement/householdResourceTransfer.ts`
+- `settlement/layeredArmorSources.test.ts`
 - `settlement/livestock.ts`
 - `settlement/npcIdentity.ts`
 - `settlement/npcResidentAnchors.ts`
@@ -1153,6 +1155,7 @@ Generated from TypeScript imports.
 
 - `settlement/household.ts`
 - `settlement/householdProfessionStock.test.ts`
+- `settlement/layeredArmorSources.test.ts`
 - `settlement/settlementAgriculture.ts`
 
 ## `settlement/householdResourceTransfer.test.ts`
@@ -1295,6 +1298,23 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `terrain/chunkManager.ts`
+
+## `settlement/layeredArmorSources.test.ts`
+
+**Imports**
+
+- `ai/npcTradeAvailability.ts`
+- `economy/production.ts`
+- `economy/settlementEconomy.ts`
+- `items/Inventory.ts`
+- `items/itemInstances.ts`
+- `items/items.ts`
+- `items/tradeCatalog.ts`
+- `settlement/artisanOrders.ts`
+- `settlement/household.ts`
+- `settlement/householdProfessionStock.ts`
+- `settlement/merchantTrade.ts`
+- `settlement/npcState.ts`
 
 ## `settlement/livestock.test.ts`
 
@@ -1550,6 +1570,7 @@ Generated from TypeScript imports.
 - `items/stage4NoSource.test.ts`
 - `items/trade.test.ts`
 - `settlement/createSettlement.ts`
+- `settlement/layeredArmorSources.test.ts`
 - `settlement/merchantTrade.test.ts`
 
 ## `settlement/merchantWagon.test.ts`
@@ -1864,6 +1885,7 @@ Generated from TypeScript imports.
 - `settlement/foundedSettlement.ts`
 - `settlement/foundedSettlementBootstrap.test.ts`
 - `settlement/foundedSettlementBootstrap.ts`
+- `settlement/layeredArmorSources.test.ts`
 - `settlement/lostTreasureChroniclesArchaeologistResident.ts`
 - `settlement/lostTreasureChroniclesSpecialistResident.ts`
 - `settlement/merchantTrade.ts`

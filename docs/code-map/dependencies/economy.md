@@ -265,6 +265,7 @@ Generated from TypeScript imports.
 - `settlement/artisanCraft.ts`
 - `settlement/artisanOrders.test.ts`
 - `settlement/artisanOrders.ts`
+- `settlement/layeredArmorSources.test.ts`
 - `settlements-npcs-007.test.ts`
 
 ## `economy/productionExecutor.test.ts`
@@ -419,6 +420,7 @@ Generated from TypeScript imports.
 - `settlement/household.ts`
 - `settlement/householdResourceTransfer.test.ts`
 - `settlement/householdResourceTransfer.ts`
+- `settlement/layeredArmorSources.test.ts`
 - `settlement/rats.ts`
 - `settlement/settlementAgriculture.test.ts`
 - `settlement/settlementAgriculture.ts`
