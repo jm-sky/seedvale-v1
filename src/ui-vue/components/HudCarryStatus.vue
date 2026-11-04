@@ -12,6 +12,8 @@ const props = defineProps<{
   held: string
   heldAmmo: string
   playerCondition: string
+  /** Last hit on the player (empty hides). */
+  lastHit?: string
   fps: string
   showFps: boolean
 }>()
@@ -19,7 +21,7 @@ const props = defineProps<{
 const primaryParts = computed(() => [props.weight, props.held].filter(Boolean))
 const showFpsLine = computed(() => Boolean(props.showFps && props.fps))
 const hasSecondary = computed(
-  () => showFpsLine.value || Boolean(props.playerCondition) || Boolean(props.heldAmmo),
+  () => showFpsLine.value || Boolean(props.playerCondition) || Boolean(props.lastHit) || Boolean(props.heldAmmo),
 )
 const visible = computed(() => primaryParts.value.length > 0 || hasSecondary.value)
 </script>
@@ -56,6 +58,14 @@ const visible = computed(() => primaryParts.value.length > 0 || hasSecondary.val
       class="wrap-break-word text-warn"
     >
       {{ playerCondition }}
+    </div>
+    <div
+      v-if="lastHit"
+      class="wrap-break-word text-warn"
+      role="status"
+      data-testid="hud-last-hit"
+    >
+      {{ lastHit }}
     </div>
     <div
       v-if="heldAmmo"
