@@ -20,7 +20,36 @@ Authority: [Strategic Brief — approved Revival decisions](./STRATEGIC-BRIEF.md
 
 **Approved scope:** coherent north/centre/south regions, **possible inland arid/desert areas** (not a decided extent); climate-driven biomes/runoff/local temperature/rain–snow phase; fewer perennial rivers and dry drainage lines without seasonal streams; connected ranges/massifs/passes and some steep summits; initial natural landforms and waterfalls, later volcanic districts/ruins; V2-style vague NPC rumours with an approximate landmark-containing map area (reuse V1 knowledge ownership). **Always keep large structures separate from large settlements (G9)**, rather than allowing co-location after a performance measurement.
 
-**Gates, not yet implementation:** S0 previews/profiles/census (including the author's too-long **left road from the home settlement**); inspect V2 waterfall and rumour-area code and V3 peaks/road passes; compare ~22/~25/~28 settlement variants using travel times and previews **for author selection**; decide G8 heights/shape after measurements. Geographic pipeline: relief/landforms → climate → hydrology → biomes/local weather → settlements → roads → fixtures. Keep deterministic generation, save/epoch/cache contracts, visual and performance checks. Details and staged plan creation go through [session queue](./AUTONOMOUS-SESSION-QUEUE.md); **no runtime work is authorized by this doc edit**.
+**Gates:** S0 previews/profiles/census (including the author's too-long **left road from the home settlement**); inspect V2 waterfall and rumour-area code and V3 peaks/road passes; compare ~22/~25/~28 settlement variants using travel times and previews **for author selection**; decide G8 heights/shape after measurements. Geographic pipeline: relief/landforms → climate → hydrology → biomes/local weather → settlements → roads → fixtures. Keep deterministic generation, save/epoch/cache contracts, visual and performance checks.
+
+### Geography program — staged plans (Opus, 2026-11-04)
+
+Runtime work within these plans is inside approved Revival scope (G1–G9, epoch 1); each plan's author gates (G5 selection, G8 profile, look reviews) still stop the work until answered. Task rows: [queue Q111–Q130](./AUTONOMOUS-SESSION-QUEUE.md#1-queue).
+
+| Stage | Plan | Content | Author gate before the next stage |
+| --- | --- | --- | --- |
+| **S0** | [tools-026](../../plans/tools-026-geography-baseline-diagnostics.md) | River/relief/route censuses incl. the left-road route, preview layers, preview-only threshold variants, V2/V3 donor recon, baseline packet | baseline + targets confirmed; **G8 height/shape** answer |
+| **S1** | Q109 (Sonnet, in flight) | Catalog lakes = real inland water (prerequisite of S7 and of any later `locations-coarse` bump) | — |
+| **S2** | [world-terrain-060](../../plans/world-terrain-060-macro-relief-ranges-passes-and-landforms.md) | Range spines + passes, summit profile, landform descriptors, P1 landforms (crags, spine summits, lakes with islands, craters) | 7-seed previews (look → §2) |
+| **S3–S4** | [world-terrain-061](../../plans/world-terrain-061-macroclimate-and-climate-weighted-hydrology.md) | Static macroclimate → climate-weighted runoff, area thresholds, perennial vs dry drainage, map hierarchy | **regional look on climate previews** (C2) |
+| **S5** | [world-terrain-062](../../plans/world-terrain-062-regional-biomes-and-local-precipitation-phase.md) | (T,P) biomes incl. possible inland arid areas, borders (absorbs Q70), local temperature + rain/snow phase | arid extent + browser spots |
+| **S5′** | [world-terrain-064](../../plans/world-terrain-064-derived-waterfalls.md) | Derived waterfalls (after V2 donor verdict) | look (§2) |
+| **S6** | [world-terrain-063](../../plans/world-terrain-063-geography-driven-settlement-variants.md) | Suitability + 22/25/28 × spacing × weighting matrix → **author picks 1 of 2–3** → implement | **G5 selection** |
+| **S7** | [world-041](../../plans/world-041-landmark-catalog-and-rumour-leads.md) | Landmarks in the catalog, names on discovery, V2-style rumour leads (Astra text) | line script approval |
+| **Close-out** | Q44 R5–R8 (Q61–Q64) + Q110 | Road retry on final geography, single fixture re-export, WSL A/B (boot, `stream`, `settlement-heavy`), Windows via §4, **epoch-batch close proposal** | epoch close (G1) |
+| later | (no plan yet) | G6 P2: volcanic district, castle/large ruins with per-site budgets, **always separate from large settlements** (G9); Q92 river polish | separate planning |
+
+```text
+S0  tools-026 D1–D4 (S) ∥ D5 donors (O) ──► D6 baseline ──► author: G8 profile + targets
+S2  060 R0 (after D2, no output change) ──► R1–R2 (after G8) ──► R3–R4
+S3  061 C1 (after R0, previews only) ──► C2 (after R2; author look) ──► H1–H2 (after R4) ──► H3–H6
+S5  062 W1–W2 (after C1) · 062 B1–B3 (after H6) · 064 waterfalls (after H6 + D5)
+S6  063 V0 (after D3) · V1–V3 (after H6, B1 preferred) ──► author G5 ──► V4
+    ──► Q61 → Q62 → Q63 → Q64 (single fixture re-export) → WSL A/B → Windows §4 → epoch-close proposal
+S7  Q109 + D5 ──► world-041 L0 ──► L3 (parallel to S3–S6) · L1–L2 after 060 R3 (+064) ──► L4 Astra text ──► L5
+```
+
+Parallel lanes: S0 D1–D4 (Sonnet) ∥ D5 (Opus) ∥ Q109; 060 R0 and 061 C1 change no output and may start early; 063 V0 and world-041 L0/L3 do not wait for the final geography. Worldgen-output slices (060 R1–R4, 061 C2–H6, 062 B1, 063 V4) land **sequentially** so each re-census attributes its change; caches are bumped per namespace in the slice that changes them, the fixture is re-exported once in Q64. Q109 owns `worldLocationCatalog.ts` / `locationsCoarseCache.ts` until it lands.
 
 ## 0. Inputs (area reports)
 

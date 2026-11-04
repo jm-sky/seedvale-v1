@@ -1,7 +1,7 @@
 # Geography & Exploration — Author Decisions G1–G9
 
 **Date:** 2026-11-04  
-**Status:** Approved strategic directions; technical calibration, donor inspection and staged plans pending  
+**Status:** Approved strategic directions; staged plans written 2026-11-04 ([roadmap — geography program](./2026-10-27--master-revival-roadmap.md#geography-program--staged-plans-opus-2026-11-04), queue Q111–Q130); technical calibration and donor inspection pending (tools-026)  
 **Authority:** Author answers to the [Opus architecture proposal §8](./2026-11-04--geography-exploration-architecture-proposal.md#8-strategic-decisions-requiring-author-approval). This document supersedes its unapproved G1–G9 option text where the author clarified or deviated.  
 **Implementation:** No runtime implementation or detailed plan is approved by this documentation update. Follow [Strategic Brief](./STRATEGIC-BRIEF.md), [Master Roadmap](./2026-10-27--master-revival-roadmap.md) and [session queue](./AUTONOMOUS-SESSION-QUEUE.md).
 
