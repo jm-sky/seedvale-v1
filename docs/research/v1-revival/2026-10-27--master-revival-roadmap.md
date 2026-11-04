@@ -14,6 +14,14 @@ Authority: [Strategic Brief — approved Revival decisions](./STRATEGIC-BRIEF.md
 
 **Author decision (2026-10-29): P1 now includes D — Trees LOD as a fourth required performance area.** The P1 exit review must cover tree LOD with focused V1 recon, a bounded LOD1-first proposal, relevant native Arc/forest measurements, visual checks and a documented implement/close/defer verdict. This is an approved **scope and gate change**, not automatic approval to integrate LOD1, billboard impostors or a V3 tree renderer. Preserve tree density, height, placement, lifecycle, shadows and V1 simulation authority. Existing A/B/C priorities and evidence are retained; no blanket fresh benchmark series is required. [Tree LOD candidate dossier](./2026-10-28--tree-lod-v1-backlog-candidate.md).
 
+## Geography & exploration — approved direction (2026-11-04; P2 epoch 1)
+
+**Decision source:** [Author's G1–G9](./2026-11-04--geography-exploration-author-decisions-g1-g9.md); [architecture proposal](./2026-11-04--geography-exploration-architecture-proposal.md) remains an implementation candidate, not an approved algorithm. Geography joins the **still-open worldgen epoch 1** (G1); this supersedes earlier implied closure after settlement/road changes alone. Keep Q64 road close-out and fixture re-export **after** macro relief, climate-weighted hydrology and settlement recalibration.
+
+**Approved scope:** coherent north/centre/south regions, **possible inland arid/desert areas** (not a decided extent); climate-driven biomes/runoff/local temperature/rain–snow phase; fewer perennial rivers and dry drainage lines without seasonal streams; connected ranges/massifs/passes and some steep summits; initial natural landforms and waterfalls, later volcanic districts/ruins; V2-style vague NPC rumours with an approximate landmark-containing map area (reuse V1 knowledge ownership). **Always keep large structures separate from large settlements (G9)**, rather than allowing co-location after a performance measurement.
+
+**Gates, not yet implementation:** S0 previews/profiles/census (including the author's too-long **left road from the home settlement**); inspect V2 waterfall and rumour-area code and V3 peaks/road passes; compare ~22/~25/~28 settlement variants using travel times and previews **for author selection**; decide G8 heights/shape after measurements. Geographic pipeline: relief/landforms → climate → hydrology → biomes/local weather → settlements → roads → fixtures. Keep deterministic generation, save/epoch/cache contracts, visual and performance checks. Details and staged plan creation go through [session queue](./AUTONOMOUS-SESSION-QUEUE.md); **no runtime work is authorized by this doc edit**.
+
 ## 0. Inputs (area reports)
 
 | Area | Report | Relation to existing owner |
