@@ -13,6 +13,8 @@
 **Geography & exploration recon (2026-11-04):** [Architecture handoff for Claude Opus 5.5](./2026-11-04--geography-exploration-revival-architecture-recon.md) — river density, shared macroclimate, route-based settlement calibration, major landforms and existing discovery systems. Research recommendations only; no new decisions or plan-status changes.
 **Geography & exploration architecture proposal (Opus, 2026-11-04):** [Proposal for author review](./2026-11-04--geography-exploration-architecture-proposal.md) — acyclic pipeline (landform descriptors + static macroclimate before global hydrology), river recalibration (area thresholds × climate runoff, perennial vs dry drainage), route-weighted settlement calibration, landmark categories, discovery via `LocationKnowledge`; staged sequence S0–S9 and author decisions G1–G9 (queue §3; Rev. 1: relief first, mountain ranges, settlement variants, split performance budgets). Not approved; no plans created.
 
+**Developer tools UI layout (2026-11-04):** [tools-025 — shared topbar, overlay widgets and sidebar polish](../../plans/tools-025-developer-tools-ui-layout.md) ([implementation notes](../../plans/implementation-notes/tools-025-developer-tools-ui-layout-implementation-notes.md)). Plan only; existing concept-art PNG still requires repository attachment.
+
 ## Current entry points
 
 | Need | Read |
