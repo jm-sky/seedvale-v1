@@ -1,7 +1,7 @@
 # Plan: Derived waterfalls on perennial rivers
 
 **Created:** 2026-11-04
-**Status:** `draft` 📝 (finalized after the tools-026 D5 V2-waterfall verdict and world-terrain-061 H5 candidate data)
+**Status:** `draft` 📝 (finalized after the tools-026 D5 V2-waterfall verdict and world-terrain-061 H5 candidate data; amended per [review 031](../reviews/2026-11-04--031--geography-revival-g1-g9-critical-architecture-review.md) 2026-11-04 — still a draft, not W1–W3 approval)
 **Type:** feature
 **Priority:** medium · **Effort:** M
 **Depends on:** tools-026, world-terrain-061
@@ -17,21 +17,32 @@ Part of the G6 first landmark package: **waterfalls derived from hydrology** at 
 ## Verified starting point (2026-11-04)
 
 - River presentation: `src/world/createRiverWater.ts` (ribbon per chain), bed carving and mouth ramps from the global hydrology payload (058). No waterfall object exists in V1.
-- 061 H5 records steep perennial reaches as data (position, drop, width class, chain id) — the only input of this plan.
+- 061 H5 records steep perennial reaches as data (top/bottom position, drop on the shipped water/bed profile, width class, source-chain id + offset) — the only input of this plan.
+- 058 notes already distinguish smoothed chain elevations from corrected ground; a "real drop" is evaluated on the profile actually shipped, not on raw relief (review 031 F9).
 - V2 waterfall: implementation and cost not yet inspected (tools-026 D5).
+
+## Ownership direction (review 031 F2)
+
+🟡 Chosen: **geography reserves, settlements and roads avoid.** 061 H5 candidates become reserved candidate footprints (fall reach + a small clearance) **before** settlement selection; world-terrain-063 V1 ranks sites outside them, and the road crossing owner (`roadRiverCrossing.ts`) treats a reserved reach as non-crossable in the Q61–Q64 retry. W1 eligibility therefore never depends on later settlement/road output, keeping the pipeline acyclic (relief → hydrology → landmarks → settlements → roads). Alternative not chosen: finalize eligibility after 063 V4 / Q64 against accepted footprints — it would make the waterfall set depend on settlement variants.
+
+## Physical contract (review 031 F9)
+
+- Identity from **source-chain id + reach offset** (061 H2 contract), independent of clipped-tile ordinal; top and bottom reach defined.
+- Water-query behaviour across the fall (swim depth, wet floor, drinking) stays owned by the hydrology/water queries; the falling sheet, foam and spray are **presentation** and never a second authority for swim depth or navigation.
+- Any bed correction/carving at the fall stays in the terrain/hydrology owner; presentation is chunk-owned (owner chunk = chunk containing the top reach; built/destroyed with it, no always-resident meshes).
 
 ## Slices (provisional)
 
 | Slice | Content | Model | Gate |
 | --- | --- | --- | --- |
 | W0 | Decide presentation from the D5 verdict: ribbon steepening + falling sheet + foam/spray + sound loop; per-site render budget (draws, triangles, particles) and streaming lifecycle (chunk-owned, no always-resident meshes); catalog kind (`waterfall` or `lake`/`river` subtype) agreed with world-041 L0 | O | D5; 061 H5 |
-| W1 | Detection rule finalized (minimum drop, perennial class, not inside settlements/roads), census per seed; stable id from chain + reach | S | W0 |
+| W1 | Detection rule finalized (minimum drop on the shipped profile, perennial class), reserved footprints handed to 063 V1 / road crossing owner, census per seed; stable id from source chain + reach offset | S | W0; 061 H6 |
 | W2 | Presentation + sound; stand-alone budget check; browser check on `415424794` | S | W1 |
 | W3 | Catalog entry hand-off to world-041 L1 | S | W2 |
 
 ## Done when (provisional)
 
-Census: waterfalls only on perennial chains at real drops (count per seed reported, no quota); presentation within its per-site budget; no swimming/pathing regression at falls; browser screenshots → §2 for the author.
+Census: waterfalls only on perennial chains at real drops on the shipped profile (count per seed reported, no quota); presentation within its per-site budget; representative player/NPC/fauna traversals near falls without swimming/pathing regression; wet/dry/navigation agreement at unloaded chunk boundaries; no settlement or road crossing inside a reserved reach; browser screenshots → §2 for the author.
 
 ## Stop if
 

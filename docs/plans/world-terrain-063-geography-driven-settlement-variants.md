@@ -1,7 +1,7 @@
 # Plan: Geography-driven settlement pattern — variant comparison and author selection
 
 **Created:** 2026-11-04
-**Status:** `planned` 📋 (V0 tooling may start after tools-026; V1+ after world-terrain-061, preferably 062)
+**Status:** `planned` 📋 (V0 tooling may start after tools-026; V1+ after world-terrain-061, preferably 062; amended per [review 031](../reviews/2026-11-04--031--geography-revival-g1-g9-critical-architecture-review.md) 2026-11-04)
 **Type:** feature
 **Priority:** high · **Effort:** L
 **Depends on:** tools-026, world-terrain-061
@@ -19,23 +19,28 @@ Author field evidence (not a measured baseline): walking the **left-hand road fr
 ## Verified starting point (2026-11-04)
 
 - `settlementLayout.ts`: seeded Poisson-disc selection over land cells; home first; `SETTLEMENT_SPACING_M 1150` relaxing by `SPACING_RELAX_STEP_M 100` down to `SETTLEMENT_MIN_DISTANCE_M = 4 × TRAVEL_HOUR_M` (720 m); `SETTLEMENT_TARGET_COUNT 22`; a cheap local suitability probe + seeded jitter; RNG graph with `SETTLEMENT_MAX_EDGE_M 2400` / band pruning at 10 h.
-- **Contract:** the layout is a pure function of seed + terrain config, explicitly **without hydrology**, so every realm computes the same result (memoized by `settlementPlanCache`). Adding water access or climate to suitability changes that contract (hydrology/climate payload must be available wherever the layout runs) — V1 decides it explicitly.
-- Downstream owners: `settlementPlanCache.ts`, `roadNetwork.ts`, size progression (MD → LG → XL within ~1.5 km of home, Brief), cemeteries, caves (`largeCaves.ts`; queue §3 Q100 open), transport/expedition distances.
+- **Contract (corrected, review 031 F4):** `settlementLayout.ts` takes no river query — there is **no explicit river suitability** in selection — but it is **not hydrology-independent**: its `sampleHeight` is `sampleLandHeightAt` (`worldKnowledgeScan.worldKnowledgeRoadContext`), which already reads the global hydrology correction and lake levels through `chunkHeightmap.ts`. Every realm must therefore already have identical installed geography before layout use. Adding water access or climate to suitability extends that dependency — V1 decides it explicitly.
+- **Caches (review 031 F4):** `settlementPlanCache.ts` holds a single memoized layout, cell-keyed defs, progression and quest-host caches; hydrated/computed first values win; river-query registration is world-scoped. `roadNetwork.ts` caches routes. A runner that changes only constants/weights inside one realm can silently reuse the previous variant.
+- Downstream owners: `settlementPlanCache.ts`, `roadNetwork.ts`, size progression (graph-hop policy, `SETTLEMENT_PROGRESSION_XL_MAX_DISTANCE_M = 4000` in `settlementProgression.ts` — supersedes the older Brief's "XL within ~1.5 km", review 031 F10), cemeteries, caves (`largeCaves.ts`; queue §3 Q100 open), transport/expedition distances (`transportOffscreen.ts` keeps straight-line estimates for legacy handoffs — not a general travel model).
 
 ## Design
 
-- **V0 variant runner** (script, no runtime change): builds the layout for an override set `{ target, startSpacing, suitabilityWeight }` and runs the tools-026 D3 route census + quadrant coverage + guarantees on seeds `42`, `415424794` and 3–5 spot seeds; prints one comparison table; draws previews with routes.
-- **V1 suitability term** — extend the existing candidate ranking (no parallel density map): macroclimate (temperate, moderately moist), lowland slope, near perennial water or coast, outside 060 landform footprints and passes' crest. Weight levels: none (today) / moderate / strong. The layout keeps computing in every realm: either read macroclimate + hydrology from the installed payload (then the layout waits for hydrology install — check boot order) or use a cheap analytic proxy; Opus picks one in V1 notes with evidence.
+- **V0 variant runner** (script, no runtime change): builds the layout for an override set `{ target, startSpacing, suitabilityWeight }` and runs the tools-026 D3 route census + quadrant coverage + guarantees on seeds `42`, `415424794` and 3–5 spot seeds; prints one comparison table; draws previews with routes. **Isolation (review 031 F4):** each variant runs in a fresh process/context, or every affected cache (layout memo, defs, progression, quest hosts, road routes) is reset and the override identity is part of the cache keys; an **A → B → A** run must reproduce A exactly. Cheap rejection (spacing/coverage/guarantees) runs before expensive full routing; shortlisted candidates are then measured fully.
+- **V1 suitability term** — extend the existing candidate ranking (no parallel density map): macroclimate (temperate, moderately moist), lowland slope, near perennial water or coast, outside 060 landform footprints and the 061 H5 **reserved waterfall-candidate footprints** (world-terrain-064 ownership direction), but **not** excluding 060 pass corridors (they must stay routable). Weight levels: none (today) / moderate / strong. The layout keeps computing in every realm: either read macroclimate + hydrology from the installed payload (inventory main / worker / tool construction paths and require identical installed geography before layout use — never a silent analytic fallback in only some realms) or use a cheap analytic proxy, labelled as a **ranking heuristic** with real water access validated separately on the final sites; Opus picks one in V1 notes with evidence (review 031 alternatives: prefer the installed payload where the existing hydrology install already provides it; no second layout service).
 - **V2 matrix** — 22 / ~25 / ~28 × start spacing 1150 / ~1050 / ~950 (verify the relax floor stays reachable) × weight none / moderate / strong; stop early where suitable land runs out.
-- **V3 shortlist** — rank by the proposal's priority order: (1) 0 roadless, 1 component, progression/home-growth guarantees; (2) shorter neighbour journeys (indicative median ~5–7 game h, p90 ≤ 9 h — use the author-confirmed S0 targets); (3) wilderness kept (indicative ≥ 20 % land beyond ~5 h); (4) no empty half (quadrant coverage); (5) NPC transport/trade distances acceptable. Present 2–3 variants in a research note with previews, numbers and the author route → queue §3 (Polish, short options).
-- **V4 implement the selection** — constants/weights, cache bumps (settlement defs, road routes, caves, cemeteries, locations-coarse after Q109), downstream censuses (access, yards, cemeteries, caves, catalog lakes), one timed walk of the author route on `415424794` recorded separately from geometry.
+- **Router pin (review 031 F2):** V2–V3 evaluate every variant with **one pinned router revision** (recorded in the note). Q61–Q63 run after V4; if they change reachability or journey rankings, the shortlist is re-run before G5 acceptance is treated as final; Q64 export stays after selection.
+- **Connectivity (review 031 F4):** components are computed over **successful, traversable route edges**; selected / defined / road-connected counts are reported separately; final site probes and promoted sizes (not nominal cell centres) satisfy footprints and spacing.
+- **Travel (review 031 F9):** D3 distance ÷ speed is a labelled estimate; shortlisted routes add sampled grade/detour checks, and the author route gets a timed walk.
+- **Workload (review 031 F7):** 28 vs 22 sites is ~27 % more settlements before size/household distribution — for each shortlisted variant record households, NPCs, active transport and the representative offscreen/time-skip workload against the tools-026 D7 baseline; no simulation reduction (stop-if below).
+- **V3 shortlist** — rank by the proposal's priority order: (1) 0 roadless, 1 component of routed roads, progression/home-growth and authored quest-host guarantees; (2) shorter neighbour journeys (indicative median ~5–7 game h, p90 ≤ 9 h — use the author-confirmed S0 targets); (3) wilderness kept (indicative ≥ 20 % land beyond ~5 h); (4) no empty half (quadrant coverage); (5) NPC transport/trade distances acceptable. Present 2–3 variants in a research note with previews, numbers and the author route → queue §3 (Polish, short options).
+- **V4 implement the selection** — constants/weights, cache bumps (settlement defs, road routes, caves, cemeteries, locations-coarse next free version after 4), downstream censuses (access, yards, cemeteries, caves, catalog lakes), one timed walk of the author route on `415424794` recorded separately from geometry.
 
 ## Slices
 
 | Slice | Content | Model | Gate |
 | --- | --- | --- | --- |
 | V0 | Variant runner + comparison table (on current terrain for tooling only) | S | tools-026 D3 |
-| V1 | Suitability term + realm/boot contract decision | O | 061 H6 |
+| V1 | Suitability term + realm/boot/cache contract decision (notes) | O | 061 H6 (frozen geography + reserved waterfall candidates) |
 | V2 | Matrix run on final geography | S | V1; 062 B1 preferred (previews show final biomes) |
 | V3 | Shortlist note + §3 question | O | V2 |
 | V4 | Implement the author's variant, bumps, censuses, walk | S | author answer |
@@ -43,7 +48,8 @@ Author field evidence (not a measured baseline): walking the **left-hand road fr
 ## Done when
 
 - Author selected a variant; implemented constants reproduce its census numbers on both seeds.
-- 0 roadless settlements and 1 component (or the author accepted an explained exception), progression/home-growth guarantees hold, access 0 unreachable.
+- 0 roadless settlements and 1 component of **successfully routed** roads (failed crossings cannot pass; or the author accepted an explained exception), progression/home-growth guarantees and authored quest hosts hold, access 0 unreachable.
+- Tests at the existing owners: A → B → A variant identity; main / worker / cold / hydrated settlement defs match.
 - Author route reported before/after (hours, ratio, detour causes).
 - Caches bumped; notes + `docs/state/` settlement/world docs updated; queue Q61 un-deferred.
 

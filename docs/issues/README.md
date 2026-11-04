@@ -66,7 +66,7 @@ Review-owned follow-ups (details remain in the review; no duplicate issue files 
 
 | Owner | Scope | Status |
 | --- | --- | --- |
-| [Review 031 — F1–F10](../reviews/2026-11-04--031--geography-revival-g1-g9-critical-architecture-review.md#findings) | Geography G1–G9 plan corrections and evidence gates; details stay in the review, no new implementation scope approved | `todo` |
+| [Review 031 — F1–F10](../reviews/2026-11-04--031--geography-revival-g1-g9-critical-architecture-review.md#findings) | Geography G1–G9 plan corrections and evidence gates; details stay in the review, no new implementation scope approved. Plans + roadmap + queue amended 2026-11-04 (Opus); contracts written per slice, evidence outstanding | `in progress` |
 | [Review 028 — R1–R6](../reviews/2026-10-28--028--settlements-023-streaming-lifecycle-plan-review.md#findings) | Settlement lifecycle/rollback requirements tracked in draft settlements-023; resource exclusion, travel ownership, helper/late cleanup and acceptance failures; author decisions remain | `todo` |
 | [Astra review 026 — F1–F4](../reviews/2026-10-26--026--v1-revival-cursor-technical-review.md#findings--ranked-all-medium-p2) | Player appearance race; armor comparison identity; nested-modal focus; Recent eligibility | `fixed` (automated); browser follow-up remains |
 

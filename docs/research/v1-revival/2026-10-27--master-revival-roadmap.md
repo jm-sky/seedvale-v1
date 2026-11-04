@@ -24,7 +24,14 @@ Authority: [Strategic Brief — approved Revival decisions](./STRATEGIC-BRIEF.md
 
 ### Geography program — staged plans (Opus, 2026-11-04)
 
-**Independent pre-implementation review (2026-11-04):** [Review 031](../../reviews/2026-11-04--031--geography-revival-g1-g9-critical-architecture-review.md) — **REWORK REQUIRED** for the affected execution contracts; S0 diagnostics/recon may proceed. Read its findings before implementing the staged plans below. This is a review recommendation, not a replacement of G1–G9 or an automatic plan rewrite/approval; runtime, visual and performance verification remain outstanding.
+**Independent pre-implementation review (2026-11-04):** [Review 031](../../reviews/2026-11-04--031--geography-revival-g1-g9-critical-architecture-review.md) — **REWORK REQUIRED** for the affected execution contracts; S0 diagnostics/recon may proceed. Read its findings before implementing the staged plans below. This is a review recommendation, not a replacement of G1–G9 or an automatic plan rewrite/approval; runtime, visual and performance verification remain outstanding. **Plans amended 2026-11-04 (Opus)** with the F1–F10 corrections (contracts, gates, acceptance) — each contract is still written out in its slice notes before code (061 H2 drainage, 062 W1 local weather, 063 V1 realm/cache, world-041 L0 §0 uncertain knowledge); evidence remains outstanding.
+
+**Cross-plan rules (review 031):**
+- **Frozen inputs.** Author previews/shortlists and calibrations name one immutable input revision: climate (061 C2) and hydrology calibration (H1–H2) run on the **060 R4** relief freeze; river-dependent biome output (062 B1–B2), water-dependent catalog entries (world-041 L1) and settlement selection (063 V1) on the **061 H6** freeze. Inert previews and pure contract/lookup work may start earlier.
+- **Cache bumps per output-changing slice**, not only at a close-out slice.
+- **Later terrain packages** recompute global hydrology and re-run the global invariants plus changed catchment/site/route/catalog-identity checks — no "local re-census only" (F5).
+- **Epoch-1 intermediate saves are disposable test saves (F6).** `loadStoredSave` refuses only an epoch mismatch, so a save from an earlier epoch-1 generator loads into a later one without migration of NPCs, terrain edits, trees, buildings, quest locations or checkpoints. Generator-changing slices are QA'd on fresh worlds plus same-build save round-trip/rebuild; rollback pairs a code revision with compatible test saves and regenerated caches. Keeping intermediate saves compatible would need an explicit author decision — no new epoch or migration framework by default.
+- **Performance protocol:** tools-026 D7 defines the cost/workload baseline and the meaning of "not slower beyond noise" for 060–063.
 
 
 Runtime work within these plans is inside approved Revival scope (G1–G9, epoch 1); each plan's author gates (G5 selection, G8 profile, look reviews) still stop the work until answered. Task rows: [queue Q111–Q130](./AUTONOMOUS-SESSION-QUEUE.md#1-queue).
@@ -32,7 +39,7 @@ Runtime work within these plans is inside approved Revival scope (G1–G9, epoch
 | Stage | Plan | Content | Author gate before the next stage |
 | --- | --- | --- | --- |
 | **S0** | [tools-026](../../plans/tools-026-geography-baseline-diagnostics.md) | River/relief/route censuses incl. the left-road route, preview layers, preview-only threshold variants, V2/V3 donor recon, baseline packet | baseline + targets confirmed; **G8 height/shape** answer |
-| **S1** | Q109 (Sonnet, in flight) | Catalog lakes = real inland water (prerequisite of S7 and of any later `locations-coarse` bump) | — |
+| **S1** | Q109 — **done 2026-11-04** | Catalog lakes = real inland water (`locations-coarse` v4; prerequisite of S7 and of any later `locations-coarse` bump) | — |
 | **S2** | [world-terrain-060](../../plans/world-terrain-060-macro-relief-ranges-passes-and-landforms.md) | Range spines + passes, summit profile, landform descriptors, P1 landforms (crags, spine summits, lakes with islands, craters) | 7-seed previews (look → §2) |
 | **S3–S4** | [world-terrain-061](../../plans/world-terrain-061-macroclimate-and-climate-weighted-hydrology.md) | Static macroclimate → climate-weighted runoff, area thresholds, perennial vs dry drainage, map hierarchy | **regional look on climate previews** (C2) |
 | **S5** | [world-terrain-062](../../plans/world-terrain-062-regional-biomes-and-local-precipitation-phase.md) | (T,P) biomes incl. possible inland arid areas, borders (absorbs Q70), local temperature + rain/snow phase | arid extent + browser spots |
@@ -43,16 +50,17 @@ Runtime work within these plans is inside approved Revival scope (G1–G9, epoch
 | later | (no plan yet) | G6 P2: volcanic district, castle/large ruins with per-site budgets, **always separate from large settlements** (G9); Q92 river polish | separate planning |
 
 ```text
-S0  tools-026 D1–D4 (S) ∥ D5 donors (O) ──► D6 baseline ──► author: G8 profile + targets
-S2  060 R0 (after D2, no output change) ──► R1–R2 (after G8) ──► R3–R4
-S3  061 C1 (after R0, previews only) ──► C2 (after R2; author look) ──► H1–H2 (after R4) ──► H3–H6
-S5  062 W1–W2 (after C1) · 062 B1–B3 (after H6) · 064 waterfalls (after H6 + D5)
-S6  063 V0 (after D3) · V1–V3 (after H6, B1 preferred) ──► author G5 ──► V4
-    ──► Q61 → Q62 → Q63 → Q64 (single fixture re-export) → WSL A/B → Windows §4 → epoch-close proposal
-S7  Q109 + D5 ──► world-041 L0 ──► L3 (parallel to S3–S6) · L1–L2 after 060 R3 (+064) ──► L4 Astra text ──► L5
+S0  tools-026 D1–D4, D7 (S) ∥ D5 donors (O) ──► D6 baseline ──► author: G8 profile + targets
+S2  060 R0 (after D2, no output change) ──► R1–R2 (after G8) ──► R3 ──► R4 = relief freeze
+S3  061 C1 (after R0, previews only) ──► C2 (after R4; author look) ──► H1–H2 (drainage contract first) ──► H3–H5 ──► H6 = hydrology freeze
+S5  062 W1 contract (after C1) ──► W1–W2 runtime (after C2) · 062 B1 contract (after C2) ──► B1–B3 acceptance (after H6)
+    064 waterfalls: H5 candidates reserved ──► W0 (after D5) ──► W1–W3 (after H6)
+S6  063 V0 (after D3) · V1–V3 (after H6 + reserved waterfall footprints, B1 preferred; one pinned router) ──► author G5 ──► V4
+    ──► Q61 → Q62 → Q63 (re-run shortlist if journey ranking changes) → Q64 (single fixture re-export) → WSL A/B → Windows §4 → epoch-close proposal
+S7  D5 ──► world-041 L0 (incl. uncertain-knowledge contract) ──► L3 (parallel to S3–S6) · L1–L2: dry kinds after 060 R4, water kinds after 061 H6, waterfalls after 064 W1 ──► L4 Astra text ──► L5
 ```
 
-Parallel lanes: S0 D1–D4 (Sonnet) ∥ D5 (Opus) ∥ Q109; 060 R0 and 061 C1 change no output and may start early; 063 V0 and world-041 L0/L3 do not wait for the final geography. Worldgen-output slices (060 R1–R4, 061 C2–H6, 062 B1, 063 V4) land **sequentially** so each re-census attributes its change; caches are bumped per namespace in the slice that changes them, the fixture is re-exported once in Q64. Q109 owns `worldLocationCatalog.ts` / `locationsCoarseCache.ts` until it lands.
+Parallel lanes: S0 D1–D4, D7 (Sonnet) ∥ D5 (Opus); 060 R0 and 061 C1 change no output and may start early; 063 V0 and world-041 L0/L3 do not wait for the final geography. Worldgen-output slices (060 R1–R4, 061 C2–H6, 062 B1, 063 V4) land **sequentially** so each re-census attributes its change; caches are bumped per namespace in the slice that changes them, the fixture is re-exported once in Q64.
 
 ## 0. Inputs (area reports)
 
