@@ -50,7 +50,7 @@ Extend `worldgen:roads:census` (or `worldgen:spacing:census --roads=1`, whicheve
 
 - per graph edge: straight distance, entrance-to-entrance polyline length, access legs, route ratio, game hours for player (6 m/s) and NPC travel (3.6 m/s) — **labelled "distance ÷ speed estimate"**, failed edges;
 - **true route connectivity** (review 031 F4): components computed over **successfully routed, traversable** route edges only (failed crossings / failed routes are not edges); report **selected / defined / road-connected** settlement counts separately — the layout-adjacency component count stays as a separate, labelled column;
-- per world: land area, share of land within 2/5/8 h of a settlement (straight-line hours; label it as such), **wilderness share** (land > 5 h), coverage per island quadrant;
+- per world: land area, share of land within 2/5/8 h of a settlement (straight-line hours; label it as such), **distance-to-settlement share** (land > 5 h; printed as `wilderness` in the JSON — ✅ author Q116-d: a neutral diagnostic, **not** a wilderness measure), coverage per island quadrant;
 - **author route:** on seed `415424794` identify the home edge whose road leaves to the **west/left on the north-up map** toward the second settlement the author walked; print its polyline length, ratio, hours and the detour causes along it (bay, river crossing, slope band), plus **sampled grades along the polyline** (both directions) and draw it in the D4 overlay. A timed in-game walk of this route is recorded separately (→ queue §2), never inferred from the estimate. If two candidates fit, list both — the author confirms which one.
 
 ### D4 — Preview layers and gameplay-mode images (S)

@@ -1,7 +1,7 @@
 # Plan: Macro relief — mountain ranges, passes and landform package P1
 
 **Created:** 2026-11-04
-**Status:** `planned` 📋 (R0 ready after tools-026 D2; R1–R4 gated on the S0 baseline and the author's G8 answer; amended per [review 031](../reviews/2026-11-04--031--geography-revival-g1-g9-critical-architecture-review.md) 2026-11-04)
+**Status:** `planned` 📋 (R0 ready after tools-026 D2; R1 unblocked by the author's G8 answer Q116-a 2026-11-04, gated on R0; amended per [review 031](../reviews/2026-11-04--031--geography-revival-g1-g9-critical-architecture-review.md) 2026-11-04)
 **Type:** feature
 **Priority:** high · **Effort:** XL
 **Depends on:** tools-026
@@ -26,7 +26,7 @@ Authority: [G1, G6, G8](../research/v1-revival/2026-11-04--geography-exploration
 ## Design (proposal-derived; R1 finalizes numbers after S0)
 
 1. **Range spines.** A pure module `src/terrain/landformDescriptors.ts` derives, from seed + world config only, 1–3 range spines (domain-warped polylines, 🎯 2–5 km on the island) and each spine's **pass descriptors** (lowered saddles). The spine distance field becomes the main term of the mountain envelope; the existing noise gate stays as a weaker secondary term so isolated massifs and hill country remain. Ridge orientation follows the spine. Reuse the existing envelope → ridge → massif hierarchy; **no second terrain generator**.
-2. **Summits.** Steeper crests and rocky summits on the spine core via a sharper ridge profile and the existing rock exposure; height/steepness profile per the author's G8 answer (§3 question from tools-026 D6).
+2. **Summits.** Steeper crests and rocky summits on the spine core via a sharper ridge profile and the existing rock exposure. ✅ **Author G8 / Q116-a (2026-11-04):** highest peaks **~60–80 m** (preference for the tallest summits, not every mountain; S0: 33/38 m). 🟡 Technical constraints ([Q116 reconciliation §1](../research/v1-revival/2026-11-04--q116-author-direction-reconciliation.md#1-q116-a--peaks-6080-m-g8)): keep `heightScale` 18 (tree line, meadows, grass, biome gating and treasure sites read **altitude fractions of `heightScale`**) and add the extra height as a **metre-scale spine/summit term** limited to range cores; tall ranges become bare above the ≈ 12 m tree line and reach `SNOW_ALT_M` 60–140 m — both are part of the R2 preview the author judges. Proposed profile: top peak per seed 60–80 m, most crests 35–55 m, isolated massifs keep 25–38 m.
 3. **Landform descriptors (P1 kinds):** `crag` (isolated rocky hill), `spineSummit`, `lakeIsland` (basin with a knoll — hydrology decides the water), `crater` (rim + bowl; crater lake when hydrology fills it). Each record: stable id `lf:<kind>:<cellKey>` (from the winning candidate cell, never a list ordinal), centre, radius, params, `intendedOutcome`. Stored in a 512 m bucket index → O(1) lookup. The bucket size alone does not bound cost: R0 states the **descriptor overlap rule** (max footprint radius vs bucket, max descriptors per bucket) and the **range-segment bound** per sample, and measures sampler cost per chunk against the tools-026 D7 baseline (review 031 F7).
 4. **Selection:** candidates scored on the descriptor-free base relief (no recursion), Poisson-style separation, fixed home reserve; 🎯 about 3–5 major attractions per world, **no per-kind guarantee**; a shortfall relaxes thresholds in deterministic steps and is reported by the census — never stamped onto unsuitable relief (G6).
 5. **Acyclicity:** descriptors read seed + base relief only — never hydrology, climate, settlements or roads. Settlements/roads later **avoid** landform footprints (world-terrain-063).
@@ -37,8 +37,8 @@ Authority: [G1, G6, G8](../research/v1-revival/2026-11-04--geography-exploration
 | Slice | Content | Model | Gate |
 | --- | --- | --- | --- |
 | **R0** | Descriptor module + bucket index + debug overlay in the continent preview; sampler hook with **zero descriptors → bit-identical output** (golden hash unchanged) | S | tools-026 D2 landed |
-| **R1** | Range spines + passes (incl. corridors) reshaping the envelope; previews on 7 seeds (`42`, `415424794` + 5); relief census vs S0; cache bumps for every namespace whose output moves | O | S0 baseline reviewed by the author; G8 answer |
-| **R2** | Summit steepness/height profile per G8; transects vs S0 and V3; cache bumps | O | R1 |
+| **R1** | Range spines + passes (incl. corridors) reshaping the envelope; previews on 7 seeds (`42`, `415424794` + 5); relief census vs S0; cache bumps for every namespace whose output moves | O | R0; ✅ S0 reviewed + G8 answered (Q116-a, 2026-11-04) |
+| **R2** | Summit steepness/height profile per G8 (top peaks ~60–80 m); transects vs S0 and V3; tree-line/bare-rock share and snow-ramp reach reported; chunk bounds, shadow (camera far 200) and fog silhouettes checked on tall slopes; cache bumps; **author preview review before R3/R4** | O | R1 |
 | **R3** | Landform P1 kinds + selection + census row (`intendedOutcome` listed; hydrology assertions come in 061); cache bumps | S | R1 |
 | **R4** | **Relief freeze**: global hydrology recompute + global invariants, chunk-generation time and hydrology boot time vs D7 baseline, downstream **re-census only** (settlements, roads, access, caves, cemeteries, catalog lakes) — no tuning here; pass-corridor grade check both directions; browser check: cross one pass and stand on one summit on `415424794`. The relief revision at R4 is the **frozen input** for 061 C2/H1–H2 and world-041 L1 | S | R2, R3 |
 
@@ -46,7 +46,7 @@ Cache versions/fingerprints change in **each output-changing slice** (R1, R2, R3
 
 ## Done when
 
-- Relief census: 1–3 coherent ranges per seed with connected crests, ≥ 1 pass per range whose corridor passes the grade/width check in both directions after hydrology/roads/pads, isolated massifs still present; summit profile matches the author's G8 choice.
+- Relief census: 1–3 coherent ranges per seed with connected crests, ≥ 1 pass per range whose corridor passes the grade/width check in both directions after hydrology/roads/pads, isolated massifs still present; summit profile matches the author's G8 choice (top peaks ~60–80 m, approved on R2 previews).
 - 7-seed previews committed; landform census lists 3–5 major attractions per seed or reports the shortfall.
 - Chunk-generation time, hydrology boot and peak transient memory not worse beyond the tolerance declared in the tools-026 D7 protocol (cold vs cold, warm vs warm; report numbers, WSL, no FPS claims).
 - Downstream censuses re-run: 0 roadless settlements not worse than S0, access 0 unreachable, wet objects 0 (Q37 guards).

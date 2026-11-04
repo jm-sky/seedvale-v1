@@ -59,16 +59,16 @@ Browser boot ready: cold 41–75 s, warm 22–31 s; hydrology compute 0.6–0.75
 
 | Area · metric | Measured baseline (42 / 415424794) | Proposed target → keep / adjust (reason) | Author-approved |
 | --- | --- | --- | --- |
-| Rivers · density | 12.2 / 11.6 km/km² | **adjust:** "⅓–½ of current" → author picks band in Q116-b; measure after 061 H2 with climate runoff | — |
-| Rivers · heads | 2277 / 2301 | **keep** "−60 % or more" only if Q116-b picks (b)/(c); with (a) ≈ −30 % | — |
+| Rivers · density | 12.2 / 11.6 km/km² | **adjust:** "⅓–½ of current" → author picks band in Q116-b; measure after 061 H2 with climate runoff | ✅ Q116-b: ≈ −50 % total length, mostly minor streams; band −40…−60 % 🟡 + main-river guard ([Q116 reconciliation](./2026-11-04--q116-author-direction-reconciliation.md) §2) |
+| Rivers · heads | 2277 / 2301 | **keep** "−60 % or more" only if Q116-b picks (b)/(c); with (a) ≈ −30 % | superseded: heads reported, not gated ([Q116 reconciliation](./2026-11-04--q116-author-direction-reconciliation.md) §2) |
 | Rivers · dry interfluves | 0.2 % / 0.2 % | **adjust:** 35 % → "15–35 %, regional (arid/upland), measured after 061 C2"; not reachable by threshold (§2.1) | — |
 | Rivers · trunk systems | 8+ / 8+, top 7.1 / 8.3 km | **keep** ≥ 3 with hierarchy (already met; must survive the cut) | — |
 | Rivers · parallel artifacts | 0 / 1 | **keep** 0 artifact-class pairs | — |
 | Relief · ranges | 0 coherent (40 / 37 blobs, ≤ 2.3 km) | **keep** 1–3 ranges, ≥ 1 pass each; add "largest gated component ≥ 3 km extent" as the census proxy | — |
-| Relief · peaks/steepness | max 33 / 38 m; ≥ 20° = 0.1–0.2 % land | **open (G8):** Q116-a | — |
+| Relief · peaks/steepness | max 33 / 38 m; ≥ 20° = 0.1–0.2 % land | **open (G8):** Q116-a | ✅ Q116-a: highest peaks ~60–80 m (preference, not every mountain); shape on 060 R2 previews; keep `heightScale` ([Q116 reconciliation](./2026-11-04--q116-author-direction-reconciliation.md) §1) |
 | Settlements · roads | 4 routed components | **keep** 0 roadless, 1 **routed** component (hard gate) | — |
-| Settlements · journeys | p50 9.9 / 8.9 game h | **keep as indicative** 5–7 h median, ❓ pending Q116-c (what "too long" means) | — |
-| Settlements · wilderness | > 5 h: 10.9 / 13.6 % | **adjust:** ≥ 20 % is below today's value; either redefine (Q116-d) or accept clustering as the way to reach it | — |
+| Settlements · journeys | p50 9.9 / 8.9 game h | **keep as indicative** 5–7 h median, ❓ pending Q116-c (what "too long" means) | ✅ ~4 real minutes accepted; ❓ route identity unverified (Q132) → report only, no journey target yet |
+| Settlements · wilderness | > 5 h: 10.9 / 13.6 % | **adjust:** ≥ 20 % is below today's value; either redefine (Q116-d) or accept clustering as the way to reach it | ✅ Q116-d: **retired** as a gate — distance-to-settlement stays a diagnostic; wilderness = land cover/use + threats, belts per settlement ([Q116 reconciliation](./2026-11-04--q116-author-direction-reconciliation.md) §4) |
 | Performance · boot | cold 41–75 s, warm 22–31 s; hydrology ≈ 4.3 s Node | **keep** "not slower beyond Q131 tolerances" (±20 % hydrology/chunk) | — |
 | Landmarks / climate / biomes / discovery | no S0 baseline (features do not exist yet) | keep as proposed; donors per D5 (V2 has no waterfall) | — |
 

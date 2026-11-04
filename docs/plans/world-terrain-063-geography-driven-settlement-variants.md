@@ -12,9 +12,9 @@
 
 ## Goal
 
-Stage S6 of the geography program (G5): a **geography-driven settlement pattern with shorter actual journeys and wilderness retained**. Compare variants around **22, 25 and 28 settlements × start spacing × geographic suitability**, present the best **2–3** with routes, statistics and previews, and implement **the variant the author selects** — no count is pre-selected. Then hand over to the deferred road close-out (Q61–Q64) and the single fixture re-export (G1).
+Stage S6 of the geography program (G5): a **geography-driven settlement pattern with shorter actual journeys and wilderness retained** (refined by author Q116-c/d below: journeys verified before optimized; wilderness by land cover and threats, not distance). Compare variants around **22, 25 and 28 settlements × start spacing × geographic suitability**, present the best **2–3** with routes, statistics and previews, and implement **the variant the author selects** — no count is pre-selected. Then hand over to the deferred road close-out (Q61–Q64) and the single fixture re-export (G1).
 
-Author field evidence (not a measured baseline): walking the **left-hand road from the home settlement** to the second settlement feels too long — the tools-026 D3 route is the concrete case every variant reports.
+Author field evidence (not a measured baseline): walking the **left-hand road from the home settlement** to the second settlement feels too long. ✅ **Author Q116-c/d (2026-11-04), [reconciliation §3–§4](../research/v1-revival/2026-11-04--q116-author-direction-reconciliation.md#3-q116-c--the-left-road-from-home-verify-before-tuning):** ~4 real minutes of walking is acceptable; the criticized road was **winding with several bridges** and may not be the D3 census route (`-4_-2`, 1429 m, near-straight). Until queue Q132 identifies and times the real road, journey length is **reported, not optimized**, and settlement density, travel speed and time scale are not changed on this observation. Wilderness is **not** "land > 5 h from a settlement": that share stays a neutral diagnostic; wilderness is judged by land cover/use, habitats and threats, with a deterministic, limited relative-safety belt per settlement (size + character + surroundings; closed settlements near predators may have narrower belts; no safe zones). Geography-led siting and clusters stay sensible, but no forced empty regions for a percentage.
 
 ## Verified starting point (2026-11-04)
 
@@ -32,7 +32,7 @@ Author field evidence (not a measured baseline): walking the **left-hand road fr
 - **Connectivity (review 031 F4):** components are computed over **successful, traversable route edges**; selected / defined / road-connected counts are reported separately; final site probes and promoted sizes (not nominal cell centres) satisfy footprints and spacing.
 - **Travel (review 031 F9):** D3 distance ÷ speed is a labelled estimate; shortlisted routes add sampled grade/detour checks, and the author route gets a timed walk.
 - **Workload (review 031 F7):** 28 vs 22 sites is ~27 % more settlements before size/household distribution — for each shortlisted variant record households, NPCs, active transport and the representative offscreen/time-skip workload against the tools-026 D7 baseline; no simulation reduction (stop-if below).
-- **V3 shortlist** — rank by the proposal's priority order: (1) 0 roadless, 1 component of routed roads, progression/home-growth and authored quest-host guarantees; (2) shorter neighbour journeys (indicative median ~5–7 game h, p90 ≤ 9 h — use the author-confirmed S0 targets); (3) wilderness kept (indicative ≥ 20 % land beyond ~5 h); (4) no empty half (quadrant coverage); (5) NPC transport/trade distances acceptable. Present 2–3 variants in a research note with previews, numbers and the author route → queue §3 (Polish, short options).
+- **V3 shortlist** — rank by the proposal's priority order: (1) 0 roadless, 1 component of routed roads, progression/home-growth and authored quest-host guarantees; (2) neighbour journeys **reported** (median, p90, author route from Q132) — a target only if Q132 shows a real defect; (3) wilderness **reported** as land-cover/land-use shares (forest, wetland, rock/alpine outside belts and road corridors) plus the per-variant belt widths from the [reconciliation §4.3](../research/v1-revival/2026-11-04--q116-author-direction-reconciliation.md#43-smallest-compatible-direction--proposal-needs-the-author) direction once the author answers queue §3 Q134 — **no ≥ 20 % distance gate**; (4) no empty half (quadrant coverage); (5) NPC transport/trade distances acceptable. Present 2–3 variants in a research note with previews, numbers and the author route → queue §3 (Polish, short options).
 - **V4 implement the selection** — constants/weights, cache bumps (settlement defs, road routes, caves, cemeteries, locations-coarse next free version after 4), downstream censuses (access, yards, cemeteries, caves, catalog lakes), one timed walk of the author route on `415424794` recorded separately from geometry.
 
 ## Slices
@@ -50,7 +50,7 @@ Author field evidence (not a measured baseline): walking the **left-hand road fr
 - Author selected a variant; implemented constants reproduce its census numbers on both seeds.
 - 0 roadless settlements and 1 component of **successfully routed** roads (failed crossings cannot pass; or the author accepted an explained exception), progression/home-growth guarantees and authored quest hosts hold, access 0 unreachable.
 - Tests at the existing owners: A → B → A variant identity; main / worker / cold / hydrated settlement defs match.
-- Author route reported before/after (hours, ratio, detour causes).
+- Author route (the road confirmed in queue Q132) reported before/after (hours, ratio, detour causes, timed walk).
 - Caches bumped; notes + `docs/state/` settlement/world docs updated; queue Q61 un-deferred.
 
 ## Stop if

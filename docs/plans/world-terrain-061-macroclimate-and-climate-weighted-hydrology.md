@@ -63,7 +63,7 @@ Cache versions/fingerprints (`WORLD_HYDROLOGY_VERSION` and every moved namespace
 
 ## Done when
 
-- River metrics meet the author-confirmed targets on both seeds (proposal starting points: perennial density ~⅓–½ of today, heads −60 %, ≥ 3 recognizable systems, ≥ 35 % land > 300 m from perennial water, 0 artifact-class parallel pairs) — **the confirmed numbers replace these**.
+- River metrics meet the author-confirmed targets on both seeds. ✅ **Author Q116-b (2026-11-04):** ≈ **−50 % total watercourse length** vs S0 (12.2 / 11.6 km per land km²), mostly by removing **minor** streams — 🟡 calibration band −40…−60 %, finalized on H2 previews; guards: ≥ 3 recognizable systems with tributary hierarchy, main-river length not cut by more than ~15 % 🟡, 0 artifact-class parallel pairs; heads and "land > 300 m from perennial water" are **reported, not gated** ([Q116 reconciliation §2](../research/v1-revival/2026-11-04--q116-author-direction-reconciliation.md#2-q116-b---50--less-total-watercourse-length)). Supersedes the Q114 1920 m² preview preference as the direction.
 - Climate: elevation-adjusted temperature tendency decreases northward and regional noise visibly breaks bands; raw 5-band means reported as a diagnostic (elevation distribution can reverse a band mean); author approved the C2 look.
 - Drainage contract acceptance (H2 §5) green; 058 continuity checks green; hydrology boot and peak transient memory within the tools-026 D7 tolerance; payload size reported (fewer **wet** chains need not mean a smaller payload — dry chains are retained).
 - Gameplay-mode and diagnostic previews before/after committed; 3 catchments on `415424794` checked in 3D (raw drainage vs smoothed path vs banks) → §2.
