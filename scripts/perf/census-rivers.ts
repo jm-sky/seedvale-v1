@@ -1,6 +1,7 @@
 import type { RoadNetworkContext } from '../../src/settlement/roadNetwork'
 import type { RawSampleParams } from '../../src/terrain/chunkHeightmap'
-// Usage: pnpm worldgen:rivers:census [--seeds=42,415424794] [--check-strips=4] [--json]
+// Usage: pnpm worldgen:rivers:census [--seeds=42,415424794] [--check-strips=4] [--json] [--network] [--stream-m2=480,960,1920]
+// --network / --stream-m2 (tools-026 D1): network metrics; --stream-m2 recomputes chains on the same grid with other initiation areas (preview only).
 //
 // Global hydrology census (058 H1/H4/L1). The pre-058 per-tile census (computeRiverTileDiagnostics) was removed with
 // the legacy per-tile river path (Q80).
@@ -12,6 +13,7 @@ import { sampleFloorAt, sampleHeightAt } from '../../src/terrain/chunkHeightmap'
 import { createRiverQuery } from '../../src/terrain/riverQuery'
 import { isWetFloor } from '../../src/terrain/waterSurface'
 import { ChainEnd, computeWorldHydrology, hashWorldHydrology, sampleRawFloorRows, sparseBlockValue, unpackChains, WORLD_HYDROLOGY_GRID } from '../../src/terrain/worldHydrology'
+import { measureNetwork } from './censusRiverNetwork'
 import { hydrologyIdFor } from '../../src/terrain/worldHydrologyRegistry'
 import { installWorldHydrology, streamHeadsFor, UNCONDITIONED_HYDROLOGY_ID } from '../../src/terrain/worldHydrologyStore'
 import { worldKnowledgeRoadContext, type WorldKnowledgeTerrainSnapshot } from '../../src/terrain/worldKnowledgeScan'
@@ -23,6 +25,8 @@ function arg(name: string, fallback: string): string {
 const seeds = arg('seeds', '42,415424794').split(',').map(Number)
 const rings = Number(arg('rings', '5'))
 const asJson = process.argv.includes('--json')
+const variantAreas = arg('stream-m2', '').split(',').filter(Boolean).map(Number)
+const withNetwork = process.argv.includes('--network') || variantAreas.length > 0
 
 type P = { x: number, z: number }
 const dist = (a: P, b: P) => Math.hypot(a.x - b.x, a.z - b.z)
@@ -179,6 +183,12 @@ function measureGlobal(seed: number) {
     homeStream = bi < 0 ? 'no chain' : `nearest chain ${best.toFixed(0)} m from home, ends ${['sea', 'lake', 'join', 'edge'][f & 15]}${f & 16 ? ' (lake-fed)' : ''}`
   }
   return {
+    network: withNetwork ? measureNetwork(h, floor, grid, params.waterLevel, landKm2) : undefined,
+    variants: variantAreas.map((m2) => {
+      const cells = Math.max(1, Math.round(m2 / (cellStep * cellStep)))
+      const hv = computeWorldHydrology({ ...grid, floor }, { waterLevel: params.waterLevel, seed, streamAccumulation: cells })
+      return { streamM2: m2, streamCells: cells, ...measureNetwork(hv, floor, grid, params.waterLevel, landKm2) }
+    }),
     seed, size, sampleMs, computeMs: h.stats.computeMs, hash, stripsHash, stats: h.stats, landKm2, filledPct,
     chains: chains.length, totalKm, seabedKm, mouthMax, mouthN, monotoneBreaks,
     lakes: h.lakes.length, lakeHa: { min: lakeHa[0] ?? 0, median: lakeHa[Math.floor(lakeHa.length / 2)] ?? 0, max: lakeHa[lakeHa.length - 1] ?? 0 },
@@ -200,6 +210,14 @@ function measureGlobal(seed: number) {
     console.log(`home stream: ${r.homeStream}`)
     console.log(`stream heads (H4): ${JSON.stringify(r.headCensus)}`)
     console.log(`lake census (L1): ${JSON.stringify(r.lakeCensus)}`)
+    if (r.network) {
+      const nw = r.network
+      console.log(`network (D1): stream ${nw.streamKm.toFixed(1)} km = ${nw.streamKmPerLandKm2.toFixed(2)} km/km² land · heads ${nw.heads} · dry interfluve (>300 m from stream) ${(100 * nw.dryInterfluveShare).toFixed(1)} % · payload ${nw.payloadMiB.toFixed(2)} MiB`)
+      console.log(`  trunk systems (top): ${JSON.stringify(nw.trunkSystems.slice(0, 5))}`)
+      console.log(`  accumulation area histogram (m²): ${nw.accumulationAreaHistogram.map((b) => `<${b.toM2}:${b.points}`).join(' ')}`)
+      console.log(`  parallel pairs (<30 m, >150 m runs; longest near-run ${nw.parallelPairs.maxRunM} m): ${nw.parallelPairs.total} (valid ${nw.parallelPairs.valid}, artifact? ${nw.parallelPairs.artifact}, ${nw.parallelPairs.lengthKm.toFixed(2)} km) first artifacts: ${JSON.stringify(nw.parallelPairs.artifacts.slice(0, 5))}`)
+    }
+    for (const v of r.variants) console.log(`variant --stream-m2=${v.streamM2} (${v.streamCells} cells): stream ${v.streamKm.toFixed(1)} km = ${v.streamKmPerLandKm2.toFixed(2)} km/km² · heads ${v.heads} · dry ${(100 * v.dryInterfluveShare).toFixed(1)} % · systems ${v.trunkSystems.length}+ top ${v.trunkSystems[0]?.km.toFixed(1)} km · parallel artifact? ${v.parallelPairs.artifact}`)
     console.log(`hash ${r.hash}${r.stripsHash ? ` · strips hash ${r.stripsHash} ${r.stripsHash === r.hash ? 'MATCH' : 'MISMATCH'}` : ''}`)
   }
   process.exit(0)
