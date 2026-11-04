@@ -6,7 +6,7 @@
 
 **Standing author decisions to read before the matching work** (references, not tasks):
 
-- **Geography & exploration (2026-11-04):** [approved G1–G9](./2026-11-04--geography-exploration-author-decisions-g1-g9.md) — required before geography, hydrology, settlement placement/road close-out, landmarks or discovery planning. [Opus proposal](./2026-11-04--geography-exploration-architecture-proposal.md) contains candidate algorithms, not approved implementations. G9 means **always separate** large structures from large settlements.
+- **Geography & exploration (2026-11-04):** [approved G1–G9 + Q114 visual feedback (streams 1920 preference, mountains OK, roads visually OK but journeys too long, lakes to compare)](./2026-11-04--geography-exploration-author-decisions-g1-g9.md#q114-visual-baseline-feedback-author-2026-11-04) — required before geography, hydrology, settlement placement/road close-out, landmarks or discovery planning. [Opus proposal](./2026-11-04--geography-exploration-architecture-proposal.md) contains candidate algorithms, not approved implementations. G9 means **always separate** large structures from large settlements.
 
 - **P2 directions (2026-10-31):** [P2 author decisions](./2026-10-31--p2-author-decisions-q38-q39-q31-q42.md) — Q38 roads, Q39 cemeteries, Q31 voice-profile/donor-first sequencing and weather remarks, Q42 profession homes.
 - **NPC voices & dialogue (2026-10-31):** before any voice/casting/recording/dialogue/bark work read [Astra voice audit §12 — six approved decisions](./2026-10-31--npc-voices-dialogue-audit.md#12-author-decisions--approved-2026-10-31-supersedes-open-questions-in-11) (maximize V3 donor reuse, one fixed voice per NPC).
