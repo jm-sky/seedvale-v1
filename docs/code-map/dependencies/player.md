@@ -614,7 +614,9 @@ Generated from TypeScript imports.
 
 - `app/interactables.ts`
 - `combat/meleeAgility.ts`
+- `items/Inventory.ts`
 - `items/itemCatalog.ts`
+- `items/weaponMaintenance.ts`
 - `player/playerMelee.ts`
 - `shared/StaminaState.ts`
 - `shared/VigorState.ts`
@@ -625,7 +627,10 @@ Generated from TypeScript imports.
 
 - `combat/meleeAgility.ts`
 - `combat/meleeAttack.ts`
+- `items/Inventory.ts`
 - `items/itemCatalog.ts`
+- `items/itemInstances.ts`
+- `items/items.ts`
 - `player/PlayerNeeds.ts`
 - `shared/StaminaState.ts`
 - `shared/VigorState.ts`

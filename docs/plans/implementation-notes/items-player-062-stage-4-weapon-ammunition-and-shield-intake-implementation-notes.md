@@ -114,4 +114,4 @@ Per author direction following review 033 F2, Common melee prices follow existin
 
 Registered exactly `obsidian_dagger`, `club`, `war_hammer`, and `staff` with the W0 melee/damage/defense/mass tuples, procedural identity-preserving ground and held fallback, NPC families (`compact` / `tool`), and no source. Obsidian dagger is condition-backed; blunt weapons remain count-backed. Existing mace sphere fallback is preserved. R1 guard now covers all eight 062 melee kinds. No save version or worldgen epoch change.
 
-Verification: 113 tests across seven focused catalog/ownership/geometry, source-guard, maintenance, donor-policy and S1 math files pass; scoped ESLint passes. NPC-family/save suites, Vue type-check and production build are repeated after the parallel 063/067 work stabilizes. No browser verification.
+Verification: 113 tests across seven focused catalog/ownership/geometry, source-guard, maintenance, donor-policy and S1 math files pass; scoped ESLint passes. NPC-family/save suites, Vue type-check and production build also pass in the coordinated verification recorded in the side-initiative index §8. No browser verification.

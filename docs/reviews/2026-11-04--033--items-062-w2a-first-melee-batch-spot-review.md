@@ -90,3 +90,7 @@ The notes ask whether it should share `meat_harvesting` / `branch_trimming`. **K
 ## 6. GO / NO-GO
 
 **NO-GO for W2b now.** **GO** as soon as R1 is on `main` with the guard test green. R2/R3 ride with the W2b commit; F2 does not block.
+
+## Executor remediation — 2026-11-04
+
+R1 landed in a separate corrective commit: W2a removed from merchant candidates, prices retained, shared 062 no-source guard added. Existing issued goods remain loadable. W2b subsequently extends that guard to all eight registered kinds. R2/R3 are implemented with W2b: sword defense `.24/.48`, mass `1.9 kg`, brittle-obsidian parrying rationale, weapon-only capability policy, corrected 35-kind holdable list. The author selected F2 recommendation (a): W2a prices `30/45/30/45`, W2b prices `36/12/45/15` in the batch order. The plan notes own the revised numeric contract and verification results. This remediation record closes the original W2b blocker; it is not a new independent Opus review.

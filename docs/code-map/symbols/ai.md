@@ -192,26 +192,26 @@ Generated from exported TypeScript symbols.
 
 ## `ai/NpcAgent.ts`
 
-- `classifyPendingActivity` — function — line 797
-- `configureNpcPlayerReactionAudio` — function — line 1043
-- `CurrentActivity` — type — line 598
-- `CurrentActivityKind` — type — line 570
-- `HUNT_RESUPPLY_ARROW_TARGET` — const — line 912
-- `NPC_HEIGHT` — const — line 512
-- `NPC_SHADOW_DISTANCE` — const — line 517
-- `NpcAgent` — class — line 1228
+- `classifyPendingActivity` — function — line 799
+- `configureNpcPlayerReactionAudio` — function — line 1045
+- `CurrentActivity` — type — line 600
+- `CurrentActivityKind` — type — line 572
+- `HUNT_RESUPPLY_ARROW_TARGET` — const — line 914
+- `NPC_HEIGHT` — const — line 514
+- `NPC_SHADOW_DISTANCE` — const — line 519
+- `NpcAgent` — class — line 1230
   - domain: settlements-npcs
   - system: npc-agent
   - role: Central per-NPC behaviour integration point: needs, FSM/schedule, personality-driven decisions and combat.
   - owns: NpcAuthoritativeState
   - uses: Household, SettlementEconomy, Needs
   - simulation: tick
-- `NpcAgentDeps` — type — line 1060
-- `NpcDialogueCondition` — type — line 1207
-- `NpcInspectionSnapshot` — type — line 613
-- `NpcWhy` — type — line 772
-- `projectNpcWhy` — function — line 839
-- `promoteChainKind` — function — line 789
+- `NpcAgentDeps` — type — line 1062
+- `NpcDialogueCondition` — type — line 1209
+- `NpcInspectionSnapshot` — type — line 615
+- `NpcWhy` — type — line 774
+- `projectNpcWhy` — function — line 841
+- `promoteChainKind` — function — line 791
 
 ## `ai/npcAnimalThreat.ts`
 
@@ -335,23 +335,25 @@ Generated from exported TypeScript symbols.
 
 ## `ai/npcCombat.ts`
 
-- `applyNpcMeleeHit` — function — line 311
-- `applyNpcRangedHit` — function — line 336
-- `chooseCombatMode` — function — line 249
-- `NpcAmmoSource` — type — line 266
-- `NpcMeleeWeapon` — type — line 42
-- `npcMeleeWeaponFamily` — function — line 83
-- `NpcMeleeWeaponFamily` — type — line 47
-- `NpcRangedWeapon` — type — line 43
-- `npcRangedWeaponFamily` — function — line 105
-- `NpcRangedWeaponFamily` — type — line 48
-- `resolveIncomingNpcDamage` — function — line 408
-- `resolveNpcAmmo` — function — line 272
-- `resolveNpcAmmoKind` — function — line 287
-- `resolveNpcArmorEquipment` — function — line 383
-- `resolveNpcDefenseConfig` — function — line 294
-- `resolveNpcMeleeWeapon` — function — line 181
-- `resolveNpcRangedWeapon` — function — line 213
+- `applyNpcMeleeHit` — function — line 351
+- `applyNpcMeleeWeaponWear` — function — line 332
+- `applyNpcRangedHit` — function — line 376
+- `chooseCombatMode` — function — line 275
+- `isNpcMeleeWeaponHeld` — function — line 324
+- `NpcAmmoSource` — type — line 292
+- `NpcMeleeWeapon` — type — line 45
+- `npcMeleeWeaponFamily` — function — line 90
+- `NpcMeleeWeaponFamily` — type — line 50
+- `NpcRangedWeapon` — type — line 46
+- `npcRangedWeaponFamily` — function — line 112
+- `NpcRangedWeaponFamily` — type — line 51
+- `resolveIncomingNpcDamage` — function — line 448
+- `resolveNpcAmmo` — function — line 298
+- `resolveNpcAmmoKind` — function — line 313
+- `resolveNpcArmorEquipment` — function — line 423
+- `resolveNpcDefenseConfig` — function — line 319
+- `resolveNpcMeleeWeapon` — function — line 188
+- `resolveNpcRangedWeapon` — function — line 239
 
 ## `ai/npcCrowd.ts`
 

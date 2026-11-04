@@ -34,16 +34,16 @@
 
 ### Bug Fixes
 
-1. `npc-067` — **Combat correctness prelude — projectile order, ready-weapon defense, attacker identity, exact-instance NPC weapons**  
-   🔴 `M` · ✅ ready · unlocks 1/6 · type: fix
-2. `settlements-npcs-054` — **Transport carrier death and cargo disposition**  
+1. `settlements-npcs-054` — **Transport carrier death and cargo disposition**  
    🔴 `S` · ✅ ready · unlocks 0/0 · type: fix
-3. `settlements-npcs-052` — **Persistent economic work cargo and local-transfer conservation**  
+2. `settlements-npcs-052` — **Persistent economic work cargo and local-transfer conservation**  
    🔴 `M` · ✅ ready · unlocks 0/0 · type: fix
-4. `fauna-045` — **Cave/surface perception boundary and entrance awareness**  
+3. `fauna-045` — **Cave/surface perception boundary and entrance awareness**  
    🔴 `M` · ✅ ready · unlocks 1/1 · type: bug
-5. `items-player-051` — **Cave-aware dropped-item continuity**  
+4. `items-player-051` — **Cave-aware dropped-item continuity**  
    🔴 `M` · ✅ ready · unlocks 1/1 · type: bug
+5. `npc-062` — **UBC NPC runtime material darkness and authored outfit preservation**  
+   🔴 `M` · ✅ ready · unlocks 0/0 · type: bug
 
 ---
 
@@ -55,8 +55,6 @@
    🔴 `L` · 🔒 blocked · unlocks 0/0
 3. `quests-progression-074` — **Small quest offer scope and prioritization**  
    🟡 `S` · 🔒 blocked · unlocks 0/0
-4. `ui-input-045` — **Equipment panel body-ordered layout (V3 items--006 adapted)**  
-   🟡 `S` · 🔒 blocked · unlocks 1/1
 
 ---
 
@@ -70,8 +68,8 @@
    🟡 `M` · ✅ ready · unlocks 2/7
 4. `tools-026` — **Geography baseline diagnostics (G1–G9 stage S0)**  
    🔴 `L` · ✅ ready · unlocks 4/6
-5. `npc-067` — **Combat correctness prelude — projectile order, ready-weapon defense, attacker identity, exact-instance NPC weapons**  
-   🔴 `M` · ✅ ready · unlocks 1/6
+5. `items-player-028` — **NPC player-storage access policies**  
+   🔴 `M` · ✅ ready · unlocks 2/5
 
 ---
 
@@ -119,239 +117,203 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   🔴 `L` · **Score:**  98  
    → **unlocks:** 2/3
 
-8. `npc-067` — **Combat correctness prelude — projectile order, ready-weapon defense, attacker identity, exact-instance NPC weapons**  
-  🔴 `M` · **Score:**  91  
-   → **unlocks:** 1/6
-
-9. `items-player-065` — **Layered anatomical armor and typed physical damage (core)**  
-  🔴 `XL` · **Score:**  92  
-   → **unlocks:** 3/5
-
-10. `quests-progression-044` — **Lost Treasure Chronicles — final treasure claims and resolution**  
+8. `quests-progression-044` — **Lost Treasure Chronicles — final treasure claims and resolution**  
   🔴 `L` · **Score:**  90  
    → **unlocks:** 2/2
 
-11. `items-player-028` — **NPC player-storage access policies**  
+9. `items-player-028` — **NPC player-storage access policies**  
   🔴 `M` · **Score:**  89  
    → **unlocks:** 2/5
 
-12. `world-035` — **Regional road travel itinerary and adaptive traveller execution**  
+10. `world-035` — **Regional road travel itinerary and adaptive traveller execution**  
   🔴 `L` · **Score:**  82  
    → **unlocks:** 2/5
 
-13. `world-terrain-060` — **Macro relief — mountain ranges, passes and landform package P1**  
+11. `world-terrain-060` — **Macro relief — mountain ranges, passes and landform package P1**  
   🔴 `XL` · **Score:**  80  
    → **unlocks:** 2/5
 
-14. `quests-progression-045` — **Lost Treasure Chronicles — property grant deed and persistent land reward**  
+12. `quests-progression-045` — **Lost Treasure Chronicles — property grant deed and persistent land reward**  
   🔴 `L` · **Score:**  78  
    → **unlocks:** 1/1
 
-15. `quests-progression-046` — **Lost Treasure Chronicles — integration, legacy catch-up and superseded quest cleanup**  
+13. `quests-progression-046` — **Lost Treasure Chronicles — integration, legacy catch-up and superseded quest cleanup**  
   🔴 `L` · **Score:**  66  
    → **unlocks:** 0/0
 
-16. `world-terrain-061` — **Static macroclimate and climate-weighted hydrology**  
+14. `world-terrain-061` — **Static macroclimate and climate-weighted hydrology**  
   🔴 `XL` · **Score:**  66  
    → **unlocks:** 3/3
 
-17. `quests-progression-069` — **Quest offer pacing and conservative settlement gating**  
+15. `quests-progression-069` — **Quest offer pacing and conservative settlement gating**  
   🔴 `M` · **Score:**  65  
    → **unlocks:** 1/1
 
-18. `items-player-066` — **Layered armor catalogue, ordinary acquisition and balance**  
-  🔴 `L` · **Score:**  64  
-   → **unlocks:** 2/2
-
-19. `settlements-npcs-054` — **Transport carrier death and cargo disposition**  
+16. `settlements-npcs-054` — **Transport carrier death and cargo disposition**  
   🔴 `S` · **Score:**  59  
    → **unlocks:** 0/0
 
-20. `settlements-npcs-022` — **Household help and age-based work participation**  
+17. `settlements-npcs-022` — **Household help and age-based work participation**  
   🔴 `M` · **Score:**  57  
    → **unlocks:** 1/1
 
-21. `settlements-npcs-052` — **Persistent economic work cargo and local-transfer conservation**  
+18. `settlements-npcs-052` — **Persistent economic work cargo and local-transfer conservation**  
   🔴 `M` · **Score:**  57  
    → **unlocks:** 0/0
 
-22. `quests-progression-053` — **Hunters Brotherhood — competing hunting strategies**  
+19. `quests-progression-053` — **Hunters Brotherhood — competing hunting strategies**  
   🟡 `L` · **Score:**  56  
    → **unlocks:** 1/1
 
-23. `settlements-npcs-043` — **Settlement Cultivation Hydration, Rain & Farmer Watering**  
+20. `settlements-npcs-043` — **Settlement Cultivation Hydration, Rain & Farmer Watering**  
   🔴 `L` · **Score:**  56  
    → **unlocks:** 1/1
 
-24. `items-player-032` — **NPC player-storage resource and context rules**  
+21. `items-player-032` — **NPC player-storage resource and context rules**  
   ⚪ `L` · **Score:**  54  
    → **unlocks:** 1/4
 
-25. `npc-032` — **Expedition needs and survival**  
+22. `npc-032` — **Expedition needs and survival**  
   🔴 `L` · **Score:**  98  
    → **unlocks:** 3/3
 
-26. `npc-034` — **Expedition shared work and activities**  
+23. `npc-034` — **Expedition shared work and activities**  
   🔴 `M` · **Score:**  75  
    → **unlocks:** 1/1
 
-27. `npc-033` — **Companion combat cooperation**  
+24. `npc-033` — **Companion combat cooperation**  
   🔴 `L` · **Score:**  72  
    → **unlocks:** 1/1
 
-28. `fauna-045` — **Cave/surface perception boundary and entrance awareness**  
+25. `fauna-045` — **Cave/surface perception boundary and entrance awareness**  
   🔴 `M` · **Score:**  53  
    → **unlocks:** 1/1
 
-29. `items-player-062` — **Stage 4 donor intake — weapons, ammunition and inventory-only shields**  
-  🔴 `L` · **Score:**  50  
-   → **unlocks:** 1/1
-
-30. `quests-progression-063` — **Healer — Injured Resident**  
+26. `quests-progression-063` — **Healer — Injured Resident**  
   🟡 `M` · **Score:**  49  
    → **unlocks:** 1/1
 
-31. `items-player-051` — **Cave-aware dropped-item continuity**  
+27. `items-player-051` — **Cave-aware dropped-item continuity**  
   🔴 `M` · **Score:**  47  
    → **unlocks:** 1/1
 
-32. `quests-progression-060` — **Builder — Finish the Local Well**  
+28. `quests-progression-060` — **Builder — Finish the Local Well**  
   🔴 `M` · **Score:**  47  
    → **unlocks:** 0/0
 
-33. `quests-progression-074` — **Small quest offer scope and prioritization**  
+29. `quests-progression-074` — **Small quest offer scope and prioritization**  
   🟡 `S` · **Score:**  45  
    → **unlocks:** 0/0
 
-34. `quests-progression-054` — **Hunters Brotherhood — exceptional animal finale**  
+30. `quests-progression-054` — **Hunters Brotherhood — exceptional animal finale**  
   🟡 `L` · **Score:**  44  
    → **unlocks:** 0/0
 
-35. `ui-input-045` — **Equipment panel body-ordered layout (V3 items--006 adapted)**  
-  🟡 `S` · **Score:**  43  
-   → **unlocks:** 1/1
-
-36. `ui-input-048` — **Layered equipment panel and truthful protection stats**  
-  🔴 `M` · **Score:**  41  
-   → **unlocks:** 0/0
-
-37. `settlements-npcs-044` — **Authored Outpost Occupants & Construction Lifecycle**  
+31. `settlements-npcs-044` — **Authored Outpost Occupants & Construction Lifecycle**  
   🔴 `L` · **Score:**  40  
    → **unlocks:** 1/1
 
-38. `npc-062` — **UBC NPC runtime material darkness and authored outfit preservation**  
+32. `npc-062` — **UBC NPC runtime material darkness and authored outfit preservation**  
   🔴 `M` · **Score:**  39  
    → **unlocks:** 0/0
 
-39. `quests-progression-081` — **Quest/UI — Completion Readiness Projection**  
+33. `quests-progression-081` — **Quest/UI — Completion Readiness Projection**  
   🔴 `S` · **Score:**  39  
    → **unlocks:** 0/0
 
-40. `quests-progression-058` — **Injured dog discovery thread**  
+34. `quests-progression-058` — **Injured dog discovery thread**  
   🟡 `M` · **Score:**  37  
    → **unlocks:** 0/0
 
-41. `npc-037` — **Work Contracts — Stale Target Discovery and Notice Cleanup**  
+35. `npc-037` — **Work Contracts — Stale Target Discovery and Notice Cleanup**  
   🔴 `M` · **Score:**  35  
    → **unlocks:** 0/0
 
-42. `world-terrain-058` — **Finite continent and global hydrology**  
+36. `world-terrain-058` — **Finite continent and global hydrology**  
   🔴 `XL` · **Score:**  34  
    → **unlocks:** 1/1
 
-43. `npc-061` — **Time-skip and reification surface placement validity**  
+37. `npc-061` — **Time-skip and reification surface placement validity**  
   🔴 `M` · **Score:**  33  
    → **unlocks:** 0/0
 
-44. `world-terrain-042` — **Medicinal herb meadow patches**  
+38. `world-terrain-042` — **Medicinal herb meadow patches**  
   🟡 `M` · **Score:**  33  
    → **unlocks:** 1/1
 
-45. `items-player-063` — **Upper-tier singleton issuance ledger (A8)**  
-  🟡 `M` · **Score:**  31  
-   → **unlocks:** 1/1
-
-46. `npc-068` — **NPC layered armor use, restrictions continuity and guard provisioning**  
-  🟡 `M` · **Score:**  31  
-   → **unlocks:** 0/0
-
-47. `npc-054` — **NPC desired gifts, gift acceptance and relationship rewards**  
+39. `npc-054` — **NPC desired gifts, gift acceptance and relationship rewards**  
   🔴 `L` · **Score:**  30  
    → **unlocks:** 0/0
 
-48. `world-terrain-062` — **Regional biomes and local temperature / rain–snow phase**  
+40. `world-terrain-062` — **Regional biomes and local temperature / rain–snow phase**  
   🔴 `L` · **Score:**  30  
    → **unlocks:** 0/0
 
-49. `world-terrain-063` — **Geography-driven settlement pattern — variant comparison and author selection**  
+41. `world-terrain-063` — **Geography-driven settlement pattern — variant comparison and author selection**  
   🔴 `L` · **Score:**  30  
    → **unlocks:** 0/0
 
-50. `items-player-064` — **Stage 4 living-world sources and NPC weapon use**  
-  🟡 `L` · **Score:**  28  
-   → **unlocks:** 0/0
-
-51. `settlements-022` — **Founded settlement live runtime and streaming**  
+42. `settlements-022` — **Founded settlement live runtime and streaming**  
   🔴 `L` · **Score:**  28  
    → **unlocks:** 0/0
 
-52. `settlements-024` — **Jumpable low campfire collision**  
+43. `settlements-024` — **Jumpable low campfire collision**  
   🔴 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-53. `world-terrain-039` — **N8AO / post-process cost budget**  
+44. `world-terrain-039` — **N8AO / post-process cost budget**  
   🔴 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-54. `ui-input-025` — **Road travel autopilot for player and mounts**  
+45. `ui-input-025` — **Road travel autopilot for player and mounts**  
   🔴 `L` · **Score:**  26  
    → **unlocks:** 0/0
 
-55. `world-036` — **Lightweight unloaded shipwreck and tower lookup**  
+46. `world-036` — **Lightweight unloaded shipwreck and tower lookup**  
   🟡 `M` · **Score:**  25  
    → **unlocks:** 0/0
 
-56. `world-terrain-059` — **World scale, travel time and sparse settlements**  
+47. `world-terrain-059` — **World scale, travel time and sparse settlements**  
   🔴 `XL` · **Score:**  22  
    → **unlocks:** 0/0
 
-57. `tools-019` — **Debug tooling lifecycle ownership**  
+48. `tools-019` — **Debug tooling lifecycle ownership**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-58. `tools-021` — **Align debug OBB overlays with physical colliders**  
+49. `tools-021` — **Align debug OBB overlays with physical colliders**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-59. `world-terrain-055` — **Optional shadow frustum and refresh trims (settlement shadow pass)**  
+50. `world-terrain-055` — **Optional shadow frustum and refresh trims (settlement shadow pass)**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-60. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
+51. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
   🟡 `L` · **Score:**  18  
    → **unlocks:** 0/0
 
-61. `items-player-014` — **Rope-pullable resource transport**  
+52. `items-player-014` — **Rope-pullable resource transport**  
   ⚪ `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-62. `items-player-052` — **Settlement tool ownership and social acquisition**  
+53. `items-player-052` — **Settlement tool ownership and social acquisition**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-63. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
+54. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-64. `npc-065` — **Stable NPC Voice Casting, V3 Donor QC and Selective Recording**  
+55. `npc-065` — **Stable NPC Voice Casting, V3 Donor QC and Selective Recording**  
   🟡 `L` · **Score:**  14  
    → **unlocks:** 0/0
 
-65. `world-040` — **Underground Locations & Portals**  
+56. `world-040` — **Underground Locations & Portals**  
   ⚪ `XL` · **Score:**  14  
    → **unlocks:** 0/0
 
-66. `fauna-049` — **Wild animal difficulty tiers, trophies and social recognition**  
+57. `fauna-049` — **Wild animal difficulty tiers, trophies and social recognition**  
   🟡 `XL` · **Score:**  10  
    → **unlocks:** 0/0
 
@@ -362,9 +324,6 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
 - [`items-player-032-npc-player-storage-resource-and-context-rules.md`](items-player-032-npc-player-storage-resource-and-context-rules.md)  
   is blocked by:
   - [`items-player-028-npc-player-storage-access-policies.md`](items-player-028-npc-player-storage-access-policies.md)
-- [`items-player-062-stage-4-weapon-ammunition-and-shield-intake.md`](items-player-062-stage-4-weapon-ammunition-and-shield-intake.md)  
-  is blocked by:
-  - [`items-player-065-layered-anatomical-armor-and-typed-physical-damage.md`](items-player-065-layered-anatomical-armor-and-typed-physical-damage.md)
 - [`items-player-064-stage-4-living-world-sources-and-npc-weapon-use.md`](items-player-064-stage-4-living-world-sources-and-npc-weapon-use.md)  
   is blocked by:
   - [`items-player-062-stage-4-weapon-ammunition-and-shield-intake.md`](items-player-062-stage-4-weapon-ammunition-and-shield-intake.md)
@@ -441,12 +400,8 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
 - [`ui-input-025-road-travel-autopilot.md`](ui-input-025-road-travel-autopilot.md)  
   is blocked by:
   - [`world-035-regional-road-travel-itinerary-and-adaptive-traveller-execution.md`](world-035-regional-road-travel-itinerary-and-adaptive-traveller-execution.md)
-- [`ui-input-045-equipment-body-layout.md`](ui-input-045-equipment-body-layout.md)  
-  is blocked by:
-  - [`items-player-044-shoulder-and-forearm-equipment-slots.md`](items-player-044-shoulder-and-forearm-equipment-slots.md)
 - [`ui-input-048-layered-equipment-panel-and-protection-stats.md`](ui-input-048-layered-equipment-panel-and-protection-stats.md)  
   is blocked by:
-  - [`ui-input-045-equipment-body-layout.md`](ui-input-045-equipment-body-layout.md)
   - [`items-player-066-layered-armor-catalogue-acquisition-and-balance.md`](items-player-066-layered-armor-catalogue-acquisition-and-balance.md)
 - [`world-040-underground-locations-and-portals.md`](world-040-underground-locations-and-portals.md)  
   is blocked by:

@@ -57,6 +57,7 @@ Generated from TypeScript imports.
 - `ai/npcCombat.ts`
 - `combat/combatIntent.ts`
 - `combat/rangedLifecycle.ts`
+- `items/itemCatalog.ts`
 - `items/weaponMaintenance.ts`
 - `settlement/npcResidentAnchors.ts`
 
@@ -945,7 +946,9 @@ Generated from TypeScript imports.
 - `items/armorItemInstances.ts`
 - `items/equipment.ts`
 - `items/itemCatalog.ts`
+- `items/itemInstances.ts`
 - `items/items.ts`
+- `items/weaponMaintenance.ts`
 
 ## `ai/npcCombat.ts`
 
@@ -961,7 +964,9 @@ Generated from TypeScript imports.
 - `items/armorItemInstances.ts`
 - `items/equipment.ts`
 - `items/itemCatalog.ts`
+- `items/itemInstances.ts`
 - `items/items.ts`
+- `items/weaponMaintenance.ts`
 
 **Imported by**
 

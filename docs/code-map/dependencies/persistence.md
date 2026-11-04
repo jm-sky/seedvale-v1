@@ -22,6 +22,7 @@ Generated from TypeScript imports.
 
 **Imports**
 
+- `items/items.ts`
 - `persistence/saveData.ts`
 - `player/PlayerSkills.ts`
 - `world/palisade.ts`
@@ -52,6 +53,7 @@ Generated from TypeScript imports.
 - `items/items.ts`
 - `items/primaryWeapons.ts`
 - `items/tradeGrievance.ts`
+- `items/upperTierIdentities.ts`
 - `persistence/worldgenEpoch.ts`
 - `player/PlayerSkills.ts`
 - `quests/quests.ts`
@@ -92,6 +94,7 @@ Generated from TypeScript imports.
 - `app/createApp.ts`
 - `app/saveState.ts`
 - `items/primaryWeapons.test.ts`
+- `items/upperTierIssuance.test.ts`
 - `persistence/saveData.test.ts`
 - `persistence/saveDb.test.ts`
 - `persistence/saveDb.ts`

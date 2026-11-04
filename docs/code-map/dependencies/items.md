@@ -74,6 +74,7 @@ Generated from TypeScript imports.
 - `items/itemInstances.ts`
 - `items/items.ts`
 - `items/liquidContainer.ts`
+- `items/upperTierIdentities.ts`
 - `shared/injurySeverity.ts`
 
 **Imported by**
@@ -194,6 +195,9 @@ Generated from TypeScript imports.
 - `items/trapInstanceTrade.test.ts`
 - `items/treasureGameplay.test.ts`
 - `items/treasureGameplay.ts`
+- `items/upperTierIssuance.test.ts`
+- `items/upperTierIssuance.ts`
+- `items/upperTierTransfers.test.ts`
 - `items/v3Equipment/compatibility.test.ts`
 - `items/weaponMaintenance.test.ts`
 - `items/weaponMaintenance.ts`
@@ -203,6 +207,8 @@ Generated from TypeScript imports.
 - `player/medicalTreatment.test.ts`
 - `player/medicalTreatment.ts`
 - `player/playerCombatMode.test.ts`
+- `player/playerMelee.test.ts`
+- `player/playerMelee.ts`
 - `quests/QuestManager.test.ts`
 - `quests/QuestManager.ts`
 - `quests/dungeonBanditTreasure.test.ts`
@@ -281,6 +287,7 @@ Generated from TypeScript imports.
 - `items/itemCatalog.ts`
 - `items/itemInstances.ts`
 - `items/items.ts`
+- `items/upperTierIdentities.ts`
 
 **Imported by**
 
@@ -298,6 +305,7 @@ Generated from TypeScript imports.
 - `items/inventoryView.ts`
 - `items/trade.test.ts`
 - `items/trade.ts`
+- `items/upperTierIssuance.ts`
 - `player/characterPresentation.test.ts`
 - `settlement/artisanOrders.ts`
 - `settlement/householdProfessionStock.ts`
@@ -922,6 +930,7 @@ Generated from TypeScript imports.
 - `items/inventoryTransfer.test.ts`
 - `items/stage4MeleeBatch.test.ts`
 - `items/trade.ts`
+- `items/upperTierTransfers.test.ts`
 - `quests/lostTreasureChronicleDeciphering.test.ts`
 - `quests/oldBonesAdventureCave.test.ts`
 - `settlement/artisanOrders.ts`
@@ -1006,6 +1015,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `ai/NpcAgent.combatMode.test.ts`
 - `ai/NpcAgent.ts`
 - `ai/npcAssistance.ts`
 - `ai/npcCombat.test.ts`
@@ -1062,8 +1072,10 @@ Generated from TypeScript imports.
 - `items/primaryWeapons.ts`
 - `items/sensibleFood.ts`
 - `items/stage4MeleeBatch.test.ts`
+- `items/stage4NoSource.test.ts`
 - `items/treasureGameplay.test.ts`
 - `items/treasureGameplay.ts`
+- `items/upperTierTransfers.test.ts`
 - `items/v3Equipment/adapter.ts`
 - `items/v3Equipment/compatibility.test.ts`
 - `items/v3Equipment/validation.ts`
@@ -1166,6 +1178,8 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `ai/npcCombat.test.ts`
+- `ai/npcCombat.ts`
 - `ai/npcLoadout.ts`
 - `ai/npcPersonalProvisions.ts`
 - `ai/npcProfessionWork.ts`
@@ -1218,12 +1232,15 @@ Generated from TypeScript imports.
 - `items/tradeCatalog.ts`
 - `items/trapInstanceTrade.test.ts`
 - `items/trapItemInstances.ts`
+- `items/upperTierIssuance.ts`
+- `items/upperTierTransfers.test.ts`
 - `items/v3Equipment/contracts.test.ts`
 - `items/weaponMaintenance.test.ts`
 - `items/weaponMaintenance.ts`
 - `persistence/saveData.ts`
 - `player/characterPresentation.ts`
 - `player/playerCombatMode.test.ts`
+- `player/playerMelee.ts`
 - `quests/dungeonBanditTreasure.ts`
 - `quests/lostHunterNaturalCave.ts`
 - `quests/lostTreasureChronicleDeciphering.ts`
@@ -1240,6 +1257,7 @@ Generated from TypeScript imports.
 - `settlement/householdProfessionStock.ts`
 - `settlement/merchantTrade.test.ts`
 - `settlement/merchantTrade.ts`
+- `settlement/npcState.ts`
 - `settlement/settlementArmorQuality.ts`
 - `ui-vue/components/items/collectArmorPreviewInstances.ts`
 - `ui-vue/components/items/equipmentPanelTypes.ts`
@@ -1414,6 +1432,9 @@ Generated from TypeScript imports.
 - `items/tradeCatalog.ts`
 - `items/treasureGameplay.test.ts`
 - `items/treasureGameplay.ts`
+- `items/upperTierIssuance.test.ts`
+- `items/upperTierIssuance.ts`
+- `items/upperTierTransfers.test.ts`
 - `items/v3Equipment/adapter.ts`
 - `items/v3Equipment/compatibility.test.ts`
 - `items/v3Equipment/compatibility.ts`
@@ -1421,11 +1442,13 @@ Generated from TypeScript imports.
 - `items/v3Equipment/contracts.test.ts`
 - `items/v3Equipment/validation.ts`
 - `items/villageTools.test.ts`
+- `persistence/saveData.test.ts`
 - `persistence/saveData.ts`
 - `player/PlayerTorch.ts`
 - `player/medicalTreatment.ts`
 - `player/playerCombatMode.ts`
 - `player/playerEquipmentVisual.ts`
+- `player/playerMelee.ts`
 - `player/playerThrow.ts`
 - `quests/QuestManager.test.ts`
 - `quests/QuestManager.ts`
@@ -1647,6 +1670,14 @@ Generated from TypeScript imports.
 - `items/trade.ts`
 - `items/tradeCatalog.ts`
 
+## `items/stage4NoSource.test.ts`
+
+**Imports**
+
+- `items/itemCatalog.ts`
+- `items/tradeCatalog.ts`
+- `settlement/merchantTrade.ts`
+
 ## `items/tentPlacement.test.ts`
 
 **Imports**
@@ -1753,6 +1784,7 @@ Generated from TypeScript imports.
 - `items/tradeCatalog.ts`
 - `items/tradeGrievance.ts`
 - `items/trapItemInstances.ts`
+- `items/upperTierIdentities.ts`
 - `items/weaponMaintenance.ts`
 
 **Imported by**
@@ -1767,6 +1799,7 @@ Generated from TypeScript imports.
 - `items/stage4MeleeBatch.test.ts`
 - `items/trade.test.ts`
 - `items/trapInstanceTrade.test.ts`
+- `items/upperTierIssuance.test.ts`
 - `settlement/artisanOrders.ts`
 - `settlement/householdProfessionStock.ts`
 - `settlement/merchantTrade.test.ts`
@@ -1792,6 +1825,7 @@ Generated from TypeScript imports.
 - `items/highQualityWeapons.test.ts`
 - `items/inventoryView.ts`
 - `items/stage4MeleeBatch.test.ts`
+- `items/stage4NoSource.test.ts`
 - `items/trade.test.ts`
 - `items/trade.ts`
 - `items/tradeGrievance.test.ts`
@@ -1884,6 +1918,7 @@ Generated from TypeScript imports.
 - `items/Inventory.ts`
 - `items/itemCatalog.ts`
 - `items/items.ts`
+- `items/upperTierIdentities.ts`
 - `world/parseSeed.ts`
 - `world/treasureSites.ts`
 
@@ -1896,6 +1931,65 @@ Generated from TypeScript imports.
 - `app/worldBundle.ts`
 - `items/treasureGameplay.test.ts`
 - `world/worldGeneratedContainers.test.ts`
+
+## `items/upperTierIdentities.ts`
+
+**Imported by**
+
+- `app/createApp.ts`
+- `app/interactables.ts`
+- `items/Inventory.ts`
+- `items/armorItemInstances.ts`
+- `items/trade.ts`
+- `items/treasureGameplay.ts`
+- `items/upperTierIssuance.test.ts`
+- `items/upperTierIssuance.ts`
+- `items/upperTierTransfers.test.ts`
+- `items/weaponMaintenance.ts`
+- `persistence/saveData.ts`
+- `settlement/npcState.ts`
+
+## `items/upperTierIssuance.test.ts`
+
+**Imports**
+
+- `items/Inventory.ts`
+- `items/items.ts`
+- `items/trade.ts`
+- `items/upperTierIdentities.ts`
+- `items/upperTierIssuance.ts`
+- `persistence/saveData.ts`
+
+## `items/upperTierIssuance.ts`
+
+**Imports**
+
+- `items/Inventory.ts`
+- `items/armorItemInstances.ts`
+- `items/itemInstances.ts`
+- `items/items.ts`
+- `items/upperTierIdentities.ts`
+- `items/weaponMaintenance.ts`
+
+**Imported by**
+
+- `items/upperTierIssuance.test.ts`
+- `items/upperTierTransfers.test.ts`
+
+## `items/upperTierTransfers.test.ts`
+
+**Imports**
+
+- `app/interactables.ts`
+- `items/Inventory.ts`
+- `items/inventoryTransfer.ts`
+- `items/itemCatalog.ts`
+- `items/itemInstances.ts`
+- `items/items.ts`
+- `items/upperTierIdentities.ts`
+- `items/upperTierIssuance.ts`
+- `settlement/npcPostDeath.ts`
+- `settlement/npcState.ts`
 
 ## `items/v3Equipment/adapter.ts`
 
@@ -2054,11 +2148,14 @@ Generated from TypeScript imports.
 
 - `items/Inventory.ts`
 - `items/itemInstances.ts`
+- `items/upperTierIdentities.ts`
 
 **Imported by**
 
 - `ai/NpcAgent.combatMode.test.ts`
 - `ai/NpcAgent.spatial.test.ts`
+- `ai/npcCombat.test.ts`
+- `ai/npcCombat.ts`
 - `ai/npcLoadout.ts`
 - `ai/npcProfessionWork.test.ts`
 - `ai/npcProfessionWork.ts`
@@ -2080,10 +2177,13 @@ Generated from TypeScript imports.
 - `items/primaryWeapons.test.ts`
 - `items/trade.test.ts`
 - `items/trade.ts`
+- `items/upperTierIssuance.ts`
 - `items/weaponMaintenance.test.ts`
 - `player/playerCombatMode.test.ts`
+- `player/playerMelee.test.ts`
 - `settlement/npcPostDeath.test.ts`
 - `settlement/npcState.test.ts`
+- `settlement/npcState.ts`
 - `ui-vue/components/items/inventoryHybridActions.test.ts`
 - `ui-vue/components/items/inventoryPresentation.test.ts`
 - `ui-vue/demos/inventory-list/fixtures.ts`

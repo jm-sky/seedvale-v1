@@ -1547,6 +1547,7 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `app/inventoryWiring.ts`
+- `items/stage4NoSource.test.ts`
 - `items/trade.test.ts`
 - `settlement/createSettlement.ts`
 - `settlement/merchantTrade.test.ts`
@@ -1681,6 +1682,7 @@ Generated from TypeScript imports.
 - `ai/burialPressure.ts`
 - `app/actions/containerActions.ts`
 - `app/actions/npcItemTransfer.test.ts`
+- `items/upperTierTransfers.test.ts`
 - `settlement/createSettlement.ts`
 - `settlement/npcPostDeath.test.ts`
 - `settlement/npcState.ts`
@@ -1798,6 +1800,9 @@ Generated from TypeScript imports.
 - `ai/npcTravel.ts`
 - `ai/npcVigor.ts`
 - `items/Inventory.ts`
+- `items/itemInstances.ts`
+- `items/upperTierIdentities.ts`
+- `items/weaponMaintenance.ts`
 - `settlement/artisanProfile.ts`
 - `settlement/merchantJourney.ts`
 - `settlement/npcPostDeath.ts`
@@ -1832,6 +1837,7 @@ Generated from TypeScript imports.
 - `app/createApp.ts`
 - `app/worldBundle.ts`
 - `items/foreignProperty.ts`
+- `items/upperTierTransfers.test.ts`
 - `persistence/saveData.ts`
 - `quests/QuestManager.ts`
 - `quests/dungeonBanditTreasure.ts`

@@ -295,13 +295,13 @@ Generated from exported TypeScript symbols.
 
 ## `app/createApp.ts`
 
-- `createApp` — function — line 466
+- `createApp` — function — line 467
   - system: app-composition
   - role: Composition root: builds every long-lived system, threads their dependencies and owns app-level lifecycle (boot, rebuild, dispose).
   - owns: WorldBundle, GameLoop, AppRenderLoop
   - lifecycle: boot
   - integration: Wires world, player, UI, persistence and audio systems together.
-- `NewAppOptions` — type — line 435
+- `NewAppOptions` — type — line 436
 
 ## `app/faunaEncounterComposition.ts`
 
@@ -311,9 +311,9 @@ Generated from exported TypeScript symbols.
 
 ## `app/gameLoop.ts`
 
-- `createGameLoop` — function — line 753
-- `GameLoop` — type — line 713
-- `GameLoopDeps` — type — line 351
+- `createGameLoop` — function — line 754
+- `GameLoop` — type — line 714
+- `GameLoopDeps` — type — line 352
 
 ## `app/graphicsSettings.ts`
 
@@ -357,32 +357,32 @@ Generated from exported TypeScript symbols.
 
 ## `app/interactables.ts`
 
-- `buildCombatTarget` — function — line 1434
-- `buildDigTarget` — function — line 1378
-- `buildInteractables` — function — line 589
-- `COMBAT_TARGET_CONE_DOT` — const — line 113
-- `COMBAT_TARGET_RANGE` — const — line 98
-- `CombatAimMode` — type — line 103
-- `commitWorldPickup` — function — line 1580
+- `buildCombatTarget` — function — line 1435
+- `buildDigTarget` — function — line 1379
+- `buildInteractables` — function — line 590
+- `COMBAT_TARGET_CONE_DOT` — const — line 114
+- `COMBAT_TARGET_RANGE` — const — line 99
+- `CombatAimMode` — type — line 104
+- `commitWorldPickup` — function — line 1581
   - domain: items-player
-- `DIG_REACH` — const — line 92
-- `DROPPED_ITEM_GROUP_RADIUS` — const — line 319
-- `DroppedItemGroupCandidate` — type — line 322
-- `filterInteractablesSameSpatialContext` — function — line 573
-- `GAZE_RANGE` — const — line 88
-- `grindstoneInteractPosition` — function — line 448
-- `groupDroppedItemCandidates` — function — line 340
+- `DIG_REACH` — const — line 93
+- `DROPPED_ITEM_GROUP_RADIUS` — const — line 320
+- `DroppedItemGroupCandidate` — type — line 323
+- `filterInteractablesSameSpatialContext` — function — line 574
+- `GAZE_RANGE` — const — line 89
+- `grindstoneInteractPosition` — function — line 449
+- `groupDroppedItemCandidates` — function — line 341
   - domain: items-player
-- `INTERACT_MIN_DOT` — const — line 85
-- `INTERACT_RANGE` — const — line 82
-- `itemPromptLabel` — function — line 308
-- `resolveHaySpot` — function — line 462
-- `resolveShorelineWaterSource` — function — line 523
-- `resolveWorldPickup` — function — line 1517
-- `worldItemAllowsAltInteract` — function — line 293
+- `INTERACT_MIN_DOT` — const — line 86
+- `INTERACT_RANGE` — const — line 83
+- `itemPromptLabel` — function — line 309
+- `resolveHaySpot` — function — line 463
+- `resolveShorelineWaterSource` — function — line 524
+- `resolveWorldPickup` — function — line 1518
+- `worldItemAllowsAltInteract` — function — line 294
   - domain: ui-input
-- `WorldPickupCommit` — type — line 1565
-- `WorldPickupResolution` — type — line 1504
+- `WorldPickupCommit` — type — line 1566
+- `WorldPickupResolution` — type — line 1505
   - domain: items-player
 
 ## `app/inventoryWiring.ts`
@@ -434,7 +434,7 @@ Generated from exported TypeScript symbols.
 
 ## `app/saveState.ts`
 
-- `createSaveState` — function — line 161
+- `createSaveState` — function — line 163
   - domain: persistence
   - system: save-state
   - role: Assembles the live runtime state into `SaveData` and owns when it is written.

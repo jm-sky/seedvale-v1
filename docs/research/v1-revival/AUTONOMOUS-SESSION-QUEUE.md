@@ -197,6 +197,8 @@ Agents may run these checks themselves (seed `415424794`) and mark an item verif
 
 **Author manual check 2026-10-30 (Windows):** walked the world and talked to NPCs on current `main` — "everything looks good". General smoke check (SHA and URL flags not recorded): it does not by itself close the specific §2 items above, and does not cover Q17 E1 unless `?prewarmTemplates=1` was set.
 
+**Items × Combat manual follow-up (2026-11-04):** on `?seed=415424794`, fixture-grant an ordinary 062 weapon, attack fauna and inspect held/ground fallback (W2a/W2b). For npc-067 P2/P4, observe a crossbow guard near a wolf: no blocking with a bag sword during reload, then accepted close-range melee switch. Automated checks do not establish gameplay/visual PASS; ammunition checks remain for the future W3 slices.
+
 ## 3. Questions waiting for the author
 
 Append here (date, task, question, short options, recommendation). When answered: record the answer in the owning doc/row, then move the item verbatim to the [archive](./AUTONOMOUS-SESSION-QUEUE--archive.md#3-answered-author-questions).

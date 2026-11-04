@@ -1055,6 +1055,7 @@ Generated from TypeScript imports.
 - `items/trade.ts`
 - `items/tradeGrievance.ts`
 - `items/treasureGameplay.ts`
+- `items/upperTierIdentities.ts`
 - `items/weaponMaintenance.ts`
 - `perf/flags.ts`
 - `perf/index.ts`
@@ -1503,6 +1504,7 @@ Generated from TypeScript imports.
 - `items/itemInstances.ts`
 - `items/items.ts`
 - `items/trade.ts`
+- `items/upperTierIdentities.ts`
 - `player/playerMelee.ts`
 - `settlement/PlacedFires.ts`
 - `settlement/createSettlement.ts`
@@ -1551,6 +1553,7 @@ Generated from TypeScript imports.
 - `app/gameLoop.ts`
 - `app/interactables.test.ts`
 - `items/cookingFireResolver.ts`
+- `items/upperTierTransfers.test.ts`
 - `player/playerCombat.test.ts`
 - `player/playerCombat.ts`
 - `player/playerMelee.test.ts`

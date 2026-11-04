@@ -4,17 +4,21 @@ Generated from exported TypeScript symbols.
 
 ## `items/armorItemInstances.ts`
 
-- `applyArmorPenaltyQuality` — function — line 72
+- `applyArmorPenaltyQuality` — function — line 88
   - domain: items-player
-- `createArmorInstance` — function — line 34
+- `createArmorInstance` — function — line 35
   - domain: items-player
-- `EffectiveArmorPiece` — type — line 81
+- `createArmorInstance` — function — line 36
+- `createArmorInstance` — function — line 37
+- `createArmorInstance` — function — line 38
+- `createArmorInstance` — function — line 44
+- `EffectiveArmorPiece` — type — line 97
   - domain: items-player
-- `effectiveInstanceWeight` — function — line 126
+- `effectiveInstanceWeight` — function — line 142
   - domain: items-player
-- `migrateArmorCountsToInstances` — function — line 141
+- `migrateArmorCountsToInstances` — function — line 157
   - domain: items-player
-- `resolveEffectiveArmorPiece` — function — line 97
+- `resolveEffectiveArmorPiece` — function — line 113
   - domain: items-player
 
 ## `items/authoredWorldPickups.ts`
@@ -284,51 +288,51 @@ Generated from exported TypeScript symbols.
 
 ## `items/HeldTool.ts`
 
-- `createHeldTool` — function — line 80
+- `createHeldTool` — function — line 84
   - domain: items-player
   - system: held-tool
   - role: Tracks which single tool/weapon instance is currently equipped in hand.
   - uses: Inventory
-- `HeldTool` — type — line 48
-- `isToolKind` — function — line 44
+- `HeldTool` — type — line 52
+- `isToolKind` — function — line 48
 - `ToolKind` — type — line 7
 
 ## `items/heldToolVisual.ts`
 
-- `BRANCH_HELD_ATTACH` — const — line 246
-- `createHeldToolObject` — function — line 364
-- `findRightHandSocket` — function — line 336
-- `findUbcLeftHandSocket` — function — line 341
+- `BRANCH_HELD_ATTACH` — const — line 250
+- `createHeldToolObject` — function — line 368
+- `findRightHandSocket` — function — line 340
+- `findUbcLeftHandSocket` — function — line 345
 - `HELD_ATTACH` — const — line 45
-- `HELD_GLB` — const — line 267
+- `HELD_GLB` — const — line 271
 - `HeldAttach` — type — line 18
-- `HeldMountContext` — type — line 322
-- `mountAttachOnSocket` — function — line 438
-- `mountHeldToolOnSocket` — function — line 392
-- `preloadHeldToolModels` — function — line 345
-- `TORCH_BELT_CARRY_ATTACH` — const — line 260
+- `HeldMountContext` — type — line 326
+- `mountAttachOnSocket` — function — line 442
+- `mountHeldToolOnSocket` — function — line 396
+- `preloadHeldToolModels` — function — line 349
+- `TORCH_BELT_CARRY_ATTACH` — const — line 264
   - domain: items-player
 
 ## `items/Inventory.ts`
 
-- `DEFAULT_MAX_SIZE` — const — line 65
-- `effectiveCarriedInstanceWeight` — function — line 132
+- `DEFAULT_MAX_SIZE` — const — line 66
+- `effectiveCarriedInstanceWeight` — function — line 133
   - domain: items-player
-- `EMPTY_INVENTORY_CONTENTS` — const — line 151
-- `Inventory` — class — line 170
+- `EMPTY_INVENTORY_CONTENTS` — const — line 152
+- `Inventory` — class — line 171
   - domain: items-player
   - system: inventory
   - role: Owns item ownership: stack counts, item instances and perishable food batches.
   - owns: FoodBatch
   - produces: SaveItemInstance
-- `InventoryContentsSnapshot` — type — line 145
-- `inventoryFromContents` — function — line 726
-- `inventoryFullToastText` — function — line 745
-- `inventoryFullToastTextForInstance` — function — line 758
-- `ItemAmount` — type — line 70
-- `SaveItemInstance` — type — line 84
-- `snapshotInventoryContents` — function — line 716
-- `toSaveItemInstance` — function — line 104
+- `InventoryContentsSnapshot` — type — line 146
+- `inventoryFromContents` — function — line 728
+- `inventoryFullToastText` — function — line 747
+- `inventoryFullToastTextForInstance` — function — line 760
+- `ItemAmount` — type — line 71
+- `SaveItemInstance` — type — line 85
+- `snapshotInventoryContents` — function — line 718
+- `toSaveItemInstance` — function — line 105
 
 ## `items/inventoryItemReadAction.ts`
 
@@ -355,41 +359,41 @@ Generated from exported TypeScript symbols.
 
 ## `items/itemCatalog.ts`
 
-- `AMMO_DAMAGE_TYPE` — const — line 1979
+- `AMMO_DAMAGE_TYPE` — const — line 2003
 - `ArmorConfig` — type — line 60
-- `ARROW_DAMAGE_BONUS` — const — line 1973
+- `ARROW_DAMAGE_BONUS` — const — line 1997
 - `BookTier` — type — line 214
-- `CAPABILITY_KINDS` — const — line 2050
+- `CAPABILITY_KINDS` — const — line 2074
 - `CAPABILITY_LABEL` — const — line 190
 - `CAPABILITY_NEED_LABEL` — const — line 174
-- `CONSUMABLE_KINDS_BY_NEED` — const — line 2090
+- `CONSUMABLE_KINDS_BY_NEED` — const — line 2114
 - `ConsumableNeed` — type — line 205
 - `consumeNeedNoun` — function — line 326
 - `consumeVerbLabel` — function — line 317
 - `DefenseConfig` — type — line 46
-- `hasItemCapability` — function — line 2075
-- `HOLDABLE_KINDS` — const — line 2041
-- `INJURY_TREATMENT_KINDS` — const — line 2112
-- `isArmorCatalogKind` — function — line 2028
-- `isBodyArmorKind` — function — line 2034
-- `isMeleeToolKind` — function — line 2022
-- `isRangedTool` — function — line 1989
-- `isThrowableKind` — function — line 1994
+- `hasItemCapability` — function — line 2099
+- `HOLDABLE_KINDS` — const — line 2065
+- `INJURY_TREATMENT_KINDS` — const — line 2136
+- `isArmorCatalogKind` — function — line 2052
+- `isBodyArmorKind` — function — line 2058
+- `isMeleeToolKind` — function — line 2046
+- `isRangedTool` — function — line 2013
+- `isThrowableKind` — function — line 2018
 - `ITEM_CATALOG` — const — line 340
   - domain: items-player
   - system: item-catalog
   - role: Single source of truth for per-`ItemKind` gameplay flags and tool-capability gates.
   - owns: ItemCatalogEntry
-- `ITEM_SYSTEM_ROADMAP` — const — line 2133
+- `ITEM_SYSTEM_ROADMAP` — const — line 2157
 - `ItemCapability` — type — line 147
 - `ItemCatalogEntry` — type — line 216
-- `itemIsResilient` — function — line 2080
+- `itemIsResilient` — function — line 2104
 - `ItemSpawnKind` — type — line 16
-- `itemTreatsPhysicalInjury` — function — line 2125
+- `itemTreatsPhysicalInjury` — function — line 2149
 - `MeleeConfig` — type — line 27
-- `NON_ITEM_PROPS` — const — line 2139
+- `NON_ITEM_PROPS` — const — line 2163
 - `RangedConfig` — type — line 80
-- `rangedConfigFromThrowable` — function — line 2001
+- `rangedConfigFromThrowable` — function — line 2025
 - `ThrowableConfig` — type — line 124
 
 ## `items/itemDisplay.ts`
@@ -417,42 +421,42 @@ Generated from exported TypeScript symbols.
 - `ArmorItemInstance` — type — line 61
 - `ArmorKind` — type — line 19
 - `ArmorQuality` — type — line 42
-- `clamp01` — function — line 300
-- `clampCampCondition` — function — line 234
-- `cloneItemInstance` — function — line 305
-- `createItemInstanceId` — function — line 250
-- `createKeyInstance` — function — line 284
-- `createTentInstance` — function — line 239
-- `IDENTITY_ONLY_ITEM_KINDS` — const — line 260
-- `INSTANCE_BACKED_KINDS` — const — line 270
+- `clamp01` — function — line 302
+- `clampCampCondition` — function — line 236
+- `cloneItemInstance` — function — line 307
+- `createItemInstanceId` — function — line 252
+- `createKeyInstance` — function — line 286
+- `createTentInstance` — function — line 241
+- `IDENTITY_ONLY_ITEM_KINDS` — const — line 262
+- `INSTANCE_BACKED_KINDS` — const — line 272
 - `isArmorItemInstance` — function — line 78
 - `isArmorKind` — function — line 66
 - `isArmorQuality` — function — line 70
-- `isInstanceBackedKind` — function — line 288
-- `isLiquidContainerInstance` — function — line 218
-- `isLiquidContainerKind` — function — line 192
-- `isRangedWeaponKind` — function — line 165
-- `isTentItemInstance` — function — line 229
-- `isTrapItemInstance` — function — line 296
-- `isTrapKind` — function — line 292
-- `isWeaponItemInstance` — function — line 205
-- `isWeaponMaintenanceKind` — function — line 134
+- `isInstanceBackedKind` — function — line 290
+- `isLiquidContainerInstance` — function — line 220
+- `isLiquidContainerKind` — function — line 194
+- `isRangedWeaponKind` — function — line 167
+- `isTentItemInstance` — function — line 231
+- `isTrapItemInstance` — function — line 298
+- `isTrapKind` — function — line 294
+- `isWeaponItemInstance` — function — line 207
+- `isWeaponMaintenanceKind` — function — line 136
 - `ItemInstance` — type — line 4
-- `LIQUID_CONTAINER_KIND_LIST` — const — line 182
-- `LIQUID_CONTAINER_KINDS` — const — line 190
-- `LiquidContainerItemInstance` — type — line 212
-- `LiquidContainerKind` — type — line 175
-- `LiquidContent` — type — line 170
+- `LIQUID_CONTAINER_KIND_LIST` — const — line 184
+- `LIQUID_CONTAINER_KINDS` — const — line 192
+- `LiquidContainerItemInstance` — type — line 214
+- `LiquidContainerKind` — type — line 177
+- `LiquidContent` — type — line 172
 - `normalizeArmorQuality` — function — line 74
-- `RANGED_WEAPON_KIND_LIST` — const — line 154
-- `RANGED_WEAPON_KINDS` — const — line 163
-- `RangedWeaponKind` — type — line 146
-- `TentItemInstance` — type — line 224
+- `RANGED_WEAPON_KIND_LIST` — const — line 156
+- `RANGED_WEAPON_KINDS` — const — line 165
+- `RangedWeaponKind` — type — line 148
+- `TentItemInstance` — type — line 226
 - `TrapItemInstance` — type — line 11
 - `TrapKind` — type — line 9
-- `WEAPON_MAINTENANCE_KIND_LIST` — const — line 111
-- `WEAPON_MAINTENANCE_KINDS` — const — line 132
-- `WeaponItemInstance` — type — line 199
+- `WEAPON_MAINTENANCE_KIND_LIST` — const — line 112
+- `WEAPON_MAINTENANCE_KINDS` — const — line 134
+- `WeaponItemInstance` — type — line 201
 - `WeaponMaintenanceKind` — type — line 87
 
 ## `items/itemModels.ts`
@@ -463,23 +467,23 @@ Generated from exported TypeScript symbols.
 
 ## `items/items.ts`
 
-- `canCancelRestNow` — function — line 284
-- `canCancelRestProgress` — function — line 255
-- `createItemMesh` — function — line 1713
-- `hasItemCategory` — function — line 232
-- `hasItemKindCategory` — function — line 236
-- `ITEM_DEFS` — const — line 288
-- `ITEM_SIZE_UNITS` — const — line 205
-- `ItemCategory` — type — line 196
-- `ItemDef` — type — line 218
+- `canCancelRestNow` — function — line 288
+- `canCancelRestProgress` — function — line 259
+- `createItemMesh` — function — line 1753
+- `hasItemCategory` — function — line 236
+- `hasItemKindCategory` — function — line 240
+- `ITEM_DEFS` — const — line 292
+- `ITEM_SIZE_UNITS` — const — line 209
+- `ItemCategory` — type — line 200
+- `ItemDef` — type — line 222
 - `ItemKind` — type — line 6
-- `ItemSize` — type — line 201
-- `itemSizeUnits` — function — line 214
-- `primaryItemCategory` — function — line 245
-- `REST_CANCEL_PROGRESS_THRESHOLD` — const — line 253
-- `REST_CANCEL_VIGOR_THRESHOLD` — const — line 265
-- `restCancelAllowedByStartVigor` — function — line 272
-- `tintBucketGlb` — function — line 1737
+- `ItemSize` — type — line 205
+- `itemSizeUnits` — function — line 218
+- `primaryItemCategory` — function — line 249
+- `REST_CANCEL_PROGRESS_THRESHOLD` — const — line 257
+- `REST_CANCEL_VIGOR_THRESHOLD` — const — line 269
+- `restCancelAllowedByStartVigor` — function — line 276
+- `tintBucketGlb` — function — line 1777
 
 ## `items/ItemSpawner.ts`
 
@@ -575,26 +579,26 @@ Generated from exported TypeScript symbols.
 
 ## `items/trade.ts`
 
-- `createAcquiredInstance` — function — line 199
-- `InstanceSellResult` — type — line 39
-- `OfferBuybackResolution` — type — line 43
-- `OwnedGoodsPurchaseLine` — type — line 548
-- `previewPricedPurchaseNetCoins` — function — line 363
-- `previewTransactionNetCoins` — function — line 346
-- `resolveOfferBuyback` — function — line 295
+- `createAcquiredInstance` — function — line 201
+- `InstanceSellResult` — type — line 40
+- `OfferBuybackResolution` — type — line 44
+- `OwnedGoodsPurchaseLine` — type — line 556
+- `previewPricedPurchaseNetCoins` — function — line 368
+- `previewTransactionNetCoins` — function — line 351
+- `resolveOfferBuyback` — function — line 300
   - domain: settlements — merchant buyback for an entire offer basket plus the concrete instance ids settlement should remove for instance-backed kinds.
-- `resolveOfferLineBuyback` — function — line 272
+- `resolveOfferLineBuyback` — function — line 277
   - domain: settlements — deterministic merchant buyback for one offer row, using the same worst-condition instance selection that settlement will remove.
-- `selectInstancesToSell` — function — line 230
-- `selectInstanceToPlace` — function — line 245
-- `sellInstancesForCoins` — function — line 820
-- `settleMerchantStockTransaction` — function — line 492
-- `settleOwnedGoodsBarterTransaction` — function — line 701
+- `selectInstancesToSell` — function — line 235
+- `selectInstanceToPlace` — function — line 250
+- `sellInstancesForCoins` — function — line 828
+- `settleMerchantStockTransaction` — function — line 499
+- `settleOwnedGoodsBarterTransaction` — function — line 709
   - domain: settlements-npcs
-- `settleOwnedGoodsPurchase` — function — line 648
-- `settlePricedPurchase` — function — line 376
-- `settleTransaction` — function — line 404
-- `TradeResult` — type — line 37
+- `settleOwnedGoodsPurchase` — function — line 656
+- `settlePricedPurchase` — function — line 381
+- `settleTransaction` — function — line 410
+- `TradeResult` — type — line 38
 
 ## `items/tradeCatalog.ts`
 
@@ -616,7 +620,7 @@ Generated from exported TypeScript symbols.
 - `MAX_BUY_FACTOR` — const — line 274
 - `MAX_SELL_FACTOR` — const — line 264
 - `MERCHANT_PRICES` — const — line 22
-- `MERCHANT_STOCK` — const — line 121
+- `MERCHANT_STOCK` — const — line 125
 - `merchantInstancePrice` — function — line 324
   - domain: items-player
 - `merchantPrice` — function — line 283
@@ -668,48 +672,78 @@ Generated from exported TypeScript symbols.
 
 ## `items/treasureGameplay.ts`
 
-- `applyTreasureContentsLosses` — function — line 313
-- `BLADE_TRAP_DAMAGE` — const — line 17
-- `CAVE_FINAL_COIN_MAX` — const — line 28
-- `CAVE_FINAL_COIN_MIN` — const — line 27
-- `CAVE_FINAL_GOLD_MAX` — const — line 30
-- `CAVE_FINAL_GOLD_MIN` — const — line 29
-- `CAVE_SIDE_COIN_MAX` — const — line 26
-- `CAVE_SIDE_COIN_MIN` — const — line 25
-- `commitForcedEntry` — function — line 380
-- `describeTreasureContainerInteraction` — function — line 328
-- `EMPTY_TREASURE_MUTATION` — const — line 66
-- `FORCE_ENTRY_DURATION_SEC` — const — line 18
-- `ForcedEntryCommitInput` — type — line 354
-- `ForcedEntryCommitResult` — type — line 363
-- `GEMSTONE_KINDS` — const — line 38
-- `GemstoneKind` — type — line 47
-- `generateTreasureLoot` — function — line 202
-- `GenerateTreasureLootOptions` — type — line 34
-- `getTreasureMutation` — function — line 147
-- `isGemstoneKind` — function — line 135
-- `mutationIsDefault` — function — line 154
-- `pryingQuality` — function — line 143
-- `quantizeStrength` — function — line 139
-- `resolveFireSeverity` — function — line 275
-- `resolveMechanicalResult` — function — line 251
-- `resolveTreasureLockDifficulty` — function — line 247
-- `resolveTreasureTrap` — function — line 240
-- `selectDestroyedContents` — function — line 297
-- `serializeTreasureMutations` — function — line 163
-- `snapshotTreasureContents` — function — line 289
-- `TREASURE_COIN_MAX` — const — line 16
-- `TREASURE_COIN_MIN` — const — line 15
+- `applyTreasureContentsLosses` — function — line 316
+- `BLADE_TRAP_DAMAGE` — const — line 18
+- `CAVE_FINAL_COIN_MAX` — const — line 29
+- `CAVE_FINAL_COIN_MIN` — const — line 28
+- `CAVE_FINAL_GOLD_MAX` — const — line 31
+- `CAVE_FINAL_GOLD_MIN` — const — line 30
+- `CAVE_SIDE_COIN_MAX` — const — line 27
+- `CAVE_SIDE_COIN_MIN` — const — line 26
+- `commitForcedEntry` — function — line 383
+- `describeTreasureContainerInteraction` — function — line 331
+- `EMPTY_TREASURE_MUTATION` — const — line 67
+- `FORCE_ENTRY_DURATION_SEC` — const — line 19
+- `ForcedEntryCommitInput` — type — line 357
+- `ForcedEntryCommitResult` — type — line 366
+- `GEMSTONE_KINDS` — const — line 39
+- `GemstoneKind` — type — line 48
+- `generateTreasureLoot` — function — line 203
+- `GenerateTreasureLootOptions` — type — line 35
+- `getTreasureMutation` — function — line 148
+- `isGemstoneKind` — function — line 136
+- `mutationIsDefault` — function — line 155
+- `pryingQuality` — function — line 144
+- `quantizeStrength` — function — line 140
+- `resolveFireSeverity` — function — line 276
+- `resolveMechanicalResult` — function — line 252
+- `resolveTreasureLockDifficulty` — function — line 248
+- `resolveTreasureTrap` — function — line 241
+- `selectDestroyedContents` — function — line 300
+- `serializeTreasureMutations` — function — line 164
+- `snapshotTreasureContents` — function — line 290
+- `TREASURE_COIN_MAX` — const — line 17
+- `TREASURE_COIN_MIN` — const — line 16
   - domain: items-player
-- `TreasureChestMutation` — type — line 59
-- `TreasureContainerInteraction` — type — line 322
-- `TreasureContentsSnapshot` — type — line 285
-- `TreasureFireSeverity` — type — line 51
-- `TreasureForceCapabilitySnapshot` — type — line 53
-- `TreasureLootProfile` — type — line 32
-- `TreasureMechanicalResult` — type — line 50
-- `TreasureTrapType` — type — line 49
-- `treasureWorldContainerPrompt` — function — line 341
+- `TreasureChestMutation` — type — line 60
+- `TreasureContainerInteraction` — type — line 325
+- `TreasureContentsSnapshot` — type — line 286
+- `TreasureFireSeverity` — type — line 52
+- `TreasureForceCapabilitySnapshot` — type — line 54
+- `TreasureLootProfile` — type — line 33
+- `TreasureMechanicalResult` — type — line 51
+- `TreasureTrapType` — type — line 50
+- `treasureWorldContainerPrompt` — function — line 344
+
+## `items/upperTierIdentities.ts`
+
+- `diagnoseUpperTierOwnerRows` — function — line 63
+- `isUpperTierIdentity` — function — line 32
+- `isUpperTierIssuanceSnapshot` — function — line 44
+- `UPPER_TIER_FACTORY_ACCESS` — const — line 30
+- `UPPER_TIER_IDENTITY_LIST` — const — line 7
+  - domain: items-player
+  - system: equipment
+- `UpperTierIdentity` — type — line 24
+- `UpperTierIssuanceRecord` — type — line 36
+- `UpperTierIssuanceSnapshot` — type — line 42
+- `validateUpperTierOwnerRows` — function — line 55
+
+## `items/upperTierIssuance.ts`
+
+- `ClaimUpperTierInput` — type — line 16
+- `claimUpperTierInstance` — function — line 49
+  - domain: items-player
+  - system: equipment
+- `isUpperTierIssuanceLedger` — function — line 112
+- `markUpperTierDestroyed` — function — line 101
+  - domain: items-player
+  - system: equipment
+- `UpperTierIssuance` — type — line 8
+- `UpperTierIssuanceLedger` — type — line 14
+- `validateUpperTierOwnership` — function — line 124
+  - domain: items-player
+  - system: equipment
 
 ## `items/v3Equipment/adapter.ts`
 
@@ -789,16 +823,19 @@ Generated from exported TypeScript symbols.
 
 ## `items/weaponMaintenance.ts`
 
-- `applySharpnessWear` — function — line 110
-- `createWeaponInstance` — function — line 94
-- `getSharpnessDamageModifier` — function — line 80
-- `getWeaponMaintenanceProfile` — function — line 65
-- `listOwnedWeaponMaintenance` — function — line 29
-- `migrateWeaponCountsToInstances` — function — line 149
-- `OwnedWeaponMaintenance` — type — line 20
-- `SharpenResult` — type — line 121
-- `SharpenSource` — type — line 18
-- `sharpenWeapon` — function — line 127
-- `weaponDurabilityPercent` — function — line 99
-- `WeaponMaintenanceProfile` — type — line 49
-- `weaponSharpnessPercent` — function — line 103
+- `applySharpnessWear` — function — line 118
+- `createWeaponInstance` — function — line 95
+- `createWeaponInstance` — function — line 96
+- `createWeaponInstance` — function — line 97
+- `createWeaponInstance` — function — line 98
+- `getSharpnessDamageModifier` — function — line 81
+- `getWeaponMaintenanceProfile` — function — line 66
+- `listOwnedWeaponMaintenance` — function — line 30
+- `migrateWeaponCountsToInstances` — function — line 157
+- `OwnedWeaponMaintenance` — type — line 21
+- `SharpenResult` — type — line 129
+- `SharpenSource` — type — line 19
+- `sharpenWeapon` — function — line 135
+- `weaponDurabilityPercent` — function — line 107
+- `WeaponMaintenanceProfile` — type — line 50
+- `weaponSharpnessPercent` — function — line 111
