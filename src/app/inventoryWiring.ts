@@ -1,7 +1,8 @@
 import type { NpcAgent } from '../ai/NpcAgent'
 import type { NpcWorldKnowledgeFollowUpSource } from '../ai/npcPlayerFollowUp'
 import type { createWorldAudio } from '../audio/createWorldAudio'
-import type { EquipmentSlot, EquipmentState } from '../items/equipment'
+import { armorProtectionScore, type EquipmentState } from '../items/equipment'
+import type { EquipmentPositionKey } from '../items/equipmentTypes'
 import type { HeldTool } from '../items/HeldTool'
 import type { Inventory } from '../items/Inventory'
 import type { InventoryGroupView } from '../items/inventoryView'
@@ -162,7 +163,7 @@ export type InventoryWiring = {
   /** "Załóż" (plan items-player-030) — equips a concrete armor instance. */
   equipArmor: (instanceId: string) => void
   /** "Zdejmij" on an equipment slot (defaults to body when omitted). */
-  unequipArmor: (slot?: EquipmentSlot) => void
+  unequipArmor: (position?: EquipmentPositionKey) => void
   /** HUD primary-weapon shortcuts (plan `ui-input-002` §6 / ui-input-018) —
    *  draw the configured primary, or sheathe when Combat Mode is active. */
   equipPrimaryMeleeWeapon: () => void
@@ -380,7 +381,7 @@ export function createInventoryWiring(deps: InventoryWiringDeps): InventoryWirin
             quality: instance.quality,
             qualityLabel: ARMOR_QUALITY_LABELS[instance.quality],
             weightKg: effective?.weightKg ?? ITEM_DEFS[kind].weight,
-            protectionPercent: effective ? Math.round(effective.damageReduction * 100) : undefined,
+            protectionPercent: effective ? Math.round(armorProtectionScore(effective.resist) * 100) : undefined,
             staminaPenaltyLabel: effective ? armorPenaltyLabel(effective.staminaCostMultiplier) : undefined,
             movementPenaltyLabel: effective ? armorPenaltyLabel(effective.movementSpeedMultiplier) : undefined,
             recoveryPenaltyLabel: effective ? armorPenaltyLabel(effective.meleeRecoveryMultiplier) : undefined,
@@ -661,13 +662,13 @@ export function createInventoryWiring(deps: InventoryWiringDeps): InventoryWirin
    *  independent of `HeldTool`/`playerTorch`: worn equipment has no hand-slot
    *  interaction and isn't a light source. */
   const equipArmor = (instanceId: string): void => {
-    if (!equipment.equip(instanceId, inventory)) return
+    if (!equipment.equip(instanceId, inventory).ok) return
     deps.syncPlayerAppearance()
     deps.refreshInventoryScreen()
   }
 
-  const unequipArmor = (slot: EquipmentSlot = 'body'): void => {
-    equipment.unequip(slot)
+  const unequipArmor = (position: EquipmentPositionKey = 'body:outer'): void => {
+    equipment.unequip(position)
     deps.syncPlayerAppearance()
     deps.refreshInventoryScreen()
   }

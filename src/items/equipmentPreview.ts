@@ -5,17 +5,20 @@ import {
   resolveEffectiveArmorPiece,
 } from './armorItemInstances'
 import {
-  composeEquipmentModifiers,
+  armorPositionOf,
+  buildProtectionSnapshot,
   createEquipmentState,
   EQUIPMENT_SLOT_LABEL,
-  EQUIPMENT_SLOTS,
+  EQUIPMENT_POSITIONS,
   type EquipmentModifiers,
   type EquipmentSlot,
+  type WornArmorPiece,
   equippedArmorInstances,
   NEUTRAL_EQUIPMENT_MODIFIERS,
   resolveEquipmentModifiers,
   type SavePlayerEquipment,
 } from './equipment'
+import type { EquipmentPositionKey } from './equipmentTypes'
 import { isArmorCatalogKind, ITEM_CATALOG } from './itemCatalog'
 import { itemDisplayName } from './itemDisplay'
 import {
@@ -41,6 +44,8 @@ export type EquipPreviewResult = {
   delta: LoadoutStatView | null
   context: string
   targetSlot: EquipmentSlot | null
+  /** Position the candidate would occupy (`slot:layer`). */
+  targetPosition: EquipmentPositionKey | null
   replacesLabel: string | null
   alreadyEquipped: boolean
 }
@@ -100,27 +105,27 @@ function pieceForSnapshot(row: ArmorPreviewInstance): EffectiveArmorPiece | null
 }
 
 function loadoutFromSlots(
-  slots: Partial<Record<EquipmentSlot, string>>,
+  slots: Partial<Record<EquipmentPositionKey, string>>,
   byId: ReadonlyMap<string, ArmorPreviewInstance>,
-): { mods: EquipmentModifiers, weightKg: number, labels: Partial<Record<EquipmentSlot, string>> } {
-  const pieces: EffectiveArmorPiece[] = []
-  const labels: Partial<Record<EquipmentSlot, string>> = {}
+): { mods: EquipmentModifiers, weightKg: number, labels: Partial<Record<EquipmentPositionKey, string>> } {
+  const pieces: WornArmorPiece[] = []
+  const labels: Partial<Record<EquipmentPositionKey, string>> = {}
   let weightKg = 0
   const seen = new Set<string>()
-  for (const slot of EQUIPMENT_SLOTS) {
-    const id = slots[slot]
+  for (const position of EQUIPMENT_POSITIONS) {
+    const id = slots[position]
     if (!id || seen.has(id)) continue
     const row = byId.get(id)
     if (!row) continue
     const piece = pieceForSnapshot(row)
-    if (!piece || piece.slot !== slot) continue
+    if (!piece || armorPositionOf(row.kind) !== position) continue
     seen.add(id)
-    pieces.push(piece)
+    pieces.push({ ...piece, instanceId: id, position })
     weightKg += piece.weightKg
-    labels[slot] = row.label
+    labels[position] = row.label
   }
   return {
-    mods: pieces.length === 0 ? NEUTRAL_EQUIPMENT_MODIFIERS : composeEquipmentModifiers(pieces),
+    mods: pieces.length === 0 ? NEUTRAL_EQUIPMENT_MODIFIERS : buildProtectionSnapshot(pieces).restrictions,
     weightKg,
     labels,
   }
@@ -151,6 +156,7 @@ export function previewEquipLoadout(
       delta: null,
       context: '—',
       targetSlot: null,
+      targetPosition: null,
       replacesLabel: null,
       alreadyEquipped: false,
     }
@@ -164,13 +170,15 @@ export function previewEquipLoadout(
       delta: null,
       context: '—',
       targetSlot: null,
+      targetPosition: null,
       replacesLabel: null,
       alreadyEquipped: false,
     }
   }
 
   const targetSlot = ITEM_CATALOG[candidate.kind].armor!.slot
-  const existingId = currentEq.getSlot(targetSlot)
+  const targetPosition = armorPositionOf(candidate.kind)!
+  const existingId = currentEq.getPosition(targetPosition)
   if (existingId === candidate.id) {
     return {
       current,
@@ -178,6 +186,7 @@ export function previewEquipLoadout(
       delta: null,
       context: 'Już założone',
       targetSlot,
+      targetPosition,
       replacesLabel: null,
       alreadyEquipped: true,
     }
@@ -189,10 +198,10 @@ export function previewEquipLoadout(
     : null
 
   const nextSlots: SavePlayerEquipment = { ...currentEq.exportState(inventory) }
-  for (const slot of EQUIPMENT_SLOTS) {
-    if (nextSlots[slot] === candidate.id) delete nextSlots[slot]
+  for (const position of EQUIPMENT_POSITIONS) {
+    if (nextSlots[position] === candidate.id) delete nextSlots[position]
   }
-  nextSlots[targetSlot] = candidate.id
+  nextSlots[targetPosition] = candidate.id
 
   const previewEq = createEquipmentState(inventory, nextSlots)
   const proposed = modifiersToView(
@@ -208,6 +217,7 @@ export function previewEquipLoadout(
       ? `Zastępuje: ${replacesLabel}`
       : `Założenie w pusty slot: ${EQUIPMENT_SLOT_LABEL[targetSlot]}`,
     targetSlot,
+    targetPosition,
     replacesLabel,
     alreadyEquipped: false,
   }
@@ -220,7 +230,7 @@ export function previewEquipLoadout(
  * @domain items-player
  */
 export function previewEquipLoadoutFromSnapshot(
-  equippedSlots: Partial<Record<EquipmentSlot, string>>,
+  equippedSlots: Partial<Record<EquipmentPositionKey, string>>,
   instances: readonly ArmorPreviewInstance[],
   candidateInstanceId: string | null | undefined,
 ): EquipPreviewResult {
@@ -235,6 +245,7 @@ export function previewEquipLoadoutFromSnapshot(
       delta: null,
       context: '—',
       targetSlot: null,
+      targetPosition: null,
       replacesLabel: null,
       alreadyEquipped: false,
     }
@@ -248,13 +259,15 @@ export function previewEquipLoadoutFromSnapshot(
       delta: null,
       context: '—',
       targetSlot: null,
+      targetPosition: null,
       replacesLabel: null,
       alreadyEquipped: false,
     }
   }
 
   const targetSlot = ITEM_CATALOG[candidate.kind].armor!.slot
-  const existingId = equippedSlots[targetSlot] ?? null
+  const targetPosition = armorPositionOf(candidate.kind)!
+  const existingId = equippedSlots[targetPosition] ?? null
   if (existingId === candidate.id) {
     return {
       current,
@@ -262,17 +275,18 @@ export function previewEquipLoadoutFromSnapshot(
       delta: null,
       context: 'Już założone',
       targetSlot,
+      targetPosition,
       replacesLabel: null,
       alreadyEquipped: true,
     }
   }
 
   const replacesLabel = existingId ? (byId.get(existingId)?.label ?? null) : null
-  const nextSlots: Partial<Record<EquipmentSlot, string>> = { ...equippedSlots }
-  for (const slot of EQUIPMENT_SLOTS) {
-    if (nextSlots[slot] === candidate.id) delete nextSlots[slot]
+  const nextSlots: Partial<Record<EquipmentPositionKey, string>> = { ...equippedSlots }
+  for (const position of EQUIPMENT_POSITIONS) {
+    if (nextSlots[position] === candidate.id) delete nextSlots[position]
   }
-  nextSlots[targetSlot] = candidate.id
+  nextSlots[targetPosition] = candidate.id
 
   const proposedPack = loadoutFromSlots(nextSlots, byId)
   const proposed = modifiersToView(proposedPack.mods, proposedPack.weightKg)
@@ -285,6 +299,7 @@ export function previewEquipLoadoutFromSnapshot(
       ? `Zastępuje: ${replacesLabel}`
       : `Założenie w pusty slot: ${EQUIPMENT_SLOT_LABEL[targetSlot]}`,
     targetSlot,
+    targetPosition,
     replacesLabel,
     alreadyEquipped: false,
   }

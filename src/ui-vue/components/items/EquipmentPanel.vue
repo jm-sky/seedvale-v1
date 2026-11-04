@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { firstUpperCase } from '@/lib/firstUpperCase'
 import type { LoadoutStatView } from '../../../items/equipmentPreview'
 import type { PrimaryWeaponChoice } from '../../../items/primaryWeapons'
+import type { EquipmentPositionKey } from '../../../items/equipmentTypes'
 import type { EquipmentSlotView } from './equipmentPanelTypes'
 import {
   type EquipmentSlot,
@@ -40,7 +41,7 @@ const emit = defineEmits<{
   'select-held': []
   'select-primary-melee': []
   'select-primary-ranged': []
-  'unequip-armor': [slot: EquipmentSlot]
+  'unequip-armor': [position: EquipmentPositionKey]
   unequip: []
 }>()
 
@@ -64,7 +65,10 @@ function selectCell(key: EquipmentCellKey): void {
 
 function unequipCell(key: EquipmentCellKey): void {
   if (key === 'held') emit('unequip')
-  else if (isEquipmentSlot(key)) emit('unequip-armor', key)
+  else if (isEquipmentSlot(key)) {
+    const position = bySlot.value.get(key)?.position
+    if (position) emit('unequip-armor', position)
+  }
 }
 
 function primaryLabel(choice: PrimaryWeaponChoice | null, fallback: string | null): string {

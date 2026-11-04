@@ -1,6 +1,6 @@
-import type { DamageType } from '../combat/damageTypes'
+import type { DamageType, Resistance } from '../combat/damageTypes'
 import type { SkillId } from '../player/PlayerSkills'
-import type { EquipmentSlot } from './equipmentTypes'
+import type { ArmorLayer, EquipmentSlot } from './equipmentTypes'
 import type { LiquidContent } from './itemInstances'
 import type { ItemKind } from './items'
 import { type InjurySeverity, injurySeverityRank, type TreatableInjurySeverity } from '../shared/injurySeverity'
@@ -51,16 +51,18 @@ export type DefenseConfig = {
   partialReduction: number
 }
 
-/** Passive worn-armor tuning (plan items-player-029) — a distinct mechanic
- *  from `DefenseConfig`'s active directional block: this applies to whatever
- *  damage remains *after* active defense, independent of facing. Absent
- *  multipliers are neutral (`1`); only `damageReduction` is required.
- *  `items/equipment.ts`'s `resolveEquipmentModifiers()` is the only reader —
- *  do not branch on equipped item kind anywhere else. */
+/** Passive worn-armor tuning (plans items-player-029, 065) — a distinct
+ *  mechanic from `DefenseConfig`'s active directional block: the layered
+ *  anatomical resolver applies per-channel `resist` of the worn pieces at the
+ *  sampled hit location, after active defense. Absent multipliers are neutral
+ *  (`1`). `items/equipment.ts`'s protection snapshot is the only reader — do
+ *  not branch on equipped item kind anywhere else. */
 export type ArmorConfig = {
   slot: EquipmentSlot
-  /** Fraction of post-active-defense incoming damage removed. */
-  damageReduction: number
+  /** Catalog-fixed layer: `slot:layer` is the worn position. */
+  layer: ArmorLayer
+  /** Common-quality fraction of each physical channel removed at this slot. */
+  resist: Resistance
   /** Multiplier on a melee attack's `MeleeConfig.staminaCost` — the weapon's
    *  own cost stays the source of truth, this scales it at use time. */
   staminaCostMultiplier?: number
@@ -1040,7 +1042,8 @@ export const ITEM_CATALOG: Record<ItemKind, ItemCatalogEntry> = {
     notes: 'Plan items-player-029 — Kupiec stock. Wearable body armor (`items/equipment.ts`), not a `HeldTool` — balanced protection with modest stamina/recovery/movement cost. Quaternius Armor Leather.',
     armor: {
       slot: 'body',
-      damageReduction: 0.18,
+      layer: 'outer',
+      resist: { cut: 0.35, pierce: 0.22, blunt: 0.18 },
       staminaCostMultiplier: 1.08,
       meleeRecoveryMultiplier: 1.06,
       movementSpeedMultiplier: 0.97,
@@ -1057,7 +1060,8 @@ export const ITEM_CATALOG: Record<ItemKind, ItemCatalogEntry> = {
     notes: 'Plan items-player-029 — Kupiec stock. Wearable body armor (`items/equipment.ts`) — strongest V1 protection, at a clearly noticeable stamina/recovery/movement cost (survivability trade-off, not a flat upgrade over `leather_armor`). Quaternius Armor Metal.',
     armor: {
       slot: 'body',
-      damageReduction: 0.32,
+      layer: 'outer',
+      resist: { cut: 0.65, pierce: 0.45, blunt: 0.15 },
       staminaCostMultiplier: 1.28,
       meleeRecoveryMultiplier: 1.22,
       movementSpeedMultiplier: 0.9,
@@ -1074,7 +1078,8 @@ export const ITEM_CATALOG: Record<ItemKind, ItemCatalogEntry> = {
     notes: 'Plan items-player-039 — Kupiec stock. Wearable shoulders armor; runtime UBC pauldron overlay, not a ground GLB.',
     armor: {
       slot: 'shoulders',
-      damageReduction: 0.03,
+      layer: 'outer',
+      resist: { cut: 0.25, pierce: 0.15, blunt: 0.12 },
     },
   },
   ranger_pauldron: {
@@ -1087,7 +1092,8 @@ export const ITEM_CATALOG: Record<ItemKind, ItemCatalogEntry> = {
     notes: 'Plan items-player-039 — Kupiec stock. Wearable shoulders armor; light restriction vs full body armor.',
     armor: {
       slot: 'shoulders',
-      damageReduction: 0.05,
+      layer: 'outer',
+      resist: { cut: 0.35, pierce: 0.22, blunt: 0.16 },
       staminaCostMultiplier: 1.02,
       meleeRecoveryMultiplier: 1.02,
       sprintStaminaMultiplier: 1.04,
@@ -1103,7 +1109,8 @@ export const ITEM_CATALOG: Record<ItemKind, ItemCatalogEntry> = {
     notes: 'Plan items-player-039 — Kupiec stock. Wearable shoulders armor; penalties stay well below chainmail.',
     armor: {
       slot: 'shoulders',
-      damageReduction: 0.07,
+      layer: 'outer',
+      resist: { cut: 0.6, pierce: 0.42, blunt: 0.25 },
       staminaCostMultiplier: 1.06,
       meleeRecoveryMultiplier: 1.05,
       movementSpeedMultiplier: 0.99,
@@ -1120,7 +1127,8 @@ export const ITEM_CATALOG: Record<ItemKind, ItemCatalogEntry> = {
     notes: 'Plan items-player-039 — Kupiec stock. Wearable shoulders armor; heaviest V1 pauldron, still far below chainmail cost.',
     armor: {
       slot: 'shoulders',
-      damageReduction: 0.08,
+      layer: 'outer',
+      resist: { cut: 0.65, pierce: 0.45, blunt: 0.3 },
       staminaCostMultiplier: 1.08,
       meleeRecoveryMultiplier: 1.06,
       movementSpeedMultiplier: 0.98,
@@ -1135,7 +1143,7 @@ export const ITEM_CATALOG: Record<ItemKind, ItemCatalogEntry> = {
     spawn: 'none',
     modelUrl: null,
     notes: '044-M: finite hunter household stock; mechanics only, no character mesh until 044-V.',
-    armor: { slot: 'forearms', damageReduction: 0.02 },
+    armor: { slot: 'forearms', layer: 'outer', resist: { cut: 0.35, pierce: 0.2, blunt: 0.1 } },
   },
   steel_bracers: {
     kind: 'steel_bracers',
@@ -1145,7 +1153,7 @@ export const ITEM_CATALOG: Record<ItemKind, ItemCatalogEntry> = {
     spawn: 'none',
     modelUrl: null,
     notes: '044-M: finite armor-capable blacksmith household stock; mechanics only until 044-V.',
-    armor: { slot: 'forearms', damageReduction: 0.04 },
+    armor: { slot: 'forearms', layer: 'outer', resist: { cut: 0.55, pierce: 0.38, blunt: 0.22 } },
   },
   obsidian_knife: {
     kind: 'obsidian_knife',

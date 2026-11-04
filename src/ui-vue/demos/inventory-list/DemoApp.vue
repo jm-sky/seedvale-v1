@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 import DemoButton from '@/components/ui/DemoButton.vue'
 import type { EquipmentSlot } from '../../../items/equipment'
+import type { EquipmentPositionKey } from '../../../items/equipmentTypes'
 import { previewEquipLoadoutFromSnapshot } from '../../../items/equipmentPreview'
 import { itemDisplayName } from '../../../items/itemDisplay'
 import {
@@ -129,7 +130,7 @@ function simulateVanishSelected(): void {
       .filter((g) => g.count > 0 || g.instances.length > 0),
     equippedSlots: Object.fromEntries(
       Object.entries(scenario.value.equippedSlots).filter(([, v]) => v !== id),
-    ) as Partial<Record<EquipmentSlot, string>>,
+    ) as Partial<Record<EquipmentPositionKey, string>>,
   }
   selection.value = reconcileInventorySelection(selection.value, projectInventoryRows(scenario.value.groups))
   pushLog(`Vanished ${id}; selection cleared without sibling auto-select`)

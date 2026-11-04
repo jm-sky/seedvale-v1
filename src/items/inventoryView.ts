@@ -1,6 +1,6 @@
 import type { ItemKind } from './items'
 import { effectiveInstanceWeight, resolveEffectiveArmorPiece } from './armorItemInstances'
-import { EQUIPMENT_SLOT_LABEL } from './equipment'
+import { armorProtectionScore, EQUIPMENT_SLOT_LABEL } from './equipment'
 import {
   type FoodSourceSpecies,
   type FreshnessStage,
@@ -256,7 +256,7 @@ function buildArmorGroup(kind: ItemKind, instances: readonly ItemInstance[]): In
       quality: inst.quality,
       qualityLabel: ARMOR_QUALITY_LABELS[inst.quality],
       effectiveWeightKg: effective.weightKg,
-      protectionPercent: Math.round(effective.damageReduction * 100),
+      protectionPercent: Math.round(armorProtectionScore(effective.resist) * 100),
       staminaPenaltyLabel: percentDeltaLabel(effective.staminaCostMultiplier),
       movementPenaltyLabel: percentDeltaLabel(effective.movementSpeedMultiplier),
       recoveryPenaltyLabel: percentDeltaLabel(effective.meleeRecoveryMultiplier),

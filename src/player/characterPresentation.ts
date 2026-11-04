@@ -141,7 +141,9 @@ export function buildCharacterEquipmentSlotViews(
   inventory: Inventory,
 ): CharacterEquipmentSlotView[] {
   return EQUIPMENT_SLOTS.map((slot) => {
-    const instanceId = equippedInstanceId(equipment, inventory, slot)
+    // Display bridge until 048's layered UI: outer piece first, then under.
+    const instanceId = equippedInstanceId(equipment, inventory, `${slot}:outer`)
+      ?? equippedInstanceId(equipment, inventory, `${slot}:under`)
     if (!instanceId) {
       return { slot, itemLabel: null, qualityLabel: null }
     }

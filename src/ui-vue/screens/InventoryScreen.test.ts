@@ -23,7 +23,7 @@ async function mount(width: number) {
   inventory.addInstance(createArmorInstance('leather_armor', 'poor', 'armor:first'))
   inventory.addInstance(createArmorInstance('leather_armor', 'good', 'armor:second'))
   ui.inventory.groups = buildInventoryGroups(inventory)
-  ui.inventory.equippedSlots = { body: 'armor:first' }
+  ui.inventory.equippedSlots = { 'body:outer': 'armor:first' }
   ui.inventory.onEquipArmor = vi.fn()
   ui.inventory.open = true
   el = document.createElement('div')
@@ -77,7 +77,7 @@ describe('current inventory review 026 regressions (F2/F3)', () => {
     expect(el.querySelector('#inventory-detail-heading')?.textContent).toBeTruthy()
     expect(el.querySelectorAll('[role="dialog"]')).toHaveLength(1)
     expect(ui.inventory.onEquipArmor).not.toHaveBeenCalled()
-    expect(ui.inventory.equippedSlots.body).toBe('armor:first')
+    expect(ui.inventory.equippedSlots['body:outer']).toBe('armor:first')
     expect(document.activeElement).toBe(rows[1])
   })
 

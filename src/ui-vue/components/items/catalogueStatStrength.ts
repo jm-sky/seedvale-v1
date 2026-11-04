@@ -1,3 +1,4 @@
+import { armorProtectionScore } from '../../../items/equipment'
 import { ITEM_CATALOG } from '../../../items/itemCatalog'
 import { ITEM_DEFS } from '../../../items/items'
 
@@ -45,7 +46,7 @@ function computeInventoryDetailStatCeilings(): InventoryDetailStatCeilings {
       rangedRanges.push(entry.ranged.range)
     }
     if (entry.armor) {
-      protections.push(entry.armor.damageReduction * 100)
+      protections.push(armorProtectionScore(entry.armor.resist) * 100)
     }
   }
 

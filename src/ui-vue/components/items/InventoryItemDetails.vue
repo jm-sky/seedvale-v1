@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import ItemsScreenItemButton from '@/components/ItemsScreenItemButton.vue'
 import { useItemCategoryLabels } from '@/composables/useItemCategoryLabels'
 import { firstUpperCase } from '@/lib/firstUpperCase'
-import type { EquipmentSlot } from '../../../items/equipment'
+import type { EquipmentPositionKey } from '../../../items/equipmentTypes'
 import type { InventoryGroupView, InventoryInstanceRow } from '../../../items/inventoryView'
 import type { PrimaryWeaponChoice } from '../../../items/primaryWeapons'
 import type { InventorySelection } from './inventoryPresentation'
@@ -30,7 +30,7 @@ const props = withDefaults(defineProps<{
   heldInstanceId: string | null
   primaryMelee: PrimaryWeaponChoice | null
   primaryRanged: PrimaryWeaponChoice | null
-  equippedSlots: Partial<Record<EquipmentSlot, string>>
+  equippedSlots: Partial<Record<EquipmentPositionKey, string>>
   counts: Partial<Record<string, number>>
   whetstoneCount: number
   merchantOpen: boolean
@@ -51,7 +51,7 @@ const emit = defineEmits<{
   equip: [kind: string, instanceId?: string]
   unequip: []
   'equip-armor': [instanceId: string]
-  'unequip-armor': [slot: EquipmentSlot]
+  'unequip-armor': [position: EquipmentPositionKey]
   consume: [kind: string]
   throw: [kind: string]
   read: [kind: string]
@@ -86,8 +86,8 @@ const readUse = computed(() => {
 
 const equippedInstanceId = computed(() => {
   if (!props.instance) return null
-  for (const [slot, id] of Object.entries(props.equippedSlots)) {
-    if (id === props.instance.id) return { slot: slot as EquipmentSlot, id }
+  for (const [position, id] of Object.entries(props.equippedSlots)) {
+    if (id === props.instance.id) return { position: position as EquipmentPositionKey, id }
   }
   return null
 })
@@ -215,7 +215,7 @@ function onUnequipHeldGuarded(): void {
 function onUnequipArmorGuarded(): void {
   const eq = equippedInstanceId.value
   if (!eq) return
-  emit('unequip-armor', eq.slot)
+  emit('unequip-armor', eq.position)
 }
 </script>
 

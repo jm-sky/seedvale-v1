@@ -175,6 +175,7 @@ export class Inventory {
    *  `isFoodPerishable()`. Every entry's batches always sum to `counts.get(kind)`. */
   private readonly foodBatches = new Map<ItemKind, FoodBatch[]>()
   private baseMaxWeight: number
+  private armorRevision = 0
   /** Gabarite capacity (plan 164), independent of `maxWeight` — see
    *  `ItemSize`/`itemSizeUnits`. `Infinity` (the default for every caller
    *  that doesn't pass one — NPC temporary carrying, pre-164 tests) means
@@ -235,6 +236,20 @@ export class Inventory {
 
   /** Updates the Strength-derived body capacity baseline (plan npc-024) when
    *  effective Strength changes — does not persist. */
+  /** Monotonic runtime revision bumped by every successful armor add / remove /
+   *  transfer / quality update / clear (plan items-player-065, proposal §10.3).
+   *  Failed operations never bump; construction-time restore starts at 0.
+   *  Cache key for derived worn-protection snapshots — never persisted.
+   *
+   *  @domain items-player */
+  get armorMutationRevision(): number {
+    return this.armorRevision
+  }
+
+  private touchArmor(kind: ItemKind): void {
+    if (isArmorKind(kind)) this.armorRevision++
+  }
+
   setBaseMaxWeight(maxWeight: number): void {
     this.baseMaxWeight = maxWeight
   }
@@ -366,6 +381,7 @@ export class Inventory {
   add(kind: ItemKind, n = 1, acquiredAtDays?: number, sourceSpecies?: FoodSourceSpecies): boolean {
     if (!this.canAdd(kind, n)) return false
     this.counts.set(kind, this.count(kind) + n)
+    this.touchArmor(kind)
     if (isFoodPerishable(kind)) {
       const acquired = acquiredAtDays ?? 0
       this.addFoodBatch(kind, createFoodBatch(
@@ -386,6 +402,7 @@ export class Inventory {
     if (batches.length === 0) return this.add(kind, n, nowDays)
     if (!this.canAdd(kind, n)) return false
     this.counts.set(kind, this.count(kind) + n)
+    this.touchArmor(kind)
     if (isFoodPerishable(kind)) {
       for (const batch of batches) {
         const incoming = nowDays == null ? cloneFoodBatch(batch) : checkpointFoodBatch(batch, nowDays, this.decayModifier)
@@ -402,6 +419,7 @@ export class Inventory {
     const current = this.count(kind)
     if (current < n) return null
     this.counts.set(kind, current - n)
+    this.touchArmor(kind)
     return isFoodPerishable(kind) ? this.removeFoodBatch(kind, n, nowDays) : []
   }
 
@@ -409,6 +427,7 @@ export class Inventory {
     if (this.instances.has(instance.id)) return false
     if (!this.canAddInstance(instance)) return false
     this.instances.set(instance.id, cloneItemInstance(instance))
+    this.touchArmor(instance.kind)
     return true
   }
 
@@ -494,6 +513,7 @@ export class Inventory {
     const next = updater(cloneItemInstance(instance))
     if (next.id !== id) return false
     this.instances.set(id, cloneItemInstance(next))
+    if (isArmorKind(instance.kind) || isArmorKind(next.kind)) this.armorRevision++
     return true
   }
 
@@ -607,6 +627,7 @@ export class Inventory {
    *  capacity-granting output can raise `maxWeight` for the same commit. */
   private addProduced(kind: ItemKind, n: number, nowDays: number): void {
     this.counts.set(kind, this.count(kind) + n)
+    this.touchArmor(kind)
     if (isFoodPerishable(kind)) {
       this.addFoodBatch(kind, createFoodBatch(
         n,
@@ -621,15 +642,21 @@ export class Inventory {
     const current = this.count(kind)
     if (current < n) return false
     this.counts.set(kind, current - n)
+    this.touchArmor(kind)
     if (isFoodPerishable(kind)) this.removeFoodBatch(kind, n, nowDays)
     return true
   }
 
   removeInstance(id: string): boolean {
-    return this.instances.delete(id)
+    const instance = this.instances.get(id)
+    if (!instance) return false
+    this.instances.delete(id)
+    this.touchArmor(instance.kind)
+    return true
   }
 
   clear(): void {
+    this.armorRevision++
     this.counts.clear()
     this.instances.clear()
     this.foodBatches.clear()

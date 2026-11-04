@@ -9,7 +9,7 @@ import type { BadgeDef, SettlementBadgeDef } from '../badges/badges'
 import type { QualityPreset } from '../config/qualityProfiles'
 import type { WorldConfig } from '../config/worldConfig'
 import type { InteractionConsequenceTone, InteractionGazePrompt } from '../interaction/interactionView'
-import type { EquipmentSlot } from '../items/equipment'
+import type { EquipmentPositionKey } from '../items/equipmentTypes'
 import type { InventoryGroupView } from '../items/inventoryView'
 import type { ArmorQuality } from '../items/itemInstances'
 import type { ItemKind } from '../items/items'
@@ -158,11 +158,11 @@ type InventoryState = {
   onEquip: ((kind: ItemKind, instanceId?: string) => void) | null
   onUnequip: (() => void) | null
   /** Live-valid equipped armor instance ids by slot (plan items-player-030). */
-  equippedSlots: Partial<Record<EquipmentSlot, string>>
+  equippedSlots: Partial<Record<EquipmentPositionKey, string>>
   /** "Załóż"/"Zdejmij" for wearable armor — distinct from `onEquip`/
    *  `onUnequip`, which are `HeldTool`-only. */
   onEquipArmor: ((instanceId: string) => void) | null
-  onUnequipArmor: ((slot?: EquipmentSlot) => void) | null
+  onUnequipArmor: ((position?: EquipmentPositionKey) => void) | null
   /** "Zjedz"/"Wypij" (plan 106) — only offered for `ITEM_CATALOG[kind].consumable` items. */
   onConsume: ((kind: ItemKind) => void) | null
   /** "Rzuć" (plan items-player-059) — improvised throwable arming. */
@@ -1325,7 +1325,7 @@ export function openInventory(
   groups: readonly InventoryGroupView[],
   primaryMelee: PrimaryWeaponChoice | null,
   primaryRanged: PrimaryWeaponChoice | null,
-  equippedSlots: Partial<Record<EquipmentSlot, string>>,
+  equippedSlots: Partial<Record<EquipmentPositionKey, string>>,
   onDrop: (kind: ItemKind, amount: number) => void,
   onEquip: (kind: ItemKind, instanceId?: string) => void,
   onUnequip: () => void,
@@ -1340,7 +1340,7 @@ export function openInventory(
   onSetPrimaryMelee: (kind: ItemKind, instanceId: string | null) => void,
   onSetPrimaryRanged: (kind: ItemKind, instanceId: string | null) => void,
   onEquipArmor: (instanceId: string) => void,
-  onUnequipArmor: (slot?: EquipmentSlot) => void,
+  onUnequipArmor: (position?: EquipmentPositionKey) => void,
 ): void {
   ui.inventory.counts = { ...counts }
   ui.inventory.groups = groups
@@ -1382,7 +1382,7 @@ export function refreshInventory(
   groups: readonly InventoryGroupView[],
   primaryMelee: PrimaryWeaponChoice | null,
   primaryRanged: PrimaryWeaponChoice | null,
-  equippedSlots: Partial<Record<EquipmentSlot, string>>,
+  equippedSlots: Partial<Record<EquipmentPositionKey, string>>,
 ): void {
   ui.inventory.counts = { ...counts }
   ui.inventory.groups = groups

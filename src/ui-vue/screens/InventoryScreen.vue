@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import type { EquipmentSlot } from '../../items/equipment'
+import type { EquipmentPositionKey } from '../../items/equipmentTypes'
 import { previewEquipLoadoutFromSnapshot } from '../../items/equipmentPreview'
 import { ITEM_CATALOG } from '../../items/itemCatalog'
 import { itemDisplayName } from '../../items/itemDisplay'
@@ -276,11 +277,11 @@ function onEquipArmor(instanceId: string): void {
   ui.inventory.onEquipArmor?.(instanceId)
 }
 
-function onUnequipArmor(slot: EquipmentSlot): void {
+function onUnequipArmor(position: EquipmentPositionKey): void {
   if (selection.value?.type === 'instance') {
-    if (ui.inventory.equippedSlots[slot] !== selection.value.instanceId) return
+    if (ui.inventory.equippedSlots[position] !== selection.value.instanceId) return
   }
-  ui.inventory.onUnequipArmor?.(slot)
+  ui.inventory.onUnequipArmor?.(position)
 }
 
 function onConsume(kind: string): void {

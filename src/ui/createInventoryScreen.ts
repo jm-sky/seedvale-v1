@@ -1,4 +1,4 @@
-import type { EquipmentSlot } from '../items/equipment'
+import type { EquipmentPositionKey } from '../items/equipmentTypes'
 import type { InventoryGroupView } from '../items/inventoryView'
 import type { ItemKind } from '../items/items'
 import type { PrimaryWeaponChoice } from '../items/primaryWeapons'
@@ -18,7 +18,7 @@ export type InventoryScreenHandlers = {
   /** "Załóż"/"Zdejmij" for wearable armor (plan items-player-030) —
    *  distinct from `onEquip`/`onUnequip`, which are `HeldTool`-only. */
   onEquipArmor?: (instanceId: string) => void
-  onUnequipArmor?: (slot?: EquipmentSlot) => void
+  onUnequipArmor?: (position?: EquipmentPositionKey) => void
   /** "Zjedz"/"Wypij" (plan 106) — only offered for consumable items. */
   onConsume?: (kind: ItemKind) => void
   /** "Rzuć" (plan items-player-059) — arms an improvised throwable without
@@ -57,7 +57,7 @@ export type InventoryScreen = {
     primaryMelee: PrimaryWeaponChoice | null,
     primaryRanged: PrimaryWeaponChoice | null,
     /** Live-valid equipped armor instance ids by slot (plan items-player-030). */
-    equippedSlots: Partial<Record<EquipmentSlot, string>>,
+    equippedSlots: Partial<Record<EquipmentPositionKey, string>>,
   ) => void
   dispose: () => void
 }
@@ -78,7 +78,7 @@ export function createInventoryScreen(
   let heldInstanceId: string | null = null
   let primaryMelee: PrimaryWeaponChoice | null = null
   let primaryRanged: PrimaryWeaponChoice | null = null
-  let equippedSlots: Partial<Record<EquipmentSlot, string>> = {}
+  let equippedSlots: Partial<Record<EquipmentPositionKey, string>> = {}
 
   const getUi = () => getMountedVueUi()
   const isOpen = () => !disposed && (getUi()?.isInventoryOpen() ?? false)

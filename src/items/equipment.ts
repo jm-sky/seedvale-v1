@@ -1,4 +1,11 @@
-import type { EquipmentSlot } from './equipmentTypes'
+import {
+  ARMOR_LAYERS,
+  type EquipmentPositionKey,
+  type EquipmentSlot,
+  equipmentPositionKey,
+} from './equipmentTypes'
+import { composeLocalResistance, type Resistance } from '../combat/damageTypes'
+import type { HumanProtection } from '../combat/hitLocation'
 import type { Inventory } from './Inventory'
 import type { ArmorItemInstance, ItemInstance } from './itemInstances'
 import {
@@ -10,7 +17,7 @@ import {
   isArmorCatalogKind,
   ITEM_CATALOG,
 } from './itemCatalog'
-import { ITEM_DEFS } from './items'
+import { ITEM_DEFS, type ItemKind } from './items'
 
 /** Wearable-equipment slots (plan items-player-030). */
 export type { EquipmentSlot } from './equipmentTypes'
@@ -36,16 +43,22 @@ export const EQUIPMENT_SLOT_LABEL: Record<EquipmentSlot, string> = {
   feet: 'Stopy',
 }
 
-/** Persisted equipment selection — instance IDs only; Inventory owns the items. */
-export type SavePlayerEquipment = Partial<Record<EquipmentSlot, string>>
+/** Persisted equipment selection — instance IDs only, keyed by `slot:layer`;
+ *  Inventory owns the items. */
+export type SavePlayerEquipment = Partial<Record<EquipmentPositionKey, string>>
 
-/** Derived gameplay effect of whatever is currently (validly) worn — the
+/** The 14 worn positions in canonical order: slot order, `under` then `outer`. */
+export const EQUIPMENT_POSITIONS: readonly EquipmentPositionKey[] = EQUIPMENT_SLOTS.flatMap(
+  (slot) => ARMOR_LAYERS.map((layer) => equipmentPositionKey(slot, layer)),
+)
+
+/** Derived gameplay restrictions of whatever is currently (validly) worn — the
  *  single shape every consumer (damage/melee/movement) reads. Neutral (`1`)
- *  means "no effect", so an unarmored player composes as a no-op everywhere
- *  this is used. */
+ *  means "no effect". Armor-only totals are clamped per proposal §5.2. */
 export type EquipmentModifiers = {
-  /** Multiplier on remaining incoming combat/physical damage, applied after
-   *  active held-item defense (`combat/defenseResolver.ts`). */
+  /** BRIDGE (items-player-065 S2 → removed by S3): combat still reads one
+   *  scalar until `resolveIncomingHumanHit` is wired. Derived from typed
+   *  `resist` with a fixed channel weighting — not a new mechanic. */
   incomingDamageMultiplier: number
   meleeStaminaMultiplier: number
   meleeRecoveryMultiplier: number
@@ -61,133 +74,148 @@ export const NEUTRAL_EQUIPMENT_MODIFIERS: EquipmentModifiers = {
   sprintStaminaMultiplier: 1,
 }
 
+/** Result of {@link EquipmentState.equip}. */
+export type EquipResult =
+  | { ok: true, position: EquipmentPositionKey, replacedId: string | null }
+  | { ok: false, reason: 'not-owned' | 'not-wearable' | 'invalid-position' }
+
 /**
- * Actor-neutral wearable-equipment state (plan items-player-030).
- * Owns only which owned instance is worn per slot; Inventory remains sole owner.
+ * Actor-neutral wearable-equipment state (plans items-player-030, 065).
+ * Owns only which owned instance is worn per `slot:layer` position;
+ * Inventory remains sole owner.
  *
  * @domain items-player
  * @system equipment
- * @role Tracks which owned armor instance (if any) is worn in each equipment slot.
+ * @role Tracks which owned armor instance (if any) is worn in each of the 14 equipment positions.
  * @uses Inventory
  */
 export type EquipmentState = {
-  /** Raw stored instance id for a slot — may be stale; prefer live-valid helpers. */
-  getSlot: (slot: EquipmentSlot) => string | null
-  /** Equips a concrete owned armor instance into its catalog slot. */
-  equip: (instanceId: string, inventory: Inventory) => boolean
-  unequip: (slot: EquipmentSlot) => void
+  /** Raw stored instance id for a position — may be stale; prefer live-valid helpers. */
+  getPosition: (position: EquipmentPositionKey) => string | null
+  /** Equips a concrete owned armor instance; the position is inferred from the
+   *  catalog (`armor.slot` + `armor.layer`). Replaces only that position's
+   *  reference (the displaced item stays owned). Failures mutate nothing and
+   *  do not bump the revision. */
+  equip: (instanceId: string, inventory: Inventory) => EquipResult
+  /** Clears one position. Bumps the selection revision only if it was occupied. */
+  unequip: (position: EquipmentPositionKey) => void
+  /** Drops references that are no longer live-valid for their position. */
   syncWithInventory: (inventory: Inventory) => void
+  /** Live-valid references only, as position-keyed save data. */
   exportState: (inventory: Inventory) => SavePlayerEquipment
+  /** Runtime-only counter bumped by every successful selection change
+   *  (equip/unequip/sync that clears). Cache key part, never persisted. */
+  readonly selectionRevision: number
 }
 
 export function isEquipmentSlot(value: unknown): value is EquipmentSlot {
   return typeof value === 'string' && (EQUIPMENT_SLOTS as readonly string[]).includes(value)
 }
 
+export function isEquipmentPositionKey(value: unknown): value is EquipmentPositionKey {
+  return typeof value === 'string' && (EQUIPMENT_POSITIONS as readonly string[]).includes(value)
+}
+
+/** Catalog position of an armor kind, or null for non-armor. */
+export function armorPositionOf(kind: ItemKind): EquipmentPositionKey | null {
+  if (!isArmorCatalogKind(kind)) return null
+  const armor = ITEM_CATALOG[kind].armor
+  return armor ? equipmentPositionKey(armor.slot, armor.layer) : null
+}
+
 function liveValidArmorInstance(
   instanceId: string | null | undefined,
   inventory: Inventory,
-  expectedSlot?: EquipmentSlot,
+  expectedPosition?: EquipmentPositionKey,
 ): ArmorItemInstance | null {
   if (!instanceId) return null
   const instance = inventory.getInstance(instanceId)
   if (!instance || !isArmorItemInstance(instance) || !isArmorCatalogKind(instance.kind)) return null
-  const slot = ITEM_CATALOG[instance.kind].armor!.slot
-  if (expectedSlot != null && slot !== expectedSlot) return null
+  if (expectedPosition != null && armorPositionOf(instance.kind) !== expectedPosition) return null
   return instance
 }
 
 /**
  * Restores from `initial` only when each saved instance id is still owned and
- * matches the slot. Invalid references resolve empty — never recreate items.
+ * matches the position. Restore order is canonical (slot order, `under` then
+ * `outer`); an instance already placed earlier is not placed again. Invalid
+ * references resolve empty — items are kept, never recreated.
  *
- * Also accepts a legacy single `body: ItemKind` string that matches an owned
- * armor instance kind (post count→instance migration).
+ * @domain items-player
  */
 export function createEquipmentState(inventory: Inventory, initial?: SavePlayerEquipment): EquipmentState {
-  const slots: Record<EquipmentSlot, string | null> = {
-    head: null,
-    body: null,
-    shoulders: null,
-    forearms: null,
-    hands: null,
-    legs: null,
-    feet: null,
-  }
+  const positions = new Map<EquipmentPositionKey, string | null>(EQUIPMENT_POSITIONS.map((p) => [p, null]))
+  let selectionRevision = 0
 
   if (initial) {
-    for (const slot of EQUIPMENT_SLOTS) {
-      const raw = initial[slot]
-      if (typeof raw !== 'string' || raw.length === 0) continue
-      const byId = liveValidArmorInstance(raw, inventory, slot)
-      if (byId) {
-        slots[slot] = byId.id
-        continue
-      }
-      // Legacy body kind → first owned instance of that kind (migration seam).
-      if (slot === 'body' && isArmorCatalogKind(raw as never)) {
-        const match = inventory.getInstances(raw as never).find(
-          (inst) => isArmorItemInstance(inst) && ITEM_CATALOG[inst.kind].armor?.slot === 'body',
-        )
-        if (match) slots.body = match.id
-      }
+    const seen = new Set<string>()
+    for (const position of EQUIPMENT_POSITIONS) {
+      const raw = initial[position]
+      if (typeof raw !== 'string' || raw.length === 0 || seen.has(raw)) continue
+      const live = liveValidArmorInstance(raw, inventory, position)
+      if (!live) continue
+      seen.add(live.id)
+      positions.set(position, live.id)
     }
-  }
-
-  // One instance cannot occupy multiple slots.
-  const seen = new Set<string>()
-  for (const slot of EQUIPMENT_SLOTS) {
-    const id = slots[slot]
-    if (id == null) continue
-    if (seen.has(id)) {
-      slots[slot] = null
-      continue
-    }
-    seen.add(id)
   }
 
   return {
-    getSlot(slot) {
-      return slots[slot]
+    get selectionRevision() {
+      return selectionRevision
+    },
+    getPosition(position) {
+      return positions.get(position) ?? null
     },
     equip(instanceId, inv) {
-      const instance = liveValidArmorInstance(instanceId, inv)
-      if (!instance) return false
-      const slot = ITEM_CATALOG[instance.kind].armor!.slot
-      for (const s of EQUIPMENT_SLOTS) {
-        if (slots[s] === instance.id) slots[s] = null
+      const owned = inv.getInstance(instanceId)
+      if (!owned) return { ok: false, reason: 'not-owned' }
+      if (!isArmorItemInstance(owned) || !isArmorCatalogKind(owned.kind)) return { ok: false, reason: 'not-wearable' }
+      const position = armorPositionOf(owned.kind)
+      if (position == null) return { ok: false, reason: 'invalid-position' }
+      const replacedId = positions.get(position) ?? null
+      if (replacedId === owned.id) return { ok: true, position, replacedId: null }
+      // One instance cannot occupy two positions.
+      for (const p of EQUIPMENT_POSITIONS) {
+        if (positions.get(p) === owned.id) positions.set(p, null)
       }
-      slots[slot] = instance.id
-      return true
+      positions.set(position, owned.id)
+      selectionRevision++
+      return { ok: true, position, replacedId }
     },
-    unequip(slot) {
-      slots[slot] = null
+    unequip(position) {
+      if (positions.get(position) == null) return
+      positions.set(position, null)
+      selectionRevision++
     },
     syncWithInventory(inv) {
-      for (const slot of EQUIPMENT_SLOTS) {
-        if (liveValidArmorInstance(slots[slot], inv, slot) == null) slots[slot] = null
+      for (const position of EQUIPMENT_POSITIONS) {
+        const id = positions.get(position) ?? null
+        if (id != null && liveValidArmorInstance(id, inv, position) == null) {
+          positions.set(position, null)
+          selectionRevision++
+        }
       }
     },
     exportState(inv) {
       const out: SavePlayerEquipment = {}
-      for (const slot of EQUIPMENT_SLOTS) {
-        const live = liveValidArmorInstance(slots[slot], inv, slot)
-        if (live) out[slot] = live.id
+      for (const position of EQUIPMENT_POSITIONS) {
+        const live = liveValidArmorInstance(positions.get(position), inv, position)
+        if (live) out[position] = live.id
       }
       return out
     },
   }
 }
 
-/** Live-valid equipped armor instances across all slots (no ghosts). */
+/** Live-valid equipped armor instances across all positions (no ghosts). */
 export function equippedArmorInstances(
   equipment: EquipmentState,
   inventory: Inventory,
 ): readonly ArmorItemInstance[] {
   const out: ArmorItemInstance[] = []
   const seen = new Set<string>()
-  for (const slot of EQUIPMENT_SLOTS) {
-    const live = liveValidArmorInstance(equipment.getSlot(slot), inventory, slot)
+  for (const position of EQUIPMENT_POSITIONS) {
+    const live = liveValidArmorInstance(equipment.getPosition(position), inventory, position)
     if (!live || seen.has(live.id)) continue
     seen.add(live.id)
     out.push(live)
@@ -195,85 +223,152 @@ export function equippedArmorInstances(
   return out
 }
 
-/** Compatibility helper — live-valid body piece kind, or null. */
+/** Live-valid `body:outer` piece kind, or null. Presentation has no under-layer
+ *  model, so `body:under` is deliberately not a fallback. */
 export function equippedBodyArmor(equipment: EquipmentState, inventory: Inventory): ArmorItemInstance['kind'] | null {
-  const live = liveValidArmorInstance(equipment.getSlot('body'), inventory, 'body')
-  return live?.kind ?? null
+  return liveValidArmorInstance(equipment.getPosition('body:outer'), inventory, 'body:outer')?.kind ?? null
 }
 
-/** Live-valid equipped instance id for a slot, or null. */
+/** Live-valid equipped instance id for a position, or null. */
 export function equippedInstanceId(
   equipment: EquipmentState,
   inventory: Inventory,
-  slot: EquipmentSlot,
+  position: EquipmentPositionKey,
 ): string | null {
-  return liveValidArmorInstance(equipment.getSlot(slot), inventory, slot)?.id ?? null
+  return liveValidArmorInstance(equipment.getPosition(position), inventory, position)?.id ?? null
 }
 
-/** Map of slot → live-valid equipped instance id (for UI). */
+/** Map of position → live-valid equipped instance id. */
 export function equippedInstanceIds(
   equipment: EquipmentState,
   inventory: Inventory,
-): Partial<Record<EquipmentSlot, string>> {
-  const out: Partial<Record<EquipmentSlot, string>> = {}
-  for (const slot of EQUIPMENT_SLOTS) {
-    const id = equippedInstanceId(equipment, inventory, slot)
-    if (id) out[slot] = id
-  }
-  return out
+): Partial<Record<EquipmentPositionKey, string>> {
+  return equipment.exportState(inventory)
+}
+
+/** Worn piece with identity, as held by a {@link ProtectionSnapshot}. */
+export type WornArmorPiece = EffectiveArmorPiece & {
+  instanceId: string
+  position: EquipmentPositionKey
 }
 
 /**
- * Fold effective per-piece armor into aggregate modifiers.
- * Protection multiplies remaining-damage factors; restriction multipliers multiply.
+ * Everything derived from what is validly worn: pieces, per-slot 7x3 local
+ * resistance and clamped restrictions. Built by one pure function shared by
+ * combat (S3), NPC derivation and preview/UI (048). Never authority.
  *
  * @domain items-player
  */
-export function composeEquipmentModifiers(pieces: readonly EffectiveArmorPiece[]): EquipmentModifiers {
-  if (pieces.length === 0) return NEUTRAL_EQUIPMENT_MODIFIERS
-  let incomingDamageMultiplier = 1
-  let meleeStaminaMultiplier = 1
-  let meleeRecoveryMultiplier = 1
-  let movementSpeedMultiplier = 1
-  let sprintStaminaMultiplier = 1
-  for (const piece of pieces) {
-    incomingDamageMultiplier *= 1 - piece.damageReduction
-    meleeStaminaMultiplier *= piece.staminaCostMultiplier
-    meleeRecoveryMultiplier *= piece.meleeRecoveryMultiplier
-    movementSpeedMultiplier *= piece.movementSpeedMultiplier
-    sprintStaminaMultiplier *= piece.sprintStaminaMultiplier
-  }
-  return {
-    incomingDamageMultiplier,
-    meleeStaminaMultiplier,
-    meleeRecoveryMultiplier,
-    movementSpeedMultiplier,
-    sprintStaminaMultiplier,
-  }
+export type ProtectionSnapshot = {
+  pieces: readonly WornArmorPiece[]
+  protection: HumanProtection
+  restrictions: EquipmentModifiers
 }
 
-function effectivePieceForInstance(instance: ArmorItemInstance): EffectiveArmorPiece | null {
-  const armor = ITEM_CATALOG[instance.kind].armor
-  if (!armor) return null
-  return resolveEffectiveArmorPiece(armor, instance.quality, ITEM_DEFS[instance.kind].weight)
+const ZERO_RESISTANCE: Resistance = { cut: 0, pierce: 0, blunt: 0 }
+
+const MELEE_STAMINA_CLAMP = [1, 1.8] as const
+const MELEE_RECOVERY_CLAMP = [1, 1.5] as const
+const MOVEMENT_CLAMP = [0.75, 1] as const
+const SPRINT_STAMINA_CLAMP = [1, 2] as const
+
+function clamp(value: number, [min, max]: readonly [number, number]): number {
+  return Math.min(max, Math.max(min, value))
+}
+
+/** BRIDGE (S2 → removed by S3): fixed channel weighting used for the legacy
+ *  scalar `incomingDamageMultiplier` and for display/ranking scores. */
+export function armorProtectionScore(resist: Resistance): number {
+  return 0.3 * resist.cut + 0.45 * resist.pierce + 0.25 * resist.blunt
 }
 
 /**
- * Single derivation point for wearable-equipment gameplay effects.
+ * Pure builder: per-slot resistance composes only `under` with `outer` of the
+ * same slot (no cross-slot protection); restrictions multiply across pieces
+ * and then take the armor-only clamps of proposal §5.2. Later duplicates of a
+ * position (callers pass canonical order) are ignored.
+ *
+ * @domain items-player
+ */
+export function buildProtectionSnapshot(pieces: readonly WornArmorPiece[]): ProtectionSnapshot {
+  const bySlot = new Map<EquipmentSlot, { under: Resistance, outer: Resistance }>()
+  const used = new Set<EquipmentPositionKey>()
+  const kept: WornArmorPiece[] = []
+  let bridge = 1
+  let meleeStamina = 1
+  let meleeRecovery = 1
+  let movement = 1
+  let sprint = 1
+  for (const piece of pieces) {
+    if (used.has(piece.position)) continue
+    used.add(piece.position)
+    kept.push(piece)
+    const entry = bySlot.get(piece.slot) ?? { under: ZERO_RESISTANCE, outer: ZERO_RESISTANCE }
+    entry[piece.layer] = piece.resist
+    bySlot.set(piece.slot, entry)
+    bridge *= 1 - armorProtectionScore(piece.resist)
+    meleeStamina *= piece.staminaCostMultiplier
+    meleeRecovery *= piece.meleeRecoveryMultiplier
+    movement *= piece.movementSpeedMultiplier
+    sprint *= piece.sprintStaminaMultiplier
+  }
+  const protection = Object.fromEntries(
+    EQUIPMENT_SLOTS.map((slot) => {
+      const entry = bySlot.get(slot)
+      return [slot, entry ? composeLocalResistance(entry.under, entry.outer) : ZERO_RESISTANCE]
+    }),
+  ) as HumanProtection
+  return {
+    pieces: kept,
+    protection,
+    restrictions: kept.length === 0
+      ? NEUTRAL_EQUIPMENT_MODIFIERS
+      : {
+          incomingDamageMultiplier: bridge,
+          meleeStaminaMultiplier: clamp(meleeStamina, MELEE_STAMINA_CLAMP),
+          meleeRecoveryMultiplier: clamp(meleeRecovery, MELEE_RECOVERY_CLAMP),
+          movementSpeedMultiplier: clamp(movement, MOVEMENT_CLAMP),
+          sprintStaminaMultiplier: clamp(sprint, SPRINT_STAMINA_CLAMP),
+        },
+  }
+}
+
+/** Effective worn piece for one instance, with its catalog position. */
+function wornPieceForInstance(instance: ArmorItemInstance): WornArmorPiece | null {
+  const armor = ITEM_CATALOG[instance.kind].armor
+  if (!armor) return null
+  const piece = resolveEffectiveArmorPiece(armor, instance.quality, ITEM_DEFS[instance.kind].weight)
+  return { ...piece, instanceId: instance.id, position: equipmentPositionKey(piece.slot, piece.layer) }
+}
+
+/**
+ * Single derivation point for wearable-equipment protection and restrictions.
+ *
+ * @domain items-player
+ */
+export function resolveProtectionSnapshot(equipment: EquipmentState, inventory: Inventory): ProtectionSnapshot {
+  const pieces: WornArmorPiece[] = []
+  for (const instance of equippedArmorInstances(equipment, inventory)) {
+    const piece = wornPieceForInstance(instance)
+    if (piece) pieces.push(piece)
+  }
+  return buildProtectionSnapshot(pieces)
+}
+
+/**
+ * Restriction view of {@link resolveProtectionSnapshot}.
  *
  * @domain items-player
  */
 export function resolveEquipmentModifiers(equipment: EquipmentState, inventory: Inventory): EquipmentModifiers {
-  const pieces: EffectiveArmorPiece[] = []
-  for (const instance of equippedArmorInstances(equipment, inventory)) {
-    const piece = effectivePieceForInstance(instance)
-    if (piece) pieces.push(piece)
-  }
-  return composeEquipmentModifiers(pieces)
+  return resolveProtectionSnapshot(equipment, inventory).restrictions
 }
 
 /** Effective display stats for one armor instance (UI + gameplay share this). */
 export function resolveArmorInstanceEffective(instance: ItemInstance): EffectiveArmorPiece | null {
   if (!isArmorItemInstance(instance)) return null
-  return effectivePieceForInstance(instance)
+  const worn = wornPieceForInstance(instance)
+  if (!worn) return null
+  const { instanceId: _id, position: _position, ...piece } = worn
+  return piece
 }

@@ -1,4 +1,4 @@
-import type { EquipmentSlot } from '../../../items/equipment'
+import type { EquipmentPositionKey } from '../../../items/equipmentTypes'
 import type { LiquidContainerItemInstance } from '../../../items/itemInstances'
 import type { ItemKind } from '../../../items/items'
 import type { PrimaryWeaponChoice } from '../../../items/primaryWeapons'
@@ -27,7 +27,7 @@ export type DemoScenario = {
   label: string
   groups: InventoryGroupView[]
   counts: Partial<Record<ItemKind, number>>
-  equippedSlots: Partial<Record<EquipmentSlot, string>>
+  equippedSlots: Partial<Record<EquipmentPositionKey, string>>
   heldTool: ItemKind | null
   heldInstanceId: string | null
   primaryMelee: PrimaryWeaponChoice | null
@@ -52,7 +52,7 @@ function liquid(
 function snapshotFromInventory(
   inventory: Inventory,
   extras: {
-    equippedSlots?: Partial<Record<EquipmentSlot, string>>
+    equippedSlots?: Partial<Record<EquipmentPositionKey, string>>
     heldTool?: ItemKind | null
     heldInstanceId?: string | null
     primaryMelee?: PrimaryWeaponChoice | null
@@ -109,7 +109,7 @@ function buildFullBag(): DemoScenario {
     label: 'Pełny worek (hybryda)',
     note: 'Mixed-quality armor, large stack, liquids, FIFO food, held vs primary.',
     ...snapshotFromInventory(inventory, {
-      equippedSlots: { body: 'leather-1', shoulders: 'pauldron-1' },
+      equippedSlots: { 'body:outer': 'leather-1', 'shoulders:outer': 'pauldron-1' },
       heldTool: 'axe',
       heldInstanceId: axeId,
       primaryMelee: { kind: 'long_sword', instanceId: swordId },
@@ -191,7 +191,7 @@ function buildInvalidation(): DemoScenario {
     label: 'Invalidacja',
     note: 'Simulate removal via demo action — selection must clear, not jump to sibling.',
     ...snapshotFromInventory(inventory, {
-      equippedSlots: { body: 'vanish-me' },
+      equippedSlots: { 'body:outer': 'vanish-me' },
     }),
   }
 }

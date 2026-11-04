@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { humanBodyCarryCapacityKg } from '../player/humanCarryCapacity'
 import { PLAYER_STARTING_ATTRIBUTES } from '../player/PlayerController'
-import { createArmorInstance, effectiveInstanceWeight } from './armorItemInstances'
+import { createArmorInstance, effectiveInstanceWeight, migrateArmorCountsToInstances } from './armorItemInstances'
 import { createFoodBatch } from './foodFreshness'
 import { DEFAULT_MAX_SIZE, effectiveCarriedInstanceWeight, Inventory, inventoryFullToastTextForInstance } from './Inventory'
 import { createTentInstance, isWeaponItemInstance } from './itemInstances'
@@ -622,5 +622,37 @@ describe('instance payload capacity admission (plan items-player-054)', () => {
     const full = fillLiquidContainer(createLiquidContainerInstance('waterskin_large'), 'water')!
     expect(inv.canAddInstance(full)).toBe(false)
     expect(inventoryFullToastTextForInstance(inv, full)).toBe('Ekwipunek jest za ciężki.')
+  })
+})
+
+describe('armorMutationRevision (items-player-065)', () => {
+  it('bumps only on successful armor mutations', () => {
+    const inv = new Inventory({}, 1000)
+    expect(inv.armorMutationRevision).toBe(0)
+    inv.add('apple')
+    inv.addInstance(createWeaponInstance('knife'))
+    expect(inv.armorMutationRevision).toBe(0)
+    const mail = createArmorInstance('chainmail', 'common', 'a:1')
+    expect(inv.addInstance(mail)).toBe(true)
+    expect(inv.armorMutationRevision).toBe(1)
+    expect(inv.addInstance(mail)).toBe(false)
+    expect(inv.updateInstance('missing', (c) => c)).toBe(false)
+    expect(inv.removeInstance('missing')).toBe(false)
+    expect(inv.armorMutationRevision).toBe(1)
+    expect(inv.updateInstance('a:1', (c) => ({ ...c, quality: 'good' }) as typeof c)).toBe(true)
+    expect(inv.armorMutationRevision).toBe(2)
+    expect(inv.removeInstance('a:1')).toBe(true)
+    expect(inv.armorMutationRevision).toBe(3)
+    inv.clear()
+    expect(inv.armorMutationRevision).toBe(4)
+  })
+
+  it('counts migration and rebuilt inventories start from their own revision', () => {
+    const inv = new Inventory({ leather_armor: 2 }, 1000)
+    expect(inv.armorMutationRevision).toBe(0)
+    migrateArmorCountsToInstances(inv)
+    expect(inv.armorMutationRevision).toBeGreaterThan(0)
+    expect(inv.add('leather_armor', 1)).toBe(true)
+    expect(inv.remove('leather_armor', 99)).toBe(false)
   })
 })

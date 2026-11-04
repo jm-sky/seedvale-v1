@@ -1,3 +1,4 @@
+import { type Resistance, scaleArmorResistance } from '../combat/damageTypes'
 import type { ArmorConfig } from './itemCatalog'
 import { ITEM_CATALOG } from './itemCatalog'
 import {
@@ -77,8 +78,6 @@ const QUALITY_TUNING: Record<ArmorQuality, QualityTuning> = {
   masterwork: { protectionScale: 1.2, weightScale: 0.8, penaltyStrength: 0.5 },
 }
 
-const MAX_PIECE_DAMAGE_REDUCTION = 0.85
-
 /**
  * Apply quality to a catalog restriction multiplier.
  * Works for both `> 1` (stamina/recovery cost) and `< 1` (movement speed).
@@ -96,7 +95,9 @@ export function applyArmorPenaltyQuality(base: number, quality: ArmorQuality): n
  */
 export type EffectiveArmorPiece = {
   slot: ArmorConfig['slot']
-  damageReduction: number
+  layer: ArmorConfig['layer']
+  /** Per-channel resistance after quality scale and the per-piece `.85` cap. */
+  resist: Resistance
   staminaCostMultiplier: number
   meleeRecoveryMultiplier: number
   movementSpeedMultiplier: number
@@ -116,13 +117,11 @@ export function resolveEffectiveArmorPiece(
   baseWeightKg: number,
 ): EffectiveArmorPiece {
   const tuning = QUALITY_TUNING[normalizeArmorQuality(quality)]
-  const damageReduction = Math.min(
-    MAX_PIECE_DAMAGE_REDUCTION,
-    Math.max(0, base.damageReduction * tuning.protectionScale),
-  )
+  const resist = scaleArmorResistance(base.resist, tuning.protectionScale)
   return {
     slot: base.slot,
-    damageReduction,
+    layer: base.layer,
+    resist,
     staminaCostMultiplier: applyArmorPenaltyQuality(base.staminaCostMultiplier ?? 1, quality),
     meleeRecoveryMultiplier: applyArmorPenaltyQuality(base.meleeRecoveryMultiplier ?? 1, quality),
     movementSpeedMultiplier: applyArmorPenaltyQuality(base.movementSpeedMultiplier ?? 1, quality),

@@ -1175,7 +1175,7 @@ export async function createApp(
     playerAppearance.kit,
   )
   const syncShouldersEquipmentVisual = (): Promise<void> => {
-    const shouldersId = equippedInstanceId(equipment, inventory, 'shoulders')
+    const shouldersId = equippedInstanceId(equipment, inventory, 'shoulders:outer')
     const shouldersKind = shouldersId ? inventory.getInstance(shouldersId)?.kind : null
     return player.applyEquipmentVisuals(
       'shoulders',

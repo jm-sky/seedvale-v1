@@ -8,10 +8,12 @@ import { isAttackFromDefensibleDirection, type ResolvedDefense, resolveDefense }
 import { applyMeleeStrength } from '../combat/meleeStrength'
 import { ARMOR_KIND_LIST, type ArmorItemInstance, isArmorItemInstance } from '../items/armorItemInstances'
 import {
+  armorPositionOf,
+  armorProtectionScore,
   createEquipmentState,
-  EQUIPMENT_SLOTS,
-  type EquipmentSlot,
+  EQUIPMENT_POSITIONS,
   type EquipmentState,
+  type SavePlayerEquipment,
   resolveArmorInstanceEffective,
   resolveEquipmentModifiers,
 } from '../items/equipment'
@@ -401,7 +403,7 @@ export function applyNpcRangedHit(
 }
 
 /** Picks the best owned armor instance for one slot by effective
- *  `damageReduction` (plan npc-053 §13) — tie-break by `ItemKind` then
+ *  protection score (plan npc-053 §13; S3 replaces with the proposal's typed score) — tie-break by `ItemKind` then
  *  instance id, mirroring `pickBestCandidate`'s determinism without forcing
  *  armor into the same generic shape (armor has no separate base/effective
  *  score split). */
@@ -413,12 +415,12 @@ function pickBestArmorInstance(instances: readonly ArmorItemInstance[]): ArmorIt
     if (!piece) continue
     if (
       best == null
-      || piece.damageReduction > bestReduction
-      || (piece.damageReduction === bestReduction && instance.kind < best.kind)
-      || (piece.damageReduction === bestReduction && instance.kind === best.kind && instance.id < best.id)
+      || armorProtectionScore(piece.resist) > bestReduction
+      || (armorProtectionScore(piece.resist) === bestReduction && instance.kind < best.kind)
+      || (armorProtectionScore(piece.resist) === bestReduction && instance.kind === best.kind && instance.id < best.id)
     ) {
       best = instance
-      bestReduction = piece.damageReduction
+      bestReduction = armorProtectionScore(piece.resist)
     }
   }
   return best
@@ -432,17 +434,17 @@ function pickBestArmorInstance(instances: readonly ArmorItemInstance[]): ArmorIt
  *  for its existing slot/catalog/ownership validation instead of inventing a
  *  partial fake `EquipmentState`. */
 export function resolveNpcArmorEquipment(inventory: Inventory): EquipmentState {
-  const derived: Partial<Record<EquipmentSlot, string>> = {}
-  for (const slot of EQUIPMENT_SLOTS) {
+  const derived: SavePlayerEquipment = {}
+  for (const position of EQUIPMENT_POSITIONS) {
     const candidates: ArmorItemInstance[] = []
     for (const kind of ARMOR_KIND_LIST) {
-      if (ITEM_CATALOG[kind].armor?.slot !== slot) continue
+      if (armorPositionOf(kind) !== position) continue
       for (const instance of inventory.getInstances(kind)) {
         if (isArmorItemInstance(instance)) candidates.push(instance)
       }
     }
     const best = pickBestArmorInstance(candidates)
-    if (best) derived[slot] = best.id
+    if (best) derived[position] = best.id
   }
   return createEquipmentState(inventory, derived)
 }

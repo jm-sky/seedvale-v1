@@ -3,7 +3,7 @@
  * Thin live adapter — D2(c)/D5: full detail+actions chrome lives in shared
  * `InventoryItemDetails`. Parent resolves exact selection and dispatches.
  */
-import type { EquipmentSlot } from '../../items/equipment'
+import type { EquipmentPositionKey } from '../../items/equipmentTypes'
 import type { InventoryGroupView, InventoryInstanceRow } from '../../items/inventoryView'
 import type { PrimaryWeaponChoice } from '../../items/primaryWeapons'
 import type { InventorySelection } from '../components/items/inventoryPresentation'
@@ -17,7 +17,7 @@ defineProps<{
   heldInstanceId: string | null
   primaryMelee: PrimaryWeaponChoice | null
   primaryRanged: PrimaryWeaponChoice | null
-  equippedSlots: Partial<Record<EquipmentSlot, string>>
+  equippedSlots: Partial<Record<EquipmentPositionKey, string>>
   counts: Partial<Record<string, number>>
   whetstoneCount: number
   merchantOpen: boolean
@@ -34,7 +34,7 @@ defineEmits<{
   equip: [kind: string, instanceId?: string]
   unequip: []
   'equip-armor': [instanceId: string]
-  'unequip-armor': [slot: EquipmentSlot]
+  'unequip-armor': [position: EquipmentPositionKey]
   consume: [kind: string]
   throw: [kind: string]
   read: [kind: string]

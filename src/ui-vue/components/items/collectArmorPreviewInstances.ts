@@ -1,7 +1,8 @@
 import type { ArmorPreviewInstance } from '../../../items/equipmentPreview'
 import type { InventoryGroupView } from '../../../items/inventoryView'
 import type { EquipmentSlotView } from './equipmentPanelTypes'
-import { EQUIPMENT_SLOTS, type EquipmentSlot } from '../../../items/equipment'
+import { EQUIPMENT_SLOTS } from '../../../items/equipment'
+import type { EquipmentPositionKey } from '../../../items/equipmentTypes'
 import { isArmorCatalogKind } from '../../../items/itemCatalog'
 import { itemDisplayName } from '../../../items/itemDisplay'
 import { ARMOR_QUALITY_LABELS, normalizeArmorQuality } from '../../../items/itemInstances'
@@ -28,15 +29,20 @@ export function collectArmorPreviewInstances(
 
 /** Build equipment panel slot rows from equipped ids + armor instance list. */
 export function buildEquipmentSlotViews(
-  equippedSlots: Partial<Record<EquipmentSlot, string>>,
+  equippedSlots: Partial<Record<EquipmentPositionKey, string>>,
   instances: readonly ArmorPreviewInstance[],
 ): EquipmentSlotView[] {
   const byId = new Map(instances.map((row) => [row.id, row]))
   return EQUIPMENT_SLOTS.map((slot) => {
-    const instanceId = equippedSlots[slot] ?? null
+    // Layered display bridge (048 redesigns): outer first, then under.
+    const position: EquipmentPositionKey | null = equippedSlots[`${slot}:outer`]
+      ? `${slot}:outer`
+      : equippedSlots[`${slot}:under`] ? `${slot}:under` : null
+    const instanceId = position ? equippedSlots[position] ?? null : null
     const row = instanceId ? byId.get(instanceId) : undefined
     return {
       slot,
+      position,
       instanceId,
       label: row?.label ?? null,
       quality: row?.quality ?? null,
