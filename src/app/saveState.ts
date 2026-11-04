@@ -103,6 +103,8 @@ export type SaveStateDeps = {
   unlockedTreasureContainerIds: ReadonlySet<string>
   /** Plan quests-progression-036 — sparse consumed authored world pickup ids. */
   consumedWorldPickupIds: ReadonlySet<string>
+  /** Plan items-player-063 — app/world-owned A8 claims survive bundle rebuilds. */
+  upperTierIssuanceLedger: Readonly<Record<string, import('../items/upperTierIssuance').UpperTierIssuance>>
   /** Plan items-player-026 — sparse forced-entry/trap mutations. */
   treasureChestMutations: ReadonlyMap<string, TreasureChestMutation>
   badges: BadgeManager
@@ -162,7 +164,7 @@ export function createSaveState(deps: SaveStateDeps): SaveState {
   const {
     config, bundle, player, mouseLook, inventory, heldTool, equipment, primaryWeapons, playerTorch,
     questManager, dayNight, mapDiscovery, locationKnowledge, navigationTargets, landOwnership, vueUi, worldFlags, fishingBait,
-    resolvedHiddenFindSpotIds, unlockedTreasureContainerIds, consumedWorldPickupIds, treasureChestMutations, badges, reputation, socialNews, tradeGrievances,
+    resolvedHiddenFindSpotIds, unlockedTreasureContainerIds, consumedWorldPickupIds, upperTierIssuanceLedger, treasureChestMutations, badges, reputation, socialNews, tradeGrievances,
   } = deps
 
   const buildSaveData = (): SaveData => {
@@ -281,6 +283,7 @@ export function createSaveState(deps: SaveStateDeps): SaveState {
     worldGeneratedContainers: bundle.worldGeneratedContainers.nodes().map((c) => ({ ...c })),
     unlockedTreasureContainerIds: [...unlockedTreasureContainerIds],
     consumedWorldPickupIds: [...consumedWorldPickupIds],
+    upperTierIssuanceLedger: structuredClone(upperTierIssuanceLedger),
     treasureChestMutations: serializeTreasureMutations(treasureChestMutations),
     carriedContainer: bundle.placedContainers.carriedNode(),
     playerWells: bundle.playerWells.nodes().map((w) => ({ ...w })),

@@ -363,6 +363,19 @@ describe('resolveWorldPickup + commitWorldPickup (plan items-player-053)', () =>
     expect(dropped.nodes()).toHaveLength(1)
   })
 
+  it('refuses a fresh pickup of a restricted identity before adding or retiring its source', () => {
+    const inventory = new Inventory()
+    const retire = vi.fn(() => true)
+    const resolution = {
+      itemKind: 'kestrel_dagger' as ItemKind,
+      authoredOneShot: false,
+      retire,
+    }
+    expect(commitWorldPickup(resolution, inventory, 0)).toEqual({ ok: false, itemKind: 'kestrel_dagger' })
+    expect(inventory.toJSON()).toEqual({})
+    expect(retire).not.toHaveBeenCalled()
+  })
+
   it('preserves a perishable dropped batch on a failed pickup and moves it intact on success', () => {
     const dropped = createDroppedItems(new Scene(), sampleHeight)
     const batch = createFoodBatch(1, 0, 1)

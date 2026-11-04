@@ -14,6 +14,7 @@ import {
   type WeaponItemInstance,
   type WeaponMaintenanceKind,
 } from './itemInstances'
+import { isUpperTierIdentity, UPPER_TIER_FACTORY_ACCESS } from './upperTierIdentities'
 
 export type SharpenSource = 'whetstone' | 'grindstone'
 
@@ -91,7 +92,14 @@ export function getSharpnessDamageModifier(sharpness: number): number {
   return 1
 }
 
-export function createWeaponInstance(kind: WeaponMaintenanceKind): WeaponItemInstance {
+export function createWeaponInstance(kind: Exclude<WeaponMaintenanceKind, import('./upperTierIdentities').UpperTierIdentity>): WeaponItemInstance
+export function createWeaponInstance(kind: WeaponMaintenanceKind, access: typeof UPPER_TIER_FACTORY_ACCESS): WeaponItemInstance
+export function createWeaponInstance(kind: WeaponMaintenanceKind, access?: typeof UPPER_TIER_FACTORY_ACCESS): WeaponItemInstance | null
+export function createWeaponInstance(
+  kind: WeaponMaintenanceKind,
+  access?: typeof UPPER_TIER_FACTORY_ACCESS,
+): WeaponItemInstance | null {
+  if (isUpperTierIdentity(kind) && access !== UPPER_TIER_FACTORY_ACCESS) return null
   return { id: createItemInstanceId(), kind, durability: 1, sharpness: 1 }
 }
 
@@ -148,11 +156,13 @@ export function sharpenWeapon(inventory: Inventory, instanceId: string, source: 
  *  it can never push the carry limit over its cap. */
 export function migrateWeaponCountsToInstances(inventory: Inventory): void {
   for (const kind of WEAPON_MAINTENANCE_KIND_LIST) {
+    if (isUpperTierIdentity(kind)) continue
     const count = inventory.count(kind)
     if (count <= 0) continue
     inventory.remove(kind, count)
     for (let i = 0; i < count; i++) {
-      inventory.addInstance(createWeaponInstance(kind))
+      const instance = createWeaponInstance(kind)
+      if (instance) inventory.addInstance(instance)
     }
   }
 }

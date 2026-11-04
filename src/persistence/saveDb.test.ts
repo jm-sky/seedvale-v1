@@ -36,6 +36,7 @@ function makeSaveData(overrides?: Partial<Pick<SaveData, 'savedAt' | 'elapsedDay
     quests: { progress: [], relations: {} },
     inventory: {},
     inventoryInstances: [],
+    upperTierIssuanceLedger: {},
     collectedItemIds: [],
     droppedItems: [],
     placedFires: [],
@@ -301,6 +302,26 @@ async function putRawRow(id: string, value: unknown): Promise<void> {
 }
 
 describe('writeSave/createSave — outgoing snapshot integrity (plan persistence-004 §1/§3)', () => {
+  it('preserves the previous world snapshot when an outgoing singleton claim contradicts its owners (063)', async () => {
+    const previous = makeSaveData({ elapsedDays: 3 })
+    const created = await createSave('Before invalid issuance', previous)
+    expect(created.ok).toBe(true)
+    if (!created.ok) return
+    const outgoing: SaveData = {
+      ...makeSaveData({ elapsedDays: 99 }),
+      upperTierIssuanceLedger: {
+        yewmaster_longbow: { instanceId: 'missing:specimen', issuanceKey: 'fixture:reward', status: 'live' },
+      },
+    }
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    try {
+      expect(await writeSave(outgoing, created.id)).toEqual({ ok: false, error: 'invalid-outgoing-snapshot' })
+    } finally {
+      warnSpy.mockRestore()
+    }
+    expect(await readSave(created.id)).toEqual(previous)
+  })
+
   it('refuses to overwrite a valid slot with a runtime-invalid outgoing snapshot, leaving it untouched', async () => {
     const created = await createSave('Save A', makeSaveData({ elapsedDays: 3 }))
     expect(created.ok).toBe(true)

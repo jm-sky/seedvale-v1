@@ -1,7 +1,7 @@
 # Plan: Upper-tier singleton issuance ledger (A8)
 
 **Created:** 2026-11-04
-**Status:** `planned` 📋
+**Status:** `in progress` 🔄 (ledger, persistence and bypass guards implemented 2026-11-04; Opus R-A remains required before 064 enables any upper-tier source)
 **Type:** infrastructure
 **Priority:** medium · **Effort:** M
 **Depends on:** -

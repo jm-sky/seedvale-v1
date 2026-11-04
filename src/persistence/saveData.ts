@@ -48,6 +48,7 @@ import { ARMOR_KIND_LIST, isArmorKind, isArmorQuality, isRangedWeaponKind, isTra
 import { ITEM_DEFS, type ItemKind } from '../items/items'
 import { type SavePrimaryWeaponChoice } from '../items/primaryWeapons'
 import { isTradeGrievanceList, type TradeGrievance } from '../items/tradeGrievance'
+import { diagnoseUpperTierOwnerRows, isUpperTierIdentity, isUpperTierIssuanceSnapshot } from '../items/upperTierIdentities'
 import { QUEST_STATES, type QuestProgressEntry } from '../quests/quests'
 import {
   isArtisanOrderStatus,
@@ -764,7 +765,7 @@ export type SaveWorkContract =
  *  representation or semantics of `SaveData` change — see the plan's
  *  "Future schema-change workflow". Never duplicate this number elsewhere;
  *  `saveState.ts` imports it instead of declaring its own constant. */
-export const CURRENT_SAVE_VERSION = 58
+export const CURRENT_SAVE_VERSION = 59
 
 /** Canonical save contract for the current schema version. This module
  *  intentionally carries no history of schemas from before the v1 hard cut
@@ -880,6 +881,8 @@ export type SaveData = {
    * @domain quests-progression
    */
   consumedWorldPickupIds?: string[]
+  /** Plan items-player-063 — A8 world-level claim and permanent destruction tombstones. */
+  upperTierIssuanceLedger: Record<string, { instanceId: string, issuanceKey: string, status: 'live' | 'destroyed' }>
   /** Plan items-player-026 — sparse forced-entry/trap mutation state keyed by
    *  stable container id. Missing means unattempted. */
   treasureChestMutations?: SaveTreasureChestMutation[]
@@ -1569,6 +1572,108 @@ function isSaveItemInstancesField(value: unknown): value is SaveItemInstance[] {
     if (row.quality !== undefined && !isArmorQuality(row.quality)) return false
     return true
   })
+}
+
+export type UpperTierOwnerRow = { owner: string, instance: { id: string, kind: string } }
+
+/** Enumerates durable instance owners used by A8 load/write integrity and migration.
+ *  It intentionally names owner domains instead of recursively treating arbitrary
+ *  `{ id, kind }` records as physical specimens.
+ *
+ * @domain persistence
+ * @system save-schema
+ */
+export function upperTierOwnerRowsFromSave(value: unknown): UpperTierOwnerRow[] {
+  const rows: UpperTierOwnerRow[] = []
+  const root = value as Record<string, unknown>
+  const addInstances = (owner: string, contents: unknown): void => {
+    if (!contents || typeof contents !== 'object' || Array.isArray(contents)) return
+    const instances = (contents as Record<string, unknown>).instances
+    if (!Array.isArray(instances)) return
+    for (let i = 0; i < instances.length; i++) {
+      const row = instances[i]
+      if (!row || typeof row !== 'object' || Array.isArray(row)) continue
+      const instance = row as Record<string, unknown>
+      if (typeof instance.id === 'string' && typeof instance.kind === 'string') {
+        rows.push({ owner: `${owner}.instances[${i}]`, instance: { id: instance.id, kind: instance.kind } })
+      }
+    }
+  }
+  addInstances('player', { instances: root.inventoryInstances })
+  for (const [id, raw] of Object.entries((root.npcStates ?? {}) as Record<string, unknown>)) {
+    if (!raw || typeof raw !== 'object') continue
+    const npc = raw as Record<string, unknown>
+    addInstances(`npc:${id}:personalInventory`, npc.personalInventory)
+    addInstances(`npc:${id}:transportCargo`, npc.transportCargo)
+    addInstances(`npc:${id}:merchantStock`, npc.merchantStock)
+    const death = npc.postDeath as Record<string, unknown> | null
+    if (death && typeof death === 'object') addInstances(`npc:${id}:corpse`, death.loot)
+  }
+  for (const [id, raw] of Object.entries((root.households ?? {}) as Record<string, unknown>)) {
+    if (raw && typeof raw === 'object') addInstances(`household:${id}`, (raw as Record<string, unknown>).items)
+  }
+  for (const key of ['placedContainers', 'worldGeneratedContainers'] as const) {
+    const containers = root[key]
+    if (Array.isArray(containers)) containers.forEach((container, i) => addInstances(`${key}:${i}`, container))
+  }
+  addInstances('carriedContainer', root.carriedContainer)
+  for (const [id, raw] of Object.entries((root.resourceSiteInventories ?? {}) as Record<string, unknown>)) {
+    addInstances(`resourceSite:${id}`, raw)
+  }
+  if (Array.isArray(root.droppedItems)) root.droppedItems.forEach((raw, i) => {
+    if (!raw || typeof raw !== 'object') return
+    const instance = (raw as Record<string, unknown>).instance
+    if (!instance || typeof instance !== 'object' || Array.isArray(instance)) return
+    const row = instance as Record<string, unknown>
+    if (typeof row.id === 'string' && typeof row.kind === 'string') {
+      rows.push({ owner: `drop:${i}`, instance: { id: row.id, kind: row.kind } })
+    }
+  })
+  return rows
+}
+
+function isUpperTierIssuanceLedgerField(value: unknown): value is Record<string, { instanceId: string, issuanceKey: string, status: 'live' | 'destroyed' }> {
+  return isUpperTierIssuanceSnapshot(value)
+}
+
+function validateUpperTierSaveOwnership(value: Record<string, unknown>): boolean {
+  const ledger = value.upperTierIssuanceLedger as Record<string, { instanceId: string, issuanceKey: string, status: 'live' | 'destroyed' }>
+  const rows = upperTierOwnerRowsFromSave(value)
+  const diagnostic = diagnoseUpperTierOwnerRows(ledger, rows)
+  const playerCounts = value.inventory as Record<string, unknown> | undefined
+  const playerHasRestrictedCount = !!playerCounts && Object.entries(playerCounts).some(([kind, count]) =>
+    isUpperTierIdentity(kind) && typeof count === 'number' && count > 0)
+  return diagnostic === null && !playerHasRestrictedCount && !hasUpperTierCountStack(value) && !hasUnbackedRestrictedDrop(value)
+}
+
+function hasUnbackedRestrictedDrop(value: Record<string, unknown>): boolean {
+  if (!Array.isArray(value.droppedItems)) return false
+  return value.droppedItems.some((raw) => {
+    if (!raw || typeof raw !== 'object') return false
+    const drop = raw as Record<string, unknown>
+    const payload = drop.instance
+    const instance = payload && typeof payload === 'object' && !Array.isArray(payload)
+      ? payload as Record<string, unknown> : null
+    const restrictedDrop = typeof drop.kind === 'string' && isUpperTierIdentity(drop.kind)
+    const restrictedPayload = typeof instance?.kind === 'string' && isUpperTierIdentity(instance.kind)
+    if (!restrictedDrop && !restrictedPayload) return false
+    return !instance || instance.kind !== drop.kind || typeof instance.id !== 'string' || instance.id.length === 0
+  })
+}
+
+function hasUpperTierCountStack(value: unknown): boolean {
+  const visit = (node: unknown): boolean => {
+    if (!node || typeof node !== 'object') return false
+    if (Array.isArray(node)) return node.some(visit)
+    const record = node as Record<string, unknown>
+    if (record.counts && typeof record.counts === 'object' && !Array.isArray(record.counts)) {
+      for (const [kind, count] of Object.entries(record.counts as Record<string, unknown>)) {
+        if (isUpperTierIdentity(kind) && typeof count === 'number' && count > 0) return true
+      }
+    }
+    return Object.values(record).some(visit)
+  }
+  return visit(value)
 }
 
 function isSaveFoodBatch(value: unknown): value is SaveFoodBatch {
@@ -2937,6 +3042,8 @@ export function isSaveData(value: unknown): value is SaveData {
   if (v.worldGeneratedContainers !== undefined && !isWorldGeneratedContainersField(v.worldGeneratedContainers)) return false
   if (v.unlockedTreasureContainerIds !== undefined && !isResolvedHiddenFindSpotIdsField(v.unlockedTreasureContainerIds)) return false
   if (v.consumedWorldPickupIds !== undefined && !isResolvedHiddenFindSpotIdsField(v.consumedWorldPickupIds)) return false
+  if (!isUpperTierIssuanceLedgerField(v.upperTierIssuanceLedger)) return false
+  if (!validateUpperTierSaveOwnership(v)) return false
   if (v.treasureChestMutations !== undefined && !isTreasureChestMutationsField(v.treasureChestMutations)) return false
   if (!isCarriedContainerField(v.carriedContainer)) return false
   if (!isPlayerWellsField(v.playerWells)) return false
@@ -4477,6 +4584,7 @@ const SAVE_MIGRATIONS: Readonly<Record<number, SaveMigration>> = {
   55: migrateSaveV55ToV56,
   56: migrateSaveV56ToV57,
   57: migrateSaveV57ToV58,
+  58: migrateSaveV58ToV59,
 }
 
 /** v56 → v57 (plan persistence-008): `config.worldgenEpoch = 0` — every save
@@ -4513,6 +4621,20 @@ function migrateSaveV57ToV58(data: unknown): unknown {
   const { arms, shoulders, ...rest } = previous
   const selected = validShoulder(shoulders) ? shoulders : validShoulder(arms) ? arms : undefined
   return { ...v, version: 58, playerEquipment: { ...rest, ...(selected ? { shoulders: selected } : {}) } }
+}
+
+/** v58 → v59 (items-player-063): initialize the A8 ledger from durable owner
+ *  rows. Duplicate and count-only rows are preserved here and then rejected by
+ *  current-schema validation; migration never silently repairs them. */
+function migrateSaveV58ToV59(data: unknown): unknown {
+  const v = data as Record<string, unknown>
+  const ledger: Record<string, { instanceId: string, issuanceKey: string, status: 'live' }> = {}
+  for (const { instance } of upperTierOwnerRowsFromSave(v)) {
+    if (!isUpperTierIdentity(instance.kind)) continue
+    if (ledger[instance.kind]) continue
+    ledger[instance.kind] = { instanceId: instance.id, issuanceKey: 'migration:save-v58', status: 'live' }
+  }
+  return { ...v, version: 59, upperTierIssuanceLedger: ledger }
 }
 
 function detectStoredVersion(value: unknown): number | null {

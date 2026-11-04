@@ -11,6 +11,7 @@ import {
   normalizeArmorQuality,
 } from './itemInstances'
 import { ITEM_DEFS, type ItemKind } from './items'
+import { isUpperTierIdentity, UPPER_TIER_FACTORY_ACCESS, type UpperTierIdentity } from './upperTierIdentities'
 
 export type { ArmorItemInstance, ArmorKind, ArmorQuality } from './itemInstances'
 export {
@@ -31,7 +32,22 @@ export {
  *
  * @domain items-player
  */
-export function createArmorInstance(kind: ArmorKind, quality: ArmorQuality = 'common', id?: string): ArmorItemInstance {
+export function createArmorInstance(kind: Exclude<ArmorKind, UpperTierIdentity>, quality?: ArmorQuality, id?: string): ArmorItemInstance
+export function createArmorInstance(kind: ArmorKind, quality: ArmorQuality | undefined, id: string | undefined, access: typeof UPPER_TIER_FACTORY_ACCESS): ArmorItemInstance
+export function createArmorInstance(kind: ArmorKind, quality?: ArmorQuality, id?: string): ArmorItemInstance | null
+export function createArmorInstance(
+  kind: ArmorKind,
+  quality?: ArmorQuality,
+  id?: string,
+  access?: typeof UPPER_TIER_FACTORY_ACCESS,
+): ArmorItemInstance | null
+export function createArmorInstance(
+  kind: ArmorKind,
+  quality: ArmorQuality = 'common',
+  id?: string,
+  access?: typeof UPPER_TIER_FACTORY_ACCESS,
+): ArmorItemInstance | null {
+  if (isUpperTierIdentity(kind) && access !== UPPER_TIER_FACTORY_ACCESS) return null
   return {
     id: id ?? createItemInstanceId(),
     kind,
@@ -144,6 +160,7 @@ export function migrateArmorCountsToInstances(inventory: {
   addInstance: (instance: ItemInstance) => boolean
 }): void {
   for (const kind of ARMOR_KIND_LIST) {
+    if (isUpperTierIdentity(kind)) continue
     const count = inventory.count(kind)
     if (count <= 0) continue
     inventory.remove(kind, count)

@@ -47,6 +47,7 @@ import {
 } from './itemInstances'
 import { ITEM_DEFS, type ItemKind, itemSizeUnits } from './items'
 import { LIQUID_DENSITY_KG_PER_LITRE } from './liquidContainer'
+import { isUpperTierIdentity } from './upperTierIdentities'
 
 /** Default carry limit (kg) — the Strength = 0.5 human baseline (plan
  *  npc-020). Not persisted (weight/limit stay derived from config, not save
@@ -346,6 +347,7 @@ export class Inventory {
    *  `maxSize` — independent constraints (plan 164 §10): a small heavy item
    *  can fail only the weight check, a large light one only the size check. */
   canAdd(kind: ItemKind, n = 1): boolean {
+    if (isUpperTierIdentity(kind)) return false
     return this.hasWeightRoom(kind, n) && this.hasSizeRoom(kind, n)
   }
 

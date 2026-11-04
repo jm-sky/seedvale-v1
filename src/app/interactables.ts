@@ -35,6 +35,7 @@ import { Inventory } from '../items/Inventory'
 import { consumeVerbLabel, hasItemCapability, isRangedTool, ITEM_CATALOG } from '../items/itemCatalog'
 import { ITEM_DEFS, type ItemKind } from '../items/items'
 import { createAcquiredInstance } from '../items/trade'
+import { isUpperTierIdentity } from '../items/upperTierIdentities'
 import { type MeleeHitCandidate, pickCombatTarget } from '../player/playerMelee'
 import { pastureTroughCanFill, pastureTroughPromptLabel } from '../settlement/pastureWater'
 import { isPlayerPlacedFire, type PlacedFires } from '../settlement/PlacedFires'
@@ -1583,6 +1584,10 @@ export function commitWorldPickup(
   nowDays: number,
 ): WorldPickupCommit {
   const { itemKind, authoredOneShot } = resolution
+  // A fresh world source cannot mint a reserved A8 identity through the
+  // ordinary null-means-stackable path. Previously issued drops keep their
+  // exact instance payload and may still move between owners.
+  if (isUpperTierIdentity(itemKind) && !resolution.instance) return { ok: false, itemKind }
   let acquiredInstance: ItemInstance | null
   if (resolution.instance) {
     const [restored] = Inventory.instancesFromJSON([resolution.instance])

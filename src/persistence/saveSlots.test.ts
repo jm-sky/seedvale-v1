@@ -41,6 +41,7 @@ const currentSave = {
   quests: { progress: [], relations: {} },
   inventory: {},
   inventoryInstances: [],
+  upperTierIssuanceLedger: {},
   collectedItemIds: [],
   droppedItems: [],
   placedFires: [],

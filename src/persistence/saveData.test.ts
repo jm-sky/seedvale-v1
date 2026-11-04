@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import type { ItemKind } from '../items/items'
 import { createPlayerSkills, restorePersistedSkills, SKILL_MIN_VALUE } from '../player/PlayerSkills'
 import { PALISADE_REQUIRED_WORK } from '../world/palisade'
 import { STANDING_TORCH_REQUIRED_WORK } from '../world/standingTorch'
@@ -45,6 +46,7 @@ const validSave: SaveData = {
   quests: { progress: [], relations: {} },
   inventory: {},
   inventoryInstances: [],
+  upperTierIssuanceLedger: {},
   collectedItemIds: [],
   droppedItems: [],
   placedFires: [],
@@ -833,6 +835,40 @@ describe('schema versioning and migration pipeline (persistence-003)', () => {
   it('loads a native current-version save through the pipeline without invoking any migration', () => {
     const result = loadStoredSave(validSave)
     expect(result).toEqual({ status: 'ok', data: validSave })
+  })
+
+  it('migrates v58 upper-tier instances into the issuance ledger and rejects duplicate or count-only ownership', () => {
+    const instance = { id: 'upper:one', kind: 'yewmaster_longbow' as ItemKind }
+    const migrated = loadStoredSave({ ...validSave, version: 58, inventoryInstances: [instance], upperTierIssuanceLedger: undefined })
+    expect(migrated.status).toBe('ok')
+    if (migrated.status === 'ok') {
+      expect(migrated.data.upperTierIssuanceLedger.yewmaster_longbow).toEqual({
+        instanceId: 'upper:one', issuanceKey: 'migration:save-v58', status: 'live',
+      })
+    }
+
+    const claimed = {
+      ...validSave,
+      inventoryInstances: [instance],
+      upperTierIssuanceLedger: { yewmaster_longbow: { instanceId: 'upper:one', issuanceKey: 'reward:one', status: 'live' } },
+    }
+    expect(isSaveData({ ...claimed, droppedItems: [{ id: 'drop:duplicate', kind: 'branch', x: 0, z: 0, instance }] })).toBe(false)
+    expect(isSaveData({ ...claimed, inventoryInstances: [instance, { id: 'upper:one', kind: 'knife' as ItemKind, durability: 1, sharpness: 1 }] })).toBe(false)
+    expect(isSaveData({ ...validSave, inventory: { yewmaster_longbow: 1 } })).toBe(false)
+    expect(isSaveData({ ...validSave, droppedItems: [{ id: 'drop:bare', kind: 'yewmaster_longbow', x: 0, z: 0 }] })).toBe(false)
+    expect(isSaveData({ ...validSave, droppedItems: [{ id: 'drop:malformed', kind: 'yewmaster_longbow', x: 0, z: 0, instance: [] }] })).toBe(false)
+    expect(isSaveData({ ...validSave, droppedItems: [{ id: 'drop:wrong-kind', kind: 'yewmaster_longbow', x: 0, z: 0, instance: { id: 'ordinary', kind: 'knife' } }] })).toBe(false)
+
+    const remoteOwner = loadStoredSave({
+      ...validSave,
+      version: 58,
+      upperTierIssuanceLedger: undefined,
+      resourceSiteInventories: { 'site:one': { counts: {}, instances: [instance] } },
+    })
+    expect(remoteOwner.status).toBe('ok')
+    if (remoteOwner.status === 'ok') {
+      expect(remoteOwner.data.upperTierIssuanceLedger.yewmaster_longbow.instanceId).toBe('upper:one')
+    }
   })
 
   it('rejects a current-version record that fails schema validation as invalid, not migration-failed', () => {

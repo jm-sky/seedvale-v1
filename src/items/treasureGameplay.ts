@@ -3,6 +3,7 @@ import { type TreasureSiteDefinition, treasureSiteForContainer } from '../world/
 import { Inventory } from './Inventory'
 import { itemIsResilient } from './itemCatalog'
 import { type ItemKind } from './items'
+import { UPPER_TIER_IDENTITY_LIST } from './upperTierIdentities'
 
 /**
  * Deterministic systemic treasure loot, force-entry and trap resolution
@@ -287,6 +288,8 @@ export type TreasureContentsSnapshot = {
 }
 
 export function snapshotTreasureContents(inventory: Inventory): TreasureContentsSnapshot {
+  const restricted = UPPER_TIER_IDENTITY_LIST.find((kind) => inventory.holdsAny(kind as ItemKind))
+  if (restricted) throw new Error(`Upper-tier identity cannot enter count-only treasure snapshot: ${restricted}`)
   return { counts: { ...inventory.toJSON() } }
 }
 

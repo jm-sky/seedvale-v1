@@ -32,6 +32,7 @@ import {
 } from './tradeCatalog'
 import { applyPurchaseMarkup } from './tradeGrievance'
 import { createTrapInstance, trapConditionRatio } from './trapItemInstances'
+import { isUpperTierIdentity } from './upperTierIdentities'
 import { createWeaponInstance } from './weaponMaintenance'
 
 export type TradeResult = 'ok' | 'cannot_afford' | 'full' | 'not_sold' | 'invalid_offer'
@@ -166,6 +167,7 @@ function isValidOffer(
 ): boolean {
   let any = false
   for (const [kind, count] of Object.entries(offer) as [ItemKind, number][]) {
+    if (isUpperTierIdentity(kind)) return false
     if (!Number.isInteger(count) || count < 0) return false
     if (count === 0) continue
     any = true
@@ -197,6 +199,9 @@ function removeOffer(
  *  world pickups (`app/createApp.ts`'s `grantItem`, `app/gameLoop.ts`'s item
  *  pickup) so no call site hard-codes which kinds are instance-backed. */
 export function createAcquiredInstance(kind: ItemKind): ItemInstance | null {
+  // A8 identities can only be created by `claimUpperTierInstance`, which binds
+  // the specimen to the world ledger and its source transaction.
+  if (isUpperTierIdentity(kind)) return null
   if (isTrapKind(kind)) return createTrapInstance(kind)
   if (isWeaponMaintenanceKind(kind)) return createWeaponInstance(kind)
   if (isLiquidContainerKind(kind)) return createLiquidContainerInstance(kind)
@@ -381,6 +386,7 @@ export function settlePricedPurchase(
   onCommit: () => boolean,
 ): TradeResult {
   if (coinPrice <= 0) return 'invalid_offer'
+  if ((Object.entries(offer) as [ItemKind, number][]).some(([kind, count]) => count > 0 && isUpperTierIdentity(kind))) return 'invalid_offer'
   const offerHasEntries = (Object.entries(offer) as [ItemKind, number][]).some(([, count]) => count > 0)
   if (!offerHasEntries) {
     if (!inventory.has('coin', coinPrice)) return 'cannot_afford'
@@ -413,6 +419,7 @@ export function settleTransaction(
   if (purchaseEntries.length === 0 && !offerHasEntries) return 'invalid_offer'
   let totalBuyCost = 0
   for (const [kind, count] of purchaseEntries) {
+    if (isUpperTierIdentity(kind)) return 'not_sold'
     if (!Number.isInteger(count)) return 'not_sold'
     const unitPrice = merchantPrice(kind)
     if (unitPrice == null) return 'not_sold'
@@ -500,6 +507,7 @@ export function settleMerchantStockTransaction(
 ): TradeResult {
   const purchaseEntries = (Object.entries(purchases) as [ItemKind, number][]).filter(([, count]) => count > 0)
   for (const [kind, count] of purchaseEntries) {
+    if (isUpperTierIdentity(kind)) return 'not_sold'
     if (!Number.isInteger(count) || !merchantStockHas(merchantStock, kind, count)) return 'not_sold'
     if (merchantPrice(kind) == null) return 'not_sold'
   }

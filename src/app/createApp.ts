@@ -71,6 +71,7 @@ import { createPrimaryWeaponSelection } from '../items/primaryWeapons'
 import { createAcquiredInstance } from '../items/trade'
 import { createTradeGrievanceStore } from '../items/tradeGrievance'
 import { type TreasureChestMutation } from '../items/treasureGameplay'
+import { isUpperTierIdentity } from '../items/upperTierIdentities'
 import { createWeaponInstance, migrateWeaponCountsToInstances } from '../items/weaponMaintenance'
 import {
   benchmarkDurationFromUrl,
@@ -637,6 +638,9 @@ export async function createApp(
   // this reference once).
   const unlockedTreasureContainerIds = new Set<string>(initialSave?.unlockedTreasureContainerIds ?? [])
   const consumedWorldPickupIds = new Set<string>(initialSave?.consumedWorldPickupIds ?? [])
+  // Plan items-player-063 — world-lifetime ledger, outside WorldBundle so same-world
+  // rebuilds cannot reopen an identity; restore from the selected save only.
+  const upperTierIssuanceLedger = structuredClone(initialSave?.upperTierIssuanceLedger ?? {})
   const treasureChestMutations = new Map<string, TreasureChestMutation>()
   for (const row of initialSave?.treasureChestMutations ?? []) {
     treasureChestMutations.set(row.containerId, {
@@ -1364,6 +1368,7 @@ export async function createApp(
   }
 
   const grantItem = (kind: ItemKind, count: number): void => {
+    if (isUpperTierIdentity(kind)) return
     for (let i = 0; i < count; i++) {
       const instance = createAcquiredInstance(kind)
       const added = instance ? inventory.addInstance(instance) : inventory.add(kind)
@@ -2813,6 +2818,7 @@ export async function createApp(
     resolvedHiddenFindSpotIds,
     unlockedTreasureContainerIds,
     consumedWorldPickupIds,
+    upperTierIssuanceLedger,
     treasureChestMutations,
     badges,
     reputation,
@@ -2994,6 +3000,7 @@ export async function createApp(
         resolvedHiddenFindSpotIds.clear()
         unlockedTreasureContainerIds.clear()
         consumedWorldPickupIds.clear()
+        for (const kind of Object.keys(upperTierIssuanceLedger)) delete upperTierIssuanceLedger[kind]
         treasureChestMutations.clear()
         badges.reset()
         reputation.reset()

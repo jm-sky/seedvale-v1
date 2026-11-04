@@ -202,6 +202,18 @@ describe('mechanical result and trap separation', () => {
 })
 
 describe('contents damage', () => {
+  it('rejects restricted upper-tier identities from the count-only snapshot', () => {
+    // The reserved ID is intentionally not a current catalog kind, so use a
+    // narrow Inventory seam matching its public `holdsAny`/`toJSON` contract.
+    const restrictedInventory = (counted: boolean, instanced: boolean) => ({
+      holdsAny: (kind: string) => kind === 'kestrel_dagger' && (counted || instanced),
+      toJSON: () => counted ? { kestrel_dagger: 1 } : {},
+    }) as unknown as Inventory
+    expect(() => snapshotTreasureContents(restrictedInventory(true, false))).toThrow(/kestrel_dagger/)
+    expect(() => snapshotTreasureContents(restrictedInventory(false, true))).toThrow(/kestrel_dagger/)
+    expect(snapshotTreasureContents(restrictedInventory(false, false))).toEqual({ counts: {} })
+  })
+
   it('destroys vulnerable loot and preserves coins and gemstones', () => {
     const snapshot = snapshotTreasureContents(new Inventory({
       coin: 80,
