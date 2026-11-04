@@ -127,6 +127,8 @@ Only `pass` donor files are copied from `docs/v3-donor/voices/mp3/` to `public/s
 
 ### 6. Prioritized missing-recording list (after reuse)
 
+**S5/Q90 editorial draft prepared 2026-11-04; awaiting author approval, not complete.** [Current audit](../research/v1-revival/2026-11-04--q90-npc-voices-editorial-audit.md) and [recording script](../research/v1-revival/2026-11-04--q90-fish-audio-script.md) supersede the provisional counts below for production review: **87 proposed takes (P0 12 / P1 54 / P2 21)**, **72 conditional reuse candidates**, **0 ledger-passed clips**. Includes [explicit dispositions for all 81 Q31/catalog proposals](../research/v1-revival/2026-11-04--q90-supersession.md). Later approved male UUID targets have no existing recordings; rejected/held voices are not counted as approved coverage. No source, canonical transcript, audio or QC verdict changed. The following table is the historical S5 estimate, not a current recording order.
+
 Computed from the coverage table, assuming casting as in §1 and all existing clips pass QC; recompute from the ledger in S5. Priority = live producer × number of NPCs on that speaker. Existing script rows are reused where they exist ([Q31 script](../research/v1-revival/2026-10-31--q31-npc-bark-line-script.md), [expansion catalog](../research/v1-revival/2026-10-31--npc-voice-expansion-catalog.json)); "new" rows must be written in S5.
 
 | Pri | Speaker | Intents (clips) | Source rows |
@@ -232,3 +234,4 @@ Each NPC retains one selected speaker across utterances (never randomly switches
 - `mark_hornblower` (Friendly Male Voice, `2adcdee4b3ce4b648dc16ea65430ea76`): **accepted for Mark Hornblower**. Listened to daily, danger alert and farewell samples. Keep separate from other guard voices.
 
 These are casting judgments, not individual transcript-QC verdicts. Unverified source IDs must not be treated as proven.
+

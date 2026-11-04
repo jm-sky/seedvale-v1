@@ -1,5 +1,7 @@
 # NPC voice expansion — English approval catalog
 
+**Q90 editorial handoff (2026-11-04, awaiting author approval):** [Current audit/script](./2026-11-04--q90-npc-voices-editorial-audit.md) and [all 52 catalog-row dispositions](./2026-11-04--q90-supersession.md) supersede this historical additive production proposal schedule for review. Do not generate both catalogs. Original text/JSON remain evidence; new proposals do not change canonical transcripts.
+
 **Date:** 2026-10-31  
 **Status:** Proposed text only; no audio generated, no production registration.  
 **Audit and dependency definitions:** [audit report](./2026-10-31--npc-voices-dialogue-audit.md)  
@@ -115,3 +117,4 @@ Q31's original text and prompts are preserved in the JSON as source evidence, no
 - Humor is optional and restricted to safe contexts. Hungry merchant humor requires noncritical hunger; if no severity input is supplied, choose a neutral line.
 - New intent strings are proposals requiring type/manifest/selection/call-site work as appropriate; filenames do not create events.
 - Review existing donor coverage before approving a take; cancel superseded rows explicitly instead of paying for both.
+

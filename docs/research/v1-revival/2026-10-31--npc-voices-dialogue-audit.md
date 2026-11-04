@@ -1,5 +1,7 @@
 # NPC Voices & Dialogue — Revival audit and diversity proposal
 
+**Q90 source-verified follow-up (2026-11-04):** [Editorial audit, dialogue corrections and Fish script](./2026-11-04--q90-npc-voices-editorial-audit.md) reconcile current Q30 code, 317 pending QC rows and later casting decisions. Earlier inventory/runtime claims below are historical where the follow-up identifies drift. §12 remains the approved author direction.
+
 **Date:** 2026-10-31  
 **Status:** Research complete; proposals pending author approval. No production code or audio changed.  
 **V1 source pin:** `ca2d0020b825e2e0c7f46d30d599b76eac10b169`  
@@ -257,4 +259,5 @@ These are explicit author approvals for **NPC Voices & Dialogue** direction, not
 **Implementation plan (2026-11-02):** [npc-065](../../plans/npc-065-stable-npc-voice-casting-and-donor-qc.md) (queue Q45 → Q87–Q90).
 
 **Implementation boundary:** This record approves product direction and answers the six questions, but does not mark Q30/Q31/Q40 done, authorize generation of every proposed recording, or change production code/assets. Resolve ordinary technical details through existing owners and planning rules.
+
 

@@ -1,0 +1,860 @@
+{
+  "status": "editorial_proposal_not_canonical_replacement",
+  "rows": [
+    {
+      "source": "Q31",
+      "filename": "general_male_weather_shelter_02.mp3",
+      "old_priority": "P0",
+      "old_fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "action": "SUPERSEDED proposal: use linked Q90 proposal(s) only after author approval; never generate both; legacy Casual UUID is not the approved new primary target",
+      "q90_alternatives": [
+        "Q90-009"
+      ],
+      "conditional_reuse": []
+    },
+    {
+      "source": "Q31",
+      "filename": "general_female_weather_shelter_02.mp3",
+      "old_priority": "P0",
+      "old_fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "action": "DEFER recording: review same-target-speaker existing candidates first; casting change is not per-line reuse; legacy Warm voice remains on hold",
+      "q90_alternatives": [],
+      "conditional_reuse": [
+        "general_female_b_weather_shelter_02.mp3"
+      ]
+    },
+    {
+      "source": "Q31",
+      "filename": "guard_male_weather_shelter_02.mp3",
+      "old_priority": "P0",
+      "old_fish_voice_id": "c29549f41b3b4aa498d66d76fba0e887",
+      "action": "DEFER recording: review same-target-speaker existing candidates first; casting change is not per-line reuse",
+      "q90_alternatives": [],
+      "conditional_reuse": [
+        "guard_male_weather_shelter_01.mp3"
+      ]
+    },
+    {
+      "source": "Q31",
+      "filename": "general_male_weather_shelter_snow_01.mp3",
+      "old_priority": "P0",
+      "old_fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "action": "SUPERSEDED proposal: use linked Q90 proposal(s) only after author approval; never generate both; legacy Casual UUID is not the approved new primary target",
+      "q90_alternatives": [
+        "Q90-075"
+      ],
+      "conditional_reuse": []
+    },
+    {
+      "source": "Q31",
+      "filename": "general_female_weather_shelter_snow_01.mp3",
+      "old_priority": "P0",
+      "old_fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "action": "SUPERSEDED proposal: use linked Q90 proposal(s) only after author approval; never generate both; legacy Warm voice remains on hold",
+      "q90_alternatives": [
+        "Q90-076"
+      ],
+      "conditional_reuse": []
+    },
+    {
+      "source": "Q31",
+      "filename": "guard_male_weather_shelter_snow_01.mp3",
+      "old_priority": "P0",
+      "old_fish_voice_id": "c29549f41b3b4aa498d66d76fba0e887",
+      "action": "SUPERSEDED proposal: use linked Q90 proposal(s) only after author approval; never generate both",
+      "q90_alternatives": [
+        "Q90-077"
+      ],
+      "conditional_reuse": []
+    },
+    {
+      "source": "Q31",
+      "filename": "general_male_weather_shelter_storm_01.mp3",
+      "old_priority": "P0",
+      "old_fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "action": "DEFER: redundant variant or unresolved casting; no Q90 take; legacy Casual UUID is not the approved new primary target",
+      "q90_alternatives": [],
+      "conditional_reuse": []
+    },
+    {
+      "source": "Q31",
+      "filename": "general_female_weather_shelter_storm_01.mp3",
+      "old_priority": "P0",
+      "old_fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "action": "SUPERSEDED proposal: use linked Q90 proposal(s) only after author approval; never generate both; legacy Warm voice remains on hold",
+      "q90_alternatives": [
+        "Q90-079"
+      ],
+      "conditional_reuse": []
+    },
+    {
+      "source": "Q31",
+      "filename": "guard_male_weather_shelter_storm_01.mp3",
+      "old_priority": "P0",
+      "old_fish_voice_id": "c29549f41b3b4aa498d66d76fba0e887",
+      "action": "SUPERSEDED proposal: use linked Q90 proposal(s) only after author approval; never generate both",
+      "q90_alternatives": [
+        "Q90-080"
+      ],
+      "conditional_reuse": []
+    },
+    {
+      "source": "Q31",
+      "filename": "general_female_weather_shelter_rain_01.mp3",
+      "old_priority": "P0",
+      "old_fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "action": "DEFER: redundant variant or unresolved casting; no Q90 take; legacy Warm voice remains on hold",
+      "q90_alternatives": [],
+      "conditional_reuse": []
+    },
+    {
+      "source": "Q31",
+      "filename": "general_male_weather_shelter_rain_01.mp3",
+      "old_priority": "P0",
+      "old_fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "action": "SUPERSEDED proposal: use linked Q90 proposal(s) only after author approval; never generate both; legacy Casual UUID is not the approved new primary target",
+      "q90_alternatives": [
+        "Q90-078"
+      ],
+      "conditional_reuse": []
+    },
+    {
+      "source": "Q31",
+      "filename": "guard_male_weather_shelter_rain_01.mp3",
+      "old_priority": "P0",
+      "old_fish_voice_id": "c29549f41b3b4aa498d66d76fba0e887",
+      "action": "DEFER: redundant variant or unresolved casting; no Q90 take",
+      "q90_alternatives": [],
+      "conditional_reuse": []
+    },
+    {
+      "source": "Q31",
+      "filename": "general_male_weather_shelter_03.mp3",
+      "old_priority": "P1",
+      "old_fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "action": "SUPERSEDED proposal: use linked Q90 proposal(s) only after author approval; never generate both; legacy Casual UUID is not the approved new primary target",
+      "q90_alternatives": [
+        "Q90-009"
+      ],
+      "conditional_reuse": []
+    },
+    {
+      "source": "Q31",
+      "filename": "general_female_weather_shelter_03.mp3",
+      "old_priority": "P1",
+      "old_fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "action": "DEFER recording: review same-target-speaker existing candidates first; casting change is not per-line reuse; legacy Warm voice remains on hold",
+      "q90_alternatives": [],
+      "conditional_reuse": [
+        "general_female_b_weather_shelter_02.mp3"
+      ]
+    },
+    {
+      "source": "Q31",
+      "filename": "general_male_weather_shelter_snow_02.mp3",
+      "old_priority": "P1",
+      "old_fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "action": "SUPERSEDED proposal: use linked Q90 proposal(s) only after author approval; never generate both; legacy Casual UUID is not the approved new primary target",
+      "q90_alternatives": [
+        "Q90-075"
+      ],
+      "conditional_reuse": []
+    },
+    {
+      "source": "Q31",
+      "filename": "general_female_weather_shelter_snow_02.mp3",
+      "old_priority": "P1",
+      "old_fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "action": "SUPERSEDED proposal: use linked Q90 proposal(s) only after author approval; never generate both; legacy Warm voice remains on hold",
+      "q90_alternatives": [
+        "Q90-076"
+      ],
+      "conditional_reuse": []
+    },
+    {
+      "source": "Q31",
+      "filename": "guard_male_weather_shelter_snow_02.mp3",
+      "old_priority": "P1",
+      "old_fish_voice_id": "c29549f41b3b4aa498d66d76fba0e887",
+      "action": "SUPERSEDED proposal: use linked Q90 proposal(s) only after author approval; never generate both",
+      "q90_alternatives": [
+        "Q90-077"
+      ],
+      "conditional_reuse": []
+    },
+    {
+      "source": "Q31",
+      "filename": "general_male_weather_shelter_storm_02.mp3",
+      "old_priority": "P1",
+      "old_fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "action": "DEFER: redundant variant or unresolved casting; no Q90 take; legacy Casual UUID is not the approved new primary target",
+      "q90_alternatives": [],
+      "conditional_reuse": []
+    },
+    {
+      "source": "Q31",
+      "filename": "general_female_weather_shelter_storm_02.mp3",
+      "old_priority": "P1",
+      "old_fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "action": "SUPERSEDED proposal: use linked Q90 proposal(s) only after author approval; never generate both; legacy Warm voice remains on hold",
+      "q90_alternatives": [
+        "Q90-079"
+      ],
+      "conditional_reuse": []
+    },
+    {
+      "source": "Q31",
+      "filename": "guard_male_weather_shelter_storm_02.mp3",
+      "old_priority": "P1",
+      "old_fish_voice_id": "c29549f41b3b4aa498d66d76fba0e887",
+      "action": "SUPERSEDED proposal: use linked Q90 proposal(s) only after author approval; never generate both",
+      "q90_alternatives": [
+        "Q90-080"
+      ],
+      "conditional_reuse": []
+    },
+    {
+      "source": "Q31",
+      "filename": "general_female_weather_shelter_rain_02.mp3",
+      "old_priority": "P1",
+      "old_fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "action": "DEFER: redundant variant or unresolved casting; no Q90 take; legacy Warm voice remains on hold",
+      "q90_alternatives": [],
+      "conditional_reuse": []
+    },
+    {
+      "source": "Q31",
+      "filename": "general_female_hungry_01.mp3",
+      "old_priority": "P2",
+      "old_fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "action": "DEFER recording: review same-target-speaker existing candidates first; casting change is not per-line reuse; legacy Warm voice remains on hold",
+      "q90_alternatives": [],
+      "conditional_reuse": [
+        "general_female_b_hungry_01.mp3"
+      ]
+    },
+    {
+      "source": "Q31",
+      "filename": "general_female_hungry_02.mp3",
+      "old_priority": "P2",
+      "old_fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "action": "DEFER recording: review same-target-speaker existing candidates first; casting change is not per-line reuse; legacy Warm voice remains on hold",
+      "q90_alternatives": [],
+      "conditional_reuse": [
+        "general_female_b_hungry_01.mp3"
+      ]
+    },
+    {
+      "source": "Q31",
+      "filename": "general_male_hungry_02.mp3",
+      "old_priority": "P2",
+      "old_fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "action": "SUPERSEDED proposal: use linked Q90 proposal(s) only after author approval; never generate both; legacy Casual UUID is not the approved new primary target",
+      "q90_alternatives": [
+        "Q90-008"
+      ],
+      "conditional_reuse": []
+    },
+    {
+      "source": "Q31",
+      "filename": "general_female_work_finished_01.mp3",
+      "old_priority": "P2",
+      "old_fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "action": "SUPERSEDED proposal: use linked Q90 proposal(s) only after author approval; never generate both; legacy Warm voice remains on hold",
+      "q90_alternatives": [
+        "Q90-055"
+      ],
+      "conditional_reuse": []
+    },
+    {
+      "source": "Q31",
+      "filename": "general_female_work_finished_02.mp3",
+      "old_priority": "P2",
+      "old_fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "action": "SUPERSEDED proposal: use linked Q90 proposal(s) only after author approval; never generate both; legacy Warm voice remains on hold",
+      "q90_alternatives": [
+        "Q90-055"
+      ],
+      "conditional_reuse": []
+    },
+    {
+      "source": "Q31",
+      "filename": "general_male_work_finished_02.mp3",
+      "old_priority": "P2",
+      "old_fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "action": "SUPERSEDED proposal: use linked Q90 proposal(s) only after author approval; never generate both; legacy Casual UUID is not the approved new primary target",
+      "q90_alternatives": [
+        "Q90-012"
+      ],
+      "conditional_reuse": []
+    },
+    {
+      "source": "Q31",
+      "filename": "general_female_exhausted_02.mp3",
+      "old_priority": "P2",
+      "old_fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "action": "DEFER recording: review same-target-speaker existing candidates first; casting change is not per-line reuse; legacy Warm voice remains on hold",
+      "q90_alternatives": [],
+      "conditional_reuse": [
+        "general_female_b_exhausted_01.mp3"
+      ]
+    },
+    {
+      "source": "Q31",
+      "filename": "general_male_exhausted_02.mp3",
+      "old_priority": "P2",
+      "old_fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "action": "SUPERSEDED proposal: use linked Q90 proposal(s) only after author approval; never generate both; legacy Casual UUID is not the approved new primary target",
+      "q90_alternatives": [
+        "Q90-007"
+      ],
+      "conditional_reuse": []
+    },
+    {
+      "source": "catalog",
+      "filename": "general_male_danger_alert_11.mp3",
+      "old_priority": "P0",
+      "old_fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "action": "SUPERSEDED proposal: use linked Q90 proposal(s) only after author approval; never generate both; legacy Casual UUID is not the approved new primary target",
+      "q90_alternatives": [
+        "Q90-010"
+      ],
+      "conditional_reuse": []
+    },
+    {
+      "source": "catalog",
+      "filename": "shepherd_male_livestock_danger_11.mp3",
+      "old_priority": "P0",
+      "old_fish_voice_id": "4af16ba03cee422996ec29a43e1947ee",
+      "action": "HOLD: metadata/role and mismatch review; no new full bank selected",
+      "q90_alternatives": [],
+      "conditional_reuse": []
+    },
+    {
+      "source": "catalog",
+      "filename": "general_male_farewell_11.mp3",
+      "old_priority": "P0",
+      "old_fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "action": "SUPERSEDED proposal: use linked Q90 proposal(s) only after author approval; never generate both; legacy Casual UUID is not the approved new primary target",
+      "q90_alternatives": [
+        "Q90-003"
+      ],
+      "conditional_reuse": []
+    },
+    {
+      "source": "catalog",
+      "filename": "general_female_danger_alert_11.mp3",
+      "old_priority": "P1",
+      "old_fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "action": "DEFER recording: review same-target-speaker existing candidates first; casting change is not per-line reuse; legacy Warm voice remains on hold",
+      "q90_alternatives": [],
+      "conditional_reuse": [
+        "general_female_b_danger_alert_02.mp3"
+      ]
+    },
+    {
+      "source": "catalog",
+      "filename": "guard_male_combat_start_11.mp3",
+      "old_priority": "P1",
+      "old_fish_voice_id": "c29549f41b3b4aa498d66d76fba0e887",
+      "action": "SUPERSEDED proposal: use linked Q90 proposal(s) only after author approval; never generate both",
+      "q90_alternatives": [
+        "Q90-038"
+      ],
+      "conditional_reuse": []
+    },
+    {
+      "source": "catalog",
+      "filename": "general_male_call_for_help_11.mp3",
+      "old_priority": "P1",
+      "old_fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "action": "DEFER: retain text idea only; event/knowledge or exact binding not supplied; no Q90 take; legacy Casual UUID is not the approved new primary target",
+      "q90_alternatives": [],
+      "conditional_reuse": []
+    },
+    {
+      "source": "catalog",
+      "filename": "general_female_call_for_help_11.mp3",
+      "old_priority": "P1",
+      "old_fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "action": "DEFER: retain text idea only; event/knowledge or exact binding not supplied; no Q90 take; legacy Warm voice remains on hold",
+      "q90_alternatives": [],
+      "conditional_reuse": []
+    },
+    {
+      "source": "catalog",
+      "filename": "hunter_male_hungry_11.mp3",
+      "old_priority": "P1",
+      "old_fish_voice_id": "bd22266aba38416cb602e90ce651520c",
+      "action": "SUPERSEDED proposal: use linked Q90 proposal(s) only after author approval; never generate both",
+      "q90_alternatives": [
+        "Q90-042"
+      ],
+      "conditional_reuse": []
+    },
+    {
+      "source": "catalog",
+      "filename": "hunter_male_exhausted_11.mp3",
+      "old_priority": "P1",
+      "old_fish_voice_id": "bd22266aba38416cb602e90ce651520c",
+      "action": "SUPERSEDED proposal: use linked Q90 proposal(s) only after author approval; never generate both",
+      "q90_alternatives": [
+        "Q90-043"
+      ],
+      "conditional_reuse": []
+    },
+    {
+      "source": "catalog",
+      "filename": "hunter_male_weather_shelter_11.mp3",
+      "old_priority": "P1",
+      "old_fish_voice_id": "bd22266aba38416cb602e90ce651520c",
+      "action": "SUPERSEDED proposal: use linked Q90 proposal(s) only after author approval; never generate both",
+      "q90_alternatives": [
+        "Q90-044"
+      ],
+      "conditional_reuse": []
+    },
+    {
+      "source": "catalog",
+      "filename": "merchant_female_hungry_11.mp3",
+      "old_priority": "P1",
+      "old_fish_voice_id": "d4f161bee1934b47ad3090f05649270c",
+      "action": "SUPERSEDED proposal: use linked Q90 proposal(s) only after author approval; never generate both",
+      "q90_alternatives": [
+        "Q90-047"
+      ],
+      "conditional_reuse": []
+    },
+    {
+      "source": "catalog",
+      "filename": "merchant_female_exhausted_11.mp3",
+      "old_priority": "P1",
+      "old_fish_voice_id": "d4f161bee1934b47ad3090f05649270c",
+      "action": "SUPERSEDED proposal: use linked Q90 proposal(s) only after author approval; never generate both",
+      "q90_alternatives": [
+        "Q90-048"
+      ],
+      "conditional_reuse": []
+    },
+    {
+      "source": "catalog",
+      "filename": "merchant_female_weather_shelter_11.mp3",
+      "old_priority": "P1",
+      "old_fish_voice_id": "d4f161bee1934b47ad3090f05649270c",
+      "action": "SUPERSEDED proposal: use linked Q90 proposal(s) only after author approval; never generate both",
+      "q90_alternatives": [
+        "Q90-049"
+      ],
+      "conditional_reuse": []
+    },
+    {
+      "source": "catalog",
+      "filename": "guard_male_hungry_11.mp3",
+      "old_priority": "P1",
+      "old_fish_voice_id": "c29549f41b3b4aa498d66d76fba0e887",
+      "action": "SUPERSEDED proposal: use linked Q90 proposal(s) only after author approval; never generate both",
+      "q90_alternatives": [
+        "Q90-039"
+      ],
+      "conditional_reuse": []
+    },
+    {
+      "source": "catalog",
+      "filename": "guard_male_exhausted_11.mp3",
+      "old_priority": "P1",
+      "old_fish_voice_id": "c29549f41b3b4aa498d66d76fba0e887",
+      "action": "SUPERSEDED proposal: use linked Q90 proposal(s) only after author approval; never generate both",
+      "q90_alternatives": [
+        "Q90-040"
+      ],
+      "conditional_reuse": []
+    },
+    {
+      "source": "catalog",
+      "filename": "shepherd_male_hungry_11.mp3",
+      "old_priority": "P1",
+      "old_fish_voice_id": "4af16ba03cee422996ec29a43e1947ee",
+      "action": "HOLD: metadata/role and mismatch review; no new full bank selected",
+      "q90_alternatives": [],
+      "conditional_reuse": []
+    },
+    {
+      "source": "catalog",
+      "filename": "shepherd_male_exhausted_11.mp3",
+      "old_priority": "P1",
+      "old_fish_voice_id": "4af16ba03cee422996ec29a43e1947ee",
+      "action": "HOLD: metadata/role and mismatch review; no new full bank selected",
+      "q90_alternatives": [],
+      "conditional_reuse": []
+    },
+    {
+      "source": "catalog",
+      "filename": "shepherd_male_weather_shelter_11.mp3",
+      "old_priority": "P1",
+      "old_fish_voice_id": "4af16ba03cee422996ec29a43e1947ee",
+      "action": "HOLD: metadata/role and mismatch review; no new full bank selected",
+      "q90_alternatives": [],
+      "conditional_reuse": []
+    },
+    {
+      "source": "catalog",
+      "filename": "general_male_profession_reply_woodcutter_11.mp3",
+      "old_priority": "P1",
+      "old_fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "action": "SUPERSEDED proposal: use linked Q90 proposal(s) only after author approval; never generate both; legacy Casual UUID is not the approved new primary target",
+      "q90_alternatives": [
+        "Q90-056"
+      ],
+      "conditional_reuse": []
+    },
+    {
+      "source": "catalog",
+      "filename": "general_female_profession_reply_farmer_11.mp3",
+      "old_priority": "P1",
+      "old_fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "action": "SUPERSEDED proposal: use linked Q90 proposal(s) only after author approval; never generate both; legacy Warm voice remains on hold",
+      "q90_alternatives": [
+        "Q90-057"
+      ],
+      "conditional_reuse": []
+    },
+    {
+      "source": "catalog",
+      "filename": "guard_male_profession_reply_guard_11.mp3",
+      "old_priority": "P1",
+      "old_fish_voice_id": "c29549f41b3b4aa498d66d76fba0e887",
+      "action": "SUPERSEDED proposal: use linked Q90 proposal(s) only after author approval; never generate both",
+      "q90_alternatives": [
+        "Q90-058"
+      ],
+      "conditional_reuse": []
+    },
+    {
+      "source": "catalog",
+      "filename": "merchant_female_profession_reply_trader_11.mp3",
+      "old_priority": "P1",
+      "old_fish_voice_id": "d4f161bee1934b47ad3090f05649270c",
+      "action": "SUPERSEDED proposal: use linked Q90 proposal(s) only after author approval; never generate both",
+      "q90_alternatives": [
+        "Q90-059"
+      ],
+      "conditional_reuse": []
+    },
+    {
+      "source": "catalog",
+      "filename": "general_male_profession_reply_miner_11.mp3",
+      "old_priority": "P1",
+      "old_fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "action": "SUPERSEDED proposal: use linked Q90 proposal(s) only after author approval; never generate both; legacy Casual UUID is not the approved new primary target",
+      "q90_alternatives": [
+        "Q90-060"
+      ],
+      "conditional_reuse": []
+    },
+    {
+      "source": "catalog",
+      "filename": "general_female_profession_reply_fisher_11.mp3",
+      "old_priority": "P1",
+      "old_fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "action": "SUPERSEDED proposal: use linked Q90 proposal(s) only after author approval; never generate both; legacy Warm voice remains on hold",
+      "q90_alternatives": [
+        "Q90-061"
+      ],
+      "conditional_reuse": []
+    },
+    {
+      "source": "catalog",
+      "filename": "hunter_male_profession_reply_hunter_11.mp3",
+      "old_priority": "P1",
+      "old_fish_voice_id": "bd22266aba38416cb602e90ce651520c",
+      "action": "SUPERSEDED proposal: use linked Q90 proposal(s) only after author approval; never generate both",
+      "q90_alternatives": [
+        "Q90-062"
+      ],
+      "conditional_reuse": []
+    },
+    {
+      "source": "catalog",
+      "filename": "general_male_profession_reply_blacksmith_11.mp3",
+      "old_priority": "P1",
+      "old_fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "action": "SUPERSEDED proposal: use linked Q90 proposal(s) only after author approval; never generate both; legacy Casual UUID is not the approved new primary target",
+      "q90_alternatives": [
+        "Q90-063"
+      ],
+      "conditional_reuse": []
+    },
+    {
+      "source": "catalog",
+      "filename": "shepherd_male_profession_reply_shepherd_11.mp3",
+      "old_priority": "P1",
+      "old_fish_voice_id": "4af16ba03cee422996ec29a43e1947ee",
+      "action": "HOLD: metadata/role and mismatch review; no new full bank selected",
+      "q90_alternatives": [],
+      "conditional_reuse": []
+    },
+    {
+      "source": "catalog",
+      "filename": "general_female_profession_reply_textile_worker_11.mp3",
+      "old_priority": "P1",
+      "old_fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "action": "SUPERSEDED proposal: use linked Q90 proposal(s) only after author approval; never generate both; legacy Warm voice remains on hold",
+      "q90_alternatives": [
+        "Q90-065"
+      ],
+      "conditional_reuse": []
+    },
+    {
+      "source": "catalog",
+      "filename": "general_female_profession_reply_herbalist_11.mp3",
+      "old_priority": "P1",
+      "old_fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "action": "SUPERSEDED proposal: use linked Q90 proposal(s) only after author approval; never generate both; legacy Warm voice remains on hold",
+      "q90_alternatives": [
+        "Q90-066"
+      ],
+      "conditional_reuse": []
+    },
+    {
+      "source": "catalog",
+      "filename": "general_male_greeting_stranger_calm_11.mp3",
+      "old_priority": "P1",
+      "old_fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "action": "SUPERSEDED proposal: use linked Q90 proposal(s) only after author approval; never generate both; legacy Casual UUID is not the approved new primary target",
+      "q90_alternatives": [
+        "Q90-067"
+      ],
+      "conditional_reuse": []
+    },
+    {
+      "source": "catalog",
+      "filename": "general_female_greeting_stranger_curious_11.mp3",
+      "old_priority": "P1",
+      "old_fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "action": "SUPERSEDED proposal: use linked Q90 proposal(s) only after author approval; never generate both; legacy Warm voice remains on hold",
+      "q90_alternatives": [
+        "Q90-068"
+      ],
+      "conditional_reuse": [
+        "general_female_b_greeting_01.mp3"
+      ]
+    },
+    {
+      "source": "catalog",
+      "filename": "general_female_greeting_familiar_cheerful_11.mp3",
+      "old_priority": "P1",
+      "old_fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "action": "SUPERSEDED proposal: use linked Q90 proposal(s) only after author approval; never generate both; legacy Warm voice remains on hold",
+      "q90_alternatives": [
+        "Q90-069"
+      ],
+      "conditional_reuse": [
+        "general_female_b_greeting_01.mp3"
+      ]
+    },
+    {
+      "source": "catalog",
+      "filename": "general_male_greeting_familiar_grumpy_11.mp3",
+      "old_priority": "P1",
+      "old_fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "action": "SUPERSEDED proposal: use linked Q90 proposal(s) only after author approval; never generate both; legacy Casual UUID is not the approved new primary target",
+      "q90_alternatives": [
+        "Q90-001",
+        "Q90-067"
+      ],
+      "conditional_reuse": []
+    },
+    {
+      "source": "catalog",
+      "filename": "guard_male_greeting_familiar_calm_11.mp3",
+      "old_priority": "P1",
+      "old_fish_voice_id": "c29549f41b3b4aa498d66d76fba0e887",
+      "action": "SUPERSEDED proposal: use linked Q90 proposal(s) only after author approval; never generate both",
+      "q90_alternatives": [
+        "Q90-071"
+      ],
+      "conditional_reuse": [
+        "guard_male_greeting_01.mp3"
+      ]
+    },
+    {
+      "source": "catalog",
+      "filename": "merchant_female_greeting_familiar_cheerful_11.mp3",
+      "old_priority": "P1",
+      "old_fish_voice_id": "d4f161bee1934b47ad3090f05649270c",
+      "action": "SUPERSEDED proposal: use linked Q90 proposal(s) only after author approval; never generate both",
+      "q90_alternatives": [
+        "Q90-072"
+      ],
+      "conditional_reuse": [
+        "merchant_female_greeting_01.mp3"
+      ]
+    },
+    {
+      "source": "catalog",
+      "filename": "general_male_greeting_local_distrust_11.mp3",
+      "old_priority": "P2",
+      "old_fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "action": "SUPERSEDED proposal: use linked Q90 proposal(s) only after author approval; never generate both; legacy Casual UUID is not the approved new primary target",
+      "q90_alternatives": [
+        "Q90-001",
+        "Q90-067"
+      ],
+      "conditional_reuse": []
+    },
+    {
+      "source": "catalog",
+      "filename": "general_female_greeting_local_respect_11.mp3",
+      "old_priority": "P2",
+      "old_fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "action": "SUPERSEDED proposal: use linked Q90 proposal(s) only after author approval; never generate both; legacy Warm voice remains on hold",
+      "q90_alternatives": [
+        "Q90-074"
+      ],
+      "conditional_reuse": [
+        "general_female_b_greeting_01.mp3"
+      ]
+    },
+    {
+      "source": "catalog",
+      "filename": "general_male_weather_remark_fog_11.mp3",
+      "old_priority": "P2",
+      "old_fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "action": "DEFER: retain text idea only; event/knowledge or exact binding not supplied; no Q90 take; legacy Casual UUID is not the approved new primary target",
+      "q90_alternatives": [],
+      "conditional_reuse": []
+    },
+    {
+      "source": "catalog",
+      "filename": "general_female_weather_remark_light_rain_11.mp3",
+      "old_priority": "P2",
+      "old_fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "action": "DEFER: retain text idea only; event/knowledge or exact binding not supplied; no Q90 take; legacy Warm voice remains on hold",
+      "q90_alternatives": [],
+      "conditional_reuse": []
+    },
+    {
+      "source": "catalog",
+      "filename": "general_female_weather_remark_clearing_11.mp3",
+      "old_priority": "P2",
+      "old_fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "action": "DEFER: retain text idea only; event/knowledge or exact binding not supplied; no Q90 take; legacy Warm voice remains on hold",
+      "q90_alternatives": [],
+      "conditional_reuse": []
+    },
+    {
+      "source": "catalog",
+      "filename": "general_male_weather_remark_cold_dry_11.mp3",
+      "old_priority": "P2",
+      "old_fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "action": "DEFER: retain text idea only; event/knowledge or exact binding not supplied; no Q90 take; legacy Casual UUID is not the approved new primary target",
+      "q90_alternatives": [],
+      "conditional_reuse": []
+    },
+    {
+      "source": "catalog",
+      "filename": "general_female_thirsty_11.mp3",
+      "old_priority": "P2",
+      "old_fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "action": "DEFER: retain text idea only; event/knowledge or exact binding not supplied; no Q90 take; legacy Warm voice remains on hold",
+      "q90_alternatives": [],
+      "conditional_reuse": []
+    },
+    {
+      "source": "catalog",
+      "filename": "general_male_thirsty_11.mp3",
+      "old_priority": "P2",
+      "old_fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "action": "DEFER: retain text idea only; event/knowledge or exact binding not supplied; no Q90 take; legacy Casual UUID is not the approved new primary target",
+      "q90_alternatives": [],
+      "conditional_reuse": []
+    },
+    {
+      "source": "catalog",
+      "filename": "general_male_injured_11.mp3",
+      "old_priority": "P2",
+      "old_fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "action": "DEFER: retain text idea only; event/knowledge or exact binding not supplied; no Q90 take; legacy Casual UUID is not the approved new primary target",
+      "q90_alternatives": [],
+      "conditional_reuse": []
+    },
+    {
+      "source": "catalog",
+      "filename": "general_female_danger_passed_11.mp3",
+      "old_priority": "P2",
+      "old_fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "action": "DEFER: retain text idea only; event/knowledge or exact binding not supplied; no Q90 take; legacy Warm voice remains on hold",
+      "q90_alternatives": [],
+      "conditional_reuse": []
+    },
+    {
+      "source": "catalog",
+      "filename": "general_male_repair_finished_11.mp3",
+      "old_priority": "P2",
+      "old_fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "action": "DEFER: retain text idea only; event/knowledge or exact binding not supplied; no Q90 take; legacy Casual UUID is not the approved new primary target",
+      "q90_alternatives": [],
+      "conditional_reuse": []
+    },
+    {
+      "source": "catalog",
+      "filename": "general_female_bereavement_11.mp3",
+      "old_priority": "P2",
+      "old_fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "action": "DEFER: retain text idea only; event/knowledge or exact binding not supplied; no Q90 take; legacy Warm voice remains on hold",
+      "q90_alternatives": [],
+      "conditional_reuse": []
+    },
+    {
+      "source": "catalog",
+      "filename": "hunter_male_knowledge_ready_11.mp3",
+      "old_priority": "P2",
+      "old_fish_voice_id": "bd22266aba38416cb602e90ce651520c",
+      "action": "DEFER: retain text idea only; event/knowledge or exact binding not supplied; no Q90 take",
+      "q90_alternatives": [],
+      "conditional_reuse": []
+    },
+    {
+      "source": "catalog",
+      "filename": "general_male_campfire_question_rest_11.mp3",
+      "old_priority": "P2",
+      "old_fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "action": "SUPERSEDED proposal: use linked Q90 proposal(s) only after author approval; never generate both; legacy Casual UUID is not the approved new primary target",
+      "q90_alternatives": [
+        "Q90-084"
+      ],
+      "conditional_reuse": []
+    },
+    {
+      "source": "catalog",
+      "filename": "general_female_campfire_answer_rest_11.mp3",
+      "old_priority": "P2",
+      "old_fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "action": "SUPERSEDED proposal: use linked Q90 proposal(s) only after author approval; never generate both; legacy Warm voice remains on hold",
+      "q90_alternatives": [
+        "Q90-085"
+      ],
+      "conditional_reuse": []
+    },
+    {
+      "source": "catalog",
+      "filename": "general_female_campfire_question_humor_11.mp3",
+      "old_priority": "P2",
+      "old_fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "action": "SUPERSEDED proposal: use linked Q90 proposal(s) only after author approval; never generate both; legacy Warm voice remains on hold",
+      "q90_alternatives": [
+        "Q90-086"
+      ],
+      "conditional_reuse": []
+    },
+    {
+      "source": "catalog",
+      "filename": "general_male_campfire_answer_humor_11.mp3",
+      "old_priority": "P2",
+      "old_fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "action": "DEFER: redundant variant or unresolved casting; no Q90 take; legacy Casual UUID is not the approved new primary target",
+      "q90_alternatives": [],
+      "conditional_reuse": []
+    }
+  ]
+}

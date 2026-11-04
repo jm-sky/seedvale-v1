@@ -1,0 +1,4683 @@
+{
+  "source_commit": "bca03d453bfb0177a9d2801c4d2ccc7ca0c3b7a5",
+  "ledger_rows": 317,
+  "public_files": 109,
+  "donor_only": 208,
+  "approved": 0,
+  "asr_match": 275,
+  "asr_mismatch": 42,
+  "per_speaker": [
+    {
+      "speaker": "general_male_fairytail",
+      "fish_voice_id": "689b47ca83dd48dba90b160affb8a118",
+      "casting": "approved direction; no recordings",
+      "files": 0,
+      "public": 0,
+      "asr_match": 0,
+      "asr_mismatch": 0,
+      "approved": 0,
+      "slots": {
+        "greeting": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-001"
+          ],
+          "classification": "no_existing_recording"
+        },
+        "attention": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-002"
+          ],
+          "classification": "no_existing_recording"
+        },
+        "farewell": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-003"
+          ],
+          "classification": "no_existing_recording"
+        },
+        "quest_accepted": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-004"
+          ],
+          "classification": "no_existing_recording"
+        },
+        "quest_declined": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-005"
+          ],
+          "classification": "no_existing_recording"
+        },
+        "quest_complete": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-006"
+          ],
+          "classification": "no_existing_recording"
+        },
+        "exhausted": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-007"
+          ],
+          "classification": "no_existing_recording"
+        },
+        "hungry": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-008"
+          ],
+          "classification": "no_existing_recording"
+        },
+        "weather_shelter": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-009"
+          ],
+          "classification": "no_existing_recording"
+        },
+        "danger_alert": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-010"
+          ],
+          "classification": "no_existing_recording"
+        },
+        "combat_start": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-011"
+          ],
+          "classification": "no_existing_recording"
+        },
+        "work_finished": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-012"
+          ],
+          "classification": "no_existing_recording"
+        }
+      }
+    },
+    {
+      "speaker": "general_old_male_george",
+      "fish_voice_id": "372ef39bf5bf4fd38c5c56bce607aba6",
+      "casting": "approved direction; no recordings",
+      "files": 0,
+      "public": 0,
+      "asr_match": 0,
+      "asr_mismatch": 0,
+      "approved": 0,
+      "slots": {
+        "greeting": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-013"
+          ],
+          "classification": "no_existing_recording"
+        },
+        "attention": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-014"
+          ],
+          "classification": "no_existing_recording"
+        },
+        "farewell": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-015"
+          ],
+          "classification": "no_existing_recording"
+        },
+        "quest_accepted": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-016"
+          ],
+          "classification": "no_existing_recording"
+        },
+        "quest_declined": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-017"
+          ],
+          "classification": "no_existing_recording"
+        },
+        "quest_complete": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-018"
+          ],
+          "classification": "no_existing_recording"
+        },
+        "exhausted": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-019"
+          ],
+          "classification": "no_existing_recording"
+        },
+        "hungry": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-020"
+          ],
+          "classification": "no_existing_recording"
+        },
+        "weather_shelter": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-021"
+          ],
+          "classification": "no_existing_recording"
+        },
+        "danger_alert": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-022"
+          ],
+          "classification": "no_existing_recording"
+        },
+        "combat_start": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-023"
+          ],
+          "classification": "no_existing_recording"
+        },
+        "work_finished": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-024"
+          ],
+          "classification": "no_existing_recording"
+        }
+      }
+    },
+    {
+      "speaker": "general_male_v2_rick",
+      "fish_voice_id": "d2e75a3e3fd6419893057c02a375a113",
+      "casting": "approved direction; no recordings",
+      "files": 0,
+      "public": 0,
+      "asr_match": 0,
+      "asr_mismatch": 0,
+      "approved": 0,
+      "slots": {
+        "greeting": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-025"
+          ],
+          "classification": "no_existing_recording"
+        },
+        "attention": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-026"
+          ],
+          "classification": "no_existing_recording"
+        },
+        "farewell": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-027"
+          ],
+          "classification": "no_existing_recording"
+        },
+        "quest_accepted": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-028"
+          ],
+          "classification": "no_existing_recording"
+        },
+        "quest_declined": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-029"
+          ],
+          "classification": "no_existing_recording"
+        },
+        "quest_complete": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-030"
+          ],
+          "classification": "no_existing_recording"
+        },
+        "exhausted": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-031"
+          ],
+          "classification": "no_existing_recording"
+        },
+        "hungry": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-032"
+          ],
+          "classification": "no_existing_recording"
+        },
+        "weather_shelter": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-033"
+          ],
+          "classification": "no_existing_recording"
+        },
+        "danger_alert": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-034"
+          ],
+          "classification": "no_existing_recording"
+        },
+        "combat_start": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-035"
+          ],
+          "classification": "no_existing_recording"
+        },
+        "work_finished": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-036"
+          ],
+          "classification": "no_existing_recording"
+        }
+      }
+    },
+    {
+      "speaker": "general_female_b",
+      "fish_voice_id": "9a9cf47702da476aa4629e2506d4a857",
+      "casting": "accepted casting; clips pending",
+      "files": 38,
+      "public": 0,
+      "asr_match": 36,
+      "asr_mismatch": 2,
+      "approved": 0,
+      "slots": {
+        "greeting": {
+          "existing_files": [
+            "general_female_b_greeting_01.mp3",
+            "general_female_b_greeting_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "general_female_b_greeting_01.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "attention": {
+          "existing_files": [
+            "general_female_b_attention_01.mp3",
+            "general_female_b_attention_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "general_female_b_attention_02.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "farewell": {
+          "existing_files": [
+            "general_female_b_farewell_01.mp3",
+            "general_female_b_farewell_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "general_female_b_farewell_02.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "quest_accepted": {
+          "existing_files": [
+            "general_female_b_quest_accepted_01.mp3",
+            "general_female_b_quest_accepted_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "general_female_b_quest_accepted_02.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "quest_declined": {
+          "existing_files": [
+            "general_female_b_quest_declined_01.mp3",
+            "general_female_b_quest_declined_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "general_female_b_quest_declined_02.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "quest_complete": {
+          "existing_files": [
+            "general_female_b_quest_complete_01.mp3",
+            "general_female_b_quest_complete_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "general_female_b_quest_complete_01.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "exhausted": {
+          "existing_files": [
+            "general_female_b_exhausted_01.mp3",
+            "general_female_b_exhausted_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "general_female_b_exhausted_01.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "hungry": {
+          "existing_files": [
+            "general_female_b_hungry_01.mp3",
+            "general_female_b_hungry_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "general_female_b_hungry_01.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "weather_shelter": {
+          "existing_files": [
+            "general_female_b_weather_shelter_01.mp3",
+            "general_female_b_weather_shelter_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "general_female_b_weather_shelter_02.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "danger_alert": {
+          "existing_files": [
+            "general_female_b_danger_alert_01.mp3",
+            "general_female_b_danger_alert_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "general_female_b_danger_alert_02.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "combat_start": {
+          "existing_files": [
+            "general_female_b_combat_start_01.mp3",
+            "general_female_b_combat_start_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "general_female_b_combat_start_01.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "work_finished": {
+          "existing_files": [
+            "general_female_b_work_finished_01.mp3",
+            "general_female_b_work_finished_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-055"
+          ],
+          "classification": "present_but_not_selected_or_context_held"
+        }
+      }
+    },
+    {
+      "speaker": "guard_male",
+      "fish_voice_id": "c29549f41b3b4aa498d66d76fba0e887",
+      "casting": "accepted casting; bank mismatch review pending",
+      "files": 22,
+      "public": 22,
+      "asr_match": 17,
+      "asr_mismatch": 5,
+      "approved": 0,
+      "slots": {
+        "greeting": {
+          "existing_files": [
+            "guard_male_greeting_01.mp3",
+            "guard_male_greeting_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "guard_male_greeting_01.mp3"
+          ],
+          "proposed_recordings": [
+            "Q90-037"
+          ],
+          "classification": "candidate_pending_QC"
+        },
+        "attention": {
+          "existing_files": [
+            "guard_male_attention_01.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "guard_male_attention_01.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "farewell": {
+          "existing_files": [
+            "guard_male_farewell_01.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "guard_male_farewell_01.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "quest_accepted": {
+          "existing_files": [
+            "guard_male_quest_accepted_01.mp3",
+            "guard_male_quest_accepted_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "guard_male_quest_accepted_01.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "quest_declined": {
+          "existing_files": [
+            "guard_male_quest_declined_01.mp3",
+            "guard_male_quest_declined_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "guard_male_quest_declined_01.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "quest_complete": {
+          "existing_files": [
+            "guard_male_quest_complete_01.mp3",
+            "guard_male_quest_complete_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "guard_male_quest_complete_01.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "exhausted": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-040"
+          ],
+          "classification": "no_existing_recording"
+        },
+        "hungry": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-039"
+          ],
+          "classification": "no_existing_recording"
+        },
+        "weather_shelter": {
+          "existing_files": [
+            "guard_male_weather_shelter_01.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "guard_male_weather_shelter_01.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "danger_alert": {
+          "existing_files": [
+            "guard_male_danger_alert_01.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "guard_male_danger_alert_01.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "combat_start": {
+          "existing_files": [
+            "guard_male_combat_start_01.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-038"
+          ],
+          "classification": "present_but_not_selected_or_context_held"
+        },
+        "work_finished": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-041"
+          ],
+          "classification": "no_existing_recording"
+        },
+        "guard_response": {
+          "existing_files": [
+            "guard_male_guard_response_01.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "guard_male_guard_response_01.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        }
+      }
+    },
+    {
+      "speaker": "hunter_male",
+      "fish_voice_id": "bd22266aba38416cb602e90ce651520c",
+      "casting": "accepted; selected for Jacob",
+      "files": 21,
+      "public": 21,
+      "asr_match": 21,
+      "asr_mismatch": 0,
+      "approved": 0,
+      "slots": {
+        "greeting": {
+          "existing_files": [
+            "hunter_male_greeting_01.mp3",
+            "hunter_male_greeting_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "hunter_male_greeting_02.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "attention": {
+          "existing_files": [
+            "hunter_male_attention_01.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "hunter_male_attention_01.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "farewell": {
+          "existing_files": [
+            "hunter_male_farewell_01.mp3",
+            "hunter_male_farewell_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "hunter_male_farewell_01.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "quest_accepted": {
+          "existing_files": [
+            "hunter_male_quest_accepted_01.mp3",
+            "hunter_male_quest_accepted_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-046"
+          ],
+          "classification": "present_but_not_selected_or_context_held"
+        },
+        "quest_declined": {
+          "existing_files": [
+            "hunter_male_quest_declined_01.mp3",
+            "hunter_male_quest_declined_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "hunter_male_quest_declined_01.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "quest_complete": {
+          "existing_files": [
+            "hunter_male_quest_complete_01.mp3",
+            "hunter_male_quest_complete_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "hunter_male_quest_complete_01.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "exhausted": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-043"
+          ],
+          "classification": "no_existing_recording"
+        },
+        "hungry": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-042"
+          ],
+          "classification": "no_existing_recording"
+        },
+        "weather_shelter": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-044"
+          ],
+          "classification": "no_existing_recording"
+        },
+        "danger_alert": {
+          "existing_files": [
+            "hunter_male_danger_alert_01.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "hunter_male_danger_alert_01.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "combat_start": {
+          "existing_files": [
+            "hunter_male_combat_start_01.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "hunter_male_combat_start_01.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "work_finished": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-045"
+          ],
+          "classification": "no_existing_recording"
+        }
+      }
+    },
+    {
+      "speaker": "merchant_female",
+      "fish_voice_id": "d4f161bee1934b47ad3090f05649270c",
+      "casting": "Kate sample fit accepted; source identity still unverified",
+      "files": 17,
+      "public": 17,
+      "asr_match": 16,
+      "asr_mismatch": 1,
+      "approved": 0,
+      "slots": {
+        "greeting": {
+          "existing_files": [
+            "merchant_female_greeting_01.mp3",
+            "merchant_female_greeting_02.mp3",
+            "merchant_female_greeting_03.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "merchant_female_greeting_01.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "attention": {
+          "existing_files": [
+            "merchant_female_attention_01.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "merchant_female_attention_01.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "farewell": {
+          "existing_files": [
+            "merchant_female_farewell_01.mp3",
+            "merchant_female_farewell_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "merchant_female_farewell_01.mp3"
+          ],
+          "proposed_recordings": [
+            "Q90-053"
+          ],
+          "classification": "candidate_pending_QC"
+        },
+        "quest_accepted": {
+          "existing_files": [
+            "merchant_female_quest_accepted_01.mp3",
+            "merchant_female_quest_accepted_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "merchant_female_quest_accepted_01.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "quest_declined": {
+          "existing_files": [
+            "merchant_female_quest_declined_01.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "merchant_female_quest_declined_01.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "quest_complete": {
+          "existing_files": [
+            "merchant_female_quest_complete_01.mp3",
+            "merchant_female_quest_complete_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-054"
+          ],
+          "classification": "present_but_not_selected_or_context_held"
+        },
+        "exhausted": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-048"
+          ],
+          "classification": "no_existing_recording"
+        },
+        "hungry": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-047"
+          ],
+          "classification": "no_existing_recording"
+        },
+        "weather_shelter": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-049"
+          ],
+          "classification": "no_existing_recording"
+        },
+        "danger_alert": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-050"
+          ],
+          "classification": "no_existing_recording"
+        },
+        "combat_start": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-051"
+          ],
+          "classification": "no_existing_recording"
+        },
+        "work_finished": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-052"
+          ],
+          "classification": "no_existing_recording"
+        }
+      }
+    },
+    {
+      "speaker": "guard_male_b",
+      "fish_voice_id": "7a18a1851d2649108c48ec9f2c80eb2c",
+      "casting": "provisional; role fit and bank mismatch review pending",
+      "files": 40,
+      "public": 0,
+      "asr_match": 31,
+      "asr_mismatch": 9,
+      "approved": 0,
+      "slots": {
+        "greeting": {
+          "existing_files": [
+            "guard_male_b_greeting_01.mp3",
+            "guard_male_b_greeting_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "guard_male_b_greeting_02.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "attention": {
+          "existing_files": [
+            "guard_male_b_attention_01.mp3",
+            "guard_male_b_attention_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "guard_male_b_attention_01.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "farewell": {
+          "existing_files": [
+            "guard_male_b_farewell_01.mp3",
+            "guard_male_b_farewell_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "guard_male_b_farewell_01.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "quest_accepted": {
+          "existing_files": [
+            "guard_male_b_quest_accepted_01.mp3",
+            "guard_male_b_quest_accepted_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "guard_male_b_quest_accepted_01.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "quest_declined": {
+          "existing_files": [
+            "guard_male_b_quest_declined_01.mp3",
+            "guard_male_b_quest_declined_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "guard_male_b_quest_declined_02.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "quest_complete": {
+          "existing_files": [
+            "guard_male_b_quest_complete_01.mp3",
+            "guard_male_b_quest_complete_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-082"
+          ],
+          "classification": "present_but_not_selected_or_context_held"
+        },
+        "exhausted": {
+          "existing_files": [
+            "guard_male_b_exhausted_01.mp3",
+            "guard_male_b_exhausted_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "guard_male_b_exhausted_01.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "hungry": {
+          "existing_files": [
+            "guard_male_b_hungry_01.mp3",
+            "guard_male_b_hungry_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "guard_male_b_hungry_01.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "weather_shelter": {
+          "existing_files": [
+            "guard_male_b_weather_shelter_01.mp3",
+            "guard_male_b_weather_shelter_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "guard_male_b_weather_shelter_02.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "danger_alert": {
+          "existing_files": [
+            "guard_male_b_danger_alert_01.mp3",
+            "guard_male_b_danger_alert_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "guard_male_b_danger_alert_02.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "combat_start": {
+          "existing_files": [
+            "guard_male_b_combat_start_01.mp3",
+            "guard_male_b_combat_start_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-081"
+          ],
+          "classification": "present_but_not_selected_or_context_held"
+        },
+        "work_finished": {
+          "existing_files": [
+            "guard_male_b_work_finished_01.mp3",
+            "guard_male_b_work_finished_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [
+            "Q90-083"
+          ],
+          "classification": "present_but_not_selected_or_context_held"
+        },
+        "guard_response": {
+          "existing_files": [
+            "guard_male_b_guard_response_01.mp3",
+            "guard_male_b_guard_response_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "guard_male_b_guard_response_01.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        }
+      }
+    },
+    {
+      "speaker": "hunter_male_b",
+      "fish_voice_id": "a2cecd3eda8b44178b7f1bc1379edae0",
+      "casting": "provisional; no Jacob assignment",
+      "files": 38,
+      "public": 0,
+      "asr_match": 35,
+      "asr_mismatch": 3,
+      "approved": 0,
+      "slots": {
+        "greeting": {
+          "existing_files": [
+            "hunter_male_b_greeting_01.mp3",
+            "hunter_male_b_greeting_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "hunter_male_b_greeting_01.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "attention": {
+          "existing_files": [
+            "hunter_male_b_attention_01.mp3",
+            "hunter_male_b_attention_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "hunter_male_b_attention_01.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "farewell": {
+          "existing_files": [
+            "hunter_male_b_farewell_01.mp3",
+            "hunter_male_b_farewell_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "hunter_male_b_farewell_01.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "quest_accepted": {
+          "existing_files": [
+            "hunter_male_b_quest_accepted_01.mp3",
+            "hunter_male_b_quest_accepted_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "hunter_male_b_quest_accepted_02.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "quest_declined": {
+          "existing_files": [
+            "hunter_male_b_quest_declined_01.mp3",
+            "hunter_male_b_quest_declined_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "hunter_male_b_quest_declined_02.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "quest_complete": {
+          "existing_files": [
+            "hunter_male_b_quest_complete_01.mp3",
+            "hunter_male_b_quest_complete_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "hunter_male_b_quest_complete_02.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "exhausted": {
+          "existing_files": [
+            "hunter_male_b_exhausted_01.mp3",
+            "hunter_male_b_exhausted_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "hunter_male_b_exhausted_01.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "hungry": {
+          "existing_files": [
+            "hunter_male_b_hungry_01.mp3",
+            "hunter_male_b_hungry_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "hunter_male_b_hungry_02.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "weather_shelter": {
+          "existing_files": [
+            "hunter_male_b_weather_shelter_01.mp3",
+            "hunter_male_b_weather_shelter_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "hunter_male_b_weather_shelter_02.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "danger_alert": {
+          "existing_files": [
+            "hunter_male_b_danger_alert_01.mp3",
+            "hunter_male_b_danger_alert_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "hunter_male_b_danger_alert_02.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "combat_start": {
+          "existing_files": [
+            "hunter_male_b_combat_start_01.mp3",
+            "hunter_male_b_combat_start_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "hunter_male_b_combat_start_02.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "work_finished": {
+          "existing_files": [
+            "hunter_male_b_work_finished_01.mp3",
+            "hunter_male_b_work_finished_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "hunter_male_b_work_finished_02.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        }
+      }
+    },
+    {
+      "speaker": "merchant_female_b",
+      "fish_voice_id": "e3cd384158934cc9a01029cd7d278634",
+      "casting": "HOLD source UUID; voice usable, not Kate",
+      "files": 38,
+      "public": 0,
+      "asr_match": 36,
+      "asr_mismatch": 2,
+      "approved": 0,
+      "slots": {
+        "greeting": {
+          "existing_files": [
+            "merchant_female_b_greeting_01.mp3",
+            "merchant_female_b_greeting_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "merchant_female_b_greeting_02.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "attention": {
+          "existing_files": [
+            "merchant_female_b_attention_01.mp3",
+            "merchant_female_b_attention_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "merchant_female_b_attention_01.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "farewell": {
+          "existing_files": [
+            "merchant_female_b_farewell_01.mp3",
+            "merchant_female_b_farewell_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "merchant_female_b_farewell_02.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "quest_accepted": {
+          "existing_files": [
+            "merchant_female_b_quest_accepted_01.mp3",
+            "merchant_female_b_quest_accepted_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "merchant_female_b_quest_accepted_02.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "quest_declined": {
+          "existing_files": [
+            "merchant_female_b_quest_declined_01.mp3",
+            "merchant_female_b_quest_declined_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "merchant_female_b_quest_declined_02.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "quest_complete": {
+          "existing_files": [
+            "merchant_female_b_quest_complete_01.mp3",
+            "merchant_female_b_quest_complete_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "merchant_female_b_quest_complete_01.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "exhausted": {
+          "existing_files": [
+            "merchant_female_b_exhausted_01.mp3",
+            "merchant_female_b_exhausted_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "merchant_female_b_exhausted_02.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "hungry": {
+          "existing_files": [
+            "merchant_female_b_hungry_01.mp3",
+            "merchant_female_b_hungry_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "merchant_female_b_hungry_01.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "weather_shelter": {
+          "existing_files": [
+            "merchant_female_b_weather_shelter_01.mp3",
+            "merchant_female_b_weather_shelter_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "merchant_female_b_weather_shelter_01.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "danger_alert": {
+          "existing_files": [
+            "merchant_female_b_danger_alert_01.mp3",
+            "merchant_female_b_danger_alert_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "merchant_female_b_danger_alert_02.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "combat_start": {
+          "existing_files": [
+            "merchant_female_b_combat_start_01.mp3",
+            "merchant_female_b_combat_start_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "merchant_female_b_combat_start_02.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "work_finished": {
+          "existing_files": [
+            "merchant_female_b_work_finished_01.mp3",
+            "merchant_female_b_work_finished_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "merchant_female_b_work_finished_02.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        }
+      }
+    },
+    {
+      "speaker": "shepherd_male",
+      "fish_voice_id": "4af16ba03cee422996ec29a43e1947ee",
+      "casting": "HOLD gender/role metadata; accepted sound",
+      "files": 5,
+      "public": 5,
+      "asr_match": 2,
+      "asr_mismatch": 3,
+      "approved": 0,
+      "slots": {
+        "greeting": {
+          "existing_files": [
+            "shepherd_male_greeting_01.mp3",
+            "shepherd_male_greeting_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "present_but_not_selected_or_context_held"
+        },
+        "attention": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "no_existing_recording"
+        },
+        "farewell": {
+          "existing_files": [
+            "shepherd_male_farewell_01.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "present_but_not_selected_or_context_held"
+        },
+        "quest_accepted": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "no_existing_recording"
+        },
+        "quest_declined": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "no_existing_recording"
+        },
+        "quest_complete": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "no_existing_recording"
+        },
+        "exhausted": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "no_existing_recording"
+        },
+        "hungry": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "no_existing_recording"
+        },
+        "weather_shelter": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "no_existing_recording"
+        },
+        "danger_alert": {
+          "existing_files": [
+            "shepard_male_danger_alert_01.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "present_but_not_selected_or_context_held"
+        },
+        "combat_start": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "no_existing_recording"
+        },
+        "work_finished": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "no_existing_recording"
+        },
+        "livestock_danger": {
+          "existing_files": [
+            "shepherd_male_livestock_danger_01.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "present_but_not_selected_or_context_held"
+        }
+      }
+    },
+    {
+      "speaker": "shepherd_male_b",
+      "fish_voice_id": "beb44e5fac1e4b33a15dfcdcc2a9421d",
+      "casting": "accepted sound; final role unresolved",
+      "files": 10,
+      "public": 0,
+      "asr_match": 10,
+      "asr_mismatch": 0,
+      "approved": 0,
+      "slots": {
+        "greeting": {
+          "existing_files": [
+            "shepherd_male_b_greeting_01.mp3",
+            "shepherd_male_b_greeting_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "shepherd_male_b_greeting_01.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "attention": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "no_existing_recording"
+        },
+        "farewell": {
+          "existing_files": [
+            "shepherd_male_b_farewell_01.mp3",
+            "shepherd_male_b_farewell_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "shepherd_male_b_farewell_01.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "quest_accepted": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "no_existing_recording"
+        },
+        "quest_declined": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "no_existing_recording"
+        },
+        "quest_complete": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "no_existing_recording"
+        },
+        "exhausted": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "no_existing_recording"
+        },
+        "hungry": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "no_existing_recording"
+        },
+        "weather_shelter": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "no_existing_recording"
+        },
+        "danger_alert": {
+          "existing_files": [
+            "shepherd_male_b_danger_alert_01.mp3",
+            "shepherd_male_b_danger_alert_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "shepherd_male_b_danger_alert_01.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "combat_start": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "no_existing_recording"
+        },
+        "work_finished": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "no_existing_recording"
+        },
+        "livestock_danger": {
+          "existing_files": [
+            "shepherd_male_b_livestock_danger_01.mp3",
+            "shepherd_male_b_livestock_danger_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "present_but_not_selected_or_context_held"
+        }
+      }
+    },
+    {
+      "speaker": "mark_hornblower",
+      "fish_voice_id": "2adcdee4b3ce4b648dc16ea65430ea76",
+      "casting": "accepted for Mark; pilot only",
+      "files": 6,
+      "public": 0,
+      "asr_match": 6,
+      "asr_mismatch": 0,
+      "approved": 0,
+      "slots": {
+        "greeting": {
+          "existing_files": [
+            "npc_mark_hornblower_greeting_01.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "npc_mark_hornblower_greeting_01.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "attention": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "no_existing_recording"
+        },
+        "farewell": {
+          "existing_files": [
+            "npc_mark_hornblower_farewell_01.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "npc_mark_hornblower_farewell_01.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "quest_accepted": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "no_existing_recording"
+        },
+        "quest_declined": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "no_existing_recording"
+        },
+        "quest_complete": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "no_existing_recording"
+        },
+        "exhausted": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "no_existing_recording"
+        },
+        "hungry": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "no_existing_recording"
+        },
+        "weather_shelter": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "no_existing_recording"
+        },
+        "danger_alert": {
+          "existing_files": [
+            "npc_mark_hornblower_danger_alert_01.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [
+            "npc_mark_hornblower_danger_alert_01.mp3"
+          ],
+          "proposed_recordings": [],
+          "classification": "candidate_pending_QC"
+        },
+        "combat_start": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "no_existing_recording"
+        },
+        "work_finished": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "no_existing_recording"
+        },
+        "guard_response": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "no_existing_recording"
+        }
+      }
+    },
+    {
+      "speaker": "general_male",
+      "fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+      "casting": "HOLD inconsistent audible identity; new primary target is FairyTail",
+      "files": 22,
+      "public": 22,
+      "asr_match": 12,
+      "asr_mismatch": 10,
+      "approved": 0,
+      "slots": {
+        "greeting": {
+          "existing_files": [
+            "general_male_greeting_01.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "present_but_not_selected_or_context_held"
+        },
+        "attention": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "no_existing_recording"
+        },
+        "farewell": {
+          "existing_files": [
+            "general_male_farewell_01.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "present_but_not_selected_or_context_held"
+        },
+        "quest_accepted": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "no_existing_recording"
+        },
+        "quest_declined": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "no_existing_recording"
+        },
+        "quest_complete": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "no_existing_recording"
+        },
+        "exhausted": {
+          "existing_files": [
+            "general_male_exhausted_01.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "present_but_not_selected_or_context_held"
+        },
+        "hungry": {
+          "existing_files": [
+            "general_male_hungry_01.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "present_but_not_selected_or_context_held"
+        },
+        "weather_shelter": {
+          "existing_files": [
+            "general_male_weather_shelter_01.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "present_but_not_selected_or_context_held"
+        },
+        "danger_alert": {
+          "existing_files": [
+            "general_male_danger_alert_01.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "present_but_not_selected_or_context_held"
+        },
+        "combat_start": {
+          "existing_files": [
+            "general_male_combat_start_01.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "present_but_not_selected_or_context_held"
+        },
+        "work_finished": {
+          "existing_files": [
+            "general_male_work_finished_01.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "present_but_not_selected_or_context_held"
+        }
+      }
+    },
+    {
+      "speaker": "general_female",
+      "fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+      "casting": "HOLD inconsistent audible identity",
+      "files": 22,
+      "public": 22,
+      "asr_match": 15,
+      "asr_mismatch": 7,
+      "approved": 0,
+      "slots": {
+        "greeting": {
+          "existing_files": [
+            "general_female_greeting_01.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "present_but_not_selected_or_context_held"
+        },
+        "attention": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "no_existing_recording"
+        },
+        "farewell": {
+          "existing_files": [
+            "general_female_farewell_01.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "present_but_not_selected_or_context_held"
+        },
+        "quest_accepted": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "no_existing_recording"
+        },
+        "quest_declined": {
+          "existing_files": [
+            "general_female_quest_declined_01.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "present_but_not_selected_or_context_held"
+        },
+        "quest_complete": {
+          "existing_files": [
+            "general_female_quest_complete_01.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "present_but_not_selected_or_context_held"
+        },
+        "exhausted": {
+          "existing_files": [
+            "general_female_exhausted_01.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "present_but_not_selected_or_context_held"
+        },
+        "hungry": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "no_existing_recording"
+        },
+        "weather_shelter": {
+          "existing_files": [
+            "general_female_weather_shelter_01.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "present_but_not_selected_or_context_held"
+        },
+        "danger_alert": {
+          "existing_files": [
+            "general_female_danger_alert_01.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "present_but_not_selected_or_context_held"
+        },
+        "combat_start": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "no_existing_recording"
+        },
+        "work_finished": {
+          "existing_files": [],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "no_existing_recording"
+        }
+      }
+    },
+    {
+      "speaker": "general_male_b",
+      "fish_voice_id": "65c0b8155c464a648161af8877404f11",
+      "casting": "REJECTED permanently globally",
+      "files": 38,
+      "public": 0,
+      "asr_match": 38,
+      "asr_mismatch": 0,
+      "approved": 0,
+      "slots": {
+        "greeting": {
+          "existing_files": [
+            "general_male_b_greeting_01.mp3",
+            "general_male_b_greeting_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "present_but_not_selected_or_context_held"
+        },
+        "attention": {
+          "existing_files": [
+            "general_male_b_attention_01.mp3",
+            "general_male_b_attention_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "present_but_not_selected_or_context_held"
+        },
+        "farewell": {
+          "existing_files": [
+            "general_male_b_farewell_01.mp3",
+            "general_male_b_farewell_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "present_but_not_selected_or_context_held"
+        },
+        "quest_accepted": {
+          "existing_files": [
+            "general_male_b_quest_accepted_01.mp3",
+            "general_male_b_quest_accepted_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "present_but_not_selected_or_context_held"
+        },
+        "quest_declined": {
+          "existing_files": [
+            "general_male_b_quest_declined_01.mp3",
+            "general_male_b_quest_declined_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "present_but_not_selected_or_context_held"
+        },
+        "quest_complete": {
+          "existing_files": [
+            "general_male_b_quest_complete_01.mp3",
+            "general_male_b_quest_complete_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "present_but_not_selected_or_context_held"
+        },
+        "exhausted": {
+          "existing_files": [
+            "general_male_b_exhausted_01.mp3",
+            "general_male_b_exhausted_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "present_but_not_selected_or_context_held"
+        },
+        "hungry": {
+          "existing_files": [
+            "general_male_b_hungry_01.mp3",
+            "general_male_b_hungry_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "present_but_not_selected_or_context_held"
+        },
+        "weather_shelter": {
+          "existing_files": [
+            "general_male_b_weather_shelter_01.mp3",
+            "general_male_b_weather_shelter_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "present_but_not_selected_or_context_held"
+        },
+        "danger_alert": {
+          "existing_files": [
+            "general_male_b_danger_alert_01.mp3",
+            "general_male_b_danger_alert_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "present_but_not_selected_or_context_held"
+        },
+        "combat_start": {
+          "existing_files": [
+            "general_male_b_combat_start_01.mp3",
+            "general_male_b_combat_start_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "present_but_not_selected_or_context_held"
+        },
+        "work_finished": {
+          "existing_files": [
+            "general_male_b_work_finished_01.mp3",
+            "general_male_b_work_finished_02.mp3"
+          ],
+          "approved_files": [],
+          "reuse_candidates": [],
+          "proposed_recordings": [],
+          "classification": "present_but_not_selected_or_context_held"
+        }
+      }
+    }
+  ],
+  "method": "Core 12 intents plus guard_response/livestock_danger as applicable. Counts are files, not approval. Registry absent at source pin. Each approved_files list is empty. Reuse candidates are editorial selections requiring existing QC/casting gates.",
+  "all_file_dispositions": [
+    {
+      "file": "campfire_female_road_answer_02.mp3",
+      "speaker": "general_female",
+      "gitBlob": "7084b3528be26d4ef8bc66680a280d0c1ffe86a7",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "campfire_female_road_question_01.mp3",
+      "speaker": "general_female",
+      "gitBlob": "1268ecbf1eb61c42aec5f1561045436f94e69742",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "campfire_female_weather_answer_02.mp3",
+      "speaker": "general_female",
+      "gitBlob": "44cec6233045d4fda3a1f0e2a014f4060c6c946f",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "campfire_female_weather_question_01.mp3",
+      "speaker": "general_female",
+      "gitBlob": "ba7d75c681b16aaf008043a25b70f4431543b59b",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "mismatch"
+    },
+    {
+      "file": "campfire_female_work_answer_01.mp3",
+      "speaker": "general_female",
+      "gitBlob": "fcbd3d5dc62121557bcf5c80257f905903bf108e",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "campfire_female_work_question_02.mp3",
+      "speaker": "general_female",
+      "gitBlob": "e71efe86c13a7dbbd4a3bfe72c7e04e85122e714",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "campfire_male_road_answer_01.mp3",
+      "speaker": "general_male",
+      "gitBlob": "139b566a98bb0def9739c8ba1e129b6125e9cebb",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "campfire_male_road_question_02.mp3",
+      "speaker": "general_male",
+      "gitBlob": "ed879ca95c8e29002ca8fc8223fe689359712bbc",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "campfire_male_weather_answer_01.mp3",
+      "speaker": "general_male",
+      "gitBlob": "0d22c4579838b0b70b4fbff3552b0e6fbb678735",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "mismatch"
+    },
+    {
+      "file": "campfire_male_weather_question_02.mp3",
+      "speaker": "general_male",
+      "gitBlob": "0b3ab7a18247608cf8b3a352810be01340735f8a",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "campfire_male_work_answer_02.mp3",
+      "speaker": "general_male",
+      "gitBlob": "e49b2a4e0d661b493c581cac67517dc57bfec76d",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "campfire_male_work_question_01.mp3",
+      "speaker": "general_male",
+      "gitBlob": "dd77daf764f815771c8be11dd416c6bb9bc5b5a6",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_female_agree_01.mp3",
+      "speaker": "general_female",
+      "gitBlob": "d12c0e2be5029d5853ce4002d294a6fb0cda8690",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_female_b_agree_01.mp3",
+      "speaker": "general_female_b",
+      "gitBlob": "7bddc75ddc329866ddbf24d6acaabccf4fdeeadd",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_female_b_agree_02.mp3",
+      "speaker": "general_female_b",
+      "gitBlob": "1bc5ff5e588bc555bd50d376e34aea08f2f33e24",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_female_b_attention_01.mp3",
+      "speaker": "general_female_b",
+      "gitBlob": "860f6a46c168ae872e7350738611eb30a03e1f29",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "mismatch"
+    },
+    {
+      "file": "general_female_b_attention_02.mp3",
+      "speaker": "general_female_b",
+      "gitBlob": "b6516f08adb95ddcc2c8679fd43810060a1e5cc9",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_female_b_call_for_help_01.mp3",
+      "speaker": "general_female_b",
+      "gitBlob": "beea62a4b43b2ad1b87bfa8c376cfd893af26d79",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_female_b_call_for_help_02.mp3",
+      "speaker": "general_female_b",
+      "gitBlob": "91fa308479a9db163cc41cc63f77f6a8d89b388e",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_female_b_combat_start_01.mp3",
+      "speaker": "general_female_b",
+      "gitBlob": "a27ef221913eeb2b9b2582a615c458a5a649d581",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_female_b_combat_start_02.mp3",
+      "speaker": "general_female_b",
+      "gitBlob": "61b7524673819fe2454a7cfa201e43fb6993bd9c",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_female_b_danger_alert_01.mp3",
+      "speaker": "general_female_b",
+      "gitBlob": "3c72670d03655a406edc590d1d5e549c68069710",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_female_b_danger_alert_02.mp3",
+      "speaker": "general_female_b",
+      "gitBlob": "af86afde09e1bcd66075b28ea352992ef980f076",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_female_b_exhausted_01.mp3",
+      "speaker": "general_female_b",
+      "gitBlob": "a8b7bb338272e0c9afa8b1733c6ea5e0f06391d5",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_female_b_exhausted_02.mp3",
+      "speaker": "general_female_b",
+      "gitBlob": "9bd55dbdcacda4d9bc8af59fe19999e18fa5ae2c",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_female_b_farewell_01.mp3",
+      "speaker": "general_female_b",
+      "gitBlob": "e069aaa3546e7e48c29c99f6c331f0cae33b96ff",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_female_b_farewell_02.mp3",
+      "speaker": "general_female_b",
+      "gitBlob": "f6940ff7c3dcefa8dacf8c9c809f7d835825e4a7",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_female_b_greeting_01.mp3",
+      "speaker": "general_female_b",
+      "gitBlob": "7711a95f8843fa7f24936da89dd2d529d94306f3",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_female_b_greeting_02.mp3",
+      "speaker": "general_female_b",
+      "gitBlob": "b003df01c0f4185398ff2feac3a777d905751aa5",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_female_b_hungry_01.mp3",
+      "speaker": "general_female_b",
+      "gitBlob": "cca6d3e7bd5b0ba45c37b441344f02e05396b6fd",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_female_b_hungry_02.mp3",
+      "speaker": "general_female_b",
+      "gitBlob": "662cd4070da51859411e61f30795f1a8d6d8b0d1",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "mismatch"
+    },
+    {
+      "file": "general_female_b_quest_accepted_01.mp3",
+      "speaker": "general_female_b",
+      "gitBlob": "ef37251d482c88eede1441393880968fe5116eb4",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_female_b_quest_accepted_02.mp3",
+      "speaker": "general_female_b",
+      "gitBlob": "b19b4a59a23d4019c5a9bbc89ce76e7507ee7059",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_female_b_quest_complete_01.mp3",
+      "speaker": "general_female_b",
+      "gitBlob": "437998c809dc2f8d9cdd9467daaf3cd59f775e29",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_female_b_quest_complete_02.mp3",
+      "speaker": "general_female_b",
+      "gitBlob": "27e853394ac16c93ec79af9affc5d97552426925",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_female_b_quest_declined_01.mp3",
+      "speaker": "general_female_b",
+      "gitBlob": "2a0d7046ecfaceb9eab18b3e959cfc8bcba30dad",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_female_b_quest_declined_02.mp3",
+      "speaker": "general_female_b",
+      "gitBlob": "38deb53e9d006f0be4fe29c122d228d2eab23f7f",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_female_b_quest_offer_01.mp3",
+      "speaker": "general_female_b",
+      "gitBlob": "cc1d0f57ae3445ad3064ac17809d00554786a5d2",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_female_b_quest_offer_02.mp3",
+      "speaker": "general_female_b",
+      "gitBlob": "80531b65b83b07ea08408c962eeecacec2c10baf",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_female_b_refusal_01.mp3",
+      "speaker": "general_female_b",
+      "gitBlob": "7756b1045e468205d97404fe1532d80cb38be846",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_female_b_refusal_02.mp3",
+      "speaker": "general_female_b",
+      "gitBlob": "7785f05421dd28f14530370b947668d8e6d2206e",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_female_b_thanks_01.mp3",
+      "speaker": "general_female_b",
+      "gitBlob": "76a7cc92c81bb2e2d1c9e18743de34cd2ee08831",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_female_b_thanks_02.mp3",
+      "speaker": "general_female_b",
+      "gitBlob": "fbcd77de97ddcc124a020b2151b1431adbea27a7",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_female_b_warning_01.mp3",
+      "speaker": "general_female_b",
+      "gitBlob": "239942183bcc2e5860d897027dbb7604989ba028",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_female_b_warning_02.mp3",
+      "speaker": "general_female_b",
+      "gitBlob": "4d671075a99d7d441c34b2434630f555ca1bb3ae",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_female_b_weather_shelter_01.mp3",
+      "speaker": "general_female_b",
+      "gitBlob": "5e8301f828de82ae17532249e625aea76350f377",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_female_b_weather_shelter_02.mp3",
+      "speaker": "general_female_b",
+      "gitBlob": "d75b47c21276444cfebbed0eb3f14ed50bc37f99",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_female_b_well_wish_01.mp3",
+      "speaker": "general_female_b",
+      "gitBlob": "5321440f1c5c8b20d2f21b5d757757e8e79be34c",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_female_b_well_wish_02.mp3",
+      "speaker": "general_female_b",
+      "gitBlob": "7fe014d38b0994871664d200a3acf406ebe9a1b3",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_female_b_work_finished_01.mp3",
+      "speaker": "general_female_b",
+      "gitBlob": "cd2493b502dd45f40dc3c3574dba1ccad7aaa236",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_female_b_work_finished_02.mp3",
+      "speaker": "general_female_b",
+      "gitBlob": "466afa6c9cd89ff4b91859e0d523d02869cfef0e",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_female_call_for_help_01.mp3",
+      "speaker": "general_female",
+      "gitBlob": "19b74114ddcf9371afe6062038d130442c244ccf",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "mismatch"
+    },
+    {
+      "file": "general_female_child_farewell_01.mp3",
+      "speaker": "general_female",
+      "gitBlob": "20faca321ca431baac95fd986dea673412301e1a",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_female_child_farewell_02.mp3",
+      "speaker": "general_female",
+      "gitBlob": "16e163eefc335a02c252382fd46cf209d93aeea0",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "mismatch"
+    },
+    {
+      "file": "general_female_child_greeting_01.mp3",
+      "speaker": "general_female",
+      "gitBlob": "1720ca75d9d7d634e72bcc3bfc26bef6621edb00",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "mismatch"
+    },
+    {
+      "file": "general_female_danger_alert_01.mp3",
+      "speaker": "general_female",
+      "gitBlob": "ab798d718db63cf9946dfbf86eabf03b06e7cb96",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "mismatch"
+    },
+    {
+      "file": "general_female_exhausted_01.mp3",
+      "speaker": "general_female",
+      "gitBlob": "b3c1df1ba4a728af37ca9cf0ad6ef97290dc2741",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_female_farewell_01.mp3",
+      "speaker": "general_female",
+      "gitBlob": "a834a37cf313af20c968b81ad9d071f61cddcb87",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_female_greeting_01.mp3",
+      "speaker": "general_female",
+      "gitBlob": "70b49103970982350b30dd3fe2ce159140651d7d",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_female_old_farewell_01.mp3",
+      "speaker": "general_female",
+      "gitBlob": "6a7c296f0edeec45fd36c6394c51b6801b7e6871",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_female_old_farewell_02.mp3",
+      "speaker": "general_female",
+      "gitBlob": "ad2a7de6df5d0c00cf8bb086bfa429638ca9ee42",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "mismatch"
+    },
+    {
+      "file": "general_female_old_greeting_01.mp3",
+      "speaker": "general_female",
+      "gitBlob": "14eba3aca9c38317052fdfcf40c66a6caf977347",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_female_quest_complete_01.mp3",
+      "speaker": "general_female",
+      "gitBlob": "1019b3298263ea5631f218d3f6873b131923788c",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_female_quest_declined_01.mp3",
+      "speaker": "general_female",
+      "gitBlob": "375d99aeb0be7e85330c09052e6fcf1f4d935fa8",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_female_thanks_01.mp3",
+      "speaker": "general_female",
+      "gitBlob": "107031b675b4727c420859f50dcbad78b0d0f165",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_female_weather_shelter_01.mp3",
+      "speaker": "general_female",
+      "gitBlob": "08c4ec7dd46160a6b394c79b93b0c0a5b6aa3415",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "mismatch"
+    },
+    {
+      "file": "general_male_b_agree_01.mp3",
+      "speaker": "general_male_b",
+      "gitBlob": "aae386274ac97351ab9b863ef01680cda03fb8cb",
+      "disposition": "blocked_rejected_speaker",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_male_b_agree_02.mp3",
+      "speaker": "general_male_b",
+      "gitBlob": "e16cca9fc1e1a0e5c8a85b80fe6447626d0705b5",
+      "disposition": "blocked_rejected_speaker",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_male_b_attention_01.mp3",
+      "speaker": "general_male_b",
+      "gitBlob": "1d874370af48e185d884eb857ad802020ec98631",
+      "disposition": "blocked_rejected_speaker",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_male_b_attention_02.mp3",
+      "speaker": "general_male_b",
+      "gitBlob": "3cb7cc04aa8fb74ae7324f98aa63b1e501c4a4b0",
+      "disposition": "blocked_rejected_speaker",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_male_b_call_for_help_01.mp3",
+      "speaker": "general_male_b",
+      "gitBlob": "547b18743613e3abce0066eda6153e1618699861",
+      "disposition": "blocked_rejected_speaker",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_male_b_call_for_help_02.mp3",
+      "speaker": "general_male_b",
+      "gitBlob": "033dbea8772e3400b26dc26e63378a895da24220",
+      "disposition": "blocked_rejected_speaker",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_male_b_combat_start_01.mp3",
+      "speaker": "general_male_b",
+      "gitBlob": "3d65ee7e695fdd0338a1c82e5da4b4abaf88ac20",
+      "disposition": "blocked_rejected_speaker",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_male_b_combat_start_02.mp3",
+      "speaker": "general_male_b",
+      "gitBlob": "2fb76acbc241649edff0e622537c40cbfaa77c1c",
+      "disposition": "blocked_rejected_speaker",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_male_b_danger_alert_01.mp3",
+      "speaker": "general_male_b",
+      "gitBlob": "d0e77d61176deeeb0b206a877149ad75d49b6b7a",
+      "disposition": "blocked_rejected_speaker",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_male_b_danger_alert_02.mp3",
+      "speaker": "general_male_b",
+      "gitBlob": "978a872dce04eb5c6f0df21d0a85e91ae4a4db08",
+      "disposition": "blocked_rejected_speaker",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_male_b_exhausted_01.mp3",
+      "speaker": "general_male_b",
+      "gitBlob": "9e5254b270350ee180ba250f5346718bb1ba851e",
+      "disposition": "blocked_rejected_speaker",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_male_b_exhausted_02.mp3",
+      "speaker": "general_male_b",
+      "gitBlob": "0f9aed66d43473ecbc7a5f7cf68bb180c91db298",
+      "disposition": "blocked_rejected_speaker",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_male_b_farewell_01.mp3",
+      "speaker": "general_male_b",
+      "gitBlob": "2f3e5a3dbdd33f69da480458e24be368289818ba",
+      "disposition": "blocked_rejected_speaker",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_male_b_farewell_02.mp3",
+      "speaker": "general_male_b",
+      "gitBlob": "b95a12dc4e9e68d70574bdf38cdde408d55e3a83",
+      "disposition": "blocked_rejected_speaker",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_male_b_greeting_01.mp3",
+      "speaker": "general_male_b",
+      "gitBlob": "dcbeddd8cc80f203d586e00118fd4538e809268d",
+      "disposition": "blocked_rejected_speaker",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_male_b_greeting_02.mp3",
+      "speaker": "general_male_b",
+      "gitBlob": "c7ecc6fd2d52a6284480589120eaa7896c07c73c",
+      "disposition": "blocked_rejected_speaker",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_male_b_hungry_01.mp3",
+      "speaker": "general_male_b",
+      "gitBlob": "2197518952b394cdf30e5ead9e63aa32cde76064",
+      "disposition": "blocked_rejected_speaker",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_male_b_hungry_02.mp3",
+      "speaker": "general_male_b",
+      "gitBlob": "6b579d0ab4a2ae2267141986835efda673825ecd",
+      "disposition": "blocked_rejected_speaker",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_male_b_quest_accepted_01.mp3",
+      "speaker": "general_male_b",
+      "gitBlob": "970eeb44071383fa4f33f34f60ffabc67335104a",
+      "disposition": "blocked_rejected_speaker",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_male_b_quest_accepted_02.mp3",
+      "speaker": "general_male_b",
+      "gitBlob": "db8dd3b31fba2e0c85ab954bc22c9078ddb29cb9",
+      "disposition": "blocked_rejected_speaker",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_male_b_quest_complete_01.mp3",
+      "speaker": "general_male_b",
+      "gitBlob": "8210b2870f0ce08218e08d0fe3a9a60ef23aa25e",
+      "disposition": "blocked_rejected_speaker",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_male_b_quest_complete_02.mp3",
+      "speaker": "general_male_b",
+      "gitBlob": "4d87968ea02f066d1ead134a52535ddc89e54303",
+      "disposition": "blocked_rejected_speaker",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_male_b_quest_declined_01.mp3",
+      "speaker": "general_male_b",
+      "gitBlob": "6394a97c4556fdca6869ebb44d75b27b8b34cc7c",
+      "disposition": "blocked_rejected_speaker",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_male_b_quest_declined_02.mp3",
+      "speaker": "general_male_b",
+      "gitBlob": "b9fcade3224ee83609ca7ec7199b77d012d0a609",
+      "disposition": "blocked_rejected_speaker",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_male_b_quest_offer_01.mp3",
+      "speaker": "general_male_b",
+      "gitBlob": "579890eb9755d14234ca5f092fc4ec28a9c7672f",
+      "disposition": "blocked_rejected_speaker",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_male_b_quest_offer_02.mp3",
+      "speaker": "general_male_b",
+      "gitBlob": "3a23b2da2046310805d00d981855fde17bd0149f",
+      "disposition": "blocked_rejected_speaker",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_male_b_refusal_01.mp3",
+      "speaker": "general_male_b",
+      "gitBlob": "5a556297218efe17457f672b16948e5ec6e6ada5",
+      "disposition": "blocked_rejected_speaker",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_male_b_refusal_02.mp3",
+      "speaker": "general_male_b",
+      "gitBlob": "f08ae5132a1ce0f9fe6e0d29b3651beb6b16a2cb",
+      "disposition": "blocked_rejected_speaker",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_male_b_thanks_01.mp3",
+      "speaker": "general_male_b",
+      "gitBlob": "ecf4585592702adc0dd1d99b17d223deca10cfd5",
+      "disposition": "blocked_rejected_speaker",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_male_b_thanks_02.mp3",
+      "speaker": "general_male_b",
+      "gitBlob": "6fb07ded8d0ae965c94998f65404e8881f2b901d",
+      "disposition": "blocked_rejected_speaker",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_male_b_warning_01.mp3",
+      "speaker": "general_male_b",
+      "gitBlob": "3f945787102f0e8e762dd4f4f61aa06771b459f8",
+      "disposition": "blocked_rejected_speaker",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_male_b_warning_02.mp3",
+      "speaker": "general_male_b",
+      "gitBlob": "0170cf89f7f975daa95349c0c2b7596e20965156",
+      "disposition": "blocked_rejected_speaker",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_male_b_weather_shelter_01.mp3",
+      "speaker": "general_male_b",
+      "gitBlob": "631709e72f8582f025aa1689d044c100fdd56f65",
+      "disposition": "blocked_rejected_speaker",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_male_b_weather_shelter_02.mp3",
+      "speaker": "general_male_b",
+      "gitBlob": "25c9bd7c2a9c7d6b41d3458c0b6f04d0fae0a9f2",
+      "disposition": "blocked_rejected_speaker",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_male_b_well_wish_01.mp3",
+      "speaker": "general_male_b",
+      "gitBlob": "8961bf7dc6cc35b0f67ebb9c426899d8fb4c7b6a",
+      "disposition": "blocked_rejected_speaker",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_male_b_well_wish_02.mp3",
+      "speaker": "general_male_b",
+      "gitBlob": "9d98f5289573f98f7cd638495083eeb2f002bc62",
+      "disposition": "blocked_rejected_speaker",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_male_b_work_finished_01.mp3",
+      "speaker": "general_male_b",
+      "gitBlob": "82659291b328e6856a111b4362d598c9277e1219",
+      "disposition": "blocked_rejected_speaker",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_male_b_work_finished_02.mp3",
+      "speaker": "general_male_b",
+      "gitBlob": "ee0e2afeaf19525aeb8b4757c3c7c79d7a82dd1d",
+      "disposition": "blocked_rejected_speaker",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_male_call_for_help_01.mp3",
+      "speaker": "general_male",
+      "gitBlob": "f63277e9bea49bfdf5c4cd0f053b07aadec3e6ba",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "mismatch"
+    },
+    {
+      "file": "general_male_combat_start_01.mp3",
+      "speaker": "general_male",
+      "gitBlob": "0dc748c48f9e85c950ee338cf48790f66e3e9523",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "mismatch"
+    },
+    {
+      "file": "general_male_danger_alert_01.mp3",
+      "speaker": "general_male",
+      "gitBlob": "db68c723980cbc6a67610c35d6aecb204b4adea9",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "mismatch"
+    },
+    {
+      "file": "general_male_exhausted_01.mp3",
+      "speaker": "general_male",
+      "gitBlob": "944793ada9c070dd1c172eb33e6c0fe3b2574262",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_male_farewell_01.mp3",
+      "speaker": "general_male",
+      "gitBlob": "063a6a7a36be1c0c0a0775ab3c77d08f6e2b3787",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_male_greeting_01.mp3",
+      "speaker": "general_male",
+      "gitBlob": "8422cf02823b0f02d2a9e9c415ed75756a60caaf",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "mismatch"
+    },
+    {
+      "file": "general_male_hungry_01.mp3",
+      "speaker": "general_male",
+      "gitBlob": "4af84fbea2fd7d37aa7a445e43b8a8e9168e0926",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_male_old_farewell_01.mp3",
+      "speaker": "general_male",
+      "gitBlob": "3093fc8188772dd728cf957cd149d9738f25011f",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "mismatch"
+    },
+    {
+      "file": "general_male_old_farewell_02.mp3",
+      "speaker": "general_male",
+      "gitBlob": "2929c50db87e33c9ab5fbf22aa428685c2c25895",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "mismatch"
+    },
+    {
+      "file": "general_male_old_greeting_01.mp3",
+      "speaker": "general_male",
+      "gitBlob": "b5e2dd722d53f179c46a36938d3325073ff498c6",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "mismatch"
+    },
+    {
+      "file": "general_male_old_greeting_02.mp3",
+      "speaker": "general_male",
+      "gitBlob": "6668112c2baa279a15fbbb99683d0bef98ed63bb",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "mismatch"
+    },
+    {
+      "file": "general_male_weather_shelter_01.mp3",
+      "speaker": "general_male",
+      "gitBlob": "343ea217aa2f0cc7cdfe49c2abbbaf98ffc388a7",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_male_work_finished_01.mp3",
+      "speaker": "general_male",
+      "gitBlob": "b981837549b05826f86526da2825be384c59b4c7",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_male_young_farewell_01.mp3",
+      "speaker": "general_male",
+      "gitBlob": "ef1d698abac2d90631f3051619202957e9658379",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "general_male_young_greeting_01.mp3",
+      "speaker": "general_male",
+      "gitBlob": "f86212d404bc5cdf20edece928081665c6879e11",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "mismatch"
+    },
+    {
+      "file": "general_male_young_greeting_02.mp3",
+      "speaker": "general_male",
+      "gitBlob": "83d18ebfda43e1a67c614ecfc623ec77e0c96a57",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "guard_male_agree_01.mp3",
+      "speaker": "guard_male",
+      "gitBlob": "a1a255b728c05da788e591bfc458f152e7dfc2dd",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "guard_male_attention_01.mp3",
+      "speaker": "guard_male",
+      "gitBlob": "58522dbe0a12239de1c99ccb64a8b0ea88c7b1e8",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "mismatch"
+    },
+    {
+      "file": "guard_male_b_agree_01.mp3",
+      "speaker": "guard_male_b",
+      "gitBlob": "18e94a79f97f2ac885ae2d4e131b045bc75caf53",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "guard_male_b_agree_02.mp3",
+      "speaker": "guard_male_b",
+      "gitBlob": "78990b607f3b290986e075778a488410b042c033",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "mismatch"
+    },
+    {
+      "file": "guard_male_b_attention_01.mp3",
+      "speaker": "guard_male_b",
+      "gitBlob": "38c56169e79105565c9ff5deff7a6c06391c180c",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "guard_male_b_attention_02.mp3",
+      "speaker": "guard_male_b",
+      "gitBlob": "48a4247a3c61f450f42da2955817eb7513a8cbeb",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "guard_male_b_call_for_help_01.mp3",
+      "speaker": "guard_male_b",
+      "gitBlob": "4cd70019ee1410770440c3368c49c0636b6019c9",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "mismatch"
+    },
+    {
+      "file": "guard_male_b_call_for_help_02.mp3",
+      "speaker": "guard_male_b",
+      "gitBlob": "3f3693a99c65e6abd9b29449eb0f16a275232d4d",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "mismatch"
+    },
+    {
+      "file": "guard_male_b_combat_start_01.mp3",
+      "speaker": "guard_male_b",
+      "gitBlob": "cfb170a76210f4227ec762bae4d5a0dc192b38fd",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "mismatch"
+    },
+    {
+      "file": "guard_male_b_combat_start_02.mp3",
+      "speaker": "guard_male_b",
+      "gitBlob": "00c9b39770186a86d32250e9b10ab704f4c56bbd",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "mismatch"
+    },
+    {
+      "file": "guard_male_b_danger_alert_01.mp3",
+      "speaker": "guard_male_b",
+      "gitBlob": "b487f300068f94e31bbf7eb40aad3647b96dff39",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "mismatch"
+    },
+    {
+      "file": "guard_male_b_danger_alert_02.mp3",
+      "speaker": "guard_male_b",
+      "gitBlob": "f170e447bf42feb9661de485d79ac171fc50c8a4",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "guard_male_b_exhausted_01.mp3",
+      "speaker": "guard_male_b",
+      "gitBlob": "162e61ad995cfc749f20a0b79c18f68895917459",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "guard_male_b_exhausted_02.mp3",
+      "speaker": "guard_male_b",
+      "gitBlob": "2807ea7acd8f0ae903a7c42f84472a76fca69414",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "guard_male_b_farewell_01.mp3",
+      "speaker": "guard_male_b",
+      "gitBlob": "a2de708ce2bcd74de0923fdc8a2298b75b2e7dc7",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "guard_male_b_farewell_02.mp3",
+      "speaker": "guard_male_b",
+      "gitBlob": "ee8d57bf73338fec4363241533f63228fc39a45f",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "guard_male_b_greeting_01.mp3",
+      "speaker": "guard_male_b",
+      "gitBlob": "836d4285c20fd409b51ed7c21c7e53cf6acf0f36",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "guard_male_b_greeting_02.mp3",
+      "speaker": "guard_male_b",
+      "gitBlob": "a4e664c4fbce5b1bd478cc5f033cd7a29769f932",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "guard_male_b_guard_response_01.mp3",
+      "speaker": "guard_male_b",
+      "gitBlob": "ff59e43e4862b594bd5db402683a1157d4cfd4e6",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "guard_male_b_guard_response_02.mp3",
+      "speaker": "guard_male_b",
+      "gitBlob": "4807ed74dc36719fb61710773abaab5058cbea06",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "guard_male_b_hungry_01.mp3",
+      "speaker": "guard_male_b",
+      "gitBlob": "7fa037cbac6d81a242c4003a4ba5a605cb3b4fb2",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "guard_male_b_hungry_02.mp3",
+      "speaker": "guard_male_b",
+      "gitBlob": "73dc4e9282166ebc2a3dc6c42900a634faa1bcce",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "guard_male_b_quest_accepted_01.mp3",
+      "speaker": "guard_male_b",
+      "gitBlob": "01d5faa8da4ded3c8e6537282c2f890fb043f640",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "guard_male_b_quest_accepted_02.mp3",
+      "speaker": "guard_male_b",
+      "gitBlob": "c0e4e26d75bedb2610f6d708063df40ce17c81e0",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "guard_male_b_quest_complete_01.mp3",
+      "speaker": "guard_male_b",
+      "gitBlob": "94f0eb63e32147df91d5bc975151f6b2bb39a66f",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "mismatch"
+    },
+    {
+      "file": "guard_male_b_quest_complete_02.mp3",
+      "speaker": "guard_male_b",
+      "gitBlob": "4cdaa9bbf256f613e198e18116b76f82f08259f0",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "mismatch"
+    },
+    {
+      "file": "guard_male_b_quest_declined_01.mp3",
+      "speaker": "guard_male_b",
+      "gitBlob": "ecb8a8bc4611db4f5ca4e2ebe9f608e71c65a77e",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "mismatch"
+    },
+    {
+      "file": "guard_male_b_quest_declined_02.mp3",
+      "speaker": "guard_male_b",
+      "gitBlob": "47314da4f0fd25c151df21080bf435ce51c9fb59",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "guard_male_b_quest_offer_01.mp3",
+      "speaker": "guard_male_b",
+      "gitBlob": "e3cf7523e3998b7b8fe64484c155aa94f568dc84",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "guard_male_b_quest_offer_02.mp3",
+      "speaker": "guard_male_b",
+      "gitBlob": "d107b7cf598f22b93db8e72d56e7b99200d2be51",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "guard_male_b_refusal_01.mp3",
+      "speaker": "guard_male_b",
+      "gitBlob": "1209a8a838745c2bfc0fb43eb19ce93b923d8e43",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "guard_male_b_refusal_02.mp3",
+      "speaker": "guard_male_b",
+      "gitBlob": "7a9c1b50265f9712620f4cbcaa966e1d6cd67d14",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "guard_male_b_thanks_01.mp3",
+      "speaker": "guard_male_b",
+      "gitBlob": "88615fc07b68508c879d957d6f593ea4ce7edf07",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "guard_male_b_thanks_02.mp3",
+      "speaker": "guard_male_b",
+      "gitBlob": "17306b116d795c7317a15c003451552b26c52638",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "guard_male_b_warning_01.mp3",
+      "speaker": "guard_male_b",
+      "gitBlob": "006abfab768edb17c613ec954d62b967eed72ebe",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "guard_male_b_warning_02.mp3",
+      "speaker": "guard_male_b",
+      "gitBlob": "a1801355d780615958b187b5bd33ac3e8eb50954",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "guard_male_b_weather_shelter_01.mp3",
+      "speaker": "guard_male_b",
+      "gitBlob": "f6bee5543e5c178fbe6ca914dae01d18ec3ded23",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "guard_male_b_weather_shelter_02.mp3",
+      "speaker": "guard_male_b",
+      "gitBlob": "c93452f1351d9ea4422a1b5cc142a40276d8a19a",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "guard_male_b_well_wish_01.mp3",
+      "speaker": "guard_male_b",
+      "gitBlob": "68c27f513d7d25dfa1013d799ed6164742dce4eb",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "guard_male_b_well_wish_02.mp3",
+      "speaker": "guard_male_b",
+      "gitBlob": "2af348885dbb08a47b89bf140be4ddc241a472bb",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "guard_male_b_work_finished_01.mp3",
+      "speaker": "guard_male_b",
+      "gitBlob": "a0b1975b1164078c26899a7c7679c89a0e31a3cb",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "guard_male_b_work_finished_02.mp3",
+      "speaker": "guard_male_b",
+      "gitBlob": "d13ec54ca974042acc44315149dfd50a79bde568",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "guard_male_call_for_help_01.mp3",
+      "speaker": "guard_male",
+      "gitBlob": "36335e9c700a079e7522d892ad59b5ae45192c3a",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "mismatch"
+    },
+    {
+      "file": "guard_male_combat_start_01.mp3",
+      "speaker": "guard_male",
+      "gitBlob": "8cdb1da4e76c7d7ca126fc045bafa8c002c3d240",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "guard_male_danger_alert_01.mp3",
+      "speaker": "guard_male",
+      "gitBlob": "7bc78b5a68614d8b7b096ae81af9f8ecca6c792b",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "guard_male_farewell_01.mp3",
+      "speaker": "guard_male",
+      "gitBlob": "935ea911de66f70ec0261f09bbfd9a0455f232f7",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "mismatch"
+    },
+    {
+      "file": "guard_male_greeting_01.mp3",
+      "speaker": "guard_male",
+      "gitBlob": "75444711a8c456b56be562ff101e542c6e845450",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "guard_male_greeting_02.mp3",
+      "speaker": "guard_male",
+      "gitBlob": "faa4ffa7a4b649e0599eae74c3c7892214ce475b",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "guard_male_guard_response_01.mp3",
+      "speaker": "guard_male",
+      "gitBlob": "ed0a16342cf86d7c043256dffad91fe3481dbd1d",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "guard_male_quest_accepted_01.mp3",
+      "speaker": "guard_male",
+      "gitBlob": "4ca0577fd8e47e4ea6a3a2d51dba89a132af1bb8",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "guard_male_quest_accepted_02.mp3",
+      "speaker": "guard_male",
+      "gitBlob": "15ae6bb2a5493e4f88f11b138bf0a790669c63d4",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "guard_male_quest_complete_01.mp3",
+      "speaker": "guard_male",
+      "gitBlob": "dcd153903d8ea04e01322875fcb3113ded538b83",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "guard_male_quest_complete_02.mp3",
+      "speaker": "guard_male",
+      "gitBlob": "489b7f4c8d0176d157573e3ac64a7363397900d0",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "guard_male_quest_declined_01.mp3",
+      "speaker": "guard_male",
+      "gitBlob": "25c982003d39284f215a067ff17b17e95ddf8b7b",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "guard_male_quest_declined_02.mp3",
+      "speaker": "guard_male",
+      "gitBlob": "df625bdea439210b9313b869b4724366555d74e8",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "guard_male_quest_offer_01.mp3",
+      "speaker": "guard_male",
+      "gitBlob": "191a16f90d4810df0d7959d4903b02e00f5c7213",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "mismatch"
+    },
+    {
+      "file": "guard_male_refusal_01.mp3",
+      "speaker": "guard_male",
+      "gitBlob": "dc3a92961b1c1ee22e546f2b4ce478321f6923d8",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "guard_male_thanks_01.mp3",
+      "speaker": "guard_male",
+      "gitBlob": "6e645c857c7f70399426b8fa33c2ee55a3303249",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "guard_male_thanks_02.mp3",
+      "speaker": "guard_male",
+      "gitBlob": "cc6586626d791299d7dd6521ac9ccc956cc51a11",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "guard_male_warning_01.mp3",
+      "speaker": "guard_male",
+      "gitBlob": "d069e121b0d39b9d5630d6bc77963c8592ad69c9",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "guard_male_weather_shelter_01.mp3",
+      "speaker": "guard_male",
+      "gitBlob": "203988f138f2ddbeefb2fe0fe167570ff9b608dc",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "mismatch"
+    },
+    {
+      "file": "guard_male_well_wish_01.mp3",
+      "speaker": "guard_male",
+      "gitBlob": "22b47433de9fd045b5d1136ed2aa96af7d415aa6",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_agree_01.mp3",
+      "speaker": "hunter_male",
+      "gitBlob": "a1c6f7bee97b2f2f796fd02184ca2061123340aa",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_attention_01.mp3",
+      "speaker": "hunter_male",
+      "gitBlob": "5f371ad79f2a22369b481e7dabb40c8d52edafe1",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_b_agree_01.mp3",
+      "speaker": "hunter_male_b",
+      "gitBlob": "12f1761c1246354c4f922783017ad836a45962d1",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_b_agree_02.mp3",
+      "speaker": "hunter_male_b",
+      "gitBlob": "8f19dfec2d299290f57cf03c234029f5af602f3c",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_b_attention_01.mp3",
+      "speaker": "hunter_male_b",
+      "gitBlob": "49d40bcf2d5f36e6fcdd54003c41e418c65665a5",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_b_attention_02.mp3",
+      "speaker": "hunter_male_b",
+      "gitBlob": "5fddd59782721854938b0690debe51d3033af09d",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "mismatch"
+    },
+    {
+      "file": "hunter_male_b_call_for_help_01.mp3",
+      "speaker": "hunter_male_b",
+      "gitBlob": "e14fdaced7a8110b2fedd9d160dc98051e12d1d9",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_b_call_for_help_02.mp3",
+      "speaker": "hunter_male_b",
+      "gitBlob": "711897633e8ddf3022fc7f6ea37cbd3c47ef0ef5",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_b_combat_start_01.mp3",
+      "speaker": "hunter_male_b",
+      "gitBlob": "227c72eed7083204481968a955f32e1912c6c7a3",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_b_combat_start_02.mp3",
+      "speaker": "hunter_male_b",
+      "gitBlob": "9b90623dcd0a798fec8a45d39f24f02e696f22bc",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "mismatch"
+    },
+    {
+      "file": "hunter_male_b_danger_alert_01.mp3",
+      "speaker": "hunter_male_b",
+      "gitBlob": "d59cd1be7902723d355f61201b9bda26c0f3b9e8",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_b_danger_alert_02.mp3",
+      "speaker": "hunter_male_b",
+      "gitBlob": "af94e3bb9912e317220259cfa1fcb88e3dcfc008",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_b_exhausted_01.mp3",
+      "speaker": "hunter_male_b",
+      "gitBlob": "a4b1766554c158d998ce25625358858e78ee6c2a",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_b_exhausted_02.mp3",
+      "speaker": "hunter_male_b",
+      "gitBlob": "b17b76155b49c30e1bd0d568b8ff7abbc60ee01c",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_b_farewell_01.mp3",
+      "speaker": "hunter_male_b",
+      "gitBlob": "3e9042f8ac52ca7f3c090a10c2bd323b387de4ee",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_b_farewell_02.mp3",
+      "speaker": "hunter_male_b",
+      "gitBlob": "3307c9f999452ed65fba916ace2fbcd20726f326",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_b_greeting_01.mp3",
+      "speaker": "hunter_male_b",
+      "gitBlob": "d7280945a148dd9397bbce6fd9ef72915f368cd4",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_b_greeting_02.mp3",
+      "speaker": "hunter_male_b",
+      "gitBlob": "3a5703bb98f741bf1d44e1d729b9e407079b133e",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_b_hungry_01.mp3",
+      "speaker": "hunter_male_b",
+      "gitBlob": "3453afa90a44cdcd6bf312739ebbce2d93459965",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_b_hungry_02.mp3",
+      "speaker": "hunter_male_b",
+      "gitBlob": "d014e34ce4fcef8feb47af1dbbeecf65188c8410",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_b_quest_accepted_01.mp3",
+      "speaker": "hunter_male_b",
+      "gitBlob": "8e7b8e68b212c4c3d6a520ebe2935521d4f5cfa1",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_b_quest_accepted_02.mp3",
+      "speaker": "hunter_male_b",
+      "gitBlob": "08ab68990d8affb14873c022388199268545fd20",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_b_quest_complete_01.mp3",
+      "speaker": "hunter_male_b",
+      "gitBlob": "1079a6209bd5bdcea035a9fc8f852c86c7e39750",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_b_quest_complete_02.mp3",
+      "speaker": "hunter_male_b",
+      "gitBlob": "e81cf3c69b89f5a95477a1b9ee17526bb5bd249c",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_b_quest_declined_01.mp3",
+      "speaker": "hunter_male_b",
+      "gitBlob": "afca616346bd1e38b8baa55382a236bab013f30b",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_b_quest_declined_02.mp3",
+      "speaker": "hunter_male_b",
+      "gitBlob": "4d9435b0fe44d3b02c0a99951e55f2a52bf98c2d",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_b_quest_offer_01.mp3",
+      "speaker": "hunter_male_b",
+      "gitBlob": "9388f0c0a06e22879599a0921a9c5697ccdb7212",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_b_quest_offer_02.mp3",
+      "speaker": "hunter_male_b",
+      "gitBlob": "808e9e82ed357a0f94455eb734a0539c38f19c8f",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "mismatch"
+    },
+    {
+      "file": "hunter_male_b_refusal_01.mp3",
+      "speaker": "hunter_male_b",
+      "gitBlob": "c4eee2f3854615e0eac1207c58224f1422f8276a",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_b_refusal_02.mp3",
+      "speaker": "hunter_male_b",
+      "gitBlob": "be5ced6c2a33d1ccc6aca7a7b53bebb463e43e98",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_b_thanks_01.mp3",
+      "speaker": "hunter_male_b",
+      "gitBlob": "39d16ef97ce94f73a00ae26b9b691b92552003f7",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_b_thanks_02.mp3",
+      "speaker": "hunter_male_b",
+      "gitBlob": "6ba6ac88ccc5c751672fbd553b7096bbde118b9b",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_b_warning_01.mp3",
+      "speaker": "hunter_male_b",
+      "gitBlob": "605eb550960e14dbbcbaa3ba345abbb37fe2988f",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_b_warning_02.mp3",
+      "speaker": "hunter_male_b",
+      "gitBlob": "4aceb4a11bc1fea3fd5cec2902988e5a9a6cddcc",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_b_weather_shelter_01.mp3",
+      "speaker": "hunter_male_b",
+      "gitBlob": "f5f1e29cce7553ad759a9dd97f7f4283a825fcb6",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_b_weather_shelter_02.mp3",
+      "speaker": "hunter_male_b",
+      "gitBlob": "fe03465eef552404802090fc856a504b0b485070",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_b_well_wish_01.mp3",
+      "speaker": "hunter_male_b",
+      "gitBlob": "915411b42ffe93a771e0d2c4d2e6a9c94fc69208",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_b_well_wish_02.mp3",
+      "speaker": "hunter_male_b",
+      "gitBlob": "e162318c3a8382db7eaf28af7784ee7c2f782a2c",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_b_work_finished_01.mp3",
+      "speaker": "hunter_male_b",
+      "gitBlob": "274af28d49bebe219814d2045483b11382918af2",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_b_work_finished_02.mp3",
+      "speaker": "hunter_male_b",
+      "gitBlob": "ada3893f5b9481edbc09b6dc3ac1b2c5ea10d2e0",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_call_for_help_01.mp3",
+      "speaker": "hunter_male",
+      "gitBlob": "e96e87f3442e32c2319f45b377abce226159fff1",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_combat_start_01.mp3",
+      "speaker": "hunter_male",
+      "gitBlob": "86e6938afc3ea497704f8e8d4e176245f6d1de53",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_danger_alert_01.mp3",
+      "speaker": "hunter_male",
+      "gitBlob": "357d750175ac24372a23a95e904f088b257c1eff",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_farewell_01.mp3",
+      "speaker": "hunter_male",
+      "gitBlob": "70b97f4374f865f313d5bad4f3e5e19a8c4d671b",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_farewell_02.mp3",
+      "speaker": "hunter_male",
+      "gitBlob": "ca4c591f9e3762eb2aa35f342a4e461d6c36d8b3",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_greeting_01.mp3",
+      "speaker": "hunter_male",
+      "gitBlob": "fba9187c8f0fd4e839530d70413219faf7b66efd",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_greeting_02.mp3",
+      "speaker": "hunter_male",
+      "gitBlob": "f2dff40ee3f350e1d97ceca5161f41fd0bf408cf",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_quest_accepted_01.mp3",
+      "speaker": "hunter_male",
+      "gitBlob": "850621d38d30b8a5d77a1b02cb0bf7da25a3ab6b",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_quest_accepted_02.mp3",
+      "speaker": "hunter_male",
+      "gitBlob": "6c177d6267b5bcd1fbb20bf77c3b21c8a0f4404f",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_quest_complete_01.mp3",
+      "speaker": "hunter_male",
+      "gitBlob": "fa5392d42bbe9a1d779629f20907ea0417e50b9c",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_quest_complete_02.mp3",
+      "speaker": "hunter_male",
+      "gitBlob": "164a166cded9423612499ba6d9acfa4689ec1ceb",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_quest_declined_01.mp3",
+      "speaker": "hunter_male",
+      "gitBlob": "058e52f03acb027212238d999b1827b83db20ec7",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_quest_declined_02.mp3",
+      "speaker": "hunter_male",
+      "gitBlob": "e2efd8ab02c8fc083518dda768f103af9a00a106",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_quest_offer_01.mp3",
+      "speaker": "hunter_male",
+      "gitBlob": "0cd03f5d812bb23fdfcfcf9974a502c12b07b11e",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_thanks_01.mp3",
+      "speaker": "hunter_male",
+      "gitBlob": "b94da845ca1f5ec1a1c2d726c828c751bcb6dc45",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_thanks_02.mp3",
+      "speaker": "hunter_male",
+      "gitBlob": "3d5bea237a73c29004caed3e1eb6097f2b4c98d6",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_warning_01.mp3",
+      "speaker": "hunter_male",
+      "gitBlob": "ed9525370417ea25477e99cccca699abe10c2155",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_well_wish_01.mp3",
+      "speaker": "hunter_male",
+      "gitBlob": "e445eb64d03a0359fb7dd7689d5867b81ecd291b",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "hunter_male_well_wish_02.mp3",
+      "speaker": "hunter_male",
+      "gitBlob": "9405f90a00392a841809d51b663e28bfb1d83511",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_agree_01.mp3",
+      "speaker": "merchant_female",
+      "gitBlob": "94c6041350fb3da89e07eaeb6a10ff4f5125eca3",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_attention_01.mp3",
+      "speaker": "merchant_female",
+      "gitBlob": "3d729996f4fa013bdc4d7ee4c42bbb8976bacf93",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_b_agree_01.mp3",
+      "speaker": "merchant_female_b",
+      "gitBlob": "6f6c7841b9175340bb257e709c93eea7b908c17c",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_b_agree_02.mp3",
+      "speaker": "merchant_female_b",
+      "gitBlob": "ced2a9b91771b8ed7410f5eb5c23310536e1022a",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_b_attention_01.mp3",
+      "speaker": "merchant_female_b",
+      "gitBlob": "dfcdb5032c74cca6b77afc76758002dc1a2be8af",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_b_attention_02.mp3",
+      "speaker": "merchant_female_b",
+      "gitBlob": "1a35f7d3023a024750b964bf2f8300e26ab98c9a",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_b_call_for_help_01.mp3",
+      "speaker": "merchant_female_b",
+      "gitBlob": "ad340ecee1483dc16ef11eea2cd6d69a82f0e8e9",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_b_call_for_help_02.mp3",
+      "speaker": "merchant_female_b",
+      "gitBlob": "3fa46cc68b3063d984c7b439a043f57432d2636e",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_b_combat_start_01.mp3",
+      "speaker": "merchant_female_b",
+      "gitBlob": "aff8fd8595d70bb9578eb04d4e05d0d28c737601",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_b_combat_start_02.mp3",
+      "speaker": "merchant_female_b",
+      "gitBlob": "e15e9564e1f722c7a9d1bc0e819b98c503fe0026",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_b_danger_alert_01.mp3",
+      "speaker": "merchant_female_b",
+      "gitBlob": "e769891a9d3c996aff1afe48850cf71d2f228abc",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_b_danger_alert_02.mp3",
+      "speaker": "merchant_female_b",
+      "gitBlob": "e106481188113a9ec8028458c049ed7981dade99",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_b_exhausted_01.mp3",
+      "speaker": "merchant_female_b",
+      "gitBlob": "57ab94fec38e52dfd1844c5d72a632163db0f64a",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_b_exhausted_02.mp3",
+      "speaker": "merchant_female_b",
+      "gitBlob": "7dff50d7a9d6436d55aada701ed31052f5030ee4",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_b_farewell_01.mp3",
+      "speaker": "merchant_female_b",
+      "gitBlob": "519ff7c119b3f6431e5806e2ff045ebf4bfc77ac",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_b_farewell_02.mp3",
+      "speaker": "merchant_female_b",
+      "gitBlob": "228d429d3839bc263eeab886d849af4afcd597e8",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_b_greeting_01.mp3",
+      "speaker": "merchant_female_b",
+      "gitBlob": "4b51e0139c11e3c06ad68aa76484549320212ea9",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_b_greeting_02.mp3",
+      "speaker": "merchant_female_b",
+      "gitBlob": "902677ead6d5f8133304edbbb714b894d345738e",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_b_hungry_01.mp3",
+      "speaker": "merchant_female_b",
+      "gitBlob": "e815130764029269f94305666b42ae5cb70723c9",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_b_hungry_02.mp3",
+      "speaker": "merchant_female_b",
+      "gitBlob": "c1033a8644bcfb340fc9e3728f4317cfd8a16cc5",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_b_quest_accepted_01.mp3",
+      "speaker": "merchant_female_b",
+      "gitBlob": "4ea03740178286066dbd50b2a14335515598f57a",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_b_quest_accepted_02.mp3",
+      "speaker": "merchant_female_b",
+      "gitBlob": "808c5c8fe7c2fabe62a492dce09353cbf2fb5e41",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_b_quest_complete_01.mp3",
+      "speaker": "merchant_female_b",
+      "gitBlob": "b057cb403bfd63648472b646c171b8071e9d1ad6",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_b_quest_complete_02.mp3",
+      "speaker": "merchant_female_b",
+      "gitBlob": "97e5c0a39c0344b632f2a4668c4ebd34d7fb1b07",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_b_quest_declined_01.mp3",
+      "speaker": "merchant_female_b",
+      "gitBlob": "c36b142866d26e2edf005ee17baeb58faa012cda",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "mismatch"
+    },
+    {
+      "file": "merchant_female_b_quest_declined_02.mp3",
+      "speaker": "merchant_female_b",
+      "gitBlob": "a62251bfaefa092e3b7d6e549163eb087c9e990c",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_b_quest_offer_01.mp3",
+      "speaker": "merchant_female_b",
+      "gitBlob": "90d76a3c65d4625f45a66f666fb1137891dac671",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "mismatch"
+    },
+    {
+      "file": "merchant_female_b_quest_offer_02.mp3",
+      "speaker": "merchant_female_b",
+      "gitBlob": "3e8c24e6a2febf9fd64216422ddc98e0d77d872a",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_b_refusal_01.mp3",
+      "speaker": "merchant_female_b",
+      "gitBlob": "f6a4a6cf8c10ba47571e68ba2f74856de28b99c9",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_b_refusal_02.mp3",
+      "speaker": "merchant_female_b",
+      "gitBlob": "3d5648fba5d81ba7f53872fbe3130f42a1a07dfc",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_b_thanks_01.mp3",
+      "speaker": "merchant_female_b",
+      "gitBlob": "aa96a938e8dedad6aaa485749331656edec074e9",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_b_thanks_02.mp3",
+      "speaker": "merchant_female_b",
+      "gitBlob": "92dde4bd2fbfeda85583a61c494c2c8c23196059",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_b_warning_01.mp3",
+      "speaker": "merchant_female_b",
+      "gitBlob": "710541aec4b56dedbaf32eebec09eeea1d41a031",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_b_warning_02.mp3",
+      "speaker": "merchant_female_b",
+      "gitBlob": "92d4b9aa3626dc6f3a6d8111af1dac5eda655f69",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_b_weather_shelter_01.mp3",
+      "speaker": "merchant_female_b",
+      "gitBlob": "48bc4c0c69cf8d08c8cebfe7442680a4ccb820c7",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_b_weather_shelter_02.mp3",
+      "speaker": "merchant_female_b",
+      "gitBlob": "427956873097178e2fd97e8a459193a9d3329388",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_b_well_wish_01.mp3",
+      "speaker": "merchant_female_b",
+      "gitBlob": "a1ceaa97eb3f6d42c0f70da5821ebaaf630a09bd",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_b_well_wish_02.mp3",
+      "speaker": "merchant_female_b",
+      "gitBlob": "914a2a1d4e7402172d90dcfcb5b051374fd793d5",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_b_work_finished_01.mp3",
+      "speaker": "merchant_female_b",
+      "gitBlob": "0ae938f935ce29108ad97311220b3ce59d0309d2",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_b_work_finished_02.mp3",
+      "speaker": "merchant_female_b",
+      "gitBlob": "9ba507d6b044be1d26979ce337dd4e85678292c6",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_farewell_01.mp3",
+      "speaker": "merchant_female",
+      "gitBlob": "84bb506bc7b164defb3ee930f279ec450f00c89a",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_farewell_02.mp3",
+      "speaker": "merchant_female",
+      "gitBlob": "0a503450121b9aeed300adcacdc20464b99f16bf",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_greeting_01.mp3",
+      "speaker": "merchant_female",
+      "gitBlob": "8642bd2ff558f5adc69fcb1287bf8e72249e150a",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_greeting_02.mp3",
+      "speaker": "merchant_female",
+      "gitBlob": "d2af0b2768a4b5b1ef7671212caadc9f70f12575",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_greeting_03.mp3",
+      "speaker": "merchant_female",
+      "gitBlob": "758d0af673a0f2d5b100d66148e1139d996420cd",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_quest_accepted_01.mp3",
+      "speaker": "merchant_female",
+      "gitBlob": "a676dad258c149d5cd5f176e1738116c6c5e7935",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_quest_accepted_02.mp3",
+      "speaker": "merchant_female",
+      "gitBlob": "14318b155a3519d0cfd44b6010df20f82967d85c",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "mismatch"
+    },
+    {
+      "file": "merchant_female_quest_complete_01.mp3",
+      "speaker": "merchant_female",
+      "gitBlob": "5af4f53b80b613a377e3d83e2eb9d7b4b714b187",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_quest_complete_02.mp3",
+      "speaker": "merchant_female",
+      "gitBlob": "e32562203ee334814e6b5e8bf308999f62f5ac9c",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_quest_declined_01.mp3",
+      "speaker": "merchant_female",
+      "gitBlob": "e9c40b2230f69fb1d4c44625b1a174a1077eb152",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_quest_offer_01.mp3",
+      "speaker": "merchant_female",
+      "gitBlob": "9c51424875f0732ef931b2bd37df4ce9d8267f4a",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_quest_offer_02.mp3",
+      "speaker": "merchant_female",
+      "gitBlob": "4cb88c1e042e8d15971123f21263e65c9d2c472c",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_refusal_01.mp3",
+      "speaker": "merchant_female",
+      "gitBlob": "869db5d3c7b1079e48e29f331d5cb93dc55cb84d",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_thanks_01.mp3",
+      "speaker": "merchant_female",
+      "gitBlob": "f8ec2d7fbcdecc23d94aa9597371b39124624516",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "merchant_female_warning_01.mp3",
+      "speaker": "merchant_female",
+      "gitBlob": "a66780538e54ea2b4b5c0be7f51c48646a151295",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "npc_mark_hornblower_daily_01.mp3",
+      "speaker": "mark_hornblower",
+      "gitBlob": "a0aef4e3644084bebf017abab2e85744e488d4af",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "npc_mark_hornblower_danger_alert_01.mp3",
+      "speaker": "mark_hornblower",
+      "gitBlob": "699aea2b04871c7a7af4471e8463507340209f29",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "npc_mark_hornblower_farewell_01.mp3",
+      "speaker": "mark_hornblower",
+      "gitBlob": "7cafb11f139f5f0a0652e2cffc9b908e8bb3cddb",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "npc_mark_hornblower_greeting_01.mp3",
+      "speaker": "mark_hornblower",
+      "gitBlob": "c8e552f313bc50e4349b1ee8f213ff6c60691fa2",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "npc_mark_hornblower_road_advice_01.mp3",
+      "speaker": "mark_hornblower",
+      "gitBlob": "407db85ddda72e7908e009c5d1e21bc2c0944791",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "npc_mark_hornblower_thanks_01.mp3",
+      "speaker": "mark_hornblower",
+      "gitBlob": "d87f461ed65541a100f43aeb7b9b0540bd581e26",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "shepard_male_danger_alert_01.mp3",
+      "speaker": "shepherd_male",
+      "gitBlob": "66c3b553a87012a84d1d683db259e802b33414ee",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "mismatch"
+    },
+    {
+      "file": "shepherd_male_b_call_for_help_01.mp3",
+      "speaker": "shepherd_male_b",
+      "gitBlob": "55214dbf1cb3bf48db3cf1680f4f448768580afa",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "shepherd_male_b_call_for_help_02.mp3",
+      "speaker": "shepherd_male_b",
+      "gitBlob": "0feee2a30d619d5befbcd3df6a800916d4973d50",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "shepherd_male_b_danger_alert_01.mp3",
+      "speaker": "shepherd_male_b",
+      "gitBlob": "21ac1108ead9c8bfac5754a16e960e754bfac6e3",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "shepherd_male_b_danger_alert_02.mp3",
+      "speaker": "shepherd_male_b",
+      "gitBlob": "6dcc1f940ee9d1da583ac357d5e19f708297fa05",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "shepherd_male_b_farewell_01.mp3",
+      "speaker": "shepherd_male_b",
+      "gitBlob": "c9268caaf1c3ad69a383d51f5d63b2491dd2b1d7",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "shepherd_male_b_farewell_02.mp3",
+      "speaker": "shepherd_male_b",
+      "gitBlob": "6cc8e50a31e82fe62e397fa59f0dd3d32c21f0d5",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "shepherd_male_b_greeting_01.mp3",
+      "speaker": "shepherd_male_b",
+      "gitBlob": "e866a79bb1affab08692eae44dd1b728adc537f7",
+      "disposition": "conditional_reuse_candidate",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "shepherd_male_b_greeting_02.mp3",
+      "speaker": "shepherd_male_b",
+      "gitBlob": "0f60f826b73c29209328e5499c8a8780112a9b96",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "shepherd_male_b_livestock_danger_01.mp3",
+      "speaker": "shepherd_male_b",
+      "gitBlob": "b79225d642d13fb498c150ec7f1455cfeedf8328",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "shepherd_male_b_livestock_danger_02.mp3",
+      "speaker": "shepherd_male_b",
+      "gitBlob": "e0bc1f40b90eec35e6ee1a5a9c75dea3bc9e8936",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "shepherd_male_farewell_01.mp3",
+      "speaker": "shepherd_male",
+      "gitBlob": "883199af694bd6a949484654f8d2bd90de973504",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    },
+    {
+      "file": "shepherd_male_greeting_01.mp3",
+      "speaker": "shepherd_male",
+      "gitBlob": "d8d5585f76a4d230708254ba7d43d39b95db67f3",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "mismatch"
+    },
+    {
+      "file": "shepherd_male_greeting_02.mp3",
+      "speaker": "shepherd_male",
+      "gitBlob": "c51a0e65589bcdc1019b926cee4461869272b631",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "mismatch"
+    },
+    {
+      "file": "shepherd_male_livestock_danger_01.mp3",
+      "speaker": "shepherd_male",
+      "gitBlob": "403b77783b1472e03766375c63ba266118c9f8ca",
+      "disposition": "retain_pending_review_not_selected",
+      "qc": "pending",
+      "auto": "match"
+    }
+  ]
+}
