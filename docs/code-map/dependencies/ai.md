@@ -948,6 +948,7 @@ Generated from TypeScript imports.
 - `items/itemCatalog.ts`
 - `items/itemInstances.ts`
 - `items/items.ts`
+- `items/upperTierIdentities.ts`
 - `items/weaponMaintenance.ts`
 
 ## `ai/npcCombat.ts`
@@ -976,6 +977,7 @@ Generated from TypeScript imports.
 - `ai/npcLoadout.test.ts`
 - `app/actions/npcItemTransfer.test.ts`
 - `items/stage4MeleeBatch.test.ts`
+- `items/stage4UpperTierMelee.test.ts`
 
 ## `ai/npcCrowd.test.ts`
 
@@ -1086,6 +1088,7 @@ Generated from TypeScript imports.
 - `items/itemInstances.ts`
 - `items/items.ts`
 - `items/trade.ts`
+- `items/upperTierIdentities.ts`
 - `items/weaponMaintenance.ts`
 
 **Imported by**

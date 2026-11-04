@@ -26,6 +26,11 @@ export type ItemKind =
   | 'millbrook_shortsword'
   | 'fenmoor_sword'
   | 'stonebridge_longsword'
+  | 'pinewatch_longsword'
+  | 'kestrel_dagger'
+  | 'harrow_shortsword'
+  | 'ironvale_sword'
+  | 'greywatch_longsword'
   | 'long_sword'
   | 'spear'
   | 'short_sword'
@@ -1151,6 +1156,51 @@ export const ITEM_DEFS: Record<ItemKind, ItemDef> = {
     color: 0xb4b9c1,
     description: 'Mistrzowsko wykuty długi miecz. Duży zasięg i mocne cięcie kosztem wolniejszego zamachu.',
   },
+  pinewatch_longsword: {
+    kind: 'pinewatch_longsword',
+    label: 'długi miecz z Pinewatch',
+    categories: ['weapon'],
+    weight: 1.7,
+    size: 'LG',
+    color: 0xb9c0c8,
+    description: 'Wyjątkowy długi miecz strażników pogranicza. Dobrze wyważony, o dużym zasięgu i pewnym cięciu.',
+  },
+  kestrel_dagger: {
+    kind: 'kestrel_dagger',
+    label: 'sztylet Kestrel',
+    categories: ['weapon'],
+    weight: 0.35,
+    size: 'SM',
+    color: 0xd2d6dc,
+    description: 'Legendarny sztylet o niemal niewyczuwalnej wadze. Błyskawiczny i śmiertelnie celny.',
+  },
+  harrow_shortsword: {
+    kind: 'harrow_shortsword',
+    label: 'krótki miecz z Harrow',
+    categories: ['weapon'],
+    weight: 1.15,
+    size: 'MD',
+    color: 0xd6d9de,
+    description: 'Legendarny krótki miecz. Szybki, zwinny i zaskakująco mocny.',
+  },
+  ironvale_sword: {
+    kind: 'ironvale_sword',
+    label: 'miecz z Ironvale',
+    categories: ['weapon'],
+    weight: 1.4,
+    size: 'MD',
+    color: 0xc9ced5,
+    description: 'Legendarny miecz o doskonałej równowadze siły i szybkości.',
+  },
+  greywatch_longsword: {
+    kind: 'greywatch_longsword',
+    label: 'długi miecz z Greywatch',
+    categories: ['weapon'],
+    weight: 1.7,
+    size: 'LG',
+    color: 0xdde0e5,
+    description: 'Legendarny długi miecz. Najpotężniejsze cięcie wśród białej broni sprawdzonej w boju.',
+  },
   mace: {
     kind: 'mace',
     label: 'buzdygan',
@@ -1972,7 +2022,7 @@ function buildProceduralItemMesh(kind: ItemKind): THREE.Object3D {
     mesh.castShadow = true
     return mesh
   }
-  if (kind === 'knife' || kind === 'damascus_knife' || kind === 'dagger' || kind === 'obsidian_knife' || kind === 'obsidian_dagger' || kind === 'ashgrove_dagger') {
+  if (kind === 'knife' || kind === 'damascus_knife' || kind === 'dagger' || kind === 'obsidian_knife' || kind === 'obsidian_dagger' || kind === 'ashgrove_dagger' || kind === 'kestrel_dagger') {
     const group = new THREE.Group()
     const blade = new THREE.Mesh(
       new THREE.ConeGeometry(0.035, 0.22, 4),
@@ -1995,7 +2045,8 @@ function buildProceduralItemMesh(kind: ItemKind): THREE.Object3D {
   if (
     kind === 'long_sword' || kind === 'damascus_long_sword' ||
     kind === 'masterwork_sword' || kind === 'obsidian_sword' || kind === 'sword' ||
-    kind === 'fenmoor_sword' || kind === 'stonebridge_longsword'
+    kind === 'fenmoor_sword' || kind === 'stonebridge_longsword' ||
+    kind === 'pinewatch_longsword' || kind === 'ironvale_sword' || kind === 'greywatch_longsword'
   ) {
     const group = new THREE.Group()
     const blade = new THREE.Mesh(
@@ -2012,7 +2063,7 @@ function buildProceduralItemMesh(kind: ItemKind): THREE.Object3D {
     group.add(blade)
     return group
   }
-  if (kind === 'short_sword' || kind === 'damascus_short_sword' || kind === 'millbrook_shortsword') {
+  if (kind === 'short_sword' || kind === 'damascus_short_sword' || kind === 'millbrook_shortsword' || kind === 'harrow_shortsword') {
     const group = new THREE.Group()
     const blade = new THREE.Mesh(
       new THREE.ConeGeometry(0.03, 0.16, 4),

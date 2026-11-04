@@ -75,6 +75,11 @@ export type MeleeToolKind = Extract<
   | 'millbrook_shortsword'
   | 'fenmoor_sword'
   | 'stonebridge_longsword'
+  | 'pinewatch_longsword'
+  | 'kestrel_dagger'
+  | 'harrow_shortsword'
+  | 'ironvale_sword'
+  | 'greywatch_longsword'
   | 'sword'
 >
 

@@ -41,6 +41,7 @@ Generated from TypeScript imports.
 - `items/highQualityWeapons.test.ts`
 - `items/itemCapabilities.test.ts`
 - `items/stage4MeleeBatch.test.ts`
+- `items/stage4UpperTierMelee.test.ts`
 - `persistence/saveData.ts`
 - `player/PlayerController.ts`
 - `player/playerCombatMode.test.ts`
@@ -190,6 +191,7 @@ Generated from TypeScript imports.
 - `items/sensibleFood.test.ts`
 - `items/sensibleFood.ts`
 - `items/stage4MeleeBatch.test.ts`
+- `items/stage4UpperTierMelee.test.ts`
 - `items/trade.test.ts`
 - `items/trade.ts`
 - `items/trapInstanceTrade.test.ts`
@@ -867,6 +869,7 @@ Generated from TypeScript imports.
 - `items/heldToolVisual.test.ts`
 - `items/highQualityWeapons.test.ts`
 - `items/stage4MeleeBatch.test.ts`
+- `items/stage4UpperTierMelee.test.ts`
 - `player/PlayerController.appearance.test.ts`
 - `player/PlayerController.ts`
 - `player/PlayerTorch.ts`
@@ -1073,6 +1076,7 @@ Generated from TypeScript imports.
 - `items/sensibleFood.ts`
 - `items/stage4MeleeBatch.test.ts`
 - `items/stage4NoSource.test.ts`
+- `items/stage4UpperTierMelee.test.ts`
 - `items/treasureGameplay.test.ts`
 - `items/treasureGameplay.ts`
 - `items/upperTierTransfers.test.ts`
@@ -1227,6 +1231,7 @@ Generated from TypeScript imports.
 - `items/liquidContainer.ts`
 - `items/primaryWeapons.ts`
 - `items/stage4MeleeBatch.test.ts`
+- `items/stage4UpperTierMelee.test.ts`
 - `items/trade.test.ts`
 - `items/trade.ts`
 - `items/tradeCatalog.ts`
@@ -1425,6 +1430,7 @@ Generated from TypeScript imports.
 - `items/primaryWeapons.ts`
 - `items/sensibleFood.ts`
 - `items/stage4MeleeBatch.test.ts`
+- `items/stage4UpperTierMelee.test.ts`
 - `items/tentProp.ts`
 - `items/timedProcess.ts`
 - `items/trade.test.ts`
@@ -1678,6 +1684,23 @@ Generated from TypeScript imports.
 - `items/tradeCatalog.ts`
 - `settlement/merchantTrade.ts`
 
+## `items/stage4UpperTierMelee.test.ts`
+
+**Imports**
+
+- `ai/npcCombat.ts`
+- `fauna/faunaCombat.ts`
+- `items/HeldTool.ts`
+- `items/Inventory.ts`
+- `items/heldToolVisual.ts`
+- `items/itemCatalog.ts`
+- `items/itemInstances.ts`
+- `items/items.ts`
+- `items/trade.ts`
+- `items/tradeCatalog.ts`
+- `items/upperTierIdentities.ts`
+- `items/upperTierIssuance.ts`
+
 ## `items/tentPlacement.test.ts`
 
 **Imports**
@@ -1797,6 +1820,7 @@ Generated from TypeScript imports.
 - `app/inventoryWiring.ts`
 - `economy/production.ts`
 - `items/stage4MeleeBatch.test.ts`
+- `items/stage4UpperTierMelee.test.ts`
 - `items/trade.test.ts`
 - `items/trapInstanceTrade.test.ts`
 - `items/upperTierIssuance.test.ts`
@@ -1826,6 +1850,7 @@ Generated from TypeScript imports.
 - `items/inventoryView.ts`
 - `items/stage4MeleeBatch.test.ts`
 - `items/stage4NoSource.test.ts`
+- `items/stage4UpperTierMelee.test.ts`
 - `items/trade.test.ts`
 - `items/trade.ts`
 - `items/tradeGrievance.test.ts`
@@ -1936,10 +1961,13 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `ai/npcCombat.test.ts`
+- `ai/npcLoadout.ts`
 - `app/createApp.ts`
 - `app/interactables.ts`
 - `items/Inventory.ts`
 - `items/armorItemInstances.ts`
+- `items/stage4UpperTierMelee.test.ts`
 - `items/trade.ts`
 - `items/treasureGameplay.ts`
 - `items/upperTierIssuance.test.ts`
@@ -1973,6 +2001,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `items/stage4UpperTierMelee.test.ts`
 - `items/upperTierIssuance.test.ts`
 - `items/upperTierTransfers.test.ts`
 

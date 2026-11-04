@@ -1,7 +1,7 @@
 # Plan: Stage 4 donor intake — weapons, ammunition and inventory-only shields
 
 **Created:** 2026-11-04
-**Status:** `in progress` 🔄 (W0/W1/W2a/W2b/W2c complete 2026-11-04; first-batch [review 033](../reviews/2026-11-04--033--items-062-w2a-first-melee-batch-spot-review.md) R1–R3 resolved)
+**Status:** `in progress` 🔄 (W0/W1/W2a–W2d complete 2026-11-04; first-batch [review 033](../reviews/2026-11-04--033--items-062-w2a-first-melee-batch-spot-review.md) R1–R3 resolved)
 **Type:** feature
 **Priority:** high · **Effort:** L
 **Depends on:** items-player-065

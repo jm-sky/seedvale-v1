@@ -91,6 +91,11 @@ export type WeaponMaintenanceKind =
   | 'millbrook_shortsword'
   | 'fenmoor_sword'
   | 'stonebridge_longsword'
+  | 'pinewatch_longsword'
+  | 'kestrel_dagger'
+  | 'harrow_shortsword'
+  | 'ironvale_sword'
+  | 'greywatch_longsword'
   | 'halberd'
   | 'sword'
   | 'knife'
@@ -120,6 +125,11 @@ export const WEAPON_MAINTENANCE_KIND_LIST: readonly WeaponMaintenanceKind[] = [
   'millbrook_shortsword',
   'fenmoor_sword',
   'stonebridge_longsword',
+  'pinewatch_longsword',
+  'kestrel_dagger',
+  'harrow_shortsword',
+  'ironvale_sword',
+  'greywatch_longsword',
   'halberd',
   'sword',
   'axe',

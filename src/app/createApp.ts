@@ -404,7 +404,7 @@ function grantStartingLoadout(inventory: Inventory): void {
   for (const [kind, count] of Object.entries(STARTING_LOADOUT) as [ItemKind, number][]) {
     const has = inventory.count(kind) + inventory.countInstances(kind)
     if (has > 0) continue
-    if (isWeaponMaintenanceKind(kind)) {
+    if (isWeaponMaintenanceKind(kind) && !isUpperTierIdentity(kind)) {
       for (let i = 0; i < count; i++) inventory.addInstance(createWeaponInstance(kind))
     } else {
       const effectiveCount = isDebugMode() && kind === 'coin' ? count * 100 : count

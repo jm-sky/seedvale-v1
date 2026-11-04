@@ -1235,6 +1235,36 @@ export const ITEM_CATALOG: Record<ItemKind, ItemCatalogEntry> = {
     defense: { canBlock: true, baseBlockChance: 0.25, partialReduction: 0.45 }, spawn: 'none', modelUrl: null,
     notes: '062 W2c: Masterwork authored V1 profile; procedural fallback, no world source.',
   },
+  pinewatch_longsword: {
+    kind: 'pinewatch_longsword', label: 'długi miecz z Pinewatch', holdable: true,
+    melee: { damageType: 'cut', damage: 42, range: 2.8, arcDot: 0.38, windUp: 0.27, hitWindow: 0.12, recovery: 0.34, staminaCost: 12 },
+    defense: { canBlock: true, baseBlockChance: 0.28, partialReduction: 0.48 }, spawn: 'none', modelUrl: null,
+    notes: '062 W2d: Exceptional A8 upper-tier authored V1 profile; no source, issued only through the 063 singleton ledger; procedural fallback.',
+  },
+  kestrel_dagger: {
+    kind: 'kestrel_dagger', label: 'sztylet Kestrel', holdable: true,
+    melee: { damageType: 'pierce', damage: 29, range: 1.8, arcDot: 0.62, windUp: 0.1, hitWindow: 0.08, recovery: 0.15, staminaCost: 5 },
+    defense: { canBlock: true, baseBlockChance: 0.2, partialReduction: 0.35 }, spawn: 'none', modelUrl: null,
+    notes: '062 W2d: Legendary A8 upper-tier authored V1 profile; no source, issued only through the 063 singleton ledger; procedural fallback.',
+  },
+  harrow_shortsword: {
+    kind: 'harrow_shortsword', label: 'krótki miecz z Harrow', holdable: true,
+    melee: { damageType: 'cut', damage: 43, range: 2.3, arcDot: 0.52, windUp: 0.16, hitWindow: 0.1, recovery: 0.22, staminaCost: 8 },
+    defense: { canBlock: true, baseBlockChance: 0.32, partialReduction: 0.52 }, spawn: 'none', modelUrl: null,
+    notes: '062 W2d: Legendary A8 upper-tier authored V1 profile; no source, issued only through the 063 singleton ledger; procedural fallback.',
+  },
+  ironvale_sword: {
+    kind: 'ironvale_sword', label: 'miecz z Ironvale', holdable: true,
+    melee: { damageType: 'cut', damage: 49, range: 2.55, arcDot: 0.45, windUp: 0.21, hitWindow: 0.11, recovery: 0.28, staminaCost: 10 },
+    defense: { canBlock: true, baseBlockChance: 0.32, partialReduction: 0.52 }, spawn: 'none', modelUrl: null,
+    notes: '062 W2d: Legendary A8 upper-tier authored V1 profile; no source, issued only through the 063 singleton ledger; procedural fallback.',
+  },
+  greywatch_longsword: {
+    kind: 'greywatch_longsword', label: 'długi miecz z Greywatch', holdable: true,
+    melee: { damageType: 'cut', damage: 55, range: 2.85, arcDot: 0.38, windUp: 0.26, hitWindow: 0.12, recovery: 0.32, staminaCost: 12 },
+    defense: { canBlock: true, baseBlockChance: 0.32, partialReduction: 0.52 }, spawn: 'none', modelUrl: null,
+    notes: '062 W2d: Legendary A8 upper-tier authored V1 profile; no source, issued only through the 063 singleton ledger; procedural fallback.',
+  },
   berries: {
     kind: 'berries',
     label: 'jagody',

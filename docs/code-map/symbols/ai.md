@@ -335,25 +335,25 @@ Generated from exported TypeScript symbols.
 
 ## `ai/npcCombat.ts`
 
-- `applyNpcMeleeHit` — function — line 355
-- `applyNpcMeleeWeaponWear` — function — line 336
-- `applyNpcRangedHit` — function — line 380
-- `chooseCombatMode` — function — line 279
-- `isNpcMeleeWeaponHeld` — function — line 328
-- `NpcAmmoSource` — type — line 296
+- `applyNpcMeleeHit` — function — line 360
+- `applyNpcMeleeWeaponWear` — function — line 341
+- `applyNpcRangedHit` — function — line 385
+- `chooseCombatMode` — function — line 284
+- `isNpcMeleeWeaponHeld` — function — line 333
+- `NpcAmmoSource` — type — line 301
 - `NpcMeleeWeapon` — type — line 45
-- `npcMeleeWeaponFamily` — function — line 94
+- `npcMeleeWeaponFamily` — function — line 99
 - `NpcMeleeWeaponFamily` — type — line 50
 - `NpcRangedWeapon` — type — line 46
-- `npcRangedWeaponFamily` — function — line 116
+- `npcRangedWeaponFamily` — function — line 121
 - `NpcRangedWeaponFamily` — type — line 51
-- `resolveIncomingNpcDamage` — function — line 452
-- `resolveNpcAmmo` — function — line 302
-- `resolveNpcAmmoKind` — function — line 317
-- `resolveNpcArmorEquipment` — function — line 427
-- `resolveNpcDefenseConfig` — function — line 323
-- `resolveNpcMeleeWeapon` — function — line 192
-- `resolveNpcRangedWeapon` — function — line 243
+- `resolveIncomingNpcDamage` — function — line 457
+- `resolveNpcAmmo` — function — line 307
+- `resolveNpcAmmoKind` — function — line 322
+- `resolveNpcArmorEquipment` — function — line 432
+- `resolveNpcDefenseConfig` — function — line 328
+- `resolveNpcMeleeWeapon` — function — line 197
+- `resolveNpcRangedWeapon` — function — line 248
 
 ## `ai/npcCrowd.ts`
 
@@ -410,19 +410,19 @@ Generated from exported TypeScript symbols.
 
 ## `ai/npcLoadout.ts`
 
-- `defaultWeaponForRole` — function — line 24
-- `ensureKnifeCarried` — function — line 50
-- `isNpcLoadoutBelonging` — function — line 212
-- `seedDefaultRoleWeapon` — function — line 35
-- `seedGuardCrossbowLoadout` — function — line 146
-- `seedHunterStartingArrows` — function — line 73
-- `seedHunterSupplies` — function — line 65
-- `seedInitialPersonalBelongingsIfNeeded` — function — line 184
-- `seedShepherdPrimaryWeapon` — function — line 128
-- `seedShepherdShears` — function — line 80
-- `seedShepherdSlingLoadout` — function — line 169
-- `selectShepherdPrimaryWeapon` — function — line 114
-- `SHEPHERD_PRIMARY_WEAPON_KINDS` — const — line 108
+- `defaultWeaponForRole` — function — line 25
+- `ensureKnifeCarried` — function — line 51
+- `isNpcLoadoutBelonging` — function — line 213
+- `seedDefaultRoleWeapon` — function — line 36
+- `seedGuardCrossbowLoadout` — function — line 147
+- `seedHunterStartingArrows` — function — line 74
+- `seedHunterSupplies` — function — line 66
+- `seedInitialPersonalBelongingsIfNeeded` — function — line 185
+- `seedShepherdPrimaryWeapon` — function — line 129
+- `seedShepherdShears` — function — line 81
+- `seedShepherdSlingLoadout` — function — line 170
+- `selectShepherdPrimaryWeapon` — function — line 115
+- `SHEPHERD_PRIMARY_WEAPON_KINDS` — const — line 109
 
 ## `ai/npcLocomotion.ts`
 

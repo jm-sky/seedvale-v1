@@ -622,10 +622,10 @@ Generated from exported TypeScript symbols.
 
 ## `fauna/faunaCombat.ts`
 
-- `combatTargetForAnimal` — function — line 100
-- `damageFor` — function — line 88
-- `damageVsHuman` — function — line 92
-- `isMeleeTool` — function — line 84
+- `combatTargetForAnimal` — function — line 105
+- `damageFor` — function — line 93
+- `damageVsHuman` — function — line 97
+- `isMeleeTool` — function — line 89
 - `MAX_HP` — const — line 9
 - `MeleeToolKind` — type — line 51
 

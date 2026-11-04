@@ -1,6 +1,7 @@
 import type { Inventory } from '../items/Inventory'
 import type { WeaponMaintenanceKind } from '../items/itemInstances'
 import type { ItemKind } from '../items/items'
+import type { UpperTierIdentity } from '../items/upperTierIdentities'
 import type { Role } from './characters'
 import { isInstanceBackedKind } from '../items/itemInstances'
 import { createAcquiredInstance } from '../items/trade'
@@ -99,7 +100,7 @@ function hashString(value: string): number {
 
 /** Weighted shepherd primary defensive weapon (plan npc-047 §5) — real melee
  *  items distinct from the general-utility `knife`. */
-const SHEPHERD_PRIMARY_WEAPON_WEIGHTS: readonly { kind: WeaponMaintenanceKind, weight: number }[] = [
+const SHEPHERD_PRIMARY_WEAPON_WEIGHTS: readonly { kind: Exclude<WeaponMaintenanceKind, UpperTierIdentity>, weight: number }[] = [
   { kind: 'spear', weight: 45 },
   { kind: 'pitchfork', weight: 30 },
   { kind: 'axe', weight: 25 },
@@ -111,7 +112,7 @@ export const SHEPHERD_PRIMARY_WEAPON_KINDS: readonly ItemKind[] =
 /** Deterministic shepherd primary-weapon roll (plan npc-047 §5) — one stable
  *  pick per `npcId`, isolated by `SHEPHERD_PRIMARY_WEAPON_SALT` so
  *  reconstructing the same NPC always picks the same weapon. */
-export function selectShepherdPrimaryWeapon(npcId: string): WeaponMaintenanceKind {
+export function selectShepherdPrimaryWeapon(npcId: string): Exclude<WeaponMaintenanceKind, UpperTierIdentity> {
   const roll = hashString(`${npcId}:${SHEPHERD_PRIMARY_WEAPON_SALT}`) % 100
   let acc = 0
   for (const entry of SHEPHERD_PRIMARY_WEAPON_WEIGHTS) {

@@ -106,3 +106,5 @@ Format: `- [ ] YYYY-MM-DD — opis (plan/plik, jeśli istotne)`
 
 
 - **2026-11-02 · worldgen fixtures stale** (`pnpm worldgen:fixture:check`: `415424794-default`, `42-benchmark` — settlement-definitions v4 vs current v19, caves-v2, road-routes). Already stale before Q72 (layout/roads/caves bumps); regenerate once at the end of the epoch batch (`tools-020`, queue Q19).
+
+- [ ] 2026-11-04 — `src/fauna/AnimalAgent.test.ts` › "067 P3 fauna human-contact identity › forwards the actual animal ID and species through public player and NPC update callbacks" fails on `main` since `393f4d67` (found while verifying 062 W2d; unrelated to items).

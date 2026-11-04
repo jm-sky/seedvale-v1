@@ -10,6 +10,7 @@ import { NEUTRAL_EQUIPMENT_MODIFIERS, resolveEquipmentModifiers } from '../items
 import { Inventory } from '../items/Inventory'
 import { ITEM_CATALOG } from '../items/itemCatalog'
 import { isWeaponMaintenanceKind } from '../items/itemInstances'
+import { isUpperTierIdentity } from '../items/upperTierIdentities'
 import { createWeaponInstance } from '../items/weaponMaintenance'
 import {
   applyNpcMeleeHit,
@@ -37,6 +38,8 @@ const ALL_CURRENT_RANGED_KINDS: readonly ItemKind[] = (Object.keys(ITEM_CATALOG)
   .filter((kind) => ITEM_CATALOG[kind].ranged != null)
 
 function addMeleeWeapon(inventory: Inventory, kind: ItemKind): void {
+  // A8 identities are issued only through the 063 ledger, never by ordinary factories.
+  if (isUpperTierIdentity(kind)) return
   if (isWeaponMaintenanceKind(kind)) inventory.addInstance(createWeaponInstance(kind))
   else inventory.add(kind, 1)
 }

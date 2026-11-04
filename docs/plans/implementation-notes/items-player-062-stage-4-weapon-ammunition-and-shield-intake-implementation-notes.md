@@ -123,3 +123,11 @@ Registered exactly `ashgrove_dagger`, `millbrook_shortsword`, `fenmoor_sword` an
 Note: donor policy rows for ashgrove/millbrook/stonebridge remain `deferred` (W1 fixture of 25 deferred is unchanged); the policy gates donor activation, not V1 authored kinds, and no policy test needed changing. W2d (five upper-tier profiles) is next and is gated by 063 factory guards for any release; no source.
 
 Verification: 156 files / 2257 tests (`src/items`, `src/settlement`, `npcCombat`, `saveData`), Vue type-check, scoped ESLint and production build pass. No browser verification.
+
+## W2d implementation — 2026-11-04
+
+Registered the five A8 upper-tier melee identities (`pinewatch_longsword`, `kestrel_dagger`, `harrow_shortsword`, `ironvale_sword`, `greywatch_longsword`) with the W0 tuples, NPC families, maintenance-instance classification, prices and procedural fallbacks. They have **no source**: the 063 guards already refuse them in `createAcquiredInstance`, count inventories, grants and sales, and `claimUpperTierInstance` (via `createWeaponInstance` with factory access) is the only creation path. `stage4UpperTierMelee.test.ts` verifies profiles, tier ordering against the Masterwork batch, generic refusal, a ledger claim producing a full-condition instance that can be held, and procedural geometry. The shared no-source guard now covers all 17 melee kinds.
+
+Type consequence: `WeaponMaintenanceKind` now includes restricted identities whose ordinary factory returns null, so three ordinary-factory callers narrow with `isUpperTierIdentity` (starting loadout in `createApp.ts`, shepherd weapon table/selector in `npcLoadout.ts`, melee-determinism fixture in `npcCombat.test.ts`). No save-version or worldgen-epoch change. The melee batch of 062 (W2a–W2d, 17 kinds) is complete; **R-A is still required before 064 U enables any source**.
+
+Verification: `src/items`, `src/ai`, `src/persistence`, `src/settlement`, `src/app` (4388 pass), Vue type-check, scoped ESLint, production build. One unrelated failure exists on baseline `04b4773b`: `src/fauna/AnimalAgent.test.ts` "067 P3 … forwards the actual animal ID and species" (from `393f4d67`); logged in LOOSE-ENDS. No browser verification.
