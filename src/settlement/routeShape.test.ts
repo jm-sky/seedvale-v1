@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { polylineIsClear, roundCorners, type RouteShapeEnv, type ShapePoint, stringPull } from './routeShape'
+import { polylineIsClear, roundCorners, type RouteShapeEnv, type ShapePoint, straightChordAround, stringPull } from './routeShape'
 
 const env: RouteShapeEnv = {
   sampleHeight: () => 10,
@@ -37,5 +37,29 @@ describe('routeShape', () => {
     expect(a.points.length).toBe(detour.length)
     expect(stringPull(detour, new Set(), wet)).toEqual(a)
     expect(polylineIsClear([pt(5, 1)], wet)).toBe(false)
+  })
+
+  it('straightChordAround replaces the bend around a centre with one straight chord (Q97)', () => {
+    // An L-shaped road bending at (0, 0); chord of radius 10 around the bend.
+    const pts: ShapePoint[] = [
+      { x: -30, z: 0, h: 10 }, { x: -6, z: 0, h: 10 }, { x: 0, z: 0, h: 10 }, { x: 0, z: 6, h: 10 }, { x: 0, z: 30, h: 10 },
+    ]
+    const out = straightChordAround(pts, 0, 0, 10, env)!
+    expect(out).not.toBeNull()
+    expect(out[0]).toEqual(pts[0])
+    expect(out[out.length - 1]).toEqual(pts[4])
+    expect(out).toHaveLength(4)
+    expect(Math.hypot(out[1]!.x, out[1]!.z)).toBeCloseTo(10, 3)
+    expect(Math.hypot(out[2]!.x, out[2]!.z)).toBeCloseTo(10, 3)
+    // No original point inside the radius survives.
+    expect(out.some((p) => Math.hypot(p.x, p.z) < 9.99)).toBe(false)
+  })
+
+  it('straightChordAround returns null when the route ends inside the radius or a chord end is wet', () => {
+    const short: ShapePoint[] = [{ x: -5, z: 0, h: 10 }, { x: 5, z: 0, h: 10 }]
+    expect(straightChordAround(short, 0, 0, 10, env)).toBeNull()
+    const line: ShapePoint[] = [{ x: -30, z: 0, h: 10 }, { x: 30, z: 0, h: 10 }]
+    const wetEnd: RouteShapeEnv = { ...env, sampleHeight: (x) => (x < -9 && x > -11 ? -3 : 10) }
+    expect(straightChordAround(line, 0, 0, 10, wetEnd)).toBeNull()
   })
 })

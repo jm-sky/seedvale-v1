@@ -168,6 +168,21 @@ Census `--rings=12` (22 settlements, 18/19 roads), before → after:
 
 **Done-when status: partly met.** Sharp turns ≤ 3/km met on seed 42 only (4.2 on 415424794; remaining turns are presumably at locked anchors/route ends or obstacle detours — not analysed). Sinuosity p50 moved −0.07 / −0.03 (target ±0.03): the shortening is the point of string-pulling (A* 8-direction chains carry ~7 % overhead), so the ±0.03 band looks too tight — author/Opus call. Crossing records: topology guard + unchanged crossing counts, no per-route test comparing against the pre-shape chain was added. Not browser-checked (look of curves: author §2).
 
+### Q97 (bridge–road alignment, Opus 2026-11-04, `main`)
+
+**Cause (✅ census):** a bridge deck is a straight slab on `crossing.angle`, which is the heading of the one polyline edge carrying the widest water hit, centred on the traversal midpoint and `span + 2 × 3 m` long. The shaped route keeps only the anchor and its two A* neighbours locked (≈ 9 m apart, up to 45° apart in heading), so the road bends at or before the bank while the deck continues straight — the deck end sits beside the road. Before the fix 12 of 15 bridges (rings ≤ 8) drifted 1.3–7.9 m off the road centreline, with up to 90° between deck axis and road heading at a deck end.
+
+**Fix:** `straightenBridgeRuns` (`roadNetwork.ts`, after the Q61 shape ladder, before `smoothProfile`) replaces the stretch around each bridge with one chord (`routeShape.straightChordAround`): its ends are the first route points ≥ deck half length + 4 m from the crossing centre, chord ends must be dry and every probe off village obstacles. Crossings are re-derived from the result (`crossingsForPolyline`), kept only when the topology still equals `planned` and the re-derived deck centre lies on one chord edge with deck + 4 m on both sides; retries re-centre on the re-derived crossing and widen the chord by 4 m (4 attempts), otherwise that bridge keeps the shaped geometry (fail-safe, no crossing is dropped). Caches: `road-routes` 12→13, `chunk-tiles` 25→26, `abandoned-cemeteries` 9→10. Census: `pnpm worldgen:roads:census --bridges` (new columns `bridges`, `bridgeOff` > 1 m, `bridgeOffMax`, `bridgeTurnMax`; `--bridges` lists each deck on stderr).
+
+Census `--rings=8`, before → after:
+
+| seed | bridges | off-axis > 1 m | max offset (m) | max end turn (°) | sharp /km | other columns |
+| --- | --- | --- | --- | --- | --- | --- |
+| 42 | 5 | 3 → **0** | 5.0 → 0.0 | 47 → 0 | 2.8 → 2.8 | unchanged |
+| 415424794 | 10 | 9 → **1** | 7.9 → 5.2 | 90 → 48 | 2.6 → 2.1 | unchanged |
+
+Residual: `4_-1|6_-5#3` at (1280, −747), seed 415424794 — every straight chord across that oblique reach is rejected by the crossing policy (too oblique or span > 34 m), so it keeps the old shape. Fixing it needs a deck turned toward the river normal with the road bending onto it, not a chord — left as is (1 of 15). Cemetery census unchanged on both seeds. Not browser-checked (queue §2).
+
 ## 6. Author decisions (also queue §3)
 
 **ANSWERED 2026-11-02 (author):** **D1 (a)** RNG graph + fallback · **D2 custom** — main road **~7–8 m** wide (`roadHalfWidth` 5 → 3.5–4), ruts must stay **clearly visible**: only a slight reduction (rut depth 0.15 → ~0.11–0.12, micro-bumps reduced moderately), tuned in game · **D3 (a)** shared lanes + spurs to doors · **D4 (b)** allow **+1 entrance** when neighbours lie in a fourth distinct direction (palisade/torches/pasture must handle the extra gap). Options below kept for the record.

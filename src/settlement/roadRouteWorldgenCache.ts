@@ -44,7 +44,8 @@ export const ROAD_ROUTE_CACHE_NAMESPACE = 'road-routes'
 // v10 (2026-11-03, queue Q37): clearance-fallback houses move off lake yards (plots/entrances).
 // v11 (2026-11-03, queue Q93): entrance lanes keep off house/storehouse corridors.
 // v12 (2026-11-03, queue Q94): object discs (storehouse, garden, field, …) keep a dry rim.
-export const ROAD_ROUTE_CACHE_VERSION = 12
+// v13 (2026-11-04, queue Q97): roads run straight under every bridge deck (chord + re-derived crossings).
+export const ROAD_ROUTE_CACHE_VERSION = 13
 
 const DEFAULT_DEBOUNCE_MS = 4000
 /** Bounded per-seed cap of requested routes only — never a full pair scan.

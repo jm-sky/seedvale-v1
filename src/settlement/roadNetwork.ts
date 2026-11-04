@@ -25,7 +25,7 @@ import {
   riverHitsOnEdge,
 } from './roadRiverCrossing'
 import { buildRouteObstacles, type RouteObstacles } from './routeObstacles'
-import { polylineIsClear, roundCorners, stringPull } from './routeShape'
+import { polylineIsClear, roundCorners, type RouteShapeEnv, straightChordAround, stringPull } from './routeShape'
 import {
   cellKey,
   cellsWithinRadius,
@@ -549,8 +549,82 @@ export function findRoute(
     if (finalPoints !== anchored.points) break
   }
 
-  const points = smoothProfile(finalPoints, smoothingWindow)
-  return { points, segments: toSegments(points, routeKind), kind: routeKind, crossings }
+  const straight = straightenBridgeRuns(finalPoints, crossings, planned, routeKind, routeId, shapeEnv)
+  const points = smoothProfile(straight.points, smoothingWindow)
+  return { points, segments: toSegments(points, routeKind), kind: routeKind, crossings: straight.crossings }
+}
+
+/** Straight road (m) kept beyond each bridge deck end before the route may bend again (Q97). */
+const BRIDGE_STRAIGHT_APPROACH = 4
+/** Chord radius growth (m) per retry when the re-derived deck does not fit inside the chord. */
+const BRIDGE_CHORD_GROWTH = 4
+const BRIDGE_CHORD_ATTEMPTS = 4
+
+/**
+ * Q97: a bridge deck is a straight slab on the crossing's heading, so the road polyline must run straight
+ * under the whole deck and a little beyond — otherwise the shaped route bends at the bank and the deck
+ * end sits beside the road. Each bridge's stretch is replaced by one chord (`straightChordAround`); the
+ * crossings are re-derived from the result and the change is kept only when the topology still matches
+ * `planned` and the re-derived deck fits inside the chord with `BRIDGE_STRAIGHT_APPROACH` to spare.
+ * Otherwise that bridge keeps the shaped geometry (fail-safe, never drops a crossing).
+ */
+function straightenBridgeRuns(
+  points: { x: number, z: number, h: number }[],
+  crossings: RoadRiverCrossing[],
+  planned: readonly RoadRiverCrossing[],
+  routeKind: RoadSegmentKind,
+  routeId: string,
+  env: RouteShapeEnv,
+): { points: { x: number, z: number, h: number }[], crossings: RoadRiverCrossing[] } {
+  let pts = points
+  let cur = crossings
+  for (let i = 0; i < cur.length; i++) {
+    if (cur[i]!.kind !== 'bridge') continue
+    // The chord's own river traversal can sit a few metres along from the shaped one (oblique banks), so
+    // a retry re-centres on the re-derived crossing and widens the chord.
+    let cx = cur[i]!.x
+    let cz = cur[i]!.z
+    let span = cur[i]!.span
+    for (let attempt = 0; attempt < BRIDGE_CHORD_ATTEMPTS; attempt++) {
+      const radius = span / 2 + BRIDGE_APPROACH_MARGIN + BRIDGE_STRAIGHT_APPROACH + attempt * BRIDGE_CHORD_GROWTH
+      const chord = straightChordAround(pts, cx, cz, radius, env)
+      if (!chord) continue
+      const found = crossingsForPolyline(chord, env.riverSegments, routeKind, routeId)
+      if (!found || !sameCrossingTopology(found, planned)) continue
+      const nc = found[i]!
+      // The re-derived deck must lie on the chord: its centre on one edge, with deck + approach to spare.
+      if (deckFitsChord(chord, nc, nc.span / 2 + BRIDGE_APPROACH_MARGIN + BRIDGE_STRAIGHT_APPROACH)) {
+        pts = chord
+        cur = found
+        break
+      }
+      cx = nc.x
+      cz = nc.z
+      span = Math.max(span, nc.span)
+    }
+  }
+  return { points: pts, crossings: cur }
+}
+
+/** True when some single polyline edge contains the deck centre (within 0.5 m) with `half` metres of
+ *  edge on both sides along the deck heading. */
+function deckFitsChord(
+  points: readonly { x: number, z: number }[],
+  crossing: RoadRiverCrossing,
+  half: number,
+): boolean {
+  for (let j = 0; j < points.length - 1; j++) {
+    const a = points[j]!
+    const b = points[j + 1]!
+    const dx = b.x - a.x
+    const dz = b.z - a.z
+    const len = Math.hypot(dx, dz)
+    if (len < 2 * half) continue
+    const along = ((crossing.x - a.x) * dx + (crossing.z - a.z) * dz) / len
+    const lateral = Math.abs((crossing.x - a.x) * dz - (crossing.z - a.z) * dx) / len
+    if (lateral <= 0.5 && along >= half && len - along >= half) return true
+  }
+  return false
 }
 
 /** Distance (m) under which a resolved crossing point is considered to already

@@ -186,3 +186,73 @@ export function polylineIsClear(points: readonly ShapePoint[], env: RouteShapeEn
   }
   return true
 }
+
+/**
+ * Replaces the stretch of `points` around `(cx, cz)` with one straight chord whose ends are the first
+ * points (walking outward along the polyline from its closest approach to the centre) at least
+ * `radius` metres from it (Q97: a bridge deck is straight, so the road must be straight under and just
+ * beyond it). Returns `null` when the polyline ends before reaching `radius` on either side or when the
+ * chord ends are not clear (dry, off village obstacles) or a probe along the chord hits an obstacle.
+ * The caller re-derives crossings and keeps its topology guard.
+ *
+ * @domain world-terrain
+ */
+export function straightChordAround(
+  points: readonly ShapePoint[],
+  cx: number,
+  cz: number,
+  radius: number,
+  env: RouteShapeEnv,
+): ShapePoint[] | null {
+  if (points.length < 2) return null
+  let k = 0
+  let bestT = 0
+  let best = Infinity
+  for (let i = 0; i < points.length - 1; i++) {
+    const a = points[i]!
+    const b = points[i + 1]!
+    const dx = b.x - a.x
+    const dz = b.z - a.z
+    const l2 = dx * dx + dz * dz
+    const t = l2 > 0 ? Math.max(0, Math.min(1, ((cx - a.x) * dx + (cz - a.z) * dz) / l2)) : 0
+    const d = Math.hypot(a.x + dx * t - cx, a.z + dz * t - cz)
+    if (d < best) { best = d; k = i; bestT = t }
+  }
+  if (best >= radius) return null
+  const far = (p: { x: number, z: number }) => Math.hypot(p.x - cx, p.z - cz) >= radius
+  /** Point on segment p→q (p inside the radius, q outside) at exactly `radius` from the centre. */
+  const exitPoint = (p: ShapePoint, q: ShapePoint): ShapePoint => {
+    let lo = 0
+    let hi = 1
+    for (let it = 0; it < 24; it++) {
+      const mid = (lo + hi) * 0.5
+      if (far({ x: p.x + (q.x - p.x) * mid, z: p.z + (q.z - p.z) * mid })) hi = mid
+      else lo = mid
+    }
+    const x = p.x + (q.x - p.x) * hi
+    const z = p.z + (q.z - p.z) * hi
+    return { x, z, h: env.sampleHeight(x, z) }
+  }
+  const a0 = points[k]!
+  const b0 = points[k + 1]!
+  const foot: ShapePoint = { x: a0.x + (b0.x - a0.x) * bestT, z: a0.z + (b0.z - a0.z) * bestT, h: 0 }
+  // Backward: last index `inIdx` kept before the chord start.
+  let prev = foot
+  let inIdx = k
+  while (inIdx >= 0 && !far(points[inIdx]!)) { prev = points[inIdx]!; inIdx-- }
+  if (inIdx < 0) return null
+  const start = exitPoint(prev, points[inIdx]!)
+  prev = foot
+  let outIdx = k + 1
+  while (outIdx < points.length && !far(points[outIdx]!)) { prev = points[outIdx]!; outIdx++ }
+  if (outIdx >= points.length) return null
+  const end = exitPoint(prev, points[outIdx]!)
+  if (!isClear(start.x, start.z, env) || !isClear(end.x, end.z, env)) return null
+  const len = Math.hypot(end.x - start.x, end.z - start.z)
+  const steps = Math.max(1, Math.ceil(len / PROBE_STEP))
+  for (let i = 1; i < steps; i++) {
+    const t = i / steps
+    if (env.obstacles?.isBlocked(start.x + (end.x - start.x) * t, start.z + (end.z - start.z) * t)) return null
+  }
+  return [...points.slice(0, inIdx + 1), start, end, ...points.slice(outIdx)]
+}

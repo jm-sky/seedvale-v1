@@ -11,13 +11,16 @@ import type { VillagePlot } from '../../src/settlement/villagePlan'
 // - crossings: proper intersections between two different roads away from settlements (no junction exists);
 // - parallel: metres of road running within 2 × roadHalfWidth of another road, away from settlements;
 // - sinuosity p50/p90 (length / chord) and sharp turns (> 50° between consecutive segments) per km.
+// - bridges (Q97): declared bridge decks (`bridgeSpecOf`); bridgeOff = decks whose axis drifts > 1 m from the
+//   road centreline anywhere along the deck; bridgeOffMax = worst lateral offset (m); bridgeTurnMax = worst angle
+//   (°) between the deck axis and the road heading at a deck end.
 // Village paths (`def.plan.paths`):
 // - pathPlot: paths crossing a non-plaza plot disc that is not the path's own endpoint (per-class breakdown incl. plaza);
 // - pathYard: path segments crossing a house yard rectangle (Q35 fences).
 import { defaultTerrainConfig } from '../../src/config/worldConfig'
 import { villageSizeConfig } from '../../src/settlement/families'
 import { pointInYard } from '../../src/settlement/householdYard'
-import { clearRoadNetworkCaches, type RoadNetworkContext, type RoadRoute, roadRoutesForSettlement } from '../../src/settlement/roadNetwork'
+import { bridgeSpecOf, clearRoadNetworkCaches, type RoadNetworkContext, type RoadRoute, roadRoutesForSettlement } from '../../src/settlement/roadNetwork'
 import { cellsWithinRadius, type SettlementDef } from '../../src/settlement/settlementGenerator'
 import { clearSettlementDefCache, setSettlementRiverQuery, settlementDefFor } from '../../src/settlement/settlementPlanCache'
 import { clearCemeteryCaches } from '../../src/terrain/cemeteryAssignment'
@@ -197,6 +200,54 @@ function measure(seed: number): Row {
     }
   }
 
+  // Q97: bridge deck axis vs road centreline
+  let bridges = 0
+  let bridgeOff = 0
+  let bridgeOffMax = 0
+  let bridgeTurnMax = 0
+  const polyDist = (p: P, pts: readonly P[]) => {
+    let best = Infinity
+    for (let i = 0; i < pts.length - 1; i++) best = Math.min(best, segPointDist(p, pts[i]!, pts[i + 1]!))
+    return best
+  }
+  /** Road heading (unit) on the segment nearest `p`. */
+  const headingNear = (p: P, pts: readonly P[]) => {
+    let best = Infinity
+    let k = 0
+    for (let i = 0; i < pts.length - 1; i++) {
+      const d = segPointDist(p, pts[i]!, pts[i + 1]!)
+      if (d < best) { best = d; k = i }
+    }
+    const dx = pts[k + 1]!.x - pts[k]!.x
+    const dz = pts[k + 1]!.z - pts[k]!.z
+    const l = Math.hypot(dx, dz) || 1
+    return { x: dx / l, z: dz / l }
+  }
+  for (const { route } of roadList) {
+    for (const crossing of route.crossings) {
+      if (crossing.kind !== 'bridge') continue
+      bridges++
+      const spec = bridgeSpecOf(crossing, route, snap.region.roadNetwork)
+      const half = spec.span / 2
+      let off = 0
+      for (let s = -half; s <= half + 1e-6; s += 1) {
+        off = Math.max(off, polyDist({ x: spec.x + spec.dirX * s, z: spec.z + spec.dirZ * s }, route.points))
+      }
+      let turn = 0
+      for (const s of [-half, half]) {
+        const h = headingNear({ x: spec.x + spec.dirX * s, z: spec.z + spec.dirZ * s }, route.points)
+        const c = Math.abs(h.x * spec.dirX + h.z * spec.dirZ)
+        turn = Math.max(turn, (Math.acos(Math.min(1, c)) * 180) / Math.PI)
+      }
+      if (off > 1) bridgeOff++
+      bridgeOffMax = Math.max(bridgeOffMax, off)
+      bridgeTurnMax = Math.max(bridgeTurnMax, turn)
+      if (process.argv.includes('--bridges')) {
+        console.error(`bridge seed ${seed} ${crossing.id} at ${spec.x.toFixed(0)},${spec.z.toFixed(0)} span ${spec.span.toFixed(1)} off ${off.toFixed(2)} m turn ${turn.toFixed(0)}°`)
+      }
+    }
+  }
+
   // road × road crossings and parallel overlap away from settlements
   let crossings = 0
   let parallelM = 0
@@ -252,6 +303,10 @@ function measure(seed: number): Row {
     parallelM: Math.round(parallelM),
     sinuosity: `${pct(sinuosity, 0.5).toFixed(2)}/${pct(sinuosity, 0.9).toFixed(2)}`,
     sharpPerKm: (sharpTurns / Math.max(totalKm, 1e-6)).toFixed(1),
+    bridges,
+    bridgeOff,
+    bridgeOffMax: bridgeOffMax.toFixed(1),
+    bridgeTurnMax: Math.round(bridgeTurnMax),
     paths,
     pathPlot,
     pathYard,
