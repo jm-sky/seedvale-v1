@@ -283,6 +283,12 @@ Generated from TypeScript imports.
 - `debug/npcDebugApi.ts`
 - `fauna/AnimalAgent.ts`
 
+## `debug/flyCam.test.ts`
+
+**Imports**
+
+- `debug/flyCam.ts`
+
 ## `debug/flyCam.ts`
 
 **Imports**
@@ -295,6 +301,7 @@ Generated from TypeScript imports.
 
 - `app/createApp.ts`
 - `app/gameLoop.ts`
+- `debug/flyCam.test.ts`
 - `input/MouseLook.ts`
 - `main.ts`
 

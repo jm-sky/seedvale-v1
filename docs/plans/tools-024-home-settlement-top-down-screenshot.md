@@ -1,7 +1,7 @@
 # Plan: Home-settlement top-down screenshot
 
 **Created:** 2026-11-04
-**Status:** `planned`
+**Status:** `verification needed` 🔍
 **Type:** infrastructure
 **Priority:** medium · **Effort:** S
 **Depends on:** -

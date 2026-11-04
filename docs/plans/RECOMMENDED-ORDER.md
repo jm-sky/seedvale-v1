@@ -776,6 +776,8 @@ graph TD
   tools_020["tools-020 — Worldgen cache boot fixture (benchmark seed + reference seed)"]
   tools_021["tools-021 — Align debug OBB overlays with physical colliders"]
   tools_022["tools-022 — Character body variants — Asset Browser preview"]
+  tools_023["tools-023 — Whole-continent raster and hydrology preview"]
+  tools_024["tools-024 — Home-settlement top-down screenshot"]
   ui_input_001["ui-input-001 — Developer Debug API"]
   ui_input_002["ui-input-002 — UI/UX Interaction and Action System Polish"]
   ui_input_003["ui-input-003 — Merchant Trade UI/UX Redesign"]

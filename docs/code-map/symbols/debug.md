@@ -103,7 +103,7 @@ Generated from exported TypeScript symbols.
 - `isNoShadowsDebugMode` — function — line 72
 - `isNpcCombatDebugMode` — function — line 108
 - `isRenderStateDebugMode` — function — line 86
-- `isSystemEnabled` — function — line 152
+- `isSystemEnabled` — function — line 154
 - `isWildBoarGlbEnabled` — function — line 117
 - `urlParamValue` — function — line 21
 
@@ -130,10 +130,13 @@ Generated from exported TypeScript symbols.
 
 ## `debug/flyCam.ts`
 
-- `createFlyCam` — function — line 50
-- `FlyCam` — type — line 44
-- `FlyConfig` — type — line 21
-- `readFlyConfig` — function — line 26
+- `aimFlyCamera` — function — line 60
+- `createFlyCam` — function — line 108
+- `DEFAULT_HOME_SHOT_AGL_M` — const — line 24
+- `FlyCam` — type — line 102
+- `FlyConfig` — type — line 28
+- `FlyShotHooks` — type — line 40
+- `readFlyConfig` — function — line 73
 
 ## `debug/householdHistory.ts`
 

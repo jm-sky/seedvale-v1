@@ -311,9 +311,9 @@ Generated from exported TypeScript symbols.
 
 ## `app/gameLoop.ts`
 
-- `createGameLoop` — function — line 748
-- `GameLoop` — type — line 708
-- `GameLoopDeps` — type — line 346
+- `createGameLoop` — function — line 753
+- `GameLoop` — type — line 713
+- `GameLoopDeps` — type — line 351
 
 ## `app/graphicsSettings.ts`
 

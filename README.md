@@ -35,12 +35,16 @@ http://localhost:5577/?fly=60&seed=415424794
 | `fly` / `fly=<m>` | Enable flight; value = start height above ground in metres (default 40). `fly=0` disables. |
 | `seed=<n>` | World seed. Without it the last stored seed is used, else 42. |
 | `flyPose=x,z,h,yaw,pitch` | Optional start pose (`h` above ground, angles in radians). |
+| `flyPose=home[,agl]` | Centre on the home settlement, straight down, north-up (implies `flyTop`); default 150 m above ground. |
+| `flyTop` | Straight-down camera, image up = world -Z (north), mouse look ignored. |
+| `flyFov=<deg>` | Vertical FOV override (narrow = near-orthographic from higher up). |
 
 - Boots a fresh world straight from the URL: no start screen, **saved games are not loaded** (a save's seed would override `?seed=`) and **autosave is off**, so your own save is never overwritten.
 - Keys: WASD / arrows move, Space up, `Z` down, Shift ×3, mouse look after clicking the canvas.
 - Speed is `14 + 0.8 × height above ground` m/s, so higher means faster.
 - The player is hidden and walks on the ground below the camera, so chunk streaming and simulation follow the flight.
 - Pitch is limited by the orbit camera's look limits (about 52° up, 69° down).
+- **Home-settlement top-down screenshot** (plan tools-024): `pnpm tools:settlement-shot <vitePort> <seed> <out.png> [--agl N] [--fov D] [--keep trees,fog] [--hour H] [--size 1600]` — see the [implementation notes](docs/plans/implementation-notes/tools-024-home-settlement-top-down-screenshot-implementation-notes.md). Uses `?debugDisableSystems=` (incl. `fog`) and `window.__seedvaleFlyShotReady()`.
 
 ## Where to look next
 
