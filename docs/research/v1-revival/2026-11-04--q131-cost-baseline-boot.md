@@ -17,8 +17,21 @@ Workers: 6 in every run.
 
 Cold/warm ready time and `createWorldBundle`: **±25 %** (spread up to 40 % on seed 42 cold, so ≥ 5 reps are advisable for a keep/revert call). Per-phase marks: ±30 %. Compare cold with cold and warm with warm, same seed, same platform.
 
-## Not measured yet (🟡 follow-up, Resume in queue)
+## Headless worldgen cost (Node, no browser)
 
-- Hydrology sample / compute / install split and payload size; **peak transient (worker) memory** — heap here is main-thread only.
-- Chunk-generation p50/p95, map raster cost, road route time.
-- Simulation workload: households, NPCs, active transport legs, one time-skip run.
+**Tool:** `pnpm tsx scripts/perf/measure-worldgen-cost.ts --reps=3 --chunks=60` · raw: `data/q131/worldgen-cost-node.json` · Node/V8 on WSL2, single thread, no workers — **not comparable** to the browser table above or to Windows. Seeds run sequentially in one process, so per-rep RSS is cumulative (use only as an upper bound, ✅ ~450–640 MiB for the whole script; worker transient memory is not captured).
+
+| Seed | hydrology sample (ms) | hydrology compute (ms) | install (ms) | payload / copy (MiB) | chunk tile p50 / p95 (ms) | layout (ms) | 22 defs (ms) | all road routes (ms) |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 42 | 3665 / 3897 / 3593 | 746 / 751 / 647 | < 1 | 6.6 | 6.8–7.3 / 7.9–11.8 | 621–671 | 1991–2096 | 33.5–36.1 s |
+| 415424794 | 3633 / 3917 / 4368 | 631 / 672 / 650 | < 1 | 6.8 | 7.0–7.8 / 9.0–12.2 | 531–572 | 2059–2146 | 23.0–23.5 s |
+
+- Floor rows (raw sample input) are 9 MiB per grid; payload matches the 058 notes (6.63 / 6.79 MiB).
+- Chunk tiles are **bare** (no roads, clearings, rivers, vegetation counts only nominal) over 60 chunks spread across the continent: a lower bound for in-game worker cost, ✅ measured only as relative baseline.
+- Road routes: 22 sites, 37 / 39 routes; the ~23–36 s is **Node cold compute of every settlement's routes** (the game computes lazily and caches) — a bound for a "route everything" tool, not boot cost.
+- Tolerance 🟡: hydrology and chunk figures ±20 % (observed spread ≤ 20 %, chunk p95 ≤ 50 % with 60 samples); routes ±25 %.
+
+## Not measured yet (🟡)
+
+- **Peak transient worker memory** and map-raster cost need a browser/debug hook (no runtime change made here).
+- **Simulation workload** (households, NPCs, transport legs, one time-skip run): needs the runtime simulation harness; not attempted headlessly.

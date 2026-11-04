@@ -1,0 +1,185 @@
+{
+ "node": "v22.23.4",
+ "reps": 3,
+ "chunkCount": 60,
+ "results": {
+  "42": [
+   {
+    "rep": 0,
+    "hydrology": {
+     "sampleMs": 3665,
+     "computeMs": 746,
+     "installMs": 0.7,
+     "payloadMiB": 6.6,
+     "floorMiB": 9
+    },
+    "rssMiB": {
+     "before": 140.7,
+     "afterHydrology": 299.7,
+     "end": 452.5
+    },
+    "chunks": {
+     "n": 60,
+     "p50": 7.2,
+     "p95": 11.8,
+     "max": 18
+    },
+    "layoutAndRoutes": {
+     "sites": 22,
+     "defs": 22,
+     "routes": 37,
+     "layoutMs": 621,
+     "defsMs": 2055,
+     "routesMs": 36122
+    }
+   },
+   {
+    "rep": 1,
+    "hydrology": {
+     "sampleMs": 3897,
+     "computeMs": 751,
+     "installMs": 0.2,
+     "payloadMiB": 6.6,
+     "floorMiB": 9
+    },
+    "rssMiB": {
+     "before": 452.5,
+     "afterHydrology": 450.9,
+     "end": 448.9
+    },
+    "chunks": {
+     "n": 60,
+     "p50": 7.3,
+     "p95": 9.4,
+     "max": 10
+    },
+    "layoutAndRoutes": {
+     "sites": 22,
+     "defs": 22,
+     "routes": 37,
+     "layoutMs": 671,
+     "defsMs": 2096,
+     "routesMs": 33966
+    }
+   },
+   {
+    "rep": 2,
+    "hydrology": {
+     "sampleMs": 3593,
+     "computeMs": 647,
+     "installMs": 0.2,
+     "payloadMiB": 6.6,
+     "floorMiB": 9
+    },
+    "rssMiB": {
+     "before": 448.9,
+     "afterHydrology": 485,
+     "end": 477
+    },
+    "chunks": {
+     "n": 60,
+     "p50": 6.8,
+     "p95": 7.9,
+     "max": 11.5
+    },
+    "layoutAndRoutes": {
+     "sites": 22,
+     "defs": 22,
+     "routes": 37,
+     "layoutMs": 623,
+     "defsMs": 1991,
+     "routesMs": 33519
+    }
+   }
+  ],
+  "415424794": [
+   {
+    "rep": 0,
+    "hydrology": {
+     "sampleMs": 3633,
+     "computeMs": 631,
+     "installMs": 0.3,
+     "payloadMiB": 6.8,
+     "floorMiB": 9
+    },
+    "rssMiB": {
+     "before": 477,
+     "afterHydrology": 465.7,
+     "end": 590.5
+    },
+    "chunks": {
+     "n": 60,
+     "p50": 7.5,
+     "p95": 9,
+     "max": 16.3
+    },
+    "layoutAndRoutes": {
+     "sites": 22,
+     "defs": 22,
+     "routes": 39,
+     "layoutMs": 572,
+     "defsMs": 2123,
+     "routesMs": 23541
+    }
+   },
+   {
+    "rep": 1,
+    "hydrology": {
+     "sampleMs": 3917,
+     "computeMs": 672,
+     "installMs": 0.3,
+     "payloadMiB": 6.8,
+     "floorMiB": 9
+    },
+    "rssMiB": {
+     "before": 590.5,
+     "afterHydrology": 562.9,
+     "end": 642.4
+    },
+    "chunks": {
+     "n": 60,
+     "p50": 7,
+     "p95": 9.1,
+     "max": 19.4
+    },
+    "layoutAndRoutes": {
+     "sites": 22,
+     "defs": 22,
+     "routes": 39,
+     "layoutMs": 553,
+     "defsMs": 2146,
+     "routesMs": 23143
+    }
+   },
+   {
+    "rep": 2,
+    "hydrology": {
+     "sampleMs": 4368,
+     "computeMs": 650,
+     "installMs": 0.2,
+     "payloadMiB": 6.8,
+     "floorMiB": 9
+    },
+    "rssMiB": {
+     "before": 642.4,
+     "afterHydrology": 574.4,
+     "end": 618.9
+    },
+    "chunks": {
+     "n": 60,
+     "p50": 7.8,
+     "p95": 12.2,
+     "max": 20.7
+    },
+    "layoutAndRoutes": {
+     "sites": 22,
+     "defs": 22,
+     "routes": 39,
+     "layoutMs": 531,
+     "defsMs": 2059,
+     "routesMs": 22952
+    }
+   }
+  ]
+ }
+}
