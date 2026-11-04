@@ -26,11 +26,13 @@ Both tools are **deterministic for a seed + commit**, so the usual workflow is:
 **Headless, no browser and no dev server needed. About 6 s per seed.**
 
 ```text
-pnpm tsx scripts/tools/continent-preview-png.ts <seed> <out.png> [all|standard]
+pnpm tsx scripts/tools/continent-preview-png.ts <seed> <out.png> [all|standard] [--hillshade] [--slope] [--settlements] [--routes] [--stream-m2=480,960,1920]
 ```
 
 - `all` (default) draws every river including small tributaries, with a visual minimum stroke width. `standard` uses the gameplay map's width filter. Stroke widths are exaggerated for legibility and do not show physical river width.
-- It runs canonical hydrology (`ensureWorldHydrology`) and the same tile builder/painter as the in-game map, at a coarse LOD (16 m steps, 144 tiles). No settlements, roads or actors.
+- It runs canonical hydrology (`ensureWorldHydrology`) and the same tile builder/painter as the in-game map, at a coarse LOD (16 m steps, 144 tiles). No actors. Settlements and roads are opt-in layers (below).
+- **Layers (tools-026 D4, all optional, default output unchanged; ~60 s per seed with `--settlements`/`--routes`):** `--hillshade` (NW light), `--slope` (tint by class <5 / 5–10 / 10–20 / 20–30 / ≥30°, gradient over ~8 m pixels — a coarse map-scale estimate, not terrain-mesh slope), `--settlements` (dots by size SM/MD/LG/XL, home ringed in yellow), `--routes` (deduplicated road-route polylines from `roadRoutesForSettlement`), `--stream-m2=<list>` (extra `<out>-streams-<m2>.png` per D1 initiation area, uniform runoff, hillshaded neutral base, lakes drawn like sea — preview only, not the production network). There is **no mountain-gate layer**: the generator does not expose the gate (see the proxy in `censusRelief.ts`).
+- Q114 exports (both seeds, `standard` + `all`, layers on, SHA in the filename): `docs/research/v1-revival/continent-previews/continent-<seed>-{standard,all}-relief-routes-<sha>.png` and `…-streams-{480,960,1920}.png`.
 - **Browser page**, the same render with a download button: `http://localhost:5577/continent-preview.html?seed=<seed>&autostart=1` (also in the in-game Tools menu). The page's canvas compositor differs slightly from the script's, so don't diff page PNGs against script PNGs pixel by pixel.
 - References: `docs/research/v1-revival/continent-previews/continent-415424794-all-streams.png`, `continent-42-all-streams.png`.
 - Details and limits: [tools-023 implementation notes](../plans/implementation-notes/tools-023-whole-continent-raster-hydrology-preview-implementation-notes.md).
