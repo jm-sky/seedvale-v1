@@ -10,6 +10,8 @@
 
 **UI palette audit:** [Vue color coverage — 98-file register and agent handoff](./2026-11-02--ui-vue-color-coverage-audit.md) (preliminary; finish per-file color checks before any CSS-only changes).
 
+**Geography & exploration recon (2026-11-04):** [Architecture handoff for Claude Opus 5.5](./2026-11-04--geography-exploration-revival-architecture-recon.md) — river density, shared macroclimate, route-based settlement calibration, major landforms and existing discovery systems. Research recommendations only; no new decisions or plan-status changes.
+
 ## Current entry points
 
 | Need | Read |
