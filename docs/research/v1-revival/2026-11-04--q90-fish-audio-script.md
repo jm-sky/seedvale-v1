@@ -1,10 +1,12 @@
 # Q90 — Fish Audio recording proposals
 
-**2026-11-04 · source `bca03d453bfb0177a9d2801c4d2ccc7ca0c3b7a5` · awaiting author approval; Q90 remains open.**
+**2026-11-04 · source `bca03d453bfb0177a9d2801c4d2ccc7ca0c3b7a5` · author-approved Fish Audio script (2026-11-04); MP3 generation/QC pending.**
 
-Proposed takes: **87 = P0 12 / P1 54 / P2 21**. No audio generated. Priority is review/production order, not permission to record or evidence of runtime readiness. [72 conditional reuse candidates](./2026-11-04--q90-fish-audio-script.json) are separate from these counts; approved reusable clips = **0** in the current ledger.
+Proposed takes: **87 = P0 12 / P1 54 / P2 21**. No audio generated. The author approved these exact 87 transcripts and their Fish Audio production scope on 2026-11-04; priorities define production order, not evidence of runtime readiness or passed QC. [72 conditional reuse candidates](./2026-11-04--q90-fish-audio-script.json) are separate from these counts; approved reusable clips = **0** in the current ledger.
 
 [Audit](./2026-11-04--q90-npc-voices-editorial-audit.md) · [writing pass](./2026-11-04--q90-dialogue-proposals.md) · [machine-readable script](./2026-11-04--q90-fish-audio-script.json) · [coverage](./2026-11-04--q90-coverage.json) · [all 81 old-row dispositions](./2026-11-04--q90-supersession.md)
+
+**Recording policy:** This is a selective voice set, not a plan to record all NPC dialogue. Routine activity/needs/family/settlement responses remain text-only. The desired MP3 surfaces are greeting/farewell, trade entry/exit, generic quest cues and selected exact important quest lines, plus spontaneous weather, campfire NPC–NPC, danger/combat, interrupted work due to needs and other individually selected significant events. Categories without rows in this script are not automatically approved new takes. [Decision](./STRATEGIC-BRIEF.md).
 
 ## Production contract
 
