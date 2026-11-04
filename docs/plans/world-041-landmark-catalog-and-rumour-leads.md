@@ -42,7 +42,7 @@ Verified in code ✅ unless marked 🟡 (proposal inside the approved G7 scope; 
 ### §1 Owner of "an NPC tells the player about a place"
 
 - ✅ `guardLocalKnowledge.askAboutArea` (generalized to any asking NPC by npc-050) + the single delivery seam `deliverNpcWorldKnowledgeFollowUp` (`npcPlayerFollowUpDelivery.ts`), called from dialogue `onAskAboutArea` (`inventoryWiring.ts`). The topic "Opowiedz mi coś o okolicy." is offered today only to the **home guard** and **adult hunters** (`NpcDialogueMenu.vue` `canAskAboutArea`); answers reveal `discovered` (exact pin + name).
-- Rumours **extend this owner** with a second answer mode — no new service: a pure `pickRumourLead(...)` next to `locationDiscovery.ts` + `reveal(id, 'estimated', 'npc')`. Which NPCs give rumours vs exact answers is an author detail → queue §3 Q135 (recommended: guards/hunters keep exact answers within their range, other adults give rumours for far places).
+- Rumours **extend this owner** with a second answer mode — no new service: a pure `pickRumourLead(...)` next to `locationDiscovery.ts` + `reveal(id, 'estimated', 'npc')`. ✅ **Author Q135 (b), 2026-11-04:** **every NPC gives only rumours** (`estimated`, no exact pin/name); some give nothing (e.g. children); **guards and hunters give better data and reach farther** — 🟡 smaller lead radius (e.g. 60–120 m) and a wider band. L3b therefore also moves today's exact guard/hunter reveals (`discovered`) to rumour leads and opens the topic to other adult NPCs; it must first check which quests rely on a guard reveal being `discovered` (landmark quests via `LANDMARK_QUEST_SEARCH_CHUNK_RADIUS`) and keep those quests working.
 
 ### §2 Persisted state — **no save-contract change**
 
