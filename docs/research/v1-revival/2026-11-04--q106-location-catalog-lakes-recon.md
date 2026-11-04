@@ -1,6 +1,6 @@
 # Q106 — world-location catalog lakes vs real water (recon)
 
-**Date:** 2026-11-04 · **Author:** Claude Opus 5.5 · **Status:** recon done; implementation row **Q109** waits on author question Q106-a (queue §3).
+**Date:** 2026-11-04 · **Author:** Claude Opus 5.5 · **Status:** recon done; author 2026-11-04 answered Q106-a **(a) fix now** → implementation row **Q109** ready (step 5, map coast colour, not yet decided).
 **Source:** [review 030 F2](../../reviews/2026-11-03--030--geography-hydrology-architecture-review.md#findings). Legend: ✅ checked in code / by census · 🟡 inference.
 
 ## 1. What the catalog does today (✅ code)
@@ -27,7 +27,7 @@ Near home (seed 415424794, ≤ 1.5 km): today 22 lake locations, e.g. (−168, �
 - **Epoch** — `WORLDGEN_EPOCH` 1 lists "map/location discovery and knowledge"; the Revival batch already bumped it, so the fix needs **no epoch bump and no save migration**. Dev saves written at epoch 1 before the fix may keep a few obsolete lake ids (harmless, above).
 - **Consumers** (generic, no lake-specific logic): map markers/labels (`mapData`, `drawMap`, `WorldMapScreen`), proximity discovery, NPC knowledge reveal / follow-up delivery, guard local knowledge, navigation targets, escort destinations. Quests have no lake-specific use. `seedProfile` counts inland wet cells with its own `isFloorBelowSea` call (same sea gap — informational only).
 
-## 4. Proposed slice (Q109, S — after the author answer)
+## 4. Proposed slice (Q109, S — approved by the author 2026-11-04)
 
 1. `classifyCoarseCell`: one `sampleRawTexelAt` per cell (fewer texel evaluations than today); wet = `isWetTexel(h, floorH, waterLevel)` (sea or lake, the `classifyMapTexel` rule); keep a distinct ocean state (e.g. `CELL_OCEAN`) instead of folding it into `CELL_NONE`.
 2. `floodFillLakes`: a component that touches an ocean cell is sea — no `lake` location. Keep the expanding flood fill so the result is query-order independent (world-013 §9).

@@ -82,6 +82,7 @@
 
 ## 3. Answered author questions
 
+- **ANSWERED 2026-11-04 (a) — fix now, Q109 ready** · **Q106-a jeziora w katalogu lokacji ([recon](./2026-11-04--q106-location-catalog-lakes-recon.md)):** ~95 % dzisiejszych „jezior” w katalogu (mapa, odkrywanie, wiedza NPC) to kawałki morza przy brzegu, a prawdziwych jezior (po hydrologii 058) katalog nie widzi. Poprawka zmienia, które jeziora da się odkryć (~146 → ~50–55 na seed, wszystkie śródlądowe; przy domu znikną „jeziora” w morzu, pojawią się prawdziwe). Bez migracji zapisu (epoka 1). (a) naprawić teraz w ramach epoki (Q109) [rek.]; (b) tylko usunąć fragmenty morza, bez nowych jezior; (c) później. Dodatkowo: czy sprawdzić i poprawić mapę, która prawdopodobnie maluje przybrzeżne morze kolorem jeziora (osobny krok)?
 - **ANSWERED 2026-11-04 · G1–G9 geography & exploration:** [author-approved decision record](./2026-11-04--geography-exploration-author-decisions-g1-g9.md); direction approved, **no implementation row or parameter choice yet**. G2 allows inland deserts (extent undecided); G5 variants ~22/~25/~28 and the too-long left-hand home road require route measurements and **author selection**; G6 V2 waterfall donor, G7 V2 rumour/approximate map area donor, G8 V1/V3 steep summits/pass hybrid require targeted recon; G9 **always** separates large structures from large settlements. Move this answered record to the queue archive during next queue housekeeping; it is **not an open author question**.
 
 
