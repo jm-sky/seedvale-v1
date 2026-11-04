@@ -90,7 +90,7 @@ describe('catalog physical classification', () => {
       for (const kind of entry.ranged?.ammoKinds ?? []) expect(['cut', 'pierce', 'blunt'], kind).toContain(AMMO_DAMAGE_TYPE[kind])
     }
     expect(AMMO_DAMAGE_TYPE).toMatchObject({ arrow: 'pierce', broadhead_arrow: 'cut', war_arrow: 'pierce', bolt: 'pierce', stone: 'blunt' })
-    expect(ARROW_DAMAGE_BONUS).toEqual({ broadhead_arrow: 4, war_arrow: 8, sling_stone: 2 })
+    expect(ARROW_DAMAGE_BONUS).toEqual({ broadhead_arrow: 4, war_arrow: 8, sling_stone: 2, bolt_heavy: 6 })
     expect(rangedConfigFromThrowable('stone')?.damageType).toBe('blunt')
   })
 })

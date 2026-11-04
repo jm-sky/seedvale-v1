@@ -1576,7 +1576,7 @@ export const ITEM_CATALOG: Record<ItemKind, ItemCatalogEntry> = {
       accuracy: 0.88,
       skillAccuracyScale: 0.25,
       minReloadDistance: 4.5,
-      ammoKinds: ['bolt'],
+      ammoKinds: ['bolt', 'bolt_heavy', 'bolt_blunt'],
       criticalChance: 0.06,
     },
     spawn: 'none',
@@ -1647,6 +1647,24 @@ export const ITEM_CATALOG: Record<ItemKind, ItemCatalogEntry> = {
     spawn: 'none',
     modelUrl: null,
     notes: 'Plan items-player-059 — Kupiec stock. Crossbow ammo; ordinary stackable count. Procedural arrow-like fallback until a dedicated GLB exists.',
+  },
+  bolt_heavy: {
+    kind: 'bolt_heavy',
+    label: 'ciężki bełt',
+    holdable: false,
+    melee: null,
+    spawn: 'none',
+    modelUrl: null,
+    notes: '062 W3c: crossbow-only pierce ammo (+6). Count-backed, no world source; procedural bolt fallback.',
+  },
+  bolt_blunt: {
+    kind: 'bolt_blunt',
+    label: 'bełt obuchowy',
+    holdable: false,
+    melee: null,
+    spawn: 'none',
+    modelUrl: null,
+    notes: '062 W3c: crossbow-only blunt ammo (+0). Count-backed, no world source; procedural bolt fallback.',
   },
   chest: {
     kind: 'chest',
@@ -2081,11 +2099,12 @@ export const ARROW_DAMAGE_BONUS: Partial<Record<ItemKind, number>> = {
   broadhead_arrow: 4,
   war_arrow: 8,
   sling_stone: 2,
+  bolt_heavy: 6,
 }
 
 /** Ammo kinds introduced by Stage 4 (062 W3). Their bonus applies to every shooter; the native arrow
  *  variants above keep their historical player-only bonus so NPC arrow balance is unchanged. */
-const STAGE4_AMMO_KINDS: ReadonlySet<ItemKind> = new Set<ItemKind>(['sling_stone'])
+const STAGE4_AMMO_KINDS: ReadonlySet<ItemKind> = new Set<ItemKind>(['bolt_blunt', 'bolt_heavy', 'sling_stone'])
 
 /** Flat damage added to a ranged config for the ammo actually fired.
  *
@@ -2104,6 +2123,8 @@ export const AMMO_DAMAGE_TYPE: Partial<Record<ItemKind, DamageType>> = {
   bolt: 'pierce',
   stone: 'blunt',
   sling_stone: 'blunt',
+  bolt_heavy: 'pierce',
+  bolt_blunt: 'blunt',
 }
 
 /** Ranged-capable held tools — mirrors `isMeleeTool` (`fauna/faunaCombat.ts`),

@@ -161,6 +161,8 @@ export type ItemKind =
   | 'war_arrow'
   /** Plan items-player-059 — crossbow ammo (ordinary stackable count). */
   | 'bolt'
+  | 'bolt_heavy'
+  | 'bolt_blunt'
   | 'chest'
   | 'backpack'
   | 'tree_seed'
@@ -1546,6 +1548,24 @@ export const ITEM_DEFS: Record<ItemKind, ItemDef> = {
     color: 0x6a5a40,
     description: 'Krótki bełt do kuszy. Grubszy i cięższy od zwykłej strzały.',
   },
+  bolt_heavy: {
+    kind: 'bolt_heavy',
+    label: 'ciężki bełt',
+    categories: ['resource'],
+    weight: 0.12,
+    size: 'XS',
+    color: 0x50463a,
+    description: 'Ciężki bełt z masywnym grotem do kuszy. Mocniej przebija, nie nadaje się do procy ani łuku.',
+  },
+  bolt_blunt: {
+    kind: 'bolt_blunt',
+    label: 'bełt obuchowy',
+    categories: ['resource'],
+    weight: 0.1,
+    size: 'XS',
+    color: 0x7a6a50,
+    description: 'Bełt z tępym zakończeniem do kuszy. Zadaje obrażenia obuchowe zamiast przebijających.',
+  },
   chest: {
     kind: 'chest',
     label: 'skrzynia',
@@ -2750,7 +2770,7 @@ function buildProceduralItemMesh(kind: ItemKind): THREE.Object3D {
     group.add(cord)
     return group
   }
-  if (kind === 'arrow' || kind === 'broadhead_arrow' || kind === 'war_arrow' || kind === 'bolt') {
+  if (kind === 'arrow' || kind === 'broadhead_arrow' || kind === 'war_arrow' || kind === 'bolt' || kind === 'bolt_heavy' || kind === 'bolt_blunt') {
     const group = new THREE.Group()
     const shaft = new THREE.Mesh(
       new THREE.CylinderGeometry(0.008, 0.008, 0.55, 5),

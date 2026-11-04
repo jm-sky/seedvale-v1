@@ -42,7 +42,7 @@ describe('exhaustive compatibility manifest', () => {
     for (const id of ['falchion', 'composite_bow', 'arrow_blunt'] as const) expect(entry(id).classification).toBe('deferred')
     expect(V3_EQUIPMENT_DEFINITIONS.filter(row => row.availability === 'future')).toHaveLength(12)
     expect(ARROW_DAMAGE_BONUS.arrow ?? 0).toBe(0)
-    expect(ARROW_DAMAGE_BONUS).toEqual({ broadhead_arrow: 4, war_arrow: 8, sling_stone: 2 })
+    expect(ARROW_DAMAGE_BONUS).toEqual({ broadhead_arrow: 4, war_arrow: 8, sling_stone: 2, bolt_heavy: 6 })
     expect(entry('arrow').historicalAliases.v1).toBe('broadhead_arrow')
     expect(entry('arrow').target?.id).toBe('arrow')
   })

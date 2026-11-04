@@ -359,43 +359,43 @@ Generated from exported TypeScript symbols.
 
 ## `items/itemCatalog.ts`
 
-- `AMMO_DAMAGE_TYPE` — const — line 2100
-- `ammoDamageBonus` — function — line 2094
+- `AMMO_DAMAGE_TYPE` — const — line 2119
+- `ammoDamageBonus` — function — line 2113
   - domain: items-player
 - `ArmorConfig` — type — line 60
-- `ARROW_DAMAGE_BONUS` — const — line 2080
+- `ARROW_DAMAGE_BONUS` — const — line 2098
 - `BookTier` — type — line 214
-- `CAPABILITY_KINDS` — const — line 2172
+- `CAPABILITY_KINDS` — const — line 2193
 - `CAPABILITY_LABEL` — const — line 190
 - `CAPABILITY_NEED_LABEL` — const — line 174
-- `CONSUMABLE_KINDS_BY_NEED` — const — line 2212
+- `CONSUMABLE_KINDS_BY_NEED` — const — line 2233
 - `ConsumableNeed` — type — line 205
 - `consumeNeedNoun` — function — line 326
 - `consumeVerbLabel` — function — line 317
 - `DefenseConfig` — type — line 46
-- `hasItemCapability` — function — line 2197
-- `HOLDABLE_KINDS` — const — line 2163
-- `INJURY_TREATMENT_KINDS` — const — line 2234
-- `isArmorCatalogKind` — function — line 2150
-- `isBodyArmorKind` — function — line 2156
-- `isMeleeToolKind` — function — line 2144
-- `isRangedTool` — function — line 2111
-- `isThrowableKind` — function — line 2116
+- `hasItemCapability` — function — line 2218
+- `HOLDABLE_KINDS` — const — line 2184
+- `INJURY_TREATMENT_KINDS` — const — line 2255
+- `isArmorCatalogKind` — function — line 2171
+- `isBodyArmorKind` — function — line 2177
+- `isMeleeToolKind` — function — line 2165
+- `isRangedTool` — function — line 2132
+- `isThrowableKind` — function — line 2137
 - `ITEM_CATALOG` — const — line 340
   - domain: items-player
   - system: item-catalog
   - role: Single source of truth for per-`ItemKind` gameplay flags and tool-capability gates.
   - owns: ItemCatalogEntry
-- `ITEM_SYSTEM_ROADMAP` — const — line 2255
+- `ITEM_SYSTEM_ROADMAP` — const — line 2276
 - `ItemCapability` — type — line 147
 - `ItemCatalogEntry` — type — line 216
-- `itemIsResilient` — function — line 2202
+- `itemIsResilient` — function — line 2223
 - `ItemSpawnKind` — type — line 16
-- `itemTreatsPhysicalInjury` — function — line 2247
+- `itemTreatsPhysicalInjury` — function — line 2268
 - `MeleeConfig` — type — line 27
-- `NON_ITEM_PROPS` — const — line 2261
+- `NON_ITEM_PROPS` — const — line 2282
 - `RangedConfig` — type — line 80
-- `rangedConfigFromThrowable` — function — line 2123
+- `rangedConfigFromThrowable` — function — line 2144
 - `ThrowableConfig` — type — line 124
 
 ## `items/itemDisplay.ts`
@@ -469,23 +469,23 @@ Generated from exported TypeScript symbols.
 
 ## `items/items.ts`
 
-- `canCancelRestNow` — function — line 300
-- `canCancelRestProgress` — function — line 271
-- `createItemMesh` — function — line 1873
-- `hasItemCategory` — function — line 248
-- `hasItemKindCategory` — function — line 252
-- `ITEM_DEFS` — const — line 304
-- `ITEM_SIZE_UNITS` — const — line 221
-- `ItemCategory` — type — line 212
-- `ItemDef` — type — line 234
+- `canCancelRestNow` — function — line 302
+- `canCancelRestProgress` — function — line 273
+- `createItemMesh` — function — line 1893
+- `hasItemCategory` — function — line 250
+- `hasItemKindCategory` — function — line 254
+- `ITEM_DEFS` — const — line 306
+- `ITEM_SIZE_UNITS` — const — line 223
+- `ItemCategory` — type — line 214
+- `ItemDef` — type — line 236
 - `ItemKind` — type — line 6
-- `ItemSize` — type — line 217
-- `itemSizeUnits` — function — line 230
-- `primaryItemCategory` — function — line 261
-- `REST_CANCEL_PROGRESS_THRESHOLD` — const — line 269
-- `REST_CANCEL_VIGOR_THRESHOLD` — const — line 281
-- `restCancelAllowedByStartVigor` — function — line 288
-- `tintBucketGlb` — function — line 1897
+- `ItemSize` — type — line 219
+- `itemSizeUnits` — function — line 232
+- `primaryItemCategory` — function — line 263
+- `REST_CANCEL_PROGRESS_THRESHOLD` — const — line 271
+- `REST_CANCEL_VIGOR_THRESHOLD` — const — line 283
+- `restCancelAllowedByStartVigor` — function — line 290
+- `tintBucketGlb` — function — line 1917
 
 ## `items/ItemSpawner.ts`
 
@@ -604,49 +604,49 @@ Generated from exported TypeScript symbols.
 
 ## `items/tradeCatalog.ts`
 
-- `armorQualityValueMultiplier` — function — line 305
+- `armorQualityValueMultiplier` — function — line 307
   - domain: items-player
-- `BASE_BUY_FACTOR` — const — line 284
+- `BASE_BUY_FACTOR` — const — line 286
   - domain: settlements — full-condition buy-from-NPC factor bounds (plan settlements-npcs-033) — a markup over `tradeValue` the player pays an ordinary NPC. `MIN_BUY_FACTOR` intentionally equals `MAX_SELL_FACTOR` so the best possible buy price never undercuts the best possible merchant buyback for the same nominal value — no standing can create a buy→sell(merchant) arbitrage loop.
-- `BASE_SELL_FACTOR` — const — line 274
+- `BASE_SELL_FACTOR` — const — line 276
   - domain: settlements — full-condition sell factor bounds (plan settlements-006).
-- `BROKEN_SELL_MULTIPLIER` — const — line 478
-- `canSell` — function — line 376
-- `fullConditionBuyFactor` — function — line 448
+- `BROKEN_SELL_MULTIPLIER` — const — line 480
+- `canSell` — function — line 378
+- `fullConditionBuyFactor` — function — line 450
   - domain: settlements — social buy factor for player purchases from an ordinary NPC (plan settlements-npcs-033) — reuses the exact same `relationshipEffect`/`reputationEffect` inputs as merchant sell pricing, but *subtracted* rather than added: better relation/reputation must never raise what the player pays, worse standing must never lower it.
-- `fullConditionSellFactor` — function — line 409
+- `fullConditionSellFactor` — function — line 411
   - domain: settlements — sell factor for a full-condition item before durability scaling.
-- `instanceNominalValue` — function — line 324
+- `instanceNominalValue` — function — line 326
   - domain: items-player
-- `isMerchantStock` — function — line 360
-- `MAX_BUY_FACTOR` — const — line 286
-- `MAX_SELL_FACTOR` — const — line 276
+- `isMerchantStock` — function — line 362
+- `MAX_BUY_FACTOR` — const — line 288
+- `MAX_SELL_FACTOR` — const — line 278
 - `MERCHANT_PRICES` — const — line 22
 - `MERCHANT_STOCK` — const — line 134
-- `merchantInstancePrice` — function — line 336
+- `merchantInstancePrice` — function — line 338
   - domain: items-player
-- `merchantPrice` — function — line 295
-- `MIN_BUY_FACTOR` — const — line 285
-- `MIN_SELL_FACTOR` — const — line 275
-- `NEUTRAL_SELL_PRICE_CONTEXT` — const — line 266
+- `merchantPrice` — function — line 297
+- `MIN_BUY_FACTOR` — const — line 287
+- `MIN_SELL_FACTOR` — const — line 277
+- `NEUTRAL_SELL_PRICE_CONTEXT` — const — line 268
   - domain: settlements — neutral social standing for merchant sell pricing.
-- `npcInstanceSalePrice` — function — line 349
+- `npcInstanceSalePrice` — function — line 351
   - domain: items-player
-- `npcSalePrice` — function — line 461
+- `npcSalePrice` — function — line 463
   - domain: settlements — player-buys-from-NPC unit price in coins for one ordinary trade-eligible good (plan settlements-npcs-033 §5/§6). Base value reuses the same catalog as merchant stock (`merchantPrice`, falling back to `tradeValue` for kinds the merchant doesn't stock) so no profession/dialogue code hardcodes its own price.
-- `offerValue` — function — line 469
-- `relationshipEffect` — function — line 385
+- `offerValue` — function — line 471
+- `relationshipEffect` — function — line 387
   - domain: settlements — relation tier bonus in percentage points (0.01 = 1 pp).
-- `reputationEffect` — function — line 398
+- `reputationEffect` — function — line 400
   - domain: settlements — weighted reputation × renown amplification (percentage points).
-- `resolveInstanceSellPrice` — function — line 481
+- `resolveInstanceSellPrice` — function — line 483
   - domain: settlements — merchant buyback for a concrete item instance — price is derived, never stored.
-- `roundSellPrice` — function — line 418
+- `roundSellPrice` — function — line 420
   - domain: settlements — deterministic integer coin rounding shared by stack and instance pricing.
-- `sellPrice` — function — line 433
+- `sellPrice` — function — line 435
   - domain: settlements — merchant buyback for a stackable kind at full condition.
-- `SellPriceContext` — type — line 288
-- `tradeValue` — function — line 365
+- `SellPriceContext` — type — line 290
+- `tradeValue` — function — line 367
 
 ## `items/tradeGrievance.ts`
 

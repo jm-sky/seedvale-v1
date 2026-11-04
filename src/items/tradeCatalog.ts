@@ -244,6 +244,8 @@ const RESOURCE_TRADE_VALUE: Partial<Record<ItemKind, number>> = {
   // inventory-value/barter semantics without making it purchasable.
   masterwork_hunting_bow: 220,
   sling_stone: 2,
+  bolt_heavy: 4,
+  bolt_blunt: 3,
   marlow_longbow: 280,
   yewmaster_longbow: 1300,
   signet_ring: 40,
