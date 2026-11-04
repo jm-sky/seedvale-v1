@@ -15,12 +15,12 @@ type Policy =
   | readonly ['adapt', ItemKind, 'candidate', 'blocked']
   | readonly ['conflict', ItemKind, 'historical-v1', 'blocked']
 
-// Reviewed policy baseline, independent of supplied/expanded manifests. Intentional changes
+// Reviewed Stage 4 W1 policy (A1–A5 + five A9 IDs), independent of supplied/expanded manifests. Intentional changes
 // require mapping/identity review and regression updates; evidence prose cannot approve them.
 const POLICY = {
   knife: ['existing', 'knife', 'canonical', 'existing-v1-reference'],
   dagger: ['existing', 'dagger', 'canonical', 'existing-v1-reference'],
-  obsidian_knife: ['conflict'],
+  obsidian_knife: ['new'],
   obsidian_dagger: ['new'],
   damascus_dagger: ['adapt', 'damascus_knife', 'historical-v1', 'existing-v1-reference'],
   ashgrove_dagger: ['deferred'],
@@ -35,7 +35,7 @@ const POLICY = {
   obsidian_sword: ['existing', 'obsidian_sword', 'canonical', 'existing-v1-reference'],
   millbrook_shortsword: ['deferred'],
   harrow_shortsword: ['deferred'],
-  fenmoor_sword: ['conflict', 'masterwork_sword', 'historical-v1', 'blocked'],
+  fenmoor_sword: ['new'],
   ironvale_sword: ['deferred'],
   stonebridge_longsword: ['deferred'],
   greywatch_longsword: ['deferred'],
@@ -43,9 +43,9 @@ const POLICY = {
   axe: ['existing', 'axe', 'canonical', 'existing-v1-reference'],
   battle_axe: ['existing', 'battle_axe', 'canonical', 'existing-v1-reference'],
   spear: ['existing', 'spear', 'canonical', 'existing-v1-reference'],
-  halberd: ['deferred'],
+  halberd: ['new'],
   club: ['new'],
-  mace: ['deferred'],
+  mace: ['new'],
   war_hammer: ['new'],
   staff: ['new'],
   sling: ['existing', 'sling', 'canonical', 'existing-v1-reference'],
@@ -53,7 +53,7 @@ const POLICY = {
   hunting_bow: ['existing', 'hunting_bow', 'canonical', 'existing-v1-reference'],
   long_bow: ['existing', 'long_bow', 'canonical', 'existing-v1-reference'],
   composite_bow: ['deferred'],
-  marlow_longbow: ['conflict', 'masterwork_hunting_bow', 'historical-v1', 'blocked'],
+  marlow_longbow: ['new'],
   yewmaster_longbow: ['deferred'],
   crossbow: ['existing', 'crossbow', 'canonical', 'existing-v1-reference'],
   buckler: ['deferred'],
@@ -73,7 +73,7 @@ const POLICY = {
   leather_jerkin: ['adapt', 'leather_armor', 'historical-v1', 'existing-v1-reference'],
   studded_leather: ['new'],
   mail_shirt: ['adapt', 'chainmail', 'historical-v1', 'existing-v1-reference'],
-  brigandine: ['deferred'],
+  brigandine: ['new'],
   plate_cuirass: ['new'],
   stoneford_mail: ['deferred'],
   kingsbane_hauberk: ['deferred'],
@@ -98,17 +98,17 @@ const POLICY = {
   leather_boots: ['new'],
   reinforced_boots: ['new'],
   plate_sabatons: ['new'],
-  arrow: ['conflict', 'broadhead_arrow', 'historical-v1', 'blocked'],
+  arrow: ['existing', 'arrow', 'canonical', 'existing-v1-reference'],
   arrow_bodkin: ['adapt', 'war_arrow', 'historical-v1', 'existing-v1-reference'],
   arrow_blunt: ['deferred'],
   bolt: ['existing', 'bolt', 'canonical', 'existing-v1-reference'],
-  bolt_heavy: ['deferred'],
-  bolt_blunt: ['deferred'],
-  sling_stone: ['adapt', 'stone', 'candidate', 'blocked'],
+  bolt_heavy: ['new'],
+  bolt_blunt: ['new'],
+  sling_stone: ['new'],
 } as const satisfies Record<string, Policy>
 
 export type CanonicalV3Id = keyof typeof POLICY
-export const V1_VERIFICATION_REVISION = '7db3382b8d6a49d428ae5d68733aee31b28437a4' as const
+export const V1_VERIFICATION_REVISION = 'dd1ff563' as const
 
 export interface CompatibilityEntry {
   readonly donorId: CanonicalV3Id
@@ -146,11 +146,11 @@ export function matchesReviewedPolicy(entry: CompatibilityEntry): boolean {
 
 const dependencies = Object.freeze(['Inventory/identity', 'combat/projectiles', 'NPC/loadout', 'economy/acquisition', 'persistence', 'UI/appearance'])
 const questions: Partial<Record<CanonicalV3Id, string>> = {
-  arrow: 'Resolve canonical arrow versus historical broadhead_arrow; preserve all three V1 ammo identities/counts.',
-  marlow_longbow: 'Resolve longbow versus V1 hunting-bow reward role, timing and range.',
-  fenmoor_sword: 'Resolve material/tier/balance versus the V1 masterwork_sword identity.',
-  obsidian_knife: 'Historical obsidian_knife is absent from current V1; no replacement is authorized.',
-  sling_stone: 'Approve or reject candidate stone relationship, preserving resource/throwable/sling uses.',
+  arrow: 'A1 approves canonical arrow with bonus zero; donor bonus and broadhead alias stay inert.',
+  marlow_longbow: 'A2 selects a distinct kind; author and verify its own ranged profile before acquisition.',
+  fenmoor_sword: 'A3 selects a distinct kind; retain masterwork_sword and verify the authored profile before acquisition.',
+  obsidian_knife: 'A4 selects an additive knife profile; no historical replacement or save rename.',
+  sling_stone: 'A5 selects distinct sling-only ammo; verify admission and preserve native stone uses.',
 }
 
 /** Frozen, exhaustive policy records; source facts remain in the independent catalogue. */

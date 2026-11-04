@@ -146,3 +146,7 @@ Defined scope for this reverse check: every current V1 melee/ranged/armor config
 | shears | melee-capable shearing tool, count-backed rather than maintained weapon | Keep V1-native shearing/melee behavior and lifecycle; do not classify every melee-capable tool as donor equipment. |
 
 Pickaxe and other V1 tools also remain native; pickaxe has no current melee config and is outside this equipment reverse-check set. Jewelry/signets have no worn finger slot and are not donor weapon/armor/shield/ammo scope. Planned steel_bracers is not a current runtime kind. V3 goods and all unrelated V1 content remain outside this intake; this mapping removes nothing.
+
+## Stage 4 W1 evolution — 2026-11-04
+
+The original 87-row table above is the historical Stage 3 mapping and remains unchanged. Approved A1–A5 and the five selected A9 IDs now evolve runtime compatibility policy: arrow → verified canonical V1 arrow (historical broadhead alias retained only as metadata); marlow_longbow, fenmoor_sword, obsidian_knife, sling_stone → distinct new candidates without targets; halberd, mace, brigandine, bolt_heavy, bolt_blunt → new candidates with blocked projection. Other classifications are unchanged. Baseline: 18 existing / 8 adapt / 36 new / 0 conflict / 25 deferred; 26 verified references, zero candidate aliases. New classification is not source activation. Armor intake belongs to 066; A7 shields remain deferred for gameplay. Donor records and provenance remain immutable.

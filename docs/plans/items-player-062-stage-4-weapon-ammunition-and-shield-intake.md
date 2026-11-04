@@ -1,7 +1,7 @@
 # Plan: Stage 4 donor intake — weapons, ammunition and inventory-only shields
 
 **Created:** 2026-11-04
-**Status:** `planned` 📋
+**Status:** `in progress` 🚧 (W0/W1 complete 2026-11-04; W2a next, then Opus spot review)
 **Type:** feature
 **Priority:** high · **Effort:** L
 **Depends on:** items-player-065

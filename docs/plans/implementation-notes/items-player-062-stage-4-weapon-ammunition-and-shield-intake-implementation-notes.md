@@ -81,3 +81,7 @@ Ammo bonuses apply equally to player and NPC for these three new kinds only; pre
 | W4 | buckler | count-backed inventory-only, no hold/equip/defense | 1.5 | 35 | procedural ground fallback |
 
 W5 keeps falchion, composite_bow, arrow_blunt unregistered and all 12 donor future flags unchanged. No armor profile is admitted in 062. W1 changes only the exact ten approved policy cases and the existing-slot family projection already landed by 044-M; shield policy remains deferred for gameplay.
+
+## W1 implementation — 2026-11-04
+
+Exact ten-ID policy evolution per the proposal, with independent historical-table-plus-approved-delta fixture and exact totals. Arrow-only canonical alias exception allows the approved A1 relationship; historical aliases otherwise remain strict and unforgeable. Distinct candidates cannot restore former aliases or gain projection. Verification revision refreshed to main's 044-M commit (`dd1ff563`); all 87 immutable source rows and 12 future flags unchanged. No new runtime item or source in this slice. Donor policy tests, Vue type-check, scoped lint and production build checked.

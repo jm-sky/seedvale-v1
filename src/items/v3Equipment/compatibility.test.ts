@@ -4,6 +4,7 @@ import type { ItemKind } from '../items'
 import type { CanonicalV3Id, CompatibilityEntry } from './compatibility'
 import type { V1Definitions } from './validation'
 import { Inventory } from '../Inventory'
+import { ARROW_DAMAGE_BONUS } from '../itemCatalog'
 import { ITEM_CATALOG } from '../itemCatalog'
 import { ITEM_DEFS } from '../items'
 import { projectV3Equipment } from './adapter'
@@ -22,10 +23,28 @@ describe('exhaustive compatibility manifest', () => {
     const table = mapping.split(/## All definitions\r?\n/)[1]!.split(/\r?\n## /)[0]!
     const rows = table.split(/\r?\n/).filter(line => line.startsWith('| `')).map(line => {
       const cells = line.split('|').map(cell => cell.trim())
-      return { id: cells[1]!.replaceAll('`', ''), target: cells[2]!.match(/^`([^`]+)`$/)?.[1], classification: cells[6]!.toLowerCase() }
+      const id = cells[1]!.replaceAll('`', '')
+      // Independent exact-ID evolution fixture over the immutable historical mapping.
+      if (id === 'arrow') return { id, target: 'arrow', classification: 'existing' }
+      if (['bolt_blunt', 'bolt_heavy', 'brigandine', 'fenmoor_sword', 'halberd', 'mace', 'marlow_longbow', 'obsidian_knife', 'sling_stone'].includes(id)) return { id, target: undefined, classification: 'new' }
+      return { id, target: cells[2]!.match(/^`([^`]+)`$/)?.[1], classification: cells[6]!.toLowerCase() }
     })
     expect(rows).toHaveLength(87)
     expect(manifest.map(e => ({ id: e.donorId, target: e.target?.id ?? e.candidateTarget, classification: e.classification }))).toEqual(rows)
+  })
+
+  it('W1 admits only the selected future identities without changing donor flags or native ammo', () => {
+    for (const id of ['halberd', 'mace', 'brigandine', 'bolt_heavy', 'bolt_blunt'] as const) {
+      expect(entry(id)).toMatchObject({ classification: 'new', runtimeProjection: 'blocked' })
+      expect(projectV3Equipment(id).kind).toBe('new-candidate')
+      expect(findV3EquipmentDefinition(id)?.availability).toBe('future')
+    }
+    for (const id of ['falchion', 'composite_bow', 'arrow_blunt'] as const) expect(entry(id).classification).toBe('deferred')
+    expect(V3_EQUIPMENT_DEFINITIONS.filter(row => row.availability === 'future')).toHaveLength(12)
+    expect(ARROW_DAMAGE_BONUS.arrow ?? 0).toBe(0)
+    expect(ARROW_DAMAGE_BONUS).toEqual({ broadhead_arrow: 4, war_arrow: 8 })
+    expect(entry('arrow').historicalAliases.v1).toBe('broadhead_arrow')
+    expect(entry('arrow').target?.id).toBe('arrow')
   })
 
   it('044-M keeps shoulder projections on shoulders and never merges forearms', () => {
@@ -70,10 +89,10 @@ describe('exhaustive compatibility manifest', () => {
     expect(new Set(manifest.map(e => e.donorId)).size).toBe(87)
     expect(manifest.map(e => e.donorId)).toEqual(V3_EQUIPMENT_DEFINITIONS.map(d => d.id))
     const totals = Object.fromEntries(['existing', 'adapt', 'new', 'conflict', 'deferred'].map(c => [c, manifest.filter(e => e.classification === c).length]))
-    expect(totals).toEqual({ existing: 17, adapt: 9, new: 27, conflict: 4, deferred: 30 })
+    expect(totals).toEqual({ existing: 18, adapt: 8, new: 36, conflict: 0, deferred: 25 })
     expect(validateEquipmentCompatibility(v1)).toEqual([])
-    expect(manifest.filter(e => e.target)).toHaveLength(25)
-    expect(manifest.filter(e => e.candidateTarget)).toHaveLength(4)
+    expect(manifest.filter(e => e.target)).toHaveLength(26)
+    expect(manifest.filter(e => e.candidateTarget)).toHaveLength(0)
     for (const e of manifest) {
       if (e.target) {
         expect(ITEM_CATALOG[e.target.id].kind).toBe(e.target.id)
@@ -125,17 +144,17 @@ describe('exhaustive compatibility manifest', () => {
   })
 
   it('prevents conflicts/candidates from gaining projection by metadata edits', () => {
-    for (const id of ['arrow', 'marlow_longbow', 'fenmoor_sword', 'obsidian_knife', 'sling_stone'] as const) {
+    for (const id of ['marlow_longbow', 'fenmoor_sword', 'obsidian_knife', 'sling_stone'] as const) {
       expect(errors(replace(id, { runtimeProjection: 'existing-v1-reference' }))).toMatch(/cannot project|projection permission/)
       expect(errors(replace(id, { unresolvedDecisions: [] }))).toMatch(/missing unresolved/)
     }
-    expect(errors(replace('arrow', { classification: 'existing', target: { ...entry('knife').target!, id: 'arrow' }, candidateTarget: undefined, identityRelation: 'canonical' }))).toMatch(/canonical collision/)
+    expect(errors(replace('arrow', { target: { ...entry('arrow').target!, id: 'broadhead_arrow' }, identityRelation: 'historical-v1' }))).toMatch(/policy mismatch/)
   })
 })
 
 describe('pure canonical adapter', () => {
   it.each([
-    ['arrow_bodkin', 'war_arrow'], ['mail_shirt', 'chainmail'], ['leather_jerkin', 'leather_armor'],
+    ['arrow', 'arrow'], ['arrow_bodkin', 'war_arrow'], ['mail_shirt', 'chainmail'], ['leather_jerkin', 'leather_armor'],
     ['plate_pauldrons_spiked', 'knight_pauldron_spike'], ['plate_pauldrons_round', 'knight_pauldron_round'],
     ['leather_pauldron', 'leather_pauldron'], ['ranger_pauldron', 'ranger_pauldron'],
   ] as const)('references the complete original V1 profile for %s → %s', (id, target) => {
@@ -148,18 +167,19 @@ describe('pure canonical adapter', () => {
     expectTypeOf(result.profile.gameplay).toExtend<Readonly<typeof ITEM_CATALOG[typeof target]>>()
   })
 
-  it.each(['arrow', 'marlow_longbow', 'fenmoor_sword', 'obsidian_knife'])('fails closed for %s', id => {
+  it.each(['marlow_longbow', 'fenmoor_sword', 'obsidian_knife'])('keeps distinct profiles non-projecting for %s', id => {
     const result = projectV3Equipment(id)
-    expect(result.kind).toBe('conflict')
+    expect(result.kind).toBe('new-candidate')
     expect(result).not.toHaveProperty('profile')
   })
 
   it('distinguishes historical aliases, candidate adaptation and unsupported source data', () => {
     expect(entry('obsidian_knife').historicalAliases.v1).toBe('obsidian_knife')
     expect(entry('obsidian_knife').target).toBeUndefined()
-    expect(entry('sling_stone')).toMatchObject({ classification: 'adapt', candidateTarget: 'stone', identityRelation: 'candidate', historicalAliases: { v2: 'sling_stone' } })
+    expect(entry('sling_stone')).toMatchObject({ classification: 'new', historicalAliases: { v2: 'sling_stone' } })
     expect(entry('sling_stone').historicalAliases.v1).toBeUndefined()
-    expect(projectV3Equipment('sling_stone').kind).toBe('deferred')
+    expect(entry('sling_stone').candidateTarget).toBeUndefined()
+    expect(projectV3Equipment('sling_stone').kind).toBe('new-candidate')
     for (const id of ['padded_cap', 'leather_bracers', 'leather_boots', 'obsidian_dagger']) {
       const result = projectV3Equipment(id)
       expect(result.kind).toBe('new-candidate')
@@ -174,7 +194,7 @@ describe('pure canonical adapter', () => {
   it('returns safe conflicts for damaged policy/authorities, with no fallback', () => {
     expect(projectV3Equipment('knife', v1, manifest.slice(1)).kind).toBe('conflict')
     expect(projectV3Equipment('knife', { ...v1, catalog: {} }).kind).toBe('conflict')
-    expect(projectV3Equipment('arrow', v1, replace('arrow', { runtimeProjection: 'existing-v1-reference' })).kind).toBe('conflict')
+    expect(projectV3Equipment('arrow', v1, replace('arrow', { runtimeProjection: 'blocked' })).kind).toBe('conflict')
     // Even a conservative permission change requires a reviewed baseline update.
     const blocked = replace('mail_shirt', { runtimeProjection: 'blocked' })
     expect(errors(blocked)).toMatch(/reviewed .*policy mismatch/)

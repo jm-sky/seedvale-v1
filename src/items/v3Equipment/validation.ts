@@ -122,7 +122,8 @@ export function validateEquipmentCompatibility(
       if (!v1.catalog[targetId] || !v1.definitions[targetId]) fail(`missing V1 target: ${targetId}`)
       else if (!compatibleFamily(source, targetId, v1)) fail('incompatible target category/gameplay family')
       if (entry.identityRelation === 'canonical') {
-        if (targetId !== id || (source.legacyIds?.v1 !== undefined && source.legacyIds.v1 !== targetId)) fail('canonical collision')
+        if (targetId !== id || (source.legacyIds?.v1 !== undefined && source.legacyIds.v1 !== targetId
+          && !(id === 'arrow' && targetId === 'arrow' && source.legacyIds.v1 === 'broadhead_arrow'))) fail('canonical collision')
       } else if (entry.identityRelation === 'historical-v1') {
         if (source.legacyIds?.v1 !== targetId) fail('unproven historical relationship')
       } else if (entry.identityRelation === 'candidate') {
@@ -136,10 +137,9 @@ export function validateEquipmentCompatibility(
     if (entry.runtimeProjection === 'existing-v1-reference' && !canReference) fail('unsafe projection permission')
     if (entry.target && entry.target.verifiedRevision !== V1_VERIFICATION_REVISION) fail('V1 verification revision drift')
     if (entry.unresolvedDecisions.length === 0) fail('missing unresolved semantic decisions')
-    // These reviewed ambiguities cannot be cleared merely by changing a target/permission field.
-    if (['arrow', 'fenmoor_sword', 'marlow_longbow', 'obsidian_knife'].includes(id)
-      && (entry.classification !== 'conflict' || entry.target || entry.runtimeProjection !== 'blocked')) fail('unresolved conflict cannot project')
-    if (id === 'sling_stone' && (entry.classification !== 'adapt' || entry.target || entry.runtimeProjection !== 'blocked')) fail('candidate cannot project')
+    // A2–A5 select distinct kinds; ancestry still grants no projection permission.
+    if (['fenmoor_sword', 'marlow_longbow', 'obsidian_knife', 'sling_stone'].includes(id)
+      && (entry.classification !== 'new' || entry.target || entry.candidateTarget || entry.runtimeProjection !== 'blocked')) fail('distinct candidate cannot project')
     if ((entry.classification === 'new' || entry.classification === 'deferred') && targetId) fail('unexpected target')
   }
   for (const id of sourceIds) if (!ids.has(id)) errors.push(`${id}: missing manifest entry`)
