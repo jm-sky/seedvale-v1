@@ -111,7 +111,7 @@ import { treeInspectionCanYieldBranch } from '../interaction/treeInspection'
 import { resolveEquipmentModifiers } from '../items/equipment'
 import { getFoodBatchFreshnessStage } from '../items/foodFreshness'
 import { Inventory, inventoryFullToastText, inventoryFullToastTextForInstance, toSaveItemInstance } from '../items/Inventory'
-import { ARROW_DAMAGE_BONUS, hasItemCapability, isRangedTool, ITEM_CATALOG, rangedConfigFromThrowable } from '../items/itemCatalog'
+import { ammoDamageBonus, hasItemCapability, isRangedTool, ITEM_CATALOG, rangedConfigFromThrowable } from '../items/itemCatalog'
 import { fuelValue, selectFuelKind } from '../items/itemFuel'
 import { isInstanceBackedKind, isWeaponItemInstance } from '../items/itemInstances'
 import { isLiquidContainerInstance, LIQUID_CONTAINER_KIND_LIST } from '../items/itemInstances'
@@ -1548,7 +1548,7 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
             speed: config.projectileSpeed,
             maxDistance: config.range,
             travelled: 0,
-            damage: config.damage + (ARROW_DAMAGE_BONUS[ammoKind] ?? 0),
+            damage: config.damage + ammoDamageBonus(ammoKind, 'player'),
             criticalChance: config.criticalChance ?? 0,
             criticalMultiplier: config.criticalMultiplier ?? MELEE_CRITICAL_MULTIPLIER,
             attackKey: `ranged:${ammoKind}`,

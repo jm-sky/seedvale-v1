@@ -83,7 +83,7 @@ import { FLOCK_THREAT_RADIUS, senseOwnedFlockThreat, type ShepherdFlockHooks } f
 import { CONSTRUCTION_MATERIAL_RADIUS, consumeMaterial, hasMaterial } from '../items/constructionMaterials'
 import { foodItemCount } from '../items/foodItems'
 import { Inventory } from '../items/Inventory'
-import { ITEM_CATALOG, type RangedConfig, rangedConfigFromThrowable } from '../items/itemCatalog'
+import { ammoDamageBonus, ITEM_CATALOG, type RangedConfig, rangedConfigFromThrowable } from '../items/itemCatalog'
 import { type AgentProfile, DEFAULT_CELL_SIZE, findPath, type NavigationQuery, type PathPoint } from '../navigation/navigation'
 import { beginActivePath, endActivePath, recordPathRequest, recordRepath } from '../navigation/navigationStats'
 import { isActorSkeletonSharingEnabled, isNpcBodyBuildsEnabled } from '../perf/flags'
@@ -2861,7 +2861,7 @@ export class NpcAgent {
           speed: tick.config.projectileSpeed,
           maxDistance: tick.config.range,
           travelled: 0,
-          damage: tick.config.damage,
+          damage: tick.config.damage + ammoDamageBonus(ammo.kind, 'npc'),
           criticalChance: tick.config.criticalChance ?? 0,
           criticalMultiplier: tick.config.criticalMultiplier ?? MELEE_CRITICAL_MULTIPLIER,
           ammoKind: ammo.kind,

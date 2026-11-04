@@ -115,6 +115,7 @@ const ITEM_ICON_FILES: Readonly<Partial<Record<ItemKind, string>>> = {
   copper: 'metal-bar',
   copper_ore: 'ore',
   stone: 'stone',
+  sling_stone: 'stone',
   branch: 'tree-branch',
   beam: 'planks',
   rope: 'rope-coil',

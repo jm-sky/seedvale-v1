@@ -243,6 +243,7 @@ const RESOURCE_TRADE_VALUE: Partial<Record<ItemKind, number>> = {
   // Plan items-player-047 — quest/exceptional reward, not Kupiec stock; keeps
   // inventory-value/barter semantics without making it purchasable.
   masterwork_hunting_bow: 220,
+  sling_stone: 2,
   marlow_longbow: 280,
   yewmaster_longbow: 1300,
   signet_ring: 40,

@@ -8,6 +8,7 @@ export type ItemKind =
   | 'shell'
   | 'exceptional_shell'
   | 'stone'
+  | 'sling_stone'
   | 'branch'
   | 'beam'
   | 'mushroom'
@@ -336,6 +337,15 @@ export const ITEM_DEFS: Record<ItemKind, ItemDef> = {
     size: 'SM',
     color: 0x8c8c8c,
     description: 'Zwykły, solidny kamień. Przydatny w budowie i rzemiośle.'
+  },
+  sling_stone: {
+    kind: 'sling_stone',
+    label: 'kamień do procy',
+    categories: ['other'],
+    weight: 0.08,
+    size: 'XS',
+    color: 0x7d7f84,
+    description: 'Gładki, wyważony otoczak do procy. Nie nadaje się do budowy ani do rzucania.'
   },
   branch: {
     kind: 'branch',
@@ -1916,6 +1926,15 @@ function buildProceduralItemMesh(kind: ItemKind): THREE.Object3D {
       new THREE.MeshStandardMaterial({ color: ITEM_DEFS.stone.color, flatShading: true }),
     )
     mesh.position.y = 0.1
+    mesh.castShadow = true
+    return mesh
+  }
+  if (kind === 'sling_stone') {
+    const mesh = new THREE.Mesh(
+      new THREE.SphereGeometry(0.045, 6, 4),
+      new THREE.MeshStandardMaterial({ color: ITEM_DEFS.sling_stone.color, flatShading: true }),
+    )
+    mesh.position.y = 0.05
     mesh.castShadow = true
     return mesh
   }

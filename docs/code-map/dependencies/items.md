@@ -191,6 +191,7 @@ Generated from TypeScript imports.
 - `items/primaryWeapons.ts`
 - `items/sensibleFood.test.ts`
 - `items/sensibleFood.ts`
+- `items/stage4Ammo.test.ts`
 - `items/stage4Bows.test.ts`
 - `items/stage4MeleeBatch.test.ts`
 - `items/stage4UpperTierMelee.test.ts`
@@ -1078,6 +1079,7 @@ Generated from TypeScript imports.
 - `items/liquidContainer.ts`
 - `items/primaryWeapons.ts`
 - `items/sensibleFood.ts`
+- `items/stage4Ammo.test.ts`
 - `items/stage4Bows.test.ts`
 - `items/stage4MeleeBatch.test.ts`
 - `items/stage4NoSource.test.ts`
@@ -1435,6 +1437,7 @@ Generated from TypeScript imports.
 - `items/poisonedMeat.ts`
 - `items/primaryWeapons.ts`
 - `items/sensibleFood.ts`
+- `items/stage4Ammo.test.ts`
 - `items/stage4Bows.test.ts`
 - `items/stage4MeleeBatch.test.ts`
 - `items/stage4UpperTierMelee.test.ts`
@@ -1667,6 +1670,17 @@ Generated from TypeScript imports.
 - `app/actions/cookMealIntent.ts`
 - `items/sensibleFood.test.ts`
 
+## `items/stage4Ammo.test.ts`
+
+**Imports**
+
+- `ai/npcCombat.ts`
+- `items/Inventory.ts`
+- `items/itemCatalog.ts`
+- `items/items.ts`
+- `items/trade.ts`
+- `items/tradeCatalog.ts`
+
 ## `items/stage4Bows.test.ts`
 
 **Imports**
@@ -1842,6 +1856,7 @@ Generated from TypeScript imports.
 - `app/interactables.ts`
 - `app/inventoryWiring.ts`
 - `economy/production.ts`
+- `items/stage4Ammo.test.ts`
 - `items/stage4Bows.test.ts`
 - `items/stage4MeleeBatch.test.ts`
 - `items/stage4UpperTierMelee.test.ts`
@@ -1872,6 +1887,7 @@ Generated from TypeScript imports.
 - `items/books.test.ts`
 - `items/highQualityWeapons.test.ts`
 - `items/inventoryView.ts`
+- `items/stage4Ammo.test.ts`
 - `items/stage4Bows.test.ts`
 - `items/stage4MeleeBatch.test.ts`
 - `items/stage4NoSource.test.ts`

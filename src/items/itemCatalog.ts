@@ -1597,11 +1597,20 @@ export const ITEM_CATALOG: Record<ItemKind, ItemCatalogEntry> = {
       staminaCost: 4,
       accuracy: 0.65,
       skillAccuracyScale: 0,
-      ammoKinds: ['stone'],
+      ammoKinds: ['stone', 'sling_stone'],
     },
     spawn: 'none',
     modelUrl: null,
     notes: 'Plan items-player-059 — Kupiec stock. Cheap ranged weapon using existing `stone` as ammo. Procedural fallback mesh.',
+  },
+  sling_stone: {
+    kind: 'sling_stone',
+    label: 'kamień do procy',
+    holdable: false,
+    melee: null,
+    spawn: 'none',
+    modelUrl: null,
+    notes: '062 W3b: sling-only blunt ammo (+2). Count-backed; neither a resource nor throwable, no world source. Procedural pebble fallback.',
   },
   arrow: {
     kind: 'arrow',
@@ -2071,6 +2080,20 @@ export const ITEM_CATALOG: Record<ItemKind, ItemCatalogEntry> = {
 export const ARROW_DAMAGE_BONUS: Partial<Record<ItemKind, number>> = {
   broadhead_arrow: 4,
   war_arrow: 8,
+  sling_stone: 2,
+}
+
+/** Ammo kinds introduced by Stage 4 (062 W3). Their bonus applies to every shooter; the native arrow
+ *  variants above keep their historical player-only bonus so NPC arrow balance is unchanged. */
+const STAGE4_AMMO_KINDS: ReadonlySet<ItemKind> = new Set<ItemKind>(['sling_stone'])
+
+/** Flat damage added to a ranged config for the ammo actually fired.
+ *
+ * @domain items-player
+ */
+export function ammoDamageBonus(kind: ItemKind, shooter: 'player' | 'npc'): number {
+  if (shooter === 'npc' && !STAGE4_AMMO_KINDS.has(kind)) return 0
+  return ARROW_DAMAGE_BONUS[kind] ?? 0
 }
 
 /** Ammo classification is authored separately from bow damage and bonus values. */
@@ -2080,6 +2103,7 @@ export const AMMO_DAMAGE_TYPE: Partial<Record<ItemKind, DamageType>> = {
   war_arrow: 'pierce',
   bolt: 'pierce',
   stone: 'blunt',
+  sling_stone: 'blunt',
 }
 
 /** Ranged-capable held tools — mirrors `isMeleeTool` (`fauna/faunaCombat.ts`),

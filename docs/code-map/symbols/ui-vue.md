@@ -70,10 +70,10 @@ Generated from exported TypeScript symbols.
 ## `ui-vue/components/items/itemIcons.ts`
 
 - `ItemStatIconName` — type — line 13
-- `QUALITY_TAG` — const — line 173
-- `resolveItemCategoryIconSrc` — function — line 159
-- `resolveItemKindIconSrc` — function — line 163
-- `resolveItemStatIconSrc` — function — line 168
+- `QUALITY_TAG` — const — line 174
+- `resolveItemCategoryIconSrc` — function — line 160
+- `resolveItemKindIconSrc` — function — line 164
+- `resolveItemStatIconSrc` — function — line 169
 
 ## `ui-vue/components/items/itemIllustrations.ts`
 

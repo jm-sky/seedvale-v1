@@ -42,8 +42,8 @@ describe('crossbow/sling handling (plan items-player-059)', () => {
     expect(ITEM_CATALOG.long_bow.ranged?.reloadTime).toBeUndefined()
   })
 
-  it('sling uses the existing stone item as ammo, not a dedicated ammo kind', () => {
-    expect(ITEM_CATALOG.sling.ranged?.ammoKinds).toEqual(['stone'])
+  it('sling keeps the existing stone item as first ammo and admits the 062 W3b sling_stone after it', () => {
+    expect(ITEM_CATALOG.sling.ranged?.ammoKinds).toEqual(['stone', 'sling_stone'])
     expect(ITEM_CATALOG.sling.ranged?.reloadTime).toBeUndefined()
   })
 })
