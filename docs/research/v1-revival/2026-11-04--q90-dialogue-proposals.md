@@ -1,6 +1,8 @@
 # Q90 — English dialogue writing proposals
 
-**2026-11-04 · editorial proposals, not approved canonical dialogue.** No source string, dialogue command, quest identifier, outcome or transcript is changed. [Audit](./2026-11-04--q90-npc-voices-editorial-audit.md) owns evidence; [recording script](./2026-11-04--q90-fish-audio-script.md) owns the only proposed take budget. Text below without a recording ID is **text-only preparation**, not another recording order.
+**2026-11-04 · author accepted text-only editorial proposals; this does not approve changes to canonical code.** No source string, dialogue command, quest identifier, outcome or transcript is changed. [Audit](./2026-11-04--q90-npc-voices-editorial-audit.md) owns evidence; [recording script](./2026-11-04--q90-fish-audio-script.md) owns the only proposed take budget. Text below without a recording ID is **text-only preparation**, not another recording order.
+
+**Author scope decision (2026-11-04):** This document's ordinary activity/needs/family/profession/settlement responses are text-only, not a Fish Audio recording order. Only the 87 explicitly listed takes in the [approved Fish Audio script](./2026-11-04--q90-fish-audio-script.md) are approved for MP3 production; selective event-based voice remains the policy. The author does not request further detailed review of text-only copy.
 
 ## Voice and character direction
 
