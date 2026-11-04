@@ -2827,3 +2827,15 @@ describe('062 W2a/W2b/W2c registered weapon save payloads', () => {
     expect(loadStoredSave(JSON.parse(JSON.stringify(current)))).toEqual({ status: 'ok', data: current })
   })
 })
+
+describe('062 W3a registered bow save payloads', () => {
+  it('round-trips marlow_longbow as a plain ranged instance', () => {
+    const current = {
+      ...validSave,
+      inventoryInstances: [{ id: 'w3:marlow_longbow', kind: 'marlow_longbow' }],
+      heldTool: 'marlow_longbow',
+      heldToolInstanceId: 'w3:marlow_longbow',
+    }
+    expect(loadStoredSave(JSON.parse(JSON.stringify(current)))).toEqual({ status: 'ok', data: current })
+  })
+})

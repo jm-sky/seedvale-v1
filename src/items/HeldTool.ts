@@ -48,6 +48,8 @@ export type ToolKind = 'knife'
 | 'dagger'
 | 'hatchet'
 | 'masterwork_hunting_bow'
+| 'marlow_longbow'
+| 'yewmaster_longbow'
 
 /** Derived from `ITEM_CATALOG[kind].holdable` (plan 184) — no hand-written
  *  second list; `itemCapabilities.test.ts` asserts it still matches the

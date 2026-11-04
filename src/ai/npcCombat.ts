@@ -109,6 +109,8 @@ const NPC_RANGED_WEAPON_FAMILY: Readonly<Partial<Record<ItemKind, NpcRangedWeapo
   hunting_bow: 'bow',
   long_bow: 'bow',
   masterwork_hunting_bow: 'bow',
+  marlow_longbow: 'bow',
+  yewmaster_longbow: 'bow',
   crossbow: 'crossbow',
   sling: 'sling',
 }

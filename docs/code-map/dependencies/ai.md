@@ -976,6 +976,7 @@ Generated from TypeScript imports.
 - `ai/npcCombat.test.ts`
 - `ai/npcLoadout.test.ts`
 - `app/actions/npcItemTransfer.test.ts`
+- `items/stage4Bows.test.ts`
 - `items/stage4MeleeBatch.test.ts`
 - `items/stage4UpperTierMelee.test.ts`
 

@@ -129,9 +129,13 @@ describe('buildInventoryDetailStatRows', () => {
 
   it('scales Obrażenia StatUnderline to the strongest catalogue weapon', () => {
     const maxDamage = INVENTORY_DETAIL_STAT_CEILINGS.damage
-    expect(maxDamage).toBe(ITEM_CATALOG.obsidian_sword.melee!.damage)
+    const strongestKind = (Object.keys(ITEM_CATALOG) as (keyof typeof ITEM_CATALOG)[])
+      .reduce((best, kind) => Math.max(best, ITEM_CATALOG[kind].melee?.damage ?? 0, ITEM_CATALOG[kind].ranged?.damage ?? 0), 0)
+    expect(maxDamage).toBe(strongestKind)
+    const strongestMelee = (Object.keys(ITEM_CATALOG) as (keyof typeof ITEM_CATALOG)[])
+      .find((kind) => ITEM_CATALOG[kind].melee?.damage === maxDamage)!
 
-    const strongest = combatRows('obsidian_sword').find((r) => r.label === 'Obrażenia')
+    const strongest = combatRows(strongestMelee).find((r) => r.label === 'Obrażenia')
     expect(strongest?.strength).toBe(1)
 
     const midMelee = combatRows('axe').find((r) => r.label === 'Obrażenia')

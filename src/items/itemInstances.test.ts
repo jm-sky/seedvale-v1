@@ -11,9 +11,9 @@ import {
 } from './itemInstances'
 
 describe('RANGED_WEAPON_KINDS (plan items-player-060)', () => {
-  it('contains exactly the six current reusable ranged weapons', () => {
-    expect(RANGED_WEAPON_KINDS.size).toBe(6)
-    for (const kind of ['short_bow', 'hunting_bow', 'long_bow', 'masterwork_hunting_bow', 'crossbow', 'sling'] as const) {
+  it('contains exactly the eight current reusable ranged weapons (six V1 + 062 W3a bows)', () => {
+    expect(RANGED_WEAPON_KINDS.size).toBe(8)
+    for (const kind of ['short_bow', 'hunting_bow', 'long_bow', 'masterwork_hunting_bow', 'marlow_longbow', 'yewmaster_longbow', 'crossbow', 'sling'] as const) {
       expect(isRangedWeaponKind(kind)).toBe(true)
     }
   })

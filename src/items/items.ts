@@ -134,6 +134,8 @@ export type ItemKind =
   /** Plan items-player-047 — elite quest-reward hunting bow: faster/lighter/
    *  more accurate than `hunting_bow`, but less raw damage than `long_bow`. */
   | 'masterwork_hunting_bow'
+  | 'marlow_longbow'
+  | 'yewmaster_longbow'
   /** Plan items-player-059 — slow high-impact reload weapon; not a bow variant. */
   | 'crossbow'
   /** Plan items-player-059 — cheap stone-ammo ranged weapon. */
@@ -1462,6 +1464,24 @@ export const ITEM_DEFS: Record<ItemKind, ItemDef> = {
     color: 0x8a6a3f,
     description: 'Wyjątkowy łuk myśliwski wykonany mistrzowską ręką. Szybszy, celniejszy i wygodniejszy niż zwykły łuk myśliwski.'
   },
+  marlow_longbow: {
+    kind: 'marlow_longbow',
+    label: 'długi łuk z Marlow',
+    categories: ['weapon'],
+    weight: 1.5,
+    size: 'LG',
+    color: 0x7a5a36,
+    description: 'Mistrzowsko wykonany długi łuk. Większy zasięg i siła niż zwykły długi łuk, kosztem dłuższego naciągu.',
+  },
+  yewmaster_longbow: {
+    kind: 'yewmaster_longbow',
+    label: 'cisowy długi łuk',
+    categories: ['weapon'],
+    weight: 1.3,
+    size: 'LG',
+    color: 0x5e4328,
+    description: 'Legendarny długi łuk z cisu. Niezrównany zasięg, celność i siła strzału.',
+  },
   crossbow: {
     kind: 'crossbow',
     label: 'kusza',
@@ -2653,9 +2673,9 @@ function buildProceduralItemMesh(kind: ItemKind): THREE.Object3D {
     group.add(line)
     return group
   }
-  if (kind === 'short_bow' || kind === 'hunting_bow' || kind === 'long_bow' || kind === 'masterwork_hunting_bow') {
+  if (kind === 'short_bow' || kind === 'hunting_bow' || kind === 'long_bow' || kind === 'masterwork_hunting_bow' || kind === 'marlow_longbow' || kind === 'yewmaster_longbow') {
     const group = new THREE.Group()
-    const height = kind === 'short_bow' ? 0.5 : kind === 'hunting_bow' || kind === 'masterwork_hunting_bow' ? 0.68 : 0.85
+    const height = kind === 'short_bow' ? 0.5 : kind === 'hunting_bow' || kind === 'masterwork_hunting_bow' ? 0.68 : kind === 'marlow_longbow' || kind === 'yewmaster_longbow' ? 0.92 : 0.85
     const limb = new THREE.Mesh(
       new THREE.TorusGeometry(height / 2, 0.014, 4, 10, Math.PI * 0.92),
       new THREE.MeshStandardMaterial({ color: ITEM_DEFS[kind].color, flatShading: true }),

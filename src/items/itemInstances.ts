@@ -168,6 +168,8 @@ export type RangedWeaponKind =
   | 'hunting_bow'
   | 'long_bow'
   | 'masterwork_hunting_bow'
+  | 'marlow_longbow'
+  | 'yewmaster_longbow'
   | 'crossbow'
   | 'sling'
 
@@ -175,8 +177,10 @@ export const RANGED_WEAPON_KIND_LIST: readonly RangedWeaponKind[] = [
   'crossbow',
   'hunting_bow',
   'long_bow',
+  'marlow_longbow',
   'masterwork_hunting_bow',
   'short_bow',
+  'yewmaster_longbow',
   'sling',
 ]
 

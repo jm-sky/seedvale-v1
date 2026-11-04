@@ -68,6 +68,8 @@ const ITEM_ICON_FILES: Readonly<Partial<Record<ItemKind, string>>> = {
   hunting_bow: 'bow',
   long_bow: 'bow',
   masterwork_hunting_bow: 'bow',
+  marlow_longbow: 'bow',
+  yewmaster_longbow: 'bow',
   crossbow: 'crossbow',
   arrow: 'arrow',
   broadhead_arrow: 'arrow',

@@ -235,6 +235,19 @@ export const HELD_ATTACH: Record<ToolKind, HeldAttach> = {
     scale: 0.98,
     gripLocalOffset: [0, 0, -0.3],
   },
+  // 062 W3a — procedural long-bow fallbacks; no asset or identity substitution.
+  marlow_longbow: {
+    position: [-0.45, 0.13, -0.02],
+    rotation: [Math.PI / 2, -Math.PI / 2, 0],
+    scale: 1.02,
+    gripLocalOffset: [0, 0, -0.34],
+  },
+  yewmaster_longbow: {
+    position: [-0.45, 0.13, -0.02],
+    rotation: [Math.PI / 2, -Math.PI / 2, 0],
+    scale: 1.02,
+    gripLocalOffset: [0, 0, -0.34],
+  },
   // Plan items-player-059 — Quaternius-style crossbow GLB in public/models/items.
   crossbow: {
     position: [-0.2, 0.12, -0.02],

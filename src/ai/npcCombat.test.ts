@@ -267,6 +267,8 @@ describe('npcRangedWeaponFamily (plan items-player-059 §8)', () => {
       hunting_bow: 'bow',
       long_bow: 'bow',
       masterwork_hunting_bow: 'bow',
+      marlow_longbow: 'bow',
+      yewmaster_longbow: 'bow',
       crossbow: 'crossbow',
       sling: 'sling',
     }

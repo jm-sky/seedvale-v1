@@ -131,3 +131,11 @@ Registered the five A8 upper-tier melee identities (`pinewatch_longsword`, `kest
 Type consequence: `WeaponMaintenanceKind` now includes restricted identities whose ordinary factory returns null, so three ordinary-factory callers narrow with `isUpperTierIdentity` (starting loadout in `createApp.ts`, shepherd weapon table/selector in `npcLoadout.ts`, melee-determinism fixture in `npcCombat.test.ts`). No save-version or worldgen-epoch change. The melee batch of 062 (W2a–W2d, 17 kinds) is complete; **R-A is still required before 064 U enables any source**.
 
 Verification: `src/items`, `src/ai`, `src/persistence`, `src/settlement`, `src/app` (4388 pass), Vue type-check, scoped ESLint, production build. One unrelated failure exists on baseline `04b4773b`: `src/fauna/AnimalAgent.test.ts` "067 P3 … forwards the actual animal ID and species" (from `393f4d67`); logged in LOOSE-ENDS. No browser verification.
+
+## W3a implementation — 2026-11-04
+
+Registered `marlow_longbow` (Masterwork) and `yewmaster_longbow` (Legendary, A8 upper tier) with the W0 ranged tuples, long-bow ammo order, bow NPC family, prices 280/1300, mass 1.5/1.3 and identity-preserving procedural ground/held fallbacks (taller bow silhouette). Both are plain `{ id, kind }` ranged instances (no maintenance state). Yewmaster has no source and is creatable only via the 063 ledger claim. Ammo selection, `ARROW_DAMAGE_BONUS`, projectile and gameLoop paths are unchanged — no hot-file edit beyond catalog rows; W3b/W3c are the slices that touch ammo admission.
+
+Side effects handled: ranged-kind totals in `itemInstances.test.ts` (6 → 8) and the NPC ranged family fixture; `INVENTORY_DETAIL_STAT_CEILINGS` is derived from the catalogue, so since W2d it follows `greywatch_longsword` (55) and the ui-vue test now derives the strongest weapon instead of hard-coding `obsidian_sword` (author may want a different ceiling policy in 048 — not changed here). No save-version or worldgen-epoch change; marlow save round-trip fixture added.
+
+Verification: `src/items src/ai src/persistence src/settlement src/app src/player src/combat src/ui-vue` (4049 tests; 1 pre-existing fauna failure outside these dirs, see LOOSE-ENDS), Vue type-check, scoped ESLint. No browser verification; fixture-grant a bow and shoot on seed `415424794` remains a manual check.
