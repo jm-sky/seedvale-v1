@@ -60,6 +60,14 @@ pnpm tools:settlement-shot 5577 <seed> <out.png> [--agl 150] [--fov 60] [--keep 
 - PNGs are not byte-identical between runs because of tree sway and shadow noise. Framing and layout are identical.
 - Only the **home** settlement is supported. For another village, use `?fly&flyTop&flyPose=x,z,h,0,0` manually (settlement `x,z` from its `SettlementDef`, e.g. via a quick vitest/script against `settlementGenerator`).
 
+## Geography baseline censuses (tools-026 D1–D3)
+
+Headless, deterministic, `pnpm tsx` scripts (results of 2026-11-04 in `docs/research/v1-revival/census-data/`):
+
+- `pnpm worldgen:rivers:census --network [--stream-m2=960,1920,3840]` — stream km per land km², heads, trunk systems, share of land > 300 m from a stream, accumulation-area histogram (chain points), parallel-pair detector (< 30 m gap, > 150 m run; ridge margin 1 m → `valid` / `artifact?`), payload MiB. `--stream-m2` recomputes chains on the same conditioned grid with other initiation areas (preview only, no cache key touched). Old output is unchanged without the flags.
+- `pnpm worldgen:continent:census --relief [--transects=<dir>]` — height histogram, top-20 peaks with prominence/isolation, slope classes (16 m grid), gated-ridge components (**proxy**: `mountainRidge ≥ 0.05`, the generator does not expose its gate), 3 fixed transect CSVs per seed. Also fixed: the script needed an installed hydrology id (it crashed on `main`).
+- `pnpm worldgen:travel:census [--json] [--routes-out=<dir>]` — per routed edge: straight/polyline/access length, ratio, hours (**distance ÷ speed estimate**), river crossings, grades; unrouted edges (failed route **or** beyond the per-settlement road cap — not distinguishable here); route connectivity over routed edges next to layout-adjacency components; coverage by straight-line hours; grade share along routes; author-route candidates (seed 415424794). `--routes-out` writes route polylines for the D4 overlay.
+
 ## Verification wording
 
 A PNG you looked at counts as **browser-verified for layout and placement only**. It does not cover look, feel or ground-level readability. Those go to queue §2 for the author (CLAUDE.md "Verification").

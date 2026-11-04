@@ -13,10 +13,10 @@ import { sampleFloorAt, sampleHeightAt } from '../../src/terrain/chunkHeightmap'
 import { createRiverQuery } from '../../src/terrain/riverQuery'
 import { isWetFloor } from '../../src/terrain/waterSurface'
 import { ChainEnd, computeWorldHydrology, hashWorldHydrology, sampleRawFloorRows, sparseBlockValue, unpackChains, WORLD_HYDROLOGY_GRID } from '../../src/terrain/worldHydrology'
-import { measureNetwork } from './censusRiverNetwork'
 import { hydrologyIdFor } from '../../src/terrain/worldHydrologyRegistry'
 import { installWorldHydrology, streamHeadsFor, UNCONDITIONED_HYDROLOGY_ID } from '../../src/terrain/worldHydrologyStore'
 import { worldKnowledgeRoadContext, type WorldKnowledgeTerrainSnapshot } from '../../src/terrain/worldKnowledgeScan'
+import { measureNetwork } from './censusRiverNetwork'
 
 function arg(name: string, fallback: string): string {
   const hit = process.argv.find((a) => a.startsWith(`--${name}=`))

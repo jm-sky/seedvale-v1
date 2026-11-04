@@ -15,10 +15,10 @@ import { cellsWithinRadius, type SettlementDef } from '../../src/settlement/sett
 import { clearSettlementDefCache, setSettlementRiverQuery, settlementDefFor } from '../../src/settlement/settlementPlanCache'
 import { type RawSampleParams, sampleRawTexelAt } from '../../src/terrain/chunkHeightmap'
 import { WORLD_HALF_EXTENT } from '../../src/terrain/continentMask'
-import { censusHydrologyId } from './censusHydrology'
-import { measureRelief, sampleReliefGrid } from './censusRelief'
 import { createRiverQuery } from '../../src/terrain/riverQuery'
 import { worldKnowledgeRoadContext, type WorldKnowledgeTerrainSnapshot } from '../../src/terrain/worldKnowledgeScan'
+import { censusHydrologyId } from './censusHydrology'
+import { measureRelief, sampleReliefGrid } from './censusRelief'
 
 function arg(name: string, fallback: string): string {
   const hit = process.argv.find((a) => a.startsWith(`--${name}=`))

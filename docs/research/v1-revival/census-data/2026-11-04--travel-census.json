@@ -1,0 +1,914 @@
+[
+  {
+    "seed": 42,
+    "assumptions": "hours = distance ÷ speed ESTIMATE (player 6 m/s = 180 m/game-h; NPC travel 3.6 m/s = 108 m/game-h); coverage hours are straight-line",
+    "counts": {
+      "selected": 22,
+      "defined": 22,
+      "definedEdges": 27,
+      "routedEdges": 18,
+      "unroutedEdges": 9,
+      "roadConnectedInLargestComponent": 13
+    },
+    "connectivity": {
+      "layoutAdjacencyComponents": 1,
+      "routedComponents": 4,
+      "routedComponentSizes": [
+        13,
+        6,
+        2,
+        1
+      ]
+    },
+    "unroutedEdges": [
+      {
+        "a": "0_0",
+        "b": "2_-6",
+        "straightM": 1947
+      },
+      {
+        "a": "10_-1",
+        "b": "6_-2",
+        "straightM": 1273
+      },
+      {
+        "a": "10_-1",
+        "b": "12_-6",
+        "straightM": 1573
+      },
+      {
+        "a": "-6_11",
+        "b": "0_10",
+        "straightM": 1845
+      },
+      {
+        "a": "-2_-8",
+        "b": "2_-11",
+        "straightM": 1456
+      },
+      {
+        "a": "-6_11",
+        "b": "-9_7",
+        "straightM": 1501
+      },
+      {
+        "a": "-2_-12",
+        "b": "-2_-8",
+        "straightM": 1209
+      },
+      {
+        "a": "-12_-2",
+        "b": "-12_2",
+        "straightM": 1259
+      },
+      {
+        "a": "-1_6",
+        "b": "-5_3",
+        "straightM": 1430
+      }
+    ],
+    "routeStats": {
+      "totalKm": 30.7,
+      "polylineM": {
+        "p10": 1233,
+        "p50": 1666,
+        "p90": 2205,
+        "max": 2658
+      },
+      "ratio": {
+        "p50": 1.14,
+        "p90": 1.33,
+        "max": 1.47
+      },
+      "hoursPlayerEst": {
+        "p50": 9.85,
+        "p90": 12.92,
+        "max": 15.16
+      },
+      "hoursNpcEst": {
+        "p50": 16.41,
+        "p90": 21.53,
+        "max": 25.27
+      },
+      "riverCrossings": 141,
+      "gradeSharePctOfRouteLength": {
+        "<5°": 87.9,
+        "5–10°": 9.9,
+        "10–20°": 0.4,
+        "20–30°": 0,
+        "≥30°": 0
+      }
+    },
+    "coverage": {
+      "landKm2": 31.3,
+      "within2hPct": 21.3,
+      "within5hPct": 89.1,
+      "within8hPct": 100,
+      "wildernessOver5hPct": 10.9,
+      "quadrantWithin5hPct": {
+        "NE": 91.1,
+        "NW": 89.2,
+        "SE": 84.7,
+        "SW": 91
+      }
+    },
+    "authorRoute": "n/a (only seed 415424794)",
+    "edges": [
+      {
+        "a": "-4_-2",
+        "b": "0_0",
+        "sizes": "SM-SM",
+        "straightM": 1365,
+        "polylineM": 1579,
+        "accessLegsM": 77,
+        "ratio": 1.16,
+        "hoursPlayerEst": 9.2,
+        "hoursNpcEst": 15.34,
+        "riverCrossings": 4,
+        "maxGradeDeg": 7.4,
+        "gradeShareOver10Pct": 0,
+        "chordWaterM": 20
+      },
+      {
+        "a": "10_-1",
+        "b": "8_3",
+        "sizes": "LG-XL",
+        "straightM": 1310,
+        "polylineM": 1321,
+        "accessLegsM": 119,
+        "ratio": 1.01,
+        "hoursPlayerEst": 8,
+        "hoursNpcEst": 13.34,
+        "riverCrossings": 5,
+        "maxGradeDeg": 7.2,
+        "gradeShareOver10Pct": 0,
+        "chordWaterM": 0
+      },
+      {
+        "a": "4_7",
+        "b": "8_3",
+        "sizes": "LG-XL",
+        "straightM": 1737,
+        "polylineM": 2205,
+        "accessLegsM": 120,
+        "ratio": 1.27,
+        "hoursPlayerEst": 12.92,
+        "hoursNpcEst": 21.53,
+        "riverCrossings": 12,
+        "maxGradeDeg": 10.8,
+        "gradeShareOver10Pct": 1,
+        "chordWaterM": 100
+      },
+      {
+        "a": "2_-6",
+        "b": "6_-8",
+        "sizes": "MD-SM",
+        "straightM": 1321,
+        "polylineM": 1754,
+        "accessLegsM": 71,
+        "ratio": 1.33,
+        "hoursPlayerEst": 10.13,
+        "hoursNpcEst": 16.89,
+        "riverCrossings": 6,
+        "maxGradeDeg": 7.9,
+        "gradeShareOver10Pct": 0,
+        "chordWaterM": 315
+      },
+      {
+        "a": "12_-6",
+        "b": "6_-8",
+        "sizes": "SM-SM",
+        "straightM": 1808,
+        "polylineM": 2658,
+        "accessLegsM": 71,
+        "ratio": 1.47,
+        "hoursPlayerEst": 15.16,
+        "hoursNpcEst": 25.27,
+        "riverCrossings": 12,
+        "maxGradeDeg": 9.5,
+        "gradeShareOver10Pct": 0,
+        "chordWaterM": 457
+      },
+      {
+        "a": "-1_6",
+        "b": "0_10",
+        "sizes": "LG-SM",
+        "straightM": 1253,
+        "polylineM": 1203,
+        "accessLegsM": 86,
+        "ratio": 0.96,
+        "hoursPlayerEst": 7.16,
+        "hoursNpcEst": 11.93,
+        "riverCrossings": 3,
+        "maxGradeDeg": 7.1,
+        "gradeShareOver10Pct": 0,
+        "chordWaterM": 0
+      },
+      {
+        "a": "0_10",
+        "b": "4_7",
+        "sizes": "SM-LG",
+        "straightM": 1474,
+        "polylineM": 1834,
+        "accessLegsM": 84,
+        "ratio": 1.24,
+        "hoursPlayerEst": 10.66,
+        "hoursNpcEst": 17.76,
+        "riverCrossings": 5,
+        "maxGradeDeg": 8.5,
+        "gradeShareOver10Pct": 0,
+        "chordWaterM": 458
+      },
+      {
+        "a": "-2_-12",
+        "b": "2_-11",
+        "sizes": "SM-LG",
+        "straightM": 1244,
+        "polylineM": 1618,
+        "accessLegsM": 86,
+        "ratio": 1.3,
+        "hoursPlayerEst": 9.47,
+        "hoursNpcEst": 15.78,
+        "riverCrossings": 15,
+        "maxGradeDeg": 12.7,
+        "gradeShareOver10Pct": 1.2,
+        "chordWaterM": 40
+      },
+      {
+        "a": "-5_3",
+        "b": "-9_7",
+        "sizes": "MD-SM",
+        "straightM": 1686,
+        "polylineM": 1787,
+        "accessLegsM": 78,
+        "ratio": 1.06,
+        "hoursPlayerEst": 10.36,
+        "hoursNpcEst": 17.27,
+        "riverCrossings": 6,
+        "maxGradeDeg": 6.9,
+        "gradeShareOver10Pct": 0,
+        "chordWaterM": 0
+      },
+      {
+        "a": "-12_2",
+        "b": "-9_7",
+        "sizes": "MD-SM",
+        "straightM": 1736,
+        "polylineM": 2124,
+        "accessLegsM": 84,
+        "ratio": 1.22,
+        "hoursPlayerEst": 12.27,
+        "hoursNpcEst": 20.45,
+        "riverCrossings": 6,
+        "maxGradeDeg": 6.6,
+        "gradeShareOver10Pct": 0,
+        "chordWaterM": 758
+      },
+      {
+        "a": "-6_-7",
+        "b": "-9_-4",
+        "sizes": "MD-SM",
+        "straightM": 1251,
+        "polylineM": 1370,
+        "accessLegsM": 81,
+        "ratio": 1.1,
+        "hoursPlayerEst": 8.06,
+        "hoursNpcEst": 13.44,
+        "riverCrossings": 4,
+        "maxGradeDeg": 10.1,
+        "gradeShareOver10Pct": 1.5,
+        "chordWaterM": 0
+      },
+      {
+        "a": "-2_-8",
+        "b": "-6_-7",
+        "sizes": "SM-MD",
+        "straightM": 1296,
+        "polylineM": 1389,
+        "accessLegsM": 80,
+        "ratio": 1.07,
+        "hoursPlayerEst": 8.16,
+        "hoursNpcEst": 13.61,
+        "riverCrossings": 9,
+        "maxGradeDeg": 8.2,
+        "gradeShareOver10Pct": 0,
+        "chordWaterM": 0
+      },
+      {
+        "a": "-2_-8",
+        "b": "2_-6",
+        "sizes": "SM-MD",
+        "straightM": 1353,
+        "polylineM": 1540,
+        "accessLegsM": 75,
+        "ratio": 1.14,
+        "hoursPlayerEst": 8.97,
+        "hoursNpcEst": 14.96,
+        "riverCrossings": 6,
+        "maxGradeDeg": 7.8,
+        "gradeShareOver10Pct": 0,
+        "chordWaterM": 0
+      },
+      {
+        "a": "2_-6",
+        "b": "6_-2",
+        "sizes": "MD-MD",
+        "straightM": 1634,
+        "polylineM": 1865,
+        "accessLegsM": 68,
+        "ratio": 1.14,
+        "hoursPlayerEst": 10.73,
+        "hoursNpcEst": 17.89,
+        "riverCrossings": 15,
+        "maxGradeDeg": 8.9,
+        "gradeShareOver10Pct": 0,
+        "chordWaterM": 0
+      },
+      {
+        "a": "4_7",
+        "b": "8_10",
+        "sizes": "LG-LG",
+        "straightM": 1470,
+        "polylineM": 1666,
+        "accessLegsM": 106,
+        "ratio": 1.13,
+        "hoursPlayerEst": 9.85,
+        "hoursNpcEst": 16.41,
+        "riverCrossings": 10,
+        "maxGradeDeg": 7.7,
+        "gradeShareOver10Pct": 0,
+        "chordWaterM": 179
+      },
+      {
+        "a": "-4_-2",
+        "b": "-5_3",
+        "sizes": "SM-MD",
+        "straightM": 1548,
+        "polylineM": 1886,
+        "accessLegsM": 78,
+        "ratio": 1.22,
+        "hoursPlayerEst": 10.91,
+        "hoursNpcEst": 18.19,
+        "riverCrossings": 9,
+        "maxGradeDeg": 7,
+        "gradeShareOver10Pct": 0,
+        "chordWaterM": 119
+      },
+      {
+        "a": "-4_-2",
+        "b": "-9_-4",
+        "sizes": "SM-SM",
+        "straightM": 1572,
+        "polylineM": 1665,
+        "accessLegsM": 70,
+        "ratio": 1.06,
+        "hoursPlayerEst": 9.64,
+        "hoursNpcEst": 16.06,
+        "riverCrossings": 9,
+        "maxGradeDeg": 12.9,
+        "gradeShareOver10Pct": 4.2,
+        "chordWaterM": 0
+      },
+      {
+        "a": "-12_-2",
+        "b": "-9_-4",
+        "sizes": "LG-SM",
+        "straightM": 1143,
+        "polylineM": 1233,
+        "accessLegsM": 88,
+        "ratio": 1.08,
+        "hoursPlayerEst": 7.34,
+        "hoursNpcEst": 12.24,
+        "riverCrossings": 5,
+        "maxGradeDeg": 5.3,
+        "gradeShareOver10Pct": 0,
+        "chordWaterM": 0
+      }
+    ]
+  },
+  {
+    "seed": 415424794,
+    "assumptions": "hours = distance ÷ speed ESTIMATE (player 6 m/s = 180 m/game-h; NPC travel 3.6 m/s = 108 m/game-h); coverage hours are straight-line",
+    "counts": {
+      "selected": 22,
+      "defined": 22,
+      "definedEdges": 30,
+      "routedEdges": 19,
+      "unroutedEdges": 11,
+      "roadConnectedInLargestComponent": 10
+    },
+    "connectivity": {
+      "layoutAdjacencyComponents": 1,
+      "routedComponents": 4,
+      "routedComponentSizes": [
+        10,
+        10,
+        1,
+        1
+      ]
+    },
+    "unroutedEdges": [
+      {
+        "a": "-4_3",
+        "b": "0_4",
+        "straightM": 1335
+      },
+      {
+        "a": "-4_-2",
+        "b": "-4_3",
+        "straightM": 1448
+      },
+      {
+        "a": "-1_12",
+        "b": "5_10",
+        "straightM": 1883
+      },
+      {
+        "a": "5_5",
+        "b": "9_3",
+        "straightM": 1376
+      },
+      {
+        "a": "5_10",
+        "b": "5_5",
+        "straightM": 1469
+      },
+      {
+        "a": "11_-6",
+        "b": "9_-2",
+        "straightM": 1340
+      },
+      {
+        "a": "9_-2",
+        "b": "9_3",
+        "straightM": 1429
+      },
+      {
+        "a": "6_-10",
+        "b": "6_-5",
+        "straightM": 1501
+      },
+      {
+        "a": "-4_-2",
+        "b": "-8_-2",
+        "straightM": 1220
+      },
+      {
+        "a": "-2_-7",
+        "b": "-4_-2",
+        "straightM": 1666
+      },
+      {
+        "a": "-2_-7",
+        "b": "2_-8",
+        "straightM": 1233
+      }
+    ],
+    "routeStats": {
+      "totalKm": 29.8,
+      "polylineM": {
+        "p10": 1193,
+        "p50": 1535,
+        "p90": 2130,
+        "max": 2153
+      },
+      "ratio": {
+        "p50": 1.09,
+        "p90": 1.31,
+        "max": 1.31
+      },
+      "hoursPlayerEst": {
+        "p50": 8.93,
+        "p90": 12.33,
+        "max": 12.51
+      },
+      "hoursNpcEst": {
+        "p50": 14.89,
+        "p90": 20.55,
+        "max": 20.85
+      },
+      "riverCrossings": 141,
+      "gradeSharePctOfRouteLength": {
+        "<5°": 91,
+        "5–10°": 6.7,
+        "10–20°": 0.3,
+        "20–30°": 0,
+        "≥30°": 0
+      }
+    },
+    "coverage": {
+      "landKm2": 31.4,
+      "within2hPct": 22.5,
+      "within5hPct": 86.4,
+      "within8hPct": 99.6,
+      "wildernessOver5hPct": 13.6,
+      "quadrantWithin5hPct": {
+        "NE": 88.2,
+        "NW": 91.8,
+        "SE": 79.5,
+        "SW": 87
+      }
+    },
+    "authorRoute": {
+      "note": "candidates sorted by angle from west; author confirms which one (timed in-game walk → queue §2)",
+      "ambiguous": false,
+      "candidates": [
+        {
+          "to": "-4_-2",
+          "toSize": "MD",
+          "toX": -1204,
+          "toZ": -552,
+          "leavesBearingDeg": 166,
+          "degFromWest": 14,
+          "polylineM": 1429,
+          "straightM": 1377,
+          "ratio": 1.04,
+          "hoursPlayerEst": 8.41,
+          "riverCrossings": 5,
+          "chordWaterM": 319,
+          "gradeOutDeg": {
+            "max": 4.1,
+            "min": -5.3,
+            "meanAbs": 1.8
+          },
+          "gradeBackDeg": {
+            "max": 5.3,
+            "min": -4.1
+          },
+          "gradeShareOver10Pct": 0,
+          "sampledGradesOutDeg": [
+            0.7,
+            -2.6,
+            0.6,
+            -0.3,
+            0.6,
+            2.4,
+            2.6,
+            -2.7,
+            0.7
+          ]
+        },
+        {
+          "to": "0_4",
+          "toSize": "MD",
+          "toX": 62,
+          "toZ": 1156,
+          "leavesBearingDeg": 81,
+          "degFromWest": 99,
+          "polylineM": 1179,
+          "straightM": 1161,
+          "ratio": 1.02,
+          "hoursPlayerEst": 7.03,
+          "riverCrossings": 12,
+          "chordWaterM": 0,
+          "gradeOutDeg": {
+            "max": 9,
+            "min": -5.4,
+            "meanAbs": 2.4
+          },
+          "gradeBackDeg": {
+            "max": 7.2,
+            "min": -6.9
+          },
+          "gradeShareOver10Pct": 0,
+          "sampledGradesOutDeg": [
+            3.4,
+            -2.7,
+            -0.8,
+            -2.1,
+            -2.1,
+            3.9,
+            1.2,
+            -5.4,
+            -2.9,
+            0
+          ]
+        },
+        {
+          "to": "4_-1",
+          "toSize": "MD",
+          "toX": 1210,
+          "toZ": -323,
+          "leavesBearingDeg": -3,
+          "degFromWest": 177,
+          "polylineM": 1320,
+          "straightM": 1193,
+          "ratio": 1.11,
+          "hoursPlayerEst": 7.81,
+          "riverCrossings": 5,
+          "chordWaterM": 239,
+          "gradeOutDeg": {
+            "max": 9.2,
+            "min": -4.8,
+            "meanAbs": 1.7
+          },
+          "gradeBackDeg": {
+            "max": 5,
+            "min": -9.2
+          },
+          "gradeShareOver10Pct": 0,
+          "sampledGradesOutDeg": [
+            1.8,
+            -2.7,
+            -0.5,
+            1.3,
+            2.3,
+            0,
+            -0.6,
+            -1.9,
+            2.9,
+            2.2,
+            -2.3
+          ]
+        }
+      ]
+    },
+    "edges": [
+      {
+        "a": "0_0",
+        "b": "0_4",
+        "sizes": "MD-MD",
+        "straightM": 1161,
+        "polylineM": 1179,
+        "accessLegsM": 86,
+        "ratio": 1.02,
+        "hoursPlayerEst": 7.03,
+        "hoursNpcEst": 11.71,
+        "riverCrossings": 12,
+        "maxGradeDeg": 9,
+        "gradeShareOver10Pct": 0,
+        "chordWaterM": 0
+      },
+      {
+        "a": "0_0",
+        "b": "4_-1",
+        "sizes": "MD-MD",
+        "straightM": 1193,
+        "polylineM": 1320,
+        "accessLegsM": 86,
+        "ratio": 1.11,
+        "hoursPlayerEst": 7.81,
+        "hoursNpcEst": 13.01,
+        "riverCrossings": 5,
+        "maxGradeDeg": 9.2,
+        "gradeShareOver10Pct": 0,
+        "chordWaterM": 239
+      },
+      {
+        "a": "-4_-2",
+        "b": "0_0",
+        "sizes": "MD-MD",
+        "straightM": 1377,
+        "polylineM": 1429,
+        "accessLegsM": 85,
+        "ratio": 1.04,
+        "hoursPlayerEst": 8.41,
+        "hoursNpcEst": 14.01,
+        "riverCrossings": 5,
+        "maxGradeDeg": 5.3,
+        "gradeShareOver10Pct": 0,
+        "chordWaterM": 319
+      },
+      {
+        "a": "-4_3",
+        "b": "-6_8",
+        "sizes": "LG-MD",
+        "straightM": 1620,
+        "polylineM": 2130,
+        "accessLegsM": 90,
+        "ratio": 1.31,
+        "hoursPlayerEst": 12.33,
+        "hoursNpcEst": 20.55,
+        "riverCrossings": 11,
+        "maxGradeDeg": 6.2,
+        "gradeShareOver10Pct": 0,
+        "chordWaterM": 356
+      },
+      {
+        "a": "0_4",
+        "b": "5_5",
+        "sizes": "MD-MD",
+        "straightM": 1517,
+        "polylineM": 1556,
+        "accessLegsM": 87,
+        "ratio": 1.03,
+        "hoursPlayerEst": 9.13,
+        "hoursNpcEst": 15.22,
+        "riverCrossings": 7,
+        "maxGradeDeg": 4.4,
+        "gradeShareOver10Pct": 0,
+        "chordWaterM": 120
+      },
+      {
+        "a": "-10_2",
+        "b": "-11_6",
+        "sizes": "XL-MD",
+        "straightM": 1303,
+        "polylineM": 1432,
+        "accessLegsM": 112,
+        "ratio": 1.1,
+        "hoursPlayerEst": 8.58,
+        "hoursNpcEst": 14.29,
+        "riverCrossings": 6,
+        "maxGradeDeg": 7,
+        "gradeShareOver10Pct": 0,
+        "chordWaterM": 0
+      },
+      {
+        "a": "-11_6",
+        "b": "-6_8",
+        "sizes": "MD-MD",
+        "straightM": 1655,
+        "polylineM": 1950,
+        "accessLegsM": 82,
+        "ratio": 1.18,
+        "hoursPlayerEst": 11.29,
+        "hoursNpcEst": 18.82,
+        "riverCrossings": 10,
+        "maxGradeDeg": 6.3,
+        "gradeShareOver10Pct": 0,
+        "chordWaterM": 80
+      },
+      {
+        "a": "-1_12",
+        "b": "-6_8",
+        "sizes": "LG-MD",
+        "straightM": 1866,
+        "polylineM": 2153,
+        "accessLegsM": 99,
+        "ratio": 1.15,
+        "hoursPlayerEst": 12.51,
+        "hoursNpcEst": 20.85,
+        "riverCrossings": 10,
+        "maxGradeDeg": 7.2,
+        "gradeShareOver10Pct": 0,
+        "chordWaterM": 476
+      },
+      {
+        "a": "-5_-11",
+        "b": "-8_-8",
+        "sizes": "SM-SM",
+        "straightM": 1342,
+        "polylineM": 1535,
+        "accessLegsM": 74,
+        "ratio": 1.14,
+        "hoursPlayerEst": 8.93,
+        "hoursNpcEst": 14.89,
+        "riverCrossings": 8,
+        "maxGradeDeg": 7.6,
+        "gradeShareOver10Pct": 0,
+        "chordWaterM": 0
+      },
+      {
+        "a": "-2_-7",
+        "b": "-5_-11",
+        "sizes": "SM-SM",
+        "straightM": 1486,
+        "polylineM": 1595,
+        "accessLegsM": 77,
+        "ratio": 1.07,
+        "hoursPlayerEst": 9.29,
+        "hoursNpcEst": 15.48,
+        "riverCrossings": 5,
+        "maxGradeDeg": 10.5,
+        "gradeShareOver10Pct": 1.7,
+        "chordWaterM": 0
+      },
+      {
+        "a": "-10_2",
+        "b": "-8_-2",
+        "sizes": "XL-LG",
+        "straightM": 1281,
+        "polylineM": 1377,
+        "accessLegsM": 111,
+        "ratio": 1.08,
+        "hoursPlayerEst": 8.27,
+        "hoursNpcEst": 13.78,
+        "riverCrossings": 5,
+        "maxGradeDeg": 8.5,
+        "gradeShareOver10Pct": 0,
+        "chordWaterM": 0
+      },
+      {
+        "a": "-10_2",
+        "b": "-12_-2",
+        "sizes": "XL-MD",
+        "straightM": 1310,
+        "polylineM": 1444,
+        "accessLegsM": 112,
+        "ratio": 1.1,
+        "hoursPlayerEst": 8.64,
+        "hoursNpcEst": 14.4,
+        "riverCrossings": 11,
+        "maxGradeDeg": 11.9,
+        "gradeShareOver10Pct": 0.9,
+        "chordWaterM": 20
+      },
+      {
+        "a": "6_-5",
+        "b": "9_-2",
+        "sizes": "SM-SM",
+        "straightM": 1318,
+        "polylineM": 1725,
+        "accessLegsM": 77,
+        "ratio": 1.31,
+        "hoursPlayerEst": 10.01,
+        "hoursNpcEst": 16.68,
+        "riverCrossings": 7,
+        "maxGradeDeg": 7.8,
+        "gradeShareOver10Pct": 0,
+        "chordWaterM": 220
+      },
+      {
+        "a": "2_-8",
+        "b": "6_-10",
+        "sizes": "LG-MD",
+        "straightM": 1284,
+        "polylineM": 1399,
+        "accessLegsM": 93,
+        "ratio": 1.09,
+        "hoursPlayerEst": 8.29,
+        "hoursNpcEst": 13.82,
+        "riverCrossings": 10,
+        "maxGradeDeg": 10,
+        "gradeShareOver10Pct": 2.6,
+        "chordWaterM": 336
+      },
+      {
+        "a": "-12_-2",
+        "b": "-8_-2",
+        "sizes": "MD-LG",
+        "straightM": 1151,
+        "polylineM": 1193,
+        "accessLegsM": 100,
+        "ratio": 1.04,
+        "hoursPlayerEst": 7.18,
+        "hoursNpcEst": 11.97,
+        "riverCrossings": 13,
+        "maxGradeDeg": 7.8,
+        "gradeShareOver10Pct": 0,
+        "chordWaterM": 0
+      },
+      {
+        "a": "-8_-2",
+        "b": "-8_-8",
+        "sizes": "LG-SM",
+        "straightM": 1814,
+        "polylineM": 1811,
+        "accessLegsM": 91,
+        "ratio": 1,
+        "hoursPlayerEst": 10.57,
+        "hoursNpcEst": 17.61,
+        "riverCrossings": 3,
+        "maxGradeDeg": 5.4,
+        "gradeShareOver10Pct": 0,
+        "chordWaterM": 239
+      },
+      {
+        "a": "4_-1",
+        "b": "6_-5",
+        "sizes": "MD-SM",
+        "straightM": 1350,
+        "polylineM": 1535,
+        "accessLegsM": 79,
+        "ratio": 1.14,
+        "hoursPlayerEst": 8.97,
+        "hoursNpcEst": 14.95,
+        "riverCrossings": 4,
+        "maxGradeDeg": 7.7,
+        "gradeShareOver10Pct": 0,
+        "chordWaterM": 457
+      },
+      {
+        "a": "11_-6",
+        "b": "6_-5",
+        "sizes": "MD-SM",
+        "straightM": 1462,
+        "polylineM": 1420,
+        "accessLegsM": 83,
+        "ratio": 0.97,
+        "hoursPlayerEst": 8.35,
+        "hoursNpcEst": 13.92,
+        "riverCrossings": 4,
+        "maxGradeDeg": 7.7,
+        "gradeShareOver10Pct": 0,
+        "chordWaterM": 40
+      },
+      {
+        "a": "2_-8",
+        "b": "6_-5",
+        "sizes": "LG-SM",
+        "straightM": 1466,
+        "polylineM": 1583,
+        "accessLegsM": 92,
+        "ratio": 1.08,
+        "hoursPlayerEst": 9.3,
+        "hoursNpcEst": 15.51,
+        "riverCrossings": 5,
+        "maxGradeDeg": 6.7,
+        "gradeShareOver10Pct": 0,
+        "chordWaterM": 0
+      }
+    ]
+  }
+]

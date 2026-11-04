@@ -126,7 +126,7 @@ export function measureRelief(g: ReliefGrid, seed: number, transectDir: string |
     const stack = [s]
     seen[s] = 1
     let cells = 0
-    let minI = n, maxI = 0, minJ = n, maxJ = 0
+    let maxI = 0, maxJ = 0, minI = n, minJ = n
     while (stack.length) {
       const k = stack.pop()!
       cells++
