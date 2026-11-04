@@ -8,6 +8,7 @@
 **Domain:** `tools`
 **Subdomains:** `development` `diagnostics`
 **Tags:** `ui` `browser` `tooling`
+**Model:** Sonnet, Composer
 
 ## Goal
 
