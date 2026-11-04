@@ -1,7 +1,7 @@
 # Plan: Equipment panel body-ordered layout (V3 items--006 adapted)
 
 **Created:** 2026-10-27
-**Status:** `planned` 📋
+**Status:** `verification needed` 🔍 (implemented and technically verified 2026-11-04; browser checks pending)
 **Type:** polish
 **Priority:** medium · **Effort:** S
 **Depends on:** ~~ui-input-040~~, items-player-044
@@ -102,3 +102,7 @@ Zastąpić flat `grid-cols-2 sm:grid-cols-3` przez `grid-template-areas` (deskto
 ## Rollback
 
 Usunąć nowe pliki layout/cell; przywrócić flat grid w `EquipmentPanel`; usunąć prop highlight z ekranu/demo.
+
+## Implementation — 2026-11-04
+
+Implemented against 044-M's real seven-slot contract, with anatomical named grid areas at sm+, one-column DOM/tab order on narrow screens, real forearm select/unequip, preview target highlight, and held/shield cells. Primary weapon choices, ammo and summary stay below the grid. No layer rows or persistence changes. See [implementation notes](./implementation-notes/ui-input-045-equipment-body-layout-implementation-notes.md).
