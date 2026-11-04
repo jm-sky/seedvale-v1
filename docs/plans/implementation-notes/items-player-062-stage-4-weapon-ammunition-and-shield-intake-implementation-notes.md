@@ -93,3 +93,7 @@ Implemented exactly the four W0 W2a rows: obsidian_knife, halberd, mace, sword. 
 Verification: 347 tests across 11 files (batch ownership/transfer/geometry, catalog/capabilities/held/maintenance, NPC combat, save payloads, S1 math and donor policy), Vue type-check, scoped ESLint and production build. No gameplay/browser check; fixture-grant ordinary weapon/attack-fauna check remains pending.
 
 **Required Opus spot review before W2b:** inspect the four W0 rows and their actual catalog profiles, defense, mass/price, maintenance and held fallback. Confirm V1 family envelope and whether obsidian knife should share native knife utility capabilities (currently weapon-only, no donor capability activation). Remaining W0 W2b–d/W3 rows are proposed contracts for review, not registered runtime content. No source is enabled by this commit. W2b onward waits for this review.
+
+## Review 033 — first-batch Opus spot review (2026-11-04)
+
+[Review 033](../../reviews/2026-11-04--033--items-062-w2a-first-melee-batch-spot-review.md): **NO-GO for W2b until R1.** Profiles match W0 and the V1 envelope, but the W2a kinds were added to `MERCHANT_STOCK`, which is a live merchant source (the "no merchant source" statement in the W2a section above is incorrect). R1: remove them from `MERCHANT_STOCK` (keep `MERCHANT_PRICES`), add a 062-wide no-source guard test, correct the docs. R2/R3 (sword defense/mass, rationale rows, CATALOG holdable count) ride with W2b. `obsidian_knife` stays weapon-only (F4). Price scale (F2) is an open author question, not blocking.

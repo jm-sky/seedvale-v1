@@ -22,6 +22,7 @@ Tematy wymagające **głębszej analizy** (nie quick fix w tej samej sesji): pli
 
 | Review | Scope | Status | File |
 |--------|-------|--------|------|
+| 062 W2a first Stage 4 melee batch (Opus spot review) | **NO-GO for W2b until R1**: 1 P1 (W2a kinds live in `MERCHANT_STOCK` = merchant source), 1 P2 price scale (author), 3 P3; profiles match W0 and V1 envelope; no browser check | `done` | [2026-11-04--033--items-062-w2a-first-melee-batch-spot-review.md](./2026-11-04--033--items-062-w2a-first-melee-batch-spot-review.md) |
 | Geography Revival G1–G9 pre-implementation architecture | REWORK REQUIRED; 3 P1, 6 P2, 1 P3; seven-plan review against current code, S0 may proceed; no runtime/visual/performance verification | `done` | [2026-11-04--031--geography-revival-g1-g9-critical-architecture-review.md](./2026-11-04--031--geography-revival-g1-g9-critical-architecture-review.md) |
 | Geography + global hydrology architecture (058 after Q80 legacy removal) | Core design sound; 5 P2 (predicate name clash, catalog lakes-as-land, hydrology never released, no version guard, stale state docs), 3 P3; follow-ups Q102–Q106 | `done` | [2026-11-03--030--geography-hydrology-architecture-review.md](./2026-11-03--030--geography-hydrology-architecture-review.md) |
 | world-terrain-050 A1′ independent code review | PASS WITH FOLLOW-UPS; 3 P2, bounds mathematics, native shadows and lifecycle | `done` | [2026-10-28--029--world-terrain-050-a1-skinned-mesh-culling-review.md](./2026-10-28--029--world-terrain-050-a1-skinned-mesh-culling-review.md) |
