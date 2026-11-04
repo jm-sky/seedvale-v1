@@ -245,34 +245,34 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/chunkTileWorldgenCache.ts`
 
-- `CHUNK_TILE_CACHE_BYTE_BUDGET` — const — line 79
+- `CHUNK_TILE_CACHE_BYTE_BUDGET` — const — line 80
 - `CHUNK_TILE_CACHE_NAMESPACE` — const — line 30
   - domain: world-terrain
   - system: worldgen-cache
   - role: Persistent-cache adapter for canonical worker-generated chunk tiles (plan world-terrain-031): one `chunk:<cx>:<cz>` record per chunk holding the unchanged `ChunkTileResult` — the eight apron-inclusive terrain grids plus the deterministic vegetation/item/environment/crop placements. Stores the existing worker contract verbatim; there is deliberately no cache-specific terrain model and no `SaveData` field.
   - integration: Disposable derived data only. `ChunkManager.ensureLoaded()` generates exactly the same chunk with an empty cache — a miss, a malformed record or an IndexedDB failure always falls back to the tile worker. The payload is *base* worldgen: player/system terrain modifications, terrain cutouts, tree/crop lifecycle, collected items, resource depletion, mesh data and every Three.js object stay downstream and are never cached here, so two same-seed saves share only deterministic generation output.
-- `CHUNK_TILE_CACHE_VERSION` — const — line 63
-- `CHUNK_TILE_META_SUBKEY` — const — line 68
-- `ChunkTileCacheStats` — type — line 109
-- `ChunkTileCacheStorage` — type — line 245
-- `chunkTileFingerprint` — function — line 102
+- `CHUNK_TILE_CACHE_VERSION` — const — line 64
+- `CHUNK_TILE_META_SUBKEY` — const — line 69
+- `ChunkTileCacheStats` — type — line 110
+- `ChunkTileCacheStorage` — type — line 246
+- `chunkTileFingerprint` — function — line 103
   - domain: world-terrain
   - system: worldgen-cache
-- `chunkTileSubKey` — function — line 86
-- `cloneChunkTileForRuntime` — function — line 222
+- `chunkTileSubKey` — function — line 87
+- `cloneChunkTileForRuntime` — function — line 223
   - domain: world-terrain
   - system: worldgen-cache
-- `estimateChunkTileBytes` — function — line 201
-- `getChunkTileCacheStats` — function — line 135
-- `loadCachedChunkTile` — function — line 346
+- `estimateChunkTileBytes` — function — line 202
+- `getChunkTileCacheStats` — function — line 136
+- `loadCachedChunkTile` — function — line 347
   - domain: world-terrain
   - system: worldgen-cache
-- `persistChunkTile` — function — line 394
+- `persistChunkTile` — function — line 395
   - domain: world-terrain
   - system: worldgen-cache
-- `resetChunkTileCacheMetadata` — function — line 329
-- `resetChunkTileCacheStats` — function — line 139
-- `validateCachedChunkTile` — function — line 179
+- `resetChunkTileCacheMetadata` — function — line 330
+- `resetChunkTileCacheStats` — function — line 140
+- `validateCachedChunkTile` — function — line 180
   - domain: world-terrain
   - system: worldgen-cache
 

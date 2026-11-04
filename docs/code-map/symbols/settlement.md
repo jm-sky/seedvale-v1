@@ -1130,22 +1130,22 @@ Generated from exported TypeScript symbols.
   - system: worldgen-cache
 - `attachRoadRoutePersistence` — function — line 126
   - domain: world-terrain
-- `bridgesNear` — function — line 1250
+- `bridgesNear` — function — line 1324
   - domain: world-terrain
-- `bridgeSpecOf` — function — line 1209
+- `bridgeSpecOf` — function — line 1283
 - `clearRoadNetworkCaches` — function — line 196
 - `clearRoadNetworkMemoryCaches` — function — line 183
   - domain: world-terrain
 - `entranceToward` — function — line 220
 - `findRoute` — function — line 339
   - domain: world-terrain
-- `fordsNear` — function — line 1142
+- `fordsNear` — function — line 1216
   - domain: world-terrain
 - `ingestHydratedRoadRoute` — function — line 116
   - domain: world-terrain
-- `meanderRoute` — function — line 630
-- `MidpointSignpost` — type — line 933
-- `midpointSignpostsFor` — function — line 947
+- `meanderRoute` — function — line 704
+- `MidpointSignpost` — type — line 1007
+- `midpointSignpostsFor` — function — line 1021
 - `neighborsFor` — function — line 249
 - `peekRoadRouteCache` — function — line 147
 - `RoadNetworkContext` — type — line 67
@@ -1156,18 +1156,18 @@ Generated from exported TypeScript symbols.
 - `roadRoutePairKey` — function — line 158
   - domain: world-terrain
   - system: worldgen-cache
-- `roadRoutesForSettlement` — function — line 861
+- `roadRoutesForSettlement` — function — line 935
 - `roadRouteWorldgenCacheReady` — function — line 142
 - `RoadSegment` — type — line 57
 - `RoadSegmentKind` — type — line 55
 - `RoutePoint` — type — line 45
 - `RouteSearchOptions` — type — line 302
-- `routeToMinorLocation` — function — line 998
-- `segmentsNear` — function — line 1067
-- `SettlementSignpost` — type — line 898
-- `signpostsForSettlement` — function — line 910
-- `VillageSegments` — type — line 1279
-- `villageSegmentsNear` — function — line 1303
+- `routeToMinorLocation` — function — line 1072
+- `segmentsNear` — function — line 1141
+- `SettlementSignpost` — type — line 972
+- `signpostsForSettlement` — function — line 984
+- `VillageSegments` — type — line 1353
+- `villageSegmentsNear` — function — line 1377
 
 ## `settlement/roadRiverCrossing.ts`
 
@@ -1189,10 +1189,10 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/roadRouteWorldgenCache.ts`
 
-- `createRoadRouteWorldgenCache` — function — line 192
+- `createRoadRouteWorldgenCache` — function — line 193
   - domain: world-terrain
   - system: worldgen-cache
-- `isValidRoadRoutePayload` — function — line 141
+- `isValidRoadRoutePayload` — function — line 142
   - domain: world-terrain
   - system: worldgen-cache
 - `ROAD_ROUTE_CACHE_NAMESPACE` — const — line 28
@@ -1200,12 +1200,12 @@ Generated from exported TypeScript symbols.
   - system: worldgen-cache
   - role: Persistent-cache adapter for inter-settlement / settlement↔minor-location `RoadRoute` results (plan world-terrain-029). IndexedDB only hydrates and extends the module-level `routeCache` in `roadNetwork.ts` — that map stays the synchronous authority. Cached `null` is a real hit (a deterministic failed route), never a miss.
   - integration: Disposable derived data only. Route consumers stay synchronous; a miss, malformed payload or IndexedDB failure always falls back to the canonical `findRoute()` path. Never `SaveData`, never a second crossing classifier, never signposts / per-chunk corridors / bridge specs.
-- `ROAD_ROUTE_CACHE_VERSION` — const — line 47
-- `RoadRouteCachePayload` — type — line 54
-- `roadRouteFingerprint` — function — line 69
+- `ROAD_ROUTE_CACHE_VERSION` — const — line 48
+- `RoadRouteCachePayload` — type — line 55
+- `roadRouteFingerprint` — function — line 70
   - domain: world-terrain
   - system: worldgen-cache
-- `RoadRouteWorldgenCache` — type — line 167
+- `RoadRouteWorldgenCache` — type — line 168
 
 ## `settlement/routeObstacles.ts`
 
@@ -1222,6 +1222,8 @@ Generated from exported TypeScript symbols.
 - `ROUTE_RESAMPLE_STEP` — const — line 33
 - `RouteShapeEnv` — type — line 19
 - `ShapePoint` — type — line 17
+  - domain: world-terrain
+- `straightChordAround` — function — line 200
   - domain: world-terrain
 - `stringPull` — function — line 85
 
