@@ -185,6 +185,14 @@ Residual: `4_-1|6_-5#3` at (1280, −747), seed 415424794 — every straight cho
 
 Wider window `--rings=12` (after the fix): 6 of 31 decks still off-axis — seed 42: `-6_-7|-9_-4#0` (−1852, −2080) 14.4 m and `-5_3|-9_7#0` (−1506, 934) 14.5 m (no clear chord in any attempt: chord end wet/obstacle or route end inside the radius), `-12_2|-9_7#2` (−2821, 1381) 5.9 m but parallel (1°, accepted chord later displaced — cause not analysed); seed 415424794: `4_-1|6_-5#3` (above), `-12_-2|-8_-2#5` (−2821, −536) policy reject, `-10_2|-11_6#1` (−3026, 775) chord changes crossing topology. A quick attempt (route end as chord end + guard that later chords keep earlier decks straight) changed none of them and was not kept. Follow-up → queue Q110.
 
+### Author visual feedback — bridge elevation fit and later appearance (2026-11-04)
+
+**Correctness issue — prioritize when road/bridge work resumes after geography:** On seed `415424794`, the bridge deck visibly fails to connect naturally to the banks/road terrain. The author's leading hypothesis is **different bank elevations**; the bridge may not reconcile its deck height/grade with the terrain and the road profile at both ends. This is **not** the Q97/Q110 horizontal bridge–road alignment defect, and the cause is **not yet verified**. Inspect deck endpoint elevations, bank samples, approach-road height profile (`smoothProfile`), and the bridge geometry/placement contract before choosing a fix. Acceptance: both ends meet their respective approaches without floating, burial, abrupt vertical steps or inaccessible transitions, including asymmetric bank heights; preserve deterministic crossings, road connectivity and navigation. Recheck on the final geography/hydrology terrain, not only the old baseline.
+
+**Deferred visual polish — separate from the correctness fix:** Improve bridge geometry, proportions, supports and surface/wood textures later. Do not fold an asset redesign into the elevation repair or treat this note as approval of implementation.
+
+**Tracking:** Keep this feedback in Q44 for the existing post-geography road close-out; no separate queue item, schedule change or new plan is requested.
+
 ## 6. Author decisions (also queue §3)
 
 **ANSWERED 2026-11-02 (author):** **D1 (a)** RNG graph + fallback · **D2 custom** — main road **~7–8 m** wide (`roadHalfWidth` 5 → 3.5–4), ruts must stay **clearly visible**: only a slight reduction (rut depth 0.15 → ~0.11–0.12, micro-bumps reduced moderately), tuned in game · **D3 (a)** shared lanes + spurs to doors · **D4 (b)** allow **+1 entrance** when neighbours lie in a fourth distinct direction (palisade/torches/pasture must handle the extra gap). Options below kept for the record.
