@@ -27,6 +27,17 @@
 - **G7 donor:** V2's legend/rumour generated an approximate map region that contained a hidden landmark. Preserve that experience while checking V1 systems first.
 - **G8 open design:** V1 mountains occasionally lack steep peaks; V3 made all summits very steep and carved road passes. A hybrid is a **candidate to discuss after recon**, not a preapproved algorithm.
 
+## Q114 visual baseline feedback (author, 2026-11-04)
+
+These judgements concern **current V1 diagnostic previews**, not a new worldgen implementation or final acceptance targets:
+
+- **G4 — Streams:** author prefers the `--stream-m2=1920` preview over denser variants (fewer visible watercourses). This is a **visual preference for the S0 comparison**, **not** approval to set the production stream-initiation threshold to 1920 m²; calibrate after relief and climate changes, then compare again.
+- **G8 — Mountains:** current relief/mountain appearance in Q114 previews looks OK to the author. This does not cancel the approved connected-ranges/pass requirements or the pending V3 recon and measured height/shape decision.
+- **G5 — Roads:** road appearance on the preview looks OK; **travel distance is not acceptable**. The west/left road from home to the next settlement on seed `415424794` is too long in actual play. Q113 measured home → `-4_-2` at 1429 m (polyline ratio 1.04, about 8.4 in-game hours as a distance/speed estimate, **not** a timed walk). Keep shorter journeys as a key criterion for Q127 variant comparisons; do not mistake visual approval for travel-distance approval.
+- **Lakes:** author suspects the current lakes may be slightly too large **or** too numerous. This is an observation requiring a side-by-side size/count comparison, **not** a selected lake-count or size threshold. Preserve earlier Q96 lake reduction unless later comparison supports a change.
+
+No generator, routing, threshold, or settlement-count implementation is authorized by this feedback alone. Present the measured comparisons and any remaining tradeoffs before final calibration/selection.
+
 ## Dependencies and next steps (planning only)
 
 1. **S0:** Baselines, river/relief profiles and geography previews, measured route from home via the left road, travel-time census; inspect V2 waterfall and rumour/area implementation, V3 mountains/pass generation in bounded recon.
