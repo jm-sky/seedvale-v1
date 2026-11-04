@@ -29,7 +29,7 @@ export type PlayerRanged = {
    *  physical-effort Vigor cost once, for the draw's own
    *  `drawTime+recovery+(reloadTime??0)` duration at `moderate` intensity
    *  (plan items-player-003 §10 / items-player-059). */
-  requestDraw: (config: RangedConfig, stamina: StaminaState, vigor: VigorState, dayLengthSec: number) => boolean
+  requestDraw: (config: RangedConfig, stamina: StaminaState, vigor: VigorState, dayLengthSec: number, staminaMultiplier?: number) => boolean
   /** Advances the lifecycle by `dt`. Call once per frame regardless of input.
    *  Never produces `fireReady` on its own — firing is release-gated,
    *  see `releaseDraw()`. */
@@ -51,10 +51,11 @@ export function createPlayerRanged(): PlayerRanged {
     isDrawing: lifecycle.isDrawing,
     isReloading: lifecycle.isReloading,
     phaseProgress: lifecycle.phaseProgress,
-    requestDraw(cfg, stamina, vigor, dayLengthSec) {
+    requestDraw(cfg, stamina, vigor, dayLengthSec, staminaMultiplier = 1) {
       if (lifecycle.state() !== 'idle') return false
-      if (stamina.current < cfg.staminaCost) return false
-      drainStamina(stamina, cfg.staminaCost)
+      const staminaCost = cfg.staminaCost * staminaMultiplier
+      if (stamina.current < staminaCost) return false
+      drainStamina(stamina, staminaCost)
       drainVigor(vigor, physicalEffortVigorCostPerSec('moderate', dayLengthSec) * (cfg.drawTime + cfg.recovery + (cfg.reloadTime ?? 0)))
       return lifecycle.start(cfg, { manualRelease: true })
     },

@@ -435,7 +435,7 @@ export type NpcTradeStockRow = {
   quality?: ArmorQuality
   qualityLabel?: string
   weightKg?: number
-  protectionPercent?: number
+  protectionLabel?: string
   staminaPenaltyLabel?: string
   movementPenaltyLabel?: string
   recoveryPenaltyLabel?: string
@@ -2137,7 +2137,9 @@ function sameCharacterPresentation(a: CharacterPresentation, b: CharacterPresent
   const eqA = a.equipment
   const eqB = b.equipment
   if (
-    eqA.damageReduction !== eqB.damageReduction ||
+    eqA.expectedProtection.cut !== eqB.expectedProtection.cut ||
+    eqA.expectedProtection.pierce !== eqB.expectedProtection.pierce ||
+    eqA.expectedProtection.blunt !== eqB.expectedProtection.blunt ||
     eqA.attackStaminaDelta !== eqB.attackStaminaDelta ||
     eqA.meleeRecoveryDelta !== eqB.meleeRecoveryDelta ||
     eqA.movementSpeedDelta !== eqB.movementSpeedDelta ||

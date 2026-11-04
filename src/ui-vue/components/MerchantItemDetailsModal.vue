@@ -146,9 +146,9 @@ function formatWeight(kg: number): string { return `${kg.toFixed(1)} kg` }
           :value="stockRow.qualityLabel"
         />
         <InventoryScreenSection
-          v-if="stockRow?.protectionPercent != null"
-          label="Ochrona"
-          :value="`${stockRow.protectionPercent}%`"
+          v-if="stockRow?.protectionLabel"
+          label="Odporność"
+          :value="stockRow.protectionLabel"
         />
         <InventoryScreenSection
           v-if="stockRow?.staminaPenaltyLabel"

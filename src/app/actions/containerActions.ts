@@ -4,6 +4,7 @@ import type { Inventory } from '../../items/Inventory'
 import type { ItemKind } from '../../items/items'
 import type { VueUi } from '../../ui-vue/mount'
 import type { GroundPlacementDefinition, PlacementBlocker, PlacementPreviewResult } from './placementActions'
+import { trapPhysicalHit } from '../../combat/physicalHits'
 import { exitGamePointerLock } from '../../input/MouseLook'
 import {
   CONTAINER_DEFS,
@@ -13,7 +14,7 @@ import {
   type ContainerKind,
   containerTotalWeight,
 } from '../../items/container'
-import { resolveEquipmentModifiers } from '../../items/equipment'
+import { resolveProtectionSnapshot } from '../../items/equipment'
 import { inventoryFullToastText, inventoryFullToastTextForInstance } from '../../items/Inventory'
 import { transferInventoryCount, transferInventoryInstance } from '../../items/inventoryTransfer'
 import { buildInventoryGroups, inventoryCountsForUi } from '../../items/inventoryView'
@@ -364,13 +365,15 @@ export function createContainerActions(
         if (result.bladeDamage > 0) {
           applyPlayerDamage({
             player,
-            amount: result.bladeDamage,
-            attackerKey: 'env',
-            heldTool: ctx.heldTool.held(),
-            defenseSkillValue: player.skills.defense.value,
-            playerYaw: mouseLook.state.yaw,
             nowDays: ctx.dayNight.elapsedDays,
-            equipmentModifiers: resolveEquipmentModifiers(ctx.equipment, ctx.inventory),
+            damage: {
+              kind: 'physical',
+              hit: trapPhysicalHit(result.bladeDamage, id),
+              protection: resolveProtectionSnapshot(ctx.equipment, ctx.inventory).protection,
+              heldTool: ctx.heldTool.held(),
+              defenseSkillValue: player.skills.defense.value,
+              playerYaw: mouseLook.state.yaw,
+            },
           })
           toast.show('Ostrze pułapki cię zraniło.', 'error')
         }

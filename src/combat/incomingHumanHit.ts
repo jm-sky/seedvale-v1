@@ -36,9 +36,28 @@ export type HumanHitResult = {
   finalDamage: number
 }
 
+/** Positive finite damage is the only input that may reserve an incoming ordinal. */
+export function isAcceptedPhysicalContactAmount(amount: number): boolean {
+  return Number.isFinite(amount) && amount > 0
+}
+
+/** Result for a rejected contact (invalid, dead, downed, zero): no defense, no location, no damage. */
+export function inertHumanHitResult(hit: Pick<PhysicalHit, 'amount' | 'damageType'>): HumanHitResult {
+  return {
+    outcome: 'none',
+    attempted: false,
+    location: null,
+    damageType: hit.damageType,
+    rawDamage: Number.isFinite(hit.amount) ? hit.amount : 0,
+    postDefenseDamage: 0,
+    armorPrevented: 0,
+    finalDamage: 0,
+  }
+}
+
 /** Resolve defense, then one anatomical location and its composed local resistance.
- * The caller validates contact and reserves the durable ordinal exactly once.
- * No runtime caller until the atomic layered release.
+ * The caller validates contact ({@link isAcceptedPhysicalContactAmount}) and reserves
+ * the durable ordinal exactly once. Shared by player and NPC incoming wrappers.
  */
 export function resolveIncomingHumanHit(hit: PhysicalHit, ctx: HumanHitContext): HumanHitResult {
   if (!Number.isFinite(hit.amount) || hit.amount < 0) throw new RangeError('Invalid physical damage')

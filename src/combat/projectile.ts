@@ -7,6 +7,7 @@
  * cleanup.
  */
 import type { ItemKind } from '../items/items'
+import type { DamageType } from './damageTypes'
 
 export type Projectile = {
   id: string
@@ -21,6 +22,8 @@ export type Projectile = {
   maxDistance: number
   travelled: number
   damage: number
+  /** Snapshotted at fire time with damage/crit/ammo; later gear or config changes never alter a flying shot. */
+  damageType: DamageType
   criticalChance: number
   criticalMultiplier: number
   /** Deterministic-roll key, e.g. the ammo `ItemKind` + shot index. */

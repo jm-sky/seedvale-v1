@@ -30,8 +30,9 @@ import { isVoluntaryJoinAccepted, type VoluntaryExpeditionTerms } from '../ai/vo
 import { playActionGrindstoneSharpen, playActionWhetstoneSharpen } from '../audio/actionSounds'
 import { playInventoryDrop } from '../audio/inventorySounds'
 import { resolveEffectiveArmorPiece } from '../items/armorItemInstances'
+import { formatResistanceLabel } from '../items/armorProtectionDisplay'
 import { readBook } from '../items/books'
-import { armorProtectionScore, type EquipmentState } from '../items/equipment'
+import { type EquipmentState } from '../items/equipment'
 import { expandFoodBatchesToUnits } from '../items/foodItems'
 import { toSaveItemInstance } from '../items/Inventory'
 import { buildInventoryGroups, inventoryCountsForUi } from '../items/inventoryView'
@@ -381,7 +382,7 @@ export function createInventoryWiring(deps: InventoryWiringDeps): InventoryWirin
             quality: instance.quality,
             qualityLabel: ARMOR_QUALITY_LABELS[instance.quality],
             weightKg: effective?.weightKg ?? ITEM_DEFS[kind].weight,
-            protectionPercent: effective ? Math.round(armorProtectionScore(effective.resist) * 100) : undefined,
+            protectionLabel: effective ? formatResistanceLabel(effective.resist) : undefined,
             staminaPenaltyLabel: effective ? armorPenaltyLabel(effective.staminaCostMultiplier) : undefined,
             movementPenaltyLabel: effective ? armorPenaltyLabel(effective.movementSpeedMultiplier) : undefined,
             recoveryPenaltyLabel: effective ? armorPenaltyLabel(effective.meleeRecoveryMultiplier) : undefined,

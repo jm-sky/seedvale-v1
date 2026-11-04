@@ -1,7 +1,6 @@
 import * as THREE from 'three'
 import type { ActiveSound, PlayAt, PlayAtCancelable } from '../audio/createWorldAudio'
 import type { CombatIntent } from '../combat/combatIntent'
-import type { ResolvedDefense } from '../combat/defenseResolver'
 import type { Projectile } from '../combat/projectile'
 import type { RangedAttackLifecycle } from '../combat/rangedLifecycle'
 import type { InterSettlementTransportHooks } from '../economy/interSettlementFoodTransport'
@@ -65,6 +64,7 @@ import {
 } from '../audio/actionSounds'
 import { assembleCharacter } from '../characters/assembleCharacter'
 import { MELEE_CRITICAL_MULTIPLIER } from '../combat/criticalHit'
+import { type HumanHitResult, inertHumanHitResult, isAcceptedPhysicalContactAmount, type PhysicalHit } from '../combat/incomingHumanHit'
 import { resolveMeleeRecovery } from '../combat/meleeAgility'
 import {
   createMeleeAttackLifecycle,
@@ -81,9 +81,10 @@ import { commitRoleWork } from '../economy/npcWork'
 import { type SettlementEconomy } from '../economy/settlementEconomy'
 import { FLOCK_THREAT_RADIUS, senseOwnedFlockThreat, type ShepherdFlockHooks } from '../fauna/shepherdFlock'
 import { CONSTRUCTION_MATERIAL_RADIUS, consumeMaterial, hasMaterial } from '../items/constructionMaterials'
+import { rangedStaminaMultiplierFor, resolveProtectionSnapshot } from '../items/equipment'
 import { foodItemCount } from '../items/foodItems'
 import { Inventory } from '../items/Inventory'
-import { ammoDamageBonus, ITEM_CATALOG, type RangedConfig, rangedConfigFromThrowable } from '../items/itemCatalog'
+import { ammoDamageBonus, ITEM_CATALOG, type RangedConfig, rangedConfigFromThrowable, resolveProjectileDamageType } from '../items/itemCatalog'
 import { type AgentProfile, DEFAULT_CELL_SIZE, findPath, type NavigationQuery, type PathPoint } from '../navigation/navigation'
 import { beginActivePath, endActivePath, recordPathRequest, recordRepath } from '../navigation/navigationStats'
 import { isActorSkeletonSharingEnabled, isNpcBodyBuildsEnabled } from '../perf/flags'
@@ -327,8 +328,9 @@ import {
   isNpcMeleeWeaponHeld,
   type NpcMeleeWeapon,
   type NpcRangedWeapon,
-  resolveIncomingNpcDamage,
+  resolveIncomingNpcHit,
   resolveNpcAmmo,
+  resolveNpcArmorEquipment,
   resolveNpcMeleeWeapon,
   resolveNpcRangedWeapon,
 } from './npcCombat'
@@ -2497,13 +2499,15 @@ export class NpcAgent {
    *  @uses HealthState
    */
   applyIncomingCombatDamage(params: {
-    amount: number
+    hit: PhysicalHit
     attackerX?: number
     attackerZ?: number
-    attackerKey: string
-  }): ResolvedDefense {
-    if (this.health.dead) return { outcome: 'none', finalDamage: 0, attempted: false }
-    // Durable ordinal lives on authoritative state (survives reconstruction/save).
+  }): HumanHitResult {
+    const { hit } = params
+    // Invalid / dead / zero contacts never reserve the durable ordinal.
+    if (this.health.dead || !isAcceptedPhysicalContactAmount(hit.amount)) return inertHumanHitResult(hit)
+    // Durable ordinal lives on authoritative state (survives reconstruction/save);
+    // reserved once per accepted positive contact, including a full block.
     this.npcState.incomingPhysicalHitOrdinal += 1
     const readyWeaponKind = this.combatIntent
       ? this.combatIntent.mode === 'melee'
@@ -2514,8 +2518,8 @@ export class NpcAgent {
           ? this.combatRangedWeapon.kind
           : null
       : resolveNpcMeleeWeapon(this.personalInventory, this.role)?.kind ?? null
-    const resolved = resolveIncomingNpcDamage({
-      amount: params.amount,
+    const resolved = resolveIncomingNpcHit({
+      hit,
       carried: this.personalInventory,
       readyWeaponKind,
       defenderId: this.id,
@@ -2524,8 +2528,7 @@ export class NpcAgent {
       defenderFacingYaw: this.mesh.rotation.y,
       attackerX: params.attackerX,
       attackerZ: params.attackerZ,
-      attackerKey: params.attackerKey,
-      attempt: this.npcState.incomingPhysicalHitOrdinal,
+      incomingOrdinal: this.npcState.incomingPhysicalHitOrdinal,
     })
     if (resolved.finalDamage > 0) this.takeDamage(resolved.finalDamage)
     return resolved
@@ -2539,6 +2542,20 @@ export class NpcAgent {
     if (resolveNpcMeleeWeapon(this.personalInventory, this.role)) return true
     const rangedWeapon = resolveNpcRangedWeapon(this.personalInventory, this.role)
     return rangedWeapon != null && this.resolveRangedAmmo(rangedWeapon.ranged) != null
+  }
+
+  private rangedStaminaMemo: { inventory: Inventory, revision: number, multiplier: number } | null = null
+
+  /** Ranged draw stamina multiplier from the armor this NPC currently wears (derived from
+   *  `personalInventory`, memoized on its armor mutation revision) — `1 + .5·(meleeStamina−1)`. */
+  private armorRangedStaminaMultiplier(): number {
+    const inventory = this.personalInventory
+    const memo = this.rangedStaminaMemo
+    if (memo && memo.inventory === inventory && memo.revision === inventory.armorMutationRevision) return memo.multiplier
+    const restrictions = resolveProtectionSnapshot(resolveNpcArmorEquipment(inventory), inventory).restrictions
+    const multiplier = rangedStaminaMultiplierFor(restrictions.meleeStaminaMultiplier)
+    this.rangedStaminaMemo = { inventory, revision: inventory.armorMutationRevision, multiplier }
+    return multiplier
   }
 
   /** Personal belongings first, then transient work/`carried` supply — one
@@ -2728,9 +2745,10 @@ export class NpcAgent {
     ) {
       const throwConfig = rangedConfigFromThrowable('stone')
       const ammo = throwConfig ? this.resolveRangedAmmo(throwConfig) : null
-      if (throwConfig && ammo && dist <= throwConfig.range && this.stamina.current >= throwConfig.staminaCost) {
+      const throwCost = throwConfig ? throwConfig.staminaCost * this.armorRangedStaminaMultiplier() : 0
+      if (throwConfig && ammo && dist <= throwConfig.range && this.stamina.current >= throwCost) {
         this.combatImprovisedThrowUsed = true
-        drainStamina(this.stamina, throwConfig.staminaCost)
+        drainStamina(this.stamina, throwCost)
         this.combatRangedAttack.start(throwConfig)
       }
     }
@@ -2841,7 +2859,7 @@ export class NpcAgent {
         this.combatAttackAttempt += 1
         // `yawToward` only returns `null` when the target sits exactly on
         // this NPC's own position — `mesh.rotation.y` is a different (and
-        // wrong, for this purpose) yaw convention, see `resolveIncomingNpcDamage`'s
+        // wrong, for this purpose) yaw convention, see `resolveIncomingNpcHit`'s
         // comment, so the fallback converts it the same way rather than
         // feeding it straight into `resolveRangedDirection`.
         const aimYaw = yawToward(this.mesh.position.x, this.mesh.position.z, targetPos.x, targetPos.z)
@@ -2860,6 +2878,7 @@ export class NpcAgent {
           maxDistance: tick.config.range,
           travelled: 0,
           damage: tick.config.damage + ammoDamageBonus(ammo.kind, 'npc'),
+          damageType: resolveProjectileDamageType(tick.config, ammo.kind),
           criticalChance: tick.config.criticalChance ?? 0,
           criticalMultiplier: tick.config.criticalMultiplier ?? MELEE_CRITICAL_MULTIPLIER,
           ammoKind: ammo.kind,
@@ -2936,10 +2955,10 @@ export class NpcAgent {
       inRange
       && this.combatRangedAttack.state() === 'idle'
       && !this.combatProjectile
-      && this.stamina.current >= weapon.ranged.staminaCost
+      && this.stamina.current >= weapon.ranged.staminaCost * this.armorRangedStaminaMultiplier()
     ) {
       if (this.resolveRangedAmmo(weapon.ranged)) {
-        drainStamina(this.stamina, weapon.ranged.staminaCost)
+        drainStamina(this.stamina, weapon.ranged.staminaCost * this.armorRangedStaminaMultiplier())
         this.combatRangedAttack.start(weapon.ranged)
         playCombatBowDraw(this.playAt, this.mesh.position)
       } else {

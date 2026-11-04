@@ -1,4 +1,16 @@
 import type { SimulationEntityRef } from '../simulation'
+import type { DamageType } from './damageTypes'
+
+/** Typed, already-rolled outgoing hit handed to a combat target. Animal targets consume `amount`
+ *  only; human targets are not introduced by this metadata.
+ *  @domain combat
+ */
+export type CombatTargetHit = {
+  amount: number
+  damageType: DamageType
+  source: 'melee' | 'projectile'
+  attackerId: string
+}
 
 /**
  * Small, data-only combat target seam (plan 177 §3/§5) — deliberately not a
@@ -19,7 +31,7 @@ export type CombatTargetHandle = {
   /** Applies already-resolved damage — the target owner decides its own
    *  defense/HealthState/death consequences; combat never mutates a target
    *  directly. */
-  applyDamage: (amount: number) => void
+  applyDamage: (hit: CombatTargetHit) => void
 }
 
 /**

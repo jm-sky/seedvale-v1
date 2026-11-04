@@ -1,23 +1,24 @@
 import type { CombatTargetHandle } from '../combat/combatIntent'
+import type { Resistance } from '../combat/damageTypes'
 import type { Projectile } from '../combat/projectile'
 import type { Inventory } from '../items/Inventory'
 import type { ItemKind } from '../items/items'
 import type { Role } from './characters'
 import { MELEE_CRITICAL_CHANCE, MELEE_CRITICAL_MULTIPLIER, resolveCriticalHit } from '../combat/criticalHit'
-import { isAttackFromDefensibleDirection, type ResolvedDefense, resolveDefense } from '../combat/defenseResolver'
+import { isAttackFromDefensibleDirection } from '../combat/defenseResolver'
+import { type HumanHitResult, type PhysicalHit, resolveIncomingHumanHit } from '../combat/incomingHumanHit'
 import { applyMeleeStrength } from '../combat/meleeStrength'
 import { ARMOR_KIND_LIST, type ArmorItemInstance, isArmorItemInstance } from '../items/armorItemInstances'
 import {
   armorPositionOf,
-  armorProtectionScore,
   createEquipmentState,
   EQUIPMENT_POSITIONS,
   type EquipmentState,
   resolveArmorInstanceEffective,
-  resolveEquipmentModifiers,
+  resolveProtectionSnapshot,
   type SavePlayerEquipment,
 } from '../items/equipment'
-import { type DefenseConfig, ITEM_CATALOG, type MeleeConfig, type RangedConfig } from '../items/itemCatalog'
+import { type DefenseConfig, ITEM_CATALOG, type MeleeConfig, type RangedConfig, resolveMeleeDamageType } from '../items/itemCatalog'
 import { isWeaponItemInstance, isWeaponMaintenanceKind, type WeaponItemInstance } from '../items/itemInstances'
 import {
   applySharpnessWear,
@@ -377,7 +378,12 @@ export function applyNpcMeleeHit(
     attackKey,
     attempt,
   )
-  target.applyDamage(result.damage)
+  target.applyDamage({
+    amount: result.damage,
+    damageType: resolveMeleeDamageType(config),
+    source: 'melee',
+    attackerId,
+  })
   return result
 }
 
@@ -398,29 +404,50 @@ export function applyNpcRangedHit(
     projectile.attackKey,
     projectile.attempt,
   )
-  target.applyDamage(result.damage)
+  target.applyDamage({
+    amount: result.damage,
+    damageType: projectile.damageType,
+    source: 'projectile',
+    attackerId: projectile.sourceId,
+  })
   return result
 }
 
-/** Picks the best owned armor instance for one slot by effective
- *  protection score (plan npc-053 §13; S3 replaces with the proposal's typed score) — tie-break by `ItemKind` then
- *  instance id, mirroring `pickBestCandidate`'s determinism without forcing
- *  armor into the same generic shape (armor has no separate base/effective
- *  score split). */
+/** Static NPC armor selection weights (proposal §7.1) — favor common bite threats; no player/camera input. */
+const NPC_ARMOR_SCORE_WEIGHTS = { cut: 0.3, pierce: 0.45, blunt: 0.25 } as const
+const NPC_ARMOR_SCORE_EPSILON = 1e-9
+
+/** Quality-adjusted typed score used only to choose one worn piece per position. */
+export function npcArmorSelectionScore(resist: Resistance): number {
+  return NPC_ARMOR_SCORE_WEIGHTS.cut * resist.cut
+    + NPC_ARMOR_SCORE_WEIGHTS.pierce * resist.pierce
+    + NPC_ARMOR_SCORE_WEIGHTS.blunt * resist.blunt
+}
+
+/** Picks the best owned armor instance for one position (plan npc-053 §13, typed score from
+ *  065 S3): higher score wins; ties go to lower effective mass, then lexical kind, then
+ *  lexical instance id. Explicit reduction, independent of candidate order. */
 function pickBestArmorInstance(instances: readonly ArmorItemInstance[]): ArmorItemInstance | null {
   let best: ArmorItemInstance | null = null
-  let bestReduction = -Infinity
+  let bestScore = -Infinity
+  let bestMass = Infinity
   for (const instance of instances) {
     const piece = resolveArmorInstanceEffective(instance)
     if (!piece) continue
-    if (
-      best == null
-      || armorProtectionScore(piece.resist) > bestReduction
-      || (armorProtectionScore(piece.resist) === bestReduction && instance.kind < best.kind)
-      || (armorProtectionScore(piece.resist) === bestReduction && instance.kind === best.kind && instance.id < best.id)
-    ) {
+    const score = npcArmorSelectionScore(piece.resist)
+    const mass = piece.weightKg
+    let better = false
+    if (best == null || score > bestScore + NPC_ARMOR_SCORE_EPSILON) better = true
+    else if (score >= bestScore - NPC_ARMOR_SCORE_EPSILON) {
+      if (mass < bestMass) better = true
+      else if (mass === bestMass) {
+        better = instance.kind < best.kind || (instance.kind === best.kind && instance.id < best.id)
+      }
+    }
+    if (better) {
       best = instance
-      bestReduction = armorProtectionScore(piece.resist)
+      bestScore = score
+      bestMass = mass
     }
   }
   return best
@@ -428,7 +455,7 @@ function pickBestArmorInstance(instances: readonly ArmorItemInstance[]): ArmorIt
 
 /** Derives the best-per-slot worn armor straight from owned armor instances
  *  (plan npc-053 §12/§13) — no persistent NPC `EquipmentState`: this is
- *  rebuilt from `personalInventory` on demand (see `resolveIncomingNpcDamage`
+ *  rebuilt from `personalInventory` on demand (see `resolveIncomingNpcHit`
  *  below), so a transferred/removed instance stops mitigating on the very
  *  next hit without any invalidation cache. Reuses `createEquipmentState()`
  *  for its existing slot/catalog/ownership validation instead of inventing a
@@ -449,17 +476,17 @@ export function resolveNpcArmorEquipment(inventory: Inventory): EquipmentState {
   return createEquipmentState(inventory, derived)
 }
 
-/** Incoming damage against an NPC (plan 177 §8/§10 — `animal → NPC`,
- *  `NPC → NPC`, `player → NPC` are all the same shape) — active defense
- *  first via the ready melee weapon, then derived worn armor
- *  (plan npc-053 §14, same shared `resolveEquipmentModifiers()` the player
- *  uses) scales whatever damage remains; the caller applies `finalDamage` to
- *  `HealthState` itself (this stays a pure resolver, no `HealthState`
- *  import). `defenseSkillValue` defaults to `0` (no bonus) — NPCs have no
- *  `PlayerSkills`-equivalent defense progression yet; this is the smallest
- *  existing-compatible value, not a new progression system. */
-export function resolveIncomingNpcDamage(params: {
-  amount: number
+/** Incoming physical hit against an NPC (plan 177 §8/§10 — `animal → NPC`,
+ *  `NPC → NPC`, `player → NPC` share this shape) through the same
+ *  `resolveIncomingHumanHit` the player uses: active defense via the ready
+ *  melee weapon first, then one sampled location against the protection of
+ *  the armor derived from `carried` (plan npc-053 §14 + 065 S3). The caller
+ *  validates contact and reserves `incomingOrdinal` once, applies
+ *  `finalDamage` to `HealthState` itself (this stays a pure resolver) and owns
+ *  all effects. `defenseSkillValue` defaults to `0` (NPCs have no defense
+ *  progression yet). */
+export function resolveIncomingNpcHit(params: {
+  hit: PhysicalHit
   carried: Inventory
   readyWeaponKind: ItemKind | null
   defenderId: string
@@ -471,10 +498,9 @@ export function resolveIncomingNpcDamage(params: {
   defenderFacingYaw: number
   attackerX?: number
   attackerZ?: number
-  attackerKey: string
-  attempt: number
+  incomingOrdinal: number
   defenseSkillValue?: number
-}): ResolvedDefense {
+}): HumanHitResult {
   const defense = resolveNpcDefenseConfig(params.readyWeaponKind)
   const inArc = params.attackerX != null && params.attackerZ != null
     ? isAttackFromDefensibleDirection(
@@ -489,17 +515,13 @@ export function resolveIncomingNpcDamage(params: {
         params.attackerZ,
       )
     : false
-  const resolved = resolveDefense(
-    params.amount,
+  const protection = resolveProtectionSnapshot(resolveNpcArmorEquipment(params.carried), params.carried).protection
+  return resolveIncomingHumanHit(params.hit, {
+    defenderId: params.defenderId,
+    incomingOrdinal: params.incomingOrdinal,
     defense,
-    params.defenseSkillValue ?? 0,
-    params.defenderId,
-    params.attackerKey,
-    params.attempt,
+    defenseSkill: params.defenseSkillValue ?? 0,
     inArc,
-  )
-  if (resolved.finalDamage <= 0) return resolved
-  const armorModifiers = resolveEquipmentModifiers(resolveNpcArmorEquipment(params.carried), params.carried)
-  if (armorModifiers.incomingDamageMultiplier === 1) return resolved
-  return { ...resolved, finalDamage: resolved.finalDamage * armorModifiers.incomingDamageMultiplier }
+    protection,
+  })
 }

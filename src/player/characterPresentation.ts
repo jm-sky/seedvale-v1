@@ -1,7 +1,8 @@
+import type { Resistance } from '../combat/damageTypes'
 import type {
-  EquipmentModifiers,
   EquipmentSlot,
   EquipmentState,
+  ProtectionSnapshot,
 } from '../items/equipment'
 import type { Inventory } from '../items/Inventory'
 import type {
@@ -9,6 +10,8 @@ import type {
   EffectivePhysicalAttributesResult,
   ModifierCategory,
 } from '../shared/effectivePhysicalAttributes'
+import { expectedProtection } from '../combat/hitLocation'
+import { ZERO_RESISTANCE_VIEW } from '../items/armorProtectionDisplay'
 import {
   EQUIPMENT_SLOTS,
   equippedInstanceId,
@@ -89,7 +92,8 @@ export type CharacterEquipmentSlotView = {
 }
 
 export type CharacterEquipmentView = {
-  damageReduction: number
+  /** Reference-profile expected protection per physical channel (UI-only, never a hit multiplier). */
+  expectedProtection: Resistance
   attackStaminaDelta: number
   meleeRecoveryDelta: number
   movementSpeedDelta: number
@@ -111,7 +115,7 @@ const EMPTY_EQUIPMENT_SLOTS: readonly CharacterEquipmentSlotView[] = EQUIPMENT_S
 }))
 
 export const NEUTRAL_CHARACTER_EQUIPMENT_VIEW: CharacterEquipmentView = {
-  damageReduction: 0,
+  expectedProtection: ZERO_RESISTANCE_VIEW,
   attackStaminaDelta: 0,
   meleeRecoveryDelta: 0,
   movementSpeedDelta: 0,
@@ -120,15 +124,17 @@ export const NEUTRAL_CHARACTER_EQUIPMENT_VIEW: CharacterEquipmentView = {
 }
 
 /**
- * Maps aggregate gameplay equipment modifiers to Character Screen deltas.
+ * Maps the derived protection snapshot to Character Screen values: per-channel expected
+ * protection (reference profile) plus restriction deltas.
  *
  * @domain items-player
  */
-export function equipmentModifiersToCharacterView(
-  modifiers: EquipmentModifiers,
+export function equipmentSnapshotToCharacterView(
+  snapshot: ProtectionSnapshot,
 ): Omit<CharacterEquipmentView, 'slots'> {
+  const modifiers = snapshot.restrictions
   return {
-    damageReduction: 1 - modifiers.incomingDamageMultiplier,
+    expectedProtection: expectedProtection(snapshot.protection),
     attackStaminaDelta: modifiers.meleeStaminaMultiplier - 1,
     meleeRecoveryDelta: modifiers.meleeRecoveryMultiplier - 1,
     movementSpeedDelta: modifiers.movementSpeedMultiplier - 1,
@@ -165,12 +171,12 @@ export function buildCharacterEquipmentSlotViews(
  * @domain items-player
  */
 export function buildCharacterEquipmentView(
-  modifiers: EquipmentModifiers,
+  snapshot: ProtectionSnapshot,
   equipment: EquipmentState,
   inventory: Inventory,
 ): CharacterEquipmentView {
   return {
-    ...equipmentModifiersToCharacterView(modifiers),
+    ...equipmentSnapshotToCharacterView(snapshot),
     slots: buildCharacterEquipmentSlotViews(equipment, inventory),
   }
 }
@@ -298,7 +304,7 @@ export function buildCharacterPresentation(input: {
   result: EffectivePhysicalAttributesResult
   skills: PlayerSkills
   conditions: TemporaryConditionsState
-  equipmentModifiers: EquipmentModifiers
+  equipmentSnapshot: ProtectionSnapshot
   equipment: EquipmentState
   inventory: Inventory
 }): CharacterPresentation {
@@ -307,7 +313,7 @@ export function buildCharacterPresentation(input: {
     skills: buildCharacterSkillViews(input.skills),
     conditions: buildCharacterConditionViews(input.result.contributions, input.conditions),
     equipment: buildCharacterEquipmentView(
-      input.equipmentModifiers,
+      input.equipmentSnapshot,
       input.equipment,
       input.inventory,
     ),

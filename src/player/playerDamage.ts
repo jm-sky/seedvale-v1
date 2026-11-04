@@ -1,11 +1,16 @@
-import type { EquipmentModifiers } from '../items/equipment'
+import type { HumanProtection } from '../combat/hitLocation'
 import type { ToolKind } from '../items/HeldTool'
 import {
   defenseBlockRoll,
   type DefenseOutcome,
   isAttackFromDefensibleDirection,
-  resolveDefense,
 } from '../combat/defenseResolver'
+import {
+  type HumanHitResult,
+  isAcceptedPhysicalContactAmount,
+  type PhysicalHit,
+  resolveIncomingHumanHit,
+} from '../combat/incomingHumanHit'
 import { ITEM_CATALOG } from '../items/itemCatalog'
 import { healHealth, type HealthState } from '../shared/HealthState'
 import { clampPhysicalInjuryToMissingHp, type InjuryRecoveryState } from '../shared/injuryRecovery'
@@ -46,94 +51,93 @@ export type PlayerDamageResult = {
   finalDamage: number
   defenseOutcome: DefenseOutcome
   enteredDowned: boolean
+  /** Committed physical-hit resolution (location, armor prevented); `null` for rejected contacts and
+   *  non-physical damage. Also exposed transiently via `PlayerController.getLastIncomingHit()`. */
+  hit: HumanHitResult | null
 }
+
+/** Discriminated damage input: physical contact is defended, armored and located; non-physical
+ *  (deprivation) bypasses defense, armor and location entirely — never inferred from omitted fields. */
+export type PlayerDamageInput =
+  | {
+    kind: 'physical'
+    hit: PhysicalHit
+    /** Attacker position for directional defense; omit for environmental damage. */
+    attackerX?: number
+    attackerZ?: number
+    /** Per-region typed protection from `resolveProtectionSnapshot(...).protection`. */
+    protection: HumanProtection
+    heldTool: ToolKind | null
+    defenseSkillValue: number
+    playerYaw: number
+    onCombatHit?: () => void
+  }
+  | {
+    kind: 'nonphysical'
+    amount: number
+    onCombatHit?: () => void
+  }
 
 export type ApplyPlayerDamageParams = {
   player: PlayerController
-  amount: number
-  /** Attacker position for directional defense; omit for environmental damage. */
-  attackerX?: number
-  attackerZ?: number
-  attackerKey?: string
-  heldTool: ToolKind | null
-  defenseSkillValue: number
-  playerYaw: number
+  damage: PlayerDamageInput
   /** World elapsed days for injury recovery accounting (plan items-player-045). */
   nowDays?: number
-  /**
-   * When false, HP loss does not increase physical injury (deprivation /
-   * starvation). Defaults to true for combat and environmental wounds.
-   */
-  registersPhysicalInjury?: boolean
-  onCombatHit?: () => void
-  /** Wearable-equipment modifiers (plan items-player-029) — passive armor
-   *  mitigation applies only when a caller actually passes this (derived via
-   *  `items/equipment.ts`'s `resolveEquipmentModifiers()`). Omit for damage
-   *  categories armor must never reduce, e.g. starvation/dehydration
-   *  (`tickPlayerStarvationDamage` below deliberately doesn't pass one). */
-  equipmentModifiers?: EquipmentModifiers
 }
 
-/** Single entry for player HP loss (plan 150 §8) — active held-item defense
- *  resolves first, then worn-armor passive mitigation (plan items-player-029)
- *  on whatever damage remains, then HP is reduced; at 0 the player enters
- *  `downed` instead of `dead`. Physical hits register actual HP loss as
- *  injury (plan items-player-045) unless `registersPhysicalInjury` is false. */
+const REJECTED: PlayerDamageResult = { finalDamage: 0, defenseOutcome: 'none', enteredDowned: false, hit: null }
+
+/** Single entry for player HP loss (plan 150 §8). Physical contact: active held-item defense, then one
+ *  sampled anatomical location against typed armor via the shared `resolveIncomingHumanHit`, then HP;
+ *  the durable incoming ordinal is reserved exactly once per accepted positive contact (including a full
+ *  block), never for invalid/dead/downed/zero input. Actual HP loss registers as physical injury.
+ *  Non-physical damage reduces HP directly with no defense, armor, location or ordinal. At 0 the player
+ *  enters `downed` instead of `dead`.
+ *  @domain items-player */
 export function applyPlayerDamage(params: ApplyPlayerDamageParams): PlayerDamageResult {
-  const {
-    player,
-    amount,
-    attackerX,
-    attackerZ,
-    attackerKey = 'env',
-    heldTool,
-    defenseSkillValue,
-    playerYaw,
-    nowDays = 0,
-    registersPhysicalInjury = true,
-    onCombatHit,
-    equipmentModifiers,
-  } = params
+  const { player, damage, nowDays = 0 } = params
+  const rawAmount = damage.kind === 'physical' ? damage.hit.amount : damage.amount
 
-  if (player.isDowned() || player.health.dead || amount <= 0) {
-    return { finalDamage: 0, defenseOutcome: 'none', enteredDowned: false }
+  if (player.isDowned() || player.health.dead || !isAcceptedPhysicalContactAmount(rawAmount)) return REJECTED
+
+  let finalDamage = rawAmount
+  let defenseOutcome: DefenseOutcome = 'none'
+  let hitResult: HumanHitResult | null = null
+  if (damage.kind === 'physical') {
+    const defenseConfig = damage.heldTool ? ITEM_CATALOG[damage.heldTool].defense ?? null : null
+    const inArc = damage.attackerX != null && damage.attackerZ != null
+      ? isAttackFromDefensibleDirection(
+          player.mesh.position.x,
+          player.mesh.position.z,
+          damage.playerYaw,
+          damage.attackerX,
+          damage.attackerZ,
+        )
+      : false
+    hitResult = resolveIncomingHumanHit(damage.hit, {
+      defenderId: 'player',
+      incomingOrdinal: player.nextIncomingPhysicalHitOrdinal(),
+      defense: defenseConfig,
+      defenseSkill: damage.defenseSkillValue,
+      inArc,
+      protection: damage.protection,
+    })
+    player.recordIncomingHit(hitResult)
+    finalDamage = hitResult.finalDamage
+    defenseOutcome = hitResult.outcome
+    if (hitResult.attempted && hitResult.outcome !== 'none') {
+      awardSkillXp(player.skills, 'defense', SKILL_XP_AWARD.defenseBlock)
+    }
   }
 
-  const defenseConfig = heldTool ? ITEM_CATALOG[heldTool].defense ?? null : null
-  const inArc = attackerX != null && attackerZ != null
-    ? isAttackFromDefensibleDirection(
-        player.mesh.position.x,
-        player.mesh.position.z,
-        playerYaw,
-        attackerX,
-        attackerZ,
-      )
-    : false
-
-  const attempt = player.nextIncomingPhysicalHitOrdinal()
-  const resolved = resolveDefense(
-    amount,
-    defenseConfig,
-    defenseSkillValue,
-    'player',
-    attackerKey,
-    attempt,
-    inArc,
-  )
-
-  if (resolved.attempted && resolved.outcome !== 'none') {
-    awardSkillXp(player.skills, 'defense', SKILL_XP_AWARD.defenseBlock)
-  }
-
-  const finalDamage = resolved.finalDamage * (equipmentModifiers?.incomingDamageMultiplier ?? 1)
   const hpBefore = player.health.currentHp
   if (finalDamage > 0) {
     player.health.currentHp = Math.max(0, player.health.currentHp - finalDamage)
-    onCombatHit?.()
+    damage.onCombatHit?.()
     recordBloodHit(player.mesh.position.x, player.mesh.position.z, PLAYER_HEIGHT, finalDamage)
   }
   const actualHpLoss = hpBefore - player.health.currentHp
-  if (registersPhysicalInjury && actualHpLoss > 0) {
+  if (damage.kind === 'physical' && actualHpLoss > 0) {
     player.registerPhysicalDamage(actualHpLoss, nowDays)
   }
 
@@ -143,11 +147,7 @@ export function applyPlayerDamage(params: ApplyPlayerDamageParams): PlayerDamage
     enteredDowned = true
   }
 
-  return {
-    finalDamage,
-    defenseOutcome: resolved.outcome,
-    enteredDowned,
-  }
+  return { finalDamage, defenseOutcome, enteredDowned, hit: hitResult }
 }
 
 /** Test helper — exposes the roll used by `resolveDefense` for assertions. */
@@ -161,8 +161,6 @@ export function tickPlayerStarvationDamage(
   player: PlayerController,
   needs: PlayerNeeds,
   dt: number,
-  heldTool: ToolKind | null,
-  playerYaw: number,
   dayLengthSec: number,
   onCombatHit?: () => void,
   nowDays = 0,
@@ -173,12 +171,7 @@ export function tickPlayerStarvationDamage(
   if (perSec <= 0 || dt <= 0) return
   applyPlayerDamage({
     player,
-    amount: perSec * dt,
-    heldTool,
-    defenseSkillValue: player.skills.defense.value,
-    playerYaw,
+    damage: { kind: 'nonphysical', amount: perSec * dt, onCombatHit },
     nowDays,
-    registersPhysicalInjury: false,
-    onCombatHit,
   })
 }

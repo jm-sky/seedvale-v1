@@ -36,6 +36,7 @@ import type {
   CharacterReputationView,
   CharacterSettlementOption,
 } from '../store'
+import { DAMAGE_CHANNEL_LABELS } from '../../items/armorProtectionDisplay'
 import { EQUIPMENT_SLOT_LABEL } from '../../items/equipment'
 import { SKILL_LABEL, type SkillId } from '../../player/PlayerSkills'
 import { reputationPresentation } from '../reputationPresentation'
@@ -292,6 +293,8 @@ function formatEquipmentPercent(fraction: number): string {
   return percent > 0 ? `+${percent}%` : `−${Math.abs(percent)}%`
 }
 
+const PROTECTION_CHANNELS = ['cut', 'pierce', 'blunt'] as const
+
 function formatDamageReduction(fraction: number): string {
   return `${Math.round(fraction * 100)}%`
 }
@@ -514,12 +517,16 @@ function selectTab(id: CharacterTabId): void {
           </h2>
           <div class="grid gap-x-8 gap-y-4 px-2 sm:grid-cols-2">
             <dl class="flex flex-col gap-1 text-sm">
-              <div class="flex justify-between gap-2">
+              <div
+                v-for="channel in PROTECTION_CHANNELS"
+                :key="channel"
+                class="flex justify-between gap-2"
+              >
                 <dt class="text-neutral-400">
-                  Redukcja obrażeń
+                  Oczekiwana ochrona: {{ DAMAGE_CHANNEL_LABELS[channel] }}
                 </dt>
                 <dd class="tabular-nums">
-                  {{ formatDamageReduction(equipment.damageReduction) }}
+                  {{ formatDamageReduction(equipment.expectedProtection[channel]) }}
                 </dd>
               </div>
               <div class="flex justify-between gap-2">

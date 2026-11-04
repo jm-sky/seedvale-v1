@@ -18,6 +18,7 @@ function makeProjectile(overrides: Partial<Projectile> = {}): Projectile {
     maxDistance: 20,
     travelled: 0,
     damage: 10,
+    damageType: 'pierce',
     criticalChance: 0,
     criticalMultiplier: 1.5,
     attackKey: 'ranged:arrow',

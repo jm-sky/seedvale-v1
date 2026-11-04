@@ -56,10 +56,6 @@ export const EQUIPMENT_POSITIONS: readonly EquipmentPositionKey[] = EQUIPMENT_SL
  *  single shape every consumer (damage/melee/movement) reads. Neutral (`1`)
  *  means "no effect". Armor-only totals are clamped per proposal §5.2. */
 export type EquipmentModifiers = {
-  /** BRIDGE (items-player-065 S2 → removed by S3): combat still reads one
-   *  scalar until `resolveIncomingHumanHit` is wired. Derived from typed
-   *  `resist` with a fixed channel weighting — not a new mechanic. */
-  incomingDamageMultiplier: number
   meleeStaminaMultiplier: number
   meleeRecoveryMultiplier: number
   movementSpeedMultiplier: number
@@ -67,7 +63,6 @@ export type EquipmentModifiers = {
 }
 
 export const NEUTRAL_EQUIPMENT_MODIFIERS: EquipmentModifiers = {
-  incomingDamageMultiplier: 1,
   meleeStaminaMultiplier: 1,
   meleeRecoveryMultiplier: 1,
   movementSpeedMultiplier: 1,
@@ -276,10 +271,9 @@ function clamp(value: number, [min, max]: readonly [number, number]): number {
   return Math.min(max, Math.max(min, value))
 }
 
-/** BRIDGE (S2 → removed by S3): fixed channel weighting used for the legacy
- *  scalar `incomingDamageMultiplier` and for display/ranking scores. */
-export function armorProtectionScore(resist: Resistance): number {
-  return 0.3 * resist.cut + 0.45 * resist.pierce + 0.25 * resist.blunt
+/** Ranged draw stamina follows half of the armor melee-stamina penalty (proposal §5.2). */
+export function rangedStaminaMultiplierFor(meleeStaminaMultiplier: number): number {
+  return 1 + 0.5 * (meleeStaminaMultiplier - 1)
 }
 
 /**
@@ -294,7 +288,6 @@ export function buildProtectionSnapshot(pieces: readonly WornArmorPiece[]): Prot
   const bySlot = new Map<EquipmentSlot, { under: Resistance, outer: Resistance }>()
   const used = new Set<EquipmentPositionKey>()
   const kept: WornArmorPiece[] = []
-  let bridge = 1
   let meleeStamina = 1
   let meleeRecovery = 1
   let movement = 1
@@ -306,7 +299,6 @@ export function buildProtectionSnapshot(pieces: readonly WornArmorPiece[]): Prot
     const entry = bySlot.get(piece.slot) ?? { under: ZERO_RESISTANCE, outer: ZERO_RESISTANCE }
     entry[piece.layer] = piece.resist
     bySlot.set(piece.slot, entry)
-    bridge *= 1 - armorProtectionScore(piece.resist)
     meleeStamina *= piece.staminaCostMultiplier
     meleeRecovery *= piece.meleeRecoveryMultiplier
     movement *= piece.movementSpeedMultiplier
@@ -324,7 +316,6 @@ export function buildProtectionSnapshot(pieces: readonly WornArmorPiece[]): Prot
     restrictions: kept.length === 0
       ? NEUTRAL_EQUIPMENT_MODIFIERS
       : {
-          incomingDamageMultiplier: bridge,
           meleeStaminaMultiplier: clamp(meleeStamina, MELEE_STAMINA_CLAMP),
           meleeRecoveryMultiplier: clamp(meleeRecovery, MELEE_RECOVERY_CLAMP),
           movementSpeedMultiplier: clamp(movement, MOVEMENT_CLAMP),

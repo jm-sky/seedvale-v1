@@ -694,10 +694,9 @@ describe('NpcAgent.spatial Stage 0A — facing, defense, ranged fallback, death 
     let frontAttempted = false
     for (let i = 0; i < 200 && !frontAttempted; i++) {
       const result = npc.applyIncomingCombatDamage({
-        amount: 0.01,
+        hit: { amount: 0.01, damageType: 'pierce', source: 'fauna', attackerId: `front:${i}`, profile: 'low-bite', blockable: true },
         attackerX: 0,
         attackerZ: 2,
-        attackerKey: `front:${i}`,
       })
       if (result.attempted) frontAttempted = true
     }
@@ -706,10 +705,9 @@ describe('NpcAgent.spatial Stage 0A — facing, defense, ranged fallback, death 
 
     for (let i = 0; i < 40; i++) {
       const result = npc.applyIncomingCombatDamage({
-        amount: 0.01,
+        hit: { amount: 0.01, damageType: 'pierce', source: 'fauna', attackerId: `back:${i}`, profile: 'low-bite', blockable: true },
         attackerX: 0,
         attackerZ: -2,
-        attackerKey: `back:${i}`,
       })
       expect(result.attempted).toBe(false)
     }

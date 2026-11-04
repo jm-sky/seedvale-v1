@@ -1,6 +1,7 @@
 import type { ItemKind } from './items'
 import { effectiveInstanceWeight, resolveEffectiveArmorPiece } from './armorItemInstances'
-import { armorProtectionScore, EQUIPMENT_SLOT_LABEL } from './equipment'
+import { formatResistanceLabel } from './armorProtectionDisplay'
+import { EQUIPMENT_SLOT_LABEL } from './equipment'
 import {
   type FoodSourceSpecies,
   type FreshnessStage,
@@ -57,7 +58,8 @@ export type InventoryInstanceRow = {
   quality?: ArmorQuality
   qualityLabel?: string
   effectiveWeightKg?: number
-  protectionPercent?: number
+  /** Piece resistance per channel, e.g. `cięcie 35% · kłucie 45% · obuch 15%`. */
+  protectionLabel?: string
   staminaPenaltyLabel?: string
   movementPenaltyLabel?: string
   recoveryPenaltyLabel?: string
@@ -256,7 +258,7 @@ function buildArmorGroup(kind: ItemKind, instances: readonly ItemInstance[]): In
       quality: inst.quality,
       qualityLabel: ARMOR_QUALITY_LABELS[inst.quality],
       effectiveWeightKg: effective.weightKg,
-      protectionPercent: Math.round(armorProtectionScore(effective.resist) * 100),
+      protectionLabel: formatResistanceLabel(effective.resist),
       staminaPenaltyLabel: percentDeltaLabel(effective.staminaCostMultiplier),
       movementPenaltyLabel: percentDeltaLabel(effective.movementSpeedMultiplier),
       recoveryPenaltyLabel: percentDeltaLabel(effective.meleeRecoveryMultiplier),

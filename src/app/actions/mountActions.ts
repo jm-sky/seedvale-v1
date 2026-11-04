@@ -1,6 +1,7 @@
 import type { MountedPropertyIncident } from '../../items/foreignProperty'
+import { fallPhysicalHit } from '../../combat/physicalHits'
 import { ANIMAL_LABELS, type AnimalAgent } from '../../fauna/AnimalAgent'
-import { resolveEquipmentModifiers } from '../../items/equipment'
+import { resolveProtectionSnapshot } from '../../items/equipment'
 import { applyPlayerDamage } from '../../player/playerDamage'
 import { tickRidingStamina } from '../../player/PlayerNeeds'
 import { accumulateRidingUse, ridingSpeedMultiplier, ridingStaminaDrainMultiplier } from '../../player/PlayerSkills'
@@ -191,12 +192,15 @@ export function createMountActions(
     exit('fall')
     applyPlayerDamage({
       player,
-      amount: damage,
-      heldTool: ctx.heldTool.held(),
-      defenseSkillValue: player.skills.defense.value,
-      playerYaw: mouseLook.state.yaw,
       nowDays: dayNight.elapsedDays,
-      equipmentModifiers: resolveEquipmentModifiers(ctx.equipment, ctx.inventory),
+      damage: {
+        kind: 'physical',
+        hit: fallPhysicalHit(damage, animal.animalId),
+        protection: resolveProtectionSnapshot(ctx.equipment, ctx.inventory).protection,
+        heldTool: ctx.heldTool.held(),
+        defenseSkillValue: player.skills.defense.value,
+        playerYaw: mouseLook.state.yaw,
+      },
     })
   }
 

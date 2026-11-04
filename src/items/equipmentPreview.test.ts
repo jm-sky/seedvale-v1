@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import type { ArmorQuality } from './itemInstances'
-import { equipmentModifiersToCharacterView } from '../player/characterPresentation'
+import { equipmentSnapshotToCharacterView } from '../player/characterPresentation'
 import { createArmorInstance } from './armorItemInstances'
-import { createEquipmentState, resolveEquipmentModifiers } from './equipment'
+import { createEquipmentState, resolveProtectionSnapshot } from './equipment'
 import {
   type ArmorPreviewInstance,
   previewEquipLoadout,
@@ -62,7 +62,7 @@ describe('previewEquipLoadout', () => {
     expect(preview.alreadyEquipped).toBe(false)
     expect(preview.targetSlot).toBe('shoulders')
     expect(preview.replacesLabel).toBeNull()
-    expect(preview.proposed!.damageReduction).toBeGreaterThan(0)
+    expect(preview.proposed!.expectedProtection.cut).toBeGreaterThan(0)
     expect(preview.context).toContain('pusty')
   })
 
@@ -80,9 +80,11 @@ describe('previewEquipLoadout', () => {
     expect(preview.proposed).not.toBeNull()
 
     equipment.equip(ids[1]!, inventory)
-    const after = resolveEquipmentModifiers(equipment, inventory)
-    const afterView = equipmentModifiersToCharacterView(after)
-    expect(preview.proposed!.damageReduction).toBeCloseTo(afterView.damageReduction, 8)
+    const after = resolveProtectionSnapshot(equipment, inventory)
+    const afterView = equipmentSnapshotToCharacterView(after)
+    for (const channel of ['cut', 'pierce', 'blunt'] as const) {
+      expect(preview.proposed!.expectedProtection[channel]).toBeCloseTo(afterView.expectedProtection[channel], 8)
+    }
     expect(preview.proposed!.attackStaminaDelta).toBeCloseTo(afterView.attackStaminaDelta, 8)
     expect(preview.proposed!.movementSpeedDelta).toBeCloseTo(afterView.movementSpeedDelta, 8)
   })
@@ -125,7 +127,7 @@ describe('previewEquipLoadout', () => {
       snapshotFromInventory(a.inventory, a.ids),
       a.ids[1]!,
     )
-    expect(fromSnap.proposed!.damageReduction).toBeCloseTo(fromInv.proposed!.damageReduction, 8)
+    expect(fromSnap.proposed!.expectedProtection.pierce).toBeCloseTo(fromInv.proposed!.expectedProtection.pierce, 8)
     expect(fromSnap.delta!.gearWeightKg).toBeCloseTo(fromInv.delta!.gearWeightKg, 8)
     void inventory
     void ids

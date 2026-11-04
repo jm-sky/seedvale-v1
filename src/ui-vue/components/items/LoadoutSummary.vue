@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { LoadoutStatView } from '../../../items/equipmentPreview'
+import { DAMAGE_CHANNEL_LABELS } from '../../../items/armorProtectionDisplay'
 
 const props = defineProps<{
   current: LoadoutStatView
@@ -36,6 +37,8 @@ function formatDeltaNumber(value: number, unit = '', digits = 2): string {
 }
 
 const d = () => props.delta ?? null
+
+const CHANNELS = ['cut', 'pierce', 'blunt'] as const
 </script>
 
 <template>
@@ -46,18 +49,21 @@ const d = () => props.delta ?? null
     >
       {{ context }}
     </p>
-    <dl class="grid grid-cols-3 gap-2 text-sm sm:grid-cols-6">
-      <div>
+    <dl class="grid grid-cols-3 gap-2 text-sm sm:grid-cols-4">
+      <div
+        v-for="channel in CHANNELS"
+        :key="channel"
+      >
         <dt class="text-xs text-neutral-500">
-          Ochrona
+          Ochrona: {{ DAMAGE_CHANNEL_LABELS[channel] }}
         </dt>
         <dd class="tabular-nums">
-          {{ formatPercent(current.damageReduction) }}
+          {{ formatPercent(current.expectedProtection[channel]) }}
           <span
-            v-if="d() && d()!.damageReduction !== 0"
+            v-if="d() && d()!.expectedProtection[channel] !== 0"
             class="ml-1 text-xs"
-            :class="deltaClass(d()!.damageReduction, 'higher')"
-          >{{ formatDeltaPercent(d()!.damageReduction) }}</span>
+            :class="deltaClass(d()!.expectedProtection[channel], 'higher')"
+          >{{ formatDeltaPercent(d()!.expectedProtection[channel]) }}</span>
         </dd>
       </div>
       <div>

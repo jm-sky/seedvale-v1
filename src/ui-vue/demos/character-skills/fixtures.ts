@@ -133,7 +133,7 @@ export function characterCriticalFixture(): {
         },
       ],
       equipment: {
-        damageReduction: 0.12,
+        expectedProtection: { cut: 0.12, pierce: 0.1, blunt: 0.08 },
         attackStaminaDelta: 0.05,
         meleeRecoveryDelta: -0.04,
         movementSpeedDelta: -0.08,
@@ -192,7 +192,7 @@ export function characterHealthyFixture(): ReturnType<typeof characterCriticalFi
       ],
       conditions: [],
       equipment: {
-        damageReduction: 0,
+        expectedProtection: { cut: 0, pierce: 0, blunt: 0 },
         attackStaminaDelta: 0,
         meleeRecoveryDelta: 0,
         movementSpeedDelta: 0,

@@ -1,11 +1,14 @@
+import { readdirSync, readFileSync, statSync } from 'node:fs'
+import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
+import type { ItemKind } from '../items/items'
 import type { HumanProtection } from './hitLocation'
 import type { HumanHitContext, PhysicalHit } from './incomingHumanHit'
-import { AMMO_DAMAGE_TYPE, ARROW_DAMAGE_BONUS, ITEM_CATALOG, rangedConfigFromThrowable } from '../items/itemCatalog'
+import { AMMO_DAMAGE_TYPE, ARROW_DAMAGE_BONUS, ITEM_CATALOG, rangedConfigFromThrowable, resolveMeleeDamageType, resolveProjectileDamageType } from '../items/itemCatalog'
 import { composeLocalResistance, scaleArmorResistance } from './damageTypes'
 import { defenseBlockRoll } from './defenseResolver'
 import { expectedProtection, HIT_LOCATION_PROFILES, HIT_LOCATIONS, hitLocationRoll, sampleHitLocation } from './hitLocation'
-import { resolveIncomingHumanHit } from './incomingHumanHit'
+import { inertHumanHitResult, isAcceptedPhysicalContactAmount, resolveIncomingHumanHit } from './incomingHumanHit'
 
 const zero = { cut: 0, pierce: 0, blunt: 0 }
 const mail = { cut: .65, pierce: .45, blunt: .15 }
@@ -92,5 +95,59 @@ describe('catalog physical classification', () => {
     expect(AMMO_DAMAGE_TYPE).toMatchObject({ arrow: 'pierce', broadhead_arrow: 'cut', war_arrow: 'pierce', bolt: 'pierce', stone: 'blunt' })
     expect(ARROW_DAMAGE_BONUS).toEqual({ broadhead_arrow: 4, war_arrow: 8, sling_stone: 2, bolt_heavy: 6 })
     expect(rangedConfigFromThrowable('stone')?.damageType).toBe('blunt')
+  })
+})
+
+describe('065 S3 integration invariants', () => {
+  it('every active melee/ranged/ammo/throw pair resolves a damage channel; thrown synthetic configs keep their tag', () => {
+    for (const [kind, entry] of Object.entries(ITEM_CATALOG)) {
+      if (entry.melee) expect(() => resolveMeleeDamageType(entry.melee!), kind).not.toThrow()
+      if (entry.ranged) {
+        for (const ammo of entry.ranged.ammoKinds) expect(() => resolveProjectileDamageType(entry.ranged!, ammo), `${kind}/${ammo}`).not.toThrow()
+      }
+      if (entry.throwable) {
+        const config = rangedConfigFromThrowable(kind as ItemKind)!
+        expect(resolveProjectileDamageType(config, kind as ItemKind), kind).toBe(entry.throwable.damageType)
+      }
+    }
+  })
+
+  it('an untyped weapon/ammo pair fails loudly instead of defaulting a channel', () => {
+    expect(() => resolveProjectileDamageType({}, 'knife')).toThrow(RangeError)
+    expect(() => resolveMeleeDamageType({})).toThrow(RangeError)
+  })
+
+  it('a flying projectile keeps its fire-time damage channel when the catalog entry changes later', () => {
+    const config = { ...ITEM_CATALOG.short_bow.ranged! }
+    const snapshot = resolveProjectileDamageType(config, 'broadhead_arrow')
+    const projectile = { damageType: snapshot }
+    ;(config as { damageType?: string }).damageType = 'blunt'
+    expect(AMMO_DAMAGE_TYPE.broadhead_arrow).toBe('cut')
+    expect(projectile.damageType).toBe('cut')
+  })
+
+  it('accepted contact amounts are finite and positive only', () => {
+    for (const amount of [1, 0.001, 1e9]) expect(isAcceptedPhysicalContactAmount(amount)).toBe(true)
+    for (const amount of [0, -1, Number.NaN, Infinity, -Infinity]) expect(isAcceptedPhysicalContactAmount(amount)).toBe(false)
+  })
+
+  it('inert results carry no location, no defense and no damage', () => {
+    expect(inertHumanHitResult({ amount: Number.NaN, damageType: 'cut' })).toEqual({
+      outcome: 'none', attempted: false, location: null, damageType: 'cut', rawDamage: 0, postDefenseDamage: 0, armorPrevented: 0, finalDamage: 0,
+    })
+  })
+
+  it('no source file still reads a removed global-protection or private-counter symbol', () => {
+    const removed = /incomingDamageMultiplier|armorProtectionScore|nextDefenseAttempt|\bdefenseAttempt\b|equipmentModifiersToCharacterView|resolveIncomingNpcDamage/
+    const offenders: string[] = []
+    const walk = (dir: string): void => {
+      for (const entry of readdirSync(dir)) {
+        const path = join(dir, entry)
+        if (statSync(path).isDirectory()) walk(path)
+        else if (/\.(ts|vue)$/.test(entry) && !path.endsWith('incomingHumanHit.test.ts') && removed.test(readFileSync(path, 'utf8'))) offenders.push(path)
+      }
+    }
+    walk(join(process.cwd(), 'src'))
+    expect(offenders).toEqual([])
   })
 })

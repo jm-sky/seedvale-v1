@@ -1,4 +1,7 @@
 import type { CombatTargetHandle } from '../combat/combatIntent'
+import type { DamageType } from '../combat/damageTypes'
+import type { HitProfile } from '../combat/hitLocation'
+import type { PhysicalHit } from '../combat/incomingHumanHit'
 import type { ToolKind } from '../items/HeldTool'
 import type { AnimalAgent, AnimalKind } from './AnimalAgent'
 import { ITEM_CATALOG } from '../items/itemCatalog'
@@ -43,6 +46,36 @@ const HUMAN_DAMAGE: Partial<Record<AnimalKind, number>> = {
   wolf: 12,
   fox: 6,
   bear: 22,
+}
+
+/** Explicit species → human-hit profile/type map (proposal §4.1). Exhaustive over `AnimalKind`
+ *  so a new species fails type-check until classified; no model-height inference.
+ *  Only wolf/fox/bear currently bite humans (`HUMAN_DAMAGE`); the rest keep the small-biter
+ *  default so a future attacker still resolves deterministically (future kick/ram = blunt,
+ *  gore = pierce are not enabled here). */
+export const HUMAN_ATTACK_PROFILE: Readonly<Record<AnimalKind, { profile: HitProfile, damageType: DamageType }>> = {
+  wolf: { profile: 'low-bite', damageType: 'pierce' },
+  fox: { profile: 'low-bite', damageType: 'pierce' },
+  dog: { profile: 'low-bite', damageType: 'pierce' },
+  rat: { profile: 'low-bite', damageType: 'pierce' },
+  rabbit: { profile: 'low-bite', damageType: 'pierce' },
+  duck: { profile: 'low-bite', damageType: 'pierce' },
+  chicken: { profile: 'low-bite', damageType: 'pierce' },
+  rooster: { profile: 'low-bite', damageType: 'pierce' },
+  deer: { profile: 'low-bite', damageType: 'pierce' },
+  stag: { profile: 'low-bite', damageType: 'pierce' },
+  boar: { profile: 'low-bite', damageType: 'pierce' },
+  sheep: { profile: 'low-bite', damageType: 'pierce' },
+  cow: { profile: 'low-bite', damageType: 'pierce' },
+  horse: { profile: 'low-bite', damageType: 'pierce' },
+  donkey: { profile: 'low-bite', damageType: 'pierce' },
+  bear: { profile: 'large-maul', damageType: 'cut' },
+}
+
+/** Typed physical hit for one animal attack on a human; `animalId` is the stable attacker identity. */
+export function faunaPhysicalHit(species: AnimalKind, amount: number, animalId: string): PhysicalHit {
+  const { profile, damageType } = HUMAN_ATTACK_PROFILE[species]
+  return { amount, damageType, source: 'fauna', attackerId: animalId, profile, blockable: true }
 }
 
 /** Held tools that can hit an animal on `[E]` (sword > axe > pitchfork > knife = sickle > shovel).
@@ -107,6 +140,6 @@ export function combatTargetForAnimal(animal: AnimalAgent): CombatTargetHandle {
     ref: { id: animal.animalId, kind: 'animal' },
     getPosition: () => (animal.isDead() ? null : { x: animal.mesh.position.x, z: animal.mesh.position.z }),
     isAlive: () => !animal.isDead(),
-    applyDamage: (amount) => animal.takeDamage(amount, 'npc'),
+    applyDamage: (hit) => animal.takeDamage(hit.amount, 'npc'),
   }
 }

@@ -54,7 +54,7 @@ import { createKeyboard } from '../input/Keyboard'
 import { createMouseLook, exitGamePointerLock, requestGamePointerLock } from '../input/MouseLook'
 import { migrateArmorCountsToInstances } from '../items/armorItemInstances'
 import { CONTAINER_DEFS } from '../items/container'
-import { createEquipmentState, equippedBodyArmor, equippedInstanceId, equippedInstanceIds, resolveEquipmentModifiers } from '../items/equipment'
+import { createEquipmentState, equippedBodyArmor, equippedInstanceId, equippedInstanceIds, resolveProtectionSnapshot } from '../items/equipment'
 import {
   createForeignPropertyUse,
   resolveMerchantHorseForeignUse,
@@ -3498,7 +3498,7 @@ export async function createApp(
         result: detailedAttributes,
         skills: player.skills,
         conditions: player.temporaryConditions,
-        equipmentModifiers: resolveEquipmentModifiers(equipment, inventory),
+        equipmentSnapshot: resolveProtectionSnapshot(equipment, inventory),
         equipment,
         inventory,
       }),

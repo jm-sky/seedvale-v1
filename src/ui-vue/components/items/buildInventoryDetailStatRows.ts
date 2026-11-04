@@ -1,6 +1,6 @@
 import type { InventoryGroupView, InventoryInstanceRow } from '../../../items/inventoryView'
 import type { DetailStatRow } from './buildItemDetailPresentation'
-import { armorProtectionScore } from '../../../items/equipment'
+import { formatResistanceLabel, strongestChannelPercent } from '../../../items/armorProtectionDisplay'
 import { FOOD_SOURCE_SPECIES_LABEL, foodHungerRelief, FRESHNESS_STAGE_LABEL } from '../../../items/foodFreshness'
 import {
   type BookTier,
@@ -218,13 +218,13 @@ export function buildInventoryDetailStatRows(input: BuildInventoryDetailStatRows
     if (input.instance?.slotLabel) {
       main.push({ group: 'main', label: 'Slot', value: input.instance.slotLabel, icon: 'slot' })
     }
-    const protection = input.instance?.protectionPercent ?? Math.round(armorProtectionScore(armor.resist) * 100)
+    const protectionLabel = input.instance?.protectionLabel ?? formatResistanceLabel(armor.resist)
     main.push({
       group: 'main',
-      label: 'Ochrona',
-      value: `${protection}%`,
+      label: 'Odporność',
+      value: protectionLabel,
       icon: 'armor',
-      strength: catalogueStatStrength(protection, CEILINGS.armorProtectionPercent),
+      strength: catalogueStatStrength(strongestChannelPercent(armor.resist), CEILINGS.armorProtectionPercent),
     })
     extra.push({
       group: 'extra',

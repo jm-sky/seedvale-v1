@@ -112,7 +112,8 @@ describe('buildInventoryGroups — armor quality (plan items-player-040)', () =>
     const masterwork = group.instances.find((row) => row.quality === 'masterwork')!
     expect(poor.sellPrice).toBeLessThan(masterwork.sellPrice)
     expect(poor.effectiveWeightKg!).toBeGreaterThan(masterwork.effectiveWeightKg!)
-    expect(poor.protectionPercent!).toBeLessThan(masterwork.protectionPercent!)
+    expect(poor.protectionLabel).toBeDefined()
+    expect(poor.protectionLabel).not.toBe(masterwork.protectionLabel)
   })
 })
 

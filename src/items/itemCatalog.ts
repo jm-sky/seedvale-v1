@@ -2162,6 +2162,27 @@ export const AMMO_DAMAGE_TYPE: Partial<Record<ItemKind, DamageType>> = {
   bolt_blunt: 'blunt',
 }
 
+/** Damage channel of one shot: the ammo kind decides, the weapon's fixed type is the fallback
+ *  (synthetic thrown configs carry the throwable's tag). Throws for an untagged pair so an
+ *  unclassified weapon/ammo fails loudly instead of defaulting a channel.
+ *
+ * @domain items-player
+ */
+export function resolveProjectileDamageType(config: Pick<RangedConfig, 'damageType'>, ammoKind: ItemKind): DamageType {
+  const type = AMMO_DAMAGE_TYPE[ammoKind] ?? config.damageType
+  if (!type) throw new RangeError(`Untyped projectile damage for ammo "${ammoKind}"`)
+  return type
+}
+
+/** Weapon damage channel for one melee swing; throws for an untagged config (see S1 classification guard).
+ *
+ * @domain items-player
+ */
+export function resolveMeleeDamageType(config: Pick<MeleeConfig, 'damageType'>): DamageType {
+  if (!config.damageType) throw new RangeError('Untyped melee weapon damage')
+  return config.damageType
+}
+
 /** Ranged-capable held tools — mirrors `isMeleeTool` (`fauna/faunaCombat.ts`),
  *  a type predicate so callers narrow `held` before indexing `ITEM_CATALOG`. */
 export function isRangedTool<K extends ItemKind | null | undefined>(kind: K): kind is Extract<K, ItemKind> {

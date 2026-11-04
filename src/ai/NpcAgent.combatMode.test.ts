@@ -2,6 +2,7 @@
 import * as THREE from 'three'
 import { describe, expect, it } from 'vitest'
 import type { CombatIntent } from '../combat/combatIntent'
+import type { PhysicalHit } from '../combat/incomingHumanHit'
 import type { RangedAttackLifecycle } from '../combat/rangedLifecycle'
 import type { NpcMeleeWeapon, NpcRangedWeapon } from './npcCombat'
 import { ITEM_CATALOG } from '../items/itemCatalog'
@@ -165,6 +166,8 @@ describe('NpcAgent crossbow reload interruption (plan items-player-059 §5/§7)'
   })
 })
 
+const wolfHit = (amount: number): PhysicalHit => ({ amount, damageType: 'pierce', source: 'fauna', attackerId: 'wolf:1', profile: 'low-bite', blockable: true })
+
 describe('NpcAgent ready-weapon defense (plan npc-067 P2)', () => {
   it('does not block with a carried sword during ranged mode, then uses it after switching to melee', async () => {
     const npc = await createCombatTestNpc('guard-ready-defense', 'guard')
@@ -173,12 +176,12 @@ describe('NpcAgent ready-weapon defense (plan npc-067 P2)', () => {
     const target = stubTarget(() => 2)
     expect(npc.beginCombat({ target, mode: 'ranged' })).toBe(true)
 
-    const rangedDefense = npc.applyIncomingCombatDamage({ amount: 10, attackerX: 0, attackerZ: 2, attackerKey: 'wolf:1' })
+    const rangedDefense = npc.applyIncomingCombatDamage({ hit: wolfHit(10), attackerX: 0, attackerZ: 2 })
     expect(rangedDefense.attempted).toBe(false)
 
     const c = combatInternals(npc)
     expect(c.switchCombatMode('melee')).toBe(true)
-    const meleeDefense = npc.applyIncomingCombatDamage({ amount: 10, attackerX: 0, attackerZ: 2, attackerKey: 'wolf:1' })
+    const meleeDefense = npc.applyIncomingCombatDamage({ hit: wolfHit(10), attackerX: 0, attackerZ: 2 })
     expect(meleeDefense.attempted).toBe(true)
   })
 })
@@ -192,7 +195,7 @@ describe('NpcAgent exact-instance melee lifecycle (plan npc-067 P4)', () => {
       ref: { id: 'wear-target', kind: 'animal' },
       getPosition: () => ({ x: 1, z: 0 }),
       isAlive: () => true,
-      applyDamage: (damage) => damages.push(damage),
+      applyDamage: (hit) => damages.push(hit.amount),
     }
     expect(npc.beginCombat({ target, mode: 'melee' })).toBe(true)
     const c = combatInternals(npc)
@@ -217,7 +220,7 @@ describe('NpcAgent exact-instance melee lifecycle (plan npc-067 P4)', () => {
       ref: { id: 'removed-target', kind: 'animal' },
       getPosition: () => ({ x: 1, z: 0 }),
       isAlive: () => true,
-      applyDamage: (damage) => damages.push(damage),
+      applyDamage: (hit) => damages.push(hit.amount),
     }
     expect(npc.beginCombat({ target, mode: 'melee' })).toBe(true)
     const c = combatInternals(npc)
@@ -288,5 +291,40 @@ describe('NpcAgent improvised stone throw (plan items-player-059 §14)', () => {
     expect(c.combatImprovisedThrowUsed).toBe(false)
     expect(c.combatRangedAttack.state()).toBe('idle')
     expect(npc.personalInventory.count('stone')).toBe(stoneBefore)
+  })
+})
+
+describe('NpcAgent incoming physical hits (plan items-player-065 S3)', () => {
+  it('reserves exactly one durable ordinal per accepted positive contact and none for invalid input', async () => {
+    const npc = await createCombatTestNpc('incoming-ordinal', 'guard')
+    const ordinal = (): number => (npc as unknown as { npcState: { incomingPhysicalHitOrdinal: number } }).npcState.incomingPhysicalHitOrdinal
+    const before = ordinal()
+    for (const amount of [0, -4, Number.NaN, Number.POSITIVE_INFINITY]) {
+      const inert = npc.applyIncomingCombatDamage({ hit: wolfHit(amount), attackerX: 0, attackerZ: 2 })
+      expect(inert).toMatchObject({ finalDamage: 0, location: null, attempted: false })
+    }
+    expect(ordinal()).toBe(before)
+    npc.applyIncomingCombatDamage({ hit: wolfHit(0.01), attackerX: 0, attackerZ: 2 })
+    npc.applyIncomingCombatDamage({ hit: wolfHit(0.01), attackerX: 0, attackerZ: 2 })
+    expect(ordinal()).toBe(before + 2)
+    expect(npc.health.currentHp).toBeGreaterThan(0)
+  })
+
+  it('never reserves an ordinal once dead', async () => {
+    const npc = await createCombatTestNpc('incoming-dead', 'guard')
+    const ordinal = (): number => (npc as unknown as { npcState: { incomingPhysicalHitOrdinal: number } }).npcState.incomingPhysicalHitOrdinal
+    npc.takeDamage(npc.health.maxHp * 10)
+    const before = ordinal()
+    const result = npc.applyIncomingCombatDamage({ hit: wolfHit(5), attackerX: 0, attackerZ: 2 })
+    expect(result.finalDamage).toBe(0)
+    expect(ordinal()).toBe(before)
+  })
+
+  it('a location is sampled for an accepted unblocked contact and HP drops by exactly finalDamage', async () => {
+    const npc = await createCombatTestNpc('incoming-location', 'guard')
+    const hpBefore = npc.health.currentHp
+    const result = npc.applyIncomingCombatDamage({ hit: wolfHit(4), attackerX: 0, attackerZ: -2 })
+    expect(result.location).not.toBeNull()
+    expect(hpBefore - npc.health.currentHp).toBeCloseTo(result.finalDamage, 10)
   })
 })

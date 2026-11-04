@@ -1,4 +1,4 @@
-import { armorProtectionScore } from '../../../items/equipment'
+import { strongestChannelPercent } from '../../../items/armorProtectionDisplay'
 import { ITEM_CATALOG } from '../../../items/itemCatalog'
 import { ITEM_DEFS } from '../../../items/items'
 
@@ -15,7 +15,7 @@ export type InventoryDetailStatCeilings = {
   staminaCost: number
   meleeRange: number
   rangedRange: number
-  /** Max armor `damageReduction * 100` (Ochrona %). */
+  /** Max single-channel armor resistance percent (strength meter only). */
   armorProtectionPercent: number
   weightKg: number
 }
@@ -46,7 +46,7 @@ function computeInventoryDetailStatCeilings(): InventoryDetailStatCeilings {
       rangedRanges.push(entry.ranged.range)
     }
     if (entry.armor) {
-      protections.push(armorProtectionScore(entry.armor.resist) * 100)
+      protections.push(strongestChannelPercent(entry.armor.resist))
     }
   }
 

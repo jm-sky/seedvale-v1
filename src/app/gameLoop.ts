@@ -6,7 +6,7 @@ import type { ActiveSound, createWorldAudio } from '../audio/createWorldAudio'
 import type { createHouseDoorTracker } from '../audio/doorSounds'
 import type { createFireAudio } from '../audio/fireSounds'
 import type { WeatherAudio } from '../audio/weatherSounds'
-import type { ResolvedDefense } from '../combat/defenseResolver'
+import type { HumanHitResult } from '../combat/incomingHumanHit'
 import type { NpcInspectTrigger } from '../debug/npcInspectTrigger'
 import type { AnimalAgent } from '../fauna/AnimalAgent'
 import type { PreySpawner } from '../fauna/AnimalSpawner'
@@ -86,7 +86,7 @@ import { setCameraMeshHit } from '../debug/renderStateDebug'
 import { ANIMAL_LABELS, FAUNA_SHADOW_DISTANCE, selectDietFeedKind } from '../fauna/AnimalAgent'
 import { buildAttractionSnapshot } from '../fauna/animalAttraction'
 import { WOLF_DEN_ID } from '../fauna/AnimalSpawner'
-import { combatTargetForAnimal, isMeleeTool } from '../fauna/faunaCombat'
+import { combatTargetForAnimal, faunaPhysicalHit, isMeleeTool } from '../fauna/faunaCombat'
 import { countNearbyHumans } from '../fauna/predatorHumanDecision'
 import { isTouchDevice } from '../input/isTouchDevice'
 import { type createMouseLook, exitGamePointerLock } from '../input/MouseLook'
@@ -108,10 +108,10 @@ import { formatSettlementStorageLines, resolveInteraction } from '../interaction
 import { pickInteractableNearScreen } from '../interaction/skillAimPick'
 import { executeTargetedSkillAction, queryTargetedSkillAction, targetedSkillPrompt, type TargetedSkillQueryContext } from '../interaction/targetedSkillAction'
 import { treeInspectionCanYieldBranch } from '../interaction/treeInspection'
-import { resolveEquipmentModifiers } from '../items/equipment'
+import { rangedStaminaMultiplierFor, resolveEquipmentModifiers, resolveProtectionSnapshot } from '../items/equipment'
 import { getFoodBatchFreshnessStage } from '../items/foodFreshness'
 import { Inventory, inventoryFullToastText, inventoryFullToastTextForInstance, toSaveItemInstance } from '../items/Inventory'
-import { ammoDamageBonus, hasItemCapability, isRangedTool, ITEM_CATALOG, rangedConfigFromThrowable } from '../items/itemCatalog'
+import { ammoDamageBonus, hasItemCapability, isRangedTool, ITEM_CATALOG, rangedConfigFromThrowable, resolveProjectileDamageType } from '../items/itemCatalog'
 import { fuelValue, selectFuelKind } from '../items/itemFuel'
 import { isInstanceBackedKind, isWeaponItemInstance } from '../items/itemInstances'
 import { isLiquidContainerInstance, LIQUID_CONTAINER_KIND_LIST } from '../items/itemInstances'
@@ -258,7 +258,7 @@ function logNpcCombatHit(
   attackerZ: number,
   npc: NpcAgent,
   npcHpBefore: number,
-  resolved: ResolvedDefense,
+  resolved: HumanHitResult,
 ): void {
   if (!isNpcCombatDebugMode() || resolved.finalDamage <= 0) return
   const wolfInfo = bundle.fauna.getAgents().find((a) => a.animalId === attackerAnimalId)?.getDebugInfo()
@@ -1070,6 +1070,7 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
     // melee request and player combat-damage mitigation, so armor equip/
     // unequip never needs a second recomputation seam of its own.
     const equipmentModifiers = resolveEquipmentModifiers(equipment, inventory)
+    const rangedStaminaMultiplier = rangedStaminaMultiplierFor(equipmentModifiers.meleeStaminaMultiplier)
     if (rawDt > 0) {
       fpsEma = fpsEma * 0.9 + (1 / rawDt) * 0.1
       fpsHudAge += rawDt
@@ -1549,6 +1550,7 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
             maxDistance: config.range,
             travelled: 0,
             damage: config.damage + ammoDamageBonus(ammoKind, 'player'),
+            damageType: resolveProjectileDamageType(config, ammoKind),
             criticalChance: config.criticalChance ?? 0,
             criticalMultiplier: config.criticalMultiplier ?? MELEE_CRITICAL_MULTIPLIER,
             attackKey: `ranged:${ammoKind}`,
@@ -2356,9 +2358,9 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
               if (!hasAmmo) {
                 toast.show('Brak kamieni w ekwipunku.', 'error')
                 playerThrow.clear()
-              } else if (player.needs.stamina.current < config.staminaCost) {
+              } else if (player.needs.stamina.current < config.staminaCost * rangedStaminaMultiplier) {
                 toast.show('Brak siły na rzut.', 'error')
-              } else if (playerRanged.requestDraw(config, player.needs.stamina, player.needs.vigor, dayNight.dayLengthSec)) {
+              } else if (playerRanged.requestDraw(config, player.needs.stamina, player.needs.vigor, dayNight.dayLengthSec, rangedStaminaMultiplier)) {
                 playerCombat.enter()
                 playerCombat.noteActivity()
                 playerCombat.setSoftLock(livingTargetIdForAnimal(target.animal.animalId))
@@ -2429,9 +2431,9 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
                 // Shared by bow/crossbow/sling (plan items-player-059) —
                 // ammo-neutral wording rather than bow-specific "strzały".
                 toast.show('Brak amunicji w ekwipunku.', 'error')
-              } else if (player.needs.stamina.current < config.staminaCost) {
+              } else if (player.needs.stamina.current < config.staminaCost * rangedStaminaMultiplier) {
                 toast.show('Brak siły na strzał.', 'error')
-              } else if (playerRanged.requestDraw(config, player.needs.stamina, player.needs.vigor, dayNight.dayLengthSec)) {
+              } else if (playerRanged.requestDraw(config, player.needs.stamina, player.needs.vigor, dayNight.dayLengthSec, rangedStaminaMultiplier)) {
                 playerCombat.enter()
                 playerCombat.noteActivity()
                 playerCombat.setSoftLock(livingTargetIdForAnimal(target.animal.animalId))
@@ -2795,8 +2797,6 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
           player,
           player.needs,
           worldDt,
-          heldTool.held(),
-          mouseLook.state.yaw,
           dayNight.dayLengthSec,
           onPlayerDamaged,
           dayNight.elapsedDays,
@@ -2834,7 +2834,7 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
             result: detailedAttributes,
             skills: player.skills,
             conditions: player.temporaryConditions,
-            equipmentModifiers,
+            equipmentSnapshot: resolveProtectionSnapshot(equipment, inventory),
             equipment,
             inventory,
           })
@@ -2997,22 +2997,24 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
             villages,
             huntableLivestock,
             nearbyHumanCount,
-            (amount, attackerX, attackerZ, attackerAnimalId) => {
+            (amount, attackerX, attackerZ, attackerAnimalId, species) => {
               const dmg = applyPlayerDamage({
                 player,
-                amount,
-                attackerX,
-                attackerZ,
-                attackerKey: attackerAnimalId,
-                heldTool: heldTool.held(),
-                defenseSkillValue: player.skills.defense.value,
-                playerYaw: mouseLook.state.yaw,
                 nowDays: dayNight.elapsedDays,
-                equipmentModifiers,
-                onCombatHit: () => {
-                  playerCombat.enter()
-                  playerCombat.noteActivity()
-                  onPlayerDamaged()
+                damage: {
+                  kind: 'physical',
+                  hit: faunaPhysicalHit(species, amount, attackerAnimalId),
+                  attackerX,
+                  attackerZ,
+                  protection: resolveProtectionSnapshot(equipment, inventory).protection,
+                  heldTool: heldTool.held(),
+                  defenseSkillValue: player.skills.defense.value,
+                  playerYaw: mouseLook.state.yaw,
+                  onCombatHit: () => {
+                    playerCombat.enter()
+                    playerCombat.noteActivity()
+                    onPlayerDamaged()
+                  },
                 },
               })
               if (dmg.enteredDowned) {
@@ -3033,12 +3035,12 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
               movement: player.movementState(),
             },
             nearbyNpcCandidates,
-            (targetId, amount, attackerX, attackerZ, attackerAnimalId) => {
+            (targetId, amount, attackerX, attackerZ, attackerAnimalId, species) => {
               for (const settlement of loaded) {
                 const target = settlement.npcs.find((npc) => npc.id === targetId)
                 if (!target) continue
                 const npcHpBefore = target.health.currentHp
-                const resolved = target.applyIncomingCombatDamage({ amount, attackerX, attackerZ, attackerKey: attackerAnimalId })
+                const resolved = target.applyIncomingCombatDamage({ hit: faunaPhysicalHit(species, amount, attackerAnimalId), attackerX, attackerZ })
                 logNpcCombatHit(bundle, dayNight, attackerAnimalId, attackerX, attackerZ, target, npcHpBefore, resolved)
                 // Impact/death sound for an animal biting an NPC (plan
                 // npc-009) — the NPC's own hurt/death *animation* is target-

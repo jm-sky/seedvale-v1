@@ -1,21 +1,22 @@
+import type { Resistance } from '../combat/damageTypes'
 import type { EquipmentPositionKey } from './equipmentTypes'
 import type { Inventory } from './Inventory'
-import { equipmentModifiersToCharacterView } from '../player/characterPresentation'
+import { equipmentSnapshotToCharacterView } from '../player/characterPresentation'
 import {
   type EffectiveArmorPiece,
   resolveEffectiveArmorPiece,
 } from './armorItemInstances'
+import { ZERO_RESISTANCE_VIEW } from './armorProtectionDisplay'
 import {
   armorPositionOf,
   buildProtectionSnapshot,
   createEquipmentState,
   EQUIPMENT_POSITIONS,
   EQUIPMENT_SLOT_LABEL,
-  type EquipmentModifiers,
   type EquipmentSlot,
   equippedArmorInstances,
-  NEUTRAL_EQUIPMENT_MODIFIERS,
-  resolveEquipmentModifiers,
+  type ProtectionSnapshot,
+  resolveProtectionSnapshot,
   type SavePlayerEquipment,
   type WornArmorPiece,
 } from './equipment'
@@ -30,7 +31,8 @@ import { ITEM_DEFS, type ItemKind } from './items'
 
 /** UI/loadout totals derived from the same resolver Character Screen uses. */
 export type LoadoutStatView = {
-  damageReduction: number
+  /** Reference-profile expected protection per channel (UI-only); the delta view holds signed differences. */
+  expectedProtection: Resistance
   attackStaminaDelta: number
   meleeRecoveryDelta: number
   movementSpeedDelta: number
@@ -60,7 +62,7 @@ export type ArmorPreviewInstance = {
 
 export function emptyLoadoutStats(): LoadoutStatView {
   return {
-    damageReduction: 0,
+    expectedProtection: ZERO_RESISTANCE_VIEW,
     attackStaminaDelta: 0,
     meleeRecoveryDelta: 0,
     movementSpeedDelta: 0,
@@ -69,16 +71,20 @@ export function emptyLoadoutStats(): LoadoutStatView {
   }
 }
 
-function modifiersToView(mods: EquipmentModifiers, gearWeightKg: number): LoadoutStatView {
+function snapshotToView(snapshot: ProtectionSnapshot, gearWeightKg: number): LoadoutStatView {
   return {
-    ...equipmentModifiersToCharacterView(mods),
+    ...equipmentSnapshotToCharacterView(snapshot),
     gearWeightKg,
   }
 }
 
 function deltaView(proposed: LoadoutStatView, current: LoadoutStatView): LoadoutStatView {
   return {
-    damageReduction: proposed.damageReduction - current.damageReduction,
+    expectedProtection: {
+      cut: proposed.expectedProtection.cut - current.expectedProtection.cut,
+      pierce: proposed.expectedProtection.pierce - current.expectedProtection.pierce,
+      blunt: proposed.expectedProtection.blunt - current.expectedProtection.blunt,
+    },
     attackStaminaDelta: proposed.attackStaminaDelta - current.attackStaminaDelta,
     meleeRecoveryDelta: proposed.meleeRecoveryDelta - current.meleeRecoveryDelta,
     movementSpeedDelta: proposed.movementSpeedDelta - current.movementSpeedDelta,
@@ -107,7 +113,7 @@ function pieceForSnapshot(row: ArmorPreviewInstance): EffectiveArmorPiece | null
 function loadoutFromSlots(
   slots: Partial<Record<EquipmentPositionKey, string>>,
   byId: ReadonlyMap<string, ArmorPreviewInstance>,
-): { mods: EquipmentModifiers, weightKg: number, labels: Partial<Record<EquipmentPositionKey, string>> } {
+): { snapshot: ProtectionSnapshot, weightKg: number, labels: Partial<Record<EquipmentPositionKey, string>> } {
   const pieces: WornArmorPiece[] = []
   const labels: Partial<Record<EquipmentPositionKey, string>> = {}
   let weightKg = 0
@@ -125,7 +131,7 @@ function loadoutFromSlots(
     labels[position] = row.label
   }
   return {
-    mods: pieces.length === 0 ? NEUTRAL_EQUIPMENT_MODIFIERS : buildProtectionSnapshot(pieces).restrictions,
+    snapshot: buildProtectionSnapshot(pieces),
     weightKg,
     labels,
   }
@@ -144,8 +150,8 @@ export function previewEquipLoadout(
 ): EquipPreviewResult {
   const slotsSnapshot: SavePlayerEquipment = { ...currentSlots }
   const currentEq = createEquipmentState(inventory, slotsSnapshot)
-  const current = modifiersToView(
-    resolveEquipmentModifiers(currentEq, inventory),
+  const current = snapshotToView(
+    resolveProtectionSnapshot(currentEq, inventory),
     gearWeightKg(currentEq, inventory),
   )
 
@@ -204,8 +210,8 @@ export function previewEquipLoadout(
   nextSlots[targetPosition] = candidate.id
 
   const previewEq = createEquipmentState(inventory, nextSlots)
-  const proposed = modifiersToView(
-    resolveEquipmentModifiers(previewEq, inventory),
+  const proposed = snapshotToView(
+    resolveProtectionSnapshot(previewEq, inventory),
     gearWeightKg(previewEq, inventory),
   )
 
@@ -236,7 +242,7 @@ export function previewEquipLoadoutFromSnapshot(
 ): EquipPreviewResult {
   const byId = new Map(instances.map((row) => [row.id, row]))
   const currentPack = loadoutFromSlots(equippedSlots, byId)
-  const current = modifiersToView(currentPack.mods, currentPack.weightKg)
+  const current = snapshotToView(currentPack.snapshot, currentPack.weightKg)
 
   if (!candidateInstanceId) {
     return {
@@ -289,7 +295,7 @@ export function previewEquipLoadoutFromSnapshot(
   nextSlots[targetPosition] = candidate.id
 
   const proposedPack = loadoutFromSlots(nextSlots, byId)
-  const proposed = modifiersToView(proposedPack.mods, proposedPack.weightKg)
+  const proposed = snapshotToView(proposedPack.snapshot, proposedPack.weightKg)
 
   return {
     current,

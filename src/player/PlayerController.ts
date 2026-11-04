@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import { CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js'
 import type { PlayAt } from '../audio/createWorldAudio'
 import type { CharacterAppearance } from '../characters/characterTypes'
+import type { HumanHitResult } from '../combat/incomingHumanHit'
 import type { CaveGroundQueryDebug, PlayerGroundTraceTick } from '../debug/playerGroundTrace'
 import type {
   MovementHeightfieldSnapshot,
@@ -405,6 +406,8 @@ export class PlayerController {
    *  feeds deterministic defense/location rolls. Saved via `saveState`, restored by
    *  `restoreIncomingPhysicalHitOrdinal`. */
   private incomingPhysicalHitOrdinal = 0
+  /** Transient committed result of the latest physical hit (feedback seam, not saved). */
+  private lastIncomingHitRecord: { sequence: number, result: HumanHitResult } | null = null
   /** Vertical speed (m/s), +up. Zeroed/`grounded=true` on teleport (`snapToGround`)
    *  and while underwater — jumping/falling only apply on dry land (plan 097 §2.3). */
   private verticalVelocity = 0
@@ -1312,6 +1315,19 @@ export class PlayerController {
     return this.incomingPhysicalHitOrdinal
   }
 
+  /** Records the committed result of the latest accepted physical hit (transient feedback seam
+   *  for the hit-feedback UI; never persisted). Called only by `applyPlayerDamage`.
+   *  @domain items-player */
+  recordIncomingHit(result: HumanHitResult): void {
+    this.lastIncomingHitRecord = { sequence: this.incomingPhysicalHitOrdinal, result }
+  }
+
+  /** Latest committed physical hit, with the durable ordinal that produced it — `null` until one lands
+   *  (or after a new game). Transient: a loaded save starts empty. */
+  getLastIncomingHit(): { readonly sequence: number, readonly result: Readonly<HumanHitResult> } | null {
+    return this.lastIncomingHitRecord
+  }
+
   /** Current durable ordinal (for save export). */
   getIncomingPhysicalHitOrdinal(): number {
     return this.incomingPhysicalHitOrdinal
@@ -1468,6 +1484,7 @@ export class PlayerController {
     this.swimming = false
     this.footstepAccum = 0
     this.incomingPhysicalHitOrdinal = 0 // new game; load restores explicitly
+    this.lastIncomingHitRecord = null
     this.playAction(this.idleAction)
   }
 

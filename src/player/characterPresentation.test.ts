@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import type { AttributeModifierContribution } from '../shared/effectivePhysicalAttributes'
+import { expectedProtection } from '../combat/hitLocation'
 import { createArmorInstance } from '../items/armorItemInstances'
-import { createEquipmentState, resolveEquipmentModifiers } from '../items/equipment'
+import { buildProtectionSnapshot, createEquipmentState, resolveProtectionSnapshot } from '../items/equipment'
 import { Inventory } from '../items/Inventory'
 import { resolveEffectivePhysicalAttributesDetailed } from '../shared/effectivePhysicalAttributes'
 import {
@@ -12,7 +13,7 @@ import {
   aggregateAttributeModifierBadges,
   buildCharacterEquipmentView,
   buildCharacterPresentation,
-  equipmentModifiersToCharacterView,
+  equipmentSnapshotToCharacterView,
   NEUTRAL_CHARACTER_EQUIPMENT_VIEW,
   toDisplayAttribute,
 } from './characterPresentation'
@@ -52,7 +53,7 @@ describe('aggregateAttributeModifierBadges (plan ui-input-013)', () => {
 })
 
 function emptyEquipmentContext(): {
-  equipmentModifiers: ReturnType<typeof resolveEquipmentModifiers>
+  equipmentSnapshot: ReturnType<typeof resolveProtectionSnapshot>
   equipment: ReturnType<typeof createEquipmentState>
   inventory: Inventory
 } {
@@ -61,7 +62,7 @@ function emptyEquipmentContext(): {
   return {
     inventory,
     equipment,
-    equipmentModifiers: resolveEquipmentModifiers(equipment, inventory),
+    equipmentSnapshot: resolveProtectionSnapshot(equipment, inventory),
   }
 }
 
@@ -70,13 +71,13 @@ describe('buildCharacterPresentation (plan ui-input-013)', () => {
     const skills = createPlayerSkills()
     const conditions = createEmptyTemporaryConditions()
     const result = resolveEffectivePhysicalAttributesDetailed(PLAYER_STARTING_ATTRIBUTES, conditions, 0)
-    const { equipment, equipmentModifiers, inventory } = emptyEquipmentContext()
+    const { equipment, equipmentSnapshot, inventory } = emptyEquipmentContext()
     const view = buildCharacterPresentation({
       base: PLAYER_STARTING_ATTRIBUTES,
       result,
       skills,
       conditions,
-      equipmentModifiers,
+      equipmentSnapshot,
       equipment,
       inventory,
     })
@@ -94,13 +95,13 @@ describe('buildCharacterPresentation (plan ui-input-013)', () => {
     const conditions = createEmptyTemporaryConditions()
     applyPoisoningExposure(conditions, 0)
     const result = resolveEffectivePhysicalAttributesDetailed(PLAYER_STARTING_ATTRIBUTES, conditions, 0)
-    const { equipment, equipmentModifiers, inventory } = emptyEquipmentContext()
+    const { equipment, equipmentSnapshot, inventory } = emptyEquipmentContext()
     const view = buildCharacterPresentation({
       base: PLAYER_STARTING_ATTRIBUTES,
       result,
       skills,
       conditions,
-      equipmentModifiers,
+      equipmentSnapshot,
       equipment,
       inventory,
     })
@@ -121,14 +122,8 @@ describe('buildCharacterPresentation (plan ui-input-013)', () => {
 
 describe('character equipment presentation (plan items-player-031)', () => {
   it('maps neutral modifiers to zero deltas', () => {
-    expect(equipmentModifiersToCharacterView({
-      incomingDamageMultiplier: 1,
-      meleeStaminaMultiplier: 1,
-      meleeRecoveryMultiplier: 1,
-      movementSpeedMultiplier: 1,
-      sprintStaminaMultiplier: 1,
-    })).toEqual({
-      damageReduction: 0,
+    expect(equipmentSnapshotToCharacterView(buildProtectionSnapshot([]))).toEqual({
+      expectedProtection: { cut: 0, pierce: 0, blunt: 0 },
       attackStaminaDelta: 0,
       meleeRecoveryDelta: 0,
       movementSpeedDelta: 0,
@@ -142,9 +137,10 @@ describe('character equipment presentation (plan items-player-031)', () => {
     expect(inventory.addInstance(inst)).toBe(true)
     const equipment = createEquipmentState(inventory)
     equipment.equip(inst.id, inventory)
-    const modifiers = resolveEquipmentModifiers(equipment, inventory)
-    const view = buildCharacterEquipmentView(modifiers, equipment, inventory)
-    expect(view.damageReduction).toBe(1 - modifiers.incomingDamageMultiplier)
+    const snapshot = resolveProtectionSnapshot(equipment, inventory)
+    const view = buildCharacterEquipmentView(snapshot, equipment, inventory)
+    expect(view.expectedProtection).toEqual(expectedProtection(snapshot.protection))
+    expect(view.expectedProtection.pierce).toBeGreaterThan(0)
     expect(view.slots.find((row) => row.slot === 'body')).toEqual({
       slot: 'body',
       itemLabel: 'kolczuga',

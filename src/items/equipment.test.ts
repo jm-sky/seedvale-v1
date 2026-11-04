@@ -188,6 +188,12 @@ describe('equippedBodyArmor / equippedInstanceId (no-ghost-equipment invariant)'
   })
 })
 
+/** Sum of every channel at every location — a monotone "more protection" measure for tests only. */
+function protectionTotal(equipment: ReturnType<typeof createEquipmentState>, inventory: Inventory): number {
+  const { protection } = resolveProtectionSnapshot(equipment, inventory)
+  return Object.values(protection).reduce((sum, r) => sum + r.cut + r.pierce + r.blunt, 0)
+}
+
 describe('resolveEquipmentModifiers', () => {
   it('is all-neutral with nothing equipped', () => {
     const inventory = new Inventory({})
@@ -200,8 +206,7 @@ describe('resolveEquipmentModifiers', () => {
     const equipment = createEquipmentState(inventory)
     equipment.equip(ids[0]!, inventory)
     const modifiers = resolveEquipmentModifiers(equipment, inventory)
-    expect(modifiers.incomingDamageMultiplier).toBeLessThan(1)
-    expect(modifiers.incomingDamageMultiplier).toBeGreaterThan(0)
+    expect(protectionTotal(equipment, inventory)).toBeGreaterThan(0)
     expect(modifiers.meleeStaminaMultiplier).toBeGreaterThan(1)
     expect(modifiers.meleeRecoveryMultiplier).toBeGreaterThan(1)
     expect(modifiers.movementSpeedMultiplier).toBeLessThan(1)
@@ -227,7 +232,7 @@ describe('resolveEquipmentModifiers', () => {
     chainmailEquipment.equip(chainmail.ids[0]!, chainmail.inventory)
     const chainmailMods = resolveEquipmentModifiers(chainmailEquipment, chainmail.inventory)
 
-    expect(chainmailMods.incomingDamageMultiplier).toBeLessThan(leatherMods.incomingDamageMultiplier)
+    expect(protectionTotal(chainmailEquipment, chainmail.inventory)).toBeGreaterThan(protectionTotal(leatherEquipment, leather.inventory))
     expect(chainmailMods.movementSpeedMultiplier).toBeLessThan(leatherMods.movementSpeedMultiplier)
     expect(chainmailMods.meleeStaminaMultiplier).toBeGreaterThan(leatherMods.meleeStaminaMultiplier)
   })
@@ -249,7 +254,7 @@ describe('resolveEquipmentModifiers', () => {
     mwEq.equip(masterwork.ids[0]!, masterwork.inventory)
     const c = resolveEquipmentModifiers(commonEq, common.inventory)
     const m = resolveEquipmentModifiers(mwEq, masterwork.inventory)
-    expect(m.incomingDamageMultiplier).toBeLessThan(c.incomingDamageMultiplier)
+    expect(protectionTotal(mwEq, masterwork.inventory)).toBeGreaterThan(protectionTotal(commonEq, common.inventory))
     expect(m.meleeStaminaMultiplier).toBeLessThan(c.meleeStaminaMultiplier)
     expect(m.movementSpeedMultiplier).toBeGreaterThan(c.movementSpeedMultiplier)
     expect(masterwork.inventory.totalWeight()).toBeLessThan(common.inventory.totalWeight())
@@ -263,7 +268,7 @@ describe('resolveEquipmentModifiers', () => {
       state.equip(equipped.ids[0]!, equipped.inventory)
       return {
         quality,
-        mods: resolveEquipmentModifiers(state, equipped.inventory),
+        protection: protectionTotal(state, equipped.inventory),
         weight: equipped.inventory.totalWeight(),
         piece: resolveEffectiveArmorPiece(
           ITEM_CATALOG.chainmail.armor!,
@@ -275,7 +280,7 @@ describe('resolveEquipmentModifiers', () => {
     for (let i = 0; i < pieces.length - 1; i++) {
       const lower = pieces[i]!
       const higher = pieces[i + 1]!
-      expect(lower.mods.incomingDamageMultiplier).toBeGreaterThan(higher.mods.incomingDamageMultiplier)
+      expect(lower.protection).toBeLessThan(higher.protection)
       expect(lower.weight).toBeGreaterThan(higher.weight)
       expect(lower.piece.staminaCostMultiplier).toBeGreaterThan(higher.piece.staminaCostMultiplier)
       expect(lower.piece.movementSpeedMultiplier).toBeLessThan(higher.piece.movementSpeedMultiplier)
@@ -351,7 +356,7 @@ describe('resolveEquipmentModifiers', () => {
     mwEq.equip(masterwork.ids[0]!, masterwork.inventory)
     const c = resolveEquipmentModifiers(commonEq, common.inventory)
     const m = resolveEquipmentModifiers(mwEq, masterwork.inventory)
-    expect(m.incomingDamageMultiplier).toBeLessThan(c.incomingDamageMultiplier)
+    expect(protectionTotal(mwEq, masterwork.inventory)).toBeGreaterThan(protectionTotal(commonEq, common.inventory))
     expect(m.meleeStaminaMultiplier).toBeLessThan(c.meleeStaminaMultiplier)
     expect(masterwork.inventory.totalWeight()).toBeLessThan(common.inventory.totalWeight())
   })

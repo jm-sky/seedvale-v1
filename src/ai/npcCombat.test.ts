@@ -1,12 +1,13 @@
 import { describe, expect, it } from 'vitest'
-import type { CombatTargetHandle } from '../combat/combatIntent'
+import type { CombatTargetHandle, CombatTargetHit } from '../combat/combatIntent'
 import type { Projectile } from '../combat/projectile'
 import type { ItemKind } from '../items/items'
 import type { Role } from './characters'
 import { MELEE_CRITICAL_MULTIPLIER } from '../combat/criticalHit'
+import { type PhysicalHit, resolveIncomingHumanHit } from '../combat/incomingHumanHit'
 import { MELEE_STRENGTH_NEUTRAL } from '../combat/meleeStrength'
 import { createArmorInstance } from '../items/armorItemInstances'
-import { NEUTRAL_EQUIPMENT_MODIFIERS, resolveEquipmentModifiers } from '../items/equipment'
+import { NEUTRAL_EQUIPMENT_MODIFIERS, resolveEquipmentModifiers, resolveProtectionSnapshot } from '../items/equipment'
 import { Inventory } from '../items/Inventory'
 import { ITEM_CATALOG } from '../items/itemCatalog'
 import { isWeaponMaintenanceKind } from '../items/itemInstances'
@@ -17,9 +18,10 @@ import {
   applyNpcMeleeWeaponWear,
   applyNpcRangedHit,
   chooseCombatMode,
+  npcArmorSelectionScore,
   npcMeleeWeaponFamily,
   npcRangedWeaponFamily,
-  resolveIncomingNpcDamage,
+  resolveIncomingNpcHit,
   resolveNpcAmmo,
   resolveNpcAmmoKind,
   resolveNpcArmorEquipment,
@@ -44,14 +46,16 @@ function addMeleeWeapon(inventory: Inventory, kind: ItemKind): void {
   else inventory.add(kind, 1)
 }
 
-function fakeTarget(overrides: Partial<CombatTargetHandle> = {}): CombatTargetHandle & { damages: number[] } {
+function fakeTarget(overrides: Partial<CombatTargetHandle> = {}): CombatTargetHandle & { damages: number[], hits: CombatTargetHit[] } {
   const damages: number[] = []
+  const hits: CombatTargetHit[] = []
   return {
     ref: { id: 'target', kind: 'animal' },
     getPosition: () => ({ x: 0, z: 0 }),
     isAlive: () => true,
-    applyDamage: (amount) => damages.push(amount),
+    applyDamage: (hit) => { hits.push(hit); damages.push(hit.amount) },
     damages,
+    hits,
     ...overrides,
   }
 }
@@ -397,6 +401,7 @@ function fakeProjectile(overrides: Partial<Projectile> = {}): Projectile {
     maxDistance: 10,
     travelled: 0,
     damage: SHORT_BOW.damage,
+    damageType: 'pierce',
     criticalChance: 0,
     criticalMultiplier: 1.6,
     attackKey: 'ranged:arrow',
@@ -405,6 +410,21 @@ function fakeProjectile(overrides: Partial<Projectile> = {}): Projectile {
     ...overrides,
   }
 }
+
+describe('typed outgoing hits', () => {
+  it('melee hits carry the weapon damageType, amount and attacker id', () => {
+    const target = fakeTarget()
+    const result = applyNpcMeleeHit(target, KNIFE, MELEE_STRENGTH_NEUTRAL, 'npc:1', 'melee:target', 1)
+    expect(target.hits).toEqual([{ amount: result.damage, damageType: KNIFE.damageType, source: 'melee', attackerId: 'npc:1' }])
+  })
+
+  it('ranged hits carry the projectile snapshot, not any later config', () => {
+    const target = fakeTarget()
+    const projectile = fakeProjectile({ damageType: 'blunt' })
+    applyNpcRangedHit(target, projectile)
+    expect(target.hits[0]).toMatchObject({ damageType: 'blunt', source: 'projectile', attackerId: 'npc:1' })
+  })
+})
 
 describe('applyNpcRangedHit', () => {
   it('applies damage to the target exactly once', () => {
@@ -429,84 +449,115 @@ describe('resolveNpcArmorEquipment', () => {
     expect(resolveEquipmentModifiers(equipment, inventory)).toEqual(NEUTRAL_EQUIPMENT_MODIFIERS)
   })
 
-  it('picks up a single worn armor instance and reduces incoming damage', () => {
+  it('picks up a single worn armor instance with typed local protection', () => {
     const inventory = new Inventory(undefined, 20)
     inventory.addInstance(createArmorInstance('leather_armor', 'common'))
-    const equipment = resolveNpcArmorEquipment(inventory)
-    const modifiers = resolveEquipmentModifiers(equipment, inventory)
-    expect(modifiers.incomingDamageMultiplier).toBeLessThan(1)
+    const snapshot = resolveProtectionSnapshot(resolveNpcArmorEquipment(inventory), inventory)
+    expect(snapshot.protection.body.cut).toBeGreaterThan(0)
+    expect(snapshot.protection.head).toEqual({ cut: 0, pierce: 0, blunt: 0 })
   })
 
-  it('chainmail reduces damage more than leather at the same quality', () => {
+  it('chainmail protects the body more than leather at the same quality (typed score)', () => {
     const leatherInventory = new Inventory(undefined, 20)
     leatherInventory.addInstance(createArmorInstance('leather_armor', 'common'))
     const chainmailInventory = new Inventory(undefined, 20)
     chainmailInventory.addInstance(createArmorInstance('chainmail', 'common'))
-    const leatherModifiers = resolveEquipmentModifiers(resolveNpcArmorEquipment(leatherInventory), leatherInventory)
-    const chainmailModifiers = resolveEquipmentModifiers(resolveNpcArmorEquipment(chainmailInventory), chainmailInventory)
-    expect(chainmailModifiers.incomingDamageMultiplier).toBeLessThan(leatherModifiers.incomingDamageMultiplier)
+    const leather = resolveProtectionSnapshot(resolveNpcArmorEquipment(leatherInventory), leatherInventory).protection.body
+    const chainmail = resolveProtectionSnapshot(resolveNpcArmorEquipment(chainmailInventory), chainmailInventory).protection.body
+    expect(npcArmorSelectionScore(chainmail)).toBeGreaterThan(npcArmorSelectionScore(leather))
   })
 
-  it('picks the best of two owned pieces for the same slot', () => {
+  it('selection score is .30 cut + .45 pierce + .25 blunt', () => {
+    expect(npcArmorSelectionScore({ cut: 1, pierce: 0, blunt: 0 })).toBeCloseTo(0.3, 12)
+    expect(npcArmorSelectionScore({ cut: 0, pierce: 1, blunt: 0 })).toBeCloseTo(0.45, 12)
+    expect(npcArmorSelectionScore({ cut: 0, pierce: 0, blunt: 1 })).toBeCloseTo(0.25, 12)
+  })
+
+  it('picks the best of two owned pieces for the same position without stacking the weaker', () => {
     const inventory = new Inventory(undefined, 20)
     inventory.addInstance(createArmorInstance('leather_armor', 'common'))
     inventory.addInstance(createArmorInstance('chainmail', 'common'))
     const soloChainmail = new Inventory(undefined, 20)
     soloChainmail.addInstance(createArmorInstance('chainmail', 'common'))
-    const bothModifiers = resolveEquipmentModifiers(resolveNpcArmorEquipment(inventory), inventory)
-    const chainmailOnlyModifiers = resolveEquipmentModifiers(resolveNpcArmorEquipment(soloChainmail), soloChainmail)
-    // Same body slot, one piece wins — owning the weaker leather piece too
-    // must not stack additional reduction on top of chainmail.
-    expect(bothModifiers.incomingDamageMultiplier).toBeCloseTo(chainmailOnlyModifiers.incomingDamageMultiplier, 10)
+    const both = resolveProtectionSnapshot(resolveNpcArmorEquipment(inventory), inventory)
+    const solo = resolveProtectionSnapshot(resolveNpcArmorEquipment(soloChainmail), soloChainmail)
+    expect(both.protection.body).toEqual(solo.protection.body)
+    expect(both.restrictions).toEqual(solo.restrictions)
   })
 
-  it('composes multiple slots (body + arms) instead of only the best single piece', () => {
+  it('selection is independent of insertion order (explicit reduction, ties by mass → kind → id)', () => {
+    const forward = new Inventory(undefined, 30)
+    const reverse = new Inventory(undefined, 30)
+    const pieces = [
+      createArmorInstance('leather_armor', 'common', 'a-leather'),
+      createArmorInstance('chainmail', 'common', 'b-chain'),
+      createArmorInstance('chainmail', 'common', 'a-chain'),
+    ]
+    for (const piece of pieces) forward.addInstance(piece)
+    for (const piece of [...pieces].reverse()) reverse.addInstance(piece)
+    expect(resolveNpcArmorEquipment(forward).exportState(forward)).toEqual(resolveNpcArmorEquipment(reverse).exportState(reverse))
+    expect(resolveNpcArmorEquipment(forward).exportState(forward)['body:outer']).toBe('a-chain')
+  })
+
+  it('composes multiple slots (body + shoulders) instead of only the best single piece', () => {
     const inventory = new Inventory(undefined, 20)
     inventory.addInstance(createArmorInstance('leather_armor', 'common'))
     inventory.addInstance(createArmorInstance('ranger_pauldron', 'common'))
-    const bodyOnly = new Inventory(undefined, 20)
-    bodyOnly.addInstance(createArmorInstance('leather_armor', 'common'))
-    const combined = resolveEquipmentModifiers(resolveNpcArmorEquipment(inventory), inventory)
-    const bodyOnlyModifiers = resolveEquipmentModifiers(resolveNpcArmorEquipment(bodyOnly), bodyOnly)
-    expect(combined.incomingDamageMultiplier).toBeLessThan(bodyOnlyModifiers.incomingDamageMultiplier)
+    const snapshot = resolveProtectionSnapshot(resolveNpcArmorEquipment(inventory), inventory)
+    expect(snapshot.protection.body.cut).toBeGreaterThan(0)
+    expect(snapshot.protection.shoulders.cut).toBeGreaterThan(0)
   })
 
-  it('stops mitigating the instant the armor instance is removed from personalInventory', () => {
+  it('stops protecting the instant the armor instance is removed from personalInventory', () => {
     const inventory = new Inventory(undefined, 20)
     const armor = createArmorInstance('chainmail', 'common')
     inventory.addInstance(armor)
-    expect(resolveEquipmentModifiers(resolveNpcArmorEquipment(inventory), inventory).incomingDamageMultiplier).toBeLessThan(1)
+    expect(resolveProtectionSnapshot(resolveNpcArmorEquipment(inventory), inventory).protection.body.cut).toBeGreaterThan(0)
     inventory.removeInstance(armor.id)
     expect(resolveEquipmentModifiers(resolveNpcArmorEquipment(inventory), inventory)).toEqual(NEUTRAL_EQUIPMENT_MODIFIERS)
+    expect(resolveProtectionSnapshot(resolveNpcArmorEquipment(inventory), inventory).protection.body.cut).toBe(0)
   })
 })
 
-describe('resolveIncomingNpcDamage', () => {
+describe('resolveIncomingNpcHit', () => {
+  const wolfBite = (amount = 20, overrides: Partial<PhysicalHit> = {}): PhysicalHit => ({
+    amount, damageType: 'pierce', source: 'fauna', attackerId: 'wolf', profile: 'low-bite', blockable: true, ...overrides,
+  })
   const baseParams = {
-    amount: 20,
+    hit: wolfBite(),
     carried: new Inventory(undefined, 5),
     readyWeaponKind: null,
     defenderId: 'npc:1',
     defenderX: 0,
     defenderZ: 0,
     defenderFacingYaw: 0,
-    attackerKey: 'wolf',
-    attempt: 1,
+    incomingOrdinal: 1,
   }
 
   it('deals full damage with no carried defense item', () => {
-    const result = resolveIncomingNpcDamage(baseParams)
-    expect(result).toEqual({ outcome: 'none', finalDamage: 20, attempted: false })
+    const result = resolveIncomingNpcHit(baseParams)
+    expect(result).toMatchObject({ outcome: 'none', finalDamage: 20, attempted: false, armorPrevented: 0, damageType: 'pierce' })
+    expect(result.location).not.toBeNull()
   })
 
   it('applies derived armor mitigation on top of the (unblocked) active defense result', () => {
     const carried = new Inventory(undefined, 20)
     carried.addInstance(createArmorInstance('chainmail', 'common'))
-    const result = resolveIncomingNpcDamage({ ...baseParams, carried })
+    const result = resolveIncomingNpcHit({ ...baseParams, carried })
     expect(result.outcome).toBe('none')
     expect(result.attempted).toBe(false)
-    expect(result.finalDamage).toBeLessThan(20)
-    expect(result.finalDamage).toBeGreaterThan(0)
+    const local = resolveProtectionSnapshot(resolveNpcArmorEquipment(carried), carried).protection[result.location!].pierce
+    expect(result.finalDamage).toBeCloseTo(20 * (1 - local), 10)
+    expect(result.armorPrevented).toBeCloseTo(20 * local, 10)
+  })
+
+  it('next block/location roll after reification is identical for the same durable ordinal and inputs', () => {
+    const carried = new Inventory(undefined, 20)
+    carried.addInstance(createArmorInstance('chainmail', 'common', 'fixed'))
+    const first = resolveIncomingNpcHit({ ...baseParams, carried, incomingOrdinal: 12 })
+    const rebuilt = new Inventory(undefined, 20)
+    rebuilt.addInstance(createArmorInstance('chainmail', 'common', 'fixed'))
+    expect(resolveIncomingNpcHit({ ...baseParams, carried: rebuilt, incomingOrdinal: 12 })).toEqual(first)
   })
 
   it('active block happens before passive armor: a full block still leaves zero final damage with armor worn', () => {
@@ -514,12 +565,12 @@ describe('resolveIncomingNpcDamage', () => {
     addMeleeWeapon(carried, 'long_sword')
     carried.addInstance(createArmorInstance('chainmail', 'common'))
     let attempt = 1
-    let result = resolveIncomingNpcDamage({
-      ...baseParams, carried, readyWeaponKind: resolveNpcMeleeWeapon(carried, 'guard')?.kind ?? null, attackerX: 0, attackerZ: 2, attempt,
+    let result = resolveIncomingNpcHit({
+      ...baseParams, carried, readyWeaponKind: resolveNpcMeleeWeapon(carried, 'guard')?.kind ?? null, attackerX: 0, attackerZ: 2, incomingOrdinal: attempt,
     })
     while (result.outcome !== 'full' && attempt < 500) {
       attempt += 1
-      result = resolveIncomingNpcDamage({ ...baseParams, carried, readyWeaponKind: resolveNpcMeleeWeapon(carried, 'guard')?.kind ?? null, attackerX: 0, attackerZ: 2, attempt })
+      result = resolveIncomingNpcHit({ ...baseParams, carried, readyWeaponKind: resolveNpcMeleeWeapon(carried, 'guard')?.kind ?? null, attackerX: 0, attackerZ: 2, incomingOrdinal: attempt })
     }
     expect(result.outcome).toBe('full')
     expect(result.finalDamage).toBe(0)
@@ -531,12 +582,12 @@ describe('resolveIncomingNpcDamage', () => {
     // defenderFacingYaw 0 means facing +Z under steerTo's atan2(dirX, dirZ)
     // convention — an attacker further along +Z stands in front.
     let attempt = 1
-    let result = resolveIncomingNpcDamage({
-      ...baseParams, carried, readyWeaponKind: resolveNpcMeleeWeapon(carried, 'guard')?.kind ?? null, defenderFacingYaw: 0, attackerX: 0, attackerZ: 2, attempt,
+    let result = resolveIncomingNpcHit({
+      ...baseParams, carried, readyWeaponKind: resolveNpcMeleeWeapon(carried, 'guard')?.kind ?? null, defenderFacingYaw: 0, attackerX: 0, attackerZ: 2, incomingOrdinal: attempt,
     })
     while (!result.attempted && attempt < 200) {
       attempt += 1
-      result = resolveIncomingNpcDamage({ ...baseParams, carried, readyWeaponKind: resolveNpcMeleeWeapon(carried, 'guard')?.kind ?? null, defenderFacingYaw: 0, attackerX: 0, attackerZ: 2, attempt })
+      result = resolveIncomingNpcHit({ ...baseParams, carried, readyWeaponKind: resolveNpcMeleeWeapon(carried, 'guard')?.kind ?? null, defenderFacingYaw: 0, attackerX: 0, attackerZ: 2, incomingOrdinal: attempt })
     }
     expect(result.attempted).toBe(true)
   })
@@ -545,11 +596,27 @@ describe('resolveIncomingNpcDamage', () => {
     const carried = new Inventory(undefined, 5)
     addMeleeWeapon(carried, 'long_sword')
     for (let attempt = 1; attempt < 50; attempt++) {
-      const result = resolveIncomingNpcDamage({
-        ...baseParams, carried, readyWeaponKind: resolveNpcMeleeWeapon(carried, 'guard')?.kind ?? null, defenderFacingYaw: 0, attackerX: 0, attackerZ: -2, attempt,
+      const result = resolveIncomingNpcHit({
+        ...baseParams, carried, readyWeaponKind: resolveNpcMeleeWeapon(carried, 'guard')?.kind ?? null, defenderFacingYaw: 0, attackerX: 0, attackerZ: -2, incomingOrdinal: attempt,
       })
       expect(result.attempted).toBe(false)
       expect(result.finalDamage).toBe(20)
+    }
+  })
+})
+
+describe('player/NPC incoming parity (plan items-player-065 S3)', () => {
+  it('equal hit, defender id, ordinal and protection give equal results from both wrappers\' shared resolver', () => {
+    const carried = new Inventory(undefined, 20)
+    carried.addInstance(createArmorInstance('chainmail', 'common', 'parity'))
+    const protection = resolveProtectionSnapshot(resolveNpcArmorEquipment(carried), carried).protection
+    const hit: PhysicalHit = { amount: 18, damageType: 'cut', source: 'fauna', attackerId: 'bear:1', profile: 'large-maul', blockable: true }
+    for (let ordinal = 1; ordinal <= 40; ordinal++) {
+      const viaNpc = resolveIncomingNpcHit({
+        hit, carried, readyWeaponKind: null, defenderId: 'player', defenderX: 0, defenderZ: 0, defenderFacingYaw: 0, incomingOrdinal: ordinal,
+      })
+      const direct = resolveIncomingHumanHit(hit, { defenderId: 'player', incomingOrdinal: ordinal, defense: null, defenseSkill: 0, inArc: false, protection })
+      expect(viaNpc).toEqual(direct)
     }
   })
 })

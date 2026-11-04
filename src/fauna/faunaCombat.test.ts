@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { AnimalAgent } from './AnimalAgent'
-import { combatTargetForAnimal, createHealthState, damageFor, damageVsHuman, isMeleeTool, MAX_HP } from './faunaCombat'
+import { ANIMAL_DEFS } from './animalDefs'
+import { combatTargetForAnimal, createHealthState, damageFor, damageVsHuman, faunaPhysicalHit, HUMAN_ATTACK_PROFILE, isMeleeTool, MAX_HP } from './faunaCombat'
 
 /** Narrow fake covering only what `combatTargetForAnimal` touches — a full
  *  `AnimalAgent` needs a GLTF/scene graph this test doesn't want. */
@@ -102,7 +103,34 @@ describe('combatTargetForAnimal (plan 177)', () => {
 
   it('routes applyDamage through takeDamage with source "npc"', () => {
     const animal = fakeAnimal()
-    combatTargetForAnimal(animal).applyDamage(12)
+    combatTargetForAnimal(animal).applyDamage({ amount: 12, damageType: 'cut', source: 'melee', attackerId: 'npc:1' })
     expect(animal.damages).toEqual([[12, 'npc']])
+  })
+})
+
+describe('fauna → human typed hits (065 S3)', () => {
+  const species = Object.keys(ANIMAL_DEFS) as (keyof typeof ANIMAL_DEFS)[]
+
+  it('maps every species that can reach the human-damage callback explicitly', () => {
+    expect(Object.keys(HUMAN_ATTACK_PROFILE).sort()).toEqual([...species].sort())
+    for (const kind of species) {
+      const hit = faunaPhysicalHit(kind, 7, `${kind}:1`)
+      expect(['low-bite', 'large-maul']).toContain(hit.profile)
+      expect(['cut', 'pierce', 'blunt']).toContain(hit.damageType)
+      expect(hit).toMatchObject({ amount: 7, source: 'fauna', attackerId: `${kind}:1`, blockable: true })
+      expect(hit.forcedLocation).toBeUndefined()
+    }
+  })
+
+  it('bear is large-maul/cut; small biters are low-bite/pierce', () => {
+    expect(faunaPhysicalHit('bear', 22, 'bear:1')).toMatchObject({ profile: 'large-maul', damageType: 'cut' })
+    for (const kind of ['wolf', 'fox', 'dog', 'rat'] as const) {
+      expect(faunaPhysicalHit(kind, 6, `${kind}:1`)).toMatchObject({ profile: 'low-bite', damageType: 'pierce' })
+    }
+  })
+
+  it('uses the stable animal id, never a shared "fauna" key, as the attacker identity', () => {
+    expect(faunaPhysicalHit('wolf', 12, 'wolf:a').attackerId).toBe('wolf:a')
+    expect(faunaPhysicalHit('wolf', 12, 'wolf:b').attackerId).not.toBe(faunaPhysicalHit('wolf', 12, 'wolf:a').attackerId)
   })
 })
