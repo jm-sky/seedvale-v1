@@ -2569,6 +2569,12 @@ describe('stamina-aware water crossing risk (plan fauna-046)', () => {
 
 describe('067 P3 fauna human-contact identity', () => {
   it('forwards the actual animal ID and species through public player and NPC update callbacks', () => {
+    // The agent seeds its life state (stamina/rest roll) and wander timers from
+    // Math.random(); an unlucky roll made the wolf rest/wander instead of
+    // chasing within the 1 s window (~1/3 flake). Pin every roll so the bite
+    // always lands.
+    const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(0.5)
+    try {
     for (const target of ['player', 'npc'] as const) {
       const animalId = `wolf:identity:${target}`
       const wolf = new AnimalAgent(makeDeps({ def: ANIMAL_DEFS.wolf, animalId }))
@@ -2598,6 +2604,9 @@ describe('067 P3 fauna human-contact identity', () => {
         expect(onHumanHit).not.toHaveBeenCalled()
       }
       wolf.dispose()
+    }
+    } finally {
+      randomSpy.mockRestore()
     }
   })
 })
