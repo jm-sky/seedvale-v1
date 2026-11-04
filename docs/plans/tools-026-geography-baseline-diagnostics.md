@@ -1,7 +1,7 @@
 # Plan: Geography baseline diagnostics (G1–G9 stage S0)
 
 **Created:** 2026-11-04
-**Status:** `planned` 📋
+**Status:** `verification needed` 🔍 — D1–D6 delivered 2026-11-04, D7 partial (runtime-hook metrics noted); baseline packet [2026-11-04--geography-s0-baseline.md](../research/v1-revival/2026-11-04--geography-s0-baseline.md), donor recon [2026-11-04--geography-donor-recon.md](../research/v1-revival/2026-11-04--geography-donor-recon.md); waits on author answers queue §3 Q116-a…d
 **Type:** infrastructure
 **Priority:** high · **Effort:** L
 **Depends on:** -
