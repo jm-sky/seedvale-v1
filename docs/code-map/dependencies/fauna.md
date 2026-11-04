@@ -1073,6 +1073,7 @@ Generated from TypeScript imports.
 - `fauna/huntingHooks.ts`
 - `items/compactWeaponsAndMasterworkBow.test.ts`
 - `items/highQualityWeapons.test.ts`
+- `items/stage4MeleeBatch.test.ts`
 - `player/playerCombat.test.ts`
 
 ## `fauna/faunaDecision.test.ts`

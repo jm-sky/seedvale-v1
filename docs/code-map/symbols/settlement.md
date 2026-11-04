@@ -435,18 +435,18 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/householdProfessionStock.ts`
 
-- `applyProfessionTradeStock` — function — line 350
+- `applyProfessionTradeStock` — function — line 352
   - domain: settlements-npcs
 - `BLACKSMITH_TRADE_PAULDRON_COUNT` — const — line 32
 - `BLACKSMITH_TRADE_SWORD_COUNT` — const — line 31
 - `FARMER_TRADE_TOOL_COUNT` — const — line 30
-- `householdStartingContextFromFamily` — function — line 311
+- `householdStartingContextFromFamily` — function — line 313
   - domain: settlements-npcs
 - `HUNTER_STARTER_DRIED_MEAT` — const — line 36
 - `HUNTER_STARTER_HERB` — const — line 37
 - `HUNTER_STARTER_TRADE_ARROWS` — const — line 35
 - `HUNTER_STARTER_TRADE_SHORT_BOWS` — const — line 29
-- `resolveProfessionStarterGrants` — function — line 290
+- `resolveProfessionStarterGrants` — function — line 292
   - domain: settlements-npcs
 - `StarterGrant` — type — line 39
 - `WOODCUTTER_TRADE_AXE_COUNT` — const — line 28

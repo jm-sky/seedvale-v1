@@ -15,6 +15,14 @@ Generated from exported TypeScript symbols.
 - `MELEE_CRITICAL_MULTIPLIER` — const — line 61
 - `resolveCriticalHit` — function — line 40
 
+## `combat/damageTypes.ts`
+
+- `composeLocalResistance` — function — line 14
+- `DamageType` — type — line 4
+  - domain: combat
+- `Resistance` — type — line 5
+- `scaleArmorResistance` — function — line 8
+
 ## `combat/defenseResolver.ts`
 
 - `DEFENSE_FRONT_ARC_DOT` — const — line 12
@@ -27,6 +35,26 @@ Generated from exported TypeScript symbols.
 - `isAttackFromDefensibleDirection` — function — line 50
 - `ResolvedDefense` — type — line 16
 - `resolveDefense` — function — line 80
+
+## `combat/hitLocation.ts`
+
+- `expectedProtection` — function — line 41
+- `HIT_LOCATION_PROFILES` — const — line 11
+- `HIT_LOCATIONS` — const — line 6
+  - domain: combat
+- `HitLocation` — type — line 7
+- `hitLocationRoll` — function — line 19
+- `HitProfile` — type — line 8
+- `HumanProtection` — type — line 9
+- `sampleHitLocation` — function — line 30
+
+## `combat/incomingHumanHit.ts`
+
+- `HumanHitContext` — type — line 20
+- `HumanHitResult` — type — line 28
+- `PhysicalHit` — type — line 11
+  - domain: combat
+- `resolveIncomingHumanHit` — function — line 43
 
 ## `combat/meleeAgility.ts`
 
@@ -57,7 +85,9 @@ Generated from exported TypeScript symbols.
 - `PROJECTILE_HIT_RADIUS` — const — line 37
 - `ProjectileCandidate` — type — line 67
 - `segmentPointDistance` — function — line 53
-- `sweptProjectileHit` — function — line 72
+- `sweptProjectileHit` — function — line 74
+  - domain: npc
+  - system: combat
 
 ## `combat/rangedAttack.ts`
 

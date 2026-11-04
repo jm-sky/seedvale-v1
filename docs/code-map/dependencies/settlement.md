@@ -1125,6 +1125,8 @@ Generated from TypeScript imports.
 
 **Imports**
 
+- `ai/npcTradeAvailability.ts`
+- `items/Inventory.ts`
 - `items/itemInstances.ts`
 - `items/items.ts`
 - `settlement/household.ts`

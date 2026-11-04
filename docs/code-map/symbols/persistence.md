@@ -21,9 +21,9 @@ Generated from exported TypeScript symbols.
 - `CURRENT_SAVE_VERSION` — const — line 767
 - `isSaveData` — function — line 2895
 - `loadSaveData` — function — line 2991
-- `loadStoredSave` — function — line 4551
-- `LoadStoredSaveOptions` — type — line 4541
-- `migrateStoredSave` — function — line 4503
+- `loadStoredSave` — function — line 4579
+- `LoadStoredSaveOptions` — type — line 4569
+- `migrateStoredSave` — function — line 4531
 - `SaveBadges` — type — line 253
 - `SaveBedroll` — type — line 595
 - `SaveCarriedContainer` — type — line 431
@@ -95,7 +95,7 @@ Generated from exported TypeScript symbols.
 - `SaveWorkContractScope` — type — line 734
 - `SaveWorkContractState` — type — line 647
 - `SaveWorldFlags` — type — line 206
-- `StoredSaveResult` — type — line 4532
+- `StoredSaveResult` — type — line 4560
 
 ## `persistence/saveDb.ts`
 

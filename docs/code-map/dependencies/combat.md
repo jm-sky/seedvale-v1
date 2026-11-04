@@ -37,6 +37,15 @@ Generated from TypeScript imports.
 - `app/gameLoop.ts`
 - `combat/criticalHit.test.ts`
 
+## `combat/damageTypes.ts`
+
+**Imported by**
+
+- `combat/hitLocation.ts`
+- `combat/incomingHumanHit.test.ts`
+- `combat/incomingHumanHit.ts`
+- `items/itemCatalog.ts`
+
 ## `combat/defenseResolver.test.ts`
 
 **Imports**
@@ -56,7 +65,43 @@ Generated from TypeScript imports.
 - `ai/npcCombat.ts`
 - `app/gameLoop.ts`
 - `combat/defenseResolver.test.ts`
+- `combat/incomingHumanHit.test.ts`
+- `combat/incomingHumanHit.ts`
 - `player/playerDamage.ts`
+
+## `combat/hitLocation.ts`
+
+**Imports**
+
+- `combat/damageTypes.ts`
+
+**Imported by**
+
+- `combat/incomingHumanHit.test.ts`
+- `combat/incomingHumanHit.ts`
+
+## `combat/incomingHumanHit.test.ts`
+
+**Imports**
+
+- `combat/damageTypes.ts`
+- `combat/defenseResolver.ts`
+- `combat/hitLocation.ts`
+- `combat/incomingHumanHit.ts`
+- `items/itemCatalog.ts`
+
+## `combat/incomingHumanHit.ts`
+
+**Imports**
+
+- `combat/damageTypes.ts`
+- `combat/defenseResolver.ts`
+- `combat/hitLocation.ts`
+- `items/itemCatalog.ts`
+
+**Imported by**
+
+- `combat/incomingHumanHit.test.ts`
 
 ## `combat/meleeAgility.test.ts`
 

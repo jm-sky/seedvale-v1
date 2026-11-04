@@ -107,6 +107,24 @@ Generated from TypeScript imports.
 - `items/itemInstances.ts`
 - `ui-vue/components/items/equipmentPanelTypes.ts`
 
+## `ui-vue/components/items/equipmentLayout.test.ts`
+
+**Imports**
+
+- `items/equipment.ts`
+- `ui-vue/components/items/equipmentLayout.ts`
+
+## `ui-vue/components/items/equipmentLayout.ts`
+
+**Imports**
+
+- `items/equipment.ts`
+- `items/equipmentTypes.ts`
+
+**Imported by**
+
+- `ui-vue/components/items/equipmentLayout.test.ts`
+
 ## `ui-vue/components/items/equipmentPanelTypes.ts`
 
 **Imports**

@@ -16,7 +16,7 @@ Generated from exported TypeScript symbols.
 
 ## `fauna/AnimalAgent.ts`
 
-- `AnimalAgent` — class — line 1257
+- `AnimalAgent` — class — line 1256
   - domain: fauna
   - system: animal-agent
   - role: Central per-animal behaviour integration point: predator/prey AI, needs, health, production (livestock) and riding (mounts).
@@ -622,10 +622,10 @@ Generated from exported TypeScript symbols.
 
 ## `fauna/faunaCombat.ts`
 
-- `combatTargetForAnimal` — function — line 88
-- `damageFor` — function — line 76
-- `damageVsHuman` — function — line 80
-- `isMeleeTool` — function — line 72
+- `combatTargetForAnimal` — function — line 92
+- `damageFor` — function — line 80
+- `damageVsHuman` — function — line 84
+- `isMeleeTool` — function — line 76
 - `MAX_HP` — const — line 9
 - `MeleeToolKind` — type — line 51
 

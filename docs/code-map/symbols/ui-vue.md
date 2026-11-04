@@ -35,6 +35,13 @@ Generated from exported TypeScript symbols.
 - `buildEquipmentSlotViews` — function — line 30
 - `collectArmorPreviewInstances` — function — line 10
 
+## `ui-vue/components/items/equipmentLayout.ts`
+
+- `EQUIPMENT_LAYOUT` — const — line 10
+  - domain: ui-input
+- `EquipmentCellKey` — type — line 4
+- `EquipmentLayoutCell` — type — line 5
+
 ## `ui-vue/components/items/equipmentPanelTypes.ts`
 
 - `EquipmentSlotView` — type — line 4
@@ -112,14 +119,14 @@ Generated from exported TypeScript symbols.
 
 ## `ui-vue/demos/character-skills/fixtures.ts`
 
-- `characterCriticalFixture` — function — line 65
-- `characterHealthyFixture` — function — line 174
-- `DEMO_BADGES` — const — line 56
+- `characterCriticalFixture` — function — line 66
+- `characterHealthyFixture` — function — line 176
+- `DEMO_BADGES` — const — line 57
 - `DEMO_SCENARIOS` — const — line 25
 - `DemoScenario` — type — line 19
 - `DemoViewId` — type — line 17
 - `SkillsActionCardInput` — type — line 11
-- `skillsFixture` — function — line 204
+- `skillsFixture` — function — line 206
 
 ## `ui-vue/demos/hud/fixtures.ts`
 

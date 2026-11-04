@@ -40,6 +40,7 @@ Generated from TypeScript imports.
 - `items/heldToolVisual.ts`
 - `items/highQualityWeapons.test.ts`
 - `items/itemCapabilities.test.ts`
+- `items/stage4MeleeBatch.test.ts`
 - `persistence/saveData.ts`
 - `player/PlayerController.ts`
 - `player/playerCombatMode.test.ts`
@@ -187,6 +188,7 @@ Generated from TypeScript imports.
 - `items/primaryWeapons.ts`
 - `items/sensibleFood.test.ts`
 - `items/sensibleFood.ts`
+- `items/stage4MeleeBatch.test.ts`
 - `items/trade.test.ts`
 - `items/trade.ts`
 - `items/trapInstanceTrade.test.ts`
@@ -220,6 +222,7 @@ Generated from TypeScript imports.
 - `settlement/artisanOrders.test.ts`
 - `settlement/artisanOrders.ts`
 - `settlement/household.ts`
+- `settlement/householdProfessionStock.test.ts`
 - `settlement/householdProfessionStock.ts`
 - `settlement/householdResourceTransfer.test.ts`
 - `settlement/householdResourceTransfer.ts`
@@ -613,6 +616,7 @@ Generated from TypeScript imports.
 
 - `items/Inventory.ts`
 - `items/armorItemInstances.ts`
+- `items/equipmentTypes.ts`
 - `items/itemCatalog.ts`
 - `items/itemInstances.ts`
 - `items/items.ts`
@@ -639,6 +643,8 @@ Generated from TypeScript imports.
 - `player/playerDamage.test.ts`
 - `player/playerDamage.ts`
 - `ui-vue/components/items/collectArmorPreviewInstances.ts`
+- `ui-vue/components/items/equipmentLayout.test.ts`
+- `ui-vue/components/items/equipmentLayout.ts`
 - `ui-vue/components/items/equipmentPanelTypes.ts`
 - `ui-vue/demos/inventory-list/fixtures.ts`
 - `ui-vue/store.ts`
@@ -673,6 +679,14 @@ Generated from TypeScript imports.
 
 - `items/equipmentPreview.test.ts`
 - `ui-vue/components/items/collectArmorPreviewInstances.ts`
+
+## `items/equipmentTypes.ts`
+
+**Imported by**
+
+- `items/equipment.ts`
+- `items/itemCatalog.ts`
+- `ui-vue/components/items/equipmentLayout.ts`
 
 ## `items/everydayItemGlbs.test.ts`
 
@@ -844,6 +858,7 @@ Generated from TypeScript imports.
 - `assets/assetIndex.ts`
 - `items/heldToolVisual.test.ts`
 - `items/highQualityWeapons.test.ts`
+- `items/stage4MeleeBatch.test.ts`
 - `player/PlayerController.appearance.test.ts`
 - `player/PlayerController.ts`
 - `player/PlayerTorch.ts`
@@ -905,6 +920,7 @@ Generated from TypeScript imports.
 - `app/actions/npcItemTransfer.ts`
 - `app/actions/workContractPayment.ts`
 - `items/inventoryTransfer.test.ts`
+- `items/stage4MeleeBatch.test.ts`
 - `items/trade.ts`
 - `quests/lostTreasureChronicleDeciphering.test.ts`
 - `quests/oldBonesAdventureCave.test.ts`
@@ -980,6 +996,8 @@ Generated from TypeScript imports.
 
 **Imports**
 
+- `combat/damageTypes.ts`
+- `items/equipmentTypes.ts`
 - `items/itemInstances.ts`
 - `items/items.ts`
 - `player/PlayerSkills.ts`
@@ -1008,6 +1026,8 @@ Generated from TypeScript imports.
 - `app/waterDrinkInteraction.ts`
 - `combat/defenseResolver.test.ts`
 - `combat/defenseResolver.ts`
+- `combat/incomingHumanHit.test.ts`
+- `combat/incomingHumanHit.ts`
 - `combat/meleeAttack.test.ts`
 - `combat/meleeAttack.ts`
 - `combat/rangedAttack.test.ts`
@@ -1041,6 +1061,7 @@ Generated from TypeScript imports.
 - `items/liquidContainer.ts`
 - `items/primaryWeapons.ts`
 - `items/sensibleFood.ts`
+- `items/stage4MeleeBatch.test.ts`
 - `items/treasureGameplay.test.ts`
 - `items/treasureGameplay.ts`
 - `items/v3Equipment/adapter.ts`
@@ -1191,6 +1212,7 @@ Generated from TypeScript imports.
 - `items/items.ts`
 - `items/liquidContainer.ts`
 - `items/primaryWeapons.ts`
+- `items/stage4MeleeBatch.test.ts`
 - `items/trade.test.ts`
 - `items/trade.ts`
 - `items/tradeCatalog.ts`
@@ -1384,6 +1406,7 @@ Generated from TypeScript imports.
 - `items/poisonedMeat.ts`
 - `items/primaryWeapons.ts`
 - `items/sensibleFood.ts`
+- `items/stage4MeleeBatch.test.ts`
 - `items/tentProp.ts`
 - `items/timedProcess.ts`
 - `items/trade.test.ts`
@@ -1608,6 +1631,22 @@ Generated from TypeScript imports.
 - `app/actions/cookMealIntent.ts`
 - `items/sensibleFood.test.ts`
 
+## `items/stage4MeleeBatch.test.ts`
+
+**Imports**
+
+- `ai/npcCombat.ts`
+- `fauna/faunaCombat.ts`
+- `items/HeldTool.ts`
+- `items/Inventory.ts`
+- `items/heldToolVisual.ts`
+- `items/inventoryTransfer.ts`
+- `items/itemCatalog.ts`
+- `items/itemInstances.ts`
+- `items/items.ts`
+- `items/trade.ts`
+- `items/tradeCatalog.ts`
+
 ## `items/tentPlacement.test.ts`
 
 **Imports**
@@ -1725,6 +1764,7 @@ Generated from TypeScript imports.
 - `app/interactables.ts`
 - `app/inventoryWiring.ts`
 - `economy/production.ts`
+- `items/stage4MeleeBatch.test.ts`
 - `items/trade.test.ts`
 - `items/trapInstanceTrade.test.ts`
 - `settlement/artisanOrders.ts`
@@ -1751,6 +1791,7 @@ Generated from TypeScript imports.
 - `items/books.test.ts`
 - `items/highQualityWeapons.test.ts`
 - `items/inventoryView.ts`
+- `items/stage4MeleeBatch.test.ts`
 - `items/trade.test.ts`
 - `items/trade.ts`
 - `items/tradeGrievance.test.ts`

@@ -335,23 +335,23 @@ Generated from exported TypeScript symbols.
 
 ## `ai/npcCombat.ts`
 
-- `applyNpcMeleeHit` — function — line 307
-- `applyNpcRangedHit` — function — line 332
-- `chooseCombatMode` — function — line 245
-- `NpcAmmoSource` — type — line 262
+- `applyNpcMeleeHit` — function — line 311
+- `applyNpcRangedHit` — function — line 336
+- `chooseCombatMode` — function — line 249
+- `NpcAmmoSource` — type — line 266
 - `NpcMeleeWeapon` — type — line 42
-- `npcMeleeWeaponFamily` — function — line 79
+- `npcMeleeWeaponFamily` — function — line 83
 - `NpcMeleeWeaponFamily` — type — line 47
 - `NpcRangedWeapon` — type — line 43
-- `npcRangedWeaponFamily` — function — line 101
+- `npcRangedWeaponFamily` — function — line 105
 - `NpcRangedWeaponFamily` — type — line 48
-- `resolveIncomingNpcDamage` — function — line 404
-- `resolveNpcAmmo` — function — line 268
-- `resolveNpcAmmoKind` — function — line 283
-- `resolveNpcArmorEquipment` — function — line 379
-- `resolveNpcDefenseConfig` — function — line 290
-- `resolveNpcMeleeWeapon` — function — line 177
-- `resolveNpcRangedWeapon` — function — line 209
+- `resolveIncomingNpcDamage` — function — line 408
+- `resolveNpcAmmo` — function — line 272
+- `resolveNpcAmmoKind` — function — line 287
+- `resolveNpcArmorEquipment` — function — line 383
+- `resolveNpcDefenseConfig` — function — line 294
+- `resolveNpcMeleeWeapon` — function — line 181
+- `resolveNpcRangedWeapon` — function — line 213
 
 ## `ai/npcCrowd.ts`
 
@@ -635,11 +635,11 @@ Generated from exported TypeScript symbols.
   - domain: settlements-npcs
 - `NpcTradeOwnerSource` — type — line 15
   - domain: settlements-npcs
-- `npcTradeQuantityAvailable` — function — line 180
+- `npcTradeQuantityAvailable` — function — line 182
   - domain: settlements-npcs
-- `npcTradeSourceInventory` — function — line 199
+- `npcTradeSourceInventory` — function — line 201
   - domain: settlements-npcs
-- `resolveNpcTradeOffers` — function — line 215
+- `resolveNpcTradeOffers` — function — line 217
   - domain: settlements-npcs
 - `TradeReserveNpc` — type — line 34
 

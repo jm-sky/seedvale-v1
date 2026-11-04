@@ -970,6 +970,7 @@ Generated from TypeScript imports.
 - `ai/npcCombat.test.ts`
 - `ai/npcLoadout.test.ts`
 - `app/actions/npcItemTransfer.test.ts`
+- `items/stage4MeleeBatch.test.ts`
 
 ## `ai/npcCrowd.test.ts`
 
@@ -1563,6 +1564,7 @@ Generated from TypeScript imports.
 
 - `ai/npcTradeAvailability.test.ts`
 - `app/inventoryWiring.ts`
+- `settlement/householdProfessionStock.test.ts`
 - `ui-vue/npcDialogueTrade.test.ts`
 
 ## `ai/npcTravel.test.ts`
