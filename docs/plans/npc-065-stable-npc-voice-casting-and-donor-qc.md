@@ -200,6 +200,19 @@ Implementation invariant: blocklisted Fish voice IDs must remain excluded irresp
 
 All above are listening/casting judgments, **not** transcript validation or global per-clip QC verdicts. Keep the ledger's unheard rows pending, especially for the two inconsistent banks.
 
+
+### S2 male Fish Audio candidates — author bookmarks (2026-11-04)
+
+The author bookmarked the following **candidates**, not approved castings or recordings. The IDs below come from the supplied Fish Audio profile URLs; no generated clip, voice consistency, licensing, or runtime suitability has been verified.
+
+| Fish voice / profile | Fish voice ID | Author listening impression | Possible use (not assigned) |
+| --- | --- | --- | --- |
+| [FairyTail 1](https://fish.audio/m/689b47ca83dd48dba90b160affb8a118) | `689b47ca83dd48dba90b160affb8a118` | Clear male voice, slight accent, somewhat storytelling-like but good | General male candidate |
+| [george](https://fish.audio/m/372ef39bf5bf4fd38c5c56bce607aba6) | `372ef39bf5bf4fd38c5c56bce607aba6` | Calm, slightly raspy male voice with a slight accent | Older male character candidate |
+| [Rick Sanchez](https://fish.audio/m/d2e75a3e3fd6419893057c02a375a113) | `d2e75a3e3fd6419893057c02a375a113` | Energetic, mildly sarcastic and slightly raspy male voice | Characterful male NPC candidate |
+
+These candidates are separate from the existing `general_male` casting decision, which remains unresolved. Before producing replacements, select and audition an actual Fish Audio speaker. Do not alter the clip registry, casting table, or Q90 gap computation based only on bookmarks.
+
 ### S2 further author listening decisions — 2026-11-03
 
 - `merchant_female_b` (catalog: Laura): usable mature female voice, but not for Kate/Kasia Hornblower. Author says sampled voice does not sound like Laura; verify actual source ID.
