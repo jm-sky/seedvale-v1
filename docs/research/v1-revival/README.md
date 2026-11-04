@@ -26,6 +26,10 @@
 | Latest readiness / review snapshots (dated, not backlogs) | [Opus readiness review](./2026-10-26--opus-readiness-review.md), [Astra technical review — Cursor models, snow, UI A–C](../../reviews/2026-10-26--026--v1-revival-cursor-technical-review.md), [documentation & backlog audit](./2026-10-26--documentation-backlog-audit.md) |
 | Strategy audits (delta) | [strategy/architecture](./2026-10-27--revival-audit--strategy-architecture.md), [equipment/armor/combat](./2026-10-27--revival-audit--equipment-armor-combat.md), [NPC/fauna rendering](./2026-10-27--revival-audit--npc-fauna-rendering.md), [settlement rendering](./2026-10-27--revival-audit--settlement-rendering.md), [grass/flowers V3](./2026-10-27--revival-audit--grass-flowers-v3.md) |
 
+## Terrain rendering correctness
+
+- [world-terrain-065 — terrain color/shading artifact correction](../../plans/world-terrain-065-terrain-color-and-shading-artifact-correction.md): planned high-priority diagnosis of large triangular ground patches seen near a shore; isolate vertex colors, terrain sun shadows, N8AO and overlays before applying a bounded fix. Separate from the 039/055/056 optimization and water-reflection work.
+
 ## Performance (P1, D4)
 
 - Roadmap and A/B/C/D(/E) tracker: [three-track rendering roadmap](./2026-10-27--performance-three-track-roadmap.md); V2/V3 transfer candidates: [recon](./2026-10-26--v1-performance-transfer-v2-v3-recon.md).
