@@ -1,4 +1,5 @@
-// Usage: pnpm worldgen:continent:census [--seeds=42,415424794] [--rings=21] [--nomask] [--json]
+// Usage: pnpm worldgen:continent:census [--seeds=42,415424794] [--rings=21] [--nomask] [--json] [--relief] [--transects=<dir>]
+// --relief (tools-026 D2): height histogram, peaks + prominence, slope classes, gated ridge components, transect CSVs.
 // World-terrain-058 slice W1: finite-continent census (read-only, diagnostic).
 //  - land fraction within R = 2.5 km of the origin (floor above sea level),
 //  - sea at every border cell (perimeter of the ±6144 m box),
@@ -14,6 +15,8 @@ import { cellsWithinRadius, type SettlementDef } from '../../src/settlement/sett
 import { clearSettlementDefCache, setSettlementRiverQuery, settlementDefFor } from '../../src/settlement/settlementPlanCache'
 import { type RawSampleParams, sampleRawTexelAt } from '../../src/terrain/chunkHeightmap'
 import { WORLD_HALF_EXTENT } from '../../src/terrain/continentMask'
+import { censusHydrologyId } from './censusHydrology'
+import { measureRelief, sampleReliefGrid } from './censusRelief'
 import { createRiverQuery } from '../../src/terrain/riverQuery'
 import { worldKnowledgeRoadContext, type WorldKnowledgeTerrainSnapshot } from '../../src/terrain/worldKnowledgeScan'
 
@@ -36,7 +39,7 @@ function snapshot(seed: number): WorldKnowledgeTerrainSnapshot {
     noiseScale: t.noiseScale, detailAmplitude: t.detailAmplitude, hillsScale: t.hillsScale, hillsAmplitude: t.hillsAmplitude,
     hillsFbm: t.hillsFbm, fbm: t.fbm, biome: t.biome, region,
     vegetationSpeciesCount: {} as WorldKnowledgeTerrainSnapshot['vegetationSpeciesCount'],
-    homeChunks: [], localSearchRadius: 56,
+    homeChunks: [], localSearchRadius: 56, hydrologyId: censusHydrologyId(seed),
   }
 }
 
@@ -78,7 +81,7 @@ function measure(seed: number): Record<string, unknown> {
   setSettlementRiverQuery(createRiverQuery({
     seed, heightScale: snap.heightScale, waterLevel: snap.waterLevel, noiseScale: snap.noiseScale,
     detailAmplitude: snap.detailAmplitude, hillsScale: snap.hillsScale, hillsAmplitude: snap.hillsAmplitude,
-    hillsFbm: snap.hillsFbm, fbm: snap.fbm, biome: snap.biome, region: snap.region,
+    hillsFbm: snap.hillsFbm, fbm: snap.fbm, biome: snap.biome, region: snap.region, hydrologyId: snap.hydrologyId,
   }))
   const ctx = worldKnowledgeRoadContext(snap)
   const defs: SettlementDef[] = []
@@ -111,6 +114,15 @@ function measure(seed: number): Record<string, unknown> {
   }
 }
 
-const rows = seeds.map(measure)
+const relief = process.argv.includes('--relief')
+const transectDir = arg('transects', '') || undefined
+const rows = seeds.map((seed) => {
+  const r = measure(seed)
+  if (relief) {
+    const snap = snapshot(seed)
+    r.relief = measureRelief(sampleReliefGrid(snap as unknown as RawSampleParams & { waterLevel: number }), seed, transectDir)
+  }
+  return r
+})
 if (asJson) console.log(JSON.stringify(rows, null, 2))
-else for (const r of rows) console.log(Object.entries(r).map(([k, v]) => `${k}: ${v}`).join('\n'), '\n')
+else for (const r of rows) console.log(Object.entries(r).map(([k, v]) => `${k}: ${typeof v === 'object' ? JSON.stringify(v) : v}`).join('\n'), '\n')

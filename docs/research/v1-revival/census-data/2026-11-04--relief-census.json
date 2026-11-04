@@ -1,0 +1,487 @@
+[
+  {
+    "seed": 42,
+    "landWithin2500": "71.7 %",
+    "borderLandCells": "0/772",
+    "coastRadiusPerRay": "3975 3850 3225 3800 3900 3875 4100 4250",
+    "settlementsPerRay": "0 0 1 0 0 0 0 0",
+    "rayMedian": 0,
+    "raysWith3to7": 0,
+    "settlementsTotal": 22,
+    "home": "8.5,22.7",
+    "relief": {
+      "gridStepM": 16,
+      "landKm2": 34.8,
+      "heightQuantilesM": {
+        "p10": 1.9,
+        "p50": 5.6,
+        "p90": 9.4,
+        "p99": 15.3,
+        "max": 33.1
+      },
+      "heightHistogram": [
+        {
+          "fromM": 0,
+          "toM": 5,
+          "sharePct": 41.27
+        },
+        {
+          "fromM": 5,
+          "toM": 10,
+          "sharePct": 51.09
+        },
+        {
+          "fromM": 10,
+          "toM": 15,
+          "sharePct": 6.55
+        },
+        {
+          "fromM": 15,
+          "toM": 20,
+          "sharePct": 0.86
+        },
+        {
+          "fromM": 20,
+          "toM": 25,
+          "sharePct": 0.18
+        },
+        {
+          "fromM": 25,
+          "toM": 30,
+          "sharePct": 0.05
+        },
+        {
+          "fromM": 30,
+          "toM": 35,
+          "sharePct": 0.01
+        }
+      ],
+      "slopeClassSharePct": {
+        "<5°": 58.99,
+        "5–10°": 36.68,
+        "10–20°": 4.25,
+        "20–30°": 0.07,
+        "≥30°": 0.01
+      },
+      "gatedRidgeLand": {
+        "definition": "mountainRidge ≥ 0.05 (proxy)",
+        "sharePct": 11.3,
+        "components": 40,
+        "top": [
+          {
+            "km2": 0.445,
+            "extentKm": 1.23
+          },
+          {
+            "km2": 0.415,
+            "extentKm": 1.85
+          },
+          {
+            "km2": 0.396,
+            "extentKm": 1.36
+          },
+          {
+            "km2": 0.325,
+            "extentKm": 1.35
+          },
+          {
+            "km2": 0.238,
+            "extentKm": 0.9
+          },
+          {
+            "km2": 0.215,
+            "extentKm": 0.95
+          }
+        ]
+      },
+      "peaks": [
+        {
+          "x": 3824,
+          "z": -768,
+          "heightM": 33.1,
+          "prominenceM": 32.6,
+          "isolationM": null
+        },
+        {
+          "x": -512,
+          "z": 992,
+          "heightM": 29.6,
+          "prominenceM": 26.5,
+          "isolationM": 4614
+        },
+        {
+          "x": 128,
+          "z": -3456,
+          "heightM": 27.4,
+          "prominenceM": 25.9,
+          "isolationM": 4480
+        },
+        {
+          "x": 880,
+          "z": -1552,
+          "heightM": 25.4,
+          "prominenceM": 19.9,
+          "isolationM": 2047
+        },
+        {
+          "x": 368,
+          "z": -3648,
+          "heightM": 24.3,
+          "prominenceM": 11.5,
+          "isolationM": 285
+        },
+        {
+          "x": -512,
+          "z": 80,
+          "heightM": 23,
+          "prominenceM": 16.5,
+          "isolationM": 896
+        },
+        {
+          "x": 2064,
+          "z": -352,
+          "heightM": 21,
+          "prominenceM": 14.4,
+          "isolationM": 1663
+        },
+        {
+          "x": -240,
+          "z": 16,
+          "heightM": 20.4,
+          "prominenceM": 6.8,
+          "isolationM": 260
+        },
+        {
+          "x": -992,
+          "z": -2848,
+          "heightM": 20.3,
+          "prominenceM": 14.6,
+          "isolationM": 1175
+        },
+        {
+          "x": -2336,
+          "z": -880,
+          "heightM": 20,
+          "prominenceM": 13.3,
+          "isolationM": 2054
+        },
+        {
+          "x": -2784,
+          "z": 288,
+          "heightM": 19.1,
+          "prominenceM": 13.1,
+          "isolationM": 1251
+        },
+        {
+          "x": 1888,
+          "z": 1456,
+          "heightM": 18.9,
+          "prominenceM": 12.8,
+          "isolationM": 1801
+        },
+        {
+          "x": -1776,
+          "z": -2512,
+          "heightM": 18.3,
+          "prominenceM": 11.4,
+          "isolationM": 847
+        },
+        {
+          "x": 1072,
+          "z": -1776,
+          "heightM": 18.1,
+          "prominenceM": 7.1,
+          "isolationM": 148
+        },
+        {
+          "x": -1200,
+          "z": 288,
+          "heightM": 17.9,
+          "prominenceM": 11.8,
+          "isolationM": 679
+        },
+        {
+          "x": 576,
+          "z": -3984,
+          "heightM": 17.5,
+          "prominenceM": 7.9,
+          "isolationM": 368
+        },
+        {
+          "x": 2112,
+          "z": 1264,
+          "heightM": 16.9,
+          "prominenceM": 7.2,
+          "isolationM": 250
+        },
+        {
+          "x": 2592,
+          "z": 288,
+          "heightM": 16.9,
+          "prominenceM": 9.2,
+          "isolationM": 804
+        },
+        {
+          "x": -1216,
+          "z": 2592,
+          "heightM": 16.6,
+          "prominenceM": 14.3,
+          "isolationM": 1584
+        },
+        {
+          "x": 2800,
+          "z": -2080,
+          "heightM": 16.4,
+          "prominenceM": 11.3,
+          "isolationM": 1422
+        }
+      ],
+      "transects": "docs/research/v1-revival/census-data/relief-transect-42-*.csv"
+    }
+  },
+  {
+    "seed": 415424794,
+    "landWithin2500": "77.0 %",
+    "borderLandCells": "0/772",
+    "coastRadiusPerRay": "3850 4100 3975 3975 4050 3675 3675 3550",
+    "settlementsPerRay": "1 1 1 0 0 1 0 0",
+    "rayMedian": 0.5,
+    "raysWith3to7": 0,
+    "settlementsTotal": 22,
+    "home": "59.9,-5.2",
+    "relief": {
+      "gridStepM": 16,
+      "landKm2": 36.4,
+      "heightQuantilesM": {
+        "p10": 1.9,
+        "p50": 5.5,
+        "p90": 9.6,
+        "p99": 17,
+        "max": 38.3
+      },
+      "heightHistogram": [
+        {
+          "fromM": 0,
+          "toM": 5,
+          "sharePct": 43.19
+        },
+        {
+          "fromM": 5,
+          "toM": 10,
+          "sharePct": 48.14
+        },
+        {
+          "fromM": 10,
+          "toM": 15,
+          "sharePct": 6.84
+        },
+        {
+          "fromM": 15,
+          "toM": 20,
+          "sharePct": 1.44
+        },
+        {
+          "fromM": 20,
+          "toM": 25,
+          "sharePct": 0.25
+        },
+        {
+          "fromM": 25,
+          "toM": 30,
+          "sharePct": 0.1
+        },
+        {
+          "fromM": 30,
+          "toM": 35,
+          "sharePct": 0.03
+        },
+        {
+          "fromM": 35,
+          "toM": 40,
+          "sharePct": 0.01
+        }
+      ],
+      "slopeClassSharePct": {
+        "<5°": 57.91,
+        "5–10°": 37.34,
+        "10–20°": 4.58,
+        "20–30°": 0.15,
+        "≥30°": 0.03
+      },
+      "gatedRidgeLand": {
+        "definition": "mountainRidge ≥ 0.05 (proxy)",
+        "sharePct": 14.27,
+        "components": 37,
+        "top": [
+          {
+            "km2": 0.94,
+            "extentKm": 2.26
+          },
+          {
+            "km2": 0.669,
+            "extentKm": 1.88
+          },
+          {
+            "km2": 0.484,
+            "extentKm": 1.67
+          },
+          {
+            "km2": 0.336,
+            "extentKm": 0.95
+          },
+          {
+            "km2": 0.266,
+            "extentKm": 1.31
+          },
+          {
+            "km2": 0.246,
+            "extentKm": 0.98
+          }
+        ]
+      },
+      "peaks": [
+        {
+          "x": -1824,
+          "z": -1600,
+          "heightM": 38.3,
+          "prominenceM": 37.9,
+          "isolationM": null
+        },
+        {
+          "x": 1856,
+          "z": 736,
+          "heightM": 33.5,
+          "prominenceM": 28.6,
+          "isolationM": 4337
+        },
+        {
+          "x": 2288,
+          "z": -1952,
+          "heightM": 33.2,
+          "prominenceM": 28.8,
+          "isolationM": 2722
+        },
+        {
+          "x": -1920,
+          "z": -3296,
+          "heightM": 33.2,
+          "prominenceM": 29.1,
+          "isolationM": 1637
+        },
+        {
+          "x": 2368,
+          "z": 2336,
+          "heightM": 30.4,
+          "prominenceM": 23.9,
+          "isolationM": 1660
+        },
+        {
+          "x": -1712,
+          "z": 3552,
+          "heightM": 29.9,
+          "prominenceM": 25.2,
+          "isolationM": 4253
+        },
+        {
+          "x": -2512,
+          "z": 16,
+          "heightM": 25.9,
+          "prominenceM": 17.8,
+          "isolationM": 1712
+        },
+        {
+          "x": 416,
+          "z": 2432,
+          "heightM": 25.6,
+          "prominenceM": 20.9,
+          "isolationM": 1936
+        },
+        {
+          "x": 0,
+          "z": 256,
+          "heightM": 24.9,
+          "prominenceM": 18.9,
+          "isolationM": 1859
+        },
+        {
+          "x": -2576,
+          "z": -352,
+          "heightM": 24.4,
+          "prominenceM": 7.2,
+          "isolationM": 371
+        },
+        {
+          "x": 2176,
+          "z": 2800,
+          "heightM": 23.3,
+          "prominenceM": 11.5,
+          "isolationM": 379
+        },
+        {
+          "x": 1200,
+          "z": 1168,
+          "heightM": 22.6,
+          "prominenceM": 15.4,
+          "isolationM": 720
+        },
+        {
+          "x": 2672,
+          "z": 2160,
+          "heightM": 22.3,
+          "prominenceM": 7.6,
+          "isolationM": 316
+        },
+        {
+          "x": 2512,
+          "z": -2096,
+          "heightM": 21.4,
+          "prominenceM": 9.9,
+          "isolationM": 222
+        },
+        {
+          "x": 736,
+          "z": -2448,
+          "heightM": 20.8,
+          "prominenceM": 16.7,
+          "isolationM": 1569
+        },
+        {
+          "x": 2864,
+          "z": 3008,
+          "heightM": 19.6,
+          "prominenceM": 17.6,
+          "isolationM": 660
+        },
+        {
+          "x": 3520,
+          "z": 1456,
+          "heightM": 19.5,
+          "prominenceM": 12.9,
+          "isolationM": 1069
+        },
+        {
+          "x": -1264,
+          "z": 2928,
+          "heightM": 19.3,
+          "prominenceM": 16.1,
+          "isolationM": 650
+        },
+        {
+          "x": -2784,
+          "z": 2592,
+          "heightM": 19.2,
+          "prominenceM": 13.5,
+          "isolationM": 1335
+        },
+        {
+          "x": -400,
+          "z": 352,
+          "heightM": 18.9,
+          "prominenceM": 9.1,
+          "isolationM": 233
+        }
+      ],
+      "transects": "docs/research/v1-revival/census-data/relief-transect-415424794-*.csv"
+    }
+  }
+]
