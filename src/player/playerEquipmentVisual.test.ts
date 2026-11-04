@@ -59,3 +59,9 @@ describe('resolvePlayerEquipmentVisual', () => {
     expect(resolvePlayerEquipmentVisualTintUrl(resolvePlayerEquipmentVisual('ranger_pauldron')!)).toBeNull()
   })
 })
+
+
+it('044-M bracers remain mechanical without a fabricated visual', () => {
+  expect(resolvePlayerEquipmentVisual('leather_bracers')).toBeNull()
+  expect(resolvePlayerEquipmentVisual('steel_bracers')).toBeNull()
+})

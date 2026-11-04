@@ -40,10 +40,10 @@ import type { SaveWorldGeneratedContainer } from '../world/worldGeneratedContain
 import { isEconomicKind } from '../economy/kinds'
 import { isAnimalStraySave } from '../fauna/animalStray'
 import { HABITAT_PRESSURE_TIE_ORDER } from '../fauna/habitatPressure'
-import { EQUIPMENT_SLOTS, isEquipmentSlot, type SavePlayerEquipment } from '../items/equipment'
+import { isEquipmentSlot, type SavePlayerEquipment } from '../items/equipment'
 import { type FoodSourceSpecies, isFoodSourceSpecies } from '../items/foodFreshness'
 import { isToolKind } from '../items/HeldTool'
-import { isMeleeToolKind, isRangedTool } from '../items/itemCatalog'
+import { isMeleeToolKind, isRangedTool, ITEM_CATALOG } from '../items/itemCatalog'
 import { ARMOR_KIND_LIST, isArmorKind, isArmorQuality, isRangedWeaponKind, isTrapKind, RANGED_WEAPON_KIND_LIST } from '../items/itemInstances'
 import { ITEM_DEFS, type ItemKind } from '../items/items'
 import { type SavePrimaryWeaponChoice } from '../items/primaryWeapons'
@@ -764,7 +764,7 @@ export type SaveWorkContract =
  *  representation or semantics of `SaveData` change — see the plan's
  *  "Future schema-change workflow". Never duplicate this number elsewhere;
  *  `saveState.ts` imports it instead of declaring its own constant. */
-export const CURRENT_SAVE_VERSION = 57
+export const CURRENT_SAVE_VERSION = 58
 
 /** Canonical save contract for the current schema version. This module
  *  intentionally carries no history of schemas from before the v1 hard cut
@@ -4367,12 +4367,13 @@ function migrateSaveV37ToV38(data: unknown): unknown {
     }))
     : v.npcStates
 
-  let playerEquipment: SavePlayerEquipment | undefined
+  const historicalSlots = ['head', 'body', 'arms', 'hands', 'legs', 'feet'] as const
+  let playerEquipment: Partial<Record<typeof historicalSlots[number], string>> | undefined
   const prevEquip = v.playerEquipment
   if (prevEquip && typeof prevEquip === 'object' && !Array.isArray(prevEquip)) {
     const pe = prevEquip as Record<string, unknown>
-    const next: SavePlayerEquipment = {}
-    for (const slot of EQUIPMENT_SLOTS) {
+    const next: Partial<Record<typeof historicalSlots[number], string>> = {}
+    for (const slot of historicalSlots) {
       const raw = pe[slot]
       if (typeof raw !== 'string' || raw.length === 0) continue
       if (slot === 'body' && isArmorKind(raw as ItemKind)) {
@@ -4475,6 +4476,7 @@ const SAVE_MIGRATIONS: Readonly<Record<number, SaveMigration>> = {
   54: migrateSaveV54ToV55,
   55: migrateSaveV55ToV56,
   56: migrateSaveV56ToV57,
+  57: migrateSaveV57ToV58,
 }
 
 /** v56 → v57 (plan persistence-008): `config.worldgenEpoch = 0` — every save
@@ -4485,6 +4487,32 @@ function migrateSaveV56ToV57(data: unknown): unknown {
   const v = data as Record<string, unknown>
   const config = (v.config ?? {}) as Record<string, unknown>
   return { ...v, version: 57, config: { ...config, worldgenEpoch: 0 } }
+}
+
+/** v57 → v58 (044-M): preserve exact owned pauldron identity in shoulders.
+ * Malformed fields stay malformed for structural validation; stale references drop.
+ */
+function migrateSaveV57ToV58(data: unknown): unknown {
+  const v = data as Record<string, unknown>
+  const equipment = v.playerEquipment
+  if (equipment === undefined || !equipment || typeof equipment !== 'object' || Array.isArray(equipment)) {
+    return { ...v, version: 58 }
+  }
+  const previous = equipment as Record<string, unknown>
+  // Do not turn corrupt equipment into an accepted save by deleting invalid fields.
+  if (Object.entries(previous).some(([key, id]) => (key !== 'arms' && !isEquipmentSlot(key))
+    || (id !== undefined && (typeof id !== 'string' || id.length === 0)))) return { ...v, version: 58 }
+  const rows = Array.isArray(v.inventoryInstances) ? v.inventoryInstances : []
+  const validShoulder = (id: unknown): id is string => typeof id === 'string' && rows.some((row: unknown) => {
+    if (!row || typeof row !== 'object') return false
+    const instance = row as Record<string, unknown>
+    return instance.id === id && typeof instance.kind === 'string'
+      && isArmorKind(instance.kind as ItemKind)
+      && ITEM_CATALOG[instance.kind as ItemKind]?.armor?.slot === 'shoulders'
+  })
+  const { arms, shoulders, ...rest } = previous
+  const selected = validShoulder(shoulders) ? shoulders : validShoulder(arms) ? arms : undefined
+  return { ...v, version: 58, playerEquipment: { ...rest, ...(selected ? { shoulders: selected } : {}) } }
 }
 
 function detectStoredVersion(value: unknown): number | null {

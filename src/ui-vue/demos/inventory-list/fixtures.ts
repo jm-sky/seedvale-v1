@@ -109,7 +109,7 @@ function buildFullBag(): DemoScenario {
     label: 'Pełny worek (hybryda)',
     note: 'Mixed-quality armor, large stack, liquids, FIFO food, held vs primary.',
     ...snapshotFromInventory(inventory, {
-      equippedSlots: { body: 'leather-1', arms: 'pauldron-1' },
+      equippedSlots: { body: 'leather-1', shoulders: 'pauldron-1' },
       heldTool: 'axe',
       heldInstanceId: axeId,
       primaryMelee: { kind: 'long_sword', instanceId: swordId },

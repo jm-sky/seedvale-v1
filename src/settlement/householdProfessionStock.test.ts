@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { ItemKind } from '../items/items'
+import { npcTradeQuantityAvailable } from '../ai/npcTradeAvailability'
+import { Inventory } from '../items/Inventory'
 import { isArmorItemInstance } from '../items/itemInstances'
 import { createHousehold, type HouseholdTradeStockContext } from './household'
 import {
@@ -113,6 +115,23 @@ describe('specialist armor quality (plan settlements-npcs-042)', () => {
     expect(instance && isArmorItemInstance(instance)).toBe(true)
     if (instance && isArmorItemInstance(instance)) {
       expect(instance.quality).toBe(pauldron?.armorQuality)
+    }
+  })
+})
+
+
+describe('044-M finite bracer stock', () => {
+  it('creates real quality instances for hunter and blacksmith, offers them and does not refill after restore', () => {
+    for (const [kind, role] of [['leather_bracers', 'hunter'], ['steel_bracers', 'blacksmith']] as const) {
+      const starting = { hasHunter: role === 'hunter', hasBlacksmith: role === 'blacksmith', tradeStock: tradeStock() }
+      const household = createHousehold(`h-${role}`, 's', 'home', undefined, starting)
+      const instance = household.items.getInstances(kind)[0]!
+      expect(instance).toBeDefined()
+      expect(isArmorItemInstance(instance)).toBe(true)
+      expect(npcTradeQuantityAvailable(kind, 'household', { role, household, personalInventory: new Inventory() }, [])).toBe(1)
+      household.items.removeInstance(instance.id)
+      const restored = createHousehold(household.id, 's', 'home', household.snapshot(), starting)
+      expect(restored.items.getInstances(kind)).toHaveLength(0)
     }
   })
 })

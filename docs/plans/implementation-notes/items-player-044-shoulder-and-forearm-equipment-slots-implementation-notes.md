@@ -188,3 +188,12 @@ If the slot-aware attachment helper/controller has tests from `items-player-039`
 Update comments/docs that describe pauldrons as `arms` equipment, especially `items-player-039`-era code comments and current state/catalog descriptions where they would otherwise become misleading. Historical plan text may remain historical unless project conventions require a correction note; current code/docs must use `shoulders`/`forearms`.
 
 > **Zrób git commit i push do main, rebase jeżeli trzeba**
+
+## 044-M implementation — 2026-11-04
+
+- Shared seven-slot union in `equipmentTypes.ts`; shoulders replaces arms throughout runtime, pauldron attachments, tests and demos. Forearms is independent; generic equip/preview/modifier paths handle both slots.
+- Save v58 (current main was v57 after pull): real v57→v58 registry step, exact owned shoulder reference validation, explicit valid shoulders wins, stale refs dropped without inventory mutation, malformed fields remain invalid. Historical v37→v38 uses a frozen local six-slot list. No epoch bump or runtime legacy branch.
+- Leather/steel bracers are instance-backed armor: .5/1 kg, .02/.04 scalar reduction, 20/45 base coins. No extra restrictions were necessary for this interim slice. Hunter and armor-capable blacksmith households seed one real quality instance at genuine household creation; existing snapshots never refill. Household trade allowlist admits these goods; personal armor remains reserved.
+- Per Q-IC4, no missing GLB is registered or requested. Item descriptions explicitly disclose absent character meshes. 044-V and its clipping/animation/attachment checks remain blocked on valid skinned assets.
+- Focused verification: 598 tests across 14 files (equipment/preview, donor policy, save migrations, stock/household/trade/inventory, NPC combat/trade, player appearance/visual mapping), Vue type-check, scoped ESLint and production build. No browser verification; author checks remain in the plan (mechanical buy/equip/swap/save/load; visual checks only when 044-V exists).
+- Source corrections: finite household stock also needs `npcTradeAvailability.ts` admission; this was extended rather than adding merchant restocking. Existing stock and instance IDs remain untouched on restore.

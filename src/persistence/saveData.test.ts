@@ -2721,11 +2721,59 @@ describe('worldgen epoch compatibility (persistence-008)', () => {
     const snapshot = structuredClone(input)
     const result = loadStoredSave(input, { worldgenEpoch: 0 })
     expect(input).toEqual(snapshot)
-    expect(result).toEqual({ status: 'ok', data: { ...snapshot, version: 57, config: { ...configV56, worldgenEpoch: 0 } } })
+    expect(result).toEqual({ status: 'ok', data: { ...snapshot, version: CURRENT_SAVE_VERSION, config: { ...configV56, worldgenEpoch: 0 } } })
   })
 
   it('a future format version stays unsupported-version regardless of epoch', () => {
     const future = { ...validSave, version: CURRENT_SAVE_VERSION + 1, config: { ...config, worldgenEpoch: 9 } }
     expect(loadStoredSave(future, { worldgenEpoch: 0 })).toEqual({ status: 'unsupported-version', version: CURRENT_SAVE_VERSION + 1 })
+  })
+})
+
+
+describe('044-M v57 to v58 equipment migration', () => {
+  const first = { id: 'pauldron:one', kind: 'ranger_pauldron', quality: 'good' }
+  const second = { id: 'pauldron:two', kind: 'knight_pauldron_round', quality: 'poor' }
+  const bracers = { id: 'bracers:one', kind: 'steel_bracers', quality: 'masterwork' }
+  const previous = { ...validSave, version: 57, inventoryInstances: [first, second, bracers] }
+
+  it('preserves owned pauldron ID, quality, inventory and epoch; input stays unchanged', () => {
+    const input = { ...previous, playerEquipment: { arms: first.id } }
+    const snapshot = structuredClone(input)
+    const result = loadStoredSave(input)
+    expect(result.status).toBe('ok')
+    if (result.status !== 'ok') return
+    expect(result.data.playerEquipment).toEqual({ shoulders: first.id })
+    expect(result.data.inventoryInstances).toEqual(previous.inventoryInstances)
+    expect(result.data.config.worldgenEpoch).toBe(previous.config.worldgenEpoch)
+    expect(result.data.version).toBe(CURRENT_SAVE_VERSION)
+    expect(input).toEqual(snapshot)
+  })
+
+  it('explicit valid shoulders wins; stale/wrong-kind refs never become forearms', () => {
+    for (const [equipment, expected] of [
+      [{ arms: first.id, shoulders: second.id }, { shoulders: second.id }],
+      [{ arms: first.id, shoulders: 'missing' }, { shoulders: first.id }],
+      [{ arms: 'missing' }, {}],
+      [{ arms: bracers.id }, {}],
+      [{ arms: first.id, forearms: bracers.id }, { shoulders: first.id, forearms: bracers.id }],
+    ]) {
+      const result = loadStoredSave({ ...previous, playerEquipment: equipment })
+      expect(result.status).toBe('ok')
+      if (result.status === 'ok') expect(result.data.playerEquipment).toEqual(expected)
+    }
+  })
+
+  it('rejects corrupt previous equipment or instances instead of repairing them', () => {
+    for (const equipment of [{ arms: 7 }, { arms: '' }, { arms: first.id, wrist: 'x' }, { shoulders: 9 }]) {
+      expect(loadStoredSave({ ...previous, playerEquipment: equipment }).status).toBe('migration-failed')
+    }
+    expect(loadStoredSave({ ...previous, inventoryInstances: [{ ...first, quality: 'fake' }], playerEquipment: { arms: first.id } }).status).toBe('migration-failed')
+  })
+
+  it('round-trips the new shape and rejects legacy keys at the current version', () => {
+    const current = { ...previous, version: CURRENT_SAVE_VERSION, playerEquipment: { shoulders: first.id, forearms: bracers.id } }
+    expect(loadStoredSave(current)).toEqual({ status: 'ok', data: current })
+    expect(loadStoredSave({ ...current, playerEquipment: { arms: first.id } }).status).toBe('invalid')
   })
 })

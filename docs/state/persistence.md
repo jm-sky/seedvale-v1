@@ -139,3 +139,7 @@ src/app/saveState.ts
 src/app/createApp.ts
 src/app/worldBundle.ts
 ```
+
+### Equipment slot migration (044-M, save v58)
+
+The v57→v58 registry step maps an owned pauldron `playerEquipment.arms` reference to `shoulders`, preserving instance ID and quality. Explicit valid shoulders wins; stale or wrong-kind legacy references drop without touching inventory. Malformed equipment/instance data still fails validation. Forearms is a distinct current slot; it never receives legacy arms. The historical v37→v38 migration uses its frozen six-slot list. No worldgen epoch change.

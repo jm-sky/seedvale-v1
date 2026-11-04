@@ -91,11 +91,13 @@ export type ItemKind =
   /** Plan items-player-029 — wearable body-armor kinds (`items/equipment.ts`). */
   | 'leather_armor'
   | 'chainmail'
-  /** Plan items-player-039 — wearable arms-slot pauldrons (`items/equipment.ts`). */
+  /** Plan items-player-039 — wearable shoulders-slot pauldrons (`items/equipment.ts`). */
   | 'leather_pauldron'
   | 'ranger_pauldron'
   | 'knight_pauldron_spike'
   | 'knight_pauldron_round'
+  | 'leather_bracers'
+  | 'steel_bracers'
   | 'berries'
   | 'apple'
   | 'nuts'
@@ -1028,6 +1030,24 @@ export const ITEM_DEFS: Record<ItemKind, ItemDef> = {
     size: 'MD',
     color: 0x9aa0a8,
     description: 'Cięższe okrągłe naramienniki płytowe. Najlepsza ochrona ramion w tym zestawie, nadal słabsza niż zbroja tułowia.'
+  },
+  leather_bracers: {
+    kind: 'leather_bracers',
+    label: 'skórzane karwasze',
+    categories: ['armor'],
+    weight: 0.5,
+    size: 'SM',
+    color: 0x6b4a2f,
+    description: 'Skórzane ochraniacze przedramion. Działają mechanicznie; model na postaci nie jest jeszcze dostępny.',
+  },
+  steel_bracers: {
+    kind: 'steel_bracers',
+    label: 'stalowe karwasze',
+    categories: ['armor'],
+    weight: 1,
+    size: 'SM',
+    color: 0x9aa0a8,
+    description: 'Stalowe ochraniacze przedramion. Działają mechanicznie; model na postaci nie jest jeszcze dostępny.',
   },
   berries: {
     kind: 'berries',

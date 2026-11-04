@@ -60,7 +60,7 @@ describe('previewEquipLoadout', () => {
     const { inventory, ids } = inventoryWithArmor({ kind: 'leather_pauldron' })
     const preview = previewEquipLoadout(inventory, {}, ids[0]!)
     expect(preview.alreadyEquipped).toBe(false)
-    expect(preview.targetSlot).toBe('arms')
+    expect(preview.targetSlot).toBe('shoulders')
     expect(preview.replacesLabel).toBeNull()
     expect(preview.proposed!.damageReduction).toBeGreaterThan(0)
     expect(preview.context).toContain('pusty')

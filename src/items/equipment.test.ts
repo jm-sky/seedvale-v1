@@ -6,6 +6,7 @@ import {
 import {
   composeEquipmentModifiers,
   createEquipmentState,
+  EQUIPMENT_SLOTS,
   equippedBodyArmor,
   equippedInstanceId,
   NEUTRAL_EQUIPMENT_MODIFIERS,
@@ -118,19 +119,19 @@ describe('createEquipmentState', () => {
     expect(live.length).toBe(1)
   })
 
-  it('maps every pauldron kind onto the arms slot (plan items-player-039)', () => {
+  it('maps every pauldron kind onto the shoulders slot (plan items-player-039)', () => {
     for (const kind of PAULDRON_KINDS) {
-      expect(ITEM_CATALOG[kind].armor?.slot).toBe('arms')
+      expect(ITEM_CATALOG[kind].armor?.slot).toBe('shoulders')
       const { inventory, ids } = inventoryWithArmor({ kind })
       const equipment = createEquipmentState(inventory)
       expect(equipment.equip(ids[0]!, inventory)).toBe(true)
-      expect(equipment.getSlot('arms')).toBe(ids[0])
+      expect(equipment.getSlot('shoulders')).toBe(ids[0])
       expect(equipment.getSlot('body')).toBeNull()
     }
     expect(ARMOR_KIND_LIST).toEqual(expect.arrayContaining([...PAULDRON_KINDS]))
   })
 
-  it('equipping a second arms item replaces the first and leaves body alone', () => {
+  it('equipping a second shoulders item replaces the first and leaves body alone', () => {
     const { inventory, ids } = inventoryWithArmor(
       { kind: 'leather_armor' },
       { kind: 'leather_pauldron' },
@@ -141,26 +142,26 @@ describe('createEquipmentState', () => {
     expect(equipment.equip(ids[1]!, inventory)).toBe(true)
     expect(equipment.equip(ids[2]!, inventory)).toBe(true)
     expect(equipment.getSlot('body')).toBe(ids[0])
-    expect(equipment.getSlot('arms')).toBe(ids[2])
+    expect(equipment.getSlot('shoulders')).toBe(ids[2])
     expect(equippedBodyArmor(equipment, inventory)).toBe('leather_armor')
-    expect(equippedInstanceId(equipment, inventory, 'arms')).toBe(ids[2])
+    expect(equippedInstanceId(equipment, inventory, 'shoulders')).toBe(ids[2])
   })
 
-  it('restores a saved arms instance id', () => {
+  it('restores a saved shoulders instance id', () => {
     const { inventory, ids } = inventoryWithArmor({ kind: 'knight_pauldron_round' })
-    const equipment = createEquipmentState(inventory, { arms: ids[0] })
-    expect(equipment.getSlot('arms')).toBe(ids[0])
-    expect(equippedInstanceId(equipment, inventory, 'arms')).toBe(ids[0])
+    const equipment = createEquipmentState(inventory, { shoulders: ids[0] })
+    expect(equipment.getSlot('shoulders')).toBe(ids[0])
+    expect(equippedInstanceId(equipment, inventory, 'shoulders')).toBe(ids[0])
   })
 
-  it('syncWithInventory clears a stale arms reference', () => {
+  it('syncWithInventory clears a stale shoulders reference', () => {
     const { inventory, ids } = inventoryWithArmor({ kind: 'leather_pauldron' })
     const equipment = createEquipmentState(inventory)
     equipment.equip(ids[0]!, inventory)
     inventory.removeInstance(ids[0]!)
     equipment.syncWithInventory(inventory)
-    expect(equipment.getSlot('arms')).toBeNull()
-    expect(equippedInstanceId(equipment, inventory, 'arms')).toBeNull()
+    expect(equipment.getSlot('shoulders')).toBeNull()
+    expect(equippedInstanceId(equipment, inventory, 'shoulders')).toBeNull()
   })
 })
 
@@ -319,5 +320,27 @@ describe('resolveEquipmentModifiers', () => {
     expect(m.incomingDamageMultiplier).toBeLessThan(c.incomingDamageMultiplier)
     expect(m.meleeStaminaMultiplier).toBeLessThan(c.meleeStaminaMultiplier)
     expect(masterwork.inventory.totalWeight()).toBeLessThan(common.inventory.totalWeight())
+  })
+})
+
+
+describe('044-M independent shoulders and forearms', () => {
+  it('composes both pieces, replaces only the same slot and never changes inventory', () => {
+    const { inventory, ids } = inventoryWithArmor({ kind: 'ranger_pauldron' }, { kind: 'leather_bracers' }, { kind: 'steel_bracers', quality: 'good' })
+    const equipment = createEquipmentState(inventory)
+    const before = ids.map(id => inventory.getInstance(id))
+    expect(EQUIPMENT_SLOTS).toEqual(['head', 'body', 'shoulders', 'forearms', 'hands', 'legs', 'feet'])
+    expect(equipment.equip(ids[0]!, inventory)).toBe(true)
+    expect(equipment.equip(ids[1]!, inventory)).toBe(true)
+    expect(resolveEquipmentModifiers(equipment, inventory).incomingDamageMultiplier).toBeCloseTo(.95 * .98)
+    expect(equipment.equip(ids[2]!, inventory)).toBe(true)
+    expect(equipment.getSlot('shoulders')).toBe(ids[0])
+    expect(equipment.getSlot('forearms')).toBe(ids[2])
+    expect(resolveEquipmentModifiers(equipment, inventory).incomingDamageMultiplier).toBeCloseTo(.95 * (1 - .04 * 1.1))
+    const restored = createEquipmentState(inventory, equipment.exportState(inventory))
+    expect(restored.exportState(inventory)).toEqual({ shoulders: ids[0], forearms: ids[2] })
+    equipment.unequip('shoulders')
+    expect(equipment.getSlot('forearms')).toBe(ids[2])
+    expect(ids.map(id => inventory.getInstance(id))).toEqual(before)
   })
 })

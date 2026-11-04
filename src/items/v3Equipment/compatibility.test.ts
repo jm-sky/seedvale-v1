@@ -28,6 +28,14 @@ describe('exhaustive compatibility manifest', () => {
     expect(manifest.map(e => ({ id: e.donorId, target: e.target?.id ?? e.candidateTarget, classification: e.classification }))).toEqual(rows)
   })
 
+  it('044-M keeps shoulder projections on shoulders and never merges forearms', () => {
+    const wrongShoulder = { ...ITEM_CATALOG.ranger_pauldron, armor: { ...ITEM_CATALOG.ranger_pauldron.armor!, slot: 'forearms' as const } }
+    expect(errors(manifest, { ...v1, catalog: { ...ITEM_CATALOG, ranger_pauldron: wrongShoulder } })).toMatch(/incompatible target category\/gameplay family/)
+    expect(ITEM_CATALOG.leather_bracers.armor?.slot).toBe('forearms')
+    expect(ITEM_CATALOG.ranger_pauldron.armor?.slot).toBe('shoulders')
+    expect(projectV3Equipment('leather_bracers', v1).activation).toBe('inactive')
+  })
+
   it('rejects every unapproved classification transition for all 87 IDs', () => {
     for (const e of manifest) {
       for (const classification of ['existing', 'adapt', 'new', 'conflict', 'deferred'] as const) {

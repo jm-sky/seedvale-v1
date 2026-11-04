@@ -1,6 +1,6 @@
-/** Shared equipment vocabulary; the live slot union changes in 044-M.
+/** Shared equipment slot and layer vocabulary.
  * @domain items-player
  */
-export type EquipmentSlot = 'head' | 'body' | 'arms' | 'hands' | 'legs' | 'feet'
+export type EquipmentSlot = 'head' | 'body' | 'shoulders' | 'forearms' | 'hands' | 'legs' | 'feet'
 export type ArmorLayer = 'under' | 'outer'
 export type EquipmentPositionKey = `${EquipmentSlot}:${ArmorLayer}`

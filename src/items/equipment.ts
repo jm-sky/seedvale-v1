@@ -18,7 +18,8 @@ export type { EquipmentSlot } from './equipmentTypes'
 export const EQUIPMENT_SLOTS: readonly EquipmentSlot[] = [
   'head',
   'body',
-  'arms',
+  'shoulders',
+  'forearms',
   'hands',
   'legs',
   'feet',
@@ -28,7 +29,8 @@ export const EQUIPMENT_SLOTS: readonly EquipmentSlot[] = [
 export const EQUIPMENT_SLOT_LABEL: Record<EquipmentSlot, string> = {
   head: 'Głowa',
   body: 'Tułów',
-  arms: 'Ramiona',
+  shoulders: 'Naramienniki',
+  forearms: 'Przedramiona',
   hands: 'Dłonie',
   legs: 'Nogi',
   feet: 'Stopy',
@@ -106,7 +108,8 @@ export function createEquipmentState(inventory: Inventory, initial?: SavePlayerE
   const slots: Record<EquipmentSlot, string | null> = {
     head: null,
     body: null,
-    arms: null,
+    shoulders: null,
+    forearms: null,
     hands: null,
     legs: null,
     feet: null,

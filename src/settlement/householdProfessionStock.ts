@@ -146,6 +146,7 @@ function resolveHunterGrants(starting: HouseholdStartingContext, householdId: st
   pushGrant(grants, 'short_bow', HUNTER_STARTER_TRADE_SHORT_BOWS)
   pushGrant(grants, 'waterskin_small', 1)
   pushGrant(grants, 'leather_pauldron', 1, armorQualityFor(starting, householdId, 'leather_pauldron', 0))
+  pushGrant(grants, 'leather_bracers', 1, armorQualityFor(starting, householdId, 'leather_bracers', 0))
 
   if (rank >= 2 || forest) {
     pushGrant(grants, 'hunting_bow', 1)
@@ -252,6 +253,7 @@ function resolveBlacksmithGrants(starting: HouseholdStartingContext, householdId
   }
 
   if (armor || !profile?.exclusive) {
+    pushGrant(grants, 'steel_bracers', 1, artisanArmorQualityFor(starting, householdId, 'steel_bracers', 0, profile))
     pushGrant(
       grants,
       'knight_pauldron_round',

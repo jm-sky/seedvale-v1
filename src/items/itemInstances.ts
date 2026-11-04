@@ -23,6 +23,8 @@ export type ArmorKind =
   | 'ranger_pauldron'
   | 'knight_pauldron_spike'
   | 'knight_pauldron_round'
+  | 'leather_bracers'
+  | 'steel_bracers'
 
 export const ARMOR_KIND_LIST: readonly ArmorKind[] = [
   'leather_armor',
@@ -31,6 +33,8 @@ export const ARMOR_KIND_LIST: readonly ArmorKind[] = [
   'ranger_pauldron',
   'knight_pauldron_spike',
   'knight_pauldron_round',
+  'leather_bracers',
+  'steel_bracers',
 ]
 
 export const ARMOR_KINDS: ReadonlySet<ItemKind> = new Set<ItemKind>(ARMOR_KIND_LIST)

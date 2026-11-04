@@ -32,7 +32,8 @@ export const DEMO_SCENARIOS: readonly DemoScenario[] = [
 const EMPTY_SLOTS = [
   { slot: 'head' as const, itemLabel: null, qualityLabel: null },
   { slot: 'body' as const, itemLabel: null, qualityLabel: null },
-  { slot: 'arms' as const, itemLabel: null, qualityLabel: null },
+  { slot: 'shoulders' as const, itemLabel: null, qualityLabel: null },
+  { slot: 'forearms' as const, itemLabel: null, qualityLabel: null },
   { slot: 'hands' as const, itemLabel: null, qualityLabel: null },
   { slot: 'legs' as const, itemLabel: null, qualityLabel: null },
   { slot: 'feet' as const, itemLabel: null, qualityLabel: null },
@@ -140,7 +141,8 @@ export function characterCriticalFixture(): {
         slots: [
           { slot: 'head', itemLabel: null, qualityLabel: null },
           { slot: 'body', itemLabel: 'Kaftan skórzany', qualityLabel: 'dobry' },
-          { slot: 'arms', itemLabel: null, qualityLabel: null },
+          { slot: 'shoulders', itemLabel: null, qualityLabel: null },
+          { slot: 'forearms', itemLabel: null, qualityLabel: null },
           { slot: 'hands', itemLabel: 'Rękawice', qualityLabel: 'zwykłe' },
           { slot: 'legs', itemLabel: 'Spodnie', qualityLabel: 'zwykłe' },
           { slot: 'feet', itemLabel: 'Buty', qualityLabel: 'dobry' },

@@ -1170,12 +1170,12 @@ export async function createApp(
       : ubcPreloadUrls(playerAppearance.modelUrl),
     playerAppearance.kit,
   )
-  const syncArmsEquipmentVisual = (): Promise<void> => {
-    const armsId = equippedInstanceId(equipment, inventory, 'arms')
-    const armsKind = armsId ? inventory.getInstance(armsId)?.kind : null
+  const syncShouldersEquipmentVisual = (): Promise<void> => {
+    const shouldersId = equippedInstanceId(equipment, inventory, 'shoulders')
+    const shouldersKind = shouldersId ? inventory.getInstance(shouldersId)?.kind : null
     return player.applyEquipmentVisuals(
-      'arms',
-      armsKind ? resolvePlayerEquipmentVisual(armsKind) : null,
+      'shoulders',
+      shouldersKind ? resolvePlayerEquipmentVisual(shouldersKind) : null,
     )
   }
   const syncPlayerAppearance = (): void => {
@@ -1188,7 +1188,7 @@ export async function createApp(
       kit: appearance.kit,
       tintUrl: appearance.tintUrl,
     })
-    void syncArmsEquipmentVisual()
+    void syncShouldersEquipmentVisual()
   }
   await player.applyAppearance({
     modelUrl: playerAppearance.modelUrl,
@@ -1196,7 +1196,7 @@ export async function createApp(
     kit: playerAppearance.kit,
     tintUrl: playerAppearance.tintUrl,
   })
-  await syncArmsEquipmentVisual()
+  await syncShouldersEquipmentVisual()
   bootMarkEnd('PlayerController.create')
 
   if (initialSave) {

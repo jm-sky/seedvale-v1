@@ -95,6 +95,8 @@ const HOUSEHOLD_TRADE_RESERVES: Partial<Record<ItemKind, ReserveResolver>> = {
   waterskin_small: noHouseholdReserve,
   backpack: noHouseholdReserve,
   leather_pauldron: noHouseholdReserve,
+  leather_bracers: noHouseholdReserve,
+  steel_bracers: noHouseholdReserve,
   leather_armor: noHouseholdReserve,
   saddlebags: noHouseholdReserve,
   axe: noHouseholdReserve,

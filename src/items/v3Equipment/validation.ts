@@ -36,8 +36,8 @@ function compatibleFamily(source: V3EquipmentDefinition, id: ItemKind, v1: V1Def
   }
   if (source.category === 'armor') {
     // Compare existing profile roles only. No slot conversion is exported or applied.
-    const slot = source.slot === 'torso' ? 'body' : source.slot === 'shoulders' ? 'arms' : source.slot
-    return source.layer === 'outer' && source.slot !== 'forearms'
+    const slot = source.slot === 'torso' ? 'body' : source.slot
+    return source.layer === 'outer'
       && def.categories.includes('armor') && entry.armor?.slot === slot
   }
   if (source.category === 'ammo') {
