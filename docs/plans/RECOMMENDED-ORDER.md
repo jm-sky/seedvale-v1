@@ -330,7 +330,6 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   - [`items-player-028-npc-player-storage-access-policies.md`](items-player-028-npc-player-storage-access-policies.md)
 - [`items-player-064-stage-4-living-world-sources-and-npc-weapon-use.md`](items-player-064-stage-4-living-world-sources-and-npc-weapon-use.md)  
   is blocked by:
-  - [`items-player-062-stage-4-weapon-ammunition-and-shield-intake.md`](items-player-062-stage-4-weapon-ammunition-and-shield-intake.md)
   - [`items-player-063-upper-tier-singleton-issuance-ledger.md`](items-player-063-upper-tier-singleton-issuance-ledger.md)
 - [`items-player-065-layered-anatomical-armor-and-typed-physical-damage.md`](items-player-065-layered-anatomical-armor-and-typed-physical-damage.md)  
   is blocked by:

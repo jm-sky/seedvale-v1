@@ -9,6 +9,9 @@ export type ItemKind =
   | 'exceptional_shell'
   | 'stone'
   | 'sling_stone'
+  | 'wooden_shield'
+  | 'iron_rimmed_shield'
+  | 'buckler'
   | 'branch'
   | 'beam'
   | 'mushroom'
@@ -348,6 +351,33 @@ export const ITEM_DEFS: Record<ItemKind, ItemDef> = {
     size: 'XS',
     color: 0x7d7f84,
     description: 'Gładki, wyważony otoczak do procy. Nie nadaje się do budowy ani do rzucania.'
+  },
+  wooden_shield: {
+    kind: 'wooden_shield',
+    label: 'drewniana tarcza',
+    categories: ['other'],
+    weight: 2.5,
+    size: 'LG',
+    color: 0x8a6a40,
+    description: 'Drewniana tarcza z klepek. Towar do przechowywania lub handlu — w tej wersji gry nie można jej używać do blokowania.',
+  },
+  iron_rimmed_shield: {
+    kind: 'iron_rimmed_shield',
+    label: 'tarcza okuta żelazem',
+    categories: ['other'],
+    weight: 4,
+    size: 'LG',
+    color: 0x6f7378,
+    description: 'Drewniana tarcza okuta żelazem. Towar do przechowywania lub handlu — w tej wersji gry nie można jej używać do blokowania.',
+  },
+  buckler: {
+    kind: 'buckler',
+    label: 'puklerz',
+    categories: ['other'],
+    weight: 1.5,
+    size: 'MD',
+    color: 0x9a9ea5,
+    description: 'Mała okrągła tarcza. Towar do przechowywania lub handlu — w tej wersji gry nie można jej używać do blokowania.',
   },
   branch: {
     kind: 'branch',
@@ -1948,6 +1978,28 @@ function buildProceduralItemMesh(kind: ItemKind): THREE.Object3D {
     mesh.position.y = 0.1
     mesh.castShadow = true
     return mesh
+  }
+  if (kind === 'wooden_shield' || kind === 'iron_rimmed_shield' || kind === 'buckler') {
+    const group = new THREE.Group()
+    const radius = kind === 'buckler' ? 0.14 : 0.22
+    const face = new THREE.Mesh(
+      new THREE.CylinderGeometry(radius, radius, 0.03, 10),
+      new THREE.MeshStandardMaterial({ color: ITEM_DEFS[kind].color, flatShading: true, metalness: kind === 'wooden_shield' ? 0 : 0.35 }),
+    )
+    face.rotation.x = Math.PI / 2
+    face.position.y = radius
+    face.castShadow = true
+    group.add(face)
+    if (kind !== 'wooden_shield') {
+      const boss = new THREE.Mesh(
+        new THREE.SphereGeometry(radius * 0.3, 6, 4),
+        new THREE.MeshStandardMaterial({ color: 0x8c9096, flatShading: true, metalness: 0.5 }),
+      )
+      boss.position.set(0, radius, 0.03)
+      boss.castShadow = true
+      group.add(boss)
+    }
+    return group
   }
   if (kind === 'sling_stone') {
     const mesh = new THREE.Mesh(

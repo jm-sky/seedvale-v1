@@ -42,6 +42,7 @@ Generated from TypeScript imports.
 - `items/itemCapabilities.test.ts`
 - `items/stage4Bows.test.ts`
 - `items/stage4MeleeBatch.test.ts`
+- `items/stage4Shields.test.ts`
 - `items/stage4UpperTierMelee.test.ts`
 - `persistence/saveData.ts`
 - `player/PlayerController.ts`
@@ -194,6 +195,7 @@ Generated from TypeScript imports.
 - `items/stage4Ammo.test.ts`
 - `items/stage4Bows.test.ts`
 - `items/stage4MeleeBatch.test.ts`
+- `items/stage4Shields.test.ts`
 - `items/stage4UpperTierMelee.test.ts`
 - `items/trade.test.ts`
 - `items/trade.ts`
@@ -1081,8 +1083,10 @@ Generated from TypeScript imports.
 - `items/sensibleFood.ts`
 - `items/stage4Ammo.test.ts`
 - `items/stage4Bows.test.ts`
+- `items/stage4Deferred.test.ts`
 - `items/stage4MeleeBatch.test.ts`
 - `items/stage4NoSource.test.ts`
+- `items/stage4Shields.test.ts`
 - `items/stage4UpperTierMelee.test.ts`
 - `items/treasureGameplay.test.ts`
 - `items/treasureGameplay.ts`
@@ -1439,7 +1443,9 @@ Generated from TypeScript imports.
 - `items/sensibleFood.ts`
 - `items/stage4Ammo.test.ts`
 - `items/stage4Bows.test.ts`
+- `items/stage4Deferred.test.ts`
 - `items/stage4MeleeBatch.test.ts`
+- `items/stage4Shields.test.ts`
 - `items/stage4UpperTierMelee.test.ts`
 - `items/tentProp.ts`
 - `items/timedProcess.ts`
@@ -1697,6 +1703,16 @@ Generated from TypeScript imports.
 - `items/tradeCatalog.ts`
 - `items/upperTierIssuance.ts`
 
+## `items/stage4Deferred.test.ts`
+
+**Imports**
+
+- `items/itemCatalog.ts`
+- `items/items.ts`
+- `items/tradeCatalog.ts`
+- `items/upperTierIdentities.ts`
+- `items/v3Equipment/catalogue.ts`
+
 ## `items/stage4MeleeBatch.test.ts`
 
 **Imports**
@@ -1720,6 +1736,17 @@ Generated from TypeScript imports.
 - `items/itemCatalog.ts`
 - `items/tradeCatalog.ts`
 - `settlement/merchantTrade.ts`
+
+## `items/stage4Shields.test.ts`
+
+**Imports**
+
+- `items/HeldTool.ts`
+- `items/Inventory.ts`
+- `items/itemCatalog.ts`
+- `items/items.ts`
+- `items/trade.ts`
+- `items/tradeCatalog.ts`
 
 ## `items/stage4UpperTierMelee.test.ts`
 
@@ -1859,6 +1886,7 @@ Generated from TypeScript imports.
 - `items/stage4Ammo.test.ts`
 - `items/stage4Bows.test.ts`
 - `items/stage4MeleeBatch.test.ts`
+- `items/stage4Shields.test.ts`
 - `items/stage4UpperTierMelee.test.ts`
 - `items/trade.test.ts`
 - `items/trapInstanceTrade.test.ts`
@@ -1889,8 +1917,10 @@ Generated from TypeScript imports.
 - `items/inventoryView.ts`
 - `items/stage4Ammo.test.ts`
 - `items/stage4Bows.test.ts`
+- `items/stage4Deferred.test.ts`
 - `items/stage4MeleeBatch.test.ts`
 - `items/stage4NoSource.test.ts`
+- `items/stage4Shields.test.ts`
 - `items/stage4UpperTierMelee.test.ts`
 - `items/trade.test.ts`
 - `items/trade.ts`
@@ -2008,6 +2038,7 @@ Generated from TypeScript imports.
 - `app/interactables.ts`
 - `items/Inventory.ts`
 - `items/armorItemInstances.ts`
+- `items/stage4Deferred.test.ts`
 - `items/stage4UpperTierMelee.test.ts`
 - `items/trade.ts`
 - `items/treasureGameplay.ts`
@@ -2092,6 +2123,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `items/stage4Deferred.test.ts`
 - `items/v3Equipment/adapter.ts`
 - `items/v3Equipment/catalogue.test.ts`
 - `items/v3Equipment/compatibility.test.ts`
