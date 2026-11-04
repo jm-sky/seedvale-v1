@@ -105,7 +105,9 @@ function layoutAndRoutes(seed: number, hydrologyId: string) {
   let routes = 0
   for (const d of defs) routes += roadRoutesForSettlement(d, ctx).length
   const t3 = performance.now()
-  return { sites: layout.sites.length, defs: defs.length, routes, layoutMs: t1 - t0, defsMs: t2 - t1, routesMs: t3 - t2 }
+  const families = defs.reduce((n, d) => n + d.families.length, 0)
+  const npcs = defs.reduce((n, d) => n + d.families.reduce((m, f) => m + f.members.length, 0), 0)
+  return { sites: layout.sites.length, defs: defs.length, routes, households: families, npcs, layoutMs: t1 - t0, defsMs: t2 - t1, routesMs: t3 - t2 }
 }
 
 const out: Record<string, unknown> = {}

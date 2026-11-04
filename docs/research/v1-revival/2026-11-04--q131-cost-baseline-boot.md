@@ -31,7 +31,16 @@ Cold/warm ready time and `createWorldBundle`: **±25 %** (spread up to 40 % on s
 - Road routes: 22 sites, 37 / 39 routes; the ~23–36 s is **Node cold compute of every settlement's routes** (the game computes lazily and caches) — a bound for a "route everything" tool, not boot cost.
 - Tolerance 🟡: hydrology and chunk figures ±20 % (observed spread ≤ 20 %, chunk p95 ≤ 50 % with 60 samples); routes ±25 %.
 
-## Not measured yet (🟡)
+## Static simulation workload (Node, `measure-worldgen-cost.ts`, definition level)
 
-- **Peak transient worker memory** and map-raster cost need a browser/debug hook (no runtime change made here).
-- **Simulation workload** (households, NPCs, transport legs, one time-skip run): needs the runtime simulation harness; not attempted headlessly.
+| Seed | settlements | households (families = houses) | NPCs (family members) |
+| --- | --- | --- | --- |
+| 42 | 22 | 83 | 153 |
+| 415424794 | 22 | 94 | 181 |
+
+✅ counts from `SettlementDef.families` (deterministic, identical per rep). They are the upper bound of what the simulation owns, not live state.
+
+## Not measured (🟡, needs a runtime change — noted, not made)
+
+- **Peak transient worker memory** and **map-raster cost**: need a debug hook in the worker pool / map renderer.
+- **Live simulation workload** (active transport legs, one representative time-skip run): needs a runtime harness/hook exposing `SettlementsManager` state; follow-up row proposed (S, adds a `?bootMark`-style debug counter only).
