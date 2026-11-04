@@ -135,6 +135,8 @@ export type DebugSystemName =
   | 'npcs'
   | 'playerModel'
   | 'weather'
+  /** Scene distance fog — off for high-altitude `?fly` screenshots (plan tools-024) that fog would wash out. */
+  | 'fog'
   | 'caveDetail'
   /** Presentation-only cave heightfield shader polish (rock detail / wetness). */
   | 'caveSurfaceDetail'

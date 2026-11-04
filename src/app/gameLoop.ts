@@ -80,7 +80,7 @@ import {
   RANGED_RETICLE_TARGET_HEIGHT,
 } from '../combat/rangedReticle'
 import { createColliderDebugView } from '../debug/colliderDebugView'
-import { isCameraMeshDebugMode, isColliderDebugMode, isDebugMode, isNpcCombatDebugMode } from '../debug/debugMode'
+import { isCameraMeshDebugMode, isColliderDebugMode, isDebugMode, isNpcCombatDebugMode, isSystemEnabled } from '../debug/debugMode'
 import { createFlyCam, readFlyConfig } from '../debug/flyCam'
 import { setCameraMeshHit } from '../debug/renderStateDebug'
 import { ANIMAL_LABELS, FAUNA_SHADOW_DISTANCE, selectDietFeedKind } from '../fauna/AnimalAgent'
@@ -336,6 +336,11 @@ function applyDayNight(
     fog.color.setHex(sceneFog.fogColor)
     fog.near = sceneFog.fogNear
     fog.far = sceneFog.fogFar
+    // `?debugDisableSystems=fog` (tools-024 screenshots): push fog out of range instead of rebuilding materials.
+    if (!isSystemEnabled('fog')) {
+      fog.near = 1e7
+      fog.far = 2e7
+    }
   }
   chunkManager.setWaterDayNight(p.dayFactor, sky.sunPosition)
   chunkManager.setGrassDayNight(p.dayFactor, sky.sunPosition)
@@ -770,7 +775,19 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
   } = deps
   // `?fly` — free-flight observer (src/debug/flyCam.ts); replaces `player.update()` below.
   const flyConfig = readFlyConfig()
-  const flyCam = flyConfig ? createFlyCam(flyConfig, player, camera, mouseLook.state, keyboard.state) : null
+  const flyCam = flyConfig
+    ? createFlyCam(flyConfig, player, camera, mouseLook.state, keyboard.state, {
+        resolveHome: () => {
+          const def = bundle.settlementsManager.getHomeDef()
+          return { x: def.x, z: def.z }
+        },
+        // Readiness for `?fly` screenshots (plan tools-024): home settlement built and the loaded chunk set unchanged.
+        streamingState: () => ({
+          signature: String(bundle.chunkManager.loadedChunkCount()),
+          complete: bundle.settlementsManager.home !== null,
+        }),
+      })
+    : null
 
   const commitDirectWaterDrink = (previewSource: WaterSource, revalidateSource: () => WaterSource | null): void => {
     if (!drinkFromWaterSource) return

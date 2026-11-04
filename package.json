@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "tools:settlement-shot": "node scripts/tools/settlement-shot.mjs",
     "build": "vue-tsc --noEmit && vite build",
     "type-check": "vue-tsc --noEmit",
     "lint": "eslint .",
