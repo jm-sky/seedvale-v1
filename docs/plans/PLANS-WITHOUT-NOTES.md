@@ -1,7 +1,7 @@
 # PLANS PLANNED WITHOUT NOTES
 
 > Generated with `pnpm plans:without-notes`  
-> Date: 2026-11-02 20:22:11  
+> Date: 2026-11-04 11:27:43  
 
 ## PLANS
 
@@ -15,9 +15,14 @@
 - `settlements-npcs-052-persistent-economic-work-cargo-and-local-transfer-conservation.md`
 - `settlements-npcs-054-transport-carrier-death-and-cargo-disposition.md`
 - `tools-019-debug-tooling-lifecycle-ownership.md`
+- `tools-026-geography-baseline-diagnostics.md`
 - `ui-input-045-equipment-body-layout.md`
 - `world-terrain-055-optional-shadow-frustum-and-refresh-trims.md`
 - `world-terrain-059-world-scale-travel-time-and-sparse-settlements.md`
+- `world-terrain-060-macro-relief-ranges-passes-and-landforms.md`
+- `world-terrain-061-macroclimate-and-climate-weighted-hydrology.md`
+- `world-terrain-062-regional-biomes-and-local-precipitation-phase.md`
+- `world-terrain-063-geography-driven-settlement-variants.md`
 
 --------------------------------
 ## PROMPTS
@@ -332,6 +337,37 @@ Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywisty
 Pliki dodaj na branch `main` w repozytorium.
 ```
 
+### `tools-026-geography-baseline-diagnostics.md`
+
+Prompt:
+
+```
+Zrób review planu `tools-026-geography-baseline-diagnostics.md`
+
+Wczytaj:
+- `docs/STATE.md`
+- `docs/plans/PLANNING.md` (Implementation Notes section),
+- `docs/plans/tools-026-geography-baseline-diagnostics.md`
+- aktualny codebase,
+- potrzebne zależności i powiązane implementacje.
+
+Na podstawie review utwórz w repo plik:
+`docs/plans/implementation-notes/tools-026-geography-baseline-diagnostics-implementation-notes.md`
+
+Umieść w nim:
+- sugestie dotyczące implementacji,
+- istotne detale techniczne,
+- decyzje architektoniczne,
+- informacje o istniejących systemach i implementacjach, które należy wykorzystać,
+- potencjalne problemy, zależności i pułapki,
+- inne konkretne wskazówki, które ułatwią agentowi AI poprawną implementację planu.
+
+Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
+Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
+
+Pliki dodaj na branch `main` w repozytorium.
+```
+
 ### `ui-input-045-equipment-body-layout.md`
 
 Prompt:
@@ -410,6 +446,130 @@ Wczytaj:
 
 Na podstawie review utwórz w repo plik:
 `docs/plans/implementation-notes/world-terrain-059-world-scale-travel-time-and-sparse-settlements-implementation-notes.md`
+
+Umieść w nim:
+- sugestie dotyczące implementacji,
+- istotne detale techniczne,
+- decyzje architektoniczne,
+- informacje o istniejących systemach i implementacjach, które należy wykorzystać,
+- potencjalne problemy, zależności i pułapki,
+- inne konkretne wskazówki, które ułatwią agentowi AI poprawną implementację planu.
+
+Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
+Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
+
+Pliki dodaj na branch `main` w repozytorium.
+```
+
+### `world-terrain-060-macro-relief-ranges-passes-and-landforms.md`
+
+Prompt:
+
+```
+Zrób review planu `world-terrain-060-macro-relief-ranges-passes-and-landforms.md`
+
+Wczytaj:
+- `docs/STATE.md`
+- `docs/plans/PLANNING.md` (Implementation Notes section),
+- `docs/plans/world-terrain-060-macro-relief-ranges-passes-and-landforms.md`
+- aktualny codebase,
+- potrzebne zależności i powiązane implementacje.
+
+Na podstawie review utwórz w repo plik:
+`docs/plans/implementation-notes/world-terrain-060-macro-relief-ranges-passes-and-landforms-implementation-notes.md`
+
+Umieść w nim:
+- sugestie dotyczące implementacji,
+- istotne detale techniczne,
+- decyzje architektoniczne,
+- informacje o istniejących systemach i implementacjach, które należy wykorzystać,
+- potencjalne problemy, zależności i pułapki,
+- inne konkretne wskazówki, które ułatwią agentowi AI poprawną implementację planu.
+
+Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
+Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
+
+Pliki dodaj na branch `main` w repozytorium.
+```
+
+### `world-terrain-061-macroclimate-and-climate-weighted-hydrology.md`
+
+Prompt:
+
+```
+Zrób review planu `world-terrain-061-macroclimate-and-climate-weighted-hydrology.md`
+
+Wczytaj:
+- `docs/STATE.md`
+- `docs/plans/PLANNING.md` (Implementation Notes section),
+- `docs/plans/world-terrain-061-macroclimate-and-climate-weighted-hydrology.md`
+- aktualny codebase,
+- potrzebne zależności i powiązane implementacje.
+
+Na podstawie review utwórz w repo plik:
+`docs/plans/implementation-notes/world-terrain-061-macroclimate-and-climate-weighted-hydrology-implementation-notes.md`
+
+Umieść w nim:
+- sugestie dotyczące implementacji,
+- istotne detale techniczne,
+- decyzje architektoniczne,
+- informacje o istniejących systemach i implementacjach, które należy wykorzystać,
+- potencjalne problemy, zależności i pułapki,
+- inne konkretne wskazówki, które ułatwią agentowi AI poprawną implementację planu.
+
+Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
+Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
+
+Pliki dodaj na branch `main` w repozytorium.
+```
+
+### `world-terrain-062-regional-biomes-and-local-precipitation-phase.md`
+
+Prompt:
+
+```
+Zrób review planu `world-terrain-062-regional-biomes-and-local-precipitation-phase.md`
+
+Wczytaj:
+- `docs/STATE.md`
+- `docs/plans/PLANNING.md` (Implementation Notes section),
+- `docs/plans/world-terrain-062-regional-biomes-and-local-precipitation-phase.md`
+- aktualny codebase,
+- potrzebne zależności i powiązane implementacje.
+
+Na podstawie review utwórz w repo plik:
+`docs/plans/implementation-notes/world-terrain-062-regional-biomes-and-local-precipitation-phase-implementation-notes.md`
+
+Umieść w nim:
+- sugestie dotyczące implementacji,
+- istotne detale techniczne,
+- decyzje architektoniczne,
+- informacje o istniejących systemach i implementacjach, które należy wykorzystać,
+- potencjalne problemy, zależności i pułapki,
+- inne konkretne wskazówki, które ułatwią agentowi AI poprawną implementację planu.
+
+Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
+Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
+
+Pliki dodaj na branch `main` w repozytorium.
+```
+
+### `world-terrain-063-geography-driven-settlement-variants.md`
+
+Prompt:
+
+```
+Zrób review planu `world-terrain-063-geography-driven-settlement-variants.md`
+
+Wczytaj:
+- `docs/STATE.md`
+- `docs/plans/PLANNING.md` (Implementation Notes section),
+- `docs/plans/world-terrain-063-geography-driven-settlement-variants.md`
+- aktualny codebase,
+- potrzebne zależności i powiązane implementacje.
+
+Na podstawie review utwórz w repo plik:
+`docs/plans/implementation-notes/world-terrain-063-geography-driven-settlement-variants-implementation-notes.md`
 
 Umieść w nim:
 - sugestie dotyczące implementacji,

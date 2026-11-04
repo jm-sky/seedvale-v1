@@ -4,11 +4,13 @@
 **Status:** `planned` 📋
 **Type:** polish
 **Priority:** medium · **Effort:** S
-**Depends on:** ~~ui-input-040~~
+**Depends on:** ~~ui-input-040~~, items-player-044
 **Domain:** `ui-input`
 **Subdomains:** `inventory` `presentation` `equipment`
 **Tags:** `v1-revival` `equipment` `layout` `items-006`
 **Roadmap:** -
+
+> **Re-base 2026-11-04 (Opus, [review 032](../reviews/2026-11-04--032--items-stage-4-and-combat-armor-architecture-review.md) F10).** Execute **after items-player-044-M** lands, so the grid uses the real slots: the `arms`/Ramiona cell becomes `shoulders` (Naramienniki) and the forearms cell is a real `forearms` slot (Przedramiona) with select/unequip — no placeholder, no `'forearms'` UI-only key in `EquipmentCellKey`. The approved grid geometry, narrow order (head → shoulders → body → forearms → hands → legs → feet → held → shield), highlight and non-goals are unchanged; still **unlayered**. Under/Outer rows and protection presentation belong to the successor [ui-input-048](./ui-input-048-layered-equipment-panel-and-protection-stats.md). Executor: GPT-6 Sol ([side-initiative index](../research/v1-revival/2026-11-04--items-combat-side-initiative-index.md)).
 
 ## Cel
 

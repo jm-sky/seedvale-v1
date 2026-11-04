@@ -7,6 +7,8 @@
 **Source baseline:** [V1 `89607ad6f8881aa12b45dc0c9ef2ed220561d065`](https://github.com/jm-sky/seedvale-v1/tree/89607ad6f8881aa12b45dc0c9ef2ed220561d065). Main rechecked at `ec0fa56b7d33393a690603f10bebaf69e4d861d1`: intervening changes concern tools documentation and roads/world caches, not the inspected combat/equipment owners.  
 **Evidence:** GitHub source inspection and arithmetic verification. No build, gameplay, browser, asset-skinning or performance verification.
 
+**Opus review 2026-11-04:** [review 032](../../reviews/2026-11-04--032--items-stage-4-and-combat-armor-architecture-review.md) — design retained; sequencing/ownership corrected. Formal plans: items-player-065 (S1–S3), 066 (S4/S7), ui-input-048 (S5), npc-068 (S6), npc-067 (correctness prelude extracted from §4.4/§6.2/§6.4/§6.5). C1–C3 are tracked as Q-IC1–Q-IC3 in the [side-initiative index](./2026-11-04--items-combat-side-initiative-index.md#6-author-decisions); they remain unapproved.
+
 ## 1. Recommended design and authority
 
 Implement **seven slots, two layers, one sampled anatomical location per contact, three physical damage types and one pure incoming-human-hit resolver**. Keep V1 inventory ownership, quality, attack lifecycles, physical attributes, medicine, economy and save infrastructure.

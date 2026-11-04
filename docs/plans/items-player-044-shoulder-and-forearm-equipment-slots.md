@@ -11,6 +11,13 @@
 **Tags:** `equipment` `armor` `ubc` `bracers`
 **Roadmap:** -
 
+> **Correction 2026-11-04 (Opus, [review 032](../reviews/2026-11-04--032--items-stage-4-and-combat-armor-architecture-review.md) F1/F3/F8/F9) — binding over the sections below.** Part of the [Items × Combat side initiative](../research/v1-revival/2026-11-04--items-combat-side-initiative-index.md); executor GPT-6 Sol.
+>
+> 1. **Save compatibility:** the runtime remap in `createEquipmentState()` described in "Kompatybilność save" cannot work — `isPlayerEquipmentField()` rejects unknown keys, so a save with `arms` is refused before restore. Use a real `SAVE_MIGRATIONS` entry (`CURRENT_SAVE_VERSION` → +1 at commit time, save-migration token): `arms` → `shoulders` (explicit valid `shoulders` wins; validate against the migrated player instance rows; never to `forearms`); `createEquipmentState()` gets **no** legacy branch. Also freeze a local six-slot constant inside the historical v37→v38 migration (`saveData.ts` ~l.4375) so it no longer reads the live `EQUIPMENT_SLOTS`.
+> 2. **Split delivery.** **044-M (mechanics, start now):** slot union + labels + migration, pauldrons → `shoulders`, `leather_bracers`/`steel_bracers` as `forearms` armor (scalar values from "Balans V1" — interim; items-player-066 re-authors them as typed layered armor), trade/stock per existing owners, `v3Equipment/validation.ts` slot projection (`shoulders` → `shoulders`, accept `forearms`) with its policy tests, rename `syncArmsEquipmentVisual` binding to `shoulders`. **044-V (visuals):** bracer GLB registration/attachment — **blocked**: both runtime GLBs were removed in `e8d4a463c`; only an unvalidated 27 MB `docs/blender/sources/male_steel_bracers.glb` exists. Waits for author-delivered skinned GLBs and author question Q-IC4.
+> 3. **044-M Definition of Done** = the DoD below minus the two GLB bullets; bracer details must state that no visual is shown yet. 044-V keeps the GLB bullets and the manual visual checks.
+> 4. The old notes' "do not run `pnpm docs:sync`" guardrail is superseded — follow CLAUDE.md (generated indexes are regenerated with `pnpm docs:sync`).
+
 ## Cel
 
 Rozdzielić obecny zbyt ogólny slot `arms` na dwie niezależne warstwy wyposażenia:

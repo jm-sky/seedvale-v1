@@ -5,6 +5,8 @@
 **Authority:** all [A1–A10 approved](./2026-10-28--equipment-stage-4-approved-author-decisions.md); [reconciled 87-row matrix](./2026-10-27--equipment-stage-4-integration-matrix.md); [dossier with superseded alternatives](./2026-10-27--equipment-stage-4-decision-dossier.md).
 **Inspected baseline:** V1 `0e6f7b3fa1d1586b1bc49fa6f8256db470427c3d`; unchanged donor pin `907e17cd2ad487547a25a1f928b2770348183d75`. Static source inspection only.
 
+**Reconciled 2026-11-04 (Opus):** [review 032](../../reviews/2026-11-04--032--items-stage-4-and-combat-armor-architecture-review.md) binds this proposal to the combat track and formal plans ([side-initiative index](./2026-11-04--items-combat-side-initiative-index.md)). P4/P5 and the padding part of P6 are **superseded** by items-player-066 (typed layered armor only); P0–P3/P6-shields/P8 → items-player-062, P7a → 063, P7b → 064. D4 references below are obsolete (freeze closed 2026-10-30). Where this text conflicts with review 032, the review wins.
+
 ## Scheduling and authorization
 
 A1–A10 settle product direction; they do not authorize registration, sources, combat, save changes or this execution sequence. No decision is pending on distinct sling ammunition, shield inventory-only status, the selected five future items or global singularity. P0 below now means bounded contract preparation, replacing the former author-decision collection step. The former P6 held-shield proposal and P8 blanket nine-item deferral are superseded, not historical implementation.

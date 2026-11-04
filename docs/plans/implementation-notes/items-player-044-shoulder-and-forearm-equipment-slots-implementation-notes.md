@@ -2,6 +2,14 @@
 
 **Plan:** `items-player-044-shoulder-and-forearm-equipment-slots.md`
 
+## Correction 2026-11-04 (Opus, re-verified at `fe49547f`) — supersedes conflicting text below
+
+- **Save seam (wrong below):** `src/persistence/saveData.ts:1077` `isPlayerEquipmentField()` returns `false` for any key failing `isEquipmentSlot`; `loadStoredSave` runs `migrateStoredSave` (registry `SAVE_MIGRATIONS`, l.4421) and only then validates. So the "Save migration seam" section's `createEquipmentState()` remap is never reached. Implement a registry migration instead; test through `loadStoredSave`, not `createEquipmentState`. Freeze the six-slot list used by the v37→v38 migration (l.4375 iterates live `EQUIPMENT_SLOTS`).
+- **Assets (wrong below):** "The User has already manually prepared and exported the final GLBs" is false at this baseline. `public/models/characters/ubc/accessories/` contains only the four pauldron GLBs; `male_{leather,steel}_bracers.glb` were removed in `e8d4a463c`. Implementation-order steps 5–6 and the multi-mesh test belong to **044-V** (blocked). 044-M stops at step 4 + step 7.
+- **Additional `arms` consumers found:** `src/app/createApp.ts:1173–1199` (`syncArmsEquipmentVisual`, reads `'arms'`), `src/items/itemCatalog.ts:57` (inline slot union) + four pauldron rows (~l.1068–1114), `src/items/v3Equipment/validation.ts:39` (donor `shoulders` → `arms` projection; update with `compatibility.test.ts`), `src/ui-vue/demos/character-skills/fixtures.ts:35,143`, `src/app/inventoryWiring.ts:669` (`unequipArmor` default slot).
+- **Ownership with the combat track:** the slot union should be declared once; if items-player-065 S1 has already created `src/items/equipmentTypes.ts`, change the union there and import it in both `equipment.ts` and `itemCatalog.ts`.
+- Bracer scalar values are interim; items-player-066 re-authors them (typed, layered).
+
 ## Verified current contracts
 
 ### Equipment state

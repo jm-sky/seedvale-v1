@@ -47,6 +47,7 @@
 
 ## Equipment, characters, assets
 
+- **Items × Combat side initiative (2026-11-04, parallel to Revival, executor GPT-6 Sol):** [coordination index](./2026-11-04--items-combat-side-initiative-index.md) · [review 032](../../reviews/2026-11-04--032--items-stage-4-and-combat-armor-architecture-review.md) — plans items-player-044/062–066, ui-input-045/048, npc-067/068.
 - Combat & armor redesign (2026-11-04): [technical proposal and Claude Opus review/implementation handoff](./2026-11-04--combat-armor-redesign-proposal.md) — seven slots, under/outer layers, anatomical typed protection, combat/NPC parity, acquisition, UI, saves and staged delivery. Proposal only; D5/D6/D7 and A6 layer activation require explicit approval; A7 shields remain inventory-only.
 
 - Equipment catalogue: [recon](./2026-10-27--equipment-catalogue-recon.md), [87-definition ID mapping](./2026-10-27--equipment-id-mapping.md), [property matrix](./2026-10-27--equipment-property-matrix.md); stage notes [1](./2026-10-27--equipment-catalogue-stage-1-implementation-notes.md), [2](./2026-10-27--equipment-catalogue-stage-2-implementation-notes.md), [3](./2026-10-27--equipment-catalogue-stage-3-implementation-notes.md).
