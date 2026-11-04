@@ -9,6 +9,7 @@ import {
 } from './armorItemInstances'
 import {
   ARMOR_LAYERS,
+  type ArmorLayer,
   type EquipmentPositionKey,
   equipmentPositionKey,
   type EquipmentSlot,
@@ -41,6 +42,20 @@ export const EQUIPMENT_SLOT_LABEL: Record<EquipmentSlot, string> = {
   hands: 'Dłonie',
   legs: 'Nogi',
   feet: 'Stopy',
+}
+
+/** Player-facing labels for armor layers (equipment panel, preview, item details). */
+export const EQUIPMENT_LAYER_LABEL: Record<ArmorLayer, string> = {
+  under: 'Spód',
+  outer: 'Wierzch',
+}
+
+/** `Tułów · Wierzch` — one worn position, for panel rows, preview and details.
+ * @domain ui-input
+ */
+export function equipmentPositionLabel(position: EquipmentPositionKey): string {
+  const [slot, layer] = position.split(':') as [EquipmentSlot, ArmorLayer]
+  return `${EQUIPMENT_SLOT_LABEL[slot]} · ${EQUIPMENT_LAYER_LABEL[layer]}`
 }
 
 /** Persisted equipment selection — instance IDs only, keyed by `slot:layer`;

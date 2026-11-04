@@ -178,6 +178,7 @@ import { getThirstRatio } from '../shared/ThirstState'
 import { getVigorRatio } from '../shared/VigorState'
 import { isMedicinalForageKind, medicinalHerbInteractRange } from '../terrain/renewableWorldItems'
 import { parseSnowParam } from '../terrain/snowField'
+import { formatLastHitLine, LAST_HIT_LINE_MS } from '../ui-vue/lastHitFeedback'
 import { skyParamsFromTime, tickDayNight } from '../world/dayNight'
 import { updateFoliageWind } from '../world/foliageWind'
 import { createLightningRuntime } from '../world/lightningEvents'
@@ -827,6 +828,9 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
 
   const timer = new Timer()
   let lastAppliedTimeOfDay = dayNight.timeOfDay
+  /** Hit-feedback line state: last shown durable ordinal (-1 = none) and its real-time expiry. */
+  let lastHudHitSequence = -1
+  let lastHudHitUntilMs = 0
   /** Last weather values `resyncDayNight()` applied to fog/lights — a change
    *  here (not just the day/night threshold) also has to trigger a resync,
    *  or weather-driven fog would only "pop" in on the next unrelated
@@ -2817,6 +2821,20 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
       hud.setPlayerCondition(poisoning.active
         ? (poisoning.tier === 'severe' ? 'Zatrucie (ciężkie)' : poisoning.tier === 'moderate' ? 'Zatrucie (umiarkowane)' : 'Zatrucie')
         : '')
+      const lastHit = player.getLastIncomingHit()
+      if (lastHit && lastHit.sequence !== lastHudHitSequence) {
+        lastHudHitSequence = lastHit.sequence
+        lastHudHitUntilMs = performance.now() + LAST_HIT_LINE_MS
+        hud.setLastHit(formatLastHitLine(lastHit.result))
+      } else if (!lastHit && lastHudHitSequence !== -1) {
+        // New game cleared the transient record.
+        lastHudHitSequence = -1
+        lastHudHitUntilMs = 0
+        hud.setLastHit('')
+      } else if (lastHudHitUntilMs > 0 && performance.now() > lastHudHitUntilMs) {
+        lastHudHitUntilMs = 0
+        hud.setLastHit('')
+      }
       const characterOpen = vueUi.isCharacterScreenOpen()
       const detailedAttributes = characterOpen
         ? player.effectiveAttributesDetailed(dayNight.elapsedDays)

@@ -2,7 +2,7 @@ import type { ArmorPreviewInstance } from '../../../items/equipmentPreview'
 import type { EquipmentPositionKey } from '../../../items/equipmentTypes'
 import type { InventoryGroupView } from '../../../items/inventoryView'
 import type { EquipmentSlotView } from './equipmentPanelTypes'
-import { EQUIPMENT_SLOTS } from '../../../items/equipment'
+import { armorPositionOf, EQUIPMENT_POSITIONS } from '../../../items/equipment'
 import { isArmorCatalogKind } from '../../../items/itemCatalog'
 import { itemDisplayName } from '../../../items/itemDisplay'
 import { ARMOR_QUALITY_LABELS, normalizeArmorQuality } from '../../../items/itemInstances'
@@ -27,28 +27,45 @@ export function collectArmorPreviewInstances(
   return out
 }
 
-/** Build equipment panel slot rows from equipped ids + armor instance list. */
+/** Build equipment panel rows for all 14 worn positions from equipped ids + armor instance list.
+ * @domain ui-input
+ */
 export function buildEquipmentSlotViews(
   equippedSlots: Partial<Record<EquipmentPositionKey, string>>,
   instances: readonly ArmorPreviewInstance[],
 ): EquipmentSlotView[] {
   const byId = new Map(instances.map((row) => [row.id, row]))
-  return EQUIPMENT_SLOTS.map((slot) => {
-    // Layered display bridge (048 redesigns): outer first, then under.
-    const position: EquipmentPositionKey | null = equippedSlots[`${slot}:outer`]
-      ? `${slot}:outer`
-      : equippedSlots[`${slot}:under`] ? `${slot}:under` : null
-    const instanceId = position ? equippedSlots[position] ?? null : null
+  return EQUIPMENT_POSITIONS.map((position) => {
+    const [slot, layer] = position.split(':') as [EquipmentSlotView['slot'], EquipmentSlotView['layer']]
+    const instanceId = equippedSlots[position] ?? null
     const row = instanceId ? byId.get(instanceId) : undefined
     return {
-      slot,
       position,
-      instanceId,
+      slot,
+      layer,
+      instanceId: row ? instanceId : null,
       label: row?.label ?? null,
       quality: row?.quality ?? null,
       qualityLabel: row ? qualityLabelFor(row) : null,
     }
   })
+}
+
+/** Positions that at least one owned, currently not worn armor piece could fill.
+ * @domain ui-input
+ */
+export function positionsWithCandidates(
+  equippedSlots: Partial<Record<EquipmentPositionKey, string>>,
+  instances: readonly ArmorPreviewInstance[],
+): Set<EquipmentPositionKey> {
+  const worn = new Set(Object.values(equippedSlots))
+  const out = new Set<EquipmentPositionKey>()
+  for (const row of instances) {
+    if (worn.has(row.id)) continue
+    const position = armorPositionOf(row.kind)
+    if (position) out.add(position)
+  }
+  return out
 }
 
 function qualityLabelFor(row: ArmorPreviewInstance): string | null {

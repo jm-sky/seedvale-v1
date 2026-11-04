@@ -147,7 +147,7 @@ function formatWeight(kg: number): string { return `${kg.toFixed(1)} kg` }
         />
         <InventoryScreenSection
           v-if="stockRow?.protectionLabel"
-          label="Odporność"
+          label="Odporność lokalna"
           :value="stockRow.protectionLabel"
         />
         <InventoryScreenSection

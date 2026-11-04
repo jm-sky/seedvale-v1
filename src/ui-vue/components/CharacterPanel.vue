@@ -37,7 +37,6 @@ import type {
   CharacterSettlementOption,
 } from '../store'
 import { DAMAGE_CHANNEL_LABELS } from '../../items/armorProtectionDisplay'
-import { EQUIPMENT_SLOT_LABEL } from '../../items/equipment'
 import { SKILL_LABEL, type SkillId } from '../../player/PlayerSkills'
 import { reputationPresentation } from '../reputationPresentation'
 import CharacterModifierBadge from './CharacterModifierBadge.vue'
@@ -295,7 +294,7 @@ function formatEquipmentPercent(fraction: number): string {
 
 const PROTECTION_CHANNELS = ['cut', 'pierce', 'blunt'] as const
 
-function formatDamageReduction(fraction: number): string {
+function formatExpectedProtection(fraction: number): string {
   return `${Math.round(fraction * 100)}%`
 }
 
@@ -523,18 +522,26 @@ function selectTab(id: CharacterTabId): void {
                 class="flex justify-between gap-2"
               >
                 <dt class="text-neutral-400">
-                  Oczekiwana ochrona: {{ DAMAGE_CHANNEL_LABELS[channel] }}
+                  Ochrona (referencyjna): {{ DAMAGE_CHANNEL_LABELS[channel] }}
                 </dt>
                 <dd class="tabular-nums">
-                  {{ formatDamageReduction(equipment.expectedProtection[channel]) }}
+                  {{ formatExpectedProtection(equipment.expectedProtection[channel]) }}
                 </dd>
               </div>
               <div class="flex justify-between gap-2">
                 <dt class="text-neutral-400">
-                  Koszt kondycji ataku
+                  Koszt kondycji ataku wręcz
                 </dt>
                 <dd class="tabular-nums">
                   {{ formatEquipmentPercent(equipment.attackStaminaDelta) }}
+                </dd>
+              </div>
+              <div class="flex justify-between gap-2">
+                <dt class="text-neutral-400">
+                  Koszt kondycji strzału
+                </dt>
+                <dd class="tabular-nums">
+                  {{ formatEquipmentPercent(equipment.rangedStaminaDelta) }}
                 </dd>
               </div>
               <div class="flex justify-between gap-2">
@@ -565,11 +572,11 @@ function selectTab(id: CharacterTabId): void {
             <dl class="flex flex-col gap-1 text-sm">
               <div
                 v-for="row in equipment.slots"
-                :key="row.slot"
+                :key="row.position"
                 class="flex justify-between gap-3"
               >
                 <dt class="text-neutral-400">
-                  {{ EQUIPMENT_SLOT_LABEL[row.slot] }}
+                  {{ row.positionLabel }}
                 </dt>
                 <dd class="truncate text-right">
                   {{ formatEquippedSlot(row.itemLabel, row.qualityLabel) }}

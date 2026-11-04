@@ -31,6 +31,8 @@ export type Hud = {
   setPlayerNeeds: (needs: { hp: number, stamina: number, vigor: number, hunger: number, thirst: number }) => void
   /** Active temporary condition label — empty hides (plan npc-024). */
   setPlayerCondition: (label: string) => void
+  /** Compact last-player-hit line (empty clears). */
+  setLastHit: (line: string) => void
   /** Shows/hides the ranged-aim reticle (plan 186 §1) — true only while
    *  `playerRanged.state() === 'draw'`. `targetScreen` is the soft-locked
    *  target's projected viewport position (fractions 0-1, y from the top);
@@ -72,6 +74,7 @@ export function createHud(_parent: HTMLElement): Hud {
     setCombatWeapon: (category) => { if (!disposed) getUi()?.setHudCombatWeapon(category) },
     setPlayerNeeds: (needs) => { if (!disposed) getUi()?.setHudPlayerNeeds(needs) },
     setPlayerCondition: (label) => { if (!disposed) getUi()?.setHudPlayerCondition(label) },
+    setLastHit: (line) => { if (!disposed) getUi()?.setHudLastHit(line) },
     setAiming: (aiming, targetScreen) => { if (!disposed) getUi()?.setHudAiming(aiming, targetScreen ?? null) },
     setCharacterStats: (stats) => { if (!disposed) getUi()?.setCharacterStats(stats) },
     setPlayerBadges: (badges) => { if (!disposed) getUi()?.setCharacterBadges(badges) },

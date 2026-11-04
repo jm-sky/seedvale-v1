@@ -164,7 +164,7 @@ export type InventoryWiring = {
   /** "Załóż" (plan items-player-030) — equips a concrete armor instance. */
   equipArmor: (instanceId: string) => void
   /** "Zdejmij" on an equipment slot (defaults to body when omitted). */
-  unequipArmor: (position?: EquipmentPositionKey) => void
+  unequipArmor: (position: EquipmentPositionKey) => void
   /** HUD primary-weapon shortcuts (plan `ui-input-002` §6 / ui-input-018) —
    *  draw the configured primary, or sheathe when Combat Mode is active. */
   equipPrimaryMeleeWeapon: () => void
@@ -382,7 +382,7 @@ export function createInventoryWiring(deps: InventoryWiringDeps): InventoryWirin
             quality: instance.quality,
             qualityLabel: ARMOR_QUALITY_LABELS[instance.quality],
             weightKg: effective?.weightKg ?? ITEM_DEFS[kind].weight,
-            protectionLabel: effective ? formatResistanceLabel(effective.resist) : undefined,
+            protectionLabel: effective ? formatResistanceLabel(effective.resist, effective) : undefined,
             staminaPenaltyLabel: effective ? armorPenaltyLabel(effective.staminaCostMultiplier) : undefined,
             movementPenaltyLabel: effective ? armorPenaltyLabel(effective.movementSpeedMultiplier) : undefined,
             recoveryPenaltyLabel: effective ? armorPenaltyLabel(effective.meleeRecoveryMultiplier) : undefined,
@@ -668,7 +668,7 @@ export function createInventoryWiring(deps: InventoryWiringDeps): InventoryWirin
     deps.refreshInventoryScreen()
   }
 
-  const unequipArmor = (position: EquipmentPositionKey = 'body:outer'): void => {
+  const unequipArmor = (position: EquipmentPositionKey): void => {
     equipment.unequip(position)
     deps.syncPlayerAppearance()
     deps.refreshInventoryScreen()

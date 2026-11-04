@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import type { ArmorQuality } from './itemInstances'
+import { expectedProtection } from '../combat/hitLocation'
 import { equipmentSnapshotToCharacterView } from '../player/characterPresentation'
 import { createArmorInstance } from './armorItemInstances'
-import { createEquipmentState, resolveProtectionSnapshot } from './equipment'
+import { createEquipmentState, rangedStaminaMultiplierFor, resolveProtectionSnapshot } from './equipment'
 import {
   type ArmorPreviewInstance,
   previewEquipLoadout,
@@ -10,6 +11,7 @@ import {
 } from './equipmentPreview'
 import { Inventory } from './Inventory'
 import { itemDisplayName } from './itemDisplay'
+import { createWeaponInstance } from './weaponMaintenance'
 
 function inventoryWithArmor(
   ...pieces: { kind: 'leather_armor' | 'chainmail' | 'leather_pauldron', quality?: ArmorQuality }[]
@@ -60,10 +62,10 @@ describe('previewEquipLoadout', () => {
     const { inventory, ids } = inventoryWithArmor({ kind: 'leather_pauldron' })
     const preview = previewEquipLoadout(inventory, {}, ids[0]!)
     expect(preview.alreadyEquipped).toBe(false)
-    expect(preview.targetSlot).toBe('shoulders')
+    expect(preview.targetPosition).toBe('shoulders:outer')
     expect(preview.replacesLabel).toBeNull()
     expect(preview.proposed!.expectedProtection.cut).toBeGreaterThan(0)
-    expect(preview.context).toContain('pusty')
+    expect(preview.context).toContain('pusta')
   })
 
   it('previews replacing same slot and agrees with real equip', () => {
@@ -103,8 +105,17 @@ describe('previewEquipLoadout', () => {
     const { inventory, ids } = inventoryWithArmor({ kind: 'leather_armor' })
     const preview = previewEquipLoadout(inventory, {}, 'missing-id')
     expect(preview.proposed).toBeNull()
-    expect(preview.context).toBe('—')
+    expect(preview.unavailableReason).toContain('niedostępny')
+    expect(preview.context).toBe(preview.unavailableReason)
+    expect(preview.targetPosition).toBeNull()
     void ids
+  })
+
+  it('marks a non-armor candidate unavailable with a reason', () => {
+    const { inventory } = inventoryWithArmor({ kind: 'leather_armor' })
+    const axe = createWeaponInstance('axe')
+    inventory.addInstance(axe)
+    expect(previewEquipLoadout(inventory, {}, axe.id).unavailableReason).toContain('nie jest elementem pancerza')
   })
 
   it('snapshot helper matches inventory helper for quality difference', () => {
@@ -131,5 +142,70 @@ describe('previewEquipLoadout', () => {
     expect(fromSnap.delta!.gearWeightKg).toBeCloseTo(fromInv.delta!.gearWeightKg, 8)
     void inventory
     void ids
+  })
+})
+
+describe('layered preview (ui-input-048)', () => {
+  const KIT = ['padded_jacket', 'chainmail', 'leather_trousers'] as const
+
+  function layeredInventory() {
+    const inventory = new Inventory({}, Infinity, undefined, undefined, Infinity)
+    const ids = KIT.map((kind) => {
+      const inst = createArmorInstance(kind, 'common')
+      expect(inventory.addInstance(inst)).toBe(true)
+      return inst.id
+    })
+    return { inventory, ids }
+  }
+
+  it('replaces only the exact position and keeps the other layer of the slot', () => {
+    const { inventory, ids } = layeredInventory()
+    const equipment = createEquipmentState(inventory)
+    equipment.equip(ids[0]!, inventory)
+    const slots = equipment.exportState(inventory)
+
+    const preview = previewEquipLoadout(inventory, slots, ids[1]!)
+    expect(preview.targetPosition).toBe('body:outer')
+    expect(preview.replacesLabel).toBeNull()
+    expect(preview.context).toBe('Założenie: Tułów · Wierzch (pusta pozycja)')
+    // mail over padding: the composed local torso value, not the mail alone
+    expect(preview.proposed!.protection.body.cut).toBeCloseTo(0.72, 3)
+    expect(preview.proposed!.protection.body.cut).toBeGreaterThan(0.65)
+  })
+
+  it('names the displaced item for an occupied position', () => {
+    const { inventory, ids } = layeredInventory()
+    const second = createArmorInstance('leather_armor', 'common')
+    inventory.addInstance(second)
+    const equipment = createEquipmentState(inventory)
+    equipment.equip(ids[1]!, inventory)
+    const preview = previewEquipLoadout(inventory, equipment.exportState(inventory), second.id)
+    expect(preview.replacesLabel).toBe(itemDisplayName('chainmail'))
+    expect(preview.context).toBe(`Zastępuje (Tułów · Wierzch): ${itemDisplayName('chainmail')}`)
+  })
+
+  it('preview equals the stats after really equipping (inventory and snapshot variants)', () => {
+    const { inventory, ids } = layeredInventory()
+    const equipment = createEquipmentState(inventory)
+    equipment.equip(ids[0]!, inventory)
+    equipment.equip(ids[2]!, inventory)
+    const slots = equipment.exportState(inventory)
+
+    const preview = previewEquipLoadout(inventory, slots, ids[1]!)
+    const fromSnapshot = previewEquipLoadoutFromSnapshot(slots, snapshotFromInventory(inventory, ids), ids[1]!)
+    expect(fromSnapshot.proposed).toEqual(preview.proposed)
+    expect(fromSnapshot.delta).toEqual(preview.delta)
+
+    expect(equipment.equip(ids[1]!, inventory).ok).toBe(true)
+    const snapshot = resolveProtectionSnapshot(equipment, inventory)
+    expect(preview.proposed!.protection).toEqual(snapshot.protection)
+    expect(preview.proposed!.expectedProtection).toEqual(expectedProtection(snapshot.protection))
+    expect(preview.proposed!.expectedByProfile['low-bite']).toEqual(expectedProtection(snapshot.protection, 'low-bite'))
+    expect(preview.proposed!.attackStaminaDelta).toBeCloseTo(snapshot.restrictions.meleeStaminaMultiplier - 1, 9)
+    expect(preview.proposed!.rangedStaminaDelta).toBeCloseTo(rangedStaminaMultiplierFor(snapshot.restrictions.meleeStaminaMultiplier) - 1, 9)
+    expect(preview.proposed!.movementSpeedDelta).toBeCloseTo(snapshot.restrictions.movementSpeedMultiplier - 1, 9)
+    expect(preview.proposed!.gearWeightKg).toBeCloseTo(snapshot.pieces.reduce((sum, p) => sum + p.weightKg, 0), 9)
+    // delta is exactly proposed - current per region and channel
+    expect(preview.delta!.protection.body.cut).toBeCloseTo(preview.proposed!.protection.body.cut - preview.current.protection.body.cut, 9)
   })
 })

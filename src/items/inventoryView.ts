@@ -1,7 +1,9 @@
+import type { Resistance } from '../combat/damageTypes'
 import type { ItemKind } from './items'
 import { effectiveInstanceWeight, resolveEffectiveArmorPiece } from './armorItemInstances'
 import { formatResistanceLabel } from './armorProtectionDisplay'
-import { EQUIPMENT_SLOT_LABEL } from './equipment'
+import { EQUIPMENT_SLOT_LABEL, equipmentPositionLabel } from './equipment'
+import { equipmentPositionKey } from './equipmentTypes'
 import {
   type FoodSourceSpecies,
   type FreshnessStage,
@@ -58,8 +60,13 @@ export type InventoryInstanceRow = {
   quality?: ArmorQuality
   qualityLabel?: string
   effectiveWeightKg?: number
-  /** Piece resistance per channel, e.g. `cięcie 35% · kłucie 45% · obuch 15%`. */
+  /** Local piece resistance per channel (quality-adjusted); covers only `positionLabel`. */
+  resist?: Resistance
+  /** Worn position the piece occupies, e.g. `Tułów · Wierzch`. */
+  positionLabel?: string
+  /** `cięcie 35% · kłucie 45% · obuch 15% (tylko tułów · wierzch)` — qualified, one line. */
   protectionLabel?: string
+  sprintPenaltyLabel?: string
   staminaPenaltyLabel?: string
   movementPenaltyLabel?: string
   recoveryPenaltyLabel?: string
@@ -258,7 +265,10 @@ function buildArmorGroup(kind: ItemKind, instances: readonly ItemInstance[]): In
       quality: inst.quality,
       qualityLabel: ARMOR_QUALITY_LABELS[inst.quality],
       effectiveWeightKg: effective.weightKg,
-      protectionLabel: formatResistanceLabel(effective.resist),
+      resist: effective.resist,
+      positionLabel: equipmentPositionLabel(equipmentPositionKey(effective.slot, effective.layer)),
+      protectionLabel: formatResistanceLabel(effective.resist, effective),
+      sprintPenaltyLabel: percentDeltaLabel(effective.sprintStaminaMultiplier),
       staminaPenaltyLabel: percentDeltaLabel(effective.staminaCostMultiplier),
       movementPenaltyLabel: percentDeltaLabel(effective.movementSpeedMultiplier),
       recoveryPenaltyLabel: percentDeltaLabel(effective.meleeRecoveryMultiplier),

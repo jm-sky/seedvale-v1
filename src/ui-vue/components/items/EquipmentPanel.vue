@@ -4,15 +4,11 @@ import { firstUpperCase } from '@/lib/firstUpperCase'
 import type { LoadoutStatView } from '../../../items/equipmentPreview'
 import type { EquipmentPositionKey } from '../../../items/equipmentTypes'
 import type { PrimaryWeaponChoice } from '../../../items/primaryWeapons'
-import type { EquipmentSlotView } from './equipmentPanelTypes'
-import {
-  type EquipmentSlot,
-  isEquipmentSlot,
-} from '../../../items/equipment'
+import type { EquipmentCellRow, EquipmentSlotView } from './equipmentPanelTypes'
 import { ITEM_CATALOG } from '../../../items/itemCatalog'
 import { ITEM_DEFS, type ItemKind } from '../../../items/items'
 import AmmoSection from './AmmoSection.vue'
-import { EQUIPMENT_LAYOUT, type EquipmentCellKey } from './equipmentLayout'
+import { buildArmorCellRows, EMPTY_ROW_TEXT, EQUIPMENT_LAYOUT, type EquipmentLayoutCell } from './equipmentLayout'
 import EquipmentSlotCell from './EquipmentSlotCell.vue'
 import LoadoutSummary from './LoadoutSummary.vue'
 
@@ -32,12 +28,18 @@ const props = defineProps<{
   loadoutCurrent: LoadoutStatView
   loadoutDelta?: LoadoutStatView | null
   loadoutContext: string
+  /** Why the selected candidate cannot be previewed (stale/not armor); null when fine. */
+  loadoutUnavailableReason?: string | null
+  carriedWeightKg?: number | null
+  carryCapacityKg?: number | null
   compareInstanceId?: string | null
-  highlightSlot?: EquipmentSlot | null
+  highlightPosition?: EquipmentPositionKey | null
+  /** Positions an owned, not worn piece could fill (decides "—" vs "no compatible items"). */
+  positionsWithCandidates?: ReadonlySet<EquipmentPositionKey>
 }>()
 
 const emit = defineEmits<{
-  'select-slot': [slot: EquipmentSlot, instanceId: string]
+  'select-slot': [position: EquipmentPositionKey, instanceId: string]
   'select-held': []
   'select-primary-melee': []
   'select-primary-ranged': []
@@ -45,30 +47,58 @@ const emit = defineEmits<{
   unequip: []
 }>()
 
-const bySlot = computed(() => {
-  const map = new Map<EquipmentSlot, EquipmentSlotView>()
-  for (const row of props.slots) map.set(row.slot, row)
-  return map
-})
+const NO_CANDIDATES: ReadonlySet<EquipmentPositionKey> = new Set()
 
-function cellLabel(key: EquipmentCellKey): string | null {
-  if (key === 'held') return props.heldTool ? props.heldLabel ?? ITEM_DEFS[props.heldTool].label : null
-  return isEquipmentSlot(key) ? bySlot.value.get(key)?.label ?? null : null
-}
-
-function selectCell(key: EquipmentCellKey): void {
-  if (key === 'held') { emit('select-held'); return }
-  if (!isEquipmentSlot(key)) return
-  const id = bySlot.value.get(key)?.instanceId
-  if (id) emit('select-slot', key, id)
-}
-
-function unequipCell(key: EquipmentCellKey): void {
-  if (key === 'held') emit('unequip')
-  else if (isEquipmentSlot(key)) {
-    const position = bySlot.value.get(key)?.position
-    if (position) emit('unequip-armor', position)
+function heldRow(): EquipmentCellRow {
+  const label = props.heldTool ? props.heldLabel ?? ITEM_DEFS[props.heldTool].label : null
+  return {
+    position: null,
+    layerLabel: null,
+    state: label ? 'worn' : 'empty',
+    itemLabel: label,
+    qualityLabel: null,
+    emptyText: EMPTY_ROW_TEXT,
+    highlighted: false,
+    compared: false,
   }
+}
+
+const shieldRow: EquipmentCellRow = {
+  position: null,
+  layerLabel: null,
+  state: 'unavailable',
+  itemLabel: null,
+  qualityLabel: null,
+  emptyText: 'N/A',
+  highlighted: false,
+  compared: false,
+}
+
+const cells = computed(() => EQUIPMENT_LAYOUT.map((cell: EquipmentLayoutCell) => ({
+  cell,
+  rows: cell.key === 'held'
+    ? [heldRow()]
+    : cell.key === 'shield'
+      ? [shieldRow]
+      : buildArmorCellRows(cell, {
+          slots: props.slots,
+          positionsWithCandidates: props.positionsWithCandidates ?? NO_CANDIDATES,
+          highlightPosition: props.highlightPosition ?? null,
+          compareInstanceId: props.compareInstanceId ?? null,
+        }),
+})))
+
+const instanceIdAt = computed(() => new Map(props.slots.map((row) => [row.position, row.instanceId])))
+
+function selectRow(row: EquipmentCellRow): void {
+  if (!row.position) { emit('select-held'); return }
+  const id = instanceIdAt.value.get(row.position)
+  if (id) emit('select-slot', row.position, id)
+}
+
+function unequipRow(row: EquipmentCellRow): void {
+  if (row.position) emit('unequip-armor', row.position)
+  else emit('unequip')
 }
 
 function primaryLabel(choice: PrimaryWeaponChoice | null, fallback: string | null): string {
@@ -97,17 +127,14 @@ const rangedAmmo = computed(() => {
     </h2>
     <div class="equipment-grid grid grid-cols-1 gap-2 text-sm">
       <EquipmentSlotCell
-        v-for="cell in EQUIPMENT_LAYOUT"
+        v-for="{ cell, rows } in cells"
         :key="cell.key"
         class="equipment-cell"
         :style="{ '--equipment-area': cell.area }"
         :label="cell.label"
-        :item-label="cellLabel(cell.key)"
-        :unavailable="cell.key === 'shield'"
-        :highlighted="highlightSlot === cell.key"
-        :compared="isEquipmentSlot(cell.key) && !!compareInstanceId && compareInstanceId === bySlot.get(cell.key)?.instanceId"
-        @select="selectCell(cell.key)"
-        @unequip="unequipCell(cell.key)"
+        :rows="rows"
+        @select="selectRow"
+        @unequip="unequipRow"
       />
     </div>
     <div class="mt-3 grid grid-cols-1 gap-2 text-sm sm:grid-cols-2">
@@ -166,6 +193,9 @@ const rangedAmmo = computed(() => {
       :current="loadoutCurrent"
       :delta="loadoutDelta"
       :context="loadoutContext"
+      :unavailable-reason="loadoutUnavailableReason ?? null"
+      :carried-weight-kg="carriedWeightKg ?? null"
+      :carry-capacity-kg="carryCapacityKg ?? null"
     />
   </section>
 </template>

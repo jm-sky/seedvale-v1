@@ -174,7 +174,7 @@ export function buildItemDetailPresentation(input: BuildItemDetailPresentationIn
     if (insertAt >= 0) stats.splice(insertAt, 0, dpsRow)
     else stats.push(dpsRow)
   }
-  if (input.showResistPlaceholders) {
+  if (input.showResistPlaceholders && !stats.some((row) => row.group === 'resist')) {
     const resistRows: DetailStatRow[] = [
       { group: 'resist', label: 'Cięcie', value: '—', unavailable: true, icon: 'armor' },
       { group: 'resist', label: 'Pchnięcie', value: '—', unavailable: true, icon: 'armor' },

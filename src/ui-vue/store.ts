@@ -162,7 +162,7 @@ type InventoryState = {
   /** "Załóż"/"Zdejmij" for wearable armor — distinct from `onEquip`/
    *  `onUnequip`, which are `HeldTool`-only. */
   onEquipArmor: ((instanceId: string) => void) | null
-  onUnequipArmor: ((position?: EquipmentPositionKey) => void) | null
+  onUnequipArmor: ((position: EquipmentPositionKey) => void) | null
   /** "Zjedz"/"Wypij" (plan 106) — only offered for `ITEM_CATALOG[kind].consumable` items. */
   onConsume: ((kind: ItemKind) => void) | null
   /** "Rzuć" (plan items-player-059) — improvised throwable arming. */
@@ -774,6 +774,8 @@ type HudState = {
   playerNeeds: { hp: number, stamina: number, vigor: number, hunger: number, thirst: number }
   /** Temporary physical condition summary for HUD (plan npc-024) — empty hides. */
   playerCondition: string
+  /** Compact last-player-hit line from the committed hit result (ui-input-048) — empty hides. */
+  lastHit: string
   /** Ranged-aim reticle visibility (plan 186 §1). */
   aiming: boolean
   /** Soft-locked target's projected screen position (viewport fractions
@@ -970,6 +972,7 @@ export const ui = reactive({
     hint: isTouchDevice() ? HUD_HINT_TOUCH : HUD_HINT_DESKTOP,
     playerNeeds: { hp: 1, stamina: 1, vigor: 1, hunger: 1, thirst: 1 },
     playerCondition: '',
+    lastHit: '',
     aiming: false,
     aimTargetScreen: null,
     skillAimScreen: null,
@@ -1340,7 +1343,7 @@ export function openInventory(
   onSetPrimaryMelee: (kind: ItemKind, instanceId: string | null) => void,
   onSetPrimaryRanged: (kind: ItemKind, instanceId: string | null) => void,
   onEquipArmor: (instanceId: string) => void,
-  onUnequipArmor: (position?: EquipmentPositionKey) => void,
+  onUnequipArmor: (position: EquipmentPositionKey) => void,
 ): void {
   ui.inventory.counts = { ...counts }
   ui.inventory.groups = groups
@@ -2381,6 +2384,10 @@ export function setHudPlayerNeeds(needs: { hp: number, stamina: number, vigor: n
 export function setHudPlayerCondition(label: string): void {
   if (ui.hud.playerCondition === label) return
   ui.hud.playerCondition = label
+}
+export function setHudLastHit(line: string): void {
+  if (ui.hud.lastHit === line) return
+  ui.hud.lastHit = line
 }
 export function setHudAiming(aiming: boolean, targetScreen: { x: number, y: number } | null = null): void {
   ui.hud.aiming = aiming

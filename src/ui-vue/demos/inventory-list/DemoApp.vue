@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import DemoButton from '@/components/ui/DemoButton.vue'
-import type { EquipmentSlot } from '../../../items/equipment'
 import type { EquipmentPositionKey } from '../../../items/equipmentTypes'
 import { previewEquipLoadoutFromSnapshot } from '../../../items/equipmentPreview'
 import { itemDisplayName } from '../../../items/itemDisplay'
 import {
   buildEquipmentSlotViews,
   collectArmorPreviewInstances,
+  positionsWithCandidates,
 } from '../../components/items/collectArmorPreviewInstances'
 import EquipmentPanel from '../../components/items/EquipmentPanel.vue'
 import InventoryItemDetails from '../../components/items/InventoryItemDetails.vue'
@@ -40,6 +40,10 @@ const armorInstances = computed(() => collectArmorPreviewInstances(scenario.valu
 const equipmentSlots = computed(() =>
   buildEquipmentSlotViews(scenario.value.equippedSlots, armorInstances.value),
 )
+const candidatePositions = computed(() =>
+  positionsWithCandidates(scenario.value.equippedSlots, armorInstances.value),
+)
+
 const loadoutPreview = computed(() =>
   previewEquipLoadoutFromSnapshot(
     scenario.value.equippedSlots,
@@ -83,7 +87,7 @@ function onSelect(next: Exclude<InventorySelection, null>): void {
   pushLog(`Select ${next.type === 'instance' ? next.instanceId : next.kind} (no gameplay)`)
 }
 
-function onSelectSlot(_slot: EquipmentSlot, instanceId: string): void {
+function onSelectSlot(_position: EquipmentPositionKey, instanceId: string): void {
   const row = allRows.value.find((r) => r.type === 'instance' && r.instanceId === instanceId)
   if (!row || row.type !== 'instance') return
   onSelect({ type: 'instance', kind: row.kind, instanceId })
@@ -233,7 +237,7 @@ if (typeof window !== 'undefined') {
             @equip="demoAction('equip')"
             @unequip="demoAction('unequip')"
             @equip-armor="demoAction('equip armor')"
-            @unequip-armor="demoAction('unequip armor')"
+            @unequip-armor="demoAction(`unequip armor ${$event}`)"
             @consume="demoAction('consume')"
             @throw="demoAction('throw')"
             @read="demoAction('read')"
@@ -266,12 +270,16 @@ if (typeof window !== 'undefined') {
             :loadout-delta="loadoutPreview.delta"
             :loadout-context="loadoutPreview.context"
             :compare-instance-id="compareInstanceId"
-            :highlight-slot="loadoutPreview.targetSlot"
+            :highlight-position="loadoutPreview.targetPosition"
+            :positions-with-candidates="candidatePositions"
+            :loadout-unavailable-reason="loadoutPreview.unavailableReason"
+            :carried-weight-kg="scenario.totalWeightKg"
+            :carry-capacity-kg="scenario.maxWeightKg"
             @select-slot="onSelectSlot"
             @select-held="onSelectHeld"
             @select-primary-melee="onSelectPrimaryMelee"
             @select-primary-ranged="onSelectPrimaryRanged"
-            @unequip-armor="demoAction('unequip armor')"
+            @unequip-armor="demoAction(`unequip armor ${$event}`)"
             @unequip="demoAction('unequip')"
           />
         </div>
@@ -311,12 +319,16 @@ if (typeof window !== 'undefined') {
             :loadout-delta="loadoutPreview.delta"
             :loadout-context="loadoutPreview.context"
             :compare-instance-id="compareInstanceId"
-            :highlight-slot="loadoutPreview.targetSlot"
+            :highlight-position="loadoutPreview.targetPosition"
+            :positions-with-candidates="candidatePositions"
+            :loadout-unavailable-reason="loadoutPreview.unavailableReason"
+            :carried-weight-kg="scenario.totalWeightKg"
+            :carry-capacity-kg="scenario.maxWeightKg"
             @select-slot="onSelectSlot"
             @select-held="onSelectHeld"
             @select-primary-melee="onSelectPrimaryMelee"
             @select-primary-ranged="onSelectPrimaryRanged"
-            @unequip-armor="demoAction('unequip armor')"
+            @unequip-armor="demoAction(`unequip armor ${$event}`)"
             @unequip="demoAction('unequip')"
           />
         </template>
@@ -341,7 +353,7 @@ if (typeof window !== 'undefined') {
           @equip="demoAction('equip')"
           @unequip="demoAction('unequip')"
           @equip-armor="demoAction('equip armor')"
-          @unequip-armor="demoAction('unequip armor')"
+          @unequip-armor="demoAction(`unequip armor ${$event}`)"
           @consume="demoAction('consume')"
           @throw="demoAction('throw')"
           @read="demoAction('read')"

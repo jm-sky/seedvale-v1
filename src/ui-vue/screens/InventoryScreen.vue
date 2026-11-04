@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import type { EquipmentSlot } from '../../items/equipment'
 import type { EquipmentPositionKey } from '../../items/equipmentTypes'
 import { previewEquipLoadoutFromSnapshot } from '../../items/equipmentPreview'
 import { ITEM_CATALOG } from '../../items/itemCatalog'
@@ -11,6 +10,7 @@ import { trapKindForItem } from '../../world/animalTraps'
 import {
   buildEquipmentSlotViews,
   collectArmorPreviewInstances,
+  positionsWithCandidates,
 } from '../components/items/collectArmorPreviewInstances'
 import EquipmentPanel from '../components/items/EquipmentPanel.vue'
 import InventoryItemDetails from '../components/items/InventoryItemDetails.vue'
@@ -57,6 +57,10 @@ const armorInstances = computed(() => collectArmorPreviewInstances(ui.inventory.
 
 const equipmentSlots = computed(() =>
   buildEquipmentSlotViews(ui.inventory.equippedSlots, armorInstances.value),
+)
+
+const candidatePositions = computed(() =>
+  positionsWithCandidates(ui.inventory.equippedSlots, armorInstances.value),
 )
 
 const loadoutPreview = computed(() =>
@@ -214,7 +218,7 @@ function selectExactId(kind: ItemKind, instanceId: string | null): void {
   }
 }
 
-function onSelectSlot(_slot: EquipmentSlot, instanceId: string): void {
+function onSelectSlot(_position: EquipmentPositionKey, instanceId: string): void {
   const row = allRows.value.find((r) => r.type === 'instance' && r.instanceId === instanceId)
   if (!row || row.type !== 'instance') return
   onSelect({ type: 'instance', kind: row.kind, instanceId })
@@ -481,7 +485,11 @@ const showDetailsPane = computed(() =>
             :loadout-delta="loadoutPreview.delta"
             :loadout-context="loadoutPreview.context"
             :compare-instance-id="compareInstanceId"
-            :highlight-slot="loadoutPreview.targetSlot"
+            :highlight-position="loadoutPreview.targetPosition"
+            :positions-with-candidates="candidatePositions"
+            :loadout-unavailable-reason="loadoutPreview.unavailableReason"
+            :carried-weight-kg="ui.inventory.totalWeight"
+            :carry-capacity-kg="ui.inventory.maxWeight"
             @select-slot="onSelectSlot"
             @select-held="onSelectHeld"
             @select-primary-melee="onSelectPrimaryMelee"
@@ -533,7 +541,11 @@ const showDetailsPane = computed(() =>
             :loadout-delta="loadoutPreview.delta"
             :loadout-context="loadoutPreview.context"
             :compare-instance-id="compareInstanceId"
-            :highlight-slot="loadoutPreview.targetSlot"
+            :highlight-position="loadoutPreview.targetPosition"
+            :positions-with-candidates="candidatePositions"
+            :loadout-unavailable-reason="loadoutPreview.unavailableReason"
+            :carried-weight-kg="ui.inventory.totalWeight"
+            :carry-capacity-kg="ui.inventory.maxWeight"
             @select-slot="onSelectSlot"
             @select-held="onSelectHeld"
             @select-primary-melee="onSelectPrimaryMelee"

@@ -1,6 +1,13 @@
 import type { InventoryGroupView, InventoryInstanceRow } from '../../../items/inventoryView'
 import type { DetailStatRow } from './buildItemDetailPresentation'
-import { formatResistanceLabel, strongestChannelPercent } from '../../../items/armorProtectionDisplay'
+import {
+  DAMAGE_CHANNEL_LABELS,
+  DAMAGE_CHANNELS,
+  formatChannelResistance,
+  resistancePercents,
+} from '../../../items/armorProtectionDisplay'
+import { equipmentPositionLabel } from '../../../items/equipment'
+import { equipmentPositionKey } from '../../../items/equipmentTypes'
 import { FOOD_SOURCE_SPECIES_LABEL, foodHungerRelief, FRESHNESS_STAGE_LABEL } from '../../../items/foodFreshness'
 import {
   type BookTier,
@@ -215,17 +222,23 @@ export function buildInventoryDetailStatRows(input: BuildInventoryDetailStatRows
   }
 
   if (input.isArmor && armor) {
-    if (input.instance?.slotLabel) {
-      main.push({ group: 'main', label: 'Slot', value: input.instance.slotLabel, icon: 'slot' })
-    }
-    const protectionLabel = input.instance?.protectionLabel ?? formatResistanceLabel(armor.resist)
+    // Local resistance per channel, always qualified by what it covers (never a global "armor %").
+    const resist = input.instance?.resist ?? armor.resist
     main.push({
       group: 'main',
-      label: 'Odporność',
-      value: protectionLabel,
-      icon: 'armor',
-      strength: catalogueStatStrength(strongestChannelPercent(armor.resist), CEILINGS.armorProtectionPercent),
+      label: 'Pozycja',
+      value: input.instance?.positionLabel ?? equipmentPositionLabel(equipmentPositionKey(armor.slot, armor.layer)),
+      icon: 'slot',
     })
+    for (const channel of DAMAGE_CHANNELS) {
+      main.push({
+        group: 'resist',
+        label: `Odporność: ${DAMAGE_CHANNEL_LABELS[channel]}`,
+        value: formatChannelResistance(resist, channel, armor.slot, armor.layer),
+        icon: 'armor',
+        strength: catalogueStatStrength(resistancePercents(resist)[channel], CEILINGS.armorProtectionPercent),
+      })
+    }
     extra.push({
       group: 'extra',
       label: 'Wysiłek ataku',
@@ -242,6 +255,12 @@ export function buildInventoryDetailStatRows(input: BuildInventoryDetailStatRows
       label: 'Ruch',
       value: input.instance?.movementPenaltyLabel ?? '±0%',
       icon: 'speedPenalty',
+    })
+    extra.push({
+      group: 'extra',
+      label: 'Sprint',
+      value: input.instance?.sprintPenaltyLabel ?? '±0%',
+      icon: 'stamina',
     })
   } else if (input.instance?.slotLabel) {
     extra.push({ group: 'extra', label: 'Slot', value: input.instance.slotLabel, icon: 'slot' })

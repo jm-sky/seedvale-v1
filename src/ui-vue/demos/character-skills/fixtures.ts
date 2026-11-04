@@ -4,8 +4,13 @@
  * @domain ui
  */
 import type { BadgeDef, SettlementBadgeDef } from '../../../badges/badges'
-import type { CharacterPresentation } from '../../../player/characterPresentation'
+import type { ArmorKind } from '../../../items/itemInstances'
+import type { CharacterEquipmentView, CharacterPresentation } from '../../../player/characterPresentation'
 import type { CharacterReputationView } from '../../store'
+import { createArmorInstance } from '../../../items/armorItemInstances'
+import { createEquipmentState, resolveProtectionSnapshot } from '../../../items/equipment'
+import { Inventory } from '../../../items/Inventory'
+import { buildCharacterEquipmentView } from '../../../player/characterPresentation'
 import { SKILL_IDS, type SkillId } from '../../../player/PlayerSkills'
 
 export type SkillsActionCardInput = {
@@ -29,15 +34,17 @@ export const DEMO_SCENARIOS: readonly DemoScenario[] = [
   { id: 'skills-sneak-on', label: 'Umiejętności · sneak on + med', kind: 'skills' },
 ]
 
-const EMPTY_SLOTS = [
-  { slot: 'head' as const, itemLabel: null, qualityLabel: null },
-  { slot: 'body' as const, itemLabel: null, qualityLabel: null },
-  { slot: 'shoulders' as const, itemLabel: null, qualityLabel: null },
-  { slot: 'forearms' as const, itemLabel: null, qualityLabel: null },
-  { slot: 'hands' as const, itemLabel: null, qualityLabel: null },
-  { slot: 'legs' as const, itemLabel: null, qualityLabel: null },
-  { slot: 'feet' as const, itemLabel: null, qualityLabel: null },
-]
+/** Real catalog pieces through the shared protection snapshot (no hand-written numbers). */
+function wornEquipmentView(kinds: readonly ArmorKind[]): CharacterEquipmentView {
+  const inventory = new Inventory({}, Infinity, undefined, undefined, Infinity)
+  const equipment = createEquipmentState(inventory)
+  for (const kind of kinds) {
+    const instance = createArmorInstance(kind, 'common')
+    inventory.addInstance(instance)
+    equipment.equip(instance.id, inventory)
+  }
+  return buildCharacterEquipmentView(resolveProtectionSnapshot(equipment, inventory), equipment, inventory)
+}
 
 function skillViews(overrides: Partial<Record<SkillId, { value: number, xp: number }>> = {}): CharacterPresentation['skills'] {
   return SKILL_IDS.map((id) => ({
@@ -132,22 +139,7 @@ export function characterCriticalFixture(): {
           effects: [{ id: 'endurance', delta: -3 }],
         },
       ],
-      equipment: {
-        expectedProtection: { cut: 0.12, pierce: 0.1, blunt: 0.08 },
-        attackStaminaDelta: 0.05,
-        meleeRecoveryDelta: -0.04,
-        movementSpeedDelta: -0.08,
-        sprintStaminaDelta: 0.1,
-        slots: [
-          { slot: 'head', itemLabel: null, qualityLabel: null },
-          { slot: 'body', itemLabel: 'Kaftan skórzany', qualityLabel: 'dobry' },
-          { slot: 'shoulders', itemLabel: null, qualityLabel: null },
-          { slot: 'forearms', itemLabel: null, qualityLabel: null },
-          { slot: 'hands', itemLabel: 'Rękawice', qualityLabel: 'zwykłe' },
-          { slot: 'legs', itemLabel: 'Spodnie', qualityLabel: 'zwykłe' },
-          { slot: 'feet', itemLabel: 'Buty', qualityLabel: 'dobry' },
-        ],
-      },
+      equipment: wornEquipmentView(['padded_jacket', 'leather_armor', 'leather_gloves', 'leather_trousers', 'leather_boots', 'iron_helm']),
     },
     reputation: {
       settlements: [
@@ -191,14 +183,7 @@ export function characterHealthyFixture(): ReturnType<typeof characterCriticalFi
         { id: 'agility', base: 58, effective: 58, modifiers: [] },
       ],
       conditions: [],
-      equipment: {
-        expectedProtection: { cut: 0, pierce: 0, blunt: 0 },
-        attackStaminaDelta: 0,
-        meleeRecoveryDelta: 0,
-        movementSpeedDelta: 0,
-        sprintStaminaDelta: 0,
-        slots: EMPTY_SLOTS,
-      },
+      equipment: wornEquipmentView([]),
     },
   }
 }

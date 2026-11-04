@@ -149,3 +149,30 @@ describe('buildInventoryDetailStatRows', () => {
     expect(bow?.strength).toBe(bowDamage / maxDamage)
   })
 })
+
+describe('layered armor detail rows (ui-input-048)', () => {
+  it('shows qualified per-channel local resistance, position and sprint, never a global armor percent', () => {
+    const armor = ITEM_CATALOG.padded_jacket
+    const rows = buildInventoryDetailStatRows({
+      kind: 'padded_jacket',
+      selectionType: 'group',
+      liveKindCount: 1,
+      unitWeightKg: 3,
+      catalog: armor,
+      group: { kind: 'padded_jacket', count: 1, condition: null, uniformConditionPercent: null, meterKind: null, instances: [], consumeUse: null },
+      instance: null,
+      counts: {},
+      bookSkillValue: null,
+      merchantOpen: false,
+      isArmor: true,
+    })
+    const resist = rows.filter((row) => row.group === 'resist')
+    expect(resist.map((row) => row.label)).toEqual(['Odporność: cięcie', 'Odporność: kłucie', 'Odporność: obuch'])
+    expect(resist.map((row) => row.value)).toEqual([
+      '20% — tylko tułów · spód', '10% — tylko tułów · spód', '25% — tylko tułów · spód',
+    ])
+    expect(rows.find((row) => row.label === 'Pozycja')?.value).toBe('Tułów · Spód')
+    expect(rows.some((row) => row.label === 'Sprint')).toBe(true)
+    expect(rows.some((row) => /redukcj|Odporność$/i.test(row.label))).toBe(false)
+  })
+})

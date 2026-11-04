@@ -85,6 +85,9 @@ function buildFullBag(): DemoScenario {
   inventory.addInstance(createArmorInstance('leather_armor', 'good', 'leather-good'))
   inventory.addInstance(createArmorInstance('chainmail', 'masterwork', 'chain-1'))
   inventory.addInstance(createArmorInstance('leather_pauldron', 'good', 'pauldron-1'))
+  inventory.addInstance(createArmorInstance('padded_jacket', 'common', 'padded-1'))
+  inventory.addInstance(createArmorInstance('padded_cap', 'common', 'cap-1'))
+  inventory.addInstance(createArmorInstance('iron_helm', 'good', 'helm-1'))
   inventory.addInstance(createWeaponInstance('axe'))
   inventory.addInstance(createWeaponInstance('long_sword'))
   inventory.addInstance({ id: 'bow:1', kind: 'short_bow' })
@@ -109,7 +112,7 @@ function buildFullBag(): DemoScenario {
     label: 'Pełny worek (hybryda)',
     note: 'Mixed-quality armor, large stack, liquids, FIFO food, held vs primary.',
     ...snapshotFromInventory(inventory, {
-      equippedSlots: { 'body:outer': 'leather-1', 'shoulders:outer': 'pauldron-1' },
+      equippedSlots: { 'body:under': 'padded-1', 'body:outer': 'leather-1', 'shoulders:outer': 'pauldron-1' },
       heldTool: 'axe',
       heldInstanceId: axeId,
       primaryMelee: { kind: 'long_sword', instanceId: swordId },

@@ -1,9 +1,11 @@
 import type { Resistance } from '../combat/damageTypes'
+import type { HumanProtection } from '../combat/hitLocation'
 import type {
   EquipmentSlot,
   EquipmentState,
   ProtectionSnapshot,
 } from '../items/equipment'
+import type { EquipmentPositionKey } from '../items/equipmentTypes'
 import type { Inventory } from '../items/Inventory'
 import type {
   AttributeModifierContribution,
@@ -11,10 +13,12 @@ import type {
   ModifierCategory,
 } from '../shared/effectivePhysicalAttributes'
 import { expectedProtection } from '../combat/hitLocation'
-import { ZERO_RESISTANCE_VIEW } from '../items/armorProtectionDisplay'
+import { type ExpectedProtectionByProfile, expectedProtectionByProfile, ZERO_PROTECTION_VIEW, ZERO_RESISTANCE_VIEW } from '../items/armorProtectionDisplay'
 import {
-  EQUIPMENT_SLOTS,
+  EQUIPMENT_POSITIONS,
+  equipmentPositionLabel,
   equippedInstanceId,
+  rangedStaminaMultiplierFor,
 } from '../items/equipment'
 import { itemDisplayName } from '../items/itemDisplay'
 import { ARMOR_QUALITY_LABELS, isArmorItemInstance } from '../items/itemInstances'
@@ -85,8 +89,12 @@ export type CharacterConditionView = {
   effects: readonly CharacterConditionEffectView[]
 }
 
+/** One worn position (`slot:layer`) on the Character Screen. */
 export type CharacterEquipmentSlotView = {
+  position: EquipmentPositionKey
   slot: EquipmentSlot
+  /** `Tułów · Wierzch`. */
+  positionLabel: string
   itemLabel: string | null
   qualityLabel: string | null
 }
@@ -94,7 +102,13 @@ export type CharacterEquipmentSlotView = {
 export type CharacterEquipmentView = {
   /** Reference-profile expected protection per physical channel (UI-only, never a hit multiplier). */
   expectedProtection: Resistance
+  /** Expected protection per switchable hit profile (UI-only). */
+  expectedByProfile: ExpectedProtectionByProfile
+  /** Local 7 x 3 resistance table the expected values derive from. */
+  protection: HumanProtection
   attackStaminaDelta: number
+  /** Ranged draw stamina follows half of the melee armor penalty (proposal 5.2). */
+  rangedStaminaDelta: number
   meleeRecoveryDelta: number
   movementSpeedDelta: number
   sprintStaminaDelta: number
@@ -108,15 +122,24 @@ export type CharacterPresentation = {
   equipment: CharacterEquipmentView
 }
 
-const EMPTY_EQUIPMENT_SLOTS: readonly CharacterEquipmentSlotView[] = EQUIPMENT_SLOTS.map((slot) => ({
-  slot,
-  itemLabel: null,
-  qualityLabel: null,
-}))
+function slotViewFor(position: EquipmentPositionKey, itemLabel: string | null, qualityLabel: string | null): CharacterEquipmentSlotView {
+  return {
+    position,
+    slot: position.split(':')[0] as EquipmentSlot,
+    positionLabel: equipmentPositionLabel(position),
+    itemLabel,
+    qualityLabel,
+  }
+}
+
+const EMPTY_EQUIPMENT_SLOTS: readonly CharacterEquipmentSlotView[] = EQUIPMENT_POSITIONS.map((position) => slotViewFor(position, null, null))
 
 export const NEUTRAL_CHARACTER_EQUIPMENT_VIEW: CharacterEquipmentView = {
   expectedProtection: ZERO_RESISTANCE_VIEW,
+  expectedByProfile: expectedProtectionByProfile(ZERO_PROTECTION_VIEW),
+  protection: ZERO_PROTECTION_VIEW,
   attackStaminaDelta: 0,
+  rangedStaminaDelta: 0,
   meleeRecoveryDelta: 0,
   movementSpeedDelta: 0,
   sprintStaminaDelta: 0,
@@ -135,7 +158,10 @@ export function equipmentSnapshotToCharacterView(
   const modifiers = snapshot.restrictions
   return {
     expectedProtection: expectedProtection(snapshot.protection),
+    expectedByProfile: expectedProtectionByProfile(snapshot.protection),
+    protection: snapshot.protection,
     attackStaminaDelta: modifiers.meleeStaminaMultiplier - 1,
+    rangedStaminaDelta: rangedStaminaMultiplierFor(modifiers.meleeStaminaMultiplier) - 1,
     meleeRecoveryDelta: modifiers.meleeRecoveryMultiplier - 1,
     movementSpeedDelta: modifiers.movementSpeedMultiplier - 1,
     sprintStaminaDelta: modifiers.sprintStaminaMultiplier - 1,
@@ -146,22 +172,11 @@ export function buildCharacterEquipmentSlotViews(
   equipment: EquipmentState,
   inventory: Inventory,
 ): CharacterEquipmentSlotView[] {
-  return EQUIPMENT_SLOTS.map((slot) => {
-    // Display bridge until 048's layered UI: outer piece first, then under.
-    const instanceId = equippedInstanceId(equipment, inventory, `${slot}:outer`)
-      ?? equippedInstanceId(equipment, inventory, `${slot}:under`)
-    if (!instanceId) {
-      return { slot, itemLabel: null, qualityLabel: null }
-    }
-    const instance = inventory.getInstance(instanceId)
-    if (!instance || !isArmorItemInstance(instance)) {
-      return { slot, itemLabel: null, qualityLabel: null }
-    }
-    return {
-      slot,
-      itemLabel: itemDisplayName(instance.kind),
-      qualityLabel: ARMOR_QUALITY_LABELS[instance.quality],
-    }
+  return EQUIPMENT_POSITIONS.map((position) => {
+    const instanceId = equippedInstanceId(equipment, inventory, position)
+    const instance = instanceId ? inventory.getInstance(instanceId) : null
+    if (!instance || !isArmorItemInstance(instance)) return slotViewFor(position, null, null)
+    return slotViewFor(position, itemDisplayName(instance.kind), ARMOR_QUALITY_LABELS[instance.quality])
   })
 }
 

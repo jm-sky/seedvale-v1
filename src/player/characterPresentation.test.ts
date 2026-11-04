@@ -122,13 +122,16 @@ describe('buildCharacterPresentation (plan ui-input-013)', () => {
 
 describe('character equipment presentation (plan items-player-031)', () => {
   it('maps neutral modifiers to zero deltas', () => {
-    expect(equipmentSnapshotToCharacterView(buildProtectionSnapshot([]))).toEqual({
+    const view = equipmentSnapshotToCharacterView(buildProtectionSnapshot([]))
+    expect(view).toMatchObject({
       expectedProtection: { cut: 0, pierce: 0, blunt: 0 },
       attackStaminaDelta: 0,
+      rangedStaminaDelta: 0,
       meleeRecoveryDelta: 0,
       movementSpeedDelta: 0,
       sprintStaminaDelta: 0,
     })
+    expect(view.expectedByProfile['low-bite']).toEqual({ cut: 0, pierce: 0, blunt: 0 })
   })
 
   it('projects equipped body armor into slot rows and aggregate deltas', () => {
@@ -141,11 +144,15 @@ describe('character equipment presentation (plan items-player-031)', () => {
     const view = buildCharacterEquipmentView(snapshot, equipment, inventory)
     expect(view.expectedProtection).toEqual(expectedProtection(snapshot.protection))
     expect(view.expectedProtection.pierce).toBeGreaterThan(0)
-    expect(view.slots.find((row) => row.slot === 'body')).toEqual({
+    expect(view.slots).toHaveLength(14)
+    expect(view.slots.find((row) => row.position === 'body:outer')).toEqual({
+      position: 'body:outer',
       slot: 'body',
+      positionLabel: 'Tułów · Wierzch',
       itemLabel: 'kolczuga',
       qualityLabel: 'Dobra',
     })
+    expect(view.slots.find((row) => row.position === 'body:under')?.itemLabel).toBeNull()
     expect(view.slots.filter((row) => row.itemLabel != null)).toHaveLength(1)
   })
 })

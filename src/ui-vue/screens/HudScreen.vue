@@ -94,6 +94,7 @@ const needBars = computed(() => [
       :held="ui.hud.held"
       :held-ammo="ui.hud.heldAmmo"
       :player-condition="ui.hud.playerCondition"
+      :last-hit="ui.hud.lastHit"
       :fps="ui.hud.fps"
       :show-fps="ui.hud.showFps"
     />

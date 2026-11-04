@@ -73,7 +73,7 @@ describe('current inventory review 026 regressions (F2/F3)', () => {
     rows[1]!.click()
     await nextTick()
     expect(rows[1]!.getAttribute('aria-current')).toBe('true')
-    expect(el.querySelector('#inventory-loadout-context')?.textContent).toContain('Zastępuje:')
+    expect(el.querySelector('#inventory-loadout-context')?.textContent).toContain('Zastępuje (Tułów · Wierzch):')
     expect(el.querySelector('#inventory-detail-heading')?.textContent).toBeTruthy()
     expect(el.querySelectorAll('[role="dialog"]')).toHaveLength(1)
     expect(ui.inventory.onEquipArmor).not.toHaveBeenCalled()

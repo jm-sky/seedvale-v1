@@ -18,7 +18,7 @@ export type InventoryScreenHandlers = {
   /** "Załóż"/"Zdejmij" for wearable armor (plan items-player-030) —
    *  distinct from `onEquip`/`onUnequip`, which are `HeldTool`-only. */
   onEquipArmor?: (instanceId: string) => void
-  onUnequipArmor?: (position?: EquipmentPositionKey) => void
+  onUnequipArmor?: (position: EquipmentPositionKey) => void
   /** "Zjedz"/"Wypij" (plan 106) — only offered for consumable items. */
   onConsume?: (kind: ItemKind) => void
   /** "Rzuć" (plan items-player-059) — arms an improvised throwable without

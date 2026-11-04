@@ -127,6 +127,7 @@ const showBusy = computed(() => selectedId.value === 'busy')
           held="w ręce: topór dwuręczny z długą nazwą"
           held-ammo="Amunicja: 8"
           player-condition="Zmęczony"
+          last-hit="Nogi · kłucie · utracono 10 HP · pancerz powstrzymał 4"
           fps="60 FPS"
           :show-fps="true"
         />

@@ -1,4 +1,5 @@
 import type { Resistance } from '../combat/damageTypes'
+import type { HumanProtection } from '../combat/hitLocation'
 import type { EquipmentPositionKey } from './equipmentTypes'
 import type { Inventory } from './Inventory'
 import { equipmentSnapshotToCharacterView } from '../player/characterPresentation'
@@ -6,14 +7,14 @@ import {
   type EffectiveArmorPiece,
   resolveEffectiveArmorPiece,
 } from './armorItemInstances'
-import { ZERO_RESISTANCE_VIEW } from './armorProtectionDisplay'
+import { type ExpectedProtectionByProfile, expectedProtectionByProfile, PROTECTION_PROFILE_KEYS, ZERO_PROTECTION_VIEW, ZERO_RESISTANCE_VIEW } from './armorProtectionDisplay'
 import {
   armorPositionOf,
   buildProtectionSnapshot,
   createEquipmentState,
   EQUIPMENT_POSITIONS,
-  EQUIPMENT_SLOT_LABEL,
-  type EquipmentSlot,
+  EQUIPMENT_SLOTS,
+  equipmentPositionLabel,
   equippedArmorInstances,
   type ProtectionSnapshot,
   resolveProtectionSnapshot,
@@ -33,7 +34,12 @@ import { ITEM_DEFS, type ItemKind } from './items'
 export type LoadoutStatView = {
   /** Reference-profile expected protection per channel (UI-only); the delta view holds signed differences. */
   expectedProtection: Resistance
+  /** Expected protection per switchable hit profile (UI-only). */
+  expectedByProfile: ExpectedProtectionByProfile
+  /** Local 7 x 3 resistance table (per anatomical region, under+outer composed). */
+  protection: HumanProtection
   attackStaminaDelta: number
+  rangedStaminaDelta: number
   meleeRecoveryDelta: number
   movementSpeedDelta: number
   sprintStaminaDelta: number
@@ -45,11 +51,29 @@ export type EquipPreviewResult = {
   proposed: LoadoutStatView | null
   delta: LoadoutStatView | null
   context: string
-  targetSlot: EquipmentSlot | null
-  /** Position the candidate would occupy (`slot:layer`). */
+  /** Exact position the candidate would occupy (`slot:layer`); drives panel highlight. */
   targetPosition: EquipmentPositionKey | null
+  /** Item currently worn at exactly that position (displaced by the candidate). */
   replacesLabel: string | null
   alreadyEquipped: boolean
+  /** Set when a candidate was requested but cannot be previewed (stale/unknown/not armor). */
+  unavailableReason: string | null
+}
+
+const STALE_CANDIDATE_REASON = 'Przedmiot niedostępny — nie ma go już w ekwipunku'
+const NOT_ARMOR_REASON = 'Ten przedmiot nie jest elementem pancerza'
+
+function emptyPreview(current: LoadoutStatView, unavailableReason: string | null = null): EquipPreviewResult {
+  return {
+    current,
+    proposed: null,
+    delta: null,
+    context: unavailableReason ?? '—',
+    targetPosition: null,
+    replacesLabel: null,
+    alreadyEquipped: false,
+    unavailableReason,
+  }
 }
 
 /** Snapshot row for UI-only preview (no Inventory mutation / no second Inventory). */
@@ -63,7 +87,10 @@ export type ArmorPreviewInstance = {
 export function emptyLoadoutStats(): LoadoutStatView {
   return {
     expectedProtection: ZERO_RESISTANCE_VIEW,
+    expectedByProfile: expectedProtectionByProfile(ZERO_PROTECTION_VIEW),
+    protection: ZERO_PROTECTION_VIEW,
     attackStaminaDelta: 0,
+    rangedStaminaDelta: 0,
     meleeRecoveryDelta: 0,
     movementSpeedDelta: 0,
     sprintStaminaDelta: 0,
@@ -78,14 +105,25 @@ function snapshotToView(snapshot: ProtectionSnapshot, gearWeightKg: number): Loa
   }
 }
 
+function subtractResistance(proposed: Resistance, current: Resistance): Resistance {
+  return {
+    cut: proposed.cut - current.cut,
+    pierce: proposed.pierce - current.pierce,
+    blunt: proposed.blunt - current.blunt,
+  }
+}
+
 function deltaView(proposed: LoadoutStatView, current: LoadoutStatView): LoadoutStatView {
   return {
-    expectedProtection: {
-      cut: proposed.expectedProtection.cut - current.expectedProtection.cut,
-      pierce: proposed.expectedProtection.pierce - current.expectedProtection.pierce,
-      blunt: proposed.expectedProtection.blunt - current.expectedProtection.blunt,
-    },
+    expectedProtection: subtractResistance(proposed.expectedProtection, current.expectedProtection),
+    expectedByProfile: Object.fromEntries(
+      PROTECTION_PROFILE_KEYS.map((key) => [key, subtractResistance(proposed.expectedByProfile[key], current.expectedByProfile[key])]),
+    ) as ExpectedProtectionByProfile,
+    protection: Object.fromEntries(
+      EQUIPMENT_SLOTS.map((slot) => [slot, subtractResistance(proposed.protection[slot], current.protection[slot])]),
+    ) as HumanProtection,
     attackStaminaDelta: proposed.attackStaminaDelta - current.attackStaminaDelta,
+    rangedStaminaDelta: proposed.rangedStaminaDelta - current.rangedStaminaDelta,
     meleeRecoveryDelta: proposed.meleeRecoveryDelta - current.meleeRecoveryDelta,
     movementSpeedDelta: proposed.movementSpeedDelta - current.movementSpeedDelta,
     sprintStaminaDelta: proposed.sprintStaminaDelta - current.sprintStaminaDelta,
@@ -155,47 +193,16 @@ export function previewEquipLoadout(
     gearWeightKg(currentEq, inventory),
   )
 
-  if (!candidateInstanceId) {
-    return {
-      current,
-      proposed: null,
-      delta: null,
-      context: '—',
-      targetSlot: null,
-      targetPosition: null,
-      replacesLabel: null,
-      alreadyEquipped: false,
-    }
-  }
+  if (!candidateInstanceId) return emptyPreview(current)
 
   const candidate = inventory.getInstance(candidateInstanceId)
-  if (!candidate || !isArmorItemInstance(candidate) || !isArmorCatalogKind(candidate.kind)) {
-    return {
-      current,
-      proposed: null,
-      delta: null,
-      context: '—',
-      targetSlot: null,
-      targetPosition: null,
-      replacesLabel: null,
-      alreadyEquipped: false,
-    }
-  }
+  if (!candidate) return emptyPreview(current, STALE_CANDIDATE_REASON)
+  if (!isArmorItemInstance(candidate) || !isArmorCatalogKind(candidate.kind)) return emptyPreview(current, NOT_ARMOR_REASON)
 
-  const targetSlot = ITEM_CATALOG[candidate.kind].armor!.slot
   const targetPosition = armorPositionOf(candidate.kind)!
   const existingId = currentEq.getPosition(targetPosition)
   if (existingId === candidate.id) {
-    return {
-      current,
-      proposed: null,
-      delta: null,
-      context: 'Już założone',
-      targetSlot,
-      targetPosition,
-      replacesLabel: null,
-      alreadyEquipped: true,
-    }
+    return { ...emptyPreview(current), context: 'Już założone', targetPosition, alreadyEquipped: true }
   }
 
   const replaced = existingId ? inventory.getInstance(existingId) : null
@@ -219,14 +226,18 @@ export function previewEquipLoadout(
     current,
     proposed,
     delta: deltaView(proposed, current),
-    context: replacesLabel
-      ? `Zastępuje: ${replacesLabel}`
-      : `Założenie w pusty slot: ${EQUIPMENT_SLOT_LABEL[targetSlot]}`,
-    targetSlot,
+    context: previewContext(targetPosition, replacesLabel),
     targetPosition,
     replacesLabel,
     alreadyEquipped: false,
+    unavailableReason: null,
   }
+}
+
+/** `Zastępuje (Tułów · Wierzch): X` / `Założenie: Tułów · Wierzch (pusta pozycja)`. */
+function previewContext(position: EquipmentPositionKey, replacesLabel: string | null): string {
+  const where = equipmentPositionLabel(position)
+  return replacesLabel ? `Zastępuje (${where}): ${replacesLabel}` : `Założenie: ${where} (pusta pozycja)`
 }
 
 /**
@@ -244,47 +255,16 @@ export function previewEquipLoadoutFromSnapshot(
   const currentPack = loadoutFromSlots(equippedSlots, byId)
   const current = snapshotToView(currentPack.snapshot, currentPack.weightKg)
 
-  if (!candidateInstanceId) {
-    return {
-      current,
-      proposed: null,
-      delta: null,
-      context: '—',
-      targetSlot: null,
-      targetPosition: null,
-      replacesLabel: null,
-      alreadyEquipped: false,
-    }
-  }
+  if (!candidateInstanceId) return emptyPreview(current)
 
   const candidate = byId.get(candidateInstanceId)
-  if (!candidate || !isArmorCatalogKind(candidate.kind)) {
-    return {
-      current,
-      proposed: null,
-      delta: null,
-      context: '—',
-      targetSlot: null,
-      targetPosition: null,
-      replacesLabel: null,
-      alreadyEquipped: false,
-    }
-  }
+  if (!candidate) return emptyPreview(current, STALE_CANDIDATE_REASON)
+  if (!isArmorCatalogKind(candidate.kind)) return emptyPreview(current, NOT_ARMOR_REASON)
 
-  const targetSlot = ITEM_CATALOG[candidate.kind].armor!.slot
   const targetPosition = armorPositionOf(candidate.kind)!
   const existingId = equippedSlots[targetPosition] ?? null
   if (existingId === candidate.id) {
-    return {
-      current,
-      proposed: null,
-      delta: null,
-      context: 'Już założone',
-      targetSlot,
-      targetPosition,
-      replacesLabel: null,
-      alreadyEquipped: true,
-    }
+    return { ...emptyPreview(current), context: 'Już założone', targetPosition, alreadyEquipped: true }
   }
 
   const replacesLabel = existingId ? (byId.get(existingId)?.label ?? null) : null
@@ -301,12 +281,10 @@ export function previewEquipLoadoutFromSnapshot(
     current,
     proposed,
     delta: deltaView(proposed, current),
-    context: replacesLabel
-      ? `Zastępuje: ${replacesLabel}`
-      : `Założenie w pusty slot: ${EQUIPMENT_SLOT_LABEL[targetSlot]}`,
-    targetSlot,
+    context: previewContext(targetPosition, replacesLabel),
     targetPosition,
     replacesLabel,
     alreadyEquipped: false,
+    unavailableReason: null,
   }
 }
