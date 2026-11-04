@@ -8,8 +8,9 @@ import type { Caves } from '../createCaves'
 import type { WorldLocation } from './worldLocationTypes'
 import { cellKey } from '../../settlement/settlementGenerator'
 import { chunkPassesAbandonedCemeteryRoll } from '../../terrain/cemeteryPlacement'
-import { sampleContinentalnessAt, sampleFloorAt, sampleMountainRidgeAt } from '../../terrain/chunkHeightmap'
+import { sampleContinentalnessAt, sampleFloorAt, sampleMountainRidgeAt, sampleRawTexelAt } from '../../terrain/chunkHeightmap'
 import { isFloorBelowSea, isMountainRidge, isOceanMix } from '../../terrain/terrainClassification'
+import { isWetTexel } from '../../terrain/waterSurface'
 import { UNCONDITIONED_HYDROLOGY_ID } from '../../terrain/worldHydrologyStore'
 import { projectCellAt } from '../map/mapProjection'
 import {
@@ -526,6 +527,44 @@ describe('coarse terrain scan (plan world-013)', () => {
     const splitResult = byId([...near, ...medium, ...far])
 
     expect(splitResult).toEqual(wholeResult)
+  })
+
+  it('no lake location is a piece of open sea (Q109): its connected wet component never touches an ocean cell', () => {
+    const params = rawParams()
+    const wetKind = (gx: number, gz: number): 'ocean' | 'water' | 'dry' => {
+      const t = sampleRawTexelAt((gx + 0.5) * LOCATION_SCAN_STEP, (gz + 0.5) * LOCATION_SCAN_STEP, params)
+      if (!isWetTexel(t.h, t.floorH, params.waterLevel) && !isFloorBelowSea(t.floorH, params.waterLevel)) return 'dry'
+      return isOceanMix(t.continentalness, params.region.oceanThreshold, params.region.coastThreshold) ? 'ocean' : 'water'
+    }
+    const lakes = scanOnlyCatalog(42).landmarksWithin(0, 0, FAR_RANGE_HOURS).filter(l => l.kind === 'lake')
+    for (const lake of lakes) {
+      const sx = Math.floor(lake.x / LOCATION_SCAN_STEP)
+      const sz = Math.floor(lake.z / LOCATION_SCAN_STEP)
+      const seen = new Set<string>()
+      const stack: Array<readonly [number, number]> = []
+      // The centroid cell can itself be dry (concave lake); seed from the nearest wet cell.
+      let best: readonly [number, number] | null = null
+      let bestD = Infinity
+      for (let dz = -4; dz <= 4; dz++) {
+        for (let dx = -4; dx <= 4; dx++) {
+          if (wetKind(sx + dx, sz + dz) === 'water' && dx * dx + dz * dz < bestD) { best = [sx + dx, sz + dz]; bestD = dx * dx + dz * dz }
+        }
+      }
+      if (best) stack.push(best)
+      let reachedOcean = false
+      let steps = 0
+      while (stack.length > 0 && steps++ < 20000) {
+        const [gx, gz] = stack.pop()!
+        const key = `${gx},${gz}`
+        if (seen.has(key)) continue
+        seen.add(key)
+        const kind = wetKind(gx, gz)
+        if (kind === 'ocean') { reachedOcean = true; break }
+        if (kind === 'dry') continue
+        stack.push([gx + 1, gz], [gx - 1, gz], [gx, gz + 1], [gx, gz - 1])
+      }
+      expect(reachedOcean, `lake ${lake.id} touches the sea`).toBe(false)
+    }
   })
 
   it('a different seed/config can change results (sanity check the fixture isn\'t trivially empty everywhere)', () => {

@@ -11,8 +11,9 @@ import {
   abandonedCemeteryMaxOffsetFromCenter,
   chunkPassesAbandonedCemeteryRoll,
 } from '../../terrain/cemeteryPlacement'
-import { sampleContinentalnessAt, sampleFloorAt, sampleHeightAt, sampleMountainRidgeAt } from '../../terrain/chunkHeightmap'
+import { sampleRawTexelAt } from '../../terrain/chunkHeightmap'
 import { isFloorBelowSea, isMountainRidge, isOceanMix } from '../../terrain/terrainClassification'
+import { isWetTexel } from '../../terrain/waterSurface'
 import {
   hoursToWorldUnits,
   LAKE_FLOOD_FILL_SAFETY_CAP,
@@ -275,6 +276,8 @@ const CELL_UNKNOWN = 0
 const CELL_NONE = 1
 const CELL_WATER = 2
 const CELL_MOUNTAIN = 3
+/** Open sea (wet + ocean gate). A water component touching it is sea, not a lake. */
+const CELL_OCEAN = 4
 
 /** Coarse `(gx, gz)` key encoding for flood-fill visited/queue tracking —
  *  a single safe integer instead of a `[gx, gz]` tuple or template-string key,
@@ -642,30 +645,22 @@ export function createWorldLocationCatalog(deps: WorldLocationCatalogDeps): Worl
     return out
   }
 
-  /** Minimal classification path for one coarse cell (plan world-013 §2) —
-   *  `sampleFloorAt` first; only wet cells pay for `sampleContinentalnessAt`
-   *  (ocean/inland-water split), only land cells pay for
-   *  `sampleMountainRidgeAt`, and only ridge cells pay for `sampleHeightAt`
-   *  (exactly once, unlike the old `projectCellAt()` + duplicate
-   *  `sampleHeightAt()` path). Never computes moisture region, biome
-   *  weights or forest density — those are map-only concerns. */
+  /** Classification of one coarse cell (plan world-013 §2, Q109) — a single
+   *  `sampleRawTexelAt` (all fields at once). Wet = the map rule
+   *  (`isWetTexel`: sea **or** lake surface); wet cells the ocean gate accepts
+   *  are `CELL_OCEAN`, the rest `CELL_WATER`. Never computes moisture region,
+   *  biome weights or forest density — those are map-only concerns. */
   function classifyCoarseCell(wx: number, wz: number, params: RawSampleParams): { kind: number, height: number } {
     diagnostics.sampleFloorCalls++
-    const floorH = sampleFloorAt(wx, wz, params)
-    if (isFloorBelowSea(floorH, params.waterLevel)) {
-      diagnostics.sampleContinentalnessCalls++
-      const continentalness = sampleContinentalnessAt(wx, wz, params)
-      if (isOceanMix(continentalness, params.region.oceanThreshold, params.region.coastThreshold)) {
-        return { kind: CELL_NONE, height: 0 }
+    const texel = sampleRawTexelAt(wx, wz, params)
+    if (isWetTexel(texel.h, texel.floorH, params.waterLevel) || isFloorBelowSea(texel.floorH, params.waterLevel)) {
+      if (isOceanMix(texel.continentalness, params.region.oceanThreshold, params.region.coastThreshold)) {
+        return { kind: CELL_OCEAN, height: 0 }
       }
       return { kind: CELL_WATER, height: 0 }
     }
-    diagnostics.sampleRidgeCalls++
-    const ridge = sampleMountainRidgeAt(wx, wz, params)
-    if (isMountainRidge(ridge)) {
-      diagnostics.sampleHeightCalls++
-      const height = sampleHeightAt(wx, wz, params)
-      return { kind: CELL_MOUNTAIN, height }
+    if (isMountainRidge(texel.mountainRidge)) {
+      return { kind: CELL_MOUNTAIN, height: texel.h }
     }
     return { kind: CELL_NONE, height: 0 }
   }
@@ -741,6 +736,7 @@ export function createWorldLocationCatalog(deps: WorldLocationCatalogDeps): Worl
    *  §9 requires (Guard → Near → Far must equal Far → Guard → Near). */
   function floodFillLakes(x: number, z: number, minHours: number, maxHours: number, seeds: Set<number>, params: RawSampleParams): WorldLocation[] {
     const visited = new Set<number>()
+    const oceanKeys = new Set<number>()
     const out: WorldLocation[] = []
     for (const seedKey of seeds) {
       if (visited.has(seedKey)) continue
@@ -749,6 +745,7 @@ export function createWorldLocationCatalog(deps: WorldLocationCatalogDeps): Worl
       let count = 0
       let sumGx = 0
       let sumGz = 0
+      let touchesOcean = false
       while (stack.length > 0) {
         const key = stack.pop()!
         const { gx, gz } = decodeCellKey(key)
@@ -760,13 +757,22 @@ export function createWorldLocationCatalog(deps: WorldLocationCatalogDeps): Worl
           const ngx = gx + dx
           const ngz = gz + dz
           const nkey = cellKeyOf(ngx, ngz)
-          if (visited.has(nkey)) continue
+          if (visited.has(nkey)) {
+            // An ocean cell is shared by every component around it, so it stays flaggable after its first visit.
+            if (oceanKeys.has(nkey)) touchesOcean = true
+            continue
+          }
           visited.add(nkey)
-          if (coarseCellAt(ngx, ngz, params).kind !== CELL_WATER) continue
+          const nkind = coarseCellAt(ngx, ngz, params).kind
+          if (nkind === CELL_OCEAN) {
+            oceanKeys.add(nkey)
+            touchesOcean = true
+          }
+          if (nkind !== CELL_WATER) continue
           stack.push(nkey)
         }
       }
-      if (count < MIN_LAKE_CELLS) continue
+      if (touchesOcean || count < MIN_LAKE_CELLS) continue
       const repGx = Math.round(sumGx / count)
       const repGz = Math.round(sumGz / count)
       const loc = scanGridLocation('lake', repGx, repGz)
