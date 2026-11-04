@@ -33,7 +33,7 @@ Also: G6 landmarks (060 landforms, 064 waterfalls, catalog lakes from Q109) beco
 2. Does a rumour lead need persisted state beyond a `LocationKnowledge` entry with `estimated` + a deterministic area (e.g. open-lead count, source NPC, expiry)? If yes: save field + `CURRENT_SAVE_VERSION` bump + migration per `docs/state/persistence.md` — a contract change, decided in L0.
 3. Landmark identity: catalog ids derived from 060 descriptor ids (`lf:<kind>:<cellKey>`) — stable across chunk rebuild, save/load; which kinds map to existing catalog kinds (`mountainPeak`, `lake` + subtype) and whether `waterfall` needs a new kind.
 4. Map presentation of an `estimated` area without a name (verify the current map draws estimated search areas).
-5. V2 policy fit (from D5): opinion gate, distance band, area radius and off-centre offset, phrasing; regional reach (NPCs know their region better).
+5. V2 policy fit (from D5): opinion gate, distance band, area radius and off-centre offset, phrasing; regional reach (NPCs know their region better). D5 verdict and V1 mapping (no `estimated` producer yet, area is per location not per lead, guard reveals are `discovered`): [donor recon §2](../research/v1-revival/2026-11-04--geography-donor-recon.md#2-rumour--approximate-area-g7); V2 landmark rule table for L1 dry kinds: §3.
 
 ## Slices (provisional)
 

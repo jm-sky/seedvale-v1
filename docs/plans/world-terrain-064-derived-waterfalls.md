@@ -19,7 +19,7 @@ Part of the G6 first landmark package: **waterfalls derived from hydrology** at 
 - River presentation: `src/world/createRiverWater.ts` (ribbon per chain), bed carving and mouth ramps from the global hydrology payload (058). No waterfall object exists in V1.
 - 061 H5 records steep perennial reaches as data (top/bottom position, drop on the shipped water/bed profile, width class, source-chain id + offset) — the only input of this plan.
 - 058 notes already distinguish smoothed chain elevations from corrected ground; a "real drop" is evaluated on the profile actually shipped, not on raw relief (review 031 F9).
-- V2 waterfall: implementation and cost not yet inspected (tools-026 D5).
+- V2 waterfall: **does not exist** at `seedvales-v2@9ba54815` (tools-026 D5, [donor recon §1](../research/v1-revival/2026-11-04--geography-donor-recon.md#1-waterfall-g6)). The only donor is V1's own `waterfallFactor` (`riverGeometry.ts`, whitewater per ribbon vertex, zero extra draws; dormant on current relief); lip sheet, pool mist, sound and catalog kind are new V1 work.
 
 ## Ownership direction (review 031 F2)
 
