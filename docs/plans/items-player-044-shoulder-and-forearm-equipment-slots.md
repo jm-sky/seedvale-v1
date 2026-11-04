@@ -1,7 +1,7 @@
 # Plan: Shoulder and forearm equipment slots
 
 **Created:** 2026-09-17
-**Status:** `planned` 📋
+**Status:** `planned` 📋 (044-M authorized by Q-IC4, 2026-11-04; 044-V awaits valid skinned assets)
 **Priority:** medium · **Effort:** M
 **Model:** Sonnet, Composer
 **Depends on:** ~~items-player-039~~

@@ -1,7 +1,7 @@
 # Plan: Layered anatomical armor and typed physical damage (core)
 
 **Created:** 2026-11-04
-**Status:** `planned` 📋 (S1 ungated; S2 needs Q-IC1; S3 needs Q-IC1 + Q-IC2)
+**Status:** `planned` 📋 (S1 ready; Q-IC1/Q-IC2 approved 2026-11-04; S2/S3 retain dependency and atomic-release gates)
 **Type:** feature
 **Priority:** high · **Effort:** XL
 **Depends on:** items-player-044, npc-067

@@ -7,7 +7,7 @@
 **Source baseline:** [V1 `89607ad6f8881aa12b45dc0c9ef2ed220561d065`](https://github.com/jm-sky/seedvale-v1/tree/89607ad6f8881aa12b45dc0c9ef2ed220561d065). Main rechecked at `ec0fa56b7d33393a690603f10bebaf69e4d861d1`: intervening changes concern tools documentation and roads/world caches, not the inspected combat/equipment owners.  
 **Evidence:** GitHub source inspection and arithmetic verification. No build, gameplay, browser, asset-skinning or performance verification.
 
-**Opus review 2026-11-04:** [review 032](../../reviews/2026-11-04--032--items-stage-4-and-combat-armor-architecture-review.md) — design retained; sequencing/ownership corrected. Formal plans: items-player-065 (S1–S3), 066 (S4/S7), ui-input-048 (S5), npc-068 (S6), npc-067 (correctness prelude extracted from §4.4/§6.2/§6.4/§6.5). C1–C3 are tracked as Q-IC1–Q-IC3 in the [side-initiative index](./2026-11-04--items-combat-side-initiative-index.md#6-author-decisions); they remain unapproved.
+**Opus review 2026-11-04:** [review 032](../../reviews/2026-11-04--032--items-stage-4-and-combat-armor-architecture-review.md) — design retained; sequencing/ownership corrected. Formal plans: items-player-065 (S1–S3), 066 (S4/S7), ui-input-048 (S5), npc-068 (S6), npc-067 (correctness prelude extracted from §4.4/§6.2/§6.4/§6.5). C1–C3 are tracked as Q-IC1–Q-IC3 in the [side-initiative index](./2026-11-04--items-combat-side-initiative-index.md#6-author-decisions); all three were approved by the author on 2026-11-04 (Strategic Brief); Q-IC4 also approves mechanics-first bracers.
 
 ## 1. Recommended design and authority
 
@@ -19,7 +19,7 @@ This is a concrete implementation design with initial values and acceptance case
 
 Binding documents:
 
-- [Strategic Brief](./STRATEGIC-BRIEF.md): layers/body protection selected, V1 authority, comparable human protection, current controls, no general player crafting; mechanics/UI may precede appearance. P1 freeze was lifted on 2026-10-30. Master-roadmap D5/D6/D7 remain open.
+- [Strategic Brief](./STRATEGIC-BRIEF.md): layers/body protection selected, V1 authority, comparable human protection, current controls, no general player crafting; mechanics/UI may precede appearance. P1 freeze was lifted on 2026-10-30. Master-roadmap D5/D6/D7 were approved on 2026-11-04 for this initiative.
 - [Stage 4 A1–A10](./2026-10-28--equipment-stage-4-approved-author-decisions.md): A6 shoulder/forearm split, padding inventory-only until separately approved layers; A7 shields inventory-only; A8 exceptional/legendary singleton identities; A9 selected future brigandine activation; A10 role-appropriate real goods.
 - [Historical equipment/combat audit](./2026-10-27--revival-audit--equipment-armor-combat.md), [Stage 4 proposal](./2026-10-27--equipment-stage-4-implementation-proposal.md).
 - [items-player-044](../../plans/items-player-044-shoulder-and-forearm-equipment-slots.md) and its [notes](../../plans/implementation-notes/items-player-044-shoulder-and-forearm-equipment-slots-implementation-notes.md) own slot/accessory work. [ui-input-045](../../plans/ui-input-045-equipment-body-layout.md) owns the approved **unlayered** body layout. Neither is silently expanded or marked done here.
@@ -652,6 +652,6 @@ Mandatory owners: equipment/armorItemInstances/itemCatalog/itemInstances/items; 
 
 Require automated matrix, normal acquisition, full save round trip, exact item conservation, next-roll continuity, same actual/preview math, NPC travel/cost verification, matched performance evidence and explicit unavailable visuals. Passing TypeScript is not gameplay acceptance.
 
-**Unresolved product decisions:** C1 anatomy/layers, C2 balance, C3 new-guard kits. C4 states recommended deferrals. Remaining empirical checks are gameplay feel, assets, browser behavior and performance; core algorithms/contracts are specified.
+**Author-approved 2026-11-04:** C1 anatomy/layers, C2 balance baselines, C3 first-creation-only guard kits. C4 states recommended deferrals. Remaining empirical checks are gameplay feel, assets, browser behavior and performance; core algorithms/contracts are specified.
 
 **This documentation deliverable neither implements gameplay nor changes existing approvals or plan statuses.**

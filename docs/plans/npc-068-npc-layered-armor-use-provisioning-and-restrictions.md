@@ -1,7 +1,7 @@
 # Plan: NPC layered armor use, restrictions continuity and guard provisioning
 
 **Created:** 2026-11-04
-**Status:** `planned` 📋 (N1–N2 after the first layered release; N3 needs Q-IC3)
+**Status:** `planned` 📋 (N1–N2 after the first layered release; Q-IC3 approved 2026-11-04 for N3)
 **Type:** feature
 **Priority:** medium · **Effort:** M
 **Depends on:** items-player-065, items-player-066

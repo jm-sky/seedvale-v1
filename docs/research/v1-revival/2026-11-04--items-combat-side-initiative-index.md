@@ -1,7 +1,7 @@
 # Side initiative — Items Stage 4 × Combat & Armor (coordination index)
 
 **Created:** 2026-11-04 · **Owner:** Claude Opus 5.5 (architecture) · **Executor:** GPT-6 Sol (author decision, 2026-11-04)
-**Status:** plans ready; Wave 1 startable; Wave 2+ gated (see §6)
+**Status:** author decisions approved; Wave 1 startable; dependency, asset and Opus gates remain
 **Relation to the Revival roadmap:** independent side initiative running **in parallel**. It does not change the Master Roadmap phase order, the [Autonomous Session Queue](./AUTONOMOUS-SESSION-QUEUE.md) priorities or the geography work. Its tasks are tracked **here**, not as queue rows; only its open author questions are mirrored in queue §3. Revival rules still apply (determinism, ownership, save/epoch discipline, performance measurement, no FPS claims).
 
 ## 1. Read first
@@ -13,7 +13,7 @@
 ## 2. Authorization (2026-11-04)
 
 - **Stage 4 runtime work within A1–A10:** authorized as the bounded slices of items-player-062/063/064. The old D4 freeze is closed (Strategic Brief, 2026-10-30) and no longer gates it.
-- **Combat runtime:** authorized only where it does not depend on an open decision — items-player-065 **S1** and **npc-067**. Everything else waits for the decision named in §6.
+- **Combat runtime:** authorized within the approved plans. Q-IC1–Q-IC4 were approved by the author on 2026-11-04; remaining dependency/review gates still apply.
 - **items-player-044 mechanics** (approved by A6) and **ui-input-045** (approved layout) are authorized; 044 visuals wait for assets (Q-IC4).
 - Not authorized anywhere: shields/parry/offhand (A7), human-target combat, armor durability, per-limb wounds, wholesale donor activation, new economy architecture, deferred items (falchion, composite_bow, arrow_blunt).
 
@@ -21,7 +21,7 @@
 
 | Plan | Scope | Gate | Status |
 | --- | --- | --- | --- |
-| [items-player-044](../../plans/items-player-044-shoulder-and-forearm-equipment-slots.md) ([notes](../../plans/implementation-notes/items-player-044-shoulder-and-forearm-equipment-slots-implementation-notes.md)) | **044-M:** `arms`→`shoulders` + `forearms`, v-next save migration, leather/steel bracers (scalar interim), labels, stock. **044-V:** bracer visuals | M: none · V: Q-IC4 + author GLBs | planned (corrected 2026-11-04) |
+| [items-player-044](../../plans/items-player-044-shoulder-and-forearm-equipment-slots.md) ([notes](../../plans/implementation-notes/items-player-044-shoulder-and-forearm-equipment-slots-implementation-notes.md)) | **044-M:** `arms`→`shoulders` + `forearms`, v-next save migration, leather/steel bracers (scalar interim), labels, stock. **044-V:** bracer visuals | M: approved Q-IC4 · V: valid skinned GLBs | planned (corrected 2026-11-04) |
 | [ui-input-045](../../plans/ui-input-045-equipment-body-layout.md) | Unlayered anatomical equipment grid, real shoulders/forearms cells | after 044-M | planned (re-based 2026-11-04) |
 | [items-player-062](../../plans/items-player-062-stage-4-weapon-ammunition-and-shield-intake.md) ([notes](../../plans/implementation-notes/items-player-062-stage-4-weapon-ammunition-and-shield-intake-implementation-notes.md)) | Stage 4 P0/P1/P2/P3/P6/P8: policy evolution, 17 melee + 2 bows, 3 ammo, 3 inventory-only shields, deferred tracking | after 065 S1 | planned |
 | [items-player-063](../../plans/items-player-063-upper-tier-singleton-issuance-ledger.md) ([notes](../../plans/implementation-notes/items-player-063-upper-tier-singleton-issuance-ledger-implementation-notes.md)) | Stage 4 P7a: world issuance ledger for the 14 A8 identities | none (Opus review before any source uses it) | planned |
@@ -90,12 +90,14 @@ Wave 4
 
 ## 6. Author decisions
 
+**All four approved by the author, 2026-11-04.** Binding record: [Strategic Brief](./STRATEGIC-BRIEF.md). Values are playtest baselines. Q-IC4 opens mechanics only; visuals still need valid skinned assets.
+
 | ID | Question | Recommendation | Unblocks |
 | --- | --- | --- | --- |
-| **Q-IC1** (= C1 / D5) | Seven exclusive body regions, one sampled location per hit, under/outer layers, cut/pierce/blunt resistance; padding becomes wearable under-armor in this track (A6 successor) | **Yes** | 065 S2/S3, 066, 048 |
-| **Q-IC2** (= C2 / D6) | Balance policy: torso armor stops protecting other regions (mail-only reference pierce 32 % → 15.75 % expected); proposed resist/restriction tables as playtest starting point; trap = hands/cut unblockable, mount fall = legs-weighted blunt with armor; no location damage multipliers | **Yes**, numbers tuned after playtest (066 C) | 065 S3, 066 |
-| **Q-IC3** (= C3 / D7) | Guard armor kits only at genuine first NPC creation by settlement size; no retroactive kits in existing saves; no civilian auto-armor | **Yes** | npc-068 kits |
-| **Q-IC4** | Ship 044 bracers mechanically now without a visible mesh (runtime GLBs were removed in `e8d4a463c`); visuals when you deliver valid skinned GLBs | **Yes** | 044-M; 044-V waits for assets |
+| **Q-IC1** (= C1 / D5) | Seven exclusive body regions, one sampled location per hit, under/outer layers, cut/pierce/blunt resistance; padding becomes wearable under-armor in this track (A6 successor) | **APPROVED 2026-11-04** | 065 S2/S3, 066, 048 |
+| **Q-IC2** (= C2 / D6) | Balance policy: torso armor stops protecting other regions (mail-only reference pierce 32 % → 15.75 % expected); proposed resist/restriction tables as playtest starting point; trap = hands/cut unblockable, mount fall = legs-weighted blunt with armor; no location damage multipliers | **APPROVED 2026-11-04**, numbers tuned after playtest (066 C) | 065 S3, 066 |
+| **Q-IC3** (= C3 / D7) | Guard armor kits only at genuine first NPC creation by settlement size; no retroactive kits in existing saves; no civilian auto-armor | **APPROVED 2026-11-04** | npc-068 kits |
+| **Q-IC4** | Ship 044 bracers mechanically now without a visible mesh (runtime GLBs were removed in `e8d4a463c`); visuals when you deliver valid skinned GLBs | **APPROVED 2026-11-04** | 044-M; 044-V waits for assets |
 
 If Q-IC1 or Q-IC2 is declined: do **not** substitute global scalar protection behind an anatomical UI. Fallback per review 032 F2 (padding → inventory-only, Stage 4 P4/P5 scalar armor reopens) and Opus revises the rejected mechanic. If Q-IC3 is declined: npc-068 ships derived wear/restrictions only, no kits.
 
