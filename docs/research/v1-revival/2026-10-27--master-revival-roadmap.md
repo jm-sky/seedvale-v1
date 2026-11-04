@@ -24,6 +24,9 @@ Authority: [Strategic Brief — approved Revival decisions](./STRATEGIC-BRIEF.md
 
 ### Geography program — staged plans (Opus, 2026-11-04)
 
+**Independent pre-implementation review (2026-11-04):** [Review 031](../../reviews/2026-11-04--031--geography-revival-g1-g9-critical-architecture-review.md) — **REWORK REQUIRED** for the affected execution contracts; S0 diagnostics/recon may proceed. Read its findings before implementing the staged plans below. This is a review recommendation, not a replacement of G1–G9 or an automatic plan rewrite/approval; runtime, visual and performance verification remain outstanding.
+
+
 Runtime work within these plans is inside approved Revival scope (G1–G9, epoch 1); each plan's author gates (G5 selection, G8 profile, look reviews) still stop the work until answered. Task rows: [queue Q111–Q130](./AUTONOMOUS-SESSION-QUEUE.md#1-queue).
 
 | Stage | Plan | Content | Author gate before the next stage |
