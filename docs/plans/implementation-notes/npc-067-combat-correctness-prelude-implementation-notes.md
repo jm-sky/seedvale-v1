@@ -27,3 +27,7 @@
 ## Order and lanes
 
 P1 and P3 are independent of other lanes except `gameLoop.ts` (062 W3 must not be concurrently in flight). P2/P4 edit `npcCombat.ts`/`NpcAgent.ts` — run after 062's NPC-family additions (W2a), before 065 S3.
+
+## P1 implementation — 2026-11-04
+
+Replaced perpendicular-distance selection with earliest quadratic segment–circle entry time, start-inside/zero-length containment, lexical stable-ID ties and dead-candidate exclusion. Existing radius and caller spatial filters unchanged; `segmentPointDistance` remains available. Verified with 84 focused projectile/NPC combat/spatial tests, Vue type-check, scoped ESLint and production build. Fixtures cover near off-center vs far centered, reversed input, ties, start-inside, zero-length, tangency/end contact and out-of-segment circles. No manual projectile check performed. No save or typed-damage change.

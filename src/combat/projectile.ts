@@ -66,21 +66,37 @@ export function segmentPointDistance(
 
 export type ProjectileCandidate = { id: string, x: number, z: number, alive: boolean }
 
-/** Nearest candidate whose position lies within `radius` of the swept
- *  segment `(prevX,prevZ)-(x,z)` — the single per-tick collision test a
- *  live `Projectile` needs against this frame's animal candidates. */
+/** Earliest segment–circle intersection, with stable lexical-ID ties.
+ * Caller-owned cave/surface filters and the existing hit radius stay unchanged.
+ * @domain npc
+ * @system combat
+ */
 export function sweptProjectileHit(
   prevX: number, prevZ: number, x: number, z: number,
   candidates: readonly ProjectileCandidate[],
   radius: number = PROJECTILE_HIT_RADIUS,
 ): string | null {
+  const dx = x - prevX
+  const dz = z - prevZ
+  const a = dx * dx + dz * dz
   let bestId: string | null = null
-  let bestDist = radius
+  let bestT = Infinity
   for (const candidate of candidates) {
     if (!candidate.alive) continue
-    const dist = segmentPointDistance(prevX, prevZ, x, z, candidate.x, candidate.z)
-    if (dist <= bestDist) {
-      bestDist = dist
+    const ox = prevX - candidate.x
+    const oz = prevZ - candidate.z
+    const c = ox * ox + oz * oz - radius * radius
+    let t = 0
+    if (c > 0) {
+      if (a === 0) continue
+      const b = 2 * (ox * dx + oz * dz)
+      const discriminant = b * b - 4 * a * c
+      if (discriminant < 0) continue
+      t = (-b - Math.sqrt(discriminant)) / (2 * a)
+      if (t < 0 || t > 1) continue
+    }
+    if (t < bestT || (t === bestT && (bestId === null || candidate.id < bestId))) {
+      bestT = t
       bestId = candidate.id
     }
   }

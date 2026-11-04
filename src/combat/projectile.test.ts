@@ -79,7 +79,7 @@ describe('sweptProjectileHit', () => {
     expect(sweptProjectileHit(0, 0, 0, -10, candidates, 0.6)).toBeNull()
   })
 
-  it('picks the closest candidate to the segment when several are in range', () => {
+  it('picks the earliest circle intersection, rather than the closest center', () => {
     const candidates = [
       { id: 'far', x: 0.5, z: -5, alive: true },
       { id: 'near', x: 0.1, z: -5, alive: true },
@@ -90,5 +90,33 @@ describe('sweptProjectileHit', () => {
   it('no tunnelling: a fast step still registers a hit crossed mid-segment', () => {
     const candidates = [{ id: 'a', x: 0, z: -5, alive: true }]
     expect(sweptProjectileHit(0, 0, 0, -20, candidates)).toBe('a')
+  })
+})
+
+
+describe('067 P1 earliest projectile contact', () => {
+  it('hits a nearer off-center target before a farther centered target regardless of input order', () => {
+    const candidates = [{ id: 'early', x: .5, z: -2, alive: true }, { id: 'late', x: 0, z: -8, alive: true }]
+    expect(sweptProjectileHit(0, 0, 0, -10, candidates)).toBe('early')
+    expect(sweptProjectileHit(0, 0, 0, -10, [...candidates].reverse())).toBe('early')
+  })
+
+  it('resolves ties and start-inside contacts by lexical ID', () => {
+    const candidates = [{ id: 'z', x: .1, z: 0, alive: true }, { id: 'a', x: -.1, z: 0, alive: true }]
+    expect(sweptProjectileHit(0, 0, 0, -10, candidates)).toBe('a')
+    expect(sweptProjectileHit(0, 0, 0, -10, [...candidates].reverse())).toBe('a')
+    const same = [{ id: 'z', x: 0, z: -5, alive: true }, { id: 'a', x: 0, z: -5, alive: true }]
+    expect(sweptProjectileHit(0, 0, 0, -10, same)).toBe('a')
+  })
+
+  it('zero-length is containment only, including the circle boundary', () => {
+    expect(sweptProjectileHit(0, 0, 0, 0, [{ id: 'a', x: .6, z: 0, alive: true }])).toBe('a')
+    expect(sweptProjectileHit(0, 0, 0, 0, [{ id: 'a', x: .61, z: 0, alive: true }])).toBeNull()
+  })
+
+  it('includes tangent/end contacts, excludes circles beyond either end and dead candidates', () => {
+    expect(sweptProjectileHit(0, 0, 0, -10, [{ id: 'a', x: .6, z: -5, alive: true }])).toBe('a')
+    expect(sweptProjectileHit(0, 0, 0, -10, [{ id: 'a', x: 0, z: -10.6, alive: true }])).toBe('a')
+    expect(sweptProjectileHit(0, 0, 0, -10, [{ id: 'a', x: 0, z: -10.61, alive: true }, { id: 'b', x: 0, z: 1, alive: true }])).toBeNull()
   })
 })
