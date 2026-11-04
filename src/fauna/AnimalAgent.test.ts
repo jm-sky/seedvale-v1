@@ -2565,3 +2565,39 @@ describe('stamina-aware water crossing risk (plan fauna-046)', () => {
 })
 
 
+
+
+describe('067 P3 fauna human-contact identity', () => {
+  it('forwards the actual animal ID and species through public player and NPC update callbacks', () => {
+    for (const target of ['player', 'npc'] as const) {
+      const animalId = `wolf:identity:${target}`
+      const wolf = new AnimalAgent(makeDeps({ def: ANIMAL_DEFS.wolf, animalId }))
+      const village = { x: 100, z: 100, radius: 30 }
+      wolf.setFrenzied(village)
+      const onHumanHit = vi.fn()
+      const onNpcHit = vi.fn()
+      for (let i = 0; i < 10 && onHumanHit.mock.calls.length + onNpcHit.mock.calls.length === 0; i++) {
+        wolf.update({
+          dt: .1,
+          others: [wolf],
+          observerPos: new THREE.Vector3(target === 'player' ? .2 : 1000, 0, 0),
+          dayFactor: 1,
+          forestFactor: 0,
+          litFires: [],
+          villages: [village],
+          nearbyNpcs: target === 'npc' ? [{ id: 'npc:contact', x: .2, z: 0 }] : [],
+          onHumanHit,
+          onNpcHit,
+        })
+      }
+      if (target === 'player') {
+        expect(onHumanHit).toHaveBeenCalledWith(expect.any(Number), expect.any(Number), expect.any(Number), animalId, 'wolf')
+        expect(onNpcHit).not.toHaveBeenCalled()
+      } else {
+        expect(onNpcHit).toHaveBeenCalledWith('npc:contact', expect.any(Number), expect.any(Number), expect.any(Number), animalId, 'wolf')
+        expect(onHumanHit).not.toHaveBeenCalled()
+      }
+      wolf.dispose()
+    }
+  })
+})

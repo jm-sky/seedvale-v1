@@ -1,7 +1,7 @@
 # Plan: Combat correctness prelude — projectile order, ready-weapon defense, attacker identity, exact-instance NPC weapons
 
 **Created:** 2026-11-04
-**Status:** `in progress` 🚧 (P1 complete 2026-11-04; P2–P4 pending)
+**Status:** `in progress` 🔄 (P1/P3 complete 2026-11-04; P2/P4 pending)
 **Type:** fix
 **Priority:** high · **Effort:** M
 **Depends on:** -

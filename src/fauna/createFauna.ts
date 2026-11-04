@@ -141,7 +141,7 @@ export type Fauna = {
     /** Player + nearby NPCs for predator crowd fear (plan 056). Default 1. */
     nearbyHumanCount?: number,
     /** Fauna→player damage callback when a predator bites in contact range. */
-    onHumanHit?: (damage: number, attackerX: number, attackerZ: number) => void,
+    onHumanHit?: (damage: number, attackerX: number, attackerZ: number, attackerAnimalId: string, species: AnimalKind) => void,
     /** Sneak/movement stealth inputs (plan 124 §4). Defaults to "no effect"
      *  (see `AnimalAgent.update`'s own default) when omitted. */
     playerStealth?: PlayerStealthState,
@@ -150,8 +150,8 @@ export type Fauna = {
      *  doc. Loaded settlements' NPCs, not a world scan. */
     nearbyNpcs?: readonly NearbyNpcCandidate[],
     /** Fauna→NPC damage callback (plan 179 §9/§11), mirrors `onHumanHit`.
-     *  `attackerAnimalId` is diagnostic-only, see `AnimalAgent`'s own doc. */
-    onNpcHit?: (targetId: string, damage: number, attackerX: number, attackerZ: number, attackerAnimalId: string) => void,
+     *  `attackerAnimalId` is the stable defense-roll source identity; species is forwarded for future physical profiles. */
+    onNpcHit?: (targetId: string, damage: number, attackerX: number, attackerZ: number, attackerAnimalId: string, species: AnimalKind) => void,
     /** Aggression/alert audio hook (plan 188 §11) — forwarded to each
      *  `AnimalAgent.update()`, fired once per predator on the rising edge of
      *  committing to a human chase (see `AnimalAgent`'s own doc). */

@@ -1110,7 +1110,7 @@ export type AnimalUpdateContext = {
   villages?: readonly VillageInfo[]
   nearbyHumanCount?: number
   /** Optional fauna→human damage seam (plan 056). Absent → chase only. */
-  onHumanHit?: (damage: number, attackerX: number, attackerZ: number) => void
+  onHumanHit?: (damage: number, attackerX: number, attackerZ: number, attackerAnimalId: string, species: AnimalKind) => void
   /** Sneak/movement stealth inputs (plan 124 §4). Defaults to "no effect"
    *  so existing callers/tests that don't pass it keep prior behaviour. */
   playerStealth?: PlayerStealthState
@@ -1122,10 +1122,9 @@ export type AnimalUpdateContext = {
   nearbyNpcs?: readonly NearbyNpcCandidate[]
   /** Fauna→NPC damage seam (plan 179 §9/§11), mirrors `onHumanHit` but
    *  keyed to the specific NPC id chosen as target. `attackerAnimalId` is
-   *  diagnostic-only (`?debug=1&debugNpcCombat=1` combat logging) — lets
-   *  the caller look this animal back up via `getAgents()` without this
-   *  callback needing to know about `AnimalAgent` itself. */
-  onNpcHit?: (targetId: string, damage: number, attackerX: number, attackerZ: number, attackerAnimalId: string) => void
+   *  the stable defense-roll source identity; species is forwarded for
+   *  future physical profiles without changing aggression behavior. */
+  onNpcHit?: (targetId: string, damage: number, attackerX: number, attackerZ: number, attackerAnimalId: string, species: AnimalKind) => void
   /** Aggression/alert audio hook (plan 188 §11) — fired once on the rising
    *  edge of this predator committing to a human chase, not every frame. */
   onAggro?: (kind: AnimalKind, x: number, z: number) => void
@@ -4217,7 +4216,7 @@ export class AnimalAgent {
   private chaseHuman(
     observerPos: THREE.Vector3,
     dt: number,
-    onHumanHit?: (damage: number, attackerX: number, attackerZ: number) => void,
+    onHumanHit?: (damage: number, attackerX: number, attackerZ: number, attackerAnimalId: string, species: AnimalKind) => void,
   ): void {
     if (isExhausted(this.life.stamina)) {
       this.setIntent('wander')
@@ -4236,7 +4235,7 @@ export class AnimalAgent {
     this.steerToward(observerPos, this.sprintSpeedNow(), dt)
   }
 
-  private attackHuman(onHumanHit: (damage: number, attackerX: number, attackerZ: number) => void): void {
+  private attackHuman(onHumanHit: (damage: number, attackerX: number, attackerZ: number, attackerAnimalId: string, species: AnimalKind) => void): void {
     if (this.attackCooldown > 0) return
     if (isExhausted(this.life.stamina)) return
     this.attackCooldown = ATTACK_COOLDOWN
@@ -4247,6 +4246,8 @@ export class AnimalAgent {
       this.outgoingDamageVsHuman(),
       x,
       z,
+      this.animalId,
+      this.def.kind,
     )
   }
 
@@ -4256,7 +4257,7 @@ export class AnimalAgent {
   private chaseNpc(
     target: NearbyNpcCandidate,
     dt: number,
-    onNpcHit?: (targetId: string, damage: number, attackerX: number, attackerZ: number, attackerAnimalId: string) => void,
+    onNpcHit?: (targetId: string, damage: number, attackerX: number, attackerZ: number, attackerAnimalId: string, species: AnimalKind) => void,
   ): void {
     if (isExhausted(this.life.stamina)) {
       this.setIntent('wander')
@@ -4275,7 +4276,7 @@ export class AnimalAgent {
 
   private attackNpc(
     targetId: string,
-    onNpcHit: (targetId: string, damage: number, attackerX: number, attackerZ: number, attackerAnimalId: string) => void,
+    onNpcHit: (targetId: string, damage: number, attackerX: number, attackerZ: number, attackerAnimalId: string, species: AnimalKind) => void,
   ): void {
     if (this.attackCooldown > 0) return
     if (isExhausted(this.life.stamina)) return
@@ -4289,6 +4290,7 @@ export class AnimalAgent {
       x,
       z,
       this.animalId,
+      this.def.kind,
     )
   }
 

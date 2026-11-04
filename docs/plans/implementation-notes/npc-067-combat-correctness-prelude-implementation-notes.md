@@ -31,3 +31,9 @@ P1 and P3 are independent of other lanes except `gameLoop.ts` (062 W3 must not b
 ## P1 implementation — 2026-11-04
 
 Replaced perpendicular-distance selection with earliest quadratic segment–circle entry time, start-inside/zero-length containment, lexical stable-ID ties and dead-candidate exclusion. Existing radius and caller spatial filters unchanged; `segmentPointDistance` remains available. Verified with 84 focused projectile/NPC combat/spatial tests, Vue type-check, scoped ESLint and production build. Fixtures cover near off-center vs far centered, reversed input, ties, start-inside, zero-length, tangency/end contact and out-of-segment circles. No manual projectile check performed. No save or typed-damage change.
+
+## P3 implementation — 2026-11-04
+
+Both fauna→human callbacks carry actual animal ID and species. `AnimalAgent` supplies identity from its own authoritative fields; both `createFauna` forwarding sites pass the callback unchanged (including its extra/settlement-owned agents). There are no separate onHumanHit/onNpcHit providers under `src/settlement`; gameLoop is the live recipient for both. Player and NPC damage use the actual ID as attackerKey. Species is available at the callback seam for 065; no typed damage/profile runtime is activated here.
+
+171 focused tests pass (AnimalAgent/createFauna/defenseResolver), including public-update tests for actual player/NPC contacts with correct ID/species and no callback to the other target. Vue type-check, scoped ESLint and production build verified. No browser verification or aggression behavior change. Defense outcomes can differ from previous encounters because the deterministic key is now per animal, as intended.

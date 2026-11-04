@@ -130,3 +130,5 @@ src/items/equipment.ts
 065 S1 provides unused pure anatomical hit/protection formulas and explicit physical-channel tags on all existing attack configs and ammo. Actual damage still uses the scalar armor pipeline above until the reviewed atomic layered release. 062 W2a registers obsidian_knife, halberd, mace and sword with authored V1 profiles and procedural held/ground fallbacks; these kinds are loadable and usable when owned, but have no world acquisition source. New NPC family entries apply only to actual owned goods. First-batch Opus review precedes further weapon batches.
 
 Projectile contact (npc-067 P1) now selects earliest swept segment–circle intersection; exact-time ties use lexical target ID. Start-inside and zero-length segments use containment. Cave/surface filtering and hit radius remain caller-owned and unchanged.
+
+Fauna contact (npc-067 P3) forwards the actual animal ID/species to the player/NPC incoming seams. Defense uses that animal ID instead of a shared fauna key. The sampler/armor runtime remains unchanged; block outcomes may differ because sources are now distinguished.

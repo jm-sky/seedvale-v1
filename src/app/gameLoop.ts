@@ -2988,13 +2988,13 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
             villages,
             huntableLivestock,
             nearbyHumanCount,
-            (amount, attackerX, attackerZ) => {
+            (amount, attackerX, attackerZ, attackerAnimalId) => {
               const dmg = applyPlayerDamage({
                 player,
                 amount,
                 attackerX,
                 attackerZ,
-                attackerKey: 'fauna',
+                attackerKey: attackerAnimalId,
                 heldTool: heldTool.held(),
                 defenseSkillValue: player.skills.defense.value,
                 playerYaw: mouseLook.state.yaw,
@@ -3028,7 +3028,7 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
                 const target = settlement.npcs.find((npc) => npc.id === targetId)
                 if (!target) continue
                 const npcHpBefore = target.health.currentHp
-                const resolved = target.applyIncomingCombatDamage({ amount, attackerX, attackerZ, attackerKey: 'fauna' })
+                const resolved = target.applyIncomingCombatDamage({ amount, attackerX, attackerZ, attackerKey: attackerAnimalId })
                 logNpcCombatHit(bundle, dayNight, attackerAnimalId, attackerX, attackerZ, target, npcHpBefore, resolved)
                 // Impact/death sound for an animal biting an NPC (plan
                 // npc-009) — the NPC's own hurt/death *animation* is target-
