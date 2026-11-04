@@ -83,6 +83,8 @@ Format: `- [ ] YYYY-MM-DD — opis (plan/plik, jeśli istotne)`
 
 ## Performance / rendering
 
+- [ ] 2026-11-04 — **Large triangular terrain color/shading patches near shoreline** (author screenshot, unverified root cause). Recon: `chunkMeshData.ts` computes biome/shore/slope/road colors per vertex; `buildChunkGeometry.ts` interpolates them on a default 65×65 grid per 64 m chunk and adds world-space fragment noise, dirt detail and weather. Visible triangles appear much larger than mesh cells; terrain receives and (by default) casts sun shadows. No confirmed color-data defect. Isolate with same-camera A/B: terrain shadow casting OFF, N8AO OFF, then unlit vertex-colors-only; check overlays if persistent. Do not retune palette/shader before attribution.
+
 - [ ] 2026-11-02 — Kamera third-person przy oddaleniu potrafi gwałtownie przybliżyć się do postaci, gdy przeszkoda (obserwowane przy drzewach) skraca `resolveCameraBoom`. Małe kolidery drzew (`radius < 1.2`) są już ignorowane, więc najpierw zdiagnozować rzeczywistą przyczynę (`terrain` / duży collider / cave occupancy). Docelowo roślinność przesłaniającą postać tymczasowo ukrywać lub wygaszać zamiast skracać boom; zachować kolizję kamery z terenem, budynkami i jaskiniami. Uwzględnić `InstancedMesh` i LOD — bez ukrywania całego batcha. `src/player/PlayerController.ts`, `src/player/cameraBoom.ts`.
 
 - [x] 2026-10-27 — `src/world/createSky.test.ts` expected storm cloud opacity `0.8`, while current `createSky` yields `0.9`. Reproduced on unmodified `890b58ff` during review-026 P2 verification. Reconciled the stale assertion with the shipped `0.9` profile during the [verification follow-up](../reviews/2026-10-27--review-026-p2-verification.md); no cloud implementation or author-approved atmosphere changed.
