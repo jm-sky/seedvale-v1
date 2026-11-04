@@ -13,9 +13,9 @@ import {
   createEquipmentState,
   EQUIPMENT_POSITIONS,
   type EquipmentState,
-  type SavePlayerEquipment,
   resolveArmorInstanceEffective,
   resolveEquipmentModifiers,
+  type SavePlayerEquipment,
 } from '../items/equipment'
 import { type DefenseConfig, ITEM_CATALOG, type MeleeConfig, type RangedConfig } from '../items/itemCatalog'
 import { isWeaponItemInstance, isWeaponMaintenanceKind, type WeaponItemInstance } from '../items/itemInstances'

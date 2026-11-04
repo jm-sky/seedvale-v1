@@ -1,18 +1,18 @@
-import {
-  ARMOR_LAYERS,
-  type EquipmentPositionKey,
-  type EquipmentSlot,
-  equipmentPositionKey,
-} from './equipmentTypes'
-import { composeLocalResistance, type Resistance } from '../combat/damageTypes'
 import type { HumanProtection } from '../combat/hitLocation'
 import type { Inventory } from './Inventory'
 import type { ArmorItemInstance, ItemInstance } from './itemInstances'
+import { composeLocalResistance, type Resistance } from '../combat/damageTypes'
 import {
   type EffectiveArmorPiece,
   isArmorItemInstance,
   resolveEffectiveArmorPiece,
 } from './armorItemInstances'
+import {
+  ARMOR_LAYERS,
+  type EquipmentPositionKey,
+  equipmentPositionKey,
+  type EquipmentSlot,
+} from './equipmentTypes'
 import {
   isArmorCatalogKind,
   ITEM_CATALOG,

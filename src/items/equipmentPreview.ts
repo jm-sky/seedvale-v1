@@ -1,3 +1,4 @@
+import type { EquipmentPositionKey } from './equipmentTypes'
 import type { Inventory } from './Inventory'
 import { equipmentModifiersToCharacterView } from '../player/characterPresentation'
 import {
@@ -8,17 +9,16 @@ import {
   armorPositionOf,
   buildProtectionSnapshot,
   createEquipmentState,
-  EQUIPMENT_SLOT_LABEL,
   EQUIPMENT_POSITIONS,
+  EQUIPMENT_SLOT_LABEL,
   type EquipmentModifiers,
   type EquipmentSlot,
-  type WornArmorPiece,
   equippedArmorInstances,
   NEUTRAL_EQUIPMENT_MODIFIERS,
   resolveEquipmentModifiers,
   type SavePlayerEquipment,
+  type WornArmorPiece,
 } from './equipment'
-import type { EquipmentPositionKey } from './equipmentTypes'
 import { isArmorCatalogKind, ITEM_CATALOG } from './itemCatalog'
 import { itemDisplayName } from './itemDisplay'
 import {

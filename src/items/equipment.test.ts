@@ -5,15 +5,15 @@ import {
 } from './armorItemInstances'
 import {
   buildProtectionSnapshot,
-  EQUIPMENT_POSITIONS,
-  resolveProtectionSnapshot,
-  type WornArmorPiece,
   createEquipmentState,
+  EQUIPMENT_POSITIONS,
   EQUIPMENT_SLOTS,
   equippedBodyArmor,
   equippedInstanceId,
   NEUTRAL_EQUIPMENT_MODIFIERS,
   resolveEquipmentModifiers,
+  resolveProtectionSnapshot,
+  type WornArmorPiece,
 } from './equipment'
 import { Inventory } from './Inventory'
 import { ITEM_CATALOG } from './itemCatalog'
@@ -110,7 +110,7 @@ describe('createEquipmentState', () => {
 
   it('same instance cannot occupy multiple slots after restore', () => {
     const { inventory, ids } = inventoryWithArmor({ kind: 'leather_armor' })
-    const equipment = createEquipmentState(inventory, { 'body:outer': ids[0], head: ids[0] })
+    const equipment = createEquipmentState(inventory, { 'body:outer': ids[0], 'head:outer': ids[0] })
     const live = EQUIPMENT_POSITIONS.filter((position) => equipment.getPosition(position) === ids[0])
     expect(live.length).toBe(1)
   })

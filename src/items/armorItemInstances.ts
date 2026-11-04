@@ -1,5 +1,5 @@
-import { type Resistance, scaleArmorResistance } from '../combat/damageTypes'
 import type { ArmorConfig } from './itemCatalog'
+import { type Resistance, scaleArmorResistance } from '../combat/damageTypes'
 import { ITEM_CATALOG } from './itemCatalog'
 import {
   ARMOR_KIND_LIST,

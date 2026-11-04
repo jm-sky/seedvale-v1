@@ -2,8 +2,8 @@
 import { computed } from 'vue'
 import { firstUpperCase } from '@/lib/firstUpperCase'
 import type { LoadoutStatView } from '../../../items/equipmentPreview'
-import type { PrimaryWeaponChoice } from '../../../items/primaryWeapons'
 import type { EquipmentPositionKey } from '../../../items/equipmentTypes'
+import type { PrimaryWeaponChoice } from '../../../items/primaryWeapons'
 import type { EquipmentSlotView } from './equipmentPanelTypes'
 import {
   type EquipmentSlot,

@@ -1211,6 +1211,7 @@ export async function createApp(
       groundQuerySeedY: initialSave.player.y,
     })
     player.restoreHealthConsequences(initialSave.player.health)
+    player.restoreIncomingPhysicalHitOrdinal(initialSave.playerIncomingPhysicalHitOrdinal)
     restorePersistedNeeds(player.needs, initialSave.playerNeeds)
     restorePersistedSkills(player.skills, initialSave.skills)
     player.restoreTemporaryConditionsState(
