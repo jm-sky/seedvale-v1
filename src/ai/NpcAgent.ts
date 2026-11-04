@@ -1453,9 +1453,6 @@ export class NpcAgent {
    *  never frame number/array index/object identity. Shared by melee and
    *  ranged attempts (only one mode is ever active at once). */
   private combatAttackAttempt = 0
-  /** Monotonic per-agent counter for `resolveDefense`'s incoming-damage roll
-   *  (mirrors `PlayerController.nextDefenseAttempt`). */
-  private defenseAttempt = 0
   /** Throttle (1 sim-second) for the `?debugNpcCombat=1` stamina-starved
    *  attack-skip log in `tickMeleeCombat` — the underlying condition can
    *  otherwise hold true for many consecutive frames while stamina regens. */
@@ -2506,7 +2503,8 @@ export class NpcAgent {
     attackerKey: string
   }): ResolvedDefense {
     if (this.health.dead) return { outcome: 'none', finalDamage: 0, attempted: false }
-    this.defenseAttempt += 1
+    // Durable ordinal lives on authoritative state (survives reconstruction/save).
+    this.npcState.incomingPhysicalHitOrdinal += 1
     const readyWeaponKind = this.combatIntent
       ? this.combatIntent.mode === 'melee'
         ? this.combatMeleeWeapon && isNpcMeleeWeaponHeld(this.personalInventory, this.combatMeleeWeapon)
@@ -2527,7 +2525,7 @@ export class NpcAgent {
       attackerX: params.attackerX,
       attackerZ: params.attackerZ,
       attackerKey: params.attackerKey,
-      attempt: this.defenseAttempt,
+      attempt: this.npcState.incomingPhysicalHitOrdinal,
     })
     if (resolved.finalDamage > 0) this.takeDamage(resolved.finalDamage)
     return resolved

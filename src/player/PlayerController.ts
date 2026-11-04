@@ -401,8 +401,10 @@ export class PlayerController {
   /** Plan 150 — temporary incapacitation at 0 HP; distinct from `health.dead`. */
   private downed = false
   private downedTimer = 0
-  /** Feeds deterministic defense rolls (`combat/defenseResolver.ts`). */
-  private defenseAttempt = 0
+  /** Durable count of accepted incoming physical contacts (plan items-player-065);
+   *  feeds deterministic defense/location rolls. Saved via `saveState`, restored by
+   *  `restoreIncomingPhysicalHitOrdinal`. */
+  private incomingPhysicalHitOrdinal = 0
   /** Vertical speed (m/s), +up. Zeroed/`grounded=true` on teleport (`snapToGround`)
    *  and while underwater — jumping/falling only apply on dry land (plan 097 §2.3). */
   private verticalVelocity = 0
@@ -1303,9 +1305,21 @@ export class PlayerController {
     return true
   }
 
-  nextDefenseAttempt(): number {
-    this.defenseAttempt += 1
-    return this.defenseAttempt
+  /** Advances and returns the durable incoming-physical-hit ordinal.
+   *  @domain items-player */
+  nextIncomingPhysicalHitOrdinal(): number {
+    this.incomingPhysicalHitOrdinal += 1
+    return this.incomingPhysicalHitOrdinal
+  }
+
+  /** Current durable ordinal (for save export). */
+  getIncomingPhysicalHitOrdinal(): number {
+    return this.incomingPhysicalHitOrdinal
+  }
+
+  /** Restores the durable ordinal from a save; invalid values restore 0. */
+  restoreIncomingPhysicalHitOrdinal(value: number | undefined): void {
+    this.incomingPhysicalHitOrdinal = typeof value === 'number' && Number.isSafeInteger(value) && value >= 0 ? value : 0
   }
 
   /** Edge-triggered request, consumed on the next `updateVerticalMotion` —
@@ -1453,7 +1467,7 @@ export class PlayerController {
     this.sneakUseDistance = 0
     this.swimming = false
     this.footstepAccum = 0
-    this.defenseAttempt = 0
+    this.incomingPhysicalHitOrdinal = 0 // new game; load restores explicitly
     this.playAction(this.idleAction)
   }
 

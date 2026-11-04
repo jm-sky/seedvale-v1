@@ -28,7 +28,7 @@ function createMockPlayer(hp = 100): PlayerController {
       injuryRecovery.injuryRecoveryUpdatedAtDays = nowDays
     },
     mesh: { position: { x: 0, y: 0, z: 0 } },
-    nextDefenseAttempt: () => ++attempt,
+    nextIncomingPhysicalHitOrdinal: () => ++attempt,
     enterDowned: () => { downed = true },
     skills: { defense: { xp: 0, value: 0 } },
   } as unknown as PlayerController

@@ -218,6 +218,7 @@ export function createSaveState(deps: SaveStateDeps): SaveState {
     elapsedDays: dayNight.elapsedDays,
     heldTool: heldTool.held(),
     playerEquipment: equipment.exportState(inventory),
+    playerIncomingPhysicalHitOrdinal: player.getIncomingPhysicalHitOrdinal(),
     ...primaryWeapons.exportState(),
     treeOverrides: deps.getTreeLifecycle().serializeOverrides(),
     playerTorch: playerTorch.isLit() && playerTorch.source()

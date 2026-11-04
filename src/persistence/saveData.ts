@@ -40,7 +40,7 @@ import type { SaveWorldGeneratedContainer } from '../world/worldGeneratedContain
 import { isEconomicKind } from '../economy/kinds'
 import { isAnimalStraySave } from '../fauna/animalStray'
 import { HABITAT_PRESSURE_TIE_ORDER } from '../fauna/habitatPressure'
-import { isEquipmentSlot, type SavePlayerEquipment } from '../items/equipment'
+import { EQUIPMENT_POSITIONS, isEquipmentPositionKey, isEquipmentSlot, type SavePlayerEquipment } from '../items/equipment'
 import { type FoodSourceSpecies, isFoodSourceSpecies } from '../items/foodFreshness'
 import { isToolKind } from '../items/HeldTool'
 import { isMeleeToolKind, isRangedTool, ITEM_CATALOG } from '../items/itemCatalog'
@@ -765,7 +765,7 @@ export type SaveWorkContract =
  *  representation or semantics of `SaveData` change — see the plan's
  *  "Future schema-change workflow". Never duplicate this number elsewhere;
  *  `saveState.ts` imports it instead of declaring its own constant. */
-export const CURRENT_SAVE_VERSION = 59
+export const CURRENT_SAVE_VERSION = 60
 
 /** Canonical save contract for the current schema version. This module
  *  intentionally carries no history of schemas from before the v1 hard cut
@@ -817,6 +817,9 @@ export type SaveData = {
    *  Absent/empty on older saves; an invalid/no-longer-owned id restores
    *  empty rather than recreating the item. */
   playerEquipment?: SavePlayerEquipment
+  /** Durable player incoming-physical-hit ordinal (plan items-player-065, proposal §4.4):
+   *  safe nonnegative integer; absent restores 0. */
+  playerIncomingPhysicalHitOrdinal?: number
   /** Explicit primary weapon slots (plan ui-input-010) — player configuration,
    *  not the currently held tool. */
   primaryMeleeWeapon: SavePrimaryWeaponChoice | null
@@ -1075,14 +1078,19 @@ function isHeldToolField(value: unknown): value is ItemKind | null {
   return isToolKind(value as ItemKind)
 }
 
-/** Structural shape only — each occupied slot, if present, must be a non-empty
+/** Absent, or a safe nonnegative integer (proposal §10.1). */
+function isOptionalHitOrdinal(value: unknown): boolean {
+  return value === undefined || (typeof value === 'number' && Number.isSafeInteger(value) && value >= 0)
+}
+
+/** Structural shape only — each occupied position (`slot:layer`), if present, must be a non-empty
  *  instance-id string. Ownership/slot compatibility is `createEquipmentState`'s job. */
 function isPlayerEquipmentField(value: unknown): value is SavePlayerEquipment | undefined {
   if (value === undefined) return true
   if (!value || typeof value !== 'object' || Array.isArray(value)) return false
   const v = value as Record<string, unknown>
   for (const key of Object.keys(v)) {
-    if (!isEquipmentSlot(key)) return false
+    if (!isEquipmentPositionKey(key)) return false
     const id = v[key]
     if (id === undefined) continue
     if (typeof id !== 'string' || id.length === 0) return false
@@ -2317,6 +2325,7 @@ function isNpcStateSnapshot(value: unknown): value is NpcStateSnapshot {
   if (s.playerFollowUp !== undefined && s.playerFollowUp !== null && !isNpcPlayerFollowUp(s.playerFollowUp)) return false
   if (s.artisanProfile !== undefined && s.artisanProfile !== null && !isArtisanProfile(s.artisanProfile)) return false
   if (s.artisanProfileInitialized !== undefined && typeof s.artisanProfileInitialized !== 'boolean') return false
+  if (!isOptionalHitOrdinal(s.incomingPhysicalHitOrdinal)) return false
   if (s.artisanOrders !== undefined && !isArtisanOrdersField(s.artisanOrders)) return false
   return true
 }
@@ -3016,6 +3025,7 @@ export function isSaveData(value: unknown): value is SaveData {
   if (typeof v.elapsedDays !== 'number') return false
   if (!isHeldToolField(v.heldTool)) return false
   if (!isPlayerEquipmentField(v.playerEquipment)) return false
+  if (!isOptionalHitOrdinal(v.playerIncomingPhysicalHitOrdinal)) return false
   if (!isPrimaryWeaponChoiceField(v.primaryMeleeWeapon, 'melee')) return false
   if (!isPrimaryWeaponChoiceField(v.primaryRangedWeapon, 'ranged')) return false
   if (!isTreeOverridesField(v.treeOverrides)) return false
@@ -4585,6 +4595,7 @@ const SAVE_MIGRATIONS: Readonly<Record<number, SaveMigration>> = {
   56: migrateSaveV56ToV57,
   57: migrateSaveV57ToV58,
   58: migrateSaveV58ToV59,
+  59: migrateSaveV59ToV60,
 }
 
 /** v56 → v57 (plan persistence-008): `config.worldgenEpoch = 0` — every save
@@ -4621,6 +4632,56 @@ function migrateSaveV57ToV58(data: unknown): unknown {
   const { arms, shoulders, ...rest } = previous
   const selected = validShoulder(shoulders) ? shoulders : validShoulder(arms) ? arms : undefined
   return { ...v, version: 58, playerEquipment: { ...rest, ...(selected ? { shoulders: selected } : {}) } }
+}
+
+/** v59 → v60 (items-player-065, proposal §10.1): `playerEquipment` slot keys →
+ *  `slot:outer` position keys. An explicit valid layered key wins over the
+ *  legacy slot key (`shoulders` wins over `arms`; an invalid explicit/shoulders
+ *  falls back to a valid `arms`). References are validated against this save's
+ *  own player `inventoryInstances` rows and the catalog position; stale,
+ *  wrong-position or duplicate refs (canonical order, under then outer) become
+ *  empty while the items stay. Unknown keys / non-string values are left as-is
+ *  so current-schema validation rejects them (never repaired). Absent hit
+ *  ordinals stay absent (runtime reads 0); stored ones are never touched. */
+function migrateSaveV59ToV60(data: unknown): unknown {
+  const v = data as Record<string, unknown>
+  const equipment = v.playerEquipment
+  if (equipment === undefined || !equipment || typeof equipment !== 'object' || Array.isArray(equipment)) {
+    return { ...v, version: 60 }
+  }
+  const previous = equipment as Record<string, unknown>
+  const legacyKeys = new Set<string>([...EQUIPMENT_POSITIONS, 'arms'])
+  const known = (key: string): boolean => isEquipmentSlot(key) || legacyKeys.has(key)
+  if (Object.entries(previous).some(([key, id]) => !known(key)
+    || (id !== undefined && (typeof id !== 'string' || id.length === 0)))) return { ...v, version: 60 }
+  const rows = Array.isArray(v.inventoryInstances) ? v.inventoryInstances : []
+  const positionOf = (id: unknown): string | null => {
+    if (typeof id !== 'string') return null
+    for (const row of rows as unknown[]) {
+      if (!row || typeof row !== 'object') continue
+      const instance = row as Record<string, unknown>
+      if (instance.id !== id || typeof instance.kind !== 'string' || !isArmorKind(instance.kind as ItemKind)) continue
+      const armor = ITEM_CATALOG[instance.kind as ItemKind]?.armor
+      return armor ? `${armor.slot}:${armor.layer}` : null
+    }
+    return null
+  }
+  const next: Record<string, string> = {}
+  const used = new Set<string>()
+  for (const position of EQUIPMENT_POSITIONS) {
+    const [slot, layer] = position.split(':') as [string, string]
+    const candidates = [previous[position]]
+    if (layer === 'outer') {
+      candidates.push(previous[slot])
+      if (slot === 'shoulders') candidates.push(previous.arms)
+    }
+    const chosen = candidates.find((id): id is string => typeof id === 'string' && positionOf(id) === position && !used.has(id))
+    if (chosen) {
+      next[position] = chosen
+      used.add(chosen)
+    }
+  }
+  return { ...v, version: 60, playerEquipment: next }
 }
 
 /** v58 → v59 (items-player-063): initialize the A8 ledger from durable owner

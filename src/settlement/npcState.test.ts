@@ -621,3 +621,24 @@ describe('NpcAuthoritativeState artisan profile/orders (plan settlements-npcs-05
     expect(state.artisanOrders).toEqual([])
   })
 })
+
+describe('NpcAuthoritativeState incomingPhysicalHitOrdinal (items-player-065)', () => {
+  it('defaults to 0, round-trips through serialize/restore and survives reconstruction', () => {
+    const registry = createNpcStateRegistry()
+    const state = registry.getOrCreate('npc:1', 0)
+    expect(state.incomingPhysicalHitOrdinal).toBe(0)
+    state.incomingPhysicalHitOrdinal = 5
+    const restored = createNpcStateRegistry(registry.serialize())
+    expect(restored.getOrCreate('npc:1', 0).incomingPhysicalHitOrdinal).toBe(5)
+    expect(registry.getOrCreate('npc:1', 0)).toBe(state)
+  })
+
+  it('absent or invalid snapshot values restore as 0', () => {
+    const base = createNpcStateRegistry()
+    base.getOrCreate('npc:1', 0)
+    const snap = base.serialize()
+    const { incomingPhysicalHitOrdinal: _drop, ...legacy } = snap['npc:1']!
+    expect(createNpcStateRegistry({ 'npc:1': legacy }).getOrCreate('npc:1', 0).incomingPhysicalHitOrdinal).toBe(0)
+    expect(createNpcStateRegistry({ 'npc:1': { ...legacy, incomingPhysicalHitOrdinal: -3 } }).getOrCreate('npc:1', 0).incomingPhysicalHitOrdinal).toBe(0)
+  })
+})

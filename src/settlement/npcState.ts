@@ -209,6 +209,11 @@ export type NpcAuthoritativeState = {
   artisanProfileInitialized: boolean
   /** Persistent player custom-orders owned by this artisan. */
   artisanOrders: ArtisanOrder[]
+  /** Durable count of accepted incoming physical contacts (plan items-player-065,
+   *  proposal §4.4) — the deterministic roll input for block/location. Safe
+   *  nonnegative integer; mutated in place by `NpcAgent`, so it survives agent
+   *  dispose/recreate, streaming and save/load. */
+  incomingPhysicalHitOrdinal: number
 }
 
 /** Plain-data snapshot — mirrors `SettlementEconomy.snapshot()` /
@@ -262,6 +267,13 @@ export type NpcStateSnapshot = {
   artisanProfile?: ArtisanProfile | null
   artisanProfileInitialized?: boolean
   artisanOrders?: ArtisanOrder[]
+  /** Optional (plan items-player-065): absent restores as 0. */
+  incomingPhysicalHitOrdinal?: number
+}
+
+/** Absent/invalid (non-safe-integer or negative) ordinals restore as 0; the save validator rejects invalid persisted values earlier. */
+function normalizeHitOrdinal(value: number | undefined): number {
+  return typeof value === 'number' && Number.isSafeInteger(value) && value >= 0 ? value : 0
 }
 
 function fromSnapshot(id: NpcId, snapshot: NpcStateSnapshot, maxima?: NpcPhysicalMaxima): NpcAuthoritativeState {
@@ -291,6 +303,7 @@ function fromSnapshot(id: NpcId, snapshot: NpcStateSnapshot, maxima?: NpcPhysica
     artisanProfile: cloneArtisanProfile(snapshot.artisanProfile),
     artisanProfileInitialized: snapshot.artisanProfileInitialized === true,
     artisanOrders: cloneArtisanOrders(snapshot.artisanOrders),
+    incomingPhysicalHitOrdinal: normalizeHitOrdinal(snapshot.incomingPhysicalHitOrdinal),
     needsInitialPersonalLoadout: false,
     needsInitialStartingWealth: false,
   }
@@ -362,6 +375,7 @@ export function createNpcAuthoritativeState(
     artisanProfile: null,
     artisanProfileInitialized: false,
     artisanOrders: [],
+    incomingPhysicalHitOrdinal: 0,
     needsInitialPersonalLoadout: true,
     needsInitialStartingWealth: true,
   }
@@ -437,6 +451,7 @@ export function createNpcStateRegistry(initial?: Record<NpcId, NpcStateSnapshot>
           artisanOrders: state.artisanOrders.length > 0
             ? cloneArtisanOrders(state.artisanOrders)
             : undefined,
+          incomingPhysicalHitOrdinal: state.incomingPhysicalHitOrdinal,
         }
       }
       return out

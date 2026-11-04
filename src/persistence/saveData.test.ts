@@ -1223,7 +1223,7 @@ describe('schema versioning and migration pipeline (persistence-003)', () => {
       { id: 'armor:migrated:1', kind: 'leather_armor', quality: 'common' },
       { id: 'armor:migrated:2', kind: 'chainmail', quality: 'common' },
     ])
-    expect(result.data.playerEquipment).toEqual({ body: 'armor:migrated:1' })
+    expect(result.data.playerEquipment).toEqual({ 'body:outer': 'armor:migrated:1' })
   })
 
   it('round-trips a partial residential house without persisting lodging', () => {
@@ -2779,7 +2779,7 @@ describe('044-M v57 to v58 equipment migration', () => {
     const result = loadStoredSave(input)
     expect(result.status).toBe('ok')
     if (result.status !== 'ok') return
-    expect(result.data.playerEquipment).toEqual({ shoulders: first.id })
+    expect(result.data.playerEquipment).toEqual({ 'shoulders:outer': first.id })
     expect(result.data.inventoryInstances).toEqual(previous.inventoryInstances)
     expect(result.data.config.worldgenEpoch).toBe(previous.config.worldgenEpoch)
     expect(result.data.version).toBe(CURRENT_SAVE_VERSION)
@@ -2788,11 +2788,11 @@ describe('044-M v57 to v58 equipment migration', () => {
 
   it('explicit valid shoulders wins; stale/wrong-kind refs never become forearms', () => {
     for (const [equipment, expected] of [
-      [{ arms: first.id, shoulders: second.id }, { shoulders: second.id }],
-      [{ arms: first.id, shoulders: 'missing' }, { shoulders: first.id }],
+      [{ arms: first.id, shoulders: second.id }, { 'shoulders:outer': second.id }],
+      [{ arms: first.id, shoulders: 'missing' }, { 'shoulders:outer': first.id }],
       [{ arms: 'missing' }, {}],
       [{ arms: bracers.id }, {}],
-      [{ arms: first.id, forearms: bracers.id }, { shoulders: first.id, forearms: bracers.id }],
+      [{ arms: first.id, forearms: bracers.id }, { 'shoulders:outer': first.id, 'forearms:outer': bracers.id }],
     ]) {
       const result = loadStoredSave({ ...previous, playerEquipment: equipment })
       expect(result.status).toBe('ok')
@@ -2808,9 +2808,106 @@ describe('044-M v57 to v58 equipment migration', () => {
   })
 
   it('round-trips the new shape and rejects legacy keys at the current version', () => {
-    const current = { ...previous, version: CURRENT_SAVE_VERSION, playerEquipment: { shoulders: first.id, forearms: bracers.id } }
+    const current = { ...previous, version: CURRENT_SAVE_VERSION, playerEquipment: { 'shoulders:outer': first.id, 'forearms:outer': bracers.id } }
     expect(loadStoredSave(current)).toEqual({ status: 'ok', data: current })
     expect(loadStoredSave({ ...current, playerEquipment: { arms: first.id } }).status).toBe('invalid')
+    expect(loadStoredSave({ ...current, playerEquipment: { shoulders: first.id } }).status).toBe('invalid')
+  })
+})
+
+
+describe('065 S2 v59 to v60 layered equipment and hit ordinals', () => {
+  const mail = { id: 'mail:one', kind: 'chainmail', quality: 'good' }
+  const leather = { id: 'leather:one', kind: 'leather_armor', quality: 'poor' }
+  const p1 = { id: 'pauldron:one', kind: 'ranger_pauldron', quality: 'good' }
+  const p2 = { id: 'pauldron:two', kind: 'knight_pauldron_round', quality: 'poor' }
+  const bracers = { id: 'bracers:one', kind: 'steel_bracers', quality: 'masterwork' }
+  const previous = { ...validSave, version: 59, inventoryInstances: [mail, leather, p1, p2, bracers] }
+  const load = (playerEquipment: unknown, extra: Record<string, unknown> = {}) =>
+    loadStoredSave({ ...previous, ...extra, playerEquipment })
+
+  it('maps shipped slot keys to :outer, preserving ids, quality, inventory and epoch', () => {
+    const input = { ...previous, playerEquipment: { body: mail.id, shoulders: p1.id, forearms: bracers.id } }
+    const snapshot = structuredClone(input)
+    const result = loadStoredSave(input)
+    expect(result.status).toBe('ok')
+    if (result.status !== 'ok') return
+    expect(result.data.playerEquipment).toEqual({ 'body:outer': mail.id, 'shoulders:outer': p1.id, 'forearms:outer': bracers.id })
+    expect(result.data.inventoryInstances).toEqual(previous.inventoryInstances)
+    expect(result.data.config.worldgenEpoch).toBe(previous.config.worldgenEpoch)
+    expect(result.data.version).toBe(CURRENT_SAVE_VERSION)
+    expect(input).toEqual(snapshot)
+  })
+
+  it('explicit layered key wins over the legacy slot key; shoulders wins over arms', () => {
+    const cases: [Record<string, string>, Record<string, string>][] = [
+      [{ 'shoulders:outer': p2.id, shoulders: p1.id }, { 'shoulders:outer': p2.id }],
+      [{ shoulders: p1.id, arms: p2.id }, { 'shoulders:outer': p1.id }],
+      [{ shoulders: 'missing', arms: p2.id }, { 'shoulders:outer': p2.id }],
+      [{ 'shoulders:outer': 'missing', shoulders: p1.id }, { 'shoulders:outer': p1.id }],
+    ]
+    for (const [equipment, expected] of cases) {
+      const result = load(equipment)
+      expect(result.status).toBe('ok')
+      if (result.status === 'ok') expect(result.data.playerEquipment).toEqual(expected)
+    }
+  })
+
+  it('stale, non-owned and wrong-position refs become empty; items stay', () => {
+    const result = load({ body: 'gone', head: mail.id, legs: p1.id, 'feet:under': leather.id })
+    expect(result.status).toBe('ok')
+    if (result.status !== 'ok') return
+    expect(result.data.playerEquipment).toEqual({})
+    expect(result.data.inventoryInstances).toHaveLength(5)
+  })
+
+  it('duplicate refs keep the first position in canonical order', () => {
+    const result = load({ body: mail.id, 'body:outer': mail.id, 'shoulders:outer': mail.id })
+    expect(result.status).toBe('ok')
+    if (result.status === 'ok') expect(result.data.playerEquipment).toEqual({ 'body:outer': mail.id })
+  })
+
+  it('preserves stored ordinals, leaves absent ones absent, and rejects invalid values', () => {
+    const kept = load({}, { playerIncomingPhysicalHitOrdinal: 7 })
+    expect(kept.status).toBe('ok')
+    if (kept.status === 'ok') expect(kept.data.playerIncomingPhysicalHitOrdinal).toBe(7)
+    const absent = load({})
+    expect(absent.status === 'ok' && absent.data.playerIncomingPhysicalHitOrdinal).toBeUndefined()
+    for (const bad of [-1, 1.5, Number.NaN, 2 ** 60, '3']) {
+      expect(load({}, { playerIncomingPhysicalHitOrdinal: bad }).status).toBe('migration-failed')
+    }
+  })
+
+  it('rejects unknown keys and non-string refs instead of repairing them', () => {
+    for (const equipment of [{ wrist: 'x' }, { body: 3 }, { body: '' }, { 'body:middle': mail.id }]) {
+      expect(load(equipment).status).toBe('migration-failed')
+    }
+  })
+
+  it('current version round-trips position keys and rejects slot keys', () => {
+    const current = { ...previous, version: CURRENT_SAVE_VERSION, playerEquipment: { 'body:outer': mail.id }, playerIncomingPhysicalHitOrdinal: 3 }
+    expect(loadStoredSave(current)).toEqual({ status: 'ok', data: current })
+    expect(loadStoredSave({ ...current, playerEquipment: { body: mail.id } }).status).toBe('invalid')
+  })
+
+  it('NPC incomingPhysicalHitOrdinal validates as safe nonnegative integer; absent stays absent', () => {
+    const npc = (extra: Record<string, unknown>) => ({
+      ...validSave,
+      npcStates: {
+        'home:npc:0': {
+          health: { current: 80, max: 100, dead: false },
+          stamina: { current: 100, max: 100 },
+          vigor: { current: 100, max: 100 },
+          needs: { thirst: 0, woodDuty: 0, waterDuty: 0, hunger: 0 },
+          postDeath: null,
+          personalInventory: { counts: {}, instances: [] },
+          ...extra,
+        },
+      },
+    })
+    expect(loadSaveData(npc({}))).not.toBeNull()
+    expect(loadSaveData(npc({ incomingPhysicalHitOrdinal: 4 }))).not.toBeNull()
+    for (const bad of [-1, 0.5, Number.NaN, 2 ** 60, '2']) expect(loadSaveData(npc({ incomingPhysicalHitOrdinal: bad }))).toBeNull()
   })
 })
 

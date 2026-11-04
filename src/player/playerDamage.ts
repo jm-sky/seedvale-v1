@@ -110,7 +110,7 @@ export function applyPlayerDamage(params: ApplyPlayerDamageParams): PlayerDamage
       )
     : false
 
-  const attempt = player.nextDefenseAttempt()
+  const attempt = player.nextIncomingPhysicalHitOrdinal()
   const resolved = resolveDefense(
     amount,
     defenseConfig,
