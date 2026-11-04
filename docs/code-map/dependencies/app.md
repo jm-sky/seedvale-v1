@@ -131,6 +131,7 @@ Generated from TypeScript imports.
 - `app/actions/actionContext.ts`
 - `app/actions/placementActions.ts`
 - `app/actions/placementYaw.ts`
+- `combat/physicalHits.ts`
 - `fauna/AnimalAgent.ts`
 - `input/MouseLook.ts`
 - `items/Inventory.ts`
@@ -483,6 +484,7 @@ Generated from TypeScript imports.
 **Imports**
 
 - `app/actions/actionContext.ts`
+- `combat/physicalHits.ts`
 - `fauna/AnimalAgent.ts`
 - `items/equipment.ts`
 - `items/foreignProperty.ts`
@@ -1260,7 +1262,7 @@ Generated from TypeScript imports.
 - `audio/inventorySounds.ts`
 - `audio/weatherSounds.ts`
 - `combat/criticalHit.ts`
-- `combat/defenseResolver.ts`
+- `combat/incomingHumanHit.ts`
 - `combat/meleeStrength.ts`
 - `combat/projectile.ts`
 - `combat/rangedAttack.ts`
@@ -1584,8 +1586,10 @@ Generated from TypeScript imports.
 - `items/HeldTool.ts`
 - `items/Inventory.ts`
 - `items/armorItemInstances.ts`
+- `items/armorProtectionDisplay.ts`
 - `items/books.ts`
 - `items/equipment.ts`
+- `items/equipmentTypes.ts`
 - `items/foodItems.ts`
 - `items/inventoryView.ts`
 - `items/itemCatalog.ts`

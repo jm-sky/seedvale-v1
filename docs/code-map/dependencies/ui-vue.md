@@ -45,6 +45,7 @@ Generated from TypeScript imports.
 
 **Imports**
 
+- `items/armorProtectionDisplay.ts`
 - `items/foodFreshness.ts`
 - `items/inventoryView.ts`
 - `items/itemCatalog.ts`
@@ -87,6 +88,7 @@ Generated from TypeScript imports.
 
 **Imports**
 
+- `items/armorProtectionDisplay.ts`
 - `items/itemCatalog.ts`
 - `items/items.ts`
 
@@ -101,6 +103,7 @@ Generated from TypeScript imports.
 
 - `items/equipment.ts`
 - `items/equipmentPreview.ts`
+- `items/equipmentTypes.ts`
 - `items/inventoryView.ts`
 - `items/itemCatalog.ts`
 - `items/itemDisplay.ts`
@@ -130,6 +133,7 @@ Generated from TypeScript imports.
 **Imports**
 
 - `items/equipment.ts`
+- `items/equipmentTypes.ts`
 - `items/itemInstances.ts`
 
 **Imported by**
@@ -278,7 +282,7 @@ Generated from TypeScript imports.
 
 - `items/Inventory.ts`
 - `items/armorItemInstances.ts`
-- `items/equipment.ts`
+- `items/equipmentTypes.ts`
 - `items/inventoryView.ts`
 - `items/itemInstances.ts`
 - `items/items.ts`
@@ -820,7 +824,7 @@ Generated from TypeScript imports.
 - `config/worldConfig.ts`
 - `input/isTouchDevice.ts`
 - `interaction/interactionView.ts`
-- `items/equipment.ts`
+- `items/equipmentTypes.ts`
 - `items/inventoryView.ts`
 - `items/itemInstances.ts`
 - `items/items.ts`

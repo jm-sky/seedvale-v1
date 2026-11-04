@@ -419,6 +419,7 @@ Generated from TypeScript imports.
 - `fauna/destinationThreatHooks.ts`
 - `fauna/dungeonResidents.test.ts`
 - `fauna/dungeonResidents.ts`
+- `fauna/faunaCombat.test.ts`
 - `fauna/faunaProximity.test.ts`
 - `fauna/foodWaterTargeting.test.ts`
 - `fauna/habitatPressure.test.ts`
@@ -1050,6 +1051,7 @@ Generated from TypeScript imports.
 **Imports**
 
 - `fauna/AnimalAgent.ts`
+- `fauna/animalDefs.ts`
 - `fauna/faunaCombat.ts`
 
 ## `fauna/faunaCombat.ts`
@@ -1057,6 +1059,9 @@ Generated from TypeScript imports.
 **Imports**
 
 - `combat/combatIntent.ts`
+- `combat/damageTypes.ts`
+- `combat/hitLocation.ts`
+- `combat/incomingHumanHit.ts`
 - `fauna/AnimalAgent.ts`
 - `items/HeldTool.ts`
 - `items/itemCatalog.ts`

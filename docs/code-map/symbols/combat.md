@@ -4,8 +4,10 @@ Generated from exported TypeScript symbols.
 
 ## `combat/combatIntent.ts`
 
-- `CombatIntent` — type — line 32
-- `CombatTargetHandle` — type — line 13
+- `CombatIntent` — type — line 44
+- `CombatTargetHandle` — type — line 25
+- `CombatTargetHit` — type — line 8
+  - domain: combat
 
 ## `combat/criticalHit.ts`
 
@@ -52,9 +54,11 @@ Generated from exported TypeScript symbols.
 
 - `HumanHitContext` — type — line 20
 - `HumanHitResult` — type — line 28
+- `inertHumanHitResult` — function — line 45
+- `isAcceptedPhysicalContactAmount` — function — line 40
 - `PhysicalHit` — type — line 11
   - domain: combat
-- `resolveIncomingHumanHit` — function — line 43
+- `resolveIncomingHumanHit` — function — line 62
 
 ## `combat/meleeAgility.ts`
 
@@ -78,14 +82,20 @@ Generated from exported TypeScript symbols.
 - `MELEE_STRENGTH_NEUTRAL` — const — line 22
 - `meleeStrengthMultiplier` — function — line 24
 
+## `combat/physicalHits.ts`
+
+- `fallPhysicalHit` — function — line 25
+- `trapPhysicalHit` — function — line 12
+  - domain: combat
+
 ## `combat/projectile.ts`
 
-- `advanceProjectile` — function — line 42
-- `Projectile` — type — line 11
-- `PROJECTILE_HIT_RADIUS` — const — line 37
-- `ProjectileCandidate` — type — line 67
-- `segmentPointDistance` — function — line 53
-- `sweptProjectileHit` — function — line 74
+- `advanceProjectile` — function — line 45
+- `Projectile` — type — line 12
+- `PROJECTILE_HIT_RADIUS` — const — line 40
+- `ProjectileCandidate` — type — line 70
+- `segmentPointDistance` — function — line 56
+- `sweptProjectileHit` — function — line 77
   - domain: npc
   - system: combat
 

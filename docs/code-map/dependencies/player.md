@@ -31,6 +31,7 @@ Generated from TypeScript imports.
 - `audio/playerMoveSounds.ts`
 - `characters/assembleCharacter.ts`
 - `characters/characterTypes.ts`
+- `combat/incomingHumanHit.ts`
 - `debug/playerGroundTrace.ts`
 - `debug/playerMovementTrace.ts`
 - `input/Keyboard.ts`
@@ -334,6 +335,7 @@ Generated from TypeScript imports.
 
 **Imports**
 
+- `combat/hitLocation.ts`
 - `items/Inventory.ts`
 - `items/armorItemInstances.ts`
 - `items/equipment.ts`
@@ -347,7 +349,10 @@ Generated from TypeScript imports.
 
 **Imports**
 
+- `combat/damageTypes.ts`
+- `combat/hitLocation.ts`
 - `items/Inventory.ts`
+- `items/armorProtectionDisplay.ts`
 - `items/equipment.ts`
 - `items/itemDisplay.ts`
 - `items/itemInstances.ts`
@@ -520,7 +525,10 @@ Generated from TypeScript imports.
 
 **Imports**
 
-- `items/equipment.ts`
+- `combat/damageTypes.ts`
+- `combat/hitLocation.ts`
+- `combat/incomingHumanHit.ts`
+- `combat/physicalHits.ts`
 - `player/PlayerController.ts`
 - `player/PlayerNeeds.ts`
 - `player/playerDamage.ts`
@@ -531,8 +539,9 @@ Generated from TypeScript imports.
 **Imports**
 
 - `combat/defenseResolver.ts`
+- `combat/hitLocation.ts`
+- `combat/incomingHumanHit.ts`
 - `items/HeldTool.ts`
-- `items/equipment.ts`
 - `items/itemCatalog.ts`
 - `player/PlayerController.ts`
 - `player/PlayerNeeds.ts`

@@ -837,17 +837,17 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/npcState.ts`
 
-- `createNpcAuthoritativeState` — function — line 337
-- `createNpcStateRegistry` — function — line 391
+- `createNpcAuthoritativeState` — function — line 350
+- `createNpcStateRegistry` — function — line 405
 - `MAX_HP` — const — line 61
 - `MAX_STAMINA` — const — line 62
 - `NpcAuthoritativeState` — type — line 100
   - domain: settlements-npcs
 - `NpcGraveVisitRecord` — type — line 53
 - `NpcId` — type — line 49
-- `NpcPhysicalMaxima` — type — line 323
-- `NpcStateRegistry` — type — line 377
-- `NpcStateSnapshot` — type — line 218
+- `NpcPhysicalMaxima` — type — line 336
+- `NpcStateRegistry` — type — line 391
+- `NpcStateSnapshot` — type — line 223
 
 ## `settlement/pastureWater.ts`
 

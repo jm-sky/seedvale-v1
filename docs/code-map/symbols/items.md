@@ -4,22 +4,31 @@ Generated from exported TypeScript symbols.
 
 ## `items/armorItemInstances.ts`
 
-- `applyArmorPenaltyQuality` — function — line 88
-  - domain: items-player
-- `createArmorInstance` — function — line 35
+- `applyArmorPenaltyQuality` — function — line 87
   - domain: items-player
 - `createArmorInstance` — function — line 36
+  - domain: items-player
 - `createArmorInstance` — function — line 37
 - `createArmorInstance` — function — line 38
-- `createArmorInstance` — function — line 44
-- `EffectiveArmorPiece` — type — line 97
+- `createArmorInstance` — function — line 39
+- `createArmorInstance` — function — line 45
+- `EffectiveArmorPiece` — type — line 96
   - domain: items-player
-- `effectiveInstanceWeight` — function — line 142
+- `effectiveInstanceWeight` — function — line 141
   - domain: items-player
-- `migrateArmorCountsToInstances` — function — line 157
+- `migrateArmorCountsToInstances` — function — line 156
   - domain: items-player
-- `resolveEffectiveArmorPiece` — function — line 113
+- `resolveEffectiveArmorPiece` — function — line 114
   - domain: items-player
+
+## `items/armorProtectionDisplay.ts`
+
+- `DAMAGE_CHANNEL_LABELS` — const — line 11
+  - domain: items-player
+- `formatResistanceLabel` — function — line 23
+- `resistancePercents` — function — line 14
+- `strongestChannelPercent` — function — line 29
+- `ZERO_RESISTANCE_VIEW` — const — line 33
 
 ## `items/authoredWorldPickups.ts`
 
@@ -143,42 +152,55 @@ Generated from exported TypeScript symbols.
 
 ## `items/equipment.ts`
 
-- `composeEquipmentModifiers` — function — line 232
+- `armorPositionOf` — function — line 115
+- `buildProtectionSnapshot` — function — line 287
   - domain: items-player
-- `createEquipmentState` — function — line 107
-- `EQUIPMENT_SLOT_LABEL` — const — line 29
-- `EQUIPMENT_SLOTS` — const — line 18
-- `EquipmentModifiers` — type — line 46
-- `EquipmentState` — type — line 73
+- `createEquipmentState` — function — line 141
+  - domain: items-player
+- `EQUIPMENT_POSITIONS` — const — line 51
+- `EQUIPMENT_SLOT_LABEL` — const — line 36
+- `EQUIPMENT_SLOTS` — const — line 25
+- `EquipmentModifiers` — type — line 58
+- `EquipmentState` — type — line 87
   - domain: items-player
   - system: equipment
-  - role: Tracks which owned armor instance (if any) is worn in each equipment slot.
+  - role: Tracks which owned armor instance (if any) is worn in each of the 14 equipment positions.
   - uses: Inventory
-- `equippedArmorInstances` — function — line 183
-- `equippedBodyArmor` — function — line 199
-- `equippedInstanceId` — function — line 205
-- `equippedInstanceIds` — function — line 214
-- `isEquipmentSlot` — function — line 83
-- `NEUTRAL_EQUIPMENT_MODIFIERS` — const — line 56
-- `resolveArmorInstanceEffective` — function — line 276
-- `resolveEquipmentModifiers` — function — line 266
+- `equippedArmorInstances` — function — line 206
+- `equippedBodyArmor` — function — line 223
+- `equippedInstanceId` — function — line 228
+- `equippedInstanceIds` — function — line 237
+- `EquipResult` — type — line 73
+- `isEquipmentPositionKey` — function — line 110
+- `isEquipmentSlot` — function — line 106
+- `NEUTRAL_EQUIPMENT_MODIFIERS` — const — line 65
+- `ProtectionSnapshot` — type — line 257
   - domain: items-player
-- `SavePlayerEquipment` — type — line 40
+- `rangedStaminaMultiplierFor` — function — line 275
+- `resolveArmorInstanceEffective` — function — line 359
+- `resolveEquipmentModifiers` — function — line 354
+  - domain: items-player
+- `resolveProtectionSnapshot` — function — line 340
+  - domain: items-player
+- `SavePlayerEquipment` — type — line 48
+- `WornArmorPiece` — type — line 245
 
 ## `items/equipmentPreview.ts`
 
-- `ArmorPreviewInstance` — type — line 49
-- `emptyLoadoutStats` — function — line 56
-- `EquipPreviewResult` — type — line 38
-- `LoadoutStatView` — type — line 29
-- `previewEquipLoadout` — function — line 135
+- `ArmorPreviewInstance` — type — line 56
+- `emptyLoadoutStats` — function — line 63
+- `EquipPreviewResult` — type — line 43
+- `LoadoutStatView` — type — line 33
+- `previewEquipLoadout` — function — line 146
   - domain: items-player
-- `previewEquipLoadoutFromSnapshot` — function — line 222
+- `previewEquipLoadoutFromSnapshot` — function — line 238
   - domain: items-player
 
 ## `items/equipmentTypes.ts`
 
+- `ARMOR_LAYERS` — const — line 8
 - `ArmorLayer` — type — line 5
+- `equipmentPositionKey` — function — line 10
 - `EquipmentPositionKey` — type — line 6
 - `EquipmentSlot` — type — line 4
   - domain: items-player
@@ -326,12 +348,12 @@ Generated from exported TypeScript symbols.
   - owns: FoodBatch
   - produces: SaveItemInstance
 - `InventoryContentsSnapshot` — type — line 146
-- `inventoryFromContents` — function — line 728
-- `inventoryFullToastText` — function — line 747
-- `inventoryFullToastTextForInstance` — function — line 760
+- `inventoryFromContents` — function — line 755
+- `inventoryFullToastText` — function — line 774
+- `inventoryFullToastTextForInstance` — function — line 787
 - `ItemAmount` — type — line 71
 - `SaveItemInstance` — type — line 85
-- `snapshotInventoryContents` — function — line 718
+- `snapshotInventoryContents` — function — line 745
 - `toSaveItemInstance` — function — line 105
 
 ## `items/inventoryItemReadAction.ts`
@@ -350,53 +372,57 @@ Generated from exported TypeScript symbols.
 
 ## `items/inventoryView.ts`
 
-- `buildInventoryGroups` — function — line 281
-- `inventoryCountsForUi` — function — line 318
-- `InventoryGroupView` — type — line 72
-- `InventoryInstanceRow` — type — line 46
-- `ITEM_METER_LABEL` — const — line 40
-- `ItemMeterKind` — type — line 35
+- `buildInventoryGroups` — function — line 283
+- `inventoryCountsForUi` — function — line 320
+- `InventoryGroupView` — type — line 74
+- `InventoryInstanceRow` — type — line 47
+- `ITEM_METER_LABEL` — const — line 41
+- `ItemMeterKind` — type — line 36
 
 ## `items/itemCatalog.ts`
 
-- `AMMO_DAMAGE_TYPE` — const — line 2146
-- `ammoDamageBonus` — function — line 2140
+- `AMMO_DAMAGE_TYPE` — const — line 2154
+- `ammoDamageBonus` — function — line 2148
   - domain: items-player
 - `ArmorConfig` — type — line 60
-- `ARROW_DAMAGE_BONUS` — const — line 2125
-- `BookTier` — type — line 214
-- `CAPABILITY_KINDS` — const — line 2220
-- `CAPABILITY_LABEL` — const — line 190
-- `CAPABILITY_NEED_LABEL` — const — line 174
-- `CONSUMABLE_KINDS_BY_NEED` — const — line 2260
-- `ConsumableNeed` — type — line 205
-- `consumeNeedNoun` — function — line 326
-- `consumeVerbLabel` — function — line 317
+- `ARROW_DAMAGE_BONUS` — const — line 2133
+- `BookTier` — type — line 216
+- `CAPABILITY_KINDS` — const — line 2249
+- `CAPABILITY_LABEL` — const — line 192
+- `CAPABILITY_NEED_LABEL` — const — line 176
+- `CONSUMABLE_KINDS_BY_NEED` — const — line 2289
+- `ConsumableNeed` — type — line 207
+- `consumeNeedNoun` — function — line 328
+- `consumeVerbLabel` — function — line 319
 - `DefenseConfig` — type — line 46
-- `hasItemCapability` — function — line 2245
-- `HOLDABLE_KINDS` — const — line 2211
-- `INJURY_TREATMENT_KINDS` — const — line 2282
-- `isArmorCatalogKind` — function — line 2198
-- `isBodyArmorKind` — function — line 2204
-- `isMeleeToolKind` — function — line 2192
-- `isRangedTool` — function — line 2159
-- `isThrowableKind` — function — line 2164
-- `ITEM_CATALOG` — const — line 340
+- `hasItemCapability` — function — line 2274
+- `HOLDABLE_KINDS` — const — line 2240
+- `INJURY_TREATMENT_KINDS` — const — line 2311
+- `isArmorCatalogKind` — function — line 2227
+- `isBodyArmorKind` — function — line 2233
+- `isMeleeToolKind` — function — line 2221
+- `isRangedTool` — function — line 2188
+- `isThrowableKind` — function — line 2193
+- `ITEM_CATALOG` — const — line 342
   - domain: items-player
   - system: item-catalog
   - role: Single source of truth for per-`ItemKind` gameplay flags and tool-capability gates.
   - owns: ItemCatalogEntry
-- `ITEM_SYSTEM_ROADMAP` — const — line 2303
-- `ItemCapability` — type — line 147
-- `ItemCatalogEntry` — type — line 216
-- `itemIsResilient` — function — line 2250
+- `ITEM_SYSTEM_ROADMAP` — const — line 2332
+- `ItemCapability` — type — line 149
+- `ItemCatalogEntry` — type — line 218
+- `itemIsResilient` — function — line 2279
 - `ItemSpawnKind` — type — line 16
-- `itemTreatsPhysicalInjury` — function — line 2295
+- `itemTreatsPhysicalInjury` — function — line 2324
 - `MeleeConfig` — type — line 27
-- `NON_ITEM_PROPS` — const — line 2309
-- `RangedConfig` — type — line 80
-- `rangedConfigFromThrowable` — function — line 2171
-- `ThrowableConfig` — type — line 124
+- `NON_ITEM_PROPS` — const — line 2338
+- `RangedConfig` — type — line 82
+- `rangedConfigFromThrowable` — function — line 2200
+- `resolveMeleeDamageType` — function — line 2181
+  - domain: items-player
+- `resolveProjectileDamageType` — function — line 2171
+  - domain: items-player
+- `ThrowableConfig` — type — line 126
 
 ## `items/itemDisplay.ts`
 

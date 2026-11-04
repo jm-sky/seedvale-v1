@@ -77,7 +77,7 @@ Generated from TypeScript imports.
 
 **Imports**
 
-- `items/equipment.ts`
+- `items/equipmentTypes.ts`
 - `items/inventoryView.ts`
 - `items/items.ts`
 - `items/primaryWeapons.ts`

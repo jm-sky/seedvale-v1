@@ -6,6 +6,7 @@ Generated from TypeScript imports.
 
 **Imports**
 
+- `combat/damageTypes.ts`
 - `simulation/index.ts`
 
 **Imported by**
@@ -41,10 +42,20 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `ai/npcCombat.ts`
+- `combat/combatIntent.ts`
 - `combat/hitLocation.ts`
 - `combat/incomingHumanHit.test.ts`
 - `combat/incomingHumanHit.ts`
+- `combat/projectile.ts`
+- `fauna/faunaCombat.ts`
+- `items/armorItemInstances.ts`
+- `items/armorProtectionDisplay.ts`
+- `items/equipment.ts`
+- `items/equipmentPreview.ts`
 - `items/itemCatalog.ts`
+- `player/characterPresentation.ts`
+- `player/playerDamage.test.ts`
 
 ## `combat/defenseResolver.test.ts`
 
@@ -61,9 +72,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
-- `ai/NpcAgent.ts`
 - `ai/npcCombat.ts`
-- `app/gameLoop.ts`
 - `combat/defenseResolver.test.ts`
 - `combat/incomingHumanHit.test.ts`
 - `combat/incomingHumanHit.ts`
@@ -79,6 +88,12 @@ Generated from TypeScript imports.
 
 - `combat/incomingHumanHit.test.ts`
 - `combat/incomingHumanHit.ts`
+- `fauna/faunaCombat.ts`
+- `items/equipment.ts`
+- `player/characterPresentation.test.ts`
+- `player/characterPresentation.ts`
+- `player/playerDamage.test.ts`
+- `player/playerDamage.ts`
 
 ## `combat/incomingHumanHit.test.ts`
 
@@ -89,6 +104,7 @@ Generated from TypeScript imports.
 - `combat/hitLocation.ts`
 - `combat/incomingHumanHit.ts`
 - `items/itemCatalog.ts`
+- `items/items.ts`
 
 ## `combat/incomingHumanHit.ts`
 
@@ -101,7 +117,17 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `ai/NpcAgent.combatMode.test.ts`
+- `ai/NpcAgent.ts`
+- `ai/npcCombat.test.ts`
+- `ai/npcCombat.ts`
+- `app/gameLoop.ts`
 - `combat/incomingHumanHit.test.ts`
+- `combat/physicalHits.ts`
+- `fauna/faunaCombat.ts`
+- `player/PlayerController.ts`
+- `player/playerDamage.test.ts`
+- `player/playerDamage.ts`
 
 ## `combat/meleeAgility.test.ts`
 
@@ -156,6 +182,25 @@ Generated from TypeScript imports.
 - `combat/meleeStrength.test.ts`
 - `player/PlayerController.test.ts`
 
+## `combat/physicalHits.test.ts`
+
+**Imports**
+
+- `combat/physicalHits.ts`
+
+## `combat/physicalHits.ts`
+
+**Imports**
+
+- `combat/incomingHumanHit.ts`
+
+**Imported by**
+
+- `app/actions/containerActions.ts`
+- `app/actions/mountActions.ts`
+- `combat/physicalHits.test.ts`
+- `player/playerDamage.test.ts`
+
 ## `combat/projectile.test.ts`
 
 **Imports**
@@ -166,6 +211,7 @@ Generated from TypeScript imports.
 
 **Imports**
 
+- `combat/damageTypes.ts`
 - `items/items.ts`
 
 **Imported by**

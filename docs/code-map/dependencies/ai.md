@@ -56,6 +56,7 @@ Generated from TypeScript imports.
 - `ai/NpcAgent.ts`
 - `ai/npcCombat.ts`
 - `combat/combatIntent.ts`
+- `combat/incomingHumanHit.ts`
 - `combat/rangedLifecycle.ts`
 - `items/itemCatalog.ts`
 - `items/weaponMaintenance.ts`
@@ -187,7 +188,7 @@ Generated from TypeScript imports.
 - `characters/assembleCharacter.ts`
 - `combat/combatIntent.ts`
 - `combat/criticalHit.ts`
-- `combat/defenseResolver.ts`
+- `combat/incomingHumanHit.ts`
 - `combat/meleeAgility.ts`
 - `combat/meleeAttack.ts`
 - `combat/projectile.ts`
@@ -204,6 +205,7 @@ Generated from TypeScript imports.
 - `items/Inventory.ts`
 - `items/constructionMaterials.ts`
 - `items/createDroppedItems.ts`
+- `items/equipment.ts`
 - `items/foodItems.ts`
 - `items/itemCatalog.ts`
 - `items/items.ts`
@@ -940,6 +942,7 @@ Generated from TypeScript imports.
 - `ai/npcCombat.ts`
 - `combat/combatIntent.ts`
 - `combat/criticalHit.ts`
+- `combat/incomingHumanHit.ts`
 - `combat/meleeStrength.ts`
 - `combat/projectile.ts`
 - `items/Inventory.ts`
@@ -958,7 +961,9 @@ Generated from TypeScript imports.
 - `ai/characters.ts`
 - `combat/combatIntent.ts`
 - `combat/criticalHit.ts`
+- `combat/damageTypes.ts`
 - `combat/defenseResolver.ts`
+- `combat/incomingHumanHit.ts`
 - `combat/meleeStrength.ts`
 - `combat/projectile.ts`
 - `items/Inventory.ts`

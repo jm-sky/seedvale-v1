@@ -10,9 +10,9 @@ Generated from exported TypeScript symbols.
 
 ## `ui-vue/components/items/buildInventoryDetailStatRows.ts`
 
-- `buildInventoryDetailStatRows` — function — line 97
-- `BuildInventoryDetailStatRowsInput` — type — line 78
-- `formatAmmoStat` — function — line 59
+- `buildInventoryDetailStatRows` — function — line 98
+- `BuildInventoryDetailStatRowsInput` — type — line 79
+- `formatAmmoStat` — function — line 60
 
 ## `ui-vue/components/items/buildItemDetailPresentation.ts`
 
@@ -26,14 +26,14 @@ Generated from exported TypeScript symbols.
 
 ## `ui-vue/components/items/catalogueStatStrength.ts`
 
-- `catalogueStatStrength` — function — line 5
-- `INVENTORY_DETAIL_STAT_CEILINGS` — const — line 64
-- `InventoryDetailStatCeilings` — type — line 10
+- `catalogueStatStrength` — function — line 6
+- `INVENTORY_DETAIL_STAT_CEILINGS` — const — line 65
+- `InventoryDetailStatCeilings` — type — line 11
 
 ## `ui-vue/components/items/collectArmorPreviewInstances.ts`
 
-- `buildEquipmentSlotViews` — function — line 30
-- `collectArmorPreviewInstances` — function — line 10
+- `buildEquipmentSlotViews` — function — line 31
+- `collectArmorPreviewInstances` — function — line 11
 
 ## `ui-vue/components/items/equipmentLayout.ts`
 
@@ -44,7 +44,7 @@ Generated from exported TypeScript symbols.
 
 ## `ui-vue/components/items/equipmentPanelTypes.ts`
 
-- `EquipmentSlotView` — type — line 4
+- `EquipmentSlotView` — type — line 5
 
 ## `ui-vue/components/items/inventoryPresentation.ts`
 
@@ -392,8 +392,8 @@ Generated from exported TypeScript symbols.
 - `CharacterReputationView` — type — line 703
 - `CharacterSettlementOption` — type — line 680
 - `CharacterStats` — type — line 667
-- `clearToasts` — function — line 2444
-- `clearTouchChrome` — function — line 2467
+- `clearToasts` — function — line 2446
+- `clearTouchChrome` — function — line 2469
 - `closeActionConfirm` — function — line 1689
 - `closeArtisanOrderScreen` — function — line 1643
 - `closeCharacterScreen` — function — line 2053
@@ -409,7 +409,7 @@ Generated from exported TypeScript symbols.
 - `closeQuantityDialog` — function — line 1661
 - `closeQuestLog` — function — line 1056
 - `closeQuickActions` — function — line 1735
-- `closeSkillsScreen` — function — line 2173
+- `closeSkillsScreen` — function — line 2175
 - `closeTopOverlay` — function — line 1005
 - `closeVillagers` — function — line 1111
 - `closeWorldConfigScreen` — function — line 1987
@@ -434,11 +434,11 @@ Generated from exported TypeScript symbols.
 - `configurePlacementPreviewConfirm` — function — line 1911
 - `configurePlacementPreviewRepeat` — function — line 1936
 - `configurePlacementPreviewRotation` — function — line 1925
-- `configurePrimaryWeaponShortcuts` — function — line 2356
+- `configurePrimaryWeaponShortcuts` — function — line 2358
 - `configureQuickActions` — function — line 1702
-- `configureSkillsScreen` — function — line 2179
+- `configureSkillsScreen` — function — line 2181
 - `configureTerrainPreparationControls` — function — line 1861
-- `configureTouchChrome` — function — line 2451
+- `configureTouchChrome` — function — line 2453
 - `configureUiSounds` — function — line 829
 - `configureWorldConfigScreen` — function — line 1965
 - `configureWorldInspection` — function — line 1994
@@ -448,16 +448,16 @@ Generated from exported TypeScript symbols.
 - `confirmTerrainPreparation` — function — line 1876
 - `ContainerScreenMode` — type — line 486
 - `emitUiClick` — function — line 844
-- `equipPrimaryMelee` — function — line 2359
-- `equipPrimaryRanged` — function — line 2362
+- `equipPrimaryMelee` — function — line 2361
+- `equipPrimaryRanged` — function — line 2364
 - `finishTimeSkipHide` — function — line 1794
 - `FireActionId` — type — line 242
 - `FlavorDialogDetailRow` — type — line 220
-- `getHudSkillAimScreen` — function — line 2399
+- `getHudSkillAimScreen` — function — line 2401
 - `getNpcDialogueQuestPreview` — function — line 1179
   - domain: ui-input
-- `getSkillValue` — function — line 2289
-- `getSkillXp` — function — line 2293
+- `getSkillValue` — function — line 2291
+- `getSkillXp` — function — line 2295
 - `growTerrainPreparation` — function — line 1864
 - `hideBusy` — function — line 1810
 - `hidePlacementPreview` — function — line 1956
@@ -474,7 +474,7 @@ Generated from exported TypeScript symbols.
 - `isHouseholdTransferScreenOpen` — function — line 1574
 - `isInventoryOpen` — function — line 1420
 - `isMerchantOpen` — function — line 1486
-- `isMinimapCollapsed` — function — line 2424
+- `isMinimapCollapsed` — function — line 2426
 - `isNotesOpen` — function — line 1992
 - `isNpcDialogueMenuOpen` — function — line 1286
 - `isNpcGiveItemScreenOpen` — function — line 1607
@@ -482,7 +482,7 @@ Generated from exported TypeScript symbols.
 - `isQuantityDialogOpen` — function — line 1671
 - `isQuestLogOpen` — function — line 1057
 - `isQuickActionsOpen` — function — line 1744
-- `isSkillsScreenOpen` — function — line 2174
+- `isSkillsScreenOpen` — function — line 2176
 - `isVillagersOpen` — function — line 1120
 - `isWorldConfigScreenOpen` — function — line 1988
 - `isWorldInspectionOpen` — function — line 2034
@@ -508,14 +508,14 @@ Generated from exported TypeScript symbols.
 - `openQuantityDialog` — function — line 1649
 - `openQuestLog` — function — line 1054
 - `openQuickActions` — function — line 1730
-- `openSkillsScreen` — function — line 2172
+- `openSkillsScreen` — function — line 2174
 - `openVillagers` — function — line 1110
 - `openWorldConfigScreen` — function — line 1986
 - `openWorldInspection` — function — line 2012
 - `openWorldMap` — function — line 2038
 - `PlacementPreviewRotationControls` — type — line 1920
-- `PrimaryWeaponShortcuts` — type — line 2350
-- `pushSkillsState` — function — line 2244
+- `PrimaryWeaponShortcuts` — type — line 2352
+- `pushSkillsState` — function — line 2246
 - `QuickActionsCategoryId` — type — line 265
 - `QuickActionsFireAvailability` — type — line 256
 - `raiseTerrainPreparation` — function — line 1870
@@ -540,29 +540,29 @@ Generated from exported TypeScript symbols.
 - `selectQuickActionsCategory` — function — line 1745
 - `setAudioVolume` — function — line 1026
 - `setCanCancelTerrainPreparation` — function — line 1773
-- `setCharacterBadges` — function — line 2162
-- `setCharacterReputation` — function — line 2168
+- `setCharacterBadges` — function — line 2164
+- `setCharacterReputation` — function — line 2170
 - `setCharacterStats` — function — line 2069
-- `setCycleTargetAvailable` — function — line 2455
+- `setCycleTargetAvailable` — function — line 2457
 - `setFlavorInteractionPrompt` — function — line 1091
 - `setFlavorPrompt` — function — line 1083
-- `setHudAiming` — function — line 2383
-- `setHudCombatWeapon` — function — line 2347
-- `setHudFps` — function — line 2297
-- `setHudHeldAmmo` — function — line 2335
-- `setHudHeldTool` — function — line 2328
-- `setHudInventoryWeight` — function — line 2323
-- `setHudLeading` — function — line 2416
-- `setHudMounted` — function — line 2410
-- `setHudPlayerCondition` — function — line 2379
-- `setHudPlayerNeeds` — function — line 2368
-- `setHudPrimaryWeapons` — function — line 2343
-- `setHudSkillAimScreen` — function — line 2389
-- `setHudTime` — function — line 2303
-- `setHudWeather` — function — line 2312
-- `setInspectAvailable` — function — line 2459
+- `setHudAiming` — function — line 2385
+- `setHudCombatWeapon` — function — line 2349
+- `setHudFps` — function — line 2299
+- `setHudHeldAmmo` — function — line 2337
+- `setHudHeldTool` — function — line 2330
+- `setHudInventoryWeight` — function — line 2325
+- `setHudLeading` — function — line 2418
+- `setHudMounted` — function — line 2412
+- `setHudPlayerCondition` — function — line 2381
+- `setHudPlayerNeeds` — function — line 2370
+- `setHudPrimaryWeapons` — function — line 2345
+- `setHudSkillAimScreen` — function — line 2391
+- `setHudTime` — function — line 2305
+- `setHudWeather` — function — line 2314
+- `setInspectAvailable` — function — line 2461
 - `setLodgingWalkActive` — function — line 1779
-- `setMinimapCollapsed` — function — line 2423
+- `setMinimapCollapsed` — function — line 2425
 - `setPauseActiveSaveName` — function — line 1052
 - `setPausePlayerName` — function — line 1050
 - `setPauseSaveStatus` — function — line 1051
@@ -585,27 +585,27 @@ Generated from exported TypeScript symbols.
 - `setQuickActionsNearTown` — function — line 1712
 - `setQuickActionsTraps` — function — line 1713
 - `setQuickActionsWorkContracts` — function — line 1727
-- `setSelectedTargetedSkill` — function — line 2257
-- `setSkillsState` — function — line 2188
-- `setTouchInputEnabled` — function — line 2463
+- `setSelectedTargetedSkill` — function — line 2259
+- `setSkillsState` — function — line 2190
+- `setTouchInputEnabled` — function — line 2465
 - `setVillagersPage` — function — line 1121
-- `sheatheCombatWeapon` — function — line 2365
+- `sheatheCombatWeapon` — function — line 2367
 - `showBusy` — function — line 1804
 - `showPlacementPreview` — function — line 1943
 - `showTerrainPreparationPreview` — function — line 1880
 - `showTimeSkip` — function — line 1759
-- `showToast` — function — line 2428
+- `showToast` — function — line 2430
 - `shrinkTerrainPreparation` — function — line 1867
 - `syncOverlayStack` — function — line 1004
 - `TerrainPreparationControls` — type — line 1853
 - `ToastItem` — type — line 801
 - `toggleCharacterScreen` — function — line 2055
-- `toggleHudFpsVisible` — function — line 2302
-- `toggleMinimap` — function — line 2422
+- `toggleHudFpsVisible` — function — line 2304
+- `toggleMinimap` — function — line 2424
 - `togglePause` — function — line 1007
 - `togglePlacementPreviewRepeat` — function — line 1939
 - `toggleQuickActions` — function — line 1743
-- `toggleSkillsScreen` — function — line 2175
+- `toggleSkillsScreen` — function — line 2177
 - `toggleVillagers` — function — line 1112
 - `toggleWorldMap` — function — line 2047
 - `ui` — const — line 848

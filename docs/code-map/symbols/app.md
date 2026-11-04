@@ -36,9 +36,9 @@ Generated from exported TypeScript symbols.
 
 ## `app/actions/containerActions.ts`
 
-- `ContainerActionDeps` — type — line 95
-- `ContainerActions` — type — line 60
-- `createContainerActions` — function — line 110
+- `ContainerActionDeps` — type — line 96
+- `ContainerActions` — type — line 61
+- `createContainerActions` — function — line 111
 
 ## `app/actions/containerInstanceTransfer.ts`
 
@@ -111,11 +111,11 @@ Generated from exported TypeScript symbols.
 
 ## `app/actions/mountActions.ts`
 
-- `createMountActions` — function — line 76
-- `DismountReason` — type — line 20
-- `ForeignPropertyMountHooks` — type — line 63
-- `MountActions` — type — line 22
-- `OwnedMountHooks` — type — line 72
+- `createMountActions` — function — line 77
+- `DismountReason` — type — line 21
+- `ForeignPropertyMountHooks` — type — line 64
+- `MountActions` — type — line 23
+- `OwnedMountHooks` — type — line 73
   - domain: fauna — conscious player dismount may refresh Stay via livestock ownership (plan fauna-035). Mount actions only report the lifecycle event; the injected callback owns control mutation + registry upsert.
 
 ## `app/actions/npcItemTransfer.ts`
@@ -387,13 +387,13 @@ Generated from exported TypeScript symbols.
 
 ## `app/inventoryWiring.ts`
 
-- `createInventoryWiring` — function — line 250
-- `InventoryWiring` — type — line 139
-- `InventoryWiringDeps` — type — line 178
-- `MerchantInventoryView` — type — line 125
-- `npcDialogueCanOrderArtisan` — function — line 243
+- `createInventoryWiring` — function — line 252
+- `InventoryWiring` — type — line 141
+- `InventoryWiringDeps` — type — line 180
+- `MerchantInventoryView` — type — line 127
+- `npcDialogueCanOrderArtisan` — function — line 245
   - domain: settlements-npcs
-- `npcDialogueCanTrade` — function — line 234
+- `npcDialogueCanTrade` — function — line 236
   - domain: settlements-npcs
 
 ## `app/modalState.ts`
