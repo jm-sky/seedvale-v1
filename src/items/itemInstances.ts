@@ -86,6 +86,7 @@ export function isArmorItemInstance(instance: ItemInstance): instance is ArmorIt
  *  for `pickaxe`). */
 export type WeaponMaintenanceKind =
   | 'obsidian_knife'
+  | 'obsidian_dagger'
   | 'halberd'
   | 'sword'
   | 'knife'
@@ -110,6 +111,7 @@ export type WeaponMaintenanceKind =
  *  save migration in `weaponMaintenance.ts`) don't hand-maintain a copy. */
 export const WEAPON_MAINTENANCE_KIND_LIST: readonly WeaponMaintenanceKind[] = [
   'obsidian_knife',
+  'obsidian_dagger',
   'halberd',
   'sword',
   'axe',

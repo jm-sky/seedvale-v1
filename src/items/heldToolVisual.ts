@@ -48,6 +48,10 @@ export const HELD_ATTACH: Record<ToolKind, HeldAttach> = {
   halberd: { position: [0.02, 0.11, -0.02], rotation: [Math.PI / 2, 0, 0], scale: 1.25, gripLocalOffset: [0, 0, -0.2] },
   mace: { position: [0.02, 0.11, -0.02], rotation: [Math.PI / 2, 0, 0], scale: 1.25, gripLocalOffset: [0, 0, -0.12] },
   sword: { position: [0.02, 0.11, -0.02], rotation: [Math.PI / 2, 0, 0], scale: 1.25 },
+  obsidian_dagger: { position: [0, 0.12, -0.01], rotation: [Math.PI, 0, Math.PI / 2], scale: 1.1 },
+  club: { position: [0.02, 0.11, -0.02], rotation: [Math.PI / 2, 0, 0], scale: 1.15, gripLocalOffset: [0, 0, -0.12] },
+  war_hammer: { position: [0.02, 0.11, -0.02], rotation: [Math.PI / 2, 0, 0], scale: 1.25, gripLocalOffset: [0, 0, -0.16] },
+  staff: { position: [0.02, 0.11, -0.02], rotation: [Math.PI / 2, 0, 0], scale: 1.15, gripLocalOffset: [0, 0, -0.25] },
 
   axe: {
     // Verified in-hand after user manual adjustment (2026-08-12)

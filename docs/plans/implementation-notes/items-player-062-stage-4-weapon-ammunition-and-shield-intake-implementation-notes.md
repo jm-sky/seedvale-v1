@@ -42,13 +42,13 @@ Melee tuple = damage / range / arcDot / windUp / hitWindow / recovery / staminaC
 
 | Batch | ID | Family / NPC family | Type | Melee tuple | Defense | Maintenance | Mass | Price | Tier |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| W2a | obsidian_knife | knife / compact | pierce | 15 / 1.6 / .6 / .13 / .08 / .19 / 5 | .08 / .20 | yes | .35 | 55 | Common |
-| W2a | halberd | polearm / spear | cut | 25 / 3.2 / .5 / .34 / .12 / .44 / 13 | .18 / .40 | yes | 3.5 | 95 | Common |
-| W2a | mace | blunt / tool | blunt | 21 / 1.9 / .45 / .30 / .10 / .36 / 10 | .12 / .30 | no | 1.8 | 50 | Common |
-| W2a | sword | sword / sword | cut | 22 / 2.35 / .42 / .23 / .10 / .32 / 9 | .20 / .40 | yes | 1.5 | 65 | Common |
-| W2b | obsidian_dagger | dagger / compact | pierce | 17 / 1.7 / .58 / .12 / .08 / .18 / 5 | .08 / .20 | yes | .45 | 65 | Common |
+| W2a | obsidian_knife | knife / compact | pierce | 15 / 1.6 / .6 / .13 / .08 / .19 / 5 | .08 / .20 | yes | .35 | 30 | Common |
+| W2a | halberd | polearm / spear | cut | 25 / 3.2 / .5 / .34 / .12 / .44 / 13 | .18 / .40 | yes | 3.5 | 45 | Common |
+| W2a | mace | blunt / tool | blunt | 21 / 1.9 / .45 / .30 / .10 / .36 / 10 | .12 / .30 | no | 1.8 | 30 | Common |
+| W2a | sword | sword / sword | cut | 22 / 2.35 / .42 / .23 / .10 / .32 / 9 | .24 / .48 | yes | 1.9 | 45 | Common |
+| W2b | obsidian_dagger | dagger / compact | pierce | 17 / 1.7 / .58 / .12 / .08 / .18 / 5 | .08 / .20 | yes | .45 | 36 | Common |
 | W2b | club | blunt / tool | blunt | 13 / 1.9 / .5 / .25 / .10 / .30 / 7 | .08 / .25 | no | 1.2 | 12 | Common |
-| W2b | war_hammer | blunt / tool | blunt | 26 / 2.1 / .38 / .38 / .12 / .46 / 13 | .14 / .35 | no | 3 | 80 | Common |
+| W2b | war_hammer | blunt / tool | blunt | 26 / 2.1 / .38 / .38 / .12 / .46 / 13 | .14 / .35 | no | 3 | 45 | Common |
 | W2b | staff | blunt / tool | blunt | 11 / 2.8 / .5 / .24 / .10 / .28 / 6 | .20 / .35 | no | 1 | 15 | Common |
 | W2c | ashgrove_dagger | dagger / compact | pierce | 21 / 1.75 / .6 / .11 / .08 / .17 / 5 | .12 / .25 | yes | .4 | 160 | Masterwork |
 | W2c | millbrook_shortsword | sword / sword | cut | 28 / 2.2 / .5 / .17 / .10 / .24 / 8 | .25 / .45 | yes | 1.2 | 220 | Masterwork |
@@ -60,7 +60,7 @@ Melee tuple = damage / range / arcDot / windUp / hitWindow / recovery / staminaC
 | W2d | ironvale_sword | sword / sword | cut | 49 / 2.55 / .45 / .21 / .11 / .28 / 10 | .32 / .52 | yes | 1.4 | 1300 | Legendary, U |
 | W2d | greywatch_longsword | sword / sword | cut | 55 / 2.85 / .38 / .26 / .12 / .32 / 12 | .32 / .52 | yes | 1.7 | 1500 | Legendary, U |
 
-W2b–d remain proposed contract rows pending first-batch review; no runtime admission until their own verified commits. Upper-tier rows have no source and require 063 factory guards before release.
+W2c–d remain proposed contract rows; no runtime admission until their own verified commits. Upper-tier rows have no source and require 063 factory guards before release.
 
 Ranged tuple = damage / range / projectileSpeed / drawTime / recovery / stamina / accuracy / criticalChance. Both bows are maintenance-free instance-backed ranged weapons, arrows in existing order (arrow, broadhead, war); pierce base with actual ammo type override. Procedural fallback must retain identity.
 
@@ -103,3 +103,15 @@ Verification: 347 tests across 11 files (batch ownership/transfer/geometry, cata
 Removed all four W2a kinds from live `MERCHANT_STOCK`, retaining prices and load/profile support. The shared no-source regression covers catalog spawn, ordinary/premium/home pools and generated assortments (50 reference-derived seeds × five terrains × five sizes × home/non-home × four traders). Later 062 batches extend this list; only 064 removes a kind as it enables its source. Saves containing already issued W2a goods remain loadable, including merchant stock; no coercion or save/epoch bump. This fixes generation going forward, not historical ownership. W2b gate opens once this correction lands with green checks.
 
 R1 validation: 52 tests / 3 files, Vue type-check, scoped ESLint and production Vite build. No browser verification.
+
+## W2a R2/R3 and F2 author resolution — 2026-11-04
+
+Per review 033 R2, `sword` defense is `.24/.48` and mass is `1.9 kg`, between `short_sword` and `long_sword`. Obsidian knife (and W2b obsidian dagger) keeps `.08/.20` defense: brittle glass edges are poor at parrying; both remain weapon-only so they cannot change harvesting auto-pick behavior (F4).
+
+Per author direction following review 033 F2, Common melee prices follow existing V1 family anchors rather than a rarity premium: W2a `obsidian_knife 30` (above dagger 24 by a modest step for its 15 damage vs 14, and well below premium damascus_knife 90), `halberd 45` (spear 32 plus reach/damage 25), `mace 30` (near axe 25 at comparable damage), `sword 45` (below long_sword 50 at lower damage). W2b uses `obsidian_dagger 36` (between dagger 24 and family sword 40, matching its damage 17), `club 12`, `war_hammer 45` (high damage offset by slow wind-up/recovery; below long_sword 50), and `staff 15` (defensive reach, low damage). Prices remain barter/sale values, not acquisition sources.
+
+## W2b implementation — 2026-11-04
+
+Registered exactly `obsidian_dagger`, `club`, `war_hammer`, and `staff` with the W0 melee/damage/defense/mass tuples, procedural identity-preserving ground and held fallback, NPC families (`compact` / `tool`), and no source. Obsidian dagger is condition-backed; blunt weapons remain count-backed. Existing mace sphere fallback is preserved. R1 guard now covers all eight 062 melee kinds. No save version or worldgen epoch change.
+
+Verification: 113 tests across seven focused catalog/ownership/geometry, source-guard, maintenance, donor-policy and S1 math files pass; scoped ESLint passes. NPC-family/save suites, Vue type-check and production build are repeated after the parallel 063/067 work stabilizes. No browser verification.

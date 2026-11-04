@@ -67,6 +67,10 @@ export type MeleeToolKind = Extract<
   | 'obsidian_knife'
   | 'halberd'
   | 'mace'
+  | 'obsidian_dagger'
+  | 'club'
+  | 'war_hammer'
+  | 'staff'
   | 'sword'
 >
 

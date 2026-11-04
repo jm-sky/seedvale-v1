@@ -14,9 +14,10 @@ import {
 } from './weaponMaintenance'
 
 describe('WEAPON_MAINTENANCE_KINDS (plan 161)', () => {
-  it('contains the 18 supported kinds including Stage 4 W2a', () => {
-    expect(WEAPON_MAINTENANCE_KINDS.size).toBe(18)
+  it('contains the 19 supported kinds including Stage 4 W2a/W2b', () => {
+    expect(WEAPON_MAINTENANCE_KINDS.size).toBe(19)
     expect(isWeaponMaintenanceKind('knife')).toBe(true)
+    expect(isWeaponMaintenanceKind('obsidian_dagger')).toBe(true)
     expect(isWeaponMaintenanceKind('short_sword')).toBe(true)
     expect(isWeaponMaintenanceKind('long_sword')).toBe(true)
     expect(isWeaponMaintenanceKind('spear')).toBe(true)

@@ -18,6 +18,10 @@ export type ItemKind =
   | 'halberd'
   | 'mace'
   | 'sword'
+  | 'obsidian_dagger'
+  | 'club'
+  | 'war_hammer'
+  | 'staff'
   | 'long_sword'
   | 'spear'
   | 'short_sword'
@@ -1071,6 +1075,42 @@ export const ITEM_DEFS: Record<ItemKind, ItemDef> = {
     color: 0x999da4,
     description: 'Broń drzewcowa z ostrzem. Duży zasięg okupiony wolnym zamachem i wysiłkiem.',
   },
+  obsidian_dagger: {
+    kind: 'obsidian_dagger',
+    label: 'obsydianowy sztylet',
+    categories: ['weapon'],
+    weight: 0.45,
+    size: 'SM',
+    color: 0x34343b,
+    description: 'Krótki sztylet z kruchego obsydianu. Dobrze kłuje, lecz słabo nadaje się do parowania.',
+  },
+  club: {
+    kind: 'club',
+    label: 'maczuga',
+    categories: ['weapon'],
+    weight: 1.2,
+    size: 'MD',
+    color: 0x755035,
+    description: 'Prosta, drewniana broń obuchowa.',
+  },
+  war_hammer: {
+    kind: 'war_hammer',
+    label: 'młot bojowy',
+    categories: ['weapon'],
+    weight: 3,
+    size: 'LG',
+    color: 0x777c83,
+    description: 'Ciężki młot bojowy o długim zamachu i dużej sile uderzenia.',
+  },
+  staff: {
+    kind: 'staff',
+    label: 'laska bojowa',
+    categories: ['weapon'],
+    weight: 1,
+    size: 'LG',
+    color: 0x755035,
+    description: 'Lekka broń drzewcowa zapewniająca zasięg i kontrolę.',
+  },
   mace: {
     kind: 'mace',
     label: 'buzdygan',
@@ -1084,7 +1124,7 @@ export const ITEM_DEFS: Record<ItemKind, ItemDef> = {
     kind: 'sword',
     label: 'miecz',
     categories: ['weapon'],
-    weight: 1.5,
+    weight: 1.9,
     size: 'MD',
     color: 0xa3a8b0,
     description: 'Miecz o umiarkowanym zasięgu i ciężarze.',
@@ -1892,7 +1932,7 @@ function buildProceduralItemMesh(kind: ItemKind): THREE.Object3D {
     mesh.castShadow = true
     return mesh
   }
-  if (kind === 'knife' || kind === 'damascus_knife' || kind === 'dagger' || kind === 'obsidian_knife') {
+  if (kind === 'knife' || kind === 'damascus_knife' || kind === 'dagger' || kind === 'obsidian_knife' || kind === 'obsidian_dagger') {
     const group = new THREE.Group()
     const blade = new THREE.Mesh(
       new THREE.ConeGeometry(0.035, 0.22, 4),
@@ -1980,19 +2020,25 @@ function buildProceduralItemMesh(kind: ItemKind): THREE.Object3D {
     }
     return group
   }
-  if (kind === 'mace') {
+  if (kind === 'mace' || kind === 'club' || kind === 'staff' || kind === 'war_hammer') {
     const group = new THREE.Group()
     const handle = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.025, 0.025, 0.35, 6),
+      new THREE.CylinderGeometry(kind === 'staff' ? 0.018 : 0.025, kind === 'staff' ? 0.018 : 0.025, kind === 'staff' ? 0.6 : kind === 'war_hammer' ? 0.42 : 0.35, 6),
       new THREE.MeshStandardMaterial({ color: 0x4a3324, flatShading: true }),
     )
     handle.rotation.x = Math.PI / 2
     handle.position.set(0, 0.06, 0)
     const head = new THREE.Mesh(
-      new THREE.SphereGeometry(0.075, 6, 4),
-      new THREE.MeshStandardMaterial({ color: ITEM_DEFS[kind].color, flatShading: true, metalness: 0.45 }),
+      kind === 'mace'
+        ? new THREE.SphereGeometry(0.075, 6, 4)
+        : kind === 'club'
+          ? new THREE.CylinderGeometry(0.045, 0.055, 0.16, 6)
+          : kind === 'staff'
+            ? new THREE.CylinderGeometry(0.025, 0.025, 0.06, 6)
+            : new THREE.BoxGeometry(0.19, 0.12, 0.12),
+      new THREE.MeshStandardMaterial({ color: ITEM_DEFS[kind].color, flatShading: true, metalness: kind === 'club' || kind === 'staff' ? 0 : 0.45 }),
     )
-    head.position.set(0, 0.06, 0.2)
+    head.position.set(0, 0.06, kind === 'staff' ? 0.33 : 0.2)
     handle.castShadow = head.castShadow = true
     group.add(handle, head)
     return group
