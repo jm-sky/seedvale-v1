@@ -33,3 +33,51 @@ Append a table per batch to this file: `id | family | damageType | melee/ranged 
 ## Order
 
 065 S1 must be on `main` first. Then W1 → W2a… (serialize with 044-M on catalog files) → W3a–c (finish before 065 S3 starts, both touch `gameLoop.ts`) → W4 → W5.
+
+## W0 slice contract — 2026-11-04
+
+Authored V1 profiles below are initial bounded tuning within existing family mechanics, not converted donor stats. No source is enabled. All melee rows are holdable weapons, spawn none, and use an explicitly registered procedural fallback retaining the actual kind. Blades/axes/polearms use existing sharpness/condition; blunt weapons use the count-backed tool path. Defense numbers use the closest existing family envelope. First W2a batch requires Opus spot review before W2b (index §7 and W0 deliverable rule).
+
+Melee tuple = damage / range / arcDot / windUp / hitWindow / recovery / staminaCost. Defense tuple = full-block chance / partial reduction (canBlock true). Mass kg; price base coins. These are authored V1 fields, not donor data.
+
+| Batch | ID | Family / NPC family | Type | Melee tuple | Defense | Maintenance | Mass | Price | Tier |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| W2a | obsidian_knife | knife / compact | pierce | 15 / 1.6 / .6 / .13 / .08 / .19 / 5 | .08 / .20 | yes | .35 | 55 | Common |
+| W2a | halberd | polearm / spear | cut | 25 / 3.2 / .5 / .34 / .12 / .44 / 13 | .18 / .40 | yes | 3.5 | 95 | Common |
+| W2a | mace | blunt / tool | blunt | 21 / 1.9 / .45 / .30 / .10 / .36 / 10 | .12 / .30 | no | 1.8 | 50 | Common |
+| W2a | sword | sword / sword | cut | 22 / 2.35 / .42 / .23 / .10 / .32 / 9 | .20 / .40 | yes | 1.5 | 65 | Common |
+| W2b | obsidian_dagger | dagger / compact | pierce | 17 / 1.7 / .58 / .12 / .08 / .18 / 5 | .08 / .20 | yes | .45 | 65 | Common |
+| W2b | club | blunt / tool | blunt | 13 / 1.9 / .5 / .25 / .10 / .30 / 7 | .08 / .25 | no | 1.2 | 12 | Common |
+| W2b | war_hammer | blunt / tool | blunt | 26 / 2.1 / .38 / .38 / .12 / .46 / 13 | .14 / .35 | no | 3 | 80 | Common |
+| W2b | staff | blunt / tool | blunt | 11 / 2.8 / .5 / .24 / .10 / .28 / 6 | .20 / .35 | no | 1 | 15 | Common |
+| W2c | ashgrove_dagger | dagger / compact | pierce | 21 / 1.75 / .6 / .11 / .08 / .17 / 5 | .12 / .25 | yes | .4 | 160 | Masterwork |
+| W2c | millbrook_shortsword | sword / sword | cut | 28 / 2.2 / .5 / .17 / .10 / .24 / 8 | .25 / .45 | yes | 1.2 | 220 | Masterwork |
+| W2c | fenmoor_sword | sword / sword | cut | 33 / 2.45 / .42 / .22 / .11 / .30 / 10 | .25 / .45 | yes | 1.5 | 300 | Masterwork |
+| W2c | stonebridge_longsword | sword / sword | cut | 38 / 2.7 / .35 / .28 / .12 / .36 / 12 | .25 / .45 | yes | 1.8 | 320 | Masterwork |
+| W2d | pinewatch_longsword | sword / sword | cut | 42 / 2.8 / .38 / .27 / .12 / .34 / 12 | .28 / .48 | yes | 1.7 | 600 | Exceptional, U |
+| W2d | kestrel_dagger | dagger / compact | pierce | 29 / 1.8 / .62 / .10 / .08 / .15 / 5 | .20 / .35 | yes | .35 | 900 | Legendary, U |
+| W2d | harrow_shortsword | sword / sword | cut | 43 / 2.3 / .52 / .16 / .10 / .22 / 8 | .32 / .52 | yes | 1.15 | 1100 | Legendary, U |
+| W2d | ironvale_sword | sword / sword | cut | 49 / 2.55 / .45 / .21 / .11 / .28 / 10 | .32 / .52 | yes | 1.4 | 1300 | Legendary, U |
+| W2d | greywatch_longsword | sword / sword | cut | 55 / 2.85 / .38 / .26 / .12 / .32 / 12 | .32 / .52 | yes | 1.7 | 1500 | Legendary, U |
+
+W2b–d remain proposed contract rows pending first-batch review; no runtime admission until their own verified commits. Upper-tier rows have no source and require 063 factory guards before release.
+
+Ranged tuple = damage / range / projectileSpeed / drawTime / recovery / stamina / accuracy / criticalChance. Both bows are maintenance-free instance-backed ranged weapons, arrows in existing order (arrow, broadhead, war); pierce base with actual ammo type override. Procedural fallback must retain identity.
+
+| Batch | ID | Family | Type | Ranged tuple / bonus | Mass | Price | Tier |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| W3a | marlow_longbow | bow | pierce | 30 / 21 / 35 / .64 / .38 / 11 / .82 / .08 | 1.5 | 280 | Masterwork |
+| W3a | yewmaster_longbow | bow | pierce | 43 / 25 / 39 / .58 / .34 / 10 / .92 / .14 | 1.3 | 1300 | Legendary, U |
+| W3b | sling_stone | sling-only ammo | blunt | +2 | .08 | 2 | Common |
+| W3c | bolt_heavy | crossbow-only ammo | pierce | +6 | .12 | 4 | Common |
+| W3c | bolt_blunt | crossbow-only ammo | blunt | +0 | .10 | 3 | Common |
+
+Ammo bonuses apply equally to player and NPC for these three new kinds only; preserve native NPC arrows/base damage. W3 snapshot carries actual chosen ammo identity and type, and fallback/drop uses that identity. New ammo is count-backed; sling_stone has neither resource nor throwable capability.
+
+| Batch | ID | Family / mechanics | Mass | Price | Model |
+| --- | --- | --- | --- | --- | --- |
+| W4 | wooden_shield | count-backed inventory-only, no hold/equip/defense | 2.5 | 25 | procedural ground fallback |
+| W4 | iron_rimmed_shield | count-backed inventory-only, no hold/equip/defense | 4 | 55 | procedural ground fallback |
+| W4 | buckler | count-backed inventory-only, no hold/equip/defense | 1.5 | 35 | procedural ground fallback |
+
+W5 keeps falchion, composite_bow, arrow_blunt unregistered and all 12 donor future flags unchanged. No armor profile is admitted in 062. W1 changes only the exact ten approved policy cases and the existing-slot family projection already landed by 044-M; shield policy remains deferred for gameplay.
