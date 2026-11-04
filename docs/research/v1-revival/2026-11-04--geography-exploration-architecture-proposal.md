@@ -2,11 +2,23 @@
 
 **Date:** 2026-11-04
 **Author:** Claude Opus 5.5 (decision-preparation session)
-**Status:** **Proposal for author review.** Nothing here is an approved decision, plan or numeric target. No runtime code, formal plans or plan statuses were changed.
+**Status:** **Proposal for author review — Revision 1 (2026-11-04) after author remarks.** Nothing here is an approved decision, plan or numeric target. No runtime code, formal plans or plan statuses were changed.
 **Input:** [Astra architecture recon](./2026-11-04--geography-exploration-revival-architecture-recon.md) (research starting point), author preliminary directions A–E (2026-11-04), [Strategic Brief](./STRATEGIC-BRIEF.md), [queue](./AUTONOMOUS-SESSION-QUEUE.md), plans [058](../../plans/world-terrain-058-finite-continent-and-global-hydrology.md), [059](../../plans/world-terrain-059-world-scale-travel-time-and-sparse-settlements.md), [Q44](./2026-11-02--q44-roads-paths-rebuild-plan.md), queue rows Q70 and Q92.
 **Evidence used here:** V1 `main` at `0619bf51`; the committed whole-continent previews [`continent-415424794-all-streams.png`](./continent-previews/continent-415424794-all-streams.png) and [`continent-42-all-streams.png`](./continent-previews/continent-42-all-streams.png); V2 `src/game/sim/rumours.ts` at `9ba54815`. No new census, benchmark or browser run was performed in this session; every number below is either quoted from a named source, arithmetic from named constants, or explicitly marked as a target range to be validated.
 
 Evidence labels: ✅ verified in code/committed artifact this session · 📏 published measurement (dated, quoted) · 🟡 inference/hypothesis · 🎯 proposed target (needs validation).
+
+## Revision 1 (2026-11-04) — response to author review
+
+The author asked for a critical evaluation of five remarks before approval. Outcome:
+
+| # | Author remark | Assessment | Change in this document |
+| --- | --- | --- | --- |
+| 1 | Landforms (S5) came after hydrology calibration (S3) although they shape drainage | **Accepted, with a nuance.** Area-based thresholds are a local rule, so a few later local landforms would not force a *global* recalibration. But remark 2 makes the macro relief itself change, and that alters drainage density, climate lapse and routes everywhere — it must precede both climate finalization and river calibration. | Relief + landform framework + first landform package moved before climate and hydrology (§6). Later landform packages are allowed after calibration under a "local re-census only" rule. Early river feedback is kept via **preview-only** threshold experiments in S0. |
+| 2 | Improve mountain ranges, massifs, crests and summits as macrogeography, not only a few landmarks | **Accepted — supported by evidence.** ✅ Mountains are gated by an isotropic low-frequency noise (`mountainScale 1800`, threshold 0.62) combined with Worley ridges; isotropic blob gating explains the isolated grey patches in the previews. Ranges also make rain shadow, passes and regional identity meaningful. **Tradeoff:** ranges lengthen routes, which works against direction A; passes must be part of the range design. Absolute relief height is unmeasured (🟡 `heightScale 18` suggests modest relief) — S0 measures it before deciding whether ranges also need more height. | New §4.0 "Macro relief"; new decision G8. |
+| 3 | G5: no 24–28 approval before measurements; compare several variants | **Accepted.** The range was a hypothesis, not a target. | §4A and G5 now specify a variant matrix (count × spacing × clustering) and selection criteria; no count proposed for approval. |
+| 4 | G6: whole catalog stays in the target vision; first package may be smaller; guarantee ~3–5 major attractions, no per-kind guarantee | **Accepted, one caution.** A hard guarantee can force weak features on unsuitable seeds. Meet it by relaxing candidate thresholds in deterministic steps (like settlement spacing relaxation), never by stamping a feature where the relief does not support it; a seed that still misses 3 is reported by the census, not patched. Volcano and crater fit best as one **volcanic district** (cone + caldera/crater lake + basalt/rocky ground) — regional identity rather than two isolated objects. | §4D, G6 updated. |
+| 5 | Separate performance of procedural landforms from 3D structures; no arbitrary count limits | **Accepted.** Terrain landforms cost worldgen CPU, not rendering; their count is a design (rarity) question. Structures are limited by **concurrent visible/loaded budget**, not by world count. One real constraint remains: a large structure next to a large settlement stacks on the known `settlement-heavy` gap (~36–37 FPS Windows, Brief P1 closure) — a combined budget or a separation rule is needed. | §4D performance and §5 split into two budgets; decision G9 on the settlement-adjacency rule. |
 
 ---
 
@@ -15,8 +27,8 @@ Evidence labels: ✅ verified in code/committed artifact this session · 📏 pu
 1. **One acyclic geography pipeline, extended in place — no new world generator.** Add two small, bounded inputs to the existing V1 owners: a **static macroclimate field** and a **sparse landform descriptor set**. Both are computed from the *unconditioned* relief, before global hydrology. Everything downstream (hydrology, biomes, settlements, roads, landmarks, catalog, weather modulation) consumes them; nothing downstream feeds back.
 2. **Rivers: fix the cause, not the map.** The dominant cause is a tiny, uniform channel-initiation threshold (✅ every land cell contributes `1`, a stream starts at `15` cells ≈ 960 m²). Replace it with **area-based thresholds × climate-weighted runoff**, and split drainage into **perennial channels (water)** and **dry drainage lines (terrain only)**. Keep priority-flood, global chains, lakes and canonical carving. 🎯 Order-of-magnitude goal: the perennial network becomes roughly a third to a half of today's visible network, concentrated in humid/upland-fed basins, with clearly dry interfluves.
 3. **Climate becomes a shared world property.** A pure, position-based `T/P/maritime` sample (north colder, lapse with altitude, maritime moderation, bounded regional noise) drives biomes, vegetation, runoff and — in a first, small step — the local precipitation phase (rain vs snow) and temperature offset on top of the existing global seasonal weather. No atmospheric simulation.
-4. **Settlements: measure on routes, then let geography cluster them.** Current median neighbour journeys already sit near the *top* of the 059 band (🟡 arithmetic below). Uniform compression cannot shorten journeys much without either many more settlements or wilderness loss. Prefer **climate/terrain-suitability-driven inhabited regions** plus moderately shorter selection spacing and a slightly higher count (🎯 24–28), validated by route-weighted census.
-5. **Landmarks: few, geological, before hydrology.** First package = terrain-only landforms (isolated rocky hill/crag, crater/caldera lake, distinctive lake with island) and *derived* waterfalls. Structures (castle ruin, large ruin complex) follow as a second package on top of those landforms, reusing the environment/adventure placement paths with modular instanced geometry.
+4. **Settlements: measure on routes, then let geography cluster them.** Current median neighbour journeys already sit near the *top* of the 059 band (🟡 arithmetic below). Uniform compression cannot shorten journeys much without either many more settlements or wilderness loss. Prefer **climate/terrain-suitability-driven inhabited regions** plus moderately shorter journeys; the settlement count is chosen from a measured **variant comparison**, not fixed in advance (Rev. 1).
+5. **Macro relief first, then landmarks.** Restructure mountains from isolated blobs into a few coherent ranges/massifs with crests, summits and passes (Rev. 1), in the same stage as the landform descriptor framework — both before climate and hydrology. Landmarks stay geological and rare: 🎯 about 3–5 guaranteed major attractions per world, no per-kind guarantee; the full catalog (volcanic district, craters, waterfalls, lakes with islands, distinctive hills, castles, ruins) remains the target vision, delivered in packages. Structures reuse the environment/adventure placement paths with modular instanced geometry and their own render budget.
 6. **Discovery reuses `LocationKnowledge`.** V2's rumour mechanism maps almost 1:1 onto V1's `estimated` confidence + `WorldLocationArea`; adopt its *policy* (opinion gate, open-lead cap, off-centre vague area, no proper name until visited), not its store. Fix Q106 (lakes invisible to the catalog) first — it is independent and cheap.
 7. **Epoch:** `WORLDGEN_EPOCH = 1` is still the open Revival batch (✅ constant is `1`; Q37 and Q38/Q62–Q64 still in progress; the author has not closed the batch). Recommend including the geography foundation in epoch 1 and moving the Q64 road close-out census + fixture re-export after the settlement recalibration — **author decision G1**.
 
@@ -42,7 +54,7 @@ From code (✅): `computeClimate(seed, elapsedDays)` has no position; `biomeWeig
 | # | Stage | Inputs | Output | Owner (existing unless noted) |
 | --- | --- | --- | --- | --- |
 | G0 | World frame | seed | normalized coordinates, **north = −Z** (current north-up projection), home reserve | `worldConfig` |
-| G1 | Base relief + **landform descriptors** | seed, continentalness/ridges/massifs | unconditioned floor `sampleRawFloorUncorrected` incl. bounded landform profiles | `chunkHeightmap.ts` + new small `landformDescriptors` module (descriptor list + spatial bucket index) |
+| G1 | Base relief (**range/massif structure**, §4.0) + **landform descriptors** | seed, continentalness, range spines/passes, ridges/massifs | unconditioned floor `sampleRawFloorUncorrected` incl. bounded landform profiles | `chunkHeightmap.ts` (existing mountain envelope reshaped, not a second generator) + new small `landformDescriptors` module (range spines, passes and landforms; spatial bucket index) |
 | G2 | **Static macroclimate** | G1 floor (unconditioned), coarse coast distance | `macroClimateAt(x,z) → { temperature, precipitation, maritime }` | new small `terrain/macroClimate` (pure functions + one coarse grid) |
 | G3 | Global hydrology | G1 floor, G2 runoff weight | conditioned floor, lakes, **perennial chains**, **dry drainage lines** | `worldHydrology.ts` (unchanged algorithm) |
 | G4 | Environment classification | conditioned floor, G2, G3 (downstream only) | biome weights, forest type, treeline/snowline, riparian bands | `biomeRegions.ts`, `biomeColors.ts`, `chunkVegetation.ts` |
@@ -67,6 +79,20 @@ From code (✅): `computeClimate(seed, elapsedDays)` has no position; `biomeWeig
 
 ## 4. Recommendations A–E
 
+### 4.0 Macro relief: ranges, massifs, crests (added in Rev. 1)
+
+**Problem / cause.** ✅ `mountainScale 1800` low-frequency noise with threshold 0.62 (width 0.2) decides *where* mountains may exist; Worley ridges (`worleyRidge`) and the plan-191 massif/peak hierarchy shape them inside that gate. An isotropic gate yields roughly round, scattered mountain islands (previews: small grey patches), so there are no ranges, few long crests and no passes. 🟡 Absolute relief is modest (`heightScale 18`, `mountainGain 1.8`); peak heights, prominence and slope distribution are unmeasured.
+
+**Preferred direction.** Keep the existing envelope → ridge → massif hierarchy and reshape *its gate*: a few seeded **range spines** (polyline descriptors, 1–3 per world, 2–5 km long on the ~8 km island 🎯) define an anisotropic mountain envelope (distance-to-spine falloff, domain-warped so edges stay natural), with the existing noise gate kept as a weaker secondary term for isolated massifs and hill country. Ridge orientation follows the spine. Each spine carries **pass descriptors** (lowered saddles) so routes and settlements have designed crossings. Steep crests and rocky summits come from sharper ridge profiles and rock exposure on the spine core, not from separate meshes. This is the V3 heightfield idea (mountain-centre + barrier/pass descriptors shared by the field and by locators), adapted, not its generator.
+
+**Why it belongs to macrogeography.** Ranges are the input that makes climate (rain shadow, cold uplands), drainage divides (recognizable river systems), routes (passes), settlement suitability (valleys vs highlands) and orientation (silhouettes) coherent. Doing it after hydrology/climate would recalibrate both.
+
+**Alternatives.** (a) Only retune `mountainScale`/threshold — cheap, still isotropic blobs, possibly larger. (b) Spines + passes (recommended). (c) Full tectonic/erosion simulation — rejected (cost, determinism complexity, little benefit at this scale).
+
+**Tradeoffs and risks.** Ranges lengthen journeys (conflict with A → passes + settlement recalibration after); more unusable land (fits wilderness, but watch suitable-site supply); higher relief increases slope-limited areas for roads, NPC pathing and building pads; taller peaks need camera/fog checks. Whether relief *height* should also grow is decision **G8**.
+
+**Validate.** S0 relief statistics (height histogram, top peak heights and prominence, slope classes, ridge connectivity length); after the change: same statistics + continent previews on 7 seeds + route census delta + one browser crossing of a pass on the reference seed.
+
 ### A. Settlement distances and density
 
 **Problem / cause.** Author reports settlements hard to encounter. 🟡 Arithmetic from current constants: player 6 m/s with a 12-min day → 180 m per game hour (queue §3 Q81-a). 📏 Median straight edge 1,490/1,474 m (059 W4) × median route ratio 1.22/1.18 (Q61) ≈ 1.75–1.8 km ≈ **9.7–10 game hours** — the top of the 059 4–10 h band, before access legs and slopes. Second factor: with distance fog far ≈ 160 m (Q54 note), a settlement is only perceived within a few hundred metres; spacing alone cannot fix encounterability. Third: selected ≠ materialized ≠ road-connected (📏 22/20 materialized; 18/19 roads, 1/2 roadless in the Q61 window).
@@ -75,11 +101,19 @@ From code (✅): `computeClimate(seed, elapsedDays)` has no position; `biomeWeig
 1. **Measure first (route-weighted census)**: per graph edge — straight distance, entrance-to-entrance polyline, access legs, ratio, game hours (player 6 m/s and NPC 3.6 m/s), failed edges, connected components; per world — selected vs defined vs road-connected counts, land area, share of land within N road-hours of a settlement, and a **wilderness share** (land > X h from any settlement). Extend `worldgen:roads:census` / `worldgen:spacing:census`; whole world, not only `--rings`.
 2. **Then calibrate with geography rather than uniform compression.** Add macroclimate/terrain suitability to the existing candidate ranking (temperate, moderately moist lowland, near perennial water or coast, outside landform footprints). This produces inhabited corridors and natural wilderness (cold uplands, dry interior, rugged massifs) without an explicit "cluster" mechanism. Combine with moderately lower start spacing and a slightly higher target.
 
-🎯 **Candidate target ranges (to validate, not chosen):** neighbour route median **5–7 game h** (~0.9–1.25 km route), p90 ≤ 9 h, no edge > 11 h; settlements **24–28**; 1 road component, 0 roadless settlements; wilderness share **≥ 20 %** of land beyond ~5 h from any settlement; ≥ 1 neighbour within 6 h for every settlement. Start-spacing experiments around 900–1,050 m with the relax floor actually reachable (fix the 1150→…→750→650 trap: either make 720 a tested step or lower the floor explicitly).
+**Variant comparison (Rev. 1 — no count is proposed for approval).** After relief, climate and rivers are in place, run a small matrix through the route-weighted census on both seeds (plus a 3–5 seed spot check):
+
+| Axis | Values to compare (🟡 starting points) |
+| --- | --- |
+| Target count | current 22 · ~25 · ~28 (stop earlier if the land runs out of suitable sites) |
+| Start spacing | current 1,150 m · ~1,050 m · ~950 m, with a reachable relax floor (fix the 1150→…→750→650 trap) |
+| Suitability weighting | none (today) · moderate geography weighting · strong geography weighting |
+
+Pick the variant from measured outcomes, in this priority: (1) 0 roadless settlements, 1 component, progression/home-growth guarantees; (2) shorter neighbour journeys — 🎯 indicative band median ~5–7 game h, p90 ≤ 9 h; (3) wilderness kept — 🎯 indicative ≥ 20 % of land beyond ~5 h; (4) no unintended empty half (coverage bound per island quadrant); (5) NPC transport/trade distances acceptable. The author chooses among the 2–3 best variants with previews and numbers (G5).
 
 **Alternatives.** Uniform spacing reduction with 22 settlements (cheap, but 🟡 on ~35–45 km² of land the average area per settlement forces ~1.3 km spacing — a 5–7 h median needs either clustering or ~40+ settlements); only fixing route failures (keeps identities but not the core feel); a separate density map (new parallel mechanism — rejected).
 
-**Dependencies.** After C (river count changes crossings, roadless cases, H4 heads) and after landform footprints (D-T1). Before Q64 road close-out census. Settlement-size growth from home (MD→LG→XL within ~1.5 km, Brief) must remain satisfied — census check.
+**Dependencies.** After macro relief (§4.0: ranges and passes change routes), after C (river count changes crossings, roadless cases, H4 heads) and after landform footprints. Before Q64 road close-out census. Settlement-size growth from home (MD→LG→XL within ~1.5 km, Brief) must remain satisfied — census check.
 
 **Risks.** Clustering creates an empty half of the island (guard with coverage and wilderness-share bounds both ways); progression host guarantees; NPC transport/trade distances change (verify expeditions and provisioning); settlement-def cache bump.
 
@@ -100,7 +134,7 @@ From code (✅): `computeClimate(seed, elapsedDays)` has no position; `biomeWeig
 - **Runoff weight** for G3: `runoff = clamp(f(P, T), ~0.25 … ~1.5)` (🎯 range) — humid north/coast feeds rivers, dry south has few perennial channels.
 - **Weather, phase 1 (small, deterministic):** keep `computeClimate(seed, day)` as the global season/weather state; add a pure `localClimateAt(climate, macro)` giving temperature offset and precipitation phase (rain→snow where local T is cold: north, peaks). Consumers that already use weather (snow patches/grass burial, wetness, barks) query it **at the entity/site position**, never at the player. Phase 2 (later, separate approval): regional precipitation frequency, fog, crop/garden growth and fauna habitat by climate.
 
-**Alternatives.** Temperature-only in biome classification (cheapest; leaves runoff and weather inconsistent); full wind/rain-shadow preprocessing (not justified by current relief).
+**Alternatives.** Temperature-only in biome classification (cheapest; leaves runoff and weather inconsistent); full wind/rain-shadow preprocessing. Rev. 1: rain shadow was "not justified by current relief"; with range spines (§4.0) a **cheap spine-based orographic term** becomes reasonable — wetter on the windward side of a spine, drier in the lee, computed analytically from distance/side relative to the spine descriptors (no upwind ray-marching). Decide after S2 relief previews; it is a technical choice inside G3, not a new author decision.
 
 **Dependencies.** Feeds C (runoff), A (suitability), D (snow-capped crag, volcanic silhouette context), E (regional knowledge text). Snow-patch thresholds (world-terrain-053) must move to local T.
 
@@ -142,13 +176,19 @@ From code (✅): `computeClimate(seed, elapsedDays)` has no position; `biomeWeig
 
 | Category | Examples | Where in pipeline | Mechanism |
 | --- | --- | --- | --- |
-| T — terrain landforms | isolated rocky hill/crag (inselberg), steep rocky summit, crater/caldera lake, distinctive lake with island, dormant volcanic cone | G1 (before hydrology) | landform descriptors with analytic height profiles; hydrology decides the water outcome; `intendedOutcome` asserted by census (e.g. crater must hold a lake) |
+| T — terrain landforms | isolated rocky hill/crag (inselberg), steep rocky summit, crater/caldera lake, distinctive lake with island, **volcanic district** (dormant eroded cone + caldera/crater lake + rocky basalt ground) | G1 (before hydrology) | landform descriptors with analytic height profiles; hydrology decides the water outcome; `intendedOutcome` asserted by census (e.g. crater must hold a lake) |
 | H — hydrology-derived | waterfalls, rapids, gorges along a scarp | G6 (after chains) | detect genuine steep reaches on perennial chains; visual object + sound; creating a drop requires a T descriptor (scarp), never post-hoc carving |
 | S — structures | castle ruin, large ruin complex, watchtower on a crag | G5 (before settlements/roads) | site chosen from T prominence; reserved footprint; built from a modular kit; bound to existing location catalog/adventure bindings (as `darkForestTreasureSite`) |
 
-**Selection rules.** Candidate scoring from relief (prominence, isolation, coastal/lake context), Poisson-style minimum separation, home reserve, per-kind cap 0–2, total 🎯 3–7 major features per world; no kind guaranteed per seed, but a world with < 3 major features re-scores (deterministically) so every seed has some. Avoid regular spacing by score-driven selection rather than grids.
+**Selection rules (Rev. 1).** Candidate scoring from relief (prominence, isolation, coastal/lake context, range spines), Poisson-style minimum separation, home reserve. 🎯 **Guarantee about 3–5 major attractions per world, no per-kind guarantee.** The guarantee is met by relaxing candidate thresholds in deterministic steps (as settlement spacing relaxes), never by stamping a feature onto relief that does not support it; a seed that still misses the minimum is reported by the census. The upper bound is a **rarity/design** rule (major features stay rare and irregular), not a performance cap. Avoid regular spacing by score-driven selection rather than grids.
 
-**Performance (conceptual).** Landforms: analytic terrain, zero extra draw calls beyond normal chunks; rock outcrops via existing rock instancing. Structures: modular kit pieces as `InstancedMesh` per piece type or merged per site at build time; one near LOD and one coarse silhouette LOD that only exists inside fog range (no view-distance increase — Brief §2); simplified box colliders; per-site budgets set in the structure plan (🎯 order of tens of draw calls and tens of thousands of triangles near, a handful of draw calls far). Streaming: sites belong to their chunks' lifecycle; no always-resident landmark meshes.
+**Delivery packages (the whole catalog stays in the target vision).** P1 (with macro relief): isolated rocky hill/crag, steep summits on range spines, distinctive lake with island, crater/caldera lake; derived waterfalls once chains exist. P2: volcanic district, castle ruin on a prominent hill, large ruin complex. P3+: further kinds as content grows. A later package that adds terrain-shaping kinds after hydrology calibration requires only a local re-census (area-based thresholds make the rule local), with an acceptance that global river metrics move < ~5 % (🎯).
+
+**Performance — two separate budgets (Rev. 1).**
+
+*Procedural landforms (worldgen CPU, ~no render cost).* Cost lives in the terrain sampler (worker chunk generation), the hydrology boot pass and map raster. Rules: O(1) bucket lookup per sample independent of the total descriptor count; ≤ 2 analytic profiles evaluated per sample; chunk generation time and hydrology boot measured before/after. Render cost equals normal terrain plus existing instanced rock exposure on crags. **Count is not limited for performance reasons.**
+
+*3D structures (render/memory budget).* Limited by **what can be loaded/visible at the same time**, not by how many exist in the world: per-site budget per LOD tier (draw calls, triangles, materials, colliders) set in the structure plan (🟡 order of tens of draw calls / tens of thousands of triangles near; a handful of draw calls for a coarse silhouette LOD that only exists inside fog range — no view-distance increase, Brief §2); modular kit pieces as `InstancedMesh` per piece type or merged per site at build time; shared materials/atlases with the existing ruin/tower kit; simplified box colliders; sites live in their chunks' streaming lifecycle (no always-resident meshes). **Concurrency rule:** at most N structure sites inside the streaming radius at once (N from the budget, 🟡 likely 1–2), enforced as a placement separation derived from the streaming radius — a consequence of the budget, not an arbitrary world cap. **Settlement adjacency:** a large structure within view of an LG/XL settlement stacks on the known `settlement-heavy` gap; either keep a separation (simple, may forbid "castle above the town") or allow it with a combined settlement+structure budget measured in `settlement-heavy` (decision G9).
 
 **Interactions.** Craters/lakes change hydrology (designed: descriptor before G3). Landform footprints exclude settlements/roads; settlements may get a mild suitability bonus *near* (not on) a castle hill. Queue Q100 (large caves ringed 130–620 m around origin) fits here: distribute caves across the continent preferring hill/massif flanks — answerable independently (§3 Q100 option a) but should use the same terrain scoring.
 
@@ -179,7 +219,7 @@ From code (✅): `computeClimate(seed, elapsedDays)` has no position; `biomeWeig
 
 ## 5. Dependencies, risks and performance
 
-**Cross-system dependencies.** B → C (runoff) → A (water access, crossings) → roads close-out (Q62–Q64). D-T → C (terrain before hydrology) and → A (exclusions). C → Q92 (river visuals), Q97 (bridges), Q84-a (roadless site). B → snow patches (053), weather consumers. E ← catalog (Q106) ← C/D (what exists).
+**Cross-system dependencies.** Macro relief (§4.0) + D-T P1 → B (lapse, orographic term) → C (runoff, divides) → A (water access, crossings, passes) → roads close-out (Q62–Q64). D-T → A (exclusions). C → Q92 (river visuals), Q97 (bridges), Q84-a (roadless site). B → snow patches (053), weather consumers. E ← catalog (Q106) ← C/D (what exists).
 
 **Existing queue items this proposal touches (no status changed here):**
 
@@ -195,29 +235,30 @@ From code (✅): `computeClimate(seed, elapsedDays)` has no position; `biomeWeig
 
 **Determinism & persistence.** All new inputs are pure functions of seed + position or bounded deterministic lists; IDs from candidate cell keys; caches: hydrology namespace (with climate grid), biome/vegetation-dependent namespaces, settlement-def, roads, caves, environment — each bumped only when its output changes; fixtures re-exported once at the end of the geography batch. All of it is worldgen-visible → epoch 1 if still open (G1). Discovery state stays keyed to stable catalog IDs.
 
-**Performance.** Boot: hydrology pass remains the dominant global cost; climate grid and descriptors add little (🟡), fewer chains may reduce payload/tile work (unclaimed). Runtime: no new per-frame work in A–C; D structures carry the only real rendering risk (budgeted, LOD, instanced); vegetation redistribution must be checked in the densest region. Measurements per CLAUDE.md: WSL A/B (boot, `stream`, `settlement-heavy`) to land, Windows confirmation via §4; no FPS claims.
+**Performance (two budgets, Rev. 1).** *Worldgen/CPU:* hydrology pass remains the dominant global boot cost; range spines, landform descriptors and the climate grid add bounded per-sample work (🟡 small; measured as chunk-generation time and boot time); fewer chains may reduce payload/tile work (unclaimed). *Render/memory:* no new per-frame work in relief, A–C; vegetation redistribution checked in the densest region; 3D structures are the only real rendering risk and get per-site LOD budgets plus a concurrency rule (§4D) instead of a world-count cap. Measurements per CLAUDE.md: WSL A/B (boot, `stream`, `settlement-heavy`) to land, Windows confirmation via §4; no FPS claims.
 
-**Top risks.** (1) Calibrating rivers twice (avoid: B before C). (2) Road work closing out on pre-geography terrain (avoid: Q64 after A). (3) Visual regressions judged only from diagnostic previews (always export gameplay mode). (4) Scope creep into climate simulation (phase 1 weather = phase + temperature offset only).
+**Top risks.** (0) Ranges lengthening journeys against direction A (avoid: passes in the spine design; settlement variants measured after relief). (1) Calibrating rivers twice (avoid: relief and B before C). (2) Road work closing out on pre-geography terrain (avoid: Q64 after A). (3) Visual regressions judged only from diagnostic previews (always export gameplay mode). (4) Scope creep into climate simulation (phase 1 weather = phase + temperature offset only).
 
 ---
 
 ## 6. Suggested staged sequence (no task slices)
 
-Different from the suggested grouping: macroclimate precedes river calibration so rivers are calibrated once, and Q106 is pulled to the front because it is independent.
+Revised in Rev. 1: **relief first** (ranges + landform framework + landform package P1), then climate on the final relief, then a single river calibration. Q106 stays at the front because it is independent. Early river feedback for the author comes from **preview-only** threshold experiments in S0 (nothing lands).
 
 | Stage | Content | Gate to next |
 | --- | --- | --- |
-| **S0 Diagnostics** | Extend river census (density, heads, area histogram, parallel detector, payload), route-weighted settlement census, gameplay-mode continent export, climate/biome/landform preview layers, prominence inventory of existing peaks/lakes. No generator change. | Author reviews baseline numbers + images; targets in §7 confirmed or adjusted |
+| **S0 Diagnostics** | Extend river census (density, heads, area histogram, parallel detector, payload), route-weighted settlement census, **relief statistics** (heights, prominence, slopes, ridge connectivity), gameplay-mode continent export, preview layers; **preview-only** river threshold variants (2–3 images per seed, uniform runoff). No generator change lands. | Author reviews baseline numbers + images; §7 targets confirmed/adjusted; G8 answerable |
 | **S1 Q106** | Lakes in the location catalog (parallel to S0). | Catalog census both seeds |
-| **S2 Macroclimate fields** | `macroClimateAt` + coast grid, previews only, no consumers. | Author approves regional look on preview layers |
-| **S3 Hydrology recalibration** | Area thresholds × climate runoff, perennial vs dry drainage, map hierarchy; artifact fix only if parallels persist. | River targets met; 058 continuity checks green; home stream OK |
-| **S4 Biomes/vegetation (+ Q70)** | `(T,P)` biome table, forest types, treeline/snowline, riparian bands. Weather phase 1 (local T, rain/snow phase) as its own small slice. | Browser spots; vegetation census in densest region |
-| **S5 Landforms T (+ derived waterfalls H)** | Descriptor set, profiles, outcome assertions, waterfall detection. | Variety across 7 seeds; hydrology re-census |
-| **S6 Settlement recalibration** | Suitability from climate/water/landforms, spacing/count experiments, pick finalist. Then Q64 road close-out + fixture re-export. | Route census targets; progression/home-growth guarantees |
+| **S2 Macro relief + landform framework** | Range spines + passes reshaping the existing envelope (§4.0); descriptor module and bucket index; landform package P1 (crag/isolated hill, spine summits, lake-with-island, crater/caldera lake). Climate fields developed in parallel as previews only. | Relief stats + previews on 7 seeds; pass crossing check; chunk-gen time measured |
+| **S3 Macroclimate** | `macroClimateAt` + coast grid on the final relief; optional spine-based orographic term; previews, no consumers yet. | Author approves regional look on preview layers |
+| **S4 Hydrology recalibration (once)** | Area thresholds × climate runoff, perennial vs dry drainage, map hierarchy; artifact fix only if parallels persist; crater/lake outcome assertions; derived waterfalls detection. | River targets met; 058 continuity checks green; home stream OK |
+| **S5 Biomes/vegetation (+ Q70)** | `(T,P)` biome table, forest types, treeline/snowline, riparian bands. Weather phase 1 (local T, rain/snow phase) as its own small slice. | Browser spots; vegetation census in densest region |
+| **S6 Settlement variants** | Suitability from relief/climate/water/landforms; variant matrix (§4A); author picks; then Q64 road close-out + fixture re-export. | Route census; progression/home-growth guarantees |
 | **S7 Discovery integration** | Landmarks in catalog, names, rumour policy, geographic directions (Astra text). | Rumour walk-through |
-| **S8 Structures + polish + perf** | Castle ruin / ruin complex kit on landforms; Q92 river visuals; WSL A/B (boot, stream, settlement-heavy), Windows via §4; epoch-batch close proposal. | Author visual sign-off; perf no regression |
+| **S8 Landform package P2 + structures** | Volcanic district (terrain, local re-census only); castle ruin / ruin complex kit with per-site LOD budgets and concurrency rule (G9). | Structure budget census in a stand-alone scene, then in world; local river re-census < ~5 % global change |
+| **S9 Polish + perf** | Q92 river visuals; WSL A/B (boot, stream, settlement-heavy), Windows via §4; epoch-batch close proposal. | Author visual sign-off; perf no regression |
 
-Each stage lands behind its own cache bumps, is revertable as a commit set, and is verified before the next starts. S2–S6 all change worldgen and belong to the same epoch batch.
+Each stage lands behind its own cache bumps, is revertable as a commit set, and is verified before the next starts. S2–S6 and the terrain part of S8 change worldgen and belong to the same epoch batch (G1). If G1 = (b) "epoch 2", S8's terrain part must land before that batch closes.
 
 ---
 
@@ -231,9 +272,10 @@ Each stage lands behind its own cache bumps, is revertable as a commit set, and 
 | Rivers | continuity | 058 checks unchanged (outlets, lake-fed, mouth ramps) |
 | Climate | N–S tendency | mean T monotonic in 5 latitude bands; regional noise visibly breaks bands |
 | Biomes | coherence | dominant-biome patch size larger than today; no inland sand desert (if G2 = b) |
-| Settlements | route time | median 5–7 h, p90 ≤ 9 h, max ≤ 11 h; 0 roadless; 1 component |
-| Settlements | wilderness | ≥ 20 % of land beyond ~5 h from any settlement |
-| Landmarks | count/variety | 3–7 major features per seed over 7 seeds; no regular spacing (nearest-neighbour CV check) |
+| Relief | ranges | 1–3 coherent ranges per seed with connected crests; ≥ 1 pass per range; isolated massifs still present |
+| Settlements | variant selection | 0 roadless, 1 component; then shorter journeys (indicative median ~5–7 h) without losing wilderness (indicative ≥ 20 %); final numbers chosen from the variant matrix |
+| Landmarks | count/variety | ~3–5 guaranteed major attractions per seed over 7 seeds (no per-kind guarantee); no regular spacing (nearest-neighbour CV check) |
+| Structures | render budget | per-site LOD budgets met in a stand-alone scene; concurrency rule holds on route samples |
 | Landmarks | outcomes | every crater/lake descriptor meets `intendedOutcome` |
 | Discovery | catalog | lakes and major features present; knowledge states round-trip in save |
 | Performance | boot + runtime | hydrology boot not slower; WSL A/B no regression; structure sites within plan budgets |
@@ -247,8 +289,10 @@ Each stage lands behind its own cache bumps, is revertable as a commit set, and 
 - **G2 — Climate contrast.** (a) Gentle temperate gradient. (b) **Distinct regions**: cold boreal north with snowy uplands, temperate centre, warm drier south with grassland/scrub; sand only on coasts [**recommended**]. (c) Strong, including a true inland desert.
 - **G3 — Climate reach in the first implementation.** (a) **Geography + biomes + runoff + local temperature/rain–snow phase** [**recommended**]. (b) Geography/biomes only, weather unchanged. (c) Also regional precipitation frequency and living-world effects now.
 - **G4 — Small watercourses.** (a) **Perennial channels + dry drainage valleys (no water), no seasonal mechanic** [**recommended**]. (b) Additionally seasonal streams as a player-visible mechanic. (c) Threshold change only.
-- **G5 — Settlement pattern (final choice after S0 numbers).** (a) **Geography-driven inhabited regions + moderately shorter spacing, 24–28 settlements** [**recommended**]. (b) Uniform moderate reduction, keep ~22. (c) Keep placement, fix only failed/roadless routes.
-- **G6 — First landmark package.** (a) **Terrain trio: isolated rocky hill/crag, crater/caldera lake, lake with island + derived waterfalls; castle ruin as the second package** [**recommended**]. (b) Start with a castle ruin on existing terrain. (c) Include a dormant volcanic cone in the first package. Plus: guarantee per seed — **≥ 3 major features of any kind, no per-kind guarantee** [recommended] vs per-kind guarantees.
+- **G5 — Settlement pattern (Rev. 1: direction now, numbers later).** Direction: geography-driven inhabited regions + moderately shorter journeys (author supports). **Now only approve the method:** (a) **variant matrix (count 22/~25/~28 × spacing × suitability weight), author picks among the 2–3 best with numbers and previews** [**recommended**]; (b) agent picks the best variant by the §4A priority order and reports.
+- **G6 — Landmark packages (Rev. 1).** Full catalog stays in the vision; guarantee **~3–5 major attractions per world, no per-kind guarantee** (author direction). Open: (a) **P1 = crag/isolated hill, spine summits, lake with island, crater/caldera lake (+ derived waterfalls); P2 = volcanic district + castle ruin + large ruin complex** [**recommended**: P1 is pure terrain and lands with the relief stage]; (b) volcanic district already in P1 (more relief/hydrology tuning in the same stage); (c) castle ruin in P1 on existing terrain (earliest visible structure, but before the structure budget exists).
+- **G8 — Mountains (new, Rev. 1).** (a) **Range spines + passes reshaping the existing envelope, relief height unchanged unless S0 shows peaks too low to read as mountains** [**recommended**]; (b) spines + noticeably higher relief (more dramatic, harder roads/pathing/building, more snow); (c) only retune the existing gate (cheap, still blobs).
+- **G9 — Large structures near large settlements (new, Rev. 1).** (a) **Allowed only with a combined settlement+structure budget measured in `settlement-heavy`; until measured, keep a separation** [**recommended**]; (b) always separate (simplest, no "castle above the town"); (c) no rule (risk on the known `settlement-heavy` gap).
 - **G7 — Discovery guidance strength.** (a) **Vague leads**: opinion-gated rumours, off-centre areas, ≤ 3–4 open leads, names learned on visit [**recommended**]. (b) Stronger: named places and clear directions from NPCs. (c) Minimal: discovery mostly by own exploration.
 
 Technical choices (coordinates, lapse scaling, threshold units, cache namespaces, descriptor indexing, LOD approach) are not author decisions; Opus resolves them in the plans.
@@ -259,6 +303,7 @@ Technical choices (coordinates, lapse scaling, threshold units, cache namespaces
 
 1. **`tools-0xx` geography diagnostics (S0)** — census extensions (rivers, routes), gameplay-mode continent export, preview layers. Sonnet-implementable; produces the baseline for every later acceptance row.
 2. **Q106 slice (S1)** — already queued as O→S; proceed as planned.
-3. **`world-terrain-0xx` macroclimate + hydrology recalibration (S2–S3)** — one plan with two slice groups, because runoff and thresholds must be calibrated together; includes the G1 epoch/cache checklist and fixture handling.
+3. **`world-terrain-0xx` macro relief + landform framework (S2)** — range spines/passes, descriptor module, landform package P1; includes the G1 epoch/cache checklist.
+4. **`world-terrain-0xx` macroclimate + hydrology recalibration (S3–S4)** — one plan, because runoff and thresholds are calibrated together on the final relief; fixture handling.
 
-Plans for S4 (biomes + weather phase 1, absorbing Q70), S5 (landforms), S6 (settlement recalibration, follow-up to 059) and S7–S8 follow after S0 results, so their targets are grounded in measured baselines rather than this proposal's ranges.
+Plans for S5 (biomes + weather phase 1, absorbing Q70), S6 (settlement variants, follow-up to 059), S7 (discovery) and S8 (P2 landforms + structure budgets) follow after S0 results, so their targets are grounded in measured baselines rather than this proposal's ranges.
