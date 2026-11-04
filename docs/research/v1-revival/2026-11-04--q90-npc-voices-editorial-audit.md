@@ -1,9 +1,11 @@
 # Q90 — NPC voices and dialogue editorial audit
 
 **Date:** 2026-11-04  
-**Status:** Editorial audit and script prepared; **awaiting author approval, Q90 not complete**.  
+**Status:** **Author-approved 2026-11-04** (87-take Fish Audio script and editorial text-only pass); recording, QC, casting and runtime integration remain outstanding.  
 **V1 evidence pin:** `bca03d453bfb0177a9d2801c4d2ccc7ca0c3b7a5` (`main` when research began).  
 **Scope:** Documentation only, in English. V1 remains authoritative. No runtime, audio, canonical transcript, casting implementation, quest logic or simulation changes. No Fish Audio generation.
+
+**Q90 author approval (2026-11-04):** The author reviewed and approved the complete [87-take Fish Audio script](./2026-11-04--q90-fish-audio-script.md) (P0 12 / P1 54 / P2 21) as the recording text and production selection. Ordinary activity/needs/profession/family/settlement dialogue is text-only by default, not a mandate to voice every response; the author accepts the editorial text-only proposals without further line-by-line review. MP3 scope is selective: dialogue opening/closing, trade opening/closing, generic quest cues and selected exact key-quest lines, plus spontaneous weather, campfire NPC–NPC exchanges, danger/combat, interruption from hunger/exhaustion, and separately selected significant events. The approved 87 rows are the current bounded script, not an exhaustive promise to cover every listed category or authorize extra recordings. The author generates audio in Fish Audio. No MP3 is generated or QC-passed by this approval; source/casting mismatch holds, Q88/Q89 and Q40 integration gates remain. Do not add unlisted takes automatically.
 
 ## Deliverables and decision boundary
 
@@ -105,7 +107,7 @@ The [81-row table](./2026-11-04--q90-supersession.md) supersedes the **old produ
 
 ## Author decisions still open
 
-1. **Approve/edit the text and staged budget.** P0 is 12 takes; P1 includes meaningful craft variation, not just gap filling. P2 can wait. Approving this audit alone must not be interpreted as permission to generate all 87.
+1. **Resolved 2026-11-04:** Author approved the complete 87-take script (P0 12 / P1 54 / P2 21) for Fish Audio generation. This approval does not waive clip QC, casting/source holds or runtime prerequisites.
 2. **Resolve remaining identity/casting gates.** Merchant source UUID (including suspected Laura mismatch), legacy general voice inconsistencies, Dramatic role fit, Historian final role, primary shepherd gender/role metadata; Molly's assignment remains a candidate. Named roles/keys and existing voice identity must survive future integration. The three new male directions are already selected; only their recordings/QC are missing, not another bookmark decision.
 3. **Confirm discrepant actual speech.** Especially female/guard weather and Dramatic shuffled meanings, plus the complete 42-row mismatch list. ASR punctuation/spelling differences need proportional review; no automatic canonical replacement.
 4. **Decide optional local-standing thresholds and later binding scope.** Profession/personal greeting and campfire text is prepared; no new selector, runtime trigger or dialogue architecture is introduced here. Keep Q46/event work separately owned.
@@ -117,4 +119,4 @@ No narrative rewrite is required for this package. Inherited relative “tomorro
 
 Executed documentation checks: ledger/tree reconciliation for all 317 donor files and all 109 public copies; counts and UUID shape/blocklist checks; required per-take fields; exact generation-input/transcript equality; proposed filename/transcript uniqueness and asset collisions; normalized comparison with both ledger transcript columns; complete 29+52 supersession coverage; exactly two paired exchanges with one question/answer each; local repository-link targets; source-file integrity against fetched pin. No runtime checks are claimed or required for this documentation-only change.
 
-Next action: author reviews this packet, resolves the relevant production holds, then generates only the selected approved takes. Q88/Q89 must retain their own casting/clip gates; Q40 waits for delivered QC-passed files and exact speaker/transcript integration. **Q90 stays awaiting approval**, not done. Do not register proposed filenames, assign a new speaker through a missing-clip fallback, or replace canonical subtitles from this document without approval.
+Next action: author reviews this packet, resolves the relevant production holds, then generates only the selected approved takes. Q88/Q89 must retain their own casting/clip gates; Q40 waits for delivered QC-passed files and exact speaker/transcript integration. **Q90 editorial/script approval is complete**; audio generation, QC and downstream implementation remain incomplete. Do not register proposed filenames, assign a new speaker through a missing-clip fallback, or replace canonical subtitles from this document without approval.
