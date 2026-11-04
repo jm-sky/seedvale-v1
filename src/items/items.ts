@@ -14,6 +14,10 @@ export type ItemKind =
   | 'flower'
   | 'cone'
   | 'knife'
+  | 'obsidian_knife'
+  | 'halberd'
+  | 'mace'
+  | 'sword'
   | 'long_sword'
   | 'spear'
   | 'short_sword'
@@ -1049,6 +1053,42 @@ export const ITEM_DEFS: Record<ItemKind, ItemDef> = {
     color: 0x9aa0a8,
     description: 'Stalowe ochraniacze przedramion. Działają mechanicznie; model na postaci nie jest jeszcze dostępny.',
   },
+  obsidian_knife: {
+    kind: 'obsidian_knife',
+    label: 'obsydianowy nóż',
+    categories: ['weapon'],
+    weight: 0.35,
+    size: 'SM',
+    color: 0x34343b,
+    description: 'Ostry obsydianowy nóż do pchnięć. Osobny przedmiot, bez zamiany istniejących noży.',
+  },
+  halberd: {
+    kind: 'halberd',
+    label: 'halabarda',
+    categories: ['weapon'],
+    weight: 3.5,
+    size: 'LG',
+    color: 0x999da4,
+    description: 'Broń drzewcowa z ostrzem. Duży zasięg okupiony wolnym zamachem i wysiłkiem.',
+  },
+  mace: {
+    kind: 'mace',
+    label: 'buzdygan',
+    categories: ['weapon'],
+    weight: 1.8,
+    size: 'MD',
+    color: 0x8a9098,
+    description: 'Krótka broń obuchowa. Nie wymaga ostrzenia.',
+  },
+  sword: {
+    kind: 'sword',
+    label: 'miecz',
+    categories: ['weapon'],
+    weight: 1.5,
+    size: 'MD',
+    color: 0xa3a8b0,
+    description: 'Miecz o umiarkowanym zasięgu i ciężarze.',
+  },
   berries: {
     kind: 'berries',
     label: 'jagody',
@@ -1852,7 +1892,7 @@ function buildProceduralItemMesh(kind: ItemKind): THREE.Object3D {
     mesh.castShadow = true
     return mesh
   }
-  if (kind === 'knife' || kind === 'damascus_knife' || kind === 'dagger') {
+  if (kind === 'knife' || kind === 'damascus_knife' || kind === 'dagger' || kind === 'obsidian_knife') {
     const group = new THREE.Group()
     const blade = new THREE.Mesh(
       new THREE.ConeGeometry(0.035, 0.22, 4),
@@ -1874,7 +1914,7 @@ function buildProceduralItemMesh(kind: ItemKind): THREE.Object3D {
   }
   if (
     kind === 'long_sword' || kind === 'damascus_long_sword' ||
-    kind === 'masterwork_sword' || kind === 'obsidian_sword'
+    kind === 'masterwork_sword' || kind === 'obsidian_sword' || kind === 'sword'
   ) {
     const group = new THREE.Group()
     const blade = new THREE.Mesh(
@@ -1911,7 +1951,7 @@ function buildProceduralItemMesh(kind: ItemKind): THREE.Object3D {
     group.add(handle)
     return group
   }
-  if (kind === 'spear') {
+  if (kind === 'spear' || kind === 'halberd') {
     const group = new THREE.Group()
     const shaft = new THREE.Mesh(
       new THREE.CylinderGeometry(0.018, 0.018, 0.6, 6),
@@ -1923,12 +1963,38 @@ function buildProceduralItemMesh(kind: ItemKind): THREE.Object3D {
     group.add(shaft)
     const head = new THREE.Mesh(
       new THREE.ConeGeometry(0.03, 0.14, 4),
-      new THREE.MeshStandardMaterial({ color: ITEM_DEFS.spear.color, flatShading: true, metalness: 0.45 }),
+      new THREE.MeshStandardMaterial({ color: ITEM_DEFS[kind].color, flatShading: true, metalness: 0.45 }),
     )
     head.rotation.x = Math.PI / 2
     head.position.set(0, 0.06, 0.36)
     head.castShadow = true
     group.add(head)
+    if (kind === 'halberd') {
+      const blade = new THREE.Mesh(
+        new THREE.BoxGeometry(0.18, 0.025, 0.14),
+        new THREE.MeshStandardMaterial({ color: ITEM_DEFS[kind].color, flatShading: true, metalness: 0.45 }),
+      )
+      blade.position.set(0.07, 0.06, 0.27)
+      blade.castShadow = true
+      group.add(blade)
+    }
+    return group
+  }
+  if (kind === 'mace') {
+    const group = new THREE.Group()
+    const handle = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.025, 0.025, 0.35, 6),
+      new THREE.MeshStandardMaterial({ color: 0x4a3324, flatShading: true }),
+    )
+    handle.rotation.x = Math.PI / 2
+    handle.position.set(0, 0.06, 0)
+    const head = new THREE.Mesh(
+      new THREE.SphereGeometry(0.075, 6, 4),
+      new THREE.MeshStandardMaterial({ color: ITEM_DEFS[kind].color, flatShading: true, metalness: 0.45 }),
+    )
+    head.position.set(0, 0.06, 0.2)
+    handle.castShadow = head.castShadow = true
+    group.add(handle, head)
     return group
   }
   if (kind === 'firestarter') {

@@ -114,7 +114,7 @@ describe('exhaustive compatibility manifest', () => {
     const catalog = { ...ITEM_CATALOG }
     delete (catalog as Partial<typeof catalog>).knife
     expect(errors(manifest, { ...v1, catalog })).toMatch(/missing V1 target: knife/)
-    expect(errors(replace('knife', { target: { ...entry('knife').target!, id: 'obsidian_knife' as ItemKind, evidence: 'verified!' } }))).toMatch(/missing V1 target/)
+    expect(errors(replace('knife', { target: { ...entry('knife').target!, id: 'unregistered-fixture' as ItemKind, evidence: 'verified!' } }))).toMatch(/missing V1 target/)
   })
 
   it('checks actual target category, gameplay family, ammo consumers and armor slot', () => {
@@ -290,7 +290,7 @@ describe('pure canonical adapter', () => {
     expect(ITEM_CATALOG).toStrictEqual(catalogBefore)
     expect(inventory.toJSON()).toEqual(inventoryBefore)
     expect([inventory.count('arrow'), inventory.count('broadhead_arrow'), inventory.count('war_arrow')]).toEqual([2, 3, 4])
-    expect(ITEM_CATALOG).not.toHaveProperty('obsidian_knife')
+    expect(projectV3Equipment('obsidian_knife').kind).toBe('new-candidate')
     expect(ITEM_CATALOG).not.toHaveProperty('padded_cap')
   })
 })

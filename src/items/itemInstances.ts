@@ -85,6 +85,9 @@ export function isArmorItemInstance(instance: ItemInstance): instance is ArmorIt
  *  `shovel`, explicitly out of scope, and would need a second exclusion list
  *  for `pickaxe`). */
 export type WeaponMaintenanceKind =
+  | 'obsidian_knife'
+  | 'halberd'
+  | 'sword'
   | 'knife'
   | 'short_sword'
   | 'long_sword'
@@ -106,6 +109,9 @@ export type WeaponMaintenanceKind =
  *  the set is built from, so callers that need to *iterate* the kinds (the
  *  save migration in `weaponMaintenance.ts`) don't hand-maintain a copy. */
 export const WEAPON_MAINTENANCE_KIND_LIST: readonly WeaponMaintenanceKind[] = [
+  'obsidian_knife',
+  'halberd',
+  'sword',
   'axe',
   'battle_axe',
   'dagger',

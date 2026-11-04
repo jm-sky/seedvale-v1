@@ -54,6 +54,10 @@ export type NpcRangedWeaponFamily = 'bow' | 'crossbow' | 'sling'
  *  becoming `tool`. */
 const NPC_MELEE_WEAPON_FAMILY: Readonly<Partial<Record<ItemKind, NpcMeleeWeaponFamily>>> = {
   knife: 'compact',
+  obsidian_knife: 'compact',
+  halberd: 'spear',
+  mace: 'tool',
+  sword: 'sword',
   dagger: 'compact',
   damascus_knife: 'compact',
   short_sword: 'sword',

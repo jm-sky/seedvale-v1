@@ -5,6 +5,10 @@ import { isInstanceBackedKind } from './itemInstances'
 
 /** Tool kinds that can occupy the single "in hand" slot. */
 export type ToolKind = 'knife'
+| 'obsidian_knife'
+| 'halberd'
+| 'mace'
+| 'sword'
 | 'firestarter'
 | 'shovel'
 | 'axe'

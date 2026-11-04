@@ -64,6 +64,10 @@ export type MeleeToolKind = Extract<
   | 'obsidian_sword'
   | 'battle_axe'
   | 'masterwork_sword'
+  | 'obsidian_knife'
+  | 'halberd'
+  | 'mace'
+  | 'sword'
 >
 
 /** `ITEM_CATALOG[kind].melee` is the single source of truth for which tools

@@ -23,6 +23,10 @@ export const MERCHANT_PRICES: Readonly<Partial<Record<ItemKind, number>>> = {
   firestarter: 8,
   wooden_torch: 8,
   blanket: 10,
+  obsidian_knife: 55,
+  halberd: 95,
+  mace: 50,
+  sword: 65,
   knife: 12,
   pitchfork: 12,
   sickle: 12,
@@ -115,6 +119,10 @@ export const MERCHANT_PRICES: Readonly<Partial<Record<ItemKind, number>>> = {
 
 /** Display order for the trade screen — matches the plan 090 mockup. */
 export const MERCHANT_STOCK: readonly ItemKind[] = [
+  'obsidian_knife',
+  'halberd',
+  'mace',
+  'sword',
   'knife',
   'firestarter',
   'blanket',

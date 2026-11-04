@@ -85,3 +85,11 @@ W5 keeps falchion, composite_bow, arrow_blunt unregistered and all 12 donor futu
 ## W1 implementation — 2026-11-04
 
 Exact ten-ID policy evolution per the proposal, with independent historical-table-plus-approved-delta fixture and exact totals. Arrow-only canonical alias exception allows the approved A1 relationship; historical aliases otherwise remain strict and unforgeable. Distinct candidates cannot restore former aliases or gain projection. Verification revision refreshed to main's 044-M commit (`dd1ff563`); all 87 immutable source rows and 12 future flags unchanged. No new runtime item or source in this slice. Donor policy tests, Vue type-check, scoped lint and production build checked.
+
+## W2a implementation and review handoff — 2026-11-04
+
+Implemented exactly the four W0 W2a rows: obsidian_knife, halberd, mace, sword. Catalog, ItemKind, held/melee type contracts, NPC families, trade value, maintenance classification and procedural ground/held fallback are complete. Blade/polearm instances retain condition; mace is count-backed. No worldgen, merchant/household source, NPC kit or reward enables these kinds. No save-version bump (additive registered kinds). No donor runtime conversion/import.
+
+Verification: 347 tests across 11 files (batch ownership/transfer/geometry, catalog/capabilities/held/maintenance, NPC combat, save payloads, S1 math and donor policy), Vue type-check, scoped ESLint and production build. No gameplay/browser check; fixture-grant ordinary weapon/attack-fauna check remains pending.
+
+**Required Opus spot review before W2b:** inspect the four W0 rows and their actual catalog profiles, defense, mass/price, maintenance and held fallback. Confirm V1 family envelope and whether obsidian knife should share native knife utility capabilities (currently weapon-only, no donor capability activation). Remaining W0 W2b–d/W3 rows are proposed contracts for review, not registered runtime content. No source is enabled by this commit. W2b onward waits for this review.

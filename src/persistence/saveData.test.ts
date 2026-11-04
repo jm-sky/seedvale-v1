@@ -2777,3 +2777,17 @@ describe('044-M v57 to v58 equipment migration', () => {
     expect(loadStoredSave({ ...current, playerEquipment: { arms: first.id } }).status).toBe('invalid')
   })
 })
+
+
+describe('062 W2a registered weapon save payloads', () => {
+  it('round-trips each distinct new kind with its native count or instance representation', () => {
+    const current = {
+      ...validSave,
+      inventory: { mace: 2 },
+      inventoryInstances: ['obsidian_knife', 'halberd', 'sword'].map(kind => ({ id: `w2a:${kind}`, kind, durability: .7, sharpness: .4 })),
+      heldTool: 'halberd',
+      heldToolInstanceId: 'w2a:halberd',
+    }
+    expect(loadStoredSave(JSON.parse(JSON.stringify(current)))).toEqual({ status: 'ok', data: current })
+  })
+})

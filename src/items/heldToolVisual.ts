@@ -43,6 +43,12 @@ export type HeldAttach = {
  * Armature scale ~100 is compensated on mount.
  */
 export const HELD_ATTACH: Record<ToolKind, HeldAttach> = {
+  // 062 W2a procedural fallbacks; no asset or item-identity substitution.
+  obsidian_knife: { position: [0, 0.12, -0.01], rotation: [Math.PI, 0, Math.PI / 2], scale: 1.25 },
+  halberd: { position: [0.02, 0.11, -0.02], rotation: [Math.PI / 2, 0, 0], scale: 1.25, gripLocalOffset: [0, 0, -0.2] },
+  mace: { position: [0.02, 0.11, -0.02], rotation: [Math.PI / 2, 0, 0], scale: 1.25, gripLocalOffset: [0, 0, -0.12] },
+  sword: { position: [0.02, 0.11, -0.02], rotation: [Math.PI / 2, 0, 0], scale: 1.25 },
+
   axe: {
     // Verified in-hand after user manual adjustment (2026-08-12)
     // Was along forearm (handle → bone −Y); +90° yaw puts shaft across the grip.
@@ -373,7 +379,7 @@ export async function createHeldToolObject(kind: ToolKind): Promise<Object3D> {
   }
 
   const mesh = createItemMesh(kind)
-  mesh.scale.setScalar(kind === 'knife' || kind === 'damascus_knife' || kind === 'dagger' ? 0.95 : 0.85)
+  mesh.scale.setScalar(kind === 'knife' || kind === 'damascus_knife' || kind === 'dagger' || kind === 'obsidian_knife' ? 0.95 : 0.85)
   return mesh
 }
 
