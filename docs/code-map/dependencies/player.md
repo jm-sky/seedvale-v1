@@ -354,6 +354,7 @@ Generated from TypeScript imports.
 - `items/Inventory.ts`
 - `items/armorProtectionDisplay.ts`
 - `items/equipment.ts`
+- `items/equipmentTypes.ts`
 - `items/itemDisplay.ts`
 - `items/itemInstances.ts`
 - `player/PlayerSkills.ts`
@@ -365,9 +366,11 @@ Generated from TypeScript imports.
 
 - `app/createApp.ts`
 - `app/gameLoop.ts`
+- `items/armorProtectionDisplay.test.ts`
 - `items/equipmentPreview.test.ts`
 - `items/equipmentPreview.ts`
 - `player/characterPresentation.test.ts`
+- `ui-vue/components/items/LoadoutSummary.test.ts`
 - `ui-vue/demos/character-skills/fixtures.ts`
 - `ui-vue/store.ts`
 

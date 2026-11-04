@@ -12,6 +12,24 @@ Generated from TypeScript imports.
 - `settlement/createSettlement.ts`
 - `ui-vue/store.ts`
 
+## `ui-vue/components/items/EquipmentPanel.test.ts`
+
+**Imports**
+
+- `items/equipmentPreview.ts`
+- `items/equipmentTypes.ts`
+- `ui-vue/components/items/collectArmorPreviewInstances.ts`
+
+## `ui-vue/components/items/LoadoutSummary.test.ts`
+
+**Imports**
+
+- `items/Inventory.ts`
+- `items/armorItemInstances.ts`
+- `items/equipment.ts`
+- `items/equipmentPreview.ts`
+- `player/characterPresentation.ts`
+
 ## `ui-vue/components/items/ammoSectionView.test.ts`
 
 **Imports**
@@ -46,6 +64,8 @@ Generated from TypeScript imports.
 **Imports**
 
 - `items/armorProtectionDisplay.ts`
+- `items/equipment.ts`
+- `items/equipmentTypes.ts`
 - `items/foodFreshness.ts`
 - `items/inventoryView.ts`
 - `items/itemCatalog.ts`
@@ -110,12 +130,18 @@ Generated from TypeScript imports.
 - `items/itemInstances.ts`
 - `ui-vue/components/items/equipmentPanelTypes.ts`
 
+**Imported by**
+
+- `ui-vue/components/items/EquipmentPanel.test.ts`
+
 ## `ui-vue/components/items/equipmentLayout.test.ts`
 
 **Imports**
 
 - `items/equipment.ts`
+- `items/equipmentTypes.ts`
 - `ui-vue/components/items/equipmentLayout.ts`
+- `ui-vue/components/items/equipmentPanelTypes.ts`
 
 ## `ui-vue/components/items/equipmentLayout.ts`
 
@@ -123,6 +149,7 @@ Generated from TypeScript imports.
 
 - `items/equipment.ts`
 - `items/equipmentTypes.ts`
+- `ui-vue/components/items/equipmentPanelTypes.ts`
 
 **Imported by**
 
@@ -132,13 +159,14 @@ Generated from TypeScript imports.
 
 **Imports**
 
-- `items/equipment.ts`
 - `items/equipmentTypes.ts`
 - `items/itemInstances.ts`
 
 **Imported by**
 
 - `ui-vue/components/items/collectArmorPreviewInstances.ts`
+- `ui-vue/components/items/equipmentLayout.test.ts`
+- `ui-vue/components/items/equipmentLayout.ts`
 
 ## `ui-vue/components/items/inventoryHybridActions.test.ts`
 
@@ -251,6 +279,10 @@ Generated from TypeScript imports.
 **Imports**
 
 - `badges/badges.ts`
+- `items/Inventory.ts`
+- `items/armorItemInstances.ts`
+- `items/equipment.ts`
+- `items/itemInstances.ts`
 - `player/PlayerSkills.ts`
 - `player/characterPresentation.ts`
 - `ui-vue/store.ts`
@@ -339,6 +371,27 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `ui-vue/hudWeaponShortcuts.test.ts`
+
+## `ui-vue/lastHitFeedback.test.ts`
+
+**Imports**
+
+- `combat/incomingHumanHit.ts`
+- `ui-vue/lastHitFeedback.ts`
+
+## `ui-vue/lastHitFeedback.ts`
+
+**Imports**
+
+- `combat/damageTypes.ts`
+- `combat/hitLocation.ts`
+- `combat/incomingHumanHit.ts`
+- `items/armorProtectionDisplay.ts`
+
+**Imported by**
+
+- `app/gameLoop.ts`
+- `ui-vue/lastHitFeedback.test.ts`
 
 ## `ui-vue/lib/continentPreviewRender.ts`
 

@@ -17,31 +17,31 @@ Generated from exported TypeScript symbols.
 
 ## `player/characterPresentation.ts`
 
-- `aggregateAttributeModifierBadges` — function — line 196
-- `ATTRIBUTE_DISPLAY_SCALE` — const — line 41
+- `aggregateAttributeModifierBadges` — function — line 211
+- `ATTRIBUTE_DISPLAY_SCALE` — const — line 45
   - domain: items-player
   - system: player-ui
   - role: Character Screen presentation snapshot (plan ui-input-013). Vue renders these views; it does not own modifier formulas or effective SPEA. Not persisted — rebuilt from authoritative player/condition/skill state.
-- `buildCharacterAttributeViews` — function — line 217
-- `buildCharacterConditionViews` — function — line 237
-- `buildCharacterEquipmentSlotViews` — function — line 145
-- `buildCharacterEquipmentView` — function — line 173
+- `buildCharacterAttributeViews` — function — line 232
+- `buildCharacterConditionViews` — function — line 252
+- `buildCharacterEquipmentSlotViews` — function — line 171
+- `buildCharacterEquipmentView` — function — line 188
   - domain: items-player
-- `buildCharacterPresentation` — function — line 302
-- `buildCharacterSkillViews` — function — line 229
-- `CharacterAttributeView` — type — line 62
-- `CharacterConditionEffectView` — type — line 75
-- `CharacterConditionView` — type — line 80
-- `CharacterEquipmentSlotView` — type — line 88
-- `CharacterEquipmentView` — type — line 94
-- `CharacterModifierBadge` — type — line 57
-- `CharacterPresentation` — type — line 104
-- `CharacterSkillView` — type — line 69
-- `equipmentSnapshotToCharacterView` — function — line 132
+- `buildCharacterPresentation` — function — line 317
+- `buildCharacterSkillViews` — function — line 244
+- `CharacterAttributeView` — type — line 66
+- `CharacterConditionEffectView` — type — line 79
+- `CharacterConditionView` — type — line 84
+- `CharacterEquipmentSlotView` — type — line 93
+- `CharacterEquipmentView` — type — line 102
+- `CharacterModifierBadge` — type — line 61
+- `CharacterPresentation` — type — line 118
+- `CharacterSkillView` — type — line 73
+- `equipmentSnapshotToCharacterView` — function — line 155
   - domain: items-player
-- `NEUTRAL_CHARACTER_EQUIPMENT_VIEW` — const — line 117
-- `toDisplayAttribute` — function — line 184
-- `toDisplaySkill` — function — line 188
+- `NEUTRAL_CHARACTER_EQUIPMENT_VIEW` — const — line 137
+- `toDisplayAttribute` — function — line 199
+- `toDisplaySkill` — function — line 203
 
 ## `player/humanCarryCapacity.ts`
 

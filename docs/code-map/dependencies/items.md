@@ -157,6 +157,7 @@ Generated from TypeScript imports.
 - `items/HeldTool.test.ts`
 - `items/HeldTool.ts`
 - `items/Inventory.test.ts`
+- `items/armorProtectionDisplay.test.ts`
 - `items/campfireCooking.test.ts`
 - `items/campfireCooking.ts`
 - `items/coin.test.ts`
@@ -258,8 +259,10 @@ Generated from TypeScript imports.
 - `settlements-npcs-007.test.ts`
 - `terrain/digAction.ts`
 - `ui-vue/NpcDialogueMenu.test.ts`
+- `ui-vue/components/items/LoadoutSummary.test.ts`
 - `ui-vue/components/items/inventoryHybridActions.test.ts`
 - `ui-vue/components/items/inventoryPresentation.test.ts`
+- `ui-vue/demos/character-skills/fixtures.ts`
 - `ui-vue/demos/inventory-list/fixtures.ts`
 - `ui-vue/npcDialogueOpen.test.ts`
 - `ui-vue/npcDialogueTrade.test.ts`
@@ -307,6 +310,7 @@ Generated from TypeScript imports.
 - `app/inventoryWiring.ts`
 - `items/Inventory.test.ts`
 - `items/Inventory.ts`
+- `items/armorProtectionDisplay.test.ts`
 - `items/equipment.test.ts`
 - `items/equipment.ts`
 - `items/equipmentPreview.test.ts`
@@ -321,25 +325,44 @@ Generated from TypeScript imports.
 - `settlement/artisanOrders.ts`
 - `settlement/householdProfessionStock.ts`
 - `settlement/merchantTrade.ts`
+- `ui-vue/components/items/LoadoutSummary.test.ts`
 - `ui-vue/components/items/inventoryHybridActions.test.ts`
 - `ui-vue/components/items/inventoryPresentation.test.ts`
+- `ui-vue/demos/character-skills/fixtures.ts`
 - `ui-vue/demos/inventory-list/fixtures.ts`
 - `ui-vue/screens/InventoryScreen.test.ts`
+
+## `items/armorProtectionDisplay.test.ts`
+
+**Imports**
+
+- `combat/hitLocation.ts`
+- `items/Inventory.ts`
+- `items/armorItemInstances.ts`
+- `items/armorProtectionDisplay.ts`
+- `items/equipment.ts`
+- `items/equipmentPreview.ts`
+- `player/characterPresentation.ts`
 
 ## `items/armorProtectionDisplay.ts`
 
 **Imports**
 
 - `combat/damageTypes.ts`
+- `combat/hitLocation.ts`
+- `items/equipment.ts`
+- `items/equipmentTypes.ts`
 
 **Imported by**
 
 - `app/inventoryWiring.ts`
+- `items/armorProtectionDisplay.test.ts`
 - `items/equipmentPreview.ts`
 - `items/inventoryView.ts`
 - `player/characterPresentation.ts`
 - `ui-vue/components/items/buildInventoryDetailStatRows.ts`
 - `ui-vue/components/items/catalogueStatStrength.ts`
+- `ui-vue/lastHitFeedback.ts`
 
 ## `items/authoredWorldPickups.test.ts`
 
@@ -669,6 +692,8 @@ Generated from TypeScript imports.
 - `app/gameLoop.ts`
 - `app/inventoryWiring.ts`
 - `app/saveState.ts`
+- `items/armorProtectionDisplay.test.ts`
+- `items/armorProtectionDisplay.ts`
 - `items/equipment.test.ts`
 - `items/equipmentPreview.test.ts`
 - `items/equipmentPreview.ts`
@@ -678,21 +703,25 @@ Generated from TypeScript imports.
 - `player/PlayerController.ts`
 - `player/characterPresentation.test.ts`
 - `player/characterPresentation.ts`
+- `ui-vue/components/items/LoadoutSummary.test.ts`
+- `ui-vue/components/items/buildInventoryDetailStatRows.ts`
 - `ui-vue/components/items/collectArmorPreviewInstances.ts`
 - `ui-vue/components/items/equipmentLayout.test.ts`
 - `ui-vue/components/items/equipmentLayout.ts`
-- `ui-vue/components/items/equipmentPanelTypes.ts`
+- `ui-vue/demos/character-skills/fixtures.ts`
 
 ## `items/equipmentPreview.test.ts`
 
 **Imports**
 
+- `combat/hitLocation.ts`
 - `items/Inventory.ts`
 - `items/armorItemInstances.ts`
 - `items/equipment.ts`
 - `items/equipmentPreview.ts`
 - `items/itemDisplay.ts`
 - `items/itemInstances.ts`
+- `items/weaponMaintenance.ts`
 - `player/characterPresentation.ts`
 
 ## `items/equipmentPreview.ts`
@@ -700,6 +729,7 @@ Generated from TypeScript imports.
 **Imports**
 
 - `combat/damageTypes.ts`
+- `combat/hitLocation.ts`
 - `items/Inventory.ts`
 - `items/armorItemInstances.ts`
 - `items/armorProtectionDisplay.ts`
@@ -713,7 +743,10 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `items/armorProtectionDisplay.test.ts`
 - `items/equipmentPreview.test.ts`
+- `ui-vue/components/items/EquipmentPanel.test.ts`
+- `ui-vue/components/items/LoadoutSummary.test.ts`
 - `ui-vue/components/items/collectArmorPreviewInstances.ts`
 
 ## `items/equipmentTypes.ts`
@@ -721,11 +754,17 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `app/inventoryWiring.ts`
+- `items/armorProtectionDisplay.ts`
 - `items/equipment.ts`
 - `items/equipmentPreview.ts`
+- `items/inventoryView.ts`
 - `items/itemCatalog.ts`
 - `items/layeredArmorBatch.test.ts`
+- `player/characterPresentation.ts`
+- `ui-vue/components/items/EquipmentPanel.test.ts`
+- `ui-vue/components/items/buildInventoryDetailStatRows.ts`
 - `ui-vue/components/items/collectArmorPreviewInstances.ts`
+- `ui-vue/components/items/equipmentLayout.test.ts`
 - `ui-vue/components/items/equipmentLayout.ts`
 - `ui-vue/components/items/equipmentPanelTypes.ts`
 - `ui-vue/demos/inventory-list/fixtures.ts`
@@ -991,10 +1030,12 @@ Generated from TypeScript imports.
 
 **Imports**
 
+- `combat/damageTypes.ts`
 - `items/Inventory.ts`
 - `items/armorItemInstances.ts`
 - `items/armorProtectionDisplay.ts`
 - `items/equipment.ts`
+- `items/equipmentTypes.ts`
 - `items/foodFreshness.ts`
 - `items/itemCatalog.ts`
 - `items/itemInstances.ts`
@@ -1314,6 +1355,7 @@ Generated from TypeScript imports.
 - `ui-vue/components/items/inventoryPresentation.test.ts`
 - `ui-vue/components/items/inventoryPresentation.ts`
 - `ui-vue/components/items/itemIcons.ts`
+- `ui-vue/demos/character-skills/fixtures.ts`
 - `ui-vue/demos/inventory-list/fixtures.ts`
 - `ui-vue/store.ts`
 - `world/createPlacedContainers.ts`
@@ -2325,6 +2367,7 @@ Generated from TypeScript imports.
 - `items/HeldTool.test.ts`
 - `items/Inventory.test.ts`
 - `items/compactWeaponsAndMasterworkBow.test.ts`
+- `items/equipmentPreview.test.ts`
 - `items/highQualityWeapons.test.ts`
 - `items/inventoryTransfer.test.ts`
 - `items/inventoryView.test.ts`

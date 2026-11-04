@@ -23,12 +23,24 @@ Generated from exported TypeScript symbols.
 
 ## `items/armorProtectionDisplay.ts`
 
-- `DAMAGE_CHANNEL_LABELS` — const — line 11
+- `DAMAGE_CHANNEL_LABELS` — const — line 15
   - domain: items-player
-- `formatResistanceLabel` — function — line 23
-- `resistancePercents` — function — line 14
-- `strongestChannelPercent` — function — line 29
-- `ZERO_RESISTANCE_VIEW` — const — line 33
+- `DAMAGE_CHANNELS` — const — line 26
+- `expectedProtectionByProfile` — function — line 41
+  - domain: ui-input
+- `ExpectedProtectionByProfile` — type — line 36
+- `formatArmorCoverage` — function — line 52
+  - domain: ui-input
+- `formatChannelResistance` — function — line 66
+  - domain: ui-input
+- `formatResistanceLabel` — function — line 57
+- `PROTECTION_PROFILE_KEYS` — const — line 30
+- `PROTECTION_PROFILE_LABEL` — const — line 31
+- `ProtectionProfileKey` — type — line 29
+- `resistancePercents` — function — line 18
+- `strongestChannelPercent` — function — line 71
+- `ZERO_PROTECTION_VIEW` — const — line 78
+- `ZERO_RESISTANCE_VIEW` — const — line 75
 
 ## `items/authoredWorldPickups.ts`
 
@@ -152,48 +164,51 @@ Generated from exported TypeScript symbols.
 
 ## `items/equipment.ts`
 
-- `armorPositionOf` — function — line 115
-- `buildProtectionSnapshot` — function — line 287
+- `armorPositionOf` — function — line 130
+- `buildProtectionSnapshot` — function — line 302
   - domain: items-player
-- `createEquipmentState` — function — line 141
+- `createEquipmentState` — function — line 156
   - domain: items-player
-- `EQUIPMENT_POSITIONS` — const — line 51
-- `EQUIPMENT_SLOT_LABEL` — const — line 36
-- `EQUIPMENT_SLOTS` — const — line 25
-- `EquipmentModifiers` — type — line 58
-- `EquipmentState` — type — line 87
+- `EQUIPMENT_LAYER_LABEL` — const — line 48
+- `EQUIPMENT_POSITIONS` — const — line 66
+- `EQUIPMENT_SLOT_LABEL` — const — line 37
+- `EQUIPMENT_SLOTS` — const — line 26
+- `EquipmentModifiers` — type — line 73
+- `equipmentPositionLabel` — function — line 56
+  - domain: ui-input
+- `EquipmentState` — type — line 102
   - domain: items-player
   - system: equipment
   - role: Tracks which owned armor instance (if any) is worn in each of the 14 equipment positions.
   - uses: Inventory
-- `equippedArmorInstances` — function — line 206
-- `equippedBodyArmor` — function — line 223
-- `equippedInstanceId` — function — line 228
-- `equippedInstanceIds` — function — line 237
-- `EquipResult` — type — line 73
-- `isEquipmentPositionKey` — function — line 110
-- `isEquipmentSlot` — function — line 106
-- `NEUTRAL_EQUIPMENT_MODIFIERS` — const — line 65
-- `ProtectionSnapshot` — type — line 257
+- `equippedArmorInstances` — function — line 221
+- `equippedBodyArmor` — function — line 238
+- `equippedInstanceId` — function — line 243
+- `equippedInstanceIds` — function — line 252
+- `EquipResult` — type — line 88
+- `isEquipmentPositionKey` — function — line 125
+- `isEquipmentSlot` — function — line 121
+- `NEUTRAL_EQUIPMENT_MODIFIERS` — const — line 80
+- `ProtectionSnapshot` — type — line 272
   - domain: items-player
-- `rangedStaminaMultiplierFor` — function — line 275
-- `resolveArmorInstanceEffective` — function — line 359
-- `resolveEquipmentModifiers` — function — line 354
+- `rangedStaminaMultiplierFor` — function — line 290
+- `resolveArmorInstanceEffective` — function — line 374
+- `resolveEquipmentModifiers` — function — line 369
   - domain: items-player
-- `resolveProtectionSnapshot` — function — line 340
+- `resolveProtectionSnapshot` — function — line 355
   - domain: items-player
-- `SavePlayerEquipment` — type — line 48
-- `WornArmorPiece` — type — line 245
+- `SavePlayerEquipment` — type — line 63
+- `WornArmorPiece` — type — line 260
 
 ## `items/equipmentPreview.ts`
 
-- `ArmorPreviewInstance` — type — line 56
-- `emptyLoadoutStats` — function — line 63
-- `EquipPreviewResult` — type — line 43
-- `LoadoutStatView` — type — line 33
-- `previewEquipLoadout` — function — line 146
+- `ArmorPreviewInstance` — type — line 80
+- `emptyLoadoutStats` — function — line 87
+- `EquipPreviewResult` — type — line 49
+- `LoadoutStatView` — type — line 34
+- `previewEquipLoadout` — function — line 184
   - domain: items-player
-- `previewEquipLoadoutFromSnapshot` — function — line 238
+- `previewEquipLoadoutFromSnapshot` — function — line 249
   - domain: items-player
 
 ## `items/equipmentTypes.ts`
@@ -372,12 +387,12 @@ Generated from exported TypeScript symbols.
 
 ## `items/inventoryView.ts`
 
-- `buildInventoryGroups` — function — line 283
-- `inventoryCountsForUi` — function — line 320
-- `InventoryGroupView` — type — line 74
-- `InventoryInstanceRow` — type — line 47
-- `ITEM_METER_LABEL` — const — line 41
-- `ItemMeterKind` — type — line 36
+- `buildInventoryGroups` — function — line 293
+- `inventoryCountsForUi` — function — line 330
+- `InventoryGroupView` — type — line 81
+- `InventoryInstanceRow` — type — line 49
+- `ITEM_METER_LABEL` — const — line 43
+- `ItemMeterKind` — type — line 38
 
 ## `items/itemCatalog.ts`
 

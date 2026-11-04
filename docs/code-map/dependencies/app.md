@@ -1333,6 +1333,7 @@ Generated from TypeScript imports.
 - `simulation/observation.ts`
 - `terrain/renewableWorldItems.ts`
 - `terrain/snowField.ts`
+- `ui-vue/lastHitFeedback.ts`
 - `ui-vue/mount.ts`
 - `ui/createBusyOverlay.ts`
 - `ui/createHud.ts`

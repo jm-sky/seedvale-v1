@@ -1,7 +1,7 @@
 # Plan: Layered equipment panel and truthful protection stats
 
 **Created:** 2026-11-04
-**Status:** `planned` 📋 (Q-IC1/Q-IC2 approved 2026-11-04; Wave 2 on main)
+**Status:** `verification needed` 🔍
 **Type:** feature
 **Priority:** high · **Effort:** M
 **Depends on:** ui-input-045, items-player-066

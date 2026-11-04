@@ -53,9 +53,11 @@ Generated from TypeScript imports.
 - `items/armorProtectionDisplay.ts`
 - `items/equipment.ts`
 - `items/equipmentPreview.ts`
+- `items/inventoryView.ts`
 - `items/itemCatalog.ts`
 - `player/characterPresentation.ts`
 - `player/playerDamage.test.ts`
+- `ui-vue/lastHitFeedback.ts`
 
 ## `combat/defenseResolver.test.ts`
 
@@ -89,12 +91,17 @@ Generated from TypeScript imports.
 - `combat/incomingHumanHit.test.ts`
 - `combat/incomingHumanHit.ts`
 - `fauna/faunaCombat.ts`
+- `items/armorProtectionDisplay.test.ts`
+- `items/armorProtectionDisplay.ts`
 - `items/equipment.ts`
+- `items/equipmentPreview.test.ts`
+- `items/equipmentPreview.ts`
 - `items/layeredArmorBatch.test.ts`
 - `player/characterPresentation.test.ts`
 - `player/characterPresentation.ts`
 - `player/playerDamage.test.ts`
 - `player/playerDamage.ts`
+- `ui-vue/lastHitFeedback.ts`
 
 ## `combat/incomingHumanHit.test.ts`
 
@@ -129,6 +136,8 @@ Generated from TypeScript imports.
 - `player/PlayerController.ts`
 - `player/playerDamage.test.ts`
 - `player/playerDamage.ts`
+- `ui-vue/lastHitFeedback.test.ts`
+- `ui-vue/lastHitFeedback.ts`
 
 ## `combat/meleeAgility.test.ts`
 
