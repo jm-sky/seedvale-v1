@@ -8,6 +8,7 @@
 **Domain:** `world-terrain`
 **Subdomains:** `terrain` `rendering`
 **Tags:** `visual` `shadows` `diagnostics`
+**Model:** Sonnet, Composer
 
 ## Goal
 
@@ -15,22 +16,27 @@ Diagnose and eliminate conspicuous large, straight-edged triangular lightness/co
 
 ## Evidence — targeted static recon (2026-11-04)
 
+Implementation notes (ranked hypotheses H1–H8, discriminators, owners, instrumentation decision): [`implementation-notes/world-terrain-065-terrain-color-and-shading-artifact-correction-implementation-notes.md`](implementation-notes/world-terrain-065-terrain-color-and-shading-artifact-correction-implementation-notes.md).
+
+
 - `src/terrain/chunkMeshData.ts::computeChunkMeshData()` computes per-vertex positions, normals, biome/shore/slope/road color and `aBareGround`. `src/terrain/biomeColors.ts` owns the underlying palettes, shore bands and color modulation.
 - `src/terrain/buildChunkGeometry.ts::buildRegularGeometry()` uses a regular indexed `PlaneGeometry`, with interpolated vertex colors and the worker-provided normals; `createTerrainMaterial()` uses `MeshStandardMaterial` with `vertexColors: true`, shared across chunks. Its injected shader adds world-space macro noise, dirt diffuse detail, wet-sand/weather effects, normals and roughness.
-- `src/config/worldConfig.ts` defaults to a 64 m chunk with a 65 × 65 vertex mesh (1 m spacing). The visible patches appear substantially larger than individual mesh triangles; a vertex-color interpolation defect is **not proven**.
-- Terrain meshes receive shadows and cast them by default (`buildChunkGeometry.ts`, `chunkManager.ts`); sun shadows are configured in `src/world/createLights.ts` (default 1024 map via `worldConfig.ts`). N8AO/post-processing is a separate possible source (`src/render/createPostProcessing.ts`).
+- `src/config/worldConfig.ts` defaults to a 64 m chunk with a 65 × 65 vertex mesh (1 m spacing), but `resolution` and `flatShading` can come from `?res=` or persisted settings — the author's effective values are unknown. The visible patches appear substantially larger than individual mesh triangles; a vertex-color interpolation defect is **not proven**.
+- Terrain height includes the global-hydrology correction layer (`hydrologyCorrectionAt`, bilinear on an 8 m grid; breach cones and near-flat filled pits, typical at coasts) — a candidate source of straight creases in normals and of flat plateaus inside the narrow shore color bands.
+- Terrain meshes receive shadows and cast them by default (`buildChunkGeometry.ts`, `chunkManager.ts`); sun shadows are configured in `src/world/createLights.ts` (default 1024 map via `worldConfig.ts`). Since 2026-11-01 the default frustum is `tight` (±56 m, shifted 24 m along camera forward; `?shadowFrustum=legacy` restores ±80 m centred on the player) and shadow refresh cadences (`shadowActorCadence`, `shadowMotionCadence`) are on by default — the most recent changes in this path, three days before the report. N8AO/post-processing is a separate possible source (`src/render/createPostProcessing.ts`).
 - Static inspection has not reproduced the artifact or established whether it tracks camera movement, sunlight, world coordinates, triangle topology, chunk seams or a transparent/overlapping mesh. No browser/GPU verification has been performed.
 
 ## Scope
 
 ### A — Reproduce and isolate (mandatory gate; no retuning)
 
+0. Ask the author (queue §3) for the screenshot's position (`?camdebug=1` readout), hour, weather, quality preset and effective terrain resolution; meanwhile search reference-seed shorelines. Add the dev-only, URL-gated terrain debug view `?debugTerrainView=vertexColor|albedo|normal|bareGround` on the shared terrain material (notes §3) — diagnostic instrumentation, not a correction, so it is allowed before Gate A.
 1. Record a repeatable scene: seed, world coordinates, time/sun angle, weather, graphics preset, camera position/orientation, resolution/DPR and screenshot. Prefer the author's shoreline screenshot area if reproducible; otherwise find an equivalent. Capture static and camera-movement comparisons.
-2. At the **same camera and world state**, A/B isolate: (a) terrain self-shadow casting off vs on (existing `setTerrainCastsShadow`), (b) N8AO off vs on (existing quality/debug controls), (c) unlit visualization of terrain vertex colors and optionally `aBareGround`, (d) shadow-free lit terrain to distinguish lighting from base color. Restore all toggles between runs. Check also water/shore overlay meshes or z-fighting if neither lighting nor vertex data explains it.
-3. Compare artifact edge geometry against the 1 m terrain grid, chunk borders, shadows, shader world-space noise and possible overlaid meshes. Confirm which pass/data produces the boundary, not merely which toggle conceals it.
+2. At the **same camera and world state**, A/B isolate: (a) terrain self-shadow casting off vs on (existing `setTerrainCastsShadow`), (b) N8AO off vs on (existing quality/debug controls), (c) unlit visualization of terrain vertex colors, shader albedo, geometric normals and `aBareGround` (the debug view above), (d) shadow-free lit terrain to distinguish lighting from base color, (e) `?shadowFrustum=legacy` and `?shadowMotionCadence=0&shadowActorCadence=0`, (f) camera rotation in place and `?fly` (camera leaves the player, so the shadow frustum stays behind). Restore all toggles between runs. Check also water/shore overlay meshes or z-fighting if neither lighting nor vertex data explains it.
+3. Compare artifact edge geometry against the mesh grid (effective resolution), the 8 m hydrology correction grid (headless raster, notes §4), chunk borders, the shadow-frustum footprint, shadows, shader world-space noise and possible overlaid meshes. Confirm which pass/data produces the boundary, not merely which toggle conceals it.
 4. Record observations, screenshots, effective toggles and a root-cause hypothesis supported by evidence in a short diagnostic report under `docs/performance/results/` or `docs/reviews/`, linked back here.
 
-**Gate A:** Do not change biome palettes, shader noise, material parameters, shadow resolution, AO quality or geometry until the responsible mechanism is identified. If not reproduced, leave this plan unresolved with a precise reproduction request instead of shipping speculative changes.
+**Gate A:** Do not change biome palettes, shader noise, material parameters, shadow resolution, AO quality or geometry until the responsible mechanism is identified. If not reproduced, leave this plan unresolved with a precise reproduction request instead of shipping speculative changes. If the cause is a 055/056 default (frustum mode, cadence), a hydrology/worldgen change (cache + possible `WORLDGEN_EPOCH` bump) or an AO/shadow quality default, **stop and ask the author** with measured options before Phase B (notes §5).
 
 ### B — Minimal correction (only after Gate A)
 
