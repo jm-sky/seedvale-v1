@@ -2700,8 +2700,9 @@ export class NpcAgent {
    *  idle during melee mode; `tickRangedAttackCycle` drives whichever one is
    *  actually active regardless of `intent.mode`. */
   private tickMeleeCombat(dt: number, intent: CombatIntent, targetPos: { x: number, z: number }): void {
-    const selectedAtTickStart = this.combatAttack.state() === 'idle'
     let weapon = this.combatMeleeWeapon
+    const selectedAtTickStart = this.combatAttack.state() === 'idle'
+      && (!weapon || !isNpcMeleeWeaponHeld(this.personalInventory, weapon))
     if (selectedAtTickStart) {
       weapon = resolveNpcMeleeWeapon(this.personalInventory, this.role)
       this.combatMeleeWeapon = weapon
@@ -2793,7 +2794,8 @@ export class NpcAgent {
     if (this.combatAttack.state() === 'idle') {
       // A large dt can finish recovery in this update. Re-resolve after the
       // lifecycle transition so the next attack uses current condition and
-      // ownership; an attack idle at tick entry already has this snapshot.
+      // ownership. A still-owned approach weapon needs no full inventory
+      // scan each idle frame; selection is refreshed at this attack edge.
       const readyWeapon = selectedAtTickStart ? weapon : resolveNpcMeleeWeapon(this.personalInventory, this.role)
       if (readyWeapon && dist <= readyWeapon.melee.range && this.stamina.current >= readyWeapon.melee.staminaCost) {
         this.combatMeleeWeapon = readyWeapon
