@@ -8,6 +8,8 @@
 
 Gdy ten plik rozjeżdża się z kodem — **wygrywa kod**, potem aktualizujemy ten dokument.
 
+PNG całej sieci rzek/jezior kontynentu (headless, do porównań przed/po): [tools/world-inspection.md](../tools/world-inspection.md#continent-preview-tools-023).
+
 ---
 
 ## Jak używać

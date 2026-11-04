@@ -74,6 +74,8 @@ Distinguish **implemented** (code changed) · **technically verified** (automate
 
 Agents may run browser/visual checks themselves (reference seed `415424794`): mark an item browser-verified only for what was actually observed, and record how (URL/flags, scene, screenshots). Checks you could not perform, or that need the author's judgement (look, feel, visual compromises), go to queue §2.
 
+For worldgen / hydrology / road / settlement-layout work, compare before/after with the world inspection tools: `pnpm tsx scripts/tools/continent-preview-png.ts` (whole-continent PNG, headless) and `pnpm tools:settlement-shot` (top-down home village PNG) — see `docs/tools/world-inspection.md`.
+
 Use the smallest relevant set:
 
 ```text

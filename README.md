@@ -45,6 +45,7 @@ http://localhost:5577/?fly=60&seed=415424794
 - The player is hidden and walks on the ground below the camera, so chunk streaming and simulation follow the flight.
 - Pitch is limited by the orbit camera's look limits (about 52° up, 69° down).
 - **Home-settlement top-down screenshot** (plan tools-024): `pnpm tools:settlement-shot <vitePort> <seed> <out.png> [--agl N] [--fov D] [--keep trees,fog] [--hour H] [--size 1600]` — see the [implementation notes](docs/plans/implementation-notes/tools-024-home-settlement-top-down-screenshot-implementation-notes.md). Uses `?debugDisableSystems=` (incl. `fog`) and `window.__seedvaleFlyShotReady()`.
+- **All world inspection tools** (incl. the headless whole-continent PNG): [docs/tools/world-inspection.md](docs/tools/world-inspection.md).
 
 ## Where to look next
 

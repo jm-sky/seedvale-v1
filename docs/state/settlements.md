@@ -8,6 +8,8 @@
 
 Gdy ten plik rozjeżdża się z kodem — **wygrywa kod**, potem aktualizujemy ten dokument.
 
+Podgląd układu osady domowej z góry (domy, plac, ścieżki) do porównań przed/po: [tools/world-inspection.md](../tools/world-inspection.md#home-settlement-shot-tools-024).
+
 Historia zakresu: zarchiwizowane plany [047](../plans/archive/2026-08-09--047--village-generation-overhaul.md), [071](../plans/archive/2026-08-11--071--local-economy-and-settlement-development.md), [060](../plans/archive/2026-08-11--060--npc-schedule-actions-and-trait-overlays.md), [076](../plans/archive/2026-08-12--076--village-generator-polish.md), [077](../plans/archive/2026-08-12--077--village-gardens-scale.md), [079](../plans/archive/2026-08-12--079--interaction-queue-well-drink.md), [092](../plans/archive/2026-08-13--092--npc-stamina-and-daily-vigor.md). Household (plan [069](../plans/archive/2026-08-11--069--npc-household-resources.md)) jest zaimplementowany, bez weryfikacji w przeglądarce — zob. §Gospodarstwa poniżej. Household water logistics (plan [122](../plans/archive/2026-08-15--122--natural-resource-gathering-and-water-distribution.md)) — well → NPC carrying → `WaterBarrel`/`AnimalTrough` — jest zaimplementowany, bez weryfikacji w przeglądarce.
 
 ---

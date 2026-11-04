@@ -24,6 +24,8 @@
 - [Model test](../src/debug/createModelTestScene.ts) — `?modelTest` renderer/camera/one-model preview, bypassing world bootstrap.
 - [Debug flags](../src/debug/debugMode.ts) — URL-driven debug switches including the isolated-scene flags above.
 - [DevTools API](../src/debug/npcDebugApi.ts) — `window.seedvale.debug` (`?debug`), including `horse.list` / `teleportToPlayer` / `resurrect`.
+- [Fly observer](../src/debug/flyCam.ts) — `?fly` free flight; `flyPose=home` + `flyTop` straight-down home-village view and `window.__seedvaleFlyShotReady()` (tools-024).
+- [World inspection tools](./tools/world-inspection.md) — how to render the whole-continent preview (`scripts/tools/continent-preview-png.ts`, [continentPreview](../src/world/map/continentPreview.ts)) and the top-down home-settlement shot (`scripts/tools/settlement-shot.mjs`) for before/after comparisons.
 
 ## Rendering / presentation
 

@@ -18,6 +18,7 @@ Ten katalog zawiera dokumentację projektu **Seedvale** (Three.js — procedural
 - **[CODE_INDEX.md](./CODE_INDEX.md)** — indeks kodu: gdzie w `src/` mieszka dany system (entry pointy)
 - **[ROADMAP.md](./ROADMAP.md)** — kierunek produktu (canonical roadmap Seedvale; `roadmap/` niżej to coś innego — zamrożony log sesji, nie roadmapa)
 - **[performance/](./performance/README.md)** - Performance & Rendering Strategy
+- **[tools/world-inspection.md](./tools/world-inspection.md)** — podgląd świata do porównań przed/po: PNG całego kontynentu (hydrologia) i zrzut osady domowej z góry
 - **[../CLAUDE.md](../CLAUDE.md)** — reguły dla agentów
 
 ## Supporting documentation

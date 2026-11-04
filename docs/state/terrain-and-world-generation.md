@@ -8,6 +8,8 @@
 
 When this file and the code disagree, the code wins — update this file.
 
+To compare coast/lakes/rivers across the whole continent before and after a change, see [tools/world-inspection.md](../tools/world-inspection.md#continent-preview-tools-023).
+
 ---
 
 ## Chunk streaming & terrain generation
