@@ -1,5 +1,5 @@
-/** Default far-ring radius (m) for `?farTerrain=1` (plan world-terrain-066: 600 / 800 / 1000 presets). */
-export const DEFAULT_FAR_TERRAIN_RADIUS = 800
+/** Default far-ring radius (m) for `?farTerrain=1` (plan world-terrain-066: 600 default; 800 / 1000 optional). */
+export const DEFAULT_FAR_TERRAIN_RADIUS = 600
 export const MIN_FAR_TERRAIN_RADIUS = 400
 export const MAX_FAR_TERRAIN_RADIUS = 1000
 

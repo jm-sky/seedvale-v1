@@ -108,7 +108,7 @@ Layout fixed (§4). Seam rule changed to raw + mask (§6). Pop list (§5) adds t
 
 ## F1 far ground + water + fog (Sonnet, 2026-11-05)
 
-Implemented behind `?farTerrain` (absent/`0` = off; bare/`1` = 800 m; `400`–`1000` = radius; `src/terrain/farTerrainFlag.ts`).
+Implemented behind `?farTerrain` (absent/`0` = off; bare/`1` = 600 m (author 2026-11-05: closer haze preferred; was 800); `400`–`1000` = radius; `src/terrain/farTerrainFlag.ts`).
 
 - **Tiles:** `src/terrain/farTile.ts::computeFarTile` (worker job `farTile`, background queue next to map tiles). World-aligned 256 m tiles; 8 m grid (32 cells) within 450 m, 16 m grid beyond. Heights = `sampleRawTexelAt` (raw map-raster surface, notes §1) − 0.3 m; apron-inclusive central-difference normals; 6 m skirt ring per tile for level-boundary cracks. Colours from the same `biomeColors.ts` functions as streamed terrain (`farTileColor.ts`; no road/scorch tint).
 - **Water:** sea vertices follow bathymetry (the ocean plane, grown to `2·farRadius + 2 chunks`, draws over them); lake vertices sit at the lake surface in a flat colour (`LAKE_WATER`, 🟡 look). No far river ribbons yet (still open, F3).
