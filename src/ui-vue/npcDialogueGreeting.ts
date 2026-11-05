@@ -29,7 +29,6 @@ type GreetingTranscript = {
  *  `merchant_female_greeting_03` has no catalog entry → intentionally absent
  *  (text-only fallback instead of a guessed translation). */
 const GREETING_TRANSCRIPTS: Readonly<Record<string, GreetingTranscript>> = {
-  'general_male_greeting_01.mp3': { text: 'Witaj, wędrowcze. Miło cię widzieć.', context: 'any' },
   'general_female_greeting_01.mp3': { text: 'Witaj. Miło cię widzieć.', context: 'any' },
   'guard_male_greeting_01.mp3': { text: 'Dzień dobry. W jakiej sprawie?', context: 'notNight' },
   'guard_male_greeting_02.mp3': { text: 'Poranek, wędrowcze. W osadzie trzymaj broń w pochwie.', context: 'morning' },

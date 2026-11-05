@@ -1,0 +1,383 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-05",
+  "scope": "Exactly six author-rejected recordings. No Fish generation. Replacement text is proposed; current casting and historical identity are separate. All pre-cleanup text references are retained as a dependency inventory, including historical evidence.",
+  "recordings": [
+    {
+      "originalFilename": "general_male_danger_alert_01.mp3",
+      "intendedBank": "general_male",
+      "intendedRole": "male farmer (approved Casual Male casting; old general runtime bank is broader)",
+      "intent": "danger_alert",
+      "disposition": "replace",
+      "originalAuthorCell": "guard?",
+      "historicalExpectedSpeakerUuid": "c2a3921fd7024b9189cb912bdfe5266a",
+      "historicalIdentityStatus": "bank expectation only; actual recorded speaker unverified",
+      "expectedReplacementSpeakerUuid": "c2a3921fd7024b9189cb912bdfe5266a",
+      "replacementSpeakerStatus": "author-approved current casting in npc-065; not the original recording identity",
+      "castingEvidence": "docs/plans/npc-065-stable-npc-voice-casting-and-donor-qc.md#npc-voice-map",
+      "originalCatalogText": "Wolf! Everyone, watch out!",
+      "originalGenerationInput": "[shouting] Wolf! [emphasis] Everyone, [short pause] watch out!",
+      "asrText": "ALERT! EVERYONE, WATCH OUT!",
+      "reasonForReplacement": "Author explicitly approved replacement of 'guard?' in ambiguous. Identity rejection is independent of ASR/transcript quality.",
+      "proposedReplacementText": "Look out! Stay clear!",
+      "textApproval": "proposal only; not approved for generation",
+      "textRationale": "Generic witnessed danger warning avoids an unverified wolf claim.",
+      "targetLocation": "docs/v3-donor/voices/mp3/general_male_danger_alert_01.mp3",
+      "publicTargetAfterQc": "public/sounds/voices/general_male_danger_alert_01.mp3",
+      "integrationReferences": {
+        "runtimeManifest": "src/ai/npcVoiceLines.ts",
+        "dialogueTranscript": null,
+        "currentRegistration": "removed general:male:danger_alert",
+        "catalogs": [
+          "docs/dialogue/NPC-VOICE-CATALOG.md",
+          "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
+        ],
+        "qc": [
+          "docs/assets/voice-qc/ledger.json",
+          "docs/assets/voice-qc/identity-audit.json",
+          "docs/assets/voice-qc/author-decisions.json"
+        ],
+        "allTrackedTextReferencesBeforeCleanup": [
+          "docs/assets/voice-qc/IDENTITY-AUDIT.md",
+          "docs/assets/voice-qc/REPORT.md",
+          "docs/assets/voice-qc/identity-audit.json",
+          "docs/assets/voice-qc/ledger.json",
+          "docs/plans/archive/npc-049-npc-contextual-life-barks-and-local-voice-limiter.md",
+          "docs/research/v1-revival/2026-10-31--npc-voice-audit-inventory.json",
+          "docs/research/v1-revival/2026-11-04--q90-coverage.json",
+          "docs/research/v1-revival/2026-11-05--named-npc-voice-reuse-qc.md",
+          "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md",
+          "docs/v3-donor/voices/docs/recorded-lines-replacement-backlog.md",
+          "scripts/voice/test_voice_identity_qc.py",
+          "src/ai/npcBarkLimiter.test.ts",
+          "src/ai/npcVoiceLines.test.ts",
+          "src/ai/npcVoiceLines.ts"
+        ]
+      },
+      "integrationGate": "No automatic re-enable. Approve text, resolve speaker/age eligibility, generate separately, transcript/context/listening QC, then integrate with Q88/Q89. New audio needs a new content binding; preserve this original historical record.",
+      "removal": {
+        "historicalCommit": "f4dabf9535941c6fb66527b91fbdcbeca1a1e531",
+        "gitBlob": "db68c723980cbc6a67610c35d6aecb204b4adea9",
+        "sha256": "8398550aa6a4396e2d95aaf6d5cdb1c5352dfebe795e4164ef236c0c8026255d",
+        "removedPaths": [
+          "docs/v3-donor/voices/mp3/general_male_danger_alert_01.mp3",
+          "public/sounds/voices/general_male_danger_alert_01.mp3"
+        ],
+        "recovery": "git show <historicalCommit>:<removedPath>",
+        "status": "removed by this cleanup"
+      }
+    },
+    {
+      "originalFilename": "general_male_farewell_01.mp3",
+      "intendedBank": "general_male",
+      "intendedRole": "male farmer (approved Casual Male casting; old general runtime bank is broader)",
+      "intent": "farewell",
+      "disposition": "replace",
+      "originalAuthorCell": "REMOVE",
+      "historicalExpectedSpeakerUuid": "c2a3921fd7024b9189cb912bdfe5266a",
+      "historicalIdentityStatus": "bank expectation only; actual recorded speaker unverified",
+      "expectedReplacementSpeakerUuid": "c2a3921fd7024b9189cb912bdfe5266a",
+      "replacementSpeakerStatus": "author-approved current casting in npc-065; not the original recording identity",
+      "castingEvidence": "docs/plans/npc-065-stable-npc-voice-casting-and-donor-qc.md#npc-voice-map",
+      "originalCatalogText": "Take care out there.",
+      "originalGenerationInput": "Take care out there. I’ll be here if you need supplies.",
+      "asrText": "Take care out there!",
+      "reasonForReplacement": "Author explicitly approved replacement of 'REMOVE' in ambiguous. Identity rejection is independent of ASR/transcript quality.",
+      "proposedReplacementText": "Take care out there.",
+      "textApproval": "proposal only; not approved for generation",
+      "textRationale": "Preserves catalog gameplay intent; farewell omits supplier-only extra sentence where present.",
+      "targetLocation": "docs/v3-donor/voices/mp3/general_male_farewell_01.mp3",
+      "publicTargetAfterQc": "public/sounds/voices/general_male_farewell_01.mp3",
+      "integrationReferences": {
+        "runtimeManifest": "src/ai/npcVoiceLines.ts",
+        "dialogueTranscript": null,
+        "currentRegistration": "removed general:male:farewell",
+        "catalogs": [
+          "docs/dialogue/NPC-VOICE-CATALOG.md",
+          "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
+        ],
+        "qc": [
+          "docs/assets/voice-qc/ledger.json",
+          "docs/assets/voice-qc/identity-audit.json",
+          "docs/assets/voice-qc/author-decisions.json"
+        ],
+        "allTrackedTextReferencesBeforeCleanup": [
+          "docs/assets/voice-qc/IDENTITY-AUDIT.md",
+          "docs/assets/voice-qc/IDENTITY-CALIBRATION.md",
+          "docs/assets/voice-qc/REPORT.md",
+          "docs/assets/voice-qc/identity-audit.json",
+          "docs/assets/voice-qc/identity-calibration.json",
+          "docs/assets/voice-qc/identity-sample.json",
+          "docs/assets/voice-qc/ledger.json",
+          "docs/dialogue/NPC-VOICE-CATALOG.md",
+          "docs/plans/npc-065-stable-npc-voice-casting-and-donor-qc.md",
+          "docs/research/v1-revival/2026-10-31--npc-voice-audit-inventory.json",
+          "docs/research/v1-revival/2026-11-04--q90-coverage.json",
+          "docs/research/v1-revival/2026-11-05--named-npc-voice-reuse-qc.md",
+          "docs/v3-donor/plans/audio--002--npc-voice-and-social-dialogue.md",
+          "docs/v3-donor/plans/audio--004--npc-pair-voice-roi-production-queue.md",
+          "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md",
+          "docs/v3-donor/voices/docs/recorded-lines-replacement-backlog.md",
+          "docs/v3-donor/voices/reviews/2026-10-20--185--npc-dialogue-quality-audit.md",
+          "src/ai/npcVoiceLines.ts"
+        ]
+      },
+      "integrationGate": "No automatic re-enable. Approve text, resolve speaker/age eligibility, generate separately, transcript/context/listening QC, then integrate with Q88/Q89. New audio needs a new content binding; preserve this original historical record.",
+      "removal": {
+        "historicalCommit": "f4dabf9535941c6fb66527b91fbdcbeca1a1e531",
+        "gitBlob": "063a6a7a36be1c0c0a0775ab3c77d08f6e2b3787",
+        "sha256": "f0525e44426491989543dd0c9f9ea779a4a0db42251151c22fb429d7f7abd178",
+        "removedPaths": [
+          "docs/v3-donor/voices/mp3/general_male_farewell_01.mp3",
+          "public/sounds/voices/general_male_farewell_01.mp3"
+        ],
+        "recovery": "git show <historicalCommit>:<removedPath>",
+        "status": "removed by this cleanup"
+      }
+    },
+    {
+      "originalFilename": "general_male_greeting_01.mp3",
+      "intendedBank": "general_male",
+      "intendedRole": "male farmer (approved Casual Male casting; old general runtime bank is broader)",
+      "intent": "greeting",
+      "disposition": "replace",
+      "originalAuthorCell": "REMOVE",
+      "historicalExpectedSpeakerUuid": "c2a3921fd7024b9189cb912bdfe5266a",
+      "historicalIdentityStatus": "bank expectation only; actual recorded speaker unverified",
+      "expectedReplacementSpeakerUuid": "c2a3921fd7024b9189cb912bdfe5266a",
+      "replacementSpeakerStatus": "author-approved current casting in npc-065; not the original recording identity",
+      "castingEvidence": "docs/plans/npc-065-stable-npc-voice-casting-and-donor-qc.md#npc-voice-map",
+      "originalCatalogText": "Hello, traveler. Good to see you.",
+      "originalGenerationInput": null,
+      "asrText": "Good day, how are you doing today?",
+      "reasonForReplacement": "Author explicitly approved replacement of 'REMOVE' in ambiguous. Identity rejection is independent of ASR/transcript quality.",
+      "proposedReplacementText": "Hello, traveler. Good to see you.",
+      "textApproval": "proposal only; not approved for generation",
+      "textRationale": "Preserves catalog gameplay intent; farewell omits supplier-only extra sentence where present.",
+      "targetLocation": "docs/v3-donor/voices/mp3/general_male_greeting_01.mp3",
+      "publicTargetAfterQc": "public/sounds/voices/general_male_greeting_01.mp3",
+      "integrationReferences": {
+        "runtimeManifest": "src/ai/npcVoiceLines.ts",
+        "dialogueTranscript": "src/ui-vue/npcDialogueGreeting.ts",
+        "currentRegistration": "removed general:male:greeting",
+        "catalogs": [
+          "docs/dialogue/NPC-VOICE-CATALOG.md",
+          "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
+        ],
+        "qc": [
+          "docs/assets/voice-qc/ledger.json",
+          "docs/assets/voice-qc/identity-audit.json",
+          "docs/assets/voice-qc/author-decisions.json"
+        ],
+        "allTrackedTextReferencesBeforeCleanup": [
+          "docs/assets/voice-qc/IDENTITY-AUDIT.md",
+          "docs/assets/voice-qc/IDENTITY-CALIBRATION.md",
+          "docs/assets/voice-qc/REPORT.md",
+          "docs/assets/voice-qc/identity-audit.json",
+          "docs/assets/voice-qc/identity-calibration.json",
+          "docs/assets/voice-qc/identity-sample.json",
+          "docs/assets/voice-qc/ledger.json",
+          "docs/dialogue/NPC-VOICE-CATALOG.md",
+          "docs/research/v1-revival/2026-10-31--npc-voice-audit-inventory.json",
+          "docs/research/v1-revival/2026-11-04--q90-coverage.json",
+          "docs/research/v1-revival/2026-11-05--named-npc-voice-reuse-qc.md",
+          "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md",
+          "scripts/voice/test_voice_identity_qc.py",
+          "src/ai/npcVoiceLines.test.ts",
+          "src/ai/npcVoiceLines.ts",
+          "src/ui-vue/npcDialogueGreeting.ts"
+        ]
+      },
+      "integrationGate": "No automatic re-enable. Approve text, resolve speaker/age eligibility, generate separately, transcript/context/listening QC, then integrate with Q88/Q89. New audio needs a new content binding; preserve this original historical record.",
+      "removal": {
+        "historicalCommit": "f4dabf9535941c6fb66527b91fbdcbeca1a1e531",
+        "gitBlob": "8422cf02823b0f02d2a9e9c415ed75756a60caaf",
+        "sha256": "9b3b77359bb8fcfbb3d6219069f2aeb2ed3c222367445e7dd18d64e67ef1d4f6",
+        "removedPaths": [
+          "docs/v3-donor/voices/mp3/general_male_greeting_01.mp3",
+          "public/sounds/voices/general_male_greeting_01.mp3"
+        ],
+        "recovery": "git show <historicalCommit>:<removedPath>",
+        "status": "removed by this cleanup"
+      }
+    },
+    {
+      "originalFilename": "general_male_old_greeting_01.mp3",
+      "intendedBank": "general_male",
+      "intendedRole": "general old male",
+      "intent": "old_greeting",
+      "disposition": "replace",
+      "originalAuthorCell": "?",
+      "historicalExpectedSpeakerUuid": null,
+      "historicalIdentityStatus": "unresolved",
+      "expectedReplacementSpeakerUuid": "372ef39bf5bf4fd38c5c56bce607aba6",
+      "replacementSpeakerStatus": "author-approved current casting in npc-065; not the original recording identity",
+      "castingEvidence": "docs/plans/npc-065-stable-npc-voice-casting-and-donor-qc.md#npc-voice-map",
+      "originalCatalogText": "Good to see you. Been traveling far?",
+      "originalGenerationInput": "Good to see you. Been traveling far?",
+      "asrText": "Ah, there you are. Come, speak your mind.",
+      "reasonForReplacement": "Author explicitly approved replacement of '?' in unresolved-expected. Identity rejection is independent of ASR/transcript quality.",
+      "proposedReplacementText": "Good to see you. Been traveling far?",
+      "textApproval": "proposal only; not approved for generation",
+      "textRationale": "Preserves catalog gameplay intent; farewell omits supplier-only extra sentence where present.",
+      "targetLocation": "docs/v3-donor/voices/mp3/general_male_old_greeting_01.mp3",
+      "publicTargetAfterQc": "public/sounds/voices/general_male_old_greeting_01.mp3",
+      "integrationReferences": {
+        "runtimeManifest": "src/ai/npcVoiceLines.ts",
+        "dialogueTranscript": null,
+        "currentRegistration": "not registered before cleanup; Q88 casting/age integration required",
+        "catalogs": [
+          "docs/dialogue/NPC-VOICE-CATALOG.md",
+          "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
+        ],
+        "qc": [
+          "docs/assets/voice-qc/ledger.json",
+          "docs/assets/voice-qc/identity-audit.json",
+          "docs/assets/voice-qc/author-decisions.json"
+        ],
+        "allTrackedTextReferencesBeforeCleanup": [
+          "docs/assets/voice-qc/IDENTITY-AUDIT.md",
+          "docs/assets/voice-qc/IDENTITY-MAPPING-REVIEW.md",
+          "docs/assets/voice-qc/REPORT.md",
+          "docs/assets/voice-qc/identity-audit.json",
+          "docs/assets/voice-qc/ledger.json",
+          "docs/research/v1-revival/2026-10-31--npc-voice-audit-inventory.json",
+          "docs/research/v1-revival/2026-11-04--q90-coverage.json",
+          "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md",
+          "scripts/voice/voice-identity-overrides.json"
+        ]
+      },
+      "integrationGate": "No automatic re-enable. Approve text, resolve speaker/age eligibility, generate separately, transcript/context/listening QC, then integrate with Q88/Q89. New audio needs a new content binding; preserve this original historical record.",
+      "removal": {
+        "historicalCommit": "f4dabf9535941c6fb66527b91fbdcbeca1a1e531",
+        "gitBlob": "b5e2dd722d53f179c46a36938d3325073ff498c6",
+        "sha256": "d00c6791b63da614ef913d35c3b99fab3d3ac8a82afb1457e75d28261387900c",
+        "removedPaths": [
+          "docs/v3-donor/voices/mp3/general_male_old_greeting_01.mp3",
+          "public/sounds/voices/general_male_old_greeting_01.mp3"
+        ],
+        "recovery": "git show <historicalCommit>:<removedPath>",
+        "status": "removed by this cleanup"
+      }
+    },
+    {
+      "originalFilename": "general_male_young_farewell_01.mp3",
+      "intendedBank": "general_male",
+      "intendedRole": "general male young (age eligibility unresolved)",
+      "intent": "young_farewell",
+      "disposition": "replace",
+      "originalAuthorCell": "?",
+      "historicalExpectedSpeakerUuid": null,
+      "historicalIdentityStatus": "unresolved",
+      "expectedReplacementSpeakerUuid": null,
+      "replacementSpeakerStatus": "unresolved: young filename does not establish boy/child eligibility; do not assign Little Lem automatically",
+      "castingEvidence": "docs/plans/npc-065-stable-npc-voice-casting-and-donor-qc.md#npc-voice-map",
+      "originalCatalogText": "See you later!",
+      "originalGenerationInput": "See you later!",
+      "asrText": "See you later!",
+      "reasonForReplacement": "Author explicitly approved replacement of '?' in unresolved-expected. Identity rejection is independent of ASR/transcript quality.",
+      "proposedReplacementText": "See you later!",
+      "textApproval": "proposal only; not approved for generation",
+      "textRationale": "Preserves catalog gameplay intent; farewell omits supplier-only extra sentence where present.",
+      "targetLocation": "docs/v3-donor/voices/mp3/general_male_young_farewell_01.mp3",
+      "publicTargetAfterQc": "public/sounds/voices/general_male_young_farewell_01.mp3",
+      "integrationReferences": {
+        "runtimeManifest": "src/ai/npcVoiceLines.ts",
+        "dialogueTranscript": null,
+        "currentRegistration": "not registered before cleanup; Q88 casting/age integration required",
+        "catalogs": [
+          "docs/dialogue/NPC-VOICE-CATALOG.md",
+          "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
+        ],
+        "qc": [
+          "docs/assets/voice-qc/ledger.json",
+          "docs/assets/voice-qc/identity-audit.json",
+          "docs/assets/voice-qc/author-decisions.json"
+        ],
+        "allTrackedTextReferencesBeforeCleanup": [
+          "docs/assets/voice-qc/IDENTITY-AUDIT.md",
+          "docs/assets/voice-qc/IDENTITY-MAPPING-REVIEW.md",
+          "docs/assets/voice-qc/identity-audit.json",
+          "docs/assets/voice-qc/ledger.json",
+          "docs/research/v1-revival/2026-10-31--npc-voice-audit-inventory.json",
+          "docs/research/v1-revival/2026-11-04--q90-coverage.json",
+          "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md",
+          "scripts/voice/voice-identity-overrides.json"
+        ]
+      },
+      "integrationGate": "No automatic re-enable. Approve text, resolve speaker/age eligibility, generate separately, transcript/context/listening QC, then integrate with Q88/Q89. New audio needs a new content binding; preserve this original historical record.",
+      "removal": {
+        "historicalCommit": "f4dabf9535941c6fb66527b91fbdcbeca1a1e531",
+        "gitBlob": "ef1d698abac2d90631f3051619202957e9658379",
+        "sha256": "d1ccef78f258bb351b627978e93aca0bad10a66eca5124cb41aec72d666d8b0f",
+        "removedPaths": [
+          "docs/v3-donor/voices/mp3/general_male_young_farewell_01.mp3",
+          "public/sounds/voices/general_male_young_farewell_01.mp3"
+        ],
+        "recovery": "git show <historicalCommit>:<removedPath>",
+        "status": "removed by this cleanup"
+      }
+    },
+    {
+      "originalFilename": "general_male_young_greeting_01.mp3",
+      "intendedBank": "general_male",
+      "intendedRole": "general male young (age eligibility unresolved)",
+      "intent": "young_greeting",
+      "disposition": "replace",
+      "originalAuthorCell": "?",
+      "historicalExpectedSpeakerUuid": null,
+      "historicalIdentityStatus": "unresolved",
+      "expectedReplacementSpeakerUuid": null,
+      "replacementSpeakerStatus": "unresolved: young filename does not establish boy/child eligibility; do not assign Little Lem automatically",
+      "castingEvidence": "docs/plans/npc-065-stable-npc-voice-casting-and-donor-qc.md#npc-voice-map",
+      "originalCatalogText": "Hello, you're new around here.",
+      "originalGenerationInput": "Hello, you're new around here.",
+      "asrText": "Hi! Want to play?",
+      "reasonForReplacement": "Author explicitly approved replacement of '?' in unresolved-expected. Identity rejection is independent of ASR/transcript quality.",
+      "proposedReplacementText": "Hello there. How are you?",
+      "textApproval": "proposal only; not approved for generation",
+      "textRationale": "Neutral greeting removes assumed unfamiliarity.",
+      "targetLocation": "docs/v3-donor/voices/mp3/general_male_young_greeting_01.mp3",
+      "publicTargetAfterQc": "public/sounds/voices/general_male_young_greeting_01.mp3",
+      "integrationReferences": {
+        "runtimeManifest": "src/ai/npcVoiceLines.ts",
+        "dialogueTranscript": null,
+        "currentRegistration": "not registered before cleanup; Q88 casting/age integration required",
+        "catalogs": [
+          "docs/dialogue/NPC-VOICE-CATALOG.md",
+          "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
+        ],
+        "qc": [
+          "docs/assets/voice-qc/ledger.json",
+          "docs/assets/voice-qc/identity-audit.json",
+          "docs/assets/voice-qc/author-decisions.json"
+        ],
+        "allTrackedTextReferencesBeforeCleanup": [
+          "docs/assets/voice-qc/IDENTITY-AUDIT.md",
+          "docs/assets/voice-qc/IDENTITY-MAPPING-REVIEW.md",
+          "docs/assets/voice-qc/REPORT.md",
+          "docs/assets/voice-qc/identity-audit.json",
+          "docs/assets/voice-qc/ledger.json",
+          "docs/research/v1-revival/2026-10-31--npc-voice-audit-inventory.json",
+          "docs/research/v1-revival/2026-11-04--q90-coverage.json",
+          "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md",
+          "docs/v3-donor/voices/docs/recorded-lines-replacement-backlog.md",
+          "scripts/voice/test_voice_identity_qc.py",
+          "scripts/voice/voice-identity-overrides.json"
+        ]
+      },
+      "integrationGate": "No automatic re-enable. Approve text, resolve speaker/age eligibility, generate separately, transcript/context/listening QC, then integrate with Q88/Q89. New audio needs a new content binding; preserve this original historical record.",
+      "removal": {
+        "historicalCommit": "f4dabf9535941c6fb66527b91fbdcbeca1a1e531",
+        "gitBlob": "f86212d404bc5cdf20edece928081665c6879e11",
+        "sha256": "042c18a2142431ac966530466bd4fc57de1120a2266970d3ffed17fc3a453fb2",
+        "removedPaths": [
+          "docs/v3-donor/voices/mp3/general_male_young_greeting_01.mp3",
+          "public/sounds/voices/general_male_young_greeting_01.mp3"
+        ],
+        "recovery": "git show <historicalCommit>:<removedPath>",
+        "status": "removed by this cleanup"
+      }
+    }
+  ]
+}

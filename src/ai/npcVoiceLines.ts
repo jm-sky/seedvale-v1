@@ -131,13 +131,6 @@ const GENERATED_VOICE_MANIFEST: Readonly<Record<string, readonly string[]>> = {
     '/sounds/voices/general_female_farewell_01.mp3',
   ],
 
-  'general:male:greeting': [
-    '/sounds/voices/general_male_greeting_01.mp3',
-  ],
-  'general:male:farewell': [
-    '/sounds/voices/general_male_farewell_01.mp3',
-  ],
-
   'merchant:female:greeting': [
     '/sounds/voices/merchant_female_greeting_01.mp3',
     '/sounds/voices/merchant_female_greeting_02.mp3',
@@ -249,9 +242,6 @@ const GENERATED_VOICE_MANIFEST: Readonly<Record<string, readonly string[]>> = {
   ],
   'guard:male:weather_shelter_rain': [
     '/sounds/voices/guard_male_weather_shelter_01.mp3',
-  ],
-  'general:male:danger_alert': [
-    '/sounds/voices/general_male_danger_alert_01.mp3',
   ],
   'general:female:danger_alert': [
     '/sounds/voices/general_female_danger_alert_01.mp3',

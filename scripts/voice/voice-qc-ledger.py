@@ -19,8 +19,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-import jiwer
-from faster_whisper import WhisperModel
+from voice_decisions import load_decisions, retain_removed_rows
 
 ROOT = Path(__file__).resolve().parents[2]
 V1_DIR = ROOT / "public/sounds/voices"
@@ -139,11 +138,15 @@ def main() -> int:
     prev = {}
     if OUT.exists():
         prev = {r["file"]: r for r in json.loads(OUT.read_text(encoding="utf-8"))["rows"]}
+    decisions = load_decisions(list(prev.values())) if prev else {}
 
     files = sorted(DONOR_DIR.glob("*.mp3"))
     if args.limit:
         files = files[: args.limit]
-    model = WhisperModel(args.model, device="cpu", compute_type="int8", cpu_threads=6)
+    # Removed takes remain historical ledger rows. Validate inventory before ASR/write.
+    if not args.limit:
+        retain_removed_rows(prev, [{"file": p.name} for p in files], decisions)
+    model = None
 
     rows = []
     for i, p in enumerate(files, 1):
@@ -169,6 +172,10 @@ def main() -> int:
             for k in ("asrText", "wer", "durationSec", "auto"):
                 row[k] = old[k]
         else:
+            import jiwer
+            from faster_whisper import WhisperModel
+            if model is None:
+                model = WhisperModel(args.model, device="cpu", compute_type="int8", cpu_threads=6)
             segs, info = model.transcribe(str(p), language="en", beam_size=5, vad_filter=False)
             asr = " ".join(s.text.strip() for s in segs).strip()
             ref = norm(cat.get("catalogText", ""))
@@ -188,6 +195,12 @@ def main() -> int:
         rows.append(row)
         print(f"[{i}/{len(files)}] {name} {row['auto']} wer={row['wer']}", file=sys.stderr, flush=True)
 
+    if not args.limit:
+        rows = retain_removed_rows(prev, rows, decisions)
+    else:
+        # A bounded run must not discard records outside the selected sample.
+        selected = {r['file'] for r in rows}
+        rows = sorted(rows + [r for name, r in prev.items() if name not in selected], key=lambda r: r['file'])
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(
         json.dumps({"model": args.model, "werMatchThreshold": WER_MATCH, "rows": rows}, indent=1, ensure_ascii=False) + "\n",

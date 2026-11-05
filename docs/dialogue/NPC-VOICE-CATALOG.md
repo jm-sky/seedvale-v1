@@ -107,6 +107,7 @@ Voice: `Casual Male Speaker` — `c2a3921fd7024b9189cb912bdfe5266a`.
 ## greeting
 
 `general_male_greeting_01.mp3`
+- disposition: `replace` — author-approved removal 2026-11-05; historical text/voice metadata below is retained. See `docs/assets/voice-qc/regeneration-backlog.json`.
 
 > Hello, traveler. Good to see you.
 
@@ -117,6 +118,7 @@ Voice: `Casual Male Speaker` — `c2a3921fd7024b9189cb912bdfe5266a`.
 ## farewell
 
 `general_male_farewell_01.mp3`
+- disposition: `replace` — author-approved removal 2026-11-05; historical text/voice metadata below is retained. See `docs/assets/voice-qc/regeneration-backlog.json`.
 
 > Take care out there.
 

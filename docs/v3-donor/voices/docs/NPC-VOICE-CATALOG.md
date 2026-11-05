@@ -195,8 +195,9 @@ Voice: `Casual Male Speaker` — `c2a3921fd7024b9189cb912bdfe5266a`.
 ## danger_alert
 
 `general_male_danger_alert_01.mp3`
+- disposition: `replace` — author-approved removal 2026-11-05; historical text/voice metadata below is retained. See `docs/assets/voice-qc/regeneration-backlog.json`.
 - voice_id: `c2a3921fd7024b9189cb912bdfe5266a`
-- status: `in_repo`
+- status: `removed-author-replace`
 - note: recovered from Fish generation-history 2026-10-09 (intent/heuristic match 🟡 — not listen-verified against this filename)
 - generation_input: `[shouting] Wolf! [emphasis] Everyone, [short pause] watch out!`
 
@@ -217,8 +218,9 @@ Voice: `Casual Male Speaker` — `c2a3921fd7024b9189cb912bdfe5266a`.
 ## farewell
 
 `general_male_farewell_01.mp3`
+- disposition: `replace` — author-approved removal 2026-11-05; historical text/voice metadata below is retained. See `docs/assets/voice-qc/regeneration-backlog.json`.
 - voice_id: `c2a3921fd7024b9189cb912bdfe5266a`
-- status: `in_repo`
+- status: `removed-author-replace`
 - generation_input: `Take care out there. I’ll be here if you need supplies.`
 
 > Take care out there.
@@ -233,8 +235,9 @@ Voice: `Casual Male Speaker` — `c2a3921fd7024b9189cb912bdfe5266a`.
 ## greeting
 
 `general_male_greeting_01.mp3`
+- disposition: `replace` — author-approved removal 2026-11-05; historical text/voice metadata below is retained. See `docs/assets/voice-qc/regeneration-backlog.json`.
 - voice_id: `c2a3921fd7024b9189cb912bdfe5266a`
-- status: `in_repo`
+- status: `removed-author-replace`
 
 > Hello, traveler. Good to see you.
 
@@ -278,8 +281,9 @@ Voice: `Casual Male Speaker` — `c2a3921fd7024b9189cb912bdfe5266a`.
 ## old_greeting
 
 `general_male_old_greeting_01.mp3`
+- disposition: `replace` — author-approved removal 2026-11-05; historical text/voice metadata below is retained. See `docs/assets/voice-qc/regeneration-backlog.json`.
 - voice_id: `c2a3921fd7024b9189cb912bdfe5266a`
-- status: `in_repo`
+- status: `removed-author-replace`
 - note: recovered from Fish generation-history 2026-10-09 (intent/heuristic match 🟡 — not listen-verified against this filename)
 - generation_input: `Good to see you. Been traveling far?`
 
@@ -441,8 +445,9 @@ Voice: `Casual Male Speaker` — `c2a3921fd7024b9189cb912bdfe5266a`.
 ## young_farewell
 
 `general_male_young_farewell_01.mp3`
+- disposition: `replace` — author-approved removal 2026-11-05; historical text/voice metadata below is retained. See `docs/assets/voice-qc/regeneration-backlog.json`.
 - voice_id: `c2a3921fd7024b9189cb912bdfe5266a`
-- status: `in_repo`
+- status: `removed-author-replace`
 - note: recovered from Fish generation-history 2026-10-09 (intent/heuristic match 🟡 — not listen-verified against this filename)
 - generation_input: `See you later!`
 
@@ -452,8 +457,9 @@ Voice: `Casual Male Speaker` — `c2a3921fd7024b9189cb912bdfe5266a`.
 ## young_greeting
 
 `general_male_young_greeting_01.mp3`
+- disposition: `replace` — author-approved removal 2026-11-05; historical text/voice metadata below is retained. See `docs/assets/voice-qc/regeneration-backlog.json`.
 - voice_id: `c2a3921fd7024b9189cb912bdfe5266a`
-- status: `in_repo`
+- status: `removed-author-replace`
 - note: recovered from Fish generation-history 2026-10-09 (intent/heuristic match 🟡 — not listen-verified against this filename)
 - generation_input: `Hello, you're new around here.`
 

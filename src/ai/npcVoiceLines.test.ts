@@ -174,10 +174,12 @@ describe('resolveNpcVoiceLine production manifest', () => {
     expect(url).toMatch(/^\/sounds\/voices\/merchant_female_greeting_0[1-3]\.mp3$/)
   })
 
-  it('falls a male farmer without profession audio back to general male greeting', () => {
-    expect(resolveNpcVoiceLine(npc({ role: 'farmer', age: 40 }), 'greeting')).toBe(
-      '/sounds/voices/general_male_greeting_01.mp3',
-    )
+  it('stays silent for removed male farmer greeting, farewell and danger recordings', () => {
+    for (const age of [10, 20, 40, 70]) {
+      for (const intent of ['greeting', 'farewell', 'danger_alert'] as const) {
+        expect(resolveNpcVoiceLine(npc({ role: 'farmer', age }), intent)).toBeUndefined()
+      }
+    }
   })
 
   it('resolves guard male quest_declined to the guard-specific generated pool', () => {
@@ -210,9 +212,7 @@ describe('resolveNpcVoiceLine production manifest', () => {
     )
     // The male clip names rain, so it is not in the weather-neutral pool (Q31).
     expect(resolveNpcVoiceLine(npc({ role: 'farmer', age: 40 }), 'weather_shelter')).toBeUndefined()
-    expect(resolveNpcVoiceLine(npc({ role: 'farmer', age: 40 }), 'danger_alert')).toBe(
-      '/sounds/voices/general_male_danger_alert_01.mp3',
-    )
+    expect(resolveNpcVoiceLine(npc({ role: 'farmer', age: 40 }), 'danger_alert')).toBeUndefined()
     expect(resolveNpcVoiceLine(npc({ role: 'farmer', age: 40 }), 'combat_start')).toBe(
       '/sounds/voices/general_male_combat_start_01.mp3',
     )

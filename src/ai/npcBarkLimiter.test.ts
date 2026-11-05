@@ -149,7 +149,7 @@ describe('NpcBarkLimiter', () => {
 })
 
 describe('resolveNpcBarkVoiceUrl', () => {
-  it('resolves livestock_danger for shepherd and falls back to danger_alert otherwise', () => {
+  it('resolves livestock danger for shepherd and guard fallback; farmer stays silent', () => {
     const shepherd = resolveNpcBarkVoiceUrl(
       { id: 's', gender: 'male', role: 'shepherd', age: 40, voiceProfileId: 'shepherd:male' },
       'livestock_danger',
@@ -161,8 +161,14 @@ describe('resolveNpcBarkVoiceUrl', () => {
       { id: 'f', gender: 'male', role: 'farmer', age: 40, voiceProfileId: 'general:male' },
       'livestock_danger',
     )
-    expect(farmer?.url).toBe('/sounds/voices/general_male_danger_alert_01.mp3')
-    expect(farmer?.resolvedIntent).toBe('danger_alert')
+    expect(farmer).toBeUndefined()
+
+    const guard = resolveNpcBarkVoiceUrl(
+      { id: 'g', gender: 'male', role: 'guard', age: 40, voiceProfileId: 'guard:male' },
+      'livestock_danger',
+    )
+    expect(guard?.url).toBe('/sounds/voices/guard_male_danger_alert_01.mp3')
+    expect(guard?.resolvedIntent).toBe('danger_alert')
   })
 })
 
