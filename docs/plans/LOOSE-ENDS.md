@@ -118,3 +118,4 @@ Format: `- [ ] YYYY-MM-DD — opis (plan/plik, jeśli istotne)`
 
 
 - **2026-11-05 · fauna-051 §A (Q151) follow-ups:** the attack-time spatial bite gate (`biteSharesSpatialContext`, same `WorldSpatialContext` + Δy ≤ 2 m) runs only in the `gameLoop` player-bite callback; NPC bites have no such check and the agent itself does not gate — both need `createFauna.ts` plumbing and an NPC height. Also: `findPath` returns a straight route through a 1 m thin wall (pre-existing; characterised in `AnimalAgent.chase.test.ts`).
+- **2026-11-05 · fauna-050 F2 (Q142):** save rows of spawners that no longer exist in the world are now carried forward instead of dropped (`snapshotSpawnPoints()` union) — harmless today (epoch 1, ids stable), but they can accumulate if spawner ids are ever retired; consider pruning by known group plans in F3/F5. Catch-up uses the bound count as a stand-in for animals within `SPAWNER_RADIUS` in the daily disabled/recovering check (🟡).
