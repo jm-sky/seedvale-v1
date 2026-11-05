@@ -35,7 +35,7 @@ import { SPARSE_BLOCK_SIZE, unpackChains } from './worldHydrologyStore'
  * input changes. The golden-hash test in `worldHydrology.test.ts` fails then; after bumping, re-export the worldgen
  * fixtures and update the hashes (stale IndexedDB records and fixtures are dropped by the id).
  */
-export const WORLD_HYDROLOGY_VERSION = 3
+export const WORLD_HYDROLOGY_VERSION = 4
 
 export type WorldHydrologyOptions = {
   /** Sea / lake-free water plane (m). */

@@ -1,13 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import {
   buildLandformIndex,
-  EMPTY_LANDFORM_INDEX,
+  generateLandforms,
   LANDFORM_BUCKET_SIZE_M,
   LANDFORM_MAX_PER_BUCKET,
   type LandformDescriptor,
-  landformDescriptorsFor,
   landformHeightDeltaAt,
-  landformIndexFor,
 } from './landformDescriptors'
 
 const crag = (id: string, x: number, z: number, radius: number): LandformDescriptor => ({
@@ -20,16 +18,7 @@ const crag = (id: string, x: number, z: number, radius: number): LandformDescrip
   intendedOutcome: 'test',
 })
 
-describe('landform descriptors (R0 framework)', () => {
-  it('produces no descriptors yet, so the height delta is exactly zero', () => {
-    for (const seed of [42, 415424794]) {
-      expect(landformDescriptorsFor(seed)).toHaveLength(0)
-      const index = landformIndexFor(seed)
-      expect(index).toBe(EMPTY_LANDFORM_INDEX)
-      expect(landformHeightDeltaAt(index, 123, -456)).toBe(0)
-    }
-  })
-
+describe('landform descriptors (index)', () => {
   it('finds a descriptor from every bucket its footprint touches', () => {
     const d = crag('a', 500, 0, 100) // straddles the x = 512 bucket border
     const index = buildLandformIndex([d])
@@ -42,5 +31,45 @@ describe('landform descriptors (R0 framework)', () => {
     expect(() => buildLandformIndex([crag('big', 0, 0, LANDFORM_BUCKET_SIZE_M + 1)])).toThrow(/radius/)
     const crowd = Array.from({ length: LANDFORM_MAX_PER_BUCKET + 1 }, (_, i) => crag(String(i), 100 + i, 100, 20))
     expect(() => buildLandformIndex(crowd)).toThrow(/overlapping/)
+  })
+})
+
+describe('landform generation + profiles (R3)', () => {
+  const ctx = { floorH: () => 8, waterLevel: 0.45, halfExtent: 4000 }
+
+  it('is deterministic, respects the home reserve and separation, and ids are cell-based', () => {
+    const a = generateLandforms(42, ctx)
+    const b = generateLandforms(42, ctx)
+    expect(a).toEqual(b)
+    expect(a.length).toBeGreaterThanOrEqual(3)
+    for (const d of a) {
+      expect(d.id).toMatch(/^lf:(crag|crater|lakeIsland):-?\d+_-?\d+$/)
+      expect(Math.hypot(d.centreX, d.centreZ)).toBeGreaterThanOrEqual(1150 + d.radius)
+    }
+    for (let i = 0; i < a.length; i++) for (let j = i + 1; j < a.length; j++) {
+      expect(Math.hypot(a[i]!.centreX - a[j]!.centreX, a[i]!.centreZ - a[j]!.centreZ)).toBeGreaterThanOrEqual(700)
+    }
+  })
+
+  it('places nothing on terrain that is not flat lowland (no stamping onto ranges)', () => {
+    expect(generateLandforms(42, { ...ctx, floorH: (x) => 30 + x * 0.001 })).toHaveLength(0)
+  })
+
+  it('height profiles are continuous and vanish at the footprint edge', () => {
+    for (const d of generateLandforms(7, ctx)) {
+      const index = buildLandformIndex([d])
+      const edge = landformHeightDeltaAt(index, d.centreX + d.radius - 0.01, d.centreZ)
+      expect(Math.abs(edge)).toBeLessThan(0.05)
+      expect(landformHeightDeltaAt(index, d.centreX + d.radius + 1, d.centreZ)).toBe(0)
+      if (d.kind === 'crag') expect(landformHeightDeltaAt(index, d.centreX, d.centreZ)).toBeGreaterThan(5)
+      if (d.kind === 'crater') {
+        expect(landformHeightDeltaAt(index, d.centreX, d.centreZ)).toBeLessThan(-2)
+        expect(landformHeightDeltaAt(index, d.centreX + d.radius * 0.8, d.centreZ)).toBeGreaterThan(1)
+      }
+      if (d.kind === 'lakeIsland') {
+        expect(landformHeightDeltaAt(index, d.centreX, d.centreZ)).toBeGreaterThan(0)
+        expect(landformHeightDeltaAt(index, d.centreX + d.radius * 0.6, d.centreZ)).toBeLessThan(-2)
+      }
+    }
   })
 })

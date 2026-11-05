@@ -5,9 +5,9 @@ import type { ChunkCoord } from './chunkGrid'
 import { LinearSpline } from '../math/linearSpline'
 import { projectOntoSegment } from '../math/segment'
 import { createSeededRandom } from '../world/parseSeed'
-import { continentMaskAt, type ContinentMaskParams } from './continentMask'
+import { continentMaskAt, type ContinentMaskParams, WORLD_HALF_EXTENT } from './continentMask'
 import { fbm01, type FbmParams } from './fbm'
-import { landformHeightDeltaAt, landformIndexFor } from './landformDescriptors'
+import { EMPTY_LANDFORM_INDEX, type LandformDescriptor, type LandformGenContext, landformHeightDeltaAt, type LandformIndex, landformIndexFor } from './landformDescriptors'
 import { EMPTY_RANGE_SPINES, generateRangeSpines, type RangeSpineSet, sampleRangeSpines, softCapSummitHeight, unionWithSpine } from './rangeSpines'
 import { fordBedHeight, fordInfluenceAt, type FordProjection } from './riverFord'
 import { isOnAnyBridgeDeck, type RoadBridgeSpec } from './roadBridge'
@@ -502,6 +502,39 @@ function noiseHandlesFor(seed: number): NoiseHandles {
   return handles
 }
 
+/** Landform index of a world (plan 060 R3): finite-continent worlds only; generated once per seed + params from the
+ *  descriptor-free base relief (`withLandforms = false` — acyclic). */
+const landformByRegion = new WeakMap<RegionParams, Map<string, LandformIndex>>()
+
+function landformIndexForParams(params: RawSampleParams): LandformIndex {
+  const region = params.region
+  if (!region.continentMask) return EMPTY_LANDFORM_INDEX
+  // Fast path: this runs per terrain sample, so never stringify the region here.
+  const fastKey = `${params.seed}|${params.heightScale}|${params.waterLevel}`
+  let perRegion = landformByRegion.get(region)
+  const hit = perRegion?.get(fastKey)
+  if (hit) return hit
+  const noise = noiseHandlesFor(params.seed)
+  const ctx: LandformGenContext = {
+    floorH: (x, z) => sampleRawTexelUncorrected(x, z, noise, params, false).floorH,
+    waterLevel: params.waterLevel,
+    halfExtent: WORLD_HALF_EXTENT,
+  }
+  const index = landformIndexFor(params.seed, `${params.heightScale}|${params.waterLevel}|${JSON.stringify(region)}`, ctx)
+  if (!perRegion) {
+    perRegion = new Map()
+    landformByRegion.set(region, perRegion)
+  }
+  perRegion.set(fastKey, index)
+  return index
+}
+
+/** Landform descriptors of a world, for census / debug overlays. */
+export function landformDescriptorsOf(params: RawSampleParams): readonly LandformDescriptor[] {
+  const index = landformIndexForParams(params)
+  return index.all
+}
+
 /** Range spines per region params object (fast path) and per seed + region content (workers clone params per job). */
 const rangeSpinesByRegion = new WeakMap<RegionParams, Map<number, RangeSpineSet>>()
 const rangeSpinesByKey = new Map<string, RangeSpineSet>()
@@ -550,6 +583,8 @@ function sampleRawTexelUncorrected(
   wz: number,
   noise: NoiseHandles,
   params: RawSampleParams,
+  /** false only inside the landform generator: the descriptor-free base relief (no recursion). */
+  withLandforms = true,
 ): {
   /** Clamped surface height: `max(floorH, waterH)`. */
   h: number
@@ -686,7 +721,7 @@ function sampleRawTexelUncorrected(
     hillsTerm +
     mountainRidge * region.mountainGain * ridgeGainFactor +
     peakDetailTerm
-  const landforms = landformIndexFor(params.seed)
+  const landforms = withLandforms ? landformIndexForParams(params) : EMPTY_LANDFORM_INDEX
   // Landform descriptors (plan 060): metre-scale term; skipped entirely while the world has none (bit-identical).
   // Range summits (plan 060 R2): metre-scale crest lift + summits on the spine core, outside `heightScale` so the
   // altitude-fraction consumers (tree line, meadows, biomes) keep their classes in the lowland.
