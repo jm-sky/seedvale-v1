@@ -35,6 +35,30 @@ Recon: 2026-11-04 (Opus, static code reading against `main` @ `697157c4`+). Noth
   - S7 conflicts with the author's earlier remark that the defect was also seen in clear weather (§1). ❓ Ask the author.
 - **Cheapest discriminator:** the same place with `?debugDisableSystems=weather` (disables the ground-fog group via `isSystemEnabled('weather')`), or the same pose in clear weather. If the patches disappear, the owner is `groundFog.ts` (fix options: a depth-fade soft-particle edge, or horizontal/ground-hugging cards; both are a visual choice, so **ask** first), not terrain data.
 
+**S7 excluded (author, 2026-11-05):** with `?debugDisableSystems=weather` the green squares are still visible.
+
+### Root cause found — terrain height creases (Opus, 2026-11-05, against `main` @ `e235c01c`)
+
+Headless Chrome on the author's Vite (`:5577`, fresh profile, `?fly&flyPose=…&flyTop&hour=12&debugDisableSystems=npcs,animals,weather,grass,playerModel,trees,fog`) plus a headless `sampleFloorAt` raster (1 m step, hillshade + second-difference crease map). Local images are under `_temp/screenshots/agent-065/` (gitignored).
+
+**Excluded with evidence:**
+- **Chunk-seam data (S1/S2/S6).** In the browser, the shared edges between home and non-home chunks, and between ordinary neighbours, are identical: `position.y`, `color` and `normal` differ by 0.0000. The material is shared (one uuid), and all chunks have the same `castShadow`/`receiveShadow`/`renderOrder`.
+- **Shadows.** `renderer.shadowMap.enabled = false` and `?shadowFrustum=legacy` leave the patterns unchanged.
+
+**Confirmed causes.** Both are piecewise-smooth **height** fields with C¹ breaks, so sunlit facets meet at sharp straight or curved edges.
+1. **Range spines (terrain-060 R1–R2, `7f40e4fb`, 2026-11-05)**, `src/terrain/rangeSpines.ts::sampleRangeSpines`. Summit (−2340, −680) top-down shot `mtn-top.png`; crease maps `crease-raw.png` (no hydrology) and `crease-summit.png`. Crease lines radiate from one point, with arcs about 110 m out; the second difference reaches 1.4 m/m².
+   - Core profile `core = (1 − d/coreHalfWidth)^1.5` has a non-zero slope at d = 0. A cross-section of `summitM` through the crest is a tent: 28.8 m at the crest, falling linearly by about 1.2 m per 8 m on both sides. The result is a sharp ridge line along the spine.
+   - `closestOnPolyline` measures distance to a 9-vertex polyline with segments hundreds of metres long. That gives straight crest lines and a bisector crease on the concave side of each vertex, where `t` (and so summit/pass terms) jumps.
+   - Hard `max()` compositions create crease lines where the two fields cross: `spine.gate` vs `noiseGate`, `spine.crest` vs `ridge01`, `gate`/`crest`/`summitM` across spines.
+   - These lines are then bent by the Worley warp.
+2. **Hydrology correction (058 H3, `5f127b450`, 2026-11-03)**, `worldHydrologyStore.ts::hydrologyCorrectionAt`. Crease map `crease-corr.png`: wherever a fill or breach is non-zero (up to +5.6 m here), the crease map shows an exact **8 m square grid**. Bilinear interpolation on the 8 m cell grid has slope breaks on every cell line, so fills read as square tiles and as planar facets. This also explains the first (shore) screenshot (polygonal shoreline, planar sand facets), which predates 060.
+
+**Fix directions (not implemented; both change persisted worldgen output, so the chunk-tile/hydrology cache must be bumped and `WORLDGEN_EPOCH` assessed; 058/060 ownership, so ask the author first):**
+- **Spines:** a C¹ crest profile, e.g. `core = smoothstep(1, 0, d/coreHalfWidth)` or `(1 − u²)^k`; smoothed/densified spine polyline or a blended `t` near vertices; smooth max (`smax`) instead of hard `max` for the gate and crest unions.
+- **Hydrology:** C¹ interpolation of the correction, e.g. smoothstep-weighted bilinear or bicubic over the existing 8 m cells, keeping drainage guarantees (breach depth must still cut the channel; re-run the census and golden hash).
+
+**Separate finding (not this defect):** at the home spawn, the per-chunk sea water inside the 3×3 home block is lighter than the water outside it. The step sits on the ±96 m chunk lines, and on land there is no step (`home-terrain-250.png`). This is a water presentation seam (chunk water vs. outer chunks/ocean ring), related to Q98, not terrain.
+
 **Re-ranking after the screenshot:** the polygonal shoreline is the strongest single clue. Something makes the **terrain height planar over tens of metres** near shores and lakes. The prime candidate is the **global hydrology correction layer** (bilinear on 8 m cells; priority-flood fills with an ε gradient over D8 neighbours; `terminalMinCells` raises small below-sea inland components; lake rule in `sampleRawTexel`). Despite the author's "probably older" (uncertain), the screenshot was taken after it landed (`5f127b450`, 2026-11-03). A raised or filled area sitting on bilinear 8 m patches near `waterLevel` gives exactly flat facets and straight water contours. Chunk-seam data mismatch (S1–S3) remains second, decided by the coordinates. **First checks:**
 1. Get the pose (`?camdebug=1`) or locate this shore on seed `415424794` from the minimap shape. Sample `sampleFloorAt − sampleRawFloorUncorrected` (correction) and `hydrologyLakeLevelAt` over ±60 m (§4). Non-zero correction under the facets settles it.
 2. Same pose at `5f127b450^` (worktree, pre-correction) vs `main`, fresh profile, clear weather (there is no URL weather override; use the GUI "Pora roku / Pogoda" folder or `debugDisableSystems=weather` and confirm the fog cards are gone).
