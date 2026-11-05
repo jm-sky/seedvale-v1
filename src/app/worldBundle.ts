@@ -21,6 +21,7 @@ import type { HouseholdId, HouseholdSnapshot } from '../settlement/household'
 import type { LivestockSaveRecord } from '../settlement/livestock'
 import type { NpcRelationshipEntry } from '../settlement/npcRelationships'
 import type { NpcId, NpcStateSnapshot } from '../settlement/npcState'
+import type { SettlementLayout } from '../settlement/settlementLayout'
 import type { LandmarkKind } from '../terrain/chunkEnvironment'
 import type { ChunkCoord } from '../terrain/chunkGrid'
 import type { ResourceDepletionState } from '../terrain/depositMining'
@@ -782,11 +783,14 @@ function collectNearbyClosedSettlements(
   seed: number,
   chunkManager: ChunkManager,
   config: WorldConfig,
+  layout: SettlementLayout,
 ): { id: string, x: number, z: number, footprintRadius: number }[] {
   const out: { id: string, x: number, z: number, footprintRadius: number }[] = []
   const riverQuery = worldRiverQuery() ?? undefined
   for (const cell of cellsWithinRadius({ gx: 0, gz: 0 }, 1)) {
     if (cell.gx === 0 && cell.gz === 0) continue
+    // Only real settlements of the 059 layout: the legacy 300 m lattice cells around home are phantoms (Q133).
+    if (!layout.has(cell)) continue
     const probe = probeSettlementSite(
       cell,
       seed,
@@ -2271,7 +2275,7 @@ async function buildWorldSystems(
               initialPersistentOccupants,
               caves,
               onAnimalDeathSound,
-              collectNearbyClosedSettlements(config.seed, chunkManager, config),
+              collectNearbyClosedSettlements(config.seed, chunkManager, config, settlementLayoutFor(homeResolveCtx)),
             )
           } finally {
             bootMarkEnd('background:buildFauna')
