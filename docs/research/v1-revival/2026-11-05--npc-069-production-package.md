@@ -7,6 +7,8 @@
 
 [Parent npc-069](../../plans/npc-069-next-fish-audio-production-batch.md) · [Original writing handoff](./2026-11-05--npc-069-astra-missing-voice-texts-handoff.md) · [Recording script](./2026-11-05--npc-069-recording-script.md) · [Production manifest](./2026-11-05--npc-069-production-manifest.json) · [Coverage matrix](./2026-11-05--npc-069-coverage.md)
 
+**Transcript QC update (2026-11-05):** The [33 selected existing clips have text/semantic equivalence accepted](../../assets/voice-qc/NPC-069-TEXT-ACCEPTANCE.md) ([per-file hash-bound JSON](../../assets/voice-qc/npc-069-text-acceptance.json)): 29 normalized matches, four acceptable minor word variants, zero material discrepancies. This is text-only acceptance; speaker identity, audio listening and runtime admission remain pending. This addendum supersedes only the earlier *transcript-review* uncertainty for these 33 selected files, not other QC gates.
+
 ## Frozen counts and production selection
 
 **72 new recording jobs, not 115 new recordings.** Exactly 37 lines needed new wording. This package is the single deduplicated npc-069 selection; historical NV drafts, Q90 references and the regeneration backlog do not create parallel orders.
