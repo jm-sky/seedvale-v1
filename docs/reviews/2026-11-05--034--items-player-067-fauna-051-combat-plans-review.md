@@ -5,7 +5,7 @@
 **Method:** static source reading only. No build, test, browser or performance run. Nothing here is runtime evidence.
 **Author constraint (2026-11-05):** the player lunge stays unchanged (`MAX_LUNGE_DISTANCE = 3`, `LUNGE_STAMINA_COST = 15`, `FALLBACK_APPROACH_DISTANCE = 1`, `GAP_CLOSE_BUFFER = 0.1`, applied at attack request through `player.gapClose()`).
 
-**Verdict:** both plans may proceed **after the corrections below** (applied in this commit). Each had one false premise or unscoped premise that would have sent the implementer after the wrong fix. Three author questions are recorded in the queue §3 (Q-C1–Q-C3).
+**Verdict:** both plans may proceed **after the corrections below** (applied in this commit). Each had one false premise or unscoped premise that would have sent the implementer after the wrong fix. Three author questions were raised (Q-C1–Q-C3); **answered 2026-11-05**: Q-C1 (a), with (a+b) allowed; Q-C2 (a); Q-C3 (a) — see [answered archive](../research/v1-revival/AUTONOMOUS-SESSION-QUEUE--archive.md#3-answered-author-questions).
 
 ## Verified claims (correct)
 

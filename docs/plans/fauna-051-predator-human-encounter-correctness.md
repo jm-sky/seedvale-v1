@@ -17,7 +17,7 @@ Make ordinary wolf and other predator encounters credible: a predator that decid
 
 The 2026-11-05 AI audit identifies weak human pursuit and target attribution alongside the weapon audit's reach mismatch; neither audit is runtime verification. Do **not** assume the fix is simply more HP or a globally larger `RETALIATION_ATTACK_CHANCE`.
 
-Pre-implementation [review 034](../reviews/2026-11-05--034--items-player-067-fauna-051-combat-plans-review.md) (2026-11-05, static) corrected this plan: pursuit credibility is bounded by player speed (open Q81-a / Q-C1), attacker identity already exists at the NPC hit seam, `player-ignore` masks more branches than NPC attack, and encounter determinism is transient by design (no save change).
+Pre-implementation [review 034](../reviews/2026-11-05--034--items-player-067-fauna-051-combat-plans-review.md) (2026-11-05, static) corrected this plan: pursuit credibility is bounded by player speed (Q81-a open; Q-C1 answered 2026-11-05: (a), optionally (a+b)), attacker identity already exists at the NPC hit seam, `player-ignore` masks more branches than NPC attack, and encounter determinism is transient by design (no save change).
 
 ## Verified current contracts and surfaces
 
@@ -37,7 +37,7 @@ Pre-implementation [review 034](../reviews/2026-11-05--034--items-player-067-fau
 ### A — Chase and contact correctness (first)
 
 1. Reuse the existing fauna `chaseNav` / `stepNavRescue` stuck detection and bounded local A* for **player and NPC** pursuit; preserve the existing prey-hunt path. Explicitly reset/retarget navigation state when a chase terminates, the target changes, combat is interrupted, or a different movement intent takes over. Avoid persistent stuck loops and pathfinding every frame.
-2. Measure and report actual closure, chase Stamina and bite cooldown against a standing, fighting, walking and sprinting player, without granting teleportation or unconditional hits. **Do not change player or predator movement speed here** — speed asymmetry is author question Q-C1 (with Q81-a). Bite contact follows the contract owned by items-player-067 (default centre-to-centre; a human-bite change gets its own human-target constant, never via shared `CONTACT_RANGE`); retain species differences and the unchanged player lunge.
+2. Measure and report actual closure, chase Stamina and bite cooldown against a standing, fighting, walking and sprinting player, without granting teleportation or unconditional hits. **Do not change player movement speed here** (Q81-a). Author Q-C1 (2026-11-05): **(a)** keep speeds and measure pursuit; **(a+b)** is also allowed — a short predator sprint burst as species data, decided only in §C from measurements. Bite contact follows the contract owned by items-player-067 (default centre-to-centre; a human-bite change gets its own human-target constant, never via shared `CONTACT_RANGE`); retain species differences and the unchanged player lunge.
 3. At attack time only, require the bite target to share the predator's spatial context, reusing the existing world spatial-context resolver; height/bridge separation is optional and uses existing world queries. Do not change perception (owned by `fauna-045`; if it lands first, reuse its composition). No per-frame raycasts or extra global scans.
 4. Preserve wolf-vs-prey, predator-vs-NPC, dog guarding and cave traversal; be conservative when modifying shared `CONTACT_RANGE` because it also governs animal-on-animal contact.
 
@@ -51,6 +51,7 @@ Pre-implementation [review 034](../reviews/2026-11-05--034--items-player-067-fau
 ### C — Calibrate natural retaliation and retreat
 
 1. Re-examine injured wolf/bear fleeing below 40% HP, 75% eligible retaliation probability and 2 s hold in **measured** isolated encounters (starting knife, other weapon families, moving/retreating human, nearby NPCs and fires). Change values only when test/playtest evidence supports a clear gain.
+   Optional per Q-C1 (a+b): if the §A2 closure measurements show predators can never land a bite on a retreating human, propose a bounded, Stamina-limited sprint burst as per-species data in `animalDefs` (no new movement system, no change to player speed or the lunge); record before/after evidence and keep it revertable.
 2. Preserve meaningful retreat for heavily injured animals and distinct wolf/bear/fox temperament. Territory, hunger, pack composition, alpha/dangerous variants, crowd and fire should remain relevant. Tactical pack coordination is **not** automatically in scope.
 3. Do not make predators universally hostile, attack through obstacles, ignore exhaustion, or chase endlessly. Maintain predictable offscreen/streaming semantics and avoid inventing new offscreen fights.
 
