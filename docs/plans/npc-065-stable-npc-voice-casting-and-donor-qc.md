@@ -9,6 +9,10 @@
 **Subdomains:** `dialogue`
 **Tags:** `voice` `audio` `casting` `v3-donor` `revival-q45`
 
+## Production ownership boundary — 2026-11-05
+
+The [next Fish Audio production batch plan](npc-069-next-fish-audio-production-batch.md) owns the bounded **recording-order reconciliation**, 1–3 variant coverage matrix for each selected non-quest named NPC situation, and five exact quest-offer audio candidates. This plan (`npc-065`) continues to own voice identity/casting implementation, resolver, donor QC, registry, and S5 technical missing-line workflow. Its historical scripts, count estimates and S5 do **not** constitute independent duplicate audio orders. New spoken text is authored by GPT Astra. Audio production and runtime integration remain separate.
+
 ## Current status and navigation — 2026-11-05
 
 - [Author-approved casting](#npc-voice-map) — latest author decisions; historical speaker aliases are not runtime assignments.
