@@ -1,7 +1,8 @@
 # Plan: Far terrain ring (600–1000 m) without bare-ground pop-in
 
 **Created:** 2026-11-05
-**Status:** `planned` 📋
+**Status:** `in progress` 🔄
+**Progress:** F0 done 2026-11-05 ([notes](implementation-notes/world-terrain-066-far-terrain-ring-implementation-notes.md)); F1 waits on the fog-distance question (queue §3)
 **Type:** feature
 **Priority:** high · **Effort:** XL
 **Depends on:** -
@@ -45,7 +46,7 @@ Key rules:
 
 1. **Forest is never drawn as bare ground in the far band.** Where the far data says `Forest` (or forest factor ≥ threshold), the far ring draws a canopy representation: at minimum a raised, darker canopy shell (ground height + typical crown height, broken edges, vertex-colour noise); at most cheap instanced tree impostors on a deterministic hash grid. F2 chooses after a side-by-side screenshot test; the author judges the look.
 2. **Hand-off direction:** near trees must already be present when the far canopy fades out at that spot. The far canopy is suppressed only over chunks that are `ready` *and* have their vegetation attached (state owned by `ChunkManager`; expose a narrow read-only residency query, do not duplicate chunk state). Until then the canopy stays, so the player sees canopy → real trees, never ground → trees.
-3. **Near/far terrain seam:** the far mesh sits below the near mesh by construction — V3's min-of-9-samples minus a small drop + `polygonOffset` — so it never z-fights or pokes through near terrain, roads or rivers; clipping over resident chunks only if F0 finds leaks (e.g. river beds deeper than the drop).
+3. **Near/far terrain seam (revised by F0):** far vertices use the raw map-raster height (≤ 0.3 m drop + `polygonOffset`), and far fragments are **discarded over chunks whose terrain mesh is attached** (per-chunk residency mask texture owned via a read-only `ChunkManager` query). V3's min-of-9 rule was measured and rejected: it sinks the far surface 3–23 m below V1 relief (notes §1).
 4. **Fog:** `TerrainVisualHorizon` gains a far-ring-aware contract: with the far ring enabled, outdoor fog becomes opaque at `farRadius` (with a fade band) instead of ≈ 160 m. Weather fog still wins (never weakened); cave-interior fog is unchanged. Without the far ring (flag off), behaviour is identical to today.
 5. **Near-ring boundary exposure (the main risk):** pushing fog out makes the ~192 m chunk boundary visible for everything that is *not* in the far ring — rocks, bushes, houses, roads, rivers, NPCs/animals. Mitigations, in order: far ring carries the large silhouettes (forest F2, water F1, settlements F4); small props (rocks, bushes, grass) at 190 m are a few pixels and use the existing density LOD; anything still popping is handled by a distance dither-in at the chunk edge (F3). If an object class still pops visibly after F3 → stop and ask (author constraint 2).
 6. **Presentation only.** Far data is never read by simulation, collision, AI, map or saves. Deterministic from the seed; rebuilt with `WorldBundle`.
@@ -55,7 +56,7 @@ Key rules:
 
 | Slice | Model | Content | Done when |
 | --- | --- | --- | --- |
-| **F0 recon** | O | Verify map raster tile heights vs runtime tile heights at 3 places (plain, range, river valley, seed `415424794`) and cost per tile; camera far-plane owner; fog/day-night chain; check V3's min-of-9 rule on V1 heights (river beds, carved roads); pick tile step/radius layout; list the classes that pop at the 192 m boundary with fog pushed to 800 m (screenshots with a debug fog override) | notes file with numbers + screenshots; layout fixed; risks for 5. updated |
+| **F0 recon** ✅ 2026-11-05 | O | Verify map raster tile heights vs runtime tile heights at 3 places (plain, range, river valley, seed `415424794`) and cost per tile; camera far-plane owner; fog/day-night chain; check V3's min-of-9 rule on V1 heights (river beds, carved roads); pick tile step/radius layout; list the classes that pop at the 192 m boundary with fog pushed to 800 m (screenshots with a debug fog override) | notes file with numbers + screenshots; layout fixed; risks for 5. updated |
 | **F1 far ground + water + fog** | S | `?farTerrain=1` flag (default off): worker-built far tile meshes from map raster tiles, biome colours from the same palette as `biomeColors.ts` (no second palette), flat water at water level for `Ocean`/`InlandWater`, seam rule 3, fog contract rule 4, camera far ≥ `farRadius` | flag on: relief visible to `farRadius` on the 060 ranges; flag off: no behaviour change (tests); type-check/test green; browser screenshots (`?seed=415424794&farTerrain=1`) → §2 |
 | **F2 forest canopy** | S (+O review) | canopy shell vs impostor prototype; hand-off rule 2 via `ChunkManager` vegetation residency | side-by-side screenshots for the author: forest reads as forest at 300/600 m; walking/flying towards a forest shows no bare-ground frame (recorded video/sequence); author picks the look |
 | **F3 boundary hand-off** | S | dither-in at chunk edge for classes found in F0 that still pop; seam polish | F0's pop list closed or explicitly accepted by the author |
