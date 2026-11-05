@@ -25,6 +25,8 @@
 
 **NPC voice cleanup (2026-11-05):** [final staged report](./2026-11-05--npc-voice-final-cleanup.md) · [author decision registry](../../assets/voice-qc/author-decisions.json) · [permanent casting](../../design/npc-voices/CASTING.md) · [catalog](../../design/npc-voices/CATALOG.md). Storage migration does not register new runtime clips.
 
+**Gameplay Visibility / Detection review (2026-11-05):** [Astra review in world-terrain-050](../../plans/world-terrain-050-agent-performance-render-census-and-lod.md#astra-requirements-review--2026-11-05) — V1/V2 source findings, LOS and information-disclosure contracts, light/stealth recommendations, alternatives, acceptance cases and author questions. Ready for Opus review; no gameplay implementation authorized.
+
 ## Current entry points
 
 | Need | Read |
