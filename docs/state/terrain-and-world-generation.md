@@ -36,6 +36,8 @@ To compare coast/lakes/rivers across the whole continent before and after a chan
 - Waterfalls are implemented (plan 181, Etap 7 completion, 2026-08-25) as a per-vertex rendering signal on the existing river ribbon — no separate geometry/system. Full shader/rendering parity between rivers and lake/ocean remains deliberately deferred ([LOOSE-ENDS](../plans/LOOSE-ENDS.md)).
 - Rivers themselves (hydrology, tiling, ribbon geometry, channel carving) are documented in [WATER.md](../state/water.md), not here — they're a water feature, not a terrain-shape one, even though carving does lower the heightmap.
 
+- **Landform descriptors (plan world-terrain-060 R0, framework only).** `src/terrain/landformDescriptors.ts` holds the descriptor type, a 512 m bucket index (`LANDFORM_MAX_RADIUS_M` = one bucket, ≤ `LANDFORM_MAX_PER_BUCKET` = 4 overlapping, both enforced) and `landformHeightDeltaAt`, called from `sampleRawTexelUncorrected` as a metre-scale term. `landformDescriptorsFor` returns **no descriptors** yet, so output is bit-identical to before and the term is skipped; the continent preview has a `--landforms` debug overlay. Generators arrive with R1/R3.
+
 ## Vegetation, rocks & landmarks
 
 - Vegetation and rocks are `InstancedMesh` buckets (`src/render/instancedProps.ts`, chunk-agnostic), batched at **region** granularity (`src/terrain/vegetationRegionBatcher.ts`, plan 143 — `REGION_CHUNKS = 3`, ≈192 m). `ChunkManager` feeds each chunk's placements in on load/unload; the batcher rebuilds only the affected region+kind from the union of its currently-loaded member chunks. Streaming/unload/tree-lifecycle stay chunk-scoped — region granularity is rendering-only. Distance LOD is per-region (max fraction across contributing chunks, "nearest member wins").

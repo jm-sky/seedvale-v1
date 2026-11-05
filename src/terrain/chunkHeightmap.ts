@@ -7,6 +7,7 @@ import { projectOntoSegment } from '../math/segment'
 import { createSeededRandom } from '../world/parseSeed'
 import { continentMaskAt, type ContinentMaskParams } from './continentMask'
 import { fbm01, type FbmParams } from './fbm'
+import { landformHeightDeltaAt, landformIndexFor } from './landformDescriptors'
 import { fordBedHeight, fordInfluenceAt, type FordProjection } from './riverFord'
 import { isOnAnyBridgeDeck, type RoadBridgeSpec } from './roadBridge'
 import { computeBodyScale, detectWaterBodies } from './waterBodies'
@@ -638,7 +639,12 @@ function sampleRawTexelUncorrected(
     hillsTerm +
     mountainRidge * region.mountainGain * ridgeGainFactor +
     peakDetailTerm
-  const floorH = nCombined * heightScale
+  const landforms = landformIndexFor(params.seed)
+  // Landform descriptors (plan 060): metre-scale term; skipped entirely while the world has none (bit-identical).
+  const floorH =
+    landforms.count === 0
+      ? nCombined * heightScale
+      : nCombined * heightScale + landformHeightDeltaAt(landforms, wx, wz)
   const h = floorH < waterLevel ? waterLevel : floorH
   const waterH = waterLevel
 

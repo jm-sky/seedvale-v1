@@ -3,7 +3,7 @@ import { writeFileSync } from 'node:fs'
  * Headless counterpart of the Continent Preview page (plan tools-023): same
  * canonical tile builder, painter and hydrology, single-threaded, no browser.
  *
- *   pnpm tsx scripts/tools/continent-preview-png.ts <seed> <out.png> [all|standard] [--hillshade] [--slope] [--settlements] [--routes] [--stream-m2=480,960,1920]
+ *   pnpm tsx scripts/tools/continent-preview-png.ts <seed> <out.png> [all|standard] [--hillshade] [--slope] [--settlements] [--routes] [--landforms] [--stream-m2=480,960,1920]
  *
  * tools-026 D4 layers (all optional, default output unchanged): `--hillshade` multiplies the terrain by a NW-lit shade, `--slope`
  * tints land by slope class (<5 / 5-10 / 10-20 / 20-30 / >=30 deg, ~8 m pixel gradients: a coarse map-scale estimate),
@@ -19,6 +19,7 @@ import { createBenchmarkWorldConfig } from '../../src/config/worldConfig'
 import { clearRoadNetworkCaches, roadRoutesForSettlement } from '../../src/settlement/roadNetwork'
 import { clearSettlementDefCache, setSettlementRiverQuery, settlementDefFor, settlementLayoutFor } from '../../src/settlement/settlementPlanCache'
 import { clearCemeteryCaches } from '../../src/terrain/cemeteryAssignment'
+import { landformDescriptorsFor } from '../../src/terrain/landformDescriptors'
 import { createRiverQuery } from '../../src/terrain/riverQuery'
 import { computeWorldHydrology, sampleRawFloorRows, unpackChains, WORLD_HYDROLOGY_GRID } from '../../src/terrain/worldHydrology'
 import { ensureWorldHydrology, sampleRowsOnThisThread } from '../../src/terrain/worldHydrologyRuntime'
@@ -153,6 +154,15 @@ function disc(target: Uint8Array, cx: number, cy: number, r: number, rgb: readon
 }
 
 if (flag('hillshade') || flag('slope')) applyRelief(rgba, { hillshade: flag('hillshade'), slope: flag('slope') })
+
+// plan 060 R0 debug overlay: descriptor footprints (magenta rings, cyan for spine summits). Zero descriptors → draws nothing.
+if (flag('landforms')) {
+  const descriptors = landformDescriptorsFor(seed)
+  for (const d of descriptors) {
+    disc(rgba, toPx(d.centreX), toPx(d.centreZ), Math.max(2, d.radius * scale), d.kind === 'spineSummit' ? [40, 220, 230] : [230, 40, 200], true)
+  }
+  console.log(`landforms drawn: ${descriptors.length}`)
+}
 
 if (flag('settlements') || flag('routes')) {
   clearSettlementDefCache(); clearRoadNetworkCaches(); clearCemeteryCaches()
