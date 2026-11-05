@@ -17,6 +17,8 @@
 
 **Developer tools UI layout (2026-11-04):** [tools-025 — shared topbar, overlay widgets and sidebar polish](../../plans/tools-025-developer-tools-ui-layout.md) ([implementation notes](../../plans/implementation-notes/tools-025-developer-tools-ui-layout-implementation-notes.md)). Plan only; existing concept-art PNG still requires repository attachment.
 
+**Next Fish Audio production batch (draft, 2026-11-05):** [npc-069 — named NPC variations, five quest offers and seven cleanup restoration candidates](../../plans/npc-069-next-fish-audio-production-batch.md). Recording selection only; npc-065 owns casting, QC and runtime.
+
 **NPC voice cleanup (2026-11-05):** [final staged report](./2026-11-05--npc-voice-final-cleanup.md) · [author decision registry](../../assets/voice-qc/author-decisions.json) · [permanent casting](../../design/npc-voices/CASTING.md) · [catalog](../../design/npc-voices/CATALOG.md). Storage migration does not register new runtime clips.
 
 ## Current entry points
