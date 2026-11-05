@@ -1,5 +1,7 @@
 # V1 Revival — Master Roadmap (approved decisions and remaining proposals)
 
+**Defensive palisade visual upgrade (2026-11-05):** [settlements-025 — modular Blender defensive palisade](../../plans/settlements-025-modular-blender-defensive-palisade.md) defines an asset-first, performance-budgeted replacement for the fence-like V1 palisade visuals. Blender assets/documentation may proceed; runtime integration remains subject to the Strategic Brief D4 gate. Dry-stone field walls are out of scope.
+
 NPC voice storage/identity cleanup (2026-11-05): [final report](2026-11-05--npc-voice-final-cleanup.md), [author decisions](../../assets/voice-qc/author-decisions.json), [casting](../../design/npc-voices/CASTING.md), [catalog](../../design/npc-voices/CATALOG.md). Q88/Q89 casting runtime work remains separate.
 
 
