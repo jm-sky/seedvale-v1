@@ -97,6 +97,11 @@ From code (not yet seen in a browser):
 1. **Fog distance = whole-game atmosphere.** The base day fog reaches only 250 m today. Showing relief to 800 m means clearer air in all outdoor views (haze to `farRadius`, night unchanged at ~150 m, weather still closes in). OK, or keep a hazier look (e.g. fog opaque at ~600 m even at the 800 m preset)?
 2. Covering the thinned near-ring forest (§5) is part of F2 and has a cost (canopy drawn over the 130–220 m band, a higher tree-LOD floor, or impostors). Confirm that F2 prototypes all three and the author picks on screenshots.
 
+### 8. Author answers (2026-11-05)
+
+- ✅ Question 1 → **(a)**: with the far ring on, outdoor fog becomes opaque at `farRadius` (fade band before it). Night and weather still close in on top. F1 owns this change in the fog contract, including the base day fog curve.
+- ✅ Question 2 → recommendation accepted (the canopy also covers the LOD-thinned near-ring band), **starting with the simplest variant** that meets constraint 2: a canopy shell drawn over unloaded chunks and over chunks with low tree-LOD fraction. Impostors or a higher LOD floor only if the shell does not read as forest on the screenshots.
+
 ## F0 result
 
-Layout fixed (§4). Seam rule changed to raw + mask (§6). Pop list (§5) adds the tree-LOD band as the main constraint-2 risk. The F1 row can go ahead once question 1 is answered: the code is flag-gated either way, but the default fog curve under the flag needs the answer.
+Layout fixed (§4). Seam rule changed to raw + mask (§6). Pop list (§5) adds the tree-LOD band as the main constraint-2 risk. F1 is unblocked (§8).

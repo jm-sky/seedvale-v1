@@ -2,7 +2,7 @@
 
 **Created:** 2026-11-05
 **Status:** `in progress` 🔄
-**Progress:** F0 done 2026-11-05 ([notes](implementation-notes/world-terrain-066-far-terrain-ring-implementation-notes.md)); F1 waits on the fog-distance question (queue §3)
+**Progress:** F0 done 2026-11-05 ([notes](implementation-notes/world-terrain-066-far-terrain-ring-implementation-notes.md)); author answers recorded (notes §8); F1 ready (queue Q147)
 **Type:** feature
 **Priority:** high · **Effort:** XL
 **Depends on:** -
@@ -73,4 +73,5 @@ Key rules:
 ## Open questions for the author
 
 - Default radius per quality preset (🟡 proposal: low 600 / medium 800 / high 1000) — decide at F5.
-- F2 look (canopy shell vs impostors) — decide on screenshots.
+- F2 look (canopy shell vs impostors) — decide on screenshots. ✅ Author 2026-11-05: start with the simplest variant (canopy shell, also over LOD-thinned near-ring forest), refine later.
+- ✅ Fog (author 2026-11-05): opaque at `farRadius` with the far ring on.
