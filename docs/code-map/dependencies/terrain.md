@@ -82,6 +82,7 @@ Generated from TypeScript imports.
 - `terrain/chunkVegetation.ts`
 - `terrain/digFinds.test.ts`
 - `terrain/digFinds.ts`
+- `terrain/farTile.ts`
 - `terrain/farTileColor.ts`
 - `terrain/grassPlacement.ts`
 - `terrain/naturalResources.ts`
@@ -1053,8 +1054,10 @@ Generated from TypeScript imports.
 
 **Imports**
 
+- `terrain/biomeRegions.ts`
 - `terrain/chunkHeightmap.ts`
 - `terrain/farTileColor.ts`
+- `terrain/terrainClassification.ts`
 
 **Imported by**
 
@@ -1605,6 +1608,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `terrain/farTile.ts`
 - `terrain/farTileColor.ts`
 - `world/caves/mountainMassif.ts`
 - `world/locations/seedProfile.ts`

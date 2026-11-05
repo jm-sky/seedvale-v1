@@ -420,15 +420,16 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/farTerrain.ts`
 
-- `createFarTerrain` — function — line 89
+- `createFarTerrain` — function — line 100
   - domain: world-terrain
+- `FAR_CANOPY_KEEP_CHUNKS` — const — line 26
 - `FAR_FINE_RADIUS` — const — line 16
 - `FAR_MASK_SIZE` — const — line 18
-- `FarTerrain` — type — line 63
-- `FarTerrainOptions` — type — line 51
-- `FarTileCells` — type — line 24
-- `FarTileWanted` — type — line 26
-- `wantedFarTiles` — function — line 35
+- `FarTerrain` — type — line 74
+- `FarTerrainOptions` — type — line 62
+- `FarTileCells` — type — line 35
+- `FarTileWanted` — type — line 37
+- `wantedFarTiles` — function — line 46
   - domain: world-terrain
 
 ## `terrain/farTerrainFlag.ts`
@@ -442,19 +443,24 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/farTile.ts`
 
-- `buildFarTileIndices` — function — line 66
-- `computeFarTile` — function — line 108
+- `buildFarTileIndices` — function — line 82
+- `computeFarTile` — function — line 124
   - domain: world-terrain
-- `FAR_SKIRT_DROP` — const — line 13
-- `FAR_SURFACE_DROP` — const — line 16
-- `FAR_TILE_CELLS_COARSE` — const — line 10
-- `FAR_TILE_CELLS_FINE` — const — line 9
-- `FAR_TILE_SIZE` — const — line 6
-- `farGridVertexCount` — function — line 38
-- `FarTileData` — type — line 26
-- `FarTileRequest` — type — line 18
-- `farTileVertexCount` — function — line 43
-- `skirtSourceIndex` — function — line 52
+- `FAR_CANOPY_FULL` — const — line 22
+- `FAR_CANOPY_HEIGHT` — const — line 24
+- `FAR_CANOPY_NOISE` — const — line 25
+- `FAR_CANOPY_NOISE_CELL` — const — line 27
+- `FAR_CANOPY_START` — const — line 21
+- `FAR_SKIRT_DROP` — const — line 15
+- `FAR_SURFACE_DROP` — const — line 18
+- `FAR_TILE_CELLS_COARSE` — const — line 12
+- `FAR_TILE_CELLS_FINE` — const — line 11
+- `FAR_TILE_SIZE` — const — line 8
+- `farGridVertexCount` — function — line 54
+- `FarTileData` — type — line 40
+- `FarTileRequest` — type — line 32
+- `farTileVertexCount` — function — line 59
+- `skirtSourceIndex` — function — line 68
 
 ## `terrain/farTileColor.ts`
 

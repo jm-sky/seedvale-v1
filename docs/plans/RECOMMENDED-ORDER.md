@@ -57,6 +57,8 @@
    🟡 `S` · 🔒 blocked · unlocks 0/0
 4. `npc-069` — **Next Fish Audio Production Batch — Named NPC Variants, Quest Offers and Restoration**  
    🟡 `M` · ✅ ready · unlocks 0/0
+5. `settlements-025` — **Modular Blender Defensive Palisade**  
+   🟡 `L` · ✅ ready · unlocks 0/0
 
 ---
 
@@ -263,51 +265,63 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   🟡 `M` · **Score:**  25  
    → **unlocks:** 0/0
 
-44. `world-terrain-059` — **World scale, travel time and sparse settlements**  
+44. `fauna-051` — **Predator-human encounter correctness and retaliation**  
+  🔴 `L` · **Score:**  24  
+   → **unlocks:** 0/0
+
+45. `items-player-067` — **Melee weapon reach and damage balance**  
+  🔴 `L` · **Score:**  24  
+   → **unlocks:** 0/0
+
+46. `world-terrain-059` — **World scale, travel time and sparse settlements**  
   🔴 `XL` · **Score:**  22  
    → **unlocks:** 0/0
 
-45. `tools-019` — **Debug tooling lifecycle ownership**  
+47. `tools-019` — **Debug tooling lifecycle ownership**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-46. `tools-021` — **Align debug OBB overlays with physical colliders**  
+48. `tools-021` — **Align debug OBB overlays with physical colliders**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-47. `world-terrain-055` — **Optional shadow frustum and refresh trims (settlement shadow pass)**  
+49. `world-terrain-055` — **Optional shadow frustum and refresh trims (settlement shadow pass)**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-48. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
+50. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
   🟡 `L` · **Score:**  18  
    → **unlocks:** 0/0
 
-49. `items-player-014` — **Rope-pullable resource transport**  
+51. `items-player-014` — **Rope-pullable resource transport**  
   ⚪ `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-50. `items-player-052` — **Settlement tool ownership and social acquisition**  
+52. `items-player-052` — **Settlement tool ownership and social acquisition**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-51. `npc-069` — **Next Fish Audio Production Batch — Named NPC Variants, Quest Offers and Restoration**  
+53. `npc-069` — **Next Fish Audio Production Batch — Named NPC Variants, Quest Offers and Restoration**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-52. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
+54. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-53. `npc-065` — **Stable NPC Voice Casting, V3 Donor QC and Selective Recording**  
+55. `npc-065` — **Stable NPC Voice Casting, V3 Donor QC and Selective Recording**  
   🟡 `L` · **Score:**  14  
    → **unlocks:** 0/0
 
-54. `world-040` — **Underground Locations & Portals**  
+56. `settlements-025` — **Modular Blender Defensive Palisade**  
+  🟡 `L` · **Score:**  14  
+   → **unlocks:** 0/0
+
+57. `world-040` — **Underground Locations & Portals**  
   ⚪ `XL` · **Score:**  14  
    → **unlocks:** 0/0
 
-55. `fauna-049` — **Wild animal difficulty tiers, trophies and social recognition**  
+58. `fauna-049` — **Wild animal difficulty tiers, trophies and social recognition**  
   🟡 `XL` · **Score:**  10  
    → **unlocks:** 0/0
 
@@ -496,6 +510,7 @@ graph TD
   fauna_048["fauna-048 — Agent Performance — Fauna Village Query Scaling"]
   fauna_049["fauna-049 — Wild animal difficulty tiers, trophies and social recognition"]
   fauna_050["fauna-050 — Wild fauna across the world — settlement and wilderness habitats"]
+  fauna_051["fauna-051 — Predator-human encounter correctness and retaliation"]
   items_player_001["items-player-001 — Containers, Waterskins & Copper Items"]
   items_player_002["items-player-002 — Food provenance, freshness and storage"]
   items_player_003["items-player-003 — Player Physical Effort — Stamina & Vigor"]
@@ -557,6 +572,7 @@ graph TD
   items_player_064["items-player-064 — Stage 4 living-world sources and NPC weapon use"]
   items_player_065["items-player-065 — Layered anatomical armor and typed physical damage (core)"]
   items_player_066["items-player-066 — Layered armor catalogue, ordinary acquisition and balance"]
+  items_player_067["items-player-067 — Melee weapon reach and damage balance"]
   npc_001["npc-001 — NPC Physical Stats — Sex & Age"]
   npc_002["npc-002 — NPC Healing"]
   npc_004["npc-004 — Drzewo genealogiczne NPC"]
@@ -737,6 +753,7 @@ graph TD
   settlements_022["settlements-022 — Founded settlement live runtime and streaming"]
   settlements_023["settlements-023 — Settlement async streaming lifecycle and construction rollback"]
   settlements_024["settlements-024 — Jumpable low campfire collision"]
+  settlements_025["settlements-025 — Modular Blender Defensive Palisade"]
   settlements_npcs_001["settlements-npcs-001 — Cultivation Hydration & Watering"]
   settlements_npcs_002["settlements-npcs-002 — NPC professions — complete profession work integration"]
   settlements_npcs_003["settlements-npcs-003 — Hunter Arrow Production"]

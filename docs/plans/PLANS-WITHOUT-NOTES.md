@@ -1,7 +1,7 @@
 # PLANS PLANNED WITHOUT NOTES
 
 > Generated with `pnpm plans:without-notes`  
-> Date: 2026-11-05 17:09:17  
+> Date: 2026-11-05 19:01:30  
 
 ## PLANS
 
@@ -14,6 +14,7 @@
 - `quests-progression-045-lost-treasure-chronicles-property-grant-deed-and-persistent-land-reward.md`
 - `quests-progression-046-lost-treasure-chronicles-integration-legacy-catch-up-and-superseded-quest-cleanup.md`
 - `quests-progression-054-hunters-brotherhood-exceptional-animal-finale.md`
+- `settlements-025-modular-blender-defensive-palisade.md`
 - `settlements-npcs-052-persistent-economic-work-cargo-and-local-transfer-conservation.md`
 - `settlements-npcs-054-transport-carrier-death-and-cargo-disposition.md`
 - `tools-019-debug-tooling-lifecycle-ownership.md`
@@ -291,6 +292,37 @@ Wczytaj:
 
 Na podstawie review utwórz w repo plik:
 `docs/plans/implementation-notes/quests-progression-054-hunters-brotherhood-exceptional-animal-finale-implementation-notes.md`
+
+Umieść w nim:
+- sugestie dotyczące implementacji,
+- istotne detale techniczne,
+- decyzje architektoniczne,
+- informacje o istniejących systemach i implementacjach, które należy wykorzystać,
+- potencjalne problemy, zależności i pułapki,
+- inne konkretne wskazówki, które ułatwią agentowi AI poprawną implementację planu.
+
+Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
+Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
+
+Pliki dodaj na branch `main` w repozytorium.
+```
+
+### `settlements-025-modular-blender-defensive-palisade.md`
+
+Prompt:
+
+```
+Zrób review planu `settlements-025-modular-blender-defensive-palisade.md`
+
+Wczytaj:
+- `docs/STATE.md`
+- `docs/plans/PLANNING.md` (Implementation Notes section),
+- `docs/plans/settlements-025-modular-blender-defensive-palisade.md`
+- aktualny codebase,
+- potrzebne zależności i powiązane implementacje.
+
+Na podstawie review utwórz w repo plik:
+`docs/plans/implementation-notes/settlements-025-modular-blender-defensive-palisade-implementation-notes.md`
 
 Umieść w nim:
 - sugestie dotyczące implementacji,

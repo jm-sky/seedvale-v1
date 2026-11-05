@@ -139,6 +139,9 @@ Unless noted otherwise, `verification needed` means implementation has passed au
 | ◼️ `world-terrain-063-geography-driven-settlement-variants.md`                 | 🔴 | L      | ~~tools-026~~, world-terrain-061                                                                                                                                                                                                                                                           | -                                         |
 | ◼️ `world-041-landmark-catalog-and-rumour-leads.md`                            | 🟡 | L      | world-terrain-060                                                                                                                                                                                                                                                                          | -                                         |
 | ◼️ `fauna-050-world-wild-fauna-habitats.md`                                    | 🔴 | L      | world-terrain-060, world-terrain-061                                                                                                                                                                                                                                                       | -                                         |
+| 💡 `fauna-051-predator-human-encounter-correctness.md`                         | 🔴 | L      | -                                                                                                                                                                                                                                                                                          | -                                         |
+| 💡 `items-player-067-melee-weapon-reach-and-damage-balance.md`                 | 🔴 | L      | -                                                                                                                                                                                                                                                                                          | -                                         |
+| ◼️ `settlements-025-modular-blender-defensive-palisade.md`                     | 🟡 | L      | -                                                                                                                                                                                                                                                                                          | -                                         |
 
 ---
 
@@ -210,12 +213,12 @@ New plans declare a primary `Domain:` in frontmatter. Use optional `Tags:` only 
 ## Next plan IDs
 
 - ai: `001`
-- fauna: `051`
-- items-player: `067`
+- fauna: `052`
+- items-player: `068`
 - npc: `070`
 - persistence: `009`
 - quests-progression: `083`
-- settlements: `025`
+- settlements: `026`
 - settlements-npcs: `058`
 - tools: `027`
 - ui-input: `049`
