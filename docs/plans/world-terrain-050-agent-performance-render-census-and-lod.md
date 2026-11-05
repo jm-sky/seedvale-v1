@@ -69,6 +69,26 @@ Po reconie plan powinien ustalić:
 
 **Liczniki do pomiaru (później, porównywalna scena/kamera, 3 powtórzenia):** `main.byBucket npcFamily:*` (spadek), render p50/p95 (nie gorzej), shadow submissions (bez zmiany przy casterach ≤36 m).
 
+## Gameplay visibility / detection — author direction (2026-11-05; Astra → Opus review pending)
+
+**Product requirement, not merely a performance optimization:** NPCs and animals, including hostile actors, must not be revealed to the player through solid walls, around opaque corners or behind other fully obstructing world geometry. The current frustum/LOD work does **not** satisfy this requirement. See [NPC/fauna visibility V2 assessment](../research/v1-revival/2026-10-30--npc-fauna-visibility-v2-analysis.md) for the distinction between native frustum culling, camera occlusion and sensory perception. This section captures author intent for review; it does **not** authorize implementation or change the status of existing A1′ work.
+
+### Expected gameplay behavior
+
+- **Physical visibility:** buildings, walls, corners, rocks and terrain should block direct sight where their actual opaque geometry does. A partly exposed actor must remain partly visible; do not hide the entire model because a single center ray is blocked. Consider doorways, windows, height differences, thin/transparent geometry and moving blockers to avoid false hiding or popping.
+- **Light / distance / stealth:** add **lightweight** detection modifiers for darkness versus light sources, distance, and stealth (e.g. crouching, slower movement or cover). Keep the effect subtle, explainable and testable; no hard-coded detection ranges or thresholds are approved yet.
+- **No magical invisibility:** a physically visible actor on open ground must not disappear simply because a gameplay detection check fails. Distinguish visual rendering from awareness, identification, targeting/UI indicators and any optional last-known contacts. Do not add V2 ghost placeholders or a wholesale perception port by default.
+- **AI perception is a separate contract:** whether NPCs/animals see, hear or remember the player/each other requires its own assessment against existing V1 AI/fauna perception. Camera visibility must not directly dictate NPC decisions or autonomous world simulation.
+- **Presentation must not own simulation/lifecycle:** preserve entity identity, movement, offscreen simulation, persistence, corpses/loot, shadow behavior and existing `mesh.visible` ownership. Gameplay LOS must not accidentally despawn actors or suppress their authoritative updates.
+
+### Review / planning handoff
+
+1. **Astra:** assess the desired player-facing behavior, separate physical occlusion from detection/awareness and propose the smallest coherent V1 integration, including whether gameplay visibility belongs in a distinct cross-domain plan rather than inside the performance-only `world-terrain-050` implementation scope.
+2. **Opus:** verify actual V1 rendering, geometry/collision, player observation and NPC/fauna perception ownership in code; identify architectural boundaries, partial-occlusion correctness, cache/invalidation, test scenarios and regression/performance risks. Compare V2 mechanisms only as selective reference.
+3. **Before implementation:** specify observable acceptance cases (fully hidden behind opaque wall; emergence around corner; partially exposed silhouette; open terrain at day/night and near/far; stealth and light-source interaction; doors/windows/terrain; UI/targeting; AI and save/load unaffected). Benchmark rendering optimization separately from gameplay correctness.
+
+**Scope boundary:** the performance culling experiment in the linked assessment remains optional and measurement-gated. The gameplay requirement is independent of whether removing occluded draws improves FPS. No gameplay LOS/detection code is approved by this amendment.
+
 ## Verification
 
 AI agent wykonuje odpowiednie testy/typecheck/build. Browser benchmark i manualne sprawdzenie poppingu/cullingu wykonuje użytkownik.
