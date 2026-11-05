@@ -47,7 +47,6 @@ Naming: `<scope>_<gender>_[<age>]_<semantic-keyword>_<variant>.{wav,mp3}` or `np
 | `guard_male_quest_declined_01.mp3` … `_02.mp3` | wired — guard male quest decline |
 | `guard_male_attention_01.mp3` | wired — guard male `normal`-tier player-reaction (`attention`, plan npc-056) |
 | `guard_male_refusal_01.mp3` / `guard_male_thanks_01.mp3` … `_02.mp3` | in repo — not wired |
-| `voices/references/` | reference material for generation — not runtime clips |
 
 Provenance/licensing for generated clips: record when known; do not invent attribution here.
 
