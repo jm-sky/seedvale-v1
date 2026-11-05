@@ -45,3 +45,5 @@ Laura greeting/exhaustion both match Laura; Casual exhaustion matches Casual but
 Near-unit similarities can indicate the same generation re-encoded with different MP3 bytes (e.g. historian greeting); these are not independent validation. Byte-identical files are always excluded; leave-one-reference-out evidence, not target near-copies, supports the gate. Multiple references are averaged once per distinct content per speaker. Singleton reference coverage remains weaker.
 
 Artifacts: [raw calibration](identity-calibration.json), [sample](identity-sample.json), [local policy](identity-policy.json), [CLI setup](../../../scripts/voice/IDENTITY-QC.md). Existing transcript QC and author verdicts are untouched.
+
+Final sample screening: 4 ambiguous, 21 strong-match, 2 suspected-wrong-speaker. Expected-bank winner: 23/27; this is agreement with catalog metadata, not measured identity accuracy. British female wins the Warm greeting (0.677, margin 0.536); Little Lem wins the child greeting (0.455, margin 0.305), with weaker singleton evidence and borderline score.

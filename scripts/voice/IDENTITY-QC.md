@@ -31,3 +31,14 @@ The JSON retains audio/ledger/mapping hashes, model revision, library versions,
 reference inventory, exclusions, errors, CPU seconds, wall time and peak RSS.
 Resource metrics include model initialization and decoding; wall time includes
 model download on a cold run. Existing ASR and author verdicts remain untouched.
+
+After reviewing the calibration gate, reproduce the full triage and Markdown:
+
+```sh
+/tmp/seedvale-identity-venv/bin/python scripts/voice/voice-identity-qc.py --policy docs/assets/voice-qc/identity-policy.json --output docs/assets/voice-qc/identity-audit.json
+python3 scripts/voice/voice-identity-report.py docs/assets/voice-qc/identity-audit.json docs/assets/voice-qc/IDENTITY-AUDIT.md
+```
+
+`referenceChecks` contains leave-one-content-out reference scores, with singleton
+voices explicitly missing their own reference. The local policy only labels
+review priorities; do not transfer these bounds to another model/reference set.

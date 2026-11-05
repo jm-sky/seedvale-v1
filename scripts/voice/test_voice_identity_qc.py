@@ -41,6 +41,33 @@ class IdentityTests(unittest.TestCase):
         self.assertIsNone(result['margin'])
         json.dumps(result,allow_nan=False)
 
+    def test_classification_stays_conservative(self):
+        policy={'minScore':.45,'minMargin':.15}
+        row=dict(missingExpectedReference=False,bestScore=.6,margin=.2,bestUuid='a',expectedUuid='a')
+        self.assertEqual(qc.classify(row,policy),'strong-match')
+        row['expectedUuid']='b'
+        self.assertEqual(qc.classify(row,policy),'suspected-wrong-speaker')
+        row['margin']=.01
+        self.assertEqual(qc.classify(row,policy),'ambiguous')
+        row['missingExpectedReference']=True
+        self.assertEqual(qc.classify(row,policy),'missing-reference')
+
+    def test_committed_audit_integrity(self):
+        path=qc.ROOT/'docs/assets/voice-qc/identity-audit.json'
+        if not path.exists():
+            self.skipTest('Full audit has not been run')
+        audit=json.loads(path.read_text())
+        ledger=json.loads((qc.ROOT/'docs/assets/voice-qc/ledger.json').read_text())
+        self.assertEqual({r['file'] for r in audit['rows']},{r['file'] for r in ledger['rows']})
+        self.assertEqual(len(audit['rows']),len(ledger['rows']))
+        refs={r['file']:r for r in audit['references']}
+        for row in audit['rows']:
+            self.assertNotIn('error',row)
+            self.assertEqual(row['bestScore'],max(row['voiceScores'].values()))
+            for pair in row['pairs']:
+                self.assertNotEqual(row['sha256'],refs[pair['file']]['sha256'])
+            self.assertEqual(row['classification'],qc.classify(row,audit['policy']))
+
     def test_pooling_margin(self):
         refs=[dict(file=str(i),sha256=str(i),uuid=u,embedding=e) for i,(u,e) in enumerate([('a',[1,0]),('a',[0,1]),('b',[0,1])])]
         result=qc.compare('target',[1,0],refs,'a')

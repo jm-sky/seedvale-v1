@@ -37,3 +37,13 @@ The QC generator reads the flat donor MP3 directory and the donor catalog; it is
 ## Decisions still needed
 
 Rudolf's named voice and the `?` profession slots (female farmer, male woodcutter/trader/blacksmith); girl voice and child-to-adult transition policy; source and transcript QC for existing files including mixed-source Casual/Warm and Laura/merchant banks; optional binding of Piers, Archibald and Patric in runtime; author review of 89 named draft texts. Q88/Q89/Q40 are implementation work outside this cleanup.
+
+## CPU speaker identity evidence — 2026-11-05
+
+The incremental [identity audit](../../assets/voice-qc/IDENTITY-AUDIT.md) and
+[27-take calibration](../../assets/voice-qc/IDENTITY-CALIBRATION.md) compare pinned
+SpeechBrain ECAPA embeddings against named Fish history references. Raw cosine
+scores, reference exclusions and resource measurements are preserved separately
+from the Whisper ledger. These findings prioritize manual source review; they do
+not change casting, transcript QC, author verdicts or authorize MP3 removal.
+[Reproducible CPU CLI](../../../scripts/voice/IDENTITY-QC.md).

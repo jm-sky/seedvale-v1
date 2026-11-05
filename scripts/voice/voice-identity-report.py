@@ -1,0 +1,43 @@
+#!/usr/bin/env python3
+"""Render review priorities from an identity audit; never modifies its input."""
+import argparse
+from collections import Counter
+import json
+from pathlib import Path
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('audit', type=Path)
+    parser.add_argument('output', type=Path)
+    args = parser.parse_args()
+    report = json.loads(args.audit.read_text())
+    mapping = json.loads(Path(__file__).with_name('voice-identity-map.json').read_text())
+    names = {v:k for k,v in mapping['voices'].items() if v}
+    counts = Counter(r.get('classification','analysis-error') for r in report['rows'])
+    lines = ['# NPC speaker identity audit — 2026-11-05', '',
+             'Identity evidence only: no transcript-QC or author verdict is changed. Similarity is not definitive proof of identity. Do not delete or admit MP3s based on this report.', '',
+             '[Calibration and limits](IDENTITY-CALIBRATION.md) · [Raw scores and provenance](identity-audit.json) · [Setup](../../../scripts/voice/IDENTITY-QC.md)', '',
+             f"Analyzed {len(report['rows'])} ledger rows / {report['uniqueTargetContents']} distinct audio hashes. Identical public copies verified: {sum(r.get('publicCopyIdentical') is True for r in report['rows'])}. No redundant public embedding extraction.", '',
+             f"Measured: {report['wallSec']:.2f}s wall; {report['cpuUserSec']+report['cpuSystemSec']:.2f}s CPU (user {report['cpuUserSec']:.2f}s, system {report['cpuSystemSec']:.2f}s); peak RSS {report['peakRssKiB']/1024:.1f} MiB; {report['threads']} CPU threads. Cache: {report['cacheHits']} hits / {report['cacheMisses']} extractions. Includes model initialization.", '',
+             '| Classification | Count |', '| --- | ---: |']
+    lines += [f'| {key} | {value} |' for key,value in sorted(counts.items())]
+    lines += ['', 'Review suspected wrong-speaker cases first, then ambiguous clips. Strong matches still require source/context/listening QC before cleanup. Single-reference voices and short or expressive clips have weaker evidence; absent speakers can never be identified by a closed reference set.', '',
+              '## Reference coverage and errors', '']
+    for error in report['referenceErrors']:
+        lines.append(f"- `{error['file']}`: {error['error']}")
+    single = Counter(r['uuid'] for r in report['references'])
+    lines += ['', 'Single-reference voices: '+', '.join(names[k] for k,v in single.items() if v==1)+'. These lack independent within-speaker reference validation.', '']
+    for kind in ['suspected-wrong-speaker','ambiguous','missing-reference','analysis-error','strong-match']:
+        lines += ['## '+kind, '', '| File | Expected | Best reference | Best | Expected score | Margin |', '| --- | --- | --- | ---: | ---: | ---: |']
+        rows = [r for r in report['rows'] if r.get('classification','analysis-error')==kind]
+        for row in sorted(rows,key=lambda r:-(r.get('margin') or 0)):
+            def num(key):
+                value=row.get(key)
+                return f'{value:.3f}' if value is not None else '—'
+            lines.append(f"| {row['file']} | {names.get(row['expectedUuid'],row['expectedUuid'])} | {names.get(row.get('bestUuid'),row.get('error','—'))} | {num('bestScore')} | {num('expectedScore')} | {num('margin')} |")
+        lines.append('')
+    args.output.write_text('\n'.join(lines)+'\n')
+
+if __name__=='__main__':
+    main()
