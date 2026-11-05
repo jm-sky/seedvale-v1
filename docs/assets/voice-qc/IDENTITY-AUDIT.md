@@ -43,35 +43,35 @@ Single-reference voices: British-female, Little-Lem, Old-man, Old-woman, Sleeple
 
 ## ambiguous
 
-| File | Expected | Best reference | Best | Expected score | Margin |
-| --- | --- | --- | ---: | ---: | ---: |
-| general_female_b_call_for_help_02.mp3 | Hannah | Hannah | 0.356 | 0.356 | 0.253 |
-| general_female_b_well_wish_01.mp3 | Hannah | Hannah | 0.441 | 0.441 | 0.251 |
-| general_female_b_danger_alert_02.mp3 | Hannah | Hannah | 0.399 | 0.399 | 0.237 |
-| campfire_female_weather_question_01.mp3 | Warm-Conversational-Female | British-female | 0.429 | 0.060 | 0.224 |
-| general_male_young_farewell_01.mp3 | Casual-Male-Speaker | Little-Lem | 0.386 | -0.009 | 0.205 |
-| hunter_male_b_agree_02.mp3 | Cowboy | Cowboy | 0.411 | 0.411 | 0.198 |
-| npc_mark_hornblower_danger_alert_01.mp3 | Friendly-Male-Voice | Friendly-Male-Voice | 0.382 | 0.382 | 0.196 |
-| merchant_female_refusal_01.mp3 | Expressive-Female-Voice | Expressive-Female-Voice | 0.380 | 0.380 | 0.188 |
-| general_male_young_greeting_01.mp3 | Casual-Male-Speaker | Little-Lem | 0.424 | 0.078 | 0.177 |
-| merchant_female_b_call_for_help_02.mp3 | Laura | Laura | 0.378 | 0.378 | 0.170 |
-| shepherd_male_livestock_danger_01.mp3 | hetalia-Russia | hetalia-Russia | 0.423 | 0.423 | 0.168 |
-| general_male_combat_start_01.mp3 | Casual-Male-Speaker | Casual-Male-Speaker | 0.393 | 0.393 | 0.160 |
-| guard_male_b_exhausted_01.mp3 | Dramatic-Character-Male | Dramatic-Character-Male | 0.368 | 0.368 | 0.156 |
-| hunter_male_thanks_02.mp3 | Arthur-Morgan | Arthur-Morgan | 0.482 | 0.482 | 0.148 |
-| general_male_old_farewell_02.mp3 | Casual-Male-Speaker | Brian-British | 0.349 | 0.014 | 0.143 |
-| campfire_male_weather_question_02.mp3 | Casual-Male-Speaker | Casual-Male-Speaker | 0.424 | 0.424 | 0.137 |
-| hunter_male_well_wish_01.mp3 | Arthur-Morgan | Arthur-Morgan | 0.440 | 0.440 | 0.117 |
-| general_male_call_for_help_01.mp3 | Casual-Male-Speaker | Casual-Male-Speaker | 0.282 | 0.282 | 0.113 |
-| general_male_farewell_01.mp3 | Casual-Male-Speaker | hetalia-Russia | 0.305 | 0.002 | 0.109 |
-| general_male_old_greeting_01.mp3 | Casual-Male-Speaker | Old-man | 0.326 | 0.206 | 0.100 |
-| campfire_male_work_question_01.mp3 | Casual-Male-Speaker | Casual-Male-Speaker | 0.300 | 0.300 | 0.100 |
-| general_male_young_greeting_02.mp3 | Casual-Male-Speaker | Little-Lem | 0.346 | 0.058 | 0.085 |
-| merchant_female_quest_accepted_01.mp3 | Expressive-Female-Voice | Expressive-Female-Voice | 0.468 | 0.468 | 0.082 |
-| merchant_female_agree_01.mp3 | Expressive-Female-Voice | Expressive-Female-Voice | 0.367 | 0.367 | 0.057 |
-| general_male_danger_alert_01.mp3 | Casual-Male-Speaker | Casual-Male-Speaker | 0.299 | 0.299 | 0.035 |
-| general_male_greeting_01.mp3 | Casual-Male-Speaker | Brian-British | 0.196 | -0.122 | 0.012 |
-| general_female_old_farewell_01.mp3 | Warm-Conversational-Female | Old-man | 0.206 | 0.036 | 0.004 |
+| File | Expected | Best reference | Best | Expected score | Margin | Decision |
+| --- | --- | --- | ---: | ---: | ---: | ---|
+| general_female_b_call_for_help_02.mp3 | Hannah | Hannah | 0.356 | 0.356 | 0.253 | ? |
+| general_female_b_well_wish_01.mp3 | Hannah | Hannah | 0.441 | 0.441 | 0.251 | ? |
+| general_female_b_danger_alert_02.mp3 | Hannah | Hannah | 0.399 | 0.399 | 0.237 | ? |
+| campfire_female_weather_question_01.mp3 | Warm-Conversational-Female | British-female | 0.429 | 0.060 | 0.224 | ? |
+| general_male_young_farewell_01.mp3 | Casual-Male-Speaker | Little-Lem | 0.386 | -0.009 | 0.205 | ? |
+| hunter_male_b_agree_02.mp3 | Cowboy | Cowboy | 0.411 | 0.411 | 0.198 | ? |
+| npc_mark_hornblower_danger_alert_01.mp3 | Friendly-Male-Voice | Friendly-Male-Voice | 0.382 | 0.382 | 0.196 | ? |
+| merchant_female_refusal_01.mp3 | Expressive-Female-Voice | Expressive-Female-Voice | 0.380 | 0.380 | 0.188 | ? |
+| general_male_young_greeting_01.mp3 | Casual-Male-Speaker | Little-Lem | 0.424 | 0.078 | 0.177 | ? |
+| merchant_female_b_call_for_help_02.mp3 | Laura | Laura | 0.378 | 0.378 | 0.170 | ? |
+| shepherd_male_livestock_danger_01.mp3 | hetalia-Russia | hetalia-Russia | 0.423 | 0.423 | 0.168 | ? |
+| general_male_combat_start_01.mp3 | Casual-Male-Speaker | Casual-Male-Speaker | 0.393 | 0.393 | 0.160 | ? |
+| guard_male_b_exhausted_01.mp3 | Dramatic-Character-Male | Dramatic-Character-Male | 0.368 | 0.368 | 0.156 | ? |
+| hunter_male_thanks_02.mp3 | Arthur-Morgan | Arthur-Morgan | 0.482 | 0.482 | 0.148 | ? |
+| general_male_old_farewell_02.mp3 | Casual-Male-Speaker | Brian-British | 0.349 | 0.014 | 0.143 | ? |
+| campfire_male_weather_question_02.mp3 | Casual-Male-Speaker | Casual-Male-Speaker | 0.424 | 0.424 | 0.137 | ? |
+| hunter_male_well_wish_01.mp3 | Arthur-Morgan | Arthur-Morgan | 0.440 | 0.440 | 0.117 | ? |
+| general_male_call_for_help_01.mp3 | Casual-Male-Speaker | Casual-Male-Speaker | 0.282 | 0.282 | 0.113 | ? |
+| general_male_farewell_01.mp3 | Casual-Male-Speaker | hetalia-Russia | 0.305 | 0.002 | 0.109 | ? |
+| general_male_old_greeting_01.mp3 | Casual-Male-Speaker | Old-man | 0.326 | 0.206 | 0.100 | ? |
+| campfire_male_work_question_01.mp3 | Casual-Male-Speaker | Casual-Male-Speaker | 0.300 | 0.300 | 0.100 | ? |
+| general_male_young_greeting_02.mp3 | Casual-Male-Speaker | Little-Lem | 0.346 | 0.058 | 0.085 | Little-Lem |
+| merchant_female_quest_accepted_01.mp3 | Expressive-Female-Voice | Expressive-Female-Voice | 0.468 | 0.468 | 0.082 | ? |
+| merchant_female_agree_01.mp3 | Expressive-Female-Voice | Expressive-Female-Voice | 0.367 | 0.367 | 0.057 | ? |
+| general_male_danger_alert_01.mp3 | Casual-Male-Speaker | Casual-Male-Speaker | 0.299 | 0.299 | 0.035 | guard? |
+| general_male_greeting_01.mp3 | Casual-Male-Speaker | Brian-British | 0.196 | -0.122 | 0.012 | REMOVE |
+| general_female_old_farewell_01.mp3 | Warm-Conversational-Female | Old-man | 0.206 | 0.036 | 0.004 | Old-woman |
 
 ## missing-reference
 
