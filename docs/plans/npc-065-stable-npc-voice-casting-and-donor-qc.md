@@ -235,3 +235,33 @@ Each NPC retains one selected speaker across utterances (never randomly switches
 
 These are casting judgments, not individual transcript-QC verdicts. Unverified source IDs must not be treated as proven.
 
+## NPC-Voice map
+
+### Defined named NPCs
+
+| Name       | Proffesion         | Voice Name              | Voice ID                         |
+|------------|--------------------|-------------------------|----------------------------------|
+| Marek      | guard              | Friendly Male           | 2adcdee4b3ce4b648dc16ea65430ea76 |
+| Kasia      | trader             | Expressive Female       | d4f161bee1934b47ad3090f05649270c |
+| Anna       | farmer             | Laura                   | e3cd384158934cc9a01029cd7d278634 |
+| Piotr      | woodcutter         | Country Baritone        | 5e03f21950f64729935dd8402c9c9702 |
+| Molly      | shepard            | Hannah                  | 9a9cf47702da476aa4629e2506d4a857 |
+| Pierce     | farmer             | Warm Male Friend        | f292c81d563f47799b7e411f1c1e68a9 |
+| Jakub      | hunter             | Arthur Morgan           | bd22266aba38416cb602e90ce651520c |
+| Kazimierz  | elder              | Clint Eastwood          | 61a8f98f12cc4551bc74d01d16830f02 |
+| Archibald  | trader             | Old man                 | 61fc0e0fc78046da8fb9549b9b4c6175 |
+| Patric     | blacksmith         | Dramatic Character Male | 7a18a1851d2649108c48ec9f2c80eb2c |
+| Rudolf     | farmer + sołtys    | ?                       | ?                                |
+
+### General, professions
+
+| Sex    | Proffesion     | Age    | Voice Name      | Voice ID                         |
+|------- |----------------|--------|-----------------|----------------------------------|
+| Male   | General        | Middle | FairyTail 1     | 689b47ca83dd48dba90b160affb8a118 |
+| Male   | General        | Old    | george          | 372ef39bf5bf4fd38c5c56bce607aba6 |
+| Female | General        | Old    | Old woman       | 8db547ea044f44838bf2f8a039f05b5a |
+| Male   | General        | Child  | Little Lem      | 34a421bb18bd4d3289898233cfa88269 |
+| Male   | Fisher         | Middle | Rick Sanchez    | d2e75a3e3fd6419893057c02a375a113 |
+| Male   | Hunter         | Middle | Cowboy          | a2cecd3eda8b44178b7f1bc1379edae0 |
+| Male   | Guard          | Middle | Guard           | c29549f41b3b4aa498d66d76fba0e887 |
+| Male   | Shepherd       | Middle | Hetalia Russia  | 4af16ba03cee422996ec29a43e1947ee |
