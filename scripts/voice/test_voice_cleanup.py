@@ -45,6 +45,21 @@ class CleanupTests(unittest.TestCase):
                 audio = subprocess.check_output(['git', 'show', removal['recoveryCommit']+':'+path], cwd=ROOT)
                 self.assertEqual(hashlib.sha256(audio).hexdigest(), removal['sha256'])
 
+    def test_regeneration_manifest_covers_removals_and_preserves_source_text(self):
+        directory = ROOT/'docs/assets/voice-qc'
+        backlog = json.loads((directory/'regeneration-backlog.json').read_text())['recordings']
+        removals = {r['filename']: r for r in json.loads((directory/'deletion-manifest.json').read_text())['recordings']}
+        ledger = {r['file']: r for r in json.loads((directory/'ledger.json').read_text())['rows']}
+        self.assertEqual({r['originalFilename'] for r in backlog}, set(removals))
+        self.assertEqual(sum(r['runtimeCritical'] for r in backlog), 7)
+        for row in backlog:
+            name = row['originalFilename']
+            self.assertEqual(row['originalSha256'], removals[name]['sha256'])
+            self.assertEqual(row['originalCatalogText'], ledger[name]['catalogText'])
+            self.assertEqual(row['verifiedAsrText'], ledger[name]['asrText'])
+            self.assertEqual(row['targetLocation'], 'public/sounds/voices/' + name)
+            self.assertNotEqual(row['expectedReplacementSpeakerUuid'], '82a3ef4504a6441e9a07acdaaf5349c1')
+
     def test_migration_preserves_every_retained_hash(self):
         directory = ROOT/'docs/assets/voice-qc'
         inventory = json.loads((directory/'migration-inventory.json').read_text())['recordings']

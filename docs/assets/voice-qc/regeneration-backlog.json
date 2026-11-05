@@ -1,8 +1,559 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "date": "2026-11-05",
-  "scope": "Exactly six author-rejected recordings. No Fish generation. Replacement text is proposed; current casting and historical identity are separate. All pre-cleanup text references are retained as a dependency inventory, including historical evidence.",
+  "scope": "14 author-rejected recordings: 7 restore removed runtime coverage; 7 optional previously unregistered takes. No Fish generation. Text and age/role integration gates remain explicit.",
   "recordings": [
+    {
+      "originalFilename": "campfire_female_weather_answer_02.mp3",
+      "intendedBank": "campfire_female",
+      "intendedRole": "General middle-aged female; campfire exchange must retain its original question/answer intent",
+      "intent": "weather_answer",
+      "disposition": "replace",
+      "originalAuthorCell": "",
+      "historicalExpectedSpeakerUuid": "5e3be339f2df45e6a1a338bb2ce94800",
+      "historicalIdentityStatus": "Historical Warm Conversational bank metadata is wrong for this recording; author confirms British-female.",
+      "confirmedOriginalSpeakerUuid": "82a3ef4504a6441e9a07acdaaf5349c1",
+      "expectedReplacementSpeakerUuid": "5e3be339f2df45e6a1a338bb2ce94800",
+      "replacementSpeakerStatus": "Author-approved general middle-aged female casting; not the rejected original recording identity",
+      "originalCatalogText": "Maybe. It usually turns before dawn.",
+      "originalGenerationInput": "[breathy] Maybe. [short pause] It usually [emphasis] turns before dawn.",
+      "asrText": "Maybe it usually turns before dawn.",
+      "reasonForReplacement": "Author explicitly confirmed British-female and approved global rejection/removal, 2026-11-05; not inferred from similarity.",
+      "proposedReplacementText": "Maybe. It usually turns before dawn.",
+      "textApproval": "Original semantic text retained for review; not new author-approved production text",
+      "textRationale": "No new dialogue authored; resolve any ASR/catalog difference and context claims before generation.",
+      "integrationReferences": {
+        "runtimeManifest": "src/ai/campfireTalk.ts",
+        "dialogueTranscript": null,
+        "currentRegistration": "removed complete weather exchange",
+        "qc": [
+          "docs/assets/voice-qc/ledger.json",
+          "docs/assets/voice-qc/identity-audit.json",
+          "docs/assets/voice-qc/author-decisions.json"
+        ],
+        "allTrackedTextReferencesBeforeCleanup": [
+          "docs/assets/voice-qc/IDENTITY-AUDIT.md",
+          "docs/assets/voice-qc/IDENTITY-MAPPING-REVIEW.md",
+          "docs/assets/voice-qc/author-decisions.json",
+          "docs/assets/voice-qc/identity-audit.json",
+          "docs/assets/voice-qc/ledger.json",
+          "docs/dialogue/NPC-VOICE-CATALOG.md",
+          "docs/research/v1-revival/2026-10-31--npc-voice-audit-inventory.json",
+          "docs/research/v1-revival/2026-11-04--q90-coverage.json",
+          "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md",
+          "src/ai/campfireTalk.ts"
+        ],
+        "catalogs": [
+          "docs/design/npc-voices/CATALOG.md"
+        ]
+      },
+      "integrationGate": "No automatic re-enable. Approve text and source, generate in a separate production task, verify transcript/context/listening QC, then integrate only original semantic intent and eligible approved speaker; Q88/Q89 casting remains separate.",
+      "removal": {
+        "historicalCommit": "4d29c4397f4d3c91869a58e2c7ae2a350cef65e1",
+        "gitBlob": "44cec6233045d4fda3a1f0e2a014f4060c6c946f",
+        "sha256": "03c9765a5d4c5f601e352cecd5fdf6ee5a49c70704f39efd169da367b6513d9b",
+        "removedPaths": [
+          "docs/v3-donor/voices/mp3/campfire_female_weather_answer_02.mp3",
+          "public/sounds/voices/campfire_female_weather_answer_02.mp3"
+        ],
+        "recovery": "git show <historicalCommit>:<removedPath>",
+        "status": "removed by final author-approved cleanup"
+      },
+      "castingEvidence": "docs/design/npc-voices/CASTING.md#npc-voice-casting",
+      "targetLocation": "public/sounds/voices/campfire_female_weather_answer_02.mp3",
+      "publicTargetAfterQc": "public/sounds/voices/campfire_female_weather_answer_02.mp3",
+      "originalSha256": "03c9765a5d4c5f601e352cecd5fdf6ee5a49c70704f39efd169da367b6513d9b",
+      "verifiedAsrText": "Maybe it usually turns before dawn.",
+      "asrVerification": "Existing cached Whisper small.en transcript, bound to original gitBlob; not manually/listening verified.",
+      "priority": "runtime-coverage-restoration",
+      "runtimeCritical": true,
+      "runtimeRequirement": "Restore previously registered semantic coverage only after production/QC and approved speaker eligibility; current gameplay uses existing silence/text-only handling. Restore the original complete weather Q/A definition only when this replacement and its retained opposite-gender partner are QC-compatible. Do not cross-pair work/road lines.",
+      "replacementTextRequiringReview": "Maybe. It usually turns before dawn.",
+      "transcriptReviewRequired": false
+    },
+    {
+      "originalFilename": "campfire_female_weather_question_01.mp3",
+      "intendedBank": "campfire_female",
+      "intendedRole": "General middle-aged female; campfire exchange must retain its original question/answer intent",
+      "intent": "weather_question",
+      "disposition": "replace",
+      "originalAuthorCell": "British-female",
+      "historicalExpectedSpeakerUuid": "5e3be339f2df45e6a1a338bb2ce94800",
+      "historicalIdentityStatus": "Historical Warm Conversational bank metadata is wrong for this recording; author confirms British-female.",
+      "confirmedOriginalSpeakerUuid": "82a3ef4504a6441e9a07acdaaf5349c1",
+      "expectedReplacementSpeakerUuid": "5e3be339f2df45e6a1a338bb2ce94800",
+      "replacementSpeakerStatus": "Author-approved general middle-aged female casting; not the rejected original recording identity",
+      "originalCatalogText": "Cold tonight, isn't it?",
+      "originalGenerationInput": "",
+      "asrText": "Long day",
+      "reasonForReplacement": "Author explicitly confirmed British-female and approved global rejection/removal, 2026-11-05; not inferred from similarity.",
+      "proposedReplacementText": "Cold tonight, isn't it?",
+      "textApproval": "Original semantic text retained for review; not new author-approved production text",
+      "textRationale": "No new dialogue authored; resolve any ASR/catalog difference and context claims before generation.",
+      "integrationReferences": {
+        "runtimeManifest": "src/ai/campfireTalk.ts",
+        "dialogueTranscript": null,
+        "currentRegistration": "removed complete weather exchange",
+        "qc": [
+          "docs/assets/voice-qc/ledger.json",
+          "docs/assets/voice-qc/identity-audit.json",
+          "docs/assets/voice-qc/author-decisions.json"
+        ],
+        "allTrackedTextReferencesBeforeCleanup": [
+          "docs/assets/voice-qc/IDENTITY-AUDIT.md",
+          "docs/assets/voice-qc/IDENTITY-MAPPING-REVIEW.md",
+          "docs/assets/voice-qc/REPORT.md",
+          "docs/assets/voice-qc/author-decisions.json",
+          "docs/assets/voice-qc/identity-audit.json",
+          "docs/assets/voice-qc/ledger.json",
+          "docs/dialogue/NPC-VOICE-CATALOG.md",
+          "docs/research/v1-revival/2026-10-31--npc-voice-audit-inventory.json",
+          "docs/research/v1-revival/2026-11-04--q90-coverage.json",
+          "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md",
+          "src/ai/campfireTalk.ts"
+        ],
+        "catalogs": [
+          "docs/design/npc-voices/CATALOG.md"
+        ]
+      },
+      "integrationGate": "No automatic re-enable. Approve text and source, generate in a separate production task, verify transcript/context/listening QC, then integrate only original semantic intent and eligible approved speaker; Q88/Q89 casting remains separate.",
+      "removal": {
+        "historicalCommit": "4d29c4397f4d3c91869a58e2c7ae2a350cef65e1",
+        "gitBlob": "ba7d75c681b16aaf008043a25b70f4431543b59b",
+        "sha256": "afa5158f6905c5c55f943835ed4ef62f13e073f15d6e0b6262e1f045b8a4774a",
+        "removedPaths": [
+          "docs/v3-donor/voices/mp3/campfire_female_weather_question_01.mp3",
+          "public/sounds/voices/campfire_female_weather_question_01.mp3"
+        ],
+        "recovery": "git show <historicalCommit>:<removedPath>",
+        "status": "removed by final author-approved cleanup"
+      },
+      "castingEvidence": "docs/design/npc-voices/CASTING.md#npc-voice-casting",
+      "targetLocation": "public/sounds/voices/campfire_female_weather_question_01.mp3",
+      "publicTargetAfterQc": "public/sounds/voices/campfire_female_weather_question_01.mp3",
+      "originalSha256": "afa5158f6905c5c55f943835ed4ef62f13e073f15d6e0b6262e1f045b8a4774a",
+      "verifiedAsrText": "Long day",
+      "asrVerification": "Existing cached Whisper small.en transcript, bound to original gitBlob; not manually/listening verified.",
+      "priority": "runtime-coverage-restoration",
+      "runtimeCritical": true,
+      "runtimeRequirement": "Restore previously registered semantic coverage only after production/QC and approved speaker eligibility; current gameplay uses existing silence/text-only handling. Restore the original complete weather Q/A definition only when this replacement and its retained opposite-gender partner are QC-compatible. Do not cross-pair work/road lines.",
+      "replacementTextRequiringReview": "Cold tonight, isn't it?",
+      "transcriptReviewRequired": true
+    },
+    {
+      "originalFilename": "general_female_agree_01.mp3",
+      "intendedBank": "general_female",
+      "intendedRole": "General middle-aged female",
+      "intent": "agree",
+      "disposition": "replace",
+      "originalAuthorCell": "",
+      "historicalExpectedSpeakerUuid": "5e3be339f2df45e6a1a338bb2ce94800",
+      "historicalIdentityStatus": "Historical Warm Conversational bank metadata is wrong for this recording; author confirms British-female.",
+      "confirmedOriginalSpeakerUuid": "82a3ef4504a6441e9a07acdaaf5349c1",
+      "expectedReplacementSpeakerUuid": "5e3be339f2df45e6a1a338bb2ce94800",
+      "replacementSpeakerStatus": "Author-approved general middle-aged female casting; not the rejected original recording identity",
+      "originalCatalogText": "Alright. That sounds good.",
+      "originalGenerationInput": "Alright. That sounds good.",
+      "asrText": "Alright, that sounds good.",
+      "reasonForReplacement": "Author explicitly confirmed British-female and approved global rejection/removal, 2026-11-05; not inferred from similarity.",
+      "proposedReplacementText": "Alright. That sounds good.",
+      "textApproval": "Original semantic text retained for review; not new author-approved production text",
+      "textRationale": "No new dialogue authored; resolve any ASR/catalog difference and context claims before generation.",
+      "integrationReferences": {
+        "runtimeManifest": "src/ai/npcVoiceLines.ts",
+        "dialogueTranscript": null,
+        "currentRegistration": "not previously registered",
+        "qc": [
+          "docs/assets/voice-qc/ledger.json",
+          "docs/assets/voice-qc/identity-audit.json",
+          "docs/assets/voice-qc/author-decisions.json"
+        ],
+        "allTrackedTextReferencesBeforeCleanup": [
+          "docs/assets/voice-qc/IDENTITY-AUDIT.md",
+          "docs/assets/voice-qc/IDENTITY-MAPPING-REVIEW.md",
+          "docs/assets/voice-qc/author-decisions.json",
+          "docs/assets/voice-qc/identity-audit.json",
+          "docs/assets/voice-qc/ledger.json",
+          "docs/dialogue/NPC-VOICE-CATALOG.md",
+          "docs/research/v1-revival/2026-10-31--npc-voice-audit-inventory.json",
+          "docs/research/v1-revival/2026-11-04--q90-coverage.json",
+          "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
+        ],
+        "catalogs": [
+          "docs/design/npc-voices/CATALOG.md"
+        ]
+      },
+      "integrationGate": "No automatic re-enable. Approve text and source, generate in a separate production task, verify transcript/context/listening QC, then integrate only original semantic intent and eligible approved speaker; Q88/Q89 casting remains separate.",
+      "removal": {
+        "historicalCommit": "4d29c4397f4d3c91869a58e2c7ae2a350cef65e1",
+        "gitBlob": "d12c0e2be5029d5853ce4002d294a6fb0cda8690",
+        "sha256": "c02485da9da8ea97012a5a432ce84db70e0c617a0db1f83fa21c3c31cbd0c466",
+        "removedPaths": [
+          "docs/v3-donor/voices/mp3/general_female_agree_01.mp3",
+          "public/sounds/voices/general_female_agree_01.mp3"
+        ],
+        "recovery": "git show <historicalCommit>:<removedPath>",
+        "status": "removed by final author-approved cleanup"
+      },
+      "castingEvidence": "docs/design/npc-voices/CASTING.md#npc-voice-casting",
+      "targetLocation": "public/sounds/voices/general_female_agree_01.mp3",
+      "publicTargetAfterQc": "public/sounds/voices/general_female_agree_01.mp3",
+      "originalSha256": "c02485da9da8ea97012a5a432ce84db70e0c617a0db1f83fa21c3c31cbd0c466",
+      "verifiedAsrText": "Alright, that sounds good.",
+      "asrVerification": "Existing cached Whisper small.en transcript, bound to original gitBlob; not manually/listening verified.",
+      "priority": "optional-coverage",
+      "runtimeCritical": false,
+      "runtimeRequirement": "Do not add to runtime merely because regenerated; optional age/general intent coverage requires separate integration approval.",
+      "replacementTextRequiringReview": "Alright. That sounds good.",
+      "transcriptReviewRequired": false
+    },
+    {
+      "originalFilename": "general_female_farewell_01.mp3",
+      "intendedBank": "general_female",
+      "intendedRole": "General middle-aged female",
+      "intent": "farewell",
+      "disposition": "replace",
+      "originalAuthorCell": "",
+      "historicalExpectedSpeakerUuid": "5e3be339f2df45e6a1a338bb2ce94800",
+      "historicalIdentityStatus": "Historical Warm Conversational bank metadata is wrong for this recording; author confirms British-female.",
+      "confirmedOriginalSpeakerUuid": "82a3ef4504a6441e9a07acdaaf5349c1",
+      "expectedReplacementSpeakerUuid": "5e3be339f2df45e6a1a338bb2ce94800",
+      "replacementSpeakerStatus": "Author-approved general middle-aged female casting; not the rejected original recording identity",
+      "originalCatalogText": "Take care of yourself.",
+      "originalGenerationInput": "Take care of yourself.",
+      "asrText": "Take care of yourself.",
+      "reasonForReplacement": "Author explicitly confirmed British-female and approved global rejection/removal, 2026-11-05; not inferred from similarity.",
+      "proposedReplacementText": "Take care of yourself.",
+      "textApproval": "Original semantic text retained for review; not new author-approved production text",
+      "textRationale": "No new dialogue authored; resolve any ASR/catalog difference and context claims before generation.",
+      "integrationReferences": {
+        "runtimeManifest": "src/ai/npcVoiceLines.ts",
+        "dialogueTranscript": null,
+        "currentRegistration": "removed general female greeting/farewell",
+        "qc": [
+          "docs/assets/voice-qc/ledger.json",
+          "docs/assets/voice-qc/identity-audit.json",
+          "docs/assets/voice-qc/author-decisions.json"
+        ],
+        "allTrackedTextReferencesBeforeCleanup": [
+          "docs/assets/voice-qc/IDENTITY-AUDIT.md",
+          "docs/assets/voice-qc/IDENTITY-MAPPING-REVIEW.md",
+          "docs/assets/voice-qc/REPORT.md",
+          "docs/assets/voice-qc/author-decisions.json",
+          "docs/assets/voice-qc/identity-audit.json",
+          "docs/assets/voice-qc/ledger.json",
+          "docs/dialogue/NPC-VOICE-CATALOG.md",
+          "docs/research/v1-revival/2026-10-31--npc-voice-audit-inventory.json",
+          "docs/research/v1-revival/2026-11-04--q90-coverage.json",
+          "docs/research/v1-revival/2026-11-05--named-npc-voice-reuse-qc.md",
+          "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md",
+          "src/ai/npcVoiceLines.ts"
+        ],
+        "catalogs": [
+          "docs/design/npc-voices/CATALOG.md"
+        ]
+      },
+      "integrationGate": "No automatic re-enable. Approve text and source, generate in a separate production task, verify transcript/context/listening QC, then integrate only original semantic intent and eligible approved speaker; Q88/Q89 casting remains separate.",
+      "removal": {
+        "historicalCommit": "4d29c4397f4d3c91869a58e2c7ae2a350cef65e1",
+        "gitBlob": "a834a37cf313af20c968b81ad9d071f61cddcb87",
+        "sha256": "e28d10809561067debc39708aebf22daa0527cc5d533cca7650768938e37063c",
+        "removedPaths": [
+          "docs/v3-donor/voices/mp3/general_female_farewell_01.mp3",
+          "public/sounds/voices/general_female_farewell_01.mp3"
+        ],
+        "recovery": "git show <historicalCommit>:<removedPath>",
+        "status": "removed by final author-approved cleanup"
+      },
+      "castingEvidence": "docs/design/npc-voices/CASTING.md#npc-voice-casting",
+      "targetLocation": "public/sounds/voices/general_female_farewell_01.mp3",
+      "publicTargetAfterQc": "public/sounds/voices/general_female_farewell_01.mp3",
+      "originalSha256": "e28d10809561067debc39708aebf22daa0527cc5d533cca7650768938e37063c",
+      "verifiedAsrText": "Take care of yourself.",
+      "asrVerification": "Existing cached Whisper small.en transcript, bound to original gitBlob; not manually/listening verified.",
+      "priority": "runtime-coverage-restoration",
+      "runtimeCritical": true,
+      "runtimeRequirement": "Restore previously registered semantic coverage only after production/QC and approved speaker eligibility; current gameplay uses existing silence/text-only handling.",
+      "replacementTextRequiringReview": "Take care of yourself.",
+      "transcriptReviewRequired": false
+    },
+    {
+      "originalFilename": "general_female_greeting_01.mp3",
+      "intendedBank": "general_female",
+      "intendedRole": "General middle-aged female",
+      "intent": "greeting",
+      "disposition": "replace",
+      "originalAuthorCell": "",
+      "historicalExpectedSpeakerUuid": "5e3be339f2df45e6a1a338bb2ce94800",
+      "historicalIdentityStatus": "Historical Warm Conversational bank metadata is wrong for this recording; author confirms British-female.",
+      "confirmedOriginalSpeakerUuid": "82a3ef4504a6441e9a07acdaaf5349c1",
+      "expectedReplacementSpeakerUuid": "5e3be339f2df45e6a1a338bb2ce94800",
+      "replacementSpeakerStatus": "Author-approved general middle-aged female casting; not the rejected original recording identity",
+      "originalCatalogText": "Hello there. Good to see you.",
+      "originalGenerationInput": "Hello there. Good to see you.",
+      "asrText": "Hello there, good to see you.",
+      "reasonForReplacement": "Author explicitly confirmed British-female and approved global rejection/removal, 2026-11-05; not inferred from similarity.",
+      "proposedReplacementText": "Hello there. Good to see you.",
+      "textApproval": "Original semantic text retained for review; not new author-approved production text",
+      "textRationale": "No new dialogue authored; resolve any ASR/catalog difference and context claims before generation.",
+      "integrationReferences": {
+        "runtimeManifest": "src/ai/npcVoiceLines.ts",
+        "dialogueTranscript": "src/ui-vue/npcDialogueGreeting.ts",
+        "currentRegistration": "removed general female greeting/farewell",
+        "qc": [
+          "docs/assets/voice-qc/ledger.json",
+          "docs/assets/voice-qc/identity-audit.json",
+          "docs/assets/voice-qc/author-decisions.json"
+        ],
+        "allTrackedTextReferencesBeforeCleanup": [
+          "docs/assets/voice-qc/IDENTITY-AUDIT.md",
+          "docs/assets/voice-qc/IDENTITY-CALIBRATION.md",
+          "docs/assets/voice-qc/IDENTITY-MAPPING-REVIEW.md",
+          "docs/assets/voice-qc/REPORT.md",
+          "docs/assets/voice-qc/author-decisions.json",
+          "docs/assets/voice-qc/identity-audit.json",
+          "docs/assets/voice-qc/identity-calibration.json",
+          "docs/assets/voice-qc/identity-sample.json",
+          "docs/assets/voice-qc/ledger.json",
+          "docs/dialogue/NPC-VOICE-CATALOG.md",
+          "docs/plans/npc-065-stable-npc-voice-casting-and-donor-qc.md",
+          "docs/research/v1-revival/2026-10-31--npc-voice-audit-inventory.json",
+          "docs/research/v1-revival/2026-11-04--q90-coverage.json",
+          "docs/research/v1-revival/2026-11-05--named-npc-voice-reuse-qc.md",
+          "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md",
+          "src/ai/npcVoiceLines.ts"
+        ],
+        "catalogs": [
+          "docs/design/npc-voices/CATALOG.md"
+        ]
+      },
+      "integrationGate": "No automatic re-enable. Approve text and source, generate in a separate production task, verify transcript/context/listening QC, then integrate only original semantic intent and eligible approved speaker; Q88/Q89 casting remains separate.",
+      "removal": {
+        "historicalCommit": "4d29c4397f4d3c91869a58e2c7ae2a350cef65e1",
+        "gitBlob": "70b49103970982350b30dd3fe2ce159140651d7d",
+        "sha256": "9de96351c44128b477a1f2a45cc8b980ce287578458466c7fd9ed6a9dca9250b",
+        "removedPaths": [
+          "docs/v3-donor/voices/mp3/general_female_greeting_01.mp3",
+          "public/sounds/voices/general_female_greeting_01.mp3"
+        ],
+        "recovery": "git show <historicalCommit>:<removedPath>",
+        "status": "removed by final author-approved cleanup"
+      },
+      "castingEvidence": "docs/design/npc-voices/CASTING.md#npc-voice-casting",
+      "targetLocation": "public/sounds/voices/general_female_greeting_01.mp3",
+      "publicTargetAfterQc": "public/sounds/voices/general_female_greeting_01.mp3",
+      "originalSha256": "9de96351c44128b477a1f2a45cc8b980ce287578458466c7fd9ed6a9dca9250b",
+      "verifiedAsrText": "Hello there, good to see you.",
+      "asrVerification": "Existing cached Whisper small.en transcript, bound to original gitBlob; not manually/listening verified.",
+      "priority": "runtime-coverage-restoration",
+      "runtimeCritical": true,
+      "runtimeRequirement": "Restore previously registered semantic coverage only after production/QC and approved speaker eligibility; current gameplay uses existing silence/text-only handling.",
+      "replacementTextRequiringReview": "Hello there. Good to see you.",
+      "transcriptReviewRequired": false
+    },
+    {
+      "originalFilename": "general_female_quest_complete_01.mp3",
+      "intendedBank": "general_female",
+      "intendedRole": "General middle-aged female",
+      "intent": "quest_complete",
+      "disposition": "replace",
+      "originalAuthorCell": "",
+      "historicalExpectedSpeakerUuid": "5e3be339f2df45e6a1a338bb2ce94800",
+      "historicalIdentityStatus": "Historical Warm Conversational bank metadata is wrong for this recording; author confirms British-female.",
+      "confirmedOriginalSpeakerUuid": "82a3ef4504a6441e9a07acdaaf5349c1",
+      "expectedReplacementSpeakerUuid": "5e3be339f2df45e6a1a338bb2ce94800",
+      "replacementSpeakerStatus": "Author-approved general middle-aged female casting; not the rejected original recording identity",
+      "originalCatalogText": "You did it! Thank you so much.",
+      "originalGenerationInput": "You did it. Thank you so much",
+      "asrText": "You did it. Thank you so much.",
+      "reasonForReplacement": "Author explicitly confirmed British-female and approved global rejection/removal, 2026-11-05; not inferred from similarity.",
+      "proposedReplacementText": "You did it! Thank you so much.",
+      "textApproval": "Original semantic text retained for review; not new author-approved production text",
+      "textRationale": "No new dialogue authored; resolve any ASR/catalog difference and context claims before generation.",
+      "integrationReferences": {
+        "runtimeManifest": "src/ai/npcVoiceLines.ts",
+        "dialogueTranscript": null,
+        "currentRegistration": "not previously registered",
+        "qc": [
+          "docs/assets/voice-qc/ledger.json",
+          "docs/assets/voice-qc/identity-audit.json",
+          "docs/assets/voice-qc/author-decisions.json"
+        ],
+        "allTrackedTextReferencesBeforeCleanup": [
+          "docs/assets/voice-qc/IDENTITY-AUDIT.md",
+          "docs/assets/voice-qc/IDENTITY-MAPPING-REVIEW.md",
+          "docs/assets/voice-qc/author-decisions.json",
+          "docs/assets/voice-qc/identity-audit.json",
+          "docs/assets/voice-qc/ledger.json",
+          "docs/dialogue/NPC-VOICE-CATALOG.md",
+          "docs/research/v1-revival/2026-10-31--npc-voice-audit-inventory.json",
+          "docs/research/v1-revival/2026-11-04--q90-coverage.json",
+          "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md",
+          "docs/v3-donor/voices/docs/recorded-lines-replacement-backlog.md"
+        ],
+        "catalogs": [
+          "docs/design/npc-voices/CATALOG.md"
+        ]
+      },
+      "integrationGate": "No automatic re-enable. Approve text and source, generate in a separate production task, verify transcript/context/listening QC, then integrate only original semantic intent and eligible approved speaker; Q88/Q89 casting remains separate.",
+      "removal": {
+        "historicalCommit": "4d29c4397f4d3c91869a58e2c7ae2a350cef65e1",
+        "gitBlob": "1019b3298263ea5631f218d3f6873b131923788c",
+        "sha256": "09829ad550173bffb9f9bd5fb9aa94e63d9e61d547f3b4c679719f14e6d47f36",
+        "removedPaths": [
+          "docs/v3-donor/voices/mp3/general_female_quest_complete_01.mp3",
+          "public/sounds/voices/general_female_quest_complete_01.mp3"
+        ],
+        "recovery": "git show <historicalCommit>:<removedPath>",
+        "status": "removed by final author-approved cleanup"
+      },
+      "castingEvidence": "docs/design/npc-voices/CASTING.md#npc-voice-casting",
+      "targetLocation": "public/sounds/voices/general_female_quest_complete_01.mp3",
+      "publicTargetAfterQc": "public/sounds/voices/general_female_quest_complete_01.mp3",
+      "originalSha256": "09829ad550173bffb9f9bd5fb9aa94e63d9e61d547f3b4c679719f14e6d47f36",
+      "verifiedAsrText": "You did it. Thank you so much.",
+      "asrVerification": "Existing cached Whisper small.en transcript, bound to original gitBlob; not manually/listening verified.",
+      "priority": "optional-coverage",
+      "runtimeCritical": false,
+      "runtimeRequirement": "Do not add to runtime merely because regenerated; optional age/general intent coverage requires separate integration approval.",
+      "replacementTextRequiringReview": "You did it! Thank you so much.",
+      "transcriptReviewRequired": false
+    },
+    {
+      "originalFilename": "general_female_quest_declined_01.mp3",
+      "intendedBank": "general_female",
+      "intendedRole": "General middle-aged female",
+      "intent": "quest_declined",
+      "disposition": "replace",
+      "originalAuthorCell": "",
+      "historicalExpectedSpeakerUuid": "5e3be339f2df45e6a1a338bb2ce94800",
+      "historicalIdentityStatus": "Historical Warm Conversational bank metadata is wrong for this recording; author confirms British-female.",
+      "confirmedOriginalSpeakerUuid": "82a3ef4504a6441e9a07acdaaf5349c1",
+      "expectedReplacementSpeakerUuid": "5e3be339f2df45e6a1a338bb2ce94800",
+      "replacementSpeakerStatus": "Author-approved general middle-aged female casting; not the rejected original recording identity",
+      "originalCatalogText": "Oh... I see. Maybe someone else can help.",
+      "originalGenerationInput": "Oh... I see. Maybe someone else can help",
+      "asrText": "Oh, I see. Maybe someone else can help.",
+      "reasonForReplacement": "Author explicitly confirmed British-female and approved global rejection/removal, 2026-11-05; not inferred from similarity.",
+      "proposedReplacementText": "Oh... I see. Maybe someone else can help.",
+      "textApproval": "Original semantic text retained for review; not new author-approved production text",
+      "textRationale": "No new dialogue authored; resolve any ASR/catalog difference and context claims before generation.",
+      "integrationReferences": {
+        "runtimeManifest": "src/ai/npcVoiceLines.ts",
+        "dialogueTranscript": null,
+        "currentRegistration": "not previously registered",
+        "qc": [
+          "docs/assets/voice-qc/ledger.json",
+          "docs/assets/voice-qc/identity-audit.json",
+          "docs/assets/voice-qc/author-decisions.json"
+        ],
+        "allTrackedTextReferencesBeforeCleanup": [
+          "docs/assets/voice-qc/IDENTITY-AUDIT.md",
+          "docs/assets/voice-qc/IDENTITY-MAPPING-REVIEW.md",
+          "docs/assets/voice-qc/author-decisions.json",
+          "docs/assets/voice-qc/identity-audit.json",
+          "docs/assets/voice-qc/ledger.json",
+          "docs/dialogue/NPC-VOICE-CATALOG.md",
+          "docs/research/v1-revival/2026-10-31--npc-voice-audit-inventory.json",
+          "docs/research/v1-revival/2026-11-04--q90-coverage.json",
+          "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md",
+          "docs/v3-donor/voices/docs/recorded-lines-replacement-backlog.md"
+        ],
+        "catalogs": [
+          "docs/design/npc-voices/CATALOG.md"
+        ]
+      },
+      "integrationGate": "No automatic re-enable. Approve text and source, generate in a separate production task, verify transcript/context/listening QC, then integrate only original semantic intent and eligible approved speaker; Q88/Q89 casting remains separate.",
+      "removal": {
+        "historicalCommit": "4d29c4397f4d3c91869a58e2c7ae2a350cef65e1",
+        "gitBlob": "375d99aeb0be7e85330c09052e6fcf1f4d935fa8",
+        "sha256": "7b7ae1043b696d38d4d413b5f3040766558b45dfcc300f825e7f175f66d812d3",
+        "removedPaths": [
+          "docs/v3-donor/voices/mp3/general_female_quest_declined_01.mp3",
+          "public/sounds/voices/general_female_quest_declined_01.mp3"
+        ],
+        "recovery": "git show <historicalCommit>:<removedPath>",
+        "status": "removed by final author-approved cleanup"
+      },
+      "castingEvidence": "docs/design/npc-voices/CASTING.md#npc-voice-casting",
+      "targetLocation": "public/sounds/voices/general_female_quest_declined_01.mp3",
+      "publicTargetAfterQc": "public/sounds/voices/general_female_quest_declined_01.mp3",
+      "originalSha256": "7b7ae1043b696d38d4d413b5f3040766558b45dfcc300f825e7f175f66d812d3",
+      "verifiedAsrText": "Oh, I see. Maybe someone else can help.",
+      "asrVerification": "Existing cached Whisper small.en transcript, bound to original gitBlob; not manually/listening verified.",
+      "priority": "optional-coverage",
+      "runtimeCritical": false,
+      "runtimeRequirement": "Do not add to runtime merely because regenerated; optional age/general intent coverage requires separate integration approval.",
+      "replacementTextRequiringReview": "Oh... I see. Maybe someone else can help.",
+      "transcriptReviewRequired": false
+    },
+    {
+      "originalFilename": "general_female_thanks_01.mp3",
+      "intendedBank": "general_female",
+      "intendedRole": "General middle-aged female",
+      "intent": "thanks",
+      "disposition": "replace",
+      "originalAuthorCell": "",
+      "historicalExpectedSpeakerUuid": "5e3be339f2df45e6a1a338bb2ce94800",
+      "historicalIdentityStatus": "Historical Warm Conversational bank metadata is wrong for this recording; author confirms British-female.",
+      "confirmedOriginalSpeakerUuid": "82a3ef4504a6441e9a07acdaaf5349c1",
+      "expectedReplacementSpeakerUuid": "5e3be339f2df45e6a1a338bb2ce94800",
+      "replacementSpeakerStatus": "Author-approved general middle-aged female casting; not the rejected original recording identity",
+      "originalCatalogText": "Thank you. I really appreciate it.",
+      "originalGenerationInput": "Thank you. I really appreciate it.",
+      "asrText": "Thank you, I really appreciate it.",
+      "reasonForReplacement": "Author explicitly confirmed British-female and approved global rejection/removal, 2026-11-05; not inferred from similarity.",
+      "proposedReplacementText": "Thank you. I really appreciate it.",
+      "textApproval": "Original semantic text retained for review; not new author-approved production text",
+      "textRationale": "No new dialogue authored; resolve any ASR/catalog difference and context claims before generation.",
+      "integrationReferences": {
+        "runtimeManifest": "src/ai/npcVoiceLines.ts",
+        "dialogueTranscript": null,
+        "currentRegistration": "not previously registered",
+        "qc": [
+          "docs/assets/voice-qc/ledger.json",
+          "docs/assets/voice-qc/identity-audit.json",
+          "docs/assets/voice-qc/author-decisions.json"
+        ],
+        "allTrackedTextReferencesBeforeCleanup": [
+          "docs/assets/voice-qc/IDENTITY-AUDIT.md",
+          "docs/assets/voice-qc/IDENTITY-MAPPING-REVIEW.md",
+          "docs/assets/voice-qc/author-decisions.json",
+          "docs/assets/voice-qc/identity-audit.json",
+          "docs/assets/voice-qc/ledger.json",
+          "docs/dialogue/NPC-VOICE-CATALOG.md",
+          "docs/research/v1-revival/2026-10-31--npc-voice-audit-inventory.json",
+          "docs/research/v1-revival/2026-11-04--q90-coverage.json",
+          "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
+        ],
+        "catalogs": [
+          "docs/design/npc-voices/CATALOG.md"
+        ]
+      },
+      "integrationGate": "No automatic re-enable. Approve text and source, generate in a separate production task, verify transcript/context/listening QC, then integrate only original semantic intent and eligible approved speaker; Q88/Q89 casting remains separate.",
+      "removal": {
+        "historicalCommit": "4d29c4397f4d3c91869a58e2c7ae2a350cef65e1",
+        "gitBlob": "107031b675b4727c420859f50dcbad78b0d0f165",
+        "sha256": "937276bfc918fc86ca2000af200de29f90c8553891a946f7e5c159f22fff80e1",
+        "removedPaths": [
+          "docs/v3-donor/voices/mp3/general_female_thanks_01.mp3",
+          "public/sounds/voices/general_female_thanks_01.mp3"
+        ],
+        "recovery": "git show <historicalCommit>:<removedPath>",
+        "status": "removed by final author-approved cleanup"
+      },
+      "castingEvidence": "docs/design/npc-voices/CASTING.md#npc-voice-casting",
+      "targetLocation": "public/sounds/voices/general_female_thanks_01.mp3",
+      "publicTargetAfterQc": "public/sounds/voices/general_female_thanks_01.mp3",
+      "originalSha256": "937276bfc918fc86ca2000af200de29f90c8553891a946f7e5c159f22fff80e1",
+      "verifiedAsrText": "Thank you, I really appreciate it.",
+      "asrVerification": "Existing cached Whisper small.en transcript, bound to original gitBlob; not manually/listening verified.",
+      "priority": "optional-coverage",
+      "runtimeCritical": false,
+      "runtimeRequirement": "Do not add to runtime merely because regenerated; optional age/general intent coverage requires separate integration approval.",
+      "replacementTextRequiringReview": "Thank you. I really appreciate it.",
+      "transcriptReviewRequired": false
+    },
     {
       "originalFilename": "general_male_danger_alert_01.mp3",
       "intendedBank": "general_male",
@@ -14,7 +565,7 @@
       "historicalIdentityStatus": "bank expectation only; actual recorded speaker unverified",
       "expectedReplacementSpeakerUuid": "c2a3921fd7024b9189cb912bdfe5266a",
       "replacementSpeakerStatus": "author-approved current casting in npc-065; not the original recording identity",
-      "castingEvidence": "docs/plans/npc-065-stable-npc-voice-casting-and-donor-qc.md#npc-voice-map",
+      "castingEvidence": "docs/design/npc-voices/CASTING.md#npc-voice-casting",
       "originalCatalogText": "Wolf! Everyone, watch out!",
       "originalGenerationInput": "[shouting] Wolf! [emphasis] Everyone, [short pause] watch out!",
       "asrText": "ALERT! EVERYONE, WATCH OUT!",
@@ -22,15 +573,14 @@
       "proposedReplacementText": "Look out! Stay clear!",
       "textApproval": "proposal only; not approved for generation",
       "textRationale": "Generic witnessed danger warning avoids an unverified wolf claim.",
-      "targetLocation": "docs/v3-donor/voices/mp3/general_male_danger_alert_01.mp3",
+      "targetLocation": "public/sounds/voices/general_male_danger_alert_01.mp3",
       "publicTargetAfterQc": "public/sounds/voices/general_male_danger_alert_01.mp3",
       "integrationReferences": {
         "runtimeManifest": "src/ai/npcVoiceLines.ts",
         "dialogueTranscript": null,
         "currentRegistration": "removed general:male:danger_alert",
         "catalogs": [
-          "docs/dialogue/NPC-VOICE-CATALOG.md",
-          "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
+          "docs/design/npc-voices/CATALOG.md"
         ],
         "qc": [
           "docs/assets/voice-qc/ledger.json",
@@ -65,7 +615,15 @@
         ],
         "recovery": "git show <historicalCommit>:<removedPath>",
         "status": "removed by this cleanup"
-      }
+      },
+      "originalSha256": "8398550aa6a4396e2d95aaf6d5cdb1c5352dfebe795e4164ef236c0c8026255d",
+      "verifiedAsrText": "ALERT! EVERYONE, WATCH OUT!",
+      "asrVerification": "Existing cached Whisper small.en transcript, bound to original gitBlob; not manually/listening verified.",
+      "priority": "runtime-coverage-restoration",
+      "runtimeCritical": true,
+      "runtimeRequirement": "Restore previously registered semantic coverage only after production/QC and approved speaker eligibility; current gameplay uses existing silence/text-only handling.",
+      "replacementTextRequiringReview": "Look out! Stay clear!",
+      "transcriptReviewRequired": true
     },
     {
       "originalFilename": "general_male_farewell_01.mp3",
@@ -78,7 +636,7 @@
       "historicalIdentityStatus": "bank expectation only; actual recorded speaker unverified",
       "expectedReplacementSpeakerUuid": "c2a3921fd7024b9189cb912bdfe5266a",
       "replacementSpeakerStatus": "author-approved current casting in npc-065; not the original recording identity",
-      "castingEvidence": "docs/plans/npc-065-stable-npc-voice-casting-and-donor-qc.md#npc-voice-map",
+      "castingEvidence": "docs/design/npc-voices/CASTING.md#npc-voice-casting",
       "originalCatalogText": "Take care out there.",
       "originalGenerationInput": "Take care out there. I’ll be here if you need supplies.",
       "asrText": "Take care out there!",
@@ -86,15 +644,14 @@
       "proposedReplacementText": "Take care out there.",
       "textApproval": "proposal only; not approved for generation",
       "textRationale": "Preserves catalog gameplay intent; farewell omits supplier-only extra sentence where present.",
-      "targetLocation": "docs/v3-donor/voices/mp3/general_male_farewell_01.mp3",
+      "targetLocation": "public/sounds/voices/general_male_farewell_01.mp3",
       "publicTargetAfterQc": "public/sounds/voices/general_male_farewell_01.mp3",
       "integrationReferences": {
         "runtimeManifest": "src/ai/npcVoiceLines.ts",
         "dialogueTranscript": null,
         "currentRegistration": "removed general:male:farewell",
         "catalogs": [
-          "docs/dialogue/NPC-VOICE-CATALOG.md",
-          "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
+          "docs/design/npc-voices/CATALOG.md"
         ],
         "qc": [
           "docs/assets/voice-qc/ledger.json",
@@ -133,7 +690,15 @@
         ],
         "recovery": "git show <historicalCommit>:<removedPath>",
         "status": "removed by this cleanup"
-      }
+      },
+      "originalSha256": "f0525e44426491989543dd0c9f9ea779a4a0db42251151c22fb429d7f7abd178",
+      "verifiedAsrText": "Take care out there!",
+      "asrVerification": "Existing cached Whisper small.en transcript, bound to original gitBlob; not manually/listening verified.",
+      "priority": "runtime-coverage-restoration",
+      "runtimeCritical": true,
+      "runtimeRequirement": "Restore previously registered semantic coverage only after production/QC and approved speaker eligibility; current gameplay uses existing silence/text-only handling.",
+      "replacementTextRequiringReview": "Take care out there.",
+      "transcriptReviewRequired": false
     },
     {
       "originalFilename": "general_male_greeting_01.mp3",
@@ -146,7 +711,7 @@
       "historicalIdentityStatus": "bank expectation only; actual recorded speaker unverified",
       "expectedReplacementSpeakerUuid": "c2a3921fd7024b9189cb912bdfe5266a",
       "replacementSpeakerStatus": "author-approved current casting in npc-065; not the original recording identity",
-      "castingEvidence": "docs/plans/npc-065-stable-npc-voice-casting-and-donor-qc.md#npc-voice-map",
+      "castingEvidence": "docs/design/npc-voices/CASTING.md#npc-voice-casting",
       "originalCatalogText": "Hello, traveler. Good to see you.",
       "originalGenerationInput": null,
       "asrText": "Good day, how are you doing today?",
@@ -154,15 +719,14 @@
       "proposedReplacementText": "Hello, traveler. Good to see you.",
       "textApproval": "proposal only; not approved for generation",
       "textRationale": "Preserves catalog gameplay intent; farewell omits supplier-only extra sentence where present.",
-      "targetLocation": "docs/v3-donor/voices/mp3/general_male_greeting_01.mp3",
+      "targetLocation": "public/sounds/voices/general_male_greeting_01.mp3",
       "publicTargetAfterQc": "public/sounds/voices/general_male_greeting_01.mp3",
       "integrationReferences": {
         "runtimeManifest": "src/ai/npcVoiceLines.ts",
         "dialogueTranscript": "src/ui-vue/npcDialogueGreeting.ts",
         "currentRegistration": "removed general:male:greeting",
         "catalogs": [
-          "docs/dialogue/NPC-VOICE-CATALOG.md",
-          "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
+          "docs/design/npc-voices/CATALOG.md"
         ],
         "qc": [
           "docs/assets/voice-qc/ledger.json",
@@ -199,7 +763,15 @@
         ],
         "recovery": "git show <historicalCommit>:<removedPath>",
         "status": "removed by this cleanup"
-      }
+      },
+      "originalSha256": "9b3b77359bb8fcfbb3d6219069f2aeb2ed3c222367445e7dd18d64e67ef1d4f6",
+      "verifiedAsrText": "Good day, how are you doing today?",
+      "asrVerification": "Existing cached Whisper small.en transcript, bound to original gitBlob; not manually/listening verified.",
+      "priority": "runtime-coverage-restoration",
+      "runtimeCritical": true,
+      "runtimeRequirement": "Restore previously registered semantic coverage only after production/QC and approved speaker eligibility; current gameplay uses existing silence/text-only handling.",
+      "replacementTextRequiringReview": "Hello, traveler. Good to see you.",
+      "transcriptReviewRequired": true
     },
     {
       "originalFilename": "general_male_old_greeting_01.mp3",
@@ -212,7 +784,7 @@
       "historicalIdentityStatus": "unresolved",
       "expectedReplacementSpeakerUuid": "372ef39bf5bf4fd38c5c56bce607aba6",
       "replacementSpeakerStatus": "author-approved current casting in npc-065; not the original recording identity",
-      "castingEvidence": "docs/plans/npc-065-stable-npc-voice-casting-and-donor-qc.md#npc-voice-map",
+      "castingEvidence": "docs/design/npc-voices/CASTING.md#npc-voice-casting",
       "originalCatalogText": "Good to see you. Been traveling far?",
       "originalGenerationInput": "Good to see you. Been traveling far?",
       "asrText": "Ah, there you are. Come, speak your mind.",
@@ -220,15 +792,14 @@
       "proposedReplacementText": "Good to see you. Been traveling far?",
       "textApproval": "proposal only; not approved for generation",
       "textRationale": "Preserves catalog gameplay intent; farewell omits supplier-only extra sentence where present.",
-      "targetLocation": "docs/v3-donor/voices/mp3/general_male_old_greeting_01.mp3",
+      "targetLocation": "public/sounds/voices/general_male_old_greeting_01.mp3",
       "publicTargetAfterQc": "public/sounds/voices/general_male_old_greeting_01.mp3",
       "integrationReferences": {
         "runtimeManifest": "src/ai/npcVoiceLines.ts",
         "dialogueTranscript": null,
         "currentRegistration": "not registered before cleanup; Q88 casting/age integration required",
         "catalogs": [
-          "docs/dialogue/NPC-VOICE-CATALOG.md",
-          "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
+          "docs/design/npc-voices/CATALOG.md"
         ],
         "qc": [
           "docs/assets/voice-qc/ledger.json",
@@ -258,7 +829,15 @@
         ],
         "recovery": "git show <historicalCommit>:<removedPath>",
         "status": "removed by this cleanup"
-      }
+      },
+      "originalSha256": "d00c6791b63da614ef913d35c3b99fab3d3ac8a82afb1457e75d28261387900c",
+      "verifiedAsrText": "Ah, there you are. Come, speak your mind.",
+      "asrVerification": "Existing cached Whisper small.en transcript, bound to original gitBlob; not manually/listening verified.",
+      "priority": "optional-coverage",
+      "runtimeCritical": false,
+      "runtimeRequirement": "Do not add to runtime merely because regenerated; optional age/general intent coverage requires separate integration approval.",
+      "replacementTextRequiringReview": "Good to see you. Been traveling far?",
+      "transcriptReviewRequired": true
     },
     {
       "originalFilename": "general_male_young_farewell_01.mp3",
@@ -271,7 +850,7 @@
       "historicalIdentityStatus": "unresolved",
       "expectedReplacementSpeakerUuid": null,
       "replacementSpeakerStatus": "unresolved: young filename does not establish boy/child eligibility; do not assign Little Lem automatically",
-      "castingEvidence": "docs/plans/npc-065-stable-npc-voice-casting-and-donor-qc.md#npc-voice-map",
+      "castingEvidence": "docs/design/npc-voices/CASTING.md#npc-voice-casting",
       "originalCatalogText": "See you later!",
       "originalGenerationInput": "See you later!",
       "asrText": "See you later!",
@@ -279,15 +858,14 @@
       "proposedReplacementText": "See you later!",
       "textApproval": "proposal only; not approved for generation",
       "textRationale": "Preserves catalog gameplay intent; farewell omits supplier-only extra sentence where present.",
-      "targetLocation": "docs/v3-donor/voices/mp3/general_male_young_farewell_01.mp3",
+      "targetLocation": "public/sounds/voices/general_male_young_farewell_01.mp3",
       "publicTargetAfterQc": "public/sounds/voices/general_male_young_farewell_01.mp3",
       "integrationReferences": {
         "runtimeManifest": "src/ai/npcVoiceLines.ts",
         "dialogueTranscript": null,
         "currentRegistration": "not registered before cleanup; Q88 casting/age integration required",
         "catalogs": [
-          "docs/dialogue/NPC-VOICE-CATALOG.md",
-          "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
+          "docs/design/npc-voices/CATALOG.md"
         ],
         "qc": [
           "docs/assets/voice-qc/ledger.json",
@@ -316,7 +894,15 @@
         ],
         "recovery": "git show <historicalCommit>:<removedPath>",
         "status": "removed by this cleanup"
-      }
+      },
+      "originalSha256": "d1ccef78f258bb351b627978e93aca0bad10a66eca5124cb41aec72d666d8b0f",
+      "verifiedAsrText": "See you later!",
+      "asrVerification": "Existing cached Whisper small.en transcript, bound to original gitBlob; not manually/listening verified.",
+      "priority": "optional-coverage",
+      "runtimeCritical": false,
+      "runtimeRequirement": "Do not add to runtime merely because regenerated; optional age/general intent coverage requires separate integration approval.",
+      "replacementTextRequiringReview": "See you later!",
+      "transcriptReviewRequired": false
     },
     {
       "originalFilename": "general_male_young_greeting_01.mp3",
@@ -329,7 +915,7 @@
       "historicalIdentityStatus": "unresolved",
       "expectedReplacementSpeakerUuid": null,
       "replacementSpeakerStatus": "unresolved: young filename does not establish boy/child eligibility; do not assign Little Lem automatically",
-      "castingEvidence": "docs/plans/npc-065-stable-npc-voice-casting-and-donor-qc.md#npc-voice-map",
+      "castingEvidence": "docs/design/npc-voices/CASTING.md#npc-voice-casting",
       "originalCatalogText": "Hello, you're new around here.",
       "originalGenerationInput": "Hello, you're new around here.",
       "asrText": "Hi! Want to play?",
@@ -337,15 +923,14 @@
       "proposedReplacementText": "Hello there. How are you?",
       "textApproval": "proposal only; not approved for generation",
       "textRationale": "Neutral greeting removes assumed unfamiliarity.",
-      "targetLocation": "docs/v3-donor/voices/mp3/general_male_young_greeting_01.mp3",
+      "targetLocation": "public/sounds/voices/general_male_young_greeting_01.mp3",
       "publicTargetAfterQc": "public/sounds/voices/general_male_young_greeting_01.mp3",
       "integrationReferences": {
         "runtimeManifest": "src/ai/npcVoiceLines.ts",
         "dialogueTranscript": null,
         "currentRegistration": "not registered before cleanup; Q88 casting/age integration required",
         "catalogs": [
-          "docs/dialogue/NPC-VOICE-CATALOG.md",
-          "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
+          "docs/design/npc-voices/CATALOG.md"
         ],
         "qc": [
           "docs/assets/voice-qc/ledger.json",
@@ -377,7 +962,15 @@
         ],
         "recovery": "git show <historicalCommit>:<removedPath>",
         "status": "removed by this cleanup"
-      }
+      },
+      "originalSha256": "042c18a2142431ac966530466bd4fc57de1120a2266970d3ffed17fc3a453fb2",
+      "verifiedAsrText": "Hi! Want to play?",
+      "asrVerification": "Existing cached Whisper small.en transcript, bound to original gitBlob; not manually/listening verified.",
+      "priority": "optional-coverage",
+      "runtimeCritical": false,
+      "runtimeRequirement": "Do not add to runtime merely because regenerated; optional age/general intent coverage requires separate integration approval.",
+      "replacementTextRequiringReview": "Hello there. How are you?",
+      "transcriptReviewRequired": true
     }
   ]
 }
