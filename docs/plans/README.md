@@ -129,6 +129,7 @@ Unless noted otherwise, `verification needed` means implementation has passed au
 | ◼️ `world-terrain-055-optional-shadow-frustum-and-refresh-trims.md`            | 🟡 | S      | -                                                                                                                                                                                                                                                                                          | -                                         |
 | 💡 `world-terrain-058-finite-continent-and-global-hydrology.md`                | 🔴 | XL     | -                                                                                                                                                                                                                                                                                          | -                                         |
 | ◼️ `world-terrain-059-world-scale-travel-time-and-sparse-settlements.md`       | 🔴 | XL     | world-terrain-058                                                                                                                                                                                                                                                                          | -                                         |
+| 📝 `npc-069-next-fish-audio-production-batch.md` | 🔴 | M | - | - |
 | ◼️ `npc-065-stable-npc-voice-casting-and-donor-qc.md`                          | 🟡 | L      | -                                                                                                                                                                                                                                                                                          | -                                         |
 | 💡 `items-player-064-stage-4-living-world-sources-and-npc-weapon-use.md`       | 🟡 | L      | ~~items-player-062~~, items-player-063                                                                                                                                                                                                                                                     | -                                         |
 | 💡 `items-player-066-layered-armor-catalogue-acquisition-and-balance.md`       | 🔴 | L      | ~~items-player-065~~                                                                                                                                                                                                                                                                       | -                                         |
@@ -213,7 +214,7 @@ New plans declare a primary `Domain:` in frontmatter. Use optional `Tags:` only 
 - ai: `001`
 - fauna: `051`
 - items-player: `067`
-- npc: `069`
+- npc: `070`
 - persistence: `009`
 - quests-progression: `083`
 - settlements: `025`
