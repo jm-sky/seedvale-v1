@@ -68,6 +68,15 @@ import {
   type ClosedSettlementSite,
   resolveClosedPredatorPressure,
 } from './closedPredatorPressure'
+import {
+  CarriedSpawnerStore,
+  catchUpSpawnerLifecycle,
+  ENGAGED_DEMATERIALIZE_TIMEOUT_SEC,
+  type FaunaHabitatGroupInput,
+  isGroupEngaged,
+  materializedPopulation,
+  type SpawnerSnapshotRow,
+} from './faunaGroupLifecycle'
 import { createFaunaProximityIndex } from './faunaProximity'
 import {
   type HabitatPressureCacheEntry,
@@ -91,6 +100,8 @@ import {
   type PlannedHabitatSpawner,
   type PlannedRingAnimal,
   planSettlementFaunaHabitats,
+  type SettlementFaunaPlan,
+  settlementFaunaSiteRandom,
   SPAWN_RIVER_CLEARANCE,
   SPAWNER_RING_OFFSET,
   SPAWNER_RIVER_CLEARANCE,
@@ -117,6 +128,23 @@ const CAVE_LABEL_HEIGHT = 1.8
 /** Label above a thicket canopy (~4 m TREE_SPECS GLBs, slightly scaled). */
 const THICKET_LABEL_HEIGHT = 5.8
 const DEFAULT_SPAWNER_LABEL_HEIGHT = 0.6
+
+export type { FaunaHabitatGroupInput, SpawnerSnapshotRow } from './faunaGroupLifecycle'
+
+/** Runtime record of one habitat group inside the single fauna registry
+ *  (plan fauna-050 F2). Home is `pinned`: always materialized, never disposed. */
+type HabitatGroupRecord = {
+  id: string
+  pinned: boolean
+  center: { x: number, z: number }
+  /** Deterministic plan, computed once on first materialization and reused. */
+  plan: SettlementFaunaPlan | null
+  materialized: boolean
+  spawnerIds: Set<string>
+  ringAnimalIds: Set<string>
+  /** Virtual bound counts from the lazy catch-up, consumed by the population fill. */
+  virtualBounds: Map<string, number>
+}
 
 export type Fauna = {
   update: (
@@ -203,7 +231,24 @@ export type Fauna = {
    *  one-shot call (not a stepped replay like NPC's) is sufficient here. */
   resolveTimeSkip: (hours: number, dayLengthSec: number) => void
   getAgents: () => AnimalAgent[]
+  /** LIVE spawners only (materialized groups). Use `snapshotSpawnPoints()` for saving. */
   getSpawners: () => readonly PreySpawner[]
+  /** Persisted spawner rows: union of live spawners and states carried for
+   *  unmaterialized habitat groups (plan fauna-050 F2). The save shape is unchanged
+   *  (`SaveSpawnPoint[]`); the list is a subset of the world's spawners. */
+  snapshotSpawnPoints: () => SpawnerSnapshotRow[]
+  /** Materializes a non-home habitat group (plan fauna-050 F2): spawners, props, labels,
+   *  ring/individuals, with saved/carried lifecycle restored and caught up lazily to
+   *  `nowDays`. Idempotent; sites are planned once per group (per-group seeded RNG) and
+   *  reused on re-materialization. Returns `false` when disabled by the
+   *  `worldFaunaHabitats` toggle, when `animals` is off, or for the home group. */
+  materializeGroup: (group: FaunaHabitatGroupInput, nowDays: number) => boolean
+  /** Requests dematerialization of a materialized non-home group: carries its spawner
+   *  state and disposes its agents/props. `'deferred'` while an agent is engaged (it is
+   *  retried each `update()` until disengaged or `ENGAGED_DEMATERIALIZE_TIMEOUT_SEC`). */
+  dematerializeGroup: (groupId: string, nowDays: number) => 'done' | 'deferred' | 'unknown' | 'pinned'
+  isGroupMaterialized: (groupId: string) => boolean
+  getMaterializedGroupIds: () => string[]
   /** True once every wolf originally spawned by the wolf den (`WOLF_DEN_ID`,
    *  plan 093 Etap E) is dead — `false` if the den has none tracked yet
    *  (including a failed placement) or any tracked wolf is still alive. */
@@ -445,6 +490,15 @@ function wrapModel(model: Object3D): Group {
   return wrap
 }
 
+/** Hysteresis view of an agent: `immediate` update importance = combat/chase/trip/player-led
+ *  (a group is dematerialized when the observer is far, so the distance signal is off). */
+function engagementOf(agent: AnimalAgent): { isDead: () => boolean, isEngaged: () => boolean } {
+  return {
+    isDead: () => agent.isDead(),
+    isEngaged: () => agent.getDebugInfo().updateImportance === 'immediate',
+  }
+}
+
 function disposeAgent(agent: AnimalAgent): void {
   agent.dispose()
   agent.mesh.removeFromParent()
@@ -587,6 +641,14 @@ export async function createFauna(
     : sampleLocalWater
 
   const random = createSeededRandom(seed ^ 0xfa11)
+  /** Spawner lifecycle states not owned by a live spawner (save-loaded, rebuild-carried
+   *  or dematerialized groups) — plan fauna-050 F2. */
+  const carried = new CarriedSpawnerStore(initialSpawnerState)
+  const groups = new Map<string, HabitatGroupRecord>()
+  /** Groups whose dematerialization waits on engaged agents -> real seconds waited. */
+  const pendingDematerialize = new Map<string, number>()
+  /** Terrain edits are not persisted per spawner and not idempotent: apply each once per instance. */
+  const terrainEditedKeys = new Set<string>()
   let agents: AnimalAgent[] = []
   const proximity = createFaunaProximityIndex()
   /** Reusable fauna-041 membership counts keyed by `spawnPointId` (plan fauna-042). */
@@ -806,7 +868,7 @@ export async function createFauna(
   }
   /** Creates the planned ring individuals (planner hook, after the ring phase and
    *  before any spawner is placed/carved). */
-  const spawnRing = (ring: readonly PlannedRingAnimal[]): void => {
+  const spawnRing = (ring: readonly PlannedRingAnimal[], group: HabitatGroupRecord): void => {
     bootMark('ringSpawns')
     try {
       const created: AnimalAgent[] = []
@@ -816,6 +878,7 @@ export async function createFauna(
         scene.add(agent.mesh)
         agents.push(agent)
         created.push(agent)
+        group.ringAnimalIds.add(agent.animalId)
       }
     } finally {
       bootMarkEnd('ringSpawns')
@@ -825,7 +888,7 @@ export async function createFauna(
   /** Materializes one planned habitat spawner (state restore, terrain carve/scorch,
    *  prop, label). Runs inside the planner's per-site hook so carving keeps
    *  influencing the next site's samples, as in the inline home build. */
-  const materializeSpawner = (planned: PlannedHabitatSpawner): void => {
+  const materializeSpawner = (planned: PlannedHabitatSpawner, group: HabitatGroupRecord, nowDays: number): void => {
     const { spec } = planned
     const pos = { x: planned.x, z: planned.z }
     const spawner: PreySpawner = {
@@ -840,19 +903,29 @@ export async function createFauna(
       depletedRecoveryDays: 0,
       ...defaultSpawnPointScenarioFields(spec.type),
     }
-    restoreSpawnPointState(spawner, initialSpawnerState?.get(spawner.id))
+    const carriedEntry = carried.take(spawner.id)
+    restoreSpawnPointState(spawner, carriedEntry?.saved)
+    if (carriedEntry?.runtime) {
+      // Lazy day catch-up for the time this group was unloaded (plan fauna-050 F2).
+      group.virtualBounds.set(
+        spawner.id,
+        catchUpSpawnerLifecycle(spawner, carriedEntry.runtime, nowDays, occupantRegistry.slotCountFor(spawner.id)),
+      )
+    }
+    group.spawnerIds.add(spawner.id)
     spawners.push(spawner)
     spawnerById.set(spawner.id, spawner)
-
 
     const { groundY } = planned
     if (spec.type === 'rockDen') {
       const slope = planned.slope ?? measureSlope(pos.x, pos.z, CAVE_SLOPE_SAMPLE_RADIUS, sampleHeight)
-      const facingVillage = Math.atan2(pos.x - settlementCenter.x, pos.z - settlementCenter.z)
+      const facingVillage = Math.atan2(pos.x - group.center.x, pos.z - group.center.z)
       if (
         terrainCarving
+        && !terrainEditedKeys.has(`${spawner.id}:carve`)
         && terrainCarving.sampleMountainRidge(pos.x, pos.z) <= CAVE_ROCK_MOUNTAIN_RIDGE_THRESHOLD
       ) {
+        terrainEditedKeys.add(`${spawner.id}:carve`)
         // Deterministic from seed/settlement placement, redone from scratch
         // on every world build — never persisted (plan `world-terrain-save`).
         terrainCarving.modifyTerrain(pos.x, pos.z, CAVE_DEPRESSION_RADIUS, CAVE_DEPRESSION_DEPTH, 'system')
@@ -877,7 +950,7 @@ export async function createFauna(
       // Etap E keeps this deliberately simple; a real `CaveVolume` (plan 104)
       // could replace this visual later without touching the den's identity/
       // quest contract). No terrain carving — that's cave-specific (083).
-      const facingVillage = Math.atan2(pos.x - settlementCenter.x, pos.z - settlementCenter.z)
+      const facingVillage = Math.atan2(pos.x - group.center.x, pos.z - group.center.z)
       const mouth = createCaveMouth(1, planned.propRandoms[0])
       mouth.position.set(pos.x, groundY, pos.z)
       mouth.rotation.y = facingVillage
@@ -897,10 +970,13 @@ export async function createFauna(
     if (spawner.state === 'disabled' || spawner.state === 'recovering') {
       const mesh = spawnerMeshById.get(spawner.id)
       if (mesh) tintPropMaterials(mesh, BURNED_SPAWNER_TINT_HEX)
-      if (terrainCarving?.scorchTerrain) {
-        terrainCarving.scorchTerrain(spawner.x, spawner.z, BURN_PATCH_RADIUS, BURN_PATCH_DEPTH, 'system')
-      } else {
-        terrainCarving?.modifyTerrain(spawner.x, spawner.z, BURN_PATCH_RADIUS, BURN_PATCH_DEPTH, 'system')
+      if (!terrainEditedKeys.has(`${spawner.id}:scorch`)) {
+        terrainEditedKeys.add(`${spawner.id}:scorch`)
+        if (terrainCarving?.scorchTerrain) {
+          terrainCarving.scorchTerrain(spawner.x, spawner.z, BURN_PATCH_RADIUS, BURN_PATCH_DEPTH, 'system')
+        } else {
+          terrainCarving?.modifyTerrain(spawner.x, spawner.z, BURN_PATCH_RADIUS, BURN_PATCH_DEPTH, 'system')
+        }
       }
     }
 
@@ -918,11 +994,155 @@ export async function createFauna(
     spawnerLabels.push({ id: spawner.id, type: spec.type, object: label, el, marker: null, lastOpacity: -1 })
   }
 
+  /** Creates `count` ordinary animals bound to `habitat` (initial fill and group
+   *  re-materialization). Only the home build feeds the quest wolf-den tracker. */
+  const spawnHabitatPopulation = (habitat: PreySpawner, count: number, trackDenWolves: boolean): void => {
+    for (let i = 0; i < count; i++) {
+      const spot = findWalkableNear(habitat.x, habitat.z, 0, 4) ?? habitat
+      const variant = habitat.type === 'wolfDen' ? wolfDenInitialFillVariant(i) : undefined
+      const agent = spawnAgent(
+        habitat.kind,
+        spot.x,
+        spot.z,
+        undefined,
+        undefined,
+        undefined,
+        habitat.id,
+        undefined,
+        undefined,
+        variant,
+      )
+      scene.add(agent.mesh)
+      agents.push(agent)
+      if (trackDenWolves && habitat.type === 'wolfDen') denWolfAnimalIds.add(agent.animalId)
+    }
+  }
+
+  /** Removes one spawner's prop and label (group dematerialization). */
+  const removeSpawnerVisuals = (id: string): void => {
+    const mesh = spawnerMeshById.get(id)
+    if (mesh) {
+      mesh.removeFromParent()
+      disposeObject3D(mesh)
+      const i = spawnerMeshes.indexOf(mesh)
+      if (i >= 0) spawnerMeshes.splice(i, 1)
+      spawnerMeshById.delete(id)
+    }
+    const li = spawnerLabels.findIndex((entry) => entry.id === id)
+    if (li >= 0) {
+      const [{ object, el }] = spawnerLabels.splice(li, 1)
+      object.removeFromParent()
+      el.remove()
+    }
+  }
+
+  const groupAgents = (group: HabitatGroupRecord): AnimalAgent[] =>
+    agents.filter((a) =>
+      group.ringAnimalIds.has(a.animalId) || (a.spawnPointId !== undefined && group.spawnerIds.has(a.spawnPointId)))
+
+  /** Fills a freshly (re)materialized group's spawners from the carried/virtual state. */
+  const fillGroupPopulation = (group: HabitatGroupRecord): void => {
+    for (const id of group.spawnerIds) {
+      const habitat = spawnerById.get(id)
+      if (!habitat) continue
+      const count = materializedPopulation(habitat, group.virtualBounds.get(id), occupantRegistry.slotCountFor(id))
+      spawnHabitatPopulation(habitat, count, group.pinned)
+    }
+    group.virtualBounds.clear()
+  }
+
+  const doMaterializeGroup = (input: FaunaHabitatGroupInput, nowDays: number): void => {
+    let group = groups.get(input.groupId)
+    if (!group) {
+      group = {
+        id: input.groupId,
+        pinned: false,
+        center: { x: input.center.x, z: input.center.z },
+        plan: null,
+        materialized: false,
+        spawnerIds: new Set(),
+        ringAnimalIds: new Set(),
+        virtualBounds: new Map(),
+      }
+      groups.set(input.groupId, group)
+    }
+    const target = group
+    target.materialized = true
+    if (target.plan) {
+      // Same sites as the first time: replay the cached plan, no re-sampling of (possibly carved) terrain.
+      spawnRing(target.plan.ring, target)
+      for (const planned of target.plan.spawners) materializeSpawner(planned, target, nowDays)
+    } else {
+      target.plan = planSettlementFaunaHabitats({
+        settlementId: input.groupId,
+        center: target.center,
+        footprintRadius: input.footprintRadius,
+        homeRadius,
+        random: settlementFaunaSiteRandom(seed, input.groupId),
+        denRing: input.denRing,
+        ringSpecs: SPAWNS,
+        spawnerSpecs: SPAWNER_SPECS,
+        isDry: drySpawnSite,
+        onRoad,
+        spawnerSiteOk,
+        ringHabitatFilter: habitatFilterFor,
+        sampleHeight,
+        sampleForestFactor,
+        denAvoidPoints,
+        onRingPlanned: (ring) => spawnRing(ring, target),
+        onSpawnerPlaced: (planned) => materializeSpawner(planned, target, nowDays),
+      })
+    }
+    fillGroupPopulation(target)
+  }
+
+  const doDematerializeGroup = (group: HabitatGroupRecord, nowDays: number): void => {
+    const members = groupAgents(group)
+    // Persistent occupants (none are declared for non-home groups today) must not be lost with the group.
+    occupantRegistry.capture(members.filter((a) => occupantRegistry.hasPersistentAnimalId(a.animalId)))
+    for (const id of group.spawnerIds) {
+      const spawner = spawnerById.get(id)
+      if (!spawner) continue
+      let bound = 0
+      for (const a of members) {
+        if (!a.isDead() && a.def.kind === spawner.kind && a.spawnPointId === id && !occupantRegistry.hasPersistentAnimalId(a.animalId)) bound++
+      }
+      carried.carry(spawner, bound, nowDays)
+      const index = spawners.indexOf(spawner)
+      if (index >= 0) spawners.splice(index, 1)
+      spawnerById.delete(id)
+      habitatPressureCache.delete(id)
+      settlementTripAnimalBySpawner.delete(id)
+      removeSpawnerVisuals(id)
+    }
+    const memberSet = new Set(members)
+    for (const a of members) {
+      animalToSpawner.delete(a.animalId)
+      disposeAgent(a)
+    }
+    agents = agents.filter((a) => !memberSet.has(a))
+    group.spawnerIds.clear()
+    group.ringAnimalIds.clear()
+    group.virtualBounds.clear()
+    group.materialized = false
+  }
+
   // `animals` also gates habitat spawners (cave/thicket/wolfDen) — when off, no
   // respawn/replenishment can occur either.
   bootMark('habitatSpawners')
   try {
   const animalsOn = isSystemEnabled('animals')
+  const homeGroup: HabitatGroupRecord = {
+    id: settlementId,
+    pinned: true,
+    center: { x: settlementCenter.x, z: settlementCenter.z },
+    plan: null,
+    materialized: true,
+    spawnerIds: new Set(),
+    ringAnimalIds: new Set(),
+    virtualBounds: new Map(),
+  }
+  groups.set(settlementId, homeGroup)
   const plan = planSettlementFaunaHabitats({
     settlementId,
     center: { x: settlementCenter.x, z: settlementCenter.z },
@@ -938,9 +1158,10 @@ export async function createFauna(
     sampleHeight,
     sampleForestFactor,
     denAvoidPoints,
-    onRingPlanned: spawnRing,
-    onSpawnerPlaced: materializeSpawner,
+    onRingPlanned: (ring) => spawnRing(ring, homeGroup),
+    onSpawnerPlaced: (planned) => materializeSpawner(planned, homeGroup, 0),
   })
+  homeGroup.plan = plan
   placedSpawnPoints.push(...plan.placedSpawnPoints)
 
   for (const extra of extraHabitatSpawners ?? []) {
@@ -960,7 +1181,7 @@ export async function createFauna(
       depletedRecoveryDays: 0,
       ...defaultSpawnPointScenarioFields(extra.type),
     }
-    restoreSpawnPointState(spawner, initialSpawnerState?.get(spawner.id))
+    restoreSpawnPointState(spawner, carried.take(spawner.id)?.saved)
     spawners.push(spawner)
     spawnerById.set(spawner.id, spawner)
     const groundY = sampleHeight(extra.x, extra.z)
@@ -1023,7 +1244,7 @@ export async function createFauna(
         depletedRecoveryDays: 0,
         ...defaultSpawnPointScenarioFields(extra.type),
       }
-      restoreSpawnPointState(spawner, initialSpawnerState?.get(spawner.id))
+      restoreSpawnPointState(spawner, carried.take(spawner.id)?.saved)
       spawners.push(spawner)
       spawnerById.set(spawner.id, spawner)
 
@@ -1127,25 +1348,7 @@ export async function createFauna(
       habitat.maxPreyCount,
       occupantRegistry.slotCountFor(habitat.id),
     )
-    for (let i = 0; i < ordinary; i++) {
-      const spot = findWalkableNear(habitat.x, habitat.z, 0, 4) ?? habitat
-      const variant = habitat.type === 'wolfDen' ? wolfDenInitialFillVariant(i) : undefined
-      const agent = spawnAgent(
-        habitat.kind,
-        spot.x,
-        spot.z,
-        undefined,
-        undefined,
-        undefined,
-        habitat.id,
-        undefined,
-        undefined,
-        variant,
-      )
-      scene.add(agent.mesh)
-      agents.push(agent)
-      if (habitat.type === 'wolfDen') denWolfAnimalIds.add(agent.animalId)
-    }
+    spawnHabitatPopulation(habitat, ordinary, true)
   }
   } finally {
     bootMarkEnd('habitatSpawners')
@@ -1184,6 +1387,24 @@ export async function createFauna(
       worldSeed,
       playerObservation,
     ) {
+      if (pendingDematerialize.size > 0) {
+        // At most one group per frame (amortized cost, plan fauna-050 workload budget).
+        for (const [groupId, waited] of pendingDematerialize) {
+          pendingDematerialize.set(groupId, waited + dt)
+        }
+        for (const [groupId, waited] of pendingDematerialize) {
+          const group = groups.get(groupId)
+          if (!group || !group.materialized) {
+            pendingDematerialize.delete(groupId)
+            continue
+          }
+          if (waited >= ENGAGED_DEMATERIALIZE_TIMEOUT_SEC || !isGroupEngaged(groupAgents(group).map(engagementOf))) {
+            pendingDematerialize.delete(groupId)
+            doDematerializeGroup(group, worldDays)
+            break
+          }
+        }
+      }
       const dayFactor = skyParamsFromTime(timeOfDay).dayFactor
       const agentCpu = getAgentCpuDiag()
       const diagOn = agentCpu.isEnabled()
@@ -1394,6 +1615,12 @@ export async function createFauna(
       for (const a of agents) a.resolveTimeSkip(elapsedSeconds)
     },
     dispose() {
+      pendingDematerialize.clear()
+      for (const group of groups.values()) {
+        group.materialized = false
+        group.spawnerIds.clear()
+        group.ringAnimalIds.clear()
+      }
       for (const a of agents) disposeAgent(a)
       agents = []
       for (const mesh of spawnerMeshes) {
@@ -1409,6 +1636,32 @@ export async function createFauna(
     },
     getAgents: () => agents,
     getSpawners: () => spawners,
+    snapshotSpawnPoints: () => carried.snapshot(spawners),
+    materializeGroup(input, nowDays) {
+      if (!isSystemEnabled('animals') || !isSystemEnabled('worldFaunaHabitats')) return false
+      const existing = groups.get(input.groupId)
+      if (existing?.pinned) return false
+      if (existing?.materialized) {
+        pendingDematerialize.delete(input.groupId)
+        return true
+      }
+      doMaterializeGroup(input, nowDays)
+      return true
+    },
+    dematerializeGroup(groupId, nowDays) {
+      const group = groups.get(groupId)
+      if (!group || !group.materialized) return 'unknown'
+      if (group.pinned) return 'pinned'
+      if (isGroupEngaged(groupAgents(group).map(engagementOf))) {
+        if (!pendingDematerialize.has(groupId)) pendingDematerialize.set(groupId, 0)
+        return 'deferred'
+      }
+      pendingDematerialize.delete(groupId)
+      doDematerializeGroup(group, nowDays)
+      return 'done'
+    },
+    isGroupMaterialized: (groupId) => groups.get(groupId)?.materialized === true,
+    getMaterializedGroupIds: () => [...groups.values()].filter((g) => g.materialized).map((g) => g.id),
     isWolfDenCleared() {
       if (denWolfAnimalIds.size === 0) return false
       for (const a of agents) {
@@ -1435,6 +1688,7 @@ export async function createFauna(
       if (mesh) tintPropMaterials(mesh, BURNED_SPAWNER_TINT_HEX)
       // The genuine player action ("[E] Zniszcz") — persisted, unlike the
       // restore-replay above.
+      terrainEditedKeys.add(`${spawnerId}:scorch`)
       if (terrainCarving?.scorchTerrain) {
         terrainCarving.scorchTerrain(spawner.x, spawner.z, BURN_PATCH_RADIUS, BURN_PATCH_DEPTH, 'player')
       } else {

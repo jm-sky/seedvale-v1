@@ -7,6 +7,7 @@ import type { WorldConfig } from '../config/worldConfig'
 import type { SettlementEconomySnapshot } from '../economy/settlementEconomy'
 import type { AnimalKind } from '../fauna/AnimalAgent'
 import type { AnimalHabitatBinding } from '../fauna/animalCaveHabitat'
+import type { SavedSpawnPointState } from '../fauna/AnimalSpawner'
 import type { SettlementDestinationThreatHooks } from '../fauna/destinationThreatHooks'
 import type { SettlementHuntingHooks } from '../fauna/huntingHooks'
 import type { PersistentOccupantSnapshot } from '../fauna/persistentOccupants'
@@ -54,7 +55,6 @@ import type { TransportOrder } from '../world/transportOrder'
 import type { TreeLifecycle } from '../world/treeLifecycle'
 import type { WorkContractRecord } from '../world/workContract'
 import { createNaturalWaterKindAt } from '../fauna/animalNaturalWater'
-import { type SavedSpawnPointState, snapshotSpawnPointState } from '../fauna/AnimalSpawner'
 import { createFauna, type Fauna, PREDATOR_DEN_RING_OFFSET, SPAWNER_RING_OFFSET } from '../fauna/createFauna'
 import { createDestinationThreatHooks } from '../fauna/destinationThreatHooks'
 import { buildDungeonResidentsPlan } from '../fauna/dungeonResidents'
@@ -1223,6 +1223,11 @@ function createEmptyFauna(): Fauna {
     resolveTimeSkip: () => {},
     getAgents: () => [],
     getSpawners: () => [],
+    snapshotSpawnPoints: () => [],
+    materializeGroup: () => false,
+    dematerializeGroup: () => 'unknown',
+    isGroupMaterialized: () => false,
+    getMaterializedGroupIds: () => [],
     isWolfDenCleared: () => false,
     setSpawnerMarker: () => {},
     destroySpawner: () => false,
@@ -2693,7 +2698,7 @@ export async function rebuildWorldBundle(
   // mid-session too (not just across a real save/load).
   const carriedSpawnerState = resetCollectedItems
     ? undefined
-    : new Map(bundle.fauna.getSpawners().map((s) => [s.id, snapshotSpawnPointState(s)]))
+    : new Map(bundle.fauna.snapshotSpawnPoints().map(({ id, ...state }) => [id, state]))
   const carriedPersistentOccupants = resetCollectedItems
     ? undefined
     : bundle.fauna.snapshotPersistentOccupants()

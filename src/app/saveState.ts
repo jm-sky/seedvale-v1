@@ -28,7 +28,6 @@ import type { PlantedTreeRecord } from '../world/plantedTrees'
 import type { TreeLifecycle } from '../world/treeLifecycle'
 import type { WorkContractRecord } from '../world/workContract'
 import type { WorldBundle } from './worldBundle'
-import { snapshotSpawnPointState } from '../fauna/AnimalSpawner'
 import { serializeTreasureMutations, type TreasureChestMutation } from '../items/treasureGameplay'
 import { CURRENT_SAVE_VERSION, type SaveData, type SaveTerrainModification, type SaveWorkContract } from '../persistence/saveData'
 import { getActiveSaveId, getPendingNewSaveName, listSavesResult, type SaveReason, writeSave, type WriteSaveResult } from '../persistence/saveDb'
@@ -264,7 +263,7 @@ export function createSaveState(deps: SaveStateDeps): SaveState {
       medicine: { xp: player.skills.medicine.xp },
       repair: { xp: player.skills.repair.xp },
     },
-    spawnPoints: bundle.fauna.getSpawners().map((s) => ({ id: s.id, ...snapshotSpawnPointState(s) })),
+    spawnPoints: bundle.fauna.snapshotSpawnPoints(),
     foodBatches: inventory.foodBatchesToJSON(),
     dryingRacks: bundle.dryingRacks.nodes().map((rack) => ({
       ...rack,

@@ -5,7 +5,7 @@
 **Type:** feature
 **Priority:** high · **Effort:** L
 **Depends on:** world-terrain-060 world-terrain-061
-**Implementation notes:** [fauna-050 notes](implementation-notes/fauna-050-world-wild-fauna-habitats-implementation-notes.md) (F1 implemented 2026-11-05)
+**Implementation notes:** [fauna-050 notes](implementation-notes/fauna-050-world-wild-fauna-habitats-implementation-notes.md) (F1 implemented 2026-11-05; F2 implemented 2026-11-05)
 **Queue:** Q139 (plan); F3 needs Q133 (phantom closed-pressure sites); F4 final numbers after the 060 R4 / 061 H6 freezes
 **Domain:** `fauna`
 **Subdomains:** `population` `lifecycle`

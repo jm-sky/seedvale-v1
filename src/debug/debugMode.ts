@@ -132,6 +132,8 @@ export type DebugSystemName =
   | 'grass'
   | 'trees'
   | 'animals'
+  /** Non-home wild-fauna habitat groups (plan fauna-050) — off for a WSL A/B of the world-habitat workload; home fauna unaffected. */
+  | 'worldFaunaHabitats'
   | 'npcs'
   | 'playerModel'
   | 'weather'
