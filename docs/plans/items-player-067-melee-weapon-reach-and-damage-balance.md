@@ -8,7 +8,7 @@
 **Domain:** `items-player`
 **Subdomains:** `items` `tools` `interaction`
 **Tags:** `combat` `balance` `v1-revival` `regression`
-**Model:** Sonnet, Opus
+**Model:** Sonnet, Composer
 **Roadmap:** -
 
 ## Goal
