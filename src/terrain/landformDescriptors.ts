@@ -161,10 +161,10 @@ export function generateLandforms(seed: number, ctx: LandformGenContext): readon
   }
   for (const { kind, count } of kinds) {
     for (let n = 0; n < count; n++) {
-      const radius = kind === 'crag' ? 110 + rand() * 60 : 200 + rand() * 70
+      const radius = kind === 'crag' ? 110 + rand() * 60 : kind === 'crater' ? 70 + rand() * 60 : 200 + rand() * 70
       let picked: (Candidate & { score: number }) | null = null
       for (const relax of RELAX_STEPS) {
-        const maxRange = (kind === 'crag' ? 4 : 2.5) * relax
+        const maxRange = (kind === 'lakeIsland' ? 2.5 : 4) * relax
         let best: (Candidate & { score: number }) | null = null
         for (let gz = -half; gz <= half; gz++) {
           for (let gx = -half; gx <= half; gx++) {
@@ -174,9 +174,9 @@ export function generateLandforms(seed: number, ctx: LandformGenContext): readon
             const ground = ctx.floorH(c.x, c.z)
             // Flat lowland well above the sea and below the tree line — never on a range.
             // Basins keep their floor above the sea (hydrology decides whether they become a lake); crags may sit lower.
-            if (ground < ctx.waterLevel + (kind === 'crag' ? 4 : 5.5) || ground > 11.5) continue
+            if (ground < ctx.waterLevel + (kind === 'lakeIsland' ? 5.5 : 4) || ground > 11.5) continue
             const pr = probeRange(ctx, c.x, c.z, radius)
-            if (pr.min < ctx.waterLevel + (kind === 'crag' ? 2.5 : 4) || pr.max > 14 || pr.range > maxRange) continue
+            if (pr.min < ctx.waterLevel + (kind === 'lakeIsland' ? 4 : 2.5) || pr.max > 14 || pr.range > maxRange) continue
             const score = -pr.range + c.j * 1.5
             if (!best || score > best.score) best = { gx, gz, x: c.x, z: c.z, range: pr.range, ground, score }
           }
@@ -185,10 +185,21 @@ export function generateLandforms(seed: number, ctx: LandformGenContext): readon
       }
       if (!picked) continue
       chosen.push({ x: picked.x, z: picked.z })
+      // A crater is a dry tuff ring (raised rim, interior at ground level) with a gap on the downhill side so no pit
+      // forms: any depression below the surroundings would be filled by hydrology (lake or filled pit), see 060 notes.
+      let notch = 0
+      if (kind === 'crater') {
+        let low = Infinity
+        for (let k = 0; k < 16; k++) {
+          const a = (k / 16) * Math.PI * 2 - Math.PI
+          const h = ctx.floorH(picked.x + Math.cos(a) * radius, picked.z + Math.sin(a) * radius)
+          if (h < low) { low = h; notch = a }
+        }
+      }
       const params: Record<string, number> = kind === 'crag'
         ? { amplitude: 7 + rand() * 6 }
         : kind === 'crater'
-          ? { depth: 3 + rand() * 1.5, rim: 2.5 + rand() * 1.5 }
+          ? { rim: 3.5 + rand() * 1.5, notch }
           : { depth: 3.5 + rand() * 1, knoll: 4 + rand() * 2 }
       out.push({
         id: `lf:${kind}:${picked.gx}_${picked.gz}`,
@@ -200,7 +211,7 @@ export function generateLandforms(seed: number, ctx: LandformGenContext): readon
         intendedOutcome: kind === 'crag'
           ? 'isolated rocky hill'
           : kind === 'crater'
-            ? 'rim + bowl; a crater lake where hydrology fills the bowl'
+            ? 'dry crater: raised rim ring with a gap on the downhill side, interior at ground level'
             : 'basin with a central knoll; a lake with an island where hydrology fills the basin',
       })
     }
@@ -225,7 +236,7 @@ export function landformIndexFor(seed: number, key: string, ctx: LandformGenCont
 
 /**
  * Metre-scale height contribution of the landforms at `(x, z)`, added on top of the base floor (continuous, zero at the
- * footprint edge). `crag` = knoll; `crater` = bowl + rim; `lakeIsland` = basin with a central knoll (hydrology decides
+ * footprint edge). `crag` = knoll; `crater` = dry rim ring with a downhill gap; `lakeIsland` = basin with a central knoll (hydrology decides
  * the water). Skipped entirely while the index is empty.
  */
 export function landformHeightDeltaAt(index: LandformIndex, x: number, z: number): number {
@@ -242,9 +253,11 @@ export function landformHeightDeltaAt(index: LandformIndex, x: number, z: number
       const w = 1 - t * t
       delta += (d.params.amplitude ?? 8) * w * w
     } else if (d.kind === 'crater') {
-      const bowl = -(d.params.depth ?? 5) * (1 - smooth(0.35, 0.75, t))
-      const u = (t - 0.8) / 0.12
-      delta += (bowl + (d.params.rim ?? 3) * Math.exp(-u * u)) * fade
+      const u = (t - 0.78) / 0.1
+      let dTheta = Math.abs(Math.atan2(dz, dx) - (d.params.notch ?? 0))
+      if (dTheta > Math.PI) dTheta = Math.PI * 2 - dTheta
+      const ring = 1 - (1 - smooth(0.3, 0.55, dTheta)) // 0 in the gap, 1 on the rest of the rim
+      delta += (d.params.rim ?? 4) * Math.exp(-u * u) * ring * fade
     } else if (d.kind === 'lakeIsland') {
       const basin = -(d.params.depth ?? 5) * (1 - smooth(0.4, 0.95, t))
       const u = t / 0.2

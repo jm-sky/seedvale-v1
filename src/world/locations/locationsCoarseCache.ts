@@ -23,7 +23,7 @@ export const LOCATIONS_COARSE_NAMESPACE = 'locations-coarse'
  *  algorithm — an old-version record is a cache miss, never migrated
  *  (plan §12). */
 // v6 (2026-11-05): C¹ relief: smooth range-spine crest/blend/unions, C¹ Worley ridge, bicubic hydrology correction (plan world-terrain-065).
-export const LOCATIONS_COARSE_VERSION = 7
+export const LOCATIONS_COARSE_VERSION = 8
 
 export type CoarseTilePayload = { state: Uint8Array, height: Float32Array }
 

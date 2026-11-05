@@ -97,3 +97,9 @@ Author accepted the R2 previews 2026-11-05 ("OK").
 - Chunk-generation time and **hydrology boot time** vs the D7 baseline (cold/cold, warm/warm); peak memory.
 - Browser check on `415424794` (clear worldgen cache): cross one pass, stand on one summit, look at one crater / lake island (the landforms are placed away from the home: `lf:crater:8_14` at (1565, 2593), `lf:lakeIsland:16_7` at (2940, 1355), `lf:crag:16_8` at (2957, 1539)). Landform **look** (profiles, rock exposure on crags — crags are knolls only, no extra rock) is an author judgement.
 - Previews with landform overlay (`continent-preview-png.ts` has no landform layer yet) and committed R3 exports in a per-topic folder.
+
+### R3 correction after the author's look at the first landforms (2026-11-05)
+
+Author: the crater read as a huge lake with islands; a crater only makes sense **dry** and does **not need to be big**; lake island OK; "crag" unexplained (= `crag`: a small isolated rocky hill/knoll rising out of flat lowland — currently only a smooth knoll, no extra rock).
+
+Cause: a bowl below the surroundings is a depression, and hydrology fills every such pit (lake above `lakeMinCells`, filled pit otherwise) — a dry bowl cannot exist with the current 058 correction. **Fix:** `crater` is now a dry **tuff ring**: raised rim (3.5–5 m, Gaussian at 0.78 r), interior at ground level, a gap in the rim on the downhill side (lowest of 16 ring samples) so no pit forms; radius 70–130 m (was 200–270). Candidates use the crag lowland rules. Census (7 seeds): still 3–5 landforms per seed, no shortfall. All caches bumped once more (chunk tiles 30, hydrology 5, settlements 29, roads 17, caves 11, locations-coarse 8, cemeteries 14). Full `pnpm vitest run` green (9285). Dry crater on a slope whose notch faces uphill-of-a-ridge is possible only where the 16-sample minimum is itself a local rise — not observed; checked visually only after the author's browser look.

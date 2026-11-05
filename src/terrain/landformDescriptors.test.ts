@@ -63,8 +63,13 @@ describe('landform generation + profiles (R3)', () => {
       expect(landformHeightDeltaAt(index, d.centreX + d.radius + 1, d.centreZ)).toBe(0)
       if (d.kind === 'crag') expect(landformHeightDeltaAt(index, d.centreX, d.centreZ)).toBeGreaterThan(5)
       if (d.kind === 'crater') {
-        expect(landformHeightDeltaAt(index, d.centreX, d.centreZ)).toBeLessThan(-2)
-        expect(landformHeightDeltaAt(index, d.centreX + d.radius * 0.8, d.centreZ)).toBeGreaterThan(1)
+        // Dry ring: never a pit (no negative delta), interior at ground level, rim up on the far side of the gap.
+        expect(landformHeightDeltaAt(index, d.centreX, d.centreZ)).toBeCloseTo(0, 6)
+        const notch = d.params.notch ?? 0
+        const rimAt = (a: number) => landformHeightDeltaAt(index, d.centreX + Math.cos(a) * d.radius * 0.78, d.centreZ + Math.sin(a) * d.radius * 0.78)
+        expect(rimAt(notch + Math.PI)).toBeGreaterThan(3)
+        expect(rimAt(notch)).toBeLessThan(0.05)
+        for (let k = 0; k < 24; k++) expect(rimAt((k / 24) * Math.PI * 2)).toBeGreaterThanOrEqual(0)
       }
       if (d.kind === 'lakeIsland') {
         expect(landformHeightDeltaAt(index, d.centreX, d.centreZ)).toBeGreaterThan(0)
