@@ -13,6 +13,7 @@ import { mkdirSync, writeFileSync } from 'node:fs'
 import { defaultTerrainConfig } from '../../src/config/worldConfig'
 import { clearRoadNetworkCaches, type RoadNetworkContext, type RoadRoute, roadRoutesForSettlement } from '../../src/settlement/roadNetwork'
 import { cellKey, type SettlementDef } from '../../src/settlement/settlementGenerator'
+import { setSettlementLayoutOverrides } from '../../src/settlement/settlementLayout'
 import { clearSettlementDefCache, setSettlementRiverQuery, settlementDefFor, settlementLayoutFor } from '../../src/settlement/settlementPlanCache'
 import { clearCemeteryCaches } from '../../src/terrain/cemeteryAssignment'
 import { WORLD_HALF_EXTENT } from '../../src/terrain/continentMask'
@@ -28,6 +29,15 @@ function arg(name: string, fallback: string): string {
 const seeds = arg('seeds', '42,415424794').split(',').map(Number)
 const asJson = process.argv.includes('--json')
 const routesOut = arg('routes-out', '')
+// world-terrain-063 V0: layout overrides (tooling only). Run each variant in a fresh process (see settlement-variants.ts).
+const overrideTarget = arg('target', '')
+const overrideSpacing = arg('spacing', '')
+if (overrideTarget || overrideSpacing) {
+  setSettlementLayoutOverrides({
+    ...(overrideTarget ? { target: Number(overrideTarget) } : {}),
+    ...(overrideSpacing ? { startSpacing: Number(overrideSpacing) } : {}),
+  })
+}
 const NPC_HOUR_M = NPC_TRAVEL_SPEED * DEFAULT_GAME_HOUR_REAL_SEC
 const GRADE_EDGES_DEG = [5, 10, 20, 30]
 const GRADE_LABELS = ['<5°', '5–10°', '10–20°', '20–30°', '≥30°']

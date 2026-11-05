@@ -65,6 +65,25 @@ export type SettlementLayoutInput = {
   homeSize?: HomeVillageSize
 }
 
+/** Tooling-only overrides of the selection constants (plan world-terrain-063 V0). */
+export type SettlementLayoutOverrides = {
+  /** Replaces `SETTLEMENT_TARGET_COUNT`. */
+  target?: number
+  /** Replaces `SETTLEMENT_SPACING_M` (first-pass radius). */
+  startSpacing?: number
+}
+
+let layoutOverrides: SettlementLayoutOverrides | null = null
+
+/**
+ * Tooling seam for the variant runner (`scripts/perf/settlement-variants.ts`). Never called by
+ * the game. The caller must also reset the settlement/road/cemetery caches, because the layout is
+ * memoized per world; the runner avoids that by using one fresh process per variant.
+ */
+export function setSettlementLayoutOverrides(overrides: SettlementLayoutOverrides | null): void {
+  layoutOverrides = overrides
+}
+
 export type LayoutSite = {
   cell: SettlementCell
   x: number
@@ -142,6 +161,8 @@ export function computeSettlementLayout(input: SettlementLayoutInput): Settlemen
     input.homeSize ?? 'auto',
   ).site
 
+  const targetCount = layoutOverrides?.target ?? SETTLEMENT_TARGET_COUNT
+  const startSpacing = layoutOverrides?.startSpacing ?? SETTLEMENT_SPACING_M
   const sites: LayoutSite[] = []
   const homeSite = probe({ gx: 0, gz: 0 })
   const homeCenter = settlementCellCenter({ gx: 0, gz: 0 }, input.seed)
@@ -156,12 +177,12 @@ export function computeSettlementLayout(input: SettlementLayoutInput): Settlemen
     sites.every((s) => Math.hypot(s.x - x, s.z - z) >= radius)
 
   for (
-    let radius = SETTLEMENT_SPACING_M;
-    radius >= SETTLEMENT_MIN_DISTANCE_M && sites.length < SETTLEMENT_TARGET_COUNT;
+    let radius = startSpacing;
+    radius >= SETTLEMENT_MIN_DISTANCE_M && sites.length < targetCount;
     radius -= SPACING_RELAX_STEP_M
   ) {
     for (const { cell } of candidates) {
-      if (sites.length >= SETTLEMENT_TARGET_COUNT) break
+      if (sites.length >= targetCount) break
       const key = cellKey(cell)
       if (taken.has(key)) continue
       const c = settlementCellCenter(cell, input.seed)

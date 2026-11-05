@@ -43,6 +43,7 @@
     "worldgen:access:census": "tsx scripts/perf/census-settlement-access.ts",
     "worldgen:roads:census": "tsx scripts/perf/census-roads.ts",
     "worldgen:continent:census": "tsx scripts/perf/census-continent.ts",
+    "worldgen:variants": "tsx scripts/perf/settlement-variants.ts",
     "worldgen:travel:census": "tsx scripts/perf/census-travel.ts",
     "worldgen:rivers:census": "tsx scripts/perf/census-rivers.ts",
     "worldgen:lakes:census": "tsx scripts/perf/census-catalog-lakes.ts",
