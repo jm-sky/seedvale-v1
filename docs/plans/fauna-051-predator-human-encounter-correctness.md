@@ -8,7 +8,7 @@
 **Domain:** `fauna`
 **Subdomains:** `predation` `lifecycle`
 **Tags:** `combat` `ai` `navigation` `determinism` `v1-revival`
-**Model:** Sonnet, Opus
+**Model:** Sonnet, Composer
 **Roadmap:** -
 
 ## Goal
