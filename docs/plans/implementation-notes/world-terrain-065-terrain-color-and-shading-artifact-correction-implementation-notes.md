@@ -97,6 +97,25 @@ Hydrology correction alone: max 0.360 → 0.160, samples > 0.15 501 → 6.
 
 **Separate finding (not this defect):** at the home spawn, the per-chunk sea water inside the 3×3 home block is lighter than the water outside it. The step sits on the ±96 m chunk lines, and on land there is no step (`home-terrain-250.png`). This is a water presentation seam (chunk water vs. outer chunks/ocean ring), related to Q98, not terrain.
 
+### Reopened — third screenshot after the fix (2026-11-05, not yet diagnosed)
+
+✅ Author, 2026-11-05: the defect is **still visible after the C¹ fix** — "widać łączenie kwadratów na terenie" (square joins are visible on the terrain). New local screenshot `_temp/screenshots/terrain-artifacts - ground.jpg` (file time 2026-11-05 20:52, ~2 h 40 min after `09c033db` landed at 18:12). The plan is back to `in progress`; **no diagnosis or fix was done in this session** (author: record conclusions only).
+
+What the screenshot shows (Opus, read from the image only, not browser-verified):
+- HUD **11:46**, spring, weather **"Deszcz" (rain)**, 10 °C. Open lowland/foothill terrain with scattered clover/grass, no road, village or water in view; the minimap shows relief with a river to the west. Camera looks steeply down at the player.
+- A **straight-edged diagonal band** runs from the upper centre through the player to the lower right. Inside it the **wet specular sheen is much brighter** than outside; its left edge is a crisp straight line over the whole visible length, and the lower-right part meets a darker area along another straight edge. Further up, a curved bright specular lobe sits next to the band.
+- Unlike screenshot 1 (fog, shore) and 2 (fog, mountain), this is **rain**, a third weather type, and **away from mountains and shores**, so it is not explained only by the spine/Worley/hydrology creases the fix targeted.
+
+🟡 Conclusions (hypotheses, not verified):
+- Rain makes the terrain glossy, so the sun highlight is very sensitive to the surface normal. A crisp straight specular step therefore means **either a remaining normal (C¹) break** in the height field, **or a step in a roughness/wetness term**, along a straight line. Both read as "joined squares".
+- Candidates to check, in order:
+  1. **Remaining height creases from other terrain terms** not touched by 065 — regional smoothing / clearings / corridor falloffs (`chunkHeightmap.ts`: `applyRegionalSmoothing`, `applyTerrainCorridors`; picks the strongest single segment per texel, a hard switch), landforms, or the hydrology correction where the bicubic still overshoots next to a single-cell cut. Discriminator: headless crease map (§ Root cause, 1 m step) at this pose.
+  2. **Wetness/roughness presentation step** in the terrain material (`src/terrain/buildChunkGeometry.ts`, wetness driven from `src/world/weather.ts` / `gameLoop.ts`) — e.g. a per-chunk or grid-quantised wetness/puddle term. Discriminator: same pose in clear weather vs rain; if the band vanishes in clear weather but the crease map is clean, the owner is the material.
+  3. **Chunk-seam data** (S1–S6): excluded for screenshot 2 at `e235c01c` (identical shared edges), but not re-checked at this pose. A band edge exactly on a 64 m chunk line would reopen it.
+- ❓ Did the author's tab actually run `09c033db` (page reloaded after 18:12)? The tile cache version bump drops old tiles, so a reload is enough.
+
+**Next session's first steps:** get the pose (`?camdebug=1` or the author), then (1) crease map + `sampleFloorAt` cross-sections at that pose, (2) clear vs rain at the same pose, (3) check whether the edges line up with the 64 m chunk grid or the 8 m hydrology cells.
+
 **Re-ranking after the screenshot:** the polygonal shoreline is the strongest single clue. Something makes the **terrain height planar over tens of metres** near shores and lakes. The prime candidate is the **global hydrology correction layer** (bilinear on 8 m cells; priority-flood fills with an ε gradient over D8 neighbours; `terminalMinCells` raises small below-sea inland components; lake rule in `sampleRawTexel`). Despite the author's "probably older" (uncertain), the screenshot was taken after it landed (`5f127b450`, 2026-11-03). A raised or filled area sitting on bilinear 8 m patches near `waterLevel` gives exactly flat facets and straight water contours. Chunk-seam data mismatch (S1–S3) remains second, decided by the coordinates. **First checks:**
 1. Get the pose (`?camdebug=1`) or locate this shore on seed `415424794` from the minimap shape. Sample `sampleFloorAt − sampleRawFloorUncorrected` (correction) and `hydrologyLakeLevelAt` over ±60 m (§4). Non-zero correction under the facets settles it.
 2. Same pose at `5f127b450^` (worktree, pre-correction) vs `main`, fresh profile, clear weather (there is no URL weather override; use the GUI "Pora roku / Pogoda" folder or `debugDisableSystems=weather` and confirm the fog cards are gone).
