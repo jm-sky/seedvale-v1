@@ -8,6 +8,7 @@ import { createSeededRandom } from '../world/parseSeed'
 import { continentMaskAt, type ContinentMaskParams } from './continentMask'
 import { fbm01, type FbmParams } from './fbm'
 import { landformHeightDeltaAt, landformIndexFor } from './landformDescriptors'
+import { EMPTY_RANGE_SPINES, generateRangeSpines, type RangeSpineSet, sampleRangeSpines, softCapSummitHeight } from './rangeSpines'
 import { fordBedHeight, fordInfluenceAt, type FordProjection } from './riverFord'
 import { isOnAnyBridgeDeck, type RoadBridgeSpec } from './roadBridge'
 import { computeBodyScale, detectWaterBodies } from './waterBodies'
@@ -501,6 +502,49 @@ function noiseHandlesFor(seed: number): NoiseHandles {
   return handles
 }
 
+/** Range spines per region params object (fast path) and per seed + region content (workers clone params per job). */
+const rangeSpinesByRegion = new WeakMap<RegionParams, Map<number, RangeSpineSet>>()
+const rangeSpinesByKey = new Map<string, RangeSpineSet>()
+
+/**
+ * Range spines of a world (plan world-terrain-060 R1–R2). Only finite-continent worlds (`region.continentMask`) get
+ * spines; the generator reads the descriptor-free base relief (land weight + noise mountain gate) — never the spine
+ * term itself, hydrology, settlements or roads.
+ */
+export function rangeSpinesFor(seed: number, region: RegionParams): RangeSpineSet {
+  if (!region.continentMask) return EMPTY_RANGE_SPINES
+  let perSeed = rangeSpinesByRegion.get(region)
+  const hit = perSeed?.get(seed)
+  if (hit) return hit
+  const key = `${seed}|${JSON.stringify(region)}`
+  let set = rangeSpinesByKey.get(key)
+  if (!set) {
+    const noise = noiseHandlesFor(seed)
+    const mask = region.continentMask
+    const land = (x: number, z: number): number => {
+      const c = Math.min(
+        fbm01(noise.continent, x / region.continentScale, z / region.continentScale, region.continentFbm),
+        continentMaskAt(x, z, noise, mask),
+      )
+      return MathUtils.smoothstep(c, region.oceanThreshold, region.coastThreshold)
+    }
+    const mountain = (x: number, z: number): number =>
+      MathUtils.smoothstep(
+        fbm01(noise.mountain, x / region.mountainScale, z / region.mountainScale, region.mountainFbm),
+        region.mountainThreshold,
+        region.mountainThreshold + region.mountainThresholdWidth,
+      )
+    set = generateRangeSpines(seed, { land, mountain })
+    rangeSpinesByKey.set(key, set)
+  }
+  if (!perSeed) {
+    perSeed = new Map()
+    rangeSpinesByRegion.set(region, perSeed)
+  }
+  perSeed.set(seed, set)
+  return set
+}
+
 function sampleRawTexelUncorrected(
   wx: number,
   wz: number,
@@ -568,13 +612,17 @@ function sampleRawTexelUncorrected(
     params.seed,
     region.ridgeSharpness,
   )
+  // Range spines (plan 060 R1): the spine envelope joins the noise gate as the main mountain term, a continuous main
+  // crest follows the spine, and pass windows lower the whole gate to a saddle. Same warp as the Worley ridges.
+  const spine = sampleRangeSpines(rangeSpinesFor(params.seed, region), wxWorleyWarp, wzWorleyWarp)
+  const noiseGate = MathUtils.smoothstep(
+    mt,
+    region.mountainThreshold,
+    region.mountainThreshold + region.mountainThresholdWidth,
+  )
   const mountainGate =
-    MathUtils.smoothstep(
-      mt,
-      region.mountainThreshold,
-      region.mountainThreshold + region.mountainThresholdWidth,
-    ) * landWeight // no ridges below sea/coast
-  const mountainRidge = ridge01 * mountainGate
+    (spine.gate > noiseGate ? spine.gate : noiseGate) * spine.passFactor * landWeight // no ridges below sea/coast
+  const mountainRidge = (spine.crest > ridge01 ? spine.crest : ridge01) * mountainGate
   // Suppress fine local detail on top of a strong ridge — this is what keeps the
   // massif reading as continuous terrain instead of a field of sharp isolated
   // spikes/pits stacked on the macro shape (see MOUNTAIN_DETAIL_DAMPING doc comment).
@@ -595,10 +643,10 @@ function sampleRawTexelUncorrected(
   let ridgeGainFactor = 1
   let peakDetailTerm = 0
   if (mountainGate > 0) {
-    const envelopeStrength = MathUtils.smoothstep(
-      mt,
-      region.mountainThreshold + region.mountainThresholdWidth,
-      1,
+    // A range spine counts as deep mountain territory (full massif gain on its core), like a strong noise envelope.
+    const envelopeStrength = Math.max(
+      MathUtils.smoothstep(mt, region.mountainThreshold + region.mountainThresholdWidth, 1),
+      spine.gate,
     )
     const massifGainFactor = MathUtils.lerp(
       MASSIF_ENVELOPE_MIN_GAIN,
@@ -641,10 +689,13 @@ function sampleRawTexelUncorrected(
     peakDetailTerm
   const landforms = landformIndexFor(params.seed)
   // Landform descriptors (plan 060): metre-scale term; skipped entirely while the world has none (bit-identical).
-  const floorH =
-    landforms.count === 0
-      ? nCombined * heightScale
-      : nCombined * heightScale + landformHeightDeltaAt(landforms, wx, wz)
+  // Range summits (plan 060 R2): metre-scale crest lift + summits on the spine core, outside `heightScale` so the
+  // altitude-fraction consumers (tree line, meadows, biomes) keep their classes in the lowland.
+  const baseH =
+    spine.summitM > 0
+      ? softCapSummitHeight(nCombined * heightScale + spine.summitM * landWeight)
+      : nCombined * heightScale
+  const floorH = landforms.count === 0 ? baseH : baseH + landformHeightDeltaAt(landforms, wx, wz)
   const h = floorH < waterLevel ? waterLevel : floorH
   const waterH = waterLevel
 

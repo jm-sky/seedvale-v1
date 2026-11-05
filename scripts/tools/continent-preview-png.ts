@@ -19,6 +19,7 @@ import { createBenchmarkWorldConfig } from '../../src/config/worldConfig'
 import { clearRoadNetworkCaches, roadRoutesForSettlement } from '../../src/settlement/roadNetwork'
 import { clearSettlementDefCache, setSettlementRiverQuery, settlementDefFor, settlementLayoutFor } from '../../src/settlement/settlementPlanCache'
 import { clearCemeteryCaches } from '../../src/terrain/cemeteryAssignment'
+import { rangeSpinesFor } from '../../src/terrain/chunkHeightmap'
 import { landformDescriptorsFor } from '../../src/terrain/landformDescriptors'
 import { createRiverQuery } from '../../src/terrain/riverQuery'
 import { computeWorldHydrology, sampleRawFloorRows, unpackChains, WORLD_HYDROLOGY_GRID } from '../../src/terrain/worldHydrology'
@@ -155,13 +156,24 @@ function disc(target: Uint8Array, cx: number, cy: number, r: number, rgb: readon
 
 if (flag('hillshade') || flag('slope')) applyRelief(rgba, { hillshade: flag('hillshade'), slope: flag('slope') })
 
-// plan 060 R0 debug overlay: descriptor footprints (magenta rings, cyan for spine summits). Zero descriptors → draws nothing.
+// plan 060 debug overlay: descriptor footprints (magenta rings, cyan for spine summits) + range spines and passes.
 if (flag('landforms')) {
   const descriptors = landformDescriptorsFor(seed)
   for (const d of descriptors) {
     disc(rgba, toPx(d.centreX), toPx(d.centreZ), Math.max(2, d.radius * scale), d.kind === 'spineSummit' ? [40, 220, 230] : [230, 40, 200], true)
   }
   console.log(`landforms drawn: ${descriptors.length}`)
+  // plan 060 R1: range spines (white centreline) and pass corridors (yellow crossing + dot at the saddle).
+  const spines = rangeSpinesFor(seed, params.region).spines
+  for (const s of spines) {
+    for (let i = 0; i + 1 < s.xs.length; i++) line(rgba, toPx(s.xs[i]!), toPx(s.zs[i]!), toPx(s.xs[i + 1]!), toPx(s.zs[i + 1]!), [245, 245, 245], 0.6)
+    for (const p of s.passes) {
+      const c = p.corridor
+      line(rgba, toPx(c.centreX - c.dirX * c.halfLength), toPx(c.centreZ - c.dirZ * c.halfLength), toPx(c.centreX + c.dirX * c.halfLength), toPx(c.centreZ + c.dirZ * c.halfLength), [250, 210, 40], 1)
+      disc(rgba, toPx(c.centreX), toPx(c.centreZ), 3, [250, 210, 40])
+    }
+  }
+  console.log(`range spines drawn: ${spines.length} (${spines.reduce((n, s) => n + s.passes.length, 0)} passes)`)
 }
 
 if (flag('settlements') || flag('routes')) {

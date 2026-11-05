@@ -60,8 +60,9 @@ export const CHUNK_TILE_CACHE_NAMESPACE = 'chunk-tiles'
  * v24 (2026-11-03, queue Q94): object pads move off lake rims.
  * v25 (2026-11-03, queue Q96): no trees inside the beach sand band.
  * v26 (2026-11-04, queue Q97): road corridors straight under bridge decks (road + bridge masks move).
+ * v27 (2026-11-05, queue Q118): range spines, passes and summits reshape the relief (plan world-terrain-060 R1–R2).
  */
-export const CHUNK_TILE_CACHE_VERSION = 26
+export const CHUNK_TILE_CACHE_VERSION = 27
 
 /** Small byte-budget manifest record living in the same namespace — see
  *  `ChunkTileMetaPayload`. Its `fingerprint` field is a constant because the

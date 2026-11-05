@@ -53,7 +53,10 @@ function terrainParams(): RawSampleParams {
     hillsFbm: terrain.hillsFbm,
     fbm: terrain.fbm,
     biome: terrain.biome,
-    region: terrain.region,
+    // Pinned to the pre-060 relief: the anchor lies inside the continent mask's untouched core (mask = 1 there), so
+    // dropping the mask only removes the range spines (plan world-terrain-060), which cross this hillside on seed 1 and
+    // would move the surface the cave fixtures and their containment tests are tuned on.
+    region: { ...terrain.region, continentMask: undefined },
   }
   // Synthetic debug heightfield: no global hydrology (nothing installs one on the cave debug page).
   return { ...params, hydrologyId: UNCONDITIONED_HYDROLOGY_ID }

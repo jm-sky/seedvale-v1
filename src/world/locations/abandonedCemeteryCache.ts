@@ -26,8 +26,9 @@ export const ABANDONED_CEMETERY_NAMESPACE = 'abandoned-cemeteries'
  *  v7 (Q37): clearance-fallback houses need a dry yard (settlement clearings move).
  *  v8 (Q93): lanes keep off house/storehouse corridors (path plans move).
  *  v9 (Q94): object discs keep a dry rim (layouts move).
- *  v10 (Q97): roads straight under bridge decks (road clearance inputs move). */
-export const ABANDONED_CEMETERY_VERSION = 10
+ *  v10 (Q97): roads straight under bridge decks (road clearance inputs move).
+ *  v11 (Q118): range spines/passes/summits reshape the relief (plan world-terrain-060 R1–R2). */
+export const ABANDONED_CEMETERY_VERSION = 11
 
 export type CachedAbandonedCemeteryResult =
   | { status: 'none' }

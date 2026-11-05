@@ -1,0 +1,492 @@
+[
+  {
+    "seed": 42,
+    "landWithin2500": "72.1 %",
+    "borderLandCells": "0/772",
+    "coastRadiusPerRay": "3975 3850 3225 3800 3900 3875 4100 4250",
+    "settlementsPerRay": "0 0 1 0 0 0 0 0",
+    "rayMedian": 0,
+    "raysWith3to7": 0,
+    "settlementsTotal": 22,
+    "home": "8.5,22.7",
+    "relief": {
+      "gridStepM": 16,
+      "landKm2": 34.9,
+      "heightQuantilesM": {
+        "p10": 2,
+        "p50": 6,
+        "p90": 13.5,
+        "p99": 35.2,
+        "max": 71.3
+      },
+      "heightHistogram": [
+        {
+          "fromM": 0,
+          "toM": 10,
+          "sharePct": 83.11
+        },
+        {
+          "fromM": 10,
+          "toM": 20,
+          "sharePct": 11.23
+        },
+        {
+          "fromM": 20,
+          "toM": 30,
+          "sharePct": 3.65
+        },
+        {
+          "fromM": 30,
+          "toM": 40,
+          "sharePct": 1.43
+        },
+        {
+          "fromM": 40,
+          "toM": 50,
+          "sharePct": 0.45
+        },
+        {
+          "fromM": 50,
+          "toM": 60,
+          "sharePct": 0.1
+        },
+        {
+          "fromM": 60,
+          "toM": 70,
+          "sharePct": 0.03
+        },
+        {
+          "fromM": 70,
+          "toM": 80,
+          "sharePct": 0
+        }
+      ],
+      "slopeClassSharePct": {
+        "<5°": 54.31,
+        "5–10°": 36.86,
+        "10–20°": 7.95,
+        "20–30°": 0.76,
+        "≥30°": 0.13
+      },
+      "gatedRidgeLand": {
+        "definition": "mountainRidge ≥ 0.05 (proxy)",
+        "sharePct": 24.07,
+        "components": 38,
+        "top": [
+          {
+            "km2": 2.068,
+            "extentKm": 3.51
+          },
+          {
+            "km2": 1.842,
+            "extentKm": 3.08
+          },
+          {
+            "km2": 1.651,
+            "extentKm": 2.85
+          },
+          {
+            "km2": 0.445,
+            "extentKm": 1.23
+          },
+          {
+            "km2": 0.415,
+            "extentKm": 1.85
+          },
+          {
+            "km2": 0.396,
+            "extentKm": 1.36
+          }
+        ]
+      },
+      "peaks": [
+        {
+          "x": 432,
+          "z": 1376,
+          "heightM": 71.3,
+          "prominenceM": 70.9,
+          "isolationM": null
+        },
+        {
+          "x": 848,
+          "z": -1776,
+          "heightM": 66.7,
+          "prominenceM": 60.6,
+          "isolationM": 3146
+        },
+        {
+          "x": 272,
+          "z": 1232,
+          "heightM": 61.1,
+          "prominenceM": 13.1,
+          "isolationM": 182
+        },
+        {
+          "x": 864,
+          "z": -1504,
+          "heightM": 53.3,
+          "prominenceM": 25.3,
+          "isolationM": 229
+        },
+        {
+          "x": 1504,
+          "z": -1632,
+          "heightM": 52.5,
+          "prominenceM": 20.2,
+          "isolationM": 516
+        },
+        {
+          "x": 624,
+          "z": 1296,
+          "heightM": 52.4,
+          "prominenceM": 7.6,
+          "isolationM": 144
+        },
+        {
+          "x": -1824,
+          "z": -1392,
+          "heightM": 51.2,
+          "prominenceM": 44.7,
+          "isolationM": 2567
+        },
+        {
+          "x": -1680,
+          "z": -1344,
+          "heightM": 50.6,
+          "prominenceM": 6.2,
+          "isolationM": 137
+        },
+        {
+          "x": -2448,
+          "z": -1376,
+          "heightM": 49.7,
+          "prominenceM": 20.2,
+          "isolationM": 609
+        },
+        {
+          "x": 1904,
+          "z": 1456,
+          "heightM": 45.6,
+          "prominenceM": 34.7,
+          "isolationM": 1032
+        },
+        {
+          "x": 1168,
+          "z": 1600,
+          "heightM": 45.3,
+          "prominenceM": 17.6,
+          "isolationM": 396
+        },
+        {
+          "x": -2368,
+          "z": -1312,
+          "heightM": 40.3,
+          "prominenceM": 8.7,
+          "isolationM": 91
+        },
+        {
+          "x": 1376,
+          "z": -1472,
+          "heightM": 40.1,
+          "prominenceM": 6.9,
+          "isolationM": 138
+        },
+        {
+          "x": 720,
+          "z": -2320,
+          "heightM": 38.2,
+          "prominenceM": 16.7,
+          "isolationM": 256
+        },
+        {
+          "x": 1920,
+          "z": -912,
+          "heightM": 37.3,
+          "prominenceM": 27.4,
+          "isolationM": 781
+        },
+        {
+          "x": 2160,
+          "z": -688,
+          "heightM": 36.1,
+          "prominenceM": 14.4,
+          "isolationM": 244
+        },
+        {
+          "x": 1824,
+          "z": 1744,
+          "heightM": 36,
+          "prominenceM": 13.4,
+          "isolationM": 229
+        },
+        {
+          "x": -3136,
+          "z": -1072,
+          "heightM": 35.9,
+          "prominenceM": 25.6,
+          "isolationM": 695
+        },
+        {
+          "x": 1328,
+          "z": 1248,
+          "heightM": 33.6,
+          "prominenceM": 8.9,
+          "isolationM": 143
+        },
+        {
+          "x": 3824,
+          "z": -768,
+          "heightM": 33.1,
+          "prominenceM": 27.5,
+          "isolationM": 1650
+        }
+      ],
+      "transects": "/tmp/claude-1000/-home-madeyskij-projects-private-seedvale-v1/61e87a20-e8da-4c89-ac47-0f5a2b46deb6/scratchpad/tr/relief-transect-42-*.csv"
+    }
+  },
+  {
+    "seed": 415424794,
+    "landWithin2500": "77.1 %",
+    "borderLandCells": "0/772",
+    "coastRadiusPerRay": "3850 4100 3975 3975 4050 3675 3675 3550",
+    "settlementsPerRay": "1 2 1 0 0 1 0 0",
+    "rayMedian": 0.5,
+    "raysWith3to7": 0,
+    "settlementsTotal": 22,
+    "home": "59.9,-5.2",
+    "relief": {
+      "gridStepM": 16,
+      "landKm2": 36.4,
+      "heightQuantilesM": {
+        "p10": 1.9,
+        "p50": 5.7,
+        "p90": 12.3,
+        "p99": 34.8,
+        "max": 76.9
+      },
+      "heightHistogram": [
+        {
+          "fromM": 0,
+          "toM": 10,
+          "sharePct": 84.84
+        },
+        {
+          "fromM": 10,
+          "toM": 20,
+          "sharePct": 10.76
+        },
+        {
+          "fromM": 20,
+          "toM": 30,
+          "sharePct": 2.67
+        },
+        {
+          "fromM": 30,
+          "toM": 40,
+          "sharePct": 1.14
+        },
+        {
+          "fromM": 40,
+          "toM": 50,
+          "sharePct": 0.32
+        },
+        {
+          "fromM": 50,
+          "toM": 60,
+          "sharePct": 0.18
+        },
+        {
+          "fromM": 60,
+          "toM": 70,
+          "sharePct": 0.08
+        },
+        {
+          "fromM": 70,
+          "toM": 80,
+          "sharePct": 0.01
+        }
+      ],
+      "slopeClassSharePct": {
+        "<5°": 54.82,
+        "5–10°": 37.29,
+        "10–20°": 7.04,
+        "20–30°": 0.73,
+        "≥30°": 0.13
+      },
+      "gatedRidgeLand": {
+        "definition": "mountainRidge ≥ 0.05 (proxy)",
+        "sharePct": 23.22,
+        "components": 35,
+        "top": [
+          {
+            "km2": 3.239,
+            "extentKm": 4.72
+          },
+          {
+            "km2": 1.891,
+            "extentKm": 3.43
+          },
+          {
+            "km2": 0.669,
+            "extentKm": 1.88
+          },
+          {
+            "km2": 0.336,
+            "extentKm": 0.95
+          },
+          {
+            "km2": 0.266,
+            "extentKm": 1.31
+          },
+          {
+            "km2": 0.221,
+            "extentKm": 0.84
+          }
+        ]
+      },
+      "peaks": [
+        {
+          "x": -2336,
+          "z": -688,
+          "heightM": 76.9,
+          "prominenceM": 76.4,
+          "isolationM": null
+        },
+        {
+          "x": -2304,
+          "z": -864,
+          "heightM": 75.7,
+          "prominenceM": 10.4,
+          "isolationM": 179
+        },
+        {
+          "x": -2416,
+          "z": -800,
+          "heightM": 70.3,
+          "prominenceM": 10.8,
+          "isolationM": 115
+        },
+        {
+          "x": 1360,
+          "z": -1600,
+          "heightM": 62.7,
+          "prominenceM": 58.3,
+          "isolationM": 3575
+        },
+        {
+          "x": 2288,
+          "z": -1968,
+          "heightM": 58.9,
+          "prominenceM": 44.8,
+          "isolationM": 983
+        },
+        {
+          "x": 1008,
+          "z": -1360,
+          "heightM": 58.6,
+          "prominenceM": 22.6,
+          "isolationM": 391
+        },
+        {
+          "x": -2976,
+          "z": 976,
+          "heightM": 52.5,
+          "prominenceM": 42.6,
+          "isolationM": 1680
+        },
+        {
+          "x": -2912,
+          "z": 992,
+          "heightM": 48.7,
+          "prominenceM": 8.7,
+          "isolationM": 66
+        },
+        {
+          "x": 2032,
+          "z": -1888,
+          "heightM": 44.9,
+          "prominenceM": 18.1,
+          "isolationM": 229
+        },
+        {
+          "x": -2512,
+          "z": 16,
+          "heightM": 40.9,
+          "prominenceM": 11.1,
+          "isolationM": 400
+        },
+        {
+          "x": -2816,
+          "z": 464,
+          "heightM": 38.9,
+          "prominenceM": 7.4,
+          "isolationM": 501
+        },
+        {
+          "x": -2672,
+          "z": -752,
+          "heightM": 38.6,
+          "prominenceM": 13.8,
+          "isolationM": 179
+        },
+        {
+          "x": 944,
+          "z": -1648,
+          "heightM": 37.9,
+          "prominenceM": 12.5,
+          "isolationM": 210
+        },
+        {
+          "x": -2688,
+          "z": 16,
+          "heightM": 37.1,
+          "prominenceM": 5.1,
+          "isolationM": 145
+        },
+        {
+          "x": -2256,
+          "z": -384,
+          "heightM": 35.6,
+          "prominenceM": 6.4,
+          "isolationM": 181
+        },
+        {
+          "x": 1856,
+          "z": 736,
+          "heightM": 33.5,
+          "prominenceM": 28.6,
+          "isolationM": 2185
+        },
+        {
+          "x": -1920,
+          "z": -3296,
+          "heightM": 33.2,
+          "prominenceM": 27.6,
+          "isolationM": 1702
+        },
+        {
+          "x": -2176,
+          "z": -1984,
+          "heightM": 32.4,
+          "prominenceM": 22.5,
+          "isolationM": 392
+        },
+        {
+          "x": 864,
+          "z": -1584,
+          "heightM": 30.4,
+          "prominenceM": 5.1,
+          "isolationM": 68
+        },
+        {
+          "x": 2368,
+          "z": 2336,
+          "heightM": 30.4,
+          "prominenceM": 23.9,
+          "isolationM": 1660
+        }
+      ],
+      "transects": "/tmp/claude-1000/-home-madeyskij-projects-private-seedvale-v1/61e87a20-e8da-4c89-ac47-0f5a2b46deb6/scratchpad/tr/relief-transect-415424794-*.csv"
+    }
+  }
+]

@@ -45,7 +45,8 @@ export const ROAD_ROUTE_CACHE_NAMESPACE = 'road-routes'
 // v11 (2026-11-03, queue Q93): entrance lanes keep off house/storehouse corridors.
 // v12 (2026-11-03, queue Q94): object discs (storehouse, garden, field, …) keep a dry rim.
 // v13 (2026-11-04, queue Q97): roads run straight under every bridge deck (chord + re-derived crossings).
-export const ROAD_ROUTE_CACHE_VERSION = 13
+// v14 (2026-11-05, queue Q118): range spines/passes/summits reshape the relief (plan world-terrain-060 R1–R2).
+export const ROAD_ROUTE_CACHE_VERSION = 14
 
 const DEFAULT_DEBOUNCE_MS = 4000
 /** Bounded per-seed cap of requested routes only — never a full pair scan.
