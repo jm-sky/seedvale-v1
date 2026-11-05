@@ -84,7 +84,7 @@ Single-reference voices: British-female, Little-Lem, Old-man, Old-woman, Sleeple
 
 | File | Expected | Best reference | Best | Expected score | Margin | Decision |
 | --- | --- | --- | ---: | ---: | ---: | --- |
-| general_male_old_farewell_02.mp3 | Old-man | Brian-British | 0.349 | — | 0.143 | ? |
+| general_male_old_farewell_02.mp3 | Old-man | Brian-British | 0.349 | — | 0.143 | Old-man |
 | general_female_old_farewell_01.mp3 | Old-woman | Old-man | 0.206 | — | 0.004 | Old-woman |
 
 ## analysis-error
