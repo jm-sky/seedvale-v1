@@ -6,6 +6,8 @@ import json
 import math
 import os
 from pathlib import Path
+from voice_assets import ARCHIVE, recording_path
+from voice_decisions import load_decisions
 import resource
 import subprocess
 import time
@@ -163,7 +165,7 @@ def main():
 
     cache = Cache(args.cache/'embeddings', version, extract)
     references, errors, seen = [], [], set()
-    for path in sorted((ROOT/'docs/v3-donor/voices/named-references').glob('*.mp3')):
+    for path in sorted((ARCHIVE/'named-references').glob('*.mp3')):
         uuid = mapping['voices'].get(reference_name(path))
         if not uuid:
             errors.append({'file':str(path.relative_to(ROOT)), 'error':'Unmapped reference name'})
@@ -177,6 +179,11 @@ def main():
             errors.append({'file':str(path.relative_to(ROOT)), 'error':str(error)})
     ledger_path = ROOT/'docs/assets/voice-qc/ledger.json'
     rows = json.loads(ledger_path.read_text())['rows']
+    decisions = load_decisions(rows)
+    historical_path = ROOT/'docs/assets/voice-qc/identity-audit.json'
+    historical = {r['file']: r for r in json.loads(historical_path.read_text())['rows']}
+    if args.output.resolve() == historical_path.resolve() and any(e['disposition'] == 'replace' for e in decisions.values()):
+        raise ValueError('Preserve the historical audit; use --output /tmp/voice-identity-current.json for migrated inventory QC')
     unknown_overrides = set(overrides['recordings']) - {r['file'] for r in rows}
     if unknown_overrides:
         raise ValueError(f'Unknown override files: {unknown_overrides}')
@@ -188,7 +195,11 @@ def main():
         rows = [r for r in rows if r['file'] in selection]
     output, processed = [], {}
     for row in rows:
-        path = ROOT/'docs/v3-donor/voices/mp3'/row['file']
+        if decisions[row['file']]['disposition'] == 'replace':
+            # Scores describe the deleted original, never a new extraction or listening claim.
+            output.append(dict(historical[row['file']], audioAvailability='removed-author-decision', historicalEvidence=True))
+            continue
+        path = recording_path(row['file'])
         record = dict(file=row['file'], ledgerVoiceId=row.get('voiceId'),
                       **expected_identity(row, mapping, overrides), ledgerGitBlob=row['gitBlob'])
         try:

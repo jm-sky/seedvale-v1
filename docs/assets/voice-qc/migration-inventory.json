@@ -34,8 +34,9 @@
       "runtimeReferences": [
         "src/ai/campfireTalk.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/campfire_female_road_answer_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/campfire_female_road_question_01.mp3",
@@ -60,8 +61,9 @@
       "runtimeReferences": [
         "src/ai/campfireTalk.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/campfire_female_road_question_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/campfire_female_weather_answer_02.mp3",
@@ -90,7 +92,8 @@
       "disposition": "delete-rejected",
       "rejectedRecordings": [
         "campfire_female_weather_answer_02.mp3"
-      ]
+      ],
+      "finalPath": null
     },
     {
       "path": "docs/v3-donor/voices/mp3/campfire_female_weather_question_01.mp3",
@@ -120,7 +123,8 @@
       "disposition": "delete-rejected",
       "rejectedRecordings": [
         "campfire_female_weather_question_01.mp3"
-      ]
+      ],
+      "finalPath": null
     },
     {
       "path": "docs/v3-donor/voices/mp3/campfire_female_work_answer_01.mp3",
@@ -145,8 +149,9 @@
       "runtimeReferences": [
         "src/ai/campfireTalk.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/campfire_female_work_answer_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/campfire_female_work_question_02.mp3",
@@ -171,8 +176,9 @@
       "runtimeReferences": [
         "src/ai/campfireTalk.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/campfire_female_work_question_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/campfire_male_road_answer_01.mp3",
@@ -199,8 +205,9 @@
       "runtimeReferences": [
         "src/ai/campfireTalk.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/campfire_male_road_answer_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/campfire_male_road_question_02.mp3",
@@ -225,8 +232,9 @@
       "runtimeReferences": [
         "src/ai/campfireTalk.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/campfire_male_road_question_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/campfire_male_weather_answer_01.mp3",
@@ -252,8 +260,9 @@
       "runtimeReferences": [
         "src/ai/campfireTalk.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/campfire_male_weather_answer_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/campfire_male_weather_question_02.mp3",
@@ -278,8 +287,9 @@
       "runtimeReferences": [
         "src/ai/campfireTalk.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/campfire_male_weather_question_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/campfire_male_work_answer_02.mp3",
@@ -304,8 +314,9 @@
       "runtimeReferences": [
         "src/ai/campfireTalk.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/campfire_male_work_answer_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/campfire_male_work_question_01.mp3",
@@ -330,8 +341,9 @@
       "runtimeReferences": [
         "src/ai/campfireTalk.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/campfire_male_work_question_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_agree_01.mp3",
@@ -357,7 +369,8 @@
       "disposition": "delete-rejected",
       "rejectedRecordings": [
         "general_female_agree_01.mp3"
-      ]
+      ],
+      "finalPath": null
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_b_agree_01.mp3",
@@ -378,8 +391,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_b_agree_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_b_agree_02.mp3",
@@ -403,8 +417,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_b_agree_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_b_attention_01.mp3",
@@ -427,8 +442,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_b_attention_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_b_attention_02.mp3",
@@ -454,8 +470,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_b_attention_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_b_call_for_help_01.mp3",
@@ -476,8 +493,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_b_call_for_help_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_b_call_for_help_02.mp3",
@@ -498,8 +516,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_b_call_for_help_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_b_combat_start_01.mp3",
@@ -522,8 +541,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_b_combat_start_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_b_combat_start_02.mp3",
@@ -544,8 +564,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_b_combat_start_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_b_danger_alert_01.mp3",
@@ -566,8 +587,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_b_danger_alert_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_b_danger_alert_02.mp3",
@@ -595,8 +617,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_b_danger_alert_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_b_exhausted_01.mp3",
@@ -628,8 +651,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_b_exhausted_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_b_exhausted_02.mp3",
@@ -650,8 +674,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_b_exhausted_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_b_farewell_01.mp3",
@@ -673,8 +698,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_b_farewell_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_b_farewell_02.mp3",
@@ -700,8 +726,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_b_farewell_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_b_greeting_01.mp3",
@@ -733,8 +760,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_b_greeting_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_b_greeting_02.mp3",
@@ -755,8 +783,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_b_greeting_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_b_hungry_01.mp3",
@@ -784,8 +813,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_b_hungry_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_b_hungry_02.mp3",
@@ -808,8 +838,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_b_hungry_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_b_quest_accepted_01.mp3",
@@ -830,8 +861,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_b_quest_accepted_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_b_quest_accepted_02.mp3",
@@ -854,8 +886,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_b_quest_accepted_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_b_quest_complete_01.mp3",
@@ -878,8 +911,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_b_quest_complete_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_b_quest_complete_02.mp3",
@@ -900,8 +934,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_b_quest_complete_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_b_quest_declined_01.mp3",
@@ -922,8 +957,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_b_quest_declined_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_b_quest_declined_02.mp3",
@@ -949,8 +985,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_b_quest_declined_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_b_quest_offer_01.mp3",
@@ -971,8 +1008,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_b_quest_offer_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_b_quest_offer_02.mp3",
@@ -996,8 +1034,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_b_quest_offer_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_b_refusal_01.mp3",
@@ -1021,8 +1060,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_b_refusal_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_b_refusal_02.mp3",
@@ -1043,8 +1083,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_b_refusal_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_b_thanks_01.mp3",
@@ -1065,8 +1106,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_b_thanks_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_b_thanks_02.mp3",
@@ -1090,8 +1132,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_b_thanks_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_b_warning_01.mp3",
@@ -1113,8 +1156,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_b_warning_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_b_warning_02.mp3",
@@ -1136,8 +1180,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_b_warning_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_b_weather_shelter_01.mp3",
@@ -1158,8 +1203,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_b_weather_shelter_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_b_weather_shelter_02.mp3",
@@ -1184,8 +1230,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_b_weather_shelter_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_b_well_wish_01.mp3",
@@ -1206,8 +1253,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_b_well_wish_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_b_well_wish_02.mp3",
@@ -1228,8 +1276,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_b_well_wish_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_b_work_finished_01.mp3",
@@ -1251,8 +1300,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_b_work_finished_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_b_work_finished_02.mp3",
@@ -1274,8 +1324,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_b_work_finished_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_call_for_help_01.mp3",
@@ -1301,8 +1352,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_call_for_help_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_child_farewell_01.mp3",
@@ -1325,8 +1377,9 @@
         "scripts/voice/voice-identity-overrides.json"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_child_farewell_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_child_farewell_02.mp3",
@@ -1350,8 +1403,9 @@
         "scripts/voice/voice-identity-overrides.json"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_child_farewell_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_child_greeting_01.mp3",
@@ -1378,8 +1432,9 @@
         "scripts/voice/voice-identity-overrides.json"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_child_greeting_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_danger_alert_01.mp3",
@@ -1406,8 +1461,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_danger_alert_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_exhausted_01.mp3",
@@ -1439,8 +1495,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_exhausted_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_farewell_01.mp3",
@@ -1471,7 +1528,8 @@
       "disposition": "delete-rejected",
       "rejectedRecordings": [
         "general_female_farewell_01.mp3"
-      ]
+      ],
+      "finalPath": null
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_greeting_01.mp3",
@@ -1506,7 +1564,8 @@
       "disposition": "delete-rejected",
       "rejectedRecordings": [
         "general_female_greeting_01.mp3"
-      ]
+      ],
+      "finalPath": null
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_old_farewell_01.mp3",
@@ -1529,8 +1588,9 @@
         "scripts/voice/voice-identity-overrides.json"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_old_farewell_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_old_farewell_02.mp3",
@@ -1554,8 +1614,9 @@
         "scripts/voice/voice-identity-overrides.json"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_old_farewell_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_old_greeting_01.mp3",
@@ -1578,8 +1639,9 @@
         "scripts/voice/voice-identity-overrides.json"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_old_greeting_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_quest_complete_01.mp3",
@@ -1606,7 +1668,8 @@
       "disposition": "delete-rejected",
       "rejectedRecordings": [
         "general_female_quest_complete_01.mp3"
-      ]
+      ],
+      "finalPath": null
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_quest_declined_01.mp3",
@@ -1633,7 +1696,8 @@
       "disposition": "delete-rejected",
       "rejectedRecordings": [
         "general_female_quest_declined_01.mp3"
-      ]
+      ],
+      "finalPath": null
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_thanks_01.mp3",
@@ -1659,7 +1723,8 @@
       "disposition": "delete-rejected",
       "rejectedRecordings": [
         "general_female_thanks_01.mp3"
-      ]
+      ],
+      "finalPath": null
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_female_weather_shelter_01.mp3",
@@ -1690,8 +1755,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_weather_shelter_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_male_b_agree_01.mp3",
@@ -1712,8 +1778,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/rejected-speakers/general_male_b_agree_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_male_b_agree_02.mp3",
@@ -1734,8 +1801,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/rejected-speakers/general_male_b_agree_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_male_b_attention_01.mp3",
@@ -1756,8 +1824,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/rejected-speakers/general_male_b_attention_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_male_b_attention_02.mp3",
@@ -1778,8 +1847,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/rejected-speakers/general_male_b_attention_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_male_b_call_for_help_01.mp3",
@@ -1800,8 +1870,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/rejected-speakers/general_male_b_call_for_help_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_male_b_call_for_help_02.mp3",
@@ -1822,8 +1893,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/rejected-speakers/general_male_b_call_for_help_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_male_b_combat_start_01.mp3",
@@ -1844,8 +1916,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/rejected-speakers/general_male_b_combat_start_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_male_b_combat_start_02.mp3",
@@ -1866,8 +1939,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/rejected-speakers/general_male_b_combat_start_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_male_b_danger_alert_01.mp3",
@@ -1888,8 +1962,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/rejected-speakers/general_male_b_danger_alert_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_male_b_danger_alert_02.mp3",
@@ -1910,8 +1985,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/rejected-speakers/general_male_b_danger_alert_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_male_b_exhausted_01.mp3",
@@ -1936,8 +2012,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/rejected-speakers/general_male_b_exhausted_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_male_b_exhausted_02.mp3",
@@ -1958,8 +2035,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/rejected-speakers/general_male_b_exhausted_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_male_b_farewell_01.mp3",
@@ -1981,8 +2059,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/rejected-speakers/general_male_b_farewell_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_male_b_farewell_02.mp3",
@@ -2003,8 +2082,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/rejected-speakers/general_male_b_farewell_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_male_b_greeting_01.mp3",
@@ -2029,8 +2109,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/rejected-speakers/general_male_b_greeting_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_male_b_greeting_02.mp3",
@@ -2051,8 +2132,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/rejected-speakers/general_male_b_greeting_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_male_b_hungry_01.mp3",
@@ -2073,8 +2155,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/rejected-speakers/general_male_b_hungry_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_male_b_hungry_02.mp3",
@@ -2095,8 +2178,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/rejected-speakers/general_male_b_hungry_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_male_b_quest_accepted_01.mp3",
@@ -2117,8 +2201,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/rejected-speakers/general_male_b_quest_accepted_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_male_b_quest_accepted_02.mp3",
@@ -2139,8 +2224,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/rejected-speakers/general_male_b_quest_accepted_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_male_b_quest_complete_01.mp3",
@@ -2161,8 +2247,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/rejected-speakers/general_male_b_quest_complete_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_male_b_quest_complete_02.mp3",
@@ -2183,8 +2270,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/rejected-speakers/general_male_b_quest_complete_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_male_b_quest_declined_01.mp3",
@@ -2205,8 +2293,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/rejected-speakers/general_male_b_quest_declined_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_male_b_quest_declined_02.mp3",
@@ -2227,8 +2316,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/rejected-speakers/general_male_b_quest_declined_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_male_b_quest_offer_01.mp3",
@@ -2249,8 +2339,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/rejected-speakers/general_male_b_quest_offer_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_male_b_quest_offer_02.mp3",
@@ -2271,8 +2362,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/rejected-speakers/general_male_b_quest_offer_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_male_b_refusal_01.mp3",
@@ -2293,8 +2385,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/rejected-speakers/general_male_b_refusal_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_male_b_refusal_02.mp3",
@@ -2315,8 +2408,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/rejected-speakers/general_male_b_refusal_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_male_b_thanks_01.mp3",
@@ -2337,8 +2431,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/rejected-speakers/general_male_b_thanks_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_male_b_thanks_02.mp3",
@@ -2359,8 +2454,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/rejected-speakers/general_male_b_thanks_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_male_b_warning_01.mp3",
@@ -2382,8 +2478,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/rejected-speakers/general_male_b_warning_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_male_b_warning_02.mp3",
@@ -2405,8 +2502,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/rejected-speakers/general_male_b_warning_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_male_b_weather_shelter_01.mp3",
@@ -2427,8 +2525,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/rejected-speakers/general_male_b_weather_shelter_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_male_b_weather_shelter_02.mp3",
@@ -2449,8 +2548,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/rejected-speakers/general_male_b_weather_shelter_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_male_b_well_wish_01.mp3",
@@ -2471,8 +2571,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/rejected-speakers/general_male_b_well_wish_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_male_b_well_wish_02.mp3",
@@ -2493,8 +2594,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/rejected-speakers/general_male_b_well_wish_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_male_b_work_finished_01.mp3",
@@ -2515,8 +2617,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/rejected-speakers/general_male_b_work_finished_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_male_b_work_finished_02.mp3",
@@ -2537,8 +2640,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/rejected-speakers/general_male_b_work_finished_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_male_call_for_help_01.mp3",
@@ -2566,8 +2670,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_male_call_for_help_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_male_combat_start_01.mp3",
@@ -2595,8 +2700,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_male_combat_start_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_male_exhausted_01.mp3",
@@ -2628,8 +2734,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_male_exhausted_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_male_hungry_01.mp3",
@@ -2656,8 +2763,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_male_hungry_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_male_old_farewell_01.mp3",
@@ -2681,8 +2789,9 @@
         "scripts/voice/voice-identity-overrides.json"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_male_old_farewell_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_male_old_farewell_02.mp3",
@@ -2706,8 +2815,9 @@
         "scripts/voice/voice-identity-overrides.json"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_male_old_farewell_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_male_old_greeting_02.mp3",
@@ -2731,8 +2841,9 @@
         "scripts/voice/voice-identity-overrides.json"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_male_old_greeting_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_male_weather_shelter_01.mp3",
@@ -2760,8 +2871,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_male_weather_shelter_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_male_work_finished_01.mp3",
@@ -2788,8 +2900,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_male_work_finished_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/general_male_young_greeting_02.mp3",
@@ -2812,8 +2925,9 @@
         "scripts/voice/voice-identity-overrides.json"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_male_young_greeting_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_agree_01.mp3",
@@ -2836,8 +2950,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_agree_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_attention_01.mp3",
@@ -2866,8 +2981,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_attention_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_b_agree_01.mp3",
@@ -2888,8 +3004,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_b_agree_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_b_agree_02.mp3",
@@ -2911,8 +3028,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_b_agree_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_b_attention_01.mp3",
@@ -2935,8 +3053,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_b_attention_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_b_attention_02.mp3",
@@ -2957,8 +3076,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_b_attention_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_b_call_for_help_01.mp3",
@@ -2980,8 +3100,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_b_call_for_help_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_b_call_for_help_02.mp3",
@@ -3003,8 +3124,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_b_call_for_help_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_b_combat_start_01.mp3",
@@ -3027,8 +3149,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_b_combat_start_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_b_combat_start_02.mp3",
@@ -3051,8 +3174,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_b_combat_start_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_b_danger_alert_01.mp3",
@@ -3074,8 +3198,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_b_danger_alert_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_b_danger_alert_02.mp3",
@@ -3098,8 +3223,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_b_danger_alert_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_b_exhausted_01.mp3",
@@ -3126,8 +3252,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_b_exhausted_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_b_exhausted_02.mp3",
@@ -3148,8 +3275,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_b_exhausted_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_b_farewell_01.mp3",
@@ -3173,8 +3301,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_b_farewell_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_b_farewell_02.mp3",
@@ -3195,8 +3324,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_b_farewell_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_b_greeting_01.mp3",
@@ -3221,8 +3351,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_b_greeting_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_b_greeting_02.mp3",
@@ -3245,8 +3376,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_b_greeting_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_b_guard_response_01.mp3",
@@ -3269,8 +3401,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_b_guard_response_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_b_guard_response_02.mp3",
@@ -3291,8 +3424,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_b_guard_response_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_b_hungry_01.mp3",
@@ -3315,8 +3449,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_b_hungry_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_b_hungry_02.mp3",
@@ -3338,8 +3473,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_b_hungry_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_b_quest_accepted_01.mp3",
@@ -3362,8 +3498,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_b_quest_accepted_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_b_quest_accepted_02.mp3",
@@ -3384,8 +3521,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_b_quest_accepted_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_b_quest_complete_01.mp3",
@@ -3408,8 +3546,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_b_quest_complete_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_b_quest_complete_02.mp3",
@@ -3432,8 +3571,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_b_quest_complete_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_b_quest_declined_01.mp3",
@@ -3455,8 +3595,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_b_quest_declined_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_b_quest_declined_02.mp3",
@@ -3479,8 +3620,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_b_quest_declined_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_b_quest_offer_01.mp3",
@@ -3501,8 +3643,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_b_quest_offer_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_b_quest_offer_02.mp3",
@@ -3523,8 +3666,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_b_quest_offer_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_b_refusal_01.mp3",
@@ -3545,8 +3689,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_b_refusal_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_b_refusal_02.mp3",
@@ -3567,8 +3712,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_b_refusal_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_b_thanks_01.mp3",
@@ -3589,8 +3735,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_b_thanks_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_b_thanks_02.mp3",
@@ -3611,8 +3758,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_b_thanks_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_b_warning_01.mp3",
@@ -3633,8 +3781,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_b_warning_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_b_warning_02.mp3",
@@ -3655,8 +3804,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_b_warning_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_b_weather_shelter_01.mp3",
@@ -3678,8 +3828,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_b_weather_shelter_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_b_weather_shelter_02.mp3",
@@ -3702,8 +3853,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_b_weather_shelter_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_b_well_wish_01.mp3",
@@ -3724,8 +3876,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_b_well_wish_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_b_well_wish_02.mp3",
@@ -3746,8 +3899,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_b_well_wish_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_b_work_finished_01.mp3",
@@ -3770,8 +3924,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_b_work_finished_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_b_work_finished_02.mp3",
@@ -3793,8 +3948,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_b_work_finished_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_call_for_help_01.mp3",
@@ -3819,8 +3975,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_call_for_help_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_combat_start_01.mp3",
@@ -3847,8 +4004,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_combat_start_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_danger_alert_01.mp3",
@@ -3877,8 +4035,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_danger_alert_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_farewell_01.mp3",
@@ -3908,8 +4067,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_farewell_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_greeting_01.mp3",
@@ -3941,8 +4101,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_greeting_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_greeting_02.mp3",
@@ -3971,8 +4132,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_greeting_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_guard_response_01.mp3",
@@ -4001,8 +4163,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_guard_response_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_quest_accepted_01.mp3",
@@ -4030,8 +4193,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_quest_accepted_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_quest_accepted_02.mp3",
@@ -4057,8 +4221,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_quest_accepted_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_quest_complete_01.mp3",
@@ -4086,8 +4251,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_quest_complete_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_quest_complete_02.mp3",
@@ -4113,8 +4279,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_quest_complete_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_quest_declined_01.mp3",
@@ -4142,8 +4309,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_quest_declined_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_quest_declined_02.mp3",
@@ -4170,8 +4338,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_quest_declined_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_quest_offer_01.mp3",
@@ -4194,8 +4363,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_quest_offer_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_refusal_01.mp3",
@@ -4221,8 +4391,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_refusal_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_thanks_01.mp3",
@@ -4248,8 +4419,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_thanks_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_thanks_02.mp3",
@@ -4275,8 +4447,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_thanks_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_warning_01.mp3",
@@ -4298,8 +4471,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_warning_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_weather_shelter_01.mp3",
@@ -4330,8 +4504,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_weather_shelter_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/guard_male_well_wish_01.mp3",
@@ -4353,8 +4528,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_well_wish_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_agree_01.mp3",
@@ -4382,8 +4558,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_agree_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_attention_01.mp3",
@@ -4410,8 +4587,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_attention_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_b_agree_01.mp3",
@@ -4432,8 +4610,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_b_agree_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_b_agree_02.mp3",
@@ -4454,8 +4633,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_b_agree_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_b_attention_01.mp3",
@@ -4478,8 +4658,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_b_attention_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_b_attention_02.mp3",
@@ -4501,8 +4682,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_b_attention_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_b_call_for_help_01.mp3",
@@ -4523,8 +4705,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_b_call_for_help_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_b_call_for_help_02.mp3",
@@ -4545,8 +4728,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_b_call_for_help_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_b_combat_start_01.mp3",
@@ -4567,8 +4751,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_b_combat_start_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_b_combat_start_02.mp3",
@@ -4592,8 +4777,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_b_combat_start_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_b_danger_alert_01.mp3",
@@ -4614,8 +4800,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_b_danger_alert_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_b_danger_alert_02.mp3",
@@ -4638,8 +4825,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_b_danger_alert_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_b_exhausted_01.mp3",
@@ -4666,8 +4854,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_b_exhausted_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_b_exhausted_02.mp3",
@@ -4688,8 +4877,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_b_exhausted_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_b_farewell_01.mp3",
@@ -4713,8 +4903,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_b_farewell_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_b_farewell_02.mp3",
@@ -4735,8 +4926,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_b_farewell_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_b_greeting_01.mp3",
@@ -4763,8 +4955,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_b_greeting_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_b_greeting_02.mp3",
@@ -4785,8 +4978,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_b_greeting_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_b_hungry_01.mp3",
@@ -4807,8 +5001,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_b_hungry_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_b_hungry_02.mp3",
@@ -4831,8 +5026,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_b_hungry_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_b_quest_accepted_01.mp3",
@@ -4853,8 +5049,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_b_quest_accepted_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_b_quest_accepted_02.mp3",
@@ -4877,8 +5074,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_b_quest_accepted_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_b_quest_complete_01.mp3",
@@ -4899,8 +5097,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_b_quest_complete_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_b_quest_complete_02.mp3",
@@ -4923,8 +5122,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_b_quest_complete_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_b_quest_declined_01.mp3",
@@ -4945,8 +5145,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_b_quest_declined_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_b_quest_declined_02.mp3",
@@ -4969,8 +5170,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_b_quest_declined_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_b_quest_offer_01.mp3",
@@ -4991,8 +5193,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_b_quest_offer_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_b_quest_offer_02.mp3",
@@ -5014,8 +5217,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_b_quest_offer_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_b_refusal_01.mp3",
@@ -5036,8 +5240,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_b_refusal_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_b_refusal_02.mp3",
@@ -5058,8 +5263,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_b_refusal_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_b_thanks_01.mp3",
@@ -5080,8 +5286,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_b_thanks_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_b_thanks_02.mp3",
@@ -5102,8 +5309,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_b_thanks_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_b_warning_01.mp3",
@@ -5125,8 +5333,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_b_warning_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_b_warning_02.mp3",
@@ -5147,8 +5356,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_b_warning_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_b_weather_shelter_01.mp3",
@@ -5169,8 +5379,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_b_weather_shelter_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_b_weather_shelter_02.mp3",
@@ -5193,8 +5404,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_b_weather_shelter_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_b_well_wish_01.mp3",
@@ -5215,8 +5427,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_b_well_wish_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_b_well_wish_02.mp3",
@@ -5237,8 +5450,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_b_well_wish_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_b_work_finished_01.mp3",
@@ -5259,8 +5473,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_b_work_finished_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_b_work_finished_02.mp3",
@@ -5283,8 +5498,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_b_work_finished_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_call_for_help_01.mp3",
@@ -5308,8 +5524,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_call_for_help_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_combat_start_01.mp3",
@@ -5335,8 +5552,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_combat_start_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_danger_alert_01.mp3",
@@ -5364,8 +5582,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_danger_alert_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_farewell_01.mp3",
@@ -5393,8 +5612,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_farewell_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_farewell_02.mp3",
@@ -5419,8 +5639,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_farewell_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_greeting_01.mp3",
@@ -5449,8 +5670,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_greeting_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_greeting_02.mp3",
@@ -5478,8 +5700,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_greeting_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_quest_accepted_01.mp3",
@@ -5505,8 +5728,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_quest_accepted_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_quest_accepted_02.mp3",
@@ -5532,8 +5756,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_quest_accepted_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_quest_complete_01.mp3",
@@ -5560,8 +5785,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_quest_complete_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_quest_complete_02.mp3",
@@ -5587,8 +5813,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_quest_complete_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_quest_declined_01.mp3",
@@ -5615,8 +5842,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_quest_declined_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_quest_declined_02.mp3",
@@ -5638,8 +5866,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_quest_declined_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_quest_offer_01.mp3",
@@ -5665,8 +5894,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_quest_offer_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_thanks_01.mp3",
@@ -5691,8 +5921,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_thanks_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_thanks_02.mp3",
@@ -5714,8 +5945,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_thanks_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_warning_01.mp3",
@@ -5740,8 +5972,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_warning_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_well_wish_01.mp3",
@@ -5767,8 +6000,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_well_wish_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/hunter_male_well_wish_02.mp3",
@@ -5794,8 +6028,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_well_wish_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_agree_01.mp3",
@@ -5828,8 +6063,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_agree_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_attention_01.mp3",
@@ -5859,8 +6095,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_attention_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_b_agree_01.mp3",
@@ -5881,8 +6118,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_b_agree_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_b_agree_02.mp3",
@@ -5903,8 +6141,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_b_agree_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_b_attention_01.mp3",
@@ -5927,8 +6166,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_b_attention_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_b_attention_02.mp3",
@@ -5949,8 +6189,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_b_attention_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_b_call_for_help_01.mp3",
@@ -5971,8 +6212,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_b_call_for_help_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_b_call_for_help_02.mp3",
@@ -5993,8 +6235,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_b_call_for_help_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_b_combat_start_01.mp3",
@@ -6015,8 +6258,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_b_combat_start_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_b_combat_start_02.mp3",
@@ -6039,8 +6283,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_b_combat_start_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_b_danger_alert_01.mp3",
@@ -6061,8 +6306,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_b_danger_alert_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_b_danger_alert_02.mp3",
@@ -6085,8 +6331,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_b_danger_alert_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_b_exhausted_01.mp3",
@@ -6111,8 +6358,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_b_exhausted_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_b_exhausted_02.mp3",
@@ -6135,8 +6383,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_b_exhausted_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_b_farewell_01.mp3",
@@ -6158,8 +6407,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_b_farewell_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_b_farewell_02.mp3",
@@ -6182,8 +6432,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_b_farewell_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_b_greeting_01.mp3",
@@ -6208,8 +6459,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_b_greeting_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_b_greeting_02.mp3",
@@ -6232,8 +6484,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_b_greeting_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_b_hungry_01.mp3",
@@ -6256,8 +6509,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_b_hungry_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_b_hungry_02.mp3",
@@ -6278,8 +6532,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_b_hungry_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_b_quest_accepted_01.mp3",
@@ -6300,8 +6555,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_b_quest_accepted_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_b_quest_accepted_02.mp3",
@@ -6324,8 +6580,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_b_quest_accepted_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_b_quest_complete_01.mp3",
@@ -6348,8 +6605,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_b_quest_complete_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_b_quest_complete_02.mp3",
@@ -6370,8 +6628,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_b_quest_complete_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_b_quest_declined_01.mp3",
@@ -6393,8 +6652,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_b_quest_declined_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_b_quest_declined_02.mp3",
@@ -6417,8 +6677,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_b_quest_declined_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_b_quest_offer_01.mp3",
@@ -6440,8 +6701,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_b_quest_offer_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_b_quest_offer_02.mp3",
@@ -6462,8 +6724,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_b_quest_offer_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_b_refusal_01.mp3",
@@ -6484,8 +6747,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_b_refusal_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_b_refusal_02.mp3",
@@ -6506,8 +6770,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_b_refusal_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_b_thanks_01.mp3",
@@ -6528,8 +6793,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_b_thanks_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_b_thanks_02.mp3",
@@ -6550,8 +6816,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_b_thanks_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_b_warning_01.mp3",
@@ -6572,8 +6839,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_b_warning_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_b_warning_02.mp3",
@@ -6594,8 +6862,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_b_warning_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_b_weather_shelter_01.mp3",
@@ -6618,8 +6887,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_b_weather_shelter_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_b_weather_shelter_02.mp3",
@@ -6641,8 +6911,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_b_weather_shelter_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_b_well_wish_01.mp3",
@@ -6663,8 +6934,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_b_well_wish_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_b_well_wish_02.mp3",
@@ -6685,8 +6957,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_b_well_wish_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_b_work_finished_01.mp3",
@@ -6707,8 +6980,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_b_work_finished_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_b_work_finished_02.mp3",
@@ -6731,8 +7005,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_b_work_finished_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_farewell_01.mp3",
@@ -6763,8 +7038,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_farewell_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_farewell_02.mp3",
@@ -6789,8 +7065,9 @@
         "docs/v3-donor/voices/docs/recorded-lines-replacement-backlog.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_farewell_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_greeting_01.mp3",
@@ -6826,8 +7103,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_greeting_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_greeting_02.mp3",
@@ -6857,8 +7135,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_greeting_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_greeting_03.mp3",
@@ -6884,8 +7163,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_greeting_03.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_quest_accepted_01.mp3",
@@ -6912,8 +7192,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_quest_accepted_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_quest_accepted_02.mp3",
@@ -6937,8 +7218,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_quest_accepted_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_quest_complete_01.mp3",
@@ -6962,8 +7244,9 @@
         "docs/v3-donor/voices/docs/recorded-lines-replacement-backlog.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_quest_complete_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_quest_complete_02.mp3",
@@ -6986,8 +7269,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_quest_complete_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_quest_declined_01.mp3",
@@ -7014,8 +7298,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_quest_declined_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_quest_offer_01.mp3",
@@ -7039,8 +7324,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_quest_offer_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_quest_offer_02.mp3",
@@ -7065,8 +7351,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_quest_offer_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_refusal_01.mp3",
@@ -7091,8 +7378,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_refusal_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_thanks_01.mp3",
@@ -7120,8 +7408,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_thanks_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/merchant_female_warning_01.mp3",
@@ -7144,8 +7433,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_warning_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/npc_mark_hornblower_daily_01.mp3",
@@ -7174,8 +7464,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/npc_mark_hornblower_daily_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/npc_mark_hornblower_danger_alert_01.mp3",
@@ -7203,8 +7494,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/npc_mark_hornblower_danger_alert_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/npc_mark_hornblower_farewell_01.mp3",
@@ -7233,8 +7525,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/npc_mark_hornblower_farewell_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/npc_mark_hornblower_greeting_01.mp3",
@@ -7265,8 +7558,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/npc_mark_hornblower_greeting_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/npc_mark_hornblower_road_advice_01.mp3",
@@ -7290,8 +7584,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/npc_mark_hornblower_road_advice_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/npc_mark_hornblower_thanks_01.mp3",
@@ -7316,8 +7611,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/npc_mark_hornblower_thanks_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/shepard_male_danger_alert_01.mp3",
@@ -7344,8 +7640,9 @@
         "docs/v3-donor/voices/docs/recorded-lines-replacement-backlog.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/shepard_male_danger_alert_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/shepherd_male_b_call_for_help_01.mp3",
@@ -7369,8 +7666,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/shepherd_male_b_call_for_help_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/shepherd_male_b_call_for_help_02.mp3",
@@ -7391,8 +7689,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/shepherd_male_b_call_for_help_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/shepherd_male_b_danger_alert_01.mp3",
@@ -7416,8 +7715,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/shepherd_male_b_danger_alert_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/shepherd_male_b_danger_alert_02.mp3",
@@ -7438,8 +7738,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/shepherd_male_b_danger_alert_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/shepherd_male_b_farewell_01.mp3",
@@ -7463,8 +7764,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/shepherd_male_b_farewell_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/shepherd_male_b_farewell_02.mp3",
@@ -7485,8 +7787,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/shepherd_male_b_farewell_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/shepherd_male_b_greeting_01.mp3",
@@ -7513,8 +7816,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/shepherd_male_b_greeting_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/shepherd_male_b_greeting_02.mp3",
@@ -7535,8 +7839,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/shepherd_male_b_greeting_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/shepherd_male_b_livestock_danger_01.mp3",
@@ -7558,8 +7863,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/shepherd_male_b_livestock_danger_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/shepherd_male_b_livestock_danger_02.mp3",
@@ -7581,8 +7887,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "migrate",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/shepherd_male_b_livestock_danger_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/shepherd_male_farewell_01.mp3",
@@ -7604,8 +7911,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/shepherd_male_farewell_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/shepherd_male_greeting_01.mp3",
@@ -7630,8 +7938,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/shepherd_male_greeting_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/shepherd_male_greeting_02.mp3",
@@ -7653,8 +7962,9 @@
         "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
       ],
       "runtimeReferences": [],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/shepherd_male_greeting_02.mp3"
     },
     {
       "path": "docs/v3-donor/voices/mp3/shepherd_male_livestock_danger_01.mp3",
@@ -7683,8 +7993,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "disposition": "remove-redundant-copy",
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/shepherd_male_livestock_danger_01.mp3"
     },
     {
       "path": "docs/v3-donor/voices/named-references/Arthur-Morgan-2026-09-17-10-12-Morning.-Heading-into-the-woods.mp3",
@@ -7697,8 +8008,9 @@
       "intendedVoiceEvidence": "named reference prefix",
       "references": [],
       "runtimeReferences": [],
-      "disposition": "archive-qc-reference",
-      "rejectedRecordings": []
+      "disposition": "archive-reference",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/named-references/Arthur-Morgan-2026-09-17-10-12-Morning.-Heading-into-the-woods.mp3"
     },
     {
       "path": "docs/v3-donor/voices/named-references/Arthur-Morgan-2026-09-17-10-55-Shame.-I-could\u2019ve-used-another-pair-of-hands.mp3",
@@ -7711,8 +8023,9 @@
       "intendedVoiceEvidence": "named reference prefix",
       "references": [],
       "runtimeReferences": [],
-      "disposition": "archive-qc-reference",
-      "rejectedRecordings": []
+      "disposition": "archive-reference",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/named-references/Arthur-Morgan-2026-09-17-10-55-Shame.-I-could\u2019ve-used-another-pair-of-hands.mp3"
     },
     {
       "path": "docs/v3-donor/voices/named-references/Arthur-Morgan-2026-09-18-10-16-[shouting]Could-use-a-hand-here!.mp3",
@@ -7725,8 +8038,9 @@
       "intendedVoiceEvidence": "named reference prefix",
       "references": [],
       "runtimeReferences": [],
-      "disposition": "archive-qc-reference",
-      "rejectedRecordings": []
+      "disposition": "archive-reference",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/named-references/Arthur-Morgan-2026-09-18-10-16-[shouting]Could-use-a-hand-here!.mp3"
     },
     {
       "path": "docs/v3-donor/voices/named-references/Brian-British-2026-10-09-13-26-Well-met.-What-brings-you-this-way.mp3",
@@ -7739,8 +8053,9 @@
       "intendedVoiceEvidence": "named reference prefix",
       "references": [],
       "runtimeReferences": [],
-      "disposition": "archive-qc-reference",
-      "rejectedRecordings": []
+      "disposition": "archive-reference",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/named-references/Brian-British-2026-10-09-13-26-Well-met.-What-brings-you-this-way.mp3"
     },
     {
       "path": "docs/v3-donor/voices/named-references/Brian-British-2026-10-09-13-32-Take-care-beyond-the-fields.-Soft-ground-and-sha.mp3",
@@ -7753,8 +8068,9 @@
       "intendedVoiceEvidence": "named reference prefix",
       "references": [],
       "runtimeReferences": [],
-      "disposition": "archive-qc-reference",
-      "rejectedRecordings": []
+      "disposition": "archive-reference",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/named-references/Brian-British-2026-10-09-13-32-Take-care-beyond-the-fields.-Soft-ground-and-sha.mp3"
     },
     {
       "path": "docs/v3-donor/voices/named-references/Brian-British-2026-10-20-13-08-Good-day.-Is-there-anything-I-can-help-with.mp3",
@@ -7767,8 +8083,9 @@
       "intendedVoiceEvidence": "named reference prefix",
       "references": [],
       "runtimeReferences": [],
-      "disposition": "archive-qc-reference",
-      "rejectedRecordings": []
+      "disposition": "archive-reference",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/named-references/Brian-British-2026-10-20-13-08-Good-day.-Is-there-anything-I-can-help-with.mp3"
     },
     {
       "path": "docs/v3-donor/voices/named-references/Brian-British-2026-10-20-13-08-If-you're-out-late,-keep-to-the-road.-It's-easie.mp3",
@@ -7781,8 +8098,9 @@
       "intendedVoiceEvidence": "named reference prefix",
       "references": [],
       "runtimeReferences": [],
-      "disposition": "archive-qc-reference",
-      "rejectedRecordings": []
+      "disposition": "archive-reference",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/named-references/Brian-British-2026-10-20-13-08-If-you're-out-late,-keep-to-the-road.-It's-easie.mp3"
     },
     {
       "path": "docs/v3-donor/voices/named-references/British-2026-10-20-13-09-Good-day.-Is-there-anything-I-can-help-with.mp3",
@@ -7795,8 +8113,9 @@
       "intendedVoiceEvidence": "named reference prefix",
       "references": [],
       "runtimeReferences": [],
-      "disposition": "archive-qc-reference",
-      "rejectedRecordings": []
+      "disposition": "archive-reference",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/named-references/British-2026-10-20-13-09-Good-day.-Is-there-anything-I-can-help-with.mp3"
     },
     {
       "path": "docs/v3-donor/voices/named-references/British-2026-10-20-13-09-If-you're-out-late,-keep-to-the-road.-It's-easie.mp3",
@@ -7809,8 +8128,9 @@
       "intendedVoiceEvidence": "named reference prefix",
       "references": [],
       "runtimeReferences": [],
-      "disposition": "archive-qc-reference",
-      "rejectedRecordings": []
+      "disposition": "archive-reference",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/named-references/British-2026-10-20-13-09-If-you're-out-late,-keep-to-the-road.-It's-easie.mp3"
     },
     {
       "path": "docs/v3-donor/voices/named-references/British-female-2026-09-18-10-06-[tired]-I-need-to-[emphasis]-sit-down-[short-pau.mp3",
@@ -7823,8 +8143,9 @@
       "intendedVoiceEvidence": "named reference prefix",
       "references": [],
       "runtimeReferences": [],
-      "disposition": "archive-qc-reference",
-      "rejectedRecordings": []
+      "disposition": "archive-reference",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/named-references/British-female-2026-09-18-10-06-[tired]-I-need-to-[emphasis]-sit-down-[short-pau.mp3"
     },
     {
       "path": "docs/v3-donor/voices/named-references/Casual-Male-Speaker-2026-09-17-11-22-Mostly-the-usual.-Bad-weather,-wolves-near-the-w.mp3",
@@ -7837,8 +8158,9 @@
       "intendedVoiceEvidence": "named reference prefix",
       "references": [],
       "runtimeReferences": [],
-      "disposition": "archive-qc-reference",
-      "rejectedRecordings": []
+      "disposition": "archive-reference",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/named-references/Casual-Male-Speaker-2026-09-17-11-22-Mostly-the-usual.-Bad-weather,-wolves-near-the-w.mp3"
     },
     {
       "path": "docs/v3-donor/voices/named-references/Casual-Male-Speaker-2026-09-18-10-05-There.-That's-enough-work-for-today.mp3",
@@ -7851,8 +8173,9 @@
       "intendedVoiceEvidence": "named reference prefix",
       "references": [],
       "runtimeReferences": [],
-      "disposition": "archive-qc-reference",
-      "rejectedRecordings": []
+      "disposition": "archive-reference",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/named-references/Casual-Male-Speaker-2026-09-18-10-05-There.-That's-enough-work-for-today.mp3"
     },
     {
       "path": "docs/v3-donor/voices/named-references/Cowboy-2026-10-20-11-41-Good-day.-Need-a-hand-with-something.mp3",
@@ -7865,8 +8188,9 @@
       "intendedVoiceEvidence": "named reference prefix",
       "references": [],
       "runtimeReferences": [],
-      "disposition": "archive-qc-reference",
-      "rejectedRecordings": []
+      "disposition": "archive-reference",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/named-references/Cowboy-2026-10-20-11-41-Good-day.-Need-a-hand-with-something.mp3"
     },
     {
       "path": "docs/v3-donor/voices/named-references/Cowboy-2026-10-20-11-42-You-kept-your-word.-Well-done.mp3",
@@ -7879,8 +8203,9 @@
       "intendedVoiceEvidence": "named reference prefix",
       "references": [],
       "runtimeReferences": [],
-      "disposition": "archive-qc-reference",
-      "rejectedRecordings": []
+      "disposition": "archive-reference",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/named-references/Cowboy-2026-10-20-11-42-You-kept-your-word.-Well-done.mp3"
     },
     {
       "path": "docs/v3-donor/voices/named-references/Dramatic-Character-Male-2026-10-20-10-40-Good-day.-Need-a-word-with-the-watch.mp3",
@@ -7893,8 +8218,9 @@
       "intendedVoiceEvidence": "named reference prefix",
       "references": [],
       "runtimeReferences": [],
-      "disposition": "archive-qc-reference",
-      "rejectedRecordings": []
+      "disposition": "archive-reference",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/named-references/Dramatic-Character-Male-2026-10-20-10-40-Good-day.-Need-a-word-with-the-watch.mp3"
     },
     {
       "path": "docs/v3-donor/voices/named-references/Dramatic-Character-Male-2026-10-20-10-46-Thank-you.-That-will-help-us.mp3",
@@ -7907,8 +8233,9 @@
       "intendedVoiceEvidence": "named reference prefix",
       "references": [],
       "runtimeReferences": [],
-      "disposition": "archive-qc-reference",
-      "rejectedRecordings": []
+      "disposition": "archive-reference",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/named-references/Dramatic-Character-Male-2026-10-20-10-46-Thank-you.-That-will-help-us.mp3"
     },
     {
       "path": "docs/v3-donor/voices/named-references/Expressive-Female-Voice-2026-09-17-11-05-I-may-have-a-little-work-for-someone-willing-to.mp3",
@@ -7924,8 +8251,9 @@
         "docs/assets/voice-qc/identity-calibration.json"
       ],
       "runtimeReferences": [],
-      "disposition": "archive-qc-reference",
-      "rejectedRecordings": []
+      "disposition": "archive-reference",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/named-references/Expressive-Female-Voice-2026-09-17-11-05-I-may-have-a-little-work-for-someone-willing-to.mp3"
     },
     {
       "path": "docs/v3-donor/voices/named-references/Expressive-Female-Voice-2026-09-17-11-07-Excellent-work.-Here,-this-is-yours.mp3",
@@ -7938,8 +8266,9 @@
       "intendedVoiceEvidence": "named reference prefix",
       "references": [],
       "runtimeReferences": [],
-      "disposition": "archive-qc-reference",
-      "rejectedRecordings": []
+      "disposition": "archive-reference",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/named-references/Expressive-Female-Voice-2026-09-17-11-07-Excellent-work.-Here,-this-is-yours.mp3"
     },
     {
       "path": "docs/v3-donor/voices/named-references/Friendly-Male-Voice-2026-10-20-13-17-I-appreciate-that.-It-means-a-good-deal.mp3",
@@ -7952,8 +8281,9 @@
       "intendedVoiceEvidence": "named reference prefix",
       "references": [],
       "runtimeReferences": [],
-      "disposition": "archive-qc-reference",
-      "rejectedRecordings": []
+      "disposition": "archive-reference",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/named-references/Friendly-Male-Voice-2026-10-20-13-17-I-appreciate-that.-It-means-a-good-deal.mp3"
     },
     {
       "path": "docs/v3-donor/voices/named-references/Friendly-Male-Voice-2026-10-20-13-17-You-learn-who's-had-a-hard-day-if-you-bother-to.mp3",
@@ -7969,8 +8299,9 @@
         "docs/assets/voice-qc/identity-calibration.json"
       ],
       "runtimeReferences": [],
-      "disposition": "archive-qc-reference",
-      "rejectedRecordings": []
+      "disposition": "archive-reference",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/named-references/Friendly-Male-Voice-2026-10-20-13-17-You-learn-who's-had-a-hard-day-if-you-bother-to.mp3"
     },
     {
       "path": "docs/v3-donor/voices/named-references/Hannah-2026-10-20-09-21-Well-met.-What-brings-you-this-way.mp3",
@@ -7983,8 +8314,9 @@
       "intendedVoiceEvidence": "named reference prefix",
       "references": [],
       "runtimeReferences": [],
-      "disposition": "archive-qc-reference",
-      "rejectedRecordings": []
+      "disposition": "archive-reference",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/named-references/Hannah-2026-10-20-09-21-Well-met.-What-brings-you-this-way.mp3"
     },
     {
       "path": "docs/v3-donor/voices/named-references/Hannah-2026-10-20-09-22-Thank-you-kindly.-That-helps-a-great-deal.mp3",
@@ -7997,8 +8329,9 @@
       "intendedVoiceEvidence": "named reference prefix",
       "references": [],
       "runtimeReferences": [],
-      "disposition": "archive-qc-reference",
-      "rejectedRecordings": []
+      "disposition": "archive-reference",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/named-references/Hannah-2026-10-20-09-22-Thank-you-kindly.-That-helps-a-great-deal.mp3"
     },
     {
       "path": "docs/v3-donor/voices/named-references/KID-2026-09-17-13-50-Hey!-I-haven't-seen-you-around-before.mp3",
@@ -8015,8 +8348,9 @@
         "docs/assets/voice-qc/identity-calibration.json"
       ],
       "runtimeReferences": [],
-      "disposition": "archive-qc-reference",
-      "rejectedRecordings": []
+      "disposition": "archive-reference",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/named-references/KID-2026-09-17-13-50-Hey!-I-haven't-seen-you-around-before.mp3"
     },
     {
       "path": "docs/v3-donor/voices/named-references/Laura-2026-10-20-11-13-Hello-there.-Looking-for-a-chat,-or-something-pa.mp3",
@@ -8029,8 +8363,9 @@
       "intendedVoiceEvidence": "named reference prefix",
       "references": [],
       "runtimeReferences": [],
-      "disposition": "archive-qc-reference",
-      "rejectedRecordings": []
+      "disposition": "archive-reference",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/named-references/Laura-2026-10-20-11-13-Hello-there.-Looking-for-a-chat,-or-something-pa.mp3"
     },
     {
       "path": "docs/v3-donor/voices/named-references/Laura-2026-10-20-11-14-Good.-I-appreciate-you-taking-this-on.mp3",
@@ -8043,8 +8378,9 @@
       "intendedVoiceEvidence": "named reference prefix",
       "references": [],
       "runtimeReferences": [],
-      "disposition": "archive-qc-reference",
-      "rejectedRecordings": []
+      "disposition": "archive-reference",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/named-references/Laura-2026-10-20-11-14-Good.-I-appreciate-you-taking-this-on.mp3"
     },
     {
       "path": "docs/v3-donor/voices/named-references/Little-Lem-2026-09-17-13-55-Bye!-See-you-later!.mp3",
@@ -8060,8 +8396,9 @@
         "docs/assets/voice-qc/identity-calibration.json"
       ],
       "runtimeReferences": [],
-      "disposition": "archive-qc-reference",
-      "rejectedRecordings": []
+      "disposition": "archive-reference",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/named-references/Little-Lem-2026-09-17-13-55-Bye!-See-you-later!.mp3"
     },
     {
       "path": "docs/v3-donor/voices/named-references/Old-man-2026-09-17-14-04-Go-safely.-These-old-roads-have-their-dangers.mp3",
@@ -8074,8 +8411,9 @@
       "intendedVoiceEvidence": "named reference prefix",
       "references": [],
       "runtimeReferences": [],
-      "disposition": "archive-qc-reference",
-      "rejectedRecordings": []
+      "disposition": "archive-reference",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/named-references/Old-man-2026-09-17-14-04-Go-safely.-These-old-roads-have-their-dangers.mp3"
     },
     {
       "path": "docs/v3-donor/voices/named-references/Old-woman-2026-09-17-14-05-Take-care,-dear.-And-mind-your-step.mp3",
@@ -8088,8 +8426,9 @@
       "intendedVoiceEvidence": "named reference prefix",
       "references": [],
       "runtimeReferences": [],
-      "disposition": "archive-qc-reference",
-      "rejectedRecordings": []
+      "disposition": "archive-reference",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/named-references/Old-woman-2026-09-17-14-05-Take-care,-dear.-And-mind-your-step.mp3"
     },
     {
       "path": "docs/v3-donor/voices/named-references/Sleepless-historian-2026-10-20-12-18-Hello-there.-How-are-you-keeping.mp3",
@@ -8102,8 +8441,9 @@
       "intendedVoiceEvidence": "named reference prefix",
       "references": [],
       "runtimeReferences": [],
-      "disposition": "archive-qc-reference",
-      "rejectedRecordings": []
+      "disposition": "archive-reference",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/named-references/Sleepless-historian-2026-10-20-12-18-Hello-there.-How-are-you-keeping.mp3"
     },
     {
       "path": "docs/v3-donor/voices/named-references/Warm-Conversational-Female-2026-09-17-11-22-You-hear-anything-from-the-road-today-Travelers.mp3",
@@ -8119,8 +8459,9 @@
         "docs/assets/voice-qc/identity-calibration.json"
       ],
       "runtimeReferences": [],
-      "disposition": "archive-qc-reference",
-      "rejectedRecordings": []
+      "disposition": "archive-reference",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/named-references/Warm-Conversational-Female-2026-09-17-11-22-You-hear-anything-from-the-road-today-Travelers.mp3"
     },
     {
       "path": "docs/v3-donor/voices/named-references/Warm-Conversational-Female-2026-09-18-10-07-[loud]-Rain's-coming-down-[emphasis]-hard.-[shor.mp3",
@@ -8133,8 +8474,9 @@
       "intendedVoiceEvidence": "named reference prefix",
       "references": [],
       "runtimeReferences": [],
-      "disposition": "archive-qc-reference",
-      "rejectedRecordings": []
+      "disposition": "archive-reference",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/named-references/Warm-Conversational-Female-2026-09-18-10-07-[loud]-Rain's-coming-down-[emphasis]-hard.-[shor.mp3"
     },
     {
       "path": "docs/v3-donor/voices/named-references/Warm-Conversational-Male-2026-10-20-13-08-Good-day.-Is-there-anything-I-can-help-with.mp3",
@@ -8147,8 +8489,9 @@
       "intendedVoiceEvidence": "named reference prefix",
       "references": [],
       "runtimeReferences": [],
-      "disposition": "archive-qc-reference",
-      "rejectedRecordings": []
+      "disposition": "archive-reference",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/named-references/Warm-Conversational-Male-2026-10-20-13-08-Good-day.-Is-there-anything-I-can-help-with.mp3"
     },
     {
       "path": "docs/v3-donor/voices/named-references/Warm-Conversational-Male-2026-10-20-13-08-If-you're-out-late,-keep-to-the-road.-It's-easie.mp3",
@@ -8161,8 +8504,9 @@
       "intendedVoiceEvidence": "named reference prefix",
       "references": [],
       "runtimeReferences": [],
-      "disposition": "archive-qc-reference",
-      "rejectedRecordings": []
+      "disposition": "archive-reference",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/named-references/Warm-Conversational-Male-2026-10-20-13-08-If-you're-out-late,-keep-to-the-road.-It's-easie.mp3"
     },
     {
       "path": "docs/v3-donor/voices/named-references/Warm-Male-Friend-2026-10-20-13-08-Good-day.-Is-there-anything-I-can-help-with.mp3",
@@ -8175,8 +8519,9 @@
       "intendedVoiceEvidence": "named reference prefix",
       "references": [],
       "runtimeReferences": [],
-      "disposition": "archive-qc-reference",
-      "rejectedRecordings": []
+      "disposition": "archive-reference",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/named-references/Warm-Male-Friend-2026-10-20-13-08-Good-day.-Is-there-anything-I-can-help-with.mp3"
     },
     {
       "path": "docs/v3-donor/voices/named-references/Warm-Male-Friend-2026-10-20-13-08-If-you're-out-late,-keep-to-the-road.-It's-easie.mp3",
@@ -8189,8 +8534,9 @@
       "intendedVoiceEvidence": "named reference prefix",
       "references": [],
       "runtimeReferences": [],
-      "disposition": "archive-qc-reference",
-      "rejectedRecordings": []
+      "disposition": "archive-reference",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/named-references/Warm-Male-Friend-2026-10-20-13-08-If-you're-out-late,-keep-to-the-road.-It's-easie.mp3"
     },
     {
       "path": "docs/v3-donor/voices/named-references/guard-2026-09-18-10-11-[shouting]-Alarm!-[short-pause]-Stay-inside-and.mp3",
@@ -8203,8 +8549,9 @@
       "intendedVoiceEvidence": "named reference prefix",
       "references": [],
       "runtimeReferences": [],
-      "disposition": "archive-qc-reference",
-      "rejectedRecordings": []
+      "disposition": "archive-reference",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/named-references/guard-2026-09-18-10-11-[shouting]-Alarm!-[short-pause]-Stay-inside-and.mp3"
     },
     {
       "path": "docs/v3-donor/voices/named-references/hetalia-Russia-2026-09-18-09-57-Hello-there.-Looking-for-wool,-or-just-passing-t.mp3",
@@ -8217,8 +8564,9 @@
       "intendedVoiceEvidence": "named reference prefix",
       "references": [],
       "runtimeReferences": [],
-      "disposition": "archive-qc-reference",
-      "rejectedRecordings": []
+      "disposition": "archive-reference",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/named-references/hetalia-Russia-2026-09-18-09-57-Hello-there.-Looking-for-wool,-or-just-passing-t.mp3"
     },
     {
       "path": "docs/v3-donor/voices/named-references/hetalia-Russia-2026-09-18-09-58-Take-care.-Keep-clear-of-the-wolves.mp3",
@@ -8231,8 +8579,9 @@
       "intendedVoiceEvidence": "named reference prefix",
       "references": [],
       "runtimeReferences": [],
-      "disposition": "archive-qc-reference",
-      "rejectedRecordings": []
+      "disposition": "archive-reference",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/named-references/hetalia-Russia-2026-09-18-09-58-Take-care.-Keep-clear-of-the-wolves.mp3"
     },
     {
       "path": "public/sounds/voices/bak/merchant_female_agree_01.mp3",
@@ -8265,8 +8614,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-unique-backup-for-provenance",
-      "rejectedRecordings": []
+      "disposition": "archive-unique-backup",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/backups/merchant_female_agree_01.mp3"
     },
     {
       "path": "public/sounds/voices/bak/merchant_female_farewell_01.mp3",
@@ -8297,8 +8647,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-unique-backup-for-provenance",
-      "rejectedRecordings": []
+      "disposition": "archive-unique-backup",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/backups/merchant_female_farewell_01.mp3"
     },
     {
       "path": "public/sounds/voices/bak/merchant_female_greeting_01.mp3",
@@ -8334,8 +8685,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-unique-backup-for-provenance",
-      "rejectedRecordings": []
+      "disposition": "archive-unique-backup",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/backups/merchant_female_greeting_01.mp3"
     },
     {
       "path": "public/sounds/voices/bak/merchant_female_greeting_02.mp3",
@@ -8365,8 +8717,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-unique-backup-for-provenance",
-      "rejectedRecordings": []
+      "disposition": "archive-unique-backup",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/backups/merchant_female_greeting_02.mp3"
     },
     {
       "path": "public/sounds/voices/bak/merchant_female_greeting_03.mp3",
@@ -8392,8 +8745,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-unique-backup-for-provenance",
-      "rejectedRecordings": []
+      "disposition": "archive-unique-backup",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/backups/merchant_female_greeting_03.mp3"
     },
     {
       "path": "public/sounds/voices/bak/merchant_female_thanks_01.mp3",
@@ -8421,8 +8775,9 @@
       "runtimeReferences": [
         "src/ai/npcVoiceLines.ts"
       ],
-      "disposition": "retain-unique-backup-for-provenance",
-      "rejectedRecordings": []
+      "disposition": "archive-unique-backup",
+      "rejectedRecordings": [],
+      "finalPath": "docs/archive/voice-donor/backups/merchant_female_thanks_01.mp3"
     },
     {
       "path": "public/sounds/voices/campfire_female_road_answer_02.mp3",
@@ -8450,7 +8805,8 @@
         "src/ai/campfireTalk.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/campfire_female_road_answer_02.mp3"
     },
     {
       "path": "public/sounds/voices/campfire_female_road_question_01.mp3",
@@ -8476,7 +8832,8 @@
         "src/ai/campfireTalk.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/campfire_female_road_question_01.mp3"
     },
     {
       "path": "public/sounds/voices/campfire_female_weather_answer_02.mp3",
@@ -8505,7 +8862,8 @@
       "disposition": "delete-rejected",
       "rejectedRecordings": [
         "campfire_female_weather_answer_02.mp3"
-      ]
+      ],
+      "finalPath": null
     },
     {
       "path": "public/sounds/voices/campfire_female_weather_question_01.mp3",
@@ -8535,7 +8893,8 @@
       "disposition": "delete-rejected",
       "rejectedRecordings": [
         "campfire_female_weather_question_01.mp3"
-      ]
+      ],
+      "finalPath": null
     },
     {
       "path": "public/sounds/voices/campfire_female_work_answer_01.mp3",
@@ -8561,7 +8920,8 @@
         "src/ai/campfireTalk.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/campfire_female_work_answer_01.mp3"
     },
     {
       "path": "public/sounds/voices/campfire_female_work_question_02.mp3",
@@ -8587,7 +8947,8 @@
         "src/ai/campfireTalk.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/campfire_female_work_question_02.mp3"
     },
     {
       "path": "public/sounds/voices/campfire_male_road_answer_01.mp3",
@@ -8615,7 +8976,8 @@
         "src/ai/campfireTalk.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/campfire_male_road_answer_01.mp3"
     },
     {
       "path": "public/sounds/voices/campfire_male_road_question_02.mp3",
@@ -8641,7 +9003,8 @@
         "src/ai/campfireTalk.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/campfire_male_road_question_02.mp3"
     },
     {
       "path": "public/sounds/voices/campfire_male_weather_answer_01.mp3",
@@ -8668,7 +9031,8 @@
         "src/ai/campfireTalk.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/campfire_male_weather_answer_01.mp3"
     },
     {
       "path": "public/sounds/voices/campfire_male_weather_question_02.mp3",
@@ -8694,7 +9058,8 @@
         "src/ai/campfireTalk.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/campfire_male_weather_question_02.mp3"
     },
     {
       "path": "public/sounds/voices/campfire_male_work_answer_02.mp3",
@@ -8720,7 +9085,8 @@
         "src/ai/campfireTalk.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/campfire_male_work_answer_02.mp3"
     },
     {
       "path": "public/sounds/voices/campfire_male_work_question_01.mp3",
@@ -8746,7 +9112,8 @@
         "src/ai/campfireTalk.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/campfire_male_work_question_01.mp3"
     },
     {
       "path": "public/sounds/voices/general_female_agree_01.mp3",
@@ -8772,7 +9139,8 @@
       "disposition": "delete-rejected",
       "rejectedRecordings": [
         "general_female_agree_01.mp3"
-      ]
+      ],
+      "finalPath": null
     },
     {
       "path": "public/sounds/voices/general_female_call_for_help_01.mp3",
@@ -8799,7 +9167,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_call_for_help_01.mp3"
     },
     {
       "path": "public/sounds/voices/general_female_child_farewell_01.mp3",
@@ -8823,7 +9192,8 @@
       ],
       "runtimeReferences": [],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_child_farewell_01.mp3"
     },
     {
       "path": "public/sounds/voices/general_female_child_farewell_02.mp3",
@@ -8848,7 +9218,8 @@
       ],
       "runtimeReferences": [],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_child_farewell_02.mp3"
     },
     {
       "path": "public/sounds/voices/general_female_child_greeting_01.mp3",
@@ -8876,7 +9247,8 @@
       ],
       "runtimeReferences": [],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_child_greeting_01.mp3"
     },
     {
       "path": "public/sounds/voices/general_female_danger_alert_01.mp3",
@@ -8904,7 +9276,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_danger_alert_01.mp3"
     },
     {
       "path": "public/sounds/voices/general_female_exhausted_01.mp3",
@@ -8937,7 +9310,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_exhausted_01.mp3"
     },
     {
       "path": "public/sounds/voices/general_female_farewell_01.mp3",
@@ -8968,7 +9342,8 @@
       "disposition": "delete-rejected",
       "rejectedRecordings": [
         "general_female_farewell_01.mp3"
-      ]
+      ],
+      "finalPath": null
     },
     {
       "path": "public/sounds/voices/general_female_greeting_01.mp3",
@@ -9003,7 +9378,8 @@
       "disposition": "delete-rejected",
       "rejectedRecordings": [
         "general_female_greeting_01.mp3"
-      ]
+      ],
+      "finalPath": null
     },
     {
       "path": "public/sounds/voices/general_female_old_farewell_01.mp3",
@@ -9027,7 +9403,8 @@
       ],
       "runtimeReferences": [],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_old_farewell_01.mp3"
     },
     {
       "path": "public/sounds/voices/general_female_old_farewell_02.mp3",
@@ -9052,7 +9429,8 @@
       ],
       "runtimeReferences": [],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_old_farewell_02.mp3"
     },
     {
       "path": "public/sounds/voices/general_female_old_greeting_01.mp3",
@@ -9076,7 +9454,8 @@
       ],
       "runtimeReferences": [],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_old_greeting_01.mp3"
     },
     {
       "path": "public/sounds/voices/general_female_quest_complete_01.mp3",
@@ -9103,7 +9482,8 @@
       "disposition": "delete-rejected",
       "rejectedRecordings": [
         "general_female_quest_complete_01.mp3"
-      ]
+      ],
+      "finalPath": null
     },
     {
       "path": "public/sounds/voices/general_female_quest_declined_01.mp3",
@@ -9130,7 +9510,8 @@
       "disposition": "delete-rejected",
       "rejectedRecordings": [
         "general_female_quest_declined_01.mp3"
-      ]
+      ],
+      "finalPath": null
     },
     {
       "path": "public/sounds/voices/general_female_thanks_01.mp3",
@@ -9156,7 +9537,8 @@
       "disposition": "delete-rejected",
       "rejectedRecordings": [
         "general_female_thanks_01.mp3"
-      ]
+      ],
+      "finalPath": null
     },
     {
       "path": "public/sounds/voices/general_female_weather_shelter_01.mp3",
@@ -9188,7 +9570,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_female_weather_shelter_01.mp3"
     },
     {
       "path": "public/sounds/voices/general_male_call_for_help_01.mp3",
@@ -9217,7 +9600,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_male_call_for_help_01.mp3"
     },
     {
       "path": "public/sounds/voices/general_male_combat_start_01.mp3",
@@ -9246,7 +9630,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_male_combat_start_01.mp3"
     },
     {
       "path": "public/sounds/voices/general_male_exhausted_01.mp3",
@@ -9279,7 +9664,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_male_exhausted_01.mp3"
     },
     {
       "path": "public/sounds/voices/general_male_hungry_01.mp3",
@@ -9307,7 +9693,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_male_hungry_01.mp3"
     },
     {
       "path": "public/sounds/voices/general_male_old_farewell_01.mp3",
@@ -9332,7 +9719,8 @@
       ],
       "runtimeReferences": [],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_male_old_farewell_01.mp3"
     },
     {
       "path": "public/sounds/voices/general_male_old_farewell_02.mp3",
@@ -9357,7 +9745,8 @@
       ],
       "runtimeReferences": [],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_male_old_farewell_02.mp3"
     },
     {
       "path": "public/sounds/voices/general_male_old_greeting_02.mp3",
@@ -9382,7 +9771,8 @@
       ],
       "runtimeReferences": [],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_male_old_greeting_02.mp3"
     },
     {
       "path": "public/sounds/voices/general_male_weather_shelter_01.mp3",
@@ -9411,7 +9801,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_male_weather_shelter_01.mp3"
     },
     {
       "path": "public/sounds/voices/general_male_work_finished_01.mp3",
@@ -9439,7 +9830,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_male_work_finished_01.mp3"
     },
     {
       "path": "public/sounds/voices/general_male_young_greeting_02.mp3",
@@ -9463,7 +9855,8 @@
       ],
       "runtimeReferences": [],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/general_male_young_greeting_02.mp3"
     },
     {
       "path": "public/sounds/voices/guard_male_agree_01.mp3",
@@ -9487,7 +9880,8 @@
       ],
       "runtimeReferences": [],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_agree_01.mp3"
     },
     {
       "path": "public/sounds/voices/guard_male_attention_01.mp3",
@@ -9517,7 +9911,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_attention_01.mp3"
     },
     {
       "path": "public/sounds/voices/guard_male_call_for_help_01.mp3",
@@ -9543,7 +9938,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_call_for_help_01.mp3"
     },
     {
       "path": "public/sounds/voices/guard_male_combat_start_01.mp3",
@@ -9571,7 +9967,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_combat_start_01.mp3"
     },
     {
       "path": "public/sounds/voices/guard_male_danger_alert_01.mp3",
@@ -9601,7 +9998,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_danger_alert_01.mp3"
     },
     {
       "path": "public/sounds/voices/guard_male_farewell_01.mp3",
@@ -9632,7 +10030,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_farewell_01.mp3"
     },
     {
       "path": "public/sounds/voices/guard_male_greeting_01.mp3",
@@ -9665,7 +10064,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_greeting_01.mp3"
     },
     {
       "path": "public/sounds/voices/guard_male_greeting_02.mp3",
@@ -9695,7 +10095,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_greeting_02.mp3"
     },
     {
       "path": "public/sounds/voices/guard_male_guard_response_01.mp3",
@@ -9725,7 +10126,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_guard_response_01.mp3"
     },
     {
       "path": "public/sounds/voices/guard_male_quest_accepted_01.mp3",
@@ -9754,7 +10156,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_quest_accepted_01.mp3"
     },
     {
       "path": "public/sounds/voices/guard_male_quest_accepted_02.mp3",
@@ -9781,7 +10184,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_quest_accepted_02.mp3"
     },
     {
       "path": "public/sounds/voices/guard_male_quest_complete_01.mp3",
@@ -9810,7 +10214,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_quest_complete_01.mp3"
     },
     {
       "path": "public/sounds/voices/guard_male_quest_complete_02.mp3",
@@ -9837,7 +10242,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_quest_complete_02.mp3"
     },
     {
       "path": "public/sounds/voices/guard_male_quest_declined_01.mp3",
@@ -9866,7 +10272,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_quest_declined_01.mp3"
     },
     {
       "path": "public/sounds/voices/guard_male_quest_declined_02.mp3",
@@ -9894,7 +10301,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_quest_declined_02.mp3"
     },
     {
       "path": "public/sounds/voices/guard_male_quest_offer_01.mp3",
@@ -9918,7 +10326,8 @@
       ],
       "runtimeReferences": [],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_quest_offer_01.mp3"
     },
     {
       "path": "public/sounds/voices/guard_male_refusal_01.mp3",
@@ -9945,7 +10354,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_refusal_01.mp3"
     },
     {
       "path": "public/sounds/voices/guard_male_thanks_01.mp3",
@@ -9972,7 +10382,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_thanks_01.mp3"
     },
     {
       "path": "public/sounds/voices/guard_male_thanks_02.mp3",
@@ -9999,7 +10410,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_thanks_02.mp3"
     },
     {
       "path": "public/sounds/voices/guard_male_warning_01.mp3",
@@ -10022,7 +10434,8 @@
       ],
       "runtimeReferences": [],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_warning_01.mp3"
     },
     {
       "path": "public/sounds/voices/guard_male_weather_shelter_01.mp3",
@@ -10054,7 +10467,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_weather_shelter_01.mp3"
     },
     {
       "path": "public/sounds/voices/guard_male_well_wish_01.mp3",
@@ -10077,7 +10491,8 @@
       ],
       "runtimeReferences": [],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/guard_male_well_wish_01.mp3"
     },
     {
       "path": "public/sounds/voices/hunter_male_agree_01.mp3",
@@ -10106,7 +10521,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_agree_01.mp3"
     },
     {
       "path": "public/sounds/voices/hunter_male_attention_01.mp3",
@@ -10134,7 +10550,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_attention_01.mp3"
     },
     {
       "path": "public/sounds/voices/hunter_male_call_for_help_01.mp3",
@@ -10159,7 +10576,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_call_for_help_01.mp3"
     },
     {
       "path": "public/sounds/voices/hunter_male_combat_start_01.mp3",
@@ -10186,7 +10604,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_combat_start_01.mp3"
     },
     {
       "path": "public/sounds/voices/hunter_male_danger_alert_01.mp3",
@@ -10215,7 +10634,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_danger_alert_01.mp3"
     },
     {
       "path": "public/sounds/voices/hunter_male_farewell_01.mp3",
@@ -10244,7 +10664,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_farewell_01.mp3"
     },
     {
       "path": "public/sounds/voices/hunter_male_farewell_02.mp3",
@@ -10270,7 +10691,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_farewell_02.mp3"
     },
     {
       "path": "public/sounds/voices/hunter_male_greeting_01.mp3",
@@ -10300,7 +10722,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_greeting_01.mp3"
     },
     {
       "path": "public/sounds/voices/hunter_male_greeting_02.mp3",
@@ -10329,7 +10752,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_greeting_02.mp3"
     },
     {
       "path": "public/sounds/voices/hunter_male_quest_accepted_01.mp3",
@@ -10356,7 +10780,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_quest_accepted_01.mp3"
     },
     {
       "path": "public/sounds/voices/hunter_male_quest_accepted_02.mp3",
@@ -10383,7 +10808,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_quest_accepted_02.mp3"
     },
     {
       "path": "public/sounds/voices/hunter_male_quest_complete_01.mp3",
@@ -10411,7 +10837,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_quest_complete_01.mp3"
     },
     {
       "path": "public/sounds/voices/hunter_male_quest_complete_02.mp3",
@@ -10438,7 +10865,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_quest_complete_02.mp3"
     },
     {
       "path": "public/sounds/voices/hunter_male_quest_declined_01.mp3",
@@ -10466,7 +10894,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_quest_declined_01.mp3"
     },
     {
       "path": "public/sounds/voices/hunter_male_quest_declined_02.mp3",
@@ -10489,7 +10918,8 @@
       ],
       "runtimeReferences": [],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_quest_declined_02.mp3"
     },
     {
       "path": "public/sounds/voices/hunter_male_quest_offer_01.mp3",
@@ -10516,7 +10946,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_quest_offer_01.mp3"
     },
     {
       "path": "public/sounds/voices/hunter_male_thanks_01.mp3",
@@ -10542,7 +10973,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_thanks_01.mp3"
     },
     {
       "path": "public/sounds/voices/hunter_male_thanks_02.mp3",
@@ -10565,7 +10997,8 @@
       ],
       "runtimeReferences": [],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_thanks_02.mp3"
     },
     {
       "path": "public/sounds/voices/hunter_male_warning_01.mp3",
@@ -10591,7 +11024,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_warning_01.mp3"
     },
     {
       "path": "public/sounds/voices/hunter_male_well_wish_01.mp3",
@@ -10618,7 +11052,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_well_wish_01.mp3"
     },
     {
       "path": "public/sounds/voices/hunter_male_well_wish_02.mp3",
@@ -10645,7 +11080,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/hunter_male_well_wish_02.mp3"
     },
     {
       "path": "public/sounds/voices/merchant_female_agree_01.mp3",
@@ -10679,7 +11115,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_agree_01.mp3"
     },
     {
       "path": "public/sounds/voices/merchant_female_attention_01.mp3",
@@ -10710,7 +11147,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_attention_01.mp3"
     },
     {
       "path": "public/sounds/voices/merchant_female_farewell_01.mp3",
@@ -10742,7 +11180,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_farewell_01.mp3"
     },
     {
       "path": "public/sounds/voices/merchant_female_farewell_02.mp3",
@@ -10768,7 +11207,8 @@
       ],
       "runtimeReferences": [],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_farewell_02.mp3"
     },
     {
       "path": "public/sounds/voices/merchant_female_greeting_01.mp3",
@@ -10805,7 +11245,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_greeting_01.mp3"
     },
     {
       "path": "public/sounds/voices/merchant_female_greeting_02.mp3",
@@ -10836,7 +11277,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_greeting_02.mp3"
     },
     {
       "path": "public/sounds/voices/merchant_female_greeting_03.mp3",
@@ -10863,7 +11305,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_greeting_03.mp3"
     },
     {
       "path": "public/sounds/voices/merchant_female_quest_accepted_01.mp3",
@@ -10891,7 +11334,8 @@
       ],
       "runtimeReferences": [],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_quest_accepted_01.mp3"
     },
     {
       "path": "public/sounds/voices/merchant_female_quest_accepted_02.mp3",
@@ -10916,7 +11360,8 @@
       ],
       "runtimeReferences": [],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_quest_accepted_02.mp3"
     },
     {
       "path": "public/sounds/voices/merchant_female_quest_complete_01.mp3",
@@ -10941,7 +11386,8 @@
       ],
       "runtimeReferences": [],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_quest_complete_01.mp3"
     },
     {
       "path": "public/sounds/voices/merchant_female_quest_complete_02.mp3",
@@ -10965,7 +11411,8 @@
       ],
       "runtimeReferences": [],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_quest_complete_02.mp3"
     },
     {
       "path": "public/sounds/voices/merchant_female_quest_declined_01.mp3",
@@ -10993,7 +11440,8 @@
       ],
       "runtimeReferences": [],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_quest_declined_01.mp3"
     },
     {
       "path": "public/sounds/voices/merchant_female_quest_offer_01.mp3",
@@ -11018,7 +11466,8 @@
       ],
       "runtimeReferences": [],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_quest_offer_01.mp3"
     },
     {
       "path": "public/sounds/voices/merchant_female_quest_offer_02.mp3",
@@ -11044,7 +11493,8 @@
       ],
       "runtimeReferences": [],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_quest_offer_02.mp3"
     },
     {
       "path": "public/sounds/voices/merchant_female_refusal_01.mp3",
@@ -11070,7 +11520,8 @@
       ],
       "runtimeReferences": [],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_refusal_01.mp3"
     },
     {
       "path": "public/sounds/voices/merchant_female_thanks_01.mp3",
@@ -11099,7 +11550,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_thanks_01.mp3"
     },
     {
       "path": "public/sounds/voices/merchant_female_warning_01.mp3",
@@ -11123,7 +11575,8 @@
       ],
       "runtimeReferences": [],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/merchant_female_warning_01.mp3"
     },
     {
       "path": "public/sounds/voices/shepard_male_danger_alert_01.mp3",
@@ -11151,7 +11604,8 @@
       ],
       "runtimeReferences": [],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/shepard_male_danger_alert_01.mp3"
     },
     {
       "path": "public/sounds/voices/shepherd_male_farewell_01.mp3",
@@ -11174,7 +11628,8 @@
       ],
       "runtimeReferences": [],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/shepherd_male_farewell_01.mp3"
     },
     {
       "path": "public/sounds/voices/shepherd_male_greeting_01.mp3",
@@ -11200,7 +11655,8 @@
       ],
       "runtimeReferences": [],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/shepherd_male_greeting_01.mp3"
     },
     {
       "path": "public/sounds/voices/shepherd_male_greeting_02.mp3",
@@ -11223,7 +11679,8 @@
       ],
       "runtimeReferences": [],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/shepherd_male_greeting_02.mp3"
     },
     {
       "path": "public/sounds/voices/shepherd_male_livestock_danger_01.mp3",
@@ -11253,7 +11710,8 @@
         "src/ai/npcVoiceLines.ts"
       ],
       "disposition": "retain-for-qc",
-      "rejectedRecordings": []
+      "rejectedRecordings": [],
+      "finalPath": "public/sounds/voices/shepherd_male_livestock_danger_01.mp3"
     }
   ]
 }

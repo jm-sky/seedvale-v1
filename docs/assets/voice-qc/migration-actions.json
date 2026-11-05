@@ -1,0 +1,2088 @@
+{
+  "schemaVersion": 1,
+  "policy": "Canonical storage is not runtime/QC admission. Brian British remains globally excluded in archive. Unique backups retained outside playable tree. Named-reference aliases use relative symlinks for identical bytes.",
+  "actions": [
+    {
+      "source": "docs/v3-donor/voices/mp3/campfire_female_road_answer_02.mp3",
+      "target": "public/sounds/voices/campfire_female_road_answer_02.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "1f0833c412447a4982935a2c45c460f0eb30fd3efed6d6f27d171b562f67d018"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/campfire_female_road_question_01.mp3",
+      "target": "public/sounds/voices/campfire_female_road_question_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "4950e02f0e876c73213ee9ce3caebc75b04d86f777ff360e8a05faae4317c1b4"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/campfire_female_work_answer_01.mp3",
+      "target": "public/sounds/voices/campfire_female_work_answer_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "578726ef74808610169b86ea4d4c92511c37b894fb65a1747f9c77e1e7e73995"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/campfire_female_work_question_02.mp3",
+      "target": "public/sounds/voices/campfire_female_work_question_02.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "7f5a025e9f1ac048b7484aef403d9fd75e138716e9a204b31fca092f78b03da5"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/campfire_male_road_answer_01.mp3",
+      "target": "public/sounds/voices/campfire_male_road_answer_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "8f533cfeecd94cf83af086cb73144d2d9a0c48aa7b9c8601fcda7ccfd67056b7"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/campfire_male_road_question_02.mp3",
+      "target": "public/sounds/voices/campfire_male_road_question_02.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "8b91a3119afba6e9e7b13eaf61ebb3a820ee65c10e1b9c9199e521221e627db1"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/campfire_male_weather_answer_01.mp3",
+      "target": "public/sounds/voices/campfire_male_weather_answer_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "94fb69ba9e88d850ddc2ef801ad19ec971f61b3608ae4cb4be12a2530f335ee2"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/campfire_male_weather_question_02.mp3",
+      "target": "public/sounds/voices/campfire_male_weather_question_02.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "33ae16261884317e89ec2068b7468fba09946c2956ada7588098bb4db1264d0a"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/campfire_male_work_answer_02.mp3",
+      "target": "public/sounds/voices/campfire_male_work_answer_02.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "30d3f9e7ba284236a123d132e73c3d2a8fc3684ae74aec2129e469b23963c40f"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/campfire_male_work_question_01.mp3",
+      "target": "public/sounds/voices/campfire_male_work_question_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "18dfece0bf070a93e7291a79fb2de6e9a687259f0726dadfc466b003a319dc78"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_female_b_agree_01.mp3",
+      "target": "public/sounds/voices/general_female_b_agree_01.mp3",
+      "action": "migrate",
+      "sha256": "aaad8e90380a473130e046f76fb343fbd282cf209a516e825c738542ca7f5b2f"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_female_b_agree_02.mp3",
+      "target": "public/sounds/voices/general_female_b_agree_02.mp3",
+      "action": "migrate",
+      "sha256": "db97340768968c4b99da37d613c961ee73c8e31006266e49a50f5dfa289b02a1"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_female_b_attention_01.mp3",
+      "target": "public/sounds/voices/general_female_b_attention_01.mp3",
+      "action": "migrate",
+      "sha256": "6dfd51852b3d89be759763319c4b4660273ce7f310b706351ef2fe9f00fd5d28"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_female_b_attention_02.mp3",
+      "target": "public/sounds/voices/general_female_b_attention_02.mp3",
+      "action": "migrate",
+      "sha256": "fb33144f7b1a8200fc040e330a41c4c0052c67ffb7d0f0086111f82c16215f4c"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_female_b_call_for_help_01.mp3",
+      "target": "public/sounds/voices/general_female_b_call_for_help_01.mp3",
+      "action": "migrate",
+      "sha256": "ce4d3dded42c41385e0a1d55e7acdb4c68ca72d5ecc06165c31533407aaaeb80"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_female_b_call_for_help_02.mp3",
+      "target": "public/sounds/voices/general_female_b_call_for_help_02.mp3",
+      "action": "migrate",
+      "sha256": "a34f9b96b0a0b64a5cf42a3a992ac52f2da715fbf23be05cd3425dbf6d38f88f"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_female_b_combat_start_01.mp3",
+      "target": "public/sounds/voices/general_female_b_combat_start_01.mp3",
+      "action": "migrate",
+      "sha256": "a154ef737db53bcbd6faeed108aa0791fc6fd17dc6b20720c1c3ca231ba0a148"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_female_b_combat_start_02.mp3",
+      "target": "public/sounds/voices/general_female_b_combat_start_02.mp3",
+      "action": "migrate",
+      "sha256": "7fd45925792224dc4fc23f558d54a2aaa047e91c4862aae940a1756d449c2924"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_female_b_danger_alert_01.mp3",
+      "target": "public/sounds/voices/general_female_b_danger_alert_01.mp3",
+      "action": "migrate",
+      "sha256": "b95d54631b0bb445b43e444f952e254bab574a49eaff797ac4c0bcbefcfd8276"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_female_b_danger_alert_02.mp3",
+      "target": "public/sounds/voices/general_female_b_danger_alert_02.mp3",
+      "action": "migrate",
+      "sha256": "75ba5a98316d322bdf3d7a437c6cb2b8934019cdd79d08d7630515dc753cfb51"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_female_b_exhausted_01.mp3",
+      "target": "public/sounds/voices/general_female_b_exhausted_01.mp3",
+      "action": "migrate",
+      "sha256": "5f7e53a4effb059bbb1fd3d08bc1cb644ffa7bf380ba12a1f73c13e462e18bfb"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_female_b_exhausted_02.mp3",
+      "target": "public/sounds/voices/general_female_b_exhausted_02.mp3",
+      "action": "migrate",
+      "sha256": "acade5d5ce36f18d585cef5b3c6ce0fb0955eedefa669c1f5e71cef7781e8913"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_female_b_farewell_01.mp3",
+      "target": "public/sounds/voices/general_female_b_farewell_01.mp3",
+      "action": "migrate",
+      "sha256": "d0dd146027935c13fb6d47e6362734bb5bcde9d2fd8cfecf65f42bb61b457099"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_female_b_farewell_02.mp3",
+      "target": "public/sounds/voices/general_female_b_farewell_02.mp3",
+      "action": "migrate",
+      "sha256": "fe966746156e13eff3e2e3f2325f67b13691136bd883bc00c3b24e795acc6e34"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_female_b_greeting_01.mp3",
+      "target": "public/sounds/voices/general_female_b_greeting_01.mp3",
+      "action": "migrate",
+      "sha256": "84896973a3222af6448c7b79f124d8497a716e71ad14dd3446b09296d05ed1e7"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_female_b_greeting_02.mp3",
+      "target": "public/sounds/voices/general_female_b_greeting_02.mp3",
+      "action": "migrate",
+      "sha256": "4371cf896e6689507d3064af8361a079777303bff4f1486f102085ae12454626"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_female_b_hungry_01.mp3",
+      "target": "public/sounds/voices/general_female_b_hungry_01.mp3",
+      "action": "migrate",
+      "sha256": "2f36c93c4946382a42d767b8eba806ac674b2d665e6d2794dd1f86af5dd66bcb"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_female_b_hungry_02.mp3",
+      "target": "public/sounds/voices/general_female_b_hungry_02.mp3",
+      "action": "migrate",
+      "sha256": "8d46050ab3a81af9acb4058917b46418b86526f33b7ef73ca6d1a0e1265b847d"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_female_b_quest_accepted_01.mp3",
+      "target": "public/sounds/voices/general_female_b_quest_accepted_01.mp3",
+      "action": "migrate",
+      "sha256": "f0214ebfc16e8dbf3dff609d47bdca932b7d3e5ddef546ec63b5423fcae809ab"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_female_b_quest_accepted_02.mp3",
+      "target": "public/sounds/voices/general_female_b_quest_accepted_02.mp3",
+      "action": "migrate",
+      "sha256": "897356d63cd92933822c4c88527c3ec81bb02b0db09939d7353533e9c9f744cc"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_female_b_quest_complete_01.mp3",
+      "target": "public/sounds/voices/general_female_b_quest_complete_01.mp3",
+      "action": "migrate",
+      "sha256": "274e95223bc2c505e393ea3d87c3de8715bc5b3662b6ae49341e6a698df81280"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_female_b_quest_complete_02.mp3",
+      "target": "public/sounds/voices/general_female_b_quest_complete_02.mp3",
+      "action": "migrate",
+      "sha256": "ffbb77881aef8677051cdb4793bd7f5d076b62eeeeb3d622fef1676a219f4375"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_female_b_quest_declined_01.mp3",
+      "target": "public/sounds/voices/general_female_b_quest_declined_01.mp3",
+      "action": "migrate",
+      "sha256": "856ea699f5981b4817198c68dbf519e325953bac2761d46cafc2521f4ca135ad"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_female_b_quest_declined_02.mp3",
+      "target": "public/sounds/voices/general_female_b_quest_declined_02.mp3",
+      "action": "migrate",
+      "sha256": "74d269fbdaa83155f2b33c589e6ccba38a340557420e04486cb86f4a0e88bb0e"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_female_b_quest_offer_01.mp3",
+      "target": "public/sounds/voices/general_female_b_quest_offer_01.mp3",
+      "action": "migrate",
+      "sha256": "2ae56851534ef985f34df54875466d6a441bd3ccba6637ea1703616ddd5e30ae"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_female_b_quest_offer_02.mp3",
+      "target": "public/sounds/voices/general_female_b_quest_offer_02.mp3",
+      "action": "migrate",
+      "sha256": "d62928b1d70bc9ba151b5a65abe2b5ae42dd063d87dbc9dfab3ea6a76728dbc5"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_female_b_refusal_01.mp3",
+      "target": "public/sounds/voices/general_female_b_refusal_01.mp3",
+      "action": "migrate",
+      "sha256": "ac47a94386424472870a80ed995fb9e632860f8ac1e1d0202eaf20938cd38749"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_female_b_refusal_02.mp3",
+      "target": "public/sounds/voices/general_female_b_refusal_02.mp3",
+      "action": "migrate",
+      "sha256": "f05468991b240114aef5fd82768baca9bb3fb55c647767e9b2ed1e8d8e8b38be"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_female_b_thanks_01.mp3",
+      "target": "public/sounds/voices/general_female_b_thanks_01.mp3",
+      "action": "migrate",
+      "sha256": "db6b50d579fdeaac34e8919b65ddcd9a0f527411850684fc3e1d6569d10c3b25"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_female_b_thanks_02.mp3",
+      "target": "public/sounds/voices/general_female_b_thanks_02.mp3",
+      "action": "migrate",
+      "sha256": "9cada42f9821723565dfee83ee1cc9461b94b23f34bd3789877d63ebc232a57e"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_female_b_warning_01.mp3",
+      "target": "public/sounds/voices/general_female_b_warning_01.mp3",
+      "action": "migrate",
+      "sha256": "61f53463c8f6dba9519df7b77992f8b86b097ae9af824f41d57a42567d60bcca"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_female_b_warning_02.mp3",
+      "target": "public/sounds/voices/general_female_b_warning_02.mp3",
+      "action": "migrate",
+      "sha256": "23399bc4ee7593d1737e14b0d5c592eeb01e888169c3b1f1dcf656b81d0535d8"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_female_b_weather_shelter_01.mp3",
+      "target": "public/sounds/voices/general_female_b_weather_shelter_01.mp3",
+      "action": "migrate",
+      "sha256": "025e6cccf7457b8c576e2182ad12b9ffd5ded00b88868958efd3e3982c13313a"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_female_b_weather_shelter_02.mp3",
+      "target": "public/sounds/voices/general_female_b_weather_shelter_02.mp3",
+      "action": "migrate",
+      "sha256": "516737c2077c10339df6e9db7739a66aa0e8ff7c9e3e95012ae7720da67361da"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_female_b_well_wish_01.mp3",
+      "target": "public/sounds/voices/general_female_b_well_wish_01.mp3",
+      "action": "migrate",
+      "sha256": "037d18710b26d326c0126c08aba85f1173f9bce68c80ca8ad6c7ebe5f6467db1"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_female_b_well_wish_02.mp3",
+      "target": "public/sounds/voices/general_female_b_well_wish_02.mp3",
+      "action": "migrate",
+      "sha256": "fa60a0b4443d9c15b6cf6cdd6c86298fd33c3f77103ba575f455335d8a3d41b3"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_female_b_work_finished_01.mp3",
+      "target": "public/sounds/voices/general_female_b_work_finished_01.mp3",
+      "action": "migrate",
+      "sha256": "5a98db7a86fdc34b0555ffb433bea2a4f36f9bd22e4f2e339cf6933e78ee4047"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_female_b_work_finished_02.mp3",
+      "target": "public/sounds/voices/general_female_b_work_finished_02.mp3",
+      "action": "migrate",
+      "sha256": "31ce5496049ca0efaeac3cb888c77e184ab4241176f2205c372e3e4341ec3e3e"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_female_call_for_help_01.mp3",
+      "target": "public/sounds/voices/general_female_call_for_help_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "2c7981dbcc6d9cdcd855b575282edca426b81977e7af27126f8dbbb05fa64ac1"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_female_child_farewell_01.mp3",
+      "target": "public/sounds/voices/general_female_child_farewell_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "ec6b7224fe3ea273302d17daaaee48d14f1291c570472887493b6a264c250305"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_female_child_farewell_02.mp3",
+      "target": "public/sounds/voices/general_female_child_farewell_02.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "5f81a80d1f50ab53d30b6afe2cc4c7d6529f7ac8e720cf25e4681256a746579d"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_female_child_greeting_01.mp3",
+      "target": "public/sounds/voices/general_female_child_greeting_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "2e868048ba425ad7d26f5db1b32232acd127359f33c3f1f996e2eab87a9a2ea4"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_female_danger_alert_01.mp3",
+      "target": "public/sounds/voices/general_female_danger_alert_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "8cce00c12ae552cf269dab19b89963d2ebeef3b103ecbb95f6f2cfa89c186db2"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_female_exhausted_01.mp3",
+      "target": "public/sounds/voices/general_female_exhausted_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "b2ac9abcc3dc85592c7e68a7e9b9108eab1c62c890463ce1cb4a8e2328450875"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_female_old_farewell_01.mp3",
+      "target": "public/sounds/voices/general_female_old_farewell_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "44711c5b0e1f447ab2f4967a2d2c026dad61dffc5243130280a8641db5ea61d9"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_female_old_farewell_02.mp3",
+      "target": "public/sounds/voices/general_female_old_farewell_02.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "9454bb632a8929a762a58543a896c8466427cab3c73727c02a5e2d0405bfb282"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_female_old_greeting_01.mp3",
+      "target": "public/sounds/voices/general_female_old_greeting_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "61f4de241c8712ee1ab0c851a005dcfb78fe4953a329ec871d247fe7af239a95"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_female_weather_shelter_01.mp3",
+      "target": "public/sounds/voices/general_female_weather_shelter_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "662aaf4afdc45d33add46c2d2bf80113d2cacb65cf731cfa4419d3e109b25569"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_male_b_agree_01.mp3",
+      "target": "docs/archive/voice-donor/rejected-speakers/general_male_b_agree_01.mp3",
+      "action": "migrate",
+      "sha256": "65cc28a4c4e85db39cb25027885457ff8f4a1169dde32907a009ad92e092b2fd"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_male_b_agree_02.mp3",
+      "target": "docs/archive/voice-donor/rejected-speakers/general_male_b_agree_02.mp3",
+      "action": "migrate",
+      "sha256": "70c7d89137a266d7eda82367c5589d58ae8addfcf30a35d397907a2f27889b33"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_male_b_attention_01.mp3",
+      "target": "docs/archive/voice-donor/rejected-speakers/general_male_b_attention_01.mp3",
+      "action": "migrate",
+      "sha256": "e3deb054c299b439610d64a5044394564f9504c2b71327c7f8d158a5d7fdeacb"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_male_b_attention_02.mp3",
+      "target": "docs/archive/voice-donor/rejected-speakers/general_male_b_attention_02.mp3",
+      "action": "migrate",
+      "sha256": "a2326ea174f55c5b7ece2d63eb6e0a214077665df6de10dc034a0db71cecbb52"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_male_b_call_for_help_01.mp3",
+      "target": "docs/archive/voice-donor/rejected-speakers/general_male_b_call_for_help_01.mp3",
+      "action": "migrate",
+      "sha256": "86292fada09336e551a47cd1935a88d7eca828496b72cdd4c5bf3734faaefe0c"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_male_b_call_for_help_02.mp3",
+      "target": "docs/archive/voice-donor/rejected-speakers/general_male_b_call_for_help_02.mp3",
+      "action": "migrate",
+      "sha256": "56e5039f47ef4c6d56907f222c4666ad73909752ec2f26e228262597582105f3"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_male_b_combat_start_01.mp3",
+      "target": "docs/archive/voice-donor/rejected-speakers/general_male_b_combat_start_01.mp3",
+      "action": "migrate",
+      "sha256": "5b3873073461572abb960210754dcef46543c8ef5522d5fc1766b21263a6d2d9"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_male_b_combat_start_02.mp3",
+      "target": "docs/archive/voice-donor/rejected-speakers/general_male_b_combat_start_02.mp3",
+      "action": "migrate",
+      "sha256": "0483d769151e3ef069e304b53875e6e558ac7a8bf1214a8b8cbf430448535e3b"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_male_b_danger_alert_01.mp3",
+      "target": "docs/archive/voice-donor/rejected-speakers/general_male_b_danger_alert_01.mp3",
+      "action": "migrate",
+      "sha256": "9e5d25787e42908f336c248bcb1661b2645d26a3dc9e68fbd34cf444bfaa4d0a"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_male_b_danger_alert_02.mp3",
+      "target": "docs/archive/voice-donor/rejected-speakers/general_male_b_danger_alert_02.mp3",
+      "action": "migrate",
+      "sha256": "e734b873a502600c859100657eec1c5616e6ce9297b5e54f3826a9d676999202"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_male_b_exhausted_01.mp3",
+      "target": "docs/archive/voice-donor/rejected-speakers/general_male_b_exhausted_01.mp3",
+      "action": "migrate",
+      "sha256": "b6903d5e985ea45f8937ef8684e8fc7f0f04b74a8740d178f9825667b7467265"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_male_b_exhausted_02.mp3",
+      "target": "docs/archive/voice-donor/rejected-speakers/general_male_b_exhausted_02.mp3",
+      "action": "migrate",
+      "sha256": "a2f458d03a458616f2ad0d06d7abc1cd53bc641ed45ae3af54fa6ccadba8773c"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_male_b_farewell_01.mp3",
+      "target": "docs/archive/voice-donor/rejected-speakers/general_male_b_farewell_01.mp3",
+      "action": "migrate",
+      "sha256": "7ed1ba27165c3603e8bcc5315ab8babf2ae1707f8e8cf5ed3aabcdf52a28df0c"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_male_b_farewell_02.mp3",
+      "target": "docs/archive/voice-donor/rejected-speakers/general_male_b_farewell_02.mp3",
+      "action": "migrate",
+      "sha256": "b61877952d4d6bc778964326a8eb1e6d1cdd5180bd34e9bd06608279feeae345"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_male_b_greeting_01.mp3",
+      "target": "docs/archive/voice-donor/rejected-speakers/general_male_b_greeting_01.mp3",
+      "action": "migrate",
+      "sha256": "3a61351dfc999db1f2590cf793b1c644c1b8131f66dddcc8957afb36955d23ce"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_male_b_greeting_02.mp3",
+      "target": "docs/archive/voice-donor/rejected-speakers/general_male_b_greeting_02.mp3",
+      "action": "migrate",
+      "sha256": "1db33da5e7297d6758de164eb1f7f182e1e62f285c39b6764a02d4b55a3886a1"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_male_b_hungry_01.mp3",
+      "target": "docs/archive/voice-donor/rejected-speakers/general_male_b_hungry_01.mp3",
+      "action": "migrate",
+      "sha256": "311a7086863ad15263db4a58f09feb7d1ec41cd30c4897aa7bcddce8bd831de0"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_male_b_hungry_02.mp3",
+      "target": "docs/archive/voice-donor/rejected-speakers/general_male_b_hungry_02.mp3",
+      "action": "migrate",
+      "sha256": "11dd14284c00c6ee5d727c4fdc0529856b97b0336e3c847f46502213df735936"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_male_b_quest_accepted_01.mp3",
+      "target": "docs/archive/voice-donor/rejected-speakers/general_male_b_quest_accepted_01.mp3",
+      "action": "migrate",
+      "sha256": "70e7c4ff029f2eb376d0da13a6a6cf2c8b4d115f17d0659dba7a600b6dd9387e"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_male_b_quest_accepted_02.mp3",
+      "target": "docs/archive/voice-donor/rejected-speakers/general_male_b_quest_accepted_02.mp3",
+      "action": "migrate",
+      "sha256": "01df15946b1f9905cc545b3d719ee13318a74c47c2cc66d1ba72e864f2049c0e"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_male_b_quest_complete_01.mp3",
+      "target": "docs/archive/voice-donor/rejected-speakers/general_male_b_quest_complete_01.mp3",
+      "action": "migrate",
+      "sha256": "3aeb9c2cd409fb87147179f135601c50379917344000f322a6d41b2614d0dd51"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_male_b_quest_complete_02.mp3",
+      "target": "docs/archive/voice-donor/rejected-speakers/general_male_b_quest_complete_02.mp3",
+      "action": "migrate",
+      "sha256": "437c873ae3a94ad6fefd5ab54ec21ffc1b7e0b96c1570c4a2876ab573b305e10"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_male_b_quest_declined_01.mp3",
+      "target": "docs/archive/voice-donor/rejected-speakers/general_male_b_quest_declined_01.mp3",
+      "action": "migrate",
+      "sha256": "8dfbb7c131706e1ee726ee81fd74a8ed73172ef1f4affc710bc6992850d3816b"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_male_b_quest_declined_02.mp3",
+      "target": "docs/archive/voice-donor/rejected-speakers/general_male_b_quest_declined_02.mp3",
+      "action": "migrate",
+      "sha256": "3a577779257e503fb4899a5a56c7cd2eaddd2966e8ff7c6428e2b0cdb30b9c20"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_male_b_quest_offer_01.mp3",
+      "target": "docs/archive/voice-donor/rejected-speakers/general_male_b_quest_offer_01.mp3",
+      "action": "migrate",
+      "sha256": "6ea723e0d6941485e936652b0422f573121c7c97bfd99d00b09392a4ed82ca03"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_male_b_quest_offer_02.mp3",
+      "target": "docs/archive/voice-donor/rejected-speakers/general_male_b_quest_offer_02.mp3",
+      "action": "migrate",
+      "sha256": "e3ee36039dde97e80d0c76626dfd05a9da7aed700cfa2936a788655559750497"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_male_b_refusal_01.mp3",
+      "target": "docs/archive/voice-donor/rejected-speakers/general_male_b_refusal_01.mp3",
+      "action": "migrate",
+      "sha256": "719c5e9976d6ca82cd6118002d0ff24cb8ba59d0ebc063791b08d7e203732301"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_male_b_refusal_02.mp3",
+      "target": "docs/archive/voice-donor/rejected-speakers/general_male_b_refusal_02.mp3",
+      "action": "migrate",
+      "sha256": "fd32348e9e5306d8b4b105be49e150bfd6a1d6cd9538e4c1baaccc82544f814d"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_male_b_thanks_01.mp3",
+      "target": "docs/archive/voice-donor/rejected-speakers/general_male_b_thanks_01.mp3",
+      "action": "migrate",
+      "sha256": "ce7e9541daf1f7f9e098218d4b7351c9470bd9df940a71a7e9212f199865f7f0"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_male_b_thanks_02.mp3",
+      "target": "docs/archive/voice-donor/rejected-speakers/general_male_b_thanks_02.mp3",
+      "action": "migrate",
+      "sha256": "b1564172023469ed7f6499796e8b1e03edc171bd0b59db0bd2b6ab31b2bbb6e7"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_male_b_warning_01.mp3",
+      "target": "docs/archive/voice-donor/rejected-speakers/general_male_b_warning_01.mp3",
+      "action": "migrate",
+      "sha256": "ef44ee95119e8bdef335cca76a988c9e425fec394b7558fcbb82c102dea6bf80"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_male_b_warning_02.mp3",
+      "target": "docs/archive/voice-donor/rejected-speakers/general_male_b_warning_02.mp3",
+      "action": "migrate",
+      "sha256": "374e6fa37f2fa6473ab4c9053be53a0b5f35c14d87a51eafed03829e80542759"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_male_b_weather_shelter_01.mp3",
+      "target": "docs/archive/voice-donor/rejected-speakers/general_male_b_weather_shelter_01.mp3",
+      "action": "migrate",
+      "sha256": "42a87833e73057da2513a9e5b590b425e3f5656e10f103919fcdde67511b7721"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_male_b_weather_shelter_02.mp3",
+      "target": "docs/archive/voice-donor/rejected-speakers/general_male_b_weather_shelter_02.mp3",
+      "action": "migrate",
+      "sha256": "887122c072cc434fb1f1237c58977c57488a0518be369805478428d4a48bd685"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_male_b_well_wish_01.mp3",
+      "target": "docs/archive/voice-donor/rejected-speakers/general_male_b_well_wish_01.mp3",
+      "action": "migrate",
+      "sha256": "f5d15c133705fd01968a477b0aec7d9c22f0146fd9be8a517499d213aeeacb63"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_male_b_well_wish_02.mp3",
+      "target": "docs/archive/voice-donor/rejected-speakers/general_male_b_well_wish_02.mp3",
+      "action": "migrate",
+      "sha256": "832885cdc5139d8d5bffdc539f567efe26b60c7656a08c322353dc16c9d63199"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_male_b_work_finished_01.mp3",
+      "target": "docs/archive/voice-donor/rejected-speakers/general_male_b_work_finished_01.mp3",
+      "action": "migrate",
+      "sha256": "0eca0c045ad896be3764e25d63e3f76343ff2bf9cd2d825e12bcdbb93d99583c"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_male_b_work_finished_02.mp3",
+      "target": "docs/archive/voice-donor/rejected-speakers/general_male_b_work_finished_02.mp3",
+      "action": "migrate",
+      "sha256": "319f7782625001cfe056cc558018150b878fffef131e6b4fe90368d4d81034f1"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_male_call_for_help_01.mp3",
+      "target": "public/sounds/voices/general_male_call_for_help_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "933c0fb4c31339db81e6d340660529d73fa7ab415881e48f8ad070d498b6cca8"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_male_combat_start_01.mp3",
+      "target": "public/sounds/voices/general_male_combat_start_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "87d31169f1b16a292db1b01b4a2a99532770493745946908c25e50619dfab381"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_male_exhausted_01.mp3",
+      "target": "public/sounds/voices/general_male_exhausted_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "9f29c76e0a0342d7dcbe935cea116d259a7dce51e69d4f7c92a502402b90d9cd"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_male_hungry_01.mp3",
+      "target": "public/sounds/voices/general_male_hungry_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "90a87c7df5d9d700f487ebb577ed13fd586636484e229ae2e2cc3c243dcf3532"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_male_old_farewell_01.mp3",
+      "target": "public/sounds/voices/general_male_old_farewell_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "c0096437cb5ef6bea4a7d901060604bcf108c43c2f378f8d3c224a817c1940a8"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_male_old_farewell_02.mp3",
+      "target": "public/sounds/voices/general_male_old_farewell_02.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "6a56390507c84fe5d5fc1601f1eb664665250bdaa7e0375093ed2cfc6b993822"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_male_old_greeting_02.mp3",
+      "target": "public/sounds/voices/general_male_old_greeting_02.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "9d1efbeb5c549ffb45ecc0952ee1532eafb9d3e22218540a86a9a702d449ce9a"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_male_weather_shelter_01.mp3",
+      "target": "public/sounds/voices/general_male_weather_shelter_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "625813e97408e102cc72cc3709fa32493e483d4e2defecb67170c12f2db20c19"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_male_work_finished_01.mp3",
+      "target": "public/sounds/voices/general_male_work_finished_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "6836fd3cad54e2d34b0e6ddf032023a3b63b79c0a0ab011c90d79694171f9fb6"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/general_male_young_greeting_02.mp3",
+      "target": "public/sounds/voices/general_male_young_greeting_02.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "101ced0fd9e9748f41b57de9a304fac062893814c8d7d0cda948af49afa57cb6"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_agree_01.mp3",
+      "target": "public/sounds/voices/guard_male_agree_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "4f46be612427051c2578c8e7b53dc744930e4b746a137fc134d8ff4a5b8871ac"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_attention_01.mp3",
+      "target": "public/sounds/voices/guard_male_attention_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "856dbbe8b9925844a0c3f917c6c3b3f281cd0743a9ae67df546df47a910fb6f3"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_b_agree_01.mp3",
+      "target": "public/sounds/voices/guard_male_b_agree_01.mp3",
+      "action": "migrate",
+      "sha256": "cd0c9904427183dbc1b45f836c0c37eafe39bf94200446f2622ec496dd5919f9"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_b_agree_02.mp3",
+      "target": "public/sounds/voices/guard_male_b_agree_02.mp3",
+      "action": "migrate",
+      "sha256": "f886ce6f8bf04b401f694b3813835315c3cc26b1a314964a2788bafbdd04d926"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_b_attention_01.mp3",
+      "target": "public/sounds/voices/guard_male_b_attention_01.mp3",
+      "action": "migrate",
+      "sha256": "9bdf99894a9a3ecb0f2a402ec58a11891a15dd9fece2daa7ac92b19683a645fe"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_b_attention_02.mp3",
+      "target": "public/sounds/voices/guard_male_b_attention_02.mp3",
+      "action": "migrate",
+      "sha256": "d0f9add77b84653070ccc3897e515ff9afd0a9ea07b2e9a415551179b01752d7"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_b_call_for_help_01.mp3",
+      "target": "public/sounds/voices/guard_male_b_call_for_help_01.mp3",
+      "action": "migrate",
+      "sha256": "fad4984e87e7a267d3eeb6840667bfb588de26eab76da4583ff52baf3eb4ff55"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_b_call_for_help_02.mp3",
+      "target": "public/sounds/voices/guard_male_b_call_for_help_02.mp3",
+      "action": "migrate",
+      "sha256": "dea5a99d79a314ec5359669c63e85bd63df8e764e15a647fb515acc8007d1271"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_b_combat_start_01.mp3",
+      "target": "public/sounds/voices/guard_male_b_combat_start_01.mp3",
+      "action": "migrate",
+      "sha256": "9f69e9a30d7eff3f73ac321881737d0eae04ca6cc842fef28c45bd6cdc748daf"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_b_combat_start_02.mp3",
+      "target": "public/sounds/voices/guard_male_b_combat_start_02.mp3",
+      "action": "migrate",
+      "sha256": "e91dee0b45e88b4198357f1f47b713fbfefdd78876fb93aa62f93681247b1146"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_b_danger_alert_01.mp3",
+      "target": "public/sounds/voices/guard_male_b_danger_alert_01.mp3",
+      "action": "migrate",
+      "sha256": "0cdf5de65c21e7490de27c2e54211b2cbb614a607573e3c9f4a48df4f6fa8b95"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_b_danger_alert_02.mp3",
+      "target": "public/sounds/voices/guard_male_b_danger_alert_02.mp3",
+      "action": "migrate",
+      "sha256": "f7d5fe9a245948aee55f1ebc33f7867be0649d1084882813425cb9f0ec231084"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_b_exhausted_01.mp3",
+      "target": "public/sounds/voices/guard_male_b_exhausted_01.mp3",
+      "action": "migrate",
+      "sha256": "5f6a143ba4fade91e7c6b0f44433fc9296f4b665c0b1b655c4a4cac9e10bfe54"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_b_exhausted_02.mp3",
+      "target": "public/sounds/voices/guard_male_b_exhausted_02.mp3",
+      "action": "migrate",
+      "sha256": "6f6318568de7be991de0912285bf186f3ec401e159d6183b00a2dbfd9e4964df"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_b_farewell_01.mp3",
+      "target": "public/sounds/voices/guard_male_b_farewell_01.mp3",
+      "action": "migrate",
+      "sha256": "4b3a50774ff72db6e377991e5800530fe2adbd25be6d4e725313c7744af9a0aa"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_b_farewell_02.mp3",
+      "target": "public/sounds/voices/guard_male_b_farewell_02.mp3",
+      "action": "migrate",
+      "sha256": "dbca215a9e54c4bb684e9bcdeacf17ff810b2a323d49ca2d36b87bebddba94f3"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_b_greeting_01.mp3",
+      "target": "public/sounds/voices/guard_male_b_greeting_01.mp3",
+      "action": "migrate",
+      "sha256": "0ea5ed016dbf7af8e188814ce8528f80955b611877e3a6b1ccc06ecd7dbdd9da"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_b_greeting_02.mp3",
+      "target": "public/sounds/voices/guard_male_b_greeting_02.mp3",
+      "action": "migrate",
+      "sha256": "fd67fc505cb48e104c1861973b5a880ff207b036696953461ef88976fd3ebb67"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_b_guard_response_01.mp3",
+      "target": "public/sounds/voices/guard_male_b_guard_response_01.mp3",
+      "action": "migrate",
+      "sha256": "a8cc747b4dc08b77b7ece7b26d42cd10369685afa1fbd5d2b2fa6bd5f31fb535"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_b_guard_response_02.mp3",
+      "target": "public/sounds/voices/guard_male_b_guard_response_02.mp3",
+      "action": "migrate",
+      "sha256": "b225be5c052dcd232a3e1ca92232997e7334820a5f20d6d1966202be038d4427"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_b_hungry_01.mp3",
+      "target": "public/sounds/voices/guard_male_b_hungry_01.mp3",
+      "action": "migrate",
+      "sha256": "fc8708b19890c4dad6450007b0e70904f94c46cea88dd99a0f6374916b777607"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_b_hungry_02.mp3",
+      "target": "public/sounds/voices/guard_male_b_hungry_02.mp3",
+      "action": "migrate",
+      "sha256": "fa0e71c7bc8d34869c172820f8c2b05e7b80d4b2788b584c1b23d9c65b370059"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_b_quest_accepted_01.mp3",
+      "target": "public/sounds/voices/guard_male_b_quest_accepted_01.mp3",
+      "action": "migrate",
+      "sha256": "8e96f6d088828781424e3017678051f085743d2e0423691d0154c32c1b069132"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_b_quest_accepted_02.mp3",
+      "target": "public/sounds/voices/guard_male_b_quest_accepted_02.mp3",
+      "action": "migrate",
+      "sha256": "3833a7e20f23e72a8348e227e955b312b2082721383ebbcd8f40d5644a1a617c"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_b_quest_complete_01.mp3",
+      "target": "public/sounds/voices/guard_male_b_quest_complete_01.mp3",
+      "action": "migrate",
+      "sha256": "81b8f00cedaf305b4807779b6681d84d4f2f37cf6d84f5d0a2ac40a4b9328c53"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_b_quest_complete_02.mp3",
+      "target": "public/sounds/voices/guard_male_b_quest_complete_02.mp3",
+      "action": "migrate",
+      "sha256": "68ca582b6394be352a190026ba39767717b8db5577b987e69a80d3af7da41d7c"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_b_quest_declined_01.mp3",
+      "target": "public/sounds/voices/guard_male_b_quest_declined_01.mp3",
+      "action": "migrate",
+      "sha256": "089f37bb2935775195562f3b23258a82a4864dbfb3594dc642d7faff41f2f928"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_b_quest_declined_02.mp3",
+      "target": "public/sounds/voices/guard_male_b_quest_declined_02.mp3",
+      "action": "migrate",
+      "sha256": "1f69c98d270c06bec735ffa1840c8081e05d1c6dc629e1f162fce600113790ad"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_b_quest_offer_01.mp3",
+      "target": "public/sounds/voices/guard_male_b_quest_offer_01.mp3",
+      "action": "migrate",
+      "sha256": "c4c185a638a36adea56c962280c32cdec19e004166e85f4e0f8f51e6137605ac"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_b_quest_offer_02.mp3",
+      "target": "public/sounds/voices/guard_male_b_quest_offer_02.mp3",
+      "action": "migrate",
+      "sha256": "7033739454f5c70cec934c3c454fd48f0fc4841c0540b5dfc23359596b36e3bb"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_b_refusal_01.mp3",
+      "target": "public/sounds/voices/guard_male_b_refusal_01.mp3",
+      "action": "migrate",
+      "sha256": "65d4c838567096b2d3d6bc0ad03a61fdefe94a309a19e49f3ea32626f1030434"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_b_refusal_02.mp3",
+      "target": "public/sounds/voices/guard_male_b_refusal_02.mp3",
+      "action": "migrate",
+      "sha256": "43ae6988b7982339e4d8b118216ad11b7f84f81cbe3950f333d9699f300f3df2"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_b_thanks_01.mp3",
+      "target": "public/sounds/voices/guard_male_b_thanks_01.mp3",
+      "action": "migrate",
+      "sha256": "00b8bf5904019b4e5302fe114678e2246060227afce5fcb388b6580216db29ea"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_b_thanks_02.mp3",
+      "target": "public/sounds/voices/guard_male_b_thanks_02.mp3",
+      "action": "migrate",
+      "sha256": "f9acae6b19b460126efb9e8faed175bb74cc83277334b549a68d345f6362ea36"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_b_warning_01.mp3",
+      "target": "public/sounds/voices/guard_male_b_warning_01.mp3",
+      "action": "migrate",
+      "sha256": "054c72f65cfdcb9281903ea93d942a202872140e02a9078c4a71ad056ae957e4"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_b_warning_02.mp3",
+      "target": "public/sounds/voices/guard_male_b_warning_02.mp3",
+      "action": "migrate",
+      "sha256": "c86db5ebda40eef14b4a05dc817d397a199e5433a6fef5d904dd1276f560cffe"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_b_weather_shelter_01.mp3",
+      "target": "public/sounds/voices/guard_male_b_weather_shelter_01.mp3",
+      "action": "migrate",
+      "sha256": "59ba852b52503646ba5b953dc3e8cecf777e7a1703155b6a080ce25b67cf86ef"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_b_weather_shelter_02.mp3",
+      "target": "public/sounds/voices/guard_male_b_weather_shelter_02.mp3",
+      "action": "migrate",
+      "sha256": "6f01c1ed9706fa72f3a30a41336187ae2332182eb77f05c458b985a4a84fc090"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_b_well_wish_01.mp3",
+      "target": "public/sounds/voices/guard_male_b_well_wish_01.mp3",
+      "action": "migrate",
+      "sha256": "a6d7943818605bdd4aa92d9e70b255367ef7d86bb0861bc32a0ce572c03887b8"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_b_well_wish_02.mp3",
+      "target": "public/sounds/voices/guard_male_b_well_wish_02.mp3",
+      "action": "migrate",
+      "sha256": "50341955826c482538f5aed4907e3eae0e20eecdf5cbd7cdb8809287ac921e2c"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_b_work_finished_01.mp3",
+      "target": "public/sounds/voices/guard_male_b_work_finished_01.mp3",
+      "action": "migrate",
+      "sha256": "ccc32c5887bb3401682b57144fbdbb6daf987cc0e38d84040d6afbfeb2e735ca"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_b_work_finished_02.mp3",
+      "target": "public/sounds/voices/guard_male_b_work_finished_02.mp3",
+      "action": "migrate",
+      "sha256": "9ef41b593be69ce47d0f659af2408e28ec4037522f3822a62a96c0ab406a2ff2"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_call_for_help_01.mp3",
+      "target": "public/sounds/voices/guard_male_call_for_help_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "a014e4b3a0056fe20cf4e6ca1fb549aeb049a0263a1786e99565ff8678a2a7ac"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_combat_start_01.mp3",
+      "target": "public/sounds/voices/guard_male_combat_start_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "6bf97c1749ae36ef0c8315e9542b2cb29f84a5e3c29f1b99f0a2e7c8b63b24e3"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_danger_alert_01.mp3",
+      "target": "public/sounds/voices/guard_male_danger_alert_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "3c2bcaa7c5a672fa854db1587e2ae5d7830599613a4aeae0738adce452ca91d6"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_farewell_01.mp3",
+      "target": "public/sounds/voices/guard_male_farewell_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "5838e57d7a5ce2a4c14e84c5cc9971f88177b03686ef3f56c65de7d49bbfe9d4"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_greeting_01.mp3",
+      "target": "public/sounds/voices/guard_male_greeting_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "6552955981f4afaf8fe94b759f9531b14c8103c94f188bec83a8c1c5d5f018c9"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_greeting_02.mp3",
+      "target": "public/sounds/voices/guard_male_greeting_02.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "c124a089785f7e828177584db9f00f851343ecec396cfc086693fb432639e640"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_guard_response_01.mp3",
+      "target": "public/sounds/voices/guard_male_guard_response_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "133a6a0f55085fd76db1397dcd59d9aeba25718d54401988900dc21e3c19cf59"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_quest_accepted_01.mp3",
+      "target": "public/sounds/voices/guard_male_quest_accepted_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "1d9dd9f4ac5dc0f636c01c1dbe6229d1076ba841613c4405749fe48809dd4d6c"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_quest_accepted_02.mp3",
+      "target": "public/sounds/voices/guard_male_quest_accepted_02.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "b5e74b0c1b061bd625f0cbc8f411b4764053b66401268158eabe65ded0097784"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_quest_complete_01.mp3",
+      "target": "public/sounds/voices/guard_male_quest_complete_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "fde7f4a6b463c10a7b4eb55ad4d2b20b5cf763803075a1a8638641e50953fb72"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_quest_complete_02.mp3",
+      "target": "public/sounds/voices/guard_male_quest_complete_02.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "87ca18b3f93f12c99f70900bb3d23bdbaa413b7b9dccc196443bf2226c38d42a"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_quest_declined_01.mp3",
+      "target": "public/sounds/voices/guard_male_quest_declined_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "830c74e984febc1405f94f2dff17f210154c4e9d81593e49e87f57163ff0e503"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_quest_declined_02.mp3",
+      "target": "public/sounds/voices/guard_male_quest_declined_02.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "836f14252316e3b5911398acd5f63a988429ebbccd4283b67635cccddef89570"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_quest_offer_01.mp3",
+      "target": "public/sounds/voices/guard_male_quest_offer_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "559939d6dc037887d48d2cb151274f4c4c0eb5a71561d2ba2dee9c27b804271d"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_refusal_01.mp3",
+      "target": "public/sounds/voices/guard_male_refusal_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "b570327902b6b9ee93dd9c0f07e62497ad75e094ed6f417cbccef51d9553ce4c"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_thanks_01.mp3",
+      "target": "public/sounds/voices/guard_male_thanks_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "c0a95f692e64bc4f23de176c94a97d5c8dd9a40e47ed2ca0ceb60e00f1c72e6b"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_thanks_02.mp3",
+      "target": "public/sounds/voices/guard_male_thanks_02.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "3c049a01d81ef9c6698615c4736d3a17b52790f9f810d06d1cda6d0e875016f1"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_warning_01.mp3",
+      "target": "public/sounds/voices/guard_male_warning_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "b4bd00c4e401774e3c8987852e72bdd1f782da59b75a7766330af328dddbb363"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_weather_shelter_01.mp3",
+      "target": "public/sounds/voices/guard_male_weather_shelter_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "811d0405f0b4d601b1239123408ac9c37f0a47a533220a99eab5fa4b89aa2724"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/guard_male_well_wish_01.mp3",
+      "target": "public/sounds/voices/guard_male_well_wish_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "051657a3eef1dd9def22c65b211155489c66c352f0953a5f2d38cf563f670456"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_agree_01.mp3",
+      "target": "public/sounds/voices/hunter_male_agree_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "cfac13cceaf47c1f9cc18c2d89e77d1767a1768fec3834ce9e49cfcb2c645409"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_attention_01.mp3",
+      "target": "public/sounds/voices/hunter_male_attention_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "7501d3c59a06fc79d26d0bcfaaa595270de8187c279687bb3976e175fe51d02c"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_b_agree_01.mp3",
+      "target": "public/sounds/voices/hunter_male_b_agree_01.mp3",
+      "action": "migrate",
+      "sha256": "7f143f485368a76a912bb40ddbb973e99748564a39f0610fde1c3166ccbfb014"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_b_agree_02.mp3",
+      "target": "public/sounds/voices/hunter_male_b_agree_02.mp3",
+      "action": "migrate",
+      "sha256": "b41bbe775c4b4a7a09dd11442a86274580bac535d9cc90f73becec168b88b765"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_b_attention_01.mp3",
+      "target": "public/sounds/voices/hunter_male_b_attention_01.mp3",
+      "action": "migrate",
+      "sha256": "1f7f0982501a8492ebc1755296f7bd7d5e765ed633358958c70d178b79030901"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_b_attention_02.mp3",
+      "target": "public/sounds/voices/hunter_male_b_attention_02.mp3",
+      "action": "migrate",
+      "sha256": "a53a09bda37aa9d6976bac712c76c598a7aedd3eaadbba67b1019a6b927b61c2"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_b_call_for_help_01.mp3",
+      "target": "public/sounds/voices/hunter_male_b_call_for_help_01.mp3",
+      "action": "migrate",
+      "sha256": "a810f5e57f731b1c2f2f65ae3cca61ab0887774b54a29d504e0c3e800909ee47"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_b_call_for_help_02.mp3",
+      "target": "public/sounds/voices/hunter_male_b_call_for_help_02.mp3",
+      "action": "migrate",
+      "sha256": "1cf08655981d350c5823a051fac9f5ab01e1e9888b025ef4ebaecd0cb52d6e75"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_b_combat_start_01.mp3",
+      "target": "public/sounds/voices/hunter_male_b_combat_start_01.mp3",
+      "action": "migrate",
+      "sha256": "a0646618d1038b43c6efac52ee763dbbc5be7de9381f8d3bf14900d600e8b5d2"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_b_combat_start_02.mp3",
+      "target": "public/sounds/voices/hunter_male_b_combat_start_02.mp3",
+      "action": "migrate",
+      "sha256": "e686c9d97c560da4af9b47e7993c02c4773604dded043174f980223d709b9dff"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_b_danger_alert_01.mp3",
+      "target": "public/sounds/voices/hunter_male_b_danger_alert_01.mp3",
+      "action": "migrate",
+      "sha256": "b23ff5035b9e3b094c40157c4f0cec25c5f51298c7dca6e5e6a82d298f39cc16"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_b_danger_alert_02.mp3",
+      "target": "public/sounds/voices/hunter_male_b_danger_alert_02.mp3",
+      "action": "migrate",
+      "sha256": "aea2a6b973dde5139e4bb6507ba33354218d932efb11022eb8feeddd446ebe2a"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_b_exhausted_01.mp3",
+      "target": "public/sounds/voices/hunter_male_b_exhausted_01.mp3",
+      "action": "migrate",
+      "sha256": "e44135d487416d4c0aa5af39e5168379f83d7069a59892158219b93cef67c02a"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_b_exhausted_02.mp3",
+      "target": "public/sounds/voices/hunter_male_b_exhausted_02.mp3",
+      "action": "migrate",
+      "sha256": "988ac5b60f4665f875ca7b4602acb2b104ad77f5624b398d1c8263743128d0c8"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_b_farewell_01.mp3",
+      "target": "public/sounds/voices/hunter_male_b_farewell_01.mp3",
+      "action": "migrate",
+      "sha256": "d0834ed9faaec1c822c9cec5f8e3ed4c58a109f6e9c8bdf4940248c2cc2a8047"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_b_farewell_02.mp3",
+      "target": "public/sounds/voices/hunter_male_b_farewell_02.mp3",
+      "action": "migrate",
+      "sha256": "bc5ea64f171f62a6650bb8fac1845e86f647ec6f6799ad0e21a07f6fc119186a"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_b_greeting_01.mp3",
+      "target": "public/sounds/voices/hunter_male_b_greeting_01.mp3",
+      "action": "migrate",
+      "sha256": "a52f87cba0bb63f65e9fc12c51ba491e4aaccafbf75c64f31b6d3f3bcf6ef1fa"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_b_greeting_02.mp3",
+      "target": "public/sounds/voices/hunter_male_b_greeting_02.mp3",
+      "action": "migrate",
+      "sha256": "8caea8a9b96928dfcb5b50919c55c0298fd9c73de8d283ff0f66d6c805d057e4"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_b_hungry_01.mp3",
+      "target": "public/sounds/voices/hunter_male_b_hungry_01.mp3",
+      "action": "migrate",
+      "sha256": "106df57c7d8ad8c0c46affcab3edcd679cf7794d5c652cc5528e893d769eb19b"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_b_hungry_02.mp3",
+      "target": "public/sounds/voices/hunter_male_b_hungry_02.mp3",
+      "action": "migrate",
+      "sha256": "f19258cdd1a2a4d1c9d99b61de71a803bd848d9a1f008af1184cb9b0325e2542"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_b_quest_accepted_01.mp3",
+      "target": "public/sounds/voices/hunter_male_b_quest_accepted_01.mp3",
+      "action": "migrate",
+      "sha256": "9443c0cb386959a79c6b985d65860f6eaac04a00c4050212c6c3fd21e06ca0f2"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_b_quest_accepted_02.mp3",
+      "target": "public/sounds/voices/hunter_male_b_quest_accepted_02.mp3",
+      "action": "migrate",
+      "sha256": "8424fda40837dc51cda36594e27c67c75cb0a9b2a6c845d98fd6e750f14cf0ff"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_b_quest_complete_01.mp3",
+      "target": "public/sounds/voices/hunter_male_b_quest_complete_01.mp3",
+      "action": "migrate",
+      "sha256": "2560e826b4f893c88e27a99e5f9ea9f8484cb80917e769e44c1660048e8ad9de"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_b_quest_complete_02.mp3",
+      "target": "public/sounds/voices/hunter_male_b_quest_complete_02.mp3",
+      "action": "migrate",
+      "sha256": "a6e51f7ca3ae1516d7d18c8c8d92927463843de086f0fa10a14649ac4adfab92"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_b_quest_declined_01.mp3",
+      "target": "public/sounds/voices/hunter_male_b_quest_declined_01.mp3",
+      "action": "migrate",
+      "sha256": "918f96726726ea79a0917ec2fdf5dd98a8c3c7d081760b70b672f88933d5f318"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_b_quest_declined_02.mp3",
+      "target": "public/sounds/voices/hunter_male_b_quest_declined_02.mp3",
+      "action": "migrate",
+      "sha256": "274ea197851e91451ae9c70aca9a4d83a4db1fb58d03654b60e523955131497c"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_b_quest_offer_01.mp3",
+      "target": "public/sounds/voices/hunter_male_b_quest_offer_01.mp3",
+      "action": "migrate",
+      "sha256": "3dc3272e315e3580e0ac51b4c215be879ec9653b603c1c7c63e5baccf9090d11"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_b_quest_offer_02.mp3",
+      "target": "public/sounds/voices/hunter_male_b_quest_offer_02.mp3",
+      "action": "migrate",
+      "sha256": "43fb4ff9c69a954d6e9a1af806c4be20fbf98d618bf6507cbdbbf85925f5cb73"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_b_refusal_01.mp3",
+      "target": "public/sounds/voices/hunter_male_b_refusal_01.mp3",
+      "action": "migrate",
+      "sha256": "7b29539996b56422ff486470ae794ec04a831bb0bc9ac321e84b2fb1bb20dd82"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_b_refusal_02.mp3",
+      "target": "public/sounds/voices/hunter_male_b_refusal_02.mp3",
+      "action": "migrate",
+      "sha256": "555e6f2deb75219baa9d7c5af502f21cbf359c03c627cccd69600ca787511d3d"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_b_thanks_01.mp3",
+      "target": "public/sounds/voices/hunter_male_b_thanks_01.mp3",
+      "action": "migrate",
+      "sha256": "5561e4d589e30dced87abd10433c073571482065866e8ff9614ea88734a2bd2e"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_b_thanks_02.mp3",
+      "target": "public/sounds/voices/hunter_male_b_thanks_02.mp3",
+      "action": "migrate",
+      "sha256": "0b910720de2ab4bce8e504c689e73b1308966ae5391e437a84b1a4919c10d04f"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_b_warning_01.mp3",
+      "target": "public/sounds/voices/hunter_male_b_warning_01.mp3",
+      "action": "migrate",
+      "sha256": "dd78105e59ab8d77726094adf5c91f90b50ba431464777eb7cd7fb006fe6803a"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_b_warning_02.mp3",
+      "target": "public/sounds/voices/hunter_male_b_warning_02.mp3",
+      "action": "migrate",
+      "sha256": "f5593ab9e0fb6920995864f8c62296c54af11259bec37ea4af643827a949ad4a"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_b_weather_shelter_01.mp3",
+      "target": "public/sounds/voices/hunter_male_b_weather_shelter_01.mp3",
+      "action": "migrate",
+      "sha256": "0445411aa0765fd7bcac5c6cdbd3ca263f9102abe5fd2ef1136315131a0ee8f0"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_b_weather_shelter_02.mp3",
+      "target": "public/sounds/voices/hunter_male_b_weather_shelter_02.mp3",
+      "action": "migrate",
+      "sha256": "4cc106b7da1f993acaf8fe41cf8b2b5b207bb7006a186c0af92098d518a6eeec"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_b_well_wish_01.mp3",
+      "target": "public/sounds/voices/hunter_male_b_well_wish_01.mp3",
+      "action": "migrate",
+      "sha256": "5a536283a55977110d531a6e3fe31b16d694c9b2f6c5db02c564c4065ec51027"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_b_well_wish_02.mp3",
+      "target": "public/sounds/voices/hunter_male_b_well_wish_02.mp3",
+      "action": "migrate",
+      "sha256": "d08a79075a0e5cb19b22813d4dd445e5bf5aadd437ce86ceacdaa7c7051e30d8"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_b_work_finished_01.mp3",
+      "target": "public/sounds/voices/hunter_male_b_work_finished_01.mp3",
+      "action": "migrate",
+      "sha256": "942a2d23443c0a7eef214e395a38c3cf3453824acd01a215f1715239afacd10d"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_b_work_finished_02.mp3",
+      "target": "public/sounds/voices/hunter_male_b_work_finished_02.mp3",
+      "action": "migrate",
+      "sha256": "1c8205deab6649a8607b169818b9a2ffff898bd5e28cc874584ec63db4c07444"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_call_for_help_01.mp3",
+      "target": "public/sounds/voices/hunter_male_call_for_help_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "e30a459d0189ed3812c2073d800e8efa6fefa8853372dd0c1cfa1f10ce209df6"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_combat_start_01.mp3",
+      "target": "public/sounds/voices/hunter_male_combat_start_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "9ccaaf065a13d4fbb159895993c50feea219e4a9a45e30798824bfe9c033f9c6"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_danger_alert_01.mp3",
+      "target": "public/sounds/voices/hunter_male_danger_alert_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "afb1b08553f6173e64960b89c0f99ce1c65a48c34757e898d6058394f28b18f4"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_farewell_01.mp3",
+      "target": "public/sounds/voices/hunter_male_farewell_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "e1bb36a296ed09546afedd927167d75f92419a31e0837f6819af4604db521df0"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_farewell_02.mp3",
+      "target": "public/sounds/voices/hunter_male_farewell_02.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "318e9843b5b0ba6d4aa5711bd8da667c31c766df5b4b93f1b7162a0bd33c788f"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_greeting_01.mp3",
+      "target": "public/sounds/voices/hunter_male_greeting_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "4dce0a5f76a1a35a3f5270bbb26ad2e815e1bf8ccd06cfa22188e5daf879f31f"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_greeting_02.mp3",
+      "target": "public/sounds/voices/hunter_male_greeting_02.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "1063fa70f030f0d421d39276ca44a78710dc7ba3d8c3c2733546104c39e73224"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_quest_accepted_01.mp3",
+      "target": "public/sounds/voices/hunter_male_quest_accepted_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "9d1bf96b7a683aa1f9e61282d8f99e7d02406d52a833623bcef1b89094387b36"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_quest_accepted_02.mp3",
+      "target": "public/sounds/voices/hunter_male_quest_accepted_02.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "07903ae8e5524e10383eccd4d3f2e33f4ece46b69310932a4962166c31ad0bf0"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_quest_complete_01.mp3",
+      "target": "public/sounds/voices/hunter_male_quest_complete_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "d7af7b44dd31b8a5d26d4b43a3dea88c1f18429e3b08849d1e96bdcadeaef9c7"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_quest_complete_02.mp3",
+      "target": "public/sounds/voices/hunter_male_quest_complete_02.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "f5a2dd84b868142aa48726e26c88cc8561772d8cfa89cfd2843439539b65fe15"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_quest_declined_01.mp3",
+      "target": "public/sounds/voices/hunter_male_quest_declined_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "f8582af1d9fb9bcc0136e43134ce6737386ab1a8f1728af8b27b7d006ef5b14c"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_quest_declined_02.mp3",
+      "target": "public/sounds/voices/hunter_male_quest_declined_02.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "d17e0f34b62c07b4d8bc882d571046f75fc4c376da92451e253e179adcda1ec4"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_quest_offer_01.mp3",
+      "target": "public/sounds/voices/hunter_male_quest_offer_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "a02c37b6d5d93256f8d0b66fcd404a5c8b7aaef65e630053f668956fe40fdbba"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_thanks_01.mp3",
+      "target": "public/sounds/voices/hunter_male_thanks_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "bee2c8381dbc2aa1a6e4790693876144ec1b1ba3e674221605f852e49506fde2"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_thanks_02.mp3",
+      "target": "public/sounds/voices/hunter_male_thanks_02.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "326f213325d4e7fce1ce2bb7859cb6665866ff9464fbfe93cb8a2207369b4b42"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_warning_01.mp3",
+      "target": "public/sounds/voices/hunter_male_warning_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "5d5b93de39e3db39196c780a3af864b995295847f39a6765639cdb0ca80f8496"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_well_wish_01.mp3",
+      "target": "public/sounds/voices/hunter_male_well_wish_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "d77758d6b5af3690fe52272ade241ec961154d46d6414a6652453aa15ba3e0ed"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/hunter_male_well_wish_02.mp3",
+      "target": "public/sounds/voices/hunter_male_well_wish_02.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "87cec041a7143acde2d952731a26b0639b1fcfc80b9760dd818625b048991fe8"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_agree_01.mp3",
+      "target": "public/sounds/voices/merchant_female_agree_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "507f3528a5c860ee573288e9b825bb3caf10ef09a07d308dd71a027e866c9ae8"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_attention_01.mp3",
+      "target": "public/sounds/voices/merchant_female_attention_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "9f0829674bde25e2597063ecfd78c24df7a92a812e2ab4ec7cc80e058a8eca2b"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_b_agree_01.mp3",
+      "target": "public/sounds/voices/merchant_female_b_agree_01.mp3",
+      "action": "migrate",
+      "sha256": "8bd147f8c3cbd6c92832868237ca979fc272bc9e52f06f2873939315703ff203"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_b_agree_02.mp3",
+      "target": "public/sounds/voices/merchant_female_b_agree_02.mp3",
+      "action": "migrate",
+      "sha256": "52a6adac899f00b3cd487a233c37527f87038221671e46d0f12ff7bf10d8701c"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_b_attention_01.mp3",
+      "target": "public/sounds/voices/merchant_female_b_attention_01.mp3",
+      "action": "migrate",
+      "sha256": "6e24564b978f898b4f2522a37f3991b7b5ac8afd6e866abc928b60650e4bca3e"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_b_attention_02.mp3",
+      "target": "public/sounds/voices/merchant_female_b_attention_02.mp3",
+      "action": "migrate",
+      "sha256": "93873cecabb9b788f714bfd747bdcb336dfc8b44348aac3c48c9e260666e10b3"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_b_call_for_help_01.mp3",
+      "target": "public/sounds/voices/merchant_female_b_call_for_help_01.mp3",
+      "action": "migrate",
+      "sha256": "58fd4f0f444ca6dc18fd0bc43223611c3477900c3b27bea2f99fff044c6f1290"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_b_call_for_help_02.mp3",
+      "target": "public/sounds/voices/merchant_female_b_call_for_help_02.mp3",
+      "action": "migrate",
+      "sha256": "90488c8ce872b2b784793af5e5adf974a97fef6ca2fff38ca888396011eb5286"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_b_combat_start_01.mp3",
+      "target": "public/sounds/voices/merchant_female_b_combat_start_01.mp3",
+      "action": "migrate",
+      "sha256": "1816c09fabef0e45e898b99e838d4ebcddb784f411acbb637d611e8a29484bd8"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_b_combat_start_02.mp3",
+      "target": "public/sounds/voices/merchant_female_b_combat_start_02.mp3",
+      "action": "migrate",
+      "sha256": "0046f56e7694245884a911d964944df5ee84161dbf002698493e2722c6707bc9"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_b_danger_alert_01.mp3",
+      "target": "public/sounds/voices/merchant_female_b_danger_alert_01.mp3",
+      "action": "migrate",
+      "sha256": "8a67a4e8084bb39beea9bae4a53f57588227dbac70bb8683114460b97eb9c17a"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_b_danger_alert_02.mp3",
+      "target": "public/sounds/voices/merchant_female_b_danger_alert_02.mp3",
+      "action": "migrate",
+      "sha256": "f52fbe809ac2cfcfa545c168c4a710dbd3432e360f2e553b71d7dc232cf585ff"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_b_exhausted_01.mp3",
+      "target": "public/sounds/voices/merchant_female_b_exhausted_01.mp3",
+      "action": "migrate",
+      "sha256": "849181e1a59807d8d0bf4cec268632e068c7789883f7c8360b44aee226e6c48b"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_b_exhausted_02.mp3",
+      "target": "public/sounds/voices/merchant_female_b_exhausted_02.mp3",
+      "action": "migrate",
+      "sha256": "83ad8827306618a1b592acd33b79d4e1b635cb061b57a04857e9006dcdd23112"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_b_farewell_01.mp3",
+      "target": "public/sounds/voices/merchant_female_b_farewell_01.mp3",
+      "action": "migrate",
+      "sha256": "6f326b124b5009738cfc7665508abb70599f575903f6b00d9e1d4d18623103b2"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_b_farewell_02.mp3",
+      "target": "public/sounds/voices/merchant_female_b_farewell_02.mp3",
+      "action": "migrate",
+      "sha256": "0a51b51ab73e19f28e505797a9703f3b011c34b7ca4f079d849f7077b427085d"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_b_greeting_01.mp3",
+      "target": "public/sounds/voices/merchant_female_b_greeting_01.mp3",
+      "action": "migrate",
+      "sha256": "8b0142a0171c17a5c2c64aa04de4b3a571a731ca243cca271cecae42102e6310"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_b_greeting_02.mp3",
+      "target": "public/sounds/voices/merchant_female_b_greeting_02.mp3",
+      "action": "migrate",
+      "sha256": "d0123c92e7500a4a9376633ecdf883af7bea52a5d5036ac6e458888de0fbe815"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_b_hungry_01.mp3",
+      "target": "public/sounds/voices/merchant_female_b_hungry_01.mp3",
+      "action": "migrate",
+      "sha256": "55c55d796fef8685003fab78bcb86208b8e9a8271a77060ef60e43b763579868"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_b_hungry_02.mp3",
+      "target": "public/sounds/voices/merchant_female_b_hungry_02.mp3",
+      "action": "migrate",
+      "sha256": "050372ef7ed331a984f079565ae076271d97bee4f8f2d2cf41829bcfdc3bcb66"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_b_quest_accepted_01.mp3",
+      "target": "public/sounds/voices/merchant_female_b_quest_accepted_01.mp3",
+      "action": "migrate",
+      "sha256": "e8a5814db27c068ff9e08c5d6b2181ad82c2deeeb06ab41c72b0cba292fc27b2"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_b_quest_accepted_02.mp3",
+      "target": "public/sounds/voices/merchant_female_b_quest_accepted_02.mp3",
+      "action": "migrate",
+      "sha256": "7e1b5f417d2972a1619cb23091028b38b8bdfdc841eeba50a390b8a4e9fd8135"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_b_quest_complete_01.mp3",
+      "target": "public/sounds/voices/merchant_female_b_quest_complete_01.mp3",
+      "action": "migrate",
+      "sha256": "3208b59a9fee1122eb8a6bf1d850e73fa34c105b7a7ff841b832044d7e8e3c98"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_b_quest_complete_02.mp3",
+      "target": "public/sounds/voices/merchant_female_b_quest_complete_02.mp3",
+      "action": "migrate",
+      "sha256": "b8203385b68e6b23343a14711052080f17adb23186c2dcf8467560a19939dbee"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_b_quest_declined_01.mp3",
+      "target": "public/sounds/voices/merchant_female_b_quest_declined_01.mp3",
+      "action": "migrate",
+      "sha256": "d536daa44b7dbf10934bf59ea077b8a9f8214b65b9cb70c4217c6ced86c30036"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_b_quest_declined_02.mp3",
+      "target": "public/sounds/voices/merchant_female_b_quest_declined_02.mp3",
+      "action": "migrate",
+      "sha256": "1fb306d26773b1987f731bb8a089843b26fb102a61766c6229167f6544f4007f"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_b_quest_offer_01.mp3",
+      "target": "public/sounds/voices/merchant_female_b_quest_offer_01.mp3",
+      "action": "migrate",
+      "sha256": "8dafd575ba6b9ac91a7a5061621a0d499be43673f5ce38798ffe5e007b62dde1"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_b_quest_offer_02.mp3",
+      "target": "public/sounds/voices/merchant_female_b_quest_offer_02.mp3",
+      "action": "migrate",
+      "sha256": "a0a54703bc22c2c74c961bd2b9bd87ad930d5445f178ade13dc55817bc89f1a0"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_b_refusal_01.mp3",
+      "target": "public/sounds/voices/merchant_female_b_refusal_01.mp3",
+      "action": "migrate",
+      "sha256": "90f100c7616a45a32d069aa3231336fd7595c795ffdb54171eb02bafa1f85146"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_b_refusal_02.mp3",
+      "target": "public/sounds/voices/merchant_female_b_refusal_02.mp3",
+      "action": "migrate",
+      "sha256": "1d3e193ef35b2a386480c417ef0dd89fef9f03e01b07533b5a74fd754ec249fa"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_b_thanks_01.mp3",
+      "target": "public/sounds/voices/merchant_female_b_thanks_01.mp3",
+      "action": "migrate",
+      "sha256": "95016dc7b43a631a7753177578d5db3a0bdef2d601c339098fbd7da07ec254d6"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_b_thanks_02.mp3",
+      "target": "public/sounds/voices/merchant_female_b_thanks_02.mp3",
+      "action": "migrate",
+      "sha256": "388ae39ca1690c785fa126f309424f5978b732863a18ea4aa8c9450013eb0c00"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_b_warning_01.mp3",
+      "target": "public/sounds/voices/merchant_female_b_warning_01.mp3",
+      "action": "migrate",
+      "sha256": "2255999609ce329a3b0b177a5be8d559be26161f963d0d193f1b478cb6a6523e"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_b_warning_02.mp3",
+      "target": "public/sounds/voices/merchant_female_b_warning_02.mp3",
+      "action": "migrate",
+      "sha256": "80239dd277e740dfea036eea1b9b321981957f0c1cfe39ddf04eff6aa61d3cac"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_b_weather_shelter_01.mp3",
+      "target": "public/sounds/voices/merchant_female_b_weather_shelter_01.mp3",
+      "action": "migrate",
+      "sha256": "dfc196a55460e3dd4af427ad11a1945c16e76a1e59cfccb750ea58059f38e0e1"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_b_weather_shelter_02.mp3",
+      "target": "public/sounds/voices/merchant_female_b_weather_shelter_02.mp3",
+      "action": "migrate",
+      "sha256": "dd08a1457188a0852c15a869a70764a08632940a46d8d359333776fe0e3dc273"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_b_well_wish_01.mp3",
+      "target": "public/sounds/voices/merchant_female_b_well_wish_01.mp3",
+      "action": "migrate",
+      "sha256": "56c782fc656b4f72e1fc0335e756c87dfb7fafe1bf12b522ba914c57a34308e7"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_b_well_wish_02.mp3",
+      "target": "public/sounds/voices/merchant_female_b_well_wish_02.mp3",
+      "action": "migrate",
+      "sha256": "bb556c152c9f5d4c8417c74286f0dafe0dcec0f523516579535f18864d1f2b83"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_b_work_finished_01.mp3",
+      "target": "public/sounds/voices/merchant_female_b_work_finished_01.mp3",
+      "action": "migrate",
+      "sha256": "dca8b38b12d706bc9a1a8004b23761d02a097eabc2b1ebf4a2b2dbfafce925dd"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_b_work_finished_02.mp3",
+      "target": "public/sounds/voices/merchant_female_b_work_finished_02.mp3",
+      "action": "migrate",
+      "sha256": "cb077c5256f73c1c9839bffffe09e748dbef4d8cad64603a21398125246f3cb7"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_farewell_01.mp3",
+      "target": "public/sounds/voices/merchant_female_farewell_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "d8e8e4b0d57a2f198e8ae4c344bacadeea33ed3ba774674db9e77c0ff37a2b70"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_farewell_02.mp3",
+      "target": "public/sounds/voices/merchant_female_farewell_02.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "3658a7fbd53f9a9b3e2d984ceb22e9f3fe38505c726a5ade841e11873d016a10"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_greeting_01.mp3",
+      "target": "public/sounds/voices/merchant_female_greeting_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "3b0ec8e1bf444ae5a49ef7d36fd2c84f0c8a7cea00770856bec805bfdb2716bf"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_greeting_02.mp3",
+      "target": "public/sounds/voices/merchant_female_greeting_02.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "3a4a1e1f61ddf8807ee04876e00aa78b6f0476a4f1c5797bb2b400c1edd2f276"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_greeting_03.mp3",
+      "target": "public/sounds/voices/merchant_female_greeting_03.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "2ef65a8ec1e98f5f912ca1e912434ca8285b7838c1183fdae20f886c8ead1f19"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_quest_accepted_01.mp3",
+      "target": "public/sounds/voices/merchant_female_quest_accepted_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "6318d4ef2d255ceed20f257ba8dbd54ab5aefa1b3e21230fb1ab37e7c6a9494e"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_quest_accepted_02.mp3",
+      "target": "public/sounds/voices/merchant_female_quest_accepted_02.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "5304a66f43474f927f95ece82b3b2f439232edfcc576a57f465e2ee088918525"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_quest_complete_01.mp3",
+      "target": "public/sounds/voices/merchant_female_quest_complete_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "fca3dc6257b373fafcb5485c6ffd5cd3dbc6d5c6169ae2a7facc244802e68718"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_quest_complete_02.mp3",
+      "target": "public/sounds/voices/merchant_female_quest_complete_02.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "3d1847a68ec10e18bc48f0025abd7734d178f00164c3a31168fe3b6b8aa66f84"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_quest_declined_01.mp3",
+      "target": "public/sounds/voices/merchant_female_quest_declined_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "546d378de19511aedb0f211830025240520ec4dade3af1959652436d1a3ba618"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_quest_offer_01.mp3",
+      "target": "public/sounds/voices/merchant_female_quest_offer_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "76604ceef8ea653332143bf21f6b09b79bcde89868a99405285cfacfb8231181"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_quest_offer_02.mp3",
+      "target": "public/sounds/voices/merchant_female_quest_offer_02.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "2f861fb12c75414a4b3887be788191000017eabdfcd9622da3234d27c1ec7320"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_refusal_01.mp3",
+      "target": "public/sounds/voices/merchant_female_refusal_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "03b73a823bfdf0131b3c1cdf405f103a6962e134452afd4361c047218ca6a2a2"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_thanks_01.mp3",
+      "target": "public/sounds/voices/merchant_female_thanks_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "54fee67ced262dd0cde9a8d0772f35bec555ffa4ffc5968408901007badf3796"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/merchant_female_warning_01.mp3",
+      "target": "public/sounds/voices/merchant_female_warning_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "a6599bf51d61a89fc1b731194b8c72d6d89065cd3498d4dc46903b0454844a01"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/npc_mark_hornblower_daily_01.mp3",
+      "target": "public/sounds/voices/npc_mark_hornblower_daily_01.mp3",
+      "action": "migrate",
+      "sha256": "51016dcc03b1a971e088790b8a2151a24fcdf15a7ca113768e393f9554ac6826"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/npc_mark_hornblower_danger_alert_01.mp3",
+      "target": "public/sounds/voices/npc_mark_hornblower_danger_alert_01.mp3",
+      "action": "migrate",
+      "sha256": "0fa92be239dd8fc8b457de64e197c7b699efc31798a6638fcd3cd1c84d5c4196"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/npc_mark_hornblower_farewell_01.mp3",
+      "target": "public/sounds/voices/npc_mark_hornblower_farewell_01.mp3",
+      "action": "migrate",
+      "sha256": "74216dfe5ac8c361a24cac644a65bf59dbd87da89446db67f6b91f64dd7db6ff"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/npc_mark_hornblower_greeting_01.mp3",
+      "target": "public/sounds/voices/npc_mark_hornblower_greeting_01.mp3",
+      "action": "migrate",
+      "sha256": "618475376cd687f45de935962b036cc3f047a24fca0c99a64df8ffb4859786e0"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/npc_mark_hornblower_road_advice_01.mp3",
+      "target": "public/sounds/voices/npc_mark_hornblower_road_advice_01.mp3",
+      "action": "migrate",
+      "sha256": "92918b1be9069263baee624c71d3776865a34f13efdd3705bef19becbc1196ec"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/npc_mark_hornblower_thanks_01.mp3",
+      "target": "public/sounds/voices/npc_mark_hornblower_thanks_01.mp3",
+      "action": "migrate",
+      "sha256": "f394c64d61c19ca88cbe8fc43ad1076cfe0d6dba7f82a589fb315db667ccb871"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/shepard_male_danger_alert_01.mp3",
+      "target": "public/sounds/voices/shepard_male_danger_alert_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "2d87c358c79a9fc40d3c82513461cbe06ff1191df4d7524844da62ee7639572e"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/shepherd_male_b_call_for_help_01.mp3",
+      "target": "public/sounds/voices/shepherd_male_b_call_for_help_01.mp3",
+      "action": "migrate",
+      "sha256": "969b5ee4f628cffb3d6ded16ec7e6ef1f8f68e633a0204bcef1b8018c3e5f3ae"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/shepherd_male_b_call_for_help_02.mp3",
+      "target": "public/sounds/voices/shepherd_male_b_call_for_help_02.mp3",
+      "action": "migrate",
+      "sha256": "fb9d0b0345def55243c1c65afd390c9d9f1416be8bbc93aa6ec59509f3feae1e"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/shepherd_male_b_danger_alert_01.mp3",
+      "target": "public/sounds/voices/shepherd_male_b_danger_alert_01.mp3",
+      "action": "migrate",
+      "sha256": "c84fac76f7b14c72f4927d7cea46f73e07ca774c85792c86b97e04de100a180b"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/shepherd_male_b_danger_alert_02.mp3",
+      "target": "public/sounds/voices/shepherd_male_b_danger_alert_02.mp3",
+      "action": "migrate",
+      "sha256": "b8e801cd0f8536f1f61066b1e60bb76b5e53ab55f9b173c2441af575b5796d17"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/shepherd_male_b_farewell_01.mp3",
+      "target": "public/sounds/voices/shepherd_male_b_farewell_01.mp3",
+      "action": "migrate",
+      "sha256": "1ac52f547d37b39cb285aa917b25adbecd4223561036b34eb00bc9fa3b95b007"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/shepherd_male_b_farewell_02.mp3",
+      "target": "public/sounds/voices/shepherd_male_b_farewell_02.mp3",
+      "action": "migrate",
+      "sha256": "d3c106e06ee9f1e825f3b8e4c7937e8c3a1af82c03eb30727283f2d22818d4ad"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/shepherd_male_b_greeting_01.mp3",
+      "target": "public/sounds/voices/shepherd_male_b_greeting_01.mp3",
+      "action": "migrate",
+      "sha256": "c610940b0aeecdbab8b97e3d6262eddf4482fe762b71ff2a3545b84c3a0504f9"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/shepherd_male_b_greeting_02.mp3",
+      "target": "public/sounds/voices/shepherd_male_b_greeting_02.mp3",
+      "action": "migrate",
+      "sha256": "de324a95cbb66f7a5fb90b3ab925404fb8e7a21242fe9b01dc0b1bcf7dc96da9"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/shepherd_male_b_livestock_danger_01.mp3",
+      "target": "public/sounds/voices/shepherd_male_b_livestock_danger_01.mp3",
+      "action": "migrate",
+      "sha256": "0bec82b1a5b74dedac164dac9bb390b4e88dff065e24c576c7a41a365cde778d"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/shepherd_male_b_livestock_danger_02.mp3",
+      "target": "public/sounds/voices/shepherd_male_b_livestock_danger_02.mp3",
+      "action": "migrate",
+      "sha256": "0080414ccbdb6835bc96dfce05070493f360d323a1b7f5553ae1391236a5d214"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/shepherd_male_farewell_01.mp3",
+      "target": "public/sounds/voices/shepherd_male_farewell_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "dba895f7d5b19c30ab077bb913708108e2a10aaa35a45926b8d00b9e6e30e861"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/shepherd_male_greeting_01.mp3",
+      "target": "public/sounds/voices/shepherd_male_greeting_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "2b6f61f617cfb1e60de8236d1f6ddc02622373e412627b5fc003d693f148a672"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/shepherd_male_greeting_02.mp3",
+      "target": "public/sounds/voices/shepherd_male_greeting_02.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "7c50dbff2c23994552ba7fddd5573143c0c8a585ef65e912c51b8deb6dd43ce9"
+    },
+    {
+      "source": "docs/v3-donor/voices/mp3/shepherd_male_livestock_danger_01.mp3",
+      "target": "public/sounds/voices/shepherd_male_livestock_danger_01.mp3",
+      "action": "remove-redundant-copy",
+      "sha256": "f189a71f30aa08b8ea645d90671838e75bdd253e4025e8363bf458ee2a8aea29"
+    },
+    {
+      "source": "docs/v3-donor/voices/named-references/Arthur-Morgan-2026-09-17-10-12-Morning.-Heading-into-the-woods.mp3",
+      "target": "docs/archive/voice-donor/named-references/Arthur-Morgan-2026-09-17-10-12-Morning.-Heading-into-the-woods.mp3",
+      "action": "archive-reference",
+      "sha256": "969a27a34f8709a5199b6be40f8abe5b6c7392580ba72d1599ce4908109fbf8a"
+    },
+    {
+      "source": "docs/v3-donor/voices/named-references/Arthur-Morgan-2026-09-17-10-55-Shame.-I-could\u2019ve-used-another-pair-of-hands.mp3",
+      "target": "docs/archive/voice-donor/named-references/Arthur-Morgan-2026-09-17-10-55-Shame.-I-could\u2019ve-used-another-pair-of-hands.mp3",
+      "action": "archive-reference",
+      "sha256": "d17e0f34b62c07b4d8bc882d571046f75fc4c376da92451e253e179adcda1ec4"
+    },
+    {
+      "source": "docs/v3-donor/voices/named-references/Arthur-Morgan-2026-09-18-10-16-[shouting]Could-use-a-hand-here!.mp3",
+      "target": "docs/archive/voice-donor/named-references/Arthur-Morgan-2026-09-18-10-16-[shouting]Could-use-a-hand-here!.mp3",
+      "action": "archive-reference",
+      "sha256": "f565d4b01035d56a0b385a126fc84e540403df2d88c6cbeabe8c95d854d958e1"
+    },
+    {
+      "source": "docs/v3-donor/voices/named-references/Brian-British-2026-10-09-13-26-Well-met.-What-brings-you-this-way.mp3",
+      "target": "docs/archive/voice-donor/named-references/Brian-British-2026-10-09-13-26-Well-met.-What-brings-you-this-way.mp3",
+      "action": "archive-reference",
+      "sha256": "e2351cdc439fa33b58b201d38c9c5933dfa35bd699364325db81b14d5c0079bd"
+    },
+    {
+      "source": "docs/v3-donor/voices/named-references/Brian-British-2026-10-09-13-32-Take-care-beyond-the-fields.-Soft-ground-and-sha.mp3",
+      "target": "docs/archive/voice-donor/named-references/Brian-British-2026-10-09-13-32-Take-care-beyond-the-fields.-Soft-ground-and-sha.mp3",
+      "action": "archive-reference",
+      "sha256": "78bbe8dd6078ed344fd3a57ba733671b620f777fc924a0769d8347e02a3beb59"
+    },
+    {
+      "source": "docs/v3-donor/voices/named-references/Brian-British-2026-10-20-13-08-Good-day.-Is-there-anything-I-can-help-with.mp3",
+      "target": "docs/archive/voice-donor/named-references/Brian-British-2026-10-20-13-08-Good-day.-Is-there-anything-I-can-help-with.mp3",
+      "action": "archive-reference",
+      "sha256": "9709df581ed5d2e19989ef271f5715e994de3fe5a467b92767f9bce1f18967ed"
+    },
+    {
+      "source": "docs/v3-donor/voices/named-references/Brian-British-2026-10-20-13-08-If-you're-out-late,-keep-to-the-road.-It's-easie.mp3",
+      "target": "docs/archive/voice-donor/named-references/Brian-British-2026-10-20-13-08-If-you're-out-late,-keep-to-the-road.-It's-easie.mp3",
+      "action": "archive-reference",
+      "sha256": "e9053b5e4398e85103dbf8282b110f845e99e157d7b6b71623795deffb069c38"
+    },
+    {
+      "source": "docs/v3-donor/voices/named-references/British-2026-10-20-13-09-Good-day.-Is-there-anything-I-can-help-with.mp3",
+      "target": "docs/archive/voice-donor/named-references/British-2026-10-20-13-09-Good-day.-Is-there-anything-I-can-help-with.mp3",
+      "action": "archive-reference",
+      "sha256": "7a5ccb923b465b6e8f6804d35dc32488c850c28f0167b9d555c1782cfc9c5448"
+    },
+    {
+      "source": "docs/v3-donor/voices/named-references/British-2026-10-20-13-09-If-you're-out-late,-keep-to-the-road.-It's-easie.mp3",
+      "target": "docs/archive/voice-donor/named-references/British-2026-10-20-13-09-If-you're-out-late,-keep-to-the-road.-It's-easie.mp3",
+      "action": "archive-reference",
+      "sha256": "ed9ff12d0b9ff79e5b78152fd553a1b6ea96169e2b88a2a6c1aadd08cd988d2a"
+    },
+    {
+      "source": "docs/v3-donor/voices/named-references/British-female-2026-09-18-10-06-[tired]-I-need-to-[emphasis]-sit-down-[short-pau.mp3",
+      "target": "docs/archive/voice-donor/named-references/British-female-2026-09-18-10-06-[tired]-I-need-to-[emphasis]-sit-down-[short-pau.mp3",
+      "action": "archive-reference",
+      "sha256": "07fd3994548a4bb2ed5eb5a95f91970a3df1db9167235803517ff4ec5bd94bf2"
+    },
+    {
+      "source": "docs/v3-donor/voices/named-references/Casual-Male-Speaker-2026-09-17-11-22-Mostly-the-usual.-Bad-weather,-wolves-near-the-w.mp3",
+      "target": "docs/archive/voice-donor/named-references/Casual-Male-Speaker-2026-09-17-11-22-Mostly-the-usual.-Bad-weather,-wolves-near-the-w.mp3",
+      "action": "archive-reference",
+      "sha256": "1daf5ef556b01326e8ebacd55b6683df5f0033b525fce0ad8d469ff6b58546d1"
+    },
+    {
+      "source": "docs/v3-donor/voices/named-references/Casual-Male-Speaker-2026-09-18-10-05-There.-That's-enough-work-for-today.mp3",
+      "target": "docs/archive/voice-donor/named-references/Casual-Male-Speaker-2026-09-18-10-05-There.-That's-enough-work-for-today.mp3",
+      "action": "archive-reference",
+      "sha256": "6836fd3cad54e2d34b0e6ddf032023a3b63b79c0a0ab011c90d79694171f9fb6"
+    },
+    {
+      "source": "docs/v3-donor/voices/named-references/Cowboy-2026-10-20-11-41-Good-day.-Need-a-hand-with-something.mp3",
+      "target": "docs/archive/voice-donor/named-references/Cowboy-2026-10-20-11-41-Good-day.-Need-a-hand-with-something.mp3",
+      "action": "archive-reference",
+      "sha256": "b2033f8c0913068e2aff245dbb1fdbb2023f5cd3eeaa9724d907ab11ac81c9a8"
+    },
+    {
+      "source": "docs/v3-donor/voices/named-references/Cowboy-2026-10-20-11-42-You-kept-your-word.-Well-done.mp3",
+      "target": "docs/archive/voice-donor/named-references/Cowboy-2026-10-20-11-42-You-kept-your-word.-Well-done.mp3",
+      "action": "archive-reference",
+      "sha256": "bbd249900c52e288465f1c9f6a62dc09ce9fdc4d304b0bf2c7bb879d04ea8e1f"
+    },
+    {
+      "source": "docs/v3-donor/voices/named-references/Dramatic-Character-Male-2026-10-20-10-40-Good-day.-Need-a-word-with-the-watch.mp3",
+      "target": "docs/archive/voice-donor/named-references/Dramatic-Character-Male-2026-10-20-10-40-Good-day.-Need-a-word-with-the-watch.mp3",
+      "action": "archive-reference",
+      "sha256": "222e81cbe208b2a7fcd3f303c2ec671196e65cca749f954f986e6e8c1b92fc9b"
+    },
+    {
+      "source": "docs/v3-donor/voices/named-references/Dramatic-Character-Male-2026-10-20-10-46-Thank-you.-That-will-help-us.mp3",
+      "target": "docs/archive/voice-donor/named-references/Dramatic-Character-Male-2026-10-20-10-46-Thank-you.-That-will-help-us.mp3",
+      "action": "archive-reference",
+      "sha256": "651447ef2a2ad026bb3efd2589c396999a34647a20a133c2863f8ec1495528db"
+    },
+    {
+      "source": "docs/v3-donor/voices/named-references/Expressive-Female-Voice-2026-09-17-11-05-I-may-have-a-little-work-for-someone-willing-to.mp3",
+      "target": "docs/archive/voice-donor/named-references/Expressive-Female-Voice-2026-09-17-11-05-I-may-have-a-little-work-for-someone-willing-to.mp3",
+      "action": "archive-reference",
+      "sha256": "76604ceef8ea653332143bf21f6b09b79bcde89868a99405285cfacfb8231181"
+    },
+    {
+      "source": "docs/v3-donor/voices/named-references/Expressive-Female-Voice-2026-09-17-11-07-Excellent-work.-Here,-this-is-yours.mp3",
+      "target": "docs/archive/voice-donor/named-references/Expressive-Female-Voice-2026-09-17-11-07-Excellent-work.-Here,-this-is-yours.mp3",
+      "action": "archive-reference",
+      "sha256": "9278a94c19d3f60ba4e860691aa028f67d87be9048f33d0aed981f7cba656464"
+    },
+    {
+      "source": "docs/v3-donor/voices/named-references/Friendly-Male-Voice-2026-10-20-13-17-I-appreciate-that.-It-means-a-good-deal.mp3",
+      "target": "docs/archive/voice-donor/named-references/Friendly-Male-Voice-2026-10-20-13-17-I-appreciate-that.-It-means-a-good-deal.mp3",
+      "action": "archive-reference",
+      "sha256": "a980c9ac790cdf2337797abbb47dbc1cd4b54f16085c7646f9c5c447e5e6a42f"
+    },
+    {
+      "source": "docs/v3-donor/voices/named-references/Friendly-Male-Voice-2026-10-20-13-17-You-learn-who's-had-a-hard-day-if-you-bother-to.mp3",
+      "target": "docs/archive/voice-donor/named-references/Friendly-Male-Voice-2026-10-20-13-17-You-learn-who's-had-a-hard-day-if-you-bother-to.mp3",
+      "action": "archive-reference",
+      "sha256": "a7a757beda27248e4c12ccee4ccffa55401a277567ee359aeeae5587550beca0"
+    },
+    {
+      "source": "docs/v3-donor/voices/named-references/Hannah-2026-10-20-09-21-Well-met.-What-brings-you-this-way.mp3",
+      "target": "docs/archive/voice-donor/named-references/Hannah-2026-10-20-09-21-Well-met.-What-brings-you-this-way.mp3",
+      "action": "archive-reference",
+      "sha256": "df37658a7eb54642934e2a2d8041fd49aeb79eef129f6ca7fb2fd5bdfceedb84"
+    },
+    {
+      "source": "docs/v3-donor/voices/named-references/Hannah-2026-10-20-09-22-Thank-you-kindly.-That-helps-a-great-deal.mp3",
+      "target": "docs/archive/voice-donor/named-references/Hannah-2026-10-20-09-22-Thank-you-kindly.-That-helps-a-great-deal.mp3",
+      "action": "archive-reference",
+      "sha256": "a28be08a581fdff1531886731eeb25638e064c8e648729b8e1d5e6a3f08f5033"
+    },
+    {
+      "source": "docs/v3-donor/voices/named-references/KID-2026-09-17-13-50-Hey!-I-haven't-seen-you-around-before.mp3",
+      "target": "docs/archive/voice-donor/named-references/KID-2026-09-17-13-50-Hey!-I-haven't-seen-you-around-before.mp3",
+      "action": "archive-reference",
+      "sha256": "101ced0fd9e9748f41b57de9a304fac062893814c8d7d0cda948af49afa57cb6"
+    },
+    {
+      "source": "docs/v3-donor/voices/named-references/Laura-2026-10-20-11-13-Hello-there.-Looking-for-a-chat,-or-something-pa.mp3",
+      "target": "docs/archive/voice-donor/named-references/Laura-2026-10-20-11-13-Hello-there.-Looking-for-a-chat,-or-something-pa.mp3",
+      "action": "archive-reference",
+      "sha256": "5a024d16151c1990599536b0e789171fd382043594f77492b4068a8a5e656d0e"
+    },
+    {
+      "source": "docs/v3-donor/voices/named-references/Laura-2026-10-20-11-14-Good.-I-appreciate-you-taking-this-on.mp3",
+      "target": "docs/archive/voice-donor/named-references/Laura-2026-10-20-11-14-Good.-I-appreciate-you-taking-this-on.mp3",
+      "action": "archive-reference",
+      "sha256": "e3ce3a4d40f71bee009205d2a5ca6a974a5cfa14479070ebaaa0f0f205a5a759"
+    },
+    {
+      "source": "docs/v3-donor/voices/named-references/Little-Lem-2026-09-17-13-55-Bye!-See-you-later!.mp3",
+      "target": "docs/archive/voice-donor/named-references/Little-Lem-2026-09-17-13-55-Bye!-See-you-later!.mp3",
+      "action": "archive-reference",
+      "sha256": "d036ecfb94e781abdd2cec4441588f3191d8fc24bee1288f8a7f59000bc27eb0"
+    },
+    {
+      "source": "docs/v3-donor/voices/named-references/Old-man-2026-09-17-14-04-Go-safely.-These-old-roads-have-their-dangers.mp3",
+      "target": "docs/archive/voice-donor/named-references/Old-man-2026-09-17-14-04-Go-safely.-These-old-roads-have-their-dangers.mp3",
+      "action": "archive-reference",
+      "sha256": "6a56390507c84fe5d5fc1601f1eb664665250bdaa7e0375093ed2cfc6b993822"
+    },
+    {
+      "source": "docs/v3-donor/voices/named-references/Old-woman-2026-09-17-14-05-Take-care,-dear.-And-mind-your-step.mp3",
+      "target": "docs/archive/voice-donor/named-references/Old-woman-2026-09-17-14-05-Take-care,-dear.-And-mind-your-step.mp3",
+      "action": "archive-reference",
+      "sha256": "44711c5b0e1f447ab2f4967a2d2c026dad61dffc5243130280a8641db5ea61d9"
+    },
+    {
+      "source": "docs/v3-donor/voices/named-references/Sleepless-historian-2026-10-20-12-18-Hello-there.-How-are-you-keeping.mp3",
+      "target": "docs/archive/voice-donor/named-references/Sleepless-historian-2026-10-20-12-18-Hello-there.-How-are-you-keeping.mp3",
+      "action": "archive-reference",
+      "sha256": "f0638e06f7e7fcffd692f59d9c686839625a63f3d9d94819d95e46b0b8573707"
+    },
+    {
+      "source": "docs/v3-donor/voices/named-references/Warm-Conversational-Female-2026-09-17-11-22-You-hear-anything-from-the-road-today-Travelers.mp3",
+      "target": "docs/archive/voice-donor/named-references/Warm-Conversational-Female-2026-09-17-11-22-You-hear-anything-from-the-road-today-Travelers.mp3",
+      "action": "archive-reference",
+      "sha256": "5cd2b98ce6af3a90c7249446efa428f64da25ddc122c2ab961e5a0b0ed441b1c"
+    },
+    {
+      "source": "docs/v3-donor/voices/named-references/Warm-Conversational-Female-2026-09-18-10-07-[loud]-Rain's-coming-down-[emphasis]-hard.-[shor.mp3",
+      "target": "docs/archive/voice-donor/named-references/Warm-Conversational-Female-2026-09-18-10-07-[loud]-Rain's-coming-down-[emphasis]-hard.-[shor.mp3",
+      "action": "archive-reference",
+      "sha256": "b07be76242c1d98dc22bc5abd4a47e96febd0e2a2c642943c44d26e6eb1a868b"
+    },
+    {
+      "source": "docs/v3-donor/voices/named-references/Warm-Conversational-Male-2026-10-20-13-08-Good-day.-Is-there-anything-I-can-help-with.mp3",
+      "target": "docs/archive/voice-donor/named-references/Warm-Conversational-Male-2026-10-20-13-08-Good-day.-Is-there-anything-I-can-help-with.mp3",
+      "action": "archive-reference",
+      "sha256": "a65d5890db050dec1ddb6f90c32885a6b9d3d3e7fa099b3e61b688b51a26dfe2"
+    },
+    {
+      "source": "docs/v3-donor/voices/named-references/Warm-Conversational-Male-2026-10-20-13-08-If-you're-out-late,-keep-to-the-road.-It's-easie.mp3",
+      "target": "docs/archive/voice-donor/named-references/Warm-Conversational-Male-2026-10-20-13-08-If-you're-out-late,-keep-to-the-road.-It's-easie.mp3",
+      "action": "archive-reference",
+      "sha256": "c3eed4c533dd968b860045b6045c4a7af951a17f23c41f350e60dabdfa8f7975"
+    },
+    {
+      "source": "docs/v3-donor/voices/named-references/Warm-Male-Friend-2026-10-20-13-08-Good-day.-Is-there-anything-I-can-help-with.mp3",
+      "target": "docs/archive/voice-donor/named-references/Warm-Male-Friend-2026-10-20-13-08-Good-day.-Is-there-anything-I-can-help-with.mp3",
+      "action": "archive-reference",
+      "sha256": "e286552976c62397534df33d574a11373c032fcb621180f8e36169c4bd215080"
+    },
+    {
+      "source": "docs/v3-donor/voices/named-references/Warm-Male-Friend-2026-10-20-13-08-If-you're-out-late,-keep-to-the-road.-It's-easie.mp3",
+      "target": "docs/archive/voice-donor/named-references/Warm-Male-Friend-2026-10-20-13-08-If-you're-out-late,-keep-to-the-road.-It's-easie.mp3",
+      "action": "archive-reference",
+      "sha256": "6e0854a445d837dbaf500fcf7bf8d0ba97e7790989ddb63d97f3e02e0874f876"
+    },
+    {
+      "source": "docs/v3-donor/voices/named-references/guard-2026-09-18-10-11-[shouting]-Alarm!-[short-pause]-Stay-inside-and.mp3",
+      "target": "docs/archive/voice-donor/named-references/guard-2026-09-18-10-11-[shouting]-Alarm!-[short-pause]-Stay-inside-and.mp3",
+      "action": "archive-reference",
+      "sha256": "f8822253ad104f4d0ee019e86fd810cd35f9e194b2f27bfac048822776968e4f"
+    },
+    {
+      "source": "docs/v3-donor/voices/named-references/hetalia-Russia-2026-09-18-09-57-Hello-there.-Looking-for-wool,-or-just-passing-t.mp3",
+      "target": "docs/archive/voice-donor/named-references/hetalia-Russia-2026-09-18-09-57-Hello-there.-Looking-for-wool,-or-just-passing-t.mp3",
+      "action": "archive-reference",
+      "sha256": "83a2edb7abdee7514249255a9220bc2e6dd346b2e824bca7f93d93ce1e93def5"
+    },
+    {
+      "source": "docs/v3-donor/voices/named-references/hetalia-Russia-2026-09-18-09-58-Take-care.-Keep-clear-of-the-wolves.mp3",
+      "target": "docs/archive/voice-donor/named-references/hetalia-Russia-2026-09-18-09-58-Take-care.-Keep-clear-of-the-wolves.mp3",
+      "action": "archive-reference",
+      "sha256": "ef490dd72e167c4cc476331d32e0d6353b3f4ce2fefdeb098ad7ec09a827930f"
+    },
+    {
+      "source": "public/sounds/voices/bak/merchant_female_agree_01.mp3",
+      "target": "docs/archive/voice-donor/backups/merchant_female_agree_01.mp3",
+      "action": "archive-unique-backup",
+      "sha256": "1a20169e45ef924fe59fbed17d3478d23fe39a92f457d2c83d3ddc64358799f9"
+    },
+    {
+      "source": "public/sounds/voices/bak/merchant_female_farewell_01.mp3",
+      "target": "docs/archive/voice-donor/backups/merchant_female_farewell_01.mp3",
+      "action": "archive-unique-backup",
+      "sha256": "78da1208a2b1179abe2e560debbf57758d65a4f4e9a13b0756c28a4a06bbca1b"
+    },
+    {
+      "source": "public/sounds/voices/bak/merchant_female_greeting_01.mp3",
+      "target": "docs/archive/voice-donor/backups/merchant_female_greeting_01.mp3",
+      "action": "archive-unique-backup",
+      "sha256": "8c64ecb9b85b6ee96136a1c6dbcf528171637a9eecb8bf67b7dbda8d0d664058"
+    },
+    {
+      "source": "public/sounds/voices/bak/merchant_female_greeting_02.mp3",
+      "target": "docs/archive/voice-donor/backups/merchant_female_greeting_02.mp3",
+      "action": "archive-unique-backup",
+      "sha256": "4901c5237c24ce488e969201a9b59704bb88300836430f3badcef0c369f810ab"
+    },
+    {
+      "source": "public/sounds/voices/bak/merchant_female_greeting_03.mp3",
+      "target": "docs/archive/voice-donor/backups/merchant_female_greeting_03.mp3",
+      "action": "archive-unique-backup",
+      "sha256": "31c5324afa92b1c2a52ef7b993333f8f5edd03702ed0444eb12980c4136cce7f"
+    },
+    {
+      "source": "public/sounds/voices/bak/merchant_female_thanks_01.mp3",
+      "target": "docs/archive/voice-donor/backups/merchant_female_thanks_01.mp3",
+      "action": "archive-unique-backup",
+      "sha256": "78908d1646f5e0ca0b95937bf59ae0a0497851b60e508d698008c9426ccd7cc4"
+    }
+  ]
+}

@@ -20,10 +20,10 @@ import sys
 from pathlib import Path
 
 from voice_decisions import load_decisions, retain_removed_rows
+from voice_assets import recording_path
 
 ROOT = Path(__file__).resolve().parents[2]
 V1_DIR = ROOT / "public/sounds/voices"
-DONOR_DIR = ROOT / "docs/v3-donor/voices/mp3"
 CATALOG = ROOT / "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
 OUT = ROOT / "docs/assets/voice-qc/ledger.json"
 
@@ -140,7 +140,7 @@ def main() -> int:
         prev = {r["file"]: r for r in json.loads(OUT.read_text(encoding="utf-8"))["rows"]}
     decisions = load_decisions(list(prev.values())) if prev else {}
 
-    files = sorted(DONOR_DIR.glob("*.mp3"))
+    files = sorted((recording_path(name) for name in prev if decisions[name]['disposition'] != 'replace'), key=lambda p: p.name)
     if args.limit:
         files = files[: args.limit]
     # Removed takes remain historical ledger rows. Validate inventory before ASR/write.
@@ -153,6 +153,11 @@ def main() -> int:
         name = p.name
         blob = git_blob(p)
         old = prev.get(name)
+        if old and old.get('gitBlob') == blob and not args.force and 'asrText' in old:
+            # The ledger is historical evidence: migration must not rewrite presence or catalog fields.
+            rows.append(old)
+            print(f"[{i}/{len(files)}] {name} cached historical row", file=sys.stderr, flush=True)
+            continue
         cat = catalog.get(name, {})
         vid = cat.get("voiceId") or ""
         speaker = SPEAKERS.get(vid) or (vid if vid in SPEAKERS.values() else None)  # some banks list the profile name

@@ -101,3 +101,14 @@ If the feature needs no new sound, do nothing to this file.
 
 - Music / soundtrack.
 - Full HRTF / 3D stereo pan (`THREE.PositionalAudio` may come later for fire loops). Distance gain via `playAt` is in.
+
+## NPC voice consolidation — 2026-11-05
+
+Canonical retained NPC recording storage: `public/sounds/voices/` (265 MP3s).
+Migration adds no runtime registrations or QC passes. Eight explicitly confirmed
+British-female recordings were removed in addition to the six earlier rejections.
+The 38 globally rejected Brian British recordings, six unique backups and 38 named
+reference paths live in `docs/archive/voice-donor/`; identical references use
+relative symlinks. The public `bak/` and `references/` locations contain no files.
+[Migration inventory](voice-qc/migration-inventory.json) and
+[deletion manifest](voice-qc/deletion-manifest.json) preserve hashes and provenance.

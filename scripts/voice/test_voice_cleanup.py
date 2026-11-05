@@ -7,6 +7,7 @@ import subprocess
 import unittest
 
 from voice_decisions import ROOT, load_decisions
+from voice_assets import recording_path
 
 
 class CleanupTests(unittest.TestCase):
@@ -29,10 +30,10 @@ class CleanupTests(unittest.TestCase):
         for row in ledger['rows']:
             name = row['file']
             if name not in removed:
-                donor = ROOT/'docs/v3-donor/voices/mp3'/name
+                donor = recording_path(name)
                 blob = subprocess.check_output(['git', 'hash-object', str(donor)], text=True).strip()
                 self.assertEqual(blob, row['gitBlob'])
-                if row['inV1Public']:
+                if (ROOT/'public/sounds/voices'/name).exists():
                     self.assertEqual((ROOT/'public/sounds/voices'/name).read_bytes(), donor.read_bytes())
                 continue
             removal = removed[name]
@@ -43,6 +44,26 @@ class CleanupTests(unittest.TestCase):
                 self.assertFalse((ROOT/path).exists())
                 audio = subprocess.check_output(['git', 'show', removal['recoveryCommit']+':'+path], cwd=ROOT)
                 self.assertEqual(hashlib.sha256(audio).hexdigest(), removal['sha256'])
+
+    def test_migration_preserves_every_retained_hash(self):
+        directory = ROOT/'docs/assets/voice-qc'
+        inventory = json.loads((directory/'migration-inventory.json').read_text())['recordings']
+        removed = {r['sha256'] for r in json.loads((directory/'deletion-manifest.json').read_text())['recordings']}
+        for row in inventory:
+            if row['finalPath'] is None:
+                self.assertIn(row['sha256'], removed)
+                continue
+            target = ROOT/row['finalPath']
+            self.assertTrue(target.is_file(), row['finalPath'])
+            self.assertEqual(hashlib.sha256(target.read_bytes()).hexdigest(), row['sha256'])
+        playable = list((ROOT/'public/sounds/voices').glob('*.mp3'))
+        self.assertEqual(len(playable), 265)
+        self.assertFalse(any(p.name.startswith('general_male_b_') for p in playable))
+        self.assertFalse(removed & {hashlib.sha256(p.read_bytes()).hexdigest() for p in playable})
+        # Each retained physical audio content has exactly one copy; reference aliases are symlinks.
+        paths = playable + list((ROOT/'docs/archive/voice-donor').rglob('*.mp3'))
+        physical = [p for p in paths if not p.is_symlink()]
+        self.assertEqual(len(physical), len({hashlib.sha256(p.read_bytes()).hexdigest() for p in physical}))
 
     def test_all_static_runtime_voice_urls_exist(self):
         checked = set()

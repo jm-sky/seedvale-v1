@@ -6,6 +6,7 @@ import subprocess
 import sys
 import unittest
 from voice_decisions import load_decisions, retain_removed_rows
+from voice_assets import evidence_path
 
 spec = importlib.util.spec_from_file_location('identity', Path(__file__).with_name('voice-identity-qc.py'))
 qc = importlib.util.module_from_spec(spec)
@@ -69,7 +70,7 @@ class IdentityTests(unittest.TestCase):
         for entry in overrides['recordings'].values():
             for evidence in entry['evidence']:
                 if evidence.endswith('.mp3'):
-                    self.assertEqual(subprocess.check_output(['git', 'hash-object', str(qc.ROOT/evidence)], text=True).strip(), entry['gitBlob'])
+                    self.assertEqual(subprocess.check_output(['git', 'hash-object', str(evidence_path(evidence))], text=True).strip(), entry['gitBlob'])
 
     def test_report_preserves_decisions_across_classification_changes(self):
         report_spec = importlib.util.spec_from_file_location('report', Path(__file__).with_name('voice-identity-report.py'))
