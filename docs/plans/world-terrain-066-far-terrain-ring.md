@@ -2,7 +2,7 @@
 
 **Created:** 2026-11-05
 **Status:** `in progress` 🔄
-**Progress:** F0 done 2026-11-05 ([notes](implementation-notes/world-terrain-066-far-terrain-ring-implementation-notes.md)); author answers recorded (notes §8); F1 ready (queue Q147)
+**Progress:** F0 done 2026-11-05 ([notes](implementation-notes/world-terrain-066-far-terrain-ring-implementation-notes.md)); author answers recorded (notes §8); F1 implemented 2026-11-05 (queue Q147; browser look → queue §2), F2 next
 **Type:** feature
 **Priority:** high · **Effort:** XL
 **Depends on:** -

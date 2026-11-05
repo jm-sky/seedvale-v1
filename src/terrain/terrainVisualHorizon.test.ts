@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { terrainVisualHorizon } from './terrainVisualHorizon'
+import { farRingBaseFog, terrainVisualHorizon } from './terrainVisualHorizon'
 
 describe('terrainVisualHorizon', () => {
   it('keeps fadeStart strictly before opaqueAt for the default config', () => {
@@ -41,5 +41,35 @@ describe('terrainVisualHorizon', () => {
     const horizon = terrainVisualHorizon({ chunkSize: 64, loadRadius: 1 })
     expect(horizon.fadeStart).toBeGreaterThan(0)
     expect(horizon.opaqueAt).toBeGreaterThan(horizon.fadeStart)
+  })
+})
+
+describe('far ring (world-terrain-066)', () => {
+  it('is unchanged without farRadius (flag off)', () => {
+    const off = terrainVisualHorizon({ chunkSize: 64, loadRadius: 3 })
+    expect(terrainVisualHorizon({ chunkSize: 64, loadRadius: 3, farRadius: null })).toEqual(off)
+    expect(off.farRadius).toBeUndefined()
+  })
+
+  it('makes fog opaque at farRadius with a fade band before it', () => {
+    const horizon = terrainVisualHorizon({ chunkSize: 64, loadRadius: 3, farRadius: 800 })
+    expect(horizon.opaqueAt).toBe(800)
+    expect(horizon.farRadius).toBe(800)
+    expect(horizon.fadeStart).toBeGreaterThan(0)
+    expect(horizon.fadeStart).toBeLessThan(800)
+  })
+
+  it('widens base day fog to farRadius by dayFactor and leaves night untouched', () => {
+    const noon = { fogNear: 130, fogFar: 250 }
+    const night = { fogNear: 50, fogFar: 150 }
+    expect(farRingBaseFog(noon, 1, 800)).toEqual({ fogNear: 360, fogFar: 800 })
+    expect(farRingBaseFog(night, 0, 800)).toEqual(night)
+    const dusk = farRingBaseFog({ fogNear: 90, fogFar: 200 }, 0.5, 800)
+    expect(dusk.fogFar).toBeGreaterThan(200)
+    expect(dusk.fogFar).toBeLessThan(800)
+  })
+
+  it('never narrows fog already wider than the ring', () => {
+    expect(farRingBaseFog({ fogNear: 500, fogFar: 2000 }, 1, 800)).toEqual({ fogNear: 500, fogFar: 2000 })
   })
 })

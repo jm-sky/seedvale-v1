@@ -8,6 +8,7 @@ import type {
   GrassRequestParams,
 } from './chunkHeightmapProtocol'
 import type { ChunkMeshData, ChunkMeshDataParams } from './chunkMeshData'
+import type { FarTileData, FarTileRequest } from './farTile'
 import type { GrassChunkData } from './grassPlacement'
 import type { WorldHydrology } from './worldHydrology'
 import type { WorldKnowledgeScanResult, WorldKnowledgeWorkerParams } from './worldKnowledgeScan'
@@ -69,6 +70,13 @@ export type ChunkWorkerPool = {
    */
   requestMapTile(key: string, params: MapTileRequest): Promise<MapTileData>
   cancelMapTile(key: string): void
+  /**
+   * Far-terrain tile (plan world-terrain-066 F1). Background kind alongside map tiles — it is presentation beyond the
+   * streamed ring, never what the player stands on.
+   * @domain world-terrain
+   */
+  requestFarTile(key: string, params: FarTileRequest): Promise<FarTileData>
+  cancelFarTile(key: string): void
   /**
    * Installs global hydrology in every worker, now and in any worker created later (plan world-terrain-058 H2). A
    * worker handles messages in order, so every job posted after this call sees the data. Replace semantics (review 030
@@ -135,6 +143,15 @@ type MapTileJob = {
   reject: (err: Error) => void
 }
 
+type FarTileJob = {
+  kind: 'farTile'
+  id: number
+  key: string
+  params: FarTileRequest
+  resolve: (data: FarTileData) => void
+  reject: (err: Error) => void
+}
+
 type HydrologyRowsJob = {
   kind: 'hydrologyRows'
   id: number
@@ -146,7 +163,7 @@ type HydrologyRowsJob = {
   reject: (err: Error) => void
 }
 
-type ChunkJob = TileJob | GrassJob | MeshJob | WorldKnowledgeJob | MapTileJob | HydrologyRowsJob
+type ChunkJob = TileJob | GrassJob | MeshJob | WorldKnowledgeJob | MapTileJob | FarTileJob | HydrologyRowsJob
 
 function createChunkWorker(): ChunkWorkerLike {
   return new Worker(new URL('./chunkHeightmap.worker.ts', import.meta.url), {
@@ -176,11 +193,12 @@ function toRequest(job: ChunkJob): ChunkWorkerJobRequest {
   if (job.kind === 'mesh') return { kind: 'mesh', id: job.id, params: job.params }
   if (job.kind === 'worldKnowledge') return { kind: 'worldKnowledge', id: job.id, params: job.params }
   if (job.kind === 'mapTile') return { kind: 'mapTile', id: job.id, params: job.params }
+  if (job.kind === 'farTile') return { kind: 'farTile', id: job.id, params: job.params }
   return { kind: 'grass', id: job.id, params: job.params }
 }
 
 function isBackgroundJob(job: ChunkJob): boolean {
-  return job.kind === 'grass' || job.kind === 'worldKnowledge' || job.kind === 'mapTile'
+  return job.kind === 'grass' || job.kind === 'worldKnowledge' || job.kind === 'mapTile' || job.kind === 'farTile'
 }
 
 export function createChunkWorkerPool(
@@ -197,6 +215,7 @@ export function createChunkWorkerPool(
   const queueMesh: MeshJob[] = []
   const queueWorldKnowledge: WorldKnowledgeJob[] = []
   const queueMapTile: MapTileJob[] = []
+  const queueFarTile: FarTileJob[] = []
   const queueGrass: GrassJob[] = []
   const installedHydrology = new Map<string, WorldHydrology>()
   const inflight = new Map<number, ChunkJob>()
@@ -232,6 +251,8 @@ export function createChunkWorkerPool(
         job = queueMesh.shift()
       } else if (queueWorldKnowledge.length > 0 && canStartBackground()) {
         job = queueWorldKnowledge.shift()
+      } else if (queueFarTile.length > 0 && canStartBackground()) {
+        job = queueFarTile.shift()
       } else if (queueMapTile.length > 0 && canStartBackground()) {
         job = queueMapTile.shift()
       } else if (queueGrass.length > 0 && canStartBackground()) {
@@ -298,6 +319,8 @@ export function createChunkWorkerPool(
             job.resolve(msg.rows)
           } else if (job.kind === 'mapTile' && msg.kind === 'mapTile') {
             job.resolve(msg.tile)
+          } else if (job.kind === 'farTile' && msg.kind === 'farTile') {
+            job.resolve(msg.tile)
           } else {
             job.reject(new Error(`chunk worker kind mismatch (${job.kind})`))
           }
@@ -350,11 +373,12 @@ export function createChunkWorkerPool(
     else if (job.kind === 'mesh') queueMesh.unshift(job)
     else if (job.kind === 'worldKnowledge') queueWorldKnowledge.unshift(job)
     else if (job.kind === 'mapTile') queueMapTile.unshift(job)
+    else if (job.kind === 'farTile') queueFarTile.unshift(job)
     else queueGrass.unshift(job)
   }
 
   function rejectQueued(makeError: () => Error): void {
-    const queues: ChunkJob[][] = [queueHydrologyRows, queueTile, queueMesh, queueWorldKnowledge, queueMapTile, queueGrass]
+    const queues: ChunkJob[][] = [queueHydrologyRows, queueTile, queueMesh, queueWorldKnowledge, queueFarTile, queueMapTile, queueGrass]
     for (const queue of queues) {
       for (const job of queue) job.reject(makeError())
       queue.length = 0
@@ -403,6 +427,12 @@ export function createChunkWorkerPool(
     const knowledgeIndex = queueWorldKnowledge.findIndex((job) => job.id === id)
     if (knowledgeIndex !== -1) {
       const [job] = queueWorldKnowledge.splice(knowledgeIndex, 1)
+      job!.reject(new HeightmapGenerationCancelledError())
+      return
+    }
+    const farTileIndex = queueFarTile.findIndex((job) => job.id === id)
+    if (farTileIndex !== -1) {
+      const [job] = queueFarTile.splice(farTileIndex, 1)
       job!.reject(new HeightmapGenerationCancelledError())
       return
     }
@@ -501,6 +531,20 @@ export function createChunkWorkerPool(
     })
   }
 
+  function cancelFarTile(key: string): void {
+    cancelByNamespacedKey(`farTile:${key}`)
+  }
+
+  function requestFarTile(key: string, params: FarTileRequest): Promise<FarTileData> {
+    cancelFarTile(key)
+    const id = nextId++
+    keyToId.set(`farTile:${key}`, id)
+    return new Promise<FarTileData>((resolve, reject) => {
+      queueFarTile.push({ kind: 'farTile', id, key, params, resolve, reject })
+      pump()
+    })
+  }
+
   function installHydrology(hydrologyId: string, data: WorldHydrology): void {
     if (installedHydrology.size === 1 && installedHydrology.get(hydrologyId) === data) return
     installedHydrology.clear()
@@ -530,6 +574,8 @@ export function createChunkWorkerPool(
     queueWorldKnowledge.length = 0
     for (const job of queueMapTile) job.reject(new HeightmapGenerationCancelledError())
     queueMapTile.length = 0
+    for (const job of queueFarTile) job.reject(new HeightmapGenerationCancelledError())
+    queueFarTile.length = 0
     for (const job of queueGrass) job.reject(new HeightmapGenerationCancelledError())
     queueGrass.length = 0
     for (const job of inflight.values()) job.reject(new HeightmapGenerationCancelledError())
@@ -553,11 +599,13 @@ export function createChunkWorkerPool(
     cancelWorldKnowledge,
     requestMapTile,
     cancelMapTile,
+    requestFarTile,
+    cancelFarTile,
     installHydrology,
     requestHydrologyRows,
     dispose,
     get pendingCount() {
-      return queueHydrologyRows.length + queueTile.length + queueMesh.length + queueWorldKnowledge.length + queueMapTile.length + queueGrass.length
+      return queueHydrologyRows.length + queueTile.length + queueMesh.length + queueWorldKnowledge.length + queueFarTile.length + queueMapTile.length + queueGrass.length
     },
     get busyCount() {
       return inflight.size
@@ -621,6 +669,14 @@ export function requestChunkMapTile(key: string, params: MapTileRequest): Promis
 
 export function cancelChunkMapTile(key: string): void {
   chunkPool?.cancelMapTile(key)
+}
+
+export function requestChunkFarTile(key: string, params: FarTileRequest): Promise<FarTileData> {
+  return getChunkPool().requestFarTile(key, params)
+}
+
+export function cancelChunkFarTile(key: string): void {
+  chunkPool?.cancelFarTile(key)
 }
 
 export function installChunkWorkerHydrology(hydrologyId: string, data: WorldHydrology): void {

@@ -12,8 +12,9 @@ import { shadowFrustumModeFromUrl } from '../perf/flags'
 import { createGpuTimer } from '../perf/gpuTimer'
 import { createPostProcessing } from '../render/createPostProcessing'
 import { createRenderer } from '../render/createRenderer'
-import { createCamera } from '../scene/createCamera'
+import { createCamera, DEFAULT_CAMERA_FAR } from '../scene/createCamera'
 import { createScene } from '../scene/createScene'
+import { farTerrainRadiusFromUrl } from '../terrain/farTerrainFlag'
 import { createLights } from '../world/createLights'
 import { createSky } from '../world/createSky'
 import { createPointLightBudget } from '../world/pointLightBudget'
@@ -80,7 +81,12 @@ export function createRenderStack(container: HTMLElement, config: WorldConfig): 
     benchmarkScenarioFromUrl() !== null || isProgramCensusUrlEnabled(),
   )
 
-  const camera = createCamera(container.clientWidth / container.clientHeight)
+  // Far terrain ring (plan world-terrain-066): the far plane must pass the fog-opaque radius (+ margin).
+  const farTerrainRadius = farTerrainRadiusFromUrl()
+  const camera = createCamera(
+    container.clientWidth / container.clientHeight,
+    farTerrainRadius ? Math.max(DEFAULT_CAMERA_FAR, farTerrainRadius * 1.25) : DEFAULT_CAMERA_FAR,
+  )
   camera.layers.enable(WATER_RENDER_LAYER)
   camera.layers.enable(AGENT_RENDER_LAYER)
   camera.layers.enable(REFLECTION_SKIPPED_LAYER)

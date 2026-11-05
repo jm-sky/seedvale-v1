@@ -178,6 +178,7 @@ import { getThirstRatio } from '../shared/ThirstState'
 import { getVigorRatio } from '../shared/VigorState'
 import { isMedicinalForageKind, medicinalHerbInteractRange } from '../terrain/renewableWorldItems'
 import { parseSnowParam } from '../terrain/snowField'
+import { farRingBaseFog } from '../terrain/terrainVisualHorizon'
 import { formatLastHitLine, LAST_HIT_LINE_MS } from '../ui-vue/lastHitFeedback'
 import { skyParamsFromTime, tickDayNight } from '../world/dayNight'
 import { updateFoliageWind } from '../world/foliageWind'
@@ -326,7 +327,10 @@ function applyDayNight(
   // `elev` (returned below) stay weather-independent so grass/water/ocean
   // shading keeps one time-of-day signal. Lightning flash is a short extra
   // overlay and never writes day/night state.
-  const overlay = applyWeatherOverlay({ fogColor: p.fogColor, fogNear: p.fogNear, fogFar: p.fogFar }, weather, p.elev)
+  const baseFog = horizon.farRadius
+    ? farRingBaseFog({ fogNear: p.fogNear, fogFar: p.fogFar }, p.dayFactor, horizon.farRadius)
+    : { fogNear: p.fogNear, fogFar: p.fogFar }
+  const overlay = applyWeatherOverlay({ fogColor: p.fogColor, ...baseFog }, weather, p.elev)
   const cappedOverlay = capOutdoorFogToTerrainHorizon(overlay, horizon)
   const presented = applyLightningFlash(cappedOverlay, inCaveInterior ? 0 : flashAmount)
   lights.sun.intensity = p.sunIntensity * presented.lightScale
@@ -2885,6 +2889,7 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
       withCategory(monitor, 'STREAMING', () => {
         bundle.chunkManager.update(player.mesh.position.x, player.mesh.position.z)
       })
+      bundle.farTerrain?.update(player.mesh.position.x, player.mesh.position.z)
       bundle.caves.update(player.mesh.position.x, player.mesh.position.z, dt)
       shadowCentreX = player.mesh.position.x
       shadowCentreZ = player.mesh.position.z

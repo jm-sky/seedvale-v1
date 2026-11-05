@@ -9,6 +9,7 @@ import { computeChunkTile } from './chunkHeightmap'
 import { computeChunkItems } from './chunkItems'
 import { computeChunkMeshData } from './chunkMeshData'
 import { computeChunkVegetation } from './chunkVegetation'
+import { computeFarTile } from './farTile'
 import { computeChunkGrass, GRASS_SPECIES_ORDER, type GrassChunkData } from './grassPlacement'
 import { sampleRawFloorRows, WORLD_HYDROLOGY_GRID } from './worldHydrology'
 import { installWorldHydrology, retainOnlyWorldHydrology } from './worldHydrologyRegistry'
@@ -118,6 +119,9 @@ ctx.onmessage = ({ data }) => {
         { kind: 'mapTile', id, ok: true, tile },
         [tile.heights.buffer, tile.floors.buffer, tile.classes.buffer, tile.riverPoints.buffer, tile.riverRuns.buffer],
       )
+    } else if (kind === 'farTile') {
+      const tile = computeFarTile(data.params)
+      ctx.postMessage({ kind: 'farTile', id, ok: true, tile }, [tile.y.buffer, tile.normal.buffer, tile.color.buffer])
     } else {
       const { params } = data
       const meshData = computeChunkMeshData(params)

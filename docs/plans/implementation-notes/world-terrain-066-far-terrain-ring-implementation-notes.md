@@ -105,3 +105,18 @@ From code (not yet seen in a browser):
 ## F0 result
 
 Layout fixed (§4). Seam rule changed to raw + mask (§6). Pop list (§5) adds the tree-LOD band as the main constraint-2 risk. F1 is unblocked (§8).
+
+## F1 far ground + water + fog (Sonnet, 2026-11-05)
+
+Implemented behind `?farTerrain` (absent/`0` = off; bare/`1` = 800 m; `400`–`1000` = radius; `src/terrain/farTerrainFlag.ts`).
+
+- **Tiles:** `src/terrain/farTile.ts::computeFarTile` (worker job `farTile`, background queue next to map tiles). World-aligned 256 m tiles; 8 m grid (32 cells) within 450 m, 16 m grid beyond. Heights = `sampleRawTexelAt` (raw map-raster surface, notes §1) − 0.3 m; apron-inclusive central-difference normals; 6 m skirt ring per tile for level-boundary cracks. Colours from the same `biomeColors.ts` functions as streamed terrain (`farTileColor.ts`; no road/scorch tint).
+- **Water:** sea vertices follow bathymetry (the ocean plane, grown to `2·farRadius + 2 chunks`, draws over them); lake vertices sit at the lake surface in a flat colour (`LAKE_WATER`, 🟡 look). No far river ribbons yet (still open, F3).
+- **Manager:** `src/terrain/farTerrain.ts` — wanted window = tiles with centre within `farRadius + 181 m` (≈ 46 tiles at 800 m), nearest first, ≤ 6 jobs in flight, merged into two meshes (one per level, ≤ 2 draws), rebuilt ≤ every 120 ms on change. Lambert material (scene lights, fog on), `polygonOffset`, no shadows.
+- **Seam:** fragment discard over chunks whose terrain mesh is attached. `ChunkManager.terrainResidency()` is a read-only `{version, coords}` (version bumps on first mesh attach/removal); the manager copies it into a toroidal 64² `R8` texture (chunk index mod 64), so no re-centring.
+- **Fog contract:** `terrainVisualHorizon({…, farRadius})` → `opaqueAt = farRadius`, `fadeStart = 0.45·farRadius`, `farRadius` field set. `farRingBaseFog` widens the authored day fog (130/250 m at noon) toward 0.45·`farRadius`/`farRadius` by `dayFactor`; night and dusk keep today's close-in fog, weather multipliers and the horizon cap still apply on top. Flag off = identical to before (test).
+- **Camera:** far plane `max(500, 1.25·farRadius)` (`createCamera(aspect, far)`); fly cam keeps its own overrides.
+
+Verification: type-check, lint, full `pnpm run test` green (781 files); new unit tests (`farTerrain.test.ts`, `farTerrainFlag.test.ts`, `terrainVisualHorizon.test.ts`). **Browser-observed (WSL Chrome, seed `415424794`, `&fly&flyPose=-2340,-680,40,0,-0.1&hour=12`, noon, no npcs/animals/weather/grass):** with `farTerrain=1` the relief and range ridges are visible through the haze far past the streamed ring; without it only a flat grey silhouette. The harness camera was at the home pose (agl 40), not the summit — so range-summit view, night, water/lake, hand-off seam inspection and forest/tree-LOD band are **not** yet checked. Screenshots local-only. Not measured: perf (Lambert incl. point-light loop on a large mesh, mirror pass also draws the far mesh — F5).
+
+Open for F2/F3/F5: forest canopy (the far ground is currently bare in forests, constraint 2 still unmet with the flag on), river ribbons, grass-to-far colour match, perf A/B.

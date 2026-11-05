@@ -5,6 +5,7 @@ import type { ChunkTileData, ChunkTileParams, RawSampleParams } from './chunkHei
 import type { ItemPlacement } from './chunkItems'
 import type { ChunkMeshData, ChunkMeshDataParams } from './chunkMeshData'
 import type { VegetationPlacement } from './chunkVegetation'
+import type { FarTileData, FarTileRequest } from './farTile'
 import type { GrassChunkData, GrassComputeParams, GrassTileGrids } from './grassPlacement'
 import type { WorldHydrology } from './worldHydrology'
 import type { WorldKnowledgeScanResult, WorldKnowledgeWorkerParams } from './worldKnowledgeScan'
@@ -35,6 +36,7 @@ export type ChunkWorkerRequest =
   | { kind: 'mesh', id: number, params: ChunkMeshDataParams }
   | { kind: 'worldKnowledge', id: number, params: WorldKnowledgeWorkerParams }
   | { kind: 'mapTile', id: number, params: MapTileRequest }
+  | { kind: 'farTile', id: number, params: FarTileRequest }
   /** Raw floor rows `[rowStart, rowEnd)` of the hydrology grid (plan world-terrain-058 H2). */
   | { kind: 'hydrologyRows', id: number, params: RawSampleParams, rowStart: number, rowEnd: number }
   /** Installs global hydrology into the worker's registry. No response: a worker handles messages in order, so every
@@ -50,5 +52,6 @@ export type ChunkWorkerResponse =
   | (ChunkMeshData & { kind: 'mesh', id: number, ok: true })
   | { kind: 'worldKnowledge', id: number, ok: true, result: WorldKnowledgeScanResult }
   | { kind: 'mapTile', id: number, ok: true, tile: MapTileData }
+  | { kind: 'farTile', id: number, ok: true, tile: FarTileData }
   | { kind: 'hydrologyRows', id: number, ok: true, rows: Float32Array }
   | { kind: ChunkWorkerJobRequest['kind'], id: number, ok: false, error: string }

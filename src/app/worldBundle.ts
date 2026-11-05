@@ -143,6 +143,9 @@ import {
   createChunkManager,
   type TerrainModification,
 } from '../terrain/chunkManager'
+import { cancelChunkFarTile, requestChunkFarTile } from '../terrain/chunkWorkerPool'
+import { createFarTerrain, type FarTerrain } from '../terrain/farTerrain'
+import { farTerrainRadiusFromUrl } from '../terrain/farTerrainFlag'
 import { resourceById } from '../terrain/naturalResources'
 import {
   createResourceDeposits,
@@ -398,6 +401,8 @@ export type WorldBundle = {
    *  config (plan world-terrain-035) — recomputed on every rebuild alongside
    *  the rest of this bundle. See `terrain/terrainVisualHorizon.ts`. */
   terrainVisualHorizon: TerrainVisualHorizon
+  /** Far ground ring (plan world-terrain-066 F1); `null` unless `?farTerrain` is set. Presentation only. */
+  farTerrain: FarTerrain | null
   bloodTraces: BloodTraceSystem
   ocean: WorldOcean
   settlementsManager: SettlementsManager
@@ -561,11 +566,12 @@ function buildChunkManager(
   return createChunkManager(scene, cfg)
 }
 
-function buildOcean(scene: Scene, config: WorldConfig, waterMirror: WaterMirror): WorldOcean {
+function buildOcean(scene: Scene, config: WorldConfig, waterMirror: WaterMirror, farRadius: number | null): WorldOcean {
   // Generously covers the loaded region so it never runs out under the player;
   // repositioned (not resized) as the player moves — see createOcean.follow().
   const { chunkSize, loadRadius, unloadRadius, waterLevel } = config.terrain
-  const size = (unloadRadius * 2 + 4) * chunkSize
+  // With the far ring (plan world-terrain-066) the plane also serves as far sea: it must reach past the fog-opaque radius.
+  const size = Math.max((unloadRadius * 2 + 4) * chunkSize, farRadius ? farRadius * 2 + chunkSize * 2 : 0)
   // Hide the singleton where chunk water already draws (incl. coastal fade).
   // Radial, not a height clipmap — follow() is every frame.
   const fadeInner = loadRadius * chunkSize
@@ -1460,7 +1466,8 @@ async function buildWorldSystems(
   }
 
   bootMark('buildOcean')
-  const ocean = buildOcean(scene, config, waterMirror)
+  const farRadius = farTerrainRadiusFromUrl()
+  const ocean = buildOcean(scene, config, waterMirror, farRadius)
   bootMarkEnd('buildOcean')
 
   // World-owned, not settlement-scoped (plan fauna-010 §3/§4) — built once
@@ -2111,7 +2118,19 @@ async function buildWorldSystems(
     terrainVisualHorizon: terrainVisualHorizon({
       chunkSize: config.terrain.chunkSize,
       loadRadius: config.terrain.loadRadius,
+      farRadius,
     }),
+    farTerrain: farRadius
+      ? createFarTerrain({
+        scene,
+        chunkSize: config.terrain.chunkSize,
+        farRadius,
+        params: rawSampleParamsFromWorld(config),
+        residency: () => chunkManager.terrainResidency(),
+        requestTile: requestChunkFarTile,
+        cancelTile: cancelChunkFarTile,
+      })
+      : null,
     bloodTraces,
     ocean,
     settlementsManager,
@@ -2775,6 +2794,7 @@ export async function rebuildWorldBundle(
   bundle.resourceDeposits.dispose()
   bundle.grassForage.dispose()
   bundle.settlementsManager.dispose()
+  bundle.farTerrain?.dispose()
   bundle.ocean.dispose()
   bundle.chunkManager.dispose()
 
@@ -2910,6 +2930,7 @@ export function disposeWorldBundle(bundle: WorldBundle): void {
   bundle.resourceDeposits.dispose()
   bundle.grassForage.dispose()
   bundle.settlementsManager.dispose()
+  bundle.farTerrain?.dispose()
   bundle.ocean.dispose()
   bundle.chunkManager.dispose()
 }

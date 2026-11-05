@@ -844,6 +844,9 @@ export type ChunkManager = {
    *  prompt (plan 106). */
   region: RegionParams
   loadedChunkCount: () => number
+  /** Read-only residency of attached terrain meshes (plan world-terrain-066 F1): `version` bumps whenever a chunk's
+   *  terrain mesh is first attached or removed, so a consumer re-reads `coords` only on change. Presentation only. */
+  terrainResidency: () => { version: number, coords: readonly ChunkCoord[] }
   /** Snapshot of the river tile cache counters (Q22 benchmark evidence);
    *  `resetMax` starts a new `syncMsMax` window after taking the snapshot. */
   riverTileStats: (resetMax?: boolean) => RiverTileCacheStats
@@ -1213,6 +1216,9 @@ export function createChunkManager(
   config: ChunkManagerConfig,
 ): ChunkManager {
   const chunks = new Map<string, ChunkRecord>()
+  /** Bumped when a chunk's terrain mesh is first attached or removed (`terrainResidency`). */
+  let terrainResidencyVersion = 0
+  let terrainResidencyCache: { version: number, coords: ChunkCoord[] } | null = null
   // Caller-owned (see `ChunkManagerConfig.modifications`'s doc comment) —
   // this is an alias, not a fresh array, so it survives this `ChunkManager`
   // instance's own disposal.
@@ -1999,6 +2005,7 @@ export function createChunkManager(
     if (chunks.get(rec.key) !== rec || rec.meshRequestSeq !== seq) return
     withCategory(getMonitor(), 'STREAMING', () => {
       const streamT0 = performance.now()
+      if (!rec.mesh) terrainResidencyVersion++
       rec.mesh?.removeFromParent()
       rec.meshDispose?.()
       const { x, z } = chunkCenter(rec.coord, config.chunkSize)
@@ -2763,6 +2770,7 @@ export function createChunkManager(
       record.treeIds = undefined
     }
     record.treeYaw = undefined
+    if (record.mesh) terrainResidencyVersion++
     record.mesh?.removeFromParent()
     record.meshDispose?.()
     record.water?.dispose()
@@ -3730,6 +3738,14 @@ export function createChunkManager(
     heightScale: config.heightScale,
     region: config.region,
     loadedChunkCount: () => chunks.size,
+    terrainResidency: () => {
+      if (terrainResidencyCache?.version !== terrainResidencyVersion) {
+        const coords: ChunkCoord[] = []
+        for (const rec of chunks.values()) if (rec.mesh) coords.push(rec.coord)
+        terrainResidencyCache = { version: terrainResidencyVersion, coords }
+      }
+      return terrainResidencyCache
+    },
     riverTileStats(resetMax = false) {
       const snapshot = { ...riverTileCache.stats }
       if (resetMax) riverTileCache.stats.syncMsMax = 0
