@@ -9,6 +9,14 @@
 **Subdomains:** `dialogue`
 **Tags:** `audio` `polish` `revival`
 
+## Editorial freeze — 2026-11-05
+
+The [final production package](../research/v1-revival/2026-11-05--npc-069-production-package.md), [English recording script](../research/v1-revival/2026-11-05--npc-069-recording-script.md), [deduplicated manifest](../research/v1-revival/2026-11-05--npc-069-production-manifest.json) and [exact coverage matrix](../research/v1-revival/2026-11-05--npc-069-coverage.md) complete the writing/reconciliation handoff. **115 base slots; 37 newly written missing-slot lines; 72 new recording jobs** (28 existing NV texts + 37 Astra texts + 5 preserved QV offers + 2 generic female restorations). All five casts and five QV offers are unchanged.
+
+Named coverage uses 29 existing NV drafts (one held), 35 existing audio candidates (two held), 9 Q90 orders and 37 new texts. The manifest also references three existing generic male Q90 orders: **12 Q90 references, zero duplicate orders**. Three Molly quest slots and five restoration tasks remain held; seven optional restoration tasks remain deferred. No optional weather take is newly commissioned. All reuse remains QC-pending, with conditional one-slot fallback rather than duplicate generation. See the package for five actual backlog transcript-review flags (the earlier handoff count of four was stale).
+
+**Production selection is now frozen by those outputs; earlier TBD counts below are historical.** The plan remains `planned` because author generation, audio QC and separate runtime/display binding remain outstanding. No audio, casting, live registry or runtime change was made. All QV playback is binding-held; QV-004 additionally awaits real water handover and duty gating. npc-065 retains QC/casting/runtime ownership.
+
 ## Goal and author rules
 
 Prepare ONE bounded, recording-ready **English Fish Audio package**: five approved quest-specific NPC offers, high-value named NPC situations, and missing coverage after the 2026-11-05 rejected-audio cleanup. **The approved per-NPC variant target is fixed in the table below**, including QC-passed same-speaker reusable audio, existing Q90 orders and newly commissioned takes. Select the exact count by usefulness and source coverage; do not blindly order three new recordings. Where multiple eligible variants exist, presentation may choose among them with repeat suppression. Quest-specific offers are one precise line per quest/offer variant, not a generic randomized offer bank.
@@ -70,7 +78,7 @@ Preserve the five English lines agreed on 2026-11-05 as editorial candidates; re
 
 **Randomisation handoff:** Context eligibility first, stable same-speaker identity second, eligible variants 1–3 (here fixed 2 or 3), then no immediate repetition when alternatives exist. Audio-only presentation variability must not consume authoritative simulation RNG. Runtime strategy is separately owned by npc-065/Q11.
 
-### B — Named NPCs: 1–3 variants per selected non-quest situation
+### B — Historical selection guidance (exact 3/2/1 table above governs)
 
 Initial eligible runtime characters: `marek_hornblower`, `kasia_hornblower`, `anna_lesniewska`, `piotr_lesniewski`, `molly_lambert`. Piers is deferred without a verified runtime character binding. Other named characters may be assessed later but are not silently added to this batch.
 
@@ -111,7 +119,7 @@ Quest playback requires `questId` + specific displayed `offer` moment + explicit
 
 1. Conflict and dedup table linking every selected row to NV, Q90, backlog or QV; explicit list of exclusions and holds.
 2. Human-readable recording script grouped by Fish UUID. Exact Fish input is plain English text; delivery guidance is **outside** the input.
-3. Machine-readable, stable-ID production manifest plus coverage matrix (1–3 eligible variants for each selected non-quest character/event and a single exact quest-offer line per quest).
+3. Machine-readable, stable-ID production manifest plus coverage matrix (exact approved 3/2/1 targets for each named character/event and a single exact quest-offer line per quest).
 4. Five paired quest display-line correction proposals with implementation gates, not automatic gameplay edits.
 5. QC protocol: UUID, actual audible words/ASR, natural delivery, context, file hash SHA256, listening provenance and no cutoff/artifacts. No asset/runtime admission without QC.
 6. Link outputs from `docs/research/v1-revival/README.md` or permanent voice index. Do not overwrite historical script/author decisions.

@@ -19,6 +19,8 @@
 
 **Next Fish Audio production batch (approved variation counts, 2026-11-05):** [npc-069 — five NPCs, 3/2/1 variant targets, five quest offers and cleanup restoration](../../plans/npc-069-next-fish-audio-production-batch.md) · [GPT Astra missing-text writing handoff](./2026-11-05--npc-069-astra-missing-voice-texts-handoff.md). Text production only; npc-065 owns casting, QC and runtime.
 
+**npc-069 editorial package complete (2026-11-05):** [Audit, restoration and integration/QC handoff](./2026-11-05--npc-069-production-package.md) · [English Fish recording script](./2026-11-05--npc-069-recording-script.md) · [Production manifest](./2026-11-05--npc-069-production-manifest.json) · [115-slot coverage matrix](./2026-11-05--npc-069-coverage.md). 37 missing texts authored by Astra; 72 deduplicated new recording jobs; Q90/reuse/holds separate. No audio generated or runtime changed.
+
 **NPC voice cleanup (2026-11-05):** [final staged report](./2026-11-05--npc-voice-final-cleanup.md) · [author decision registry](../../assets/voice-qc/author-decisions.json) · [permanent casting](../../design/npc-voices/CASTING.md) · [catalog](../../design/npc-voices/CATALOG.md). Storage migration does not register new runtime clips.
 
 ## Current entry points

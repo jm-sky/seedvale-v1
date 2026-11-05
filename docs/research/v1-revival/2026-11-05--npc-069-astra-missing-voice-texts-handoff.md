@@ -3,7 +3,7 @@
 **Date:** 2026-11-05
 **Owner:** GPT Astra — new English NPC dialogue and variant writing only
 **Parent:** [npc-069](../../plans/npc-069-next-fish-audio-production-batch.md)
-**Status:** ready for editorial session; NO Fish generation, code implementation or casting changes
+**Status:** editorial session completed — [final package](./2026-11-05--npc-069-production-package.md), [recording script](./2026-11-05--npc-069-recording-script.md), [manifest](./2026-11-05--npc-069-production-manifest.json), [coverage](./2026-11-05--npc-069-coverage.md). Historical task brief and all five QV texts below preserved. NO Fish generation, code implementation or casting changes.
 
 ## Objective
 
