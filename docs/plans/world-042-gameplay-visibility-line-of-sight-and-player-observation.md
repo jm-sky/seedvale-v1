@@ -26,6 +26,10 @@ Author requirement (2026-11-05, recorded in [world-terrain-050 §Gameplay visibi
 | A5 | Vegetation = **soft cover** reducing detectability. | Cover lowers detection/identification; it never conceals a model and never acts as an opaque box. |
 | A6 | Torch: easier observation, but higher detectability. | Light term in player observation (Stage 2) and in AI detection of the carrier (Stage 3/4). |
 | A7 | Fix animal labels visible through the ground between surface and caves. | Stage 0, a bug fix that ships first and becomes Stage 1's first early-out. |
+| A8 | Shadows of concealed actors are **hidden** (2026-11-05). | The concealed layer is **not** enabled on `sun.shadow.camera`. |
+| A9 | Billboard expires when the player comes **closer than ~3 m**, moves **farther than ~50 m**, or after **60 s** (2026-11-05). | Plus the implicit removals: re-acquisition (real model returns), death/despawn/unload/rebuild, spatial-context change. No "character sees the empty spot" rule. |
+| A10 | Billboard in **3 variants**: human; large/medium animal (bear, wolf, deer…); small animal (duck, hare, fox…) (2026-11-05). | One shared grey-silhouette atlas with three cells; species → variant mapping by body class in the fauna catalog. |
+| A11 | Partial-silhouette compromise **accepted**: whole model drawn once any sample is clear (2026-11-05). | No per-fragment eye-visibility mask planned. |
 
 ## Verified starting point (summary — details in the notes)
 
@@ -67,7 +71,7 @@ querySight(observer: {x,y,z, context}, target samples: {x,y,z}[], options)
 ```text
 seen ──(all samples blocked for ≥ grace)──► concealed + last-known billboard at last clear pose
 concealed ──(any sample clear)──► seen (instant; billboard removed)
-billboard expires on: re-acquire · character sees the spot empty · max age · range/context exit · death/unload/rebuild
+billboard expires on: re-acquire · player within ~3 m · player beyond ~50 m · age 60 s · context exit · death/unload/rebuild
 ```
 
 - Samples: 5–7 semantic points per actor (head, chest, pelvis, left/right shoulder extent, low body for quadrupeds) from the existing A1′ cull bounds / label height — no CPU skinning.
@@ -91,7 +95,7 @@ Done when: tests for surface↔cave above/below closed roof (hidden), same conte
 1. `src/world/sight/` query and blocker registry; producers for terrain, caves, house walls/roofs/doors/windows, palisades, large rocks.
 2. Player contact store + concealment state machine for loaded NPCs and animals within the presentation range (frustum-intersecting first).
 3. Concealment via a dedicated render layer on a cached mesh list; newly attached equipment/hair meshes inherit the current layer.
-4. Billboard: grey human / small quadruped / large quadruped / bird silhouettes (one shared texture atlas, procedural or Blender-rendered), 30 % opacity, depth-tested, no depth write, no label, pooled.
+4. Billboard (A10): three grey silhouettes — human, large/medium animal, small animal — in one shared texture atlas (procedural or Blender-rendered), 30 % opacity, depth-tested, no depth write, no label, pooled. Expiry per A9; concealed actors cast no shadow (A8).
 5. Gate all information consumers listed above.
 
 Done when: unit tests for every sight case below; state-machine and billboard lifecycle tests; consumer-gating tests; **simulation invariance test** (same seed/steps with sight on/off/camera rotated → identical NPC/fauna state); type-check, lint, tests, build; cost measured (below); browser check on the reference seed (house wall, door, window, corner, ridge, cave mouth) with screenshots; look/feel → §2.
@@ -131,7 +135,8 @@ Non-visual indicator (compass/edge marker) pointing to the **last known position
 | Concealed actor moves | Billboard stays at the frozen point; no live updates leak. |
 | Death, corpse, loot, unload/reload, save/load, WorldBundle rebuild, time-skip | No stale billboards, no resurrected corpses, root visibility untouched, no save change. |
 | Camera rotation, graphics presets, `?sight=0` | Simulation outcomes identical. |
-| Shadows | Per §3 decision; presentation layers always restored. |
+| Shadows | Concealed actors cast no shadow (A8); visible actors keep the existing shadow-distance policy; layers always restored. |
+| Billboard expiry | Disappears at ~3 m approach, beyond ~50 m, after 60 s, or on re-acquire (A9). |
 
 ## Performance and measurement
 
@@ -139,15 +144,12 @@ Recurring work = Stage 1 sight evaluation. Budget per frame: only actors within 
 
 ## Non-goals / guardrails
 
-- No GPU occlusion queries, depth readback or per-pixel eye-visibility map in this plan (possible later strict-silhouette alternative, see §3).
+- No GPU occlusion queries, depth readback or per-pixel eye-visibility map (A11 accepts the whole-model compromise).
 - No V2 ghost placeholder or perception port; V2 only as pattern reference (stable-ID contacts, frozen coordinates, expiry).
 - No `mesh.visible` writes on actor roots; no change to corpse/loot lifecycle, AI cadence, offscreen simulation, streaming or persistence; no save version or worldgen cache/epoch bump.
 - No hard-coded detection thresholds without author calibration; no stacking a second Sneak/forest multiplier.
 - Q16 `occludedActorCohort` stays diagnostic; its sampled result is not a correctness oracle.
 
-## Open author questions (also queue §3)
+## Author questions
 
-1. **Shadows of concealed actors** — (a) suppress (no information leak) [rec.]; (b) keep (physically correct, reveals actors behind walls).
-2. **Billboard expiry** — (a) on re-acquire / seeing the empty spot / after ~60 s / leaving ~60 m range [rec.]; (b) only on re-acquire or seeing the spot; (c) other.
-3. **Billboard form** — (a) shared grey silhouettes per body class [rec., cheap]; (b) per-species silhouettes rendered from the GLB in Blender; (c) blurred snapshot of the actual model (render target per contact, costlier).
-4. **Partial-silhouette compromise** — with sample-based LOS the *whole* model is drawn as soon as one sample is clear (camera may show more of the body than the eye sees). (a) accept [rec.]; (b) plan a later strict per-fragment eye-visibility mask (GPU cost, separate measurement).
+All four Stage 1 questions were answered on 2026-11-05 and are recorded as A8–A11 above. Stage 2 numbers (light/cover terms) will be proposed after Stage 1 and asked via queue §3.
