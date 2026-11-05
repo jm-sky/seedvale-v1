@@ -1,0 +1,381 @@
+{
+  "schemaVersion": 1,
+  "scope": "14 explicitly rejected unique recordings. Historical reference material is not playable; retained separately. SHA256 matching, never similarity ranking, determines redundant copies.",
+  "recordings": [
+    {
+      "filename": "general_male_danger_alert_01.mp3",
+      "sha256": "8398550aa6a4396e2d95aaf6d5cdb1c5352dfebe795e4164ef236c0c8026255d",
+      "gitBlob": "db68c723980cbc6a67610c35d6aecb204b4adea9",
+      "reason": "Author explicitly approved replacement of 'guard?' in ambiguous. Identity rejection is independent of ASR/transcript quality.",
+      "paths": [
+        "docs/v3-donor/voices/mp3/general_male_danger_alert_01.mp3",
+        "public/sounds/voices/general_male_danger_alert_01.mp3"
+      ],
+      "recoveryCommit": "f4dabf9535941c6fb66527b91fbdcbeca1a1e531",
+      "affectedReferences": [
+        "docs/assets/voice-qc/IDENTITY-AUDIT.md",
+        "docs/assets/voice-qc/REPORT.md",
+        "docs/assets/voice-qc/identity-audit.json",
+        "docs/assets/voice-qc/ledger.json",
+        "docs/plans/archive/npc-049-npc-contextual-life-barks-and-local-voice-limiter.md",
+        "docs/research/v1-revival/2026-10-31--npc-voice-audit-inventory.json",
+        "docs/research/v1-revival/2026-11-04--q90-coverage.json",
+        "docs/research/v1-revival/2026-11-05--named-npc-voice-reuse-qc.md",
+        "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md",
+        "docs/v3-donor/voices/docs/recorded-lines-replacement-backlog.md",
+        "scripts/voice/test_voice_identity_qc.py",
+        "src/ai/npcBarkLimiter.test.ts",
+        "src/ai/npcVoiceLines.test.ts",
+        "src/ai/npcVoiceLines.ts"
+      ],
+      "removedBeforeThisSession": true
+    },
+    {
+      "filename": "general_male_farewell_01.mp3",
+      "sha256": "f0525e44426491989543dd0c9f9ea779a4a0db42251151c22fb429d7f7abd178",
+      "gitBlob": "063a6a7a36be1c0c0a0775ab3c77d08f6e2b3787",
+      "reason": "Author explicitly approved replacement of 'REMOVE' in ambiguous. Identity rejection is independent of ASR/transcript quality.",
+      "paths": [
+        "docs/v3-donor/voices/mp3/general_male_farewell_01.mp3",
+        "public/sounds/voices/general_male_farewell_01.mp3"
+      ],
+      "recoveryCommit": "f4dabf9535941c6fb66527b91fbdcbeca1a1e531",
+      "affectedReferences": [
+        "docs/assets/voice-qc/IDENTITY-AUDIT.md",
+        "docs/assets/voice-qc/IDENTITY-CALIBRATION.md",
+        "docs/assets/voice-qc/REPORT.md",
+        "docs/assets/voice-qc/identity-audit.json",
+        "docs/assets/voice-qc/identity-calibration.json",
+        "docs/assets/voice-qc/identity-sample.json",
+        "docs/assets/voice-qc/ledger.json",
+        "docs/dialogue/NPC-VOICE-CATALOG.md",
+        "docs/plans/npc-065-stable-npc-voice-casting-and-donor-qc.md",
+        "docs/research/v1-revival/2026-10-31--npc-voice-audit-inventory.json",
+        "docs/research/v1-revival/2026-11-04--q90-coverage.json",
+        "docs/research/v1-revival/2026-11-05--named-npc-voice-reuse-qc.md",
+        "docs/v3-donor/plans/audio--002--npc-voice-and-social-dialogue.md",
+        "docs/v3-donor/plans/audio--004--npc-pair-voice-roi-production-queue.md",
+        "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md",
+        "docs/v3-donor/voices/docs/recorded-lines-replacement-backlog.md",
+        "docs/v3-donor/voices/reviews/2026-10-20--185--npc-dialogue-quality-audit.md",
+        "src/ai/npcVoiceLines.ts"
+      ],
+      "removedBeforeThisSession": true
+    },
+    {
+      "filename": "general_male_greeting_01.mp3",
+      "sha256": "9b3b77359bb8fcfbb3d6219069f2aeb2ed3c222367445e7dd18d64e67ef1d4f6",
+      "gitBlob": "8422cf02823b0f02d2a9e9c415ed75756a60caaf",
+      "reason": "Author explicitly approved replacement of 'REMOVE' in ambiguous. Identity rejection is independent of ASR/transcript quality.",
+      "paths": [
+        "docs/v3-donor/voices/mp3/general_male_greeting_01.mp3",
+        "public/sounds/voices/general_male_greeting_01.mp3"
+      ],
+      "recoveryCommit": "f4dabf9535941c6fb66527b91fbdcbeca1a1e531",
+      "affectedReferences": [
+        "docs/assets/voice-qc/IDENTITY-AUDIT.md",
+        "docs/assets/voice-qc/IDENTITY-CALIBRATION.md",
+        "docs/assets/voice-qc/REPORT.md",
+        "docs/assets/voice-qc/identity-audit.json",
+        "docs/assets/voice-qc/identity-calibration.json",
+        "docs/assets/voice-qc/identity-sample.json",
+        "docs/assets/voice-qc/ledger.json",
+        "docs/dialogue/NPC-VOICE-CATALOG.md",
+        "docs/research/v1-revival/2026-10-31--npc-voice-audit-inventory.json",
+        "docs/research/v1-revival/2026-11-04--q90-coverage.json",
+        "docs/research/v1-revival/2026-11-05--named-npc-voice-reuse-qc.md",
+        "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md",
+        "scripts/voice/test_voice_identity_qc.py",
+        "src/ai/npcVoiceLines.test.ts",
+        "src/ai/npcVoiceLines.ts",
+        "src/ui-vue/npcDialogueGreeting.ts"
+      ],
+      "removedBeforeThisSession": true
+    },
+    {
+      "filename": "general_male_old_greeting_01.mp3",
+      "sha256": "d00c6791b63da614ef913d35c3b99fab3d3ac8a82afb1457e75d28261387900c",
+      "gitBlob": "b5e2dd722d53f179c46a36938d3325073ff498c6",
+      "reason": "Author explicitly approved replacement of '?' in unresolved-expected. Identity rejection is independent of ASR/transcript quality.",
+      "paths": [
+        "docs/v3-donor/voices/mp3/general_male_old_greeting_01.mp3",
+        "public/sounds/voices/general_male_old_greeting_01.mp3"
+      ],
+      "recoveryCommit": "f4dabf9535941c6fb66527b91fbdcbeca1a1e531",
+      "affectedReferences": [
+        "docs/assets/voice-qc/IDENTITY-AUDIT.md",
+        "docs/assets/voice-qc/IDENTITY-MAPPING-REVIEW.md",
+        "docs/assets/voice-qc/REPORT.md",
+        "docs/assets/voice-qc/identity-audit.json",
+        "docs/assets/voice-qc/ledger.json",
+        "docs/research/v1-revival/2026-10-31--npc-voice-audit-inventory.json",
+        "docs/research/v1-revival/2026-11-04--q90-coverage.json",
+        "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md",
+        "scripts/voice/voice-identity-overrides.json"
+      ],
+      "removedBeforeThisSession": true
+    },
+    {
+      "filename": "general_male_young_farewell_01.mp3",
+      "sha256": "d1ccef78f258bb351b627978e93aca0bad10a66eca5124cb41aec72d666d8b0f",
+      "gitBlob": "ef1d698abac2d90631f3051619202957e9658379",
+      "reason": "Author explicitly approved replacement of '?' in unresolved-expected. Identity rejection is independent of ASR/transcript quality.",
+      "paths": [
+        "docs/v3-donor/voices/mp3/general_male_young_farewell_01.mp3",
+        "public/sounds/voices/general_male_young_farewell_01.mp3"
+      ],
+      "recoveryCommit": "f4dabf9535941c6fb66527b91fbdcbeca1a1e531",
+      "affectedReferences": [
+        "docs/assets/voice-qc/IDENTITY-AUDIT.md",
+        "docs/assets/voice-qc/IDENTITY-MAPPING-REVIEW.md",
+        "docs/assets/voice-qc/identity-audit.json",
+        "docs/assets/voice-qc/ledger.json",
+        "docs/research/v1-revival/2026-10-31--npc-voice-audit-inventory.json",
+        "docs/research/v1-revival/2026-11-04--q90-coverage.json",
+        "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md",
+        "scripts/voice/voice-identity-overrides.json"
+      ],
+      "removedBeforeThisSession": true
+    },
+    {
+      "filename": "general_male_young_greeting_01.mp3",
+      "sha256": "042c18a2142431ac966530466bd4fc57de1120a2266970d3ffed17fc3a453fb2",
+      "gitBlob": "f86212d404bc5cdf20edece928081665c6879e11",
+      "reason": "Author explicitly approved replacement of '?' in unresolved-expected. Identity rejection is independent of ASR/transcript quality.",
+      "paths": [
+        "docs/v3-donor/voices/mp3/general_male_young_greeting_01.mp3",
+        "public/sounds/voices/general_male_young_greeting_01.mp3"
+      ],
+      "recoveryCommit": "f4dabf9535941c6fb66527b91fbdcbeca1a1e531",
+      "affectedReferences": [
+        "docs/assets/voice-qc/IDENTITY-AUDIT.md",
+        "docs/assets/voice-qc/IDENTITY-MAPPING-REVIEW.md",
+        "docs/assets/voice-qc/REPORT.md",
+        "docs/assets/voice-qc/identity-audit.json",
+        "docs/assets/voice-qc/ledger.json",
+        "docs/research/v1-revival/2026-10-31--npc-voice-audit-inventory.json",
+        "docs/research/v1-revival/2026-11-04--q90-coverage.json",
+        "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md",
+        "docs/v3-donor/voices/docs/recorded-lines-replacement-backlog.md",
+        "scripts/voice/test_voice_identity_qc.py",
+        "scripts/voice/voice-identity-overrides.json"
+      ],
+      "removedBeforeThisSession": true
+    },
+    {
+      "filename": "campfire_female_weather_answer_02.mp3",
+      "sha256": "03c9765a5d4c5f601e352cecd5fdf6ee5a49c70704f39efd169da367b6513d9b",
+      "gitBlob": "44cec6233045d4fda3a1f0e2a014f4060c6c946f",
+      "reason": "Author explicitly confirmed British-female and approved global rejection/removal, 2026-11-05; not inferred from similarity.",
+      "paths": [
+        "docs/v3-donor/voices/mp3/campfire_female_weather_answer_02.mp3",
+        "public/sounds/voices/campfire_female_weather_answer_02.mp3"
+      ],
+      "recoveryCommit": "4d29c4397f4d3c91869a58e2c7ae2a350cef65e1",
+      "affectedReferences": [
+        "docs/assets/voice-qc/IDENTITY-AUDIT.md",
+        "docs/assets/voice-qc/IDENTITY-MAPPING-REVIEW.md",
+        "docs/assets/voice-qc/author-decisions.json",
+        "docs/assets/voice-qc/identity-audit.json",
+        "docs/assets/voice-qc/ledger.json",
+        "docs/dialogue/NPC-VOICE-CATALOG.md",
+        "docs/research/v1-revival/2026-10-31--npc-voice-audit-inventory.json",
+        "docs/research/v1-revival/2026-11-04--q90-coverage.json",
+        "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md",
+        "src/ai/campfireTalk.ts"
+      ],
+      "runtimeReferences": [
+        "src/ai/campfireTalk.ts"
+      ],
+      "removedBeforeThisSession": false
+    },
+    {
+      "filename": "campfire_female_weather_question_01.mp3",
+      "sha256": "afa5158f6905c5c55f943835ed4ef62f13e073f15d6e0b6262e1f045b8a4774a",
+      "gitBlob": "ba7d75c681b16aaf008043a25b70f4431543b59b",
+      "reason": "Author explicitly confirmed British-female and approved global rejection/removal, 2026-11-05; not inferred from similarity.",
+      "paths": [
+        "docs/v3-donor/voices/mp3/campfire_female_weather_question_01.mp3",
+        "public/sounds/voices/campfire_female_weather_question_01.mp3"
+      ],
+      "recoveryCommit": "4d29c4397f4d3c91869a58e2c7ae2a350cef65e1",
+      "affectedReferences": [
+        "docs/assets/voice-qc/IDENTITY-AUDIT.md",
+        "docs/assets/voice-qc/IDENTITY-MAPPING-REVIEW.md",
+        "docs/assets/voice-qc/REPORT.md",
+        "docs/assets/voice-qc/author-decisions.json",
+        "docs/assets/voice-qc/identity-audit.json",
+        "docs/assets/voice-qc/ledger.json",
+        "docs/dialogue/NPC-VOICE-CATALOG.md",
+        "docs/research/v1-revival/2026-10-31--npc-voice-audit-inventory.json",
+        "docs/research/v1-revival/2026-11-04--q90-coverage.json",
+        "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md",
+        "src/ai/campfireTalk.ts"
+      ],
+      "runtimeReferences": [
+        "src/ai/campfireTalk.ts"
+      ],
+      "removedBeforeThisSession": false
+    },
+    {
+      "filename": "general_female_agree_01.mp3",
+      "sha256": "c02485da9da8ea97012a5a432ce84db70e0c617a0db1f83fa21c3c31cbd0c466",
+      "gitBlob": "d12c0e2be5029d5853ce4002d294a6fb0cda8690",
+      "reason": "Author explicitly confirmed British-female and approved global rejection/removal, 2026-11-05; not inferred from similarity.",
+      "paths": [
+        "docs/v3-donor/voices/mp3/general_female_agree_01.mp3",
+        "public/sounds/voices/general_female_agree_01.mp3"
+      ],
+      "recoveryCommit": "4d29c4397f4d3c91869a58e2c7ae2a350cef65e1",
+      "affectedReferences": [
+        "docs/assets/voice-qc/IDENTITY-AUDIT.md",
+        "docs/assets/voice-qc/IDENTITY-MAPPING-REVIEW.md",
+        "docs/assets/voice-qc/author-decisions.json",
+        "docs/assets/voice-qc/identity-audit.json",
+        "docs/assets/voice-qc/ledger.json",
+        "docs/dialogue/NPC-VOICE-CATALOG.md",
+        "docs/research/v1-revival/2026-10-31--npc-voice-audit-inventory.json",
+        "docs/research/v1-revival/2026-11-04--q90-coverage.json",
+        "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
+      ],
+      "runtimeReferences": [],
+      "removedBeforeThisSession": false
+    },
+    {
+      "filename": "general_female_farewell_01.mp3",
+      "sha256": "e28d10809561067debc39708aebf22daa0527cc5d533cca7650768938e37063c",
+      "gitBlob": "a834a37cf313af20c968b81ad9d071f61cddcb87",
+      "reason": "Author explicitly confirmed British-female and approved global rejection/removal, 2026-11-05; not inferred from similarity.",
+      "paths": [
+        "docs/v3-donor/voices/mp3/general_female_farewell_01.mp3",
+        "public/sounds/voices/general_female_farewell_01.mp3"
+      ],
+      "recoveryCommit": "4d29c4397f4d3c91869a58e2c7ae2a350cef65e1",
+      "affectedReferences": [
+        "docs/assets/voice-qc/IDENTITY-AUDIT.md",
+        "docs/assets/voice-qc/IDENTITY-MAPPING-REVIEW.md",
+        "docs/assets/voice-qc/REPORT.md",
+        "docs/assets/voice-qc/author-decisions.json",
+        "docs/assets/voice-qc/identity-audit.json",
+        "docs/assets/voice-qc/ledger.json",
+        "docs/dialogue/NPC-VOICE-CATALOG.md",
+        "docs/research/v1-revival/2026-10-31--npc-voice-audit-inventory.json",
+        "docs/research/v1-revival/2026-11-04--q90-coverage.json",
+        "docs/research/v1-revival/2026-11-05--named-npc-voice-reuse-qc.md",
+        "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md",
+        "src/ai/npcVoiceLines.ts"
+      ],
+      "runtimeReferences": [
+        "src/ai/npcVoiceLines.ts"
+      ],
+      "removedBeforeThisSession": false
+    },
+    {
+      "filename": "general_female_greeting_01.mp3",
+      "sha256": "9de96351c44128b477a1f2a45cc8b980ce287578458466c7fd9ed6a9dca9250b",
+      "gitBlob": "70b49103970982350b30dd3fe2ce159140651d7d",
+      "reason": "Author explicitly confirmed British-female and approved global rejection/removal, 2026-11-05; not inferred from similarity.",
+      "paths": [
+        "docs/v3-donor/voices/mp3/general_female_greeting_01.mp3",
+        "public/sounds/voices/general_female_greeting_01.mp3"
+      ],
+      "recoveryCommit": "4d29c4397f4d3c91869a58e2c7ae2a350cef65e1",
+      "affectedReferences": [
+        "docs/assets/voice-qc/IDENTITY-AUDIT.md",
+        "docs/assets/voice-qc/IDENTITY-CALIBRATION.md",
+        "docs/assets/voice-qc/IDENTITY-MAPPING-REVIEW.md",
+        "docs/assets/voice-qc/REPORT.md",
+        "docs/assets/voice-qc/author-decisions.json",
+        "docs/assets/voice-qc/identity-audit.json",
+        "docs/assets/voice-qc/identity-calibration.json",
+        "docs/assets/voice-qc/identity-sample.json",
+        "docs/assets/voice-qc/ledger.json",
+        "docs/dialogue/NPC-VOICE-CATALOG.md",
+        "docs/plans/npc-065-stable-npc-voice-casting-and-donor-qc.md",
+        "docs/research/v1-revival/2026-10-31--npc-voice-audit-inventory.json",
+        "docs/research/v1-revival/2026-11-04--q90-coverage.json",
+        "docs/research/v1-revival/2026-11-05--named-npc-voice-reuse-qc.md",
+        "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md",
+        "src/ai/npcVoiceLines.ts"
+      ],
+      "runtimeReferences": [
+        "src/ai/npcVoiceLines.ts"
+      ],
+      "removedBeforeThisSession": false
+    },
+    {
+      "filename": "general_female_quest_complete_01.mp3",
+      "sha256": "09829ad550173bffb9f9bd5fb9aa94e63d9e61d547f3b4c679719f14e6d47f36",
+      "gitBlob": "1019b3298263ea5631f218d3f6873b131923788c",
+      "reason": "Author explicitly confirmed British-female and approved global rejection/removal, 2026-11-05; not inferred from similarity.",
+      "paths": [
+        "docs/v3-donor/voices/mp3/general_female_quest_complete_01.mp3",
+        "public/sounds/voices/general_female_quest_complete_01.mp3"
+      ],
+      "recoveryCommit": "4d29c4397f4d3c91869a58e2c7ae2a350cef65e1",
+      "affectedReferences": [
+        "docs/assets/voice-qc/IDENTITY-AUDIT.md",
+        "docs/assets/voice-qc/IDENTITY-MAPPING-REVIEW.md",
+        "docs/assets/voice-qc/author-decisions.json",
+        "docs/assets/voice-qc/identity-audit.json",
+        "docs/assets/voice-qc/ledger.json",
+        "docs/dialogue/NPC-VOICE-CATALOG.md",
+        "docs/research/v1-revival/2026-10-31--npc-voice-audit-inventory.json",
+        "docs/research/v1-revival/2026-11-04--q90-coverage.json",
+        "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md",
+        "docs/v3-donor/voices/docs/recorded-lines-replacement-backlog.md"
+      ],
+      "runtimeReferences": [],
+      "removedBeforeThisSession": false
+    },
+    {
+      "filename": "general_female_quest_declined_01.mp3",
+      "sha256": "7b7ae1043b696d38d4d413b5f3040766558b45dfcc300f825e7f175f66d812d3",
+      "gitBlob": "375d99aeb0be7e85330c09052e6fcf1f4d935fa8",
+      "reason": "Author explicitly confirmed British-female and approved global rejection/removal, 2026-11-05; not inferred from similarity.",
+      "paths": [
+        "docs/v3-donor/voices/mp3/general_female_quest_declined_01.mp3",
+        "public/sounds/voices/general_female_quest_declined_01.mp3"
+      ],
+      "recoveryCommit": "4d29c4397f4d3c91869a58e2c7ae2a350cef65e1",
+      "affectedReferences": [
+        "docs/assets/voice-qc/IDENTITY-AUDIT.md",
+        "docs/assets/voice-qc/IDENTITY-MAPPING-REVIEW.md",
+        "docs/assets/voice-qc/author-decisions.json",
+        "docs/assets/voice-qc/identity-audit.json",
+        "docs/assets/voice-qc/ledger.json",
+        "docs/dialogue/NPC-VOICE-CATALOG.md",
+        "docs/research/v1-revival/2026-10-31--npc-voice-audit-inventory.json",
+        "docs/research/v1-revival/2026-11-04--q90-coverage.json",
+        "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md",
+        "docs/v3-donor/voices/docs/recorded-lines-replacement-backlog.md"
+      ],
+      "runtimeReferences": [],
+      "removedBeforeThisSession": false
+    },
+    {
+      "filename": "general_female_thanks_01.mp3",
+      "sha256": "937276bfc918fc86ca2000af200de29f90c8553891a946f7e5c159f22fff80e1",
+      "gitBlob": "107031b675b4727c420859f50dcbad78b0d0f165",
+      "reason": "Author explicitly confirmed British-female and approved global rejection/removal, 2026-11-05; not inferred from similarity.",
+      "paths": [
+        "docs/v3-donor/voices/mp3/general_female_thanks_01.mp3",
+        "public/sounds/voices/general_female_thanks_01.mp3"
+      ],
+      "recoveryCommit": "4d29c4397f4d3c91869a58e2c7ae2a350cef65e1",
+      "affectedReferences": [
+        "docs/assets/voice-qc/IDENTITY-AUDIT.md",
+        "docs/assets/voice-qc/IDENTITY-MAPPING-REVIEW.md",
+        "docs/assets/voice-qc/author-decisions.json",
+        "docs/assets/voice-qc/identity-audit.json",
+        "docs/assets/voice-qc/ledger.json",
+        "docs/dialogue/NPC-VOICE-CATALOG.md",
+        "docs/research/v1-revival/2026-10-31--npc-voice-audit-inventory.json",
+        "docs/research/v1-revival/2026-11-04--q90-coverage.json",
+        "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
+      ],
+      "runtimeReferences": [],
+      "removedBeforeThisSession": false
+    }
+  ]
+}

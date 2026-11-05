@@ -20,9 +20,9 @@ class CleanupTests(unittest.TestCase):
         self.assertEqual(ledger, json.loads(historical))
         self.assertEqual(len(ledger['rows']), 317)
         entries = load_decisions(ledger['rows'])
-        backlog = json.loads((directory/'regeneration-backlog.json').read_text())['recordings']
-        removed = {r['originalFilename']: r for r in backlog}
-        self.assertEqual(len(backlog), 6)
+        manifest = json.loads((directory/'deletion-manifest.json').read_text())['recordings']
+        removed = {r['filename']: r for r in manifest}
+        self.assertEqual(len(manifest), 14)
         self.assertEqual(set(removed), {n for n, e in entries.items() if e['disposition'] == 'replace'})
         paths = subprocess.check_output(['git', 'ls-files', '-z', '*.mp3'], cwd=ROOT).decode().split('\0')[:-1]
         existing = {p: hashlib.sha256((ROOT/p).read_bytes()).hexdigest() for p in paths if (ROOT/p).exists()}
@@ -35,13 +35,13 @@ class CleanupTests(unittest.TestCase):
                 if row['inV1Public']:
                     self.assertEqual((ROOT/'public/sounds/voices'/name).read_bytes(), donor.read_bytes())
                 continue
-            removal = removed[name]['removal']
+            removal = removed[name]
             self.assertEqual(removal['gitBlob'], row['gitBlob'])
-            self.assertEqual(len(removal['removedPaths']), 2)
+            self.assertEqual(len(removal['paths']), 2)
             self.assertNotIn(removal['sha256'], existing.values())
-            for path in removal['removedPaths']:
+            for path in removal['paths']:
                 self.assertFalse((ROOT/path).exists())
-                audio = subprocess.check_output(['git', 'show', removal['historicalCommit']+':'+path], cwd=ROOT)
+                audio = subprocess.check_output(['git', 'show', removal['recoveryCommit']+':'+path], cwd=ROOT)
                 self.assertEqual(hashlib.sha256(audio).hexdigest(), removal['sha256'])
 
     def test_all_static_runtime_voice_urls_exist(self):
@@ -49,7 +49,8 @@ class CleanupTests(unittest.TestCase):
         for path in (ROOT/'src').rglob('*.ts'):
             if path.name.endswith('.test.ts'):
                 continue
-            for url in re.findall(r'/sounds/voices/[\w/.-]+\.mp3', path.read_text()):
+            for url in re.findall(r'(?:/sounds/voices|\$\{VOICES\})/[\w/.-]+\.mp3', path.read_text()):
+                url = url.replace('${VOICES}', '/sounds/voices')
                 self.assertTrue((ROOT/'public'/url.lstrip('/')).is_file(), f'{path}: {url}')
                 checked.add(url)
         self.assertGreater(len(checked), 50)

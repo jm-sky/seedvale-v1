@@ -30,22 +30,6 @@ const VOICES = '/sounds/voices'
  *  responder can start after the question without a completion callback. */
 const CAMPFIRE_TALKS: readonly CampfireTalkDefinition[] = [
   {
-    topic: 'weather',
-    questionerGender: 'female',
-    responderGender: 'male',
-    questionUrl: `${VOICES}/campfire_female_weather_question_01.mp3`,
-    answerUrl: `${VOICES}/campfire_male_weather_answer_01.mp3`,
-    answerDelaySec: 1.0,
-  },
-  {
-    topic: 'weather',
-    questionerGender: 'male',
-    responderGender: 'female',
-    questionUrl: `${VOICES}/campfire_male_weather_question_02.mp3`,
-    answerUrl: `${VOICES}/campfire_female_weather_answer_02.mp3`,
-    answerDelaySec: 1.5,
-  },
-  {
     topic: 'work',
     questionerGender: 'male',
     responderGender: 'female',

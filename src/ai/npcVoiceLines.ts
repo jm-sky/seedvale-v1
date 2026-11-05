@@ -124,12 +124,6 @@ export const FRIENDLY_TALK_SOUND_VOLUME = 0.65
  * runtime probing.
  */
 const GENERATED_VOICE_MANIFEST: Readonly<Record<string, readonly string[]>> = {
-  'general:female:greeting': [
-    '/sounds/voices/general_female_greeting_01.mp3',
-  ],
-  'general:female:farewell': [
-    '/sounds/voices/general_female_farewell_01.mp3',
-  ],
 
   'merchant:female:greeting': [
     '/sounds/voices/merchant_female_greeting_01.mp3',

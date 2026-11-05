@@ -30,7 +30,7 @@ describe('resolveCampfireTalk', () => {
     const last = resolveCampfireTalk('female', 'male', () => 0.999999)
     expect(first).toBeDefined()
     expect(last).toBeDefined()
-    expect(first!.topic).toBe('weather')
+    expect(first!.topic).toBe('work')
     expect(last!.topic).toBe('road')
     expect(first!.questionUrl).not.toBe(last!.questionUrl)
   })
