@@ -28,6 +28,20 @@ Small differences between Whisper ASR and canonical scripts are **acceptable**, 
 
 The complete original and ASR transcripts, filenames, source blobs, hashes, selected characterKeys and explicit reasons are in the JSON. Avoid repeating transcript QC for these **unchanged** files unless later evidence contradicts these findings.
 
+## Existing speaker identity audit — reconciled, not rerun
+
+The same **33 content-bound files** were matched to the previously completed [speaker identity audit](IDENTITY-AUDIT.md) and [author decision registry](author-decisions.json).
+
+| Existing identity result | Files |
+| --- | ---: |
+| `strong-match` | **31** |
+| `ambiguous`, expected speaker also best match and consistent with author annotation | **2** |
+| `suspected-wrong-speaker` | **0** |
+
+The two ambiguous clips are Marek's `npc_mark_hornblower_danger_alert_01.mp3` (Friendly-Male-Voice) and Molly's `general_female_b_danger_alert_02.mp3` (Hannah). In both cases the expected and best-matching reference agree with the historical author's speaker annotation. These annotations corroborate classification, but **are not formal audio-QC passes**: the original decision registry still has `disposition: pending`.
+
+Both text acceptance and existing speaker evidence are now recorded per file in the [hash-bound JSON](npc-069-text-acceptance.json). Re-running 317-file ASR or full speaker comparison is not needed merely because historical final QC remains pending.
+
 ## Boundaries and remaining gates
 
 - **Speaker identity:** a separate embedding comparison exists. It remains probabilistic; `strong-match` is not final listening approval, and some selected clips (e.g. Marek danger, Molly danger) were historically `ambiguous`. Use the existing identity audit and author source decisions, not this text acceptance to resolve those.
@@ -35,4 +49,4 @@ The complete original and ASR transcripts, filenames, source blobs, hashes, sele
 - **Context and runtime:** selected semantic intents and restrictions remain as in the npc-069 manifest; `npc-065`/Q88 governs same-speaker resolver and subsequent registration. This document never auto-admits an MP3.
 - **ASR uncertainty:** this is a documented acceptance of minor differences, not proof that Whisper output is a faithful verbatim transcript. Exact displayed/spoken wording policy in UI integration must respect the reviewed semantic-equivalence allowance and any separately agreed strict display fidelity.
 
-**Next useful step:** apply identity evidence specifically to these 33 files, then limited audio listening on low-confidence files; no need to rerun full 317-file ASR to resolve minor differences.
+**Next useful step:** determine minimal listening/audio-admission policy under `npc-065` and integrate stable-speaker runtime selection. The 33-file transcript and identity evidence has already been reconciled.
