@@ -1359,7 +1359,7 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
       // Universal melee tick (plan 123) — runs every frame regardless of
       // input. Candidates are read from `interactables`'s already-filtered
       // `animal` entries (GAZE_RANGE, currently 5, comfortably covers every
-      // weapon's configured `range`, currently <=2.6), not a fresh world
+      // weapon's configured `range`, currently <=3.2), not a fresh world
       // query — the hit test itself is independent of whichever single
       // target `pickInGaze` would pick below.
       const meleeCandidates: MeleeHitCandidate[] = []
