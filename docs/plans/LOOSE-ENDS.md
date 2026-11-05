@@ -116,3 +116,5 @@ Format: `- [ ] YYYY-MM-DD — opis (plan/plik, jeśli istotne)`
 
 - [ ] 2026-11-05 — Q99: the water-exit "target inside the 0.4 m arrival radius" fix (`overshootWaterExit`, `WATER_EXIT_REACHED_DIST` in `AnimalAgent.ts`) has no discriminating unit test — wander always found a dry target first in the synthetic pool. Covered only by the browser A/B (fauna water log). Also seen while writing tests: an animal's first `update()` moves ~3–7 m in one tick (cadence prime `CADENCE_PRIME_SEC` flushed as one behaviour step) — check whether that is intended for freshly spawned animals.
 
+
+- **2026-11-05 · fauna-051 §A (Q151) follow-ups:** the attack-time spatial bite gate (`biteSharesSpatialContext`, same `WorldSpatialContext` + Δy ≤ 2 m) runs only in the `gameLoop` player-bite callback; NPC bites have no such check and the agent itself does not gate — both need `createFauna.ts` plumbing and an NPC height. Also: `findPath` returns a straight route through a 1 m thin wall (pre-existing; characterised in `AnimalAgent.chase.test.ts`).
