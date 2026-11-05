@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "date": "2026-11-05",
   "scope": "33 active npc-069 reuse-QC-pending files; content-bound text acceptance only",
   "decision_authority": "Author: small transcription differences are tolerated even when actual generated wording differs if meaning/context remain intact",
@@ -9,7 +9,11 @@
     "ledger": "docs/assets/voice-qc/ledger.json",
     "ledger_blob": "91122b13395f6f247aab012e978f92d2e34d253e",
     "nv_script": "docs/research/v1-revival/2026-11-05--named-npc-voice-script.json",
-    "nv_blob": "3208d79887b77c56ee3bce3294196eff7cae5c26"
+    "nv_blob": "3208d79887b77c56ee3bce3294196eff7cae5c26",
+    "identity_audit": "docs/assets/voice-qc/IDENTITY-AUDIT.md",
+    "identity_audit_blob": "e8a0888a65cb395797ed1812839027ed032bac17",
+    "author_decisions": "docs/assets/voice-qc/author-decisions.json",
+    "author_decisions_blob": "e46d1cd3a825f7c2c16181627305239d43d0d0fe"
   },
   "counts": {
     "total": 33,
@@ -17,7 +21,11 @@
     "minor_semantic_equivalent": 4,
     "material_differences": 0,
     "text_accepted": 33,
-    "speaker_qc_approved": 0
+    "speaker_qc_approved": 0,
+    "identity_strong_match": 31,
+    "identity_ambiguous": 2,
+    "identity_suspected_wrong": 0,
+    "identity_ambiguous_with_author_annotation": 2
   },
   "policy": "Text-only automatic acceptance on verified source gitBlob and sha256. No change to canonical transcript, historical ASR, source identity, audio listening verdict, or runtime admission. Changes to audio hash or transcript invalidate this content-bound text acceptance and require recheck.",
   "rows": [
@@ -35,7 +43,15 @@
       "rationale": "will you ↔ will ya: colloquial contraction; same intent",
       "speaker_identity": "not-approved-by-text-review",
       "audio_quality": "not-listened",
-      "runtime_admission": "not-authorized"
+      "runtime_admission": "not-authorized",
+      "identity_audit": {
+        "classification": "strong-match",
+        "expected_reference": "Friendly-Male-Voice",
+        "best_reference": "Friendly-Male-Voice",
+        "author_speaker_cell": null,
+        "content_bound": true,
+        "interpretation": "Strong automated similarity evidence; separate final audio admission still pending"
+      }
     },
     {
       "recording_id": "NV-004",
@@ -51,7 +67,15 @@
       "rationale": "Equivalent after case/punctuation normalization",
       "speaker_identity": "not-approved-by-text-review",
       "audio_quality": "not-listened",
-      "runtime_admission": "not-authorized"
+      "runtime_admission": "not-authorized",
+      "identity_audit": {
+        "classification": "ambiguous",
+        "expected_reference": "Friendly-Male-Voice",
+        "best_reference": "Friendly-Male-Voice",
+        "author_speaker_cell": "Friendly-Male-Voice",
+        "content_bound": true,
+        "interpretation": "Ambiguous automatic score; expected and best match agree; author speaker annotation corroborates, not a formal pass"
+      }
     },
     {
       "recording_id": "NV-003",
@@ -67,7 +91,15 @@
       "rationale": "Equivalent after case/punctuation normalization",
       "speaker_identity": "not-approved-by-text-review",
       "audio_quality": "not-listened",
-      "runtime_admission": "not-authorized"
+      "runtime_admission": "not-authorized",
+      "identity_audit": {
+        "classification": "strong-match",
+        "expected_reference": "Friendly-Male-Voice",
+        "best_reference": "Friendly-Male-Voice",
+        "author_speaker_cell": null,
+        "content_bound": true,
+        "interpretation": "Strong automated similarity evidence; separate final audio admission still pending"
+      }
     },
     {
       "recording_id": "NV-022",
@@ -83,7 +115,15 @@
       "rationale": "Equivalent after case/punctuation normalization",
       "speaker_identity": "not-approved-by-text-review",
       "audio_quality": "not-listened",
-      "runtime_admission": "not-authorized"
+      "runtime_admission": "not-authorized",
+      "identity_audit": {
+        "classification": "strong-match",
+        "expected_reference": "Expressive-Female-Voice",
+        "best_reference": "Expressive-Female-Voice",
+        "author_speaker_cell": null,
+        "content_bound": true,
+        "interpretation": "Strong automated similarity evidence; separate final audio admission still pending"
+      }
     },
     {
       "recording_id": "NV-023",
@@ -99,7 +139,15 @@
       "rationale": "Equivalent after case/punctuation normalization",
       "speaker_identity": "not-approved-by-text-review",
       "audio_quality": "not-listened",
-      "runtime_admission": "not-authorized"
+      "runtime_admission": "not-authorized",
+      "identity_audit": {
+        "classification": "strong-match",
+        "expected_reference": "Expressive-Female-Voice",
+        "best_reference": "Expressive-Female-Voice",
+        "author_speaker_cell": null,
+        "content_bound": true,
+        "interpretation": "Strong automated similarity evidence; separate final audio admission still pending"
+      }
     },
     {
       "recording_id": "NV-024",
@@ -115,7 +163,15 @@
       "rationale": "Equivalent after case/punctuation normalization",
       "speaker_identity": "not-approved-by-text-review",
       "audio_quality": "not-listened",
-      "runtime_admission": "not-authorized"
+      "runtime_admission": "not-authorized",
+      "identity_audit": {
+        "classification": "strong-match",
+        "expected_reference": "Expressive-Female-Voice",
+        "best_reference": "Expressive-Female-Voice",
+        "author_speaker_cell": null,
+        "content_bound": true,
+        "interpretation": "Strong automated similarity evidence; separate final audio admission still pending"
+      }
     },
     {
       "recording_id": "merchant_female_quest_accepted_02.mp3",
@@ -131,7 +187,15 @@
       "rationale": "I knew you looked ↔ I know you look: minor tense variation; same positive assessment/acceptance intent; user explicitly tolerates it",
       "speaker_identity": "not-approved-by-text-review",
       "audio_quality": "not-listened",
-      "runtime_admission": "not-authorized"
+      "runtime_admission": "not-authorized",
+      "identity_audit": {
+        "classification": "strong-match",
+        "expected_reference": "Expressive-Female-Voice",
+        "best_reference": "Expressive-Female-Voice",
+        "author_speaker_cell": null,
+        "content_bound": true,
+        "interpretation": "Strong automated similarity evidence; separate final audio admission still pending"
+      }
     },
     {
       "recording_id": "NV-026",
@@ -147,7 +211,15 @@
       "rationale": "Equivalent after case/punctuation normalization",
       "speaker_identity": "not-approved-by-text-review",
       "audio_quality": "not-listened",
-      "runtime_admission": "not-authorized"
+      "runtime_admission": "not-authorized",
+      "identity_audit": {
+        "classification": "strong-match",
+        "expected_reference": "Expressive-Female-Voice",
+        "best_reference": "Expressive-Female-Voice",
+        "author_speaker_cell": null,
+        "content_bound": true,
+        "interpretation": "Strong automated similarity evidence; separate final audio admission still pending"
+      }
     },
     {
       "recording_id": "merchant_female_b_greeting_02.mp3",
@@ -163,7 +235,15 @@
       "rationale": "Equivalent after case/punctuation normalization",
       "speaker_identity": "not-approved-by-text-review",
       "audio_quality": "not-listened",
-      "runtime_admission": "not-authorized"
+      "runtime_admission": "not-authorized",
+      "identity_audit": {
+        "classification": "strong-match",
+        "expected_reference": "Laura",
+        "best_reference": "Laura",
+        "author_speaker_cell": null,
+        "content_bound": true,
+        "interpretation": "Strong automated similarity evidence; separate final audio admission still pending"
+      }
     },
     {
       "recording_id": "merchant_female_b_farewell_02.mp3",
@@ -179,7 +259,15 @@
       "rationale": "Equivalent after case/punctuation normalization",
       "speaker_identity": "not-approved-by-text-review",
       "audio_quality": "not-listened",
-      "runtime_admission": "not-authorized"
+      "runtime_admission": "not-authorized",
+      "identity_audit": {
+        "classification": "strong-match",
+        "expected_reference": "Laura",
+        "best_reference": "Laura",
+        "author_speaker_cell": null,
+        "content_bound": true,
+        "interpretation": "Strong automated similarity evidence; separate final audio admission still pending"
+      }
     },
     {
       "recording_id": "merchant_female_b_attention_01.mp3",
@@ -195,7 +283,15 @@
       "rationale": "Equivalent after case/punctuation normalization",
       "speaker_identity": "not-approved-by-text-review",
       "audio_quality": "not-listened",
-      "runtime_admission": "not-authorized"
+      "runtime_admission": "not-authorized",
+      "identity_audit": {
+        "classification": "strong-match",
+        "expected_reference": "Laura",
+        "best_reference": "Laura",
+        "author_speaker_cell": null,
+        "content_bound": true,
+        "interpretation": "Strong automated similarity evidence; separate final audio admission still pending"
+      }
     },
     {
       "recording_id": "merchant_female_b_attention_02.mp3",
@@ -211,7 +307,15 @@
       "rationale": "Equivalent after case/punctuation normalization",
       "speaker_identity": "not-approved-by-text-review",
       "audio_quality": "not-listened",
-      "runtime_admission": "not-authorized"
+      "runtime_admission": "not-authorized",
+      "identity_audit": {
+        "classification": "strong-match",
+        "expected_reference": "Laura",
+        "best_reference": "Laura",
+        "author_speaker_cell": null,
+        "content_bound": true,
+        "interpretation": "Strong automated similarity evidence; separate final audio admission still pending"
+      }
     },
     {
       "recording_id": "merchant_female_b_hungry_01.mp3",
@@ -227,7 +331,15 @@
       "rationale": "Equivalent after case/punctuation normalization",
       "speaker_identity": "not-approved-by-text-review",
       "audio_quality": "not-listened",
-      "runtime_admission": "not-authorized"
+      "runtime_admission": "not-authorized",
+      "identity_audit": {
+        "classification": "strong-match",
+        "expected_reference": "Laura",
+        "best_reference": "Laura",
+        "author_speaker_cell": null,
+        "content_bound": true,
+        "interpretation": "Strong automated similarity evidence; separate final audio admission still pending"
+      }
     },
     {
       "recording_id": "merchant_female_b_hungry_02.mp3",
@@ -243,7 +355,15 @@
       "rationale": "Equivalent after case/punctuation normalization",
       "speaker_identity": "not-approved-by-text-review",
       "audio_quality": "not-listened",
-      "runtime_admission": "not-authorized"
+      "runtime_admission": "not-authorized",
+      "identity_audit": {
+        "classification": "strong-match",
+        "expected_reference": "Laura",
+        "best_reference": "Laura",
+        "author_speaker_cell": null,
+        "content_bound": true,
+        "interpretation": "Strong automated similarity evidence; separate final audio admission still pending"
+      }
     },
     {
       "recording_id": "merchant_female_b_exhausted_02.mp3",
@@ -259,7 +379,15 @@
       "rationale": "Equivalent after case/punctuation normalization",
       "speaker_identity": "not-approved-by-text-review",
       "audio_quality": "not-listened",
-      "runtime_admission": "not-authorized"
+      "runtime_admission": "not-authorized",
+      "identity_audit": {
+        "classification": "strong-match",
+        "expected_reference": "Laura",
+        "best_reference": "Laura",
+        "author_speaker_cell": null,
+        "content_bound": true,
+        "interpretation": "Strong automated similarity evidence; separate final audio admission still pending"
+      }
     },
     {
       "recording_id": "merchant_female_b_weather_shelter_01.mp3",
@@ -275,7 +403,15 @@
       "rationale": "Equivalent after case/punctuation normalization",
       "speaker_identity": "not-approved-by-text-review",
       "audio_quality": "not-listened",
-      "runtime_admission": "not-authorized"
+      "runtime_admission": "not-authorized",
+      "identity_audit": {
+        "classification": "strong-match",
+        "expected_reference": "Laura",
+        "best_reference": "Laura",
+        "author_speaker_cell": null,
+        "content_bound": true,
+        "interpretation": "Strong automated similarity evidence; separate final audio admission still pending"
+      }
     },
     {
       "recording_id": "merchant_female_b_danger_alert_01.mp3",
@@ -291,7 +427,15 @@
       "rationale": "Equivalent after case/punctuation normalization",
       "speaker_identity": "not-approved-by-text-review",
       "audio_quality": "not-listened",
-      "runtime_admission": "not-authorized"
+      "runtime_admission": "not-authorized",
+      "identity_audit": {
+        "classification": "strong-match",
+        "expected_reference": "Laura",
+        "best_reference": "Laura",
+        "author_speaker_cell": null,
+        "content_bound": true,
+        "interpretation": "Strong automated similarity evidence; separate final audio admission still pending"
+      }
     },
     {
       "recording_id": "merchant_female_b_danger_alert_02.mp3",
@@ -307,7 +451,15 @@
       "rationale": "Equivalent after case/punctuation normalization",
       "speaker_identity": "not-approved-by-text-review",
       "audio_quality": "not-listened",
-      "runtime_admission": "not-authorized"
+      "runtime_admission": "not-authorized",
+      "identity_audit": {
+        "classification": "strong-match",
+        "expected_reference": "Laura",
+        "best_reference": "Laura",
+        "author_speaker_cell": null,
+        "content_bound": true,
+        "interpretation": "Strong automated similarity evidence; separate final audio admission still pending"
+      }
     },
     {
       "recording_id": "merchant_female_b_combat_start_01.mp3",
@@ -323,7 +475,15 @@
       "rationale": "Equivalent after case/punctuation normalization",
       "speaker_identity": "not-approved-by-text-review",
       "audio_quality": "not-listened",
-      "runtime_admission": "not-authorized"
+      "runtime_admission": "not-authorized",
+      "identity_audit": {
+        "classification": "strong-match",
+        "expected_reference": "Laura",
+        "best_reference": "Laura",
+        "author_speaker_cell": null,
+        "content_bound": true,
+        "interpretation": "Strong automated similarity evidence; separate final audio admission still pending"
+      }
     },
     {
       "recording_id": "merchant_female_b_combat_start_02.mp3",
@@ -339,7 +499,15 @@
       "rationale": "I don't want a fight ↔ I don't want to fight: semantic equivalence; same defensive warning",
       "speaker_identity": "not-approved-by-text-review",
       "audio_quality": "not-listened",
-      "runtime_admission": "not-authorized"
+      "runtime_admission": "not-authorized",
+      "identity_audit": {
+        "classification": "strong-match",
+        "expected_reference": "Laura",
+        "best_reference": "Laura",
+        "author_speaker_cell": null,
+        "content_bound": true,
+        "interpretation": "Strong automated similarity evidence; separate final audio admission still pending"
+      }
     },
     {
       "recording_id": "merchant_female_b_quest_accepted_02.mp3",
@@ -355,7 +523,15 @@
       "rationale": "Equivalent after case/punctuation normalization",
       "speaker_identity": "not-approved-by-text-review",
       "audio_quality": "not-listened",
-      "runtime_admission": "not-authorized"
+      "runtime_admission": "not-authorized",
+      "identity_audit": {
+        "classification": "strong-match",
+        "expected_reference": "Laura",
+        "best_reference": "Laura",
+        "author_speaker_cell": null,
+        "content_bound": true,
+        "interpretation": "Strong automated similarity evidence; separate final audio admission still pending"
+      }
     },
     {
       "recording_id": "merchant_female_b_quest_declined_02.mp3",
@@ -371,7 +547,15 @@
       "rationale": "Equivalent after case/punctuation normalization",
       "speaker_identity": "not-approved-by-text-review",
       "audio_quality": "not-listened",
-      "runtime_admission": "not-authorized"
+      "runtime_admission": "not-authorized",
+      "identity_audit": {
+        "classification": "strong-match",
+        "expected_reference": "Laura",
+        "best_reference": "Laura",
+        "author_speaker_cell": null,
+        "content_bound": true,
+        "interpretation": "Strong automated similarity evidence; separate final audio admission still pending"
+      }
     },
     {
       "recording_id": "merchant_female_b_quest_complete_01.mp3",
@@ -387,7 +571,15 @@
       "rationale": "Equivalent after case/punctuation normalization",
       "speaker_identity": "not-approved-by-text-review",
       "audio_quality": "not-listened",
-      "runtime_admission": "not-authorized"
+      "runtime_admission": "not-authorized",
+      "identity_audit": {
+        "classification": "strong-match",
+        "expected_reference": "Laura",
+        "best_reference": "Laura",
+        "author_speaker_cell": null,
+        "content_bound": true,
+        "interpretation": "Strong automated similarity evidence; separate final audio admission still pending"
+      }
     },
     {
       "recording_id": "NV-082",
@@ -403,7 +595,15 @@
       "rationale": "Equivalent after case/punctuation normalization",
       "speaker_identity": "not-approved-by-text-review",
       "audio_quality": "not-listened",
-      "runtime_admission": "not-authorized"
+      "runtime_admission": "not-authorized",
+      "identity_audit": {
+        "classification": "strong-match",
+        "expected_reference": "Hannah",
+        "best_reference": "Hannah",
+        "author_speaker_cell": null,
+        "content_bound": true,
+        "interpretation": "Strong automated similarity evidence; separate final audio admission still pending"
+      }
     },
     {
       "recording_id": "general_female_b_greeting_02.mp3",
@@ -419,7 +619,15 @@
       "rationale": "Equivalent after case/punctuation normalization",
       "speaker_identity": "not-approved-by-text-review",
       "audio_quality": "not-listened",
-      "runtime_admission": "not-authorized"
+      "runtime_admission": "not-authorized",
+      "identity_audit": {
+        "classification": "strong-match",
+        "expected_reference": "Hannah",
+        "best_reference": "Hannah",
+        "author_speaker_cell": null,
+        "content_bound": true,
+        "interpretation": "Strong automated similarity evidence; separate final audio admission still pending"
+      }
     },
     {
       "recording_id": "NV-083",
@@ -435,7 +643,15 @@
       "rationale": "Equivalent after case/punctuation normalization",
       "speaker_identity": "not-approved-by-text-review",
       "audio_quality": "not-listened",
-      "runtime_admission": "not-authorized"
+      "runtime_admission": "not-authorized",
+      "identity_audit": {
+        "classification": "strong-match",
+        "expected_reference": "Hannah",
+        "best_reference": "Hannah",
+        "author_speaker_cell": null,
+        "content_bound": true,
+        "interpretation": "Strong automated similarity evidence; separate final audio admission still pending"
+      }
     },
     {
       "recording_id": "general_female_b_farewell_01.mp3",
@@ -451,7 +667,15 @@
       "rationale": "Equivalent after case/punctuation normalization",
       "speaker_identity": "not-approved-by-text-review",
       "audio_quality": "not-listened",
-      "runtime_admission": "not-authorized"
+      "runtime_admission": "not-authorized",
+      "identity_audit": {
+        "classification": "strong-match",
+        "expected_reference": "Hannah",
+        "best_reference": "Hannah",
+        "author_speaker_cell": null,
+        "content_bound": true,
+        "interpretation": "Strong automated similarity evidence; separate final audio admission still pending"
+      }
     },
     {
       "recording_id": "NV-084",
@@ -467,7 +691,15 @@
       "rationale": "Equivalent after case/punctuation normalization",
       "speaker_identity": "not-approved-by-text-review",
       "audio_quality": "not-listened",
-      "runtime_admission": "not-authorized"
+      "runtime_admission": "not-authorized",
+      "identity_audit": {
+        "classification": "strong-match",
+        "expected_reference": "Hannah",
+        "best_reference": "Hannah",
+        "author_speaker_cell": null,
+        "content_bound": true,
+        "interpretation": "Strong automated similarity evidence; separate final audio admission still pending"
+      }
     },
     {
       "recording_id": "general_female_b_attention_01.mp3",
@@ -483,7 +715,15 @@
       "rationale": "over here ↔ overhear: likely ASR word-boundary error; same attention utterance",
       "speaker_identity": "not-approved-by-text-review",
       "audio_quality": "not-listened",
-      "runtime_admission": "not-authorized"
+      "runtime_admission": "not-authorized",
+      "identity_audit": {
+        "classification": "strong-match",
+        "expected_reference": "Hannah",
+        "best_reference": "Hannah",
+        "author_speaker_cell": null,
+        "content_bound": true,
+        "interpretation": "Strong automated similarity evidence; separate final audio admission still pending"
+      }
     },
     {
       "recording_id": "NV-086",
@@ -499,7 +739,15 @@
       "rationale": "Equivalent after case/punctuation normalization",
       "speaker_identity": "not-approved-by-text-review",
       "audio_quality": "not-listened",
-      "runtime_admission": "not-authorized"
+      "runtime_admission": "not-authorized",
+      "identity_audit": {
+        "classification": "strong-match",
+        "expected_reference": "Hannah",
+        "best_reference": "Hannah",
+        "author_speaker_cell": null,
+        "content_bound": true,
+        "interpretation": "Strong automated similarity evidence; separate final audio admission still pending"
+      }
     },
     {
       "recording_id": "NV-085",
@@ -515,7 +763,15 @@
       "rationale": "Equivalent after case/punctuation normalization",
       "speaker_identity": "not-approved-by-text-review",
       "audio_quality": "not-listened",
-      "runtime_admission": "not-authorized"
+      "runtime_admission": "not-authorized",
+      "identity_audit": {
+        "classification": "strong-match",
+        "expected_reference": "Hannah",
+        "best_reference": "Hannah",
+        "author_speaker_cell": null,
+        "content_bound": true,
+        "interpretation": "Strong automated similarity evidence; separate final audio admission still pending"
+      }
     },
     {
       "recording_id": "NV-087",
@@ -531,7 +787,15 @@
       "rationale": "Equivalent after case/punctuation normalization",
       "speaker_identity": "not-approved-by-text-review",
       "audio_quality": "not-listened",
-      "runtime_admission": "not-authorized"
+      "runtime_admission": "not-authorized",
+      "identity_audit": {
+        "classification": "ambiguous",
+        "expected_reference": "Hannah",
+        "best_reference": "Hannah",
+        "author_speaker_cell": "Hannah",
+        "content_bound": true,
+        "interpretation": "Ambiguous automatic score; expected and best match agree; author speaker annotation corroborates, not a formal pass"
+      }
     },
     {
       "recording_id": "general_female_b_danger_alert_01.mp3",
@@ -547,7 +811,16 @@
       "rationale": "Equivalent after case/punctuation normalization",
       "speaker_identity": "not-approved-by-text-review",
       "audio_quality": "not-listened",
-      "runtime_admission": "not-authorized"
+      "runtime_admission": "not-authorized",
+      "identity_audit": {
+        "classification": "strong-match",
+        "expected_reference": "Hannah",
+        "best_reference": "Hannah",
+        "author_speaker_cell": null,
+        "content_bound": true,
+        "interpretation": "Strong automated similarity evidence; separate final audio admission still pending"
+      }
     }
-  ]
+  ],
+  "identity_note": "Existing 2026-11-05 identity audit and author annotations reconciled against exact 33 selected files and their immutable hashes. No second embedding run. Classification and comments are not synonymous with final QC verdict or runtime registration."
 }
