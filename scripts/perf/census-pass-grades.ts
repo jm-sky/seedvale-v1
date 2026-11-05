@@ -29,7 +29,7 @@ for (const seed of seeds) {
     const hs: number[] = []
     for (let u = -c.halfLength; u <= c.halfLength; u += 20) hs.push(sampleHeightAt(c.centreX + c.dirX * u, c.centreZ + c.dirZ * u, p))
     const steps = hs.slice(1).map((v, i) => (v - hs[i]!) / 20)
-    const up = Math.max(...steps), down = Math.min(...steps)
+    const down = Math.min(...steps), up = Math.max(...steps)
     // mean grade over 100 m windows (what a walker/router feels), both directions
     let win = 0
     for (let i = 5; i < hs.length; i++) win = Math.max(win, Math.abs(hs[i]! - hs[i - 5]!) / 100)
