@@ -71,6 +71,8 @@ Po reconie plan powinien ustalić:
 
 ## Gameplay visibility / detection — author direction (2026-11-05; Astra → Opus review pending)
 
+> **Follow-up (2026-11-05, Opus):** architecture review done and author decisions A1–A7 recorded; gameplay visibility is planned in [world-042](world-042-gameplay-visibility-line-of-sight-and-player-observation.md). This plan keeps only optional, measurement-gated draw suppression. Heading kept for existing links.
+
 **Product requirement, not merely a performance optimization:** NPCs and animals, including hostile actors, must not be revealed to the player through solid walls, around opaque corners or behind other fully obstructing world geometry. The current frustum/LOD work does **not** satisfy this requirement. See [NPC/fauna visibility V2 assessment](../research/v1-revival/2026-10-30--npc-fauna-visibility-v2-analysis.md) for the distinction between native frustum culling, camera occlusion and sensory perception. This section captures author intent for review; it does **not** authorize implementation or change the status of existing A1′ work.
 
 ### Expected gameplay behavior
