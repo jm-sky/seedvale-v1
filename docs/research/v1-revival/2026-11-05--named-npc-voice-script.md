@@ -1263,7 +1263,7 @@ Direction: Gentle, dreamy, affectionate but capable. No childishness or cheerful
 - **Existing asset:** `docs/v3-donor/voices/mp3/general_female_b_danger_alert_02.mp3`; ASR match; ledger pending.
 - **Holds:** per-clip-QC; speaker-safe-runtime-Q88; casting-hold.
 
-## Pierce (profile spelling: Piers)
+## Piers
 
 Runtime key: **none; editorial ID `piers` only**. Role: unbound traveller; no runtime profession selected.
 
@@ -1273,7 +1273,7 @@ Direction: Plain, guarded, awkward and stubborn. No clever rogue quips, automati
 
 ### NV-102 — greeting · P2
 
-- **NPC / voice:** Pierce (profile spelling: Piers) / CASTING HOLD.
+- **NPC / voice:** Piers / CASTING HOLD.
 - **Disposition:** new-draft; **binding:** binding-needed.
 - **Trigger:** src/ui-vue/npcDialogueGreeting.ts:resolveNpcGreetingPresentation; NpcAgent.playReactionSound on non-normal tier. Explicit open or admitted proximity greeting; no assumed familiarity.
 - **Additional conditions:** Text preparation only. No stable V1 character, role, cast or quest surface. No automatic confession, guilt, Pip custody or household admission.
@@ -1284,7 +1284,7 @@ Direction: Plain, guarded, awkward and stubborn. No clever rogue quips, automati
 
 ### NV-103 — farewell · P2
 
-- **NPC / voice:** Pierce (profile spelling: Piers) / CASTING HOLD.
+- **NPC / voice:** Piers / CASTING HOLD.
 - **Disposition:** new-draft; **binding:** binding-needed.
 - **Trigger:** src/ui-vue/store.ts:closeNpcDialogueMenu, no pending offer decline. Ordinary conversation close.
 - **Additional conditions:** Text preparation only. No stable V1 character, role, cast or quest surface. No automatic confession, guilt, Pip custody or household admission.
@@ -1295,7 +1295,7 @@ Direction: Plain, guarded, awkward and stubborn. No clever rogue quips, automati
 
 ### NV-104 — attention · P2
 
-- **NPC / voice:** Pierce (profile spelling: Piers) / CASTING HOLD.
+- **NPC / voice:** Piers / CASTING HOLD.
 - **Disposition:** new-draft; **binding:** binding-needed.
 - **Trigger:** src/ai/NpcAgent.ts:playReactionSound normal reaction tier; admitted proximity reaction.
 - **Additional conditions:** Text preparation only. No stable V1 character, role, cast or quest surface. No automatic confession, guilt, Pip custody or household admission.
@@ -1306,7 +1306,7 @@ Direction: Plain, guarded, awkward and stubborn. No clever rogue quips, automati
 
 ### NV-105 — thanks · P2
 
-- **NPC / voice:** Pierce (profile spelling: Piers) / CASTING HOLD.
+- **NPC / voice:** Piers / CASTING HOLD.
 - **Disposition:** new-draft; **binding:** binding-needed.
 - **Trigger:** Semantic intent exists, but no general thanks producer verified. Bind only to a committed helpful act, not an attempted action.
 - **Additional conditions:** Text preparation only. No stable V1 character, role, cast or quest surface. No automatic confession, guilt, Pip custody or household admission.
@@ -1317,7 +1317,7 @@ Direction: Plain, guarded, awkward and stubborn. No clever rogue quips, automati
 
 ### NV-106 — refusal · P2
 
-- **NPC / voice:** Pierce (profile spelling: Piers) / CASTING HOLD.
+- **NPC / voice:** Piers / CASTING HOLD.
 - **Disposition:** new-draft; **binding:** binding-needed.
 - **Trigger:** Semantic intent exists; no general refusal voice producer verified. Bind to an actual refused request.
 - **Additional conditions:** Text preparation only. No stable V1 character, role, cast or quest surface. No automatic confession, guilt, Pip custody or household admission.
@@ -1328,7 +1328,7 @@ Direction: Plain, guarded, awkward and stubborn. No clever rogue quips, automati
 
 ### NV-107 — confirmation · P2
 
-- **NPC / voice:** Pierce (profile spelling: Piers) / CASTING HOLD.
+- **NPC / voice:** Piers / CASTING HOLD.
 - **Disposition:** new-draft; **binding:** binding-needed.
 - **Trigger:** Agreement maps to confirmation. Semantic intent exists; exact successful agreement voice binding absent.
 - **Additional conditions:** Text preparation only. No stable V1 character, role, cast or quest surface. No automatic confession, guilt, Pip custody or household admission.
@@ -1339,7 +1339,7 @@ Direction: Plain, guarded, awkward and stubborn. No clever rogue quips, automati
 
 ### NV-108 — quest_offer · P2
 
-- **NPC / voice:** Pierce (profile spelling: Piers) / CASTING HOLD.
+- **NPC / voice:** Piers / CASTING HOLD.
 - **Disposition:** new-draft; **binding:** binding-needed.
 - **Trigger:** Quest offers exist as text; QuestVoiceIntent admits quest_offer but no inspected producer requests it. Require actual available offer by this giver.
 - **Additional conditions:** Text preparation only. No stable V1 character, role, cast or quest surface. No automatic confession, guilt, Pip custody or household admission.
@@ -1350,7 +1350,7 @@ Direction: Plain, guarded, awkward and stubborn. No clever rogue quips, automati
 
 ### NV-109 — quest_accepted · P2
 
-- **NPC / voice:** Pierce (profile spelling: Piers) / CASTING HOLD.
+- **NPC / voice:** Piers / CASTING HOLD.
 - **Disposition:** new-draft; **binding:** binding-needed.
 - **Trigger:** src/ui-vue/store.ts:acceptNpcDialogueOffer after onAccept. Acknowledges willingness, not task completion or guaranteed success.
 - **Additional conditions:** Text preparation only. No stable V1 character, role, cast or quest surface. No automatic confession, guilt, Pip custody or household admission.
@@ -1361,7 +1361,7 @@ Direction: Plain, guarded, awkward and stubborn. No clever rogue quips, automati
 
 ### NV-110 — quest_declined · P2
 
-- **NPC / voice:** Pierce (profile spelling: Piers) / CASTING HOLD.
+- **NPC / voice:** Piers / CASTING HOLD.
 - **Disposition:** new-draft; **binding:** binding-needed.
 - **Trigger:** src/ui-vue/store.ts:closeNpcDialogueMenu with pending helpResult.offer. Decline, not generic farewell.
 - **Additional conditions:** Text preparation only. No stable V1 character, role, cast or quest surface. No automatic confession, guilt, Pip custody or household admission.
@@ -1372,7 +1372,7 @@ Direction: Plain, guarded, awkward and stubborn. No clever rogue quips, automati
 
 ### NV-111 — quest_complete · P2
 
-- **NPC / voice:** Pierce (profile spelling: Piers) / CASTING HOLD.
+- **NPC / voice:** Piers / CASTING HOLD.
 - **Disposition:** new-draft; **binding:** binding-needed.
 - **Trigger:** src/quests/QuestManager.ts:playQuestCompleteSound via complete outcome, loaded giver resolved in createApp. Generic thanks only; no victory, restored animal, reward or completed repair claim.
 - **Additional conditions:** Text preparation only. No stable V1 character, role, cast or quest surface. No automatic confession, guilt, Pip custody or household admission.
@@ -1383,7 +1383,7 @@ Direction: Plain, guarded, awkward and stubborn. No clever rogue quips, automati
 
 ### NV-112 — hungry · P2
 
-- **NPC / voice:** Pierce (profile spelling: Piers) / CASTING HOLD.
+- **NPC / voice:** Piers / CASTING HOLD.
 - **Disposition:** new-draft; **binding:** binding-needed.
 - **Trigger:** src/ai/NpcAgent.ts:choose selects food need after previousNeed != food. Does NOT establish work was interrupted, an empty stomach, food available or consumption.
 - **Additional conditions:** Text preparation only. No stable V1 character, role, cast or quest surface. No automatic confession, guilt, Pip custody or household admission.
@@ -1394,7 +1394,7 @@ Direction: Plain, guarded, awkward and stubborn. No clever rogue quips, automati
 
 ### NV-113 — exhausted · P2
 
-- **NPC / voice:** Pierce (profile spelling: Piers) / CASTING HOLD.
+- **NPC / voice:** Piers / CASTING HOLD.
 - **Disposition:** new-draft; **binding:** binding-needed.
 - **Trigger:** src/ai/NpcAgent.ts:goTo/execute -> exhausted on isExhausted(stamina); action pauses. Rest, not end of day.
 - **Additional conditions:** Text preparation only. No stable V1 character, role, cast or quest surface. No automatic confession, guilt, Pip custody or household admission.
@@ -1405,7 +1405,7 @@ Direction: Plain, guarded, awkward and stubborn. No clever rogue quips, automati
 
 ### NV-114 — weather_shelter · P2
 
-- **NPC / voice:** Pierce (profile spelling: Piers) / CASTING HOLD.
+- **NPC / voice:** Piers / CASTING HOLD.
 - **Disposition:** new-draft; **binding:** binding-needed.
 - **Trigger:** src/ai/NpcAgent.ts:beginSeekShelter before arrival. Neutral shared variant for rain/storm/snow through npcBarkRequest.weatherShelterVoiceIntents.
 - **Additional conditions:** Text preparation only. No stable V1 character, role, cast or quest surface. No automatic confession, guilt, Pip custody or household admission.
@@ -1416,7 +1416,7 @@ Direction: Plain, guarded, awkward and stubborn. No clever rogue quips, automati
 
 ### NV-115 — danger_alert · P2
 
-- **NPC / voice:** Pierce (profile spelling: Piers) / CASTING HOLD.
+- **NPC / voice:** Piers / CASTING HOLD.
 - **Disposition:** new-draft; **binding:** binding-needed.
 - **Trigger:** NpcAgent newly perceived animal-threat episode. Species-neutral; no death, victory or all-clear claim.
 - **Additional conditions:** Text preparation only. No stable V1 character, role, cast or quest surface. No automatic confession, guilt, Pip custody or household admission.
@@ -1427,7 +1427,7 @@ Direction: Plain, guarded, awkward and stubborn. No clever rogue quips, automati
 
 ### NV-116 — combat_start · P2
 
-- **NPC / voice:** Pierce (profile spelling: Piers) / CASTING HOLD.
+- **NPC / voice:** Piers / CASTING HOLD.
 - **Disposition:** new-draft; **binding:** binding-needed.
 - **Trigger:** NpcAgent successful beginCombat. Do not use on mere sighting or flight; no assumed weapon.
 - **Additional conditions:** Text preparation only. No stable V1 character, role, cast or quest surface. No automatic confession, guilt, Pip custody or household admission.
@@ -1438,7 +1438,7 @@ Direction: Plain, guarded, awkward and stubborn. No clever rogue quips, automati
 
 ### NV-117 — work_finished · P2
 
-- **NPC / voice:** Pierce (profile spelling: Piers) / CASTING HOLD.
+- **NPC / voice:** Piers / CASTING HOLD.
 - **Disposition:** new-draft; **binding:** binding-needed.
 - **Trigger:** NpcAgent terminal execute with classifyPendingActivity(action, activeNeed) === work. One task ended; no end-of-shift, tools-away or repaired-world claim.
 - **Additional conditions:** Text preparation only. No stable V1 character, role, cast or quest surface. No automatic confession, guilt, Pip custody or household admission.
@@ -1449,7 +1449,7 @@ Direction: Plain, guarded, awkward and stubborn. No clever rogue quips, automati
 
 ### NV-118 — weather_shelter_rain · P2
 
-- **NPC / voice:** Pierce (profile spelling: Piers) / CASTING HOLD.
+- **NPC / voice:** Piers / CASTING HOLD.
 - **Disposition:** new-draft; **binding:** binding-needed.
 - **Trigger:** beginSeekShelter with weather rain; storm may also use rain fallback under existing policy. No forecast/intensity/arrival claim.
 - **Additional conditions:** Text preparation only. No stable V1 character, role, cast or quest surface. No automatic confession, guilt, Pip custody or household admission.
@@ -1460,7 +1460,7 @@ Direction: Plain, guarded, awkward and stubborn. No clever rogue quips, automati
 
 ### NV-119 — weather_shelter_storm · P2
 
-- **NPC / voice:** Pierce (profile spelling: Piers) / CASTING HOLD.
+- **NPC / voice:** Piers / CASTING HOLD.
 - **Disposition:** new-draft; **binding:** binding-needed.
 - **Trigger:** beginSeekShelter with current weather storm only. No inferred damage/lightning strike.
 - **Additional conditions:** Text preparation only. No stable V1 character, role, cast or quest surface. No automatic confession, guilt, Pip custody or household admission.
@@ -1471,7 +1471,7 @@ Direction: Plain, guarded, awkward and stubborn. No clever rogue quips, automati
 
 ### NV-120 — weather_shelter_snow · P2
 
-- **NPC / voice:** Pierce (profile spelling: Piers) / CASTING HOLD.
+- **NPC / voice:** Piers / CASTING HOLD.
 - **Disposition:** new-draft; **binding:** binding-needed.
 - **Trigger:** beginSeekShelter with current weather snow only. Never rain fallback.
 - **Additional conditions:** Text preparation only. No stable V1 character, role, cast or quest surface. No automatic confession, guilt, Pip custody or household admission.

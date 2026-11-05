@@ -250,7 +250,7 @@ Authors decisions (2026-11-05 09:30)
 | Anna       | Farmer             | Laura                   | e3cd384158934cc9a01029cd7d278634 |
 | Piotr      | Woodcutter         | Country Baritone        | 5e03f21950f64729935dd8402c9c9702 |
 | Molly      | Shepherd           | Hannah                  | 9a9cf47702da476aa4629e2506d4a857 |
-| Pierce     | Farmer             | Warm Male Friend        | f292c81d563f47799b7e411f1c1e68a9 |
+| Piers      | Farmer             | Warm Male Friend        | f292c81d563f47799b7e411f1c1e68a9 |
 | Jakub      | Hunter             | Arthur Morgan           | bd22266aba38416cb602e90ce651520c |
 | Kazimierz  | Elder              | Clint Eastwood          | 61a8f98f12cc4551bc74d01d16830f02 |
 | Archibald  | Trader             | Old man                 | 61fc0e0fc78046da8fb9549b9b4c6175 |
