@@ -109,7 +109,11 @@ Over budget → lower per-site capacity or site density, which is an **author de
 
 Ordering: F1 → F2 → F3 (needs Q133) → F4 (tool any time after F2; numbers after the freezes) → F5. Each worldgen-output-affecting slice gets its own census (roadmap cross-plan rules). Fauna sites are not cached, so no cache namespace is involved. Epoch-1 test saves are disposable (review 031).
 
-## Open questions (author, queue §3)
+## Author decisions (2026-11-05, queue §3 Q139)
+
+Answered: **Q139-a (a)** and **Q139-b (a)**. Consequences: wilderness density target = home-like (~20–25 live wild animals within ~250 m of the player); the `SPAWNS` lairless ring individuals become habitat-bound (spawner with respawn) for non-home and wilderness groups. Home keeps its current ring in F1–F3 (bit-identical); converting the home ring is a separate, explicit step in F4 with its own census.
+
+Original options:
 
 - **Q139-a — wilderness density:** how many wild animals should be live around the player away from villages? (a) like around home today (~20–25 within ~250 m), recommended; (b) less: wilderness is quieter, danger comes in clusters; (c) more than home.
 - **Q139-b — ring individuals without a lair** (wolf/fox/rabbit/duck/boar from `SPAWNS`): today they never respawn after being killed (until reload). In the world: (a) everything tied to habitats with respawn (killing a pack has a lasting effect, the area recovers slowly), recommended; (b) keep as is.
