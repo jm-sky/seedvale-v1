@@ -2976,7 +2976,20 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
         // `nearbyPredators` param doc).
         const nearbyWolves = bundle.fauna.getAgents().filter((a) => a.def.kind === 'wolf' && !a.isDead())
         const nearbyWildCorpses = bundle.fauna.getAgents().filter((a) => a.isDead())
+        // World-042 Stage 0: player spatial view for actor labels/highlight —
+        // player context resolved once per frame; actors resolve their own once
+        // per presentation tick (inside label range only).
         const playerObservation = getPlayerObservation()
+        playerObservation.labelSpatial = {
+          context: bundle.caves.spatialContextAt(
+            player.mesh.position.x,
+            player.mesh.position.y,
+            player.mesh.position.z,
+          ),
+          position: player.mesh.position,
+          resolveContextAt: bundle.caves.spatialContextAt,
+          canPerceiveAcrossEntrance: bundle.caves.canPerceiveAcrossEntrance,
+        }
         withCategory(monitor, 'NPC', () => {
           bundle.settlementsManager.update(
             dt,

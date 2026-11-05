@@ -164,6 +164,7 @@ import {
   qualitativeHealthFromInjurySeverity,
   resolveStableObservationLevel,
 } from '../simulation/observation'
+import { isActorInfoSpatiallyVisible } from '../simulation/observationSpatial'
 import { stepWithSlopeAndCollision, stepWithSlopeAndCollisionResident } from '../terrain/slopeConstraint'
 import {
   TERRAIN_PREP_NPC_WORK_SESSION_HOURS,
@@ -173,7 +174,7 @@ import {
 } from '../terrain/terrainPreparation'
 import { isInsideWorldBox } from '../terrain/worldEdge'
 import { type AgentStatusLabelController, createAgentStatusLabelController } from '../ui/agentStatusLabel'
-import { gazeOpacityFactor } from '../ui/labelDistance'
+import { gazeOpacityFactor, LABEL_FADE_FAR } from '../ui/labelDistance'
 import { activityIconPresentation } from '../ui/npcLabelIconPresentation'
 import { recordBloodHit } from '../world/bloodTraces'
 import { colliderActiveAtY } from '../world/collision'
@@ -3852,6 +3853,14 @@ export class NpcAgent {
         resolveAgentPresentationLevel({ distance, important: this.phase === 'combat' }),
       )
     }
+    // World-042 Stage 0: label (and highlight) only in the player's spatial
+    // context or through the matching cave mouth; resolved inside label range.
+    this.labelController.setHidden(
+      'spatial',
+      playerObservation.labelSpatial !== undefined
+        && distance < LABEL_FADE_FAR
+        && !isActorInfoSpatiallyVisible(playerObservation.labelSpatial, this.mesh.position),
+    )
     const observationLevel = resolveStableObservationLevel(
       { perception: playerObservation.perception, distance },
       this.lastObservationLevel,

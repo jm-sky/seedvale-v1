@@ -1,4 +1,5 @@
 import type { InjurySeverity } from '../shared/injurySeverity'
+import type { PlayerLabelSpatialView } from './observationSpatial'
 
 /**
  * @domain npc
@@ -22,6 +23,9 @@ export type PlayerObservationInput = {
   showNpcActivityIcon: boolean
   /** Debug-only — show verbose NPC diagnostic text under the label. */
   showNpcDiagnosticText: boolean
+  /** World-042 Stage 0 — when present, actor labels/highlight are shown only
+   *  in the player's spatial context or through the matching cave mouth. */
+  labelSpatial?: PlayerLabelSpatialView
 }
 
 export const NEUTRAL_PERCEPTION = 0.5

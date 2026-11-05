@@ -35,6 +35,11 @@ export type AgentLabelNamePresentation = {
   suffix?: string
 }
 
+/** Why the label root is hidden. `lifecycle` = remains/harvested (owned by the
+ *  agent's death path); `spatial` = not in the player's spatial context
+ *  (world-042 Stage 0). Hidden while any reason is set. */
+export type AgentLabelHideReason = 'lifecycle' | 'spatial'
+
 export type { AgentLabelIconKind, AgentLabelIconPresentation }
 
 const ICON_SLOT_ORDER: readonly AgentLabelIconSlot[] = ['activity', 'quest', 'shop']
@@ -216,6 +221,11 @@ export type AgentStatusLabelController = {
   setIcon: (slot: AgentLabelIconSlot, presentation: AgentLabelIconPresentation | null) => void
   /** Maps a quest marker token into the quest icon slot (compat helper). */
   setQuestMarker: (text: string | null) => void
+  /**
+   * Single owner of the label root's `display` (and so the highlight glow).
+   * Composable: the label is hidden while any reason is set. Write-if-changed.
+   */
+  setHidden: (reason: AgentLabelHideReason, hidden: boolean) => void
   /** `null` hides the debug line; a string shows it, write-if-changed. */
   setDebugLine: (text: string | null) => void
   sync: (
@@ -288,6 +298,8 @@ export function createAgentStatusLabelController(
   let lastObservationLevel: ObservationLevel | null = null
   let lastDebugText = ''
   let distanceState = INITIAL_LABEL_DISTANCE_STATE
+
+  const hideReasons = new Set<AgentLabelHideReason>()
 
   const syncIconRowVisibility = (): void => {
     let anyVisible = false
@@ -390,6 +402,12 @@ export function createAgentStatusLabelController(
       if (text === lastQuestMarker) return
       lastQuestMarker = text
       applyIconSlot('quest', questMarkerIconPresentation(text))
+    },
+    setHidden: (reason, hidden) => {
+      if (hidden === hideReasons.has(reason)) return
+      if (hidden) hideReasons.add(reason)
+      else hideReasons.delete(reason)
+      labelDom.el.style.display = hideReasons.size > 0 ? 'none' : ''
     },
     setDebugLine: (text) => {
       if (text === null) {

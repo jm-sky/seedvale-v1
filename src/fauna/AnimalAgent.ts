@@ -55,9 +55,11 @@ import {
   type PlayerObservationInput,
   resolveStableObservationLevel,
 } from '../simulation/observation'
+import { isActorInfoSpatiallyVisible } from '../simulation/observationSpatial'
 import { stepWithSlopeAndCollision, stepWithSlopeAndCollisionResident } from '../terrain/slopeConstraint'
 import { isInsideWorldBox } from '../terrain/worldEdge'
 import { type AgentStatusLabelController, createAgentStatusLabelController } from '../ui/agentStatusLabel'
+import { LABEL_FADE_FAR } from '../ui/labelDistance'
 import { recordBloodHit } from '../world/bloodTraces'
 import { colliderActiveAtY, colliderContainsPoint } from '../world/collision'
 import { createSeededRandom } from '../world/parseSeed'
@@ -2181,7 +2183,7 @@ export class AnimalAgent {
     this.deathAnimElapsedSec = 0
     this.mesh.rotation.z = 0
     showLivingVisual(this)
-    this.labelController.el.style.display = ''
+    this.labelController.setHidden('lifecycle', false)
     this.trip = null
     clearNavRescue(this.chaseNav)
     clearNavRescue(this.fleeNav)
@@ -2636,6 +2638,18 @@ export class AnimalAgent {
     this.resolveWaterTraversal()
   }
 
+  /** World-042 Stage 0: hide the label (and so the highlight) unless this
+   *  animal shares the player's spatial context or is visible through the
+   *  matching cave mouth. Context is resolved only inside label range, once
+   *  per presentation tick; beyond it the label is already faded out. */
+  private syncLabelSpatialVisibility(distance: number, playerObservation: PlayerObservationInput): void {
+    const view = playerObservation.labelSpatial
+    const hidden = view !== undefined
+      && distance < LABEL_FADE_FAR
+      && !isActorInfoSpatiallyVisible(view, this.mesh.position)
+    this.labelController.setHidden('spatial', hidden)
+  }
+
   /** Presentation-only tail (plan fauna-028) — locomotion clip choice, the
    *  shared status-label sync (bars, observation level, distance opacity /
    *  shadow-casting) and the `AnimationMixer`. Cadence-gated by
@@ -2655,6 +2669,7 @@ export class AnimalAgent {
   ): void {
     this.updateAnim()
     const distance = this.mesh.position.distanceTo(observerPos)
+    this.syncLabelSpatialVisibility(distance, playerObservation)
     const observationLevel = resolveStableObservationLevel(
       { perception: playerObservation.perception, distance },
       this.lastObservationLevel,
@@ -3122,7 +3137,7 @@ export class AnimalAgent {
         this.anim.stopAll()
         hideLivingVisual(this)
         void spawnHarvestedRemains(this.corpse, this)
-        this.labelController.el.style.display = 'none'
+        this.labelController.setHidden('lifecycle', true)
       } else {
         this.settleDeathPose()
       }
@@ -3218,7 +3233,7 @@ export class AnimalAgent {
   harvestMeat(): void {
     if (!this.canHarvestMeat()) return
     harvestCorpseMeat(this.corpse, this, this.tickNowDays)
-    this.labelController.el.style.display = 'none'
+    this.labelController.setHidden('lifecycle', true)
   }
 
   /** Pin this corpse for the duration of a player harvest channel.
@@ -3536,6 +3551,7 @@ export class AnimalAgent {
         if (this.deathAnimElapsedSec >= this.deathAnimDurationSec) this.settleDeathPose()
       }
       const corpseObserverDistance = this.mesh.position.distanceTo(observerPos)
+      this.syncLabelSpatialVisibility(corpseObserverDistance, playerObservation)
       this.labelController.syncDistance(
         this.mesh,
         corpseObserverDistance,

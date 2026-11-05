@@ -386,6 +386,19 @@ describe('createCaves (world-terrain-019 B)', () => {
     expect(caves.spatialContextAt(ax, ay, az)).toEqual({ kind: 'surface' })
   })
 
+  it('canPerceiveAcrossEntrance passes inside the mouth corridor only (world-042 Stage 0)', () => {
+    const def = caves.definitions()[0]!
+    const e = def.entrance
+    const out = openingDirection(e.yaw)
+    const at = (along: number, y = e.y + 0.5) => ({ x: e.x + out.dx * along, y, z: e.z + out.dz * along })
+    expect(caves.canPerceiveAcrossEntrance(def.caveId, at(3), at(-3))).toBe(true)
+    // Too far out from the mouth plane, or on the hillside above the aperture.
+    expect(caves.canPerceiveAcrossEntrance(def.caveId, at(40), at(-3))).toBe(false)
+    expect(caves.canPerceiveAcrossEntrance(def.caveId, at(3, e.y + e.height + 20), at(-3))).toBe(false)
+    // Unknown cave id never connects.
+    expect(caves.canPerceiveAcrossEntrance('no-such-cave', at(3), at(-3))).toBe(false)
+  })
+
   // Rebuilds heightfield + a fresh createCaves() for hysteresis — heavy under suite contention.
   it('interior is strict occupancy inside the mouth plane, with two-sample confirmation, and the approach is not interior', { timeout: 30_000 }, () => {
     const def = caves.definitions()[0]!

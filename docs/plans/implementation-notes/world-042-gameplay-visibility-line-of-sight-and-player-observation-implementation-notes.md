@@ -53,3 +53,14 @@ A1′ cull bounds and picking; Q20 shared skeletons; agent presentation LOD opti
 ## Do not
 
 Run `pnpm docs:sync` from a task that did not change generated inputs; persist contacts; bump `CURRENT_SAVE_VERSION`, worldgen caches or `WORLDGEN_EPOCH`; use rendered meshes or raycasts against the scene as the AI authority.
+
+## Stage 0 implemented (Q155, 2026-11-05)
+
+Technically verified (type-check, lint, `src/fauna src/ai src/ui src/world src/simulation` green); **not browser-verified** (no cave screenshot taken; goes to the author's check list).
+
+- **`canPerceiveAcrossEntrance(caveId, a, b)`** now exists on `Caves` (`createCaves.ts`), backed by pure `isInsideEntranceAwarenessCorridor` in `world/caves/mouthCarve.ts` (consts `ENTRANCE_AWARENESS_*`: 10 m outward / 10 m inward of the mouth plane, aperture half-width + 1.5 m lateral, -2 m / +2 m vertical around floor/ceiling). Both positions must be in the corridor; O(1) via `v2ByCaveId`. `spatialContextAt` is unchanged (mouth stays `surface`). **fauna-045 must reuse this, not add another** (its corridor numbers are untuned guesses; change the constants once for both consumers).
+- **Gate:** `simulation/observationSpatial.ts` (`PlayerLabelSpatialView`, `isActorInfoSpatiallyVisible`): same context visible; cave A vs B hidden; surface vs cave only via the mouth corridor keyed by the cave-side id. The view travels on `PlayerObservationInput.labelSpatial` (optional; undefined = old behaviour). `gameLoop.ts` builds it once per frame (one `spatialContextAt` for the player; the object is added to the already per-frame `getPlayerObservation()` result).
+- **Consumers:** `AnimalAgent.syncLabelSpatialVisibility` (presentation tick and corpse path) and the `NpcAgent` presentation block resolve the actor context only when `distance < LABEL_FADE_FAR` (32 m, now exported from `ui/labelDistance.ts`). No per-pair scans.
+- **Controller owns `display`:** `AgentStatusLabelController.setHidden(reason: 'lifecycle' | 'spatial', hidden)` is the only writer of the label root's `display`; the three direct `el.style.display` writes in `AnimalAgent` (revive, harvested remains) now use `'lifecycle'`. Hiding the root also hides the highlight glow (class state is kept; `setHighlighted` itself is unchanged). Shadow-distance gating in `sync`/`syncDistance` still runs while hidden.
+- **Not covered (Stage 1):** gaze/Tab target selection and minimap dots can still pick a cave actor; only label + highlight visuals are gated.
+- Cost: per in-range actor per presentation tick, one `spatialContextAt` (scan over loaded cave runtimes) + at most one O(1) corridor test when contexts differ; per frame one extra player `spatialContextAt` and one small object.

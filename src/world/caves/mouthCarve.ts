@@ -345,3 +345,36 @@ export function mouthFrameSolidSDF(
   )
   return Math.min(left, right, hood, lip)
 }
+
+/** Entrance-awareness corridor (world-042 Stage 0 / fauna-045): how far outward
+ *  from the mouth plane and inward into the cave a position still counts as
+ *  "at the doorway", and the lateral slack beside the aperture. Short on
+ *  purpose — a larger disc would leak through the hillside beside the mouth. */
+export const ENTRANCE_AWARENESS_OUTWARD = 10
+export const ENTRANCE_AWARENESS_INWARD = 10
+export const ENTRANCE_AWARENESS_LATERAL_MARGIN = 1.5
+/** Vertical slack below the mouth floor / above the lintel, so the hillside
+ *  above the aperture and tunnels below it stay outside the corridor. */
+export const ENTRANCE_AWARENESS_VERTICAL_MARGIN = 2
+
+/**
+ * True when `(x,y,z)` lies inside the short corridor around the real doorway
+ * of `entrance` (bounded lateral, along-axis and vertical extent). Pure and
+ * stateless; derived from the shared mouth geometry, never from cave bounds
+ * or presentation objects.
+ *
+ * @domain world-terrain
+ */
+export function isInsideEntranceAwarenessCorridor(
+  entrance: Pick<CaveEntrance, 'x' | 'y' | 'z' | 'yaw' | 'width' | 'height'>,
+  x: number,
+  y: number,
+  z: number,
+): boolean {
+  const mouth = deriveMouthGeometry(entrance)
+  if (y < mouth.floorY - ENTRANCE_AWARENESS_VERTICAL_MARGIN) return false
+  if (y > mouth.ceilingY + ENTRANCE_AWARENESS_VERTICAL_MARGIN) return false
+  const along = mouthAlong(x, z, entrance)
+  if (along > ENTRANCE_AWARENESS_OUTWARD || along < -ENTRANCE_AWARENESS_INWARD) return false
+  return Math.abs(mouthLateral(x, z, entrance)) <= mouth.apertureHalfWidth + ENTRANCE_AWARENESS_LATERAL_MARGIN
+}

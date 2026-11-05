@@ -376,3 +376,17 @@ describe('npcLabelIconPresentation mappers', () => {
     expect(activityIconPresentation({ kind: 'idle' })?.icon).toBe('activity-idle')
   })
 })
+
+describe('createAgentStatusLabelController setHidden (world-042 Stage 0)', () => {
+  it('composes lifecycle and spatial reasons; shown only when none is set', () => {
+    const controller = createAgentStatusLabelController('Wolf', null, ['hp'], 2)
+    expect(controller.el.style.display).toBe('')
+    controller.setHidden('spatial', true)
+    expect(controller.el.style.display).toBe('none')
+    controller.setHidden('lifecycle', true)
+    controller.setHidden('spatial', false)
+    expect(controller.el.style.display).toBe('none')
+    controller.setHidden('lifecycle', false)
+    expect(controller.el.style.display).toBe('')
+  })
+})

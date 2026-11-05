@@ -101,6 +101,7 @@ import {
   type CaveWorldgenSnapshot,
 } from './caves/caveWorldgenCache'
 import {
+  isInsideEntranceAwarenessCorridor,
   MOUTH_INTERIOR_ALONG,
   mouthAlong,
   mouthCarveDepth,
@@ -167,6 +168,18 @@ export type Caves = {
   /** Stateless gameplay spatial identity at `(x,y,z)` — not hysteretic
    *  `queryInterior()`. Open-sky mouth occupancy resolves as surface. */
   spatialContextAt: (x: number, y: number, z: number) => WorldSpatialContext
+  /**
+   * Whether two positions in *different* spatial contexts may perceive each
+   * other through cave `caveId`'s mouth: both must lie inside the short
+   * entrance-awareness corridor (O(1), no occupancy scan). Does not itself
+   * compare contexts; callers gate on `spatialContextsEqual` first. Shared by
+   * fauna-045 and world-042 label visibility.
+   */
+  canPerceiveAcrossEntrance: (
+    caveId: string,
+    a: { x: number, y: number, z: number },
+    b: { x: number, y: number, z: number },
+  ) => boolean
   /**
    * Entity-neutral horizontal cave containment (world-terrain-019): pushes
    * an XZ capsule of `radius` that needs `entityHeight` of clearance out of
@@ -985,6 +998,12 @@ export function createCaves(
     },
     occupancyAt,
     spatialContextAt,
+    canPerceiveAcrossEntrance(caveId, a, b) {
+      const entrance = v2ByCaveId.get(caveId)?.topology.entrance
+      if (!entrance) return false
+      return isInsideEntranceAwarenessCorridor(entrance, a.x, a.y, a.z)
+        && isInsideEntranceAwarenessCorridor(entrance, b.x, b.y, b.z)
+    },
     resolveHorizontal(x, z, y, radius, entityHeight) {
       // Every field is `outsideGrid` except the cave(s) local to the point,
       // for which the resolver is the identity; sequential application is

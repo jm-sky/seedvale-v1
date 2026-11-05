@@ -1,7 +1,7 @@
 /** Fully readable up to this distance from the observer (units). */
 const LABEL_FADE_NEAR = 20
 /** Fully faded out beyond this distance. */
-const LABEL_FADE_FAR = 32
+export const LABEL_FADE_FAR = 32
 
 /** 1 = fully visible, 0 = fully faded, linear falloff between `near`/`far`.
  *  Defaults match the original NPC-label thresholds — callers with a
