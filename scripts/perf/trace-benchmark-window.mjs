@@ -15,7 +15,7 @@ mkdirSync(outDir, { recursive: true })
 const sha = execSync('git rev-parse HEAD', { cwd: process.env.SEEDVALE_REPO ?? (IS_WIN ? 'D:/Projekty/private/seedvale-v1' : process.cwd()) }).toString().trim()
 const profile = mkdtempSync(join(tmpdir(), 'sv-trace-'))
 const chrome = spawn(process.env.SEEDVALE_CHROME ?? (IS_WIN ? 'C:/Program Files/Google/Chrome/Application/chrome.exe' : '/usr/bin/google-chrome'), [
-  `--remote-debugging-port=${DEBUG}`, `--user-data-dir=${profile}`, '--no-first-run', '--no-default-browser-check',
+  `--remote-debugging-port=${DEBUG}`, `--user-data-dir=${profile}`, '--no-first-run', '--mute-audio', '--no-default-browser-check',
   '--disable-backgrounding-occluded-windows', '--disable-renderer-backgrounding', '--disable-background-timer-throttling',
   ...(IS_WIN ? [] : ['--ignore-gpu-blocklist', '--password-store=basic', '--simulate-outdated-no-au=Tue, 31 Dec 2099 23:59:59 GMT']),
   '--window-size=1600,900', '--window-position=0,0', `http://localhost:${port}/?benchmark=${scenario}${process.env.SEEDVALE_QUERY ?? ''}`,

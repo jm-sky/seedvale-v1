@@ -2610,3 +2610,26 @@ describe('067 P3 fauna human-contact identity', () => {
     }
   })
 })
+
+describe('drowning avoidance (queue Q99)', () => {
+  it('prey fleeing a predator turns along the shore instead of running into deep water', () => {
+    // Deep water fills the half-plane x < -1 and the wolf sits due east, so
+    // the straight flee heading (due west) leads straight into it — before
+    // Q99 the deer swam out and stayed in the water.
+    const DEEP = { present: true as const, waterSurfaceHeight: 0, floorHeight: -2, depth: 2 }
+    const water = (x: number) => (x < -1 ? DEEP : DRY_WATER_SAMPLE)
+    const deer = new AnimalAgent(makeDeps({ def: ANIMAL_DEFS.deer, animalId: 'shore-flee-deer', x: 0, z: 0, sampleLocalWater: water }))
+    const wolf = new AnimalAgent(makeDeps({ def: ANIMAL_DEFS.wolf, animalId: 'shore-flee-wolf', x: 6, z: 0, sampleLocalWater: water }))
+    const far = new THREE.Vector3(1000, 0, 1000)
+    let swamTicks = 0
+    let fled = false
+    for (let i = 0; i < 120; i++) {
+      deer.update({ dt: 1 / 60, others: [deer, wolf], observerPos: far, dayFactor: 1, forestFactor: 0, litFires: [] })
+      if (deer.getDebugInfo().intent === 'flee') fled = true
+      if (deer.getDebugInfo().waterCrossing.waterMode === 'swimming') swamTicks++
+    }
+    expect(fled).toBe(true)
+    expect(swamTicks).toBe(0)
+    expect(deer.mesh.position.x).toBeGreaterThan(-1)
+  })
+})

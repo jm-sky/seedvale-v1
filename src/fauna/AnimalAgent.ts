@@ -21,6 +21,7 @@ import {
   tickSpontaneousVocalizeCooldown,
 } from '../audio/animalSounds'
 import { isNpcCombatDebugMode } from '../debug/debugMode'
+import { type FaunaWaterEventType, isFaunaWaterLogEnabled, recordFaunaWaterEvent } from '../debug/faunaInspector'
 import { logNpcThreatBranch } from '../debug/faunaInspector'
 import { DEFAULT_CELL_SIZE, findPath, type NavigationQuery, type PathPoint } from '../navigation/navigation'
 import { beginActivePath, endActivePath, recordPathRequest, recordRepath } from '../navigation/navigationStats'
@@ -404,6 +405,12 @@ const UNSAFE_CROSSING_COOLDOWN_SEC = 5
  *  world-scale water-body scan. */
 const WATER_EXIT_SEARCH_RADIUS = 14
 const WATER_EXIT_SEARCH_ATTEMPTS = 16
+/** Distance (m) past the probed exit point the recovery target is pushed
+ *  onto the bank (plan Q99). */
+const WATER_EXIT_OVERSHOOT = 1.5
+/** Recovery target this close while still swimming counts as reached
+ *  without leaving the water — re-probe (just above `steerToward`'s 0.4 m). */
+const WATER_EXIT_REACHED_DIST = 0.5
 
 /** HP/sec drained by `tickDrowning()` while `swimming` and stamina-exhausted
  *  by a non-`waterAdapted` species (plan fauna-015 §7) — same order of magnitude as a real attack (see
@@ -482,6 +489,10 @@ const FIRE_AVOID_RADIUS = 11
  *  away-from-threat direction — shared by fleeing a predator, the player, or
  *  a campfire (`fleeFrom()`). */
 const FLEE_DISTANCE = 8
+/** Flee headings tried in order when the straight one leads into swimming
+ *  water (plan Q99) — straight first, then ±45°, then ±90° (never back
+ *  toward the threat). */
+const FLEE_WATER_DETOUR_ANGLES = [0, Math.PI / 4, -Math.PI / 4, Math.PI / 2, -Math.PI / 2]
 /** Clearance (world units) *past* a village's real footprint (`VillageInfo.radius`,
  *  see `settlement/families.ts`'s `VILLAGE_SIZE_CONFIG.footprintRadius`) that's
  *  off-limits to `wild` animals for both wandering and predator hunting — plan
@@ -1653,6 +1664,10 @@ export class AnimalAgent {
   private readonly fleeNav: NavRescue = createNavRescue()
   /** Wander / trip / needs / attraction (plan fauna-029) — preferDry cost. */
   private readonly moveNav: NavRescue = createNavRescue()
+  /** Last `NavRescue` `stepNavRescue` steered with — fauna water log only. */
+  private debugLastNav: 'move' | 'chase' | 'flee' | 'none' = 'none'
+  /** Drowning damage applied last tick — fauna water log `exhausted` edge only. */
+  private debugDrowningActive = false
   private readonly repathWaypointScratch = new THREE.Vector3()
   /** Set only while `tickWaterExitRecovery()` is actively steering this
    *  animal toward a found dry/wading exit (plan fauna-046 §6) — `null`
@@ -4493,14 +4508,56 @@ export class AnimalAgent {
    *  Assumes `this.tmp` already holds a normalized flee direction. */
   private stepFleeDirection(dt: number): void {
     this.sprinting = !isExhausted(this.life.stamina)
+    const speed = (this.sprinting ? this.sprintSpeedNow() : this.walkSpeedNow())
+      * straySurvivalFleeSpeedMultiplier(this._stray)
+    if (!this.pickDryFleeDirection()) {
+      // Every flee heading leads into swimming water. Already swimming →
+      // the threat is behind and deep water ahead: get out at the nearest
+      // exit instead of fleeing further out (plan Q99 — prey fled across
+      // a pond until exhausted). Still on land → keep the straight heading:
+      // a desperate crossing stays possible (plan fauna-046 §4).
+      if (this.waterMode === 'swimming' && this.tickWaterExitRecovery(speed, dt)) return
+    }
     this.fleeTarget.set(
       this.mesh.position.x + this.tmp.x * FLEE_DISTANCE,
       0,
       this.mesh.position.z + this.tmp.z * FLEE_DISTANCE,
     )
-    const speed = (this.sprinting ? this.sprintSpeedNow() : this.walkSpeedNow())
-      * straySurvivalFleeSpeedMultiplier(this._stray)
     this.stepNavRescue(this.fleeNav, this.fleeTarget, speed, dt)
+  }
+
+  /** Flee-heading water preference (plan Q99) for a non-`waterAdapted`
+   *  species: keeps `this.tmp` (normalized flee direction) when its flee
+   *  point and midpoint are not `swimming`, otherwise rotates it to the
+   *  first of ±45°/±90° that is. `false` (with `this.tmp` unchanged) when
+   *  every heading leads into swimming water. Same bounded point samples
+   *  `destLosHasDispreferredSwim` uses — at most 10 `sampleLocalWater`
+   *  calls, and 2 in the common dry case. */
+  private pickDryFleeDirection(): boolean {
+    if (this.def.water?.waterAdapted) return true
+    const baseX = this.tmp.x
+    const baseZ = this.tmp.z
+    for (const angle of FLEE_WATER_DETOUR_ANGLES) {
+      const c = Math.cos(angle)
+      const sn = Math.sin(angle)
+      const dx = baseX * c - baseZ * sn
+      const dz = baseX * sn + baseZ * c
+      if (this.fleeHeadingIsDry(dx, dz)) {
+        this.tmp.set(dx, 0, dz)
+        return true
+      }
+    }
+    return false
+  }
+
+  private fleeHeadingIsDry(dx: number, dz: number): boolean {
+    const x = this.mesh.position.x
+    const z = this.mesh.position.z
+    for (const d of [FLEE_DISTANCE / 2, FLEE_DISTANCE]) {
+      const mode = this.waterModeAt(x + dx * d, z + dz * d)
+      if (mode === 'swimming' || mode === null) return false
+    }
+    return true
   }
 
   /** Nearest present member of the owning household among caller-bounded
@@ -5868,12 +5925,51 @@ export class AnimalAgent {
    *  water/terrain itself changing) — treated defensively as `swimming`
    *  rather than silently downgraded to a safer mode it isn't actually in. */
   private resolveWaterTraversal(): void {
+    const previous = this.waterMode
     const water = this.sampleLocalWater(this.mesh.position.x, this.mesh.position.z)
-    if (!water.present) {
-      this.waterMode = 'dry'
-      return
+    this.waterMode = water.present
+      ? classifyWaterTraversal(water.depth, this.def.scale, this.def.water) ?? 'swimming'
+      : 'dry'
+    if (previous !== this.waterMode && (previous === 'swimming' || this.waterMode === 'swimming') && isFaunaWaterLogEnabled()) {
+      this.recordWaterEvent(this.waterMode === 'swimming' ? 'enter' : 'exit', water.present ? water.depth : 0)
     }
-    this.waterMode = classifyWaterTraversal(water.depth, this.def.scale, this.def.water) ?? 'swimming'
+  }
+
+  /** Fauna water log entry (debug only — `isFaunaWaterLogEnabled()`). */
+  private recordWaterEvent(type: FaunaWaterEventType, depth: number): void {
+    recordFaunaWaterEvent({
+      type,
+      t: performance.now() / 1000,
+      animalId: this.animalId,
+      kind: this.def.kind,
+      branch: this.debugBranch,
+      intent: this.pendingAction?.kind ?? null,
+      nav: this.debugLastNav,
+      sprinting: this.sprinting,
+      staminaRatio: getStaminaRatio(this.life.stamina),
+      hp: this.health.currentHp,
+      depth,
+      x: this.mesh.position.x,
+      z: this.mesh.position.z,
+      recovery: this.waterExitRecoveryTarget ? { x: this.waterExitRecoveryTarget.x, z: this.waterExitRecoveryTarget.z } : null,
+      lastStepDistance: this.debugLastStepDist,
+      ring: type === 'exhausted' || type === 'drowned' ? this.debugGroundRing() : null,
+    })
+  }
+
+  /** Fauna water log only — ground relief around the animal. */
+  private debugGroundRing(): number[] {
+    const x = this.mesh.position.x
+    const z = this.mesh.position.z
+    const h0 = this.sampleHeight(x, z)
+    const out: number[] = []
+    for (const r of [2, 4, 8]) {
+      for (let i = 0; i < 8; i++) {
+        const a = (i / 8) * Math.PI * 2
+        out.push(Math.round((this.sampleHeight(x + Math.sin(a) * r, z - Math.cos(a) * r) - h0) * 100) / 100)
+      }
+    }
+    return out
   }
 
   /** `tickAnimalLife`'s swim-exertion argument for the current tick —
@@ -5891,9 +5987,18 @@ export class AnimalAgent {
    *  `collapse()`), without that method's combat-only blood/provocation
    *  side effects — the source here is environmental, not an attacker. */
   private tickDrowning(dt: number): void {
-    if (this.health.dead || !shouldApplyDrowningDamage(this.waterMode, isExhausted(this.life.stamina), this.def.water)) return
+    if (this.health.dead || !shouldApplyDrowningDamage(this.waterMode, isExhausted(this.life.stamina), this.def.water)) {
+      this.debugDrowningActive = false
+      return
+    }
+    const logOn = isFaunaWaterLogEnabled()
+    if (logOn && !this.debugDrowningActive) this.recordWaterEvent('exhausted', 0)
+    this.debugDrowningActive = true
     damageHealth(this.health, DROWNING_DAMAGE_PER_SEC * dt)
-    if (this.health.dead) this.collapse()
+    if (this.health.dead) {
+      if (logOn) this.recordWaterEvent('drowned', 0)
+      this.collapse()
+    }
   }
 
   /** Stable live-hunt target (plan npc-005 — see `preyTarget`'s doc; extended
@@ -6134,6 +6239,7 @@ export class AnimalAgent {
     dt: number,
     intent: WaterRouteIntent = 'allowSwim',
   ): void {
+    this.debugLastNav = nav === this.moveNav ? 'move' : nav === this.chaseNav ? 'chase' : nav === this.fleeNav ? 'flee' : 'none'
     if (intent === 'preferDry' && nav === this.moveNav && this.tickWaterExitRecovery(speed, dt)) return
     if (nav.unsafeCooldown > 0) nav.unsafeCooldown = Math.max(0, nav.unsafeCooldown - dt)
     if (nav.active) {
@@ -6202,6 +6308,14 @@ export class AnimalAgent {
       }
       return false
     }
+    const target = this.waterExitRecoveryTarget
+    if (target && Math.hypot(target.x - this.mesh.position.x, target.z - this.mesh.position.z) < WATER_EXIT_REACHED_DIST) {
+      // Reached the exit point but still swimming (it sat inside
+      // `steerToward`'s 0.4 m arrival radius, so the animal stood still and
+      // drowned 0.3 m from shore — plan Q99): probe again from here.
+      this.waterExitRecoveryTarget = null
+      this.clearNavRescue(this.moveNav)
+    }
     if (!this.waterExitRecoveryTarget) {
       const found = probeBestPointNear(
         { x: this.mesh.position.x, z: this.mesh.position.z },
@@ -6211,10 +6325,27 @@ export class AnimalAgent {
         (x, z) => -Math.hypot(x - this.mesh.position.x, z - this.mesh.position.z),
       )
       if (!found) return false
-      this.waterExitRecoveryTarget = new THREE.Vector3(found.x, 0, found.z)
+      this.waterExitRecoveryTarget = this.overshootWaterExit(found.x, found.z)
     }
     this.stepNavRescue(this.moveNav, this.waterExitRecoveryTarget, speed, dt, 'allowSwim')
     return true
+  }
+
+  /** Pushes a probed water-exit point `WATER_EXIT_OVERSHOOT` further along
+   *  the swim→exit direction when that point is still walkable and not
+   *  swimming, so the target lies on the bank, beyond `steerToward`'s
+   *  arrival radius, rather than on the water edge (plan Q99). */
+  private overshootWaterExit(x: number, z: number): THREE.Vector3 {
+    const dx = x - this.mesh.position.x
+    const dz = z - this.mesh.position.z
+    const dist = Math.hypot(dx, dz)
+    if (dist > 1e-4) {
+      const ox = x + (dx / dist) * WATER_EXIT_OVERSHOOT
+      const oz = z + (dz / dist) * WATER_EXIT_OVERSHOOT
+      const mode = this.waterModeAt(ox, oz)
+      if (mode !== 'swimming' && mode !== null && this.isWalkable(ox, oz)) return new THREE.Vector3(ox, 0, oz)
+    }
+    return new THREE.Vector3(x, 0, z)
   }
 
   /** Bounded A* from the current position toward `dest` via the shared

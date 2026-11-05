@@ -1,7 +1,7 @@
 import type { NpcInspectionSnapshot, NpcWhy } from '../ai/NpcAgent'
 import type { WorldBundle } from '../app/worldBundle'
 import type { WorldConfig } from '../config/worldConfig'
-import type { AnimalAgent, AnimalKind } from '../fauna/AnimalAgent'
+import type { AnimalAgent, AnimalAgentDebugInfo, AnimalKind } from '../fauna/AnimalAgent'
 import type { PreySpawner } from '../fauna/AnimalSpawner'
 import type { PlayerController } from '../player/PlayerController'
 import type { PlayerNeeds } from '../player/PlayerNeeds'
@@ -48,7 +48,7 @@ import { DARK_FOREST_TREASURE_LOCATION_ID } from '../world/locations/darkForestT
 import { FAR_RANGE_HOURS } from '../world/locations/locationConfig'
 import { isAdminMode, isDebugMode } from './debugMode'
 import { type HistoryFilter } from './domainHistory'
-import { getCurrentFrenzyWolf, getFrenzyWolves, getNextFrenzyWolf } from './faunaInspector'
+import { clearFaunaWaterLog, type FaunaWaterEvent, getCurrentFrenzyWolf, getFaunaWaterLog, getFrenzyWolves, getNextFrenzyWolf } from './faunaInspector'
 import {
   deepForestNearest,
   type LocationResult,
@@ -460,6 +460,14 @@ export type SeedvaleDebugApi = {
    *  scan. Each returned `AnimalAgent` carries its own
    *  `showDebug()`/`hideDebug()`/`toggleDebug()`/`getDebugInfo()`. */
   getFrenzyWolves: () => AnimalAgent[]
+  /** Fauna water-traversal log (plan Q99 drowning diagnostics) —
+   *  enter/exhausted/exit/drowned events with branch/nav/stamina context,
+   *  and plain debug snapshots of every live wild animal. */
+  fauna: {
+    waterLog: () => FaunaWaterEvent[]
+    clearWaterLog: () => void
+    agents: () => AnimalAgentDebugInfo[]
+  }
   /** Currently DevTools-selected frenzied wolf, or `null` if nothing is
    *  selected or the selection is no longer live/frenzied. */
   getCurrentFrenzyWolf: () => AnimalAgent | null
@@ -527,6 +535,7 @@ const HELP_TEXT = [
   'worldLocations.list() / .listUndiscovered() — cave/cemetery/lake/mountainPeak/settlement locations within 200km of the player, each flagged {discovered}; worldLocations.reveal(id) / .revealAll() — mark as confirmed/exploration (mutates location knowledge only, never map Fog of War)',
   'worldLocations.teleportToFirstCave() — nearest generated cave entrance of any archetype; worldLocations.teleportToNearestCave(type) — nearest cave of CaveArchetype (\'natural\' | \'adventure\' | \'dungeon\'); both use Caves.definitions, never a catalog scan; false if none',
   'navigation() — pathfinding counters (requests/successes/failures, search time, visited nodes, waypoints, repaths, active routes)',
+  'fauna.waterLog() / fauna.clearWaterLog() — animal swim enter/exhausted/exit/drowned events with AI branch, nav, stamina; fauna.agents() — getDebugInfo() of every live wild animal',
   'getFrenzyWolves() / getCurrentFrenzyWolf() / getNextFrenzyWolf() — frenzied-wolf DevTools selection; each returned wolf has showDebug()/hideDebug()/toggleDebug()/getDebugInfo()',
   'skills.getSkills() — every skill\'s current {value, xp}; skills.setSkillValue(id, value) — dev-only direct set (can lower, unlike real gameplay); skills.addSkillXp(id, xp) — award raw XP through the normal path',
   'conditions.player() — current player poisoning severity; conditions.applyPlayerPoisoning(severity?) / clearPlayerPoisoning() — test hooks',
@@ -877,6 +886,11 @@ export function installNpcDebugApi(
     worldLocations: worldLocationsDebug,
     navigation: () => getNavigationStats(),
     getFrenzyWolves: () => getFrenzyWolves(bundle),
+    fauna: {
+      waterLog: getFaunaWaterLog,
+      clearWaterLog: clearFaunaWaterLog,
+      agents: () => bundle.fauna.getAgents().map((a) => a.getDebugInfo()),
+    },
     getCurrentFrenzyWolf: () => getCurrentFrenzyWolf(bundle),
     getNextFrenzyWolf: () => getNextFrenzyWolf(bundle),
     skills: skillsDebug,

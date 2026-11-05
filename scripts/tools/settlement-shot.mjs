@@ -70,7 +70,7 @@ function cdp(ws) {
 
 const profile = mkdtempSync(join(tmpdir(), 'sv-shot-'))
 const chrome = spawn(CHROME, [
-  `--remote-debugging-port=${DEBUG}`, `--user-data-dir=${profile}`, '--no-first-run',
+  `--remote-debugging-port=${DEBUG}`, `--user-data-dir=${profile}`, '--no-first-run', '--mute-audio',
   '--no-default-browser-check', '--disable-backgrounding-occluded-windows', '--disable-renderer-backgrounding', '--disable-background-timer-throttling', `--window-size=${size},${size + 200}`, '--window-position=0,0',
   ...(IS_WIN ? [] : ['--ignore-gpu-blocklist', '--password-store=basic', '--simulate-outdated-no-au=Tue, 31 Dec 2099 23:59:59 GMT']), 'about:blank',
 ], { stdio: 'ignore', env: IS_WIN ? process.env : { GALLIUM_DRIVER: 'd3d12', ...process.env } })

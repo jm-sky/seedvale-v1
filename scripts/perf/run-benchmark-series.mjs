@@ -54,7 +54,7 @@ async function runOne(scenario, rep) {
   const profile = mkdtempSync(join(tmpdir(), 'sv-bench-'))
   const url = `http://localhost:${port}/?benchmark=${scenario}${process.env.SEEDVALE_QUERY ?? ''}` // e.g. SEEDVALE_QUERY='&skelShare=0'
   const chrome = spawn(CHROME, [
-    `--remote-debugging-port=${DEBUG}`, `--user-data-dir=${profile}`, '--no-first-run',
+    `--remote-debugging-port=${DEBUG}`, `--user-data-dir=${profile}`, '--no-first-run', '--mute-audio',
     '--no-default-browser-check', '--disable-backgrounding-occluded-windows', '--disable-renderer-backgrounding', '--disable-background-timer-throttling', '--window-size=1600,900', '--window-position=0,0',
     // WSL2: Mesa defaults to llvmpipe (software); d3d12 reaches the real GPU through /dev/dxg.
     // WSL2: no GNOME keyring prompt ("Choose password for new keyring" blocks the page, Q18) and

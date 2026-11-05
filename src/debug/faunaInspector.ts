@@ -1,5 +1,6 @@
 import type { WorldBundle } from '../app/worldBundle'
 import type { AnimalAgent } from '../fauna/AnimalAgent'
+import { isDebugMode } from './debugMode'
 
 /**
  * Frenzied-wolf runtime diagnostics registry (fauna debug tooling — see
@@ -98,4 +99,64 @@ export function getNextFrenzyWolf(bundle: WorldBundle): AnimalAgent | null {
   next?.setHighlighted(true)
   selectedAnimalId = nextId
   return next
+}
+
+/** One animal water-traversal transition (plan Q99 drowning diagnostics) —
+ *  recorded by `AnimalAgent` only while `isFaunaWaterLogEnabled()`. `enter`
+ *  = dry/wading → swimming, `exhausted` = first drowning-damage tick of a
+ *  swim, `exit` = swimming → dry/wading, `drowned` = death from drowning. */
+export type FaunaWaterEventType = 'enter' | 'exhausted' | 'exit' | 'drowned'
+
+export type FaunaWaterEvent = {
+  type: FaunaWaterEventType
+  /** `performance.now()` seconds. */
+  t: number
+  animalId: string
+  kind: string
+  /** `AnimalAgent.debugBranch` at the event tick. */
+  branch: string
+  intent: string | null
+  /** Which `NavRescue` steered last (`move`/`chase`/`flee`/`none`). */
+  nav: string
+  sprinting: boolean
+  staminaRatio: number
+  hp: number
+  depth: number
+  x: number
+  z: number
+  /** Water-exit recovery target while active (`exhausted`/`drowned`). */
+  recovery: { x: number, z: number } | null
+  lastStepDistance: number
+  /** `drowned`/`exhausted` only: ground height minus the animal's ground
+   *  height at 2/4/8 m in 8 compass directions (N, NE, E, … NW). */
+  ring: number[] | null
+}
+
+const FAUNA_WATER_LOG_CAP = 2000
+const faunaWaterLog: FaunaWaterEvent[] = []
+let faunaWaterLogEnabled: boolean | null = null
+
+/** `?debug` gate for the fauna water log, resolved once per page — the
+ *  recording call sites in `AnimalAgent` check this before building an
+ *  event, so the log costs nothing outside debug sessions. */
+export function isFaunaWaterLogEnabled(): boolean {
+  if (faunaWaterLogEnabled === null) {
+    faunaWaterLogEnabled = typeof window !== 'undefined' && isDebugMode()
+  }
+  return faunaWaterLogEnabled
+}
+
+/** Appends one event to the bounded ring (oldest dropped past the cap). */
+export function recordFaunaWaterEvent(event: FaunaWaterEvent): void {
+  if (faunaWaterLog.length >= FAUNA_WATER_LOG_CAP) faunaWaterLog.shift()
+  faunaWaterLog.push(event)
+}
+
+/** Copy of the recorded fauna water events, oldest first. */
+export function getFaunaWaterLog(): FaunaWaterEvent[] {
+  return faunaWaterLog.slice()
+}
+
+export function clearFaunaWaterLog(): void {
+  faunaWaterLog.length = 0
 }
