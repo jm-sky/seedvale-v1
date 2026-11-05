@@ -171,6 +171,9 @@ export function createGuardLocalKnowledge(deps: GuardLocalKnowledgeDeps): GuardL
   const alreadyKnownInRange = (originX: number, originZ: number): WorldLocation[] => {
     const homeId = deps.homeLocationId()
     return deps.locationKnowledge.list()
+      // A rumour lead (`estimated`) is not "known" — re-revealing it here
+      // would hand out its exact name/pin (plan world-041 L0 §0).
+      .filter((entry) => entry.state !== 'estimated')
       .map((entry) => deps.getLocation(entry.id))
       .filter((location): location is WorldLocation => location != null)
       .filter((location) => location.id !== homeId && location.kind !== 'settlement')

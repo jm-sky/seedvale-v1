@@ -202,7 +202,9 @@ describe('map data filtering', () => {
       abandonedMine: () => null,
       abandonedMineBinding: () => null,
       stableLandmarksInRange: () => [],
-      invalidateScanCache: () => {},
+      lakeExtentRadius: () => null,
+    peakSummitHeight: () => null,
+    invalidateScanCache: () => {},
       getScanDiagnostics: () => emptyLocationScanDiagnostics(),
     }
   }
@@ -215,7 +217,7 @@ describe('map data filtering', () => {
       { id: 'settlement:home', kind: 'settlement', x: 2, z: 2, name: 'Home', discoveryWeight: 0 },
     ])
     const knowledge = createLocationKnowledge([{ id: 'settlement:home', state: 'confirmed', source: 'exploration' }])
-    const mapData = createMapData({ projection, discovery, catalog, knowledge })
+    const mapData = createMapData({ projection, discovery, catalog, knowledge, getSeed: () => 42 })
     const cells = mapData.queryCells({ minX: -40, maxX: 40, minZ: -40, maxZ: 40 })
     expect(cells.length).toBeGreaterThan(0)
     expect(cells.every((cell) => discovery.isDiscovered(cell.key))).toBe(true)
@@ -233,7 +235,7 @@ describe('map data filtering', () => {
       { id: 'cave:far', kind: 'cave', x: 400, z: 400, name: 'Far', discoveryWeight: 0.5 },
     ])
     const knowledge = createLocationKnowledge([{ id: 'cave:far', state: 'discovered', source: 'npc' }])
-    const mapData = createMapData({ projection, discovery, catalog, knowledge })
+    const mapData = createMapData({ projection, discovery, catalog, knowledge, getSeed: () => 42 })
     expect(mapData.knownLocations({ minX: -40, maxX: 40, minZ: -40, maxZ: 40 })).toEqual([])
     expect(mapData.knownLocations({ minX: -500, maxX: 500, minZ: -500, maxZ: 500 })).toHaveLength(1)
   })
@@ -247,7 +249,7 @@ describe('map data filtering', () => {
       { id: 'settlement:home', kind: 'settlement', x: 2, z: 2, name: 'Home', discoveryWeight: 0 },
     ])
     const knowledge = createLocationKnowledge()
-    const mapData = createMapData({ projection, discovery, catalog, knowledge })
+    const mapData = createMapData({ projection, discovery, catalog, knowledge, getSeed: () => 42 })
     expect(mapData.knownLocations({ minX: -40, maxX: 40, minZ: -40, maxZ: 40 })).toEqual([])
   })
 
@@ -256,7 +258,7 @@ describe('map data filtering', () => {
     const discovery = createMapDiscovery()
     const catalog = fakeCatalog([])
     const knowledge = createLocationKnowledge([{ id: 'cave:gone', state: 'confirmed', source: 'exploration' }])
-    const mapData = createMapData({ projection, discovery, catalog, knowledge })
+    const mapData = createMapData({ projection, discovery, catalog, knowledge, getSeed: () => 42 })
     expect(mapData.knownLocations({ minX: -500, maxX: 500, minZ: -500, maxZ: 500 })).toEqual([])
   })
 })

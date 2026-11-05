@@ -77,7 +77,10 @@ export function suppressedCaveLocationIdsForMineBinding(
 ): Set<string> {
   if (!binding) return new Set()
   const ids = new Set(locations.map((l) => l.id))
-  if (ids.has(binding.mineId) && ids.has(binding.caveLocationId)) {
+  // An `estimated` mine is drawn at its off-centre rumour area, not at the
+  // shared entrance anchor, so it cannot stand in for the cave marker.
+  const mine = locations.find((l) => l.id === binding.mineId)
+  if (mine && mine.state !== 'estimated' && ids.has(binding.caveLocationId)) {
     return new Set([binding.caveLocationId])
   }
   return new Set()

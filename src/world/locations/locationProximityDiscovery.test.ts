@@ -42,6 +42,8 @@ function fakeCatalog(locations: readonly WorldLocation[]): WorldLocationCatalog 
     abandonedMine: () => null,
     abandonedMineBinding: () => null,
     stableLandmarksInRange: () => [],
+    lakeExtentRadius: () => null,
+    peakSummitHeight: () => null,
     invalidateScanCache: () => {},
     getScanDiagnostics: () => emptyLocationScanDiagnostics(),
   }
@@ -146,6 +148,7 @@ describe('confirmHomeSettlement', () => {
       discovery: createMapDiscovery(),
       catalog: fakeCatalog([locationFromDef(home)]),
       knowledge,
+      getSeed: () => 42,
     })
     const known = mapData.knownLocations({ minX: -100, maxX: 100, minZ: -100, maxZ: 100 })
     expect(known).toHaveLength(1)
@@ -206,6 +209,7 @@ describe('revealSettlementsInRange', () => {
       discovery: createMapDiscovery(),
       catalog,
       knowledge,
+      getSeed: () => 42,
     })
     const known = mapData.knownLocations({ minX: -50, maxX: SETTLEMENT_GRID_STEP + 50, minZ: -50, maxZ: 50 })
     const ids = known.map((entry) => entry.id).sort()
@@ -256,6 +260,7 @@ describe('map-cell discovery vs settlement knowledge', () => {
       discovery,
       catalog,
       knowledge,
+      getSeed: () => 42,
     })
     expect(mapData.knownLocations({ minX: -80, maxX: 80, minZ: -80, maxZ: 80 })).toEqual([])
   })

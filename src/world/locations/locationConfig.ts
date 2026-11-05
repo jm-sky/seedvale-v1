@@ -79,6 +79,9 @@ export const PEAK_SCAN_HALO_CELLS = PEAK_NEIGHBOR_MARGIN_CELLS + PEAK_MERGE_RADI
  *  unbounded scan. */
 export const LAKE_FLOOD_FILL_SAFETY_CAP = 20000
 
+/** Ring (coarse cells) searched around a lake's rounded-centroid representative cell for a water cell to seed its extent flood fill. */
+export const LAKE_EXTENT_SEED_SEARCH_CELLS = 6
+
 /** Guard's "Opowiedz mi coś o okolicy" — near+medium landmark pool (plan §6),
  *  top-N by `discoveryWeight` before the 1-3 reveal roll. */
 export const GUARD_LANDMARK_POOL_SIZE = 5

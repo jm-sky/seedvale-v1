@@ -4,7 +4,7 @@
 
 **Not:** a second terrain-generation reference ([terrain-and-world-generation.md](./terrain-and-world-generation.md) owns the actual sampling/heightmap/biome machinery this domain consumes), UI implementation detail (the map screen's rendering is out of scope unless it changes ownership), or a plan/changelog.
 
-**Last verified:** 2026-09-16
+**Last verified:** 2026-11-05 (uncertain knowledge, plan world-041 L3a)
 
 When this file and the code disagree, the code wins — update this file.
 
@@ -57,6 +57,15 @@ The persistent worldgen cache currently has two namespaces owned by this catalog
 - **Map/UI:** map rendering consumes this domain's discovery/knowledge state and the catalog's classification output, but owns no state of its own beyond presentation — UI implementation detail is out of this document's scope.
 - **Quests:** where a quest references a landmark, it does so through an injected resolver function (the same "quest never imports concrete domain classes" pattern quests use for fauna targets) rather than a direct dependency — see [npc.md](./npc.md)'s Relationships, social, and dialogue section for the resolver convention.
 - **Persistence:** discovery/knowledge/target state persists as part of `SaveData.map` (optional `guardLocalKnowledge`, an `npcId`-keyed wait/selection map, plan npc-050); location geometry itself is never persisted, always re-derived from `(world seed, location id)`. See [persistence.md](./persistence.md).
+
+## Uncertain knowledge (rumour leads) — plan world-041 L3a
+
+`LocationKnowledge` entries with `state: 'estimated'` (a rumour lead; the only producer-compatible combination is `source: 'npc'`) are **not known** in the name/pin sense. No save change: a lead is the persisted `{ id, state, source }` triple; its search area is never stored.
+
+- **Single projection chokepoint:** `mapData.project()` (`src/world/map/mapData.ts`). For `estimated` it returns the deterministic off-centre area from `rumourLeadArea(seed, id, canonical)` (`rumourLead.ts`: radius 120–260 m, centre offset 0.15–0.6 r at a hashed angle, always contains the target, clamped inward at the world bound — containment wins over bound at the very edge/corner) plus a generic kind label (`genericLocationLabel`), never the canonical `x/z` or proper name. Full map, minimap, navigation targets (`resolveKnown`) and the popover all read this, so they cannot leak. `createMapData` therefore takes `getSeed`. An `estimated` entry can be a navigation target; it points at the area centre.
+- **Other consumers treat `estimated` as unknown:** `guardLocalKnowledge.alreadyKnownInRange` and `listKnownSettlementOptions` skip it, quest `hasDiscoveredLocation` uses `isLocationDiscovered` (`rumourLead.ts`). `npcDebugApi` is exempt. `mapLocationLabelLayout` no longer lets an `estimated` mine hide its bound cave marker.
+- **Open-lead cap:** `RUMOUR_LEAD_CAP = 4`, counted by `countOpenRumourLeads` — `estimated`+`npc` entries whose id still resolves in the catalog (derived, stale ids drop out, duplicates use one slot). Nothing enforces it yet (L3b producer).
+- **Arrival rules (`landmarkArrival.ts`, called from `LocationProximityDiscovery.update`):** for knowledge entries that are not `confirmed` of kind cemetery (30 m of centre), mountainPeak (60 m horizontal and within 10 m of the summit height), lake (within extent + 40 m, player on dry ground, wet floor within 30 m). Reveals `confirmed`/`exploration`. The catalog gained non-persisted, memoized `lakeExtentRadius(id)` (flood-fill extent) and `peakSummitHeight(id)` (max of a 5x5 sample grid over the coarse cell); both dropped by `invalidateScanCache`. Landform/waterfall arrival belongs to L1.
 
 ## Limitations
 

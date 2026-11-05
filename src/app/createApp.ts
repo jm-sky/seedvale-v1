@@ -263,6 +263,7 @@ import { resolveInjurySeverity } from '../shared/injurySeverity'
 import { drainStamina } from '../shared/StaminaState'
 import { drainVigor } from '../shared/VigorState'
 import { chunksNear } from '../terrain/chunkGrid'
+import { sampleRawTexelAt } from '../terrain/chunkHeightmap'
 import { disposeChunkWorkerPool } from '../terrain/chunkWorkerPool'
 import { sampleFootstepSurface } from '../terrain/footstepSurface'
 import { deserializeMineableRockState, type MineableRockStateStore } from '../terrain/mineableRocks'
@@ -309,6 +310,7 @@ import { createCoarseCachePersistence, locationsCoarseFingerprint } from '../wor
 import { getActiveLostTreasureEstateSearchArea } from '../world/locations/lostTreasureEstateSearchAreaRuntime'
 import { createNavigationTargets, setActiveNavigationTargets } from '../world/locations/navigationTargets'
 import { revealLocationKnowledge } from '../world/locations/revealLocationKnowledge'
+import { isLocationDiscovered } from '../world/locations/rumourLead'
 import {
   isTreasureMapBearCaveAuthoredCasket,
   TREASURE_MAP_BEAR_CAVE_KEPT_OUTCOME_ID,
@@ -1025,6 +1027,7 @@ export async function createApp(
     lookupSettlement: lookupSettlementCell,
     catalog: worldLocationCatalog,
     knowledge: locationKnowledge,
+    sampleTexel: (x, z) => sampleRawTexelAt(x, z, rawSampleParamsFromWorld(config)),
     onInsideSettlement: (settlementId) => {
       if (settlementId) lastVisitedSettlementId = settlementId
     },
@@ -1040,6 +1043,7 @@ export async function createApp(
     discovery: mapDiscovery,
     catalog: worldLocationCatalog,
     knowledge: locationKnowledge,
+    getSeed: () => config.seed,
   })
   setActiveMapData(mapData)
   // Shared minimap/world-map raster terrain + fog (plan ui-input-046).
@@ -2159,7 +2163,7 @@ export async function createApp(
     },
     {
       hasReadItem: (itemKind) => itemKind === 'treasure_map_dark_forest' && worldFlags.treasureMapDarkForestRead,
-      hasDiscoveredLocation: (locationId) => locationKnowledge.has(locationId),
+      hasDiscoveredLocation: (locationId) => isLocationDiscovered(locationKnowledge, locationId),
       isWorldContainerLooted: (containerId) => {
         if (lostHunterBinding && containerId === lostHunterBinding.packContainerId) {
           const instances = bundle.worldGeneratedContainers.containerInstances(containerId, 'hunting_bow')

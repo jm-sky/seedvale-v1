@@ -8,6 +8,8 @@ import type {
   MapLocationKind,
   MapViewport,
 } from './mapTypes'
+import { genericLocationLabel, rumourLeadArea } from '../locations/rumourLead'
+import { worldLocationKindFromId } from '../locations/worldLocationTypes'
 import { MAP_EXTENT_HALF } from './mapConfig'
 
 export type MapData = {
@@ -46,14 +48,33 @@ export function createMapData(opts: {
   discovery: MapDiscovery
   catalog: WorldLocationCatalog
   knowledge: LocationKnowledge
+  /** Live world seed (thunk — the seed changes on world rebuild); drives the
+   *  deterministic, non-persisted rumour-lead area of `estimated` entries. */
+  getSeed: () => number
 }): MapData {
-  const { projection, discovery, catalog, knowledge } = opts
+  const { projection, discovery, catalog, knowledge, getSeed } = opts
 
   function project(entryId: string): MapKnownLocation | null {
     const entry = knowledge.get(entryId)
     if (!entry) return null
     const location = catalog.getById(entryId)
     if (!location) return null
+    if (entry.state === 'estimated') {
+      // Uncertain knowledge (plan world-041 L0 §0): the canonical x/z/name
+      // must never reach any player-facing consumer. This is the single
+      // chokepoint for map, minimap, navigation targets and the popover.
+      const lead = rumourLeadArea(getSeed(), location.id, location)
+      return {
+        id: location.id,
+        kind: toMapLocationKind(location.kind),
+        x: lead.x,
+        z: lead.z,
+        state: entry.state,
+        source: entry.source,
+        label: genericLocationLabel(worldLocationKindFromId(location.id) ?? location.kind),
+        areaRadius: lead.radius,
+      }
+    }
     return {
       id: location.id,
       kind: toMapLocationKind(location.kind),

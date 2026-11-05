@@ -16,6 +16,7 @@ import { isFloorBelowSea, isMountainRidge, isOceanMix } from '../../terrain/terr
 import { isWetTexel } from '../../terrain/waterSurface'
 import {
   hoursToWorldUnits,
+  LAKE_EXTENT_SEED_SEARCH_CELLS,
   LAKE_FLOOD_FILL_SAFETY_CAP,
   LOCATION_SCAN_STEP,
   LOCATION_TILE_CELLS,
@@ -208,6 +209,19 @@ export type WorldLocationCatalog = {
     maxHours: number,
     options?: LandmarkQueryOptions,
   ): Promise<WorldLocation[]>
+  /**
+   * Horizontal extent of a catalog lake (plan world-041 L0 §4): the farthest
+   * distance from its representative position to the edge of its flood-filled
+   * coarse water component. Lazily computed and memoized per id (non-persisted,
+   * dropped by `invalidateScanCache`). `null` for a non-lake / unresolvable id.
+   */
+  lakeExtentRadius(id: string): number | null
+  /**
+   * Approximate summit height of a catalog `mountainPeak` (max sampled terrain
+   * height around its coarse-cell centre) for arrival checks. Memoized,
+   * non-persisted. `null` for a non-peak / unresolvable id.
+   */
+  peakSummitHeight(id: string): number | null
   /** Drops the internal coarse-terrain tile cache and cemetery-lookup cache
    *  (and resets `getScanDiagnostics()`) — call after a world rebuild (new
    *  seed/terrain params), same "must not silently reuse stale terrain data
@@ -363,6 +377,83 @@ export function createWorldLocationCatalog(deps: WorldLocationCatalogDeps): Worl
     const id = `${kind}:${cx},${cz}`
     const seed = getSeed()
     return { id, kind, x, z, name: landmarkName(seed, kind, id), discoveryWeight: weightOf(seed, id) }
+  }
+
+  const lakeExtentCache = new Map<string, number | null>()
+  const peakSummitCache = new Map<string, number | null>()
+
+  function gridCoordsFromId(id: string, kind: 'lake' | 'mountainPeak'): { cx: number, cz: number } | null {
+    if (!id.startsWith(`${kind}:`)) return null
+    const [cxStr, czStr] = id.slice(kind.length + 1).split(',')
+    const cx = Number(cxStr)
+    const cz = Number(czStr)
+    return Number.isInteger(cx) && Number.isInteger(cz) ? { cx, cz } : null
+  }
+
+  function lakeExtentRadius(id: string): number | null {
+    const cached = lakeExtentCache.get(id)
+    if (cached !== undefined) return cached
+    const coords = gridCoordsFromId(id, 'lake')
+    if (!coords) return null
+    const params = getSampleParams()
+    // The representative cell is a rounded centroid and may itself be dry —
+    // look for the nearest water cell in a small ring before flood-filling.
+    let start: number | null = null
+    for (let ring = 0; ring <= LAKE_EXTENT_SEED_SEARCH_CELLS && start == null; ring++) {
+      for (let dz = -ring; dz <= ring && start == null; dz++) {
+        for (let dx = -ring; dx <= ring; dx++) {
+          if (Math.max(Math.abs(dx), Math.abs(dz)) !== ring) continue
+          if (coarseCellAt(coords.cx + dx, coords.cz + dz, params).kind === CELL_WATER) {
+            start = cellKeyOf(coords.cx + dx, coords.cz + dz)
+            break
+          }
+        }
+      }
+    }
+    let extent: number | null = null
+    if (start != null) {
+      const visited = new Set<number>([start])
+      const stack = [start]
+      let count = 0
+      let maxDistSq = 0
+      const repX = (coords.cx + 0.5) * LOCATION_SCAN_STEP
+      const repZ = (coords.cz + 0.5) * LOCATION_SCAN_STEP
+      while (stack.length > 0 && count < LAKE_FLOOD_FILL_SAFETY_CAP) {
+        const { gx, gz } = decodeCellKey(stack.pop()!)
+        count++
+        const dxw = (gx + 0.5) * LOCATION_SCAN_STEP - repX
+        const dzw = (gz + 0.5) * LOCATION_SCAN_STEP - repZ
+        maxDistSq = Math.max(maxDistSq, dxw * dxw + dzw * dzw)
+        for (const [dx, dz] of NEIGHBOR4) {
+          const nkey = cellKeyOf(gx + dx, gz + dz)
+          if (visited.has(nkey)) continue
+          visited.add(nkey)
+          if (coarseCellAt(gx + dx, gz + dz, params).kind === CELL_WATER) stack.push(nkey)
+        }
+      }
+      extent = Math.sqrt(maxDistSq) + LOCATION_SCAN_STEP / 2
+    }
+    lakeExtentCache.set(id, extent)
+    return extent
+  }
+
+  function peakSummitHeight(id: string): number | null {
+    const cached = peakSummitCache.get(id)
+    if (cached !== undefined) return cached
+    const coords = gridCoordsFromId(id, 'mountainPeak')
+    if (!coords) return null
+    const params = getSampleParams()
+    const cx = (coords.cx + 0.5) * LOCATION_SCAN_STEP
+    const cz = (coords.cz + 0.5) * LOCATION_SCAN_STEP
+    let best = -Infinity
+    const half = LOCATION_SCAN_STEP / 2
+    for (let i = -2; i <= 2; i++) {
+      for (let j = -2; j <= 2; j++) {
+        best = Math.max(best, sampleRawTexelAt(cx + (i * half) / 2, cz + (j * half) / 2, params).h)
+      }
+    }
+    peakSummitCache.set(id, best)
+    return best
   }
 
   function getById(id: string): WorldLocation | null {
@@ -936,8 +1027,12 @@ export function createWorldLocationCatalog(deps: WorldLocationCatalogDeps): Worl
     landmarksWithin,
     landmarksInRange,
     landmarksInRangeAsync,
+    lakeExtentRadius,
+    peakSummitHeight,
     invalidateScanCache: () => {
       tiles.clear()
+      lakeExtentCache.clear()
+      peakSummitCache.clear()
       cemeteryCache.clear()
       diagnostics = emptyLocationScanDiagnostics()
     },

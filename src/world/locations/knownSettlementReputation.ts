@@ -42,6 +42,7 @@ export function listKnownSettlementOptions(
 ): KnownSettlementOption[] {
   const options: KnownSettlementOption[] = []
   for (const entry of knowledge.list()) {
+    if (entry.state === 'estimated') continue // a rumour is not knowledge of the settlement (plan world-041 L0 §0)
     const settlementId = settlementIdFromLocationId(entry.id)
     if (!settlementId) continue
     const location = catalog.getById(entry.id)

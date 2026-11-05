@@ -1,11 +1,13 @@
 import type { SettlementCell } from '../../settlement/settlementGenerator'
 import type { CaveDefinition } from '../caveVolume'
+import type { LandmarkArrivalTexel } from './landmarkArrival'
 import type { LocationKnowledge } from './locationKnowledge'
 import type { WorldLocationCatalog } from './worldLocationCatalog'
 import { getActiveLostTreasureChronicleSearchBinding } from '../../quests/lostTreasureChronicleSearchRuntime'
 import { cellsWithinRadius, worldToCell } from '../../settlement/settlementGenerator'
 import { ruinsDiscoveryRadius } from './darkForestTreasureSite'
 import { getActiveDarkForestTreasureSite } from './darkForestTreasureSiteRuntime'
+import { revealLandmarksOnArrival } from './landmarkArrival'
 import { settlementLocationId } from './worldLocationCatalog'
 
 /** Horizontal distance from `CaveDefinition.entrance` at which physical
@@ -147,6 +149,9 @@ export function createLocationProximityDiscovery(deps: {
    *  containing the player, or `null` when outside every nearby footprint.
    *  Character Screen last-visited tracking — not a world-state mutation. */
   onInsideSettlement?: (settlementId: string | null) => void
+  /** Raw terrain sample for the lake/peak arrival rules (plan world-041 §4);
+   *  without it lake/peak/cemetery arrival is skipped. */
+  sampleTexel?: (x: number, z: number) => LandmarkArrivalTexel
   checkIntervalS?: number
   now?: () => number
 }): LocationProximityDiscovery {
@@ -156,6 +161,7 @@ export function createLocationProximityDiscovery(deps: {
     catalog,
     knowledge,
     onInsideSettlement,
+    sampleTexel,
     checkIntervalS = DEFAULT_CHECK_INTERVAL_S,
     now = () => performance.now() / 1000,
   } = deps
@@ -204,6 +210,9 @@ export function createLocationProximityDiscovery(deps: {
             revealed.push({ id: mine.id, name: mine.name })
           }
         }
+      }
+      if (sampleTexel) {
+        revealed.push(...revealLandmarksOnArrival({ catalog, knowledge, sampleTexel }, playerX, playerZ))
       }
       return revealed
     },

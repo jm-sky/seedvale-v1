@@ -102,6 +102,8 @@ describe('landmarksInBand / settlementsInBand', () => {
       landmarksInRangeAsync: async (x, z, minHours, maxHours) => all.filter((l) => hoursOf(x, z, l) > minHours && hoursOf(x, z, l) <= maxHours),
       abandonedMine: () => null,
       abandonedMineBinding: () => null,
+      lakeExtentRadius: () => null,
+      peakSummitHeight: () => null,
       stableLandmarksInRange: (x, z, minHours, maxHours) => all.filter((l) => hoursOf(x, z, l) > minHours && hoursOf(x, z, l) <= maxHours),
       invalidateScanCache: () => {},
       getScanDiagnostics: () => emptyLocationScanDiagnostics(),

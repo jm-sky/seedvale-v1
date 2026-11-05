@@ -567,6 +567,29 @@ describe('coarse terrain scan (plan world-013)', () => {
     }
   })
 
+  it('lakeExtentRadius / peakSummitHeight (world-041 arrival support) are memoized, non-persisted and kind-checked', () => {
+    const catalog = scanOnlyCatalog(42)
+    const all = catalog.landmarksWithin(0, 0, FAR_RANGE_HOURS)
+    const lake = all.find(l => l.kind === 'lake')
+    const peak = all.find(l => l.kind === 'mountainPeak')
+    expect(lake ?? peak, 'fixture has neither a lake nor a peak').toBeDefined()
+    if (lake) {
+      const extent = catalog.lakeExtentRadius(lake.id)
+      expect(extent).not.toBeNull()
+      expect(extent!).toBeGreaterThanOrEqual(LOCATION_SCAN_STEP / 2)
+      expect(catalog.lakeExtentRadius(lake.id)).toBe(extent)
+      expect(catalog.peakSummitHeight(lake.id)).toBeNull()
+    }
+    if (peak) {
+      const summit = catalog.peakSummitHeight(peak.id)
+      expect(summit).not.toBeNull()
+      expect(Number.isFinite(summit!)).toBe(true)
+      expect(catalog.lakeExtentRadius(peak.id)).toBeNull()
+    }
+    expect(catalog.lakeExtentRadius('lake:not-a-cell')).toBeNull()
+    expect(catalog.peakSummitHeight('cave:x')).toBeNull()
+  })
+
   it('a different seed/config can change results (sanity check the fixture isn\'t trivially empty everywhere)', () => {
     const a = scanOnlyCatalog(1).landmarksWithin(0, 0, FAR_RANGE_HOURS)
     const b = scanOnlyCatalog(2).landmarksWithin(0, 0, FAR_RANGE_HOURS)
