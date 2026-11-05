@@ -1,5 +1,8 @@
 # NPC Voice Cleanup — 2026-11-05
 
+> Superseded by the [final staged cleanup and migration report](2026-11-05--npc-voice-final-cleanup.md). Counts, pending British-female dispositions and old locations below describe earlier snapshots.
+
+
 ## Completed author decision cleanup
 
 The author approved exactly six individual replacements, seven keeps in
@@ -77,7 +80,7 @@ The original audit below records the earlier documentation-only pass. Its asset
 counts and “no files removed” statements describe that baseline, not current
 availability. Current disposition/removal authority is the section above.
 
-**Scope:** Documentation and dependency audit on V1 `main` `59c6ae15`; no files removed, no runtime or MP3 changes. [Current author-approved casting](../../plans/npc-065-stable-npc-voice-casting-and-donor-qc.md#npc-voice-map) is the single casting authority. Q90's 87 exact approved takes and the named packet's 89 draft texts retain their recording IDs, filenames and transcripts. Historical decisions remain in the source documents and Git.
+**Scope:** Documentation and dependency audit on V1 `main` `59c6ae15`; no files removed, no runtime or MP3 changes. [Current author-approved casting](../../design/npc-voices/CASTING.md#npc-voice-casting) is the single casting authority. Q90's 87 exact approved takes and the named packet's 89 draft texts retain their recording IDs, filenames and transcripts. Historical decisions remain in the source documents and Git.
 
 ## Resolved contradictions
 

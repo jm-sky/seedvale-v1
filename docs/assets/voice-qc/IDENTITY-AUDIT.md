@@ -22,7 +22,7 @@ Review suspected wrong-speaker cases first, then ambiguous clips. Strong matches
 
 ## Reference coverage and errors
 
-- `docs/v3-donor/voices/named-references/KID-2026-09-17-13-50-Hey!-I-haven't-seen-you-around-before.mp3`: Unmapped reference name
+- `docs/archive/voice-donor/named-references/KID-2026-09-17-13-50-Hey!-I-haven't-seen-you-around-before.mp3`: Unmapped reference name
 
 Single-reference voices: British-female, Little-Lem, Old-man, Old-woman, Sleepless-historian, guard. These lack independent within-speaker reference validation.
 

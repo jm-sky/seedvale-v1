@@ -5,6 +5,7 @@ from collections import Counter
 import json
 from pathlib import Path
 from voice_decisions import load_decisions
+from voice_assets import evidence_path
 
 
 def read_decisions(text):
@@ -54,7 +55,7 @@ def main():
     lines += ['', 'Review suspected wrong-speaker cases first, then ambiguous clips. Strong matches still require source/context/listening QC before cleanup. Single-reference voices and short or expressive clips have weaker evidence; absent speakers can never be identified by a closed reference set.', '',
               '## Reference coverage and errors', '']
     for error in report['referenceErrors']:
-        lines.append(f"- `{error['file']}`: {error['error']}")
+        lines.append(f"- `{evidence_path(error['file']).relative_to(Path(__file__).resolve().parents[2])}`: {error['error']}")
     single = Counter(r['uuid'] for r in report['references'])
     lines += ['', 'Single-reference voices: '+', '.join(names[k] for k,v in single.items() if v==1)+'. These lack independent within-speaker reference validation.', '']
     for kind in ['suspected-wrong-speaker','unresolved-expected','ambiguous','missing-reference','analysis-error','strong-match']:

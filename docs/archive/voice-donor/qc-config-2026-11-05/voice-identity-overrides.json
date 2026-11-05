@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 1,
+  "description": "Per-recording QC expectations only. Null explicitly blocks ledger fallback. No runtime casting or transcript verdict changes.",
+  "recordings": {
+    "general_female_child_farewell_01.mp3": {
+      "uuid": null,
+      "status": "unresolved",
+      "gitBlob": "20faca321ca431baac95fd986dea673412301e1a",
+      "evidence": [
+        "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md: age entry marked intent/heuristic match, not listen-verified; generation-history scrape contains phrases only."
+      ],
+      "note": "Filename age and embedding winner are review hints, not verified historical identity."
+    },
+    "general_female_child_farewell_02.mp3": {
+      "uuid": null,
+      "status": "unresolved",
+      "gitBlob": "16e163eefc335a02c252382fd46cf209d93aeea0",
+      "evidence": [
+        "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md: age entry marked intent/heuristic match, not listen-verified; generation-history scrape contains phrases only."
+      ],
+      "note": "Filename age and embedding winner are review hints, not verified historical identity."
+    },
+    "general_female_child_greeting_01.mp3": {
+      "uuid": null,
+      "status": "unresolved",
+      "gitBlob": "1720ca75d9d7d634e72bcc3bfc26bef6621edb00",
+      "evidence": [
+        "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md: age entry marked intent/heuristic match, not listen-verified; generation-history scrape contains phrases only."
+      ],
+      "note": "Filename age and embedding winner are review hints, not verified historical identity."
+    },
+    "general_female_old_farewell_01.mp3": {
+      "uuid": "8db547ea044f44838bf2f8a039f05b5a",
+      "status": "historical-verified",
+      "gitBlob": "6a7c296f0edeec45fd36c6394c51b6801b7e6871",
+      "evidence": [
+        "docs/v3-donor/voices/named-references/Old-woman-2026-09-17-14-05-Take-care,-dear.-And-mind-your-step.mp3",
+        "docs/assets/voice-qc/IDENTITY-AUDIT.md: author Decision = Old-woman"
+      ],
+      "note": "Byte-identical named reference; independently author-confirmed."
+    },
+    "general_female_old_farewell_02.mp3": {
+      "uuid": null,
+      "status": "unresolved",
+      "gitBlob": "ad2a7de6df5d0c00cf8bb086bfa429638ca9ee42",
+      "evidence": [
+        "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md: age entry marked intent/heuristic match, not listen-verified; generation-history scrape contains phrases only."
+      ],
+      "note": "Filename age and embedding winner are review hints, not verified historical identity."
+    },
+    "general_female_old_greeting_01.mp3": {
+      "uuid": null,
+      "status": "unresolved",
+      "gitBlob": "14eba3aca9c38317052fdfcf40c66a6caf977347",
+      "evidence": [
+        "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md: age entry marked intent/heuristic match, not listen-verified; generation-history scrape contains phrases only."
+      ],
+      "note": "Filename age and embedding winner are review hints, not verified historical identity."
+    },
+    "general_male_old_farewell_01.mp3": {
+      "uuid": null,
+      "status": "unresolved",
+      "gitBlob": "3093fc8188772dd728cf957cd149d9738f25011f",
+      "evidence": [
+        "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md: age entry marked intent/heuristic match, not listen-verified; generation-history scrape contains phrases only."
+      ],
+      "note": "Filename age and embedding winner are review hints, not verified historical identity."
+    },
+    "general_male_old_farewell_02.mp3": {
+      "uuid": "61fc0e0fc78046da8fb9549b9b4c6175",
+      "status": "historical-verified",
+      "gitBlob": "2929c50db87e33c9ab5fbf22aa428685c2c25895",
+      "evidence": [
+        "docs/v3-donor/voices/named-references/Old-man-2026-09-17-14-04-Go-safely.-These-old-roads-have-their-dangers.mp3"
+      ],
+      "note": "Byte-identical named reference. Identical reference remains excluded from scoring."
+    },
+    "general_male_old_greeting_01.mp3": {
+      "uuid": null,
+      "status": "unresolved",
+      "gitBlob": "b5e2dd722d53f179c46a36938d3325073ff498c6",
+      "evidence": [
+        "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md: age entry marked intent/heuristic match, not listen-verified; generation-history scrape contains phrases only."
+      ],
+      "note": "Filename age and embedding winner are review hints, not verified historical identity."
+    },
+    "general_male_old_greeting_02.mp3": {
+      "uuid": null,
+      "status": "unresolved",
+      "gitBlob": "6668112c2baa279a15fbbb99683d0bef98ed63bb",
+      "evidence": [
+        "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md: age entry marked intent/heuristic match, not listen-verified; generation-history scrape contains phrases only."
+      ],
+      "note": "Filename age and embedding winner are review hints, not verified historical identity."
+    },
+    "general_male_young_farewell_01.mp3": {
+      "uuid": null,
+      "status": "unresolved",
+      "gitBlob": "ef1d698abac2d90631f3051619202957e9658379",
+      "evidence": [
+        "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md: age entry marked intent/heuristic match, not listen-verified; generation-history scrape contains phrases only."
+      ],
+      "note": "Filename age and embedding winner are review hints, not verified historical identity."
+    },
+    "general_male_young_greeting_01.mp3": {
+      "uuid": null,
+      "status": "unresolved",
+      "gitBlob": "f86212d404bc5cdf20edece928081665c6879e11",
+      "evidence": [
+        "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md: age entry marked intent/heuristic match, not listen-verified; generation-history scrape contains phrases only."
+      ],
+      "note": "Filename age and embedding winner are review hints, not verified historical identity."
+    },
+    "general_male_young_greeting_02.mp3": {
+      "uuid": "34a421bb18bd4d3289898233cfa88269",
+      "status": "author-confirmed",
+      "gitBlob": "83d18ebfda43e1a67c614ecfc623ec77e0c96a57",
+      "evidence": [
+        "docs/assets/voice-qc/IDENTITY-AUDIT.md: author Decision = Little-Lem"
+      ],
+      "note": "Author-confirmed identity; not a verified historical generation UUID. KID reference has the same phrase but no established UUID; phrase equality does not prove identity."
+    }
+  }
+}

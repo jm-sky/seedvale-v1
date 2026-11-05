@@ -1,0 +1,49 @@
+{
+  "modelRevision": "0f99f2d0ebe89ac095bcc5903c4dd8f72b367286",
+  "sources": [
+    "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md#voice-sources",
+    "docs/v3-donor/voices/docs/voice-production-notes.md",
+    "docs/plans/npc-065-stable-npc-voice-casting-and-donor-qc.md#npc-voice-map"
+  ],
+  "unresolved": {
+    "KID": "No repository UUID evidence; excluded, never inferred from child filenames."
+  },
+  "voices": {
+    "Expressive-Female-Voice": "d4f161bee1934b47ad3090f05649270c",
+    "Laura": "e3cd384158934cc9a01029cd7d278634",
+    "Casual-Male-Speaker": "c2a3921fd7024b9189cb912bdfe5266a",
+    "Brian-British": "65c0b8155c464a648161af8877404f11",
+    "guard": "c29549f41b3b4aa498d66d76fba0e887",
+    "Dramatic-Character-Male": "7a18a1851d2649108c48ec9f2c80eb2c",
+    "Arthur-Morgan": "bd22266aba38416cb602e90ce651520c",
+    "Cowboy": "a2cecd3eda8b44178b7f1bc1379edae0",
+    "Warm-Conversational-Female": "5e3be339f2df45e6a1a338bb2ce94800",
+    "Hannah": "9a9cf47702da476aa4629e2506d4a857",
+    "hetalia-Russia": "4af16ba03cee422996ec29a43e1947ee",
+    "Sleepless-historian": "beb44e5fac1e4b33a15dfcdcc2a9421d",
+    "Friendly-Male-Voice": "2adcdee4b3ce4b648dc16ea65430ea76",
+    "British-female": "82a3ef4504a6441e9a07acdaaf5349c1",
+    "British": "d33bd87d47a04c2eada3c5438047e32d",
+    "Warm-Conversational-Male": "559bb0b0a3c74f7a93bd884c0e5a6049",
+    "Warm-Male-Friend": "f292c81d563f47799b7e411f1c1e68a9",
+    "Little-Lem": "34a421bb18bd4d3289898233cfa88269",
+    "Old-man": "61fc0e0fc78046da8fb9549b9b4c6175",
+    "Old-woman": "8db547ea044f44838bf2f8a039f05b5a",
+    "KID": null
+  },
+  "profiles": {
+    "merchant_female": "d4f161bee1934b47ad3090f05649270c",
+    "merchant_female_b": "e3cd384158934cc9a01029cd7d278634",
+    "general_male": "c2a3921fd7024b9189cb912bdfe5266a",
+    "general_male_b": "65c0b8155c464a648161af8877404f11",
+    "guard_male": "c29549f41b3b4aa498d66d76fba0e887",
+    "guard_male_b": "7a18a1851d2649108c48ec9f2c80eb2c",
+    "hunter_male": "bd22266aba38416cb602e90ce651520c",
+    "hunter_male_b": "a2cecd3eda8b44178b7f1bc1379edae0",
+    "general_female": "5e3be339f2df45e6a1a338bb2ce94800",
+    "general_female_b": "9a9cf47702da476aa4629e2506d4a857",
+    "shepherd_male": "4af16ba03cee422996ec29a43e1947ee",
+    "shepherd_male_b": "beb44e5fac1e4b33a15dfcdcc2a9421d",
+    "mark_hornblower": "2adcdee4b3ce4b648dc16ea65430ea76"
+  }
+}

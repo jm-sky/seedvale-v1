@@ -5,7 +5,7 @@
 **Created by:** ChatGPT Sol  
 **Domain:** dialogue, recorded audio, quality control  
 **Roadmap:** M4 text admission, M7 voice pilot, M9 broader voice use  
-**Depends on:** [voice catalog](NPC-VOICE-CATALOG.md), [quality audit](../reviews/2026-10-20--185--npc-dialogue-quality-audit.md)  
+**Depends on:** [voice catalog](../../../design/npc-voices/CATALOG.md), [quality audit](../reviews/2026-10-20--185--npc-dialogue-quality-audit.md)  
 **Decided by:** ChatGPT Sol — quarantine potentially unsuitable recorded lines instead of silently rewriting their transcripts
 
 ## Safety rule

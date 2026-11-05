@@ -47,7 +47,7 @@ model download on a cold run. Existing ASR and author verdicts remain untouched.
 After reviewing the calibration gate, reproduce the full triage and Markdown:
 
 ```sh
-/tmp/seedvale-identity-venv/bin/python scripts/voice/voice-identity-qc.py --policy docs/assets/voice-qc/identity-policy.json --output docs/assets/voice-qc/identity-audit.json
+/tmp/seedvale-identity-venv/bin/python scripts/voice/voice-identity-qc.py --policy docs/assets/voice-qc/identity-policy.json --output /tmp/seedvale-identity-current.json
 python3 scripts/voice/voice-identity-report.py docs/assets/voice-qc/identity-audit.json docs/assets/voice-qc/IDENTITY-AUDIT.md
 ```
 
@@ -68,31 +68,32 @@ coverage or malformed/duplicate rows fail before writing. Edit structured author
 evidence explicitly when a new author decision arrives; neither identity nor
 transcript verdicts are inferred from disposition.
 
-The [six-recording replacement backlog](../../docs/assets/voice-qc/regeneration-backlog.json)
-records every removed path, blob, SHA256, original/ASR/proposed text and integration
-gate. The ledger and audit JSON are historical snapshots of all 317 recordings;
-`inV1Public` and `publicCopyIdentical` describe that snapshot, not live availability.
-The ledger generator retains authorized missing rows verbatim and aborts on
-unapproved missing audio. A `--limit` run also preserves unselected rows. Cached
-ASR does not initialize Whisper. Run the full generator without `--force` to
-verify that cleanup preserves the ledger exactly.
+The [replacement backlog](../../docs/assets/voice-qc/regeneration-backlog.json)
+records removed paths, original blobs, SHA256, texts and integration gates.
 
-The embedding extractor still requires audio files. To reproduce historical
-embeddings after deletion, use a separate temporary checkout at `historicalCommit`
-from the backlog (or recover the exact blobs there with `git show`); do not restore
-rejected recordings into the active donor/public tree or overwrite the historical
-audit with missing-file errors. Markdown-only regeneration uses the committed audit
-and requires neither deleted audio nor model dependencies. Future accepted takes
-must receive fresh content bindings/QC without erasing original evidence.
+## Migrated storage and historical evidence
 
-Validation without model downloads or generation:
+Canonical retained audio lives in `public/sounds/voices/`; source storage is not
+a runtime/QC admission. `voice_assets.py` resolves each historical bank recording
+through [migration-inventory.json](../../docs/assets/voice-qc/migration-inventory.json).
+The 38 globally excluded Brian British bank files are archive-only. Six unique
+backups and 38 named reference paths are in `docs/archive/voice-donor/`. Exact
+reference duplicates are relative symlinks; use a Git checkout preserving symlinks
+or materialize their target bytes when transporting evidence.
 
-```sh
-python3 -m unittest discover -s scripts/voice -p 'test_voice*.py'
-python3 scripts/voice/voice-qc-ledger.py
-python3 scripts/voice/voice-identity-report.py docs/assets/voice-qc/identity-audit.json docs/assets/voice-qc/IDENTITY-AUDIT.md
-```
+The committed audit/ledger are historical snapshots. Their original presence flags,
+source paths, expected identities and scores remain evidence, not live availability.
+Historical audit config hashes resolve to exact archived files under
+`docs/archive/voice-donor/qc-config-2026-11-05/`; current config changes paths only.
+The identity CLI refuses to overwrite the historical audit. On a new `--output`,
+retained audio is checked/extracted normally; 14 removed rows reuse their original
+scores with `historicalEvidence: true` and `audioAvailability: removed-author-decision`.
+This is not a fresh identity assessment of absent audio. Render historical Markdown
+from the committed audit and current decisions as shown above.
 
-`referenceChecks` contains leave-one-content-out reference scores, with singleton
-voices explicitly missing their own reference. The local policy only labels
-review priorities; do not transfer these bounds to another model/reference set.
+The ASR generator resolves all 303 retained bank recordings (265 canonical + 38
+archived), preserves all 317 original cached ledger rows byte-for-byte, and retains
+authorized removed rows. Neither regeneration tool writes author-decisions.json.
+For historical extraction of deleted audio, recover by exact commit/path/hash from
+[deletion-manifest.json](../../docs/assets/voice-qc/deletion-manifest.json) into a
+separate temporary checkout. Never restore rejected takes to the playable tree.

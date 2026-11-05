@@ -1,9 +1,9 @@
 {
   "modelRevision": "0f99f2d0ebe89ac095bcc5903c4dd8f72b367286",
   "sources": [
-    "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md#voice-sources",
-    "docs/v3-donor/voices/docs/voice-production-notes.md",
-    "docs/plans/npc-065-stable-npc-voice-casting-and-donor-qc.md#npc-voice-map"
+    "docs/design/npc-voices/CATALOG.md#voice-sources",
+    "docs/archive/voice-donor/docs/voice-production-notes.md",
+    "docs/design/npc-voices/CASTING.md#npc-voice-casting"
   ],
   "unresolved": {
     "KID": "No repository UUID evidence; excluded, never inferred from child filenames."

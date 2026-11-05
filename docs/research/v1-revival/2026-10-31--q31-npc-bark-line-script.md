@@ -21,7 +21,7 @@
 
 ## 2. Line script for generation
 
-**Format** follows the [voice catalog](../../v3-donor/voices/docs/NPC-VOICE-CATALOG.md): filename `<scope>_<gender>_<keyword>_<NN>.mp3` under `public/sounds/voices/`; `generation_input` is the Fish prompt (expressive tags are generation metadata only); voice IDs are the catalog's primary profiles. Lines are short (≈1–3 s), present-tense, presuppose nothing the world may not have (no gates, no specific fire, no named places, no time of day).
+**Format** follows the [voice catalog](../../design/npc-voices/CATALOG.md): filename `<scope>_<gender>_<keyword>_<NN>.mp3` under `public/sounds/voices/`; `generation_input` is the Fish prompt (expressive tags are generation metadata only); voice IDs are the catalog's primary profiles. Lines are short (≈1–3 s), present-tense, presuppose nothing the world may not have (no gates, no specific fire, no named places, no time of day).
 
 | Voice profile | Fish voice ID |
 | --- | --- |

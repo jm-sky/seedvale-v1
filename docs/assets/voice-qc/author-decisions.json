@@ -3537,7 +3537,7 @@
       "name": "Brian British",
       "decision": "rejected",
       "reason": "Permanent global do-not-use, author 2026-11-03; retain historical recordings in archive only.",
-      "evidence": "docs/plans/npc-065-stable-npc-voice-casting-and-donor-qc.md#author-casting-decisions--2026-11-03-s2-first-listening-round"
+      "evidence": "docs/design/npc-voices/CASTING.md#author-casting-decisions--2026-11-03-s2-first-listening-round"
     }
   }
 }

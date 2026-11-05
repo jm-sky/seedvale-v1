@@ -1,6 +1,6 @@
 # Voice QC ledger — report (npc-065 S1, Q87)
 
-This ASR report documents existing files; [2026-11-05 casting](../../plans/npc-065-stable-npc-voice-casting-and-donor-qc.md#npc-voice-map) supersedes older bank casting holds, while every row remains QC-pending. Casual Male Speaker is approved for male farmer; mixed-source recordings require individual QC.
+This ASR report documents existing files; [2026-11-05 casting](../../design/npc-voices/CASTING.md#npc-voice-casting) supersedes older bank casting holds, while every row remains QC-pending. Casual Male Speaker is approved for male farmer; mixed-source recordings require individual QC.
 
 Generated 2026-11-02 by `scripts/voice/voice-qc-ledger.py` (faster-whisper `small.en`, CPU, int8) over all 317 files in `docs/v3-donor/voices/mp3` (the 109 files in `public/sounds/voices` are byte-identical copies, flagged `inV1Public`). Data: [`ledger.json`](./ledger.json). ASR proves spoken words only; taste/pronunciation remain author-owned (`author`/`verdict` start `unheard`/`pending`). Catalog `voice_id` is a profile name for some `_b` banks; the tool maps both forms.
 

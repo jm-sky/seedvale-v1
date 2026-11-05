@@ -9,7 +9,7 @@ It is **not a weather-state mapping bug**. The shelter reaction works on the rea
 
 - `weatherShelterPressure` (`src/ai/weatherPressure.ts`) correctly produces pressure for `storm`, `snow` and rain types (separate thresholds), nothing for clear/cloudy/fog.
 - `NpcAgent.beginSeekShelter` (`src/ai/NpcAgent.ts` ~6609) calls `this.requestBark('weather_shelter')` — intent only, `currentWeather` is not consulted.
-- `GENERATED_VOICE_MANIFEST` has exactly one clip per scope for that intent (`src/ai/npcVoiceLines.ts` ~235): `general:male`, `guard:male` → *"Rain's coming down hard. Better get inside."* (identical generation input, [v3-donor catalog](../../v3-donor/voices/docs/NPC-VOICE-CATALOG.md) lines 404/719); `general:female` → *"This weather's getting worse. Time to get under cover."* (weather-neutral).
+- `GENERATED_VOICE_MANIFEST` has exactly one clip per scope for that intent (`src/ai/npcVoiceLines.ts` ~235): `general:male`, `guard:male` → *"Rain's coming down hard. Better get inside."* (identical generation input, [v3-donor catalog](../../design/npc-voices/CATALOG.md) lines 404/719); `general:female` → *"This weather's getting worse. Time to get under cover."* (weather-neutral).
 - So any male/guard NPC sheltering from **snow or storm** says "Rain's coming down". Female NPCs are fine. The catalog already flags this as "quality debt" (rain presupposed by the intent).
 
 **Fix candidates (all workload-neutral, presentation only):**

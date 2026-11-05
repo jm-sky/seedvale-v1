@@ -152,7 +152,7 @@ class IdentityTests(unittest.TestCase):
         self.assertEqual(len(audit['rows']),len(ledger['rows']))
         refs={r['file']:r for r in audit['references']}
         mapping=json.loads(Path(__file__).with_name('voice-identity-map.json').read_text())
-        overrides_path=Path(__file__).with_name('voice-identity-overrides.json')
+        overrides_path=qc.ROOT/'docs/archive/voice-donor/qc-config-2026-11-05/voice-identity-overrides.json'
         overrides=json.loads(overrides_path.read_text())
         self.assertEqual(audit['overridesSha256'], qc.digest(overrides_path))
         ledger_rows={r['file']:r for r in ledger['rows']}

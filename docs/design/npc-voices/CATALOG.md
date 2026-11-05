@@ -1,9 +1,29 @@
+# V1 NPC Voice Catalog — current storage and historical phrases
+
+[Approved casting](CASTING.md) · [Author decisions](../../assets/voice-qc/author-decisions.json) · [Live migration inventory](../../assets/voice-qc/migration-inventory.json)
+
+265 retained recordings are canonical in `public/sounds/voices/`. Storage does not
+approve playback: no migrated clip was newly registered; all 317 historical
+ledger transcript-QC verdicts remain pending. Fourteen rejected recordings were
+removed; 38 Brian British recordings remain archive-only. Six unique alternate
+backup takes and 38 named reference paths are archived separately.
+
+The body preserves the complete donor catalog's semantic texts, voice labels,
+generation inputs and planned phrases. Bank labels are historical intended
+sources, not confirmed identities. The [original V1 catalog](../../archive/voice-donor/v1-catalog-before-consolidation.md)
+retains V1-specific wording, annotations and translation context.
+[Raw Fish generation history](../../archive/voice-donor/docs/fish-generation-history-2026-10-09.json)
+and [production notes](../../archive/voice-donor/docs/voice-production-notes.md)
+are historical production evidence. ASR texts remain in the unchanged
+[ledger](../../assets/voice-qc/ledger.json). Current paths/hashes for every
+retained or deleted recording are machine-readable in the migration inventory.
+
 # NPC Voice Catalog
 
 **Updated at:** 2026-10-20
 **Updated by:** Composer — Mark Hornblower cast (`Friendly Male Voice`) + 6-line pilot
 
-Canonical working catalog for generated NPC voice samples (barks).
+Historical phrase and generation metadata, consolidated into the permanent V1 catalog. Current availability/disposition is defined below; dated in_repo flags in the historical body are not live QC or availability.
 
 Visible in-game dialogue is English (changed from Polish by D-CMP-13); strings remain translation-ready for Polish later. Generated/spoken voice samples are English. Existing clips express a semantic intent and are not automatically a literal reading of every displayed line.
 
@@ -11,7 +31,7 @@ Runtime generated samples currently live flat under `public/sounds/voices/`.
 
 **Statuses:** `in_repo` (file on disk, text known) · `text_unknown` (file on disk, spoken text not verified) · `planned` (phrase + voice slot authored; no audio yet).
 
-**Generation metadata:** when known from Fish [Generation History](https://fish.audio/app/generation-history/), store the full prompt (including expressive tags) as `generation_input:`. The blockquote is the spoken line with tags stripped. Raw scrape: [`fish-generation-history-2026-10-09.json`](./fish-generation-history-2026-10-09.json).
+**Generation metadata:** when known from Fish [Generation History](https://fish.audio/app/generation-history/), store the full prompt (including expressive tags) as `generation_input:`. The blockquote is the spoken line with tags stripped. Raw scrape: [`fish-generation-history-2026-10-09.json`](../../archive/voice-donor/docs/fish-generation-history-2026-10-09.json).
 
 Imported from v1 `legacy/seedvale/docs/dialogue/NPC-VOICE-CATALOG.md` (2026-10-09); this file is the tracked canon.
 
@@ -79,9 +99,9 @@ Topics: `weather`, `work`, `road`.
 | `merchant_female` | Fish Audio | `d4f161bee1934b47ad3090f05649270c` | `Expressive Female Voice`; current merchant voice. |
 | `merchant_female_b` | Fish Audio | `e3cd384158934cc9a01029cd7d278634` | `Laura` (Fish Discovery); second merchant timbre. |
 | `general_male` | Fish Audio | `c2a3921fd7024b9189cb912bdfe5266a` | `Casual Male Speaker`; generic male fallback. |
-| `general_male_b` | Fish Audio | `65c0b8155c464a648161af8877404f11` | `Brian British`; calm middle-aged British male — second general-male timbre. Author cast taste 2026-10-20: mechanical / no emotion — [voice-production-notes.md](./voice-production-notes.md). |
+| `general_male_b` | Fish Audio | `65c0b8155c464a648161af8877404f11` | `Brian British`; calm middle-aged British male — second general-male timbre. Author cast taste 2026-10-20: mechanical / no emotion — [voice-production-notes.md](../../archive/voice-donor/docs/voice-production-notes.md). |
 | `guard_male` | Fish Audio | `c29549f41b3b4aa498d66d76fba0e887` | Fish Audio voice labelled/selected as `guard`. |
-| `guard_male_b` | Fish Audio | `7a18a1851d2649108c48ec9f2c80eb2c` | `Dramatic Character Male`; deep commanding — second guard timbre. Taste: [voice production notes](./voice-production-notes.md) (2026-10-20, not signed off). |
+| `guard_male_b` | Fish Audio | `7a18a1851d2649108c48ec9f2c80eb2c` | `Dramatic Character Male`; deep commanding — second guard timbre. Taste: [voice production notes](../../archive/voice-donor/docs/voice-production-notes.md) (2026-10-20, not signed off). |
 | `hunter_male` | Fish Audio | `bd22266aba38416cb602e90ce651520c` | Arthur Morgan-style hunter voice. |
 | `hunter_male_b` | Fish Audio | `a2cecd3eda8b44178b7f1bc1379edae0` | `Cowboy` (John Morgan / Old West); gritty outdoor — second hunter timbre. |
 | `general_female` | Fish Audio | `5e3be339f2df45e6a1a338bb2ce94800` | `Warm Conversational`; generic female/villager. Previous candidate: `British female` (`82a3ef4504a6441e9a07acdaaf5349c1`). |
@@ -90,11 +110,11 @@ Topics: `weather`, `work`, `road`.
 | `shepherd_male_b` | Fish Audio | `beb44e5fac1e4b33a15dfcdcc2a9421d` | `Sleepless historian`; calm British measured — second shepherd timbre. |
 | `campfire_female` | Fish Audio | `5e3be339f2df45e6a1a338bb2ce94800` | Alias of `general_female` for campfire POC (provisional). |
 | `campfire_male` | Fish Audio | `c2a3921fd7024b9189cb912bdfe5266a` | Alias of `general_male` for campfire POC. |
-| `mark_hornblower` | Fish Audio | `2adcdee4b3ce4b648dc16ea65430ea76` | `Friendly Male Voice`; actor-specific for `G01` / Mark Hornblower (author cast 2026-10-20). Does **not** replace `guard_male`. Taste ledger: [voice-production-notes.md](./voice-production-notes.md). |
+| `mark_hornblower` | Fish Audio | `2adcdee4b3ce4b648dc16ea65430ea76` | `Friendly Male Voice`; actor-specific for `G01` / Mark Hornblower (author cast 2026-10-20). Does **not** replace `guard_male`. Taste ledger: [voice-production-notes.md](../../archive/voice-donor/docs/voice-production-notes.md). |
 
 Provider page: `https://fish.audio/app/`.
 
-Actor-specific files also use `npc_<npc-id>_<keyword>_<variant>.mp3` (see [public/sounds/README.md](../../public/sounds/README.md)).
+Actor-specific files also use `npc_<npc-id>_<keyword>_<variant>.mp3` (see [public/sounds/README.md](../../assets/SOUNDS.md)).
 
 Target diversity (no generation this round): **two Fish profiles per main scope×gender** (`*` + `*_b`) and **at least two English text variants** on core intents.
 
@@ -1029,6 +1049,7 @@ Voice: `Warm Conversational` — `5e3be339f2df45e6a1a338bb2ce94800`.
 ## agree
 
 `general_female_agree_01.mp3`
+- disposition: `replace` — author-rejected; audio removed. Historical phrase and generation metadata follow.
 - voice_id: `5e3be339f2df45e6a1a338bb2ce94800`
 - status: `in_repo`
 - generation_input: `Alright. That sounds good.`
@@ -1123,6 +1144,7 @@ Voice: `Warm Conversational` — `5e3be339f2df45e6a1a338bb2ce94800`.
 ## farewell
 
 `general_female_farewell_01.mp3`
+- disposition: `replace` — author-rejected; audio removed. Historical phrase and generation metadata follow.
 - voice_id: `5e3be339f2df45e6a1a338bb2ce94800`
 - status: `in_repo`
 - generation_input: `Take care of yourself.`
@@ -1139,6 +1161,7 @@ Voice: `Warm Conversational` — `5e3be339f2df45e6a1a338bb2ce94800`.
 ## greeting
 
 `general_female_greeting_01.mp3`
+- disposition: `replace` — author-rejected; audio removed. Historical phrase and generation metadata follow.
 - voice_id: `5e3be339f2df45e6a1a338bb2ce94800`
 - status: `in_repo`
 - generation_input: `Hello there. Good to see you.`
@@ -1200,6 +1223,7 @@ Voice: `Warm Conversational` — `5e3be339f2df45e6a1a338bb2ce94800`.
 ## quest_complete
 
 `general_female_quest_complete_01.mp3`
+- disposition: `replace` — author-rejected; audio removed. Historical phrase and generation metadata follow.
 - voice_id: `5e3be339f2df45e6a1a338bb2ce94800`
 - status: `in_repo`
 - generation_input: `You did it. Thank you so much`
@@ -1216,6 +1240,7 @@ Voice: `Warm Conversational` — `5e3be339f2df45e6a1a338bb2ce94800`.
 ## quest_declined
 
 `general_female_quest_declined_01.mp3`
+- disposition: `replace` — author-rejected; audio removed. Historical phrase and generation metadata follow.
 - voice_id: `5e3be339f2df45e6a1a338bb2ce94800`
 - status: `in_repo`
 - generation_input: `Oh... I see. Maybe someone else can help`
@@ -1262,6 +1287,7 @@ Voice: `Warm Conversational` — `5e3be339f2df45e6a1a338bb2ce94800`.
 ## thanks
 
 `general_female_thanks_01.mp3`
+- disposition: `replace` — author-rejected; audio removed. Historical phrase and generation metadata follow.
 - voice_id: `5e3be339f2df45e6a1a338bb2ce94800`
 - status: `in_repo`
 - generation_input: `Thank you. I really appreciate it.`
@@ -1576,6 +1602,7 @@ Campfire lines reuse `campfire_female` / `campfire_male` voice ids (aliases of g
 ## Weather
 
 `campfire_female_weather_question_01.mp3`
+- disposition: `replace` — author-rejected; audio removed. Historical phrase and generation metadata follow.
 - voice_id: `5e3be339f2df45e6a1a338bb2ce94800`
 - status: `in_repo`
 
@@ -1589,6 +1616,7 @@ Campfire lines reuse `campfire_female` / `campfire_male` voice ids (aliases of g
 > Think this wind will last?
 
 `campfire_female_weather_answer_02.mp3`
+- disposition: `replace` — author-rejected; audio removed. Historical phrase and generation metadata follow.
 - voice_id: `5e3be339f2df45e6a1a338bb2ce94800`
 - status: `in_repo`
 - generation_input: `[breathy] Maybe. [short pause] It usually [emphasis] turns before dawn.`
@@ -3591,7 +3619,7 @@ Every on-disk file must appear above with `voice_id` and `status` `in_repo` or `
 
 # Fish generation-history scrape (2026-10-09)
 
-Source: [Generation History](https://fish.audio/app/generation-history/). Scraped **134** unique prompt strings (tags included). Machine dump: [`fish-generation-history-2026-10-09.json`](./fish-generation-history-2026-10-09.json).
+Source: [Generation History](https://fish.audio/app/generation-history/). Scraped **134** unique prompt strings (tags included). Machine dump: [`fish-generation-history-2026-10-09.json`](../../archive/voice-donor/docs/fish-generation-history-2026-10-09.json).
 
 Recovered into `text_unknown` clips: **38**. Enriched existing quotes with `generation_input`: **76**.
 

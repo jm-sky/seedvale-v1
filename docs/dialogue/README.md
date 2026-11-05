@@ -1,7 +1,7 @@
 # Dialogue and voice documentation
 
-- [Current approved NPC casting](../plans/npc-065-stable-npc-voice-casting-and-donor-qc.md#npc-voice-map) and [cleanup / asset-status report](../research/v1-revival/2026-11-05--npc-voice-cleanup.md).
-- [NPC Voice Catalog](./NPC-VOICE-CATALOG.md) — current generated voice providers/IDs, filename convention, semantic keywords and approved working phrases.
+- [Current approved NPC casting](../design/npc-voices/CASTING.md#npc-voice-casting) and [cleanup / asset-status report](../research/v1-revival/2026-11-05--npc-voice-cleanup.md).
+- [NPC Voice Catalog](../design/npc-voices/CATALOG.md) — current generated voice providers/IDs, filename convention, semantic keywords and approved working phrases.
 
 Runtime voice resolution is implemented/planned separately from this content catalog; keep semantic intent IDs stable and avoid duplicating provider/phrase data in multiple documents.
 

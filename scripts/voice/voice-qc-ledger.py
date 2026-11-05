@@ -24,7 +24,7 @@ from voice_assets import recording_path
 
 ROOT = Path(__file__).resolve().parents[2]
 V1_DIR = ROOT / "public/sounds/voices"
-CATALOG = ROOT / "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md"
+CATALOG = ROOT / "docs/design/npc-voices/CATALOG.md"
 OUT = ROOT / "docs/assets/voice-qc/ledger.json"
 
 # Fish voice UUID -> speaker id (catalog "Voice sources"). campfire_* are aliases of general_*.

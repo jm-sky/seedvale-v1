@@ -1,5 +1,8 @@
 # Expected speaker mapping review — 2026-11-05
 
+> Historical mapping evidence. The [final author registry](author-decisions.json) now explicitly rejects eight British-female recordings and retains seven age-compatible takes; see the [final report](../../research/v1-revival/2026-11-05--npc-voice-final-cleanup.md). No historical scores or bank metadata were reclassified as UUID proof.
+
+
 ## Findings and evidence boundaries
 
 The original resolver used only ledger `voiceId`, inherited from catalog bank-level defaults. The catalog labels the age entries as heuristic prompt recovery, not filename/listening verification. The Fish generation-history JSON contains 134 phrases, without generation-to-file UUID associations. Neither it nor a current NPC casting table establishes which speaker generated an individual historical recording. The ledger and transcript QC remain unchanged.

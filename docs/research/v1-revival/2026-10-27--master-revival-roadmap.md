@@ -1,5 +1,8 @@
 # V1 Revival — Master Roadmap (approved decisions and remaining proposals)
 
+NPC voice storage/identity cleanup (2026-11-05): [final report](2026-11-05--npc-voice-final-cleanup.md), [author decisions](../../assets/voice-qc/author-decisions.json), [casting](../../design/npc-voices/CASTING.md), [catalog](../../design/npc-voices/CATALOG.md). Q88/Q89 casting runtime work remains separate.
+
+
 **NPC Voices & Dialogue author decisions (2026-10-31):** Six decisions are now approved: fixed per-NPC voice; selective personality variants (initial two-vs-four delegated to Opus); English NPC dialogue with generic quest voice cues and exact displayed details; staged profession/social diversity with more humor; maximum V3 donor voice reuse; moderate event-grounded living-world speech. **Authoritative detailed record:** [Astra NPC voice audit — §12 author decisions](./2026-10-31--npc-voices-dialogue-audit.md#12-author-decisions--approved-2026-10-31-supersedes-open-questions-in-11). These do not approve every recording or assign an immediate implementation slot; schedule through the session queue and normal plan gates.
 
 **Created:** 2026-10-27  

@@ -11,7 +11,7 @@ This is the next reusable text bank after [greetings](greetings.md), for authore
 
 ## Source and hierarchy
 
-`V1:<stem>` is the exact displayed phrase under `<stem>.mp3` in the [V1 voice catalog](NPC-VOICE-CATALOG.md); it does not bind an MP3. `V1 template` refers to `legacy/seedvale/src/ai/dialogueTemplates.ts::currentActivityLine`, which supplies the *current-activity question/reply pattern* in Polish; English text below is adapted when so marked. `V3 flavour` refers to already accepted English barks in [flavour.ts](../../src/game/data/npc/flavour.ts). `New` is a short new line where no suitable source text exists. V2's `DialogPanel.vue` has quest, trade, gift, bed and news actions, but no general work/weather conversation tree to copy.
+`V1:<stem>` is the exact displayed phrase under `<stem>.mp3` in the [V1 voice catalog](../../../design/npc-voices/CATALOG.md); it does not bind an MP3. `V1 template` refers to `legacy/seedvale/src/ai/dialogueTemplates.ts::currentActivityLine`, which supplies the *current-activity question/reply pattern* in Polish; English text below is adapted when so marked. `V3 flavour` refers to already accepted English barks in [flavour.ts](../../../v3-donor/src/game/data/npc/flavour.ts). `New` is a short new line where no suitable source text exists. V2's `DialogPanel.vue` has quest, trade, gift, bed and news actions, but no general work/weather conversation tree to copy.
 
 ```text
 ordinary/
@@ -127,7 +127,7 @@ The player option `ordinary.weather.ask` is **“How is the weather treating you
 
 | Area | Existing source | Missing fact or supplier | Earliest useful content work |
 |---|---|---|---|
-| Everyday conversation for all 17 Saltmere residents | [17 resident scene drafts](saltmere-daily-conversations.md), V1 self/village/work templates, V3 role barks | Actor-specific voice review, scene placement and S4 relationship/knowledge resolution; Q-026 working names | Text drafted; no runtime binding until roster/S4/M4 |
+| Everyday conversation for all 17 Saltmere residents | [17 resident scene drafts](../../../v3-donor/voices/docs/saltmere-daily-conversations.md), V1 self/village/work templates, V3 role barks | Actor-specific voice review, scene placement and S4 relationship/knowledge resolution; Q-026 working names | Text drafted; no runtime binding until roster/S4/M4 |
 | True rumours and directions | V1 `aboutAreaLine`; V2 “Ask for news”; M3 board candidates | Speaker-known site/lead ID, exact vs approximate precision, disclosure policy | After M3 survey + S4 knowledge contract |
 | Requests for food, water, gifts, trade or lodging | V1 assistance lines, V2 panel actions, V1 voice `thanks`/`refusal` | Real stock, title, money, permission, availability and conserved transfer | M4/M5/M8 supplier-backed scripts |
 | Danger, injury, rescue and bereavement | V1 warnings/help/alerts; V2 quest scenes | Real observed threat, health/death state, interruption and aftermath | M5/M6 and later quest slices |

@@ -20,7 +20,7 @@ type GreetingContext = 'any' | 'morning' | 'notNight'
 
 type GreetingTranscript = {
   /** Faithful Polish rendering of the English catalog transcript
-   *  (`docs/dialogue/NPC-VOICE-CATALOG.md`). Audio itself stays English. */
+   *  (`docs/design/npc-voices/CATALOG.md`). Audio itself stays English. */
   text: string
   context: GreetingContext
 }

@@ -7,7 +7,7 @@
       "status": "unresolved",
       "gitBlob": "20faca321ca431baac95fd986dea673412301e1a",
       "evidence": [
-        "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md: age entry marked intent/heuristic match, not listen-verified; generation-history scrape contains phrases only."
+        "docs/design/npc-voices/CATALOG.md: age entry marked intent/heuristic match, not listen-verified; generation-history scrape contains phrases only."
       ],
       "note": "Filename age and embedding winner are review hints, not verified historical identity."
     },
@@ -16,7 +16,7 @@
       "status": "unresolved",
       "gitBlob": "16e163eefc335a02c252382fd46cf209d93aeea0",
       "evidence": [
-        "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md: age entry marked intent/heuristic match, not listen-verified; generation-history scrape contains phrases only."
+        "docs/design/npc-voices/CATALOG.md: age entry marked intent/heuristic match, not listen-verified; generation-history scrape contains phrases only."
       ],
       "note": "Filename age and embedding winner are review hints, not verified historical identity."
     },
@@ -25,7 +25,7 @@
       "status": "unresolved",
       "gitBlob": "1720ca75d9d7d634e72bcc3bfc26bef6621edb00",
       "evidence": [
-        "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md: age entry marked intent/heuristic match, not listen-verified; generation-history scrape contains phrases only."
+        "docs/design/npc-voices/CATALOG.md: age entry marked intent/heuristic match, not listen-verified; generation-history scrape contains phrases only."
       ],
       "note": "Filename age and embedding winner are review hints, not verified historical identity."
     },
@@ -34,7 +34,7 @@
       "status": "historical-verified",
       "gitBlob": "6a7c296f0edeec45fd36c6394c51b6801b7e6871",
       "evidence": [
-        "docs/v3-donor/voices/named-references/Old-woman-2026-09-17-14-05-Take-care,-dear.-And-mind-your-step.mp3",
+        "docs/archive/voice-donor/named-references/Old-woman-2026-09-17-14-05-Take-care,-dear.-And-mind-your-step.mp3",
         "docs/assets/voice-qc/IDENTITY-AUDIT.md: author Decision = Old-woman"
       ],
       "note": "Byte-identical named reference; independently author-confirmed."
@@ -44,7 +44,7 @@
       "status": "unresolved",
       "gitBlob": "ad2a7de6df5d0c00cf8bb086bfa429638ca9ee42",
       "evidence": [
-        "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md: age entry marked intent/heuristic match, not listen-verified; generation-history scrape contains phrases only."
+        "docs/design/npc-voices/CATALOG.md: age entry marked intent/heuristic match, not listen-verified; generation-history scrape contains phrases only."
       ],
       "note": "Filename age and embedding winner are review hints, not verified historical identity."
     },
@@ -53,7 +53,7 @@
       "status": "unresolved",
       "gitBlob": "14eba3aca9c38317052fdfcf40c66a6caf977347",
       "evidence": [
-        "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md: age entry marked intent/heuristic match, not listen-verified; generation-history scrape contains phrases only."
+        "docs/design/npc-voices/CATALOG.md: age entry marked intent/heuristic match, not listen-verified; generation-history scrape contains phrases only."
       ],
       "note": "Filename age and embedding winner are review hints, not verified historical identity."
     },
@@ -62,7 +62,7 @@
       "status": "unresolved",
       "gitBlob": "3093fc8188772dd728cf957cd149d9738f25011f",
       "evidence": [
-        "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md: age entry marked intent/heuristic match, not listen-verified; generation-history scrape contains phrases only."
+        "docs/design/npc-voices/CATALOG.md: age entry marked intent/heuristic match, not listen-verified; generation-history scrape contains phrases only."
       ],
       "note": "Filename age and embedding winner are review hints, not verified historical identity."
     },
@@ -71,7 +71,7 @@
       "status": "historical-verified",
       "gitBlob": "2929c50db87e33c9ab5fbf22aa428685c2c25895",
       "evidence": [
-        "docs/v3-donor/voices/named-references/Old-man-2026-09-17-14-04-Go-safely.-These-old-roads-have-their-dangers.mp3"
+        "docs/archive/voice-donor/named-references/Old-man-2026-09-17-14-04-Go-safely.-These-old-roads-have-their-dangers.mp3"
       ],
       "note": "Byte-identical named reference. Identical reference remains excluded from scoring."
     },
@@ -80,7 +80,7 @@
       "status": "unresolved",
       "gitBlob": "b5e2dd722d53f179c46a36938d3325073ff498c6",
       "evidence": [
-        "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md: age entry marked intent/heuristic match, not listen-verified; generation-history scrape contains phrases only."
+        "docs/design/npc-voices/CATALOG.md: age entry marked intent/heuristic match, not listen-verified; generation-history scrape contains phrases only."
       ],
       "note": "Filename age and embedding winner are review hints, not verified historical identity."
     },
@@ -89,7 +89,7 @@
       "status": "unresolved",
       "gitBlob": "6668112c2baa279a15fbbb99683d0bef98ed63bb",
       "evidence": [
-        "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md: age entry marked intent/heuristic match, not listen-verified; generation-history scrape contains phrases only."
+        "docs/design/npc-voices/CATALOG.md: age entry marked intent/heuristic match, not listen-verified; generation-history scrape contains phrases only."
       ],
       "note": "Filename age and embedding winner are review hints, not verified historical identity."
     },
@@ -98,7 +98,7 @@
       "status": "unresolved",
       "gitBlob": "ef1d698abac2d90631f3051619202957e9658379",
       "evidence": [
-        "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md: age entry marked intent/heuristic match, not listen-verified; generation-history scrape contains phrases only."
+        "docs/design/npc-voices/CATALOG.md: age entry marked intent/heuristic match, not listen-verified; generation-history scrape contains phrases only."
       ],
       "note": "Filename age and embedding winner are review hints, not verified historical identity."
     },
@@ -107,7 +107,7 @@
       "status": "unresolved",
       "gitBlob": "f86212d404bc5cdf20edece928081665c6879e11",
       "evidence": [
-        "docs/v3-donor/voices/docs/NPC-VOICE-CATALOG.md: age entry marked intent/heuristic match, not listen-verified; generation-history scrape contains phrases only."
+        "docs/design/npc-voices/CATALOG.md: age entry marked intent/heuristic match, not listen-verified; generation-history scrape contains phrases only."
       ],
       "note": "Filename age and embedding winner are review hints, not verified historical identity."
     },

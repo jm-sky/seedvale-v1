@@ -111,7 +111,7 @@ Use existing Vitest/jsdom + Vue `createApp/h/nextTick` mounting, as in `src/ui-v
 - [Strategic Brief](../../research/v1-revival/STRATEGIC-BRIEF.md)
 - [Grouping and quest priority](../archive/ui-input-024-npc-dialogue-grouping-and-quest-priority.md)
 - [Offer / active context separation](../archive/ui-input-036-quest-dialogue-offer-active-context-separation.md)
-- [Voice catalog](../../dialogue/NPC-VOICE-CATALOG.md)
+- [Voice catalog](../../design/npc-voices/CATALOG.md)
 
 ## Implementation status (2026-10-30)
 
