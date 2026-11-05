@@ -1,7 +1,7 @@
 # Plan: Terrain color and shading artifact correction
 
 **Created:** 2026-11-04
-**Status:** `in progress` 🔄 — reopened 2026-11-05: author still sees square joins after the C¹ fix `09c033db` (third screenshot, rain, lowland); see [notes § Reopened](./implementation-notes/world-terrain-065-terrain-color-and-shading-artifact-correction-implementation-notes.md#reopened--third-screenshot-after-the-fix-2026-11-05-not-yet-diagnosed)
+**Status:** `in progress` 🔄 — reopened 2026-11-05: author still sees square joins after the C¹ fix `09c033db` (third screenshot, rain, lowland). **On hold (author 2026-11-05) until the author gives coordinates for every screenshot.** See [notes § Reopened](./implementation-notes/world-terrain-065-terrain-color-and-shading-artifact-correction-implementation-notes.md#reopened--third-screenshot-after-the-fix-2026-11-05-not-yet-diagnosed)
 **Type:** bug
 **Priority:** high · **Effort:** M
 **Depends on:** -
