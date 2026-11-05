@@ -9,7 +9,7 @@
 **Subdomains:** `dialogue`
 **Tags:** `audio` `polish` `revival`
 
-**Selected reuse transcript decision — 2026-11-05:** [33/33 content-bound ASR text acceptance](../assets/voice-qc/NPC-069-TEXT-ACCEPTANCE.md) ([structured evidence](../assets/voice-qc/npc-069-text-acceptance.json)); four minor wording differences accepted by author policy. Speaker identity/listening QC and runtime admission remain separate.
+**Selected reuse evidence — 2026-11-05:** [33/33 content-bound ASR text acceptance](../assets/voice-qc/NPC-069-TEXT-ACCEPTANCE.md) ([structured evidence](../assets/voice-qc/npc-069-text-acceptance.json)); four minor wording differences accepted by author policy. The original speaker audit for the same 33 clips reports **31 strong matches, 2 ambiguous matches** (both expected/best match and consistent with author voice annotations), and **0 suspected wrong speakers**. No new speaker analysis is required; final audio-QC admission and stable-speaker runtime integration remain separate.
 
 ## Editorial freeze — 2026-11-05
 
