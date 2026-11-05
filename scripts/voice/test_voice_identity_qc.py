@@ -16,11 +16,11 @@ class IdentityTests(unittest.TestCase):
         ledger = json.loads((qc.ROOT/'docs/assets/voice-qc/ledger.json').read_text())['rows']
         entries = load_decisions(ledger)
         self.assertEqual(sum(e['disposition'] == 'keep' for e in entries.values()), 7)
-        self.assertEqual(sum(e['disposition'] == 'replace' for e in entries.values()), 6)
+        self.assertEqual(sum(e['disposition'] == 'replace' for e in entries.values()), 14)
         audit = json.loads((qc.ROOT/'docs/assets/voice-qc/identity-audit.json').read_text())
         for row in audit['rows']:
             if row['classification'] == 'suspected-wrong-speaker':
-                self.assertEqual(entries[row['file']]['disposition'], 'pending')
+                self.assertEqual(entries[row['file']]['disposition'], 'replace')
             row['classification'] = 'ambiguous'
         with tempfile.TemporaryDirectory() as tmp:
             source, output = Path(tmp)/'audit.json', Path(tmp)/'report.md'

@@ -30,13 +30,13 @@ Single-reference voices: British-female, Little-Lem, Old-man, Old-woman, Sleeple
 
 | File | Expected | Best reference | Best | Expected score | Margin | Decision | Disposition |
 | --- | --- | --- | ---: | ---: | ---: | --- | --- |
-| general_female_greeting_01.mp3 | Warm-Conversational-Female | British-female | 0.677 | 0.046 | 0.536 |  | pending |
-| general_female_quest_complete_01.mp3 | Warm-Conversational-Female | British-female | 0.747 | 0.196 | 0.511 |  | pending |
-| campfire_female_weather_answer_02.mp3 | Warm-Conversational-Female | British-female | 0.695 | 0.071 | 0.501 |  | pending |
-| general_female_agree_01.mp3 | Warm-Conversational-Female | British-female | 0.695 | 0.020 | 0.499 |  | pending |
-| general_female_thanks_01.mp3 | Warm-Conversational-Female | British-female | 0.668 | 0.103 | 0.477 |  | pending |
-| general_female_quest_declined_01.mp3 | Warm-Conversational-Female | British-female | 0.707 | 0.103 | 0.457 |  | pending |
-| general_female_farewell_01.mp3 | Warm-Conversational-Female | British-female | 0.518 | -0.025 | 0.325 |  | pending |
+| general_female_greeting_01.mp3 | Warm-Conversational-Female | British-female | 0.677 | 0.046 | 0.536 |  | replace |
+| general_female_quest_complete_01.mp3 | Warm-Conversational-Female | British-female | 0.747 | 0.196 | 0.511 |  | replace |
+| campfire_female_weather_answer_02.mp3 | Warm-Conversational-Female | British-female | 0.695 | 0.071 | 0.501 |  | replace |
+| general_female_agree_01.mp3 | Warm-Conversational-Female | British-female | 0.695 | 0.020 | 0.499 |  | replace |
+| general_female_thanks_01.mp3 | Warm-Conversational-Female | British-female | 0.668 | 0.103 | 0.477 |  | replace |
+| general_female_quest_declined_01.mp3 | Warm-Conversational-Female | British-female | 0.707 | 0.103 | 0.457 |  | replace |
+| general_female_farewell_01.mp3 | Warm-Conversational-Female | British-female | 0.518 | -0.025 | 0.325 |  | replace |
 
 ## unresolved-expected
 
@@ -60,7 +60,7 @@ Single-reference voices: British-female, Little-Lem, Old-man, Old-woman, Sleeple
 | general_female_b_call_for_help_02.mp3 | Hannah | Hannah | 0.356 | 0.356 | 0.253 | Hannah | pending |
 | general_female_b_well_wish_01.mp3 | Hannah | Hannah | 0.441 | 0.441 | 0.251 | Hannah | pending |
 | general_female_b_danger_alert_02.mp3 | Hannah | Hannah | 0.399 | 0.399 | 0.237 | Hannah | pending |
-| campfire_female_weather_question_01.mp3 | Warm-Conversational-Female | British-female | 0.429 | 0.060 | 0.224 | British-female | pending |
+| campfire_female_weather_question_01.mp3 | Warm-Conversational-Female | British-female | 0.429 | 0.060 | 0.224 | British-female | replace |
 | hunter_male_b_agree_02.mp3 | Cowboy | Cowboy | 0.411 | 0.411 | 0.198 | Cowboy | pending |
 | npc_mark_hornblower_danger_alert_01.mp3 | Friendly-Male-Voice | Friendly-Male-Voice | 0.382 | 0.382 | 0.196 | Friendly-Male-Voice | pending |
 | merchant_female_refusal_01.mp3 | Expressive-Female-Voice | Expressive-Female-Voice | 0.380 | 0.380 | 0.188 | Expressive-Female-Voice | pending |

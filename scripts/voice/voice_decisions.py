@@ -8,7 +8,8 @@ DECISIONS = ROOT / 'docs/assets/voice-qc/author-decisions.json'
 
 def load_decisions(rows, path=DECISIONS):
     """Reject stale or incomplete author evidence before generating any output."""
-    entries = json.loads(path.read_text())['recordings']
+    registry = json.loads(path.read_text())
+    entries = registry['recordings']
     if set(entries) != {r['file'] for r in rows}:
         raise ValueError('Author decisions must cover exactly the historical ledger filenames')
     for row in rows:
