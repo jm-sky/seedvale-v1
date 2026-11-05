@@ -82,14 +82,27 @@ def compare(target_hash, vector, references, expected):
                 missingExpectedReference=expected not in scores)
 
 
+def classify(row, policy):
+    """Conservative local triage, never a speaker-identity proof or author verdict."""
+    if 'error' in row:
+        return 'analysis-error'
+    if row['missingExpectedReference']:
+        return 'missing-reference'
+    if row['bestScore'] < policy['minScore'] or (row['margin'] or 0) < policy['minMargin']:
+        return 'ambiguous'
+    return 'strong-match' if row['bestUuid'] == row['expectedUuid'] else 'suspected-wrong-speaker'
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--sample', type=Path, help='JSON list of ledger filenames; omit for all')
+    parser.add_argument('--policy', type=Path, help='Locally calibrated triage policy JSON')
     parser.add_argument('--cache', type=Path, default=ROOT/'_temp/voice-identity')
     parser.add_argument('--threads', type=int, default=2)
     args = parser.parse_args()
     started = time.monotonic()
+    policy = json.loads(args.policy.read_text()) if args.policy else None
     os.environ['CUDA_VISIBLE_DEVICES'] = ''
     os.environ['HF_HOME'] = str(args.cache/'huggingface')
     import importlib.metadata
@@ -158,19 +171,22 @@ def main():
             public = ROOT/'public/sounds/voices'/row['file']
             record.update(sha256=key, durationSec=result['durationSec'], **evidence)
             record['publicCopyIdentical'] = digest(public)==key if public.exists() else None
-            record['classification'] = 'unclassified'
+            record['classification'] = classify(record, policy) if policy else 'unclassified'
         except Exception as error:
             record['error'] = str(error)
         output.append(record)
         print(f"{len(output)}/{len(rows)} {row['file']}", flush=True)
     usage = resource.getrusage(resource.RUSAGE_SELF)
-    report = dict(schemaVersion=1, model=MODEL, revision=mapping['modelRevision'], versions=versions,
+    report = dict(policy=policy, schemaVersion=1, model=MODEL, revision=mapping['modelRevision'], versions=versions,
                   preprocessing='mono 16kHz full clip; no VAD', pooling='mean cosine per unique reference content per UUID',
                   mappingSha256=digest(mapping_path), ledgerSha256=digest(ledger_path), threads=args.threads,
                   wallSec=time.monotonic()-started, cpuUserSec=usage.ru_utime, cpuSystemSec=usage.ru_stime,
                   peakRssKiB=usage.ru_maxrss, cacheHits=cache.hits, cacheMisses=cache.misses,
                   uniqueTargetContents=len(processed), referenceErrors=errors,
-                  references=[{k:v for k,v in r.items() if k!='embedding'} for r in references], rows=output)
+                  references=[{k:v for k,v in r.items() if k!='embedding'} for r in references],
+                  referenceChecks=[dict(file=r['file'], expectedUuid=r['uuid'], durationSec=r['durationSec'],
+                                        **compare(r['sha256'], r['embedding'], references, r['uuid'])) for r in references],
+                  rows=output)
     args.output.parent.mkdir(parents=True,exist_ok=True)
     args.output.write_text(json.dumps(report,indent=2,allow_nan=False)+'\n')
     return int(any('error' in r for r in output))

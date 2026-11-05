@@ -1,0 +1,6 @@
+{
+  "minScore": 0.45,
+  "minMargin": 0.15,
+  "scope": "Seedvale historical Fish references, ECAPA pinned revision; manual-review triage only",
+  "evidence": "identity-calibration.json: 31/31 multi-reference leave-one-content-out winners correct; smallest expected mean 0.463, smallest winning margin 0.160. Rounded-down local screening bounds; no error-rate or probability claim."
+}
