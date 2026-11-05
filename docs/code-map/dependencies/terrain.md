@@ -317,6 +317,8 @@ Generated from TypeScript imports.
 - `terrain/chunkGrid.ts`
 - `terrain/continentMask.ts`
 - `terrain/fbm.ts`
+- `terrain/landformDescriptors.ts`
+- `terrain/rangeSpines.ts`
 - `terrain/riverFord.ts`
 - `terrain/roadBridge.ts`
 - `terrain/waterBodies.ts`
@@ -1144,6 +1146,19 @@ Generated from TypeScript imports.
 - `terrain/worldHydrologyStore.ts`
 - `world/map/mapProjection.ts`
 
+## `terrain/landformDescriptors.test.ts`
+
+**Imports**
+
+- `terrain/landformDescriptors.ts`
+
+## `terrain/landformDescriptors.ts`
+
+**Imported by**
+
+- `terrain/chunkHeightmap.ts`
+- `terrain/landformDescriptors.test.ts`
+
 ## `terrain/mineableDeposit.test.ts`
 
 **Imports**
@@ -1229,6 +1244,23 @@ Generated from TypeScript imports.
 - `terrain/mineableDeposit.ts`
 - `terrain/naturalResources.test.ts`
 - `terrain/resourceDeposits.ts`
+
+## `terrain/rangeSpines.test.ts`
+
+**Imports**
+
+- `terrain/rangeSpines.ts`
+
+## `terrain/rangeSpines.ts`
+
+**Imports**
+
+- `world/parseSeed.ts`
+
+**Imported by**
+
+- `terrain/chunkHeightmap.ts`
+- `terrain/rangeSpines.test.ts`
 
 ## `terrain/renewableWorldItems.test.ts`
 

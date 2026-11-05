@@ -3901,6 +3901,7 @@ Generated from TypeScript imports.
 - `terrain/continentMask.test.ts`
 - `terrain/grassPlacement.ts`
 - `terrain/naturalResources.ts`
+- `terrain/rangeSpines.ts`
 - `terrain/resourceDeposits.ts`
 - `terrain/terrainDetailNormalMap.ts`
 - `terrain/worldHydrology.ts`

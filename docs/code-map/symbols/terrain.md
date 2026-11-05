@@ -154,40 +154,41 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/chunkHeightmap.ts`
 
-- `apronGridWeights` — function — line 771
-- `ApronGridWeights` — type — line 762
-- `apronOriginWorld` — function — line 742
-- `ChunkTileData` — type — line 376
-- `ChunkTileParams` — type — line 244
-- `ClearingSegment` — type — line 176
-- `computeChunkTile` — function — line 1201
-- `createLocalTerrainSampler` — function — line 1286
+- `apronGridWeights` — function — line 828
+- `ApronGridWeights` — type — line 819
+- `apronOriginWorld` — function — line 799
+- `ChunkTileData` — type — line 378
+- `ChunkTileParams` — type — line 246
+- `ClearingSegment` — type — line 178
+- `computeChunkTile` — function — line 1258
+- `createLocalTerrainSampler` — function — line 1343
   - domain: world-terrain
-- `createWorldTerrainSampler` — function — line 1328
+- `createWorldTerrainSampler` — function — line 1385
   - domain: world-terrain
-- `extractCoreGrid` — function — line 826
-- `LocalTerrainSampler` — type — line 1261
+- `extractCoreGrid` — function — line 883
+- `LocalTerrainSampler` — type — line 1318
   - domain: world-terrain
-- `RawSampleParams` — type — line 356
-- `RawTexelSample` — type — line 681
-- `RegionalSmoothingSegment` — type — line 236
-- `RegionParams` — type — line 24
-- `RiverChannelSegment` — type — line 212
-- `RoadCorridorSegment` — type — line 158
-- `RoadNetworkParams` — type — line 95
-- `sampleApronGrid` — function — line 809
-- `sampleApronGridWeighted` — function — line 794
-- `sampleBiomeAt` — function — line 713
-- `sampleContinentalnessAt` — function — line 717
-- `sampleFloorAt` — function — line 709
-- `sampleHeightAt` — function — line 693
-- `sampleLandHeightAt` — function — line 699
-- `sampleMoistureRegionAt` — function — line 725
-- `sampleMountainRidgeAt` — function — line 733
-- `sampleRawFloorUncorrected` — function — line 705
-- `sampleRawTexelAt` — function — line 686
-- `VegetationKind` — type — line 22
-- `VillageClearingParams` — type — line 76
+- `rangeSpinesFor` — function — line 514
+- `RawSampleParams` — type — line 358
+- `RawTexelSample` — type — line 738
+- `RegionalSmoothingSegment` — type — line 238
+- `RegionParams` — type — line 26
+- `RiverChannelSegment` — type — line 214
+- `RoadCorridorSegment` — type — line 160
+- `RoadNetworkParams` — type — line 97
+- `sampleApronGrid` — function — line 866
+- `sampleApronGridWeighted` — function — line 851
+- `sampleBiomeAt` — function — line 770
+- `sampleContinentalnessAt` — function — line 774
+- `sampleFloorAt` — function — line 766
+- `sampleHeightAt` — function — line 750
+- `sampleLandHeightAt` — function — line 756
+- `sampleMoistureRegionAt` — function — line 782
+- `sampleMountainRidgeAt` — function — line 790
+- `sampleRawFloorUncorrected` — function — line 762
+- `sampleRawTexelAt` — function — line 743
+- `VegetationKind` — type — line 24
+- `VillageClearingParams` — type — line 78
 
 ## `terrain/chunkHeightmapProtocol.ts`
 
@@ -245,34 +246,34 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/chunkTileWorldgenCache.ts`
 
-- `CHUNK_TILE_CACHE_BYTE_BUDGET` — const — line 80
+- `CHUNK_TILE_CACHE_BYTE_BUDGET` — const — line 81
 - `CHUNK_TILE_CACHE_NAMESPACE` — const — line 30
   - domain: world-terrain
   - system: worldgen-cache
   - role: Persistent-cache adapter for canonical worker-generated chunk tiles (plan world-terrain-031): one `chunk:<cx>:<cz>` record per chunk holding the unchanged `ChunkTileResult` — the eight apron-inclusive terrain grids plus the deterministic vegetation/item/environment/crop placements. Stores the existing worker contract verbatim; there is deliberately no cache-specific terrain model and no `SaveData` field.
   - integration: Disposable derived data only. `ChunkManager.ensureLoaded()` generates exactly the same chunk with an empty cache — a miss, a malformed record or an IndexedDB failure always falls back to the tile worker. The payload is *base* worldgen: player/system terrain modifications, terrain cutouts, tree/crop lifecycle, collected items, resource depletion, mesh data and every Three.js object stay downstream and are never cached here, so two same-seed saves share only deterministic generation output.
-- `CHUNK_TILE_CACHE_VERSION` — const — line 64
-- `CHUNK_TILE_META_SUBKEY` — const — line 69
-- `ChunkTileCacheStats` — type — line 110
-- `ChunkTileCacheStorage` — type — line 246
-- `chunkTileFingerprint` — function — line 103
+- `CHUNK_TILE_CACHE_VERSION` — const — line 65
+- `CHUNK_TILE_META_SUBKEY` — const — line 70
+- `ChunkTileCacheStats` — type — line 111
+- `ChunkTileCacheStorage` — type — line 247
+- `chunkTileFingerprint` — function — line 104
   - domain: world-terrain
   - system: worldgen-cache
-- `chunkTileSubKey` — function — line 87
-- `cloneChunkTileForRuntime` — function — line 223
+- `chunkTileSubKey` — function — line 88
+- `cloneChunkTileForRuntime` — function — line 224
   - domain: world-terrain
   - system: worldgen-cache
-- `estimateChunkTileBytes` — function — line 202
-- `getChunkTileCacheStats` — function — line 136
-- `loadCachedChunkTile` — function — line 347
+- `estimateChunkTileBytes` — function — line 203
+- `getChunkTileCacheStats` — function — line 137
+- `loadCachedChunkTile` — function — line 348
   - domain: world-terrain
   - system: worldgen-cache
-- `persistChunkTile` — function — line 395
+- `persistChunkTile` — function — line 396
   - domain: world-terrain
   - system: worldgen-cache
-- `resetChunkTileCacheMetadata` — function — line 330
-- `resetChunkTileCacheStats` — function — line 140
-- `validateCachedChunkTile` — function — line 180
+- `resetChunkTileCacheMetadata` — function — line 331
+- `resetChunkTileCacheStats` — function — line 141
+- `validateCachedChunkTile` — function — line 181
   - domain: world-terrain
   - system: worldgen-cache
 
@@ -477,6 +478,21 @@ Generated from exported TypeScript symbols.
 - `marchCellRing` — function — line 34
   - domain: world-terrain
 
+## `terrain/landformDescriptors.ts`
+
+- `buildLandformIndex` — function — line 61
+- `EMPTY_LANDFORM_INDEX` — const — line 52
+- `LANDFORM_BUCKET_SIZE_M` — const — line 37
+- `LANDFORM_MAX_PER_BUCKET` — const — line 41
+- `LANDFORM_MAX_RADIUS_M` — const — line 39
+- `LandformDescriptor` — type — line 23
+- `landformDescriptorsFor` — function — line 94
+- `landformHeightDeltaAt` — function — line 114
+- `LandformIndex` — type — line 43
+- `landformIndexFor` — function — line 101
+- `LandformKind` — type — line 21
+  - domain: world-terrain
+
 ## `terrain/mineableDeposit.ts`
 
 - `depositMatchesQueryContext` — function — line 98
@@ -519,6 +535,25 @@ Generated from exported TypeScript symbols.
 - `resourcesNear` — function — line 261
 - `ResourceType` — type — line 34
 - `SIGNIFICANT_RICHNESS` — const — line 69
+
+## `terrain/rangeSpines.ts`
+
+- `EMPTY_RANGE_SPINES` — const — line 153
+- `generateRangeSpines` — function — line 293
+- `RANGE_HOME_RESERVE_M` — const — line 116
+- `RANGE_MAX_SPINES` — const — line 104
+- `RANGE_SEGMENTS` — const — line 105
+- `RangeBaseRelief` — type — line 97
+- `RangePass` — type — line 39
+- `RangePassCorridor` — type — line 25
+- `RangeSpine` — type — line 60
+- `RangeSpineSample` — type — line 85
+- `RangeSpineSet` — type — line 82
+- `RangeSummit` — type — line 51
+- `sampleRangeSpines` — function — line 396
+- `softCapSummitHeight` — function — line 147
+- `SUMMIT_SOFT_CEILING_M` — const — line 144
+- `SUMMIT_SOFT_KNEE_M` — const — line 143
 
 ## `terrain/renewableWorldItems.ts`
 

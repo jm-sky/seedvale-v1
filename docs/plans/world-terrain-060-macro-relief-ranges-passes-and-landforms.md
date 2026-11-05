@@ -1,7 +1,7 @@
 # Plan: Macro relief — mountain ranges, passes and landform package P1
 
 **Created:** 2026-11-04
-**Status:** `in progress` 🚧 — R0 done (Q117); **R1–R2 landed 2026-11-05 (Q118), awaiting the author's R2 preview review before R3/R4** ([implementation notes](./implementation-notes/world-terrain-060-macro-relief-ranges-passes-and-landforms-implementation-notes.md)); amended per [review 031](../reviews/2026-11-04--031--geography-revival-g1-g9-critical-architecture-review.md) 2026-11-04
+**Status:** `in progress` 🔄 — R0 done (Q117); **R1–R2 landed 2026-11-05 (Q118), awaiting the author's R2 preview review before R3/R4** ([implementation notes](./implementation-notes/world-terrain-060-macro-relief-ranges-passes-and-landforms-implementation-notes.md)); amended per [review 031](../reviews/2026-11-04--031--geography-revival-g1-g9-critical-architecture-review.md) 2026-11-04
 **Type:** feature
 **Priority:** high · **Effort:** XL
 **Depends on:** tools-026

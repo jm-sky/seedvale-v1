@@ -1189,10 +1189,10 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/roadRouteWorldgenCache.ts`
 
-- `createRoadRouteWorldgenCache` — function — line 193
+- `createRoadRouteWorldgenCache` — function — line 194
   - domain: world-terrain
   - system: worldgen-cache
-- `isValidRoadRoutePayload` — function — line 142
+- `isValidRoadRoutePayload` — function — line 143
   - domain: world-terrain
   - system: worldgen-cache
 - `ROAD_ROUTE_CACHE_NAMESPACE` — const — line 28
@@ -1200,12 +1200,12 @@ Generated from exported TypeScript symbols.
   - system: worldgen-cache
   - role: Persistent-cache adapter for inter-settlement / settlement↔minor-location `RoadRoute` results (plan world-terrain-029). IndexedDB only hydrates and extends the module-level `routeCache` in `roadNetwork.ts` — that map stays the synchronous authority. Cached `null` is a real hit (a deterministic failed route), never a miss.
   - integration: Disposable derived data only. Route consumers stay synchronous; a miss, malformed payload or IndexedDB failure always falls back to the canonical `findRoute()` path. Never `SaveData`, never a second crossing classifier, never signposts / per-chunk corridors / bridge specs.
-- `ROAD_ROUTE_CACHE_VERSION` — const — line 48
-- `RoadRouteCachePayload` — type — line 55
-- `roadRouteFingerprint` — function — line 70
+- `ROAD_ROUTE_CACHE_VERSION` — const — line 49
+- `RoadRouteCachePayload` — type — line 56
+- `roadRouteFingerprint` — function — line 71
   - domain: world-terrain
   - system: worldgen-cache
-- `RoadRouteWorldgenCache` — type — line 168
+- `RoadRouteWorldgenCache` — type — line 169
 
 ## `settlement/routeObstacles.ts`
 
@@ -1474,34 +1474,34 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/settlementWorldgenCache.ts`
 
-- `createSettlementWorldgenCache` — function — line 609
+- `createSettlementWorldgenCache` — function — line 610
   - domain: settlements
   - system: worldgen-cache
-- `isValidSettlementDefPayload` — function — line 527
+- `isValidSettlementDefPayload` — function — line 528
   - domain: settlements
   - system: worldgen-cache
-- `isValidSettlementWorldgenPayload` — function — line 574
+- `isValidSettlementWorldgenPayload` — function — line 575
   - domain: settlements
   - system: worldgen-cache
-- `parseSettlementCellSubKey` — function — line 109
+- `parseSettlementCellSubKey` — function — line 110
 - `SETTLEMENT_DEFINITION_CACHE_NAMESPACE` — const — line 46
   - domain: settlements
   - system: worldgen-cache
   - role: Persistent-cache adapter for `SettlementDef | null` results (plan settlements-014). IndexedDB only hydrates and extends the module-level `defCache` in `settlementPlanCache.ts` — that map stays the synchronous authority. Cached `null` is a real hit (a cell that deterministically has no settlement), never a miss.
   - integration: Disposable derived data only. `settlementDefFor()` stays synchronous; a miss, malformed payload or IndexedDB failure always falls back to `generateSettlementDef()`. Never `SaveData`, never a second reduced `VillagePlan`, never economy / household / NPC runtime state.
-- `SETTLEMENT_DEFINITION_CACHE_VERSION` — const — line 62
-- `SETTLEMENT_LOST_TREASURE_HOSTS_SUB_KEY` — const — line 78
-- `settlementCellSubKey` — function — line 104
+- `SETTLEMENT_DEFINITION_CACHE_VERSION` — const — line 63
+- `SETTLEMENT_LOST_TREASURE_HOSTS_SUB_KEY` — const — line 79
+- `settlementCellSubKey` — function — line 105
   - domain: settlements
   - system: worldgen-cache
-- `SettlementDefinitionCachePayload` — type — line 75
-- `settlementDefinitionFingerprint` — function — line 131
+- `SettlementDefinitionCachePayload` — type — line 76
+- `settlementDefinitionFingerprint` — function — line 132
   - domain: settlements
   - system: worldgen-cache
-- `SettlementLostTreasureHostsPayload` — type — line 82
-- `SettlementProgressionIdentity` — type — line 92
-- `SettlementWorldgenCache` — type — line 583
-- `SettlementWorldgenCachePayload` — type — line 88
+- `SettlementLostTreasureHostsPayload` — type — line 83
+- `SettlementProgressionIdentity` — type — line 93
+- `SettlementWorldgenCache` — type — line 584
+- `SettlementWorldgenCachePayload` — type — line 89
 
 ## `settlement/storageDestinations.ts`
 

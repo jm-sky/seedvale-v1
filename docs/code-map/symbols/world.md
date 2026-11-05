@@ -1337,14 +1337,14 @@ Generated from exported TypeScript symbols.
   - system: worldgen-cache
   - role: Persistent-cache integration for abandoned-cemetery materialization (plan world-025) — stores the deterministic result of a roll-pass `ChunkManager.probeAbandonedCemeteryAtChunk()` so later Near/Guard/Far discovery, other saves on the same seed, and later sessions can skip the expensive `paramsFor` + terrain-sampler path.
   - integration: Disposable derived data only. A miss or storage failure always falls back to the canonical ChunkManager probe. Never player discovery state, never a second cemetery resolver.
-- `ABANDONED_CEMETERY_VERSION` — const — line 30
-- `AbandonedCemeteryCache` — type — line 69
-- `abandonedCemeteryFingerprint` — function — line 49
+- `ABANDONED_CEMETERY_VERSION` — const — line 31
+- `AbandonedCemeteryCache` — type — line 70
+- `abandonedCemeteryFingerprint` — function — line 50
   - domain: world
   - system: worldgen-cache
-- `CachedAbandonedCemeteryResult` — type — line 32
-- `chunkSubKey` — function — line 36
-- `createAbandonedCemeteryCache` — function — line 90
+- `CachedAbandonedCemeteryResult` — type — line 33
+- `chunkSubKey` — function — line 37
+- `createAbandonedCemeteryCache` — function — line 91
   - domain: world
   - system: worldgen-cache
 
