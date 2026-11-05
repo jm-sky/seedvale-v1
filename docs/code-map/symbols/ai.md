@@ -31,7 +31,7 @@ Generated from exported TypeScript symbols.
 
 - `CampfireTalk` — type — line 14
 - `CampfireTalkTopic` — type — line 12
-- `resolveCampfireTalk` — function — line 87
+- `resolveCampfireTalk` — function — line 71
   - domain: npc
 
 ## `ai/characters.ts`
@@ -708,7 +708,7 @@ Generated from exported TypeScript symbols.
 
 ## `ai/npcVoiceLines.ts`
 
-- `buildNpcVoiceLookupKeys` — function — line 309
+- `buildNpcVoiceLookupKeys` — function — line 293
 - `FRIENDLY_TALK_SOUND_VOLUME` — const — line 117
 - `NpcVoiceAgeBand` — type — line 75
   - domain: npc
@@ -717,9 +717,9 @@ Generated from exported TypeScript symbols.
 - `NpcVoiceResolveInput` — type — line 78
 - `NpcVoiceSemanticIntent` — type — line 44
 - `REACTION_SOUND_VOLUME` — const — line 111
-- `resolveNpcVoiceLine` — function — line 331
+- `resolveNpcVoiceLine` — function — line 315
   - domain: npc
-- `resolveNpcVoiceLineWithManifest` — function — line 340
+- `resolveNpcVoiceLineWithManifest` — function — line 324
 - `voiceAgeBandForAge` — function — line 92
   - domain: npc
 - `voiceProfileIdFor` — function — line 35

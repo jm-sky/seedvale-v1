@@ -360,7 +360,7 @@ Generated from exported TypeScript symbols.
 
 - `NpcGreetingPresentation` — type — line 12
   - domain: ui-input
-- `resolveNpcGreetingPresentation` — function — line 91
+- `resolveNpcGreetingPresentation` — function — line 89
   - domain: ui-input
 
 ## `ui-vue/playerQuickActions.ts`

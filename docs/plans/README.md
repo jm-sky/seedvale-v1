@@ -139,6 +139,7 @@ Unless noted otherwise, `verification needed` means implementation has passed au
 | ◼️ `world-terrain-063-geography-driven-settlement-variants.md`                 | 🔴 | L      | ~~tools-026~~, world-terrain-061                                                                                                                                                                                                                                                           | -                                         |
 | 💡 `world-terrain-065-terrain-color-and-shading-artifact-correction.md`        | 🔴 | M      | -                                                                                                                                                                                                                                                                                          | -                                         |
 | ◼️ `world-041-landmark-catalog-and-rumour-leads.md`                            | 🟡 | L      | world-terrain-060                                                                                                                                                                                                                                                                          | -                                         |
+| ◼️ `fauna-050-world-wild-fauna-habitats.md`                                    | 🔴 | L      | world-terrain-060, world-terrain-061                                                                                                                                                                                                                                                       | -                                         |
 
 ---
 
@@ -210,7 +211,7 @@ New plans declare a primary `Domain:` in frontmatter. Use optional `Tags:` only 
 ## Next plan IDs
 
 - ai: `001`
-- fauna: `050`
+- fauna: `051`
 - items-player: `067`
 - npc: `069`
 - persistence: `009`

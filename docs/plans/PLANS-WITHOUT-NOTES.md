@@ -1,11 +1,12 @@
 # PLANS PLANNED WITHOUT NOTES
 
 > Generated with `pnpm plans:without-notes`  
-> Date: 2026-11-04 14:18:27  
+> Date: 2026-11-05 13:00:37  
 
 ## PLANS
 
 - `fauna-049-wild-animal-tiers-and-trophies.md`
+- `fauna-050-world-wild-fauna-habitats.md`
 - `npc-062-ubc-runtime-material-darkness-and-authored-outfit-preservation.md`
 - `npc-065-stable-npc-voice-casting-and-donor-qc.md`
 - `quests-progression-044-lost-treasure-chronicles-final-treasure-claims-and-resolution.md`
@@ -42,6 +43,37 @@ Wczytaj:
 
 Na podstawie review utwórz w repo plik:
 `docs/plans/implementation-notes/fauna-049-wild-animal-tiers-and-trophies-implementation-notes.md`
+
+Umieść w nim:
+- sugestie dotyczące implementacji,
+- istotne detale techniczne,
+- decyzje architektoniczne,
+- informacje o istniejących systemach i implementacjach, które należy wykorzystać,
+- potencjalne problemy, zależności i pułapki,
+- inne konkretne wskazówki, które ułatwią agentowi AI poprawną implementację planu.
+
+Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
+Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
+
+Pliki dodaj na branch `main` w repozytorium.
+```
+
+### `fauna-050-world-wild-fauna-habitats.md`
+
+Prompt:
+
+```
+Zrób review planu `fauna-050-world-wild-fauna-habitats.md`
+
+Wczytaj:
+- `docs/STATE.md`
+- `docs/plans/PLANNING.md` (Implementation Notes section),
+- `docs/plans/fauna-050-world-wild-fauna-habitats.md`
+- aktualny codebase,
+- potrzebne zależności i powiązane implementacje.
+
+Na podstawie review utwórz w repo plik:
+`docs/plans/implementation-notes/fauna-050-world-wild-fauna-habitats-implementation-notes.md`
 
 Umieść w nim:
 - sugestie dotyczące implementacji,

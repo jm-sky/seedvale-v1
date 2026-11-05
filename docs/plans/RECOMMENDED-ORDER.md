@@ -66,10 +66,10 @@
    🔴 `L` · ✅ ready · unlocks 2/6
 3. `items-player-044` — **Shoulder and forearm equipment slots**  
    🟡 `M` · ✅ ready · unlocks 2/7
-4. `items-player-028` — **NPC player-storage access policies**  
+4. `world-terrain-060` — **Macro relief — mountain ranges, passes and landform package P1**  
+   🔴 `XL` · ✅ ready · unlocks 3/6
+5. `items-player-028` — **NPC player-storage access policies**  
    🔴 `M` · ✅ ready · unlocks 2/5
-5. `world-035` — **Regional road travel itinerary and adaptive traveller execution**  
-   🔴 `L` · ✅ ready · unlocks 2/5
 
 ---
 
@@ -113,33 +113,33 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   🔴 `L` · **Score:**  98  
    → **unlocks:** 2/3
 
-7. `quests-progression-044` — **Lost Treasure Chronicles — final treasure claims and resolution**  
+7. `world-terrain-060` — **Macro relief — mountain ranges, passes and landform package P1**  
+  🔴 `XL` · **Score:**  94  
+   → **unlocks:** 3/6
+
+8. `quests-progression-044` — **Lost Treasure Chronicles — final treasure claims and resolution**  
   🔴 `L` · **Score:**  90  
    → **unlocks:** 2/2
 
-8. `items-player-028` — **NPC player-storage access policies**  
+9. `items-player-028` — **NPC player-storage access policies**  
   🔴 `M` · **Score:**  89  
    → **unlocks:** 2/5
 
-9. `world-035` — **Regional road travel itinerary and adaptive traveller execution**  
+10. `world-035` — **Regional road travel itinerary and adaptive traveller execution**  
   🔴 `L` · **Score:**  82  
    → **unlocks:** 2/5
 
-10. `world-terrain-060` — **Macro relief — mountain ranges, passes and landform package P1**  
+11. `world-terrain-061` — **Static macroclimate and climate-weighted hydrology**  
   🔴 `XL` · **Score:**  80  
-   → **unlocks:** 2/5
+   → **unlocks:** 4/4
 
-11. `quests-progression-045` — **Lost Treasure Chronicles — property grant deed and persistent land reward**  
+12. `quests-progression-045` — **Lost Treasure Chronicles — property grant deed and persistent land reward**  
   🔴 `L` · **Score:**  78  
    → **unlocks:** 1/1
 
-12. `quests-progression-046` — **Lost Treasure Chronicles — integration, legacy catch-up and superseded quest cleanup**  
+13. `quests-progression-046` — **Lost Treasure Chronicles — integration, legacy catch-up and superseded quest cleanup**  
   🔴 `L` · **Score:**  66  
    → **unlocks:** 0/0
-
-13. `world-terrain-061` — **Static macroclimate and climate-weighted hydrology**  
-  🔴 `XL` · **Score:**  66  
-   → **unlocks:** 3/3
 
 14. `quests-progression-069` — **Quest offer pacing and conservative settlement gating**  
   🔴 `M` · **Score:**  65  
@@ -245,87 +245,91 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   🟡 `M` · **Score:**  31  
    → **unlocks:** 0/0
 
-40. `npc-054` — **NPC desired gifts, gift acceptance and relationship rewards**  
+40. `fauna-050` — **Wild fauna across the world — settlement and wilderness habitats**  
   🔴 `L` · **Score:**  30  
    → **unlocks:** 0/0
 
-41. `world-terrain-062` — **Regional biomes and local temperature / rain–snow phase**  
+41. `npc-054` — **NPC desired gifts, gift acceptance and relationship rewards**  
   🔴 `L` · **Score:**  30  
    → **unlocks:** 0/0
 
-42. `world-terrain-063` — **Geography-driven settlement pattern — variant comparison and author selection**  
+42. `world-terrain-062` — **Regional biomes and local temperature / rain–snow phase**  
   🔴 `L` · **Score:**  30  
    → **unlocks:** 0/0
 
-43. `settlements-022` — **Founded settlement live runtime and streaming**  
+43. `world-terrain-063` — **Geography-driven settlement pattern — variant comparison and author selection**  
+  🔴 `L` · **Score:**  30  
+   → **unlocks:** 0/0
+
+44. `settlements-022` — **Founded settlement live runtime and streaming**  
   🔴 `L` · **Score:**  28  
    → **unlocks:** 0/0
 
-44. `settlements-024` — **Jumpable low campfire collision**  
+45. `settlements-024` — **Jumpable low campfire collision**  
   🔴 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-45. `world-terrain-039` — **N8AO / post-process cost budget**  
+46. `world-terrain-039` — **N8AO / post-process cost budget**  
   🔴 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-46. `world-terrain-065` — **Terrain color and shading artifact correction**  
+47. `world-terrain-065` — **Terrain color and shading artifact correction**  
   🔴 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-47. `ui-input-025` — **Road travel autopilot for player and mounts**  
+48. `ui-input-025` — **Road travel autopilot for player and mounts**  
   🔴 `L` · **Score:**  26  
    → **unlocks:** 0/0
 
-48. `world-036` — **Lightweight unloaded shipwreck and tower lookup**  
+49. `world-036` — **Lightweight unloaded shipwreck and tower lookup**  
   🟡 `M` · **Score:**  25  
    → **unlocks:** 0/0
 
-49. `world-terrain-059` — **World scale, travel time and sparse settlements**  
+50. `world-terrain-059` — **World scale, travel time and sparse settlements**  
   🔴 `XL` · **Score:**  22  
    → **unlocks:** 0/0
 
-50. `tools-019` — **Debug tooling lifecycle ownership**  
+51. `tools-019` — **Debug tooling lifecycle ownership**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-51. `tools-021` — **Align debug OBB overlays with physical colliders**  
+52. `tools-021` — **Align debug OBB overlays with physical colliders**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-52. `world-terrain-055` — **Optional shadow frustum and refresh trims (settlement shadow pass)**  
+53. `world-terrain-055` — **Optional shadow frustum and refresh trims (settlement shadow pass)**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-53. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
+54. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
   🟡 `L` · **Score:**  18  
    → **unlocks:** 0/0
 
-54. `world-041` — **Landmarks in the location catalog and NPC rumour leads**  
+55. `world-041` — **Landmarks in the location catalog and NPC rumour leads**  
   🟡 `L` · **Score:**  18  
    → **unlocks:** 0/0
 
-55. `items-player-014` — **Rope-pullable resource transport**  
+56. `items-player-014` — **Rope-pullable resource transport**  
   ⚪ `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-56. `items-player-052` — **Settlement tool ownership and social acquisition**  
+57. `items-player-052` — **Settlement tool ownership and social acquisition**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-57. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
+58. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-58. `npc-065` — **Stable NPC Voice Casting, V3 Donor QC and Selective Recording**  
+59. `npc-065` — **Stable NPC Voice Casting, V3 Donor QC and Selective Recording**  
   🟡 `L` · **Score:**  14  
    → **unlocks:** 0/0
 
-59. `world-040` — **Underground Locations & Portals**  
+60. `world-040` — **Underground Locations & Portals**  
   ⚪ `XL` · **Score:**  14  
    → **unlocks:** 0/0
 
-60. `fauna-049` — **Wild animal difficulty tiers, trophies and social recognition**  
+61. `fauna-049` — **Wild animal difficulty tiers, trophies and social recognition**  
   🟡 `XL` · **Score:**  10  
    → **unlocks:** 0/0
 
@@ -333,6 +337,10 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
 
 ## Initially Blocked
 
+- [`fauna-050-world-wild-fauna-habitats.md`](fauna-050-world-wild-fauna-habitats.md)  
+  is blocked by:
+  - [`world-terrain-060-macro-relief-ranges-passes-and-landforms.md`](world-terrain-060-macro-relief-ranges-passes-and-landforms.md)
+  - [`world-terrain-061-macroclimate-and-climate-weighted-hydrology.md`](world-terrain-061-macroclimate-and-climate-weighted-hydrology.md)
 - [`items-player-032-npc-player-storage-resource-and-context-rules.md`](items-player-032-npc-player-storage-resource-and-context-rules.md)  
   is blocked by:
   - [`items-player-028-npc-player-storage-access-policies.md`](items-player-028-npc-player-storage-access-policies.md)
@@ -509,6 +517,7 @@ graph TD
   fauna_047["fauna-047 — Deer thicket capacity and natural population recovery"]
   fauna_048["fauna-048 — Agent Performance — Fauna Village Query Scaling"]
   fauna_049["fauna-049 — Wild animal difficulty tiers, trophies and social recognition"]
+  fauna_050["fauna-050 — Wild fauna across the world — settlement and wilderness habitats"]
   items_player_001["items-player-001 — Containers, Waterskins & Copper Items"]
   items_player_002["items-player-002 — Food provenance, freshness and storage"]
   items_player_003["items-player-003 — Player Physical Effort — Stamina & Vigor"]
@@ -1680,8 +1689,10 @@ graph TD
   world_terrain_047 --> world_terrain_048
   world_terrain_049 --> world_terrain_042
   world_terrain_058 --> world_terrain_059
+  world_terrain_060 --> fauna_050
   world_terrain_060 --> world_041
   world_terrain_060 --> world_terrain_061
+  world_terrain_061 --> fauna_050
   world_terrain_061 --> world_terrain_062
   world_terrain_061 --> world_terrain_063
   world_terrain_061 --> world_terrain_064
