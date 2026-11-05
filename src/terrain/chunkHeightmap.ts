@@ -7,7 +7,7 @@ import { projectOntoSegment } from '../math/segment'
 import { createSeededRandom } from '../world/parseSeed'
 import { continentMaskAt, type ContinentMaskParams, WORLD_HALF_EXTENT } from './continentMask'
 import { fbm01, type FbmParams } from './fbm'
-import { EMPTY_LANDFORM_INDEX, type LandformDescriptor, type LandformGenContext, landformHeightDeltaAt, type LandformIndex, landformIndexFor } from './landformDescriptors'
+import { EMPTY_LANDFORM_INDEX, landformCorrectionBypassAt, type LandformDescriptor, type LandformGenContext, landformHeightDeltaAt, type LandformIndex, landformIndexFor, landformRockAt } from './landformDescriptors'
 import { EMPTY_RANGE_SPINES, generateRangeSpines, type RangeSpineSet, sampleRangeSpines, softCapSummitHeight, unionWithSpine } from './rangeSpines'
 import { fordBedHeight, fordInfluenceAt, type FordProjection } from './riverFord'
 import { isOnAnyBridgeDeck, type RoadBridgeSpec } from './roadBridge'
@@ -745,7 +745,11 @@ function sampleRawTexelUncorrected(
     region.moistureRegionFbm,
   )
 
-  return { h, floorH, waterH, m, continentalness: c, mountainRidge, moistureRegion }
+  // Landform rock (crag core, crater bowl) joins the *reported* ridge only — it must not feed the height model above —
+  // so grass thins, trees are rejected and rock exposure applies without a second vegetation mechanism.
+  const reportedRidge = landforms.count === 0 ? mountainRidge : Math.max(mountainRidge, landformRockAt(landforms, wx, wz))
+
+  return { h, floorH, waterH, m, continentalness: c, mountainRidge: reportedRidge, moistureRegion }
 }
 
 /**
@@ -759,7 +763,9 @@ function sampleRawTexel(
   params: RawSampleParams,
 ): RawTexelSample {
   const raw = sampleRawTexelUncorrected(wx, wz, noise, params)
-  const correction = hydrologyCorrectionAt(params.hydrologyId, wx, wz)
+  const rawCorrection = hydrologyCorrectionAt(params.hydrologyId, wx, wz)
+  // Craters are dry bowls: hydrology would fill or breach them (a depression), so its correction is ignored inside.
+  const correction = rawCorrection === 0 ? 0 : rawCorrection * (1 - landformCorrectionBypassAt(landformIndexForParams(params), wx, wz))
   const floorH = raw.floorH + correction
   // Lake rule (058 L1): inside a lake basin the surface is the lake level wherever the corrected floor lies below it.
   const lake = hydrologyLakeLevelAt(params.hydrologyId, wx, wz)

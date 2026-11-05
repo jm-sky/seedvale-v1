@@ -4,8 +4,10 @@ import {
   generateLandforms,
   LANDFORM_BUCKET_SIZE_M,
   LANDFORM_MAX_PER_BUCKET,
+  landformCorrectionBypassAt,
   type LandformDescriptor,
   landformHeightDeltaAt,
+  landformRockAt,
 } from './landformDescriptors'
 
 const crag = (id: string, x: number, z: number, radius: number): LandformDescriptor => ({
@@ -35,7 +37,7 @@ describe('landform descriptors (index)', () => {
 })
 
 describe('landform generation + profiles (R3)', () => {
-  const ctx = { floorH: () => 8, waterLevel: 0.45, halfExtent: 4000 }
+  const ctx = { floorH: () => 10, waterLevel: 0.45, halfExtent: 4000 }
 
   it('is deterministic, respects the home reserve and separation, and ids are cell-based', () => {
     const a = generateLandforms(42, ctx)
@@ -61,15 +63,18 @@ describe('landform generation + profiles (R3)', () => {
       const edge = landformHeightDeltaAt(index, d.centreX + d.radius - 0.01, d.centreZ)
       expect(Math.abs(edge)).toBeLessThan(0.05)
       expect(landformHeightDeltaAt(index, d.centreX + d.radius + 1, d.centreZ)).toBe(0)
-      if (d.kind === 'crag') expect(landformHeightDeltaAt(index, d.centreX, d.centreZ)).toBeGreaterThan(5)
+      if (d.kind === 'crag') {
+        expect(landformHeightDeltaAt(index, d.centreX, d.centreZ)).toBeGreaterThanOrEqual(18) // 1–3 trees tall
+        expect(landformRockAt(index, d.centreX, d.centreZ)).toBe(1)
+      }
       if (d.kind === 'crater') {
-        // Dry ring: never a pit (no negative delta), interior at ground level, rim up on the far side of the gap.
-        expect(landformHeightDeltaAt(index, d.centreX, d.centreZ)).toBeCloseTo(0, 6)
-        const notch = d.params.notch ?? 0
-        const rimAt = (a: number) => landformHeightDeltaAt(index, d.centreX + Math.cos(a) * d.radius * 0.78, d.centreZ + Math.sin(a) * d.radius * 0.78)
-        expect(rimAt(notch + Math.PI)).toBeGreaterThan(3)
-        expect(rimAt(notch)).toBeLessThan(0.05)
-        for (let k = 0; k < 24; k++) expect(rimAt((k / 24) * Math.PI * 2)).toBeGreaterThanOrEqual(0)
+        // Dry bowl below the surroundings with a low rim; bare rock, hydrology correction ignored inside.
+        expect(landformHeightDeltaAt(index, d.centreX, d.centreZ)).toBeLessThan(-4)
+        expect(landformHeightDeltaAt(index, d.centreX + d.radius * 0.8, d.centreZ)).toBeGreaterThan(1)
+        expect(landformRockAt(index, d.centreX, d.centreZ)).toBe(1)
+        expect(landformCorrectionBypassAt(index, d.centreX, d.centreZ)).toBe(1)
+        expect(landformCorrectionBypassAt(index, d.centreX + d.radius + 1, d.centreZ)).toBe(0)
+        expect(d.radius).toBeLessThanOrEqual(60)
       }
       if (d.kind === 'lakeIsland') {
         expect(landformHeightDeltaAt(index, d.centreX, d.centreZ)).toBeGreaterThan(0)
