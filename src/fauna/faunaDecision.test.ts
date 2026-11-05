@@ -242,3 +242,43 @@ describe('FAUNA_BEHAVIOUR_PRIORITY', () => {
     }
   })
 })
+
+describe('player-ignore does not mask live threats (fauna-051 §B2)', () => {
+  const ignoring: FaunaDecisionInput = {
+    ...base, role: 'predator', playerActive: true, playerIntent: 'ignore',
+  }
+
+  it('keeps player-ignore when nothing else is live', () => {
+    expect(decideFaunaBehaviour(ignoring)).toBe('player-ignore')
+  })
+
+  it('NPC retaliation (npc-attack) wins over player-ignore', () => {
+    expect(decideFaunaBehaviour({ ...ignoring, npcThreat: true, npcIntent: 'attack' })).toBe('npc-attack')
+  })
+
+  it('frenzied NPC attack wins over player-ignore', () => {
+    expect(decideFaunaBehaviour({ ...ignoring, frenzied: true, npcThreat: true })).toBe('npc-attack-frenzied')
+  })
+
+  it('NPC flee wins over player-ignore', () => {
+    expect(decideFaunaBehaviour({ ...ignoring, npcThreat: true, npcIntent: 'flee' })).toBe('npc-flee')
+  })
+
+  it('fire avoidance and scare win over player-ignore (non-frenzied)', () => {
+    expect(decideFaunaBehaviour({ ...ignoring, fireNearby: true })).toBe('fire-avoid')
+    expect(decideFaunaBehaviour({ ...ignoring, scareActive: true })).toBe('scare-flee')
+  })
+
+  it('an NPC scored ignore leaves player-ignore in place (both run updatePredator)', () => {
+    expect(decideFaunaBehaviour({ ...ignoring, npcThreat: true, npcIntent: 'ignore' })).toBe('player-ignore')
+  })
+
+  it('player-attack / player-flee still outrank NPC branches (table not reordered)', () => {
+    expect(decideFaunaBehaviour({
+      ...ignoring, playerIntent: 'attack', npcThreat: true, npcIntent: 'attack',
+    })).toBe('player-attack')
+    expect(decideFaunaBehaviour({
+      ...ignoring, playerIntent: 'flee', fireNearby: true,
+    })).toBe('player-flee')
+  })
+})

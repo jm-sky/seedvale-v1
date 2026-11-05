@@ -140,6 +140,6 @@ export function combatTargetForAnimal(animal: AnimalAgent): CombatTargetHandle {
     ref: { id: animal.animalId, kind: 'animal' },
     getPosition: () => (animal.isDead() ? null : { x: animal.mesh.position.x, z: animal.mesh.position.z }),
     isAlive: () => !animal.isDead(),
-    applyDamage: (hit) => animal.takeDamage(hit.amount, 'npc'),
+    applyDamage: (hit) => animal.takeDamage(hit.amount, 'npc', hit.attackerId),
   }
 }

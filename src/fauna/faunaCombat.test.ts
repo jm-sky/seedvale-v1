@@ -5,16 +5,16 @@ import { combatTargetForAnimal, createHealthState, damageFor, damageVsHuman, fau
 
 /** Narrow fake covering only what `combatTargetForAnimal` touches — a full
  *  `AnimalAgent` needs a GLTF/scene graph this test doesn't want. */
-function fakeAnimal(overrides: { dead?: boolean, x?: number, z?: number } = {}): AnimalAgent & { damages: [number, string | undefined][] } {
-  const damages: [number, string | undefined][] = []
+function fakeAnimal(overrides: { dead?: boolean, x?: number, z?: number } = {}): AnimalAgent & { damages: [number, string | undefined, string | undefined][] } {
+  const damages: [number, string | undefined, string | undefined][] = []
   const dead = overrides.dead ?? false
   return {
     animalId: 'wolf-1',
     mesh: { position: { x: overrides.x ?? 3, z: overrides.z ?? 4 } },
     isDead: () => dead,
-    takeDamage: (amount: number, source?: 'npc' | 'player') => damages.push([amount, source]),
+    takeDamage: (amount: number, source?: 'npc' | 'player', attackerId?: string) => damages.push([amount, source, attackerId]),
     damages,
-  } as unknown as AnimalAgent & { damages: [number, string | undefined][] }
+  } as unknown as AnimalAgent & { damages: [number, string | undefined, string | undefined][] }
 }
 
 describe('faunaCombat (createHealthState re-exported from shared, MAX_HP/damageFor fauna-local)', () => {
@@ -104,7 +104,7 @@ describe('combatTargetForAnimal (plan 177)', () => {
   it('routes applyDamage through takeDamage with source "npc"', () => {
     const animal = fakeAnimal()
     combatTargetForAnimal(animal).applyDamage({ amount: 12, damageType: 'cut', source: 'melee', attackerId: 'npc:1' })
-    expect(animal.damages).toEqual([[12, 'npc']])
+    expect(animal.damages).toEqual([[12, 'npc', 'npc:1']])
   })
 })
 

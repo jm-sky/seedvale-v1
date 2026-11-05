@@ -126,7 +126,14 @@ function isBehaviourValid(kind: FaunaBehaviourKind, input: FaunaDecisionInput): 
     case 'player-flee-prey':
       return input.playerActive && input.role !== 'predator'
     case 'player-ignore':
+      // fauna-051 §B2: `ignore` means "keep doing what you were doing", so it
+      // must not mask a live NPC threat (frenzied attack or scored attack/flee),
+      // fire avoidance or a scare impulse. Only these branches are un-masked;
+      // player-attack/-flee and the rest of the table keep today's order.
       return input.playerActive && input.role === 'predator' && input.playerIntent === 'ignore'
+        && !(input.npcThreat && (input.frenzied || input.npcIntent === 'attack' || input.npcIntent === 'flee'))
+        && !(input.fireNearby && !input.frenzied)
+        && !(input.scareActive === true && !input.frenzied)
     case 'predator-normal':
       return input.role === 'predator'
     case 'prey-normal':

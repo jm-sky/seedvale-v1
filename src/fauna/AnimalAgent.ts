@@ -20,6 +20,7 @@ import {
   spontaneousVocalizeTimeWeight,
   tickSpontaneousVocalizeCooldown,
 } from '../audio/animalSounds'
+import { criticalRoll } from '../combat/criticalHit'
 import { isNpcCombatDebugMode } from '../debug/debugMode'
 import { type FaunaWaterEventType, isFaunaWaterLogEnabled, recordFaunaWaterEvent } from '../debug/faunaInspector'
 import { logNpcThreatBranch } from '../debug/faunaInspector'
@@ -1602,6 +1603,17 @@ export class AnimalAgent {
    *  caller-bounded `nearbyNpcs` list (dead or its settlement unloaded) —
    *  see `resolveNpcTarget()`. */
   private npcTarget: NearbyNpcCandidate | null = null
+  /** Live NPC aggressor id from the last `takeDamage(_, 'npc', attackerId)`
+   *  (fauna-051 §B1) — preferred over the nearest-candidate pick by
+   *  `resolveNpcTarget()` while the 8 s provocation window lasts. Transient
+   *  (not in `AnimalSaveState`); validated against `nearbyNpcs` each tick, so
+   *  a dead/unloaded attacker simply falls back to the normal pick. */
+  private aggressorNpcId: string | null = null
+  /** Per-agent in-memory encounter/provocation ordinal (fauna-051 §B3) — the
+   *  third key of the deterministic aggression roll. Transient: restarts at 0
+   *  on construction and `hydrate()`, same precedent as the player's unsaved
+   *  crit attempt counter. */
+  private encounterOrdinal = 0
   /** Dog-only guard state (plan fauna-011 §9/§10/§13) — recomputed fresh
    *  every `update()` tick from live world state (see `resolveGuardTarget`),
    *  never itself the source of truth; only cached here for
@@ -3080,6 +3092,8 @@ export class AnimalAgent {
     this.health.currentHp = state.health.current
     this.health.maxHp = state.health.max
     this.health.dead = state.health.dead
+    // fauna-051 §B3: encounter state is transient — a hydrate never carries it.
+    this.resetEncounterState()
     this.life.hunger = state.life.hunger
     this.life.thirst = state.life.thirst
     this._training = this.def.kind === 'horse' ? normalizeHorseTrainingState(state.training) : undefined
@@ -3218,7 +3232,7 @@ export class AnimalAgent {
    *  reaction as `'player'` — this is the existing predator-vs-human decision
    *  reacting to being hit, not a new NPC-aware animal behaviour. Physical
    *  injury tracks actual HP loss (plan items-player-045). */
-  takeDamage(damage: number, source?: 'npc' | 'player'): void {
+  takeDamage(damage: number, source?: 'npc' | 'player', attackerId?: string): void {
     if (this.health.dead) return
     const hpBefore = this.health.currentHp
     damageHealth(this.health, damage)
@@ -3229,6 +3243,9 @@ export class AnimalAgent {
     if (damage > 0) recordBloodHit(this.mesh.position.x, this.mesh.position.z, this.def.modelHeight, damage)
     if (source === 'player' || source === 'npc') {
       this.provokedTimer = PROVOCATION_SECONDS
+      // fauna-051 §B1: remember the live NPC aggressor so retaliation goes to
+      // the right target (a player hit leaves any previous NPC aggressor alone).
+      if (source === 'npc' && attackerId) this.aggressorNpcId = attackerId
       // Force an immediate re-score so healthy wolves can retaliate this frame.
       this.humanDecisionTimer = 0
       this.npcDecisionTimer = 0
@@ -3932,8 +3949,26 @@ export class AnimalAgent {
     this.humanDecisionTimer = 0
     this.npcDecisionTimer = 0
     this.provokedTimer = 0
+    this.aggressorNpcId = null
     clearPredatorIntentCommitment(this.humanIntentCommitment)
     clearPredatorIntentCommitment(this.npcIntentCommitment)
+  }
+
+  /** Keyed deterministic 0..1 aggression roll (fauna-051 §B3) over
+   *  (`animalId`, target key, per-agent encounter ordinal) — the same hash as
+   *  `combat/criticalHit.ts::criticalRoll`; consumed once per new encounter or
+   *  provocation reroll, never per frame, no shared RNG. */
+  private nextEncounterRoll(targetKey: string): number {
+    return criticalRoll(this.animalId, `encounter:${targetKey}`, this.encounterOrdinal++)
+  }
+
+  /** Drops every transient predator-vs-human encounter field (fauna-051 §B3):
+   *  provocation, aggressor, NPC lock, commitments, latches and the roll
+   *  ordinal. Called from `hydrate()`; encounter state is never persisted. */
+  private resetEncounterState(): void {
+    this.resetHumanThreatState()
+    this.npcTarget = null
+    this.encounterOrdinal = 0
   }
 
   /** Feeds this tick's steering-relevant state to the `showDebug()` overlay
@@ -4000,7 +4035,7 @@ export class AnimalAgent {
     const inEncounter = this.humanIntentCommitment.targetKey === PLAYER_INTENT_TARGET_KEY
     const forceReroll = this.humanDecisionTimer <= 0 && inEncounter
     const nextRoll = !inEncounter || forceReroll
-      ? Math.random()
+      ? this.nextEncounterRoll(PLAYER_INTENT_TARGET_KEY)
       : this.humanIntentCommitment.aggressionRoll
     const intent = resolveCommittedPredatorIntent(this.humanIntentCommitment, {
       input: this.buildHumanDecisionInput(sense, observerPos, nearbyHumanCount, habitat),
@@ -4093,6 +4128,19 @@ export class AnimalAgent {
    *  target then wanders into a village (recorded as a follow-up, see
    *  `docs/plans/LOOSE-ENDS.md`). */
   private resolveNpcTarget(nearbyNpcs: readonly NearbyNpcCandidate[]): NearbyNpcCandidate | null {
+    // fauna-051 §B1: a live, recent NPC aggressor outranks the existing lock
+    // and the nearest pick (still the same `npcTarget` lock, no registry).
+    if (this.aggressorNpcId) {
+      if (this.provokedTimer > 0) {
+        const aggressor = nearbyNpcs.find((npc) => npc.id === this.aggressorNpcId)
+        if (aggressor) {
+          this.npcTarget = aggressor
+          return aggressor
+        }
+      } else {
+        this.aggressorNpcId = null
+      }
+    }
     if (this.npcTarget) {
       const stillPresent = nearbyNpcs.find((npc) => npc.id === this.npcTarget!.id)
       if (stillPresent) {
@@ -4184,7 +4232,7 @@ export class AnimalAgent {
     const inEncounter = this.npcIntentCommitment.targetKey === targetKey
     const forceReroll = this.npcDecisionTimer <= 0 && inEncounter
     const nextRoll = !inEncounter || forceReroll
-      ? Math.random()
+      ? this.nextEncounterRoll(targetKey)
       : this.npcIntentCommitment.aggressionRoll
     const intent = resolveCommittedPredatorIntent(this.npcIntentCommitment, {
       input: this.buildNpcDecisionInput(npcThreat, nearbyNpcs, sense, habitat),

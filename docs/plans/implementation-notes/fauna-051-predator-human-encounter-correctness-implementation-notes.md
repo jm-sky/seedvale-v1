@@ -25,3 +25,12 @@
 ## Targeted verification
 
 `src/fauna/predatorHumanDecision.test.ts`, `predatorIntentCommitment.test.ts`, `faunaDecision.test.ts`, `AnimalAgent.test.ts`, `animalVariants.test.ts`, `animalUpdateCadence.test.ts`, `animalTerritory.test.ts`; add obstacle chase, aggressor with player present, repeatability and spatial hit exclusions. Run focused tests, type-check, lint and build when implementation is done; report manual browser checks separately. Add `@domain fauna` JSDoc to new public targeting/contact helpers.
+
+## Implementation log — §B (Q152, 2026-11-05)
+
+Landed (technically verified; not browser-verified):
+
+- **B1 identity:** `AnimalAgent.takeDamage(damage, source?, attackerId?)`; `combatTargetForAnimal().applyDamage` passes `hit.attackerId`. `CombatTargetHit` unchanged (the field already existed). `aggressorNpcId` is remembered on `source: 'npc'` hits and preferred by `resolveNpcTarget()` (overrides an existing lock, same `npcTarget`, no registry) while `provokedTimer > 0` and the NPC is in `nearbyNpcs`; cleared by `resetHumanThreatState()` or on window expiry. Not done: an explicit spatial-context check for the aggressor (`nearbyNpcs` is caller-bounded; context belongs to §A3/fauna-045); the "player stronger immediate threat" case is already covered because player-attack/-flee (90) outrank NPC branches.
+- **B2 arbitration:** `faunaDecision.ts::isBehaviourValid('player-ignore')` is false when a live NPC threat (frenzied, or `npcIntent` attack/flee), non-frenzied fire, or non-frenzied scare is active. Priority table untouched; `dog-guard` is unaffected (dogs are never `role: 'predator'`).
+- **B3 deterministic roll:** `Math.random()` in `refreshThrottledHumanIntent` / `refreshThrottledNpcIntent` replaced by `nextEncounterRoll(targetKey)` = `criticalRoll(animalId, 'encounter:'+targetKey, encounterOrdinal++)`. Ordinal/aggressor/lock/commitments reset in `hydrate()` via `resetEncounterState()`; no save change. Documented in `docs/state/fauna.md` (Combat).
+- Tests: `AnimalAgent.encounter.test.ts` (aggressor lock vs nearer bystander, override of an existing lock, fallback when absent, identical rolls for same ids/order, ordinal advance on provocation, no redraw while stable, hydrate reset), `faunaDecision.test.ts` (player-ignore un-masking), `faunaCombat.test.ts` (attackerId forwarded). The player-path roll shares the same helper but is only covered via the NPC path (player noticing is probabilistic).
