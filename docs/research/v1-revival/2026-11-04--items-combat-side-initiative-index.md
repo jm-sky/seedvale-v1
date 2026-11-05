@@ -4,6 +4,8 @@
 **Status:** author decisions approved; Wave 1 startable; dependency, asset and Opus gates remain
 **Relation to the Revival roadmap:** independent side initiative running **in parallel**. It does not change the Master Roadmap phase order, the [Autonomous Session Queue](./AUTONOMOUS-SESSION-QUEUE.md) priorities or the geography work. Its tasks are tracked **here**, not as queue rows; only its open author questions are mirrored in queue §3. Revival rules still apply (determinism, ownership, save/epoch discipline, performance measurement, no FPS claims).
 
+**Related coordinated combat-balance plans (2026-11-05, not part of the existing staged armor wave):** [items-player-067 — melee weapon reach and damage balance](../../plans/items-player-067-melee-weapon-reach-and-damage-balance.md) ([implementation notes](../../plans/implementation-notes/items-player-067-melee-weapon-reach-and-damage-balance-implementation-notes.md)) and [fauna-051 — predator-human encounter correctness](../../plans/fauna-051-predator-human-encounter-correctness.md) ([implementation notes](../../plans/implementation-notes/fauna-051-predator-human-encounter-correctness-implementation-notes.md)). Both are `planned`; they share a contact-geometry contract and explicitly preserve the player's current 3 m lunge. They do not authorize modifications to active items/armor wave scopes or reorder this index's work queue.
+
 ## 1. Read first
 
 1. [Review 032 — architecture reconciliation](../../reviews/2026-11-04--032--items-stage-4-and-combat-armor-architecture-review.md): critical findings F1–F11 and binding resolutions. **Where it disagrees with an older document, review 032 wins.**
