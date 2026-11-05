@@ -23,7 +23,10 @@ const MAX_INFLIGHT = 6
  * tree density LOD (`distanceLod.ts`) thins trees there (49 % at 2, 8 % at 3 with the default radius), and the shell
  * stands in for the missing trees so forest never reads as bare ground (plan 066 F2, author constraint 2).
  */
-export const FAR_CANOPY_KEEP_CHUNKS = 2
+export const FAR_CANOPY_KEEP_CHUNKS = Number.POSITIVE_INFINITY
+// Author look 2026-11-05: with 2 the kept shell floated ~9 m above the streamed ground (ground fragments discarded,
+// shell not), was seen from underneath and could be walked up to. Disabled (never kept over resident chunks) until the
+// LOD-thinned band gets a real solution (impostors / higher tree-LOD floor, queue Q148).
 /** Mask texel values: nothing resident · terrain resident, canopy kept · terrain resident, trees at full LOD. */
 const MASK_OPEN = 0
 const MASK_CANOPY = 128
