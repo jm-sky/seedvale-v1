@@ -9,6 +9,8 @@
 **Subdomains:** `dialogue`
 **Tags:** `audio` `polish` `revival`
 
+**Selected reuse transcript decision — 2026-11-05:** [33/33 content-bound ASR text acceptance](../assets/voice-qc/NPC-069-TEXT-ACCEPTANCE.md) ([structured evidence](../assets/voice-qc/npc-069-text-acceptance.json)); four minor wording differences accepted by author policy. Speaker identity/listening QC and runtime admission remain separate.
+
 ## Editorial freeze — 2026-11-05
 
 The [final production package](../research/v1-revival/2026-11-05--npc-069-production-package.md), [English recording script](../research/v1-revival/2026-11-05--npc-069-recording-script.md), [deduplicated manifest](../research/v1-revival/2026-11-05--npc-069-production-manifest.json) and [exact coverage matrix](../research/v1-revival/2026-11-05--npc-069-coverage.md) complete the writing/reconciliation handoff. **115 base slots; 37 newly written missing-slot lines; 72 new recording jobs** (28 existing NV texts + 37 Astra texts + 5 preserved QV offers + 2 generic female restorations). All five casts and five QV offers are unchanged.
