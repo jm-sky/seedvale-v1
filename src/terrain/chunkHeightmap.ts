@@ -508,7 +508,8 @@ const landformByRegion = new WeakMap<RegionParams, Map<string, LandformIndex>>()
 
 function landformIndexForParams(params: RawSampleParams): LandformIndex {
   const region = params.region
-  if (!region.continentMask) return EMPTY_LANDFORM_INDEX
+  // `region` may be absent in partial test params (river tile view tests) — no continent, no landforms.
+  if (!(region as RegionParams | undefined)?.continentMask) return EMPTY_LANDFORM_INDEX
   // Fast path: this runs per terrain sample, so never stringify the region here.
   const fastKey = `${params.seed}|${params.heightScale}|${params.waterLevel}`
   let perRegion = landformByRegion.get(region)
@@ -527,6 +528,12 @@ function landformIndexForParams(params: RawSampleParams): LandformIndex {
   }
   perRegion.set(fastKey, index)
   return index
+}
+
+/** The landform index of a world (finite-continent worlds only) — for consumers that must treat landform footprints
+ *  specially (river chains end at a crater rim). */
+export function landformIndexOf(params: RawSampleParams): LandformIndex {
+  return landformIndexForParams(params)
 }
 
 /** Landform descriptors of a world, for census / debug overlays. */

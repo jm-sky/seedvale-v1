@@ -1,6 +1,8 @@
 import type { RawSampleParams, RiverChannelSegment } from './chunkHeightmap'
 import type { WorldHydrology } from './worldHydrology'
 import { projectOntoSegment } from '../math/segment'
+import { landformIndexOf } from './chunkHeightmap'
+import { insideCraterAt } from './landformDescriptors'
 import { clipChainsToRect, RiverChainIndex } from './riverChainClip'
 import { isUnconditionedHydrologyId, unpackChains, worldHydrologyFor } from './worldHydrologyStore'
 import type { NoiseFunction2D } from 'simplex-noise'
@@ -607,7 +609,32 @@ export function smoothChainPoints(points: RiverPoint[], passes: number = CHAIKIN
 export function computeRiverTile(tile: RiverTileCoord, sampleParams: RawSampleParams): RiverChain[] {
   // "Unconditioned" = raw floor, no water network: no rivers (same as no correction / lakes / stream heads).
   if (isUnconditionedHydrologyId(sampleParams.hydrologyId)) return []
-  return globalRiverTile(tile, sampleParams.hydrologyId)
+  const chains = globalRiverTile(tile, sampleParams.hydrologyId)
+  const landforms = landformIndexOf(sampleParams)
+  return landforms.count === 0 ? chains : endChainsAtCraters(chains, landforms)
+}
+
+/**
+ * A crater is a dry bowl below the surroundings (plan 060 R3), so a stream cannot cross it: its water surface would hang
+ * over the bowl. Chain points inside a crater footprint are dropped, which ends the stream at the rim (a dry sink) and
+ * restarts it on the far side. Central place: every river consumer (ribbon, queries, carving) reads `computeRiverTile`.
+ */
+function endChainsAtCraters(chains: RiverChain[], landforms: ReturnType<typeof landformIndexOf>): RiverChain[] {
+  const out: RiverChain[] = []
+  for (const chain of chains) {
+    let run: RiverPoint[] = []
+    let cut = false
+    for (const p of chain.points) {
+      if (insideCraterAt(landforms, p.x, p.z)) {
+        cut = true
+        if (run.length >= 2) out.push({ points: run })
+        run = []
+      } else run.push(p)
+    }
+    if (!cut) out.push(chain)
+    else if (run.length >= 2) out.push({ points: run })
+  }
+  return out
 }
 
 type GlobalChainView = { index: RiverChainIndex }

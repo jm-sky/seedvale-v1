@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   buildLandformIndex,
   generateLandforms,
+  insideCraterAt,
   LANDFORM_BUCKET_SIZE_M,
   LANDFORM_MAX_PER_BUCKET,
   landformCorrectionBypassAt,
@@ -81,5 +82,23 @@ describe('landform generation + profiles (R3)', () => {
         expect(landformHeightDeltaAt(index, d.centreX + d.radius * 0.6, d.centreZ)).toBeLessThan(-2)
       }
     }
+  })
+})
+
+describe('crater river exclusion + crag rock (author look 2)', () => {
+  const ctx = { floorH: () => 10, waterLevel: 0.45, halfExtent: 4000 }
+  it('craters are 7–9 m deep with a dry floor and rivers are excluded inside', () => {
+    const d = generateLandforms(42, ctx).find((x) => x.kind === 'crater')!
+    const index = buildLandformIndex([d])
+    expect(d.params.depth).toBeGreaterThanOrEqual(7)
+    expect(10 - (d.params.depth ?? 0)).toBeGreaterThan(0.45 + 1)
+    expect(insideCraterAt(index, d.centreX, d.centreZ)).toBe(true)
+    expect(insideCraterAt(index, d.centreX + d.radius + 1, d.centreZ)).toBe(false)
+  })
+  it('a crag is grassy on the flanks and rocky only on the top', () => {
+    const d = generateLandforms(42, ctx).find((x) => x.kind === 'crag')!
+    const index = buildLandformIndex([d])
+    expect(landformRockAt(index, d.centreX, d.centreZ)).toBe(1)
+    expect(landformRockAt(index, d.centreX + d.radius * 0.7, d.centreZ)).toBe(0)
   })
 })

@@ -191,7 +191,7 @@ export function generateLandforms(seed: number, ctx: LandformGenContext): readon
       const params: Record<string, number> = kind === 'crag'
         ? { amplitude: CRAG_MIN_HEIGHT_M + rand() * (CRAG_MAX_HEIGHT_M - CRAG_MIN_HEIGHT_M) }
         : kind === 'crater'
-          ? { depth: 5 + rand() * 3, rim: 2 + rand() * 1.5 }
+          ? { depth: Math.min(7 + rand() * 2.5, picked.ground - ctx.waterLevel - 2), rim: 2 + rand() * 1.5 }
           : { depth: 3.5 + rand() * 1, knoll: 4 + rand() * 2 }
       out.push({
         id: `lf:${kind}:${picked.gx}_${picked.gz}`,
@@ -203,7 +203,7 @@ export function generateLandforms(seed: number, ctx: LandformGenContext): readon
         intendedOutcome: kind === 'crag'
           ? 'isolated rocky hill'
           : kind === 'crater'
-            ? 'dry meteorite-style crater: bowl 5–8 m below ground with a low rim, bare rock (no grass/trees); hydrology correction ignored inside'
+            ? 'dry meteorite-style crater: bowl 7–9 m below ground with a low rim, bare rock (no grass/trees); hydrology correction ignored inside'
             : 'basin with a central knoll; a lake with an island where hydrology fills the basin',
       })
     }
@@ -272,7 +272,8 @@ export function landformRockAt(index: LandformIndex, x: number, z: number): numb
     const d2 = dx * dx + dz * dz
     if (d2 >= d.radius * d.radius) continue
     const t = Math.sqrt(d2) / d.radius
-    rock = Math.max(rock, 1 - smooth(d.kind === 'crater' ? 0.85 : 0.6, 1, t))
+    // Crater: bare bowl. Crag: grassy flanks, bare rock/soil only on the top (author: geometry matters, not colour).
+    rock = Math.max(rock, d.kind === 'crater' ? 1 - smooth(0.85, 1, t) : 1 - smooth(0.15, 0.5, t))
   }
   return rock
 }
@@ -293,4 +294,14 @@ export function landformCorrectionBypassAt(index: LandformIndex, x: number, z: n
     keep = Math.max(keep, 1 - smooth(0.85, 1, Math.sqrt(d2) / d.radius))
   }
   return keep
+}
+
+/** True when `(x, z)` lies inside a crater footprint — rivers end at the rim (a dry sink), never float over the bowl. */
+export function insideCraterAt(index: LandformIndex, x: number, z: number): boolean {
+  if (index.count === 0) return false
+  for (const d of index.near(x, z)) {
+    if (d.kind !== 'crater') continue
+    if ((x - d.centreX) ** 2 + (z - d.centreZ) ** 2 < d.radius * d.radius) return true
+  }
+  return false
 }

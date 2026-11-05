@@ -114,3 +114,11 @@ Author: a crag must stand **1–3 tree heights** above the terrain; a crater may
 - **Bare ground:** `landformRockAt` → the *reported* `mountainRidge` (not the one in the height model — a first version fed it into the height and produced 30–60 m craters/crags). Grass fades with ridge (`MOUNTAIN_RIDGE_FADE_*`), trees are rejected at ridge ≥ 0.35 (`MOUNTAIN_RIDGE_REJECT`), rock exposure follows. No second vegetation mechanism.
 - Caches bumped again (chunk tiles 31, hydrology 6, settlements 30, roads 18, caves 12, locations-coarse 9, cemeteries 15). Full suite 9285 green. Census: 3–5 landforms per seed; seed 415424794: crater `(-1150, -452)` r 58 m, crag `(3179, -1706)` r 99 m (floor 24 m), lake island `(2940, 1355)`.
 - 🟡 Not observed in the browser. Dry-bowl neighbours: a river chain crossing a crater footprint is not excluded (not seen); roads/settlements do not yet avoid landform footprints (063 / Q61).
+
+### R3 correction 3 — author 2026-11-05 (third look: crag good, crater shallow + stream floating, white rock)
+
+- **Stream floated over the crater:** hydrology chains pass over the pit's filled surface, so the water ribbon hung above the bowl. `computeRiverTile` (the single source for ribbon, queries and carving) now drops chain points inside a crater footprint (`endChainsAtCraters`): the stream ends at the rim (dry sink) and restarts on the far side. Chains are post-processed, not recomputed — hydrology payload unchanged.
+- **Crater deeper:** bowl 7–9.5 m (capped so the floor stays ≥ 2 m above the sea).
+- **White rock:** not landform snow but `applyMountainRock`: snow tint started at 0.55 × `heightScale` (≈ 10 m) × ridge, so any 15 m rock with ridge 1 went white. Now by **metres: 45 → 75 m** × ridge (real snow lives in `snowField` at `SNOW_ALT_M` 60–140). ⚠ affects every mountain (noise massifs 25–40 m lose the white tint; ranges ≥ 60 m keep it) — a visual change beyond landforms, flagged for the author.
+- **Crag:** rock/soil only on the top (weight 1 → 0 between 0.15 and 0.5 r); flanks keep grass. Geometry unchanged (18–34 m).
+- Caches bumped again (chunk tiles 32, hydrology 7, settlements 31, roads 19, caves 13, locations-coarse 10, cemeteries 16). Full suite 9287 green. Not observed in the browser.
