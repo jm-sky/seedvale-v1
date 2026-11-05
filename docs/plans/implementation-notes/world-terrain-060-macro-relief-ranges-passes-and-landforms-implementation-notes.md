@@ -71,3 +71,29 @@ Full uncorrected sampler 1.8–1.96 µs/sample; the spine term alone 0.04–0.06
 ### Open for the author (R2 preview review, before R3/R4)
 
 Previews: `docs/research/v1-revival/continent-previews/continent-<seed>-standard-relief-ranges-060r2.png` (7 seeds; white = spine, yellow = pass corridor). Questions: do the ranges read as ranges; is the larger bare-rock area acceptable; peak height (top 69–81 m on 7 seeds); range count (2–3 per seed — 1 possible by the seeded target, not observed); home reserve 1150 m (seed 42: a 63 m crest ~1.3 km north of home).
+
+## R3 + R4 (partial) — P1 landforms, cache bumps, re-census (Sonnet, 2026-11-05, queue Q119)
+
+Author accepted the R2 previews 2026-11-05 ("OK").
+
+### R3 — what landed (`9f9931cb`)
+
+- `landformDescriptors.ts`: `generateLandforms(seed, ctx)` + per-kind profiles in `landformHeightDeltaAt`. Kinds: `crag` (knoll, amplitude 7–13 m, r 110–170 m), `crater` (bowl 3–4.5 m + rim 2.5–4 m, r 200–270 m), `lakeIsland` (basin 3.5–4.5 m with central knoll 4–6 m, r 200–270 m). `spineSummit` stays a range-spine term (R2), not a point landform. Profiles are continuous and exactly 0 at the footprint edge (test).
+- Selection: jittered 180 m candidates on **flat lowland** of the descriptor-free base relief (`sampleRawTexelUncorrected(..., withLandforms = false)` — acyclic; no hydrology/climate/settlements/roads). Crags: floor 4–11.5 m above the sea... basins ≥ `waterLevel + 5.5` (so the basin floor stays dry and hydrology decides whether it fills); probe-ring range ≤ 2.5 m (basins) / 4 m (crags), relaxed ×1.6 / ×2.4 in deterministic steps; home reserve 1150 m + radius; ≥ 700 m between landforms; ids `lf:<kind>:<gx>_<gz>` from the candidate cell. Target: 1 lake island, 1 crater, 1–3 crags (no per-kind guarantee). Only finite-continent worlds (`region.continentMask`) get landforms, like the spines.
+- Hook: `landformIndexForParams` in `chunkHeightmap.ts` (WeakMap fast path per region object — **never stringify the region per sample**; the first version did and slowed `createCaves` tests ~3×). `landformDescriptorsOf(params)` for census/debug.
+- Census `pnpm tsx scripts/perf/census-landforms.ts [seeds]`: 7 seeds — 3 / 3 / 3 / 4 / 5 / 4 / 5 landforms (seed 42 and 415424794: 1 lake island + 1 crater + 1 crag each); **no shortfall in any of the 7 seeds** vs the 3–5 target. Generation ≈ 70–80 ms per world per realm (each terrain worker builds its own copy).
+- Caches bumped (output-changing slice): `CHUNK_TILE_CACHE_VERSION` 28→29, `WORLD_HYDROLOGY_VERSION` 3→4, settlement defs 27→28, road routes 15→16, caves 9→10, locations-coarse 6→7, abandoned cemeteries 12→13. `WORLDGEN_EPOCH` untouched (open Revival batch).
+- Sampler cost (WSL, 400k random points): 1.86–1.90 µs/sample — unchanged vs R2 (1.8–1.96).
+
+### R4 — re-census after R3 (both seeds, no tuning)
+
+- Settlements 22 / 22 defined; routed components **42: 3, 415424794: 1** (same as R2); routed edges 20 / 21; route p50 1587 / 1585 m, ratio p50 1.16 / 1.11, max 2333 / 3402 m; river crossings 192 / 178; wilderness > 5 h 11.3 / 13.9 %.
+- Access census: 0 unreachable yard gates / storage / bay slots, 0 body-clearance failures, 0 wet object discs. Seed 42 LG: 1 overlapping object disc and 3 paths crossing discs; seed 415424794 MD: 2 and LG: 1 path-ribbon ∩ wall; runtime props: some `on path` hits (market props, plaza-adjacent) — not compared with S0 here, 🟡 pre-existing class (Q93/Q95), left to the 063 / Q61 close-out.
+- Catalog lakes (`worldgen:lakes:census`): inland wet cells 1288→1884 (42) and 1329→2204 (415424794); lake locations 141→178 / 145→185; within 1.5 km of home 20→30 / 22→31. Lakes census compares against the pre-058 baseline, not R2.
+
+### Not done (R4 remainder → Resume)
+
+- Pass-corridor **grade check after hydrology correction / road shaping / pads, both directions** against `slopeConstraint.ts` (R2 numbers are raw floor only).
+- Chunk-generation time and **hydrology boot time** vs the D7 baseline (cold/cold, warm/warm); peak memory.
+- Browser check on `415424794` (clear worldgen cache): cross one pass, stand on one summit, look at one crater / lake island (the landforms are placed away from the home: `lf:crater:8_14` at (1565, 2593), `lf:lakeIsland:16_7` at (2940, 1355), `lf:crag:16_8` at (2957, 1539)). Landform **look** (profiles, rock exposure on crags — crags are knolls only, no extra rock) is an author judgement.
+- Previews with landform overlay (`continent-preview-png.ts` has no landform layer yet) and committed R3 exports in a per-topic folder.
