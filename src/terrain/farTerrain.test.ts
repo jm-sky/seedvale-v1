@@ -92,4 +92,18 @@ describe('computeFarTile', () => {
     for (const v of tile.color) expect(v).toBeGreaterThanOrEqual(0)
     for (const v of tile.color) expect(v).toBeLessThanOrEqual(1)
   })
+
+  it('raises a bounded canopy shell somewhere on land, never on water, identical across levels at shared points', () => {
+    let forest = 0
+    for (const [tx, tz] of [[0, 0], [-9, -3], [4, 2], [-3, 6]] as const) {
+      const tile = computeFarTile({ params, tx, tz, cells: FAR_TILE_CELLS_FINE })
+      expect(tile.canopy.length).toBe(tile.y.length)
+      for (const c of tile.canopy) {
+        expect(c).toBeGreaterThanOrEqual(0)
+        expect(c).toBeLessThanOrEqual(12.01)
+        if (c > 0) forest++
+      }
+    }
+    expect(forest).toBeGreaterThan(0)
+  })
 })

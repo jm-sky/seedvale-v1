@@ -121,7 +121,7 @@ ctx.onmessage = ({ data }) => {
       )
     } else if (kind === 'farTile') {
       const tile = computeFarTile(data.params)
-      ctx.postMessage({ kind: 'farTile', id, ok: true, tile }, [tile.y.buffer, tile.normal.buffer, tile.color.buffer])
+      ctx.postMessage({ kind: 'farTile', id, ok: true, tile }, [tile.y.buffer, tile.normal.buffer, tile.color.buffer, tile.canopy.buffer])
     } else {
       const { params } = data
       const meshData = computeChunkMeshData(params)
