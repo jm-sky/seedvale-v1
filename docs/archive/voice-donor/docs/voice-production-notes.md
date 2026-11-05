@@ -1,5 +1,8 @@
 # Voice production notes (Fish Audio)
 
+> Archived historical production/context record. Original casting, counts, V3 links and workflow instructions are dated evidence; the [permanent V1 catalog](../../../design/npc-voices/CATALOG.md) and author decision registry own current state.
+
+
 **Updated at:** 2026-10-20  
 **Updated by:** user taste feedback (recorded by Composer)
 

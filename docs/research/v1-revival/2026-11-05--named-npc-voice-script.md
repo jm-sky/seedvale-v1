@@ -63,7 +63,7 @@ Direction: Grounded, observant, restrained warmth; brief and firm under threat. 
 - **Canonical transcript (QC candidate):** Good day. Is there anything I can help with?
 - **Generation input:** NONE — reference/reuse only; do not enqueue a new take.
 - **Filename:** `npc_mark_hornblower_greeting_01.mp3`.
-- **Existing asset:** `docs/v3-donor/voices/mp3/npc_mark_hornblower_greeting_01.mp3`; ASR match; ledger pending.
+- **Existing asset:** `public/sounds/voices/npc_mark_hornblower_greeting_01.mp3`; ASR match; ledger pending.
 - **Holds:** per-clip-QC; speaker-safe-runtime-Q88.
 
 ### NV-002 — farewell · P0
@@ -75,7 +75,7 @@ Direction: Grounded, observant, restrained warmth; brief and firm under threat. 
 - **Canonical transcript (QC candidate):** Look after yourself, will you? I'll see you around.
 - **Generation input:** NONE — reference/reuse only; do not enqueue a new take.
 - **Filename:** `npc_mark_hornblower_farewell_01.mp3`.
-- **Existing asset:** `docs/v3-donor/voices/mp3/npc_mark_hornblower_farewell_01.mp3`; ASR match; ledger pending.
+- **Existing asset:** `public/sounds/voices/npc_mark_hornblower_farewell_01.mp3`; ASR match; ledger pending.
 - **Holds:** per-clip-QC; speaker-safe-runtime-Q88.
 
 ### NV-003 — thanks · P2
@@ -86,7 +86,7 @@ Direction: Grounded, observant, restrained warmth; brief and firm under threat. 
 - **Canonical transcript (QC candidate):** I appreciate that. It means a good deal.
 - **Generation input:** NONE — reference/reuse only; do not enqueue a new take.
 - **Filename:** `npc_mark_hornblower_thanks_01.mp3`.
-- **Existing asset:** `docs/v3-donor/voices/mp3/npc_mark_hornblower_thanks_01.mp3`; ASR match; ledger pending.
+- **Existing asset:** `public/sounds/voices/npc_mark_hornblower_thanks_01.mp3`; ASR match; ledger pending.
 - **Holds:** per-clip-QC; speaker-safe-runtime-Q88; binding-needed.
 
 ### NV-004 — danger_alert · P1
@@ -97,7 +97,7 @@ Direction: Grounded, observant, restrained warmth; brief and firm under threat. 
 - **Canonical transcript (QC candidate):** Back! Get clear of it!
 - **Generation input:** NONE — reference/reuse only; do not enqueue a new take.
 - **Filename:** `npc_mark_hornblower_danger_alert_01.mp3`.
-- **Existing asset:** `docs/v3-donor/voices/mp3/npc_mark_hornblower_danger_alert_01.mp3`; ASR match; ledger pending.
+- **Existing asset:** `public/sounds/voices/npc_mark_hornblower_danger_alert_01.mp3`; ASR match; ledger pending.
 - **Holds:** per-clip-QC; speaker-safe-runtime-Q88.
 
 ### NV-005 — attention · P0
@@ -1043,7 +1043,7 @@ Direction: Gentle, dreamy, affectionate but capable. No childishness or cheerful
 - **Canonical transcript (QC candidate):** Well met. What brings you this way?
 - **Generation input:** NONE — reference/reuse only; do not enqueue a new take.
 - **Filename:** `general_female_b_greeting_01.mp3`.
-- **Existing asset:** `docs/v3-donor/voices/mp3/general_female_b_greeting_01.mp3`; ASR match; ledger pending.
+- **Existing asset:** `public/sounds/voices/general_female_b_greeting_01.mp3`; ASR match; ledger pending.
 - **Holds:** per-clip-QC; speaker-safe-runtime-Q88.
 
 ### NV-083 — farewell · P0
@@ -1055,7 +1055,7 @@ Direction: Gentle, dreamy, affectionate but capable. No childishness or cheerful
 - **Canonical transcript (QC candidate):** Farewell. May the road treat you kindly.
 - **Generation input:** NONE — reference/reuse only; do not enqueue a new take.
 - **Filename:** `general_female_b_farewell_02.mp3`.
-- **Existing asset:** `docs/v3-donor/voices/mp3/general_female_b_farewell_02.mp3`; ASR match; ledger pending.
+- **Existing asset:** `public/sounds/voices/general_female_b_farewell_02.mp3`; ASR match; ledger pending.
 - **Holds:** per-clip-QC; speaker-safe-runtime-Q88.
 
 ### NV-084 — attention · P0
@@ -1067,7 +1067,7 @@ Direction: Gentle, dreamy, affectionate but capable. No childishness or cheerful
 - **Canonical transcript (QC candidate):** Pardon me. Could I have a word?
 - **Generation input:** NONE — reference/reuse only; do not enqueue a new take.
 - **Filename:** `general_female_b_attention_02.mp3`.
-- **Existing asset:** `docs/v3-donor/voices/mp3/general_female_b_attention_02.mp3`; ASR match; ledger pending.
+- **Existing asset:** `public/sounds/voices/general_female_b_attention_02.mp3`; ASR match; ledger pending.
 - **Holds:** per-clip-QC; speaker-safe-runtime-Q88.
 
 ### NV-085 — exhausted · P1
@@ -1079,7 +1079,7 @@ Direction: Gentle, dreamy, affectionate but capable. No childishness or cheerful
 - **Canonical transcript (QC candidate):** I'm worn out. I have to rest.
 - **Generation input:** NONE — reference/reuse only; do not enqueue a new take.
 - **Filename:** `general_female_b_exhausted_01.mp3`.
-- **Existing asset:** `docs/v3-donor/voices/mp3/general_female_b_exhausted_01.mp3`; ASR match; ledger pending.
+- **Existing asset:** `public/sounds/voices/general_female_b_exhausted_01.mp3`; ASR match; ledger pending.
 - **Holds:** per-clip-QC; speaker-safe-runtime-Q88.
 
 ### NV-086 — hungry · P1
@@ -1091,7 +1091,7 @@ Direction: Gentle, dreamy, affectionate but capable. No childishness or cheerful
 - **Canonical transcript (QC candidate):** I need food before I can keep going.
 - **Generation input:** NONE — reference/reuse only; do not enqueue a new take.
 - **Filename:** `general_female_b_hungry_01.mp3`.
-- **Existing asset:** `docs/v3-donor/voices/mp3/general_female_b_hungry_01.mp3`; ASR match; ledger pending.
+- **Existing asset:** `public/sounds/voices/general_female_b_hungry_01.mp3`; ASR match; ledger pending.
 - **Holds:** per-clip-QC; speaker-safe-runtime-Q88.
 
 ### NV-087 — danger_alert · P1
@@ -1103,7 +1103,7 @@ Direction: Gentle, dreamy, affectionate but capable. No childishness or cheerful
 - **Canonical transcript (QC candidate):** Look out — something hostile!
 - **Generation input:** NONE — reference/reuse only; do not enqueue a new take.
 - **Filename:** `general_female_b_danger_alert_02.mp3`.
-- **Existing asset:** `docs/v3-donor/voices/mp3/general_female_b_danger_alert_02.mp3`; ASR match; ledger pending.
+- **Existing asset:** `public/sounds/voices/general_female_b_danger_alert_02.mp3`; ASR match; ledger pending.
 - **Holds:** per-clip-QC; speaker-safe-runtime-Q88.
 
 ### NV-088 — thanks · P2
@@ -1115,7 +1115,7 @@ Direction: Gentle, dreamy, affectionate but capable. No childishness or cheerful
 - **Canonical transcript (QC candidate):** I'm grateful. Truly.
 - **Generation input:** NONE — reference/reuse only; do not enqueue a new take.
 - **Filename:** `general_female_b_thanks_02.mp3`.
-- **Existing asset:** `docs/v3-donor/voices/mp3/general_female_b_thanks_02.mp3`; ASR match; ledger pending.
+- **Existing asset:** `public/sounds/voices/general_female_b_thanks_02.mp3`; ASR match; ledger pending.
 - **Holds:** per-clip-QC; speaker-safe-runtime-Q88; binding-needed.
 
 ### NV-089 — refusal · P2
@@ -1127,7 +1127,7 @@ Direction: Gentle, dreamy, affectionate but capable. No childishness or cheerful
 - **Canonical transcript (QC candidate):** Sorry. I can't help with that.
 - **Generation input:** NONE — reference/reuse only; do not enqueue a new take.
 - **Filename:** `general_female_b_refusal_01.mp3`.
-- **Existing asset:** `docs/v3-donor/voices/mp3/general_female_b_refusal_01.mp3`; ASR match; ledger pending.
+- **Existing asset:** `public/sounds/voices/general_female_b_refusal_01.mp3`; ASR match; ledger pending.
 - **Holds:** per-clip-QC; speaker-safe-runtime-Q88; binding-needed.
 
 ### NV-090 — confirmation · P2
@@ -1139,7 +1139,7 @@ Direction: Gentle, dreamy, affectionate but capable. No childishness or cheerful
 - **Canonical transcript (QC candidate):** Fine by me. We'll do it that way.
 - **Generation input:** NONE — reference/reuse only; do not enqueue a new take.
 - **Filename:** `general_female_b_agree_02.mp3`.
-- **Existing asset:** `docs/v3-donor/voices/mp3/general_female_b_agree_02.mp3`; ASR match; ledger pending.
+- **Existing asset:** `public/sounds/voices/general_female_b_agree_02.mp3`; ASR match; ledger pending.
 - **Holds:** per-clip-QC; speaker-safe-runtime-Q88; binding-needed.
 
 ### NV-091 — quest_offer · P2
@@ -1151,7 +1151,7 @@ Direction: Gentle, dreamy, affectionate but capable. No childishness or cheerful
 - **Canonical transcript (QC candidate):** I could use a capable pair of hands. Interested?
 - **Generation input:** NONE — reference/reuse only; do not enqueue a new take.
 - **Filename:** `general_female_b_quest_offer_02.mp3`.
-- **Existing asset:** `docs/v3-donor/voices/mp3/general_female_b_quest_offer_02.mp3`; ASR match; ledger pending.
+- **Existing asset:** `public/sounds/voices/general_female_b_quest_offer_02.mp3`; ASR match; ledger pending.
 - **Holds:** per-clip-QC; speaker-safe-runtime-Q88; binding-needed.
 
 ### NV-092 — quest_declined · P2
@@ -1163,7 +1163,7 @@ Direction: Gentle, dreamy, affectionate but capable. No childishness or cheerful
 - **Canonical transcript (QC candidate):** Understood. Perhaps another day.
 - **Generation input:** NONE — reference/reuse only; do not enqueue a new take.
 - **Filename:** `general_female_b_quest_declined_02.mp3`.
-- **Existing asset:** `docs/v3-donor/voices/mp3/general_female_b_quest_declined_02.mp3`; ASR match; ledger pending.
+- **Existing asset:** `public/sounds/voices/general_female_b_quest_declined_02.mp3`; ASR match; ledger pending.
 - **Holds:** per-clip-QC; speaker-safe-runtime-Q88; binding-needed.
 
 ### NV-093 — work_finished · P1
@@ -1262,7 +1262,7 @@ Direction: Gentle, dreamy, affectionate but capable. No childishness or cheerful
 - **Canonical transcript (QC candidate):** Look out — something hostile!
 - **Generation input:** NONE — reference/reuse only; do not enqueue a new take.
 - **Filename:** `general_female_b_danger_alert_02.mp3`.
-- **Existing asset:** `docs/v3-donor/voices/mp3/general_female_b_danger_alert_02.mp3`; ASR match; ledger pending.
+- **Existing asset:** `public/sounds/voices/general_female_b_danger_alert_02.mp3`; ASR match; ledger pending.
 - **Holds:** per-clip-QC; speaker-safe-runtime-Q88.
 
 ## Piers

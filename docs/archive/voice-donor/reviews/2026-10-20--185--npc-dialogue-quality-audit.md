@@ -1,5 +1,8 @@
 # NPC dialogue quality audit and production handoff
 
+> Archived historical production/context record. Original casting, counts, V3 links and workflow instructions are dated evidence; the [permanent V1 catalog](../../../design/npc-voices/CATALOG.md) and author decision registry own current state.
+
+
 **Status:** `verification needed` (editorial pass complete; audio listening/runtime gates open)  
 **Created at:** 2026-10-20  
 **Created by:** ChatGPT Sol  

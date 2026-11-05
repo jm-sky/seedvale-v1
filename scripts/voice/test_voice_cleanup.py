@@ -45,6 +45,54 @@ class CleanupTests(unittest.TestCase):
                 audio = subprocess.check_output(['git', 'show', removal['recoveryCommit']+':'+path], cwd=ROOT)
                 self.assertEqual(hashlib.sha256(audio).hexdigest(), removal['sha256'])
 
+    def test_author_identity_evidence_and_global_rejection_survive_migration(self):
+        directory = ROOT/'docs/assets/voice-qc'
+        registry = json.loads((directory/'author-decisions.json').read_text())
+        historical = json.loads(subprocess.check_output([
+            'git', 'show', '4646b07e:docs/assets/voice-qc/author-decisions.json',
+        ], cwd=ROOT))
+        audit = {r['file']: r for r in json.loads((directory/'identity-audit.json').read_text())['rows']}
+        british = '82a3ef4504a6441e9a07acdaaf5349c1'
+        self.assertEqual(registry['globalVoiceDecisions'][british]['decision'], 'rejected')
+        self.assertEqual(len(registry['globalVoiceDecisions'][british]['recordings']), 8)
+        for name, entry in registry['recordings'].items():
+            self.assertEqual(entry['sha256'], audit[name]['sha256'])
+            old = historical['recordings'][name]['speakerAssessment']
+            self.assertEqual(entry['speakerAssessment']['authorCell'], old['authorCell'])
+            self.assertEqual(entry['speakerAssessment']['ageMatchesFilename'], old['ageMatchesFilename'])
+            if name in registry['globalVoiceDecisions'][british]['recordings']:
+                self.assertEqual(entry['speakerAssessment']['confirmedSpeakerUuid'], british)
+                self.assertEqual(entry['disposition'], 'replace')
+
+    def test_active_tool_paths_and_catalog_coverage(self):
+        old_location = 'docs/' + 'v3-donor/voices/'
+        for path in (ROOT/'scripts/voice').glob('*'):
+            if path.suffix in ('.py', '.json'):
+                self.assertNotIn(old_location, path.read_text(), str(path))
+        catalog = (ROOT/'docs/design/npc-voices/CATALOG.md').read_text()
+        registry = json.loads((ROOT/'docs/assets/voice-qc/author-decisions.json').read_text())
+        for name in registry['recordings']:
+            self.assertIn(name, catalog)
+        self.assertFalse(any(p.is_file() for p in (ROOT/'docs/v3-donor/voices').rglob('*')))
+        for name in ['2026-11-05--named-npc-voice-script.json', '2026-11-04--q90-fish-audio-script.json']:
+            path = ROOT/'docs/research/v1-revival'/name
+            self.assertNotIn(old_location, path.read_text())
+            original = json.loads(subprocess.check_output([
+                'git', 'show', '4646b07e:' + str(path.relative_to(ROOT)),
+            ], cwd=ROOT))
+            current = json.loads(path.read_text())
+            def without_migrated_paths(value):
+                if isinstance(value, dict):
+                    return {k: without_migrated_paths(v) for k, v in value.items()
+                            if k not in ('source_file', 'casting_authority')}
+                if isinstance(value, list):
+                    return [without_migrated_paths(v) for v in value]
+                return value
+            self.assertEqual(without_migrated_paths(current), without_migrated_paths(original))
+            for source in re.findall(r'"source_file": "([^"]+\.mp3)"', path.read_text()):
+                self.assertTrue((ROOT/source).is_file(), source)
+
+
     def test_regeneration_manifest_covers_removals_and_preserves_source_text(self):
         directory = ROOT/'docs/assets/voice-qc'
         backlog = json.loads((directory/'regeneration-backlog.json').read_text())['recordings']

@@ -1,5 +1,8 @@
 # Recorded NPC voice lines — replacement and listening backlog
 
+> Archived historical production/context record. Original casting, counts, V3 links and workflow instructions are dated evidence; the [permanent V1 catalog](../../../design/npc-voices/CATALOG.md) and author decision registry own current state.
+
+
 **Status:** `draft` (proposals only; no recorded text or MP3 changed)  
 **Created at:** 2026-10-20  
 **Created by:** ChatGPT Sol  

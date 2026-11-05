@@ -1,5 +1,8 @@
 # NPC greeting library — hierarchical text candidates
 
+> Archived historical production/context record. Original casting, counts, V3 links and workflow instructions are dated evidence; the [permanent V1 catalog](../../../design/npc-voices/CATALOG.md) and author decision registry own current state.
+
+
 **Status:** `draft`
 **Created:** 2026-10-15
 **Domain:** dialogue, NPC, social knowledge

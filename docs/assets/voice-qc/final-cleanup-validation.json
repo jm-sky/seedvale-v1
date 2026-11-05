@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-05",
+  "baselineCommit": "4646b07e2",
+  "canonicalMp3s": 265,
+  "retainedBankRecordings": 303,
+  "archiveOnlyBrianBritish": 38,
+  "archiveUniqueBackups": 6,
+  "archiveNamedReferencePaths": 38,
+  "archiveReferenceSymlinks": 6,
+  "totalRetainedMp3Paths": 347,
+  "totalRetainedUniqueContents": 341,
+  "newRejectedRecordingsDeleted": 8,
+  "newRejectedMp3PathsDeleted": 16,
+  "totalRejectedRecordings": 14,
+  "totalRejectedMp3PathsDeleted": 28,
+  "redundantDonorCopiesRemoved": 95,
+  "donorOnlyRecordingsMigratedToCanonical": 170,
+  "donorOnlyRecordingsMigratedToArchive": 38,
+  "donorReferencesMigratedToArchive": 38,
+  "regenerationTasks": 14,
+  "runtimeCoverageRestorationTasks": 7,
+  "optionalCoverageTasks": 7,
+  "remainingOldDonorFiles": 0,
+  "productionRuntimeVoiceUrls": 63,
+  "authorDispositions": {
+    "keep": 7,
+    "replace": 14,
+    "pending": 296
+  },
+  "historicalEvidence": {
+    "ledger.json": {
+      "sha256": "446609639af9a1e9de5f48a05b7156c16cc141040144738cdfd3c3264764e68c",
+      "unchangedFromBaseline": true
+    },
+    "identity-audit.json": {
+      "sha256": "7e6f864bd8eef8844e65e25e4029894b94ef94a09f1600cd3733dae380719347",
+      "unchangedFromBaseline": true
+    },
+    "identity-calibration.json": {
+      "sha256": "d2053d95a8d7b8b1417122eafe0bb4611acb1e5d8b2bc156acd875fffdfb45fa",
+      "unchangedFromBaseline": true
+    }
+  },
+  "validation": {
+    "pythonTests": 16,
+    "vitestTests": 49,
+    "eslint": "passed",
+    "productionBuildWithVueTypeCheck": "passed",
+    "gitDiffCheck": "passed",
+    "identityCacheHits": 340,
+    "identityCacheMisses": 0,
+    "identityModelInitialized": false,
+    "identityRetainedContents": 303,
+    "identityRemovedHistoricalRowsReused": 14,
+    "identityTargetErrors": 0,
+    "identityReferenceErrors": [
+      {
+        "file": "docs/archive/voice-donor/named-references/KID-2026-09-17-13-50-Hey!-I-haven't-seen-you-around-before.mp3",
+        "error": "Unmapped reference name"
+      }
+    ],
+    "browserVerification": false,
+    "listeningVerification": false,
+    "audioGenerated": false
+  }
+}

@@ -202,7 +202,7 @@
         "per-clip-QC",
         "speaker-safe-runtime-Q88"
       ],
-      "source_file": "docs/v3-donor/voices/mp3/npc_mark_hornblower_greeting_01.mp3",
+      "source_file": "public/sounds/voices/npc_mark_hornblower_greeting_01.mp3",
       "source_voice_uuid": "2adcdee4b3ce4b648dc16ea65430ea76",
       "ledger_verdict": "pending",
       "asr_result": "match",
@@ -231,7 +231,7 @@
         "per-clip-QC",
         "speaker-safe-runtime-Q88"
       ],
-      "source_file": "docs/v3-donor/voices/mp3/npc_mark_hornblower_farewell_01.mp3",
+      "source_file": "public/sounds/voices/npc_mark_hornblower_farewell_01.mp3",
       "source_voice_uuid": "2adcdee4b3ce4b648dc16ea65430ea76",
       "ledger_verdict": "pending",
       "asr_result": "match",
@@ -261,7 +261,7 @@
         "speaker-safe-runtime-Q88",
         "binding-needed"
       ],
-      "source_file": "docs/v3-donor/voices/mp3/npc_mark_hornblower_thanks_01.mp3",
+      "source_file": "public/sounds/voices/npc_mark_hornblower_thanks_01.mp3",
       "source_voice_uuid": "2adcdee4b3ce4b648dc16ea65430ea76",
       "ledger_verdict": "pending",
       "asr_result": "match",
@@ -290,7 +290,7 @@
         "per-clip-QC",
         "speaker-safe-runtime-Q88"
       ],
-      "source_file": "docs/v3-donor/voices/mp3/npc_mark_hornblower_danger_alert_01.mp3",
+      "source_file": "public/sounds/voices/npc_mark_hornblower_danger_alert_01.mp3",
       "source_voice_uuid": "2adcdee4b3ce4b648dc16ea65430ea76",
       "ledger_verdict": "pending",
       "asr_result": "match",
@@ -2245,7 +2245,7 @@
         "per-clip-QC",
         "speaker-safe-runtime-Q88"
       ],
-      "source_file": "docs/v3-donor/voices/mp3/general_female_b_greeting_01.mp3",
+      "source_file": "public/sounds/voices/general_female_b_greeting_01.mp3",
       "source_voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
       "ledger_verdict": "pending",
       "asr_result": "match",
@@ -2274,7 +2274,7 @@
         "per-clip-QC",
         "speaker-safe-runtime-Q88"
       ],
-      "source_file": "docs/v3-donor/voices/mp3/general_female_b_farewell_02.mp3",
+      "source_file": "public/sounds/voices/general_female_b_farewell_02.mp3",
       "source_voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
       "ledger_verdict": "pending",
       "asr_result": "match",
@@ -2303,7 +2303,7 @@
         "per-clip-QC",
         "speaker-safe-runtime-Q88"
       ],
-      "source_file": "docs/v3-donor/voices/mp3/general_female_b_attention_02.mp3",
+      "source_file": "public/sounds/voices/general_female_b_attention_02.mp3",
       "source_voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
       "ledger_verdict": "pending",
       "asr_result": "match",
@@ -2332,7 +2332,7 @@
         "per-clip-QC",
         "speaker-safe-runtime-Q88"
       ],
-      "source_file": "docs/v3-donor/voices/mp3/general_female_b_exhausted_01.mp3",
+      "source_file": "public/sounds/voices/general_female_b_exhausted_01.mp3",
       "source_voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
       "ledger_verdict": "pending",
       "asr_result": "match",
@@ -2361,7 +2361,7 @@
         "per-clip-QC",
         "speaker-safe-runtime-Q88"
       ],
-      "source_file": "docs/v3-donor/voices/mp3/general_female_b_hungry_01.mp3",
+      "source_file": "public/sounds/voices/general_female_b_hungry_01.mp3",
       "source_voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
       "ledger_verdict": "pending",
       "asr_result": "match",
@@ -2390,7 +2390,7 @@
         "per-clip-QC",
         "speaker-safe-runtime-Q88"
       ],
-      "source_file": "docs/v3-donor/voices/mp3/general_female_b_danger_alert_02.mp3",
+      "source_file": "public/sounds/voices/general_female_b_danger_alert_02.mp3",
       "source_voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
       "ledger_verdict": "pending",
       "asr_result": "match",
@@ -2420,7 +2420,7 @@
         "speaker-safe-runtime-Q88",
         "binding-needed"
       ],
-      "source_file": "docs/v3-donor/voices/mp3/general_female_b_thanks_02.mp3",
+      "source_file": "public/sounds/voices/general_female_b_thanks_02.mp3",
       "source_voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
       "ledger_verdict": "pending",
       "asr_result": "match",
@@ -2450,7 +2450,7 @@
         "speaker-safe-runtime-Q88",
         "binding-needed"
       ],
-      "source_file": "docs/v3-donor/voices/mp3/general_female_b_refusal_01.mp3",
+      "source_file": "public/sounds/voices/general_female_b_refusal_01.mp3",
       "source_voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
       "ledger_verdict": "pending",
       "asr_result": "match",
@@ -2480,7 +2480,7 @@
         "speaker-safe-runtime-Q88",
         "binding-needed"
       ],
-      "source_file": "docs/v3-donor/voices/mp3/general_female_b_agree_02.mp3",
+      "source_file": "public/sounds/voices/general_female_b_agree_02.mp3",
       "source_voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
       "ledger_verdict": "pending",
       "asr_result": "match",
@@ -2510,7 +2510,7 @@
         "speaker-safe-runtime-Q88",
         "binding-needed"
       ],
-      "source_file": "docs/v3-donor/voices/mp3/general_female_b_quest_offer_02.mp3",
+      "source_file": "public/sounds/voices/general_female_b_quest_offer_02.mp3",
       "source_voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
       "ledger_verdict": "pending",
       "asr_result": "match",
@@ -2540,7 +2540,7 @@
         "speaker-safe-runtime-Q88",
         "binding-needed"
       ],
-      "source_file": "docs/v3-donor/voices/mp3/general_female_b_quest_declined_02.mp3",
+      "source_file": "public/sounds/voices/general_female_b_quest_declined_02.mp3",
       "source_voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
       "ledger_verdict": "pending",
       "asr_result": "match",
@@ -2768,7 +2768,7 @@
         "per-clip-QC",
         "speaker-safe-runtime-Q88"
       ],
-      "source_file": "docs/v3-donor/voices/mp3/general_female_b_danger_alert_02.mp3",
+      "source_file": "public/sounds/voices/general_female_b_danger_alert_02.mp3",
       "source_voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
       "ledger_verdict": "pending",
       "asr_result": "match",
@@ -3414,7 +3414,7 @@
       "conditions": "Only actual available authored offer. Preserve interact_well; no carried bucket requirement, water purity or extra objective."
     }
   ],
-  "casting_authority": "../../plans/npc-065-stable-npc-voice-casting-and-donor-qc.md#npc-voice-map",
+  "casting_authority": "../../design/npc-voices/CASTING.md#npc-voice-casting",
   "casting_history": {
     "superseded_npcs_from_bcaee9e7": [
       {
