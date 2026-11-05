@@ -34,3 +34,36 @@ Landed (technically verified; not browser-verified):
 - **B2 arbitration:** `faunaDecision.ts::isBehaviourValid('player-ignore')` is false when a live NPC threat (frenzied, or `npcIntent` attack/flee), non-frenzied fire, or non-frenzied scare is active. Priority table untouched; `dog-guard` is unaffected (dogs are never `role: 'predator'`).
 - **B3 deterministic roll:** `Math.random()` in `refreshThrottledHumanIntent` / `refreshThrottledNpcIntent` replaced by `nextEncounterRoll(targetKey)` = `criticalRoll(animalId, 'encounter:'+targetKey, encounterOrdinal++)`. Ordinal/aggressor/lock/commitments reset in `hydrate()` via `resetEncounterState()`; no save change. Documented in `docs/state/fauna.md` (Combat).
 - Tests: `AnimalAgent.encounter.test.ts` (aggressor lock vs nearer bystander, override of an existing lock, fallback when absent, identical rolls for same ids/order, ordinal advance on provocation, no redraw while stable, hydrate reset), `faunaDecision.test.ts` (player-ignore un-masking), `faunaCombat.test.ts` (attackerId forwarded). The player-path roll shares the same helper but is only covered via the NPC path (player noticing is probabilistic).
+
+## Implementation log — §A (Q151, 2026-11-05)
+
+Landed (technically verified; not browser-verified):
+
+- **A1 nav:** `chaseHuman` / `chaseNpc` now use `stepNavRescue(this.chaseNav, ...)` instead of direct `steerToward`; the prey-hunt path is untouched. `chaseNav` is claimed per target (`bindHumanChaseNav`: key `'player'` or NPC id; a changed key or a leftover prey route is cleared) and released (`releaseHumanChaseNav`) when the tick's branch is not `player-attack` / `npc-attack` / `npc-attack-frenzied`, on stamina exhaustion and in `resetEncounterState()` (hydrate). No new per-frame work: A* runs only through the existing watchdog (`STUCK_CHECK_INTERVAL_SEC` strikes) or when a route is stale.
+- **A2 contact:** `humanBite.ts::HUMAN_BITE_RANGE = 0.8` (centre-to-centre, same value as before, separate from `CONTACT_RANGE`, which is unchanged). Cooldown 0.6 s / stamina cost / speeds unchanged (Q-C1 (a)).
+- **A3 spatial check:** `humanBite.ts::biteSharesSpatialContext` (same `WorldSpatialContext` + `HUMAN_BITE_MAX_DY = 2` m) is applied in the `gameLoop.ts` player-bite callback at attack time (one agent lookup + two resolver queries per bite). NOT done: the same check for NPC bites (`onNpcHit` has no NPC context/height) and an agent-side check inside `AnimalAgent` (would need `createFauna.ts` plumbing, owned by another agent) -> follow-up.
+- Tests: `AnimalAgent.chase.test.ts` (constant, cooldown-bounded bites, no bite on a sprinting target, wall detour without entering the collider, determinism, nav claim/release/target change, spatial check cases).
+
+### Closure measurements (headless, deterministic; `SEEDVALE_CHASE_REPORT=1 pnpm vitest run src/fauna/AnimalAgent.chase.test.ts`)
+
+Setup: wolf/bear id `wolf-chase`, flat ground, no colliders, wolf faces the player, player starts 8 m away, held alert (perception not measured), provoked every 6 s, dt 0.05 s, 20 s. Player: standing (a fighting player is closure-equivalent; the 3 m lunge only shortens the gap), walking 6 m/s, sprinting 10.8 m/s directly away. These are modeled, deterministic numbers, not playtest statistics.
+
+| animal vs player | landed bites / 20 s | first bite | min distance | stamina exhausted at |
+|---|---|---|---|---|
+| wolf vs standing | 25 | 1.15 s | 0.48 m | 4.1 s |
+| wolf vs walking | 0 | none | 4.90 m | 5.5 s |
+| wolf vs sprinting | 0 | none | 7.67 m | 5.5 s |
+| bear vs standing | 27 | 1.25 s | 0.50 m | 4.1 s |
+| bear vs walking | 0 | none | 7.70 m | 5.5 s |
+| bear vs sprinting | 0 | none | 7.70 m | 5.5 s |
+
+Findings:
+1. A wolf's sprint Stamina lasts ~5.5 s (~4.1 s while biting), i.e. ~35 m of pursuit; a walking player (6 m/s vs wolf 6.5) is never bitten from 8 m and a sprinting one is out of reach. Per the plan this is the §C input for the optional (a+b) burst decision: predators currently **never** land a bite on a retreating human that starts >= 4.9 m away. No speed change was made.
+2. Obstacle (4 m x 5 m block between wolf and standing player): the old direct steer stays pinned against the block for the whole chase. With `chaseNav` the stuck watchdog fires its repath only after ~4.5 s (two strikes at 1.5 s check interval), the detour is walked in ~2 s and the first bite lands at 6.85 s. The watchdog latency alone burns ~80% of the wolf's sprint Stamina; shortening it for predator chase would change the watchdog constants shared with NPCs -> author/§C question, not changed here.
+3. A thin (1 m) wall is not avoided: the existing `findPath` returns a straight 2-point route through it (cell-centre walkability sampling), so the wolf stays pinned. Pre-existing nav-grid limitation shared with every nav user; out of scope (no new pathfinder). The shared contact-contract "thin obstacles" half (067 verification 4) is therefore characterised, not fixed.
+4. Contact-contract items covered (shared half of 067 verification 4, fauna side): centre-to-centre bite range, vertical separation (>2 m), cave vs surface and cave vs cave via `biteSharesSpatialContext`; moving targets (walking/sprinting rows) never take ghost bites; no bite without being within 0.8 m.
+5. First `update()` of a fresh agent banks `CADENCE_PRIME_SEC` (1 s) and teleports up to ~6.8 m in one tick (pre-existing); the harness consumes it with a warm-up tick.
+6. After Stamina exhaustion the agent wanders with `Math.random()` (non-deterministic after ~5 s); determinism is asserted only for the pre-exhaustion window.
+
+Cadence: no change to `resolveAnimalUpdateImportance` inputs; no new scans (one cheap null check per tick).
+

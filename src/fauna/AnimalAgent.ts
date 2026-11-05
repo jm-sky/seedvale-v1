@@ -364,6 +364,7 @@ export * from './animalRoaming'
  *  type already is. */
 export * from './animalUpdateCadence'
 export type { AnimalVariant } from './animalVariants'
+import { HUMAN_BITE_RANGE } from './humanBite'
 
 /** One movement mode's stuck-watchdog + in-flight `findPath()` route (plan
  *  npc-006) — see `AnimalAgent.chaseNav`/`fleeNav`'s doc for why chase and
@@ -1673,6 +1674,10 @@ export class AnimalAgent {
    *  no route, direct `steerToward` simply resumes next frame, the
    *  pre-existing behaviour, never worse than before this plan. */
   private readonly chaseNav: NavRescue = createNavRescue()
+  /** Whose pursuit `chaseNav` currently serves while chasing a human
+   *  (`PLAYER_INTENT_TARGET_KEY` or an NPC id; fauna-051 §A1), `null`
+   *  otherwise (idle or the prey-hunt path). Transient, never saved. */
+  private humanChaseNavKey: string | null = null
   private readonly fleeNav: NavRescue = createNavRescue()
   /** Wander / trip / needs / attraction (plan fauna-029) — preferDry cost. */
   private readonly moveNav: NavRescue = createNavRescue()
@@ -3688,6 +3693,9 @@ export class AnimalAgent {
       }
     }
     this.debugBranch = branch
+    if (branch !== 'player-attack' && branch !== 'npc-attack' && branch !== 'npc-attack-frenzied') {
+      this.releaseHumanChaseNav()
+    }
 
     // Importance/cadence (plan fauna-028) — one shared policy for wild fauna
     // and livestock alike. `immediate` yields a 0 s interval, i.e. exactly
@@ -3967,6 +3975,7 @@ export class AnimalAgent {
    *  ordinal. Called from `hydrate()`; encounter state is never persisted. */
   private resetEncounterState(): void {
     this.resetHumanThreatState()
+    this.releaseHumanChaseNav()
     this.npcTarget = null
     this.encounterOrdinal = 0
   }
@@ -4282,6 +4291,7 @@ export class AnimalAgent {
     onHumanHit?: (damage: number, attackerX: number, attackerZ: number, attackerAnimalId: string, species: AnimalKind) => void,
   ): void {
     if (isExhausted(this.life.stamina)) {
+      this.releaseHumanChaseNav()
       this.setIntent('wander')
       this.wander(dt)
       return
@@ -4291,11 +4301,29 @@ export class AnimalAgent {
       observerPos.x - this.mesh.position.x,
       observerPos.z - this.mesh.position.z,
     )
-    if (dist < CONTACT_RANGE && onHumanHit) {
+    if (dist < HUMAN_BITE_RANGE && onHumanHit) {
       this.attackHuman(onHumanHit)
       return
     }
-    this.steerToward(observerPos, this.sprintSpeedNow(), dt)
+    this.bindHumanChaseNav(PLAYER_INTENT_TARGET_KEY)
+    this.stepNavRescue(this.chaseNav, observerPos, this.sprintSpeedNow(), dt)
+  }
+
+  /** Claims `chaseNav` for a human pursuit of `key` (fauna-051 §A1): a changed
+   *  target (or a leftover prey route) drops the old route/watchdog state so
+   *  it is never followed toward the wrong person. */
+  private bindHumanChaseNav(key: string): void {
+    if (this.humanChaseNavKey !== key) this.clearNavRescue(this.chaseNav)
+    this.humanChaseNavKey = key
+  }
+
+  /** Releases `chaseNav` when a human pursuit ends (target lost, flee, wander,
+   *  exhaustion, different branch) so the next user starts clean. Cheap null
+   *  check on every tick the animal is not chasing a human. */
+  private releaseHumanChaseNav(): void {
+    if (this.humanChaseNavKey === null) return
+    this.humanChaseNavKey = null
+    this.clearNavRescue(this.chaseNav)
   }
 
   private attackHuman(onHumanHit: (damage: number, attackerX: number, attackerZ: number, attackerAnimalId: string, species: AnimalKind) => void): void {
@@ -4323,18 +4351,20 @@ export class AnimalAgent {
     onNpcHit?: (targetId: string, damage: number, attackerX: number, attackerZ: number, attackerAnimalId: string, species: AnimalKind) => void,
   ): void {
     if (isExhausted(this.life.stamina)) {
+      this.releaseHumanChaseNav()
       this.setIntent('wander')
       this.wander(dt)
       return
     }
     this.sprinting = true
     const dist = Math.hypot(target.x - this.mesh.position.x, target.z - this.mesh.position.z)
-    if (dist < CONTACT_RANGE && onNpcHit) {
+    if (dist < HUMAN_BITE_RANGE && onNpcHit) {
       this.attackNpc(target.id, onNpcHit)
       return
     }
+    this.bindHumanChaseNav(target.id)
     this.strategicDest.set(target.x, 0, target.z)
-    this.steerToward(this.strategicDest, this.sprintSpeedNow(), dt)
+    this.stepNavRescue(this.chaseNav, this.strategicDest, this.sprintSpeedNow(), dt)
   }
 
   private attackNpc(

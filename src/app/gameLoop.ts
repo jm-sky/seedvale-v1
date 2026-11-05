@@ -87,6 +87,7 @@ import { ANIMAL_LABELS, FAUNA_SHADOW_DISTANCE, selectDietFeedKind } from '../fau
 import { buildAttractionSnapshot } from '../fauna/animalAttraction'
 import { WOLF_DEN_ID } from '../fauna/AnimalSpawner'
 import { combatTargetForAnimal, faunaPhysicalHit, isMeleeTool } from '../fauna/faunaCombat'
+import { biteSharesSpatialContext } from '../fauna/humanBite'
 import { countNearbyHumans } from '../fauna/predatorHumanDecision'
 import { isTouchDevice } from '../input/isTouchDevice'
 import { type createMouseLook, exitGamePointerLock } from '../input/MouseLook'
@@ -3021,6 +3022,14 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
             huntableLivestock,
             nearbyHumanCount,
             (amount, attackerX, attackerZ, attackerAnimalId, species) => {
+              // fauna-051 §A3: attack-time same-spatial-context bite check
+              // (one resolver query pair per bite, not per frame).
+              const biter = bundle.fauna.getAgents().find((a) => a.animalId === attackerAnimalId)
+              if (biter && !biteSharesSpatialContext(
+                (x, y, z) => bundle.caves.spatialContextAt(x, y, z),
+                biter.mesh.position,
+                player.mesh.position,
+              )) return
               const dmg = applyPlayerDamage({
                 player,
                 nowDays: dayNight.elapsedDays,
