@@ -118,6 +118,34 @@ What the screenshot shows (Opus, read from the image only, not browser-verified)
 
 **First steps once the coordinates are in:** get the pose (`?camdebug=1` or the author), (1) crease map + `sampleFloorAt` cross-sections at that pose, (2) clear vs rain at the same pose, (3) check whether the edges line up with the 64 m chunk grid or the 8 m hydrology cells.
 
+### Coordinates received — four `camdebug` screenshots (2026-11-05, not yet diagnosed)
+
+✅ Author, 2026-11-05: four new local screenshots with the `?camdebug=1` overlay, `_temp/screenshots/terrain-artifacts - camdebug - ground {0,1,2,3}.jpg` (file times 21:23–21:28, ~3 h after `09c033db`; ❓ page reload after the fix still unconfirmed). Author: record conclusions only, no diagnosis/fix in that session. Seed presumably the reference `415424794` (❓ not visible in the shots). Viewport 1920×945, dpr 1, FOV 60.
+
+| Shot | Camera pos (x, y, z) | rot (XYZ) | terrainY / cam-ground | HUD | What is visible |
+|---|---|---|---|---|---|
+| 0 | 131.13, 21.96, −19.64 | −1.31, 0.64, 1.15 | 2.65 / 19.31 | 16:44, overcast | Shore (water to the east). Soft dark blotch on sand/grass clipped by a **long straight edge**; faint straight tone step also inside the water. Also **thin black straight lines across the sky** top-right (separate anomaly, unexplained). |
+| 1 | 43.16, 22.79, 212.13 | −1.64, −0.76, −1.67 | 15.08 / 7.71 | 14:27, overcast | Almost no grass, bare detail-normal ground. **Rectangular patches of different hue** (greener vs bluish-grey) with crisp straight edges — the clearest "square joins". |
+| 2 | 298.30, 22.10, 369.13 | −1.58, −0.53, −1.59 | 10.37 / 11.73 | 11:55, rain | Wet sheen; dark band + lighter rectangles with straight edges, crossing under the player. |
+| 3 | 298.19, 14.99, 403.23 | −2.61, 0.14, 3.06 | 8.03 / 6.96 | 12:04, rain | Straight edge runs from the far hills **across the river** past the player; the **water is brighter on one side** too; second darker region on the right. |
+
+🟡 Back-projection (Opus, scratchpad script, not browser-verified): edge pixels were ray-cast from the camdebug pose onto a flat plane at `terrainY` (three.js XYZ Euler, camera looking down −Z, FOV 60, aspect 2.03). Points along each edge land on a **near-constant world x or z**, i.e. the edges are **world-axis-aligned straight lines**:
+
+- shot 3: main edge **x ≈ 300** (299.4–302.1 over z 410→523); right region edge **x ≈ 282** (281.9–282.3).
+- shot 2: edge **x ≈ 300** (299.9 / 300.0) — the **same line as shot 3** seen from a pose 34 m away → world-anchored, not screen-space; other edges **z ≈ 371** and **z ≈ 375**.
+- shot 1: edges **z ≈ 211.6** (constant over x 45→62), **x ≈ 51.5** (51.3–51.7), **x ≈ 66**, and a right edge x ≈ 52–54.
+- shot 0: edge **x ≈ 119** (119.0–119.4 over z −8→−25).
+
+Error budget: relief vs the flat plane can shift values by a few metres (larger far from the player), so treat them as ±3–5 m.
+
+🟡 Conclusions (hypotheses):
+1. **Not the 64 m chunk grid.** Chunk lines are at ±32 + 64k (…, 32, 96, 160, 224, 288, 352, 416). None of the edges fits (300 vs 288, 119 vs 96/160, 51–66 vs 32/96, z 211.6 vs 224, z 371–375 vs 352/416) — unless the author's profile persists a different `chunkSize` (`applyStoredTerrain`, `worldConfig.ts:437`) ❓. S1–S6 as chunk-line mechanisms are therefore **demoted**; S4 (grass LOD) also does not fit shot 1 (almost no grass).
+2. **World-anchored, axis-aligned rectangles of ~15–18 m** (x 282↔300, x 51.5↔66), with **arbitrary offsets**. A coarse ~16 m grid is a candidate (8 + 16k gives 280/296/120/56/72/216/376, within the error budget) but not proven.
+3. **It is a tone/shading step, not a relief crease**: hue changes (shot 1, green ↔ bluish), a soft dark field clipped by a straight edge (shots 0, 2), and it also shows **through/on water** (shots 0, 3). A smooth field (noise / moisture / wetness / tint) multiplied by, or sampled from, something with **hard axis-aligned cell boundaries** fits best. It appears in overcast and rain, near shore, lowland and on a bare 15 m plateau — so it is not specific to the rain wetness term (weakens Reopened candidate 2) nor to ridges/hydrology creases (065 fix).
+4. Candidates to check, in order: (a) any per-texel or per-vertex **categorical/nearest lookup on a coarse world grid** feeding colour/roughness (biome or moisture region grids, macro/climate fields, `aBareGround`, snow/frost tint, grass/forage patch cells — `GRASS_PATCH_CELL_SIZE = 5`, resource grid) in `chunkMeshData.ts` / `biomeColors.ts` / the terrain shader; (b) a **world-space texture sampled with NEAREST filtering or clamped at its bounds** that both terrain and water read (cloud shadow, wetness/puddle, weather masks); (c) hydrology 8 m cells (edges are not multiples of 8 at x 300/282 within ±2, so weak).
+
+**First steps when the author unblocks:** open each pose (`?seed=415424794&fly&flyPose=…` or walk with `camdebug`) and use `?debugTerrainView=vertexColor|albedo|normal` (if implemented — §3) to see whether the step is in vertex colour, albedo or lighting; dump the coarse colour-input grids around (300, 370–420) and (51–66, 212) headlessly and look for a cell boundary at x ≈ 300 / 282 / 51.5 / 66 and z ≈ 211.6 / 371 / 375; confirm `chunkSize`/`resolution` from the author's GUI "Terrain mesh" folder. The shot-0 black sky lines get their own note if they reproduce.
+
 **Re-ranking after the screenshot:** the polygonal shoreline is the strongest single clue. Something makes the **terrain height planar over tens of metres** near shores and lakes. The prime candidate is the **global hydrology correction layer** (bilinear on 8 m cells; priority-flood fills with an ε gradient over D8 neighbours; `terminalMinCells` raises small below-sea inland components; lake rule in `sampleRawTexel`). Despite the author's "probably older" (uncertain), the screenshot was taken after it landed (`5f127b450`, 2026-11-03). A raised or filled area sitting on bilinear 8 m patches near `waterLevel` gives exactly flat facets and straight water contours. Chunk-seam data mismatch (S1–S3) remains second, decided by the coordinates. **First checks:**
 1. Get the pose (`?camdebug=1`) or locate this shore on seed `415424794` from the minimap shape. Sample `sampleFloorAt − sampleRawFloorUncorrected` (correction) and `hydrologyLakeLevelAt` over ±60 m (§4). Non-zero correction under the facets settles it.
 2. Same pose at `5f127b450^` (worktree, pre-correction) vs `main`, fresh profile, clear weather (there is no URL weather override; use the GUI "Pora roku / Pogoda" folder or `debugDisableSystems=weather` and confirm the fog cards are gone).
