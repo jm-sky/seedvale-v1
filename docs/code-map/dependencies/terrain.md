@@ -417,6 +417,7 @@ Generated from TypeScript imports.
 - `terrain/grassPlacement.test.ts`
 - `terrain/grassPlacement.ts`
 - `terrain/lakeWater.test.ts`
+- `terrain/macroClimate.ts`
 - `terrain/naturalResources.test.ts`
 - `terrain/naturalResources.ts`
 - `terrain/riverNetwork.test.ts`
@@ -868,6 +869,7 @@ Generated from TypeScript imports.
 - `settlement/settlementLayout.ts`
 - `terrain/chunkHeightmap.ts`
 - `terrain/continentMask.test.ts`
+- `terrain/macroClimate.ts`
 - `terrain/worldEdge.test.ts`
 - `terrain/worldEdge.ts`
 - `terrain/worldHydrology.ts`
@@ -1239,6 +1241,25 @@ Generated from TypeScript imports.
 
 - `terrain/chunkHeightmap.ts`
 - `terrain/landformDescriptors.test.ts`
+
+## `terrain/macroClimate.test.ts`
+
+**Imports**
+
+- `config/worldConfig.ts`
+- `terrain/macroClimate.ts`
+- `world/map/mapProjection.ts`
+
+## `terrain/macroClimate.ts`
+
+**Imports**
+
+- `terrain/chunkHeightmap.ts`
+- `terrain/continentMask.ts`
+
+**Imported by**
+
+- `terrain/macroClimate.test.ts`
 
 ## `terrain/mineableDeposit.test.ts`
 

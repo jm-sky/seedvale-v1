@@ -222,6 +222,7 @@ Generated from TypeScript imports.
 - `debug/createCaveHeightfieldTestScene.ts`
 - `debug/createModelTestScene.ts`
 - `debug/debugMode.test.ts`
+- `debug/faunaInspector.ts`
 - `debug/npcDebugApi.ts`
 - `debug/npcInspectTrigger.ts`
 - `debug/npcInspector.ts`
@@ -275,6 +276,7 @@ Generated from TypeScript imports.
 **Imports**
 
 - `app/worldBundle.ts`
+- `debug/debugMode.ts`
 - `fauna/AnimalAgent.ts`
 
 **Imported by**

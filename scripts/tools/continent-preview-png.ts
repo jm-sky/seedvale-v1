@@ -3,12 +3,14 @@ import { writeFileSync } from 'node:fs'
  * Headless counterpart of the Continent Preview page (plan tools-023): same
  * canonical tile builder, painter and hydrology, single-threaded, no browser.
  *
- *   pnpm tsx scripts/tools/continent-preview-png.ts <seed> <out.png> [all|standard] [--hillshade] [--slope] [--settlements] [--routes] [--landforms] [--stream-m2=480,960,1920]
+ *   pnpm tsx scripts/tools/continent-preview-png.ts <seed> <out.png> [all|standard] [--hillshade] [--slope] [--settlements] [--routes] [--landforms] [--climate] [--stream-m2=480,960,1920]
  *
  * tools-026 D4 layers (all optional, default output unchanged): `--hillshade` multiplies the terrain by a NW-lit shade, `--slope`
  * tints land by slope class (<5 / 5-10 / 10-20 / 20-30 / >=30 deg, ~8 m pixel gradients: a coarse map-scale estimate),
  * `--settlements` marks sites (size-scaled dots, home ringed), `--routes` draws road-route polylines over the terrain,
  * `--stream-m2=` writes one extra image per initiation area (uniform runoff, preview only, `<out>-streams-<m2>.png`) on a hillshade.
+ * `--climate` (plan 061 C1) writes `<out>-climate-{temp,precip,maritime,runoff}.png` from `macroClimate.ts` (land only, hillshaded;
+ * runoff = provisional proxy precipitation × warmth, labelled preview-only, no hydrology consumer).
  * The mountain gate is not exposed by the generator, so no gate layer (see censusRelief.ts proxy).
  *
  * @domain tools
@@ -20,7 +22,9 @@ import { clearRoadNetworkCaches, roadRoutesForSettlement } from '../../src/settl
 import { clearSettlementDefCache, setSettlementRiverQuery, settlementDefFor, settlementLayoutFor } from '../../src/settlement/settlementPlanCache'
 import { clearCemeteryCaches } from '../../src/terrain/cemeteryAssignment'
 import { rangeSpinesFor } from '../../src/terrain/chunkHeightmap'
+import { sampleRawTexelUncorrectedAt } from '../../src/terrain/chunkHeightmap'
 import { landformDescriptorsFor } from '../../src/terrain/landformDescriptors'
+import { createMacroClimate } from '../../src/terrain/macroClimate'
 import { createRiverQuery } from '../../src/terrain/riverQuery'
 import { computeWorldHydrology, sampleRawFloorRows, unpackChains, WORLD_HYDROLOGY_GRID } from '../../src/terrain/worldHydrology'
 import { ensureWorldHydrology, sampleRowsOnThisThread } from '../../src/terrain/worldHydrologyRuntime'
@@ -231,6 +235,53 @@ function writePng(file: string, data: Uint8Array): void {
   writeFileSync(file, Buffer.concat([Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]), chunk('IHDR', ihdr), chunk('IDAT', deflateSync(raw)), chunk('IEND', Buffer.alloc(0))]))
 }
 writePng(out, rgba)
+
+// plan 061 C1: macroclimate layers (land only; sea stays flat blue). Evaluated on a 2-px stride and replicated.
+if (flag('climate')) {
+  const climate = createMacroClimate(params)
+  const layers = { temp: new Uint8Array(rgba.length), precip: new Uint8Array(rgba.length), maritime: new Uint8Array(rgba.length), runoff: new Uint8Array(rgba.length) }
+  const stats = { tMin: 99, tMax: -99, pMin: 9, pMax: -9, land: 0 }
+  const ramp = (t: number, lo: readonly number[], mid: readonly number[], hi: readonly number[]): number[] => {
+    const k = Math.min(1, Math.max(0, t))
+    const [a, b, f] = k < 0.5 ? [lo, mid, k * 2] : [mid, hi, (k - 0.5) * 2]
+    return [0, 1, 2].map((c) => Math.round(a[c]! + (b[c]! - a[c]!) * f!))
+  }
+  for (let y = 0; y < PX; y += 2) for (let x = 0; x < PX; x += 2) {
+    const wx = (x + 1) / scale - MAP_EXTENT_HALF, wz = (y + 1) / scale - MAP_EXTENT_HALF
+    const t = sampleRawTexelUncorrectedAt(wx, wz, params)
+    const sea = t.floorH < params.waterLevel
+    let colours: Record<keyof typeof layers, number[]>
+    if (sea) {
+      const flat = [60, 90, 120]
+      colours = { temp: flat, precip: flat, maritime: flat, runoff: flat }
+    } else {
+      const c = climate.at(wx, wz, t.floorH, t.moistureRegion)
+      stats.land++
+      stats.tMin = Math.min(stats.tMin, c.temperature); stats.tMax = Math.max(stats.tMax, c.temperature)
+      stats.pMin = Math.min(stats.pMin, c.precipitation); stats.pMax = Math.max(stats.pMax, c.precipitation)
+      const runoff = c.precipitation * (0.55 + 0.45 * Math.min(1, Math.max(0, (c.temperature + 6) / 24)))
+      colours = {
+        temp: ramp((c.temperature + 6) / 24, [60, 90, 200], [235, 235, 210], [210, 70, 40]),
+        precip: ramp(c.precipitation, [225, 200, 130], [120, 190, 120], [30, 90, 170]),
+        maritime: ramp(c.maritime, [240, 240, 240], [150, 190, 210], [30, 90, 170]),
+        runoff: ramp(runoff, [235, 225, 190], [110, 175, 150], [20, 70, 150]),
+      }
+    }
+    for (const dy of [0, 1]) for (const dx of [0, 1]) {
+      const o = ((y + dy) * PX + x + dx) * 4
+      for (const k of Object.keys(layers) as (keyof typeof layers)[]) {
+        layers[k][o] = colours[k][0]!; layers[k][o + 1] = colours[k][1]!; layers[k][o + 2] = colours[k][2]!; layers[k][o + 3] = 255
+      }
+    }
+  }
+  for (const [k, img] of Object.entries(layers)) {
+    applyRelief(img, { hillshade: true, slope: false })
+    const file = out.replace(/\.png$/, '') + `-climate-${k}.png`
+    writePng(file, img)
+    console.log(`wrote ${file}`)
+  }
+  console.log(`climate: T ${stats.tMin.toFixed(1)}..${stats.tMax.toFixed(1)} °C, P ${stats.pMin.toFixed(2)}..${stats.pMax.toFixed(2)} over ${stats.land} sampled land px; coast grid ${(climate.gridBytes / 1024).toFixed(0)} KiB`)
+}
 
 // D1 threshold variants: recompute chains on the same floor grid with other initiation areas (uniform runoff, preview only).
 if (streamM2s.length > 0) {

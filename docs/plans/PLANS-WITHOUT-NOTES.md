@@ -1,7 +1,7 @@
 # PLANS PLANNED WITHOUT NOTES
 
 > Generated with `pnpm plans:without-notes`  
-> Date: 2026-11-05 19:01:30  
+> Date: 2026-11-05 20:19:58  
 
 ## PLANS
 
@@ -21,7 +21,6 @@
 - `world-041-landmark-catalog-and-rumour-leads.md`
 - `world-terrain-055-optional-shadow-frustum-and-refresh-trims.md`
 - `world-terrain-059-world-scale-travel-time-and-sparse-settlements.md`
-- `world-terrain-061-macroclimate-and-climate-weighted-hydrology.md`
 - `world-terrain-062-regional-biomes-and-local-precipitation-phase.md`
 - `world-terrain-063-geography-driven-settlement-variants.md`
 
@@ -509,37 +508,6 @@ Wczytaj:
 
 Na podstawie review utwórz w repo plik:
 `docs/plans/implementation-notes/world-terrain-059-world-scale-travel-time-and-sparse-settlements-implementation-notes.md`
-
-Umieść w nim:
-- sugestie dotyczące implementacji,
-- istotne detale techniczne,
-- decyzje architektoniczne,
-- informacje o istniejących systemach i implementacjach, które należy wykorzystać,
-- potencjalne problemy, zależności i pułapki,
-- inne konkretne wskazówki, które ułatwią agentowi AI poprawną implementację planu.
-
-Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
-Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
-
-Pliki dodaj na branch `main` w repozytorium.
-```
-
-### `world-terrain-061-macroclimate-and-climate-weighted-hydrology.md`
-
-Prompt:
-
-```
-Zrób review planu `world-terrain-061-macroclimate-and-climate-weighted-hydrology.md`
-
-Wczytaj:
-- `docs/STATE.md`
-- `docs/plans/PLANNING.md` (Implementation Notes section),
-- `docs/plans/world-terrain-061-macroclimate-and-climate-weighted-hydrology.md`
-- aktualny codebase,
-- potrzebne zależności i powiązane implementacje.
-
-Na podstawie review utwórz w repo plik:
-`docs/plans/implementation-notes/world-terrain-061-macroclimate-and-climate-weighted-hydrology-implementation-notes.md`
 
 Umieść w nim:
 - sugestie dotyczące implementacji,

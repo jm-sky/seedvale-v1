@@ -757,6 +757,11 @@ export function sampleLandHeightAt(worldX: number, worldZ: number, params: RawSa
   return isWetFloor(t.h, t.floorH) ? params.waterLevel : t.h
 }
 
+/** All raw fields **without** the hydrology correction — for upstream consumers (macroclimate, plan 061 C1) that must not read hydrology. */
+export function sampleRawTexelUncorrectedAt(worldX: number, worldZ: number, params: RawSampleParams): RawTexelSample {
+  return sampleRawTexelUncorrected(worldX, worldZ, noiseHandlesFor(params.seed), params)
+}
+
 /** Floor height **without** the hydrology correction — the only input global hydrology may read (no cycle). */
 export function sampleRawFloorUncorrected(worldX: number, worldZ: number, params: RawSampleParams): number {
   return sampleRawTexelUncorrected(worldX, worldZ, noiseHandlesFor(params.seed), params).floorH

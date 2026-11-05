@@ -154,19 +154,19 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/chunkHeightmap.ts`
 
-- `apronGridWeights` — function — line 827
-- `ApronGridWeights` — type — line 818
-- `apronOriginWorld` — function — line 798
+- `apronGridWeights` — function — line 832
+- `ApronGridWeights` — type — line 823
+- `apronOriginWorld` — function — line 803
 - `ChunkTileData` — type — line 378
 - `ChunkTileParams` — type — line 246
 - `ClearingSegment` — type — line 178
-- `computeChunkTile` — function — line 1257
-- `createLocalTerrainSampler` — function — line 1342
+- `computeChunkTile` — function — line 1262
+- `createLocalTerrainSampler` — function — line 1347
   - domain: world-terrain
-- `createWorldTerrainSampler` — function — line 1384
+- `createWorldTerrainSampler` — function — line 1389
   - domain: world-terrain
-- `extractCoreGrid` — function — line 882
-- `LocalTerrainSampler` — type — line 1317
+- `extractCoreGrid` — function — line 887
+- `LocalTerrainSampler` — type — line 1322
   - domain: world-terrain
 - `rangeSpinesFor` — function — line 514
 - `RawSampleParams` — type — line 358
@@ -176,17 +176,18 @@ Generated from exported TypeScript symbols.
 - `RiverChannelSegment` — type — line 214
 - `RoadCorridorSegment` — type — line 160
 - `RoadNetworkParams` — type — line 97
-- `sampleApronGrid` — function — line 865
-- `sampleApronGridWeighted` — function — line 850
-- `sampleBiomeAt` — function — line 769
-- `sampleContinentalnessAt` — function — line 773
-- `sampleFloorAt` — function — line 765
+- `sampleApronGrid` — function — line 870
+- `sampleApronGridWeighted` — function — line 855
+- `sampleBiomeAt` — function — line 774
+- `sampleContinentalnessAt` — function — line 778
+- `sampleFloorAt` — function — line 770
 - `sampleHeightAt` — function — line 749
 - `sampleLandHeightAt` — function — line 755
-- `sampleMoistureRegionAt` — function — line 781
-- `sampleMountainRidgeAt` — function — line 789
-- `sampleRawFloorUncorrected` — function — line 761
+- `sampleMoistureRegionAt` — function — line 786
+- `sampleMountainRidgeAt` — function — line 794
+- `sampleRawFloorUncorrected` — function — line 766
 - `sampleRawTexelAt` — function — line 742
+- `sampleRawTexelUncorrectedAt` — function — line 761
 - `VegetationKind` — type — line 24
 - `VillageClearingParams` — type — line 78
 
@@ -544,6 +545,16 @@ Generated from exported TypeScript symbols.
 - `landformIndexFor` — function — line 101
 - `LandformKind` — type — line 21
   - domain: world-terrain
+
+## `terrain/macroClimate.ts`
+
+- `createMacroClimate` — function — line 109
+- `latitude01` — function — line 53
+- `MACRO_CLIMATE_CELL_M` — const — line 18
+  - domain: world-terrain
+- `MacroClimate` — type — line 39
+- `macroClimateFrom` — function — line 58
+- `MacroClimateSample` — type — line 30
 
 ## `terrain/mineableDeposit.ts`
 

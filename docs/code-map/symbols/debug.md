@@ -121,12 +121,18 @@ Generated from exported TypeScript symbols.
 
 ## `debug/faunaInspector.ts`
 
-- `FrenzyWolfCandidate` — type — line 41
-- `getCurrentFrenzyWolf` — function — line 72
-- `getFrenzyWolves` — function — line 65
-- `getNextFrenzyWolf` — function — line 84
-- `logNpcThreatBranch` — function — line 24
-- `pickNextFrenzyWolfId` — function — line 49
+- `clearFaunaWaterLog` — function — line 160
+- `FaunaWaterEvent` — type — line 110
+- `FaunaWaterEventType` — type — line 108
+- `FrenzyWolfCandidate` — type — line 42
+- `getCurrentFrenzyWolf` — function — line 73
+- `getFaunaWaterLog` — function — line 156
+- `getFrenzyWolves` — function — line 66
+- `getNextFrenzyWolf` — function — line 85
+- `isFaunaWaterLogEnabled` — function — line 142
+- `logNpcThreatBranch` — function — line 25
+- `pickNextFrenzyWolfId` — function — line 50
+- `recordFaunaWaterEvent` — function — line 150
 
 ## `debug/flyCam.ts`
 
@@ -174,7 +180,7 @@ Generated from exported TypeScript symbols.
 - `HouseholdDebugHandle` — type — line 128
 - `HouseholdFoodSupplyDebugSnapshot` — type — line 110
 - `InjuryDebugApi` — type — line 259
-- `installNpcDebugApi` — function — line 560
+- `installNpcDebugApi` — function — line 569
 - `LocationsDebugApi` — type — line 168
 - `NpcDebugHandle` — type — line 96
 - `PlayerDebugApi` — type — line 325

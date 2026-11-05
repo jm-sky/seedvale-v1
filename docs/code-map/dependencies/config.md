@@ -91,6 +91,7 @@ Generated from TypeScript imports.
 - `terrain/continentMask.test.ts`
 - `terrain/farTerrain.test.ts`
 - `terrain/lakeWater.test.ts`
+- `terrain/macroClimate.test.ts`
 - `terrain/worldHydrologyRuntime.test.ts`
 - `tools/assetBrowser/viewer/createViewer.ts`
 - `ui-vue/lib/mapTerrainPaint.test.ts`

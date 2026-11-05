@@ -3656,6 +3656,7 @@ Generated from TypeScript imports.
 - `main.ts`
 - `terrain/farTerrain.test.ts`
 - `terrain/lakeWater.test.ts`
+- `terrain/macroClimate.test.ts`
 - `terrain/worldHydrologyRuntime.test.ts`
 - `ui-vue/lib/mapFogLayer.ts`
 - `ui-vue/lib/mapTerrainPaint.test.ts`
