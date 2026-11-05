@@ -5,12 +5,52 @@ import tempfile
 import subprocess
 import sys
 import unittest
+from voice_decisions import load_decisions, retain_removed_rows
 
 spec = importlib.util.spec_from_file_location('identity', Path(__file__).with_name('voice-identity-qc.py'))
 qc = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(qc)
 
 class IdentityTests(unittest.TestCase):
+    def test_structured_dispositions_survive_fresh_report_and_category_move(self):
+        ledger = json.loads((qc.ROOT/'docs/assets/voice-qc/ledger.json').read_text())['rows']
+        entries = load_decisions(ledger)
+        self.assertEqual(sum(e['disposition'] == 'keep' for e in entries.values()), 7)
+        self.assertEqual(sum(e['disposition'] == 'replace' for e in entries.values()), 6)
+        audit = json.loads((qc.ROOT/'docs/assets/voice-qc/identity-audit.json').read_text())
+        for row in audit['rows']:
+            if row['classification'] == 'suspected-wrong-speaker':
+                self.assertEqual(entries[row['file']]['disposition'], 'pending')
+            row['classification'] = 'ambiguous'
+        with tempfile.TemporaryDirectory() as tmp:
+            source, output = Path(tmp)/'audit.json', Path(tmp)/'report.md'
+            source.write_text(json.dumps(audit))
+            command = [sys.executable, str(Path(__file__).with_name('voice-identity-report.py')), str(source), str(output)]
+            subprocess.run(command, check=True)
+            first = output.read_text()
+            for name, entry in entries.items():
+                line = next(line for line in first.splitlines() if line.startswith(f'| {name} |'))
+                self.assertTrue(line.endswith(f"| {entry['speakerAssessment']['authorCell']} | {entry['disposition']} |"))
+            subprocess.run(command, check=True)
+            self.assertEqual(first, output.read_text())
+            output.write_text(first.replace('| REMOVE | replace |', '| keep | replace |', 1))
+            before = output.read_text()
+            self.assertNotEqual(subprocess.run(command, capture_output=True).returncode, 0)
+            self.assertEqual(before, output.read_text())
+        stale = [dict(r) for r in ledger]
+        stale[0]['gitBlob'] = 'changed'
+        with self.assertRaisesRegex(ValueError, 'Stale'):
+            load_decisions(stale)
+
+    def test_ledger_retains_only_authorized_removed_history(self):
+        rows = json.loads((qc.ROOT/'docs/assets/voice-qc/ledger.json').read_text())['rows']
+        entries = load_decisions(rows)
+        current = [r for r in rows if entries[r['file']]['disposition'] != 'replace']
+        previous = {r['file']: r for r in rows}
+        self.assertEqual(retain_removed_rows(previous, current, entries), rows)
+        with self.assertRaisesRegex(ValueError, 'Unapproved missing audio'):
+            retain_removed_rows(previous, current[1:], entries)
+
     def test_expected_overrides_and_unknowns(self):
         mapping = json.loads(Path(__file__).with_name('voice-identity-map.json').read_text())
         overrides = json.loads(Path(__file__).with_name('voice-identity-overrides.json').read_text())
