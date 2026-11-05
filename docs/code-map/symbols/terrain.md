@@ -154,49 +154,49 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/chunkHeightmap.ts`
 
-- `apronGridWeights` — function — line 828
-- `ApronGridWeights` — type — line 819
-- `apronOriginWorld` — function — line 799
+- `apronGridWeights` — function — line 827
+- `ApronGridWeights` — type — line 818
+- `apronOriginWorld` — function — line 798
 - `ChunkTileData` — type — line 378
 - `ChunkTileParams` — type — line 246
 - `ClearingSegment` — type — line 178
-- `computeChunkTile` — function — line 1258
-- `createLocalTerrainSampler` — function — line 1343
+- `computeChunkTile` — function — line 1257
+- `createLocalTerrainSampler` — function — line 1342
   - domain: world-terrain
-- `createWorldTerrainSampler` — function — line 1385
+- `createWorldTerrainSampler` — function — line 1384
   - domain: world-terrain
-- `extractCoreGrid` — function — line 883
-- `LocalTerrainSampler` — type — line 1318
+- `extractCoreGrid` — function — line 882
+- `LocalTerrainSampler` — type — line 1317
   - domain: world-terrain
 - `rangeSpinesFor` — function — line 514
 - `RawSampleParams` — type — line 358
-- `RawTexelSample` — type — line 738
+- `RawTexelSample` — type — line 737
 - `RegionalSmoothingSegment` — type — line 238
 - `RegionParams` — type — line 26
 - `RiverChannelSegment` — type — line 214
 - `RoadCorridorSegment` — type — line 160
 - `RoadNetworkParams` — type — line 97
-- `sampleApronGrid` — function — line 866
-- `sampleApronGridWeighted` — function — line 851
-- `sampleBiomeAt` — function — line 770
-- `sampleContinentalnessAt` — function — line 774
-- `sampleFloorAt` — function — line 766
-- `sampleHeightAt` — function — line 750
-- `sampleLandHeightAt` — function — line 756
-- `sampleMoistureRegionAt` — function — line 782
-- `sampleMountainRidgeAt` — function — line 790
-- `sampleRawFloorUncorrected` — function — line 762
-- `sampleRawTexelAt` — function — line 743
+- `sampleApronGrid` — function — line 865
+- `sampleApronGridWeighted` — function — line 850
+- `sampleBiomeAt` — function — line 769
+- `sampleContinentalnessAt` — function — line 773
+- `sampleFloorAt` — function — line 765
+- `sampleHeightAt` — function — line 749
+- `sampleLandHeightAt` — function — line 755
+- `sampleMoistureRegionAt` — function — line 781
+- `sampleMountainRidgeAt` — function — line 789
+- `sampleRawFloorUncorrected` — function — line 761
+- `sampleRawTexelAt` — function — line 742
 - `VegetationKind` — type — line 24
 - `VillageClearingParams` — type — line 78
 
 ## `terrain/chunkHeightmapProtocol.ts`
 
-- `ChunkTileResult` — type — line 15
-- `ChunkWorkerJobRequest` — type — line 45
-- `ChunkWorkerRequest` — type — line 32
-- `ChunkWorkerResponse` — type — line 47
-- `GrassRequestParams` — type — line 28
+- `ChunkTileResult` — type — line 16
+- `ChunkWorkerJobRequest` — type — line 47
+- `ChunkWorkerRequest` — type — line 33
+- `ChunkWorkerResponse` — type — line 49
+- `GrassRequestParams` — type — line 29
 
 ## `terrain/chunkItems.ts`
 
@@ -206,27 +206,27 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/chunkManager.ts`
 
-- `applyChunkWaterDayNight` — function — line 1186
-- `applyModificationToTile` — function — line 947
+- `applyChunkWaterDayNight` — function — line 1189
+- `applyModificationToTile` — function — line 950
 - `ChunkManager` — type — line 560
 - `ChunkManagerConfig` — type — line 340
-- `createChunkManager` — function — line 1211
+- `createChunkManager` — function — line 1214
   - domain: world-terrain
   - system: chunk-manager
   - role: Owns terrain chunk streaming, sampling and environment-facing world queries.
   - simulation: on-demand
   - performance: nearby-only
-- `CropHarvestOutcome` — type — line 1200
-- `drainByBudget` — function — line 1161
+- `CropHarvestOutcome` — type — line 1203
+- `drainByBudget` — function — line 1164
 - `FinalizeStage` — type — line 456
-- `pickNearestQueuedKey` — function — line 1121
-- `pickNextFinalizeKey` — function — line 1139
-- `ResidentChunkSnapshot` — type — line 1026
-- `sampleResidentHeight` — function — line 1046
-- `sampleResidentLocalWater` — function — line 1094
-- `sampleResidentSurfaceGround` — function — line 1066
-- `TerrainModification` — type — line 904
-- `tickChunkWaterSurfaces` — function — line 1174
+- `pickNearestQueuedKey` — function — line 1124
+- `pickNextFinalizeKey` — function — line 1142
+- `ResidentChunkSnapshot` — type — line 1029
+- `sampleResidentHeight` — function — line 1049
+- `sampleResidentLocalWater` — function — line 1097
+- `sampleResidentSurfaceGround` — function — line 1069
+- `TerrainModification` — type — line 907
+- `tickChunkWaterSurfaces` — function — line 1177
 
 ## `terrain/chunkMeshCache.ts`
 
@@ -246,34 +246,34 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/chunkTileWorldgenCache.ts`
 
-- `CHUNK_TILE_CACHE_BYTE_BUDGET` — const — line 81
+- `CHUNK_TILE_CACHE_BYTE_BUDGET` — const — line 82
 - `CHUNK_TILE_CACHE_NAMESPACE` — const — line 30
   - domain: world-terrain
   - system: worldgen-cache
   - role: Persistent-cache adapter for canonical worker-generated chunk tiles (plan world-terrain-031): one `chunk:<cx>:<cz>` record per chunk holding the unchanged `ChunkTileResult` — the eight apron-inclusive terrain grids plus the deterministic vegetation/item/environment/crop placements. Stores the existing worker contract verbatim; there is deliberately no cache-specific terrain model and no `SaveData` field.
   - integration: Disposable derived data only. `ChunkManager.ensureLoaded()` generates exactly the same chunk with an empty cache — a miss, a malformed record or an IndexedDB failure always falls back to the tile worker. The payload is *base* worldgen: player/system terrain modifications, terrain cutouts, tree/crop lifecycle, collected items, resource depletion, mesh data and every Three.js object stay downstream and are never cached here, so two same-seed saves share only deterministic generation output.
-- `CHUNK_TILE_CACHE_VERSION` — const — line 65
-- `CHUNK_TILE_META_SUBKEY` — const — line 70
-- `ChunkTileCacheStats` — type — line 111
-- `ChunkTileCacheStorage` — type — line 247
-- `chunkTileFingerprint` — function — line 104
+- `CHUNK_TILE_CACHE_VERSION` — const — line 66
+- `CHUNK_TILE_META_SUBKEY` — const — line 71
+- `ChunkTileCacheStats` — type — line 112
+- `ChunkTileCacheStorage` — type — line 248
+- `chunkTileFingerprint` — function — line 105
   - domain: world-terrain
   - system: worldgen-cache
-- `chunkTileSubKey` — function — line 88
-- `cloneChunkTileForRuntime` — function — line 224
+- `chunkTileSubKey` — function — line 89
+- `cloneChunkTileForRuntime` — function — line 225
   - domain: world-terrain
   - system: worldgen-cache
-- `estimateChunkTileBytes` — function — line 203
-- `getChunkTileCacheStats` — function — line 137
-- `loadCachedChunkTile` — function — line 348
+- `estimateChunkTileBytes` — function — line 204
+- `getChunkTileCacheStats` — function — line 138
+- `loadCachedChunkTile` — function — line 349
   - domain: world-terrain
   - system: worldgen-cache
-- `persistChunkTile` — function — line 396
+- `persistChunkTile` — function — line 397
   - domain: world-terrain
   - system: worldgen-cache
-- `resetChunkTileCacheMetadata` — function — line 331
-- `resetChunkTileCacheStats` — function — line 141
-- `validateCachedChunkTile` — function — line 181
+- `resetChunkTileCacheMetadata` — function — line 332
+- `resetChunkTileCacheStats` — function — line 142
+- `validateCachedChunkTile` — function — line 182
   - domain: world-terrain
   - system: worldgen-cache
 
@@ -284,26 +284,28 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/chunkWorkerPool.ts`
 
-- `cancelChunkGrass` — function — line 592
-- `cancelChunkMapTile` — function — line 622
-- `cancelChunkMesh` — function — line 603
-- `cancelChunkTile` — function — line 581
-- `cancelChunkWorldKnowledge` — function — line 614
-- `ChunkWorkerLike` — type — line 28
-- `ChunkWorkerPool` — type — line 44
-- `ChunkWorkerPoolOptions` — type — line 35
-- `createChunkWorkerPool` — function — line 186
-- `defaultChunkWorkerCount` — function — line 157
-- `disposeChunkWorkerPool` — function — line 639
-- `HeightmapGenerationCancelledError` — class — line 16
-- `installChunkWorkerHydrology` — function — line 626
-- `isChunkWorkerCancelledError` — function — line 23
-- `requestChunkGrass` — function — line 585
-- `requestChunkHydrologyRows` — function — line 630
-- `requestChunkMapTile` — function — line 618
-- `requestChunkMesh` — function — line 596
-- `requestChunkTile` — function — line 574
-- `requestChunkWorldKnowledge` — function — line 607
+- `cancelChunkFarTile` — function — line 678
+- `cancelChunkGrass` — function — line 640
+- `cancelChunkMapTile` — function — line 670
+- `cancelChunkMesh` — function — line 651
+- `cancelChunkTile` — function — line 629
+- `cancelChunkWorldKnowledge` — function — line 662
+- `ChunkWorkerLike` — type — line 29
+- `ChunkWorkerPool` — type — line 45
+- `ChunkWorkerPoolOptions` — type — line 36
+- `createChunkWorkerPool` — function — line 204
+- `defaultChunkWorkerCount` — function — line 174
+- `disposeChunkWorkerPool` — function — line 695
+- `HeightmapGenerationCancelledError` — class — line 17
+- `installChunkWorkerHydrology` — function — line 682
+- `isChunkWorkerCancelledError` — function — line 24
+- `requestChunkFarTile` — function — line 674
+- `requestChunkGrass` — function — line 633
+- `requestChunkHydrologyRows` — function — line 686
+- `requestChunkMapTile` — function — line 666
+- `requestChunkMesh` — function — line 644
+- `requestChunkTile` — function — line 622
+- `requestChunkWorldKnowledge` — function — line 655
 
 ## `terrain/chunkWorldItems.ts`
 
@@ -415,6 +417,50 @@ Generated from exported TypeScript symbols.
 - `grassFillerLodFraction` — function — line 25
 - `grassGeometryLodTier` — function — line 37
 - `GrassGeometryLodTier` — type — line 35
+
+## `terrain/farTerrain.ts`
+
+- `createFarTerrain` — function — line 89
+  - domain: world-terrain
+- `FAR_FINE_RADIUS` — const — line 16
+- `FAR_MASK_SIZE` — const — line 18
+- `FarTerrain` — type — line 63
+- `FarTerrainOptions` — type — line 51
+- `FarTileCells` — type — line 24
+- `FarTileWanted` — type — line 26
+- `wantedFarTiles` — function — line 35
+  - domain: world-terrain
+
+## `terrain/farTerrainFlag.ts`
+
+- `DEFAULT_FAR_TERRAIN_RADIUS` — const — line 2
+- `farTerrainRadiusFromUrl` — function — line 24
+- `MAX_FAR_TERRAIN_RADIUS` — const — line 4
+- `MIN_FAR_TERRAIN_RADIUS` — const — line 3
+- `parseFarTerrainFlag` — function — line 12
+  - domain: world-terrain
+
+## `terrain/farTile.ts`
+
+- `buildFarTileIndices` — function — line 66
+- `computeFarTile` — function — line 108
+  - domain: world-terrain
+- `FAR_SKIRT_DROP` — const — line 13
+- `FAR_SURFACE_DROP` — const — line 16
+- `FAR_TILE_CELLS_COARSE` — const — line 10
+- `FAR_TILE_CELLS_FINE` — const — line 9
+- `FAR_TILE_SIZE` — const — line 6
+- `farGridVertexCount` — function — line 38
+- `FarTileData` — type — line 26
+- `FarTileRequest` — type — line 18
+- `farTileVertexCount` — function — line 43
+- `skirtSourceIndex` — function — line 52
+
+## `terrain/farTileColor.ts`
+
+- `classifyBiomeColor` — function — line 30
+  - domain: world-terrain
+- `isFarLake` — function — line 19
 
 ## `terrain/fbm.ts`
 
@@ -538,22 +584,24 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/rangeSpines.ts`
 
-- `EMPTY_RANGE_SPINES` — const — line 153
-- `generateRangeSpines` — function — line 293
-- `RANGE_HOME_RESERVE_M` — const — line 116
-- `RANGE_MAX_SPINES` — const — line 104
-- `RANGE_SEGMENTS` — const — line 105
-- `RangeBaseRelief` — type — line 97
-- `RangePass` — type — line 39
-- `RangePassCorridor` — type — line 25
-- `RangeSpine` — type — line 60
-- `RangeSpineSample` — type — line 85
-- `RangeSpineSet` — type — line 82
-- `RangeSummit` — type — line 51
-- `sampleRangeSpines` — function — line 396
-- `softCapSummitHeight` — function — line 147
-- `SUMMIT_SOFT_CEILING_M` — const — line 144
-- `SUMMIT_SOFT_KNEE_M` — const — line 143
+- `EMPTY_RANGE_SPINES` — const — line 190
+- `generateRangeSpines` — function — line 330
+- `RANGE_HOME_RESERVE_M` — const — line 117
+- `RANGE_MAX_SPINES` — const — line 105
+- `RANGE_SEGMENTS` — const — line 106
+- `RangeBaseRelief` — type — line 98
+- `RangePass` — type — line 40
+- `RangePassCorridor` — type — line 26
+- `RangeSpine` — type — line 61
+- `RangeSpineSample` — type — line 86
+- `RangeSpineSet` — type — line 83
+- `RangeSummit` — type — line 52
+- `sampleRangeSpines` — function — line 486
+- `softCapSummitHeight` — function — line 184
+- `SUMMIT_SOFT_CEILING_M` — const — line 181
+- `SUMMIT_SOFT_KNEE_M` — const — line 180
+- `unionWithSpine` — function — line 161
+  - domain: world-terrain
 
 ## `terrain/renewableWorldItems.ts`
 
@@ -763,7 +811,10 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/terrainVisualHorizon.ts`
 
-- `terrainVisualHorizon` — function — line 33
+- `FAR_FOG_NEAR_FRACTION` — const — line 52
+- `farRingBaseFog` — function — line 61
+  - domain: world-terrain
+- `terrainVisualHorizon` — function — line 36
   - domain: world-terrain
 - `TerrainVisualHorizon` — type — line 14
   - domain: world-terrain
@@ -899,17 +950,17 @@ Generated from exported TypeScript symbols.
 
 - `clearWorldHydrology` — function — line 43
 - `hasWorldHydrology` — function — line 31
-- `hydrologyCorrectionAt` — function — line 131
-- `hydrologyLakeLevelAt` — function — line 153
+- `hydrologyCorrectionAt` — function — line 146
+- `hydrologyLakeLevelAt` — function — line 207
 - `installWorldHydrology` — function — line 27
 - `isUnconditionedHydrologyId` — function — line 20
 - `retainOnlyWorldHydrology` — function — line 53
 - `SPARSE_BLOCK_SIZE` — const — line 14
   - domain: world-terrain
-- `StreamHead` — type — line 169
-- `streamHeadsFor` — function — line 178
+- `StreamHead` — type — line 223
+- `streamHeadsFor` — function — line 232
 - `UNCONDITIONED_HYDROLOGY_ID` — const — line 17
-- `unpackChains` — function — line 197
+- `unpackChains` — function — line 251
 - `worldHydrologyFor` — function — line 36
 
 ## `terrain/worldKnowledgeScan.ts`
@@ -934,5 +985,7 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/worleyNoise.ts`
 
-- `worleyRidge` — function — line 35
-- `WorleyRidgeResult` — type — line 1
+- `roundCrease` — function — line 45
+  - domain: world-terrain
+- `worleyRidge` — function — line 64
+- `WorleyRidgeResult` — type — line 3

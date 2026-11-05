@@ -27,8 +27,9 @@ export const ABANDONED_CEMETERY_NAMESPACE = 'abandoned-cemeteries'
  *  v8 (Q93): lanes keep off house/storehouse corridors (path plans move).
  *  v9 (Q94): object discs keep a dry rim (layouts move).
  *  v10 (Q97): roads straight under bridge decks (road clearance inputs move).
- *  v11 (Q118): range spines/passes/summits reshape the relief (plan world-terrain-060 R1–R2). */
-export const ABANDONED_CEMETERY_VERSION = 11
+ *  v11 (Q118): range spines/passes/summits reshape the relief (plan world-terrain-060 R1–R2).
+ *  v12: C¹ relief: smooth range-spine crest/blend/unions, C¹ Worley ridge, bicubic hydrology correction (plan world-terrain-065). */
+export const ABANDONED_CEMETERY_VERSION = 12
 
 export type CachedAbandonedCemeteryResult =
   | { status: 'none' }

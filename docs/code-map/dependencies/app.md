@@ -1333,6 +1333,7 @@ Generated from TypeScript imports.
 - `simulation/observation.ts`
 - `terrain/renewableWorldItems.ts`
 - `terrain/snowField.ts`
+- `terrain/terrainVisualHorizon.ts`
 - `ui-vue/lastHitFeedback.ts`
 - `ui-vue/mount.ts`
 - `ui/createBusyOverlay.ts`
@@ -1707,6 +1708,7 @@ Generated from TypeScript imports.
 - `render/createRenderer.ts`
 - `scene/createCamera.ts`
 - `scene/createScene.ts`
+- `terrain/farTerrainFlag.ts`
 - `world/createLights.ts`
 - `world/createSky.ts`
 - `world/pointLightBudget.ts`
@@ -1927,7 +1929,10 @@ Generated from TypeScript imports.
 - `terrain/chunkEnvironment.ts`
 - `terrain/chunkGrid.ts`
 - `terrain/chunkManager.ts`
+- `terrain/chunkWorkerPool.ts`
 - `terrain/depositMining.ts`
+- `terrain/farTerrain.ts`
+- `terrain/farTerrainFlag.ts`
 - `terrain/mineableDeposit.ts`
 - `terrain/mineableRocks.ts`
 - `terrain/naturalResources.ts`

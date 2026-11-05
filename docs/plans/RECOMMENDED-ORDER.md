@@ -255,67 +255,59 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   🔴 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-42. `world-terrain-065` — **Terrain color and shading artifact correction**  
-  🔴 `M` · **Score:**  27  
-   → **unlocks:** 0/0
-
-43. `ui-input-025` — **Road travel autopilot for player and mounts**  
+42. `ui-input-025` — **Road travel autopilot for player and mounts**  
   🔴 `L` · **Score:**  26  
    → **unlocks:** 0/0
 
-44. `world-036` — **Lightweight unloaded shipwreck and tower lookup**  
+43. `world-036` — **Lightweight unloaded shipwreck and tower lookup**  
   🟡 `M` · **Score:**  25  
    → **unlocks:** 0/0
 
-45. `world-terrain-059` — **World scale, travel time and sparse settlements**  
+44. `world-terrain-059` — **World scale, travel time and sparse settlements**  
   🔴 `XL` · **Score:**  22  
    → **unlocks:** 0/0
 
-46. `world-terrain-066` — **Far terrain ring (600–1000 m) without bare-ground pop-in**  
-  🔴 `XL` · **Score:**  20  
-   → **unlocks:** 0/0
-
-47. `tools-019` — **Debug tooling lifecycle ownership**  
+45. `tools-019` — **Debug tooling lifecycle ownership**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-48. `tools-021` — **Align debug OBB overlays with physical colliders**  
+46. `tools-021` — **Align debug OBB overlays with physical colliders**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-49. `world-terrain-055` — **Optional shadow frustum and refresh trims (settlement shadow pass)**  
+47. `world-terrain-055` — **Optional shadow frustum and refresh trims (settlement shadow pass)**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-50. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
+48. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
   🟡 `L` · **Score:**  18  
    → **unlocks:** 0/0
 
-51. `items-player-014` — **Rope-pullable resource transport**  
+49. `items-player-014` — **Rope-pullable resource transport**  
   ⚪ `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-52. `items-player-052` — **Settlement tool ownership and social acquisition**  
+50. `items-player-052` — **Settlement tool ownership and social acquisition**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-53. `npc-069` — **Next Fish Audio Production Batch — Named NPC Variants, Quest Offers and Restoration**  
+51. `npc-069` — **Next Fish Audio Production Batch — Named NPC Variants, Quest Offers and Restoration**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-54. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
+52. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-55. `npc-065` — **Stable NPC Voice Casting, V3 Donor QC and Selective Recording**  
+53. `npc-065` — **Stable NPC Voice Casting, V3 Donor QC and Selective Recording**  
   🟡 `L` · **Score:**  14  
    → **unlocks:** 0/0
 
-56. `world-040` — **Underground Locations & Portals**  
+54. `world-040` — **Underground Locations & Portals**  
   ⚪ `XL` · **Score:**  14  
    → **unlocks:** 0/0
 
-57. `fauna-049` — **Wild animal difficulty tiers, trophies and social recognition**  
+55. `fauna-049` — **Wild animal difficulty tiers, trophies and social recognition**  
   🟡 `XL` · **Score:**  10  
    → **unlocks:** 0/0
 

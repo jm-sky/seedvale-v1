@@ -1,7 +1,7 @@
 # PLANS PLANNED WITHOUT NOTES
 
 > Generated with `pnpm plans:without-notes`  
-> Date: 2026-11-05 14:30:22  
+> Date: 2026-11-05 17:09:17  
 
 ## PLANS
 
@@ -23,7 +23,6 @@
 - `world-terrain-061-macroclimate-and-climate-weighted-hydrology.md`
 - `world-terrain-062-regional-biomes-and-local-precipitation-phase.md`
 - `world-terrain-063-geography-driven-settlement-variants.md`
-- `world-terrain-066-far-terrain-ring.md`
 
 --------------------------------
 ## PROMPTS
@@ -571,37 +570,6 @@ Wczytaj:
 
 Na podstawie review utwórz w repo plik:
 `docs/plans/implementation-notes/world-terrain-063-geography-driven-settlement-variants-implementation-notes.md`
-
-Umieść w nim:
-- sugestie dotyczące implementacji,
-- istotne detale techniczne,
-- decyzje architektoniczne,
-- informacje o istniejących systemach i implementacjach, które należy wykorzystać,
-- potencjalne problemy, zależności i pułapki,
-- inne konkretne wskazówki, które ułatwią agentowi AI poprawną implementację planu.
-
-Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
-Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
-
-Pliki dodaj na branch `main` w repozytorium.
-```
-
-### `world-terrain-066-far-terrain-ring.md`
-
-Prompt:
-
-```
-Zrób review planu `world-terrain-066-far-terrain-ring.md`
-
-Wczytaj:
-- `docs/STATE.md`
-- `docs/plans/PLANNING.md` (Implementation Notes section),
-- `docs/plans/world-terrain-066-far-terrain-ring.md`
-- aktualny codebase,
-- potrzebne zależności i powiązane implementacje.
-
-Na podstawie review utwórz w repo plik:
-`docs/plans/implementation-notes/world-terrain-066-far-terrain-ring-implementation-notes.md`
 
 Umieść w nim:
 - sugestie dotyczące implementacji,

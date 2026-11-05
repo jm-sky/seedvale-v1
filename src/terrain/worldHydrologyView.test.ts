@@ -37,9 +37,21 @@ describe('hydrology correction', () => {
     installWorldHydrology('fake', fakeHydrology())
     expect(hydrologyCorrectionAt('fake', 5 * 8, 3 * 8)).toBeCloseTo(-2)
     expect(hydrologyCorrectionAt('fake', 6 * 8, 3 * 8)).toBeCloseTo(1)
-    expect(hydrologyCorrectionAt('fake', 5.5 * 8, 3 * 8)).toBeCloseTo(-0.5)
+    // Catmull-Rom between -2 and 1 with zero neighbours (bilinear would give -0.5).
+    expect(hydrologyCorrectionAt('fake', 5.5 * 8, 3 * 8)).toBeCloseTo(-0.5625)
     expect(hydrologyCorrectionAt('fake', 100, 500)).toBe(0)
     expect(hydrologyCorrectionAt('fake', -50, -50)).toBe(0)
+  })
+
+  it('has no slope break on cell lines (C¹, plan world-terrain-065)', () => {
+    installWorldHydrology('fake', fakeHydrology())
+    const z = 3 * 8 + 2.3
+    for (const lineX of [5 * 8, 6 * 8]) {
+      const e = 1e-3
+      const left = (hydrologyCorrectionAt('fake', lineX, z) - hydrologyCorrectionAt('fake', lineX - e, z)) / e
+      const right = (hydrologyCorrectionAt('fake', lineX + e, z) - hydrologyCorrectionAt('fake', lineX, z)) / e
+      expect(Math.abs(right - left)).toBeLessThan(1e-2)
+    }
   })
 
   it('is zero for unconditioned ids and throws for a missing id', () => {

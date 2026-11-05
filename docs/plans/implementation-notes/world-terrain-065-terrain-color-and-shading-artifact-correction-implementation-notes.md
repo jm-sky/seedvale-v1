@@ -57,6 +57,44 @@ Headless Chrome on the author's Vite (`:5577`, fresh profile, `?fly&flyPose=…&
 - **Spines:** a C¹ crest profile, e.g. `core = smoothstep(1, 0, d/coreHalfWidth)` or `(1 − u²)^k`; smoothed/densified spine polyline or a blended `t` near vertices; smooth max (`smax`) instead of hard `max` for the gate and crest unions.
 - **Hydrology:** C¹ interpolation of the correction, e.g. smoothstep-weighted bilinear or bicubic over the existing 8 m cells, keeping drainage guarantees (breach depth must still cut the channel; re-run the census and golden hash).
 
+### Fix implemented (Opus, 2026-11-05)
+
+Author decision 2026-11-05: **A — fix both** (spines + hydrology). The crease maps showed a third, larger source: the Worley ridge itself (pre-060, but switched to full strength under a spine). The radiating fan of lines at the summit came from a Voronoi vertex.
+
+| Source | Change | Owner |
+|---|---|---|
+| Worley ridge `1 − (F2 − F1)` | F2 → `smin(F2, F3, 20 m)` (polynomial, exact where F3 − F2 ≥ 20 m); gap rounded at the ridge line with `roundCrease(g, 40 m)` (`g²(2a − g)/a²` below `a`, identity above, so nothing farther than 40 m from a ridge line changes); 0-floor as softplus (k 0.04). Evaluated only where `mountainGate > 0` (identical output, saves the 3×3 scan in lowland). | `src/terrain/worleyNoise.ts` |
+| Spine crest V | core profile on the nearest segment's `roundCrease(d, 50 m)` distance; crest height and profile beyond 50 m unchanged | `src/terrain/rangeSpines.ts` |
+| Spine `t` jump on concave-vertex bisector | `t` = softmin-weighted blend of per-segment arc lengths (60 m). *Distances are not averaged:* a first attempt did average them, which lifted the crest near every vertex and lowered the top peaks by up to 6 m (census). | `rangeSpines.ts::blendedOnPolyline` |
+| Hard `max` unions (gate, crest, massif envelope) | `unionWithSpine`: polynomial smooth max with softness fading to 0 as both inputs → 0 (lowland stays exact `max`; overshoot ≤ 0.025) | `rangeSpines.ts`, `chunkHeightmap.ts` |
+| Pass factor stepping to 1 at the envelope edge (it scales the noise gate too) | `1 − (1 − pf) · envelope` | `rangeSpines.ts` |
+| Hydrology correction 8 m squares | bicubic Catmull-Rom over 4×4 cells (exact at cell centres, reproduces ramps, C¹; may overshoot by a few % next to a single-cell cut); empty-block fast path and same-block direct indexing | `src/terrain/worldHydrologyStore.ts::hydrologyCorrectionAt` |
+
+**Bumps:** `CHUNK_TILE_CACHE_VERSION` 28, `WORLD_HYDROLOGY_VERSION` 3, `ROAD_ROUTE_CACHE_VERSION` 15, `SETTLEMENT_DEFINITION_CACHE_VERSION` 27, `CAVES_V2_VERSION` 9, `ABANDONED_CEMETERY_VERSION` 12, `LOCATIONS_COARSE_VERSION` 6 (same set as 060 R1–R2). **No `WORLDGEN_EPOCH` bump:** epoch 1 is the open Revival batch (060 plan G1). The worldgen boot fixtures in `public/worldgen-fixtures/` were already stale since 060 (version mismatch → plain cache miss); re-export them separately.
+
+**Measurements** (headless `sampleFloorAt`, seed 415424794, 301 × 301 m around the summit (−2340, −680), 1 m step; second difference in m):
+
+| | max | p99.9 | p99 | samples > 0.3 |
+|---|---|---|---|---|
+| before (`main` @ `ebfd6563`) | 1.417 | 0.953 | 0.340 | 1048 |
+| after | 0.301 | 0.215 | 0.160 | 1 |
+
+Hydrology correction alone: max 0.360 → 0.160, samples > 0.15 501 → 6.
+
+- **Relief census** (`census-range-spines.ts 415424794,42`):
+  - Top peaks 77.4 → 77.3 m (415424794) and 69.3 → 70.8 m (42); crestMax within ±2.5 m.
+  - Pass max grades were already above the 0.12 target before this change and are about unchanged (060 R1 issue, not this plan).
+  - **Cross-slope on `rp:rs:-10_-3:0` rose from 14.0 % to 23.9 %**, and on `:1` from 10.5 % to 16.6 %. This is the smooth union now lifting the gate near the passes. Watch it in the 060 R2 review / pass-corridor work.
+- **River census** (`census-rivers.ts --network`, both seeds):
+  - 0 dry sinks, 0 edge drains; mouth errors unchanged.
+  - Stream density 11.99 → 12.01 km/km² (415424794) and 12.34 → 12.43 (42); lakes 19 → 20 and 15 → 14.
+  - Parallel-pair "artifact?" candidates on 415424794 rose from 2 to 4 (runs 150–166 m, just over the 150 m threshold) — note for tools-026.
+- **Cost of `sampleFloorAt`** (min of 6 × 160 k samples, node):
+  - lowland around home 1.226 → 1.130 µs (−8 %, from the lazy Worley);
+  - summit 1.574 → 1.741 µs (+10.6 %).
+  - Worker chunk generation was not measured in the browser. Any FPS/streaming claim → queue §4.
+- **Tests:** full suite green (9276); `grassPlacement` golden snapshot updated (heights in the seed-42 mountain chunk moved slightly; blade counts 87 → 89 / 12 → 11 in chunk (−18, 6)). New test: hydrology correction has no slope break on cell lines.
+
 **Separate finding (not this defect):** at the home spawn, the per-chunk sea water inside the 3×3 home block is lighter than the water outside it. The step sits on the ±96 m chunk lines, and on land there is no step (`home-terrain-250.png`). This is a water presentation seam (chunk water vs. outer chunks/ocean ring), related to Q98, not terrain.
 
 **Re-ranking after the screenshot:** the polygonal shoreline is the strongest single clue. Something makes the **terrain height planar over tens of metres** near shores and lakes. The prime candidate is the **global hydrology correction layer** (bilinear on 8 m cells; priority-flood fills with an ε gradient over D8 neighbours; `terminalMinCells` raises small below-sea inland components; lake rule in `sampleRawTexel`). Despite the author's "probably older" (uncertain), the screenshot was taken after it landed (`5f127b450`, 2026-11-03). A raised or filled area sitting on bilinear 8 m patches near `waterLevel` gives exactly flat facets and straight water contours. Chunk-seam data mismatch (S1–S3) remains second, decided by the coordinates. **First checks:**

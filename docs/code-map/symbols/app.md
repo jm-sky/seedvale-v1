@@ -311,9 +311,9 @@ Generated from exported TypeScript symbols.
 
 ## `app/gameLoop.ts`
 
-- `createGameLoop` — function — line 755
-- `GameLoop` — type — line 715
-- `GameLoopDeps` — type — line 353
+- `createGameLoop` — function — line 759
+- `GameLoop` — type — line 719
+- `GameLoopDeps` — type — line 357
 
 ## `app/graphicsSettings.ts`
 
@@ -423,8 +423,8 @@ Generated from exported TypeScript symbols.
 
 ## `app/renderStack.ts`
 
-- `createRenderStack` — function — line 49
-- `RenderStack` — type — line 30
+- `createRenderStack` — function — line 50
+- `RenderStack` — type — line 31
 
 ## `app/restCampSequence.ts`
 
@@ -467,24 +467,24 @@ Generated from exported TypeScript symbols.
 
 ## `app/worldBundle.ts`
 
-- `BuiltWorldSystems` — type — line 1254
-- `carryTerrainModificationsAcrossRebuild` — function — line 2583
-- `caveCrateContainerSpecs` — function — line 348
+- `BuiltWorldSystems` — type — line 1260
+- `carryTerrainModificationsAcrossRebuild` — function — line 2602
+- `caveCrateContainerSpecs` — function — line 351
   - domain: world-terrain
-- `caveTreasureContainerSpecs` — function — line 315
-- `createWorldBundle` — function — line 2315
-- `disposeWorldBundle` — function — line 2883
-- `HOME_RADIUS` — const — line 268
-- `homeChunks` — function — line 372
-- `rebuildWorldBundle` — function — line 2596
-- `WorldBundle` — type — line 395
+- `caveTreasureContainerSpecs` — function — line 318
+- `createWorldBundle` — function — line 2334
+- `disposeWorldBundle` — function — line 2903
+- `HOME_RADIUS` — const — line 271
+- `homeChunks` — function — line 375
+- `rebuildWorldBundle` — function — line 2615
+- `WorldBundle` — type — line 398
   - system: world-bundle
   - role: Owns the lifetime/rebuild boundary for all world systems (terrain, settlements, fauna, items, player-placed structures).
   - owns: WorldBundle
   - lifecycle: rebuild
-- `WorldBundleRebuildOutcome` — type — line 2594
-- `WorldStartupLoadingStage` — type — line 1067
-- `WorldStartupLoadingStageListener` — type — line 1069
+- `WorldBundleRebuildOutcome` — type — line 2613
+- `WorldStartupLoadingStage` — type — line 1073
+- `WorldStartupLoadingStageListener` — type — line 1075
 
 ## `app/worldRebuildLifecycle.ts`
 

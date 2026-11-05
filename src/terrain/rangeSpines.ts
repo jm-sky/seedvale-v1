@@ -21,6 +21,7 @@
 
 import { MathUtils } from 'three'
 import { createSeededRandom } from '../world/parseSeed'
+import { roundCrease } from './worleyNoise'
 
 export type RangePassCorridor = {
   /** Centreline midpoint (on the spine) and unit direction across the range. */
@@ -132,8 +133,44 @@ const CREST_LIFT_M = 9
 const TOP_SUMMIT_AMPLITUDE_M = 34
 const SECONDARY_SUMMIT_AMPLITUDE_M: readonly [number, number] = [10, 20]
 const SUMMIT_SIGMA_M: readonly [number, number] = [170, 260]
-/** Exponent of the across-spine core profile `(1 - d/core)^p`; > 1 gives a sharp crest line and steep upper flanks. */
+/** Exponent of the across-spine core profile `(1 - u)^p`; > 1 gives steep upper flanks. */
 const CORE_PROFILE_EXPONENT = 1.5
+/**
+ * Crest rounding width (m, plan world-terrain-065). The core profile runs on `roundCrease(d, CREST_ROUND_M)` instead of
+ * `d`, so the crest is C¹ (no lit/shaded facet edge along the ridge line); the crest/summit height at `d = 0` and the
+ * profile beyond this width are unchanged.
+ */
+const CREST_ROUND_M = 50
+/**
+ * Softness (m) of the arc-length blend over polyline segments (plan world-terrain-065). The nearest-segment `t` jumps
+ * on the bisector of every concave polyline vertex (summits and passes are functions of `t`); a softmin-weighted
+ * average of the per-segment arc lengths is continuous there.
+ */
+const POLYLINE_BLEND_M = 60
+
+/** Softness of `unionWithSpine` (0..1 field units); overshoot above the hard max is at most a quarter of it. */
+const SPINE_UNION_SOFTNESS = 0.1
+
+/**
+ * C¹ union of a spine field with the matching noise field (plan world-terrain-065): a hard `max` creases wherever the
+ * two cross, which shows as a lit/shaded facet edge. Polynomial smooth max whose softness fades to 0 as both inputs
+ * approach 0, so lowland (both ≈ 0) stays exactly `max(a, b)` and no mountain term leaks into it. Overshoot ≤ 0.025.
+ *
+ * @domain world-terrain
+ */
+export function unionWithSpine(a: number, b: number): number {
+  const m = a > b ? a : b
+  const sum = a + b
+  if (sum <= 0) return m
+  const k = SPINE_UNION_SOFTNESS * MathUtils.smoothstep(sum, 0, 2 * SPINE_UNION_SOFTNESS)
+  const h = Math.max(k - Math.abs(a - b), 0) / k
+  return m + h * h * k * 0.25
+}
+
+/** Rounded distance used by the core profile (see `CREST_ROUND_M`). */
+function roundedCrestDistance(d: number): number {
+  return roundCrease(d, CREST_ROUND_M)
+}
 
 /**
  * Soft ceiling for range summits (G8: top peaks ~60–80 m). Heights above the knee are compressed smoothly towards the
@@ -391,6 +428,59 @@ function hashId(id: string): number {
 }
 
 /**
+ * Distance + arc length to the polyline for terrain sampling (plan world-terrain-065). `d` is the exact distance (the
+ * envelope); `dCrest` is the nearest segment's *rounded* distance (`roundedCrestDistance`), so the crest line itself is
+ * C¹ — what remains is a weak crease on the bisector of a concave vertex, proportional to its turn (≤ `MAX_TURN_RAD`).
+ * `t` is a softmin-weighted average of the per-segment arc lengths, so summits and passes (functions of `t`) no longer
+ * jump on that bisector. Generation keeps the exact `closestOnPolyline`.
+ */
+function blendedOnPolyline(xs: readonly number[], zs: readonly number[], cum: readonly number[], px: number, pz: number) {
+  const n = xs.length - 1
+  const segD = n <= BLEND_SCRATCH_D.length ? BLEND_SCRATCH_D : new Float64Array(n)
+  const segR = n <= BLEND_SCRATCH_R.length ? BLEND_SCRATCH_R : new Float64Array(n)
+  const segT = n <= BLEND_SCRATCH_T.length ? BLEND_SCRATCH_T : new Float64Array(n)
+  let rMin = Infinity
+  for (let i = 0; i < n; i++) {
+    const ax = xs[i]!
+    const az = zs[i]!
+    const dx = xs[i + 1]! - ax
+    const dz = zs[i + 1]! - az
+    const len2 = dx * dx + dz * dz
+    let u = len2 > 0 ? ((px - ax) * dx + (pz - az) * dz) / len2 : 0
+    u = u < 0 ? 0 : u > 1 ? 1 : u
+    const qx = ax + dx * u - px
+    const qz = az + dz * u - pz
+    const d = Math.sqrt(qx * qx + qz * qz)
+    const r = roundedCrestDistance(d)
+    segD[i] = d
+    segR[i] = r
+    segT[i] = cum[i]! + (cum[i + 1]! - cum[i]!) * u
+    if (r < rMin) rMin = r
+  }
+  let dMin = Infinity
+  let wSum = 0
+  let tSum = 0
+  for (let i = 0; i < n; i++) {
+    if (segD[i]! < dMin) dMin = segD[i]!
+    // Only `t` is blended: averaging *distances* would lift the crest line near every vertex (the neighbour segment's
+    // clamped distance there is the along-line distance to the vertex). Weights come from the rounded (smooth)
+    // distances, `rMin` only normalises (it cancels in the ratios); segments beyond 12 blend widths weigh < 6e−6 and
+    // are skipped (the step this leaves in `t` is negligible).
+    const e = (segR[i]! - rMin) / POLYLINE_BLEND_M
+    if (e > 12) continue
+    const w = Math.exp(-e)
+    wSum += w
+    tSum += w * segT[i]!
+  }
+  return { d: dMin, dCrest: rMin, t: tSum / wSum }
+}
+
+/** Per-segment scratch for `blendedOnPolyline` (single-threaded per worker; spines have `RANGE_SEGMENTS` segments). */
+const BLEND_SCRATCH_D = new Float64Array(RANGE_SEGMENTS)
+const BLEND_SCRATCH_T = new Float64Array(RANGE_SEGMENTS)
+const BLEND_SCRATCH_R = new Float64Array(RANGE_SEGMENTS)
+
+/**
  * Spine fields at a (warped) world point. Allocates only when the point is inside a spine's bounding box.
  */
 export function sampleRangeSpines(set: RangeSpineSet, x: number, z: number): RangeSpineSample {
@@ -404,7 +494,7 @@ export function sampleRangeSpines(set: RangeSpineSet, x: number, z: number): Ran
   for (let i = 0; i < spines.length; i++) {
     const s = spines[i]!
     if (x < s.minX || x > s.maxX || z < s.minZ || z > s.maxZ) continue
-    const { d, t } = closestOnPolyline(s.xs, s.zs, s.cum, x, z)
+    const { d, dCrest, t } = blendedOnPolyline(s.xs, s.zs, s.cum, x, z)
     if (d >= s.halfWidth) continue
     hit = true
     const taper = MathUtils.smoothstep(t, 0, END_TAPER_M) * MathUtils.smoothstep(s.length - t, 0, END_TAPER_M)
@@ -413,8 +503,10 @@ export function sampleRangeSpines(set: RangeSpineSet, x: number, z: number): Ran
       const w = 1 - MathUtils.smoothstep(Math.abs(t - p.t), p.halfWindow, p.halfWindow * 2)
       pf = Math.min(pf, 1 - p.depth * w)
     }
-    const g = (1 - MathUtils.smoothstep(d / s.halfWidth, ENVELOPE_INNER, 1)) * taper
-    const coreU = d < s.coreHalfWidth ? 1 - d / s.coreHalfWidth : 0
+    const envelope = 1 - MathUtils.smoothstep(d / s.halfWidth, ENVELOPE_INNER, 1)
+    const g = envelope * taper
+    const coreEdge = roundedCrestDistance(s.coreHalfWidth)
+    const coreU = dCrest < coreEdge ? 1 - dCrest / coreEdge : 0
     const core = coreU > 0 ? coreU ** CORE_PROFILE_EXPONENT : 0
     let lift = 0
     if (core > 0) {
@@ -428,7 +520,9 @@ export function sampleRangeSpines(set: RangeSpineSet, x: number, z: number): Ran
     gate = Math.max(gate, g)
     crest = Math.max(crest, core * taper * pf)
     summitM = Math.max(summitM, lift)
-    passFactor = Math.min(passFactor, pf)
+    // The pass factor scales the whole mountain gate (noise included), so it must reach 1 at the envelope edge;
+    // a raw `pf` would step back to 1 there (plan world-terrain-065).
+    passFactor = Math.min(passFactor, 1 - (1 - pf) * envelope)
   }
   if (!hit) return NO_SPINE
   return { gate, crest, summitM, passFactor }

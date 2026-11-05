@@ -49,6 +49,7 @@ Generated from TypeScript imports.
 - `terrain/chunkVegetation.test.ts`
 - `terrain/chunkVegetation.ts`
 - `terrain/dig.ts`
+- `terrain/farTileColor.ts`
 - `terrain/footstepSurface.ts`
 - `terrain/grassPlacement.ts`
 - `world/map/mapProjection.ts`
@@ -81,6 +82,7 @@ Generated from TypeScript imports.
 - `terrain/chunkVegetation.ts`
 - `terrain/digFinds.test.ts`
 - `terrain/digFinds.ts`
+- `terrain/farTileColor.ts`
 - `terrain/grassPlacement.ts`
 - `terrain/naturalResources.ts`
 - `world/locations/darkForestTreasureSite.ts`
@@ -292,6 +294,7 @@ Generated from TypeScript imports.
 - `terrain/chunkManager.ts`
 - `terrain/chunkVegetation.ts`
 - `terrain/chunkWorldItems.ts`
+- `terrain/farTerrain.ts`
 - `terrain/grass.ts`
 - `terrain/unloadedLandmarkLookup.ts`
 - `terrain/vegetationRegionBatcher.ts`
@@ -404,6 +407,10 @@ Generated from TypeScript imports.
 - `terrain/dig.ts`
 - `terrain/digFinds.test.ts`
 - `terrain/digFinds.ts`
+- `terrain/farTerrain.test.ts`
+- `terrain/farTerrain.ts`
+- `terrain/farTile.ts`
+- `terrain/farTileColor.ts`
 - `terrain/footstepSurface.ts`
 - `terrain/grass.ts`
 - `terrain/grassPlacement.test.ts`
@@ -475,6 +482,7 @@ Generated from TypeScript imports.
 - `terrain/chunkItems.ts`
 - `terrain/chunkMeshData.ts`
 - `terrain/chunkVegetation.ts`
+- `terrain/farTile.ts`
 - `terrain/grassPlacement.ts`
 - `terrain/worldHydrology.ts`
 - `terrain/worldHydrologyRegistry.ts`
@@ -490,6 +498,7 @@ Generated from TypeScript imports.
 - `terrain/chunkItems.ts`
 - `terrain/chunkMeshData.ts`
 - `terrain/chunkVegetation.ts`
+- `terrain/farTile.ts`
 - `terrain/grassPlacement.ts`
 - `terrain/worldHydrology.ts`
 - `terrain/worldKnowledgeScan.ts`
@@ -768,6 +777,7 @@ Generated from TypeScript imports.
 - `terrain/chunkHeightmap.ts`
 - `terrain/chunkHeightmapProtocol.ts`
 - `terrain/chunkMeshData.ts`
+- `terrain/farTile.ts`
 - `terrain/grassPlacement.ts`
 - `terrain/worldHydrology.ts`
 - `terrain/worldKnowledgeScan.ts`
@@ -776,6 +786,7 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `app/createApp.ts`
+- `app/worldBundle.ts`
 - `terrain/chunkManager.ts`
 - `terrain/chunkWorkerPool.test.ts`
 - `terrain/worldHydrologyRuntime.ts`
@@ -999,6 +1010,73 @@ Generated from TypeScript imports.
 - `terrain/grassPlacement.test.ts`
 - `terrain/vegetationRegionBatcher.test.ts`
 - `terrain/vegetationRegionBatcher.ts`
+
+## `terrain/farTerrain.test.ts`
+
+**Imports**
+
+- `config/worldConfig.ts`
+- `terrain/chunkHeightmap.ts`
+- `terrain/farTerrain.ts`
+- `terrain/farTile.ts`
+- `terrain/worldHydrologyStore.ts`
+- `world/map/mapProjection.ts`
+
+## `terrain/farTerrain.ts`
+
+**Imports**
+
+- `terrain/chunkGrid.ts`
+- `terrain/chunkHeightmap.ts`
+- `terrain/farTile.ts`
+
+**Imported by**
+
+- `app/worldBundle.ts`
+- `terrain/farTerrain.test.ts`
+
+## `terrain/farTerrainFlag.test.ts`
+
+**Imports**
+
+- `terrain/farTerrainFlag.ts`
+
+## `terrain/farTerrainFlag.ts`
+
+**Imported by**
+
+- `app/renderStack.ts`
+- `app/worldBundle.ts`
+- `terrain/farTerrainFlag.test.ts`
+
+## `terrain/farTile.ts`
+
+**Imports**
+
+- `terrain/chunkHeightmap.ts`
+- `terrain/farTileColor.ts`
+
+**Imported by**
+
+- `terrain/chunkHeightmap.worker.ts`
+- `terrain/chunkHeightmapProtocol.ts`
+- `terrain/chunkWorkerPool.ts`
+- `terrain/farTerrain.test.ts`
+- `terrain/farTerrain.ts`
+
+## `terrain/farTileColor.ts`
+
+**Imports**
+
+- `terrain/biomeColors.ts`
+- `terrain/biomeRegions.ts`
+- `terrain/chunkHeightmap.ts`
+- `terrain/terrainClassification.ts`
+- `terrain/waterSurface.ts`
+
+**Imported by**
+
+- `terrain/farTile.ts`
 
 ## `terrain/fbm.ts`
 
@@ -1255,6 +1333,7 @@ Generated from TypeScript imports.
 
 **Imports**
 
+- `terrain/worleyNoise.ts`
 - `world/parseSeed.ts`
 
 **Imported by**
@@ -1526,6 +1605,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `terrain/farTileColor.ts`
 - `world/caves/mountainMassif.ts`
 - `world/locations/seedProfile.ts`
 - `world/locations/worldLocationCatalog.test.ts`
@@ -1613,6 +1693,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `app/gameLoop.ts`
 - `app/worldBundle.ts`
 - `terrain/terrainVisualHorizon.test.ts`
 - `world/weatherVisuals.test.ts`
@@ -1774,6 +1855,7 @@ Generated from TypeScript imports.
 - `terrain/chunkItems.ts`
 - `terrain/chunkManager.ts`
 - `terrain/chunkVegetation.ts`
+- `terrain/farTileColor.ts`
 - `terrain/grassPlacement.ts`
 - `terrain/lakeWater.test.ts`
 - `terrain/waterBodies.ts`
@@ -1915,6 +1997,7 @@ Generated from TypeScript imports.
 - `terrain/chunkManager.test.ts`
 - `terrain/chunkVegetation.test.ts`
 - `terrain/chunkWorkerPool.test.ts`
+- `terrain/farTerrain.test.ts`
 - `terrain/grassPlacement.test.ts`
 - `terrain/lakeWater.test.ts`
 - `terrain/riverNetwork.test.ts`
@@ -1997,6 +2080,11 @@ Generated from TypeScript imports.
 
 ## `terrain/worleyNoise.ts`
 
+**Imports**
+
+- `world/caves/caveMath.ts`
+
 **Imported by**
 
 - `terrain/chunkHeightmap.ts`
+- `terrain/rangeSpines.ts`

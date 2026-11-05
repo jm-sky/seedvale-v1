@@ -123,10 +123,25 @@ function cellCorrection(s: CorrectionSampler, ix: number, iz: number): number {
   return s.data[block * B * B + (iz % B) * B + (ix % B)]!
 }
 
+/** Directory entry of the sparse block holding cell `(ix, iz)`, or -1 (also outside the grid). */
+function blockAt(s: CorrectionSampler, ix: number, iz: number): number {
+  if (ix < 0 || iz < 0 || ix >= s.size || iz >= s.size) return -1
+  const B = SPARSE_BLOCK_SIZE
+  return s.directory[Math.floor(iz / B) * s.blocksPerRow + Math.floor(ix / B)]!
+}
+
+/** Catmull-Rom spline through four equally spaced samples at parameter `t ∈ [0, 1]` between `p1` and `p2`. */
+function catmullRom(p0: number, p1: number, p2: number, p3: number, t: number): number {
+  return p1 + 0.5 * t * (p2 - p0 + t * (2 * p0 - 5 * p1 + 4 * p2 - p3 + t * (3 * (p1 - p2) + p3 - p0)))
+}
+
 /**
- * Correction (breach cuts negative, filled pits positive) at a world point: bilinear between the four surrounding
- * hydrology cells, so it equals the stored value exactly at cell centres (where the hydrology was computed) and
- * 0 away from every correction block. Throws when `hydrologyId` has no installed data (and is not an unconditioned id).
+ * Correction (breach cuts negative, filled pits positive) at a world point: bicubic Catmull-Rom over the 4×4
+ * surrounding hydrology cells. It equals the stored value exactly at cell centres (where the hydrology was computed),
+ * reproduces linear ramps, and is 0 away from every correction block. Bilinear interpolation (before plan
+ * world-terrain-065) had a slope break on every 8 m cell line, which rendered fills/breaches as square facets; this
+ * is C¹. Catmull-Rom may overshoot by a few per cent next to a sharp single-cell cut. Throws when `hydrologyId` has no
+ * installed data (and is not an unconditioned id).
  */
 export function hydrologyCorrectionAt(hydrologyId: string, wx: number, wz: number): number {
   if (isUnconditionedHydrologyId(hydrologyId)) return 0
@@ -135,13 +150,52 @@ export function hydrologyCorrectionAt(hydrologyId: string, wx: number, wz: numbe
   const gz = (wz - s.originZ) / s.cellStep
   const ix = Math.floor(gx)
   const iz = Math.floor(gz)
+  // Fast path: the 4×4 stencil spans at most 2×2 sparse blocks; all empty → 0 (the common case on land).
+  if (
+    blockAt(s, ix - 1, iz - 1) < 0
+    && blockAt(s, ix + 2, iz - 1) < 0
+    && blockAt(s, ix - 1, iz + 2) < 0
+    && blockAt(s, ix + 2, iz + 2) < 0
+  ) {
+    return 0
+  }
   const fx = gx - ix
   const fz = gz - iz
-  const c00 = cellCorrection(s, ix, iz)
-  const c10 = cellCorrection(s, ix + 1, iz)
-  const c01 = cellCorrection(s, ix, iz + 1)
-  const c11 = cellCorrection(s, ix + 1, iz + 1)
-  return (c00 * (1 - fx) + c10 * fx) * (1 - fz) + (c01 * (1 - fx) + c11 * fx) * fz
+  // Common case: the whole 4×4 stencil lies in one present block — index its data directly.
+  const B = SPARSE_BLOCK_SIZE
+  const sameBlock =
+    ix - 1 >= 0 && iz - 1 >= 0 && ix + 2 < s.size && iz + 2 < s.size
+    && Math.floor((ix - 1) / B) === Math.floor((ix + 2) / B)
+    && Math.floor((iz - 1) / B) === Math.floor((iz + 2) / B)
+  const block = sameBlock ? blockAt(s, ix, iz) : -1
+  let r0 = 0
+  let r1 = 0
+  let r2 = 0
+  let r3 = 0
+  for (let k = 0; k < 4; k++) {
+    const jz = iz - 1 + k
+    let r: number
+    if (block >= 0) {
+      const base = block * B * B + (jz % B) * B
+      const lx = (ix - 1) % B
+      r = catmullRom(s.data[base + lx]!, s.data[base + lx + 1]!, s.data[base + lx + 2]!, s.data[base + lx + 3]!, fx)
+    } else if (sameBlock) {
+      r = 0
+    } else {
+      r = catmullRom(
+        cellCorrection(s, ix - 1, jz),
+        cellCorrection(s, ix, jz),
+        cellCorrection(s, ix + 1, jz),
+        cellCorrection(s, ix + 2, jz),
+        fx,
+      )
+    }
+    if (k === 0) r0 = r
+    else if (k === 1) r1 = r
+    else if (k === 2) r2 = r
+    else r3 = r
+  }
+  return catmullRom(r0, r1, r2, r3, fz)
 }
 
 /**

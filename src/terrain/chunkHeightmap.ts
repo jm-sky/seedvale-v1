@@ -8,7 +8,7 @@ import { createSeededRandom } from '../world/parseSeed'
 import { continentMaskAt, type ContinentMaskParams } from './continentMask'
 import { fbm01, type FbmParams } from './fbm'
 import { landformHeightDeltaAt, landformIndexFor } from './landformDescriptors'
-import { EMPTY_RANGE_SPINES, generateRangeSpines, type RangeSpineSet, sampleRangeSpines, softCapSummitHeight } from './rangeSpines'
+import { EMPTY_RANGE_SPINES, generateRangeSpines, type RangeSpineSet, sampleRangeSpines, softCapSummitHeight, unionWithSpine } from './rangeSpines'
 import { fordBedHeight, fordInfluenceAt, type FordProjection } from './riverFord'
 import { isOnAnyBridgeDeck, type RoadBridgeSpec } from './roadBridge'
 import { computeBodyScale, detectWaterBodies } from './waterBodies'
@@ -605,13 +605,6 @@ function sampleRawTexelUncorrected(
   // raw Voronoi cell boundaries so ridge lines wiggle naturally.
   const wxWorleyWarp = wx + noise.warp(wx * 0.0035, wz * 0.0035) * 90
   const wzWorleyWarp = wz + noise.warp(wx * 0.0035 + 40, wz * 0.0035 + 40) * 90
-  const { ridge01 } = worleyRidge(
-    wxWorleyWarp,
-    wzWorleyWarp,
-    region.worleyCellSize,
-    params.seed,
-    region.ridgeSharpness,
-  )
   // Range spines (plan 060 R1): the spine envelope joins the noise gate as the main mountain term, a continuous main
   // crest follows the spine, and pass windows lower the whole gate to a saddle. Same warp as the Worley ridges.
   const spine = sampleRangeSpines(rangeSpinesFor(params.seed, region), wxWorleyWarp, wzWorleyWarp)
@@ -621,8 +614,14 @@ function sampleRawTexelUncorrected(
     region.mountainThreshold + region.mountainThresholdWidth,
   )
   const mountainGate =
-    (spine.gate > noiseGate ? spine.gate : noiseGate) * spine.passFactor * landWeight // no ridges below sea/coast
-  const mountainRidge = (spine.crest > ridge01 ? spine.crest : ridge01) * mountainGate
+    unionWithSpine(spine.gate, noiseGate) * spine.passFactor * landWeight // no ridges below sea/coast
+  // Worley ridges only matter under a mountain gate (`mountainRidge` is gated by it) — skip the 3×3 cell scan elsewhere,
+  // i.e. on most of the world (identical output).
+  const ridge01 =
+    mountainGate > 0
+      ? worleyRidge(wxWorleyWarp, wzWorleyWarp, region.worleyCellSize, params.seed, region.ridgeSharpness).ridge01
+      : 0
+  const mountainRidge = unionWithSpine(spine.crest, ridge01) * mountainGate
   // Suppress fine local detail on top of a strong ridge — this is what keeps the
   // massif reading as continuous terrain instead of a field of sharp isolated
   // spikes/pits stacked on the macro shape (see MOUNTAIN_DETAIL_DAMPING doc comment).
@@ -644,7 +643,7 @@ function sampleRawTexelUncorrected(
   let peakDetailTerm = 0
   if (mountainGate > 0) {
     // A range spine counts as deep mountain territory (full massif gain on its core), like a strong noise envelope.
-    const envelopeStrength = Math.max(
+    const envelopeStrength = unionWithSpine(
       MathUtils.smoothstep(mt, region.mountainThreshold + region.mountainThresholdWidth, 1),
       spine.gate,
     )

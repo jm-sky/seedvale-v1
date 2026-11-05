@@ -1,7 +1,7 @@
 # Plan: Terrain color and shading artifact correction
 
 **Created:** 2026-11-04
-**Status:** `planned` 📋
+**Status:** `verification needed` 🔍
 **Type:** bug
 **Priority:** high · **Effort:** M
 **Depends on:** -
@@ -13,6 +13,10 @@
 ## Goal
 
 Diagnose and eliminate conspicuous large, straight-edged triangular lightness/color patches on outdoor terrain (author screenshot, 2026-11-04, near a shoreline). ✅ Author: **not shadows and not lighting** — the defect sits at the **joins of terrain chunks**; seen around noon on open terrain with the camera looking down; patches **do not move** with the camera (world-anchored); **probably older than the hydrology correction** (`5f127b450`, 2026-11-03; uncertain). Screenshot (local `_temp/screenshots/terrain-artifacts.jpg`, 2026-11-04 13:33, in-game 09:15, fog): planar sand facets 20–40 m wide with straight, mostly diagonal edges meeting near the player, and a **polygonal shoreline of long straight segments**, so the height surface is piecewise planar far above the 1 m mesh scale. Prime suspect: the hydrology correction layer (screenshot postdates it); chunk-seam mismatch second (notes §1). Keep the existing biome palette, procedural variation, coast, weather and terrain rendering architecture intact. **The root cause is not established.** This is a correctness/visual-artifact fix, not a terrain art-direction redesign.
+
+## Outcome (2026-11-05)
+
+Root cause found and fixed (author chose option A: fix both sources). The cause was C¹ breaks in the terrain **height** field, not chunk seams, colour, shadows or fog: Worley ridges plus range spines (060), and the 8 m bilinear hydrology correction (058). Measurements, implementation and open follow-ups: [implementation notes § Fix](implementation-notes/world-terrain-065-terrain-color-and-shading-artifact-correction-implementation-notes.md#fix-implemented-opus-2026-11-05). Final visual acceptance → queue §2.
 
 ## Evidence — targeted static recon (2026-11-04)
 

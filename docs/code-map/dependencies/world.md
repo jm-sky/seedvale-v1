@@ -955,6 +955,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `terrain/worleyNoise.ts`
 - `world/caves/caveHeightfieldRepresentation.ts`
 - `world/caves/caveMath.test.ts`
 
@@ -3653,6 +3654,7 @@ Generated from TypeScript imports.
 - `app/worldBundle.ts`
 - `debug/locationQueries.ts`
 - `main.ts`
+- `terrain/farTerrain.test.ts`
 - `terrain/lakeWater.test.ts`
 - `terrain/worldHydrologyRuntime.test.ts`
 - `ui-vue/lib/mapFogLayer.ts`

@@ -596,31 +596,31 @@ Generated from exported TypeScript symbols.
 
 ## `world/caves/caveWorldgenCache.ts`
 
-- `CAVE_MANIFEST_SUBKEY` — const — line 54
-- `CaveDerivedPayload` — type — line 75
-- `CaveManifestEntry` — type — line 63
-- `CaveManifestPayload` — type — line 68
+- `CAVE_MANIFEST_SUBKEY` — const — line 55
+- `CaveDerivedPayload` — type — line 76
+- `CaveManifestEntry` — type — line 64
+- `CaveManifestPayload` — type — line 69
 - `CAVES_V2_NAMESPACE` — const — line 33
   - domain: world-terrain
   - system: worldgen-cache
   - role: Persistent-cache adapter for Cave V2 *retained worldgen* (plan world-terrain-030): the accepted `{ archetype, topology }` manifest plus, per accepted cave, its retained `CaveHeightfieldRepresentation`, content anchors and dungeon pool. Stores the existing canonical cave domain types verbatim — there is deliberately no cache-specific cave model, no second spatial representation and no `SaveData` field.
   - integration: Disposable derived data only. `createCaves()` stays fully synchronous and fully deterministic without this module; a miss, a malformed record or an IndexedDB failure always falls back to normal generation. Never presentation/Three.js state, never quest, container, loot, fauna or discovery consequences of an anchor.
-- `CAVES_V2_VERSION` — const — line 47
-- `caveSubKey` — function — line 56
-- `CaveWorldgenBuildResult` — type — line 95
-- `CaveWorldgenCacheStorage` — type — line 292
-- `caveWorldgenFingerprint` — function — line 120
+- `CAVES_V2_VERSION` — const — line 48
+- `caveSubKey` — function — line 57
+- `CaveWorldgenBuildResult` — type — line 96
+- `CaveWorldgenCacheStorage` — type — line 293
+- `caveWorldgenFingerprint` — function — line 121
   - domain: world-terrain
   - system: worldgen-cache
-- `CaveWorldgenSnapshot` — type — line 86
-- `loadCaveWorldgenSnapshot` — function — line 316
+- `CaveWorldgenSnapshot` — type — line 87
+- `loadCaveWorldgenSnapshot` — function — line 317
   - domain: world-terrain
   - system: worldgen-cache
-- `persistCaveWorldgen` — function — line 362
+- `persistCaveWorldgen` — function — line 363
   - domain: world-terrain
   - system: worldgen-cache
-- `validateCaveDerived` — function — line 271
-- `validateCaveManifest` — function — line 187
+- `validateCaveDerived` — function — line 272
+- `validateCaveManifest` — function — line 188
 
 ## `world/caves/clipBelowSurface.ts`
 
@@ -1337,14 +1337,14 @@ Generated from exported TypeScript symbols.
   - system: worldgen-cache
   - role: Persistent-cache integration for abandoned-cemetery materialization (plan world-025) — stores the deterministic result of a roll-pass `ChunkManager.probeAbandonedCemeteryAtChunk()` so later Near/Guard/Far discovery, other saves on the same seed, and later sessions can skip the expensive `paramsFor` + terrain-sampler path.
   - integration: Disposable derived data only. A miss or storage failure always falls back to the canonical ChunkManager probe. Never player discovery state, never a second cemetery resolver.
-- `ABANDONED_CEMETERY_VERSION` — const — line 31
-- `AbandonedCemeteryCache` — type — line 70
-- `abandonedCemeteryFingerprint` — function — line 50
+- `ABANDONED_CEMETERY_VERSION` — const — line 32
+- `AbandonedCemeteryCache` — type — line 71
+- `abandonedCemeteryFingerprint` — function — line 51
   - domain: world
   - system: worldgen-cache
-- `CachedAbandonedCemeteryResult` — type — line 33
-- `chunkSubKey` — function — line 37
-- `createAbandonedCemeteryCache` — function — line 91
+- `CachedAbandonedCemeteryResult` — type — line 34
+- `chunkSubKey` — function — line 38
+- `createAbandonedCemeteryCache` — function — line 92
   - domain: world
   - system: worldgen-cache
 
@@ -1469,17 +1469,17 @@ Generated from exported TypeScript symbols.
 
 ## `world/locations/locationsCoarseCache.ts`
 
-- `CoarseCachePersistence` — type — line 48
-- `CoarseTilePayload` — type — line 27
-- `createCoarseCachePersistence` — function — line 66
+- `CoarseCachePersistence` — type — line 49
+- `CoarseTilePayload` — type — line 28
+- `createCoarseCachePersistence` — function — line 67
 - `LOCATIONS_COARSE_NAMESPACE` — const — line 21
   - domain: world
   - system: worldgen-cache
   - role: Persistent-cache integration for `WorldLocationCatalog`'s coarse terrain tiles (plan world-015 §7/§11/§15) — reuses the exact tile shape `worldLocationCatalog.ts` already keeps in memory (`Uint8Array` state + `Float32Array` height per 16×16 tile), never a second coarse-terrain representation.
   - integration: The catalog stays fully synchronous; this module owns the async IndexedDB side (hydrate-on-activate, debounced dirty-tile upsert) behind a synchronous `hydrateTile`/`onTileDirty` seam the catalog calls through its `WorldLocationCatalogDeps`. A hydrate miss or write failure always falls back to normal procedural sampling — this is an optimization layer, never a correctness dependency.
-- `LOCATIONS_COARSE_VERSION` — const — line 25
-- `locationsCoarseFingerprint` — function — line 38
-- `tileSubKey` — function — line 29
+- `LOCATIONS_COARSE_VERSION` — const — line 26
+- `locationsCoarseFingerprint` — function — line 39
+- `tileSubKey` — function — line 30
 
 ## `world/locations/lostTreasureEstateSearchArea.ts`
 
