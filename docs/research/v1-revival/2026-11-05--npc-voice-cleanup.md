@@ -1,5 +1,82 @@
 # NPC Voice Cleanup — 2026-11-05
 
+## Completed author decision cleanup
+
+The author approved exactly six individual replacements, seven keeps in
+`unresolved-expected`, and no disposition changes elsewhere. The structured
+[317-record decision snapshot](../../assets/voice-qc/author-decisions.json)
+separates `keep` / `replace` / `pending` from speaker comments, historical identity
+and transcript QC. It preserves the original author cells and binds each row to
+its ledger Git blob. Counts: **7 keep, 6 replace, 304 pending**. All seven suspected
+British-female files remain pending and untouched.
+
+Removed from both donor and public root (12 MP3 files, six distinct contents):
+
+- `general_male_young_farewell_01.mp3`
+- `general_male_young_greeting_01.mp3`
+- `general_male_old_greeting_01.mp3`
+- `general_male_danger_alert_01.mp3`
+- `general_male_farewell_01.mp3`
+- `general_male_greeting_01.mp3`
+
+Every Git-tracked MP3 was compared by SHA256, including differently named
+recordings, backups and references. Only those 12 paths matched the rejected
+contents. Active inventory is now **311 donor MP3s, 103 public root MP3s**; six
+backup and three public reference files are unchanged. No other audio was deleted.
+
+`src/ai/npcVoiceLines.ts` no longer registers `general:male:greeting`,
+`general:male:farewell`, or `general:male:danger_alert`.
+`src/ui-vue/npcDialogueGreeting.ts` no longer contains the rejected greeting's
+translation. The three age recordings were already unregistered. Missing clips
+resolve to the existing silent/text-only behavior; profession-specific barks and
+other NPC voice features are preserved. Catalogs retain original text/voice
+metadata with explicit removal annotations; Piotr's dynamic coverage rows are
+marked historical/now silent. Dated inventory/Q90 coverage remains historical.
+
+The [six-entry structured regeneration backlog](../../assets/voice-qc/regeneration-backlog.json)
+contains original/generation/ASR/proposed text, intended role, UUID evidence,
+removed paths, Git blobs, SHA256 hashes, recovery commit and all pre-cleanup tracked
+text references. The [readable backlog](../../assets/voice-qc/REGENERATION-BACKLOG.md)
+explains proposed wording and integration gates. Current approved replacement
+targets are Casual Male Speaker for the farmer lines and george for the old male
+line; historical UUIDs remain unverified, and both young replacement UUIDs are
+explicitly unresolved. No Fish generation, casting changes or Q90/named-script
+text changes were made.
+
+All **317 historical ledger records remain byte-for-byte unchanged**, as do raw
+identity scores, calibration, generation history and identity overrides. Git
+retains exact deleted audio. Historical presence flags are not live availability.
+The ASR generator now retains approved removed rows verbatim, rejects unexplained
+inventory loss, preserves unselected rows in limited runs and loads Whisper only
+if transcription is needed. The identity Markdown renderer rebuilds author
+comments/dispositions from JSON even with no existing Markdown, preserves them
+through category moves, and rejects stale content bindings or conflicting edits.
+
+Pending: seven British-female cases; historical UUIDs for the seven kept age
+recordings; speaker/age eligibility for the two young replacements; approval of
+proposed replacement text and later source/transcript/context/listening QC.
+Re-enabling broader general-bank and age playback depends on Q88/Q89 and is out
+of scope; there is no blocker to the completed cleanup.
+
+Verification executed:
+
+- Python voice validation: **12 tests passed** (decision regeneration/category
+  moves/conflict safety; 317 historical rows; recovered audio/hash evidence;
+  untouched valid donor/public audio; no rejected hashes or broken static runtime
+  voice paths).
+- Full cached ASR ledger regeneration: **311 available files processed**, no model
+  initialization; six historical removed rows retained, resulting file unchanged.
+- Vitest voice resolver, bark limiter and dialogue greeting: **44 tests passed**.
+- ESLint on changed TypeScript files: **passed**.
+- Production build including Vue/TypeScript checking: **passed**.
+- No browser or listening verification; no new audio generation.
+
+## Historical baseline — before approved deletion
+
+The original audit below records the earlier documentation-only pass. Its asset
+counts and “no files removed” statements describe that baseline, not current
+availability. Current disposition/removal authority is the section above.
+
 **Scope:** Documentation and dependency audit on V1 `main` `59c6ae15`; no files removed, no runtime or MP3 changes. [Current author-approved casting](../../plans/npc-065-stable-npc-voice-casting-and-donor-qc.md#npc-voice-map) is the single casting authority. Q90's 87 exact approved takes and the named packet's 89 draft texts retain their recording IDs, filenames and transcripts. Historical decisions remain in the source documents and Git.
 
 ## Resolved contradictions

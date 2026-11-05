@@ -4,7 +4,12 @@ Living backlog of sound effects Seedvale still needs (or has but must wire).
 
 Inventory of files already in the repo: [`public/sounds/README.md`](../../public/sounds/README.md). One-shot research snapshot that seeded this list: [research 007](../research/2026-08-11--007--sound-needs.md).
 
-**Last updated:** 2026-09-18
+**Last updated:** 2026-11-05
+
+**NPC voice cleanup (2026-11-05):** six author-rejected recordings removed from
+donor and public assets (12 copies). The general male greeting/farewell/danger
+manifest entries are withdrawn; missing coverage stays silent/text-only. Other
+voices remain available. [Exact removal evidence and regeneration backlog](voice-qc/REGENERATION-BACKLOG.md).
 
 ## How to use
 

@@ -136,12 +136,12 @@ This table is generated from the inspected static manifest and role→general lo
 
 | Intent | Existing resolved files | Producer |
 | --- | --- | --- |
-| greeting | `general_male_greeting_01.mp3` | existing generic event |
-| farewell | `general_male_farewell_01.mp3` | existing generic event |
+| greeting | `general_male_greeting_01.mp3` (removed; historical reference) | silent pending approved replacement; see [backlog](../../assets/voice-qc/regeneration-backlog.json) |
+| farewell | `general_male_farewell_01.mp3` (removed; historical reference) | silent pending approved replacement; see [backlog](../../assets/voice-qc/regeneration-backlog.json) |
 | hungry | `general_male_hungry_01.mp3` | existing generic event |
 | exhausted | `general_male_exhausted_01.mp3` | existing generic event |
 | weather_shelter_rain | `general_male_weather_shelter_01.mp3` | existing generic event |
-| danger_alert | `general_male_danger_alert_01.mp3` | existing generic event |
+| danger_alert | `general_male_danger_alert_01.mp3` (removed; historical reference) | silent pending approved replacement; see [backlog](../../assets/voice-qc/regeneration-backlog.json) |
 | combat_start | `general_male_combat_start_01.mp3` | existing generic event |
 | work_finished | `general_male_work_finished_01.mp3` | existing generic event |
 

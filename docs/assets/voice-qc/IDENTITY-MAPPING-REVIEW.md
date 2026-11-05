@@ -59,7 +59,7 @@ Exactly 12 classifications changed:
 
 `general_male_young_greeting_02.mp3` changes Expected to author-confirmed Little-Lem but remains ambiguous under the unchanged policy. The two verified recordings become missing-reference because their sole same-speaker reference is byte-identical and excluded; this is not a new audio defect.
 
-## Remaining review
+## Historical remaining review (before author disposition decisions)
 
 Seven high-confidence mismatches against the ledger remain; all favor British-female:
 
@@ -75,6 +75,20 @@ The catalog identifies British-female as a previous general-female candidate, so
 
 The ten unresolved age files above need historical metadata or an explicit author identity decision. The 22 ambiguous clips still require listening; author `guard?` is tentative and `REMOVE` is a disposition, not a speaker identity. Both remain exactly as entered, along with all `?` cells. No transcript QC, final verdict, audio or runtime casting was changed.
 
-## Regeneration safety
+## Current disposition decisions and regeneration safety
 
-The Markdown renderer reads existing Decision cells by filename before writing. Every generated classification table includes that column, so decisions survive category moves. Malformed/duplicate decision rows and disappearing filenames stop regeneration before writing. Repeating the renderer is idempotent. It never turns Decision text into overrides automatically; corrections require an explicit evidence-backed JSON entry. Preserve the existing Markdown when regenerating, since it owns author decisions.
+The author subsequently approved exactly six replacements and seven keeps in
+`unresolved-expected`; the seven suspected British-female recordings remain
+pending. See [structured author decisions](author-decisions.json), the
+[replacement backlog](regeneration-backlog.json) and the
+[cleanup report](../../research/v1-revival/2026-11-05--npc-voice-cleanup.md).
+Keeping an age-compatible recording does not resolve its historical UUID. The
+identity overrides and original 317-row audit/ledger remain unchanged.
+
+The renderer reads separate speaker comments and recording dispositions from
+content-bound JSON. It reconstructs reports from scratch, retains comments across
+category moves, and rejects conflicting Markdown comments, malformed/duplicate
+rows or stale/incomplete structured decisions before writing. Repeated rendering
+is idempotent. The old `?`, `guard?` and `REMOVE` cells remain historical evidence;
+the separate Disposition column carries the approved action. Speaker identity,
+transcript QC and disposition never overwrite one another.

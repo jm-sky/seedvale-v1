@@ -56,12 +56,42 @@ scores/classifications from existing version-scoped embeddings and fails a cache
 miss without loading the model. Schema v2 records the override file hash,
 per-row evidence/status, original ledger voiceId and whether the model initialized.
 
-Keep the existing `IDENTITY-AUDIT.md` in place: its `Decision` cells are owned by
-the author. The renderer preserves them by filename across classification moves,
-including tentative `guard?`, `?`, and disposition `REMOVE`. Invalid/duplicate
-decision rows or missing files abort before writing. Repeated regeneration is
-idempotent. Decisions never update transcript QC, author verdicts or expected
-overrides automatically.
+Author decisions are now owned by
+[`author-decisions.json`](../../docs/assets/voice-qc/author-decisions.json), bound
+by filename and historical Git blob. Disposition (`keep` / `replace` / `pending`)
+is separate from `speakerAssessment`, expected-identity overrides and transcript
+QC. The seven empty unresolved-age cells mean keep; other empty cells remain
+pending. The original `?`, `guard?`, `REMOVE` and speaker comments remain evidence.
+The renderer can reconstruct Markdown from scratch and preserves decisions across
+classification changes. Conflicting Markdown edits, stale bindings, incomplete
+coverage or malformed/duplicate rows fail before writing. Edit structured author
+evidence explicitly when a new author decision arrives; neither identity nor
+transcript verdicts are inferred from disposition.
+
+The [six-recording replacement backlog](../../docs/assets/voice-qc/regeneration-backlog.json)
+records every removed path, blob, SHA256, original/ASR/proposed text and integration
+gate. The ledger and audit JSON are historical snapshots of all 317 recordings;
+`inV1Public` and `publicCopyIdentical` describe that snapshot, not live availability.
+The ledger generator retains authorized missing rows verbatim and aborts on
+unapproved missing audio. A `--limit` run also preserves unselected rows. Cached
+ASR does not initialize Whisper. Run the full generator without `--force` to
+verify that cleanup preserves the ledger exactly.
+
+The embedding extractor still requires audio files. To reproduce historical
+embeddings after deletion, use a separate temporary checkout at `historicalCommit`
+from the backlog (or recover the exact blobs there with `git show`); do not restore
+rejected recordings into the active donor/public tree or overwrite the historical
+audit with missing-file errors. Markdown-only regeneration uses the committed audit
+and requires neither deleted audio nor model dependencies. Future accepted takes
+must receive fresh content bindings/QC without erasing original evidence.
+
+Validation without model downloads or generation:
+
+```sh
+python3 -m unittest discover -s scripts/voice -p 'test_voice*.py'
+python3 scripts/voice/voice-qc-ledger.py
+python3 scripts/voice/voice-identity-report.py docs/assets/voice-qc/identity-audit.json docs/assets/voice-qc/IDENTITY-AUDIT.md
+```
 
 `referenceChecks` contains leave-one-content-out reference scores, with singleton
 voices explicitly missing their own reference. The local policy only labels
