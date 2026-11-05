@@ -122,3 +122,20 @@ Author: a crag must stand **1–3 tree heights** above the terrain; a crater may
 - **White rock:** not landform snow but `applyMountainRock`: snow tint started at 0.55 × `heightScale` (≈ 10 m) × ridge, so any 15 m rock with ridge 1 went white. Now by **metres: 45 → 75 m** × ridge (real snow lives in `snowField` at `SNOW_ALT_M` 60–140). ⚠ affects every mountain (noise massifs 25–40 m lose the white tint; ranges ≥ 60 m keep it) — a visual change beyond landforms, flagged for the author.
 - **Crag:** rock/soil only on the top (weight 1 → 0 between 0.15 and 0.5 r); flanks keep grass. Geometry unchanged (18–34 m).
 - Caches bumped again (chunk tiles 32, hydrology 7, settlements 31, roads 19, caves 13, locations-coarse 10, cemeteries 16). Full suite 9287 green. Not observed in the browser.
+
+### R4 — pass-corridor grade on the final terrain (Sonnet, 2026-11-05, queue Q119)
+
+`pnpm tsx scripts/perf/census-pass-grades.ts` — hydrology-corrected `sampleHeightAt` (production hydrology installed), 20 m steps along the corridor centreline, both directions; roads/pads not applied (separate shapers). No tuning.
+
+| Seed | Pass | 20 m step max up / down | worst 100 m mean | steps > 12 % |
+| --- | --- | --- | --- | --- |
+| 42 | `-10_-5:0` | 24.2 / 18.4 % | 9.3 % | 6/60 |
+| 42 | `4_5:0` | 25.8 / 19.3 % | 7.4 % | 3/60 |
+| 42 | `5_-6:0` | 25.0 / 25.3 % | 8.9 % | 6/60 |
+| 415424794 | `-10_-3:0` | 16.3 / 16.7 % | 9.5 % | 7/60 |
+| 415424794 | `-10_-3:1` | 15.6 / 19.2 % | 5.6 % | 5/60 |
+| 415424794 | `6_-7:0` | 19.7 / **41.0** % | **14.1 %** | 8/60 |
+
+- 5 of 6 passes: worst 100 m mean ≤ 9.5 % (within the 12 % `maxGrade`); individual 20 m steps exceed it (detail-noise roughness, same class as R2 note).
+- 🟡 `415424794` `rp:rs:6_-7:0` exceeds 12 % on a 100 m window (14.1 %, one 41 % step downhill) — a pass this steep would need switchbacks/route cost; whether the router still crosses it is a road census question (routed components stay 1 on `415424794`, see R4 re-census). Left for the author / Q61–063 close-out, not tuned here.
+- Still not done: chunk-generation / hydrology boot time vs D7, peak memory, browser check (pass, summit, crater, lake island), landform preview layer.
