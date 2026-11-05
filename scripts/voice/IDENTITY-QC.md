@@ -15,11 +15,23 @@ The pinned model revision, installed library versions and decoding recipe scope
 content-hash caches. MP3 decoding uses PyAV (no system FFmpeg needed), mono 16kHz,
 full clips without VAD; inference uses CPU with two threads by default.
 
-Mapping evidence is in `voice-identity-map.json`: donor catalog for historical
+Bank/reference mapping evidence is in `voice-identity-map.json`: donor catalog for historical
 bank identities, production notes for alternate male candidates, npc-065 for
 Old man/woman and Little Lem. KID has no established UUID and is reported as an
 unmapped reference. Historical bank UUIDs are expected sources, not current NPC
 casting assignments. This tool never imports the Whisper generator.
+
+Per-recording expectations live in `voice-identity-overrides.json` (override path
+with `--overrides`). Each entry requires a ledger `gitBlob`, UUID or explicit
+null, evidence, and status (`historical-verified`, `author-confirmed`, or
+`unresolved`). Overrides precede the ledger; null blocks fallback and classifies
+as `unresolved-expected`. Unlisted files fall back to the original bank mapping.
+Unknown ledger speakers also remain unresolved. Stale content bindings, unknown
+UUIDs and unknown filenames fail validation. Add corrections to JSON, not Python;
+retain original ledger `voiceId`, exposed as `ledgerVoiceId` in audit rows.
+Filename age, matching transcript and embedding winner alone are not proof.
+See [the mapping review](../../docs/assets/voice-qc/IDENTITY-MAPPING-REVIEW.md)
+for the 13 age exceptions and unresolved historical British-female candidates.
 
 Every eligible reference/target cosine is retained. Identical content is excluded
 before averaging scores per UUID, including an identical target renamed in the
@@ -38,6 +50,18 @@ After reviewing the calibration gate, reproduce the full triage and Markdown:
 /tmp/seedvale-identity-venv/bin/python scripts/voice/voice-identity-qc.py --policy docs/assets/voice-qc/identity-policy.json --output docs/assets/voice-qc/identity-audit.json
 python3 scripts/voice/voice-identity-report.py docs/assets/voice-qc/identity-audit.json docs/assets/voice-qc/IDENTITY-AUDIT.md
 ```
+
+For a mapping-only rerun, add `--cache-only` to the QC command: it recomputes all
+scores/classifications from existing version-scoped embeddings and fails a cache
+miss without loading the model. Schema v2 records the override file hash,
+per-row evidence/status, original ledger voiceId and whether the model initialized.
+
+Keep the existing `IDENTITY-AUDIT.md` in place: its `Decision` cells are owned by
+the author. The renderer preserves them by filename across classification moves,
+including tentative `guard?`, `?`, and disposition `REMOVE`. Invalid/duplicate
+decision rows or missing files abort before writing. Repeated regeneration is
+idempotent. Decisions never update transcript QC, author verdicts or expected
+overrides automatically.
 
 `referenceChecks` contains leave-one-content-out reference scores, with singleton
 voices explicitly missing their own reference. The local policy only labels

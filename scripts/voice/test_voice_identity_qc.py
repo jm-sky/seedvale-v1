@@ -2,6 +2,8 @@ import importlib.util
 import json
 from pathlib import Path
 import tempfile
+import subprocess
+import sys
 import unittest
 
 spec = importlib.util.spec_from_file_location('identity', Path(__file__).with_name('voice-identity-qc.py'))
@@ -9,6 +11,51 @@ qc = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(qc)
 
 class IdentityTests(unittest.TestCase):
+    def test_expected_overrides_and_unknowns(self):
+        mapping = json.loads(Path(__file__).with_name('voice-identity-map.json').read_text())
+        overrides = json.loads(Path(__file__).with_name('voice-identity-overrides.json').read_text())
+        ledger = json.loads((qc.ROOT/'docs/assets/voice-qc/ledger.json').read_text())['rows']
+        rows = {r['file']:r for r in ledger}
+        for file, entry in overrides['recordings'].items():
+            self.assertEqual(qc.expected_uuid(rows[file], mapping, overrides), entry['uuid'])
+        self.assertEqual(qc.expected_uuid(rows['general_male_young_greeting_02.mp3'], mapping, overrides), mapping['voices']['Little-Lem'])
+        self.assertIsNone(qc.expected_uuid(rows['general_male_young_greeting_01.mp3'], mapping, overrides))
+        self.assertIsNone(qc.expected_uuid({'voiceId':'unknown'}, mapping, overrides))
+        self.assertIsNone(qc.expected_uuid({'voiceId':'KID'}, mapping, overrides))
+        self.assertEqual(qc.expected_uuid({'voiceId':mapping['voices']['Laura']}, mapping, overrides), mapping['voices']['Laura'])
+        stale = dict(rows['general_female_old_farewell_01.mp3'], gitBlob='changed')
+        with self.assertRaisesRegex(ValueError, 'Stale'):
+            qc.expected_uuid(stale, mapping, overrides)
+        for entry in overrides['recordings'].values():
+            for evidence in entry['evidence']:
+                if evidence.endswith('.mp3'):
+                    self.assertEqual(subprocess.check_output(['git', 'hash-object', str(qc.ROOT/evidence)], text=True).strip(), entry['gitBlob'])
+
+    def test_report_preserves_decisions_across_classification_changes(self):
+        report_spec = importlib.util.spec_from_file_location('report', Path(__file__).with_name('voice-identity-report.py'))
+        renderer = importlib.util.module_from_spec(report_spec)
+        report_spec.loader.exec_module(renderer)
+        audit = qc.ROOT/'docs/assets/voice-qc/identity-audit.json'
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp)/'audit.md'
+            source = '| File | Decision |\n| --- | --- |\n'
+            decisions = {'general_male_young_greeting_02.mp3':'Little-Lem', 'general_female_old_farewell_01.mp3':'Old-woman', 'general_male_greeting_01.mp3':'REMOVE', 'general_male_danger_alert_01.mp3':'guard?'}
+            output.write_text(source + ''.join(f'| {f} | {v} |\n' for f,v in decisions.items()))
+            command = [sys.executable, str(Path(__file__).with_name('voice-identity-report.py')), str(audit), str(output)]
+            subprocess.run(command, check=True)
+            first = output.read_text()
+            parsed = renderer.read_decisions(first)
+            self.assertTrue(all(parsed[f] == v for f,v in decisions.items()))
+            subprocess.run(command, check=True)
+            self.assertEqual(first, output.read_text())
+            output.write_text(source + '| unknown.mp3 | KEEP |\n')
+            before = output.read_text()
+            result = subprocess.run(command, capture_output=True)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertEqual(output.read_text(), before)
+        with self.assertRaises(ValueError):
+            renderer.read_decisions(source + '| a.mp3 | extra | KEEP |')
+
     def test_mapping(self):
         mapping = json.loads(Path(__file__).with_name('voice-identity-map.json').read_text())
         self.assertEqual(qc.expected_uuid({'voiceId':'general_male_b'},mapping),mapping['voices']['Brian-British'])
@@ -51,6 +98,8 @@ class IdentityTests(unittest.TestCase):
         self.assertEqual(qc.classify(row,policy),'ambiguous')
         row['missingExpectedReference']=True
         self.assertEqual(qc.classify(row,policy),'missing-reference')
+        row['expectedUuid']=None
+        self.assertEqual(qc.classify(row,policy),'unresolved-expected')
 
     def test_committed_audit_integrity(self):
         path=qc.ROOT/'docs/assets/voice-qc/identity-audit.json'
@@ -61,8 +110,17 @@ class IdentityTests(unittest.TestCase):
         self.assertEqual({r['file'] for r in audit['rows']},{r['file'] for r in ledger['rows']})
         self.assertEqual(len(audit['rows']),len(ledger['rows']))
         refs={r['file']:r for r in audit['references']}
+        mapping=json.loads(Path(__file__).with_name('voice-identity-map.json').read_text())
+        overrides_path=Path(__file__).with_name('voice-identity-overrides.json')
+        overrides=json.loads(overrides_path.read_text())
+        self.assertEqual(audit['overridesSha256'], qc.digest(overrides_path))
+        ledger_rows={r['file']:r for r in ledger['rows']}
         for row in audit['rows']:
             self.assertNotIn('error',row)
+            original=ledger_rows[row['file']]
+            self.assertEqual(row['ledgerVoiceId'],original['voiceId'])
+            self.assertEqual(row['expectedUuid'],qc.expected_uuid(original,mapping,overrides))
+            self.assertEqual(row['expectedScore'],row['voiceScores'].get(row['expectedUuid']))
             self.assertEqual(row['bestScore'],max(row['voiceScores'].values()))
             for pair in row['pairs']:
                 self.assertNotEqual(row['sha256'],refs[pair['file']]['sha256'])

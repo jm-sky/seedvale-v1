@@ -29,9 +29,27 @@ def reference_name(path):
     return path.name.split('-2026-')[0]
 
 
-def expected_uuid(row, mapping):
+def expected_identity(row, mapping, overrides):
+    """Resolve reviewed per-content expectations before historical bank metadata."""
+    override = overrides.get('recordings', {}).get(row.get('file'))
+    if override is not None:
+        if override['gitBlob'] != row.get('gitBlob'):
+            raise ValueError(f"Stale identity override: {row['file']}")
+        uuid = override['uuid']
+        if uuid is not None and uuid not in mapping['voices'].values():
+            raise ValueError(f'Unknown override UUID: {uuid}')
+        if not override['evidence'] or override['status'] not in ('historical-verified', 'author-confirmed', 'unresolved'):
+            raise ValueError('Override requires evidence and an explicit status')
+        if (uuid is None) != (override['status'] == 'unresolved'):
+            raise ValueError('Unresolved override must have null UUID')
+        return dict(expectedUuid=uuid, expectedSource='override', expectedEvidence=override)
     value = row.get('voiceId')
-    return mapping['profiles'].get(value, value if value in mapping['voices'].values() else None)
+    uuid = mapping['profiles'].get(value, value if value in mapping['voices'].values() else None)
+    return dict(expectedUuid=uuid, expectedSource='ledger' if uuid else 'unknown-ledger')
+
+
+def expected_uuid(row, mapping, overrides=None):
+    return expected_identity(row, mapping, overrides or {})['expectedUuid']
 
 
 class Cache:
@@ -86,6 +104,8 @@ def classify(row, policy):
     """Conservative local triage, never a speaker-identity proof or author verdict."""
     if 'error' in row:
         return 'analysis-error'
+    if row.get('expectedUuid') is None:
+        return 'unresolved-expected'
     if row['missingExpectedReference']:
         return 'missing-reference'
     if row['bestScore'] < policy['minScore'] or (row['margin'] or 0) < policy['minMargin']:
@@ -100,26 +120,34 @@ def main():
     parser.add_argument('--policy', type=Path, help='Locally calibrated triage policy JSON')
     parser.add_argument('--cache', type=Path, default=ROOT/'_temp/voice-identity')
     parser.add_argument('--threads', type=int, default=2)
+    parser.add_argument('--overrides', type=Path, default=Path(__file__).with_name('voice-identity-overrides.json'))
+    parser.add_argument('--cache-only', action='store_true', help='Fail on cache misses; never load the model or run inference')
     args = parser.parse_args()
     started = time.monotonic()
     policy = json.loads(args.policy.read_text()) if args.policy else None
     os.environ['CUDA_VISIBLE_DEVICES'] = ''
     os.environ['HF_HOME'] = str(args.cache/'huggingface')
     import importlib.metadata
-    import av
-    import numpy as np
-    import torch
-    from huggingface_hub import snapshot_download
-    from speechbrain.inference.speaker import EncoderClassifier
     mapping_path = ROOT/'scripts/voice/voice-identity-map.json'
     mapping = json.loads(mapping_path.read_text())
-    torch.set_num_threads(args.threads)
-    snapshot = snapshot_download(MODEL, revision=mapping['modelRevision'])
-    model = EncoderClassifier.from_hparams(source=snapshot, savedir=str(args.cache/'model'), run_opts={'device':'cpu'})
+    overrides = json.loads(args.overrides.read_text())
+    model = None
     versions = {p: importlib.metadata.version(p) for p in ('torch','torchaudio','speechbrain','av','numpy','huggingface-hub')}
     version = json.dumps([MODEL, mapping['modelRevision'], versions, 'mono-16k-av-full-clip-v1'], sort_keys=True)
 
     def extract(path):
+        nonlocal model
+        if args.cache_only:
+            raise ValueError(f'Embedding cache miss: {path}')
+        import av
+        import numpy as np
+        import torch
+        if model is None:
+            from huggingface_hub import snapshot_download
+            from speechbrain.inference.speaker import EncoderClassifier
+            torch.set_num_threads(args.threads)
+            snapshot = snapshot_download(MODEL, revision=mapping['modelRevision'])
+            model = EncoderClassifier.from_hparams(source=snapshot, savedir=str(args.cache/'model'), run_opts={'device':'cpu'})
         resampler = av.AudioResampler(format='fltp', layout='mono', rate=16000)
         chunks = []
         with av.open(str(path)) as audio:
@@ -149,6 +177,9 @@ def main():
             errors.append({'file':str(path.relative_to(ROOT)), 'error':str(error)})
     ledger_path = ROOT/'docs/assets/voice-qc/ledger.json'
     rows = json.loads(ledger_path.read_text())['rows']
+    unknown_overrides = set(overrides['recordings']) - {r['file'] for r in rows}
+    if unknown_overrides:
+        raise ValueError(f'Unknown override files: {unknown_overrides}')
     selection = json.loads(args.sample.read_text()) if args.sample else None
     if selection:
         unknown = set(selection)-{r['file'] for r in rows}
@@ -158,7 +189,8 @@ def main():
     output, processed = [], {}
     for row in rows:
         path = ROOT/'docs/v3-donor/voices/mp3'/row['file']
-        record = dict(file=row['file'], expectedUuid=expected_uuid(row,mapping), ledgerGitBlob=row['gitBlob'])
+        record = dict(file=row['file'], ledgerVoiceId=row.get('voiceId'),
+                      **expected_identity(row, mapping, overrides), ledgerGitBlob=row['gitBlob'])
         try:
             key, result = cache.get(path)
             actual_blob = subprocess.check_output(['git','hash-object',str(path)],text=True).strip()
@@ -177,9 +209,10 @@ def main():
         output.append(record)
         print(f"{len(output)}/{len(rows)} {row['file']}", flush=True)
     usage = resource.getrusage(resource.RUSAGE_SELF)
-    report = dict(policy=policy, schemaVersion=1, model=MODEL, revision=mapping['modelRevision'], versions=versions,
+    report = dict(policy=policy, schemaVersion=2, model=MODEL, revision=mapping['modelRevision'], versions=versions,
                   preprocessing='mono 16kHz full clip; no VAD', pooling='mean cosine per unique reference content per UUID',
                   mappingSha256=digest(mapping_path), ledgerSha256=digest(ledger_path), threads=args.threads,
+                  overridesSha256=digest(args.overrides), modelInitialized=model is not None,
                   wallSec=time.monotonic()-started, cpuUserSec=usage.ru_utime, cpuSystemSec=usage.ru_stime,
                   peakRssKiB=usage.ru_maxrss, cacheHits=cache.hits, cacheMisses=cache.misses,
                   uniqueTargetContents=len(processed), referenceErrors=errors,
