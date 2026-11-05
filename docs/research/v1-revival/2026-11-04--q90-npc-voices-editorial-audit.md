@@ -1,5 +1,7 @@
 # Q90 — NPC voices and dialogue editorial audit
 
+**Casting update — 2026-11-05:** The [NPC-Voice map](../../plans/npc-065-stable-npc-voice-casting-and-donor-qc.md#npc-voice-map) is authoritative. Earlier casting holds/alternatives in this dated evidence are superseded: Kasia→Expressive Female, Anna→Laura, Piotr→Country Baritone, Molly→Hannah, Piers→Warm Male Friend (farmer; no runtime key), Jakub→Arthur, Patric→Dramatic, generic hunter→Cowboy, male farmer→Casual, general female→Warm Conversational, fisher→Rick. Existing file source/transcript/context QC and missing runtime bindings remain separate gates. See [cleanup report](./2026-11-05--npc-voice-cleanup.md). No transcript, recording ID, filename or ledger verdict is changed.
+
 **Date:** 2026-11-04  
 **Status:** **Author-approved 2026-11-04** (87-take Fish Audio script and editorial text-only pass); recording, QC, casting and runtime integration remain outstanding.  
 **V1 evidence pin:** `bca03d453bfb0177a9d2801c4d2ccc7ca0c3b7a5` (`main` when research began).  

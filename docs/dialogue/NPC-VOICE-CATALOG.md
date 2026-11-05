@@ -1,6 +1,6 @@
 # NPC Voice Catalog
 
-Canonical working catalog for generated NPC voice samples.
+Working catalog for generated NPC voice samples. For the latest casting decision and distinct runtime/MP3/QC states, see [npc-065 NPC-Voice map](../plans/npc-065-stable-npc-voice-casting-and-donor-qc.md#npc-voice-map). The provider table below is historical file provenance, not current casting.
 
 Visible in-game dialogue remains Polish. Generated/spoken voice samples are English and represent semantic intent rather than a literal reading of the displayed Polish line.
 

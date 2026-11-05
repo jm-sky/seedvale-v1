@@ -1,5 +1,7 @@
 # Named NPC voices — reuse shortlist and QC blockers
 
+**Casting update — 2026-11-05:** The [NPC-Voice map](../../plans/npc-065-stable-npc-voice-casting-and-donor-qc.md#npc-voice-map) is authoritative. Earlier casting holds/alternatives in this dated evidence are superseded: Kasia→Expressive Female, Anna→Laura, Piotr→Country Baritone, Molly→Hannah, Piers→Warm Male Friend (farmer; no runtime key), Jakub→Arthur, Patric→Dramatic, generic hunter→Cowboy, male farmer→Casual, general female→Warm Conversational, fisher→Rick. Existing file source/transcript/context QC and missing runtime bindings remain separate gates. See [cleanup report](./2026-11-05--npc-voice-cleanup.md). No transcript, recording ID, filename or ledger verdict is changed.
+
 **2026-11-05 · source `2722c78ab6d79b3312d78877f9b96140fd97ddb1` · no audio listened to in this pass.**
 
 [Audit](./2026-11-05--named-npc-voice-audit.md) · [Script](./2026-11-05--named-npc-voice-script.md) · [JSON](./2026-11-05--named-npc-voice-script.json)

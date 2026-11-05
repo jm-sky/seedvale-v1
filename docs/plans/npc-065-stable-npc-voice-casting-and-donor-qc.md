@@ -9,6 +9,86 @@
 **Subdomains:** `dialogue`
 **Tags:** `voice` `audio` `casting` `v3-donor` `revival-q45`
 
+## Current status and navigation — 2026-11-05
+
+- [Author-approved casting](#npc-voice-map) — latest author decisions; historical speaker aliases are not runtime assignments.
+- [Implemented runtime / asset / QC / recording status](#implementation-and-recording-status) — independently verified facts.
+- [Q90 approved recording texts](../research/v1-revival/2026-11-04--q90-fish-audio-script.md) · [Named NPC draft script](../research/v1-revival/2026-11-05--named-npc-voice-script.md).
+- [NPC Voice Cleanup report and hygiene inventory](../research/v1-revival/2026-11-05--npc-voice-cleanup.md).
+
+## NPC-Voice map
+
+**Author-approved casting · 2026-11-05 09:30.** This map is the single current source of casting decisions and supersedes earlier casting proposals/listening holds below. `?` means undecided; never fill it automatically. Voice selection does not approve existing MP3s, transcripts, runtime assignment or generation of unapproved text.
+
+### Defined named NPCs
+
+| Name | Profession | Voice name | Fish voice ID |
+| --- | --- | --- | --- |
+| Marek      | Guard              | Friendly Male           | 2adcdee4b3ce4b648dc16ea65430ea76 |
+| Kasia      | Trader             | Expressive Female       | d4f161bee1934b47ad3090f05649270c |
+| Anna       | Farmer             | Laura                   | e3cd384158934cc9a01029cd7d278634 |
+| Piotr      | Woodcutter         | Country Baritone        | 5e03f21950f64729935dd8402c9c9702 |
+| Molly      | Shepherd           | Hannah                  | 9a9cf47702da476aa4629e2506d4a857 |
+| Piers      | Farmer             | Warm Male Friend        | f292c81d563f47799b7e411f1c1e68a9 |
+| Jakub      | Hunter             | Arthur Morgan           | bd22266aba38416cb602e90ce651520c |
+| Kazimierz  | Elder              | Clint Eastwood          | 61a8f98f12cc4551bc74d01d16830f02 |
+| Archibald  | Trader             | Old man                 | 61fc0e0fc78046da8fb9549b9b4c6175 |
+| Patric     | Blacksmith         | Dramatic Character Male | 7a18a1851d2649108c48ec9f2c80eb2c |
+| Rudolf     | Farmer + reeve     | ?                       | ?                                |
+
+### General, professions
+
+| Sex | Profession | Age | Voice name | Fish voice ID |
+| --- | --- | --- | --- | --- |
+| Male   | General        | Middle | FairyTail 1         | 689b47ca83dd48dba90b160affb8a118 |
+| Female | General        | Middle | Warm Conversational | 5e3be339f2df45e6a1a338bb2ce94800 |
+| Male   | General        | Old    | george              | 372ef39bf5bf4fd38c5c56bce607aba6 |
+| Female | General        | Old    | Old woman           | 8db547ea044f44838bf2f8a039f05b5a |
+| Male   | General        | Child  | Little Lem          | 34a421bb18bd4d3289898233cfa88269 |
+| Male   | Guard          | Middle | Guard               | c29549f41b3b4aa498d66d76fba0e887 |
+| Male   | Farmer         | Middle | Casual Male Speaker | c2a3921fd7024b9189cb912bdfe5266a |
+| Female | Farmer         | Middle | ?                   | ?                                |
+| Male   | Woodcutter     | Middle | ?                   | ?                                |
+| Male   | Hunter         | Middle | Cowboy              | a2cecd3eda8b44178b7f1bc1379edae0 |
+| Male   | Trader         | Middle | ?                   | ?                                |
+| Male   | Blacksmith     | Middle | ?                   | ?                                |
+| Male   | Shepherd       | Middle | Hetalia Russia      | 4af16ba03cee422996ec29a43e1947ee |
+| Male   | Fisher         | Middle | Rick Sanchez        | d2e75a3e3fd6419893057c02a375a113 |
+
+## Implementation and recording status
+
+Verified against V1 `main` / `origin/main` `59c6ae15` on 2026-11-05. The map above records author intent; code remains authoritative for implemented behaviour.
+
+| Layer | Current evidence / gate |
+| --- | --- |
+| Author-approved casting | Map above. Casual Male Speaker is approved for **male farmer**; the historical issue was mixed recording sources, not rejection of this UUID. Warm Conversational is approved for general middle-aged women. Verify each old file's actual source separately. |
+| Implemented runtime assignment | `src/ai/npcVoiceLines.ts` still resolves role/gender/age → general pools, ignores `voiceProfileId` as a speaker constraint and has no named manifest overrides. Q88 is unimplemented; no map assignment is claimed live. Children currently reach adult fallback in code; intended silence/age policy is not implemented. |
+| Existing MP3 | 317 donor MP3s, including 109 byte-identical public root copies; 208 donor-only. Another 6 `bak` + 3 `references` MP3s are outside the ledger. Bank filenames/UUID metadata do not prove audible source. |
+| QC-approved MP3 | **0**: all 317 ledger rows remain `pending`. Casting approval never promotes a file to `pass`; bank mismatch and context gates remain. |
+| Pending recording | Q90: 87 author-approved texts (12 / 54 / 21), no delivered Q90 MP3s. Named packet: 89 drafts, 27 reuse placements (25 files), 10 Q90 references; no extra production order. New mapped UUIDs without donor files need selective future scripts/recording, not automatic pack generation. |
+
+### Runtime identity crosswalk (not a casting implementation)
+
+| Map name | Current `characterKey` | Runtime role / binding |
+| --- | --- | --- |
+| Marek | `marek_hornblower` | `guard`, reserved |
+| Kasia | `kasia_hornblower` | `trader`, reserved |
+| Anna | `anna_lesniewska` | `farmer`, reserved; Woodward is an editorial alias |
+| Piotr | `piotr_lesniewski` | `woodcutter`, reserved; Woodward is an editorial alias |
+| Molly | `molly_lambert` | `shepherd`, guaranteed home resident |
+| Piers | none | Farmer is author-approved direction; no runtime key/resident/story binding. Preserve editorial ID `piers`; do not invent a key. |
+| Jakub | `jakub` | `hunter`, guaranteed home resident; Jacob is an editorial alias |
+| Kazimierz | `kazimierz` | Elder is narrative function; initial `farmer` baseline may be reassigned by staffing; no `elder` Role |
+| Archibald | `archibald` | Known identity key; no inspected live resident binding |
+| Patric | `patric_smith` | Known key, intended blacksmith in a larger settlement; not yet bound |
+| Rudolf | `rudolf` | Reeve office identity; existing adult's role preserved or fallback `farmer`; voice undecided |
+
+Sources: [`characters.ts`](../../src/ai/characters.ts), [`homeAuthoredResidents.ts`](../../src/settlement/homeAuthoredResidents.ts), [`npcVoiceLines.ts`](../../src/ai/npcVoiceLines.ts). `Elder`, `Middle`, `Old`, `Child` are editorial map labels, not new runtime enum values or chosen age thresholds.
+
+## Historical design and decision record
+
+The sections below preserve the original plan, counts and dated listening history. **Casting lists, role candidates, child-speaker availability and recording estimates below are superseded wherever they differ from the current map/status above.** The map does not define new hashing weights, fallback eligibility or age-transition mechanics. Keep the earlier equal-weight direction only within eligible candidates; do not reinterpret it as permission to draw from every mapped voice.
+
 ## Plan history
 
 - **2026-11-02 (Opus, queue Q45):** recon against `main` `f35ba4f2` + staged donor bytes `docs/v3-donor/voices/mp3/` (V3 pin `47733d6b`). Planning only, no code or assets changed. Author direction: [voice audit §12](../research/v1-revival/2026-10-31--npc-voices-dialogue-audit.md#12-author-decisions--approved-2026-10-31-supersedes-open-questions-in-11) and [P2 decisions Q31/Q40](../research/v1-revival/2026-10-31--p2-author-decisions-q38-q39-q31-q42.md#q31--q40--voice-bank-sequencing).
@@ -59,6 +139,8 @@ A **speaker** = one Fish voice UUID ([donor catalog §Voice sources](../v3-donor
 ## Design
 
 ### 1. Speaker casting (replaces `voiceProfileIdFor`)
+
+**Historical candidate table — superseded by the current map.** In particular Brian is globally blocked, named casts take precedence, Cowboy belongs to generic hunters, Casual to male farmers, Rick to fishers; Hannah is Molly’s named cast, not the approved generic female voice. No unresolved map slot gains an automatic assignment from this old table.
 
 `NpcVoiceProfileId` becomes a **speaker id** (`general_male`, `hunter_male_b`, `mark_hornblower`, …). Owner stays `src/ai/npcVoiceLines.ts` (pure, no `NpcAgent` import).
 
@@ -127,7 +209,7 @@ Only `pass` donor files are copied from `docs/v3-donor/voices/mp3/` to `public/s
 
 ### 6. Prioritized missing-recording list (after reuse)
 
-**S5/Q90 editorial and 87-take Fish Audio script author-approved 2026-11-04; recordings/QC/integration not complete.** [Current audit](../research/v1-revival/2026-11-04--q90-npc-voices-editorial-audit.md) and [recording script](../research/v1-revival/2026-11-04--q90-fish-audio-script.md) supersede the provisional counts below for production review: **87 proposed takes (P0 12 / P1 54 / P2 21)**, **72 conditional reuse candidates**, **0 ledger-passed clips**. Includes [explicit dispositions for all 81 Q31/catalog proposals](../research/v1-revival/2026-11-04--q90-supersession.md). Later approved male UUID targets have no existing recordings; rejected/held voices are not counted as approved coverage. No source, canonical transcript, audio or QC verdict changed. The following table is the historical S5 estimate, not a current recording order.
+**S5/Q90 editorial and 87-take Fish Audio script author-approved 2026-11-04; recordings/QC/integration not complete.** [Current audit](../research/v1-revival/2026-11-04--q90-npc-voices-editorial-audit.md) and [recording script](../research/v1-revival/2026-11-04--q90-fish-audio-script.md) supersede the provisional counts below for production review: **87 proposed takes (P0 12 / P1 54 / P2 21)**, **72 conditional reuse candidates**, **0 ledger-passed clips**. Includes [explicit dispositions for all 81 Q31/catalog proposals](../research/v1-revival/2026-11-04--q90-supersession.md). The three 2026-11-04 male targets have no existing recordings. Coverage counts here are historical Q90 scope, not a complete 2026-11-05 map inventory; zero files are QC-approved. No source, canonical transcript, audio or QC verdict changed. The following table is the historical S5 estimate, not a current recording order.
 
 Computed from the coverage table, assuming casting as in §1 and all existing clips pass QC; recompute from the ledger in S5. Priority = live producer × number of NPCs on that speaker. Existing script rows are reused where they exist ([Q31 script](../research/v1-revival/2026-10-31--q31-npc-bark-line-script.md), [expansion catalog](../research/v1-revival/2026-10-31--npc-voice-expansion-catalog.json)); "new" rows must be written in S5.
 
@@ -182,6 +264,8 @@ Casting: one hash per candidate at NPC construction. Resolution: map lookup + fi
 
 ## Author casting decisions — 2026-11-03 (S2, first listening round)
 
+**Historical listening record; superseded for casting by [NPC-Voice map](#npc-voice-map).** Brian’s global exclusion remains in force. Dramatic→Patric, Hannah→Molly, Cowboy→generic hunter and Arthur→Jakub are now selected; recorded-file QC remains pending.
+
 These are author-approved voice **casting** decisions, not per-clip transcript/QC passes. Do not convert unheard ledger rows into `pass` solely from this section.
 
 | Speaker | Fish voice ID | Decision | Casting guidance |
@@ -194,6 +278,8 @@ These are author-approved voice **casting** decisions, not per-clip transcript/Q
 Implementation invariant: blocklisted Fish voice IDs must remain excluded irrespective of speaker profile aliases or future additions. All remaining S2 speakers and individual clip verdicts stay pending further review.
 
 ### S2 second listening round — 2026-11-03 (author decisions)
+
+**Superseded casting holds:** Casual is now approved for male farmer, Warm Conversational for general female. The mixed-source concern below is retained as file provenance history, not a defective-UUID finding or current bank-wide casting veto.
 
 - `general_male` / Casual Male: **HOLD — suspected inconsistent actual speaker**. `general_male_farewell_01.mp3` sounds pleasant, whereas `general_male_exhausted_01.mp3` sounds raspy/like a different voice. Both currently map to Fish voice ID `c2a3921fd7024b9189cb912bdfe5266a` in the QC ledger. Investigate source/generation provenance per file; **do not silently treat the shared catalog ID as proof of identical audible identity**. No bank-wide casting approval yet.
 - `general_female` / Warm Conversational: **HOLD — suspected inconsistent actual speaker**. `general_female_greeting_01.mp3` sounds flat, `general_female_exhausted_01.mp3` bright and emotional. Both currently map to `5e3be339f2df45e6a1a338bb2ce94800`. Verify generation/source provenance before admitting this bank as a consistent speaker. No blanket rejection/approval.
@@ -217,6 +303,8 @@ These candidates are separate from the existing `general_male` casting decision,
 
 ### S2 approved male voice direction — 2026-11-04
 
+**Historical direction, narrowed by the 2026-11-05 map:** FairyTail→general middle-aged male, george→general old male, Rick→male fisher. No automatic alternative cast for Piotr/Piers or other unresolved profession slots.
+
 **Author decision:** use these Fish Audio bookmarked voices for different NPC purposes (casting direction; not clip QC or completed implementation):
 
 - **FairyTail 1** — Fish voice ID `689b47ca83dd48dba90b160affb8a118`: primary `general_male` for adult men.
@@ -227,6 +315,8 @@ Each NPC retains one selected speaker across utterances (never randomly switches
 
 ### S2 further author listening decisions — 2026-11-03
 
+**Superseded for casting:** Laura→Anna, Expressive Female→Kasia, Hetalia Russia→male shepherd. Historian remains unassigned. Suspected source mismatches in existing files still require per-file QC; they do not reopen these selected UUIDs.
+
 - `merchant_female_b` (catalog: Laura): usable mature female voice, but not for Kate/Kasia Hornblower. Author says sampled voice does not sound like Laura; verify actual source ID.
 - `merchant_female` (catalog: Expressive Female): greeting sample fits merchant Kate/Kasia Hornblower; source ID likely correct but not independently verified.
 - `shepherd_male_b` (Sleepless Historian): accepted, calm male voice; final NPC role undecided.
@@ -236,42 +326,3 @@ Each NPC retains one selected speaker across utterances (never randomly switches
 These are casting judgments, not individual transcript-QC verdicts. Unverified source IDs must not be treated as proven.
 
 ---
-
-## NPC-Voice map
-
-Authors decisions (2026-11-05 09:30)
-
-### Defined named NPCs
-
-| Name       | Proffesion         | Voice Name              | Voice ID                         |
-|------------|--------------------|-------------------------|----------------------------------|
-| Marek      | Guard              | Friendly Male           | 2adcdee4b3ce4b648dc16ea65430ea76 |
-| Kasia      | Trader             | Expressive Female       | d4f161bee1934b47ad3090f05649270c |
-| Anna       | Farmer             | Laura                   | e3cd384158934cc9a01029cd7d278634 |
-| Piotr      | Woodcutter         | Country Baritone        | 5e03f21950f64729935dd8402c9c9702 |
-| Molly      | Shepherd           | Hannah                  | 9a9cf47702da476aa4629e2506d4a857 |
-| Piers      | Farmer             | Warm Male Friend        | f292c81d563f47799b7e411f1c1e68a9 |
-| Jakub      | Hunter             | Arthur Morgan           | bd22266aba38416cb602e90ce651520c |
-| Kazimierz  | Elder              | Clint Eastwood          | 61a8f98f12cc4551bc74d01d16830f02 |
-| Archibald  | Trader             | Old man                 | 61fc0e0fc78046da8fb9549b9b4c6175 |
-| Patric     | Blacksmith         | Dramatic Character Male | 7a18a1851d2649108c48ec9f2c80eb2c |
-| Rudolf     | Farmer + reeve     | ?                       | ?                                |
-
-### General, professions
-
-| Sex    | Proffesion     | Age    | Voice Name          | Voice ID                         |
-|------- |----------------|--------|---------------------|----------------------------------|
-| Male   | General        | Middle | FairyTail 1         | 689b47ca83dd48dba90b160affb8a118 |
-| Female | General        | Middle | Warm Conversational | 5e3be339f2df45e6a1a338bb2ce94800 |
-| Male   | General        | Old    | george              | 372ef39bf5bf4fd38c5c56bce607aba6 |
-| Female | General        | Old    | Old woman           | 8db547ea044f44838bf2f8a039f05b5a |
-| Male   | General        | Child  | Little Lem          | 34a421bb18bd4d3289898233cfa88269 |
-| Male   | Guard          | Middle | Guard               | c29549f41b3b4aa498d66d76fba0e887 |
-| Male   | Farmer         | Middle | Casual Male Speaker | c2a3921fd7024b9189cb912bdfe5266a |
-| Female | Farmer         | Middle | ?                   | ?                                |
-| Male   | Woodcutter     | Middle | ?                   | ?                                |
-| Male   | Hunter         | Middle | Cowboy              | a2cecd3eda8b44178b7f1bc1379edae0 |
-| Male   | Trader         | Middle | ?                   | ?                                |
-| Male   | Blacksmith     | Middle | ?                   | ?                                |
-| Male   | Shepherd       | Middle | Hetalia Russia      | 4af16ba03cee422996ec29a43e1947ee |
-| Male   | Fisher         | Middle | Rick Sanchez        | d2e75a3e3fd6419893057c02a375a113 |

@@ -64,7 +64,7 @@
 
 - Round 2 decisions (current entry point): [author direction + seven group-session checklists](./2026-10-28--quest-round-2-author-decisions.md).
 - Portfolio (advisory): [61-quest prioritization](./2026-10-28--quest-portfolio-prioritization.md). Direction **A — V1 preservation-first**: [executive recon](./2026-10-27--quest-revival-recon.md), [61-record matrix](./2026-10-27--quest-revival-matrix.md), [runtime evidence](./2026-10-27--quest-revival-runtime-evidence.md).
-- NPC voices / barks: [recon](./2026-10-30--npc-voices-barks-recon.md).
+- NPC voices / barks: [current casting](../../plans/npc-065-stable-npc-voice-casting-and-donor-qc.md#npc-voice-map), [cleanup and hygiene report](./2026-11-05--npc-voice-cleanup.md), [Q90 recording script](./2026-11-04--q90-fish-audio-script.md), [named NPC draft script](./2026-11-05--named-npc-voice-script.md), [historical recon](./2026-10-30--npc-voices-barks-recon.md).
 - Vision alignment V1/V3: [2026-10-29 note](./2026-10-29--vision-alignment-v1-v3.md).
 - Completed comparisons (apply newer brief decisions): [dog/elder/cemeteries](./2026-10-26--dog-elder-cemeteries-comparison.md), [clouds/settlement spacing](./2026-10-26--clouds-settlement-spacing-comparison.md).
 

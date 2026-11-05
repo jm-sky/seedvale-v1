@@ -1,6 +1,8 @@
 # Named NPC voice and barks — targeted recon and writing pass
 
-**2026-11-05 · documentation only · draft text, no new casting decisions**  
+**Casting update — 2026-11-05:** The [NPC-Voice map](../../plans/npc-065-stable-npc-voice-casting-and-donor-qc.md#npc-voice-map) is authoritative. Earlier casting holds/alternatives in this dated evidence are superseded: Kasia→Expressive Female, Anna→Laura, Piotr→Country Baritone, Molly→Hannah, Piers→Warm Male Friend (farmer; no runtime key), Jakub→Arthur, Patric→Dramatic, generic hunter→Cowboy, male farmer→Casual, general female→Warm Conversational, fisher→Rick. Existing file source/transcript/context QC and missing runtime bindings remain separate gates. See [cleanup report](./2026-11-05--npc-voice-cleanup.md). No transcript, recording ID, filename or ledger verdict is changed.
+
+**2026-11-05 · documentation only · draft text; casting synchronized to the later 09:30 author map**
 **Source:** V1 main `2722c78ab6d79b3312d78877f9b96140fd97ddb1`.
 
 [Fish script (Markdown)](./2026-11-05--named-npc-voice-script.md) · [Fish script (JSON)](./2026-11-05--named-npc-voice-script.json) · [Reuse / QC blockers](./2026-11-05--named-npc-voice-reuse-qc.md) · [Queue](./AUTONOMOUS-SESSION-QUEUE.md)

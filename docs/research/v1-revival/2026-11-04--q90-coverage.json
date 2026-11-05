@@ -250,7 +250,7 @@
     {
       "speaker": "general_male_v2_rick",
       "fish_voice_id": "d2e75a3e3fd6419893057c02a375a113",
-      "casting": "approved direction; no recordings",
+      "casting": "approved for male fisher; recordings pending",
       "files": 0,
       "public": 0,
       "asr_match": 0,
@@ -370,7 +370,7 @@
     {
       "speaker": "general_female_b",
       "fish_voice_id": "9a9cf47702da476aa4629e2506d4a857",
-      "casting": "accepted casting; clips pending",
+      "casting": "approved for Molly; per-file QC pending",
       "files": 38,
       "public": 0,
       "asr_match": 36,
@@ -681,7 +681,7 @@
     {
       "speaker": "hunter_male",
       "fish_voice_id": "bd22266aba38416cb602e90ce651520c",
-      "casting": "accepted; selected for Jacob",
+      "casting": "approved for Jakub; per-file QC pending",
       "files": 21,
       "public": 21,
       "asr_match": 21,
@@ -822,7 +822,7 @@
     {
       "speaker": "merchant_female",
       "fish_voice_id": "d4f161bee1934b47ad3090f05649270c",
-      "casting": "Kate sample fit accepted; source identity still unverified",
+      "casting": "approved for Kasia; existing-file source QC pending",
       "files": 17,
       "public": 17,
       "asr_match": 16,
@@ -961,7 +961,7 @@
     {
       "speaker": "guard_male_b",
       "fish_voice_id": "7a18a1851d2649108c48ec9f2c80eb2c",
-      "casting": "provisional; role fit and bank mismatch review pending",
+      "casting": "approved for Patric; bank mismatch QC pending",
       "files": 40,
       "public": 0,
       "asr_match": 31,
@@ -1129,7 +1129,7 @@
     {
       "speaker": "hunter_male_b",
       "fish_voice_id": "a2cecd3eda8b44178b7f1bc1379edae0",
-      "casting": "provisional; no Jacob assignment",
+      "casting": "approved for male hunter; per-file QC pending",
       "files": 38,
       "public": 0,
       "asr_match": 35,
@@ -1285,7 +1285,7 @@
     {
       "speaker": "merchant_female_b",
       "fish_voice_id": "e3cd384158934cc9a01029cd7d278634",
-      "casting": "HOLD source UUID; voice usable, not Kate",
+      "casting": "approved for Anna; existing-file source QC pending",
       "files": 38,
       "public": 0,
       "asr_match": 36,
@@ -1441,7 +1441,7 @@
     {
       "speaker": "shepherd_male",
       "fish_voice_id": "4af16ba03cee422996ec29a43e1947ee",
-      "casting": "HOLD gender/role metadata; accepted sound",
+      "casting": "approved for male shepherd; per-file QC pending",
       "files": 5,
       "public": 5,
       "asr_match": 2,
@@ -1674,7 +1674,7 @@
     {
       "speaker": "mark_hornblower",
       "fish_voice_id": "2adcdee4b3ce4b648dc16ea65430ea76",
-      "casting": "accepted for Mark; pilot only",
+      "casting": "approved for Marek; per-file QC pending",
       "files": 6,
       "public": 0,
       "asr_match": 6,
@@ -1789,7 +1789,7 @@
     {
       "speaker": "general_male",
       "fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
-      "casting": "HOLD inconsistent audible identity; new primary target is FairyTail",
+      "casting": "approved for male farmer; mixed-source files need individual QC",
       "files": 22,
       "public": 22,
       "asr_match": 12,
@@ -1901,7 +1901,7 @@
     {
       "speaker": "general_female",
       "fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
-      "casting": "HOLD inconsistent audible identity",
+      "casting": "approved for general middle-aged female; per-file QC pending",
       "files": 22,
       "public": 22,
       "asr_match": 15,
@@ -4679,5 +4679,7 @@
       "qc": "pending",
       "auto": "match"
     }
-  ]
+  ],
+  "casting_authority": "../../plans/npc-065-stable-npc-voice-casting-and-donor-qc.md#npc-voice-map",
+  "inventory_scope": "Historical Q90 inventory/shortlist; not complete coverage of 2026-11-05 map. No asset/QC counts changed."
 }

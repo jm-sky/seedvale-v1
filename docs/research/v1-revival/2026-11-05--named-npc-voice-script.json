@@ -20,50 +20,48 @@
       "name": "Marek (Mark) Hornblower",
       "role": "guard",
       "voice": "2adcdee4b3ce4b648dc16ea65430ea76",
-      "casting": "approved",
+      "casting": "author-approved 2026-11-05; runtime/QC pending",
       "direction": "Grounded, observant, restrained warmth; brief and firm under threat. No theatrical guard swagger."
     },
     {
       "key": "kasia_hornblower",
       "name": "Kasia (Kate) Hornblower",
       "role": "trader",
-      "voice": null,
-      "candidate": "d4f161bee1934b47ad3090f05649270c",
-      "casting": "sample-fit-approved; final named assignment and source confirmation hold",
+      "voice": "d4f161bee1934b47ad3090f05649270c",
+      "casting": "author-approved 2026-11-05; runtime/QC pending",
       "direction": "Warm, perceptive, conversational and fair-minded. No automatic stock, discount or location promises."
     },
     {
       "key": "anna_lesniewska",
       "name": "Anna (Woodward editorial alias)",
       "role": "farmer",
-      "voice": null,
-      "casting": "unassigned",
+      "voice": "e3cd384158934cc9a01029cd7d278634",
+      "casting": "author-approved 2026-11-05; runtime/QC pending",
       "direction": "Energetic, sociable, practical and community-minded; no scolding-wife caricature."
     },
     {
       "key": "piotr_lesniewski",
       "name": "Piotr (Woodward editorial alias)",
       "role": "woodcutter",
-      "voice": null,
-      "casting": "unassigned",
+      "voice": "5e03f21950f64729935dd8402c9c9702",
+      "casting": "author-approved 2026-11-05; runtime/QC pending",
       "direction": "Practical, household-first, economical with words and materials; approachable, not heroic or boorish."
     },
     {
       "key": "molly_lambert",
       "name": "Molly Lambert",
       "role": "shepherd",
-      "voice": null,
-      "candidate": "9a9cf47702da476aa4629e2506d4a857",
-      "casting": "Hannah candidate only",
+      "voice": "9a9cf47702da476aa4629e2506d4a857",
+      "casting": "author-approved 2026-11-05; runtime/QC pending",
       "direction": "Gentle, dreamy, affectionate but capable. No childishness or cheerful celebration of a loss."
     },
     {
       "key": null,
       "editorial_id": "piers",
-      "name": "Pierce (profile spelling: Piers)",
-      "role": null,
-      "voice": null,
-      "casting": "unassigned; no runtime character key",
+      "name": "Piers",
+      "role": "farmer",
+      "voice": "f292c81d563f47799b7e411f1c1e68a9",
+      "casting": "author-approved 2026-11-05; runtime/QC pending",
       "direction": "Plain, guarded, awkward and stubborn. No clever rogue quips, automatic apology, confession or reconciliation."
     }
   ],
@@ -191,7 +189,7 @@
       "role": "guard",
       "voice_uuid": "2adcdee4b3ce4b648dc16ea65430ea76",
       "candidate_voice_uuid": null,
-      "casting_status": "approved",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "greeting",
       "trigger": "src/ui-vue/npcDialogueGreeting.ts:resolveNpcGreetingPresentation; NpcAgent.playReactionSound on non-normal tier. Explicit open or admitted proximity greeting; no assumed familiarity.",
       "binding_status": "existing-event",
@@ -220,7 +218,7 @@
       "role": "guard",
       "voice_uuid": "2adcdee4b3ce4b648dc16ea65430ea76",
       "candidate_voice_uuid": null,
-      "casting_status": "approved",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "farewell",
       "trigger": "src/ui-vue/store.ts:closeNpcDialogueMenu, no pending offer decline. Ordinary conversation close.",
       "binding_status": "existing-event",
@@ -249,7 +247,7 @@
       "role": "guard",
       "voice_uuid": "2adcdee4b3ce4b648dc16ea65430ea76",
       "candidate_voice_uuid": null,
-      "casting_status": "approved",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "thanks",
       "trigger": "Semantic intent exists, but no general thanks producer verified. Bind only to a committed helpful act, not an attempted action.",
       "binding_status": "binding-needed",
@@ -279,7 +277,7 @@
       "role": "guard",
       "voice_uuid": "2adcdee4b3ce4b648dc16ea65430ea76",
       "candidate_voice_uuid": null,
-      "casting_status": "approved",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "danger_alert",
       "trigger": "NpcAgent newly perceived animal-threat episode. Species-neutral; no death, victory or all-clear claim.",
       "binding_status": "existing-event",
@@ -308,7 +306,7 @@
       "role": "guard",
       "voice_uuid": "2adcdee4b3ce4b648dc16ea65430ea76",
       "candidate_voice_uuid": null,
-      "casting_status": "approved",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "attention",
       "trigger": "src/ai/NpcAgent.ts:playReactionSound normal reaction tier; admitted proximity reaction.",
       "binding_status": "existing-event",
@@ -331,7 +329,7 @@
       "role": "guard",
       "voice_uuid": "2adcdee4b3ce4b648dc16ea65430ea76",
       "candidate_voice_uuid": null,
-      "casting_status": "approved",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "quest_accepted",
       "trigger": "src/ui-vue/store.ts:acceptNpcDialogueOffer after onAccept. Acknowledges willingness, not task completion or guaranteed success.",
       "binding_status": "existing-event",
@@ -354,7 +352,7 @@
       "role": "guard",
       "voice_uuid": "2adcdee4b3ce4b648dc16ea65430ea76",
       "candidate_voice_uuid": null,
-      "casting_status": "approved",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "quest_declined",
       "trigger": "src/ui-vue/store.ts:closeNpcDialogueMenu with pending helpResult.offer. Decline, not generic farewell.",
       "binding_status": "existing-event",
@@ -377,7 +375,7 @@
       "role": "guard",
       "voice_uuid": "2adcdee4b3ce4b648dc16ea65430ea76",
       "candidate_voice_uuid": null,
-      "casting_status": "approved",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "quest_complete",
       "trigger": "src/quests/QuestManager.ts:playQuestCompleteSound via complete outcome, loaded giver resolved in createApp. Generic thanks only; no victory, restored animal, reward or completed repair claim.",
       "binding_status": "existing-event",
@@ -400,7 +398,7 @@
       "role": "guard",
       "voice_uuid": "2adcdee4b3ce4b648dc16ea65430ea76",
       "candidate_voice_uuid": null,
-      "casting_status": "approved",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "hungry",
       "trigger": "src/ai/NpcAgent.ts:choose selects food need after previousNeed != food. Does NOT establish work was interrupted, an empty stomach, food available or consumption.",
       "binding_status": "existing-event",
@@ -423,7 +421,7 @@
       "role": "guard",
       "voice_uuid": "2adcdee4b3ce4b648dc16ea65430ea76",
       "candidate_voice_uuid": null,
-      "casting_status": "approved",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "exhausted",
       "trigger": "src/ai/NpcAgent.ts:goTo/execute -> exhausted on isExhausted(stamina); action pauses. Rest, not end of day.",
       "binding_status": "existing-event",
@@ -446,7 +444,7 @@
       "role": "guard",
       "voice_uuid": "2adcdee4b3ce4b648dc16ea65430ea76",
       "candidate_voice_uuid": null,
-      "casting_status": "approved",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "weather_shelter",
       "trigger": "src/ai/NpcAgent.ts:beginSeekShelter before arrival. Neutral shared variant for rain/storm/snow through npcBarkRequest.weatherShelterVoiceIntents.",
       "binding_status": "existing-event",
@@ -469,7 +467,7 @@
       "role": "guard",
       "voice_uuid": "2adcdee4b3ce4b648dc16ea65430ea76",
       "candidate_voice_uuid": null,
-      "casting_status": "approved",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "combat_start",
       "trigger": "NpcAgent successful beginCombat. Do not use on mere sighting or flight; no assumed weapon.",
       "binding_status": "existing-event",
@@ -492,7 +490,7 @@
       "role": "guard",
       "voice_uuid": "2adcdee4b3ce4b648dc16ea65430ea76",
       "candidate_voice_uuid": null,
-      "casting_status": "approved",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "work_finished",
       "trigger": "NpcAgent terminal execute with classifyPendingActivity(action, activeNeed) === work. One task ended; no end-of-shift, tools-away or repaired-world claim.",
       "binding_status": "existing-event",
@@ -515,7 +513,7 @@
       "role": "guard",
       "voice_uuid": "2adcdee4b3ce4b648dc16ea65430ea76",
       "candidate_voice_uuid": null,
-      "casting_status": "approved",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "guard_response",
       "trigger": "NpcAgent successful guard threat intervention; not mere profession or greeting.",
       "binding_status": "existing-event",
@@ -538,7 +536,7 @@
       "role": "guard",
       "voice_uuid": "2adcdee4b3ce4b648dc16ea65430ea76",
       "candidate_voice_uuid": null,
-      "casting_status": "approved",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "refusal",
       "trigger": "Semantic intent exists; no general refusal voice producer verified. Bind to an actual refused request.",
       "binding_status": "binding-needed",
@@ -562,7 +560,7 @@
       "role": "guard",
       "voice_uuid": "2adcdee4b3ce4b648dc16ea65430ea76",
       "candidate_voice_uuid": null,
-      "casting_status": "approved",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "confirmation",
       "trigger": "Agreement maps to confirmation. Semantic intent exists; exact successful agreement voice binding absent.",
       "binding_status": "binding-needed",
@@ -586,7 +584,7 @@
       "role": "guard",
       "voice_uuid": "2adcdee4b3ce4b648dc16ea65430ea76",
       "candidate_voice_uuid": null,
-      "casting_status": "approved",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "quest_offer",
       "trigger": "Quest offers exist as text; QuestVoiceIntent admits quest_offer but no inspected producer requests it. Require actual available offer by this giver.",
       "binding_status": "binding-needed",
@@ -610,7 +608,7 @@
       "role": "guard",
       "voice_uuid": "2adcdee4b3ce4b648dc16ea65430ea76",
       "candidate_voice_uuid": null,
-      "casting_status": "approved",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "greeting",
       "trigger": "src/ui-vue/npcDialogueGreeting.ts:resolveNpcGreetingPresentation; NpcAgent.playReactionSound on non-normal tier. Explicit open or admitted proximity greeting; no assumed familiarity.",
       "binding_status": "existing-event",
@@ -633,7 +631,7 @@
       "role": "guard",
       "voice_uuid": "2adcdee4b3ce4b648dc16ea65430ea76",
       "candidate_voice_uuid": null,
-      "casting_status": "approved",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "weather_shelter_rain",
       "trigger": "beginSeekShelter with weather rain; storm may also use rain fallback under existing policy. No forecast/intensity/arrival claim.",
       "binding_status": "existing-event",
@@ -656,7 +654,7 @@
       "role": "guard",
       "voice_uuid": "2adcdee4b3ce4b648dc16ea65430ea76",
       "candidate_voice_uuid": null,
-      "casting_status": "approved",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "weather_shelter_storm",
       "trigger": "beginSeekShelter with current weather storm only. No inferred damage/lightning strike.",
       "binding_status": "existing-event",
@@ -679,7 +677,7 @@
       "role": "guard",
       "voice_uuid": "2adcdee4b3ce4b648dc16ea65430ea76",
       "candidate_voice_uuid": null,
-      "casting_status": "approved",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "weather_shelter_snow",
       "trigger": "beginSeekShelter with current weather snow only. Never rain fallback.",
       "binding_status": "existing-event",
@@ -700,9 +698,9 @@
       "characterKey": "kasia_hornblower",
       "editorial_id": "kasia_hornblower",
       "role": "trader",
-      "voice_uuid": null,
-      "candidate_voice_uuid": "d4f161bee1934b47ad3090f05649270c",
-      "casting_status": "sample-fit-approved; final named assignment and source confirmation hold",
+      "voice_uuid": "d4f161bee1934b47ad3090f05649270c",
+      "candidate_voice_uuid": null,
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "greeting",
       "trigger": "src/ui-vue/npcDialogueGreeting.ts:resolveNpcGreetingPresentation; NpcAgent.playReactionSound on non-normal tier. Explicit open or admitted proximity greeting; no assumed familiarity.",
       "binding_status": "existing-event",
@@ -714,8 +712,7 @@
       "production_holds": [
         "per-clip-QC",
         "speaker-safe-runtime-Q88",
-        "source-identity-hold",
-        "casting-hold"
+        "source-identity-hold"
       ],
       "source_file": "public/sounds/voices/merchant_female_greeting_01.mp3",
       "source_voice_uuid": "d4f161bee1934b47ad3090f05649270c",
@@ -731,9 +728,9 @@
       "characterKey": "kasia_hornblower",
       "editorial_id": "kasia_hornblower",
       "role": "trader",
-      "voice_uuid": null,
-      "candidate_voice_uuid": "d4f161bee1934b47ad3090f05649270c",
-      "casting_status": "sample-fit-approved; final named assignment and source confirmation hold",
+      "voice_uuid": "d4f161bee1934b47ad3090f05649270c",
+      "candidate_voice_uuid": null,
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "farewell",
       "trigger": "src/ui-vue/store.ts:closeNpcDialogueMenu, no pending offer decline. Ordinary conversation close.",
       "binding_status": "existing-event",
@@ -745,8 +742,7 @@
       "production_holds": [
         "per-clip-QC",
         "speaker-safe-runtime-Q88",
-        "source-identity-hold",
-        "casting-hold"
+        "source-identity-hold"
       ],
       "source_file": "public/sounds/voices/merchant_female_farewell_01.mp3",
       "source_voice_uuid": "d4f161bee1934b47ad3090f05649270c",
@@ -762,9 +758,9 @@
       "characterKey": "kasia_hornblower",
       "editorial_id": "kasia_hornblower",
       "role": "trader",
-      "voice_uuid": null,
-      "candidate_voice_uuid": "d4f161bee1934b47ad3090f05649270c",
-      "casting_status": "sample-fit-approved; final named assignment and source confirmation hold",
+      "voice_uuid": "d4f161bee1934b47ad3090f05649270c",
+      "candidate_voice_uuid": null,
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "attention",
       "trigger": "src/ai/NpcAgent.ts:playReactionSound normal reaction tier; admitted proximity reaction.",
       "binding_status": "existing-event",
@@ -776,8 +772,7 @@
       "production_holds": [
         "per-clip-QC",
         "speaker-safe-runtime-Q88",
-        "source-identity-hold",
-        "casting-hold"
+        "source-identity-hold"
       ],
       "source_file": "public/sounds/voices/merchant_female_attention_01.mp3",
       "source_voice_uuid": "d4f161bee1934b47ad3090f05649270c",
@@ -793,9 +788,9 @@
       "characterKey": "kasia_hornblower",
       "editorial_id": "kasia_hornblower",
       "role": "trader",
-      "voice_uuid": null,
-      "candidate_voice_uuid": "d4f161bee1934b47ad3090f05649270c",
-      "casting_status": "sample-fit-approved; final named assignment and source confirmation hold",
+      "voice_uuid": "d4f161bee1934b47ad3090f05649270c",
+      "candidate_voice_uuid": null,
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "quest_accepted",
       "trigger": "src/ui-vue/store.ts:acceptNpcDialogueOffer after onAccept. Acknowledges willingness, not task completion or guaranteed success.",
       "binding_status": "existing-event",
@@ -807,8 +802,7 @@
       "production_holds": [
         "per-clip-QC",
         "speaker-safe-runtime-Q88",
-        "source-identity-hold",
-        "casting-hold"
+        "source-identity-hold"
       ],
       "source_file": "public/sounds/voices/merchant_female_quest_accepted_01.mp3",
       "source_voice_uuid": "d4f161bee1934b47ad3090f05649270c",
@@ -824,9 +818,9 @@
       "characterKey": "kasia_hornblower",
       "editorial_id": "kasia_hornblower",
       "role": "trader",
-      "voice_uuid": null,
-      "candidate_voice_uuid": "d4f161bee1934b47ad3090f05649270c",
-      "casting_status": "sample-fit-approved; final named assignment and source confirmation hold",
+      "voice_uuid": "d4f161bee1934b47ad3090f05649270c",
+      "candidate_voice_uuid": null,
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "quest_declined",
       "trigger": "src/ui-vue/store.ts:closeNpcDialogueMenu with pending helpResult.offer. Decline, not generic farewell.",
       "binding_status": "existing-event",
@@ -838,8 +832,7 @@
       "production_holds": [
         "per-clip-QC",
         "speaker-safe-runtime-Q88",
-        "source-identity-hold",
-        "casting-hold"
+        "source-identity-hold"
       ],
       "source_file": "public/sounds/voices/merchant_female_quest_declined_01.mp3",
       "source_voice_uuid": "d4f161bee1934b47ad3090f05649270c",
@@ -855,9 +848,9 @@
       "characterKey": "kasia_hornblower",
       "editorial_id": "kasia_hornblower",
       "role": "trader",
-      "voice_uuid": null,
-      "candidate_voice_uuid": "d4f161bee1934b47ad3090f05649270c",
-      "casting_status": "sample-fit-approved; final named assignment and source confirmation hold",
+      "voice_uuid": "d4f161bee1934b47ad3090f05649270c",
+      "candidate_voice_uuid": null,
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "hungry",
       "trigger": "src/ai/NpcAgent.ts:choose selects food need after previousNeed != food. Does NOT establish work was interrupted, an empty stomach, food available or consumption.",
       "binding_status": "existing-event",
@@ -867,8 +860,6 @@
       "priority": "P1",
       "disposition": "Q90-reference-do-not-regenerate",
       "production_holds": [
-        "casting-hold",
-        "source-identity-hold",
         "speaker-safe-runtime-Q88",
         "per-clip-QC"
       ],
@@ -883,9 +874,9 @@
       "characterKey": "kasia_hornblower",
       "editorial_id": "kasia_hornblower",
       "role": "trader",
-      "voice_uuid": null,
-      "candidate_voice_uuid": "d4f161bee1934b47ad3090f05649270c",
-      "casting_status": "sample-fit-approved; final named assignment and source confirmation hold",
+      "voice_uuid": "d4f161bee1934b47ad3090f05649270c",
+      "candidate_voice_uuid": null,
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "exhausted",
       "trigger": "src/ai/NpcAgent.ts:goTo/execute -> exhausted on isExhausted(stamina); action pauses. Rest, not end of day.",
       "binding_status": "existing-event",
@@ -895,8 +886,6 @@
       "priority": "P1",
       "disposition": "Q90-reference-do-not-regenerate",
       "production_holds": [
-        "casting-hold",
-        "source-identity-hold",
         "speaker-safe-runtime-Q88",
         "per-clip-QC"
       ],
@@ -911,9 +900,9 @@
       "characterKey": "kasia_hornblower",
       "editorial_id": "kasia_hornblower",
       "role": "trader",
-      "voice_uuid": null,
-      "candidate_voice_uuid": "d4f161bee1934b47ad3090f05649270c",
-      "casting_status": "sample-fit-approved; final named assignment and source confirmation hold",
+      "voice_uuid": "d4f161bee1934b47ad3090f05649270c",
+      "candidate_voice_uuid": null,
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "weather_shelter",
       "trigger": "src/ai/NpcAgent.ts:beginSeekShelter before arrival. Neutral shared variant for rain/storm/snow through npcBarkRequest.weatherShelterVoiceIntents.",
       "binding_status": "existing-event",
@@ -923,8 +912,6 @@
       "priority": "P1",
       "disposition": "Q90-reference-do-not-regenerate",
       "production_holds": [
-        "casting-hold",
-        "source-identity-hold",
         "speaker-safe-runtime-Q88",
         "per-clip-QC"
       ],
@@ -939,9 +926,9 @@
       "characterKey": "kasia_hornblower",
       "editorial_id": "kasia_hornblower",
       "role": "trader",
-      "voice_uuid": null,
-      "candidate_voice_uuid": "d4f161bee1934b47ad3090f05649270c",
-      "casting_status": "sample-fit-approved; final named assignment and source confirmation hold",
+      "voice_uuid": "d4f161bee1934b47ad3090f05649270c",
+      "candidate_voice_uuid": null,
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "danger_alert",
       "trigger": "NpcAgent newly perceived animal-threat episode. Species-neutral; no death, victory or all-clear claim.",
       "binding_status": "existing-event",
@@ -951,8 +938,6 @@
       "priority": "P1",
       "disposition": "Q90-reference-do-not-regenerate",
       "production_holds": [
-        "casting-hold",
-        "source-identity-hold",
         "speaker-safe-runtime-Q88",
         "per-clip-QC"
       ],
@@ -967,9 +952,9 @@
       "characterKey": "kasia_hornblower",
       "editorial_id": "kasia_hornblower",
       "role": "trader",
-      "voice_uuid": null,
-      "candidate_voice_uuid": "d4f161bee1934b47ad3090f05649270c",
-      "casting_status": "sample-fit-approved; final named assignment and source confirmation hold",
+      "voice_uuid": "d4f161bee1934b47ad3090f05649270c",
+      "candidate_voice_uuid": null,
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "combat_start",
       "trigger": "NpcAgent successful beginCombat. Do not use on mere sighting or flight; no assumed weapon.",
       "binding_status": "existing-event",
@@ -979,8 +964,6 @@
       "priority": "P1",
       "disposition": "Q90-reference-do-not-regenerate",
       "production_holds": [
-        "casting-hold",
-        "source-identity-hold",
         "speaker-safe-runtime-Q88",
         "per-clip-QC"
       ],
@@ -995,9 +978,9 @@
       "characterKey": "kasia_hornblower",
       "editorial_id": "kasia_hornblower",
       "role": "trader",
-      "voice_uuid": null,
-      "candidate_voice_uuid": "d4f161bee1934b47ad3090f05649270c",
-      "casting_status": "sample-fit-approved; final named assignment and source confirmation hold",
+      "voice_uuid": "d4f161bee1934b47ad3090f05649270c",
+      "candidate_voice_uuid": null,
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "work_finished",
       "trigger": "NpcAgent terminal execute with classifyPendingActivity(action, activeNeed) === work. One task ended; no end-of-shift, tools-away or repaired-world claim.",
       "binding_status": "existing-event",
@@ -1007,8 +990,6 @@
       "priority": "P1",
       "disposition": "Q90-reference-do-not-regenerate",
       "production_holds": [
-        "casting-hold",
-        "source-identity-hold",
         "speaker-safe-runtime-Q88",
         "per-clip-QC"
       ],
@@ -1023,9 +1004,9 @@
       "characterKey": "kasia_hornblower",
       "editorial_id": "kasia_hornblower",
       "role": "trader",
-      "voice_uuid": null,
-      "candidate_voice_uuid": "d4f161bee1934b47ad3090f05649270c",
-      "casting_status": "sample-fit-approved; final named assignment and source confirmation hold",
+      "voice_uuid": "d4f161bee1934b47ad3090f05649270c",
+      "candidate_voice_uuid": null,
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "quest_complete",
       "trigger": "src/quests/QuestManager.ts:playQuestCompleteSound via complete outcome, loaded giver resolved in createApp. Generic thanks only; no victory, restored animal, reward or completed repair claim.",
       "binding_status": "existing-event",
@@ -1035,8 +1016,6 @@
       "priority": "P1",
       "disposition": "Q90-reference-do-not-regenerate",
       "production_holds": [
-        "casting-hold",
-        "source-identity-hold",
         "speaker-safe-runtime-Q88",
         "per-clip-QC"
       ],
@@ -1051,9 +1030,9 @@
       "characterKey": "kasia_hornblower",
       "editorial_id": "kasia_hornblower",
       "role": "trader",
-      "voice_uuid": null,
-      "candidate_voice_uuid": "d4f161bee1934b47ad3090f05649270c",
-      "casting_status": "sample-fit-approved; final named assignment and source confirmation hold",
+      "voice_uuid": "d4f161bee1934b47ad3090f05649270c",
+      "candidate_voice_uuid": null,
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "refusal",
       "trigger": "Semantic intent exists; no general refusal voice producer verified. Bind to an actual refused request.",
       "binding_status": "binding-needed",
@@ -1066,7 +1045,6 @@
         "per-clip-QC",
         "speaker-safe-runtime-Q88",
         "source-identity-hold",
-        "casting-hold",
         "binding-needed"
       ],
       "source_file": "public/sounds/voices/merchant_female_refusal_01.mp3",
@@ -1083,9 +1061,9 @@
       "characterKey": "kasia_hornblower",
       "editorial_id": "kasia_hornblower",
       "role": "trader",
-      "voice_uuid": null,
-      "candidate_voice_uuid": "d4f161bee1934b47ad3090f05649270c",
-      "casting_status": "sample-fit-approved; final named assignment and source confirmation hold",
+      "voice_uuid": "d4f161bee1934b47ad3090f05649270c",
+      "candidate_voice_uuid": null,
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "confirmation",
       "trigger": "Agreement maps to confirmation. Semantic intent exists; exact successful agreement voice binding absent.",
       "binding_status": "binding-needed",
@@ -1098,7 +1076,6 @@
         "per-clip-QC",
         "speaker-safe-runtime-Q88",
         "source-identity-hold",
-        "casting-hold",
         "binding-needed"
       ],
       "source_file": "public/sounds/voices/merchant_female_agree_01.mp3",
@@ -1115,9 +1092,9 @@
       "characterKey": "kasia_hornblower",
       "editorial_id": "kasia_hornblower",
       "role": "trader",
-      "voice_uuid": null,
-      "candidate_voice_uuid": "d4f161bee1934b47ad3090f05649270c",
-      "casting_status": "sample-fit-approved; final named assignment and source confirmation hold",
+      "voice_uuid": "d4f161bee1934b47ad3090f05649270c",
+      "candidate_voice_uuid": null,
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "quest_offer",
       "trigger": "Quest offers exist as text; QuestVoiceIntent admits quest_offer but no inspected producer requests it. Require actual available offer by this giver.",
       "binding_status": "binding-needed",
@@ -1130,7 +1107,6 @@
         "per-clip-QC",
         "speaker-safe-runtime-Q88",
         "source-identity-hold",
-        "casting-hold",
         "binding-needed"
       ],
       "source_file": "public/sounds/voices/merchant_female_quest_offer_02.mp3",
@@ -1147,9 +1123,9 @@
       "characterKey": "kasia_hornblower",
       "editorial_id": "kasia_hornblower",
       "role": "trader",
-      "voice_uuid": null,
-      "candidate_voice_uuid": "d4f161bee1934b47ad3090f05649270c",
-      "casting_status": "sample-fit-approved; final named assignment and source confirmation hold",
+      "voice_uuid": "d4f161bee1934b47ad3090f05649270c",
+      "candidate_voice_uuid": null,
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "trade_open",
       "trigger": "NpcDialogueMenu.vue:openTrade -> onOpenTrade is a real action, without specific voice hook. Require successful opening for this trader; no stock promise.",
       "binding_status": "binding-needed",
@@ -1162,7 +1138,6 @@
         "per-clip-QC",
         "speaker-safe-runtime-Q88",
         "source-identity-hold",
-        "casting-hold",
         "binding-needed"
       ],
       "source_file": "public/sounds/voices/merchant_female_greeting_02.mp3",
@@ -1179,9 +1154,9 @@
       "characterKey": "kasia_hornblower",
       "editorial_id": "kasia_hornblower",
       "role": "trader",
-      "voice_uuid": null,
-      "candidate_voice_uuid": "d4f161bee1934b47ad3090f05649270c",
-      "casting_status": "sample-fit-approved; final named assignment and source confirmation hold",
+      "voice_uuid": "d4f161bee1934b47ad3090f05649270c",
+      "candidate_voice_uuid": null,
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "trade_close",
       "trigger": "Trade-close-specific NPC voice hook not verified. Close with or without purchase; never imply a completed sale.",
       "binding_status": "binding-needed",
@@ -1194,7 +1169,6 @@
         "per-clip-QC",
         "speaker-safe-runtime-Q88",
         "source-identity-hold",
-        "casting-hold",
         "binding-needed"
       ],
       "source_file": "public/sounds/voices/merchant_female_farewell_01.mp3",
@@ -1211,9 +1185,9 @@
       "characterKey": "kasia_hornblower",
       "editorial_id": "kasia_hornblower",
       "role": "trader",
-      "voice_uuid": null,
-      "candidate_voice_uuid": "d4f161bee1934b47ad3090f05649270c",
-      "casting_status": "sample-fit-approved; final named assignment and source confirmation hold",
+      "voice_uuid": "d4f161bee1934b47ad3090f05649270c",
+      "candidate_voice_uuid": null,
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "thanks",
       "trigger": "Semantic intent exists, but no general thanks producer verified. Bind only to a committed helpful act, not an attempted action.",
       "binding_status": "binding-needed",
@@ -1226,7 +1200,6 @@
         "per-clip-QC",
         "speaker-safe-runtime-Q88",
         "source-identity-hold",
-        "casting-hold",
         "binding-needed"
       ],
       "source_file": "public/sounds/voices/merchant_female_thanks_01.mp3",
@@ -1243,9 +1216,9 @@
       "characterKey": "kasia_hornblower",
       "editorial_id": "kasia_hornblower",
       "role": "trader",
-      "voice_uuid": null,
-      "candidate_voice_uuid": "d4f161bee1934b47ad3090f05649270c",
-      "casting_status": "sample-fit-approved; final named assignment and source confirmation hold",
+      "voice_uuid": "d4f161bee1934b47ad3090f05649270c",
+      "candidate_voice_uuid": null,
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "thanks",
       "trigger": "Semantic intent exists, but no general thanks producer verified. Bind only to a committed helpful act, not an attempted action.",
       "binding_status": "binding-needed",
@@ -1258,8 +1231,6 @@
         "text-approval",
         "speaker-safe-runtime-Q88",
         "per-clip-QC",
-        "casting-hold",
-        "source-identity-hold",
         "binding-needed"
       ],
       "conditions": "Non-trade helpful act only; existing trade thanks remains preferred for transactions."
@@ -1270,9 +1241,9 @@
       "characterKey": "kasia_hornblower",
       "editorial_id": "kasia_hornblower",
       "role": "trader",
-      "voice_uuid": null,
-      "candidate_voice_uuid": "d4f161bee1934b47ad3090f05649270c",
-      "casting_status": "sample-fit-approved; final named assignment and source confirmation hold",
+      "voice_uuid": "d4f161bee1934b47ad3090f05649270c",
+      "candidate_voice_uuid": null,
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "weather_shelter_rain",
       "trigger": "beginSeekShelter with weather rain; storm may also use rain fallback under existing policy. No forecast/intensity/arrival claim.",
       "binding_status": "existing-event",
@@ -1284,9 +1255,7 @@
       "production_holds": [
         "text-approval",
         "speaker-safe-runtime-Q88",
-        "per-clip-QC",
-        "casting-hold",
-        "source-identity-hold"
+        "per-clip-QC"
       ]
     },
     {
@@ -1295,9 +1264,9 @@
       "characterKey": "kasia_hornblower",
       "editorial_id": "kasia_hornblower",
       "role": "trader",
-      "voice_uuid": null,
-      "candidate_voice_uuid": "d4f161bee1934b47ad3090f05649270c",
-      "casting_status": "sample-fit-approved; final named assignment and source confirmation hold",
+      "voice_uuid": "d4f161bee1934b47ad3090f05649270c",
+      "candidate_voice_uuid": null,
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "weather_shelter_storm",
       "trigger": "beginSeekShelter with current weather storm only. No inferred damage/lightning strike.",
       "binding_status": "existing-event",
@@ -1309,9 +1278,7 @@
       "production_holds": [
         "text-approval",
         "speaker-safe-runtime-Q88",
-        "per-clip-QC",
-        "casting-hold",
-        "source-identity-hold"
+        "per-clip-QC"
       ]
     },
     {
@@ -1320,9 +1287,9 @@
       "characterKey": "kasia_hornblower",
       "editorial_id": "kasia_hornblower",
       "role": "trader",
-      "voice_uuid": null,
-      "candidate_voice_uuid": "d4f161bee1934b47ad3090f05649270c",
-      "casting_status": "sample-fit-approved; final named assignment and source confirmation hold",
+      "voice_uuid": "d4f161bee1934b47ad3090f05649270c",
+      "candidate_voice_uuid": null,
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "weather_shelter_snow",
       "trigger": "beginSeekShelter with current weather snow only. Never rain fallback.",
       "binding_status": "existing-event",
@@ -1334,9 +1301,7 @@
       "production_holds": [
         "text-approval",
         "speaker-safe-runtime-Q88",
-        "per-clip-QC",
-        "casting-hold",
-        "source-identity-hold"
+        "per-clip-QC"
       ]
     },
     {
@@ -1345,9 +1310,9 @@
       "characterKey": "anna_lesniewska",
       "editorial_id": "anna_lesniewska",
       "role": "farmer",
-      "voice_uuid": null,
+      "voice_uuid": "e3cd384158934cc9a01029cd7d278634",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "greeting",
       "trigger": "src/ui-vue/npcDialogueGreeting.ts:resolveNpcGreetingPresentation; NpcAgent.playReactionSound on non-normal tier. Explicit open or admitted proximity greeting; no assumed familiarity.",
       "binding_status": "existing-event",
@@ -1359,8 +1324,7 @@
       "production_holds": [
         "text-approval",
         "speaker-safe-runtime-Q88",
-        "per-clip-QC",
-        "casting-hold"
+        "per-clip-QC"
       ],
       "economy_rule": "Casting hold: after author selects a speaker, prefer its compatible QC-passed clips and approved Q90 rows. Suppress this draft when covered; never record both merely for a named filename."
     },
@@ -1370,9 +1334,9 @@
       "characterKey": "anna_lesniewska",
       "editorial_id": "anna_lesniewska",
       "role": "farmer",
-      "voice_uuid": null,
+      "voice_uuid": "e3cd384158934cc9a01029cd7d278634",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "farewell",
       "trigger": "src/ui-vue/store.ts:closeNpcDialogueMenu, no pending offer decline. Ordinary conversation close.",
       "binding_status": "existing-event",
@@ -1384,8 +1348,7 @@
       "production_holds": [
         "text-approval",
         "speaker-safe-runtime-Q88",
-        "per-clip-QC",
-        "casting-hold"
+        "per-clip-QC"
       ],
       "economy_rule": "Casting hold: after author selects a speaker, prefer its compatible QC-passed clips and approved Q90 rows. Suppress this draft when covered; never record both merely for a named filename."
     },
@@ -1395,9 +1358,9 @@
       "characterKey": "anna_lesniewska",
       "editorial_id": "anna_lesniewska",
       "role": "farmer",
-      "voice_uuid": null,
+      "voice_uuid": "e3cd384158934cc9a01029cd7d278634",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "attention",
       "trigger": "src/ai/NpcAgent.ts:playReactionSound normal reaction tier; admitted proximity reaction.",
       "binding_status": "existing-event",
@@ -1409,8 +1372,7 @@
       "production_holds": [
         "text-approval",
         "speaker-safe-runtime-Q88",
-        "per-clip-QC",
-        "casting-hold"
+        "per-clip-QC"
       ],
       "economy_rule": "Casting hold: after author selects a speaker, prefer its compatible QC-passed clips and approved Q90 rows. Suppress this draft when covered; never record both merely for a named filename."
     },
@@ -1420,9 +1382,9 @@
       "characterKey": "anna_lesniewska",
       "editorial_id": "anna_lesniewska",
       "role": "farmer",
-      "voice_uuid": null,
+      "voice_uuid": "e3cd384158934cc9a01029cd7d278634",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "thanks",
       "trigger": "Semantic intent exists, but no general thanks producer verified. Bind only to a committed helpful act, not an attempted action.",
       "binding_status": "binding-needed",
@@ -1435,7 +1397,6 @@
         "text-approval",
         "speaker-safe-runtime-Q88",
         "per-clip-QC",
-        "casting-hold",
         "binding-needed"
       ],
       "economy_rule": "Casting hold: after author selects a speaker, prefer its compatible QC-passed clips and approved Q90 rows. Suppress this draft when covered; never record both merely for a named filename."
@@ -1446,9 +1407,9 @@
       "characterKey": "anna_lesniewska",
       "editorial_id": "anna_lesniewska",
       "role": "farmer",
-      "voice_uuid": null,
+      "voice_uuid": "e3cd384158934cc9a01029cd7d278634",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "refusal",
       "trigger": "Semantic intent exists; no general refusal voice producer verified. Bind to an actual refused request.",
       "binding_status": "binding-needed",
@@ -1461,7 +1422,6 @@
         "text-approval",
         "speaker-safe-runtime-Q88",
         "per-clip-QC",
-        "casting-hold",
         "binding-needed"
       ],
       "economy_rule": "Casting hold: after author selects a speaker, prefer its compatible QC-passed clips and approved Q90 rows. Suppress this draft when covered; never record both merely for a named filename."
@@ -1472,9 +1432,9 @@
       "characterKey": "anna_lesniewska",
       "editorial_id": "anna_lesniewska",
       "role": "farmer",
-      "voice_uuid": null,
+      "voice_uuid": "e3cd384158934cc9a01029cd7d278634",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "confirmation",
       "trigger": "Agreement maps to confirmation. Semantic intent exists; exact successful agreement voice binding absent.",
       "binding_status": "binding-needed",
@@ -1487,7 +1447,6 @@
         "text-approval",
         "speaker-safe-runtime-Q88",
         "per-clip-QC",
-        "casting-hold",
         "binding-needed"
       ],
       "economy_rule": "Casting hold: after author selects a speaker, prefer its compatible QC-passed clips and approved Q90 rows. Suppress this draft when covered; never record both merely for a named filename."
@@ -1498,9 +1457,9 @@
       "characterKey": "anna_lesniewska",
       "editorial_id": "anna_lesniewska",
       "role": "farmer",
-      "voice_uuid": null,
+      "voice_uuid": "e3cd384158934cc9a01029cd7d278634",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "quest_offer",
       "trigger": "Quest offers exist as text; QuestVoiceIntent admits quest_offer but no inspected producer requests it. Require actual available offer by this giver.",
       "binding_status": "binding-needed",
@@ -1513,7 +1472,6 @@
         "text-approval",
         "speaker-safe-runtime-Q88",
         "per-clip-QC",
-        "casting-hold",
         "binding-needed"
       ],
       "economy_rule": "Casting hold: after author selects a speaker, prefer its compatible QC-passed clips and approved Q90 rows. Suppress this draft when covered; never record both merely for a named filename."
@@ -1524,9 +1482,9 @@
       "characterKey": "anna_lesniewska",
       "editorial_id": "anna_lesniewska",
       "role": "farmer",
-      "voice_uuid": null,
+      "voice_uuid": "e3cd384158934cc9a01029cd7d278634",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "quest_accepted",
       "trigger": "src/ui-vue/store.ts:acceptNpcDialogueOffer after onAccept. Acknowledges willingness, not task completion or guaranteed success.",
       "binding_status": "existing-event",
@@ -1538,8 +1496,7 @@
       "production_holds": [
         "text-approval",
         "speaker-safe-runtime-Q88",
-        "per-clip-QC",
-        "casting-hold"
+        "per-clip-QC"
       ],
       "economy_rule": "Casting hold: after author selects a speaker, prefer its compatible QC-passed clips and approved Q90 rows. Suppress this draft when covered; never record both merely for a named filename."
     },
@@ -1549,9 +1506,9 @@
       "characterKey": "anna_lesniewska",
       "editorial_id": "anna_lesniewska",
       "role": "farmer",
-      "voice_uuid": null,
+      "voice_uuid": "e3cd384158934cc9a01029cd7d278634",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "quest_declined",
       "trigger": "src/ui-vue/store.ts:closeNpcDialogueMenu with pending helpResult.offer. Decline, not generic farewell.",
       "binding_status": "existing-event",
@@ -1563,8 +1520,7 @@
       "production_holds": [
         "text-approval",
         "speaker-safe-runtime-Q88",
-        "per-clip-QC",
-        "casting-hold"
+        "per-clip-QC"
       ],
       "economy_rule": "Casting hold: after author selects a speaker, prefer its compatible QC-passed clips and approved Q90 rows. Suppress this draft when covered; never record both merely for a named filename."
     },
@@ -1574,9 +1530,9 @@
       "characterKey": "anna_lesniewska",
       "editorial_id": "anna_lesniewska",
       "role": "farmer",
-      "voice_uuid": null,
+      "voice_uuid": "e3cd384158934cc9a01029cd7d278634",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "quest_complete",
       "trigger": "src/quests/QuestManager.ts:playQuestCompleteSound via complete outcome, loaded giver resolved in createApp. Generic thanks only; no victory, restored animal, reward or completed repair claim.",
       "binding_status": "existing-event",
@@ -1588,8 +1544,7 @@
       "production_holds": [
         "text-approval",
         "speaker-safe-runtime-Q88",
-        "per-clip-QC",
-        "casting-hold"
+        "per-clip-QC"
       ],
       "economy_rule": "Casting hold: after author selects a speaker, prefer its compatible QC-passed clips and approved Q90 rows. Suppress this draft when covered; never record both merely for a named filename."
     },
@@ -1599,9 +1554,9 @@
       "characterKey": "anna_lesniewska",
       "editorial_id": "anna_lesniewska",
       "role": "farmer",
-      "voice_uuid": null,
+      "voice_uuid": "e3cd384158934cc9a01029cd7d278634",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "hungry",
       "trigger": "src/ai/NpcAgent.ts:choose selects food need after previousNeed != food. Does NOT establish work was interrupted, an empty stomach, food available or consumption.",
       "binding_status": "existing-event",
@@ -1613,8 +1568,7 @@
       "production_holds": [
         "text-approval",
         "speaker-safe-runtime-Q88",
-        "per-clip-QC",
-        "casting-hold"
+        "per-clip-QC"
       ],
       "economy_rule": "Casting hold: after author selects a speaker, prefer its compatible QC-passed clips and approved Q90 rows. Suppress this draft when covered; never record both merely for a named filename."
     },
@@ -1624,9 +1578,9 @@
       "characterKey": "anna_lesniewska",
       "editorial_id": "anna_lesniewska",
       "role": "farmer",
-      "voice_uuid": null,
+      "voice_uuid": "e3cd384158934cc9a01029cd7d278634",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "exhausted",
       "trigger": "src/ai/NpcAgent.ts:goTo/execute -> exhausted on isExhausted(stamina); action pauses. Rest, not end of day.",
       "binding_status": "existing-event",
@@ -1638,8 +1592,7 @@
       "production_holds": [
         "text-approval",
         "speaker-safe-runtime-Q88",
-        "per-clip-QC",
-        "casting-hold"
+        "per-clip-QC"
       ],
       "economy_rule": "Casting hold: after author selects a speaker, prefer its compatible QC-passed clips and approved Q90 rows. Suppress this draft when covered; never record both merely for a named filename."
     },
@@ -1649,9 +1602,9 @@
       "characterKey": "anna_lesniewska",
       "editorial_id": "anna_lesniewska",
       "role": "farmer",
-      "voice_uuid": null,
+      "voice_uuid": "e3cd384158934cc9a01029cd7d278634",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "weather_shelter",
       "trigger": "src/ai/NpcAgent.ts:beginSeekShelter before arrival. Neutral shared variant for rain/storm/snow through npcBarkRequest.weatherShelterVoiceIntents.",
       "binding_status": "existing-event",
@@ -1663,8 +1616,7 @@
       "production_holds": [
         "text-approval",
         "speaker-safe-runtime-Q88",
-        "per-clip-QC",
-        "casting-hold"
+        "per-clip-QC"
       ],
       "economy_rule": "Casting hold: after author selects a speaker, prefer its compatible QC-passed clips and approved Q90 rows. Suppress this draft when covered; never record both merely for a named filename."
     },
@@ -1674,9 +1626,9 @@
       "characterKey": "anna_lesniewska",
       "editorial_id": "anna_lesniewska",
       "role": "farmer",
-      "voice_uuid": null,
+      "voice_uuid": "e3cd384158934cc9a01029cd7d278634",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "danger_alert",
       "trigger": "NpcAgent newly perceived animal-threat episode. Species-neutral; no death, victory or all-clear claim.",
       "binding_status": "existing-event",
@@ -1688,8 +1640,7 @@
       "production_holds": [
         "text-approval",
         "speaker-safe-runtime-Q88",
-        "per-clip-QC",
-        "casting-hold"
+        "per-clip-QC"
       ],
       "economy_rule": "Casting hold: after author selects a speaker, prefer its compatible QC-passed clips and approved Q90 rows. Suppress this draft when covered; never record both merely for a named filename."
     },
@@ -1699,9 +1650,9 @@
       "characterKey": "anna_lesniewska",
       "editorial_id": "anna_lesniewska",
       "role": "farmer",
-      "voice_uuid": null,
+      "voice_uuid": "e3cd384158934cc9a01029cd7d278634",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "combat_start",
       "trigger": "NpcAgent successful beginCombat. Do not use on mere sighting or flight; no assumed weapon.",
       "binding_status": "existing-event",
@@ -1713,8 +1664,7 @@
       "production_holds": [
         "text-approval",
         "speaker-safe-runtime-Q88",
-        "per-clip-QC",
-        "casting-hold"
+        "per-clip-QC"
       ],
       "economy_rule": "Casting hold: after author selects a speaker, prefer its compatible QC-passed clips and approved Q90 rows. Suppress this draft when covered; never record both merely for a named filename."
     },
@@ -1724,9 +1674,9 @@
       "characterKey": "anna_lesniewska",
       "editorial_id": "anna_lesniewska",
       "role": "farmer",
-      "voice_uuid": null,
+      "voice_uuid": "e3cd384158934cc9a01029cd7d278634",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "work_finished",
       "trigger": "NpcAgent terminal execute with classifyPendingActivity(action, activeNeed) === work. One task ended; no end-of-shift, tools-away or repaired-world claim.",
       "binding_status": "existing-event",
@@ -1738,8 +1688,7 @@
       "production_holds": [
         "text-approval",
         "speaker-safe-runtime-Q88",
-        "per-clip-QC",
-        "casting-hold"
+        "per-clip-QC"
       ],
       "economy_rule": "Casting hold: after author selects a speaker, prefer its compatible QC-passed clips and approved Q90 rows. Suppress this draft when covered; never record both merely for a named filename."
     },
@@ -1749,9 +1698,9 @@
       "characterKey": "anna_lesniewska",
       "editorial_id": "anna_lesniewska",
       "role": "farmer",
-      "voice_uuid": null,
+      "voice_uuid": "e3cd384158934cc9a01029cd7d278634",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "weather_shelter_rain",
       "trigger": "beginSeekShelter with weather rain; storm may also use rain fallback under existing policy. No forecast/intensity/arrival claim.",
       "binding_status": "existing-event",
@@ -1763,8 +1712,7 @@
       "production_holds": [
         "text-approval",
         "speaker-safe-runtime-Q88",
-        "per-clip-QC",
-        "casting-hold"
+        "per-clip-QC"
       ],
       "economy_rule": "Casting hold: after author selects a speaker, prefer its compatible QC-passed clips and approved Q90 rows. Suppress this draft when covered; never record both merely for a named filename."
     },
@@ -1774,9 +1722,9 @@
       "characterKey": "anna_lesniewska",
       "editorial_id": "anna_lesniewska",
       "role": "farmer",
-      "voice_uuid": null,
+      "voice_uuid": "e3cd384158934cc9a01029cd7d278634",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "weather_shelter_storm",
       "trigger": "beginSeekShelter with current weather storm only. No inferred damage/lightning strike.",
       "binding_status": "existing-event",
@@ -1788,8 +1736,7 @@
       "production_holds": [
         "text-approval",
         "speaker-safe-runtime-Q88",
-        "per-clip-QC",
-        "casting-hold"
+        "per-clip-QC"
       ],
       "economy_rule": "Casting hold: after author selects a speaker, prefer its compatible QC-passed clips and approved Q90 rows. Suppress this draft when covered; never record both merely for a named filename."
     },
@@ -1799,9 +1746,9 @@
       "characterKey": "anna_lesniewska",
       "editorial_id": "anna_lesniewska",
       "role": "farmer",
-      "voice_uuid": null,
+      "voice_uuid": "e3cd384158934cc9a01029cd7d278634",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "weather_shelter_snow",
       "trigger": "beginSeekShelter with current weather snow only. Never rain fallback.",
       "binding_status": "existing-event",
@@ -1813,8 +1760,7 @@
       "production_holds": [
         "text-approval",
         "speaker-safe-runtime-Q88",
-        "per-clip-QC",
-        "casting-hold"
+        "per-clip-QC"
       ],
       "economy_rule": "Casting hold: after author selects a speaker, prefer its compatible QC-passed clips and approved Q90 rows. Suppress this draft when covered; never record both merely for a named filename."
     },
@@ -1824,9 +1770,9 @@
       "characterKey": "piotr_lesniewski",
       "editorial_id": "piotr_lesniewski",
       "role": "woodcutter",
-      "voice_uuid": null,
+      "voice_uuid": "5e03f21950f64729935dd8402c9c9702",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "greeting",
       "trigger": "src/ui-vue/npcDialogueGreeting.ts:resolveNpcGreetingPresentation; NpcAgent.playReactionSound on non-normal tier. Explicit open or admitted proximity greeting; no assumed familiarity.",
       "binding_status": "existing-event",
@@ -1838,8 +1784,7 @@
       "production_holds": [
         "text-approval",
         "speaker-safe-runtime-Q88",
-        "per-clip-QC",
-        "casting-hold"
+        "per-clip-QC"
       ],
       "economy_rule": "Casting hold: after author selects a speaker, prefer its compatible QC-passed clips and approved Q90 rows. Suppress this draft when covered; never record both merely for a named filename."
     },
@@ -1849,9 +1794,9 @@
       "characterKey": "piotr_lesniewski",
       "editorial_id": "piotr_lesniewski",
       "role": "woodcutter",
-      "voice_uuid": null,
+      "voice_uuid": "5e03f21950f64729935dd8402c9c9702",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "farewell",
       "trigger": "src/ui-vue/store.ts:closeNpcDialogueMenu, no pending offer decline. Ordinary conversation close.",
       "binding_status": "existing-event",
@@ -1863,8 +1808,7 @@
       "production_holds": [
         "text-approval",
         "speaker-safe-runtime-Q88",
-        "per-clip-QC",
-        "casting-hold"
+        "per-clip-QC"
       ],
       "economy_rule": "Casting hold: after author selects a speaker, prefer its compatible QC-passed clips and approved Q90 rows. Suppress this draft when covered; never record both merely for a named filename."
     },
@@ -1874,9 +1818,9 @@
       "characterKey": "piotr_lesniewski",
       "editorial_id": "piotr_lesniewski",
       "role": "woodcutter",
-      "voice_uuid": null,
+      "voice_uuid": "5e03f21950f64729935dd8402c9c9702",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "attention",
       "trigger": "src/ai/NpcAgent.ts:playReactionSound normal reaction tier; admitted proximity reaction.",
       "binding_status": "existing-event",
@@ -1888,8 +1832,7 @@
       "production_holds": [
         "text-approval",
         "speaker-safe-runtime-Q88",
-        "per-clip-QC",
-        "casting-hold"
+        "per-clip-QC"
       ],
       "economy_rule": "Casting hold: after author selects a speaker, prefer its compatible QC-passed clips and approved Q90 rows. Suppress this draft when covered; never record both merely for a named filename."
     },
@@ -1899,9 +1842,9 @@
       "characterKey": "piotr_lesniewski",
       "editorial_id": "piotr_lesniewski",
       "role": "woodcutter",
-      "voice_uuid": null,
+      "voice_uuid": "5e03f21950f64729935dd8402c9c9702",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "thanks",
       "trigger": "Semantic intent exists, but no general thanks producer verified. Bind only to a committed helpful act, not an attempted action.",
       "binding_status": "binding-needed",
@@ -1914,7 +1857,6 @@
         "text-approval",
         "speaker-safe-runtime-Q88",
         "per-clip-QC",
-        "casting-hold",
         "binding-needed"
       ],
       "economy_rule": "Casting hold: after author selects a speaker, prefer its compatible QC-passed clips and approved Q90 rows. Suppress this draft when covered; never record both merely for a named filename."
@@ -1925,9 +1867,9 @@
       "characterKey": "piotr_lesniewski",
       "editorial_id": "piotr_lesniewski",
       "role": "woodcutter",
-      "voice_uuid": null,
+      "voice_uuid": "5e03f21950f64729935dd8402c9c9702",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "refusal",
       "trigger": "Semantic intent exists; no general refusal voice producer verified. Bind to an actual refused request.",
       "binding_status": "binding-needed",
@@ -1940,7 +1882,6 @@
         "text-approval",
         "speaker-safe-runtime-Q88",
         "per-clip-QC",
-        "casting-hold",
         "binding-needed"
       ],
       "economy_rule": "Casting hold: after author selects a speaker, prefer its compatible QC-passed clips and approved Q90 rows. Suppress this draft when covered; never record both merely for a named filename."
@@ -1951,9 +1892,9 @@
       "characterKey": "piotr_lesniewski",
       "editorial_id": "piotr_lesniewski",
       "role": "woodcutter",
-      "voice_uuid": null,
+      "voice_uuid": "5e03f21950f64729935dd8402c9c9702",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "confirmation",
       "trigger": "Agreement maps to confirmation. Semantic intent exists; exact successful agreement voice binding absent.",
       "binding_status": "binding-needed",
@@ -1966,7 +1907,6 @@
         "text-approval",
         "speaker-safe-runtime-Q88",
         "per-clip-QC",
-        "casting-hold",
         "binding-needed"
       ],
       "economy_rule": "Casting hold: after author selects a speaker, prefer its compatible QC-passed clips and approved Q90 rows. Suppress this draft when covered; never record both merely for a named filename."
@@ -1977,9 +1917,9 @@
       "characterKey": "piotr_lesniewski",
       "editorial_id": "piotr_lesniewski",
       "role": "woodcutter",
-      "voice_uuid": null,
+      "voice_uuid": "5e03f21950f64729935dd8402c9c9702",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "quest_offer",
       "trigger": "Quest offers exist as text; QuestVoiceIntent admits quest_offer but no inspected producer requests it. Require actual available offer by this giver.",
       "binding_status": "binding-needed",
@@ -1992,7 +1932,6 @@
         "text-approval",
         "speaker-safe-runtime-Q88",
         "per-clip-QC",
-        "casting-hold",
         "binding-needed"
       ],
       "economy_rule": "Casting hold: after author selects a speaker, prefer its compatible QC-passed clips and approved Q90 rows. Suppress this draft when covered; never record both merely for a named filename."
@@ -2003,9 +1942,9 @@
       "characterKey": "piotr_lesniewski",
       "editorial_id": "piotr_lesniewski",
       "role": "woodcutter",
-      "voice_uuid": null,
+      "voice_uuid": "5e03f21950f64729935dd8402c9c9702",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "quest_accepted",
       "trigger": "src/ui-vue/store.ts:acceptNpcDialogueOffer after onAccept. Acknowledges willingness, not task completion or guaranteed success.",
       "binding_status": "existing-event",
@@ -2017,8 +1956,7 @@
       "production_holds": [
         "text-approval",
         "speaker-safe-runtime-Q88",
-        "per-clip-QC",
-        "casting-hold"
+        "per-clip-QC"
       ],
       "economy_rule": "Casting hold: after author selects a speaker, prefer its compatible QC-passed clips and approved Q90 rows. Suppress this draft when covered; never record both merely for a named filename."
     },
@@ -2028,9 +1966,9 @@
       "characterKey": "piotr_lesniewski",
       "editorial_id": "piotr_lesniewski",
       "role": "woodcutter",
-      "voice_uuid": null,
+      "voice_uuid": "5e03f21950f64729935dd8402c9c9702",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "quest_declined",
       "trigger": "src/ui-vue/store.ts:closeNpcDialogueMenu with pending helpResult.offer. Decline, not generic farewell.",
       "binding_status": "existing-event",
@@ -2042,8 +1980,7 @@
       "production_holds": [
         "text-approval",
         "speaker-safe-runtime-Q88",
-        "per-clip-QC",
-        "casting-hold"
+        "per-clip-QC"
       ],
       "economy_rule": "Casting hold: after author selects a speaker, prefer its compatible QC-passed clips and approved Q90 rows. Suppress this draft when covered; never record both merely for a named filename."
     },
@@ -2053,9 +1990,9 @@
       "characterKey": "piotr_lesniewski",
       "editorial_id": "piotr_lesniewski",
       "role": "woodcutter",
-      "voice_uuid": null,
+      "voice_uuid": "5e03f21950f64729935dd8402c9c9702",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "quest_complete",
       "trigger": "src/quests/QuestManager.ts:playQuestCompleteSound via complete outcome, loaded giver resolved in createApp. Generic thanks only; no victory, restored animal, reward or completed repair claim.",
       "binding_status": "existing-event",
@@ -2067,8 +2004,7 @@
       "production_holds": [
         "text-approval",
         "speaker-safe-runtime-Q88",
-        "per-clip-QC",
-        "casting-hold"
+        "per-clip-QC"
       ],
       "economy_rule": "Casting hold: after author selects a speaker, prefer its compatible QC-passed clips and approved Q90 rows. Suppress this draft when covered; never record both merely for a named filename."
     },
@@ -2078,9 +2014,9 @@
       "characterKey": "piotr_lesniewski",
       "editorial_id": "piotr_lesniewski",
       "role": "woodcutter",
-      "voice_uuid": null,
+      "voice_uuid": "5e03f21950f64729935dd8402c9c9702",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "hungry",
       "trigger": "src/ai/NpcAgent.ts:choose selects food need after previousNeed != food. Does NOT establish work was interrupted, an empty stomach, food available or consumption.",
       "binding_status": "existing-event",
@@ -2092,8 +2028,7 @@
       "production_holds": [
         "text-approval",
         "speaker-safe-runtime-Q88",
-        "per-clip-QC",
-        "casting-hold"
+        "per-clip-QC"
       ],
       "economy_rule": "Casting hold: after author selects a speaker, prefer its compatible QC-passed clips and approved Q90 rows. Suppress this draft when covered; never record both merely for a named filename."
     },
@@ -2103,9 +2038,9 @@
       "characterKey": "piotr_lesniewski",
       "editorial_id": "piotr_lesniewski",
       "role": "woodcutter",
-      "voice_uuid": null,
+      "voice_uuid": "5e03f21950f64729935dd8402c9c9702",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "exhausted",
       "trigger": "src/ai/NpcAgent.ts:goTo/execute -> exhausted on isExhausted(stamina); action pauses. Rest, not end of day.",
       "binding_status": "existing-event",
@@ -2117,8 +2052,7 @@
       "production_holds": [
         "text-approval",
         "speaker-safe-runtime-Q88",
-        "per-clip-QC",
-        "casting-hold"
+        "per-clip-QC"
       ],
       "economy_rule": "Casting hold: after author selects a speaker, prefer its compatible QC-passed clips and approved Q90 rows. Suppress this draft when covered; never record both merely for a named filename."
     },
@@ -2128,9 +2062,9 @@
       "characterKey": "piotr_lesniewski",
       "editorial_id": "piotr_lesniewski",
       "role": "woodcutter",
-      "voice_uuid": null,
+      "voice_uuid": "5e03f21950f64729935dd8402c9c9702",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "weather_shelter",
       "trigger": "src/ai/NpcAgent.ts:beginSeekShelter before arrival. Neutral shared variant for rain/storm/snow through npcBarkRequest.weatherShelterVoiceIntents.",
       "binding_status": "existing-event",
@@ -2142,8 +2076,7 @@
       "production_holds": [
         "text-approval",
         "speaker-safe-runtime-Q88",
-        "per-clip-QC",
-        "casting-hold"
+        "per-clip-QC"
       ],
       "economy_rule": "Casting hold: after author selects a speaker, prefer its compatible QC-passed clips and approved Q90 rows. Suppress this draft when covered; never record both merely for a named filename."
     },
@@ -2153,9 +2086,9 @@
       "characterKey": "piotr_lesniewski",
       "editorial_id": "piotr_lesniewski",
       "role": "woodcutter",
-      "voice_uuid": null,
+      "voice_uuid": "5e03f21950f64729935dd8402c9c9702",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "danger_alert",
       "trigger": "NpcAgent newly perceived animal-threat episode. Species-neutral; no death, victory or all-clear claim.",
       "binding_status": "existing-event",
@@ -2167,8 +2100,7 @@
       "production_holds": [
         "text-approval",
         "speaker-safe-runtime-Q88",
-        "per-clip-QC",
-        "casting-hold"
+        "per-clip-QC"
       ],
       "economy_rule": "Casting hold: after author selects a speaker, prefer its compatible QC-passed clips and approved Q90 rows. Suppress this draft when covered; never record both merely for a named filename."
     },
@@ -2178,9 +2110,9 @@
       "characterKey": "piotr_lesniewski",
       "editorial_id": "piotr_lesniewski",
       "role": "woodcutter",
-      "voice_uuid": null,
+      "voice_uuid": "5e03f21950f64729935dd8402c9c9702",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "combat_start",
       "trigger": "NpcAgent successful beginCombat. Do not use on mere sighting or flight; no assumed weapon.",
       "binding_status": "existing-event",
@@ -2192,8 +2124,7 @@
       "production_holds": [
         "text-approval",
         "speaker-safe-runtime-Q88",
-        "per-clip-QC",
-        "casting-hold"
+        "per-clip-QC"
       ],
       "economy_rule": "Casting hold: after author selects a speaker, prefer its compatible QC-passed clips and approved Q90 rows. Suppress this draft when covered; never record both merely for a named filename."
     },
@@ -2203,9 +2134,9 @@
       "characterKey": "piotr_lesniewski",
       "editorial_id": "piotr_lesniewski",
       "role": "woodcutter",
-      "voice_uuid": null,
+      "voice_uuid": "5e03f21950f64729935dd8402c9c9702",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "work_finished",
       "trigger": "NpcAgent terminal execute with classifyPendingActivity(action, activeNeed) === work. One task ended; no end-of-shift, tools-away or repaired-world claim.",
       "binding_status": "existing-event",
@@ -2217,8 +2148,7 @@
       "production_holds": [
         "text-approval",
         "speaker-safe-runtime-Q88",
-        "per-clip-QC",
-        "casting-hold"
+        "per-clip-QC"
       ],
       "economy_rule": "Casting hold: after author selects a speaker, prefer its compatible QC-passed clips and approved Q90 rows. Suppress this draft when covered; never record both merely for a named filename."
     },
@@ -2228,9 +2158,9 @@
       "characterKey": "piotr_lesniewski",
       "editorial_id": "piotr_lesniewski",
       "role": "woodcutter",
-      "voice_uuid": null,
+      "voice_uuid": "5e03f21950f64729935dd8402c9c9702",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "weather_shelter_rain",
       "trigger": "beginSeekShelter with weather rain; storm may also use rain fallback under existing policy. No forecast/intensity/arrival claim.",
       "binding_status": "existing-event",
@@ -2242,8 +2172,7 @@
       "production_holds": [
         "text-approval",
         "speaker-safe-runtime-Q88",
-        "per-clip-QC",
-        "casting-hold"
+        "per-clip-QC"
       ],
       "economy_rule": "Casting hold: after author selects a speaker, prefer its compatible QC-passed clips and approved Q90 rows. Suppress this draft when covered; never record both merely for a named filename."
     },
@@ -2253,9 +2182,9 @@
       "characterKey": "piotr_lesniewski",
       "editorial_id": "piotr_lesniewski",
       "role": "woodcutter",
-      "voice_uuid": null,
+      "voice_uuid": "5e03f21950f64729935dd8402c9c9702",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "weather_shelter_storm",
       "trigger": "beginSeekShelter with current weather storm only. No inferred damage/lightning strike.",
       "binding_status": "existing-event",
@@ -2267,8 +2196,7 @@
       "production_holds": [
         "text-approval",
         "speaker-safe-runtime-Q88",
-        "per-clip-QC",
-        "casting-hold"
+        "per-clip-QC"
       ],
       "economy_rule": "Casting hold: after author selects a speaker, prefer its compatible QC-passed clips and approved Q90 rows. Suppress this draft when covered; never record both merely for a named filename."
     },
@@ -2278,9 +2206,9 @@
       "characterKey": "piotr_lesniewski",
       "editorial_id": "piotr_lesniewski",
       "role": "woodcutter",
-      "voice_uuid": null,
+      "voice_uuid": "5e03f21950f64729935dd8402c9c9702",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "weather_shelter_snow",
       "trigger": "beginSeekShelter with current weather snow only. Never rain fallback.",
       "binding_status": "existing-event",
@@ -2292,8 +2220,7 @@
       "production_holds": [
         "text-approval",
         "speaker-safe-runtime-Q88",
-        "per-clip-QC",
-        "casting-hold"
+        "per-clip-QC"
       ],
       "economy_rule": "Casting hold: after author selects a speaker, prefer its compatible QC-passed clips and approved Q90 rows. Suppress this draft when covered; never record both merely for a named filename."
     },
@@ -2303,9 +2230,9 @@
       "characterKey": "molly_lambert",
       "editorial_id": "molly_lambert",
       "role": "shepherd",
-      "voice_uuid": null,
-      "candidate_voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
-      "casting_status": "Hannah candidate only",
+      "voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
+      "candidate_voice_uuid": null,
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "greeting",
       "trigger": "src/ui-vue/npcDialogueGreeting.ts:resolveNpcGreetingPresentation; NpcAgent.playReactionSound on non-normal tier. Explicit open or admitted proximity greeting; no assumed familiarity.",
       "binding_status": "existing-event",
@@ -2316,8 +2243,7 @@
       "disposition": "reuse-after-QC",
       "production_holds": [
         "per-clip-QC",
-        "speaker-safe-runtime-Q88",
-        "casting-hold"
+        "speaker-safe-runtime-Q88"
       ],
       "source_file": "docs/v3-donor/voices/mp3/general_female_b_greeting_01.mp3",
       "source_voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
@@ -2333,9 +2259,9 @@
       "characterKey": "molly_lambert",
       "editorial_id": "molly_lambert",
       "role": "shepherd",
-      "voice_uuid": null,
-      "candidate_voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
-      "casting_status": "Hannah candidate only",
+      "voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
+      "candidate_voice_uuid": null,
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "farewell",
       "trigger": "src/ui-vue/store.ts:closeNpcDialogueMenu, no pending offer decline. Ordinary conversation close.",
       "binding_status": "existing-event",
@@ -2346,8 +2272,7 @@
       "disposition": "reuse-after-QC",
       "production_holds": [
         "per-clip-QC",
-        "speaker-safe-runtime-Q88",
-        "casting-hold"
+        "speaker-safe-runtime-Q88"
       ],
       "source_file": "docs/v3-donor/voices/mp3/general_female_b_farewell_02.mp3",
       "source_voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
@@ -2363,9 +2288,9 @@
       "characterKey": "molly_lambert",
       "editorial_id": "molly_lambert",
       "role": "shepherd",
-      "voice_uuid": null,
-      "candidate_voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
-      "casting_status": "Hannah candidate only",
+      "voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
+      "candidate_voice_uuid": null,
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "attention",
       "trigger": "src/ai/NpcAgent.ts:playReactionSound normal reaction tier; admitted proximity reaction.",
       "binding_status": "existing-event",
@@ -2376,8 +2301,7 @@
       "disposition": "reuse-after-QC",
       "production_holds": [
         "per-clip-QC",
-        "speaker-safe-runtime-Q88",
-        "casting-hold"
+        "speaker-safe-runtime-Q88"
       ],
       "source_file": "docs/v3-donor/voices/mp3/general_female_b_attention_02.mp3",
       "source_voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
@@ -2393,9 +2317,9 @@
       "characterKey": "molly_lambert",
       "editorial_id": "molly_lambert",
       "role": "shepherd",
-      "voice_uuid": null,
-      "candidate_voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
-      "casting_status": "Hannah candidate only",
+      "voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
+      "candidate_voice_uuid": null,
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "exhausted",
       "trigger": "src/ai/NpcAgent.ts:goTo/execute -> exhausted on isExhausted(stamina); action pauses. Rest, not end of day.",
       "binding_status": "existing-event",
@@ -2406,8 +2330,7 @@
       "disposition": "reuse-after-QC",
       "production_holds": [
         "per-clip-QC",
-        "speaker-safe-runtime-Q88",
-        "casting-hold"
+        "speaker-safe-runtime-Q88"
       ],
       "source_file": "docs/v3-donor/voices/mp3/general_female_b_exhausted_01.mp3",
       "source_voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
@@ -2423,9 +2346,9 @@
       "characterKey": "molly_lambert",
       "editorial_id": "molly_lambert",
       "role": "shepherd",
-      "voice_uuid": null,
-      "candidate_voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
-      "casting_status": "Hannah candidate only",
+      "voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
+      "candidate_voice_uuid": null,
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "hungry",
       "trigger": "src/ai/NpcAgent.ts:choose selects food need after previousNeed != food. Does NOT establish work was interrupted, an empty stomach, food available or consumption.",
       "binding_status": "existing-event",
@@ -2436,8 +2359,7 @@
       "disposition": "reuse-after-QC",
       "production_holds": [
         "per-clip-QC",
-        "speaker-safe-runtime-Q88",
-        "casting-hold"
+        "speaker-safe-runtime-Q88"
       ],
       "source_file": "docs/v3-donor/voices/mp3/general_female_b_hungry_01.mp3",
       "source_voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
@@ -2453,9 +2375,9 @@
       "characterKey": "molly_lambert",
       "editorial_id": "molly_lambert",
       "role": "shepherd",
-      "voice_uuid": null,
-      "candidate_voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
-      "casting_status": "Hannah candidate only",
+      "voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
+      "candidate_voice_uuid": null,
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "danger_alert",
       "trigger": "NpcAgent newly perceived animal-threat episode. Species-neutral; no death, victory or all-clear claim.",
       "binding_status": "existing-event",
@@ -2466,8 +2388,7 @@
       "disposition": "reuse-after-QC",
       "production_holds": [
         "per-clip-QC",
-        "speaker-safe-runtime-Q88",
-        "casting-hold"
+        "speaker-safe-runtime-Q88"
       ],
       "source_file": "docs/v3-donor/voices/mp3/general_female_b_danger_alert_02.mp3",
       "source_voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
@@ -2483,9 +2404,9 @@
       "characterKey": "molly_lambert",
       "editorial_id": "molly_lambert",
       "role": "shepherd",
-      "voice_uuid": null,
-      "candidate_voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
-      "casting_status": "Hannah candidate only",
+      "voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
+      "candidate_voice_uuid": null,
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "thanks",
       "trigger": "Semantic intent exists, but no general thanks producer verified. Bind only to a committed helpful act, not an attempted action.",
       "binding_status": "binding-needed",
@@ -2497,7 +2418,6 @@
       "production_holds": [
         "per-clip-QC",
         "speaker-safe-runtime-Q88",
-        "casting-hold",
         "binding-needed"
       ],
       "source_file": "docs/v3-donor/voices/mp3/general_female_b_thanks_02.mp3",
@@ -2514,9 +2434,9 @@
       "characterKey": "molly_lambert",
       "editorial_id": "molly_lambert",
       "role": "shepherd",
-      "voice_uuid": null,
-      "candidate_voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
-      "casting_status": "Hannah candidate only",
+      "voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
+      "candidate_voice_uuid": null,
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "refusal",
       "trigger": "Semantic intent exists; no general refusal voice producer verified. Bind to an actual refused request.",
       "binding_status": "binding-needed",
@@ -2528,7 +2448,6 @@
       "production_holds": [
         "per-clip-QC",
         "speaker-safe-runtime-Q88",
-        "casting-hold",
         "binding-needed"
       ],
       "source_file": "docs/v3-donor/voices/mp3/general_female_b_refusal_01.mp3",
@@ -2545,9 +2464,9 @@
       "characterKey": "molly_lambert",
       "editorial_id": "molly_lambert",
       "role": "shepherd",
-      "voice_uuid": null,
-      "candidate_voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
-      "casting_status": "Hannah candidate only",
+      "voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
+      "candidate_voice_uuid": null,
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "confirmation",
       "trigger": "Agreement maps to confirmation. Semantic intent exists; exact successful agreement voice binding absent.",
       "binding_status": "binding-needed",
@@ -2559,7 +2478,6 @@
       "production_holds": [
         "per-clip-QC",
         "speaker-safe-runtime-Q88",
-        "casting-hold",
         "binding-needed"
       ],
       "source_file": "docs/v3-donor/voices/mp3/general_female_b_agree_02.mp3",
@@ -2576,9 +2494,9 @@
       "characterKey": "molly_lambert",
       "editorial_id": "molly_lambert",
       "role": "shepherd",
-      "voice_uuid": null,
-      "candidate_voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
-      "casting_status": "Hannah candidate only",
+      "voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
+      "candidate_voice_uuid": null,
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "quest_offer",
       "trigger": "Quest offers exist as text; QuestVoiceIntent admits quest_offer but no inspected producer requests it. Require actual available offer by this giver.",
       "binding_status": "binding-needed",
@@ -2590,7 +2508,6 @@
       "production_holds": [
         "per-clip-QC",
         "speaker-safe-runtime-Q88",
-        "casting-hold",
         "binding-needed"
       ],
       "source_file": "docs/v3-donor/voices/mp3/general_female_b_quest_offer_02.mp3",
@@ -2607,9 +2524,9 @@
       "characterKey": "molly_lambert",
       "editorial_id": "molly_lambert",
       "role": "shepherd",
-      "voice_uuid": null,
-      "candidate_voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
-      "casting_status": "Hannah candidate only",
+      "voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
+      "candidate_voice_uuid": null,
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "quest_declined",
       "trigger": "src/ui-vue/store.ts:closeNpcDialogueMenu with pending helpResult.offer. Decline, not generic farewell.",
       "binding_status": "binding-needed",
@@ -2621,7 +2538,6 @@
       "production_holds": [
         "per-clip-QC",
         "speaker-safe-runtime-Q88",
-        "casting-hold",
         "binding-needed"
       ],
       "source_file": "docs/v3-donor/voices/mp3/general_female_b_quest_declined_02.mp3",
@@ -2638,9 +2554,9 @@
       "characterKey": "molly_lambert",
       "editorial_id": "molly_lambert",
       "role": "shepherd",
-      "voice_uuid": null,
-      "candidate_voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
-      "casting_status": "Hannah candidate only",
+      "voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
+      "candidate_voice_uuid": null,
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "work_finished",
       "trigger": "NpcAgent terminal execute with classifyPendingActivity(action, activeNeed) === work. One task ended; no end-of-shift, tools-away or repaired-world claim.",
       "binding_status": "existing-event",
@@ -2650,7 +2566,6 @@
       "priority": "P1",
       "disposition": "Q90-reference-do-not-regenerate",
       "production_holds": [
-        "casting-hold",
         "speaker-safe-runtime-Q88",
         "per-clip-QC"
       ],
@@ -2665,9 +2580,9 @@
       "characterKey": "molly_lambert",
       "editorial_id": "molly_lambert",
       "role": "shepherd",
-      "voice_uuid": null,
-      "candidate_voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
-      "casting_status": "Hannah candidate only",
+      "voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
+      "candidate_voice_uuid": null,
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "weather_shelter_snow",
       "trigger": "beginSeekShelter with current weather snow only. Never rain fallback.",
       "binding_status": "existing-event",
@@ -2677,7 +2592,6 @@
       "priority": "P2",
       "disposition": "Q90-reference-do-not-regenerate",
       "production_holds": [
-        "casting-hold",
         "speaker-safe-runtime-Q88",
         "per-clip-QC"
       ],
@@ -2692,9 +2606,9 @@
       "characterKey": "molly_lambert",
       "editorial_id": "molly_lambert",
       "role": "shepherd",
-      "voice_uuid": null,
-      "candidate_voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
-      "casting_status": "Hannah candidate only",
+      "voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
+      "candidate_voice_uuid": null,
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "weather_shelter_storm",
       "trigger": "beginSeekShelter with current weather storm only. No inferred damage/lightning strike.",
       "binding_status": "existing-event",
@@ -2704,7 +2618,6 @@
       "priority": "P2",
       "disposition": "Q90-reference-do-not-regenerate",
       "production_holds": [
-        "casting-hold",
         "speaker-safe-runtime-Q88",
         "per-clip-QC"
       ],
@@ -2719,9 +2632,9 @@
       "characterKey": "molly_lambert",
       "editorial_id": "molly_lambert",
       "role": "shepherd",
-      "voice_uuid": null,
-      "candidate_voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
-      "casting_status": "Hannah candidate only",
+      "voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
+      "candidate_voice_uuid": null,
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "quest_accepted",
       "trigger": "src/ui-vue/store.ts:acceptNpcDialogueOffer after onAccept. Acknowledges willingness, not task completion or guaranteed success.",
       "binding_status": "binding-needed",
@@ -2734,7 +2647,6 @@
         "text-approval",
         "speaker-safe-runtime-Q88",
         "per-clip-QC",
-        "casting-hold",
         "binding-needed"
       ],
       "conditions": "No verified Molly-authored quest giver. Hold until an actual quest offered by her exists."
@@ -2745,9 +2657,9 @@
       "characterKey": "molly_lambert",
       "editorial_id": "molly_lambert",
       "role": "shepherd",
-      "voice_uuid": null,
-      "candidate_voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
-      "casting_status": "Hannah candidate only",
+      "voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
+      "candidate_voice_uuid": null,
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "quest_complete",
       "trigger": "src/quests/QuestManager.ts:playQuestCompleteSound via complete outcome, loaded giver resolved in createApp. Generic thanks only; no victory, restored animal, reward or completed repair claim.",
       "binding_status": "binding-needed",
@@ -2760,7 +2672,6 @@
         "text-approval",
         "speaker-safe-runtime-Q88",
         "per-clip-QC",
-        "casting-hold",
         "binding-needed"
       ],
       "conditions": "No verified Molly quest callback; no assumption of Pip's return or reconciliation."
@@ -2771,9 +2682,9 @@
       "characterKey": "molly_lambert",
       "editorial_id": "molly_lambert",
       "role": "shepherd",
-      "voice_uuid": null,
-      "candidate_voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
-      "casting_status": "Hannah candidate only",
+      "voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
+      "candidate_voice_uuid": null,
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "weather_shelter",
       "trigger": "src/ai/NpcAgent.ts:beginSeekShelter before arrival. Neutral shared variant for rain/storm/snow through npcBarkRequest.weatherShelterVoiceIntents.",
       "binding_status": "existing-event",
@@ -2785,8 +2696,7 @@
       "production_holds": [
         "text-approval",
         "speaker-safe-runtime-Q88",
-        "per-clip-QC",
-        "casting-hold"
+        "per-clip-QC"
       ],
       "conditions": "Hannah donors predict worsening weather; use neutral wording instead unless QC admits a safe neutral recording."
     },
@@ -2796,9 +2706,9 @@
       "characterKey": "molly_lambert",
       "editorial_id": "molly_lambert",
       "role": "shepherd",
-      "voice_uuid": null,
-      "candidate_voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
-      "casting_status": "Hannah candidate only",
+      "voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
+      "candidate_voice_uuid": null,
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "combat_start",
       "trigger": "NpcAgent successful beginCombat. Do not use on mere sighting or flight; no assumed weapon.",
       "binding_status": "existing-event",
@@ -2810,8 +2720,7 @@
       "production_holds": [
         "text-approval",
         "speaker-safe-runtime-Q88",
-        "per-clip-QC",
-        "casting-hold"
+        "per-clip-QC"
       ],
       "conditions": "Only actual combat start, not flight; conditional Hannah donor combat lines are theatrical/weapon-dependent."
     },
@@ -2821,9 +2730,9 @@
       "characterKey": "molly_lambert",
       "editorial_id": "molly_lambert",
       "role": "shepherd",
-      "voice_uuid": null,
-      "candidate_voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
-      "casting_status": "Hannah candidate only",
+      "voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
+      "candidate_voice_uuid": null,
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "weather_shelter_rain",
       "trigger": "beginSeekShelter with weather rain; storm may also use rain fallback under existing policy. No forecast/intensity/arrival claim.",
       "binding_status": "existing-event",
@@ -2835,8 +2744,7 @@
       "production_holds": [
         "text-approval",
         "speaker-safe-runtime-Q88",
-        "per-clip-QC",
-        "casting-hold"
+        "per-clip-QC"
       ]
     },
     {
@@ -2845,9 +2753,9 @@
       "characterKey": "molly_lambert",
       "editorial_id": "molly_lambert",
       "role": "shepherd",
-      "voice_uuid": null,
-      "candidate_voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
-      "casting_status": "Hannah candidate only",
+      "voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
+      "candidate_voice_uuid": null,
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "livestock_danger",
       "trigger": "NpcAgent flockThreatApplied with household at new threat episode. npcBarkRequest can reuse same-speaker danger_alert.",
       "binding_status": "existing-event",
@@ -2858,8 +2766,7 @@
       "disposition": "reuse-after-QC",
       "production_holds": [
         "per-clip-QC",
-        "speaker-safe-runtime-Q88",
-        "casting-hold"
+        "speaker-safe-runtime-Q88"
       ],
       "source_file": "docs/v3-donor/voices/mp3/general_female_b_danger_alert_02.mp3",
       "source_voice_uuid": "9a9cf47702da476aa4629e2506d4a857",
@@ -2871,13 +2778,13 @@
     },
     {
       "id": "NV-102",
-      "npc": "Pierce (profile spelling: Piers)",
+      "npc": "Piers",
       "characterKey": null,
       "editorial_id": "piers",
-      "role": null,
-      "voice_uuid": null,
+      "role": "farmer",
+      "voice_uuid": "f292c81d563f47799b7e411f1c1e68a9",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned; no runtime character key",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "greeting",
       "trigger": "src/ui-vue/npcDialogueGreeting.ts:resolveNpcGreetingPresentation; NpcAgent.playReactionSound on non-normal tier. Explicit open or admitted proximity greeting; no assumed familiarity.",
       "binding_status": "binding-needed",
@@ -2890,20 +2797,19 @@
         "text-approval",
         "speaker-safe-runtime-Q88",
         "per-clip-QC",
-        "casting-hold",
         "binding-needed"
       ],
       "conditions": "Text preparation only. No stable V1 character, role, cast or quest surface. No automatic confession, guilt, Pip custody or household admission."
     },
     {
       "id": "NV-103",
-      "npc": "Pierce (profile spelling: Piers)",
+      "npc": "Piers",
       "characterKey": null,
       "editorial_id": "piers",
-      "role": null,
-      "voice_uuid": null,
+      "role": "farmer",
+      "voice_uuid": "f292c81d563f47799b7e411f1c1e68a9",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned; no runtime character key",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "farewell",
       "trigger": "src/ui-vue/store.ts:closeNpcDialogueMenu, no pending offer decline. Ordinary conversation close.",
       "binding_status": "binding-needed",
@@ -2916,20 +2822,19 @@
         "text-approval",
         "speaker-safe-runtime-Q88",
         "per-clip-QC",
-        "casting-hold",
         "binding-needed"
       ],
       "conditions": "Text preparation only. No stable V1 character, role, cast or quest surface. No automatic confession, guilt, Pip custody or household admission."
     },
     {
       "id": "NV-104",
-      "npc": "Pierce (profile spelling: Piers)",
+      "npc": "Piers",
       "characterKey": null,
       "editorial_id": "piers",
-      "role": null,
-      "voice_uuid": null,
+      "role": "farmer",
+      "voice_uuid": "f292c81d563f47799b7e411f1c1e68a9",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned; no runtime character key",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "attention",
       "trigger": "src/ai/NpcAgent.ts:playReactionSound normal reaction tier; admitted proximity reaction.",
       "binding_status": "binding-needed",
@@ -2942,20 +2847,19 @@
         "text-approval",
         "speaker-safe-runtime-Q88",
         "per-clip-QC",
-        "casting-hold",
         "binding-needed"
       ],
       "conditions": "Text preparation only. No stable V1 character, role, cast or quest surface. No automatic confession, guilt, Pip custody or household admission."
     },
     {
       "id": "NV-105",
-      "npc": "Pierce (profile spelling: Piers)",
+      "npc": "Piers",
       "characterKey": null,
       "editorial_id": "piers",
-      "role": null,
-      "voice_uuid": null,
+      "role": "farmer",
+      "voice_uuid": "f292c81d563f47799b7e411f1c1e68a9",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned; no runtime character key",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "thanks",
       "trigger": "Semantic intent exists, but no general thanks producer verified. Bind only to a committed helpful act, not an attempted action.",
       "binding_status": "binding-needed",
@@ -2968,20 +2872,19 @@
         "text-approval",
         "speaker-safe-runtime-Q88",
         "per-clip-QC",
-        "casting-hold",
         "binding-needed"
       ],
       "conditions": "Text preparation only. No stable V1 character, role, cast or quest surface. No automatic confession, guilt, Pip custody or household admission."
     },
     {
       "id": "NV-106",
-      "npc": "Pierce (profile spelling: Piers)",
+      "npc": "Piers",
       "characterKey": null,
       "editorial_id": "piers",
-      "role": null,
-      "voice_uuid": null,
+      "role": "farmer",
+      "voice_uuid": "f292c81d563f47799b7e411f1c1e68a9",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned; no runtime character key",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "refusal",
       "trigger": "Semantic intent exists; no general refusal voice producer verified. Bind to an actual refused request.",
       "binding_status": "binding-needed",
@@ -2994,20 +2897,19 @@
         "text-approval",
         "speaker-safe-runtime-Q88",
         "per-clip-QC",
-        "casting-hold",
         "binding-needed"
       ],
       "conditions": "Text preparation only. No stable V1 character, role, cast or quest surface. No automatic confession, guilt, Pip custody or household admission."
     },
     {
       "id": "NV-107",
-      "npc": "Pierce (profile spelling: Piers)",
+      "npc": "Piers",
       "characterKey": null,
       "editorial_id": "piers",
-      "role": null,
-      "voice_uuid": null,
+      "role": "farmer",
+      "voice_uuid": "f292c81d563f47799b7e411f1c1e68a9",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned; no runtime character key",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "confirmation",
       "trigger": "Agreement maps to confirmation. Semantic intent exists; exact successful agreement voice binding absent.",
       "binding_status": "binding-needed",
@@ -3020,20 +2922,19 @@
         "text-approval",
         "speaker-safe-runtime-Q88",
         "per-clip-QC",
-        "casting-hold",
         "binding-needed"
       ],
       "conditions": "Text preparation only. No stable V1 character, role, cast or quest surface. No automatic confession, guilt, Pip custody or household admission."
     },
     {
       "id": "NV-108",
-      "npc": "Pierce (profile spelling: Piers)",
+      "npc": "Piers",
       "characterKey": null,
       "editorial_id": "piers",
-      "role": null,
-      "voice_uuid": null,
+      "role": "farmer",
+      "voice_uuid": "f292c81d563f47799b7e411f1c1e68a9",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned; no runtime character key",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "quest_offer",
       "trigger": "Quest offers exist as text; QuestVoiceIntent admits quest_offer but no inspected producer requests it. Require actual available offer by this giver.",
       "binding_status": "binding-needed",
@@ -3046,20 +2947,19 @@
         "text-approval",
         "speaker-safe-runtime-Q88",
         "per-clip-QC",
-        "casting-hold",
         "binding-needed"
       ],
       "conditions": "Text preparation only. No stable V1 character, role, cast or quest surface. No automatic confession, guilt, Pip custody or household admission."
     },
     {
       "id": "NV-109",
-      "npc": "Pierce (profile spelling: Piers)",
+      "npc": "Piers",
       "characterKey": null,
       "editorial_id": "piers",
-      "role": null,
-      "voice_uuid": null,
+      "role": "farmer",
+      "voice_uuid": "f292c81d563f47799b7e411f1c1e68a9",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned; no runtime character key",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "quest_accepted",
       "trigger": "src/ui-vue/store.ts:acceptNpcDialogueOffer after onAccept. Acknowledges willingness, not task completion or guaranteed success.",
       "binding_status": "binding-needed",
@@ -3072,20 +2972,19 @@
         "text-approval",
         "speaker-safe-runtime-Q88",
         "per-clip-QC",
-        "casting-hold",
         "binding-needed"
       ],
       "conditions": "Text preparation only. No stable V1 character, role, cast or quest surface. No automatic confession, guilt, Pip custody or household admission."
     },
     {
       "id": "NV-110",
-      "npc": "Pierce (profile spelling: Piers)",
+      "npc": "Piers",
       "characterKey": null,
       "editorial_id": "piers",
-      "role": null,
-      "voice_uuid": null,
+      "role": "farmer",
+      "voice_uuid": "f292c81d563f47799b7e411f1c1e68a9",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned; no runtime character key",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "quest_declined",
       "trigger": "src/ui-vue/store.ts:closeNpcDialogueMenu with pending helpResult.offer. Decline, not generic farewell.",
       "binding_status": "binding-needed",
@@ -3098,20 +2997,19 @@
         "text-approval",
         "speaker-safe-runtime-Q88",
         "per-clip-QC",
-        "casting-hold",
         "binding-needed"
       ],
       "conditions": "Text preparation only. No stable V1 character, role, cast or quest surface. No automatic confession, guilt, Pip custody or household admission."
     },
     {
       "id": "NV-111",
-      "npc": "Pierce (profile spelling: Piers)",
+      "npc": "Piers",
       "characterKey": null,
       "editorial_id": "piers",
-      "role": null,
-      "voice_uuid": null,
+      "role": "farmer",
+      "voice_uuid": "f292c81d563f47799b7e411f1c1e68a9",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned; no runtime character key",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "quest_complete",
       "trigger": "src/quests/QuestManager.ts:playQuestCompleteSound via complete outcome, loaded giver resolved in createApp. Generic thanks only; no victory, restored animal, reward or completed repair claim.",
       "binding_status": "binding-needed",
@@ -3124,20 +3022,19 @@
         "text-approval",
         "speaker-safe-runtime-Q88",
         "per-clip-QC",
-        "casting-hold",
         "binding-needed"
       ],
       "conditions": "Text preparation only. No stable V1 character, role, cast or quest surface. No automatic confession, guilt, Pip custody or household admission."
     },
     {
       "id": "NV-112",
-      "npc": "Pierce (profile spelling: Piers)",
+      "npc": "Piers",
       "characterKey": null,
       "editorial_id": "piers",
-      "role": null,
-      "voice_uuid": null,
+      "role": "farmer",
+      "voice_uuid": "f292c81d563f47799b7e411f1c1e68a9",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned; no runtime character key",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "hungry",
       "trigger": "src/ai/NpcAgent.ts:choose selects food need after previousNeed != food. Does NOT establish work was interrupted, an empty stomach, food available or consumption.",
       "binding_status": "binding-needed",
@@ -3150,20 +3047,19 @@
         "text-approval",
         "speaker-safe-runtime-Q88",
         "per-clip-QC",
-        "casting-hold",
         "binding-needed"
       ],
       "conditions": "Text preparation only. No stable V1 character, role, cast or quest surface. No automatic confession, guilt, Pip custody or household admission."
     },
     {
       "id": "NV-113",
-      "npc": "Pierce (profile spelling: Piers)",
+      "npc": "Piers",
       "characterKey": null,
       "editorial_id": "piers",
-      "role": null,
-      "voice_uuid": null,
+      "role": "farmer",
+      "voice_uuid": "f292c81d563f47799b7e411f1c1e68a9",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned; no runtime character key",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "exhausted",
       "trigger": "src/ai/NpcAgent.ts:goTo/execute -> exhausted on isExhausted(stamina); action pauses. Rest, not end of day.",
       "binding_status": "binding-needed",
@@ -3176,20 +3072,19 @@
         "text-approval",
         "speaker-safe-runtime-Q88",
         "per-clip-QC",
-        "casting-hold",
         "binding-needed"
       ],
       "conditions": "Text preparation only. No stable V1 character, role, cast or quest surface. No automatic confession, guilt, Pip custody or household admission."
     },
     {
       "id": "NV-114",
-      "npc": "Pierce (profile spelling: Piers)",
+      "npc": "Piers",
       "characterKey": null,
       "editorial_id": "piers",
-      "role": null,
-      "voice_uuid": null,
+      "role": "farmer",
+      "voice_uuid": "f292c81d563f47799b7e411f1c1e68a9",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned; no runtime character key",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "weather_shelter",
       "trigger": "src/ai/NpcAgent.ts:beginSeekShelter before arrival. Neutral shared variant for rain/storm/snow through npcBarkRequest.weatherShelterVoiceIntents.",
       "binding_status": "binding-needed",
@@ -3202,20 +3097,19 @@
         "text-approval",
         "speaker-safe-runtime-Q88",
         "per-clip-QC",
-        "casting-hold",
         "binding-needed"
       ],
       "conditions": "Text preparation only. No stable V1 character, role, cast or quest surface. No automatic confession, guilt, Pip custody or household admission."
     },
     {
       "id": "NV-115",
-      "npc": "Pierce (profile spelling: Piers)",
+      "npc": "Piers",
       "characterKey": null,
       "editorial_id": "piers",
-      "role": null,
-      "voice_uuid": null,
+      "role": "farmer",
+      "voice_uuid": "f292c81d563f47799b7e411f1c1e68a9",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned; no runtime character key",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "danger_alert",
       "trigger": "NpcAgent newly perceived animal-threat episode. Species-neutral; no death, victory or all-clear claim.",
       "binding_status": "binding-needed",
@@ -3228,20 +3122,19 @@
         "text-approval",
         "speaker-safe-runtime-Q88",
         "per-clip-QC",
-        "casting-hold",
         "binding-needed"
       ],
       "conditions": "Text preparation only. No stable V1 character, role, cast or quest surface. No automatic confession, guilt, Pip custody or household admission."
     },
     {
       "id": "NV-116",
-      "npc": "Pierce (profile spelling: Piers)",
+      "npc": "Piers",
       "characterKey": null,
       "editorial_id": "piers",
-      "role": null,
-      "voice_uuid": null,
+      "role": "farmer",
+      "voice_uuid": "f292c81d563f47799b7e411f1c1e68a9",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned; no runtime character key",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "combat_start",
       "trigger": "NpcAgent successful beginCombat. Do not use on mere sighting or flight; no assumed weapon.",
       "binding_status": "binding-needed",
@@ -3254,20 +3147,19 @@
         "text-approval",
         "speaker-safe-runtime-Q88",
         "per-clip-QC",
-        "casting-hold",
         "binding-needed"
       ],
       "conditions": "Text preparation only. No stable V1 character, role, cast or quest surface. No automatic confession, guilt, Pip custody or household admission."
     },
     {
       "id": "NV-117",
-      "npc": "Pierce (profile spelling: Piers)",
+      "npc": "Piers",
       "characterKey": null,
       "editorial_id": "piers",
-      "role": null,
-      "voice_uuid": null,
+      "role": "farmer",
+      "voice_uuid": "f292c81d563f47799b7e411f1c1e68a9",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned; no runtime character key",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "work_finished",
       "trigger": "NpcAgent terminal execute with classifyPendingActivity(action, activeNeed) === work. One task ended; no end-of-shift, tools-away or repaired-world claim.",
       "binding_status": "binding-needed",
@@ -3280,20 +3172,19 @@
         "text-approval",
         "speaker-safe-runtime-Q88",
         "per-clip-QC",
-        "casting-hold",
         "binding-needed"
       ],
       "conditions": "Text preparation only. No stable V1 character, role, cast or quest surface. No automatic confession, guilt, Pip custody or household admission."
     },
     {
       "id": "NV-118",
-      "npc": "Pierce (profile spelling: Piers)",
+      "npc": "Piers",
       "characterKey": null,
       "editorial_id": "piers",
-      "role": null,
-      "voice_uuid": null,
+      "role": "farmer",
+      "voice_uuid": "f292c81d563f47799b7e411f1c1e68a9",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned; no runtime character key",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "weather_shelter_rain",
       "trigger": "beginSeekShelter with weather rain; storm may also use rain fallback under existing policy. No forecast/intensity/arrival claim.",
       "binding_status": "binding-needed",
@@ -3306,20 +3197,19 @@
         "text-approval",
         "speaker-safe-runtime-Q88",
         "per-clip-QC",
-        "casting-hold",
         "binding-needed"
       ],
       "conditions": "Text preparation only. No stable V1 character, role, cast or quest surface. No automatic confession, guilt, Pip custody or household admission."
     },
     {
       "id": "NV-119",
-      "npc": "Pierce (profile spelling: Piers)",
+      "npc": "Piers",
       "characterKey": null,
       "editorial_id": "piers",
-      "role": null,
-      "voice_uuid": null,
+      "role": "farmer",
+      "voice_uuid": "f292c81d563f47799b7e411f1c1e68a9",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned; no runtime character key",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "weather_shelter_storm",
       "trigger": "beginSeekShelter with current weather storm only. No inferred damage/lightning strike.",
       "binding_status": "binding-needed",
@@ -3332,20 +3222,19 @@
         "text-approval",
         "speaker-safe-runtime-Q88",
         "per-clip-QC",
-        "casting-hold",
         "binding-needed"
       ],
       "conditions": "Text preparation only. No stable V1 character, role, cast or quest surface. No automatic confession, guilt, Pip custody or household admission."
     },
     {
       "id": "NV-120",
-      "npc": "Pierce (profile spelling: Piers)",
+      "npc": "Piers",
       "characterKey": null,
       "editorial_id": "piers",
-      "role": null,
-      "voice_uuid": null,
+      "role": "farmer",
+      "voice_uuid": "f292c81d563f47799b7e411f1c1e68a9",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned; no runtime character key",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "weather_shelter_snow",
       "trigger": "beginSeekShelter with current weather snow only. Never rain fallback.",
       "binding_status": "binding-needed",
@@ -3358,7 +3247,6 @@
         "text-approval",
         "speaker-safe-runtime-Q88",
         "per-clip-QC",
-        "casting-hold",
         "binding-needed"
       ],
       "conditions": "Text preparation only. No stable V1 character, role, cast or quest surface. No automatic confession, guilt, Pip custody or household admission."
@@ -3371,7 +3259,7 @@
       "role": "guard",
       "voice_uuid": "2adcdee4b3ce4b648dc16ea65430ea76",
       "candidate_voice_uuid": null,
-      "casting_status": "approved",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "reward_ack",
       "trigger": "Quest-complete voice receives only giverNpcId and intent, no quest/outcome/reward receipt. Add exact binding only after actual reward grant success; never generic quest_complete.",
       "binding_status": "binding-needed",
@@ -3396,9 +3284,9 @@
       "characterKey": "piotr_lesniewski",
       "editorial_id": "piotr_lesniewski",
       "role": "woodcutter",
-      "voice_uuid": null,
+      "voice_uuid": "5e03f21950f64729935dd8402c9c9702",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "reward_ack",
       "trigger": "Quest-complete voice receives only giverNpcId and intent, no quest/outcome/reward receipt. Add exact binding only after actual reward grant success; never generic quest_complete.",
       "binding_status": "binding-needed",
@@ -3411,7 +3299,6 @@
         "text-approval",
         "speaker-safe-runtime-Q88",
         "per-clip-QC",
-        "casting-hold",
         "binding-needed"
       ],
       "quest_id": "drewno-na-naprawe",
@@ -3424,9 +3311,9 @@
       "characterKey": "anna_lesniewska",
       "editorial_id": "anna_lesniewska",
       "role": "farmer",
-      "voice_uuid": null,
+      "voice_uuid": "e3cd384158934cc9a01029cd7d278634",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "story",
       "trigger": "Existing authored quest text surface, but no quest/stage-specific audio selector. Require exact quest, speaker and stage/outcome.",
       "binding_status": "binding-needed",
@@ -3439,7 +3326,6 @@
         "text-approval",
         "speaker-safe-runtime-Q88",
         "per-clip-QC",
-        "casting-hold",
         "binding-needed"
       ],
       "quest_id": "relay-anna-piotr",
@@ -3452,9 +3338,9 @@
       "characterKey": "kasia_hornblower",
       "editorial_id": "kasia_hornblower",
       "role": "trader",
-      "voice_uuid": null,
-      "candidate_voice_uuid": "d4f161bee1934b47ad3090f05649270c",
-      "casting_status": "sample-fit-approved; final named assignment and source confirmation hold",
+      "voice_uuid": "d4f161bee1934b47ad3090f05649270c",
+      "candidate_voice_uuid": null,
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "story",
       "trigger": "Existing authored quest text surface, but no quest/stage-specific audio selector. Require exact quest, speaker and stage/outcome.",
       "binding_status": "binding-needed",
@@ -3467,8 +3353,6 @@
         "text-approval",
         "speaker-safe-runtime-Q88",
         "per-clip-QC",
-        "casting-hold",
-        "source-identity-hold",
         "binding-needed"
       ],
       "quest_id": "shells-dla-kasi",
@@ -3481,9 +3365,9 @@
       "characterKey": "piotr_lesniewski",
       "editorial_id": "piotr_lesniewski",
       "role": "woodcutter",
-      "voice_uuid": null,
+      "voice_uuid": "5e03f21950f64729935dd8402c9c9702",
       "candidate_voice_uuid": null,
-      "casting_status": "unassigned",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "story",
       "trigger": "Existing authored quest text surface, but no quest/stage-specific audio selector. Require exact quest, speaker and stage/outcome.",
       "binding_status": "binding-needed",
@@ -3496,7 +3380,6 @@
         "text-approval",
         "speaker-safe-runtime-Q88",
         "per-clip-QC",
-        "casting-hold",
         "binding-needed"
       ],
       "quest_id": "drewno-na-naprawe",
@@ -3511,7 +3394,7 @@
       "role": "guard",
       "voice_uuid": "2adcdee4b3ce4b648dc16ea65430ea76",
       "candidate_voice_uuid": null,
-      "casting_status": "approved",
+      "casting_status": "author-approved 2026-11-05; runtime/QC pending",
       "intent": "story",
       "trigger": "Existing authored quest text surface, but no quest/stage-specific audio selector. Require exact quest, speaker and stage/outcome.",
       "binding_status": "binding-needed",
@@ -3530,5 +3413,62 @@
       "stage": "offer",
       "conditions": "Only actual available authored offer. Preserve interact_well; no carried bucket requirement, water purity or extra objective."
     }
-  ]
+  ],
+  "casting_authority": "../../plans/npc-065-stable-npc-voice-casting-and-donor-qc.md#npc-voice-map",
+  "casting_history": {
+    "superseded_npcs_from_bcaee9e7": [
+      {
+        "key": "marek_hornblower",
+        "name": "Marek (Mark) Hornblower",
+        "role": "guard",
+        "voice": "2adcdee4b3ce4b648dc16ea65430ea76",
+        "casting": "approved",
+        "direction": "Grounded, observant, restrained warmth; brief and firm under threat. No theatrical guard swagger."
+      },
+      {
+        "key": "kasia_hornblower",
+        "name": "Kasia (Kate) Hornblower",
+        "role": "trader",
+        "voice": null,
+        "candidate": "d4f161bee1934b47ad3090f05649270c",
+        "casting": "sample-fit-approved; final named assignment and source confirmation hold",
+        "direction": "Warm, perceptive, conversational and fair-minded. No automatic stock, discount or location promises."
+      },
+      {
+        "key": "anna_lesniewska",
+        "name": "Anna (Woodward editorial alias)",
+        "role": "farmer",
+        "voice": null,
+        "casting": "unassigned",
+        "direction": "Energetic, sociable, practical and community-minded; no scolding-wife caricature."
+      },
+      {
+        "key": "piotr_lesniewski",
+        "name": "Piotr (Woodward editorial alias)",
+        "role": "woodcutter",
+        "voice": null,
+        "casting": "unassigned",
+        "direction": "Practical, household-first, economical with words and materials; approachable, not heroic or boorish."
+      },
+      {
+        "key": "molly_lambert",
+        "name": "Molly Lambert",
+        "role": "shepherd",
+        "voice": null,
+        "candidate": "9a9cf47702da476aa4629e2506d4a857",
+        "casting": "Hannah candidate only",
+        "direction": "Gentle, dreamy, affectionate but capable. No childishness or cheerful celebration of a loss."
+      },
+      {
+        "key": null,
+        "editorial_id": "piers",
+        "name": "Pierce (profile spelling: Piers)",
+        "role": null,
+        "voice": null,
+        "casting": "unassigned; no runtime character key",
+        "direction": "Plain, guarded, awkward and stubborn. No clever rogue quips, automatic apology, confession or reconciliation."
+      }
+    ],
+    "note": "Current map resolves named casting; draft texts, NV IDs, filenames, null runtime keys and all QC/binding gates preserved. Piers spelling corrected; role farmer is author intent, not runtime binding."
+  }
 }

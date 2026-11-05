@@ -1,5 +1,7 @@
 # Q90 — Fish Audio recording proposals
 
+**Casting update — 2026-11-05:** The [NPC-Voice map](../../plans/npc-065-stable-npc-voice-casting-and-donor-qc.md#npc-voice-map) is authoritative. Earlier casting holds/alternatives in this dated evidence are superseded: Kasia→Expressive Female, Anna→Laura, Piotr→Country Baritone, Molly→Hannah, Piers→Warm Male Friend (farmer; no runtime key), Jakub→Arthur, Patric→Dramatic, generic hunter→Cowboy, male farmer→Casual, general female→Warm Conversational, fisher→Rick. Existing file source/transcript/context QC and missing runtime bindings remain separate gates. See [cleanup report](./2026-11-05--npc-voice-cleanup.md). No transcript, recording ID, filename or ledger verdict is changed.
+
 **2026-11-04 · source `bca03d453bfb0177a9d2801c4d2ccc7ca0c3b7a5` · author-approved Fish Audio script (2026-11-04); MP3 generation/QC pending.**
 
 Proposed takes: **87 = P0 12 / P1 54 / P2 21**. No audio generated. The author approved these exact 87 transcripts and their Fish Audio production scope on 2026-11-04; priorities define production order, not evidence of runtime readiness or passed QC. [72 conditional reuse candidates](./2026-11-04--q90-fish-audio-script.json) are separate from these counts; approved reusable clips = **0** in the current ledger.
@@ -12,7 +14,7 @@ Proposed takes: **87 = P0 12 / P1 54 / P2 21**. No audio generated. The author a
 
 For every take, **generation input is exactly the complete Transcript cell**, with no ID, quotation marks, stage direction or tags. The JSON repeats `canonical_transcript` and `generation_input` independently per row, alongside UUID, conditions, restrictions and replacement references. All filenames are proposed, flat, under `public/sounds/voices/`; `q90_` prevents collisions and does not create runtime keys. Keep the existing speaker UUID across every line for an NPC. Do not synthesize a cross-product of this list. New speaker identifiers here are editorial labels, not runtime registrations. Old `general_male` assets must not be relabelled FairyTail.
 
-P0 establishes twelve existing-event slots for the approved new primary male voice. P1 adds the two other approved male directions, bounded gaps in existing banks, and one profession reply per V1 role. P2 adds selective social/weather/pair variation and held Dramatic repairs. All three new male directions have **zero existing files**. Equal casting weights apply only after eligibility; do not bypass named-character restrictions.
+P0 establishes twelve existing-event slots for the approved new primary male voice. P1 adds the two other approved male directions, bounded gaps in existing banks, and one profession reply per V1 role. P2 adds selective social/weather/pair variation and held Dramatic repairs. All three 2026-11-04 new male directions have **zero existing files**. The current map narrows Rick to male fisher and defines other named/profession restrictions. Equal casting weights apply only after eligibility; do not bypass named-character restrictions.
 
 ## Speakers and gates
 
@@ -20,14 +22,14 @@ P0 establishes twelve existing-event slots for the approved new primary male voi
 | --- | --- | --- |
 | `general_male_fairytail` (FairyTail 1) | `689b47ca83dd48dba90b160affb8a118` | approved direction; no recordings; adult male; general roles after named/role exclusions |
 | `general_old_male_george` (george) | `372ef39bf5bf4fd38c5c56bce607aba6` | approved direction; no recordings; older male; initial age-eligible casting, no automatic recast on birthday |
-| `general_male_v2_rick` (Rick Sanchez) | `d2e75a3e3fd6419893057c02a375a113` | approved direction; no recordings; adult male; general roles, not exclusively fisher |
+| `general_male_v2_rick` (Rick Sanchez) | `d2e75a3e3fd6419893057c02a375a113` | approved for male fisher; recordings pending; male fisher; no automatic assignment to other professions |
 | `guard_male` (Guard) | `c29549f41b3b4aa498d66d76fba0e887` | accepted casting; bank mismatch review pending; male guard; never substitute for Mark |
-| `hunter_male` (Arthur) | `bd22266aba38416cb602e90ce651520c` | accepted; selected for Jacob; male hunter; named key jakub, no rename |
-| `merchant_female` (Expressive Female) | `d4f161bee1934b47ad3090f05649270c` | Kate sample fit accepted; source identity still unverified; female trader; kasia_hornblower candidate, not silent reassignment |
-| `general_female_b` (Hannah) | `9a9cf47702da476aa4629e2506d4a857` | accepted casting; clips pending; adult female; Molly assignment not locked |
-| `guard_male_b` (Dramatic Character Male) | `7a18a1851d2649108c48ec9f2c80eb2c` | provisional; role fit and bank mismatch review pending; male guard or approved future role; not Mark; watch text remains guard-only |
+| `hunter_male` (Arthur) | `bd22266aba38416cb602e90ce651520c` | approved for Jakub; per-file QC pending; jakub named cast; generic hunter uses Cowboy |
+| `merchant_female` (Expressive Female) | `d4f161bee1934b47ad3090f05649270c` | approved for Kasia; existing-file source QC pending; kasia_hornblower named cast; no Laura substitution |
+| `general_female_b` (Hannah) | `9a9cf47702da476aa4629e2506d4a857` | approved for Molly; per-file QC pending; molly_lambert named cast; not the general female default |
+| `guard_male_b` (Dramatic Character Male) | `7a18a1851d2649108c48ec9f2c80eb2c` | approved for Patric; bank mismatch QC pending; patric_smith named cast; no Mark or generic guard assignment; guard-specific rows require future explicit scope approval |
 
-All new clips require author script approval, generation by the author and transcript/identity QC. Merchant production additionally waits for source identity confirmation; Dramatic rows wait for role/casting confirmation and mismatch reconciliation. P1 profession and P2 relation/pair rows are **text-first, binding-held**, not live producers. Do not spend the recording budget to fix missing runtime eligibility.
+The 87 Q90 texts have author script approval; generation by the author and transcript/identity QC remain pending. Selected UUIDs are approved; existing merchant/Dramatic files still require source and mismatch QC. Historical Dramatic guard context must not become Patric’s blacksmith dialogue. Profession-specific Q90 rows whose speaker is not assigned to that profession in the current map remain placement-held; preserve their approved texts/UUIDs/IDs rather than silently retargeting them. P1 profession and P2 relation/pair rows are **text-first, binding-held**, not live producers. Do not spend the recording budget to fix missing runtime eligibility.
 
 ## Trigger codes
 

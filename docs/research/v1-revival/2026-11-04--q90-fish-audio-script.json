@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "proposal_awaiting_author_approval_Q90_not_complete",
+  "status": "author_approved_2026-11-04; recording_QC_runtime_pending",
   "source_commit": "bca03d453bfb0177a9d2801c4d2ccc7ca0c3b7a5",
   "locale": "en",
   "counts": {
@@ -24,14 +24,14 @@
     "general_male_v2_rick": {
       "name": "Rick Sanchez",
       "fish_voice_id": "d2e75a3e3fd6419893057c02a375a113",
-      "casting": "approved direction; no recordings",
-      "restrictions": "adult male; general roles, not exclusively fisher"
+      "casting": "approved for male fisher; recordings pending",
+      "restrictions": "male fisher; no automatic assignment to other professions"
     },
     "general_female_b": {
       "name": "Hannah",
       "fish_voice_id": "9a9cf47702da476aa4629e2506d4a857",
-      "casting": "accepted casting; clips pending",
-      "restrictions": "adult female; Molly assignment not locked"
+      "casting": "approved for Molly; per-file QC pending",
+      "restrictions": "molly_lambert named cast; not the general female default"
     },
     "guard_male": {
       "name": "Guard",
@@ -42,38 +42,38 @@
     "hunter_male": {
       "name": "Arthur",
       "fish_voice_id": "bd22266aba38416cb602e90ce651520c",
-      "casting": "accepted; selected for Jacob",
-      "restrictions": "male hunter; named key jakub, no rename"
+      "casting": "approved for Jakub; per-file QC pending",
+      "restrictions": "jakub named cast; generic hunter uses Cowboy"
     },
     "merchant_female": {
       "name": "Expressive Female",
       "fish_voice_id": "d4f161bee1934b47ad3090f05649270c",
-      "casting": "Kate sample fit accepted; source identity still unverified",
-      "restrictions": "female trader; kasia_hornblower candidate, not silent reassignment"
+      "casting": "approved for Kasia; existing-file source QC pending",
+      "restrictions": "kasia_hornblower named cast; no Laura substitution"
     },
     "guard_male_b": {
       "name": "Dramatic Character Male",
       "fish_voice_id": "7a18a1851d2649108c48ec9f2c80eb2c",
-      "casting": "provisional; role fit and bank mismatch review pending",
-      "restrictions": "male guard or approved future role; not Mark; watch text remains guard-only"
+      "casting": "approved for Patric; bank mismatch QC pending",
+      "restrictions": "patric_smith named cast; no Mark or generic guard assignment; guard-specific rows require future explicit scope approval"
     },
     "hunter_male_b": {
       "name": "Cowboy",
       "fish_voice_id": "a2cecd3eda8b44178b7f1bc1379edae0",
-      "casting": "provisional; no Jacob assignment",
-      "restrictions": "adult male; only role-neutral clips for non-hunters"
+      "casting": "approved for male hunter; per-file QC pending",
+      "restrictions": "male hunter; named Jakub uses Arthur"
     },
     "merchant_female_b": {
       "name": "catalog Laura",
       "fish_voice_id": "e3cd384158934cc9a01029cd7d278634",
-      "casting": "HOLD source UUID; voice usable, not Kate",
-      "restrictions": "adult female; source verification required"
+      "casting": "approved for Anna; existing-file source QC pending",
+      "restrictions": "anna_lesniewska named cast; no Kate substitution"
     },
     "shepherd_male": {
       "name": "Hetalia Russia",
       "fish_voice_id": "4af16ba03cee422996ec29a43e1947ee",
-      "casting": "HOLD gender/role metadata; accepted sound",
-      "restrictions": "role/gender eligibility unresolved"
+      "casting": "approved for male shepherd; per-file QC pending",
+      "restrictions": "male shepherd; no Molly substitution"
     },
     "shepherd_male_b": {
       "name": "Sleepless historian",
@@ -84,20 +84,20 @@
     "mark_hornblower": {
       "name": "Friendly Male Voice",
       "fish_voice_id": "2adcdee4b3ce4b648dc16ea65430ea76",
-      "casting": "accepted for Mark; pilot only",
-      "restrictions": "marek_hornblower only; full pack unauthorized"
+      "casting": "approved for Marek; per-file QC pending",
+      "restrictions": "marek_hornblower only; named expansion text still draft"
     },
     "general_male": {
       "name": "legacy Casual Male",
       "fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
-      "casting": "HOLD inconsistent audible identity; new primary target is FairyTail",
-      "restrictions": "legacy evidence only; no new takes"
+      "casting": "approved for male farmer; mixed-source files need individual QC",
+      "restrictions": "male farmer; never relabel existing files as FairyTail"
     },
     "general_female": {
       "name": "legacy Warm Conversational",
       "fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
-      "casting": "HOLD inconsistent audible identity",
-      "restrictions": "legacy evidence only; no new takes"
+      "casting": "approved for general middle-aged female; per-file QC pending",
+      "restrictions": "general middle-aged female; named cast overrides first"
     },
     "general_male_b": {
       "name": "Brian",
@@ -124,8 +124,8 @@
       "priority": "P0",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -145,8 +145,8 @@
       "priority": "P0",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -166,8 +166,8 @@
       "priority": "P0",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -187,8 +187,8 @@
       "priority": "P0",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -208,8 +208,8 @@
       "priority": "P0",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -229,8 +229,8 @@
       "priority": "P0",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -250,8 +250,8 @@
       "priority": "P0",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -271,8 +271,8 @@
       "priority": "P0",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -292,8 +292,8 @@
       "priority": "P0",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -313,8 +313,8 @@
       "priority": "P0",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -334,8 +334,8 @@
       "priority": "P0",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -355,8 +355,8 @@
       "priority": "P0",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -376,8 +376,8 @@
       "priority": "P1",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -397,8 +397,8 @@
       "priority": "P1",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -418,8 +418,8 @@
       "priority": "P1",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -439,8 +439,8 @@
       "priority": "P1",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -460,8 +460,8 @@
       "priority": "P1",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -481,8 +481,8 @@
       "priority": "P1",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -502,8 +502,8 @@
       "priority": "P1",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -523,8 +523,8 @@
       "priority": "P1",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -544,8 +544,8 @@
       "priority": "P1",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -565,8 +565,8 @@
       "priority": "P1",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -586,8 +586,8 @@
       "priority": "P1",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -607,8 +607,8 @@
       "priority": "P1",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -616,8 +616,8 @@
       "speaker": "general_male_v2_rick",
       "speaker_name": "Rick Sanchez",
       "fish_voice_id": "d2e75a3e3fd6419893057c02a375a113",
-      "casting_status": "approved direction; no recordings",
-      "speaker_restrictions": "adult male; general roles, not exclusively fisher",
+      "casting_status": "approved for male fisher; recordings pending",
+      "speaker_restrictions": "male fisher; no automatic assignment to other professions",
       "intent": "greeting",
       "conditions": "Existing explicit dialogue open or greeting proximity reaction; time-neutral text; stable speaker required.",
       "profession": "any",
@@ -628,8 +628,8 @@
       "priority": "P1",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -637,8 +637,8 @@
       "speaker": "general_male_v2_rick",
       "speaker_name": "Rick Sanchez",
       "fish_voice_id": "d2e75a3e3fd6419893057c02a375a113",
-      "casting_status": "approved direction; no recordings",
-      "speaker_restrictions": "adult male; general roles, not exclusively fisher",
+      "casting_status": "approved for male fisher; recordings pending",
+      "speaker_restrictions": "male fisher; no automatic assignment to other professions",
       "intent": "attention",
       "conditions": "Existing normal-relation proximity attention reaction; no demand to stop simulation.",
       "profession": "any",
@@ -649,8 +649,8 @@
       "priority": "P1",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -658,8 +658,8 @@
       "speaker": "general_male_v2_rick",
       "speaker_name": "Rick Sanchez",
       "fish_voice_id": "d2e75a3e3fd6419893057c02a375a113",
-      "casting_status": "approved direction; no recordings",
-      "speaker_restrictions": "adult male; general roles, not exclusively fisher",
+      "casting_status": "approved for male fisher; recordings pending",
+      "speaker_restrictions": "male fisher; no automatic assignment to other professions",
       "intent": "farewell",
       "conditions": "Existing committed dialogue close, not declining an offered quest.",
       "profession": "any",
@@ -670,8 +670,8 @@
       "priority": "P1",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -679,8 +679,8 @@
       "speaker": "general_male_v2_rick",
       "speaker_name": "Rick Sanchez",
       "fish_voice_id": "d2e75a3e3fd6419893057c02a375a113",
-      "casting_status": "approved direction; no recordings",
-      "speaker_restrictions": "adult male; general roles, not exclusively fisher",
+      "casting_status": "approved for male fisher; recordings pending",
+      "speaker_restrictions": "male fisher; no automatic assignment to other professions",
       "intent": "quest_accepted",
       "conditions": "Existing successful offer acceptance; generic reaction shown separately from exact quest text.",
       "profession": "any",
@@ -691,8 +691,8 @@
       "priority": "P1",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -700,8 +700,8 @@
       "speaker": "general_male_v2_rick",
       "speaker_name": "Rick Sanchez",
       "fish_voice_id": "d2e75a3e3fd6419893057c02a375a113",
-      "casting_status": "approved direction; no recordings",
-      "speaker_restrictions": "adult male; general roles, not exclusively fisher",
+      "casting_status": "approved for male fisher; recordings pending",
+      "speaker_restrictions": "male fisher; no automatic assignment to other professions",
       "intent": "quest_declined",
       "conditions": "Existing offered-quest decline/close; no cancellation or refusal of unrelated services.",
       "profession": "any",
@@ -712,8 +712,8 @@
       "priority": "P1",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -721,8 +721,8 @@
       "speaker": "general_male_v2_rick",
       "speaker_name": "Rick Sanchez",
       "fish_voice_id": "d2e75a3e3fd6419893057c02a375a113",
-      "casting_status": "approved direction; no recordings",
-      "speaker_restrictions": "adult male; general roles, not exclusively fisher",
+      "casting_status": "approved for male fisher; recordings pending",
+      "speaker_restrictions": "male fisher; no automatic assignment to other professions",
       "intent": "quest_complete",
       "conditions": "Existing quest completion voice callback for this loaded NPC; generic reaction, never reward/objective narration.",
       "profession": "any",
@@ -733,8 +733,8 @@
       "priority": "P1",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -742,8 +742,8 @@
       "speaker": "general_male_v2_rick",
       "speaker_name": "Rick Sanchez",
       "fish_voice_id": "d2e75a3e3fd6419893057c02a375a113",
-      "casting_status": "approved direction; no recordings",
-      "speaker_restrictions": "adult male; general roles, not exclusively fisher",
+      "casting_status": "approved for male fisher; recordings pending",
+      "speaker_restrictions": "male fisher; no automatic assignment to other professions",
       "intent": "exhausted",
       "conditions": "Existing exhaustion transition in NpcAgent; no claim about hours worked or distance travelled.",
       "profession": "any",
@@ -754,8 +754,8 @@
       "priority": "P1",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -763,8 +763,8 @@
       "speaker": "general_male_v2_rick",
       "speaker_name": "Rick Sanchez",
       "fish_voice_id": "d2e75a3e3fd6419893057c02a375a113",
-      "casting_status": "approved direction; no recordings",
-      "speaker_restrictions": "adult male; general roles, not exclusively fisher",
+      "casting_status": "approved for male fisher; recordings pending",
+      "speaker_restrictions": "male fisher; no automatic assignment to other professions",
       "intent": "hungry",
       "conditions": "Existing selected food need after a different need; not a claim of fasting or food availability.",
       "profession": "any",
@@ -775,8 +775,8 @@
       "priority": "P1",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -784,8 +784,8 @@
       "speaker": "general_male_v2_rick",
       "speaker_name": "Rick Sanchez",
       "fish_voice_id": "d2e75a3e3fd6419893057c02a375a113",
-      "casting_status": "approved direction; no recordings",
-      "speaker_restrictions": "adult male; general roles, not exclusively fisher",
+      "casting_status": "approved for male fisher; recordings pending",
+      "speaker_restrictions": "male fisher; no automatic assignment to other professions",
       "intent": "weather_shelter",
       "conditions": "Existing beginSeekShelter entry; any admitted rain/storm/snow; no arrival, intensity or forecast claim.",
       "profession": "any",
@@ -796,8 +796,8 @@
       "priority": "P1",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -805,8 +805,8 @@
       "speaker": "general_male_v2_rick",
       "speaker_name": "Rick Sanchez",
       "fish_voice_id": "d2e75a3e3fd6419893057c02a375a113",
-      "casting_status": "approved direction; no recordings",
-      "speaker_restrictions": "adult male; general roles, not exclusively fisher",
+      "casting_status": "approved for male fisher; recordings pending",
+      "speaker_restrictions": "male fisher; no automatic assignment to other professions",
       "intent": "danger_alert",
       "conditions": "Existing newly perceived animal-threat episode; species-neutral, no joke.",
       "profession": "any",
@@ -817,8 +817,8 @@
       "priority": "P1",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -826,8 +826,8 @@
       "speaker": "general_male_v2_rick",
       "speaker_name": "Rick Sanchez",
       "fish_voice_id": "d2e75a3e3fd6419893057c02a375a113",
-      "casting_status": "approved direction; no recordings",
-      "speaker_restrictions": "adult male; general roles, not exclusively fisher",
+      "casting_status": "approved for male fisher; recordings pending",
+      "speaker_restrictions": "male fisher; no automatic assignment to other professions",
       "intent": "combat_start",
       "conditions": "Existing successful beginCombat; not mere threat perception or player dialogue.",
       "profession": "any",
@@ -838,8 +838,8 @@
       "priority": "P1",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -847,8 +847,8 @@
       "speaker": "general_male_v2_rick",
       "speaker_name": "Rick Sanchez",
       "fish_voice_id": "d2e75a3e3fd6419893057c02a375a113",
-      "casting_status": "approved direction; no recordings",
-      "speaker_restrictions": "adult male; general roles, not exclusively fisher",
+      "casting_status": "approved for male fisher; recordings pending",
+      "speaker_restrictions": "male fisher; no automatic assignment to other professions",
       "intent": "work_finished",
       "conditions": "Existing terminal action classified as schedule work; one completed task, not end of shift/day.",
       "profession": "any",
@@ -859,8 +859,8 @@
       "priority": "P1",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -883,7 +883,7 @@
         "guard_male_greeting_02.mp3"
       ],
       "binding_gate": "Replace unguarded morning/weapon-rule greeting; retain existing day greeting for eligible use.",
-      "status": "editorial_proposal_not_approved",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -906,8 +906,8 @@
         "guard_male_combat_start_01.mp3",
         "guard_male_combat_start_11.mp3"
       ],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -927,8 +927,8 @@
       "priority": "P1",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -948,8 +948,8 @@
       "priority": "P1",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -969,8 +969,8 @@
       "priority": "P1",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -978,8 +978,8 @@
       "speaker": "hunter_male",
       "speaker_name": "Arthur",
       "fish_voice_id": "bd22266aba38416cb602e90ce651520c",
-      "casting_status": "accepted; selected for Jacob",
-      "speaker_restrictions": "male hunter; named key jakub, no rename",
+      "casting_status": "approved for Jakub; per-file QC pending",
+      "speaker_restrictions": "jakub named cast; generic hunter uses Cowboy",
       "intent": "hungry",
       "conditions": "Existing selected food need after a different need; not a claim of fasting or food availability.",
       "profession": "any",
@@ -990,8 +990,8 @@
       "priority": "P1",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -999,8 +999,8 @@
       "speaker": "hunter_male",
       "speaker_name": "Arthur",
       "fish_voice_id": "bd22266aba38416cb602e90ce651520c",
-      "casting_status": "accepted; selected for Jacob",
-      "speaker_restrictions": "male hunter; named key jakub, no rename",
+      "casting_status": "approved for Jakub; per-file QC pending",
+      "speaker_restrictions": "jakub named cast; generic hunter uses Cowboy",
       "intent": "exhausted",
       "conditions": "Existing exhaustion transition in NpcAgent; no claim about hours worked or distance travelled.",
       "profession": "any",
@@ -1011,8 +1011,8 @@
       "priority": "P1",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -1020,8 +1020,8 @@
       "speaker": "hunter_male",
       "speaker_name": "Arthur",
       "fish_voice_id": "bd22266aba38416cb602e90ce651520c",
-      "casting_status": "accepted; selected for Jacob",
-      "speaker_restrictions": "male hunter; named key jakub, no rename",
+      "casting_status": "approved for Jakub; per-file QC pending",
+      "speaker_restrictions": "jakub named cast; generic hunter uses Cowboy",
       "intent": "weather_shelter",
       "conditions": "Existing beginSeekShelter entry; any admitted rain/storm/snow; no arrival, intensity or forecast claim.",
       "profession": "any",
@@ -1032,8 +1032,8 @@
       "priority": "P1",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -1041,8 +1041,8 @@
       "speaker": "hunter_male",
       "speaker_name": "Arthur",
       "fish_voice_id": "bd22266aba38416cb602e90ce651520c",
-      "casting_status": "accepted; selected for Jacob",
-      "speaker_restrictions": "male hunter; named key jakub, no rename",
+      "casting_status": "approved for Jakub; per-file QC pending",
+      "speaker_restrictions": "jakub named cast; generic hunter uses Cowboy",
       "intent": "work_finished",
       "conditions": "Existing terminal action classified as schedule work; one completed task, not end of shift/day.",
       "profession": "any",
@@ -1053,8 +1053,8 @@
       "priority": "P1",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -1062,8 +1062,8 @@
       "speaker": "hunter_male",
       "speaker_name": "Arthur",
       "fish_voice_id": "bd22266aba38416cb602e90ce651520c",
-      "casting_status": "accepted; selected for Jacob",
-      "speaker_restrictions": "male hunter; named key jakub, no rename",
+      "casting_status": "approved for Jakub; per-file QC pending",
+      "speaker_restrictions": "jakub named cast; generic hunter uses Cowboy",
       "intent": "quest_accepted",
       "conditions": "Existing successful offer acceptance; generic reaction shown separately from exact quest text.",
       "profession": "any",
@@ -1078,7 +1078,7 @@
         "hunter_male_quest_accepted_02.mp3"
       ],
       "binding_gate": "Neutral alternative when actual quest does not require returning here or stealth; keep originals for verified matching objectives.",
-      "status": "editorial_proposal_not_approved",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -1086,8 +1086,8 @@
       "speaker": "merchant_female",
       "speaker_name": "Expressive Female",
       "fish_voice_id": "d4f161bee1934b47ad3090f05649270c",
-      "casting_status": "Kate sample fit accepted; source identity still unverified",
-      "speaker_restrictions": "female trader; kasia_hornblower candidate, not silent reassignment",
+      "casting_status": "approved for Kasia; existing-file source QC pending",
+      "speaker_restrictions": "kasia_hornblower named cast; no Laura substitution",
       "intent": "hungry",
       "conditions": "Existing selected food need after a different need; not a claim of fasting or food availability.",
       "profession": "any",
@@ -1098,8 +1098,8 @@
       "priority": "P1",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -1107,8 +1107,8 @@
       "speaker": "merchant_female",
       "speaker_name": "Expressive Female",
       "fish_voice_id": "d4f161bee1934b47ad3090f05649270c",
-      "casting_status": "Kate sample fit accepted; source identity still unverified",
-      "speaker_restrictions": "female trader; kasia_hornblower candidate, not silent reassignment",
+      "casting_status": "approved for Kasia; existing-file source QC pending",
+      "speaker_restrictions": "kasia_hornblower named cast; no Laura substitution",
       "intent": "exhausted",
       "conditions": "Existing exhaustion transition in NpcAgent; no claim about hours worked or distance travelled.",
       "profession": "any",
@@ -1119,8 +1119,8 @@
       "priority": "P1",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -1128,8 +1128,8 @@
       "speaker": "merchant_female",
       "speaker_name": "Expressive Female",
       "fish_voice_id": "d4f161bee1934b47ad3090f05649270c",
-      "casting_status": "Kate sample fit accepted; source identity still unverified",
-      "speaker_restrictions": "female trader; kasia_hornblower candidate, not silent reassignment",
+      "casting_status": "approved for Kasia; existing-file source QC pending",
+      "speaker_restrictions": "kasia_hornblower named cast; no Laura substitution",
       "intent": "weather_shelter",
       "conditions": "Existing beginSeekShelter entry; any admitted rain/storm/snow; no arrival, intensity or forecast claim.",
       "profession": "any",
@@ -1140,8 +1140,8 @@
       "priority": "P1",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -1149,8 +1149,8 @@
       "speaker": "merchant_female",
       "speaker_name": "Expressive Female",
       "fish_voice_id": "d4f161bee1934b47ad3090f05649270c",
-      "casting_status": "Kate sample fit accepted; source identity still unverified",
-      "speaker_restrictions": "female trader; kasia_hornblower candidate, not silent reassignment",
+      "casting_status": "approved for Kasia; existing-file source QC pending",
+      "speaker_restrictions": "kasia_hornblower named cast; no Laura substitution",
       "intent": "danger_alert",
       "conditions": "Existing newly perceived animal-threat episode; species-neutral, no joke.",
       "profession": "any",
@@ -1161,8 +1161,8 @@
       "priority": "P1",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -1170,8 +1170,8 @@
       "speaker": "merchant_female",
       "speaker_name": "Expressive Female",
       "fish_voice_id": "d4f161bee1934b47ad3090f05649270c",
-      "casting_status": "Kate sample fit accepted; source identity still unverified",
-      "speaker_restrictions": "female trader; kasia_hornblower candidate, not silent reassignment",
+      "casting_status": "approved for Kasia; existing-file source QC pending",
+      "speaker_restrictions": "kasia_hornblower named cast; no Laura substitution",
       "intent": "combat_start",
       "conditions": "Existing successful beginCombat; not mere threat perception or player dialogue.",
       "profession": "any",
@@ -1182,8 +1182,8 @@
       "priority": "P1",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -1191,8 +1191,8 @@
       "speaker": "merchant_female",
       "speaker_name": "Expressive Female",
       "fish_voice_id": "d4f161bee1934b47ad3090f05649270c",
-      "casting_status": "Kate sample fit accepted; source identity still unverified",
-      "speaker_restrictions": "female trader; kasia_hornblower candidate, not silent reassignment",
+      "casting_status": "approved for Kasia; existing-file source QC pending",
+      "speaker_restrictions": "kasia_hornblower named cast; no Laura substitution",
       "intent": "work_finished",
       "conditions": "Existing terminal action classified as schedule work; one completed task, not end of shift/day.",
       "profession": "any",
@@ -1203,8 +1203,8 @@
       "priority": "P1",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -1212,8 +1212,8 @@
       "speaker": "merchant_female",
       "speaker_name": "Expressive Female",
       "fish_voice_id": "d4f161bee1934b47ad3090f05649270c",
-      "casting_status": "Kate sample fit accepted; source identity still unverified",
-      "speaker_restrictions": "female trader; kasia_hornblower candidate, not silent reassignment",
+      "casting_status": "approved for Kasia; existing-file source QC pending",
+      "speaker_restrictions": "kasia_hornblower named cast; no Laura substitution",
       "intent": "farewell",
       "conditions": "Existing committed dialogue close, not declining an offered quest.",
       "profession": "any",
@@ -1227,7 +1227,7 @@
         "merchant_female_farewell_02.mp3"
       ],
       "binding_gate": "No future stock/location promise; merchant source identity must be confirmed before production.",
-      "status": "editorial_proposal_not_approved",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -1235,8 +1235,8 @@
       "speaker": "merchant_female",
       "speaker_name": "Expressive Female",
       "fish_voice_id": "d4f161bee1934b47ad3090f05649270c",
-      "casting_status": "Kate sample fit accepted; source identity still unverified",
-      "speaker_restrictions": "female trader; kasia_hornblower candidate, not silent reassignment",
+      "casting_status": "approved for Kasia; existing-file source QC pending",
+      "speaker_restrictions": "kasia_hornblower named cast; no Laura substitution",
       "intent": "quest_complete",
       "conditions": "Existing quest completion voice callback for this loaded NPC; generic reaction, never reward/objective narration.",
       "profession": "any",
@@ -1251,7 +1251,7 @@
         "merchant_female_quest_complete_02.mp3"
       ],
       "binding_gate": "General completion including shells-dla-kasi with relation-only outcome; existing reward lines require actual reward.",
-      "status": "editorial_proposal_not_approved",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -1259,8 +1259,8 @@
       "speaker": "general_female_b",
       "speaker_name": "Hannah",
       "fish_voice_id": "9a9cf47702da476aa4629e2506d4a857",
-      "casting_status": "accepted casting; clips pending",
-      "speaker_restrictions": "adult female; Molly assignment not locked",
+      "casting_status": "approved for Molly; per-file QC pending",
+      "speaker_restrictions": "molly_lambert named cast; not the general female default",
       "intent": "work_finished",
       "conditions": "Existing terminal action classified as schedule work; one completed task, not end of shift/day.",
       "profession": "any",
@@ -1274,8 +1274,8 @@
         "general_female_b_work_finished_01.mp3",
         "general_female_b_work_finished_02.mp3"
       ],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -1295,8 +1295,8 @@
       "priority": "P1",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Text-first proposal: existing about-self topic, new exact clip binding/filter needed; preserve name/family facts separately. No new ambient trigger.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Text-first proposal: existing about-self topic, new exact clip binding/filter needed; preserve name/family facts separately. No new ambient trigger. Historical profession-specific proposal: current map does not assign this speaker to that generic profession; hold placement pending explicit compatible casting. Do not retarget UUID or text.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -1304,8 +1304,8 @@
       "speaker": "general_female_b",
       "speaker_name": "Hannah",
       "fish_voice_id": "9a9cf47702da476aa4629e2506d4a857",
-      "casting_status": "accepted casting; clips pending",
-      "speaker_restrictions": "adult female; Molly assignment not locked",
+      "casting_status": "approved for Molly; per-file QC pending",
+      "speaker_restrictions": "molly_lambert named cast; not the general female default",
       "intent": "profession_reply",
       "conditions": "Player selects about-self topic; actual role=farmer; matching archetype; safe ordinary conversation. Casting must allow this role; no character is recast to fit this sentence.",
       "profession": "farmer",
@@ -1316,8 +1316,8 @@
       "priority": "P1",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Text-first proposal: existing about-self topic, new exact clip binding/filter needed; preserve name/family facts separately. No new ambient trigger.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Text-first proposal: existing about-self topic, new exact clip binding/filter needed; preserve name/family facts separately. No new ambient trigger. Historical profession-specific proposal: current map does not assign this speaker to that generic profession; hold placement pending explicit compatible casting. Do not retarget UUID or text.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -1338,7 +1338,7 @@
       "disposition": "new recording",
       "replaces": [],
       "binding_gate": "Text-first proposal: existing about-self topic, new exact clip binding/filter needed; preserve name/family facts separately. No new ambient trigger.",
-      "status": "editorial_proposal_not_approved",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -1346,8 +1346,8 @@
       "speaker": "merchant_female",
       "speaker_name": "Expressive Female",
       "fish_voice_id": "d4f161bee1934b47ad3090f05649270c",
-      "casting_status": "Kate sample fit accepted; source identity still unverified",
-      "speaker_restrictions": "female trader; kasia_hornblower candidate, not silent reassignment",
+      "casting_status": "approved for Kasia; existing-file source QC pending",
+      "speaker_restrictions": "kasia_hornblower named cast; no Laura substitution",
       "intent": "profession_reply",
       "conditions": "Player selects about-self topic; actual role=trader; matching archetype; safe ordinary conversation. Casting must allow this role; no character is recast to fit this sentence.",
       "profession": "trader",
@@ -1359,7 +1359,7 @@
       "disposition": "new recording",
       "replaces": [],
       "binding_gate": "Text-first proposal: existing about-self topic, new exact clip binding/filter needed; preserve name/family facts separately. No new ambient trigger.",
-      "status": "editorial_proposal_not_approved",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -1379,8 +1379,8 @@
       "priority": "P1",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Text-first proposal: existing about-self topic, new exact clip binding/filter needed; preserve name/family facts separately. No new ambient trigger.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Text-first proposal: existing about-self topic, new exact clip binding/filter needed; preserve name/family facts separately. No new ambient trigger. Historical profession-specific proposal: current map does not assign this speaker to that generic profession; hold placement pending explicit compatible casting. Do not retarget UUID or text.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -1388,8 +1388,8 @@
       "speaker": "general_male_v2_rick",
       "speaker_name": "Rick Sanchez",
       "fish_voice_id": "d2e75a3e3fd6419893057c02a375a113",
-      "casting_status": "approved direction; no recordings",
-      "speaker_restrictions": "adult male; general roles, not exclusively fisher",
+      "casting_status": "approved for male fisher; recordings pending",
+      "speaker_restrictions": "male fisher; no automatic assignment to other professions",
       "intent": "profession_reply",
       "conditions": "Player selects about-self topic; actual role=fisher; matching archetype; safe ordinary conversation. Casting must allow this role; no character is recast to fit this sentence.",
       "profession": "fisher",
@@ -1401,7 +1401,7 @@
       "disposition": "new recording",
       "replaces": [],
       "binding_gate": "Text-first proposal: existing about-self topic, new exact clip binding/filter needed; preserve name/family facts separately. No new ambient trigger.",
-      "status": "editorial_proposal_not_approved",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -1409,8 +1409,8 @@
       "speaker": "hunter_male",
       "speaker_name": "Arthur",
       "fish_voice_id": "bd22266aba38416cb602e90ce651520c",
-      "casting_status": "accepted; selected for Jacob",
-      "speaker_restrictions": "male hunter; named key jakub, no rename",
+      "casting_status": "approved for Jakub; per-file QC pending",
+      "speaker_restrictions": "jakub named cast; generic hunter uses Cowboy",
       "intent": "profession_reply",
       "conditions": "Player selects about-self topic; actual role=hunter; matching archetype; safe ordinary conversation. Casting must allow this role; no character is recast to fit this sentence.",
       "profession": "hunter",
@@ -1421,8 +1421,8 @@
       "priority": "P1",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Text-first proposal: existing about-self topic, new exact clip binding/filter needed; preserve name/family facts separately. No new ambient trigger.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Text-first proposal: existing about-self topic, new exact clip binding/filter needed; preserve name/family facts separately. No new ambient trigger. Historical profession-specific proposal: current map does not assign this speaker to that generic profession; hold placement pending explicit compatible casting. Do not retarget UUID or text.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -1442,8 +1442,8 @@
       "priority": "P1",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Text-first proposal: existing about-self topic, new exact clip binding/filter needed; preserve name/family facts separately. No new ambient trigger.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Text-first proposal: existing about-self topic, new exact clip binding/filter needed; preserve name/family facts separately. No new ambient trigger. Historical profession-specific proposal: current map does not assign this speaker to that generic profession; hold placement pending explicit compatible casting. Do not retarget UUID or text.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -1463,8 +1463,8 @@
       "priority": "P1",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Text-first proposal: existing about-self topic, new exact clip binding/filter needed; preserve name/family facts separately. No new ambient trigger.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Text-first proposal: existing about-self topic, new exact clip binding/filter needed; preserve name/family facts separately. No new ambient trigger. Historical profession-specific proposal: current map does not assign this speaker to that generic profession; hold placement pending explicit compatible casting. Do not retarget UUID or text.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -1472,8 +1472,8 @@
       "speaker": "general_female_b",
       "speaker_name": "Hannah",
       "fish_voice_id": "9a9cf47702da476aa4629e2506d4a857",
-      "casting_status": "accepted casting; clips pending",
-      "speaker_restrictions": "adult female; Molly assignment not locked",
+      "casting_status": "approved for Molly; per-file QC pending",
+      "speaker_restrictions": "molly_lambert named cast; not the general female default",
       "intent": "profession_reply",
       "conditions": "Player selects about-self topic; actual role=textile_worker; matching archetype; safe ordinary conversation. Casting must allow this role; no character is recast to fit this sentence.",
       "profession": "textile_worker",
@@ -1484,8 +1484,8 @@
       "priority": "P1",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Text-first proposal: existing about-self topic, new exact clip binding/filter needed; preserve name/family facts separately. No new ambient trigger.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Text-first proposal: existing about-self topic, new exact clip binding/filter needed; preserve name/family facts separately. No new ambient trigger. Historical profession-specific proposal: current map does not assign this speaker to that generic profession; hold placement pending explicit compatible casting. Do not retarget UUID or text.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -1493,8 +1493,8 @@
       "speaker": "general_female_b",
       "speaker_name": "Hannah",
       "fish_voice_id": "9a9cf47702da476aa4629e2506d4a857",
-      "casting_status": "accepted casting; clips pending",
-      "speaker_restrictions": "adult female; Molly assignment not locked",
+      "casting_status": "approved for Molly; per-file QC pending",
+      "speaker_restrictions": "molly_lambert named cast; not the general female default",
       "intent": "profession_reply",
       "conditions": "Player selects about-self topic; actual role=herbalist; matching archetype; safe ordinary conversation. Casting must allow this role; no character is recast to fit this sentence.",
       "profession": "herbalist",
@@ -1505,8 +1505,8 @@
       "priority": "P1",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Text-first proposal: existing about-self topic, new exact clip binding/filter needed; preserve name/family facts separately. No new ambient trigger.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Text-first proposal: existing about-self topic, new exact clip binding/filter needed; preserve name/family facts separately. No new ambient trigger. Historical profession-specific proposal: current map does not assign this speaker to that generic profession; hold placement pending explicit compatible casting. Do not retarget UUID or text.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -1527,7 +1527,7 @@
       "disposition": "new recording",
       "replaces": [],
       "binding_gate": "HOLD binding: existing personal relation/archetype inputs need clip eligibility; local reputation thresholds remain author decision. No accusation or access restriction.",
-      "status": "editorial_proposal_not_approved",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -1535,8 +1535,8 @@
       "speaker": "general_female_b",
       "speaker_name": "Hannah",
       "fish_voice_id": "9a9cf47702da476aa4629e2506d4a857",
-      "casting_status": "accepted casting; clips pending",
-      "speaker_restrictions": "adult female; Molly assignment not locked",
+      "casting_status": "approved for Molly; per-file QC pending",
+      "speaker_restrictions": "molly_lambert named cast; not the general female default",
       "intent": "greeting",
       "conditions": "Explicit dialogue open only; stranger/acquainted; curious; no acute emergency. Local tiers must not be inferred from personal familiarity.",
       "profession": "any",
@@ -1548,7 +1548,7 @@
       "disposition": "new recording",
       "replaces": [],
       "binding_gate": "HOLD binding: existing personal relation/archetype inputs need clip eligibility; local reputation thresholds remain author decision. No accusation or access restriction.",
-      "status": "editorial_proposal_not_approved",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -1556,8 +1556,8 @@
       "speaker": "general_female_b",
       "speaker_name": "Hannah",
       "fish_voice_id": "9a9cf47702da476aa4629e2506d4a857",
-      "casting_status": "accepted casting; clips pending",
-      "speaker_restrictions": "adult female; Molly assignment not locked",
+      "casting_status": "approved for Molly; per-file QC pending",
+      "speaker_restrictions": "molly_lambert named cast; not the general female default",
       "intent": "greeting",
       "conditions": "Explicit dialogue open only; friendly/trusted; cheerful; no acute emergency. Local tiers must not be inferred from personal familiarity.",
       "profession": "any",
@@ -1569,7 +1569,7 @@
       "disposition": "new recording",
       "replaces": [],
       "binding_gate": "HOLD binding: existing personal relation/archetype inputs need clip eligibility; local reputation thresholds remain author decision. No accusation or access restriction.",
-      "status": "editorial_proposal_not_approved",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -1577,8 +1577,8 @@
       "speaker": "general_male_v2_rick",
       "speaker_name": "Rick Sanchez",
       "fish_voice_id": "d2e75a3e3fd6419893057c02a375a113",
-      "casting_status": "approved direction; no recordings",
-      "speaker_restrictions": "adult male; general roles, not exclusively fisher",
+      "casting_status": "approved for male fisher; recordings pending",
+      "speaker_restrictions": "male fisher; no automatic assignment to other professions",
       "intent": "greeting",
       "conditions": "Explicit dialogue open only; friendly/trusted; grumpy; no acute emergency. Local tiers must not be inferred from personal familiarity.",
       "profession": "any",
@@ -1590,7 +1590,7 @@
       "disposition": "new recording",
       "replaces": [],
       "binding_gate": "HOLD binding: existing personal relation/archetype inputs need clip eligibility; local reputation thresholds remain author decision. No accusation or access restriction.",
-      "status": "editorial_proposal_not_approved",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -1611,7 +1611,7 @@
       "disposition": "new recording",
       "replaces": [],
       "binding_gate": "HOLD binding: existing personal relation/archetype inputs need clip eligibility; local reputation thresholds remain author decision. No accusation or access restriction.",
-      "status": "editorial_proposal_not_approved",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -1619,8 +1619,8 @@
       "speaker": "merchant_female",
       "speaker_name": "Expressive Female",
       "fish_voice_id": "d4f161bee1934b47ad3090f05649270c",
-      "casting_status": "Kate sample fit accepted; source identity still unverified",
-      "speaker_restrictions": "female trader; kasia_hornblower candidate, not silent reassignment",
+      "casting_status": "approved for Kasia; existing-file source QC pending",
+      "speaker_restrictions": "kasia_hornblower named cast; no Laura substitution",
       "intent": "greeting",
       "conditions": "Explicit dialogue open only; friendly/trusted; cheerful; no acute emergency. Local tiers must not be inferred from personal familiarity.",
       "profession": "any",
@@ -1632,7 +1632,7 @@
       "disposition": "new recording",
       "replaces": [],
       "binding_gate": "HOLD binding: existing personal relation/archetype inputs need clip eligibility; local reputation thresholds remain author decision. No accusation or access restriction.",
-      "status": "editorial_proposal_not_approved",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -1653,7 +1653,7 @@
       "disposition": "new recording",
       "replaces": [],
       "binding_gate": "HOLD binding: existing personal relation/archetype inputs need clip eligibility; local reputation thresholds remain author decision. No accusation or access restriction.",
-      "status": "editorial_proposal_not_approved",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -1661,8 +1661,8 @@
       "speaker": "general_female_b",
       "speaker_name": "Hannah",
       "fish_voice_id": "9a9cf47702da476aa4629e2506d4a857",
-      "casting_status": "accepted casting; clips pending",
-      "speaker_restrictions": "adult female; Molly assignment not locked",
+      "casting_status": "approved for Molly; per-file QC pending",
+      "speaker_restrictions": "molly_lambert named cast; not the general female default",
       "intent": "greeting",
       "conditions": "Explicit dialogue open only; local-respect; calm; no acute emergency. Local tiers must not be inferred from personal familiarity.",
       "profession": "any",
@@ -1674,7 +1674,7 @@
       "disposition": "new recording",
       "replaces": [],
       "binding_gate": "HOLD binding: existing personal relation/archetype inputs need clip eligibility; local reputation thresholds remain author decision. No accusation or access restriction.",
-      "status": "editorial_proposal_not_approved",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -1694,8 +1694,8 @@
       "priority": "P2",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -1703,8 +1703,8 @@
       "speaker": "general_female_b",
       "speaker_name": "Hannah",
       "fish_voice_id": "9a9cf47702da476aa4629e2506d4a857",
-      "casting_status": "accepted casting; clips pending",
-      "speaker_restrictions": "adult female; Molly assignment not locked",
+      "casting_status": "approved for Molly; per-file QC pending",
+      "speaker_restrictions": "molly_lambert named cast; not the general female default",
       "intent": "weather_shelter_snow",
       "conditions": "Existing beginSeekShelter and current weather=snow; no thunder/flash, accumulation, soaked-clothes or visibility claim. Storm may also reuse rain; snow never may.",
       "profession": "any",
@@ -1715,8 +1715,8 @@
       "priority": "P2",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -1736,8 +1736,8 @@
       "priority": "P2",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -1757,8 +1757,8 @@
       "priority": "P2",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -1766,8 +1766,8 @@
       "speaker": "general_female_b",
       "speaker_name": "Hannah",
       "fish_voice_id": "9a9cf47702da476aa4629e2506d4a857",
-      "casting_status": "accepted casting; clips pending",
-      "speaker_restrictions": "adult female; Molly assignment not locked",
+      "casting_status": "approved for Molly; per-file QC pending",
+      "speaker_restrictions": "molly_lambert named cast; not the general female default",
       "intent": "weather_shelter_storm",
       "conditions": "Existing beginSeekShelter and current weather=storm; no thunder/flash, accumulation, soaked-clothes or visibility claim. Storm may also reuse rain; snow never may.",
       "profession": "any",
@@ -1778,8 +1778,8 @@
       "priority": "P2",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -1799,8 +1799,8 @@
       "priority": "P2",
       "disposition": "new recording",
       "replaces": [],
-      "binding_gate": "Existing event; Q88 exact speaker/text binding and author script approval required.",
-      "status": "editorial_proposal_not_approved",
+      "binding_gate": "Existing event; Q88 exact speaker/text binding required; script approved 2026-11-04.",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -1808,8 +1808,8 @@
       "speaker": "guard_male_b",
       "speaker_name": "Dramatic Character Male",
       "fish_voice_id": "7a18a1851d2649108c48ec9f2c80eb2c",
-      "casting_status": "provisional; role fit and bank mismatch review pending",
-      "speaker_restrictions": "male guard or approved future role; not Mark; watch text remains guard-only",
+      "casting_status": "approved for Patric; bank mismatch QC pending",
+      "speaker_restrictions": "patric_smith named cast; no Mark or generic guard assignment; guard-specific rows require future explicit scope approval",
       "intent": "combat_start",
       "conditions": "Existing successful beginCombat; not mere threat perception or player dialogue.",
       "profession": "any",
@@ -1824,7 +1824,7 @@
         "guard_male_b_combat_start_02.mp3"
       ],
       "binding_gate": "HOLD provisional casting/role and per-bank QC; no cross-speaker substitution. Existing safe same-speaker alternative wins if author accepts it.",
-      "status": "editorial_proposal_not_approved",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -1832,8 +1832,8 @@
       "speaker": "guard_male_b",
       "speaker_name": "Dramatic Character Male",
       "fish_voice_id": "7a18a1851d2649108c48ec9f2c80eb2c",
-      "casting_status": "provisional; role fit and bank mismatch review pending",
-      "speaker_restrictions": "male guard or approved future role; not Mark; watch text remains guard-only",
+      "casting_status": "approved for Patric; bank mismatch QC pending",
+      "speaker_restrictions": "patric_smith named cast; no Mark or generic guard assignment; guard-specific rows require future explicit scope approval",
       "intent": "quest_complete",
       "conditions": "Existing quest completion voice callback for this loaded NPC; generic reaction, never reward/objective narration.",
       "profession": "any",
@@ -1848,7 +1848,7 @@
         "guard_male_b_quest_complete_02.mp3"
       ],
       "binding_gate": "HOLD provisional casting/role and per-bank QC; no cross-speaker substitution. Existing safe same-speaker alternative wins if author accepts it.",
-      "status": "editorial_proposal_not_approved",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -1856,8 +1856,8 @@
       "speaker": "guard_male_b",
       "speaker_name": "Dramatic Character Male",
       "fish_voice_id": "7a18a1851d2649108c48ec9f2c80eb2c",
-      "casting_status": "provisional; role fit and bank mismatch review pending",
-      "speaker_restrictions": "male guard or approved future role; not Mark; watch text remains guard-only",
+      "casting_status": "approved for Patric; bank mismatch QC pending",
+      "speaker_restrictions": "patric_smith named cast; no Mark or generic guard assignment; guard-specific rows require future explicit scope approval",
       "intent": "work_finished",
       "conditions": "Existing terminal action classified as schedule work; one completed task, not end of shift/day.",
       "profession": "any",
@@ -1872,7 +1872,7 @@
         "guard_male_b_work_finished_02.mp3"
       ],
       "binding_gate": "HOLD provisional casting/role and per-bank QC; no cross-speaker substitution. Existing safe same-speaker alternative wins if author accepts it.",
-      "status": "editorial_proposal_not_approved",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null
     },
     {
@@ -1893,7 +1893,7 @@
       "disposition": "new recording",
       "replaces": [],
       "binding_gate": "HOLD speaker/context-compatible pair binding in existing campfireTalk/socialBehaviour; duration and cancellation checked after audio QC. No new social trigger.",
-      "status": "editorial_proposal_not_approved",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null,
       "pair_id": "CF90-1"
     },
@@ -1902,8 +1902,8 @@
       "speaker": "general_female_b",
       "speaker_name": "Hannah",
       "fish_voice_id": "9a9cf47702da476aa4629e2506d4a857",
-      "casting_status": "accepted casting; clips pending",
-      "speaker_restrictions": "adult female; Molly assignment not locked",
+      "casting_status": "approved for Molly; per-file QC pending",
+      "speaker_restrictions": "molly_lambert named cast; not the general female default",
       "intent": "campfire_answer",
       "conditions": "Existing valid social campfire pair CF90-1; exact speaker pair; no critical need, acute threat or bereavement; answer only while same conversation remains active.",
       "profession": "any",
@@ -1915,7 +1915,7 @@
       "disposition": "new recording",
       "replaces": [],
       "binding_gate": "HOLD speaker/context-compatible pair binding in existing campfireTalk/socialBehaviour; duration and cancellation checked after audio QC. No new social trigger.",
-      "status": "editorial_proposal_not_approved",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null,
       "pair_id": "CF90-1"
     },
@@ -1924,8 +1924,8 @@
       "speaker": "general_female_b",
       "speaker_name": "Hannah",
       "fish_voice_id": "9a9cf47702da476aa4629e2506d4a857",
-      "casting_status": "accepted casting; clips pending",
-      "speaker_restrictions": "adult female; Molly assignment not locked",
+      "casting_status": "approved for Molly; per-file QC pending",
+      "speaker_restrictions": "molly_lambert named cast; not the general female default",
       "intent": "campfire_question",
       "conditions": "Existing valid social campfire pair CF90-2; exact speaker pair; no critical need, acute threat or bereavement; answer only while same conversation remains active.",
       "profession": "any",
@@ -1937,7 +1937,7 @@
       "disposition": "new recording",
       "replaces": [],
       "binding_gate": "HOLD speaker/context-compatible pair binding in existing campfireTalk/socialBehaviour; duration and cancellation checked after audio QC. No new social trigger.",
-      "status": "editorial_proposal_not_approved",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null,
       "pair_id": "CF90-2"
     },
@@ -1946,8 +1946,8 @@
       "speaker": "general_male_v2_rick",
       "speaker_name": "Rick Sanchez",
       "fish_voice_id": "d2e75a3e3fd6419893057c02a375a113",
-      "casting_status": "approved direction; no recordings",
-      "speaker_restrictions": "adult male; general roles, not exclusively fisher",
+      "casting_status": "approved for male fisher; recordings pending",
+      "speaker_restrictions": "male fisher; no automatic assignment to other professions",
       "intent": "campfire_answer",
       "conditions": "Existing valid social campfire pair CF90-2; exact speaker pair; no critical need, acute threat or bereavement; answer only while same conversation remains active.",
       "profession": "any",
@@ -1959,7 +1959,7 @@
       "disposition": "new recording",
       "replaces": [],
       "binding_gate": "HOLD speaker/context-compatible pair binding in existing campfireTalk/socialBehaviour; duration and cancellation checked after audio QC. No new social trigger.",
-      "status": "editorial_proposal_not_approved",
+      "status": "text_author_approved_2026-11-04; generation_QC_binding_pending",
       "existing_clip_reused": null,
       "pair_id": "CF90-2"
     }
@@ -1978,7 +1978,7 @@
       "asrText": "Well met. What brings you this way?",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "accepted casting; clips pending",
+      "casting_status": "approved for Molly; per-file QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import.",
       "generation_input": null
     },
@@ -1995,7 +1995,7 @@
       "asrText": "Pardon me, could I have a word?",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "accepted casting; clips pending",
+      "casting_status": "approved for Molly; per-file QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import.",
       "generation_input": null
     },
@@ -2012,7 +2012,7 @@
       "asrText": "Farewell. May the road treat you kindly.",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "accepted casting; clips pending",
+      "casting_status": "approved for Molly; per-file QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import.",
       "generation_input": null
     },
@@ -2029,7 +2029,7 @@
       "asrText": "Good. I'll be waiting for news.",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "accepted casting; clips pending",
+      "casting_status": "approved for Molly; per-file QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import.",
       "generation_input": null
     },
@@ -2046,7 +2046,7 @@
       "asrText": "Understood. Perhaps another day.",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "accepted casting; clips pending",
+      "casting_status": "approved for Molly; per-file QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import.",
       "generation_input": null
     },
@@ -2063,7 +2063,7 @@
       "asrText": "That's that then, well done.",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "accepted casting; clips pending",
+      "casting_status": "approved for Molly; per-file QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import.",
       "generation_input": null
     },
@@ -2080,7 +2080,7 @@
       "asrText": "I'm worn out. I have to rest.",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "accepted casting; clips pending",
+      "casting_status": "approved for Molly; per-file QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import.",
       "generation_input": null
     },
@@ -2097,7 +2097,7 @@
       "asrText": "I need food before I can keep going.",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "accepted casting; clips pending",
+      "casting_status": "approved for Molly; per-file QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import.",
       "generation_input": null
     },
@@ -2114,7 +2114,7 @@
       "asrText": "Best get under a roof before it gets worse.",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "accepted casting; clips pending",
+      "casting_status": "approved for Molly; per-file QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import.",
       "generation_input": null
     },
@@ -2131,7 +2131,7 @@
       "asrText": "Look out! Something hostile!",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "accepted casting; clips pending",
+      "casting_status": "approved for Molly; per-file QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import.",
       "generation_input": null
     },
@@ -2148,7 +2148,7 @@
       "asrText": "So be it. Let's settle this.",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "accepted casting; clips pending",
+      "casting_status": "approved for Molly; per-file QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import.",
       "generation_input": null
     },
@@ -2318,7 +2318,7 @@
       "asrText": "Good to see you. Been traveling far?",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "accepted; selected for Jacob",
+      "casting_status": "approved for Jakub; per-file QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import.",
       "generation_input": null
     },
@@ -2335,7 +2335,7 @@
       "asrText": "Hey, over here a moment.",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "accepted; selected for Jacob",
+      "casting_status": "approved for Jakub; per-file QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import.",
       "generation_input": null
     },
@@ -2352,7 +2352,7 @@
       "asrText": "Watch your step out there!",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "accepted; selected for Jacob",
+      "casting_status": "approved for Jakub; per-file QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import.",
       "generation_input": null
     },
@@ -2369,7 +2369,7 @@
       "asrText": "Fair enough. I'll manage somehow.",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "accepted; selected for Jacob",
+      "casting_status": "approved for Jakub; per-file QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import.",
       "generation_input": null
     },
@@ -2386,7 +2386,7 @@
       "asrText": "Nicely done. You know how to handle yourself.",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "accepted; selected for Jacob",
+      "casting_status": "approved for Jakub; per-file QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import.",
       "generation_input": null
     },
@@ -2403,7 +2403,7 @@
       "asrText": "Danger! Keep your distance!",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "accepted; selected for Jacob",
+      "casting_status": "approved for Jakub; per-file QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import.",
       "generation_input": null
     },
@@ -2420,7 +2420,7 @@
       "asrText": "Alright, let's finish this!",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "accepted; selected for Jacob",
+      "casting_status": "approved for Jakub; per-file QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import.",
       "generation_input": null
     },
@@ -2437,7 +2437,7 @@
       "asrText": "Welcome, traveler. Looking for something useful today?",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "Kate sample fit accepted; source identity still unverified",
+      "casting_status": "approved for Kasia; existing-file source QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import.",
       "generation_input": null
     },
@@ -2454,7 +2454,7 @@
       "asrText": "Traveler, a moment if you please.",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "Kate sample fit accepted; source identity still unverified",
+      "casting_status": "approved for Kasia; existing-file source QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import.",
       "generation_input": null
     },
@@ -2471,7 +2471,7 @@
       "asrText": "Safe travels. Come back if you need anything.",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "Kate sample fit accepted; source identity still unverified",
+      "casting_status": "approved for Kasia; existing-file source QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import.",
       "generation_input": null
     },
@@ -2488,7 +2488,7 @@
       "asrText": "Excellent. Come back when it's done.",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "Kate sample fit accepted; source identity still unverified",
+      "casting_status": "approved for Kasia; existing-file source QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import.",
       "generation_input": null
     },
@@ -2505,7 +2505,7 @@
       "asrText": "A pity. I suppose I'll have to ask someone else.",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "Kate sample fit accepted; source identity still unverified",
+      "casting_status": "approved for Kasia; existing-file source QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import.",
       "generation_input": null
     },
@@ -2522,7 +2522,7 @@
       "asrText": "Hello there, how's your day going?",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "provisional; role fit and bank mismatch review pending",
+      "casting_status": "approved for Patric; bank mismatch QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import. >20% bank mismatch gate remains.",
       "generation_input": null
     },
@@ -2539,7 +2539,7 @@
       "asrText": "Excuse me, could you stop a moment?",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "provisional; role fit and bank mismatch review pending",
+      "casting_status": "approved for Patric; bank mismatch QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import. >20% bank mismatch gate remains.",
       "generation_input": null
     },
@@ -2556,7 +2556,7 @@
       "asrText": "Take care. Mind your footing on the road.",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "provisional; role fit and bank mismatch review pending",
+      "casting_status": "approved for Patric; bank mismatch QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import. >20% bank mismatch gate remains.",
       "generation_input": null
     },
@@ -2573,7 +2573,7 @@
       "asrText": "Thank you. That will help us.",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "provisional; role fit and bank mismatch review pending",
+      "casting_status": "approved for Patric; bank mismatch QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import. >20% bank mismatch gate remains.",
       "generation_input": null
     },
@@ -2590,7 +2590,7 @@
       "asrText": "Fair enough. It's a lot to ask.",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "provisional; role fit and bank mismatch review pending",
+      "casting_status": "approved for Patric; bank mismatch QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import. >20% bank mismatch gate remains.",
       "generation_input": null
     },
@@ -2607,7 +2607,7 @@
       "asrText": "I need a moment off my feet.",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "provisional; role fit and bank mismatch review pending",
+      "casting_status": "approved for Patric; bank mismatch QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import. >20% bank mismatch gate remains.",
       "generation_input": null
     },
@@ -2624,7 +2624,7 @@
       "asrText": "I need a bite before I go back to it.",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "provisional; role fit and bank mismatch review pending",
+      "casting_status": "approved for Patric; bank mismatch QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import. >20% bank mismatch gate remains.",
       "generation_input": null
     },
@@ -2641,7 +2641,7 @@
       "asrText": "Get out of this weather if you can.",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "provisional; role fit and bank mismatch review pending",
+      "casting_status": "approved for Patric; bank mismatch QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import. >20% bank mismatch gate remains.",
       "generation_input": null
     },
@@ -2658,7 +2658,7 @@
       "asrText": "Move away. Keep clear.",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "provisional; role fit and bank mismatch review pending",
+      "casting_status": "approved for Patric; bank mismatch QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import. >20% bank mismatch gate remains.",
       "generation_input": null
     },
@@ -2675,7 +2675,7 @@
       "asrText": "Hold on, I'm coming to help.",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "provisional; role fit and bank mismatch review pending",
+      "casting_status": "approved for Patric; bank mismatch QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import. >20% bank mismatch gate remains.",
       "generation_input": null
     },
@@ -2692,7 +2692,7 @@
       "asrText": "Hello there, what brings you this way?",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "provisional; no Jacob assignment",
+      "casting_status": "approved for male hunter; per-file QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import.",
       "generation_input": null
     },
@@ -2709,7 +2709,7 @@
       "asrText": "Could you spare a moment?",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "provisional; no Jacob assignment",
+      "casting_status": "approved for male hunter; per-file QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import.",
       "generation_input": null
     },
@@ -2726,7 +2726,7 @@
       "asrText": "Mind your footing on rough ground.",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "provisional; no Jacob assignment",
+      "casting_status": "approved for male hunter; per-file QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import.",
       "generation_input": null
     },
@@ -2743,7 +2743,7 @@
       "asrText": "Thanks. That's a load off my mind.",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "provisional; no Jacob assignment",
+      "casting_status": "approved for male hunter; per-file QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import.",
       "generation_input": null
     },
@@ -2760,7 +2760,7 @@
       "asrText": "No harm done. It was worth asking.",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "provisional; no Jacob assignment",
+      "casting_status": "approved for male hunter; per-file QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import.",
       "generation_input": null
     },
@@ -2777,7 +2777,7 @@
       "asrText": "That's settled. Good work.",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "provisional; no Jacob assignment",
+      "casting_status": "approved for male hunter; per-file QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import.",
       "generation_input": null
     },
@@ -2794,7 +2794,7 @@
       "asrText": "Need a rest. Can't think straight like this.",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "provisional; no Jacob assignment",
+      "casting_status": "approved for male hunter; per-file QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import.",
       "generation_input": null
     },
@@ -2811,7 +2811,7 @@
       "asrText": "Time for something to eat.",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "provisional; no Jacob assignment",
+      "casting_status": "approved for male hunter; per-file QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import.",
       "generation_input": null
     },
@@ -2828,7 +2828,7 @@
       "asrText": "I'm not staying out in this if I can help it.",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "provisional; no Jacob assignment",
+      "casting_status": "approved for male hunter; per-file QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import.",
       "generation_input": null
     },
@@ -2845,7 +2845,7 @@
       "asrText": "Move! Get clear of it!",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "provisional; no Jacob assignment",
+      "casting_status": "approved for male hunter; per-file QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import.",
       "generation_input": null
     },
@@ -2862,7 +2862,7 @@
       "asrText": "Alright, I'll defend myself.",
       "auto": "mismatch",
       "verdict": "pending",
-      "casting_status": "provisional; no Jacob assignment",
+      "casting_status": "approved for male hunter; per-file QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import. Author must confirm actual words; ASR is a hypothesis, not canonical text.",
       "generation_input": null
     },
@@ -2879,7 +2879,7 @@
       "asrText": "I've done what I came to do. That's enough.",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "provisional; no Jacob assignment",
+      "casting_status": "approved for male hunter; per-file QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import. Confirm completed task meaning; never interpret as end of all work.",
       "generation_input": null
     },
@@ -2896,7 +2896,7 @@
       "asrText": "Hello there, looking for a chat or something particular?",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "HOLD source UUID; voice usable, not Kate",
+      "casting_status": "approved for Anna; existing-file source QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import.",
       "generation_input": null
     },
@@ -2913,7 +2913,7 @@
       "asrText": "Excuse me, could we speak for a moment?",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "HOLD source UUID; voice usable, not Kate",
+      "casting_status": "approved for Anna; existing-file source QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import.",
       "generation_input": null
     },
@@ -2930,7 +2930,7 @@
       "asrText": "Until we meet again, look after yourself.",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "HOLD source UUID; voice usable, not Kate",
+      "casting_status": "approved for Anna; existing-file source QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import.",
       "generation_input": null
     },
@@ -2947,7 +2947,7 @@
       "asrText": "Good. I appreciate you taking this on.",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "HOLD source UUID; voice usable, not Kate",
+      "casting_status": "approved for Anna; existing-file source QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import.",
       "generation_input": null
     },
@@ -2964,7 +2964,7 @@
       "asrText": "Fair enough. I'll see what else I can do.",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "HOLD source UUID; voice usable, not Kate",
+      "casting_status": "approved for Anna; existing-file source QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import.",
       "generation_input": null
     },
@@ -2981,7 +2981,7 @@
       "asrText": "You saw it through. Thank you.",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "HOLD source UUID; voice usable, not Kate",
+      "casting_status": "approved for Anna; existing-file source QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import.",
       "generation_input": null
     },
@@ -2998,7 +2998,7 @@
       "asrText": "I need to sit for a while.",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "HOLD source UUID; voice usable, not Kate",
+      "casting_status": "approved for Anna; existing-file source QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import.",
       "generation_input": null
     },
@@ -3015,7 +3015,7 @@
       "asrText": "I could do with a proper meal.",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "HOLD source UUID; voice usable, not Kate",
+      "casting_status": "approved for Anna; existing-file source QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import.",
       "generation_input": null
     },
@@ -3032,7 +3032,7 @@
       "asrText": "Best find cover until this passes.",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "HOLD source UUID; voice usable, not Kate",
+      "casting_status": "approved for Anna; existing-file source QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import.",
       "generation_input": null
     },
@@ -3049,7 +3049,7 @@
       "asrText": "Look out, keep away from it.",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "HOLD source UUID; voice usable, not Kate",
+      "casting_status": "approved for Anna; existing-file source QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import.",
       "generation_input": null
     },
@@ -3066,7 +3066,7 @@
       "asrText": "I don't want to fight, but I'll defend myself.",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "HOLD source UUID; voice usable, not Kate",
+      "casting_status": "approved for Anna; existing-file source QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import.",
       "generation_input": null
     },
@@ -3083,7 +3083,7 @@
       "asrText": "Finished for now. The rest can wait.",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "HOLD source UUID; voice usable, not Kate",
+      "casting_status": "approved for Anna; existing-file source QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import. Confirm completed task meaning; never interpret as end of all work.",
       "generation_input": null
     },
@@ -3151,7 +3151,7 @@
       "asrText": "Good day. Is there anything I can help with?",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "accepted for Mark; pilot only",
+      "casting_status": "approved for Marek; per-file QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import.",
       "generation_input": null
     },
@@ -3168,7 +3168,7 @@
       "asrText": "Look after yourself, will ya? I'll see you around.",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "accepted for Mark; pilot only",
+      "casting_status": "approved for Marek; per-file QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import.",
       "generation_input": null
     },
@@ -3185,7 +3185,7 @@
       "asrText": "Back. Get clear of it.",
       "auto": "match",
       "verdict": "pending",
-      "casting_status": "accepted for Mark; pilot only",
+      "casting_status": "approved for Marek; per-file QC pending",
       "conditions": "Requires transcript/identity/role QC and Q88; not approved for import.",
       "generation_input": null
     }
@@ -3198,11 +3198,11 @@
     },
     {
       "speaker": "mark_hornblower",
-      "reason": "Pilot reuse only; full pack needs separate author authorization."
+      "reason": "No Q90 new takes; named expansion is a separate draft requiring text approval."
     },
     {
       "speaker": "shepherd_male",
-      "reason": "Hold metadata and mismatch review; same-speaker generic danger unavailable. Do not assume sheep/wolf eligibility."
+      "reason": "Male shepherd cast approved; existing-file mismatch/context QC pending. No new Q90 pack."
     },
     {
       "speaker": "shepherd_male_b",
@@ -3210,15 +3210,117 @@
     },
     {
       "speaker": "merchant_female_b",
-      "reason": "Source UUID unresolved; reuse candidates retained, no new recordings."
+      "reason": "Anna cast approved; source QC of old files pending. No new Q90 pack."
     },
     {
       "speaker": "general_female",
-      "reason": "Legacy consistency hold; no new takes; Hannah reuse is an alternative cast, never per-line fallback."
+      "reason": "General female cast approved; mixed-source files need individual QC. No new Q90 takes; Hannah belongs to Molly."
     },
     {
       "speaker": "children",
-      "reason": "No approved boy/girl speaker UUID or age-transition policy; no fictional IDs/takes."
+      "reason": "Little Lem boy voice selected in current map; no Q90 child takes. Girl selection and child/adult transition policy remain open."
     }
-  ]
+  ],
+  "casting_authority": "../../plans/npc-065-stable-npc-voice-casting-and-donor-qc.md#npc-voice-map",
+  "casting_history": {
+    "superseded_profile_metadata_2026-11-04": {
+      "general_male_fairytail": {
+        "name": "FairyTail 1",
+        "fish_voice_id": "689b47ca83dd48dba90b160affb8a118",
+        "casting": "approved direction; no recordings",
+        "restrictions": "adult male; general roles after named/role exclusions"
+      },
+      "general_old_male_george": {
+        "name": "george",
+        "fish_voice_id": "372ef39bf5bf4fd38c5c56bce607aba6",
+        "casting": "approved direction; no recordings",
+        "restrictions": "older male; initial age-eligible casting, no automatic recast on birthday"
+      },
+      "general_male_v2_rick": {
+        "name": "Rick Sanchez",
+        "fish_voice_id": "d2e75a3e3fd6419893057c02a375a113",
+        "casting": "approved direction; no recordings",
+        "restrictions": "adult male; general roles, not exclusively fisher"
+      },
+      "general_female_b": {
+        "name": "Hannah",
+        "fish_voice_id": "9a9cf47702da476aa4629e2506d4a857",
+        "casting": "accepted casting; clips pending",
+        "restrictions": "adult female; Molly assignment not locked"
+      },
+      "guard_male": {
+        "name": "Guard",
+        "fish_voice_id": "c29549f41b3b4aa498d66d76fba0e887",
+        "casting": "accepted casting; bank mismatch review pending",
+        "restrictions": "male guard; never substitute for Mark"
+      },
+      "hunter_male": {
+        "name": "Arthur",
+        "fish_voice_id": "bd22266aba38416cb602e90ce651520c",
+        "casting": "accepted; selected for Jacob",
+        "restrictions": "male hunter; named key jakub, no rename"
+      },
+      "merchant_female": {
+        "name": "Expressive Female",
+        "fish_voice_id": "d4f161bee1934b47ad3090f05649270c",
+        "casting": "Kate sample fit accepted; source identity still unverified",
+        "restrictions": "female trader; kasia_hornblower candidate, not silent reassignment"
+      },
+      "guard_male_b": {
+        "name": "Dramatic Character Male",
+        "fish_voice_id": "7a18a1851d2649108c48ec9f2c80eb2c",
+        "casting": "provisional; role fit and bank mismatch review pending",
+        "restrictions": "male guard or approved future role; not Mark; watch text remains guard-only"
+      },
+      "hunter_male_b": {
+        "name": "Cowboy",
+        "fish_voice_id": "a2cecd3eda8b44178b7f1bc1379edae0",
+        "casting": "provisional; no Jacob assignment",
+        "restrictions": "adult male; only role-neutral clips for non-hunters"
+      },
+      "merchant_female_b": {
+        "name": "catalog Laura",
+        "fish_voice_id": "e3cd384158934cc9a01029cd7d278634",
+        "casting": "HOLD source UUID; voice usable, not Kate",
+        "restrictions": "adult female; source verification required"
+      },
+      "shepherd_male": {
+        "name": "Hetalia Russia",
+        "fish_voice_id": "4af16ba03cee422996ec29a43e1947ee",
+        "casting": "HOLD gender/role metadata; accepted sound",
+        "restrictions": "role/gender eligibility unresolved"
+      },
+      "shepherd_male_b": {
+        "name": "Sleepless historian",
+        "fish_voice_id": "beb44e5fac1e4b33a15dfcdcc2a9421d",
+        "casting": "accepted sound; final role unresolved",
+        "restrictions": "adult male; role-neutral content only until role settled"
+      },
+      "mark_hornblower": {
+        "name": "Friendly Male Voice",
+        "fish_voice_id": "2adcdee4b3ce4b648dc16ea65430ea76",
+        "casting": "accepted for Mark; pilot only",
+        "restrictions": "marek_hornblower only; full pack unauthorized"
+      },
+      "general_male": {
+        "name": "legacy Casual Male",
+        "fish_voice_id": "c2a3921fd7024b9189cb912bdfe5266a",
+        "casting": "HOLD inconsistent audible identity; new primary target is FairyTail",
+        "restrictions": "legacy evidence only; no new takes"
+      },
+      "general_female": {
+        "name": "legacy Warm Conversational",
+        "fish_voice_id": "5e3be339f2df45e6a1a338bb2ce94800",
+        "casting": "HOLD inconsistent audible identity",
+        "restrictions": "legacy evidence only; no new takes"
+      },
+      "general_male_b": {
+        "name": "Brian",
+        "fish_voice_id": "65c0b8155c464a648161af8877404f11",
+        "casting": "REJECTED permanently globally",
+        "restrictions": "never generate/import/cast, including aliases"
+      }
+    },
+    "note": "2026-11-05 map supersedes casting fields only; transcripts, UUIDs, IDs, filenames and selection of 87 approved texts retained. Role-specific historic proposals are not current assignment permissions."
+  }
 }
