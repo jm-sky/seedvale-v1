@@ -50,6 +50,7 @@ function fakeChunkManager(): ChunkManager {
     waterLevel: params.waterLevel,
     sampleHeight: (x: number, z: number) => sampleHeightAt(x, z, params),
     sampleBaseHeight: (x: number, z: number) => sampleHeightAt(x, z, params),
+    sampleRuntimeHeight: (x: number, z: number) => sampleHeightAt(x, z, params),
     sampleContinentalness: (x: number, z: number) => sampleContinentalnessAt(x, z, params),
     sampleMountainRidge: (x: number, z: number) => sampleMountainRidgeAt(x, z, params),
     roadCorridorsNear: () => [],

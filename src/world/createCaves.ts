@@ -712,9 +712,19 @@ export function createCaves(
     mouthProxies.get(caveId)?.removeFromParent()
   }
 
+  /** The proxy only backs the terrain aperture — it is presentation for a
+   *  hole in a *resident* chunk mesh. Beyond the terrain streaming ring (or
+   *  with scene fog off, e.g. `?fly` shots) an ungated proxy hangs alone in
+   *  the air, so it follows the entrance chunk's residency, not the 500 m
+   *  cave grid. */
   function showMouthProxy(caveId: string): void {
     const v2 = v2ByCaveId.get(caveId)
     if (!v2) return
+    const { x, z } = v2.topology.entrance
+    if (chunkManager.sampleRuntimeHeight(x, z) === null) {
+      hideMouthProxy(caveId)
+      return
+    }
     let proxy = mouthProxies.get(caveId)
     if (!proxy) {
       const created = createCaveMouthProxy({

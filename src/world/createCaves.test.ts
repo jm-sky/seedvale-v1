@@ -86,6 +86,9 @@ type FakeChunkManager = ChunkManager & {
   cutoutClears: string[]
   colliderOwners: Map<string, readonly Collider[]>
   systemMods: number
+  /** Points whose owning terrain chunk reads as absent (`sampleRuntimeHeight`
+   *  → null). Empty = every chunk resident. */
+  nonResident: (x: number, z: number) => boolean
 }
 
 function fakeChunkManager(): FakeChunkManager {
@@ -113,6 +116,8 @@ function fakeChunkManager(): FakeChunkManager {
     waterLevel: t.waterLevel,
     sampleHeight: (x: number, z: number) => sampleHeightAt(x, z, params),
     sampleBaseHeight: (x: number, z: number) => sampleHeightAt(x, z, params),
+    nonResident: (_x: number, _z: number) => false,
+    sampleRuntimeHeight: (x: number, z: number) => (fake.nonResident(x, z) ? null : sampleHeightAt(x, z, params)),
     sampleContinentalness: (x: number, z: number) => sampleContinentalnessAt(x, z, params),
     sampleMountainRidge: (x: number, z: number) => sampleMountainRidgeAt(x, z, params),
     roadCorridorsNear: () => [],
@@ -648,6 +653,22 @@ describe('createCaves (world-terrain-019 B)', () => {
       expect(caveGroup(def.caveId, scene)).toBeUndefined()
       expect(mouthProxyGroup(def.caveId, scene)).toBeDefined()
       spy.mockRestore()
+      caves.dispose()
+    })
+
+    it('hides the mouth proxy while the entrance terrain chunk is not resident', () => {
+      const { scene, caves, chunkManager: cm } = isolatedCaves()
+      const def = caves.definitions()[0]!
+      const observerX = def.bounds.maxX + CAVE_ACTIVATE_DISTANCE + 8
+      cm.nonResident = () => true
+      caves.update(observerX, def.entrance.z)
+      expect(mouthProxyGroup(def.caveId, scene)).toBeUndefined()
+      cm.nonResident = () => false
+      caves.update(observerX, def.entrance.z)
+      expect(mouthProxyGroup(def.caveId, scene)).toBeDefined()
+      cm.nonResident = () => true
+      caves.update(observerX, def.entrance.z)
+      expect(mouthProxyGroup(def.caveId, scene)).toBeUndefined()
       caves.dispose()
     })
 
