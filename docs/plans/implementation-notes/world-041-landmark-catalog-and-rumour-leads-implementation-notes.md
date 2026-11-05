@@ -1,6 +1,6 @@
 # Implementation notes: world-041 landmark catalog and rumour leads
 
-Plan: [world-041](./world-041-landmark-catalog-and-rumour-leads.md)
+Plan: [world-041](../world-041-landmark-catalog-and-rumour-leads.md)
 
 ## L3a — uncertain projection, consumer guards, arrival rules (2026-11-05, Sonnet)
 
