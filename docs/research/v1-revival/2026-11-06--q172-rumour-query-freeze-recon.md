@@ -44,6 +44,10 @@ The author pointed out that the pre-Revival game already had this freeze and sol
 Before either, measure as in step 1 below. Do **not** narrow the 25 h expert band or change selection without the author (§3).
 
 1. **Measure (S):** in the browser on seed 415424794 with cold caches, ask a home guard. Record the long frames, `getScanDiagnostics()` and the slowest single probe; repeat warm.
-2. The wait-vs-instant choice is gameplay, so it goes to the author: §3 **Q172-a**.
+2. The wait-vs-instant choice was a gameplay decision for the author (§3 Q172-a); decided below.
+
+## Author decision Q172-a (2026-11-06)
+
+**(a) Restore the wait.** The rumour ask answers at once with the approved Q137 §6 `RUM.WAIT.START.*` line. The pool is computed in the background, and the lead is delivered later through the npc-050 follow-up seam (`RUM.WAIT.READY.*`, re-resolved at delivery). Still open for the S/O row: how the pool is computed, (i) extended worker or (ii) cooperative main-thread, chosen after the step 1 measurement.
 
 Verification: the async result must equal the sync result (existing test plus a test for the cooperative variant), and there must be no change in `pnpm worldgen:outcomes:census` / catalog output. For the browser check, the worst long frame during an ask should be under about 50 ms on a cold cache (WSL; record it, no FPS claims), and Windows confirmation goes to queue §4.
