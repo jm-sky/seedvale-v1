@@ -18,10 +18,6 @@ watch(() => ui.pauseMenu.playerName, (value) => { name.value = value })
 
 function commitName(): void { const value = name.value.trim(); if (value) ui.pauseMenu.onNameCommit?.(value) }
 function onNameInput(): void { setPausePlayerName(name.value); ui.pauseMenu.onNameChange?.(name.value) }
-function openVillagers(): void { closePauseMenu(); ui.pauseMenu.onVillagers?.() }
-// No `ui.pauseMenu.onX` indirection needed here, unlike `openVillagers` —
-// these two don't need any data fetched from `createApp.ts`'s game-world
-// state, just the store's own open flag.
 function openWorldConfig(): void { closePauseMenu(); openWorldConfigScreen() }
 function openNotesScreen(): void { closePauseMenu(); openNotes() }
 function onVolumeInput(key: AudioVolumeKey, event: Event): void {
@@ -66,12 +62,6 @@ function resetSettings(): void {
     </div>
     <UiButton
       class="mb-2 w-full"
-      @click="openVillagers"
-    >
-      Mieszkańcy
-    </UiButton>
-    <UiButton
-      class="mb-2 w-full"
       @click="openWorldConfig"
     >
       Świat
@@ -81,12 +71,6 @@ function resetSettings(): void {
       @click="openNotesScreen"
     >
       Notatki
-    </UiButton>
-    <UiButton
-      class="mb-2 w-full"
-      @click="ui.pauseMenu.onToggleGui?.()"
-    >
-      Panel debug
     </UiButton>
     <div class="mb-5 text-left">
       <h2 class="mb-2 text-xs font-semibold uppercase tracking-widest opacity-60">

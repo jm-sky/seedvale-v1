@@ -1,12 +1,10 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 import UiButton from '@/components/UiButton.vue'
 import UiPanel from '@/components/UiPanel.vue'
 import { isTouchDevice } from '../../input/isTouchDevice'
-import { useOverlayScreen } from '../composables/useOverlayScreen'
-import { closePauseMenu, emitUiClick, isPauseMenuOpen, openSkillsScreen, setPauseSaveStatus, showToast, ui } from '../store'
+import { closePauseMenu, emitUiClick, openSkillsScreen, setPauseSaveStatus, showToast, ui } from '../store'
 
-const name = ref(ui.pauseMenu.playerName)
 const saveTimer = ref<number | null>(null)
 const appVersion = __APP_VERSION__
 const gitCommit = __GIT_COMMIT__
@@ -17,12 +15,8 @@ const emit = defineEmits<{
   'open-settings': []
   'open-tools': []
   'open-save-as': []
-  'open-load': []
-  'open-new-game': []
+  'open-management': []
 }>()
-
-useOverlayScreen('pause-menu', isPauseMenuOpen, closePauseMenu)
-watch(() => ui.pauseMenu.playerName, (value) => { name.value = value })
 
 async function save(): Promise<void> {
   emitUiClick()
@@ -50,101 +44,105 @@ function openTools(): void { emitUiClick(); emit('open-tools') }
 </script>
 
 <template>
-  <UiPanel>
-    <div class="mb-5 flex justify-between text-[13px] opacity-85">
+  <UiPanel class="mx-4 border border-primary/25 p-4">
+    <div class="mb-3 flex justify-between text-xs opacity-70">
       <span>Seed</span><span>{{ ui.pauseMenu.seed }}</span>
     </div>
-    <UiButton
-      variant="primary"
-      class="mb-2 w-full"
-      @click="resume"
+    <section
+      aria-label="Gra i zapis"
+      class="grid grid-cols-2 gap-2"
     >
-      Wznów
-    </UiButton>
-    <UiButton
-      class="mb-2 w-full"
-      @click="openCharacter"
+      <UiButton
+        variant="primary"
+        class="col-span-2 w-full font-semibold"
+        @click="resume"
+      >
+        Wznów
+      </UiButton>
+      <UiButton
+        class="min-w-0 flex-col"
+        @click="save"
+      >
+        Zapisz
+        <span
+          v-if="ui.pauseMenu.saveStatus || ui.pauseMenu.activeSaveName"
+          role="status"
+          class="w-full truncate text-xs opacity-75"
+          :title="ui.pauseMenu.saveStatus || ui.pauseMenu.activeSaveName"
+        >{{ ui.pauseMenu.saveStatus || ui.pauseMenu.activeSaveName }}</span>
+      </UiButton>
+      <UiButton @click="emitUiClick(); emit('open-save-as')">
+        Zapisz jako…
+      </UiButton>
+    </section>
+    <nav
+      aria-label="Postać i świat"
+      class="my-3 grid grid-cols-2 gap-2 border-y border-primary/20 py-3"
     >
-      Postać [C]
-    </UiButton>
-    <UiButton
-      class="mb-2 w-full"
-      @click="openSkills"
+      <UiButton
+        class="px-2"
+        @click="openCharacter"
+      >
+        Postać [C]
+      </UiButton>
+      <UiButton
+        class="px-2"
+        @click="openSkills"
+      >
+        Umiejętności [U]
+      </UiButton>
+      <UiButton
+        class="px-2"
+        @click="openInventory"
+      >
+        Ekwipunek [I]
+      </UiButton>
+      <UiButton
+        class="px-2"
+        @click="openQuestLog"
+      >
+        Zadania [L]
+      </UiButton>
+      <UiButton
+        class="col-span-2"
+        @click="openMap"
+      >
+        Mapa [M]
+      </UiButton>
+    </nav>
+    <nav
+      aria-label="Menu pauzy"
+      class="grid gap-2"
     >
-      Umiejętności [U]
-    </UiButton>
-    <UiButton
-      class="mb-2 w-full"
-      @click="openInventory"
-    >
-      Ekwipunek [I]
-    </UiButton>
-    <UiButton
-      class="mb-2 w-full"
-      @click="openQuestLog"
-    >
-      Zadania [L]
-    </UiButton>
-    <UiButton
-      class="mb-2 w-full"
-      @click="openMap"
-    >
-      Mapa [M]
-    </UiButton>
-    <UiButton
-      class="mb-2 w-full"
-      @click="openActions"
-    >
-      Akcje
-    </UiButton>
-    <UiButton
-      class="mb-2 w-full"
-      @click="openTools"
-    >
-      Narzędzia ›
-    </UiButton>
-    <div class="my-3 mx-auto h-px w-1/2 self-center border-t border-white/15" />
-    <UiButton
-      class="mb-2 w-full"
-      @click="openSettings"
-    >
-      Ustawienia
-    </UiButton>
-    <UiButton
-      class="mb-2 w-full"
-      @click="save"
-    >
-      Zapisz<span class="ml-2 text-xs opacity-75">{{ ui.pauseMenu.saveStatus || ui.pauseMenu.activeSaveName }}</span>
-    </UiButton>
-    <UiButton
-      class="mb-2 w-full"
-      @click="emitUiClick(); emit('open-save-as')"
-    >
-      Zapisz jako
-    </UiButton>
-    <UiButton
-      class="mb-2 w-full"
-      @click="emitUiClick(); emit('open-load')"
-    >
-      Wczytaj
-    </UiButton>
-    <UiButton
-      class="mb-2 w-full"
-      @click="emitUiClick(); ui.pauseMenu.onRefresh?.()"
-    >
-      Odśwież stronę
-    </UiButton>
-    <UiButton
-      variant="danger"
-      class="mb-2 w-full"
-      @click="emitUiClick(); emit('open-new-game')"
-    >
-      Nowa gra
-    </UiButton>
-    <div class="mt-4 border-t border-white/10 pt-3 text-center font-mono text-[10px] opacity-40">
+      <UiButton
+        class="justify-between"
+        @click="openActions"
+      >
+        Akcje <span aria-hidden="true">›</span>
+      </UiButton>
+      <UiButton
+        class="justify-between"
+        @click="emitUiClick(); emit('open-management')"
+      >
+        Zarządzanie grą <span aria-hidden="true">›</span>
+      </UiButton>
+      <UiButton
+        class="justify-between"
+        @click="openSettings"
+      >
+        Ustawienia <span aria-hidden="true">›</span>
+      </UiButton>
+      <UiButton
+        class="justify-between"
+        @click="openTools"
+      >
+        Narzędzia deweloperskie <span aria-hidden="true">›</span>
+      </UiButton>
+    </nav>
+    <div class="mt-3 border-t border-white/10 pt-2 text-center font-mono text-[10px] opacity-40">
       v{{ appVersion }} | {{ gitCommit }} | {{ buildDate }}
     </div>
-    <div class="mt-1 text-[11px] opacity-60">
+    <div class="mt-1 text-center text-[11px] opacity-60">
       {{ isTouchDevice() ? 'Joystick — ruch · przeciągnij ekran — rozglądanie · dotknij poza oknem — zamknij' : 'WASD — ruch · mysz (klik) — rozglądanie · Esc — pauza' }}
     </div>
   </UiPanel>

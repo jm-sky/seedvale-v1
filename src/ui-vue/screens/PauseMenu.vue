@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
+import UiButton from '@/components/UiButton.vue'
+import UiPanel from '@/components/UiPanel.vue'
 import { useOverlayScreen } from '../composables/useOverlayScreen'
 import { useTouchScroll } from '../composables/useTouchScroll'
-import { closePauseMenu, isPauseMenuOpen, ui } from '../store'
+import { closePauseMenu, emitUiClick, isPauseMenuOpen, ui } from '../store'
 import PauseMenuEntriesActions from './PauseMenuEntriesActions.vue'
 import PauseMenuEntriesMain from './PauseMenuEntriesMain.vue'
 import PauseMenuEntriesSaves from './PauseMenuEntriesSaves.vue'
@@ -11,7 +13,7 @@ import PauseMenuEntriesTools from './PauseMenuEntriesTools.vue'
 
 const panel = ref<HTMLElement | null>(null)
 const name = ref(ui.pauseMenu.playerName)
-const currentScreen = ref<'main' | 'actions' | 'settings' | 'tools' | 'saves'>('main')
+const currentScreen = ref<'main' | 'actions' | 'settings' | 'tools' | 'saves' | 'management'>('main')
 const savesMode = ref<'save-as' | 'load' | 'new-game'>('load')
 
 useOverlayScreen('pause-menu', isPauseMenuOpen, closePauseMenu)
@@ -35,9 +37,32 @@ watch(() => ui.pauseMenu.open, (open) => {
       @open-settings="currentScreen = 'settings'"
       @open-tools="currentScreen = 'tools'"
       @open-save-as="savesMode = 'save-as'; currentScreen = 'saves'"
-      @open-load="savesMode = 'load'; currentScreen = 'saves'"
-      @open-new-game="savesMode = 'new-game'; currentScreen = 'saves'"
+      @open-management="currentScreen = 'management'"
     />
+    <UiPanel v-if="currentScreen === 'management'">
+      <UiButton
+        class="mb-3 w-full"
+        @click="emitUiClick(); currentScreen = 'main'"
+      >
+        Wróć
+      </UiButton>
+      <h2 class="mb-3 text-sm font-semibold text-primary">
+        Zarządzanie grą
+      </h2>
+      <UiButton
+        class="mb-2 w-full"
+        @click="emitUiClick(); savesMode = 'load'; currentScreen = 'saves'"
+      >
+        Wczytaj
+      </UiButton>
+      <UiButton
+        variant="danger"
+        class="w-full"
+        @click="emitUiClick(); savesMode = 'new-game'; currentScreen = 'saves'"
+      >
+        Nowa gra
+      </UiButton>
+    </UiPanel>
     <PauseMenuEntriesActions
       v-if="currentScreen === 'actions'"
       @close-actions="currentScreen = 'main'"
@@ -53,7 +78,7 @@ watch(() => ui.pauseMenu.open, (open) => {
     <PauseMenuEntriesSaves
       v-if="currentScreen === 'saves'"
       :mode="savesMode"
-      @close-saves="currentScreen = 'main'"
+      @close-saves="currentScreen = savesMode === 'save-as' ? 'main' : 'management'"
     />
   </div>
 </template>
