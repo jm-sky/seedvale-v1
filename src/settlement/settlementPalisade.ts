@@ -13,7 +13,7 @@ import { yawToward } from './roadNetwork'
 
 export { pointHitsCorridor }
 
-const WALL_TARGET_HEIGHT = 1.85
+export const WALL_TARGET_HEIGHT = 1.85
 /** Approximate world half-width of a wall segment after `prepareProp` height fit. */
 export const WALL_HALF_LENGTH = 2.2
 /** Gate gap half-angle (radians) left open for the road/path. */

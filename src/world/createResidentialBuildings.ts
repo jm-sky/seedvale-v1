@@ -1,6 +1,7 @@
 import { type Object3D, type Scene } from 'three'
 import type { HeightSampler } from '../player/PlayerController'
 import type { Collider } from './collision'
+import type { SightBlocker } from './sight/sightBlockers'
 import { buildConstructionCatalog } from '../assets/constructionCatalog'
 import {
   buildHouse,
@@ -20,6 +21,7 @@ import {
   supplyResidentialStageMaterials,
 } from './residentialBuilding'
 import { createResidentialBuildingPlaceholder, disposeResidentialBuildingProp } from './residentialBuildingProp'
+import { buildAssemblySightBlockersWorld } from './sight/houseSightBlockers'
 
 export type ResidentialBuildingEntry = ResidentialBuildingRecord & { mesh: Object3D }
 
@@ -40,6 +42,7 @@ export type ResidentialBuildings = {
 }
 
 const colliderKey = (id: string): string => `residential:${id}`
+const sightKey = colliderKey
 
 let nextResidentialId = 0
 let sharedBuilder: Promise<HouseBuildContext | null> | null = null
@@ -80,6 +83,8 @@ export function createResidentialBuildings(
   registerColliders: (ownerKey: string, colliders: readonly Collider[]) => void,
   clearColliders: (ownerKey: string) => void,
   initial: readonly ResidentialBuildingRecord[] = [],
+  registerSightBlockers?: (ownerKey: string, blockers: readonly SightBlocker[]) => void,
+  clearSightBlockers?: (ownerKey: string) => void,
 ): ResidentialBuildings {
   const buildings: ResidentialBuildingEntry[] = []
   let disposed = false
@@ -112,6 +117,13 @@ export function createResidentialBuildings(
       })
       disposeResidentialBuildingProp(entry.mesh)
       attachMesh(entry, assembly.root)
+      // Sight (world-042): only the completed house blocks. There is no door
+      // controller here and the collider is a solid footprint box, so the
+      // leaves stay closed → the default all-doors-closed assembly state
+      // (leaf panels registered) matches both the visual and the collider.
+      if (isResidentialBuildingComplete(entry)) {
+        registerSightBlockers?.(sightKey(entry.id), buildAssemblySightBlockersWorld(assembly))
+      }
     } catch (err) {
       console.warn('[residential] HouseBuilder stage mesh failed — keeping placeholder', err)
     }
@@ -132,6 +144,7 @@ export function createResidentialBuildings(
   }
 
   const rebuildVisual = (entry: ResidentialBuildingEntry): void => {
+    clearSightBlockers?.(sightKey(entry.id))
     disposeResidentialBuildingProp(entry.mesh)
     attachMesh(entry, createResidentialBuildingPlaceholder(entry.kind, entry.stage))
     void builderContext().then((ctx) => {
@@ -198,6 +211,7 @@ export function createResidentialBuildings(
       buildings.splice(index, 1)
       disposeResidentialBuildingProp(entry.mesh)
       clearColliders(colliderKey(entry.id))
+      clearSightBlockers?.(sightKey(entry.id))
       return toRecord(entry)
     },
     dispose() {
@@ -205,6 +219,7 @@ export function createResidentialBuildings(
       for (const entry of buildings) {
         disposeResidentialBuildingProp(entry.mesh)
         clearColliders(colliderKey(entry.id))
+      clearSightBlockers?.(sightKey(entry.id))
       }
       buildings.length = 0
     },

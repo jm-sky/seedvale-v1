@@ -91,6 +91,7 @@ import { isActorSkeletonSharingEnabled, isNpcBodyBuildsEnabled } from '../perf/f
 import { PLAYER_COLLISION_RADIUS } from '../player/playerDimensions'
 import { companionAnimationUrl } from '../player/playerVisualPreset'
 import { installActorCullBounds } from '../render/actorCullBounds'
+import { setActorSightConcealed } from '../render/actorSightConcealment'
 import { shareActorSkeletons } from '../render/actorSkeletonSharing'
 import { resolveAgentPresentationLevel } from '../render/agentPresentationLod'
 import { type AgentPresentationVisibility, createAgentPresentationVisibility } from '../render/agentPresentationVisibility'
@@ -1546,6 +1547,8 @@ export class NpcAgent {
    *  `lastStaminaPercent`/`lastVigorPercent`/`lastDebugText`/
    *  `labelDistanceState`). `ui/agentStatusLabel.ts` owns the guarded-write
    *  presentation logic; this only ever drives it. */
+  /** World-042 Stage 1 — see `setSightConcealed`. */
+  private sightConcealed = false
   private readonly labelController: AgentStatusLabelController
   /** Cached optional presentation nodes (hair/beard attachments) this NPC's
    *  family actually has — `null` when there's nothing safe to hide (plan
@@ -4101,6 +4104,30 @@ export class NpcAgent {
     this.resetInFlightAction({ lifecycle: 'fail', clearSleepReason: true, markPlanInterrupted: true })
     this.phase = 'choose'
     this.trace.record({ simTime: this.simClock, type: 'action.failed', action: actionKind, reason: 'invalid' })
+  }
+
+  /**
+   * World-042 Stage 1 — character-eye concealment (presentation only):
+   * moves the whole presentation subtree (label included) to
+   * `SIGHT_CONCEALED_LAYER` and hides the label for the `sight` reason.
+   * Never touches root `visible` (`concealCorpsePresentation`/loot
+   * authority). Owned by the player sight controller (`app/playerSight.ts`).
+   */
+  setSightConcealed(concealed: boolean): void {
+    if (this.sightConcealed === concealed) return
+    this.sightConcealed = concealed
+    setActorSightConcealed(this.mesh, concealed)
+    this.labelController.setHidden('sight', concealed)
+  }
+
+  /** Re-applies the concealed layer to meshes attached after concealment
+   *  (equipment/hair/held props) — called at a low cadence while concealed. */
+  reapplySightConcealment(): void {
+    if (this.sightConcealed) setActorSightConcealed(this.mesh, true)
+  }
+
+  isSightConcealed(): boolean {
+    return this.sightConcealed
   }
 
   dispose(): void {

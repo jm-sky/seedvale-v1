@@ -383,10 +383,23 @@ describe('createAgentStatusLabelController setHidden (world-042 Stage 0)', () =>
     expect(controller.el.style.display).toBe('')
     controller.setHidden('spatial', true)
     expect(controller.el.style.display).toBe('none')
+    // CSS2DRenderer rewrites `display` every render — `visible` is what sticks.
+    expect(controller.label.visible).toBe(false)
     controller.setHidden('lifecycle', true)
     controller.setHidden('spatial', false)
     expect(controller.el.style.display).toBe('none')
     controller.setHidden('lifecycle', false)
     expect(controller.el.style.display).toBe('')
+    expect(controller.label.visible).toBe(true)
+  })
+
+  it('composes the world-042 Stage 1 sight reason', () => {
+    const controller = createAgentStatusLabelController('Wolf', null, ['hp'], 2)
+    controller.setHidden('sight', true)
+    controller.setHidden('spatial', true)
+    controller.setHidden('sight', false)
+    expect(controller.label.visible).toBe(false)
+    controller.setHidden('spatial', false)
+    expect(controller.label.visible).toBe(true)
   })
 })

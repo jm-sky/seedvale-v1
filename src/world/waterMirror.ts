@@ -42,6 +42,13 @@ export const REFLECTION_SKIPPED_LAYER = 3
  *  items (which never cast shadows) don't have to start doing so. */
 export const REFLECTION_DISTANT_LAYER = 4
 
+/** World-042 Stage 1 — actors the player currently cannot see (concealed by
+ *  the sight query). The main camera must NOT enable this layer unless sight
+ *  is disabled, and the sun's shadow camera never does, so concealed actors
+ *  neither render nor cast shadows (author A8). CSS2D labels hide with the
+ *  subtree because CSS2DRenderer tests `object.layers.test(camera.layers)`. */
+export const SIGHT_CONCEALED_LAYER = 5
+
 /** Default size of the shared planar-reflection pass for every water material. */
 export const WATER_MIRROR_SIZE = 256
 

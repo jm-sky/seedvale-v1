@@ -37,8 +37,9 @@ export type AgentLabelNamePresentation = {
 
 /** Why the label root is hidden. `lifecycle` = remains/harvested (owned by the
  *  agent's death path); `spatial` = not in the player's spatial context
- *  (world-042 Stage 0). Hidden while any reason is set. */
-export type AgentLabelHideReason = 'lifecycle' | 'spatial'
+ *  (world-042 Stage 0); `sight` = concealed from the character's line of sight
+ *  (world-042 Stage 1). Hidden while any reason is set. */
+export type AgentLabelHideReason = 'lifecycle' | 'spatial' | 'sight'
 
 export type { AgentLabelIconKind, AgentLabelIconPresentation }
 
@@ -407,7 +408,13 @@ export function createAgentStatusLabelController(
       if (hidden === hideReasons.has(reason)) return
       if (hidden) hideReasons.add(reason)
       else hideReasons.delete(reason)
-      labelDom.el.style.display = hideReasons.size > 0 ? 'none' : ''
+      // `CSS2DRenderer` rewrites the wrapper's `display` on every render from
+      // its own frustum/layer test, so `display` alone is overwritten next
+      // frame; `label.visible = false` makes the renderer hide the subtree
+      // itself. (Only the label object — never the actor root.)
+      const hiddenNow = hideReasons.size > 0
+      labelDom.label.visible = !hiddenNow
+      labelDom.el.style.display = hiddenNow ? 'none' : ''
     },
     setDebugLine: (text) => {
       if (text === null) {

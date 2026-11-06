@@ -33,6 +33,7 @@ import type { SettlementHerbalGatherHooks } from '../world/herbalGathering'
 import type { NearbyPlayerWellLookup } from '../world/playerWell'
 import type { ResourceSiteInventories } from '../world/resourceSiteInventory'
 import type { SettlementForestHooks } from '../world/settlementForestHooks'
+import type { SightBlocker } from '../world/sight/sightBlockers'
 import type { TransportEndpointRef } from '../world/transportOrder'
 import type { WeatherState } from '../world/weather'
 import type { TerrainSamplers } from './settlementTerrain'
@@ -643,6 +644,9 @@ export async function createSettlementsManager(
    *  home-manager-created and detached/reconstructed animal paths), same
    *  optional convention as `sampleBridgeDeck` above. */
   sampleResidentSurfaceGround?: RuntimeGroundSampler,
+  /** World-042 sight blockers — registered/cleared exactly alongside colliders. */
+  registerSightBlockers?: (ownerKey: string, blockers: readonly SightBlocker[]) => void,
+  clearSightBlockers?: (ownerKey: string) => void,
 ): Promise<SettlementsManager> {
   const surfaceSampleHeight: HeightSampler = (x, z) => sampleBridgeDeck(x, z) ?? sampleHeight(x, z)
   const surfaceSampleLocalWater = (x: number, z: number): LocalWaterSample =>
@@ -1009,6 +1013,8 @@ export async function createSettlementsManager(
     collidersNear,
     registerColliders,
     clearColliders,
+    registerSightBlockers,
+    clearSightBlockers,
     playAt,
     pointLightBudget,
     roadCtx,

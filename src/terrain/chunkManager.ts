@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import type { DetailNormalConfig } from '../config/worldConfig'
 import type { HeightSampler, RuntimeGroundSampler, RuntimeLocalWaterSampler } from '../player/PlayerController'
 import type { PropPlacement } from '../render/instancedProps'
+import type { SightBlocker } from '../world/sight/sightBlockers'
 import type { TreeEnvSample, TreeGrowthStage, TreeLifecycle, TreePresence } from '../world/treeLifecycle'
 import type { ChunkTileResult, GrassRequestParams } from './chunkHeightmapProtocol'
 import type { ChunkMeshData, ChunkMeshTileGrids } from './chunkMeshData'
@@ -73,6 +74,7 @@ import { createCropPlacementVisual } from '../world/cropVisuals'
 import { getActiveDarkForestTreasureSite } from '../world/locations/darkForestTreasureSiteRuntime'
 import { makePlantedCropId } from '../world/plantedCrops'
 import { makePlantedTreeId, pickPlantedTreeSpecies, type PlantedTreeRecord } from '../world/plantedTrees'
+import { environmentSightBlocker } from '../world/sight/environmentSightBlockers'
 import { coastalFactor, rollSizeClass, type TreeSizeClass } from '../world/treeLifecycle'
 import { createTreeStageMesh, preloadTreeStumpTemplate, tagTreeMesh } from '../world/treeVisuals'
 import { assignRenderLayer, REFLECTION_DISTANT_LAYER, REFLECTION_SKIPPED_LAYER, type WaterMirror } from '../world/waterMirror'
@@ -384,6 +386,10 @@ export type ChunkManagerConfig = {
    *  untouched (full base state); `'depleted'` is an explicit tombstone so
    *  deterministic worldgen never respawns a fully mined rock. */
   mineableRockState: MineableRockStateStore
+  /** World-042 sight blockers (large rocks/towers/shipwrecks) — registered on
+   *  the same lifecycle as the chunk's colliders. Optional (tests). */
+  registerSightBlockers?: (ownerKey: string, blockers: readonly SightBlocker[]) => void
+  clearSightBlockers?: (ownerKey: string) => void
   /** Ids of naturally-generated crops (`terrain/chunkCrops.ts`) already
    *  harvested/removed (plan 172) — same "shared/mutated in place, survives
    *  chunk unload/reload" contract as `collectedItemIds`, kept as a separate
@@ -2717,6 +2723,11 @@ export function createChunkManager(
   function rebuildColliders(record: ChunkRecord): void {
     if (!record.tile) return
     const colliders: Collider[] = []
+    const sightBlockers: SightBlocker[] = []
+    const pushSight = (kind: string, p: { x: number, z: number, scale: number }, radius: number): void => {
+      const blocker = environmentSightBlocker(kind, p.x, p.z, p.scale, radius, landHeightAt(p.x, p.z))
+      if (blocker) sightBlockers.push(blocker)
+    }
     for (const p of record.tile.environment) {
       if (isMineableRockKind(p.kind) && p.resourceId) {
         // Collider follows the same authoritative mineable state as
@@ -2727,10 +2738,12 @@ export function createChunkManager(
         if (effectiveKind === 'depleted') continue
         const radius = ENVIRONMENT_COLLISION_RADIUS[effectiveKind]
         if (radius > 0) colliders.push({ type: 'circle', x: p.x, z: p.z, radius: radius * p.scale })
+        pushSight(effectiveKind, p, radius)
         continue
       }
       const radius = ENVIRONMENT_COLLISION_RADIUS[p.kind]
       if (radius > 0) colliders.push({ type: 'circle', x: p.x, z: p.z, radius: radius * p.scale })
+      pushSight(p.kind, p, radius)
       // Cemetery markers/crypts get per-piece OBBs (Q47); aisles and the plot itself stay walkable.
       if (p.kind === 'cemetery') {
         for (const obb of cemeteryObbColliders(p)) colliders.push({ type: 'obb', ...obb })
@@ -2749,7 +2762,10 @@ export function createChunkManager(
       }
     }
     colliderRegistry.setColliders(record.key, colliders)
+    config.registerSightBlockers?.(sightOwnerKey(record.key), sightBlockers)
   }
+
+  const sightOwnerKey = (chunkKey: string): string => `chunk:${chunkKey}`
 
   function unload(record: ChunkRecord): void {
     const unloadT0 = performance.now()
@@ -2765,6 +2781,7 @@ export function createChunkManager(
     // world-terrain-004) — cheap no-op if nothing is pending.
     cancelChunkMesh(record.key)
     colliderRegistry.clearColliders(record.key)
+    config.clearSightBlockers?.(sightOwnerKey(record.key))
     if (record.treeIds) {
       for (const id of record.treeIds) config.treeLifecycle.unregisterPresence(id)
       record.treeIds = undefined

@@ -1,6 +1,7 @@
 import { type Object3D, type Scene } from 'three'
 import type { HeightSampler } from '../player/PlayerController'
 import type { Collider } from './collision'
+import type { SightBlocker } from './sight/sightBlockers'
 import { placeOnGround } from '../settlement/props'
 import {
   isPalisadeConstructionComplete,
@@ -11,6 +12,7 @@ import {
   type PalisadeSegmentRecord,
 } from './palisade'
 import { createPalisadeSegmentProp, disposePalisadeSegmentProp } from './palisadeProp'
+import { playerPalisadeSightBlocker } from './sight/palisadeSightBlockers'
 
 /** Cheap discrete unfinished-height fraction derived from progress (plan
  *  items-player-017 §14) — a growing fence panel, one `Object3D.scale.y` set
@@ -77,6 +79,8 @@ export function createPalisades(
   registerColliders: (ownerKey: string, colliders: readonly Collider[]) => void,
   clearColliders: (ownerKey: string) => void,
   initial: readonly PalisadeSegmentRecord[] = [],
+  registerSightBlockers?: (ownerKey: string, blockers: readonly SightBlocker[]) => void,
+  clearSightBlockers?: (ownerKey: string) => void,
 ): Palisades {
   const segments: PalisadeSegmentEntry[] = []
 
@@ -91,6 +95,14 @@ export function createPalisades(
     }])
   }
 
+  // Sight blocker on the collider's lifecycle (completed segments only); Y is
+  // the terrain height `placeOnGround` places the mesh at.
+  const registerSight = (record: PalisadeSegmentRecord): void => {
+    registerSightBlockers?.(colliderKey(record.id), [
+      playerPalisadeSightBlocker(record, sampleHeight(record.x, record.z)),
+    ])
+  }
+
   const spawn = (record: PalisadeSegmentRecord): PalisadeSegmentEntry => {
     const mesh = createPalisadeSegmentProp()
     mesh.rotation.y = record.yaw
@@ -101,7 +113,10 @@ export function createPalisades(
     // segment reserves its footprint for placement/snapping (`nodes()` below
     // still lists it) but must not act as a completed barrier for NPC
     // pathing/collision until construction finishes.
-    if (isPalisadeConstructionComplete(record)) registerCollider(record)
+    if (isPalisadeConstructionComplete(record)) {
+      registerCollider(record)
+      registerSight(record)
+    }
     const entry: PalisadeSegmentEntry = { ...record, mesh }
     segments.push(entry)
     return entry
@@ -134,7 +149,10 @@ export function createPalisades(
       if (acceptedWork > 0) {
         entry.completedWork += acceptedWork
         entry.mesh.scale.y = palisadeVisualScaleY(entry)
-        if (!wasComplete && isPalisadeConstructionComplete(entry)) registerCollider(entry)
+        if (!wasComplete && isPalisadeConstructionComplete(entry)) {
+          registerCollider(entry)
+          registerSight(entry)
+        }
       }
       return { acceptedWork, completed: isPalisadeConstructionComplete(entry) }
     },
@@ -145,12 +163,14 @@ export function createPalisades(
       if (!entry) return null
       disposePalisadeSegmentProp(entry.mesh)
       clearColliders(colliderKey(entry.id))
+      clearSightBlockers?.(colliderKey(entry.id))
       return toRecord(entry)
     },
     dispose() {
       for (const entry of segments) {
         disposePalisadeSegmentProp(entry.mesh)
         clearColliders(colliderKey(entry.id))
+      clearSightBlockers?.(colliderKey(entry.id))
       }
       segments.length = 0
     },

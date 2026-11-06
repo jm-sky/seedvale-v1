@@ -48,6 +48,28 @@ export type AnimalKind =
    *  livestock. */
   | 'rat'
 
+/** World-042 author A10 — billboard silhouette class for the last-known marker. */
+export type AnimalSightBodyClass = 'large' | 'small'
+
+export const ANIMAL_SIGHT_BODY_CLASS: Record<AnimalKind, AnimalSightBodyClass> = {
+  wolf: 'large',
+  fox: 'small',
+  deer: 'large',
+  stag: 'large',
+  rabbit: 'small',
+  duck: 'small',
+  boar: 'large',
+  bear: 'large',
+  horse: 'large',
+  donkey: 'large',
+  cow: 'large',
+  sheep: 'large',
+  chicken: 'small',
+  rooster: 'small',
+  dog: 'large',
+  rat: 'small',
+}
+
 export const ANIMAL_LABELS: Record<AnimalKind, string> = {
   wolf: 'wilk',
   fox: 'lis',

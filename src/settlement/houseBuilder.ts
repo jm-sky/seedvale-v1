@@ -53,8 +53,8 @@ export const HOUSE_ASSEMBLY_SCALE = 1
  */
 export const HOUSE_WALL_LENGTH_M = HOUSE_MODULE_M
 export const HOUSE_WALL_THICKNESS_M = 0.41
-const WALL_HALF_WIDTH = HOUSE_WALL_LENGTH_M / 2
-const WALL_HALF_DEPTH = HOUSE_WALL_THICKNESS_M / 2
+export const WALL_HALF_WIDTH = HOUSE_WALL_LENGTH_M / 2
+export const WALL_HALF_DEPTH = HOUSE_WALL_THICKNESS_M / 2
 
 /**
  * `wall_plaster_door_flat`'s real pre-cut opening — measured directly from
@@ -154,6 +154,8 @@ export type HouseAssembly = {
   staticGroup: Group
   interactiveGroup: Group
   doors: HouseDoor[]
+  /** Local wall-module height (m, pre-scale) — sight blockers (world-042). */
+  wallTopY: number
   interactionPoints: HouseInteractionPoint[]
   census: HouseAssemblyCensus
   update: (dt: number) => void
@@ -265,7 +267,7 @@ export function matchingWallPlacement(def: HouseDefinition, opening: HouseOpenin
 }
 
 /** Local pose of a wall module — shared by wall instantiation and openings. */
-function wallModulePose(def: HouseDefinition, wall: HouseWallPlacement): HouseLocalPose {
+export function wallModulePose(def: HouseDefinition, wall: HouseWallPlacement): HouseLocalPose {
   return addVec(wall.transform?.position, wallLocalTransform(def.footprint, wall.side, wall.moduleIndex))
 }
 
@@ -280,7 +282,7 @@ export function openingLocalPose(def: HouseDefinition, opening: HouseOpening): H
   return wallModulePose(def, matchingWallPlacement(def, opening))
 }
 
-function wallTopY(def: HouseDefinition, catalog: ConstructionCatalog): number {
+export function wallTopY(def: HouseDefinition, catalog: ConstructionCatalog): number {
   let top = 0
   for (const wall of def.walls) {
     const part = catalog.byAssetId.get(wall.assetId)
@@ -537,11 +539,11 @@ function createDoorController(hinge: Object3D, leaf: Object3D): HouseDoor {
   }
 }
 
-function wallModuleKey(side: HouseWallSide, moduleIndex: number): string {
+export function wallModuleKey(side: HouseWallSide, moduleIndex: number): string {
   return `${side}:${moduleIndex}`
 }
 
-function doorWallKeys(def: HouseDefinition): Set<string> {
+export function doorWallKeys(def: HouseDefinition): Set<string> {
   const keys = new Set<string>()
   for (const opening of def.openings) {
     if (opening.type !== 'door') continue
@@ -601,7 +603,7 @@ export function buildHouseWallCollidersLocal(def: HouseDefinition): Collider[] {
  *  plus the existing hinge offset plus the leaf's own geometric center, the
  *  same single pose the visual leaf uses (not a second door-position
  *  calculation). */
-function doorLeafColliderLocal(def: HouseDefinition, opening: HouseOpening): Collider {
+export function doorLeafColliderLocal(def: HouseDefinition, opening: HouseOpening): Collider {
   const pose = openingLocalPose(def, opening)
   const cos = Math.cos(pose.rotationY)
   const sin = Math.sin(pose.rotationY)
@@ -883,6 +885,7 @@ export function buildHouse(def: HouseDefinition, ctx: HouseBuildContext, options
     staticGroup,
     interactiveGroup,
     doors,
+    wallTopY: wallTopY(def, ctx.catalog),
     interactionPoints,
     census,
     update(dt) {

@@ -1287,6 +1287,13 @@ export function acceptNpcDialogueOffer(): void {
   resetNpcDialogueMenu()
 }
 export function isNpcDialogueMenuOpen(): boolean { return ui.npcDialogueMenu.open }
+/** World-042 Stage 1 — NPC the player is in dialogue or trade with (exempt
+ *  from sight concealment while the interaction lasts), else `null`. */
+export function playerInteractingNpcId(): string | null {
+  if (ui.npcDialogueMenu.open && ui.npcDialogueMenu.npc) return ui.npcDialogueMenu.npc.id
+  if (ui.merchant.open && ui.merchant.npc) return ui.merchant.npc.id
+  return null
+}
 export function configureNpcDialogueMenu(handlers: {
   onClaimGuardReward: () => string
   onOpenTrade: () => void

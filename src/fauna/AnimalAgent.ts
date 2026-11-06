@@ -28,6 +28,7 @@ import { DEFAULT_CELL_SIZE, findPath, type NavigationQuery, type PathPoint } fro
 import { beginActivePath, endActivePath, recordPathRequest, recordRepath } from '../navigation/navigationStats'
 import { getAgentCpuDiag } from '../perf/agentCpuDiag'
 import { isActorSkeletonSharingEnabled } from '../perf/flags'
+import { setActorSightConcealed } from '../render/actorSightConcealment'
 import { shareActorSkeletons } from '../render/actorSkeletonSharing'
 import { tintPropMaterials } from '../settlement/props'
 import { type AgentAnimationSet, createAgentAnimationSet } from '../shared/agentAnimationSet'
@@ -1479,6 +1480,8 @@ export class AnimalAgent {
    *  `['hp','stamina','satiety','hydration']`; satiety/hydration are
    *  inverted needs, fed as `{ current: 1 - hunger, max: 1 }` at each
    *  `sync()` call (see `tickPresentationAndLife()`). */
+  /** World-042 Stage 1 — see `setSightConcealed`. */
+  private sightConcealed = false
   private readonly labelController: AgentStatusLabelController
   /** Runtime-only hysteresis cache for observation-level presentation (npc-023). */
   private lastObservationLevel: ObservationLevel | null = null
@@ -1988,6 +1991,36 @@ export class AnimalAgent {
     return this.isCapsule
       ? (0.45 * this.def.scale + 0.3) * juvenileFactor
       : (this.def.modelHeight + 0.3) * juvenileFactor
+  }
+
+  /**
+   * World-042 Stage 1 — character-eye concealment (presentation only):
+   * moves the whole presentation subtree (label included) to
+   * `SIGHT_CONCEALED_LAYER` and hides the label for the `sight` reason.
+   * Never touches root `visible` (corpse/loot authority). Owned by the
+   * player sight controller (`app/playerSight.ts`).
+   */
+  setSightConcealed(concealed: boolean): void {
+    if (this.sightConcealed === concealed) return
+    this.sightConcealed = concealed
+    setActorSightConcealed(this.mesh, concealed)
+    this.labelController.setHidden('sight', concealed)
+  }
+
+  /** Re-applies the concealed layer to meshes attached after concealment
+   *  (async GLB swap, pack visual, remains) — cheap subtree walk, called by
+   *  the sight controller at a low cadence while concealed. */
+  reapplySightConcealment(): void {
+    if (this.sightConcealed) setActorSightConcealed(this.mesh, true)
+  }
+
+  isSightConcealed(): boolean {
+    return this.sightConcealed
+  }
+
+  /** Body envelope for world-042 sight samples (no CPU skinning). */
+  sightBodyHeight(): number {
+    return Math.max(0.2, this.labelHeight() - 0.3)
   }
 
   dispose(): void {

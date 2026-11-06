@@ -1,7 +1,7 @@
 # Plan: Gameplay visibility — character line of sight, concealment and last-known contacts
 
 **Created:** 2026-11-05
-**Status:** `in progress` 🔄 (Stage 0 implemented 2026-11-05, Q155; Stages 1-5 planned)
+**Status:** `in progress` 🔄 (Stage 0 implemented 2026-11-05, Q155; Stage 1 implemented 2026-11-06, Q156 — technical, browser/A-B pending, `?sight=0` reverts; Stages 2-5 planned)
 **Type:** feature
 **Priority:** high · **Effort:** XL
 **Depends on:** -

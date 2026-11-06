@@ -41,6 +41,44 @@ function withinRange(x: number, z: number, playerPos: Vector3, range: number): b
   return dx * dx + dz * dz <= range * range
 }
 
+/** World-042 Stage 1 — `app/playerSight.ts` disclosure seam (structural). */
+type CombatSightDisclosure = {
+  isNpcDisclosed: (npcId: string) => boolean
+  isAnimalDisclosed: (animalId: string) => boolean
+}
+
+/**
+ * World-042 Stage 1 — Tab/soft-lock candidates without actors concealed from
+ * the character's line of sight. A held lock on a concealed actor is then
+ * dropped by the caller's existing `findLivingTargetById` check.
+ */
+export function filterLivingTargetsSightDisclosed(
+  targets: LivingCombatTarget[],
+  sight: CombatSightDisclosure,
+): LivingCombatTarget[] {
+  const concealed = (t: LivingCombatTarget): boolean => {
+    const it = t.interactable
+    if (it.kind === 'npc') return !sight.isNpcDisclosed(it.npc.id)
+    if (it.kind === 'animal') return !sight.isAnimalDisclosed(it.animal.animalId)
+    return false
+  }
+  if (!targets.some(concealed)) return targets
+  return targets.filter((t) => !concealed(t))
+}
+
+/**
+ * World-042 Stage 1 — ranged aim/reticle candidates without concealed
+ * animals (no aim tracking of hidden targets; `resolveRangedAimYaw` falls
+ * back to free aim). Projectile hit tests keep the unfiltered list.
+ */
+export function filterRangedCandidatesSightDisclosed(
+  candidates: RangedAnimalCandidate[],
+  sight: CombatSightDisclosure,
+): RangedAnimalCandidate[] {
+  if (!candidates.some((c) => !sight.isAnimalDisclosed(c.animal.animalId))) return candidates
+  return candidates.filter((c) => sight.isAnimalDisclosed(c.animal.animalId))
+}
+
 export function livingTargetIdForAnimal(animalId: string): string {
   return `animal:${animalId}`
 }

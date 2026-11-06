@@ -49,6 +49,7 @@ import type { NearbyPlayerWellLookup, PlayerWellRecord } from '../world/playerWe
 import type { PointLightBudget } from '../world/pointLightBudget'
 import type { ResidentialBuildingRecord } from '../world/residentialBuilding'
 import type { SettlementForestHooks } from '../world/settlementForestHooks'
+import type { SightWorld } from '../world/sight/querySight'
 import type { BedrollRecord, PlatformRecord } from '../world/sleepingUtilities'
 import type { StandingTorchRecord } from '../world/standingTorch'
 import type { TransportOrder } from '../world/transportOrder'
@@ -241,6 +242,8 @@ import {
   type ResourceSiteInventories,
 } from '../world/resourceSiteInventory'
 import { createRiverWaterQualityResolver, type RiverWaterQualityResolver } from '../world/riverWaterQualityResolver'
+import { createSightBlockerRegistry, type SightBlockerRegistry } from '../world/sight/sightBlockers'
+import { createSightWorld } from '../world/sight/sightWorld'
 import { querySiteInfrastructure as collectSiteInfrastructure, type SiteBounds, type SiteInfrastructure } from '../world/siteInfrastructure'
 import { WORLD_SPATIAL_CONTEXT_SURFACE } from '../world/spatialContext'
 import { preloadTrapProps } from '../world/trapProp'
@@ -264,6 +267,7 @@ import {
   type WorldGeneratedContainers,
   type WorldGeneratedContainerSpec,
 } from '../world/worldGeneratedContainers'
+import { createPlayerSight, isPlayerSightEnabledFromUrl, type PlayerSight } from './playerSight'
 
 /** Fixed radius (world units) for settlement/fauna spatial logic — deliberately
  *  independent of the streamed terrain's loaded region, so the village and its
@@ -398,6 +402,15 @@ export function homeChunks(): ChunkCoord[] {
  */
 export type WorldBundle = {
   chunkManager: ChunkManager
+  /** World-042 sight blockers — one registry per bundle, filled by the same
+   *  producers (chunks, settlements, player palisades/houses) on the same
+   *  lifecycle as their colliders; cleared on dispose/rebuild teardown. */
+  sightBlockers: SightBlockerRegistry
+  /** World-owned geometry `querySight` reads (blockers, terrain, caves). */
+  sightWorld: SightWorld
+  /** World-042 Stage 1 player sight controller (transient presentation /
+   *  information state, never saved; recreated with the bundle). */
+  playerSight: PlayerSight
   /** Presentation-only outdoor fog cap derived from `chunkManager`'s streaming
    *  config (plan world-terrain-035) — recomputed on every rebuild alongside
    *  the rest of this bundle. See `terrain/terrainVisualHorizon.ts`. */
@@ -527,6 +540,7 @@ function buildChunkManager(
    *  "caller-owned, mutated in place, carried across rebuild" contract as
    *  `collectedItemIds` above. */
   mineableRockState: MineableRockStateStore,
+  sightBlockers?: SightBlockerRegistry,
 ): ChunkManager {
   const cfg: ChunkManagerConfig = {
     chunkSize: config.terrain.chunkSize,
@@ -563,6 +577,12 @@ function buildChunkManager(
     waterMirror,
     lodScale: config.quality.lodScale,
     grassFillerCoverage: config.quality.grassFillerCoverage,
+    ...(sightBlockers
+      ? {
+          registerSightBlockers: (ownerKey, blockers) => sightBlockers.setBlockers(ownerKey, blockers),
+          clearSightBlockers: (ownerKey) => sightBlockers.clearBlockers(ownerKey),
+        }
+      : {}),
   }
   return createChunkManager(scene, cfg)
 }
@@ -687,6 +707,7 @@ function buildSettlementsManager(
   /** Plan settlements-003 — same carry/restore contract as `initialHouseholds`/
    *  `initialNpcStates` above. */
   initialFoundedSettlements?: FoundedSettlementRegistrySnapshot,
+  sightBlockers?: SightBlockerRegistry,
 ): Promise<SettlementsManager> {
   return createSettlementsManager(
     scene,
@@ -752,6 +773,8 @@ function buildSettlementsManager(
     onAnimalDeathSound,
     initialFoundedSettlements,
     chunkManager.sampleRuntimeSurfaceGround,
+    sightBlockers && ((ownerKey, blockers) => sightBlockers.setBlockers(ownerKey, blockers)),
+    sightBlockers && ((ownerKey) => sightBlockers.clearBlockers(ownerKey)),
   )
 }
 
@@ -1387,7 +1410,8 @@ async function buildWorldSystems(
   bootMarkEnd('createWaterMirror')
 
   bootMark('buildChunkManager')
-  const chunkManager = buildChunkManager(scene, config, collectedItemIds, renewableWorldItems, removedCropIds, plantedTrees, plantedCrops, modifications, treeLifecycle, getWorldDays, waterMirror, mineableRockState)
+  const sightBlockers = createSightBlockerRegistry()
+  const chunkManager = buildChunkManager(scene, config, collectedItemIds, renewableWorldItems, removedCropIds, plantedTrees, plantedCrops, modifications, treeLifecycle, getWorldDays, waterMirror, mineableRockState, sightBlockers)
   bootMarkEnd('buildChunkManager')
 
   // Plan settlements-014 — river identity is registered during ChunkManager
@@ -1662,6 +1686,8 @@ async function buildWorldSystems(
     chunkManager.registerColliders,
     chunkManager.clearColliders,
     initialPalisades,
+    (ownerKey, blockers) => sightBlockers.setBlockers(ownerKey, blockers),
+    (ownerKey) => sightBlockers.clearBlockers(ownerKey),
   )
   const residentialBuildings = createResidentialBuildings(
     scene,
@@ -1669,6 +1695,8 @@ async function buildWorldSystems(
     chunkManager.registerColliders,
     chunkManager.clearColliders,
     initialResidentialBuildings,
+    (ownerKey, blockers) => sightBlockers.setBlockers(ownerKey, blockers),
+    (ownerKey) => sightBlockers.clearBlockers(ownerKey),
   )
   bootMarkEnd('droppedItems+wells+workContracts+terrainPrep+buildables')
 
@@ -1691,7 +1719,7 @@ async function buildWorldSystems(
   // background, not awaited here (world-003 §3) — see
   // `SettlementsManager.homeReady`.
   bootMark('buildSettlementsManager')
-  const settlementsManager = await buildSettlementsManager(scene, chunkManager, config.seed, playAt, config, forest, worldContext, mining, initialEconomies, onAnimalDeath, getPlayerSocial, isLandPlotOwned, pointLightBudget, getNearbyPlayerWell, foodSources, herbalGather, hunting, destinationThreat, initialHouseholds, initialNpcStates, helperDelivery, initialNpcRelationships, initialLivestock, initialRemovedLivestockIds, initialRats, initialRemovedRatIds, initialRatReconcileBuckets, initialStorageInfestation, seedHomeStorageInfestation, workContracts, transportOrders, resourceSiteInventories, resolveResourceSitePosition, playerWells, droppedItems, grassForage, playerTroughs, terrainPreparations, palisades, standingTorches, residentialBuildings, npcGraves, initialStructureStates, getWorldDays, onSettlementAvailable, npcWorldMovement, onAnimalDeathSound, initialFoundedSettlements)
+  const settlementsManager = await buildSettlementsManager(scene, chunkManager, config.seed, playAt, config, forest, worldContext, mining, initialEconomies, onAnimalDeath, getPlayerSocial, isLandPlotOwned, pointLightBudget, getNearbyPlayerWell, foodSources, herbalGather, hunting, destinationThreat, initialHouseholds, initialNpcStates, helperDelivery, initialNpcRelationships, initialLivestock, initialRemovedLivestockIds, initialRats, initialRemovedRatIds, initialRatReconcileBuckets, initialStorageInfestation, seedHomeStorageInfestation, workContracts, transportOrders, resourceSiteInventories, resolveResourceSitePosition, playerWells, droppedItems, grassForage, playerTroughs, terrainPreparations, palisades, standingTorches, residentialBuildings, npcGraves, initialStructureStates, getWorldDays, onSettlementAvailable, npcWorldMovement, onAnimalDeathSound, initialFoundedSettlements, sightBlockers)
   bootMarkEnd('buildSettlementsManager')
   const homeDef = settlementsManager.getHomeDef()
   const riverWaterQuality = createRiverWaterQualityResolver(settlementsManager.peekDef)
@@ -2122,8 +2150,12 @@ async function buildWorldSystems(
 
   const authoredWorldConsequences = createAuthoredWorldConsequenceRegistry(initialAuthoredWorldConsequences)
 
+  const sightWorld = createSightWorld(sightBlockers, chunkManager, caves)
   const bundle: WorldBundle = {
     chunkManager,
+    sightBlockers,
+    sightWorld,
+    playerSight: createPlayerSight(sightWorld, scene, { enabled: isPlayerSightEnabledFromUrl() }),
     terrainVisualHorizon: terrainVisualHorizon({
       chunkSize: config.terrain.chunkSize,
       loadRadius: config.terrain.loadRadius,
@@ -2706,6 +2738,8 @@ export async function rebuildWorldBundle(
   // seed-derived — same "carried across rebuild, reset only on a genuinely
   // new world" contract as the placed-* arrays below.
   const carriedBloodTraces = resetCollectedItems ? undefined : bundle.bloodTraces.snapshot()
+  // World-042 Stage 1: reveal every concealed actor, drop contacts/billboards.
+  bundle.playerSight.dispose()
   bundle.bloodTraces.dispose()
   bundle.fauna.dispose()
   bundle.itemSpawners.dispose()
@@ -2806,6 +2840,7 @@ export async function rebuildWorldBundle(
   bundle.farTerrain?.dispose()
   bundle.ocean.dispose()
   bundle.chunkManager.dispose()
+  bundle.sightBlockers.clear()
 
   // roadNetwork's def/route caches are module-level and keyed by cell/id, not
   // by seed — must be dropped before generating the new world's chunks,
@@ -2910,6 +2945,8 @@ export async function rebuildWorldBundle(
 }
 
 export function disposeWorldBundle(bundle: WorldBundle): void {
+  // World-042 Stage 1: reveal every concealed actor, drop contacts/billboards.
+  bundle.playerSight.dispose()
   bundle.bloodTraces.dispose()
   bundle.fauna.dispose()
   bundle.itemSpawners.dispose()
@@ -2942,4 +2979,5 @@ export function disposeWorldBundle(bundle: WorldBundle): void {
   bundle.farTerrain?.dispose()
   bundle.ocean.dispose()
   bundle.chunkManager.dispose()
+  bundle.sightBlockers.clear()
 }

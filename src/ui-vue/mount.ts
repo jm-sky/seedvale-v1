@@ -4,7 +4,7 @@ import type { App } from 'vue'
 type StoreModule = typeof import('./store')
 
 const FORWARDED_FNS = [
-  'openNpcDialogueMenu', 'closeNpcDialogueMenu', 'acceptNpcDialogueOffer', 'isNpcDialogueMenuOpen', 'configureNpcDialogueMenu',
+  'openNpcDialogueMenu', 'closeNpcDialogueMenu', 'acceptNpcDialogueOffer', 'isNpcDialogueMenuOpen', 'playerInteractingNpcId', 'configureNpcDialogueMenu',
   'openVillagers', 'closeVillagers', 'toggleVillagers', 'refreshVillagers', 'isVillagersOpen',
   'openInventory', 'refreshInventory', 'isInventoryOpen', 'closeInventory',
   'configureMerchant', 'openMerchant', 'openMerchantFromDialogue', 'refreshMerchant', 'closeMerchant', 'isMerchantOpen',

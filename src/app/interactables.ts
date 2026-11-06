@@ -570,6 +570,31 @@ function finalizeInteractables(
   }))
 }
 
+/** Player-facing sight disclosure (world-042 Stage 1) — `app/playerSight.ts`. */
+export type SightDisclosure = {
+  isNpcDisclosed: (npcId: string) => boolean
+  isAnimalDisclosed: (animalId: string) => boolean
+}
+
+/**
+ * World-042 Stage 1 — drops living NPC/animal candidates concealed from the
+ * character's line of sight, for gaze/inspect/touch/Quick Actions and
+ * lock resolution. Physical melee hit candidates must keep the unfiltered
+ * list (hits stay independent of sight). Returns `interactables` itself
+ * when nothing is concealed (no allocation in the common case).
+ */
+export function filterInteractablesSightDisclosed(
+  interactables: readonly Interactable[],
+  sight: SightDisclosure,
+): readonly Interactable[] {
+  const concealed = (c: Interactable): boolean => (
+    (c.kind === 'npc' && !sight.isNpcDisclosed(c.npc.id))
+    || (c.kind === 'animal' && !sight.isAnimalDisclosed(c.animal.animalId))
+  )
+  if (!interactables.some(concealed)) return interactables
+  return interactables.filter((c) => !concealed(c))
+}
+
 /** Drops candidates whose spatial context differs from the player's (plan world-027). */
 export function filterInteractablesSameSpatialContext(
   interactables: readonly Interactable[],

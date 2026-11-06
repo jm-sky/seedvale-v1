@@ -132,7 +132,9 @@ import {
   collectLivingCombatTargets,
   collectRangedAnimalCandidates,
   createPlayerCombat,
+  filterLivingTargetsSightDisclosed,
   filterRangedCandidatesBySpatialContext,
+  filterRangedCandidatesSightDisclosed,
   filterWorldCycleTargets,
   findLivingTargetById,
   livingTargetIdForAnimal,
@@ -208,6 +210,7 @@ import {
   type CombatAimMode,
   commitWorldPickup,
   filterInteractablesSameSpatialContext,
+  filterInteractablesSightDisclosed,
   INTERACT_MIN_DOT,
   INTERACT_RANGE,
   resolveShorelineWaterSource,
@@ -1370,6 +1373,9 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
         meleeCandidates.push({ id: item.animal.animalId, x: item.position.x, z: item.position.z, alive: true })
         meleeAnimalById.set(item.animal.animalId, item.animal)
       }
+      // World-042 Stage 1: gaze/inspect/touch/lock read only actors the
+      // character can see; the melee hit candidates above stay unfiltered.
+      const gazeInteractables = filterInteractablesSightDisclosed(interactables, bundle.playerSight)
       const meleeTick = playerMelee.update(dt)
       if (downedAtInputBoundary) {
         cancelPlayerAttackInput()
@@ -1499,8 +1505,11 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
       // visual facing and the fired direction can never diverge
       // (`docs/plans/LOOSE-ENDS.md`'s melee-yaw entry called this out for
       // melee; closed here for ranged).
+      // World-042 Stage 1: aim/reticle never track a concealed animal;
+      // projectile hit tests below keep the unfiltered `rangedCandidates`.
+      const rangedAimCandidates = filterRangedCandidatesSightDisclosed(rangedCandidates, bundle.playerSight)
       const currentRangedAimYaw = (): number => resolveRangedAimYaw(
-        rangedTargetId, rangedCandidates, player.mesh.position.x, player.mesh.position.z, mouseLook.state.yaw,
+        rangedTargetId, rangedAimCandidates, player.mesh.position.x, player.mesh.position.z, mouseLook.state.yaw,
       )
       if (downedAtInputBoundary) {
         cancelPlayerAttackInput()
@@ -1522,7 +1531,7 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
       const drawing = playerRanged.state() === 'draw'
       let aimTargetScreen: { x: number, y: number } | null = null
       if (drawing && rangedTargetId) {
-        const locked = rangedCandidates.find((c) => c.id === rangedTargetId)
+        const locked = rangedAimCandidates.find((c) => c.id === rangedTargetId)
         if (locked) {
           const projected = projectToViewportFraction(
             locked.x, RANGED_RETICLE_TARGET_HEIGHT, locked.z, camera,
@@ -1631,7 +1640,7 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
       // melee-scale `COMBAT_TARGET_RANGE` — see `collectLivingCombatTargets`'s
       // own doc for why this is needed.
       const livingTargetRange = Math.max(COMBAT_TARGET_RANGE, isRangedTool(held) ? ITEM_CATALOG[held].ranged?.range ?? 0 : 0)
-      const livingTargets = collectLivingCombatTargets(
+      const livingTargets = filterLivingTargetsSightDisclosed(collectLivingCombatTargets(
         bundle.settlementsManager.getLoaded(),
         bundle.fauna,
         player.mesh.position,
@@ -1641,7 +1650,7 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
         livingTargetRange,
         playerSpatialContext,
         resolveSpatialContextAt,
-      )
+      ), bundle.playerSight)
       if (playerCombat.softLockId() && !findLivingTargetById(livingTargets, playerCombat.softLockId())) {
         playerCombat.setSoftLock(null)
       }
@@ -1652,7 +1661,7 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
       }
       const herbDiscoveryRange = medicinalHerbInteractRange(player.skills.survival.value, INTERACT_RANGE)
       const gazeRanked = rankInGaze(
-        interactables,
+        gazeInteractables,
         player.mesh.position,
         mouseLook.state.yaw,
         herbDiscoveryRange,
@@ -1723,11 +1732,11 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
         if (playerCombat.worldCycleActive() && worldCycleCandidates.length > 0) {
           target = worldCycleCandidates[playerCombat.worldCycleIndex() % worldCycleCandidates.length] ?? null
         } else {
-          target = resolveLivingInteractable(playerCombat.softLockId(), interactables)
+          target = resolveLivingInteractable(playerCombat.softLockId(), gazeInteractables)
             ?? (livingTargets.length > 0
               ? resolveLivingInteractable(
                   livingTargets[playerCombat.livingCycleIndex() % livingTargets.length]!.id,
-                  interactables,
+                  gazeInteractables,
                 )
               : null)
             ?? buildCombatTarget(
@@ -1758,7 +1767,7 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
           : null
         const skillScreenTarget = skillAimScreen
           ? pickInteractableNearScreen(
-            interactables,
+            gazeInteractables,
             player.mesh.position,
             camera,
             skillAimScreen,
@@ -1792,7 +1801,7 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
           ?? skillScreenTarget
           ?? arbitrateGazeWaterEdgeTarget(
             pickInGaze(
-              interactables,
+              gazeInteractables,
               player.mesh.position,
               mouseLook.state.yaw,
               herbDiscoveryRange,
@@ -3177,9 +3186,31 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
       updateFoliageWind(dt)
       withCategory(monitor, 'WATER', () => { bundle.ocean.update(dt) })
       worldAudio.update(dt)
+      // World-042 Stage 1: character-eye sight after this frame's NPC/fauna
+      // update, before the minimap and render read concealment.
+      bundle.playerSight.update({
+        nowSec: performance.now() / 1000,
+        playerPosition: player.mesh.position,
+        playerContext: bundle.caves.spatialContextAt(
+          player.mesh.position.x,
+          player.mesh.position.y,
+          player.mesh.position.z,
+        ),
+        settlements: loaded,
+        detachedLivestock: bundle.settlementsManager.getDetachedLivestock(),
+        wildFauna: bundle.fauna.getAgents(),
+        mountedAnimalId: mount.mountedAnimalId(),
+        interactingNpcId: vueUi.playerInteractingNpcId(),
+        resolveContextAt: bundle.caves.spatialContextAt,
+      })
       minimap.update(
         player.mesh.position,
-        loaded.map((s): MinimapSettlement => ({ position: s.center, npcs: s.npcs, name: s.name })),
+        loaded.map((s): MinimapSettlement => ({
+          position: s.center,
+          // World-042 Stage 1: no dot for an NPC concealed from the character.
+          npcs: bundle.playerSight.enabled() ? s.npcs.filter((n) => bundle.playerSight.isNpcDisclosed(n.id)) : s.npcs,
+          name: s.name,
+        })),
         mouseLook.state.yaw,
       )
     }

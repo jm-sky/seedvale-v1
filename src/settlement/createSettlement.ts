@@ -38,6 +38,7 @@ import type { SettlementHerbalGatherHooks } from '../world/herbalGathering'
 import type { NearbyPlayerWellLookup } from '../world/playerWell'
 import type { ResourceSiteInventories } from '../world/resourceSiteInventory'
 import type { SettlementForestHooks } from '../world/settlementForestHooks'
+import type { SightBlocker } from '../world/sight/sightBlockers'
 import type { WeatherState } from '../world/weather'
 import type { AuthoredRepairPresentationInput } from './authoredRepairTargets'
 import type { VillageSize } from './families'
@@ -61,6 +62,8 @@ import {
 } from '../simulation'
 import { DRY_WATER_SAMPLE } from '../terrain/waterSample'
 import { createNullPointLightBudget, type PointLightBudget } from '../world/pointLightBudget'
+import { buildAssemblySightBlockersWorld } from '../world/sight/houseSightBlockers'
+import { settlementPalisadeSightBlockers } from '../world/sight/palisadeSightBlockers'
 import { applyTreeStageVisual } from '../world/treeVisuals'
 import {
   type AnimalCorpseCleanupCandidate,
@@ -402,6 +405,10 @@ export type CreateSettlementDeps = {
    *  again in `dispose()`. */
   registerColliders: (ownerKey: string, colliders: readonly Collider[]) => void
   clearColliders: (ownerKey: string) => void
+  /** World-042 sight blockers (houses, storehouse, entrance palisade) under
+   *  `def.id`, re-registered with the colliders on every door change. */
+  registerSightBlockers?: (ownerKey: string, blockers: readonly SightBlocker[]) => void
+  clearSightBlockers?: (ownerKey: string) => void
   // presentation
   playAt?: PlayAt
   /**
@@ -649,6 +656,8 @@ async function buildSettlement(
     collidersNear,
     registerColliders,
     clearColliders,
+    registerSightBlockers,
+    clearSightBlockers,
     playAt = () => {},
     requestNpcBark,
     roadCtx,
@@ -707,7 +716,10 @@ async function buildSettlement(
     owned.released = true
     owned.alive = false
     if (owned.lightsRegistered && owned.group) pointLightBudget.unregisterSubtree(owned.group)
-    if (owned.collidersRegistered) clearColliders(def.id)
+    if (owned.collidersRegistered) {
+      clearColliders(def.id)
+      clearSightBlockers?.(def.id)
+    }
     if (forest) for (const id of owned.treeIds) forest.lifecycle.unregisterPresence(id)
     for (const agent of owned.agents) {
       agent.dispose()
@@ -962,6 +974,12 @@ async function buildSettlement(
       ...fencePlacementColliders(paddockFencePlacements),
       ...fencePlacementColliders(yardFencePlacements),
       ...professionDressingColliders,
+    ])
+    // Pasture/paddock/yard rail fences deliberately do not block sight (open rails).
+    registerSightBlockers?.(def.id, [
+      ...houseAssemblies.flatMap((assembly) => buildAssemblySightBlockersWorld(assembly)),
+      ...(storehouseAssembly ? buildAssemblySightBlockersWorld(storehouseAssembly) : []),
+      ...settlementPalisadeSightBlockers(palisadePlacements),
     ])
   }
   owned.collidersRegistered = true

@@ -2,7 +2,9 @@ import * as THREE from 'three'
 import { disposeObject3D } from '../assets/loadGltf'
 import { PALISADE_HALF_LENGTH } from './palisade'
 
-const POST_HEIGHT = 1.5
+/** Post height (m) — also the player-palisade sight blocker height (world-042). */
+export const PALISADE_POST_HEIGHT = 1.5
+const POST_HEIGHT = PALISADE_POST_HEIGHT
 const POST_RADIUS_TOP = 0.05
 const POST_RADIUS_BOTTOM = 0.07
 const RAIL_HEIGHT = 0.14
