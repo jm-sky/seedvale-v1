@@ -65,3 +65,10 @@ Bump in the B1 commit every namespace whose output moves — verify each by grep
 - Tried and **removed**: latitude-dependent treeline (0.50 N → 0.72 S) incl. matching `forestDensity` altitude fade — north trees 367 → 234 (−36 %); queue §3 Q164-a. Snowline: terrain snow lives in the shader/`snowField` (W2), not touched.
 - Not done: forest-type distinctions beyond species mix (heath/bog/meadow regional kinds), dry-valley modifier, browser spots on `415424794` (→ §2).
 
+
+## B3 census (S, 2026-11-06, queue Q165) ✅ technically verified · ❓ WSL A/B not run
+
+- New `pnpm worldgen:vegetation:census [--seeds=…] [--span=24] [--step=1]` (`scripts/perf/census-vegetation.ts`): per-chunk instance census (`computeChunkTile` + `computeChunkVegetation`, 49×49 chunks around the origin, no rivers/roads passed — comparable before/after, not absolute in-game numbers). Home chunk skipped by design.
+- Before = `d44c3c80~1` (pre-B2), after = current `main`, same script/seeds. Totals 42 / 415424794: **34 788 → 34 798 / 42 250 → 42 254**; trees **21 886 / 26 375 identical**; bush, cactus, lily, reed identical; fern +10 / +4 (+0.2 %, an increase, source not investigated — fern gating reads nothing B2 touched, likely the riparian pine damping shifting a shared RNG draw). Per-chunk p50/p90/p99/max and densest 3×3 block identical on both seeds.
+- Densest region (per-chunk, both seeds): max 98 @(10,−15) / 104 @(−23,9) instances per chunk; p99 86 / 88; densest 3×3 block 741 @(12,−10) / 748 @(−11,11). **No density reduction anywhere (D9 held).**
+- WSL A/B (`stream` / `settlement`) **not run**: WSL benchmarks need the author's consent (VM-crash risk, runbook §WSL stability) and B2 changes no instance counts, only the species mix → listed in queue §4.
