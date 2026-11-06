@@ -2936,3 +2936,30 @@ describe('062 W3a registered bow save payloads', () => {
     expect(loadStoredSave(JSON.parse(JSON.stringify(current)))).toEqual({ status: 'ok', data: current })
   })
 })
+
+describe('world-041 Q138 v60 to v61 rumour lead tier', () => {
+  const lead = { id: 'cave:1', state: 'estimated', source: 'npc' }
+  const old = (discoveredLocations: unknown[]) => ({
+    ...validSave,
+    version: 60,
+    map: { ...validSave.map, discoveredLocations },
+  })
+
+  it('migrates an old lead without a tier (common) and keeps entries intact', () => {
+    const result = loadStoredSave(old([lead]))
+    expect(result.status).toBe('ok')
+    if (result.status !== 'ok') return
+    expect(result.data.version).toBe(CURRENT_SAVE_VERSION)
+    expect(result.data.map.discoveredLocations).toEqual([lead])
+  })
+
+  it('round-trips an expert tier and rejects it on a non-estimated entry or unknown tier', () => {
+    const expert = { ...lead, leadTier: 'expert' }
+    const ok = loadStoredSave({ ...old([expert]), version: CURRENT_SAVE_VERSION })
+    expect(ok.status).toBe('ok')
+    if (ok.status === 'ok') expect(ok.data.map.discoveredLocations).toEqual([expert])
+    for (const bad of [{ ...expert, state: 'discovered' }, { ...lead, leadTier: 'common' }]) {
+      expect(loadStoredSave({ ...old([bad]), version: CURRENT_SAVE_VERSION }).status).not.toBe('ok')
+    }
+  })
+})

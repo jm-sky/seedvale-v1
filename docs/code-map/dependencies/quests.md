@@ -102,6 +102,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `ai/rumourLines.ts`
 - `app/createApp.ts`
 - `quests/cardinalDirection.test.ts`
 - `quests/caveLocationDescription.ts`
@@ -957,7 +958,6 @@ Generated from TypeScript imports.
 - `ui-vue/lib/questTerminalFeedback.test.ts`
 - `ui-vue/npcDialogueGreeting.ts`
 - `ui-vue/npcDialogueOpen.test.ts`
-- `world/locations/guardLocalKnowledge.ts`
 
 ## `quests/settlementLightLookup.ts`
 

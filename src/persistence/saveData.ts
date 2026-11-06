@@ -226,7 +226,14 @@ export type SaveWorldFlags = {
  *  sparse, keyed by the location's own stable id. Only `state`/`source` are
  *  persisted; position/name/weight are re-derived from `(world seed,
  *  location id)` by `world/locations/worldLocationCatalog.ts`, never stored. */
-export type SaveLocationKnowledge = { id: string, state: MapConfidence, source: MapSource }
+export type SaveLocationKnowledge = {
+  id: string
+  state: MapConfidence
+  source: MapSource
+  /** Rumour-lead precision tier (world-041 Q138, v61); only on `estimated`+`npc`
+   *  entries. Absent = the common 120–260 m tier (every pre-v61 lead). */
+  leadTier?: 'expert'
+}
 
 export type SaveMap = {
   discoveredCells: string[]
@@ -765,7 +772,7 @@ export type SaveWorkContract =
  *  representation or semantics of `SaveData` change — see the plan's
  *  "Future schema-change workflow". Never duplicate this number elsewhere;
  *  `saveState.ts` imports it instead of declaring its own constant. */
-export const CURRENT_SAVE_VERSION = 60
+export const CURRENT_SAVE_VERSION = 61
 
 /** Canonical save contract for the current schema version. This module
  *  intentionally carries no history of schemas from before the v1 hard cut
@@ -1232,6 +1239,7 @@ function isSaveLocationKnowledgeField(value: unknown): value is SaveLocationKnow
   return value.every((entry) => {
     if (!entry || typeof entry !== 'object') return false
     const e = entry as Record<string, unknown>
+    if (e.leadTier !== undefined && (e.leadTier !== 'expert' || e.state !== 'estimated')) return false
     return typeof e.id === 'string' && MAP_CONFIDENCE_VALUES.has(e.state as string) && MAP_SOURCE_VALUES.has(e.source as string)
   })
 }
@@ -4596,6 +4604,7 @@ const SAVE_MIGRATIONS: Readonly<Record<number, SaveMigration>> = {
   57: migrateSaveV57ToV58,
   58: migrateSaveV58ToV59,
   59: migrateSaveV59ToV60,
+  60: migrateSaveV60ToV61,
 }
 
 /** v56 → v57 (plan persistence-008): `config.worldgenEpoch = 0` — every save
@@ -4632,6 +4641,13 @@ function migrateSaveV57ToV58(data: unknown): unknown {
   const { arms, shoulders, ...rest } = previous
   const selected = validShoulder(shoulders) ? shoulders : validShoulder(arms) ? arms : undefined
   return { ...v, version: 58, playerEquipment: { ...rest, ...(selected ? { shoulders: selected } : {}) } }
+}
+
+/** v60 → v61 (world-041 Q138): `map.discoveredLocations[].leadTier` is new and
+ *  optional. Absent means the common rumour tier, which is what every existing
+ *  `estimated` entry already was — nothing to rewrite, the version only moves. */
+function migrateSaveV60ToV61(data: unknown): unknown {
+  return { ...(data as Record<string, unknown>), version: 61 }
 }
 
 /** v59 → v60 (items-player-065, proposal §10.1): `playerEquipment` slot keys →

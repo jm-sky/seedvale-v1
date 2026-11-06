@@ -751,6 +751,18 @@ Generated from exported TypeScript symbols.
 - `ReactionTier` — type — line 11
 - `reactionTierForRelation` — function — line 120
 
+## `ai/rumourLines.ts`
+
+- `isRumourKind` — function — line 144
+- `rumourBearing` — function — line 110
+- `RumourKind` — type — line 18
+- `RumourOutcome` — type — line 20
+- `rumourOutcomeLine` — function — line 140
+- `RumourSpeaker` — type — line 15
+  - domain: dialogue
+- `rumourSuccessLine` — function — line 129
+- `rumourTravelTime` — function — line 116
+
 ## `ai/schedule.ts`
 
 - `activityAt` — function — line 330

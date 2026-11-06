@@ -30,6 +30,12 @@ export const RUMOUR_LEAD_OFFSET_MAX_FRAC = 0.6
 /** After world-bound clipping the target must stay at most this fraction of r from the centre. */
 const MAX_CLIPPED_OFFSET_FRAC = 0.9
 
+/** Guard/hunter ("expert") leads: smaller circle (author Q135 (b) / Q136-a (c)). */
+export const RUMOUR_LEAD_EXPERT_RADIUS_MIN = 60
+export const RUMOUR_LEAD_EXPERT_RADIUS_MAX = 120
+
+export type RumourLeadTier = 'common' | 'expert'
+
 export type RumourLeadArea = { x: number, z: number, radius: number }
 
 export type RumourLeadAreaOptions = {
@@ -87,6 +93,21 @@ export function rumourLeadArea(
     z = target.z + (dz / dist) * maxDist
   }
   return { x, z, radius }
+}
+
+/**
+ * The one lead-area calculation for a stored entry: `project()` (map labels)
+ * and the spoken bearing/hours (`ai/rumourLines`) both go through it, so
+ * speech never reveals more than the map. Absent tier = common.
+ */
+export function rumourLeadAreaForEntry(
+  seed: number,
+  entry: Pick<LocationKnowledgeEntry, 'id' | 'leadTier'>,
+  target: { x: number, z: number },
+): RumourLeadArea {
+  return rumourLeadArea(seed, entry.id, target, entry.leadTier === 'expert'
+    ? { radiusMin: RUMOUR_LEAD_EXPERT_RADIUS_MIN, radiusMax: RUMOUR_LEAD_EXPERT_RADIUS_MAX }
+    : {})
 }
 
 const GENERIC_KIND_LABEL: Record<WorldLocationKind, string> = {

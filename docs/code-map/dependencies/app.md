@@ -978,7 +978,6 @@ Generated from TypeScript imports.
 - `ai/npcBarkLimiter.ts`
 - `ai/npcBarkRequest.ts`
 - `ai/npcInitiatedDialogueRequest.ts`
-- `ai/npcPlayerFollowUp.ts`
 - `ai/npcVoiceLines.ts`
 - `ai/reactionChance.ts`
 - `app/actions/actionContext.ts`
@@ -1581,8 +1580,8 @@ Generated from TypeScript imports.
 
 - `ai/NpcAgent.ts`
 - `ai/dialogueTemplates.ts`
-- `ai/npcPlayerFollowUp.ts`
 - `ai/npcTradeAvailability.ts`
+- `ai/rumourLines.ts`
 - `ai/voluntaryExpeditionJoin.ts`
 - `app/actions/workContractPayment.ts`
 - `app/worldBundle.ts`

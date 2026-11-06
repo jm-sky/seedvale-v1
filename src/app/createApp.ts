@@ -16,7 +16,6 @@ import { configureNpcPlayerReactionAudio } from '../ai/NpcAgent'
 import { NpcBarkLimiter } from '../ai/npcBarkLimiter'
 import { configureRequestNpcBark, createRequestNpcBark } from '../ai/npcBarkRequest'
 import { configureRequestNpcInitiatedDialogue } from '../ai/npcInitiatedDialogueRequest'
-import { armNpcPlayerFollowUp } from '../ai/npcPlayerFollowUp'
 import { resolveNpcVoiceLine } from '../ai/npcVoiceLines'
 import { NEUTRAL_PLAYER_SOCIAL_STATE } from '../ai/reactionChance'
 import { playAnimalCombatDeath } from '../audio/actionSounds'
@@ -1001,23 +1000,13 @@ export async function createApp(
   // home entries in older saves are normalized the same way.
   confirmHomeSettlement(bundle.settlementsManager.getHomeDef(), locationKnowledge)
   const guardLocalKnowledge = createGuardLocalKnowledge({
-    research: worldKnowledgeResearch,
     getElapsedDays: () => dayNight.elapsedDays,
     getWorldSeed: () => config.seed,
     locationKnowledge,
     getLocation: (id) => worldLocationCatalog.getById(id),
-    listStableLocations: (originX, originZ, maxKm) => worldLocationCatalog.stableLandmarksInRange(originX, originZ, 0, maxKm),
-    nearestSettlements: (originX, originZ, maxKm) => worldLocationCatalog.nearestSettlements(originX, originZ, maxKm),
+    landmarksInRange: (originX, originZ, minHours, maxHours) =>
+      worldLocationCatalog.landmarksInRangeAsync(originX, originZ, minHours, maxHours),
     homeLocationId: () => settlementLocationId(bundle.settlementsManager.getHomeDef()),
-    searchChunkRadius: LANDMARK_QUEST_SEARCH_CHUNK_RADIUS,
-    // Ready research transfers into the asking NPC's own authoritative
-    // follow-up (plan npc-050 §8) — this service stops being a second
-    // owner of the deliverable result once armed.
-    armFollowUp: (npcId, followUp) => {
-      const state = bundle.settlementsManager.getNpcState(npcId)
-      if (!state) return null
-      return armNpcPlayerFollowUp(state, { kind: 'deliver_world_knowledge', ...followUp }, npcId)
-    },
   })
   // Restored once `homeGuardNpcId` is resolved further below — a legacy
   // (pre-npc-050) save's anonymous single record needs that stable id to

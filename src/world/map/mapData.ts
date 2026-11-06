@@ -8,7 +8,7 @@ import type {
   MapLocationKind,
   MapViewport,
 } from './mapTypes'
-import { genericLocationLabel, rumourLeadArea } from '../locations/rumourLead'
+import { genericLocationLabel, rumourLeadAreaForEntry } from '../locations/rumourLead'
 import { worldLocationKindFromId } from '../locations/worldLocationTypes'
 import { MAP_EXTENT_HALF } from './mapConfig'
 
@@ -63,7 +63,7 @@ export function createMapData(opts: {
       // Uncertain knowledge (plan world-041 L0 §0): the canonical x/z/name
       // must never reach any player-facing consumer. This is the single
       // chokepoint for map, minimap, navigation targets and the popover.
-      const lead = rumourLeadArea(getSeed(), location.id, location)
+      const lead = rumourLeadAreaForEntry(getSeed(), entry, location)
       return {
         id: location.id,
         kind: toMapLocationKind(location.kind),

@@ -567,9 +567,6 @@ Generated from TypeScript imports.
 - `app/inventoryWiring.ts`
 - `ui-vue/npcDialogueGreeting.test.ts`
 - `ui-vue/npcDialogueGreeting.ts`
-- `world/locations/guardLocalKnowledge.test.ts`
-- `world/locations/guardLocalKnowledge.ts`
-- `world/locations/npcPlayerFollowUpDelivery.ts`
 
 ## `ai/economicPressure.test.ts`
 
@@ -1415,12 +1412,8 @@ Generated from TypeScript imports.
 
 - `ai/NpcAgent.ts`
 - `ai/npcPlayerFollowUp.test.ts`
-- `app/createApp.ts`
-- `app/inventoryWiring.ts`
 - `settlement/npcPostDeath.ts`
 - `settlement/npcState.ts`
-- `world/locations/guardLocalKnowledge.test.ts`
-- `world/locations/guardLocalKnowledge.ts`
 - `world/locations/npcPlayerFollowUpDelivery.test.ts`
 - `world/locations/npcPlayerFollowUpDelivery.ts`
 
@@ -1753,6 +1746,26 @@ Generated from TypeScript imports.
 - `settlement/createSettlement.ts`
 - `settlement/lodgingResolver.test.ts`
 - `settlement/lodgingResolver.ts`
+
+## `ai/rumourLines.test.ts`
+
+**Imports**
+
+- `ai/rumourLines.ts`
+
+## `ai/rumourLines.ts`
+
+**Imports**
+
+- `quests/cardinalDirection.ts`
+- `world/locations/worldLocationTypes.ts`
+
+**Imported by**
+
+- `ai/rumourLines.test.ts`
+- `app/inventoryWiring.ts`
+- `world/locations/guardLocalKnowledge.ts`
+- `world/locations/npcPlayerFollowUpDelivery.ts`
 
 ## `ai/schedule.test.ts`
 

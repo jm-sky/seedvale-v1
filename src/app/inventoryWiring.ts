@@ -1,5 +1,5 @@
 import type { NpcAgent } from '../ai/NpcAgent'
-import type { NpcWorldKnowledgeFollowUpSource } from '../ai/npcPlayerFollowUp'
+import type { RumourSpeaker } from '../ai/rumourLines'
 import type { createWorldAudio } from '../audio/createWorldAudio'
 import type { EquipmentPositionKey } from '../items/equipmentTypes'
 import type { HeldTool } from '../items/HeldTool'
@@ -26,6 +26,7 @@ import type { WorldLocationCatalog } from '../world/locations/worldLocationCatal
 import type { WorldBundle } from './worldBundle'
 import { requestAssistanceLine, voluntaryJoinResponseLine } from '../ai/dialogueTemplates'
 import { npcTradeSourceInventory, resolveNpcTradeOffers } from '../ai/npcTradeAvailability'
+import { rumourOutcomeLine } from '../ai/rumourLines'
 import { isVoluntaryJoinAccepted, type VoluntaryExpeditionTerms } from '../ai/voluntaryExpeditionJoin'
 import { playActionGrindstoneSharpen, playActionWhetstoneSharpen } from '../audio/actionSounds'
 import { playInventoryDrop } from '../audio/inventorySounds'
@@ -84,7 +85,6 @@ import {
 } from '../settlement/horseAcquisition'
 import { horseVendorNpcId } from '../settlement/merchantTrade'
 import { hideBusy, showBusy, ui } from '../ui-vue/store'
-import { GUARD_AREA_RESEARCH_PENDING } from '../world/locations/guardLocalKnowledge'
 import {
   FAR_RANGE_HOURS,
   MEDIUM_RANGE_HOURS,
@@ -1182,14 +1182,14 @@ export function createInventoryWiring(deps: InventoryWiringDeps): InventoryWirin
     onRequestWater: (npc) => resolveAssistanceDialogue(npc, 'water'),
     onAskAboutArea: (npc) => {
       const npcState = bundle.settlementsManager.getNpcState(npc.id)
-      if (!npcState) return GUARD_AREA_RESEARCH_PENDING
-      const deliveryDeps = { getLocation: (id: string) => locationCatalog.getById(id), locationKnowledge }
+      if (!npcState) return rumourOutcomeLine('none', 'adult', 0)
+      // An old save may still carry an armed follow-up: drain it (no reveal).
       const pending = npcState.playerFollowUp
-      if (pending) return deliverNpcWorldKnowledgeFollowUp(deliveryDeps, npcState, pending.id) ?? GUARD_AREA_RESEARCH_PENDING
-      const source: NpcWorldKnowledgeFollowUpSource = { kind: npc.role === 'hunter' ? 'hunter' : 'guard' }
-      const line = guardLocalKnowledge.askAboutArea(npc.id, player.mesh.position.x, player.mesh.position.z, source)
-      const justArmed = npcState.playerFollowUp
-      return justArmed ? (deliverNpcWorldKnowledgeFollowUp(deliveryDeps, npcState, justArmed.id) ?? line) : line
+      if (pending) return deliverNpcWorldKnowledgeFollowUp(npcState, pending.id) ?? rumourOutcomeLine('none', 'adult', 0)
+      const speaker: RumourSpeaker = npc.role === 'hunter' ? 'hunter' : npc.role === 'guard' ? 'guard' : 'adult'
+      const settlementId = findSettlementForNpc(npc)?.id
+      const trust = settlementId ? reputationManager.getReputationDimension(settlementId, 'trust') : 0
+      return guardLocalKnowledge.askAboutArea(npc.id, player.mesh.position.x, player.mesh.position.z, speaker, trust)
     },
     onPayWage: () => {
       const npc = ui.npcDialogueMenu.npc as NpcAgent | null

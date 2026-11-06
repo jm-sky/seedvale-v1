@@ -3050,27 +3050,21 @@ Generated from TypeScript imports.
 
 **Imports**
 
-- `ai/dialogueTemplates.ts`
-- `ai/npcPlayerFollowUp.ts`
 - `world/locations/guardLocalKnowledge.ts`
 - `world/locations/locationKnowledge.ts`
-- `world/locations/worldKnowledgeResearch.ts`
+- `world/locations/rumourLead.ts`
 - `world/locations/worldLocationTypes.ts`
 
 ## `world/locations/guardLocalKnowledge.ts`
 
 **Imports**
 
-- `ai/dialogueTemplates.ts`
-- `ai/npcPlayerFollowUp.ts`
-- `quests/quests.ts`
+- `ai/rumourLines.ts`
 - `settlement/npcState.ts`
 - `world/locations/locationConfig.ts`
-- `world/locations/locationDiscovery.ts`
 - `world/locations/locationKnowledge.ts`
-- `world/locations/worldKnowledgeResearch.ts`
+- `world/locations/rumourLead.ts`
 - `world/locations/worldLocationTypes.ts`
-- `world/parseSeed.ts`
 
 **Imported by**
 
@@ -3166,7 +3160,6 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `app/inventoryWiring.ts`
-- `world/locations/guardLocalKnowledge.ts`
 - `world/locations/locationDiscovery.test.ts`
 
 ## `world/locations/locationKnowledge.test.ts`
@@ -3197,8 +3190,6 @@ Generated from TypeScript imports.
 - `world/locations/locationKnowledge.test.ts`
 - `world/locations/locationProximityDiscovery.test.ts`
 - `world/locations/locationProximityDiscovery.ts`
-- `world/locations/npcPlayerFollowUpDelivery.test.ts`
-- `world/locations/npcPlayerFollowUpDelivery.ts`
 - `world/locations/revealLocationKnowledge.ts`
 - `world/locations/rumourLead.ts`
 - `world/locations/uncertainKnowledge.test.ts`
@@ -3323,18 +3314,14 @@ Generated from TypeScript imports.
 **Imports**
 
 - `ai/npcPlayerFollowUp.ts`
-- `world/locations/locationKnowledge.ts`
 - `world/locations/npcPlayerFollowUpDelivery.ts`
-- `world/locations/worldLocationTypes.ts`
 
 ## `world/locations/npcPlayerFollowUpDelivery.ts`
 
 **Imports**
 
-- `ai/dialogueTemplates.ts`
 - `ai/npcPlayerFollowUp.ts`
-- `world/locations/locationKnowledge.ts`
-- `world/locations/worldLocationTypes.ts`
+- `ai/rumourLines.ts`
 
 **Imported by**
 
@@ -3367,6 +3354,8 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `app/createApp.ts`
+- `world/locations/guardLocalKnowledge.test.ts`
+- `world/locations/guardLocalKnowledge.ts`
 - `world/locations/uncertainKnowledge.test.ts`
 - `world/map/mapData.ts`
 
@@ -3479,8 +3468,6 @@ Generated from TypeScript imports.
 
 - `app/createApp.ts`
 - `quests/worldKnowledgeResolver.ts`
-- `world/locations/guardLocalKnowledge.test.ts`
-- `world/locations/guardLocalKnowledge.ts`
 - `world/locations/worldKnowledgeResearch.test.ts`
 
 ## `world/locations/worldLocationCatalog.test.ts`
@@ -3570,6 +3557,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `ai/rumourLines.ts`
 - `debug/npcDebugApi.test.ts`
 - `debug/npcDebugApi.ts`
 - `ui-vue/lib/drawMap.ts`
@@ -3585,8 +3573,6 @@ Generated from TypeScript imports.
 - `world/locations/locationDiscovery.test.ts`
 - `world/locations/locationDiscovery.ts`
 - `world/locations/locationProximityDiscovery.test.ts`
-- `world/locations/npcPlayerFollowUpDelivery.test.ts`
-- `world/locations/npcPlayerFollowUpDelivery.ts`
 - `world/locations/rumourLead.ts`
 - `world/locations/uncertainKnowledge.test.ts`
 - `world/locations/worldLocationCatalog.test.ts`
@@ -4017,7 +4003,6 @@ Generated from TypeScript imports.
 - `world/hiddenFinds.ts`
 - `world/largeCaves.ts`
 - `world/locations/darkForestTreasureSite.ts`
-- `world/locations/guardLocalKnowledge.ts`
 - `world/locations/lostTreasureEstateSearchArea.ts`
 - `world/locations/rumourLead.ts`
 - `world/locations/seedProfile.ts`

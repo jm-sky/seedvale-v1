@@ -132,6 +132,15 @@ describe('mapData.project() for estimated knowledge — map / minimap consumers'
     }
   })
 
+  it('an expert-tier lead projects the smaller 60–120 m circle and still contains the target', () => {
+    const { mapData, knowledge } = estimatedSetup()
+    knowledge.restore([{ id: CAVE.id, state: 'estimated', source: 'npc', leadTier: 'expert' }])
+    const [loc] = mapData.knownLocations(WIDE)
+    expect(loc!.areaRadius).toBeGreaterThanOrEqual(60)
+    expect(loc!.areaRadius).toBeLessThanOrEqual(120)
+    expect(Math.hypot(loc!.x - CAVE.x, loc!.z - CAVE.z)).toBeLessThan(loc!.areaRadius!)
+  })
+
   it('viewport filtering uses the projected centre, never the canonical position', () => {
     const { mapData } = estimatedSetup([LAKE])
     const [loc] = mapData.knownLocations(WIDE)
@@ -255,29 +264,18 @@ describe('non-projection consumers treat estimated as "not known"', () => {
     expect(isLocationDiscovered(knowledge, 'zz')).toBe(false)
   })
 
-  it('guardLocalKnowledge.alreadyKnownInRange never re-reveals an estimated entry with its name', () => {
+  it('rumour producer never upgrades an existing estimated entry to a named reveal', async () => {
     const knowledge = createLocationKnowledge([{ id: CAVE.id, state: 'estimated', source: 'npc' }])
-    let research = 0
     const guard = createGuardLocalKnowledge({
-      research: {
-        resolve: async () => null,
-        resolveMany: async () => { research += 1; return [] },
-        invalidate() {},
-        dispose() {},
-      },
       getElapsedDays: () => 0,
       getWorldSeed: () => 2,
       locationKnowledge: knowledge,
       getLocation: (id) => id === CAVE.id ? CAVE : null,
-      listStableLocations: () => [CAVE],
-      nearestSettlements: () => [],
+      landmarksInRange: async () => [CAVE],
       homeLocationId: () => 'settlement:home',
-      armFollowUp: () => null,
     })
-    const line = guard.askAboutArea('npc:1', CAVE.x, CAVE.z, { kind: 'guard' })
+    const line = await guard.askAboutArea('npc:1', CAVE.x, CAVE.z, 'guard', 0)
     expect(line).not.toContain(CAVE.name)
-    // Not treated as already known: falls through to the research path.
-    expect(research).toBe(1)
     expect(knowledge.get(CAVE.id)).toEqual({ id: CAVE.id, state: 'estimated', source: 'npc' })
   })
 

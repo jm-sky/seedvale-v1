@@ -87,14 +87,13 @@ const helpDrilled = ref(false)
 /** When true, leaving a drilled help payload returns to Aktywne zadania. */
 const activeMattersOrigin = ref(false)
 const isHomeGuard = computed(() => state.npc?.role === 'guard' && state.settlement?.isHome === true)
-/** "Opowiedz mi coś o okolicy" eligibility (plan world-012 §7, extended to
- *  living local hunters by npc-050 §9) — same canonical `role` other quest
- *  modules already key off, no separate "knows area" flag. */
+/** "Opowiedz mi coś o okolicy" eligibility (plan world-041 L3b, author Q135 (b)):
+ *  every living adult may share a rumour; children know nothing, so the topic
+ *  is not offered. Guards/hunters answer better (producer decides by `role`). */
 const canAskAboutArea = computed(() => {
   const npc = state.npc
   if (!npc || npc.health.dead) return false
-  if (isHomeGuard.value) return true
-  return npc.role === 'hunter' && isAdultAge(npc.age)
+  return isAdultAge(npc.age)
 })
 const guardRewardLine = ref('')
 const foodLine = ref('')

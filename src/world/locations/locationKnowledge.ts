@@ -4,6 +4,10 @@ export type LocationKnowledgeEntry = {
   id: string
   state: MapConfidence
   source: MapSource
+  /** Rumour-lead precision (world-041 Q138): `expert` = guard/hunter, smaller
+   *  area. Only meaningful on `estimated`; absent = common tier. Dropped when
+   *  the entry is upgraded. */
+  leadTier?: 'expert'
 }
 
 /** Rank used to decide whether a new `reveal()` actually upgrades an entry —
@@ -25,7 +29,7 @@ export type LocationKnowledge = {
    *  `true` only when this call actually changed something (new entry or a
    *  forward state upgrade) — the caller (guard dialogue, merchant map)
    *  uses that to decide what to show as "newly discovered". */
-  reveal(id: string, state: MapConfidence, source: MapSource): boolean
+  reveal(id: string, state: MapConfidence, source: MapSource, leadTier?: 'expert'): boolean
   list(): readonly LocationKnowledgeEntry[]
   serialize(): LocationKnowledgeEntry[]
   restore(entries: readonly LocationKnowledgeEntry[]): void
@@ -43,14 +47,20 @@ export function createLocationKnowledge(initial?: readonly LocationKnowledgeEntr
     has(id) {
       return entries.has(id)
     },
-    reveal(id, state, source) {
+    reveal(id, state, source, leadTier) {
       const existing = entries.get(id)
+      const entry: LocationKnowledgeEntry = {
+        id,
+        state,
+        source,
+        ...(state === 'estimated' && leadTier ? { leadTier } : {}),
+      }
       if (!existing) {
-        entries.set(id, { id, state, source })
+        entries.set(id, entry)
         return true
       }
       if (STATE_RANK[state] > STATE_RANK[existing.state]) {
-        entries.set(id, { id, state, source })
+        entries.set(id, entry)
         return true
       }
       return false

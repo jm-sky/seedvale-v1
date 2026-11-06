@@ -1,34 +1,20 @@
-import type { NpcPlayerFollowUp, NpcWorldKnowledgeFollowUpSource } from '../../ai/npcPlayerFollowUp'
+import type { RumourSpeaker } from '../../ai/rumourLines'
 import type { NpcId } from '../../settlement/npcState'
 import type { LocationKnowledge } from './locationKnowledge'
-import type { WorldKnowledgeQuery, WorldKnowledgeRef, WorldKnowledgeResearch } from './worldKnowledgeResearch'
 import type { WorldLocation } from './worldLocationTypes'
-import { aboutAreaLine } from '../../ai/dialogueTemplates'
-import { WORLD_KNOWLEDGE_HOUR_DAYS } from '../../quests/quests'
-import { createSeededRandom } from '../parseSeed'
-import {
-  GUARD_LANDMARK_POOL_SIZE,
-  GUARD_REVEAL_MAX,
-  GUARD_REVEAL_MIN,
-  MEDIUM_RANGE_HOURS,
-  worldUnitsToHours,
-} from './locationConfig'
-import { pickRandomReveal, weightedTopN } from './locationDiscovery'
+import { isRumourKind, rumourBearing, rumourOutcomeLine, rumourSuccessLine, rumourTravelTime } from '../../ai/rumourLines'
+import { MEDIUM_RANGE_HOURS, NEAR_RANGE_HOURS, worldUnitsToHours } from './locationConfig'
+import { countOpenRumourLeads, RUMOUR_LEAD_CAP, rumourLeadAreaForEntry } from './rumourLead'
 
-export const GUARD_AREA_RESEARCH_STARTED =
-  'Muszę przejrzeć meldunki i przypomnieć sobie szlaki. Wróć za godzinę.'
+/** Settlement `trust` below this refuses a rumour (🟡 proposal, plan world-041 L0 §2; neutral = 0). */
+export const RUMOUR_TRUST_MIN = -10
+/** Candidate band in walking hours (L0 §5): everyone `(NEAR, MEDIUM]`; guards/hunters reach farther. */
+export const RUMOUR_BAND_MIN_HOURS = NEAR_RANGE_HOURS
+export const RUMOUR_BAND_MAX_HOURS = MEDIUM_RANGE_HOURS
+export const RUMOUR_EXPERT_BAND_MAX_HOURS = 25
+/** Legacy (pre-Q138) wait line — still returned when an old armed follow-up cannot be delivered. */
 export const GUARD_AREA_RESEARCH_PENDING =
   'Wciąż przeglądam meldunki i szlaki. Wróć trochę później.'
-/** Returned the moment research resolves and the authored delay is already
- *  satisfied — the actual locations are no longer revealed here (plan
- *  npc-050 §8); callers deliver through the shared follow-up seam instead
- *  and normally never surface this line to the player. */
-export const GUARD_AREA_RESEARCH_READY =
-  'Właśnie sobie przypomniałem, o co pytałeś.'
-
-const GUARD_RESEARCH_KINDS = ['cemetery', 'ruins'] as const
-export const GUARD_LOCAL_KNOWLEDGE_DELAY_DAYS = WORLD_KNOWLEDGE_HOUR_DAYS
-export const GUARD_LOCAL_KNOWLEDGE_CHUNK_RADIUS = 10
 
 export type SaveGuardLocalKnowledge =
   | {
@@ -47,28 +33,25 @@ export type SaveGuardLocalKnowledge =
       selectedIds: string[]
     }
 
-/** Per-npc keyed save shape (plan npc-050 §10) — each asking NPC owns its
- *  own request/resolution state; two NPCs can never share one in-flight
- *  request or resolved result. */
+/** Per-npc keyed save shape (plan npc-050 §10). Since Q138 nothing writes it
+ *  any more (rumours are answered instantly); an old save's entries are read
+ *  for compatibility and dropped on restore. */
 export type SaveGuardLocalKnowledgeByNpc = Record<NpcId, SaveGuardLocalKnowledge>
 
-type GuardState =
-  | { status: 'idle' }
-  | SaveGuardLocalKnowledge
-
 /**
- * Owner-keyed local-knowledge research service (plan quests-progression-047,
- * generalized to any asking NPC by npc-050). Owns only per-NPC dialogue
- * wait/selection state; discovery still goes through `LocationKnowledge`.
- * Once research resolves and the authored delay elapses, ownership of the
- * *deliverable* result transfers into the asking NPC's authoritative
- * `playerFollowUp` (via `armFollowUp`) — this service is never a second,
- * independent owner of an already-armed delivery.
+ * Rumour producer (plan world-041 L3b, queue Q138): "an NPC tells the player
+ * about a place". Every NPC only ever gives an `estimated` rumour lead (never
+ * an exact pin or a name); guards and hunters give a smaller area (`expert`
+ * tier, persisted on the entry) and reach farther. Owns no persisted state —
+ * the daily limit is derived (`(seed, npc, day)`), the cap is derived from
+ * `LocationKnowledge`.
  *
  * @domain world-locations
  */
 export type GuardLocalKnowledge = {
-  askAboutArea(npcId: NpcId, originX: number, originZ: number, source: NpcWorldKnowledgeFollowUpSource): string
+  /** `trust` = the asking NPC's settlement trust dimension toward the player. */
+  askAboutArea(npcId: NpcId, originX: number, originZ: number, speaker: RumourSpeaker, trust: number): Promise<string>
+  /** Accepts (and drops) pre-Q138 research state. */
   restore(saved: SaveGuardLocalKnowledgeByNpc | undefined): void
   serialize(): SaveGuardLocalKnowledgeByNpc | undefined
   reset(): void
@@ -76,36 +59,24 @@ export type GuardLocalKnowledge = {
 }
 
 export type GuardLocalKnowledgeDeps = {
-  research: WorldKnowledgeResearch
   getElapsedDays: () => number
   getWorldSeed: () => number
   locationKnowledge: LocationKnowledge
   getLocation: (id: string) => WorldLocation | null
-  listStableLocations: (originX: number, originZ: number, maxHours: number) => readonly WorldLocation[]
-  nearestSettlements: (originX: number, originZ: number, maxHours: number) => readonly WorldLocation[]
+  /** Catalog candidates in the walking-hour band `(minHours, maxHours]` of the origin. */
+  landmarksInRange: (originX: number, originZ: number, minHours: number, maxHours: number) => Promise<readonly WorldLocation[]>
   homeLocationId: () => string | null
-  searchChunkRadius?: number
-  /** Idempotently arms the asking NPC's one authoritative Player follow-up
-   *  (`ai/npcPlayerFollowUp.ts`) once a result is ready to deliver. `null`
-   *  when the NPC cannot currently receive one (dead/unknown) — the caller
-   *  keeps its resolved research state and may retry on a later ask. */
-  armFollowUp: (
-    npcId: NpcId,
-    followUp: { createdAtDays: number, source: NpcWorldKnowledgeFollowUpSource, selectedLocationIds: string[] },
-  ) => NpcPlayerFollowUp | null
 }
 
-function locationInRange(location: WorldLocation, originX: number, originZ: number, maxHours: number): boolean {
-  return worldUnitsToHours(Math.hypot(location.x - originX, location.z - originZ)) <= maxHours
-}
-
-function hashSeed(seed: number, ids: readonly string[]): number {
-  let h = seed >>> 0
-  for (const id of ids) {
-    for (let i = 0; i < id.length; i++) {
-      h ^= id.charCodeAt(i)
+function hashSeed(seed: number, parts: readonly (string | number)[]): number {
+  let h = (seed >>> 0) ^ 0x72756d6f
+  for (const part of parts) {
+    const text = String(part)
+    for (let i = 0; i < text.length; i++) {
+      h ^= text.charCodeAt(i)
       h = Math.imul(h, 16777619)
     }
+    h = Math.imul(h ^ 0xff, 16777619)
   }
   return h >>> 0
 }
@@ -114,147 +85,50 @@ function hashSeed(seed: number, ids: readonly string[]): number {
  * @domain world-locations
  */
 export function createGuardLocalKnowledge(deps: GuardLocalKnowledgeDeps): GuardLocalKnowledge {
-  const radius = deps.searchChunkRadius ?? GUARD_LOCAL_KNOWLEDGE_CHUNK_RADIUS
-  const byNpc = new Map<NpcId, GuardState>()
-  let epoch = 0
-  const launching = new Set<NpcId>()
-
-  const stateFor = (npcId: NpcId): GuardState => byNpc.get(npcId) ?? { status: 'idle' }
-
-  const pickSelectedIds = (
-    originX: number,
-    originZ: number,
-    refs: readonly WorldKnowledgeRef[],
-  ): string[] => {
-    const fromWorker = refs
-      .map((ref) => deps.getLocation(ref.id))
-      .filter((location): location is WorldLocation => location != null)
-    const merged = new Map<string, WorldLocation>()
-    for (const location of [...fromWorker, ...deps.listStableLocations(originX, originZ, MEDIUM_RANGE_HOURS)]) {
-      merged.set(location.id, location)
-    }
-    const pool = weightedTopN([...merged.values()], GUARD_LANDMARK_POOL_SIZE)
-    const rng = createSeededRandom(hashSeed(deps.getWorldSeed(), pool.map((location) => location.id)))
-    return pickRandomReveal(pool, GUARD_REVEAL_MIN, GUARD_REVEAL_MAX, rng).map((location) => location.id)
-  }
-
-  const queryFor = (originX: number, originZ: number): WorldKnowledgeQuery => ({
-    kind: 'nearby-landmarks',
-    landmarkKinds: GUARD_RESEARCH_KINDS,
-    originX,
-    originZ,
-    maxChunkRadius: radius,
-  })
-
-  const launch = (npcId: NpcId, originX: number, originZ: number): void => {
-    if (launching.has(npcId)) return
-    launching.add(npcId)
-    const startedEpoch = epoch
-    void deps.research.resolveMany(queryFor(originX, originZ)).then(
-      (refs) => {
-        launching.delete(npcId)
-        if (startedEpoch !== epoch) return
-        const current = stateFor(npcId)
-        if (current.status !== 'requested') return
-        byNpc.set(npcId, {
-          ...current,
-          status: 'resolved',
-          selectedIds: pickSelectedIds(current.originX, current.originZ, refs),
-        })
-      },
-      () => {
-        launching.delete(npcId)
-      },
-    )
-  }
-
-  const alreadyKnownInRange = (originX: number, originZ: number): WorldLocation[] => {
-    const homeId = deps.homeLocationId()
-    return deps.locationKnowledge.list()
-      // A rumour lead (`estimated`) is not "known" — re-revealing it here
-      // would hand out its exact name/pin (plan world-041 L0 §0).
-      .filter((entry) => entry.state !== 'estimated')
-      .map((entry) => deps.getLocation(entry.id))
-      .filter((location): location is WorldLocation => location != null)
-      .filter((location) => location.id !== homeId && location.kind !== 'settlement')
-      .filter((location) => locationInRange(location, originX, originZ, MEDIUM_RANGE_HOURS))
-  }
-
   return {
-    askAboutArea(npcId, originX, originZ, source) {
-      const state = stateFor(npcId)
-      if (state.status === 'resolved') {
-        if (deps.getElapsedDays() < state.revealAtDays) return GUARD_AREA_RESEARCH_PENDING
-        const armed = deps.armFollowUp(npcId, {
-          createdAtDays: deps.getElapsedDays(),
-          source,
-          selectedLocationIds: state.selectedIds,
-        })
-        if (!armed) return GUARD_AREA_RESEARCH_PENDING
-        // Ownership transferred — this service is no longer the owner of the
-        // deliverable result (plan npc-050 §8/§10).
-        byNpc.set(npcId, { status: 'idle' })
-        return GUARD_AREA_RESEARCH_READY
-      }
-      if (state.status === 'requested') {
-        launch(npcId, state.originX, state.originZ)
-        return GUARD_AREA_RESEARCH_PENDING
-      }
-      const known = alreadyKnownInRange(originX, originZ)
-      if (known.length > 0) {
-        const rng = createSeededRandom(hashSeed(deps.getWorldSeed(), known.map((location) => location.id)))
-        const picked = pickRandomReveal(
-          weightedTopN(known, GUARD_LANDMARK_POOL_SIZE),
-          GUARD_REVEAL_MIN,
-          GUARD_REVEAL_MAX,
-          rng,
-        )
-        for (const location of picked) {
-          deps.locationKnowledge.reveal(location.id, 'discovered', 'npc')
-        }
-        return aboutAreaLine(picked.map((location) => location.name))
-      }
-      const now = deps.getElapsedDays()
-      byNpc.set(npcId, {
-        status: 'requested',
-        requestedAtDays: now,
-        revealAtDays: now + GUARD_LOCAL_KNOWLEDGE_DELAY_DAYS,
+    async askAboutArea(npcId, originX, originZ, speaker, trust) {
+      const seed = deps.getWorldSeed()
+      const day = Math.floor(deps.getElapsedDays())
+      const variant = hashSeed(seed, [npcId, day, 'variant'])
+      const expert = speaker !== 'adult'
+      if (trust < RUMOUR_TRUST_MIN) return rumourOutcomeLine('trust', speaker, variant)
+
+      const homeId = deps.homeLocationId()
+      const found = await deps.landmarksInRange(
         originX,
         originZ,
-      })
-      launch(npcId, originX, originZ)
-      return GUARD_AREA_RESEARCH_STARTED
-    },
-    restore(saved) {
-      launching.clear()
-      byNpc.clear()
-      if (!saved) return
-      for (const [npcId, entry] of Object.entries(saved)) {
-        byNpc.set(npcId, entry)
-        if (entry.status === 'requested') launch(npcId, entry.originX, entry.originZ)
+        RUMOUR_BAND_MIN_HOURS,
+        expert ? RUMOUR_EXPERT_BAND_MAX_HOURS : RUMOUR_BAND_MAX_HOURS,
+      )
+      // Ordering ignores knowledge state, so asking again / reloading the same
+      // day yields the same top candidate and cannot farm extra leads.
+      const pool = found
+        .filter((location) => isRumourKind(location.kind) && location.id !== homeId)
+        .map((location) => ({ location, rank: hashSeed(seed, [npcId, day, location.id]) }))
+        .sort((a, b) => a.rank - b.rank || a.location.id.localeCompare(b.location.id))
+      const top = pool[0]?.location
+      if (!top || !isRumourKind(top.kind)) return rumourOutcomeLine('none', speaker, variant)
+      if (deps.locationKnowledge.has(top.id)) return rumourOutcomeLine('daily', speaker, variant)
+      if (countOpenRumourLeads(deps.locationKnowledge, { getById: deps.getLocation }) >= RUMOUR_LEAD_CAP) {
+        return rumourOutcomeLine('cap', speaker, variant)
       }
+
+      const leadTier = expert ? 'expert' : undefined
+      // Same projection the map uses (`mapData.project`), so speech never
+      // reveals more than the marker does.
+      const area = rumourLeadAreaForEntry(seed, { id: top.id, leadTier }, top)
+      const bearing = rumourBearing(area.x - originX, area.z - originZ)
+      if (!bearing) return rumourOutcomeLine('none', speaker, variant)
+      const hours = worldUnitsToHours(Math.hypot(area.x - originX, area.z - originZ))
+      deps.locationKnowledge.reveal(top.id, 'estimated', 'npc', leadTier)
+      return rumourSuccessLine(top.kind, speaker, bearing, rumourTravelTime(hours), variant)
     },
+    restore() {},
     serialize() {
-      if (byNpc.size === 0) return undefined
-      const out: SaveGuardLocalKnowledgeByNpc = {}
-      for (const [npcId, state] of byNpc) {
-        if (state.status === 'idle') continue
-        out[npcId] = state
-      }
-      return Object.keys(out).length > 0 ? out : undefined
+      return undefined
     },
-    reset() {
-      epoch += 1
-      launching.clear()
-      byNpc.clear()
-    },
-    invalidate() {
-      epoch += 1
-      launching.clear()
-      for (const [npcId, state] of byNpc) {
-        if (state.status === 'requested') launch(npcId, state.originX, state.originZ)
-      }
-    },
+    reset() {},
+    invalidate() {},
   }
 }
 

@@ -1388,22 +1388,22 @@ Generated from exported TypeScript symbols.
 
 ## `world/locations/guardLocalKnowledge.ts`
 
-- `createGuardLocalKnowledge` — function — line 116
+- `createGuardLocalKnowledge` — function — line 87
   - domain: world-locations
-- `GUARD_AREA_RESEARCH_PENDING` — const — line 20
-- `GUARD_AREA_RESEARCH_READY` — const — line 26
-- `GUARD_AREA_RESEARCH_STARTED` — const — line 18
-- `GUARD_LOCAL_KNOWLEDGE_CHUNK_RADIUS` — const — line 31
-- `GUARD_LOCAL_KNOWLEDGE_DELAY_DAYS` — const — line 30
-- `GuardLocalKnowledge` — type — line 70
+- `GUARD_AREA_RESEARCH_PENDING` — const — line 16
+- `GuardLocalKnowledge` — type — line 51
   - domain: world-locations
-- `GuardLocalKnowledgeDeps` — type — line 78
-- `isSaveGuardLocalKnowledge` — function — line 264
-- `isSaveGuardLocalKnowledgeByNpc` — function — line 276
-- `normalizeSaveGuardLocalKnowledge` — function — line 292
+- `GuardLocalKnowledgeDeps` — type — line 61
+- `isSaveGuardLocalKnowledge` — function — line 138
+- `isSaveGuardLocalKnowledgeByNpc` — function — line 150
+- `normalizeSaveGuardLocalKnowledge` — function — line 166
   - domain: world-locations
-- `SaveGuardLocalKnowledge` — type — line 33
-- `SaveGuardLocalKnowledgeByNpc` — type — line 53
+- `RUMOUR_BAND_MAX_HOURS` — const — line 13
+- `RUMOUR_BAND_MIN_HOURS` — const — line 12
+- `RUMOUR_EXPERT_BAND_MAX_HOURS` — const — line 14
+- `RUMOUR_TRUST_MIN` — const — line 10
+- `SaveGuardLocalKnowledge` — type — line 19
+- `SaveGuardLocalKnowledgeByNpc` — type — line 39
 
 ## `world/locations/knownSettlementReputation.ts`
 
@@ -1467,11 +1467,11 @@ Generated from exported TypeScript symbols.
 
 ## `world/locations/locationKnowledge.ts`
 
-- `createLocationKnowledge` — function — line 35
-- `getActiveLocationKnowledge` — function — line 83
-- `LocationKnowledge` — type — line 19
+- `createLocationKnowledge` — function — line 39
+- `getActiveLocationKnowledge` — function — line 93
+- `LocationKnowledge` — type — line 23
 - `LocationKnowledgeEntry` — type — line 3
-- `setActiveLocationKnowledge` — function — line 79
+- `setActiveLocationKnowledge` — function — line 89
 
 ## `world/locations/locationProximityDiscovery.ts`
 
@@ -1526,9 +1526,8 @@ Generated from exported TypeScript symbols.
 
 ## `world/locations/npcPlayerFollowUpDelivery.ts`
 
-- `deliverNpcWorldKnowledgeFollowUp` — function — line 24
+- `deliverNpcWorldKnowledgeFollowUp` — function — line 17
   - domain: world-locations
-- `NpcPlayerFollowUpDeliveryDeps` — type — line 7
 
 ## `world/locations/revealLocationKnowledge.ts`
 
@@ -1538,19 +1537,23 @@ Generated from exported TypeScript symbols.
 
 ## `world/locations/rumourLead.ts`
 
-- `countOpenRumourLeads` — function — line 127
-- `genericLocationLabel` — function — line 104
-- `isLocationDiscovered` — function — line 117
-- `isRumourLeadEntry` — function — line 109
+- `countOpenRumourLeads` — function — line 148
+- `genericLocationLabel` — function — line 125
+- `isLocationDiscovered` — function — line 138
+- `isRumourLeadEntry` — function — line 130
 - `RUMOUR_LEAD_CAP` — const — line 22
   - domain: world-locations
+- `RUMOUR_LEAD_EXPERT_RADIUS_MAX` — const — line 35
+- `RUMOUR_LEAD_EXPERT_RADIUS_MIN` — const — line 34
 - `RUMOUR_LEAD_OFFSET_MAX_FRAC` — const — line 29
 - `RUMOUR_LEAD_OFFSET_MIN_FRAC` — const — line 28
 - `RUMOUR_LEAD_RADIUS_MAX` — const — line 26
 - `RUMOUR_LEAD_RADIUS_MIN` — const — line 25
-- `rumourLeadArea` — function — line 59
-- `RumourLeadArea` — type — line 33
-- `RumourLeadAreaOptions` — type — line 35
+- `rumourLeadArea` — function — line 65
+- `RumourLeadArea` — type — line 39
+- `rumourLeadAreaForEntry` — function — line 103
+- `RumourLeadAreaOptions` — type — line 41
+- `RumourLeadTier` — type — line 37
 
 ## `world/locations/seedProfile.ts`
 
