@@ -4,7 +4,7 @@
 // Usage: node scripts/perf/measure-cost-baseline.mjs <previewPort> <outFile.json> <seed> <cold|warm> <reps>
 //   cold = fresh Chrome profile per rep, ?worldgenFixture=0 (no fixture, empty caches)
 //   warm = one fresh profile; rep 0 primes the caches (discarded), reps 1..N reload the same profile
-// Captures: [BootMark] console lines (ms), navigation → __seedvaleReady, JS heap peak (sampled), worker count.
+// Captures: [BootMark] console lines (ms), navigation → __seedvaleReady, main-thread JS heap peak + total Chrome process-tree RSS peak (sampled), worker count.
 // No FPS claims; no src/ edits. Labels every sample with platform, SHA, seed, cache state.
 import { execSync, spawn } from 'node:child_process'
 import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
@@ -17,6 +17,16 @@ const CHROME = process.env.SEEDVALE_CHROME ?? '/usr/bin/google-chrome'
 const DEBUG = 9334
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 const sha = execSync('git rev-parse HEAD').toString().trim()
+
+/** Sum of RSS (MiB) over the Chrome process tree rooted at `rootPid` (browser + renderers + GPU; dedicated workers live in renderers). */
+function chromeRssMiB(rootPid) {
+  try {
+    const rows = execSync('ps -eo pid=,ppid=,rss=').toString().split('\n').filter(Boolean).map((l) => l.trim().split(/\s+/).map(Number))
+    const tree = new Set([rootPid])
+    for (let grew = true; grew; ) { grew = false; for (const [pid, ppid] of rows) if (tree.has(ppid) && !tree.has(pid)) { tree.add(pid); grew = true } }
+    return rows.filter(([pid]) => tree.has(pid)).reduce((a, r) => a + r[2], 0) / 1024
+  } catch { return 0 }
+}
 
 async function cdpConnect() {
   for (let i = 0; i < 60; i++) {
@@ -39,7 +49,7 @@ function launch(profile) {
   ], { stdio: 'ignore', env: { GALLIUM_DRIVER: 'd3d12', ...process.env } })
 }
 
-async function sample(ws, url, label) {
+async function sample(ws, url, label, rootPid) {
   let id = 0
   const pending = new Map()
   const marks = {}
@@ -52,7 +62,7 @@ async function sample(ws, url, label) {
       const mm = typeof t === 'string' && t.match(/^\[BootMark\]\[([^\]]*)\] (.+): (\d+) ms$/)
       if (mm) marks[`${mm[1]}/${mm[2]}`] = Number(mm[3])
     }
-    if (d.method === 'Target.attachedToTarget' && d.params.targetInfo.type === 'worker') workers.add(d.params.targetInfo.targetId)
+    if (d.method === 'Target.attachedToTarget' && d.params.targetInfo.type === 'worker') { workers.add(d.params.targetInfo.targetId) }
   }
   const send = (method, params = {}) => new Promise((res) => { const i = ++id; pending.set(i, res); ws.send(JSON.stringify({ id: i, method, params })) })
   const ev = async (expression) => (await send('Runtime.evaluate', { expression, returnByValue: true })).result?.result?.value
@@ -65,19 +75,21 @@ async function sample(ws, url, label) {
     await sleep(500)
   }
   const t0 = Date.now()
-  let heapPeak = 0, ready = null
+  let heapPeak = 0, ready = null, rssPeak = 0
   while (Date.now() - t0 < 5 * 60_000) {
     await sleep(500)
     try {
       const m = (await send('Performance.getMetrics')).result?.metrics ?? []
       const heap = m.find((x) => x.name === 'JSHeapUsedSize')?.value ?? 0
       heapPeak = Math.max(heapPeak, heap)
+      // Total Chrome process-tree RSS (workers are not separately measurable: CDP Performance.getMetrics returns nothing for them).
+      rssPeak = Math.max(rssPeak, chromeRssMiB(rootPid))
       if (await ev('window.__seedvaleReady === true')) { ready = Date.now() - t0; break }
     } catch {}
   }
   const renderer = await ev("(()=>{const g=document.createElement('canvas').getContext('webgl2');const e=g&&g.getExtension('WEBGL_debug_renderer_info');return e?String(g.getParameter(e.UNMASKED_RENDERER_WEBGL)):'?'})()")
   const nav = await ev('JSON.stringify(performance.getEntriesByType("navigation")[0]?.toJSON?.() ?? null)')
-  return { label, readyMs: ready, heapPeakMiB: +(heapPeak / 1048576).toFixed(1), workers: workers.size, marks, renderer, nav: nav && JSON.parse(nav) }
+  return { label, readyMs: ready, heapPeakMiB: +(heapPeak / 1048576).toFixed(1), workers: workers.size, chromeRssPeakMiB: +rssPeak.toFixed(0), marks, renderer, nav: nav && JSON.parse(nav) }
 }
 
 const url = `http://localhost:${port}/?bootMark=1&seed=${seed}${mode === 'cold' ? '&worldgenFixture=0' : ''}`
@@ -88,7 +100,7 @@ if (mode === 'cold') {
     const chrome = launch(profile)
     try {
       const ws = new WebSocket(await cdpConnect()); await new Promise((x) => (ws.onopen = x))
-      results.push(await sample(ws, url, `cold#${r}`)); console.log('done', results.at(-1).label, results.at(-1).readyMs)
+      results.push(await sample(ws, url, `cold#${r}`, chrome.pid)); console.log('done', results.at(-1).label, results.at(-1).readyMs)
     } finally { chrome.kill(); await sleep(2000); rmSync(profile, { recursive: true, force: true }) }
   }
 } else {
@@ -97,7 +109,7 @@ if (mode === 'cold') {
     const chrome = launch(profile)
     try {
       const ws = new WebSocket(await cdpConnect()); await new Promise((x) => (ws.onopen = x))
-      const s = await sample(ws, url, r === 0 ? 'warm-prime(discarded)' : `warm#${r}`)
+      const s = await sample(ws, url, r === 0 ? 'warm-prime(discarded)' : `warm#${r}`, chrome.pid)
       if (r > 0) results.push(s)
       console.log('done', s.label, s.readyMs)
       await sleep(3000) // let IndexedDB/cache writes flush before the browser is killed

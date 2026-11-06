@@ -21,9 +21,8 @@ import { createBenchmarkWorldConfig } from '../../src/config/worldConfig'
 import { clearRoadNetworkCaches, roadRoutesForSettlement } from '../../src/settlement/roadNetwork'
 import { clearSettlementDefCache, setSettlementRiverQuery, settlementDefFor, settlementLayoutFor } from '../../src/settlement/settlementPlanCache'
 import { clearCemeteryCaches } from '../../src/terrain/cemeteryAssignment'
-import { rangeSpinesFor } from '../../src/terrain/chunkHeightmap'
+import { landformDescriptorsOf, rangeSpinesFor } from '../../src/terrain/chunkHeightmap'
 import { sampleRawTexelUncorrectedAt } from '../../src/terrain/chunkHeightmap'
-import { landformDescriptorsFor } from '../../src/terrain/landformDescriptors'
 import { createMacroClimate } from '../../src/terrain/macroClimate'
 import { createRiverQuery } from '../../src/terrain/riverQuery'
 import { computeWorldHydrology, sampleRawFloorRows, unpackChains, WORLD_HYDROLOGY_GRID } from '../../src/terrain/worldHydrology'
@@ -162,7 +161,7 @@ if (flag('hillshade') || flag('slope')) applyRelief(rgba, { hillshade: flag('hil
 
 // plan 060 debug overlay: descriptor footprints (magenta rings, cyan for spine summits) + range spines and passes.
 if (flag('landforms')) {
-  const descriptors = landformDescriptorsFor(seed)
+  const descriptors = landformDescriptorsOf(params)
   for (const d of descriptors) {
     disc(rgba, toPx(d.centreX), toPx(d.centreZ), Math.max(2, d.radius * scale), d.kind === 'spineSummit' ? [40, 220, 230] : [230, 40, 200], true)
   }
