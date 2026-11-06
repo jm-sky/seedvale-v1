@@ -47,7 +47,7 @@ export const ROAD_ROUTE_CACHE_NAMESPACE = 'road-routes'
 // v13 (2026-11-04, queue Q97): roads run straight under every bridge deck (chord + re-derived crossings).
 // v14 (2026-11-05, queue Q118): range spines/passes/summits reshape the relief (plan world-terrain-060 R1–R2).
 // v15 (2026-11-05): C¹ relief: smooth range-spine crest/blend/unions, C¹ Worley ridge, bicubic hydrology correction (plan world-terrain-065).
-export const ROAD_ROUTE_CACHE_VERSION = 22
+export const ROAD_ROUTE_CACHE_VERSION = 23
 
 const DEFAULT_DEBOUNCE_MS = 4000
 /** Bounded per-seed cap of requested routes only — never a full pair scan.

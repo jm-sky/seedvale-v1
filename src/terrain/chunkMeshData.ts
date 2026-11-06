@@ -10,6 +10,7 @@ import {
 } from './biomeColors'
 import { biomeWeightsAt } from './biomeRegions'
 import { apronGridWeights, type RegionParams, sampleApronGridWeighted } from './chunkHeightmap'
+import { applyRockPlateColor } from './rockPlateColor'
 
 /** World-space burn patches applied as vertex-color charcoal (plan 137) —
  *  the same `{x,z,radius}` as `chunkManager.ts`'s `TerrainModification` mode
@@ -189,6 +190,7 @@ export function computeChunkMeshData(params: ChunkMeshDataParams): ChunkMeshData
       colorForTerrain(h, m, waterLevel, heightScale, biomeWeights, tmp, sandBand)
       applySlopeRock(tmp, h, waterLevel, steepness, sandBand)
       applyMountainRock(tmp, mountainRidge, h, waterLevel, heightScale)
+      applyRockPlateColor(tmp, seed, wx, wz, mountainRidge, h, waterLevel)
       applyOceanDepthTint(tmp, continentalness, h, waterLevel)
       applyMicroTint(tmp, h, waterLevel, wx, wz, 0.045 + Math.min(1, roadTint) * 0.05)
       applyRoadTint(tmp, roadTint, wx, wz)

@@ -13,8 +13,13 @@
 
 /** Plate cell size (m): neighbouring rock cells form patches ≥ 10 m across. */
 export const PLATE_CELL_M = 9
-/** Largest plate height offset from the surrounding ground (m); author: ≤ ~0.8 m. */
-export const PLATE_MAX_DELTA_M = 0.8
+/** Facet cell size (m): the plate surface is broken into small tilted facets so it reads as rough, fractured rock. */
+export const FACET_CELL_M = 2.6
+/** Largest plate height offset from the surrounding ground (m); author: ≤ ~0.8 m (plane) + facets. */
+export const PLATE_MAX_DELTA_M = 1.1
+const PLANE_MAX_DELTA_M = 0.8
+const FACET_MAX_SLOPE = 0.22
+const FACET_MAX_DELTA_M = 0.3
 /** Maximum plane slope (m per m) of a plate. */
 const PLATE_MAX_SLOPE = 0.16
 /** Probability that a plate is rock at zone weight 1 / at the zone threshold. */
@@ -36,14 +41,24 @@ function smooth01(a: number, b: number, v: number): number {
   return t * t * (3 - 2 * t)
 }
 
+/**
+ * Rock-zone weight from the *reported* `mountainRidge`: plates exist only where the ground is already bare grey/white rock
+ * (author 2026-11-06: not on green mountainsides). Used identically by the height sampler and the vertex-colour pass.
+ */
+export function rockPlateZoneOf(ridge: number): number {
+  return smooth01(0.8, 0.95, ridge)
+}
+
 export type RockPlate = {
   /** Height offset (m) to add to the floor. */
   delta: number
   /** 0..1 rock-colour / exposure weight. */
   patch: number
+  /** 0..1 per-plate / per-facet brightness variation for the colour pass. */
+  tone: number
 }
 
-const NONE: RockPlate = { delta: 0, patch: 0 }
+const NONE: RockPlate = { delta: 0, patch: 0, tone: 0.5 }
 
 /**
  * Plate at `(x, z)` for a rock-zone weight `zone` (0..1). Returns a shared zero object when outside the zone — do not mutate.
@@ -78,7 +93,40 @@ export function rockPlateAt(seed: number, x: number, z: number, zone: number): R
   if (hash2(bix, biz, seed, SALT + 2) >= prob) return NONE
   const slopeX = (hash2(bix, biz, seed, SALT + 3) * 2 - 1) * PLATE_MAX_SLOPE
   const slopeZ = (hash2(bix, biz, seed, SALT + 4) * 2 - 1) * PLATE_MAX_SLOPE
-  const raw = slopeX * (x - bx) + slopeZ * (z - bz)
-  const delta = Math.max(-PLATE_MAX_DELTA_M, Math.min(PLATE_MAX_DELTA_M, raw)) * smooth01(ZONE_MIN, 0.4, zone)
-  return { delta, patch: smooth01(0.1, 0.4, zone) }
+  const plane = Math.max(-PLANE_MAX_DELTA_M, Math.min(PLANE_MAX_DELTA_M, slopeX * (x - bx) + slopeZ * (z - bz)))
+
+  // Facets: second, finer Voronoi layer on top of the plane (rough, fractured surface).
+  const fx = Math.floor(x / FACET_CELL_M)
+  const fz = Math.floor(z / FACET_CELL_M)
+  let fbest = Infinity
+  let fsx = 0
+  let fsz = 0
+  let fix = 0
+  let fiz = 0
+  for (let j = -1; j <= 1; j++) {
+    for (let i = -1; i <= 1; i++) {
+      const ix = fx + i
+      const iz = fz + j
+      const sx = (ix + 0.1 + hash2(ix, iz, seed, SALT + 10) * 0.8) * FACET_CELL_M
+      const sz = (iz + 0.1 + hash2(ix, iz, seed, SALT + 11) * 0.8) * FACET_CELL_M
+      const d = (x - sx) ** 2 + (z - sz) ** 2
+      if (d < fbest) {
+        fbest = d
+        fsx = sx
+        fsz = sz
+        fix = ix
+        fiz = iz
+      }
+    }
+  }
+  const facet = Math.max(
+    -FACET_MAX_DELTA_M,
+    Math.min(
+      FACET_MAX_DELTA_M,
+      (hash2(fix, fiz, seed, SALT + 12) * 2 - 1) * FACET_MAX_SLOPE * (x - fsx) + (hash2(fix, fiz, seed, SALT + 13) * 2 - 1) * FACET_MAX_SLOPE * (z - fsz),
+    ),
+  )
+  const delta = (plane + facet) * smooth01(ZONE_MIN, 0.4, zone)
+  const tone = hash2(bix, biz, seed, SALT + 5) * 0.6 + hash2(fix, fiz, seed, SALT + 14) * 0.4
+  return { delta, patch: smooth01(0.1, 0.4, zone), tone }
 }

@@ -3,7 +3,7 @@ import { PLATE_MAX_DELTA_M, rockPlateAt } from './rockPlates'
 
 describe('rockPlateAt', () => {
   it('is empty outside the rock zone', () => {
-    for (let i = 0; i < 50; i++) expect(rockPlateAt(7, i * 3.3, i * 1.7, 0)).toEqual({ delta: 0, patch: 0 })
+    for (let i = 0; i < 50; i++) expect(rockPlateAt(7, i * 3.3, i * 1.7, 0)).toMatchObject({ delta: 0, patch: 0 })
   })
 
   it('is deterministic and bounded', () => {

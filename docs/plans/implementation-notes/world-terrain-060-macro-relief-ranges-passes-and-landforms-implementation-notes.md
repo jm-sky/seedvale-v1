@@ -209,3 +209,9 @@ Author: crag/summit rock should read as angular grey rock; chose **(b)** a layer
 - **Cost:** 0.07 µs/sample inside the zone (Node microbench), 0 outside (gated on zone > 0.05).
 - **Caches bumped** (height output changed): chunk tile 36, hydrology 10, settlement defs 34, roads 22, caves 16, cemeteries 19, locations-coarse 13. Tests green (unit + full suite). Not re-run after this bump: full pass-grade/hydrology re-census and `measure-worldgen-cost.ts` (plates move heights ≤ 0.8 m only on crags/ridges; grade impact on passes expected within noise — 🟡). `worldgen:fixture:check` was already STALE before this change (fixtures v6/v12/v25 vs current) — unchanged, tools-020.
 - **Not browser-verified.** Look → queue §2 (crag `lf:crag:17_-10` (3179,-1706), peaks (-2322,-710) etc., seed `415424794`).
+
+### R3 correction 8 — plates only on grey/white rock, grey colour, rough surface (author look 2026-11-06, queue Q119)
+
+- **Author:** plates same colour as surroundings; also on green mountainsides; surface too smooth.
+- **Fix:** zone = `rockPlateZoneOf(reported ridge)` = smoothstep(0.8, 0.95) (was 0.55–0.8 + crag), so plates exist only where the ground is already bare rock; crater damping ×0.3 of the delta. The plate no longer feeds the reported ridge (zone would be circular). Colour: `rockPlateColor.ts` recomputes the plate in the vertex-colour pass → cool light grey (0x7d8086–0xb4b7bc, per plate/facet tone, snow mix at height) over the warm-brown ridge rock. Roughness: second Voronoi layer of 2.6 m facets (slope ≤ 0.22, ±0.3 m) on top of the 9 m plane (total ≤ 1.1 m).
+- Caches bumped again (chunk tile 37, hydrology 11, settlement defs 35, roads 23, caves 17, cemeteries 20, locations-coarse 14). Unit tests green; not browser-verified; far-tile colour has no plates (🟡).
