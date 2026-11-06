@@ -70,8 +70,8 @@ describe('landform generation + profiles (R3)', () => {
       }
       if (d.kind === 'crater') {
         // Dry bowl below the surroundings with a low rim; bare rock, hydrology correction ignored inside.
-        expect(landformHeightDeltaAt(index, d.centreX, d.centreZ)).toBeLessThan(-4)
-        expect(landformHeightDeltaAt(index, d.centreX + d.radius * 0.8, d.centreZ)).toBeGreaterThan(1)
+        expect(landformHeightDeltaAt(index, d.centreX, d.centreZ, 10)).toBeLessThan(-4)
+        expect(landformHeightDeltaAt(index, d.centreX + d.radius * 0.8, d.centreZ, 10)).toBeGreaterThan(1)
         expect(landformRockAt(index, d.centreX, d.centreZ)).toBe(1)
         expect(landformCorrectionBypassAt(index, d.centreX, d.centreZ)).toBe(1)
         expect(landformCorrectionBypassAt(index, d.centreX + d.radius + 1, d.centreZ)).toBe(0)
@@ -94,6 +94,21 @@ describe('crater river exclusion + crag rock (author look 2)', () => {
     expect(10 - (d.params.depth ?? 0)).toBeGreaterThan(0.45 + 1)
     expect(insideCraterAt(index, d.centreX, d.centreZ)).toBe(true)
     expect(insideCraterAt(index, d.centreX + d.radius + 1, d.centreZ)).toBe(false)
+  })
+  it('crater floor is a smooth concave dish: base-relief noise does not poke through (author 2026-11-06)', () => {
+    const d = generateLandforms(42, ctx).find((x) => x.kind === 'crater')!
+    const index = buildLandformIndex([d])
+    const floorAt = (dxFrac: number, noise: number) => {
+      const x = d.centreX + d.radius * dxFrac
+      return 10 + noise + landformHeightDeltaAt(index, x, d.centreZ, 10 + noise)
+    }
+    // Inside the flat dish (t ≤ 0.35) the result ignores ±2 m of base noise entirely.
+    for (const f of [0, 0.1, 0.2, 0.3]) expect(floorAt(f, 2)).toBeCloseTo(floorAt(f, -2), 6)
+    // Concave: rises monotonically from the centre outwards.
+    expect(floorAt(0.3, 0)).toBeGreaterThan(floorAt(0.1, 0))
+    expect(floorAt(0.1, 0)).toBeGreaterThan(floorAt(0, 0))
+    // Continuous with the unperturbed surroundings at the footprint edge.
+    expect(Math.abs(floorAt(0.999, 1.5) - (10 + 1.5))).toBeLessThan(0.05)
   })
   it('a crag is grassy on the flanks and rocky only on the top', () => {
     const d = generateLandforms(42, ctx).find((x) => x.kind === 'crag')!

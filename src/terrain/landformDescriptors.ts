@@ -115,6 +115,14 @@ const RELAX_STEPS = [1, 1.6, 2.4] as const
 
 type Candidate = { gx: number, gz: number, x: number, z: number, range: number, ground: number }
 
+/** Rise of the crater floor from its centre to the edge of the flat dish (m): a shallow concave dish, not a flat plate. */
+const CRATER_DISH_RISE_M = 1.2
+
+function craterParams(ground: number, waterLevel: number, rand: () => number): Record<string, number> {
+  const depth = Math.min(7 + rand() * 2.5, ground - waterLevel - 2)
+  return { depth, bottom: ground - depth, rim: 2 + rand() * 1.5 }
+}
+
 /** Smooth 0..1 step. */
 const smooth = (a: number, b: number, v: number): number => {
   const t = Math.min(1, Math.max(0, (v - a) / (b - a)))
@@ -191,7 +199,7 @@ export function generateLandforms(seed: number, ctx: LandformGenContext): readon
       const params: Record<string, number> = kind === 'crag'
         ? { amplitude: CRAG_MIN_HEIGHT_M + rand() * (CRAG_MAX_HEIGHT_M - CRAG_MIN_HEIGHT_M) }
         : kind === 'crater'
-          ? { depth: Math.min(7 + rand() * 2.5, picked.ground - ctx.waterLevel - 2), rim: 2 + rand() * 1.5 }
+          ? craterParams(picked.ground, ctx.waterLevel, rand)
           : { depth: 3.5 + rand() * 1, knoll: 4 + rand() * 2 }
       out.push({
         id: `lf:${kind}:${picked.gx}_${picked.gz}`,
@@ -231,7 +239,7 @@ export function landformIndexFor(seed: number, key: string, ctx: LandformGenCont
  * footprint edge). `crag` = knoll; `crater` = dry bowl with a low rim; `lakeIsland` = basin with a central knoll (hydrology decides
  * the water). Skipped entirely while the index is empty.
  */
-export function landformHeightDeltaAt(index: LandformIndex, x: number, z: number): number {
+export function landformHeightDeltaAt(index: LandformIndex, x: number, z: number, baseH = 0): number {
   if (index.count === 0) return 0
   let delta = 0
   for (const d of index.near(x, z)) {
@@ -245,9 +253,13 @@ export function landformHeightDeltaAt(index: LandformIndex, x: number, z: number
       const w = 1 - t * t
       delta += (d.params.amplitude ?? 8) * w * w
     } else if (d.kind === 'crater') {
-      const bowl = -(d.params.depth ?? 6) * (1 - smooth(0.3, 0.7, t))
+      // Floor: the base-relief noise is replaced (not offset) by a smooth concave dish, so no knolls poke out of the bowl
+      // (author 2026-11-06). `bottom` is the absolute dish centre height fixed at generation; fall back to depth below `baseH`.
+      const w = 1 - smooth(0.35, 0.75, t)
+      const bottom = d.params.bottom ?? baseH - (d.params.depth ?? 6)
+      const dish = bottom + CRATER_DISH_RISE_M * Math.min(1, t / 0.6) ** 2
       const u = (t - 0.8) / 0.1
-      delta += (bowl + (d.params.rim ?? 2.5) * Math.exp(-u * u)) * fade
+      delta += (dish - baseH) * w + (d.params.rim ?? 2.5) * Math.exp(-u * u) * fade
     } else if (d.kind === 'lakeIsland') {
       const basin = -(d.params.depth ?? 5) * (1 - smooth(0.4, 0.95, t))
       const u = t / 0.2

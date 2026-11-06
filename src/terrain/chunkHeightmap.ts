@@ -736,7 +736,7 @@ function sampleRawTexelUncorrected(
     spine.summitM > 0
       ? softCapSummitHeight(nCombined * heightScale + spine.summitM * landWeight)
       : nCombined * heightScale
-  const floorH = landforms.count === 0 ? baseH : baseH + landformHeightDeltaAt(landforms, wx, wz)
+  const floorH = landforms.count === 0 ? baseH : baseH + landformHeightDeltaAt(landforms, wx, wz, baseH)
   const h = floorH < waterLevel ? waterLevel : floorH
   const waterH = waterLevel
 
