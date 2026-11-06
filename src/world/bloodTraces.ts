@@ -132,10 +132,15 @@ function distanceSq(ax: number, az: number, bx: number, bz: number): number {
  *  against the trace's own `lifetimeDays` (plan §5/§6). Pure given
  *  `(seed, elapsedDays)`, same "re-derive, don't replay" contract as
  *  `world/weather.ts` — no per-trace timer, no persisted weather history. */
-export function bloodTraceRemainingFraction(trace: BloodTrace, seed: number, elapsedDays: number): number {
+export function bloodTraceRemainingFraction(
+  trace: BloodTrace,
+  seed: number,
+  elapsedDays: number,
+  offsetC = 0,
+): number {
   const age = elapsedDays - trace.createdAtDays
   if (age <= 0) return 1
-  const rainExposure = computeRainExposureDays(seed, trace.createdAtDays, elapsedDays)
+  const rainExposure = computeRainExposureDays(seed, trace.createdAtDays, elapsedDays, offsetC)
   const effectiveAge = age + rainExposure * BLOOD_RAIN_FADE_WEIGHT
   return clamp01(1 - effectiveAge / trace.lifetimeDays)
 }

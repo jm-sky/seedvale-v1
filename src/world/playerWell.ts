@@ -441,6 +441,7 @@ export function resolveWellRoofCondition(
   record: PlayerWellRecord,
   seed: number,
   nowDays: number,
+  offsetC = 0,
 ): number | null {
   if (!isWellCompleted(record) || !hasInitializedWellRoof(record)) return null
   // Active repair freezes degradation at the checkpointed started condition.
@@ -455,8 +456,8 @@ export function resolveWellRoofCondition(
     },
     nowDays,
     passiveDays: elapsed,
-    rainExposureDays: computeRainExposureDays(seed, fromDays, nowDays),
-    snowExposureDays: computeSnowExposureDays(seed, fromDays, nowDays),
+    rainExposureDays: computeRainExposureDays(seed, fromDays, nowDays, offsetC),
+    snowExposureDays: computeSnowExposureDays(seed, fromDays, nowDays, offsetC),
     decay: {
       passivePerDay: WELL_ROOF_PASSIVE_DECAY_PER_DAY,
       rainPerExposureDay: WELL_ROOF_RAIN_DECAY_PER_DAY,

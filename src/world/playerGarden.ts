@@ -2,7 +2,7 @@ import type { MaterialRequirement } from '../items/constructionMaterials'
 import type { ToolKind } from '../items/HeldTool'
 import type { ItemCapability } from '../items/itemCatalog'
 import type { GroundPlacementReason } from '../items/tentPlacement'
-import { computeWeather, getSeason, isRainWeather, WEATHER_CYCLE_DAYS } from './weather'
+import { computeWeather, getSeason, isRainWeather, localWeatherFrom, WEATHER_CYCLE_DAYS } from './weather'
 
 /**
  * Player-built garden plot (plan 174) — pure domain logic, same split as
@@ -278,6 +278,7 @@ export function resolveGardenHydration(
   record: Pick<PlayerGardenRecord, 'hydration' | 'lastHydrationUpdateAtDays' | 'droughtStressDays'>,
   seed: number,
   worldDays: number,
+  offsetC = 0,
 ): GardenHydrationState {
   const elapsed = Math.max(0, worldDays - record.lastHydrationUpdateAtDays)
   if (elapsed <= 0) {
@@ -302,7 +303,7 @@ export function resolveGardenHydration(
     const stepEnd = Math.min(cycleStart + WEATHER_CYCLE_DAYS, worldDays)
     const stepDays = stepEnd - stepStart
     if (stepDays <= 0) continue
-    const weather = computeWeather(seed, cycleStart, getSeason(cycleStart))
+    const weather = localWeatherFrom(computeWeather(seed, cycleStart, getSeason(cycleStart)), offsetC)
     hydration -= HYDRATION_DRY_RATE_PER_DAY * stepDays
     if (isRainWeather(weather.type)) hydration += HYDRATION_RAIN_GAIN_PER_DAY * weather.intensity * stepDays
     hydration = clampHydration(hydration)
@@ -319,8 +320,9 @@ export function applyGardenWatering(
   record: Pick<PlayerGardenRecord, 'hydration' | 'lastHydrationUpdateAtDays' | 'droughtStressDays'>,
   seed: number,
   worldDays: number,
+  offsetC = 0,
 ): GardenHydrationState {
-  const resolved = resolveGardenHydration(record, seed, worldDays)
+  const resolved = resolveGardenHydration(record, seed, worldDays, offsetC)
   return { ...resolved, hydration: clampHydration(resolved.hydration + WATERING_HYDRATION_GAIN) }
 }
 
@@ -331,8 +333,9 @@ export function resolveGardenHydrationAfterHarvest(
   record: Pick<PlayerGardenRecord, 'hydration' | 'lastHydrationUpdateAtDays' | 'droughtStressDays'>,
   seed: number,
   worldDays: number,
+  offsetC = 0,
 ): GardenHydrationState {
-  const resolved = resolveGardenHydration(record, seed, worldDays)
+  const resolved = resolveGardenHydration(record, seed, worldDays, offsetC)
   return { ...resolved, droughtStressDays: 0 }
 }
 

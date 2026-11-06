@@ -148,6 +148,7 @@ import {
 import { cancelChunkFarTile, requestChunkFarTile } from '../terrain/chunkWorkerPool'
 import { createFarTerrain, type FarTerrain } from '../terrain/farTerrain'
 import { farTerrainRadiusFromUrl } from '../terrain/farTerrainFlag'
+import { createClimateOffsetAt } from '../terrain/macroClimate'
 import { resourceById } from '../terrain/naturalResources'
 import {
   createResourceDeposits,
@@ -1541,6 +1542,11 @@ async function buildWorldSystems(
   // maintenance hook, unlike `playerWells` below which is only reachable
   // through `createApp.ts`'s live `getNearbyPlayerWell` accessor.
   bootMark('createPlayerGardens')
+  const climateOffsetAt = createClimateOffsetAt(
+    !!config.terrain.region.continentMask,
+    config.terrain.waterLevel,
+    chunkManager.sampleHeight,
+  )
   const playerGardens = createPlayerGardens(
     scene,
     chunkManager.sampleHeight,
@@ -1549,6 +1555,7 @@ async function buildWorldSystems(
     initialPlayerGardens,
     getWorldDays(),
     config.seed,
+    climateOffsetAt,
   )
   bootMarkEnd('createPlayerGardens')
 
@@ -1734,13 +1741,14 @@ async function buildWorldSystems(
     initialFireResidues,
     dayNight.elapsedDays,
   )
-  const placedTents = createPlacedTents(scene, chunkManager.sampleHeight, initialPlacedTents, config.seed)
+  const placedTents = createPlacedTents(scene, chunkManager.sampleHeight, initialPlacedTents, config.seed, climateOffsetAt)
   const placedTraps = createPlacedTraps(
     scene,
     chunkManager.sampleHeight,
     config.seed,
     { onCapture: onTrapCapture, onBaitReturned: onTrapBaitReturned },
     initialPlacedTraps,
+    climateOffsetAt,
   )
   const carts = createWorldCarts(
     scene,

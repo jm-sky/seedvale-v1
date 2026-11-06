@@ -1,5 +1,6 @@
 import { type Object3D, type Scene } from 'three'
 import type { HeightSampler } from '../player/PlayerController'
+import type { ClimateOffsetAt } from '../terrain/macroClimate'
 import type { RepairProgress } from '../world/repair'
 import type { MaterialRequirement } from './constructionMaterials'
 import type { ItemCapability } from './itemCatalog'
@@ -115,6 +116,7 @@ export function createPlacedTents(
   sampleHeight: HeightSampler,
   initial: readonly PlacedTent[] = [],
   seed = 0,
+  climateOffsetAt: ClimateOffsetAt = () => 0,
 ): PlacedTents {
   const tents: PlacedTentEntry[] = []
 
@@ -136,7 +138,7 @@ export function createPlacedTents(
       rainDecayPerDay: TENT_RAIN_DECAY_PER_DAY,
       snowDecayPerDay: TENT_SNOW_DECAY_PER_DAY,
       simWindowDays: SLEEPING_UTILITY_SIM_WINDOW_DAYS,
-    })
+    }, climateOffsetAt(entry.x, entry.z))
   }
 
   return {

@@ -1,17 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import { climateOffsetC } from '../terrain/macroClimate'
 import {
-  computeSurfaceWeatherLut,
-  localWeatherFrom,
-  SURFACE_LUT_KNOTS,
-  SURFACE_LUT_MIN_C,
-  surfaceWeatherAtOffset,
-  type WeatherState,
-  type WeatherType,
   computeClimate,
   computeRainExposureDays,
   computeSnowExposureDays,
   computeSurfaceWeather,
+  computeSurfaceWeatherLut,
   computeWeather,
   createClimateState,
   createForcedSurfaceWeatherRuntime,
@@ -20,10 +14,16 @@ import {
   getSeason,
   getSeasonProgress,
   isRainWeather,
+  localWeatherFrom,
   resolveSurfaceWeatherForFrame,
+  SURFACE_LUT_KNOTS,
+  SURFACE_LUT_MIN_C,
+  surfaceWeatherAtOffset,
   temperatureFor,
   tickClimate,
   WEATHER_CYCLE_DAYS,
+  type WeatherState,
+  type WeatherType,
 } from './weather'
 
 describe('getSeason / getSeasonProgress', () => {

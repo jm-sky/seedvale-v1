@@ -1,5 +1,6 @@
 import { type Object3D, type Scene } from 'three'
 import type { HeightSampler } from '../player/PlayerController'
+import type { ClimateOffsetAt } from '../terrain/macroClimate'
 import type { Collider } from './collision'
 import { disposeObject3D } from '../assets/loadGltf'
 import { placeOnGround } from '../settlement/props'
@@ -72,6 +73,7 @@ export function createPlayerGardens(
   initial: readonly PlayerGardenRecord[] = [],
   worldDays = 0,
   seed = 0,
+  climateOffsetAt: ClimateOffsetAt = () => 0,
 ): PlayerGardens {
   const gardens: PlayerGardenEntry[] = []
 
@@ -138,12 +140,12 @@ export function createPlayerGardens(
     },
     hydrationOf(id, days) {
       const entry = gardens.find((g) => g.id === id)
-      return entry ? resolveGardenHydration(entry, seed, days) : null
+      return entry ? resolveGardenHydration(entry, seed, days, climateOffsetAt(entry.x, entry.z)) : null
     },
     water(id, days) {
       const entry = gardens.find((g) => g.id === id)
       if (!entry) return null
-      const next = applyGardenWatering(entry, seed, days)
+      const next = applyGardenWatering(entry, seed, days, climateOffsetAt(entry.x, entry.z))
       entry.hydration = next.hydration
       entry.lastHydrationUpdateAtDays = next.lastHydrationUpdateAtDays
       entry.droughtStressDays = next.droughtStressDays
@@ -152,7 +154,7 @@ export function createPlayerGardens(
     recordHarvest(id, days) {
       const entry = gardens.find((g) => g.id === id)
       if (!entry) return
-      const next = resolveGardenHydrationAfterHarvest(entry, seed, days)
+      const next = resolveGardenHydrationAfterHarvest(entry, seed, days, climateOffsetAt(entry.x, entry.z))
       entry.hydration = next.hydration
       entry.lastHydrationUpdateAtDays = next.lastHydrationUpdateAtDays
       entry.droughtStressDays = next.droughtStressDays

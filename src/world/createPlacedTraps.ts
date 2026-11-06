@@ -3,6 +3,7 @@ import type { AnimalAgent, AnimalKind } from '../fauna/AnimalAgent'
 import type { TrapItemInstance } from '../items/itemInstances'
 import type { ItemKind } from '../items/items'
 import type { HeightSampler } from '../player/PlayerController'
+import type { ClimateOffsetAt } from '../terrain/macroClimate'
 import type { AnimalAttractionSource } from './animalAttractionSource'
 import { placeOnGround } from '../settlement/props'
 import {
@@ -98,6 +99,7 @@ export function createPlacedTraps(
   seed: number,
   hooks: PlacedTrapsHooks,
   initial: readonly PlacedTrapRecord[] = [],
+  climateOffsetAt: ClimateOffsetAt = () => 0,
 ): PlacedTraps {
   const traps: PlacedTrapEntry[] = []
   /** `trapId → animalId → in-game day the evasion cooldown expires`. Runtime
@@ -140,7 +142,7 @@ export function createPlacedTraps(
    *  incentive plan 141 §7 asks for. */
   const applyWeather = (entry: PlacedTrapEntry, nowDays: number): void => {
     const def = TRAP_DEFS[entry.kind]
-    const { wear, checkedAtDay } = accumulateTrapWeatherWear(seed, entry.weatherCheckedAtDay, nowDays, def)
+    const { wear, checkedAtDay } = accumulateTrapWeatherWear(seed, entry.weatherCheckedAtDay, nowDays, def, climateOffsetAt(entry.x, entry.z))
     entry.weatherCheckedAtDay = checkedAtDay
     if (wear <= 0) return
     const spent = spendTrapDurability(entry.durability, wear)

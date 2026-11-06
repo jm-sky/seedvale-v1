@@ -291,3 +291,21 @@ export function macroClimateOf(params: RawSampleParams): MacroClimate | null {
   perRegion.set(key, built)
   return built
 }
+
+/** Site → local-climate offset (°C) lookup, built once per `WorldBundle`. */
+export type ClimateOffsetAt = (x: number, z: number) => number
+
+/**
+ * Builds the per-world offset function (world-terrain-062 W1). Worlds without a finite continent
+ * (tests, infinite worlds) get a constant 0, so every consumer behaves exactly as before.
+ * `sampleHeight` supplies the ground height of the site; no player or camera position is involved.
+ * @domain world
+ */
+export function createClimateOffsetAt(
+  hasContinent: boolean,
+  waterLevel: number,
+  sampleHeight: (x: number, z: number) => number,
+): ClimateOffsetAt {
+  if (!hasContinent) return () => 0
+  return (x, z) => climateOffsetC(z, sampleHeight(x, z), waterLevel)
+}

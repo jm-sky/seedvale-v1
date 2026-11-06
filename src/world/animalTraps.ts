@@ -1,7 +1,7 @@
 import type { AnimalKind } from '../fauna/animalDefs'
 import type { ItemKind } from '../items/items'
 import { TRAP_GOOD_URL } from '../settlement/propSpecs'
-import { computeWeather, getSeason, type WeatherState, type WeatherType } from './weather'
+import { computeWeather, getSeason, localWeatherFrom, type WeatherState, type WeatherType } from './weather'
 
 /**
  * Animal traps — pure domain logic (plan 141). Deliberately free of
@@ -245,12 +245,13 @@ export function accumulateTrapWeatherWear(
   fromDay: number,
   nowDay: number,
   def: TrapDef,
+  offsetC = 0,
 ): TrapWeatherCatchup {
   if (!(nowDay > fromDay)) return { wear: 0, checkedAtDay: fromDay }
   let day = fromDay
   let wear = 0
   for (let i = 0; i < TRAP_WEATHER_MAX_CATCHUP_CYCLES; i++) {
-    const weather = computeWeather(seed, day, getSeason(day))
+    const weather = localWeatherFrom(computeWeather(seed, day, getSeason(day)), offsetC)
     if (weather.endsAt > nowDay) return { wear, checkedAtDay: day }
     wear += trapWeatherWear(weather, def)
     day = weather.endsAt

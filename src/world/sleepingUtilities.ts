@@ -162,6 +162,7 @@ export function resolveWeatherDrivenCondition(
   nowDays: number,
   shelterFactor: number,
   rates: WeatherDrivenConditionRates,
+  offsetC = 0,
 ): number {
   const elapsed = Math.max(0, nowDays - record.lastConditionUpdateAtDays)
   if (elapsed <= 0) return clampCondition(record.condition)
@@ -174,8 +175,8 @@ export function resolveWeatherDrivenCondition(
     state: record,
     nowDays,
     passiveDays: 0,
-    rainExposureDays: computeRainExposureDays(seed, fromDays, nowDays) * exposureScale,
-    snowExposureDays: computeSnowExposureDays(seed, fromDays, nowDays) * exposureScale,
+    rainExposureDays: computeRainExposureDays(seed, fromDays, nowDays, offsetC) * exposureScale,
+    snowExposureDays: computeSnowExposureDays(seed, fromDays, nowDays, offsetC) * exposureScale,
     decay: {
       rainPerExposureDay: rates.rainDecayPerDay,
       snowPerExposureDay: rates.snowDecayPerDay,
