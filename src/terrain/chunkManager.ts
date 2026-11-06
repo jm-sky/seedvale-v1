@@ -75,6 +75,7 @@ import { createCropPlacementVisual } from '../world/cropVisuals'
 import { getActiveDarkForestTreasureSite } from '../world/locations/darkForestTreasureSiteRuntime'
 import { makePlantedCropId } from '../world/plantedCrops'
 import { makePlantedTreeId, pickPlantedTreeSpecies, type PlantedTreeRecord } from '../world/plantedTrees'
+import { POOL_FOAM_RADIUS_M } from '../world/riverGeometry'
 import { environmentSightBlocker } from '../world/sight/environmentSightBlockers'
 import { coastalFactor, rollSizeClass, type TreeSizeClass } from '../world/treeLifecycle'
 import { createTreeStageMesh, preloadTreeStumpTemplate, tagTreeMesh } from '../world/treeVisuals'
@@ -174,6 +175,7 @@ import {
   ringChunkOffsets,
 } from './unloadedLandmarkLookup'
 import { createVegetationRegionBatcher } from './vegetationRegionBatcher'
+import { waterfallReservesIn } from './waterfallSites'
 import { type LocalWaterSample, sampleLocalWater as sampleLocalWaterPure } from './waterSample'
 import { isWetFloor } from './waterSurface'
 
@@ -2284,7 +2286,15 @@ export function createChunkManager(
       // requested) and released once in `unload`. Reused here rather than
       // retained again to keep the ref count balanced 1:1.
       const riverChains = rec.riverChains ?? []
-      rec.river = createChunkRiver(riverChains, chunkRect, x, z)
+      const cascadeSites = riverChains.length === 0
+        ? []
+        : waterfallReservesIn(config.hydrologyId, {
+          minX: chunkRect.minX - POOL_FOAM_RADIUS_M,
+          maxX: chunkRect.maxX + POOL_FOAM_RADIUS_M,
+          minZ: chunkRect.minZ - POOL_FOAM_RADIUS_M,
+          maxZ: chunkRect.maxZ + POOL_FOAM_RADIUS_M,
+        })
+      rec.river = createChunkRiver(riverChains, chunkRect, x, z, cascadeSites)
       if (rec.river) scene.add(rec.river.mesh)
       const riverMs = performance.now() - riverT0
       getMonitor().recordStage('riverFinalize', riverMs)

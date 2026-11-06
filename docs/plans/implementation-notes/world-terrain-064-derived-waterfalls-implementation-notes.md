@@ -85,3 +85,14 @@ Findings:
 - Reserve distances sample the straight top→bottom segment, not the chain polyline between (reach ≤ 107 m, nearly straight at 1.3–2.9 m spacing) — acceptable for a footprint; W2 may refine.
 
 Checks: `pnpm vitest run src/terrain` 708 pass, type-check, lint clean. Technical only; nothing browser-observable.
+
+## W2 — cascade presentation (Sonnet, 2026-11-06 — queue Q169)
+
+Implemented per §2.5–2.6, **technical verification only** (type-check, lint, `vitest src/world src/terrain/chunkManager`, build). GLSL was not compiled in a browser; looks → queue §2.
+
+- **Ribbon whitewater (0 extra draws):** `waterfallFactor` now `CASCADE_SLOPE_MIN` (0.25) → 0.55 (`riverGeometry.ts` imports the detector constant: one "steep" rule). Flow-streak speed in `riverWaterMaterial.ts` scales with `vFall` (0.55 → 1.45).
+- **Pool foam:** new per-vertex `aPool` (1 at a site bottom, linear to 0 over `POOL_FOAM_RADIUS_M` 12 m). 🟡 Deviation from W0 text: distance is the **world-plane Euclidean** distance to the bottom point, not along-chain offset — clipped runs lose chain indices, and a global x/z function agrees across chunk clips by construction (tested with two chunk origins). Upstream vertices within 12 m of the bottom (rare, reaches are straighter than that) get a little foam too.
+- **Spray:** `src/world/waterfallSpray.ts` — `SPRAY_QUADS_PER_SITE` 48 (96 tris), camera-facing billboards in the vertex shader from a per-chunk `uTime` (same clock as the river), no texture, no CPU per frame beyond one uniform write, `depthWrite: false`, fog on, no shadows. Layout from a per-site-id PRNG (deterministic, no `Math.random`). Owner chunk = the one containing the site's **bottom**; the mesh is a child of that chunk's river mesh (disposed with it). Budget: ≤ 1 extra draw per owning chunk.
+- **Wiring:** `chunkManager` asks `waterfallReservesIn(hydrologyId, chunkRect ± 12 m)` only when the chunk has river chains and passes the sites to `createChunkRiver`.
+- **Sound:** no asset in `public/sounds/` yet — not wired (W0: visuals do not wait). `docs/assets/SOUNDS.md` untouched.
+- No cache bump, no persistence change, no epoch change. Spray opacity/size are first guesses (tunables at the top of the shader / `buildWaterfallSprayGeometry`).

@@ -94,6 +94,34 @@ describe('buildRiverRibbonGeometry', () => {
     expect(aFall.getX(3)).toBe(1)
   })
 
+  it('starts foaming at the cascade detector slope (0.25) and saturates by 0.55', () => {
+    const at = (slope: number) => {
+      const run = [
+        { x: 0, z: 0, elevation: 20, accumulation: 20 },
+        { x: 10, z: 0, elevation: 20 - slope * 10, accumulation: 20 },
+      ]
+      return buildRiverRibbonGeometry([run], 0, 0)!.getAttribute('aFall').getX(2)
+    }
+    expect(at(0.24)).toBe(0)
+    expect(at(0.4)).toBeCloseTo(0.5, 5)
+    expect(at(0.6)).toBe(1)
+  })
+
+  it('writes pool foam from global distance to a cascade bottom, identical across chunk origins', () => {
+    const run = [
+      { x: 100, z: 50, elevation: 5, accumulation: 20 },
+      { x: 106, z: 50, elevation: 5, accumulation: 20 },
+      { x: 130, z: 50, elevation: 5, accumulation: 20 },
+    ]
+    const pools = [{ x: 100, z: 50 }]
+    const a = buildRiverRibbonGeometry([run], 0, 0, pools)!.getAttribute('aPool')
+    const b = buildRiverRibbonGeometry([run], 64, -64, pools)!.getAttribute('aPool')
+    expect(a.getX(0)).toBe(1)
+    expect(a.getX(2)).toBeCloseTo(0.5, 5)
+    expect(a.getX(4)).toBe(0)
+    for (let i = 0; i < a.count; i++) expect(b.getX(i)).toBe(a.getX(i))
+  })
+
   it('water Y sits below each point\'s own elevation (canonical cross-section)', () => {
     const run = [
       { x: 0, z: 0, elevation: 10, accumulation: 300 },

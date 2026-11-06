@@ -1,6 +1,7 @@
 import { BufferAttribute, BufferGeometry } from 'three'
 import type { RiverChain, RiverPoint, WorldRect } from '../terrain/riverNetwork'
 import { canonicalWaterHeight, flowFactor, widthFromAccumulation } from '../terrain/riverNetwork'
+import { CASCADE_SLOPE_MIN } from '../terrain/waterfallSites'
 
 /** Tiny rendering-only epsilon to avoid z-fighting where the ribbon's edge
  *  meets carved terrain at (by construction) almost exactly the same height
@@ -109,8 +110,27 @@ function tangentAt(points: RiverPoint[], i: number): { tx: number; tz: number } 
 // ribbon reads as churning/foaming there instead of flat water sliding downhill.
 // Below `WATERFALL_SLOPE_MIN` a segment is ordinary flow; above
 // `WATERFALL_SLOPE_MAX` it reads as a full waterfall.
-const WATERFALL_SLOPE_MIN = 0.6
-const WATERFALL_SLOPE_MAX = 1.6
+// Plan world-terrain-064 W2: foam onset equals the cascade detector's
+// `CASCADE_SLOPE_MIN` (0.25) so renderer and `waterfallSites.ts` share one rule
+// for "steep"; the measured steepest chain segment is 0.56–0.68, hence MAX 0.55.
+const WATERFALL_SLOPE_MIN = CASCADE_SLOPE_MIN
+const WATERFALL_SLOPE_MAX = 0.55
+
+/** Pool foam fades from the site bottom over this distance (metres, world plane). */
+export const POOL_FOAM_RADIUS_M = 12
+
+/** Where a cascade ends: ribbon vertices near it get the `aPool` foam term. */
+export type PoolFoamPoint = { x: number, z: number }
+
+/** 1 at a pool point fading linearly to 0 at {@link POOL_FOAM_RADIUS_M}; a pure function of global x/z so chunk clips agree. */
+export function poolFoamAt(pools: readonly PoolFoamPoint[], x: number, z: number): number {
+  let best = 0
+  for (const pool of pools) {
+    const d = Math.hypot(x - pool.x, z - pool.z)
+    if (d < POOL_FOAM_RADIUS_M) best = Math.max(best, 1 - d / POOL_FOAM_RADIUS_M)
+  }
+  return best
+}
 
 function waterfallFactor(prev: RiverPoint | null, p: RiverPoint): number {
   if (!prev) return 0
@@ -135,6 +155,7 @@ export function buildRiverRibbonGeometry(
   runs: RiverPoint[][],
   chunkOriginX: number,
   chunkOriginZ: number,
+  pools: readonly PoolFoamPoint[] = [],
 ): BufferGeometry | null {
   const usableRuns = runs.filter((run) => run.length >= 2)
   if (usableRuns.length === 0) return null
@@ -143,6 +164,7 @@ export function buildRiverRibbonGeometry(
   const uvs: number[] = []
   const flows: number[] = []
   const falls: number[] = []
+  const poolFoam: number[] = []
   const indices: number[] = []
 
   for (const run of usableRuns) {
@@ -170,6 +192,8 @@ export function buildRiverRibbonGeometry(
       positions.push(x + px * halfWidth, y, z + pz * halfWidth)
       flows.push(flow, flow)
       falls.push(fall, fall)
+      const pool = poolFoamAt(pools, p.x, p.z)
+      poolFoam.push(pool, pool)
 
       if (i > 0) {
         const prev = run[i - 1]!
@@ -191,6 +215,7 @@ export function buildRiverRibbonGeometry(
   geometry.setAttribute('uv', new BufferAttribute(new Float32Array(uvs), 2))
   geometry.setAttribute('aFlow', new BufferAttribute(new Float32Array(flows), 1))
   geometry.setAttribute('aFall', new BufferAttribute(new Float32Array(falls), 1))
+  geometry.setAttribute('aPool', new BufferAttribute(new Float32Array(poolFoam), 1))
   geometry.setIndex(indices)
   return geometry
 }

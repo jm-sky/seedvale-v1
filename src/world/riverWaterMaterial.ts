@@ -27,14 +27,17 @@ const VERTEX_SHADER = /* glsl */ `
 
   attribute float aFlow;
   attribute float aFall;
+  attribute float aPool;
 
   varying vec2 vUv;
   varying vec3 vViewDir;
   varying float vFlow;
   varying float vFall;
+  varying float vPool;
 
   void main() {
     vUv = uv;
+    vPool = aPool;
     vFlow = aFlow;
     vFall = aFall;
     vec4 world = modelMatrix * vec4(position, 1.0);
@@ -62,6 +65,7 @@ const FRAGMENT_SHADER = /* glsl */ `
   varying vec3 vViewDir;
   varying float vFlow;
   varying float vFall;
+  varying float vPool;
 
   // Cheap 2D value noise (hash + bilinear smoothstep interpolation) — the
   // irregularity source for the flow highlights below. Deliberately no
@@ -116,7 +120,7 @@ const FRAGMENT_SHADER = /* glsl */ `
     // flow axis (vUv.y, arc length in metres) than across it (vUv.x, 0..1)
     // stretches each highlight along the current, so it reads as a drifting
     // glint on moving water.
-    vec2 flowUv = vec2(vUv.x * 3.0, vUv.y * 0.45 - uTime * 0.55);
+    vec2 flowUv = vec2(vUv.x * 3.0, vUv.y * 0.45 - uTime * (0.55 + 0.9 * vFall));
     float streakField =
       valueNoise(flowUv) * 0.65 +
       valueNoise(vec2(flowUv.x * 2.3 + 11.7, flowUv.y * 2.7 - uTime * 0.35)) * 0.35;
@@ -139,6 +143,12 @@ const FRAGMENT_SHADER = /* glsl */ `
     col += uLakeFoam * mistBand * 0.6;
     col = mix(col, uLakeFoam, vFall * 0.6);
     alpha = mix(alpha, 0.92, vFall);
+
+    // Plunge-pool foam (plan world-terrain-064 W2): churning froth at the bottom
+    // of a cascade, fading with distance from it (aPool, global-coordinate based).
+    float poolChurn = smoothstep(0.35, 0.8, valueNoise(vec2(vUv.x * 5.0, vUv.y * 0.8 - uTime * 0.7)) + 0.35 * vPool);
+    col = mix(col, uLakeFoam, vPool * (0.35 + 0.4 * poolChurn));
+    alpha = mix(alpha, 0.9, vPool * 0.7);
 
     gl_FragColor = vec4(col, alpha);
     #include <fog_fragment>
