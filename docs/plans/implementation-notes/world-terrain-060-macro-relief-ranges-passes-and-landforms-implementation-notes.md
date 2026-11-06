@@ -221,3 +221,11 @@ Author: crag/summit rock should read as angular grey rock; chose **(b)** a layer
 - **Author:** plates collide with rivers/objects (gold ore buried, only its label visible); too dense; straight hard edges visible for metres.
 - **Fix:** `rockPlates.ts` — amplitude plane 0.6 + facets 0.2 (≤ 0.8 m); rock probability 0.7 → 0.12 at the zone edge and a coarse 40 m cluster gate keeps ~60 % of clusters (gaps between patches); plate borders domain-warped (wobbly, no straight lines); height fades to 0 over 2.8 m from a plate edge, colour over 5 m (edge distance from first/second nearest Voronoi site). Caches bumped (chunk tile 38, hydrology 12, settlement defs 36, roads 24, caves 18, cemeteries 21, locations-coarse 15).
 - **Ore under plate (🟡 cause not confirmed):** deposits take `env.sampleHeight` (bilinear tile heights) while the mesh is triangulated; sharp ~1 m steps made the two disagree. Lower amplitude + soft edges shrink that gap; if it persists, give deposits a plate-free exclusion (re-check with the author). Rivers carve after the sampler, so the plate height is under the channel cut — not changed.
+
+### R4 — re-measure after the rock-plate cache bump (Sonnet, 2026-11-06, queue Q119)
+
+Re-run after caches chunk tile 36 / hydrology 10 / settlements 34 / roads 22 (plates move heights). Node/V8, WSL2; no browser, no FPS claim.
+
+- **Pass grades** (`census-pass-grades.ts`): unchanged from the pre-plate numbers — 5/6 passes ≤ 9.5 % worst-100 m mean; 🟡 `415424794` `6_-7:0` still 14.1 % (one 41 % downhill step).
+- **Travel** (`worldgen:travel:census`): `415424794` routed components **1**, 21 routed edges, `gradeShareOver10Pct` 0 on the author-relevant edges. Seed 42 routed components **4** (R2 re-census had 3) — 🟡 seed 42 reconnected less well after the later relief changes (crater/plates); a few edges carry 6.8–12.4 % of length over 10 % grade. Not tuned (relief freeze = measure only); candidate for the road close-out (Q61–Q64).
+- **Cost** (`measure-worldgen-cost.ts --reps=3 --chunks=60`, last run): hydrology sample 3.6–4.2 s, compute 0.6–0.85 s, chunk p50 7–8 ms / p95 10–17 ms, layout 0.70–0.79 s, routes 26–30 s — ✅ within the Q131 tolerances (same as the earlier R4 cost table).
