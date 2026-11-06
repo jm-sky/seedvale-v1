@@ -153,3 +153,17 @@ Author: a crag must stand **1–3 tree heights** above the terrain; a crater may
 | all road routes (s) | 33.5–36.1 / 23.0–23.5 | 26.2–32.2 / 27.0–27.2 | ✅ 42 faster; 🟡 `415424794` +17 % (within ±25 %) |
 
 Relief/landform work adds no measurable hydrology or chunk cost. Still not done: browser boot (`?bootMark=1`, cold/warm), peak worker memory, browser look at pass / summit / crater / lake island, landform preview layer.
+
+### R4 — browser boot vs Q131 baseline (Sonnet, 2026-11-06, queue Q119)
+
+`node scripts/perf/measure-cost-baseline.mjs 4173 <out> 415424794 <cold|warm> 3` — production build at `e053b44a`, `vite preview`, WSL2 Chrome (Mesa D3D12), n = 3; cold = fresh profile + `?worldgenFixture=0`, warm = reloaded profile (prime discarded). Raw JSON not committed. No FPS claim.
+
+| State | Ready (s) | worldHydrology (ms) | buildSettlementsManager (ms) | createCaves (ms) | createWorldBundle (ms) | main-thread heap peak MiB |
+| --- | --- | --- | --- | --- | --- | --- |
+| cold (Q131) | 41.0 / 41.2 / 50.8 | 3324 / 2106 / 3994 | 2278 / 1798 / 3086 | 1078 / 1027 / 1478 | 19385 / 16841 / 26677 | 111–138 |
+| cold (now) | 43.6 / 55.7 / 34.9 | 2126 / 3301 / 2589 | 3119 / 5090 / 3065 | 977 / 1426 / 999 | 19195 / 25573 / 19349 | 110–134 |
+| warm (Q131) | 21.6 / 21.8 / 30.8 | 212 / 217 / 224 | 73 / 85 / 79 | 12 / 21 / 18 | 3492 / 4262 / 4504 | 88–110 |
+| warm (now) | 20.2 / 20.6 / 21.1 | 194 / 198 / 200 | 78 / 83 / 90 | 25 / 13 / 18 | 3568 / 3571 / 3747 | 98–106 |
+
+Verdict ✅ within the Q131 tolerances (±25 % ready/bundle, ±30 % per-phase): warm ready slightly faster; cold ready median 43.6 s vs 41.2 s (+6 %, one 55.7 s outlier). Workers: 6. 🟡 `buildSettlementsManager` cold median 3.1 s vs 2.3 s baseline (large spread; settlement work changed since Q131).
+Peak **worker** memory not measured (the tool samples only the main-thread JS heap) — left open. Still not done: browser look at pass / summit / crater / lake island (author judgement), landform preview layer.
