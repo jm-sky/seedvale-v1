@@ -136,6 +136,39 @@ export function computeWeather(seed: number, elapsedDays: number, season: Season
   }
 }
 
+/** Precipitation phase of a weather cycle at one site. */
+export type PrecipitationPhase = 'none' | 'rain' | 'snow'
+
+/** `WeatherState` re-labelled for one site: `type` rain↔snow by local phase, `temperature` = local °C. */
+export type LocalWeather = WeatherState & { offsetC: number; phase: PrecipitationPhase }
+
+/** Minimum |offset| (°C) from the reference site before a global event changes phase. */
+export const PHASE_GATE_C = 2
+/** Local temperature (°C) at or below which re-labelled precipitation falls as snow. */
+export const PHASE_T_C = 1
+
+/**
+ * Pure. Re-labels the phase of a global weather event for a site `offsetC` °C away from the
+ * reference (world-terrain-062 W1). Reference-anchored: with offset 0 the result equals the
+ * global weather. Storms stay `storm` (thunder is global) but carry the local phase.
+ * @domain world
+ */
+export function localWeatherFrom(global: WeatherState, offsetC: number): LocalWeather {
+  const temperature = global.temperature + offsetC
+  let phase: PrecipitationPhase =
+    global.type === 'snow' ? 'snow' : isRainWeather(global.type) ? 'rain' : 'none'
+  let type = global.type
+  if (phase === 'rain' && offsetC <= -PHASE_GATE_C && temperature <= PHASE_T_C) {
+    phase = 'snow'
+    if (type === 'rain') type = 'snow'
+  } else if (global.type === 'snow' && offsetC >= PHASE_GATE_C && temperature > PHASE_T_C) {
+    phase = 'rain'
+    type = 'rain'
+  }
+  if (offsetC === 0 && type === global.type) return { ...global, offsetC, phase }
+  return { ...global, type, temperature, offsetC, phase }
+}
+
 function clamp01(v: number): number {
   return v < 0 ? 0 : v > 1 ? 1 : v
 }
@@ -220,7 +253,7 @@ export function stepSurfaceWeather(
  *  of how large `elapsedDays` is — cheap enough to call every frame, no
  *  per-chunk or per-particle state involved (plan 133). `wetness`/
  *  `snowAmount` are visual presentation only, not a soil/snow simulation. */
-export function computeSurfaceWeather(seed: number, elapsedDays: number): SurfaceWeatherState {
+export function computeSurfaceWeather(seed: number, elapsedDays: number, offsetC = 0): SurfaceWeatherState {
   const currentCycle = Math.floor(elapsedDays / WEATHER_CYCLE_DAYS)
   const windowCycles = Math.ceil(SURFACE_SIM_WINDOW_DAYS / WEATHER_CYCLE_DAYS)
   const startCycle = Math.max(0, currentCycle - windowCycles)
@@ -229,7 +262,7 @@ export function computeSurfaceWeather(seed: number, elapsedDays: number): Surfac
   for (let cycle = startCycle; cycle <= currentCycle; cycle++) {
     const cycleStart = cycle * WEATHER_CYCLE_DAYS
     const cycleSeason = getSeason(cycleStart)
-    const w = computeWeather(seed, cycleStart, cycleSeason)
+    const w = localWeatherFrom(computeWeather(seed, cycleStart, cycleSeason), offsetC)
     const stepDays =
       cycle === currentCycle
         ? clamp01((elapsedDays - cycleStart) / WEATHER_CYCLE_DAYS) * WEATHER_CYCLE_DAYS
@@ -310,7 +343,7 @@ export function resolveSurfaceWeatherForFrame(
  *  covers). Pure — same inputs always yield the same exposure, independent of
  *  when it's actually called (time-skip/save-load safe, same guarantee as
  *  `computeWeather` itself). */
-export function computeRainExposureDays(seed: number, fromDays: number, toDays: number): number {
+export function computeRainExposureDays(seed: number, fromDays: number, toDays: number, offsetC = 0): number {
   if (toDays <= fromDays) return 0
   const startCycle = Math.floor(fromDays / WEATHER_CYCLE_DAYS)
   const endCycle = Math.floor(toDays / WEATHER_CYCLE_DAYS)
@@ -320,7 +353,7 @@ export function computeRainExposureDays(seed: number, fromDays: number, toDays: 
     const cycleEnd = cycleStart + WEATHER_CYCLE_DAYS
     const overlapDays = Math.min(cycleEnd, toDays) - Math.max(cycleStart, fromDays)
     if (overlapDays <= 0) continue
-    const w = computeWeather(seed, cycleStart, getSeason(cycleStart))
+    const w = localWeatherFrom(computeWeather(seed, cycleStart, getSeason(cycleStart)), offsetC)
     if (isRainWeather(w.type)) exposure += overlapDays * w.intensity
   }
   return exposure
@@ -329,7 +362,7 @@ export function computeRainExposureDays(seed: number, fromDays: number, toDays: 
 /** Cumulative snow "intensity-days" between two `elapsedDays` timestamps —
  *  the snow counterpart to `computeRainExposureDays`. Used by lazy tent /
  *  sleeping-utility condition (plan items-player-018), not by blood traces. */
-export function computeSnowExposureDays(seed: number, fromDays: number, toDays: number): number {
+export function computeSnowExposureDays(seed: number, fromDays: number, toDays: number, offsetC = 0): number {
   if (toDays <= fromDays) return 0
   const startCycle = Math.floor(fromDays / WEATHER_CYCLE_DAYS)
   const endCycle = Math.floor(toDays / WEATHER_CYCLE_DAYS)
@@ -339,7 +372,7 @@ export function computeSnowExposureDays(seed: number, fromDays: number, toDays: 
     const cycleEnd = cycleStart + WEATHER_CYCLE_DAYS
     const overlapDays = Math.min(cycleEnd, toDays) - Math.max(cycleStart, fromDays)
     if (overlapDays <= 0) continue
-    const w = computeWeather(seed, cycleStart, getSeason(cycleStart))
+    const w = localWeatherFrom(computeWeather(seed, cycleStart, getSeason(cycleStart)), offsetC)
     if (w.type === 'snow') exposure += overlapDays * w.intensity
   }
   return exposure
@@ -357,6 +390,50 @@ export type WorldClimateState = {
 export function computeClimate(seed: number, elapsedDays: number): WorldClimateState {
   const season = getSeason(elapsedDays)
   return { season, seasonProgress: getSeasonProgress(elapsedDays), weather: computeWeather(seed, elapsedDays, season) }
+}
+
+/** Local climate at a site `offsetC` °C from the reference (see `localWeatherFrom`). */
+export function localClimateAt(
+  climate: WorldClimateState,
+  offsetC: number,
+): { temperatureC: number; precipitationPhase: PrecipitationPhase; weather: LocalWeather } {
+  const weather = localWeatherFrom(climate.weather, offsetC)
+  return { temperatureC: weather.temperature, precipitationPhase: weather.phase, weather }
+}
+
+/** Offset knots (°C) of the surface-weather LUT used by position-dependent snow/wetness. */
+export const SURFACE_LUT_MIN_C = -10
+export const SURFACE_LUT_KNOTS = 16
+
+export type SurfaceWeatherLut = { snow: Float32Array; wetness: Float32Array }
+
+export function createSurfaceWeatherLut(): SurfaceWeatherLut {
+  return { snow: new Float32Array(SURFACE_LUT_KNOTS), wetness: new Float32Array(SURFACE_LUT_KNOTS) }
+}
+
+/** Pure: `computeSurfaceWeather` at each knot (1 °C apart from `SURFACE_LUT_MIN_C`). */
+export function computeSurfaceWeatherLut(
+  seed: number,
+  elapsedDays: number,
+  out: SurfaceWeatherLut = createSurfaceWeatherLut(),
+): SurfaceWeatherLut {
+  for (let k = 0; k < SURFACE_LUT_KNOTS; k++) {
+    const s = computeSurfaceWeather(seed, elapsedDays, SURFACE_LUT_MIN_C + k)
+    out.snow[k] = s.snowAmount
+    out.wetness[k] = s.wetness
+  }
+  return out
+}
+
+/** Linear interpolation between knots, clamped to the LUT range. */
+export function surfaceWeatherAtOffset(lut: SurfaceWeatherLut, offsetC: number): SurfaceWeatherState {
+  const f = Math.min(SURFACE_LUT_KNOTS - 1, Math.max(0, offsetC - SURFACE_LUT_MIN_C))
+  const i = Math.min(SURFACE_LUT_KNOTS - 2, Math.floor(f))
+  const t = f - i
+  return {
+    snowAmount: lut.snow[i]! * (1 - t) + lut.snow[i + 1]! * t,
+    wetness: lut.wetness[i]! * (1 - t) + lut.wetness[i + 1]! * t,
+  }
 }
 
 /** Mutable runtime cache around `computeClimate` — mirrors `dayNight.ts`'s

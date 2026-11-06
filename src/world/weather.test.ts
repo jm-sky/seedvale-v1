@@ -1,5 +1,13 @@
 import { describe, expect, it } from 'vitest'
+import { climateOffsetC } from '../terrain/macroClimate'
 import {
+  computeSurfaceWeatherLut,
+  localWeatherFrom,
+  SURFACE_LUT_KNOTS,
+  SURFACE_LUT_MIN_C,
+  surfaceWeatherAtOffset,
+  type WeatherState,
+  type WeatherType,
   computeClimate,
   computeRainExposureDays,
   computeSnowExposureDays,
@@ -356,5 +364,68 @@ describe('computeRainExposureDays (plan world-009 §6)', () => {
       if (isRainWeather(w.type)) expected += overlap * w.intensity
     }
     expect(computeRainExposureDays(seed, from, to)).toBeCloseTo(expected, 10)
+  })
+})
+
+describe('local climate (world-terrain-062 W1)', () => {
+  const base = (type: WeatherType, temperature: number): WeatherState => ({
+    type,
+    intensity: 0.7,
+    temperature,
+    startedAt: 0,
+    endsAt: 0.3,
+  })
+
+  it('offset 0 is identical to the global weather', () => {
+    for (const type of ['clear', 'cloudy', 'rain', 'fog', 'snow', 'storm'] as const) {
+      const w = base(type, 5)
+      const l = localWeatherFrom(w, 0)
+      expect(l.type).toBe(type)
+      expect(l.temperature).toBe(5)
+    }
+    expect(computeSurfaceWeather(7, 20, 0)).toEqual(computeSurfaceWeather(7, 20))
+    expect(computeRainExposureDays(7, 1, 9, 0)).toBe(computeRainExposureDays(7, 1, 9))
+    expect(computeSnowExposureDays(7, 1, 9, 0)).toBe(computeSnowExposureDays(7, 1, 9))
+  })
+
+  it('re-labels phase only past the gate and the temperature threshold', () => {
+    expect(localWeatherFrom(base('rain', -1), -3).type).toBe('snow') // -4 °C
+    expect(localWeatherFrom(base('rain', -1), -1).type).toBe('rain') // inside gate
+    expect(localWeatherFrom(base('rain', 12), -3).type).toBe('rain') // too warm
+    expect(localWeatherFrom(base('storm', -1), -3)).toMatchObject({ type: 'storm', phase: 'snow' })
+    expect(localWeatherFrom(base('snow', 5), 3)).toMatchObject({ type: 'rain', phase: 'rain' })
+    expect(localWeatherFrom(base('snow', -7), 3).type).toBe('snow') // still freezing
+    expect(localWeatherFrom(base('clear', 5), 3)).toMatchObject({ type: 'clear', phase: 'none', temperature: 8 })
+  })
+
+  it('one global event gives north snow and south rain', () => {
+    const w = base('rain', 0)
+    expect(localWeatherFrom(w, -4).phase).toBe('snow')
+    expect(localWeatherFrom(w, +4).phase).toBe('rain')
+  })
+
+  it('surface state is a pure function of (seed, day, offset)', () => {
+    for (let day = 0; day < 40; day += 3.7) {
+      expect(computeSurfaceWeather(3, day, -4)).toEqual(computeSurfaceWeather(3, day, -4))
+    }
+  })
+
+  it('LUT knots equal computeSurfaceWeather exactly and interpolate', () => {
+    const lut = computeSurfaceWeatherLut(11, 30.3)
+    for (let k = 0; k < SURFACE_LUT_KNOTS; k++) {
+      const s = computeSurfaceWeather(11, 30.3, SURFACE_LUT_MIN_C + k)
+      expect(lut.snow[k]).toBeCloseTo(s.snowAmount, 6)
+      expect(lut.wetness[k]).toBeCloseTo(s.wetness, 6)
+      expect(surfaceWeatherAtOffset(lut, SURFACE_LUT_MIN_C + k).snowAmount).toBeCloseTo(s.snowAmount, 6)
+    }
+  })
+})
+
+describe('climateOffsetC', () => {
+  it('is 0 at the reference, lapses once, and cools northwards', () => {
+    expect(climateOffsetC(0, 0, 0)).toBeCloseTo(0, 9)
+    expect(climateOffsetC(0, 10, 0)).toBeCloseTo(-0.09 * 10, 9)
+    expect(climateOffsetC(-3000, 0, 0)).toBeLessThan(0)
+    expect(climateOffsetC(3000, 0, 0)).toBeGreaterThan(0)
   })
 })

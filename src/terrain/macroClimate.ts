@@ -108,6 +108,21 @@ export function temperatureAt(z: number, floorH: number, waterLevel: number): nu
   return T_NORTH_C + (T_SOUTH_C - T_NORTH_C) * latitude01(z) - LAPSE_C_PER_M * Math.max(0, floorH - waterLevel)
 }
 
+/** Reference site of the global weather timeline: continent centre (z = 0) at sea level. */
+export function referenceTemperatureC(waterLevel: number): number {
+  return temperatureAt(0, waterLevel, waterLevel)
+}
+
+/**
+ * Local deviation (°C) from the global weather timeline's reference site (world-terrain-062 W1).
+ * The lapse lives only inside `temperatureAt`; consumers add `climateOffsetC` to the global
+ * temperature and never apply a second lapse. Pure in `(z, floorH)`.
+ * @domain world
+ */
+export function climateOffsetC(z: number, floorH: number, waterLevel: number): number {
+  return temperatureAt(z, floorH, waterLevel) - referenceTemperatureC(waterLevel)
+}
+
 /** Pure climate formula from already-known terms (shared by the grid path and tests). */
 export function macroClimateFrom(
   z: number,
