@@ -1734,6 +1734,7 @@ async function buildWorldSystems(
   bootMark('buildSettlementsManager')
   const settlementsManager = await buildSettlementsManager(scene, chunkManager, config.seed, playAt, config, forest, worldContext, mining, initialEconomies, onAnimalDeath, getPlayerSocial, isLandPlotOwned, pointLightBudget, getNearbyPlayerWell, foodSources, herbalGather, hunting, destinationThreat, initialHouseholds, initialNpcStates, helperDelivery, initialNpcRelationships, initialLivestock, initialRemovedLivestockIds, initialRats, initialRemovedRatIds, initialRatReconcileBuckets, initialStorageInfestation, seedHomeStorageInfestation, workContracts, transportOrders, resourceSiteInventories, resolveResourceSitePosition, playerWells, droppedItems, grassForage, playerTroughs, terrainPreparations, palisades, standingTorches, residentialBuildings, npcGraves, initialStructureStates, getWorldDays, onSettlementAvailable, npcWorldMovement, onAnimalDeathSound, initialFoundedSettlements, sightBlockers)
   bootMarkEnd('buildSettlementsManager')
+  settlementsManager.setClimateOffsetAt(climateOffsetAt)
   const homeDef = settlementsManager.getHomeDef()
   const riverWaterQuality = createRiverWaterQualityResolver(settlementsManager.peekDef)
 

@@ -15,6 +15,7 @@ import type { MaterialRequirement } from '../items/constructionMaterials'
 import type { DroppedItems } from '../items/createDroppedItems'
 import type { ColliderSource, HeightSampler, RuntimeGroundSampler } from '../player/PlayerController'
 import type { RegionParams } from '../terrain/chunkHeightmap'
+import type { ClimateOffsetAt } from '../terrain/macroClimate'
 import type { SettlementMiningHooks } from '../terrain/resourceDeposits'
 import type { RiverShoreCandidate } from '../terrain/riverNetwork'
 import type { LocalWaterSample } from '../terrain/waterSample'
@@ -35,7 +36,6 @@ import type { ResourceSiteInventories } from '../world/resourceSiteInventory'
 import type { SettlementForestHooks } from '../world/settlementForestHooks'
 import type { SightBlocker } from '../world/sight/sightBlockers'
 import type { TransportEndpointRef } from '../world/transportOrder'
-import type { WeatherState } from '../world/weather'
 import type { TerrainSamplers } from './settlementTerrain'
 import { dispatchReadyExpedition, type DispatchReadyExpeditionInput, type DispatchReadyExpeditionResult } from '../ai/npcExpeditionTravel'
 import { resolveNpcTravelCheckpoint } from '../ai/npcTravelCheckpoint'
@@ -58,6 +58,7 @@ import {
 } from '../world/transportOffscreen'
 import { resolveTransportTravelArrivals } from '../world/transportTravelArrival'
 import { DEFAULT_DAY_LENGTH_SEC } from '../world/travelUnits'
+import { localWeatherFrom, type WeatherState } from '../world/weather'
 import { resolveAuthoredRepairStructureIds } from './authoredRepairTargets'
 import { createSettlement, type CreateSettlementDeps, type Settlement } from './createSettlement'
 import {
@@ -201,6 +202,9 @@ export function shouldAcceptSettlementResidency(input: {
 const EAGER_NEIGHBOR_COUNT = 2
 
 export type SettlementsManager = {
+  /** Q170 / world-terrain-062 W1 — installs the local °C offset lookup so each settlement's NPCs
+   *  see weather re-phased at the settlement centre (default: reference climate everywhere). */
+  setClimateOffsetAt(fn: ClimateOffsetAt): void
   /** Settlement at grid cell (0,0) — always loaded, where the player spawns.
    *  Fauna/item spawners anchor to this one only (v1 scope: no per-settlement
    *  resource distribution, see multi-settlements plan). `null` until
@@ -1508,7 +1512,14 @@ export async function createSettlementsManager(
     resolveMerchantJourneyCheckpoints(nowDays, dayLengthSec)
   }
 
+  let climateOffsetAt: ClimateOffsetAt = () => 0
+  /** Per-settlement offset is static for a position — cache by settlement id. */
+  const settlementOffsetC = new Map<string, number>()
   return {
+    setClimateOffsetAt(fn) {
+      climateOffsetAt = fn
+      settlementOffsetC.clear()
+    },
     get home() {
       return homeSettlement
     },
@@ -1556,6 +1567,15 @@ export async function createSettlementsManager(
         agentCpu.endNpcStreaming()
       }
       for (const entry of entries.values()) {
+        let entryWeather = weather
+        if (weather && entry.settlement) {
+          let offsetC = settlementOffsetC.get(entry.def.id)
+          if (offsetC === undefined) {
+            offsetC = climateOffsetAt(entry.def.x, entry.def.z)
+            settlementOffsetC.set(entry.def.id, offsetC)
+          }
+          if (offsetC !== 0) entryWeather = localWeatherFrom(weather, offsetC)
+        }
         entry.settlement?.update(
           dt,
           playerPos,
@@ -1569,7 +1589,7 @@ export async function createSettlementsManager(
           dropLivestockProduct,
           nowDays,
           onAnimalVocalize,
-          weather,
+          entryWeather,
           nearbyPredators,
           playerObservation,
           nearbyWildCorpses,

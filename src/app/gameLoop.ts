@@ -190,6 +190,7 @@ import { WELL_WATER_UNAVAILABLE_DURING_REPAIR } from '../world/playerWell'
 import { resolveOffscreenTransportArrivals } from '../world/transportOffscreen'
 import {
   createForcedSurfaceWeatherRuntime,
+  localWeatherFrom,
   resolveSurfaceWeatherForFrame,
   SEASON_LABELS,
   tickClimate,
@@ -2765,11 +2766,14 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
       )
       hud.setTime(dayNight.timeOfDay)
       // Stage E — thin HUD projection of existing climate facts (no climate math).
+      // Q170 — HUD shows the climate at the player's position (offset 0 → reference weather).
+      const hudOffsetC = bundle.climateOffsetAt(player.mesh.position.x, player.mesh.position.z)
+      const hudWeather = hudOffsetC === 0 ? climate.weather : localWeatherFrom(climate.weather, hudOffsetC)
       hud.setWeather({
         seasonLabel: SEASON_LABELS[climate.season],
-        weatherLabel: WEATHER_LABELS[climate.weather.type],
-        temperatureText: `${Math.round(climate.weather.temperature)}°C`,
-        weatherKind: climate.weather.type,
+        weatherLabel: WEATHER_LABELS[hudWeather.type],
+        temperatureText: `${Math.round(hudWeather.temperature)}°C`,
+        weatherKind: hudWeather.type,
       })
       // Live ammo readout (plan items-player-024) — cheap early-exit for the
       // common non-ranged-held case; recomputed every frame (like the load
