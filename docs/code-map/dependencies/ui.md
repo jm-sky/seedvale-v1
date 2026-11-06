@@ -238,6 +238,7 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `ai/NpcAgent.ts`
+- `fauna/AnimalAgent.ts`
 - `fauna/createFauna.ts`
 - `items/createItemSpawners.ts`
 - `settlement/settlementSignposts.ts`

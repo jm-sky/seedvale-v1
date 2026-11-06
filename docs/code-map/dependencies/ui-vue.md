@@ -420,6 +420,7 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `ui-vue/lib/worldMapPlayerHeading.test.ts`
+- `world/locations/uncertainKnowledge.test.ts`
 
 ## `ui-vue/lib/drawMinimap.ts`
 
@@ -518,6 +519,7 @@ Generated from TypeScript imports.
 
 - `ui-vue/lib/drawMap.ts`
 - `ui-vue/lib/mapLocationLabelLayout.test.ts`
+- `world/locations/uncertainKnowledge.test.ts`
 
 ## `ui-vue/lib/mapRasterLayers.ts`
 

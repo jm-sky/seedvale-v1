@@ -37,6 +37,7 @@ Generated from TypeScript imports.
 - `ai/npcCombat.ts`
 - `app/gameLoop.ts`
 - `combat/criticalHit.test.ts`
+- `fauna/AnimalAgent.ts`
 
 ## `combat/damageTypes.ts`
 
@@ -153,6 +154,7 @@ Generated from TypeScript imports.
 - `combat/meleeAgility.test.ts`
 - `player/playerMelee.test.ts`
 - `player/playerMelee.ts`
+- `player/playerMeleeContact.test.ts`
 
 ## `combat/meleeAttack.test.ts`
 

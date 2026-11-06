@@ -672,6 +672,7 @@ Generated from TypeScript imports.
 **Imports**
 
 - `assets/sharedSurfaceDiffuseTextures.ts`
+- `terrain/snowField.ts`
 - `terrain/terrainDetailNormalMap.ts`
 
 **Imported by**
@@ -1735,6 +1736,7 @@ Generated from TypeScript imports.
 - `debug/colliderDebugView.ts`
 - `debug/colliderInstancedVisual.ts`
 - `debug/playerMovementTrace.ts`
+- `fauna/AnimalAgent.chase.test.ts`
 - `fauna/AnimalAgent.ts`
 - `house-browser/colliderPreview.test.ts`
 - `house-browser/colliderPreview.ts`
@@ -3071,6 +3073,7 @@ Generated from TypeScript imports.
 - `app/saveState.ts`
 - `persistence/saveData.ts`
 - `world/locations/guardLocalKnowledge.test.ts`
+- `world/locations/uncertainKnowledge.test.ts`
 
 ## `world/locations/knownSettlementReputation.test.ts`
 
@@ -3093,6 +3096,31 @@ Generated from TypeScript imports.
 
 - `app/createApp.ts`
 - `world/locations/knownSettlementReputation.test.ts`
+- `world/locations/uncertainKnowledge.test.ts`
+
+## `world/locations/landmarkArrival.test.ts`
+
+**Imports**
+
+- `world/locations/landmarkArrival.ts`
+- `world/locations/locationKnowledge.ts`
+- `world/locations/worldLocationCatalog.ts`
+- `world/locations/worldLocationTypes.ts`
+
+## `world/locations/landmarkArrival.ts`
+
+**Imports**
+
+- `terrain/waterSurface.ts`
+- `world/locations/locationKnowledge.ts`
+- `world/locations/worldLocationCatalog.ts`
+- `world/locations/worldLocationTypes.ts`
+
+**Imported by**
+
+- `world/locations/landmarkArrival.test.ts`
+- `world/locations/locationProximityDiscovery.ts`
+- `world/locations/uncertainKnowledge.test.ts`
 
 ## `world/locations/locationConfig.ts`
 
@@ -3158,12 +3186,16 @@ Generated from TypeScript imports.
 - `world/locations/guardLocalKnowledge.ts`
 - `world/locations/knownSettlementReputation.test.ts`
 - `world/locations/knownSettlementReputation.ts`
+- `world/locations/landmarkArrival.test.ts`
+- `world/locations/landmarkArrival.ts`
 - `world/locations/locationKnowledge.test.ts`
 - `world/locations/locationProximityDiscovery.test.ts`
 - `world/locations/locationProximityDiscovery.ts`
 - `world/locations/npcPlayerFollowUpDelivery.test.ts`
 - `world/locations/npcPlayerFollowUpDelivery.ts`
 - `world/locations/revealLocationKnowledge.ts`
+- `world/locations/rumourLead.ts`
+- `world/locations/uncertainKnowledge.test.ts`
 - `world/locations/worldLocationCatalog.test.ts`
 - `world/map/mapData.ts`
 - `world/map/mapProjection.test.ts`
@@ -3191,6 +3223,7 @@ Generated from TypeScript imports.
 - `world/caveVolume.ts`
 - `world/locations/darkForestTreasureSite.ts`
 - `world/locations/darkForestTreasureSiteRuntime.ts`
+- `world/locations/landmarkArrival.ts`
 - `world/locations/locationKnowledge.ts`
 - `world/locations/worldLocationCatalog.ts`
 
@@ -3277,6 +3310,7 @@ Generated from TypeScript imports.
 - `ui-vue/lib/drawMinimap.ts`
 - `world/locations/navigationTargets.test.ts`
 - `world/locations/revealLocationKnowledge.ts`
+- `world/locations/uncertainKnowledge.test.ts`
 
 ## `world/locations/npcPlayerFollowUpDelivery.test.ts`
 
@@ -3313,6 +3347,22 @@ Generated from TypeScript imports.
 
 - `app/createApp.ts`
 - `app/inventoryWiring.ts`
+
+## `world/locations/rumourLead.ts`
+
+**Imports**
+
+- `world/locations/locationKnowledge.ts`
+- `world/locations/worldLocationCatalog.ts`
+- `world/locations/worldLocationTypes.ts`
+- `world/map/mapConfig.ts`
+- `world/parseSeed.ts`
+
+**Imported by**
+
+- `app/createApp.ts`
+- `world/locations/uncertainKnowledge.test.ts`
+- `world/map/mapData.ts`
 
 ## `world/locations/seedProfile.test.ts`
 
@@ -3379,6 +3429,25 @@ Generated from TypeScript imports.
 
 - `app/createApp.ts`
 - `app/worldBundle.ts`
+
+## `world/locations/uncertainKnowledge.test.ts`
+
+**Imports**
+
+- `ui-vue/lib/drawMap.ts`
+- `ui-vue/lib/mapLocationLabelLayout.ts`
+- `world/locations/guardLocalKnowledge.ts`
+- `world/locations/knownSettlementReputation.ts`
+- `world/locations/landmarkArrival.ts`
+- `world/locations/locationKnowledge.ts`
+- `world/locations/navigationTargets.ts`
+- `world/locations/rumourLead.ts`
+- `world/locations/worldLocationCatalog.ts`
+- `world/locations/worldLocationTypes.ts`
+- `world/map/mapConfig.ts`
+- `world/map/mapData.ts`
+- `world/map/mapDiscovery.ts`
+- `world/map/mapProjection.ts`
 
 ## `world/locations/worldKnowledgeResearch.test.ts`
 
@@ -3454,11 +3523,15 @@ Generated from TypeScript imports.
 - `debug/npcDebugApi.ts`
 - `world/locations/knownSettlementReputation.test.ts`
 - `world/locations/knownSettlementReputation.ts`
+- `world/locations/landmarkArrival.test.ts`
+- `world/locations/landmarkArrival.ts`
 - `world/locations/locationDiscovery.test.ts`
 - `world/locations/locationDiscovery.ts`
 - `world/locations/locationProximityDiscovery.test.ts`
 - `world/locations/locationProximityDiscovery.ts`
 - `world/locations/revealLocationKnowledge.ts`
+- `world/locations/rumourLead.ts`
+- `world/locations/uncertainKnowledge.test.ts`
 - `world/locations/worldLocationCatalog.test.ts`
 - `world/map/mapData.ts`
 - `world/map/mapProjection.test.ts`
@@ -3501,15 +3574,20 @@ Generated from TypeScript imports.
 - `world/locations/guardLocalKnowledge.ts`
 - `world/locations/knownSettlementReputation.test.ts`
 - `world/locations/knownSettlementReputation.ts`
+- `world/locations/landmarkArrival.test.ts`
+- `world/locations/landmarkArrival.ts`
 - `world/locations/locationDiscovery.test.ts`
 - `world/locations/locationDiscovery.ts`
 - `world/locations/locationProximityDiscovery.test.ts`
 - `world/locations/npcPlayerFollowUpDelivery.test.ts`
 - `world/locations/npcPlayerFollowUpDelivery.ts`
+- `world/locations/rumourLead.ts`
+- `world/locations/uncertainKnowledge.test.ts`
 - `world/locations/worldLocationCatalog.test.ts`
 - `world/locations/worldLocationCatalog.ts`
 - `world/locations/worldLocationNames.ts`
 - `world/locations/worldLocationTypes.test.ts`
+- `world/map/mapData.ts`
 - `world/map/mapProjection.test.ts`
 
 ## `world/map/continentPreview.test.ts`
@@ -3543,6 +3621,8 @@ Generated from TypeScript imports.
 - `ui-vue/lib/continentPreviewRender.ts`
 - `ui-vue/lib/drawMap.ts`
 - `ui-vue/lib/mapFogLayer.ts`
+- `world/locations/rumourLead.ts`
+- `world/locations/uncertainKnowledge.test.ts`
 - `world/map/continentPreview.test.ts`
 - `world/map/continentPreview.ts`
 - `world/map/mapData.ts`
@@ -3559,7 +3639,9 @@ Generated from TypeScript imports.
 **Imports**
 
 - `world/locations/locationKnowledge.ts`
+- `world/locations/rumourLead.ts`
 - `world/locations/worldLocationCatalog.ts`
+- `world/locations/worldLocationTypes.ts`
 - `world/map/mapConfig.ts`
 - `world/map/mapDiscovery.ts`
 - `world/map/mapProjection.ts`
@@ -3571,6 +3653,7 @@ Generated from TypeScript imports.
 - `ui-vue/lib/drawMap.ts`
 - `ui-vue/lib/drawMinimap.ts`
 - `world/locations/locationProximityDiscovery.test.ts`
+- `world/locations/uncertainKnowledge.test.ts`
 - `world/map/mapProjection.test.ts`
 
 ## `world/map/mapDiscovery.ts`
@@ -3590,6 +3673,7 @@ Generated from TypeScript imports.
 - `ui-vue/lib/mapFogLayer.ts`
 - `ui-vue/lib/mapRasterLayers.ts`
 - `world/locations/locationProximityDiscovery.test.ts`
+- `world/locations/uncertainKnowledge.test.ts`
 - `world/map/mapData.ts`
 - `world/map/mapFogGrid.test.ts`
 - `world/map/mapProjection.test.ts`
@@ -3661,6 +3745,7 @@ Generated from TypeScript imports.
 - `ui-vue/lib/mapFogLayer.ts`
 - `ui-vue/lib/mapTerrainPaint.test.ts`
 - `world/locations/locationProximityDiscovery.test.ts`
+- `world/locations/uncertainKnowledge.test.ts`
 - `world/locations/worldLocationCatalog.test.ts`
 - `world/map/continentPreview.test.ts`
 - `world/map/mapData.ts`
@@ -3855,6 +3940,8 @@ Generated from TypeScript imports.
 - `fauna/createFauna.ts`
 - `fauna/huntingHooks.ts`
 - `fauna/poisonedMeatBait.ts`
+- `fauna/settlementFaunaHabitats.test.ts`
+- `fauna/settlementFaunaHabitats.ts`
 - `items/createItemSpawners.ts`
 - `items/treasureGameplay.ts`
 - `items/villageTools.test.ts`
@@ -3903,6 +3990,7 @@ Generated from TypeScript imports.
 - `terrain/chunkVegetation.ts`
 - `terrain/continentMask.test.ts`
 - `terrain/grassPlacement.ts`
+- `terrain/landformDescriptors.ts`
 - `terrain/naturalResources.ts`
 - `terrain/rangeSpines.ts`
 - `terrain/resourceDeposits.ts`
@@ -3921,6 +4009,7 @@ Generated from TypeScript imports.
 - `world/locations/darkForestTreasureSite.ts`
 - `world/locations/guardLocalKnowledge.ts`
 - `world/locations/lostTreasureEstateSearchArea.ts`
+- `world/locations/rumourLead.ts`
 - `world/locations/seedProfile.ts`
 - `world/parseSeed.test.ts`
 - `world/seedLibrary.test.ts`
@@ -4247,15 +4336,23 @@ Generated from TypeScript imports.
 - `world/createRiverWater.ts`
 - `world/riverGeometry.test.ts`
 
+## `world/riverWaterMaterial.test.ts`
+
+**Imports**
+
+- `world/riverWaterMaterial.ts`
+
 ## `world/riverWaterMaterial.ts`
 
 **Imports**
 
+- `terrain/snowField.ts`
 - `world/waterMaterial.ts`
 
 **Imported by**
 
 - `world/createRiverWater.ts`
+- `world/riverWaterMaterial.test.ts`
 
 ## `world/riverWaterQuality.test.ts`
 
@@ -4447,9 +4544,13 @@ Generated from TypeScript imports.
 - `audio/createWorldAudio.ts`
 - `audio/worldAudioSpatial.test.ts`
 - `audio/worldAudioSpatial.ts`
+- `fauna/AnimalAgent.chase.test.ts`
+- `fauna/humanBite.ts`
 - `interaction/Interactable.ts`
 - `player/playerCombat.test.ts`
 - `player/playerCombat.ts`
+- `simulation/observationSpatial.test.ts`
+- `simulation/observationSpatial.ts`
 - `terrain/abandonedMineDeposits.test.ts`
 - `terrain/abandonedMineDeposits.ts`
 - `terrain/mineableDeposit.test.ts`

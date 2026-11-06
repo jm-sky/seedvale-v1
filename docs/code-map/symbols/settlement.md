@@ -1283,16 +1283,18 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/settlementLayout.ts`
 
-- `computeSettlementLayout` — function — line 132
+- `computeSettlementLayout` — function — line 151
   - domain: settlements
-- `LayoutSite` — type — line 68
+- `LayoutSite` — type — line 87
+- `setSettlementLayoutOverrides` — function — line 83
 - `SETTLEMENT_BAND_MAX_EDGE_M` — const — line 45
 - `SETTLEMENT_MAX_EDGE_M` — const — line 42
 - `SETTLEMENT_MIN_DISTANCE_M` — const — line 33
 - `SETTLEMENT_SPACING_M` — const — line 36
 - `SETTLEMENT_TARGET_COUNT` — const — line 40
-- `SettlementLayout` — type — line 74
+- `SettlementLayout` — type — line 93
 - `SettlementLayoutInput` — type — line 57
+- `SettlementLayoutOverrides` — type — line 69
 
 ## `settlement/settlementNameUniqueness.ts`
 

@@ -628,6 +628,8 @@ Generated from TypeScript imports.
 - `debug/npcDebugApi.ts`
 - `debug/npcInspector.ts`
 - `economy/initial.ts`
+- `fauna/settlementFaunaHabitats.test.ts`
+- `fauna/settlementFaunaHabitats.ts`
 - `house-browser/dressingPreview.ts`
 - `perf/heavySettlementScenario.test.ts`
 - `perf/heavySettlementScenario.ts`
@@ -2750,6 +2752,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `app/worldBundle.ts`
 - `settlement/settlementPlanCache.ts`
 - `settlement/settlementProgression.test.ts`
 - `settlement/settlementProgression.ts`
@@ -3406,6 +3409,7 @@ Generated from TypeScript imports.
 - `ai/voluntaryExpeditionJoin.ts`
 - `debug/npcDebugApi.ts`
 - `economy/initial.ts`
+- `fauna/settlementFaunaHabitats.ts`
 - `settlement/SettlementsManager.ts`
 - `settlement/authoredRepairTargets.test.ts`
 - `settlement/authoredRepairTargets.ts`

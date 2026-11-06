@@ -1173,6 +1173,7 @@ Generated from TypeScript imports.
 - `player/playerDamage.ts`
 - `player/playerMelee.test.ts`
 - `player/playerMelee.ts`
+- `player/playerMeleeContact.test.ts`
 - `player/playerRanged.test.ts`
 - `player/playerRanged.ts`
 - `settlements-npcs-007.test.ts`

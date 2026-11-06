@@ -248,6 +248,7 @@ Generated from TypeScript imports.
 - `shared/temporaryConditions.ts`
 - `simulation/index.ts`
 - `simulation/observation.ts`
+- `simulation/observationSpatial.ts`
 - `terrain/resourceDeposits.ts`
 - `terrain/slopeConstraint.ts`
 - `terrain/terrainPreparation.ts`

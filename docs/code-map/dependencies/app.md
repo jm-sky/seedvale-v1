@@ -1130,6 +1130,7 @@ Generated from TypeScript imports.
 - `shared/bootMark.ts`
 - `shared/injurySeverity.ts`
 - `terrain/chunkGrid.ts`
+- `terrain/chunkHeightmap.ts`
 - `terrain/chunkManager.ts`
 - `terrain/chunkWorkerPool.ts`
 - `terrain/depositMining.ts`
@@ -1173,6 +1174,7 @@ Generated from TypeScript imports.
 - `world/locations/lostTreasureEstateSearchAreaRuntime.ts`
 - `world/locations/navigationTargets.ts`
 - `world/locations/revealLocationKnowledge.ts`
+- `world/locations/rumourLead.ts`
 - `world/locations/treasureMapBearCave.ts`
 - `world/locations/treasureMapBearCaveRuntime.ts`
 - `world/locations/worldKnowledgeResearch.ts`
@@ -1276,6 +1278,7 @@ Generated from TypeScript imports.
 - `fauna/AnimalSpawner.ts`
 - `fauna/animalAttraction.ts`
 - `fauna/faunaCombat.ts`
+- `fauna/humanBite.ts`
 - `fauna/predatorHumanDecision.ts`
 - `input/Keyboard.ts`
 - `input/MouseLook.ts`
@@ -1561,6 +1564,7 @@ Generated from TypeScript imports.
 - `player/playerCombat.test.ts`
 - `player/playerCombat.ts`
 - `player/playerMelee.test.ts`
+- `player/playerMeleeContact.test.ts`
 
 ## `app/inventoryWiring.equipToolGuard.test.ts`
 
@@ -1738,7 +1742,6 @@ Generated from TypeScript imports.
 - `app/worldBundle.ts`
 - `badges/badges.ts`
 - `config/worldConfig.ts`
-- `fauna/AnimalSpawner.ts`
 - `input/MouseLook.ts`
 - `items/HeldTool.ts`
 - `items/Inventory.ts`
@@ -1921,6 +1924,7 @@ Generated from TypeScript imports.
 - `settlement/roadRouteWorldgenCache.ts`
 - `settlement/settlementCharacter.ts`
 - `settlement/settlementGenerator.ts`
+- `settlement/settlementLayout.ts`
 - `settlement/settlementPlanCache.ts`
 - `settlement/settlementStructures.ts`
 - `settlement/settlementWorldgenCache.ts`

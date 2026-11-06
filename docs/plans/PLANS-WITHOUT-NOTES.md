@@ -1,12 +1,11 @@
 # PLANS PLANNED WITHOUT NOTES
 
 > Generated with `pnpm plans:without-notes`  
-> Date: 2026-11-05 20:19:58  
+> Date: 2026-11-06 11:32:44  
 
 ## PLANS
 
 - `fauna-049-wild-animal-tiers-and-trophies.md`
-- `fauna-050-world-wild-fauna-habitats.md`
 - `npc-062-ubc-runtime-material-darkness-and-authored-outfit-preservation.md`
 - `npc-065-stable-npc-voice-casting-and-donor-qc.md`
 - `npc-069-next-fish-audio-production-batch.md`
@@ -18,7 +17,6 @@
 - `settlements-npcs-052-persistent-economic-work-cargo-and-local-transfer-conservation.md`
 - `settlements-npcs-054-transport-carrier-death-and-cargo-disposition.md`
 - `tools-019-debug-tooling-lifecycle-ownership.md`
-- `world-041-landmark-catalog-and-rumour-leads.md`
 - `world-terrain-055-optional-shadow-frustum-and-refresh-trims.md`
 - `world-terrain-059-world-scale-travel-time-and-sparse-settlements.md`
 - `world-terrain-062-regional-biomes-and-local-precipitation-phase.md`
@@ -43,37 +41,6 @@ Wczytaj:
 
 Na podstawie review utwórz w repo plik:
 `docs/plans/implementation-notes/fauna-049-wild-animal-tiers-and-trophies-implementation-notes.md`
-
-Umieść w nim:
-- sugestie dotyczące implementacji,
-- istotne detale techniczne,
-- decyzje architektoniczne,
-- informacje o istniejących systemach i implementacjach, które należy wykorzystać,
-- potencjalne problemy, zależności i pułapki,
-- inne konkretne wskazówki, które ułatwią agentowi AI poprawną implementację planu.
-
-Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
-Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
-
-Pliki dodaj na branch `main` w repozytorium.
-```
-
-### `fauna-050-world-wild-fauna-habitats.md`
-
-Prompt:
-
-```
-Zrób review planu `fauna-050-world-wild-fauna-habitats.md`
-
-Wczytaj:
-- `docs/STATE.md`
-- `docs/plans/PLANNING.md` (Implementation Notes section),
-- `docs/plans/fauna-050-world-wild-fauna-habitats.md`
-- aktualny codebase,
-- potrzebne zależności i powiązane implementacje.
-
-Na podstawie review utwórz w repo plik:
-`docs/plans/implementation-notes/fauna-050-world-wild-fauna-habitats-implementation-notes.md`
 
 Umieść w nim:
 - sugestie dotyczące implementacji,
@@ -415,37 +382,6 @@ Wczytaj:
 
 Na podstawie review utwórz w repo plik:
 `docs/plans/implementation-notes/tools-019-debug-tooling-lifecycle-ownership-implementation-notes.md`
-
-Umieść w nim:
-- sugestie dotyczące implementacji,
-- istotne detale techniczne,
-- decyzje architektoniczne,
-- informacje o istniejących systemach i implementacjach, które należy wykorzystać,
-- potencjalne problemy, zależności i pułapki,
-- inne konkretne wskazówki, które ułatwią agentowi AI poprawną implementację planu.
-
-Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
-Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
-
-Pliki dodaj na branch `main` w repozytorium.
-```
-
-### `world-041-landmark-catalog-and-rumour-leads.md`
-
-Prompt:
-
-```
-Zrób review planu `world-041-landmark-catalog-and-rumour-leads.md`
-
-Wczytaj:
-- `docs/STATE.md`
-- `docs/plans/PLANNING.md` (Implementation Notes section),
-- `docs/plans/world-041-landmark-catalog-and-rumour-leads.md`
-- aktualny codebase,
-- potrzebne zależności i powiązane implementacje.
-
-Na podstawie review utwórz w repo plik:
-`docs/plans/implementation-notes/world-041-landmark-catalog-and-rumour-leads-implementation-notes.md`
 
 Umieść w nim:
 - sugestie dotyczące implementacji,

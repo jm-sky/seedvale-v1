@@ -192,26 +192,26 @@ Generated from exported TypeScript symbols.
 
 ## `ai/NpcAgent.ts`
 
-- `classifyPendingActivity` — function — line 801
-- `configureNpcPlayerReactionAudio` — function — line 1047
-- `CurrentActivity` — type — line 602
-- `CurrentActivityKind` — type — line 574
-- `HUNT_RESUPPLY_ARROW_TARGET` — const — line 916
-- `NPC_HEIGHT` — const — line 516
-- `NPC_SHADOW_DISTANCE` — const — line 521
-- `NpcAgent` — class — line 1232
+- `classifyPendingActivity` — function — line 802
+- `configureNpcPlayerReactionAudio` — function — line 1048
+- `CurrentActivity` — type — line 603
+- `CurrentActivityKind` — type — line 575
+- `HUNT_RESUPPLY_ARROW_TARGET` — const — line 917
+- `NPC_HEIGHT` — const — line 517
+- `NPC_SHADOW_DISTANCE` — const — line 522
+- `NpcAgent` — class — line 1233
   - domain: settlements-npcs
   - system: npc-agent
   - role: Central per-NPC behaviour integration point: needs, FSM/schedule, personality-driven decisions and combat.
   - owns: NpcAuthoritativeState
   - uses: Household, SettlementEconomy, Needs
   - simulation: tick
-- `NpcAgentDeps` — type — line 1064
-- `NpcDialogueCondition` — type — line 1211
-- `NpcInspectionSnapshot` — type — line 617
-- `NpcWhy` — type — line 776
-- `projectNpcWhy` — function — line 843
-- `promoteChainKind` — function — line 793
+- `NpcAgentDeps` — type — line 1065
+- `NpcDialogueCondition` — type — line 1212
+- `NpcInspectionSnapshot` — type — line 618
+- `NpcWhy` — type — line 777
+- `projectNpcWhy` — function — line 844
+- `promoteChainKind` — function — line 794
 
 ## `ai/npcAnimalThreat.ts`
 

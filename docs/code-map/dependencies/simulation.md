@@ -98,6 +98,7 @@ Generated from TypeScript imports.
 **Imports**
 
 - `shared/injurySeverity.ts`
+- `simulation/observationSpatial.ts`
 
 **Imported by**
 
@@ -107,6 +108,26 @@ Generated from TypeScript imports.
 - `settlement/createSettlement.ts`
 - `simulation/observation.test.ts`
 - `ui/agentStatusLabel.ts`
+
+## `simulation/observationSpatial.test.ts`
+
+**Imports**
+
+- `simulation/observationSpatial.ts`
+- `world/spatialContext.ts`
+
+## `simulation/observationSpatial.ts`
+
+**Imports**
+
+- `world/spatialContext.ts`
+
+**Imported by**
+
+- `ai/NpcAgent.ts`
+- `fauna/AnimalAgent.ts`
+- `simulation/observation.ts`
+- `simulation/observationSpatial.test.ts`
 
 ## `simulation/scoreActions.test.ts`
 

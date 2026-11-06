@@ -33,9 +33,9 @@ Generated from exported TypeScript symbols.
 
 - `CAVE_HEIGHTFIELD_TERRAIN_ANCHOR` — const — line 37
 - `CAVE_HEIGHTFIELD_TERRAIN_SEED` — const — line 25
-- `sampleCaveHeightfieldBaseSurface` — function — line 79
+- `sampleCaveHeightfieldBaseSurface` — function — line 81
   - domain: world-terrain
-- `sampleCaveHeightfieldWalkSurface` — function — line 96
+- `sampleCaveHeightfieldWalkSurface` — function — line 98
   - domain: world-terrain
 
 ## `debug/caves/caveHeightfieldTraversal.ts`
@@ -103,7 +103,7 @@ Generated from exported TypeScript symbols.
 - `isNoShadowsDebugMode` — function — line 72
 - `isNpcCombatDebugMode` — function — line 108
 - `isRenderStateDebugMode` — function — line 86
-- `isSystemEnabled` — function — line 154
+- `isSystemEnabled` — function — line 156
 - `isWildBoarGlbEnabled` — function — line 117
 - `urlParamValue` — function — line 21
 

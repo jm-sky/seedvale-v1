@@ -32,28 +32,33 @@ Generated from exported TypeScript symbols.
 
 ## `simulation/observation.ts`
 
-- `assessHealthRatio` — function — line 96
-- `assessStaminaRatio` — function — line 121
-- `DEFAULT_PLAYER_OBSERVATION` — const — line 31
-- `formatPhysicalAssessment` — function — line 144
-- `formatPhysicalAssessmentFromQualitative` — function — line 114
-- `NEUTRAL_PERCEPTION` — const — line 27
-- `NPC_BROAD_IDENTITY_LABEL` — const — line 29
-- `ObservationInput` — type — line 12
-- `ObservationLevel` — type — line 10
+- `assessHealthRatio` — function — line 100
+- `assessStaminaRatio` — function — line 125
+- `DEFAULT_PLAYER_OBSERVATION` — const — line 35
+- `formatPhysicalAssessment` — function — line 148
+- `formatPhysicalAssessmentFromQualitative` — function — line 118
+- `NEUTRAL_PERCEPTION` — const — line 31
+- `NPC_BROAD_IDENTITY_LABEL` — const — line 33
+- `ObservationInput` — type — line 13
+- `ObservationLevel` — type — line 11
   - domain: npc
   - system: observation
   - role: Pure observation-level resolution from observer Perception and distance. Intended for presentation now and simulation consumers later — no DOM/UI dependency.
-- `observationRangeScale` — function — line 58
-- `PlayerObservationInput` — type — line 17
-- `QualitativeHealth` — type — line 50
-- `qualitativeHealthFromInjurySeverity` — function — line 105
-- `qualitativeHealthLabel` — function — line 127
-- `QualitativeStamina` — type — line 51
-- `qualitativeStaminaLabel` — function — line 136
-- `resolveObservationLevel` — function — line 63
-- `resolveStableObservationLevel` — function — line 89
-- `stabilizeObservationLevel` — function — line 73
+- `observationRangeScale` — function — line 62
+- `PlayerObservationInput` — type — line 18
+- `QualitativeHealth` — type — line 54
+- `qualitativeHealthFromInjurySeverity` — function — line 109
+- `qualitativeHealthLabel` — function — line 131
+- `QualitativeStamina` — type — line 55
+- `qualitativeStaminaLabel` — function — line 140
+- `resolveObservationLevel` — function — line 67
+- `resolveStableObservationLevel` — function — line 93
+- `stabilizeObservationLevel` — function — line 77
+
+## `simulation/observationSpatial.ts`
+
+- `isActorInfoSpatiallyVisible` — function — line 36
+- `PlayerLabelSpatialView` — type — line 18
 
 ## `simulation/scoreActions.ts`
 

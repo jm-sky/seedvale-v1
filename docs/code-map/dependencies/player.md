@@ -95,6 +95,7 @@ Generated from TypeScript imports.
 - `fauna/createFauna.ts`
 - `fauna/mountedSpeed.test.ts`
 - `fauna/playerAwareness.ts`
+- `fauna/settlementFaunaHabitats.ts`
 - `items/Inventory.test.ts`
 - `items/createDroppedItems.ts`
 - `items/createItemSpawners.ts`
@@ -654,6 +655,18 @@ Generated from TypeScript imports.
 - `player/playerCombat.test.ts`
 - `player/playerCombat.ts`
 - `player/playerMelee.test.ts`
+- `player/playerMeleeContact.test.ts`
+
+## `player/playerMeleeContact.test.ts`
+
+**Imports**
+
+- `app/interactables.ts`
+- `combat/meleeAgility.ts`
+- `items/itemCatalog.ts`
+- `player/playerMelee.ts`
+- `shared/StaminaState.ts`
+- `shared/VigorState.ts`
 
 ## `player/playerRanged.test.ts`
 

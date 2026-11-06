@@ -325,6 +325,7 @@ Generated from TypeScript imports.
 - `terrain/rangeSpines.ts`
 - `terrain/riverFord.ts`
 - `terrain/roadBridge.ts`
+- `terrain/rockPlates.ts`
 - `terrain/waterBodies.ts`
 - `terrain/waterSurface.ts`
 - `terrain/worldHydrologyStore.ts`
@@ -333,6 +334,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `app/createApp.ts`
 - `audio/ambientWeights.test.ts`
 - `audio/ambientWeights.ts`
 - `config/worldConfig.ts`
@@ -686,6 +688,7 @@ Generated from TypeScript imports.
 - `terrain/biomeColors.ts`
 - `terrain/biomeRegions.ts`
 - `terrain/chunkHeightmap.ts`
+- `terrain/rockPlateColor.ts`
 
 **Imported by**
 
@@ -1237,10 +1240,15 @@ Generated from TypeScript imports.
 
 ## `terrain/landformDescriptors.ts`
 
+**Imports**
+
+- `world/parseSeed.ts`
+
 **Imported by**
 
 - `terrain/chunkHeightmap.ts`
 - `terrain/landformDescriptors.test.ts`
+- `terrain/riverNetwork.ts`
 
 ## `terrain/macroClimate.test.ts`
 
@@ -1248,6 +1256,8 @@ Generated from TypeScript imports.
 
 - `config/worldConfig.ts`
 - `terrain/macroClimate.ts`
+- `terrain/worldHydrology.ts`
+- `terrain/worldHydrologyStore.ts`
 - `world/map/mapProjection.ts`
 
 ## `terrain/macroClimate.ts`
@@ -1260,6 +1270,7 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `terrain/macroClimate.test.ts`
+- `terrain/worldHydrology.ts`
 
 ## `terrain/mineableDeposit.test.ts`
 
@@ -1455,6 +1466,7 @@ Generated from TypeScript imports.
 
 - `math/segment.ts`
 - `terrain/chunkHeightmap.ts`
+- `terrain/landformDescriptors.ts`
 - `terrain/riverChainClip.ts`
 - `terrain/worldHydrology.ts`
 - `terrain/worldHydrologyStore.ts`
@@ -1569,6 +1581,30 @@ Generated from TypeScript imports.
 - `terrain/roadBridge.test.ts`
 - `world/createBridge.ts`
 
+## `terrain/rockPlateColor.ts`
+
+**Imports**
+
+- `terrain/rockPlates.ts`
+
+**Imported by**
+
+- `terrain/chunkMeshData.ts`
+
+## `terrain/rockPlates.test.ts`
+
+**Imports**
+
+- `terrain/rockPlates.ts`
+
+## `terrain/rockPlates.ts`
+
+**Imported by**
+
+- `terrain/chunkHeightmap.ts`
+- `terrain/rockPlateColor.ts`
+- `terrain/rockPlates.test.ts`
+
 ## `terrain/scorchFalloff.test.ts`
 
 **Imports**
@@ -1620,6 +1656,8 @@ Generated from TypeScript imports.
 - `terrain/buildChunkGeometry.ts`
 - `terrain/grass.ts`
 - `terrain/snowField.test.ts`
+- `world/caves/caveHeightfieldMaterial.ts`
+- `world/riverWaterMaterial.ts`
 
 ## `terrain/terrainClassification.ts`
 
@@ -1850,6 +1888,8 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `app/actions/mountActions.test.ts`
+- `fauna/AnimalAgent.chase.test.ts`
+- `fauna/AnimalAgent.encounter.test.ts`
 - `fauna/AnimalAgent.test.ts`
 - `fauna/AnimalAgent.ts`
 - `fauna/animalCaveJourney.test.ts`
@@ -1857,6 +1897,7 @@ Generated from TypeScript imports.
 - `fauna/animalHarvest.test.ts`
 - `fauna/animalSteering.test.ts`
 - `fauna/animalVariants.test.ts`
+- `fauna/createFauna.groups.test.ts`
 - `fauna/createFauna.ts`
 - `fauna/faunaProximity.test.ts`
 - `fauna/persistentOccupants.test.ts`
@@ -1886,6 +1927,7 @@ Generated from TypeScript imports.
 - `terrain/waterBodies.ts`
 - `terrain/waterSample.ts`
 - `world/createWater.ts`
+- `world/locations/landmarkArrival.ts`
 - `world/locations/worldLocationCatalog.test.ts`
 - `world/locations/worldLocationCatalog.ts`
 - `world/map/mapProjection.ts`
@@ -1923,6 +1965,7 @@ Generated from TypeScript imports.
 - `math/segment.ts`
 - `terrain/chunkHeightmap.ts`
 - `terrain/continentMask.ts`
+- `terrain/macroClimate.ts`
 - `terrain/riverNetwork.ts`
 - `terrain/worldHydrologyStore.ts`
 - `world/parseSeed.ts`
@@ -1934,6 +1977,7 @@ Generated from TypeScript imports.
 - `terrain/chunkWorkerPool.test.ts`
 - `terrain/chunkWorkerPool.ts`
 - `terrain/lakeWater.test.ts`
+- `terrain/macroClimate.test.ts`
 - `terrain/riverNetwork.ts`
 - `terrain/testWindowHydrology.ts`
 - `terrain/worldHydrology.test.ts`
@@ -2025,6 +2069,7 @@ Generated from TypeScript imports.
 - `terrain/farTerrain.test.ts`
 - `terrain/grassPlacement.test.ts`
 - `terrain/lakeWater.test.ts`
+- `terrain/macroClimate.test.ts`
 - `terrain/riverNetwork.test.ts`
 - `terrain/riverNetwork.ts`
 - `terrain/riverQuery.test.ts`

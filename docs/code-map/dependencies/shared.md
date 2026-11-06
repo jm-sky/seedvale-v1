@@ -119,6 +119,7 @@ Generated from TypeScript imports.
 - `player/PlayerNeeds.ts`
 - `player/playerMelee.test.ts`
 - `player/playerMelee.ts`
+- `player/playerMeleeContact.test.ts`
 - `player/playerRanged.test.ts`
 - `player/playerRanged.ts`
 - `settlement/npcState.ts`
@@ -159,6 +160,7 @@ Generated from TypeScript imports.
 - `player/PlayerNeeds.ts`
 - `player/playerMelee.test.ts`
 - `player/playerMelee.ts`
+- `player/playerMeleeContact.test.ts`
 - `player/playerRanged.test.ts`
 - `player/playerRanged.ts`
 - `settlement/npcState.ts`

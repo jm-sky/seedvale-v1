@@ -4,24 +4,25 @@ Generated from exported TypeScript symbols.
 
 ## `ui/agentStatusLabel.ts`
 
-- `AgentLabelDom` — type — line 55
+- `AgentLabelDom` — type — line 60
+- `AgentLabelHideReason` — type — line 41
 - `AgentLabelIconSlot` — type — line 29
 - `AgentLabelNamePresentation` — type — line 32
-- `AgentLabelObservationPresentation` — type — line 152
-- `AgentStatusLabelController` — type — line 205
+- `AgentLabelObservationPresentation` — type — line 157
+- `AgentStatusLabelController` — type — line 210
   - domain: ui-input
-- `applyBarPercent` — function — line 136
-- `computeBarPercent` — function — line 127
-- `createAgentLabel` — function — line 73
+- `applyBarPercent` — function — line 141
+- `computeBarPercent` — function — line 132
+- `createAgentLabel` — function — line 78
   - domain: ui-input
-- `createAgentStatusLabelController` — function — line 253
+- `createAgentStatusLabelController` — function — line 263
   - domain: ui-input
-- `createLabelBar` — function — line 45
-- `INITIAL_LABEL_DISTANCE_STATE` — const — line 171
+- `createLabelBar` — function — line 50
+- `INITIAL_LABEL_DISTANCE_STATE` — const — line 176
 - `LabelBarKind` — type — line 26
   - domain: ui-input
-- `LabelDistanceState` — type — line 144
-- `updateAgentLabelDistanceState` — function — line 586
+- `LabelDistanceState` — type — line 149
+- `updateAgentLabelDistanceState` — function — line 604
 
 ## `ui/createBusyOverlay.ts`
 
@@ -112,6 +113,7 @@ Generated from exported TypeScript symbols.
 
 - `barsVisibleForDistance` — function — line 22
 - `gazeOpacityFactor` — function — line 41
+- `LABEL_FADE_FAR` — const — line 4
 - `labelOpacityForDistance` — function — line 10
 
 ## `ui/lucideDomIcon.ts`

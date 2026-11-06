@@ -273,55 +273,59 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   🔴 `L` · **Score:**  24  
    → **unlocks:** 0/0
 
-46. `world-terrain-059` — **World scale, travel time and sparse settlements**  
+46. `world-terrain-067` — **Procedural rock grounding and prepared-template transforms**  
+  🔴 `L` · **Score:**  24  
+   → **unlocks:** 0/0
+
+47. `world-terrain-059` — **World scale, travel time and sparse settlements**  
   🔴 `XL` · **Score:**  22  
    → **unlocks:** 0/0
 
-47. `tools-019` — **Debug tooling lifecycle ownership**  
+48. `tools-019` — **Debug tooling lifecycle ownership**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-48. `tools-021` — **Align debug OBB overlays with physical colliders**  
+49. `tools-021` — **Align debug OBB overlays with physical colliders**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-49. `world-terrain-055` — **Optional shadow frustum and refresh trims (settlement shadow pass)**  
+50. `world-terrain-055` — **Optional shadow frustum and refresh trims (settlement shadow pass)**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-50. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
+51. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
   🟡 `L` · **Score:**  18  
    → **unlocks:** 0/0
 
-51. `items-player-014` — **Rope-pullable resource transport**  
+52. `items-player-014` — **Rope-pullable resource transport**  
   ⚪ `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-52. `items-player-052` — **Settlement tool ownership and social acquisition**  
+53. `items-player-052` — **Settlement tool ownership and social acquisition**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-53. `npc-069` — **Next Fish Audio Production Batch — Named NPC Variants, Quest Offers and Restoration**  
+54. `npc-069` — **Next Fish Audio Production Batch — Named NPC Variants, Quest Offers and Restoration**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-54. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
+55. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-55. `npc-065` — **Stable NPC Voice Casting, V3 Donor QC and Selective Recording**  
+56. `npc-065` — **Stable NPC Voice Casting, V3 Donor QC and Selective Recording**  
   🟡 `L` · **Score:**  14  
    → **unlocks:** 0/0
 
-56. `settlements-025` — **Modular Blender Defensive Palisade**  
+57. `settlements-025` — **Modular Blender Defensive Palisade**  
   🟡 `L` · **Score:**  14  
    → **unlocks:** 0/0
 
-57. `world-040` — **Underground Locations & Portals**  
+58. `world-040` — **Underground Locations & Portals**  
   ⚪ `XL` · **Score:**  14  
    → **unlocks:** 0/0
 
-58. `fauna-049` — **Wild animal difficulty tiers, trophies and social recognition**  
+59. `fauna-049` — **Wild animal difficulty tiers, trophies and social recognition**  
   🟡 `XL` · **Score:**  10  
    → **unlocks:** 0/0
 
@@ -329,10 +333,6 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
 
 ## Initially Blocked
 
-- [`fauna-050-world-wild-fauna-habitats.md`](fauna-050-world-wild-fauna-habitats.md)  
-  is blocked by:
-  - [`world-terrain-060-macro-relief-ranges-passes-and-landforms.md`](world-terrain-060-macro-relief-ranges-passes-and-landforms.md)
-  - [`world-terrain-061-macroclimate-and-climate-weighted-hydrology.md`](world-terrain-061-macroclimate-and-climate-weighted-hydrology.md)
 - [`items-player-032-npc-player-storage-resource-and-context-rules.md`](items-player-032-npc-player-storage-resource-and-context-rules.md)  
   is blocked by:
   - [`items-player-028-npc-player-storage-access-policies.md`](items-player-028-npc-player-storage-access-policies.md)
@@ -413,9 +413,6 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
 - [`world-terrain-059-world-scale-travel-time-and-sparse-settlements.md`](world-terrain-059-world-scale-travel-time-and-sparse-settlements.md)  
   is blocked by:
   - [`world-terrain-058-finite-continent-and-global-hydrology.md`](world-terrain-058-finite-continent-and-global-hydrology.md)
-- [`world-terrain-061-macroclimate-and-climate-weighted-hydrology.md`](world-terrain-061-macroclimate-and-climate-weighted-hydrology.md)  
-  is blocked by:
-  - [`world-terrain-060-macro-relief-ranges-passes-and-landforms.md`](world-terrain-060-macro-relief-ranges-passes-and-landforms.md)
 - [`world-terrain-062-regional-biomes-and-local-precipitation-phase.md`](world-terrain-062-regional-biomes-and-local-precipitation-phase.md)  
   is blocked by:
   - [`world-terrain-061-macroclimate-and-climate-weighted-hydrology.md`](world-terrain-061-macroclimate-and-climate-weighted-hydrology.md)
@@ -924,6 +921,7 @@ graph TD
   world_039["world-039 — Lifecycle — Fresh World Failure Cleanup"]
   world_040["world-040 — Underground Locations & Portals"]
   world_041["world-041 — Landmarks in the location catalog and NPC rumour leads"]
+  world_042["world-042 — Gameplay visibility — character line of sight, concealment and last-known contacts"]
   world_terrain_001["world-terrain-001 — Cloud System"]
   world_terrain_002["world-terrain-002 — Terrain Modification & Land Preparation"]
   world_terrain_003["world-terrain-003 — Weather puddles V2 — stronger shader surface effect"]
@@ -990,6 +988,7 @@ graph TD
   world_terrain_064["world-terrain-064 — Derived waterfalls on perennial rivers"]
   world_terrain_065["world-terrain-065 — Terrain color and shading artifact correction"]
   world_terrain_066["world-terrain-066 — Far terrain ring (600–1000 m) without bare-ground pop-in"]
+  world_terrain_067["world-terrain-067 — Procedural rock grounding and prepared-template transforms"]
   008 --> items_player_010
   069 --> settlements_npcs_008
   097 --> world_terrain_007

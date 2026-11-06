@@ -323,17 +323,17 @@ Generated from exported TypeScript symbols.
 
 ## `world/caves/caveHeightfieldMaterial.ts`
 
-- `alignCaveDetailNormalToGeometric` — function — line 126
+- `alignCaveDetailNormalToGeometric` — function — line 127
   - domain: world-terrain
-- `CAVE_SURFACE_MATERIAL_TUNING` — const — line 17
-- `CaveSurfaceMaterialTuning` — type — line 37
-- `CaveVec3` — type — line 39
-- `createCaveHeightfieldMaterial` — function — line 423
-- `CreateCaveHeightfieldMaterialOptions` — type — line 410
-- `disposeCaveHeightfieldMaterialGpu` — function — line 458
-- `perturbCaveWorldNormalOnTangentPlane` — function — line 104
+- `CAVE_SURFACE_MATERIAL_TUNING` — const — line 18
+- `CaveSurfaceMaterialTuning` — type — line 38
+- `CaveVec3` — type — line 40
+- `createCaveHeightfieldMaterial` — function — line 422
+- `CreateCaveHeightfieldMaterialOptions` — type — line 409
+- `disposeCaveHeightfieldMaterialGpu` — function — line 457
+- `perturbCaveWorldNormalOnTangentPlane` — function — line 105
   - domain: world-terrain
-- `reconstructCaveTriplanarWorldNormal` — function — line 64
+- `reconstructCaveTriplanarWorldNormal` — function — line 65
   - domain: world-terrain
 
 ## `world/caves/caveHeightfieldMesh.ts`
@@ -778,7 +778,13 @@ Generated from exported TypeScript symbols.
   - domain: world-terrain
 - `deriveMouthGeometry` — function — line 106
   - domain: world-terrain
+- `ENTRANCE_AWARENESS_INWARD` — const — line 354
+- `ENTRANCE_AWARENESS_LATERAL_MARGIN` — const — line 355
+- `ENTRANCE_AWARENESS_OUTWARD` — const — line 353
+- `ENTRANCE_AWARENESS_VERTICAL_MARGIN` — const — line 358
 - `inMouthAperture` — function — line 241
+  - domain: world-terrain
+- `isInsideEntranceAwarenessCorridor` — function — line 368
   - domain: world-terrain
 - `MOUTH_APERTURE_INWARD` — const — line 60
 - `MOUTH_APERTURE_OUTWARD` — const — line 61
@@ -941,14 +947,14 @@ Generated from exported TypeScript symbols.
 
 ## `world/createCaves.ts`
 
-- `CaveInteriorQueryChannel` — type — line 133
-- `Caves` — type — line 135
-- `createCaves` — function — line 412
+- `CaveInteriorQueryChannel` — type — line 134
+- `Caves` — type — line 136
+- `createCaves` — function — line 425
   - system: caves
   - role: Owns cave topologies, retained heightfield representations (presentation mesh + terrain mouth cutout + every spatial query), streamed interior presentation, and deterministic adventure content anchors; `PlayerController` ground goes through `queryGround`, lateral containment through `resolveHorizontal`, camera and swim eligibility through `occupancyAt`. `queryInterior` is the hysteretic cave-interior signal: `player` (default, audio) and `camera` (scene fog) keep separate confirmation slots.
   - owns: Caves
   - lifecycle: rebuild
-- `CreateCavesOptions` — type — line 353
+- `CreateCavesOptions` — type — line 366
   - domain: world-terrain
   - system: worldgen-cache
 
@@ -1392,9 +1398,9 @@ Generated from exported TypeScript symbols.
 - `GuardLocalKnowledge` — type — line 70
   - domain: world-locations
 - `GuardLocalKnowledgeDeps` — type — line 78
-- `isSaveGuardLocalKnowledge` — function — line 261
-- `isSaveGuardLocalKnowledgeByNpc` — function — line 273
-- `normalizeSaveGuardLocalKnowledge` — function — line 289
+- `isSaveGuardLocalKnowledge` — function — line 264
+- `isSaveGuardLocalKnowledgeByNpc` — function — line 276
+- `normalizeSaveGuardLocalKnowledge` — function — line 292
   - domain: world-locations
 - `SaveGuardLocalKnowledge` — type — line 33
 - `SaveGuardLocalKnowledgeByNpc` — type — line 53
@@ -1405,27 +1411,40 @@ Generated from exported TypeScript symbols.
   - domain: ui-input
 - `listKnownSettlementOptions` — function — line 39
   - domain: ui-input
-- `resolveCharacterReputationSettlementId` — function — line 65
+- `resolveCharacterReputationSettlementId` — function — line 66
   - domain: ui-input
 - `settlementIdFromLocationId` — function — line 23
   - domain: ui-input
+
+## `world/locations/landmarkArrival.ts`
+
+- `CEMETERY_ARRIVAL_RADIUS` — const — line 18
+  - domain: world-locations
+- `LAKE_ARRIVAL_EXTENT_MARGIN` — const — line 24
+- `LAKE_ARRIVAL_SHORE_RADIUS` — const — line 26
+- `LandmarkArrivalDeps` — type — line 33
+- `LandmarkArrivalTexel` — type — line 31
+- `PEAK_ARRIVAL_HEIGHT_WINDOW` — const — line 22
+- `PEAK_ARRIVAL_RADIUS` — const — line 20
+- `revealLandmarksOnArrival` — function — line 78
 
 ## `world/locations/locationConfig.ts`
 
 - `CEMETERY_SEARCH_CHUNK_RADIUS` — const — line 46
 - `FAR_RANGE_HOURS` — const — line 33
-- `GUARD_LANDMARK_POOL_SIZE` — const — line 84
-- `GUARD_REVEAL_MAX` — const — line 86
-- `GUARD_REVEAL_MIN` — const — line 85
+- `GUARD_LANDMARK_POOL_SIZE` — const — line 87
+- `GUARD_REVEAL_MAX` — const — line 89
+- `GUARD_REVEAL_MIN` — const — line 88
 - `HOURS_PER_DAY` — const — line 15
 - `hoursToDays` — function — line 25
 - `hoursToWorldUnits` — function — line 21
+- `LAKE_EXTENT_SEED_SEARCH_CELLS` — const — line 83
 - `LAKE_FLOOD_FILL_SAFETY_CAP` — const — line 80
 - `LOCATION_SCAN_STEP` — const — line 40
 - `LOCATION_TILE_CELLS` — const — line 64
 - `MAX_CEMETERY_SETTLEMENTS_SEARCHED` — const — line 54
 - `MEDIUM_RANGE_HOURS` — const — line 32
-- `MERCHANT_MAP_LANDMARK_POOL_SIZE` — const — line 89
+- `MERCHANT_MAP_LANDMARK_POOL_SIZE` — const — line 92
 - `MIN_LAKE_CELLS` — const — line 58
 - `NEAR_RANGE_HOURS` — const — line 31
 - `PEAK_MERGE_RADIUS_CELLS` — const — line 72
@@ -1456,16 +1475,16 @@ Generated from exported TypeScript symbols.
 
 ## `world/locations/locationProximityDiscovery.ts`
 
-- `CAVE_ENTRANCE_DISCOVERY_RADIUS` — const — line 13
-- `confirmHomeSettlement` — function — line 53
-- `createLocationProximityDiscovery` — function — line 141
-- `findSettlementContainingPlayer` — function — line 120
+- `CAVE_ENTRANCE_DISCOVERY_RADIUS` — const — line 15
+- `confirmHomeSettlement` — function — line 55
+- `createLocationProximityDiscovery` — function — line 143
+- `findSettlementContainingPlayer` — function — line 122
   - domain: ui-input
-- `LocationProximityDiscovery` — type — line 134
-- `revealCaveEntrancesInRange` — function — line 63
-- `revealSettlementsInRange` — function — line 92
-- `SETTLEMENT_PROXIMITY_CELL_RADIUS` — const — line 22
-- `SettlementProximityDef` — type — line 28
+- `LocationProximityDiscovery` — type — line 136
+- `revealCaveEntrancesInRange` — function — line 65
+- `revealSettlementsInRange` — function — line 94
+- `SETTLEMENT_PROXIMITY_CELL_RADIUS` — const — line 24
+- `SettlementProximityDef` — type — line 30
 
 ## `world/locations/locationsCoarseCache.ts`
 
@@ -1517,6 +1536,22 @@ Generated from exported TypeScript symbols.
   - domain: world
 - `RevealLocationKnowledgeResult` — type — line 5
 
+## `world/locations/rumourLead.ts`
+
+- `countOpenRumourLeads` — function — line 127
+- `genericLocationLabel` — function — line 104
+- `isLocationDiscovered` — function — line 117
+- `isRumourLeadEntry` — function — line 109
+- `RUMOUR_LEAD_CAP` — const — line 22
+  - domain: world-locations
+- `RUMOUR_LEAD_OFFSET_MAX_FRAC` — const — line 29
+- `RUMOUR_LEAD_OFFSET_MIN_FRAC` — const — line 28
+- `RUMOUR_LEAD_RADIUS_MAX` — const — line 26
+- `RUMOUR_LEAD_RADIUS_MIN` — const — line 25
+- `rumourLeadArea` — function — line 59
+- `RumourLeadArea` — type — line 33
+- `RumourLeadAreaOptions` — type — line 35
+
 ## `world/locations/seedProfile.ts`
 
 - `generateSeedName` — function — line 82
@@ -1563,16 +1598,16 @@ Generated from exported TypeScript symbols.
 
 ## `world/locations/worldLocationCatalog.ts`
 
-- `abandonedCemeteryChunkIntersectsHoursBand` — function — line 231
+- `abandonedCemeteryChunkIntersectsHoursBand` — function — line 245
   - domain: world
-- `COOPERATIVE_ABANDONED_PROBE_THRESHOLD` — const — line 156
-- `createWorldLocationCatalog` — function — line 299
-- `emptyLocationScanDiagnostics` — function — line 121
-- `LandmarkQueryOptions` — type — line 145
-- `LocationScanDiagnostics` — type — line 94
-- `settlementLocationId` — function — line 952
-- `WorldLocationCatalog` — type — line 158
-- `WorldLocationCatalogDeps` — type — line 30
+- `COOPERATIVE_ABANDONED_PROBE_THRESHOLD` — const — line 157
+- `createWorldLocationCatalog` — function — line 313
+- `emptyLocationScanDiagnostics` — function — line 122
+- `LandmarkQueryOptions` — type — line 146
+- `LocationScanDiagnostics` — type — line 95
+- `settlementLocationId` — function — line 1047
+- `WorldLocationCatalog` — type — line 159
+- `WorldLocationCatalogDeps` — type — line 31
 
 ## `world/locations/worldLocationNames.ts`
 
@@ -1610,10 +1645,10 @@ Generated from exported TypeScript symbols.
 
 ## `world/map/mapData.ts`
 
-- `createMapData` — function — line 44
-- `getActiveMapData` — function — line 113
-- `MapData` — type — line 13
-- `setActiveMapData` — function — line 109
+- `createMapData` — function — line 46
+- `getActiveMapData` — function — line 134
+- `MapData` — type — line 15
+- `setActiveMapData` — function — line 130
 
 ## `world/map/mapDiscovery.ts`
 
@@ -2018,7 +2053,7 @@ Generated from exported TypeScript symbols.
 
 ## `world/riverWaterMaterial.ts`
 
-- `createRiverWaterMaterial` — function — line 146
+- `createRiverWaterMaterial` — function — line 148
 
 ## `world/riverWaterQuality.ts`
 

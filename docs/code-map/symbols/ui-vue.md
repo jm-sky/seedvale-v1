@@ -261,7 +261,7 @@ Generated from exported TypeScript symbols.
 
 - `AbandonedMineBinding` — type — line 4
 - `MapLocationLabelPresentation` — type — line 9
-- `resolveMapLocationLabelPresentations` — function — line 104
+- `resolveMapLocationLabelPresentations` — function — line 107
   - domain: ui-input
 - `suppressedCaveLocationIdsForMineBinding` — function — line 74
   - domain: ui-input

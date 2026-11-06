@@ -18,10 +18,10 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/biomeColors.ts`
 
-- `applyMicroTint` — function — line 275
+- `applyMicroTint` — function — line 277
 - `applyMountainRock` — function — line 202
-- `applyOceanDepthTint` — function — line 225
-- `applyRoadTint` — function — line 246
+- `applyOceanDepthTint` — function — line 227
+- `applyRoadTint` — function — line 248
 - `applySlopeRock` — function — line 168
 - `colorForTerrain` — function — line 128
 - `landBlendForSandBand` — function — line 54
@@ -31,7 +31,7 @@ Generated from exported TypeScript symbols.
 - `SAND_BAND_MAX` — const — line 20
 - `SAND_BAND_MIN` — const — line 18
 - `sandBandAt` — function — line 47
-- `terrainTintNoise` — function — line 269
+- `terrainTintNoise` — function — line 271
 
 ## `terrain/biomeRegions.ts`
 
@@ -50,10 +50,10 @@ Generated from exported TypeScript symbols.
 ## `terrain/buildChunkGeometry.ts`
 
 - `buildChunkGeometry` — function — line 420
-- `ChunkMeshResult` — type — line 18
-- `createTerrainMaterial` — function — line 56
-- `TERRAIN_DIRT_DIFFUSE_TUNING` — const — line 47
-- `TerrainWeatherUniforms` — type — line 41
+- `ChunkMeshResult` — type — line 19
+- `createTerrainMaterial` — function — line 57
+- `TERRAIN_DIRT_DIFFUSE_TUNING` — const — line 48
+- `TerrainWeatherUniforms` — type — line 42
 
 ## `terrain/cemeteryAssignment.ts`
 
@@ -154,42 +154,44 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/chunkHeightmap.ts`
 
-- `apronGridWeights` — function — line 832
-- `ApronGridWeights` — type — line 823
-- `apronOriginWorld` — function — line 803
-- `ChunkTileData` — type — line 378
-- `ChunkTileParams` — type — line 246
-- `ClearingSegment` — type — line 178
-- `computeChunkTile` — function — line 1262
-- `createLocalTerrainSampler` — function — line 1347
+- `apronGridWeights` — function — line 894
+- `ApronGridWeights` — type — line 885
+- `apronOriginWorld` — function — line 865
+- `ChunkTileData` — type — line 384
+- `ChunkTileParams` — type — line 247
+- `ClearingSegment` — type — line 179
+- `computeChunkTile` — function — line 1324
+- `createLocalTerrainSampler` — function — line 1409
   - domain: world-terrain
-- `createWorldTerrainSampler` — function — line 1389
+- `createWorldTerrainSampler` — function — line 1451
   - domain: world-terrain
-- `extractCoreGrid` — function — line 887
-- `LocalTerrainSampler` — type — line 1322
+- `extractCoreGrid` — function — line 949
+- `landformDescriptorsOf` — function — line 546
+- `landformIndexOf` — function — line 541
+- `LocalTerrainSampler` — type — line 1384
   - domain: world-terrain
-- `rangeSpinesFor` — function — line 514
-- `RawSampleParams` — type — line 358
-- `RawTexelSample` — type — line 737
-- `RegionalSmoothingSegment` — type — line 238
-- `RegionParams` — type — line 26
-- `RiverChannelSegment` — type — line 214
-- `RoadCorridorSegment` — type — line 160
-- `RoadNetworkParams` — type — line 97
-- `sampleApronGrid` — function — line 870
-- `sampleApronGridWeighted` — function — line 855
-- `sampleBiomeAt` — function — line 774
-- `sampleContinentalnessAt` — function — line 778
-- `sampleFloorAt` — function — line 770
-- `sampleHeightAt` — function — line 749
-- `sampleLandHeightAt` — function — line 755
-- `sampleMoistureRegionAt` — function — line 786
-- `sampleMountainRidgeAt` — function — line 794
-- `sampleRawFloorUncorrected` — function — line 766
-- `sampleRawTexelAt` — function — line 742
-- `sampleRawTexelUncorrectedAt` — function — line 761
-- `VegetationKind` — type — line 24
-- `VillageClearingParams` — type — line 78
+- `rangeSpinesFor` — function — line 560
+- `RawSampleParams` — type — line 364
+- `RawTexelSample` — type — line 799
+- `RegionalSmoothingSegment` — type — line 239
+- `RegionParams` — type — line 27
+- `RiverChannelSegment` — type — line 215
+- `RoadCorridorSegment` — type — line 161
+- `RoadNetworkParams` — type — line 98
+- `sampleApronGrid` — function — line 932
+- `sampleApronGridWeighted` — function — line 917
+- `sampleBiomeAt` — function — line 836
+- `sampleContinentalnessAt` — function — line 840
+- `sampleFloorAt` — function — line 832
+- `sampleHeightAt` — function — line 811
+- `sampleLandHeightAt` — function — line 817
+- `sampleMoistureRegionAt` — function — line 848
+- `sampleMountainRidgeAt` — function — line 856
+- `sampleRawFloorUncorrected` — function — line 828
+- `sampleRawTexelAt` — function — line 804
+- `sampleRawTexelUncorrectedAt` — function — line 823
+- `VegetationKind` — type — line 25
+- `VillageClearingParams` — type — line 79
 
 ## `terrain/chunkHeightmapProtocol.ts`
 
@@ -237,13 +239,13 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/chunkMeshData.ts`
 
-- `ChunkMeshData` — type — line 63
-- `ChunkMeshDataParams` — type — line 75
-- `ChunkMeshTileGrids` — type — line 47
-- `computeChunkMeshData` — function — line 125
-- `SCORCH_CHARCOAL` — const — line 22
-- `scorchFalloffAt` — function — line 27
-- `TerrainScorchPatch` — type — line 19
+- `ChunkMeshData` — type — line 64
+- `ChunkMeshDataParams` — type — line 76
+- `ChunkMeshTileGrids` — type — line 48
+- `computeChunkMeshData` — function — line 126
+- `SCORCH_CHARCOAL` — const — line 23
+- `scorchFalloffAt` — function — line 28
+- `TerrainScorchPatch` — type — line 20
 
 ## `terrain/chunkTileWorldgenCache.ts`
 
@@ -421,16 +423,16 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/farTerrain.ts`
 
-- `createFarTerrain` — function — line 100
+- `createFarTerrain` — function — line 103
   - domain: world-terrain
 - `FAR_CANOPY_KEEP_CHUNKS` — const — line 26
 - `FAR_FINE_RADIUS` — const — line 16
 - `FAR_MASK_SIZE` — const — line 18
-- `FarTerrain` — type — line 74
-- `FarTerrainOptions` — type — line 62
-- `FarTileCells` — type — line 35
-- `FarTileWanted` — type — line 37
-- `wantedFarTiles` — function — line 46
+- `FarTerrain` — type — line 77
+- `FarTerrainOptions` — type — line 65
+- `FarTileCells` — type — line 38
+- `FarTileWanted` — type — line 40
+- `wantedFarTiles` — function — line 49
   - domain: world-terrain
 
 ## `terrain/farTerrainFlag.ts`
@@ -533,28 +535,35 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/landformDescriptors.ts`
 
-- `buildLandformIndex` — function — line 61
-- `EMPTY_LANDFORM_INDEX` — const — line 52
-- `LANDFORM_BUCKET_SIZE_M` — const — line 37
-- `LANDFORM_MAX_PER_BUCKET` — const — line 41
-- `LANDFORM_MAX_RADIUS_M` — const — line 39
-- `LandformDescriptor` — type — line 23
-- `landformDescriptorsFor` — function — line 94
-- `landformHeightDeltaAt` — function — line 114
-- `LandformIndex` — type — line 43
-- `landformIndexFor` — function — line 101
-- `LandformKind` — type — line 21
-  - domain: world-terrain
+- `buildLandformIndex` — function — line 65
+- `EMPTY_LANDFORM_INDEX` — const — line 56
+- `generateLandforms` — function — line 152
+- `insideCraterAt` — function — line 312
+- `LANDFORM_BUCKET_SIZE_M` — const — line 39
+- `LANDFORM_MAX_PER_BUCKET` — const — line 43
+- `LANDFORM_MAX_RADIUS_M` — const — line 41
+- `landformCorrectionBypassAt` — function — line 297
+- `LandformDescriptor` — type — line 25
+- `LandformGenContext` — type — line 98
+- `landformHeightDeltaAt` — function — line 242
+- `LandformIndex` — type — line 45
+- `landformIndexFor` — function — line 226
+- `LandformKind` — type — line 23
+- `landformRockAt` — function — line 277
 
 ## `terrain/macroClimate.ts`
 
-- `createMacroClimate` — function — line 109
-- `latitude01` — function — line 53
-- `MACRO_CLIMATE_CELL_M` — const — line 18
+- `createMacroClimate` — function — line 162
+- `latitude01` — function — line 102
+- `MACRO_CLIMATE_CELL_M` — const — line 19
   - domain: world-terrain
-- `MacroClimate` — type — line 39
-- `macroClimateFrom` — function — line 58
-- `MacroClimateSample` — type — line 30
+- `MACRO_CLIMATE_GRID_N` — const — line 22
+- `MacroClimate` — type — line 63
+- `macroClimateFrom` — function — line 112
+- `MacroClimateSample` — type — line 33
+- `runoffFrom` — function — line 57
+- `runoffGrid` — function — line 208
+- `temperatureAt` — function — line 107
 
 ## `terrain/mineableDeposit.ts`
 
@@ -668,40 +677,40 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/riverNetwork.ts`
 
-- `canonicalWaterHeight` — function — line 171
-- `computeRiverTile` — function — line 607
-- `DEFAULT_RIVER_THRESHOLDS` — const — line 30
-- `depthFromAccumulation` — function — line 155
-- `exposedBankFromFlow` — function — line 141
-- `flowFactor` — function — line 95
-- `footprintOverlapsRiver` — function — line 339
-- `isInsideRiverChannel` — function — line 326
-- `MEANDER_NOISE_SEED_XOR` — const — line 519
-- `meanderChainPointsWith` — function — line 523
-- `nearestRiverBankDistance` — function — line 309
-- `nearestRiverBankPoint` — function — line 356
-- `nearestRiverHydrologyContext` — function — line 409
-- `nearestRiverShoreCandidate` — function — line 459
-- `overlappingRiverTiles` — function — line 57
-- `RIVER_CELL_STEP` — const — line 18
-- `RIVER_MEANDER_TAPER_DISTANCE` — const — line 518
-- `RIVER_TILE_SIZE` — const — line 17
-- `RiverChain` — type — line 71
-- `riverChannelSegmentsNear` — function — line 198
-- `RiverHydrologyContext` — type — line 399
-- `RiverPoint` — type — line 70
-- `RiverShoreCandidate` — type — line 451
-- `RiverTileCoord` — type — line 36
-- `riverTileCoordOf` — function — line 38
-- `riverTileCoreRect` — function — line 49
-- `riverTileKey` — function — line 42
-- `RiverWaterSample` — type — line 266
-- `riverWaterSampleAt` — function — line 277
-- `smoothChainPoints` — function — line 586
-- `StreamThresholds` — type — line 24
-- `submergedDepthFromFlow` — function — line 146
-- `widthFromAccumulation` — function — line 109
-- `WorldRect` — type — line 46
+- `canonicalWaterHeight` — function — line 175
+- `computeRiverTile` — function — line 611
+- `DEFAULT_RIVER_THRESHOLDS` — const — line 34
+- `depthFromAccumulation` — function — line 159
+- `exposedBankFromFlow` — function — line 145
+- `flowFactor` — function — line 99
+- `footprintOverlapsRiver` — function — line 343
+- `isInsideRiverChannel` — function — line 330
+- `MEANDER_NOISE_SEED_XOR` — const — line 523
+- `meanderChainPointsWith` — function — line 527
+- `nearestRiverBankDistance` — function — line 313
+- `nearestRiverBankPoint` — function — line 360
+- `nearestRiverHydrologyContext` — function — line 413
+- `nearestRiverShoreCandidate` — function — line 463
+- `overlappingRiverTiles` — function — line 61
+- `RIVER_CELL_STEP` — const — line 20
+- `RIVER_MEANDER_TAPER_DISTANCE` — const — line 522
+- `RIVER_TILE_SIZE` — const — line 19
+- `RiverChain` — type — line 75
+- `riverChannelSegmentsNear` — function — line 202
+- `RiverHydrologyContext` — type — line 403
+- `RiverPoint` — type — line 74
+- `RiverShoreCandidate` — type — line 455
+- `RiverTileCoord` — type — line 40
+- `riverTileCoordOf` — function — line 42
+- `riverTileCoreRect` — function — line 53
+- `riverTileKey` — function — line 46
+- `RiverWaterSample` — type — line 270
+- `riverWaterSampleAt` — function — line 281
+- `smoothChainPoints` — function — line 590
+- `StreamThresholds` — type — line 28
+- `submergedDepthFromFlow` — function — line 150
+- `widthFromAccumulation` — function — line 113
+- `WorldRect` — type — line 50
 
 ## `terrain/riverQuery.ts`
 
@@ -732,6 +741,20 @@ Generated from exported TypeScript symbols.
   - role: Bridge *projection* geometry — the plain-data `RoadBridgeSpec` an already-declared canonical `RoadRiverCrossing(kind = 'bridge')` (plan world-terrain-023) is turned into, plus the one oriented-footprint test every consumer shares (plan world-terrain-033). Mirrors `riverFord.ts`'s split: this module owns worker-safe type + pure query, `roadNetwork.ts` owns the settlement-layer projection (`bridgeSpecOf`) and bounded query (`bridgesNear`), same "terrain owns the shared shape, settlement produces it" seam `RoadCorridorSegment`/`FordProjection` already use.
   - integration: `terrain/chunkHeightmap.ts` reads isOnBridgeDeck to suppress road-height/tint shaping under an open span (never the river carve). `terrain/chunkManager.ts` reads the same test for bridge presentation ownership and the shared movement-ground query (`sampleBridgeDeck`/`sampleSurfaceGround`). No THREE.js, no route/crossing search — every bridge here is already decided.
 
+## `terrain/rockPlateColor.ts`
+
+- `applyRockPlateColor` — function — line 15
+
+## `terrain/rockPlates.ts`
+
+- `FACET_CELL_M` — const — line 17
+- `PLATE_CELL_M` — const — line 15
+  - domain: world-terrain
+- `PLATE_MAX_DELTA_M` — const — line 19
+- `RockPlate` — type — line 58
+- `rockPlateAt` — function — line 73
+- `rockPlateZoneOf` — function — line 54
+
 ## `terrain/slopeConstraint.ts`
 
 - `applySlopeMovementConstraint` — function — line 82
@@ -750,26 +773,27 @@ Generated from exported TypeScript symbols.
 - `GRASS_SNOW_BIAS` — const — line 24
 - `GRASS_SNOW_DITHER_AT` — const — line 28
 - `GRASS_SNOW_FROST` — const — line 26
-- `grassSnowBury` — function — line 149
-- `grassSnowCoverAt` — function — line 143
-- `grassSnowFrost` — function — line 154
-- `grassSnowVisible` — function — line 159
-- `parseSnowParam` — function — line 167
+- `grassSnowBury` — function — line 157
+- `grassSnowCoverAt` — function — line 151
+- `grassSnowFrost` — function — line 162
+- `grassSnowVisible` — function — line 167
+- `INTEGER_LATTICE_GLSL` — const — line 56
+- `parseSnowParam` — function — line 175
 - `SNOW_ALT_M` — const — line 22
 - `SNOW_BIAS` — const — line 20
 - `SNOW_COL` — const — line 30
 - `SNOW_EDGE` — const — line 18
-- `SNOW_FIELD_GLSL` — const — line 58
+- `SNOW_FIELD_GLSL` — const — line 66
 - `SNOW_GAIN` — const — line 14
   - domain: world-terrain
 - `SNOW_ONSET` — const — line 16
-- `snowCover` — function — line 111
+- `snowCover` — function — line 119
 - `snowLatticeHash` — function — line 45
-- `snowNoise` — function — line 86
-- `snowTerrainBias` — function — line 124
-- `SnowTerrainBiasInput` — interface — line 116
-- `snowThreshold` — function — line 102
-- `terrainSnowCoverAt` — function — line 133
+- `snowNoise` — function — line 94
+- `snowTerrainBias` — function — line 132
+- `SnowTerrainBiasInput` — interface — line 124
+- `snowThreshold` — function — line 110
+- `terrainSnowCoverAt` — function — line 141
 
 ## `terrain/terrainClassification.ts`
 
@@ -916,24 +940,25 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/worldHydrology.ts`
 
-- `ChainEnd` — const — line 120
-- `ChainEndKind` — type — line 121
-- `computeWorldHydrology` — function — line 675
-- `DEFAULT_WORLD_HYDROLOGY_OPTIONS` — const — line 72
-- `hashWorldHydrology` — function — line 1018
-- `HydrologyLake` — type — line 132
-- `PackedChains` — type — line 123
-- `packSparseBlocks` — function — line 553
-- `sampleRawFloorRows` — function — line 195
-- `SparseBlocks` — type — line 112
-- `sparseBlockValue` — function — line 596
-- `WORLD_HYDROLOGY_GRID` — const — line 92
-- `WORLD_HYDROLOGY_VERSION` — const — line 38
+- `ChainEnd` — const — line 128
+- `ChainEndKind` — type — line 129
+- `computeWorldHydrology` — function — line 697
+- `DEFAULT_WORLD_HYDROLOGY_OPTIONS` — const — line 74
+- `hashWorldHydrology` — function — line 1044
+- `HydrologyLake` — type — line 140
+- `PackedChains` — type — line 131
+- `packSparseBlocks` — function — line 575
+- `sampleRawFloorRows` — function — line 203
+- `SparseBlocks` — type — line 120
+- `sparseBlockValue` — function — line 618
+- `WORLD_HYDROLOGY_GRID` — const — line 94
+- `WORLD_HYDROLOGY_VERSION` — const — line 40
   - domain: world-terrain
-- `WorldHydrology` — type — line 174
-- `WorldHydrologyGrid` — type — line 99
-- `WorldHydrologyOptions` — type — line 40
-- `WorldHydrologyStats` — type — line 145
+- `WorldHydrology` — type — line 182
+- `WorldHydrologyGrid` — type — line 101
+- `worldHydrologyGridFor` — function — line 224
+- `WorldHydrologyOptions` — type — line 42
+- `WorldHydrologyStats` — type — line 153
 
 ## `terrain/worldHydrologyCache.ts`
 
