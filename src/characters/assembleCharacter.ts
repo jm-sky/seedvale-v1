@@ -73,6 +73,12 @@ function rebindAllSkinned(
     const mesh = new SkinnedMesh(src.geometry, src.material)
     mesh.name = src.name || label
     mesh.frustumCulled = false
+    // The fresh mesh only sees geometry morph attributes (numeric names); carry the GLTF-assigned names and give each
+    // actor its own influence array so body-build weights reach garments without leaking across actors.
+    if (src.morphTargetDictionary && src.morphTargetInfluences) {
+      mesh.morphTargetDictionary = { ...src.morphTargetDictionary }
+      mesh.morphTargetInfluences = [...src.morphTargetInfluences]
+    }
     body.add(mesh)
     mesh.bind(skeleton, src.bindMatrix)
     attached.push(mesh.name)
