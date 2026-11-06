@@ -27,6 +27,8 @@
 
 **Gameplay Visibility / Detection review (2026-11-05):** [Astra review in world-terrain-050](../../plans/world-terrain-050-agent-performance-render-census-and-lod.md#astra-requirements-review--2026-11-05) — V1/V2 source findings, LOS and information-disclosure contracts, light/stealth recommendations, alternatives, acceptance cases and author questions. Ready for Opus review; no gameplay implementation authorized.
 
+**Grok evidence audits (setup pending independent review, 2026-11-06):** [workspace rules and index](../../grok-audits/README.md) · [candidate queue](../../grok-audits/QUEUE.md). No audits authorized or executed; separate from Revival implementation and system-level reviews.
+
 ## Current entry points
 
 | Need | Read |
