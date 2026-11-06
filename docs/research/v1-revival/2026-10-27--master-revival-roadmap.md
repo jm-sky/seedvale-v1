@@ -273,3 +273,7 @@ Area-specific secondary decisions (blade implementation, herb variant, flower re
 - This policy controls **when** to measure. Executed runs still satisfy the existing [readiness audit](../../performance/audits/2026-10-27--three-track-benchmark-diagnostics-readiness.md) and [Arc runbook](../../performance/2026-10-27--arc-baseline-runbook.md) quality/READY/STOP requirements; no reduced rep counts, missing metadata or uncertified substitutions.
 
 Link appropriate comparable native Arc A/B artifacts and metadata in the A/B/C audits' **Baseline results slots** (§6); label diagnostic results accurately and resolve only the affected candidate decisions. Diagnostic 032 and 033–051 remain diagnostic, not certified acceptance. Reorder A/B/C candidates only if evidence warrants; do not reopen strategic D1/D3/D4/D9 decisions.
+
+## Wild fauna architecture review — 2026-11-06
+
+[Review 035](../../reviews/2026-11-06--035--continent-wide-wild-fauna-architecture-review.md): **REWORK REQUIRED** for fauna-050 continental continuity. Recommend holding F3 activation and F4 runtime integration until durable individual authority, save/rebuild equivalence, deterministic catch-up and remote geography ownership are corrected. Pure census/contract work may proceed. This records independent review guidance; it does not rewrite the approved plan or queue priorities. Targeted tests: 37 passed; browser and performance evidence outstanding.
