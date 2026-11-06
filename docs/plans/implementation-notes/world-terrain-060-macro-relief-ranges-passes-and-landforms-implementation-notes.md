@@ -139,3 +139,17 @@ Author: a crag must stand **1–3 tree heights** above the terrain; a crater may
 - 5 of 6 passes: worst 100 m mean ≤ 9.5 % (within the 12 % `maxGrade`); individual 20 m steps exceed it (detail-noise roughness, same class as R2 note).
 - 🟡 `415424794` `rp:rs:6_-7:0` exceeds 12 % on a 100 m window (14.1 %, one 41 % step downhill) — a pass this steep would need switchbacks/route cost; whether the router still crosses it is a road census question (routed components stay 1 on `415424794`, see R4 re-census). Left for the author / Q61–063 close-out, not tuned here.
 - Still not done: chunk-generation / hydrology boot time vs D7, peak memory, browser check (pass, summit, crater, lake island), landform preview layer.
+
+### R4 — Node worldgen cost vs Q131 baseline (Sonnet, 2026-11-06, queue Q119)
+
+`pnpm tsx scripts/perf/measure-worldgen-cost.ts --reps=3 --chunks=60` (Node/V8, WSL2, single thread; same protocol as the [Q131 note](../../research/v1-revival/2026-11-04--q131-cost-baseline-boot.md); two runs, 3 reps each; order seed 42 → `415424794`). Not browser, no FPS claim.
+
+| Metric | Q131 baseline (42 / 415424794) | Now (42 / 415424794) | Verdict |
+| --- | --- | --- | --- |
+| hydrology sample (ms) | 3593–3897 / 3633–4368 | 3537–4529 / 3727–3882 | ✅ within ±20 % |
+| hydrology compute (ms) | 647–751 / 631–672 | 613–761 / 546–651 | ✅ |
+| chunk tile p50 / p95 (ms) | 6.8–7.3 / 7.9–11.8 | 6.8–7.6 / 10.0–12.4 | ✅ |
+| layout (ms) | 621–671 / 531–572 | 683–702 / 678–694 | 🟡 +5 % / +25 % on `415424794` (layout also changed by Q37/Q93–Q95 settlement work — not attributable to relief) |
+| all road routes (s) | 33.5–36.1 / 23.0–23.5 | 26.2–32.2 / 27.0–27.2 | ✅ 42 faster; 🟡 `415424794` +17 % (within ±25 %) |
+
+Relief/landform work adds no measurable hydrology or chunk cost. Still not done: browser boot (`?bootMark=1`, cold/warm), peak worker memory, browser look at pass / summit / crater / lake island, landform preview layer.
