@@ -1,7 +1,7 @@
 # Plan: Derived waterfalls on perennial rivers
 
 **Created:** 2026-11-04
-**Status:** `planned` 📋 — **W0 decided (Opus, 2026-11-06)** in the [implementation notes](./implementation-notes/world-terrain-064-derived-waterfalls-implementation-notes.md): the relief gives **cascades** (steepest chain segment 34°, ground ≤ 44°), not plunge falls → cascade presentation pending author §3 Q125-a; W1 Sonnet (queue Q168) ready, W2 (Q169) after Q125-a, W3 inside world-041 L1 (Q130). Amended per [review 031](../reviews/2026-11-04--031--geography-revival-g1-g9-critical-architecture-review.md) 2026-11-04
+**Status:** `planned` 📋 — **W0 decided (Opus, 2026-11-06)** in the [implementation notes](./implementation-notes/world-terrain-064-derived-waterfalls-implementation-notes.md): the relief gives **cascades** (steepest chain segment 34°, ground ≤ 44°), not plunge falls → cascade presentation **approved by the author (Q125-a (a), 2026-11-06; author supplies the sound loop)**; W1 Sonnet (queue Q168) ready, W2 (Q169) after W1, W3 inside world-041 L1 (Q130). Amended per [review 031](../reviews/2026-11-04--031--geography-revival-g1-g9-critical-architecture-review.md) 2026-11-04
 **Type:** feature
 **Priority:** medium · **Effort:** M
 **Depends on:** tools-026, world-terrain-061
