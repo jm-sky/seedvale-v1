@@ -167,3 +167,9 @@ Relief/landform work adds no measurable hydrology or chunk cost. Still not done:
 
 Verdict ✅ within the Q131 tolerances (±25 % ready/bundle, ±30 % per-phase): warm ready slightly faster; cold ready median 43.6 s vs 41.2 s (+6 %, one 55.7 s outlier). Workers: 6. 🟡 `buildSettlementsManager` cold median 3.1 s vs 2.3 s baseline (large spread; settlement work changed since Q131).
 Peak **worker** memory not measured (the tool samples only the main-thread JS heap) — left open. Still not done: browser look at pass / summit / crater / lake island (author judgement), landform preview layer.
+
+### R4 — author visual verdict + pass traversability (2026-11-06, queue Q119)
+
+**Author look (browser, `415424794`):** summit OK (suggestion: more angular grey rock, less smoothing); crater OK (floor could be more concave — current relief leaves too-prominent knolls); lake island OK; passes look good, but the author could not confirm they saw `6_-7:0`. Overall geography accepted. 🟡 follow-ups (not blocking the freeze): crag/summit rock angularity, crater floor concavity.
+
+**Traversability (Sonnet, technical, no browser walk):** `pnpm worldgen:travel:census --seeds=415424794 --routes-out=…` → `routedComponents 1` (all 22 settlements road-connected), `gradeShareOver10Pct 0`. Nearest routed polyline vs pass corridor centres: `6_-7:0` ← route `2_-8`–`6_-5` passes **87 m** from the centre (the road crosses that pass, so the router handles its 14.1 % / 41 % step); `-10_-3:1` ← `-10_2`–`-11_6` at 130 m; `-10_-3:0` nearest 662 m (not used by a road; passes only matter for roads where a route needs them). Walk limits: `SLOPE_FALLOFF_START_DEG` 35° (≈70 %), max 55°; a 41 % step ≈ 22° is not slowed for player/NPC movement, so the 12 % `maxGrade` is a road-design target, not a walkability limit. Not verified: a player/NPC actually walking the `6_-7:0` crossing.
