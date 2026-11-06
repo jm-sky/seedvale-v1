@@ -152,15 +152,15 @@ Generated from exported TypeScript symbols.
 
 ## `items/createPlacedTents.ts`
 
-- `createPlacedTents` — function — line 113
+- `createPlacedTents` — function — line 114
   - domain: items-player
-- `PlacedTent` — type — line 20
-- `PlacedTentEntry` — type — line 34
-- `PlacedTents` — type — line 41
-- `TENT_CONDITION_MAX` — const — line 79
-- `TENT_RAIN_DECAY_PER_DAY` — const — line 77
-- `TENT_SNOW_DECAY_PER_DAY` — const — line 78
-- `TentPackResult` — type — line 36
+- `PlacedTent` — type — line 21
+- `PlacedTentEntry` — type — line 35
+- `PlacedTents` — type — line 42
+- `TENT_CONDITION_MAX` — const — line 80
+- `TENT_RAIN_DECAY_PER_DAY` — const — line 78
+- `TENT_SNOW_DECAY_PER_DAY` — const — line 79
+- `TentPackResult` — type — line 37
 
 ## `items/equipment.ts`
 

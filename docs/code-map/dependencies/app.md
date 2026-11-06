@@ -1973,6 +1973,7 @@ Generated from TypeScript imports.
 - `terrain/depositMining.ts`
 - `terrain/farTerrain.ts`
 - `terrain/farTerrainFlag.ts`
+- `terrain/macroClimate.ts`
 - `terrain/mineableDeposit.ts`
 - `terrain/mineableRocks.ts`
 - `terrain/naturalResources.ts`

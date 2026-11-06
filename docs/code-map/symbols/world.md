@@ -20,22 +20,22 @@ Generated from exported TypeScript symbols.
 - `accumulateTrapWeatherWear` — function — line 243
 - `isSpeciesTrappable` — function — line 97
 - `isTrapCooldownActive` — function — line 180
-- `PlacedTrapRecord` — type — line 267
+- `PlacedTrapRecord` — type — line 268
 - `rollTrapDetection` — function — line 137
 - `spendTrapDurability` — function — line 205
 - `startTrapCooldown` — function — line 192
 - `TRAP_BAIT_DETECTION_CUT` — const — line 114
-- `TRAP_CHECK_INTERVAL_SEC` — const — line 309
+- `TRAP_CHECK_INTERVAL_SEC` — const — line 310
 - `TRAP_DEFS` — const — line 51
 - `TRAP_DETECTION_COOLDOWN_DAYS` — const — line 171
-- `TRAP_FOOTPRINT_RADIUS` — const — line 297
+- `TRAP_FOOTPRINT_RADIUS` — const — line 298
 - `TRAP_KIND_BY_ITEM` — const — line 76
 - `TRAP_MAX_DETECTION` — const — line 105
 - `TRAP_MIN_DETECTION` — const — line 104
-- `TRAP_PLACE_REACH` — const — line 302
-- `TRAP_PLACEMENT_MESSAGE` — const — line 289
-- `TRAP_SEPARATION` — const — line 300
-- `TRAP_SETUP_DURATION_SEC` — const — line 305
+- `TRAP_PLACE_REACH` — const — line 303
+- `TRAP_PLACEMENT_MESSAGE` — const — line 290
+- `TRAP_SEPARATION` — const — line 301
+- `TRAP_SETUP_DURATION_SEC` — const — line 306
 - `TRAP_SKILL_DETECTION_CUT` — const — line 107
 - `TRAP_WEATHER_MAX_CATCHUP_CYCLES` — const — line 233
 - `TRAP_WEATHER_SEVERITY` — const — line 212
@@ -45,9 +45,9 @@ Generated from exported TypeScript symbols.
 - `trapDetectionRoll` — function — line 164
 - `TrapKind` — type — line 18
 - `trapKindForItem` — function — line 81
-- `TrapPlacementReason` — type — line 287
+- `TrapPlacementReason` — type — line 288
 - `TrapState` — type — line 23
-- `trapStateLabel` — function — line 311
+- `trapStateLabel` — function — line 312
 - `TrapUseResult` — type — line 200
 - `TrapWeatherCatchup` — type — line 235
 - `trapWeatherWear` — function — line 224
@@ -81,28 +81,28 @@ Generated from exported TypeScript symbols.
 
 ## `world/bloodTraces.ts`
 
-- `BLOOD_GLOBAL_CAP` — const — line 64
-- `BLOOD_LOCAL_CAP` — const — line 61
-- `BLOOD_LOCAL_RADIUS` — const — line 60
-- `BLOOD_MAX_LIFETIME_DAYS` — const — line 50
-- `BLOOD_MAX_SIZE` — const — line 48
-- `BLOOD_MIN_LIFETIME_DAYS` — const — line 49
-- `BLOOD_MIN_SIZE` — const — line 47
-- `BLOOD_RAIN_FADE_WEIGHT` — const — line 56
-- `BLOOD_VARIANT_COUNT` — const — line 46
-- `BloodTrace` — type — line 26
-- `bloodTraceRemainingFraction` — function — line 135
-- `BloodTraceSink` — type — line 216
-- `bloodTracesNear` — function — line 206
-- `BloodTraceSystem` — type — line 239
-- `BloodTraceWorldState` — type — line 41
-- `computeBloodTraceSize` — function — line 97
-- `createBloodTraceSystem` — function — line 262
-- `createBloodTraceWorldState` — function — line 86
-- `pruneBloodTraces` — function — line 146
-- `recordBloodHit` — function — line 235
-- `recordBloodTrace` — function — line 162
-- `setBloodTraceSink` — function — line 228
+- `BLOOD_GLOBAL_CAP` — const — line 65
+- `BLOOD_LOCAL_CAP` — const — line 62
+- `BLOOD_LOCAL_RADIUS` — const — line 61
+- `BLOOD_MAX_LIFETIME_DAYS` — const — line 51
+- `BLOOD_MAX_SIZE` — const — line 49
+- `BLOOD_MIN_LIFETIME_DAYS` — const — line 50
+- `BLOOD_MIN_SIZE` — const — line 48
+- `BLOOD_RAIN_FADE_WEIGHT` — const — line 57
+- `BLOOD_VARIANT_COUNT` — const — line 47
+- `BloodTrace` — type — line 27
+- `bloodTraceRemainingFraction` — function — line 136
+- `BloodTraceSink` — type — line 228
+- `bloodTracesNear` — function — line 218
+- `BloodTraceSystem` — type — line 251
+- `BloodTraceWorldState` — type — line 42
+- `computeBloodTraceSize` — function — line 98
+- `createBloodTraceSystem` — function — line 274
+- `createBloodTraceWorldState` — function — line 87
+- `pruneBloodTraces` — function — line 152
+- `recordBloodHit` — function — line 247
+- `recordBloodTrace` — function — line 173
+- `setBloodTraceSink` — function — line 240
 
 ## `world/cart.ts`
 
@@ -1007,17 +1007,17 @@ Generated from exported TypeScript symbols.
 
 ## `world/createPlacedTraps.ts`
 
-- `createPlacedTraps` — function — line 94
-- `PlacedTrapEntry` — type — line 25
-- `PlacedTraps` — type — line 47
-- `PlacedTrapsHooks` — type — line 38
-- `TrapCaptureEvent` — type — line 27
+- `createPlacedTraps` — function — line 95
+- `PlacedTrapEntry` — type — line 26
+- `PlacedTraps` — type — line 48
+- `PlacedTrapsHooks` — type — line 39
+- `TrapCaptureEvent` — type — line 28
 
 ## `world/createPlayerGardens.ts`
 
-- `createPlayerGardens` — function — line 67
-- `PlayerGardenEntry` — type — line 19
-- `PlayerGardens` — type — line 21
+- `createPlayerGardens` — function — line 68
+- `PlayerGardenEntry` — type — line 20
+- `PlayerGardens` — type — line 22
 
 ## `world/createPlayerTroughs.ts`
 
@@ -1028,9 +1028,9 @@ Generated from exported TypeScript symbols.
 
 ## `world/createPlayerWells.ts`
 
-- `createPlayerWells` — function — line 90
-- `PlayerWellEntry` — type — line 22
-- `PlayerWells` — type — line 24
+- `createPlayerWells` — function — line 91
+- `PlayerWellEntry` — type — line 23
+- `PlayerWells` — type — line 25
 
 ## `world/createResidentialBuildings.ts`
 
@@ -1834,13 +1834,13 @@ Generated from exported TypeScript symbols.
 ## `world/playerGarden.ts`
 
 - `applyCultivationMaintenance` — function — line 165
-- `applyGardenWatering` — function — line 318
+- `applyGardenWatering` — function — line 319
 - `CARE_DEGRADATION_PER_DAY` — const — line 126
 - `CARE_MAINTAINED_THRESHOLD` — const — line 128
 - `CARE_NEGLECTED_THRESHOLD` — const — line 129
 - `CARE_REMOVAL_THRESHOLD` — const — line 133
 - `CultivationStatus` — type — line 135
-- `cultivationYieldCount` — function — line 358
+- `cultivationYieldCount` — function — line 361
 - `DROUGHT_STRESS_CAP_DAYS` — const — line 238
 - `DROUGHT_STRESS_MAX_STEPS` — const — line 235
 - `DROUGHT_STRESS_PERCENT_PER_STEP` — const — line 234
@@ -1855,12 +1855,12 @@ Generated from exported TypeScript symbols.
 - `GARDEN_PLACEMENT_MESSAGE` — const — line 79
 - `GARDEN_SEPARATION` — const — line 65
 - `GardenHydrationState` — type — line 256
-- `gardenMaintenanceRoll` — function — line 415
+- `gardenMaintenanceRoll` — function — line 418
 - `GardenMaterialCost` — type — line 48
 - `gardenMaterialRequirements` — function — line 51
 - `GardenPlacementReason` — type — line 77
-- `gardenPlotPromptLabel` — function — line 379
-- `gardenWateringRoll` — function — line 419
+- `gardenPlotPromptLabel` — function — line 382
+- `gardenWateringRoll` — function — line 422
 - `getCultivationStatus` — function — line 137
 - `HYDRATION_DROUGHT_THRESHOLD` — const — line 218
 - `HYDRATION_DRY_RATE_PER_DAY` — const — line 203
@@ -1874,7 +1874,7 @@ Generated from exported TypeScript symbols.
 - `PlayerGardenRecord` — type — line 28
 - `resolveCultivationCare` — function — line 150
 - `resolveGardenHydration` — function — line 277
-- `resolveGardenHydrationAfterHarvest` — function — line 330
+- `resolveGardenHydrationAfterHarvest` — function — line 332
 - `WATERING_DURATION_SEC` — const — line 211
 - `WATERING_HYDRATION_GAIN` — const — line 205
 - `WATERING_LITRES` — const — line 208
@@ -1905,65 +1905,65 @@ Generated from exported TypeScript symbols.
 
 ## `world/playerWell.ts`
 
-- `activeWellStage` — function — line 546
-- `advanceWellConstruction` — function — line 321
-- `applyWellRoofConditionDelta` — function — line 481
+- `activeWellStage` — function — line 551
+- `advanceWellConstruction` — function — line 324
+- `applyWellRoofConditionDelta` — function — line 485
   - domain: world
-- `applyWellRoofRepairWork` — function — line 276
+- `applyWellRoofRepairWork` — function — line 279
   - domain: world
-- `beginWellRoofRepair` — function — line 239
+- `beginWellRoofRepair` — function — line 240
   - domain: world
-- `formatHours` — function — line 606
-- `formatWorkDuration` — function — line 611
+- `formatHours` — function — line 611
+- `formatWorkDuration` — function — line 616
 - `getWellPitWorkHours` — function — line 89
 - `hasActiveWellRoofRepair` — function — line 185
-- `hasWellRoofCondition` — function — line 406
-- `initializeWellRoofCondition` — function — line 425
+- `hasWellRoofCondition` — function — line 409
+- `initializeWellRoofCondition` — function — line 428
   - domain: world
-- `initialWellRoofCondition` — function — line 412
-- `isWellCompleted` — function — line 385
-- `isWellStageWorkComplete` — function — line 376
-- `isWellWaterAvailable` — function — line 503
-- `NearbyPlayerWellLookup` — type — line 648
-- `nextWellStage` — function — line 371
+- `initialWellRoofCondition` — function — line 415
+- `isWellCompleted` — function — line 388
+- `isWellStageWorkComplete` — function — line 379
+- `isWellWaterAvailable` — function — line 508
+- `NearbyPlayerWellLookup` — type — line 653
+- `nextWellStage` — function — line 374
 - `PlayerWellRecord` — type — line 37
 - `quoteWellRoofRepair` — function — line 212
   - domain: world
-- `resolveWellRoofCondition` — function — line 440
+- `resolveWellRoofCondition` — function — line 443
   - domain: world
-- `WELL_FOOTPRINT_RADIUS` — const — line 563
-- `WELL_PLACE_DURATION_SEC` — const — line 569
-- `WELL_PLACE_REACH` — const — line 566
-- `WELL_PLACEMENT_MESSAGE` — const — line 553
+- `WELL_FOOTPRINT_RADIUS` — const — line 568
+- `WELL_PLACE_DURATION_SEC` — const — line 574
+- `WELL_PLACE_REACH` — const — line 571
+- `WELL_PLACEMENT_MESSAGE` — const — line 558
 - `WELL_RECOVERY_RATE` — const — line 159
-- `WELL_ROOF_PASSIVE_DECAY_PER_DAY` — const — line 393
-- `WELL_ROOF_RAIN_DECAY_PER_DAY` — const — line 394
+- `WELL_ROOF_PASSIVE_DECAY_PER_DAY` — const — line 396
+- `WELL_ROOF_RAIN_DECAY_PER_DAY` — const — line 397
 - `WELL_ROOF_REPAIR_COST_FACTOR` — const — line 164
-- `WELL_ROOF_REPAIR_WORK_LABEL` — const — line 587
-- `WELL_ROOF_SIM_WINDOW_DAYS` — const — line 396
-- `WELL_ROOF_SNOW_DECAY_PER_DAY` — const — line 395
-- `WELL_SEPARATION` — const — line 564
+- `WELL_ROOF_REPAIR_WORK_LABEL` — const — line 592
+- `WELL_ROOF_SIM_WINDOW_DAYS` — const — line 399
+- `WELL_ROOF_SNOW_DECAY_PER_DAY` — const — line 398
+- `WELL_SEPARATION` — const — line 569
 - `WELL_STAGE_CAPABILITY` — const — line 124
 - `WELL_STAGE_COST` — const — line 112
-- `WELL_STAGE_START_PROMPT` — const — line 590
+- `WELL_STAGE_START_PROMPT` — const — line 595
 - `WELL_STAGE_WORK_HOURS` — const — line 75
-- `WELL_WATER_UNAVAILABLE_DURING_REPAIR` — const — line 509
-- `WELL_WORK_LABEL` — const — line 597
-- `WELL_WORK_SESSION_HOURS` — const — line 584
-- `WELL_WORK_SESSION_SEC` — const — line 575
+- `WELL_WATER_UNAVAILABLE_DURING_REPAIR` — const — line 514
+- `WELL_WORK_LABEL` — const — line 602
+- `WELL_WORK_SESSION_HOURS` — const — line 589
+- `WELL_WORK_SESSION_SEC` — const — line 580
 - `WellMaterialCost` — type — line 106
-- `WellPlacementReason` — type — line 551
-- `wellPromptLabel` — function — line 624
-- `wellRemainingWork` — function — line 356
-- `wellRoofProtectionFactor` — function — line 469
+- `WellPlacementReason` — type — line 556
+- `wellPromptLabel` — function — line 629
+- `wellRemainingWork` — function — line 359
+- `wellRoofProtectionFactor` — function — line 473
 - `WellRoofRepairQuote` — type — line 166
 - `WellRoofRepairStartOutcome` — type — line 173
 - `WellStage` — type — line 30
 - `wellStageCapabilities` — function — line 137
 - `wellStageRequirements` — function — line 149
 - `wellStageWorkHours` — function — line 102
-- `wellWaterSource` — function — line 519
-- `WellWorkOutcome` — type — line 308
+- `wellWaterSource` — function — line 524
+- `WellWorkOutcome` — type — line 311
 
 ## `world/playerWellProp.ts`
 
@@ -2207,7 +2207,7 @@ Generated from exported TypeScript symbols.
 - `PLATFORM_SEPARATION` — const — line 61
 - `PlatformPlacementReason` — type — line 75
 - `PlatformRecord` — type — line 41
-- `resolveSleepingUtilityCondition` — function — line 201
+- `resolveSleepingUtilityCondition` — function — line 202
 - `resolveWeatherDrivenCondition` — function — line 159
   - domain: items-player
 - `SLEEPING_UTILITY_CONDITION_MAX` — const — line 128
@@ -2546,40 +2546,53 @@ Generated from exported TypeScript symbols.
 
 ## `world/weather.ts`
 
-- `ClimateState` — type — line 371
-- `computeClimate` — function — line 357
-- `computeRainExposureDays` — function — line 313
-- `computeSnowExposureDays` — function — line 332
-- `computeSurfaceWeather` — function — line 223
+- `ClimateState` — type — line 448
+- `computeClimate` — function — line 390
+- `computeRainExposureDays` — function — line 346
+- `computeSnowExposureDays` — function — line 365
+- `computeSurfaceWeather` — function — line 256
+- `computeSurfaceWeatherLut` — function — line 415
 - `computeWeather` — function — line 125
-- `createClimateState` — function — line 384
-- `createForcedSurfaceWeatherRuntime` — function — line 258
+- `createClimateState` — function — line 461
+- `createForcedSurfaceWeatherRuntime` — function — line 291
+- `createSurfaceWeatherLut` — function — line 410
 - `DAYS_PER_SEASON` — const — line 32
 - `DAYS_PER_YEAR` — const — line 33
-- `ForcedSurfaceWeatherRuntime` — type — line 251
+- `ForcedSurfaceWeatherRuntime` — type — line 284
   - domain: world
 - `getSeason` — function — line 35
 - `getSeasonProgress` — function — line 41
 - `isRainWeather` — function — line 74
   - domain: world
-- `resolveSurfaceWeatherForFrame` — function — line 268
+- `localClimateAt` — function — line 396
+- `LocalWeather` — type — line 143
+- `localWeatherFrom` — function — line 156
+  - domain: world
+- `PHASE_GATE_C` — const — line 146
+- `PHASE_T_C` — const — line 148
+- `PrecipitationPhase` — type — line 140
+- `resolveSurfaceWeatherForFrame` — function — line 301
   - domain: world
 - `Season` — type — line 8
 - `SEASON_LABELS` — const — line 14
-- `SNOW_ACCUMULATE_WINDOW_DAYS` — const — line 150
-- `SNOW_MELT_WINDOW_DAYS` — const — line 153
-- `stepSurfaceWeather` — function — line 182
+- `SNOW_ACCUMULATE_WINDOW_DAYS` — const — line 183
+- `SNOW_MELT_WINDOW_DAYS` — const — line 186
+- `stepSurfaceWeather` — function — line 215
   - domain: world
-- `SurfaceWeatherState` — type — line 161
-- `SurfaceWeatherStepInput` — type — line 170
+- `SURFACE_LUT_KNOTS` — const — line 406
+- `SURFACE_LUT_MIN_C` — const — line 405
+- `surfaceWeatherAtOffset` — function — line 429
+- `SurfaceWeatherLut` — type — line 408
+- `SurfaceWeatherState` — type — line 194
+- `SurfaceWeatherStepInput` — type — line 203
 - `temperatureFor` — function — line 78
-- `tickClimate` — function — line 388
+- `tickClimate` — function — line 465
 - `WEATHER_CYCLE_DAYS` — const — line 86
 - `WEATHER_LABELS` — const — line 21
 - `WeatherState` — type — line 110
 - `WeatherType` — type — line 9
-- `WETNESS_DRY_WINDOW_DAYS` — const — line 145
-- `WorldClimateState` — type — line 348
+- `WETNESS_DRY_WINDOW_DAYS` — const — line 178
+- `WorldClimateState` — type — line 381
 
 ## `world/weatherParticles.ts`
 

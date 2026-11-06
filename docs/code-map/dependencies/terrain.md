@@ -1281,10 +1281,18 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `app/worldBundle.ts`
+- `items/createPlacedTents.ts`
+- `settlement/SettlementsManager.ts`
 - `terrain/biomeRegions.test.ts`
 - `terrain/biomeRegions.ts`
 - `terrain/macroClimate.test.ts`
 - `terrain/worldHydrology.ts`
+- `world/bloodTraces.ts`
+- `world/createPlacedTraps.ts`
+- `world/createPlayerGardens.ts`
+- `world/createPlayerWells.ts`
+- `world/weather.test.ts`
 
 ## `terrain/mineableDeposit.test.ts`
 

@@ -567,18 +567,24 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/macroClimate.ts`
 
-- `createMacroClimate` — function — line 162
-- `lastMacroClimateBuildMs` — function — line 249
+- `ClimateOffsetAt` — type — line 296
+- `climateOffsetC` — function — line 122
+  - domain: world
+- `createClimateOffsetAt` — function — line 304
+  - domain: world
+- `createMacroClimate` — function — line 177
+- `lastMacroClimateBuildMs` — function — line 264
 - `latitude01` — function — line 102
 - `MACRO_CLIMATE_CELL_M` — const — line 19
   - domain: world-terrain
 - `MACRO_CLIMATE_GRID_N` — const — line 22
 - `MacroClimate` — type — line 63
-- `macroClimateFrom` — function — line 112
-- `macroClimateOf` — function — line 257
+- `macroClimateFrom` — function — line 127
+- `macroClimateOf` — function — line 272
 - `MacroClimateSample` — type — line 33
+- `referenceTemperatureC` — function — line 112
 - `runoffFrom` — function — line 57
-- `runoffGrid` — function — line 208
+- `runoffGrid` — function — line 223
 - `temperatureAt` — function — line 107
 
 ## `terrain/mineableDeposit.ts`

@@ -99,6 +99,7 @@ Generated from TypeScript imports.
 - `settlement/villagePlan.ts`
 - `terrain/chunkGrid.ts`
 - `terrain/chunkHeightmap.ts`
+- `terrain/macroClimate.ts`
 - `terrain/resourceDeposits.ts`
 - `terrain/riverNetwork.ts`
 - `terrain/waterSample.ts`

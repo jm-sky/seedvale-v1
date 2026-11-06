@@ -158,6 +158,7 @@ Generated from TypeScript imports.
 
 - `player/PlayerController.ts`
 - `terrain/bloodOverlay.ts`
+- `terrain/macroClimate.ts`
 - `world/dayNight.ts`
 - `world/weather.ts`
 
@@ -2151,6 +2152,7 @@ Generated from TypeScript imports.
 - `items/items.ts`
 - `player/PlayerController.ts`
 - `settlement/props.ts`
+- `terrain/macroClimate.ts`
 - `world/animalAttractionSource.ts`
 - `world/animalTraps.ts`
 - `world/trapProp.ts`
@@ -2176,6 +2178,7 @@ Generated from TypeScript imports.
 - `assets/loadGltf.ts`
 - `player/PlayerController.ts`
 - `settlement/props.ts`
+- `terrain/macroClimate.ts`
 - `world/collision.ts`
 - `world/gardenPlotProp.ts`
 - `world/playerGarden.ts`
@@ -2220,6 +2223,7 @@ Generated from TypeScript imports.
 - `items/constructionMaterials.ts`
 - `player/PlayerController.ts`
 - `settlement/props.ts`
+- `terrain/macroClimate.ts`
 - `world/collision.ts`
 - `world/playerWell.ts`
 - `world/playerWellProp.ts`
@@ -5129,6 +5133,7 @@ Generated from TypeScript imports.
 
 **Imports**
 
+- `terrain/macroClimate.ts`
 - `world/weather.ts`
 
 ## `world/weather.ts`

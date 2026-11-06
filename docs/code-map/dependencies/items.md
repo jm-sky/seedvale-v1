@@ -645,6 +645,7 @@ Generated from TypeScript imports.
 - `items/tentProp.ts`
 - `player/PlayerController.ts`
 - `settlement/props.ts`
+- `terrain/macroClimate.ts`
 - `world/condition.ts`
 - `world/repair.ts`
 - `world/sleepingUtilities.ts`

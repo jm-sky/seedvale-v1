@@ -1426,14 +1426,14 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/SettlementsManager.ts`
 
-- `createSettlementsManager` — function — line 455
+- `createSettlementsManager` — function — line 459
   - domain: settlements
   - system: settlements-manager
   - role: Owns settlement generation, streaming and per-settlement economy/household/NPC-state registries.
   - owns: SettlementEconomy, Household
   - lifecycle: streaming
-- `SettlementsManager` — type — line 203
-- `shouldAcceptSettlementResidency` — function — line 178
+- `SettlementsManager` — type — line 204
+- `shouldAcceptSettlementResidency` — function — line 179
   - domain: settlements
 
 ## `settlement/settlementStructures.ts`

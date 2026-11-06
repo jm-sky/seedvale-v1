@@ -55,7 +55,7 @@ Generated from exported TypeScript symbols.
 
 ## `fauna/animalAttraction.ts`
 
-- `activeIgnoredAttractionIds` — function — line 272
+- `activeIgnoredAttractionIds` — function — line 274
 - `ATTRACTION_IGNORE_CAP` — const — line 38
 - `attractionScore` — function — line 84
 - `BLOOD_ATTRACTION_RADIUS` — const — line 26
@@ -63,7 +63,7 @@ Generated from exported TypeScript symbols.
 - `BLOOD_INVESTIGATE_SEC` — const — line 36
 - `bloodAttractionSource` — function — line 189
 - `bloodAttractionStrength` — function — line 64
-- `buildAttractionSnapshot` — function — line 211
+- `buildAttractionSnapshot` — function — line 212
 - `canSenseBlood` — function — line 59
 - `droppedFoodAttractionSource` — function — line 167
 - `FOOD_ATTRACTION_RADIUS` — const — line 24
@@ -74,9 +74,9 @@ Generated from exported TypeScript symbols.
 - `FOOD_STRENGTH_SPOILED_MEAT` — const — line 30
 - `foodAttractionStrength` — function — line 42
 - `isAttractionCompatible` — function — line 70
-- `isDroppedFoodStillAttractive` — function — line 236
-- `markAttractionIgnored` — function — line 247
-- `pruneAttractionIgnored` — function — line 266
+- `isDroppedFoodStillAttractive` — function — line 238
+- `markAttractionIgnored` — function — line 249
+- `pruneAttractionIgnored` — function — line 268
 - `resolveAttractionTarget` — function — line 106
 - `TRAP_BAIT_STRENGTH` — const — line 31
 - `trapBaitAttractionSource` — function — line 139
