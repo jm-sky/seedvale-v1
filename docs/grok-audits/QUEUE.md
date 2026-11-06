@@ -33,6 +33,8 @@ GA-003: [STATE deferred-section pilot](./audits/2026-11-06--GA-003--state-deferr
 
 ## Change log
 
+- 2026-11-06 — independent Opus validation of F01–F07 at `46636498`: all **confirmed** (F02/F06 narrowed), docs-only fixes → Revival Q167 (low priority), code/tooling candidates → LOOSE-ENDS; no false positives. [Record](./audits/2026-11-06--GA-003--opus-validation.md).
+
 - 2026-11-06 - author-authorized GA-003 items/player slice delivered at `3c249cb62ddde343be2b654fae43315a484f8054`; 32 claim rows (19 supported static / 1 partial / 1 contradicted / 8 excluded overlap / 3 excluded scope); F06-F07 remain `unverified`. Dirty tooling report preserved byte-for-byte; earlier slices and F01-F05 retained. No runtime changes, commit, push or stash.
 
 - 2026-11-06 — author-authorized GA-003 developer-tooling slice delivered at `3c249cb62ddde343be2b654fae43315a484f8054`; 30 claim rows (18 supported static / 1 contradicted / 2 partial / 9 excluded); F03–F05 remain `unverified`. Deferred-section pilot and F01/F02 preserved; no runtime changes, commit or push.

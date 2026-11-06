@@ -119,3 +119,9 @@ Format: `- [ ] YYYY-MM-DD — opis (plan/plik, jeśli istotne)`
 
 - **2026-11-05 · fauna-051 §A (Q151) follow-ups:** the attack-time spatial bite gate (`biteSharesSpatialContext`, same `WorldSpatialContext` + Δy ≤ 2 m) runs only in the `gameLoop` player-bite callback; NPC bites have no such check and the agent itself does not gate — both need `createFauna.ts` plumbing and an NPC height. Also: `findPath` returns a straight route through a 1 m thin wall (pre-existing; characterised in `AnimalAgent.chase.test.ts`).
 - **2026-11-05 · fauna-050 F2 (Q142):** save rows of spawners that no longer exist in the world are now carried forward instead of dropped (`snapshotSpawnPoints()` union) — harmless today (epoch 1, ids stable), but they can accumulate if spawner ids are ever retired; consider pruning by known group plans in F3/F5. Catch-up uses the bound count as a stand-in for animals within `SPAWNER_RADIUS` in the daily disabled/recovering check (🟡).
+
+## Docs ↔ tooling contracts (GA-003)
+
+- [ ] 2026-11-06 — GA-003-F06: Quick Actions `wedkarstwo` availability uses exact `inventory.has('fishing_rod', 1)` (`createApp.ts` `setQuickActionsHasFishingRod` / `hasFishingRod`) while the execution gate uses `hasItemCapability(…, 'fishing')` (`gameLoop.ts`). Harmless while only `fishing_rod` has `'fishing'`; derive from capability if a second fishing tool is added. Needs its own brief.
+- [ ] 2026-11-06 — GA-003-F05: `settlement-shot.mjs` rejects software rasterizers only on WSL (`if (!IS_WIN)`); native Windows has no SwiftShader/Basic Render guard. Optional tooling hardening (author choice; docs are qualified in Q167).
+- [ ] 2026-11-06 — GA-003-F03: `docs:sync` does not run `docs:navigation-candidates` (the CODE_INDEX `AI_NAVIGATION_INDEX` writer). Q167 fixes the doc; wiring it into `docs:sync` instead is an author choice (rewrites generated CODE_INDEX on every sync).
