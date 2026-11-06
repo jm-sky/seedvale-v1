@@ -61,3 +61,27 @@ Conclusions:
 - A site needs terrain carving to look right, or the author picks plunge falls (→ 060 scarp landform, new plan, Opus).
 - Spray needs per-frame CPU or exceeds the per-site budget.
 - An id collision cannot be resolved by the "larger drop" rule (two distinct falls in one 16 m cell).
+
+## W1 — detection, reserves, census (Sonnet, 2026-11-06 — queue Q168)
+
+Implemented `src/terrain/waterfallSites.ts` per §2.2–2.4: `waterfallSitesOf(hydrologyId)` (memoized per installed hydrology data, empty for unconditioned ids), `isInWaterfallReserve`, `waterfallReservesIn(rect)`, pure `detectWaterfallSites(chains)` (unit-tested with synthetic chains). 🟡 constants from W0 used as written (slope 0.25, merge gap 30 m, drop 2 m, landmark 10 m + 300 m greedy spacing by drop, 16 m id cell, reserve `max(12, width + 8)` m, 20 m pool). Tier spacing is greedy: eligible sites sorted by drop desc (id asc), accepted when ≥ 300 m from every accepted landmark. Id collisions keep the larger drop. No output change, no cache bump, epoch untouched.
+
+`pnpm worldgen:outcomes:census` now uses the module (second copy of the rule removed; JSON key `waterfallCandidates` → `waterfallSites` with `id`/`tier`; the 2026-11-06 H5 JSON is a frozen snapshot and is not regenerated) and prints today's intersections (`--rings=5`, `--no-intersections` to skip; ~34 s both seeds).
+
+| | seed 42 | seed 415424794 |
+| --- | --- | --- |
+| sites (merge applied after the 2 m filter on merged drop) | 39 | 45 |
+| landmark / minor | 4 / 35 | 7 / 38 |
+| id collisions | 0 | 0 |
+| settlement footprints (rings ≤ 5) in a reserve | 0 / 4 | 0 / 6 |
+| plots in a reserve | 0 | 0 |
+| inter-settlement roads touching a reserve | 2 / 7 | 0 / 8 |
+| bridges touching a reserve | 2 / 7 (`1_-6\|4_-3#5`, `-4_-2\|-6_-7#4`) | 0 / 6 |
+
+Findings:
+- 🟡 Site counts are above W0's estimate (34 / 43) because W0 filtered 2 m *before* merging; the plan text filters the merged drop, so short sub-2 m runs now join a neighbouring run. Landmark counts are 4 / 7, W0 expected 3 / ≤ 11 — the 300 m spacing cut 415424794's western cluster as predicted.
+- ✅ Settlements: no footprint intersects a reserve on either seed within rings ≤ 5, so 063 V1 has nothing to move today; the reserve is a guard for the new placement.
+- ❓ Seed 42: 2 roads (the same 2 bridges) run through reserves — the Q61–Q64 retry must treat them as non-crossable (or move them); size of that change is 2 of 7 routes on seed 42, 0 on 415424794.
+- Reserve distances sample the straight top→bottom segment, not the chain polyline between (reach ≤ 107 m, nearly straight at 1.3–2.9 m spacing) — acceptable for a footprint; W2 may refine.
+
+Checks: `pnpm vitest run src/terrain` 708 pass, type-check, lint clean. Technical only; nothing browser-observable.

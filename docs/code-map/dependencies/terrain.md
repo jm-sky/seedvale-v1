@@ -1525,6 +1525,7 @@ Generated from TypeScript imports.
 - `terrain/waterBodyKind.ts`
 - `terrain/waterSample.test.ts`
 - `terrain/waterSample.ts`
+- `terrain/waterfallSites.ts`
 - `terrain/worldHydrology.ts`
 - `terrain/worldHydrologyStore.ts`
 - `terrain/worldHydrologyView.test.ts`
@@ -1955,6 +1956,25 @@ Generated from TypeScript imports.
 - `world/locations/worldLocationCatalog.ts`
 - `world/map/mapProjection.ts`
 
+## `terrain/waterfallSites.test.ts`
+
+**Imports**
+
+- `terrain/waterfallSites.ts`
+- `terrain/worldHydrology.ts`
+- `terrain/worldHydrologyStore.ts`
+
+## `terrain/waterfallSites.ts`
+
+**Imports**
+
+- `terrain/riverNetwork.ts`
+- `terrain/worldHydrologyStore.ts`
+
+**Imported by**
+
+- `terrain/waterfallSites.test.ts`
+
 ## `terrain/worldEdge.test.ts`
 
 **Imports**
@@ -2003,6 +2023,7 @@ Generated from TypeScript imports.
 - `terrain/macroClimate.test.ts`
 - `terrain/riverNetwork.ts`
 - `terrain/testWindowHydrology.ts`
+- `terrain/waterfallSites.test.ts`
 - `terrain/worldHydrology.test.ts`
 - `terrain/worldHydrologyCache.ts`
 - `terrain/worldHydrologyRegistry.ts`
@@ -2099,6 +2120,8 @@ Generated from TypeScript imports.
 - `terrain/riverQuery.test.ts`
 - `terrain/riverQuery.ts`
 - `terrain/testWindowHydrology.ts`
+- `terrain/waterfallSites.test.ts`
+- `terrain/waterfallSites.ts`
 - `terrain/worldHydrology.ts`
 - `terrain/worldHydrologyRegistry.ts`
 - `terrain/worldHydrologyRuntime.ts`

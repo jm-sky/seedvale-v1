@@ -931,6 +931,28 @@ Generated from exported TypeScript symbols.
 - `WaterShoreResult` — type — line 100
 - `WaterShoreSamplers` — type — line 107
 
+## `terrain/waterfallSites.ts`
+
+- `CASCADE_MERGE_GAP_M` — const — line 10
+- `CASCADE_MIN_DROP_M` — const — line 12
+- `CASCADE_SLOPE_MIN` — const — line 8
+- `detectWaterfallSites` — function — line 100
+- `isInWaterfallReserve` — function — line 214
+- `LANDMARK_MIN_DROP_M` — const — line 14
+- `LANDMARK_POOL_RADIUS_M` — const — line 23
+- `LANDMARK_SPACING_M` — const — line 16
+- `RESERVE_MIN_M` — const — line 20
+- `RESERVE_WIDTH_PAD_M` — const — line 21
+- `siteReservesPointAt` — function — line 237
+- `WATERFALL_ID_CELL_M` — const — line 18
+- `WaterfallPoint` — type — line 30
+- `waterfallReserveHalfWidth` — function — line 55
+- `waterfallReservesIn` — function — line 220
+- `WaterfallSite` — type — line 32
+- `WaterfallSiteId` — type — line 28
+- `waterfallSitesOf` — function — line 209
+- `WaterfallTier` — type — line 27
+
 ## `terrain/waterSample.ts`
 
 - `DRY_WATER_SAMPLE` — const — line 25
