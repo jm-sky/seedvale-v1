@@ -212,7 +212,7 @@ export function applyMountainRock(
   color.lerp(ROCK, rockT * 0.85)
 
   // Snow tint by height in metres (starts 45 m, full at 75 m): the old `heightScale` fraction put white on 10–15 m rock
-  // (landform crags/craters, low massifs). Real snow (snowField) lives at SNOW_ALT_M 60–140 m.
+  // (landform crags/craters, low massifs). Real snow (snowField) follows the temperature lapse (062 W2).
   const metres = height - waterLevel
   const snowT = Math.max(0, Math.min(1, (metres - 45) / 30)) * mountainRidge
   if (snowT > 0) color.lerp(SNOW, snowT)

@@ -2,8 +2,8 @@
  * World-anchored snow reveal field (plan world-terrain-053 / VIS-07): monotone
  * threshold coverage `smoothstep(n ± EDGE, s * GAIN + bias - ONSET)` so patches
  * appear, grow and merge as `snowAmount` rises and retreat as it melts. Adapted
- * from V3 `render/snowField.ts` for V1 presentation only — consumes existing
- * `computeSurfaceWeather().snowAmount`, no second weather state. Camera-independent
+ * from V3 `render/snowField.ts` for V1 presentation only — consumes the
+ * position-dependent `computeSurfaceWeather` LUT (`surfaceClimateField.ts`), no second weather state. Camera-independent
  * (`detail` always 1; no litter/worn biases). GLSL text and TypeScript twins live
  * here so terrain and grass share one spatial logic.
  * @domain world-terrain
@@ -16,11 +16,9 @@ export const SNOW_GAIN = 1.25
 export const SNOW_ONSET = 0.15
 /** Half width of the smoothstep edge in threshold units. */
 export const SNOW_EDGE = 0.06
-/** Terrain bias terms (flat gains, steep sheds, altitude gains). */
-export const SNOW_BIAS = { flat: 0.12, steep: 0.6, altitude: 0.15 } as const
-/** Altitude ramp (metres, absolute world Y) of the altitude bias. */
-export const SNOW_ALT_M = [60, 140] as const
-/** Grass cover bias before the altitude term (terrain flat bias does not apply to blades). */
+/** Terrain bias terms (flat gains, steep sheds). Altitude is carried by the temperature lapse (062 W2). */
+export const SNOW_BIAS = { flat: 0.12, steep: 0.6 } as const
+/** Grass cover bias (terrain flat bias does not apply to blades). */
 export const GRASS_SNOW_BIAS = 0.1
 /** Share of snow colour on tips of a covered blade (before the height ramp). */
 export const GRASS_SNOW_FROST = 0.55
@@ -120,12 +118,10 @@ export function snowCover(n: number, s: number, bias: number): number {
   return smooth(n - SNOW_EDGE, n + SNOW_EDGE, s * SNOW_GAIN + bias - SNOW_ONSET)
 }
 
-/** Terrain bias inputs (flat / steep / altitude only — no litter/worn). */
+/** Terrain bias inputs (flat / steep only — no litter/worn). */
 export interface SnowTerrainBiasInput {
   /** Object-space up component of the normal (1 = flat). */
   up: number
-  /** World Y (metres). */
-  y: number
 }
 
 /** Twin of the terrain snow bias GLSL. */
@@ -133,7 +129,6 @@ export function snowTerrainBias(i: SnowTerrainBiasInput): number {
   return (
     SNOW_BIAS.flat * smooth(0.85, 0.97, i.up)
     - SNOW_BIAS.steep * (1 - smooth(0.55, 0.8, i.up))
-    + SNOW_BIAS.altitude * smooth(SNOW_ALT_M[0], SNOW_ALT_M[1], i.y)
   )
 }
 
@@ -147,10 +142,9 @@ export function terrainSnowCoverAt(
   return snowCover(snowThreshold(x, z, 1), s, snowTerrainBias(i))
 }
 
-/** Per-instance grass cover twin (fixed blade bias + altitude; detail = 1). */
-export function grassSnowCoverAt(x: number, z: number, s: number, y: number): number {
-  const altitude = SNOW_BIAS.altitude * smooth(SNOW_ALT_M[0], SNOW_ALT_M[1], y)
-  return snowCover(snowThreshold(x, z, 1), s, GRASS_SNOW_BIAS + altitude)
+/** Per-instance grass cover twin (fixed blade bias; detail = 1). */
+export function grassSnowCoverAt(x: number, z: number, s: number): number {
+  return snowCover(snowThreshold(x, z, 1), s, GRASS_SNOW_BIAS)
 }
 
 /** Twin of the vertex bury curve (blade path — V1 has no separate flower bury). */

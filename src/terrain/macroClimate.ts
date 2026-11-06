@@ -123,6 +123,30 @@ export function climateOffsetC(z: number, floorH: number, waterLevel: number): n
   return temperatureAt(z, floorH, waterLevel) - referenceTemperatureC(waterLevel)
 }
 
+/**
+ * Closed-form parameters of `climateOffsetC` for shaders (world-terrain-062 W2):
+ * `offset = a + b * clamp(z + WORLD_HALF_EXTENT, 0, span) - lapse * max(0, y - waterLevel)`.
+ * Exact twin of `climateOffsetC`; worlds without a finite continent use `SURFACE_CLIMATE_OFF`.
+ */
+export type SurfaceClimateParams = { a: number; b: number; lapse: number; waterLevel: number }
+
+export const SURFACE_CLIMATE_OFF: SurfaceClimateParams = { a: 0, b: 0, lapse: 0, waterLevel: 0 }
+
+export function surfaceClimateParams(waterLevel: number): SurfaceClimateParams {
+  return {
+    a: T_NORTH_C - referenceTemperatureC(waterLevel),
+    b: (T_SOUTH_C - T_NORTH_C) / WORLD_SPAN_M,
+    lapse: LAPSE_C_PER_M,
+    waterLevel,
+  }
+}
+
+/** CPU twin of the GLSL `svClimateOffset`. */
+export function climateOffsetFromParams(p: SurfaceClimateParams, z: number, y: number): number {
+  const along = Math.min(WORLD_SPAN_M, Math.max(0, z + WORLD_HALF_EXTENT))
+  return p.a + p.b * along - p.lapse * Math.max(0, y - p.waterLevel)
+}
+
 /** Pure climate formula from already-known terms (shared by the grid path and tests). */
 export function macroClimateFrom(
   z: number,

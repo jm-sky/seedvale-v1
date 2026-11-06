@@ -4,6 +4,7 @@ import type { HeightSampler, RuntimeGroundSampler, RuntimeLocalWaterSampler } fr
 import type { PropPlacement } from '../render/instancedProps'
 import type { SightBlocker } from '../world/sight/sightBlockers'
 import type { TreeEnvSample, TreeGrowthStage, TreeLifecycle, TreePresence } from '../world/treeLifecycle'
+import type { SurfaceWeatherLut } from '../world/weather'
 import type { ChunkTileResult, GrassRequestParams } from './chunkHeightmapProtocol'
 import type { ChunkMeshData, ChunkMeshTileGrids } from './chunkMeshData'
 import type { FbmParams } from './fbm'
@@ -136,6 +137,7 @@ import {
 } from './chunkWorldItems'
 import { DENSITY_LOD_FLOOR, densityLodFraction, grassFillerLodFraction, grassGeometryLodTier } from './distanceLod'
 import { createGrassSystem, type WorldGrassChunk } from './grass'
+import { SURFACE_CLIMATE_OFF, surfaceClimateParams } from './macroClimate'
 import {
   applyMineableRockAction,
   effectiveMineableRockKind,
@@ -163,6 +165,7 @@ import {
 import { createRiverQuery } from './riverQuery'
 import { createRiverTileCache, type RiverTileCacheStats } from './riverTileCache'
 import { bridgeDeckYAt } from './roadBridge'
+import { setSurfaceClimateParams, setSurfaceWeatherLut } from './surfaceClimateField'
 import { cutoutsOverlappingChunk, type TerrainCutout } from './terrainCutout'
 import {
   isLightweightUnloadedLandmark,
@@ -572,9 +575,9 @@ export type ChunkManager = {
   tickGrass: (dt: number, windAmp?: number) => void
   setGrassDayNight: (dayFactor: number, sunDirection: THREE.Vector3) => void
   /** Updates the shared terrain material's weather-surface uniforms in
-   *  place (plan 133) — a couple of `.value` writes, not a per-chunk update;
+   *  place (plan 133) — a 32-float copy, not a per-chunk update;
    *  every loaded (and later-loaded) chunk shares this one material. */
-  setWeatherSurface: (wetness: number, snowAmount: number) => void
+  setWeatherSurface: (lut: SurfaceWeatherLut) => void
   sampleHeight: HeightSampler
   /** Ground height as dry-land placement sees it: water-covered points (sea **or lake**, plan 058 L1) report
    *  `waterLevel`, so legacy `height <= waterLevel + margin` water/shore tests keep working for lakes. For
@@ -1298,9 +1301,14 @@ export function createChunkManager(
     config.detailNormal,
     config.waterLevel,
   )
-  // Grass burial/frost reads the identical uSnowAmount object as terrain
-  // (plan world-terrain-053) — setWeatherSurface mutates `.value` in place.
-  grassSystem.setSnowAmountUniform(terrainMaterial.weatherUniforms.uSnowAmount)
+  // Grass burial/frost reads the identical snow-LUT/climate objects as terrain
+  // (plans world-terrain-053, 062 W2) — setWeatherSurface mutates `.value` in place.
+  grassSystem.setSurfaceClimateUniforms(terrainMaterial.weatherUniforms)
+  // Finite continent → closed-form climate offset per fragment/blade; otherwise offset 0 (as before W2).
+  setSurfaceClimateParams(
+    terrainMaterial.weatherUniforms,
+    config.region.continentMask ? surfaceClimateParams(config.waterLevel) : SURFACE_CLIMATE_OFF,
+  )
   let lastCheckX = Number.POSITIVE_INFINITY
   let lastCheckZ = Number.POSITIVE_INFINITY
   const recheckDistance = config.chunkSize * 0.25
@@ -3171,9 +3179,8 @@ export function createChunkManager(
     setGrassDayNight(dayFactor, sunDirection) {
       grassSystem.setDayNight(dayFactor, sunDirection)
     },
-    setWeatherSurface(wetness, snowAmount) {
-      terrainMaterial.weatherUniforms.uWetness.value = wetness
-      terrainMaterial.weatherUniforms.uSnowAmount.value = snowAmount
+    setWeatherSurface(lut) {
+      setSurfaceWeatherLut(terrainMaterial.weatherUniforms, lut)
     },
     sampleHeight: (x, z) => readField('heights', x, z),
     sampleLandHeight: landHeightAt,

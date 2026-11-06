@@ -190,6 +190,7 @@ import { WELL_WATER_UNAVAILABLE_DURING_REPAIR } from '../world/playerWell'
 import { resolveOffscreenTransportArrivals } from '../world/transportOffscreen'
 import {
   createForcedSurfaceWeatherRuntime,
+  createSurfaceWeatherLut,
   localWeatherFrom,
   resolveSurfaceWeatherForFrame,
   SEASON_LABELS,
@@ -849,6 +850,7 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
   /** Lil-gui `forced` surface wetness/snow integrator (same rates as
    *  `computeSurfaceWeather`); idle while `forced === 'auto'`. */
   const forcedSurfaceWeather = createForcedSurfaceWeatherRuntime()
+  const surfaceSnowOverrideLut = createSurfaceWeatherLut()
   const lightningRuntime = createLightningRuntime()
   let lightningFlashAmount = 0
   let lightningScare: import('../fauna/animalScare').AnimalScareStimulus | null = null
@@ -2715,9 +2717,12 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
         climate.forced,
       )
       const snowOverride = parseSnowParam()
+      // `?snow=` pins every LUT knot (uniform A/B step regardless of position); copy so the
+      // runtime's own LUT stays the pure/forced state.
       bundle.chunkManager.setWeatherSurface(
-        surfaceWeather.wetness,
-        snowOverride !== null ? snowOverride : surfaceWeather.snowAmount,
+        snowOverride !== null
+          ? { snow: surfaceSnowOverrideLut.snow.fill(snowOverride), wetness: surfaceWeather.wetness }
+          : surfaceWeather,
       )
       const weatherVisualChanged =
         climate.weather.type !== lastAppliedWeatherType ||

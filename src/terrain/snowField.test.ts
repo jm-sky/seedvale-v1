@@ -1,4 +1,6 @@
 import { describe, expect, it } from 'vitest'
+import { createSurfaceWeatherLut, surfaceWeatherAtOffset } from '../world/weather'
+import { climateOffsetC, climateOffsetFromParams, SURFACE_CLIMATE_OFF, surfaceClimateParams } from './macroClimate'
 import {
   grassSnowBury,
   grassSnowCoverAt,
@@ -77,13 +79,12 @@ describe('snowField (world-terrain-053)', () => {
   it('terrain and grass cover are both monotone and agree on spatial threshold', () => {
     const amounts = [0, 0.2, 0.5, 0.8, 1]
     grid(25, (x, z) => {
-      const y = 40
       const up = 0.95
       let prevT = -1
       let prevG = -1
       for (const s of amounts) {
-        const t = terrainSnowCoverAt(x, z, s, { up, y })
-        const g = grassSnowCoverAt(x, z, s, y)
+        const t = terrainSnowCoverAt(x, z, s, { up })
+        const g = grassSnowCoverAt(x, z, s)
         expect(t).toBeGreaterThanOrEqual(prevT - 1e-12)
         expect(g).toBeGreaterThanOrEqual(prevG - 1e-12)
         prevT = t
@@ -101,10 +102,10 @@ describe('snowField (world-terrain-053)', () => {
   })
 
   it('identical world state yields identical cover (deterministic)', () => {
-    const a = terrainSnowCoverAt(12.5, -88.25, 0.55, { up: 0.92, y: 55 })
-    const b = terrainSnowCoverAt(12.5, -88.25, 0.55, { up: 0.92, y: 55 })
+    const a = terrainSnowCoverAt(12.5, -88.25, 0.55, { up: 0.92 })
+    const b = terrainSnowCoverAt(12.5, -88.25, 0.55, { up: 0.92 })
     expect(a).toBe(b)
-    expect(grassSnowCoverAt(12.5, -88.25, 0.55, 55)).toBe(grassSnowCoverAt(12.5, -88.25, 0.55, 55))
+    expect(grassSnowCoverAt(12.5, -88.25, 0.55)).toBe(grassSnowCoverAt(12.5, -88.25, 0.55))
   })
 
   it('grass bury/frost/visible twins are bounded and monotone in cover', () => {
@@ -135,5 +136,33 @@ describe('snowField (world-terrain-053)', () => {
     expect(parseSnowParam('?snow=1.5')).toBe(1)
     expect(parseSnowParam('?snow=-0.2')).toBe(0)
     expect(parseSnowParam('?snow=abc')).toBeNull()
+  })
+})
+
+describe('position-dependent surface climate (062 W2)', () => {
+  it('shader offset params are an exact twin of climateOffsetC', () => {
+    const wl = 0
+    const p = surfaceClimateParams(wl)
+    for (const z of [-7000, -6144, -3000, 0, 1234.5, 6144, 9000]) {
+      for (const y of [-5, 0, 3, 25, 51]) {
+        expect(climateOffsetFromParams(p, z, y)).toBeCloseTo(climateOffsetC(z, y, wl), 9)
+      }
+    }
+    expect(climateOffsetFromParams(SURFACE_CLIMATE_OFF, 4000, 40)).toBe(0)
+  })
+
+  it('terrain and grass read the same LUT value at a point and agree on the front', () => {
+    const lut = createSurfaceWeatherLut()
+    // Snow on cold knots only (north / hills), none on warm knots.
+    for (let k = 0; k < 16; k++) lut.snow[k] = k < 8 ? 1 : 0
+    const p = surfaceClimateParams(0)
+    const north = surfaceWeatherAtOffset(lut, climateOffsetFromParams(p, -5000, 10)).snowAmount
+    const south = surfaceWeatherAtOffset(lut, climateOffsetFromParams(p, 5000, 2)).snowAmount
+    expect(north).toBeGreaterThan(south)
+    grid(25, (x, z) => {
+      const t = terrainSnowCoverAt(x, z, north, { up: 1 })
+      const g = grassSnowCoverAt(x, z, north)
+      if (t > 0.6 && g < 0.05) throw new Error(`terrain covered but grass empty at ${x},${z}`)
+    })
   })
 })

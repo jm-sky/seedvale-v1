@@ -8,11 +8,15 @@ import {
 } from '../assets/sharedSurfaceDiffuseTextures'
 import {
   INTEGER_LATTICE_GLSL,
-  SNOW_ALT_M,
   SNOW_BIAS,
   SNOW_COL,
   SNOW_FIELD_GLSL,
 } from './snowField'
+import {
+  createSurfaceClimateUniforms,
+  SURFACE_CLIMATE_GLSL,
+  type SurfaceClimateUniforms,
+} from './surfaceClimateField'
 import { buildCutChunkAttributes, type TerrainCutout } from './terrainCutout'
 import { getSharedTerrainDetailNormalMap } from './terrainDetailNormalMap'
 
@@ -39,10 +43,7 @@ export { SCORCH_CHARCOAL, scorchFalloffAt, type TerrainScorchPatch } from './chu
  *  the shared terrain program so `ChunkManager.setWeatherSurface()` can
  *  update `.value` in place without touching per-chunk geometry or
  *  triggering a recompile (plan 133). */
-export type TerrainWeatherUniforms = {
-  uWetness: { value: number }
-  uSnowAmount: { value: number }
-}
+export type TerrainWeatherUniforms = SurfaceClimateUniforms
 
 /** Shared diffuse colour-detail tuning (plan world-terrain-021). */
 export const TERRAIN_DIRT_DIFFUSE_TUNING = {
@@ -76,10 +77,7 @@ export function createTerrainMaterial(
         }
       : {}),
   }) as THREE.MeshStandardMaterial & { weatherUniforms: TerrainWeatherUniforms }
-  const weatherUniforms: TerrainWeatherUniforms = {
-    uWetness: { value: 0 },
-    uSnowAmount: { value: 0 },
-  }
+  const weatherUniforms: TerrainWeatherUniforms = createSurfaceClimateUniforms()
   material.weatherUniforms = weatherUniforms
   const dirtDiffuse = getSharedTerrainDirtDiffuse()
   // Macro color/roughness always; dual-tile normals + distance fade when enabled.
@@ -213,8 +211,8 @@ const WET_SAND_CHUNK = /* glsl */ `
 `
 
 /** Plan 133 / world-terrain-053 — deterministic weather-derived surface visuals
- *  (wet ground, puddles, threshold snow). `uWetness`/`uSnowAmount` are the only
- *  weather uniforms; snow uses the shared world-anchored field from
+ *  (wet ground, puddles, threshold snow). Wetness/snow are sampled per fragment from the
+ *  surface-weather LUT at the fragment's climate offset (062 W2, `surfaceClimateField.ts`); snow uses the shared world-anchored field from
  *  `snowField.ts` (detail always 1 — camera-independent). `vSlopeUp` is the
  *  cheapest flatness signal (terrain only translates; objectNormal.y is world up). */
 const WEATHER_SURFACE_COLOR_CHUNK = /* glsl */ `
@@ -223,11 +221,14 @@ const WEATHER_SURFACE_COLOR_CHUNK = /* glsl */ `
   float puddleCoreAmt = 0.0;
   float snowCoverAmt = 0.0;
   {
+    // Position-dependent wetness / snow (world-terrain-062 W2): LUT at this fragment's climate offset.
+    float svWetHere = svSurfaceWet( vWorldPos );
+    float svSnowHere = svSurfaceSnow( vWorldPos );
     float aboveWater = smoothstep( uWaterLevel, uWaterLevel + 0.3, vWorldPos.y );
     float flatUp = clamp( vSlopeUp, 0.0, 1.0 );
 
     // Broad darkening — dirt/roads read wetter than grass.
-    wetGroundAmt = uWetness * mix( 0.28, 0.82, vBareGround ) * aboveWater;
+    wetGroundAmt = svWetHere * mix( 0.28, 0.82, vBareGround ) * aboveWater;
 
     // Puddles: low-frequency irregular patches, gated to flat, bare-ish,
     // above-water ground; threshold tightens as wetness rises so coverage
@@ -236,10 +237,10 @@ const WEATHER_SURFACE_COLOR_CHUNK = /* glsl */ `
     // camera distance (plan world-terrain-003 v2).
     float puddleNoise = terrainValueNoise( vWorldPos.xz * 0.02 ) * 0.6
       + terrainValueNoise( vWorldPos.xz * 0.05 ) * 0.4;
-    float puddleThreshold = mix( 0.86, 0.32, uWetness );
+    float puddleThreshold = mix( 0.86, 0.32, svWetHere );
     float puddleFlat = smoothstep( 0.72, 0.95, flatUp );
     float puddleBare = mix( 0.08, 1.0, smoothstep( 0.15, 0.75, vBareGround ) );
-    float puddleGate = puddleFlat * puddleBare * aboveWater * uWetness;
+    float puddleGate = puddleFlat * puddleBare * aboveWater * svWetHere;
 
     // Same noise field, two nested bands — an outer edge (wet rim easing
     // into standing water) and a smaller inner core (the water itself), so
@@ -252,11 +253,10 @@ const WEATHER_SURFACE_COLOR_CHUNK = /* glsl */ `
 
     // Snow: monotone world-anchored patches (plan world-terrain-053 / VIS-07).
     // Flat gains, steep sheds, altitude gains; detail octave share fixed at 1.
-    if ( uSnowAmount > 0.002 ) {
+    if ( svSnowHere > 0.002 ) {
       float snowBias = ${SNOW_BIAS.flat.toFixed(2)} * smoothstep( 0.85, 0.97, flatUp )
-        - ${SNOW_BIAS.steep.toFixed(2)} * ( 1.0 - smoothstep( 0.55, 0.8, flatUp ) )
-        + ${SNOW_BIAS.altitude.toFixed(2)} * smoothstep( ${SNOW_ALT_M[0].toFixed(2)}, ${SNOW_ALT_M[1].toFixed(2)}, vWorldPos.y );
-      snowCoverAmt = svSnowCover( svSnowThreshold( vWorldPos.xz, 1.0 ), uSnowAmount, snowBias ) * aboveWater;
+        - ${SNOW_BIAS.steep.toFixed(2)} * ( 1.0 - smoothstep( 0.55, 0.8, flatUp ) );
+      snowCoverAmt = svSnowCover( svSnowThreshold( vWorldPos.xz, 1.0 ), svSnowHere, snowBias ) * aboveWater;
       wetGroundAmt *= 1.0 - snowCoverAmt;
       puddleEdgeAmt *= 1.0 - snowCoverAmt;
       puddleCoreAmt *= 1.0 - snowCoverAmt;
@@ -320,10 +320,11 @@ function applyTerrainSurfaceShader(
     shader.uniforms.uTerrainDirtFadeStart = { value: dirtTuning.detailFadeStart }
     shader.uniforms.uTerrainDirtFadeEnd = { value: dirtTuning.detailFadeEnd }
     // Referenced, not copied — `ChunkManager.setWeatherSurface()` mutates
-    // `weatherUniforms.uWetness.value` directly, so this stays live without
+    // the `weatherUniforms` values directly, so this stays live without
     // needing to re-fetch the compiled shader later (plan 133).
-    shader.uniforms.uWetness = weatherUniforms.uWetness
-    shader.uniforms.uSnowAmount = weatherUniforms.uSnowAmount
+    shader.uniforms.uWetLut = weatherUniforms.uWetLut
+    shader.uniforms.uSnowLut = weatherUniforms.uSnowLut
+    shader.uniforms.uClimate = weatherUniforms.uClimate
     if (detailOn) {
       shader.uniforms.uDetailTilesGrass = { value: detailNormal.tilesGrass }
       shader.uniforms.uDetailTilesBare = { value: detailNormal.tilesBare }
@@ -358,8 +359,7 @@ varying float vBareGround;
 varying vec3 vWorldPos;
 varying float vSlopeUp;
 uniform float uWaterLevel;
-uniform float uWetness;
-uniform float uSnowAmount;
+${SURFACE_CLIMATE_GLSL}
 uniform sampler2D uTerrainDirtAlbedo;
 uniform float uTerrainDirtAlbedoInfluence;
 uniform float uTerrainDirtWorldScale;
@@ -403,9 +403,9 @@ ${SNOW_FIELD_GLSL}${
   // Every chunk injects identical code for a given detail mode, so they can
   // share one compiled program — but three's default cache key ignores
   // `onBeforeCompile`, so say so explicitly. Bumped to v8 for plan
-  // world-terrain-053's threshold snow field (replaces the soft v7 blend).
+  // world-terrain-053's threshold snow field; v9 = 062 W2 position-dependent LUT snow/wetness.
   material.customProgramCacheKey = () =>
-    detailOn ? 'chunk-terrain-surface-detail-v8' : 'chunk-terrain-surface-v8'
+    detailOn ? 'chunk-terrain-surface-detail-v9' : 'chunk-terrain-surface-v9'
 }
 
 /**

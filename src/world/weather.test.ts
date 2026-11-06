@@ -9,6 +9,7 @@ import {
   computeWeather,
   createClimateState,
   createForcedSurfaceWeatherRuntime,
+  createSurfaceWeatherLut,
   DAYS_PER_SEASON,
   DAYS_PER_YEAR,
   getSeason,
@@ -18,6 +19,7 @@ import {
   resolveSurfaceWeatherForFrame,
   SURFACE_LUT_KNOTS,
   SURFACE_LUT_MIN_C,
+  SURFACE_LUT_REFRESH_DAYS,
   surfaceWeatherAtOffset,
   temperatureFor,
   tickClimate,
@@ -205,23 +207,24 @@ describe('computeSurfaceWeather', () => {
   })
 })
 
-describe('resolveSurfaceWeatherForFrame (lil-gui forced)', () => {
-  it('follows pure computeSurfaceWeather while forced is auto', () => {
+describe('resolveSurfaceWeatherForFrame (LUT, lil-gui forced)', () => {
+  const at0 = (lut: ReturnType<typeof createSurfaceWeatherLut>) => surfaceWeatherAtOffset(lut, 0)
+
+  it('follows the pure LUT while forced is auto', () => {
     const runtime = createForcedSurfaceWeatherRuntime()
-    const a = resolveSurfaceWeatherForFrame(runtime, 11, 12.34, 480, 1 / 60, 'auto')
-    expect(a).toEqual(computeSurfaceWeather(11, 12.34))
+    const lut = resolveSurfaceWeatherForFrame(runtime, 11, 12.34, 480, 1 / 60, 'auto')
+    const pure = computeSurfaceWeather(11, 12.34)
+    expect(at0(lut).snowAmount).toBeCloseTo(pure.snowAmount, 6)
+    expect(at0(lut).wetness).toBeCloseTo(pure.wetness, 6)
     expect(runtime.activeForced).toBeNull()
   })
 
   it('accumulates snow monotonically while forced snow runs', () => {
     const runtime = createForcedSurfaceWeatherRuntime()
-    // Spring start — deterministic snowAmount is typically 0; force snow.
-    let prev = resolveSurfaceWeatherForFrame(runtime, 1, 0.05, 480, 0, 'snow').snowAmount
+    let prev = at0(resolveSurfaceWeatherForFrame(runtime, 1, 0.05, 480, 0, 'snow')).snowAmount
     for (let i = 0; i < 120; i++) {
-      // ~2 real minutes at 60fps with dayLengthSec=480 ≈ 0.25 world-days —
-      // enough to see a clear rise toward the accumulate window.
-      const next = resolveSurfaceWeatherForFrame(runtime, 1, 0.05 + i / 480, 480, 1, 'snow').snowAmount
-      expect(next).toBeGreaterThanOrEqual(prev - 1e-12)
+      const next = at0(resolveSurfaceWeatherForFrame(runtime, 1, 0.05 + i / 480, 480, 1, 'snow')).snowAmount
+      expect(next).toBeGreaterThanOrEqual(prev - 1e-6)
       prev = next
     }
     expect(prev).toBeGreaterThan(0.15)
@@ -231,21 +234,15 @@ describe('resolveSurfaceWeatherForFrame (lil-gui forced)', () => {
     const runtime = createForcedSurfaceWeatherRuntime()
     let snow = 0
     for (let i = 0; i < 200; i++) {
-      snow = resolveSurfaceWeatherForFrame(runtime, 1, i / 480, 480, 1, 'snow').snowAmount
+      snow = at0(resolveSurfaceWeatherForFrame(runtime, 1, i / 480, 480, 1, 'snow')).snowAmount
     }
     expect(snow).toBeGreaterThan(0.2)
     let prev = snow
     for (let i = 0; i < 200; i++) {
-      // Summer clear is well above freezing → melt.
-      const next = resolveSurfaceWeatherForFrame(
-        runtime,
-        1,
-        DAYS_PER_SEASON + i / 480,
-        480,
-        1,
-        'clear',
+      const next = at0(
+        resolveSurfaceWeatherForFrame(runtime, 1, DAYS_PER_SEASON + i / 480, 480, 1, 'clear'),
       ).snowAmount
-      expect(next).toBeLessThanOrEqual(prev + 1e-12)
+      expect(next).toBeLessThanOrEqual(prev + 1e-6)
       prev = next
     }
     expect(prev).toBeLessThan(snow)
@@ -256,8 +253,27 @@ describe('resolveSurfaceWeatherForFrame (lil-gui forced)', () => {
     resolveSurfaceWeatherForFrame(runtime, 1, 0.1, 480, 1, 'snow')
     expect(runtime.activeForced).toBe('snow')
     const resumed = resolveSurfaceWeatherForFrame(runtime, 1, 0.1, 480, 1, 'auto')
-    expect(resumed).toEqual(computeSurfaceWeather(1, 0.1))
+    expect(at0(resumed).snowAmount).toBeCloseTo(computeSurfaceWeather(1, 0.1).snowAmount, 6)
     expect(runtime.activeForced).toBeNull()
+  })
+
+  it('forced snow keeps a cold-site / warm-site split (local phase per knot)', () => {
+    const runtime = createForcedSurfaceWeatherRuntime()
+    // Autumn: base +9 °C, snow delta → warm sites (offset ≥ gate, T > 1 °C) turn it to rain.
+    const day = 2 * DAYS_PER_SEASON + 0.1
+    let lut = resolveSurfaceWeatherForFrame(runtime, 1, day, 480, 0, 'snow')
+    for (let i = 0; i < 200; i++) lut = resolveSurfaceWeatherForFrame(runtime, 1, day, 480, 1, 'snow')
+    expect(surfaceWeatherAtOffset(lut, -4).snowAmount).toBeGreaterThan(surfaceWeatherAtOffset(lut, 4).snowAmount)
+  })
+
+  it('auto LUT is cached within the refresh step and recomputed beyond it', () => {
+    const runtime = createForcedSurfaceWeatherRuntime()
+    const a = resolveSurfaceWeatherForFrame(runtime, 3, 20, 480, 0, 'auto').snow.slice()
+    resolveSurfaceWeatherForFrame(runtime, 3, 20 + SURFACE_LUT_REFRESH_DAYS / 2, 480, 0, 'auto')
+    expect(runtime.computedDays).toBe(20)
+    resolveSurfaceWeatherForFrame(runtime, 3, 20 + SURFACE_LUT_REFRESH_DAYS * 2, 480, 0, 'auto')
+    expect(runtime.computedDays).toBeCloseTo(20 + SURFACE_LUT_REFRESH_DAYS * 2, 9)
+    expect(a.length).toBe(16)
   })
 })
 

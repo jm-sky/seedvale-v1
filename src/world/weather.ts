@@ -273,29 +273,33 @@ export function computeSurfaceWeather(seed: number, elapsedDays: number, offsetC
   return state
 }
 
+/** Auto-mode LUT refresh step (world days ≈ a few real seconds): surface weather moves over hours, not frames. */
+export const SURFACE_LUT_REFRESH_DAYS = 0.002
+
 /**
- * Mutable presentation cache for lil-gui `forced` weather: while forced is
- * active, surface wetness/snow integrate forward with `stepSurfaceWeather`
- * (same rates as the pure lookback). Entering forced seeds from
- * `computeSurfaceWeather`; returning to `'auto'` drops the cache so the
- * deterministic function resumes. Debug-only — not persisted.
+ * Mutable presentation cache for the per-frame surface-weather LUT (world-terrain-062 W2).
+ * Auto mode recomputes the pure LUT when `elapsedDays` moved by `SURFACE_LUT_REFRESH_DAYS` (or the
+ * seed changed). With a lil-gui force, every knot integrates forward with `stepSurfaceWeather` using
+ * the forced weather's local phase at that knot's offset (same rates as the pure lookback). Entering
+ * forced seeds from the pure LUT; returning to `'auto'` resumes it. Debug-only — not persisted.
  * @domain world
  */
 export type ForcedSurfaceWeatherRuntime = {
-  wetness: number
-  snowAmount: number
-  /** `null` while following pure `computeSurfaceWeather`. */
+  lut: SurfaceWeatherLut
+  /** `null` while following the pure `computeSurfaceWeatherLut`. */
   activeForced: WeatherType | null
+  seed: number
+  /** `elapsedDays` of the last pure computation (`NaN` = stale). */
+  computedDays: number
 }
 
 export function createForcedSurfaceWeatherRuntime(): ForcedSurfaceWeatherRuntime {
-  return { wetness: 0, snowAmount: 0, activeForced: null }
+  return { lut: createSurfaceWeatherLut(), activeForced: null, seed: Number.NaN, computedDays: Number.NaN }
 }
 
 /**
- * Resolves presented surface weather for one frame. With `forced === 'auto'`
- * this is pure `computeSurfaceWeather`. With a lil-gui force, it steps the
- * shared accumulate/melt curves using the forced weather and world-clock `dt`.
+ * Resolves the presented surface-weather LUT for one frame (the returned object is the runtime's own
+ * and is overwritten next call). Terrain/grass shaders read it at each point's climate offset.
  * @domain world
  */
 export function resolveSurfaceWeatherForFrame(
@@ -305,31 +309,39 @@ export function resolveSurfaceWeatherForFrame(
   dayLengthSec: number,
   worldDtSec: number,
   forced: WeatherType | 'auto',
-): SurfaceWeatherState {
+): SurfaceWeatherLut {
   if (forced === 'auto') {
     runtime.activeForced = null
-    return computeSurfaceWeather(seed, elapsedDays)
+    if (seed !== runtime.seed || !(Math.abs(elapsedDays - runtime.computedDays) < SURFACE_LUT_REFRESH_DAYS)) {
+      computeSurfaceWeatherLut(seed, elapsedDays, runtime.lut)
+      runtime.seed = seed
+      runtime.computedDays = elapsedDays
+    }
+    return runtime.lut
   }
 
+  if (runtime.activeForced === null) computeSurfaceWeatherLut(seed, elapsedDays, runtime.lut)
+  runtime.activeForced = forced
+  runtime.computedDays = Number.NaN
+
   const season = getSeason(elapsedDays)
-  const weather: SurfaceWeatherStepInput = {
+  const global: WeatherState = {
     type: forced,
     intensity: forced === 'clear' ? 0 : 0.8,
     temperature: temperatureFor(season, forced),
+    startedAt: elapsedDays,
+    endsAt: elapsedDays,
   }
-
-  if (runtime.activeForced === null) {
-    const base = computeSurfaceWeather(seed, elapsedDays)
-    runtime.wetness = base.wetness
-    runtime.snowAmount = base.snowAmount
-    runtime.activeForced = forced
-  } else {
-    runtime.activeForced = forced
-  }
-
   const stepDays = worldDtSec / Math.max(30, dayLengthSec)
-  stepSurfaceWeather(runtime, weather, stepDays)
-  return { wetness: runtime.wetness, snowAmount: runtime.snowAmount }
+  const state: SurfaceWeatherState = { wetness: 0, snowAmount: 0 }
+  for (let k = 0; k < SURFACE_LUT_KNOTS; k++) {
+    state.wetness = runtime.lut.wetness[k]!
+    state.snowAmount = runtime.lut.snow[k]!
+    stepSurfaceWeather(state, localWeatherFrom(global, SURFACE_LUT_MIN_C + k), stepDays)
+    runtime.lut.wetness[k] = state.wetness
+    runtime.lut.snow[k] = state.snowAmount
+  }
+  return runtime.lut
 }
 
 /** Cumulative rain "intensity-days" between two `elapsedDays` timestamps —

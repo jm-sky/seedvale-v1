@@ -16,11 +16,10 @@ import {
   GRASS_SNOW_BIAS,
   GRASS_SNOW_DITHER_AT,
   GRASS_SNOW_FROST,
-  SNOW_ALT_M,
-  SNOW_BIAS,
   SNOW_COL,
   SNOW_FIELD_GLSL,
 } from './snowField'
+import { createSurfaceClimateUniforms, SURFACE_CLIMATE_GLSL, type SurfaceClimateUniforms } from './surfaceClimateField'
 
 export type WorldGrassChunk = {
   /** Group of InstancedMeshes (species buckets + optional near-field filler)
@@ -111,11 +110,11 @@ export type GrassSystem = {
    *  `sunDirection` drives cheap fake subsurface/backlighting (plan 066). */
   setDayNight: (dayFactor: number, sunDirection: THREE.Vector3) => void
   /**
-   * Bind the shared terrain `uSnowAmount` uniform object so grass burial/frost
-   * uses the same presentation amount as ground snow (plan world-terrain-053).
-   * Pass the identical `{ value }` reference — do not clone.
+   * Bind the shared terrain snow-LUT + climate uniform objects so grass burial/frost
+   * uses the same position-dependent amount as ground snow (plans world-terrain-053, 062 W2).
+   * Pass the identical `{ value }` references — do not clone.
    */
-  setSnowAmountUniform: (uSnowAmount: { value: number }) => void
+  setSurfaceClimateUniforms: (uniforms: SurfaceClimateUniforms) => void
   dispose: () => void
 }
 
@@ -393,8 +392,6 @@ const VERTEX_SHADER = /* glsl */ `
 
   uniform float uTime;
   uniform float uWindAmp;
-  // Shared with terrain weatherUniforms.uSnowAmount (plan world-terrain-053).
-  uniform float uSnowAmount;
 
   varying vec3 vColor;
   varying float vFogDepth;
@@ -408,6 +405,7 @@ const VERTEX_SHADER = /* glsl */ `
   varying float vGrassBury;
 
 ${SNOW_FIELD_GLSL}
+${SURFACE_CLIMATE_GLSL}
 
   void main() {
     float bladeT = position.y;
@@ -424,9 +422,10 @@ ${SNOW_FIELD_GLSL}
     #ifdef USE_INSTANCING
       // World-space instance origin (chunk group translate × instance translate).
       vec3 instanceOrigin = ( modelMatrix * instanceMatrix * vec4( 0.0, 0.0, 0.0, 1.0 ) ).xyz;
-      if ( uSnowAmount > 0.002 ) {
-        float snowAlt = ${SNOW_BIAS.altitude.toFixed(2)} * smoothstep( ${SNOW_ALT_M[0].toFixed(2)}, ${SNOW_ALT_M[1].toFixed(2)}, instanceOrigin.y );
-        grassSnow = svSnowCover( svSnowThreshold( instanceOrigin.xz, 1.0 ), uSnowAmount, ${GRASS_SNOW_BIAS.toFixed(2)} + snowAlt );
+      // Same LUT + climate offset as terrain (062 W2), evaluated at the instance origin.
+      float snowHere = svSurfaceSnow( instanceOrigin );
+      if ( snowHere > 0.002 ) {
+        grassSnow = svSnowCover( svSnowThreshold( instanceOrigin.xz, 1.0 ), snowHere, ${GRASS_SNOW_BIAS.toFixed(2)} );
         grassBury = smoothstep( 0.25, 0.9, grassSnow );
         // Shrink blade height in place — roots stay planted (no placement regen).
         localPos.y *= 1.0 - 0.8 * grassBury;
@@ -561,8 +560,8 @@ export function createGrassSystem(): GrassSystem {
         uDayFactor: { value: 1 },
         // Normalized sun direction from Sky — updated via setDayNight.
         uSunDirection: { value: new THREE.Vector3(0, 1, 0) },
-        // Placeholder until ChunkManager binds terrain weatherUniforms.uSnowAmount.
-        uSnowAmount: { value: 0 },
+        // Placeholders until ChunkManager binds the terrain weatherUniforms (snow LUT + climate).
+        ...createSurfaceClimateUniforms(),
       },
     ]),
     vertexShader: VERTEX_SHADER,
@@ -884,9 +883,11 @@ export function createGrassSystem(): GrassSystem {
       material.uniforms.uDayFactor!.value = dayFactor
       ;(material.uniforms.uSunDirection!.value as THREE.Vector3).copy(sunDirection).normalize()
     },
-    setSnowAmountUniform(uSnowAmount) {
-      // Same object reference as terrain — ChunkManager mutates `.value` in place.
-      material.uniforms.uSnowAmount = uSnowAmount
+    setSurfaceClimateUniforms(uniforms) {
+      // Same object references as terrain — ChunkManager mutates `.value` in place.
+      material.uniforms.uSnowLut = uniforms.uSnowLut
+      material.uniforms.uWetLut = uniforms.uWetLut
+      material.uniforms.uClimate = uniforms.uClimate
     },
     dispose() {
       material.dispose()
