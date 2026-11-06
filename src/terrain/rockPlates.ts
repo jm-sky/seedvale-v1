@@ -16,15 +16,21 @@ export const PLATE_CELL_M = 9
 /** Facet cell size (m): the plate surface is broken into small tilted facets so it reads as rough, fractured rock. */
 export const FACET_CELL_M = 2.6
 /** Largest plate height offset from the surrounding ground (m); author: ≤ ~0.8 m (plane) + facets. */
-export const PLATE_MAX_DELTA_M = 1.1
-const PLANE_MAX_DELTA_M = 0.8
+export const PLATE_MAX_DELTA_M = 0.8
+const PLANE_MAX_DELTA_M = 0.6
 const FACET_MAX_SLOPE = 0.22
-const FACET_MAX_DELTA_M = 0.3
+const FACET_MAX_DELTA_M = 0.2
 /** Maximum plane slope (m per m) of a plate. */
 const PLATE_MAX_SLOPE = 0.16
 /** Probability that a plate is rock at zone weight 1 / at the zone threshold. */
-const ROCK_PROB_FULL = 0.85
-const ROCK_PROB_EDGE = 0.2
+const ROCK_PROB_FULL = 0.7
+const ROCK_PROB_EDGE = 0.12
+/** Coarse clusters (m): only about {@link CLUSTER_KEEP} of them hold plates, so the patches have gaps between them. */
+const CLUSTER_CELL_M = 40
+const CLUSTER_KEEP = 0.6
+/** Height fades to 0 over this distance (m) from a plate edge; colour over {@link COLOR_BLEND_M}. */
+const EDGE_BLEND_M = 2.8
+const COLOR_BLEND_M = 5
 /** Zone weight below this → no plates at all. */
 const ZONE_MIN = 0.05
 const SALT = 0x5bd1e995
@@ -64,11 +70,15 @@ const NONE: RockPlate = { delta: 0, patch: 0, tone: 0.5 }
  * Plate at `(x, z)` for a rock-zone weight `zone` (0..1). Returns a shared zero object when outside the zone — do not mutate.
  * `seed` = world seed (determinism, per-world patterns).
  */
-export function rockPlateAt(seed: number, x: number, z: number, zone: number): RockPlate {
+export function rockPlateAt(seed: number, x0: number, z0: number, zone: number): RockPlate {
   if (zone < ZONE_MIN) return NONE
+  // Wobbly plate borders (cheap domain warp): no long straight edges.
+  const x = x0 + 2.6 * Math.sin(z0 * 0.29 + seed * 0.013) + 1.1 * Math.sin(z0 * 0.83 + x0 * 0.21)
+  const z = z0 + 2.6 * Math.sin(x0 * 0.31 + seed * 0.017) + 1.1 * Math.sin(x0 * 0.79 + z0 * 0.23)
   const gx = Math.floor(x / PLATE_CELL_M)
   const gz = Math.floor(z / PLATE_CELL_M)
   let best = Infinity
+  let second = Infinity
   let bx = 0
   let bz = 0
   let bix = 0
@@ -81,16 +91,19 @@ export function rockPlateAt(seed: number, x: number, z: number, zone: number): R
       const sz = (iz + 0.15 + hash2(ix, iz, seed, SALT + 1) * 0.7) * PLATE_CELL_M
       const d = (x - sx) ** 2 + (z - sz) ** 2
       if (d < best) {
+        second = best
         best = d
         bx = sx
         bz = sz
         bix = ix
         biz = iz
-      }
+      } else if (d < second) second = d
     }
   }
+  const edgeDist = (Math.sqrt(second) - Math.sqrt(best)) * 0.5
   const prob = ROCK_PROB_EDGE + (ROCK_PROB_FULL - ROCK_PROB_EDGE) * zone
   if (hash2(bix, biz, seed, SALT + 2) >= prob) return NONE
+  if (hash2(Math.floor(bx / CLUSTER_CELL_M), Math.floor(bz / CLUSTER_CELL_M), seed, SALT + 20) >= CLUSTER_KEEP) return NONE
   const slopeX = (hash2(bix, biz, seed, SALT + 3) * 2 - 1) * PLATE_MAX_SLOPE
   const slopeZ = (hash2(bix, biz, seed, SALT + 4) * 2 - 1) * PLATE_MAX_SLOPE
   const plane = Math.max(-PLANE_MAX_DELTA_M, Math.min(PLANE_MAX_DELTA_M, slopeX * (x - bx) + slopeZ * (z - bz)))
@@ -126,7 +139,7 @@ export function rockPlateAt(seed: number, x: number, z: number, zone: number): R
       (hash2(fix, fiz, seed, SALT + 12) * 2 - 1) * FACET_MAX_SLOPE * (x - fsx) + (hash2(fix, fiz, seed, SALT + 13) * 2 - 1) * FACET_MAX_SLOPE * (z - fsz),
     ),
   )
-  const delta = (plane + facet) * smooth01(ZONE_MIN, 0.4, zone)
+  const delta = (plane + facet) * smooth01(ZONE_MIN, 0.4, zone) * smooth01(0, EDGE_BLEND_M, edgeDist)
   const tone = hash2(bix, biz, seed, SALT + 5) * 0.6 + hash2(fix, fiz, seed, SALT + 14) * 0.4
-  return { delta, patch: smooth01(0.1, 0.4, zone), tone }
+  return { delta, patch: smooth01(0.1, 0.4, zone) * smooth01(0, COLOR_BLEND_M, edgeDist), tone }
 }

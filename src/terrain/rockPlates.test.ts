@@ -16,9 +16,9 @@ describe('rockPlateAt', () => {
       expect(Math.abs(a.delta)).toBeLessThanOrEqual(PLATE_MAX_DELTA_M)
       if (a.patch > 0) rock++
     }
-    // Most (not all) of a full-zone area is bare rock: a mix with soil remains.
-    expect(rock / 4000).toBeGreaterThan(0.5)
-    expect(rock / 4000).toBeLessThan(0.97)
+    // Sparse patches with gaps: a minority of a full-zone area is bare rock (edges fade, so coverage is below the plate share).
+    expect(rock / 4000).toBeGreaterThan(0.08)
+    expect(rock / 4000).toBeLessThan(0.5)
   })
 
   it('weakens toward the zone edge', () => {

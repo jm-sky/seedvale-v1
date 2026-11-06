@@ -45,7 +45,7 @@ export const CAVES_V2_NAMESPACE = 'caves-v2'
  * — records are never migrated.
  */
 // v9 (2026-11-05): C¹ relief: smooth range-spine crest/blend/unions, C¹ Worley ridge, bicubic hydrology correction (plan world-terrain-065).
-export const CAVES_V2_VERSION = 17
+export const CAVES_V2_VERSION = 18
 
 /** Generous per-seed cap: one manifest plus every accepted cave, with room
  *  for a little stale fingerprint churn before the least-recently-written
