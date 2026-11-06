@@ -178,3 +178,7 @@ Oczekiwany rezultat to jedno z dwóch:
 Oba wyniki są poprawne. Priorytetem jest **nie utonąć w niepotrzebnej pracy** dla małego efektu.
 
 > **Zrób git commit i push do main, rebase jeżeli trzeba**
+
+## Review 041 cross-reference (2026-11-06)
+
+[review 041](../reviews/2026-11-06--041--rendering-performance-final-critical-synthesis.md) **F16-07** (LDR unsigned-byte mirror inside the HDR scene clips bright highlights) is a visual trade-off under open **D8**/D13 — keep the current format until the author decides with sunlight/fire comparisons and GPU memory numbers. Program: [roadmap §audit 041](../research/v1-revival/2026-10-27--master-revival-roadmap.md#rendering--performance-audit-041--program-2026-11-06).

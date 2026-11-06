@@ -345,3 +345,7 @@ Stage 1 zostaje, jeśli:
 Jeżeli zysk jest mały, nie zwiększać agresywności w ciemno. Przejść do Stage 2 i dopiero na podstawie diagnostyki wybierać następny lever.
 
 > **Zrób git commit i push do main, rebase jeżeli trzeba**
+
+## Review 041 cross-reference (2026-11-06)
+
+[review 041](../reviews/2026-11-06--041--rendering-performance-final-critical-synthesis.md) **F16-16** (coarse vegetation region LOD/culling) belongs to this plan's Stage 2 diagnostics, together with [world-terrain-070](./world-terrain-070-streaming-worker-occupancy-and-ready-publication.md) P4 (F16-13 regional rebuild amplification). Start only after tools-027 T2 traces; keep vegetation richness. Program: [roadmap §audit 041](../research/v1-revival/2026-10-27--master-revival-roadmap.md#rendering--performance-audit-041--program-2026-11-06).

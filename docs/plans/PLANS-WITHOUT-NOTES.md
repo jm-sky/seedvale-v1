@@ -1,7 +1,7 @@
 # PLANS PLANNED WITHOUT NOTES
 
 > Generated with `pnpm plans:without-notes`  
-> Date: 2026-11-06 14:16:14  
+> Date: 2026-11-06 16:44:13  
 
 ## PLANS
 
@@ -16,10 +16,15 @@
 - `settlements-025-modular-blender-defensive-palisade.md`
 - `settlements-npcs-052-persistent-economic-work-cargo-and-local-transfer-conservation.md`
 - `settlements-npcs-054-transport-carrier-death-and-cargo-disposition.md`
+- `settlements-npcs-058-simulation-scaling-retained-scan-crowd-and-skip-catch-up.md`
 - `tools-019-debug-tooling-lifecycle-ownership.md`
+- `tools-027-frame-attribution-and-benchmark-provenance.md`
 - `world-terrain-055-optional-shadow-frustum-and-refresh-trims.md`
 - `world-terrain-059-world-scale-travel-time-and-sparse-settlements.md`
 - `world-terrain-063-geography-driven-settlement-variants.md`
+- `world-terrain-068-actor-presentation-correctness-bounds-morphs-retirement.md`
+- `world-terrain-069-renderer-gpu-validity-shadow-coverage-and-recovery.md`
+- `world-terrain-070-streaming-worker-occupancy-and-ready-publication.md`
 
 --------------------------------
 ## PROMPTS
@@ -365,6 +370,37 @@ Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywisty
 Pliki dodaj na branch `main` w repozytorium.
 ```
 
+### `settlements-npcs-058-simulation-scaling-retained-scan-crowd-and-skip-catch-up.md`
+
+Prompt:
+
+```
+Zrób review planu `settlements-npcs-058-simulation-scaling-retained-scan-crowd-and-skip-catch-up.md`
+
+Wczytaj:
+- `docs/STATE.md`
+- `docs/plans/PLANNING.md` (Implementation Notes section),
+- `docs/plans/settlements-npcs-058-simulation-scaling-retained-scan-crowd-and-skip-catch-up.md`
+- aktualny codebase,
+- potrzebne zależności i powiązane implementacje.
+
+Na podstawie review utwórz w repo plik:
+`docs/plans/implementation-notes/settlements-npcs-058-simulation-scaling-retained-scan-crowd-and-skip-catch-up-implementation-notes.md`
+
+Umieść w nim:
+- sugestie dotyczące implementacji,
+- istotne detale techniczne,
+- decyzje architektoniczne,
+- informacje o istniejących systemach i implementacjach, które należy wykorzystać,
+- potencjalne problemy, zależności i pułapki,
+- inne konkretne wskazówki, które ułatwią agentowi AI poprawną implementację planu.
+
+Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
+Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
+
+Pliki dodaj na branch `main` w repozytorium.
+```
+
 ### `tools-019-debug-tooling-lifecycle-ownership.md`
 
 Prompt:
@@ -381,6 +417,37 @@ Wczytaj:
 
 Na podstawie review utwórz w repo plik:
 `docs/plans/implementation-notes/tools-019-debug-tooling-lifecycle-ownership-implementation-notes.md`
+
+Umieść w nim:
+- sugestie dotyczące implementacji,
+- istotne detale techniczne,
+- decyzje architektoniczne,
+- informacje o istniejących systemach i implementacjach, które należy wykorzystać,
+- potencjalne problemy, zależności i pułapki,
+- inne konkretne wskazówki, które ułatwią agentowi AI poprawną implementację planu.
+
+Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
+Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
+
+Pliki dodaj na branch `main` w repozytorium.
+```
+
+### `tools-027-frame-attribution-and-benchmark-provenance.md`
+
+Prompt:
+
+```
+Zrób review planu `tools-027-frame-attribution-and-benchmark-provenance.md`
+
+Wczytaj:
+- `docs/STATE.md`
+- `docs/plans/PLANNING.md` (Implementation Notes section),
+- `docs/plans/tools-027-frame-attribution-and-benchmark-provenance.md`
+- aktualny codebase,
+- potrzebne zależności i powiązane implementacje.
+
+Na podstawie review utwórz w repo plik:
+`docs/plans/implementation-notes/tools-027-frame-attribution-and-benchmark-provenance-implementation-notes.md`
 
 Umieść w nim:
 - sugestie dotyczące implementacji,
@@ -474,6 +541,99 @@ Wczytaj:
 
 Na podstawie review utwórz w repo plik:
 `docs/plans/implementation-notes/world-terrain-063-geography-driven-settlement-variants-implementation-notes.md`
+
+Umieść w nim:
+- sugestie dotyczące implementacji,
+- istotne detale techniczne,
+- decyzje architektoniczne,
+- informacje o istniejących systemach i implementacjach, które należy wykorzystać,
+- potencjalne problemy, zależności i pułapki,
+- inne konkretne wskazówki, które ułatwią agentowi AI poprawną implementację planu.
+
+Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
+Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
+
+Pliki dodaj na branch `main` w repozytorium.
+```
+
+### `world-terrain-068-actor-presentation-correctness-bounds-morphs-retirement.md`
+
+Prompt:
+
+```
+Zrób review planu `world-terrain-068-actor-presentation-correctness-bounds-morphs-retirement.md`
+
+Wczytaj:
+- `docs/STATE.md`
+- `docs/plans/PLANNING.md` (Implementation Notes section),
+- `docs/plans/world-terrain-068-actor-presentation-correctness-bounds-morphs-retirement.md`
+- aktualny codebase,
+- potrzebne zależności i powiązane implementacje.
+
+Na podstawie review utwórz w repo plik:
+`docs/plans/implementation-notes/world-terrain-068-actor-presentation-correctness-bounds-morphs-retirement-implementation-notes.md`
+
+Umieść w nim:
+- sugestie dotyczące implementacji,
+- istotne detale techniczne,
+- decyzje architektoniczne,
+- informacje o istniejących systemach i implementacjach, które należy wykorzystać,
+- potencjalne problemy, zależności i pułapki,
+- inne konkretne wskazówki, które ułatwią agentowi AI poprawną implementację planu.
+
+Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
+Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
+
+Pliki dodaj na branch `main` w repozytorium.
+```
+
+### `world-terrain-069-renderer-gpu-validity-shadow-coverage-and-recovery.md`
+
+Prompt:
+
+```
+Zrób review planu `world-terrain-069-renderer-gpu-validity-shadow-coverage-and-recovery.md`
+
+Wczytaj:
+- `docs/STATE.md`
+- `docs/plans/PLANNING.md` (Implementation Notes section),
+- `docs/plans/world-terrain-069-renderer-gpu-validity-shadow-coverage-and-recovery.md`
+- aktualny codebase,
+- potrzebne zależności i powiązane implementacje.
+
+Na podstawie review utwórz w repo plik:
+`docs/plans/implementation-notes/world-terrain-069-renderer-gpu-validity-shadow-coverage-and-recovery-implementation-notes.md`
+
+Umieść w nim:
+- sugestie dotyczące implementacji,
+- istotne detale techniczne,
+- decyzje architektoniczne,
+- informacje o istniejących systemach i implementacjach, które należy wykorzystać,
+- potencjalne problemy, zależności i pułapki,
+- inne konkretne wskazówki, które ułatwią agentowi AI poprawną implementację planu.
+
+Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
+Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
+
+Pliki dodaj na branch `main` w repozytorium.
+```
+
+### `world-terrain-070-streaming-worker-occupancy-and-ready-publication.md`
+
+Prompt:
+
+```
+Zrób review planu `world-terrain-070-streaming-worker-occupancy-and-ready-publication.md`
+
+Wczytaj:
+- `docs/STATE.md`
+- `docs/plans/PLANNING.md` (Implementation Notes section),
+- `docs/plans/world-terrain-070-streaming-worker-occupancy-and-ready-publication.md`
+- aktualny codebase,
+- potrzebne zależności i powiązane implementacje.
+
+Na podstawie review utwórz w repo plik:
+`docs/plans/implementation-notes/world-terrain-070-streaming-worker-occupancy-and-ready-publication-implementation-notes.md`
 
 Umieść w nim:
 - sugestie dotyczące implementacji,

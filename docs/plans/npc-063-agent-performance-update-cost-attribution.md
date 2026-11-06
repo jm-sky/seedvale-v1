@@ -60,3 +60,7 @@ AI agent wykonuje odpowiednie testy/typecheck/build i sprawdza narzut instrument
 Uzupełnić o aktualne call-sites, istniejącą instrumentation, granice `SettlementsManager` / `NpcAgent` i dokładny baseline benchmarków.
 
 > **Zrób git commit i push do main, rebase jeżeli trzeba**
+
+## Review 041 cross-reference (2026-11-06)
+
+[review 041](../reviews/2026-11-06--041--rendering-performance-final-critical-synthesis.md): cross-task joins (F16-31) are [tools-027](./tools-027-frame-attribution-and-benchmark-provenance.md) T2; crowd/skip/fauna counters (F16-29/30/33) are [settlements-npcs-058](./settlements-npcs-058-simulation-scaling-retained-scan-crowd-and-skip-catch-up.md) N2. This plan keeps the NPC update category split (incl. mixer cost for F16-22). Program: [roadmap §audit 041](../research/v1-revival/2026-10-27--master-revival-roadmap.md#rendering--performance-audit-041--program-2026-11-06).

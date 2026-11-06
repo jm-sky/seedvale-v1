@@ -75,3 +75,7 @@ Key rules:
 - Default radius per quality preset (🟡 proposal: low 600 / medium 800 / high 1000) — decide at F5.
 - F2 look (canopy shell vs impostors) — decide on screenshots. ✅ Author 2026-11-05: start with the simplest variant (canopy shell, also over LOD-thinned near-ring forest), refine later.
 - ✅ Fog (author 2026-11-05): opaque at `farRadius` with the far ring on.
+
+## Review 041 cross-reference (2026-11-06)
+
+[review 041](../reviews/2026-11-06--041--rendering-performance-final-critical-synthesis.md) **F16-18** (merged far-ring geometry bypasses fine culling, repeated buffer updates) — keep the ring optional; evaluate with ring on/off matched silhouettes, uploads and p95/p99 when F2 (Q148) resumes. Program: [roadmap §audit 041](../research/v1-revival/2026-10-27--master-revival-roadmap.md#rendering--performance-audit-041--program-2026-11-06).

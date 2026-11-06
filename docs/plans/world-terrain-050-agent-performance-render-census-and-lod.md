@@ -221,3 +221,7 @@ AI agent wykonuje odpowiednie testy/typecheck/build. Browser benchmark i manualn
 Uzupełnić plan o aktualne pliki, symbole, ownership presentation state, asset families, benchmark baseline i konkretny mechanizm o najwyższym ROI.
 
 > **Zrób git commit i push do main, rebase jeżeli trzeba**
+
+## Review 041 cross-reference (2026-11-06)
+
+[review 041](../reviews/2026-11-06--041--rendering-performance-final-critical-synthesis.md) owns here: **F16-22** (offscreen resident mixers — presentation-only cadence, only if measured), **F16-23** (optional-part LOD registers legacy hair/beard attachment names, not current `HAIR_*` skinned nodes — adapter repair needs census + author look; far proxies stay D10), **F16-25** (multipart draw/shadow multiplication — selective grouping only for a measured bottleneck). Animal bounds (F16-24) moved to [world-terrain-068](./world-terrain-068-actor-presentation-correctness-bounds-morphs-retirement.md) A1. Program: [roadmap §audit 041](../research/v1-revival/2026-10-27--master-revival-roadmap.md#rendering--performance-audit-041--program-2026-11-06).

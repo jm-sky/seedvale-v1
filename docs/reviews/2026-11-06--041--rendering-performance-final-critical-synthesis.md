@@ -228,3 +228,5 @@ Stages are discussion ordering only. S1's isolated correctness tests can run wit
 **Do-not-break invariants:** independent NPC/animal state; stable composite identities through streaming/save/rebuild; deterministic ecology/stock/travel/quest outcomes; entity authorization/acceptance separate from delayed graphics; shared GLTF cache not disposed by actor clones; animated bounds safe for all poses; no unapproved scene richness reductions; no conflation of Windows Arc and WSL/Mesa evidence.
 
 **Status:** Session 5 synthesis complete within static/GitHub scope; **system 16 = partial, runtime and performance verification pending**. No fixes, tests, config, roadmap changes or implementation plans performed.
+
+**Planning integration (Opus, 2026-11-06):** findings mapped to plans world-terrain-068/069/070, tools-027, settlements-npcs-058 and existing owners; queue rows Q173–Q185 — see [roadmap §audit 041](../research/v1-revival/2026-10-27--master-revival-roadmap.md#rendering--performance-audit-041--program-2026-11-06).

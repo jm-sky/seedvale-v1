@@ -175,3 +175,7 @@ S0 → S1 → S2 (S1 and S2 independent; never in one A/B arm) → S3 → S4 →
 - **S3:** `WorldConfig.postProcessing.waterReflectionSize` (normalised via `normalizeWaterMirrorSize`), `WaterMirror.setSize` (same texture object — verified in a unit test), `ocean.setReflectionSize`, applied in `applyLiveGraphics`/`updatePostProcessingFromGui`, Vue select + debug GUI. Quality presets untouched (all 128). Local config only → no save-version bump.
 - Pre-existing, unrelated: `actorSkeletonSharing.assets.test.ts` (cow.glb) fails on a clean tree; `lint` error in `docs/research/…/sample_three.mjs`.
 - **Author 2026-11-02:** S3 default reflection size = **256** (was 128); S5 may still compare sizes. Presets inherit it.
+
+## Review 041 cross-reference (2026-11-06)
+
+[review 041](../reviews/2026-11-06--041--rendering-performance-final-critical-synthesis.md): **F16-05** mirror relevance = this plan's S2 (queue Q54, author §3) — no new plan. **F16-06** (GPU timer brackets beauty only; mirror outside) is corrected by [tools-027](./tools-027-frame-attribution-and-benchmark-provenance.md) T1 — use its scopes for S4/S5 reports. Program: [roadmap §audit 041](../research/v1-revival/2026-10-27--master-revival-roadmap.md#rendering--performance-audit-041--program-2026-11-06).

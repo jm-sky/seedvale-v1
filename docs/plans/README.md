@@ -141,6 +141,11 @@ Unless noted otherwise, `verification needed` means implementation has passed au
 | ◼️ `settlements-025-modular-blender-defensive-palisade.md`                     | 🟡 | L      | -                                                                                                                                                                                                                                                                                          | -                                         |
 | 💡 `world-terrain-067-procedural-rock-grounding-and-template-transforms.md`    | 🔴 | L      | -                                                                                                                                                                                                                                                                                          | -                                         |
 | 💡 `world-terrain-064-derived-waterfalls.md`                                   | 🟡 | M      | ~~tools-026~~, world-terrain-061                                                                                                                                                                                                                                                           | -                                         |
+| ◼️ `settlements-npcs-058-simulation-scaling-retained-scan-crowd-and-skip-catch-up.md` | 🔴 | M      | -                                                                                                                                                                                                                                                                                          | -                                         |
+| ◼️ `tools-027-frame-attribution-and-benchmark-provenance.md`                   | 🔴 | M      | -                                                                                                                                                                                                                                                                                          | -                                         |
+| ◼️ `world-terrain-068-actor-presentation-correctness-bounds-morphs-retirement.md` | 🔴 | M      | -                                                                                                                                                                                                                                                                                          | -                                         |
+| ◼️ `world-terrain-069-renderer-gpu-validity-shadow-coverage-and-recovery.md`   | 🔴 | M      | -                                                                                                                                                                                                                                                                                          | -                                         |
+| ◼️ `world-terrain-070-streaming-worker-occupancy-and-ready-publication.md`     | 🔴 | L      | tools-027                                                                                                                                                                                                                                                                                  | -                                         |
 
 ---
 
@@ -218,11 +223,11 @@ New plans declare a primary `Domain:` in frontmatter. Use optional `Tags:` only 
 - persistence: `009`
 - quests-progression: `083`
 - settlements: `026`
-- settlements-npcs: `058`
-- tools: `027`
+- settlements-npcs: `059`
+- tools: `028`
 - ui-input: `049`
 - world: `043`
-- world-terrain: `068`
+- world-terrain: `071`
 
 This ids section is maintained automatically from the plan files.
 
