@@ -85,6 +85,8 @@ Provenance/licensing for generated clips: record when known; do not invent attri
 | thunder-very-close.ogg | — | — (TBD — provided directly in `public/sounds/`, source/license not yet recorded) | S28; very-close storm thunder one-shot (≤220 m) via `audio/weatherSounds.ts` |
 | thunder-mid.ogg | — | — (TBD — provided directly in `public/sounds/`, source/license not yet recorded) | S28; mid storm thunder one-shot (220–850 m) |
 | thunder-distant.ogg | — | — (TBD — provided directly in `public/sounds/`, source/license not yet recorded) | S28; distant storm thunder one-shot (>850 m) |
+| stream-loop.ogg | — | — (TBD — provided directly in `public/sounds/`, source/license not yet recorded) | S30; mountain stream loop; **not wired** — staged for the waterfall/stream local ambience (world-terrain waterfalls) |
+| waterfall-loop.ogg | — | — (TBD — provided directly in `public/sounds/`, source/license not yet recorded) | S30; waterfall / cascade loop; **not wired** — staged for waterfall local ambience (world-terrain waterfalls) |
 
 ## Items / Inventory
 

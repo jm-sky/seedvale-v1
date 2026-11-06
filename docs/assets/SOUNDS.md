@@ -4,7 +4,7 @@ Living backlog of sound effects Seedvale still needs (or has but must wire).
 
 Inventory of files already in the repo: [`public/sounds/README.md`](../../public/sounds/README.md). One-shot research snapshot that seeded this list: [research 007](../research/2026-08-11--007--sound-needs.md).
 
-**Last updated:** 2026-11-05
+**Last updated:** 2026-11-06
 
 **NPC voice cleanup (2026-11-05):** six author-rejected recordings removed from
 donor and public assets (12 copies). The general male greeting/farewell/danger
@@ -88,6 +88,7 @@ If the feature needs no new sound, do nothing to this file.
 | S27 | Dog bark, second sample | A 2nd bark clip to vary `ANIMAL_SOUND_URLS.dog` (currently a single-clip array, shared by `[E]`-interact and the contextual guard/wolf-howl/stranger bark) | `needed` | plan fauna-011 §1/§7 — append the path to `animalSounds.ts`'s `ANIMAL_SOUND_URLS.dog` once recorded; user-provided |
 | S28 | Thunder (very-close / mid / distant) | Storm lightning events (plan world-026, `audio/weatherSounds.ts`) | `wired` | `thunder-very-close.ogg` / `thunder-mid.ogg` / `thunder-distant.ogg` picked from simulated strike distance; volume from clip + strength + distance + cave. Storm rain reuses `ambient-rain-loop-01`; storm secondary bed is `ambient-rain-storm-01` (storm-only) |
 | S29 | NPC contextual life/world barks | Exhaustion, hunger, weather shelter, danger, combat start, livestock danger, work finished (plan npc-049); spatial via `npcVoicePlayback` + settlement bark limiter | `wired` | Manifest entries in `npcVoiceLines.ts`; request path `npcBarkRequest.ts`. Assets under `public/sounds/voices/` for shipped intents only — missing gender/profession clips stay silent. `call_for_help` / `guard_response` clips exist; runtime emit awaits npc-048. Shelter barks pick a weather variant first (`weather_shelter_rain|storm|snow` → neutral `weather_shelter`, Q31); planned clips + generation prompts: [Q31 line script](../research/v1-revival/2026-10-31--q31-npc-bark-line-script.md). |
+| S30 | Waterfall / mountain stream loops | Local water ambience near waterfalls (gain by distance to the cascade) and mountain streams; needed for waterfalls | `in repo` | `waterfall-loop.ogg` (cascade) + `stream-loop.ogg` (mountain stream) in `public/sounds/`, author-provided, not wired yet; source/license TBD (see `public/sounds/README.md`) |
 
 ## Acquisition rules
 
