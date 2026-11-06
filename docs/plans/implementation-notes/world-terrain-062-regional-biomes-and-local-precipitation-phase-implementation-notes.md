@@ -56,3 +56,12 @@ Bump in the B1 commit every namespace whose output moves — verify each by grep
 - Caches bumped: chunk tile 40, settlement definition 38 (terrain class rolls village size/outpost), road routes 26, cemetery 23, locations-coarse 17. `WORLD_HYDROLOGY_VERSION` unchanged; golden hydrology hashes pass. `WORLDGEN_EPOCH` untouched.
 - Checks: type-check, lint, full vitest (804 files) green; `worldgen:access:census` run (settlement tables, no wet/unreachable flagged in sampled output); chunk-tile p50 7.4 ms before / 7.2–7.6 after (bare tiles, lower bound). Climate memo build 130–170 ms per realm in Node, once per worker/thread.
 - Not done / open: vegetation instance totals per biome before/after, `?bootMark=1` long-task check of the memo on the main thread, browser look → §2/§3. The sync `createChunkGrass` fallback in `grass.ts` still passes no `sampleParams` (legacy biomes) — only matters if that path is used.
+
+## B2 implementation (S, 2026-11-06, queue Q164) ✅ implemented (partial) · ✅ technically verified · ❓ not browser-verified
+
+- `biomeRegions.ts`: `regionalTreeSpeciesWeight(params, z, speciesIndex)` — per-`TREE_SPECS` multipliers blended by latitude (north: pines ×2.4, birch ×2, broadleaf ×0.3–0.5; south: oak-like ×1.4, pines ×1.2, birch ×0.4, maple ×0.6; centre neutral; dead trees untouched); `1` on worlds without `continentMask`. Applied only in `pickTreeSpecies` (`chunkVegetation.ts`) as a multiplier on `envGrowthFactor` — growth rate keeps its own definition. Riparian bank trees (`riparianPatches`) additionally damp pines ×0.5 (display/ecology only, never reads or feeds hydrology).
+- Chunk tile cache 40 → 41. No other namespace bumped (species pick only changes vegetation output inside the chunk tile).
+- Census (throwaway script, 24×24 chunks over the continent, seed 415424794, tree kind only), trees/pine%/oak-like%: N 367 / 49→72 % / 6.8→1.4 %; M 1549 / 43→45 % / 8.8→8.8 %; S 270 / 43→45 % / 5.6→14.4 %. **Tree counts identical before/after** (D9 held).
+- Tried and **removed**: latitude-dependent treeline (0.50 N → 0.72 S) incl. matching `forestDensity` altitude fade — north trees 367 → 234 (−36 %); queue §3 Q164-a. Snowline: terrain snow lives in the shader/`snowField` (W2), not touched.
+- Not done: forest-type distinctions beyond species mix (heath/bog/meadow regional kinds), dry-valley modifier, browser spots on `415424794` (→ §2).
+

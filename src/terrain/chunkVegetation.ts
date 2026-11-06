@@ -15,7 +15,7 @@ import {
   type TreeSizeClass,
 } from '../world/treeLifecycle'
 import { SAND_BAND_MAX, sandBandAt } from './biomeColors'
-import { biomeWeightsAtPoint, forestDensityAtPoint } from './biomeRegions'
+import { biomeWeightsAtPoint, forestDensityAtPoint, regionalTreeSpeciesWeight } from './biomeRegions'
 import {
   apronOriginWorld,
   type ChunkTileData,
@@ -55,11 +55,8 @@ const SLOPE_SAMPLE_STEP = 1.5
 /** Reject candidates on slopes steeper than this (roughly matches where
  *  `applySlopeRock` starts taking over visually). */
 const SLOPE_REJECT = 0.9
-/** Treeline — fraction of `heightScale` above `waterLevel` above which nothing
- *  grows. Raised from 0.6 (world-terrain-006) alongside `biomeRegions.ts`'s
- *  `forestDensityAt` altitude fade so the hard cutoff sits past where density
- *  has actually tapered to near-zero, instead of chopping off a still-tapering
- *  slope. Ridge crests stay bare via `MOUNTAIN_RIDGE_REJECT` regardless. */
+/** Treeline — fraction of `heightScale` above `waterLevel` above which nothing grows (world-terrain-006). A
+ *  latitude-dependent treeline (062 B2 "lower in the north") was tried and removed: it cut north trees ~36 % (D9). */
 const TREELINE_ALTITUDE = 0.66
 /** Reject candidates sitting on a strong mountain ridge crest, regardless of altitude. */
 const MOUNTAIN_RIDGE_REJECT = 0.35
@@ -70,6 +67,8 @@ const OPEN_TREE_BASELINE = 0.10
 /** Altitude band (fraction of `heightScale` above `waterLevel`) treated as
  *  "wet shoreline" for reed placement near any lake, not only swamp biome. */
 const WATERLINE_ALTITUDE_BAND = 0.06
+/** 062 B2 riparian modifier (display/ecology only): bank trees favour broadleaf over pines. */
+const RIPARIAN_PINE_WEIGHT = 0.5
 
 /** Deep Forest age/size skew (plan 182) — exponent applied to a fresh 0..1
  *  roll so it favours the "large"/"old" end of `rollSizeClass`/`rollLivingAge`
@@ -153,13 +152,14 @@ function pickTreeSpecies(
   speciesCount: number,
   clumpValue: number,
   random: () => number,
+  regionalWeight: (speciesIndex: number) => number = () => 1,
 ): number {
   const count = Math.max(1, Math.min(speciesCount, TREE_SPECIES_PREFS.length))
   if (count <= 1) return 0
   let total = 0
   const weights: number[] = new Array<number>(count)
   for (let i = 0; i < count; i++) {
-    const w = envGrowthFactor(env, speciesPrefs(i))
+    const w = envGrowthFactor(env, speciesPrefs(i)) * regionalWeight(i)
     weights[i] = w
     total += w
   }
@@ -313,6 +313,7 @@ export function computeChunkVegetation(
             Math.max(1, speciesCount),
             clumpValue,
             random,
+            (i) => regionalTreeSpeciesWeight(params, wz, i),
           )
         : Math.floor(random() * Math.max(1, speciesCount))
     // Trees: sizeClass + living age (plan 073). Height comes from meter ranges
@@ -693,6 +694,7 @@ function riparianPatches(
       Math.max(1, params.vegetationSpeciesCount.tree),
       clumpValue,
       riparianRandom,
+      (i) => regionalTreeSpeciesWeight(params, z, i) * (PINE_SPECIES_INDICES.includes(i) ? RIPARIAN_PINE_WEIGHT : 1),
     )
     const sizeJitter = 0.4 + riparianRandom() * 0.4
     out.push({

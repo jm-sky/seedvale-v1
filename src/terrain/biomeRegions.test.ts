@@ -3,8 +3,9 @@ import type { RegionParams } from './chunkHeightmap'
 import { createBenchmarkWorldConfig } from '../config/worldConfig'
 import { rawSampleParamsFromWorld } from '../world/map/mapProjection'
 import { projectCellAt } from '../world/map/mapProjection'
-import { biomeBorderAt, type BiomeClimateInput, biomeWeightsAt, biomeWeightsAtPoint, biomeWeightsFromClimate, forestBiomeAt, forestDensityAt, forestDensityAtPoint } from './biomeRegions'
+import { biomeBorderAt, type BiomeClimateInput, biomeWeightsAt, biomeWeightsAtPoint, biomeWeightsFromClimate, forestBiomeAt, forestDensityAt, forestDensityAtPoint, regionalTreeSpeciesWeight } from './biomeRegions'
 import { sampleRawTexelAt } from './chunkHeightmap'
+import { WORLD_HALF_EXTENT } from './continentMask'
 import { macroClimateOf } from './macroClimate'
 import { UNCONDITIONED_HYDROLOGY_ID } from './worldHydrologyStore'
 
@@ -332,5 +333,29 @@ describe('map = terrain agreement (062 B1)', () => {
       }
       expect(checked).toBeGreaterThan(0)
     }
+  })
+})
+
+describe('regional treeline + tree species (062 B2 species)', () => {
+  const finite = rawSampleParamsFromWorld(createBenchmarkWorldConfig({ seed: 42, terrainResolution: 65, loadRadius: 2 }))
+  const legacy = { ...finite, region: { ...finite.region, continentMask: undefined } }
+  const northZ = -WORLD_HALF_EXTENT * 0.9
+  const southZ = WORLD_HALF_EXTENT * 0.9
+
+  it('is neutral on a world without continentMask (legacy bit-identical)', () => {
+    for (let i = 0; i < 13; i++) expect(regionalTreeSpeciesWeight(legacy, northZ, i)).toBe(1)
+  })
+
+  it('favours pines and birch in the north and oak-like trees in the south', () => {
+    const pine = 6
+    const birch = 3
+    const oak = 0
+    expect(regionalTreeSpeciesWeight(finite, northZ, pine)).toBeGreaterThan(1)
+    expect(regionalTreeSpeciesWeight(finite, northZ, birch)).toBeGreaterThan(1)
+    expect(regionalTreeSpeciesWeight(finite, northZ, oak)).toBeLessThan(1)
+    expect(regionalTreeSpeciesWeight(finite, southZ, oak)).toBeGreaterThan(1)
+    expect(regionalTreeSpeciesWeight(finite, southZ, birch)).toBeLessThan(1)
+    // dead trees untouched
+    expect(regionalTreeSpeciesWeight(finite, northZ, 5)).toBe(1)
   })
 })

@@ -172,6 +172,25 @@ export function forestDensityAtPoint(
   return forestDensityFrom(biomeWeightsAtPoint(params, x, z, altitude01, moistureRegion).forest, moistureRegion, altitude01, continentalness, mountainRidge, params.region)
 }
 
+/** Per-`TREE_SPECS`-index regional weight multipliers (062 B2 🟡): north = conifer/birch, south = oak-like/pine woodland. */
+const TREE_REGION_NORTH: readonly number[] = [0.5, 0.5, 0.5, 2.0, 0.3, 1, 2.4, 2.4, 2.4, 1, 1, 1, 1]
+const TREE_REGION_SOUTH: readonly number[] = [1.4, 1.4, 1.4, 0.4, 0.6, 1, 1.2, 1.2, 1.2, 1, 1, 1, 1]
+
+/**
+ * Regional multiplier for tree species `speciesIndex` at world `z` (1 = neutral, centre of the continent = mixed forest).
+ * Multiplies the habitat weight in species picking only — growth keeps using `envGrowthFactor` alone.
+ * Worlds without `region.continentMask` return 1.
+ */
+export function regionalTreeSpeciesWeight(params: RawSampleParams, z: number, speciesIndex: number): number {
+  if (!params.region.continentMask) return 1
+  const lat = latitude01(z)
+  const north = 1 - MathUtils.smoothstep(lat, 0.15, 0.45)
+  const south = MathUtils.smoothstep(lat, 0.55, 0.85)
+  const n = TREE_REGION_NORTH[speciesIndex] ?? 1
+  const so = TREE_REGION_SOUTH[speciesIndex] ?? 1
+  return 1 + north * (n - 1) + south * (so - 1)
+}
+
 /** Moisture band where temperate land builds closed canopy (plan 063).
  *  Below → open / scattered trees; inside → dense forest; above → swamp gate
  *  via `biomeWeightsAt` already zeroes the forest remainder. */
