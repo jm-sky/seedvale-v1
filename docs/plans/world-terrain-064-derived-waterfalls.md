@@ -1,7 +1,7 @@
 # Plan: Derived waterfalls on perennial rivers
 
 **Created:** 2026-11-04
-**Status:** `draft` 📝 (finalized after the tools-026 D5 V2-waterfall verdict and world-terrain-061 H5 candidate data; amended per [review 031](../reviews/2026-11-04--031--geography-revival-g1-g9-critical-architecture-review.md) 2026-11-04 — still a draft, not W1–W3 approval)
+**Status:** `planned` 📋 — **W0 decided (Opus, 2026-11-06)** in the [implementation notes](./implementation-notes/world-terrain-064-derived-waterfalls-implementation-notes.md): the relief gives **cascades** (steepest chain segment 34°, ground ≤ 44°), not plunge falls → cascade presentation pending author §3 Q125-a; W1 Sonnet (queue Q168) ready, W2 (Q169) after Q125-a, W3 inside world-041 L1 (Q130). Amended per [review 031](../reviews/2026-11-04--031--geography-revival-g1-g9-critical-architecture-review.md) 2026-11-04
 **Type:** feature
 **Priority:** medium · **Effort:** M
 **Depends on:** tools-026, world-terrain-061
@@ -35,7 +35,7 @@ Part of the G6 first landmark package: **waterfalls derived from hydrology** at 
 
 | Slice | Content | Model | Gate |
 | --- | --- | --- | --- |
-| W0 | Decide presentation from the D5 verdict: ribbon steepening + falling sheet + foam/spray + sound loop; per-site render budget (draws, triangles, particles) and streaming lifecycle (chunk-owned, no always-resident meshes); catalog kind (`waterfall` or `lake`/`river` subtype) agreed with world-041 L0 | O | D5; 061 H5 |
+| W0 ✅ | Decide presentation from the D5 verdict: ribbon steepening + falling sheet + foam/spray + sound loop; per-site render budget (draws, triangles, particles) and streaming lifecycle (chunk-owned, no always-resident meshes); catalog kind (`waterfall` or `lake`/`river` subtype) agreed with world-041 L0 | O | D5; 061 H5 |
 | W1 | Detection rule finalized (minimum drop on the shipped profile, perennial class), reserved footprints handed to 063 V1 / road crossing owner, census per seed; stable id from source chain + reach offset | S | W0; 061 H6 |
 | W2 | Presentation + sound; stand-alone budget check; browser check on `415424794` | S | W1 |
 | W3 | Catalog entry hand-off to world-041 L1 | S | W2 |

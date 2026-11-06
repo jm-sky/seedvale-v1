@@ -1,7 +1,7 @@
 # Plan: Regional biomes and local temperature / rain–snow phase
 
 **Created:** 2026-11-04
-**Status:** `planned` 📋 — gates open 2026-11-06 (061 C2 look accepted 2026-11-05, 060 R4 relief freeze + 061 H6 close-out landed 2026-11-06); **B1 contract written (Opus, 2026-11-06)** in the [implementation notes](./implementation-notes/world-terrain-062-regional-biomes-and-local-precipitation-phase-implementation-notes.md) → B1 implementation is Sonnet (queue Q124); W1 contract still Opus (Q123). Amended per [review 031](../reviews/2026-11-04--031--geography-revival-g1-g9-critical-architecture-review.md) 2026-11-04
+**Status:** `planned` 📋 — gates open 2026-11-06 (061 C2 look accepted 2026-11-05, 060 R4 relief freeze + 061 H6 close-out landed 2026-11-06); **B1 contract written (Opus, 2026-11-06)** in the [implementation notes](./implementation-notes/world-terrain-062-regional-biomes-and-local-precipitation-phase-implementation-notes.md) → B1 implementation is Sonnet (queue Q124); **W1 + W2 contract written (Opus, 2026-11-06, Q123)** — reference-anchored phase, offset LUT for the surface replay → W1 implementation Sonnet (Q170), W2 Sonnet (Q171). Amended per [review 031](../reviews/2026-11-04--031--geography-revival-g1-g9-critical-architecture-review.md) 2026-11-04
 **Type:** feature
 **Priority:** high · **Effort:** L
 **Depends on:** world-terrain-061

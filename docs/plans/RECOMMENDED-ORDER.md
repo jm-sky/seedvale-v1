@@ -420,6 +420,9 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
 - [`world-terrain-063-geography-driven-settlement-variants.md`](world-terrain-063-geography-driven-settlement-variants.md)  
   is blocked by:
   - [`world-terrain-061-macroclimate-and-climate-weighted-hydrology.md`](world-terrain-061-macroclimate-and-climate-weighted-hydrology.md)
+- [`world-terrain-064-derived-waterfalls.md`](world-terrain-064-derived-waterfalls.md)  
+  is blocked by:
+  - [`world-terrain-061-macroclimate-and-climate-weighted-hydrology.md`](world-terrain-061-macroclimate-and-climate-weighted-hydrology.md)
 
 ---
 

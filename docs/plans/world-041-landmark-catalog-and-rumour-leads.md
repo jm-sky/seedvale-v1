@@ -56,7 +56,7 @@ Verified in code ✅ unless marked 🟡 (proposal inside the approved G7 scope; 
 
 ### §3 Landmark identity and kinds (for L1)
 
-- Catalog ids must stay `<kind>:<sourceId>` with `kind ∈ WorldLocationKind` so `getById` resolves by id alone ✅ (`worldLocationTypes.ts`). Add kinds **`landform`** (`landform:<descriptorKind>:<cellKey>`, resolved O(1) through the 060 bucket index; subtype crag / spineSummit / crater / lakeIsland on the record) and **`waterfall`** (`waterfall:<sourceChainId>:<offsetBucket>` per 064 data). Saves store ids as strings and do not validate kinds ✅ → no save bump; `MapLocationKind` mapping and `LOCATION_KIND_EMOJI` gain entries.
+- Catalog ids must stay `<kind>:<sourceId>` with `kind ∈ WorldLocationKind` so `getById` resolves by id alone ✅ (`worldLocationTypes.ts`). Add kinds **`landform`** (`landform:<descriptorKind>:<cellKey>`, resolved O(1) through the 060 bucket index; subtype crag / spineSummit / crater / lakeIsland on the record) and **`waterfall`** (`waterfall:<qx>_<qz>` — lip point quantized to 16 m, landmark tier only; replaces the earlier `<sourceChainId>:<offsetBucket>` because the chain index is pack order — [064 W0 §2.3](./implementation-notes/world-terrain-064-derived-waterfalls-implementation-notes.md#2-decisions)). Saves store ids as strings and do not validate kinds ✅ → no save bump; `MapLocationKind` mapping and `LOCATION_KIND_EMOJI` gain entries.
 - Coarse `mountainPeak:cx,cz` candidates inside a `landform` summit footprint are suppressed (one summit = one entry). Lakes stay `lake:cx,cz` (Q109); a crater lake / lake island yields a `landform` entry **and** its `lake` entry.
 - `locations-coarse` bump at L1 (next free after 4); intermediate epoch-1 saves are disposable (roadmap).
 
