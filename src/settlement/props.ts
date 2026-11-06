@@ -450,6 +450,7 @@ export {
   createFern,
   createGraveStone,
   createLargeRock,
+  createRockOutcrop,
   createLilyPad,
   createLimbedTree,
   createMonolith,
