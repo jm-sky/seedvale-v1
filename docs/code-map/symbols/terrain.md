@@ -35,11 +35,25 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/biomeRegions.ts`
 
-- `BiomeWeights` — type — line 4
-- `biomeWeightsAt` — function — line 28
-- `ForestBiome` — type — line 139
-- `forestBiomeAt` — function — line 157
-- `forestDensityAt` — function — line 102
+- `ARID_START` — const — line 79
+- `ARID_WIDTH` — const — line 80
+- `biomeBorderAt` — function — line 125
+- `BiomeClimateInput` — type — line 65
+- `BiomeWeights` — type — line 7
+- `biomeWeightsAt` — function — line 31
+- `biomeWeightsAtPoint` — function — line 137
+- `biomeWeightsFromClimate` — function — line 89
+- `BiomeWeightsSampler` — type — line 154
+- `biomeWeightsSamplerFor` — function — line 157
+- `ForestBiome` — type — line 279
+- `forestBiomeAt` — function — line 297
+- `forestDensityAt` — function — line 238
+- `forestDensityAtPoint` — function — line 162
+- `regionalTreeSpeciesWeight` — function — line 184
+- `SWAMP_WET_FULL` — const — line 82
+- `SWAMP_WET_WIDTH` — const — line 83
+- `T_WARM_FULL` — const — line 77
+- `T_WARM_START` — const — line 76
 
 ## `terrain/bloodOverlay.ts`
 
@@ -209,27 +223,27 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/chunkManager.ts`
 
-- `applyChunkWaterDayNight` — function — line 1195
-- `applyModificationToTile` — function — line 956
+- `applyChunkWaterDayNight` — function — line 1197
+- `applyModificationToTile` — function — line 958
 - `ChunkManager` — type — line 566
 - `ChunkManagerConfig` — type — line 342
-- `createChunkManager` — function — line 1220
+- `createChunkManager` — function — line 1222
   - domain: world-terrain
   - system: chunk-manager
   - role: Owns terrain chunk streaming, sampling and environment-facing world queries.
   - simulation: on-demand
   - performance: nearby-only
-- `CropHarvestOutcome` — type — line 1209
-- `drainByBudget` — function — line 1170
+- `CropHarvestOutcome` — type — line 1211
+- `drainByBudget` — function — line 1172
 - `FinalizeStage` — type — line 462
-- `pickNearestQueuedKey` — function — line 1130
-- `pickNextFinalizeKey` — function — line 1148
-- `ResidentChunkSnapshot` — type — line 1035
-- `sampleResidentHeight` — function — line 1055
-- `sampleResidentLocalWater` — function — line 1103
-- `sampleResidentSurfaceGround` — function — line 1075
-- `TerrainModification` — type — line 913
-- `tickChunkWaterSurfaces` — function — line 1183
+- `pickNearestQueuedKey` — function — line 1132
+- `pickNextFinalizeKey` — function — line 1150
+- `ResidentChunkSnapshot` — type — line 1037
+- `sampleResidentHeight` — function — line 1057
+- `sampleResidentLocalWater` — function — line 1105
+- `sampleResidentSurfaceGround` — function — line 1077
+- `TerrainModification` — type — line 915
+- `tickChunkWaterSurfaces` — function — line 1185
 
 ## `terrain/chunkMeshCache.ts`
 
@@ -242,41 +256,41 @@ Generated from exported TypeScript symbols.
 - `ChunkMeshData` — type — line 64
 - `ChunkMeshDataParams` — type — line 76
 - `ChunkMeshTileGrids` — type — line 48
-- `computeChunkMeshData` — function — line 126
+- `computeChunkMeshData` — function — line 128
 - `SCORCH_CHARCOAL` — const — line 23
 - `scorchFalloffAt` — function — line 28
 - `TerrainScorchPatch` — type — line 20
 
 ## `terrain/chunkTileWorldgenCache.ts`
 
-- `CHUNK_TILE_CACHE_BYTE_BUDGET` — const — line 82
+- `CHUNK_TILE_CACHE_BYTE_BUDGET` — const — line 83
 - `CHUNK_TILE_CACHE_NAMESPACE` — const — line 30
   - domain: world-terrain
   - system: worldgen-cache
   - role: Persistent-cache adapter for canonical worker-generated chunk tiles (plan world-terrain-031): one `chunk:<cx>:<cz>` record per chunk holding the unchanged `ChunkTileResult` — the eight apron-inclusive terrain grids plus the deterministic vegetation/item/environment/crop placements. Stores the existing worker contract verbatim; there is deliberately no cache-specific terrain model and no `SaveData` field.
   - integration: Disposable derived data only. `ChunkManager.ensureLoaded()` generates exactly the same chunk with an empty cache — a miss, a malformed record or an IndexedDB failure always falls back to the tile worker. The payload is *base* worldgen: player/system terrain modifications, terrain cutouts, tree/crop lifecycle, collected items, resource depletion, mesh data and every Three.js object stay downstream and are never cached here, so two same-seed saves share only deterministic generation output.
-- `CHUNK_TILE_CACHE_VERSION` — const — line 66
-- `CHUNK_TILE_META_SUBKEY` — const — line 71
-- `ChunkTileCacheStats` — type — line 112
-- `ChunkTileCacheStorage` — type — line 248
-- `chunkTileFingerprint` — function — line 105
+- `CHUNK_TILE_CACHE_VERSION` — const — line 67
+- `CHUNK_TILE_META_SUBKEY` — const — line 72
+- `ChunkTileCacheStats` — type — line 113
+- `ChunkTileCacheStorage` — type — line 249
+- `chunkTileFingerprint` — function — line 106
   - domain: world-terrain
   - system: worldgen-cache
-- `chunkTileSubKey` — function — line 89
-- `cloneChunkTileForRuntime` — function — line 225
+- `chunkTileSubKey` — function — line 90
+- `cloneChunkTileForRuntime` — function — line 226
   - domain: world-terrain
   - system: worldgen-cache
-- `estimateChunkTileBytes` — function — line 204
-- `getChunkTileCacheStats` — function — line 138
-- `loadCachedChunkTile` — function — line 349
+- `estimateChunkTileBytes` — function — line 205
+- `getChunkTileCacheStats` — function — line 139
+- `loadCachedChunkTile` — function — line 350
   - domain: world-terrain
   - system: worldgen-cache
-- `persistChunkTile` — function — line 397
+- `persistChunkTile` — function — line 398
   - domain: world-terrain
   - system: worldgen-cache
-- `resetChunkTileCacheMetadata` — function — line 332
-- `resetChunkTileCacheStats` — function — line 142
-- `validateCachedChunkTile` — function — line 182
+- `resetChunkTileCacheMetadata` — function — line 333
+- `resetChunkTileCacheStats` — function — line 143
+- `validateCachedChunkTile` — function — line 183
   - domain: world-terrain
   - system: worldgen-cache
 
@@ -394,13 +408,13 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/digFinds.ts`
 
-- `buildDigContextualFindContext` — function — line 117
+- `buildDigContextualFindContext` — function — line 119
 - `COASTAL_AMBER_CHANCE` — const — line 16
 - `COASTAL_EXCEPTIONAL_SHELL_CHANCE` — const — line 15
   - domain: world-terrain Contextual shovel-find resolution (plan world-terrain-048) — repeatable low-probability material discovery during physical digging, separate from one-shot Hidden Finds.
 - `DigContextualFindContext` — type — line 33
 - `DigContextualFindEnv` — type — line 108
-- `digContextualFindEnvFromChunkManager` — function — line 153
+- `digContextualFindEnvFromChunkManager` — function — line 157
 - `INLAND_AMBER_CHANCE` — const — line 17
 - `isDigForestContext` — function — line 45
 - `isDigSwampContext` — function — line 41
@@ -513,17 +527,17 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/grassPlacement.ts`
 
-- `computeChunkGrass` — function — line 381
+- `computeChunkGrass` — function — line 383
 - `GRASS_SPECIES_ORDER` — const — line 32
-- `GrassBucketData` — type — line 85
-- `GrassChunkData` — type — line 101
-- `GrassComputeMode` — type — line 83
+- `GrassBucketData` — type — line 87
+- `GrassChunkData` — type — line 103
+- `GrassComputeMode` — type — line 85
 - `GrassComputeParams` — type — line 46
-- `grassLodCount` — function — line 107
+- `grassLodCount` — function — line 109
 - `GrassSpeciesId` — type — line 28
 - `GrassTileGrids` — type — line 36
-- `macroMeadowNoiseFor` — function — line 358
-- `macroMeadowWeightAt` — function — line 374
+- `macroMeadowNoiseFor` — function — line 360
+- `macroMeadowWeightAt` — function — line 376
   - domain: world-terrain
 
 ## `terrain/gridContour.ts`
@@ -554,12 +568,14 @@ Generated from exported TypeScript symbols.
 ## `terrain/macroClimate.ts`
 
 - `createMacroClimate` — function — line 162
+- `lastMacroClimateBuildMs` — function — line 249
 - `latitude01` — function — line 102
 - `MACRO_CLIMATE_CELL_M` — const — line 19
   - domain: world-terrain
 - `MACRO_CLIMATE_GRID_N` — const — line 22
 - `MacroClimate` — type — line 63
 - `macroClimateFrom` — function — line 112
+- `macroClimateOf` — function — line 257
 - `MacroClimateSample` — type — line 33
 - `runoffFrom` — function — line 57
 - `runoffGrid` — function — line 208
@@ -596,15 +612,15 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/naturalResources.ts`
 
-- `dominantResourceNear` — function — line 283
+- `dominantResourceNear` — function — line 287
 - `NaturalResource` — type — line 50
 - `RESOURCE_ROLE` — const — line 75
 - `RESOURCE_TYPES` — const — line 46
-- `resourceAttractionAt` — function — line 305
-- `resourceById` — function — line 252
+- `resourceAttractionAt` — function — line 309
+- `resourceById` — function — line 256
   - domain: settlements-npcs
 - `ResourceEnv` — type — line 115
-- `resourcesNear` — function — line 261
+- `resourcesNear` — function — line 265
 - `ResourceType` — type — line 34
 - `SIGNIFICANT_RICHNESS` — const — line 69
 
@@ -1007,23 +1023,23 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/worldKnowledgeScan.ts`
 
-- `chunkParamsForWorldKnowledgeScan` — function — line 205
+- `chunkParamsForWorldKnowledgeScan` — function — line 207
   - domain: world-terrain
-- `prepareWorldKnowledgeScan` — function — line 139
+- `prepareWorldKnowledgeScan` — function — line 141
   - domain: world-terrain
-- `scanWorldKnowledge` — function — line 289
+- `scanWorldKnowledge` — function — line 291
   - domain: world-terrain
-- `WORLD_KNOWLEDGE_MAX_NEARBY_HITS` — const — line 28
-- `WorldKnowledgeChunkGather` — type — line 84
-- `worldKnowledgeGatherFor` — function — line 189
-- `WorldKnowledgeQueryKind` — type — line 30
-- `worldKnowledgeRoadContext` — function — line 117
+- `WORLD_KNOWLEDGE_MAX_NEARBY_HITS` — const — line 29
+- `WorldKnowledgeChunkGather` — type — line 85
+- `worldKnowledgeGatherFor` — function — line 191
+- `WorldKnowledgeQueryKind` — type — line 31
+- `worldKnowledgeRoadContext` — function — line 118
   - domain: world-terrain
-- `WorldKnowledgeScanHit` — type — line 71
-- `WorldKnowledgeScanResult` — type — line 79
-- `WorldKnowledgeTerrainSnapshot` — type — line 37
+- `WorldKnowledgeScanHit` — type — line 72
+- `WorldKnowledgeScanResult` — type — line 80
+- `WorldKnowledgeTerrainSnapshot` — type — line 38
   - domain: world-terrain
-- `WorldKnowledgeWorkerParams` — type — line 60
+- `WorldKnowledgeWorkerParams` — type — line 61
 
 ## `terrain/worleyNoise.ts`
 

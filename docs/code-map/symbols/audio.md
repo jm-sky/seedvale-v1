@@ -54,7 +54,7 @@ Generated from exported TypeScript symbols.
 
 - `AmbientSamplers` — type — line 11
 - `AmbientWeights` — type — line 5
-- `ambientWeightsAt` — function — line 43
+- `ambientWeightsAt` — function — line 45
 
 ## `audio/animalSounds.ts`
 

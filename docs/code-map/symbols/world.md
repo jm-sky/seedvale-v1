@@ -1343,14 +1343,14 @@ Generated from exported TypeScript symbols.
   - system: worldgen-cache
   - role: Persistent-cache integration for abandoned-cemetery materialization (plan world-025) — stores the deterministic result of a roll-pass `ChunkManager.probeAbandonedCemeteryAtChunk()` so later Near/Guard/Far discovery, other saves on the same seed, and later sessions can skip the expensive `paramsFor` + terrain-sampler path.
   - integration: Disposable derived data only. A miss or storage failure always falls back to the canonical ChunkManager probe. Never player discovery state, never a second cemetery resolver.
-- `ABANDONED_CEMETERY_VERSION` — const — line 32
-- `AbandonedCemeteryCache` — type — line 71
-- `abandonedCemeteryFingerprint` — function — line 51
+- `ABANDONED_CEMETERY_VERSION` — const — line 33
+- `AbandonedCemeteryCache` — type — line 72
+- `abandonedCemeteryFingerprint` — function — line 52
   - domain: world
   - system: worldgen-cache
-- `CachedAbandonedCemeteryResult` — type — line 34
-- `chunkSubKey` — function — line 38
-- `createAbandonedCemeteryCache` — function — line 92
+- `CachedAbandonedCemeteryResult` — type — line 35
+- `chunkSubKey` — function — line 39
+- `createAbandonedCemeteryCache` — function — line 93
   - domain: world
   - system: worldgen-cache
 
@@ -1488,17 +1488,17 @@ Generated from exported TypeScript symbols.
 
 ## `world/locations/locationsCoarseCache.ts`
 
-- `CoarseCachePersistence` — type — line 49
-- `CoarseTilePayload` — type — line 28
-- `createCoarseCachePersistence` — function — line 67
+- `CoarseCachePersistence` — type — line 50
+- `CoarseTilePayload` — type — line 29
+- `createCoarseCachePersistence` — function — line 68
 - `LOCATIONS_COARSE_NAMESPACE` — const — line 21
   - domain: world
   - system: worldgen-cache
   - role: Persistent-cache integration for `WorldLocationCatalog`'s coarse terrain tiles (plan world-015 §7/§11/§15) — reuses the exact tile shape `worldLocationCatalog.ts` already keeps in memory (`Uint8Array` state + `Float32Array` height per 16×16 tile), never a second coarse-terrain representation.
   - integration: The catalog stays fully synchronous; this module owns the async IndexedDB side (hydrate-on-activate, debounced dirty-tile upsert) behind a synchronous `hydrateTile`/`onTileDirty` seam the catalog calls through its `WorldLocationCatalogDeps`. A hydrate miss or write failure always falls back to normal procedural sampling — this is an optimization layer, never a correctness dependency.
-- `LOCATIONS_COARSE_VERSION` — const — line 26
-- `locationsCoarseFingerprint` — function — line 39
-- `tileSubKey` — function — line 30
+- `LOCATIONS_COARSE_VERSION` — const — line 27
+- `locationsCoarseFingerprint` — function — line 40
+- `tileSubKey` — function — line 31
 
 ## `world/locations/lostTreasureEstateSearchArea.ts`
 
@@ -2699,8 +2699,8 @@ Generated from exported TypeScript symbols.
 
 ## `world/worldContext.ts`
 
-- `createWorldContext` — function — line 43
-- `withLandHeightView` — function — line 71
+- `createWorldContext` — function — line 44
+- `withLandHeightView` — function — line 73
 - `WorldContext` — type — line 17
 
 ## `world/worldGeneratedContainers.ts`

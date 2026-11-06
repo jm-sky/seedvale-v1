@@ -254,6 +254,10 @@ Each module below takes the shared [`PlayerActionContext`](../src/app/actions/ac
 
 - `../src/audio/createWorldAudio.ts` — audio factory; open first when tracing creation and setup of domain objects.
 
+### characters
+
+- `../src/characters/characterTypes.ts` — characterTypes; open first for the primary characters domain logic.
+
 ### combat
 
 - `../src/combat/defenseResolver.ts` — primary combat resolver; open first for domain resolution logic.
@@ -286,9 +290,13 @@ Each module below takes the shared [`PlayerActionContext`](../src/app/actions/ac
 
 - `../src/items/Inventory.ts` — items domain entry; open first for the main items data and API surface.
 
+### math
+
+- `../src/math/segment.ts` — segment; open first for the primary math domain logic.
+
 ### perf
 
-- `../src/perf/agentCpuDiag.ts` — agentCpuDiag; open first for the primary perf domain logic.
+- `../src/perf/monitor.ts` — monitor; open first for the primary perf domain logic.
 
 ### persistence
 
@@ -309,14 +317,6 @@ Each module below takes the shared [`PlayerActionContext`](../src/app/actions/ac
 ### reputation
 
 - `../src/reputation/ReputationManager.ts` — primary reputation manager; open first for domain coordination and state management.
-
-### scene
-
-- `../src/scene/createCamera.ts` — scene factory; open first when tracing creation and setup of domain objects.
-
-### settlement
-
-- `../src/settlement/settlementGenerator.ts` — primary settlement generator; open first for domain generation logic.
 
 <!-- AI_NAVIGATION_INDEX_END -->
 

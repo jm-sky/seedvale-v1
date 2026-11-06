@@ -58,14 +58,21 @@ Generated from TypeScript imports.
 
 **Imports**
 
+- `config/worldConfig.ts`
 - `terrain/biomeRegions.ts`
 - `terrain/chunkHeightmap.ts`
+- `terrain/continentMask.ts`
+- `terrain/macroClimate.ts`
+- `terrain/worldHydrologyStore.ts`
+- `world/map/mapProjection.ts`
 
 ## `terrain/biomeRegions.ts`
 
 **Imports**
 
 - `terrain/chunkHeightmap.ts`
+- `terrain/macroClimate.ts`
+- `world/parseSeed.ts`
 
 **Imported by**
 
@@ -86,6 +93,7 @@ Generated from TypeScript imports.
 - `terrain/farTileColor.ts`
 - `terrain/grassPlacement.ts`
 - `terrain/naturalResources.ts`
+- `terrain/worldKnowledgeScan.ts`
 - `world/locations/darkForestTreasureSite.ts`
 - `world/locations/lostTreasureEstateSearchArea.ts`
 - `world/map/mapProjection.ts`
@@ -873,6 +881,7 @@ Generated from TypeScript imports.
 
 - `settlement/settlementGenerator.ts`
 - `settlement/settlementLayout.ts`
+- `terrain/biomeRegions.test.ts`
 - `terrain/chunkHeightmap.ts`
 - `terrain/continentMask.test.ts`
 - `terrain/macroClimate.ts`
@@ -1272,6 +1281,8 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `terrain/biomeRegions.test.ts`
+- `terrain/biomeRegions.ts`
 - `terrain/macroClimate.test.ts`
 - `terrain/worldHydrology.ts`
 
@@ -2062,6 +2073,7 @@ Generated from TypeScript imports.
 - `player/worldWaterEligibility.test.ts`
 - `settlement/roadRouteWorldgenCache.test.ts`
 - `settlement/settlementWorldgenCache.test.ts`
+- `terrain/biomeRegions.test.ts`
 - `terrain/cemeteryPlacement.test.ts`
 - `terrain/chunkEnvironment.test.ts`
 - `terrain/chunkHeightmap.test.ts`
@@ -2133,6 +2145,7 @@ Generated from TypeScript imports.
 
 - `settlement/roadNetwork.ts`
 - `settlement/settlementPlanCache.ts`
+- `terrain/biomeRegions.ts`
 - `terrain/cemeteryAssignment.ts`
 - `terrain/chunkEnvironment.ts`
 - `terrain/chunkGrid.ts`

@@ -86,6 +86,7 @@ Generated from TypeScript imports.
 - `settlement/settlementPlanCache.ts`
 - `settlement/settlementProgression.ts`
 - `settlement/settlementWorldgenCache.ts`
+- `terrain/biomeRegions.test.ts`
 - `terrain/buildChunkGeometry.ts`
 - `terrain/chunkManager.ts`
 - `terrain/continentMask.test.ts`

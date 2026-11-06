@@ -3744,6 +3744,7 @@ Generated from TypeScript imports.
 - `app/worldBundle.ts`
 - `debug/locationQueries.ts`
 - `main.ts`
+- `terrain/biomeRegions.test.ts`
 - `terrain/farTerrain.test.ts`
 - `terrain/lakeWater.test.ts`
 - `terrain/macroClimate.test.ts`
@@ -3989,6 +3990,7 @@ Generated from TypeScript imports.
 - `terrain/abandonedMineDeposits.test.ts`
 - `terrain/abandonedMineDeposits.ts`
 - `terrain/biomeColors.ts`
+- `terrain/biomeRegions.ts`
 - `terrain/cemeteryPlacement.ts`
 - `terrain/chunkCrops.ts`
 - `terrain/chunkEnvironment.test.ts`
