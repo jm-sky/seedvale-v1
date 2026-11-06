@@ -76,7 +76,7 @@ Per donor recon §2: cap 4, one lead per NPC per day (derived, §2), gate on tru
 | L2 | Deterministic proper names (locally unique, like settlement names), shown only from `discovered` | S | L1 |
 | L3a | ✅ done 2026-11-05 (see [implementation notes](./implementation-notes/world-041-landmark-catalog-and-rumour-leads-implementation-notes.md)) — Projection + guards (§0): `rumourLeadArea`, `project()` estimated branch with generic label, consumer filters, arrival rules for lake/peak/cemetery (§4), tests per consumer (no-name/no-pin, containment, clipping, cap derivation, stale ids); driven by tests/debug reveal only — no dialogue | S | L0 |
 | L3b | Rumour producer in `guardLocalKnowledge` (§1–§2, §5): pick, trust gate, cap, derived daily limit; dialogue wiring with Astra's lines | S | L3a; author §3 Q135; L4 text |
-| L4 | Text: line script by GPT Astra (geographic phrasing generated from route/hydrology data as data only) → author approval → integration | Astra → author → S | L0 (§5 phrasing slots; can start now) |
+| L4 | [English script draft](../research/v1-revival/2026-11-06--q137-npc-rumour-line-script.md) by GPT Astra, 2026-11-06 — **awaiting author approval**, Q137 not complete. Route/hydrology enrichment awaits a verified data contract; integration remains Q138 | Astra → author → S | L0 (§5 phrasing slots; can start now) |
 | L5 | Walk-through on `415424794`: ask → estimated area → walk → discovered; knowledge round-trips in save | S | L4 |
 
 L3a/L3b do not need the final geography and may run in parallel with 061–063.
