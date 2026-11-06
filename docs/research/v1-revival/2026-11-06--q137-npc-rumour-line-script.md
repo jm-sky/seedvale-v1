@@ -1,8 +1,8 @@
 # Q137 — NPC rumour line script
 
 **Date:** 2026-11-06 · **Writer:** GPT Astra  
-**Status:** **DRAFT — awaiting author approval. Q137 is not done.**  
-**Scope:** [world-041 L4](../../plans/world-041-landmark-catalog-and-rumour-leads.md#slices-provisional), for later Q138 integration. English dialogue and proposed uncertain map labels only; no runtime, selection, range, radius, save or quest changes.
+**Status:** **APPROVED by the author on 2026-11-06 — Q137 complete.**
+**Scope:** [world-041 L4](../../plans/world-041-landmark-catalog-and-rumour-leads.md#slices-provisional), for later Q138 integration. Approved English dialogue and uncertain map labels only; no runtime, selection, range, radius, save or quest changes.
 
 The adult voice is plain and conversational. Guards are measured; hunters are practical. Neither claims to have visited a place, patrolled a route or spoken to a witness. A little dry humour belongs in optional variants, without making every speaker a comedian. These are rumours about real eligible catalog entries, not invented legends.
 
@@ -139,7 +139,7 @@ After waiting, resolve the actual result again: an already-known candidate uses 
 | `RUM.LABEL.LANDFORM.01` | Future estimated landform, after L1 | Rumoured landmark |
 | `RUM.LABEL.WATERFALL.01` | Future estimated waterfall, after L1 | Rumoured waterfall |
 
-**Q136-b proposal, still open:** approve this small English label set alongside the English topic. “Rumoured” makes uncertainty explicit even when the label appears without its circle. These are UI strings, not spoken suffixes or proper names. Discovered/confirmed locations retain their canonical names; existing `settlement`, `abandonedMine` and `searchArea` labels are outside this proposal. The current [`genericLocationLabel`](../../../src/world/locations/rumourLead.ts) covers every estimated kind, so Q138 must respect that narrower approval when wiring the labels. The author may approve the dialogue and leave the current Polish map labels unchanged.
+**Q136-b approved by the author, 2026-11-06:** this bounded English label set and the English topic are approved. “Rumoured” makes uncertainty explicit even when the label appears without its circle. These are UI strings, not spoken suffixes or proper names. Discovered/confirmed locations retain their canonical names; existing `settlement`, `abandonedMine` and `searchArea` labels are outside this proposal. The current [`genericLocationLabel`](../../../src/world/locations/rumourLead.ts) covers every estimated kind, so Q138 must respect that narrower approval when wiring the labels. The current Polish labels remain in runtime until Q138 integrates the approved set.
 
 ## 8. Editorial and handoff checks
 
@@ -151,6 +151,6 @@ Editorial pass completed on this draft:
 - Checked refusal, cap, no-candidate and daily-known wording separately. Removed a “telling it twice” variant: today's candidate may already be known from another source before the player's first conversation with this NPC. None spends coins, offers a quest/reward, resets a lead, promises new information tomorrow or exposes a known target's name.
 - Checked deferred “here” against the missing origin in persisted follow-ups. The proposed delivery-time projection contract avoids reusing stale directions. No save field or radius tier was selected.
 
-For Q138 after approval: preserve the line IDs; exercise every selected outcome and both compass/hour grammatical boundaries, a moved-NPC deferred delivery, an area containing the speaker/player, stale IDs and duplicate delivery. Check that map, text and navigation agree on the same uncertain area and that name-bearing legacy replies are not used on the rumour path. Check quest dependencies before changing today's exact reveals, as the plan requires. These are handoff acceptance cases, **not tests run in Q137**.
+For Q138 integration: preserve the line IDs; exercise every selected outcome and both compass/hour grammatical boundaries, a moved-NPC deferred delivery, an area containing the speaker/player, stale IDs and duplicate delivery. Check that map, text and navigation agree on the same uncertain area and that name-bearing legacy replies are not used on the rumour path. Check quest dependencies before changing today's exact reveals, as the plan requires. These are handoff acceptance cases, **not tests run in Q137**.
 
-**Approval requested:** (1) dialogue/topic wording, including the reserved lines as conditional copy; (2) the separate Q136-b English labels. Q136-a, Q138 mechanics, future-kind activation and audio remain outside that approval. No runtime or browser verification is claimed; no implementation is included.
+**Author approval recorded (2026-11-06):** the author accepted (1) dialogue/topic wording, including the reserved lines as conditional copy, and (2) the separate Q136-b English labels. Q137 is complete. Q136-a, Q138 mechanics, future-kind activation and audio remain outside that approval. No runtime or browser verification is claimed; no implementation is included.

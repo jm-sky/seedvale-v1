@@ -19,9 +19,9 @@ Deviations / findings for L3b:
 - Peak summit height is approximated from a sample grid around the coarse-cell centre, not the true summit; revisit with L1 landforms.
 - Not browser-verified (no gameplay observed); technically verified only.
 
-## L4 / Q137 — English script awaiting author approval (2026-11-06)
+## L4 / Q137 — English script approved by the author (2026-11-06)
 
 - [Astra's rumour line script](../../research/v1-revival/2026-11-06--q137-npc-rumour-line-script.md) supplies the reviewable copy and Q138 handoff: stable line IDs, placeholder contracts, outcome coverage, proposed uncertain-location labels, and gated future landmark wording.
 - Reviewed against the existing area-topic menu, `guardLocalKnowledge`, `npcPlayerFollowUpDelivery`, `dialogueTemplates`, compass/travel helpers and L3a projection. Current runtime still delivers exact names through the older `discovered` path; this document does not integrate the draft.
-- Q137 is **not complete** until the author approves the English copy. Q138 remains blocked by that approval and Q136-a (persisting/reconstructing guard/hunter precision); Q136-b label wording remains a proposal.
+- **Author approval, 2026-11-06:** dialogue/topic wording, conditional future-kind copy and the bounded Q136-b English labels are approved; Q137 is complete. Q138 remains blocked only by Q136-a (persisting/reconstructing guard/hunter precision). This approval does not select a radius/storage policy, activate future kinds or authorize audio production.
 - Documentation only: no runtime, mechanics, persistence, worldgen, audio or quest changes; no gameplay/browser verification claimed.
