@@ -129,6 +129,10 @@ export function createPlayerSight(
   const cache = new Map<string, CacheEntry>()
   const touched = new Map<string, SightAgent>()
   const liveIds = new Set<string>()
+  /** Corpses are evaluated for model/info concealment only: no contact state
+   *  machine, no last-known billboard (a corpse never moves). */
+  const corpseKeys = new Set<string>()
+  const concealedCorpses = new Set<string>()
   const samples = new Float32Array(SAMPLE_CAPACITY * 3)
   const out = createSightQueryOut()
   const observer = { x: 0, y: 0, z: 0, context: { kind: 'surface' } as WorldSpatialContext }
@@ -144,6 +148,7 @@ export function createPlayerSight(
     exempt: boolean,
     input: PlayerSightUpdateInput,
     animal: AnimalAgent | null,
+    corpse = false,
   ): void => {
     liveIds.add(key)
     const p = agent.mesh.position
@@ -201,8 +206,14 @@ export function createPlayerSight(
     pose.y = p.y
     pose.z = p.z
     pose.yaw = agent.mesh.rotation.y
-    const state = contacts.observe(key, result, pose, variant, entry.contextKey, input.nowSec)
-    const concealed = state === 'concealed'
+    let concealed: boolean
+    if (corpse) {
+      concealed = result === 'blocked'
+      if (concealed) concealedCorpses.add(key)
+      else concealedCorpses.delete(key)
+    } else {
+      concealed = contacts.observe(key, result, pose, variant, entry.contextKey, input.nowSec) === 'concealed'
+    }
     if (concealed !== agent.isSightConcealed()) {
       agent.setSightConcealed(concealed)
       entry.lastReapplySec = input.nowSec
@@ -226,18 +237,30 @@ export function createPlayerSight(
     return writeActorSightSamples(samples, p.x, p.y, p.z, yaw, NPC_HEIGHT, 0.25, 0.15, 'biped')
   }
 
-  const reveal = (key: string, agent: SightAgent): void => {
-    if (agent.isSightConcealed()) agent.setSightConcealed(false)
+  /** Alive → dead transition: drop the contact + last-known billboard once
+   *  (the evaluation cache entry stays — the corpse keeps its pose). */
+  const enterCorpse = (key: string): void => {
+    if (corpseKeys.has(key)) return
+    corpseKeys.add(key)
     contacts.forget(key)
-    cache.delete(key)
+  }
+
+  /** Dead → alive (resurrection): resume the normal contact path. */
+  const leaveCorpse = (key: string): void => {
+    if (!corpseKeys.delete(key)) return
+    concealedCorpses.delete(key)
   }
 
   const evalAnimal = (animal: AnimalAgent, input: PlayerSightUpdateInput): void => {
     const key = `animal:${animal.animalId}`
     if (animal.isDead()) {
-      reveal(key, animal)
+      // Finalised corpse (root hidden by its lifecycle) — nothing to conceal.
+      if (!animal.mesh.visible) return
+      enterCorpse(key)
+      evaluate(key, animal, 'smallAnimal', false, input, animal, true)
       return
     }
+    leaveCorpse(key)
     const small = ANIMAL_SIGHT_BODY_CLASS[animal.def.kind] === 'small'
     evaluate(key, animal, small ? 'smallAnimal' : 'largeAnimal', animal.animalId === input.mountedAnimalId, input, animal)
   }
@@ -245,11 +268,16 @@ export function createPlayerSight(
   const evalNpc = (npc: NpcAgent, input: PlayerSightUpdateInput): void => {
     const key = `npc:${npc.id}`
     if (npc.health.dead) {
-      reveal(key, npc)
+      if (!npc.mesh.visible) return
+      enterCorpse(key)
+      evaluate(key, npc, 'human', false, input, null, true)
       return
     }
+    leaveCorpse(key)
     evaluate(key, npc, 'human', npc.id === input.interactingNpcId, input, null)
   }
+
+  const isConcealedKey = (key: string): boolean => contacts.isConcealed(key) || concealedCorpses.has(key)
 
   const revealAll = (): void => {
     for (const [, agent] of touched) {
@@ -257,6 +285,8 @@ export function createPlayerSight(
     }
     touched.clear()
     cache.clear()
+    corpseKeys.clear()
+    concealedCorpses.clear()
     contacts.clear()
     billboards?.sync(contacts.lastKnown())
   }
@@ -286,6 +316,11 @@ export function createPlayerSight(
       if (frame % RETAIN_INTERVAL_FRAMES === 0) {
         contacts.retainOnly(liveIds)
         for (const key of cache.keys()) if (!liveIds.has(key)) cache.delete(key)
+        for (const key of corpseKeys) {
+          if (liveIds.has(key)) continue
+          corpseKeys.delete(key)
+          concealedCorpses.delete(key)
+        }
       }
       contacts.tick(input.nowSec, input.playerPosition.x, input.playerPosition.z, contextKeyOf(input.playerContext))
       if (contacts.revision() !== lastBillboardRevision) {
@@ -295,8 +330,8 @@ export function createPlayerSight(
       stats.billboards = contacts.lastKnown().length
       stats.cpuMs = performance.now() - t0
     },
-    isNpcDisclosed: (npcId) => !enabled || !contacts.isConcealed(`npc:${npcId}`),
-    isAnimalDisclosed: (animalId) => !enabled || !contacts.isConcealed(`animal:${animalId}`),
+    isNpcDisclosed: (npcId) => !enabled || !isConcealedKey(`npc:${npcId}`),
+    isAnimalDisclosed: (animalId) => !enabled || !isConcealedKey(`animal:${animalId}`),
     enabled: () => enabled,
     stats: () => stats,
     dispose() {

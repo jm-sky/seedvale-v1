@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from 'vitest'
-import { createAgentStatusLabelController } from './agentStatusLabel'
+import { CORPSE_ASSESSMENT_TEXT, createAgentStatusLabelController } from './agentStatusLabel'
 import {
   activityIconPresentation,
   questMarkerIconPresentation,
@@ -401,5 +401,37 @@ describe('createAgentStatusLabelController setHidden (world-042 Stage 0)', () =>
     expect(controller.label.visible).toBe(false)
     controller.setHidden('spatial', false)
     expect(controller.label.visible).toBe(true)
+  })
+})
+
+describe('createAgentStatusLabelController corpse assessment', () => {
+  const observation = { level: 'assessed', broadIdentity: 'Szczur', knownName: 'Szczur', questMarker: null, healthRatio: 1, staminaRatio: 1 } as const
+  const assessment = (c: ReturnType<typeof createAgentStatusLabelController>) =>
+    c.el.querySelector('.npc-label__assessment') as HTMLElement
+
+  it('replaces the stale "Zdrowy" assessment once the agent is settled dead', () => {
+    const c = createAgentStatusLabelController('Szczur', null, ['hp'], 1)
+    c.sync({ hp: { current: 10, max: 10 } }, c.label, 5, 80, 1, observation)
+    expect(assessment(c).textContent).toContain('Zdrowy')
+    c.settleAtZeroHp()
+    expect(assessment(c).textContent).toBe(CORPSE_ASSESSMENT_TEXT)
+    expect(assessment(c).style.display).toBe('')
+    c.syncDistance(c.label, 5, 80, 1, false)
+    expect(assessment(c).textContent).not.toContain('Zdrowy')
+  })
+
+  it('does not reveal an assessment for a label whose name row is hidden', () => {
+    const c = createAgentStatusLabelController('X', null, ['hp'], 1)
+    c.sync({ hp: { current: 10, max: 10 } }, c.label, 5, 80, 1, { ...observation, level: 'none' })
+    c.settleAtZeroHp()
+    expect(assessment(c).style.display).toBe('none')
+  })
+
+  it('a later live sync (revival) rewrites the assessment', () => {
+    const c = createAgentStatusLabelController('Szczur', null, ['hp'], 1)
+    c.sync({ hp: { current: 10, max: 10 } }, c.label, 5, 80, 1, observation)
+    c.settleAtZeroHp()
+    c.sync({ hp: { current: 10, max: 10 } }, c.label, 5, 80, 1, observation)
+    expect(assessment(c).textContent).toContain('Zdrowy')
   })
 })

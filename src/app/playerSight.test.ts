@@ -182,18 +182,70 @@ describe('createPlayerSight (unit)', () => {
     expect(sight.isAnimalDisclosed('h1')).toBe(true)
   })
 
-  it('a dead actor is revealed and forgotten', () => {
+  it('a dead actor drops its contact/billboard but stays subject to concealment', () => {
+    const reg = createSightBlockerRegistry()
+    sight = createPlayerSight(makeWorld(reg), new THREE.Object3D(), { enabled: true })
+    const deer = fakeAgent('d1', 0, 10)
+    sight.update(makeInput(0, P0, { wild: [deer] }))
+    reg.setBlockers('wall', [wallAt(5)])
+    for (let t = 0.1; t <= 0.6; t += 0.1) sight.update(makeInput(t, P0, { wild: [deer] }))
+    expect(deer.concealed).toBe(true)
+    expect(sight.stats().billboards).toBe(1)
+    deer.dead = true
+    sight.update(makeInput(0.7, P0, { wild: [deer] }))
+    // Corpse behind the wall stays concealed (no through-wall reveal) …
+    expect(deer.concealed).toBe(true)
+    expect(sight.isAnimalDisclosed('d1')).toBe(false)
+    // … but its last-known billboard is gone (a corpse never moves).
+    expect(sight.stats().billboards).toBe(0)
+    // Wall removed → corpse is revealed again, instantly.
+    reg.clearBlockers('wall')
+    sight.update(makeInput(0.8, P0, { wild: [deer] }))
+    expect(deer.concealed).toBe(false)
+    expect(sight.isAnimalDisclosed('d1')).toBe(true)
+  })
+
+  it('an actor dying in plain view stays visible, and a corpse never makes billboards', () => {
+    const reg = createSightBlockerRegistry()
+    sight = createPlayerSight(makeWorld(reg), new THREE.Object3D(), { enabled: true })
+    const deer = fakeAgent('d1', 0, 10)
+    sight.update(makeInput(0, P0, { wild: [deer] }))
+    deer.dead = true
+    sight.update(makeInput(0.1, P0, { wild: [deer] }))
+    expect(deer.concealed).toBe(false)
+    reg.setBlockers('wall', [wallAt(5)])
+    for (let t = 0.2; t <= 0.8; t += 0.1) sight.update(makeInput(t, P0, { wild: [deer] }))
+    expect(deer.concealed).toBe(true)
+    expect(sight.stats().billboards).toBe(0)
+  })
+
+  it('a finalised corpse (root hidden) is revealed and not evaluated', () => {
+    const reg = createSightBlockerRegistry()
+    reg.setBlockers('wall', [wallAt(5)])
+    sight = createPlayerSight(makeWorld(reg), new THREE.Object3D(), { enabled: true })
+    const npc = fakeAgent('n1', 0, 10)
+    npc.dead = true
+    sight.update(makeInput(0, P0, { npcs: [npc] }))
+    expect(npc.concealed).toBe(true)
+    npc.mesh.visible = false
+    sight.update(makeInput(0.1, P0, { npcs: [npc] }))
+    expect(sight.stats().evaluated).toBe(0)
+  })
+
+  it('a resurrected actor returns to the normal contact path', () => {
     const reg = createSightBlockerRegistry()
     reg.setBlockers('wall', [wallAt(5)])
     sight = createPlayerSight(makeWorld(reg), new THREE.Object3D(), { enabled: true })
     const deer = fakeAgent('d1', 0, 10)
-    for (let t = 0; t <= 0.6; t += 0.1) sight.update(makeInput(t, P0, { wild: [deer] }))
-    expect(deer.concealed).toBe(true)
     deer.dead = true
+    sight.update(makeInput(0, P0, { wild: [deer] }))
+    expect(deer.concealed).toBe(true)
+    deer.dead = false
+    for (let t = 0.1; t <= 0.6; t += 0.1) sight.update(makeInput(t, P0, { wild: [deer] }))
+    expect(deer.concealed).toBe(true)
+    reg.clearBlockers('wall')
     sight.update(makeInput(0.7, P0, { wild: [deer] }))
     expect(deer.concealed).toBe(false)
-    expect(sight.isAnimalDisclosed('d1')).toBe(true)
-    expect(sight.stats().billboards).toBe(0)
   })
 
   it('enabled:false never conceals and discloses everything', () => {

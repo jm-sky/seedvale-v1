@@ -43,6 +43,9 @@ export type AgentLabelHideReason = 'lifecycle' | 'spatial' | 'sight'
 
 export type { AgentLabelIconKind, AgentLabelIconPresentation }
 
+/** Shown instead of the qualitative health assessment once an agent is dead. */
+export const CORPSE_ASSESSMENT_TEXT = 'Martwy'
+
 const ICON_SLOT_ORDER: readonly AgentLabelIconSlot[] = ['activity', 'quest', 'shop']
 
 /** One `npc-label__bar--{kind}` bar + its fill div, ready to append into a
@@ -482,6 +485,12 @@ export function createAgentStatusLabelController(
       )
     },
     settleAtZeroHp: () => {
+      // The last living `sync()` left a qualitative assessment ("Zdrowy · …")
+      // that a corpse never refreshes (dead path only calls `syncDistance`).
+      // Overwrite it; track the text so a later live `sync()` rewrites it.
+      lastAssessmentText = CORPSE_ASSESSMENT_TEXT
+      assessmentEl.textContent = CORPSE_ASSESSMENT_TEXT
+      assessmentEl.style.display = labelDom.nameRowEl.style.display === 'none' ? 'none' : ''
       lastPercentByKind.set('hp', 0)
       const hpFill = fillByKind.get('hp')
       if (hpFill) hpFill.style.width = '0%'

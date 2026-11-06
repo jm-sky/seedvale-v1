@@ -3252,6 +3252,13 @@ export class NpcAgent {
         this.anim.update(dt)
       }
       this.resolveCorpseLifecycle()
+      // Corpse label keeps honouring the player's spatial context (Stage 0).
+      this.labelController.setHidden(
+        'spatial',
+        playerObservation.labelSpatial !== undefined
+          && this.mesh.position.distanceTo(observerPos) < LABEL_FADE_FAR
+          && !isActorInfoSpatiallyVisible(playerObservation.labelSpatial, this.mesh.position),
+      )
       return
     }
     this.tickPendingConversationVoiceCue()
