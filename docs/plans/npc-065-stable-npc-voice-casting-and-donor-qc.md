@@ -15,6 +15,7 @@ The [next Fish Audio production batch plan](npc-069-next-fish-audio-production-b
 
 ## Current status and navigation — 2026-11-05
 
+- **Production tooling — 2026-11-06:** [Safe CLI and usage](../../scripts/voice/PRODUCTION.md), [API recon / technical handoff](../research/v1-revival/2026-11-06--fish-production-handoff.md), and [159-order queue](../research/v1-revival/2026-11-06--fish-production-queue.md). Offline preparation and mocked transport tests only; no generation, listening approval or registry changes. npc-069 owns the frozen 72-order selection; Q90 retains its original 87 orders.
 - [Author-approved casting](#npc-voice-map) — latest author decisions; historical speaker aliases are not runtime assignments.
 - [Implemented runtime / asset / QC / recording status](#implementation-and-recording-status) — independently verified facts.
 - [Q90 approved recording texts](../research/v1-revival/2026-11-04--q90-fish-audio-script.md) · [Named NPC draft script](../research/v1-revival/2026-11-05--named-npc-voice-script.md).

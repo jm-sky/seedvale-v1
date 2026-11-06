@@ -21,6 +21,8 @@
 
 **npc-069 transcript QC (2026-11-05):** [33 existing reuse clips — text accepted with hash-bound evidence](../../assets/voice-qc/NPC-069-TEXT-ACCEPTANCE.md); speaker/listening verification still pending.
 
+**Fish production tooling (2026-11-06):** [CLI usage](../../../scripts/voice/PRODUCTION.md) · [Official API recon and technical handoff](./2026-11-06--fish-production-handoff.md) · [Deterministic 159-order queue](./2026-11-06--fish-production-queue.md). Offline validation, staging/import/QC handoff and mocked API tests; no paid generation or runtime admission.
+
 **npc-069 editorial package complete (2026-11-05):** [Audit, restoration and integration/QC handoff](./2026-11-05--npc-069-production-package.md) · [English Fish recording script](./2026-11-05--npc-069-recording-script.md) · [Production manifest](./2026-11-05--npc-069-production-manifest.json) · [115-slot coverage matrix](./2026-11-05--npc-069-coverage.md). 37 missing texts authored by Astra; 72 deduplicated new recording jobs; Q90/reuse/holds separate. No audio generated or runtime changed.
 
 **NPC voice cleanup (2026-11-05):** [final staged report](./2026-11-05--npc-voice-final-cleanup.md) · [author decision registry](../../assets/voice-qc/author-decisions.json) · [permanent casting](../../design/npc-voices/CASTING.md) · [catalog](../../design/npc-voices/CATALOG.md). Storage migration does not register new runtime clips.
