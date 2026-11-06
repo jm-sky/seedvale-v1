@@ -1,6 +1,6 @@
 # Q172 — "Opowiedz mi coś o okolicy" main-thread stall: recon (2026-11-06, Opus)
 
-Status: **static recon + one headless timing, not a runtime profile.** Input: a GPT static-recon finding (author paste, 2026-11-06). Priority: low — after the geography main path (author 2026-11-06).
+Status: **static recon + one headless timing + history check, not a runtime profile.** Input: a GPT static-recon finding (author paste, 2026-11-06). Priority: low — after the geography main path (author 2026-11-06).
 
 ## Symptom (author)
 
@@ -21,19 +21,29 @@ Asking an NPC about the area appeared to freeze the game. Not reproduced or prof
 
 The same code path also serves `map_far` (12–50 h, `inventoryWiring.ts:894`). That path has the busy overlay, but it shares both costs.
 
+## History — this is a Q138 regression of a solved problem (added after author remark, 2026-11-06)
+
+The author pointed out that the pre-Revival game already had this freeze and solved it. Verified:
+
+- [quests-progression-047](../../plans/archive/quests-progression-047-deferred-world-knowledge-and-location-research.md) (`2e985953`) made the guard ask **deferred**. The guard says "Muszę przejrzeć meldunki… Wróć za godzinę". The lookup goes off the main thread through `WorldKnowledgeResearch.resolveMany` (a worker job: cemetery/ruins kinds, chunk radius 10) and is merged with `listStableLocations` (`stableLandmarksInRange`: caves, settlement cemeteries, authored ruins, mine). That path has **no coarse lake/peak scan and no abandoned-cemetery probes**. After the authored delay of one game hour, [npc-050](../../plans/archive/npc-050-npc-initiated-player-follow-ups-and-proactive-dialogue.md) delivers the result through the NPC's `playerFollowUp`. Its acceptance criterion was explicitly "ask guard on a cold world — no visible freeze" (047 §verification).
+- **Q138 / world-041 L3b (`e1b93d97`, Sonnet, 2026-11-06)** removed that path: "now async and instant (no wait, no persisted state)". It replaced the path with `landmarksInRangeAsync` over `(4 h, 25 h]` on the main thread, which brings back both expensive steps (cemetery probes and `scanLakesAndPeaks`) over a band much wider than the old ~10-chunk radius. The Q137 script §6 had written conditional `RUM.WAIT.*` lines for keeping the delay. L3b left them dormant ("no wait was introduced"). Neither the world-041 plan nor the L3b notes record an author decision to drop the wait.
+- So the freeze is most likely **a regression introduced today**, not a new problem. The fix should restore the 047 pattern, not invent a new one.
+
 ## Existing infrastructure
 
 - `WorldKnowledgeResearch` (`src/world/locations/worldKnowledgeResearch.ts`) sends one bounded worker job through `chunkWorkerPool` (`requestChunkWorldKnowledge`). It deduplicates, cancels and invalidates, but it resolves only chunk `LandmarkKind`s (monoliths, ruins, …). It covers neither the coarse lake/peak scan nor the cemetery probes. Extending it is possible, because the worker already has `sampleRawTexelAt` inputs (`WorldKnowledgeTerrainSnapshot` carries `hydrologyId` and raw params). The catch is that the coarse tile cache and its persistence (`hydrateTile` / `onTileDirty`) live on the main thread and are the determinism seam described in plan world-013 §9.
 - Tests: `worldLocationCatalog.test.ts` (sync/async equivalence, order-independence), `guardLocalKnowledge.test.ts` (uses a stub `landmarksInRange`), `locationDiscovery.test.ts`. There is no performance guard for this path.
 
-## Recommended direction (to confirm by measurement first)
+## Recommended direction (revised after the history check)
 
-1. **Measure first (S):** in the browser on seed 415424794, with cold caches (fresh profile, or the caches cleared), ask a home guard. Record the long frames, `getScanDiagnostics()` (`classificationMs`, `lakeExtractionMs`, `peakExtractionMs`, `cemeteryMs`, `sampledCells`) and the slowest single probe. Repeat with warm caches. Settle which of costs 1 and 2 dominates.
-2. **Smallest fix, likely enough:**
-   - (a) Route the NPC ask through the existing `withLocationDiscoveryBusy` (the same overlay as the map). This is pure UX and needs no new system.
-   - (b) Make `scanLakesAndPeaks` cooperative inside `landmarksInRangeAsync`: an async variant that yields between rows or batches, using the same `yieldToPaint` / `probeBudgetMs` options. The output must stay identical (the sync/async equivalence test already exists).
-   - (c) For the cemetery probes, if they dominate: warm or resolve the needed settlement defs before probing (reusing the cold-def follow-up candidate from Q26), or split a probe so the budget check can run inside it. Do **not** build a parallel lookup.
-3. **Only if (b)/(c) are not enough:** move the coarse scan into the existing worker job (`WorldKnowledgeResearch` / `chunkWorkerPool`) and send the classified tiles back so the main-thread cache stays the single owner. This is larger, so it needs Opus design for the cache-ownership and persistence seam.
-4. Do not narrow the 25 h expert band or change landmark selection (that would be a gameplay/density change, so author → §3).
+**Restore the 047/npc-050 shape for rumours.** The NPC's "let me think" reply comes back at once (Q137 `RUM.WAIT.START.*`). The candidate pool is computed off the critical path. The lead is delivered later through the existing follow-up seam (`RUM.WAIT.READY.*`, re-resolved at delivery per Q137 §6). The world-041 pool needs kinds the 047 worker job never covered (lakes, peaks, abandoned cemeteries over a 25 h band), so the S row also has to choose how the pool gets computed:
+
+- (i) Extend the existing worker job (`worldKnowledgeScan` / `chunkWorkerPool`) to the coarse lake/peak scan and the abandoned-cemetery resolution. The main-thread coarse tile cache stays the single owner, and the worker hands back classified tiles. This is the most correct option, but the cache/persistence seam needs an Opus design.
+- (ii) Keep `landmarksInRangeAsync` on the main thread, made cooperative (`scanLakesAndPeaks` split into yielding batches, probes bounded) and started in the background during the wait. This is simpler, but each probe still has a cold settlement-def stall (see cost 1 above). Measure it first.
+
+Before either, measure as in step 1 below. Do **not** narrow the 25 h expert band or change selection without the author (§3).
+
+1. **Measure (S):** in the browser on seed 415424794 with cold caches, ask a home guard. Record the long frames, `getScanDiagnostics()` and the slowest single probe; repeat warm.
+2. The wait-vs-instant choice is gameplay, so it goes to the author: §3 **Q172-a**.
 
 Verification: the async result must equal the sync result (existing test plus a test for the cooperative variant), and there must be no change in `pnpm worldgen:outcomes:census` / catalog output. For the browser check, the worst long frame during an ask should be under about 50 ms on a cold cache (WSL; record it, no FPS claims), and Windows confirmation goes to queue §4.
