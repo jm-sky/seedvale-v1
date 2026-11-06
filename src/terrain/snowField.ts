@@ -46,11 +46,19 @@ export function snowLatticeHash(ix: number, iy: number): number {
   return (mix32((Math.imul(ix >>> 0, 0x27d4eb2d) ^ mix32((iy + 0x165667b1) >>> 0)) >>> 0) >>> 8) / 16777216
 }
 
-const INTEGER_LATTICE_GLSL = `
+/**
+ * Shared 32-bit integer lattice hash for every procedural value noise in V1 shaders (`gpHash`, `gpHash2`).
+ * Float `fract`/`sin` hashes are not backend-stable: on ANGLE D3D11 the same lattice corner evaluated from two
+ * neighbouring cells (`hash(i + 1)` vs `hash(i)`) can round differently, so value noise jumps on every lattice line
+ * and reads as crisp rectangles (world-terrain-065 Q149; V3 review 165). Include-guarded, so several shader chunks may
+ * inject it.
+ */
+export const INTEGER_LATTICE_GLSL = `
 #ifndef SV_INTEGER_LATTICE_GLSL
 #define SV_INTEGER_LATTICE_GLSL
 highp uint gpMix(highp uint x) { x ^= x >> 16u; x *= 0x7feb352du; x ^= x >> 15u; x *= 0x846ca68bu; x ^= x >> 16u; return x; }
 highp float gpHash(highp ivec2 i) { return float(gpMix((uint(i.x) * 0x27d4eb2du) ^ gpMix(uint(i.y) + 0x165667b1u)) >> 8u) / 16777216.0; }
+highp vec2 gpHash2(highp ivec2 i) { return vec2(gpHash(i), gpHash(i.yx + ivec2(0x3c6ef372, 0x1b873593))); }
 #endif
 `
 

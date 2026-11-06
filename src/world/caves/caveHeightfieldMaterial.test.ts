@@ -112,6 +112,12 @@ describe('createCaveHeightfieldMaterial', () => {
 })
 
 describe('cave surface shader contract', () => {
+  it('uses the integer lattice hash for value/gradient noise (no float fract/sin hash, Q149)', () => {
+    const { fragmentShader } = injectDetailShader(createCaveHeightfieldMaterial())
+    expect(fragmentShader).toContain('gpHash2( ivec2( p ) )')
+    expect(fragmentShader).not.toMatch(/fract\(\s*sin|fract\(\s*p\s*\*\s*vec2|Hash21/)
+  })
+
   it('perturbs the geometric view normal instead of replacing it through tbn or vWorldNormal', () => {
     const mat = createCaveHeightfieldMaterial()
     const { uniforms, vertexShader, fragmentShader } = injectDetailShader(mat)

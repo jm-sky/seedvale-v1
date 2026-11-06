@@ -37,6 +37,16 @@ const DETAIL_NORMAL = {
 } as const
 
 describe('createTerrainMaterial', () => {
+  it('uses the integer lattice hash for macro noise (no float fract/sin hash — ANGLE D3D11 lattice steps, Q149)', () => {
+    const { fragmentShader } = injectTerrainShader(createTerrainMaterial(true, DETAIL_NORMAL, 0))
+    expect(fragmentShader).toContain('float terrainValueNoise( vec2 p )')
+    expect(fragmentShader).toContain('gpHash( i + ivec2( 1, 1 ) )')
+    expect(fragmentShader).not.toMatch(/fract\(\s*sin|fract\(\s*p\s*\*\s*vec2|Hash21/)
+    // Injected by macro noise and the snow field; every copy is include-guarded.
+    const copies = fragmentShader.match(/highp uint gpMix/g)?.length ?? 0
+    expect(fragmentShader.match(/#ifndef SV_INTEGER_LATTICE_GLSL/g)?.length).toBe(copies)
+  })
+
   it('shares one process-wide dirt diffuse sampler across materials', () => {
     const a = createTerrainMaterial(false, DETAIL_NORMAL, 0)
     const b = createTerrainMaterial(false, DETAIL_NORMAL, 0)

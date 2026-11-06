@@ -1,4 +1,5 @@
 import { DoubleSide, ShaderMaterial, UniformsLib, UniformsUtils, Vector3 } from 'three'
+import { INTEGER_LATTICE_GLSL } from '../terrain/snowField'
 import {
   DAY_LAKE_DEEP,
   DAY_LAKE_FOAM,
@@ -65,18 +66,19 @@ const FRAGMENT_SHADER = /* glsl */ `
   // Cheap 2D value noise (hash + bilinear smoothstep interpolation) — the
   // irregularity source for the flow highlights below. Deliberately no
   // texture/extra uniform: this material stays a lightweight variant.
-  float hash21(vec2 p) {
-    return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
-  }
+  // Integer lattice hash (gpHash): a float sin-based hash is not stable on ANGLE D3D11
+  // and stepped on lattice lines (world-terrain-065 Q149).
+  ${INTEGER_LATTICE_GLSL}
 
   float valueNoise(vec2 p) {
-    vec2 i = floor(p);
-    vec2 f = fract(p);
+    vec2 fl = floor(p);
+    ivec2 i = ivec2(fl);
+    vec2 f = p - fl;
     vec2 u = f * f * (3.0 - 2.0 * f);
-    float a = hash21(i);
-    float b = hash21(i + vec2(1.0, 0.0));
-    float c = hash21(i + vec2(0.0, 1.0));
-    float d = hash21(i + vec2(1.0, 1.0));
+    float a = gpHash(i);
+    float b = gpHash(i + ivec2(1, 0));
+    float c = gpHash(i + ivec2(0, 1));
+    float d = gpHash(i + ivec2(1, 1));
     return mix(mix(a, b, u.x), mix(c, d, u.x), u.y);
   }
 

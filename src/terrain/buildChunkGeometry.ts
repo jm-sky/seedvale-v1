@@ -7,6 +7,7 @@ import {
   TERRAIN_DIRT_DIFFUSE_LINEAR_NEUTRAL,
 } from '../assets/sharedSurfaceDiffuseTextures'
 import {
+  INTEGER_LATTICE_GLSL,
   SNOW_ALT_M,
   SNOW_BIAS,
   SNOW_COL,
@@ -126,21 +127,20 @@ const NORMAL_MAP_TWO_TAP = /* glsl */ `
 
 /** Cheap tileable value noise in world XZ — drives macro color/roughness
  *  variation so the ground stops reading as a flat vertex-color carpet
- *  (plan 066). No texture sample. */
+ *  (plan 066). No texture sample. Integer lattice hash (`gpHash`): a float
+ *  hash rounded differently per cell on ANGLE D3D11 and drew rectangles on
+ *  every lattice line (world-terrain-065 Q149). */
 const MACRO_NOISE_FUNCS = /* glsl */ `
-float terrainHash21( vec2 p ) {
-  p = fract( p * vec2( 123.34, 456.21 ) );
-  p += dot( p, p + 45.32 );
-  return fract( p.x * p.y );
-}
+${INTEGER_LATTICE_GLSL}
 float terrainValueNoise( vec2 p ) {
-  vec2 i = floor( p );
-  vec2 f = fract( p );
+  vec2 fl = floor( p );
+  ivec2 i = ivec2( fl );
+  vec2 f = p - fl;
   f = f * f * ( 3.0 - 2.0 * f );
-  float a = terrainHash21( i );
-  float b = terrainHash21( i + vec2( 1.0, 0.0 ) );
-  float c = terrainHash21( i + vec2( 0.0, 1.0 ) );
-  float d = terrainHash21( i + vec2( 1.0, 1.0 ) );
+  float a = gpHash( i );
+  float b = gpHash( i + ivec2( 1, 0 ) );
+  float c = gpHash( i + ivec2( 0, 1 ) );
+  float d = gpHash( i + ivec2( 1, 1 ) );
   return mix( mix( a, b, f.x ), mix( c, d, f.x ), f.y );
 }
 `
