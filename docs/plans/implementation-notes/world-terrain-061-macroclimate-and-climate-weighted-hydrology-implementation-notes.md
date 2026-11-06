@@ -51,3 +51,45 @@ A blue-line screenshot is not evidence.
 - ❓ Dry-valley look (carve depth, strip colour) is a visual compromise → author look on previews once H1 runs.
 - 🟡 Taper length 48–96 m.
 - Not evaluated: `chunkManager`, `locationQueries`, `riverTileCache` and `mapRasterTile` readers of `RiverChain` — list them in the H2 implementation pass.
+
+## H1 — runoff-weighted accumulation + perennial threshold (Opus, 2026-11-06, queue Q121)
+
+**Implemented / technically verified (headless census both seeds; no browser look yet).** H2's dry-drainage class is **not** implemented: streams below the perennial threshold are simply not chains, so the H2 contract (no dry reach may become wet) holds trivially. Whether dry valleys need a visible projection at all → author §3 Q121-a.
+
+### Mechanism
+
+- `macroClimate.ts`: coarse precipitation grid (64 m cell centres, sampled with the coast grid — still 192² texel evaluations), `precipitationAt`, `temperatureAt`, `runoffFrom(T, P) = clamp(P·(1 − 0.5·warm(T)) / 0.42, 0.15, 2)` with `warm` = 0 at 2 °C … 1 at 16 °C, and `runoffGrid(climate, floor, grid, waterLevel)` (inlined bilinear; reuses the hydrology grid's own floor samples for the lapse term — no second terrain pass). Land mean ≈ 1.00 / 0.97 (seeds 42 / 415424794), range 0.54–1.66 / 0.43–1.61. 🟡 Direction change vs the C1 *provisional* runoff preview (which multiplied P by warmth): runoff now falls with warmth (evaporation) — cold north sheds more water, warm south less, consistent with G2 "warmer/drier south". `--climate` preview's runoff layer now shows this weight.
+- `worldHydrology.ts`: `WorldHydrologyGrid.runoff?` — each land cell contributes its weight instead of `1`; `accumulation` is therefore in **effective cells** (runoff-weighted area / 64 m²). Raw catchment m² is not stored (not needed by any consumer yet; H5/064 can add it). `worldHydrologyGridFor(params, floor, grid?)` is the single builder used by boot (`worldHydrologyRuntime`), `testWindowHydrology` and every census/preview script — synthetic tests without `runoff` keep uniform 1 (golden hashes changed only through the threshold).
+- `riverNetwork.ts` `DEFAULT_RIVER_THRESHOLDS`: `stream` 15 → **96** effective cells (6144 m²) = chain initiation *and* the zero of `flowFactor`, so a spring still starts at `MIN_RIVER_WIDTH` 0.4 m (no abrupt 3.5 m head, which keeping the old zero would give). `majorRiver` 200 unchanged → width saturation (11 m) at the same effective area as before; mid-size reaches (≈ 100–800 effective cells) become somewhat narrower (e.g. 300 cells: 7.1 → 4.3 m). `river` (drinkable-small-stream bound, `riverWaterQuality`) 50 → 192 (2 × stream). Exposed bank / submerged depth follow `flowFactor`, so the cross-section stays consistent.
+- Cache bumps (all output moved): `WORLD_HYDROLOGY_VERSION` 13, chunk tiles 39, settlement defs 37, road routes 25, caves 19, cemeteries 22, locations-coarse 16. No `WORLDGEN_EPOCH` bump (epoch-1 test saves disposable). Boot fixtures were already stale before this change (re-export at the batch close, Q80 rule).
+
+### Calibration (headless, `scratch` sweep then census; before = `6593120b`)
+
+| Metric | S0 (2026-11-04) | before (6593120b) | H1 | target |
+| --- | --- | --- | --- | --- |
+| stream km per land km², seed 42 / 415424794 | 12.2 / 11.6 | 12.46 / 11.90 | **6.18 / 5.78** (−49 % / −50 % vs S0) | −40…−60 % (Q116-b) ✅ |
+| chains (heads) | — | 2375 / 2375 | 902 / 886 | reported |
+| largest systems (chains / km) | — | 31/5.4 · 22/5.2 · 24/5.1 ; 43/8.3 · 37/8.3 · 30/6.7 | 14/4.8 · 9/3.4 · 10/3.3 ; 15/4.9 · 14/4.5 · 15/4.2 | ≥ 3 with hierarchy ✅ |
+| longest flow path of the 8 largest outlets (ratio to before) | — | 1.00 | 42: 0.83–1.00 (rivers ≥ 1 km: 0.92–0.96); 415: 0.89–1.00, one 0.26 km system 0.52 | main rivers ≤ ~15 % cut ✅ |
+| artifact-class parallel pairs | 0 / 1 | 0 / 4 | **1 / 0** (42: (1730, −1309), run 158 m, gap 18 m) | 0 → H4 (Q122) |
+| dry interfluve > 300 m | ≤ 0.9 % | 0.3 / 0.2 % | 0.9 / 0.6 % | reported (needs regional dryness) |
+| payload | 6.63 / 6.79 MiB | 6.65 / 6.82 MiB | 5.09 / 5.23 MiB | reported |
+
+Threshold sweep (runoff-weighted, effective cells → km/km² 42 / 415): 45 → 8.48 / 8.02 · 60 → 7.64 / 7.16 · 75 → 7.02 / 6.51 · 90 → 6.45 / 6.05 · **96 → 6.18 / 5.78** · 105 → 5.98 / 5.58 · 120 → 5.61 / 5.17.
+
+### Downstream re-census (before → H1)
+
+- **Home on seed 415424794 moved** (60, −5) → (17, 24): the stream that ran 17 m from home (168 raw cells at its mouth) drops out (its stretch above 96 effective cells is < `minChainCells` before the sea), and the home site search picks a new spot. Threshold 70 (−43 %) keeps that stream but home still moves (to (−16, 23)), so it is not a single-stream effect. Seed 42: nearest chain to home 24 → 34 m.
+- **Road connectivity on 415424794:** routed edges 21 → 20, routed components 1 → 2 (16 + 6): the home ↔ `4_-1` (east) road no longer routes. No river crossing is rejected on that search (instrumented, reverted) — it fails on walkability/obstacles/search window; left for the road close-out (Q61–Q64 after 063), not patched here. Seed 42: 19 → 18 routed, components 4 → 5. Wilderness > 5 h: 11 / 13.8 → 11 / 14.1 %.
+- Settlement access (`worldgen:access:census`): unreachable yard gates / storage / bay slots 0 on both seeds; wet object discs 0. Settlement mix on 415424794: one LG → OUTPOST (LG 2 → 1, OUTPOST 1 → 2), totals unchanged.
+- Caves: identical. Cemeteries: all placed, 0 plot∩clearing/road. Catalog lakes: identical (lakes do not depend on runoff).
+- Stream heads inside settlements: 3 / 2 → 0 / 1.
+- Cost (WSL, headless, `measure-worldgen-cost` + direct timing): climate build ≈ 70 ms + `runoffGrid` ≈ 60 ms, added once to a cold (uncached) hydrology install of ≈ 4–5 s sampling + 0.8–1.0 s compute (≈ +2–3 %, within the D7 tolerance); compute itself unchanged within noise; payload 6.7 → 5.1 MiB per copy; RSS after hydrology 319 → 251 MiB (one noisy run each).
+- Previews (hillshade + routes, `standard` gameplay and `all` diagnostic, before/after, both seeds; runoff weight layer for 415424794): `docs/research/v1-revival/continent-previews/061-hydrology-h1/`.
+
+### Not done / next
+
+- H2 dry drainage (class, projections, contract tests) — waits for §3 Q121-a.
+- H3–H6 (Q122): map hierarchy, the one artifact pair on seed 42 (H4), outcome assertions + waterfall data (H5), fixtures/close-out (H6).
+- Browser/3D: 3 catchments on 415424794 and the new home site → §2.
+- ❓ Unverified observation while debugging: after `clearRoadNetworkCaches()` mid-run, `-4_-2` resolved 1 instead of 2 routes — may be an artefact of the debug sequence (defs cached, routes not); not investigated.

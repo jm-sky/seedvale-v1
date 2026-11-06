@@ -1,6 +1,6 @@
 import type { RawSampleParams } from '../../src/terrain/chunkHeightmap'
 import { defaultTerrainConfig } from '../../src/config/worldConfig'
-import { computeWorldHydrology, sampleRawFloorRows, WORLD_HYDROLOGY_GRID } from '../../src/terrain/worldHydrology'
+import { computeWorldHydrology, sampleRawFloorRows, WORLD_HYDROLOGY_GRID, worldHydrologyGridFor } from '../../src/terrain/worldHydrology'
 import { hydrologyIdFor } from '../../src/terrain/worldHydrologyRegistry'
 import { installWorldHydrology, UNCONDITIONED_HYDROLOGY_ID } from '../../src/terrain/worldHydrologyStore'
 
@@ -23,7 +23,7 @@ export function censusHydrologyId(seed: number): string {
   }
   const grid = { ...WORLD_HYDROLOGY_GRID }
   const floor = sampleRawFloorRows(params, grid, 0, grid.size)
-  const hydrology = computeWorldHydrology({ ...grid, floor }, { waterLevel: params.waterLevel, seed })
+  const hydrology = computeWorldHydrology(worldHydrologyGridFor(params, floor), { waterLevel: params.waterLevel, seed })
   const id = hydrologyIdFor(params)
   installWorldHydrology(id, hydrology)
   cache.set(seed, id)

@@ -38,7 +38,7 @@ describe('classifyBaseRiverWaterQuality (plan world-017 §9.1)', () => {
   })
 
   it('is unsafe for a larger upstream/tributary river even at high elevation', () => {
-    expect(classifyBaseRiverWaterQuality({ accumulation: 120, elevation: 1000 })).toBe('unsafe')
+    expect(classifyBaseRiverWaterQuality({ accumulation: DEFAULT_RIVER_THRESHOLDS.river + 30, elevation: 1000 })).toBe('unsafe')
   })
 
   it('is unsafe for a downstream/major river', () => {

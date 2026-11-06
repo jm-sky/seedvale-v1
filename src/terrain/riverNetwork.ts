@@ -19,10 +19,12 @@ import type { NoiseFunction2D } from 'simplex-noise'
 export const RIVER_TILE_SIZE = 256
 export const RIVER_CELL_STEP = 8
 
-// Calibrated empirically against real generation: lower thresholds produced dozens of 1-2 cell noise blips (terrain
-// wrinkles briefly crossing an accumulation threshold, not real channels). `worldHydrology` uses `stream` as its chain
-// threshold (`DEFAULT_WORLD_HYDROLOGY_OPTIONS.streamAccumulation`); `flowFactor` scales width/depth from these.
-/** Accumulation thresholds (cells) that classify stream / river / major river. */
+// Accumulation is in **effective cells** (runoff-weighted area / 64 m², world-terrain-061 H1). `stream` is the perennial
+// initiation threshold `worldHydrology` uses for its chains (`DEFAULT_WORLD_HYDROLOGY_OPTIONS.streamAccumulation`) and the
+// zero of `flowFactor`, so a spring still starts as a thin thread. 061 H1 (Opus 2026-11-06): 15 → 96 (6144 m²) gives
+// ≈ −50 % total watercourse length vs S0 on seeds 42 / 415424794 (author Q116-b), trimming minor streams; `majorRiver`
+// (width saturation at 4×) stays, so large rivers keep today's width; `river` (drinkable-small-stream bound) = 2 × stream.
+/** Accumulation thresholds (effective cells) that classify stream / river / major river. */
 export type StreamThresholds = {
   stream: number
   river: number
@@ -30,8 +32,8 @@ export type StreamThresholds = {
 }
 
 export const DEFAULT_RIVER_THRESHOLDS: StreamThresholds = {
-  stream: 15,
-  river: 50,
+  stream: 96,
+  river: 192,
   majorRiver: 200,
 }
 

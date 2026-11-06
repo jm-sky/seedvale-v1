@@ -10,7 +10,7 @@ import { yawFacing } from '../../src/settlement/householdYard'
 import { cellsWithinRadius, type SettlementDef } from '../../src/settlement/settlementGenerator'
 import { clearSettlementDefCache, setSettlementRiverQuery, settlementDefFor } from '../../src/settlement/settlementPlanCache'
 import { createRiverQuery } from '../../src/terrain/riverQuery'
-import { computeWorldHydrology, sampleRawFloorRows, WORLD_HYDROLOGY_GRID } from '../../src/terrain/worldHydrology'
+import { computeWorldHydrology, sampleRawFloorRows, WORLD_HYDROLOGY_GRID, worldHydrologyGridFor } from '../../src/terrain/worldHydrology'
 import { hydrologyIdFor } from '../../src/terrain/worldHydrologyRegistry'
 import { installWorldHydrology, UNCONDITIONED_HYDROLOGY_ID } from '../../src/terrain/worldHydrologyStore'
 import { worldKnowledgeRoadContext, type WorldKnowledgeTerrainSnapshot } from '../../src/terrain/worldKnowledgeScan'
@@ -41,7 +41,7 @@ function productionHydrologyId(seed: number): string {
   }
   const grid = { ...WORLD_HYDROLOGY_GRID }
   const floor = sampleRawFloorRows(params, grid, 0, grid.size)
-  const h = computeWorldHydrology({ ...grid, floor }, { waterLevel: params.waterLevel, seed })
+  const h = computeWorldHydrology(worldHydrologyGridFor(params, floor), { waterLevel: params.waterLevel, seed })
   const id = hydrologyIdFor(params)
   installWorldHydrology(id, h)
   return id

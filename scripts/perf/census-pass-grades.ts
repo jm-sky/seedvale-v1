@@ -5,7 +5,7 @@
 // `census-range-spines.ts`.
 import { defaultTerrainConfig } from '../../src/config/worldConfig'
 import { rangeSpinesFor, type RawSampleParams, sampleHeightAt } from '../../src/terrain/chunkHeightmap'
-import { computeWorldHydrology, sampleRawFloorRows, WORLD_HYDROLOGY_GRID } from '../../src/terrain/worldHydrology'
+import { computeWorldHydrology, sampleRawFloorRows, WORLD_HYDROLOGY_GRID, worldHydrologyGridFor } from '../../src/terrain/worldHydrology'
 import { hydrologyIdFor } from '../../src/terrain/worldHydrologyRegistry'
 import { installWorldHydrology, UNCONDITIONED_HYDROLOGY_ID } from '../../src/terrain/worldHydrologyStore'
 
@@ -20,7 +20,7 @@ for (const seed of seeds) {
   const raw = { ...base, hydrologyId: UNCONDITIONED_HYDROLOGY_ID } as RawSampleParams
   const grid = { ...WORLD_HYDROLOGY_GRID }
   const floor = sampleRawFloorRows(raw, grid, 0, grid.size)
-  const h = computeWorldHydrology({ ...grid, floor }, { waterLevel: raw.waterLevel, seed })
+  const h = computeWorldHydrology(worldHydrologyGridFor(raw, floor), { waterLevel: raw.waterLevel, seed })
   const hid = hydrologyIdFor(raw)
   installWorldHydrology(hid, h)
   const p = { ...base, hydrologyId: hid } as RawSampleParams

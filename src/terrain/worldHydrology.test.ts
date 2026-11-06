@@ -68,7 +68,7 @@ describe('computeWorldHydrology', () => {
     expect(
       hashes,
       'computeWorldHydrology output changed: bump WORLD_HYDROLOGY_VERSION (src/terrain/worldHydrology.ts), re-export the worldgen fixtures (node scripts/perf/export-worldgen-fixture.mjs) and update these hashes',
-    ).toEqual({ valley: 'a6fa19df', pit: '4414228f' })
+    ).toEqual({ valley: '5eafc640', pit: 'c9199617' })
   })
 
   it('fills a small pit through the correction layer', () => {

@@ -3,6 +3,7 @@ import { projectOntoSegment } from '../math/segment'
 import { createSeededRandom } from '../world/parseSeed'
 import { type RawSampleParams, sampleRawFloorUncorrected } from './chunkHeightmap'
 import { WORLD_HALF_EXTENT } from './continentMask'
+import { createMacroClimate, runoffGrid } from './macroClimate'
 import {
   DEFAULT_RIVER_THRESHOLDS,
   MEANDER_NOISE_SEED_XOR,
@@ -22,7 +23,8 @@ import { SPARSE_BLOCK_SIZE, unpackChains } from './worldHydrologyStore'
  * correction layer (breach cuts, filled pits) and lake basins.
  *
  * Input is the RAW floor (`sampleFloorAt`, no correction). Determinism: heap ordered by `(height, index)`, no
- * `Math.random`, floats summed in a fixed order; the result depends only on `(floor, options, seed)`.
+ * `Math.random`, floats summed in a fixed order; the result depends only on `(floor, runoff, options, seed)` — runoff = the
+ * 061 H1 macroclimate weight per cell (`worldHydrologyGridFor`), so `accumulation` is in effective (runoff-weighted) cells.
  * Donor: V3 `world/gen/hydrology.ts` (pit policy) and `world/rivers/riverChains.ts` (chains); cut depths recalibrated
  * for V1's 18 m relief (`DEFAULT_WORLD_HYDROLOGY_OPTIONS`, calibration recorded in the 058 implementation notes).
  *
@@ -35,7 +37,7 @@ import { SPARSE_BLOCK_SIZE, unpackChains } from './worldHydrologyStore'
  * input changes. The golden-hash test in `worldHydrology.test.ts` fails then; after bumping, re-export the worldgen
  * fixtures and update the hashes (stale IndexedDB records and fixtures are dropped by the id).
  */
-export const WORLD_HYDROLOGY_VERSION = 12
+export const WORLD_HYDROLOGY_VERSION = 13
 
 export type WorldHydrologyOptions = {
   /** Sea / lake-free water plane (m). */
@@ -59,7 +61,7 @@ export type WorldHydrologyOptions = {
   lakeMinDepthM: number
   /** Inland below-sea components with at least this many cells stay sea-level lakes; smaller ones are raised. */
   terminalMinCells: number
-  /** Flow accumulation (cells) that makes a stream. */
+  /** Effective flow accumulation (runoff-weighted cells) that makes a perennial stream. */
   streamAccumulation: number
   /** Isolated chains shorter than this many cells are dropped (threshold noise). */
   minChainCells: number
@@ -99,6 +101,12 @@ export const WORLD_HYDROLOGY_GRID = {
 export type WorldHydrologyGrid = {
   /** Raw floor heights, row-major (`iz * size + ix`), `size * size` long. Not modified. */
   floor: Float32Array
+  /**
+   * Per-cell runoff weight (061 H1, `macroClimate.runoffGrid`), same layout as `floor`. Each land cell contributes this
+   * much to flow accumulation, so `accumulation` counts **effective cells** (runoff-weighted area / cell area), not raw
+   * cells. Omitted → uniform 1 (synthetic tests). The game and every census pass it (`worldHydrologyInputFor`).
+   */
+  runoff?: Float32Array
   size: number
   cellStep: number
   /** World position of cell (0, 0). */
@@ -206,6 +214,20 @@ export function sampleRawFloorRows(
     for (let ix = 0; ix < size; ix++) out[o++] = sampleRawFloorUncorrected(originX + ix * cellStep, z, params)
   }
   return out
+}
+
+/**
+ * The hydrology input for `params` (061 H1): the sampled raw floor plus the macroclimate runoff weights computed from
+ * it (no second terrain pass; the climate's own coarse grid is 192² texel evaluations). Every caller that computes the
+ * real world's hydrology — boot, tools, census scripts — goes through this so their results match the game.
+ */
+export function worldHydrologyGridFor(
+  params: RawSampleParams,
+  floor: Float32Array,
+  grid: Pick<WorldHydrologyGrid, 'size' | 'cellStep' | 'originX' | 'originZ'> = WORLD_HYDROLOGY_GRID,
+): WorldHydrologyGrid {
+  const runoff = runoffGrid(createMacroClimate(params), floor, grid, params.waterLevel)
+  return { size: grid.size, cellStep: grid.cellStep, originX: grid.originX, originZ: grid.originZ, floor, runoff }
 }
 
 // ---- helpers -------------------------------------------------------------------------------------------------------
@@ -781,7 +803,11 @@ export function computeWorldHydrology(
     }
   }
   const acc = new Float32Array(N)
-  for (let o = 0; o < oc; o++) if (!sea[order[o]!]) acc[order[o]!] = 1
+  const runoff = grid.runoff
+  for (let o = 0; o < oc; o++) {
+    const k = order[o]!
+    if (!sea[k]) acc[k] = runoff ? runoff[k]! : 1
+  }
   for (let o = oc - 1; o >= 0; o--) {
     const k = order[o]!
     const d = down[k]!

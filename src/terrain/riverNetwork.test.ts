@@ -3,6 +3,7 @@ import type { RawSampleParams } from './chunkHeightmap'
 import {
   canonicalWaterHeight,
   computeRiverTile,
+  DEFAULT_RIVER_THRESHOLDS,
   depthFromAccumulation,
   exposedBankFromFlow,
   footprintOverlapsRiver,
@@ -129,7 +130,8 @@ describe('riverNetwork tile math', () => {
 describe('widthFromAccumulation', () => {
   it('is zero below the stream threshold and grows with accumulation, bounded', () => {
     expect(widthFromAccumulation(0)).toBe(0)
-    const small = widthFromAccumulation(20)
+    expect(widthFromAccumulation(DEFAULT_RIVER_THRESHOLDS.stream - 1)).toBe(0)
+    const small = widthFromAccumulation(DEFAULT_RIVER_THRESHOLDS.stream + 5)
     const big = widthFromAccumulation(1000)
     expect(small).toBeGreaterThan(0)
     expect(big).toBeGreaterThan(small)
@@ -172,7 +174,7 @@ describe('computeRiverTile', () => {
 describe('depthFromAccumulation', () => {
   it('is zero below the stream threshold and grows with accumulation, bounded', () => {
     expect(depthFromAccumulation(0)).toBe(0)
-    const small = depthFromAccumulation(20)
+    const small = depthFromAccumulation(DEFAULT_RIVER_THRESHOLDS.stream + 5)
     const big = depthFromAccumulation(1000)
     expect(small).toBeGreaterThan(0)
     expect(big).toBeGreaterThan(small)
@@ -182,7 +184,7 @@ describe('depthFromAccumulation', () => {
 
 describe('canonicalWaterHeight (plan world-terrain-010)', () => {
   it('always sits below the point\'s own natural elevation, even for a barely-classified stream', () => {
-    const barelyStream = point(0, 0, 10, 16) // just past DEFAULT_RIVER_THRESHOLDS.stream (15)
+    const barelyStream = point(0, 0, 10, DEFAULT_RIVER_THRESHOLDS.stream + 1) // just past the stream threshold
     expect(canonicalWaterHeight(barelyStream)).toBeLessThan(barelyStream.elevation)
     const bigRiver = point(0, 0, 10, 5000)
     expect(canonicalWaterHeight(bigRiver)).toBeLessThan(bigRiver.elevation)

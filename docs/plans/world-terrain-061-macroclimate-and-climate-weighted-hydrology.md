@@ -1,7 +1,7 @@
 # Plan: Static macroclimate and climate-weighted hydrology
 
 **Created:** 2026-11-04
-**Status:** `planned` 📋 (C1 may start in parallel with world-terrain-060 as previews only; C2+ after the 060 R4 relief freeze; amended per [review 031](../reviews/2026-11-04--031--geography-revival-g1-g9-critical-architecture-review.md) 2026-11-04)
+**Status:** `in progress` 🔄 — C1 done, C2 look accepted 2026-11-05, **H1 landed 2026-11-06** (runoff weight + perennial threshold 96 effective cells, −49/−50 % length; [notes §H1](./implementation-notes/world-terrain-061-macroclimate-and-climate-weighted-hydrology-implementation-notes.md#h1--runoff-weighted-accumulation--perennial-threshold-opus-2026-11-06-queue-q121)); H2 dry drainage waits for author Q121-a; H3–H6 next (queue Q122). Amended per [review 031](../reviews/2026-11-04--031--geography-revival-g1-g9-critical-architecture-review.md) 2026-11-04.
 **Type:** feature
 **Priority:** high · **Effort:** XL
 **Depends on:** tools-026, world-terrain-060

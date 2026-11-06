@@ -12,7 +12,7 @@ import { clearSettlementDefCache, setSettlementRiverQuery, settlementDefFor } fr
 import { sampleFloorAt, sampleHeightAt } from '../../src/terrain/chunkHeightmap'
 import { createRiverQuery } from '../../src/terrain/riverQuery'
 import { isWetFloor } from '../../src/terrain/waterSurface'
-import { ChainEnd, computeWorldHydrology, hashWorldHydrology, sampleRawFloorRows, sparseBlockValue, unpackChains, WORLD_HYDROLOGY_GRID } from '../../src/terrain/worldHydrology'
+import { ChainEnd, computeWorldHydrology, hashWorldHydrology, sampleRawFloorRows, sparseBlockValue, unpackChains, WORLD_HYDROLOGY_GRID, worldHydrologyGridFor } from '../../src/terrain/worldHydrology'
 import { hydrologyIdFor } from '../../src/terrain/worldHydrologyRegistry'
 import { installWorldHydrology, streamHeadsFor, UNCONDITIONED_HYDROLOGY_ID } from '../../src/terrain/worldHydrologyStore'
 import { worldKnowledgeRoadContext, type WorldKnowledgeTerrainSnapshot } from '../../src/terrain/worldKnowledgeScan'
@@ -59,7 +59,7 @@ function measureGlobal(seed: number) {
   const t0 = performance.now()
   const floor = sampleRawFloorRows(params, grid, 0, size)
   const sampleMs = performance.now() - t0
-  const h = computeWorldHydrology({ ...grid, floor }, { waterLevel: params.waterLevel, seed })
+  const h = computeWorldHydrology(worldHydrologyGridFor(params, floor), { waterLevel: params.waterLevel, seed })
   const hash = hashWorldHydrology(h)
   const strips = Number(arg('check-strips', '0'))
   let stripsHash: string | null = null
@@ -69,7 +69,7 @@ function measureGlobal(seed: number) {
     const joined = new Float32Array(size * size)
     let o = 0
     for (const p of parts) { joined.set(p, o); o += p.length }
-    stripsHash = hashWorldHydrology(computeWorldHydrology({ ...grid, floor: joined }, { waterLevel: params.waterLevel, seed }))
+    stripsHash = hashWorldHydrology(computeWorldHydrology(worldHydrologyGridFor(params, joined), { waterLevel: params.waterLevel, seed }))
   }
   const chains = unpackChains(h.chains)
   let seabedKm = 0
@@ -186,7 +186,7 @@ function measureGlobal(seed: number) {
     network: withNetwork ? measureNetwork(h, floor, grid, params.waterLevel, landKm2) : undefined,
     variants: variantAreas.map((m2) => {
       const cells = Math.max(1, Math.round(m2 / (cellStep * cellStep)))
-      const hv = computeWorldHydrology({ ...grid, floor }, { waterLevel: params.waterLevel, seed, streamAccumulation: cells })
+      const hv = computeWorldHydrology(worldHydrologyGridFor(params, floor), { waterLevel: params.waterLevel, seed, streamAccumulation: cells })
       return { streamM2: m2, streamCells: cells, ...measureNetwork(hv, floor, grid, params.waterLevel, landKm2) }
     }),
     seed, size, sampleMs, computeMs: h.stats.computeMs, hash, stripsHash, stats: h.stats, landKm2, filledPct,

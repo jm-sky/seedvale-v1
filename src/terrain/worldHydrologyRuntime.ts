@@ -1,7 +1,7 @@
 import type { RawSampleParams } from './chunkHeightmap'
 import type { WorldHydrology } from './worldHydrology'
 import { installChunkWorkerHydrology, requestChunkHydrologyRows } from './chunkWorkerPool'
-import { computeWorldHydrology, hashWorldHydrology, sampleRawFloorRows, WORLD_HYDROLOGY_GRID } from './worldHydrology'
+import { computeWorldHydrology, hashWorldHydrology, sampleRawFloorRows, WORLD_HYDROLOGY_GRID, worldHydrologyGridFor } from './worldHydrology'
 import { readCachedWorldHydrology, writeCachedWorldHydrology } from './worldHydrologyCache'
 import { hasWorldHydrology, installWorldHydrology, retainOnlyWorldHydrology, worldHydrologyFor, worldHydrologyOptionsFor } from './worldHydrologyRegistry'
 import { isUnconditionedHydrologyId } from './worldHydrologyStore'
@@ -68,7 +68,7 @@ export async function computeWorldHydrologyFor(
   const floor = await sampleWorldHydrologyFloor(params, sampleRows, strips)
   const sampleMs = performance.now() - t0
   const t1 = performance.now()
-  const hydrology = computeWorldHydrology({ ...WORLD_HYDROLOGY_GRID, floor }, worldHydrologyOptionsFor(params))
+  const hydrology = computeWorldHydrology(worldHydrologyGridFor(params, floor), worldHydrologyOptionsFor(params))
   return { hydrology, sampleMs, computeMs: performance.now() - t1 }
 }
 

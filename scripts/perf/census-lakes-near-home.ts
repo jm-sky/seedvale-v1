@@ -4,7 +4,7 @@
 // pnpm exec tsx scripts/perf/census-lakes-near-home.ts --seeds=415424794,42 --cells=80,300,600 --depths=0.3,0.6,1
 import type { RawSampleParams } from '../../src/terrain/chunkHeightmap'
 import { defaultTerrainConfig } from '../../src/config/worldConfig'
-import { computeWorldHydrology, sampleRawFloorRows, sparseBlockValue, WORLD_HYDROLOGY_GRID } from '../../src/terrain/worldHydrology'
+import { computeWorldHydrology, sampleRawFloorRows, sparseBlockValue, WORLD_HYDROLOGY_GRID, worldHydrologyGridFor } from '../../src/terrain/worldHydrology'
 import { UNCONDITIONED_HYDROLOGY_ID } from '../../src/terrain/worldHydrologyStore'
 
 function arg(name: string, fallback: string): string {
@@ -35,7 +35,7 @@ for (const seed of seeds) {
   const home = HOME[seed] ?? { x: 0, z: 0 }
   for (const lakeMinCells of cellsList) {
     for (const lakeMinDepthM of depthList) {
-      const h = computeWorldHydrology({ ...grid, floor }, { waterLevel: params.waterLevel, seed, lakeMinCells, lakeMinDepthM })
+      const h = computeWorldHydrology(worldHydrologyGridFor(params, floor), { waterLevel: params.waterLevel, seed, lakeMinCells, lakeMinDepthM })
       const areas = h.lakes.map((l) => l.areaM2).sort((a, b) => a - b)
       const median = areas.length ? areas[areas.length >> 1]! / 1e4 : 0
       const filledPct = (100 * h.stats.filledCells) / Math.max(1, h.stats.landCells)

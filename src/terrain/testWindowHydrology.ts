@@ -1,6 +1,6 @@
 import type { RawSampleParams } from './chunkHeightmap'
 import { RIVER_CELL_STEP } from './riverNetwork'
-import { computeWorldHydrology, sampleRawFloorRows } from './worldHydrology'
+import { computeWorldHydrology, sampleRawFloorRows, worldHydrologyGridFor } from './worldHydrology'
 import { worldHydrologyOptionsFor } from './worldHydrologyRegistry'
 import { installWorldHydrology, UNCONDITIONED_HYDROLOGY_ID } from './worldHydrologyStore'
 
@@ -22,7 +22,7 @@ export function withWindowHydrology(
   const raw = { ...params, hydrologyId: UNCONDITIONED_HYDROLOGY_ID }
   const grid = { size: window.cells, cellStep: RIVER_CELL_STEP, originX: window.originX, originZ: window.originZ }
   const floor = sampleRawFloorRows(raw, grid, 0, window.cells)
-  const hydrology = computeWorldHydrology({ ...grid, floor }, worldHydrologyOptionsFor(raw))
+  const hydrology = computeWorldHydrology(worldHydrologyGridFor(raw, floor, grid), worldHydrologyOptionsFor(raw))
   const hydrologyId = `test-window-${params.seed}-${window.originX}-${window.originZ}-${window.cells}`
   installWorldHydrology(hydrologyId, hydrology)
   return { ...params, hydrologyId }

@@ -8,9 +8,9 @@ import { writeFileSync } from 'node:fs'
  * tools-026 D4 layers (all optional, default output unchanged): `--hillshade` multiplies the terrain by a NW-lit shade, `--slope`
  * tints land by slope class (<5 / 5-10 / 10-20 / 20-30 / >=30 deg, ~8 m pixel gradients: a coarse map-scale estimate),
  * `--settlements` marks sites (size-scaled dots, home ringed), `--routes` draws road-route polylines over the terrain,
- * `--stream-m2=` writes one extra image per initiation area (uniform runoff, preview only, `<out>-streams-<m2>.png`) on a hillshade.
+ * `--stream-m2=` writes one extra image per initiation area (effective m², runoff-weighted; preview only, `<out>-streams-<m2>.png`) on a hillshade.
  * `--climate` (plan 061 C1) writes `<out>-climate-{temp,precip,maritime,runoff}.png` from `macroClimate.ts` (land only, hillshaded;
- * runoff = provisional proxy precipitation × warmth, labelled preview-only, no hydrology consumer).
+ * runoff = the 061 H1 hydrology weight `runoffFrom(T, P)`).
  * The mountain gate is not exposed by the generator, so no gate layer (see censusRelief.ts proxy).
  *
  * @domain tools
@@ -23,9 +23,9 @@ import { clearSettlementDefCache, setSettlementRiverQuery, settlementDefFor, set
 import { clearCemeteryCaches } from '../../src/terrain/cemeteryAssignment'
 import { landformDescriptorsOf, rangeSpinesFor } from '../../src/terrain/chunkHeightmap'
 import { sampleRawTexelUncorrectedAt } from '../../src/terrain/chunkHeightmap'
-import { createMacroClimate } from '../../src/terrain/macroClimate'
+import { createMacroClimate, runoffFrom } from '../../src/terrain/macroClimate'
 import { createRiverQuery } from '../../src/terrain/riverQuery'
-import { computeWorldHydrology, sampleRawFloorRows, unpackChains, WORLD_HYDROLOGY_GRID } from '../../src/terrain/worldHydrology'
+import { computeWorldHydrology, sampleRawFloorRows, unpackChains, WORLD_HYDROLOGY_GRID, worldHydrologyGridFor } from '../../src/terrain/worldHydrology'
 import { ensureWorldHydrology, sampleRowsOnThisThread } from '../../src/terrain/worldHydrologyRuntime'
 import { worldKnowledgeRoadContext, type WorldKnowledgeTerrainSnapshot } from '../../src/terrain/worldKnowledgeScan'
 import { paintMapTilePixels } from '../../src/ui-vue/lib/mapTerrainPaint'
@@ -258,7 +258,8 @@ if (flag('climate')) {
       stats.land++
       stats.tMin = Math.min(stats.tMin, c.temperature); stats.tMax = Math.max(stats.tMax, c.temperature)
       stats.pMin = Math.min(stats.pMin, c.precipitation); stats.pMax = Math.max(stats.pMax, c.precipitation)
-      const runoff = c.precipitation * (0.55 + 0.45 * Math.min(1, Math.max(0, (c.temperature + 6) / 24)))
+      // The hydrology weight (061 H1), 0.15..2, ≈ 1 typical; ramp centred on 1.
+      const runoff = runoffFrom(c.temperature, climate.precipitationAt(wx, wz)) / 2
       colours = {
         temp: ramp((c.temperature + 6) / 24, [60, 90, 200], [235, 235, 210], [210, 70, 40]),
         precip: ramp(c.precipitation, [225, 200, 130], [120, 190, 120], [30, 90, 170]),
@@ -282,13 +283,14 @@ if (flag('climate')) {
   console.log(`climate: T ${stats.tMin.toFixed(1)}..${stats.tMax.toFixed(1)} °C, P ${stats.pMin.toFixed(2)}..${stats.pMax.toFixed(2)} over ${stats.land} sampled land px; coast grid ${(climate.gridBytes / 1024).toFixed(0)} KiB`)
 }
 
-// D1 threshold variants: recompute chains on the same floor grid with other initiation areas (uniform runoff, preview only).
+// D1 threshold variants: recompute chains on the same floor grid with other initiation areas (effective m², runoff-weighted
+// since 061 H1; preview only).
 if (streamM2s.length > 0) {
   const grid = { ...WORLD_HYDROLOGY_GRID }
   const floor = sampleRawFloorRows(params, grid, 0, grid.size)
   for (const m2 of streamM2s) {
     const cells = Math.max(1, Math.round(m2 / (grid.cellStep * grid.cellStep)))
-    const hv = computeWorldHydrology({ ...grid, floor }, { waterLevel: params.waterLevel, seed, streamAccumulation: cells })
+    const hv = computeWorldHydrology(worldHydrologyGridFor(params, floor), { waterLevel: params.waterLevel, seed, streamAccumulation: cells })
     // Neutral base: land from the standard render, rivers dropped (repaint from the base-layer copy, then hillshade).
     const base = new Uint8Array(rgba.length)
     for (let y = 0; y < PX; y++) for (let x = 0; x < PX; x++) {

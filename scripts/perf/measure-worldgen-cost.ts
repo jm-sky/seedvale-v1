@@ -10,7 +10,7 @@ import { clearSettlementDefCache, setSettlementRiverQuery, settlementDefFor, set
 import { clearCemeteryCaches } from '../../src/terrain/cemeteryAssignment'
 import { type ChunkTileParams, computeChunkTile } from '../../src/terrain/chunkHeightmap'
 import { createRiverQuery } from '../../src/terrain/riverQuery'
-import { computeWorldHydrology, sampleRawFloorRows, WORLD_HYDROLOGY_GRID, type WorldHydrology } from '../../src/terrain/worldHydrology'
+import { computeWorldHydrology, sampleRawFloorRows, WORLD_HYDROLOGY_GRID, type WorldHydrology, worldHydrologyGridFor } from '../../src/terrain/worldHydrology'
 import { hydrologyIdFor } from '../../src/terrain/worldHydrologyRegistry'
 import { installWorldHydrology, UNCONDITIONED_HYDROLOGY_ID } from '../../src/terrain/worldHydrologyStore'
 import { worldKnowledgeRoadContext, type WorldKnowledgeTerrainSnapshot } from '../../src/terrain/worldKnowledgeScan'
@@ -51,7 +51,7 @@ function hydrologyCost(seed: number) {
   const t0 = performance.now()
   const floor = sampleRawFloorRows(params, grid, 0, grid.size)
   const t1 = performance.now()
-  const hydrology: WorldHydrology = computeWorldHydrology({ ...grid, floor }, { waterLevel: params.waterLevel, seed })
+  const hydrology: WorldHydrology = computeWorldHydrology(worldHydrologyGridFor(params, floor), { waterLevel: params.waterLevel, seed })
   const t2 = performance.now()
   const id = hydrologyIdFor(params)
   installWorldHydrology(id, hydrology)

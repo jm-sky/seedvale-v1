@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import { createBenchmarkWorldConfig } from '../config/worldConfig'
 import { rawSampleParamsFromWorld } from '../world/map/mapProjection'
-import { createMacroClimate, latitude01, MACRO_CLIMATE_CELL_M, macroClimateFrom } from './macroClimate'
+import { createMacroClimate, latitude01, MACRO_CLIMATE_CELL_M, macroClimateFrom, runoffFrom, runoffGrid, temperatureAt } from './macroClimate'
+import { sampleRawFloorRows } from './worldHydrology'
+import { UNCONDITIONED_HYDROLOGY_ID } from './worldHydrologyStore'
 
 const params = (seed: number) => rawSampleParamsFromWorld(createBenchmarkWorldConfig({ seed, terrainResolution: 65, loadRadius: 2 }))
 
@@ -48,5 +50,29 @@ describe('macroClimate (061 C1)', () => {
     expect(c.maritimeAt(-6144 - 500, 0)).toBe(1)
     expect(c.maritimeAt(0, 0)).toBeLessThan(0.99)
     expect(MACRO_CLIMATE_CELL_M).toBe(64)
+  })
+
+  it('runoff (061 H1): bounded, wetter with precipitation, lower where warm', () => {
+    for (const t of [-5, 2, 9, 16, 25]) for (const p of [0, 0.3, 0.6, 1]) {
+      const r = runoffFrom(t, p)
+      expect(r).toBeGreaterThanOrEqual(0.15)
+      expect(r).toBeLessThanOrEqual(2)
+    }
+    expect(runoffFrom(8, 0.8)).toBeGreaterThan(runoffFrom(8, 0.4))
+    expect(runoffFrom(3, 0.6)).toBeGreaterThan(runoffFrom(15, 0.6))
+  })
+
+  it('runoffGrid matches the per-point climate path and is deterministic', () => {
+    const p = params(415424794)
+    const climate = createMacroClimate(p)
+    const grid = { size: 33, cellStep: 8, originX: 1200, originZ: -800 }
+    const floor = sampleRawFloorRows({ ...p, hydrologyId: UNCONDITIONED_HYDROLOGY_ID }, grid, 0, grid.size)
+    const a = runoffGrid(climate, floor, grid, p.waterLevel)
+    expect(runoffGrid(createMacroClimate(p), floor, grid, p.waterLevel)).toEqual(a)
+    for (const [ix, iz] of [[0, 0], [7, 19], [32, 32], [16, 3]] as const) {
+      const k = iz * grid.size + ix, x = grid.originX + ix * 8, z = grid.originZ + iz * 8
+      const expected = runoffFrom(temperatureAt(z, floor[k]!, p.waterLevel), climate.precipitationAt(x, z))
+      expect(a[k]!).toBeCloseTo(expected, 5)
+    }
   })
 })
