@@ -1,7 +1,7 @@
 # Grok Audits — Candidate Queue
 
 **Created:** 2026-11-06  
-**Gate:** independent workspace review corrections incorporated 2026-11-06; **GA-003 deferred-section slice authorized 2026-11-06 and delivered for review; other tasks remain proposals requiring explicit author approval**.
+**Gate:** independent workspace review corrections incorporated 2026-11-06; **GA-003 deferred-section, developer-tooling and items/player slices authorized 2026-11-06 and delivered for review; other task IDs remain proposals requiring explicit author approval**.
 
 This is a candidate queue for bounded Grok evidence-gathering in [SeedVale V1](https://github.com/jm-sky/seedvale-v1). See [operating rules](./README.md). `P1`/`P2` express **relative audit research value / scheduling preference only**, not urgency or authorization in the Revival roadmap. At kickoff, check the [Revival session queue](../research/v1-revival/AUTONOMOUS-SESSION-QUEUE.md), [System Review Matrix](../reviews/SYSTEM-REVIEW-MATRIX.md), current code and recent commits; document overlapping Q tasks, matrix IDs, previously commissioned reviews, and excluded unstable paths before proceeding.
 
@@ -29,9 +29,13 @@ For this pilot, record: number of findings; number independently `confirmed`, `r
 
 ## Reports
 
-GA-003: [STATE deferred-section pilot](./audits/2026-11-06--GA-003--state-deferred-section.md), pinned `a75dcdfb29cd95d9634f5c87f6943daa428f44be`, `review needed`; 2 unverified findings, no independent validation or implementation approval. Other scopes remain unassigned. See the [report index](./audits/README.md).
+GA-003: [STATE deferred-section pilot](./audits/2026-11-06--GA-003--state-deferred-section.md), pinned `a75dcdfb29cd95d9634f5c87f6943daa428f44be`, `review needed`; 2 unverified findings, no independent validation or implementation approval. Second delivered slice: [developer tooling](./audits/2026-11-06--GA-003--dev-tooling.md), pinned `3c249cb62ddde343be2b654fae43315a484f8054`, `review needed`; 3 unverified findings (F03–F05). First two slices: 5 unverified findings. Third delivered slice: [items / player](./audits/2026-11-06--GA-003--items-player.md), pinned `3c249cb62ddde343be2b654fae43315a484f8054`, `review needed`; 2 unverified findings (F06-F07). Combined: 7 unverified findings, no independent validation or implementation approval. See the [report index](./audits/README.md).
 
 ## Change log
+
+- 2026-11-06 - author-authorized GA-003 items/player slice delivered at `3c249cb62ddde343be2b654fae43315a484f8054`; 32 claim rows (19 supported static / 1 partial / 1 contradicted / 8 excluded overlap / 3 excluded scope); F06-F07 remain `unverified`. Dirty tooling report preserved byte-for-byte; earlier slices and F01-F05 retained. No runtime changes, commit, push or stash.
+
+- 2026-11-06 — author-authorized GA-003 developer-tooling slice delivered at `3c249cb62ddde343be2b654fae43315a484f8054`; 30 claim rows (18 supported static / 1 contradicted / 2 partial / 9 excluded); F03–F05 remain `unverified`. Deferred-section pilot and F01/F02 preserved; no runtime changes, commit or push.
 
 - 2026-11-06 — author-authorized GA-003 deferred-section pilot delivered at `a75dcdfb29cd95d9634f5c87f6943daa428f44be`; 12 bullets accounted for (4 confirmed deferred / 2 partial / 6 excluded); 2 findings remain `unverified`. No runtime changes or commit.
 
