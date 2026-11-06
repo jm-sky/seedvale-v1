@@ -343,6 +343,7 @@ Generated from TypeScript imports.
 - `fauna/animalNaturalWater.ts`
 - `fauna/createFauna.test.ts`
 - `fauna/createFauna.ts`
+- `fauna/faunaGroupLifecycle.ts`
 - `player/worldWaterEligibility.test.ts`
 - `settlement/SettlementsManager.lifecycle.test.ts`
 - `settlement/SettlementsManager.ts`
@@ -623,6 +624,8 @@ Generated from TypeScript imports.
 - `world/locations/darkForestTreasureSiteRuntime.ts`
 - `world/plantedCrops.ts`
 - `world/plantedTrees.ts`
+- `world/sight/environmentSightBlockers.ts`
+- `world/sight/sightBlockers.ts`
 - `world/treeLifecycle.ts`
 - `world/treeVisuals.ts`
 - `world/waterMirror.ts`
@@ -1888,6 +1891,7 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `app/actions/mountActions.test.ts`
+- `app/playerSight.test.ts`
 - `fauna/AnimalAgent.chase.test.ts`
 - `fauna/AnimalAgent.encounter.test.ts`
 - `fauna/AnimalAgent.test.ts`

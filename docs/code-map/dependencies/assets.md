@@ -207,6 +207,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `app/playerSight.test.ts`
 - `assets/constructionCatalog.test.ts`
 - `assets/storehouseDefinition.test.ts`
 - `house-browser/dressingPreview.test.ts`
@@ -219,6 +220,7 @@ Generated from TypeScript imports.
 - `settlement/props.ts`
 - `settlement/villagePlanner.ts`
 - `world/residentialBuilding.ts`
+- `world/sight/houseSightBlockers.test.ts`
 
 ## `assets/houseDefinitionExampleConfig.ts`
 
@@ -237,6 +239,7 @@ Generated from TypeScript imports.
 - `settlement/professionDressing.ts`
 - `settlement/props.ts`
 - `world/residentialBuilding.ts`
+- `world/sight/houseSightBlockers.ts`
 
 ## `assets/loadGltf.test.ts`
 

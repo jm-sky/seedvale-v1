@@ -60,6 +60,20 @@ Generated from exported TypeScript symbols.
 - `isActorInfoSpatiallyVisible` — function — line 36
 - `PlayerLabelSpatialView` — type — line 18
 
+## `simulation/playerSightContacts.ts`
+
+- `ContactPose` — type — line 28
+- `createPlayerSightContacts` — function — line 70
+- `DEFAULT_PLAYER_SIGHT_CONTACT_CONFIG` — const — line 21
+- `LastKnownContact` — type — line 30
+- `PlayerContactState` — type — line 12
+- `PlayerSightContactConfig` — type — line 14
+- `PlayerSightContacts` — type — line 37
+- `SightBillboardVariant` — type — line 11
+  - domain: world
+  - system: sight
+  - role: World-042 Stage 1 — transient per-world store of player-facing sight contacts: per-actor `seen`/`concealed` state (with a short blocked grace) and last-known billboards. Pure, never saved, no Three.js.
+
 ## `simulation/scoreActions.ts`
 
 - `pickActionKind` — function — line 27

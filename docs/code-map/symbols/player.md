@@ -90,24 +90,26 @@ Generated from exported TypeScript symbols.
 
 ## `player/playerCombat.ts`
 
-- `collectLivingCombatTargets` — function — line 79
-- `collectRangedAnimalCandidates` — function — line 168
+- `collectLivingCombatTargets` — function — line 117
+- `collectRangedAnimalCandidates` — function — line 206
 - `COMBAT_MODE_TIMEOUT_SEC` — const — line 13
-- `createPlayerCombat` — function — line 267
-- `filterRangedCandidatesBySpatialContext` — function — line 191
-- `filterWorldCycleTargets` — function — line 224
-- `findLivingTargetById` — function — line 240
-- `forEachLivingCombatAnimal` — function — line 59
+- `createPlayerCombat` — function — line 305
+- `filterLivingTargetsSightDisclosed` — function — line 55
+- `filterRangedCandidatesBySpatialContext` — function — line 229
+- `filterRangedCandidatesSightDisclosed` — function — line 74
+- `filterWorldCycleTargets` — function — line 262
+- `findLivingTargetById` — function — line 278
+- `forEachLivingCombatAnimal` — function — line 97
   - domain: fauna
 - `LivingCombatTarget` — type — line 15
-- `livingTargetIdForAnimal` — function — line 44
-- `livingTargetIdForNpc` — function — line 48
+- `livingTargetIdForAnimal` — function — line 82
+- `livingTargetIdForNpc` — function — line 86
 - `PlayerCombat` — type — line 23
-- `RangedAnimalCandidate` — type — line 159
-- `resolveLivingInteractable` — function — line 251
-- `resolveRangedAimYaw` — function — line 211
-- `SpatialContextAt` — type — line 77
-- `tabCyclesLivingCombatTargets` — function — line 236
+- `RangedAnimalCandidate` — type — line 197
+- `resolveLivingInteractable` — function — line 289
+- `resolveRangedAimYaw` — function — line 249
+- `SpatialContextAt` — type — line 115
+- `tabCyclesLivingCombatTargets` — function — line 274
   - domain: ui-input
 
 ## `player/playerCombatMode.ts`

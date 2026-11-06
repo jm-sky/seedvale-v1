@@ -1766,6 +1766,7 @@ Generated from TypeScript imports.
 - `world/createPlayerWells.ts`
 - `world/createResidentialBuildings.test.ts`
 - `world/createResidentialBuildings.ts`
+- `world/sight/houseSightBlockers.ts`
 
 ## `world/condition.test.ts`
 
@@ -1989,6 +1990,7 @@ Generated from TypeScript imports.
 - `world/createCaves.test.ts`
 - `world/locations/worldLocationCatalog.test.ts`
 - `world/locations/worldLocationCatalog.ts`
+- `world/sight/sightWorld.ts`
 
 ## `world/createDryingRacks.ts`
 
@@ -2091,6 +2093,8 @@ Generated from TypeScript imports.
 - `world/collision.ts`
 - `world/palisade.ts`
 - `world/palisadeProp.ts`
+- `world/sight/palisadeSightBlockers.ts`
+- `world/sight/sightBlockers.ts`
 
 **Imported by**
 
@@ -2249,6 +2253,8 @@ Generated from TypeScript imports.
 - `world/collision.ts`
 - `world/residentialBuilding.ts`
 - `world/residentialBuildingProp.ts`
+- `world/sight/houseSightBlockers.ts`
+- `world/sight/sightBlockers.ts`
 
 **Imported by**
 
@@ -3905,6 +3911,7 @@ Generated from TypeScript imports.
 - `world/createPalisades.ts`
 - `world/palisade.test.ts`
 - `world/palisadeProp.ts`
+- `world/sight/palisadeSightBlockers.ts`
 
 ## `world/palisadeProp.ts`
 
@@ -3916,6 +3923,7 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `world/createPalisades.ts`
+- `world/sight/palisadeSightBlockers.ts`
 
 ## `world/parseSeed.test.ts`
 
@@ -4442,6 +4450,147 @@ Generated from TypeScript imports.
 - `settlement/SettlementsManager.ts`
 - `settlement/createSettlement.ts`
 
+## `world/sight/environmentSightBlockers.test.ts`
+
+**Imports**
+
+- `world/sight/environmentSightBlockers.ts`
+
+## `world/sight/environmentSightBlockers.ts`
+
+**Imports**
+
+- `world/sight/sightBlockers.ts`
+
+**Imported by**
+
+- `terrain/chunkManager.ts`
+- `world/sight/environmentSightBlockers.test.ts`
+
+## `world/sight/houseSightBlockers.test.ts`
+
+**Imports**
+
+- `assets/houseDefinitionExample.ts`
+- `world/sight/houseSightBlockers.ts`
+- `world/sight/querySight.ts`
+- `world/sight/sightBlockers.ts`
+- `world/spatialContext.ts`
+
+## `world/sight/houseSightBlockers.ts`
+
+**Imports**
+
+- `assets/houseDefinitionExampleConfig.ts`
+- `settlement/houseBuilder.ts`
+- `world/collision.ts`
+- `world/sight/sightBlockers.ts`
+
+**Imported by**
+
+- `app/playerSight.test.ts`
+- `settlement/createSettlement.ts`
+- `world/createResidentialBuildings.ts`
+- `world/sight/houseSightBlockers.test.ts`
+
+## `world/sight/palisadeSightBlockers.test.ts`
+
+**Imports**
+
+- `settlement/settlementPalisade.ts`
+- `world/sight/palisadeSightBlockers.ts`
+
+## `world/sight/palisadeSightBlockers.ts`
+
+**Imports**
+
+- `render/instancedProps.ts`
+- `settlement/settlementPalisade.ts`
+- `world/palisade.ts`
+- `world/palisadeProp.ts`
+- `world/sight/sightBlockers.ts`
+
+**Imported by**
+
+- `settlement/createSettlement.ts`
+- `world/createPalisades.ts`
+- `world/sight/palisadeSightBlockers.test.ts`
+
+## `world/sight/querySight.test.ts`
+
+**Imports**
+
+- `world/sight/querySight.ts`
+- `world/sight/sightBlockers.ts`
+- `world/spatialContext.ts`
+
+## `world/sight/querySight.ts`
+
+**Imports**
+
+- `world/sight/sightBlockers.ts`
+- `world/sight/sightSegment.ts`
+- `world/spatialContext.ts`
+
+**Imported by**
+
+- `app/playerSight.test.ts`
+- `app/playerSight.ts`
+- `app/worldBundle.ts`
+- `simulation/playerSightContacts.ts`
+- `world/sight/houseSightBlockers.test.ts`
+- `world/sight/querySight.test.ts`
+- `world/sight/sightWorld.ts`
+
+## `world/sight/sightBlockers.test.ts`
+
+**Imports**
+
+- `world/sight/sightBlockers.ts`
+
+## `world/sight/sightBlockers.ts`
+
+**Imported by**
+
+- `app/playerSight.test.ts`
+- `app/worldBundle.ts`
+- `settlement/SettlementsManager.ts`
+- `settlement/createSettlement.ts`
+- `terrain/chunkManager.ts`
+- `world/createPalisades.ts`
+- `world/createResidentialBuildings.ts`
+- `world/sight/environmentSightBlockers.ts`
+- `world/sight/houseSightBlockers.test.ts`
+- `world/sight/houseSightBlockers.ts`
+- `world/sight/palisadeSightBlockers.ts`
+- `world/sight/querySight.test.ts`
+- `world/sight/querySight.ts`
+- `world/sight/sightBlockers.test.ts`
+- `world/sight/sightSegment.ts`
+- `world/sight/sightWorld.ts`
+
+## `world/sight/sightSegment.ts`
+
+**Imports**
+
+- `world/sight/sightBlockers.ts`
+
+**Imported by**
+
+- `world/sight/querySight.ts`
+
+## `world/sight/sightWorld.ts`
+
+**Imports**
+
+- `world/createCaves.ts`
+- `world/sight/querySight.ts`
+- `world/sight/sightBlockers.ts`
+
+**Imported by**
+
+- `app/worldBundle.ts`
+
 ## `world/siteInfrastructure.test.ts`
 
 **Imports**
@@ -4537,6 +4686,8 @@ Generated from TypeScript imports.
 - `app/gameLoop.ts`
 - `app/interactables.test.ts`
 - `app/interactables.ts`
+- `app/playerSight.test.ts`
+- `app/playerSight.ts`
 - `app/waterDrinkInteraction.test.ts`
 - `app/worldBundle.ts`
 - `audio/ambientEvents.ts`
@@ -4556,6 +4707,9 @@ Generated from TypeScript imports.
 - `terrain/mineableDeposit.test.ts`
 - `terrain/mineableDeposit.ts`
 - `world/createCaves.ts`
+- `world/sight/houseSightBlockers.test.ts`
+- `world/sight/querySight.test.ts`
+- `world/sight/querySight.ts`
 - `world/spatialContext.test.ts`
 - `world/worldGeneratedContainers.ts`
 
@@ -4964,10 +5118,14 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `ai/NpcAgent.ts`
+- `app/playerSight.test.ts`
 - `app/renderStack.ts`
 - `app/worldBundle.ts`
 - `config/worldConfig.ts`
 - `fauna/AnimalAgent.ts`
+- `render/actorSightConcealment.test.ts`
+- `render/actorSightConcealment.ts`
+- `render/lastKnownBillboards.ts`
 - `terrain/chunkManager.ts`
 - `terrain/grass.ts`
 - `terrain/vegetationRegionBatcher.test.ts`

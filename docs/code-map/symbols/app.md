@@ -311,9 +311,9 @@ Generated from exported TypeScript symbols.
 
 ## `app/gameLoop.ts`
 
-- `createGameLoop` — function — line 760
-- `GameLoop` — type — line 720
-- `GameLoopDeps` — type — line 358
+- `createGameLoop` — function — line 763
+- `GameLoop` — type — line 723
+- `GameLoopDeps` — type — line 361
 
 ## `app/graphicsSettings.ts`
 
@@ -357,18 +357,19 @@ Generated from exported TypeScript symbols.
 
 ## `app/interactables.ts`
 
-- `buildCombatTarget` — function — line 1435
-- `buildDigTarget` — function — line 1379
-- `buildInteractables` — function — line 590
+- `buildCombatTarget` — function — line 1460
+- `buildDigTarget` — function — line 1404
+- `buildInteractables` — function — line 615
 - `COMBAT_TARGET_CONE_DOT` — const — line 114
 - `COMBAT_TARGET_RANGE` — const — line 99
 - `CombatAimMode` — type — line 104
-- `commitWorldPickup` — function — line 1581
+- `commitWorldPickup` — function — line 1606
   - domain: items-player
 - `DIG_REACH` — const — line 93
 - `DROPPED_ITEM_GROUP_RADIUS` — const — line 320
 - `DroppedItemGroupCandidate` — type — line 323
-- `filterInteractablesSameSpatialContext` — function — line 574
+- `filterInteractablesSameSpatialContext` — function — line 599
+- `filterInteractablesSightDisclosed` — function — line 586
 - `GAZE_RANGE` — const — line 89
 - `grindstoneInteractPosition` — function — line 449
 - `groupDroppedItemCandidates` — function — line 341
@@ -378,11 +379,12 @@ Generated from exported TypeScript symbols.
 - `itemPromptLabel` — function — line 309
 - `resolveHaySpot` — function — line 463
 - `resolveShorelineWaterSource` — function — line 524
-- `resolveWorldPickup` — function — line 1518
+- `resolveWorldPickup` — function — line 1543
+- `SightDisclosure` — type — line 574
 - `worldItemAllowsAltInteract` — function — line 294
   - domain: ui-input
-- `WorldPickupCommit` — type — line 1566
-- `WorldPickupResolution` — type — line 1505
+- `WorldPickupCommit` — type — line 1591
+- `WorldPickupResolution` — type — line 1530
   - domain: items-player
 
 ## `app/inventoryWiring.ts`
@@ -420,6 +422,19 @@ Generated from exported TypeScript symbols.
 - `drainNonModalGameplayInput` — function — line 23
 - `KeyboardGameplayDrain` — type — line 3
 - `runUnlessPlayerDowned` — function — line 42
+
+## `app/playerSight.ts`
+
+- `createPlayerSight` — function — line 121
+- `isPlayerSightEnabledFromUrl` — function — line 111
+- `PLAYER_SIGHT_EVAL_RANGE_M` — const — line 32
+  - domain: world
+  - system: sight
+  - role: World-042 Stage 1 — per-world player sight controller: evaluates character-eye line of sight to loaded NPCs/animals on a distance-tiered cadence, drives the contact state machine, applies model/label concealment and syncs last-known billboards. Presentation/information only — reads simulation state, never writes it, never reads the camera.
+- `PLAYER_SIGHT_EYE_HEIGHT_M` — const — line 34
+- `PlayerSight` — type — line 69
+- `PlayerSightStats` — type — line 60
+- `PlayerSightUpdateInput` — type — line 45
 
 ## `app/renderStack.ts`
 
@@ -467,24 +482,24 @@ Generated from exported TypeScript symbols.
 
 ## `app/worldBundle.ts`
 
-- `BuiltWorldSystems` — type — line 1269
-- `carryTerrainModificationsAcrossRebuild` — function — line 2611
-- `caveCrateContainerSpecs` — function — line 352
+- `BuiltWorldSystems` — type — line 1292
+- `carryTerrainModificationsAcrossRebuild` — function — line 2643
+- `caveCrateContainerSpecs` — function — line 356
   - domain: world-terrain
-- `caveTreasureContainerSpecs` — function — line 319
-- `createWorldBundle` — function — line 2343
-- `disposeWorldBundle` — function — line 2912
-- `HOME_RADIUS` — const — line 272
-- `homeChunks` — function — line 376
-- `rebuildWorldBundle` — function — line 2624
-- `WorldBundle` — type — line 399
+- `caveTreasureContainerSpecs` — function — line 323
+- `createWorldBundle` — function — line 2375
+- `disposeWorldBundle` — function — line 2947
+- `HOME_RADIUS` — const — line 276
+- `homeChunks` — function — line 380
+- `rebuildWorldBundle` — function — line 2656
+- `WorldBundle` — type — line 403
   - system: world-bundle
   - role: Owns the lifetime/rebuild boundary for all world systems (terrain, settlements, fauna, items, player-placed structures).
   - owns: WorldBundle
   - lifecycle: rebuild
-- `WorldBundleRebuildOutcome` — type — line 2622
-- `WorldStartupLoadingStage` — type — line 1077
-- `WorldStartupLoadingStageListener` — type — line 1079
+- `WorldBundleRebuildOutcome` — type — line 2654
+- `WorldStartupLoadingStage` — type — line 1100
+- `WorldStartupLoadingStageListener` — type — line 1102
 
 ## `app/worldRebuildLifecycle.ts`
 

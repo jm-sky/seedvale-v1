@@ -26,6 +26,38 @@ Generated from TypeScript imports.
 - `render/actorCullBounds.test.ts`
 - `render/actorSkeletonSharing.assets.test.ts`
 
+## `render/actorSightConcealment.test.ts`
+
+**Imports**
+
+- `render/actorSightConcealment.ts`
+- `world/waterMirror.ts`
+
+## `render/actorSightConcealment.ts`
+
+**Imports**
+
+- `world/waterMirror.ts`
+
+**Imported by**
+
+- `ai/NpcAgent.ts`
+- `fauna/AnimalAgent.ts`
+- `render/actorSightConcealment.test.ts`
+
+## `render/actorSightSamples.test.ts`
+
+**Imports**
+
+- `render/actorSightSamples.ts`
+
+## `render/actorSightSamples.ts`
+
+**Imported by**
+
+- `app/playerSight.ts`
+- `render/actorSightSamples.test.ts`
+
 ## `render/actorSkeletonSharing.assets.test.ts`
 
 **Imports**
@@ -173,6 +205,26 @@ Generated from TypeScript imports.
 - `terrain/vegetationRegionBatcher.test.ts`
 - `terrain/vegetationRegionBatcher.ts`
 - `world/caves/caveInteriorRocks.ts`
+- `world/sight/palisadeSightBlockers.ts`
+
+## `render/lastKnownBillboards.test.ts`
+
+**Imports**
+
+- `render/lastKnownBillboards.ts`
+- `simulation/playerSightContacts.ts`
+
+## `render/lastKnownBillboards.ts`
+
+**Imports**
+
+- `simulation/playerSightContacts.ts`
+- `world/waterMirror.ts`
+
+**Imported by**
+
+- `app/playerSight.ts`
+- `render/lastKnownBillboards.test.ts`
 
 ## `render/programPrewarm.test.ts`
 

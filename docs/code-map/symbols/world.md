@@ -992,10 +992,10 @@ Generated from exported TypeScript symbols.
 
 ## `world/createPalisades.ts`
 
-- `createPalisades` — function — line 74
+- `createPalisades` — function — line 76
   - domain: items-player
-- `Palisades` — type — line 30
-- `PalisadeSegmentEntry` — type — line 28
+- `Palisades` — type — line 32
+- `PalisadeSegmentEntry` — type — line 30
 
 ## `world/createPlacedContainers.ts`
 
@@ -1034,10 +1034,10 @@ Generated from exported TypeScript symbols.
 
 ## `world/createResidentialBuildings.ts`
 
-- `createResidentialBuildings` — function — line 77
+- `createResidentialBuildings` — function — line 80
   - domain: settlements
-- `ResidentialBuildingEntry` — type — line 24
-- `ResidentialBuildings` — type — line 26
+- `ResidentialBuildingEntry` — type — line 26
+- `ResidentialBuildings` — type — line 28
 
 ## `world/createRiverWater.ts`
 
@@ -1780,8 +1780,9 @@ Generated from exported TypeScript symbols.
 
 ## `world/palisadeProp.ts`
 
-- `createPalisadeSegmentProp` — function — line 20
-- `disposePalisadeSegmentProp` — function — line 53
+- `createPalisadeSegmentProp` — function — line 22
+- `disposePalisadeSegmentProp` — function — line 55
+- `PALISADE_POST_HEIGHT` — const — line 6
 
 ## `world/parseSeed.ts`
 
@@ -2091,6 +2092,80 @@ Generated from exported TypeScript symbols.
 ## `world/settlementForestHooks.ts`
 
 - `SettlementForestHooks` — type — line 4
+
+## `world/sight/environmentSightBlockers.ts`
+
+- `environmentSightBlocker` — function — line 31
+- `LARGE_ROCK_SIGHT_HEIGHT_PER_RADIUS` — const — line 16
+- `SHIPWRECK_SIGHT_HEIGHT_M` — const — line 22
+- `SightEnvironmentKind` — type — line 12
+  - domain: world
+  - system: sight
+  - role: World-042 Stage 1 — pure chunk-environment placement → sight cylinder mapping. Only large solid landmarks block sight: `largeRock`, `tower`, `shipwreck`. `rockCluster`, logs, boats, trees and vegetation never do (low / see-through; a deliberate soft choice).
+- `TOWER_SIGHT_HEIGHT_M` — const — line 19
+
+## `world/sight/houseSightBlockers.ts`
+
+- `buildAssemblySightBlockersWorld` — function — line 169
+- `buildHouseSightBlockersWorld` — function — line 63
+- `HOUSE_DOOR_LEAF_HEIGHT_M` — const — line 27
+  - domain: world
+  - system: sight
+  - role: World-042 Stage 1 — sight blockers for one house (sibling of `buildHouseCollidersWorld`). Pure; reuses houseBuilder's wall/opening poses so sight geometry cannot drift from the visual/collider pose.
+- `HOUSE_ROOF_SLAB_HEIGHT_M` — const — line 43
+- `HOUSE_ROOF_SLAB_OVERHANG_M` — const — line 44
+- `HOUSE_WINDOW_MAX_Y_M` — const — line 39
+- `HOUSE_WINDOW_MIN_Y_M` — const — line 38
+- `HOUSE_WINDOW_THIN_HALF_WIDTH_M` — const — line 37
+- `HOUSE_WINDOW_WIDE_HALF_WIDTH_M` — const — line 36
+
+## `world/sight/palisadeSightBlockers.ts`
+
+- `playerPalisadeSightBlocker` — function — line 40
+- `settlementPalisadeSightBlockers` — function — line 20
+  - domain: world
+  - system: sight
+  - role: World-042 Stage 1 — palisade sight blockers. Settlement entrance palisades block sight; pasture/paddock/yard rail fences deliberately do NOT (open rails, soft — they are movement obstacles only), and are simply not registered by the settlement.
+
+## `world/sight/querySight.ts`
+
+- `createSightQueryOut` — function — line 56
+- `querySight` — function — line 94
+- `SIGHT_CAVE_STEP_M` — const — line 67
+- `SIGHT_ENDPOINT_SKIP_M` — const — line 71
+- `SIGHT_MAX_SAMPLES` — const — line 61
+- `SIGHT_TERRAIN_STEP_M` — const — line 63
+- `SIGHT_TERRAIN_TOLERANCE_M` — const — line 73
+- `SightObserver` — type — line 31
+- `SightQueryOut` — type — line 47
+- `SightReason` — type — line 35
+- `SightResult` — type — line 33
+- `SightWorld` — type — line 19
+
+## `world/sight/sightBlockers.ts`
+
+- `createSightBlockerRegistry` — function — line 97
+- `SIGHT_GRID_CELL_M` — const — line 80
+- `SightAperture` — type — line 18
+  - domain: world
+  - system: sight
+  - role: World-042 Stage 1 — sight blocker primitives and their spatial index. Sight geometry is deliberately separate from movement colliders (window walls are full movement OBBs; houses used to be 8 m camera cylinders): producers that own the geometry (settlements, player buildings, terrain chunks) register blockers on the same load/unload lifecycle as their colliders. Pure and headless — no Three.js scene dependency.
+- `SightBlocker` — type — line 53
+- `sightBlockerBounds` — function — line 85
+- `SightBlockerRegistry` — type — line 59
+- `SightCylinder` — type — line 44
+- `SightPanel` — type — line 31
+
+## `world/sight/sightSegment.ts`
+
+- `segmentBlockedBy` — function — line 13
+
+## `world/sight/sightWorld.ts`
+
+- `createSightWorld` — function — line 12
+  - domain: world
+  - system: sight
+  - role: World-042 Stage 1 — assembles the `SightWorld` a `WorldBundle` hands to `querySight`. No `isAreaReady`: the chunk manager has no readiness API yet, so queries never return `'unloaded'`.
 
 ## `world/siteInfrastructure.ts`
 
@@ -2429,21 +2504,22 @@ Generated from exported TypeScript symbols.
 ## `world/waterMirror.ts`
 
 - `AGENT_RENDER_LAYER` — const — line 24
-- `applyMirrorYield` — function — line 95
-- `assignRenderLayer` — function — line 104
-- `bindWaterMirror` — function — line 301
-- `createWaterMirror` — function — line 153
-- `MirrorCadenceState` — type — line 74
-- `normalizeWaterMirrorSize` — function — line 52
+- `applyMirrorYield` — function — line 102
+- `assignRenderLayer` — function — line 111
+- `bindWaterMirror` — function — line 308
+- `createWaterMirror` — function — line 160
+- `MirrorCadenceState` — type — line 81
+- `normalizeWaterMirrorSize` — function — line 59
 - `REFLECTION_DISTANT_LAYER` — const — line 43
 - `REFLECTION_SKIPPED_LAYER` — const — line 35
-- `setSubtreeCastShadow` — function — line 110
-- `shouldRenderMirror` — function — line 85
-- `WATER_MIRROR_SIZE` — const — line 46
-- `WATER_MIRROR_SIZES` — const — line 49
+- `setSubtreeCastShadow` — function — line 117
+- `shouldRenderMirror` — function — line 92
+- `SIGHT_CONCEALED_LAYER` — const — line 50
+- `WATER_MIRROR_SIZE` — const — line 53
+- `WATER_MIRROR_SIZES` — const — line 56
 - `WATER_RENDER_LAYER` — const — line 19
-- `WaterMirror` — type — line 123
-- `WaterMirrorUniforms` — type — line 117
+- `WaterMirror` — type — line 130
+- `WaterMirrorUniforms` — type — line 124
 
 ## `world/WaterSource.ts`
 

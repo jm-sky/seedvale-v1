@@ -95,6 +95,7 @@ Generated from TypeScript imports.
 - `perf/agentCpuDiag.ts`
 - `perf/flags.ts`
 - `player/PlayerController.ts`
+- `render/actorSightConcealment.ts`
 - `render/actorSkeletonSharing.ts`
 - `settlement/household.ts`
 - `settlement/props.ts`
@@ -134,6 +135,8 @@ Generated from TypeScript imports.
 - `app/faunaEncounterComposition.ts`
 - `app/gameLoop.ts`
 - `app/interactables.ts`
+- `app/playerSight.test.ts`
+- `app/playerSight.ts`
 - `app/worldBundle.ts`
 - `assets/assetIndex.ts`
 - `audio/actionSounds.ts`
@@ -420,6 +423,8 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `app/actions/mountActions.test.ts`
+- `app/playerSight.test.ts`
+- `app/playerSight.ts`
 - `fauna/AnimalAgent.chase.test.ts`
 - `fauna/AnimalAgent.encounter.test.ts`
 - `fauna/AnimalAgent.test.ts`
@@ -1157,6 +1162,7 @@ Generated from TypeScript imports.
 - `fauna/AnimalSpawner.ts`
 - `fauna/persistentOccupants.ts`
 - `fauna/wolfDenScenario.ts`
+- `terrain/chunkHeightmap.ts`
 
 **Imported by**
 

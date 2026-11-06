@@ -170,14 +170,14 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/createSettlement.ts`
 
-- `AcquiredSettlementResources` — type — line 555
-- `collectAgentBatch` — function — line 578
+- `AcquiredSettlementResources` — type — line 562
+- `collectAgentBatch` — function — line 585
   - domain: settlements
-- `createSettlement` — function — line 605
+- `createSettlement` — function — line 612
   - domain: settlements
-- `CreateSettlementDeps` — type — line 335
-- `Settlement` — type — line 179
-- `settlementSpawnPoint` — function — line 323
+- `CreateSettlementDeps` — type — line 338
+- `Settlement` — type — line 182
+- `settlementSpawnPoint` — function — line 326
 
 ## `settlement/decorProps.ts`
 
@@ -334,21 +334,23 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/houseBuilder.ts`
 
-- `applyHouseShadowSide` — function — line 385
-- `buildAssemblyCollidersWorld` — function — line 692
-- `buildHouse` — function — line 754
-- `buildHouseCollidersWorld` — function — line 677
-- `buildHouseDoorCollidersLocal` — function — line 620
-- `BuildHouseOptions` — type — line 310
-- `buildHouseWallCollidersLocal` — function — line 586
-- `censusAssembly` — function — line 453
-- `cornerLocalPosition` — function — line 216
-- `createHouseStaticBatch` — function — line 911
+- `applyHouseShadowSide` — function — line 387
+- `buildAssemblyCollidersWorld` — function — line 694
+- `buildHouse` — function — line 756
+- `buildHouseCollidersWorld` — function — line 679
+- `buildHouseDoorCollidersLocal` — function — line 622
+- `BuildHouseOptions` — type — line 312
+- `buildHouseWallCollidersLocal` — function — line 588
+- `censusAssembly` — function — line 455
+- `cornerLocalPosition` — function — line 218
+- `createHouseStaticBatch` — function — line 914
 - `DOOR_1_FLAT_HINGE_OFFSET_X` — const — line 41
 - `DOOR_ANIM_SPEED` — const — line 43
 - `DOOR_OPEN_ANGLE` — const — line 42
-- `fillOffsetFor` — function — line 398
-- `floorTilePositions` — function — line 228
+- `doorLeafColliderLocal` — function — line 606
+- `doorWallKeys` — function — line 546
+- `fillOffsetFor` — function — line 400
+- `floorTilePositions` — function — line 230
 - `HOUSE_ASSEMBLY_SCALE` — const — line 45
 - `HOUSE_DOOR_OPENING_HALF_WIDTH_M` — const — line 69
 - `HOUSE_WALL_LENGTH_M` — const — line 54
@@ -356,21 +358,26 @@ Generated from exported TypeScript symbols.
 - `HouseAssembly` — type — line 150
 - `HouseAssemblyCensus` — type — line 142
 - `HouseBuildContext` — type — line 127
-- `houseDefinitionAssetIds` — function — line 319
-- `houseDefinitionAssetIdsForStage` — function — line 323
+- `houseDefinitionAssetIds` — function — line 321
+- `houseDefinitionAssetIdsForStage` — function — line 325
 - `HouseDoor` — type — line 133
-- `houseFootprintRadius` — function — line 249
+- `houseFootprintRadius` — function — line 251
 - `HouseLocalPose` — type — line 112
 - `HousePartPrimitive` — type — line 119
-- `HouseStaticBatch` — type — line 163
-- `HouseVisualStage` — type — line 308
-- `loadHousePartTemplates` — function — line 358
-- `matchingWallPlacement` — function — line 254
-- `openingLocalPose` — function — line 279
-- `resolveRoofParts` — function — line 292
-- `transformHouseCollidersToWorld` — function — line 647
+- `HouseStaticBatch` — type — line 165
+- `HouseVisualStage` — type — line 310
+- `loadHousePartTemplates` — function — line 360
+- `matchingWallPlacement` — function — line 256
+- `openingLocalPose` — function — line 281
+- `resolveRoofParts` — function — line 294
+- `transformHouseCollidersToWorld` — function — line 649
+- `WALL_HALF_DEPTH` — const — line 57
+- `WALL_HALF_WIDTH` — const — line 56
 - `WALL_YAW` — const — line 91
-- `wallLocalTransform` — function — line 195
+- `wallLocalTransform` — function — line 197
+- `wallModuleKey` — function — line 542
+- `wallModulePose` — function — line 270
+- `wallTopY` — function — line 285
 
 ## `settlement/houseCatalog.ts`
 
@@ -1342,6 +1349,7 @@ Generated from exported TypeScript symbols.
 - `SettlementPalisadePlacement` — type — line 65
   - domain: settlements
 - `WALL_HALF_LENGTH` — const — line 18
+- `WALL_TARGET_HEIGHT` — const — line 16
 
 ## `settlement/settlementPlanCache.ts`
 
@@ -1418,14 +1426,14 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/SettlementsManager.ts`
 
-- `createSettlementsManager` — function — line 454
+- `createSettlementsManager` — function — line 455
   - domain: settlements
   - system: settlements-manager
   - role: Owns settlement generation, streaming and per-settlement economy/household/NPC-state registries.
   - owns: SettlementEconomy, Household
   - lifecycle: streaming
-- `SettlementsManager` — type — line 202
-- `shouldAcceptSettlementResidency` — function — line 177
+- `SettlementsManager` — type — line 203
+- `shouldAcceptSettlementResidency` — function — line 178
   - domain: settlements
 
 ## `settlement/settlementStructures.ts`

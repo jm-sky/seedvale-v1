@@ -129,6 +129,25 @@ Generated from TypeScript imports.
 - `simulation/observation.ts`
 - `simulation/observationSpatial.test.ts`
 
+## `simulation/playerSightContacts.test.ts`
+
+**Imports**
+
+- `simulation/playerSightContacts.ts`
+
+## `simulation/playerSightContacts.ts`
+
+**Imports**
+
+- `world/sight/querySight.ts`
+
+**Imported by**
+
+- `app/playerSight.ts`
+- `render/lastKnownBillboards.test.ts`
+- `render/lastKnownBillboards.ts`
+- `simulation/playerSightContacts.test.ts`
+
 ## `simulation/scoreActions.test.ts`
 
 **Imports**

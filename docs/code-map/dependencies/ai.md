@@ -216,6 +216,7 @@ Generated from TypeScript imports.
 - `player/playerDimensions.ts`
 - `player/playerVisualPreset.ts`
 - `render/actorCullBounds.ts`
+- `render/actorSightConcealment.ts`
 - `render/actorSkeletonSharing.ts`
 - `render/agentPresentationLod.ts`
 - `render/agentPresentationVisibility.ts`
@@ -305,6 +306,8 @@ Generated from TypeScript imports.
 - `app/dialogueTimeControl.ts`
 - `app/gameLoop.ts`
 - `app/inventoryWiring.ts`
+- `app/playerSight.test.ts`
+- `app/playerSight.ts`
 - `assets/characterKitEntries.ts`
 - `debug/npcDebugApi.test.ts`
 - `debug/npcDebugApi.ts`

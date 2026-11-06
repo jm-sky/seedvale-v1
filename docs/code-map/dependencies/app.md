@@ -1698,6 +1698,42 @@ Generated from TypeScript imports.
 - `app/gameLoop.ts`
 - `app/playerDownedInputGating.test.ts`
 
+## `app/playerSight.test.ts`
+
+**Imports**
+
+- `ai/NpcAgent.ts`
+- `app/playerSight.ts`
+- `assets/houseDefinitionExample.ts`
+- `fauna/AnimalAgent.ts`
+- `fauna/animalDefs.ts`
+- `settlement/createSettlement.ts`
+- `terrain/waterSample.ts`
+- `world/sight/houseSightBlockers.ts`
+- `world/sight/querySight.ts`
+- `world/sight/sightBlockers.ts`
+- `world/spatialContext.ts`
+- `world/waterMirror.ts`
+
+## `app/playerSight.ts`
+
+**Imports**
+
+- `ai/NpcAgent.ts`
+- `fauna/AnimalAgent.ts`
+- `fauna/animalDefs.ts`
+- `render/actorSightSamples.ts`
+- `render/lastKnownBillboards.ts`
+- `settlement/createSettlement.ts`
+- `simulation/playerSightContacts.ts`
+- `world/sight/querySight.ts`
+- `world/spatialContext.ts`
+
+**Imported by**
+
+- `app/playerSight.test.ts`
+- `app/worldBundle.ts`
+
 ## `app/renderStack.ts`
 
 **Imports**
@@ -1873,6 +1909,7 @@ Generated from TypeScript imports.
 - `ai/npcExpeditionTravel.ts`
 - `ai/npcMovementTarget.ts`
 - `ai/reactionChance.ts`
+- `app/playerSight.ts`
 - `audio/createWorldAudio.ts`
 - `config/worldConfig.ts`
 - `economy/settlementEconomy.ts`
@@ -2005,6 +2042,9 @@ Generated from TypeScript imports.
 - `world/resourceSiteInventory.ts`
 - `world/riverWaterQualityResolver.ts`
 - `world/settlementForestHooks.ts`
+- `world/sight/querySight.ts`
+- `world/sight/sightBlockers.ts`
+- `world/sight/sightWorld.ts`
 - `world/siteInfrastructure.ts`
 - `world/sleepingUtilities.ts`
 - `world/spatialContext.ts`

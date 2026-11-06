@@ -118,6 +118,7 @@ Generated from TypeScript imports.
 - `world/pointLightBudget.ts`
 - `world/resourceSiteInventory.ts`
 - `world/settlementForestHooks.ts`
+- `world/sight/sightBlockers.ts`
 - `world/timeConversion.ts`
 - `world/transportCapacity.ts`
 - `world/transportOffscreen.ts`
@@ -539,6 +540,9 @@ Generated from TypeScript imports.
 - `world/pointLightBudget.ts`
 - `world/resourceSiteInventory.ts`
 - `world/settlementForestHooks.ts`
+- `world/sight/houseSightBlockers.ts`
+- `world/sight/palisadeSightBlockers.ts`
+- `world/sight/sightBlockers.ts`
 - `world/treeVisuals.ts`
 - `world/weather.ts`
 
@@ -549,6 +553,8 @@ Generated from TypeScript imports.
 - `app/guardQuestWiring.ts`
 - `app/interactables.ts`
 - `app/inventoryWiring.ts`
+- `app/playerSight.test.ts`
+- `app/playerSight.ts`
 - `app/worldBundle.ts`
 - `interaction/Interactable.ts`
 - `items/cookingFireResolver.ts`
@@ -918,6 +924,7 @@ Generated from TypeScript imports.
 - `settlement/props.ts`
 - `settlement/villagePlanner.ts`
 - `world/createResidentialBuildings.ts`
+- `world/sight/houseSightBlockers.ts`
 
 ## `settlement/houseCatalog.test.ts`
 
@@ -2835,6 +2842,8 @@ Generated from TypeScript imports.
 - `settlement/settlementPalisade.test.ts`
 - `settlement/villagePaddock.test.ts`
 - `settlement/villagePasture.test.ts`
+- `world/sight/palisadeSightBlockers.test.ts`
+- `world/sight/palisadeSightBlockers.ts`
 
 ## `settlement/settlementPlanCache.ts`
 

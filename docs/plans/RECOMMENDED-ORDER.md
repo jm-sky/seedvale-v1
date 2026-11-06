@@ -297,35 +297,39 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   🟡 `L` · **Score:**  18  
    → **unlocks:** 0/0
 
-52. `items-player-014` — **Rope-pullable resource transport**  
+52. `world-041` — **Landmarks in the location catalog and NPC rumour leads**  
+  🟡 `L` · **Score:**  18  
+   → **unlocks:** 0/0
+
+53. `items-player-014` — **Rope-pullable resource transport**  
   ⚪ `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-53. `items-player-052` — **Settlement tool ownership and social acquisition**  
+54. `items-player-052` — **Settlement tool ownership and social acquisition**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-54. `npc-069` — **Next Fish Audio Production Batch — Named NPC Variants, Quest Offers and Restoration**  
+55. `npc-069` — **Next Fish Audio Production Batch — Named NPC Variants, Quest Offers and Restoration**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-55. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
+56. `quests-progression-061` — **Builder — Complete an Unfinished Palisade Segment**  
   🟡 `M` · **Score:**  17  
    → **unlocks:** 0/0
 
-56. `npc-065` — **Stable NPC Voice Casting, V3 Donor QC and Selective Recording**  
+57. `npc-065` — **Stable NPC Voice Casting, V3 Donor QC and Selective Recording**  
   🟡 `L` · **Score:**  14  
    → **unlocks:** 0/0
 
-57. `settlements-025` — **Modular Blender Defensive Palisade**  
+58. `settlements-025` — **Modular Blender Defensive Palisade**  
   🟡 `L` · **Score:**  14  
    → **unlocks:** 0/0
 
-58. `world-040` — **Underground Locations & Portals**  
+59. `world-040` — **Underground Locations & Portals**  
   ⚪ `XL` · **Score:**  14  
    → **unlocks:** 0/0
 
-59. `fauna-049` — **Wild animal difficulty tiers, trophies and social recognition**  
+60. `fauna-049` — **Wild animal difficulty tiers, trophies and social recognition**  
   🟡 `XL` · **Score:**  10  
    → **unlocks:** 0/0
 
@@ -407,9 +411,6 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   is blocked by:
   - [`items-player-051-cave-aware-dropped-item-continuity.md`](items-player-051-cave-aware-dropped-item-continuity.md)
   - [`fauna-045-cave-surface-perception-boundary-and-entrance-awareness.md`](fauna-045-cave-surface-perception-boundary-and-entrance-awareness.md)
-- [`world-041-landmark-catalog-and-rumour-leads.md`](world-041-landmark-catalog-and-rumour-leads.md)  
-  is blocked by:
-  - [`world-terrain-060-macro-relief-ranges-passes-and-landforms.md`](world-terrain-060-macro-relief-ranges-passes-and-landforms.md)
 - [`world-terrain-059-world-scale-travel-time-and-sparse-settlements.md`](world-terrain-059-world-scale-travel-time-and-sparse-settlements.md)  
   is blocked by:
   - [`world-terrain-058-finite-continent-and-global-hydrology.md`](world-terrain-058-finite-continent-and-global-hydrology.md)

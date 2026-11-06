@@ -4,25 +4,26 @@ Generated from exported TypeScript symbols.
 
 ## `ui/agentStatusLabel.ts`
 
-- `AgentLabelDom` — type — line 60
-- `AgentLabelHideReason` — type — line 41
+- `AgentLabelDom` — type — line 64
+- `AgentLabelHideReason` — type — line 42
 - `AgentLabelIconSlot` — type — line 29
 - `AgentLabelNamePresentation` — type — line 32
-- `AgentLabelObservationPresentation` — type — line 157
-- `AgentStatusLabelController` — type — line 210
+- `AgentLabelObservationPresentation` — type — line 161
+- `AgentStatusLabelController` — type — line 214
   - domain: ui-input
-- `applyBarPercent` — function — line 141
-- `computeBarPercent` — function — line 132
-- `createAgentLabel` — function — line 78
+- `applyBarPercent` — function — line 145
+- `computeBarPercent` — function — line 136
+- `CORPSE_ASSESSMENT_TEXT` — const — line 47
+- `createAgentLabel` — function — line 82
   - domain: ui-input
-- `createAgentStatusLabelController` — function — line 263
+- `createAgentStatusLabelController` — function — line 267
   - domain: ui-input
-- `createLabelBar` — function — line 50
-- `INITIAL_LABEL_DISTANCE_STATE` — const — line 176
+- `createLabelBar` — function — line 54
+- `INITIAL_LABEL_DISTANCE_STATE` — const — line 180
 - `LabelBarKind` — type — line 26
   - domain: ui-input
-- `LabelDistanceState` — type — line 149
-- `updateAgentLabelDistanceState` — function — line 604
+- `LabelDistanceState` — type — line 153
+- `updateAgentLabelDistanceState` — function — line 620
 
 ## `ui/createBusyOverlay.ts`
 

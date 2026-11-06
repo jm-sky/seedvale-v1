@@ -8,6 +8,21 @@ Generated from exported TypeScript symbols.
 - `installActorCullBounds` — function — line 70
   - domain: world-terrain
 
+## `render/actorSightConcealment.ts`
+
+- `setActorSightConcealed` — function — line 15
+  - domain: world
+  - system: sight
+  - role: World-042 Stage 1 — conceal/reveal an actor's whole presentation subtree (incl. CSS2D labels) by render layer. Never touches `.visible`, so it cannot fight `hideLivingVisual()` / corpse lifecycle. Main and shadow cameras do not enable `SIGHT_CONCEALED_LAYER`: concealed actors neither render nor cast shadows.
+
+## `render/actorSightSamples.ts`
+
+- `ActorSightShape` — type — line 8
+  - domain: world
+  - system: sight
+  - role: World-042 Stage 1 — writes semantic sight-target sample points for an actor (body/head/limbs) into a caller-owned buffer. Pure, allocation-free.
+- `writeActorSightSamples` — function — line 16
+
 ## `render/actorSkeletonSharing.ts`
 
 - `ActorSkeletonShareResult` — type — line 14
@@ -65,6 +80,14 @@ Generated from exported TypeScript symbols.
 - `InstancedPropGroup` — type — line 30
 - `PropPlacement` — type — line 15
 - `PropPrimitive` — type — line 7
+
+## `render/lastKnownBillboards.ts`
+
+- `createLastKnownBillboards` — function — line 95
+- `LastKnownBillboards` — type — line 21
+  - domain: world
+  - system: sight
+  - role: World-042 Stage 1 — pooled grey-silhouette sprites marking where the player last saw a now-concealed actor. Presentation only; reads the contact list from `playerSightContacts`.
 
 ## `render/programPrewarm.ts`
 
