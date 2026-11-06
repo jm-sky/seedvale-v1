@@ -161,7 +161,9 @@ Author screenshot `_temp/screenshots/terrain-artifacts - camdebug - ground 4.jpg
 
 **Discriminator (author, Windows, ~2 min):** at a place where the rectangles are visible, `?gui=1` → folder "Post-processing": toggle **Ambient occlusion** off/on, then **Bloom**, then **God rays**; and one run in a Chrome incognito window (fresh storage). Whichever switch makes the rectangles disappear names the owner. An agent cannot drive the Windows Chrome from WSL (CDP to Windows was denied by the sandbox in this session).
 
-### Root cause #2 — float lattice hash on ANGLE D3D11 (Opus, 2026-11-06; fix landed, Windows look pending)
+### Root cause #2 — float lattice hash on ANGLE D3D11 (Opus, 2026-11-06; fix landed, author-verified)
+
+✅ **Author 2026-11-06, Windows Chrome / ANGLE D3D11 / Intel Arc, after `5d205128`: "Działa!" — rectangles gone.**
 
 ✅ Author, 2026-11-06: with AO, Bloom, God rays and other post-processing off, and even with flat shading, the rectangles stay (`_temp/screenshots/terrain-artifacts - camdebug - ground 5 - no effects.jpg`: a clear patchwork of axis-aligned tiles of several sizes with crisp tone steps). So the screen-space hypothesis above is **excluded**. The author also pointed to the V3 case (storm puddles, `seedvale-v3` reviews 108/118/165): float `fract` hashes give different values on ANGLE D3D11 than on OpenGL/Mesa.
 
