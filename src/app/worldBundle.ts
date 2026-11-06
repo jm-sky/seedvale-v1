@@ -148,7 +148,7 @@ import {
 import { cancelChunkFarTile, requestChunkFarTile } from '../terrain/chunkWorkerPool'
 import { createFarTerrain, type FarTerrain } from '../terrain/farTerrain'
 import { farTerrainRadiusFromUrl } from '../terrain/farTerrainFlag'
-import { createClimateOffsetAt } from '../terrain/macroClimate'
+import { type ClimateOffsetAt, createClimateOffsetAt } from '../terrain/macroClimate'
 import { resourceById } from '../terrain/naturalResources'
 import {
   createResourceDeposits,
@@ -419,6 +419,8 @@ export type WorldBundle = {
   /** Far ground ring (plan world-terrain-066 F1); `null` unless `?farTerrain` is set. Presentation only. */
   farTerrain: FarTerrain | null
   bloodTraces: BloodTraceSystem
+  /** Local °C offset from the reference climate at a world position (Q170 / world-terrain-062 W1). */
+  climateOffsetAt: ClimateOffsetAt
   ocean: WorldOcean
   settlementsManager: SettlementsManager
   fauna: Fauna
@@ -1466,6 +1468,11 @@ async function buildWorldSystems(
   // Plan world-009 — bounded to roughly the streamed terrain footprint
   // (chunkSize * loadRadius) rather than depending on ChunkManager's own
   // loaded-chunk bookkeeping; see bloodTraces.ts's `createBloodTraceSystem` doc.
+  const climateOffsetAt = createClimateOffsetAt(
+    !!config.terrain.region.continentMask,
+    config.terrain.waterLevel,
+    chunkManager.sampleHeight,
+  )
   const bloodTraces = createBloodTraceSystem(
     scene,
     chunkManager.sampleHeight,
@@ -1473,6 +1480,7 @@ async function buildWorldSystems(
     dayNight,
     config.terrain.chunkSize * config.terrain.loadRadius,
     initialBloodTraces,
+    climateOffsetAt,
   )
 
   chunkManager.update(0, 0)
@@ -1542,11 +1550,6 @@ async function buildWorldSystems(
   // maintenance hook, unlike `playerWells` below which is only reachable
   // through `createApp.ts`'s live `getNearbyPlayerWell` accessor.
   bootMark('createPlayerGardens')
-  const climateOffsetAt = createClimateOffsetAt(
-    !!config.terrain.region.continentMask,
-    config.terrain.waterLevel,
-    chunkManager.sampleHeight,
-  )
   const playerGardens = createPlayerGardens(
     scene,
     chunkManager.sampleHeight,
@@ -1671,6 +1674,7 @@ async function buildWorldSystems(
     initialPlayerWells,
     config.seed,
     config.terrain.waterLevel,
+    climateOffsetAt,
   )
   const workContracts = createWorkContracts(scene, chunkManager.sampleHeight, initialWorkContracts)
   // Cargo is now authoritative NPC-owned state (`NpcAuthoritativeState
@@ -2183,6 +2187,7 @@ async function buildWorldSystems(
       })
       : null,
     bloodTraces,
+    climateOffsetAt,
     ocean,
     settlementsManager,
     fauna: createEmptyFauna(),

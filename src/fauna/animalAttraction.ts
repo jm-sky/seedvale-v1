@@ -190,8 +190,9 @@ export function bloodAttractionSource(
   trace: BloodTrace,
   seed: number,
   elapsedDays: number,
+  offsetC = 0,
 ): AnimalAttractionSource | null {
-  const remaining = bloodTraceRemainingFraction(trace, seed, elapsedDays)
+  const remaining = bloodTraceRemainingFraction(trace, seed, elapsedDays, offsetC)
   const strength = bloodAttractionStrength(trace.size, remaining)
   if (strength <= 0) return null
   return {
@@ -216,6 +217,7 @@ export function buildAttractionSnapshot(
     seed: number
     elapsedDays: number
     nowDays: number
+    climateOffsetAt?: (x: number, z: number) => number
   },
   into: AnimalAttractionSource[] = [],
 ): AnimalAttractionSource[] {
@@ -226,7 +228,7 @@ export function buildAttractionSnapshot(
     if (source) into.push(source)
   }
   for (const trace of opts.bloodTraces) {
-    const source = bloodAttractionSource(trace, opts.seed, opts.elapsedDays)
+    const source = bloodAttractionSource(trace, opts.seed, opts.elapsedDays, opts.climateOffsetAt?.(trace.x, trace.z) ?? 0)
     if (source) into.push(source)
   }
   return into

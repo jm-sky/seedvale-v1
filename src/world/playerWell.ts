@@ -214,9 +214,10 @@ export function quoteWellRoofRepair(
   seed: number,
   nowDays: number,
   targetCondition = CONDITION_MAX,
+  offsetC = 0,
 ): WellRoofRepairQuote | null {
   if (hasActiveWellRoofRepair(record)) return null
-  const currentCondition = resolveWellRoofCondition(record, seed, nowDays)
+  const currentCondition = resolveWellRoofCondition(record, seed, nowDays, offsetC)
   if (currentCondition === null) return null
   if (!(currentCondition < targetCondition && targetCondition <= CONDITION_MAX)) return null
   const fraction = restoredConditionFraction(currentCondition, targetCondition)
@@ -241,12 +242,14 @@ export function beginWellRoofRepair(params: {
   seed: number
   nowDays: number
   targetCondition?: number
+  /** Local °C offset at the well (Q170). */
+  offsetC?: number
   hasMaterial: (requirement: MaterialRequirement) => boolean
   consumeMaterial: (requirement: MaterialRequirement) => void
 }): WellRoofRepairStartOutcome {
   const { consumeMaterial, hasMaterial, nowDays, record, seed } = params
   const targetCondition = params.targetCondition ?? CONDITION_MAX
-  const quote = quoteWellRoofRepair(record, seed, nowDays, targetCondition)
+  const quote = quoteWellRoofRepair(record, seed, nowDays, targetCondition, params.offsetC ?? 0)
   if (!quote) return { status: 'unavailable' }
   const missing = quote.materials.filter((requirement) => !hasMaterial(requirement))
   if (missing.length > 0) return { status: 'blocked', missing }
@@ -484,9 +487,10 @@ export function applyWellRoofConditionDelta(
   seed: number,
   nowDays: number,
   delta: number,
+  offsetC = 0,
 ): PlayerWellRecord {
   if (hasActiveWellRoofRepair(record)) return record
-  const resolved = resolveWellRoofCondition(record, seed, nowDays)
+  const resolved = resolveWellRoofCondition(record, seed, nowDays, offsetC)
   if (resolved === null) return record
   const checkpointed = checkpointCondition(resolved, nowDays)
   return {

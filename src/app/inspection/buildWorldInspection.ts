@@ -120,6 +120,8 @@ export type WorldInspectionLookup = {
   campSnapshot?: (tentId: string) => CampRestSnapshot | null
   droppedItems?: DroppedItems
   worldSeed: number
+  /** Local °C offset at a world position (Q170). Optional for tests. */
+  climateOffsetAt?: (x: number, z: number) => number
   nowDays: number
   inventory: Inventory
   hasRope: boolean
@@ -159,7 +161,7 @@ function buildWellInspection(id: string, lookup: WorldInspectionLookup): WorldIn
   const well = lookup.well(id)
   if (!well) return null
   const completed = isWellCompleted(well)
-  const roofCondition = resolveWellRoofCondition(well, lookup.worldSeed, lookup.nowDays)
+  const roofCondition = resolveWellRoofCondition(well, lookup.worldSeed, lookup.nowDays, lookup.climateOffsetAt?.(well.x, well.z) ?? 0)
   const waterAvailable = isWellWaterAvailable(well)
   const source = waterAvailable ? wellWaterSource(well, roofCondition) : null
   const workView = completed ? null : lookup.describeWellWork(id)
@@ -900,8 +902,9 @@ export function liveWellWaterSource(
   well: PlayerWellRecord,
   worldSeed: number,
   nowDays: number,
+  offsetC = 0,
 ): WaterSource | null {
   if (!isWellWaterAvailable(well)) return null
-  const roofCondition = resolveWellRoofCondition(well, worldSeed, nowDays)
+  const roofCondition = resolveWellRoofCondition(well, worldSeed, nowDays, offsetC)
   return wellWaterSource(well, roofCondition)
 }

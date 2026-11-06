@@ -1,6 +1,7 @@
 import { type Object3D, type Scene } from 'three'
 import type { MaterialRequirement } from '../items/constructionMaterials'
 import type { HeightSampler } from '../player/PlayerController'
+import type { ClimateOffsetAt } from '../terrain/macroClimate'
 import type { Collider } from './collision'
 import { disposeObject3D } from '../assets/loadGltf'
 import { placeOnGround } from '../settlement/props'
@@ -99,6 +100,7 @@ export function createPlayerWells(
    *  recomputed (plan §11/§12). */
   seed = 0,
   waterLevel = 0,
+  climateOffsetAt: ClimateOffsetAt = () => 0,
 ): PlayerWells {
   const wells: PlayerWellEntry[] = []
 
@@ -192,7 +194,7 @@ export function createPlayerWells(
     applyRoofConditionDelta(id, seed, nowDays, delta) {
       const entry = find(id)
       if (!entry) return false
-      const next = applyWellRoofConditionDelta(entry, seed, nowDays, delta)
+      const next = applyWellRoofConditionDelta(entry, seed, nowDays, delta, climateOffsetAt(entry.x, entry.z))
       if (next === entry) return false
       entry.roofCondition = next.roofCondition
       entry.lastRoofConditionUpdateAtDays = next.lastRoofConditionUpdateAtDays
@@ -206,6 +208,7 @@ export function createPlayerWells(
         seed,
         nowDays,
         targetCondition,
+        offsetC: climateOffsetAt(entry.x, entry.z),
         hasMaterial,
         consumeMaterial,
       })

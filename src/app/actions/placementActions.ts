@@ -902,7 +902,13 @@ export function createPlacementActions(ctx: PlayerActionContext): PlacementActio
         waterAvailable: false,
       }
     }
-    const quote = quoteWellRoofRepair(well, ctx.getWorldSeed(), dayNight.elapsedDays)
+    const quote = quoteWellRoofRepair(
+      well,
+      ctx.getWorldSeed(),
+      dayNight.elapsedDays,
+      undefined,
+      ctx.bundle.climateOffsetAt(well.x, well.z),
+    )
     if (!quote) return null
     const missing = quote.materials.filter(
       (r) => !hasMaterial(inventory, bundle.droppedItems, well.x, well.z, CONSTRUCTION_MATERIAL_RADIUS, r),

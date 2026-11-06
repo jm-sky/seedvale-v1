@@ -816,7 +816,7 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
   const revalidatePlayerWellDrinkSource = (wellId: string): WaterSource | null => {
     const well = bundle.playerWells.nodes().find((entry) => entry.id === wellId)
     if (!well) return null
-    return liveWellWaterSource(well, getSeed(), dayNight.elapsedDays)
+    return liveWellWaterSource(well, getSeed(), dayNight.elapsedDays, bundle.climateOffsetAt(well.x, well.z))
   }
 
   renderer.shadowMap.autoUpdate = false
@@ -1356,6 +1356,7 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
         (settlementId, structureId, nowDays) => bundle.settlementsManager.getStructureSnapshot(settlementId, structureId, nowDays),
         resolveSpatialContextAt,
         player.skills.survival.value,
+        bundle.climateOffsetAt,
       ),
         playerSpatialContext,
       )
@@ -3120,6 +3121,7 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
               seed: getSeed(),
               elapsedDays: dayNight.elapsedDays,
               nowDays: dayNight.elapsedDays,
+              climateOffsetAt: bundle.climateOffsetAt,
             }, attractionSnapshotScratch),
             (droppedItemId) => {
               const item = bundle.droppedItems.consume(droppedItemId)

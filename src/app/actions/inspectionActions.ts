@@ -133,6 +133,7 @@ export function createInspectionActions(
     campSnapshot: deps.campInspectionSnapshot,
     droppedItems: ctx.bundle.droppedItems,
     worldSeed: ctx.getWorldSeed(),
+    climateOffsetAt: ctx.bundle.climateOffsetAt,
     nowDays: ctx.dayNight.elapsedDays,
     inventory: ctx.inventory,
     hasRope: ctx.inventory.count('rope') > 0,
@@ -156,7 +157,7 @@ export function createInspectionActions(
   const liveWellSource = (id: string): WaterSource | null => {
     const well = ctx.bundle.playerWells.nodes().find((entry) => entry.id === id)
     if (!well) return null
-    return liveWellWaterSource(well, ctx.getWorldSeed(), ctx.dayNight.elapsedDays)
+    return liveWellWaterSource(well, ctx.getWorldSeed(), ctx.dayNight.elapsedDays, ctx.bundle.climateOffsetAt(well.x, well.z))
   }
 
   const close = (): void => {

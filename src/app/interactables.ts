@@ -707,6 +707,8 @@ export function buildInteractables(
   /** Plan items-player-043 — Survival skill value (0..1) for medicinal herb
    *  discovery radius. Defaults to 0 (novice / base interact range). */
   survivalSkillValue = 0,
+  /** Local °C offset at a position (Q170) — well roof weather. */
+  climateOffsetAt: (x: number, z: number) => number = () => 0,
 ): Interactable[] {
   const list: InteractablePayload[] = []
   const worldGeneratedContextById = new Map(
@@ -853,7 +855,7 @@ export function buildInteractables(
   // Settlement wells below stay the generic `well` kind.
   for (const well of placedWells.list()) {
     if (!withinRange(well.x, well.z, playerPos, GAZE_RANGE)) continue
-    const roofCondition = resolveWellRoofCondition(well, worldSeed, nowDays)
+    const roofCondition = resolveWellRoofCondition(well, worldSeed, nowDays, climateOffsetAt(well.x, well.z))
     const complete = isWellCompleted(well)
     list.push({
       kind: 'playerWell',

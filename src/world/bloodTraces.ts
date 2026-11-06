@@ -18,6 +18,7 @@
  *  contract every other player-positioned world object already uses there. */
 
 import type { HeightSampler } from '../player/PlayerController'
+import type { ClimateOffsetAt } from '../terrain/macroClimate'
 import type { DayNightState } from './dayNight'
 import { type BloodOverlayPlacement, createBloodOverlaySystem } from '../terrain/bloodOverlay'
 import { computeRainExposureDays } from './weather'
@@ -148,10 +149,15 @@ export function bloodTraceRemainingFraction(
 /** Drops every trace whose lifetime has fully elapsed. Returns `true` if
  *  anything was actually removed, so callers can skip a render resync when
  *  nothing changed. */
-export function pruneBloodTraces(state: BloodTraceWorldState, seed: number, elapsedDays: number): boolean {
+export function pruneBloodTraces(
+  state: BloodTraceWorldState,
+  seed: number,
+  elapsedDays: number,
+  climateOffsetAt: ClimateOffsetAt = () => 0,
+): boolean {
   const before = state.traces.length
   if (before === 0) return false
-  state.traces = state.traces.filter((t) => bloodTraceRemainingFraction(t, seed, elapsedDays) > 0)
+  state.traces = state.traces.filter((t) => bloodTraceRemainingFraction(t, seed, elapsedDays, climateOffsetAt(t.x, t.z)) > 0)
   return state.traces.length !== before
 }
 
@@ -172,9 +178,10 @@ export function recordBloodTrace(
   z: number,
   victimSize: number,
   damage: number,
+  climateOffsetAt: ClimateOffsetAt = () => 0,
 ): BloodTrace | null {
   if (!(damage > 0)) return null
-  pruneBloodTraces(state, seed, elapsedDays)
+  pruneBloodTraces(state, seed, elapsedDays, climateOffsetAt)
 
   const radiusSq = BLOOD_LOCAL_RADIUS * BLOOD_LOCAL_RADIUS
   const nearby = state.traces.filter((t) => distanceSq(t.x, t.z, x, z) <= radiusSq)
@@ -271,6 +278,7 @@ export function createBloodTraceSystem(
   dayNight: DayNightState,
   activeRadius: number,
   initialTraces: readonly BloodTrace[] = [],
+  climateOffsetAt: ClimateOffsetAt = () => 0,
 ): BloodTraceSystem {
   const state = createBloodTraceWorldState(initialTraces)
   const overlay = createBloodOverlaySystem(sampleHeight)
@@ -280,12 +288,12 @@ export function createBloodTraceSystem(
   let accumSec = 0
 
   setBloodTraceSink((x, z, victimSize, damage) => {
-    recordBloodTrace(state, seed, dayNight.elapsedDays, x, z, victimSize, damage)
+    recordBloodTrace(state, seed, dayNight.elapsedDays, x, z, victimSize, damage, climateOffsetAt)
     dirty = true
   })
 
   function resync(playerX: number, playerZ: number): void {
-    pruneBloodTraces(state, seed, dayNight.elapsedDays)
+    pruneBloodTraces(state, seed, dayNight.elapsedDays, climateOffsetAt)
     const nearby = bloodTracesNear(state, playerX, playerZ, activeRadius)
     const placements: BloodOverlayPlacement[] = nearby.map((t) => ({
       x: t.x,
@@ -293,7 +301,7 @@ export function createBloodTraceSystem(
       rotation: t.rotation,
       scale: t.size * t.scaleJitter,
       variant: t.variant,
-      opacity: bloodTraceRemainingFraction(t, seed, dayNight.elapsedDays) * t.opacityJitter,
+      opacity: bloodTraceRemainingFraction(t, seed, dayNight.elapsedDays, climateOffsetAt(t.x, t.z)) * t.opacityJitter,
     }))
     overlay.sync(placements)
     dirty = false
