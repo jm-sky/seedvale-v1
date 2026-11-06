@@ -138,3 +138,9 @@ Gates: 061 C1 (closed-form `temperatureAt`) and C2 look accepted; B1 landed. Sco
 - No new per-frame CPU work beyond the LUT update; uniform upload only (32 floats + 4); program count unchanged (no new variants).
 - Browser check on `415424794` (forced winter snow / autumn snow day): north or hill snow while the centre/south is wet, a front visible on the minimap scale; terrain and grass agree at the front → §2 for the author's look.
 - Stop if the front reads as a hard stripe that needs blending beyond the LUT (visual compromise → author) or a program-count increase is needed.
+
+## W1 phase census + consumer migration (S, 2026-11-06, queue Q170) ✅ technically verified · ❓ browser not checked
+
+- Consumers migrated with their own site positions via `WorldBundle.climateOffsetAt`: gardens (`createPlayerGardens.ts`), tents (`createPlacedTents.ts`), traps (`createPlacedTraps.ts`), wells (`createPlayerWells.ts`, `interactables.ts`, `inspectionActions.ts`, `placementActions.ts`, `gameLoop.ts` drink revalidation), blood traces (`bloodTraces.ts`, `animalAttraction.ts`), NPC weather per settlement centre (`SettlementsManager.setClimateOffsetAt`), HUD at the player (`gameLoop.ts`).
+- Phase census (`pnpm tsx scripts/tools/phase-census.ts 415424794 --years=2`, 549 land samples on a 256 m grid, share of precipitation cycles falling as snow, global → local): north winter 85.8 → 100 %, middle winter 85.8 → 88.8 %, south winter 85.8 → 85.8 %, south autumn 10.3 → 1.1 %, north/middle autumn 10.3 → 10.3/10.5 %, spring/summer 0 → 0 %. Home offset −0.50 °C (within the expected |offset| < 1 °C). Only the reference seed was run.
+- **Not done here (moved to Q171):** `forced` debug runtime with per-knot state and the `computeSurfaceWeather` terrain/grass application — both need the position-dependent surface consumer, which is Q171.
