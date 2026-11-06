@@ -55,3 +55,12 @@ Status: **implemented · technically verified** (type-check, lint, `pnpm vitest 
 - Non-home groups reuse `SPAWNS`/`SPAWNER_SPECS` as-is (ring individuals not habitat-bound yet; Q139-b conversion is F4). Their `wolfDen` spawners are NOT fed to the quest tracker (`isWolfDenCleared` is home-only) but the daily `shouldActivateWolfDenProblem` loop iterates all live spawners, so F3 must decide whether non-home dens may run that scenario.
 - Deaths of animals that wander outside the loaded region while their group persists are unaffected; only materialized animals die (plan invariant 2).
 - Not wired: `SettlementsManager` load/unload, `closedSettlements` pressure per group (Q133), wilderness cells (F4).
+
+## Review 035 — status relabel and rework (Opus, 2026-11-06)
+
+[Review 035](../../reviews/2026-11-06--035--continent-wide-wild-fauna-architecture-review.md): **REWORK REQUIRED** for continent-wide continuity. Each finding was checked against code at `474ce2cb`; the response table is in the plan, [§ Review 035 response](../fauna-050-world-wild-fauna-habitats.md#review-035-response-2026-11-06). No runtime code changed in this step.
+
+- **F1 relabel:** extracted + synthetic golden verified. Still owed: WSL baseline and a home check on the real continent. Planner side effects (carving during planning) get a frozen-input contract for non-home groups in C0.
+- **F2 relabel:** streaming infrastructure (group map, cached plan, save union, toggle). The F2 "Stop if" (*catch-up cannot match continuous lifecycle without persisting individuals*) was in fact hit. The 15 + 9 tests prove timer parity and site identity, not individual or ecological continuity. The test "carry() keeps runtime data out of the persisted rows" asserts the R2 information loss. C2 rewrites it into a round-trip assertion.
+- **Not reachable in production yet:** no non-home group is materialized (F3 not wired), so R1/R2/R6 do not affect current play. Home keeps the already documented reload limitation (ordinary wild animals resurrect, quest bindings `invalidated`). Q035-d decides whether C1/C2 also fix that.
+- **Next:** C0 (S, ready, no decision needed) in parallel with author answers Q035-a…d → C1 (O spec) → C2 → C3 → C4 → F3.

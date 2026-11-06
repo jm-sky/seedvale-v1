@@ -1,11 +1,11 @@
 # Plan: Wild fauna across the world — settlement and wilderness habitats
 
 **Created:** 2026-11-05
-**Status:** `in progress` 🔄
+**Status:** `in progress` 🔄 — **rework after [review 035](../reviews/2026-11-06--035--continent-wide-wild-fauna-architecture-review.md) (REWORK REQUIRED, 2026-11-06):** F3/F4 runtime on hold until the continuity slices C1–C4 below land; see [§ Review 035 response](#review-035-response-2026-11-06)
 **Type:** feature
 **Priority:** high · **Effort:** L
 **Depends on:** world-terrain-060 world-terrain-061
-**Implementation notes:** [fauna-050 notes](implementation-notes/fauna-050-world-wild-fauna-habitats-implementation-notes.md) (F1 implemented 2026-11-05; F2 implemented 2026-11-05)
+**Implementation notes:** [fauna-050 notes](implementation-notes/fauna-050-world-wild-fauna-habitats-implementation-notes.md) (F1 extracted 2026-11-05 — baseline + home browser check outstanding; F2 streaming infrastructure 2026-11-05 — continuity contract reworked by C1–C4)
 **Queue:** Q139 (plan); F3 needs Q133 (phantom closed-pressure sites); F4 final numbers after the 060 R4 / 061 H6 freezes
 **Domain:** `fauna`
 **Subdomains:** `population` `lifecycle`
@@ -15,7 +15,7 @@
 
 Wild fauna exists across the whole continent, not only around the home settlement (author, Q134 (a), 2026-11-04). Every settlement has its own fauna surroundings, with a safety belt sized for that settlement. Between settlements, wilderness has habitats chosen by land cover (forest, rock/ridge, shore/wetland). Danger and game come from **where you are**, not from how close you are to the starting village.
 
-No simulation reduction: species behaviour, spawner lifecycle, predator/prey and village avoidance stay exactly as they are today.
+No simulation reduction: species behaviour, spawner lifecycle, predator/prey and village avoidance stay exactly as they are today. **Since review 035 this also means: streaming must not erase individuals.** Unloading a group demotes its animals to durable world-owned records; it never deletes or re-creates them. Keeping the loaded `AnimalAgent` code unchanged is not enough on its own.
 
 ## Recon (verified 2026-11-05, Opus)
 
@@ -47,7 +47,12 @@ No simulation reduction: species behaviour, spawner lifecycle, predator/prey and
 ### Invariants
 
 1. **One fauna registry.** World habitats are added to the existing `createFauna` instance and its `agents` array, proximity index and spawner map. No second fauna system and no per-settlement `Fauna`.
-2. **Authoritative state is world-level and player-independent.** This covers habitat site lists (deterministic from seed + terrain) and spawner lifecycle (persisted per id, day-anchored). Individuals are a **projection**, materialized where the world is loaded, like settlement NPCs and livestock. Respawn and recovery give the same result whether a spawner was materialized all along or caught up on materialization. Deaths only happen to materialized animals, which matches today's policy that wild individuals are not persisted.
+2. **Authoritative state is world-level and player-independent** (revised after review 035). This covers:
+   - habitat site lists (deterministic from seed + frozen terrain inputs),
+   - spawner lifecycle (persisted per id, day-anchored, with an advancement cursor),
+   - **every wild individual as a durable record** (C1): stable birth id, kind, life stage/age, HP, needs, position, mother link, infection, habitat membership, alive/dead + corpse timeline.
+
+   A live `AnimalAgent` is a **projection** of its record. Materialize = promote (record → agent), dematerialize = demote (agent → record), both lossless. ~~Deaths only happen to materialized animals~~ is replaced by the common world-time transition (C3): the same rules advance an animal whether its group is loaded, unloaded or time-skipped, within an explicitly documented tolerance.
 3. **Home stays bit-identical** in F1–F3: same ids, same positions, same RNG stream. Golden test.
 4. **Determinism:**
    - Each non-home site uses `createSeededRandom(hash(seed, siteId))`, so positions do not depend on materialization order.
@@ -70,6 +75,8 @@ A **habitat group** = `{ groupId, anchor, spawners[], ringSpecs[] }`, produced b
 
 ### Materialization lifecycle (inside `createFauna`)
 
+> **Superseded in part by review 035.** The bullets below describe what F2 implemented. Three of its rules are replaced by C1–C4: individuals are disposed on unload, the 20 s timeout forcibly evicts engaged agents, and the save keeps only thin spawner rows. Keep the save union and the cached site plan.
+
 - `materializeGroup(group, nowDays)`:
   - creates spawner props and spawners,
   - restores saved state from a carried `savedSpawnerState` map,
@@ -80,8 +87,8 @@ A **habitat group** = `{ groupId, anchor, spawners[], ringSpecs[] }`, produced b
   - writes the lifecycle snapshot into the carried map,
   - disposes the group's agents and props.
 
-  **Hysteresis:** an agent that is `immediate` (combat, chase, trip, player-led) delays its group's dematerialization until it disengages or a bounded timeout passes. Corpses of unpersisted wild animals vanish with the group, the same as on reload today.
-- **Save:** `getSpawners()` keeps meaning "live spawners". A new `snapshotSpawnPoints()` returns the union of live and carried states and writes only non-default entries. The save shape is unchanged (`SaveSpawnPoint[]`), so no `CURRENT_SAVE_VERSION` bump; the semantic "subset of world spawners" goes into `docs/state/persistence.md`.
+  **Hysteresis:** an agent that is `immediate` (combat, chase, trip, player-led) delays its group's dematerialization until it disengages or a bounded timeout passes. Corpses of unpersisted wild animals vanish with the group, the same as on reload today. *(F2; replaced by C2: demotion keeps the record, including the corpse timeline.)*
+- **Save:** `getSpawners()` keeps meaning "live spawners". A new `snapshotSpawnPoints()` returns the union of live and carried states and writes only non-default entries. The save shape is unchanged (`SaveSpawnPoint[]`), so no `CURRENT_SAVE_VERSION` bump; the semantic "subset of world spawners" goes into `docs/state/persistence.md`. *(F2; review 035 R2: this drops the carried runtime on save/rebuild, so a depleted habitat refills to capacity. C2 persists the advancement cursor and the individuals: save bump + migration.)*
 - **Drivers:**
   - Home: always materialized (eager, as today).
   - Other settlements: `SettlementsManager` load/unload, through a callback that the composition root wires in `gameLoop` / `worldBundle`.
@@ -96,19 +103,71 @@ Today's home peak is ≈ 26 wild agents plus pressure dens, dungeon residents an
 - **Fauna CPU:** `faunaAgentUpdatesMs` p95 (agent CPU diagnostics) ≤ +25 % against the WSL baseline on the standard bench route.
 - **(De)materialization cost:** amortized, at most one group per frame. Spawner props should use existing instancing, or the props are counted and measured as draw calls.
 
+- **Also measure (review 035 R8):** resident / active / authoritative record counts separately; heap plateau after repeated home ↔ neighbour routes and boundary oscillation; retained visited-site state (`groups` plans, carried rows, `terrainEditedKeys`, tombstones); save size; long-absence catch-up latency; materialization burst frame tails (p95/p99); draw calls; GC. Whole-group activation needs a budgeted materialization queue, not only the deferred-eviction limit.
+
 Over budget → lower per-site capacity or site density, which is an **author decision (§3), not a silent reduction**.
+
+### F4 additions (review 035 R7)
+
+- Deterministic candidate priority + cross-cell exclusion with a halo. A 384 m cell is a discovery/index partition, not a territory.
+- An explicit rule for settlement-ring vs wilderness overlap, so density does not double at the boundary.
+- Classify against final relief, forest/biome and **authoritative hydrology**, not water meshes.
+- Reachability + dry resting ground for passes, disconnected banks and wetlands, not only a centre-point height test.
+- Each habitat has a stable id + an input revision; placement/id changes follow the epoch policy.
+
+## Review 035 response (2026-11-06)
+
+Owner response to [review 035](../reviews/2026-11-06--035--continent-wide-wild-fauna-architecture-review.md), written by Opus after checking each finding against the code at `474ce2cb`.
+
+### Findings checked against code
+
+| # | Verdict | Checked where | Response |
+| --- | --- | --- | --- |
+| R1 identity | ✅ agree | `createFauna.ts` `nextAnimalId++` (≈ 818), `doDematerializeGroup` disposes all members, re-materialize replays the ring | C1 + C2 |
+| R2 save/rebuild | ✅ agree — **a real bug, not only a contract gap** | `faunaGroupLifecycle.ts` `snapshot()` writes only `saved`; `materializedPopulation` with no runtime = full fill if `active` | C2 (save bump + migration). Not reachable in production today: no non-home group is materialized (F3 not wired) |
+| R3 catch-up ≠ ecology | ✅ agree | `catchUpSpawnerLifecycle` = timers only; daily check uses bound count vs live "nearby same-kind" | C3. Author picks the offscreen abstraction level (§3 Q035-a) |
+| R4 randomness | ✅ agree, partly inherited | `AnimalAgent.ts` `Math.random()` at 1863 (life), 4828 (rabies), 5648/5820 (wander); default shared RNG in `findWalkableNear` | C4. Wander keeps a per-agent seeded stream **without a persisted cursor**: an accepted trajectory tolerance, stated in `docs/state/fauna.md` |
+| R5 remote roads / trip target | ✅ agree | `worldBundle.buildFauna` queries `roadCorridorsNear` around home only; den-trip loop passes the captured home `settlementCenter`/`footprintRadius` | C0 (no decision needed) |
+| R6 forced eviction | ✅ agree | `ENGAGED_DEMATERIALIZE_TIMEOUT_SEC` → `doDematerializeGroup` regardless of engagement | Once demotion is lossless (C2), eviction is harmless for state. C2 adds explicit handle cancel/reconnect by durable id for NPC hunt/combat/quest/player-lead. Ownership moves to the animal's **current position cell**, not its source group |
+| R7 planner side effects / F4 seams | 🟡 agree as risk | F1 notes: carving hooks change later samples | Non-home groups plan against frozen inputs, then apply edits (home keeps the golden interleaved order). F4 design gets candidate priority + cross-cell halo exclusion + settlement/wilderness overlap rule + reachability (§ F4 additions) |
+| R8 budget | 🟡 agree | — | Metric list added to § Workload budget |
+| R9 labels | ✅ agree | — | F1/F2 relabelled in the slice table and notes |
+
+### Decisions taken here (architecture, within the approved scope)
+
+- **One owner.** Durable records live in the existing `createFauna` registry and reuse the `persistentOccupants.ts` pattern (slot key `habitatId:occupantKey`, `PersistentOccupantSaveRecord`, removed-slot tombstones) and `AnimalSaveState`. An ordinary habitat member becomes an occupant whose slot is generated by a birth cursor (`<habitatId>:b<seq>`) instead of declared. There is no second fauna registry and no general ecosystem engine.
+- **Stable ids.** Birth id = `<habitatId>:b<seq>`, where `seq` is a per-habitat cursor persisted with the spawner row. Ring individuals of non-home groups become habitat-bound, as Q139-b (a) already requires. Home ring ids stay the same while home placement stays bit-identical (scope: §3 Q035-d).
+- **Quest bindings.** The ordinary-wild `invalidated` protection in `QuestManager` stays until C2 is browser-verified. Rebinding by durable id is a later, explicit step.
+- **Domestic transfer.** Taming or leading an animal moves its record atomically to the livestock owner and removes it from habitat membership. Membership no longer implies permission to delete.
+- **Persistence.** C2 bumps `CURRENT_SAVE_VERSION` and adds a migration. An old save without records keeps today's deterministic initial fill. Stale spawner rows (LOOSE-ENDS) are kept until an epoch bump, never silently deleted.
+- **Epoch.** C1/C2 do not move home placement. Planning non-home groups against frozen inputs (C0) moves their sites, but no saves refer to them yet, so this lands inside the next coordinated `WORLDGEN_EPOCH` bump (D3) if one is pending, otherwise in epoch 1, which is still disposable (review 031).
+- **Wording.** "Catch-up parity" from now on means **timer parity**, never ecology parity.
+
+### Questions for the author (queue §3 Q035-a…d)
+
+- **Q035-a** offscreen abstraction: conservation-only (age, heal, needs, replenishment and recovery from record positions; no offscreen predation) vs a coarse daily predator–prey exchange.
+- **Q035-b** replenishment = immigration (today) vs birth vs mixed.
+- **Q035-c** corpse/tombstone retention.
+- **Q035-d** whether home ordinary wild animals also become durable (ends resurrection on reload at home).
+
+C1 can start once Q035-d is answered. C3 needs Q035-a/b.
 
 ## Slices
 
 | Slice | Model | Scope | Done when | Stop if |
 | --- | --- | --- | --- | --- |
-| **F1** | S | Extract `planSettlementFaunaHabitats` + `safetyBeltWidth` (pure) out of `createFauna`; home path uses it; per-site RNG for non-home only; baseline counts (live wild agents near home, `faunaAgentUpdatesMs` WSL) | home golden test: identical ids + positions + RNG consumption on both seeds; planner unit tests for 3 sizes × 2 characters; belt(home) = 70 m; baseline recorded in notes | extraction changes home output |
-| **F2** | S | Group (de)materialization inside `createFauna`, carried spawner-state map, `snapshotSpawnPoints()` union, lazy catch-up, engaged-agent hysteresis, world-habitat toggle | tests: materialize → dematerialize → materialize gives identical sites and spawner state; save round-trip of an unmaterialized depleted/disabled spawner; time-skip/catch-up parity against continuous ticking; no orphaned props/agents after dispose | catch-up cannot match continuous lifecycle without persisting individuals |
-| **F3** | S | Non-home settlements' groups wired to `SettlementsManager` load/unload; closed-settlement pressure moved into its own settlement's group (after Q133) | headless: walking home → neighbour materializes/dematerializes the neighbour group; type-check, lint, fauna/app/quests suites; WSL A/B (toggle) against budget; browser check at a non-home settlement on `?seed=415424794` (§2) | quest/progression code assumes a single fauna anchor |
-| **F4** | O→S | Wilderness cells: classifier + planner + terrain-region driver; `pnpm worldgen:fauna:census` (sites and capacity per km² by land cover, min distance to settlements/roads, both seeds) | census both seeds within the author's density answer (§3 Q139-a); no site inside a belt/road/river clearance; WSL A/B against budget; final numbers re-taken after 060 R4 / 061 H6 freezes | budget only met by reducing density below the author's answer → §3 |
-| **F5** | S | Docs: `docs/state/fauna.md` (habitat groups, projection boundary), `docs/state/persistence.md` (spawner subset), plan notes; queue §4 Windows Arc A/B handoff | docs match code | — |
+| **F1** | S | Extract `planSettlementFaunaHabitats` + `safetyBeltWidth` (pure) out of `createFauna`; home path uses it; per-site RNG for non-home only; baseline counts (live wild agents near home, `faunaAgentUpdatesMs` WSL) | **extracted, technically verified (synthetic golden).** Outstanding: WSL baseline, home browser check on the real continent | extraction changes home output |
+| **F2** | S | Group (de)materialization inside `createFauna`, carried spawner-state map, `snapshotSpawnPoints()` union, lazy catch-up, engaged-agent hysteresis, world-habitat toggle | **streaming infrastructure implemented, not wired.** Continuity contract not met (review 035 R1–R4/R6) → C1–C4. Reused: save union, cached plan, toggle, group map | catch-up cannot match continuous lifecycle without persisting individuals — **hit (review 035)** |
+| **C0** | S | Review 035 R5 + R4 (placement) + R7 (non-home): per-group road query at the group anchor (bounded `roadCorridorsNear`), habitat → settlement destination owner on the spawner (den trips use the group's own centre/footprint), explicit home-only guard for the wolf-den scenario until Q142-a, site-owned RNG for `spawnHabitatPopulation`/`findWalkableNear` in non-home groups, non-home planning against frozen inputs then edits; home bit-identical | tests: remote road absent from the home query excludes a remote site; two settlements with different centres → den trip targets its own settlement; reversed group materialization order → identical non-home positions; home golden unchanged | home output changes |
+| **C1** | O→S | Durable wild record schema inside the existing fauna owner: birth ids + per-habitat cursor, record fields, death/removal records, domestic-transfer rule, event-keyed RNG keys; S row added on completion | spec in notes covers every review 035 §Verification snapshot case; reuse map to `persistentOccupants.ts` / `AnimalSaveState` | needs a second registry, or Q035-d unanswered |
+| **C2** | S | Lossless demote/promote + save/rebuild: records captured on dematerialize, eviction cancels/reconnects handles by durable id, `CURRENT_SAVE_VERSION` bump + migration, rebuild through the same snapshot | snapshot equivalence (wounded/juvenile/infected/dead/harvested, partial + depleted) across stream out/in, save/load, bundle rebuild: no resurrection, lost ids or duplicate ownership; NPC hunter/quest target during eviction; long pursuit across eviction | migration needs data that is not available |
+| **C3** | O→S | Common world-time transition `advance(records, habitat, fromDays, toDays)` used by unloaded catch-up, time-skip (loaded and unloaded) and load, with the abstraction from Q035-a/b and deterministic event ordering; recovery predicate counts records within `SPAWNER_RADIUS` (fixes the bound-vs-nearby divergence); wolf-den activation/trips included or explicitly excluded | differential tests loaded vs unloaded vs skip with **written tolerances**, including fractional boundaries, > 120 days, neighbours entering the recovery radius, den activation | Q035-a/b unanswered; tolerance cannot be met without reducing behaviour → §3 |
+| **C4** | S | Determinism: entity/event-keyed streams (life init, infection, respawn picks); per-agent seeded wander (cursor not persisted, stated tolerance) | authoritative snapshots equal on seeds 42 + 415424794 under reversed group order, different frame partitions, save insertion | — |
+| **F3** | S | **Blocked on C0–C4.** Non-home settlements' groups wired to `SettlementsManager` load/unload; closed-settlement pressure moved into its own settlement's group (after Q133) | headless: walking home → neighbour materializes/dematerializes the neighbour group; type-check, lint, fauna/app/quests suites; WSL A/B (toggle) against budget; browser check at a non-home settlement on `?seed=415424794` (§2); atomic settlement accept/unload/rollback ordering tested (late fauna init) | quest/progression code assumes a single fauna anchor |
+| **F4** | O→S | **Census + pure design may proceed; runtime after F3.** Wilderness cells: classifier + planner + terrain-region driver; `pnpm worldgen:fauna:census` (sites and capacity per km² by land cover, min distance to settlements/roads, both seeds) | census both seeds within the author's density answer (§3 Q139-a); no site inside a belt/road/river clearance; WSL A/B against budget; final numbers re-taken after 060 R4 / 061 H6 freezes | budget only met by reducing density below the author's answer → §3 |
+| **F5** | S | Docs: `docs/state/fauna.md` (habitat groups, projection boundary, **remaining offscreen approximations listed explicitly**), `docs/state/persistence.md` (wild records + spawner cursor), plan notes; queue §4 Windows Arc A/B handoff | docs match code; review 035 §Verification items each marked verified / handed to §2 / §4 | — |
 
-Ordering: F1 → F2 → F3 (needs Q133) → F4 (tool any time after F2; numbers after the freezes) → F5. Each worldgen-output-affecting slice gets its own census (roadmap cross-plan rules). Fauna sites are not cached, so no cache namespace is involved. Epoch-1 test saves are disposable (review 031).
+Ordering (revised 2026-11-06): F1 → F2 → **C0 (ready) ∥ C1 → C2 → C3 → C4** → F3 → F4 runtime (census tool may run earlier) (tool any time after F2; numbers after the freezes) → F5. Each worldgen-output-affecting slice gets its own census (roadmap cross-plan rules). Fauna sites are not cached, so no cache namespace is involved. Epoch-1 test saves are disposable (review 031).
 
 ## Author decisions (2026-11-05, queue §3 Q139)
 
