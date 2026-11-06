@@ -1,7 +1,7 @@
 # Grok Audits — Candidate Queue
 
 **Created:** 2026-11-06  
-**Gate:** independent workspace review corrections incorporated 2026-11-06; **all tasks remain proposals requiring explicit author approval**, not active assignments.
+**Gate:** independent workspace review corrections incorporated 2026-11-06; **GA-003 deferred-section slice authorized 2026-11-06 and delivered for review; other tasks remain proposals requiring explicit author approval**.
 
 This is a candidate queue for bounded Grok evidence-gathering in [SeedVale V1](https://github.com/jm-sky/seedvale-v1). See [operating rules](./README.md). `P1`/`P2` express **relative audit research value / scheduling preference only**, not urgency or authorization in the Revival roadmap. At kickoff, check the [Revival session queue](../research/v1-revival/AUTONOMOUS-SESSION-QUEUE.md), [System Review Matrix](../reviews/SYSTEM-REVIEW-MATRIX.md), current code and recent commits; document overlapping Q tasks, matrix IDs, previously commissioned reviews, and excluded unstable paths before proceeding.
 
@@ -9,7 +9,7 @@ This is a candidate queue for bounded Grok evidence-gathering in [SeedVale V1](h
 | --- | --- | --- | --- | --- |
 | GA-001 | P2 | Dead code & unused assets | `proposed` | **Not the first experiment.** Identify candidates, never delete targets; inspect dynamic imports, registries, string lookups, build/runtime asset manifests and entry points before interpreting negative usage searches. No `unused` conclusion from text search alone. |
 | GA-002 | P1 | Duplicate implementations | `proposed` | Report concrete overlapping logic with ownership/callsite evidence; distinguish intentional presentation/simulation separation from accidental duplication. No consolidation proposals without validation. |
-| GA-003 | P1 | Documentation vs code consistency | `proposed` | **Preferred first experiment.** Check a small, stable documentation slice against source/tests at one pinned SHA. Quote exact disputed claims and show source/test contract, callsites and plausible exceptions. Exclude changing geography/fauna/combat/rendering seams. |
+| GA-003 | P1 | Documentation vs code consistency | `review needed` | **Preferred first experiment.** Check a small, stable documentation slice against source/tests at one pinned SHA. Quote exact disputed claims and show source/test contract, callsites and plausible exceptions. Exclude changing geography/fauna/combat/rendering seams. |
 | GA-004 | P2 | Memory & resource lifecycle | `proposed` | One stable **non-rendering** subsystem only; trace allocations, disposal, listeners, cancellation and ownership. Exclude Three.js/GPU resource ownership, terrain/world streaming, LOD, culling and other commissioned Astra rendering/performance scope. Suspected leaks remain hypotheses without reproduction or proof. |
 | GA-005 | P2 | Missing tests & contract coverage | `proposed` | Compare an explicitly selected contract against current tests; enumerate meaningful missing cases with source evidence, no speculative blanket coverage percentages. |
 | GA-006 | P2 | Error handling & silent failures | `proposed` | Trace bounded async/failure paths and observable consequences; distinguish intended fallback behavior from lost errors. No automatic refactors. |
@@ -29,9 +29,11 @@ For this pilot, record: number of findings; number independently `confirmed`, `r
 
 ## Reports
 
-No audits have run. Accepted and pending reports will appear in the [report index](./audits/README.md).
+GA-003: [STATE deferred-section pilot](./audits/2026-11-06--GA-003--state-deferred-section.md), pinned `a75dcdfb29cd95d9634f5c87f6943daa428f44be`, `review needed`; 2 unverified findings, no independent validation or implementation approval. Other scopes remain unassigned. See the [report index](./audits/README.md).
 
 ## Change log
+
+- 2026-11-06 — author-authorized GA-003 deferred-section pilot delivered at `a75dcdfb29cd95d9634f5c87f6943daa428f44be`; 12 bullets accounted for (4 confirmed deferred / 2 partial / 6 excluded); 2 findings remain `unverified`. No runtime changes or commit.
 
 - 2026-11-06 — independent review corrections: GA-003 first, GA-001 P2, stronger evidence/overlap controls and pilot evaluation; tasks still `proposed`, no audit run.
 - 2026-11-06 — initial *proposed* queue; no task approved or executed.
