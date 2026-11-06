@@ -16,12 +16,10 @@ import {
   type RoadCorridorSegment,
   sampleApronGrid,
 } from './chunkHeightmap'
-import { computeRockOutcrops } from './rockOutcrops'
 import { isWetFloor } from './waterSurface'
 
 export type EnvironmentKind =
   | 'largeRock'
-  | 'rockOutcrop'
   | 'rockCluster'
   | 'fallenLog'
   | 'campfire'
@@ -43,7 +41,7 @@ export type EnvironmentPlacement = {
   scale: number
   rotationY: number
   /** Meaning depends on `kind`: boulder irregularity 0..1 (`largeRock`/
-   *  `rockCluster`/`rockOutcrop`; for an outcrop `scale` is its height in metres), log length in world units (`fallenLog`), unused
+   *  `rockCluster`), log length in world units (`fallenLog`), unused
    *  (`campfire`), height/count/damage variation 0..1 (`monolith`/
    *  `stoneCircle`/`smallRuins`/`cemetery`/`boat`/`shipwreck`/`tower`/
    *  `oldTree`/`wagon`) — see factories in `settlement/props.ts`. */
@@ -370,7 +368,7 @@ export function clearVegetationAroundOldTrees(
 
 /** Extra clearance around a cemetery plot rectangle for vegetation / rock removal (Q47). */
 const CEMETERY_PLOT_CLEAR_PAD = 1
-const CEMETERY_CLEARED_ENV_KINDS: ReadonlySet<EnvironmentKind> = new Set(['fallenLog', 'largeRock', 'rockCluster', 'rockOutcrop'])
+const CEMETERY_CLEARED_ENV_KINDS: ReadonlySet<EnvironmentKind> = new Set(['fallenLog', 'largeRock', 'rockCluster'])
 
 /** True when `(wx, wz)` lies inside `cemetery`'s rotated plot rectangle grown by `pad`. */
 function insideCemeteryPlot(cemetery: EnvironmentPlacement, wx: number, wz: number, pad: number): boolean {
@@ -610,13 +608,6 @@ export function computeChunkEnvironment(
       resourceId: deriveMineableRockResourceId(params.seed, coord.cx, coord.cz, rockKind, i),
     })
   }
-
-  // --- Angular rock outcrops on crag tops and summit zones (plan 060 R3 correction 5) ---
-  placements.push(...computeRockOutcrops(coord, params, {
-    heightAt: (x, z) => sample(tile.heights, x, z),
-    ridgeAt: (x, z) => sample(tile.mountainRidge, x, z),
-    roadTintAt: (x, z) => sample(tile.roadTint, x, z),
-  }))
 
   // --- Fallen logs: forest terrain, ideally near trees ---
   const logRandom = createSeededRandom(params.seed ^ hashChunk(coord.cx, coord.cz, 2) ^ 0x4c17)

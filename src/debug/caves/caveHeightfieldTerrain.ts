@@ -44,6 +44,8 @@ function terrainParams(): RawSampleParams {
   const terrain = defaultTerrainConfig(TERRAIN_RESOLUTION)
   const params: Omit<RawSampleParams, 'hydrologyId'> = {
     seed: CAVE_HEIGHTFIELD_TERRAIN_SEED,
+    // Also pinned to the pre-plate relief (bare-rock plates would add ≤ 0.8 m steps on this ridge hillside).
+    rockPlates: false,
     heightScale: terrain.heightScale,
     waterLevel: terrain.waterLevel,
     noiseScale: terrain.noiseScale,

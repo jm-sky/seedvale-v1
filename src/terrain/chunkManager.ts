@@ -38,7 +38,6 @@ import {
   createMonolith,
   createReed,
   createRockCluster,
-  createRockOutcrop,
   createSeaweed,
   createSmallRuins,
   createStoneCircle,
@@ -268,7 +267,6 @@ function envTemplateIndex(
  *  single circle would misrepresent. */
 const ENVIRONMENT_COLLISION_RADIUS: Record<EnvironmentKind, number> = {
   largeRock: 0.9,
-  rockOutcrop: 0.4,
   rockCluster: 0.5,
   fallenLog: 0.4,
   campfire: 0.5,
@@ -330,8 +328,6 @@ function createProceduralEnvironmentProp(
       return createMonolith(scale, variant)
     case 'rockCluster':
       return createRockCluster(scale, variant)
-    case 'rockOutcrop':
-      return createRockOutcrop(scale, variant)
     case 'ruins':
       return createExpeditionRuins(scale, variant)
     case 'smallRuins':

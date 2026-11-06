@@ -11,6 +11,7 @@ import { EMPTY_LANDFORM_INDEX, landformCorrectionBypassAt, type LandformDescript
 import { EMPTY_RANGE_SPINES, generateRangeSpines, type RangeSpineSet, sampleRangeSpines, softCapSummitHeight, unionWithSpine } from './rangeSpines'
 import { fordBedHeight, fordInfluenceAt, type FordProjection } from './riverFord'
 import { isOnAnyBridgeDeck, type RoadBridgeSpec } from './roadBridge'
+import { rockPlateAt } from './rockPlates'
 import { computeBodyScale, detectWaterBodies } from './waterBodies'
 import { isWetFloor } from './waterSurface'
 import { hydrologyCorrectionAt, hydrologyLakeLevelAt } from './worldHydrologyStore'
@@ -250,6 +251,8 @@ export type ChunkTileParams = {
   /** Core texels per edge (excludes the 1-texel apron used for seam-safe normals). */
   resolution: number
   seed: number
+  /** Set `false` to skip bare-rock plates (debug fixtures pinned to the pre-plate relief); default on. */
+  rockPlates?: boolean
   heightScale: number
   waterLevel: number
   /** World-space wavelength of local surface detail FBM. Larger = broader bumps. */
@@ -354,6 +357,9 @@ export type ChunkTileParams = {
     scale: number
   } | null
 }
+
+/** Rock plates only on land clearly above the water (no tilted slabs in shallows). */
+const ROCK_PLATE_MIN_ABOVE_WATER_M = 1.5
 
 export type RawSampleParams = Omit<
   ChunkTileParams,
@@ -736,7 +742,14 @@ function sampleRawTexelUncorrected(
     spine.summitM > 0
       ? softCapSummitHeight(nCombined * heightScale + spine.summitM * landWeight)
       : nCombined * heightScale
-  const floorH = landforms.count === 0 ? baseH : baseH + landformHeightDeltaAt(landforms, wx, wz, baseH)
+  const landformH = landforms.count === 0 ? baseH : baseH + landformHeightDeltaAt(landforms, wx, wz, baseH)
+  // Bare-rock plates (plan 060 R3 correction 7): crag tops + high ridges, dry land only. Terrain-integrated Voronoi planes.
+  const plateZone =
+    params.rockPlates !== false && landformH > waterLevel + ROCK_PLATE_MIN_ABOVE_WATER_M
+      ? Math.max(landforms.count === 0 ? 0 : landformRockAt(landforms, wx, wz, false), MathUtils.smoothstep(mountainRidge, 0.55, 0.8))
+      : 0
+  const plate = plateZone > 0 ? rockPlateAt(params.seed, wx, wz, plateZone) : null
+  const floorH = plate ? landformH + plate.delta : landformH
   const h = floorH < waterLevel ? waterLevel : floorH
   const waterH = waterLevel
 
@@ -754,7 +767,8 @@ function sampleRawTexelUncorrected(
 
   // Landform rock (crag core, crater bowl) joins the *reported* ridge only — it must not feed the height model above —
   // so grass thins, trees are rejected and rock exposure applies without a second vegetation mechanism.
-  const reportedRidge = landforms.count === 0 ? mountainRidge : Math.max(mountainRidge, landformRockAt(landforms, wx, wz))
+  const landformRidge = landforms.count === 0 ? mountainRidge : Math.max(mountainRidge, landformRockAt(landforms, wx, wz))
+  const reportedRidge = plate && plate.patch > 0 ? Math.max(landformRidge, plate.patch) : landformRidge
 
   return { h, floorH, waterH, m, continentalness: c, mountainRidge: reportedRidge, moistureRegion }
 }

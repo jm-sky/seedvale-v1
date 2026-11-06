@@ -274,11 +274,11 @@ export function landformHeightDeltaAt(index: LandformIndex, x: number, z: number
  * `mountainRidge` to this value, so grass thins out, trees are rejected (`MOUNTAIN_RIDGE_REJECT`) and rock exposure
  * takes over — no second vegetation mechanism.
  */
-export function landformRockAt(index: LandformIndex, x: number, z: number): number {
+export function landformRockAt(index: LandformIndex, x: number, z: number, includeCrater = true): number {
   if (index.count === 0) return 0
   let rock = 0
   for (const d of index.near(x, z)) {
-    if (d.kind !== 'crag' && d.kind !== 'crater') continue
+    if (d.kind !== 'crag' && (d.kind !== 'crater' || !includeCrater)) continue
     const dx = x - d.centreX
     const dz = z - d.centreZ
     const d2 = dx * dx + dz * dz

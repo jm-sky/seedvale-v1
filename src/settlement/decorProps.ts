@@ -1,5 +1,4 @@
 import * as THREE from 'three'
-import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js'
 import type { CemeteryPiecePack } from './cemeteryPack'
 import { patchProceduralFoliageMaterial } from '../world/foliageWind'
 import {
@@ -452,83 +451,6 @@ export function createLargeRock(
   mesh.receiveShadow = true
   rock.add(mesh)
   return rock
-}
-
-/** Granite-like grey palette for `createRockOutcrop`: cooler and more neutral than the outdoor boulder (and distinct
- *  from the warm cave stone) so crag tops read as bare angular rock. */
-const OUTCROP_PALETTE: LargeRockPalette = {
-  base: new THREE.Color(0x77777a),
-  cool: new THREE.Color(0x585d66),
-  warm: new THREE.Color(0x8b857b),
-  moss: new THREE.Color(0x6b6f66),
-}
-
-/** Position-keyed jitter in [-1, 1] — the same corner always moves the same way, so the non-indexed faces stay watertight. */
-function outcropJitter(x: number, y: number, z: number, seed: number, axis: number): number {
-  return rockHash01(x + axis * 3.1, y - axis * 1.7, z + axis * 5.3, seed) * 2 - 1
-}
-
-/**
- * Large angular rock outcrop (plan world-terrain-060, author 2026-11-06): a few jagged, flat-shaded shards (dodecahedra
- * with position-keyed vertex jitter, stretched into tilted slabs/prisms) merged into one mesh with soft grey vertex
- * colours. `height` is the main shard's height in metres (1–6); about a fifth is buried so it sits in the ground rather
- * than on it. Deterministic from `variant` — no `Math.random()`. One mesh, one draw call per outcrop.
- */
-export function createRockOutcrop(height = 3, variant = 0.5): THREE.Group {
-  const group = new THREE.Group()
-  const shardCount = 3 + Math.floor(variant * 3)
-  const parts: THREE.BufferGeometry[] = []
-  for (let i = 0; i < shardCount; i++) {
-    const k = i === 0 ? 1 : 0.35 + rockHash01(variant, i, 1, 5.5) * 0.4
-    const h = height * k
-    const geo = new THREE.DodecahedronGeometry(0.5, 0)
-    const pos = geo.getAttribute('position')
-    const seed = variant * 71.3 + i * 13.7
-    // Slab/prism proportions: tall, narrow, differently stretched per shard.
-    const sx = h * (0.45 + rockHash01(variant, i, 2, 7.1) * 0.5)
-    const sz = h * (0.4 + rockHash01(variant, i, 3, 8.3) * 0.5)
-    for (let v = 0; v < pos.count; v++) {
-      const x = pos.getX(v)
-      const y = pos.getY(v)
-      const z = pos.getZ(v)
-      const jx = 1 + outcropJitter(x, y, z, seed, 0) * 0.28
-      const jy = 1 + outcropJitter(x, y, z, seed, 1) * 0.22
-      const jz = 1 + outcropJitter(x, y, z, seed, 2) * 0.28
-      // Taper toward the top for a blocky wedge rather than an egg.
-      const taper = 1 - Math.max(0, y) * 0.5
-      pos.setXYZ(v, x * sx * jx * taper, y * h * jy, z * sz * jz * taper)
-    }
-    geo.computeVertexNormals()
-    // Tilt and place each shard; the main one stays close to the centre.
-    const tiltX = (rockHash01(variant, i, 4, 3.3) - 0.5) * 0.5
-    const tiltZ = (rockHash01(variant, i, 5, 4.4) - 0.5) * 0.5
-    const yaw = rockHash01(variant, i, 6, 6.6) * Math.PI
-    const spread = i === 0 ? 0 : height * (0.3 + rockHash01(variant, i, 7, 9.9) * 0.35)
-    const ang = rockHash01(variant, i, 8, 2.2) * Math.PI * 2
-    geo.applyMatrix4(
-      new THREE.Matrix4().compose(
-        new THREE.Vector3(Math.cos(ang) * spread, h * 0.5 - height * 0.2 * k, Math.sin(ang) * spread),
-        new THREE.Quaternion().setFromEuler(new THREE.Euler(tiltX, yaw, tiltZ)),
-        new THREE.Vector3(1, 1, 1),
-      ),
-    )
-    // Strip the (re)computed index/uv so every shard merges with identical attributes.
-    geo.deleteAttribute('uv')
-    parts.push(geo.index ? geo.toNonIndexed() : geo)
-  }
-  const merged = mergeGeometries(parts, false)
-  for (const p of parts) p.dispose()
-  if (!merged) return group
-  merged.computeVertexNormals()
-  applyLargeRockVertexColors(merged, variant, Math.max(0.9, height * 0.5), OUTCROP_PALETTE)
-  const mesh = new THREE.Mesh(
-    merged,
-    new THREE.MeshStandardMaterial({ color: 0xffffff, flatShading: true, roughness: 1, vertexColors: true }),
-  )
-  mesh.castShadow = true
-  mesh.receiveShadow = true
-  group.add(mesh)
-  return group
 }
 
 /** Small cluster of pebbles (same geometry as the collectible `stone` item,
