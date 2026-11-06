@@ -46,6 +46,8 @@
 
 ## Performance (P1, D4)
 
+- **System 16 / rendering-performance synthesis (2026-11-06):** [Final Critical Synthesis — review 041](../../reviews/2026-11-06--041--rendering-performance-final-critical-synthesis.md) reconciles reviews 036–040 into 33 canonical findings and documents priorities, architectural decisions, correction-stage candidates and benchmark gates. **Static synthesis only; system 16 remains partial**, with native Intel Arc/WSL and runtime verification outstanding. No implementation scope or visual changes approved.
+
 - Roadmap and A/B/C/D(/E) tracker: [three-track rendering roadmap](./2026-10-27--performance-three-track-roadmap.md); V2/V3 transfer candidates: [recon](./2026-10-26--v1-performance-transfer-v2-v3-recon.md).
 - NPC/fauna (Track A): [NPC rendering recon](./2026-10-29--npc-rendering-optimization-recon.md), [negative-experiments review](./2026-10-29--performance-negative-experiments-review.md) (request: [opus review](./2026-10-29--performance-negative-experiments-opus-review.md)), [actor skeleton sharing (Q20)](./2026-10-30--q20-actor-skeleton-sharing--implementation-notes.md), [visibility / occlusion analysis](./2026-10-30--npc-fauna-visibility-v2-analysis.md) (V2 sensory contacts vs V1 culling; research only).
 - Settlements (Track B): [next optimization shortlist](./2026-10-28--settlement-track-b-next-optimization.md), [house chest instancing (Q5)](./2026-10-29--q5-house-chest-instancing--implementation-notes.md), [lantern GLBs rebuilt in Blender](./2026-10-28--settlement-lantern-blender-optimization.md) (wall / standing, 3 primitives each).
