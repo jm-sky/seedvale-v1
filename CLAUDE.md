@@ -85,6 +85,10 @@ pnpm run test         # or: pnpm vitest run <path>
 pnpm run build
 ```
 
+## Shell hygiene
+
+- **Never `pkill -f` / `pgrep -f | xargs kill` with a pattern that also appears in your own command line** (e.g. `pkill -f "vite preview"` inside a command that mentions `vite preview` kills the tool's own shell → exit 144, rest of the command never runs). Start long-lived servers with a PID file or capture `$!` (`cmd > log 2>&1 & echo $! > $SCRATCH/x.pid`), stop with `kill "$(cat $SCRATCH/x.pid)"`; or use `run_in_background`. If a pattern kill is unavoidable, use a bracket trick (`pkill -f "[v]ite preview"`) and run it as a separate, final command.
+
 ## Documentation
 
 - Update docs that your change makes stale, in the document that owns the information (no duplication): `docs/STATE.md` for current state, plans for status, reviews when performing that review.
