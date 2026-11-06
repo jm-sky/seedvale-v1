@@ -115,8 +115,8 @@ const RELAX_STEPS = [1, 1.6, 2.4] as const
 
 type Candidate = { gx: number, gz: number, x: number, z: number, range: number, ground: number }
 
-/** Rise of the crater floor from its centre to the edge of the flat dish (m): a shallow concave dish, not a flat plate. */
-const CRATER_DISH_RISE_M = 1.2
+/** Rise of the crater floor from its centre to the edge of the dish (m): a clearly concave bowl, lowest in the middle (author 2026-11-06 look 2). */
+const CRATER_DISH_RISE_M = 3.5
 
 function craterParams(ground: number, waterLevel: number, rand: () => number): Record<string, number> {
   const depth = Math.min(7 + rand() * 2.5, ground - waterLevel - 2)
@@ -257,7 +257,7 @@ export function landformHeightDeltaAt(index: LandformIndex, x: number, z: number
       // (author 2026-11-06). `bottom` is the absolute dish centre height fixed at generation; fall back to depth below `baseH`.
       const w = 1 - smooth(0.35, 0.75, t)
       const bottom = d.params.bottom ?? baseH - (d.params.depth ?? 6)
-      const dish = bottom + CRATER_DISH_RISE_M * Math.min(1, t / 0.6) ** 2
+      const dish = bottom + CRATER_DISH_RISE_M * Math.min(1, t / 0.75) ** 2
       const u = (t - 0.8) / 0.1
       delta += (dish - baseH) * w + (d.params.rim ?? 2.5) * Math.exp(-u * u) * fade
     } else if (d.kind === 'lakeIsland') {

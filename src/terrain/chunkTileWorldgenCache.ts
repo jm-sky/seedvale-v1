@@ -63,7 +63,7 @@ export const CHUNK_TILE_CACHE_NAMESPACE = 'chunk-tiles'
  * v27 (2026-11-05, queue Q118): range spines, passes and summits reshape the relief (plan world-terrain-060 R1–R2).
  * v28 (2026-11-05): C¹ relief: smooth range-spine crest/blend/unions, C¹ Worley ridge, bicubic hydrology correction (plan world-terrain-065).
  */
-export const CHUNK_TILE_CACHE_VERSION = 34
+export const CHUNK_TILE_CACHE_VERSION = 35
 
 /** Small byte-budget manifest record living in the same namespace — see
  *  `ChunkTileMetaPayload`. Its `fingerprint` field is a constant because the
