@@ -253,6 +253,12 @@ function pointAt(s: Pick<RangeSpine, 'xs' | 'zs' | 'cum'>, t: number) {
   return { x: s.xs[i]! + dx * u, z: s.zs[i]! + dz * u, tx: dx / l, tz: dz / l }
 }
 
+/** World position of a spine summit (its crest point at arc length `summit.t`) — for the location catalog (world-041 L1). */
+export function rangeSummitPosition(spine: RangeSpine, summit: RangeSummit): { x: number, z: number } {
+  const p = pointAt(spine, summit.t)
+  return { x: p.x, z: p.z }
+}
+
 const SAMPLE_STEP_M = 100
 
 /**

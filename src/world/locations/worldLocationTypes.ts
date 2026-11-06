@@ -1,4 +1,7 @@
-export type WorldLocationKind = 'settlement' | 'cave' | 'cemetery' | 'lake' | 'mountainPeak' | 'ruins' | 'abandonedMine' | 'searchArea'
+export type WorldLocationKind = 'settlement' | 'cave' | 'cemetery' | 'lake' | 'mountainPeak' | 'ruins' | 'abandonedMine' | 'searchArea' | 'landform'
+
+/** `landform` catalog entries (plan world-041 L1): 060 point landforms + range-spine summits. */
+export type WorldLocationLandformSubtype = 'crag' | 'crater' | 'lakeIsland' | 'spineSummit'
 
 /** Optional bounded search-area geometry. `WorldLocation.x/z` remain the
  *  label/navigation center; this is not an exact waypoint. */
@@ -32,11 +35,13 @@ export type WorldLocation = {
   /** Approximate area when the location is a bounded search region rather
    *  than a point landmark (plan quests-progression-039). */
   area?: WorldLocationArea
+  /** Set on `landform` entries only. */
+  subtype?: WorldLocationLandformSubtype
 }
 
 export type DiscoveryRange = 'near' | 'medium' | 'far'
 
-const WORLD_LOCATION_KINDS: readonly WorldLocationKind[] = ['settlement', 'cave', 'cemetery', 'lake', 'mountainPeak', 'ruins', 'abandonedMine', 'searchArea']
+const WORLD_LOCATION_KINDS: readonly WorldLocationKind[] = ['settlement', 'cave', 'cemetery', 'lake', 'mountainPeak', 'ruins', 'abandonedMine', 'searchArea', 'landform']
 
 /**
  * Reads the `WorldLocationKind` encoded in a `WorldLocation.id`'s

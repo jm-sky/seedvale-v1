@@ -1,5 +1,5 @@
 import type { CemeterySize } from '../../settlement/props'
-import type { WorldLocationKind } from './worldLocationTypes'
+import type { WorldLocationKind, WorldLocationLandformSubtype } from './worldLocationTypes'
 
 /**
  * Deterministic landmark naming (plan world-012 §2) — a pure function of
@@ -66,6 +66,18 @@ const SEARCH_AREA_ADJECTIVES = [
 ]
 const SEARCH_AREA_NOUNS = ['Okolice', 'Obszar', 'Rejon']
 
+const LANDFORM_ADJECTIVES = [
+  'Samotna', 'Szara', 'Wietrzna', 'Zapomniana', 'Pradawna',
+  'Milcząca', 'Stara', 'Kamienna', 'Głucha', 'Zimna',
+]
+/** Per-subtype noun pools of `landform` entries (plan world-041 L1). */
+const LANDFORM_NOUNS: Record<WorldLocationLandformSubtype, readonly string[]> = {
+  crag: ['Skała', 'Turnia', 'Głaz'],
+  crater: ['Krater', 'Niecka', 'Rozpadlina'],
+  lakeIsland: ['Wyspa', 'Ostrów', 'Kępa'],
+  spineSummit: ['Szczyt', 'Wierch', 'Turnia'],
+}
+
 const POOLS: Record<Exclude<WorldLocationKind, 'settlement'>, {
   adjectives: readonly string[]
   nouns: readonly string[]
@@ -77,6 +89,7 @@ const POOLS: Record<Exclude<WorldLocationKind, 'settlement'>, {
   ruins: { adjectives: RUINS_ADJECTIVES, nouns: RUINS_NOUNS },
   abandonedMine: { adjectives: MINE_ADJECTIVES, nouns: MINE_NOUNS },
   searchArea: { adjectives: SEARCH_AREA_ADJECTIVES, nouns: SEARCH_AREA_NOUNS },
+  landform: { adjectives: LANDFORM_ADJECTIVES, nouns: LANDFORM_NOUNS.crag },
 }
 
 /** Larger cemeteries lean toward the more solemn/grand noun pool. */
@@ -90,10 +103,12 @@ export function landmarkName(
   kind: Exclude<WorldLocationKind, 'settlement'>,
   id: string,
   cemeterySize?: CemeterySize,
+  landformSubtype?: WorldLocationLandformSubtype,
 ): string {
   const hash = hashLocationId(seed, id)
   const pool = POOLS[kind]
-  const noun = kind === 'cemetery' ? cemeteryNoun(hash, cemeterySize) : pick(pool.nouns, hash >>> 8)
+  const nouns = kind === 'landform' && landformSubtype ? LANDFORM_NOUNS[landformSubtype] : pool.nouns
+  const noun = kind === 'cemetery' ? cemeteryNoun(hash, cemeterySize) : pick(nouns, hash >>> 8)
   const adjective = pick(pool.adjectives, hash >>> 16)
   return `${noun} ${adjective}`
 }

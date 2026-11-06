@@ -1041,8 +1041,8 @@ Generated from exported TypeScript symbols.
 
 ## `world/createRiverWater.ts`
 
-- `createChunkRiver` — function — line 23
-- `WorldRiver` — type — line 8
+- `createChunkRiver` — function — line 29
+- `WorldRiver` — type — line 10
 
 ## `world/createSky.ts`
 
@@ -1416,17 +1416,26 @@ Generated from exported TypeScript symbols.
 - `settlementIdFromLocationId` — function — line 23
   - domain: ui-input
 
+## `world/locations/landformLandmarks.ts`
+
+- `insideSpineSummitFootprint` — function — line 58
+- `LandformLandmark` — type — line 18
+  - domain: world-locations
+- `landformLandmarksOf` — function — line 30
+- `landformSubtypeFromId` — function — line 50
+
 ## `world/locations/landmarkArrival.ts`
 
 - `CEMETERY_ARRIVAL_RADIUS` — const — line 18
   - domain: world-locations
 - `LAKE_ARRIVAL_EXTENT_MARGIN` — const — line 24
 - `LAKE_ARRIVAL_SHORE_RADIUS` — const — line 26
-- `LandmarkArrivalDeps` — type — line 33
-- `LandmarkArrivalTexel` — type — line 31
+- `LANDFORM_POINT_ARRIVAL_RADIUS` — const — line 29
+- `LandmarkArrivalDeps` — type — line 36
+- `LandmarkArrivalTexel` — type — line 34
 - `PEAK_ARRIVAL_HEIGHT_WINDOW` — const — line 22
 - `PEAK_ARRIVAL_RADIUS` — const — line 20
-- `revealLandmarksOnArrival` — function — line 78
+- `revealLandmarksOnArrival` — function — line 86
 
 ## `world/locations/locationConfig.ts`
 
@@ -1537,10 +1546,10 @@ Generated from exported TypeScript symbols.
 
 ## `world/locations/rumourLead.ts`
 
-- `countOpenRumourLeads` — function — line 148
-- `genericLocationLabel` — function — line 125
-- `isLocationDiscovered` — function — line 138
-- `isRumourLeadEntry` — function — line 130
+- `countOpenRumourLeads` — function — line 149
+- `genericLocationLabel` — function — line 126
+- `isLocationDiscovered` — function — line 139
+- `isRumourLeadEntry` — function — line 131
 - `RUMOUR_LEAD_CAP` — const — line 22
   - domain: world-locations
 - `RUMOUR_LEAD_EXPERT_RADIUS_MAX` — const — line 35
@@ -1601,28 +1610,29 @@ Generated from exported TypeScript symbols.
 
 ## `world/locations/worldLocationCatalog.ts`
 
-- `abandonedCemeteryChunkIntersectsHoursBand` — function — line 245
+- `abandonedCemeteryChunkIntersectsHoursBand` — function — line 246
   - domain: world
-- `COOPERATIVE_ABANDONED_PROBE_THRESHOLD` — const — line 157
-- `createWorldLocationCatalog` — function — line 313
-- `emptyLocationScanDiagnostics` — function — line 122
-- `LandmarkQueryOptions` — type — line 146
-- `LocationScanDiagnostics` — type — line 95
-- `settlementLocationId` — function — line 1047
-- `WorldLocationCatalog` — type — line 159
-- `WorldLocationCatalogDeps` — type — line 31
+- `COOPERATIVE_ABANDONED_PROBE_THRESHOLD` — const — line 158
+- `createWorldLocationCatalog` — function — line 314
+- `emptyLocationScanDiagnostics` — function — line 123
+- `LandmarkQueryOptions` — type — line 147
+- `LocationScanDiagnostics` — type — line 96
+- `settlementLocationId` — function — line 1090
+- `WorldLocationCatalog` — type — line 160
+- `WorldLocationCatalogDeps` — type — line 32
 
 ## `world/locations/worldLocationNames.ts`
 
-- `landmarkName` — function — line 88
+- `landmarkName` — function — line 101
 
 ## `world/locations/worldLocationTypes.ts`
 
-- `DiscoveryRange` — type — line 37
-- `WorldLocation` — type — line 21
-- `WorldLocationArea` — type — line 5
+- `DiscoveryRange` — type — line 42
+- `WorldLocation` — type — line 24
+- `WorldLocationArea` — type — line 8
 - `WorldLocationKind` — type — line 1
-- `worldLocationKindFromId` — function — line 49
+- `worldLocationKindFromId` — function — line 54
+- `WorldLocationLandformSubtype` — type — line 4
 
 ## `world/map/continentPreview.ts`
 
@@ -2051,13 +2061,16 @@ Generated from exported TypeScript symbols.
 
 ## `world/riverGeometry.ts`
 
-- `buildRiverRibbonGeometry` — function — line 134
-- `clipChainToRect` — function — line 62
-- `RIVER_SURFACE_OFFSET` — const — line 12
+- `buildRiverRibbonGeometry` — function — line 154
+- `clipChainToRect` — function — line 63
+- `POOL_FOAM_RADIUS_M` — const — line 120
+- `poolFoamAt` — function — line 126
+- `PoolFoamPoint` — type — line 123
+- `RIVER_SURFACE_OFFSET` — const — line 13
 
 ## `world/riverWaterMaterial.ts`
 
-- `createRiverWaterMaterial` — function — line 148
+- `createRiverWaterMaterial` — function — line 158
 
 ## `world/riverWaterQuality.ts`
 
@@ -2485,6 +2498,13 @@ Generated from exported TypeScript symbols.
 - `readTreeSizeJitter` — function — line 84
 - `tagTreeMesh` — function — line 131
 
+## `world/waterfallSpray.ts`
+
+- `buildWaterfallSprayGeometry` — function — line 84
+- `createWaterfallSpray` — function — line 147
+- `SPRAY_QUADS_PER_SITE` — const — line 20
+- `WaterfallSpray` — type — line 134
+
 ## `world/waterMaterial.ts`
 
 - `createWaterMaterial` — function — line 235
@@ -2546,32 +2566,32 @@ Generated from exported TypeScript symbols.
 
 ## `world/weather.ts`
 
-- `ClimateState` — type — line 448
-- `computeClimate` — function — line 390
-- `computeRainExposureDays` — function — line 346
-- `computeSnowExposureDays` — function — line 365
+- `ClimateState` — type — line 460
+- `computeClimate` — function — line 402
+- `computeRainExposureDays` — function — line 358
+- `computeSnowExposureDays` — function — line 377
 - `computeSurfaceWeather` — function — line 256
-- `computeSurfaceWeatherLut` — function — line 415
+- `computeSurfaceWeatherLut` — function — line 427
 - `computeWeather` — function — line 125
-- `createClimateState` — function — line 461
-- `createForcedSurfaceWeatherRuntime` — function — line 291
-- `createSurfaceWeatherLut` — function — line 410
+- `createClimateState` — function — line 473
+- `createForcedSurfaceWeatherRuntime` — function — line 296
+- `createSurfaceWeatherLut` — function — line 422
 - `DAYS_PER_SEASON` — const — line 32
 - `DAYS_PER_YEAR` — const — line 33
-- `ForcedSurfaceWeatherRuntime` — type — line 284
+- `ForcedSurfaceWeatherRuntime` — type — line 287
   - domain: world
 - `getSeason` — function — line 35
 - `getSeasonProgress` — function — line 41
 - `isRainWeather` — function — line 74
   - domain: world
-- `localClimateAt` — function — line 396
+- `localClimateAt` — function — line 408
 - `LocalWeather` — type — line 143
 - `localWeatherFrom` — function — line 156
   - domain: world
 - `PHASE_GATE_C` — const — line 146
 - `PHASE_T_C` — const — line 148
 - `PrecipitationPhase` — type — line 140
-- `resolveSurfaceWeatherForFrame` — function — line 301
+- `resolveSurfaceWeatherForFrame` — function — line 305
   - domain: world
 - `Season` — type — line 8
 - `SEASON_LABELS` — const — line 14
@@ -2579,20 +2599,21 @@ Generated from exported TypeScript symbols.
 - `SNOW_MELT_WINDOW_DAYS` — const — line 186
 - `stepSurfaceWeather` — function — line 215
   - domain: world
-- `SURFACE_LUT_KNOTS` — const — line 406
-- `SURFACE_LUT_MIN_C` — const — line 405
-- `surfaceWeatherAtOffset` — function — line 429
-- `SurfaceWeatherLut` — type — line 408
+- `SURFACE_LUT_KNOTS` — const — line 418
+- `SURFACE_LUT_MIN_C` — const — line 417
+- `SURFACE_LUT_REFRESH_DAYS` — const — line 277
+- `surfaceWeatherAtOffset` — function — line 441
+- `SurfaceWeatherLut` — type — line 420
 - `SurfaceWeatherState` — type — line 194
 - `SurfaceWeatherStepInput` — type — line 203
 - `temperatureFor` — function — line 78
-- `tickClimate` — function — line 465
+- `tickClimate` — function — line 477
 - `WEATHER_CYCLE_DAYS` — const — line 86
 - `WEATHER_LABELS` — const — line 21
 - `WeatherState` — type — line 110
 - `WeatherType` — type — line 9
 - `WETNESS_DRY_WINDOW_DAYS` — const — line 178
-- `WorldClimateState` — type — line 381
+- `WorldClimateState` — type — line 393
 
 ## `world/weatherParticles.ts`
 

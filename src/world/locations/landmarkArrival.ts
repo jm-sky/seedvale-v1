@@ -5,7 +5,7 @@ import { worldLocationKindFromId } from './worldLocationTypes'
 
 /**
  * Physical-arrival rules for the catalog kinds that had none (plan world-041
- * L0 §4, slice L3a): lake, mountain peak, cemetery. Evaluated on the existing
+ * L0 §4, slices L3a + L1): lake, mountain peak, cemetery, landforms (crag / spine summit like a peak; crater / lake island by centre distance). Evaluated on the existing
  * proximity cadence over **knowledge entries that are not `confirmed`** only —
  * never a catalog scan — so a rumour lead (`estimated`) or a map-told
  * (`discovered`) place closes by walking to it. Arrival reveals
@@ -24,6 +24,9 @@ export const PEAK_ARRIVAL_HEIGHT_WINDOW = 10
 export const LAKE_ARRIVAL_EXTENT_MARGIN = 40
 /** Lake: a wet-floor hit must exist within this distance of the player (who stands on dry ground). */
 export const LAKE_ARRIVAL_SHORE_RADIUS = 30
+
+/** Crater / lake island landforms (world-041 L1): horizontal distance from the descriptor centre (bowl floor / island knoll). */
+export const LANDFORM_POINT_ARRIVAL_RADIUS = 40
 
 const SHORE_PROBE_DIRECTIONS = 8
 const SHORE_PROBE_RINGS: readonly number[] = [LAKE_ARRIVAL_SHORE_RADIUS / 2, LAKE_ARRIVAL_SHORE_RADIUS]
@@ -54,12 +57,17 @@ function hasWetFloorNearby(deps: LandmarkArrivalDeps, x: number, z: number): boo
 
 function arrivedAt(deps: LandmarkArrivalDeps, id: string, playerX: number, playerZ: number): boolean {
   const kind = worldLocationKindFromId(id)
-  if (kind !== 'lake' && kind !== 'mountainPeak' && kind !== 'cemetery') return false
+  if (kind !== 'lake' && kind !== 'mountainPeak' && kind !== 'cemetery' && kind !== 'landform') return false
   const location = deps.catalog.getById(id)
   if (!location) return false
   const dist = Math.hypot(playerX - location.x, playerZ - location.z)
   if (kind === 'cemetery') return dist <= CEMETERY_ARRIVAL_RADIUS
-  if (kind === 'mountainPeak') {
+  if (kind === 'landform' && (location.subtype === 'crater' || location.subtype === 'lakeIsland')) {
+    if (dist > LANDFORM_POINT_ARRIVAL_RADIUS) return false
+    // A lake island's centre may sit in the water around it — the player must stand on dry ground.
+    return location.subtype === 'crater' || isDry(deps.sampleTexel(playerX, playerZ))
+  }
+  if (kind === 'mountainPeak' || kind === 'landform') {
     if (dist > PEAK_ARRIVAL_RADIUS) return false
     const summit = deps.catalog.peakSummitHeight(id)
     if (summit == null) return false
@@ -71,7 +79,7 @@ function arrivedAt(deps: LandmarkArrivalDeps, id: string, playerX: number, playe
 }
 
 /**
- * Confirms every not-yet-`confirmed` lake / peak / cemetery entry the player
+ * Confirms every not-yet-`confirmed` lake / peak / cemetery / landform entry the player
  * has physically reached. Returns the newly confirmed `{ id, name }` pairs for
  * toast feedback.
  */

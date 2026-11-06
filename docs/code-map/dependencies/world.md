@@ -1989,6 +1989,7 @@ Generated from TypeScript imports.
 - `world/createCaves.archetype.test.ts`
 - `world/createCaves.contentAnchors.test.ts`
 - `world/createCaves.test.ts`
+- `world/locations/landformLandmarks.test.ts`
 - `world/locations/worldLocationCatalog.test.ts`
 - `world/locations/worldLocationCatalog.ts`
 - `world/sight/sightWorld.ts`
@@ -2274,10 +2275,12 @@ Generated from TypeScript imports.
 **Imports**
 
 - `terrain/riverNetwork.ts`
+- `terrain/waterfallSites.ts`
 - `world/riverGeometry.ts`
 - `world/riverWaterMaterial.ts`
 - `world/waterMaterial.ts`
 - `world/waterMirror.ts`
+- `world/waterfallSpray.ts`
 
 **Imported by**
 
@@ -3102,6 +3105,32 @@ Generated from TypeScript imports.
 - `world/locations/knownSettlementReputation.test.ts`
 - `world/locations/uncertainKnowledge.test.ts`
 
+## `world/locations/landformLandmarks.test.ts`
+
+**Imports**
+
+- `config/worldConfig.ts`
+- `terrain/chunkHeightmap.ts`
+- `terrain/chunkManager.ts`
+- `world/createCaves.ts`
+- `world/locations/landformLandmarks.ts`
+- `world/locations/locationConfig.ts`
+- `world/locations/worldLocationCatalog.ts`
+- `world/locations/worldLocationTypes.ts`
+
+## `world/locations/landformLandmarks.ts`
+
+**Imports**
+
+- `terrain/chunkHeightmap.ts`
+- `terrain/rangeSpines.ts`
+- `world/locations/worldLocationTypes.ts`
+
+**Imported by**
+
+- `world/locations/landformLandmarks.test.ts`
+- `world/locations/worldLocationCatalog.ts`
+
 ## `world/locations/landmarkArrival.test.ts`
 
 **Imports**
@@ -3138,6 +3167,7 @@ Generated from TypeScript imports.
 - `app/inventoryWiring.ts`
 - `debug/npcDebugApi.ts`
 - `world/locations/guardLocalKnowledge.ts`
+- `world/locations/landformLandmarks.test.ts`
 - `world/locations/locationDiscovery.test.ts`
 - `world/locations/locationDiscovery.ts`
 - `world/locations/seedProfile.ts`
@@ -3508,6 +3538,7 @@ Generated from TypeScript imports.
 - `world/caves/abandonedMineLandmark.ts`
 - `world/createCaves.ts`
 - `world/locations/abandonedCemeteryCache.ts`
+- `world/locations/landformLandmarks.ts`
 - `world/locations/locationConfig.ts`
 - `world/locations/worldLocationNames.ts`
 - `world/locations/worldLocationTypes.ts`
@@ -3520,6 +3551,7 @@ Generated from TypeScript imports.
 - `debug/npcDebugApi.ts`
 - `world/locations/knownSettlementReputation.test.ts`
 - `world/locations/knownSettlementReputation.ts`
+- `world/locations/landformLandmarks.test.ts`
 - `world/locations/landmarkArrival.test.ts`
 - `world/locations/landmarkArrival.ts`
 - `world/locations/locationDiscovery.test.ts`
@@ -3572,6 +3604,8 @@ Generated from TypeScript imports.
 - `world/locations/guardLocalKnowledge.ts`
 - `world/locations/knownSettlementReputation.test.ts`
 - `world/locations/knownSettlementReputation.ts`
+- `world/locations/landformLandmarks.test.ts`
+- `world/locations/landformLandmarks.ts`
 - `world/locations/landmarkArrival.test.ts`
 - `world/locations/landmarkArrival.ts`
 - `world/locations/locationDiscovery.test.ts`
@@ -4329,9 +4363,11 @@ Generated from TypeScript imports.
 **Imports**
 
 - `terrain/riverNetwork.ts`
+- `terrain/waterfallSites.ts`
 
 **Imported by**
 
+- `terrain/chunkManager.ts`
 - `world/createRiverWater.ts`
 - `world/riverGeometry.test.ts`
 
@@ -5129,6 +5165,24 @@ Generated from TypeScript imports.
 - `world/createWater.ts`
 - `world/waterMirror.test.ts`
 
+## `world/waterfallSpray.test.ts`
+
+**Imports**
+
+- `terrain/waterfallSites.ts`
+- `world/waterfallSpray.ts`
+
+## `world/waterfallSpray.ts`
+
+**Imports**
+
+- `terrain/waterfallSites.ts`
+
+**Imported by**
+
+- `world/createRiverWater.ts`
+- `world/waterfallSpray.test.ts`
+
 ## `world/weather.test.ts`
 
 **Imports**
@@ -5151,6 +5205,9 @@ Generated from TypeScript imports.
 - `audio/weatherSounds.ts`
 - `settlement/SettlementsManager.ts`
 - `settlement/createSettlement.ts`
+- `terrain/chunkManager.ts`
+- `terrain/snowField.test.ts`
+- `terrain/surfaceClimateField.ts`
 - `ui/createDebugGui.ts`
 - `world/animalTraps.test.ts`
 - `world/animalTraps.ts`

@@ -119,6 +119,7 @@ const GENERIC_KIND_LABEL: Record<WorldLocationKind, string> = {
   ruins: 'Ruiny',
   abandonedMine: 'Opuszczona kopalnia',
   searchArea: 'Rejon poszukiwań',
+  landform: 'Formacja terenu',
 }
 
 /** Name-free label for an `estimated` entry. */

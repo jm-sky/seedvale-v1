@@ -5,6 +5,7 @@ import {
   CEMETERY_ARRIVAL_RADIUS,
   LAKE_ARRIVAL_EXTENT_MARGIN,
   LAKE_ARRIVAL_SHORE_RADIUS,
+  LANDFORM_POINT_ARRIVAL_RADIUS,
   type LandmarkArrivalTexel,
   PEAK_ARRIVAL_HEIGHT_WINDOW,
   PEAK_ARRIVAL_RADIUS,
@@ -87,5 +88,44 @@ describe('revealLandmarksOnArrival', () => {
     const knowledge = createLocationKnowledge([{ id: CEMETERY.id, state: 'confirmed', source: 'exploration' }])
     revealLandmarksOnArrival({ catalog: catalogFor([CEMETERY]), knowledge, sampleTexel: () => { samples++; return DRY } }, 0, 0)
     expect(samples).toBe(0)
+  })
+})
+
+describe('revealLandmarksOnArrival — landforms (world-041 L1)', () => {
+  const CRATER: WorldLocation = { id: 'landform:crater:8_14', kind: 'landform', subtype: 'crater', x: 300, z: 300, name: 'Krater Stary', discoveryWeight: 0.5 }
+  const ISLAND: WorldLocation = { id: 'landform:lakeIsland:16_7', kind: 'landform', subtype: 'lakeIsland', x: -300, z: 300, name: 'Wyspa Szara', discoveryWeight: 0.5 }
+  const SUMMIT: WorldLocation = { id: 'landform:spineSummit:6_-7:0', kind: 'landform', subtype: 'spineSummit', x: 800, z: -800, name: 'Szczyt Zimny', discoveryWeight: 0.5 }
+
+  function landformSetup(id: string, sampleTexel: (x: number, z: number) => LandmarkArrivalTexel) {
+    const knowledge = createLocationKnowledge([{ id, state: 'discovered', source: 'npc' }])
+    const locations = [CRATER, ISLAND, SUMMIT]
+    const catalog = {
+      getById: (i: string) => locations.find((l) => l.id === i) ?? null,
+      lakeExtentRadius: () => null,
+      peakSummitHeight: (i: string) => i === SUMMIT.id ? SUMMIT_H : null,
+    }
+    return { knowledge, deps: { catalog, knowledge, sampleTexel } }
+  }
+
+  it('crater: confirms within the point radius of its centre', () => {
+    const { knowledge, deps } = landformSetup(CRATER.id, () => DRY)
+    expect(revealLandmarksOnArrival(deps, CRATER.x + LANDFORM_POINT_ARRIVAL_RADIUS + 5, CRATER.z)).toEqual([])
+    expect(revealLandmarksOnArrival(deps, CRATER.x + LANDFORM_POINT_ARRIVAL_RADIUS - 5, CRATER.z)).toEqual([{ id: CRATER.id, name: CRATER.name }])
+    expect(knowledge.get(CRATER.id)?.state).toBe('confirmed')
+  })
+
+  it('lake island: needs dry ground near the centre', () => {
+    const wet = landformSetup(ISLAND.id, () => WET)
+    expect(revealLandmarksOnArrival(wet.deps, ISLAND.x, ISLAND.z)).toEqual([])
+    const dry = landformSetup(ISLAND.id, () => DRY)
+    expect(revealLandmarksOnArrival(dry.deps, ISLAND.x + 10, ISLAND.z)).toEqual([{ id: ISLAND.id, name: ISLAND.name }])
+  })
+
+  it('spine summit: horizontal radius + summit height window, like a peak', () => {
+    const low = landformSetup(SUMMIT.id, () => ({ h: SUMMIT_H - PEAK_ARRIVAL_HEIGHT_WINDOW - 5, floorH: 0 }))
+    expect(revealLandmarksOnArrival(low.deps, SUMMIT.x + 10, SUMMIT.z)).toEqual([])
+    const high = landformSetup(SUMMIT.id, () => ({ h: SUMMIT_H - 3, floorH: 0 }))
+    expect(revealLandmarksOnArrival(high.deps, SUMMIT.x + PEAK_ARRIVAL_RADIUS + 5, SUMMIT.z)).toEqual([])
+    expect(revealLandmarksOnArrival(high.deps, SUMMIT.x + 10, SUMMIT.z)).toEqual([{ id: SUMMIT.id, name: SUMMIT.name }])
   })
 })

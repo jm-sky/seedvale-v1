@@ -14,6 +14,7 @@ import {
 import { sampleRawTexelAt } from '../../terrain/chunkHeightmap'
 import { isFloorBelowSea, isMountainRidge, isOceanMix } from '../../terrain/terrainClassification'
 import { isWetTexel } from '../../terrain/waterSurface'
+import { insideSpineSummitFootprint, type LandformLandmark, landformLandmarksOf } from './landformLandmarks'
 import {
   hoursToWorldUnits,
   LAKE_EXTENT_SEED_SEARCH_CELLS,
@@ -182,7 +183,7 @@ export type WorldLocationCatalog = {
    * probes so it stays cheap on the main thread (plan quests-progression-047).
    */
   stableLandmarksInRange(x: number, z: number, minHours: number, maxHours: number): WorldLocation[]
-  /** cave + cemetery + lake + mountainPeak + abandonedMine candidates within `maxHours` of
+  /** cave + cemetery + lake + mountainPeak + abandonedMine + landform candidates within `maxHours` of
    *  `(x, z)` — unsorted; callers apply the distance-filter → weighted-pick
    *  pipeline themselves (`locationDiscovery.ts`). Equivalent to
    *  `landmarksInRange(x, z, 0, maxHours)`. */
@@ -217,8 +218,8 @@ export type WorldLocationCatalog = {
    */
   lakeExtentRadius(id: string): number | null
   /**
-   * Approximate summit height of a catalog `mountainPeak` (max sampled terrain
-   * height around its coarse-cell centre) for arrival checks. Memoized,
+   * Approximate summit height of a catalog `mountainPeak` or a crag / spine-summit
+   * `landform` (max sampled terrain height around its centre) for arrival checks. Memoized,
    * non-persisted. `null` for a non-peak / unresolvable id.
    */
   peakSummitHeight(id: string): number | null
@@ -379,6 +380,19 @@ export function createWorldLocationCatalog(deps: WorldLocationCatalogDeps): Worl
     return { id, kind, x, z, name: landmarkName(seed, kind, id), discoveryWeight: weightOf(seed, id) }
   }
 
+  function landformLocation(l: LandformLandmark): WorldLocation {
+    const seed = getSeed()
+    return {
+      id: l.id,
+      kind: 'landform',
+      subtype: l.subtype,
+      x: l.x,
+      z: l.z,
+      name: landmarkName(seed, 'landform', l.id, undefined, l.subtype),
+      discoveryWeight: weightOf(seed, l.id),
+    }
+  }
+
   const lakeExtentCache = new Map<string, number | null>()
   const peakSummitCache = new Map<string, number | null>()
 
@@ -440,11 +454,21 @@ export function createWorldLocationCatalog(deps: WorldLocationCatalogDeps): Worl
   function peakSummitHeight(id: string): number | null {
     const cached = peakSummitCache.get(id)
     if (cached !== undefined) return cached
-    const coords = gridCoordsFromId(id, 'mountainPeak')
-    if (!coords) return null
     const params = getSampleParams()
-    const cx = (coords.cx + 0.5) * LOCATION_SCAN_STEP
-    const cz = (coords.cz + 0.5) * LOCATION_SCAN_STEP
+    let cx: number
+    let cz: number
+    const coords = gridCoordsFromId(id, 'mountainPeak')
+    if (coords) {
+      cx = (coords.cx + 0.5) * LOCATION_SCAN_STEP
+      cz = (coords.cz + 0.5) * LOCATION_SCAN_STEP
+    }
+    else {
+      // Crag / spine summit landforms (world-041 L1): same sampled-maximum rule around the descriptor position.
+      const landform = id.startsWith('landform:') ? landformLandmarksOf(params).find((l) => l.id === id) : undefined
+      if (!landform || (landform.subtype !== 'crag' && landform.subtype !== 'spineSummit')) return null
+      cx = landform.x
+      cz = landform.z
+    }
     let best = -Infinity
     const half = LOCATION_SCAN_STEP / 2
     for (let i = -2; i <= 2; i++) {
@@ -477,6 +501,10 @@ export function createWorldLocationCatalog(deps: WorldLocationCatalogDeps): Worl
       const cz = Number(czStr)
       if (!Number.isInteger(cx) || !Number.isInteger(cz)) return null
       return scanGridLocation(kind, cx, cz)
+    }
+    if (kind === 'landform') {
+      const landform = landformLandmarksOf(getSampleParams()).find((l) => l.id === id)
+      return landform ? landformLocation(landform) : null
     }
     if (kind === 'ruins') {
       const sites = [
@@ -900,8 +928,11 @@ export function createWorldLocationCatalog(deps: WorldLocationCatalogDeps): Worl
     }
 
     const out: WorldLocation[] = []
+    const landforms = landformLandmarksOf(params)
     for (const peak of kept) {
       const loc = scanGridLocation('mountainPeak', peak.gx, peak.gz)
+      // One summit = one entry (plan world-041 §3): a coarse maximum on a range-spine summit is the `landform` entry.
+      if (insideSpineSummitFootprint(landforms, loc.x, loc.z)) continue
       const hours = distanceHours(x, z, loc.x, loc.z)
       if (hours > minHours && hours <= maxHours) out.push(loc)
     }
@@ -961,6 +992,15 @@ export function createWorldLocationCatalog(deps: WorldLocationCatalogDeps): Worl
     return [loc]
   }
 
+  function landformCandidates(x: number, z: number, minHours: number, maxHours: number): WorldLocation[] {
+    const out: WorldLocation[] = []
+    for (const l of landformLandmarksOf(getSampleParams())) {
+      const hours = distanceHours(x, z, l.x, l.z)
+      if (hours > minHours && hours <= maxHours) out.push(landformLocation(l))
+    }
+    return out
+  }
+
   function landmarksInRange(x: number, z: number, minHours: number, maxHours: number): WorldLocation[] {
     const cemeteryStart = performance.now()
     const cemeteries = cemeteryCandidates(x, z, minHours, maxHours)
@@ -970,6 +1010,7 @@ export function createWorldLocationCatalog(deps: WorldLocationCatalogDeps): Worl
       ...cemeteries,
       ...scanLakesAndPeaks(x, z, minHours, maxHours),
       ...abandonedMineCandidate(x, z, minHours, maxHours),
+      ...landformCandidates(x, z, minHours, maxHours),
     ]
   }
 
@@ -997,6 +1038,7 @@ export function createWorldLocationCatalog(deps: WorldLocationCatalogDeps): Worl
       ...out,
       ...scanLakesAndPeaks(x, z, minHours, maxHours),
       ...abandonedMineCandidate(x, z, minHours, maxHours),
+      ...landformCandidates(x, z, minHours, maxHours),
     ]
   }
 
@@ -1011,6 +1053,7 @@ export function createWorldLocationCatalog(deps: WorldLocationCatalogDeps): Worl
       ...out,
       ...ruins,
       ...abandonedMineCandidate(x, z, minHours, maxHours),
+      ...landformCandidates(x, z, minHours, maxHours),
     ]
   }
 

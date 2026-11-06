@@ -18,6 +18,7 @@ export const LOCATION_KIND_LABEL: Record<WorldLocationKind, string> = {
   ruins: 'Ruiny',
   abandonedMine: 'Kopalnia',
   searchArea: 'Obszar',
+  landform: 'Formacja',
 }
 
 export const LOCATION_KIND_LABEL_FALLBACK = 'Miejsce'
@@ -31,6 +32,7 @@ export const LOCATION_KIND_ICON: Record<WorldLocationKind, Component> = {
   ruins: Castle,
   abandonedMine: Pickaxe,
   searchArea: Trees,
+  landform: Mountain,
 }
 
 export const LOCATION_KIND_ICON_FALLBACK: Component = MapPin

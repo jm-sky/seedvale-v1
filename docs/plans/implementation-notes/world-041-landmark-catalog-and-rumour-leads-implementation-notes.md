@@ -39,3 +39,15 @@ Landed (technically verified; **not** browser-verified):
 - **Quests:** no quest reads a guard reveal directly; `hasDiscoveredLocation` uses `isLocationDiscovered`, so a rumour (`estimated`) does not complete it — arrival reveal (`discovered`/`confirmed`) does, as before. Quest-owned search areas are separate entries, untouched.
 
 Open / for the author (queue §2): UI strings of the topic and Polish `genericLocationLabel` stay Polish while NPC lines are English (approved script); trust threshold and bands are 🟡; the daily pool depends on the player's position (band edge) — a player walking between asks can see a different top candidate on one day; walk-through (L5) not done.
+
+## L1 — landform catalog entries (2026-11-06, Sonnet, queue Q130)
+
+Landed (technically verified: type-check, lint, full `vitest` 9540 green; **not** browser-verified; no rumour copy or UI beyond a generic marker):
+
+- **New kind `landform`** (`WorldLocationKind`), `subtype` on the record: `crag | crater | lakeIsland | spineSummit`. Source `src/world/locations/landformLandmarks.ts` (pure, a handful per world): the 060 descriptors (`lf:<kind>:<cell>` → `landform:<kind>:<cell>`) and range-spine summits (`landform:spineSummit:<spine cell>:<summit index>`; summit index comes from the per-spine RNG, so another spine never renumbers it). Position of a summit = crest point at arc length `t` (`rangeSummitPosition`). Catalog: `getById`, `landmarksInRange`/`Async`/`stableLandmarksInRange` list them in the hours band; no persisted state, no save change.
+- **One summit = one entry:** `extractPeaks` drops a coarse `mountainPeak` inside a spine-summit footprint (1.5 σ along the spine). Crater / lake-island water stays the existing `lake:cx,cz` entry (Q109); the landform entry is added beside it.
+- **Arrival** (`landmarkArrival.ts`): crag / spine summit like a peak (60 m + 10 m height window around the sampled maximum, `peakSummitHeight` now also answers these ids); crater and lake island within 40 m of the centre (island: dry ground).
+- **Names:** `landmarkName(..., 'landform', subtype)` — placeholder deterministic Polish pools per subtype; L2 owns final proper names/uniqueness. Map: generic marker (emoji 🪨, label "Formacja"), `estimated` label "Formacja terenu".
+- **Rumours:** `isRumourKind` still limits the producer to cave/ruins/lake/peak/cemetery, so landforms are not told by NPCs yet (needs approved Astra copy — L4 reserved landform lines).
+- **`locations-coarse` not bumped:** the tile payload and `classifyCoarseCell` are unchanged (the plan's bump presumed catalog output stored in the cache; landforms and the summit suppression are applied after the cache).
+- Open: crater/island/crag arrival radii and the 1.5 σ summit footprint are 🟡; waterfall kind waits for 064 W3; L2 names, L5 walk-through.

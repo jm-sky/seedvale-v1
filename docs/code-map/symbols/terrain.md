@@ -64,10 +64,10 @@ Generated from exported TypeScript symbols.
 ## `terrain/buildChunkGeometry.ts`
 
 - `buildChunkGeometry` — function — line 420
-- `ChunkMeshResult` — type — line 19
-- `createTerrainMaterial` — function — line 57
-- `TERRAIN_DIRT_DIFFUSE_TUNING` — const — line 48
-- `TerrainWeatherUniforms` — type — line 42
+- `ChunkMeshResult` — type — line 23
+- `createTerrainMaterial` — function — line 58
+- `TERRAIN_DIRT_DIFFUSE_TUNING` — const — line 49
+- `TerrainWeatherUniforms` — type — line 46
 
 ## `terrain/cemeteryAssignment.ts`
 
@@ -223,27 +223,27 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/chunkManager.ts`
 
-- `applyChunkWaterDayNight` — function — line 1197
-- `applyModificationToTile` — function — line 958
-- `ChunkManager` — type — line 566
-- `ChunkManagerConfig` — type — line 342
-- `createChunkManager` — function — line 1222
+- `applyChunkWaterDayNight` — function — line 1202
+- `applyModificationToTile` — function — line 963
+- `ChunkManager` — type — line 571
+- `ChunkManagerConfig` — type — line 347
+- `createChunkManager` — function — line 1227
   - domain: world-terrain
   - system: chunk-manager
   - role: Owns terrain chunk streaming, sampling and environment-facing world queries.
   - simulation: on-demand
   - performance: nearby-only
-- `CropHarvestOutcome` — type — line 1211
-- `drainByBudget` — function — line 1172
-- `FinalizeStage` — type — line 462
-- `pickNearestQueuedKey` — function — line 1132
-- `pickNextFinalizeKey` — function — line 1150
-- `ResidentChunkSnapshot` — type — line 1037
-- `sampleResidentHeight` — function — line 1057
-- `sampleResidentLocalWater` — function — line 1105
-- `sampleResidentSurfaceGround` — function — line 1077
-- `TerrainModification` — type — line 915
-- `tickChunkWaterSurfaces` — function — line 1185
+- `CropHarvestOutcome` — type — line 1216
+- `drainByBudget` — function — line 1177
+- `FinalizeStage` — type — line 467
+- `pickNearestQueuedKey` — function — line 1137
+- `pickNextFinalizeKey` — function — line 1155
+- `ResidentChunkSnapshot` — type — line 1042
+- `sampleResidentHeight` — function — line 1062
+- `sampleResidentLocalWater` — function — line 1110
+- `sampleResidentSurfaceGround` — function — line 1082
+- `TerrainModification` — type — line 920
+- `tickChunkWaterSurfaces` — function — line 1190
 
 ## `terrain/chunkMeshCache.ts`
 
@@ -503,11 +503,11 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/grass.ts`
 
-- `createGrassSystem` — function — line 530
-- `grassBladeLocalPositions` — function — line 378
+- `createGrassSystem` — function — line 529
+- `grassBladeLocalPositions` — function — line 377
   - domain: world-terrain
-- `GrassSystem` — type — line 79
-- `WorldGrassChunk` — type — line 25
+- `GrassSystem` — type — line 78
+- `WorldGrassChunk` — type — line 24
 
 ## `terrain/grassBounds.ts`
 
@@ -567,24 +567,28 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/macroClimate.ts`
 
-- `ClimateOffsetAt` — type — line 296
+- `ClimateOffsetAt` — type — line 320
 - `climateOffsetC` — function — line 122
   - domain: world
-- `createClimateOffsetAt` — function — line 304
+- `climateOffsetFromParams` — function — line 145
+- `createClimateOffsetAt` — function — line 328
   - domain: world
-- `createMacroClimate` — function — line 177
-- `lastMacroClimateBuildMs` — function — line 264
+- `createMacroClimate` — function — line 201
+- `lastMacroClimateBuildMs` — function — line 288
 - `latitude01` — function — line 102
 - `MACRO_CLIMATE_CELL_M` — const — line 19
   - domain: world-terrain
 - `MACRO_CLIMATE_GRID_N` — const — line 22
 - `MacroClimate` — type — line 63
-- `macroClimateFrom` — function — line 127
-- `macroClimateOf` — function — line 272
+- `macroClimateFrom` — function — line 151
+- `macroClimateOf` — function — line 296
 - `MacroClimateSample` — type — line 33
 - `referenceTemperatureC` — function — line 112
 - `runoffFrom` — function — line 57
-- `runoffGrid` — function — line 223
+- `runoffGrid` — function — line 247
+- `SURFACE_CLIMATE_OFF` — const — line 133
+- `surfaceClimateParams` — function — line 135
+- `SurfaceClimateParams` — type — line 131
 - `temperatureAt` — function — line 107
 
 ## `terrain/mineableDeposit.ts`
@@ -633,7 +637,7 @@ Generated from exported TypeScript symbols.
 ## `terrain/rangeSpines.ts`
 
 - `EMPTY_RANGE_SPINES` — const — line 190
-- `generateRangeSpines` — function — line 330
+- `generateRangeSpines` — function — line 336
 - `RANGE_HOME_RESERVE_M` — const — line 117
 - `RANGE_MAX_SPINES` — const — line 105
 - `RANGE_SEGMENTS` — const — line 106
@@ -644,7 +648,8 @@ Generated from exported TypeScript symbols.
 - `RangeSpineSample` — type — line 86
 - `RangeSpineSet` — type — line 83
 - `RangeSummit` — type — line 52
-- `sampleRangeSpines` — function — line 486
+- `rangeSummitPosition` — function — line 257
+- `sampleRangeSpines` — function — line 492
 - `softCapSummitHeight` — function — line 184
 - `SUMMIT_SOFT_CEILING_M` — const — line 181
 - `SUMMIT_SOFT_KNEE_M` — const — line 180
@@ -792,30 +797,37 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/snowField.ts`
 
-- `GRASS_SNOW_BIAS` — const — line 24
-- `GRASS_SNOW_DITHER_AT` — const — line 28
-- `GRASS_SNOW_FROST` — const — line 26
-- `grassSnowBury` — function — line 157
-- `grassSnowCoverAt` — function — line 151
-- `grassSnowFrost` — function — line 162
-- `grassSnowVisible` — function — line 167
-- `INTEGER_LATTICE_GLSL` — const — line 56
-- `parseSnowParam` — function — line 175
-- `SNOW_ALT_M` — const — line 22
+- `GRASS_SNOW_BIAS` — const — line 22
+- `GRASS_SNOW_DITHER_AT` — const — line 26
+- `GRASS_SNOW_FROST` — const — line 24
+- `grassSnowBury` — function — line 151
+- `grassSnowCoverAt` — function — line 146
+- `grassSnowFrost` — function — line 156
+- `grassSnowVisible` — function — line 161
+- `INTEGER_LATTICE_GLSL` — const — line 54
+- `parseSnowParam` — function — line 169
 - `SNOW_BIAS` — const — line 20
-- `SNOW_COL` — const — line 30
+- `SNOW_COL` — const — line 28
 - `SNOW_EDGE` — const — line 18
-- `SNOW_FIELD_GLSL` — const — line 66
+- `SNOW_FIELD_GLSL` — const — line 64
 - `SNOW_GAIN` — const — line 14
   - domain: world-terrain
 - `SNOW_ONSET` — const — line 16
-- `snowCover` — function — line 119
-- `snowLatticeHash` — function — line 45
-- `snowNoise` — function — line 94
-- `snowTerrainBias` — function — line 132
-- `SnowTerrainBiasInput` — interface — line 124
-- `snowThreshold` — function — line 110
-- `terrainSnowCoverAt` — function — line 141
+- `snowCover` — function — line 117
+- `snowLatticeHash` — function — line 43
+- `snowNoise` — function — line 92
+- `snowTerrainBias` — function — line 128
+- `SnowTerrainBiasInput` — interface — line 122
+- `snowThreshold` — function — line 108
+- `terrainSnowCoverAt` — function — line 136
+
+## `terrain/surfaceClimateField.ts`
+
+- `createSurfaceClimateUniforms` — function — line 23
+- `setSurfaceClimateParams` — function — line 31
+- `setSurfaceWeatherLut` — function — line 35
+- `SURFACE_CLIMATE_GLSL` — const — line 41
+- `SurfaceClimateUniforms` — type — line 16
 
 ## `terrain/terrainClassification.ts`
 

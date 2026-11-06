@@ -107,6 +107,7 @@ Generated from TypeScript imports.
 - `world/createCaves.archetype.test.ts`
 - `world/createCaves.contentAnchors.test.ts`
 - `world/createCaves.test.ts`
+- `world/locations/landformLandmarks.test.ts`
 - `world/map/continentPreview.test.ts`
 - `world/map/mapProjection.ts`
 - `world/map/mapRasterTile.test.ts`

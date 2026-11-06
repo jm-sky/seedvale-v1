@@ -119,6 +119,7 @@ Generated from TypeScript imports.
 - `config/worldConfig.ts`
 - `terrain/chunkMeshData.ts`
 - `terrain/snowField.ts`
+- `terrain/surfaceClimateField.ts`
 - `terrain/terrainCutout.ts`
 - `terrain/terrainDetailNormalMap.ts`
 
@@ -466,6 +467,8 @@ Generated from TypeScript imports.
 - `world/locations/abandonedCemeteryCache.test.ts`
 - `world/locations/abandonedCemeteryCache.ts`
 - `world/locations/darkForestTreasureSite.ts`
+- `world/locations/landformLandmarks.test.ts`
+- `world/locations/landformLandmarks.ts`
 - `world/locations/locationsCoarseCache.test.ts`
 - `world/locations/locationsCoarseCache.ts`
 - `world/locations/lostTreasureEstateSearchArea.test.ts`
@@ -610,6 +613,7 @@ Generated from TypeScript imports.
 - `terrain/fbm.ts`
 - `terrain/grass.ts`
 - `terrain/grassPlacement.ts`
+- `terrain/macroClimate.ts`
 - `terrain/mineableRocks.ts`
 - `terrain/renewableWorldItems.ts`
 - `terrain/riverFord.ts`
@@ -617,11 +621,13 @@ Generated from TypeScript imports.
 - `terrain/riverQuery.ts`
 - `terrain/riverTileCache.ts`
 - `terrain/roadBridge.ts`
+- `terrain/surfaceClimateField.ts`
 - `terrain/terrainCutout.ts`
 - `terrain/unloadedLandmarkLookup.ts`
 - `terrain/vegetationRegionBatcher.ts`
 - `terrain/waterSample.ts`
 - `terrain/waterSurface.ts`
+- `terrain/waterfallSites.ts`
 - `terrain/worldKnowledgeScan.ts`
 - `world/collision.ts`
 - `world/createBridge.ts`
@@ -632,11 +638,13 @@ Generated from TypeScript imports.
 - `world/locations/darkForestTreasureSiteRuntime.ts`
 - `world/plantedCrops.ts`
 - `world/plantedTrees.ts`
+- `world/riverGeometry.ts`
 - `world/sight/environmentSightBlockers.ts`
 - `world/sight/sightBlockers.ts`
 - `world/treeLifecycle.ts`
 - `world/treeVisuals.ts`
 - `world/waterMirror.ts`
+- `world/weather.ts`
 
 **Imported by**
 
@@ -663,6 +671,7 @@ Generated from TypeScript imports.
 - `world/createTerrainPreparations.ts`
 - `world/foodSources.ts`
 - `world/herbalGathering.ts`
+- `world/locations/landformLandmarks.test.ts`
 - `world/locations/worldLocationCatalog.test.ts`
 - `world/locations/worldLocationCatalog.ts`
 - `world/worldContext.ts`
@@ -885,6 +894,7 @@ Generated from TypeScript imports.
 - `terrain/chunkHeightmap.ts`
 - `terrain/continentMask.test.ts`
 - `terrain/macroClimate.ts`
+- `terrain/surfaceClimateField.ts`
 - `terrain/worldEdge.test.ts`
 - `terrain/worldEdge.ts`
 - `terrain/worldHydrology.ts`
@@ -1151,6 +1161,7 @@ Generated from TypeScript imports.
 - `terrain/distanceLod.ts`
 - `terrain/grassPlacement.ts`
 - `terrain/snowField.ts`
+- `terrain/surfaceClimateField.ts`
 - `world/waterMirror.ts`
 
 **Imported by**
@@ -1286,7 +1297,10 @@ Generated from TypeScript imports.
 - `settlement/SettlementsManager.ts`
 - `terrain/biomeRegions.test.ts`
 - `terrain/biomeRegions.ts`
+- `terrain/chunkManager.ts`
 - `terrain/macroClimate.test.ts`
+- `terrain/snowField.test.ts`
+- `terrain/surfaceClimateField.ts`
 - `terrain/worldHydrology.ts`
 - `world/bloodTraces.ts`
 - `world/createPlacedTraps.ts`
@@ -1397,6 +1411,7 @@ Generated from TypeScript imports.
 
 - `terrain/chunkHeightmap.ts`
 - `terrain/rangeSpines.test.ts`
+- `world/locations/landformLandmarks.ts`
 
 ## `terrain/renewableWorldItems.test.ts`
 
@@ -1669,7 +1684,9 @@ Generated from TypeScript imports.
 
 **Imports**
 
+- `terrain/macroClimate.ts`
 - `terrain/snowField.ts`
+- `world/weather.ts`
 
 ## `terrain/snowField.ts`
 
@@ -1681,6 +1698,20 @@ Generated from TypeScript imports.
 - `terrain/snowField.test.ts`
 - `world/caves/caveHeightfieldMaterial.ts`
 - `world/riverWaterMaterial.ts`
+
+## `terrain/surfaceClimateField.ts`
+
+**Imports**
+
+- `terrain/continentMask.ts`
+- `terrain/macroClimate.ts`
+- `world/weather.ts`
+
+**Imported by**
+
+- `terrain/buildChunkGeometry.ts`
+- `terrain/chunkManager.ts`
+- `terrain/grass.ts`
 
 ## `terrain/terrainClassification.ts`
 
@@ -1973,7 +2004,12 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `terrain/chunkManager.ts`
 - `terrain/waterfallSites.test.ts`
+- `world/createRiverWater.ts`
+- `world/riverGeometry.ts`
+- `world/waterfallSpray.test.ts`
+- `world/waterfallSpray.ts`
 
 ## `terrain/worldEdge.test.ts`
 

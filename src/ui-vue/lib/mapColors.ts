@@ -50,6 +50,7 @@ export const LOCATION_KIND_COLOR: Record<WorldLocationKind, string> = {
   ruins: '#a68b6a',
   abandonedMine: '#c4a35a',
   searchArea: '#6d8f5a',
+  landform: '#8a8f7a',
 }
 
 /** Fallback for a marker whose kind can't be resolved from its id (should
@@ -74,4 +75,5 @@ export const LOCATION_KIND_EMOJI: Record<WorldLocationKind, string> = {
   ruins: '🏚️',
   abandonedMine: '⛏️',
   searchArea: '🌲',
+  landform: '🪨',
 }

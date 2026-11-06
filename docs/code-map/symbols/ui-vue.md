@@ -240,9 +240,9 @@ Generated from exported TypeScript symbols.
 ## `ui-vue/lib/mapColors.ts`
 
 - `LOCATION_KIND_COLOR` — const — line 44
-- `LOCATION_KIND_COLOR_FALLBACK` — const — line 57
-- `LOCATION_KIND_EMOJI` — const — line 68
-- `locationKindColor` — function — line 59
+- `LOCATION_KIND_COLOR_FALLBACK` — const — line 58
+- `LOCATION_KIND_EMOJI` — const — line 69
+- `locationKindColor` — function — line 60
 - `MAP_FOG_FILL` — const — line 4
 - `MAP_FOG_RGB` — const — line 6
 - `MAP_RASTER_CLASS_RGB` — const — line 29
@@ -343,12 +343,12 @@ Generated from exported TypeScript symbols.
 
 ## `ui-vue/lib/worldLocationDisplay.ts`
 
-- `LOCATION_KIND_ICON` — const — line 25
-- `LOCATION_KIND_ICON_FALLBACK` — const — line 36
+- `LOCATION_KIND_ICON` — const — line 26
+- `LOCATION_KIND_ICON_FALLBACK` — const — line 38
 - `LOCATION_KIND_LABEL` — const — line 12
-- `LOCATION_KIND_LABEL_FALLBACK` — const — line 23
-- `locationKindIcon` — function — line 42
-- `locationKindLabel` — function — line 38
+- `LOCATION_KIND_LABEL_FALLBACK` — const — line 24
+- `locationKindIcon` — function — line 44
+- `locationKindLabel` — function — line 40
 
 ## `ui-vue/mount.ts`
 
