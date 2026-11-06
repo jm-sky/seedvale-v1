@@ -483,3 +483,15 @@ export function planSettlementFaunaHabitats(input: SettlementFaunaPlanInput): Se
 
   return { ring, spawners, placedSpawnPoints }
 }
+
+/**
+ * Side length of the `roadCorridorsNear` query a habitat group needs at its own
+ * anchor: covers the farthest spawner/den ring plus a road clearance margin
+ * (same 10 m margin as the home build query).
+ *
+ * @domain fauna
+ */
+export function groupRoadQueryExtent(footprintRadius: number, denRing?: readonly [number, number]): number {
+  const reach = footprintRadius + Math.max(SPAWNER_RING_OFFSET[1], (denRing ?? PREDATOR_DEN_RING_OFFSET)[1])
+  return (reach + 10) * 2
+}

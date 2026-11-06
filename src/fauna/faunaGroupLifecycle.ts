@@ -1,3 +1,4 @@
+import type { RoadCorridorSegment } from '../terrain/chunkHeightmap'
 import {
   type PreySpawner,
   type SavedSpawnPointState,
@@ -31,6 +32,8 @@ export type FaunaHabitatGroupInput = {
   footprintRadius: number
   /** Predator-den ring past the footprint (`predatorDenRingForBelt`); omitted = home ring. */
   denRing?: readonly [number, number]
+  /** Road corridors queried around this group's own anchor (`groupRoadQueryExtent`); omitted = none. */
+  roadSegments?: readonly RoadCorridorSegment[]
 }
 
 /** Step used by the lazy catch-up. Small enough that the result matches per-frame

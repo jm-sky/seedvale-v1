@@ -210,4 +210,47 @@ describe('createFauna habitat groups (plan fauna-050 F2)', () => {
   })
 })
 
+describe('createFauna remote groups (plan fauna-050 C0)', () => {
+  const SOUTH: FaunaHabitatGroupInput = { groupId: 'south-hamlet', center: { x: -900, z: 300 }, footprintRadius: 35, denRing: [70, 130] }
+  const sites = (fauna: Fauna, prefix: string) =>
+    fauna.getSpawners().filter((s) => s.id.startsWith(prefix)).map((s) => [s.id, s.x, s.z])
+  const agentSpots = (fauna: Fauna, prefix: string) =>
+    fauna.getAgents().filter((a) => a.spawnPointId?.startsWith(prefix))
+      .map((a) => [a.spawnPointId, a.mesh.position.x, a.mesh.position.z]).sort()
+
+  it('non-home positions do not depend on group materialization order', async () => {
+    const a = await build()
+    a.fauna.materializeGroup(NEIGHBOUR, 0)
+    a.fauna.materializeGroup(SOUTH, 0)
+    const b = await build()
+    b.fauna.materializeGroup(SOUTH, 0)
+    b.fauna.materializeGroup(NEIGHBOUR, 0)
+    for (const prefix of ['north-hamlet:', 'south-hamlet:']) {
+      expect(sites(b.fauna, prefix)).toEqual(sites(a.fauna, prefix))
+      expect(agentSpots(b.fauna, prefix)).toEqual(agentSpots(a.fauna, prefix))
+    }
+    expect(sites(a.fauna, 'north-hamlet:').length).toBeGreaterThan(0)
+    a.fauna.dispose()
+    b.fauna.dispose()
+  })
+
+  it("a remote group's own road excludes sites on it; the home road query is not applied to it", async () => {
+    const free = await build()
+    free.fauna.materializeGroup(NEIGHBOUR, 0)
+    const freeSites = sites(free.fauna, 'north-hamlet:')
+    expect(freeSites.length).toBeGreaterThan(0)
+    const [, fx, fz] = freeSites[0] as [string, number, number]
+    free.fauna.dispose()
+
+    // A road through the first free site, given only to the neighbour group.
+    const road = { ax: fx - 20, az: fz, ah: 5, bx: fx + 20, bz: fz, bh: 5, halfWidth: 3, heightStrength: 1, tintStrength: 1 }
+    const roaded = await build()
+    roaded.fauna.materializeGroup({ ...NEIGHBOUR, roadSegments: [road] }, 0)
+    for (const [, x, z] of sites(roaded.fauna, 'north-hamlet:') as [string, number, number][]) {
+      expect(Math.abs(z - fz) <= 4 && x >= fx - 20 && x <= fx + 20).toBe(false)
+    }
+    roaded.fauna.dispose()
+  })
+})
+
 warn.mockClear()

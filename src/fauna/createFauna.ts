@@ -137,6 +137,10 @@ type HabitatGroupRecord = {
   id: string
   pinned: boolean
   center: { x: number, z: number }
+  /** Settlement boundary radius — destination of this group's den trips (C0). */
+  footprintRadius: number
+  /** Road corridors queried at this group's own anchor (C0); home uses the build-time query. */
+  roadSegments: readonly RoadCorridorSegment[]
   /** Deterministic plan, computed once on first materialization and reused. */
   plan: SettlementFaunaPlan | null
   materialized: boolean
@@ -853,12 +857,12 @@ export async function createFauna(
     marker: string | null
     lastOpacity: number
   }[] = []
-  const offRoad = (x: number, z: number) => !onRoad(x, z)
   /** Habitat spawners (esp. thicket) stay inland — not on beach / coastal
-   *  band, and not on top of a river channel (`SPAWNER_RIVER_CLEARANCE`). */
-  const spawnerSiteOk = (x: number, z: number): boolean => {
+   *  band, and not on top of a river channel (`SPAWNER_RIVER_CLEARANCE`).
+   *  `roadTest` is the owning group's road predicate (C0: never the home query for a remote site). */
+  const spawnerSiteOkFor = (roadTest: (x: number, z: number) => boolean) => (x: number, z: number): boolean => {
     if (!drySpawnSite(x, z, SPAWNER_RIVER_CLEARANCE)) return false
-    if (!offRoad(x, z)) return false
+    if (roadTest(x, z)) return false
     return !isCoastalPlacement(x, z, {
       sampleHeight,
       waterLevel,
@@ -866,6 +870,28 @@ export async function createFauna(
       coastThreshold: coast?.coastThreshold,
     })
   }
+  /** Home / extra-site gate (build-time road query). */
+  const spawnerSiteOk = spawnerSiteOkFor(onRoad)
+
+  /** Spawner id -> owning group (C0): destination owner for den trips and the
+   *  home-only wolf-den scenario guard. Absent = extra/closed-pressure site, treated as home. */
+  const spawnerGroupById = new Map<string, HabitatGroupRecord>()
+  /** Site-owned placement streams for non-home spawners (C0): independent of
+   *  materialization order. Home keeps the shared `0xfa11` stream (bit-identical). */
+  const spawnerRngById = new Map<string, () => number>()
+  const rngForSpawner = (spawner: PreySpawner): (() => number) => {
+    if (spawnerGroupById.get(spawner.id)?.pinned ?? true) return random
+    let rng = spawnerRngById.get(spawner.id)
+    if (!rng) {
+      rng = settlementFaunaSiteRandom(seed, `spawner:${spawner.id}`)
+      spawnerRngById.set(spawner.id, rng)
+    }
+    return rng
+  }
+  /** Walkable point near a spawner, drawn from that spawner's own stream. */
+  const findWalkableNearSpawner = (spawner: PreySpawner, minDist: number, maxDist: number) =>
+    findWalkableNear(spawner.x, spawner.z, minDist, maxDist, undefined, 24, rngForSpawner(spawner))
+
   /** Creates the planned ring individuals (planner hook, after the ring phase and
    *  before any spawner is placed/carved). */
   const spawnRing = (ring: readonly PlannedRingAnimal[], group: HabitatGroupRecord): void => {
@@ -913,6 +939,7 @@ export async function createFauna(
       )
     }
     group.spawnerIds.add(spawner.id)
+    spawnerGroupById.set(spawner.id, group)
     spawners.push(spawner)
     spawnerById.set(spawner.id, spawner)
 
@@ -998,7 +1025,7 @@ export async function createFauna(
    *  re-materialization). Only the home build feeds the quest wolf-den tracker. */
   const spawnHabitatPopulation = (habitat: PreySpawner, count: number, trackDenWolves: boolean): void => {
     for (let i = 0; i < count; i++) {
-      const spot = findWalkableNear(habitat.x, habitat.z, 0, 4) ?? habitat
+      const spot = findWalkableNearSpawner(habitat, 0, 4) ?? habitat
       const variant = habitat.type === 'wolfDen' ? wolfDenInitialFillVariant(i) : undefined
       const agent = spawnAgent(
         habitat.kind,
@@ -1058,6 +1085,8 @@ export async function createFauna(
         id: input.groupId,
         pinned: false,
         center: { x: input.center.x, z: input.center.z },
+        footprintRadius: input.footprintRadius,
+        roadSegments: input.roadSegments ?? [],
         plan: null,
         materialized: false,
         spawnerIds: new Set(),
@@ -1073,6 +1102,10 @@ export async function createFauna(
       spawnRing(target.plan.ring, target)
       for (const planned of target.plan.spawners) materializeSpawner(planned, target, nowDays)
     } else {
+      // Plan against frozen inputs (no per-site hooks), then apply ring and terrain edits,
+      // so a site's carving never feeds the next site's samples (review 035 R7).
+      const groupRoadTest = (x: number, z: number): boolean =>
+        isNearRoadCorridor(x, z, target.roadSegments, SPAWNER_ROAD_CLEARANCE)
       target.plan = planSettlementFaunaHabitats({
         settlementId: input.groupId,
         center: target.center,
@@ -1083,15 +1116,15 @@ export async function createFauna(
         ringSpecs: SPAWNS,
         spawnerSpecs: SPAWNER_SPECS,
         isDry: drySpawnSite,
-        onRoad,
-        spawnerSiteOk,
+        onRoad: groupRoadTest,
+        spawnerSiteOk: spawnerSiteOkFor(groupRoadTest),
         ringHabitatFilter: habitatFilterFor,
         sampleHeight,
         sampleForestFactor,
         denAvoidPoints,
-        onRingPlanned: (ring) => spawnRing(ring, target),
-        onSpawnerPlaced: (planned) => materializeSpawner(planned, target, nowDays),
       })
+      spawnRing(target.plan.ring, target)
+      for (const planned of target.plan.spawners) materializeSpawner(planned, target, nowDays)
     }
     fillGroupPopulation(target)
   }
@@ -1111,6 +1144,7 @@ export async function createFauna(
       const index = spawners.indexOf(spawner)
       if (index >= 0) spawners.splice(index, 1)
       spawnerById.delete(id)
+      spawnerGroupById.delete(id)
       habitatPressureCache.delete(id)
       settlementTripAnimalBySpawner.delete(id)
       removeSpawnerVisuals(id)
@@ -1136,6 +1170,8 @@ export async function createFauna(
     id: settlementId,
     pinned: true,
     center: { x: settlementCenter.x, z: settlementCenter.z },
+    footprintRadius,
+    roadSegments,
     plan: null,
     materialized: true,
     spawnerIds: new Set(),
@@ -1506,7 +1542,7 @@ export async function createFauna(
       }
       const materializeManagedSpawnerAnimal = (spawner: PreySpawner): boolean => {
         const pos = resolveWildFaunaSpawnPosition(
-          findWalkableNear(spawner.x, spawner.z, 0, 4),
+          findWalkableNearSpawner(spawner, 0, 4),
           spawner,
           drySpawnSite(spawner.x, spawner.z, SPAWN_RIVER_CLEARANCE),
         )
@@ -1544,7 +1580,10 @@ export async function createFauna(
         lastRecoveryCheckDay = dayIndex
         for (const spawner of spawners) {
           if (spawner.type === 'wolfDen') {
-            if (shouldActivateWolfDenProblem(spawner, dayIndex)) {
+            // Q142-a (b): the wolf-den problem scenario is home-only for now.
+            const denGroup = spawnerGroupById.get(spawner.id)
+            const tripGroup = denGroup ?? groups.get(settlementId)!
+            if ((!denGroup || denGroup.pinned) && shouldActivateWolfDenProblem(spawner, dayIndex)) {
               activateWolfDenProblem(spawner)
               const targetCap = effectiveMaxPreyCount(spawner)
               let nearby = 0
@@ -1554,7 +1593,7 @@ export async function createFauna(
               }
               while (nearby < targetCap && spawner.state === 'active') {
                 const spot = resolveWildFaunaSpawnPosition(
-                  findWalkableNear(spawner.x, spawner.z, 0, 4),
+                  findWalkableNearSpawner(spawner, 0, 4),
                   spawner,
                   drySpawnSite(spawner.x, spawner.z, SPAWN_RIVER_CLEARANCE),
                 )
@@ -1579,8 +1618,8 @@ export async function createFauna(
                     && !a.hasActiveTrip(),
                 )
                 const destination = findSettlementOutskirtsDestination(
-                  { x: settlementCenter.x, z: settlementCenter.z },
-                  footprintRadius + 6,
+                  { x: tripGroup.center.x, z: tripGroup.center.z },
+                  tripGroup.footprintRadius + 6,
                   sampleHeight,
                   waterLevel,
                   (x, z) => sampleHeight(x, z) > waterLevel + 0.6,
