@@ -66,3 +66,10 @@ Status for every entry: `todo` (unverified). Created: 2026-10-29. IDs here (`IMP
 - **Expected:** Roads (optionally) only slightly depress the terrain and otherwise follow the relief, flowing over rises and hillocks rather than trenching through them.
 - **Investigate:** Road bed carving depth/profile and its limits (max cut depth, slope-relative cut, shoulder blending), interaction with route grade; any change alters terrain output → bump the affected worldgen cache versions (and `WORLDGEN_EPOCH` per checklist if saves are affected). Coordinate with Q119 relief freeze.
 - **Area:** world-terrain / roads.
+
+## IMP-011 — Player swims along the riverbed instead of at the surface
+- **Observation (2026-11-06, author playtest):** When swimming in a river, the player moves along the riverbed instead of floating/swimming near the water surface.
+- **Expected:** In sufficiently deep river water, the swimming character is positioned at the water surface, not on the bottom; shallow water remains wading.
+- **Investigate:** Player swim-mode vertical placement versus river surface height and riverbed/terrain collision; verify water sampling, character root/feet offsets and transitions between wading and swimming.
+- **Related:** IMP-003 (shallow-stream swim threshold was fixed; this is a distinct observed deep-water vertical-position symptom). Avoid assuming the same root cause.
+- **Area:** items-player / world-terrain.
