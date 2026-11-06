@@ -89,7 +89,8 @@ Threshold sweep (runoff-weighted, effective cells → km/km² 42 / 415): 45 → 
 
 ### Not done / next
 
-- H2 dry drainage (class, projections, contract tests) — waits for §3 Q121-a.
+- H2 dry drainage (class, projections, contract tests) — **not wanted for now** (author Q121-a (a), 2026-11-06: "wygląda dobrze"); may return as option (b) — subtle dry-valley strip — after 062 biomes.
+- Home shift on 415424794: site search treats rivers only as obstacles (plaza in channel rejected, 24 m stream-head clearance; `findSettlementSite.ts`), so removing the home stream freed a better-scoring spot ≈ 52 m away. Author 2026-11-06: negligible, leave it. Home ↔ `4_-1` road: waits for the road close-out (Q61–Q64), no hurry.
 - H3–H6 (Q122): map hierarchy, the one artifact pair on seed 42 (H4), outcome assertions + waterfall data (H5), fixtures/close-out (H6).
 - Browser/3D: 3 catchments on 415424794 and the new home site → §2.
 - ❓ Unverified observation while debugging: after `clearRoadNetworkCaches()` mid-run, `-4_-2` resolved 1 instead of 2 routes — may be an artefact of the debug sequence (defs cached, routes not); not investigated.
