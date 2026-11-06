@@ -16,7 +16,7 @@ Status: **implemented · technically verified** (type-check, lint, `pnpm vitest 
 
 Width in metres past the footprint radius = inner edge of the predator-den ring. Base by size `OUTPOST 40 · SM 55 · MD 70 · LG 85 · XL 100`; `closed` x0.75; minus 40 m per 1.0 of forest share above 0.35; floor 30 m. `MD / default / 0.35 = 70 m` = `HOME_SAFETY_BELT_WIDTH` (= `PREDATOR_DEN_RING_OFFSET[0]`).
 
-Important: the **home belt is always exactly 70 m regardless of home size**. Home size is variable (`homeSize: 'auto'`), and a size-dependent value would move home dens and break the bit-identical invariant, so the home build keeps the constant ring and the function is only for non-home sites. Non-`MD` values are proposals; re-tune in F3/F4 with a census (author decision if it changes feel).
+Important: the **home belt is always exactly 70 m regardless of home size**. Home size is variable (`homeSize: 'auto'`), and a size-dependent value would move home dens and break the bit-identical invariant, so the home build keeps the constant ring and the function is only for non-home sites. Non-`MD` values are proposals; re-tune in F3/F4 with a census (author decision if it changes feel). **Author Q141-a (a), 2026-11-06:** accepted as the start, keep belts narrow.
 
 ### Verification
 
@@ -62,5 +62,5 @@ Status: **implemented · technically verified** (type-check, lint, `pnpm vitest 
 
 - **F1 relabel:** extracted + synthetic golden verified. Still owed: WSL baseline and a home check on the real continent. Planner side effects (carving during planning) get a frozen-input contract for non-home groups in C0.
 - **F2 relabel:** streaming infrastructure (group map, cached plan, save union, toggle). The F2 "Stop if" (*catch-up cannot match continuous lifecycle without persisting individuals*) was in fact hit. The 15 + 9 tests prove timer parity and site identity, not individual or ecological continuity. The test "carry() keeps runtime data out of the persisted rows" asserts the R2 information loss. C2 rewrites it into a round-trip assertion.
-- **Not reachable in production yet:** no non-home group is materialized (F3 not wired), so R1/R2/R6 do not affect current play. Home keeps the already documented reload limitation (ordinary wild animals resurrect, quest bindings `invalidated`). Q035-d decides whether C1/C2 also fix that.
-- **Next:** C0 (S, ready, no decision needed) in parallel with author answers Q035-a…d → C1 (O spec) → C2 → C3 → C4 → F3.
+- **Not reachable in production yet:** no non-home group is materialized (F3 not wired), so R1/R2/R6 do not affect current play. Home keeps the already documented reload limitation (ordinary wild animals resurrect, quest bindings `invalidated`). Author Q035-d (a), 2026-11-06: C1/C2 also fix that at home.
+- **Next:** C0 (S, ready) ∥ C1 (O, ready — author answered Q035-a…d 2026-11-06) → C1 (O spec) → C2 → C3 → C4 → F3.
