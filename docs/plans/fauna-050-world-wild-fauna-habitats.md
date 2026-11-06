@@ -169,6 +169,13 @@ Owner response to [review 035](../reviews/2026-11-06--035--continent-wide-wild-f
 
 Ordering (revised 2026-11-06): F1 → F2 → **C0 (done 2026-11-06, technical; den-trip two-centre test deferred to F3) ∥ C1 → C2 → C3 → C4** → F3 → F4 runtime (census tool may run earlier) (tool any time after F2; numbers after the freezes) → F5. Each worldgen-output-affecting slice gets its own census (roadmap cross-plan rules). Fauna sites are not cached, so no cache namespace is involved. Epoch-1 test saves are disposable (review 031).
 
+**Execution sequence (Opus, 2026-11-06 — architecture by Opus, implementation by Sonnet):**
+
+1. **Q160 C1 — one Opus session** writes in the notes: (a) the durable wild record spec (birth id `<habitatId>:b<seq>` + persisted cursor, deterministic sex from the birth id, fields reused from `AnimalSaveState` / `PersistentOccupantSaveRecord`, death/removal tombstones bounded by capacity, domestic transfer, event-keyed RNG keys, `CURRENT_SAVE_VERSION` 60 → 61 migration shape, epoch impact); (b) the **C3 world-time transition contract** incl. the traveller threat bubble hook (verify merchant / knight / hunter traveller roles in `merchantJourney.ts`, `npcTravel.ts`, `npcExpeditionTravel.ts` first) and written tolerances — so C3 needs no second Opus session unless the code disproves the contract; (c) paste-ready S rows for C2, C3 and C4 with done-when and stop-if.
+2. **S:** C2 (lossless demote/promote + save/rebuild) → C4 (entity/event-keyed randomness; may follow C2 directly, independent of C3) → C3 implementation.
+3. **S:** F3 (wire non-home groups; Q133 done 2026-11-05, so only C0–C4 gate it) → F4 runtime (census/pure planner may run earlier, after 062 B1 when land cover moves) → F5.
+4. Living-world lane: runs after or beside the geography main path; fauna rows change no worldgen output, so they never collide with geography cache bumps.
+
 ## Author decisions (2026-11-05, queue §3 Q139)
 
 Answered: **Q139-a (a)** and **Q139-b (a)**. Consequences: wilderness density target = home-like (~20–25 live wild animals within ~250 m of the player); the `SPAWNS` lairless ring individuals become habitat-bound (spawner with respawn) for non-home and wilderness groups. Home keeps its current ring in F1–F3 (bit-identical); converting the home ring is a separate, explicit step in F4 with its own census.

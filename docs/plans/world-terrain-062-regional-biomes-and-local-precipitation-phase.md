@@ -1,14 +1,14 @@
 # Plan: Regional biomes and local temperature / rain–snow phase
 
 **Created:** 2026-11-04
-**Status:** `planned` 📋 (slice details finalized after world-terrain-061 C2; amended per [review 031](../reviews/2026-11-04--031--geography-revival-g1-g9-critical-architecture-review.md) 2026-11-04)
+**Status:** `planned` 📋 — gates open 2026-11-06 (061 C2 look accepted 2026-11-05, 060 R4 relief freeze + 061 H6 close-out landed 2026-11-06); **B1 contract written (Opus, 2026-11-06)** in the [implementation notes](./implementation-notes/world-terrain-062-regional-biomes-and-local-precipitation-phase-implementation-notes.md) → B1 implementation is Sonnet (queue Q124); W1 contract still Opus (Q123). Amended per [review 031](../reviews/2026-11-04--031--geography-revival-g1-g9-critical-architecture-review.md) 2026-11-04
 **Type:** feature
 **Priority:** high · **Effort:** L
 **Depends on:** world-terrain-061
 **Domain:** `world-terrain`
 **Subdomains:** `terrain` `vegetation` `weather`
 **Tags:** `geography` `climate` `biomes` `weather` `snow` `worldgen` `epoch`
-**Model:** Opus (B1 mapping, W1 consumer contract), Sonnet (B2–B3, W2)
+**Model:** Opus (B1 contract — done 2026-11-06; W1 consumer contract), Sonnet (B1 implementation, B2–B3, W1 implementation, W2)
 
 ## Goal
 
@@ -35,8 +35,8 @@ Absorbs the remaining part of queue **Q70** (blended biome borders + domain warp
 
 | Slice | Content | Model | Gate |
 | --- | --- | --- | --- |
-| B1 | (T,P) mapping + borders; map/terrain agreement; caches. Pure lookup/presentation tests may start after 061 C2; **river-dependent output (riparian, dry valleys) and runtime acceptance wait for the 061 H6 freeze** (review 031 F2) | O | 061 C2 (contract) · 061 H6 (acceptance) |
-| B2 | Regional forest types, treeline/snowline, riparian modifier | S | B1 |
+| B1 | (T,P) mapping + borders; map/terrain agreement; caches — implement the [B1 contract](./implementation-notes/world-terrain-062-regional-biomes-and-local-precipitation-phase-implementation-notes.md#b1-contract-opus-2026-11-06--written-before-code-queue-q124) (memoized per-realm `macroClimateOf`, `biomeWeightsAtPoint`, border noise = Q70); arid-extent previews → author (gates B2) | O contract ✅ → **S** | ✅ 061 C2 · ✅ 061 H6 |
+| B2 | Regional forest types, treeline/snowline, riparian modifier | S | B1 + author arid-extent look |
 | B3 | Vegetation instance census per chunk in the densest region + WSL A/B `stream` / `settlement` (no density reduction) → §4 for Windows | S | B2 |
 | W1 | Contract note + `localClimateAt` + consumer migration (list each consumer and the position it uses) | O→S | 061 C1 (contract, can run beside B1); runtime acceptance after 061 C2 final fields |
 | W2 | Position-dependent terrain/grass snow | S | W1; 061 C2 |

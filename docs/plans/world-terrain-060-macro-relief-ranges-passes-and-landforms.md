@@ -1,7 +1,7 @@
 # Plan: Macro relief — mountain ranges, passes and landform package P1
 
 **Created:** 2026-11-04
-**Status:** `in progress` 🔄 — R0 done (Q117); **R1–R2 landed 2026-11-05 (Q118), awaiting the author's R2 preview review before R3/R4** ([implementation notes](./implementation-notes/world-terrain-060-macro-relief-ranges-passes-and-landforms-implementation-notes.md)); amended per [review 031](../reviews/2026-11-04--031--geography-revival-g1-g9-critical-architecture-review.md) 2026-11-04
+**Status:** `done` ✅ (2026-11-06) — R0 (Q117), R1–R2 (Q118; **author accepted the R2 mountain look 2026-11-05: "mountains look great" / "OK"**), R3–R4 relief freeze (Q119; author browser review accepted 2026-11-06: summits, crater, lake island, rock patches, pass `6_-7:0`). The R4 relief is the frozen input for 061/062/063 and world-041 L1. Residuals handed on, not open here: 🟡 seed 42 routed components 4 (R2: 3) and pass `415424794` `6_-7:0` 14.1 % per 100 m → road close-out Q61–Q64; ore under a rock plate seen once (cause unconfirmed — add a plate exclusion around deposits if it recurs); far-tile colour has no plates. [Implementation notes](./implementation-notes/world-terrain-060-macro-relief-ranges-passes-and-landforms-implementation-notes.md); amended per [review 031](../reviews/2026-11-04--031--geography-revival-g1-g9-critical-architecture-review.md) 2026-11-04
 **Type:** feature
 **Priority:** high · **Effort:** XL
 **Depends on:** tools-026

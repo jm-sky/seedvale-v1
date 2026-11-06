@@ -67,6 +67,21 @@ S6  063 V0 (after D3) · V1–V3 (after H6 + reserved waterfall footprints, B1 p
 S7  D5 ──► world-041 L0 (incl. uncertain-knowledge contract) ──► L3 (parallel to S3–S6) · L1–L2: dry kinds after 060 R4, water kinds after 061 H6, waterfalls after 064 W1 ──► L4 Astra text ──► L5
 ```
 
+**Status and next sessions (Opus, 2026-11-06; author priority: 1. geography + hydrology `060 → 062/064 → 063 → roads`, 2. living world):**
+
+| Stage | State |
+| --- | --- |
+| S0 tools-026 | done |
+| S2 060 | **done** — R2 look accepted 2026-11-05, R3/R4 relief freeze accepted 2026-11-06 (residuals → road close-out) |
+| S3–S4 061 | C1, C2 look, H1, H3–H6 done 2026-11-06 (technical); H2 dry drainage not built (author Q121-a (a)); open: §3 Q122-a/b, 3D catchment look §2 |
+| S5 062 | **B1 contract written (Opus 2026-11-06)** → Q124 (S) ready; B2/B3 after the author's arid look; W1 contract = Q123 (O) |
+| S5′ 064 | W0 = Q125 (O) ready; W1 reserved footprints gate 063 V1 |
+| S6 063 | V0 done; V1–V3 = Q127 (O) after Q124 + 064 W1 → author G5 → V4 (Q128) → Q61–Q64 |
+| S7 world-041 | L0, L3a done; L1 dry + water kinds may start after Q124 lands |
+| Settlement composition Q37 | **deferred (author 2026-11-06)** until after biomes, settlement placement and roads; author remarks first |
+
+Session order: **S** Q124 → **O** Q125 W0 + Q123 W1 contract (one session) → **S** 064 W1 → (author arid look) **S** Q164 B2 → Q165 B3 → **S** 064 W2–W3, 062 W1/W2 → **O** Q127 → author G5 → **S** Q128 → Q61–Q64. Living-world lane beside it: **O** Q160 fauna C1 (+ C3 contract) → **S** C2 → C4 → C3 → F3 → F4 → F5.
+
 Parallel lanes: S0 D1–D4, D7 (Sonnet) ∥ D5 (Opus); 060 R0 and 061 C1 change no output and may start early; 063 V0 and world-041 L0/L3 do not wait for the final geography. Worldgen-output slices (060 R1–R4, 061 C2–H6, 062 B1, 063 V4) land **sequentially** so each re-census attributes its change; caches are bumped per namespace in the slice that changes them, the fixture is re-exported once in Q64.
 
 ## 0. Inputs (area reports)
@@ -276,4 +291,4 @@ Link appropriate comparable native Arc A/B artifacts and metadata in the A/B/C a
 
 ## Wild fauna architecture review — 2026-11-06
 
-[Review 035](../../reviews/2026-11-06--035--continent-wide-wild-fauna-architecture-review.md): **REWORK REQUIRED** for fauna-050 continental continuity. Recommend holding F3 activation and F4 runtime integration until durable individual authority, save/rebuild equivalence, deterministic catch-up and remote geography ownership are corrected. Pure census/contract work may proceed. This records independent review guidance; it does not rewrite the approved plan or queue priorities. Targeted tests: 37 passed; browser and performance evidence outstanding.
+[Review 035](../../reviews/2026-11-06--035--continent-wide-wild-fauna-architecture-review.md): **REWORK REQUIRED** for fauna-050 continental continuity. Recommend holding F3 activation and F4 runtime integration until durable individual authority, save/rebuild equivalence, deterministic catch-up and remote geography ownership are corrected. Pure census/contract work may proceed. **Owner response + author answers Q035-a…d (2026-11-06) are in the plan; C0 landed 2026-11-06 (Q159); next C1 (Opus, Q160) — see the plan's execution sequence.** This records independent review guidance; it does not rewrite the approved plan or queue priorities. Targeted tests: 37 passed; browser and performance evidence outstanding.

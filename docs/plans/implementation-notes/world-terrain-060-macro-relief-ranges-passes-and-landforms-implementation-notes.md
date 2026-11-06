@@ -68,7 +68,10 @@ Full uncorrected sampler 1.8–1.96 µs/sample; the spine term alone 0.04–0.06
 - Snow tint `biomeColors.ts` clamps altitude to 0..1 of the ramp — no overflow at 4× `heightScale`.
 - Shadow camera far 200 m / fog silhouettes on 70 m slopes: **not checked** (browser, → queue §2).
 
-### Open for the author (R2 preview review, before R3/R4)
+### Open for the author (R2 preview review, before R3/R4) — ✅ answered
+
+**Author 2026-11-05: R2 mountain look accepted** ("mountains look great"; previews "OK"); the individual sub-questions below were not answered one by one and are treated as accepted with the overall look (recorded 2026-11-06, Opus). Far-view wish → world-terrain-066.
+
 
 Previews: `docs/research/v1-revival/continent-previews/continent-<seed>-standard-relief-ranges-060r2.png` (7 seeds; white = spine, yellow = pass corridor). Questions: do the ranges read as ranges; is the larger bare-rock area acceptable; peak height (top 69–81 m on 7 seeds); range count (2–3 per seed — 1 possible by the seeded target, not observed); home reserve 1150 m (seed 42: a 63 m crest ~1.3 km north of home).
 
@@ -229,3 +232,7 @@ Re-run after caches chunk tile 36 / hydrology 10 / settlements 34 / roads 22 (pl
 - **Pass grades** (`census-pass-grades.ts`): unchanged from the pre-plate numbers — 5/6 passes ≤ 9.5 % worst-100 m mean; 🟡 `415424794` `6_-7:0` still 14.1 % (one 41 % downhill step).
 - **Travel** (`worldgen:travel:census`): `415424794` routed components **1**, 21 routed edges, `gradeShareOver10Pct` 0 on the author-relevant edges. Seed 42 routed components **4** (R2 re-census had 3) — 🟡 seed 42 reconnected less well after the later relief changes (crater/plates); a few edges carry 6.8–12.4 % of length over 10 % grade. Not tuned (relief freeze = measure only); candidate for the road close-out (Q61–Q64).
 - **Cost** (`measure-worldgen-cost.ts --reps=3 --chunks=60`, last run): hydrology sample 3.6–4.2 s, compute 0.6–0.85 s, chunk p50 7–8 ms / p95 10–17 ms, layout 0.70–0.79 s, routes 26–30 s — ✅ within the Q131 tolerances (same as the earlier R4 cost table).
+
+## Close-out (Opus, 2026-11-06)
+
+Plan `done`: R0–R4 landed, author accepted R2 (2026-11-05) and the R3/R4 browser review (2026-11-06; queue Q119 archived). Hand-offs: seed 42 routed components 4 and the steep `6_-7:0` pass → road close-out Q61–Q64; ore-under-plate → re-check if it recurs; plates in the far-tile colour → world-terrain-066 if the author asks.
