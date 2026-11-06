@@ -1,5 +1,8 @@
+import { createNoise2D, type NoiseFunction2D } from 'simplex-noise'
 import { MathUtils } from 'three'
-import type { RegionParams } from './chunkHeightmap'
+import type { RawSampleParams, RegionParams } from './chunkHeightmap'
+import { createSeededRandom } from '../world/parseSeed'
+import { latitude01, macroClimateOf, temperatureAt } from './macroClimate'
 
 export type BiomeWeights = {
   desert: number
@@ -55,6 +58,120 @@ export function biomeWeightsAt(
   return { desert, swamp, forest }
 }
 
+/**
+ * Climate-driven biome input (plan world-terrain-062 B1): annual-mean temperature (°C, elevation-adjusted), relative
+ * precipitation 0..1, altitude fraction and the two seeded border offsets. `BiomeWeights` stays the consumer contract.
+ */
+export type BiomeClimateInput = {
+  temperatureC: number
+  precipitation: number
+  altitude01: number
+  /** Offset on the aridity index (irregular desert border). */
+  borderA: number
+  /** Offset on the wetness index (irregular swamp border). */
+  borderS: number
+}
+
+/** Warm factor: 0 at/below `T_WARM_START` °C, 1 at/above `T_WARM_FULL` °C. 🟡 calibrated on previews. */
+export const T_WARM_START = 6
+export const T_WARM_FULL = 13
+/** Aridity index `a` above which desert starts and its blend width. 🟡 calibrated on previews. */
+export const ARID_START = 0.42
+export const ARID_WIDTH = 0.10
+/** Wetness index (precipitation + border) at which swamp is fully on, and its blend width. 🟡 calibrated. */
+export const SWAMP_WET_FULL = 0.74
+export const SWAMP_WET_WIDTH = 0.14
+
+/**
+ * Whittaker-style biome weights from climate (B1): desert needs warm *and* dry (the cold north cannot become desert),
+ * swamp needs wet low ground, forest is the remainder. Pure, bounded, sums to 1.
+ */
+export function biomeWeightsFromClimate(input: BiomeClimateInput): BiomeWeights {
+  const { temperatureC, precipitation, altitude01, borderA, borderS } = input
+  const warm = MathUtils.smoothstep(temperatureC, T_WARM_START, T_WARM_FULL)
+  const aridity = (1 - precipitation) * (0.4 + 0.6 * warm) + borderA
+  const highlandFade = 1 - MathUtils.smoothstep(altitude01, DESERT_HIGHLAND_START, DESERT_HIGHLAND_END)
+  const desert = clamp01(MathUtils.smoothstep(aridity, ARID_START, ARID_START + ARID_WIDTH) * highlandFade)
+
+  const lowlandFade = 1 - MathUtils.smoothstep(altitude01, SWAMP_ALTITUDE_START, SWAMP_ALTITUDE_END)
+  const swamp =
+    clamp01(MathUtils.smoothstep(precipitation + borderS, SWAMP_WET_FULL - SWAMP_WET_WIDTH, SWAMP_WET_FULL) * lowlandFade) *
+    (1 - desert)
+  return { desert, swamp, forest: Math.max(0, 1 - desert - swamp) }
+}
+
+function clamp01(v: number): number {
+  return v < 0 ? 0 : v > 1 ? 1 : v
+}
+
+/** Border noise (Q70 fold-in): two independent low-frequency seeded fields, ~600 m + ~150 m, amplitude ≤ BORDER_AMPLITUDE. */
+const BORDER_AMPLITUDE = 0.08
+const BORDER_COARSE_M = 600
+const BORDER_FINE_M = 150
+const borderNoiseCache = new Map<number, { a: NoiseFunction2D, s: NoiseFunction2D }>()
+function borderNoiseFor(seed: number): { a: NoiseFunction2D, s: NoiseFunction2D } {
+  let h = borderNoiseCache.get(seed)
+  if (!h) {
+    h = {
+      a: createNoise2D(createSeededRandom(seed ^ 0x3c6ef372)),
+      s: createNoise2D(createSeededRandom(seed ^ 0xa54ff53a)),
+    }
+    borderNoiseCache.set(seed, h)
+  }
+  return h
+}
+
+/** Border offsets at a world point — pure in (seed, x, z). */
+export function biomeBorderAt(seed: number, x: number, z: number): { borderA: number, borderS: number } {
+  const n = borderNoiseFor(seed)
+  const f = (noise: NoiseFunction2D): number =>
+    BORDER_AMPLITUDE * (0.65 * noise(x / BORDER_COARSE_M, z / BORDER_COARSE_M) + 0.35 * noise(x / BORDER_FINE_M, z / BORDER_FINE_M))
+  return { borderA: f(n.a), borderS: f(n.s) }
+}
+
+/**
+ * Biome weights at a world point — the one entry every consumer uses (map, far ring, terrain colour, vegetation,
+ * settlements, audio). Worlds without `region.continentMask` keep the legacy moisture formula bit-identically.
+ * `altitude01` is the caller's own altitude fraction (height above `waterLevel` / `heightScale`).
+ */
+export function biomeWeightsAtPoint(
+  params: RawSampleParams,
+  x: number,
+  z: number,
+  altitude01: number,
+  moistureRegion: number,
+): BiomeWeights {
+  const climate = macroClimateOf(params)
+  if (!climate) return biomeWeightsAt(moistureRegion, altitude01, params.region)
+  const lat = latitude01(z)
+  const precipitation = clamp01(0.12 + 0.62 * moistureRegion + 0.22 * climate.maritimeAt(x, z) - 0.1 * lat)
+  const temperatureC = temperatureAt(z, params.waterLevel + altitude01 * params.heightScale, params.waterLevel)
+  const { borderA, borderS } = biomeBorderAt(params.seed, x, z)
+  return biomeWeightsFromClimate({ temperatureC, precipitation, altitude01, borderA, borderS })
+}
+
+/** Biome weights at (x, z, altitude01, moistureRegion) — what env/sampler records carry instead of full terrain params. */
+export type BiomeWeightsSampler = (x: number, z: number, altitude01: number, moistureRegion: number) => BiomeWeights
+
+/** Binds {@link biomeWeightsAtPoint} to one world's terrain params. */
+export function biomeWeightsSamplerFor(params: RawSampleParams): BiomeWeightsSampler {
+  return (x, z, altitude01, moistureRegion) => biomeWeightsAtPoint(params, x, z, altitude01, moistureRegion)
+}
+
+/** Forest density at a world point using {@link biomeWeightsAtPoint} (same weights as the caller's colour / placement). */
+export function forestDensityAtPoint(
+  params: RawSampleParams,
+  x: number,
+  z: number,
+  moistureRegion: number,
+  altitude01: number,
+  continentalness: number,
+  mountainRidge: number,
+): number {
+  if (altitude01 <= 0) return 0
+  return forestDensityFrom(biomeWeightsAtPoint(params, x, z, altitude01, moistureRegion).forest, moistureRegion, altitude01, continentalness, mountainRidge, params.region)
+}
+
 /** Moisture band where temperate land builds closed canopy (plan 063).
  *  Below → open / scattered trees; inside → dense forest; above → swamp gate
  *  via `biomeWeightsAt` already zeroes the forest remainder. */
@@ -107,16 +224,20 @@ export function forestDensityAt(
   region: RegionParams,
 ): number {
   if (altitude01 <= 0) return 0
+  return forestDensityFrom(biomeWeightsAt(moistureRegion, altitude01, region).forest, moistureRegion, altitude01, continentalness, mountainRidge, region)
+}
 
-  const land = MathUtils.smoothstep(
-    continentalness,
-    region.oceanThreshold,
-    region.coastThreshold,
-  )
-  if (land <= 0) return 0
-
-  const { forest: forestBiome } = biomeWeightsAt(moistureRegion, altitude01, region)
-  if (forestBiome <= 0) return 0
+function forestDensityFrom(
+  forestBiome: number,
+  moistureRegion: number,
+  altitude01: number,
+  continentalness: number,
+  mountainRidge: number,
+  region: RegionParams,
+): number {
+  if (altitude01 <= 0) return 0
+  const land = MathUtils.smoothstep(continentalness, region.oceanThreshold, region.coastThreshold)
+  if (land <= 0 || forestBiome <= 0) return 0
 
   // Peaked moisture curve inside temperate land: open low-moisture temperate
   // stays sparse, humid mid-band builds closed canopy, then swamp/desert

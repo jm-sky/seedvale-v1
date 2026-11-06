@@ -2,8 +2,8 @@ import { createNoise2D } from 'simplex-noise'
 import * as THREE from 'three'
 import { createSeededRandom } from '../world/parseSeed'
 import { ROCK_SLOPE_FULL, sandBandAt } from './biomeColors'
-import { biomeWeightsAt } from './biomeRegions'
-import { apronOriginWorld, type RegionParams, type RiverChannelSegment, sampleApronGrid } from './chunkHeightmap'
+import { biomeWeightsAt, biomeWeightsAtPoint } from './biomeRegions'
+import { apronOriginWorld, type RawSampleParams, type RegionParams, type RiverChannelSegment, sampleApronGrid } from './chunkHeightmap'
 import { fbm01, type FbmParams } from './fbm'
 import {
   createGrassBoundsAccumulator,
@@ -61,6 +61,8 @@ export type GrassComputeParams = {
    *  reproduces the pre-012 tint path exactly. */
   macroVariationEnabled: boolean
   region: RegionParams
+  /** Full terrain params — climate-driven biomes (plan 062 B1); absent → legacy moisture-only biomes. */
+  sampleParams?: RawSampleParams
   /** River channel carving segments near this chunk — same source/shape as
    *  `ChunkTileParams.riverSegments` — used to reject candidates that fall
    *  inside a river's actual water channel (world-terrain-006). */
@@ -390,6 +392,7 @@ export function computeChunkGrass(params: GrassComputeParams, grids: GrassTileGr
     candidatesPerChunk,
     macroVariationEnabled,
     region,
+    sampleParams,
     riverSegments,
     mode = 'full',
   } = params
@@ -456,7 +459,9 @@ export function computeChunkGrass(params: GrassComputeParams, grids: GrassTileGr
 
     const moisture = sample(grids.biomes, wx, wz)
     const moistureRegion = sample(grids.moistureRegion, wx, wz)
-    const biome = biomeWeightsAt(moistureRegion, altitude, region)
+    const biome = sampleParams
+      ? biomeWeightsAtPoint(sampleParams, wx, wz, altitude, moistureRegion)
+      : biomeWeightsAt(moistureRegion, altitude, region)
     const altitudeFade =
       1 -
       Math.max(0, Math.min(1, (altitude - TREELINE_FADE_START) / (TREELINE_ALTITUDE - TREELINE_FADE_START)))
@@ -543,7 +548,9 @@ export function computeChunkGrass(params: GrassComputeParams, grids: GrassTileGr
 
     const moisture = sample(grids.biomes, wx, wz)
     const moistureRegion = sample(grids.moistureRegion, wx, wz)
-    const biome = biomeWeightsAt(moistureRegion, altitude, region)
+    const biome = sampleParams
+      ? biomeWeightsAtPoint(sampleParams, wx, wz, altitude, moistureRegion)
+      : biomeWeightsAt(moistureRegion, altitude, region)
     const altitudeFade =
       1 -
       Math.max(0, Math.min(1, (altitude - TREELINE_FADE_START) / (TREELINE_ALTITUDE - TREELINE_FADE_START)))

@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest'
 import type { RegionParams } from './chunkHeightmap'
-import { biomeWeightsAt, forestBiomeAt, forestDensityAt } from './biomeRegions'
+import { createBenchmarkWorldConfig } from '../config/worldConfig'
+import { rawSampleParamsFromWorld } from '../world/map/mapProjection'
+import { projectCellAt } from '../world/map/mapProjection'
+import { biomeBorderAt, type BiomeClimateInput, biomeWeightsAt, biomeWeightsAtPoint, biomeWeightsFromClimate, forestBiomeAt, forestDensityAt, forestDensityAtPoint } from './biomeRegions'
+import { sampleRawTexelAt } from './chunkHeightmap'
+import { macroClimateOf } from './macroClimate'
+import { UNCONDITIONED_HYDROLOGY_ID } from './worldHydrologyStore'
 
 // Same default values as `config/worldConfig.ts`'s `baseConfig` — copied
 // locally so this test doesn't depend on config internals.
@@ -209,5 +215,122 @@ describe('forestBiomeAt', () => {
     expect(seen.has('open')).toBe(true)
     expect(seen.has('forest')).toBe(true)
     expect(seen.has('deepForest')).toBe(true)
+  })
+})
+
+describe('biomeWeightsFromClimate (062 B1)', () => {
+  const base: BiomeClimateInput = { temperatureC: 12, precipitation: 0.5, altitude01: 0.1, borderA: 0, borderS: 0 }
+
+  it('is bounded and sums to 1 over a climate grid', () => {
+    for (const temperatureC of [-5, 3, 8, 13, 20]) for (const precipitation of [0, 0.3, 0.6, 1]) for (const altitude01 of [0, 0.1, 0.4, 0.8]) {
+      for (const border of [-0.08, 0, 0.08]) {
+        const w = biomeWeightsFromClimate({ temperatureC, precipitation, altitude01, borderA: border, borderS: -border })
+        for (const v of [w.desert, w.swamp, w.forest]) {
+          expect(v).toBeGreaterThanOrEqual(0)
+          expect(v).toBeLessThanOrEqual(1)
+        }
+        expect(w.desert + w.swamp + w.forest).toBeCloseTo(1, 10)
+      }
+    }
+  })
+
+  it('desert grows with aridity and with warmth; swamp grows with wetness', () => {
+    const dry = (precipitation: number) => biomeWeightsFromClimate({ ...base, temperatureC: 14, precipitation }).desert
+    expect(dry(0.2)).toBeGreaterThanOrEqual(dry(0.4))
+    expect(dry(0.4)).toBeGreaterThanOrEqual(dry(0.6))
+    const warm = (temperatureC: number) => biomeWeightsFromClimate({ ...base, temperatureC, precipitation: 0.4 }).desert
+    expect(warm(14)).toBeGreaterThanOrEqual(warm(10))
+    expect(warm(10)).toBeGreaterThanOrEqual(warm(5))
+    const wet = (precipitation: number) => biomeWeightsFromClimate({ ...base, altitude01: 0.02, precipitation }).swamp
+    expect(wet(0.9)).toBeGreaterThanOrEqual(wet(0.7))
+    expect(wet(0.7)).toBeGreaterThanOrEqual(wet(0.5))
+  })
+
+  it('the cold north never becomes desert, however dry', () => {
+    for (const precipitation of [0, 0.1, 0.3]) {
+      expect(biomeWeightsFromClimate({ ...base, temperatureC: 3, precipitation }).desert).toBe(0)
+    }
+  })
+})
+
+describe('biomeWeightsAtPoint (062 B1)', () => {
+  const finite = rawSampleParamsFromWorld(createBenchmarkWorldConfig({ seed: 42, terrainResolution: 65, loadRadius: 2 }))
+
+  it('is bit-identical to the legacy formula on a world without continentMask', () => {
+    const legacy = { ...finite, region: { ...finite.region, continentMask: undefined } }
+    for (const [x, z, a, m] of [[10, 20, 0.1, 0.3], [-800, 400, 0.5, 0.6], [3000, -2000, 0.02, 0.8]] as const) {
+      expect(biomeWeightsAtPoint(legacy, x, z, a, m)).toEqual(biomeWeightsAt(m, a, legacy.region))
+    }
+  })
+
+  it('builds one climate per realm (same object, also for a structured clone)', () => {
+    const a = macroClimateOf(finite)
+    expect(a).not.toBeNull()
+    expect(macroClimateOf(finite)).toBe(a)
+    expect(macroClimateOf(structuredClone(finite))).toBe(a)
+  })
+
+  it('is deterministic and order independent', () => {
+    const pts = [[-2000, -3000], [1500, 2500], [0, 0], [-4000, 4000]] as const
+    const fwd = pts.map(([x, z]) => biomeWeightsAtPoint(finite, x, z, 0.1, 0.4))
+    const rev = [...pts].reverse().map(([x, z]) => biomeWeightsAtPoint(finite, x, z, 0.1, 0.4)).reverse()
+    expect(rev).toEqual(fwd)
+  })
+
+  it('forest density uses the same forest weight the colour path sees', () => {
+    const [x, z, m, a] = [-1000, 2000, 0.55, 0.1] as const
+    const w = biomeWeightsAtPoint(finite, x, z, a, m)
+    const d = forestDensityAtPoint(finite, x, z, m, a, 0.8, 0)
+    expect(w.forest <= 0 ? d === 0 : d >= 0).toBe(true)
+    expect(d).toBeLessThanOrEqual(w.forest + 1e-9)
+  })
+
+  it('border noise is seeded, bounded and varies in space', () => {
+    expect(biomeBorderAt(42, 100, 200)).toEqual(biomeBorderAt(42, 100, 200))
+    const vals = new Set<number>()
+    for (let i = 0; i < 20; i++) {
+      const b = biomeBorderAt(42, i * 173, i * 91)
+      expect(Math.abs(b.borderA)).toBeLessThanOrEqual(0.08)
+      expect(Math.abs(b.borderS)).toBeLessThanOrEqual(0.08)
+      vals.add(b.borderA)
+    }
+    expect(vals.size).toBeGreaterThan(10)
+  })
+
+  it('arid land sits in the warm south, not the cold north (seeds 42, 415424794)', () => {
+    for (const seed of [42, 415424794]) {
+      const p = rawSampleParamsFromWorld(createBenchmarkWorldConfig({ seed, terrainResolution: 65, loadRadius: 2 }))
+      let north = 0
+      let south = 0
+      for (let i = 0; i < 40; i++) {
+        north += biomeWeightsAtPoint(p, -3000 + i * 150, -5500, 0.05, 0.3).desert
+        south += biomeWeightsAtPoint(p, -3000 + i * 150, 5500, 0.05, 0.3).desert
+      }
+      expect(north).toBe(0)
+      expect(south).toBeGreaterThan(0)
+    }
+  })
+})
+
+describe('map = terrain agreement (062 B1)', () => {
+  it('the map biome class follows the same weights biomeWeightsAtPoint gives terrain colour', () => {
+    for (const seed of [42, 415424794]) {
+      const p = { ...rawSampleParamsFromWorld(createBenchmarkWorldConfig({ seed, terrainResolution: 65, loadRadius: 2 })), hydrologyId: UNCONDITIONED_HYDROLOGY_ID }
+      let checked = 0
+      for (let i = 0; i < 900 && checked < 25; i++) {
+        const x = -3000 + (i % 30) * 200
+        const z = 1000 + Math.floor(i / 30) * 140
+        const t = sampleRawTexelAt(x, z, p)
+        const cls = projectCellAt(x, z, p)
+        if (cls.water) continue
+        checked++
+        const alt = Math.max(0, (t.h - p.waterLevel) / Math.max(p.heightScale, 0.001))
+        const w = biomeWeightsAtPoint(p, x, z, alt, t.moistureRegion)
+        if (cls.biome === 'desert') expect(w.desert).toBeGreaterThan(0.5)
+        if (cls.biome === 'swamp') expect(w.swamp).toBeGreaterThan(0.5)
+        if (w.desert > 0.5 && w.desert >= w.forest) expect(cls.biome).toBe('desert')
+      }
+      expect(checked).toBeGreaterThan(0)
+    }
   })
 })

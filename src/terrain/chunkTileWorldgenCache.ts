@@ -62,8 +62,9 @@ export const CHUNK_TILE_CACHE_NAMESPACE = 'chunk-tiles'
  * v26 (2026-11-04, queue Q97): road corridors straight under bridge decks (road + bridge masks move).
  * v27 (2026-11-05, queue Q118): range spines, passes and summits reshape the relief (plan world-terrain-060 R1–R2).
  * v28 (2026-11-05): C¹ relief: smooth range-spine crest/blend/unions, C¹ Worley ridge, bicubic hydrology correction (plan world-terrain-065).
+ * v29 (2026-11-06, queue Q124): climate-driven biomes + borders (plan world-terrain-062 B1) move colour/vegetation/settlement terrain class.
  */
-export const CHUNK_TILE_CACHE_VERSION = 39
+export const CHUNK_TILE_CACHE_VERSION = 40
 
 /** Small byte-budget manifest record living in the same namespace — see
  *  `ChunkTileMetaPayload`. Its `fingerprint` field is a constant because the

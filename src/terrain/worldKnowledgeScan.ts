@@ -8,6 +8,7 @@ import type {
 import type { FbmParams } from './fbm'
 import { bridgesNear, clearRoadNetworkMemoryCaches, fordsNear, segmentsNear, villageSegmentsNear } from '../settlement/roadNetwork'
 import { setSettlementRiverQuery, settlementDefFor } from '../settlement/settlementPlanCache'
+import { biomeWeightsSamplerFor } from './biomeRegions'
 import { CEMETERY_SETTLEMENT_GATHER_RADIUS, collectSettlementRefsNear } from './cemeteryAssignment'
 import { isClassicLandmarkKind, type LandmarkKind } from './chunkEnvironment'
 import { chunkCenter, type ChunkCoord, worldToChunk } from './chunkGrid'
@@ -124,6 +125,7 @@ export function worldKnowledgeRoadContext(terrain: WorldKnowledgeTerrainSnapshot
       sampleContinentalness: (x, z) => sampleContinentalnessAt(x, z, raw),
       sampleMountainRidge: (x, z) => sampleMountainRidgeAt(x, z, raw),
       sampleMoistureRegion: (x, z) => sampleMoistureRegionAt(x, z, raw),
+      sampleBiomeWeights: biomeWeightsSamplerFor(raw),
     },
     heightScale: terrain.heightScale,
     region: terrain.region,

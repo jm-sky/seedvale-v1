@@ -1,6 +1,6 @@
 import type { WorldConfig } from '../config/worldConfig'
 import type { HeightSampler } from '../player/PlayerController'
-import type { ForestBiome } from '../terrain/biomeRegions'
+import type { BiomeWeightsSampler, ForestBiome } from '../terrain/biomeRegions'
 import type { RegionParams } from '../terrain/chunkHeightmap'
 import type { ChunkManager } from '../terrain/chunkManager'
 import type { DayNightState } from './dayNight'
@@ -25,6 +25,7 @@ export type WorldContext = {
   sampleContinentalness: (x: number, z: number) => number
   sampleMountainRidge: (x: number, z: number) => number
   sampleMoistureRegion: (x: number, z: number) => number
+  sampleBiomeWeights: BiomeWeightsSampler
   sampleForestFactor: (x: number, z: number) => number
   sampleForestBiome: (x: number, z: number) => ForestBiome
   sampleTreeEnv: (x: number, z: number) => TreeEnvSample
@@ -53,6 +54,7 @@ export function createWorldContext(
     sampleContinentalness: (x, z) => getChunkManager().sampleContinentalness(x, z),
     sampleMountainRidge: (x, z) => getChunkManager().sampleMountainRidge(x, z),
     sampleMoistureRegion: (x, z) => getChunkManager().sampleMoistureRegion(x, z),
+    sampleBiomeWeights: (x, z, a, m) => getChunkManager().sampleBiomeWeights(x, z, a, m),
     sampleForestFactor: (x, z) => getChunkManager().sampleForestFactor(x, z),
     sampleForestBiome: (x, z) => getChunkManager().sampleForestBiome(x, z),
     sampleTreeEnv: (x, z) => getChunkManager().sampleTreeEnv(x, z),

@@ -15,7 +15,7 @@ import {
   type TreeSizeClass,
 } from '../world/treeLifecycle'
 import { SAND_BAND_MAX, sandBandAt } from './biomeColors'
-import { biomeWeightsAt, forestDensityAt } from './biomeRegions'
+import { biomeWeightsAtPoint, forestDensityAtPoint } from './biomeRegions'
 import {
   apronOriginWorld,
   type ChunkTileData,
@@ -206,12 +206,14 @@ export function computeChunkVegetation(
   const centerZ = coord.cz * chunkSize
   const centerH = sample(tile.heights, centerX, centerZ)
   const centerAltitude = (centerH - waterLevel) / Math.max(heightScale, 0.001)
-  const centerForest = forestDensityAt(
+  const centerForest = forestDensityAtPoint(
+    params,
+    centerX,
+    centerZ,
     sample(tile.moistureRegion, centerX, centerZ),
     centerAltitude,
     sample(tile.continentalness, centerX, centerZ),
     sample(tile.mountainRidge, centerX, centerZ),
-    region,
   )
   const candidateCount = Math.round(
     BASE_CANDIDATES_PER_CHUNK + FOREST_EXTRA_CANDIDATES * centerForest,
@@ -229,14 +231,8 @@ export function computeChunkVegetation(
     const moistureRegion = sample(tile.moistureRegion, wx, wz)
     const continentalness = sample(tile.continentalness, wx, wz)
     const ridge = sample(tile.mountainRidge, wx, wz)
-    const biome = biomeWeightsAt(moistureRegion, altitude, region)
-    const forestDensity = forestDensityAt(
-      moistureRegion,
-      altitude,
-      continentalness,
-      ridge,
-      region,
-    )
+    const biome = biomeWeightsAtPoint(params, wx, wz, altitude, moistureRegion)
+    const forestDensity = forestDensityAtPoint(params, wx, wz, moistureRegion, altitude, continentalness, ridge)
 
     // Reeds tolerate growing right at the waterline; everything else needs
     // to clear the shore. Non-swamp clearance is looser than before (was
@@ -405,7 +401,7 @@ function flowerMeadowPatches(
   sample: (grid: Float32Array, x: number, z: number) => number,
   meadowNoise: NoiseFunction2D,
 ): VegetationPlacement[] {
-  const { chunkSize, waterLevel, heightScale, region } = params
+  const { chunkSize, waterLevel, heightScale } = params
   const half = chunkSize / 2
   const patchRandom = createSeededRandom(params.seed ^ hashChunk(coord.cx, coord.cz) ^ 0x5f2a3d)
   const out: VegetationPlacement[] = []
@@ -424,7 +420,7 @@ function flowerMeadowPatches(
     if (altitude > MEADOW_ALTITUDE_LIMIT) continue
 
     const moistureRegion = sample(tile.moistureRegion, cx, cz)
-    const biome = biomeWeightsAt(moistureRegion, altitude, region)
+    const biome = biomeWeightsAtPoint(params, cx, cz, altitude, moistureRegion)
     if (biome.desert > 0.3 || biome.swamp > 0.3) continue
 
     const d = SLOPE_SAMPLE_STEP
@@ -496,7 +492,7 @@ function fernPatches(
   sample: (grid: Float32Array, x: number, z: number) => number,
   treePlacements: readonly VegetationPlacement[],
 ): VegetationPlacement[] {
-  const { chunkSize, waterLevel, heightScale, region } = params
+  const { chunkSize, waterLevel, heightScale } = params
   const half = chunkSize / 2
   const fernRandom = createSeededRandom(params.seed ^ hashChunk(coord.cx, coord.cz) ^ 0x2b7f19)
   const fernSpeciesCount = Math.max(1, params.vegetationSpeciesCount.fern)
@@ -526,12 +522,12 @@ function fernPatches(
     if (sample(tile.roadTint, cx, cz) > ROAD_TINT_REJECT) continue // road/path corridor
 
     const moistureRegion = sample(tile.moistureRegion, cx, cz)
-    const biome = biomeWeightsAt(moistureRegion, altitude, region)
+    const biome = biomeWeightsAtPoint(params, cx, cz, altitude, moistureRegion)
     if (biome.desert > 0.25) continue // no ferns on dry ground
 
     const continentalness = sample(tile.continentalness, cx, cz)
     const ridge = sample(tile.mountainRidge, cx, cz)
-    const forestDensity = forestDensityAt(moistureRegion, altitude, continentalness, ridge, region)
+    const forestDensity = forestDensityAtPoint(params, cx, cz, moistureRegion, altitude, continentalness, ridge)
 
     // Base habitat: dense forest (broadleaf or conifer) or swamp/wet ground.
     // A nearby pine only nudges this up — never the sole qualifier.
@@ -645,7 +641,7 @@ function riparianPatches(
     const altitude = (h - waterLevel) / Math.max(heightScale, 0.001)
     const moistureRegion = sample(tile.moistureRegion, x, z)
     const moisture = sample(tile.biomes, x, z)
-    const biome = biomeWeightsAt(moistureRegion, altitude, region)
+    const biome = biomeWeightsAtPoint(params, x, z, altitude, moistureRegion)
     const dist = riparianDistanceAt(params, x, z, altitude, moisture, biome.desert)
     if (dist === null) return
 
@@ -721,7 +717,7 @@ function riparianPatches(
     const altitude = (h - waterLevel) / Math.max(heightScale, 0.001)
     const moistureRegion = sample(tile.moistureRegion, cx, cz)
     const moisture = sample(tile.biomes, cx, cz)
-    const biome = biomeWeightsAt(moistureRegion, altitude, region)
+    const biome = biomeWeightsAtPoint(params, cx, cz, altitude, moistureRegion)
     if (riparianDistanceAt(params, cx, cz, altitude, moisture, biome.desert) === null) continue
 
     place(cx, cz)

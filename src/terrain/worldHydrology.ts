@@ -3,7 +3,7 @@ import { projectOntoSegment } from '../math/segment'
 import { createSeededRandom } from '../world/parseSeed'
 import { type RawSampleParams, sampleRawFloorUncorrected } from './chunkHeightmap'
 import { WORLD_HALF_EXTENT } from './continentMask'
-import { createMacroClimate, runoffGrid } from './macroClimate'
+import { createMacroClimate, macroClimateOf, runoffGrid } from './macroClimate'
 import {
   DEFAULT_RIVER_THRESHOLDS,
   MEANDER_NOISE_SEED_XOR,
@@ -226,7 +226,7 @@ export function worldHydrologyGridFor(
   floor: Float32Array,
   grid: Pick<WorldHydrologyGrid, 'size' | 'cellStep' | 'originX' | 'originZ'> = WORLD_HYDROLOGY_GRID,
 ): WorldHydrologyGrid {
-  const runoff = runoffGrid(createMacroClimate(params), floor, grid, params.waterLevel)
+  const runoff = runoffGrid(macroClimateOf(params) ?? createMacroClimate(params), floor, grid, params.waterLevel)
   return { size: grid.size, cellStep: grid.cellStep, originX: grid.originX, originZ: grid.originZ, floor, runoff }
 }
 

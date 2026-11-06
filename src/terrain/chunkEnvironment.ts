@@ -7,7 +7,7 @@ import { type CemeterySize } from '../settlement/props'
 import { siteChunkContainsPoint } from '../world/locations/darkForestTreasureSite'
 import { getActiveDarkForestTreasureSite } from '../world/locations/darkForestTreasureSiteRuntime'
 import { createSeededRandom } from '../world/parseSeed'
-import { biomeWeightsAt, forestDensityAt } from './biomeRegions'
+import { biomeWeightsAtPoint, forestDensityAtPoint } from './biomeRegions'
 import { resolveCemeteriesForChunk } from './cemeteryPlacement'
 import {
   apronOriginWorld,
@@ -500,7 +500,7 @@ export function resolveClassicLandmarkPlacement(
   terrain: LandmarkTerrainSampler,
 ): EnvironmentPlacement | null {
   const spec = CLASSIC_LANDMARK_SPECS[kind]
-  const { chunkSize, waterLevel, heightScale, region } = params
+  const { chunkSize, waterLevel, heightScale } = params
   const half = chunkSize / 2
   const random = createSeededRandom(params.seed ^ hashChunk(coord.cx, coord.cz, spec.chunkSalt) ^ spec.xorSalt)
   const wx = coord.cx * chunkSize + (random() * 2 - 1) * (half - spec.margin)
@@ -517,7 +517,7 @@ export function resolveClassicLandmarkPlacement(
     return null
   }
   const altitude01 = (h - waterLevel) / Math.max(heightScale, 0.001)
-  const biome = biomeWeightsAt(terrain.moistureRegionAt(wx, wz), altitude01, region)
+  const biome = biomeWeightsAtPoint(params, wx, wz, altitude01, terrain.moistureRegionAt(wx, wz))
   const bias = landmarkChanceBias(kind, {
     mountainRidge: terrain.mountainRidgeAt(wx, wz),
     altitude01,
@@ -628,7 +628,7 @@ export function computeChunkEnvironment(
     // `biome.forest` — deadwood frequency now actually tracks how deep the
     // surrounding forest reads (open ≈ rare, deep forest ≈ clearly present),
     // not "any non-desert/swamp land".
-    const forestDensity = forestDensityAt(moistureRegion, altitude, continentalness, ridge, region)
+    const forestDensity = forestDensityAtPoint(params, wx, wz, moistureRegion, altitude, continentalness, ridge)
     const treeClose = nearTree(vegetation, wx, wz, TREE_PROXIMITY_RADIUS)
     const chance = forestDensity * (treeClose ? 0.6 : 0.16)
     if (logRandom() > chance) continue
@@ -879,8 +879,8 @@ export function computeChunkEnvironment(
     const moistureRegion = sample(tile.moistureRegion, wx, wz)
     const continentalness = sample(tile.continentalness, wx, wz)
     const ridge = sample(tile.mountainRidge, wx, wz)
-    const forestDensity = forestDensityAt(moistureRegion, altitude, continentalness, ridge, region)
-    const biome = biomeWeightsAt(moistureRegion, altitude, region)
+    const forestDensity = forestDensityAtPoint(params, wx, wz, moistureRegion, altitude, continentalness, ridge)
+    const biome = biomeWeightsAtPoint(params, wx, wz, altitude, moistureRegion)
     const suitable =
       forestDensity >= 0.25 || biome.forest >= 0.35 || (biome.desert < 0.4 && biome.swamp < 0.45 && altitude > 0.08)
     if (

@@ -1,6 +1,6 @@
 import { MathUtils } from 'three'
 import type { RegionParams } from '../terrain/chunkHeightmap'
-import { biomeWeightsAt } from '../terrain/biomeRegions'
+import { biomeWeightsAt, type BiomeWeightsSampler } from '../terrain/biomeRegions'
 
 export type AmbientWeights = { ocean: number, forest: number, mountain: number }
 
@@ -14,6 +14,8 @@ export type AmbientSamplers = {
   sampleContinentalness: (x: number, z: number) => number
   sampleMountainRidge: (x: number, z: number) => number
   sampleMoistureRegion: (x: number, z: number) => number
+  /** Climate-driven biome weights (plan 062 B1); absent → legacy moisture-only formula. */
+  sampleBiomeWeights?: BiomeWeightsSampler
   waterLevel: number
   heightScale: number
   region: RegionParams
@@ -54,7 +56,10 @@ export function ambientWeightsAt(x: number, z: number, s: AmbientSamplers): Ambi
     0,
     1,
   )
-  const { forest } = biomeWeightsAt(s.sampleMoistureRegion(x, z), altitude01, s.region)
+  const moistureRegion = s.sampleMoistureRegion(x, z)
+  const { forest } = s.sampleBiomeWeights
+    ? s.sampleBiomeWeights(x, z, altitude01, moistureRegion)
+    : biomeWeightsAt(moistureRegion, altitude01, s.region)
 
   const mountainRegion = MathUtils.smoothstep(
     s.sampleMountainRidge(x, z),

@@ -1,4 +1,4 @@
-import { type RawSampleParams, sampleRawTexelUncorrectedAt } from './chunkHeightmap'
+import { type RawSampleParams, type RegionParams, sampleRawTexelUncorrectedAt } from './chunkHeightmap'
 import { WORLD_HALF_EXTENT } from './continentMask'
 
 /**
@@ -237,4 +237,42 @@ export function runoffGrid(
     }
   }
   return out
+}
+
+/** Per-realm climate memo (plan 062 B1): one build per `region` object + seed/scale/water key, shared by hydrology and biomes. */
+const climateByRegion = new WeakMap<RegionParams, Map<string, MacroClimate>>()
+/** Workers receive a structured clone of `region` per job (fresh object), so the first lookup per object falls back to content. */
+const climateByContent = new Map<string, MacroClimate>()
+let lastClimateBuildMs = 0
+
+/** Duration (ms) of the most recent memo build on this thread — for cost / boot reports. */
+export function lastMacroClimateBuildMs(): number {
+  return lastClimateBuildMs
+}
+
+/**
+ * Memoized {@link createMacroClimate}. `null` for worlds without `region.continentMask` (infinite / test worlds keep the
+ * legacy moisture-only biome formula). Never stringifies per call — this sits on the per-sample biome path.
+ */
+export function macroClimateOf(params: RawSampleParams): MacroClimate | null {
+  const region = params.region as RegionParams | undefined
+  if (!region?.continentMask) return null
+  const key = `${params.seed}|${params.heightScale}|${params.waterLevel}`
+  let perRegion = climateByRegion.get(region)
+  const hit = perRegion?.get(key)
+  if (hit) return hit
+  const contentKey = `${key}|${JSON.stringify(region)}`
+  let built = climateByContent.get(contentKey)
+  if (!built) {
+    const t0 = performance.now()
+    built = createMacroClimate(params)
+    lastClimateBuildMs = performance.now() - t0
+    climateByContent.set(contentKey, built)
+  }
+  if (!perRegion) {
+    perRegion = new Map()
+    climateByRegion.set(region, perRegion)
+  }
+  perRegion.set(key, built)
+  return built
 }

@@ -8,7 +8,7 @@ import {
   colorForTerrain,
   sandBandAt,
 } from './biomeColors'
-import { biomeWeightsAt } from './biomeRegions'
+import { biomeWeightsAtPoint } from './biomeRegions'
 import { isFloorBelowSea } from './terrainClassification'
 import { isWetFloor } from './waterSurface'
 
@@ -40,9 +40,9 @@ export function classifyBiomeColor(
     out.copy(LAKE_WATER)
     return
   }
-  const { waterLevel, heightScale, region, seed } = params
+  const { waterLevel, heightScale, seed } = params
   const altitude01 = (height - waterLevel) / Math.max(heightScale, 0.001)
-  const weights = biomeWeightsAt(texel.moistureRegion, altitude01, region)
+  const weights = biomeWeightsAtPoint(params, wx, wz, altitude01, texel.moistureRegion)
   const sandBand = sandBandAt(wx, wz, seed)
   colorForTerrain(height, texel.m, waterLevel, heightScale, weights, out, sandBand)
   applySlopeRock(out, height, waterLevel, steepness, sandBand)

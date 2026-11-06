@@ -1,6 +1,6 @@
 import type { SettlementTerrain } from '../shared/SettlementName'
 import type { RegionParams } from '../terrain/chunkHeightmap'
-import { biomeWeightsAt } from '../terrain/biomeRegions'
+import { biomeWeightsAt, type BiomeWeightsSampler } from '../terrain/biomeRegions'
 
 function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value))
@@ -10,6 +10,8 @@ export type TerrainSamplers = {
   sampleContinentalness: (x: number, z: number) => number
   sampleMountainRidge: (x: number, z: number) => number
   sampleMoistureRegion: (x: number, z: number) => number
+  /** Climate-driven biome weights (plan 062 B1); absent → legacy moisture-only formula. */
+  sampleBiomeWeights?: BiomeWeightsSampler
 }
 
 /** Offsets (world units) around a site to average terrain axes over — a
@@ -61,7 +63,9 @@ export function classifySettlementTerrain(
   if (mountainRidge > MOUNTAIN_RIDGE_THRESHOLD) return 'mountain'
 
   const altitude01 = clamp((y - waterLevel) / Math.max(heightScale, 0.001), 0, 1)
-  const weights = biomeWeightsAt(moistureRegion, altitude01, region)
+  const weights = samplers.sampleBiomeWeights
+    ? samplers.sampleBiomeWeights(x, z, altitude01, moistureRegion)
+    : biomeWeightsAt(moistureRegion, altitude01, region)
   if (weights.swamp >= weights.desert && weights.swamp >= weights.forest) return 'swamp'
   if (weights.desert >= weights.forest) return 'desert'
   return 'forest'

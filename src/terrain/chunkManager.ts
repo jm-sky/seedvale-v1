@@ -78,7 +78,7 @@ import { environmentSightBlocker } from '../world/sight/environmentSightBlockers
 import { coastalFactor, rollSizeClass, type TreeSizeClass } from '../world/treeLifecycle'
 import { createTreeStageMesh, preloadTreeStumpTemplate, tagTreeMesh } from '../world/treeVisuals'
 import { assignRenderLayer, REFLECTION_DISTANT_LAYER, REFLECTION_SKIPPED_LAYER, type WaterMirror } from '../world/waterMirror'
-import { biomeWeightsAt, type ForestBiome, forestBiomeAt, forestDensityAt } from './biomeRegions'
+import { biomeWeightsAtPoint, type BiomeWeightsSampler, type ForestBiome, forestBiomeAt, forestDensityAtPoint } from './biomeRegions'
 import { buildChunkGeometry, createTerrainMaterial } from './buildChunkGeometry'
 import {
   CEMETERY_SETTLEMENT_GATHER_RADIUS,
@@ -615,6 +615,8 @@ export type ChunkManager = {
   sampleContinentalness: (x: number, z: number) => number
   sampleMountainRidge: (x: number, z: number) => number
   sampleMoistureRegion: (x: number, z: number) => number
+  /** Climate-driven biome weights (plan 062 B1) — the same function terrain colour / vegetation use. */
+  sampleBiomeWeights: BiomeWeightsSampler
   /** Signed distance from `(worldX, worldZ)` to the nearest loaded river's own
    *  bank edge (`riverNetwork.ts`'s `nearestRiverBankDistance`, fed by each
    *  loaded chunk's already-cached `riverChains` — no separate river query
@@ -1690,6 +1692,7 @@ export function createChunkManager(
       mode,
       mainCapFraction,
       region: config.region,
+      sampleParams: fallbackParams,
       riverSegments: record.riverChains
         ? riverChannelSegmentsNear(record.riverChains, x, z, config.chunkSize)
         : [],
@@ -1976,6 +1979,7 @@ export function createChunkManager(
       heightScale: config.heightScale,
       region: config.region,
       seed: config.seed,
+      sampleParams: fallbackParams,
       scorches,
     }).then((meshData) => {
       meshDataCache.set(cacheKey, meshData)
@@ -2842,7 +2846,7 @@ export function createChunkManager(
     const altitude01 = Math.max(0, (h - config.waterLevel) / Math.max(config.heightScale, 0.001))
     const moistureRegion = sample(tile.moistureRegion)
     return {
-      biome: biomeWeightsAt(moistureRegion, altitude01, config.region),
+      biome: biomeWeightsAtPoint(fallbackParams, x, z, altitude01, moistureRegion),
       moisture: sample(tile.biomes),
       altitude01,
       mountainRidge: sample(tile.mountainRidge),
@@ -2863,7 +2867,7 @@ export function createChunkManager(
     const altitude01 = Math.max(0, (h - config.waterLevel) / Math.max(config.heightScale, 0.001))
     const moistureRegion = readField('moistureRegion', x, z)
     return {
-      biome: biomeWeightsAt(moistureRegion, altitude01, config.region),
+      biome: biomeWeightsAtPoint(fallbackParams, x, z, altitude01, moistureRegion),
       moisture: readField('biomes', x, z),
       altitude01,
       mountainRidge: readField('mountainRidge', x, z),
@@ -3182,6 +3186,7 @@ export function createChunkManager(
     sampleContinentalness: (x, z) => readField('continentalness', x, z),
     sampleMountainRidge: (x, z) => readField('mountainRidge', x, z),
     sampleMoistureRegion: (x, z) => readField('moistureRegion', x, z),
+    sampleBiomeWeights: (x, z, altitude01, moistureRegion) => biomeWeightsAtPoint(fallbackParams, x, z, altitude01, moistureRegion),
     riverShoreDistance(worldX, worldZ) {
       let best: number | null = null
       for (const rec of chunks.values()) {
@@ -3239,24 +3244,28 @@ export function createChunkManager(
     sampleForestFactor: (x, z) => {
       const h = readField('heights', x, z)
       const altitude01 = Math.max(0, (h - config.waterLevel) / Math.max(config.heightScale, 0.001))
-      return forestDensityAt(
+      return forestDensityAtPoint(
+        fallbackParams,
+        x,
+        z,
         readField('moistureRegion', x, z),
         altitude01,
         readField('continentalness', x, z),
         readField('mountainRidge', x, z),
-        config.region,
       )
     },
     sampleForestBiome: (x, z) => {
       const h = readField('heights', x, z)
       const altitude01 = Math.max(0, (h - config.waterLevel) / Math.max(config.heightScale, 0.001))
       return forestBiomeAt(
-        forestDensityAt(
+        forestDensityAtPoint(
+          fallbackParams,
+          x,
+          z,
           readField('moistureRegion', x, z),
           altitude01,
           readField('continentalness', x, z),
           readField('mountainRidge', x, z),
-          config.region,
         ),
       )
     },

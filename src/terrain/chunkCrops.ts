@@ -1,7 +1,7 @@
 import type { ChunkCoord } from './chunkGrid'
 import { CROP_DEFS, CROP_IDS, type CropId, type CropPlacement, rollCropPhase } from '../world/cropLifecycle'
 import { createSeededRandom } from '../world/parseSeed'
-import { biomeWeightsAt } from './biomeRegions'
+import { biomeWeightsAtPoint } from './biomeRegions'
 import {
   apronOriginWorld,
   type ChunkTileData,
@@ -42,7 +42,7 @@ export function computeChunkCrops(
 ): CropPlacement[] {
   if (params.isHomeChunk) return []
 
-  const { chunkSize, waterLevel, heightScale, region } = params
+  const { chunkSize, waterLevel, heightScale } = params
   const o = apronOriginWorld(coord.cx, coord.cz, chunkSize, params.resolution)
   const random = createSeededRandom(params.seed ^ hashChunk(coord.cx, coord.cz) ^ 0xc90f1)
 
@@ -70,7 +70,7 @@ export function computeChunkCrops(
 
     const altitude = (h - waterLevel) / Math.max(heightScale, 0.001)
     const moistureRegion = sample(tile.moistureRegion, wx, wz)
-    const biome = biomeWeightsAt(moistureRegion, altitude, region)
+    const biome = biomeWeightsAtPoint(params, wx, wz, altitude, moistureRegion)
     const ridge = sample(tile.mountainRidge, wx, wz)
 
     const openGroundWeight =

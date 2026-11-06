@@ -2,7 +2,7 @@ import type { Role } from '../ai/characters'
 import type { HeightSampler } from '../player/PlayerController'
 import type { RegionParams } from './chunkHeightmap'
 import { createSeededRandom } from '../world/parseSeed'
-import { biomeWeightsAt } from './biomeRegions'
+import { biomeWeightsAt, type BiomeWeightsSampler } from './biomeRegions'
 
 function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value))
@@ -117,6 +117,8 @@ export type ResourceEnv = {
   sampleContinentalness: (x: number, z: number) => number
   sampleMountainRidge: (x: number, z: number) => number
   sampleMoistureRegion: (x: number, z: number) => number
+  /** Climate-driven biome weights (plan 062 B1); absent → legacy moisture-only formula. */
+  sampleBiomeWeights?: BiomeWeightsSampler
   waterLevel: number
   heightScale: number
   region: RegionParams
@@ -207,7 +209,9 @@ function resourceAtCell(cell: ResourceCell, seed: number, env: ResourceEnv): Nat
   const moistureRegion = env.sampleMoistureRegion(x, z)
   const altitude01 = clamp((h - env.waterLevel) / Math.max(env.heightScale, 0.001), 0, 1)
   const nearWater = isNearWater(x, z, env)
-  const biome = biomeWeightsAt(moistureRegion, altitude01, env.region)
+  const biome = env.sampleBiomeWeights
+    ? env.sampleBiomeWeights(x, z, altitude01, moistureRegion)
+    : biomeWeightsAt(moistureRegion, altitude01, env.region)
 
   const weights = resourceWeights(continentalness, mountainRidge, altitude01, nearWater, biome, env.region)
   const totalWeight = RESOURCE_TYPES.reduce((sum, t) => sum + weights[t], 0)

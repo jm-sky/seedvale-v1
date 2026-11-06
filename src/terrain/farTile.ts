@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { forestDensityAt } from './biomeRegions'
+import { forestDensityAtPoint } from './biomeRegions'
 import { type RawSampleParams, sampleRawTexelAt } from './chunkHeightmap'
 import { classifyBiomeColor, isFarLake } from './farTileColor'
 import { isFloorBelowSea } from './terrainClassification'
@@ -212,7 +212,7 @@ function farCanopyHeight(
 ): number {
   if (isFarLake(texel, params) || isFloorBelowSea(texel.floorH, params.waterLevel)) return 0
   const altitude01 = (height - params.waterLevel) / Math.max(params.heightScale, 0.001)
-  const density = forestDensityAt(texel.moistureRegion, altitude01, texel.continentalness, texel.mountainRidge, params.region)
+  const density = forestDensityAtPoint(params, wx, wz, texel.moistureRegion, altitude01, texel.continentalness, texel.mountainRidge)
   const factor = THREE.MathUtils.smoothstep(density, FAR_CANOPY_START, FAR_CANOPY_FULL)
   if (factor <= 0) return 0
   const noise = valueNoise(wx / FAR_CANOPY_NOISE_CELL, wz / FAR_CANOPY_NOISE_CELL) * 2 - 1

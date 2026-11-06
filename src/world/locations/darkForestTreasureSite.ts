@@ -1,7 +1,7 @@
 import type { ChunkCoord } from '../../terrain/chunkGrid'
 import type { RawSampleParams } from '../../terrain/chunkHeightmap'
 import type { CaveDefinition } from '../caveVolume'
-import { biomeWeightsAt, forestBiomeAt, forestDensityAt } from '../../terrain/biomeRegions'
+import { biomeWeightsAtPoint, forestBiomeAt, forestDensityAtPoint } from '../../terrain/biomeRegions'
 import {
   sampleContinentalnessAt,
   sampleFloorAt,
@@ -115,7 +115,7 @@ function forestFactorAt(sampleParams: RawSampleParams, x: number, z: number): nu
   const moisture = sampleMoistureRegionAt(x, z, sampleParams)
   const continentalness = sampleContinentalnessAt(x, z, sampleParams)
   const ridge = sampleMountainRidgeAt(x, z, sampleParams)
-  return forestDensityAt(moisture, altitude01, continentalness, ridge, sampleParams.region)
+  return forestDensityAtPoint(sampleParams, x, z, moisture, altitude01, continentalness, ridge)
 }
 
 type SiteTier = {
@@ -161,7 +161,7 @@ function scoreCandidate(
   const floorH = sampleFloorAt(x, z, sampleParams)
   const altitude01 = (floorH - sampleParams.waterLevel) / Math.max(sampleParams.heightScale, 0.001)
   const moisture = sampleMoistureRegionAt(x, z, sampleParams)
-  const biomeWeights = biomeWeightsAt(moisture, altitude01, sampleParams.region)
+  const biomeWeights = biomeWeightsAtPoint(sampleParams, x, z, altitude01, moisture)
   const swampPenalty = biomeWeights.swamp * 0.4
   const ridge = sampleMountainRidgeAt(x, z, sampleParams)
   const ridgePenalty = ridge * 0.25

@@ -3,7 +3,7 @@ import type { ChunkCoord } from './chunkGrid'
 import type { VegetationPlacement } from './chunkVegetation'
 import { createSeededRandom } from '../world/parseSeed'
 import { PINE_SPECIES_INDICES } from '../world/treeLifecycle'
-import { biomeWeightsAt } from './biomeRegions'
+import { biomeWeightsAtPoint } from './biomeRegions'
 import {
   apronOriginWorld,
   type ChunkTileData,
@@ -147,7 +147,7 @@ export function computeChunkItems(
 ): ItemPlacement[] {
   if (params.isHomeChunk) return []
 
-  const { chunkSize, waterLevel, heightScale, region } = params
+  const { chunkSize, waterLevel, heightScale } = params
   const o = apronOriginWorld(coord.cx, coord.cz, chunkSize, params.resolution)
   const random = createSeededRandom(params.seed ^ hashChunk(coord.cx, coord.cz) ^ 0x17e51)
 
@@ -205,7 +205,7 @@ export function computeChunkItems(
 
     const altitude = (pos.h - waterLevel) / Math.max(heightScale, 0.001)
     const moistureRegion = sample(tile.moistureRegion, pos.wx, pos.wz)
-    const biome = biomeWeightsAt(moistureRegion, altitude, region)
+    const biome = biomeWeightsAtPoint(params, pos.wx, pos.wz, altitude, moistureRegion)
     const treeClose = nearTree(vegetation, pos.wx, pos.wz)
     const pineClose = nearPine(vegetation, pos.wx, pos.wz)
 
@@ -253,7 +253,7 @@ export function computeChunkItems(
 
     const altitude = (pos.h - waterLevel) / Math.max(heightScale, 0.001)
     const moistureRegion = sample(tile.moistureRegion, pos.wx, pos.wz)
-    const biome = biomeWeightsAt(moistureRegion, altitude, region)
+    const biome = biomeWeightsAtPoint(params, pos.wx, pos.wz, altitude, moistureRegion)
     const ridge = sample(tile.mountainRidge, pos.wx, pos.wz)
     const treeClose = nearTree(vegetation, pos.wx, pos.wz)
 
@@ -302,7 +302,7 @@ export function computeChunkItems(
 
     const altitude = (pos.h - waterLevel) / Math.max(heightScale, 0.001)
     const moistureRegion = sample(tile.moistureRegion, pos.wx, pos.wz)
-    const biome = biomeWeightsAt(moistureRegion, altitude, region)
+    const biome = biomeWeightsAtPoint(params, pos.wx, pos.wz, altitude, moistureRegion)
     const ridge = sample(tile.mountainRidge, pos.wx, pos.wz)
     const treeClose = nearTree(vegetation, pos.wx, pos.wz)
 

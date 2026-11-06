@@ -1,7 +1,7 @@
 import type { WorldConfig } from '../../config/worldConfig'
 import type { MapBiomeKind, MapCellData, MapCellKey, MapTerrainKind, MapViewport } from './mapTypes'
 import { sandBandAt } from '../../terrain/biomeColors'
-import { biomeWeightsAt, forestDensityAt } from '../../terrain/biomeRegions'
+import { biomeWeightsAtPoint, forestDensityAtPoint } from '../../terrain/biomeRegions'
 import { type RawSampleParams, type RawTexelSample, sampleRawTexelAt } from '../../terrain/chunkHeightmap'
 import { isFloorBelowSea, isMountainRidge, isOceanMix } from '../../terrain/terrainClassification'
 import { isWetFloor } from '../../terrain/waterSurface'
@@ -95,8 +95,8 @@ export function classifyMapTexel(texel: RawTexelSample, params: RawSampleParams,
   const altitude01 = Math.max(0, (height - waterLevel) / Math.max(heightScale, 0.001))
   const ridge = texel.mountainRidge
   const moistureRegion = texel.moistureRegion
-  const weights = biomeWeightsAt(moistureRegion, altitude01, region)
-  const forest = forestDensityAt(moistureRegion, altitude01, continentalness, ridge, region)
+  const weights = biomeWeightsAtPoint(params, worldX, worldZ, altitude01, moistureRegion)
+  const forest = forestDensityAtPoint(params, worldX, worldZ, moistureRegion, altitude01, continentalness, ridge)
 
   let terrain: MapTerrainKind
   if (isMountainRidge(ridge)) terrain = 'mountain'

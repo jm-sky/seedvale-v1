@@ -3,7 +3,7 @@ import type { RegionParams } from './chunkHeightmap'
 import type { ChunkManager } from './chunkManager'
 import type { DigProfile } from './dig'
 import { cellsWithinRadius, SETTLEMENT_GRID_STEP, type SettlementCell, type SettlementDef, worldToCell } from '../settlement/settlementGenerator'
-import { biomeWeightsAt, type ForestBiome } from './biomeRegions'
+import { biomeWeightsAt, type BiomeWeightsSampler, type ForestBiome } from './biomeRegions'
 import { type MineableOre, ORE_ITEM } from './depositMining'
 import { type DigEnv, isEligibleShellDigSpot } from './dig'
 
@@ -108,6 +108,8 @@ export function resolveContextualDigFind(
 export type DigContextualFindEnv = Omit<DigEnv, 'region'> & {
   region: RegionParams
   sampleMoistureRegion: (x: number, z: number) => number
+  /** Climate-driven biome weights (plan 062 B1); absent → legacy moisture-only formula. */
+  sampleBiomeWeights?: BiomeWeightsSampler
   sampleForestBiome: (x: number, z: number) => ForestBiome
   heightScale: number
 }
@@ -128,7 +130,9 @@ export function buildDigContextualFindContext(
   const height = env.sampleHeight(x, z)
   const altitude01 = Math.max(0, (height - env.waterLevel) / Math.max(env.heightScale, 0.001))
   const moisture = env.sampleMoistureRegion(x, z)
-  const swampWeight = biomeWeightsAt(moisture, altitude01, env.region).swamp
+  const swampWeight = (env.sampleBiomeWeights
+    ? env.sampleBiomeWeights(x, z, altitude01, moisture)
+    : biomeWeightsAt(moisture, altitude01, env.region)).swamp
 
   let swamp = false
   let forest = false
@@ -159,6 +163,7 @@ export function digContextualFindEnvFromChunkManager(chunkManager: ChunkManager)
     sampleContinentalness: chunkManager.sampleContinentalness,
     region: chunkManager.region,
     sampleMoistureRegion: chunkManager.sampleMoistureRegion,
+    sampleBiomeWeights: chunkManager.sampleBiomeWeights,
     sampleForestBiome: chunkManager.sampleForestBiome,
     heightScale: chunkManager.heightScale,
   }

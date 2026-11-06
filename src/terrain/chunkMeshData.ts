@@ -8,8 +8,8 @@ import {
   colorForTerrain,
   sandBandAt,
 } from './biomeColors'
-import { biomeWeightsAt } from './biomeRegions'
-import { apronGridWeights, type RegionParams, sampleApronGridWeighted } from './chunkHeightmap'
+import { biomeWeightsAt, biomeWeightsAtPoint } from './biomeRegions'
+import { apronGridWeights, type RawSampleParams, type RegionParams, sampleApronGridWeighted } from './chunkHeightmap'
 import { applyRockPlateColor } from './rockPlateColor'
 
 /** World-space burn patches applied as vertex-color charcoal (plan 137) —
@@ -86,6 +86,8 @@ export type ChunkMeshDataParams = {
   heightScale: number
   region: RegionParams
   seed: number
+  /** Full terrain params of the world — climate-driven biomes (plan 062 B1); absent → legacy moisture-only biomes. */
+  sampleParams?: RawSampleParams
   scorches: readonly TerrainScorchPatch[]
 }
 
@@ -134,6 +136,7 @@ export function computeChunkMeshData(params: ChunkMeshDataParams): ChunkMeshData
     heightScale,
     region,
     seed,
+    sampleParams,
     scorches,
   } = params
   const step = chunkSize / (resolution - 1)
@@ -182,9 +185,11 @@ export function computeChunkMeshData(params: ChunkMeshDataParams): ChunkMeshData
       const roadTint = sampleApronGridWeighted(tile.roadTint, apronRes, w)
       const steepness = 1 - ny
       const altitude01 = (h - waterLevel) / Math.max(heightScale, 0.001)
-      const biomeWeights = biomeWeightsAt(moistureRegion, altitude01, region)
       const wx = worldOriginX + x
       const wz = worldOriginZ + z
+      const biomeWeights = sampleParams
+        ? biomeWeightsAtPoint(sampleParams, wx, wz, altitude01, moistureRegion)
+        : biomeWeightsAt(moistureRegion, altitude01, region)
       const sandBand = sandBandAt(wx, wz, seed)
 
       colorForTerrain(h, m, waterLevel, heightScale, biomeWeights, tmp, sandBand)

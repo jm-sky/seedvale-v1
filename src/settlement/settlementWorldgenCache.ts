@@ -61,7 +61,8 @@ export const SETTLEMENT_DEFINITION_CACHE_NAMESPACE = 'settlement-definitions'
 // v25 (2026-11-03, queue Q94): object discs keep a dry rim (layouts move; LG -4_3 on seed 415424794 has no cemetery).
 // v26 (2026-11-05, queue Q118): range spines/passes/summits reshape the relief (plan world-terrain-060 R1–R2).
 // v27 (2026-11-05): C¹ relief: smooth range-spine crest/blend/unions, C¹ Worley ridge, bicubic hydrology correction (plan world-terrain-065).
-export const SETTLEMENT_DEFINITION_CACHE_VERSION = 37
+// v28 (2026-11-06, queue Q124): climate-driven biomes + borders (plan world-terrain-062 B1) move colour/vegetation/settlement terrain class.
+export const SETTLEMENT_DEFINITION_CACHE_VERSION = 38
 // v7 (2026-10-31, queue Q43): settlement storehouse — plot-infra-storehouse-0 (+ houseDefinitionId/houseYaw/storehouse),
 // landmark kind 'storehouse', ClearingLayout.storehouses.
 // v6 (2026-10-31, queue Q41): household compounds — plot.houseDefinitionId/houseYaw/yard/discs,

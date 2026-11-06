@@ -46,3 +46,13 @@ Bump in the B1 commit every namespace whose output moves — verify each by grep
 - A consumer cannot get a world position / params without a lifecycle change (would need a singleton).
 - The main-thread memo build is a visible boot long task → design fork (ship the coast grid with the hydrology install vs lazy build in an idle slot) → Opus.
 - Hydrology id/hash changes.
+
+## B1 implementation (S, 2026-11-06, queue Q124) ✅ implemented · ✅ technically verified · ❓ not browser-verified
+
+- `biomeRegions.ts`: `biomeWeightsFromClimate`, `biomeBorderAt` (2-octave seeded 600/150 m, ≤ 0.08), `biomeWeightsAtPoint`, `forestDensityAtPoint`, `BiomeWeightsSampler`. `macroClimate.ts`: `macroClimateOf` (WeakMap on `region` + content-key fallback, because workers receive a cloned `region` per job); `worldHydrology.ts` shares it. Legacy formula unchanged without `continentMask`.
+- Consumers: all call sites use the point helper (terrain mesh via `ChunkMeshDataParams.sampleParams`, grass via `GrassComputeParams.sampleParams`, env-style records via optional `sampleBiomeWeights` from `ChunkManager`/`worldKnowledgeScan`). `T` uses `altitude01` of the caller (equivalent to sample height).
+- Calibrated 🟡 constants: warm 6→13 °C, `ARID_START` 0.42 + 0.10, swamp wet 0.74 − 0.14. Land on V1 is T 5–14 °C, P 0.4–0.75, so contract's 8→15 °C start would have left desert almost nowhere.
+- Shares (`pnpm tsx scripts/tools/biome-shares.ts 42,415424794 --png=…`), desert/swamp %: seed 42 legacy 21.0/3.2 → 7.5/3.7 (N 0.0/5.6, mid 3.5/3.5, S 31.8/2.6); seed 415424794 legacy 23.7/4.3 → 14.7/4.7 (N 0.0/8.0, mid 6.9/4.5, S 46.7/3.3). Swamp within ±25 %. Desert is a result, not a quota; patchy in the south on the previews, not a stripe.
+- Caches bumped: chunk tile 40, settlement definition 38 (terrain class rolls village size/outpost), road routes 26, cemetery 23, locations-coarse 17. `WORLD_HYDROLOGY_VERSION` unchanged; golden hydrology hashes pass. `WORLDGEN_EPOCH` untouched.
+- Checks: type-check, lint, full vitest (804 files) green; `worldgen:access:census` run (settlement tables, no wet/unreachable flagged in sampled output); chunk-tile p50 7.4 ms before / 7.2–7.6 after (bare tiles, lower bound). Climate memo build 130–170 ms per realm in Node, once per worker/thread.
+- Not done / open: vegetation instance totals per biome before/after, `?bootMark=1` long-task check of the memo on the main thread, browser look → §2/§3. The sync `createChunkGrass` fallback in `grass.ts` still passes no `sampleParams` (legacy biomes) — only matters if that path is used.
