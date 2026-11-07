@@ -19,11 +19,11 @@ Generated from exported TypeScript symbols.
 ## `persistence/saveData.ts`
 
 - `CURRENT_SAVE_VERSION` — const — line 782
-- `isSaveData` — function — line 3059
-- `loadSaveData` — function — line 3159
-- `loadStoredSave` — function — line 4830
-- `LoadStoredSaveOptions` — type — line 4820
-- `migrateStoredSave` — function — line 4782
+- `isSaveData` — function — line 3044
+- `loadSaveData` — function — line 3144
+- `loadStoredSave` — function — line 4815
+- `LoadStoredSaveOptions` — type — line 4805
+- `migrateStoredSave` — function — line 4767
 - `SaveBadges` — type — line 262
 - `SaveBedroll` — type — line 610
 - `SaveCarriedContainer` — type — line 446
@@ -51,7 +51,7 @@ Generated from exported TypeScript symbols.
 - `SaveLocationKnowledge` — type — line 230
 - `SaveMap` — type — line 239
 - `SaveMeasurableWorkContractScope` — type — line 713
-- `SaveMigration` — type — line 3173
+- `SaveMigration` — type — line 3158
 - `SaveMineableRockState` — type — line 438
 - `SavePalisadeContractTarget` — type — line 701
 - `SavePalisadeSegment` — type — line 571
@@ -95,20 +95,21 @@ Generated from exported TypeScript symbols.
 - `SaveWorkContractScope` — type — line 749
 - `SaveWorkContractState` — type — line 662
 - `SaveWorldFlags` — type — line 208
-- `StoredSaveResult` — type — line 4811
+- `StoredSaveResult` — type — line 4796
+- `upperTierOrphanClaimsFromSave` — function — line 1673
 - `UpperTierOwnerRow` — type — line 1634
-- `upperTierOwnerRowsFromSave` — function — line 1643
+- `upperTierOwnerRowsFromSave` — function — line 1646
   - domain: persistence
   - system: save-schema
 
 ## `persistence/saveDb.ts`
 
 - `beginNewSave` — function — line 142
-- `createSave` — function — line 368
+- `createSave` — function — line 369
   - role: Creates a brand-new named slot from `data`.
   - integration: Same outgoing-validation guard as `writeSave()` (plan persistence-004 §1) — an invalid `data` must not be allowed to create a slot that would immediately be excluded from `listSaves()` again.
 - `CreateSaveResult` — type — line 32
-- `deleteSave` — function — line 416
+- `deleteSave` — function — line 417
 - `getActiveSaveId` — function — line 115
 - `getPendingNewSaveName` — function — line 133
 - `listSaveManagementEntries` — function — line 243
@@ -116,7 +117,7 @@ Generated from exported TypeScript symbols.
 - `listSavesResult` — function — line 204
 - `ListSavesResult` — type — line 200
 - `readSave` — function — line 264
-- `renameSave` — function — line 393
+- `renameSave` — function — line 394
 - `SaveManagementResult` — type — line 239
 - `SaveReason` — type — line 51
 - `setActiveSaveId` — function — line 124

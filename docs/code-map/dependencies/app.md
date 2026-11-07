@@ -1604,6 +1604,7 @@ Generated from TypeScript imports.
 - `items/trade.ts`
 - `items/tradeCatalog.ts`
 - `items/tradeGrievance.ts`
+- `items/upperTierIdentities.ts`
 - `items/weaponMaintenance.ts`
 - `player/PlayerController.ts`
 - `player/PlayerSkills.ts`
@@ -1928,6 +1929,7 @@ Generated from TypeScript imports.
 - `items/heldToolVisual.ts`
 - `items/itemModels.ts`
 - `items/treasureGameplay.ts`
+- `items/upperTierIssuance.ts`
 - `quests/dungeonBanditTreasure.ts`
 - `quests/dungeonBanditTreasureRuntime.ts`
 - `quests/lostHunterNaturalCave.ts`

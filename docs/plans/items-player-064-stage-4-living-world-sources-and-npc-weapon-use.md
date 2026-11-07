@@ -1,7 +1,7 @@
 # Plan: Stage 4 living-world sources and NPC weapon use
 
 **Created:** 2026-11-04
-**Status:** `in progress` 🔄 (O1–O4 implemented and technically verified 2026-11-07; N1, U open)
+**Status:** `in progress` 🔄 (O1–O4 implemented and technically verified 2026-11-07; **U** merchant issuer for the 6 registered identities implemented and technically verified 2026-11-07 (`1c8c0ab4`), the 8 armor identities designated but dormant until items-player-066 registers them; N1 open)
 **Type:** feature
 **Priority:** medium · **Effort:** L
 **Depends on:** items-player-062, items-player-063

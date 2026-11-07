@@ -170,14 +170,14 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/createSettlement.ts`
 
-- `AcquiredSettlementResources` — type — line 562
-- `collectAgentBatch` — function — line 585
+- `AcquiredSettlementResources` — type — line 567
+- `collectAgentBatch` — function — line 590
   - domain: settlements
-- `createSettlement` — function — line 612
+- `createSettlement` — function — line 617
   - domain: settlements
-- `CreateSettlementDeps` — type — line 338
-- `Settlement` — type — line 182
-- `settlementSpawnPoint` — function — line 326
+- `CreateSettlementDeps` — type — line 340
+- `Settlement` — type — line 184
+- `settlementSpawnPoint` — function — line 328
 
 ## `settlement/decorProps.ts`
 
@@ -1452,14 +1452,14 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/SettlementsManager.ts`
 
-- `createSettlementsManager` — function — line 460
+- `createSettlementsManager` — function — line 462
   - domain: settlements
   - system: settlements-manager
   - role: Owns settlement generation, streaming and per-settlement economy/household/NPC-state registries.
   - owns: SettlementEconomy, Household
   - lifecycle: streaming
-- `SettlementsManager` — type — line 205
-- `shouldAcceptSettlementResidency` — function — line 180
+- `SettlementsManager` — type — line 207
+- `shouldAcceptSettlementResidency` — function — line 182
   - domain: settlements
 
 ## `settlement/settlementStructures.ts`
@@ -1659,6 +1659,20 @@ Generated from exported TypeScript symbols.
   - system: structure-condition
   - role: Owns mutable settlement-structure condition/repair state, keyed by stable structureId.
   - owns: SettlementStructureState
+
+## `settlement/upperTierHosts.ts`
+
+- `createUpperTierHostResolver` — function — line 87
+  - domain: items-player
+  - system: equipment
+- `issueHostedUpperTierStock` — function — line 138
+  - domain: items-player
+  - system: equipment
+- `upperTierEligibleTraderIds` — function — line 59
+  - domain: settlements
+- `UpperTierHost` — type — line 12
+- `UpperTierHostDeps` — type — line 20
+- `UpperTierHostResolver` — type — line 28
 
 ## `settlement/villageClearing.ts`
 

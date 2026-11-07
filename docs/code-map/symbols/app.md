@@ -389,13 +389,13 @@ Generated from exported TypeScript symbols.
 
 ## `app/inventoryWiring.ts`
 
-- `createInventoryWiring` — function — line 252
-- `InventoryWiring` — type — line 141
-- `InventoryWiringDeps` — type — line 180
-- `MerchantInventoryView` — type — line 127
-- `npcDialogueCanOrderArtisan` — function — line 245
+- `createInventoryWiring` — function — line 254
+- `InventoryWiring` — type — line 143
+- `InventoryWiringDeps` — type — line 182
+- `MerchantInventoryView` — type — line 129
+- `npcDialogueCanOrderArtisan` — function — line 247
   - domain: settlements-npcs
-- `npcDialogueCanTrade` — function — line 236
+- `npcDialogueCanTrade` — function — line 238
   - domain: settlements-npcs
 
 ## `app/modalState.ts`
@@ -482,24 +482,24 @@ Generated from exported TypeScript symbols.
 
 ## `app/worldBundle.ts`
 
-- `BuiltWorldSystems` — type — line 1299
-- `carryTerrainModificationsAcrossRebuild` — function — line 2663
-- `caveCrateContainerSpecs` — function — line 358
+- `BuiltWorldSystems` — type — line 1304
+- `carryTerrainModificationsAcrossRebuild` — function — line 2670
+- `caveCrateContainerSpecs` — function — line 359
   - domain: world-terrain
-- `caveTreasureContainerSpecs` — function — line 325
-- `createWorldBundle` — function — line 2395
-- `disposeWorldBundle` — function — line 2967
-- `HOME_RADIUS` — const — line 278
-- `homeChunks` — function — line 382
-- `rebuildWorldBundle` — function — line 2676
-- `WorldBundle` — type — line 405
+- `caveTreasureContainerSpecs` — function — line 326
+- `createWorldBundle` — function — line 2400
+- `disposeWorldBundle` — function — line 2976
+- `HOME_RADIUS` — const — line 279
+- `homeChunks` — function — line 383
+- `rebuildWorldBundle` — function — line 2683
+- `WorldBundle` — type — line 406
   - system: world-bundle
   - role: Owns the lifetime/rebuild boundary for all world systems (terrain, settlements, fauna, items, player-placed structures).
   - owns: WorldBundle
   - lifecycle: rebuild
-- `WorldBundleRebuildOutcome` — type — line 2674
-- `WorldStartupLoadingStage` — type — line 1106
-- `WorldStartupLoadingStageListener` — type — line 1108
+- `WorldBundleRebuildOutcome` — type — line 2681
+- `WorldStartupLoadingStage` — type — line 1109
+- `WorldStartupLoadingStageListener` — type — line 1111
 
 ## `app/worldRebuildLifecycle.ts`
 

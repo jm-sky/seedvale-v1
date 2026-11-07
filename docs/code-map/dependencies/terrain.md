@@ -386,6 +386,7 @@ Generated from TypeScript imports.
 - `settlement/settlementTerrain.ts`
 - `settlement/settlementWorldgenCache.test.ts`
 - `settlement/settlementWorldgenCache.ts`
+- `settlement/upperTierHosts.test.ts`
 - `settlement/villageClearing.test.ts`
 - `settlement/villageClearing.ts`
 - `settlement/villagePaddock.test.ts`
@@ -1283,6 +1284,7 @@ Generated from TypeScript imports.
 - `settlement/settlementPlanCache.ts`
 - `settlement/settlementProgression.test.ts`
 - `settlement/settlementWorldgenCache.test.ts`
+- `settlement/upperTierHosts.test.ts`
 - `terrain/chunkHeightmap.ts`
 - `terrain/landformDescriptors.test.ts`
 - `terrain/riverNetwork.ts`

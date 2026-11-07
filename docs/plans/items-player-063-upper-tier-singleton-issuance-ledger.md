@@ -1,7 +1,7 @@
 # Plan: Upper-tier singleton issuance ledger (A8)
 
 **Created:** 2026-11-04
-**Status:** `in progress` 🔄 (ledger, persistence and bypass guards implemented 2026-11-04; [Opus R-A — review 042](../reviews/2026-11-07--042--items-063-upper-tier-ledger-r-a-review.md) 2026-11-07: core PASS, corrections **R1–R3 required** before 064 enables any upper-tier source)
+**Status:** `done` ✅ (technically verified 2026-11-07; ledger, persistence and bypass guards 2026-11-04; [Opus R-A — review 042](../reviews/2026-11-07--042--items-063-upper-tier-ledger-r-a-review.md) corrections R1–R3 landed in `fda82efa`; optional F7 cleanups remain open; first production issuer is items-player-064 U)
 **Type:** infrastructure
 **Priority:** medium · **Effort:** M
 **Depends on:** -

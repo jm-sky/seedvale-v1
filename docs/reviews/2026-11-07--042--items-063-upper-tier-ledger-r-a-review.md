@@ -119,3 +119,7 @@ R1–R3 are small (one session, no save version bump: R2 changes validation only
 
 - **Q-U1 — A8 po zniszczeniu / grobie:** (a) zniszczony lub pochowany egzemplarz przepada na zawsze, tożsamość nigdy nie wraca [rek. na start]; (b) po zniszczeniu tożsamość może raz wrócić z innego, deterministycznego źródła; (c) pochówek upuszcza przedmioty unikatowe przy grobie zamiast je zakopywać, reszta jak (a).
 - **Q-U2 — gdzie pojawia się unikat:** (a) każdy unikat ma jedno z góry wyznaczone źródło na świat (z seeda), to samo przy każdej grze na tym seedzie [rek.]; (b) wygrywa pierwsze źródło, które gracz odwiedzi (zależne od kolejności zwiedzania).
+
+## 7. Resolution — 2026-11-07
+
+R1–R3 landed in `fda82efa` (see 063 notes); the walker is recursive, which also closed an uncovered owner class not listed in F3 (animal saddlebag packs). U1–U4 landed with 064 U in `1c8c0ab4`. Opus spot check of the first issuer (§5) is still recommended and not yet done.

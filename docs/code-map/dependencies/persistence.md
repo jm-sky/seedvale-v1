@@ -101,6 +101,7 @@ Generated from TypeScript imports.
 - `persistence/saveDb.ts`
 - `persistence/saveSlots.test.ts`
 - `persistence/saveSlots.ts`
+- `settlement/upperTierHosts.test.ts`
 
 ## `persistence/saveDb.test.ts`
 

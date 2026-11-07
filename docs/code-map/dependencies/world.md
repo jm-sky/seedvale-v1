@@ -4006,6 +4006,7 @@ Generated from TypeScript imports.
 - `settlement/settlementGenerator.ts`
 - `settlement/settlementLayout.ts`
 - `settlement/settlementNightCycle.ts`
+- `settlement/upperTierHosts.ts`
 - `settlement/villageClearing.ts`
 - `settlement/villagePaddock.ts`
 - `settlement/villagePasture.ts`

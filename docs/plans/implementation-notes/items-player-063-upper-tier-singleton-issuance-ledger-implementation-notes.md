@@ -58,3 +58,10 @@ Tests cover same-kind competing/reentrant sources, failure and throwing-source r
 - **R3** — owner walker is hand-listed (misses `settlementEconomies[*].food.instances`); add a structural coverage test over every instance-bearing save path.
 
 Optional F7 cleanups (type dedupe, capability import test, scoped count walk) in the review. 063 completes when R1–R3 are green.
+
+## R1–R3 resolved — 2026-11-07 (`fda82efa`, technically verified; no save version bump)
+
+- **R1:** `resolveInstanceSellPrice` returns `null` for restricted kinds, so `sellInstancesForCoins` returns `not_sold`; test in `upperTierIssuance.test.ts`.
+- **R2:** a `live` claim with no owner is accepted (`findUpperTierOrphanClaims`, DEV diagnostic `upper-tier-orphan-claim` on write); duplicates, contradicting IDs, owners of destroyed/unclaimed identities and count stacks still reject. Round-trip test in `saveDb.test.ts`.
+- **R3:** `upperTierOwnerRowsFromSave` is now a structural recursive walk (every `instances` array and `instance` payload in the save). It newly covers animal saddlebag packs (`livestock`, `wildFauna`, habitat occupants, rats), `settlementEconomies[*].food` and any future domain. Coverage tests in `upperTierIssuance.test.ts`.
+- Not done (optional F7): single record/status type, capability-import test, scoping `hasUpperTierCountStack`. 063 is complete; full suite 822 files / 9694 tests green.

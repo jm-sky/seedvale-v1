@@ -67,6 +67,7 @@ Generated from TypeScript imports.
 - `fauna/ownedAnimalControl.ts`
 - `items/constructionMaterials.ts`
 - `items/createDroppedItems.ts`
+- `items/upperTierIssuance.ts`
 - `perf/active.ts`
 - `perf/agentCpuDiag.ts`
 - `perf/monitor.ts`
@@ -98,6 +99,7 @@ Generated from TypeScript imports.
 - `settlement/structureCondition.ts`
 - `settlement/structureRepairCandidates.ts`
 - `settlement/structureStateRegistry.ts`
+- `settlement/upperTierHosts.ts`
 - `settlement/villagePlan.ts`
 - `terrain/chunkGrid.ts`
 - `terrain/chunkHeightmap.ts`
@@ -481,6 +483,7 @@ Generated from TypeScript imports.
 - `fauna/shepherdFlock.ts`
 - `items/constructionMaterials.ts`
 - `items/createDroppedItems.ts`
+- `items/upperTierIssuance.ts`
 - `perf/agentCpuDiag.ts`
 - `player/PlayerController.ts`
 - `settlement/VillageFire.ts`
@@ -520,6 +523,7 @@ Generated from TypeScript imports.
 - `settlement/structureCondition.ts`
 - `settlement/structureRepairCandidates.ts`
 - `settlement/structureStateRegistry.ts`
+- `settlement/upperTierHosts.ts`
 - `settlement/wellInteractionQueue.ts`
 - `shared/SettlementName.ts`
 - `shared/bootMark.ts`
@@ -1599,6 +1603,7 @@ Generated from TypeScript imports.
 - `settlement/layeredArmorSources.test.ts`
 - `settlement/merchantStage4Sources.test.ts`
 - `settlement/merchantTrade.test.ts`
+- `settlement/upperTierHosts.ts`
 
 ## `settlement/merchantWagon.test.ts`
 
@@ -1665,6 +1670,7 @@ Generated from TypeScript imports.
 - `settlement/lostTreasureChroniclesSpecialistResident.test.ts`
 - `settlement/lostTreasureChroniclesSpecialistResident.ts`
 - `settlement/npcIdentity.test.ts`
+- `settlement/upperTierHosts.ts`
 - `world/expeditionParty.test.ts`
 - `world/expeditionParty.ts`
 
@@ -1920,6 +1926,8 @@ Generated from TypeScript imports.
 - `settlement/npcIdentity.ts`
 - `settlement/npcPostDeath.test.ts`
 - `settlement/npcState.test.ts`
+- `settlement/upperTierHosts.test.ts`
+- `settlement/upperTierHosts.ts`
 - `world/createExpeditionAssignments.ts`
 - `world/expeditionAssignment.ts`
 - `world/expeditionParty.test.ts`
@@ -2673,6 +2681,7 @@ Generated from TypeScript imports.
 - `settlement/artisanCraft.ts`
 - `settlement/householdProfessionStock.ts`
 - `settlement/merchantTrade.ts`
+- `settlement/upperTierHosts.ts`
 
 ## `settlement/settlementCharacter.test.ts`
 
@@ -2791,6 +2800,7 @@ Generated from TypeScript imports.
 - `settlement/settlementSignposts.ts`
 - `settlement/settlementWorldgenCache.test.ts`
 - `settlement/settlementWorldgenCache.ts`
+- `settlement/upperTierHosts.ts`
 - `terrain/cemeteryAssignment.test.ts`
 - `terrain/cemeteryAssignment.ts`
 - `terrain/cemeteryPlacement.ts`
@@ -2965,6 +2975,7 @@ Generated from TypeScript imports.
 - `settlement/settlementNameUniqueness.test.ts`
 - `settlement/settlementProgression.test.ts`
 - `settlement/settlementWorldgenCache.test.ts`
+- `settlement/upperTierHosts.test.ts`
 - `terrain/chunkManager.ts`
 - `terrain/worldKnowledgeScan.ts`
 
@@ -3124,6 +3135,7 @@ Generated from TypeScript imports.
 - `settlement/settlementProgression.test.ts`
 - `settlement/settlementProgression.ts`
 - `settlement/settlementWorldgenCache.test.ts`
+- `settlement/upperTierHosts.test.ts`
 
 ## `settlement/settlementTimeSkipAnimals.test.ts`
 
@@ -3356,6 +3368,42 @@ Generated from TypeScript imports.
 - `settlement/structureRepairCandidates.test.ts`
 - `settlement/structureRepairCandidates.ts`
 - `settlement/structureStateRegistry.test.ts`
+
+## `settlement/upperTierHosts.test.ts`
+
+**Imports**
+
+- `items/Inventory.ts`
+- `items/items.ts`
+- `items/upperTierIdentities.ts`
+- `items/upperTierIssuance.ts`
+- `persistence/saveData.ts`
+- `settlement/npcState.ts`
+- `settlement/settlementPlanCache.ts`
+- `settlement/settlementTerrain.ts`
+- `settlement/upperTierHosts.ts`
+- `terrain/chunkHeightmap.ts`
+- `terrain/landformDescriptors.ts`
+
+## `settlement/upperTierHosts.ts`
+
+**Imports**
+
+- `items/Inventory.ts`
+- `items/upperTierIdentities.ts`
+- `items/upperTierIssuance.ts`
+- `settlement/merchantTrade.ts`
+- `settlement/npcIdentity.ts`
+- `settlement/npcState.ts`
+- `settlement/settlementArmorQuality.ts`
+- `settlement/settlementGenerator.ts`
+- `world/parseSeed.ts`
+
+**Imported by**
+
+- `settlement/SettlementsManager.ts`
+- `settlement/createSettlement.ts`
+- `settlement/upperTierHosts.test.ts`
 
 ## `settlement/villageClearing.test.ts`
 

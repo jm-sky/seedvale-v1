@@ -206,6 +206,7 @@ Generated from TypeScript imports.
 - `items/treasureGameplay.ts`
 - `items/upperTierIssuance.test.ts`
 - `items/upperTierIssuance.ts`
+- `items/upperTierPurchase.test.ts`
 - `items/upperTierTransfers.test.ts`
 - `items/v3Equipment/compatibility.test.ts`
 - `items/weaponMaintenance.test.ts`
@@ -257,6 +258,8 @@ Generated from TypeScript imports.
 - `settlement/storageRepair.ts`
 - `settlement/storageVisuals.test.ts`
 - `settlement/storageVisuals.ts`
+- `settlement/upperTierHosts.test.ts`
+- `settlement/upperTierHosts.ts`
 - `settlements-npcs-007.test.ts`
 - `terrain/digAction.ts`
 - `ui-vue/NpcDialogueMenu.test.ts`
@@ -1537,6 +1540,7 @@ Generated from TypeScript imports.
 - `items/treasureGameplay.ts`
 - `items/upperTierIssuance.test.ts`
 - `items/upperTierIssuance.ts`
+- `items/upperTierPurchase.test.ts`
 - `items/upperTierTransfers.test.ts`
 - `items/v3Equipment/adapter.ts`
 - `items/v3Equipment/compatibility.test.ts`
@@ -1578,6 +1582,7 @@ Generated from TypeScript imports.
 - `settlement/storageDestinations.ts`
 - `settlement/storageRepair.ts`
 - `settlement/storageVisuals.ts`
+- `settlement/upperTierHosts.test.ts`
 - `shared/foodPoisoningExposure.ts`
 - `terrain/chunkItems.ts`
 - `terrain/chunkManager.ts`
@@ -1988,6 +1993,7 @@ Generated from TypeScript imports.
 - `items/trade.test.ts`
 - `items/trapInstanceTrade.test.ts`
 - `items/upperTierIssuance.test.ts`
+- `items/upperTierPurchase.test.ts`
 - `settlement/artisanOrders.ts`
 - `settlement/householdProfessionStock.ts`
 - `settlement/merchantTrade.test.ts`
@@ -2002,6 +2008,7 @@ Generated from TypeScript imports.
 - `items/itemInstances.ts`
 - `items/items.ts`
 - `items/trapItemInstances.ts`
+- `items/upperTierIdentities.ts`
 - `quests/quests.ts`
 - `reputation/ReputationManager.ts`
 
@@ -2026,6 +2033,8 @@ Generated from TypeScript imports.
 - `items/tradeGrievance.ts`
 - `items/trapInstanceTrade.test.ts`
 - `items/treasureGameplay.test.ts`
+- `items/upperTierIssuance.test.ts`
+- `items/upperTierPurchase.test.ts`
 - `quests/guardRewards.test.ts`
 - `quests/guardRewards.ts`
 - `settlement/artisanCraft.ts`
@@ -2136,18 +2145,23 @@ Generated from TypeScript imports.
 - `ai/npcLoadout.ts`
 - `app/createApp.ts`
 - `app/interactables.ts`
+- `app/inventoryWiring.ts`
 - `items/Inventory.ts`
 - `items/armorItemInstances.ts`
 - `items/stage4Deferred.test.ts`
 - `items/stage4UpperTierMelee.test.ts`
 - `items/trade.ts`
+- `items/tradeCatalog.ts`
 - `items/treasureGameplay.ts`
 - `items/upperTierIssuance.test.ts`
 - `items/upperTierIssuance.ts`
+- `items/upperTierPurchase.test.ts`
 - `items/upperTierTransfers.test.ts`
 - `items/weaponMaintenance.ts`
 - `persistence/saveData.ts`
 - `settlement/npcState.ts`
+- `settlement/upperTierHosts.test.ts`
+- `settlement/upperTierHosts.ts`
 
 ## `items/upperTierIssuance.test.ts`
 
@@ -2156,6 +2170,7 @@ Generated from TypeScript imports.
 - `items/Inventory.ts`
 - `items/items.ts`
 - `items/trade.ts`
+- `items/tradeCatalog.ts`
 - `items/upperTierIdentities.ts`
 - `items/upperTierIssuance.ts`
 - `persistence/saveData.ts`
@@ -2173,10 +2188,27 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `app/worldBundle.ts`
 - `items/stage4Bows.test.ts`
 - `items/stage4UpperTierMelee.test.ts`
 - `items/upperTierIssuance.test.ts`
+- `items/upperTierPurchase.test.ts`
 - `items/upperTierTransfers.test.ts`
+- `settlement/SettlementsManager.ts`
+- `settlement/createSettlement.ts`
+- `settlement/upperTierHosts.test.ts`
+- `settlement/upperTierHosts.ts`
+
+## `items/upperTierPurchase.test.ts`
+
+**Imports**
+
+- `items/Inventory.ts`
+- `items/items.ts`
+- `items/trade.ts`
+- `items/tradeCatalog.ts`
+- `items/upperTierIdentities.ts`
+- `items/upperTierIssuance.ts`
 
 ## `items/upperTierTransfers.test.ts`
 
