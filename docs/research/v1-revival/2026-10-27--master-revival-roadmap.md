@@ -313,3 +313,7 @@ Link appropriate comparable native Arc A/B artifacts and metadata in the A/B/C a
 **Decisions needed (queue §3):** Q180-a capability fallback policy (F16-02); Q184-a game-clock semantics under low FPS / tab resume (F16-32); D8 (F16-07 HDR mirror, D8/D13 reflection content), D10 (far actor proxies) stay open and are **not** reopened by 041; WSL benchmark consent for Q185.
 
 **Do-not-break invariants (041 §12):** independent NPC/animal state; stable identities through streaming/save/rebuild; deterministic ecology/stock/travel/quests; acceptance separate from delayed graphics; shared GLTF cache not disposed by actor clones; no unapproved richness reductions; Windows Arc and WSL evidence never mixed.
+
+## Caves and Dungeons — to be planned
+
+Przebudowa jaskiń jest do zaplanowania zgodnie z [docs/roadmap/caves-and-dungeons.md](../../roadmap/caves-and-dungeons.md). Ten dokument opisuje kierunek koncepcyjny, nie zatwierdzony plan implementacji.
