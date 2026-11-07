@@ -1,5 +1,7 @@
 # Seedvale V1 Revival — Research Dossier
 
+**Masterwork utility items (author scope approved 2026-11-07):** [items-player-068 draft plan](../../plans/items-player-068-masterwork-utility-items.md) and [implementation notes](../../plans/implementation-notes/items-player-068-masterwork-utility-items-implementation-notes.md) — seven ordinary/masterwork utility variants; no shovel/pickaxe durability; rare but regularly attainable. Documentation only, not implementation approval.
+
 **Created at:** 2026-10-25 by ChatGPT GPT-6 · **Index slimmed:** 2026-10-30 (queue Q12)
 
 > **Start here:** [Strategic Brief](./STRATEGIC-BRIEF.md) (approved decisions, D4 freeze, autonomy) → [Autonomous Session Queue](./AUTONOMOUS-SESSION-QUEUE.md) (ordered tasks, gates, author-owned checks) → [P1 tracker snapshot](./2026-10-27--performance-three-track-roadmap.md#p1-status-snapshot-2026-10-29). Everything below is a topic index of research evidence; where it conflicts with the brief, the brief wins. Closed hand-off stubs live in [archive/](./archive/) (`NEXT-SESSION--*`).
