@@ -41,3 +41,7 @@ Two layers from [review 041](../reviews/2026-11-06--041--rendering-performance-f
 
 - Any P stage would delay authoritative activation, show missing/late models visibly, or reduce vegetation/NPC density → author.
 - P1 evidence is ambiguous → O judgement, not S.
+
+## Implementation status
+
+- **C1 (Q176, Sonnet 2026-11-07) — implemented, technically verified (pool); grass guard not covered by a manager-level test.** `chunkWorkerPool.ts`: cancelling a running job moves it to an `orphaned` map (caller promise rejected as before) that keeps counting toward background headroom and `busyCount` until that worker's response (or death) arrives; no terminate/respawn. Test: `chunkWorkerPool.test.ts` ("keeps a cancelled running background job counted…"). `chunkManager.ts`: initial grass request carries `grassRequestId` (shared `grassSideRequestSeq`), checked in `.then` and `.catch`; `removeGrass` clears it. **Gap:** no `createChunkManager` test harness exists in the repo, so the unload + reload late-resolve/reject case from the plan is untested — loose end (needs a mocked pool + minimal config harness).

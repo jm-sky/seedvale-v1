@@ -219,6 +219,10 @@ export function createChunkWorkerPool(
   const queueGrass: GrassJob[] = []
   const installedHydrology = new Map<string, WorldHydrology>()
   const inflight = new Map<number, ChunkJob>()
+  /** Jobs cancelled while a worker was already running them (Q176). The caller's promise is settled, but the
+   *  worker stays physically busy until its response arrives (then discarded) — so they keep counting toward
+   *  background headroom and `busyCount`. Workers are not terminated on cancel. */
+  const orphaned = new Map<number, ChunkJob>()
   const keyToId = new Map<string, number>()
   const workerJob = new Map<ChunkWorkerLike, number>()
   /** Jobs already retried once after their worker died (see `worker.onerror`). */
@@ -232,6 +236,7 @@ export function createChunkWorkerPool(
   function inflightBackgroundCount(): number {
     let count = 0
     for (const job of inflight.values()) if (isBackgroundJob(job)) count++
+    for (const job of orphaned.values()) if (isBackgroundJob(job)) count++
     return count
   }
 
@@ -284,6 +289,7 @@ export function createChunkWorkerPool(
     worker.onmessage = (event: MessageEvent<ChunkWorkerResponse>) => {
       const msg = event.data
       const job = settleJob(msg.id)
+      orphaned.delete(msg.id)
       workerJob.delete(worker)
       free.push(worker)
       if (job) {
@@ -336,6 +342,7 @@ export function createChunkWorkerPool(
       // bare `Event` (Q80). Jobs posted to it would never answer: replace it and retry its job once.
       console.error('[chunkWorkerPool] worker error — replacing worker', event.message, event.filename, event.lineno, event.colno)
       const jobId = workerJob.get(worker)
+      if (jobId !== undefined) orphaned.delete(jobId)
       retire(worker)
       if (respawnsLeft > 0) {
         respawnsLeft--
@@ -446,6 +453,7 @@ export function createChunkWorkerPool(
     if (job) {
       inflight.delete(id)
       retriedJobs.delete(id)
+      orphaned.set(id, job)
       job.reject(new HeightmapGenerationCancelledError())
     }
   }
@@ -580,6 +588,7 @@ export function createChunkWorkerPool(
     queueGrass.length = 0
     for (const job of inflight.values()) job.reject(new HeightmapGenerationCancelledError())
     inflight.clear()
+    orphaned.clear()
     retriedJobs.clear()
     keyToId.clear()
     workerJob.clear()
@@ -608,7 +617,7 @@ export function createChunkWorkerPool(
       return queueHydrologyRows.length + queueTile.length + queueMesh.length + queueWorldKnowledge.length + queueFarTile.length + queueMapTile.length + queueGrass.length
     },
     get busyCount() {
-      return inflight.size
+      return inflight.size + orphaned.size
     },
   }
 }

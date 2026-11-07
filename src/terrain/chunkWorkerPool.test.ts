@@ -194,6 +194,34 @@ describe('chunkWorkerPool world-knowledge scheduling (plan quests-progression-04
     pool.dispose()
   })
 
+  it('keeps a cancelled running background job counted until its worker answers (Q176)', async () => {
+    const posted: Posted[] = []
+    // 3 workers → background headroom 2, one worker always left for terrain.
+    const pool = createChunkWorkerPool(3, { createWorker: () => createControllableWorker(posted) })
+    const g1 = pool.requestGrass('g1', dummyGrass)
+    const g2 = pool.requestGrass('g2', dummyGrass)
+    expect(posted).toHaveLength(2)
+    const orphanWorker = posted[0]!.worker
+    pool.cancelGrass('g1')
+    await expect(g1).rejects.toBeInstanceOf(HeightmapGenerationCancelledError)
+    // The cancelled job still occupies its worker: physical occupancy, no phantom background slot.
+    expect(pool.busyCount).toBe(2)
+    const g3 = pool.requestGrass('g3', dummyGrass)
+    expect(posted).toHaveLength(2)
+    expect(pool.pendingCount).toBe(1)
+    // Foreground work still gets the reserved worker.
+    const tile = pool.requestTile('t', dummyTile)
+    expect(posted).toHaveLength(3)
+    expect(posted[2]?.request.kind).toBe('tile')
+    // The cancelled worker's late response is discarded and releases the slot → queued grass starts.
+    orphanWorker.completeOk()
+    expect(pool.busyCount).toBe(3)
+    expect(posted).toHaveLength(4)
+    expect(posted[3]?.request.kind).toBe('grass')
+    pool.dispose()
+    await Promise.allSettled([g2, g3, tile])
+  })
+
   it('starts a queued mesh before queued world-knowledge after a tile completes', async () => {
     const posted: Posted[] = []
     const pool = createChunkWorkerPool(1, { createWorker: () => createControllableWorker(posted) })

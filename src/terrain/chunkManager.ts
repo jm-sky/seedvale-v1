@@ -554,6 +554,9 @@ type ChunkRecord = {
   /** A `requestChunkGrass` request is in flight for this chunk (plan 086) —
    *  `grass` stays `undefined` until it resolves. */
   grassPending?: boolean
+  /** Q176: id of the initial (`grassPending`) request. A completion or rejection whose id no longer matches
+   *  this record (unloaded, or a replacement record for the same key) is stale and must not touch it. */
+  grassRequestId?: number
   /** CA1: id of the in-flight filler-only request (`undefined` = none). A
    *  completion whose id no longer matches is stale and discarded. */
   grassFillerRequestId?: number
@@ -1726,6 +1729,8 @@ export function createChunkManager(
    *  (not the one at request time) before building meshes. Chunk tiles come
    *  back synchronously already resolved (`ensureLoaded`); grass is the only
    *  per-chunk placement still generated on demand after that. */
+  let grassSideRequestSeq = 0
+
   function ensureGrass(record: ChunkRecord): void {
     if (record.grass !== undefined || record.grassPending || !record.tile) return
     const tile = record.tile
@@ -1733,6 +1738,8 @@ export function createChunkManager(
     const coord = record.coord
     const { x, z } = chunkCenter(coord, config.chunkSize)
     record.grassPending = true
+    const requestId = ++grassSideRequestSeq
+    record.grassRequestId = requestId
     getGrassBaselineDiag().recordRequest()
     // CA1: skip the filler pass (no allocation/transfer) for chunks outside
     // the filler range; `syncFillerForRecord` requests it when they enter.
@@ -1744,12 +1751,13 @@ export function createChunkManager(
     requestChunkGrass(key, params)
       .then((data) => {
         const rec = chunks.get(key)
-        if (!rec) {
+        if (!rec || rec.grassRequestId !== requestId) {
           getGrassFinalizationDiag().recordDiscarded('unloaded')
           getGrassBaselineDiag().recordDiscard('unloaded')
           return
         }
         rec.grassPending = false
+        rec.grassRequestId = undefined
         const dist = chebyshevDistance(coord, lastPlayerChunk)
         if (dist > grassUnloadRadius) {
           getGrassFinalizationDiag().recordDiscarded('outOfRange')
@@ -1788,7 +1796,10 @@ export function createChunkManager(
       })
       .catch((err: unknown) => {
         const rec = chunks.get(key)
-        if (rec) rec.grassPending = false
+        if (rec && rec.grassRequestId === requestId) {
+          rec.grassPending = false
+          rec.grassRequestId = undefined
+        }
         if (!(err instanceof HeightmapGenerationCancelledError)) {
           console.error('[chunkManager] grass generation failed', err)
         }
@@ -1810,12 +1821,12 @@ export function createChunkManager(
     if (record.grassPending) {
       cancelChunkGrass(record.key)
       record.grassPending = false
+      record.grassRequestId = undefined
       getGrassBaselineDiag().recordCancel()
     }
   }
 
   const grassFillerKeyFor = (key: string): string => `${key}#filler`
-  let grassSideRequestSeq = 0
 
   /** CA1: keeps a chunk's filler bucket in step with the filler range - requests
    *  a filler-only placement when the chunk enters it, releases the bucket (and
