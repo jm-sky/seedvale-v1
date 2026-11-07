@@ -77,6 +77,7 @@ import { createHouseholdRegistry, type Household, type HouseholdId, householdIdF
 import {
   createLivestockRegistry,
   detachMerchantPackAnimal,
+  disposeLivestock,
   type LivestockSaveRecord,
   originOfDetachedAnimal,
   type PackAnimalJourneyHooks,
@@ -1852,10 +1853,8 @@ export async function createSettlementsManager(
     snapshotStructureStates: () => structureStates.serialize(),
     dispose() {
       disposed = true
-      for (const animal of detachedLivestock) {
-        animal.dispose()
-        animal.mesh.removeFromParent()
-      }
+      // Q175: full livestock retirement (agent release + mesh resources), not just the agent half.
+      disposeLivestock(detachedLivestock)
       detachedLivestock.length = 0
       detachedByRef.clear()
       for (const entry of entries.values()) entry.settlement?.dispose()

@@ -50,3 +50,7 @@ No global animated instancing, cross-actor palette pooling, actor LOD changes (F
 - A1 forces culling off for whole species → measurable draw increase; land behind a revertable boundary and ask before default.
 - A2 shows garment GLBs lack morph targets matching body-build names (asset gap) → record per asset in §3; no code workaround.
 - A3 requires changing equipment/held-tool ownership contracts.
+
+## Implementation status
+
+- **A3 (Q175, Sonnet 2026-11-07) — implemented, technically verified.** `PlayerController.replaceModelRoot` now calls `disposePlayerVisual(previous)` after the torch socket, held-tool pivot and equipment visuals are re-homed (replaces the former `disposeOutfitMaterialClones`, which `disposeObject3D` covers; skeleton bone texture, geometry and old-skeleton accessory clones are released once, `sharedGpu` assets untouched). `SettlementsManager.dispose` retires detached livestock through the existing `disposeLivestock` (agent + mesh resources). Tests: `PlayerController.appearance.test.ts` (A→B→C swap spies), `SettlementsManager.lifecycle.test.ts` (detached livestock retired once). Not browser-checked: renderer `info.memory` plateau over repeated outfit swaps (queue §2).

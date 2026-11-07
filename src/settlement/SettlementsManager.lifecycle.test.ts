@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
-import { Scene } from 'three'
+import { BoxGeometry, Group, Mesh, MeshStandardMaterial, Scene } from 'three'
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import type { AnimalAgent } from '../fauna/AnimalAgent'
 import type { RegionParams } from '../terrain/chunkHeightmap'
 import type { Settlement } from './createSettlement'
 import type { TerrainSamplers } from './settlementTerrain'
@@ -109,6 +110,32 @@ afterEach(() => {
 })
 
 describe('SettlementsManager streaming lifecycle (settlements-023)', () => {
+  it('retires detached livestock fully on dispose — agent and owned mesh resources, once (Q175)', async () => {
+    const manager = await makeManager()
+    await flush()
+    const geometry = new BoxGeometry(1, 1, 1)
+    const material = new MeshStandardMaterial()
+    const shared = new MeshStandardMaterial()
+    shared.userData.sharedGpu = true
+    const geoDispose = vi.spyOn(geometry, 'dispose')
+    const matDispose = vi.spyOn(material, 'dispose')
+    const sharedDispose = vi.spyOn(shared, 'dispose')
+    const root = new Group()
+    const mesh = new Group()
+    mesh.add(new Mesh(geometry, material), new Mesh(new BoxGeometry(1, 1, 1), shared))
+    root.add(mesh)
+    const agentDispose = vi.fn()
+    const detached = manager.getDetachedLivestock()
+    detached.push({ dispose: agentDispose, mesh } as unknown as AnimalAgent)
+    manager.dispose()
+    expect(agentDispose).toHaveBeenCalledTimes(1)
+    expect(mesh.parent).toBeNull()
+    expect(geoDispose).toHaveBeenCalledTimes(1)
+    expect(matDispose).toHaveBeenCalledTimes(1)
+    expect(sharedDispose).not.toHaveBeenCalled()
+    expect(detached).toHaveLength(0)
+  })
+
   it('builds home and eager neighbors through the factory', async () => {
     const manager = await makeManager()
     await flush()

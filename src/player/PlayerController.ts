@@ -22,7 +22,6 @@ import {
   applyOutfitTint,
   cloneAccessoryMaterials,
   cloneOutfitMaterials,
-  disposeOutfitMaterialClones,
 } from '../assets/ubcOutfitMaterials'
 import { assembleCharacter } from '../characters/assembleCharacter'
 
@@ -945,8 +944,8 @@ export class PlayerController {
     const resumeMelee = this.meleeAttacking
     const resumeRanged = this.rangedDrawing
     this.mixer?.stopAllAction()
-    disposeOutfitMaterialClones(this.modelRoot)
-    this.modelRoot.removeFromParent()
+    const previous = this.modelRoot
+    previous.removeFromParent()
     this.mesh.add(next)
     this.modelRoot = next
     this.modelRoot.rotation.copy(poseRot)
@@ -960,6 +959,10 @@ export class PlayerController {
     }
     this.remountHeldTool()
     this.remountEquipmentVisuals()
+    // Q175: survivors (torch socket, held-tool pivot) now live under the new root; the old clone's skeleton
+    // bone texture, geometry, outfit/accessory material clones and old-skeleton equipment visuals are
+    // released once (`disposeObject3D` skips loader-shared GPU resources).
+    disposePlayerVisual(previous)
     this.currentAction = null
     this.bindMixer(next, animations)
     if (resumeMelee && this.attackAction) {

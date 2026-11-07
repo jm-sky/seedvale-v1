@@ -87,6 +87,31 @@ describe('player async visual lifetime (review 026 F1)', () => {
     expect(sharedDispose).not.toHaveBeenCalled()
   })
 
+  it('retires each superseded root once on A→B→C swaps and keeps the live root and shared GPU resources (Q175)', async () => {
+    const { controller, initial } = await player()
+    const b = model()
+    const c = model()
+    const aSkeleton = vi.spyOn(initial.mesh.skeleton, 'dispose')
+    const bSkeleton = vi.spyOn(b.mesh.skeleton, 'dispose')
+    const cSkeleton = vi.spyOn(c.mesh.skeleton, 'dispose')
+    const aGeometry = vi.spyOn(initial.mesh.geometry, 'dispose')
+    const shared = [initial.material, b.material, c.material].map((m) => vi.spyOn(m, 'dispose'))
+    vi.mocked(assembleCharacter).mockResolvedValueOnce(b).mockResolvedValueOnce(c)
+    await controller.applyAppearance({ ...base, kit, modelUrl: 'B.glb' })
+    expect(aSkeleton).toHaveBeenCalledOnce()
+    expect(bSkeleton).not.toHaveBeenCalled()
+    await controller.applyAppearance({ ...base, kit: { ...kit, outfit: 'Knight' }, modelUrl: 'C.glb' })
+    expect(bSkeleton).toHaveBeenCalledOnce()
+    expect(aSkeleton).toHaveBeenCalledOnce()
+    expect(cSkeleton).not.toHaveBeenCalled()
+    expect(controller.mesh.children).toContain(c.scene)
+    expect(controller.mesh.children).not.toContain(initial.scene)
+    expect(controller.mesh.children).not.toContain(b.scene)
+    // geometry/material flagged sharedGpu stay with the loader cache
+    expect(aGeometry).not.toHaveBeenCalled()
+    shared.forEach((spy) => expect(spy).not.toHaveBeenCalled())
+  })
+
   it('only installs the newest of two out-of-order loads', async () => {
     const { controller } = await player()
     const first = deferred<Awaited<ReturnType<typeof assembleCharacter>>>()
