@@ -41,3 +41,5 @@ So the existing actor envelope (bind union, radius = half diagonal + height) con
 5. Census before/after on `?seed=415424794` (fauna draw + shadow calls at the home village, same camera pose) — record in these notes; one revertable commit; draw delta to queue §4 only if non-trivial; edge-pop look → queue §2.
 
 **Stop if** (plan): needs per-frame bounds — not the case on this evidence.
+
+**S result (2026-11-07, Sonnet, Q173 S part):** implemented per spec items 1-4 (spec item 2 landed as a sibling `actorCullBounds.fauna.assets.test.ts` with its own on-disk loader rather than extending the character file; the skeleton-sharing guardrail is covered there by running every species with sharing on and off, not by editing `actorSkeletonSharing.assets.test.ts`). 32 tests pass; type-check, lint, `src/fauna/AnimalAgent*` and `src/render` suites pass. Item 5: census not run (no draw/shadow census tool in repo); conservative sphere may add edge draws, magnitude unknown. One revertable commit: revert removes the single `installActorCullBounds(visual)` line in `AnimalAgent`.

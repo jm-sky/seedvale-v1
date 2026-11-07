@@ -28,6 +28,7 @@ import { DEFAULT_CELL_SIZE, findPath, type NavigationQuery, type PathPoint } fro
 import { beginActivePath, endActivePath, recordPathRequest, recordRepath } from '../navigation/navigationStats'
 import { getAgentCpuDiag } from '../perf/agentCpuDiag'
 import { isActorSkeletonSharingEnabled } from '../perf/flags'
+import { installActorCullBounds } from '../render/actorCullBounds'
 import { setActorSightConcealed } from '../render/actorSightConcealment'
 import { shareActorSkeletons } from '../render/actorSkeletonSharing'
 import { tintPropMaterials } from '../settlement/props'
@@ -1885,6 +1886,9 @@ export class AnimalAgent {
     if (visual) {
       // Q20 (A1): one bone palette per animal where provably exact (per-spawn clone).
       if (isActorSkeletonSharingEnabled()) shareActorSkeletons(visual)
+      // world-terrain-068 A1: bind-pose actor envelope for native skinned culling
+      // (all clips incl. death probed inside it); no-op for rigid/procedural visuals.
+      installActorCullBounds(visual)
       this.mesh = visual
       this.isCapsule = false
     } else {
