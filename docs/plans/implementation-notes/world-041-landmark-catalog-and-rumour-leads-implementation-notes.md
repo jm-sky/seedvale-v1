@@ -61,3 +61,12 @@ Landed (technically verified: type-check, lint, full `vitest` 9540 green; **not*
 - **Rumours:** `isRumourKind` still limits the producer to cave/ruins/lake/peak/cemetery, so landforms are not told by NPCs yet (needs approved Astra copy — L4 reserved landform lines).
 - **`locations-coarse` not bumped:** the tile payload and `classifyCoarseCell` are unchanged (the plan's bump presumed catalog output stored in the cache; landforms and the summit suppression are applied after the cache).
 - Open: crater/island/crag arrival radii and the 1.5 σ summit footprint are 🟡; waterfall kind waits for 064 W3; L2 names, L5 walk-through.
+
+## L2 — landform names (2026-11-07, Sonnet, queue Q130)
+
+Landed (technically verified: type-check, lint, `vitest src/world` green; **not** browser-verified). No worldgen output, catalog ids/contents, caches or save change.
+
+- `uniqueLandformNames(seed, landforms)` (`worldLocationNames.ts`): world-wide unique names for the handful of `landform` entries. Ids processed in sorted order; first free candidate from `landmarkName(..., attempt)` (attempt salts the hash; attempt 0 = L1 name), numeric suffix as last resort. Pure, not persisted; the catalog memoizes it per seed (`landformNameOf`).
+- Landform nouns/adjectives now agree in gender (feminine/masculine adjective pairs); this renames some L1 placeholder names (names were never persisted).
+- "Shown only from `discovered`" already holds via the L3a `project()` estimated branch (generic label) — no change needed.
+- Open: lakes / peaks / caves / cemeteries / ruins keep per-id hash names without a uniqueness pass (unbounded grid-scanned sets; a settlement-style radius rule would need a neighbour-name lookup) — author/Opus decision if wanted. Waterfall names wait for W3. Names are Polish placeholders from generator pools, not NPC text.

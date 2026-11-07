@@ -27,7 +27,7 @@ import {
   PEAK_SCAN_HALO_CELLS,
   worldUnitsToHours,
 } from './locationConfig'
-import { landmarkName } from './worldLocationNames'
+import { landmarkName, uniqueLandformNames } from './worldLocationNames'
 
 export type WorldLocationCatalogDeps = {
   /** `WorldConfig.seed`/`caves`/`chunkManager`/`chunkSize` are read fresh on
@@ -425,6 +425,16 @@ export function createWorldLocationCatalog(deps: WorldLocationCatalogDeps): Worl
     return { id, kind, x, z, name: landmarkName(seed, kind, id), discoveryWeight: weightOf(seed, id) }
   }
 
+  let landformNames: { seed: number, names: Map<string, string> } | null = null
+  /** Locally unique landform names (plan world-041 L2); memoized per seed, never persisted. */
+  function landformNameOf(l: LandformLandmark): string {
+    const seed = getSeed()
+    if (landformNames?.seed !== seed) {
+      landformNames = { seed, names: uniqueLandformNames(seed, landformLandmarksOf(getSampleParams())) }
+    }
+    return landformNames.names.get(l.id) ?? landmarkName(seed, 'landform', l.id, undefined, l.subtype)
+  }
+
   function landformLocation(l: LandformLandmark): WorldLocation {
     const seed = getSeed()
     return {
@@ -433,7 +443,7 @@ export function createWorldLocationCatalog(deps: WorldLocationCatalogDeps): Worl
       subtype: l.subtype,
       x: l.x,
       z: l.z,
-      name: landmarkName(seed, 'landform', l.id, undefined, l.subtype),
+      name: landformNameOf(l),
       discoveryWeight: weightOf(seed, l.id),
     }
   }

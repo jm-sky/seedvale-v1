@@ -66,16 +66,18 @@ const SEARCH_AREA_ADJECTIVES = [
 ]
 const SEARCH_AREA_NOUNS = ['Okolice', 'Obszar', 'Rejon']
 
-const LANDFORM_ADJECTIVES = [
-  'Samotna', 'Szara', 'Wietrzna', 'Zapomniana', 'Pradawna',
-  'Milcząca', 'Stara', 'Kamienna', 'Głucha', 'Zimna',
+/** Landform adjectives as feminine/masculine pairs so "<Noun> <Adjective>" agrees in gender. */
+const LANDFORM_ADJECTIVES: readonly (readonly [feminine: string, masculine: string])[] = [
+  ['Samotna', 'Samotny'], ['Szara', 'Szary'], ['Wietrzna', 'Wietrzny'], ['Zapomniana', 'Zapomniany'],
+  ['Pradawna', 'Pradawny'], ['Milcząca', 'Milczący'], ['Stara', 'Stary'], ['Kamienna', 'Kamienny'],
+  ['Głucha', 'Głuchy'], ['Zimna', 'Zimny'],
 ]
-/** Per-subtype noun pools of `landform` entries (plan world-041 L1). */
-const LANDFORM_NOUNS: Record<WorldLocationLandformSubtype, readonly string[]> = {
-  crag: ['Skała', 'Turnia', 'Głaz'],
-  crater: ['Krater', 'Niecka', 'Rozpadlina'],
-  lakeIsland: ['Wyspa', 'Ostrów', 'Kępa'],
-  spineSummit: ['Szczyt', 'Wierch', 'Turnia'],
+/** Per-subtype noun pools of `landform` entries (plan world-041 L1); `m` marks masculine nouns. */
+const LANDFORM_NOUNS: Record<WorldLocationLandformSubtype, readonly { word: string, m?: true }[]> = {
+  crag: [{ word: 'Skała' }, { word: 'Turnia' }, { word: 'Głaz', m: true }],
+  crater: [{ word: 'Krater', m: true }, { word: 'Niecka' }, { word: 'Rozpadlina' }],
+  lakeIsland: [{ word: 'Wyspa' }, { word: 'Ostrów', m: true }, { word: 'Kępa' }],
+  spineSummit: [{ word: 'Szczyt', m: true }, { word: 'Wierch', m: true }, { word: 'Turnia' }],
 }
 
 const POOLS: Record<Exclude<WorldLocationKind, 'settlement'>, {
@@ -89,7 +91,7 @@ const POOLS: Record<Exclude<WorldLocationKind, 'settlement'>, {
   ruins: { adjectives: RUINS_ADJECTIVES, nouns: RUINS_NOUNS },
   abandonedMine: { adjectives: MINE_ADJECTIVES, nouns: MINE_NOUNS },
   searchArea: { adjectives: SEARCH_AREA_ADJECTIVES, nouns: SEARCH_AREA_NOUNS },
-  landform: { adjectives: LANDFORM_ADJECTIVES, nouns: LANDFORM_NOUNS.crag },
+  landform: { adjectives: [], nouns: [] },
 }
 
 /** Larger cemeteries lean toward the more solemn/grand noun pool. */
@@ -98,17 +100,58 @@ function cemeteryNoun(hash: number, size: CemeterySize | undefined): string {
   return pick(CEMETERY_NOUNS, hash)
 }
 
+function landformName(hash: number, subtype: WorldLocationLandformSubtype): string {
+  const noun = pick(LANDFORM_NOUNS[subtype], hash >>> 8)
+  const adjective = pick(LANDFORM_ADJECTIVES, hash >>> 16)
+  return `${noun.word} ${noun.m ? adjective[1] : adjective[0]}`
+}
+
+/**
+ * Deterministic proper name of a catalog location. Names are a pure function of (seed, id) and are shown to the
+ * player only from `discovered` (the map projection substitutes a generic label for `estimated`, plan world-041 §0).
+ * A `landform` without a subtype falls back to the crag pool. Local uniqueness among landforms is resolved by
+ * {@link uniqueLandformNames}; this function returns the candidate for the given re-roll `attempt`.
+ */
 export function landmarkName(
   seed: number,
   kind: Exclude<WorldLocationKind, 'settlement'>,
   id: string,
   cemeterySize?: CemeterySize,
   landformSubtype?: WorldLocationLandformSubtype,
+  attempt = 0,
 ): string {
-  const hash = hashLocationId(seed, id)
+  const hash = hashLocationId(seed, attempt === 0 ? id : `${id}#${attempt}`)
+  if (kind === 'landform') return landformName(hash, landformSubtype ?? 'crag')
   const pool = POOLS[kind]
-  const nouns = kind === 'landform' && landformSubtype ? LANDFORM_NOUNS[landformSubtype] : pool.nouns
-  const noun = kind === 'cemetery' ? cemeteryNoun(hash, cemeterySize) : pick(nouns, hash >>> 8)
+  const noun = kind === 'cemetery' ? cemeteryNoun(hash, cemeterySize) : pick(pool.nouns, hash >>> 8)
   const adjective = pick(pool.adjectives, hash >>> 16)
   return `${noun} ${adjective}`
+}
+
+/** Number of re-rolls before a numeric suffix guarantees uniqueness. */
+const LANDFORM_NAME_REROLLS = 12
+
+/**
+ * World-wide unique names for the (few) landform landmarks, like settlement-name uniqueness: ids are processed in
+ * sorted order, each takes the first candidate (re-rolling by attempt salt) no earlier id holds, with a numeric
+ * suffix as the last resort. Pure and deterministic for a given landform set; an id's name changes only when another
+ * landform with a smaller id collides with it (never persisted, never worldgen output).
+ */
+export function uniqueLandformNames(
+  seed: number,
+  landforms: readonly { id: string, subtype: WorldLocationLandformSubtype }[],
+): Map<string, string> {
+  const taken = new Set<string>()
+  const out = new Map<string, string>()
+  for (const l of [...landforms].sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))) {
+    let name = landmarkName(seed, 'landform', l.id, undefined, l.subtype)
+    for (let attempt = 1; taken.has(name) && attempt <= LANDFORM_NAME_REROLLS; attempt++) {
+      name = landmarkName(seed, 'landform', l.id, undefined, l.subtype, attempt)
+    }
+    const base = name
+    for (let n = 2; taken.has(name); n++) name = `${base} ${n}`
+    taken.add(name)
+    out.set(l.id, name)
+  }
+  return out
 }
