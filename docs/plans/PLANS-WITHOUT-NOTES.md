@@ -1,7 +1,7 @@
 # PLANS PLANNED WITHOUT NOTES
 
 > Generated with `pnpm plans:without-notes`  
-> Date: 2026-11-06 16:44:13  
+> Date: 2026-11-07 07:53:08  
 
 ## PLANS
 
@@ -21,8 +21,6 @@
 - `tools-027-frame-attribution-and-benchmark-provenance.md`
 - `world-terrain-055-optional-shadow-frustum-and-refresh-trims.md`
 - `world-terrain-059-world-scale-travel-time-and-sparse-settlements.md`
-- `world-terrain-063-geography-driven-settlement-variants.md`
-- `world-terrain-068-actor-presentation-correctness-bounds-morphs-retirement.md`
 - `world-terrain-069-renderer-gpu-validity-shadow-coverage-and-recovery.md`
 - `world-terrain-070-streaming-worker-occupancy-and-ready-publication.md`
 
@@ -510,68 +508,6 @@ Wczytaj:
 
 Na podstawie review utwórz w repo plik:
 `docs/plans/implementation-notes/world-terrain-059-world-scale-travel-time-and-sparse-settlements-implementation-notes.md`
-
-Umieść w nim:
-- sugestie dotyczące implementacji,
-- istotne detale techniczne,
-- decyzje architektoniczne,
-- informacje o istniejących systemach i implementacjach, które należy wykorzystać,
-- potencjalne problemy, zależności i pułapki,
-- inne konkretne wskazówki, które ułatwią agentowi AI poprawną implementację planu.
-
-Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
-Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
-
-Pliki dodaj na branch `main` w repozytorium.
-```
-
-### `world-terrain-063-geography-driven-settlement-variants.md`
-
-Prompt:
-
-```
-Zrób review planu `world-terrain-063-geography-driven-settlement-variants.md`
-
-Wczytaj:
-- `docs/STATE.md`
-- `docs/plans/PLANNING.md` (Implementation Notes section),
-- `docs/plans/world-terrain-063-geography-driven-settlement-variants.md`
-- aktualny codebase,
-- potrzebne zależności i powiązane implementacje.
-
-Na podstawie review utwórz w repo plik:
-`docs/plans/implementation-notes/world-terrain-063-geography-driven-settlement-variants-implementation-notes.md`
-
-Umieść w nim:
-- sugestie dotyczące implementacji,
-- istotne detale techniczne,
-- decyzje architektoniczne,
-- informacje o istniejących systemach i implementacjach, które należy wykorzystać,
-- potencjalne problemy, zależności i pułapki,
-- inne konkretne wskazówki, które ułatwią agentowi AI poprawną implementację planu.
-
-Uwzględnij aktualny stan codebase — nie zakładaj, że plan opisuje aktualną implementację.
-Bądź oszczędny - pisz to co jest realnie potrzebne, nie pisz rzeczy oczywistych.
-
-Pliki dodaj na branch `main` w repozytorium.
-```
-
-### `world-terrain-068-actor-presentation-correctness-bounds-morphs-retirement.md`
-
-Prompt:
-
-```
-Zrób review planu `world-terrain-068-actor-presentation-correctness-bounds-morphs-retirement.md`
-
-Wczytaj:
-- `docs/STATE.md`
-- `docs/plans/PLANNING.md` (Implementation Notes section),
-- `docs/plans/world-terrain-068-actor-presentation-correctness-bounds-morphs-retirement.md`
-- aktualny codebase,
-- potrzebne zależności i powiązane implementacje.
-
-Na podstawie review utwórz w repo plik:
-`docs/plans/implementation-notes/world-terrain-068-actor-presentation-correctness-bounds-morphs-retirement-implementation-notes.md`
 
 Umieść w nim:
 - sugestie dotyczące implementacji,

@@ -2,6 +2,13 @@
 
 Generated from TypeScript imports.
 
+## `characters/assembleCharacter.garmentMorphs.assets.test.ts`
+
+**Imports**
+
+- `characters/assembleCharacter.ts`
+- `characters/characterTypes.ts`
+
 ## `characters/assembleCharacter.ts`
 
 **Imports**
@@ -14,6 +21,7 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `ai/NpcAgent.ts`
+- `characters/assembleCharacter.garmentMorphs.assets.test.ts`
 - `debug/caves/caveHeightfieldPlayer.ts`
 - `player/PlayerController.appearance.test.ts`
 - `player/PlayerController.ts`
@@ -100,6 +108,7 @@ Generated from TypeScript imports.
 - `ai/npcAppearance.ts`
 - `assets/assetIndex.ts`
 - `assets/characterKitEntries.ts`
+- `characters/assembleCharacter.garmentMorphs.assets.test.ts`
 - `characters/assembleCharacter.ts`
 - `characters/baseGarments.ts`
 - `characters/bodyBuild.ts`

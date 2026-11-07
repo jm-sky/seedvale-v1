@@ -1052,26 +1052,28 @@ Generated from exported TypeScript symbols.
 - `hydrologyLakeLevelAt` — function — line 207
 - `installWorldHydrology` — function — line 27
 - `isUnconditionedHydrologyId` — function — line 20
+- `perennialChannelDistance` — function — line 287
+  - domain: world-terrain
 - `retainOnlyWorldHydrology` — function — line 53
 - `SPARSE_BLOCK_SIZE` — const — line 14
   - domain: world-terrain
 - `StreamHead` — type — line 223
 - `streamHeadsFor` — function — line 232
 - `UNCONDITIONED_HYDROLOGY_ID` — const — line 17
-- `unpackChains` — function — line 251
+- `unpackChains` — function — line 316
 - `worldHydrologyFor` — function — line 36
 
 ## `terrain/worldKnowledgeScan.ts`
 
-- `chunkParamsForWorldKnowledgeScan` — function — line 207
+- `chunkParamsForWorldKnowledgeScan` — function — line 208
   - domain: world-terrain
-- `prepareWorldKnowledgeScan` — function — line 141
+- `prepareWorldKnowledgeScan` — function — line 142
   - domain: world-terrain
-- `scanWorldKnowledge` — function — line 291
+- `scanWorldKnowledge` — function — line 294
   - domain: world-terrain
 - `WORLD_KNOWLEDGE_MAX_NEARBY_HITS` — const — line 29
 - `WorldKnowledgeChunkGather` — type — line 85
-- `worldKnowledgeGatherFor` — function — line 191
+- `worldKnowledgeGatherFor` — function — line 192
 - `WorldKnowledgeQueryKind` — type — line 31
 - `worldKnowledgeRoadContext` — function — line 118
   - domain: world-terrain

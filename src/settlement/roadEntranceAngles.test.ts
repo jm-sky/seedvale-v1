@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it } from 'vitest'
 import type { RegionParams } from '../terrain/chunkHeightmap'
 import type { TerrainSamplers } from './settlementTerrain'
+import { EMPTY_LANDFORM_INDEX } from '../terrain/landformDescriptors'
 import { cellsWithinRadius, probeSettlementSite } from './settlementGenerator'
 import { clearSettlementDefCache, settlementDefFor, settlementLayoutFor, type SettlementResolveContext } from './settlementPlanCache'
 import { roadEntranceAngles } from './villagePlanner'
@@ -58,6 +59,8 @@ describe('neighbour-facing entrances in generated defs', () => {
   } as RegionParams
   const ctx: SettlementResolveContext = {
     seed: 42, sampleHeight: () => 12, waterLevel: 0, localSearchRadius: 56, terrainSamplers: samplers, heightScale: 1, region,
+    hydrologyId: 'unconditioned',
+    landformIndex: EMPTY_LANDFORM_INDEX,
   }
   afterEach(() => clearSettlementDefCache())
 

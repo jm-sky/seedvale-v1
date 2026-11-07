@@ -3,6 +3,7 @@ import type { RegionParams } from '../terrain/chunkHeightmap'
 import type { SettlementResolveContext } from './settlementPlanCache'
 import type { TerrainSamplers } from './settlementTerrain'
 import { settlementOpportunityNpcsFromDef } from '../quests/opportunities/settlementNpcMaterialization'
+import { EMPTY_LANDFORM_INDEX } from '../terrain/landformDescriptors'
 import { generateFamilies } from './families'
 import { createLostTreasureArchaeologistFamily } from './lostTreasureChroniclesArchaeologistResident'
 import {
@@ -59,6 +60,8 @@ function ctxFor(seed: number): SettlementResolveContext {
     sampleHeight: flatHeight,
     waterLevel: 0,
     localSearchRadius: 56,
+    hydrologyId: 'unconditioned',
+    landformIndex: EMPTY_LANDFORM_INDEX,
     terrainSamplers: samplers,
     heightScale: 1,
     region,

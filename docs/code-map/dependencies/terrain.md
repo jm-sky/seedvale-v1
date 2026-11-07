@@ -377,6 +377,7 @@ Generated from TypeScript imports.
 - `settlement/settlementGenerator.test.ts`
 - `settlement/settlementGenerator.ts`
 - `settlement/settlementLayout.ts`
+- `settlement/settlementLayoutFilters.test.ts`
 - `settlement/settlementNameUniqueness.test.ts`
 - `settlement/settlementPalisade.ts`
 - `settlement/settlementPlanCache.ts`
@@ -1269,6 +1270,19 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `settlement/SettlementsManager.lifecycle.test.ts`
+- `settlement/createSettlement.rollback.integration.test.ts`
+- `settlement/lostTreasureChroniclesArchaeologistResident.test.ts`
+- `settlement/lostTreasureChroniclesElderResident.test.ts`
+- `settlement/lostTreasureChroniclesSpecialistResident.test.ts`
+- `settlement/roadEntranceAngles.test.ts`
+- `settlement/roadNetwork.ts`
+- `settlement/settlementLayout.ts`
+- `settlement/settlementLayoutFilters.test.ts`
+- `settlement/settlementNameUniqueness.test.ts`
+- `settlement/settlementPlanCache.ts`
+- `settlement/settlementProgression.test.ts`
+- `settlement/settlementWorldgenCache.test.ts`
 - `terrain/chunkHeightmap.ts`
 - `terrain/landformDescriptors.test.ts`
 - `terrain/riverNetwork.ts`
@@ -2004,6 +2018,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `settlement/settlementLayout.ts`
 - `terrain/chunkManager.ts`
 - `terrain/waterfallSites.test.ts`
 - `world/createRiverWater.ts`
@@ -2051,6 +2066,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `settlement/settlementLayoutFilters.test.ts`
 - `terrain/chunkHeightmap.worker.ts`
 - `terrain/chunkHeightmapProtocol.ts`
 - `terrain/chunkWorkerPool.test.ts`
@@ -2137,6 +2153,8 @@ Generated from TypeScript imports.
 - `debug/caves/caveHeightfieldTerrain.ts`
 - `player/worldWaterEligibility.test.ts`
 - `settlement/roadRouteWorldgenCache.test.ts`
+- `settlement/settlementLayout.ts`
+- `settlement/settlementLayoutFilters.test.ts`
 - `settlement/settlementWorldgenCache.test.ts`
 - `terrain/biomeRegions.test.ts`
 - `terrain/cemeteryPlacement.test.ts`

@@ -1,9 +1,9 @@
-// Usage: pnpm worldgen:variants [--seeds=42,415424794] [--variants=22@1150,25@1050,28@950] [--abca] [--json]
+// Usage: pnpm worldgen:variants [--seeds=42,415424794] [--variants=22@1150,25@1050/moderate,28@950] [--abca] [--json]
 // world-terrain-063 V0: settlement variant runner (tooling only, current terrain).
 // Each variant × seed runs `census-travel.ts` in a FRESH process, so the layout memo, defs, progression, quest
 // hosts and road routes can never leak between variants (review 031 F4). `--abca` appends the first variant again
-// and fails if A's fingerprint differs (A → B → A identity). Variant syntax: `<target>@<startSpacingM>`
-// (suitabilityWeight arrives with V1; there is no suitability term to weight yet).
+// and fails if A's fingerprint differs (A → B → A identity). Variant syntax: `<target>@<startSpacingM>[/<none|moderate|strong>]`
+// (suitability weight, plan world-terrain-063 V1; default `none`).
 import { execFileSync } from 'node:child_process'
 
 function arg(name: string, fallback: string): string {
@@ -20,13 +20,17 @@ type Census = {
   counts: { selected: number, defined: number, routedEdges: number, unroutedEdges: number, roadConnectedInLargestComponent: number }
   connectivity: { routedComponents: number }
   routeStats: { polylineM: { p50: number, p90: number }, ratio: { p50: number }, riverCrossings: number }
+  workload: { households: number, residents: number }
+  longDetourEdges: number
+  authorTarget: { id: string, ratio?: number } | null
   coverage: { wildernessOver5hPct: number, quadrantWithin5hPct: Record<string, number | null> }
   edges: unknown[]
 }
 
 function run(seed: number, variant: string): Census {
-  const [target, spacing] = variant.split('@') as [string, string]
-  const out = execFileSync('pnpm', ['exec', 'tsx', 'scripts/perf/census-travel.ts', `--seeds=${seed}`, '--json', `--target=${target}`, `--spacing=${spacing}`], {
+  const [target, rest] = variant.split('@') as [string, string]
+  const [spacing, weight = 'none'] = rest.split('/') as [string, string?]
+  const out = execFileSync('pnpm', ['exec', 'tsx', 'scripts/perf/census-travel.ts', `--seeds=${seed}`, '--json', `--target=${target}`, `--spacing=${spacing}`, `--suitability=${weight}`], {
     encoding: 'utf8', maxBuffer: 256 * 1024 * 1024,
   })
   return (JSON.parse(out.slice(out.indexOf('['))) as Census[])[0]!
@@ -48,7 +52,7 @@ for (const seed of seeds) {
       seed, variant: repeat ? `${variant} (A again)` : variant, selected: r.counts.selected, defined: r.counts.defined,
       routed: r.counts.routedEdges, unrouted: r.counts.unroutedEdges, comps: r.connectivity.routedComponents,
       p50m: r.routeStats.polylineM.p50, p90m: r.routeStats.polylineM.p90, ratioP50: r.routeStats.ratio.p50,
-      crossings: r.routeStats.riverCrossings, wild5hPct: r.coverage.wildernessOver5hPct, minQuad5hPct: q.length ? Math.min(...q) : 0,
+      crossings: r.routeStats.riverCrossings, households: r.workload.households, residents: r.workload.residents, longDetours: r.longDetourEdges, author: r.authorTarget ? `${r.authorTarget.id}${r.authorTarget.ratio ? ` ×${r.authorTarget.ratio}` : ''}` : '-', wild5hPct: r.coverage.wildernessOver5hPct, minQuad5hPct: q.length ? Math.min(...q) : 0,
     })
   }
 }

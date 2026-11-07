@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it } from 'vitest'
 import type { RegionParams } from '../terrain/chunkHeightmap'
 import type { SettlementResolveContext } from './settlementPlanCache'
 import type { TerrainSamplers } from './settlementTerrain'
+import { EMPTY_LANDFORM_INDEX } from '../terrain/landformDescriptors'
 import { rolledVillageSizeRank, rollVillageSize } from './families'
 import { cellSeed, generateSettlementDef } from './settlementGenerator'
 import { computeSettlementLayout } from './settlementLayout'
@@ -59,6 +60,8 @@ function ctxFor(
     sampleHeight: flatHeight,
     waterLevel: 0,
     localSearchRadius: 56,
+    hydrologyId: 'unconditioned',
+    landformIndex: EMPTY_LANDFORM_INDEX,
     terrainSamplers: samplers,
     heightScale: 1,
     region,
