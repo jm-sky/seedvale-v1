@@ -2,7 +2,7 @@ import type { PostProcessing } from '../render/createPostProcessing'
 import { createCameraDebugOverlay } from '../debug/createCameraDebugOverlay'
 import { isCameraDebugMode, isRenderStateDebugMode } from '../debug/debugMode'
 import { getRenderStateDebugText } from '../debug/renderStateDebug'
-import { MIN_RENDERER_SIZE, shouldApplyRendererResize } from '../render/rendererResize'
+import { MIN_RENDERER_SIZE, nextPixelRatio, shouldApplyRendererResize } from '../render/rendererResize'
 import type { PerspectiveCamera, Scene, WebGLRenderer } from 'three'
 import type { CSS2DRenderer } from 'three/addons/renderers/CSS2DRenderer.js'
 
@@ -39,6 +39,8 @@ export type AppRenderLoopDeps = {
   /** Terrain sampler for the camera debug overlay — read through the live
    *  bundle, never captured, so it survives a world rebuild. */
   sampleHeight: (x: number, z: number) => number
+  /** Live `postProcessing.pixelRatioCap` — read when `devicePixelRatio` changes (monitor move / zoom). */
+  pixelRatioCap: () => number
   /** One frame of simulation + render. */
   onTick: () => void
 }
@@ -87,6 +89,13 @@ export function createAppRenderLoop(deps: AppRenderLoopDeps): AppRenderLoop {
       width = lastViewportWidth
       height = lastViewportHeight
     }
+    // Q178: a DPR-only change (other monitor, browser zoom) keeps the CSS size, so re-size anyway.
+    const pixelRatio = nextPixelRatio(renderer.getPixelRatio(), window.devicePixelRatio, deps.pixelRatioCap())
+    if (pixelRatio !== null) {
+      renderer.setPixelRatio(pixelRatio)
+      postProcessing.setPixelRatio(pixelRatio)
+      force = true
+    }
     if (!force && !shouldApplyRendererResize(width, height, lastViewportWidth, lastViewportHeight)) {
       return
     }
@@ -108,6 +117,21 @@ export function createAppRenderLoop(deps: AppRenderLoopDeps): AppRenderLoop {
     })
   }
   window.addEventListener('resize', requestResize)
+  // Q178: `resolution` media queries fire when `devicePixelRatio` changes; each query is bound to one
+  // ratio, so re-arm it after every change.
+  let dprQuery: MediaQueryList | null = null
+  const watchDevicePixelRatio = () => {
+    dprQuery?.removeEventListener('change', onDevicePixelRatioChange)
+    dprQuery = typeof window.matchMedia === 'function'
+      ? window.matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`)
+      : null
+    dprQuery?.addEventListener('change', onDevicePixelRatioChange)
+  }
+  function onDevicePixelRatioChange(): void {
+    watchDevicePixelRatio()
+    requestResize()
+  }
+  watchDevicePixelRatio()
   // Mobile browsers resize the *visual* viewport (address bar show/hide,
   // on-screen keyboard) without always firing a plain window 'resize' — and
   // orientation changes on some Android WebViews fire neither reliably.
@@ -178,6 +202,8 @@ export function createAppRenderLoop(deps: AppRenderLoopDeps): AppRenderLoop {
     dispose: () => {
       cancelAnimationFrame(frameId)
       window.removeEventListener('resize', requestResize)
+      dprQuery?.removeEventListener('change', onDevicePixelRatioChange)
+      dprQuery = null
       window.removeEventListener('orientationchange', requestResize)
       window.removeEventListener('orientationchange', onOrientationSettled)
       window.visualViewport?.removeEventListener('resize', requestResize)

@@ -11,6 +11,7 @@ import { sampleRenderState } from '../debug/renderStateDebug'
 import { isGodRaysSoftEnabled } from '../perf/flags'
 import { GodRaysShader } from './godRaysShader'
 import { createGradedOutputPass } from './gradedOutputPass'
+import { disposeN8aoPass } from './n8aoDispose'
 import type { Camera, PerspectiveCamera, Scene, WebGLRenderer } from 'three'
 
 export type PostPassId = 'ao' | 'bloom' | 'smaa' | 'godRays' | 'filmGrade'
@@ -275,6 +276,8 @@ export function createPostProcessing(
       // disposing it keeps the list exhaustive if that changes upstream.
       renderPass.dispose()
       aoPass.dispose()
+      // `n8ao` ships no `dispose()` (inherits the no-op): free its targets/textures/materials explicitly.
+      disposeN8aoPass(aoPass)
       smaaPass.dispose()
       bloomPass.dispose()
       godRaysPass.dispose()

@@ -18,3 +18,12 @@ export function shouldApplyRendererResize(
   const h = Math.round(height)
   return w !== lastWidth || h !== lastHeight
 }
+
+/** Q178: the pixel ratio the renderer should use, or `null` when it already matches. Dragging the window
+ *  to another monitor / browser zoom changes `devicePixelRatio` without changing the CSS size, so the
+ *  size-only gate above never fires; this is the DPR-only decision. */
+export function nextPixelRatio(current: number, devicePixelRatio: number, cap: number): number | null {
+  if (!Number.isFinite(devicePixelRatio) || !Number.isFinite(cap) || devicePixelRatio <= 0 || cap <= 0) return null
+  const next = Math.min(devicePixelRatio, cap)
+  return Math.abs(next - current) > 1e-3 ? next : null
+}
